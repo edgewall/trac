@@ -26,6 +26,7 @@ from svn import fs, util, delta
 
 from Module import Module
 from util import *
+from Href import href
 import perm
 
 class Browser (Module):
@@ -100,7 +101,7 @@ class Browser (Module):
             out.write ('<td class="icon-column"><img src="%s" width="16" height="16"></td>'
                        % (self.namespace['htdocs_location'] + '/folder.png'))
             out.write ('<td class="name-column"><a href="%s">%s</a></td>'
-                       % (browser_href (item['fullpath']), item['name']))
+                       % (href.browser(item['fullpath']), item['name']))
             out.write ('<td class="size-column">&nbsp;</td>')
             out.write ('<td class="rev-column">%s</td>' %
                        item['created_rev'])
@@ -108,11 +109,11 @@ class Browser (Module):
             out.write ('<td class="icon-column"><img src="%s" width="16" height="16"></td>'
                        % (self.namespace['htdocs_location'] + '/file.png'))
             out.write ('<td class="name-column"><a href="%s">%s</a></td>'
-                       % (log_href (item['fullpath']), item['name']))
+                       % (href.log(item['fullpath']), item['name']))
             out.write ('<td class="size-column">%s</td>' %
                        self.pretty_size(item['size']))
             out.write ('<td class="rev-column"><a href="%s">%s</a></td>'
-                       % (file_href(item['fullpath'],
+                       % (href.file(item['fullpath'],
                                                 item['created_rev']),
                           item['created_rev']))
         out.write ('<td class="date-column">%s</td>' % item['date'])
@@ -121,12 +122,12 @@ class Browser (Module):
     def get_path_links (self):
         list = self.path[1:].split('/')
         path = '/'
-        str  = '<a href="%s">/</a>' % browser_href('/')
+        str  = '<a href="%s">/</a>' % href.browser('/')
         for part in list:
             if part == '':
                 return str
             path = path + part + '/'
-            str = str + '<a href="%s">%s/</a>' % (browser_href(path), part)
+            str = str + '<a href="%s">%s/</a>' % (href.browser(path), part)
         return str
     
     def render (self):
@@ -150,7 +151,7 @@ class Browser (Module):
             out.write ('<td class="icon-column"><img src="%s" width="16" height="16"></td>'
                        % (self.namespace['htdocs_location'] + '/folder.png'))
             out.write ('<td class="name-column"><a href="%s">..</a></td><td class="size-column">&nbsp;</td><td class="rev-column">&nbsp;</td><td class="date-column">&nbsp;</td>' %
-                       browser_href(parent))
+                       href.browser(parent))
             out.write ('</tr>')
             idx = 1
         # print the "ordinary" items

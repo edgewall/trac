@@ -25,6 +25,7 @@ import os
 import StringIO
 import auth
 import perm
+from Href import href
 from Module import Module
 from db import get_connection
 from util import *
@@ -71,7 +72,7 @@ class Formatter:
         return '<h%d>%s</h%d>' % (depth, match[depth + 1:len(match) - depth - 1], depth)
 
     def _wikilink_formatter(self, match, fullmatch):
-        return '<a href="?mode=wiki&page=%s">%s</a>' % (match, match)
+        return '<a href="%s">%s</a>' % (href.wiki(match), match)
 
     def _url_formatter(self, match, fullmatch):
         return '<a href="%s">%s</a>' % (match, match)
@@ -223,7 +224,7 @@ class Page:
     def render_edit(self, out):
         perm.assert_permission (perm.WIKI_MODIFY)
         out.write ('<h3>source</h3>')
-        out.write ('<form action="svntrac.cgi" method="POST">')
+        out.write ('<form action="%s" method="POST">' % get_cgi_name())
         out.write ('<input type="hidden" name="page" value="%s">' % self.name)
         out.write ('<input type="hidden" name="mode" value="wiki">')
         out.write ('<textarea name="text" rows="15" cols="80">')
@@ -279,7 +280,7 @@ class Page:
                 time_str = ''
             out.write ('<tr><td><a href="%s">%s</a></td><td>%s</td>'
                        '<td>%s</td><td>%s</td></tr>'
-                       % (wiki_href(self.name, row[0]), row[0], time_str,
+                       % (href.wiki(self.name, row[0]), row[0], time_str,
                           row[2], row[3]))
         out.write ('</table>')
 
@@ -310,15 +311,15 @@ class Wiki(Module):
         out = StringIO.StringIO()
         if action == 'save changes':
             page.commit ()
-            redirect (wiki_href (page.name))
+            redirect (href.wiki(page.name))
         elif action == ' edit page ':
             out.write ('<h2>edit <a href="%s">%s</a></h2>' %
-                       (wiki_href(page.name), page.name))
+                       (href.wiki(page.name), page.name))
             page.render_edit (out)
             self.namespace['title'] = 'wiki - edit'
         elif action == 'preview':
             out.write ('<h2>edit <a href="%s">%s</a></h2>' %
-                       (wiki_href(page.name), page.name))
+                       (href.wiki(page.name), page.name))
             page.render_preview (out)
             self.namespace['title'] = 'wiki - preview'
         else:

@@ -20,6 +20,7 @@
 # Author: Jonas Borgström <jonas@xyche.com>
 
 from util import *
+from Href import href
 from Module import Module
 import perm
 
@@ -61,9 +62,9 @@ class Log (Module):
             
         out.write ('<td class="date-column">%s</td>' % (item['date']))
         out.write ('<td class="rev-column"><a href="%s">%s</a></td>'
-                   % (file_href (self.path, item['rev']), item['rev']))
+                   % (href.file(self.path, item['rev']), item['rev']))
         out.write ('<td class="rev-column"><a href="%s">%s</a></td>'
-                   % (changeset_href (item['rev']), item['rev']))
+                   % (href.changeset(item['rev']), item['rev']))
         out.write ('<td class="summary-column">%s</td>' % (item['log']))
         out.write ('\n</tr>\n')
         

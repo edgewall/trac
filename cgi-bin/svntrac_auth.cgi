@@ -24,6 +24,7 @@ import os
 import svntrac.db
 from svntrac.util import *
 from svntrac.auth import authenticate_user
+from  svntrac import Href
         
 if __name__ == '__main__':
     if not os.getenv('REMOTE_USER'):
@@ -33,6 +34,8 @@ if __name__ == '__main__':
                '</pre></body></html>')
     else:
         svntrac.db.init()
+        config = svntrac.db.load_config()
+        Href.initialize(config)
         authenticate_user()
-        redirect (wiki_href())
+        redirect (Href.href.wiki())
 

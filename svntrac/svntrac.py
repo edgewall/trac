@@ -24,7 +24,9 @@ import sys
 import cgi
 #import cgitb; cgitb.enable()
 import warnings
+from util import set_cgi_name, set_authcgi_name
 from svn import util, repos
+import Href
 
 warnings.filterwarnings('ignore', 'DB-API extension cursor.next() used')
 
@@ -49,7 +51,10 @@ def main():
     mode = 'wiki' #default module
     db.init()
     config = db.load_config()
-    
+    set_cgi_name(config['general']['cgi_name'])
+    set_authcgi_name(config['general']['authcgi_name'])
+    Href.initialize(config)
+
     pool = util.svn_pool_create(None)
     
     _args = cgi.FieldStorage()

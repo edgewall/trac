@@ -187,6 +187,12 @@ VALUES('general', 'svn_repository', '/var/svn/myrep');
 INSERT INTO config (section, name, value)
 VALUES('general', 'theme_dir', '/usr/lib/svntrac/templates');
 INSERT INTO config (section, name, value)
+VALUES('general', 'cgi_name', 'svntrac.cgi');
+INSERT INTO config (section, name, value)
+VALUES('general', 'authcgi_name', 'svntrac_auth.cgi');
+INSERT INTO config (section, name, value)
+VALUES('general', 'href_scheme', 'cgi');
+INSERT INTO config (section, name, value)
 VALUES('ticket', 'default_version', '');
 INSERT INTO config (section, name, value)
 VALUES('ticket', 'default_severity', 'normal');

@@ -20,6 +20,7 @@
 # Author: Jonas Borgström <jonas@xyche.com>
 
 from util import *
+from Href import href
 from Module import Module
 import perm
 import db
@@ -82,11 +83,11 @@ class Report (Module):
         idx = 0
         for value in row:
             if cols[idx][0] in ['ticket', '#']:
-                out.write('<td class="ticket-column"><a href="%s">#%s</a></td>' % (ticket_href(value),
+                out.write('<td class="ticket-column"><a href="%s">#%s</a></td>' % (href.ticket(value),
                                                             value))
             elif cols[idx][0] == 'report':
                 out.write('<td class="report-column"><a href="%s">{%s}</a></td>'
-                          % (report_href(value), value))
+                          % (href.report(value), value))
                              
             elif cols[idx][0] in ['time', 'date', 'created', 'modified']:
                 out.write('<td class="%s-column">%s</td>'
@@ -107,7 +108,7 @@ class Report (Module):
                         'VALUES (NULL, %s, %s)', title, sql)
         id = cnx.db.sqlite_last_insert_rowid ()
         cnx.commit ()
-        redirect (report_href (id))
+        redirect (href.report(id))
 
     def delete_report (self, id):
         perm.assert_permission (perm.REPORT_DELETE)
@@ -117,7 +118,7 @@ class Report (Module):
 
         cursor.execute ('DELETE FROM report WHERE id=%s', id)
         cnx.commit ()
-        redirect (report_href ())
+        redirect (href.report())
 
     def commit_changes (self, id):
         """
@@ -134,7 +135,7 @@ class Report (Module):
         cursor.execute ('UPDATE report SET title=%s, sql=%s WHERE id=%s',
                         title, sql, id)
         cnx.commit ()
-        redirect (report_href (id))
+        redirect (href.report(id))
 
     def render_report_editor (self, out, id, action='commit'):
         cnx = db.get_connection()
@@ -149,7 +150,7 @@ class Report (Module):
             sql   = row[1]
         
         out.write (
-            '<form action="" method="post">'
+            '<form action="%s" method="post">'
             '<input type="hidden" name="mode" value="report">'
             '<input type="hidden" name="id" value="%d">'
             '<input type="hidden" name="action" value="%s">'
@@ -160,7 +161,7 @@ class Report (Module):
             '<br>'
             '<input type="submit" value="commit">&nbsp;'
             '<input type="reset" value="reset">'
-            '</form>' % (id, action, title, sql)
+            '</form>' % (get_cgi_name(), id, action, title, sql)
             )
     
     def render_report_list (self, out, id):
@@ -172,18 +173,18 @@ class Report (Module):
             [cols, rows, title] = self.get_info (id)
         except Exception, e:
             out.write ('<h3>report failed: %s</h3>' % e)
-            out.write ('<p><a href="%s">edit</a></p>' % report_href(id, 'edit'))
+            out.write ('<p><a href="%s">edit</a></p>' % href.report(id, 'edit'))
             return
         if perm.has_permission (perm.REPORT_CREATE):
-            out.write ('<a href="%s">new report</a>' % report_href (None, 'new'))
+            out.write ('<a href="%s">new report</a>' % href.report(None, 'new'))
         out.write ('<h3>%s</h3><p>' % title)
         if id != -1:
             if perm.has_permission (perm.REPORT_MODIFY):
-                out.write ('<a href="%s">edit</a> | ' % report_href(id, 'edit'))
+                out.write ('<a href="%s">edit</a> | ' % href.report(id, 'edit'))
             if perm.has_permission (perm.REPORT_CREATE):
-                out.write ('<a href="%s">copy</a> | ' % report_href(id, 'copy'))
+                out.write ('<a href="%s">copy</a> | ' % href.report(id, 'copy'))
             if perm.has_permission (perm.REPORT_DELETE):
-                out.write ('<a href="%s">delete</a>' % report_href(id, 'delete'))
+                out.write ('<a href="%s">delete</a>' % href.report(id, 'delete'))
         out.write ('</p>')
         
         out.write ('<table class="listing" cellspacing="0" cellpadding="0">')

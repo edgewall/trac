@@ -25,6 +25,7 @@ import StringIO
 from types import *
 
 from util import *
+from Href import href
 from Module import Module
 import perm
 import auth
@@ -165,7 +166,7 @@ class Ticket (Module):
         cnx.commit()
         
         # redirect to the Ticket module to get a GET request
-        redirect (ticket_href(id))
+        redirect (href.ticket(id))
         
     def get_changes(self, id):
         cnx = db.get_connection ()
@@ -254,14 +255,14 @@ class Ticket (Module):
         try:
             id = int(self.args['id'])
         except:
-            redirect (menu_href ())
+            redirect (href.menu())
 
         if action in ['leave', 'accept', 'reopen', 'resolve', 'reassign']:
             # save changes and redirect to avoid the POST request
             old = self.get_ticket(id)
             perm.assert_permission (perm.TICKET_MODIFY)
             self.save_changes (id, old, self.args)
-            redirect (ticket_href (id))
+            redirect (href.ticket(id))
         
         perm.assert_permission (perm.TICKET_VIEW)
         

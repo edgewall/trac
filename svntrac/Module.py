@@ -22,6 +22,7 @@
 import os
 import StringIO
 from Toolbar import Toolbar
+from util import *
 
 class Module:
     def __init__(self, config, args, pool):
@@ -35,6 +36,7 @@ class Module:
         self.namespace['title'] = ''
         self.namespace['svntrac_url'] = 'http://svntrac.xyche.com/'
         self.namespace['htdocs_location'] = config['general']['htdocs_location']
+        self.namespace['cgi_name'] = get_cgi_name()
 
     def render (self):
         """

@@ -2,7 +2,7 @@
 
 <h3>ticket: #%(ticket)d</h3>
 
-<form action="svntrac.cgi" method="POST">
+<form action="%(cgi_name)s" method="POST">
 <input type="hidden" name="mode" value="ticket">
 <input type="hidden" name="id"   value="%(ticket)d">
 <table>

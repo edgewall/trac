@@ -27,6 +27,22 @@ from svn import util
 from db import get_connection
 from xml.sax import saxutils
 
+cgi_name = 'svntrac.cgi'
+authcgi_name = 'svntrac_auth.cgi'
+
+def set_cgi_name(name):
+    global cgi_name
+    cgi_name = name
+
+def get_cgi_name():
+    return cgi_name
+
+def set_authcgi_name(name):
+    global authcgi_name
+    authcgi_name = name
+
+def get_authcgi_name():
+    return authcgi_name
 
 def time_to_string(date):
     date = time.asctime(time.localtime(date))
@@ -35,51 +51,6 @@ def time_to_string(date):
 def format_date(date, pool):
     date = util.svn_time_from_cstring(date, pool)
     return time_to_string (date / 1000000)
-
-def log_href (path, rev = None):
-    if not rev:
-        return 'svntrac.cgi?mode=log&path=%s' % path
-    else:
-        return 'svntrac.cgi?mode=log&path=%s&rev=%s' % (path, rev)
-        
-def file_href (path, rev):
-    return 'svntrac.cgi?mode=file&path=%s&rev=%s' % (path, rev)
-
-def browser_href (path):
-    return 'svntrac.cgi?mode=browser&path=%s' % path
-
-def login_href ():
-    return 'svntrac_auth.cgi'
-
-def timeline_href ():
-    return 'svntrac.cgi?mode=timeline'
-
-def changeset_href (rev):
-    return 'svntrac.cgi?mode=changeset&rev=%s' % rev
-
-def ticket_href (ticket):
-    return 'svntrac.cgi?mode=ticket&id=%s' % ticket
-
-def newticket_href ():
-    return 'svntrac.cgi?mode=newticket'
-
-def wiki_href (page = None, version=None):
-    if page and version:
-        return 'svntrac.cgi?mode=wiki&page=%s&version=%s' % (page, version)
-    if page:
-        return 'svntrac.cgi?mode=wiki&page=%s' % page
-    else:
-        return 'svntrac.cgi?mode=wiki'
-
-def report_href (report=None, action=None):
-    if report and action:
-        return 'svntrac.cgi?mode=report&id=%s&action=%s' % (report, action)
-    if report:
-        return 'svntrac.cgi?mode=report&id=%s' % report
-    elif action:
-        return 'svntrac.cgi?mode=report&action=%s' % action
-    else:
-        return 'svntrac.cgi?mode=report'
 
 def redirect (url):
     """
@@ -132,3 +103,12 @@ def get_first_line(text, maxlen):
         return escape(line[:maxlen] + '...')
     else:
         return escape(line)
+
+def href_join(u1, *tail):
+    for u2 in tail:
+        if u1[-1] == '/' and u2[0] != '/' or \
+            u1[-1] != '/' and u2[0] == '/':
+                u1 = u1 + u2
+        else:
+            u1 = u1 + '/' + u2
+    return u1

@@ -20,6 +20,7 @@
 # Author: Jonas Borgström <jonas@xyche.com>
 
 from util import *
+from Href import href
 from Module import Module
 import db
 import perm
@@ -69,7 +70,7 @@ class Timeline (Module):
         out.write ('<tr>')
         out.write ('<td>%s</td><td>change set [<a href="%s">%s</a>]: %s</td>'
                    % (time.strftime('%H:%M', time.localtime(date)),
-                      changeset_href (item['data']),
+                      href.changeset(item['data']),
                       item['data'], get_first_line(item['message'],
                                                    self.MAX_MESSAGE_LEN)))
         out.write ('</tr>')
@@ -81,7 +82,7 @@ class Timeline (Module):
         out.write ('<tr>')
         out.write ('<td>%s</td><td>ticket <a href="%s">#%s</a> created: %s</td>'
                    % (time.strftime('%H:%M', time.localtime(date)),
-                      ticket_href (item['data']), item['data'],
+                      href.ticket(item['data']), item['data'],
                       get_first_line(item['message'], self.MAX_MESSAGE_LEN)))
         out.write ('</tr>')
         
@@ -92,7 +93,7 @@ class Timeline (Module):
         out.write ('<tr>')
         out.write ('<td>%s</td><td>ticket <a href="%s">#%s</a> closed</td>'
                    % (time.strftime('%H:%M', time.localtime(date)),
-                      ticket_href (item['data']), item['data']))
+                      href.ticket(item['data']), item['data']))
         out.write ('</tr>')
         
     def render (self):

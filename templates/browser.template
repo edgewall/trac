@@ -2,7 +2,7 @@
 
 <h3>Revision %(revision)d: %(path_links)s</h3>
 
-<form action="" method="get">
+<form action="%(cgi_name)s" method="get">
 <input type="hidden" name="mode" value="browser">
 <input type="hidden" name="path" value="%(path)s">
 Change revision: <input type="text" name="rev" value="%(revision)d" size="6">

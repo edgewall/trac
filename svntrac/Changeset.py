@@ -21,6 +21,7 @@
 
 from util import *
 from Module import Module
+from Href import href
 import db
 import perm
 from xml.sax.saxutils import escape
@@ -190,7 +191,7 @@ class Changeset (Module):
         out.write ('<tr>\n')
         if item['change'] in ['A', 'M']:
             out.write ('<td><a href="%s">%s</a></td><td>%s</td>'
-                       % (log_href (item['name']),
+                       % (href.log(item['name']),
                           item['name'],
                           action[item['change']]))
         else:

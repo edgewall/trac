@@ -21,6 +21,7 @@
 
 import StringIO
 from util import *
+from Href import href
 from auth import get_authname
 import perm
 
@@ -54,34 +55,34 @@ class Toolbar:
     def render (self):
         out = StringIO.StringIO()
         out.write ('<table width="100%" cellspacing="0" cellpadding="0"><tr><td class="navbar" bgcolor="black">')
-        out.write ('<a href="%s" class="navbar-link">wiki</a> |' % wiki_href ())
+        out.write ('<a href="%s" class="navbar-link">wiki</a> |' % href.wiki())
 
         if perm.has_permission (perm.BROWSER_VIEW):
             out.write ('<a href="%s" class="navbar-link">browse</a> |'
-                       % browser_href (self.browser_path))
+                       % href.browser(self.browser_path))
         if perm.has_permission (perm.TIMELINE_VIEW):
             out.write ('<a href="%s" class="navbar-link">timeline</a> | '
-                       % timeline_href ())
+                       % href.timeline())
             
         if perm.has_permission (perm.REPORT_VIEW):
-            out.write ('<a href="%s" class="navbar-link">reports</a> |' % report_href ())
+            out.write ('<a href="%s" class="navbar-link">reports</a> |' % href.report())
         
         if perm.has_permission (perm.TICKET_CREATE):
-            out.write ('<a href="%s" class="navbar-link">new ticket</a> |' % newticket_href ())
+            out.write ('<a href="%s" class="navbar-link">new ticket</a> |' % href.newticket())
 
         if self.log:
             out.write ('<a href="%s" class="navbar-link">log</a> |'
-                       % log_href (self.log_path))
+                       % href.log(self.log_path))
         if self.changeset:
             out.write ('<a href="%s" class="navbar-link">change set</a> |'
-                       % changeset_href (self.changeset_rev))
+                       % href.changeset(self.changeset_rev))
             
         out.write ('</td><td align="right" class="navbar" bgcolor="black">')
         authname = get_authname ()        
         if authname == 'anonymous':
-            out.write ('<a href="%s" class="navbar-link">login</a>' % login_href())
+            out.write ('<a href="%s" class="navbar-link">login</a>' % href.login())
         else:
-            out.write ('logged in as %s | <a href="svntrac.cgi?logout=now" class="navbar-link">logout</a>' % authname)
+            out.write ('logged in as %s | <a href="%s" class="navbar-link">logout</a>' % (authname, href.logout()))
         out.write ('</td>')
         out.write ('</td></tr></table>')
         return out.getvalue()

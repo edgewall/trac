@@ -2,7 +2,7 @@
 
 <h3>New ticket:</h3>
 
-<form action="svntrac.cgi" method="POST">
+<form action="%(cgi_name)s" method="POST">
 <input type="hidden" name="mode" value="ticket">
 <input type="hidden" name="action" value="create">
 <input type="hidden" name="status" value="new">
