@@ -136,12 +136,15 @@ class Ticket(UserDict):
                not self._old.has_key('owner'):
             cursor.execute('SELECT owner FROM component '
                            'WHERE name=%s', self._old['component'])
-            old_owner = cursor.fetchone()[0]
-            if self['owner'] == old_owner:
-                cursor.execute('SELECT owner FROM component '
-                               'WHERE name=%s', self['component'])
-                self['owner'] = cursor.fetchone()[0]
-           
+            row = cursor.fetchone()
+            # If the old component has been removed from the database
+            # then we just leave the owner as is.
+            if row:
+                old_owner = row[0]
+                if self['owner'] == old_owner:
+                    cursor.execute('SELECT owner FROM component '
+                                   'WHERE name=%s', self['component'])
+                    self['owner'] = cursor.fetchone()[0]
 
         for name in self._old.keys():
             if name[:7] == 'custom_':
