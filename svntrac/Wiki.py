@@ -30,16 +30,24 @@ from db import get_connection
 from util import *
 from xml.sax.saxutils import quoteattr, escape
 
+
 class Formatter:
     """
     A simple Wiki formatter
     """
+    _url_re = r'(((new|file|(ht|f)tp)s?://))([a-z0-9_-]+:[a-z0-9_-]+\@)?([a-z0-9]+(\-*[a-z0-9]+)*\.)+[a-z]{2,7}(/~?[a-z0-9_\.%\-]+)?(/[a-z0-9_\.%\-]+)*(/?[a-z0-9_\%\-]*(\.[a-z0-9]+)?(\#[a-zA-Z0-9_\.]+)?)(\?([a-z0-9_\.\%\-]+)\=[a-z0-9_\.\%\/\-]*)?(&([a-z0-9_\.\%\-]+)\=[a-z0-9_\.\%\/\-]*)?(#[a-z0-9]+)?'
+
     _rules = r"""(?:(?P<bold>''')""" \
              r"""|(?P<italic>'')""" \
              r"""|(?P<heading>^\s*(?P<hdepth>=+)\s.*\s(?P=hdepth)$)""" \
              r"""|(?P<listitem>^(?P<ldepth>\s+)(?:\*|[0-9]+\.) .*$)""" \
              r"""|(?P<wikilink>[[A-Z][a-z]*(?:[A-Z][a-z]+)+)""" \
-             r"""|(?P<underline>__))"""
+             r"""|(?P<url>%(url_re)s)""" \
+             r"""|(?P<fancylink>\[(?P<fancyurl>%(url_re)s) (?P<linkname>.*?)\])""" \
+             r"""|(?P<underline>__))""" % { 'url_re': _url_re}
+    
+    # RE patterns used by other patterna
+    _helper_patterns = ('ldepth', 'hdepth', 'fancyurl', 'linkname')
 
     def _bold_formatter(self, match, fullmatch):
         self._is_bold = not self._is_bold
@@ -57,6 +65,17 @@ class Formatter:
         depth = min(len(fullmatch.group('hdepth')), 5)
         self.is_heading = True
         return '<h%d>%s</h%d>' % (depth, match[depth + 1:len(match) - depth - 1], depth)
+
+    def _wikilink_formatter(self, match, fullmatch):
+        return '<a href="?mode=wiki&page=%s">%s</a>' % (match, match)
+
+    def _url_formatter(self, match, fullmatch):
+        return '<a href="%s">%s</a>' % (match, match)
+
+    def _fancylink_formatter(self, match, fullmatch):
+        link = fullmatch.group('fancyurl')
+        name = fullmatch.group('linkname')
+        return '<a href="%s">%s</a>' % (link, name)
 
     def _set_list_depth(self, depth, type):
         current_depth = len(self._list_stack)
@@ -80,19 +99,16 @@ class Formatter:
         
         return '<li>%s</li>' % match[depth * 2 + 1:]
 
-    def _wikilink_formatter(self, match, fullmatch):
-        return '<a href="?mode=wiki&page=%s">%s</a>' % (match, match)
-
     def replace(self, fullmatch):
         for type, match in fullmatch.groupdict().items():
-            if match and not type in ('ldepth', 'hdepth'):
+            if match and not type in Formatter._helper_patterns:
                 return getattr(self, '_' + type + '_formatter')(match, fullmatch)
     
     def format(self, text, out):
         self.out = out
         rules = re.compile(Formatter._rules)
         p_open = False
-        self.is_heading_p = False
+        self.is_heading = False
         self._list_stack = []
         for line in text.splitlines():
             self._is_bold = False
@@ -110,7 +126,15 @@ class Formatter:
                 
             out.write(result)
             self.is_heading = False
+        if p_open:
+            self._set_list_depth(0, None)
+            out.write('</p>')
 
+
+def wiki_to_html(wikitext):
+    out = StringIO.StringIO()
+    Formatter().format(wikitext, out)
+    return out.getvalue()
 
 class Page:
     def __init__(self, name, version):
@@ -201,7 +225,7 @@ class Page:
         cursor.execute ('SELECT version, time, author, ipnr FROM wiki '
                         'WHERE name=%s ORDER BY version DESC', self.name)
 
-        out.write ('<div align="right">'
+        out.write ('<div class="wiki-history" align="right">'
                    '<a href=\"javascript:view_history()\">show/hide history</a>'
                    '</div>')
         out.write ('<table class="wiki-history" id="history">')
