@@ -115,6 +115,7 @@ class Query:
                 result[col] = escape(row[col] or '--')
             result['time'] = row['time']
             result['changetime'] = row['changetime']
+            result['priority_value'] = row['priority_value']
             if self.group:
                 result[self.group] = row[self.group] or 'None'
             if self.verbose:
@@ -142,6 +143,7 @@ class Query:
             # Add default columns
             if not col in cols:
                 cols += [col]
+        cols += ['priority_value']
         cols.extend([c for c in self.constraints.keys() if not c in cols])
 
         custom_fields = [f['name'] for f in get_custom_fields(self.env)]
@@ -157,7 +159,7 @@ class Query:
                       "(id=%s.ticket AND %s.name='%s')" % (k, k, k, k))
 
         for col in [c for c in ['status', 'resolution', 'priority', 'severity']
-                    if c == self.order or c == self.group]:
+                    if c == self.order or c == self.group or c == 'priority']:
             sql.append("\n  LEFT OUTER JOIN (SELECT name AS %s_name, " \
                                             "value AS %s_value " \
                                             "FROM enum WHERE type='%s')" \

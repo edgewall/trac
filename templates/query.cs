@@ -194,8 +194,8 @@
    <?cs call:thead() ?><tbody><?cs
   /if ?>
   <tr class="<?cs
-   if:name(result) % 2 ?>odd<?cs else ?>even<?cs /if ?> <?cs
-   var:result.priority ?><?cs
+   if:name(result) % 2 ?>odd<?cs else ?>even<?cs /if ?> prio<?cs
+   var:result.priority_value ?><?cs
    if:result.added ?> added<?cs /if ?><?cs
    if:result.changed ?> changed<?cs /if ?><?cs
    if:result.removed ?> removed<?cs /if ?>"><?cs

@@ -71,13 +71,15 @@ h2 {
 table.tickets tbody tr.added td { font-weight: bold }
 table.tickets tbody tr.changed td { font-style: italic }
 table.tickets tbody tr.removed td { color: #999 }
-table.tickets tbody tr.highest { background: #fdc; border-color: #e88 }
-table.tickets tbody tr.even.highest { background: #fed; border-color: #e99 }
-table.tickets tbody tr.high { background: #ffb; border-color: #eea }
-table.tickets tbody tr.even.high { background: #ffd; border-color: #dd8 }
-table.tickets tbody tr.normal  { background: #fbfbfb; border-color: #ddd }
-table.tickets tbody tr.even.normal { background: #f6f6f6; border-color: #ccc }
-table.tickets tbody tr.low { background: #e7ffff; border-color: #cee }
-table.tickets tbody tr.even.low { background: #dff; border-color: #bee }
-table.tickets tbody tr.lowest { background: #e7eeff; border-color: #cde }
-table.tickets tbody tr.even.lowest { background: #dde7ff; border-color: #cde }
+table.tickets tbody tr.prio1 { background: #fdc; border-color: #e88 }
+table.tickets tbody tr.even.prio1 { background: #fed; border-color: #e99 }
+table.tickets tbody tr.prio2 { background: #ffb; border-color: #eea }
+table.tickets tbody tr.even.prio2 { background: #ffd; border-color: #dd8 }
+table.tickets tbody tr.prio3  { background: #fbfbfb; border-color: #ddd }
+table.tickets tbody tr.even.prio3 { background: #f6f6f6; border-color: #ccc }
+table.tickets tbody tr.prio4 { background: #e7ffff; border-color: #cee }
+table.tickets tbody tr.even.prio4 { background: #dff; border-color: #bee }
+table.tickets tbody tr.prio5 { background: #e7eeff; border-color: #cde }
+table.tickets tbody tr.even.prio5 { background: #dde7ff }
+table.tickets tbody tr.prio6 { background: #f0f0f0; border-color: #ddd }
+table.tickets tbody tr.even.prio6 { background: #f7f7f7 }
