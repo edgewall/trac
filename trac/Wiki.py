@@ -241,7 +241,7 @@ class WikiModule(Module):
             self.req.redirect(self.env.href.wiki())
             # Not reached
 
-        self.req.hdf.setValue('wiki.name', name)
+        self.req.hdf.setValue('wiki.name', escape(name))
         self.req.hdf.setValue('wiki.author', escape(author))
         self.req.hdf.setValue('wiki.comment', escape(comment))
         # Workaround so that we can attach files to wiki pages
@@ -265,20 +265,20 @@ class WikiModule(Module):
         elif edit:
             self.perm.assert_permission (perm.WIKI_MODIFY)
             self.req.hdf.setValue('wiki.action', 'edit')
-            self.req.hdf.setValue('title', name + ' (edit)')
+            self.req.hdf.setValue('title', escape(name) + ' (edit)')
         elif preview:
             self.req.hdf.setValue('wiki.action', 'preview')
             self.req.hdf.setValue('wiki.scroll_bar_pos',
                                   self.args.get('scroll_bar_pos', ''))
-            self.req.hdf.setValue('title', name + ' (preview)')
+            self.req.hdf.setValue('title', escape(name) + ' (preview)')
         elif diff and version > 0:
             self.req.hdf.setValue('wiki.action', 'diff')
             self.generate_diff(name, version)
-            self.req.hdf.setValue('title', name + ' (diff)')
+            self.req.hdf.setValue('title', escape(name) + ' (diff)')
         elif history:
             self.req.hdf.setValue('wiki.action', 'history')
             self.generate_history(name)
-            self.req.hdf.setValue('title', name + ' (history)')
+            self.req.hdf.setValue('title', escape(name) + ' (history)')
         else:
             self.perm.assert_permission (perm.WIKI_VIEW)
             if version:
@@ -294,7 +294,7 @@ class WikiModule(Module):
             if name == 'WikiStart':
                 self.req.hdf.setValue('title', '')
             else:
-                self.req.hdf.setValue('title', name)
+                self.req.hdf.setValue('title', escape(name))
             self.env.get_attachments_hdf(self.db, 'wiki', name, self.req.hdf,
                                          'wiki.attachments')
 
@@ -329,10 +329,11 @@ class WikiModule(Module):
             self.req.redirect(self.env.href.wiki(self.page.name))
 
         self.req.hdf.setValue('wiki.current_href',
-                              self.env.href.wiki(self.page.name))
+                              escape(self.env.href.wiki(self.page.name)))
         self.req.hdf.setValue('wiki.history_href',
-                              self.env.href.wiki(self.page.name, history=1))
-        self.req.hdf.setValue('wiki.page_name', self.page.name)
+                              escape(self.env.href.wiki(self.page.name,
+                                                        history=1)))
+        self.req.hdf.setValue('wiki.page_name', escape(self.page.name))
         self.req.hdf.setValue('wiki.page_source', escape(self.page.text))
         out = StringIO.StringIO()
         Formatter(self.req.hdf, self.env,self.db).format(self.page.text, out)
