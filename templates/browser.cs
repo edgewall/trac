@@ -2,13 +2,13 @@
 <?cs include: "header.cs"?>
 <?cs include "macros.cs"?>
 
-<div class="nav">
- <ul class="subheader-links">
-  <li><a href="<?cs var:browser.log_href ?>">Revision Log</a></li>
+<div id="ctxtnav" class="nav">
+ <ul>
+  <li class="last"><a href="<?cs var:browser.log_href ?>">Revision Log</a></li>
  </ul>
 </div>
 
-<div id="main" class="browser">
+<div id="content" class="browser">
  <?cs call:browser_path_links(browser.path, browser) ?>
 
  <div id="toolbar">

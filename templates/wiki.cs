@@ -2,9 +2,9 @@
 <?cs include "header.cs" ?>
 <?cs include "macros.cs" ?>
 
-<div class="nav">
+<div id="ctxtnav" class="nav">
  <h2>Wiki Navigation</h2>
- <ul class="subheader-links">
+ <ul>
   <li><a href="<?cs var:$trac.href.wiki ?>">Start Page</a></li>
   <li><a href="<?cs var:$trac.href.wiki ?>/TitleIndex">Title Index</a></li>
   <li><a href="<?cs var:$trac.href.wiki ?>/RecentChanges">Recent Changes</a></li>
@@ -17,7 +17,7 @@
  <hr />
 </div>
 
-<div id="main" class="wiki">
+<div id="content" class="wiki">
 
  <?cs if:wiki.action == "diff" ?>
   <h1>Changes in version <?cs var:wiki.edit_version?> of <a href="<?cs

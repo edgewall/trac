@@ -31,18 +31,18 @@ class About (Module):
 
     about_cs = """
 <?cs include "header.cs"?>
-<div id="page-content">
-<h2 class="hide">About Navigation</h2>
-<ul class="subheader-links">
- <li<?cs if:!trac.acl.CONFIG_VIEW ?> class="last"<?cs /if ?>><a href="<?cs
-  var:trac.href.about ?>">About Trac</a></li>
- <?cs if:trac.acl.CONFIG_VIEW ?><li class="last"><a href="<?cs
-  var:trac.href.about_config ?>">View Config</a></li>
- <?cs /if ?>
-</ul>
- <div id="main">
-  <div id="main-content">
-<?cs if about.page == "config"?>
+<div id="ctxtnav" class="nav">
+ <h2>About Navigation</h2>
+ <ul>
+  <li<?cs if:!trac.acl.CONFIG_VIEW ?> class="last"<?cs /if ?>><a href="<?cs
+   var:trac.href.about ?>">About Trac</a></li>
+  <?cs if:trac.acl.CONFIG_VIEW ?><li class="last"><a href="<?cs
+   var:trac.href.about_config ?>">View Config</a></li>
+  <?cs /if ?>
+ </ul>
+</div>
+<div id="content" class="about">
+ <?cs if about.page == "config"?>
   <h3>Configuration</h3>
   <table>
   <tr><th>Section</th><th>Name</th><th>Value</th></tr>
@@ -54,7 +54,7 @@ class About (Module):
     </tr>
   <?cs /each ?>
   </table>
-<?cs else ?>
+ <?cs else ?>
   <a class="noline" href="http://trac.edgewall.com"
       style="float: right; margin-left: 2em"><img src="<?cs var:htdocs_location ?>trac_banner.png" alt=""/></a>
 <h1>About Trac <?cs var:trac.version ?></h1>
@@ -81,9 +81,7 @@ Copyright &copy; 2003,2004 <a href="http://www.edgewall.com/">Edgewall Software<
   <a class="noline" href="http://www.edgewall.com/">
    <img style="display: block; margin: 30px" src="<?cs var:htdocs_location ?>edgewall_logo_left-226x43.png"
      alt="Edgewall Software"/></a>
-<?cs /if ?>
- </div>
-</div>
+ <?cs /if ?>
 </div>
 <?cs include "footer.cs"?>
 """ # about_cs

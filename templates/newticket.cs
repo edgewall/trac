@@ -5,10 +5,9 @@
 addEvent(window, 'load', function() { document.getElementById('summary').focus()}); 
 </script>
 
-<div class="nav">
-</div>
+<div id="ctxtnav" class="nav"></div>
 
-<div id="main" class="ticket">
+<div id="content" class="ticket">
 
 <h3>Create New Ticket:</h3>
 <div id="nt-ticket">

@@ -1,5 +1,5 @@
 /* Timeline */
-#main.timeline #prefs {
+.timeline #prefs {
  background: #f7f7f0;
  border: 1px outset #998;
  float: right;
@@ -8,54 +8,50 @@
  margin: 0 1em 1em;
  width: 36em;
 }
-#main.timeline #prefs input { font-size: 9px; vertical-align: middle }
-#main.timeline #prefs fieldset { border: 0; margin: .5em; padding: 0 }
-#main.timeline #prefs .buttons { text-align: right; margin-top: -1.6em }
+.timeline #prefs input { font-size: 9px; vertical-align: middle }
+.timeline #prefs fieldset { border: 0; margin: .5em; padding: 0 }
+.timeline #prefs .buttons { text-align: right; margin-top: -1.6em }
 
-#main.timeline h2 {
+.timeline h2 {
  background: #f7f7f7;
  border-bottom: 1px solid #d7d7d7;
  font-size: 105%;
 }
-#main.timeline dl { line-height: 130%; margin-left: 1em }
-#main.timeline dt { background: 4px 50% no-repeat; padding: 1px }
-#main.timeline dt em {
+.timeline dl { line-height: 130%; margin-left: 1em }
+.timeline dt { background: 4px 50% no-repeat; padding: 1px }
+.timeline dt em {
  border-bottom: 1px dotted #bbb;
  color: #b00;
  font-style: normal;
  text-decoration: none;
 }
-#main.timeline dt .time { color: #777 }
-#main.timeline dt :link, #main.timeline dt :visited {
+.timeline dt .time { color: #777 }
+.timeline dt :link, .timeline dt :visited {
  background: transparent 3px 50% no-repeat;
  display: block;
  border: none;
  color: #000;
  padding: 0 2px 2px 22px;
 }
-#main.timeline dt :link:hover, #main.timeline dt :visited:hover {
+.timeline dt :link:hover, .timeline dt :visited:hover {
  background-color: #eed;
  color: #000;
 }
-#main.timeline dd {
- font-size: 80%;
- margin: 0 0 .5em 5em;
- padding: 0;
-}
+.timeline dd { font-size: 80%; margin: 0 0 .5em 5em; padding: 0 }
 
 /* Apply icon background-image twice to avoid hover-flicker in IE/Win */
-#main.timeline dt.changeset, #main.timeline dt.changeset a {
+.timeline dt.changeset, .timeline dt.changeset a {
  background-image: url(../changeset.png);
 }
-#main.timeline dt.newticket, #main.timeline dt.newticket a {
+.timeline dt.newticket, .timeine dt.newticket a {
  background-image: url(../newticket.png);
 }
-#main.timeline dt.closedticket, #main.timeline dt.closedticket a {
+.timeline dt.closedticket, .timeline dt.closedticket a {
  background-image: url(../closedticket.png);
 }
-#main.timeline dt.wiki, #main.timeline dt.wiki a {
+.timeline dt.wiki, .timeline dt.wiki a {
  background-image: url(../wiki.png);
 }
-#main.timeline dt.milestone, #main.timeline dt.milestone a {
+.timeline dt.milestone, .timeline dt.milestone a {
  background-image: url(../milestone.png);
 }

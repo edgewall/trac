@@ -2,14 +2,14 @@
 <?cs include "header.cs" ?>
 <?cs include "macros.cs" ?>
 
-<div class="nav">
+<div id="ctxtnav" class="nav">
  <h2>Ticket Navigation</h2>
- <ul class="subheader-links">
+ <ul>
   <li class="last"><a href="#edit">Add/Change Info</a></li>
  </ul>
 </div>
 
-<div id="main" class="ticket">
+<div id="content" class="ticket">
  <div id="searchable">
 
 <?cs if:ticket.status == 'closed' ?>

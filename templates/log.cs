@@ -2,14 +2,14 @@
 <?cs include "header.cs"?>
 <?cs include "macros.cs"?>
 
-<div class="nav">
- <ul class="subheader-links">
+<div id="ctxtnav" class="nav">
+ <ul>
   <li class="last"><a href="<?cs
     var:log.items.0.file_href ?>">View Latest Revision</a></li>
  </ul>
 </div>
 
-<div id="main" class="log">
+<div id="content" class="log">
  <?cs call:browser_path_links(log.path, log) ?>
 
  <div id="toolbar">

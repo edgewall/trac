@@ -3,11 +3,10 @@
 <script type="text/javascript">
 addEvent(window, 'load', function() { document.getElementById('q').focus()}); 
 </script>
-<div id="page-content">
- <div id="subheader-links">
- </div>
- <div id="main">
-  <div id="main-content">
+
+<div id="ctxtnav" class="nav"></div>
+
+<div id="content" class="search">
 
 <form action="<?cs var:trac.href.search ?>" method="get">
 <div>
@@ -98,8 +97,5 @@ Page</a>
   <strong>Note:</strong> See <a href="<?cs var:$trac.href.wiki ?>/TracSearch">TracSearch</a>  for help on searching.
  </div>
 
-
-</div>
 </div>
 <?cs include "footer.cs"?>
-

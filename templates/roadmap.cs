@@ -2,12 +2,14 @@
 <?cs include "header.cs"?>
 <?cs include "macros.cs"?>
 
-<ul class="subheader-links">
- <?cs if:roadmap.href.newmilestone ?><li class="last"><a href="<?cs
-   var:roadmap.href.newmilestone ?>">Add New Milestone</a></li><?cs /if ?>
-</ul>
+<div id="ctxtnav" class="nav">
+ <ul>
+  <?cs if:roadmap.href.newmilestone ?><li class="last"><a href="<?cs
+    var:roadmap.href.newmilestone ?>">Add New Milestone</a></li><?cs /if ?>
+ </ul>
+</div>
 
-<div id="main" class="roadmap">
+<div id="content" class="roadmap">
  <h1>Roadmap</h1>
 
  <ul class="milestones"><?cs each:milestone = roadmap.milestones ?>

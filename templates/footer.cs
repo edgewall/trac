@@ -12,6 +12,8 @@
 </div>
 <?cs /if ?>
 
+</div>
+
 <div id="footer">
  <hr />
  <a id="tracpowered" href="http://trac.edgewall.com/"><img src="<?cs

@@ -2,13 +2,13 @@
 <?cs include "header.cs"?>
 <?cs include "macros.cs"?>
 
-<div class="nav">
- <ul class="subheader-links">
+<div id="ctxtnav" class="nav">
+ <ul>
   <li class="last"><a href="?format=diff">Download Diff</a></li>
  </ul>
 </div>
 
-<div id="main" class="changeset">
+<div id="content" class="changeset">
 <h1>Changeset <?cs var:changeset.revision ?></h1>
 
 <form id="prefs" action="<?cs var:changeset.href ?>">

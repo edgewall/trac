@@ -2,8 +2,8 @@
 <?cs include "header.cs"?>
 <?cs include "macros.cs"?>
 
-<div class="nav">
- <ul class="subheader-links">
+<div id="ctxtnav" class="nav">
+ <ul>
   <?cs if args.mode!= 'attachment' ?>
   <li><a href="<?cs var:file.logurl ?>">Revision Log</a></li>
   <?cs /if ?>
@@ -12,7 +12,7 @@
  </ul>
 </div>
 
-<div id="main" class="file">
+<div id="content" class="file">
 
   <?cs if file.attachment_parent ?>
 
@@ -65,7 +65,7 @@
 
   <?cs /if ?>
 
-  <div id="content">
+  <div id="preview">
    <?cs if:file.highlighted_html ?>
     <?cs var:file.highlighted_html ?>
    <?cs elif:file.max_file_size_reached ?>

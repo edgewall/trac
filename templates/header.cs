@@ -44,9 +44,9 @@
  </div>
 </form>
 
-<div class="nav">
+<div id="metanav" class="nav">
  <h2>Navigation</h2>
- <ul class="subheader-links">
+ <ul>
   <li><?cs if:trac.authname == "anonymous" || !trac.authname ?>
     <a href="<?cs var:trac.href.login ?>">Login</a>
   <?cs else ?>
@@ -93,7 +93,7 @@
   set:$roadmap_view="roadmap" ?><?cs 
  /if ?>
 
-<div id="navbar" class="nav">
+<div id="mainnav" class="nav">
  <ul>
   <?cs call:navlink("Wiki", $trac.href.wiki, $wiki_view,
                     $trac.acl.WIKI_VIEW, "1") ?>
@@ -113,3 +113,5 @@
                     $trac.acl.SEARCH_VIEW, "4") ?>
  </ul>
 </div>
+
+<div id="main">

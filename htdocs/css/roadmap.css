@@ -4,42 +4,34 @@ div.progress div { background: #bae0ba; height: 1.2em }
 p.percentage { font-size: 10px; line-height: 2.4em }
 
 /* Styles for the roadmap view */
-#main.roadmap ul.milestones { margin: 2em 0 0; padding: 0 }
-#main.roadmap li.milestone {
+ul.milestones { margin: 2em 0 0; padding: 0 }
+li.milestone {
  clear: both;
  list-style: none;
  margin-bottom: 4em;
 }
-#main.roadmap li.milestone .info h2 {
+li.milestone .info h2 {
  background: #f7f7f7;
  border-bottom: 1px solid #d7d7d7;
  font-size: 14px;
  margin: 0;
 }
-#main.roadmap li.milestone .info h2 :link,
-#main.roadmap li.milestone .info h2 :visited {
+li.milestone .info h2 :link, li.milestone .info h2 :visited {
  display: block;
  border-bottom: none;
 }
-#main.roadmap li.milestone .info h2 :link:hover,
-#main.roadmap li.milestone .info h2 :visited:hover {
+li.milestone .info h2 :link:hover, li.milestone .info h2 :visited:hover {
  color: inherit;
 }
-#main.roadmap li.milestone .info h2 em {
- color: #b00;
- font-style: normal;
-}
-#main.roadmap li.milestone .info .date {
+li.milestone .info h2 em { color: #b00; font-style: normal }
+li.milestone .info .date {
  color: #888;
  font-size: 11px;
  font-style: italic;
  margin: 0;
 }
-#main.roadmap li.milestone .info .progress {
- margin: 1em;
- width: 40em;
-}
-#main.roadmap li.milestone .info dl {
+li.milestone .info .progress { margin: 1em; width: 40em }
+li.milestone .info dl {
  clear: both;
  float: left;
  font-size: 10px;
@@ -47,23 +39,17 @@ p.percentage { font-size: 10px; line-height: 2.4em }
  margin: -1em 0 2em 1em;
  white-space: nowrap;
 }
-#main.roadmap li.milestone .info dt {
- display: inline;
- margin-left: .5em;
-}
-#main.roadmap li.milestone .info dd {
+li.milestone .info dt { display: inline; margin-left: .5em }
+li.milestone .info dd {
  display: inline;
  margin-left: .5em;
  margin-right: 1em
 }
-#main.roadmap li.milestone .descr {
- clear: both;
- margin-left: 1em;
-}
+li.milestone .descr { clear: both; margin-left: 1em }
 
 /* Styles for the milestone view */
-#main.milestone .date { color: #888; font-style: italic }
-#main.milestone .descr { margin: 1em 0 2em }
+.milestone .date { color: #888; font-style: italic }
+.milestone .descr { margin: 1em 0 2em }
 
 #stats { border-bottom: none }
 #stats td, #stats th { padding: 0 .25em }
@@ -88,15 +74,6 @@ p.percentage { font-size: 10px; line-height: 2.4em }
 #stats tfoot th, #stats tfoot td { font-weight: bold; padding: 0 .25em }
 
 /* Styles for the milestone edit form */
-#main.milestone form fieldset {
- margin: 1em 0;
- padding: .5em;
-}
-#main.milestone form label {
- font-size: 11px;
- margin-right: .5em;
-}
-#main.milestone form em {
- color: #888;
- font-size: 11px;
-}
+.milestone form fieldset { margin: 1em 0; padding: .5em }
+.milestone form label { font-size: 11px; margin-right: .5em }
+.milestone form em { color: #888; font-size: 11px }

@@ -2,14 +2,16 @@
 <?cs include "header.cs"?>
 <?cs include "macros.cs"?>
 
-<ul class="subheader-links">
- <?cs if:milestone.href.edit ?><li class="first"><a href="<?cs
-   var:milestone.href.edit ?>">Edit Milestone Info</a></li><?cs /if ?>
- <?cs if:milestone.href.delete ?><li class="last"><a href="<?cs
-   var:milestone.href.delete ?>">Delete Milestone</a></li><?cs /if ?>
-</ul>
+<div id="ctxtnav" class="nav">
+ <ul>
+  <?cs if:milestone.href.edit ?><li class="first"><a href="<?cs
+    var:milestone.href.edit ?>">Edit Milestone Info</a></li><?cs /if ?>
+  <?cs if:milestone.href.delete ?><li class="last"><a href="<?cs
+    var:milestone.href.delete ?>">Delete Milestone</a></li><?cs /if ?>
+ </ul>
+</div>
 
-<div id="main" class="milestone">
+<div id="content" class="milestone">
  <?cs if:milestone.mode == "new" ?>
  <h1>New Milestone</h1>
  <?cs elif:milestone.mode == "edit" ?>

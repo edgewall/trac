@@ -88,8 +88,6 @@ h1 .sep { color: #666; padding: 0 .1em }
 #info .message ul { padding: 0; margin: 0 2em }
 #info .message p { margin: 0; padding: 0 }
 
-#content { clear: both }
-
 /* Styles for the directory entries table
    (extends the styles for "table.listing") */
 #dirlist td.rev, #dirlist td.age, #dirlist td.change {

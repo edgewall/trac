@@ -1,19 +1,19 @@
 <?cs set:html.stylesheet = 'css/report.css' ?>
 <?cs include "header.cs" ?>
 
-<div class="nav">
+<div id="ctxtnav" class="nav">
  <h2>Report Navigation</h2>
- <ul class="subheader-links">
+ <ul>
   <?cs if report.edit_href || report.copy_href || report.delete_href ?>
   <li><b>This report:</b>
-    <ul>
-      <?cs if report.edit_href
-        ?><li <?cs if !report.delete_href && !report.copy_href ?>class="last"<?cs /if
-          ?>><a href="<?cs var:report.edit_href ?>">Edit</a></li><?cs
-       /if ?><?cs
-       if report.copy_href ?><li <?cs if !report.delete_href ?>class="last"<?cs /if
-          ?>><a href="<?cs var:report.copy_href ?>">Copy</a></li><?cs /if ?><?cs
-      if report.delete_href ?><li class="last"><a href="<?cs var:report.delete_href ?>">Delete</a></li><?cs /if ?></ul></li>
+   <ul>
+    <?cs if report.edit_href
+      ?><li <?cs if !report.delete_href && !report.copy_href ?>class="last"<?cs /if
+        ?>><a href="<?cs var:report.edit_href ?>">Edit</a></li><?cs
+     /if ?><?cs
+     if report.copy_href ?><li <?cs if !report.delete_href ?>class="last"<?cs /if
+        ?>><a href="<?cs var:report.copy_href ?>">Copy</a></li><?cs /if ?><?cs
+    if report.delete_href ?><li class="last"><a href="<?cs var:report.delete_href ?>">Delete</a></li><?cs /if ?></ul></li>
   <?cs /if ?>
   <?cs if report.create_href ?>
    <li><a href="<?cs var:report.create_href ?>">New Report</a></li>
@@ -22,7 +22,7 @@
  </ul>
 </div>
 
-<div id="main" class="report">
+<div id="content" class="report">
 
 <?cs if report.message ?>
  <div class="error"><?cs var report.message ?></div>

@@ -81,6 +81,8 @@ form.inline input { margin: 1em }
  margin-bottom: 2px;
  border: none;
 }
+
+/* Quick search */
 #search {
   clear: both;
   font-size: 10px;
@@ -92,70 +94,68 @@ form.inline input { margin: 1em }
 
 /* Navigation */
 .nav { height: 1em }
-.nav h2 { display: none }
-.nav hr { display: none }
-.nav ul { margin: 0; padding: 0 }
-.nav li { list-style: none }
-#navbar {
-  background: #f7f7f7 url(../topbar_gradient.png) top left;
-  border: 1px solid #999;
-  font: normal 10px verdana,'Bitstream Vera Sans',helvetica,arial,sans-serif;
-  height: 1.6em;
-  margin: .33em 0;
+.nav h2, .nav hr { display: none }
+.nav ul {
+ display: block;
+ font-size: 10px;
+ margin: 0;
+ margin: 0;
+ padding: 0;
+ padding-bottom: .25em;
+ text-align: right;
 }
-#navbar ul {
-  float: right;
+.nav li {
+ display: inline;
+ border-right: 1px solid #d7d7d7;
+ list-style: none;
+ padding: 0 .75em;
+ white-space: nowrap;
 }
-#navbar li { float: left }
-#navbar :link, #navbar :visited {
-  background: url(../dots.gif) top left no-repeat;
-  border-left: 1px solid #999;
-  border-right: 1px solid #fff;
-  border-bottom: none;
-  color: #000;
-  display: block;
-  float: left;
-  line-height: 1.4em;
-  padding: .1em 15px;
+.nav li :link, .nav li :visited { padding: 0 .5em }
+.nav li.last { border-right: none }
+/* Main navigation bar */
+#mainnav {
+ background: #f7f7f7 url(../topbar_gradient.png) top left;
+ border: 1px solid #999;
+ font: normal 10px verdana,'Bitstream Vera Sans',helvetica,arial,sans-serif;
+ height: 1.6em;
+ margin: .33em 0;
 }
-#navbar .active:link, #navbar .active:visited {
-  background: #d7d7d7 url(../topbar_active.png) top left repeat-x;
-  border-top: none;
-  border-right: none !important;
-  font-weight: bold;
+#mainnav ul { float: right; padding: 0 }
+#mainnav li { border-right: none; float: left; padding: 0 }
+#mainnav :link, #mainnav :visited {
+ background: url(../dots.gif) top left no-repeat;
+ border-left: 1px solid #999;
+ border-right: 1px solid #fff;
+ border-bottom: none;
+ color: #000;
+ display: block;
+ float: left;
+ line-height: 1.4em;
+ padding: .1em 15px;
 }
-#navbar :link:hover, #navbar :visited:hover {
-  background-color: #d7d7d7;
-  border-right: 1px solid #ddd;
+#mainnav .active:link, #mainnav .active:visited {
+ background: #d7d7d7 url(../topbar_active.png) top left repeat-x;
+ border-top: none;
+ border-right: none !important;
+ font-weight: bold;
 }
-.subheader-links {
-  display: block;
-  padding: 0;
-  padding-bottom: .25em;
-  margin: 0;
-  font-size: 10px;
-  text-align: right;
+#mainnav :link:hover, #mainnav :visited:hover {
+ background-color: #d7d7d7;
+ border-right: 1px solid #ddd;
 }
-.subheader-links li {
-  display: inline;
-  border-right: 1px solid #d7d7d7;
-  padding: 0;
-  white-space: nowrap;
+/* Context-dependent navigation links */
+#ctxtnav li ul {
+ background: #f7f7f7;
+ color: #ccc;
+ border: 1px solid;
+ padding: 0;
+ display: inline;
+ margin: 0;
 }
-.subheader-links li { padding: 0 .75em }
-.subheader-links li a { padding: 0 .5em }
-.subheader-links li.last { border-right: none }
-.subheader-links li ul {
-  background: #f7f7f7;
-  color: #ccc;
-  border: 1px solid;
-  padding: 0;
-  display: inline;
-  margin: 0;
-}
-.subheader-links li li { padding: 0; }
-.subheader-links li li :link, .subheader-links li li :visited { padding: 0 1em }
-.subheader-links li li :link:hover, .subheader-links li li :visited:hover {
+.#ctxtnav li li { padding: 0; }
+.#ctxtnav li li :link, .nav li li :visited { padding: 0 1em }
+.#ctxtnav li li :link:hover, .nav li li :visited:hover {
  background: #bba;
  color: #fff;
 }
@@ -207,7 +207,7 @@ form.inline input { margin: 1em }
   text-align: right;
 }
 
-#main { padding-bottom: 2em }
+#content { padding-bottom: 2em }
 
 #help {
  clear: both;
@@ -223,7 +223,7 @@ form.inline input { margin: 1em }
 a.missing:link,a.missing:visited { background: #fafaf0; color: #998 }
 a.missing:hover { color: #000; }
 
-#main.wiki { line-height: 140%; margin: 1em; }
+#content.wiki { line-height: 140%; margin: 1em; }
 #wiki-formatting-help {
   font: normal 11px Verdana, 'Bitstream Vera Sans', Helvetica, Arial, sans-serif;
   float: right;
@@ -305,7 +305,7 @@ table.wiki td { border: 1px solid #ccc;  padding: .1em .25em; }
 #wiki-edit-page:hover { background: #ccb }
 
 /* Styles for the error page */
-#main.error .message {
+#content.error .message {
  background: #fdc;
  border: 2px solid #d00;
  color: #500;
