@@ -23,6 +23,16 @@
 }
 #tktlist tbody td, #reportlist tbody td { padding: .1em }
 #tktlist tbody td a, #reportlist tbody td a { border-bottom: none }
+#tktlist tbody td.ticket :link, #tktlist tbody td.ticket :visited {
+ display: block;
+ font-weight: bold;
+ padding: .1em .5em;
+}
+#tktlist tbody td.ticket :link:hover, #tktlist tbody td.ticket :visited:hover {
+ background: #b00;
+ color: #fff;
+}
+#tktlist tbody tr:hover { background: #d7d7d7; color: #000 }
 #tktlist tr.color1-odd  { background: #fdc; border-color: #e88; color: #a22 }
 #tktlist tr.color1-even { background: #fed; border-color: #e99; color: #a22 }
 #tktlist tr.color2-odd  { background: #ffb; border-color: #eea; color: #880 }
