@@ -51,7 +51,7 @@ addEvent(window, 'load', function() { document.getElementById('summary').focus()
    <br />
    <label for="keywords">Keywords:</label>
    <input type="text" id="keywords" name="keywords" size="20"
-       value="<?cs var:ticket.keywords ?>" />
+       value="<?cs var:newticket.keywords ?>" />
   </div>
   <div class="col2">
    <label for="priority">Priority:</label><?cs

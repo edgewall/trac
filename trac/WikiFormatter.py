@@ -290,7 +290,7 @@ class Formatter(CommonFormatter):
     def html_processor(hdf, text, env):
         if Formatter._htmlproc_disallow_rule.search(text):
             err = """\
-<div class="error">Error: HTML block contains disallowed tags.
+<div class="system-message">Error: HTML block contains disallowed tags.
 <pre>
 %s</pre>
 </div>""" % util.escape(text)
@@ -334,7 +334,7 @@ class Formatter(CommonFormatter):
             macro = self.load_macro(name)
             return macro(self.hdf, args, self.env)
         except Exception, e:
-            return '<span class="error">Macro %s(%s) failed: %s</span' \
+            return '<div class="system-message">Macro %s(%s) failed: %s</span' \
                    % (name, args, e)
 
     def _heading_formatter(self, match, fullmatch):
@@ -498,9 +498,9 @@ class Formatter(CommonFormatter):
                             self.mime_type = name
                             self.code_processor = self.mime_processor
                         else:
-                            self.code_text += line + os.linesep 
+                            self.code_text += line + os.linesep
                             self.code_processor = Formatter.builtin_processors['default']
-                            self.out.write('<div class="error">Failed to load processor macro %s: %s t %s</div>' % (name, line, e))
+                            self.out.write('<div class="system-message">Failed to load processor macro %s: %s t %s</div>' % (name, line, e))
             else:
                 self.code_text += line + os.linesep 
                 self.code_processor = Formatter.builtin_processors['default']
