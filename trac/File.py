@@ -161,6 +161,16 @@ class Attachment(FileCommon):
             self.req.hdf.setValue('attachment.id', self.attachment_id)
             self.req.display('attachment.cs')
             return
+        self.req.hdf.setValue('file.rawurl', 
+                              self.env.href.attachment(self.attachment_type,
+                                                       self.attachment_id,
+                                                       self.filename,
+                                                       'raw'))
+        self.req.hdf.setValue('file.texturl', 
+                              self.env.href.attachment(self.attachment_type,
+                                                       self.attachment_id,
+                                                       self.filename,
+                                                       'text'))
         self.req.hdf.setValue('file.filename', self.filename)
         FileCommon.display(self)
 
@@ -200,7 +210,10 @@ class File(FileCommon):
             rev = int(rev)
         self.req.hdf.setValue('file.rev', str(rev))
         self.req.hdf.setValue('file.path', self.path)
-        self.req.hdf.setValue('file.url', self.env.href.file(self.path, rev))
+        self.req.hdf.setValue('file.rawurl', self.env.href.file(self.path, rev,
+                                                                'raw'))
+        self.req.hdf.setValue('file.texturl', self.env.href.file(self.path, rev,
+                                                                 'text'))
         self.req.hdf.setValue('file.logurl', self.env.href.log(self.path))
         root = svn.fs.revision_root(self.fs_ptr, rev, self.pool)
         

@@ -1,7 +1,5 @@
 <?cs include "header.cs"?>
 <?cs include "macros.cs"?>
-<?cs set:file.rawurl = file.url + '&format=raw' ?>
-<?cs set:file.texturl = file.url + '&format=text' ?>
 <div id="page-content">
 <div id="subheader-links">
 <ul class="subheader-links">
@@ -17,7 +15,14 @@
 
     <h1><a href="<?cs var:file.attachment_parent_href ?>">
     <?cs var:file.attachment_parent ?></a>: <?cs var:file.filename ?></h1>
-
+    <div id="browser-nav">
+    <ul class="menulist"><li><a 
+      title="Show file as plaintext" 
+       href="<?cs var:file.texturl ?>">View as Text</a></li><li class="last"><a 
+      title="Download this revision"  
+       href="<?cs var:file.rawurl ?>">Download File</a></li></ul>
+    <div class="tiny" style="clear: both">&nbsp;</div>
+    </div>
   <?cs else ?>
     <h1 id="file-hdr" class="hide"><?cs var:file.filename ?></h1>
     <?cs call:browser_path_links(file.path, file) ?>

@@ -100,8 +100,8 @@ class Href:
     
     def attachment(self, module, id, filename, format=None):
         if format:
-            return href_join(self.base, 'attachment', module, id, filename,
-                             '?format='+format)
+            return href_join(self.base, 'attachment', module, id, filename) + \
+                   '?format='+format
         else:
             return href_join(self.base, 'attachment', module, id, filename)
 
