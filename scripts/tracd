@@ -259,7 +259,7 @@ class TracHTTPRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler,
         args = trac.core.parse_args(self.command, self.path_info,
                                     self.query_string,
                                     self.rfile, None, self.headers)
-
+        trac.core.add_args_to_hdf(args, self.hdf)
         try:
             pool = None
             # Load the selected module

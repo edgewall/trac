@@ -44,7 +44,7 @@
          <?cs else ?>
            <?cs if $report.sorting.enabled ?>
              <?cs set sortValue = '' ?>
-             <?cs if $header.real == $Query.sort ?>
+             <?cs if $header.asc == '1' ?>
                <?cs set sortValue = '?sort='+$header.real+'&asc=0' ?>
              <?cs else ?>
                <?cs set sortValue = '?sort='+$header.real+'&asc=1' ?>
@@ -182,11 +182,11 @@
  <?cs /each ?>
 
  <?cs set sortInfo='' ?>
- <?cs if Query.sort ?>
-   <?cs set sortInfo=$sortInfo+'&sort='+$Query.sort ?>
+ <?cs if args.sort ?>
+   <?cs set sortInfo=$sortInfo+'&sort='+$args.sort ?>
  <?cs /if ?>
- <?cs if Query.asc ?>
-   <?cs set sortInfo=$sortInfo+'&asc='+$Query.asc ?>
+ <?cs if args.asc ?>
+   <?cs set sortInfo=$sortInfo+'&asc='+$args.asc ?>
  <?cs /if ?>
 
   <div id="main-footer">

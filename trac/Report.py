@@ -236,10 +236,13 @@ class Report (Module):
                     colIndex = x
                 x = x + 1
             if colIndex != None:
+                k = 'report.headers.%d.asc' % (colIndex-1)
                 if self.args.has_key('asc'):
                     sorter = ColumnSorter(colIndex, int(self.args['asc']))
+                    self.req.hdf.setValue(k, self.args['asc'])
                 else:
                     sorter = ColumnSorter(colIndex)
+                    self.req.hdf.setValue(k, '1')
                 self.rows.sort(sorter.sort)
 
 

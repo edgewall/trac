@@ -125,6 +125,10 @@ def parse_args(command, path_info, query_string,
         args[x] = argv.value.replace('\r','')
     return args
 
+def add_args_to_hdf(args, hdf):
+    for key in args.keys():
+        hdf.setValue('args.' + key, str(args[key]))
+
 def module_factory(args, env, db, req, href):
     mode = args.get('mode', 'wiki')
     module_name, constructor_name, need_svn = modules[mode]
@@ -385,7 +389,7 @@ def real_cgi_start():
     args = parse_args(os.getenv('REQUEST_METHOD'),
                       path_info, os.getenv('QUERY_STRING'),
                       sys.stdin, os.environ)
-
+    add_args_to_hdf(args, req.hdf)
     req.authname = authenticator.authname
     try:
         pool = None
