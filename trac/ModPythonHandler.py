@@ -22,7 +22,7 @@
 import os
 import re, threading
 import auth, core, Environment, Href, Session, Wiki
-from util import TracError
+from util import TracError, href_join
 from mod_python import apache, util
 
 class ModPythonRequest(core.Request):
@@ -59,7 +59,7 @@ class ModPythonRequest(core.Request):
         elif port == 443:
             self.base_url = 'https://%s%s' % (host, self.cgi_location)
         else:
-            self.base_url = 'http://%s:%d%s' % (host, port, cgi_location)
+            self.base_url = 'http://%s:%d%s' % (host, port, self.cgi_location)
 
         self.remote_addr = self.req.connection.remote_ip
         self.remote_user = self.req.user
@@ -105,7 +105,8 @@ def send_project_index(req, mpr, dir):
     req.write('<html><head><title>Available Projects</title></head>')
     req.write('<body><h1>Available Projects</h1><ul>')
     for project in os.listdir(dir):
-        req.write('<li><a href="%s">%s</a></li>' % (mpr.idx_location + '/' + project,
+        req.write('<li><a href="%s">%s</a></li>' % (href_join(mpr.idx_location,
+                                                              project),
                                                     project))
     req.write('</ul></body><html>')
 
