@@ -44,7 +44,7 @@ class Browser(Module):
         node_type = fs.check_path(root, path, self.pool)
         if not node_type in [core.svn_node_dir, core.svn_node_file]:
             raise TracError('"%s": no such file or directory in revision %d' \
-                            % (path, revision), 'Not such file or directory')
+                            % (path, revision), 'No such file or directory')
 
         # Redirect to the file module if the requested path happens
         # to point to a regular file

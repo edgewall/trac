@@ -67,6 +67,8 @@ legend {
 }
 form.inline { float: left }
 form.inline input { margin: 1em }
+.att-label { float:left; width: 7em; text-align: right; margin-right: .5em; }
+.buttons { margin: .5em; }
 
 /* Header */
 #header hr { display: none }
@@ -256,17 +258,19 @@ table.wiki {
 }
 table.wiki td { border: 1px solid #ccc;  padding: .1em .25em; }
 #wiki-edit-page:hover { background: #ccb }
-.error {
+
+/* Styles for the error page */
+#main.error .message {
  background: #fdc;
  border: 1px solid #b00;
  color: #b00;
  padding: .25em;
  margin: 1em 0;
 }
+
+/* Styles for search word highlighting */
 .searchword0 { background: #ff9; }
 .searchword1 { background: #cfc; }
 .searchword2 { background: #cff; }
 .searchword3 { background: #ccf; }
 .searchword4 { background: #fcf; }
-.att-label { float:left; width: 7em; text-align: right; margin-right: .5em; }
-.buttons { margin: .5em; }
