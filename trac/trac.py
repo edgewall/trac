@@ -270,7 +270,7 @@ def main():
             real_e = e
             real_tb = tb
             cgi, templates_dir = create_error_cgi()
-            cgi.hdf.setValue('title', 'Oups')
+            cgi.hdf.setValue('title', 'Oops')
             cgi.hdf.setValue('error.type', 'internal')
             cgi.hdf.setValue('error.message', str(e))
             cgi.hdf.setValue('error.traceback',tb.getvalue())
@@ -278,7 +278,7 @@ def main():
             cgi.display(name)
     except Exception:
         print 'Content-Type: text/plain\r\n\r\n',
-        print 'Oups...'
+        print 'Oops...'
         print
         print 'Trac detected an internal error:'
         print

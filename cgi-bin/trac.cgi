@@ -25,7 +25,7 @@ try:
     trac.main()
 except Exception, e:
     print 'Content-Type: text/plain\r\n\r\n',
-    print 'Oups...'
+    print 'Oops...'
     print
     print 'Trac detected an internal error:'
     print
