@@ -37,18 +37,21 @@ class CacheTestCase(unittest.TestCase):
     def test_initial_sync(self):
         changes = [('trunk', Node.DIRECTORY, Changeset.ADD, None, None),
                    ('trunk/README', Node.FILE, Changeset.ADD, None, None)]
-        changeset = Mock(Changeset, 1, 'Import', 'joe', 42000,
-                         get_changes=lambda: iter(changes))
+        changesets = [Mock(Changeset, 0, '', '', 41000,
+                         get_changes=lambda: []),
+                      Mock(Changeset, 1, 'Import', 'joe', 42000,
+                         get_changes=lambda: iter(changes))]
         repos = Mock(Repository, None, self.log,
-                     get_changeset=lambda x: changeset,
-                     get_oldest_rev=lambda: 1,
+                     get_changeset=lambda x: changesets[int(x)],
+                     get_oldest_rev=lambda: 0,
                      get_youngest_rev=lambda: 1,
-                     next_rev=lambda x: x == '0' and '1' or None)
+                     next_rev=lambda x: int(x) == 0 and '1' or None)
         cache = CachedRepository(self.db, repos, None, self.log)
         cache.sync()
 
         cursor = self.db.cursor()
         cursor.execute("SELECT rev,time,author,message FROM revision")
+        self.assertEquals(('0', 41000, '', ''), cursor.fetchone())
         self.assertEquals(('1', 42000, 'joe', 'Import'), cursor.fetchone())
         self.assertEquals(None, cursor.fetchone())
         cursor.execute("SELECT rev,path,kind,change,base_path,base_rev "
@@ -61,6 +64,8 @@ class CacheTestCase(unittest.TestCase):
 
     def test_update_sync(self):
         cursor = self.db.cursor()
+        cursor.execute("INSERT INTO revision (rev,time,author,message) "
+                       "VALUES (0,41000,'','')")
         cursor.execute("INSERT INTO revision (rev,time,author,message) "
                        "VALUES (1,42000,'joe','Import')")
         cursor.executemany("INSERT INTO node_change (rev,path,kind,change,"
@@ -90,6 +95,8 @@ class CacheTestCase(unittest.TestCase):
 
     def test_get_changes(self):
         cursor = self.db.cursor()
+        cursor.execute("INSERT INTO revision (rev,time,author,message) "
+                       "VALUES (0,41000,'','')")
         cursor.execute("INSERT INTO revision (rev,time,author,message) "
                        "VALUES (1,42000,'joe','Import')")
         cursor.executemany("INSERT INTO node_change (rev,path,kind,change,"
