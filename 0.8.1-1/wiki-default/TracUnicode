@@ -1,0 +1,48 @@
+= Unicode Support in Trac =
+Trac stores all text using UTF-8 encoding, including text in tickets and wiki pages. 
+
+As such, it supports most (all?) commonly used character encodings.
+
+
+== Examples ==
+
+=== Swedish ===
+
+''Räven raskar över isen med luva på.''
+
+=== Français ===
+
+''Il est possible d'écrire en Français : à, ç, û, ...''
+
+=== Icelandic ===
+
+''Ævar sagði við ömmu sína: Sjáðu hvað ég er stór!''
+
+=== Japanese ===
+
+''漢字 ひらがな カタカナ ﾊﾝｶｸｶﾅ''
+
+=== Chinese ===
+
+Traditional: ''繁體中文, 許功蓋會育''; Simplified: ''简体中文，许功盖会育''
+
+=== Korean ===
+
+''이번에는 한글로 써보겠습니다. 잘 보이나요?''
+
+=== Russian ===
+
+Проверка Русского языка: кажется работает...
+
+=== Bulgarian ===
+
+Българският език работи ли?
+
+=== Greek ===
+Μακάρι να έτρεχε στο και Debian box μου... Bug #495
+
+=== Spanish ===
+Esto es un pequeño texto en Español, ahora una con acentó
+
+=== Hebrew ===
+אני יכול לאכול זכוכית וזה לא מזיק לי
