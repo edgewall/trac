@@ -44,7 +44,7 @@
         <tr class="br-row-even">
           <td class="br-icon-col">
             <a title="Parent Directory" class="block-link" href="<?cs var:browser.parent_href ?>">
-              <img src="<?cs var:htdocs_location ?>folder.png" 
+              <img src="<?cs var:htdocs_location ?>parent.png" 
                     width="16" height="16" alt="[parent]" />
             </a>
           </td>
