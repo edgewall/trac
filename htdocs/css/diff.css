@@ -143,7 +143,7 @@
 
 /* Styles for the inline diff */
 .diff table.inline del, .diff table.inline ins, .diff table.inline span {
- height: 1.5em;
+ min-height: 1.5em;
 }
 .diff table.inline del {
  background: #fdd;
