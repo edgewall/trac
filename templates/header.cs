@@ -101,22 +101,21 @@
  /if ?>
 
 <div id="mainnav" class="nav">
- <ul>
-  <?cs call:navlink("Wiki", $trac.href.wiki, $wiki_view,
-                    $trac.acl.WIKI_VIEW, "1") ?>
-  <?cs call:navlink("Timeline", $trac.href.timeline, "timeline",
-                    $trac.acl.TIMELINE_VIEW, "2") ?>
-  <?cs call:navlink("Roadmap", trac.href.roadmap, $roadmap_view,
-                    $trac.acl.ROADMAP_VIEW, "3") ?>
-  <?cs call:navlink("Browse Source", $trac.href.browser, $browser_view,
-                    $trac.acl.BROWSER_VIEW, "") ?>
-  <?cs call:navlink("View Tickets", $trac.href.report, $ticket_view,
-                    $trac.acl.REPORT_VIEW, "") ?>
-  <?cs call:navlink("New Ticket", $trac.href.newticket, "newticket",
-                    $trac.acl.TICKET_CREATE, "7") ?>
-  <?cs call:navlink("Search", $trac.href.search, "search",
-                    $trac.acl.SEARCH_VIEW, "4") ?>
- </ul>
+ <ul><?cs
+  call:navlink("Wiki", trac.href.wiki, wiki_view,
+               trac.acl.WIKI_VIEW, "1") ?><?cs
+  call:navlink("Timeline", trac.href.timeline, "timeline",
+               trac.acl.TIMELINE_VIEW, "2") ?><?cs
+  call:navlink("Roadmap", trac.href.roadmap, roadmap_view,
+               trac.acl.ROADMAP_VIEW, "3") ?><?cs
+  call:navlink("Browse Source", trac.href.browser, browser_view,
+               trac.acl.BROWSER_VIEW, "") ?><?cs
+  call:navlink("View Tickets", trac.href.report, ticket_view,
+               trac.acl.REPORT_VIEW, "") ?><?cs
+  call:navlink("New Ticket", trac.href.newticket, "newticket",
+               trac.acl.TICKET_CREATE, "7") ?><?cs
+  call:navlink("Search", trac.href.search, "search",
+               trac.acl.SEARCH_VIEW, "4") ?></ul>
 </div>
 
 <div id="main">
