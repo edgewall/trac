@@ -164,8 +164,10 @@ class Milestone(Module):
         id = self.args.get('id', -1)
 
         if action == 'new':
+            self.perm.assert_permission(perm.MILESTONE_CREATE)
             self.render_editor(-1)
         elif action == 'edit':
+            self.perm.assert_permission(perm.MILESTONE_MODIFY)
             self.render_editor(id)
         elif action == 'commit':
             self.save_milestone(id)
@@ -175,8 +177,6 @@ class Milestone(Module):
             self.render_view(id)
 
     def render_editor(self, id):
-        self.perm.assert_permission(perm.MILESTONE_VIEW)
-
         if id == -1:
             milestone = {
                 'name': '',
