@@ -1,9 +1,8 @@
-Trac 0.7 'Fulci' Release Notes
-==============================
-May 18, 2004 (The 104th anniversary of Tonga becoming a British protectorate)
+Trac 0.7.1 'Argento' Release Notes
+===================================
+May , 2004 ()
 
-Edgewall Software proudly announces the immediate availability of our latest
-release, Trac 0.7 'Fulci'.
+Edgewall Software is pleased to announce, Trac 0.7.1 'Argento'.
 
 Trac is a minimalistic web-based software project management and bug/issue
 tracking system. It provides an interface to the Subversion revision control
@@ -35,35 +34,21 @@ For questions, comments and user discussions, please use the Trac mailing list
 
 What's New
 ----------
-0.7 'Fulci' is an important release for Trac, and also brings the largest number of
-improvements yet. It marks a big step towards the big '1.0', some of the
-biggest changes being the introduction of a new database format and the
-experimental stand-alone Trac daemon.
+0.7.1 'Argento' is primarily a bug-fix release for 0.7. Also included in this
+release is experimental support for running Trac in mod_python. This allows
+higher performance and shorter response-times, especially when serving many
+concurrent users.
 
 A summary of major changes for this release:
 
- * Revised database format. (Requires manual upgrade).
- * Trac stand-alone daemon, tracd (Experimental).
- * Greatly improved browser.
- * Many usability improvements.
- * UTF-8 character encoding support.
- * Wiki page attachments.
- * Ticket attachments.
- * Syntax coloring supporting >35 languages, using SilverCity or GNU Enscript.
- * Better support for ReStructuredText.
- * Logging support, including syslog and windows event log.
- * Ticket email notification.
- * Improved search facilities.
- * Import tickets from Bugzilla (contributed by Mark Rowe).
- * Import tickets from SourceForge (contributed by Dmitry Yusupov).
+ * Bugfixes for 0.7
+ * Fixes security hole in auth.py
+ * Experimental support for mod_python
+ * Added support for more MIME-types
 
 For a more complete list of improvements, see the ChangeLog at:
 
  <http://projects.edgewall.com/trac/wiki/ChangeLog>
-
-We'd also like to extend a warm welcome to a new member of the Trac Team,
-Christopher Lenz - His work on templates and CSS has already added a nice
-touch to this release.
 
 About Edgewall
 --------------
