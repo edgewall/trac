@@ -44,7 +44,7 @@ import trac.core
 import trac.util
 from trac import Session
 from trac.Href import Href
-from trac import auth, Wiki, siteconfig
+from trac import auth, siteconfig
 from trac.Environment import Environment
 
 
@@ -244,15 +244,12 @@ class TracHTTPRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler,
             if not self.remote_user:
                 return
 
-        db = self.env.get_db_cnx()
-        Wiki.populate_page_dict(db, self.env)
-
         # Parse arguments
         args = trac.core.parse_args(self.command, self.path_info,
                                     self.query_string,
                                     self.rfile, None, self.headers)
 
-        trac.core.dispatch_request(self.path_info, args, self, self.env, db)
+        trac.core.dispatch_request(self.path_info, args, self, self.env)
 
         self.log.debug('Total request time: %f s', time.time() - start)
 

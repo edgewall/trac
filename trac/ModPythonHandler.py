@@ -21,7 +21,7 @@
 
 import os
 import re, threading
-import auth, core, Environment, Href, Wiki
+import auth, core, Environment, Href
 from util import TracError, href_join
 from mod_python import apache, util
 
@@ -121,9 +121,7 @@ def open_environment(env_path, mpr):
 
     env.href = Href.Href(mpr.cgi_location)
     env.abs_href = Href.Href(mpr.base_url)
-    # Let the wiki module build a dictionary of all page names
-    database = env.get_db_cnx()
-    Wiki.populate_page_dict(database, env)
+
     return env
 
 env_cache = {}

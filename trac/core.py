@@ -366,8 +366,14 @@ class CGIRequest(Request):
         self.write('\r\n')
 
 def dispatch_request(path_info, args, req, env, database=None):
+    import Wiki
+
     if not database:
         database = env.get_db_cnx()
+
+    # Let the wiki module build a dictionary of all page names
+    database = env.get_db_cnx()
+    Wiki.populate_page_dict(database, env)
 
     authenticator = auth.Authenticator(database, req)
     if path_info == '/logout':
@@ -465,13 +471,8 @@ def send_pretty_error(e, env, req=None):
         env.log.error(tb.getvalue())
 
 def real_cgi_start():
-    import Wiki
 
     env = open_environment()
-    database = env.get_db_cnx()
-
-    # Let the wiki module build a dictionary of all page names
-    Wiki.populate_page_dict(database, env)
 
     req = CGIRequest()
     req.init_request()
@@ -484,7 +485,7 @@ def real_cgi_start():
     args = parse_args(req.command,
                       path_info, os.getenv('QUERY_STRING'),
                       sys.stdin, os.environ)
-    dispatch_request(path_info, args, req, env, database)
+    dispatch_request(path_info, args, req, env)
 
 def cgi_start():
     try:
