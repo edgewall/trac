@@ -2,7 +2,7 @@
 <div id="page-content">
 <div id="subheader-links">
   <?cs if report.edit_href || report.copy_href || report.delete_href ?>
-  <?cs if report.edit_href ?>
+  <?cs if report.edit_href?>
     <span class="subheader-sublinks"><b>This report:</b>&nbsp;
       [ <a href="<?cs var:report.edit_href ?>">edit</a>&nbsp;
   <?cs /if ?>
@@ -19,8 +19,8 @@
   <?cs /if ?>
   <a href="<?cs var:$trac.href.report ?>">Report Index</a>&nbsp;
 </div>
-
-  <div id="main">
+<hr />
+<div id="main">
     <div id="main-content">
 <?cs if report.mode == "list" ?>
   <h1 id="report-hdr"><?cs var:report.title ?></h1>

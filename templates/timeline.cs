@@ -4,7 +4,7 @@
    <br />
  </div>
 
- <div id="main">
+<div id="main">
   <div id="main-content">
 
 <h1 id="timeline-hdr">Timeline</h1>
@@ -40,66 +40,45 @@
   <?cs /if ?>
 <?cs /def ?>
 
+<?cs def:tlitem(url,icon,msg,descr) ?>
+  <a class="tl-item" href="<?cs var:url ?>">
+    <img class="tl-item-icon" alt="" 
+          src="<?cs var:$htdocs_location + $icon ?>" />
+    <span class="tl-item-time"><?cs var:item.time ?> :</span> 
+    <span class="tl-item-msg"><?cs var:msg ?></span>
+
+  </a>
+  <?cs if:descr ?>
+    <div class="tl-item-descr"><?cs var:descr ?></div>
+  <?cs /if ?>
+<?cs /def ?>
+
 <?cs each:item = timeline.items ?>
   <?cs call:day_separator(item.date) ?>
-    <div class="tl-item">
-<!-- Changeset -->
-  <?cs if:item.type == #1 ?>
-    <a class="tl-item-chgset" href="<?cs var:item.changeset_href ?>">
-      <img class="tl-item-icon" alt="" 
-            src="<?cs var:htdocs_location?>/changeset.png" />
-      <span class="tl-item-time"><?cs var:item.time?></span>
-      <span class="tl-item-data">
-        Changeset <b>[<?cs var:item.data?>]</b> by <?cs var:item.author ?>:
-      </span>
-      <span class="tl-item-descr"><?cs var:item.message?></span>
-    </a>
-<!-- New ticket -->
-  <?cs elif:item.type == #2 ?>
-      <a class="tl-item-newtkt" href="<?cs var:item.ticket_href ?>">
-        <img class="tl-item-icon" alt="" 
-              src="<?cs var:htdocs_location?>/newticket.png" />
-        <span class="tl-item-time"><?cs var:item.time?></span>
-        <span class="tl-item-data">
-          Ticket <b>#<?cs var:item.data?></b> created by <?cs var:item.author ?>:
-        </span>
-        <span class="tl-item-descr"><?cs var:item.message?></span>
-      </a>
-<!-- Closed ticket -->
-  <?cs elif:item.type == #3 ?>
-      <a class="tl-item-closedtkt" href="<?cs var:item.ticket_href ?>">
-        <img class="tl-item-icon" alt=""
-              src="<?cs var:htdocs_location?>/closedticket.png" />
-        <span class="tl-item-time"><?cs var:item.time?></span>
-        <span class="tl-item-data">
-          Ticket <b>#<?cs var:item.data?></b> closed by
-          <?cs var:item.author ?>.
-        </span>
-      </a>
-<!-- Reopened ticket -->
-  <?cs elif:item.type == #4 ?>
-    <a class="tl-item-reopentkt" href="<?cs var:item.ticket_href ?>">
-      <img class="tl-item-icon" alt=""
-            src="<?cs var:htdocs_location?>/newticket.png" />
-      <span class="tl-item-time"><?cs var:item.time?></span>
-      <span class="tl-item-data">
-        Ticket <b>#<?cs var:item.data?></b> reopened by <?cs var:item.author ?>.
-      </span>
-    </a>
-<!-- Wiki change -->
-  <?cs elif:item.type == #5 ?>
-    <a class="tl-item-wiki" href="<?cs var:item.wiki_href ?>">
-      <img class="tl-item-icon" alt=""
-            src="<?cs var:htdocs_location?>/wiki.png" />
-      <span class="tl-item-time"><?cs var:item.time?></span>
-      <span class="tl-item-data">
-        <b><?cs var:item.data?></b> edited by <?cs var:item.author ?>.
-      </span>
-    </a>
-  <?cs /if ?>
-    </div>
+  <div class="tl-day">
+  <?cs if:item.type == #1 ?><!-- Changeset -->
+    <?cs call:tlitem(item.changeset_href, 'changeset.png',
+      'Changeset <b class="tl-item-link">['+$item.data+']</b>
+       by '+$item.author, item.message) ?>
+    <?cs elif:item.type == #2 ?><!-- New ticket -->
+      <?cs call:tlitem(item.ticket_href, 'newticket.png',
+        'Ticket <b class="tl-item-link">#'+$item.data+'</b>
+         created by '+$item.author, '') ?>
+    <?cs elif:item.type == #3 ?><!-- Closed ticket -->
+      <?cs call:tlitem(item.ticket_href, 'closedticket.png',
+        'Ticket <b class="tl-item-link">#'+$item.data+'</b>
+         closed by '+$item.author, '') ?>
+    <?cs elif:item.type == #4 ?><!-- Reopened ticket -->
+      <?cs call:tlitem(item.ticket_href, 'newticket.png',
+        'Ticket <b class="tl-item-link">#'+$item.data+'</b>
+         reopened by '+$item.author, '') ?>
+    <?cs elif:item.type == #5 ?><!-- Wiki change -->
+      <?cs call:tlitem(item.wiki_href, 'wiki.png',
+        '<b class="tl-item-link">'+$item.data+'</b>
+         edited by '+$item.author, '') ?>
+    <?cs /if ?>
+  </div>
 <?cs /each ?>
-
 
  </div>
 </div>

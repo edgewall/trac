@@ -7,15 +7,15 @@
     <span class="hide"> | </span>
   <?cs /if ?>
 <?cs /def ?>
-
 <html>
   <head>
     <title>Edgewall Trac | <?cs var:title ?></title>
     <style type="text/css">
       <?cs include "css.cs" ?>
     </style>
-  </head>
+</head>
 <body>
+
 <div id="header">
   <a id="hdrlogo" href="<?cs var:header_logo.link ?>"><img src="<?cs var:header_logo.src ?>" 
       width="<?cs var:header_logo.width ?>" 
@@ -51,6 +51,5 @@
       <?cs call:navlink("New Ticket", $trac.href.newticket, "newticket", 
                         "TICKET_CREATE") ?>
     </div>
-    <div style="clear: both"></div>
   </div>
 </div>

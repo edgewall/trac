@@ -6,7 +6,7 @@ body {
 	font: normal 100% 'Bitstream Vera Sans', Verdana, Helvetica, Arial, sans-serif;
 }
 hr,.hide { display: none; }
-a:link, a:visited, a.noline {
+a:link, a:visited, a.noline,b.tl-item-link {
 	text-decoration: none;
 	color: #b00;
 	border-bottom: 1px dotted #bbb;
@@ -87,6 +87,8 @@ option {  border-bottom: 1px solid #ccc; }
 	border: 1px solid #999;
 	background: #eee;
 	margin: .15em 0;
+	min-width: 500px;          
+        height: 16px;
 }
 #navbar-links { float: right; }
 a.navbar-link, a.navbar-link-active,a.navbar-link-active:hover {
@@ -95,6 +97,7 @@ a.navbar-link, a.navbar-link-active,a.navbar-link-active:hover {
 	border-left: 1px solid #999;
 	border-bottom: none;
 	margin: 0;
+        height: 14px;
 	padding: .1em 1.5em;
 	color: #000;
 	background: url(<?cs var:$htdocs_location ?>dots.gif) top left no-repeat;
@@ -104,7 +107,7 @@ a.navbar-link-active {
 	font-weight: bold;
 }
 a.navbar-link:hover { background-color: #ccb; }
-#page-content { clear: both; }
+#page-content { clear: none; }
 
 /* Wiki */
 
@@ -141,7 +144,6 @@ a.wiki-missing-page:hover { color: #000; }
 }
 
 #browser-list,#common-list {
-	clear: both;
 	margin: .5em 0 2em 0;
 	border-bottom: 1px solid #eee;
 	border-collapse: collapse;
@@ -229,49 +231,32 @@ td.br-icon-col, td.br-report-col, td.br-ticket-col { width: 1em; }
 	font-size: 105%;
 	border-bottom: 1px solid #d7d7d7;
 }
-.tl-item { margin: 1px; font-size: 90%; }
-.tl-item a {
-	border: none;
-	background: url(<?cs var:$htdocs_location ?>topangle.gif) top left no-repeat;
+.tl-day { 
+	line-height: 130%; 
+	margin-left: 1em;
 }
-.tl-item a:hover {
+a.tl-item { 
+	display: block;
+	color: #000;
+	padding: 1px 0;
+	margin: 1px; 
+	border: none; 
+}
+a.tl-item:hover {
 	background-color: #eed;
 	color: #000;
 }
-.tl-item-data { }
+.tl-item-time { color: #777; }
+.tl-item-link { font-weight: normal; }
+.tl-item-msg { }
 .tl-item-descr {
 	display: block;
-	margin-left: 32px;
+	margin-left: 6.5em;
+	font-size: 80%;
 }
-.tl-item-icon {
-	margin-left: 12px;
-	margin-right: 2px;
-}
-.tl-item-time { }
-a.tl-item-chgset {
- 	display: block;
-	background-color: #ddd;
-	color: #666;
-}
-a.tl-item-newtkt {
-	display: block;
-	background-color: #fba;
-	color: #b00;
-}
-a.tl-item-closedtkt {
-	display: block;
-	background-color: #cec;
-	color: #080;
-}
-a.tl-item-reopentkt {
-	display: block;
-	background-color: #fda;
-	color: #860;
-}
-a.tl-item-wiki {
-	display: block;
-	background-color: #cde;
-	color: #446;
+.tl-item-icon { 
+	vertical-align: text-top; 
+	margin: 0;
 }
 <?cs /if ?>
 

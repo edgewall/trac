@@ -90,7 +90,7 @@
         <ul class="tkt-chg-list">
       <?cs /if ?>
       <?cs if $item.field == "comment" ?>
-        <?cs set:$comment = $item.new ?>
+      <?cs set:$comment = $item.new ?> 
       <?cs elif $item.new == "" ?>
         <li class="tkt-chg-change">
            cleared <b><?cs var:item.field?></b>

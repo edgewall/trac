@@ -1,4 +1,4 @@
-<?cs include: "header.cs" ?>
+<?cs include "header.cs" ?>
 <script src="/trac_common/trac.js" type="text/javascript"> 
 </script>
 <div id="page-content">
@@ -8,7 +8,7 @@
   <a href="javascript:view_history()">Show/Hide History</a>
 </div>
 <hr />
-  <?cs if $wiki.history ?>
+<?cs if $wiki.history ?>
     <table id="wiki-history">
       <tr>
         <th>Version</th>
