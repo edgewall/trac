@@ -113,9 +113,19 @@ out:
 </p>
 ==============================
 [wiki:WikiStart Foo] [http://www.edgewall.com/ Edgewall]
+
+wiki:Foo%20Bar wiki:Foo%20Bar#baz
+
+[wiki:Foo%20Bar Foo Bar] [wiki:Foo%20Bar#baz Foo Bar]
 ------------------------------
 <p>
 <a class="missing wiki" href="/wiki/WikiStart" rel="nofollow">Foo?</a> <a class="ext-link" href="http://www.edgewall.com/">Edgewall</a>
+</p>
+<p>
+<a class="missing wiki" href="/wiki/Foo%20Bar" rel="nofollow">wiki:Foo Bar?</a> <a class="missing wiki" href="/wiki/Foo%20Bar#baz" rel="nofollow">wiki:Foo Bar#baz?</a>
+</p>
+<p>
+<a class="missing wiki" href="/wiki/Foo%20Bar" rel="nofollow">Foo Bar?</a> <a class="missing wiki" href="/wiki/Foo%20Bar#baz" rel="nofollow">Foo Bar?</a>
 </p>
 ==============================
 foo (FooBar)
@@ -178,6 +188,10 @@ source:/foo/bar
 source:/foo/bar#42
 
 source:/foo/bar#head
+
+source:/foo%20bar/baz%2Bquux
+
+source:/foo%2520bar/baz%252Bquux#42
 ------------------------------
 <p>
 <a class="source" href="/browser/foo/bar">source:/foo/bar</a>
@@ -187,6 +201,12 @@ source:/foo/bar#head
 </p>
 <p>
 <a class="source" href="/browser/foo/bar?rev=head">source:/foo/bar#head</a>
+</p>
+<p>
+<a class="source" href="/browser/foo%20bar/baz%2Bquux">source:/foo bar/baz+quux</a>
+</p>
+<p>
+<a class="source" href="/browser/foo%2520bar/baz%252Bquux?rev=42">source:/foo%20bar/baz%2Bquux#42</a>
 </p>
 ==============================
 query:?order=priority

@@ -24,6 +24,7 @@ import os
 import imp
 import string
 import StringIO
+import urllib
 
 import util
 import Mimeview
@@ -246,6 +247,7 @@ class CommonFormatter:
         if page.find('#') != -1:
             anchor = page[page.find('#'):]
             page = page[:page.find('#')]
+        text = urllib.unquote(text)
         if not self.env._wiki_pages.has_key(page):
             return '<a class="missing wiki" href="%s" rel="nofollow">%s?</a>' \
                    % (self._href.wiki(page) + anchor, text)
@@ -313,6 +315,8 @@ class CommonFormatter:
         if match:
             path = match.group(1)
             rev = match.group(2)
+        text = urllib.unquote(text)
+        path = urllib.unquote(path)
         if rev:
             return '<a class="source" href="%s">%s</a>' \
                    % (self._href.browser(path, rev), text)
