@@ -24,7 +24,7 @@ __license__ = """
 import trac
 from trac.db_default import data as default_data
 from trac.scripts import admin
-from trac.tests.environment import EnvironmentTestBase
+from trac.Environment import Environment
 from trac.util import get_date_format_hint, NaivePopen
 
 import os
@@ -33,6 +33,7 @@ import sys
 import time
 import unittest
 import shlex
+import ConfigParser
 
 try:
     from cStringIO import StringIO
@@ -64,7 +65,32 @@ def load_expected_results(file, pattern):
     return expected
 
 
-class TracadminTestCase(EnvironmentTestBase, unittest.TestCase):
+"""
+A subclass of trac.Environment that keeps its' DB in memory.
+"""
+class InMemoryEnvironment(Environment):
+    def get_db_cnx(self):
+        if not hasattr(self, '_db'):
+            self._db = trac.test.InMemoryDatabase()
+        return self._db
+
+    def create(self):
+        pass
+    
+    def verify(self):
+        return True
+
+    def setup_log(self):
+        self.log = trac.Logging.logger_factory('null')
+    
+    def load_config(self):
+        self.cfg = ConfigParser.ConfigParser()
+
+    def save_config(self):
+        pass
+
+
+class TracadminTestCase(unittest.TestCase):
 
     """
     Tests the output of trac-admin and is meant to be used with
@@ -76,9 +102,15 @@ class TracadminTestCase(EnvironmentTestBase, unittest.TestCase):
                                             '===== (test_[^ ]+) =====')
 
     def setUp(self):
-        EnvironmentTestBase.setUp(self)
+        self.env = InMemoryEnvironment('', create=1)
+        self.env.insert_default_data()
+        self.db = self.env.get_db_cnx()
+
         self._admin = admin.TracAdmin()
-        self._admin.env_set(self._get_envpath(), self.env)
+        self._admin.env_set('', self.env)
+    
+    def tearDown(self):
+        self.env = None
 
     def _execute(self, cmd):
         try:
