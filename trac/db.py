@@ -80,10 +80,8 @@ def load_config():
         config[row[0]][row[1]] = row[2]
     return config
 
-
 def get_connection():
-    return sqlite.connect(db_name)
-
+    return sqlite.connect(db_name, timeout=5000)
 
 def sync(repos, fs_ptr, pool):
     """
