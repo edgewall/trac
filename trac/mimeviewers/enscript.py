@@ -20,7 +20,7 @@
 # Author: Daniel Lundin <daniel@edgewall.com>
 #
 # Syntax highlighting module, using GNU enscript.
-# 
+#
 
 import re
 import sys
@@ -28,7 +28,7 @@ import os
 
 from trac.util import NaivePopen, escape
 
-supported_types = [               
+supported_types = [
     (2, 'application/postscript', 'postscript'),
     (2, 'application/x-csh', 'csh'),
     (2, 'application/x-troff', 'nroff'),
@@ -40,7 +40,7 @@ supported_types = [
     (2, 'text/x-c++hdr',     'cpp'),
     (2, 'text/x-chdr',       'c'),
     (2, 'text/x-csrc',       'c'),
-    (2, 'text/x-diff',       None),
+    (2, 'text/x-diff',       'diffu'), # Assume unified diff (works otherwise)
     (2, 'text/x-eiffel',     'eiffel'),
     (2, 'text/x-elisp',      'elisp'),
     (2, 'text/x-fortran',    'fortran'),
@@ -107,7 +107,7 @@ class Deuglifier:
                 return '<span class="code-%s">' % mtype
 
 
-def display(data, mimetype, filename, env):    
+def display(data, mimetype, filename, env):
     try:
         lang = types[mimetype]
     except KeyError:
@@ -115,9 +115,10 @@ def display(data, mimetype, filename, env):
     env.log.debug("type: %s enscript-suffix: %s" % (mimetype, lang))
 
     enscript = env.get_config('mimeviewer', 'enscript_path', 'enscript')
-    enscript += ' --color -h -q --language=html '\
-                '--pretty-print=%s ' \
-                '-p -' % lang
+    enscript += ' --color -h -q --language=html -p - -E'
+    if lang:
+        enscript += lang
+
     np = NaivePopen(enscript, data)
     if np.errorlevel:
         err = 'Running (%s) failed: %s.' % (enscript, np.errorlevel)
