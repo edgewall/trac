@@ -24,7 +24,7 @@ import time
 import string
 
 import perm
-from util import TracError
+from util import TracError, escape, shorten_line, add_dictlist_to_hdf
 from Module import Module
 
 class Search(Module):
@@ -184,8 +184,8 @@ class Search(Module):
             elif item['type'] == 3:
                 item['wiki_href'] = self.env.href.wiki(row['data'])
 
-            item['shortmsg'] = util.escape(util.shorten_line(msg))
-            item['message'] = util.escape(self.shorten_result(msg, keywords))
+            item['shortmsg'] = escape(shorten_line(msg))
+            item['message'] = escape(self.shorten_result(msg, keywords))
             info.append(item)
         return info
         
