@@ -381,7 +381,7 @@ def send_pretty_error(e, env, req=None):
         req.write(str(e))
         req.write('\n')
         req.write(tb.getvalue())
-    if env and env.log:
+    if env and env.log != None:
 	env.log.error(str(e))
 	env.log.error(tb.getvalue())
 
