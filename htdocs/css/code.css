@@ -121,7 +121,7 @@
 /* .pl_commentline { color: green; font-style: italic; } */
 .pl_datasection { color: olive; }
 /* .pl_default { } */
-.pl_error { color: red; font-style: bold; }
+.pl_error { color: red; font-weight: bold; }
 .pl_hash { color: black; }
 .pl_here_delim { color: olive; }
 .pl_here_q { color: olive; }
