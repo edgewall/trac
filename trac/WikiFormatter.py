@@ -119,7 +119,7 @@ class CommonFormatter:
         if not row:
             return '<a class="missing" href="%s">#%d</a>' % (self._href.ticket(number), number)
         else:
-            summary = row[0]
+            summary = util.shorten_line(row[0])
             if row[1] == 'new':
                 return '<a href="%s" title="NEW : %s">#%d*</a>' % (self._href.ticket(number), summary, number)
             elif row[1] == 'closed':
@@ -135,7 +135,7 @@ class CommonFormatter:
         if not row:
             return '[<a class="missing" href="%s">%d</a>]' % (self._href.changeset(number), number)
         else:
-            return '[<a title="%s" href="%s">%d</a>]' % (row[0],self._href.changeset(number), number)
+            return '[<a title="%s" href="%s">%d</a>]' % (util.shorten_line(row[0]),self._href.changeset(number), number)
 
     def _reporthref_formatter(self, match, fullmatch):
         number = int(match[1:-1])
