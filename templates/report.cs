@@ -158,8 +158,6 @@
       <input type="reset" value="reset" />
     </div>
   </form>
-
-
 <?cs /if?>
 <br />
   </div>

@@ -28,7 +28,7 @@ tr {
 .report-list td {
  padding: .1em .5em;
  vertical-align: top;
- border-right: 1px dotted #fff; 
+ border-right: 1px dotted #d7d7d7; 
  border-top: 1px dotted #fff; 
 }
 .report-fullrow { 
@@ -36,6 +36,7 @@ tr {
  margin-top: 0;
  background: #fff;
  padding-bottom: 2.5em;
+ font-size: 90%;
 }
 td.ticket-col { font-weight: bold; }
 td.summary-col {}

@@ -19,23 +19,35 @@
 #
 # Author: Jonas Borgström <jonas@edgewall.com>
 
+import time
+
 from util import *
 from Href import href
 from Module import Module
 from Wiki import wiki_to_oneliner
 import perm
+import neo_cgi
+import neo_cs
 
 from svn import util, repos
 
 class Log (Module):
     template_name = 'log.cs'
+    template_rss_name = 'log_rss.cs'
 
     def log_receiver (self, baton, rev, author, date, log, pool):
+        log = utf8_to_iso(log)
+        shortlog = shorten_line(log)
+        t = util.svn_time_from_cstring(date, pool) / 1000000
+        gmt = time.gmtime(t)
         item = {
             'rev'    : rev,
             'author' : utf8_to_iso(author or 'None'),
             'date'   : svn_date_to_string (date, pool),
-            'log'    : wiki_to_oneliner(utf8_to_iso(log)),
+            'gmt'    : time.strftime('%a, %d %b %Y %H:%M:%S GMT', gmt),
+            'log.raw'    : escape(log),
+            'log'    : wiki_to_oneliner(log),
+            'shortlog' : escape(shortlog),
             'file_href': href.file(self.path, rev),
             'changeset_href': href.changeset(rev)
             }
@@ -52,6 +64,7 @@ class Log (Module):
         list = self.path.split('/')
         path = '/'
         self.cgi.hdf.setValue('log.filename', list[-1])
+        self.cgi.hdf.setValue('log.href' , href.log(self.path))
         self.cgi.hdf.setValue('log.path.0', '[root]')
         self.cgi.hdf.setValue('log.path.0.url' , href.browser(path))
         i = 0
@@ -75,3 +88,11 @@ class Log (Module):
         self.cgi.hdf.setValue('title', self.path + ' (log)')
         self.cgi.hdf.setValue('log.path', self.path)
         add_dictlist_to_hdf(info, self.cgi.hdf, 'log.items')
+
+
+    def display_rss (self):
+        cs = neo_cs.CS(self.cgi.hdf)
+        cs.parseFile(self.template_rss_name)
+        print "Content-type: text/xml\r\n"
+        print cs.render()
+

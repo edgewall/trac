@@ -2,7 +2,6 @@
 <div id="page-content">
 <div id="subheader-links">
   <a href="?daysback=90&max=50&format=rss">RSS Feed </a>
-
 </div>
 
 <div id="main">
@@ -79,6 +78,15 @@
     <?cs /if ?>
   </div>
 <?cs /each ?>
+
+ <div id="main-footer">
+  Download timeline in other formats: <br />
+  <a class="noline" href="?daysback=90&max=50&format=rss"><img src="<?cs var:htdocs_location
+?>xml.png" alt="RSS Feed" style="vertical-align: bottom"/></a>&nbsp;
+  <a href="?daysback=90&max=50&format=rss">(RSS 2.0)</a>
+  <br />
+ </div>
+
 
  </div>
 </div>

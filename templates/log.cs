@@ -1,7 +1,7 @@
 <?cs include "header.cs"?>
 <div id="page-content">
- <div id="subheader-links">
- </div>
+<div id="subheader-links">
+</div>
  <div id="main">
   <div id="main-content">
 
@@ -40,8 +40,15 @@
   </tr>
   <?cs set:idx = idx + #1 ?>
 <?cs /each ?>
-
 </table>
+
+ <div id="main-footer">
+  Download this log in other formats: <br />
+  <a class="noline" href="?format=rss"><img src="<?cs var:htdocs_location
+?>xml.png" alt="RSS Feed" style="vertical-align: bottom"/></a>&nbsp;
+  <a href="?format=rss">(RSS 2.0)</a>
+  <br />
+ </div>
 
  </div>
 </div>

@@ -4,7 +4,7 @@ body {
   margin: 10px;
   padding: 0;
   color: #000;
-  font: normal 12px 'Bitstream Vera Sans', Verdana, Helvetica, Arial, sans-serif;
+  font: normal 13px 'Bitstream Vera Sans', Verdana, Helvetica, Arial, sans-serif;
 }
 .hide { display: none; }
 .tiny { font-size: 1px; height: 1px }
@@ -101,10 +101,8 @@ a.navbar-link:hover {
   border-right: 1px solid #ddd;
 }
 #page-content { clear: none; }
-
 #main {  margin-bottom: 2em; }
-
-#main-footer { margin-top: 2em; text-align: center; }
+#main-footer { margin-top: 2em; text-align: center }
 
 /* Wiki */
 #wiki-history {
@@ -141,7 +139,7 @@ a.wiki-missing-page:hover { color: #000; }
 #browser-list td { padding: 0 .25em; border: 1px dotted #ddd; }
 #browser-list { width: 100%; }
 tr.br-row-even, tr.br-row-odd,tr.row-even, tr.row-odd { border-top: 1px solid #ddd; }
-tr.br-row-even,tr.row-even { background-color: #fff; }
+tr.br-row-even,tr.row-even { background-color: #fcfcfc; }
 tr.br-row-odd,tr.row-odd { background-color: #f7f7f7; }
 tr.br-row-even:hover,tr.br-row-odd:hover { background: #eed; }
 #wiki-edit-page { 
