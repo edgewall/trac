@@ -43,7 +43,7 @@ class File (Module):
             type = 'text/plain'
         return type
 
-    def apply_template (self):
+    def display (self):
         rev = dict_get_with_default(self.args, 'rev', None)
         path = dict_get_with_default(self.args, 'path', '/')
         
