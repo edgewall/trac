@@ -158,6 +158,8 @@ class OneLinerFormatter(CommonFormatter):
              [r"""(?P<url>([a-z]+://[^ ]+[^\., ]))"""]
 
     def format(self, text, out):
+	if not text:
+	    return ''
         self.out = out
         self._open_tags = []
         self._list_stack = []
@@ -318,11 +320,15 @@ class Formatter(CommonFormatter):
             # Handle Horizontal ruler
             elif line[0:4] == '----':
                 self.close_paragraph()
+		self.close_indentation()
+		self.close_list()
                 self.out.write('<hr />\n')
                 continue
             # Handle new paragraph
             elif line == '':
                 self.close_paragraph()
+		self.close_indentation()
+		self.close_list()
                 continue
 
             self.in_list_item = 0
@@ -405,15 +411,15 @@ class Page:
     def render_edit(self, out, hdf):
         perm.assert_permission (perm.WIKI_MODIFY)
         out.write ('<h3>source</h3>')
-        out.write ('<form action="%s" method="POST">' %
+        out.write ('<form action="%s" method="post"><p>' %
                    hdf.getValue('cgi_location', ''))
-        out.write ('<input type="hidden" name="page" value="%s">' % self.name)
-        out.write ('<input type="hidden" name="mode" value="wiki">')
+        out.write ('<input type="hidden" name="page" value="%s" />' % self.name)
+        out.write ('<input type="hidden" name="mode" value="wiki" />')
         out.write ('<textarea name="text" rows="15" cols="80">')
         out.write(escape(self.text))
-        out.write ('</textarea><p>')
-        out.write ('<input type="submit" name="action" value="preview">&nbsp;')
-        out.write ('<input type="submit" name="action" value="save changes">')
+        out.write ('</textarea></p><p>')
+        out.write ('<input type="submit" name="action" value="preview" />&nbsp;')
+        out.write ('<input type="submit" name="action" value="save changes" />')
         out.write ('</form>')
 
     def render_view(self, out, hdf, edit_button=1):
@@ -423,12 +429,12 @@ class Page:
         Formatter().format(self.text, out)
         out.write ('</div><br />')
         if edit_button and perm.has_permission (perm.WIKI_MODIFY):
-            out.write ('<form action="%s" method="POST">' %
+            out.write ('<form action="%s" method="post"><p>' %
                        hdf.getValue('cgi_location', ''))
-            out.write ('<input type="hidden" name="mode" value="wiki">')
-            out.write ('<input type="hidden" name="page" value="%s">' % self.name)
-            out.write ('<input type="submit" name="action" value=" edit page ">')
-            out.write ('</form>')
+            out.write ('<input type="hidden" name="mode" value="wiki" />')
+            out.write ('<input type="hidden" name="page" value="%s" />' % self.name)
+            out.write ('<input type="submit" name="action" value=" edit page " />')
+            out.write ('</p></form>')
         
     def render_preview (self, out, hdf):
         perm.assert_permission (perm.WIKI_MODIFY)

@@ -14,5 +14,5 @@ setup(name="trac",
       license=LICENSE,
       url=URL,
       packages=['trac'],
-      scripts=[os.path.join('scripts', 'trac_admin.py')])
+      scripts=[os.path.join('scripts', 'trac-admin')])
 
