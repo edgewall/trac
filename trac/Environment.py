@@ -219,6 +219,7 @@ class Environment:
                        type, id, filename, stat[6], int(time.time()),
                        description, author, ipnr)
         shutil.copyfileobj(attachment.file, fd)
+        self.log.info('New attachment: %s/%s/%s by %s', type, id, filename, author)
         cnx.commit()
         return filename
     
@@ -228,6 +229,7 @@ class Environment:
         cursor.execute('DELETE FROM attachment WHERE type=%s AND id=%s AND '
                        'filename=%s', type, id, filename)
         os.unlink(path)
+        self.log.info('Attachment removed: %s/%s/%s', type, id, filename)
         cnx.commit()
 
     def backup(self, dest=None):
@@ -265,5 +267,7 @@ class Environment:
                 d.do_upgrade(self, i, cursor)
             cursor.execute("UPDATE system SET value='%i' WHERE "
                            "name='database_version'" % db_default.db_version)
+            self.log.info('Upgraded db version from %d to %d',
+                          dbver, db_default.db_version)
             cnx.commit()
             return 1
