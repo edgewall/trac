@@ -144,7 +144,7 @@ class HtmlDiffEditor (delta.Editor):
             line = pobj.readline()
             if not line:
                 break
-            filtr.writeline(escape(line))
+            filtr.writeline(escape(to_utf8(line)))
         filtr.close()
 
     def add_file(self, path, parent_baton, copyfrom_path,
