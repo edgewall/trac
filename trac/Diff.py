@@ -69,6 +69,7 @@ class HDFBuilder:
         elif self.ttype == ' ':
             self._write_block(prefix, 'unmod', old=self.block, new=self.block)
         self.block = self.p_block = []
+        self.p_type = ' '
         self.blockno += 1
 
     def writeline(self, text):
