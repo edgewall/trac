@@ -29,6 +29,8 @@ from types import *
 TRUE =  ['yes', '1', 1, 'true',  'on',  'aye']
 FALSE = ['no',  '0', 0, 'false', 'off', 'nay']
 
+CRLF = '\r\n'
+
 def svn_date_to_string(date, pool):
     from svn import util
     date_seconds = util.svn_time_from_cstring(date,

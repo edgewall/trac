@@ -45,7 +45,7 @@ def wrap(t, cols=75, initial_indent='', subsequent_indent=''):
         wrappedLines = []
         for line in t.split('\n'):
             wrappedLines += wrapper.wrap(line.rstrip()) or ['']
-        return os.linesep.join(wrappedLines)
+        return CRLF.join(wrappedLines)
 
     except ImportError:
         return t
@@ -204,19 +204,16 @@ class TicketNotifyEmail(NotifyEmail):
                 elif r[1] == 'description':
                     new_descr = wrap(r[3], self.COLS, ' ', ' ')
                     old_descr = wrap(r[2], self.COLS, '> ', '> ')
-                    old_descr = old_descr.replace(2 * os.linesep,
-                                                  os.linesep + '>' + os.linesep)
-                    cdescr = os.linesep
-                    cdescr += 'Old description:' + 2 * os.linesep
-                    cdescr += old_descr + 2 * os.linesep
-                    cdescr += 'New description:' + 2 * os.linesep
-                    cdescr += new_descr + os.linesep
+                    old_descr = old_descr.replace(2*CRLF, CRLF + '>' + CRLF)
+                    cdescr = CRLF
+                    cdescr += 'Old description:' + 2*CRLF + old_descr + 2*CRLF
+                    cdescr += 'New description:' + 2*CRLF + new_descr + CRLF
                     self.hdf.setValue('email.changes_descr', cdescr)
                 else:
                     newv = r[3]
                     l = 7 + len(r[1])
                     chg = wrap('%s => %s' % (r[2], r[3]), self.COLS-l,'', l*' ')
-                    changes += '  * %s:  %s%s' % (r[1], chg, os.linesep)
+                    changes += '  * %s:  %s%s' % (r[1], chg, CRLF)
                 if newv:
                     self.hdf.setValue('%s.oldvalue' % pfx, str(r[2]))
                     self.hdf.setValue('%s.newvalue' % pfx, newv)
@@ -244,12 +241,12 @@ class TicketNotifyEmail(NotifyEmail):
             if len(tkt[f]) > width[idx+1]:
                 width[idx+1] = len(tkt[f])
             i += 1
-        format = (' %%%is:  %%-%is%s' % (width[0], width[1], os.linesep),
+        format = (' %%%is:  %%-%is%s' % (width[0], width[1], CRLF),
                   '%%%is:  %%-%is  |  ' % (width[2], width[3]))
         i = 1
         l = (width[2] + width[3] + 5)
         sep = l*'-' + '+' + (self.COLS-l)*'-'
-        txt = sep + os.linesep
+        txt = sep + CRLF
         for f in fields:
             txt += format[i%2] % (f.capitalize(), tkt[f])
             i += 1
