@@ -131,7 +131,7 @@ else:
             msg['X-Trac-Version'] =  __version__
             projname = self.env.get_config('project','name')
             msg['X-Trac-Project'] =  projname
-            msg['X-URL'] =  self.env.get_config('project','link')
+            msg['X-URL'] =  self.env.get_config('project','url')
             msg['Subject'] = self.subject
             msg['From'] = '%s <%s>' % (projname, self.from_email)
             msg['Sender'] = msg['Reply-To'] = self.from_email
