@@ -87,7 +87,7 @@ class TracAdmin(cmd.Cmd):
 
     def env_check(self):
         try:
-            self.__db = trac.Environment.Environment(self.envname)
+            self.__env = trac.Environment.Environment(self.envname)
         except:
             return 0
         return 1
@@ -250,7 +250,8 @@ class TracAdmin(cmd.Cmd):
                 print "No documentation found for '%s'" % arg[0]
         else:
             docs = (self._help_about + self._help_help +
-                    self._help_initenv + self._help_resync + self._help_upgrade +
+                    self._help_initenv + self._help_hotcopy +
+                    self._help_resync + self._help_upgrade +
                     self._help_wiki +
 #                    self._help_config + self._help_wiki +
                     self._help_permission + self._help_component +
@@ -911,6 +912,26 @@ class TracAdmin(cmd.Cmd):
         except Exception, e:
             print "Upgrade failed: ",e
 
+    _help_hotcopy = [('hotcopy <backupdir>', 'Make a hot backup copy of an environment.')]
+    def do_hotcopy(self, line):
+        arg = self.arg_tokenize(line)
+        if arg[0]:
+            dest = arg[0]
+        else:
+            self.do_help('hotcopy')
+            return
+        cnx=self.db_open()
+        # Lock the database while copying files
+        cnx.db.execute("BEGIN")
+        import shutil
+        print 'Hotcopying %s to %s ...' % (self.__env.path, dest),
+        try:
+            shutil.copytree(self.__env.path, dest, symlinks=1)
+            print 'OK'
+        except Exception, err:
+            print err
+        # Unlock database
+        cnx.db.execute("ROLLBACK")
 
 ## ---------------------------------------------------------------------------
 
