@@ -145,7 +145,7 @@ class Attachment(FileCommon):
             
             stat = os.fstat(fd.fileno())
             self.last_modified = time.gmtime(stat[8])
-            self.req.check_modified(self.last_modified)
+            self.req.check_modified(stat[8])
 
             self.length = stat[6]
             self.read_func = lambda x, f=fd: f.read(x)
