@@ -160,8 +160,8 @@
   </div>
 <?cs /if ?>
 
+<?cs if $trac.acl.TICKET_MODIFY ?>
 <br /><hr />
-
 
 <h3><a name="edit"
 onfocus="document.getElementById('comment').focus()">Add/Change
@@ -285,6 +285,7 @@ onfocus="document.getElementById('comment').focus()">Add/Change
  </div>
 
 </form>
+<?cs /if ?>
 
 </div> <!-- #tkt-main -->
 
