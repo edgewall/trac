@@ -23,7 +23,7 @@ function getAncestorByTagName(e, tagName) {
   do {
     e = e.parentNode;
   } while ((e.nodeType == 1) && (e.tagName.toLowerCase() != tagName));
-  return e;
+  return (e.nodeType == 1) ? e : null;
 }
 
 // Adapted from http://www.kryogenix.org/code/browser/searchhi/
@@ -97,79 +97,4 @@ function enableControl(id, enabled) {
       }
     }
   }
-}
-
-function addWikiFormattingToolbar(textarea) {
-  if ((typeof(document["selection"]) == "undefined")
-   && (typeof(textarea["setSelectionRange"]) == "undefined")) {
-    return;
-  }
-  
-  var toolbar = document.createElement("div");
-  toolbar.className = "wikitoolbar";
-
-  function addButton(id, title, fn) {
-    var a = document.createElement("a");
-    a.href = "#";
-    a.id = id;
-    a.title = title;
-    a.onclick = function() { try { fn() } catch (e) { } return false };
-    a.tabIndex = 400;
-    toolbar.appendChild(a);
-  }
-
-  function encloseSelection(prefix, suffix) {
-    textarea.focus();
-    var start, end, sel, scrollPos, subst;
-    if (typeof(document["selection"]) != "undefined") {
-      sel = document.selection.createRange().text;
-    } else if (typeof(textarea["setSelectionRange"]) != "undefined") {
-      start = textarea.selectionStart;
-      end = textarea.selectionEnd;
-      scrollPos = textarea.scrollTop;
-      sel = textarea.value.substring(start, end);
-    }
-    if (sel.match(/ $/)) { // exclude ending space char, if any
-      sel = sel.substring(0, sel.length - 1);
-      suffix = suffix + " ";
-    }
-    subst = prefix + sel + suffix;
-    if (typeof(document["selection"]) != "undefined") {
-      var range = document.selection.createRange().text = subst;
-      textarea.caretPos -= suffix.length;
-    } else if (typeof(textarea["setSelectionRange"]) != "undefined") {
-      textarea.value = textarea.value.substring(0, start) + subst +
-                       textarea.value.substring(end);
-      if (sel) {
-        textarea.setSelectionRange(start + subst.length, start + subst.length);
-      } else {
-        textarea.setSelectionRange(start + prefix.length, start + prefix.length);
-      }
-      textarea.scrollTop = scrollPos;
-    }
-  }
-
-  addButton("strong", "Bold text: '''Example'''", function() {
-    encloseSelection("'''", "'''");
-  });
-  addButton("em", "Italic text: ''Example''", function() {
-    encloseSelection("''", "''");
-  });
-  addButton("heading", "Heading: == Example ==", function() {
-    encloseSelection("\n== ", " ==\n", "Heading");
-  });
-  addButton("link", "Link: [http://www.example.com/ Example]", function() {
-    encloseSelection("[", "]");
-  });
-  addButton("code", "Code block: {{{ example }}}", function() {
-    encloseSelection("\n{{{\n", "\n}}}\n");
-  });
-  addButton("hr", "Horizontal rule: ----", function() {
-    encloseSelection("\n----\n", "");
-  });
-
-  textarea.parentNode.insertBefore(toolbar, textarea);
-  var br = document.createElement("br");
-  br.style.clear = "left";
-  textarea.parentNode.insertBefore(br, textarea);
 }
