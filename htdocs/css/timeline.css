@@ -17,11 +17,8 @@
  border-bottom: 1px solid #d7d7d7;
  font-size: 105%;
 }
-#main.timeline dl {
- line-height: 130%; 
- margin-left: 1em;
-}
-#main.timeline dt {Êpadding: 1px }
+#main.timeline dl { line-height: 130%; margin-left: 1em }
+#main.timeline dt { background: 3px 50% no-repeat; padding: 1px }
 #main.timeline dt em {
  border-bottom: 1px dotted #bbb;
  color: #b00;
@@ -46,8 +43,19 @@
  padding: 0;
 }
 
-#main.timeline dt.changeset a { background-image: url(../changeset.png) }
-#main.timeline dt.newticket a { background-image: url(../newticket.png) }
-#main.timeline dt.closedticket a { background-image: url(../closedticket.png) }
-#main.timeline dt.wiki a { background-image: url(../wiki.png) }
-#main.timeline dt.milestone a { background-image: url(../milestone.png) }
+/* Apply icon background-image twice to avoid hover-flicker in IE/Win */
+#main.timeline dt.changeset, #main.timeline dt.changeset a {
+ background-image: url(../changeset.png);
+}
+#main.timeline dt.newticket, #main.timeline dt.newticket a {
+ background-image: url(../newticket.png);
+}
+#main.timeline dt.closedticket, #main.timeline dt.closedticket a {
+ background-image: url(../closedticket.png);
+}
+#main.timeline dt.wiki, #main.timeline dt.wiki a {
+ background-image: url(../wiki.png);
+}
+#main.timeline dt.milestone, #main.timeline dt.milestone a {
+ background-image: url(../milestone.png);
+}
