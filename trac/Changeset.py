@@ -183,13 +183,8 @@ class Changeset (Module.Module):
                               self.args, self.env)
         e_ptr, e_baton = svn.delta.make_editor(editor, self.pool)
 
-        if svn.util.SVN_VER_MAJOR == 0 and svn.util.SVN_VER_MINOR == 37:
-            svn.repos.svn_repos_dir_delta(old_root, '', '',
-                                      new_root, '', e_ptr, e_baton, None, None,
-                                      0, 1, 0, 1, self.pool)
-        else:
-            def authz_cb(root, path, pool): return 1
-            svn.repos.svn_repos_dir_delta(old_root, '', '',
+        def authz_cb(root, path, pool): return 1
+        svn.repos.svn_repos_dir_delta(old_root, '', '',
                                       new_root, '', e_ptr, e_baton, authz_cb,
                                       0, 1, 0, 1, self.pool)
 

@@ -27,9 +27,9 @@ def sync(db, repos, fs_ptr, pool):
     the repository.
     """
 
-    if util.SVN_VER_MAJOR == 0 and util.SVN_VER_MINOR < 37:
+    if util.SVN_VER_MAJOR < 1:
         raise EnvironmentError, \
-              "Subversion >= 0.37 required: Found %d.%d.%d" % \
+              "Subversion >= 1.0 required: Found %d.%d.%d" % \
               (util.SVN_VER_MAJOR, util.SVN_VER_MINOR, util.SVN_VER_MICRO)
 
     cursor = db.cursor()
@@ -93,13 +93,8 @@ def insert_change (pool, fs_ptr, rev, cursor):
     editor = ChangeEditor(rev, old_root, new_root, cursor)
     e_ptr, e_baton = delta.make_editor(editor, pool)
 
-    if util.SVN_VER_MAJOR == 0 and util.SVN_VER_MINOR == 37:
-        repos.svn_repos_dir_delta(old_root, '', '',
-                                  new_root, '', e_ptr, e_baton, None, None,
-                                  0, 1, 0, 1, pool)
-    else:
-        def authz_cb(root, path, pool): return 1
-        repos.svn_repos_dir_delta(old_root, '', '',
-                                  new_root, '', e_ptr, e_baton, authz_cb,
-                                  0, 1, 0, 1, pool)
-
+    def authz_cb(root, path, pool): return 1
+    repos.svn_repos_dir_delta(old_root, '', '',
+                              new_root, '', e_ptr, e_baton, authz_cb,
+                              0, 1, 0, 1, pool)
+    
