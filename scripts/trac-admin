@@ -433,6 +433,15 @@ class TracAdmin(cmd.Cmd):
         if not action.islower() and not action.isupper():
             print 'group-names must be in lower case and permissions in upper case'
             return
+        if not action in ['LOG_VIEW', 'FILE_VIEW', 'CHANGESET_VIEW', 'BROWSER_VIEW', 
+		          'TICKET_VIEW', 'TICKET_CREATE', 'TICKET_MODIFY', 'TICKET_ADMIN',
+                          'REPORT_VIEW', 'REPORT_CREATE', 'REPORT_MODIFY', 'REPORT_DELETE', 'REPORT_ADMIN', 
+                          'WIKI_VIEW', 'WIKI_CREATE', 'WIKI_MODIFY', 'WIKI_DELETE', 'WIKI_ADMIN',
+                          'MILESTONE_VIEW', 'MILESTONE_CREATE', 'MILESTONE_MODIFY', 'MILESTONE_DELETE',
+                          'ROADMAP_VIEW', 'ROADMAP_ADMIN', 'TIMELINE_VIEW', 'SEARCH_VIEW',
+                          'REPORT_SQL_VIEW', 'CONFIG_VIEW', 'TRAC_ADMIN']:
+            print '%s is not a valid permission. Use the permission list command to see allowed permission.' % (action)
+            return
         self.db_execsql("INSERT INTO permission VALUES('%s', '%s')" % (user, action))
 
     def _do_permission_remove(self, user, action):
