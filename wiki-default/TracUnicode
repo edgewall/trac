@@ -8,12 +8,21 @@ As such, it supports most (all?) commonly used character encodings.
 
 === Swedish ===
 
-''R�ven raskar �ver isen med luva p�.''
+''Räven raskar över isen med luva på.''
 
-=== Fran�ais ===
+=== Français ===
 
-''Il est possible d'�crire en Fran�ais : �, �, �, ...''
+''Il est possible d'écrire en Français : à, ç, û, ...''
 
 === Icelandic ===
 
-''�var sag�i vi� �mmu s�na: Sj��u hva� �g er st�r!''
+''Ævar sagði við ömmu sína: Sjáðu hvað ég er stór!''
+
+=== Japanese ===
+
+''漢字 ひらがな カタカナ ﾊﾝｶｸｶﾅ''
+
+=== Chinese Traditional ===
+
+''繁體中文, 許功蓋會育''
+

@@ -3,9 +3,10 @@ Trac 0.7 introduces an editable configuration file, ''trac.ini'', located in {{{
 This is a brief reference of available configuration options.
 
 == [project] ==
-|| name  || Project name ||
-|| descr || Short project description ||
-|| url   || URL to the main project website ||
+|| name   || Project name ||
+|| descr  || Short project description ||
+|| url    || URL to the main project website ||
+|| footer || Page footer text (right-aligned) ||
 
 == [trac] ==
 || repository_dir  || Path to local Subversion repository ||
@@ -39,11 +40,15 @@ See also: TracLogging
 See also: TracNotification
 
 == [header_logo] ==
-|| src    || URL to image to use as header logo || 
+|| src    || URL to image to use as header logo ||
 || link   || Destination URL to link to from header logo ||
 || alt    || ''alt'' text for header logo ||
 || width  || Header logo width in pixels ||
 || height || Header logo height in pixels ||
 
+== [mimeviewer] ==
+|| enscript_path || Path to Enscript program ||
+ 
+[[BR]]
 ----
 See also: TracGuide, TracAdmin

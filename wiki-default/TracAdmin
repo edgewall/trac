@@ -52,4 +52,3 @@ milestone remove <name>             -- Remove milestone
 '''trac-admin''' starts in an interactive mode when started with the database 
 filename as the only argument. Commands can then be executed on the selected 
 database using the tab-completing prompt.
-

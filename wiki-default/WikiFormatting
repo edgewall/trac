@@ -89,7 +89,8 @@ Display:
 
 == Links ==
 
-Hyperlinks are automatically created for WikiPageNames and urls. 
+Hyperlinks are automatically created for WikiPageNames and urls. !WikiPageLinks can be disabled by
+prepending a bang (!) character like this {{{!WikiPageLink}}}.
 
 For example:
 
