@@ -52,4 +52,3 @@
     <div style="clear: both"></div>
   </div>
 </div>
-<div id="page-content">

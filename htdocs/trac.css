@@ -17,13 +17,24 @@ a:hover {
 }
 a.noline { border-bottom: none; }
 address { font-style: normal; }
-img {}
+img { border: none }
+
+/*
+ * Forms 
+ */
+
+input, textarea, select { 
+  border: 1px solid #ccc;
+  background: #fff;
+}
+input[type="submit"], input[type="reset"] { background: #eee; }
+input[type="submit"]:hover, input[type="reset"]:hover { background: #ccb; }
+option {  border-bottom: 1px solid #ccc; }
 
 /* Header */
 
 #header { }
 #hdrlogo,#hdrlogo img,#hdrlogo:hover { 
- border: none;
  background: transparent;
  margin-bottom: -1em;
 }
@@ -35,9 +46,7 @@ img {}
  padding: 0 1em;
  text-align: right; 
 }
-#subheader-links a,#header-links a { 
-  padding: 0 .5em;
-}
+#subheader-links a,#header-links a { padding: 0 .5em; }
 
 /* Navbar  */ 
 
@@ -46,7 +55,6 @@ img {}
  border: 1px solid #999;
  background: #eee;
  margin: .15em 0;
- height: 17px;
 }
 #navbar-links { float: right }
 a.navbar-link, a.navbar-link-active,a.navbar-link-active:hover { 
@@ -55,7 +63,6 @@ a.navbar-link, a.navbar-link-active,a.navbar-link-active:hover {
  border-left: 1px solid #999;
  border-bottom: none;
  margin: 0;
- height: 15px;
  padding: .1em 1.5em;
  color: #000;
  background: url(/trac_common/dots.gif) top left no-repeat;
@@ -64,9 +71,7 @@ a.navbar-link-active {
  background: #ccc;
  font-weight: bold;
 }
-a.navbar-link:hover { 
- background-color: #ccb;
-}
+a.navbar-link:hover { background-color: #ccb; }
 
 #page-content { 
  clear: both;
@@ -100,9 +105,7 @@ a.wiki-missing-page:link
   color: #998;
   background: #fafaf0;
 }
-a.wiki-missing-page:hover { 
- color: #000;
-}
+a.wiki-missing-page:hover { color: #000; }
 
 #wiki-body { 
  line-height: 140%;
@@ -127,8 +130,58 @@ a.wiki-missing-page:hover {
 #footer-right {  text-align: right }
 #footer-logo {
  float: left;
- border: none;
  margin-right: 1em; 
  margin-top: .3em;
 }
 
+/* Browser */
+
+#browser-rev { 
+ font-size: 110%; 
+ margin-right: 1em;
+ }
+#browser-chgrev { 
+ display: inline;
+ margin: 0;
+ float: right;
+ font-size: 9px;
+ width: 15em;
+ text-align: right;
+}
+#browser-chgrev input { text-align: center }
+#browser-pathlinks { padding: 0; }
+#browser-list
+{
+  clear: both;
+  margin: 1em 0 2em 0;
+  border-bottom: 1px solid #eee;
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  line-height: 130%;
+}
+tr.browser-listhdr { border-bottom: 1px solid #eee; }
+tr.browser-listhdr th { 
+ text-align: left;
+ padding: 0 .5em;
+ font-size: 13px;
+}
+#browser-list a { 
+  display: block;
+ border-bottom: none;
+ background: transparent;
+}
+#browser-list td { padding: 0 .25em; }
+tr.br-row-even, tr.br-row-odd { border-top: 1px solid #eee; }
+tr.br-row-even { background-color: #fff; }
+tr.br-row-odd { background-color: #f7f7f7; }
+tr.br-row-even:hover,tr.br-row-odd:hover { 
+ background: #eed;
+}
+td.br-size-col,td.br-rev-col,td.br-date-col { 
+ border-left: thin dotted #dddddd; 
+}
+td.br-icon-col { }
+td.br-rev-col { text-align: center }
+td.br-size-col, td.br-rev-col, td.br-date-col { color: #888 }
+td.br-icon-col, td.br-report-col, td.br-ticket-col { width: 1em; }

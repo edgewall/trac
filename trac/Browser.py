@@ -100,6 +100,21 @@ class Browser(Module):
             str = str + '<a href="%s">%s/</a>' % (href.browser(path), part)
         return str
 
+    def generate_path_links(self):
+        list = self.path[1:].split('/')
+        path = '/'
+        self.cgi.hdf.setValue('browser.path.0', '[root]')
+        self.cgi.hdf.setValue('browser.path.0.url' , href.browser(path))
+        i = 0
+        for part in list:
+            i = i + 1
+            if part == '':
+                break
+            path = path + part + '/'
+            self.cgi.hdf.setValue('browser.path.%d' % i, part)
+            self.cgi.hdf.setValue('browser.path.%d.url' % i,
+                                  href.browser(path))
+
     def render(self):
         perm.assert_permission (perm.BROWSER_VIEW)
         
@@ -113,6 +128,8 @@ class Browser(Module):
         info.sort(lambda x, y: cmp(y['is_dir'], x['is_dir']))
 
         add_dictlist_to_hdf(info, self.cgi.hdf, 'browser.items')
+
+        self.generate_path_links()
 
         if self.path != '/':
             parent = string.join(self.path.split('/')[:-2], '/') + '/'

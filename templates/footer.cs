@@ -1,4 +1,3 @@
-  </div>
 <hr />
 <div id="footer">
  <a class="noline" href="http://trac.edgewall.com/"><img id="footer-logo"
