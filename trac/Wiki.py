@@ -662,6 +662,7 @@ class Wiki(Module):
     def render(self):
         name = self.args.get('page', 'WikiStart')
         author = self.args.get('author', self.req.authname)
+        edit_version = self.args.get('edit_version', '-1')
         comment = self.args.get('comment', '')
         save = self.args.get('save', None)
         edit = self.args.get('edit', None)
@@ -709,9 +710,25 @@ class Wiki(Module):
 
         self.page = Page(name, version, self.perm, self.db)
         if self.args.has_key('text'):
+            self.page.modified = self.page.text != self.args.get('text')
             self.page.set_content (self.args.get('text'))
-        
-        if save:
+        else:
+            self.page.modified = 0
+
+        if edit:
+            # We store the page version when we start editing a page.
+            # This way we can stop users from saving changes if they are
+            # not based on the latest version any more
+            self.req.hdf.setValue('wiki.edit_version', str(self.page.version))
+
+        if save and edit_version != str(self.page.version - 1):
+            raise TracError('Sorry, Can\' create new version, the page has '
+                            'already been edited by someone else')
+        elif save and not self.page.modified:
+            # There is no point in creating a new page version if the content
+            # hasn't changed
+            raise TracError('Page not modified')
+        elif save:
             self.page.commit(author, comment, self.req.remote_addr)
             self.req.redirect(self.env.href.wiki(self.page.name))
 

@@ -93,6 +93,8 @@
           <?cs if wiki.action == "edit" || wiki.action == "preview" ?>
             <h3>Editing "<?cs var:wiki.page_name ?>"</h3>
             <form action="<?cs var:wiki.current_href ?>" method="post">
+              <input type="hidden" name="edit_version" 
+                     value="<?cs var:wiki.edit_version?>" />
               <div>
                 <label for="text">Page source:</label><br />
                 <textarea id="text" name="text" rows="20" cols="80" style="width:100%"><?cs var:wiki.page_source ?></textarea>
@@ -114,6 +116,7 @@
 		       value="<?cs var:wiki.comment?>"/>
                 <input type="submit" name="save" value="Save changes" />&nbsp;
                 <input type="submit" name="preview" value="Preview" />&nbsp;
+
                 <input type="submit" name="view" value="Cancel" />
               </fieldset>
             </form>
