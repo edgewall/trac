@@ -1,5 +1,6 @@
 /* Timeline */
-#prefs { width: 36em }
+
+* html #prefs { width: 34em } /* Set width only for IE */
 #prefs .buttons { margin-top: -1.6em }
 
 h2 { background: #f7f7f7; border-bottom: 1px solid #d7d7d7; font-size: 105% }

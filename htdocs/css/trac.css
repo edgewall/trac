@@ -222,8 +222,8 @@ label.disabled { color: #d7d7d7 }
  padding: .8em;
  position: relative;
  margin: 0 1em 1em;
- width: 26em;
 }
+* html #prefs { width: 26em } /* Set width only for IE */
 #prefs input, #prefs select { font-size: 9px; vertical-align: middle }
 #prefs fieldset { border: none; margin: .5em; padding: 0 }
 #prefs fieldset legend {

@@ -232,14 +232,7 @@ class Report (Module):
             self.req.hdf.setValue('report.create_href',
                                   self.env.href.report(None, 'new'))
 
-        try:
-            args = self.get_var_args()
-        except ValueError,e:
-            self.req.hdf.setValue('report.message', 'report failed: %s' % e)
-            return
-
         if id != -1:
-            self.add_alternate_links(args)
             if self.perm.has_permission(perm.REPORT_MODIFY):
                 self.req.hdf.setValue('report.edit_href',
                                       self.env.href.report(id, 'edit'))
@@ -249,6 +242,15 @@ class Report (Module):
             if self.perm.has_permission(perm.REPORT_DELETE):
                 self.req.hdf.setValue('report.delete_href',
                                       self.env.href.report(id, 'delete'))
+
+        try:
+            args = self.get_var_args()
+        except ValueError,e:
+            self.req.hdf.setValue('report.message', 'report failed: %s' % e)
+            return
+
+        if id != -1:
+            self.add_alternate_links(args)
 
         self.req.hdf.setValue('report.mode', 'list')
         info = self.get_info(id, args)

@@ -114,17 +114,16 @@
     </tr></thead>
     <tbody><?cs each:item = wiki.history ?>
      <tr class="<?cs if:name(item) % #2 ?>even<?cs else ?>odd<?cs /if ?>">
-      <td class="date"><?cs var:$item.time ?></td>
+      <td class="date"><?cs var:item.time ?></td>
       <td class="version">
        <a href="<?cs var:item.url ?>" title="View version"><?cs
          var:item.version ?></a>
        (<a href="<?cs var:item.diff_url ?>" title="Compare to previous version">diff</a>)
       </td>
-      <td class="author">
-       <span class="name"><?cs var:$item.author ?></span>
-       <span class="ipaddr">(IP: <?cs var:$item.ipaddr ?>)</span>
+      <td class="author" title="IP-Address: <?cs var:item.ipaddr ?>">
+       <?cs var:item.author ?>
       </td>
-      <td class="comment"><?cs var:$item.comment ?></td>
+      <td class="comment"><?cs var:item.comment ?></td>
      </tr>
     <?cs /each ?></tbody>
    </table>

@@ -20,5 +20,4 @@
  white-space: nowrap;
 }
 #wikihist td.version { text-align: center }
-#wikihist td.author .ipaddr { color: #888; font-size: smaller }
 #wikihist td.comment { width: 100% }
