@@ -117,12 +117,10 @@ class RewriteHref(Href):
             return href_join(self.base, 'wiki/')
 
     def report(self, report=None, action=None):
-        if report and action:
-            return href_join(self.base, 'report', str(report), action)
+        if action:
+            Href.report(self, report, action)
         elif report:
             return href_join(self.base, 'report', str(report))
-        elif action:
-            return href_join(self.base, 'report', action)
         else:
             return href_join(self.base, 'report/')
 

@@ -43,7 +43,7 @@ class Report (Module):
             cursor.execute("SELECT id AS report, title "
                            "FROM report "
                            "ORDER BY report")
-            title = 'available reports'
+            title = 'Available reports'
         else:
             cursor.execute('SELECT title, sql from report WHERE id=%s', id)
             row = cursor.fetchone()
@@ -97,7 +97,7 @@ class Report (Module):
         cnx.commit()
         redirect(href.report(id))
 
-    def render_report_editor(self, id, action='commit'):
+    def render_report_editor(self, id, action='commit', copy=0):
         cnx = db.get_connection()
         cursor = cnx.cursor()
 
@@ -108,6 +108,9 @@ class Report (Module):
             row = cursor.fetchone()
             sql = row[1]
             title = row[0]
+
+        if copy:
+            title += ' copy'
         
         self.cgi.hdf.setValue('report.mode', 'editor')
         self.cgi.hdf.setValue('report.title', title)
@@ -143,6 +146,7 @@ class Report (Module):
             return
         
         self.cgi.hdf.setValue('report.title', title)
+        self.cgi.hdf.setValue('report.id', str(id))
 
         # Convert the header info to HDF-format
         idx = 0
@@ -193,7 +197,7 @@ class Report (Module):
         elif action == 'new':
             self.render_report_editor(-1, 'create')
         elif action == 'copy':
-            self.render_report_editor(id, 'create')
+            self.render_report_editor(id, 'create', 1)
         elif action == 'edit':
             self.render_report_editor(id, 'commit')
         else:

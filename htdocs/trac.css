@@ -6,15 +6,19 @@ pre.file-content
   font-size: 10pt;
 }
 
-table.listing
+table.listing-nomaximize, table.listing
 {
-  width: 90%;
   background-color: white;
   border: thin solid lightgray;
   border: thin solid lightgray;
   border-right-color: gray;
   border-bottom-color: gray;
   padding: 0px;
+}
+
+table.listing
+{
+  width: 100%;
 }
 
 th.header-left
@@ -80,9 +84,9 @@ td.date-column
   white-space: nowrap;
 }
 
-td.summary-column
+td.summary-column, td.name-column, td.maximize-column
 {
-  width: 50%;
+  width: 99%;
 }
 
 td.icon-column, td.report-column, td.ticket-column
@@ -186,6 +190,13 @@ td.diff-add-left,td.diff-add-right
 {
   font-family: monospace; 
   vertical-align: top;
+}
+
+div.report-sidebar
+{
+  float: left;
+  margin-right: 1.5em;
+  min-height: 200px;
 }
 
 body
@@ -311,33 +322,11 @@ a.navbar-link-active
 #content-main {  margin: 0; padding: 1em; }
 
 /*
- * Sidebar
- */
-
-#page-sidebar { 
- background-color: #f7f7f7;
- border: dotted 1px #ccc;
-  border-width: 0 1px 0 0;
-}
-
-.sidebar-section { 
- padding: 0 1em;
- margin: 0;
-}
-
-.sidebar-spacer { 
-  border: dotted 1px #ccc;
-  border-width: 1px 1px 0 0;
-  margin: 0;
-  padding: 0;
-}
-
-
-/*
  * Footer
  */
 
 #page-footer { 
+  clear: both;
   margin: 0; 
   padding: 0.5em;
   border: dotted 1px #ccc;

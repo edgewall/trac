@@ -1,25 +1,33 @@
 <?cs include "header.cs" ?>
 
-<h3>Reports</h3>
-
 <?cs if report.mode == "list" ?>
 
-  <h3><?cs var:report.title ?></h3>
+  <div class="report-sidebar">
 
-  <?cs if report.create_href ?>
-    <a href="<?cs var:report.create_href ?>">create</a> |
+  <?cs if report.id != "-1" ?>
+  - <a href="<?cs var:trac.href.report ?>">Report index</a><br>
   <?cs /if ?>
+  <?cs if report.create_href ?>
+  - <a href="<?cs var:report.create_href ?>">New report</a><br>
+  <?cs /if ?>
+  <?cs if report.edit_href || report.copy_href || report.delete_href ?>
+  <br>
+  This report:
+  <br>
   <?cs if report.edit_href ?>
-    <a href="<?cs var:report.edit_href ?>">edit</a> |
+    &nbsp;&nbsp;- <a href="<?cs var:report.edit_href ?>">edit</a> <br>
   <?cs /if ?>
   <?cs if report.copy_href ?>
-    <a href="<?cs var:report.copy_href ?>">copy</a> |
+    &nbsp;&nbsp;- <a href="<?cs var:report.copy_href ?>">copy</a> <br>
   <?cs /if ?>
   <?cs if report.delete_href ?>
-    <a href="<?cs var:report.delete_href ?>">delete</a> |
+    &nbsp;&nbsp;- <a href="<?cs var:report.delete_href ?>">delete</a>
   <?cs /if ?>
+  <?cs /if ?>
+  </div>
+  <h3><?cs var:report.title ?></h3>
 
-  <table class="listing" cellspacing="0" cellpadding="0">
+  <table class="listing-nomaximize" cellspacing="0" cellpadding="0">
     <tr>
       <?cs each header = report.headers ?>
         <th class="header-left"><?cs var:header.title ?></th>
