@@ -162,7 +162,12 @@
    <th<?cs if:header.order ?> class="<?cs var:header.order ?>"<?cs /if ?>>
     <a href="<?cs var:header.href ?>" title="Sort by <?cs
       var:header.name ?> (<?cs if:header.order == 'asc' ?>descending<?cs
-      else ?>ascending<?cs /if ?>)"><?cs var:header.name ?></a>
+      else ?>ascending<?cs /if ?>)"><?cs
+       each:property = ticket.properties ?><?cs
+        if:property.name == header.name ?><?cs
+         var:property.label ?><?cs
+        /if ?><?cs
+       /each ?></a>
    </th><?cs
   /if ?>
  <?cs /each ?></tr></thead>
