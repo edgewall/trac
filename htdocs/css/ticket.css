@@ -1,10 +1,16 @@
 /* Ticket */
+#tkt-hdr { margin: 0 }
+#tkt-subhdr { 
+ display: block;
+ font-weight: normal; 
+ margin-top: .25em;
+ padding-bottom: .5em;
+ border-bottom: 1px solid #dd9;
+}
 #tkt-ticket,#tkt-changes { 
   background: #ffd;
-  border: 1px solid #dd9;
-  border-width: 1px 3px 3px 1px;
-  border-spacing: 0;
-  padding: .5em;
+  border: 1px outset #996;
+  padding: 1em;
 }
 #tkt-main { max-width: 700px; }
 #tkt-ticket td { padding: .2em .5em; }
@@ -23,21 +29,28 @@
 }
 .tkt-label { color: #996; }
 .tkt-label b { font-weight: normal; }
-.tkt-prop-sep { border-right: 1px solid #dd9; border-bottom: 1px dotted #eed; }
-#tkt-descr-hdr { font-size: 100%; margin-top: .25em }
+.tkt-prop { margin-top: .75em }
+#tkt-descr-hdr { 
+ font-size: 100%; 
+ margin-top: .25em;
+ padding-top: .5em;
+ border-top: 1px solid #dd9;
+
+}
 #tkt-descr { line-height: 140%; }
 #tkt-changes-hdr { font-size: 110%; margin-bottom: .5em;  margin-top: 1em; }
 #tkt-changes { 
-  border-color: #d7d7d7;
   background: #fff;
-  padding: 0 .5em;
   padding-left: 1.5em;
+  border: 1px outset #999;
 }
 .tkt-chg-mod { 
   color: #999;
-  border-bottom: 1px solid;
-  margin-top: .5em;
+  border-bottom: 1px solid #d7d7d7;
+
   margin-left: -1em;
+  margin-top: 1px;
+  font-size: 100%;
   font-weight: normal;
   padding: 0 .5em;
 }
@@ -46,13 +59,15 @@ li.tkt-chg-change { margin: 0; }
 .tkt-chg-comment-hdr { margin: 0;  font-size: 100%; }
 .tkt-chg-comment p { margin: .25em }
 .tkt-chg-comment { margin: 0; margin-left: 1em; }
-#tkt-submit {  padding-top: .5em; }
+#tkt-submit {  padding-top: 1em; line-height: 180%; }
 
 /* New Ticket (NOTE: Shared with Ticket) */
-#nt-upper { border-bottom: 1px dotted #d7d7d7; margin-bottom: 1em; }
-#nt-submit {  padding-top: .5em; text-align: right; }
-#nt-descr {  padding-top: 1em; border-top: 1px dotted #d7d7d7; }
-.nt-label { text-align: right; min-width: 6em; margin-right: .5em; }
-table {  border-collapse: separate; border-spacing: 10px 0; }
-.nt-row-sep { padding-top: 1em; }
-.nt-prop-sep { border-right: 1px dotted #d7d7d7; }
+
+.nt-label { float:left; width: 7em; text-align: right; margin-right: .5em; }
+#nt-ticket { max-width: 700px; line-height: 160% }
+#nt-body { margin: 1em 0}
+#nt-props { white-space: nowrap; line-height: 160%; }
+#nt-left { float: left; border-right: 1px dotted #d7d7d7; width: 40%; }
+#nt-right { margin-left: 40%; }
+#nt-buttons {  padding-top: .5em; text-align: right; }
+

@@ -2,7 +2,7 @@
 <?cs include "macros.cs" ?>
 <div id="page-content">
 <div id="subheader-links">
-<br />
+<a href="#edit">Add/Change Info</a>
 </div>
 
  <div id="main">
@@ -31,48 +31,36 @@
 
 
 
-<h1 id="tkt-hdr">Ticket #<?cs var:ticket.id ?><?cs var:status ?></h1>
 
 <div id="tkt-main">
 
-<table id="tkt-ticket">
- <tr>
-  <td colspan="5">
-   <div id="tkt-date"><?cs var:ticket.opened ?></div>
-   <h2 id="tkt-summary">#<?cs var:ticket.id ?> : <?cs var:ticket.summary ?></h2>
-  </td>
- </tr>
- <tr><td colspan="5" class="tkt-row-sep"><hr class="hide"/></td></tr>
- <tr>
-  <?cs call:ticketprop("Priority", ticket.priority) ?>
-  <?cs call:ticketprop("Reporter", ticket.reporter) ?>
-  <?cs call:ticketprop("Severity", ticket.severity) ?>
-  <?cs if ticket.status == "assigned"?>
-   <?cs call:ticketprop("Assigned to", ticket.owner + " (accepted)") ?>
-  <?cs else ?>
-   <?cs call:ticketprop("Assigned to", ticket.owner) ?>
-  <?cs /if ?>
-  <?cs call:ticketprop("Component", ticket.component) ?>
-  <?cs call:ticketprop("Status", ticket.status) ?>
-  <?cs call:ticketprop("Version", ticket.version) ?>
-  <?cs call:ticketprop("Resolution", ticket.resolution) ?>
-  <?cs call:ticketprop("Milestone", ticket.milestone) ?>
-  <td colspan="2">&nbsp;</td>
- </tr>
- <tr>
-   <td colspan="2" class="tkt-row-sep"></td>
-   <td colspan="1" class="tkt-row-sep-vert"></td>
-   <td colspan="2" class="tkt-row-sep"> </td>
- </tr>
- <tr>
-  <td colspan="5" id="tkt-descr">
-   <hr class="hide" />
-   <h3 id="tkt-descr-hdr">Description by <?cs var:ticket.reporter ?>:</h3>
+<div id="tkt-ticket">
+ <div id="tkt-date"><?cs var:ticket.opened ?></div>
+<h1 id="tkt-hdr">Ticket #<?cs var:ticket.id ?><?cs var:status ?><br />
+ <span class="hide">-</span> <span id="tkt-subhdr"><?cs var:ticket.summary ?></span></h1>
+ <hr class="hide" />
+ <table style="width: 100%">
+  <tr>
+   <?cs call:ticketprop("Priority", ticket.priority) ?>
+   <?cs call:ticketprop("Reporter", ticket.reporter) ?>
+   <?cs call:ticketprop("Severity", ticket.severity) ?>
+   <?cs if ticket.status == "assigned"?>
+    <?cs call:ticketprop("Assigned to", ticket.owner + " (accepted)") ?>
+   <?cs else ?>
+    <?cs call:ticketprop("Assigned to", ticket.owner) ?>
+   <?cs /if ?>
+   <?cs call:ticketprop("Component", ticket.component) ?>
+   <?cs call:ticketprop("Status", ticket.status) ?>
+   <?cs call:ticketprop("Version", ticket.version) ?>
+   <?cs call:ticketprop("Resolution", ticket.resolution) ?>
+   <?cs call:ticketprop("Milestone", ticket.milestone) ?>
+  </tr>
+ </table>
+ <hr class="hide" />
+ <h3 id="tkt-descr-hdr">Description by <?cs var:ticket.reporter ?>:</h3>
     <?cs var:ticket.description ?>
-   <hr class="hide"/>
-  </td>
- </tr>
-</table>
+ <hr class="hide"/>
+</div>
 
 <?cs if ticket.changes.0.time ?>
   <h2 id="tkt-changes-hdr">Changelog</h2>
@@ -132,118 +120,75 @@
 
 <br /><hr />
 
-<h3>Add/Change Information</h3>
-<form action="<?cs var:cgi_location ?>" method="post">
- <table id="nt-upper">
-  <tr>
-   <td class="nt-label">Opened:</td>
-   <td class="nt-widget">
-    <input type="hidden" name="mode" value="ticket" />
-    <input type="hidden" name="id"   value="<?cs var:ticket.id ?>" />
-    <?cs var:ticket.opened ?>
-   </td>
-   <td class="nt-prop-sep">&nbsp;</td>
-   <td class="nt-label">Editor:</td>
-   <td class="nt-widget">
-    <input type="text" name="reporter" value="<?cs var:trac.authname ?>" />
-   </td>
-  </tr>
-  <tr>
-   <td class="nt-label">Version:</td>
-   <td class="nt-widget">
-    <?cs call:hdf_select(ticket.versions, "version", ticket.version) ?>
-   </td>
-   <td class="nt-prop-sep">&nbsp;</td>
-   <td class="nt-label">Priority:</td>
-   <td class="nt-widget">
-    <?cs call:hdf_select(enums.priority, "priority", ticket.priority) ?>
-   </td>
-  </tr>
-  <tr>
-   <td class="nt-label">Component:</td>
-   <td class="nt-widget">
-    <?cs call:hdf_select(ticket.components, "component", ticket.component) ?>
-   </td>
-   <td class="nt-prop-sep">&nbsp;</td>
-   <td class="nt-label">Milestone:</td>
-   <td class="nt-widget">
-    <?cs call:hdf_select(ticket.milestones, "milestone", ticket.milestone) ?>
-   </td>
-  </tr>
-  <tr>
-   <td class="nt-label">Severity:</td>
-   <td class="nt-widget">
-    <?cs call:hdf_select(enums.severity, "severity", ticket.severity) ?>
-   </td>
-   <td class="nt-prop-sep">&nbsp;</td>
-   <td class="nt-label">Assigned to:</td>
-   <td class="nt-widget"><?cs var:ticket.owner ?></td>
-  </tr>
-  <tr>
-   <td class="nt-label">Status:</td>
-   <td class="nt-widget"><?cs var:ticket.status ?></td>
-   <td class="nt-prop-sep">&nbsp;</td>
-   <td class="nt-label"></td><td class="nt-widget"></td>
-  </tr>
-  <?cs if:ticket.resolution ?>
-  <tr>
-   <td class="nt-label">Resolution:</td>
-   <td class="nt-widget"><?cs var:ticket.resolution ?></td>
-   <td class="nt-prop-sep">&nbsp;</td>
-   <td class="nt-label"></td><td class="nt-widget"></td>
-  </tr>
-  <?cs /if ?>
-  <tr>
-   <td colspan="2" class="nt-row-sep">&nbsp;</td>
-   <td class="nt-prop-sep">&nbsp;</td>
-   <td colspan="2" class="nt-row-sep">&nbsp</td>
-  </tr>
- </table>
 
-<table id="nt-lower">
- <tr>
-  <td class="nt-label">Cc:</td>
-  <td class="nt-widget">
-   <input type="text" name="cc" value="<?cs var:ticket.cc ?>" size="66" />
-  </td>
- </tr>
- <tr>
-  <td class="nt-label"><a href="<?cs var:ticket.url ?>">URL</a>:</td>
-  <td class="nt-widget">
-   <input type="text" name="url" value="<?cs var:ticket.url ?>" size="66" />
-  </td>
- </tr>
- <tr>
-  <td class="nt-label">Summary:</td>
-  <td class="nt-widget">
-   <input type="text" name="summary" 
-          value="<?cs var:ticket.summary ?>" size="66" />
-  </td>
- </tr>
- <tr><td colspan="2" id="nt-row-sep">&nbsp;</td></tr>
- <tr>
-  <td colspan="2" id="nt-descr">Add Comments:</td>
- </tr>
- <tr>
-  <td colspan="2" class="nt-widget">
-   <textarea name="comment" rows="12" cols="80"></textarea>
-  </td>
- </tr>
- <tr>
-  <td colspan="2" id="tkt-submit">
-   <input type="radio" name="action" value="leave" checked="checked" />
-    &nbsp;leave as <?cs var:ticket.status ?><br />
+<h3><a name="edit"
+onfocus="document.getElementById('comment').focus()">Add/Change
+#<?cs var:ticket.id ?> (<?cs var:ticket.summary ?>)</a></h3>
+<form action="<?cs var:cgi_location ?>" method="post">
+  <div class="tkt-prop">
+   <input type="hidden" name="mode" value="ticket" />
+   <input type="hidden" name="id"   value="<?cs var:ticket.id ?>" />
+   <label for="reporter">Your email or username:</label><br />
+    <input type="text" id="reporter" name="reporter" class="textwidget" size="40"
+           value="<?cs var:trac.authname ?>" /><br />
+  </div>
+  <div class="tkt-prop">
+  <label for="comment">Add Comment (You may use 
+      <a href="<?cs var:$trac.href.wiki ?>WikiFormatting">WikiFormatting</a> here):</label><br />
+
+  <textarea id="comment" name="comment" class="textwidget"
+            rows="10" cols="78" style="width: 97%; max-width: 694px"></textarea>
+ <br />&nbsp;
+  </div>
+
+ <fieldset>
+   <legend>Change Properties</legend>
+ <div id="nt-props"  style="padding: .5em">
+  <div id="nt-left">
+   <label for="component" class="nt-label">Component:</label>
+   <?cs call:hdf_select(ticket.components, "component", ticket.component) ?>
+   <br />
+   <label for="version" class="nt-label">Version:</label>
+   <?cs call:hdf_select(ticket.versions, "version", ticket.version) ?>
+   <br />
+   <label for="severity" class="nt-label">Severity:</label>
+   <?cs call:hdf_select(enums.severity, "severity", ticket.severity) ?>
+   <br />&nbsp;
+  </div>
+ <div  id="nt-right" style="">
+  <label for="priority" class="nt-label">Priority:</label>
+  <?cs call:hdf_select(enums.priority, "priority", ticket.priority) ?>
+  <br />
+  <label for="milestone" class="nt-label">Milestone:</label>
+  <?cs call:hdf_select(ticket.milestones, "milestone", ticket.milestone) ?>
+  <br />
+  <span class="nt-label">Assigned to:</span>
+  <?cs var:ticket.owner ?>
+  <br />
+  <label for="cc" class="nt-label">Cc:</label>
+   <input type="text" id="cc" name="cc" class="textwidget"
+          value="<?cs var:ticket.cc ?>" size="40" />
+  </div>
+ </div>
+  </fieldset>
+
+
+ <div id="tkt-submit">
+  <fieldset>
+   <legend>Action</legend>
+  <input type="radio" id="leave" name="action" value="leave" checked="checked" />
+   &nbsp;<label for="leave">leave as <?cs var:ticket.status ?></label><br />
    <?cs if $ticket.status == "new" ?>
-    <input type="radio" name="action" value="accept" />
-     &nbsp;accept ticket<br />
+    <input type="radio" id="accept" name="action" value="accept" />
+     &nbsp;<label for="accept">accept ticket</label><br />
    <?cs /if ?>
    <?cs if $ticket.status == "closed" ?>
-    <input type="radio" name="action" value="reopen" />
-     &nbsp;reopen ticket<br />
+    <input type="radio" id="reopen" name="action" value="reopen" />
+     &nbsp;<label for="reopen">reopen ticket</label><br />
    <?cs /if ?>
    <?cs if $ticket.status == "new" || $ticket.status == "assigned" || $ticket.status == "reopened" ?>
-    <input type="radio" name="action" value="resolve" />
-     &nbsp;resolve as: 
+    <input type="radio" id="resolve" name="action" value="resolve" />
+     &nbsp;<label for="resolve">resolve as:</label>
      <select name="resolve_resolution">
       <option selected="selected">fixed</option>
       <option>invalid</option>
@@ -251,25 +196,24 @@
       <option>duplicate</option>
       <option>worksforme</option>
      </select><br />
-    <input type="radio" name="action" value="reassign" />
-    &nbsp;reassign ticket to:
-    &nbsp;<input type="text" name="reassign_owner" 
-          value="<?cs var:ticket.owner ?>" />
+    <input type="radio" id="reassign" name="action" value="reassign" />
+    &nbsp;<label for="reassign">reassign ticket to:</label>
+    &nbsp;<input type="text" id="reassign_owner" name="reassign_owner" 
+           class="textwidget" value="<?cs var:ticket.owner ?>" />
    <?cs /if ?>
-   <br />
-   <input type="submit" value="Submit" /> 
-  </td>
- </tr>
- <tr>
-  <td colspan="2" id="tkt-submit">
-<div id="help">
-<strong>Note:</strong> See <a href="<?cs var:$trac.href.wiki
-?>TracTickets">TracTickets</a> for help on editing tickets.
-</div>
-  </td>
- </tr>
-</table>
+   </fieldset>
+
+  <div id="nt-buttons" style="clear: both">
+   <input type="reset" value="Reset" />&nbsp;
+   <input type="submit" value="Submit changes" /> 
+  </div>
+ </div>
+
+
 </form>
+
+
+
 </div> <!-- #tkt-main -->
 
 </div>

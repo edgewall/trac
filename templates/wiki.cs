@@ -85,14 +85,16 @@
 	  </div>
         <?cs else ?>
           <?cs if wiki.action == "edit" || wiki.action == "preview" ?>
-            <h3>Edit "<?cs var:wiki.page_name ?>"</h3>
+            <h3>Editing "<?cs var:wiki.page_name ?>"</h3>
             <form action="<?cs var:wiki.current_href ?>" method="post">
-              <p>
-                <textarea name="text" rows="20" cols="80" style="width:100%"><?cs var:wiki.page_source ?></textarea>
-              </p>
-              <div id="wiki-formatting-help">
-              See <a href="<?cs var:$trac.href.wiki
-?>WikiFormatting">WikiFormatting</a> and <a href="<?cs var:$trac.href.wiki ?>TracWiki">TracWiki</a> for help on editing.
+              <div>
+                <label for="text">Page source:</label><br />
+                <textarea id="text" name="text" rows="20" cols="80" style="width:100%"><?cs var:wiki.page_source ?></textarea>
+              </div>
+              <div id="help">
+              <b>Note:</b> See <a href="<?cs var:$trac.href.wiki
+?>WikiFormatting">WikiFormatting</a> and <a href="<?cs var:$trac.href.wiki
+?>TracWiki">TracWiki</a> for help on editing wiki content.
               </div>
               <p>
                 <input type="submit" name="save" value="Save changes" />&nbsp;
@@ -110,7 +112,7 @@
             </div>
             <?cs if wiki.action == "view" && trac.acl.WIKI_MODIFY ?>
               <p>
-              <a id="wiki-edit-page" href="<?cs var:wiki_current_href?>?edit=yes">Edit this page</a>
+              <a class="fake-button" href="<?cs var:wiki_current_href?>?edit=yes">Edit this page</a>
               </p>
             <?cs /if ?>
           <?cs /if ?>

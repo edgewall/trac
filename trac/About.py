@@ -55,9 +55,9 @@ class About (Module):
       style="float: right"><img src="<?cs var:htdocs_location ?>trac_banner.png" alt=""/></a>
 <h1>About Trac <?cs var:trac.version ?></h1>
 <p>
-Trac is a minimalistic web-based software project management and bug/issue
-tracking system.<br />
-It provides an interface to revision control systems, integrated Wiki and convenient report facilities. 
+Trac is a web-based software project management and bug/issue
+tracking system emphasizing ease of use and low ceremony. 
+It provides an interface to the Subversion revision control systems, integrated Wiki and convenient report facilities. 
 </p>
   <p>
   Trac is distributed under the GNU General Public License (GPL).<br />

@@ -10,7 +10,8 @@
 <html>
   <head>
     <?cs if $project.name ?>
-      <title>Trac : <?cs var:project.name?> - <?cs var:title ?></title>
+      <title>Trac : <?cs var:project.name?><?cs if title 
+                     ?> - <?cs var:title ?><?cs /if ?></title>
     <?cs else ?>
       <title>Trac : <?cs var:title ?></title>
     <?cs /if ?>

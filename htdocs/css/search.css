@@ -1,8 +1,5 @@
-#search-result { 
- margin-left: .5em;
- margin-right: 3em;
-
-}
+#search-hdr { margin-bottom: 1em }
+#search-result { margin-left: .5em; margin-right: 3em; }
 .result-item { margin: 1.5em 0; }
 a.result-title {  color: #33c; }
 .result-body { font-size: 80%; }

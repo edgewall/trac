@@ -10,7 +10,20 @@ function view_history() {
         }
 }
 
-/* From http://www.kryogenix.org/code/browser/searchhi/ */
+// A better way than for example hardcoding foo.onload
+function addEvent(obj, evType, fn){
+ if (obj.addEventListener){
+    obj.addEventListener(evType, fn, true);
+    return true;
+ } else if (obj.attachEvent){
+    var r = obj.attachEvent("on"+evType, fn);
+    return r;
+ } else {
+    return false;
+ }
+} 
+
+// From http://www.kryogenix.org/code/browser/searchhi/ 
 function highlightWord(node,word,searchwordindex) {
 	// Iterate into this nodes childNodes
 	if (node.hasChildNodes) {
@@ -66,4 +79,44 @@ function searchHighlight() {
 	}
 }
 
-window.onload = searchHighlight;
+// Allow search highlighting of all pages
+addEvent(window, 'load', searchHighlight);
+
+
+addEvent(window, 'load', function() {
+ var input, textarea;
+ var inputs = document.getElementsByTagName('input');
+ for (var i = 0; (input = inputs[i]); i++) {
+   addEvent(input, 'focus', oninputfocus);
+   addEvent(input, 'blur', oninputblur);
+ }
+ var textareas = document.getElementsByTagName('textarea');
+ for (var i = 0; (textarea = textareas[i]); i++) {
+   addEvent(textarea, 'focus', oninputfocus);
+   addEvent(textarea, 'blur', oninputblur);
+ }
+});
+function oninputfocus(e) {
+ if (typeof e == 'undefined') {
+   var e = window.event;
+ }
+ var source;
+ if (typeof e.target != 'undefined') {
+    source = e.target;
+ } else if (typeof e.srcElement != 'undefined') {
+    source = e.srcElement;
+ } else { return; }
+ source.style.border='1px solid #886';
+}
+function oninputblur(e) {
+ if (typeof e == 'undefined') { var e = window.event; }
+ var source;
+ if (typeof e.target != 'undefined') {
+    source = e.target;
+ } else if (typeof e.srcElement != 'undefined') {
+    source = e.srcElement;
+ } else { return; }
+ source.style.border='1px solid #d7d7d7';
+}
+
+

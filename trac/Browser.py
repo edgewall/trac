@@ -38,7 +38,7 @@ class Browser(Module):
         root = fs.revision_root(self.fs_ptr, revision, self.pool)
 
         # Redirect to the file module if the requested path happens
-        # to point to a regular filed
+        # to point to a regular file
         if fs.is_file(root, path, self.pool):
             if rev_specified:
                 redirect(href.file(path, revision))

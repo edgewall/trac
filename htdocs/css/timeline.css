@@ -1,13 +1,17 @@
 /* Timeline */
+#timeline-hdr { display: inline; }
 #timeline-prefs {
   background: #f7f7f0;
-  border: 1px solid #d7d7d7;
+  border: 1px outset #998;
   float: right;
   font-size: 9px;
-  padding: .5em;
+  padding: 1em;
   margin-left: 1em;
   margin-bottom: 1em;
+  white-space: nowrap;
 }
+#timeline-prefs input { font-size: 9px; }
+
 #timeline-prefs-checks { }
 #timeline-prefs-btns {
   text-align: right;

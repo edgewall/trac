@@ -1,29 +1,31 @@
 <?cs include "header.cs"?>
 <div id="page-content">
 <div id="subheader-links">
-  <a href="?daysback=90&max=50&format=rss">RSS Feed </a>
+  <a href="?daysback=90&amp;max=50&amp;format=rss">RSS Feed </a>
 </div>
 
 <div id="main">
   <div id="main-content">
 
 <h1 id="timeline-hdr">Timeline</h1>
+
 <form action="<?cs var:trac.href.timeline ?>">
   <div id="timeline-prefs">
-    View changes from 
-    <input size="10" name="from" value="<?cs var:timeline.from ?>" /> 
-    and 
-    <input size="3" name="daysback" value="<?cs var:timeline.daysback ?>" />
-    days back:
+    <label for="from">View changes from</label>
+    <input size="10" id="from" name="from" value="<?cs var:timeline.from ?>" />
+    and <input size="3" id="daysback" name="daysback" 
+           value="<?cs var:timeline.daysback ?>" />
+    <label for="daysback">days back</label>.
   <div id="timeline-prefs-checks">
-    <input type="checkbox" name="ticket" <?cs var:timeline.ticket ?> />
-    view ticket changes
-  <br />
-    <input type="checkbox" name="changeset" <?cs var:timeline.changeset ?> />
-    view repository checkins
-  <br />
-    <input type="checkbox" name="wiki" <?cs var:timeline.wiki ?> />
-   view wiki changes
+    <input type="checkbox" id="ticket" name="ticket" 
+           <?cs if:timeline.ticket ?>checked="checked"<?cs /if ?> />
+    <label for="ticket">Ticket changes</label><br />
+    <input type="checkbox" id="changeset" name="changeset" 
+           <?cs if:timeline.changeset ?>checked="checked"<?cs /if ?> />
+    <label for="changeset">Repository checkins</label><br />
+    <input type="checkbox" id="wiki" name="wiki"
+           <?cs if:timeline.wiki ?>checked="checked"<?cs /if ?> />
+   <label for="wiki">Wiki changes</label>
   </div>
   <div id="timeline-prefs-btns">
     <input type="submit" value="Update" /> 
@@ -87,9 +89,9 @@
 </div>
  <div id="main-footer">
   Download in other formats: <br />
-  <a class="noline" href="?daysback=90&max=50&format=rss"><img src="<?cs var:htdocs_location
+  <a class="noline" href="?daysback=90&amp;max=50&amp;format=rss"><img src="<?cs var:htdocs_location
 ?>xml.png" alt="RSS Feed" style="vertical-align: bottom"/></a>&nbsp;
-  <a href="?daysback=90&max=50&format=rss">(RSS 2.0)</a>
+  <a href="?daysback=90&amp;max=50&amp;format=rss">(RSS 2.0)</a>
   <br />
  </div>
  </div>

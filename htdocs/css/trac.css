@@ -16,6 +16,7 @@ a:link, a:visited, a.noline,b.tl-item-link {
 }
 a[name] { border: none; }
 a:hover { color: #b00; background: #f7f7f7; }
+a[name]:hover { color: inherit; background: transparent; }
 a.noline { border-bottom: none; }
 address { font-style: normal; }
 img { border: none; }
@@ -26,11 +27,40 @@ span.underline { text-decoration: underline; }
   margin-top: .5em;
 }
 /* Forms */
-input,textarea,select { border: 1px solid #ccc; background: #fff; }
-input[type="submit"]:hover,input[type="reset"]:hover { background: #ccb; }
-input[type="submit"],input[type="reset"] { background: #eee; color: #666; }
-option { border-bottom: 1px solid #ccc; }
-
+input,textarea,select { background: #fff; }
+input[type="submit"]:hover,input[type="reset"]:hover,a.fake-button:hover { background: #ccb; }
+input[type="submit"],input[type="reset"],.fake-button,a.fake-button {
+ background: #eee;
+ color: #666; 
+ border: 1px outset #ccc;
+ padding: .1em .5em;
+}
+.fake-button, a.fake-button { 
+ display: block;
+ width: 9em; 
+ text-align: center;
+ font-size: 80%;
+ white-space: nowrap;
+}
+option { border-bottom: 1px dotted #d7d7d7; }
+.textwidget {  border: 1px solid #d7d7d7; padding: .25em .5em }
+textarea,input[type="text"],.input-text { border: 1px solid #d7d7d7; padding: .25em .5em}
+input:focus,textarea:focus { border: 1px solid #886; }
+fieldset { 
+ border: 1px solid #d7d7d7; 
+ padding: 0;
+ padding-top: .5em; 
+ padding-bottom: .75em;
+ margin: 0;
+ width: 99%; 
+}
+legend { 
+ color: #d7d7d7; 
+ background: #fff;
+ padding: 0 .25em;
+ font-size: 75%; 
+ font-weight: bold; 
+}
 /* Header */
 #header { }
 #hdrlogo,#hdrlogo img,#hdrlogo:hover {
@@ -102,8 +132,8 @@ a.navbar-link:hover {
 }
 #page-content { clear: none; }
 #main {  margin-bottom: 2em; }
-#main-footer { margin-top: 3em; text-align: center }
-#help { margin: 1em; font-size: 90%; color: #999 }
+#main-footer { margin-top: 3em; text-align: center; }
+#help { margin: 1em; font-size: 90%; color: #999; text-align: right}
 #help a { color: #b44 }
 /* Wiki */
 #wiki-history {
@@ -143,17 +173,6 @@ tr.br-row-even, tr.br-row-odd,tr.row-even, tr.row-odd { border-top: 1px solid #d
 tr.br-row-even,tr.row-even { background-color: #fcfcfc; }
 tr.br-row-odd,tr.row-odd { background-color: #f7f7f7; }
 tr.br-row-even:hover,tr.br-row-odd:hover { background: #eed; }
-#wiki-edit-page { 
- display: block;
- width: 9em; 
- text-align: center;
- border: 1px solid #ccc; 
- background: #eee;
- color: #666;
- padding: .1em .5em;
- font-size: 90%;
- white-space: nowrap;
-}
 .wikipage p {  margin-left: 1em }
 pre.wiki, pre.literal-block { 
  margin: .1em 1.5em;

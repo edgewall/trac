@@ -146,11 +146,12 @@
        <input type="hidden" name="mode" value="report" />
        <input type="hidden" name="id" value="<?cs var:report.id ?>" />
        <input type="hidden" name="action" value="<?cs var:report.action ?>" />
-       Report Title:<br />
-       <input type="text" name="title" value="<?cs var:report.title ?>"
-               size="50" />
-       <br />SQL Query: <br />
-       <textarea name="sql" cols="70" rows="10"><?cs var:report.sql ?></textarea>
+       <label for="title">Report Title:</label><br />
+        <input type="text" id="title" name="title"
+               value="<?cs var:report.title ?>" size="50" /><br />
+       <label for="sql" style="display: block; margin-top: 1em">
+        SQL Query for Report:</label>
+       <textarea id="sql" name="sql" cols="70" rows="12"><?cs var:report.sql ?></textarea>
        <br />
        <input type="submit" value="Save" />&nbsp;
        <input type="submit" name="view" value="Cancel" />
@@ -158,9 +159,9 @@
    </form>
  <?cs /if?>
  
- <div id="help">
+ <div id="help" style="text-align: left; margin-top: 2em">
   <strong>Note:</strong> See <a href="<?cs var:$trac.href.wiki ?>TracReports">TracReports</a> 
-  for help on reports.
+  for help on using and creating reports.
  </div>
  
  <?cs if report.id > #0 ?>

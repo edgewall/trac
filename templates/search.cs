@@ -1,18 +1,27 @@
 <?cs include "header.cs"?>
+<script type="text/javascript">
+addEvent(window, 'load', function() { document.getElementById('q').focus()}); 
+</script>
 <div id="page-content">
  <div id="subheader-links">
  </div>
  <div id="main">
   <div id="main-content">
 
-<h3>Search</h3>
 <form action="<?cs var:trac.href.search ?>" method="get">
 <div>
-<input type="text" name="q" size="40" value="<?cs var:search.q ?>" />
+<h3 id="search-hdr"><label for="q">Search</label></h3>
+<input type="text" id="q" name="q" size="40" value="<?cs var:search.q ?>" />
 <input type="submit" value="Search" /><br />
-<input type="checkbox" <?cs if search.wiki ?>checked="checked"<?cs /if ?> name="wiki" />Wiki
-<input type="checkbox" <?cs if search.ticket ?>checked="checked"<?cs /if ?> name="ticket" />Tickets
-<input type="checkbox"  <?cs if search.changeset ?>checked="checked"<?cs /if ?> name="changeset" />Changesets
+<input type="checkbox" <?cs if search.wiki ?>checked="checked"<?cs /if ?> 
+       id="wiki" name="wiki" />
+<label for="wiki">Wiki</label>
+<input type="checkbox" <?cs if search.ticket ?>checked="checked"<?cs /if ?>
+       id="ticket" name="ticket" />
+<label for="ticket">Tickets</label>
+<input type="checkbox"  <?cs if search.changeset ?>checked="checked"<?cs /if ?>
+       id="changeset" name="changeset" />
+<label for="changeset">Changesets</label>
 </div>
 </form>
 

@@ -581,9 +581,11 @@ class Wiki(Module):
 
         if name == 'TitleIndex':
             self.generate_title_index()
+            self.cgi.hdf.setValue('title', 'Title Index (wiki)')
             return
         elif name == 'RecentChanges':
             self.generate_recent_changes()
+            self.cgi.hdf.setValue('title', 'Recent Changes (wiki)')
             return
 
         if save:
@@ -602,7 +604,10 @@ class Wiki(Module):
             if self.args.has_key('text'):
                 del self.args['text']
             self.cgi.hdf.setValue('wiki.action', 'view')
-            self.cgi.hdf.setValue('title', name + ' (wiki)')
+            if name == 'WikiStart':
+                self.cgi.hdf.setValue('title', '')
+            else:
+                self.cgi.hdf.setValue('title', name + ' (wiki)')
 
         self.page = Page(name, version, self.perm, self.db,
                     self.authname, self.remote_addr)
