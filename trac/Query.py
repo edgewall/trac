@@ -62,7 +62,7 @@ class Query:
         for col in [k for k in self.constraints.keys() if k in cols]:
             constraint = self.constraints[col]
             if len(constraint) == 1 and constraint[0] \
-                    and not constraint[0][0] in '!~^$':
+                    and not constraint[0][0] in ('!', '~', '^', '$'):
                 cols.remove(col)
             if col == 'status' and not 'closed' in constraint \
                     and 'resolution' in cols:
@@ -187,7 +187,7 @@ class Query:
             # negation, etc)
             neg = len(v[0]) and v[0][0] == '!'
             mode = ''
-            if len(v[0]) and v[0][neg] in "~^$":
+            if len(v[0]) and v[0][neg] in ('~', '^', '$'):
                 mode = v[0][neg]
 
             # Special case for exact matches on multiple values
@@ -203,8 +203,9 @@ class Query:
             elif len(v) == 1:
                 clauses.append(get_constraint_sql(k, v[0][neg and 1 or 0:], mode, neg))
 
+        clauses = filter(None, clauses)
         if clauses:
-            sql.append("\nWHERE " + " AND ".join(filter(None, clauses)))
+            sql.append("\nWHERE " + " AND ".join(clauses))
 
         sql.append("\nORDER BY ")
         order_cols = [(self.order, self.desc)]
@@ -431,7 +432,7 @@ class QueryModule(Module):
                 if neg:
                     val = val[1:]
                 mode = ''
-                if val[:1] in "~^$":
+                if val[:1] in ('~', '^', '$'):
                     mode, val = val[:1], val[1:]
                 constraint['mode'] = mode + (neg and '!' or '')
                 constraint['values'].append(val)
