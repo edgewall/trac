@@ -92,7 +92,7 @@ option {  border-bottom: 1px solid #ccc; }
         clear: both;
         border: 1px solid #999;
         background: #eee;
-        background: url("/gfx/topbar_gradient.png") top left #999; 
+        background: url("<?cs var:$htdocs_location ?>/topbar_gradient.png") top left #999; 
         margin: .15em 0;
         min-width: 500px;          
         height: 16px;
