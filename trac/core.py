@@ -333,28 +333,31 @@ class CGIRequest(Request):
         self.remote_user = os.getenv('REMOTE_USER')
         self.command = os.getenv('REQUEST_METHOD')
         host = os.getenv('SERVER_NAME')
-        try:
-            port = int(os.getenv('SERVER_PORT'))
-        except TypeError:
-            port = 80
-        if os.getenv('HTTP_X_FORWARDED_HOST'):
-            self.base_url = 'http://%s%s/' % (os.getenv('HTTP_X_FORWARDED_HOST'), self.cgi_location)
-        elif port == 80:
-            self.base_url = 'http://%s%s' % (host, self.cgi_location)
-        elif port == 443:
-            self.base_url = 'https://%s%s' % (host, self.cgi_location)
+        proto_port = ''
+        port = os.environ.get('SERVER_PORT', 80)
+        if port == 443:
+           proto = 'https'
         else:
-            self.base_url = 'http://%s:%d%s' % (host, port, self.cgi_location)
+           proto = 'http'
+           if not port == 80:
+               proto_port = ':%s' % port
+
+        if os.getenv('HTTP_X_FORWARDED_HOST'):
+            self.base_url = '%s://%s%s/' % (proto,
+                                            os.getenv('HTTP_X_FORWARDED_HOST'),
+                                            self.cgi_location)
+        else:
+            self.base_url = '%s://%s%s%s' % (proto, proto_port, host, self.cgi_location)
+
         if os.getenv('HTTP_COOKIE'):
             self.incookie.load(os.getenv('HTTP_COOKIE'))
         if os.getenv('HTTP_HOST'):
             self.hdf.setValue('HTTP.Host', os.getenv('HTTP_HOST'))
 
-        script_uri = os.getenv('SCRIPT_URI')
-        if script_uri:
-            i = script_uri.find('://')
-            if i > -1:
-                self.hdf.setValue('HTTP.Protocol', script_uri[:i + 3])
+        self.hdf.setValue('HTTP.Protocol', proto)
+        if proto_port:
+            self.hdf.setValue('HTTP.Port', str(port))
+
 
     def read(self, len):
         return sys.stdin.read(len)
