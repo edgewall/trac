@@ -25,8 +25,7 @@ Display:
 Macros are still a new feature, and the list of available (and distributed) macros is 
 admittedly not very impressive. In future Trac releases, we hope to build a library of useful macros, and will of course happily include contributed macros (see below). 
 
- * '''!HelloWorld''' -- An example macro, useful for learning how to write macros.
- * '''Timestamp''' -- Insert the current date and time.
+[[MacroList]]
 
 
 ----

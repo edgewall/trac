@@ -1,3 +1,11 @@
+"""
+Inserts an alphabetic list of all wiki pages into the output.
+
+Accepts a prefix string as parameter: if provided, only pages with names that
+start with the prefix are included in the resulting list. If this parameter is
+omitted, all pages are listed.
+"""
+
 from StringIO import StringIO
 
 def execute(hdf, args, env):

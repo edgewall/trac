@@ -1,3 +1,16 @@
+"""
+Lists all pages that have recently been modified, grouping them by the
+day they were last modified.
+
+This macro accepts two parameters. The first is a prefix string: if provided,
+only pages with names that start with the prefix are included in the resulting
+list. If this parameter is omitted, all pages are listed.
+
+The second parameter is a number for limiting the number of pages returned. For
+example, specifying a limit of 5 will result in only the five most recently
+changed pages to be included in the list.
+"""
+
 import time
 from StringIO import StringIO
 
