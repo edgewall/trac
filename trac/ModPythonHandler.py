@@ -131,10 +131,7 @@ def handler(req):
     args = TracFieldStorage(req)
     core.parse_path_info(args, req.path_info)
 
-    referrer = req.headers_in.get('Referer', None)
-
     req.content_type = 'text/html'
-
     try:
         core.dispatch_request(req.path_info, args, mpr, env)
     except Exception, e:
