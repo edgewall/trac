@@ -22,18 +22,23 @@
       <description>Trac Timeline</description>
       <language>en-us</language>
       <generator>Trac v<?cs var:$trac.version ?></generator>
+      <image>
+        <title><?cs var:$project.name?></title>
+        <url><?cs if !$header_logo.src_abs ?><?cs var:$base_url ?><?cs /if ?><?cs var $header_logo.src ?></url>
+        <link><?cs var:$base_url ?></link>
+      </image>
       <?cs each:item = $timeline.items ?>
         <?cs if:item.type == #1 ?><!-- Changeset -->
           <?cs call:rss_item('Changeset',
-                             '['+$item.idata+']: '+$item.shortmsg, 
-                             $item.changeset_href, $item.message) ?>
+                             'Changeset ['+$item.idata+']: '+$item.shortmsg, 
+                             $item.changeset_href, $item.msg_nowiki) ?>
         <?cs elif:item.type == #2 ?><!-- New ticket -->
           <?cs call:rss_item('Ticket',
-                             '#'+$item.idata+' created: '+$item.shortmsg,
+                             'Ticket #'+$item.idata+' created: '+$item.shortmsg,
                              $item.ticket_href, $item.message) ?>
         <?cs elif:item.type == #3 ?><!-- Closed ticket -->
           <?cs call:rss_item('Ticket',
-                             '#'+$item.idata+' resolved: '+$item.shortmsg,
+                             'Ticket #'+$item.idata+' resolved: '+$item.shortmsg,
                              $item.ticket_href, $item.message) ?>
         <?cs elif:item.type == #4 ?><!-- Reopened ticket -->
           <?cs call:rss_item('Ticket',
@@ -46,7 +51,7 @@
 'Wiki page <a href="'+$base_url+$item.wiki_href+'">'+$item.tdata+'</a> edited by '+$item.author) ?>
         <?cs elif:item.type == #6 ?><!-- Milestones -->
           <?cs call:rss_item('Milestone',
-                             'Milestone ' + $item.tdata + ' reached.',
+                             'Milestone ' + $item.message + ' reached.',
                              '',
 	       'Milestone ' + $item.tdata + ' reached.') ?>
         <?cs /if ?>
