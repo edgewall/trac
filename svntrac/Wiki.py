@@ -38,9 +38,9 @@ class Formatter:
     _url_re = r'(((new|file|(ht|f)tp)s?://))([a-z0-9_-]+:[a-z0-9_-]+\@)?([a-z0-9]+(\-*[a-z0-9]+)*\.)+[a-z]{2,7}(/~?[a-z0-9_\.%\-]+)?(/[a-z0-9_\.%\-]+)*(/?[a-z0-9_\%\-]*(\.[a-z0-9]+)?(\#[a-zA-Z0-9_\.]+)?)(\?([a-z0-9_\.\%\-]+)\=[a-z0-9_\.\%\/\-]*)?(&([a-z0-9_\.\%\-]+)\=[a-z0-9_\.\%\/\-]*)?(#[a-z0-9]+)?'
 
     _rules = r"""(?:(?P<bold>''')""" \
-             r"""|(?P<tickethref> #(?P<ticketnumber>[0-9]+))""" \
-             r"""|(?P<changesethref>\[(?P<changesetnumber>[0-9]+)\])""" \
-             r"""|(?P<reporthref>\{(?P<reportnumber>[0-9]+)\})""" \
+             r"""|(?P<tickethref> #[0-9]+)""" \
+             r"""|(?P<changesethref>\[[0-9]+\])""" \
+             r"""|(?P<reporthref>\{[0-9]+\})""" \
              r"""|(?P<italic>'')""" \
              r"""|(?P<hr>-{5,})""" \
              r"""|(?P<heading>^\s*(?P<hdepth>=+)\s.*\s(?P=hdepth)$)""" \
@@ -60,15 +60,15 @@ class Formatter:
         return ['</strong>', '<strong>'][self._is_bold]
 
     def _tickethref_formatter(self, match, fullmatch):
-        number = int(fullmatch.group('ticketnumber'))
+        number = int(match[2:])
         return '<a href="%s">#%d</a>' % (href.ticket(number), number)
 
     def _changesethref_formatter(self, match, fullmatch):
-        number = int(fullmatch.group('changesetnumber'))
+        number = int(match[1:-1])
         return '[<a href="%s">%d</a>]' % (href.changeset(number), number)
 
     def _reporthref_formatter(self, match, fullmatch):
-        number = int(fullmatch.group('reportnumber'))
+        number = int(match[1:-1])
         return '{<a href="%s">%d</a>}' % (href.report(number), number)
 
     def _italic_formatter(self, match, fullmatch):
