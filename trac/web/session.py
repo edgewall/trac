@@ -163,9 +163,14 @@ class Session(dict):
                 self.env.log.debug('Changing variable %s from "%s" to "%s" in '
                                    'session %s' % (k, self._old[k], v,
                                    self.sid or self.req.authname))
-                cursor.execute("UPDATE session SET var_value=%s WHERE sid=%s "
-                               "AND username=%s AND var_name=%s",
-                               (v, self.sid, self.req.authname, k))
+                if self.sid:
+                    cursor.execute("UPDATE session SET var_value=%s "
+                                   "WHERE sid=%s AND username='anonymous' "
+                                   "AND var_name=%s", (v, self.sid, k))
+                else:
+                    cursor.execute("UPDATE session SET var_value=%s "
+                                   "WHERE sid IS NULL AND username=%s "
+                                   "AND var_name=%s", (v, self.req.authname, k))
                 changed = 1
 
         # Find all variables that have been deleted and also remove them from
