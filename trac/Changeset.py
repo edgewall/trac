@@ -57,7 +57,23 @@ class HtmlDiffEditor (svn.delta.Editor):
         # Make sure we have permission to view this diff
         if not self.authzperm.has_permission(new_path):
             return
-        
+
+        # Try to figure out the charset used. We assume that both the old
+        # and the new version uses the same charset, not always the case
+        # but that's all we can do...
+        mime_type = svn.fs.node_prop (self.new_root, new_path,
+                                      svn.util.SVN_PROP_MIME_TYPE,
+                                      pool)
+        # We don't have to guess if the charset is specified in the
+        # svn:mime-type property
+        ctpos = mime_type and mime_type.find('charset=') or -1
+        if ctpos >= 0:
+            charset = mime_type[ctpos + 8:]
+            self.env.log.debug("Charset %s selected" % charset)
+        else:
+            charset = self.env.get_config('trac', 'default_charset', 'iso-8859-15')
+
+        # Start up the diff process
         differ = svn.fs.FileDiff(self.old_root, old_path, self.new_root,
                                  new_path, pool, options)
         differ.get_files()
@@ -72,7 +88,7 @@ class HtmlDiffEditor (svn.delta.Editor):
             line = pobj.readline()
             if not line:
                 break
-            builder.writeline(util.escape(util.to_utf8(line)))
+            builder.writeline(util.escape(util.to_utf8(line, charset)))
         builder.close()
 
     def add_file(self, path, parent_baton, copyfrom_path,

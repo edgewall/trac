@@ -135,7 +135,7 @@ def get_options(env, req, args, advanced=0):
         arg = int(args.get('contextlines', pref))
         if args.has_key('update') and arg != pref:
             session.set_var('diff_contextlines', arg)
-        options = ['-u%d' % arg]
+        options = ['-U%d' % arg]
         req.hdf.setValue('diff.options.contextlines', str(arg))
 
         arg = get_bool_option(session, args, 'ignoreblanklines')
