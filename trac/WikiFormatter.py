@@ -267,7 +267,7 @@ class Formatter(CommonFormatter):
 
     _compiled_rules = re.compile('(?:' + string.join(_rules, '|') + ')')
     _processor_re = re.compile('#\!([a-zA-Z0-9/+-]+)')
-    _anchor_re = re.compile('[^\w\d]+')
+    _anchor_re = re.compile('[^\w\d\.-_:]+', re.UNICODE)
     mime_type = ""
     anchors = []
 
@@ -382,8 +382,9 @@ class Formatter(CommonFormatter):
         depth = min(len(fullmatch.group('hdepth')), 5)
         heading = match[depth + 1:len(match) - depth - 1]
         anchor = anchor_base = self._anchor_re.sub('', heading)
-        if anchor[0].isdigit():
-            anchor = '_' + anchor
+        if not anchor or not anchor[0].isalpha():
+            # an ID must start with a letter in HTML
+            anchor = 'a' + anchor
         i = 1
         while anchor in self.anchors:
             anchor = anchor_base + str(i)
