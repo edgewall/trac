@@ -4,7 +4,7 @@
 
 <div id="ctxtnav" class="nav">
  <ul>
-  <?cs if args.mode!= 'attachment' ?>
+  <?cs if args.mode != 'attachment' && trac.acl.LOG_VIEW ?>
   <li><a href="<?cs var:file.logurl ?>">Revision Log</a></li>
   <?cs /if ?>
   <li><a href="<?cs var:file.texturl ?>">View as Text</a></li>

@@ -155,9 +155,10 @@ class Timeline (Module):
         _from = self.args.get('from', '')
         _daysback = self.args.get('daysback', '')
 
+        # Parse the from date and adjust the timestamp to the last second of the day
         try:
-            _from = time.mktime(time.strptime(_from, '%x')) + 86399
-            pass
+            t = time.strptime(_from, '%x')
+            _from = time.mktime((t[0], t[1], t[2], 23, 59, 59, t[6], t[7], t[8]))
         except:
             _from = time.time()
         try:
