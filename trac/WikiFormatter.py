@@ -26,8 +26,87 @@ import string
 import StringIO
 
 import util
+import Mimeview
 
 __all__ = ['Formatter', 'OneLinerFormatter', 'wiki_to_html', 'wiki_to_oneliner']
+
+
+def system_message(msg, text):
+    return """<div class="system-message">
+ <strong>%s</strong>
+ <pre>%s</pre>
+</div>
+""" % (msg, util.escape(text))
+    
+
+class WikiProcessor:
+
+    mime_type = ""
+
+    def __init__(self, env, name):
+        self.env = env
+        self.error = self.set_code_processor(name)
+    
+    def default_processor(hdf, text, env):
+        return '<pre class="wiki">' + util.escape(text) + '</pre>'
+    
+    def html_processor(hdf, text, env):
+        if Formatter._htmlproc_disallow_rule.search(text):
+            err = system_message('Error: HTML block contains disallowed tags.', text)
+            env.log.error(err)
+            return err
+        if Formatter._htmlproc_disallow_attribute.search(text):
+            err = system_message('Error: HTML block contains disallowed attributes.', text)
+            env.log.error(err)
+            return err
+        return text
+
+    def mime_processor(self, hdf, text, env):
+        return env.mimeview.display(text, self.mime_type)
+    
+    builtin_processors = { 'html': html_processor,
+                           'default': default_processor}
+
+    def process(self, hdf, text, inline=False):
+        text = self.code_processor(hdf, text, self.env)
+        if inline:
+            code_block_start = re.compile('^<div class="code-block">')
+            code_block_end = re.compile('</div>$')
+            text, nr = code_block_start.subn('<span class="code-block">', text, 1 )
+            if nr:
+                text, nr = code_block_end.subn('</span>', text, 1 )
+            return text
+        else:
+            return text
+    
+
+    def set_code_processor(self, name):
+        if  self.builtin_processors.has_key(name):
+            self.code_processor = self.builtin_processors[name]
+        else:
+            try:
+                self.code_processor = self.load_macro(name)
+            except Exception, e:
+                if Mimeview.MIME_MAP.has_key(name):
+                    name = Mimeview.MIME_MAP[name]
+                mimeviewer, exists = self.env.mimeview.get_viewer(name)
+                if exists != -1:
+                    self.mime_type = name
+                    self.code_processor = self.mime_processor
+                else:
+                    self.code_processor = self.builtin_processors['default']
+                    return 1
+        return 0
+    
+    def load_macro(self, name):
+        # Look in envdir/wiki-macros/ first
+        try:
+            module = imp.load_source(name, os.path.join(self.env.path, 'wiki-macros', name+'.py'))
+        except IOError:
+            # fall back to site-wide macros
+            macros = __import__('wikimacros.' + name, globals(),  locals(), [])
+            module = getattr(macros, name)
+        return module.execute
 
 
 class CommonFormatter:
@@ -263,7 +342,7 @@ class Formatter(CommonFormatter):
     """
     _rules = [r"""(?P<svnimg>(source|repos):([^ ]+)\.(PNG|png|JPG|jpg|JPEG|jpeg|GIF|gif))"""] + \
              CommonFormatter._rules + \
-             [r"""(?P<macro>!?\[\[(?P<macroname>[a-zA-Z]+)(\((?P<macroargs>[^\)]*)\))?\]\])""",
+             [r"""(?P<macro>!?\[\[(?P<macroname>[\w/+-]+)(\]\]|\((?P<macroargs>.*?)\)\]\]))""",
               r"""(?P<heading>^\s*(?P<hdepth>=+)\s.*\s(?P=hdepth)\s*$)""",
               r"""(?P<list>^(?P<ldepth>\s+)(?:\*|[0-9]+\.) )""",
               r"""(?P<indent>^(?P<idepth>\s+)(?=\S))""",
@@ -273,9 +352,8 @@ class Formatter(CommonFormatter):
               r"""(?P<table_cell>\|\|)"""]
 
     _compiled_rules = re.compile('(?:' + string.join(_rules, '|') + ')')
-    _processor_re = re.compile('#\!([a-zA-Z0-9/+-]+)')
+    _processor_re = re.compile('#\!([\w/+-]+)')
     _anchor_re = re.compile('[^\w\d\.-:]+', re.UNICODE)
-    mime_type = ""
     anchors = None
 
     hdf = None
@@ -296,89 +374,17 @@ class Formatter(CommonFormatter):
         self.hdf = hdf
         self.anchors = []
 
-    def default_processor(hdf, text, env):
-        return '<pre class="wiki">' + util.escape(text) + '</pre>'
-    def asp_processor(hdf, text, env):
-        return env.mimeview.display(text, 'text/x-asp')
-    def c_processor(hdf, text, env):
-        return env.mimeview.display(text, 'text/x-csrc')
-    def css_processor(hdf, text, env):
-        return env.mimeview.display(text, 'text/css')
-    def java_processor(hdf, text, env):
-        return env.mimeview.display(text, 'text/x-java')
-    def cpp_processor(hdf, text, env):
-        return env.mimeview.display(text, 'text/x-c++src')
-    def perl_processor(hdf, text, env):
-        return env.mimeview.display(text, 'text/x-perl')
-    def php_processor(hdf, text, env):
-        return env.mimeview.display(text, 'text/x-php')
-    def python_processor(hdf, text, env):
-        return env.mimeview.display(text, 'text/x-python')
-    def ruby_processor(hdf, text, env):
-        return env.mimeview.display(text, 'text/x-ruby')
-    def sql_processor(hdf, text, env):
-        return env.mimeview.display(text, 'text/x-sql')
-    def xml_processor(hdf, text, env):
-        return env.mimeview.display(text, 'text/xml')
-    def verilog_processor(hdf, text, env):
-        return env.mimeview.display(text, 'text/x-verilog')
-    def html_processor(hdf, text, env):
-        if Formatter._htmlproc_disallow_rule.search(text):
-            err = """\
-<div class="system-message">
- <strong>Error: HTML block contains disallowed tags.</strong>
- <pre>%s</pre>
-</div>\n""" % util.escape(text)
-            env.log.error(err)
-            return err
-        if Formatter._htmlproc_disallow_attribute.search(text):
-            err = """\
-<div class="system-message">
- <strong>Error: HTML block contains disallowed attributes.</strong>
- <pre>%s</pre>
-</div>\n""" % util.escape(text)
-            env.log.error(err)
-            return err
-        return text
-    def mime_processor(self, hdf, text, env):
-        return env.mimeview.display(text, self.mime_type)
-
-    builtin_processors = { 'html': html_processor,
-                           'asp': asp_processor,
-                           'c': c_processor,
-                           'css': css_processor,
-                           'cpp': cpp_processor,
-                           'java': java_processor,
-                           'php': php_processor,
-                           'perl': perl_processor,
-                           'python': python_processor,
-                           'ruby': ruby_processor,
-                           'sql': sql_processor,
-                           'xml': xml_processor,
-                           'verilog': verilog_processor,
-                           'default': default_processor}
-
-    def load_macro(self, name):
-        # Look in envdir/wiki-macros/ first
-        try:
-            module = imp.load_source(name, os.path.join(self.env.path, 'wiki-macros', name+'.py'))
-        except IOError:
-            # fall back to site-wide macros
-            macros = __import__('wikimacros.' + name, globals(),  locals(), [])
-            module = getattr(macros, name)
-        return module.execute
-
     def _macro_formatter(self, match, fullmatch):
         name = fullmatch.group('macroname')
         if name in ['br', 'BR']:
             return '<br />'
         args = fullmatch.group('macroargs')
+        args = util.unescape(args)
         try:
-            macro = self.load_macro(name)
-            return macro(self.hdf, args, self.env)
+            macro = WikiProcessor(self.env, name)
+            return macro.process(self.hdf, args, 1)
         except Exception, e:
-            return '<div class="system-message"><strong>Error: Macro %s(%s) failed</strong><pre>%s</pre></div>' \
-                   % (name, args, e)
+            return system_message('Error: Macro %s(%s) failed' % (name, args), e)
 
     def _heading_formatter(self, match, fullmatch):
         match = match.strip()
@@ -533,36 +539,26 @@ class Formatter(CommonFormatter):
             else:
                 self.code_text += line + os.linesep
                 if not self.code_processor:
-                    self.code_processor = Formatter.builtin_processors['default']
+                    self.code_processor = WikiProcessor(self.env, 'default')
         elif line.strip() == '}}}':
             self.in_code_block -= 1
             if self.in_code_block == 0 and self.code_processor:
                 self.close_paragraph()
                 self.close_table()
-                self.out.write(self.code_processor(self.hdf, self.code_text, self.env))
+                self.out.write(self.code_processor.process(self.hdf, self.code_text))
             else:
                 self.code_text += line + os.linesep
         elif not self.code_processor:
             match = Formatter._processor_re.search(line)
             if match:
                 name = match.group(1)
-                if  Formatter.builtin_processors.has_key(name):
-                    self.code_processor = Formatter.builtin_processors[name]
-                else:
-                    try:
-                        self.code_processor = self.load_macro(name)
-                    except Exception, e:
-                        mimeviewer, exists = self.env.mimeview.get_viewer(name)
-                        if exists != -1:
-                            self.mime_type = name
-                            self.code_processor = self.mime_processor
-                        else:
-                            self.code_text += line + os.linesep
-                            self.code_processor = Formatter.builtin_processors['default']
-                            self.out.write('<div class="system-message"><strong>Error: Failed to load processor <code>%s</code></strong>:<pre>%s</pre></div>' % (name, e))
+                self.code_processor = WikiProcessor(self.env, name)
+                if self.code_processor.error:
+                    self.out.write(system_message('Error: Failed to load processor <code>%s</code>' % name, e))
+                    self.code_text += line + os.linesep
             else:
                 self.code_text += line + os.linesep 
-                self.code_processor = Formatter.builtin_processors['default']
+                self.code_processor = WikiProcessor(self.env, 'default')
         else:
             self.code_text += line + os.linesep
 
@@ -630,7 +626,7 @@ def wiki_to_html(wikitext, hdf, env, db, absurls=0):
     return out.getvalue()
 
 
-def wiki_to_oneliner(wikitext, env, db,absurls=0):
+def wiki_to_oneliner(wikitext, env, db, absurls=0):
     out = StringIO.StringIO()
     OneLinerFormatter(env, db, absurls).format(wikitext, out)
     return out.getvalue()

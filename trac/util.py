@@ -62,6 +62,17 @@ def escape(text):
                     .replace('>', '&gt;') \
                     .replace('"', '&#34;')
 
+def unescape(text):
+    """Reverses Escapes &, <, > and \""""
+    if not text:
+        return ''
+    if type(text) is StringType:
+        text = text.replace('&#34;', '"') \
+               .replace('&gt;', '>') \
+               .replace('&lt;', '<') \
+               .replace('&amp;', '&') 
+    return text
+
 def get_first_line(text, maxlen):
     """
     returns the first line of text. If the line is longer then

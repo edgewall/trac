@@ -44,11 +44,11 @@ if __version__ < docutils_required:
     raise EnvironmentError, 'Docutils version >= %s required, %s found' % (docutils_required, __version__)
 
 from trac.Href import Href
+from trac.WikiFormatter import WikiProcessor
 
 __docformat__ = 'reStructuredText'
 
-WIKI_LINK = re.compile(r'(?:wiki:)?(?P<w>[A-Za-z][\w\#\?]*[^\w\#\?]*)') # Links must begin with Letters, \# ? so we can link inside pages.
-#WIKI_LINK = re.compile(r'(?:wiki:)?(?P<w>(^|(?<=[^A-Za-z]))[!]?[A-Z][a-z/]+(?:[A-Z][a-z/]+)+)')
+WIKI_LINK = re.compile(r'(?:wiki:)?(.+)')
 TICKET_LINK = re.compile(r'(?:#(\d+))|(?:ticket:(\d+))')
 REPORT_LINK = re.compile(r'(?:{(\d+)})|(?:report:(\d+))')
 CHANGESET_LINK = re.compile(r'(?:\[(\d+)\])|(?:changeset:(\d+))')
@@ -72,23 +72,26 @@ def _browser(href, args):
     return href.browser(path, rev)
 
 # TracLink REs and callback functions
-LINKS = [(WIKI_LINK, _wikipage),
-         (TICKET_LINK, _ticket),
+LINKS = [(TICKET_LINK, _ticket),
          (REPORT_LINK, _report),
          (CHANGESET_LINK, _changeset),
-         (FILE_LINK, _browser)]
+         (FILE_LINK, _browser),
+         (WIKI_LINK, _wikipage)]
 
 
-def trac_get_reference(env, rawtext, text):
+def trac_get_reference(env, rawtext, link, text):
     for (pattern, function) in LINKS:
-        m = pattern.match(text)
+        m = pattern.match(link)
         if m:
             g = filter(None, m.groups())
             missing = 0
+            if not text:
+                text = g[0]
             if pattern == WIKI_LINK:
-                if not (env._wiki_pages.has_key(g[0])):
-                        missing = 1
-                        text = text + "?"
+                pagename = re.search(r'^[^\#]+',g[0])
+                if not (env._wiki_pages.has_key(pagename.group())):
+                    missing = 1
+                    text = text + "?"
             uri = function(env.href, g)
             reference = nodes.reference(rawtext, text)
             reference['refuri']= uri
@@ -120,8 +123,12 @@ def trac(env, name, arguments, options, content, lineno,
 
     .. _TracLink: http://projects.edgewall.com/trac/wiki/TracLinks
     """
-    text = arguments[int(len(arguments) == 2)]
-    reference = trac_get_reference(env, block_text, text)
+    link = arguments[0]
+    if len(arguments) == 2:
+        text = arguments[1]
+    else:
+        text = None
+    reference = trac_get_reference(env, block_text, link, text)
     if reference:
         return reference
     # didn't find a match (invalid TracLink),
@@ -134,7 +141,13 @@ def trac(env, name, arguments, options, content, lineno,
 
 
 def trac_role(env, name, rawtext, text, lineno, inliner, options={}, content=[]):
-    reference = trac_get_reference(env, rawtext, text)
+    args  = text.split(" ",1)
+    link = args[0]
+    if len(args)==2:
+        text = args[1]
+    else:
+        text = None
+    reference = trac_get_reference(env, rawtext, link, text)
     if reference:
         return [reference], []
     warning = nodes.warning(None,
@@ -160,6 +173,24 @@ def execute(hdf, text, env):
     rst.roles.register_local_role('trac', do_trac_role)
 
     # The code_block could is taken from the leo plugin rst2
+    def code_formatter(language, text):
+        Format = WikiProcessor(env, language)
+        html = Format.process(hdf, text)        
+        raw = nodes.raw('',html, format='html')
+        return raw
+        
+    def code_role(name, rawtext, text, lineno, inliner, options={}, content=[]):
+        args  = text.split(":",1)
+        language = args[0]
+        if len(args)==2:
+            text = args[1]
+        else:
+            text = ""
+        reference = code_formatter(language, text)
+        return [reference], []
+        
+
+      
     def code_block(name,arguments,options,content,lineno,content_offset,block_text,state,state_machine):
 
         """Create a code-block directive for docutils.
@@ -167,23 +198,10 @@ def execute(hdf, text, env):
         Usage: .. code-block:: language
 
         If the language can be syntax highlighted it will be."""
-
-
-        
-        from trac.WikiFormatter import Formatter
-        
         language = arguments[0]
-
-        code_processor = None
-        if  Formatter.builtin_processors.has_key(language):
-            code_processor = Formatter.builtin_processors[language]
-        else:
-            code_processor = Formatter.builtin_processors['default']
-
-
-        html = code_processor(hdf, '\n'.join(content), env)        
-        raw = nodes.raw('',html, format='html') #(self, rawsource='', text='', *children, **attributes):
-        return [raw]
+        text = '\n'.join(content)        
+        reference = code_formatter(language, text)
+        return [reference]
 
     # These are documented at http://docutils.sourceforge.net/spec/howto/rst-directives.html.
     code_block.arguments = (
@@ -200,9 +218,8 @@ def execute(hdf, text, env):
     code_block.content = 1 # True if content is allowed.
     # Register the directive with docutils.
     rst.directives.register_directive('code-block',code_block)
+    rst.roles.register_local_role('code-block', code_role)
     
-    
-
     _inliner = rst.states.Inliner()
     _parser = rst.Parser(inliner = _inliner)
 

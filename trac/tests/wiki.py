@@ -4,6 +4,7 @@ import os
 import StringIO
 import unittest
 
+
 class WikiTestCase(unittest.TestCase):
 
     def __init__(self, input, correct):
@@ -13,7 +14,7 @@ class WikiTestCase(unittest.TestCase):
     
     def test(self):
         """Testing WikiFormatter"""
-        from trac import Href, Logging
+        from trac import Href, Mimeview, Logging
         class Environment:
             def __init__(self):
                 self.log = Logging.logger_factory('null')
@@ -21,6 +22,7 @@ class WikiTestCase(unittest.TestCase):
                 self.href = Href.Href('/')
                 self.abs_href = Href.Href('http://www.example.com/')
                 self._wiki_pages = {}
+                self.mimeview = Mimeview.Mimeview(self)
         class Cursor:
             def execute(self, *kwargs): pass
             def fetchone(self): return []
@@ -30,7 +32,8 @@ class WikiTestCase(unittest.TestCase):
 
         out = StringIO.StringIO()
         Formatter(None, Environment(), Connection()).format(self.input, out)
-        self.assertEquals(self.correct, out.getvalue())
+        v = out.getvalue().replace('\r','')
+        self.assertEquals(self.correct, v)
 
 def suite():
     suite = unittest.TestSuite()

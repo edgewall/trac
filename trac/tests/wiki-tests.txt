@@ -216,3 +216,33 @@ source:/foo/bar#head
 <p>
 <sup>superscript</sup>, <sub>subscript</sub>, normal.
 </p>
+==============================
+[[HelloWorld(hej hopp)]]
+------------------------------
+<p>
+<pre class="wiki">hej hopp</pre>
+</p>
+==============================
+[[HelloWorld(hej hopp) ]] # This shouldnt executed as macro since it contain whitespace between ) and ]
+------------------------------
+<p>
+[[HelloWorld(hej hopp) ]] # This shouldnt executed as macro since it contain whitespace between ) and ]
+</p>
+==============================
+[[HelloWorld(hej hopp))]] # Extra right brace and still executed
+------------------------------
+<p>
+<pre class="wiki">hej hopp)</pre> # Extra right brace and still executed
+</p>
+==============================
+[[HelloWorld(hej hopp)]] [[HelloWorld(hej hopp2)]] # Test non greedy match
+------------------------------
+<p>
+<pre class="wiki">hej hopp</pre> <pre class="wiki">hej hopp2</pre> # Test non greedy match
+</p>
+==============================
+Inline [[html(<B> Test </B>)]] text
+------------------------------
+<p>
+Inline <B> Test </B> text
+</p>
