@@ -553,10 +553,34 @@ CREATE INDEX wiki_idx		ON wiki(name,version);
             print "Initdb for '%s' failed.\nDoes a database already exist?" % self.dbname
             return
         try:
+            print
+            print 'Trac need to known a few installation-specific settings'
+            print 'when creating a new database.'
+            print
+            while 1:
+                repository_dir = raw_input('Subversion repository> ')
+                if os.access(os.path.join(repository_dir, 'README.txt'), os.F_OK) and \
+                   os.access(os.path.join(repository_dir, 'conf'), os.F_OK):
+                    break
+                print repository_dir, 'doesn\'t look like a subversion repository'
+            while 1:
+                templates_dir = raw_input('Trac templates directory> ')
+                if os.access(os.path.join(templates_dir, 'browser.cs'), os.F_OK) and \
+                   os.access(os.path.join(templates_dir, 'ticket.cs'), os.F_OK):
+                    break
+                print templates_dir, 'doesn\'t look like a Trac templates directory'
+        except KeyboardInterrupt:
+            print 'initdb aborted'
+            return
+        try:
             cnx = sqlite.connect (self.dbname)
             cursor = cnx.cursor ()
             self.initdb_create_tables(cursor)
             self.initdb_insert_default_data (cursor)
+            cursor.execute('UPDATE config SET value=%s WHERE name=%s',
+                           repository_dir, 'repository_dir')
+            cursor.execute('UPDATE config SET value=%s WHERE name=%s',
+                           templates_dir, 'templates_dir')
             cnx.commit()
         except Exception, e:
             print 'Failed to initialize database.', e
