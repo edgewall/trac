@@ -33,8 +33,7 @@ class Session:
 
     DEPARTURE_INTERVAL = 3600 # If you're idle for an hour, you left
     UPDATE_INTERVAL = 300  # Update session every 5 mins
-#    PURGE_AGE = 3600*24*90 # Purge session after 90 days idle
-    PURGE_AGE = 3600 # Purge session after 90 days idle
+    PURGE_AGE = 3600*24*90 # Purge session after 90 days idle
     COOKIE_KEY = 'trac_session'
 
     def __init__(self, env, req, newsession = 0):
