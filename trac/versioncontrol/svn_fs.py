@@ -116,6 +116,8 @@ class SubversionRepository(Repository):
         if not os.path.split(path)[1]:
             path = os.path.split(path)[0]
         self.path = repos.svn_repos_find_root_path(path, self.pool)
+        if self.path is None:
+            raise TracError, "%s does not appear to be a Subversion repository." % (path, )
         if self.path != path:
             self.scope = path[len(self.path):]
             if not self.scope[-1] == '/':

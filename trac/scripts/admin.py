@@ -552,6 +552,7 @@ class TracAdmin(cmd.Cmd):
             print ' Installing wiki pages'
             cursor = cnx.cursor()
             self._do_wiki_load(trac.siteconfig.__default_wiki_dir__,cursor)
+            cnx.commit()
 
             print ' Indexing repository'
             repos = self.__env.get_repository()
