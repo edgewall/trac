@@ -293,19 +293,9 @@ class Wiki(Module):
     template_name = 'wiki.template'
 
     def render(self):
-        if self.args.has_key('page'):
-            name = self.args['page']
-        else:
-            name = 'WikiStart'
-        if self.args.has_key('version'):
-            version = self.args['version']
-        else:
-            version = 0
-            
-        if self.args.has_key('action'):
-            action = self.args['action']
-        else:
-            action = 'view'
+        name = dict_get_with_default(self.args, 'page', 'WikiStart')
+        action = dict_get_with_default(self.args, 'action', 'view')
+        version = dict_get_with_default(self.args, 'verion', 0)
             
         page = Page(name, version)
 
@@ -331,6 +321,10 @@ class Wiki(Module):
             self.namespace['title'] = 'wiki - view'
         self.namespace['content'] = out.getvalue()
 
+
+###
+### A simple unit test
+###
 
 test_in = '''
  * Foo
