@@ -20,7 +20,6 @@
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
 from trac.core import open_environment
-from trac.Href import Href
 from trac.web.main import Request, dispatch_request, send_pretty_error
 
 import cgi
@@ -36,44 +35,25 @@ class CGIRequest(Request):
     """
 
     def __init__(self, environ=os.environ, input=sys.stdin, output=sys.stdout):
+        Request.__init__(self)
         self.__environ = environ
         self.__input = input
         self.__output = output
 
-    def init_request(self):
-        Request.init_request(self)
-
-        self.cgi_location = self.__environ.get('SCRIPT_NAME')
+        self.method = self.__environ.get('REQUEST_METHOD')
         self.remote_addr = self.__environ.get('REMOTE_ADDR')
         self.remote_user = self.__environ.get('REMOTE_USER')
-        self.command = self.__environ.get('REQUEST_METHOD')
+        self.server_name = self.__environ.get('SERVER_NAME')
+        self.server_port = int(self.__environ.get('SERVER_PORT', 0))
+        self.scheme = 'http'
+        if self.__environ.get('HTTPS') in ('on', '1') or self.server_port == 443:
+            self.scheme = 'https'
         if self.__environ.get('HTTP_COOKIE'):
             self.incookie.load(self.__environ.get('HTTP_COOKIE'))
-
-        scheme = 'http'
-        port = int(self.__environ.get('SERVER_PORT', 0))
-        if self.__environ.get('HTTPS') in ('on', '1') or port == 443:
-            scheme = 'https'
-
-        # Reconstruct the absolute base URL
-        host = self.__environ.get('HTTP_HOST')
-        if self.__environ.has_key('HTTP_X_FORWARDED_FOR'):
-            host = self.__environ['HTTP_X_FORWARDED_FOR']
-        if not host:
-            # Missing host header, so reconstruct the host from the
-            # server name and port
-            default_port = {'http': 80, 'https': 443}
-            name = self.__environ.get('SERVER_NAME', 'localhost')
-            if port and port != default_port[scheme]:
-                host = '%s:%d' % (name, port)
-            else:
-                host = name
-        from urlparse import urlunparse
-        self.base_url = urlunparse((scheme, host, self.cgi_location, None, None,
-                                   None))
-
         self.args = TracFieldStorage(self.__input, environ=self.__environ,
                                      keep_blank_values=1)
+
+        self.cgi_location = self.__environ.get('SCRIPT_NAME')
 
     def read(self, len):
         return self.__input.read(len)
@@ -114,12 +94,11 @@ class TracFieldStorage(cgi.FieldStorage):
 
 def run():
     locale.setlocale(locale.LC_ALL, '')
+
+    req = CGIRequest()
+    env = open_environment()
+
     try:
-        req = CGIRequest()
-        req.init_request()
-        env = open_environment()
-        env.href = Href(req.cgi_location)
-        env.abs_href = Href(req.base_url)
         dispatch_request(os.getenv('PATH_INFO', ''), req, env)
     except Exception, e:
         send_pretty_error(e, env, req)

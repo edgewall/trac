@@ -221,54 +221,53 @@ class TracHTTPRequestHandler(BaseHTTPRequestHandler):
         if not m:
             self.send_error(400, 'Bad Request')
             return
-        self.project_name, self.path_info, self.query_string = m[0]
-        if not self.server.projects.has_key(self.project_name):
+        project_name, path_info, query_string = m[0]
+        if not self.server.projects.has_key(project_name):
             self.send_error(404, 'Not Found')
             return
-        self.path_info = urllib.unquote(self.path_info)
-        self.env = self.server.projects[self.project_name]
-        self.log = self.env.log
+        path_info = urllib.unquote(path_info)
+        env = self.server.projects[project_name]
+        self.log = env.log
 
-        req = TracHTTPRequest(self)
-        req.init_request()
+        req = TracHTTPRequest(self, project_name, query_string)
         req.remote_user = None
-        if self.path_info == '/login':
-            if not self.env.auth:
+        if path_info == '/login':
+            if not env.auth:
                 raise util.TracError('Authentication not enabled. '
                                      'Please use the tracd --auth option.\n')
-            req.remote_user = self.env.auth.do_auth(self)
+            req.remote_user = env.auth.do_auth(self)
             if not req.remote_user:
                 return
 
         try:
             start = time.time()
-            dispatch_request(self.path_info, req, self.env)
+            dispatch_request(path_info, req, env)
             self.log.debug('Total request time: %f s', time.time() - start)
         except Exception, e:
-            send_pretty_error(e, self.env, req)
+            send_pretty_error(e, env, req)
 
 
 class TracHTTPRequest(Request):
 
     __handler = None
 
-    def __init__(self, handler):
+    def __init__(self, handler, project_name, query_string):
+        Request.__init__(self)
         self.__handler = handler
 
-    def init_request(self):
-        Request.init_request(self)
+        self.method = self.__handler.command
         self.remote_addr = str(self.__handler.client_address[0])
+        self.server_name = self.__handler.server.server_name
+        self.server_port = self.__handler.server.server_port
         if self.__handler.headers.has_key('Cookie'):
             self.incookie.load(self.__handler.headers['Cookie'])
 
-        self.cgi_location = '/' + self.__handler.project_name
-        self.base_url = 'http://%s/%s' % (self.__handler.server.http_host,
-                                          self.__handler.project_name)
+        self.cgi_location = '/' + project_name
 
-        environ = {'REQUEST_METHOD': self.__handler.command,
-                   'QUERY_STRING': self.__handler.query_string}
+        environ = {'REQUEST_METHOD': self.method,
+                   'QUERY_STRING': query_string}
         headers = self.__handler.headers
-        if self.__handler.command in ('GET', 'HEAD'):
+        if self.method in ('GET', 'HEAD'):
             headers = None
         self.args = TracFieldStorage(self.__handler.rfile, environ=environ,
                                      headers=headers, keep_blank_values=1)

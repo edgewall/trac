@@ -26,19 +26,31 @@ from trac.web.main import Request, dispatch_request, send_pretty_error
 from mod_python import apache, util
 
 import locale
-locale.setlocale(locale.LC_ALL, '')
-
 import os
-import re, threading
+import re
+import threading
 
 
 class ModPythonRequest(Request):
 
+    idx_location = None
+
     def __init__(self, req):
+        Request.__init__(self)
         self.req = req
 
-    def init_request(self):
-        Request.init_request(self)
+        self.method = self.req.method
+        self.server_name = self.req.server.server_hostname
+        self.server_port = self.req.connection.local_addr[1]
+        self.remote_addr = self.req.connection.remote_ip
+        self.remote_user = self.req.user
+        self.scheme = 'http'
+        if self.req.subprocess_env.get('HTTPS') in ('on', '1') or self.server_port == 443:
+            self.scheme = 'https'
+        if self.req.headers_in.has_key('Cookie'):
+            self.incookie.load(self.req.headers_in['Cookie'])
+        self.args = FieldStorageWrapper(self.req, keep_blank_values=1)
+
         options = self.req.get_options()
 
         # The root uri sometimes has to be explicitly specified because apache
@@ -68,34 +80,6 @@ class ModPythonRequest(Request):
         else:
             self.cgi_location = self.req.uri
 
-        # Reconstruct the absolute base URL
-        port = self.req.connection.local_addr[1]
-        scheme = 'http'
-        if self.req.subprocess_env.get('HTTPS') in ('on', '1') or port == 443:
-            scheme = 'https'
-        host = self.req.hostname
-        if self.req.headers_in.has_key('X-Forwarded-For'):
-            host = self.req.headers_in['X-Forwarded-For']
-        if not host:
-            # Missing host header, so reconstruct the host from the
-            # server name and port
-            default_port = {'http': 80, 'https': 443}
-            name = self.req.server.server_hostname
-            if port != default_port[scheme]:
-                host = '%s:%d' % (name, port)
-            else:
-                host = name
-        from urlparse import urlunparse
-        self.base_url = urlunparse((scheme, host, self.cgi_location, None, None,
-                                    None))
-
-        self.remote_addr = self.req.connection.remote_ip
-        self.remote_user = self.req.user
-        self.command = self.req.method
-
-        if self.req.headers_in.has_key('Cookie'):
-            self.incookie.load(self.req.headers_in['Cookie'])
-
     def read(self, len):
         return self.req.read(len)
 
@@ -121,7 +105,8 @@ class ModPythonRequest(Request):
 class FieldStorageWrapper(util.FieldStorage):
     """
     FieldStorage class with a get function that provides an empty string as the
-    default value for the 'default' parameter, mimicking the CGI interface.
+    default value for the 'default' parameter, mimicking
+    trac.web.cgi_frontend.TracFieldStorage
     """
 
     def get(self, key, default=''):
@@ -145,9 +130,6 @@ def open_environment(env_path, mpr):
                         'Run "trac-admin %s upgrade"' % env_path)
     elif version > Environment.db_version:
         raise TracError('Unknown Trac Environment version (%d).' % version)
-
-    env.href = Href.Href(mpr.cgi_location)
-    env.abs_href = Href.Href(mpr.base_url)
 
     return env
 
@@ -185,14 +167,12 @@ def get_environment(req, mpr):
     return env
 
 def handler(req):
-    mpr = ModPythonRequest(req)
-    mpr.init_request()
+    locale.setlocale(locale.LC_ALL, '')
 
+    mpr = ModPythonRequest(req)
     env = get_environment(req, mpr)
     if not env:
         return apache.OK
-
-    mpr.args = FieldStorageWrapper(req, keep_blank_values=1)
 
     req.content_type = 'text/html'
     try:

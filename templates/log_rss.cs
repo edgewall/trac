@@ -7,7 +7,7 @@
       <?cs else ?>
         <title>Revisions of <?cs var:$log.filename ?></title>
       <?cs /if ?>
-      <link><?cs var:$base_url ?><?cs var:$log.href ?></link>
+      <link><?cs var:$base_host ?><?cs var:$log.href ?></link>
       <description>Trac Log - Revisions of <?cs var:$log.path ?></description>
       <language>en-us</language>
       <generator>Trac v<?cs var:$trac.version ?></generator>
@@ -18,7 +18,7 @@
        <author><?cs var:$item.author ?></author> -->
          <pubDate><?cs var:$item.gmt ?></pubDate>
          <title><?cs var:$item.rev+': '+$item.shortlog ?></title>
-         <link><?cs var:$base_url+$item.file_href ?></link>
+         <link><?cs var:$base_host+$item.file_href ?></link>
          <description><?cs var:$item.log.raw ?></description>
          <category>Report</category>
        </item>

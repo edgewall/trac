@@ -20,6 +20,7 @@
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
 from trac.core import module_factory, open_environment
+from trac.Href import Href
 from trac.util import escape
 from trac.web.auth import Authenticator
 from trac.web.session import Session
@@ -46,15 +47,19 @@ class Request:
     frontend (cgi, tracd, mod_python) specific code in the modules.
     """
 
-    command = None
+    method = None
+    scheme = None
+    server_name = None
+    server_port = None
+    remote_addr = None
+    remote_user = None
+
     hdf = None
     authname = None
     session = None
-    remote_addr = None
-    remote_user = None
     _headers = None # additional headers to send
 
-    def init_request(self):
+    def __init__(self):
         import Cookie
         self.incookie = Cookie.SimpleCookie()
         self.outcookie = Cookie.SimpleCookie()
@@ -110,7 +115,7 @@ class Request:
         for cookie in cookies.splitlines():
             self.send_header('Set-Cookie', cookie.strip())
         self.end_headers()
-        if self.command != 'HEAD':
+        if self.method != 'HEAD':
             self.write(data)
 
     def read(self, len):
@@ -178,20 +183,13 @@ def _parse_path_info(args, path_info):
     return args
 
 def populate_hdf(hdf, env, req=None):
-    htdocs_location = env.get_config('trac', 'htdocs_location')
-    if htdocs_location[-1] != '/':
-        htdocs_location += '/'
-    hdf['htdocs_location'] = htdocs_location
-    hdf['project.name'] = env.get_config('project', 'name')
-    # Kludges for RSS, etc
-    hdf['project.name.encoded'] = escape(env.get_config('project', 'name'))
-    hdf['project.descr'] = env.get_config('project', 'descr')
-    hdf['project.footer'] = env.get_config('project', 'footer',
-                 'Visit the Trac open source project at<br />'
-                 '<a href="http://trac.edgewall.com/">'
-                 'http://trac.edgewall.com/</a>')
-    hdf['project.url'] = env.get_config('project', 'url')
-
+    from trac import __version__
+    from time import gmtime, localtime, strftime
+    hdf['trac'] = {
+        'version': __version__,
+        'time': strftime('%c', localtime()),
+        'time.gmt': strftime('%a, %d %b %Y %H:%M:%S GMT', gmtime())
+    }
     hdf['trac.href'] = {
         'wiki': env.href.wiki(),
         'browser': env.href.browser('/'),
@@ -210,11 +208,21 @@ def populate_hdf(hdf, env, req=None):
         'homepage': 'http://trac.edgewall.com/'
     }
 
-    from trac import __version__
-    hdf['trac.version'] = __version__
-    from time import gmtime, localtime, strftime
-    hdf['trac.time'] = strftime('%c', localtime())
-    hdf['trac.time.gmt'] = strftime('%a, %d %b %Y %H:%M:%S GMT', gmtime())
+    hdf['project'] = {
+        'name': env.get_config('project', 'name'),
+        'name.encoded': escape(env.get_config('project', 'name')),
+        'descr': env.get_config('project', 'descr'),
+        'footer': env.get_config('project', 'footer',
+                 'Visit the Trac open source project at<br />'
+                 '<a href="http://trac.edgewall.com/">'
+                 'http://trac.edgewall.com/</a>'),
+        'url': env.get_config('project', 'url')
+    }
+
+    htdocs_location = env.get_config('trac', 'htdocs_location')
+    if htdocs_location[-1] != '/':
+        htdocs_location += '/'
+    hdf['htdocs_location'] = htdocs_location
 
     src = env.get_config('header_logo', 'src')
     src_abs = re.match(r'https?://', src) != None
@@ -231,11 +239,36 @@ def populate_hdf(hdf, env, req=None):
 
     if req:
         hdf['base_url'] = req.base_url
+        hdf['base_host'] = req.base_url[:req.base_url.rfind(req.cgi_location)]
         hdf['cgi_location'] = req.cgi_location
         hdf['trac.authname'] = escape(req.authname)
 
+def _reconstruct_base_url(req):
+    host = req.get_header('Host')
+    if req.get_header('X-Forwarded-For'):
+        host = req.get_header('X-Forwarded-For')
+    if not host:
+        # Missing host header, so reconstruct the host from the
+        # server name and port
+        default_port = {'http': 80, 'https': 443}
+        name = req.server_name
+        if req.server_port and req.server_port != default_port[req.scheme]:
+            host = '%s:%d' % (req.server_name, req.server_port)
+        else:
+            host = req.server_name
+    from urlparse import urlunparse
+    return urlunparse((req.scheme, host, req.cgi_location, None, None, None))
+
 def dispatch_request(path_info, req, env):
+    base_url = env.get_config('trac', 'base_url')
+    if not base_url:
+        base_url = _reconstruct_base_url(req)
+    req.base_url = base_url
     _parse_path_info(req.args, path_info)
+
+    env.href = Href(req.cgi_location)
+    env.abs_href = Href(req.base_url)
+
     db = env.get_db_cnx()
 
     # Let the wiki module build a dictionary of all page names
@@ -305,7 +338,6 @@ def send_pretty_error(e, env, req=None):
     if not req:
         from trac.web.cgi_frontend import CGIRequest
         req = CGIRequest()
-        req.init_request()
         req.authname = ''
     try:
         if not env:
