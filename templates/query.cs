@@ -86,7 +86,7 @@
       </td>
       <td class="actions"><input type="submit" name="rm_filter_<?cs
          var:property.name ?><?cs
-         if:property.type != "radio" ?>_<?cs
+         if:property.type != 'radio' ?>_<?cs
           var:len(constraint.values) - 1 ?><?cs
          /if ?>" value="-" /></td>
      </tr></tbody><?cs /if ?><?cs

@@ -14,7 +14,14 @@ function initializeFilters() {
   function removeRow(button, propertyName) {
     var tr = getAncestorByTagName(button, "tr");
 
-    var mode = button.form.elements[propertyName + "_mode"];
+    var mode = null;
+    var selects = tr.getElementsByTagName("select");
+    for (var i = 0; i < selects.length; i++) {
+      if (selects[i].name == propertyName + "_mode") {
+        mode = selects[i];
+        break;
+      }
+    }
     if (mode && (getAncestorByTagName(mode, "tr") == tr)) {
       // Check whether there are more 'or' rows for this filter
       var next = tr.nextSibling;
@@ -69,7 +76,9 @@ function initializeFilters() {
     removeButton.value = input.value;
     if (input.name.substr(0, 10) == "rm_filter_") {
       removeButton.onclick = function() {
-        removeRow(removeButton, input.name.substr(10));
+        var endIndex = input.name.search(/_\d+$/);
+        if (endIndex < 0) endIndex = input.name.length;
+        removeRow(removeButton, input.name.substring(10, endIndex));
         return false;
       }
     } else {
@@ -152,6 +161,7 @@ function initializeFilters() {
     var alreadyPresent = false;
     for (var i = 0; i < table.rows.length; i++) {
       if (table.rows[i].className == propertyName) {
+        var existingTBody = table.rows[i].parentNode;
         alreadyPresent = true;
         break;
       }
@@ -220,21 +230,26 @@ function initializeFilters() {
     td.appendChild(removeButton);
     tr.appendChild(td);
 
-    // Find the insertion point for the new row. We try to keep the filter rows
-    // in the same order as the options in the 'Add filter' drop-down, because
-    // that's the order they'll appear in when submitted.
-    var insertionPoint = getAncestorByTagName(select, "tr");
-    outer: for (var i = select.selectedIndex + 1; i < select.options.length; i++) {
-      for (var j = 0; j < table.rows.length; j++) {
-        if (table.rows[j].className == select.options[i].value) {
-          insertionPoint = table.rows[j];
-          break outer;
+    if (alreadyPresent) {
+      existingTBody.appendChild(tr);
+    } else {
+      // Find the insertion point for the new row. We try to keep the filter rows
+      // in the same order as the options in the 'Add filter' drop-down, because
+      // that's the order they'll appear in when submitted.
+      var insertionPoint = getAncestorByTagName(select, "tbody");
+      outer: for (var i = select.selectedIndex + 1; i < select.options.length; i++) {
+        for (var j = 0; j < table.tBodies.length; j++) {
+          if (table.rows[j].className == select.options[i].value) {
+            insertionPoint = table.tBodies[j];
+            break outer;
+          }
         }
       }
+      // Finally add the new row to the table
+      var tbody = document.createElement("tbody");
+      tbody.appendChild(tr);
+      insertionPoint.parentNode.insertBefore(tbody, insertionPoint);
     }
-
-    // Finally add the new row to the table
-    insertionPoint.parentNode.insertBefore(tr, insertionPoint);
 
     // Disable the add filter in the drop-down list
     if (property.type == "radio") {
