@@ -147,21 +147,39 @@ class CommonFormatter:
             return None, None
         module = text[:sep]
         args = text[sep+1:]
-        if module in ['bug', 'ticket']:
-            return self._href.ticket(args), '%s:%s' % (module, args), 0
+	if module in ['bug', 'ticket']:
+	    cursor = self.db.cursor ()
+	    cursor.execute('SELECT summary,status FROM ticket WHERE id=%s', args)
+	    row = cursor.fetchone ()				    
+	    if row:
+		summary = util.shorten_line(row[0])
+		if row[1] == 'new':
+		    return self._href.ticket(args), '%s:%s*' % (module, args), 0, 'NEW: ' +  summary
+		elif row[1] == 'closed':
+		    return self._href.ticket(args), '<del>%s:%s</del>' % (module, args), 0, 'CLOSED: ' + summary
+		else:
+		    return self._href.ticket(args), '%s:%s' % (module, args), 0, summary
+	    else:
+		return self._href.ticket(args), '%s:%s' % (module, args), 1, ''
         elif module == 'wiki':
             if not self.env._wiki_pages.has_key(args):
-                return self._href.wiki(args), '%s:%s' % (module, args), 1
+                return self._href.wiki(args), '%s:%s' % (module, args), 1, None
             else:
-                return self._href.wiki(args), '%s:%s' % (module, args), 0
+                return self._href.wiki(args), '%s:%s' % (module, args), 0, None
         elif module == 'report':
-            return self._href.report(args), '%s:%s' % (module, args), 0
+            return self._href.report(args), '%s:%s' % (module, args), 0, None
         elif module == 'changeset':
-            return self._href.changeset(args), '%s:%s' % (module, args), 0
-        elif module == 'milestone':
-            return self._href.milestone(args), '%s:%s' % (module, args), 0
+	    cursor = self.db.cursor ()
+	    cursor.execute('SELECT message FROM revision WHERE rev=%s', args)
+	    row = cursor.fetchone ()
+	    if row:
+		return self._href.changeset(args), '%s:%s' % (module,args), 0, util.shorten_line(row[0])
+	    else:
+		return self._href.changeset(args), '%s:%s' % (module,args), 1, ''
+	elif module == 'milestone':
+            return self._href.milestone(args), '%s:%s' % (module, args), 0, None
         elif module == 'search':
-            return self._href.search(args), '%s:%s' % (module, args), 0
+            return self._href.search(args), '%s:%s' % (module, args), 0, None
         elif module in ['source', 'repos', 'browser']:
             rev = None
             match = re.search('([^#]+)#(.+)', args)
@@ -170,18 +188,18 @@ class CommonFormatter:
                 rev = match.group(2)
             if rev:
                 return self._href.browser(args, rev), \
-                       '%s:%s#%s' % (module, args, rev), 0
+                       '%s:%s#%s' % (module, args, rev), 0, None
             else:
-                return self._href.browser(args), '%s:%s' % (module, args), 0
+                return self._href.browser(args), '%s:%s' % (module, args), 0, None
         else:
-            return None, None, 0
+            return None, None, 0, None
 
     def _modulehref_formatter(self, match, fullmatch):
-        link, text, missing = self._expand_module_link(match)
+        link, text, missing, title = self._expand_module_link(match)
         if link and missing:
-            return '<a class="missing" href="%s">%s?</a>' % (link, text)
+            return '<a title="%s" class="missing" href="%s">%s?</a>' % (title,link, text)
         elif link:
-            return '<a href="%s">%s</a>' % (link, text)
+            return '<a title="%s" href="%s">%s</a>' % (title,link, text)
         else:
             return match
 
@@ -199,7 +217,7 @@ class CommonFormatter:
         link = fullmatch.group('fancyurl')
         name = fullmatch.group('linkname')
 
-        module_link, t, missing = self._expand_module_link(link)
+        module_link, t, missing, title = self._expand_module_link(link)
         if module_link and missing:
             return '<a class="missing" href="%s">%s?</a>' % (module_link, name)
         elif module_link:
