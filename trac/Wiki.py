@@ -23,15 +23,17 @@ import re
 import time
 import os
 import StringIO
+import string
+
 import auth
 import perm
-import string
 from Href import href
 from Module import Module
 from db import get_connection
 from util import *
 
 page_dict = None
+
 
 def populate_page_dict():
     """Extract wiki page names. This is used to detect broken wiki-links"""
@@ -45,6 +47,7 @@ def populate_page_dict():
         if not row:
             break
         page_dict[row[0]] = 1
+
 
 class CommonFormatter:
     """This class contains the patterns common to both Formatter and
@@ -70,17 +73,36 @@ class CommonFormatter:
             if match and not type in Formatter._helper_patterns:
                 return getattr(self, '_' + type + '_formatter')(match, fullmatch)
     
-    def _bold_formatter(self, match, fullmatch):
-        self._is_bold = not self._is_bold
-        return ['</strong>', '<strong>'][self._is_bold]
+    def tag_open_p(self, tag):
+        """Do we currently have any open tag with @tag as end-tag"""
+        return tag in self._open_tags
 
+    def close_tag(self, tag):
+        tmp = s = ''
+        while self._open_tags != [] and tag != tmp:
+            tmp = self._open_tags.pop()
+            s += tmp
+        return s
+
+    def open_tag(self, tag):
+        self._open_tags.append(tag)
+        
+    def simple_tag_handler(self, open_tag, close_tag):
+        """Generic handler for simple binary style tags"""
+        if self.tag_open_p(close_tag):
+            return self.close_tag(close_tag)
+        else:
+            self.open_tag(close_tag)
+            return open_tag
+        
+    def _bold_formatter(self, match, fullmatch):
+        return self.simple_tag_handler('<strong>', '</strong>')
+    
     def _italic_formatter(self, match, fullmatch):
-        self._is_italic = not self._is_italic
-        return ['</i>', '<i>'][self._is_italic]
+        return self.simple_tag_handler('<i>', '</i>')
 
     def _underline_formatter(self, match, fullmatch):
-        self._is_underline = not self._is_underline
-        return ['</span>', '<span class="underline">'][self._is_underline]
+        return self.simple_tag_handler('<span class="underline">', '</span>')
 
     def _htmlescapeentity_formatter(self, match, fullmatch):
         #dummy function that match html escape entities in the format:
@@ -107,7 +129,8 @@ class CommonFormatter:
     def _wikilink_formatter(self, match, fullmatch):
         global page_dict
         if page_dict and not page_dict.has_key(match):
-            return '<a class="wiki-missing-page" href="%s">%s?</a>' % (href.wiki(match), match)
+            return '<a class="wiki-missing-page" href="%s">%s?</a>' % \
+                   (href.wiki(match), match)
         else:
             return '<a href="%s">%s</a>' % (href.wiki(match), match)
 
@@ -136,14 +159,20 @@ class OneLinerFormatter(CommonFormatter):
 
     def format(self, text, out):
         self.out = out
+        self._open_tags = []
+        self._list_stack = []
+        
+        self.in_pre = 0
+        self.indent_level = 0
+        self.paragraph_open = 0
+
         rules = self.compile_rules(self._rules)
-        p_open = 0
-        self._is_bold = 0
-        self._is_italic = 0
-        self._is_underline = 0
-        text = escape(text)
-        result = re.sub(rules, self.replace, text)
+
+        result = re.sub(rules, self.replace, escape(text.strip()))
+        # Close all open 'one line'-tags
+        result += self.close_tag(None)
         out.write(result)
+
 
 class Formatter(CommonFormatter):
     """
@@ -155,9 +184,8 @@ class Formatter(CommonFormatter):
               r"""(?P<begintt>\{\{\{)""",
               r"""(?P<endtt>\}\}\})""",
               r"""(?P<br>\[\[(br|BR)\]\])""",
-              r"""(?P<hr>-{4,})""",
               r"""(?P<heading>^\s*(?P<hdepth>=+)\s.*\s(?P=hdepth)$)""",
-              r"""(?P<listitem>^(?P<ldepth>\s+)(?:\*|[0-9]+\.) )""",
+              r"""(?P<list>^(?P<ldepth>\s+)(?:\*|[0-9]+\.) )""",
               r"""(?P<indent>^(?P<idepth>\s+)(?=[^\s]))""",
               r"""(?P<imgurl>([a-z]+://[^ ]+)(\.png|\.jpg|\.jpeg|\.gif))""",
               r"""(?P<url>([a-z]+://[^ ]+[^\., ]))"""]
@@ -177,20 +205,16 @@ class Formatter(CommonFormatter):
         name = fullmatch.group('svnlinkname')
         return '<a href="%s">%s</a>' % (href.log(path[4:]), name)
 
-    def _hr_formatter(self, match, fullmatch):
-        self._in_hr = 1
-        if self._p_open:
-            return '</p><hr /><p>'
-        else:
-            return '<hr />'
-
     def _br_formatter(self, match, fullmatch):
         return '<br />'
 
     def _heading_formatter(self, match, fullmatch):
         depth = min(len(fullmatch.group('hdepth')), 5)
-        self.is_heading = 1
-        return '<h%d>%s</h%d>' % (depth, match[depth + 1:len(match) - depth - 1], depth)
+        self.close_paragraph()
+        self.close_indentation()
+        self.close_list()
+        self.out.write('<h%d>%s</h%d>' % (depth, match[depth + 1:len(match) - depth - 1], depth))
+        return ''
 
     def _svnimg_formatter(self, match, fullmatch):
         return '<img src="%s" alt="%s" />' % (href.file(match[4:]), match[4:])
@@ -198,137 +222,126 @@ class Formatter(CommonFormatter):
     def _imgurl_formatter(self, match, fullmatch):
         return '<img src="%s" alt="%s" />' % (match, match)
 
-    def _set_indent_depth(self, depth):
-        current_depth = len(self._indent_stack)
-        diff = depth - current_depth
-        self._in_indent = depth > 0
-        if diff > 0:
-            for i in range(diff):
-                self.out.write('<blockquote>')
-                self._indent_stack.append('</blockquote>')
-        elif diff < 0:
-            for i in range(-diff):
-                self.out.write(self._indent_stack.pop())
-        
-    def _set_list_depth(self, depth, type):
-        if self._p_open and depth > 0:
-            self.out.write('</p>')
-            self._p_open = 0
-            
-        self._in_list = depth > 0
-        current_depth = len(self._list_stack)
-        diff = depth - current_depth
-        if diff > 0:
-            for i in range(diff):
-                self.out.write('<%s><li>' % type)
-                self._list_stack.append('</li></%s>' % type)
-        elif diff < 0:
-            for i in range(-diff):
-                self.out.write(self._list_stack.pop())
-            # If the list type changes...
-            if self._list_stack != [] and self._list_stack[0][-3:-1] != type:
-                self.out.write(self._list_stack.pop())
-                self.out.write('<%s><li>' % type)
-                self._list_stack.append('</li></%s>' % type)
-            elif depth > 0:
-                self.out.write('</li><li>')
-        # If the list type changes...
-        elif self._list_stack != [] and self._list_stack[0][-3:-1] != type:
-            self.out.write(self._list_stack.pop())
-            self.out.write('<%s><li>' % type)
-            self._list_stack.append('</li></%s>' % type)
-        elif depth > 0:
-            self.out.write('</li><li>')
-        
-    def _listitem_formatter(self, match, fullmatch):
-        ldepth = len(fullmatch.group('ldepth'))
-        depth = int((ldepth + 1) / 2)
-        #self.out.write('depth:%d' % depth)
-        type = ['ol', 'ul'][match[ldepth] == '*']
-        self._li_open = 1
-        self._set_indent_depth(0)
-        self._set_list_depth(depth, type)
-        return ''
-        #return '<li>%s</li>' % match[depth * 2 + 1:]
-
     def _indent_formatter(self, match, fullmatch):
         depth = int((len(fullmatch.group('idepth')) + 1) / 2)
-        #self.out.write('depth:%d' % depth)
-        self._set_indent_depth(depth)
-        self._in_blockquote = 1
-        return ' '
-        #return '<li>%s</li>' % match[depth * 2 + 1:]
+        self.open_indentation(depth)
+        return ''
+
+    def close_indentation(self):
+        self.out.write('</blockquote>' * self.indent_level)
+        self.indent_level = 0
         
+    def open_indentation(self, depth):
+        diff = depth - self.indent_level
+        if diff != 0:
+            self.close_paragraph()
+            self.close_indentation()
+            self.close_list()
+            self.indent_level = depth
+            for i in range(depth):
+                self.out.write('<blockquote>')
+
+    def _list_formatter(self, match, fullmatch):
+        ldepth = len(fullmatch.group('ldepth'))
+        depth = int((len(fullmatch.group('ldepth')) + 1) / 2)
+        self.in_list_item = depth > 0
+        type_ = ['ol', 'ul'][match[ldepth] == '*']
+        self._set_list_depth(depth, type_)
+        return ''
+    
+    def _set_list_depth(self, depth, type_):
+        current_depth = len(self._list_stack)
+        diff = depth - current_depth
+        self.close_paragraph()
+        self.close_indentation()
+        if diff > 0:
+            for i in range(diff):
+                self._list_stack.append(type_)
+                self.out.write('<%s><li>' % type_)
+        elif diff < 0:
+            for i in range(-diff):
+                tmp = self._list_stack.pop()
+                self.out.write('</li></%s>' % tmp)
+            if self._list_stack != [] and type_ != self._list_stack[-1]:
+                tmp = self._list_stack.pop()
+                self._list_stack.append(type_)
+                self.out.write('</li></%s><%s><li>' % (tmp, type_))
+            if depth > 0:
+                self.out.write('</li><li>')
+        # diff == 0
+        elif self._list_stack != [] and type_ != self._list_stack[-1]:
+            tmp = self._list_stack.pop()
+            self._list_stack.append(type_)
+            self.out.write('</li></%s><%s><li>' % (tmp, type_))
+        elif depth > 0:
+            self.out.write('</li><li>')
+
+    def close_list(self):
+        if self._list_stack != []:
+            self._set_list_depth(0, None)
+    
+    def open_paragraph(self):
+        if not self.paragraph_open:
+            self.out.write('<p>\n')
+            self.paragraph_open = 1
+            
+    def close_paragraph(self):
+        if self.paragraph_open:
+            self.out.write('</p>\n')
+            self.paragraph_open = 0
+
     def format(self, text, out):
         self.out = out
-        rules = self.compile_rules(self._rules)
-        self._p_open = 0
-        self.is_heading = 0
-        self._li_open = 0
+        self._open_tags = []
         self._list_stack = []
-        self._indent_stack = []
-        self._in_pre = 0
-        for line in text.splitlines():
-            # In a PRE-block no other formatting commands apply
-            if not self._in_pre and re.search('^\{\{\{$', line.strip()):
-                if self._p_open:
-                    self._p_open = 0
-                    out.write('</p>')
-                self._in_pre = 1
-                out.write('<pre>')
+        
+        self.in_pre = 0
+        self.indent_level = 0
+        self.paragraph_open = 0
+
+        rules = self.compile_rules(self._rules)
+        
+        for line in escape(text).splitlines():
+            # Handle PRE-blocks
+            if not self.in_pre and line == '{{{':
+                self.in_pre = 1
+                self.close_paragraph()
+                self.out.write('<pre>\n')
                 continue
-            if self._in_pre:
-                if re.search('^\}\}\}$', line.strip()):
-                    self._in_pre = 0
+            elif self.in_pre:
+                if line == '}}}':
                     out.write('</pre>')
-                    continue
+                    self.in_pre = 0
                 else:
-                    out.write(escape(line) + '\n')
-                    continue
-                    
-            self._is_bold = 0
-            self._is_italic = 0
-            self._is_underline = 0
-            self._in_list = 0
-            self._in_indent = 0
-            self._in_blockquote = 0
-            self._in_hr = 0
-            result = re.sub(rules, self.replace, escape(line))
-            # close any open list item
-            #if self._li_open:
-            #    self._li_open = 0
-            #    result = result + '</li>'
-                
-            # close the paragraph when a heading starts
-            # or on an empty line
-            if self._p_open and self._list_stack != []:
-                out.write ('</p>')
-                self._p_open = 0
+                    self.out.write(line + '\n')
+                continue
+            # Handle Horizontal ruler
+            elif line[0:4] == '----':
+                self.close_paragraph()
+                self.out.write('<hr />\n')
+                continue
+            # Handle new paragraph
+            elif line == '':
+                self.close_paragraph()
+                continue
 
-            if not self._in_list:
-                self._set_list_depth(0, None)
-                
-            if self._p_open and (self.is_heading or result == ''):
-                out.write ('</p>')
-                self._p_open = 0                
-            elif not self._p_open and not self.is_heading and \
-                     (not self._in_list or self._in_blockquote) and \
-                     not self._in_hr and result != '':
-                self._p_open = 1
-                out.write ('<p>')
-                
-            if not self._in_indent:
-                self._set_indent_depth(0)
-                
-            out.write(result + '\n')
-            self.is_heading = 0
+            self.in_list_item = 0
             
-        # clean up before we are done
-        self._set_list_depth(0, None)
-        self._set_indent_depth(0)
-        if self._p_open:
-            out.write('</p>')
+            # Throw a bunch of regexps on the problem
+            result = re.sub(rules, self.replace, line)
+            # Close all open 'one line'-tags
+            result += self.close_tag(None)
 
+            if not self.in_list_item:
+                self.close_list()
+            
+            if len(result) and not self.in_list_item:
+                self.open_paragraph()
+            out.write(result + '\n')
+            
+        self.close_paragraph()
+        self.close_indentation()
+        self.close_list()
 
 def wiki_to_html(wikitext):
     out = StringIO.StringIO()
@@ -392,16 +405,16 @@ class Page:
     def render_edit(self, out, hdf):
         perm.assert_permission (perm.WIKI_MODIFY)
         out.write ('<h3>source</h3>')
-        out.write ('<form action="%s" method="post"><p>' %
+        out.write ('<form action="%s" method="POST">' %
                    hdf.getValue('cgi_location', ''))
-        out.write ('<input type="hidden" name="page" value="%s" />' % self.name)
-        out.write ('<input type="hidden" name="mode" value="wiki" />')
+        out.write ('<input type="hidden" name="page" value="%s">' % self.name)
+        out.write ('<input type="hidden" name="mode" value="wiki">')
         out.write ('<textarea name="text" rows="15" cols="80">')
         out.write(escape(self.text))
-        out.write ('</textarea></p><p>')
-        out.write ('<input type="submit" name="action" value="preview" />&nbsp;')
-        out.write ('<input type="submit" name="action" value="save changes" />')
-        out.write ('</p></form>')
+        out.write ('</textarea><p>')
+        out.write ('<input type="submit" name="action" value="preview">&nbsp;')
+        out.write ('<input type="submit" name="action" value="save changes">')
+        out.write ('</form>')
 
     def render_view(self, out, hdf, edit_button=1):
         perm.assert_permission (perm.WIKI_VIEW)
@@ -410,12 +423,12 @@ class Page:
         Formatter().format(self.text, out)
         out.write ('</div><br />')
         if edit_button and perm.has_permission (perm.WIKI_MODIFY):
-            out.write ('<form action="%s" method="post"><p>' %
+            out.write ('<form action="%s" method="POST">' %
                        hdf.getValue('cgi_location', ''))
-            out.write ('<input type="hidden" name="mode" value="wiki" />')
-            out.write ('<input type="hidden" name="page" value="%s" />' % self.name)
-            out.write ('<input type="submit" name="action" value=" edit page " />')
-            out.write ('</p></form>')
+            out.write ('<input type="hidden" name="mode" value="wiki">')
+            out.write ('<input type="hidden" name="page" value="%s">' % self.name)
+            out.write ('<input type="submit" name="action" value=" edit page ">')
+            out.write ('</form>')
         
     def render_preview (self, out, hdf):
         perm.assert_permission (perm.WIKI_MODIFY)
@@ -507,16 +520,20 @@ class Wiki(Module):
         self.cgi.hdf.setValue('content', out.getvalue())
 
 
+
 ###
 ### A simple unit test
 ###
 
-test_in = '''
-foo
+
+test_in = \
+"""Foo
+
  * Foo
- 1. Foo 2
- * Foo 3
-'''
+ * Bar
+ * Baz
+"""
+
 test_out = ''' <ul><li>Foo</li> <ul><li>Foo 2</li> </ul></ul><ol><li>Foo 3</li> </ol><h3>FooBar</h3> <ul> Hoj  Hoj2 </ul><p>Hoj3 Line1<br />Line2 </p>'''
 
 def test():
@@ -524,7 +541,7 @@ def test():
     Formatter().format(test_in, result)
     if result.getvalue() != test_out:
         print 'now:', result.getvalue()
-        #print 'correct:', test_out
+        print 'correct:', test_out
 
 if __name__ == '__main__':
     test()
