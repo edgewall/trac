@@ -57,7 +57,7 @@ class CommonFormatter:
               r"""(?P<tickethref>#[0-9]+)""",
               r"""(?P<changesethref>\[[0-9]+\])""",
               r"""(?P<reporthref>\{[0-9]+\})""",
-              r"""(?P<svnhref>(svn:[^ ]+[^\.,]))""",
+              r"""(?P<svnhref>(svn:[^ ]+[^\., ]))""",
               r"""(?P<wikilink>(^|(?<=[^A-Za-z]))[A-Z][a-z/]*(?:[A-Z][a-z/]+)+)""",
               r"""(?P<fancylink>\[(?P<fancyurl>([a-z]+:[^ ]+)) (?P<linkname>.*?)\])"""]
 
@@ -132,7 +132,7 @@ class OneLinerFormatter(CommonFormatter):
     """
     
     _rules = CommonFormatter._rules + \
-             [r"""(?P<url>([a-z]+://[^ ]+))"""]
+             [r"""(?P<url>([a-z]+://[^ ]+[^\., ]))"""]
 
     def format(self, text, out):
         self.out = out
@@ -160,7 +160,7 @@ class Formatter(CommonFormatter):
               r"""(?P<listitem>^(?P<ldepth>\s+)(?:\*|[0-9]+\.) )""",
               r"""(?P<indent>^(?P<idepth>\s+)(?=[^\s]))""",
               r"""(?P<imgurl>([a-z]+://[^ ]+)(\.png|\.jpg|\.jpeg|\.gif))""",
-              r"""(?P<url>([a-z]+://[^ ]+))"""]
+              r"""(?P<url>([a-z]+://[^ ]+[^\., ]))"""]
     
     # RE patterns used by other patterna
     _helper_patterns = ('idepth', 'ldepth', 'hdepth', 'fancyurl',
