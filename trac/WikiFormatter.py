@@ -378,7 +378,7 @@ class Formatter(CommonFormatter):
         depth = int((len(fullmatch.group('idepth')) + 1) / 2)
         list_depth = len(self._list_stack)
         if list_depth > 0 and depth == list_depth + 1:
-            self.in_list_item = True
+            self.in_list_item = 1
         else:
             self.open_indentation(depth)
         return ''
