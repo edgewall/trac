@@ -210,3 +210,9 @@ source:/foo/bar#head
  <pre>&lt;div onclick=&#34;alert('')&#34;&gt;Click me&lt;/div&gt;
 </pre>
 </div>
+==============================
+^superscript^, ,,subscript,,, normal.
+------------------------------
+<p>
+<sup>superscript</sup>, <sub>subscript</sub>, normal.
+</p>

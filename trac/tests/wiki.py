@@ -2,7 +2,7 @@ import os
 import StringIO
 import unittest
 
-from trac.Wiki import Formatter
+from trac.WikiFormatter import Formatter
 
 class WikiTestCase(unittest.TestCase):
 
@@ -13,8 +13,7 @@ class WikiTestCase(unittest.TestCase):
     
     def test(self):
         """Testing WikiFormatter"""
-        import Href
-        import Logging
+        from trac import Href, Logging
         class Environment:
             def __init__(self):
                 self.log = Logging.logger_factory('null')
@@ -42,3 +41,7 @@ def suite():
         input, correct = test.split('-' * 30 + '\n')
         suite.addTest(WikiTestCase(input, correct))
     return suite
+
+if __name__ == '__main__':
+    runner = unittest.TextTestRunner()
+    runner.run(suite())
