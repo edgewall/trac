@@ -23,6 +23,12 @@ img { border: none }
 
 .underline { text-decoration: underline; }
 
+OL.loweralpha { list-style-type: lower-alpha }
+OL.upperalpha { list-style-type: upper-alpha }
+OL.lowerroman { list-style-type: lower-roman }
+OL.upperroman { list-style-type: upper-roman }
+OL.arabic     { list-style-type: decimal }
+
 /* Link styles */
 :link, :visited {
  text-decoration: none;
