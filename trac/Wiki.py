@@ -125,8 +125,8 @@ class CommonFormatter:
         return '{<a href="%s">%d</a>}' % (href.report(number), number)
 
     def _svnhref_formatter(self, match, fullmatch):
-        m = re.match('^svn:(([^#]+)(#([0-9]+))?)$', match)
-        if m.group(3):
+        m = re.search('^svn:(([^#]+)(#([0-9]+))?)', match)
+        if m.group(4):
             return '<a href="%s">%s</a>' % (href.browser(m.group(2),
                                                          int(m.group(4))),
                                             m.group(1))
@@ -151,7 +151,7 @@ class CommonFormatter:
         if link[0:5] == 'wiki:':
             link = href.wiki(link[5:])
         elif link[0:4] == 'svn:':
-            m = re.match('^svn:(([^#]+)(#([0-9]+))?)$', link)
+            m = re.search('^svn:(([^#]+)(#([0-9]+))?)', link)
             if m.group(4):
                 link = href.browser(m.group(2), int(m.group(4)))
             else:

@@ -22,6 +22,7 @@
 import os
 from util import *
 from Href import href
+from __init__ import __version__
 import neo_cgi
 
 class Module:
@@ -64,7 +65,7 @@ class Module:
         self.cgi.hdf.setValue('trac.href.login', href.login())
         self.cgi.hdf.setValue('trac.href.logout', href.logout())
         self.cgi.hdf.setValue('trac.href.homepage', 'http://trac.edgewall.com/')
-        self.cgi.hdf.setValue('trac.version', '0.5.1')
+        self.cgi.hdf.setValue('trac.version', __version__)
 
         
         self.cgi.hdf.setValue('header_logo.link',
