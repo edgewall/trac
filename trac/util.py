@@ -179,6 +179,22 @@ def pretty_size(size):
     else:
         return '%d MB' % (size / 1024 / 1024)
 
+def pretty_age(then):
+    """Calculate age (inaccurately, only for decorative purposes ;-) for
+    prettyprinting."""
+    units = ((3600 * 24 * 365, 'year',   'years'),
+             (3600 * 24 * 30,  'month',  'months'),
+             (3600 * 24 * 7,   'week',   'weeks'),
+             (3600 * 24,       'day',    'days'),
+             (3600,            'hour',   'hours'),
+             (60,              'minute', 'minutes'))
+    now = time.time()
+    age_s = int(now - then)
+    for u, unit, unit_plural in units:
+        r = int(age_s / u)
+        if r:
+            return '%i %s' % (r, r == 1 and unit or unit_plural)
+    return ''
 
 def create_unique_file(path):
     """Create a new file. An index is added if the path exists"""
@@ -231,3 +247,10 @@ class NaivePopen:
        if capturestderr:
            self.err=open(errfile,"r").read()
            os.remove(errfile)
+
+
+
+if __name__ == '__main__ ':
+    pass
+    #print pre
+

@@ -73,14 +73,17 @@ tr.browser-listhdr th {
 }
 #browser-list td { padding: .2em .5em; }
 th { text-align: left; }
-td.br-size-col,td.br-rev-col,td.br-date-col,td.br-summary-col,td.br-chg-col { border-left: 1px solid #eee; }
+td.br-size-col,td.br-rev-col,td.br-age-col,td.br-summary-col,td.br-chg-col { border-left: 1px solid #eee; }
 td.br-icon-col { }
 td.br-rev-col, td.br-chg-col { text-align: center; }
 td.br-rev-col a { font-weight: bold; }
 #browser-list a.block-link-nobold { font-weight: normal; }
 td.br-name-col { width: 100%; }
-td.br-size-col, td.br-rev-col, td.br-date-col {
+td.br-size-col, td.br-rev-col, td.br-age-col {
   color: #888;
   white-space: nowrap;
 }
 td.br-icon-col, td.br-report-col, td.br-ticket-col { width: 1em; }
+td.br-age-col .date { 
+ font-size: 9px;
+}

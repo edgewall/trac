@@ -35,9 +35,9 @@
 <?cs /if ?>
         <th>Rev</th>
 <?cs if browser.sort_order == "date" ?>
-        <th><a title="Sort by Date (Descending)" href="<?cs var:browser.current_href?>?order=Date">Date</a></th>
+        <th><a title="Sort by Age" href="<?cs var:browser.current_href?>?order=Date">Age</a></th>
 <?cs else ?>
-        <th><a title="Sort by Date" href="<?cs var:browser.current_href?>?order=date">Date</a></th>
+        <th><a title="Sort by Age (Descending)" href="<?cs var:browser.current_href?>?order=date">Age</a></th>
 <?cs /if ?>
       </tr>
       <?cs if $browser.path != "/" ?>
@@ -53,7 +53,7 @@
           </td>
           <td class="br-size-col">&nbsp;</td>
           <td class="br-rev-col">&nbsp;</td>
-          <td class="br-date-col">&nbsp;</td>
+          <td class="br-age-col">&nbsp;</td>
         </tr>
       <?cs /if ?>
       <?cs set:idx = #0 ?>
@@ -91,8 +91,8 @@
            <a title="View Revision Log" class="block-link-nobold" 
               href="<?cs var:item.log_href ?>"><?cs var:item.created_rev ?></a>
          </td>
-         <td class="br-date-col">
-           <?cs var:item.date ?>
+         <td class="br-age-col">
+          <a class="age" title="<?cs var:item.date ?>"><?cs var:item.age ?></a>
          </td>
        </tr>
        <?cs set:idx = idx + #1 ?>
