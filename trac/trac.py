@@ -158,7 +158,10 @@ def real_main():
     args = parse_args(path_info)
     _args = cgi.FieldStorage()
     for x in _args.keys():
-        args[x] = _args[x].value
+        argv = _args[x]
+        if type(argv) == list:
+            argv = argv[0]
+        args[x] = argv.value
 
     # Load the selected module
     mode = dict_get_with_default(args, 'mode', 'wiki')
