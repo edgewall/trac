@@ -61,8 +61,7 @@ class HDFWrapper:
       1 = Item 2
     }
 
-    Simple values can also be easily retrieved using the same syntax. If the
-    requested value is not set, None is returned.
+    Simple values can also be easily retrieved using the same syntax.
 
     >>> hdf = HDFWrapper()
     >>> hdf['time'] = 42
@@ -79,6 +78,20 @@ class HDFWrapper:
     Traceback (most recent call last):
         ...
     KeyError: 'undef'
+    
+    It may be preferable to return a default value if the given key does not exit.
+    It will return 'None' when the specified key is not present:
+
+    >>> hdf.get('time')
+    '42'
+    >>> hdf.get('undef')
+
+    A second argument may be passed to specify the default return value:
+
+    >>> hdf.get('time', 'Undefined Key')
+    '42'
+    >>> hdf.get('undef', 'Undefined Key')
+    'Undefined Key'
 
     The 'in' and 'not in' operators can be used to test whether the HDF contains
     a value with a given name.
