@@ -52,7 +52,6 @@ li.milestone .descr { clear: both; margin-left: 1em }
 .milestone .descr { margin: 1em 0 2em }
 
 /* Milestone view preferences */
-#prefs { margin-top: -5em }
 #prefs fieldset { margin: 1em .5em .5em; padding: .5em 1em 0 }
 
 /* Styles for the statistics table */
@@ -60,7 +59,6 @@ h2.stats {
  background: #f7f7f7;
  border-bottom: 1px solid #d7d7d7;
  clear: right;
- margin: -2em 0 0;
  padding: 0 .33em;
 }
 #stats { border-bottom: none; margin-top: 0 }
@@ -93,5 +91,7 @@ h2.stats {
 /* Styles for the milestone edit form */
 #edit fieldset { margin: 1em 0 }
 #edit em { color: #888; font-size: smaller }
-#edit label { display: block; margin-top: 1.3em; padding-left: 0.2em }
+#edit .disabled em { color: #d7d7d7 }
+#edit .field { margin-top: 1.3em }
+#edit label { padding-left: .2em }
 #edit textarea#descr { width: 97% }

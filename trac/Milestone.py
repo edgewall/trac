@@ -96,10 +96,14 @@ class Milestone(Module):
             if not name:
                 raise TracError('You must provide a name for the milestone.',
                                 'Required Field Missing')
-            datestr = self.args.get('date', '')
-            date = 0
-            if datestr:
-                date = self.parse_date(datestr)
+            datemode = self.args.get('datemode', 'manual')
+            if datemode == 'now':
+                date = int(time.time())
+            else:
+                datestr = self.args.get('date', '')
+                date = 0
+                if datestr:
+                    date = self.parse_date(datestr)
             descr = self.args.get('descr', '')
             if id == -1:
                 self.create_milestone(name, date, descr)
@@ -162,7 +166,7 @@ class Milestone(Module):
         if self.args.has_key('save'):
             self.env.log.info('Updating milestone field of all tickets '
                               'associated with milestone %s' % id)
-            cursor.execute ('UPDATE ticket SET milestone = %s '
+            cursor.execute('UPDATE ticket SET milestone = %s '
                             'WHERE milestone = %s', name, id)
             cursor.execute("UPDATE milestone SET name = %s, time = %d, "
                            "descr = %s WHERE name = %s",
@@ -280,7 +284,6 @@ class Milestone(Module):
         for group in groups:
             group_tickets = [t for t in tickets if t[by] == group]
             if not showempty and not group_tickets:
-                group_no += 1
                 continue
             prefix = 'milestone.stats.groups.%s' % group_no
             self.req.hdf.setValue('%s.name' % prefix, group)

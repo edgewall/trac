@@ -20,6 +20,36 @@
  <h1>Delete Milestone <?cs var:milestone.name ?></h1>
  <?cs else ?>
  <h1>Milestone <?cs var:milestone.name ?></h1>
+ <form action="#stats" id="prefs" method="get">
+  <div>
+   <label for="by">View status by</label>
+   <select id="by" name="by">
+    <option<?cs
+      if:milestone.stats.grouped_by == 'component'?> selected="selected"<?cs
+      /if ?>>component</option>
+    <option<?cs
+      if:milestone.stats.grouped_by == 'version'?> selected="selected"<?cs
+      /if ?>>version</option>
+    <option value="owner"<?cs
+      if:milestone.stats.grouped_by == 'owner'?> selected="selected"<?cs
+      /if ?>>owner</option>
+    <option<?cs
+      if:milestone.stats.grouped_by == 'priority'?> selected="selected"<?cs
+      /if ?>>priority</option>
+    <option<?cs
+      if:milestone.stats.grouped_by == 'severity'?> selected="selected"<?cs
+      /if ?>>severity</option>
+   </select>
+   <div>
+    <input name="showempty" id="showempty" type="checkbox"<?cs
+       if:milestone.stats.show_empty ?> checked="checked"<?cs /if ?>>
+    <label for="showempty">Show groups with no assigned tickets</label>
+   </div>
+   <div class="buttons">
+    <input type="submit" value="Update" />
+   </div>
+  </div>
+ </form>
  <?cs /if ?>
 
  <?cs if:milestone.mode == "edit" || milestone.mode == "new" ?>
@@ -33,19 +63,26 @@
    <input type="hidden" name="id" value="<?cs var:milestone.name ?>" />
    <input type="hidden" name="action" value="commit_changes" />
    <div class="field">
-    <label for="name">Name of the milestone:</label>
+    <label for="name">Name of the milestone:</label><br />
     <input type="text" id="name" name="name" size="32" value="<?cs
       var:milestone.name ?>" />
    </div>
-    <div class="field">
-    <label for="date">Estimated completion date:</label>
+   <div class="field">
+    <label for="datemode">Completion date:</label><br />
+    <select name="datemode" id="datemode"
+        onchange="enableControl('date',this.value=='manual');
+                  if (this.value=='manual') document.getElementById('date').focus();">
+     <option value="manual">Set manually</option>
+     <option value="now">Mark as completed now</option>
+    </select>
     <input type="text" id="date" name="date" size="8" value="<?cs
       var:milestone.date ?>" title="Format: MM/DD/YY" />
-    <em>Format: MM/DD/YY</em>
+    <label for="date"><em>Format: MM/DD/YY</em></label>
+    </fieldset>
    </div>
    <div class="field">
-    <label for="descr">Description (You may use <a tabindex="42" href="<?cs
-      var:trac.href.wiki ?>/WikiFormatting">WikiFormatting</a> here):</label>
+    <label for="descr">Description (you may use <a tabindex="42" href="<?cs
+      var:trac.href.wiki ?>/WikiFormatting">WikiFormatting</a> here):</label><br />
     <textarea id="descr" name="descr" rows="12" cols="80"><?cs
       var:milestone.descr_source ?></textarea>
     <?cs call:wiki_toolbar('descr') ?>
@@ -83,36 +120,6 @@
  <?cs /if ?>
 
  <?cs if:milestone.mode == "view" ?>
- <form action="#stats" id="prefs" method="get">
-  <div>
-   <label for="by">View status by</label>
-   <select id="by" name="by">
-    <option<?cs
-      if:milestone.stats.grouped_by == 'component'?> selected="selected"<?cs
-      /if ?>>component</option>
-    <option<?cs
-      if:milestone.stats.grouped_by == 'version'?> selected="selected"<?cs
-      /if ?>>version</option>
-    <option value="owner"<?cs
-      if:milestone.stats.grouped_by == 'owner'?> selected="selected"<?cs
-      /if ?>>owner</option>
-    <option<?cs
-      if:milestone.stats.grouped_by == 'priority'?> selected="selected"<?cs
-      /if ?>>priority</option>
-    <option<?cs
-      if:milestone.stats.grouped_by == 'severity'?> selected="selected"<?cs
-      /if ?>>severity</option>
-   </select>
-   <div>
-    <input name="showempty" id="showempty" type="checkbox"<?cs
-       if:milestone.stats.show_empty ?> checked="checked"<?cs /if ?>>
-    <label for="showempty">Show groups with no assigned tickets</label>
-   </div>
-   <div class="buttons">
-    <input type="submit" value="Update" />
-   </div>
-  </div>
- </form>
  <h2 class="stats">Status by <?cs var:milestone.stats.grouped_by ?></h2>
  <table class="listing" id="stats"
    summary="Shows the milestone completion status grouped by <?cs

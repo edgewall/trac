@@ -63,6 +63,19 @@ function searchHighlight() {
   }
 }
 
+function enableControl(id, enabled) {
+  if (typeof(enabled) == "undefined") enabled = true;
+  var control = document.getElementById(id);
+  if (!control) return;
+  control.disabled = !enabled;
+  var labels = document.getElementsByTagName("label");
+  for (var i = 0; i < labels.length; i++) {
+    if (labels[i].htmlFor == id) {
+      labels[i].className = enabled ? "enabled" : "disabled";
+    }
+  }
+}
+
 function addWikiFormattingToolbar(textarea) {
   if ((typeof(document["selection"]) == "undefined")
    && (typeof(textarea["setSelectionRange"]) == "undefined")) {
