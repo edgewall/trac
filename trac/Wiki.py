@@ -258,6 +258,7 @@ class Formatter(CommonFormatter):
 
     def _heading_formatter(self, match, fullmatch):
         depth = min(len(fullmatch.group('hdepth')), 5)
+        self.close_table()
         self.close_paragraph()
         self.close_indentation()
         self.close_list()
@@ -307,6 +308,7 @@ class Formatter(CommonFormatter):
     def _set_list_depth(self, depth, type_):
         current_depth = len(self._list_stack)
         diff = depth - current_depth
+        self.close_table()
         self.close_paragraph()
         self.close_indentation()
         if diff > 0:
@@ -347,10 +349,10 @@ class Formatter(CommonFormatter):
 
     def open_table(self):
         if not self.in_table:
-            self.in_table = 1
             self.close_paragraph()
             self.close_indentation()
             self.close_list()
+            self.in_table = 1
             self.out.write('<table class="wiki">' + os.linesep)
 
     def close_table(self):
@@ -370,6 +372,7 @@ class Formatter(CommonFormatter):
             self.in_code_block -= 1
             if self.in_code_block == 0 and self.code_processor:
                 self.close_paragraph()
+                self.close_table()
                 self.out.write(self.code_processor(self.hdf, self.code_text))
             else:
                 self.code_text += os.linesep + line
