@@ -71,15 +71,15 @@ class Search(Module):
             row = cursor.fetchone()
             if not row:
                 break
-            item = {'type': row['type'],
+            item = {'type': int(row['type']),
                     'message': wiki_to_oneliner(row['message']),
                     'data': row['data'],
                     'author': row['author']}
-            if row['type'] == '1':
+            if item['type'] == 1:
                 item['changeset_href'] = href.changeset(int(row['data']))
-            elif row['type'] == '2':
+            elif item['type'] == 2:
                 item['ticket_href'] = href.ticket(int(row['data']))
-            elif row['type'] == '3':
+            elif item['type'] == 3:
                 item['wiki_href'] = href.wiki(row['data'])
             info.append(item)
         return info

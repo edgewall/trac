@@ -90,13 +90,13 @@ class Timeline (Module):
             item = {'time': time.strftime('%R', t),
                     'date': time.strftime('%F', t),
                     'data': row['data'],
-                    'type': row['type'],
+                    'type': int(row['type']),
                     'message': row['message'],
                     'author': row['author']}
-            if row['type'] == '1':
+            if item['type'] == 1:
                 item['changeset_href'] = href.changeset(int(row['data']))
                 item['message'] = wiki_to_oneliner(item['message'])
-            elif row['type'] == '5':
+            elif item['type'] == 5:
                 item['wiki_href'] = href.wiki(row['data'])
             else:
                 item['ticket_href'] = href.ticket(int(row['data']))
