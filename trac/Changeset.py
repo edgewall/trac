@@ -101,7 +101,9 @@ class HtmlDiffEditor (svn.delta.Editor):
         # calls to eliminate zombies (this is a problem especially when 
         # mod_python is used.
         if sys.platform[:3] != "win" and sys.platform != "os2emx":
-            os.waitpid(-1, 0)
+            try:
+                os.waitpid(-1, 0)
+            except OSError: pass
 
     def add_file(self, path, parent_baton, copyfrom_path,
                  copyfrom_revision, file_pool):
@@ -141,7 +143,9 @@ class UnifiedDiffEditor(HtmlDiffEditor):
             line = pobj.readline()
         pobj.close()
         if sys.platform[:3] != "win" and sys.platform != "os2emx":
-            os.waitpid(-1, 0)
+            try:
+                os.waitpid(-1, 0)
+            except OSError: pass
 
 class Changeset (Module.Module):
     template_name = 'changeset.cs'

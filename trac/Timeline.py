@@ -128,8 +128,13 @@ class Timeline (Module):
                                                                absurls=1))
                 item['message'] = wiki_to_oneliner(msg, self.req.hdf,
                                                    self.env, self.db,absurls=1)
-                
-                max_node = int(self.env.get_config('timeline', 'changeset_show_files', 0))
+                try:
+                    max_node = int(self.env.get_config('timeline', 'changeset_show_files', 0))
+                except ValueError, e:
+                    self.env.log.warning("Invalid 'changeset_show_files' value, "
+                                         "please edit trac.ini : %s" % e)
+                    max_node = 0
+                    
                 if max_node != 0:
                     cursor_node = self.db.cursor ()
                     cursor_node.execute("SELECT name, change "
