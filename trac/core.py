@@ -207,8 +207,10 @@ def populate_hdf(hdf, env, db, href, req):
         hdf.setValue('cgi_location', req.cgi_location)
         hdf.setValue('trac.authname', req.authname)
 
+    
     templates_dir = env.get_config('trac', 'templates_dir')
-    hdf.setValue('hdf.loadpaths.0', templates_dir)
+    hdf.setValue('hdf.loadpaths.0', self.env.get_templates_dir())
+    hdf.setValue('hdf.loadpaths.1', templates_dir)
 
 
 class Request:
@@ -319,7 +321,6 @@ def send_pretty_error(e, env, req=None):
         href = Href.Href(req.cgi_location)
         cnx = env.get_db_cnx()
         populate_hdf(req.hdf, env, cnx, href, req)
-        templates_dir = env.get_config('trac', 'templates_dir')
 
         if isinstance(e, util.TracError):
             req.hdf.setValue('title', e.title or 'Error')
@@ -338,8 +339,7 @@ def send_pretty_error(e, env, req=None):
             req.hdf.setValue('error.type', 'internal')
             req.hdf.setValue('error.message', str(e))
             req.hdf.setValue('error.traceback',tb.getvalue())
-        name = os.path.join (templates_dir, 'error.cs')
-        req.display(name, response=500)
+        req.display('error.cs', response=500)
     except Exception, e:
         req.send_response(500)
         req.send_header('Content-Type', 'text/plain')

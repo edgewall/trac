@@ -138,3 +138,8 @@ class Environment:
     def save_config(self):
         self.cfg.write(open(os.path.join(self.path, 'conf', 'trac.ini'), 'w'))
 
+    def get_templates_dir(self):
+        return os.path.join(self.path, 'templates')
+    
+    def get_attachments_dir(self):
+        return os.path.join(self.path, 'attachments')
