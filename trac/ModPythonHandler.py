@@ -22,11 +22,11 @@
 import os
 import re, threading
 import auth, core, Environment, Href
-from util import TracError, href_join
+from util import TracError, href_join, rstrip
+
 from mod_python import apache, util
 
 class ModPythonRequest(core.Request):
-
     def __init__(self, req):
         self.req = req
 
@@ -34,22 +34,32 @@ class ModPythonRequest(core.Request):
         core.Request.init_request(self)
         options = self.req.get_options()
 
-        if options.has_key('TracEnvParentDir') and self.req.path_info:
-            # We have to remove one path element from path_info when we're
-            # using TracEnvParentDir
-            self.path_info = re.sub('/[^/]+', '', self.req.path_info, 1)
+        # The root uri sometimes has to be explicitly specified because apache
+        # sometimes get req.path_info wrong if many <alias> and <location> directives
+        # are used.
+        if options.has_key('TracUriRoot'):
+            root_uri = rstrip(options['TracUriRoot'], '/')
+            if self.req.uri[:len(root_uri)] != root_uri:
+                raise ValueError('TracRootUri set to "%s" but req.uri starts with "%s"' %
+                                 (root_uri, self.req.uri[:len(root_uri)]))
+            self.path_info = self.req.uri[len(root_uri):]
         else:
             self.path_info = self.req.path_info
+    
+        if len(self.path_info):
+            self.idx_location = self.req.uri[:-len(self.path_info)]
+        else:
+            self.idx_location = self.req.uri
+
+        if options.has_key('TracEnvParentDir') and self.path_info:
+            # We have to remove one path element from path_info when we're
+            # using TracEnvParentDir
+            self.path_info = re.sub('/[^/]+', '', self.path_info, 1)
             
         if len(self.path_info):
             self.cgi_location = self.req.uri[:-len(self.path_info)]
         else:
             self.cgi_location = self.req.uri
-
-        if len(self.req.path_info):
-            self.idx_location = self.req.uri[:-len(self.req.path_info)]
-        else:
-            self.idx_location = self.req.uri
 
         # TODO This will need proxy host name support (see #437 and [581])
         host = self.req.hostname
