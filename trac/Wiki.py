@@ -547,21 +547,25 @@ class Wiki(Module):
             self.cgi.hdf.setValue('wiki.action', 'view')
             self.cgi.hdf.setValue('title', name + ' (wiki)')
 
-        page = Page(name, version, self.perm, self.db,
+        self.page = Page(name, version, self.perm, self.db,
                     self.authname, self.remote_addr)
         if self.args.has_key('text'):
-            page.set_content (self.args['text'])
+            self.page.set_content (self.args['text'])
         
         if save:
-            page.commit ()
-            redirect (href.wiki(page.name))
+            self.page.commit ()
+            redirect (href.wiki(self.page.name))
 
-        self.cgi.hdf.setValue('wiki.current_href', href.wiki(page.name))
-        self.cgi.hdf.setValue('wiki.page_name', page.name)
-        self.cgi.hdf.setValue('wiki.page_source', escape(page.text))
+        self.cgi.hdf.setValue('wiki.current_href', href.wiki(self.page.name))
+        self.cgi.hdf.setValue('wiki.page_name', self.page.name)
+        self.cgi.hdf.setValue('wiki.page_source', escape(self.page.text))
         out = StringIO.StringIO()
-        Formatter(self.cgi.hdf).format(page.text, out)
+        Formatter(self.cgi.hdf).format(self.page.text, out)
         self.cgi.hdf.setValue('wiki.page_html', out.getvalue())
+
+    def display_txt(self):
+        print "Content-type: text/plain\r\n"
+        print self.page.text
 
 ###
 ### A simple unit test
