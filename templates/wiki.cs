@@ -180,7 +180,7 @@
 		onclick="save_edit_position(this.form.text, this.form.scroll_bar_pos, this.form.selection_start, this.form.selection_end);"
 		/>&nbsp;
              <input type="submit" name="cancel" value="Cancel" />
-	     <?cs if trac.acl.WIKI_ADMIN ?>
+	     <?cs if trac.acl.WIKI_DELETE ?>
 	         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 <input type="submit" name="delete_ver" value="Delete this version"
                        onClick="return confirm('Do you really want to delete version <?cs var:wiki.edit_version?>?\nThis is an irreversible operation.')"/>
@@ -278,7 +278,7 @@
 		onclick="save_edit_position(document.form.text, this.form.scroll_bar_pos, this.form.selection_start, this.form.selection_end);"
 		/>&nbsp;
              <input type="submit" name="cancel" value="Cancel" />
-	     <?cs if trac.acl.WIKI_ADMIN ?>
+	     <?cs if trac.acl.WIKI_DELETE ?>
 	         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 <input type="submit" name="delete_ver" value="Delete this version"
                        onClick="return confirm('Do you really want to delete version <?cs var:wiki.edit_version?>?\nThis is an irreversible operation.')"/>

@@ -210,7 +210,7 @@ class WikiModule(Module):
 
         if delete_ver and edit_version and name:
             # Delete only a specific page version
-            self.perm.assert_permission(perm.WIKI_ADMIN)
+            self.perm.assert_permission(perm.WIKI_DELETE)
             cursor = self.db.cursor()
             cursor.execute ('DELETE FROM wiki WHERE name=%s and version=%s',
                             name, int(edit_version))
@@ -227,7 +227,7 @@ class WikiModule(Module):
                 
         if delete_page and name:
             # Delete a wiki page completely
-            self.perm.assert_permission(perm.WIKI_ADMIN)
+            self.perm.assert_permission(perm.WIKI_DELETE)
             cursor = self.db.cursor()
             cursor.execute ('DELETE FROM wiki WHERE name=%s', name)
             self.db.commit()
