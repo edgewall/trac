@@ -247,6 +247,8 @@ class Formatter(CommonFormatter):
         return env.mimeview.display(text, 'text/x-asp')
     def c_processor(hdf, text, env):
         return env.mimeview.display(text, 'text/x-csrcl')
+    def java_processor(hdf, text, env):
+        return env.mimeview.display(text, 'text/x-java')
     def cpp_processor(hdf, text, env):
         return env.mimeview.display(text, 'text/x-c++src')
     def perl_processor(hdf, text, env):
@@ -266,6 +268,7 @@ class Formatter(CommonFormatter):
                            'asp': asp_processor,
                            'c': c_processor,
                            'cpp': cpp_processor,
+                           'java': java_processor,
                            'php': php_processor,
                            'perl': perl_processor,
                            'python': python_processor,

@@ -30,6 +30,7 @@ wiki_pages = [
  "TracRss",
  "TracSearch",
  "TracSupport",
+ "TracSyntaxColoring",
  "TracTickets",
  "TracTimeline",
  "TracWiki",
