@@ -16,17 +16,19 @@
    <input type="hidden" name="id"   value="<?cs var:attachment.id ?>" />
   <div style="align: right">
    <label for="author" class="att-label">Author:</label>
-   <input type="text" name="author" class="textwidget" size="40" value="<?cs var:trac.authname?>">
+   <input type="text" id="author" name="author" class="textwidget" size="40"
+       value="<?cs var:trac.authname?>" />
    <br />
    <label for="description" class="att-label">Description:</label>
-   <input type="text" name="description" class="textwidget" size="40">
+   <input type="text" id="description" name="description" class="textwidget"
+       size="40" />
    <br />
    <label for="file" class="att-label">File:</label>
-   <input type="file" name="attachment"/>
+   <input type="file" id="file" name="attachment" />
    <br />
    <br />
-   <input type="reset" value="Reset"/>
-   <input type="submit" value="Add"/>
+   <input type="reset" value="Reset" />
+   <input type="submit" value="Add" />
   </div>
   </form>
   </fieldset>
@@ -34,4 +36,3 @@
 </div>
 </div>
 <?cs include:"footer.cs"?>
-
