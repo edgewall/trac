@@ -31,6 +31,7 @@ from svn import fs, util, delta, repos, core
 line_re = re.compile('@@ [+-]([0-9]+),([0-9]+) [+-]([0-9]+),([0-9]+) @@')
 header_re = re.compile('header ([^\|]+) \| ([^\|]+) redaeh')
 space_re = re.compile('  ')
+lspace_re = re.compile('^ [^ ]')
 
 class DiffColorizer:
     def __init__(self, hdf, prefix='changeset.diff'):
@@ -40,7 +41,7 @@ class DiffColorizer:
         self.p_type  = None
         self.hdf = hdf
         self.prefix = prefix
-        self.changeno = 0
+        self.changeno = -1
         self.blockno = 0
 
     def _write_block (self, prefix, dtype, old = None, new = None):
@@ -49,7 +50,6 @@ class DiffColorizer:
         if new: self.hdf.setValue(prefix + '.text.new', new);
 
     def print_block (self):
-        self.blockno += 1
         prefix = '%s.changes.%d.blocks.%d' % (self.prefix, self.changeno,
                                               self.blockno)
         if self.p_type == '-' and self.ttype == '+':
@@ -64,6 +64,7 @@ class DiffColorizer:
             self._write_block(prefix, 'unmod', old=string.join(self.block, '<br />'),
                               new=string.join(self.block, '<br />'))
         self.block = self.p_block = []
+        self.blockno += 1
 
     def writeline(self, text):
         match = header_re.search(text)
@@ -75,14 +76,17 @@ class DiffColorizer:
             return
         match = line_re.search(text)
         if match:
-            self.changeno += 1
-            pfx = '%s.changes.%d.line' % (self.prefix, self.changeno)
             self.print_block()
+            self.changeno += 1
+            self.blockno = 0
+            pfx = '%s.changes.%d.line' % (self.prefix, self.changeno)
             self.hdf.setValue('%s.old' % pfx, match.group(1))
             self.hdf.setValue('%s.new' % pfx, match.group(3))
             return
         ttype = text[0]
         text = text[1:]
+        if lspace_re.match(text):
+            text = '&nbsp;' + text[1:]
         text = space_re.sub('&nbsp; ', text.expandtabs(8))
         if ttype == self.ttype:
             self.block.append(text)
@@ -165,16 +169,6 @@ class UnifiedDiffEditor(HtmlDiffEditor):
         while line:
             self.output.write(line)
             line = pobj.readline()
-
-    def add_file(self, path, parent_baton, copyfrom_path,
-                 copyfrom_revision, file_pool):
-        return [None, path, file_pool]
-
-    def open_file(self, path, parent_baton, base_revision, file_pool):
-        return [path, path, file_pool]
-
-    def apply_textdelta(self, file_baton, base_checksum):
-        self.print_diff (*file_baton)
 
 
 def render_diffs(fs_ptr, rev, pool, req, editor_class=HtmlDiffEditor):
