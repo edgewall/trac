@@ -27,7 +27,7 @@
     <input type="hidden" name="diff" value="yes" />
     <div>
      <label for="type">View differences</label>
-     <select name="style">
+     <select name="style" onchange="this.form.submit()">
       <option value="inline"<?cs
         if:diff.style == 'inline' ?> selected="selected"<?cs
         /if ?>>inline</option>
