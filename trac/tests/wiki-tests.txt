@@ -256,7 +256,7 @@ query:milestone!=
 [[HelloWorld(hej hopp)]]
 ------------------------------
 <p>
-<pre class="wiki">hej hopp</pre>
+Hello World, args = hej hopp
 </p>
 ==============================
 [[HelloWorld(hej hopp) ]] # This shouldnt executed as macro since it contain whitespace between ) and ]
@@ -268,13 +268,13 @@ query:milestone!=
 [[HelloWorld(hej hopp))]] # Extra right brace and still executed
 ------------------------------
 <p>
-<pre class="wiki">hej hopp)</pre> # Extra right brace and still executed
+Hello World, args = hej hopp) # Extra right brace and still executed
 </p>
 ==============================
 [[HelloWorld(hej hopp)]] [[HelloWorld(hej hopp2)]] # Test non greedy match
 ------------------------------
 <p>
-<pre class="wiki">hej hopp</pre> <pre class="wiki">hej hopp2</pre> # Test non greedy match
+Hello World, args = hej hopp Hello World, args = hej hopp2 # Test non greedy match
 </p>
 ==============================
 Inline [[html(<B> Test </B>)]] text

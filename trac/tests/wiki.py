@@ -22,6 +22,7 @@ class WikiTestCase(unittest.TestCase):
                 self.href = Href.Href('/')
                 self.abs_href = Href.Href('http://www.example.com/')
                 self._wiki_pages = {}
+                self.path = ''
                 self.mimeview = Mimeview.Mimeview(self)
         class Cursor:
             def execute(self, *kwargs): pass
