@@ -33,7 +33,7 @@ class Log (Module):
     def log_receiver (self, baton, rev, author, date, log, pool):
         item = {
             'rev'    : rev,
-            'author' : utf8_to_iso(author),
+            'author' : utf8_to_iso(author or 'None'),
             'date'   : svn_date_to_string (date, pool),
             'log'    : wiki_to_oneliner(utf8_to_iso(log)),
             'file_href': href.file(self.path, rev),
