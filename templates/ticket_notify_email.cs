@@ -19,4 +19,5 @@ Comment<?cs
 /if ?>
 -- 
 Ticket URL: <<?cs var:$ticket.link ?>>
-<?cs var:$project.name ?> <<?cs var:$trac.href.homepage ?>>
+<?cs var:$project.name ?> <<?cs var:$project.url ?>>
+<?cs var:$project.descr ?>
