@@ -265,13 +265,27 @@ class TicketNotifyEmail(NotifyEmail):
                                      self.ticket['summary'])
 
     def get_recipients(self, tktid):
+        # The old notification behavior is still available if always_notify_reporter
+        # is set to true
+        val = self.env.get_config('notification', 'always_notify_reporter', 'false')
+        notify_reporter = val.lower() in TRUE
+        
         emails = []
         cursor = self.db.cursor()
         # Harvest email addresses from the cc field
-        cursor.execute('SELECT cc FROM ticket WHERE id=%s', tktid)
+        cursor.execute('SELECT cc,reporter FROM ticket WHERE id=%s', tktid)
         row = cursor.fetchone()
         if row:
             emails += row[0] and self.get_email_addresses(row[0]) or []
+            if notify_reporter:
+                emails += row[1] and self.get_email_addresses(row[1]) or []
+
+        if notify_reporter:
+            cursor.execute('SELECT DISTINCT author,ticket FROM ticket_change '
+                           ' WHERE ticket=%s', tktid)
+            rows = cursor.fetchall()
+            for row in rows:
+                emails += row[0] and self.get_email_addresses(row[0]) or []
 
         # Add smtp_always_cc address
         acc = self.env.get_config('notification', 'smtp_always_cc', '')
