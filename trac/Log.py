@@ -82,28 +82,21 @@ class Log (Module):
         return self.log_info
 
     def generate_path_links(self, req, rev, rev_specified):
-        list = filter(None, self.path.split('/'))
+        links = [''] + filter(None, self.path.split('/'))
         path = '/'
-        req.hdf.setValue('log.filename', list[-1])
-        req.hdf.setValue('log.href' , self.env.href.log(self.path))
-        req.hdf.setValue('log.path.0', 'root')
-        if rev_specified:
-            req.hdf.setValue('log.path.0.url', self.env.href.browser(path, rev))
-        else:
-            req.hdf.setValue('log.path.0.url', self.env.href.browser(path))
         i = 0
-        for part in list[:-1]:
-            i = i + 1
+        for part in links:
             path = path + part + '/'
-            req.hdf.setValue('log.path.%d' % i, part)
+            req.hdf.setValue('log.path.%d' % i, part or 'root')
             url = ''
             if rev_specified:
                 url = self.env.href.browser(path, rev)
             else:
                 url = self.env.href.browser(path)
             req.hdf.setValue('log.path.%d.url' % i, url)
-            if i == len(list) - 1:
+            if i == len(links) - 1:
                 self.add_link('up', url, 'Parent directory')
+            i = i + 1
 
     def render(self, req):
         self.perm.assert_permission(perm.LOG_VIEW)
@@ -151,6 +144,7 @@ class Log (Module):
         self.generate_path_links(req, rev, rev_specified)
         req.hdf.setValue('title', self.path + ' (log)')
         req.hdf.setValue('log.path', self.path)
+        req.hdf.setValue('log.href', self.env.href.log(self.path))
 
     def display_rss(self, req):
         req.display(self.template_rss_name, 'application/rss+xml')
