@@ -10,14 +10,12 @@
    <div id="browser-body">
     <?cs call:browser_path_links(browser.path, browser) ?>
     <div id="browser-nav">
-    <form id="browser-chgrev" action="<?cs var:browser_current_href ?>" 
-          method="get">
-      <div>
-        View rev:
-        <input type="text" name="rev" value="<?cs var:browser.revision?>"
-          size="4" />
-        <input type="submit" value="View" />
-      </div></form>
+    <form id="browser-chgrev" action="<?cs var:browser_current_href ?>" method="get">
+      <label for="rev">View rev:</label>
+      <input type="text" id="rev" name="rev" value="<?cs
+        var:browser.revision?>" size="4" />
+      <input type="submit" value="View" />
+    </form>
     <div class="tiny" style="clear: both">&nbsp;</div>
     </div>
     <table id="browser-list" cellspacing="0" cellpadding="0">
