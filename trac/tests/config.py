@@ -84,8 +84,8 @@ class ConfigurationTestCase(unittest.TestCase):
         configfile.close()
 
         config = Configuration(self.filename)
-        self.assertEquals(('option', 'x'), config.options('a').next())
-        self.assertEquals(('option', 'y'), config.options('b').next())
+        self.assertEquals(('option', 'x'), iter(config.options('a')).next())
+        self.assertEquals(('option', 'y'), iter(config.options('b')).next())
 
     def test_reparse(self):
         configfile = open(self.filename, 'w')
