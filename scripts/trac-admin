@@ -35,7 +35,7 @@ import trac.siteconfig
 
 class TracAdmin(cmd.Cmd):
     intro = ''
-    license = trac.__license__
+    license = trac.__license_long__
     credits = trac.__credits__
 
     doc_header = 'Trac Admin Console %(ver)s\n' \
@@ -388,8 +388,8 @@ CREATE INDEX wiki_idx		ON wiki(name,version);
                 print "No documentation found for '%s'" % arg[0]
         else:
             docs = (self._help_about + self._help_help + self._help_initdb +
-                    self._help_config + self._help_component +
-                    self._help_permission + self._help_wiki +
+                    self._help_config + self._help_wiki +
+                    self._help_permission + self._help_component +
                     self._help_priority + self._help_severity +
                     self._help_version)
             print 'trac-admin - The Trac Administration Console %s' % __version__
@@ -470,6 +470,7 @@ CREATE INDEX wiki_idx		ON wiki(name,version);
     ## Component
     _help_component = [('component list', 'Show available components'),
                        ('component add <name> <owner>', 'Add a new component'),
+                       ('component rename <name> <newname>', 'Rename a component'),
                        ('component remove <name>', 'Remove/uninstall component'),
                        ('component chown <name> <owner>', 'Change component ownership')]
 
@@ -479,7 +480,7 @@ CREATE INDEX wiki_idx		ON wiki(name,version);
         elif begidx > 15 and line.startswith('component chown '):
             comp = self.get_user_list()
         else:
-            comp = ['list','add','remove','chown']
+            comp = ['list','add','rename','remove','chown']
         return self.word_complete(text, comp)
 
     def do_component(self, line):
@@ -491,6 +492,10 @@ CREATE INDEX wiki_idx		ON wiki(name,version);
                 name = arg[1]
                 owner = arg[2]
                 self._do_component_add(name, owner)
+            elif arg[0] == 'rename' and len(arg)==3:
+                name = arg[1]
+                newname = arg[2]
+                self._do_component_rename(name, newname)
             elif arg[0] == 'remove'  and len(arg)==2:
                 name = arg[1]
                 self._do_component_remove(name)
@@ -510,6 +515,10 @@ CREATE INDEX wiki_idx		ON wiki(name,version);
     def _do_component_add(self, name, owner):
             data = self.db_execsql("INSERT INTO component VALUES('%s', '%s')"
                                    % (name, owner))
+
+    def _do_component_rename(self, name, newname):
+            data = self.db_execsql("UPDATE component SET name='%s' WHERE name='%s'"
+                                   % (newname,name))
 
     def _do_component_remove(self, name):
             data = self.db_execsql("DELETE FROM component WHERE name='%s'"
