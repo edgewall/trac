@@ -53,12 +53,12 @@
      <li>
       <table summary="Differences">
        <thead><tr>
-        <th><?cs var:wiki.diff.name.old ?></th>
-        <th><?cs var:wiki.diff.name.new ?></th>
+        <th colspan="2"><?cs var:wiki.diff.name.old ?></th>
+        <th colspan="2"><?cs var:wiki.diff.name.new ?></th>
        </tr></thead>
        <tbody>
         <?cs each:change = wiki.diff.changes ?><?cs
-          call:diff_display(change) ?><?cs
+          call:diff_display(change, 'sidebyside') ?><?cs
           /each ?>
        </tbody>
       </table>

@@ -14,3 +14,25 @@
 #overview tr.message td,
 #overview tr.message th { padding-top: 1em }
 #overview tr.message td :first-child { margin-top: 0 }
+
+/* Diff preferences */
+#prefs {
+ background: #f7f7f0;
+ border: 1px outset #998;
+ float: right;
+ font-size: 9px;
+ padding: .8em;
+ margin: -12em 1em 1em 2em;
+ width: 28em;
+}
+#prefs input, #prefs select { font-size: 9px; vertical-align: middle }
+#prefs fieldset { border: none; margin: 0 .5em .5em; padding: .5em 1em 0 }
+#prefs fieldset legend {
+ background: transparent;
+ display: block;
+ color: #333;
+ font-size: 10px;
+ margin: 1em 0 0 -1.5em;
+}
+#prefs fieldset .field input { margin: 0; padding: 0 }
+#prefs .buttons { margin-top: -1.5em; text-align: right }

@@ -10,7 +10,7 @@
  text-align: right;
  width: 8em;
 }
-#overview td,  #overview th {
+#overview td, #overview th {
  vertical-align: top;
  background: transparent;
  color: inherit;
@@ -26,7 +26,7 @@
 
 /* Legend for diff colors */
 .diff #legend {
- float: right;
+ float: left;
  font-size: 9px;
  line-height: 1em;
  margin: 1em 0;
@@ -89,14 +89,27 @@
 .diff table thead.rev th {
  background: #eee;
  color: #999;
+ padding: 0 .25em;
  text-align: center;
+ white-space: nowrap;
 }
-.diff table td {
+.diff table tbody td {
  background: #fff;
  padding: 0 .5em;
  font: normal 11px monospace;
  vertical-align: top;
- width: 50%;
 }
-.diff table td.left { border-right: dashed 1px #d7d7d7 }
+.diff table.inline tbody td { width: 100% }
+.diff table.sidebyside tbody td { width: 50% }
+.diff table tbody.skippedlines td {
+ background: #f7f7f7;
+ border: 1px solid #d7d7d7;
+ }
+.diff table tbody th {
+ padding: 0 .5em;
+ text-align: right;
+ vertical-align: top;
+}
 .diff table td del, .diff table td ins { text-decoration: none }
+.diff table td del { color: #800 }
+.diff table td ins { color: #080 }

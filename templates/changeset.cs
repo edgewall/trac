@@ -9,7 +9,7 @@
 </div>
 
 <div id="main" class="changeset">
-<h1 id="chg-hdr">Change set <?cs var:changeset.revision ?></h1>
+<h1>Changeset <?cs var:changeset.revision ?></h1>
 
 <table id="overview" summary="Changeset overview">
  <tr class="time">
@@ -47,6 +47,46 @@
  </tr>
 </table>
 
+<form id="prefs" action="<?cs var:changeset.href ?>">
+ <div>
+  <label for="type">View differences</label>
+  <select name="style">
+   <option value="inline"<?cs
+     if:changeset.style == 'inline' ?> selected="selected"<?cs
+     /if ?>>inline</option>
+   <option value="sidebyside"<?cs
+     if:changeset.style == 'sidebyside' ?> selected="selected"<?cs
+     /if ?>>side by side</option>
+  </select>
+  <div class="field">
+   Show <input type="text" name="contextlines" id="contextlines" size="2"
+     maxlength="2" value="<?cs var:changeset.options.contextlines ?>" />
+   <label for="contextlines">lines around each change</label>
+  </div>
+  <fieldset id="ignore">
+   <legend>Ignore:</legend>
+   <div class="field">
+    <input type="checkbox" id="blanklines" name="ignoreblanklines" <?cs
+      if:changeset.options.ignoreblanklines ?>checked="checked"<?cs /if ?>/>
+    <label for="blanklines">Blank lines</label>
+   </div>
+   <div class="field">
+    <input type="checkbox" id="case" name="ignorecase" <?cs
+      if:changeset.options.ignorecase ?>checked="checked"<?cs /if ?>/>
+    <label for="case">Case changes</label>
+   </div>
+   <div class="field">
+    <input type="checkbox" id="whitespace" name="ignorewhitespace" <?cs
+      if:changeset.options.ignorewhitespace ?>checked="checked"<?cs /if ?>/>
+    <label for="spacechanges">White space changes</label>
+   </div>
+  </fieldset>
+  <div class="buttons">
+   <input type="submit" value="Update" />
+  </div>
+ </div>
+</form>
+
 <div class="diff">
  <div id="legend">
   <h3>Legend:</h3>
@@ -59,24 +99,47 @@
  </div>
  <ul>
   <?cs each:file = changeset.diff.files ?>
-   <li>
-    <h2><?cs var:file.name.new ?></h2>
-    <table cellspacing="0">
-      <thead class="rev"><tr>
-       <th>Rev <?cs var:file.rev.old ?></th>
-       <th>Rev <?cs var:file.rev.new ?></th>
-      </tr></thead>
-      <tbody>
-      <?cs each:change = file.changes ?>
-       <tr>
-        <th>line <?cs var:change.line.old ?></th>
-        <th>line <?cs var:change.line.new ?></th>
-       </tr>
-       <?cs call:diff_display(change) ?>
-      <?cs /each ?>
-     </tbody>
-    </table>
-   </li>
+   <?cs if:len(file.changes) ?>
+    <li>
+     <h2><?cs var:file.name.new ?></h2>
+     <?cs if:changeset.style == 'sidebyside' ?>
+      <table class="sidebyside">
+       <thead class="rev"><tr>
+        <th colspan="2">Rev <?cs var:file.rev.old ?></th>
+        <th colspan="2">Rev <?cs var:file.rev.new ?></th>
+       </tr></thead>
+       <?cs each:change = file.changes ?>
+        <tbody>
+         <?cs call:diff_display(change, changeset.style) ?>
+        </tbody>
+        <?cs if:name(change) < len(file.changes) - 1 ?>
+         <tbody class="skippedlines">
+          <tr><th>&hellip;</th><td>&nbsp;</td><th>&hellip;</th><td>&nbsp;</td></tr>
+         </tbody>
+        <?cs /if ?>
+       <?cs /each ?>
+      </table>
+     <?cs else ?>
+      <table class="inline">
+       <thead class="rev"><tr>
+        <th>Rev <?cs var:file.rev.old ?></th>
+        <th>Rev <?cs var:file.rev.new ?></th>
+        <th></th>
+       </tr></thead>
+       <?cs each:change = file.changes ?>
+        <tbody>
+         <?cs call:diff_display(change, changeset.style) ?>
+        </tbody>
+        <?cs if:name(change) < len(file.changes) - 1 ?>
+         <tbody class="skippedlines">
+          <tr><th>&hellip;</th><th>&hellip;</th><td>&nbsp;</td></tr>
+         </tbody>
+        <?cs /if ?>
+       <?cs /each ?>
+      </table>
+     <?cs /if ?>
+    </li>
+   <?cs /if ?>
   <?cs /each ?>
  </ul>
 </div>
