@@ -217,7 +217,7 @@ class Timeline (Module):
         self.req.hdf.setValue('timeline.daysback', str(daysback))
 
         stop  = _from
-        start = stop - daysback * 86400
+        start = stop - (daysback + 1) * 86400
         maxrows = int(self.args.get('max', 0))
 
         wiki = self.args.has_key('wiki') 
