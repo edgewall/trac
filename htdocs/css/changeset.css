@@ -42,6 +42,7 @@ ul.chg-list {
  float: right;
  border: 1px solid #d7d7d7;
  padding: .5em;
+ line-height: 100%;
 }
 #chg-legend h3 { 
   display: none;

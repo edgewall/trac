@@ -71,24 +71,26 @@
 
         <?cs elif wiki.action == "diff" ?>
           <div class="hide">
-            <hr class="hide" />
+            <hr />
             <h2>-=&gt; Note: Diff viewing requires CSS2 &lt;=-</h2>
             <p>
               Output below might not be useful.
             </p>
-            <hr class="hide" />
+            <hr />
+          </div>
+          <div id="chg-legend">
+           <h3>Legend:</h3>
+           <ul>
+            <li><span class="diff-legend-unmod"> </span>Unmodified</li>
+            <li><span class="diff-legend-add"> </span>Added</li>
+            <li><span class="diff-legend-rem"> </span>Removed</li>
+            <li><span class="diff-legend-mod"> </span>Modified</li>
+           </ul>
           </div>
           <div id="chg-diff">
-            <div id="chg-legend">
-              <h3>Legend</h3>
-              <span class="diff-legend-add"> </span> Added <br />
-              <span class="diff-legend-rem"> </span> Removed <br />
-              <span class="diff-legend-mod"> </span> Modified <br />
-              <span class="diff-legend-unmod"> </span> Unmodified <br />
-            </div>
-          </div>
-          <div class="chg-diff-file">
-           <?cs call:diff_display(wiki.diff) ?>
+           <div class="chg-diff-file">
+            <?cs call:diff_display(wiki.diff) ?>
+           </div>
           </div>
         <?cs else ?>
           <?cs if wiki.action == "edit" || wiki.action == "preview" ?>
