@@ -19,10 +19,10 @@
 #
 # Author: Jonas Borgström <jonas@edgewall.com>
 
-import tempfile
 import os
 import sys
 import time
+import tempfile
 import StringIO
 from types import *
 

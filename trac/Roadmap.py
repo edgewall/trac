@@ -19,13 +19,14 @@
 #
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
-from util import *
+import time
+
+import perm
+import util
+import Milestone
 from Module import Module
 from Wiki import wiki_to_html
-import Milestone
-import perm
 
-import time
 
 class Roadmap(Module):
     template_name = 'roadmap.cs'
@@ -62,12 +63,12 @@ class Roadmap(Module):
             else:
                 milestones.append(milestone)
         cursor.close()
-        add_dictlist_to_hdf(milestones, self.req.hdf, 'roadmap.milestones')
+        util.add_dictlist_to_hdf(milestones, self.req.hdf, 'roadmap.milestones')
 
         milestone_no = 0
         for milestone in milestones:
             tickets = Milestone.get_tickets_for_milestone(self.db, milestone['name'])
             stats = Milestone.calc_ticket_stats(tickets)
-            add_dict_to_hdf(stats, self.req.hdf,
+            util.add_dict_to_hdf(stats, self.req.hdf,
                 'roadmap.milestones.%s.stats' % int(milestone_no))
             milestone_no += 1

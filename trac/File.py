@@ -32,10 +32,10 @@ import svn
 
 import perm
 import util
-from Module import Module
-from Wiki import wiki_to_html
+import Module
+from WikiFormatter import wiki_to_html
 
-class FileCommon(Module):
+class FileCommon(Module.Module):
     CHUNK_SIZE = 4096
     DISP_MAX_FILE_SIZE = 256 * 1024
 

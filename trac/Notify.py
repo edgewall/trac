@@ -19,20 +19,22 @@
 #
 # Author: Daniel Lundin <daniel@edgewall.com>
 
+import md5
 import sys
+import time
 import smtplib
 import os.path
-import md5
 
 import neo_cgi
 import neo_cs
 import neo_util
 
 from __init__ import __version__
-from util import *
+from util import add_dict_to_hdf, CRLF, TRUE, FALSE
 import Environment
 import core
 import Ticket
+
 
 def wrap(t, cols=75, initial_indent='', subsequent_indent=''):
     try:

@@ -22,29 +22,15 @@
 import re
 import time
 import string
-from types import *
 from UserDict import UserDict
 
 import perm
-from util import *
+import util
 from Module import Module
-from Wiki import wiki_to_html
+from WikiFormatter import wiki_to_html
 from Notify import TicketNotifyEmail
 
 __all__ = ['Ticket', 'NewticketModule', 'TicketModule']
-
-# class TicketManager:
-#     def fetch_ticket(self, db, id):
-#         pass
-# 
-#     def insert_ticket(self, db, ticket):
-#         pass
-# 
-#     def save_changes(self, db, ticket):
-#         pass
-# 
-#     def get_changelog(self, db, ticket):
-#         pass
 
 
 class Ticket(UserDict):
@@ -216,7 +202,7 @@ def insert_custom_fields(env, hdf, vals = {}):
                     hdf.setValue('%s.option.%d.selected' % (pfx, j), '1')
                 j += 1
         elif vtype == 'checkbox':
-            if vval in TRUE:
+            if vval in util.TRUE:
                 hdf.setValue('%s.selected' % pfx, '1')
         elif vtype == 'textarea':
             cols = allvars.get(name + '.width', allvars.get(name + '.cols', ''))
@@ -270,7 +256,7 @@ class NewticketModule(Module):
                           self.env.get_config('ticket', 'default_severity'))
         ticket.setdefault('version',
                           self.env.get_config('ticket', 'default_version'))
-        ticket.setdefault('reporter', get_reporter_id(self.req))
+        ticket.setdefault('reporter', util.get_reporter_id(self.req))
 
         if ticket.has_key('description'):
             self.req.hdf.setValue('newticket.description_preview',
@@ -278,15 +264,16 @@ class NewticketModule(Module):
                                                self.req.hdf, self.env))
             
         self.req.hdf.setValue('title', 'New Ticket')
-        evals = mydict(zip(ticket.keys(), map(lambda x: escape(x), ticket.values())))
-        add_dict_to_hdf(evals, self.req.hdf, 'newticket')
+        evals = util.mydict(zip(ticket.keys(),
+                                map(lambda x: util.escape(x), ticket.values())))
+        util.add_dict_to_hdf(evals, self.req.hdf, 'newticket')
         
-        sql_to_hdf(self.db, 'SELECT name FROM component ORDER BY name',
-                   self.req.hdf, 'newticket.components')
-        sql_to_hdf(self.db, 'SELECT name FROM milestone ORDER BY name',
-                   self.req.hdf, 'newticket.milestones')
-        sql_to_hdf(self.db, 'SELECT name FROM version ORDER BY name',
-                   self.req.hdf, 'newticket.versions')
+        util.sql_to_hdf(self.db, 'SELECT name FROM component ORDER BY name',
+                        self.req.hdf, 'newticket.components')
+        util.sql_to_hdf(self.db, 'SELECT name FROM milestone ORDER BY name',
+                        self.req.hdf, 'newticket.milestones')
+        util.sql_to_hdf(self.db, 'SELECT name FROM version ORDER BY name',
+                        self.req.hdf, 'newticket.versions')
 
         insert_custom_fields(self.env, self.req.hdf, ticket)
 
@@ -334,22 +321,23 @@ class TicketModule (Module):
 
     def insert_ticket_data(self, hdf, id, ticket, reporter_id):
         """Insert ticket data into the hdf"""
-        evals = mydict(zip(ticket.keys(), map(lambda x: escape(x), ticket.values())))
-        add_dict_to_hdf(evals, self.req.hdf, 'ticket')
+        evals = util.mydict(zip(ticket.keys(),
+                                map(lambda x: util.escape(x), ticket.values())))
+        util.add_dict_to_hdf(evals, self.req.hdf, 'ticket')
 
-        sql_to_hdf(self.db, 'SELECT name FROM component ORDER BY name',
-                   self.req.hdf, 'ticket.components')
-        sql_to_hdf(self.db, 'SELECT name FROM milestone ORDER BY name',
-                   self.req.hdf, 'ticket.milestones')
-        sql_to_hdf(self.db, 'SELECT name FROM version ORDER BY name',
-                   self.req.hdf, 'ticket.versions')
-        hdf_add_if_missing(self.req.hdf, 'ticket.components', ticket['component'])
-        hdf_add_if_missing(self.req.hdf, 'ticket.milestones', ticket['milestone'])
-        hdf_add_if_missing(self.req.hdf, 'ticket.versions', ticket['version'])
-        hdf_add_if_missing(self.req.hdf, 'enums.priority', ticket['priority'])
-        hdf_add_if_missing(self.req.hdf, 'enums.severity', ticket['severity'])
+        util.sql_to_hdf(self.db, 'SELECT name FROM component ORDER BY name',
+                        self.req.hdf, 'ticket.components')
+        util.sql_to_hdf(self.db, 'SELECT name FROM milestone ORDER BY name',
+                        self.req.hdf, 'ticket.milestones')
+        util.sql_to_hdf(self.db, 'SELECT name FROM version ORDER BY name',
+                        self.req.hdf, 'ticket.versions')
+        util.hdf_add_if_missing(self.req.hdf, 'ticket.components', ticket['component'])
+        util.hdf_add_if_missing(self.req.hdf, 'ticket.milestones', ticket['milestone'])
+        util.hdf_add_if_missing(self.req.hdf, 'ticket.versions', ticket['version'])
+        util.hdf_add_if_missing(self.req.hdf, 'enums.priority', ticket['priority'])
+        util.hdf_add_if_missing(self.req.hdf, 'enums.severity', ticket['severity'])
 
-        self.req.hdf.setValue('ticket.reporter_id', escape(reporter_id))
+        self.req.hdf.setValue('ticket.reporter_id', util.escape(reporter_id))
         self.req.hdf.setValue('title', '#%d (ticket)' % id)
         self.req.hdf.setValue('ticket.description.formatted',
                               wiki_to_html(ticket['description'], self.req.hdf,
@@ -366,14 +354,14 @@ class TicketModule (Module):
             hdf.setValue('ticket.changes.%d.date' % idx,
                          time.strftime('%c', time.localtime(date)))
             hdf.setValue('ticket.changes.%d.time' % idx, str(date))
-            hdf.setValue('ticket.changes.%d.author' % idx, escape(author))
+            hdf.setValue('ticket.changes.%d.author' % idx, util.escape(author))
             hdf.setValue('ticket.changes.%d.field' % idx, field)
-            hdf.setValue('ticket.changes.%d.old' % idx, escape(old))
+            hdf.setValue('ticket.changes.%d.old' % idx, util.escape(old))
             if field == 'comment':
                 hdf.setValue('ticket.changes.%d.new' % idx,
                              wiki_to_html(new, self.req.hdf, self.env))
             else:
-                hdf.setValue('ticket.changes.%d.new' % idx, escape(new))
+                hdf.setValue('ticket.changes.%d.new' % idx, util.escape(new))
             idx = idx + 1
 
         insert_custom_fields(self.env, hdf, ticket)
@@ -397,7 +385,7 @@ class TicketModule (Module):
             self.save_changes (id)
 
         ticket = Ticket(self.db, id)
-        reporter_id = get_reporter_id(self.req)
+        reporter_id = util.get_reporter_id(self.req)
 
         if preview:
             # Use user supplied values

@@ -21,12 +21,12 @@
 
 import time
 
-from util import *
+import perm
+import util
 from Module import Module
 from Wiki import wiki_to_oneliner
-import perm
 
-from svn import util, repos, fs, core
+import svn
 
 class Log (Module):
     template_name = 'log.cs'
@@ -42,17 +42,17 @@ class Log (Module):
             if change.copyfrom_path:
                 self.branch_info.setdefault(rev, []).append((change.copyfrom_path, newpath))
 
-        shortlog = shorten_line(wiki_escape_newline(log))
-        t = util.svn_time_from_cstring(date, pool) / 1000000
+        shortlog = util.shorten_line(util.wiki_escape_newline(log))
+        t = svn.util.svn_time_from_cstring(date, pool) / 1000000
         gmt = time.gmtime(t)
         item = {
             'rev'      : rev,
-            'author'   : author and escape(author) or 'None',
-            'date'     : svn_date_to_string (date, pool),
+            'author'   : author and util.escape(author) or 'None',
+            'date'     : util.svn_date_to_string (date, pool),
             'gmt'      : time.strftime('%a, %d %b %Y %H:%M:%S GMT', gmt),
-            'log.raw'  : escape(log),
-            'log'      : wiki_to_oneliner(shorten_line(wiki_escape_newline(log)), self.req.hdf, self.env),
-            'shortlog' : escape(shortlog),
+            'log.raw'  : util.escape(log),
+            'log'      : wiki_to_oneliner(util.shorten_line(util.wiki_escape_newline(log)), self.req.hdf, self.env),
+            'shortlog' : util.escape(shortlog),
             'file_href': self.env.href.browser(self.path, rev),
             'changeset_href': self.env.href.changeset(rev)
             }
@@ -61,7 +61,7 @@ class Log (Module):
     def get_info (self, path, rev):
         self.log_info = []
         self.branch_info = {}
-        repos.svn_repos_get_logs (self.repos, [path],
+        svn.repos.svn_repos_get_logs (self.repos, [path],
                                    0, rev, 1, 0, self.log_receiver,
                                    self.pool)
         # Loop through all revisions and update the path
@@ -116,26 +116,26 @@ class Log (Module):
                 rev = fs.youngest_rev(self.fs_ptr, self.pool)
                 rev_specified = 0
         else:
-            rev = fs.youngest_rev(self.fs_ptr, self.pool)
+            rev = svn.fs.youngest_rev(self.fs_ptr, self.pool)
             rev_specified = 0
             
         try:
-            root = fs.revision_root(self.fs_ptr, rev, self.pool)
-        except core.SubversionException:
+            root = svn.fs.revision_root(self.fs_ptr, rev, self.pool)
+        except svn.core.SubversionException:
             raise TracError('Invalid revision number: %d' % rev)
         
         # We display an error message if the file doesn't exist (any more).
         # All we know is that the path isn't valid in the youngest
         # revision of the repository. The file might have existed
         # before, but we don't know for sure...
-        if not fs.check_path(root, self.path, self.pool) in \
-               [core.svn_node_file, core.svn_node_dir]:
+        if not svn.fs.check_path(root, self.path, self.pool) in \
+               [svn.core.svn_node_file, svn.core.svn_node_dir]:
             raise TracError('The file or directory "%s" doesn\'t exist in the '
                             'repository at revision %d.' % (self.path, rev),
                             'Nonexistent path')
         else:
             info = self.get_info (self.path, rev)
-            add_dictlist_to_hdf(info, self.req.hdf, 'log.items')
+            util.add_dictlist_to_hdf(info, self.req.hdf, 'log.items')
 
         self.generate_path_links(rev, rev_specified)
         self.req.hdf.setValue('title', self.path + ' (log)')

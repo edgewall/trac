@@ -19,12 +19,13 @@
 #
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
-from util import *
+import time
+
 from Module import Module
-from Wiki import wiki_to_html
+from util import add_dict_to_hdf
+from WikiFormatter import wiki_to_html
 import perm
 
-import time
 
 def get_tickets_for_milestone(db, milestone):
     cursor = db.cursor ()
@@ -59,6 +60,7 @@ def calc_ticket_stats(tickets):
         'closed_tickets': closed_cnt,
         'percent_complete': percent_complete
     }
+
 
 class Milestone(Module):
     template_name = 'milestone.cs'

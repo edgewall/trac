@@ -19,7 +19,6 @@
 #
 # Author: Jonas Borgström <jonas@edgewall.com>
 
-from util import *
 from svn import fs, util, delta, repos, core
 
 def sync(db, repos, fs_ptr, pool):

@@ -23,6 +23,7 @@ import os
 import re
 import sys
 import cgi
+import time
 import locale
 import urllib
 import warnings
@@ -33,7 +34,7 @@ import auth
 import Environment
 import Session
 
-from util import *
+from util import sql_to_hdf
 from __init__ import __version__
 
 warnings.filterwarnings('ignore', 'DB-API extension cursor.next() used')
@@ -42,7 +43,7 @@ modules = {
 #    name           (module_name, class_name, requires_svn)
     'log'         : ('Log', 'Log', 1),
     'file'        : ('File', 'File', 1),
-    'wiki'        : ('Wiki', 'Wiki', 0),
+    'wiki'        : ('Wiki', 'WikiModule', 0),
     'about_trac'  : ('About', 'About', 0),
     'search'      : ('Search', 'Search', 0),
     'report'      : ('Report', 'Report', 0),

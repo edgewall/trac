@@ -19,11 +19,11 @@
 #
 # Author: Daniel Lundin <daniel@edgewall.com>
 
-from util import *
-from Module import Module
-import perm
-
 import time
+
+import perm
+from Module import Module
+
 
 class Settings(Module):
     template_name = 'settings.cs'

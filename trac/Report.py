@@ -19,16 +19,16 @@
 #
 # Author: Jonas Borgström <jonas@edgewall.com>
 
-import os, os.path
-import time
+import os
 import re
+import time
 import types
 import urllib
 
-from util import *
-from Module import Module
-from Wiki import wiki_to_html
 import perm
+import util
+from Module import Module
+from WikiFormatter import wiki_to_html
 
 dynvars_re = re.compile('\$([A-Z]+)')
 dynvars_disallowed_var_chars_re = re.compile('[^A-Z0-9_]')
@@ -355,7 +355,7 @@ class Report (Module):
                     value['gmt'] = time.strftime('%a, %d %b %Y %H:%M:%S GMT',
                                                  time.gmtime(int(cell)))
                 prefix = 'report.items.%d.%s' % (row_idx, str(column))
-                self.req.hdf.setValue(prefix, escape(str(cell)))
+                self.req.hdf.setValue(prefix, util.escape(str(cell)))
                 for key in value.keys():
                     self.req.hdf.setValue(prefix + '.' + key, str(value[key]))
 
@@ -419,7 +419,7 @@ class Report (Module):
         while item:
             nodename = 'report.items.%s.summary' % item.name()
             summary = self.req.hdf.getValue(nodename, '')
-            self.req.hdf.setValue(nodename, escape(summary))
+            self.req.hdf.setValue(nodename, util.escape(summary))
             item = item.next()
         self.req.display(self.template_rss_name, 'text/xml')
             

@@ -20,7 +20,8 @@
 # Author: Daniel Lundin <daniel@edgewall.com>
 
 import sys
-from util import *
+import time
+from util import hex_entropy, add_dict_to_hdf
 
 class Session:
     """Basic session handling and per-session storage."""

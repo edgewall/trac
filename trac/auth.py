@@ -22,6 +22,7 @@
 import time
 import util
 
+
 class Authenticator:
     def __init__(self, db, req):
         self.db = db

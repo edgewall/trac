@@ -19,14 +19,18 @@
 #
 # Author: Jonas Borgström <jonas@edgewall.com>
 
-from util import *
-from Module import Module
-from Wiki import wiki_to_html
-import Diff, perm
+import time
 
-from svn import fs, util, delta, repos, core
+import util
+import Diff
+import perm
+import Module
+from WikiFormatter import wiki_to_html
 
-class HtmlDiffEditor (delta.Editor):
+import svn.delta
+import svn
+
+class HtmlDiffEditor (svn.delta.Editor):
     """
     generates a htmlized unified diff of the changes for a given changeset.
     the output is written to stdout.
@@ -44,11 +48,11 @@ class HtmlDiffEditor (delta.Editor):
         if not old_path or not new_path:
             return
 
-        old_rev = fs.node_created_rev(self.old_root, old_path, pool)
-        new_rev = fs.node_created_rev(self.new_root, new_path, pool)
+        old_rev = svn.fs.node_created_rev(self.old_root, old_path, pool)
+        new_rev = svn.fs.node_created_rev(self.new_root, new_path, pool)
 
         options = Diff.get_options(self.env, self.req, self.args, 1)
-        differ = fs.FileDiff(self.old_root, old_path, self.new_root, new_path,
+        differ = svn.fs.FileDiff(self.old_root, old_path, self.new_root, new_path,
                              pool, options)
         differ.get_files()
         pobj = differ.get_pipe()
@@ -62,7 +66,7 @@ class HtmlDiffEditor (delta.Editor):
             line = pobj.readline()
             if not line:
                 break
-            builder.writeline(escape(to_utf8(line)))
+            builder.writeline(util.escape(util.to_utf8(line)))
         builder.close()
 
     def add_file(self, path, parent_baton, copyfrom_path,
@@ -93,7 +97,7 @@ class UnifiedDiffEditor(HtmlDiffEditor):
         options.append('-L')
         options.append("%s\t(revision %d)" % (new_path, self.rev))
 
-        differ = fs.FileDiff(self.old_root, old_path,
+        differ = svn.fs.FileDiff(self.old_root, old_path,
                              self.new_root, new_path, pool, options)
         differ.get_files()
         pobj = differ.get_pipe()
@@ -103,7 +107,7 @@ class UnifiedDiffEditor(HtmlDiffEditor):
             line = pobj.readline()
 
 
-class Changeset (Module):
+class Changeset (Module.Module):
     template_name = 'changeset.cs'
     perm = None
     fs_ptr = None
@@ -143,7 +147,7 @@ class Changeset (Module):
         if self.args.has_key('rev'):
             self.rev = int(self.args.get('rev'))
         else:
-            self.rev = fs.youngest_rev(self.fs_ptr, self.pool)
+            self.rev = svn.fs.youngest_rev(self.fs_ptr, self.pool)
 
         change_info = self.get_change_info (self.rev)
         for item in change_info:
@@ -154,12 +158,12 @@ class Changeset (Module):
         self.req.hdf.setValue('changeset.time',
                               time.asctime (time.localtime(int(changeset_info['time']))))
         author = changeset_info['author'] or 'None'
-        self.req.hdf.setValue('changeset.author', escape(author))
+        self.req.hdf.setValue('changeset.author', util.escape(author))
         self.req.hdf.setValue('changeset.message',
-                              wiki_to_html(wiki_escape_newline(changeset_info['message']),
+                              wiki_to_html(util.wiki_escape_newline(changeset_info['message']),
                                            self.req.hdf, self.env))
         self.req.hdf.setValue('changeset.revision', str(self.rev))
-        add_dictlist_to_hdf(change_info, self.req.hdf, 'changeset.changes')
+        util.add_dictlist_to_hdf(change_info, self.req.hdf, 'changeset.changes')
         self.req.hdf.setValue('changeset.href',
             self.env.href.changeset(self.rev))
         self.req.hdf.setValue('title', '[%d] (changeset)' % self.rev)
@@ -170,33 +174,33 @@ class Changeset (Module):
         the output is written to stdout.
         """
         try:
-            old_root = fs.revision_root(self.fs_ptr, int(self.rev) - 1, self.pool)
-            new_root = fs.revision_root(self.fs_ptr, int(self.rev), self.pool)
-        except core.SubversionException:
+            old_root = svn.fs.revision_root(self.fs_ptr, int(self.rev) - 1, self.pool)
+            new_root = svn.fs.revision_root(self.fs_ptr, int(self.rev), self.pool)
+        except svn.core.SubversionException:
             raise TracError('Invalid revision number: %d' % int(self.rev))
 
         editor = editor_class(old_root, new_root, int(self.rev), self.req,
                               self.args, self.env)
-        e_ptr, e_baton = delta.make_editor(editor, self.pool)
+        e_ptr, e_baton = svn.delta.make_editor(editor, self.pool)
 
-        if util.SVN_VER_MAJOR == 0 and util.SVN_VER_MINOR == 37:
-            repos.svn_repos_dir_delta(old_root, '', '',
+        if svn.util.SVN_VER_MAJOR == 0 and svn.util.SVN_VER_MINOR == 37:
+            svn.repos.svn_repos_dir_delta(old_root, '', '',
                                       new_root, '', e_ptr, e_baton, None, None,
                                       0, 1, 0, 1, self.pool)
         else:
             def authz_cb(root, path, pool): return 1
-            repos.svn_repos_dir_delta(old_root, '', '',
+            svn.repos.svn_repos_dir_delta(old_root, '', '',
                                       new_root, '', e_ptr, e_baton, authz_cb,
                                       0, 1, 0, 1, self.pool)
 
     def display(self):
         """Pretty HTML view of the changeset"""
         self.render_diffs()
-        Module.display(self)
+        Module.Module.display(self)
 
     def display_hdf(self):
         self.render_diffs()
-        Module.display_hdf(self)
+        Module.Module.display_hdf(self)
 
     def display_diff (self):
         """Raw Unified Diff version"""

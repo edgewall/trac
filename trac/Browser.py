@@ -19,17 +19,18 @@
 #
 # Author: Jonas Borgström <jonas@edgewall.com>
 
+import time
 import string
 import posixpath
 
-from svn import core, fs, util, delta
+import svn
 
-from Module import Module
-from Wiki import wiki_to_oneliner
-from util import *
+import util
 import perm
+import Module
+from Wiki import wiki_to_oneliner
 
-class Browser(Module):
+class Browser(Module.Module):
     template_name = 'browser.cs'
 
     def get_info(self, path, revision, rev_specified):
@@ -37,51 +38,51 @@ class Browser(Module):
         Extracts information for a given path and revision
         """
         try:
-            root = fs.revision_root(self.fs_ptr, revision, self.pool)
-        except core.SubversionException:
+            root = svn.fs.revision_root(self.fs_ptr, revision, self.pool)
+        except svn.core.SubversionException:
             raise TracError('Invalid revision number: %d' % revision)
 
-        node_type = fs.check_path(root, path, self.pool)
-        if not node_type in [core.svn_node_dir, core.svn_node_file]:
+        node_type = svn.fs.check_path(root, path, self.pool)
+        if not node_type in [svn.core.svn_node_dir, svn.core.svn_node_file]:
             raise TracError('"%s": no such file or directory in revision %d' \
                             % (path, revision), 'No such file or directory')
 
         # Redirect to the file module if the requested path happens
         # to point to a regular file
-        if fs.is_file(root, path, self.pool):
+        if svn.fs.is_file(root, path, self.pool):
             if rev_specified:
                 self.req.redirect(self.env.href.file(path, revision))
             else:
                 self.req.redirect(self.env.href.log(path))
 
-        entries = fs.dir_entries(root, path, self.pool)
+        entries = svn.fs.dir_entries(root, path, self.pool)
         info = []
         for item in entries.keys():
             fullpath = posixpath.join(path, item)
 
-            is_dir = fs.is_dir(root, fullpath, self.pool)
+            is_dir = svn.fs.is_dir(root, fullpath, self.pool)
             if is_dir:
                 name = item + '/'
                 fullpath = fullpath + '/'
             else:
                 name = item
 
-            created_rev = fs.node_created_rev(root, fullpath, self.pool)
-            date = fs.revision_prop(self.fs_ptr, created_rev,
-                                    util.SVN_PROP_REVISION_DATE,
+            created_rev = svn.fs.node_created_rev(root, fullpath, self.pool)
+            date = svn.fs.revision_prop(self.fs_ptr, created_rev,
+                                    svn.util.SVN_PROP_REVISION_DATE,
                                     self.pool)
             if date:
-                date_seconds = util.svn_time_from_cstring(date,
+                date_seconds = svn.util.svn_time_from_cstring(date,
                                                           self.pool) / 1000000
                 date = time.strftime('%x %X', time.localtime(date_seconds))
             else:
                 date_seconds = 0
                 date = ''
-            author = fs.revision_prop(self.fs_ptr, created_rev,
-                                      util.SVN_PROP_REVISION_AUTHOR,
+            author = svn.fs.revision_prop(self.fs_ptr, created_rev,
+                                      svn.util.SVN_PROP_REVISION_AUTHOR,
                                       self.pool)
-            change = fs.revision_prop(self.fs_ptr, created_rev,
-                                             util.SVN_PROP_REVISION_LOG,
+            change = svn.fs.revision_prop(self.fs_ptr, created_rev,
+                                             svn.util.SVN_PROP_REVISION_LOG,
                                              self.pool)
             item = {
                 'name'         : name,
@@ -89,10 +90,10 @@ class Browser(Module):
                 'created_rev'  : created_rev,
                 'date'         : date,
                 'date_seconds' : date_seconds,
-                'age'          : pretty_age(date_seconds),
+                'age'          : util.pretty_age(date_seconds),
                 'is_dir'       : is_dir,
                 'author'       : author,
-                'change'       : wiki_to_oneliner(shorten_line(wiki_escape_newline(change)),
+                'change'       : wiki_to_oneliner(util.shorten_line(util.wiki_escape_newline(change)),
                                                   self.req.hdf, self.env)
                 }
             if rev_specified:
@@ -147,9 +148,9 @@ class Browser(Module):
 
         if not rev:
             rev_specified = 0
-            rev = fs.youngest_rev(self.fs_ptr, self.pool)
+            rev = svn.fs.youngest_rev(self.fs_ptr, self.pool)
         elif rev.lower() in ['head', 'latest', 'trunk']:
-            rev = fs.youngest_rev(self.fs_ptr, self.pool)
+            rev = svn.fs.youngest_rev(self.fs_ptr, self.pool)
             rev_specified = 1
         else:
             try:
@@ -157,7 +158,7 @@ class Browser(Module):
                 rev_specified = 1
             except:
                 rev_specified = 0
-                rev = fs.youngest_rev(self.fs_ptr, self.pool)
+                rev = svn.fs.youngest_rev(self.fs_ptr, self.pool)
 
         info = self.get_info(path, rev, rev_specified)
         if order == 'date':
@@ -165,16 +166,16 @@ class Browser(Module):
         elif order == 'Date':
             info.sort(lambda y, x: cmp(x['date_seconds'], y['date_seconds']))
         elif order == 'Name':
-            info.sort(lambda y, x: cmp(rstrip(x['name'], '/'),
-                                       rstrip(y['name'], '/')))
+            info.sort(lambda y, x: cmp(util.rstrip(x['name'], '/'),
+                                       util.rstrip(y['name'], '/')))
         else:
-            info.sort(lambda x, y: cmp(rstrip(x['name'], '/'),
-                                       rstrip(y['name'], '/')))
+            info.sort(lambda x, y: cmp(util.rstrip(x['name'], '/'),
+                                       util.rstrip(y['name'], '/')))
 
         # Always put directories before files
         info.sort(lambda x, y: cmp(y['is_dir'], x['is_dir']))
 
-        add_dictlist_to_hdf(info, self.req.hdf, 'browser.items')
+        util.add_dictlist_to_hdf(info, self.req.hdf, 'browser.items')
 
         self.generate_path_links(path, rev, rev_specified)
 

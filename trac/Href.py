@@ -21,7 +21,7 @@
 
 import os
 import urllib
-from util import *
+from util import href_join
 
 class Href:
     def __init__(self, base):

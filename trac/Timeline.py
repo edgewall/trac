@@ -19,14 +19,15 @@
 #
 # Author: Jonas Borgström <jonas@edgewall.com>
 
-from util import *
-from Module import Module
-from Wiki import wiki_to_oneliner
-import perm
-
 import time
 import string
 import urllib
+
+import perm
+import util
+from Module import Module
+from Wiki import wiki_to_oneliner
+
 
 class Timeline (Module):
     template_name = 'timeline.cs'
@@ -111,29 +112,29 @@ class Timeline (Module):
                     'tdata': row['tdata'],
                     'type': int(row['type']),
                     'message': row['message'] or '',
-                    'author': escape(row['author'])
+                    'author': util.escape(row['author'])
                     }
 
             if item['type'] == CHANGESET:
                 item['href'] = self.env.href.changeset(item['idata'])
                 msg = item['message']
-                item['shortmsg'] = escape(shorten_line(msg))
-                item['msg_nowiki'] = escape(msg)
+                item['shortmsg'] = util.escape(util.shorten_line(msg))
+                item['msg_nowiki'] = util.escape(msg)
                 item['message'] = wiki_to_oneliner(msg, self.req.hdf,
                                                    self.env)
 
             elif item['type'] == WIKI:
                 item['href'] = self.env.href.wiki(row['tdata'])
-                item['message'] = wiki_to_oneliner(shorten_line(item['message']),
+                item['message'] = wiki_to_oneliner(util.shorten_line(item['message']),
                                                    self.req.hdf, self.env)
             elif item['type'] == MILESTONE:
                 item['href'] = self.env.href.milestone(item['message'])
-                item['message'] = escape(item['message'])
+                item['message'] = util.escape(item['message'])
             else:
                 item['href'] = self.env.href.ticket(item['idata'])
                 msg = item['message']
-                item['shortmsg'] = escape(shorten_line(msg))
-                item['message'] = wiki_to_oneliner(shorten_line(item['message']),
+                item['shortmsg'] = util.escape(util.shorten_line(msg))
+                item['message'] = wiki_to_oneliner(util.shorten_line(item['message']),
                                                    self.req.hdf, self.env)
 
             info.append(item)
@@ -184,7 +185,7 @@ class Timeline (Module):
 
         info = self.get_info (start, stop, maxrows, ticket,
                               changeset, wiki, milestone)
-        add_dictlist_to_hdf(info, self.req.hdf, 'timeline.items')
+        util.add_dictlist_to_hdf(info, self.req.hdf, 'timeline.items')
         self.req.hdf.setValue('title', 'Timeline')
 
     def display_rss(self):
