@@ -1,7 +1,7 @@
 # -*- coding: iso8859-1 -*-
 #
 # Copyright (C) 2004 Edgewall Software
-# Copyright (C) 2004 Oliver Rutherford
+# Copyright (C) 2004 Oliver Rutherfurd
 #
 # Trac is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License as
@@ -18,11 +18,11 @@
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #
 # Author: Daniel Lundin
-#         Oliver Rutherford
+#         Oliver Rutherfurd
 #
 # Trac support for reStructured Text, including a custom 'trac' directive
 #
-# 'trac' directive code by Oliver Rutherford.
+# 'trac' directive code by Oliver Rutherfurd.
 #
 # Inserts `reference` nodes for TracLinks into the document tree.
 
