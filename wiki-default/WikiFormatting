@@ -102,11 +102,11 @@ Urls ending with .png, .gif or .jpg will be converted to an IMG-tag.
 
 Example:
 {{{
-http://www.edgewall.com/gfx/media/edgewall_logo_symbol_only_152x142.png
+http://www.edgewall.com/gfx/trac_example_image.png
 }}}
 Display:
 
-http://www.edgewall.com/gfx/media/edgewall_logo_symbol_only_152x142.png
+http://www.edgewall.com/gfx/trac_example_image.png
 
 
 == Other stuff ==
