@@ -21,7 +21,7 @@
 
 from trac.core import module_factory, open_environment
 from trac.Href import Href
-from trac.util import escape
+from trac.util import escape, href_join
 from trac.web.auth import Authenticator
 from trac.web.session import Session
 
@@ -39,7 +39,7 @@ class RedirectException(Exception):
     pass
 
 
-class Request:
+class Request(object):
     """
     This class is used to abstract the interface between different frontends.
 
@@ -89,7 +89,7 @@ class Request:
 
     def redirect(self, url):
         self.send_response(302)
-        self.send_header('Location', url)
+        self.send_header('Location', absolute_url(self, url))
         self.send_header('Content-Type', 'text/plain')
         self.send_header('Pragma', 'no-cache')
         self.send_header('Cache-control', 'no-cache')
@@ -243,7 +243,7 @@ def populate_hdf(hdf, env, req=None):
         hdf['cgi_location'] = req.cgi_location
         hdf['trac.authname'] = escape(req.authname)
 
-def _reconstruct_base_url(req):
+def absolute_url(req, path=None):
     host = req.get_header('Host')
     if req.get_header('X-Forwarded-Host'):
         host = req.get_header('X-Forwarded-Host')
@@ -257,12 +257,12 @@ def _reconstruct_base_url(req):
         else:
             host = req.server_name
     from urlparse import urlunparse
-    return urlunparse((req.scheme, host, req.cgi_location, None, None, None))
+    return urlunparse((req.scheme, host, path, None, None, None))
 
 def dispatch_request(path_info, req, env):
     base_url = env.get_config('trac', 'base_url')
     if not base_url:
-        base_url = _reconstruct_base_url(req)
+        base_url = absolute_url(req, req.cgi_location)
     req.base_url = base_url
     _parse_path_info(req.args, path_info)
 
