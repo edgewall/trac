@@ -81,7 +81,7 @@ class Ticket (Module):
             # We shouldn't escape the description
             # wiki_to_html will take care of that
             if fields[i] == 'description':
-                info[fields[i]] = row[i]
+                info[fields[i]] = row[i] or ''
             else:
                 info[fields[i]] = escape(row[i])
         return info
