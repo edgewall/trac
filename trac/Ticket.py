@@ -195,27 +195,32 @@ class Ticket(UserDict):
         return log
 
 
-def insert_custom_fields(env, hdf, vals = {}):
+def get_custom_fields(env):
     cfg = env.get_config_items('ticket-custom')
-    if not cfg: return None,None
-    allvars = {}
-    vnames = []
-    for k,v in cfg:
-        allvars[k] = v
-        if '.' not in k:
-            vnames.append(k)
-    if not allvars: return
+    if not cfg:
+        return []
+    return [k for k,v in cfg if '.' not in k]
+
+
+def insert_custom_fields(env, hdf, vals = {}):
+    vnames = get_custom_fields(env)
+    if not vnames:
+        return None,None
+    items = {}
+    cfg = env.get_config_items('ticket-custom')
+    for k, v in cfg:
+        items[k] = v
     i = 0
     for name in vnames:
-        vtype = allvars[name]
-        vval = vals.get('custom_' + name, allvars.get(name + '.value', ''))
+        vtype = items.get(name)
+        vval = vals.get('custom_' + name, items.get(name + '.value', ''))
         pfx = 'ticket.custom.%i' % i
         hdf.setValue('%s.name' % pfx, name)
         hdf.setValue('%s.type' % pfx, vtype)
-        hdf.setValue('%s.label' % pfx, allvars.get(name + '.label', ''))
+        hdf.setValue('%s.label' % pfx, items.get(name + '.label', ''))
         hdf.setValue('%s.value' % pfx, vval)
         if vtype == 'select' or vtype == 'radio':
-            opts = allvars.get(name + '.options', '').split('|')
+            opts = items.get(name + '.options', '').split('|')
             j = 0
             for o in opts:
                 hdf.setValue('%s.option.%d' % (pfx, j), o)
@@ -226,8 +231,8 @@ def insert_custom_fields(env, hdf, vals = {}):
             if vval in util.TRUE:
                 hdf.setValue('%s.selected' % pfx, '1')
         elif vtype == 'textarea':
-            cols = allvars.get(name + '.width', allvars.get(name + '.cols', ''))
-            rows = allvars.get(name + '.height', allvars.get(name + '.rows', ''))
+            cols = items.get(name + '.width', items.get(name + '.cols', ''))
+            rows = items.get(name + '.height', items.get(name + '.rows', ''))
             hdf.setValue('%s.width' % pfx, cols)
             hdf.setValue('%s.height' % pfx, rows)
         i += 1
@@ -434,46 +439,73 @@ class QueryModule (Module):
         cursor = self.db.cursor()
         cursor.execute(sql)
         results = []
+        previous_id = 0
         while 1:
             row = cursor.fetchone()
             if not row:
                 break
             id = int(row['id'])
-            result = {
-                'id': id,
-                'href': self.env.href.ticket(id),
-                'summary': row['summary'] or '',
-                'status': row['status'] or '',
-                'component': row['component'] or '',
-                'owner': row['owner'] or '',
-                'priority': row['priority'] or ''
-            }
-            results.append(result)
+            if id == previous_id:
+                result = results[-1]
+                result[row['name']] = row['value']
+            else:
+                result = {
+                    'id': id,
+                    'href': self.env.href.ticket(id),
+                    'summary': row['summary'] or '',
+                    'status': row['status'] or '',
+                    'component': row['component'] or '',
+                    'owner': row['owner'] or '',
+                    'priority': row['priority'] or ''
+                }
+                results.append(result)
+                previous_id = id
         return results
 
     def render(self):
         self.perm.assert_permission(perm.TICKET_VIEW)
 
+        # FIXME: the user should be able to configure which columns should
+        # be displayed
         headers = [ 'id', 'summary', 'status', 'component', 'owner' ]
 
-        constraints = [k for k in self.args.keys() if k in Ticket.std_fields]
-        self.req.hdf.setValue('constraints', str(constraints))
+        cols = headers
+        if not 'priority' in cols:
+            cols.append('priority')
 
-        sql = 'SELECT * FROM ticket'
+        custom_fields = get_custom_fields(self.env)
+        constraints = [k for k in self.args.keys()
+                       if k in Ticket.std_fields or k in custom_fields]
+        sql = 'SELECT ' + ', '.join(['ticket.%s AS %s' % (header, header)
+                                     for header in headers])
+        if [k for k in constraints if k in custom_fields]:
+            sql += ', ticket_custom.name AS name, ' \
+                   'ticket_custom.value AS value ' \
+                   'FROM ticket OUTER JOIN ticket_custom ON id = ticket'
+        else:
+            sql += ' FROM ticket'
+
         clauses = []
         constraints_dict = {}
         for i in range(len(constraints)):
             clause = []
+            col = constraints[i]
+            if not col in Ticket.std_fields:
+                col = 'value'
             vals = self.args[constraints[i]]
             self.req.hdf.setValue('vals', str(vals))
             if type(vals) == list:
                 for j in range(len(vals)):
                     vals[j] = vals[j].value
-                    clause.append('%s = \'%s\'' % (constraints[i], vals[j]))
+                    clause.append('%s=\'%s\'' % (col, vals[j]))
             else:
                 vals = vals.value
-                clause.append('%s = \'%s\'' % (constraints[i], vals))
-            clauses.append('(' + ' OR '.join(clause) + ')')
+                clause.append('%s=\'%s\'' % (col, vals))
+            if not constraints[i] in Ticket.std_fields:
+                clauses.append('(name=\'%s\' AND (' % constraints[i] +
+                               ' OR '.join(clause) + '))')
+            else:
+                clauses.append('(' + ' OR '.join(clause) + ')')
             constraints_dict[constraints[i]] = vals;
         if clauses:
             sql += ' WHERE ' + ' AND '.join(clauses)
