@@ -1,4 +1,4 @@
-<?cs include "../templates/header.cs"?>
+<?cs include "header.cs"?>
 
 <h3>Timeline</h3>
 
@@ -72,5 +72,5 @@ view wiki changes<br>
 
 </table>
 
-<?cs include "../templates/footer.cs"?>
+<?cs include "footer.cs"?>
 

@@ -1,10 +1,10 @@
-<?cs include: "../templates/header.cs" ?>
+<?cs include: "header.cs" ?>
 
-<script language="JavaScript" src="<?cs var:htdocs_location ?>svntrac.js">
+<script language="JavaScript" src="<?cs var:htdocs_location ?>trac.js">
 </script>
 
 <p>
 <?cs var:content ?>
 </p>
 
-<?cs include: "../templates/footer.cs" ?>
+<?cs include: "footer.cs" ?>

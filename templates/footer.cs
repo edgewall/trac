@@ -2,8 +2,8 @@
   <table id="page-footer" width="100%" bgcolor="#eeeeee">
     <tr>
       <td align="left" class="footer">
-	Powered by <a href="http://svntrac.edgewall.com/">SVNTRAC
-	<?cs var:svntrac.version ?></a>
+	Powered by <a href="http://trac.edgewall.com/">Trac
+	<?cs var:trac.version ?></a>
       </td>
       <td align="right" class="footer">
 	Please visit <a href="http://www.edgewall.com/">www.edgewall.com.</a>

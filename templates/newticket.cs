@@ -1,5 +1,5 @@
-<?cs include "../templates/header.cs" ?>
-<?cs include "../templates/macros.cs" ?>
+<?cs include "header.cs" ?>
+<?cs include "macros.cs" ?>
 
 <h3>New ticket:</h3>
 
@@ -57,4 +57,4 @@
 </table>
 </form>
 
-<?cs include "../templates/footer.cs" ?>
+<?cs include "footer.cs" ?>

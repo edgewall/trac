@@ -93,5 +93,5 @@ def assert_permission (action):
 def perm_to_hdf(hdf):
     global perm_cache
     for action in perm_cache.keys():
-        hdf.setValue('svntrac.acl.' + action, 'true')
+        hdf.setValue('trac.acl.' + action, 'true')
     

@@ -22,10 +22,10 @@
 
 import os
 
-import svntrac.db
-from svntrac.util import *
-from svntrac.auth import authenticate_user
-from  svntrac import Href
+import trac.db
+from trac.util import *
+from trac.auth import authenticate_user
+from trac import Href
         
 if __name__ == '__main__':
     if not os.getenv('REMOTE_USER'):
@@ -34,8 +34,8 @@ if __name__ == '__main__':
                'svntrac missconfigured, please enable apache auth on this url'
                '</pre></body></html>')
     else:
-        svntrac.db.init()
-        config = svntrac.db.load_config()
+        trac.db.init()
+        config = trac.db.load_config()
         Href.initialize(config)
         authenticate_user()
         redirect (Href.href.wiki())

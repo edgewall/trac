@@ -1,4 +1,4 @@
-<?cs include: "../templates/header.cs"?>
+<?cs include: "header.cs"?>
 
 <h3>Revision <?cs var:revision?>: <?cs var:browser.path_links?></h3>
 
@@ -86,4 +86,4 @@
 
 </table>
 
-<?cs include:"../templates/footer.cs"?>
+<?cs include:"footer.cs"?>

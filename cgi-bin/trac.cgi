@@ -21,6 +21,6 @@
 # Author: Jonas Borgström <jonas@edgewall.com>
 
 if __name__ == '__main__':
-    import svntrac
-    svntrac.main()
+    import trac
+    trac.main()
 

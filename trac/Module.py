@@ -50,17 +50,17 @@ class Module:
                               self.config['general']['htdocs_location'])
         self.cgi.hdf.setValue('cgi_location',
                               self.config['general']['cgi_location'])
-        self.cgi.hdf.setValue('svntrac.active_module', self._name)
-        self.cgi.hdf.setValue('svntrac.authname', auth.get_authname())
-        self.cgi.hdf.setValue('svntrac.href.wiki', href.wiki())
-        self.cgi.hdf.setValue('svntrac.href.browser', href.browser('/'))
-        self.cgi.hdf.setValue('svntrac.href.timeline', href.timeline())
-        self.cgi.hdf.setValue('svntrac.href.report', href.report())
-        self.cgi.hdf.setValue('svntrac.href.newticket', href.newticket())
-        self.cgi.hdf.setValue('svntrac.href.search', href.search())
-        self.cgi.hdf.setValue('svntrac.href.login', href.login())
-        self.cgi.hdf.setValue('svntrac.href.logout', href.logout())
-        self.cgi.hdf.setValue('svntrac.version', '0.0.1')
+        self.cgi.hdf.setValue('trac.active_module', self._name)
+        self.cgi.hdf.setValue('trac.authname', auth.get_authname())
+        self.cgi.hdf.setValue('trac.href.wiki', href.wiki())
+        self.cgi.hdf.setValue('trac.href.browser', href.browser('/'))
+        self.cgi.hdf.setValue('trac.href.timeline', href.timeline())
+        self.cgi.hdf.setValue('trac.href.report', href.report())
+        self.cgi.hdf.setValue('trac.href.newticket', href.newticket())
+        self.cgi.hdf.setValue('trac.href.search', href.search())
+        self.cgi.hdf.setValue('trac.href.login', href.login())
+        self.cgi.hdf.setValue('trac.href.logout', href.logout())
+        self.cgi.hdf.setValue('trac.version', '0.0.1')
 
         
         self.cgi.hdf.setValue('header_logo.link',
@@ -78,7 +78,7 @@ class Module:
                               self.config['header_logo']['width'])
         self.cgi.hdf.setValue('header_logo.height',
                               self.config['header_logo']['height'])
-        self.cgi.hdf.setValue('svntrac.href.logout', href.logout())
+        self.cgi.hdf.setValue('trac.href.logout', href.logout())
         
         templates_dir = self.config['general']['templates_dir']
         self.cgi.hdf.setValue('hdf.loadpaths.0', templates_dir)

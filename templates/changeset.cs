@@ -1,4 +1,4 @@
-<?cs include "../templates/header.cs"?>
+<?cs include "header.cs"?>
 
 <h3>Change set <?cs var:changeset.revision ?></h3>
 

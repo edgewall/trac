@@ -1,4 +1,4 @@
-<?cs include "../templates/header.cs"?>
+<?cs include "header.cs"?>
 
 <h3>Log history for: <?cs var:log.path ?></h3>
 
@@ -31,4 +31,4 @@
 
 </table>
 
-<?cs include "../templates/footer.cs"?>
+<?cs include "footer.cs"?>

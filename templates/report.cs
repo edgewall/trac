@@ -1,4 +1,4 @@
-<?cs include "../templates/header.cs" ?>
+<?cs include "header.cs" ?>
 
 <h3>Reports</h3>
 
@@ -83,4 +83,4 @@
 <?cs /if?>
 
 
-<?cs include "../templates/footer.cs" ?>
+<?cs include "footer.cs" ?>

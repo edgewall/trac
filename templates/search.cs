@@ -1,4 +1,4 @@
-<?cs include "../templates/header.cs"?>
+<?cs include "header.cs"?>
 
 <h3>Search</h3>
 <form action="<?cs var:cgi_location ?>" method="GET">
@@ -46,5 +46,5 @@
 <br>
 Note: only the first 20 results are shown.
 
-<?cs include "../templates/footer.cs"?>
+<?cs include "footer.cs"?>
 
