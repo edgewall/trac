@@ -513,9 +513,7 @@ class TicketModule (Module):
 
         if preview:
             # Use user supplied values
-            for field in Ticket.std_fields:
-                if req.args.has_key(field) and field != 'reporter':
-                    ticket[field] = req.args.get(field)
+            ticket.populate(req.args)
             req.hdf['ticket.action'] = action
             req.hdf['ticket.reassign_owner'] = req.args.get('reassign_owner')
             reporter_id = req.args.get('author')
