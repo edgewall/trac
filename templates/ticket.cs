@@ -134,7 +134,7 @@ onfocus="document.getElementById('comment').focus()">Add/Change
   </div>
   <div class="tkt-prop">
   <label for="comment">Add Comment (You may use 
-      <a href="<?cs var:$trac.href.wiki ?>WikiFormatting">WikiFormatting</a> here):</label><br />
+      <a tabindex="42" href="<?cs var:$trac.href.wiki ?>WikiFormatting">WikiFormatting</a> here):</label><br />
 
   <textarea id="comment" name="comment" class="textwidget"
             rows="10" cols="78" style="width: 97%; max-width: 694px"></textarea>
@@ -144,6 +144,11 @@ onfocus="document.getElementById('comment').focus()">Add/Change
  <fieldset>
    <legend>Change Properties</legend>
  <div id="nt-props"  style="padding: .5em">
+<div style="margin-bottom: 1em">
+<label for="summary" class="nt-label">Summary:</label>
+<input id="summary" type="text" name="summary" class="textwidget" size="80"
+       value="<?cs var:ticket.summary ?>" />
+</div>
   <div id="nt-left">
    <label for="component" class="nt-label">Component:</label>
    <?cs call:hdf_select(ticket.components, "component", ticket.component) ?>

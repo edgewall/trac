@@ -31,7 +31,7 @@ input,textarea,select { background: #fff; }
 input[type="submit"]:hover,input[type="reset"]:hover,a.fake-button:hover { background: #ccb; }
 input[type="submit"],input[type="reset"],.fake-button,a.fake-button {
  background: #eee;
- color: #666; 
+ color: #222; 
  border: 1px outset #ccc;
  padding: .1em .5em;
 }
