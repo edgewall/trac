@@ -165,8 +165,7 @@ class Search(Module):
             elif item['type'] == 3:
                 item['wiki_href'] = self.env.href.wiki(row['data'])
 
-            shortmsg = shorten_line(msg)
-            item['shortmsg'] = shortmsg
+            item['shortmsg'] = escape(shorten_line(msg))
             item['message'] = escape(self.shorten_result(msg, keywords))
             info.append(item)
         return info
