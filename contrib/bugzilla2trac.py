@@ -26,7 +26,7 @@ Many enhancements, Bill Soudan <bill@soudan.net>
 #
 # If you run this script on a version not listed here and it is successful,
 # please report it to the Trac mailing list so we can update the list.
-BZ_VERSION = '2.11'
+BZ_VERSION = '2.16.5'
 
 # MySQL connection parameters for the Bugzilla database.  These can also 
 # be specified on the command line.
@@ -119,7 +119,7 @@ sys.setdefaultencoding('latin1')
 class Attachment:
     def __init__(self, name, data):
         self.filename = name
-        self.file = StringIO.StringIO(data)
+        self.file = StringIO.StringIO(data.tostring())
   
 # simple field translation mapping.  if string not in
 # mapping, just return string, otherwise return value
@@ -186,9 +186,9 @@ class TracDatabase(object):
         c = self.db().cursor()
         c.execute("""DELETE FROM component""")
         for comp in l:
-            print "inserting component ", comp[key]
-            c.execute("""INSERT INTO component (name) VALUES (%s)""",
-                      comp[key].encode('utf-8'))
+            print "inserting component '",comp[key],"', owner",  comp['owner']
+            c.execute("""INSERT INTO component (name, owner) VALUES (%s, %s)""",
+                      comp[key].encode('utf-8'), comp['owner'].encode('utf-8'))
         self.db().commit()
     
     def setVersionList(self, v, key):
@@ -239,6 +239,7 @@ class TracDatabase(object):
                   severity.encode('utf-8'), priority.encode('utf-8'), owner, reporter, cc,
                   version, milestone.encode('utf-8'), status.lower(), resolution,
                   summary.encode('utf-8'), desc, keywords)
+        
         self.db().commit()
         return self.db().db.sqlite_last_insert_rowid()
     
@@ -263,7 +264,8 @@ class TracDatabase(object):
         
     def addAttachment(self, id, attachment, description, author):
         print 'inserting attachment for ticket %s -- %s' % (id, description)
-        self.env.create_attachment(self.db(), 'ticket', str(id), attachment, description,
+        attachment.filename = attachment.filename.encode('utf-8')
+        self.env.create_attachment(self.db(), 'ticket', str(id), attachment, description.encode('utf-8'),
             author, 'unknown')
         
     def getLoginName(self, cursor, userid):
@@ -348,11 +350,13 @@ def convert(_db, _host, _user, _password, _env, _force):
 
     print
     print "2. import components..."
-    sql = "SELECT DISTINCTROW value FROM components"
+    sql = "SELECT value, initialowner AS owner FROM components"
     if PRODUCTS:
        sql += " WHERE %s" % productFilter('program', PRODUCTS)
     mysql_cur.execute(sql)
     components = mysql_cur.fetchall()
+    for component in components:
+    		component['owner'] = trac.getLoginName(mysql_cur, component['owner'])
     trac.setComponentList(components, 'value')
 
     print
@@ -459,6 +463,7 @@ def convert(_db, _host, _user, _password, _env, _force):
         mysql_cur.execute("SELECT * FROM bugs_activity WHERE bug_id = %s ORDER BY bug_when" % bugid)
         bugs_activity = mysql_cur.fetchall()
         resolution = ''
+        ticketChanges = []
         for activity in bugs_activity:
             field_name = trac.getFieldName(mysql_cur, activity['fieldid']).lower()
             
@@ -512,11 +517,24 @@ def convert(_db, _host, _user, _password, _env, _force):
                     keywords.append(kw)
                     keywordChange = True
 
+            ticketChange = {}
+            ticketChange['ticket'] = bugid
+            ticketChange['time'] = activity['bug_when']
+            ticketChange['author'] = trac.getLoginName(mysql_cur, activity['who'])
+            ticketChange['field'] = field_name
+            ticketChange['oldvalue'] = removed
+            ticketChange['newvalue'] = added
+
             if keywordChange:
                 newKeywords = string.join(keywords, " ")
-                trac.addTicketChange(ticket=bugid, time=activity['bug_when'],
-                    author=trac.getLoginName(mysql_cur, activity['who']),
-                    field='keywords', oldvalue=oldKeywords, newvalue=newKeywords)
+                ticketChangeKw = ticketChange
+                ticketChangeKw['field'] = 'keywords'
+                ticketChangeKw['oldvalue'] = oldKeywords
+                ticketChangeKw['newvalue'] = newKeywords
+                #trac.addTicketChange(ticket=bugid, time=activity['bug_when'],
+                #    author=trac.getLoginName(mysql_cur, activity['who']),
+                #    field='keywords', oldvalue=oldKeywords, newvalue=newKeywords)
+                ticketChanges.append(ticketChangeKw)
 
             if field_name in IGNORED_ACTIVITY_FIELDS:
                 continue
@@ -525,9 +543,24 @@ def convert(_db, _host, _user, _password, _env, _force):
             if added == removed:
                 continue
                 
-            trac.addTicketChange(ticket=bugid, time=activity['bug_when'],
-                author=trac.getLoginName(mysql_cur, activity['who']),
-                field=field_name, oldvalue=removed, newvalue=added)
+            # bugzilla splits large summary changes into two records
+            for oldChange in ticketChanges:
+              if (field_name == 'summary'
+                  and oldChange['field'] == ticketChange['field'] 
+                  and oldChange['time'] == ticketChange['time'] 
+                  and oldChange['author'] == ticketChange['author']):
+                  oldChange['oldvalue'] += " " + ticketChange['oldvalue'] 
+                  oldChange['newvalue'] += " " + ticketChange['newvalue']
+                  break
+            else:
+                #trac.addTicketChange(ticket=bugid, time=activity['bug_when'],
+                #    author=trac.getLoginName(mysql_cur, activity['who']),
+                #    field=field_name, oldvalue=removed, newvalue=added)
+                ticketChanges.append (ticketChange)
+
+        for ticketChange in ticketChanges:
+            trac.addTicketChange (**ticketChange)
+
 
         # for some reason, bugzilla v2.11 seems to clear the resolution
         # when you mark a bug as closed.  let's remember it and restore
@@ -551,7 +584,7 @@ def convert(_db, _host, _user, _password, _env, _force):
         attachments = mysql_cur.fetchall()
         for a in attachments:
             author = trac.getLoginName(mysql_cur, a['submitter_id'])
-
+            
             tracAttachment = Attachment(a['filename'], a['thedata'])
             trac.addAttachment(bugid, tracAttachment, a['description'], author)
             
