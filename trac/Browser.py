@@ -143,6 +143,7 @@ class Browser(Module):
             parent = string.join(self.path.split('/')[:-2], '/') + '/'
             self.cgi.hdf.setValue('browser.parent_href', href.browser(parent))
 
+        self.cgi.hdf.setValue('title', 'Browser: ' + self.path)
         self.cgi.hdf.setValue('browser.path', self.path)
         self.cgi.hdf.setValue('browser.revision', str(rev))
         self.cgi.hdf.setValue('browser.sort_order', order)

@@ -235,7 +235,8 @@ class Ticket (Module):
                    self.cgi.hdf, 'ticket.milestones')
         sql_to_hdf('SELECT name FROM version ORDER BY name',
                    self.cgi.hdf, 'ticket.versions')
-        self.cgi.hdf.setValue('ticket.title', 'Ticket #%d' % id)
+        # Page title
+        self.cgi.hdf.setValue('title', 'Ticket #%d' % id)
         self.insert_ticket_data(self.cgi.hdf, id)
         self.cgi.hdf.setValue('ticket.description',
                               wiki_to_html(info['description']))

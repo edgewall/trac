@@ -455,15 +455,15 @@ class Wiki(Module):
             out.write ('<h2>edit <a href="%s">%s</a></h2>' %
                        (href.wiki(page.name), page.name))
             page.render_edit (out, self.cgi.hdf)
-            self.cgi.hdf.setValue('title', 'wiki - edit')
+            self.cgi.hdf.setValue('title', 'Wiki Page: ' + name + ' (edit)')
         elif action == 'preview':
             out.write ('<h2>edit <a href="%s">%s</a></h2>' %
                        (href.wiki(page.name), page.name))
             page.render_preview (out, self.cgi.hdf)
-            self.cgi.hdf.setValue('title', 'wiki - preview')
+            self.cgi.hdf.setValue('title', 'Wiki Page: ' + name + ' (preview)')
         else:
             page.render_view (out, self.cgi.hdf)
-            self.cgi.hdf.setValue('title', 'wiki - view')
+            self.cgi.hdf.setValue('title', 'Wiki Page: ' + name)
         self.cgi.hdf.setValue('content', out.getvalue())
 
 

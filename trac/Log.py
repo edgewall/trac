@@ -39,7 +39,7 @@ class Log (Module):
         item = {
             'rev'    : rev,
             'author' : author,
-            'date'   : format_date (date, pool),
+            'date'   : svn_date_to_string (date, pool),
             'log'    : wiki_to_oneliner(log),
             'file_href': href.file(self.path, rev),
             'changeset_href': href.changeset(rev)
@@ -75,5 +75,6 @@ class Log (Module):
         info = self.get_info (self.path)
 
         self.generate_path_links()
+        self.cgi.hdf.setValue('title', 'Log: ' + self.path)
         self.cgi.hdf.setValue('log.path', self.path)
         add_dictlist_to_hdf(info, self.cgi.hdf, 'log.items')
