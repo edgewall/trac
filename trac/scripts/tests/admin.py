@@ -43,7 +43,6 @@ STRIP_TRAILING_SPACE = re.compile(r'( +)$', re.MULTILINE)
 
 
 def load_expected_results(file, pattern):
-
     """
     Reads the file, named file, which contains test results separated by
     the a regular expression, pattern.  The test results are returned as
@@ -52,15 +51,16 @@ def load_expected_results(file, pattern):
 
     expected = {}
     compiled_pattern = re.compile(pattern)
-    data = open(file, 'r').read()
-    for line in data.split('\n'):
-        match = re.search(compiled_pattern, line)
+    f = open(file, 'r')
+    for line in f:
+        line = line.rstrip()
+        match = compiled_pattern.search(line)
         if match:
             test = match.groups()[0]
             expected[test] = ''
         else:
-            expected[test] += line.rstrip() + '\n'
-    expected[test] = expected[test][:-1]
+            expected[test] += line + '\n'
+    f.close()
     return expected
 
 
@@ -71,18 +71,10 @@ class TracadminTestCase(EnvironmentTestBase, unittest.TestCase):
     .../trac/tests.py.
     """
 
-    def __init__(self, method_name):
-        """
-        Loads the expected test results in addition to the normal
-        initialization done by unittest.TestCase.
-        """
+    expected_results = load_expected_results(os.path.join(os.path.split(__file__)[0],
+                                            'admin-tests.txt'),
+                                            '===== (test_[^ ]+) =====')
 
-        unittest.TestCase.__init__(self, method_name)
-        self.expected_results = \
-            load_expected_results(os.path.join(os.path.split(__file__)[0],
-                                               'admin-tests.txt'),
-                                  '===== (test_.*) =====')
-    
     def setUp(self):
         EnvironmentTestBase.setUp(self)
         self._admin = admin.TracAdmin()
