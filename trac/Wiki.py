@@ -57,7 +57,7 @@ class CommonFormatter:
               r"""(?P<tickethref>#[0-9]+)""",
               r"""(?P<changesethref>\[[0-9]+\])""",
               r"""(?P<reporthref>\{[0-9]+\})""",
-              r"""(?P<svnhref>(svn:[^ ]+))""",
+              r"""(?P<svnhref>(svn:[^ ]+[^\.,]))""",
               r"""(?P<wikilink>(^|(?<=[^A-Za-z]))[A-Z][a-z/]*(?:[A-Z][a-z/]+)+)""",
               r"""(?P<fancylink>\[(?P<fancyurl>([a-z]+:[^ ]+)) (?P<linkname>.*?)\])"""]
 

@@ -31,10 +31,10 @@
             
   <td class="br-date-col"><?cs var:item.date ?></td>
   <td class="br-rev-col">
-    <a href="<?cs var:item.file_href ?>"><?cs var:item.rev ?></a>
+    <a class="block-link" href="<?cs var:item.file_href ?>"><?cs var:item.rev ?></a>
   </td>
   <td class="br-chg-col">
-    <a href="<?cs var:item.changeset_href ?>"><?cs var:item.rev ?></a>
+    <a class="block-link" href="<?cs var:item.changeset_href ?>"><?cs var:item.rev ?></a>
   </td>
   <td class="br-summary-col"><?cs var:item.log ?></td>
   </tr>

@@ -65,7 +65,7 @@ a.navbar-link, a.navbar-link-active,a.navbar-link-active:hover {
  margin: 0;
  padding: .1em 1.5em;
  color: #000;
- background: url(/trac_common/dots.gif) top left no-repeat;
+ background: url(/trac/dots.gif) top left no-repeat;
 }
 a.navbar-link-active { 
  background: #ccc;
@@ -167,7 +167,7 @@ tr.browser-listhdr th {
  padding: 0 1em 0 0;
  font-size: 13px;
 }
-#browser-list a { 
+#browser-list a.block-link { 
   display: block;
   border-bottom: none;
   background: transparent;

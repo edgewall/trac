@@ -22,6 +22,7 @@
 from util import *
 from Href import href
 from Module import Module
+from Wiki import wiki_to_oneliner
 import perm
 
 from svn import util, repos
@@ -39,7 +40,7 @@ class Log (Module):
             'rev'    : rev,
             'author' : author,
             'date'   : format_date (date, pool),
-            'log'    : log,
+            'log'    : wiki_to_oneliner(log),
             'file_href': href.file(self.path, rev),
             'changeset_href': href.changeset(rev)
             }
