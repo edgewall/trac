@@ -24,6 +24,9 @@ function addEvent(element, type, func){
 function searchHighlight() {
   if (!document.createElement) return;
 
+  var div = document.getElementById("searchable");
+  if (!div) return;
+
   function getSearchWords(url) {
     if (url.indexOf('?') == -1) return [];
     var queryString = url.substr(url.indexOf('?') + 1);
@@ -63,7 +66,6 @@ function searchHighlight() {
   var words = getSearchWords(document.URL);
   if (!words.length) words = getSearchWords(document.referrer);
   if (words.length) {
-    var div = document.getElementById("searchable");
     for (var w in words) {
       if (words[w].length) highlightWord(div, words[w], w);
     }
