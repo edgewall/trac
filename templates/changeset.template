@@ -1,5 +1,4 @@
 %(header)s
-%(toolbar)s
 
 <h3>Change set %(revision)s</h3>
 

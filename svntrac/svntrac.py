@@ -33,7 +33,7 @@ from perm import cache_permissions, PermissionError
 def load_config():
     import ConfigParser
     config = ConfigParser.ConfigParser()
-    config.read('/home/jonas/src/svntrac/svntrac.conf')
+    config.read('/home/jonas/badger/src/svntrac/svntrac.conf')
     return config
 
 modules = {

@@ -1,5 +1,4 @@
 %(header)s
-%(toolbar)s
 
 <h3>Revision %(revision)d: %(path_links)s</h3>
 

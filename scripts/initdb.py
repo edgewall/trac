@@ -2,7 +2,7 @@
 #
 # svntrac
 #
-# Copyright (C) 2002, 2003 Jonas Borgström <jonas@codefactory.se>
+# Copyright (C) 2003 Xyche Software
 #
 # svntrac is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License as
@@ -18,7 +18,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #
-# Author: Jonas Borgström <jonas@codefactory.se>
+# Author: Jonas Borgström <jonas@xyche.com>
 
 import sys
 import sqlite
