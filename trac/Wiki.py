@@ -303,13 +303,13 @@ class WikiModule(Module):
         version = req.args.get('version')
         if version:
             self.add_link('alternate',
-                '?version=%s&amp;format=txt' % version, 'Plain Text',
-                'text/plain')
-        else:
-            self.add_link('alternate', '?format=txt', 'Plain Text',
-                'text/plain')
+                          '?version=%s&amp;format=txt' % version, 'Plain Text',
+                          'text/plain')
             # Ask web spiders to not index old versions
             req.hdf['html.norobots'] = 1
+        else:
+            self.add_link('alternate', '?format=txt', 'Plain Text',
+                          'text/plain')
 
         page = WikiPage(pagename, version, self.perm, self.db)
 
