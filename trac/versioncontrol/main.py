@@ -203,4 +203,7 @@ class Authorizer(object):
 
     def has_permission(self, path):
         return 1
+    
+    def has_permission_for_changeset(self, rev):
+        return 1
 
