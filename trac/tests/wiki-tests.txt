@@ -74,22 +74,6 @@ CamelCase,CamelCase.CamelCase:CamelCase
 CamelCase
 </p>
 ==============================
-FooBar123
-FooB123ar
-Foo123
-FooBar1.0
-FooBar1.0.
-FooBar1.
-------------------------------
-<p>
-<a class="missing" href="/wiki/FooBar123">FooBar123?</a>
-<a class="missing" href="/wiki/FooB123ar">FooB123ar?</a>
-Foo123
-<a class="missing" href="/wiki/FooBar1.0">FooBar1.0?</a>
-<a class="missing" href="/wiki/FooBar1.0">FooBar1.0?</a>.
-<a class="missing" href="/wiki/FooBar1">FooBar1?</a>.
-</p>
-==============================
 ||http://example.com/img.png||text||
 ------------------------------
 <table class="wiki">
@@ -142,3 +126,9 @@ foo (<a class="missing" href="/wiki/FooBar">FooBar?</a> )
 == Heading with trailing white-space == 
 ------------------------------
 <h2>Heading with trailing white-space</h2>
+==============================
+A0B1, ST62T53C6, IR32V1H000
+------------------------------
+<p>
+A0B1, ST62T53C6, IR32V1H000
+</p>
