@@ -98,6 +98,10 @@ class Search(Module):
             if redir:
                 self.req.hdf.setValue('search.q', '')
                 self.req.redirect(redir)
+            elif len(query) < 3:
+                raise TracError('Search query too short. '
+                                'Query must be at least 3 characters long.',
+                                'Search Error')
 
         cursor = self.db.cursor ()
 
@@ -105,16 +109,19 @@ class Search(Module):
         if changeset:
             q.append('SELECT 1 as type, message AS title, message, author, '
                      ' \'\' AS keywords, rev AS data, time,0 AS ver'
-                     ' FROM revision WHERE %s' %
-                     self.query_to_sql(query, 'message'))
+                     ' FROM revision WHERE %s OR %s' % 
+                     (self.query_to_sql(query, 'message'),
+                      self.query_to_sql(query, 'author')))
         if tickets:
             q.append('SELECT 2 as type, summary AS title, '
                      ' description AS message, reporter AS author, keywords,'
                      ' id AS data, time,0 AS ver'
-                     ' FROM ticket WHERE %s OR %s OR %s' %
+                     ' FROM ticket WHERE %s OR %s OR %s OR %s OR %s' %
                       (self.query_to_sql(query, 'summary'),
                        self.query_to_sql(query, 'keywords'),
-                       self.query_to_sql(query, 'description')))
+                       self.query_to_sql(query, 'description'),
+                       self.query_to_sql(query, 'reporter'),
+                       self.query_to_sql(query, 'cc')))
         if wiki:
             q.append('SELECT 3 as type, text AS title, text AS message,'
                      ' author, \'\' AS keywords, w1.name AS data, time,'
@@ -123,8 +130,9 @@ class Search(Module):
                      ' (SELECT name,max(version) AS ver '
                      '    FROM wiki GROUP BY name) w2'
                      ' WHERE w1.version = w2.ver AND w1.name = w2.name  AND'
-                     ' (%s OR %s) ' %
+                     ' (%s OR %s OR %s) ' %
                      (self.query_to_sql(query, 'w1.name'),
+                      self.query_to_sql(query, 'w1.author'),
                       self.query_to_sql(query, 'w1.text')))
 
         if not q: return []
@@ -136,7 +144,7 @@ class Search(Module):
         self.log.debug("SQL Query: %s" % q_str)
         cursor.execute(q_str)
 
-        # Make the data more HDF-friendly
+        # Make the data more HDF-friendly2
         info = []
         while 1:
             row = cursor.fetchone()
