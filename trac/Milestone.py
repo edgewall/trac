@@ -116,11 +116,11 @@ class Milestone(Module):
                 if datestr:
                     date = self.parse_date(datestr)
             descr = self.args.get('descr', '')
-            if id == -1:
+            if not id:
                 self.create_milestone(name, date, descr)
             else:
                 self.update_milestone(id, name, date, descr)
-        elif id != -1:
+        elif id:
             self.req.redirect(self.env.href.milestone(id))
         else:
             self.req.redirect(self.env.href.roadmap())
@@ -246,11 +246,11 @@ class Milestone(Module):
         self.add_link('up', self.env.href.roadmap(), 'Roadmap')
 
         action = self.args.get('action', 'view')
-        id = self.args.get('id', -1)
+        id = self.args.get('id')
 
         if action == 'new':
             self.perm.assert_permission(perm.MILESTONE_CREATE)
-            self.render_editor(-1)
+            self.render_editor()
         elif action == 'edit':
             self.perm.assert_permission(perm.MILESTONE_MODIFY)
             self.render_editor(id)
@@ -283,8 +283,8 @@ class Milestone(Module):
             milestone_no += 1
         cursor.close()
 
-    def render_editor(self, id):
-        if id == -1:
+    def render_editor(self, id=None):
+        if not id:
             milestone = { 'name': '', 'date': '', 'descr': '' }
             self.req.hdf.setValue('title', 'New Milestone')
             self.req.hdf.setValue('milestone.mode', 'new')
