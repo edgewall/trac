@@ -172,7 +172,7 @@ class SubversionRepository(Repository):
                               self.pool)
 
     def get_oldest_rev(self):
-        rev = 1
+        rev = 0
         if self.scope == '/':
             return rev
         return self.history[-1]
