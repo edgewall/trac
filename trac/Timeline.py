@@ -50,10 +50,11 @@ class Timeline (Module):
         REOPENED_TICKET = 4
         WIKI = 5
         MILESTONE = 6
-        
+
         q = []
         if changeset:
-            q.append("SELECT time, rev AS idata, '' AS tdata, 1 AS type, message, author "
+            q.append("SELECT time, rev AS idata, '' AS tdata, 1 AS type, "
+                     " message, author "
                      "FROM revision WHERE time>=%s AND time<=%s" %
                      (start, stop))
         if tickets:
@@ -61,16 +62,22 @@ class Timeline (Module):
                      "summary AS message, reporter AS author "
                      "FROM ticket WHERE time>=%s AND time<=%s" %
                      (start, stop))
-            q.append("SELECT time, ticket AS idata, '' AS tdata, 3 AS type, "
-                     "'' AS message, author "
-                     "FROM ticket_change WHERE field='status' "
-                     "AND newvalue='closed' AND time>=%s AND time<=%s" %
-                     (start, stop))
             q.append("SELECT time, ticket AS idata, '' AS tdata, 4 AS type, "
                      "'' AS message, author "
                      "FROM ticket_change WHERE field='status' "
                      "AND newvalue='reopened' AND time>=%s AND time<=%s" %
                      (start, stop))
+            q.append("SELECT t1.time AS time, t1.ticket AS idata,"
+                     "       t2.newvalue AS tdata, 3 AS type,"
+                     "       t3.newvalue AS message, t1.author AS author"
+                     " FROM ticket_change t1"
+                     "   INNER JOIN ticket_change t2 ON t1.ticket = t2.ticket"
+                     "     AND t1.time = t2.time"
+                     "   LEFT OUTER JOIN ticket_change t3 ON t1.time = t3.time"
+                     "     AND t1.ticket = t3.ticket"
+                     " WHERE t1.field = 'status' AND t1.newvalue = 'closed'"
+                     "   AND t2.field = 'resolution' AND t3.field = 'comment'"
+                     "   AND t1.time >= %s AND t1.time <= %s" % (start,stop))
         if wiki:
             q.append("SELECT time, -1 AS idata, name AS tdata, 5 AS type, "
                      "comment AS message, author "
@@ -126,11 +133,12 @@ class Timeline (Module):
                 item['href'] = self.env.href.ticket(item['idata'])
                 msg = item['message']
                 item['shortmsg'] = escape(shorten_line(msg))
-                item['message'] = escape(item['message'])
+                item['message'] = wiki_to_oneliner(shorten_line(item['message']),
+                                                   self.req.hdf, self.env)
 
             info.append(item)
         return info
-        
+
     def render (self):
         self.perm.assert_permission(perm.TIMELINE_VIEW)
 
@@ -164,7 +172,7 @@ class Timeline (Module):
         milestone = self.args.has_key('milestone')
         if not (wiki or ticket or changeset or milestone):
             wiki = ticket = changeset = milestone = 1
-           
+
         if wiki:
             self.req.hdf.setValue('timeline.wiki', 'checked')
         if ticket:
@@ -173,7 +181,7 @@ class Timeline (Module):
             self.req.hdf.setValue('timeline.changeset', 'checked')
         if milestone:
             self.req.hdf.setValue('timeline.milestone', 'checked')
-        
+
         info = self.get_info (start, stop, maxrows, ticket,
                               changeset, wiki, milestone)
         add_dictlist_to_hdf(info, self.req.hdf, 'timeline.items')
