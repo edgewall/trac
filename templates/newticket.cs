@@ -14,7 +14,7 @@ addEvent(window, 'load', function() { document.getElementById('summary').focus()
 <div id="nt-ticket">
 <form action="<?cs var:cgi_location ?>" method="post">
 
- <div id="nt-body">
+ <div id="nt-body" style="width: 100%">
   <div class="tkt-prop">
    <label for="reporter">Your email or username:</label><br />
    <input type="text" id="reporter" name="reporter" size="40"

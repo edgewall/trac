@@ -100,14 +100,14 @@
           </div>
         <?cs else ?>
           <?cs if wiki.action == "edit" || wiki.action == "preview" ?>
-            <h3>Editing "<?cs var:wiki.page_name ?>"</h3>
+           <h3>Editing "<?cs var:wiki.page_name ?>"</h3>
+           <div style="width: 100%">
             <form action="<?cs var:wiki.current_href ?>" method="post">
-              <div>
-                <input type="hidden" name="edit_version"
-                     value="<?cs var:wiki.edit_version?>" />
-                <label for="text">Page source:</label><br />
-                <textarea id="text" name="text" rows="20" cols="80" style="width:100%"><?cs var:wiki.page_source ?></textarea>
-              </div>
+              <input type="hidden" name="edit_version"
+                  value="<?cs var:wiki.edit_version?>" />
+              <label for="text">Page source:</label><br />
+              <textarea id="text" name="text" rows="20" cols="80"
+                  style="width: 97%"><?cs var:wiki.page_source ?></textarea>
               <div id="help">
               <b>Note:</b> See <a href="<?cs var:$trac.href.wiki
 ?>/WikiFormatting">WikiFormatting</a> and <a href="<?cs var:$trac.href.wiki
@@ -133,6 +133,7 @@
                 </div>
               </fieldset>
             </form>
+           </div>
           <?cs /if ?>
           <?cs if wiki.action == "view" || wiki.action == "preview" ?>
             <?cs if wiki.action == "preview" ?><hr /><?cs /if ?>
