@@ -46,7 +46,7 @@ function searchHighlight() {
     // surrounding it with a span element
     if (node.nodeType == 3) { // Node.TEXT_NODE
       var pos = node.nodeValue.toLowerCase().indexOf(word.toLowerCase());
-      if (pos >= 0 && !node.parentNode.className.match(/^searchword\d/)) {
+      if (pos >= 0 && !/^searchword\d$/.test(node.parentNode.className)) {
         var span = document.createElement("span");
         span.className = "searchword" + (searchwordindex % 5);
         span.appendChild(document.createTextNode(
