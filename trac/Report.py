@@ -106,6 +106,8 @@ class Report (Module):
                                 'Invalid Report Number')
                 title = row[0] or ''
                 sql   = self.sql_sub_vars(row[1], args)
+                if not sql:
+                    raise TracError('Report %s has no SQL query.' % id)
                 description = row[2] or ''
                 cursor.execute(sql)
 
@@ -125,13 +127,13 @@ class Report (Module):
 #        info = map(lambda row: map(lambda x: escape(x), row), info)
         return [cols, info, title, description]
         
-    def create_report(self, title, sql):
+    def create_report(self, title, description, sql):
         self.perm.assert_permission(perm.REPORT_CREATE)
 
         cursor = self.db.cursor()
         
-        cursor.execute('INSERT INTO report (id, title, sql)'
-                        'VALUES (NULL, %s, %s)', title, sql)
+        cursor.execute('INSERT INTO report (id, title, sql, description)'
+                        'VALUES (NULL, %s, %s, %s)', title, sql, description)
         id = self.db.db.sqlite_last_insert_rowid()
         self.db.commit()
         self.req.redirect(self.href.report(id))
@@ -151,9 +153,9 @@ class Report (Module):
         self.perm.assert_permission(perm.REPORT_MODIFY)
 
         cursor = self.db.cursor()
-        title = self.args['title']
-        sql   = self.args['sql']
-        description   = self.args['description']
+        title = self.args.get('title', '')
+        sql   = self.args.get('sql', '')
+        description   = self.args.get('description', '')
 
         cursor.execute('UPDATE report SET title=%s, sql=%s, description=%s '
                        ' WHERE id=%s',
@@ -166,7 +168,7 @@ class Report (Module):
         cursor = self.db.cursor()
 
         if id == -1:
-            title = sql = ""
+            title = sql = description = ''
         else:
             cursor.execute('SELECT title, description, sql FROM report '
                            ' WHERE id=%s', id)
@@ -336,8 +338,13 @@ class Report (Module):
             return
         
         if action == 'create':
-            self.create_report(self.args['title'], self.args['sql'])
-        elif action == 'delete':
+            if not (self.args.has_key('sql') or self.args.has_key('title')):
+                action = 'list'
+            else:
+                self.create_report(self.args.get('title', ''),
+                                   self.args.get('description', ''),
+                                   self.args.get('sql', ''))
+        if action == 'delete':
             self.delete_report(id)
         elif action == 'commit':
             self.commit_changes(id)
@@ -347,7 +354,7 @@ class Report (Module):
             self.render_report_editor(id, 'create', 1)
         elif action == 'edit':
             self.render_report_editor(id, 'commit')
-        else:
+        elif action == 'list':
             self.render_report_list(id, report_args)
 
     def display_rss(self):
