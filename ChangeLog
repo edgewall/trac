@@ -1,21 +1,27 @@
-Trac 0.6 (March __, 2004)
+Trac 0.6 'Solanum' (March 23, 2004)
 http://svn.edgewall.com/repos/trac/trunk/
 
  * View diffs between wiki page edits.
+ * Improved Search module.
  * Support for tables in the wiki. (Thanks to Stephen Hansen)
  * Colored reports. Use colors to show priority, etc. 
  * Support for custom wiki processor macros.
- * ReStructuredText support (through a processor macro)
+ * ReStructuredText markup support (through a processor macro)
+ * HTML markup support (through a processor macro)
  * Report groups. Group results by a column.
  * Multi-line report rows.
  * Download report in CSV (Comma Separated Value) and tab-separated format
  * RSS 2.0 content syndication support in Timeline, Reports and Log/Browser
  * Better, locale-based date and time formatting. 
  * Wiki RecentChanges support.
- * Overall cosmetic improvements.
- * Fixed bugs: #16, #103, #110, #112, #113, #114, #117,#120
+ * Overall usability, consistency and cosmetic improvements.
+ * More documentation.
+ * Fixed bugs: #16, #68, #81, #88, #98, #101, #102, #103, #104, #105,
+               #110, #112, #113, #114, #117, #119, #120, #131, #132, #134,
+	       #135, #136, #138, #142, #145, #147, #151, #155, #170, #173,
+	       #174, #175, #177, #179
 	
-Trac 0.5.2 (March 2, 2004)
+Trac 0.5.2 'Nameless' (March 2, 2004)
 http://svn.edgewall.com/repos/trac/tags/trac-0.5.2
 
  * Performance improvements.
@@ -33,7 +39,7 @@ http://svn.edgewall.com/repos/trac/tags/trac-0.5.2
  * Fixed bugs: #69, #73, #77, #78, #79, #80, #84, #85, #86, #89, #90, 
                #91, #93, #97, 
 	
-Trac 0.5.1 (February 25, 2004)
+Trac 0.5.1 'Unnamed' (February 25, 2004)
 http://svn.edgewall.com/repos/trac/tags/trac-0.5.1
 	
  * Navbar now works properly on error pages.
@@ -42,7 +48,7 @@ http://svn.edgewall.com/repos/trac/tags/trac-0.5.1
  * trac-admin now works with python 2.1.
  * Fixed bugs: #74, #75, #76, #77.
 	
-Trac 0.5 (February 23, 2004)
+Trac 0.5 'Incognito' (February 23, 2004)
 http://svn.edgewall.com/repos/trac/tags/trac-0.5
 
  * First release.
