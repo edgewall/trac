@@ -4,7 +4,7 @@ Paragraph
    * Item 2
 Another paragraph
 ------------------------------
-<h1>Heading 1</h1>
+<h1 id="Heading1">Heading 1</h1>
 <p>
 Paragraph
 </p>
@@ -131,7 +131,7 @@ foo (<a class="missing wiki" href="/wiki/FooBar" rel="nofollow">FooBar?</a> )
 ==============================
 == Heading with trailing white-space == 
 ------------------------------
-<h2>Heading with trailing white-space</h2>
+<h2 id="Headingwithtrailingwhitespace">Heading with trailing white-space</h2>
 ==============================
 A0B1, ST62T53C6, IR32V1H000
 ------------------------------

@@ -45,7 +45,7 @@ class CommonFormatter:
               r"(?P<changesethref>!?(\[\d+\]|\br\d+\b))",
               r"(?P<reporthref>!?\{\d+\})",
               r"(?P<modulehref>!?((?P<modulename>bug|ticket|browser|source|repos|report|changeset|wiki|milestone|search):(?P<moduleargs>(&#34;(.*?)&#34;|'(.*?)')|([^ ]*[^'~_\., \)]))))",
-              r"(?P<wikihref>!?(^|(?<=[^A-Za-z]))[A-Z][a-z]+(?:[A-Z][a-z]*[a-z/])+(?=\Z|\s|[.,;:!?\)}\]]))",
+              r"(?P<wikihref>!?(^|(?<=[^A-Za-z]))[A-Z][a-z]+(?:[A-Z][a-z]*[a-z/])+(?:#[A-Za-z0-9]+)?(?=\Z|\s|[.,;:!?\)}\]]))",
               r"(?P<fancylink>!?\[(?P<fancyurl>([a-z]+:[^ ]+)) (?P<linkname>.*?)\])"]
 
     _open_tags = []
@@ -156,12 +156,16 @@ class CommonFormatter:
             return '<a href="%s">%s</a>' % (url, text)
 
     def _make_wiki_link(self, page, text):
+        anchor = ''
+        if page.find('#') != -1:
+            anchor = page[page.find('#'):]
+            page = page[:page.find('#')]
         if not self.env._wiki_pages.has_key(page):
             return '<a class="missing wiki" href="%s" rel="nofollow">%s?</a>' \
-                   % (self._href.wiki(page), text)
+                   % (self._href.wiki(page + anchor), text)
         else:
             return '<a class="wiki" href="%s">%s</a>' \
-                   % (self._href.wiki(page), text)
+                   % (self._href.wiki(page + anchor), text)
 
     def _make_changeset_link(self, rev, text):
         cursor = self.db.cursor()
@@ -263,7 +267,9 @@ class Formatter(CommonFormatter):
 
     _compiled_rules = re.compile('(?:' + string.join(_rules, '|') + ')')
     _processor_re = re.compile('#\!([a-zA-Z0-9/+-]+)')
+    _anchor_re = re.compile('[^\w\d]+')
     mime_type = ""
+    anchors = []
 
     hdf = None
 
@@ -368,12 +374,22 @@ class Formatter(CommonFormatter):
 
     def _heading_formatter(self, match, fullmatch):
         match = match.strip()
-        depth = min(len(fullmatch.group('hdepth')), 5)
         self.close_table()
         self.close_paragraph()
         self.close_indentation()
         self.close_list()
-        self.out.write('<h%d>%s</h%d>' % (depth, match[depth + 1:len(match) - depth - 1], depth))
+
+        depth = min(len(fullmatch.group('hdepth')), 5)
+        heading = match[depth + 1:len(match) - depth - 1]
+        anchor = anchor_base = self._anchor_re.sub('', heading)
+        if anchor[0].isdigit():
+            anchor = '_' + anchor
+        i = 1
+        while anchor in self.anchors:
+            anchor = anchor_base + str(i)
+            i += 1
+        self.anchors.append(anchor)
+        self.out.write('<h%d id="%s">%s</h%d>' % (depth, anchor, heading, depth))
         return ''
 
     def _svnimg_formatter(self, match, fullmatch):

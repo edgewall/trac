@@ -143,11 +143,15 @@ class Href:
             return href_join(self.base, 'about_trac')
 
     def wiki(self, page=None, version=None, action=None):
+        anchor = ''
+        if page and page.find("#") != -1:
+            anchor = page[page.find('#'):]
+            page = page[:page.find('#')]
         params = []
         if page:
-            href = href_join(self.base, 'wiki', page)
+            href = href_join(self.base, 'wiki', page) + anchor
         else:
-            href = href_join(self.base, 'wiki')
+            href = href_join(self.base, 'wiki') + anchor
         if action:
             params.append(('action', action))
         if version:

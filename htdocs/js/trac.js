@@ -98,3 +98,23 @@ function enableControl(id, enabled) {
     }
   }
 }
+
+function addHeadingLinks(container) {
+  var base = document.location.pathname;
+  function addLinks(elems) {
+    for (var i = 0; i < elems.length; i++) {
+      var hn = elems[i];
+      if (hn.id) {
+        var link = document.createElement('a');
+        link.href = base + '#' + hn.id;
+        link.className = 'anchor';
+        link.title = "Link to this section";
+        link.appendChild(document.createTextNode(" \u00B6"));
+        hn.appendChild(link);
+      }
+    }
+  }
+  for (var lvl = 0; lvl <= 6; lvl++) {
+    addLinks(container.getElementsByTagName('h' + lvl));
+  }
+}
