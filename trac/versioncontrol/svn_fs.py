@@ -52,17 +52,15 @@ def _get_history(path, authz, fs_ptr, pool, start, end=0):
     for item in history:
         yield item
 
-class Pool(str):
+class Pool(object):
     """
     A wrapper for a new Subversion `pool` object that ties the lifetime of the
     pool to that of a  given object.
     
-    Subversion's bindings use specially formatted strings to refer to objects,
-    so by subclassing `str` we allow instances to be used directly in place of
-    regular pools.
+    Instances of this type return their associated `pool when called.
     """
     
-    def __new__(klass, parent, parent_pool):
+    def __init__(self, parent, parent_pool):
         """
         Create a new pool that is a sub-pool of `parent_pool`, and arrange for
         `self.close` to be called up when the `parent` object is destroyed.
@@ -70,7 +68,7 @@ class Pool(str):
         The `parent` object must be weak-referenceable.  The returned `Pool`
         instance will have the value of the newly created pool. 
         """
-        self = str.__new__(klass, core.svn_pool_create(parent_pool))
+        self.pool = core.svn_pool_create(parent_pool)
         
         try:
             parent._pool_closer = weakref.ref(parent, self.close)
@@ -80,19 +78,22 @@ class Pool(str):
             
         return self
     
+    def __call__(self):
+        return self.pool
+    
     def close(self, x):
         """
         The parent object has been destroyed so it is time for us to go.
         
         -- So long, and thanks for all the fish!
         """
-        core.svn_pool_destroy(self)
+        core.svn_pool_destroy(self.pool)
 
 class SubversionRepository(Repository):
     """
     Repository implementation based on the svn.fs API.
     """
-
+    pool = property(lambda self: self._pool(), lambda self, pool: setattr(self, '_pool', pool))
     def __init__(self, path, authz, log):
         Repository.__init__(self, authz, log)
 
@@ -215,7 +216,7 @@ class SubversionRepository(Repository):
 
 
 class SubversionNode(Node):
-
+    pool = property(lambda self: self._pool(), lambda self, pool: setattr(self, '_pool', pool))
     def __init__(self, path, rev, authz, scope, fs_ptr, pool):
         self.authz = authz
         self.scope = scope
@@ -275,7 +276,7 @@ class SubversionNode(Node):
 
 
 class SubversionChangeset(Changeset):
-
+    pool = property(lambda self: self._pool(), lambda self, pool: setattr(self, '_pool', pool))
     def __init__(self, rev, authz, scope, fs_ptr, pool):
         self.rev = rev
         self.authz = authz
