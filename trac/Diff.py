@@ -114,7 +114,7 @@ def get_options(env, req, args, advanced=0):
     from Session import Session
     session = Session(env, req)
 
-    def get_bool_option(name, default=0):
+    def get_bool_option(session, args, name, default=0):
         pref = int(session.get('diff_' + name, default))
         arg = args.has_key(name)
         if args.has_key('update') and arg != pref:
@@ -138,17 +138,17 @@ def get_options(env, req, args, advanced=0):
         options = ['-u%d' % arg]
         req.hdf.setValue('diff.options.contextlines', str(arg))
 
-        arg = get_bool_option('ignoreblanklines')
+        arg = get_bool_option(session, args, 'ignoreblanklines')
         if arg:
             options.append('-B')
         req.hdf.setValue('diff.options.ignoreblanklines', str(arg))
 
-        arg = get_bool_option('ignorecase')
+        arg = get_bool_option(session, args, 'ignorecase')
         if arg:
             options.append('-i')
         req.hdf.setValue('diff.options.ignorecase', str(arg))
 
-        arg = get_bool_option('ignorewhitespace')
+        arg = get_bool_option(session, args, 'ignorewhitespace')
         if arg:
             options.append('-b')
         req.hdf.setValue('diff.options.ignorewhitespace', str(arg))
