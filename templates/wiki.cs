@@ -88,14 +88,6 @@
       </tr>
      <?cs /if ?>
     </table>
-   <div class="hide">
-     <hr />
-     <h2>-=&gt; Note: Diff viewing requires CSS2 &lt;=-</h2>
-     <p>
-       Output below might not be useful.
-     </p>
-     <hr />
-   </div>
    <div class="diff">
     <div id="legend">
      <h3>Legend:</h3>
@@ -193,4 +185,4 @@
  <?cs /if ?>
 
 </div>
-<?cs include: "footer.cs" ?>
+<?cs include "footer.cs" ?>

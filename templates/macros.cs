@@ -25,8 +25,18 @@
 
 <?cs def:diff_display(change) ?>
  <?cs each:block = change.blocks ?><tr>
-  <td class="<?cs var:block.type ?> left"><?cs var:block.text.old ?></td>
-  <td class="<?cs var:block.type ?> right"><?cs var:block.text.new ?></td>
+  <td class="<?cs var:block.type ?> left"><?cs
+   if:block.type == 'rem' || block.type == 'mod' ?><del><?cs
+    var:block.text.old ?></del><?cs
+   else ?><?cs
+    var:block.text.old ?><?cs
+   /if ?></td>
+  <td class="<?cs var:block.type ?> right"><?cs
+   if:block.type == 'add' || block.type == 'mod' ?><ins><?cs
+    var:block.text.new ?></ins><?cs
+   else ?><?cs
+    var:block.text.new ?><?cs
+   /if ?></td>
  </tr><?cs /each ?>
 <?cs /def ?>
 

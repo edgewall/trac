@@ -80,6 +80,8 @@
  width: 50%;
 }
 .diff table td.left { border-right: dashed 1px #d7d7d7 }
+.diff table td del, .diff table td ins { text-decoration: none }
+
 #overview {
  border: 1px solid #d7d7d7;
  padding: .5em;

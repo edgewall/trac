@@ -47,12 +47,6 @@
 </table>
 
 <div class="diff">
- <div class="hide">
-   <hr />
-   <h2>-=&gt; Note: Diff viewing requires CSS2 &lt;=-</h2>
-   <p>Output below might not be useful.</p>
-   <hr />
- </div>
  <div id="legend">
   <h3>Legend:</h3>
   <dl>
@@ -71,15 +65,15 @@
        <th>Rev <?cs var:file.rev.old ?></th>
        <th>Rev <?cs var:file.rev.new ?></th>
       </tr></thead>
-     <?cs each:change = file.changes ?>
-      <thead><tr>
-       <th>line <?cs var:change.line.old ?></th>
-       <th>line <?cs var:change.line.new ?></th>
-      </tr></thead>
       <tbody>
+      <?cs each:change = file.changes ?>
+       <tr>
+        <th>line <?cs var:change.line.old ?></th>
+        <th>line <?cs var:change.line.new ?></th>
+       </tr>
        <?cs call:diff_display(change) ?>
-      </tbody>
-     <?cs /each ?>
+      <?cs /each ?>
+     </tbody>
     </table>
    </li>
   <?cs /each ?>
@@ -87,4 +81,4 @@
 </div>
 
 </div>
-<?cs include:"footer.cs"?>
+<?cs include "footer.cs"?>
