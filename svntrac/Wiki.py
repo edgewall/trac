@@ -28,7 +28,6 @@ import perm
 from Module import Module
 from db import get_connection
 from util import *
-from xml.sax.saxutils import escape
 
 
 class Formatter:
@@ -39,15 +38,17 @@ class Formatter:
 
     _rules = r"""(?:(?P<bold>''')""" \
              r"""|(?P<italic>'')""" \
+             r"""|(?P<hr>-{5,})""" \
              r"""|(?P<heading>^\s*(?P<hdepth>=+)\s.*\s(?P=hdepth)$)""" \
              r"""|(?P<listitem>^(?P<ldepth>\s+)(?:\*|[0-9]+\.) )""" \
-             r"""|(?P<wikilink>[[A-Z][a-z]*(?:[A-Z][a-z]+)+)""" \
+             r"""|(?P<wikilink>(^|(?<=[^A-Za-z]))[A-Z][a-z]*(?:[A-Z][a-z]+)+)""" \
+             r"""|(?P<indent>^(?P<idepth>\s+)(?=[^\s]))""" \
              r"""|(?P<url>%(url_re)s)""" \
              r"""|(?P<fancylink>\[(?P<fancyurl>%(url_re)s) (?P<linkname>.*?)\])""" \
              r"""|(?P<underline>__))""" % { 'url_re': _url_re}
     
     # RE patterns used by other patterna
-    _helper_patterns = ('ldepth', 'hdepth', 'fancyurl', 'linkname')
+    _helper_patterns = ('idepth', 'ldepth', 'hdepth', 'fancyurl', 'linkname')
 
     def _bold_formatter(self, match, fullmatch):
         self._is_bold = not self._is_bold
@@ -56,6 +57,9 @@ class Formatter:
     def _italic_formatter(self, match, fullmatch):
         self._is_italic = not self._is_italic
         return ['</i>', '<i>'][self._is_italic]
+
+    def _hr_formatter(self, match, fullmatch):
+        return '<hr />'
 
     def _underline_formatter(self, match, fullmatch):
         self._is_underline = not self._is_underline
@@ -78,6 +82,7 @@ class Formatter:
         return '<a href="%s">%s</a>' % (link, name)
 
     def _set_list_depth(self, depth, type):
+        self._in_list = depth > 0
         current_depth = len(self._list_stack)
         diff = depth - current_depth
         if diff > 0:
@@ -87,19 +92,33 @@ class Formatter:
         elif diff < 0:
             for i in range(-diff):
                 self.out.write(self._list_stack.pop())
+            # If the list type changes...
+            if self._list_stack != [] and self._list_stack[0][2:4] != type:
+                self.out.write(self._list_stack.pop())
+                self.out.write('<%s>' % type)
+                self._list_stack.append('</%s>' % type)
+        # If the list type changes...
         elif self._list_stack != [] and self._list_stack[0][2:4] != type:
             self.out.write(self._list_stack.pop())
             self.out.write('<%s>' % type)
             self._list_stack.append('</%s>' % type)
         
     def _listitem_formatter(self, match, fullmatch):
-        depth = (len(fullmatch.group('ldepth')) + 1) / 2
+        depth = int((len(fullmatch.group('ldepth')) + 1) / 2)
+        #self.out.write('depth:%d' % depth)
         type = ['ol', 'ul'][match[depth * 2 - 1] == '*']
-        self._set_list_depth(depth, type)
         self._li_open = 1
+        self._set_list_depth(depth, type)
         return '<li>'
         #return '<li>%s</li>' % match[depth * 2 + 1:]
 
+    def _indent_formatter(self, match, fullmatch):
+        depth = int((len(fullmatch.group('idepth')) + 1) / 2)
+        #self.out.write('depth:%d' % depth)
+        self._set_list_depth(depth, 'ul')
+        return ' '
+        #return '<li>%s</li>' % match[depth * 2 + 1:]
+        
     def replace(self, fullmatch):
         for type, match in fullmatch.groupdict().items():
             if match and not type in Formatter._helper_patterns:
@@ -112,10 +131,12 @@ class Formatter:
         self.is_heading = 0
         self._li_open = 0
         self._list_stack = []
+        self._in_pre = 0
         for line in text.splitlines():
             self._is_bold = 0
             self._is_italic = 0
             self._is_underline = 0
+            self._in_list = 0
             line = escape(line)
             result = re.sub(rules, self.replace, line)
             # close any open list item
@@ -127,12 +148,14 @@ class Formatter:
             if p_open and self._list_stack != []:
                 out.write ('</p>')
                 p_open = 0
-                
-            if (self.is_heading or result == '') and p_open:
+
+            if not self._in_list:
                 self._set_list_depth(0, None)
+            if p_open and (self.is_heading or result == ''):
                 out.write ('</p>')
                 p_open = 0
-            elif not p_open and not self.is_heading and result != '' and self._list_stack==[]:
+            elif not p_open and not self.is_heading and not \
+                     self._in_list and result != '':
                 p_open = 1
                 out.write ('<p>')
                 
@@ -303,3 +326,24 @@ class Wiki(Module):
             self.namespace['title'] = 'wiki - view'
         self.namespace['content'] = out.getvalue()
 
+
+test_in = '''
+ * Foo
+   * Foo 2
+ 1. Foo 3
+=== FooBar ===
+  Hoj
+  Hoj2
+Hoj3
+'''
+test_out = '''<ul><li>Foo</li><ul><li>Foo 2</li></ul></ul><ol><li>Foo 3</li></ol><h3>FooBar</h3><ul> Hoj Hoj2</ul><p>Hoj3</p>'''
+
+def test():
+    result = StringIO.StringIO()
+    Formatter().format(test_in, result)
+    if result.getvalue() != test_out:
+        print 'now:', result.getvalue()
+        print 'correct:', test_out
+
+if __name__ == '__main__':
+    test()
