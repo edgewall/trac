@@ -39,8 +39,6 @@ from util import escape, TracError
 
 from __init__ import __version__
 
-warnings.filterwarnings('ignore', 'DB-API extension cursor.next() used')
-
 modules = {
 #    name           (module_name, class_name, requires_svn)
     'log'         : ('Log', 'Log', 1),

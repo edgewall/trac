@@ -29,74 +29,67 @@ import util
 from Module import Module
 from Wiki import wiki_to_oneliner, wiki_to_html
 
+AVAILABLE_FILTERS = ('wiki', 'ticket', 'changeset', 'milestone')
+
 
 class Timeline (Module):
     template_name = 'timeline.cs'
     template_rss_name = 'timeline_rss.cs'
 
-    def get_info(self, req, start, stop, maxrows, tickets, changeset, wiki,
-                 milestone):
-
-        tickets = tickets and self.perm.has_permission(perm.TICKET_VIEW)
-        changeset = changeset and self.perm.has_permission(perm.CHANGESET_VIEW)
-        wiki = wiki and self.perm.has_permission(perm.WIKI_VIEW)
-        milestone = milestone and self.perm.has_permission(perm.MILESTONE_VIEW)
-
-        if tickets == changeset == wiki == milestone == 0:
+    def get_info(self, req, start, stop, maxrows,
+                 filters=('tickets', 'changeset', 'wiki', 'milestone'),
+                 absurls=0):
+        perm_map = {'tickets': perm.TICKET_VIEW, 'changeset': perm.CHANGESET_VIEW,
+                    'wiki': perm.WIKI_VIEW, 'milestone': perm.MILESTONE_VIEW}
+        for k,v in perm_map.items():
+            if not self.perm.has_permission(v): filters.remove(k)
+        if not filters:
             return []
 
-        CHANGESET = 1
-        NEW_TICKET = 2
-        CLOSED_TICKET = 3
-        REOPENED_TICKET = 4
-        WIKI = 5
-        MILESTONE = 6
+        sql, params = [], []
+        if 'changeset' in filters:
+            sql.append("SELECT time,rev,'','changeset',message,author"
+                       " FROM revision WHERE time>=%s AND time<=%s")
+            params += (start, stop)
+        if 'ticket' in filters:
+            sql.append("SELECT time,id,'','newticket',summary,reporter"
+                       " FROM ticket WHERE time>=%s AND time<=%s")
+            params += (start, stop)
+            sql.append("SELECT time,ticket,'','closedticket','',author "
+                       "FROM ticket_change WHERE field='status' "
+                       "AND newvalue='reopened' AND time>=%s AND time<=%s")
+            params += (start, stop)
+            sql.append("SELECT t1.time,t1.ticket,t2.newvalue,'reopenedticket',"
+                       "t3.newvalue,t1.author"
+                       " FROM ticket_change t1"
+                       "   INNER JOIN ticket_change t2 ON t1.ticket = t2.ticket"
+                       "     AND t1.time = t2.time"
+                       "   LEFT OUTER JOIN ticket_change t3 ON t1.time = t3.time"
+                       "     AND t1.ticket = t3.ticket AND t3.field = 'comment'"
+                       " WHERE t1.field = 'status' AND t1.newvalue = 'closed'"
+                       "   AND t2.field = 'resolution'"
+                       "   AND t1.time >= %s AND t1.time <= %s")
+            params += (start,stop)
+        if 'wiki' in filters:
+            sql.append("SELECT time,-1,name,'wiki',comment,author"
+                       " FROM wiki WHERE time>=%s AND time<=%s")
+            params += (start, stop)
+        if 'milestone' in filters:
+            sql.append("SELECT completed,-1,'','milestone',name,''" 
+                       " FROM milestone WHERE completed>=%s AND completed<=%s")
+            params += (start, stop)
 
-        q = []
-        if changeset:
-            q.append("SELECT time, rev AS idata, '' AS tdata, 1 AS type, "
-                     " message, author "
-                     "FROM revision WHERE time>=%s AND time<=%s" %
-                     (start, stop))
-        if tickets:
-            q.append("SELECT time, id AS idata, '' AS tdata, 2 AS type, "
-                     "summary AS message, reporter AS author "
-                     "FROM ticket WHERE time>=%s AND time<=%s" %
-                     (start, stop))
-            q.append("SELECT time, ticket AS idata, '' AS tdata, 4 AS type, "
-                     "'' AS message, author "
-                     "FROM ticket_change WHERE field='status' "
-                     "AND newvalue='reopened' AND time>=%s AND time<=%s" %
-                     (start, stop))
-            q.append("SELECT t1.time AS time, t1.ticket AS idata,"
-                     "       t2.newvalue AS tdata, 3 AS type,"
-                     "       t3.newvalue AS message, t1.author AS author"
-                     " FROM ticket_change t1"
-                     "   INNER JOIN ticket_change t2 ON t1.ticket = t2.ticket"
-                     "     AND t1.time = t2.time"
-                     "   LEFT OUTER JOIN ticket_change t3 ON t1.time = t3.time"
-                     "     AND t1.ticket = t3.ticket AND t3.field = 'comment'"
-                     " WHERE t1.field = 'status' AND t1.newvalue = 'closed'"
-                     "   AND t2.field = 'resolution'"
-                     "   AND t1.time >= %s AND t1.time <= %s" % (start,stop))
-        if wiki:
-            q.append("SELECT time, -1 AS idata, name AS tdata, 5 AS type, "
-                     "comment AS message, author "
-                        "FROM wiki WHERE time>=%s AND time<=%s" %
-                     (start, stop))
-        if milestone:
-            q.append("SELECT completed AS time, -1 AS idata, '' AS tdata, 6 AS type, "
-                     "name AS message, '' AS author " 
-                     "FROM milestone WHERE completed>=%s AND completed<=%s" %
-                     (start, stop))
-
-        q_str = string.join(q, ' UNION ALL ')
-        q_str += ' ORDER BY time DESC'
+        sql = ' UNION ALL '.join(sql) + ' ORDER BY time DESC'
         if maxrows:
-            q_str += ' LIMIT %d' % maxrows
+            sql += ' LIMIT %d'
+            params += (maxrows,)
 
         cursor = self.db.cursor()
-        cursor.execute(q_str)
+        cursor.execute(sql, params)
+
+        href = self.env.href
+        if absurls:
+            href = self.env.abs_href
 
         # Make the data more HDF-friendly
         info = []
@@ -106,22 +99,23 @@ class Timeline (Module):
                 break
 
             if len(info) == 0:
-                req.check_modified(int(row['time']))
+                req.check_modified(int(row[0]))
 
-            t = time.localtime(int(row['time']))
-            gmt = time.gmtime(int(row['time']))
-            item = {'time': time.strftime('%H:%M', t),
-                    'date': time.strftime('%x', t),
-                    'datetime': time.strftime('%a, %d %b %Y %H:%M:%S GMT', gmt),
-                    'idata': int(row['idata']),
-                    'tdata': util.escape(row['tdata']),
-                    'type': int(row['type']),
-                    'message': row['message'] or '',
-                    'author': util.escape(row['author'] or 'anonymous')
-                    }
+            t = time.localtime(int(row[0]))
+            gmt = time.gmtime(int(row[0]))
+            item = {
+                'time': time.strftime('%H:%M', t),
+                'date': time.strftime('%x', t),
+                'datetime': time.strftime('%a, %d %b %Y %H:%M:%S GMT', gmt),
+                'idata': int(row[1]),
+                'tdata': util.escape(row[2]),
+                'type': row[3],
+                'message': row[4] or '',
+                'author': util.escape(row[5] or 'anonymous')
+            }
 
-            if item['type'] == CHANGESET:
-                item['href'] = util.escape(self.env.href.changeset(item['idata']))
+            if item['type'] == 'changeset':
+                item['href'] = util.escape(href.changeset(item['idata']))
                 msg = item['message']
                 item['shortmsg'] = util.escape(util.shorten_line(msg))
                 item['msg_nowiki'] = util.escape(msg)
@@ -129,9 +123,9 @@ class Timeline (Module):
                                                                req.hdf,
                                                                self.env,
                                                                self.db,
-                                                               absurls=1))
+                                                               absurls=absurls))
                 item['message'] = wiki_to_oneliner(msg, self.env, self.db,
-                                                   absurls=1)
+                                                   absurls=absurls)
                 try:
                     max_node = int(self.env.get_config('timeline', 'changeset_show_files', 0))
                 except ValueError, e:
@@ -165,24 +159,25 @@ class Timeline (Module):
                         node_count += 1
                     item['node_list'] = node_list + ': '
 
-            elif item['type'] == WIKI:
-                item['href'] = util.escape(self.env.href.wiki(row['tdata']))
+            elif item['type'] == 'wiki':
+                item['href'] = util.escape(href.wiki(item['tdata']))
                 item['message'] = wiki_to_oneliner(util.shorten_line(item['message']),
-                                                   self.env, self.db, absurls=1)
-            elif item['type'] == MILESTONE:
-                item['href'] = util.escape(self.env.href.milestone(item['message']))
+                                                   self.env, self.db, absurls=absurls)
+                item['msg_escwiki'] = util.escape(item['message'])
+            elif item['type'] == 'milestone':
+                item['href'] = util.escape(href.milestone(item['message']))
                 item['message'] = util.escape(item['message'])
-            else:               # TICKET
-                item['href'] = util.escape(self.env.href.ticket(item['idata']))
+            else: # newticket, closedticket, reopenedticket
+                item['href'] = util.escape(href.ticket(item['idata']))
                 msg = item['message']
                 item['shortmsg'] = util.escape(util.shorten_line(msg))
                 item['message'] = wiki_to_oneliner(util.shorten_line(item['message']),
-                                                   self.env, self.db, absurls=1)
+                                                   self.env, self.db, absurls=absurls)
                 item['msg_escwiki'] = util.escape(wiki_to_html(msg,
                                                                req.hdf,
                                                                self.env,
                                                                self.db,
-                                                               absurls=1))
+                                                               absurls=absurls))
             # Kludges for RSS
             item['author.rss'] = item['author']
             if item['author.rss'].find('@') == -1:
@@ -219,41 +214,24 @@ class Timeline (Module):
         start = stop - (daysback + 1) * 86400
         maxrows = int(req.args.get('max', 0))
 
-        wiki = req.args.has_key('wiki') 
-        ticket = req.args.has_key('ticket')
-        changeset = req.args.has_key('changeset')
-        milestone = req.args.has_key('milestone')
-        if not (wiki or ticket or changeset or milestone):
-            wiki = ticket = changeset = milestone = 1
+        filters = [k for k in AVAILABLE_FILTERS if k in req.args]
+        if not filters:
+            filters = AVAILABLE_FILTERS[:]
 
-        rssargs = []
-        if wiki:
-            rssargs.append('wiki=on')
-        if ticket:
-            rssargs.append('ticket=on')
-        if changeset:
-            rssargs.append('changeset=on')
-        if milestone:
-            rssargs.append('milestone=on')
-        if rssargs:
-            rssargs = '&' + '&'.join(rssargs)
-        self.add_link('alternate',
-            '?daysback=90&max=50%s&format=rss' % rssargs,
-            'RSS Feed', 'application/rss+xml', 'rss')
-
-        info = self.get_info(req, start, stop, maxrows, ticket, changeset, wiki,
-                             milestone)
-        util.add_to_hdf(info, req.hdf, 'timeline.items')
+        self.add_link('alternate', '?daysback=90&max=50&%s&format=rss' \
+                      % '&'.join(['%s=on' % k for k in filters]),
+                      'RSS Feed', 'application/rss+xml', 'rss')
 
         req.hdf.setValue('title', 'Timeline')
-        if wiki:
-            req.hdf.setValue('timeline.wiki', 'checked')
-        if ticket:
-            req.hdf.setValue('timeline.ticket', 'checked')
-        if changeset:
-            req.hdf.setValue('timeline.changeset', 'checked')
-        if milestone:
-            req.hdf.setValue('timeline.milestone', 'checked')
+        for f in filters:
+            req.hdf.setValue('timeline.%s' % f, 'checked')
+
+        absurls = 0
+        if req.args.get('format') == 'rss':
+            absurls = 1
+        info = self.get_info(req, start, stop, maxrows, filters,
+                             absurls=absurls)
+        util.add_to_hdf(info, req.hdf, 'timeline.items')
 
     def display_rss(self, req):
         base_url = self.env.get_config('trac', 'base_url', '')
