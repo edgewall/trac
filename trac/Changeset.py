@@ -223,6 +223,6 @@ class Changeset (Module.Module):
     def display_diff (self):
         """Raw Unified Diff version"""
         self.req.send_response(200)
-        self.req.send_header('Content-Type', 'text/plain')
+        self.req.send_header('Content-Type', 'text/plain;charset=utf-8')
         self.req.end_headers()
         self.render_diffs(UnifiedDiffEditor)

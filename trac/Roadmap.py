@@ -105,7 +105,7 @@ class Roadmap(Module):
 
     def display_ics(self):
         self.req.send_response(200)
-        self.req.send_header('Content-Type', 'text/calendar')
+        self.req.send_header('Content-Type', 'text/calendar;charset=utf-8')
         self.req.end_headers()
 
         priority_mapping = { 'highest': '1', 'high': '3', 'normal': '5',

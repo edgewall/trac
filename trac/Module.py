@@ -88,6 +88,6 @@ class Module:
                     self.req.write('%s}\r\n' % prefix)
                 node = node.next()
         self.req.send_response(200)
-        self.req.send_header('Content-Type', 'text/plain')
+        self.req.send_header('Content-Type', 'text/plain;charset=utf-8')
         self.req.end_headers()
         hdf_tree_walk (self.req.hdf.child())

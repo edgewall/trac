@@ -88,7 +88,7 @@ class FileCommon(Module.Module):
             i += self.CHUNK_SIZE
 
     def display_text(self):
-        self.mime_type = 'text/plain'
+        self.mime_type = 'text/plain;charset=utf-8'
         self.display_raw()
 
 class Attachment(FileCommon):

@@ -324,6 +324,6 @@ class WikiModule(Module):
 
     def display_txt(self):
         self.req.send_response(200)
-        self.req.send_header('Content-Type', 'text/plain')
+        self.req.send_header('Content-Type', 'text/plain;charset=utf-8')
         self.req.end_headers()
         self.req.write(self.page.text)

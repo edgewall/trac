@@ -432,7 +432,7 @@ class Report (Module):
 
     def display_csv(self,sep=','):
         self.req.send_response(200)
-        self.req.send_header('Content-Type', 'text/plain')
+        self.req.send_header('Content-Type', 'text/plain;charset=utf-8')
         self.req.end_headers()
         titles = ''
         if self.error:
@@ -448,7 +448,7 @@ class Report (Module):
     def display_sql(self):
         self.perm.assert_permission(perm.REPORT_SQL_VIEW)
         self.req.send_response(200)
-        self.req.send_header('Content-Type', 'text/plain')
+        self.req.send_header('Content-Type', 'text/plain;charset=utf-8')
         self.req.end_headers()
         rid = self.req.hdf.getValue('report.id', '')
         if self.error or not rid:
