@@ -28,12 +28,10 @@ import os
 import re
 import sys
 
-
 class CGIRequest(Request):
     """
     Request implementation for CGI.
     """
-
     def __init__(self, environ=os.environ, input=sys.stdin, output=sys.stdout):
         Request.__init__(self)
         self.__environ = environ
@@ -50,10 +48,14 @@ class CGIRequest(Request):
             self.scheme = 'https'
         if self.__environ.get('HTTP_COOKIE'):
             self.incookie.load(self.__environ.get('HTTP_COOKIE'))
-        self.args = TracFieldStorage(self.__input, environ=self.__environ,
-                                     keep_blank_values=1)
+        self.args = self._getFieldStorage()
 
         self.cgi_location = self.__environ.get('SCRIPT_NAME')
+
+
+    def _getFieldStorage(self):
+        return TracFieldStorage(self.__input, environ=self.__environ,
+                                keep_blank_values=1)
 
     def read(self, len):
         return self.__input.read(len)
@@ -90,7 +92,6 @@ class TracFieldStorage(cgi.FieldStorage):
         if not self.has_key(name):
             raise KeyError(name)
         self.list = filter(lambda x, name=name: x.name != name, self.list)
-
 
 def run():
     locale.setlocale(locale.LC_ALL, '')
