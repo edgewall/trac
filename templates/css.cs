@@ -434,3 +434,44 @@ li.tkt-chg-change { margin: 0 }
 
 <?cs if:trac.active_module == 'about' ?>
 <?cs /if ?>
+
+
+<?cs if:trac.active_module == 'newticket' ?>
+/* New Ticket */
+
+#nt-props-left, #nt-props-right { 
+ display: block;
+ float: left;
+}
+
+#nt-props-left { 
+ border-right: 1px dotted #d7d7d7;
+}
+
+#nt-props-middle,#nt-props-bottom { 
+ clear: both;
+ border-top: 1px dotted #d7d7d7;
+ margin-bottom: .5em 0;
+ padding: .5em 0;
+ width: 38em;
+}
+
+#nt-submit {
+ margin: .5em 1em;
+ text-align: right;
+}
+
+
+.nt-prop { margin: .25em; }
+
+.nt-label { 
+ display: block;
+ float: left;
+ min-width: 6em;
+ margin-right: .5em;
+ text-align: right;
+}
+
+.nt-widget {  padding-right: .5em }
+
+<?cs /if ?>
