@@ -269,7 +269,7 @@ class Formatter(CommonFormatter):
     _processor_re = re.compile('#\!([a-zA-Z0-9/+-]+)')
     _anchor_re = re.compile('[^\w\d\.-:]+', re.UNICODE)
     mime_type = ""
-    anchors = []
+    anchors = None
 
     hdf = None
 
@@ -287,6 +287,7 @@ class Formatter(CommonFormatter):
     def __init__(self, hdf, env, db, absurls=0):
         CommonFormatter.__init__(self, env, db, absurls)
         self.hdf = hdf
+        self.anchors = []
 
     def default_processor(hdf, text, env):
         return '<pre class="wiki">' + util.escape(text) + '</pre>'
