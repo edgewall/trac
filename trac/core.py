@@ -339,47 +339,38 @@ class CGIRequest(Request):
         self.remote_addr = self.__environ.get('REMOTE_ADDR')
         self.remote_user = self.__environ.get('REMOTE_USER')
         self.command = self.__environ.get('REQUEST_METHOD')
+        if self.__environ.get('HTTP_COOKIE'):
+            self.incookie.load(self.__environ.get('HTTP_COOKIE'))
 
-        host = self.__environ.get('SERVER_NAME')
-        proto_port = ''
+        scheme = 'http'
         port = int(self.__environ.get('SERVER_PORT', 0))
+        if self.__environ.get('HTTPS') in ('on', '1') or port == 443:
+            scheme = 'https'
 
-        if self.__environ.get('HTTPS') in ('on', '1'):
-            # when you support Apache's way, you get it 60% right
-            proto  = 'https'
-            if port and port != 443:
-               proto_port = ':%d' % port
-        elif port == 443:
-            proto = 'https'
-        else:
-           proto = 'http'
-           if port and port != 80:
-               proto_port = ':%d' % port
-
-        if self.__environ.has_key('HTTP_X_FORWARDED_HOST'):
-            self.base_url = '%s://%s%s' % (
-                            proto,
-                            self.__environ['HTTP_X_FORWARDED_HOST'],
-                            self.cgi_location)
-        else:
-            self.base_url = '%s://%s%s%s' % (
-                            proto, host, proto_port, self.cgi_location)
+        # Reconstruct the absolute base URL
+        host = self.__environ.get('HTTP_HOST')
+        if self.__environ.has_key('HTTP_X_FORWARDED_FOR'):
+            host = self.__environ['HTTP_X_FORWARDED_FOR']
+        if not host:
+            # Missing host header, so reconstruct the host from the
+            # server name and port
+            default_port = {'http': 80, 'https': 443}
+            name = self.__environ.get('SERVER_NAME', 'localhost')
+            if port and port != default_port[scheme]:
+                host = '%s:%d' % (name, port)
+            else:
+                host = name
+        from urlparse import urlunparse
+        self.base_url = urlunparse((scheme, host, self.cgi_location, None, None,
+                                   None))
 
         self.args = TracFieldStorage(self.__input, environ=self.__environ,
                                      keep_blank_values=1)
 
-        if self.__environ.get('HTTP_COOKIE'):
-            self.incookie.load(self.__environ.get('HTTP_COOKIE'))
-        if self.__environ.get('HTTP_HOST'):
-            self.hdf.setValue('HTTP.Host',
-                              self.__environ.get('HTTP_HOST').split(':')[0])
-        if self.__environ.get('PATH_INFO'):
-            self.hdf.setValue('HTTP.PathInfo',
-                              self.__environ.get('PATH_INFO'))
-
-        self.hdf.setValue('HTTP.Protocol', proto)
-        if proto_port:
-            self.hdf.setValue('HTTP.Port', str(port))
+        # Populate the HDF with some HTTP info
+        # FIXME: Ideally, the templates shouldn't even need this data
+        self.hdf.setValue('HTTP.Protocol', scheme)
+        self.hdf.setValue('HTTP.Host', host)
 
     def read(self, len):
         return self.__input.read(len)
@@ -427,8 +418,8 @@ class RedirectException(Exception):
 
 
 def dispatch_request(path_info, req, env):
-
     parse_path_info(req.args, path_info)
+    req.hdf.setValue('HTTP.PathInfo', path_info)
 
     db = env.get_db_cnx()
 

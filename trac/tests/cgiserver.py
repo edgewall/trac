@@ -25,6 +25,13 @@ class CGIRequestTestCase(unittest.TestCase):
         req.init_request()
         self.assertEqual('http://example.org/trac', req.base_url)
 
+    def test_base_url_host(self):
+        environ = {'SCRIPT_NAME': '/trac', 'SERVER_NAME': 'localhost',
+                   'SERVER_PORT': '8080', 'HTTP_HOST': 'example.org'}
+        req = CGIRequest(environ)
+        req.init_request()
+        self.assertEqual('http://example.org/trac', req.base_url)
+
     def test_base_url_nondefaultport(self):
         environ = {'SCRIPT_NAME': '/trac', 'SERVER_NAME': 'example.org',
                    'SERVER_PORT': '8080'}
@@ -39,6 +46,14 @@ class CGIRequestTestCase(unittest.TestCase):
         req.init_request()
         self.assertEqual('https://example.org/trac', req.base_url)
 
+    def test_base_url_https_host(self):
+        environ = {'SCRIPT_NAME': '/trac', 'SERVER_NAME': 'localhost',
+                   'SERVER_PORT': '8443', 'HTTPS': 'on',
+                   'HTTP_HOST': 'example.org'}
+        req = CGIRequest(environ)
+        req.init_request()
+        self.assertEqual('https://example.org/trac', req.base_url)
+
     def test_base_url_https_nondefaultport(self):
         environ = {'SCRIPT_NAME': '/trac', 'SERVER_NAME': 'example.org',
                    'SERVER_PORT': '8443', 'HTTPS': 'on'}
@@ -48,7 +63,7 @@ class CGIRequestTestCase(unittest.TestCase):
 
     def test_base_url_proxy(self):
         environ = {'SCRIPT_NAME': '/trac', 'SERVER_NAME': 'some_proxy.org',
-                   'HTTP_X_FORWARDED_HOST': 'example.org'}
+                   'HTTP_X_FORWARDED_FOR': 'example.org'}
         req = CGIRequest(environ)
         req.init_request()
         self.assertEqual('http://example.org/trac', req.base_url)

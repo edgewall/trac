@@ -24,10 +24,12 @@ locale.setlocale(locale.LC_ALL, '')
 
 import os
 import re, threading
-import auth, core, Environment, Href
-from util import TracError, href_join, rstrip
+
+from trac import auth, core, Environment, Href
+from trac.util import TracError, href_join, rstrip
 
 from mod_python import apache, util
+
 
 class ModPythonRequest(core.Request):
 
@@ -65,24 +67,26 @@ class ModPythonRequest(core.Request):
         else:
             self.cgi_location = self.req.uri
 
-        # TODO This will need proxy host name support (see #437 and [581])
-        host = self.req.hostname
+        # Reconstruct the absolute base URL
         port = self.req.connection.local_addr[1]
-
-        proto_port = ''
-        if self.req.subprocess_env.get('HTTPS') in ('on', '1'):
-            proto  = 'https'
-            if port != 443:
-               proto_port = ':%d' % port
-        elif port == 443:
-           proto = 'https'
-        else:
-           proto = 'http'
-           if port != 80:
-               proto_port = ':%d' % port
-
-        self.base_url = '%s://%s%s%s' % (proto, host, proto_port,
-                                         self.cgi_location)
+        scheme = 'http'
+        if self.req.subprocess_env.get('HTTPS') in ('on', '1') or port == 443:
+            scheme = 'https'
+        host = self.req.hostname
+        if self.req.headers_in.has_key('X-Forwarded-For'):
+            host = self.req.headers_in['X-Forwarded-For']
+        if not host:
+            # Missing host header, so reconstruct the host from the
+            # server name and port
+            default_port = {'http': 80, 'https': 443}
+            name = self.req.server.server_hostname
+            if port != default_port[scheme]:
+                host = '%s:%d' % (name, port)
+            else:
+                host = name
+        from urlparse import urlunparse
+        self.base_url = urlunparse((scheme, host, self.cgi_location, None, None,
+                                    None))
 
         self.remote_addr = self.req.connection.remote_ip
         self.remote_user = self.req.user
@@ -91,11 +95,10 @@ class ModPythonRequest(core.Request):
         if self.req.headers_in.has_key('Cookie'):
             self.incookie.load(self.req.headers_in['Cookie'])
 
-        self.hdf.setValue('HTTP.PathInfo', self.path_info)
+        # Populate the HDF with some HTTP info
+        # FIXME: Ideally, the templates shouldn't even need this data
         self.hdf.setValue('HTTP.Host', self.req.hostname)
-        self.hdf.setValue('HTTP.Protocol', proto)
-        if proto_port:
-            self.hdf.setValue('HTTP.Port', str(port))
+        self.hdf.setValue('HTTP.Protocol', scheme)
 
     def read(self, len):
         return self.req.read(len)
@@ -119,11 +122,12 @@ class ModPythonRequest(core.Request):
         pass
 
 
-class TracFieldStorage(util.FieldStorage):
+class FieldStorageWrapper(util.FieldStorage):
     """
     FieldStorage class with a get function that provides an empty string as the
     default value for the 'default' parameter, mimicking the CGI interface.
     """
+
     def get(self, key, default=''):
         return util.FieldStorage.get(self, key, default)
 
@@ -192,7 +196,7 @@ def handler(req):
     if not env:
         return apache.OK
 
-    mpr.args = TracFieldStorage(req, keep_blank_values=1)
+    mpr.args = FieldStorageWrapper(req, keep_blank_values=1)
 
     req.content_type = 'text/html'
     try:
