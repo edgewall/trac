@@ -780,8 +780,10 @@ class TracAdmin(cmd.Cmd):
                 self._do_mile_ver_list(type)
             elif arg[0] == 'add' and len(arg) in [2,3]:
                 name = arg[1]
-                time = len(arg) == 3 and arg[2]
-                self._do_mile_ver_add(type, name, time)
+                self._do_mile_ver_add(type, name)
+                if len(arg) == 3:
+                    time = arg[2]
+                    self._do_mile_ver_time(type, name, time)
             elif arg[0] == 'rename'  and len(arg)==3:
                 name = arg[1]
                 newname = arg[2]
@@ -814,10 +816,10 @@ class TracAdmin(cmd.Cmd):
         data = self.db_execsql("UPDATE %(type)s SET name='%(newname)s'" 
                                " WHERE name='%(name)s'" % d)
 
-    def _do_mile_ver_add(self, type, name, time):
-        sql = ("INSERT INTO %(type)s('name','time') "
-               " VALUES('%(name)s', '%(time)s')" 
-               % {'type':type, 'name':name, 'time':time})
+    def _do_mile_ver_add(self, type, name):
+        sql = ("INSERT INTO %(type)s('name') "
+               " VALUES('%(name)s')" 
+               % {'type':type, 'name':name})
         data = self.db_execsql(sql)
 
     def _do_mile_ver_remove(self, type, name):

@@ -73,8 +73,8 @@ class Timeline (Module):
             pass
 
 	if milestone:
-	    q.append("SELECT time, -1 AS idata, name AS tdata, 6 AS type, "
-	             "'' AS message, '' AS author " 
+	    q.append("SELECT time, -1 AS idata, '' AS tdata, 6 AS type, "
+	             "name AS message, '' AS author " 
 		     "FROM milestone WHERE time>=%s AND time<=%s" %
 		     (start, stop))
 
@@ -105,8 +105,6 @@ class Timeline (Module):
 
             if item['type'] == CHANGESET:
                 item['changeset_href'] = self.env.href.changeset(item['idata'])
-                item['shortmsg'] = wiki_to_oneliner(shorten_line(item['message']),
-                                                    self.req.hdf, self.env)
                 item['message'] = wiki_to_oneliner(item['message'],
                                                    self.req.hdf, self.env)
             elif item['type'] == WIKI:
@@ -114,15 +112,12 @@ class Timeline (Module):
                 item['message'] = wiki_to_oneliner(shorten_line(item['message']),
                                                    self.req.hdf, self.env)
 	    elif item['type'] == MILESTONE:
-		item['shortmsg'] = ''
+		item['message'] = escape(item['message'])
 	    else:
 		item['ticket_href'] = self.env.href.ticket(item['idata'])
 		msg = item['message']
 		shortmsg = shorten_line(msg)
-		item['message'] = wiki_to_oneliner(item['message'],
-                                                   self.req.hdf, self.env)
-		item['shortmsg'] = wiki_to_oneliner(shorten_line(item['message']),
-                                                    self.req.hdf, self.env)
+		item['message'] = escape(item['message'])
 
             info.append(item)
         return info

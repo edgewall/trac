@@ -82,7 +82,7 @@
          edited by '+$item.author, item.message) ?>
     <?cs elif:item.type == #6 ?><!-- milestone -->
       <?cs call:tlitem('', 'milestone.png',
-	 '<b class="tl-item-link">Milestone '+$item.tdata+' reached</b>', '') ?>
+	 '<b class="tl-item-link">Milestone '+$item.message+' reached</b>', '') ?>
     <?cs /if ?>
   </div>
 <?cs /each ?>
