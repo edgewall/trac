@@ -21,6 +21,8 @@
 
 import time
 
+import os
+import sys
 import util
 import Diff
 import perm
@@ -94,6 +96,12 @@ class HtmlDiffEditor (svn.delta.Editor):
                 break
             builder.writeline(util.to_utf8(line, charset))
         builder.close()
+        pobj.close()
+        # svn.fs.FileDiff creates a child process and there is no waitpid()
+        # calls to eliminate zombies (this is a problem especially when 
+        # mod_python is used.
+        if sys.platform[:3] != "win" and sys.platform != "os2emx":
+            os.waitpid(-1, 0)
 
     def add_file(self, path, parent_baton, copyfrom_path,
                  copyfrom_revision, file_pool):
@@ -131,7 +139,9 @@ class UnifiedDiffEditor(HtmlDiffEditor):
         while line:
             self.output.write(line)
             line = pobj.readline()
-
+        pobj.close()
+        if sys.platform[:3] != "win" and sys.platform != "os2emx":
+            os.waitpid(-1, 0)
 
 class Changeset (Module.Module):
     template_name = 'changeset.cs'
