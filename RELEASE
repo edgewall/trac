@@ -1,8 +1,8 @@
-Trac 0.8 'Qualia' Release Notes
-==============================
-Nov 17, 2004
+Trac 0.8.1 'None' Release Notes
+===============================
+Feb 28, 2005
 
-Edgewall Software presents, our latest release - Trac 0.8 'Qualia'.
+We're proud to present our latest release - Trac 0.8.1 'None'.
 
 Trac is an enhanced wiki and issue tracking system, integrated with
 Subversion, for software development projects. Trac uses a minimalistic
@@ -36,23 +36,9 @@ For questions, comments and user discussions, please use the Trac mailing list
 
 What's New
 ----------
-0.8 'Qualia', a much delayed release of Trac brings the largest number of
-improvements yet. It marks a big step towards the big '1.0' -
-some of the biggest changes being the new Roadmap module and a user interface
-for custom ticket queries.
-
 A brief summary of major changes for this release:
 
- * Revised database format. (Requires manual upgrade, see the UPGRADE file).
- * Support for custom ticket properties.
- * Advanced ticket queries.
- * A new Roadmap module.
- * User preferences.
- * Improved diff display.
- * Tooltips for most Trac links.
- * Wiki editing (near-wysiwyg) aids a la wikipedia.
- * Improved email notification.
- * Improved ModPython support.
+XXX: Add highlights from ChangeLog here.
 
 For a more complete list of improvements, see the ChangeLog at:
 
