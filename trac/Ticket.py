@@ -163,9 +163,12 @@ class Ticket (Module):
                             now, id)
             self.db.commit()
         # Notify
-        from Notify import TicketNotifyEmail
-        tn = TicketNotifyEmail(self.env)
-        tn.notify(id, newticket=0, modtime=now)
+        try:
+            from Notify import TicketNotifyEmail
+            tn = TicketNotifyEmail(self.env)
+            tn.notify(id, newticket=0, modtime=now)
+        except:
+            self.env.log.warning("Email notifications require Python >= 2.2")
 
     def create_ticket(self):
         """
@@ -204,8 +207,12 @@ class Ticket (Module):
         self.db.commit()
 
         # Notify
-        tn = TicketNotifyEmail(self.env)
-        tn.notify(id, newticket=1)
+        try:
+            from Notify import TicketNotifyEmail
+            tn = TicketNotifyEmail(self.env)
+            tn.notify(id, newticket=1)
+        except:
+            self.env.log.warning("Email notifications require Python >= 2.2")
         
         # redirect to the Ticket module to get a GET request
         self.req.redirect(self.env.href.ticket(id))

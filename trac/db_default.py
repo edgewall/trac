@@ -411,5 +411,6 @@ default_config = \
   ('attachment', 'max_size', '262144'),
   ('notification', 'smtp_enabled', 'false'),
   ('notification', 'smtp_server', 'localhost'),
+  ('notification', 'smtp_always_cc', ''),
   ('notification', 'smtp_replyto', 'trac@localhost'))
 

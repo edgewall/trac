@@ -93,7 +93,7 @@ else:
                                            initial_indent=initial_indent,
                                            subsequent_indent=subsequent_indent))
     except ImportError:
-        def wrap(t, *args):
+        def wrap(t, *args, **kwords):
             return t
 
     class NotifyEmail(Notify):
@@ -253,6 +253,12 @@ else:
             rows = cursor.fetchall()
             for row in rows:
                 emails += row[0] and self.get_email_addresses(row[0]) or []
+
+            # Add smtp_always_cc address
+            acc = self.env.get_config('notification', 'smtp_always_cc', '')
+            if acc:
+                emails += self.get_email_addresses(acc)
+                    
             result = []
             for e in emails:        # Remove duplicates
                 if e not in result:
