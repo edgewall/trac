@@ -91,6 +91,7 @@ function enableControl(id, enabled) {
     for (var i = 0; i < labels.length; i++) {
       if (labels[i].htmlFor == id) {
         labels[i].className = enabled ? "enabled" : "disabled";
+        break;
       }
     }
   }

@@ -2,14 +2,7 @@
 <?cs include:"header.cs"?>
 <?cs include:"macros.cs"?>
 
-<div id="ctxtnav" class="nav">
- <ul>
-  <?cs if:milestone.href.edit ?><li class="first"><a href="<?cs
-    var:milestone.href.edit ?>">Edit Milestone Info</a></li><?cs /if ?>
-  <?cs if:milestone.href.delete ?><li class="last"><a href="<?cs
-    var:milestone.href.delete ?>">Delete Milestone</a></li><?cs /if ?>
- </ul>
-</div>
+<div id="ctxtnav" class="nav"></div>
 
 <div id="content" class="milestone">
  <?cs if:milestone.mode == "new" ?>
@@ -141,8 +134,24 @@
     No date set<?cs
    /if ?>
   </p>
-  <div class="description"><?cs var:milestone.description ?></div>
- <?cs /if ?>
+  <div class="description"><?cs var:milestone.description ?></div><?cs
+  if:trac.acl.MILESTONE_MODIFY || trac.acl.MILESTONE_DELETE ?>
+   <div class="buttons"><?cs
+    if:trac.acl.MILESTONE_MODIFY ?>
+     <form method="get" action=""><div>
+      <input type="hidden" name="action" value="edit" />
+      <input type="submit" value="Edit Milestone Info" />
+     </div></form><?cs
+    /if ?><?cs
+    if:trac.acl.MILESTONE_DELETE ?>
+     <form method="get" action=""><div>
+      <input type="hidden" name="action" value="delete" />
+      <input type="submit" value="Delete Milestone" />
+     </div></form><?cs
+    /if ?>
+   </div><?cs
+  /if ?><?cs
+ /if ?>
 
  <?cs if:milestone.mode == "view" ?>
  <h2 class="stats">Status by <?cs var:milestone.stats.grouped_by ?></h2>

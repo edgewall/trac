@@ -307,13 +307,6 @@ class Milestone(Module):
         add_to_hdf(time.strftime('%x %X', time.localtime(time.time())), self.req.hdf, 'milestone.datetime_now')
 
     def render_view(self, id):
-        if self.perm.has_permission(perm.MILESTONE_DELETE):
-            self.req.hdf.setValue('milestone.href.delete',
-                                   self.env.href.milestone(id, 'delete'))
-        if self.perm.has_permission(perm.MILESTONE_MODIFY):
-            self.req.hdf.setValue('milestone.href.edit',
-                                   self.env.href.milestone(id, 'edit'))
-
         milestone = self.get_milestone(id)
         self.req.hdf.setValue('title', 'Milestone %s' % milestone['name'])
         self.req.hdf.setValue('milestone.mode', 'view')

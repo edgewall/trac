@@ -56,25 +56,9 @@ input[type=button], input[type=submit], input[type=reset] {
 input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover {
  background: #ccb;
 }
-input[type=button][disabled=disabled], input[type=submit][disabled=disabled],
-input[type=reset][disabled=disabled] {
- color: graytext;
-}
-input[type=button][disabled=disabled]:hover,
-input[type=submit][disabled=disabled]:hover,
-input[type=reset][disabled=disabled]:hover {
- background: #eee;
-}
-input[type=text], input.textwidget, textarea {
- background: #fff;
- color: #000;
- border: 1px solid #d7d7d7;
-}
+input[type=text], input.textwidget, textarea { border: 1px solid #d7d7d7 }
 input[type=text], input.textwidget { padding: .25em .5em }
 input[type=text]:focus, textarea:focus { border: 1px solid #886 }
-input[type=text][disabled=disabled], textarea[disabled=disabled] {
- color: graytext;
-}
 option { border-bottom: 1px dotted #d7d7d7 }
 fieldset { border: 1px solid #d7d7d7; padding: .5em; margin: 0 }
 fieldset.iefix { border: none; padding: 0; margin: 0 }

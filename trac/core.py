@@ -219,6 +219,7 @@ def populate_hdf(hdf, env, db, req):
     hdf.setValue('trac.href.browser', env.href.browser('/'))
     hdf.setValue('trac.href.timeline', env.href.timeline())
     hdf.setValue('trac.href.roadmap', env.href.roadmap())
+    hdf.setValue('trac.href.milestone', env.href.milestone(None))
     hdf.setValue('trac.href.report', env.href.report())
     hdf.setValue('trac.href.query', env.href.query())
     hdf.setValue('trac.href.newticket', env.href.newticket())

@@ -39,10 +39,6 @@ class Roadmap(Module):
         self.perm.assert_permission(perm.ROADMAP_VIEW)
         self.req.hdf.setValue('title', 'Roadmap')
 
-        if self.perm.has_permission(perm.MILESTONE_CREATE):
-            self.req.hdf.setValue('roadmap.href.newmilestone',
-                                   self.env.href.milestone(None, 'new'))
-
         icalhref = '?format=ics'
         show = self.args.get('show', 'current')
         if show == 'all':

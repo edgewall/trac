@@ -4,8 +4,6 @@
 
 <div id="ctxtnav" class="nav">
  <ul>
-  <?cs if:roadmap.href.newmilestone ?><li><a href="<?cs
-    var:roadmap.href.newmilestone ?>">Add New Milestone</a></li><?cs /if ?>
   <li class="last"><a href="<?cs var:roadmap.href.list ?>"><?cs
     if:roadmap.showall ?>Show All Milestones<?cs
     else ?>Show Upcoming Milestones<?cs /if ?></a></li>
@@ -51,8 +49,16 @@
     <?cs /with ?>
    </div>
    <div class="description"><?cs var:milestone.description ?></div>
-  </li>
- <?cs /each ?></ul>
+  </li><?cs
+ /each ?></ul><?cs
+ if:trac.acl.MILESTONE_CREATE ?>
+  <div class="buttons">
+   <form method="get" action="<?cs var:trac.href.milestone ?>"><div>
+    <input type="hidden" name="action" value="new" />
+    <input type="submit" value="Add New Milestone" />
+   </div></form>
+  </div><?cs
+ /if ?>
 
  <div id="help">
   <strong>Note:</strong> See <a href="<?cs
