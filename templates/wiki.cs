@@ -173,25 +173,28 @@
      <div class="field">
       <label for="author">Your email or username:</label>
       <br /><input id="author" type="text" name="author" size="30" value="<?cs
-        var:wiki.author ?>" />
+        var:wiki.author ?>" 
+        onChange="document.getElementById('author_bottom').value = this.value;" />
      </div>
      <div class="field">
       <label for="comment">Comment about this change (optional):</label>
       <br /><input id="comment" type="text" name="comment" size="60" value="<?cs
-        var:wiki.comment?>" />
+        var:wiki.comment?>" 
+        onChange="document.getElementById('comment_bottom').value = this.value;" />
      </div><br />
      <?cs if trac.acl.WIKI_ADMIN ?>
       <div class="options">
        <input type="checkbox" name="readonly" id="readonly"<?cs
-         if wiki.readonly == "1"?>checked="checked"<?cs /if ?> />
+         if wiki.readonly == "1"?>checked="checked"<?cs /if ?>
+                 onChange="document.getElementById('readonly_bottom').checked = this.checked;" />
        <label for="readonly">Page is read-only</label>
       </div>
      <?cs /if ?>
     </fieldset>
     <div class="buttons">
-     <input type="submit" name="save" value="Save changes" />&nbsp;
-     <input type="submit" name="preview" value="Preview" />&nbsp;
-     <input type="submit" name="cancel" value="Cancel" />
+     <input type="submit" id="save_button" name="save" value="Save changes" />&nbsp;
+     <input type="submit" id="preview_button" name="preview" value="Preview" />&nbsp;
+     <input type="submit" id="cancel_button" name="cancel" value="Cancel" />
     </div><?cs
     if wiki.action == "preview" ?>
      <fieldset id="preview">
@@ -244,4 +247,47 @@
  <?cs /if ?>
  <?cs /if ?>
 </div>
+ <?cs if wiki.action == "preview" ?>
+     <form name="submit_bottom" action="<?cs var:wiki.current_href ?>#preview" method="post">
+      <div style="width: 100%">
+      <label for="text">Page source:</label><br />
+       <fieldset>
+         <legend>Change information</legend>
+         <div style="display: inline; float: left; margin: 0 .5em;">
+           <label for="author">Your email or username:</label><br />
+           <input id="author_bottom" type="text" name="author_bottom" size="30"
+                value="<?cs var:wiki.author ?>"
+                 onChange="document.getElementById('author').value = this.value;" />
+         </div>
+         <div>
+           <label for="comment">Comment about this change (optional):</label>
+           <br />
+           <input id="comment_bottom" type="text" name="comment_bottom" size="60"
+                 value="<?cs var:wiki.comment?>" o
+                 onChange="document.getElementById('comment').value = this.value;" />
+         </div>
+	 <?cs if trac.acl.WIKI_ADMIN ?>
+	 <div>
+	   <input type="checkbox" name="readonly_bottom" id="readonly_bottom"
+           <?cs if wiki.readonly == "1"?>checked="checked"<?cs /if ?> 
+                 onChange="document.getElementById('readonly').checked = this.checked;" />
+                <label for="readonly">Page is read-only</label>
+	 </div>
+	 <?cs /if ?>
+         <div class="buttons">
+             <input type="button"  value="Save changes" 
+                    onClick="document.getElementById('save_button').click();" />&nbsp;
+             <input type="button" value="Preview" 
+		onClick="document.getElementById('preview_button').click();"
+                />&nbsp;
+             <input type="button"  value="Cancel" 
+		onClick="document.getElementById('cancel_button').click();"
+                />
+         </div>
+       </fieldset>
+      </div>
+     </form>
+ <?cs /if ?>
+</div>
+
 <?cs include "footer.cs" ?>
