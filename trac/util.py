@@ -144,6 +144,6 @@ def utf8_to_iso(text):
     try:
         utf = unicode(text, 'utf-8')
         return  utf.encode('iso-8859-15')
-    except UnicodeEncodeError:
+    except UnicodeError:
         return text
     
