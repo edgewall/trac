@@ -126,6 +126,132 @@ Trac Admin Console %s
         assert test_results == expected_results
 
     #
+    #  permission tests
+    #
+    def test_permission_list_ok(self):
+
+        """
+        Tests the 'permission list' command in trac-admin.  Since this command
+        has no command arguments, it is hard to call it incorrectly.  As
+        a result, there is only this one test.
+        """
+
+        test_name = sys._getframe().f_code.co_name
+        cmd = 'permission list'
+        trac_admin = 'trac-admin %s %s' % (self.env.path, cmd)
+        np = NaivePopen(trac_admin, None, capturestderr=1)
+        if np.errorlevel or np.err:
+            err = 'Running (%s) failed: %s, %s.' % \
+                  (trac_admin, np.errorlevel, np.err)
+            raise Exception, err
+        test_results = np.out
+        assert test_results == self.expected_results[test_name]
+
+    def test_permission_add_one_action_ok(self):
+
+        """
+        Tests the 'permission add' command in trac-admin.  This particular
+        test passes valid arguments to add one permission and checks for
+        success.
+        """
+
+        test_name = sys._getframe().f_code.co_name
+        cmd = 'permission add test_user WIKI_VIEW'
+        trac_admin = 'trac-admin %s %s' % (self.env.path, cmd)
+        np = NaivePopen(trac_admin, None, capturestderr=1)
+        if np.errorlevel or np.err:
+            err = 'Running (%s) failed: %s, %s.' % \
+                  (trac_admin, np.errorlevel, np.err)
+            raise Exception, err
+        cmd = 'permission list'
+        trac_admin = 'trac-admin %s %s' % (self.env.path, cmd)
+        np = NaivePopen(trac_admin, None, capturestderr=1)
+        if np.errorlevel or np.err:
+            err = 'Running (%s) failed: %s, %s.' % \
+                  (trac_admin, np.errorlevel, np.err)
+            raise Exception, err
+        test_results = np.out
+        assert test_results == self.expected_results[test_name]
+
+    def test_permission_add_multiple_actions_ok(self):
+
+        """
+        Tests the 'permission add' command in trac-admin.  This particular
+        test passes valid arguments to add multiple permissions and checks for
+        success.
+        """
+
+        test_name = sys._getframe().f_code.co_name
+        cmd = 'permission add test_user LOG_VIEW FILE_VIEW'
+        trac_admin = 'trac-admin %s %s' % (self.env.path, cmd)
+        np = NaivePopen(trac_admin, None, capturestderr=1)
+        if np.errorlevel or np.err:
+            err = 'Running (%s) failed: %s, %s.' % \
+                  (trac_admin, np.errorlevel, np.err)
+            raise Exception, err
+        cmd = 'permission list'
+        trac_admin = 'trac-admin %s %s' % (self.env.path, cmd)
+        np = NaivePopen(trac_admin, None, capturestderr=1)
+        if np.errorlevel or np.err:
+            err = 'Running (%s) failed: %s, %s.' % \
+                  (trac_admin, np.errorlevel, np.err)
+            raise Exception, err
+        test_results = np.out
+        assert test_results == self.expected_results[test_name]
+
+    def test_permission_remove_one_action_ok(self):
+
+        """
+        Tests the 'permission remove' command in trac-admin.  This particular
+        test passes valid arguments to remove one permission and checks for
+        success.
+        """
+
+        test_name = sys._getframe().f_code.co_name
+        cmd = 'permission remove anonymous TICKET_MODIFY'
+        trac_admin = 'trac-admin %s %s' % (self.env.path, cmd)
+        np = NaivePopen(trac_admin, None, capturestderr=1)
+        if np.errorlevel or np.err:
+            err = 'Running (%s) failed: %s, %s.' % \
+                  (trac_admin, np.errorlevel, np.err)
+            raise Exception, err
+        cmd = 'permission list'
+        trac_admin = 'trac-admin %s %s' % (self.env.path, cmd)
+        np = NaivePopen(trac_admin, None, capturestderr=1)
+        if np.errorlevel or np.err:
+            err = 'Running (%s) failed: %s, %s.' % \
+                  (trac_admin, np.errorlevel, np.err)
+            raise Exception, err
+        test_results = np.out
+        assert test_results == self.expected_results[test_name]
+
+    def test_permission_remove_multiple_actions_ok(self):
+
+        """
+        Tests the 'permission remove' command in trac-admin.  This particular
+        test passes valid arguments to remove multiple permission and checks
+        for success.
+        """
+
+        test_name = sys._getframe().f_code.co_name
+        cmd = 'permission remove anonymous WIKI_CREATE WIKI_MODIFY'
+        trac_admin = 'trac-admin %s %s' % (self.env.path, cmd)
+        np = NaivePopen(trac_admin, None, capturestderr=1)
+        if np.errorlevel or np.err:
+            err = 'Running (%s) failed: %s, %s.' % \
+                  (trac_admin, np.errorlevel, np.err)
+            raise Exception, err
+        cmd = 'permission list'
+        trac_admin = 'trac-admin %s %s' % (self.env.path, cmd)
+        np = NaivePopen(trac_admin, None, capturestderr=1)
+        if np.errorlevel or np.err:
+            err = 'Running (%s) failed: %s, %s.' % \
+                  (trac_admin, np.errorlevel, np.err)
+            raise Exception, err
+        test_results = np.out
+        assert test_results == self.expected_results[test_name]
+
+    #
     #  component tests
     #
     def test_component_list_ok(self):

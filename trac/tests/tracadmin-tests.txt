@@ -53,6 +53,161 @@ Trac is brought to you by:
         Professional Linux and software development services
               Read more at http://www.edgewall.com/
 -----------------------------------------------------------------
+===== test_permission_list_ok =====
+
+User       Action         
+--------------------------
+anonymous  LOG_VIEW       
+anonymous  FILE_VIEW      
+anonymous  WIKI_VIEW      
+anonymous  WIKI_CREATE    
+anonymous  WIKI_MODIFY    
+anonymous  SEARCH_VIEW    
+anonymous  REPORT_VIEW    
+anonymous  REPORT_SQL_VIEW
+anonymous  TICKET_VIEW    
+anonymous  TICKET_CREATE  
+anonymous  TICKET_MODIFY  
+anonymous  BROWSER_VIEW   
+anonymous  TIMELINE_VIEW  
+anonymous  CHANGESET_VIEW 
+anonymous  ROADMAP_VIEW   
+anonymous  MILESTONE_VIEW 
+
+
+Available actions:
+ LOG_VIEW, FILE_VIEW, CHANGESET_VIEW, BROWSER_VIEW, 
+ TICKET_VIEW, TICKET_CREATE, TICKET_MODIFY, TICKET_ADMIN, 
+ REPORT_VIEW, REPORT_CREATE, REPORT_MODIFY, REPORT_DELETE, REPORT_ADMIN, 
+ WIKI_VIEW, WIKI_CREATE, WIKI_MODIFY, WIKI_DELETE, WIKI_ADMIN, 
+ MILESTONE_VIEW, MILESTONE_CREATE, MILESTONE_MODIFY, MILESTONE_DELETE, 
+ ROADMAP_VIEW, ROADMAP_ADMIN, TIMELINE_VIEW, SEARCH_VIEW, 
+ CONFIG_VIEW and TRAC_ADMIN.
+
+===== test_permission_add_one_action_ok =====
+
+User       Action         
+--------------------------
+anonymous  LOG_VIEW       
+anonymous  FILE_VIEW      
+anonymous  WIKI_VIEW      
+anonymous  WIKI_CREATE    
+anonymous  WIKI_MODIFY    
+anonymous  SEARCH_VIEW    
+anonymous  REPORT_VIEW    
+anonymous  REPORT_SQL_VIEW
+anonymous  TICKET_VIEW    
+anonymous  TICKET_CREATE  
+anonymous  TICKET_MODIFY  
+anonymous  BROWSER_VIEW   
+anonymous  TIMELINE_VIEW  
+anonymous  CHANGESET_VIEW 
+anonymous  ROADMAP_VIEW   
+anonymous  MILESTONE_VIEW 
+test_user  WIKI_VIEW      
+
+
+Available actions:
+ LOG_VIEW, FILE_VIEW, CHANGESET_VIEW, BROWSER_VIEW, 
+ TICKET_VIEW, TICKET_CREATE, TICKET_MODIFY, TICKET_ADMIN, 
+ REPORT_VIEW, REPORT_CREATE, REPORT_MODIFY, REPORT_DELETE, REPORT_ADMIN, 
+ WIKI_VIEW, WIKI_CREATE, WIKI_MODIFY, WIKI_DELETE, WIKI_ADMIN, 
+ MILESTONE_VIEW, MILESTONE_CREATE, MILESTONE_MODIFY, MILESTONE_DELETE, 
+ ROADMAP_VIEW, ROADMAP_ADMIN, TIMELINE_VIEW, SEARCH_VIEW, 
+ CONFIG_VIEW and TRAC_ADMIN.
+
+===== test_permission_add_multiple_actions_ok =====
+
+User       Action         
+--------------------------
+anonymous  LOG_VIEW       
+anonymous  FILE_VIEW      
+anonymous  WIKI_VIEW      
+anonymous  WIKI_CREATE    
+anonymous  WIKI_MODIFY    
+anonymous  SEARCH_VIEW    
+anonymous  REPORT_VIEW    
+anonymous  REPORT_SQL_VIEW
+anonymous  TICKET_VIEW    
+anonymous  TICKET_CREATE  
+anonymous  TICKET_MODIFY  
+anonymous  BROWSER_VIEW   
+anonymous  TIMELINE_VIEW  
+anonymous  CHANGESET_VIEW 
+anonymous  ROADMAP_VIEW   
+anonymous  MILESTONE_VIEW 
+test_user  LOG_VIEW       
+test_user  FILE_VIEW      
+
+
+Available actions:
+ LOG_VIEW, FILE_VIEW, CHANGESET_VIEW, BROWSER_VIEW, 
+ TICKET_VIEW, TICKET_CREATE, TICKET_MODIFY, TICKET_ADMIN, 
+ REPORT_VIEW, REPORT_CREATE, REPORT_MODIFY, REPORT_DELETE, REPORT_ADMIN, 
+ WIKI_VIEW, WIKI_CREATE, WIKI_MODIFY, WIKI_DELETE, WIKI_ADMIN, 
+ MILESTONE_VIEW, MILESTONE_CREATE, MILESTONE_MODIFY, MILESTONE_DELETE, 
+ ROADMAP_VIEW, ROADMAP_ADMIN, TIMELINE_VIEW, SEARCH_VIEW, 
+ CONFIG_VIEW and TRAC_ADMIN.
+
+===== test_permission_remove_one_action_ok =====
+
+User       Action         
+--------------------------
+anonymous  LOG_VIEW       
+anonymous  FILE_VIEW      
+anonymous  WIKI_VIEW      
+anonymous  WIKI_CREATE    
+anonymous  WIKI_MODIFY    
+anonymous  SEARCH_VIEW    
+anonymous  REPORT_VIEW    
+anonymous  REPORT_SQL_VIEW
+anonymous  TICKET_VIEW    
+anonymous  TICKET_CREATE  
+anonymous  BROWSER_VIEW   
+anonymous  TIMELINE_VIEW  
+anonymous  CHANGESET_VIEW 
+anonymous  ROADMAP_VIEW   
+anonymous  MILESTONE_VIEW 
+
+
+Available actions:
+ LOG_VIEW, FILE_VIEW, CHANGESET_VIEW, BROWSER_VIEW, 
+ TICKET_VIEW, TICKET_CREATE, TICKET_MODIFY, TICKET_ADMIN, 
+ REPORT_VIEW, REPORT_CREATE, REPORT_MODIFY, REPORT_DELETE, REPORT_ADMIN, 
+ WIKI_VIEW, WIKI_CREATE, WIKI_MODIFY, WIKI_DELETE, WIKI_ADMIN, 
+ MILESTONE_VIEW, MILESTONE_CREATE, MILESTONE_MODIFY, MILESTONE_DELETE, 
+ ROADMAP_VIEW, ROADMAP_ADMIN, TIMELINE_VIEW, SEARCH_VIEW, 
+ CONFIG_VIEW and TRAC_ADMIN.
+
+===== test_permission_remove_multiple_actions_ok =====
+
+User       Action         
+--------------------------
+anonymous  LOG_VIEW       
+anonymous  FILE_VIEW      
+anonymous  WIKI_VIEW      
+anonymous  SEARCH_VIEW    
+anonymous  REPORT_VIEW    
+anonymous  REPORT_SQL_VIEW
+anonymous  TICKET_VIEW    
+anonymous  TICKET_CREATE  
+anonymous  TICKET_MODIFY  
+anonymous  BROWSER_VIEW   
+anonymous  TIMELINE_VIEW  
+anonymous  CHANGESET_VIEW 
+anonymous  ROADMAP_VIEW   
+anonymous  MILESTONE_VIEW 
+
+
+Available actions:
+ LOG_VIEW, FILE_VIEW, CHANGESET_VIEW, BROWSER_VIEW, 
+ TICKET_VIEW, TICKET_CREATE, TICKET_MODIFY, TICKET_ADMIN, 
+ REPORT_VIEW, REPORT_CREATE, REPORT_MODIFY, REPORT_DELETE, REPORT_ADMIN, 
+ WIKI_VIEW, WIKI_CREATE, WIKI_MODIFY, WIKI_DELETE, WIKI_ADMIN, 
+ MILESTONE_VIEW, MILESTONE_CREATE, MILESTONE_MODIFY, MILESTONE_DELETE, 
+ ROADMAP_VIEW, ROADMAP_ADMIN, TIMELINE_VIEW, SEARCH_VIEW, 
+ CONFIG_VIEW and TRAC_ADMIN.
+
 ===== test_component_list_ok =====
 
 Name        Owner   
