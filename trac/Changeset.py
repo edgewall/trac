@@ -24,7 +24,6 @@ from Module import Module
 from Href import href
 from Wiki import wiki_to_html
 import perm
-from xml.sax.saxutils import escape
 
 import sys
 from cStringIO import StringIO
