@@ -327,6 +327,12 @@ class NewticketModule(Module):
                         self.req.hdf, 'newticket.milestones')
         util.sql_to_hdf(self.db, 'SELECT name FROM version ORDER BY name',
                         self.req.hdf, 'newticket.versions')
+        util.sql_to_hdf(self.db, "SELECT name FROM enum WHERE type='priority'"
+                                 " ORDER BY value",
+                        self.req.hdf, 'enums.priority')
+        util.sql_to_hdf(self.db, "SELECT name FROM enum WHERE type='severity'"
+                                 " ORDER BY value",
+                        self.req.hdf, 'enums.severity')
 
         insert_custom_fields(self.env, self.req.hdf, ticket)
 
@@ -387,6 +393,12 @@ class TicketModule (Module):
                         self.req.hdf, 'ticket.milestones')
         util.sql_to_hdf(self.db, 'SELECT name FROM version ORDER BY name',
                         self.req.hdf, 'ticket.versions')
+        util.sql_to_hdf(self.db, "SELECT name FROM enum WHERE type='priority'"
+                                 " ORDER BY value",
+                        self.req.hdf, 'enums.priority')
+        util.sql_to_hdf(self.db, "SELECT name FROM enum WHERE type='severity'"
+                                 " ORDER BY value",
+                        self.req.hdf, 'enums.severity')
         util.sql_to_hdf(self.db, "SELECT name FROM enum WHERE type='resolution'"
                                  " ORDER BY value",
                         self.req.hdf, 'enums.resolution')

@@ -33,19 +33,16 @@ class Module:
     links = {}
 
     def run(self):
-        core.populate_hdf(self.req.hdf, self.env, self.db, self.req)
-        self.req.hdf.setValue('trac.active_module', self._name)
         if self.args.has_key('format'):
             disp = getattr(self, 'display_' + self.args.get('format'))
         else:
             disp = self.display
         self.add_default_links()
-        try:
-            self.render()
-            add_to_hdf(self.links, self.req.hdf, 'links')
-            disp()
-        except core.RedirectException:
-            pass
+        self.render()
+        core.populate_hdf(self.req.hdf, self.env, self.db, self.req)
+        self.req.hdf.setValue('trac.active_module', self._name)
+        add_to_hdf(self.links, self.req.hdf, 'links')
+        disp()
 
     def add_default_links(self):
         self.links.clear()

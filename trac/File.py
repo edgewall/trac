@@ -74,7 +74,9 @@ class FileCommon(Module.Module):
         self.req.send_response(200)
         self.req.send_header('Content-Type', self.mime_type)
         self.req.send_header('Content-Length', str(self.length))
-        self.req.send_header('Last-Modified', self.last_modified)
+        self.req.send_header('Last-Modified',
+                             time.strftime("%a, %d %b %Y %H:%M:%S GMT",
+                                           self.last_modified))
         self.req.send_header('Pragma', 'no-cache')
         self.req.send_header('Expires', 'Mon, 26 Jul 1997 05:00:00 GMT')
         self.req.send_header('Cache-Control',
@@ -142,9 +144,10 @@ class Attachment(FileCommon):
                 raise util.TracError('Attachment not found')
             
             stat = os.fstat(fd.fileno())
+            self.last_modified = time.gmtime(stat[8])
+            self.req.check_modified(self.last_modified)
+
             self.length = stat[6]
-            self.last_modified = time.strftime("%a, %d %b %Y %H:%M:%S GMT",
-                                               time.gmtime(stat[8]))
             self.read_func = lambda x, f=fd: f.read(x)
             self.mime_type = self.env.mimeview.get_mimetype(self.filename) \
                              or 'application/octet-stream'
@@ -267,6 +270,12 @@ class File(FileCommon):
                 rev_specified = 0
                 self.rev = svn.fs.youngest_rev(self.fs_ptr, self.pool)
 
+        date = svn.fs.revision_prop(self.fs_ptr, self.rev,
+                                    svn.util.SVN_PROP_REVISION_DATE, self.pool)
+        date_seconds = svn.util.svn_time_from_cstring(date, self.pool) / 1000000
+        self.last_modified = time.gmtime(date_seconds)
+        self.req.check_modified(date_seconds)
+
         self.generate_path_links(self.rev, rev_specified)
 
         try:
@@ -327,10 +336,5 @@ class File(FileCommon):
             'Plain Text', 'text/plain')
 
         self.length = svn.fs.file_length(root, self.path, self.pool)
-        date = svn.fs.revision_prop(self.fs_ptr, self.rev,
-                                svn.util.SVN_PROP_REVISION_DATE, self.pool)
-        date_seconds = svn.util.svn_time_from_cstring(date, self.pool) / 1000000
-        self.last_modified = time.strftime("%a, %d %b %Y %H:%M:%S GMT",
-                                      time.gmtime(date_seconds))
         fd = svn.fs.file_contents(root, self.path, self.pool)
         self.read_func = lambda x, f=fd: svn.util.svn_stream_read(f, x)

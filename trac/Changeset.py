@@ -291,8 +291,10 @@ class Changeset (Module.Module):
         if self.args.has_key('update'):
             self.req.redirect(self.env.href.changeset(self.rev))
 
-        change_info = self.get_change_info (self.rev)
-        changeset_info = self.get_changeset_info (self.rev)
+        changeset_info = self.get_changeset_info(self.rev)
+        self.req.check_modified(int(changeset_info['time']))
+
+        change_info = self.get_change_info(self.rev)
 
         self.req.hdf.setValue('title', '[%d] (changeset)' % self.rev)
         self.req.hdf.setValue('changeset.time',

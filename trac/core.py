@@ -195,15 +195,13 @@ def open_environment():
         raise TracError('Unknown Trac Environment version (%d).' % version)
     return env
 
+class NotModifiedException(Exception):
+    pass
+
 class RedirectException(Exception):
     pass
 
 def populate_hdf(hdf, env, db, req):
-    sql_to_hdf(db, "SELECT name FROM enum WHERE type='priority' "
-               "ORDER BY value", hdf, 'enums.priority')
-    sql_to_hdf(db, "SELECT name FROM enum WHERE type='severity' "
-               "ORDER BY value", hdf, 'enums.severity')
-
     htdocs_location = env.get_config('trac', 'htdocs_location')
     if htdocs_location[-1] != '/':
         htdocs_location += '/'
@@ -292,6 +290,16 @@ class Request:
     def end_headers(self):
         raise RuntimeError, 'Virtual method not implemented'
 
+    def check_modified(self, timesecs):
+        etag = 'W"%s/%d"' % (self.authname, timesecs)
+        inm = self.get_header('If-None-Match')
+        if (not inm or inm != etag):
+            self.send_header('ETag', etag)
+            return
+        self.send_response(304)
+        self.end_headers()
+        raise NotModifiedException()
+
     def redirect(self, url):
         self.send_response(302)
         self.send_header('Location', url)
@@ -319,7 +327,7 @@ class Request:
             cs.parseFile(filename)
         data = cs.render()
         self.send_response(response)
-        self.send_header('Cache-control', 'no-cache')
+        self.send_header('Cache-control', 'must-revalidate')
         self.send_header('Expires', 'Fri, 01 Jan 1999 00:00:00 GMT')
         self.send_header('Content-Type', content_type + ';charset=utf-8')
         self.send_header('Content-Length', len(data))
@@ -399,46 +407,45 @@ def dispatch_request(path_info, args, req, env, database=None):
     # Let the wiki module build a dictionary of all page names
     Wiki.populate_page_dict(database, env)
 
-    authenticator = auth.Authenticator(database, req)
-    if path_info == '/logout':
-        authenticator.logout()
-        referer = req.get_header('Referer')
-        if referer and referer[0:len(req.base_url)] != req.base_url:
-            # only redirect to referer if the latter is from the same instance
-            referer = None
-        try:
-            req.redirect(referer or env.href.wiki())
-        except RedirectException:
-            pass
-    elif req.remote_user and authenticator.authname == 'anonymous':
-        auth_cookie = authenticator.login(req)
-    if path_info == '/login':
-        referer = req.get_header('Referer')
-        if referer and referer[0:len(req.base_url)] != req.base_url:
-            # only redirect to referer if the latter is from the same instance
-            referer = None
-        try:
-            req.redirect(referer or env.href.wiki())
-        except RedirectException:
-            pass
-    req.authname = authenticator.authname
-
-    newsession = args.has_key('newsession') and args['newsession']
-    req.session = Session.Session(env, req, newsession)
-
-    add_args_to_hdf(args, req.hdf)
     try:
-        pool = None
-        # Load the selected module
-        module = module_factory(args, env, database, req)
-        pool = module.pool
-        module.run()
-    finally:
-        # We do this even if the cgi will terminate directly after. A pool
-        # destruction might trigger important clean-up functions.
-        if pool:
-            import svn.core
-            svn.core.svn_pool_destroy(pool)
+        authenticator = auth.Authenticator(database, req)
+        if path_info == '/logout':
+            authenticator.logout()
+            referer = req.get_header('Referer')
+            if referer and referer[0:len(req.base_url)] != req.base_url:
+                # only redirect to referer if the latter is from the same instance
+                referer = None
+            req.redirect(referer or env.href.wiki())
+        elif req.remote_user and authenticator.authname == 'anonymous':
+            auth_cookie = authenticator.login(req)
+        if path_info == '/login':
+            referer = req.get_header('Referer')
+            if referer and referer[0:len(req.base_url)] != req.base_url:
+                # only redirect to referer if the latter is from the same instance
+                referer = None
+            req.redirect(referer or env.href.wiki())
+        req.authname = authenticator.authname
+
+        newsession = args.has_key('newsession') and args['newsession']
+        req.session = Session.Session(env, req, newsession)
+
+        add_args_to_hdf(args, req.hdf)
+        try:
+            pool = None
+            # Load the selected module
+            module = module_factory(args, env, database, req)
+            pool = module.pool
+            module.run()
+        finally:
+            # We do this even if the cgi will terminate directly after. A pool
+            # destruction might trigger important clean-up functions.
+            if pool:
+                import svn.core
+                svn.core.svn_pool_destroy(pool)
+    except NotModifiedException:
+        pass
+    except RedirectException:
+        pass
 
 def open_svn_repos(repos_dir):
     from svn import util, repos, core

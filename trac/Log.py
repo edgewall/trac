@@ -55,7 +55,7 @@ class Log (Module):
             'shortlog' : util.escape(shortlog),
             'file_href': self.env.href.browser(self.path, rev),
             'changeset_href': self.env.href.changeset(rev)
-            }
+        }
         self.log_info.insert (0, item)
 
     def get_info (self, path, rev):
@@ -108,8 +108,8 @@ class Log (Module):
             if i == len(list) - 1:
                 self.add_link('up', url, 'Parent directory')
 
-    def render (self):
-        self.perm.assert_permission (perm.LOG_VIEW)
+    def render(self):
+        self.perm.assert_permission(perm.LOG_VIEW)
 
         self.add_link('alternate', '?format=rss', 'RSS Feed',
             'application/rss+xml', 'rss')
@@ -130,7 +130,7 @@ class Log (Module):
             root = svn.fs.revision_root(self.fs_ptr, rev, self.pool)
         except svn.core.SubversionException:
             raise util.TracError('Invalid revision number: %d' % rev)
-        
+
         # We display an error message if the file doesn't exist (any more).
         # All we know is that the path isn't valid in the youngest
         # revision of the repository. The file might have existed
@@ -141,6 +141,14 @@ class Log (Module):
                                  'repository at revision %d.' % (self.path, rev),
                                  'Nonexistent path')
         else:
+            date = svn.fs.revision_prop(self.fs_ptr, rev,
+                                        svn.util.SVN_PROP_REVISION_DATE,
+                                        self.pool)
+            if date:
+                date_seconds = svn.util.svn_time_from_cstring(date, self.pool) / 1000000
+                self.req.check_modified(date_seconds)
+            self.log.debug("Not using HTTP cache, regenerating page.")
+
             info = self.get_info (self.path, rev)
             util.add_dictlist_to_hdf(info, self.req.hdf, 'log.items')
 

@@ -22,10 +22,11 @@
 import time
 import string
 import urllib
+import sys
 
 import perm
 import util
-import sys
+from core import RedirectException
 from Module import Module
 from Wiki import wiki_to_oneliner,wiki_to_html
 
@@ -104,6 +105,11 @@ class Timeline (Module):
             row = cursor.fetchone()
             if not row:
                 break
+
+            if len(info) == 0:
+                self.req.check_modified(int(row['time']))
+            self.log.debug("Not using HTTP cache, regenerating page.")
+
             t = time.localtime(int(row['time']))
             gmt = time.gmtime(int(row['time']))
             item = {'time': time.strftime('%H:%M', t),
@@ -226,6 +232,11 @@ class Timeline (Module):
         if not (wiki or ticket or changeset or milestone):
             wiki = ticket = changeset = milestone = 1
 
+        info = self.get_info (start, stop, maxrows, ticket,
+                              changeset, wiki, milestone)
+        util.add_to_hdf(info, self.req.hdf, 'timeline.items')
+
+        self.req.hdf.setValue('title', 'Timeline')
         if wiki:
             self.req.hdf.setValue('timeline.wiki', 'checked')
         if ticket:
@@ -234,11 +245,6 @@ class Timeline (Module):
             self.req.hdf.setValue('timeline.changeset', 'checked')
         if milestone:
             self.req.hdf.setValue('timeline.milestone', 'checked')
-
-        info = self.get_info (start, stop, maxrows, ticket,
-                              changeset, wiki, milestone)
-        util.add_dictlist_to_hdf(info, self.req.hdf, 'timeline.items')
-        self.req.hdf.setValue('title', 'Timeline')
 
     def display_rss(self):
         base_url = self.env.get_config('trac', 'base_url', '')         

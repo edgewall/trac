@@ -52,6 +52,14 @@ class Browser(Module.Module):
             raise util.TracError('"%s": no such file or directory in revision %d' \
                             % (path, revision), 'No such file or directory')
 
+        date = svn.fs.revision_prop(self.fs_ptr, revision,
+                                    svn.util.SVN_PROP_REVISION_DATE,
+                                    self.pool)
+        if date:
+            date_seconds = svn.util.svn_time_from_cstring(date, self.pool) / 1000000
+            self.req.check_modified(date_seconds)
+        self.log.debug("Not using HTTP cache, regenerating page.")
+
         # Redirect to the file module if the requested path happens
         # to point to a regular file
         if svn.fs.is_file(root, path, self.pool):
@@ -74,8 +82,8 @@ class Browser(Module.Module):
 
             created_rev = svn.fs.node_created_rev(root, fullpath, self.pool)
             date = svn.fs.revision_prop(self.fs_ptr, created_rev,
-                                    svn.util.SVN_PROP_REVISION_DATE,
-                                    self.pool)
+                                        svn.util.SVN_PROP_REVISION_DATE,
+                                        self.pool)
             if date:
                 date_seconds = svn.util.svn_time_from_cstring(date,
                                                           self.pool) / 1000000
@@ -84,11 +92,11 @@ class Browser(Module.Module):
                 date_seconds = 0
                 date = ''
             author = svn.fs.revision_prop(self.fs_ptr, created_rev,
-                                      svn.util.SVN_PROP_REVISION_AUTHOR,
-                                      self.pool)
+                                          svn.util.SVN_PROP_REVISION_AUTHOR,
+                                          self.pool)
             change = svn.fs.revision_prop(self.fs_ptr, created_rev,
-                                             svn.util.SVN_PROP_REVISION_LOG,
-                                             self.pool)
+                                          svn.util.SVN_PROP_REVISION_LOG,
+                                          self.pool)
             item = {
                 'name'         : name,
                 'fullpath'     : fullpath,
@@ -100,8 +108,8 @@ class Browser(Module.Module):
                 'author'       : author,
                 'change'       : wiki_to_oneliner(util.shorten_line(util.wiki_escape_newline(change)),
                                                   self.req.hdf, self.env,self.db),
-		'permission'   : self.authzperm.has_permission(fullpath)
-                }
+                'permission'   : self.authzperm.has_permission(fullpath)
+            }
             if rev_specified:
                 item['log_href'] = self.env.href.log(fullpath, revision)
                 if is_dir:
