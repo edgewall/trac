@@ -196,6 +196,17 @@ class Ticket(UserDict):
         return log
 
 
+def cmp_by_order(a, b):
+    try:
+        return int(a['order']) - int(b['order'])
+    except:
+        if a['order'] < b['order']:
+            return -1
+        elif a['order'] > b['order']:
+            return 1
+        else:
+            return 0
+
 def get_custom_fields(env):
     cfg = env.get_config_items('ticket-custom')
     if not cfg:
@@ -211,6 +222,7 @@ def get_custom_fields(env):
         field = {
             'name': name,
             'type': items[name],
+            'order': items.get(name + '.order', '0'),
             'label': items.get(name + '.label', ''),
             'value': items.get(name + '.value', '')
         }
@@ -221,6 +233,7 @@ def get_custom_fields(env):
             field['height'] = items.get(name + '.rows', '')
         fields.append(field)
 
+    fields.sort(cmp_by_order)
     return fields
 
 

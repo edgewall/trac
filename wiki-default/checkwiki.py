@@ -48,6 +48,7 @@ wiki_pages = [
  "TracSupport",
  "TracSyntaxColoring",
  "TracTickets",
+ "TracTicketsCustomFields",
  "TracTimeline",
  "TracUnicode",
  "TracUpgrade",

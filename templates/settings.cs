@@ -28,17 +28,6 @@
           value="<?cs var:trac.session.var.email ?>" />
   </div>
 
-  <h3>Preferences</h3>
-  <div>
-   <label for="tz">Timezone:</label>
-   <select id="tz" name="tz">
-    <option selected="selected">EST (-5)</option>
-    <option>GMT (0)</option>
-    <option>CET (+1)</option>
-   </select>
-  (<b>Note:</b> Not implemented yet.)
-  </div>
-
   <h3>Session</h3>
   <div>
    <label for="newsid">Session Key:</label>
