@@ -162,6 +162,12 @@
            <input id="comment" type="text" name="comment" size="60"
                  value="<?cs var:wiki.comment?>" />
          </div>
+	 <?cs if trac.acl.WIKI_ADMIN ?>
+	 <div>
+	   <input type="checkbox" name="readonly"
+           <?cs if wiki.readonly == "1"?>checked="checked"<?cs /if ?> /> Page is read-only.
+	 </div>
+	 <?cs /if ?>
          <div class="buttons">
              <input type="submit" name="save" value="Save changes" />&nbsp;
              <input type="submit" name="preview" value="Preview" />&nbsp;
@@ -190,8 +196,9 @@
     <?cs /each ?>
   </ul>
   <?cs /if ?>
-  <?cs if wiki.action == "view" && trac.acl.WIKI_MODIFY ?>
-    <form class="inline" method="get" action=""><div>
+  <?cs if wiki.action == "view" && trac.acl.WIKI_MODIFY &&
+       (wiki.readonly == "0" || trac.acl.WIKI_ADMIN) ?>
+       <form class="inline" method="get" action=""><div>
         <input type="hidden" name="edit" value="yes" />
         <input type="submit" value="Edit This Page" />
        </div></form>

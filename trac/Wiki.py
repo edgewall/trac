@@ -546,25 +546,33 @@ class Page:
         self.perm = perm
         cursor = self.db.cursor ()
         if version:
-            cursor.execute ('SELECT version, text FROM wiki '
+            cursor.execute ('SELECT version, text, readonly FROM wiki '
                             'WHERE name=%s AND version=%s',
                             name, version)
         else:
-            cursor.execute ('SELECT version, text FROM wiki '
+            cursor.execute ('SELECT version, text, readonly FROM wiki '
                             'WHERE name=%s ORDER BY version DESC LIMIT 1', name)
         row = cursor.fetchone()
         if row:
             self.new = 0
             self.version = int(row[0])
             self.text = row[1]
+            self.readonly = row[2] and int(row[2]) or 0
         else:
             self.version = 0
             self.text = 'describe %s here' % name
             self.new = 1
+            self.readonly = 0
 
     def set_content (self, text):
         self.text = text
         self.version = self.version + 1
+
+    def set_readonly (self, val):
+        cursor = self.db.cursor ()
+        self.readonly = int(val)
+        cursor.execute ('UPDATE wiki SET readonly=%s WHERE name=%s', self.readonly, self.name)
+        self.db.commit()
 
     def commit (self, author, comment, remote_addr):
         if self.new:
@@ -666,6 +674,7 @@ class Wiki(Module):
         preview = self.args.get('preview', None)
         history = self.args.get('history', None)
         version = int(self.args.get('version', 0))
+        readonly = self.args.get('readonly', None)
 
         # Ask web spiders to not index old version
         if diff or version:
@@ -725,6 +734,24 @@ class Wiki(Module):
         else:
             self.page.modified = 0
 
+        # Only WIKI_ADMIN:s can modify read-only pages
+        if self.page.readonly and (edit or save):
+            self.perm.assert_permission (perm.WIKI_ADMIN)
+
+        # Modify the read-only flag if it has been changed and the user is WIKI_ADMIN
+        readonly_changed = 0
+        if save and self.perm.has_permission(perm.WIKI_ADMIN):
+            if readonly:
+                new_readonly = 1
+            else:
+                new_readonly = 0
+            readonly_changed = new_readonly != self.page.readonly
+            if readonly_changed:
+                self.page.set_readonly(new_readonly)
+                if not self.page.modified:
+                    self.req.redirect(self.env.href.wiki(name))
+            
+        self.req.hdf.setValue('wiki.readonly', str(self.page.readonly))
         # We store the page version when we start editing a page.
         # This way we can stop users from saving changes if they are
         # not based on the latest version any more
