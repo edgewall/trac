@@ -11,19 +11,22 @@
  <form id="attachment" method="post" enctype="multipart/form-data" action="<?cs
    var:cgi_location ?>">
   <div class="field">
-   <label for="author">Author:</label><br />
-   <input type="text" id="author" name="author" class="textwidget" size="40"
-       value="<?cs var:attachment.author?>" />
-  </div>
-  <div class="field">
-   <label for="description">Description:</label><br />
-   <input type="text" id="description" name="description" class="textwidget"
-       size="40" />
-  </div>
-  <div class="field">
    <label for="file">File:</label><br />
    <input type="file" id="file" name="attachment" />
   </div>
+  <fieldset>
+   <legend>Attachment Info</legend>
+   <div class="field">
+    <label for="author">Your email or username:</label><br />
+    <input type="text" id="author" name="author" class="textwidget" size="30"
+        value="<?cs var:attachment.author?>" />
+   </div>
+   <div class="field">
+    <label for="description">Description of the file (optional):</label><br />
+    <input type="text" id="description" name="description" class="textwidget"
+        size="60" />
+   </div>
+  </fieldset>
   <div class="buttons">
    <input type="hidden" name="mode" value="attachment" />
    <input type="hidden" name="type" value="<?cs var:attachment.type ?>" />
