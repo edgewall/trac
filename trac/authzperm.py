@@ -58,7 +58,6 @@ class AuthzPermission:
 
             path_comb = ''
 	    for path_ele in path.split('/'):
-                print path_ele
 		if path_ele != '':
 		    path_comb = path_comb + '/' + path_ele
 		    section_name = self.module_name + ':' + path_comb
