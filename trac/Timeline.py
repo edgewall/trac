@@ -145,8 +145,8 @@ class Timeline(Module):
 
             if format == 'rss':
                 # For RSS, author must be an email address
-                if item['author'].find('@') != -1:
-                    item['author.email'] = item['author']
+                if event['author'].find('@') != -1:
+                    event['author.email'] = event['author']
 
             req.hdf['timeline.items.%d' % idx] = event
 
