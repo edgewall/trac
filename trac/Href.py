@@ -118,7 +118,7 @@ class RewriteHref(Href):
 
     def report(self, report=None, action=None):
         if action:
-            Href.report(self, report, action)
+	    return Href.report(self, report, action)
         elif report:
             return href_join(self.base, 'report', str(report))
         else:
