@@ -68,6 +68,22 @@ class WebMainTestCase(unittest.TestCase):
         self.assertEqual(302, status[0])
         self.assertEqual('http://example.org/trac/test', headers['Location'])
 
+    def test_redirect_absolute(self):
+        status = []
+        headers = {}
+        body = StringIO()
+        req = Mock(Request, scheme='http', server_name='example.org',
+                   server_port=None, outcookie=Cookie(),
+                   get_header=lambda x: None,
+                   end_headers=lambda: None,
+                   send_header=lambda x,y: headers.setdefault(x, y),
+                   write=lambda x: body.write(x),
+                   send_response=lambda x: status.append(x))
+        self.assertRaises(RedirectException, req.redirect,
+                          'http://example.org/trac/test')
+        self.assertEqual(302, status[0])
+        self.assertEqual('http://example.org/trac/test', headers['Location'])
+
 
 def suite():
     return unittest.makeSuite(CGIRequestTestCase, 'test')

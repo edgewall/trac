@@ -89,7 +89,10 @@ class Request(object):
 
     def redirect(self, url):
         self.send_response(302)
-        self.send_header('Location', absolute_url(self, url))
+        if not url.startswith('http://') and not url.startswith('https://'):
+            # Make sure the URL is absolute
+            url = absolute_url(self, url)
+        self.send_header('Location', url)
         self.send_header('Content-Type', 'text/plain')
         self.send_header('Pragma', 'no-cache')
         self.send_header('Cache-control', 'no-cache')
