@@ -155,26 +155,24 @@ legend {
 
 /* Navbar  */
 #navbar {
+  list-style-type: none;
   font: normal 10px verdana, 'Bitstream Vera Sans', Helvetica, Arial, sans-serif;
   color: #000;
-  clear: left;
+  clear: both;
   border: 1px solid #999;
-  margin: .15em 0;
   min-width: 500px;
   height: 16px;
+  padding: 0;
+  margin: .15em 0;
+
   /* NOTE: Changes dynamically in header.cs */
 }
-#navbar ul {
-  display: inline;
-  float: right;
-  padding: 0;
-  margin: 0;
+#navbar li {
+/*  display: inline; */
+/*  list-style: none; */
+ float: right;
 }
-#navbar ul li {
- display: inline;
- list-style: none;
-}
-#navbar ul li a {
+#navbar li a {
   display: block;
   float: left;
   height: 14px;
@@ -185,12 +183,12 @@ legend {
   color: #000;
   /* NOTE: Changes dynamically augmented in header.cs */
 }
-#navbar a.active, #navbar a.active:visited {
+#navbar li a.active, #navbar li a.active:visited {
   font-weight: bold;
   border-top: none;
   border-right: none;
 }
-#navbar a:hover { background-color: #d7d7d7; border-right: 1px solid #ddd; }
+#navbar li a:hover { background-color: #d7d7d7; border-right: 1px solid #ddd; }
 #page-content { }
 #main {  margin-bottom: 2em; }
 #main-footer { margin-top: 3em; text-align: center; }

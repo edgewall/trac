@@ -1,14 +1,5 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
         "http://www.w3.org/TR/2000/REC-xhtml1-20000126/DTD/xhtml1-strict.dtd">
-
-<?cs def:navlink(text, href, id, aclname, accesskey) ?><?cs
-   if aclname ?><li><a href="<?cs var:href ?>" <?cs 
-        if $id == $trac.active_module ?>class="active"<?cs /if ?> 
-        <?cs if:$accesskey!="" ?> accesskey="<?cs var:$accesskey ?>"<?cs 
-        /if ?>><?cs var:text ?></a></li><?cs 
-   /if ?><?cs 
-/def ?>
-
 <html>
   <head>
     <?cs if $project.name ?>
@@ -35,10 +26,9 @@
       @import url("<?cs var:$htdocs_location ?>/css/search.css");
       <?cs /if ?>
       /* Dynamically/template-generated CSS below */
-      #navbar { background: url("<?cs var:$htdocs_location ?>/topbar_gradient.png") top left #f7f7f7 }  
+      #navbar { background: url("<?cs var:$htdocs_location ?>/topbar_gradient.png") top left #f7f7f7 }
       #navbar a { background: url(<?cs var:$htdocs_location ?>/dots.gif) top left no-repeat; }
-      #navbar a.active,#navbar a.active:visited { background: url("<?cs var:$htdocs_location ?>/topbar_active.png") top left repeat-x #d7d7d7;}  
-
+      #navbar a.active,#navbar a.active:visited { background: url("<?cs var:$htdocs_location ?>/topbar_active.png") top left repeat-x #d7d7d7;}
        -->
     </style>
     <script src="<?cs var:$htdocs_location ?>/trac.js" type="text/javascript"></script>
@@ -46,9 +36,9 @@
 <body>
 
 <div id="header">
-  <a id="hdrlogo" href="<?cs var:header_logo.link ?>"><img src="<?cs var:header_logo.src ?>" 
-      width="<?cs var:header_logo.width ?>" 
-      height="<?cs var:header_logo.height ?>" 
+  <a id="hdrlogo" href="<?cs var:header_logo.link ?>"><img src="<?cs var:header_logo.src ?>"
+      width="<?cs var:header_logo.width ?>"
+      height="<?cs var:header_logo.height ?>"
       alt="<?cs var:header_logo.alt ?>" /></a>
   <hr class="hide"/>
   <h2 class="hide">Navigation</h2>
@@ -66,7 +56,7 @@
    <ul class="subheader-links">
     <li><?cs if $trac.authname == "anonymous" ?>
       <a href="<?cs var:trac.href.login ?>">Login</a>
-    <?cs else ?> 
+    <?cs else ?>
       logged in as <?cs var:trac.authname ?> </li>
       <li><a href="<?cs var:trac.href.logout ?>">Logout</a>
     <?cs /if ?></li>
@@ -77,37 +67,51 @@
    </ul>
   </div>
  </div>
-  <div id="navbar">
-    <ul>
-      <?cs if $trac.active_module == "wiki" ?>	
-    	<?cs set:$wiki_view="wiki" ?>
-      <?cs else  ?>	
-    	<?cs set:$wiki_view="attachment" ?>
-      <?cs /if  ?>	
-      <?cs call:navlink("Wiki", $trac.href.wiki, $wiki_view, 
-                        $trac.acl.WIKI_VIEW, "1") ?>
-      <?cs call:navlink("Timeline", $trac.href.timeline, "timeline", 
-                        $trac.acl.TIMELINE_VIEW, "2") ?>
-      <?cs if $trac.active_module == "log" ?>	
-    	<?cs set:$browser_view="log" ?>
-      <?cs elif $trac.active_module == "file" ?>	
-    	<?cs set:$browser_view="file" ?>
-      <?cs else  ?>	
-    	<?cs set:$browser_view="browser" ?>
-      <?cs /if  ?>	
-      <?cs call:navlink("Browse Source", $trac.href.browser, $browser_view, 
-                        $trac.acl.BROWSER_VIEW, "") ?>
-      <?cs if $trac.active_module == "ticket" ?>	
-    	<?cs set:$ticket_view="ticket" ?>
-      <?cs else  ?>	
-    	<?cs set:$ticket_view="report" ?>
-      <?cs /if  ?>	
-      <?cs call:navlink("View Tickets", $trac.href.report, $ticket_view, 
-                        $trac.acl.REPORT_VIEW, "") ?>
-      <li style="display: none"><a href="<?cs var:$trac.href.newticket ?>" accesskey="7"></a></li>
-      <?cs call:navlink("New Ticket", $trac.href.newticket, "newticket", 
-                        $trac.acl.TICKET_CREATE, "9") ?>
-      <?cs call:navlink("Search", $trac.href.search, "search", 
-                        $trac.acl.SEARCH_VIEW, "4") ?>
-    </ul>
-  </div>
+<?cs def:navlink(text, href, id, aclname, accesskey) ?><?cs
+   if $error.type || $trac.acl.+aclname ?><li><a href="<?cs var:href ?>" <?cs 
+        if $id == $trac.active_module ?>class="active"<?cs /if ?> 
+        <?cs if:$accesskey!="" ?> accesskey="<?cs var:$accesskey ?>"<?cs 
+        /if ?>><?cs var:text ?></a></li><?cs 
+   /if ?><?cs  /def ?>
+
+  <?cs if $trac.active_module == "wiki" ?>
+    <?cs set:$wiki_view="wiki" ?>
+  <?cs else  ?>
+    <?cs set:$wiki_view="attachment" ?>
+  <?cs /if  ?>
+  <?cs if $trac.active_module == "ticket" ?>
+    <?cs set:$ticket_view="ticket" ?>
+  <?cs else  ?>
+    <?cs set:$ticket_view="report" ?>
+  <?cs /if  ?>
+  <?cs if $trac.active_module == "log" ?>
+    <?cs set:$browser_view="log" ?>
+  <?cs elif $trac.active_module == "file" ?>
+    <?cs set:$browser_view="file" ?>
+  <?cs else  ?>
+    <?cs set:$browser_view="browser" ?>
+  <?cs /if  ?>
+
+ <ul id="navbar">
+  <?cs call:navlink("Search", $trac.href.search, "search",
+                    $trac.acl.SEARCH_VIEW, "4") ?>
+
+  <?cs call:navlink("New Ticket", $trac.href.newticket, "newticket",
+                    $trac.acl.TICKET_CREATE, "9") ?>
+
+  <?cs call:navlink("View Tickets", $trac.href.report, $ticket_view,
+                    $trac.acl.REPORT_VIEW, "") ?>
+
+  <li style="display: none"><a href="<?cs var:$trac.href.newticket ?>"
+                    accesskey="7">New Ticket (Accessibility)</a></li>
+
+  <?cs call:navlink("Browse Source", $trac.href.browser, $browser_view,
+                    $trac.acl.BROWSER_VIEW, "") ?>
+
+  <?cs call:navlink("Timeline", $trac.href.timeline, "timeline",
+                    $trac.acl.TIMELINE_VIEW, "2") ?>
+
+  <?cs call:navlink("Wiki", $trac.href.wiki, $wiki_view,
+                    $trac.acl.WIKI_VIEW, "1") ?>
+ </ul>
+
