@@ -1,8 +1,7 @@
 <?cs include "header.cs"?>
 
 <h3>Search</h3>
-<form action="<?cs var:cgi_location ?>" method="GET">
-<input type="hidden" name="mode" value="search">
+<form action="<?cs var:trac.href.search ?>" method="GET">
 <input type="text" name="q" size="40" value="<?cs var:search.q ?>">
 <input type="submit" value="Search">
 <br>

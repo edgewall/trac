@@ -7,10 +7,8 @@
    <div id="browser-body">
     <h1 id="browser-rev">Revision <?cs var:browser.revision?></h1>
 
-    <form id="browser-chgrev" action="<?cs var:cgi_location ?>" method="get">
+    <form id="browser-chgrev" action="<?cs var:browser_current_href ?>" method="get">
       <div>
-        <input type="hidden" name="mode" value="browser" />
-        <input type="hidden" name="path" value="<?cs var:browser.path?>" />
         View rev:
         <input type="text" name="rev" value="<?cs var:browser.revision?>"
           size="4" />

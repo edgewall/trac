@@ -126,3 +126,4 @@ class Browser(Module):
 
         self.cgi.hdf.setValue('browser.path', self.path)
         self.cgi.hdf.setValue('browser.revision', str(rev))
+        self.cgi.hdf.setValue('browser.current_href', href.browser(self.path))

@@ -46,7 +46,7 @@
                         "REPORT_VIEW") ?>
       <?cs call:navlink("Search", $trac.href.search, "search", 
                         "SEARCH_VIEW") ?>
-      <?cs call:navlink("New Ticket", $trac.href.newticket, "search", 
+      <?cs call:navlink("New Ticket", $trac.href.newticket, "newticket", 
                         "TICKET_CREATE") ?>
     </div>
     <div style="clear: both"></div>
