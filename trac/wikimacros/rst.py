@@ -27,6 +27,7 @@
 #
 # Inserts `reference` nodes for TracLinks into the document tree.
 
+from __future__ import nested_scopes
 import re
 
 docutils_required = '0.3.3'
@@ -83,10 +84,10 @@ def trac_get_reference(env, rawtext, text):
         m = pattern.match(text)
         if m:
             g = filter(None, m.groups())
-            missing = False
+            missing = 0
             if pattern == WIKI_LINK:
                 if not (env._wiki_pages.has_key(g[0])):
-                        missing = True
+                        missing = 1
                         text = text + "?"
             uri = function(env.href, g)
             reference = nodes.reference(rawtext, text)
