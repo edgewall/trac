@@ -276,9 +276,10 @@ def main():
     hostname = ''
     auths = {}
     projects = {}
+    daemonize = 0
     try:
-        opts, args = getopt.getopt(sys.argv[1:], "a:p:b:",
-                                   ["auth=", "port=", "hostname="])
+        opts, args = getopt.getopt(sys.argv[1:], "a:p:b:d",
+                                   ["auth=", "port=", "hostname=","daemonize"])
     except getopt.GetoptError:
         usage()
     for o, a in opts:
@@ -292,6 +293,8 @@ def main():
             port = int(a)
         elif o in ("-b", "--hostname"):
             hostname = a
+        if o in ("-d","--daemonize"):
+            daemonize = 1    
 
     if not args:
         usage()
@@ -322,7 +325,20 @@ def main():
         projects[project].auth = auth
         
     httpd.projects = projects
-    httpd.serve_forever()
+    try:
+        if daemonize:    
+            pid=os.fork()
+            if pid == 0:
+                os.chdir(os.sep)
+                os.setpgrp()
+                sys.stdin.close()
+                sys.stdout.close()
+                sys.stderr.close()
+            else:
+                sys.exit(0)
+        httpd.serve_forever()
+    except OSError:
+        sys.exit(1)		
 
 if __name__ == '__main__':
     main()
