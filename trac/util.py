@@ -60,7 +60,7 @@ def enum_selector (db, sql, name, selected=None,default_empty=0):
 
 def wiki_escape_newline(text):
     return text.replace(os.linesep, '[[BR]]' + os.linesep)
-
+	
 def escape(text):
     """Escapes &, <, > and \""""
     if not text:
@@ -162,8 +162,8 @@ def shorten_line(text, maxlen = 75):
     if not text:
         return ''
     i = text.find('[[BR]]')
-    if i < maxlen:
-	    shortline = text[:i]+' ...'
+    if i > -1 and i < maxlen:
+        shortline = text[:i]+' ...'
     elif len(text) < maxlen:
         shortline = text
     else:
