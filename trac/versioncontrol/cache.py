@@ -61,7 +61,7 @@ class CachedRepository(Repository):
                 current_rev = self.repos.next_rev(youngest_stored)
             else:
                 current_rev = self.repos.oldest_rev
-            while current_rev:
+            while current_rev is not None:
                 changeset = self.repos.get_changeset(current_rev)
                 cursor.execute("INSERT INTO revision (rev,time,author,message) "
                                "VALUES (%s,%s,%s,%s)", (current_rev,
