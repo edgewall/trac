@@ -367,6 +367,14 @@ CREATE INDEX wiki_idx		ON wiki(name,version);
         data = self.db_execsql("SELECT name FROM enum WHERE type='%s'" % type) 
         return [r[0] for r in data]
 
+    def get_milestone_list (self):
+        data = self.db_execsql("SELECT name FROM milestone") 
+        return [r[0] for r in data]
+
+    def get_version_list (self):
+        data = self.db_execsql("SELECT name FROM version") 
+        return [r[0] for r in data]
+
 
     ##
     ## Available Commands
@@ -387,7 +395,8 @@ CREATE INDEX wiki_idx		ON wiki(name,version);
             docs = (self._help_about + self._help_help + self._help_initdb +
                     self._help_config + self._help_component +
                     self._help_permission + self._help_wiki +
-                    self._help_priority + self._help_severity)
+                    self._help_priority + self._help_severity +
+                    self._help_version)
             print 'trac-admin - The Trac Administration Console %s' % __version__
             if not self.interactive:
                 print
@@ -400,7 +409,6 @@ CREATE INDEX wiki_idx		ON wiki(name,version);
     
     ## About / Version
     _help_about = [('about', 'Shows information about trac-admin')]
-    _help_version = _help_about
 
     def do_about(self, line):
         print
@@ -408,8 +416,6 @@ CREATE INDEX wiki_idx		ON wiki(name,version);
         print '================================================================='
         print self.license
         print self.credits
-
-    do_version = do_about # Alias
 
 
     ## Quit / EOF
@@ -735,9 +741,8 @@ CREATE INDEX wiki_idx		ON wiki(name,version);
     def do_severity(self, line):
         self._do_enum('severity', line)
 
-
-
-        
+    # Priority and Severity share the same datastructure and methods:
+    
     def _do_enum(self, type, line):
         arg = self.arg_tokenize(line)
         try:
@@ -789,6 +794,104 @@ CREATE INDEX wiki_idx		ON wiki(name,version);
                                % (type, name))
 
 
+    ## Milestone
+    _help_milestone = [('milestone list', 'Show milestones'),
+                       ('milestone add <name> [time]', 'Add milestone'),
+                       ('milestone rename <name> <newname>',
+                        'Rename milestone'),
+                       ('milestone time <name> <time>', 'Set milestone date/time'),
+                       ('milestone remove <name>', 'Remove milestone')]
+
+    def complete_milestone (self, text, line, begidx, endidx):
+
+        if begidx in [15,17]:
+            comp = self.get_milestone_list ()
+        elif begidx < 15:
+            comp = ['list','add','rename','time','remove']
+        return self.word_complete(text, comp)
+
+    def do_milestone(self, line):
+        self._do_mile_ver('milestone', line)
+
+
+    ## Version
+    _help_version = [('version list', 'Show versions'),
+                       ('version add <name> [time]', 'Add version'),
+                       ('version rename <name> <newname>',
+                        'Rename version'),
+                       ('version time <name> <time>', 'Set version date/time'),
+                       ('version remove <name>', 'Remove version')]
+
+    def complete_version (self, text, line, begidx, endidx):
+
+        if begidx in [15,17]:
+            comp = self.get_version_list ()
+        elif begidx < 15:
+            comp = ['list','add','rename','time','remove']
+        return self.word_complete(text, comp)
+
+    def do_version(self, line):
+        self._do_mile_ver('version', line)
+
+        
+    # Milestone and Version are identical,  methods
+
+    def _do_mile_ver(self, type, line):
+        arg = self.arg_tokenize(line)
+        try:
+            if arg[0]  == 'list':
+                self._do_mile_ver_list(type)
+            elif arg[0] == 'add' and len(arg) in [2,3]:
+                name = arg[1]
+                time = len(arg) == 3 and arg[2]
+                self._do_mile_ver_add(type, name, time)
+            elif arg[0] == 'rename'  and len(arg)==3:
+                name = arg[1]
+                newname = arg[2]
+                self._do_mile_ver_rename(type, name, newname)
+            elif arg[0] == 'time'  and len(arg)==3:
+                name = arg[1]
+                time = arg[2]
+                self._do_mile_ver_time(type, name, time)
+            elif arg[0] == 'remove'  and len(arg)==2:
+                name = arg[1]
+                self._do_mile_ver_remove(type, name)
+            else:    
+                self.do_help (type)
+        except Exception, e:
+            print 'Command %s failed:' % arg[0], e
+
+    def _do_mile_ver_list(self, type):
+        data = self.db_execsql("SELECT name,time FROM %s ORDER BY time,name"
+                               % type)
+        self.print_listing(['Name', 'Time'], data)
+
+    def _do_mile_ver_rename(self, type, name, newname):
+        d = {'name':name, 'newname':newname, 'type':type}
+        data = self.db_execsql("SELECT name FROM %(type)s" 
+                               " WHERE name='%(name)s'" % d)
+        if not data:
+            raise Exception, "No such %s '%s'" % (type, name)
+        data = self.db_execsql("UPDATE %(type)s SET name='%(newname)s'" 
+                               " WHERE name='%(name)s'" % d)
+
+    def _do_mile_ver_add(self, type, name, time):
+        sql = ("INSERT INTO %(type)s('name','time') "
+               " VALUES('%(name)s', '%(time)s')" 
+               % {'type':type, 'name':name, 'time':time})
+        data = self.db_execsql(sql)
+        
+    def _do_mile_ver_remove(self, type, name):
+        d = {'name':name, 'type':type}
+        data = self.db_execsql("SELECT name FROM %(type)s" 
+                               " WHERE name='%(name)s'" % d)
+        if not data:
+            raise Exception, "No such %s '%s'" % (type, name)
+        data = self.db_execsql("DELETE FROM %(type)s" 
+                               " WHERE name='%(name)s'" % d)
+
+
+
 ## ---------------------------------------------------------------------------
 
 ##
@@ -800,8 +903,8 @@ def main():
     if len (sys.argv) > 1:
         if sys.argv[1] in ['-h','--help','help']:
             tracadm.docmd ("help")
-        elif sys.argv[1] in ['-v','--version','version','about']:
-            tracadm.docmd ("version")
+        elif sys.argv[1] in ['-v','--version','about']:
+            tracadm.docmd ("about")
         else:
             tracadm.db_set(sys.argv[1])
             if len (sys.argv) > 2:
