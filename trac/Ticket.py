@@ -31,14 +31,13 @@ from Notify import TicketNotifyEmail
 
 fields = ['time', 'component', 'severity', 'priority', 'milestone', 'reporter',
           'owner', 'cc', 'url', 'version', 'status', 'resolution',
-          'summary', 'description']
+          'keywords', 'summary', 'description']
 
 def get_ticket (db, id, escape_values=1):
     global fields
     cursor = db.cursor ()
 
     fetch = string.join(fields, ',')
-
     cursor.execute(('SELECT %s FROM ticket ' % fetch) + 'WHERE id=%s', id)
     row = cursor.fetchone ()
     cursor.close ()
@@ -168,7 +167,6 @@ class Ticket (Module):
         tn = TicketNotifyEmail(self.env)
         tn.notify(id, newticket=0, modtime=now)
 
-
     def create_ticket(self):
         """
         Insert a new ticket into the database.
@@ -235,11 +233,8 @@ class Ticket (Module):
             new    = row[4] or ''
 
             hdf.setValue('ticket.changes.%d.date' % idx,
-                                  time.strftime('%c',
-                                                time.localtime(date)))
-            
+                         time.strftime('%c', time.localtime(date)))
             hdf.setValue('ticket.changes.%d.time' % idx, str(date))
-            
             hdf.setValue('ticket.changes.%d.author' % idx, author)
             hdf.setValue('ticket.changes.%d.field' % idx, field)
             hdf.setValue('ticket.changes.%d.old' % idx, old)

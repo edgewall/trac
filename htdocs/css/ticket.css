@@ -67,7 +67,7 @@ li.tkt-chg-change { margin: 0; }
 #nt-ticket { max-width: 700px; line-height: 160% }
 #nt-body { margin: 1em 0}
 #nt-props { white-space: nowrap; line-height: 160%; }
-#nt-left { float: left; border-right: 1px dotted #d7d7d7; width: 40%; }
+#nt-left { float: left; border-right: 1px dotted #d7d7d7; width: 45%; }
 #nt-right { margin-left: 40%; }
 #nt-buttons {  padding-top: .5em; text-align: right; }
 

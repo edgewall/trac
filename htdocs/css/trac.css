@@ -28,7 +28,7 @@ span.underline { text-decoration: underline; }
   margin-top: .5em;
 }
 /* Forms */
-input,textarea,select { background: #fff; }
+input,textarea,select { background: #fff; margin: 2px;}
 input[type="submit"]:hover,input[type="reset"]:hover,a.fake-button:hover { background: #ccb; }
 input[type="submit"],input[type="reset"],.fake-button,a.fake-button {
  background: #eee;

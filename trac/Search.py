@@ -101,19 +101,21 @@ class Search(Module):
         q = []
         if changeset:
             q.append('SELECT 1 as type, message AS title, message, author, '
-                     ' rev AS data, time,0 AS ver'
+                     ' "" AS keywords, rev AS data, time,0 AS ver'
                      ' FROM revision WHERE %s' %
                      self.query_to_sql(query, 'message'))
         if tickets:
             q.append('SELECT 2 as type, summary AS title, '
-                     ' description AS message, reporter AS author, id AS data,'
-                     ' time,0 AS ver'
-                     ' FROM ticket WHERE %s OR %s' %
-                     (self.query_to_sql(query, 'summary'),
-                      self.query_to_sql(query, 'description')))
+                     ' description AS message, reporter AS author, keywords,'
+                     ' id AS data, time,0 AS ver'
+                     ' FROM ticket WHERE %s OR %s OR %s' %
+                      (self.query_to_sql(query, 'summary'),
+                       self.query_to_sql(query, 'keywords'),
+                       self.query_to_sql(query, 'description')))
         if wiki:
             q.append('SELECT 3 as type, text AS title, text AS message,'
-                     ' author, w1.name AS data, time, w1.version as ver'
+                     ' author, '' AS keywords, w1.name AS data, time,'
+                     ' w1.version as ver'
                      ' FROM wiki w1, '
                      ' (SELECT name,max(version) AS ver '
                      '    FROM wiki GROUP BY name) w2'
@@ -138,6 +140,7 @@ class Search(Module):
             msg = row['message']
             t = time.localtime(int(row['time']))
             item = {'type': int(row['type']),
+                    'keywords': row['keywords'] or '',
                     'data': row['data'],
                     'title': row['title'],
                     'datetime' : time.strftime('%c', t),

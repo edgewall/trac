@@ -48,7 +48,9 @@ addEvent(window, 'load', function() { document.getElementById('summary').focus()
    <label for="severity" class="nt-label">Severity:</label>
     <?cs call:hdf_select(enums.severity, "severity",
                          newticket.default_severity) ?><br />
-    &nbsp;
+  <label for="keywords" class="nt-label">Keywords:</label>
+   <input type="text" id="keywords" name="keywords" size="28" class="textwidget" 
+          value="" /><br />
   </div>
  <div  id="nt-right" style="">
   <label for="priority" class="nt-label">Priority:</label>
@@ -58,10 +60,10 @@ addEvent(window, 'load', function() { document.getElementById('summary').focus()
   <?cs call:hdf_select(newticket.milestones, "milestone",
                        newticket.default_milestone) ?><br />
   <label for="owner" class="nt-label">Assign to:</label>
-   <input type="text" id="owner" name="owner" size="40" class="textwidget" 
+   <input type="text" id="owner" name="owner" size="35" class="textwidget" 
           value="<?cs var:newticket.default_owner ?>" /><br />
   <label for="cc" class="nt-label">Cc:</label>
-   <input type="text" id="cc" name="cc" size="40" class="textwidget" 
+   <input type="text" id="cc" name="cc" size="35" class="textwidget" 
           value="" /><br />
   </div>
  </div>

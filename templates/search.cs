@@ -25,9 +25,10 @@ addEvent(window, 'load', function() { document.getElementById('q').focus()});
 </div>
 </form>
 
-<?cs def result(title, body, link) ?>
+<?cs def result(title, keywords, body, link) ?>
  <div class="result-item">
  <a class="result-title" href="<?cs var:$link ?>"><?cs var:$title ?></a>
+ <?cs if:$keywords ?><div class="result-keywords"><?cs var:$keywords ?></div><?cs /if ?>
  <div class="result-body"><?cs var:$body ?></div>
  <span class="result-author">By <?cs var:$item.author ?></span>
  -  <span class="result-date"><?cs var:$item.datetime ?></span>
@@ -47,14 +48,17 @@ addEvent(window, 'load', function() { document.getElementById('q').focus()});
    <?cs each item=search.result ?> 
     <?cs if item.type == 1 ?>
      <?cs call result('['+item.data+']: '+item.shortmsg,
+                      item.keywords,
                       item.message,
                       item.changeset_href) ?>
     <?cs elif item.type == 2 ?>
      <?cs call result('#'+item.data+': '+item.title,
+                      item.keywords,
                       item.message,
                       item.ticket_href) ?>
     <?cs elif item.type == 3 ?>
      <?cs call result(item.data+': '+item.shortmsg,
+                      item.keywords,
                       item.message,
                       item.wiki_href) ?>
     <?cs /if ?>
