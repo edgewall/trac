@@ -73,3 +73,13 @@ CamelCase,CamelCase.CamelCase:CamelCase
 <p>
 CamelCase
 </p>
+==============================
+FooBar123
+FooB123ar
+Foo123
+------------------------------
+<p>
+<a class="missing" href="/wiki/FooBar123">FooBar123?</a>
+<a class="missing" href="/wiki/FooB123ar">FooB123ar?</a>
+Foo123
+</p>
