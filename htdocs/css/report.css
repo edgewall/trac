@@ -62,3 +62,4 @@ a.report-tktref:hover { background: #b00; color: #fff; }
 .color6-odd  { background: #f0f0f0; border-color: #ddd; color: #888; }
 .color6-even { background: #f7f7f7; border-color: #ddd; color: #888; }
 .color6-odd a, .color6-even a { color: #b66; }
+#report-notfound { margin: 2em; font-size: 110%; }

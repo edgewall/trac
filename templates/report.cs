@@ -72,7 +72,7 @@
  
  <?cs if report.mode == "list" ?>
    <h1 id="report-hdr"><?cs var:report.title ?></h1>
- 
+
      <?cs each row = report.items ?>
  
        <?cs if group != row.__group__ || idx == #0 ?>
@@ -129,6 +129,13 @@
        </tr>
      <?cs /each ?>
    </table>
+
+   <?cs if $idx == #0 ?>
+    <div id="report-notfound">No matches found.</div>
+   <?cs /if ?>
+
+ 
+
  
  <?cs elif report.mode == "editor" ?>
  
@@ -157,13 +164,18 @@
  </div>
  
  <?cs if report.id > #0 ?>
+ <?cs set vars='' ?>
+ <?cs each arg = $report.var ?>
+   <?cs set vars=$vars+'&'+name($arg)+'='+$arg ?>
+ <?cs /each ?>
+
   <div id="main-footer">
    Download report in other data formats: <br />
    <a class="noline" href="?format=rss"><img src="<?cs var:htdocs_location
  ?>xml.png" alt="RSS Feed" style="vertical-align: bottom"/></a>&nbsp;
-   <a href="?format=rss">(RSS 2.0)</a>&nbsp;|
-   <a href="?format=csv">Comma-delimited</a>&nbsp;|
-   <a href="?format=tab">Tab-delimited</a>
+   <a href="?format=rss<?cs var $vars ?>">(RSS 2.0)</a>&nbsp;|
+   <a href="?format=csv<?cs var $vars ?>">Comma-delimited</a>&nbsp;|
+   <a href="?format=tab<?cs var $vars ?>">Tab-delimited</a>
    <br />
   </div>
  <?cs /if ?>
