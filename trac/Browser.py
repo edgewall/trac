@@ -153,7 +153,7 @@ class Browser(Module):
                 url = self.env.href.browser(path)
             req.hdf['browser.path.%d.url' % i] = url
             if i == len(list) - 1:
-                self.add_link('up', url, 'Parent directory')
+                self.add_link(req, 'up', url, 'Parent directory')
 
     def render(self, req):
         self.perm.assert_permission (perm.BROWSER_VIEW)
@@ -199,7 +199,7 @@ class Browser(Module):
 
         self.generate_path_links(req, path, rev, rev_specified)
         if path != '/':
-            parent = '/'.join(path.split('/')[:-2]) + '/'
+            parent = '/'.join(path.split('/')[:-1]) + '/'
             if rev_specified:
                 req.hdf['browser.parent_href'] = self.env.href.browser(parent, rev=rev)
             else:
