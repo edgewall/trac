@@ -189,14 +189,14 @@ def create_unique_file(path):
             flags = os.O_CREAT + os.O_WRONLY + os.O_EXCL
             if hasattr(os, 'O_BINARY'):
                 flags += os.O_BINARY
-            return path, os.fdopen(os.open(path, flags), 'w')
-        except OSError, e:
+            break
+        except OSError:
             idx += 1
             # A sanity check
             if idx > 100:
                 raise Exception('Failed to create unique name: ' + path)
             path = '%s.%d%s' % (parts[0], idx, parts[1])
-
+    return path, os.fdopen(os.open(path, flags), 'w')
 
 
 class TracError(Exception):

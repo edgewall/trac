@@ -1,4 +1,5 @@
 <?cs include "header.cs" ?>
+<?cs include "macros.cs" ?>
 <div id="page-content">
 <h2 class="hide">Wiki Navigation</h2>
 <ul class="subheader-links">
@@ -87,7 +88,7 @@
             </div>
           </div>
           <div class="chg-diff-file">
-            <?cs var:wiki.diff_output ?>
+           <?cs call:diff_display(wiki.diff) ?>
           </div>
         <?cs else ?>
           <?cs if wiki.action == "edit" || wiki.action == "preview" ?>

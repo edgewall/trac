@@ -1,4 +1,5 @@
 <?cs include "header.cs"?>
+<?cs include "macros.cs"?>
 <div id="page-content">
  <ul class="subheader-links">
    <li><a href="?format=diff">Download Diff</a></li>
@@ -60,7 +61,7 @@
     Output below might not be useful.
   </p>
   <hr class="hide" />
-</div>    
+</div>
 
 <div id="chg-legend">
   <h3>Legend:</h3>
@@ -73,7 +74,12 @@
 </div>
 
 <div id="chg-diff">
-  <?cs var:changeset.diff_output ?>
+  <?cs each:file = changeset.diff.files ?>
+    <div class="chg-diff-file">
+      <h3 class="chg-diff-hdr"><?cs var:file.name.new ?></h3>
+      <?cs call:diff_display(file) ?>
+    </div>
+  <?cs /each ?>
 </div>
 
  <div id="main-footer">

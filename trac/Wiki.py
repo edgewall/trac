@@ -561,7 +561,7 @@ class Page:
             self.version = 0
             self.text = 'describe %s here' % name
             self.new = 1
-            
+
     def set_content (self, text):
         self.text = text
         self.version = self.version + 1
@@ -577,7 +577,6 @@ class Page:
                         'AS version)', self.name)
         row = cursor.fetchone()
         new_version = int(row[0])
-        
         cursor.execute ('INSERT INTO WIKI '
                         '(name, version, time, author, ipnr, text, comment) '
                         'VALUES (%s, %s, %s, %s, %s, %s, %s)',
@@ -661,8 +660,7 @@ class Wiki(Module):
             raise TracError('Version %d of page "%s" not found.'
                             % (version, pagename),
                             'Page Not Found')
-        out = StringIO.StringIO()
-        filtr = DiffColorizer(out)
+        filtr = DiffColorizer(self.req.hdf, 'wiki.diff')
         filtr.writeline('header %s version %d | %s version %d header' %
                          (pagename, version - 1, pagename, version))
         try:
@@ -671,10 +669,8 @@ class Wiki(Module):
                     filtr.writeline(escape(line))
         except AttributeError:
             raise TracError('Python >= 2.2 is required for diff support.')
-        
         filtr.close()
-        self.req.hdf.setValue('wiki.diff_output', out.getvalue())
-        
+
     def render(self):
         name = self.args.get('page', 'WikiStart')
         author = self.args.get('author', self.req.authname)
