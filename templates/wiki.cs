@@ -134,9 +134,6 @@
  
  <?cs else ?>
   <?cs if wiki.action == "edit" || wiki.action == "preview" ?>
-   <script type="text/javascript">
-   addEvent(window, 'load', function() { document.getElementById('summary').focus()}); 
-   </script>
    <h3>Editing "<?cs var:wiki.page_name ?>"</h3>
    <form name="form" action="<?cs var:wiki.current_href ?>#preview" method="post">
     <div style="width: 100%">
