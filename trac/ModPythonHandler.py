@@ -21,6 +21,7 @@
 
 import re
 import auth, core, Environment, Href, Session, Wiki
+from util import TracError
 from mod_python import apache, util
 
 content_type_re = re.compile(r'^Content-Type$', re.IGNORECASE)
@@ -84,10 +85,7 @@ class TracFieldStorage(util.FieldStorage):
         return util.FieldStorage.get(self, key, default)
 
 
-env = None
-
-def init(req):
-    global env
+def init_env(req):
 
     options = req.req.get_options()
     if not options.has_key('TracEnv'):
@@ -111,14 +109,22 @@ def init(req):
     database = env.get_db_cnx()
     Wiki.populate_page_dict(database, env)
 
+    return env
+
+
+projects = {}
+
 def handler(req):
-    global env
+    global projects
 
     mpr = ModPythonRequest(req)
     mpr.init_request()
 
+    # TODO Write access to the projects dict should be synchronized somehow
+    env = projects.get(req.filename, None)
     if not env:
-        init(mpr)
+        env = init_env(mpr)
+        projects[req.filename] = env
 
     args = TracFieldStorage(req)
     core.parse_path_info(args, req.path_info)
