@@ -38,7 +38,7 @@ class Timeline (Module):
                     'wiki': perm.WIKI_VIEW, 'milestone': perm.MILESTONE_VIEW}
         filters = list(filters) # copy list so we can make modifications
         for k,v in perm_map.items():
-            if not self.perm.has_permission(v):
+            if k in filters and not self.perm.has_permission(v):
                 filters.remove(k)
         if not filters:
             return []
@@ -136,7 +136,7 @@ class Timeline (Module):
         start = stop - (daysback + 1) * 86400
         maxrows = int(req.args.get('max', 0))
 
-        filters = [k for k in AVAILABLE_FILTERS if k in req.args]
+        filters = [k for k in AVAILABLE_FILTERS if k in req.args.keys()]
         if not filters:
             filters = AVAILABLE_FILTERS[:]
 
