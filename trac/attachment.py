@@ -144,6 +144,11 @@ class AttachmentModule(Module):
         # Render HTML view
         text, link = self.get_parent_link(parent_type, parent_id)
         add_link(req, 'up', link, text)
+
+        raw_href = self.env.href.attachment(parent_type, parent_id, filename,
+                                            format='raw')
+        add_link(req, 'alternate', raw_href, 'Original Format', mime_type)
+
         req.hdf['trac.active_module'] = parent_type # Kludge
         req.hdf['title'] = '%s%s: %s' % (parent_type == 'ticket' and '#' or '',
                                          parent_id, filename)
@@ -152,13 +157,9 @@ class AttachmentModule(Module):
             'parent_id': parent_id,
             'parent_name': text,
             'parent_href': link,
-            'filename': urllib.unquote(filename)
+            'filename': urllib.unquote(filename),
+            'raw_href': raw_href
         }
-
-        add_link(req, 'alternate',
-                 self.env.href.attachment(parent_type, parent_id, filename,
-                                          format='raw'),
-                 'Original Format', mime_type)
 
         perm_map = {'ticket': perm.TICKET_ADMIN, 'wiki': perm.WIKI_DELETE}
         if self.perm.has_permission(perm_map[parent_type]):
