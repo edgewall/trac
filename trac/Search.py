@@ -123,24 +123,18 @@ class Search(Module):
                      (self.query_to_sql(query, 'message'),
                       self.query_to_sql(query, 'author')))
         if tickets:
-            q.append('SELECT 2 as type, summary AS title, '
-                     ' description AS message, reporter AS author, keywords,'
-                     ' id AS data, time,0 AS ver'
-                     ' FROM ticket WHERE %s OR %s OR %s OR %s OR %s' %
-                      (self.query_to_sql(query, 'summary'),
+            q.append('SELECT DISTINCT 2 as type, a.summary AS title, '
+                     ' a.description AS message, a.reporter AS author, a.keywords as keywords,'
+                     ' a.id AS data, a.time as time, 0 AS ver'
+                     ' FROM ticket a LEFT JOIN ticket_change b ON a.id = b.ticket'
+                     ' WHERE (b.field=\'comment\' AND %s ) OR'
+                     ' %s OR %s OR %s OR %s OR %s' %
+                      (self.query_to_sql(query, 'b.newvalue'),
+                       self.query_to_sql(query, 'summary'),
                        self.query_to_sql(query, 'keywords'),
                        self.query_to_sql(query, 'description'),
                        self.query_to_sql(query, 'reporter'),
                        self.query_to_sql(query, 'cc')))
-            # Ticket comments
-            q.append('SELECT 2 as type, a.summary AS title, '
-                     ' b.newvalue AS message, a.reporter AS author,'
-                     ' a.keywords as keywords,'
-                     ' a.id AS data, a.time AS time,0 AS ver'
-                     ' FROM ticket a, ticket_change b'
-                     ' WHERE a.id = b.ticket AND b.field=\'comment\' AND %s' %
-                      (self.query_to_sql(query, 'b.newvalue')))
-
         if wiki:
             q.append('SELECT 3 as type, text AS title, text AS message,'
                      ' author, \'\' AS keywords, w1.name AS data, time,'
@@ -157,7 +151,7 @@ class Search(Module):
         if not q: return []
 
         q_str = string.join(q, ' UNION ALL ')
-        q_str += ' ORDER BY time DESC LIMIT %d OFFSET %d' % \
+        q_str += ' ORDER BY 7 DESC LIMIT %d OFFSET %d' % \
                  (self.RESULTS_PER_PAGE, self.RESULTS_PER_PAGE * page)
 
         self.log.debug("SQL Query: %s" % q_str)
