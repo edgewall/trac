@@ -109,7 +109,7 @@ CREATE TABLE report (
         author          text,
         title           text,
         sql             text,
-        description
+        description     text
 );
 CREATE TABLE permission (
         username        text,           -- 

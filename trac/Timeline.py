@@ -31,8 +31,6 @@ class Timeline (Module):
     template_name = 'timeline.cs'
     template_rss_name = 'timeline_rss.cs'
 
-    MAX_MESSAGE_LEN = 75
-
     def get_info (self, start, stop, maxrows, tickets,
                   changeset, wiki, milestone):
         cursor = self.db.cursor ()
@@ -40,42 +38,42 @@ class Timeline (Module):
         if tickets == changeset == wiki == 0:
             return []
 
-        # 1: change set
-        # 2: new tickets
-        # 3: closed tickets
-        # 4: reopened tickets
-        # 5: wiki
-        # 6: milestone
+        CHANGESET = 1
+        NEW_TICKET = 2
+        CLOSED_TICKET = 3
+        REOPENED_TICKET = 4
+        WIKI = 5
+        MILESTONE = 6
         
         q = []
         if changeset:
-            q.append("SELECT time, rev AS data, 1 AS type, message, author "
+            q.append("SELECT time, rev AS idata, '' AS tdata, 1 AS type, message, author "
                         "FROM revision WHERE time>=%s AND time<=%s" %
                      (start, stop))
         if tickets:
-            q.append("SELECT time, id AS data, 2 AS type, "
+            q.append("SELECT time, id AS idata, '' AS tdata, 2 AS type, "
                      "summary AS message, reporter AS author "
                      "FROM ticket WHERE time>=%s AND time<=%s" %
                      (start, stop))
-            q.append("SELECT time, ticket AS data, 3 AS type, "
+            q.append("SELECT time, ticket AS idata, '' AS tdata, 3 AS type, "
                         "'' AS message, author "
                         "FROM ticket_change WHERE field='status' "
                         "AND newvalue='closed' AND time>=%s AND time<=%s" %
                      (start, stop))
-            q.append("SELECT time, ticket AS data, 4 AS type, "
+            q.append("SELECT time, ticket AS idata, '' AS tdata, 4 AS type, "
                      "'' AS message, author "
                      "FROM ticket_change WHERE field='status' "
                      "AND newvalue='reopened' AND time>=%s AND time<=%s" %
                      (start, stop))
         if wiki:
-            q.append("SELECT time, name AS data, 5 AS type, "
+            q.append("SELECT time, -1 AS idata, name AS tdata, 5 AS type, "
                      "'' AS message, author "
                         "FROM wiki WHERE time>=%s AND time<=%s" %
                      (start, stop))
             pass
 
 	if milestone:
-	    q.append("SELECT time, name AS data, 6 AS type, "
+	    q.append("SELECT time, -1 AS idata, name AS tdata, 6 AS type, "
 	             "'' AS message, '' AS author " 
 		     "FROM milestone WHERE time>=%s AND time<=%s" %
 		     (start, stop))
@@ -98,32 +96,29 @@ class Timeline (Module):
             item = {'time': time.strftime('%X', t),
                     'date': time.strftime('%x', t),
                     'datetime': time.strftime('%a, %d %b %Y %H:%M:%S GMT', gmt),
-                    'data': row['data'],
-                    'type': int(row['type']),
+                    'idata': row['idata'],
+                    'tdata': row['tdata'],
+                    'type': row['type'],
                     'message': row['message'],
                     'author': row['author']}
-            if item['type'] == 1:
-                item['changeset_href'] = self.href.changeset(int(row['data']))
-                # Just recode this to iso8859-15 until we have propper unicode
-                # support
-                msg = item['message']
-                shortmsg = shorten_line(msg)
-                item['shortmsg'] = wiki_to_oneliner(shortmsg,
+            if item['type'] == CHANGESET:
+                item['changeset_href'] = self.href.changeset(row['idata'])
+                item['shortmsg'] = wiki_to_oneliner(shorten_line(item['message']),
                                                     self.req.hdf, self.href)
-                item['message'] = wiki_to_oneliner(msg,
+                item['message'] = wiki_to_oneliner(item['message'],
                                                    self.req.hdf, self.href)
-            elif item['type'] == 5:
-		item['wiki_href'] = self.href.wiki(row['data'])
-	    elif item['type'] == 6:
+            elif item['type'] == WIKI:
+		item['wiki_href'] = self.href.wiki(row['tdata'])
+	    elif item['type'] == MILESTONE:
 		item['shortmsg'] = ''
 	    else:
-		item['ticket_href'] = self.href.ticket(int(row['data']))
+		item['ticket_href'] = self.href.ticket(row['idata'])
 		msg = item['message']
 		shortmsg = shorten_line(msg)
-		item['message'] = wiki_to_oneliner(msg, self.req.hdf,
-                                                   self.href)
-		item['shortmsg'] = wiki_to_oneliner(shortmsg, self.req.hdf,
-                                                    self.href)
+		item['message'] = wiki_to_oneliner(item['message'],
+                                                   self.req.hdf, self.href)
+		item['shortmsg'] = wiki_to_oneliner(shorten_line(item['message']),
+                                                    self.req.hdf, self.href)
 
             info.append(item)
         return info
