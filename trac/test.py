@@ -53,22 +53,29 @@ class InMemoryDatabase(object):
 
 
 def suite():
-    from trac.tests import wiki, ticket, perm_test, environment, diff, \
-                           tracadmin, query, href
+    from trac.tests import wiki, ticket, perm, environment, diff, query, href, \
+                           tracadmin
     from trac.web.tests import auth, cgi_frontend, clearsilver
 
     suite = unittest.TestSuite()
+
+    # trac
     suite.addTest(wiki.suite())
     suite.addTest(ticket.suite())
-    suite.addTest(perm_test.suite())
+    suite.addTest(perm.suite())
     suite.addTest(environment.suite())
     suite.addTest(diff.suite())
-    suite.addTest(tracadmin.suite())
+    suite.addTest(href.suite())
     suite.addTest(query.suite())
+
+    # trac.web
     suite.addTest(auth.suite())
     suite.addTest(cgi_frontend.suite())
     suite.addTest(clearsilver.suite())
-    suite.addTest(href.suite())
+
+    # trac-admin
+    suite.addTest(tracadmin.suite())
+
     return suite
 
 if __name__ == '__main__':

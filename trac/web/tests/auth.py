@@ -94,7 +94,7 @@ class AuthTestCase(unittest.TestCase):
 
 
 def suite():
-    return unittest.makeSuite(CGIRequestTestCase, 'test')
+    return unittest.makeSuite(AuthTestCase, 'test')
 
 if __name__ == '__main__':
     unittest.main()
