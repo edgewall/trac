@@ -74,21 +74,20 @@ class Module:
     def display_hdf(self):
         def hdf_tree_walk(node,prefix=''):
             while node: 
-                np = (prefix and prefix+'.' or '') + (node.name() or '')
-                nvalue = node.value()
-                if nvalue: result.append((np, nvalue))
-                hdf_tree_walk(node.child(), np)
+                name = node.name() or ''
+                if not node.child():
+                    value = node.value()
+                    self.req.write('%s%s = ' % (prefix, name))
+                    if value.find('\n') == -1:
+                        self.req.write('%s\r\n' % value)
+                    else:
+                        self.req.write('<< EOM\r\n%s\r\nEOM\r\n' % value)
+                else:
+                    self.req.write('%s%s {\r\n' % (prefix, name))
+                    hdf_tree_walk(node.child(), prefix + '  ')
+                    self.req.write('%s}\r\n' % prefix)
                 node = node.next()
         self.req.send_response(200)
         self.req.send_header('Content-Type', 'text/plain')
         self.req.end_headers()
-        result = []
-        hdf_tree_walk (self.req.hdf)
-        result.sort()
-        for (name,value) in result:
-            self.req.write(name)
-            if value.find('\n') == -1:
-                self.req.write(' = %s\r\n' % value)
-            else:
-                self.req.write(' << EOM\r\n%s\r\nEOM\r\n' % value)
-
+        hdf_tree_walk (self.req.hdf.child())
