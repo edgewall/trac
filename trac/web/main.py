@@ -320,19 +320,11 @@ def dispatch_request(path_info, req, env):
             req.session = Session(env, db, req, newsession)
 
             try:
-                pool = None
                 # Load the selected module
                 from trac.Module import module_factory
                 module = module_factory(env, db, req)
-                pool = module.pool
                 module.run(req)
             finally:
-                # We do this even if the cgi will terminate directly after. A
-                # pool destruction might trigger important clean-up functions.
-                if pool:
-                    import svn.core
-                    svn.core.svn_pool_destroy(pool)
-
                 # Give the session a chance to persist changes
                 req.session.save()
 

@@ -19,27 +19,17 @@
 #
 # Author: Francois Harvey <fharvey@securiweb.net>
 
-import ConfigParser
-from trac import perm
+from trac.versioncontrol import Authorizer
 
 
-class AuthzPermissionError(perm.PermissionError):
-    """Insufficient permission to view this file"""
+class SubversionAuthorizer(Authorizer):
 
-    def __init__(self):
-        perm.PermissionError.__init__(self, "authz read")
-
-    def __str__ (self):
-        return 'Insufficient permission to view this file (mod_authz_svn)'
-
-
-class AuthzPermission:
     auth_name = ''
     module_name = ''
     conf_authz = None
     authz_file = ''
 
-    def __init__(self,env,authname):
+    def __init__(self, env, authname):
         self.auth_name = authname
         
         if env.get_config('trac','authz_module_name','') == '':
@@ -49,8 +39,9 @@ class AuthzPermission:
                                  
         self.autz_file = env.get_config('trac','authz_file')    
         if env.get_config('trac','authz_file'):
-            self.conf_authz = ConfigParser.ConfigParser()
-            self.conf_authz.read( self.autz_file )
+            from ConfigParser import ConfigParser
+            self.conf_authz = ConfigParser()
+            self.conf_authz.read(self.autz_file)
 
         self.db = env.get_db_cnx()
 
@@ -59,7 +50,7 @@ class AuthzPermission:
             if self.conf_authz.has_option('groups', group_name):
                 users_list = self.conf_authz.get('groups', group_name).split(',')
                 return users_list.has_key(user_name)
-        return False
+        return 0
 
     def has_permission(self, path):
         acc = ''
@@ -86,13 +77,9 @@ class AuthzPermission:
             acc = 'r'
         return acc
 
-    def assert_permission (self, path):
-        if self.has_permission(path) == '':
-            raise AuthzPermissionError()
-
     def has_permission_for_changeset(self, rev):
         cursor = self.db.cursor()
-        cursor.execute("SELECT name FROM node_change WHERE rev=%s", (rev,))
+        cursor.execute("SELECT path FROM node_change WHERE rev=%s", (rev,))
         for row in cursor:
             if self.has_permission(row[0]):
                 return 1

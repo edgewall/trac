@@ -19,13 +19,14 @@
 #
 # Author: Jonas Borgström <jonas@edgewall.com>
 
-from trac import perm
-from trac.util import TracError, escape, shorten_line
-from trac.Module import Module
-
 import re
 import time
 import string
+
+from trac import perm
+from trac.Module import Module
+from trac.util import TracError, escape, shorten_line
+from trac.versioncontrol.svn_authz import SubversionAuthorizer
 
 
 class Search(Module):
@@ -210,6 +211,8 @@ class Search(Module):
 
     def render(self, req):
         self.perm.assert_permission(perm.SEARCH_VIEW)
+        self.authzperm = SubversionAuthorizer(self.env, req.authname)
+
         req.hdf['title'] = 'Search'
         req.hdf['search'] = {
             'ticket': 'checked',

@@ -5,7 +5,7 @@
 <div id="ctxtnav" class="nav">
  <ul>
   <li class="last"><a href="<?cs
-    var:log.file_href ?>">View Latest Revision</a></li>
+    var:log.browser_href ?>">View Latest Revision</a></li>
  </ul>
 </div>
 
@@ -35,15 +35,15 @@
   <tbody>
    <?cs each:item = log.items ?>
     <tr class="<?cs if:name(item) % #2 ?>even<?cs else ?>odd<?cs /if ?>">
-     <td class="date"><?cs var:item.date ?></td>
+     <td class="date"><?cs var:log.changes[item.rev].date ?></td>
      <td class="rev">
-      <a href="<?cs var:item.file_href ?>"><?cs var:item.rev ?></a>
+      <a href="<?cs var:item.browser_href ?>"><?cs var:item.rev ?></a>
      </td>
      <td class="chgset">
-      <a class="block-link" href="<?cs var:item.changeset_href ?>"><?cs var:item.rev ?></a>
+      <a href="<?cs var:item.changeset_href ?>"><?cs var:item.rev ?></a>
      </td>
-     <td class="author"><?cs var:item.author ?></td>
-     <td class="summary"><?cs var:item.log ?></td>
+     <td class="author"><?cs var:log.changes[item.rev].author ?></td>
+     <td class="summary"><?cs var:log.changes[item.rev].message ?></td>
     </tr>
    <?cs /each ?>
   </tbody>

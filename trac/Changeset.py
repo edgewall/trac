@@ -19,505 +19,190 @@
 #
 # Author: Jonas Borgström <jonas@edgewall.com>
 
-from __future__ import nested_scopes
-
-from trac.Diff import get_diff_options, hdf_diff, unified_diff
-from trac.Module import Module
-from trac.WikiFormatter import wiki_to_html
-from trac import authzperm, perm
-
-import svn.core
-import svn.delta
-import svn.fs
-import svn.repos
-import svn.util
-
-import os
 import time
 import util
 import re
-import posixpath
-from StringIO import StringIO
-from zipfile import ZipFile, ZipInfo, ZIP_DEFLATED
+
+from trac import perm
+from trac.Module import Module
+from trac.WikiFormatter import wiki_to_html
+from trac.versioncontrol import Changeset, Node
+from trac.versioncontrol.diff import get_diff_options, hdf_diff, unified_diff
 
 
-class BaseDiffEditor(svn.delta.Editor):
-    """
-    Base class for diff renderers.
-    """
-
-    def __init__(self, old_root, new_root, rev, req, env, path_info,
-                 diff_options):
-        self.path_info = path_info
-        self.old_root = old_root
-        self.new_root = new_root
-        self.rev = rev
-        self.req = req
-        self.env = env
-        self.diff_options = diff_options
-
-    # svn.delta.Editor callbacks:
-    #   This editor will be driven by a 'repos.svn_repos_dir_delta' call.
-    #   With this driver, The 'copyfrom_path' will always be 'None'.
-    #   We can't use it.
-    #   This is why we merge the path_info data (obtained during a
-    #   'repos.svn_repos_replay' call) back into this process.
-    
-    def _read_file(self, root, path, pool, charset):
-        fd = svn.fs.file_contents(root, path, pool)
-        chunks = []
-        while 1:
-            chunk = svn.util.svn_stream_read(fd, svn.core.SVN_STREAM_CHUNK_SIZE)
-            if not chunk:
-                break
-            chunks.append(util.to_utf8(chunk, charset))
-        return ''.join(chunks)
-
-    def _retrieve_old_path(self, parent_baton, path, pool):
-        old_path = parent_baton[0]
-        self.prefix = None
-        if self.path_info.has_key(path): # retrieve 'copyfrom_path' info
-            seq, old_path = self.path_info[path][:2]
-            self.prefix = 'changeset.changes.%d' % seq
-        elif old_path:    # already on a branch, expand the original path
-            old_path = posixpath.join(old_path, posixpath.split(path)[1])
-        else:
-            old_path = path
-        return (old_path, path, pool)
-
-    def open_root(self, base_revision, dir_pool):
-        return self._retrieve_old_path((None, None, None), '/', dir_pool)
-    
-    def open_directory(self, path, dir_baton, base_revision, dir_pool):
-        return self._retrieve_old_path(dir_baton, path, dir_pool)
-
-    def open_file(self, path, parent_baton, base_revision, file_pool):
-        return self._retrieve_old_path(parent_baton, path, file_pool)
-
-
-class HtmlDiffEditor(BaseDiffEditor):
-    """
-    Generates a htmlized unified diff of the changes for a given changeset.
-    the output is written to stdout.
-    """
-
-    def __init__(self, old_root, new_root, rev, req, env, change_info,
-                 diff_options):
-        BaseDiffEditor.__init__(self, old_root, new_root, rev, req, env,
-                                change_info, diff_options)
-        self.prefix = None
-
-    def add_directory(self, path, parent_baton, copyfrom_path,
-                      copyfrom_revision, dir_pool):
-        return self._retrieve_old_path(parent_baton, path, dir_pool)
-
-    def add_file(self, path, parent_baton, copyfrom_path, copyfrom_revision,
-                 file_pool):
-        return self._retrieve_old_path(parent_baton, path, file_pool)
-
-    def delete_entry(self, path, revision, parent_baton, pool):
-        old_path = self._retrieve_old_path(parent_baton, path, pool)[0]
-        return old_path, None, pool
-
-
-    # -- changes:
-
-    def _old_root(self, new_path, pool):
-        if not new_path:
-            return 
-        old_rev = self.path_info[new_path][2]
-        if not old_rev:
-            return 
-        elif old_rev == self.rev - 1:
-            return self.old_root
-        else:
-            return svn.fs.revision_root(svn.fs.root_fs(self.old_root),
-                                        old_rev, pool)
-        
-    # -- -- textual changes:
-
-    def apply_textdelta(self, file_baton, base_checksum):
-        old_path, new_path, pool = file_baton
-        if not self.prefix or not (old_path and new_path):
-            return
-        old_root = self._old_root(new_path, pool)
-        if not old_root:
-            return
-
-        # Try to figure out the charset used. We assume that both the old
-        # and the new version uses the same charset, not always the case
-        # but that's all we can do...
-        mime_type = svn.fs.node_prop(self.new_root, new_path,
-                                     svn.util.SVN_PROP_MIME_TYPE, pool)
-        if mime_type and svn.core.svn_mime_type_is_binary(mime_type):
-            return
-
-        # We don't have to guess if the charset is specified in the
-        # svn:mime-type property
-        ctpos = mime_type and mime_type.find('charset=') or -1
-        if ctpos >= 0:
-            charset = mime_type[ctpos + 8:]
-        else:
-            charset = self.env.get_config('trac', 'default_charset',
-                                          'iso-8859-15')
-
-        fromfile = self._read_file(old_root, old_path, pool, charset)
-        tofile = self._read_file(self.new_root, new_path, pool, charset)
-        if self.env.mimeview.is_binary(fromfile):
-            return
-
-        context = 3
-        for option in self.diff_options:
-            if option[:2] == '-U':
-                context = int(option[2:])
-                break
-        tabwidth = int(self.env.get_config('diff', 'tab_width', '8'))
-        changes = hdf_diff(fromfile.splitlines(), tofile.splitlines(),
-                           context, tabwidth,
-                           ignore_blank_lines='-B' in self.diff_options,
-                           ignore_case='-i' in self.diff_options,
-                           ignore_space_changes='-b' in self.diff_options)
-        self.req.hdf[self.prefix + '.diff'] = changes
-
-    # -- -- property changes:
-
-    def change_dir_prop(self, dir_baton, name, value, dir_pool):
-        self._change_prop(dir_baton, name, value, dir_pool)
-
-    def change_file_prop(self, file_baton, name, value, file_pool):
-        self._change_prop(file_baton, name, value, file_pool)
-
-    def _change_prop(self, baton, name, value, pool):
-        if not self.prefix:
-            return
-        old_path, new_path, pool = baton
-
-        prefix = '%s.props.%s' % (self.prefix, name)
-        if old_path:
-            old_root = self._old_root(new_path, pool)
-            if old_root:
-                old_value = svn.fs.node_prop(old_root, old_path, name, pool)
-                if old_value:
-                    if value == old_value:
-                        return # spurious change prop after a copy
-                    self.req.hdf[prefix + '.old'] = util.escape(old_value)
-        if value:
-            self.req.hdf[prefix + '.new'] = util.escape(value)
-
-
-class UnifiedDiffEditor(BaseDiffEditor):
-    """
-    Generates a unified diff of the changes for a given changeset.
-    the output is written to stdout.
-    """
-
-    def _old_root(self, new_path, pool):
-        if not new_path:
-            return 
-        old_rev = self.path_info[new_path][2]
-        if not old_rev:
-            return 
-        elif old_rev == self.rev - 1:
-            return self.old_root
-        else:
-            return svn.fs.revision_root(svn.fs.root_fs(self.old_root),
-                                        old_rev, pool)
-
-    def add_file(self, path, parent_baton, copyfrom_path, copyfrom_revision,
-                 file_pool):
-        return (None, path, file_pool)
-
-    def delete_entry(self, path, revision, parent_baton, pool):
-        if svn.fs.check_path(self.old_root, path, pool) == svn.core.svn_node_file:
-            self.apply_textdelta((path, None, pool),None)
-
-    # -- -- textual changes:
-
-    def apply_textdelta(self, file_baton, base_checksum):
-        if not file_baton:
-            return
-        (old_path, new_path, pool) = file_baton
-        old_root = self._old_root(new_path, pool)
-        if not old_root:
-            return
-
-        mime_type = svn.fs.node_prop(self.new_root, new_path,
-                                     svn.util.SVN_PROP_MIME_TYPE, pool)
-        if mime_type and svn.core.svn_mime_type_is_binary(mime_type):
-            return
-
-        # We don't have to guess if the charset is specified in the
-        # svn:mime-type property
-        ctpos = mime_type and mime_type.find('charset=') or -1
-        if ctpos >= 0:
-            charset = mime_type[ctpos + 8:]
-        else:
-            charset = self.env.get_config('trac', 'default_charset',
-                                          'iso-8859-15')
-
-        fromfile = self._read_file(old_root, old_path, pool, charset)
-        tofile = self._read_file(self.new_root, new_path, pool, charset)
-        if self.env.mimeview.is_binary(fromfile):
-            return
-
-        context = 3
-        for option in self.diff_options:
-            if option[:2] == '-U':
-                context = int(option[2:])
-                break
-        self.req.write('Index: ' + new_path + util.CRLF)
-        self.req.write('=' * 67 + util.CRLF)
-        self.req.write('--- %s (revision %s)' % (new_path, self.rev - 1) + util.CRLF)
-        self.req.write('+++ %s (revision %s)' % (new_path, self.rev) + util.CRLF)
-        for line in unified_diff(fromfile.split('\n'), tofile.split('\n'),
-                                 context,
-                                 ignore_blank_lines='-B' in self.diff_options,
-                                 ignore_case='-i' in self.diff_options,
-                                 ignore_space_changes='-b' in self.diff_options):
-            self.req.write(line + util.CRLF)
-
-    # -- -- property changes:
-
-    def change_dir_prop(self, dir_baton, name, value, dir_pool):
-        self._change_prop(dir_baton, name, value, dir_pool)
-
-    def change_file_prop(self, file_baton, name, value, file_pool):
-        self._change_prop(file_baton, name, value, file_pool)
-
-    def _change_prop(self, baton, name, value, pool):
-        old_path, new_path, pool = baton
-        # FIXME: print the property change like 'svn diff' does
-
-
-class ZipDiffEditor(BaseDiffEditor):
-    """
-    Generates a ZIP archive containing the modified and added files.
-    """
-
-    def __init__(self, old_root, new_root, rev, req, env, path_info,
-                 diff_options):
-        BaseDiffEditor.__init__(self, old_root, new_root, rev, req, env,
-                                path_info, diff_options)
-        self.buffer = StringIO()
-        self.zip = ZipFile(self.buffer, 'w', ZIP_DEFLATED)
-
-    def add_file(self, path, parent_baton, copyfrom_path,
-                 copyfrom_revision, file_pool):
-        self._add_file_to_zip(path, file_pool)
-
-    def open_file(self, path, parent_baton, base_revision, file_pool):
-        self._add_file_to_zip(path, file_pool)
-
-    def close_edit(self):
-        self.zip.close()
-        self.req.write(self.buffer.getvalue())
-
-    def _add_file_to_zip(self, path, pool):
-        fd = svn.fs.file_contents(self.new_root, path, pool)
-        info = ZipInfo()
-        info.filename = path
-        date = svn.fs.revision_prop(svn.fs.root_fs(self.new_root), self.rev,
-                                    svn.util.SVN_PROP_REVISION_DATE, pool)
-        date = svn.util.svn_time_from_cstring(date, pool) / 1000000
-        date = time.localtime(date)
-        info.date_time = date[:6]
-        info.compress_type = ZIP_DEFLATED
-        data = ""
-        while 1:
-            chunk = svn.util.svn_stream_read(fd, 512)
-            if not chunk:
-                break
-            data = data + chunk
-        self.zip.writestr(info, data)
-
-
-class Changeset(Module):
-
-    # set by the module_factory
-    authzperm = None
-    fs_ptr = None
-    pool = None
-    repos = None
-
-    def get_changeset_info (self, rev):
-        cursor = self.db.cursor ()
-        cursor.execute("SELECT time, author, message FROM revision "
-                       "WHERE rev=%s", (rev,))
-        row = cursor.fetchone()
-        if not row:
-            raise util.TracError('Changeset %s does not exist.' % rev,
-                                 'Invalid Changset')
-        return row
-
-    def get_change_info(self, rev):
-        cursor = self.db.cursor ()
-        cursor.execute("SELECT name, change FROM node_change "
-                       "WHERE rev=%s", (rev,))
-        info = []
-        while 1:
-            row = cursor.fetchone()
-            if not row:
-                break
-            change = row['change']
-            name = row['name']
-            if change in 'CRdm': # 'C'opy, 'R'eplace or 'd'elete on a branch
-                # the name column contains the encoded ''path_info''
-                # (see _save_change method in sync.py).
-                m = re.match('(.*) // (-?\d+), (.*)', name)
-                if change == 'd':
-                    new_path = None
-                else:
-                    new_path = m.group(1)
-                old_rev = int(m.group(2))
-                if old_rev < 0:
-                    old_rev = None
-                old_path = m.group(3)
-            elif change == 'D':         # 'D'elete
-                new_path = None
-                old_path = name
-                old_rev = None
-            elif change == 'A':         # 'A'dd
-                new_path = name
-                old_path = old_rev = None
-            else:                       # 'M'odify
-                new_path = old_path = name
-                old_rev = None
-            if old_path and not old_rev: # 'D' and 'M'
-                history = svn.fs.node_history(self.old_root, old_path, self.pool)
-                history = svn.fs.history_prev(history, 0, self.pool) # what an API...
-                old_rev = svn.fs.history_location(history, self.pool)[1]
-                # Note: 'node_created_rev' doesn't work reliably
-            key = (new_path or old_path)
-            info.append((key, change, new_path, old_path, old_rev))
-
-        info = filter(lambda x,self=self: self.authzperm.has_permission(x[2]) \
-                                      and self.authzperm.has_permission(x[3]),
-                      info)
-
-        info.sort(lambda x,y: cmp(x[0],y[0]))
-        self.path_info = {}
-        #  path_info is a mapping of paths to sequence number and additional info
-        #   'new_path' to '(seq, copyfrom_path, copyfrom_rev)',
-        #   'old_path' to '(seq)'
-        sinfo = []
-        seq = 0
-        for _, change, new_path, old_path, old_rev in info:
-            cinfo = { 'name.new': new_path,
-                      'name.old': old_path,
-                      'log_href': new_path or old_path }
-            if new_path:
-                self.path_info[new_path] = (seq, old_path, old_rev)
-                cinfo['rev.new'] = str(rev)
-                cinfo['browser_href.new'] = self.env.href.browser(new_path, rev=rev)
-            if old_path:
-                cinfo['rev.old'] = str(old_rev)
-                cinfo['browser_href.old'] = self.env.href.browser(old_path, rev=old_rev)
-            if change in 'CRm':
-                cinfo['copyfrom_path'] = old_path
-            cinfo['change'] = change.upper()
-            cinfo['seq'] = seq
-            sinfo.append(cinfo)
-            seq += 1
-        return sinfo
+class ChangesetModule(Module):
 
     def render(self, req):
-        self.perm.assert_permission (perm.CHANGESET_VIEW)
+        self.perm.assert_permission(perm.CHANGESET_VIEW)
 
         self.add_link(req, 'alternate', '?format=diff', 'Unified Diff',
                       'text/plain', 'diff')
         self.add_link(req, 'alternate', '?format=zip', 'Zip Archive',
                       'application/zip', 'zip')
 
-        youngest_rev = svn.fs.youngest_rev(self.fs_ptr, self.pool)
-        if req.args.has_key('rev'):
-            self.rev = int(req.args.get('rev'))
-        else:
-            self.rev = youngest_rev
+        rev = req.args.get('rev')
+        repos = self.env.get_repository(req.authname)
 
-        self.diff_options = get_diff_options(req)
+        diff_options = get_diff_options(req)
         if req.args.has_key('update'):
-            req.redirect(self.env.href.changeset(self.rev))
+            req.redirect(self.env.href.changeset(rev))
 
-        try:
-            self.old_root = svn.fs.revision_root(self.fs_ptr,
-                int(self.rev) - 1, self.pool)
-            self.new_root = svn.fs.revision_root(self.fs_ptr,
-                int(self.rev), self.pool)
-        except svn.core.SubversionException:
-            raise util.TracError('Invalid revision number: %d' % int(self.rev))
-
-        changeset_info = self.get_changeset_info(self.rev)
-        req.check_modified(int(changeset_info['time']),
-                           self.diff_options[0] + "".join(self.diff_options[1]))
-        change_info = self.get_change_info(self.rev)
-
-        req.hdf['title'] = '[%d] (changeset)' % self.rev
-        req.hdf['changeset.time'] = time.asctime(time.localtime(int(changeset_info['time'])))
-        author = changeset_info['author'] or 'anonymous'
-        req.hdf['changeset.author'] = util.escape(author)
-        message = changeset_info['message'] or '--'
-        req.hdf['changeset.message'] = wiki_to_html(util.wiki_escape_newline(message),
-                                                    req.hdf, self.env, self.db)
-        req.hdf['changeset.revision'] = self.rev
-        req.hdf['changeset.changes'] = change_info
-        req.hdf['changeset.href'] = self.env.href.changeset(self.rev)
-        
-        if len(change_info) == 0:
-            raise authzperm.AuthzPermissionError()
-        
-        if self.rev > 1:
-            self.add_link(req, 'first', self.env.href.changeset(1),
-                          'Changeset 1')
-            self.add_link(req, 'prev', self.env.href.changeset(self.rev - 1),
-                          'Changeset %d' % (self.rev - 1))
-        if self.rev < youngest_rev:
-            self.add_link(req, 'next', self.env.href.changeset(self.rev + 1),
-                          'Changeset %d' % (self.rev + 1))
-            self.add_link(req, 'last', self.env.href.changeset(youngest_rev),
-                          'Changeset %d' % youngest_rev)
+        chgset = repos.get_changeset(rev)
+        req.check_modified(chgset.date, diff_options[0] + ''.join(diff_options[1]))
 
         format = req.args.get('format')
         if format == 'diff':
-            self.render_diff(req)
+            self.render_diff(req, repos, chgset, diff_options)
         elif format == 'zip':
-            self.render_zip(req)
+            self.render_zip(req, repos, chgset)
         else:
-            self.render_html(req)
+            self.render_html(req, repos, chgset, diff_options)
 
-    def render_diffs(self, req, editor_class=HtmlDiffEditor):
-        """
-        Generate a unified diff of the changes for a given changeset.
-        The output is written to stdout.
-        """
-        editor = editor_class(self.old_root, self.new_root, int(self.rev), req,
-                              self.env, self.path_info, self.diff_options[1])
-        e_ptr, e_baton = svn.delta.make_editor(editor, self.pool)
+    def render_html(self, req, repos, chgset, diff_options):
+        """HTML version"""
 
-        def authz_cb(root, path, pool):
-            return self.authzperm.has_permission(path) and 1 or 0
-        svn.repos.svn_repos_dir_delta(self.old_root, '', '',
-                                      self.new_root, '', e_ptr, e_baton, authz_cb,
-                                      0, 1, 0, 1, self.pool)
+        req.hdf['title'] = '[%s]' % chgset.rev
+        req.hdf['changeset'] = {
+            'revision': chgset.rev,
+            'time': time.asctime(time.localtime(chgset.date)),
+            'author': util.escape(chgset.author or 'anonymous'),
+            'message': wiki_to_html(util.wiki_escape_newline(chgset.message or '--'),
+                                    req.hdf, self.env, self.db)
+        }
 
-    def render_html(self, req):
-        """Pretty HTML view of the changeset"""
-        self.render_diffs(req)
+        oldest_rev = repos.oldest_rev
+        if chgset.rev != oldest_rev:
+            self.add_link(req, 'first', self.env.href.changeset(oldest_rev),
+                          'Changeset %s' % oldest_rev)
+            previous_rev = repos.previous_rev(chgset.rev)
+            self.add_link(req, 'prev', self.env.href.changeset(previous_rev),
+                          'Changeset %s' % previous_rev)
+        youngest_rev = repos.youngest_rev
+        if chgset.rev != youngest_rev:
+            next_rev = repos.next_rev(chgset.rev)
+            self.add_link(req, 'next', self.env.href.changeset(next_rev),
+                          'Changeset %s' % next_rev)
+            self.add_link(req, 'last', self.env.href.changeset(youngest_rev),
+                          'Changeset %s' % youngest_rev)
+
+        edits = []
+        idx = 0
+        for path, kind, change, base_path, base_rev in chgset.get_changes():
+            info = {'change': change}
+            if base_path:
+                info['path.old'] = base_path
+                info['rev.old'] = base_rev
+                info['browser_href.old'] = self.env.href.browser(base_path, base_rev)
+            if path:
+                info['path.new'] = path
+                info['rev.new'] = chgset.rev
+                info['browser_href.new'] = self.env.href.browser(path, rev=chgset.rev)
+            if change in (Changeset.COPY, Changeset.EDIT, Changeset.MOVE):
+                edits.append((idx, path, kind, base_path, base_rev))
+            req.hdf['changeset.changes.%d' % idx] = info
+            idx += 1
+
+        for idx, path, kind, base_path, base_rev in edits:
+            old_node = repos.get_node(base_path or path, base_rev)
+            new_node = repos.get_node(path, chgset.rev)
+
+            # Property changes
+            old_props = old_node.get_properties()
+            new_props = new_node.get_properties()
+            changed_props = {}
+            if old_props != new_props:
+                for k,v in old_props.items():
+                    if not k in new_props:
+                        changed_props[k] = {'old': v}
+                    elif v != new_props[k]:
+                        changed_props[k] = {'old': v, 'new': new_props[k]}
+                for k,v in new_props.items():
+                    if not k in old_props:
+                        changed_props[k] = {'new': v}
+                req.hdf['changeset.changes.%d.props' % idx] = changed_props
+
+            # Content changes
+            old_content = old_node.get_content().read()
+            if self.env.mimeview.is_binary(old_content):
+                continue
+            new_content = new_node.get_content().read()
+            if old_content != new_content:
+                context = 3
+                for option in diff_options:
+                    if option[:2] == '-U':
+                        context = int(option[2:])
+                        break
+                tabwidth = int(self.env.get_config('diff', 'tab_width', '8'))
+                changes = hdf_diff(old_content.splitlines(),
+                                   new_content.splitlines(),
+                                   context, tabwidth,
+                                   ignore_blank_lines='-B' in diff_options,
+                                   ignore_case='-i' in diff_options,
+                                   ignore_space_changes='-b' in diff_options)
+                req.hdf['changeset.changes.%d.diff' % idx] = changes
         req.display('changeset.cs')
 
-    def render_diff(self, req):
+    def render_diff(self, req, repos, chgset, diff_options):
         """Raw Unified Diff version"""
         req.send_response(200)
         req.send_header('Content-Type', 'text/plain;charset=utf-8')
         req.send_header('Content-Disposition',
-                        'filename=Changeset%d.diff' % self.rev)
+                        'filename=Changeset%s.diff' % req.args.get('rev'))
         req.end_headers()
-        self.render_diffs(req, UnifiedDiffEditor)
 
-    def render_zip(self, req):
+        for path, kind, change, base_path, base_rev in chgset.get_changes():
+            old_node = repos.get_node(base_path or path, base_rev)
+            new_node = repos.get_node(path, chgset.rev)
+
+            # TODO: Property changes
+
+            # Content changes
+            old_content = old_node.get_content().read()
+            if self.env.mimeview.is_binary(old_content):
+                continue
+            new_content = new_node.get_content().read()
+            if old_content != new_content:
+                context = 3
+                for option in diff_options:
+                    if option[:2] == '-U':
+                        context = int(option[2:])
+                        break
+                req.write('Index: ' + path + util.CRLF)
+                req.write('=' * 67 + util.CRLF)
+                req.write('--- %s (revision %s)' % (old_node.path, old_node.rev) +
+                          util.CRLF)
+                req.write('+++ %s (revision %s)' % (new_node.path, new_node.rev) +
+                          util.CRLF)
+                for line in unified_diff(old_content.split('\n'),
+                                         new_content.split('\n'), context,
+                                         ignore_blank_lines='-B' in diff_options,
+                                         ignore_case='-i' in diff_options,
+                                         ignore_space_changes='-b' in diff_options):
+                    req.write(line + util.CRLF)
+
+    def render_zip(self, req, repos, chgset):
         """ZIP archive with all the added and/or modified files."""
         req.send_response(200)
         req.send_header('Content-Type', 'application/zip')
         req.send_header('Content-Disposition',
-                        'filename=Changeset%d.zip' % self.rev)
+                        'filename=Changeset%s.zip' % chgset.rev)
         req.end_headers()
-        self.render_diffs(req, ZipDiffEditor)
+
+        try:
+            from cStringIO import StringIO
+        except ImportError:
+            from StringIO import StringIO
+        from zipfile import ZipFile, ZipInfo, ZIP_DEFLATED
+
+        buf = StringIO()
+        zipfile = ZipFile(buf, 'w', ZIP_DEFLATED)
+        for path, kind, change, base_path, base_rev in chgset.get_changes():
+            if kind is Node.FILE and change is not Changeset.DELETE:
+                node = repos.get_node(path, chgset.rev)
+                zipinfo = ZipInfo()
+                zipinfo.filename = node.path
+                zipinfo.date_time = node.last_modified[:6]
+                zipinfo.compress_type = ZIP_DEFLATED
+                zipfile.writestr(zipinfo, node.get_content().read())
+        zipfile.close()
+        req.write(buf.getvalue())

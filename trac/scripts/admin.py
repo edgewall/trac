@@ -29,7 +29,7 @@ import cmd
 import shlex
 import StringIO
 
-from trac import perm, util, sync
+from trac import perm, util
 from trac.env import Environment
 import trac.siteconfig
 
@@ -502,18 +502,7 @@ class TracAdmin(cmd.Cmd):
             project_name = arg[0]
             repository_dir = arg[1]
             templates_dir = arg[2]
-        from svn import repos, core
-        core.apr_initialize()
-        pool = core.svn_pool_create(None)
-        try:
-            # Remove any trailing slash or else subversion might abort
-            if not os.path.split(repository_dir)[1]:
-                repository_dir = os.path.split(repository_dir)[0]
-            rep = repos.svn_repos_open(repository_dir, pool)
-            fs_ptr = repos.svn_repos_fs(rep)
-        except Exception, e:
-            print repository_dir, 'Repository access error: %s' % e
-            return
+
         if not os.access(os.path.join(templates_dir, 'browser.cs'), os.F_OK) \
            or not os.access(os.path.join(templates_dir, 'ticket.cs'), os.F_OK):
             print templates_dir, "doesn't look like a Trac templates directory"
@@ -539,7 +528,9 @@ class TracAdmin(cmd.Cmd):
             self._do_wiki_load(trac.siteconfig.__default_wiki_dir__,cursor)
 
             print ' Indexing repository'
-            sync.sync(cnx, rep, fs_ptr, pool)
+            repos = self.__env.get_repository()
+            repos.sync()
+
         except Exception, e:
             print 'Failed to initialize database.', e
             sys.exit(2)
@@ -579,30 +570,21 @@ class TracAdmin(cmd.Cmd):
         print
         
     _help_resync = [('resync', 'Re-synchronize trac with the repository')]
-    
+
     ## Resync
     def do_resync(self, line):
-        from svn import repos, core
-        core.apr_initialize()
-        pool = core.svn_pool_create(None)
-
         self.db_open() # We need to call this function to open the env, really stupid
 
-        # Remove any trailing slash or else subversion might abort
-        repository_dir = self.__env.get_config('trac', 'repository_dir')
-        if not os.path.split(repository_dir)[1]:
-            repository_dir = os.path.split(repository_dir)[0]
-            
-        rep = repos.svn_repos_open(repository_dir, pool)
-        fs_ptr = repos.svn_repos_fs(rep)
-        
-        cnx = self.__env.get_db_cnx()
         print 'resyncing...'
+        cnx = self.__env.get_db_cnx()
         self.db_execsql("DELETE FROM revision")
         self.db_execsql("DELETE FROM node_change")
-        sync.sync(cnx, rep, fs_ptr, pool)
+
+        repos = self.__env.get_repository()
+        repos.sync()
+            
         print 'done.'
-        
+
     ## Wiki
     _help_wiki = [('wiki list', 'List wiki pages'),
                   ('wiki remove <name>', 'Remove wiki page'),

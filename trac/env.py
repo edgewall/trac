@@ -68,6 +68,19 @@ class Environment:
     def get_db_cnx(self):
         return db.get_cnx(self)
 
+    def get_repository(self, authname=None):
+        from trac.versioncontrol.cache import CachedRepository
+        from trac.versioncontrol.svn_authz import SubversionAuthorizer
+        from trac.versioncontrol.svn_fs import SubversionRepository
+        repos_dir = self.get_config('trac', 'repository_dir')
+        if not repos_dir:
+            raise EnvironmentError, 'Path to repository not configured'
+        authz = None
+        if authname:
+            authz = SubversionAuthorizer(self, authname)
+        repos = SubversionRepository(repos_dir, authz, self.log)
+        return CachedRepository(self.get_db_cnx(), repos, authz, self.log)
+
     def create(self):
         def _create_file(fname, data=None):
             fd = open(fname, 'w')

@@ -20,9 +20,9 @@
 # Author: Jonas Borgström <jonas@edgewall.com>
 
 from trac import perm
-from trac.Diff import get_diff_options, hdf_diff
 from trac.Module import Module
 from trac.util import enum, escape, TracError, get_reporter_id
+from trac.versioncontrol.diff import get_diff_options, hdf_diff
 from trac.WikiFormatter import *
 
 import os

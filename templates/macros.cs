@@ -16,12 +16,10 @@
    set:last = name(part) == len(path) - #1 ?><a<?cs 
    if:first ?> class="first" title="Go to root directory"<?cs 
     set:first = #0 ?><?cs 
-   else ?> title="Go to directory"<?cs
-   /if ?> href="<?cs var:part.url ?>"><?cs var:part ?></a><?cs
-   if:file.filename || !last ?><span class="sep">/</span><?cs /if ?><?cs 
- /each ?><?cs
- if:file.filename ?><span class="filename"><?cs var:file.filename ?></span><?cs
- /if ?></h1>
+   else ?> title="View <?cs var:part.name ?>"<?cs
+   /if ?> href="<?cs var:part.href ?>"><?cs var:part.name ?></a><?cs
+   if:!last ?><span class="sep">/</span><?cs /if ?><?cs 
+ /each ?></h1>
 <?cs /def ?>
 
 <?cs def:diff_display(diff, style) ?><?cs

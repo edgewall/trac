@@ -25,7 +25,7 @@ from trac.db import SQLiteConnection
 import unittest
 
 
-def Mock(bases=(), **kw):
+def Mock(bases=(), *initargs, **kw):
     """
     Simple factory for dummy classes that can be used as replacement for the 
     real implementation in tests.
@@ -76,7 +76,7 @@ def Mock(bases=(), **kw):
     if not isinstance(bases, tuple):
         bases = (bases,)
     cls = type('Mock', bases, {})
-    mock = cls()
+    mock = cls(*initargs)
     for k,v in kw.items():
         setattr(mock, k, v)
     return mock
@@ -100,8 +100,7 @@ def suite():
     suite = unittest.TestSuite()
 
     # trac
-    from trac.tests import diff, env, perm, query, ticket, wiki
-    suite.addTest(diff.suite())
+    from trac.tests import env, perm, query, ticket, wiki
     suite.addTest(env.suite())
     suite.addTest(perm.suite())
     suite.addTest(query.suite())
@@ -119,6 +118,11 @@ def suite():
     # trac.scripts
     from trac.scripts.tests import admin
     suite.addTest(admin.suite())
+
+    # trac.versioncontrol
+    from trac.versioncontrol.tests import cache, diff
+    suite.addTest(cache.suite())
+    suite.addTest(diff.suite())
 
     return suite
 

@@ -19,7 +19,6 @@
 #
 # Author: Jonas Borgström <jonas@edgewall.com>
 
-from trac.core import open_svn_repos
 from trac.perm import PermissionCache
 from trac.util import escape
 from trac.web.main import populate_hdf
@@ -69,28 +68,28 @@ class Module:
 
 
 modules = {
-#    name           (module_name, class_name, requires_svn)
-    'log'         : ('Log', 'Log', 1),
-    'file'        : ('File', 'File', 1),
-    'wiki'        : ('Wiki', 'WikiModule', 0),
-    'about_trac'  : ('About', 'About', 0),
-    'search'      : ('Search', 'Search', 0),
-    'report'      : ('Report', 'Report', 0),
-    'ticket'      : ('Ticket', 'TicketModule', 0),
-    'browser'     : ('Browser', 'Browser', 1),
-    'timeline'    : ('Timeline', 'Timeline', 1),
-    'changeset'   : ('Changeset', 'Changeset', 1),
-    'newticket'   : ('Ticket', 'NewticketModule', 0),
-    'query'       : ('Query', 'QueryModule', 0),
-    'attachment'  : ('File', 'Attachment', 0),
-    'roadmap'     : ('Roadmap', 'Roadmap', 0),
-    'settings'    : ('Settings', 'Settings', 0),
-    'milestone'   : ('Milestone', 'Milestone', 0)
+#    name           (module_name,   class_name)
+    'about_trac'  : ('About',       'About'),
+    'attachment'  : ('attachment',  'AttachmentModule'),
+    'browser'     : ('Browser',     'BrowserModule'),
+    'changeset'   : ('Changeset',   'ChangesetModule'),
+    'file'        : ('Browser',     'FileModule'),
+    'log'         : ('Browser',     'LogModule'),
+    'milestone'   : ('Milestone',   'Milestone'),
+    'newticket'   : ('Ticket',      'NewticketModule'),
+    'query'       : ('Query',       'QueryModule'),
+    'report'      : ('Report',      'Report'),
+    'roadmap'     : ('Roadmap',     'Roadmap'),
+    'search'      : ('Search',      'Search'),
+    'settings'    : ('Settings',    'Settings'),
+    'ticket'      : ('Ticket',      'TicketModule'),
+    'timeline'    : ('Timeline',    'Timeline'),
+    'wiki'        : ('Wiki',        'WikiModule'),
 }
 
 def module_factory(env, db, req):
     mode = req.args.get('mode', 'wiki')
-    module_name, constructor_name, need_svn = modules[mode]
+    module_name, constructor_name = modules[mode]
     module = __import__(module_name, globals(),  locals())
     constructor = getattr(module, constructor_name)
     module = constructor()
@@ -100,19 +99,5 @@ def module_factory(env, db, req):
     module.log = env.log
     module.db = db
     module.perm = PermissionCache(module.db, req.authname)
-
-    # Only open the subversion repository for the modules that really
-    # need it. This saves us some precious time.
-    from trac.authzperm import AuthzPermission
-    module.authzperm = AuthzPermission(env, req.authname)
-    module.pool = None
-    if need_svn:
-        from trac import sync
-        repos_dir = env.get_config('trac', 'repository_dir')
-        pool, rep, fs_ptr = open_svn_repos(repos_dir)
-        module.repos = rep
-        module.fs_ptr = fs_ptr
-        sync.sync(db, rep, fs_ptr, pool)
-        module.pool = pool
 
     return module

@@ -22,6 +22,7 @@
 from trac import perm
 from trac.util import enum, escape, shorten_line
 from trac.Module import Module
+from trac.versioncontrol.svn_authz import SubversionAuthorizer
 from trac.WikiFormatter import wiki_to_oneliner, wiki_to_html
 
 import time
@@ -29,7 +30,7 @@ import time
 AVAILABLE_FILTERS = ('wiki', 'ticket', 'changeset', 'milestone')
 
 
-class Timeline (Module):
+class Timeline(Module):
 
     def get_info(self, req, start, stop, maxrows, filters=AVAILABLE_FILTERS):
         perm_map = {'ticket': perm.TICKET_VIEW, 'changeset': perm.CHANGESET_VIEW,
@@ -105,6 +106,7 @@ class Timeline (Module):
 
     def render(self, req):
         self.perm.assert_permission(perm.TIMELINE_VIEW)
+        self.authzperm = SubversionAuthorizer(self.env, req.authname) # Kludge
 
         _from = req.args.get('from', '')
         _daysback = req.args.get('daysback', '')
@@ -192,10 +194,10 @@ class Timeline (Module):
 
         if show_files != 0:
             cursor = self.db.cursor()
-            cursor.execute("SELECT name,change FROM node_change WHERE rev=%s",
+            cursor.execute("SELECT path,change FROM node_change WHERE rev=%s",
                            (item['idata']))
             files = []
-            class_map = {'A': 'add', 'M': 'mod', 'D': 'rem'}
+            class_map = {'A': 'add', 'C': 'add', 'D': 'rem', 'M': 'mod'}
             for name,change in cursor:
                 if show_files > 0 and len(files) >= show_files:
                     files.append('...')

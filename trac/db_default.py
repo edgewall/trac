@@ -21,7 +21,7 @@
 
 
 # Database version identifier. Used for automatic upgrades.
-db_version = 9
+db_version = 10
 
 def __mkreports(reports):
     """Utility function used to create report data in same syntax as the
@@ -39,16 +39,19 @@ def __mkreports(reports):
 
 schema = """
 CREATE TABLE revision (
-        rev             integer PRIMARY KEY,
+        rev             text PRIMARY KEY,
         time            integer,
         author          text,
         message         text
 );
 CREATE TABLE node_change (
-        rev             integer,
-        name            text,
+        rev             text,
+        path            text,
+        kind            char(1), -- 'D' for directory, 'F' for file
         change          char(1),
-        UNIQUE(rev, name, change)
+        base_path       text,
+        base_rev        text,
+        UNIQUE(rev, path, change)
 );
 CREATE TABLE auth_cookie (
         cookie          text,

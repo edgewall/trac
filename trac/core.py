@@ -18,19 +18,3 @@
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #
 # Author: Jonas Borgström <jonas@edgewall.com>
-
-import os.path
-
-
-def open_svn_repos(repos_dir):
-    from svn import repos, core
-
-    core.apr_initialize()
-    pool = core.svn_pool_create(None)
-    # Remove any trailing slash or else subversion might abort
-    if not os.path.split(repos_dir)[1]:
-        repos_dir = os.path.split(repos_dir)[0]
-
-    rep = repos.svn_repos_open(repos_dir, pool)
-    fs_ptr = repos.svn_repos_fs(rep)
-    return pool, rep, fs_ptr
