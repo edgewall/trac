@@ -84,17 +84,19 @@ class Module:
         def hdf_tree_walk(node,prefix=''):
             while node: 
                 name = node.name() or ''
-                if not node.child():
-                    value = node.value()
-                    req.write('%s%s = ' % (prefix, name))
+                req.write('%s%s' % (prefix, name))
+                value = node.value()
+                if value:
                     if value.find('\n') == -1:
-                        req.write('%s\r\n' % value)
+                        req.write(' = %s' % value)
                     else:
-                        req.write('<< EOM\r\n%s\r\nEOM\r\n' % value)
-                else:
-                    req.write('%s%s {\r\n' % (prefix, name))
+                        req.write(' = << EOM\r\n%s\r\nEOM' % value)
+                if node.child():
+                    req.write(' {\r\n')
                     hdf_tree_walk(node.child(), prefix + '  ')
                     req.write('%s}\r\n' % prefix)
+                else:
+                    req.write('\r\n')
                 node = node.next()
         req.send_response(200)
         req.send_header('Content-Type', 'text/plain;charset=utf-8')
