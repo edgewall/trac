@@ -136,13 +136,9 @@
    <form id="edit" action="<?cs var:wiki.current_href ?>#preview" method="post">
     <fieldset class="iefix">
      <input type="hidden" name="edit_version" value="<?cs
-       var:wiki.edit_version?>" />
-     <input type="hidden" name="scroll_bar_pos" id="scroll_bar_pos" value="<?cs
-       var:wiki.scroll_bar_pos?>" />
-     <input type="hidden" name="selection_start" id="selection_start" value="<?cs
-       var:wiki.selection_start?>" />
-     <input type="hidden" name="selection_end" id="selection_end" value="<?cs
-       var:wiki.selection_end?>" />
+       var:wiki.edit_version ?>" />
+     <input type="hidden" id="scroll_bar_pos" name="scroll_bar_pos" value="<?cs
+       var:wiki.scroll_bar_pos ?>" />
      <div id="rows">
       <label for="editrows">Adjust edit area height:</label>
       <select size="1" name="editrows" id="editrows" tabindex="43"
@@ -154,9 +150,17 @@
        /loop ?>
       </select>
      </div>
-     <p><textarea id="text" name="text" rows="<?cs var:wiki.edit_rows ?>" cols="80"><?cs
-       var:wiki.page_source ?></textarea></p>
+     <p><textarea id="text" name="text" cols="80" rows="<?cs
+       var:wiki.edit_rows ?>"><?cs var:wiki.page_source ?></textarea></p>
      <?cs call:wiki_toolbar('text') ?>
+     <script type="text/javascript">
+       var scrollBarPos = document.getElementById("scroll_bar_pos");
+       var text = document.getElementById("text");
+       addEvent(window, "load", function() {
+         if (scrollBarPos.value) text.scrollTop = scrollBarPos.value;
+       });
+       addEvent(text, "blur", function() { scrollBarPos.value = text.scrollTop });
+     </script>
     </fieldset>
     <div id="help">
      <b>Note:</b> See <a href="<?cs var:$trac.href.wiki
@@ -185,22 +189,19 @@
     </fieldset>
     <div class="buttons">
      <input type="submit" name="save" value="Save changes" />&nbsp;
-     <input type="submit" name="preview" value="Preview" onclick="saveEditPosition(this.form.text, this.form.scroll_bar_pos, this.form.selection_start, this.form.selection_end);" />&nbsp;
+     <input type="submit" name="preview" value="Preview" />&nbsp;
      <input type="submit" name="cancel" value="Cancel" />
-     <?cs if trac.acl.WIKI_DELETE ?>
-      <input type="submit" name="delete_ver" id="delete_ver" value="Delete this version" onclick="return confirm('Do you really want to delete version <?cs var:wiki.edit_version?> of this page?\nThis is an irreversible operation.')" />
-      <input type="submit" name="delete_page" value="Delete Page" onclick="return confirm('Do you really want to delete all versions of this page?\nThis is an irreversible operation.')" />
-     <?cs /if ?>
-    </div>
+    </div><?cs
+    if wiki.action == "preview" ?>
+     <fieldset id="preview">
+      <legend>Preview</legend>
+      <div class="wikipage"><?cs var:wiki.page_html ?></div>
+     </fieldset><?cs
+    /if ?>
    </form>
-   <script type='text/javascript'>
-     restoreEditPosition(document.getElementById("text"), document.getElementById("scroll_bar_pos"),
-       document.getElementById("selection_start"), document.getElementById("selection_end"));
-   </script>
   <?cs /if ?>
-  <?cs if wiki.action == "view" || wiki.action == "preview" ?>
-   <?cs if wiki.action == "preview" ?><hr /><?cs /if ?>
-   <div class="wikipage"<?cs if wiki.action == "preview" ?> id="preview"<?cs /if ?>>
+  <?cs if wiki.action == "view" ?>
+   <div class="wikipage">
     <div id="searchable"><?cs var:wiki.page_html ?></div>
    </div>
    <?cs if $wiki.attachments.0.name ?>
@@ -214,17 +215,27 @@
     <?cs /each ?>
   </ul>
   <?cs /if ?>
-  <?cs if wiki.action == "view" && trac.acl.WIKI_MODIFY &&
-       (wiki.readonly == "0" || trac.acl.WIKI_ADMIN) ?>
+  <?cs if wiki.action == "view" && (trac.acl.WIKI_MODIFY || trac.acl.WIKI_DELETE)
+      && (wiki.readonly == "0" || trac.acl.WIKI_ADMIN) ?>
    <div class="buttons">
-    <form method="get" action=""><div>
-     <input type="hidden" name="edit" value="yes" />
-     <input type="submit" value="Edit This Page" />
-    </div></form>
-    <form method="get" action="<?cs var:cgi_location?>/attachment/wiki/<?cs
-      var:wiki.namedoublequoted ?>"><div>
-     <input type="submit" value="Attach File" />
-    </div></form>
+    <?cs if:trac.acl.WIKI_MODIFY ?>
+     <form method="get" action=""><div>
+      <input type="hidden" name="edit" value="yes" />
+      <input type="submit" value="Edit This Page" />
+     </div></form>
+     <form method="get" action="<?cs var:cgi_location?>/attachment/wiki/<?cs
+       var:wiki.namedoublequoted ?>"><div>
+      <input type="submit" value="Attach File" />
+     </div></form>
+    <?cs /if ?>
+    <?cs if:trac.acl.WIKI_DELETE ?>
+     <form method="post" action=""><div id="delete">
+      <input type="hidden" name="edit_version" value="<?cs
+        var:wiki.edit_version?>" />
+       <input type="submit" name="delete_ver" id="delete_ver" value="Delete This Version" onclick="return confirm('Do you really want to delete version <?cs var:wiki.edit_version?> of this page?\nThis is an irreversible operation.')" />
+       <input type="submit" name="delete_page" value="Delete Page" onclick="return confirm('Do you really want to delete all versions of this page?\nThis is an irreversible operation.')" />
+     </div></form>
+    <?cs /if ?>
    </div>
   <?cs /if ?>
  <?cs /if ?>
