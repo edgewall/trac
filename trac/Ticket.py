@@ -37,7 +37,7 @@ __all__ = ['Ticket', 'NewticketModule', 'TicketModule']
 class Ticket(UserDict):
     std_fields = ['time', 'component', 'severity', 'priority', 'milestone',
                   'reporter', 'owner', 'cc', 'url', 'version', 'status', 'resolution',
-                  'keywords', 'summary', 'description', 'reporter']
+                  'keywords', 'summary', 'description']
 
     def __init__(self, *args):
         UserDict.__init__(self)
@@ -374,11 +374,15 @@ class TicketModule (Module):
                         self.req.hdf, 'ticket.milestones')
         util.sql_to_hdf(self.db, 'SELECT name FROM version ORDER BY name',
                         self.req.hdf, 'ticket.versions')
+        util.sql_to_hdf(self.db, "SELECT name FROM enum WHERE type='resolution'"
+                                 " ORDER BY value",
+                        self.req.hdf, 'enums.resolution')
         util.hdf_add_if_missing(self.req.hdf, 'ticket.components', ticket['component'])
         util.hdf_add_if_missing(self.req.hdf, 'ticket.milestones', ticket['milestone'])
         util.hdf_add_if_missing(self.req.hdf, 'ticket.versions', ticket['version'])
         util.hdf_add_if_missing(self.req.hdf, 'enums.priority', ticket['priority'])
         util.hdf_add_if_missing(self.req.hdf, 'enums.severity', ticket['severity'])
+        util.hdf_add_if_missing(self.req.hdf, 'enums.resolution', 'fixed')
 
         self.req.hdf.setValue('ticket.reporter_id', util.escape(reporter_id))
         self.req.hdf.setValue('title', '#%d (%s)' % (id,ticket['summary']))

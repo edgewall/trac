@@ -231,23 +231,7 @@
    <?cs call:action_radio('resolve') ?>
    <label for="resolve">resolve</label>
    <label for="resolve_resolution">as:</label>
-   <select id="resolve_resolution" name="resolve_resolution">
-    <option<?cs
-     if:args.resolve_resolution == 'fixed' ?> selected="selected"<?cs
-     /if ?>>fixed</option>
-    <option<?cs
-     if:args.resolve_resolution == 'invalid' ?> selected="selected"<?cs
-     /if ?>>invalid</option>
-    <option<?cs
-     if:args.resolve_resolution == 'wontfix' ?> selected="selected"<?cs
-     /if ?>>wontfix</option>
-    <option<?cs
-     if:args.resolve_resolution == 'duplicate' ?> selected="selected"<?cs
-     /if ?>>duplicate</option>
-    <option<?cs
-     if:args.resolve_resolution == 'worksforme' ?> selected="selected"<?cs
-     /if ?>>worksforme</option>
-   </select><br />
+   <?cs call:hdf_select(enums.resolution, "resolve_resolution", args.resolve_resolution) ?><br />
    <?cs call:action_radio('reassign') ?>
    <label for="reassign">reassign</label>
    <label for="reassign_owner">to:</label>
