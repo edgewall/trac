@@ -42,8 +42,7 @@ together as an integrated environment.
   </p>
 
   <p>
-  Trac is a product of <a href="http:/www.edgewall.com/">Edgewall Research
-  &amp; Development</a>, provider of professional Linux and software
+  Trac is a product of <a href="http:/www.edgewall.com/">Edgewall Software</a>, provider of professional Linux and software
   development services.
   </p>
   
@@ -63,7 +62,7 @@ together as an integrated environment.
   </ul>
   <a class="noline" href="http://www.edgewall.com/">
    <img style="display: block; margin: 30px" src="<?cs var:htdocs_location ?>edgewall_logo_left-226x43.png"
-     alt="Edgewall Research  &amp; Development"/></a>
+     alt="Edgewall Software"/></a>
 <?cs /if ?>
 
 

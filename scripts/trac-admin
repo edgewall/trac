@@ -2,9 +2,9 @@
 # -*- coding: iso8859-1 -*-
 __version__ = '0.5-rc1'
 __author__ = 'Daniel Lundin <daniel@edgewall.com>, Jonas Borgström <jonas@edgewall.com>'
-__copyright__ = 'Copyright (c) 2004 Edgewall Research & Development'
+__copyright__ = 'Copyright (c) 2004 Edgewall Software'
 __license__ = """
- Copyright (C) 2003, 2004 Edgewall Research & Development
+ Copyright (C) 2003, 2004 Edgewall Software
  Copyright (C) 2003, 2004 Jonas Borgström <jonas@edgewall.com>
  Copyright (C) 2003, 2004 Daniel Lundin <daniel@edgewall.com>
 

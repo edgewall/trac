@@ -71,12 +71,12 @@ Hyperlinks are automatically created for wiki names and urls. For example:
 Links can be given a move descriptive title by writing the link followed by
 a space and a title and all this inside two square brackets. Like this:
 {{{
- * [http://www.edgewall.com/ Edgewall Research & Development]
+ * [http://www.edgewall.com/ Edgewall Software]
  * [wiki:TitleIndex Title Index]
 }}}
 Display:
 
- * [http://www.edgewall.com/ Edgewall Research & Development]
+ * [http://www.edgewall.com/ Edgewall Software]
  * [wiki:TitleIndex Title Index]
 
 === Intra Trac Links ===
