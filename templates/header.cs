@@ -46,7 +46,18 @@
       height="<?cs var:header_logo.height ?>" 
       alt="<?cs var:header_logo.alt ?>" /></a>
   <hr class="hide"/>
-  <div id="header-links">
+  <div id="header-right">
+   <form id="search" action="<?cs var:trac.href.search ?>" method="get">
+    <div>
+     <label for="proj-search">Search:</label>
+     <input type="text" id="proj-search" name="q" size="10" value="" />
+     <input type="submit" value="search" />
+     <input type="hidden" name="wiki" value="on" />
+     <input type="hidden" name="changeset" value="on" />
+     <input type="hidden" name="ticket" value="on" />
+    </div>
+   </form>
+   <div id="header-links">
     <?cs if $trac.authname == "anonymous" ?>
       <a href="<?cs var:trac.href.login ?>" 
          class="navbar-link-right">Login</a>&nbsp;| 
@@ -59,7 +70,10 @@
        class="navbar-link-right"> Help/Guide </a>&nbsp;| 
     <a href="<?cs var:trac.href.about ?>" 
        class="navbar-link-right"> About Trac </a>
+   </div>
   </div>
+ </div>
+
   <div id="navbar">
     <div id="navbar-links">
       <?cs call:navlink("Wiki", $trac.href.wiki, "wiki", 
@@ -76,4 +90,3 @@
                         "TICKET_CREATE") ?>
     </div>
   </div>
-</div>

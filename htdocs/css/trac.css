@@ -62,17 +62,34 @@ legend {
  font-weight: bold; 
 }
 /* Header */
-#header { }
+#header { 
+ position: relative;
+ width: 100%;
+ float: left;
+}
+#header-right { 
+ position: absolute;
+ bottom: 0px;
+ right: 0px;
+}
+#search { 
+ text-align: right;
+ margin: 1em 0;
+ font-size: 10px;
+}
+#search input { padding: 1px;  font-size: 10px; }
+#search input[type="submit"] { }
 #hdrlogo { }
 #hdrlogo,#hdrlogo img,#hdrlogo:hover {
-  margin-bottom: -1.25em;
-  border: none;
+ float: left;
+ margin-bottom: 2px;
+ border: none;
 }
 #header-links, #subheader-links, #navbar {
   font: normal 11px Verdana, 'Bitstream Vera Sans', Helvetica, Arial, sans-serif;
   color: #000;
 }
-#header-links, #subheader-links { padding: 2px 0em; text-align: right; }
+#header-links,#subheader-links { padding: 2px 0em; text-align: right; }
 #subheader-links a,#header-links a { padding: 0 .5em; }
 .subheader-sublinks { 
   background: #f7f7f7;
@@ -101,6 +118,7 @@ legend {
 
 /* Navbar  */
 #navbar {
+  clear: left;
   border: 1px solid #999;
   margin: .15em 0;
   min-width: 500px;          
