@@ -221,17 +221,28 @@
    <label for="resolve">resolve</label>
    <label for="resolve_resolution">as:</label>
    <select id="resolve_resolution" name="resolve_resolution">
-    <option>fixed</option>
-    <option>invalid</option>
-    <option>wontfix</option>
-    <option>duplicate</option>
-    <option>worksforme</option>
+    <option<?cs
+     if:args.resolve_resolution == 'fixed' ?> selected="selected"<?cs
+     /if ?>>fixed</option>
+    <option<?cs
+     if:args.resolve_resolution == 'invalid' ?> selected="selected"<?cs
+     /if ?>>invalid</option>
+    <option<?cs
+     if:args.resolve_resolution == 'wontfix' ?> selected="selected"<?cs
+     /if ?>>wontfix</option>
+    <option<?cs
+     if:args.resolve_resolution == 'duplicate' ?> selected="selected"<?cs
+     /if ?>>duplicate</option>
+    <option<?cs
+     if:args.resolve_resolution == 'worksforme' ?> selected="selected"<?cs
+     /if ?>>worksforme</option>
    </select><br />
    <?cs call:action_radio('reassign') ?>
    <label for="reassign">reassign</label>
    <label for="reassign_owner">to:</label>
    <input type="text" id="reassign_owner" name="reassign_owner" size="40" value="<?cs
-     var:trac.authname ?>" /><?cs
+     if:args.reassign_to ?><?cs var:args.reassign_to ?><?cs
+     else ?><?cs var:trac.authname ?><?cs /if ?>" /><?cs
   /if ?><?cs
   if $ticket.status == "new" || $ticket.status == "assigned" || $ticket.status == "reopened" ?>
    <script type="text/javascript">
