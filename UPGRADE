@@ -3,16 +3,18 @@ Upgrade Instructions
 
 Upgrading to 0.7
 ----------------
-Previous versions of Trac stored wiki pages, ticket, reports, 
-settings, etc. in a single sqlite database.
-As of version 0.7 this information is stored in Trac Environments. 
-An Environment is a directory containing among other things a sqlite database,
-human readable configuration file, log-files and attachments.
+Trac 0.7 has a new database format, requiring manual upgrade.
 
-Old Trac databases can be converted to environments using the "tracdb2env"
-program:
+Previous versions of Trac stored wiki pages, ticket, reports,
+settings, etc. in a single SQLite database file. Trac 0.7 replaces this file
+with a new backend storage format; the 'Trac Environment', which is a
+directory containing an SQLite database, a human-readable configuration file,
+log-files and attachments.
 
-  tracdb2env /path/to/old/project.db /where/to/create/new/env
+Fear not though, old-style Trac databases can easily be converted to
+Environments using the included "tracdb2env" program as follows:
+
+  tracdb2env /path/to/old/project.db /path/to/new/projectenv
 
 tracdb2env will create a new environment and copy the information from
 the old database to the new environment. The existing database will
@@ -20,9 +22,9 @@ not be modified.
 
 You also need to update your apache configuration:
 change this line:
-   SetEnv TRAC_DB "/somewhere/myproject.db"
+   SetEnv TRAC_DB "/path/to/old/project.db"
 to:
-   SetEnv TRAC_ENV "/somewhere/myprojectenv"
+   SetEnv TRAC_ENV "/path/to/new/projectenv"
 
 
 Updating wiki pages
