@@ -33,6 +33,7 @@ from util import *
 
 page_dict = None
 
+processor_re = re.compile('#\!([a-zA-Z]+)')
 
 def populate_page_dict(db):
     """Extract wiki page names. This is used to detect broken wiki-links"""
@@ -345,8 +346,9 @@ class Formatter(CommonFormatter):
                 self.close_paragraph()
                 self.out.write(self.code_processor(self.hdf, self.code_text))
         elif not self.code_processor:
-            if line[0:2] == '#!':
-                name = line[2:]
+            match = processor_re.search(line)
+            if match:
+                name = match.group(1)
                 if  Formatter.builtin_processors.has_key(name):
                     self.code_processor = Formatter.builtin_processors[name]
                 else:
