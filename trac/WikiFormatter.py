@@ -236,7 +236,7 @@ class Formatter(CommonFormatter):
     def asp_processor(hdf, text, env):
         return env.mimeview.display(text, 'text/x-asp')
     def c_processor(hdf, text, env):
-        return env.mimeview.display(text, 'text/x-csrcl')
+        return env.mimeview.display(text, 'text/x-csrc')
     def java_processor(hdf, text, env):
         return env.mimeview.display(text, 'text/x-java')
     def cpp_processor(hdf, text, env):
