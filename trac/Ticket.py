@@ -434,12 +434,14 @@ class TicketModule (Module):
             for field in Ticket.std_fields:
                 if self.args.has_key(field) and field != 'reporter':
                     ticket[field] = self.args.get(field)
-            self.req.hdf.setValue('ticket.comment', self.args.get('comment'))
             self.req.hdf.setValue('ticket.action', action)
             reporter_id = self.args.get('author')
-            # Wiki format a preview of comment
-            self.req.hdf.setValue('ticket.comment_preview',
-                                  wiki_to_html(self.args.get('comment'),
+            comment = self.args.get('comment')
+            if comment:
+                self.req.hdf.setValue('ticket.comment', comment)
+                # Wiki format a preview of comment
+                self.req.hdf.setValue('ticket.comment_preview',
+                                  wiki_to_html(comment,
                                                self.req.hdf, self.env, self.db))
 
         self.insert_ticket_data(self.req.hdf, id, ticket, reporter_id)
