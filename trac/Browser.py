@@ -31,12 +31,6 @@ import perm
 class Browser(Module):
     template_name = 'browser.cs'
 
-    def __init__(self, config, args, pool):
-        Module.__init__(self, config, args, pool)
-
-        self.rev = dict_get_with_default(args, 'rev', None)
-        self.path = dict_get_with_default(args, 'path', '/')
-    
     def get_info(self, path, revision):
         """
         Extracts information for a given path and revision
@@ -111,6 +105,10 @@ class Browser(Module):
 
     def render(self):
         perm.assert_permission (perm.BROWSER_VIEW)
+
+        self.rev = dict_get_with_default(self.args, 'rev', None)
+        self.path = dict_get_with_default(self.args, 'path', '/')
+
         order = dict_get_with_default(self.args, 'order', 'name')
         
         if not self.rev:

@@ -30,9 +30,6 @@ import time
 class Report (Module):
     template_name = 'report.cs'
 
-    def __init__(self, config, args, pool):
-        Module.__init__(self, config, args, pool)
-        
     def get_info (self, id):
         cnx = db.get_connection()
         cursor = cnx.cursor()

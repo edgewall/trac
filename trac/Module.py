@@ -27,10 +27,9 @@ import auth
 import neo_cgi
 
 class Module:
-    def __init__(self, config, args, pool):
+    def __init__(self, config, args):
         self.config = config
         self.args = args
-        self.pool = pool
         self.cgi = neo_cgi.CGI()
 
     def run(self):

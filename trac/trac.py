@@ -110,14 +110,10 @@ def real_main():
     from util import dict_get_with_default, redirect
     from auth import verify_authentication, authenticate_user
     from perm import cache_permissions, PermissionError, perm_to_hdf
-    from svn import util, repos, core
-    
+
     db.init()
     config = db.load_config()
     Href.initialize(config)
-
-    core.apr_initialize()
-    pool = core.svn_pool_create(None)
 
     args = parse_args()
     _args = cgi.FieldStorage()
@@ -128,7 +124,7 @@ def real_main():
     module_name, constructor_name, need_svn = modules[mode]
     module = __import__(module_name, globals(),  locals(), [])
     constructor = getattr(module, constructor_name)
-    module = constructor(config, args, pool)
+    module = constructor(config, args)
     module._name = mode
 
     verify_authentication(args)
@@ -138,6 +134,10 @@ def real_main():
     # Only open the subversion repository for the modules that really
     # need it. This saves us some precious time.
     if need_svn:
+        from svn import util, repos, core
+
+        core.apr_initialize()
+        pool = core.svn_pool_create(None)
 
         repos_dir = config['general']['repository_dir']
         rep = repos.svn_repos_open(repos_dir, pool)
@@ -145,15 +145,18 @@ def real_main():
         module.repos = rep
         module.fs_ptr = fs_ptr
         db.sync(rep, fs_ptr, pool)
-
+    else:
+        pool = None
+        
     # Let the wiki module build a dictionary of all page names
     import Wiki
     Wiki.populate_page_dict()
-    
+    module.pool = pool
     module.run()
-        
-    core.svn_pool_destroy(pool)
-    core.apr_terminate()
+    
+    if pool:
+        core.svn_pool_destroy(pool)
+        core.apr_terminate()
 
 def create_error_cgi():
     import neo_cgi

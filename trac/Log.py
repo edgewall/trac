@@ -30,11 +30,6 @@ from svn import util, repos
 class Log (Module):
     template_name = 'log.cs'
 
-    def __init__(self, config, args, pool):
-        Module.__init__(self, config, args, pool)
-        
-        self.path = dict_get_with_default(args, 'path', '/')
-
     def log_receiver (self, baton, rev, author, date, log, pool):
         item = {
             'rev'    : rev,
@@ -72,6 +67,8 @@ class Log (Module):
     def render (self):
         perm.assert_permission (perm.LOG_VIEW)
 
+        self.path = dict_get_with_default(self.args, 'path', '/')
+        
         info = self.get_info (self.path)
 
         self.generate_path_links()

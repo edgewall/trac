@@ -31,12 +31,6 @@ import perm
 class File (Module):
     CHUNK_SIZE = 4096
 
-    def __init__(self, config, args, pool):
-        Module.__init__(self, config, args, pool)
-
-        self.rev = dict_get_with_default(args, 'rev', None)
-        self.path = dict_get_with_default(args, 'path', '/')
-        
     def render (self):
         perm.assert_permission (perm.FILE_VIEW)
 
@@ -50,15 +44,18 @@ class File (Module):
         return type
 
     def apply_template (self):
-        if not self.rev:
+        rev = dict_get_with_default(self.args, 'rev', None)
+        path = dict_get_with_default(self.args, 'path', '/')
+        
+        if not rev:
             rev = fs.youngest_rev(self.fs_ptr, self.pool)
         else:
-            rev = int(self.rev)
+            rev = int(rev)
             
         root = fs.revision_root(self.fs_ptr, rev, self.pool)
 
-        mime_type = self.get_mime_type (root, self.path)
-        size = fs.file_length(root, self.path, self.pool)
+        mime_type = self.get_mime_type (root, path)
+        size = fs.file_length(root, path, self.pool)
         date = fs.revision_prop(self.fs_ptr, rev,
                                 util.SVN_PROP_REVISION_DATE, self.pool)
         date_seconds = util.svn_time_from_cstring(date, self.pool) / 1000000
@@ -68,7 +65,7 @@ class File (Module):
         sys.stdout.write('Content-Length: %d\r\n' % size) 
         sys.stdout.write('Content-Type: %s\r\n\r\n' % mime_type)
        
-        file = fs.file_contents(root, self.path, self.pool)
+        file = fs.file_contents(root, path, self.pool)
         while 1:
             data = util.svn_stream_read(file, self.CHUNK_SIZE)
             if not data:

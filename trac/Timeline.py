@@ -34,9 +34,6 @@ class Timeline (Module):
 
     MAX_MESSAGE_LEN = 75
 
-    def __init__(self, config, args, pool):
-        Module.__init__(self, config, args, pool)
-        
     def get_info (self, start, stop, tickets, changeset, wiki):
         cnx = db.get_connection()
         cursor = cnx.cursor ()

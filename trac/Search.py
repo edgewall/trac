@@ -31,10 +31,6 @@ import perm
 class Search(Module):
     template_name = 'search.cs'
 
-    def __init__(self, config, args, pool):
-        Module.__init__(self, config, args, pool)
-        self._args = args
-
     def query_to_sql(self, query, name):
         query = query.replace('\'', '\'\'\'\'')
         keywords = query.split(' ')
@@ -90,11 +86,11 @@ class Search(Module):
         self.cgi.hdf.setValue('search.ticket', 'checked')
         self.cgi.hdf.setValue('search.changeset', 'checked')
         
-        if self._args.has_key('q'):
-            query = self._args['q']
+        if self.args.has_key('q'):
+            query = self.args['q']
             self.cgi.hdf.setValue('search.q', query)
-            tickets = self._args.has_key('ticket')
-            changesets = self._args.has_key('changeset')
+            tickets = self.args.has_key('ticket')
+            changesets = self.args.has_key('changeset')
             if not tickets:
                 self.cgi.hdf.setValue('search.ticket', '')
             if not changesets:

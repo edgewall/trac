@@ -23,34 +23,7 @@ import os
 import os.path
 import sqlite
 
-from svn import fs, util, delta, repos
-
 db_name = None
-
-class ChangeEditor(delta.Editor):
-    def __init__(self, rev, old_root, new_root, cursor):
-        self.rev = rev
-        self.cursor = cursor
-        self.old_root = old_root
-        self.new_root = new_root
-        
-    def delete_entry(self, path, revision, parent_baton, pool):
-        self.cursor.execute('INSERT INTO node_change (rev, name, change) '
-                            'VALUES (%s, %s, \'D\')', self.rev, path)
-        
-    def add_directory(self, path, parent_baton,
-                      copyfrom_path, copyfrom_revision, dir_pool):
-        self.cursor.execute('INSERT INTO node_change (rev, name, change) '
-                            'VALUES (%s, %s, \'A\')', self.rev, path)
-
-    def add_file(self, path, parent_baton,
-                 copyfrom_path, copyfrom_revision, file_pool):
-        self.cursor.execute('INSERT INTO node_change (rev, name, change) '
-                            'VALUES (%s, %s, \'A\')',self.rev, path)
-
-    def open_file(self, path, parent_baton, base_revision, file_pool):
-        self.cursor.execute('INSERT INTO node_change (rev, name, change) '
-                            'VALUES (%s, %s, \'M\')',self.rev, path)
 
 def get_youngest_stored(cursor):
     cursor.execute('SELECT ifnull(max(rev), 0) FROM revision')
@@ -58,10 +31,7 @@ def get_youngest_stored(cursor):
 
 def init():
     global db_name
-    if util.SVN_VER_MAJOR == 0 and util.SVN_VER_MINOR < 37:
-        raise EnvironmentError, \
-              "Subversion >= 0.37 required: Found %d.%d.%d" % \
-              (util.SVN_VER_MAJOR, util.SVN_VER_MINOR, util.SVN_VER_MICRO)
+
     db_name = os.getenv('TRAC_DB')
     if not db_name:
         raise EnvironmentError, \
@@ -103,6 +73,39 @@ def sync(repos, fs_ptr, pool):
     updates the revision and node_change tables to be in sync with
     the repository.
     """
+    from svn import fs, util, delta, repos
+
+    class ChangeEditor(delta.Editor):
+        def __init__(self, rev, old_root, new_root, cursor):
+            self.rev = rev
+            self.cursor = cursor
+            self.old_root = old_root
+            self.new_root = new_root
+        
+        def delete_entry(self, path, revision, parent_baton, pool):
+            self.cursor.execute('INSERT INTO node_change (rev, name, change) '
+                                'VALUES (%s, %s, \'D\')', self.rev, path)
+        
+        def add_directory(self, path, parent_baton,
+                          copyfrom_path, copyfrom_revision, dir_pool):
+            self.cursor.execute('INSERT INTO node_change (rev, name, change) '
+                                'VALUES (%s, %s, \'A\')', self.rev, path)
+
+        def add_file(self, path, parent_baton,
+                     copyfrom_path, copyfrom_revision, file_pool):
+            self.cursor.execute('INSERT INTO node_change (rev, name, change) '
+                                'VALUES (%s, %s, \'A\')',self.rev, path)
+            
+        def open_file(self, path, parent_baton, base_revision, file_pool):
+            self.cursor.execute('INSERT INTO node_change (rev, name, change) '
+                                'VALUES (%s, %s, \'M\')',self.rev, path)
+
+
+    if util.SVN_VER_MAJOR == 0 and util.SVN_VER_MINOR < 37:
+        raise EnvironmentError, \
+              "Subversion >= 0.37 required: Found %d.%d.%d" % \
+              (util.SVN_VER_MAJOR, util.SVN_VER_MINOR, util.SVN_VER_MICRO)
+
     cnx = get_connection()
 
     cursor = cnx.cursor()
