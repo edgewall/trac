@@ -114,7 +114,7 @@ class Href:
                 params.append(('id', milestone))
             else:
                 href = href_join(self.base, 'milestone',
-                                 urllib.quote_plus(milestone))
+                                 urllib.quote(milestone))
         else:
             href = href_join(self.base, 'milestone')
         if action:

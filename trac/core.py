@@ -124,7 +124,7 @@ def parse_path_info(args, path_info):
     if match:
         set_if_missing(args, 'mode', 'milestone')
         if match.group(1):
-            set_if_missing(args, 'id', urllib.unquote_plus(match.group(1)))
+            set_if_missing(args, 'id', urllib.unquote(match.group(1)))
         return args
     return args
 
