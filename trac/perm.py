@@ -56,7 +56,7 @@ meta_permissions = {
 import sys
 for p in permissions:
     setattr(sys.modules[__name__], p, p)
-for mp in meta_permissions:
+for mp in meta_permissions.keys():
     setattr(sys.modules[__name__], mp, mp)
 del p, mp, sys
 
