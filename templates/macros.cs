@@ -24,16 +24,8 @@
 <?cs /def ?>
 
 <?cs def:diff_display(change) ?>
-  <?cs each:block = change.blocks ?><tr>
-    <?cs if block.type == "unmod" ?><td class="unmod-left"><?cs
-      elif block.type == "mod" ?><td class="mod-left"><?cs
-      elif block.type == "add" ?><td class="add-left"><?cs
-      elif block.type == "rem" ?><td class="rem-right"><?cs
-    /if ?><?cs var:block.text.old ?></td>
-    <?cs if block.type == "unmod" ?><td class="unmod-right"><?cs
-      elif block.type == "mod" ?><td class="mod-right"><?cs
-      elif block.type == "add" ?><td class="add-right"><?cs
-      elif block.type == "rem" ?><td class="rem-right"><?cs
-    /if ?><?cs var:block.text.new ?></td></tr>
-  <?cs /each ?>
+ <?cs each:block = change.blocks ?><tr>
+  <td class="<?cs var:block.type ?> left"><?cs var:block.text.old ?></td>
+  <td class="<?cs var:block.type ?> right"><?cs var:block.text.new ?></td>
+ </tr><?cs /each ?>
 <?cs /def ?>

@@ -15,84 +15,13 @@
 #main.changeset #overview tr.files ul { margin: 0; padding: 0 }
 #main.changeset #overview tr.files li { list-style-type: none }
 #main.changeset #overview tr.files li .comment { display: none }
+#main.changeset #overview tr.files li div {
+ border: 1px solid #999;
+ float: left;
+ margin: .1em .5em .1em 0;
+ overflow: hidden;
+ width: .8em; height: .8em;
+}
 #main.changeset #overview tr.message td,
 #main.changeset #overview tr.message th { padding-top: 1em }
 #main.changeset #overview tr.message td :first-child { margin-top: 0 }
-
-.chg-file-add, .chg-file-mod, .chg-file-rem,
-.diff-legend-unmod, .diff-legend-mod, .diff-legend-add, .diff-legend-rem {
-  display: block;
-  float: left;
-  width: 1em;
-  height: 1em;
-  margin-right: .5em;
-  border: 1px solid #999;
-}
-
-#chg-diff { clear: both; margin-bottom: 3em; }
-#chg-legend {
- margin: 1em 0;
- font-size: 9px;
- display: inline;
- float: right;
- border: 1px solid #d7d7d7;
- padding: .5em;
- line-height: 100%;
-}
-#chg-legend h3 { display: none; }
-#chg-legend ul, #chg-legend ul li {
- display: inline;
- float: left;
- padding: 0;
- margin: 0;
- margin-right: .5em;
-}
-table.diff-table {
-  border: 1px inset #ddd;
-  padding: 5px;
-  width: 100%;
-  font-size: 12px;
-  border-collapse: collapse;
-  margin-left: 1px;
-}
-.chg-diff-file {
-  background: #f7f7f7;
-  border: 1px solid #d7d7d7;
-  padding: 2px;
-  margin: 0;
-  margin-bottom: 3em;
-}
-.chg-diff-hdr {
-  font-size: 14px;
-  color: #333;
-  padding: .1em 1em;
-  text-align: center;
-  margin: 0;
-  margin-bottom: 1px;
-  border-bottom: 1px solid #d7d7d7;
-  letter-spacing: normal;
-}
-table.diff-table td {
-  padding: 0 .5em;
-  font-family: monospace;
-  font-size: 11px;
-  vertical-align: top;
-}
-td.diff-line {
-  background: #eed;
-  border: 1px solid #d7d7d7;
-  border-top: 1px solid #f7f7f0;
-  border-bottom: 1px solid #998;
-  color: #886;
-  font-weight: bold;
-  font-size: 11px;
-}
-.mod-left,.mod-right,.chg-file-mod,.diff-legend-mod { background-color: #fd8; }
-.unmod-left,.unmod-right, .diff-legend-unmod { background-color: #fff }
-.rem-left,.chg-file-rem,.diff-legend-rem { background-color: #f88; }
-.rem-right { background-color: #ffaaaa; }
-.add-left,.chg-file-add { background-color: #dfd; }
-.add-right, .diff-legend-add { background-color: #cfc; }
-.add-left, .rem-left,.mod-left,.unmod-left {
- border-right: dashed 1px #d7d7d7;
-}

@@ -15,8 +15,11 @@
    @import url("<?cs var:htdocs_location ?>css/browser.css");
    <?cs elif:trac.active_module == 'timeline' ?>
    @import url("<?cs var:htdocs_location ?>css/timeline.css");
-   <?cs elif:trac.active_module == 'changeset' || trac.active_module == 'wiki' ?>
+   <?cs elif:trac.active_module == 'changeset'?>
    @import url("<?cs var:htdocs_location ?>css/changeset.css");
+   @import url("<?cs var:htdocs_location ?>css/diff.css");
+   <?cs elif:trac.active_module == 'wiki' ?>
+   @import url("<?cs var:htdocs_location ?>css/diff.css");
    <?cs elif:trac.active_module == 'newticket' || trac.active_module == 'ticket' ?>
    @import url("<?cs var:htdocs_location ?>css/ticket.css");
    <?cs elif:trac.active_module == 'report' ?>
@@ -30,7 +33,6 @@
  </head>
 <body>
 <?cs include "site_header.cs" ?>
-<div id="trac-main">
 <div id="header">
   <a id="logo" href="<?cs var:header_logo.link ?>"><img src="<?cs var:header_logo.src ?>"
       width="<?cs var:header_logo.width ?>" height="<?cs var:header_logo.height ?>"
@@ -39,14 +41,12 @@
 </div>
 
 <form id="search" action="<?cs var:trac.href.search ?>" method="get">
- <div>
-  <label for="proj-search">Search:</label>
-  <input type="text" id="proj-search" name="q" size="10" value="" />
-  <input type="submit" value="Search" />
-  <input type="hidden" name="wiki" value="on" />
-  <input type="hidden" name="changeset" value="on" />
-  <input type="hidden" name="ticket" value="on" />
- </div>
+ <label for="proj-search">Search:</label>
+ <input type="text" id="proj-search" name="q" size="10" value="" />
+ <input type="submit" value="Search" />
+ <input type="hidden" name="wiki" value="on" />
+ <input type="hidden" name="changeset" value="on" />
+ <input type="hidden" name="ticket" value="on" />
 </form>
 
 <div class="nav">

@@ -78,25 +78,31 @@
             </p>
             <hr />
           </div>
-          <div id="chg-legend">
-           <h3>Legend:</h3>
+          <div class="diff">
+           <div id="legend">
+            <h3>Legend:</h3>
+            <dl>
+             <dt class="unmod"></dt><dd>Unmodified</dd>
+             <dt class="add"></dt><dd>Added</dd>
+             <dt class="rem"></dt><dd>Removed</dd>
+             <dt class="mod"></dt><dd>Modified</dd>
+            </ul>
+           </div>
            <ul>
-            <li><span class="diff-legend-unmod"> </span>Unmodified</li>
-            <li><span class="diff-legend-add"> </span>Added</li>
-            <li><span class="diff-legend-rem"> </span>Removed</li>
-            <li><span class="diff-legend-mod"> </span>Modified</li>
-           </ul>
-          </div>
-          <div id="chg-diff">
-           <div class="chg-diff-file">
-             <table class="diff-table" cellspacing="0">
-               <tr><td class="diff-line"><?cs var:wiki.diff.name.old ?></td>
-               <td class="diff-line"><?cs var:wiki.diff.name.new ?></td></tr>
+            <li>
+             <table>
+              <thead><tr>
+               <th><?cs var:wiki.diff.name.old ?></th>
+               <th><?cs var:wiki.diff.name.new ?></th>
+              </tr></thead>
+              <tbody>
                <?cs each:change = wiki.diff.changes ?><?cs
                  call:diff_display(change) ?><?cs
                  /each ?>
+              </tbody>
              </table>
-           </div>
+            </li>
+           </ul>
           </div>
         <?cs else ?>
           <?cs if wiki.action == "edit" || wiki.action == "preview" ?>

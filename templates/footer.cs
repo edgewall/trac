@@ -12,7 +12,6 @@
   <?cs var $project.footer ?>
  </p>
 </div>
-</div>
 <?cs include "site_footer.cs" ?>
  </body>
 </html>
