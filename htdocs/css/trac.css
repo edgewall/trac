@@ -216,7 +216,7 @@ form.inline input { margin: 1em }
  margin: 1em;
  text-align: right
 }
-#help :link, #help :visited { color: #b44; cursor: help }
+#help :link, #help :visited { cursor: help }
 #help hr { display: none }
 
 /* Wiki */
