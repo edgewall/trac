@@ -236,13 +236,18 @@ class TicketNotifyEmail(NotifyEmail):
                   'severity',  'milestone',
                   'priority',  'version',
                   'owner',     'reporter']
+        fields.extend(filter(lambda f: f.startswith('custom_'),
+                             self.ticket.keys()))
         i = 1
         width = [0,0,0,0]
         for f in fields:
             if not tkt.has_key(f): continue
+            if '\n' in tkt[f]:
+                continue
+            fname = f.startswith('custom_') and f[7:] or f
             idx = 2*(i % 2)
-            if len(f) > width[idx]:
-                width[idx] = len(f)
+            if len(fname) > width[idx]:
+                width[idx] = len(fname)
             if len(tkt[f]) > width[idx+1]:
                 width[idx+1] = len(tkt[f])
             i += 1
@@ -252,10 +257,22 @@ class TicketNotifyEmail(NotifyEmail):
         l = (width[2] + width[3] + 5)
         sep = l*'-' + '+' + (self.COLS-l)*'-'
         txt = sep + CRLF
+        big=[]
         for f in fields:
             if not tkt.has_key(f): continue
-            txt += format[i%2] % (f.capitalize(), tkt[f])
-            i += 1
+            fval = tkt[f]
+            fname = f.startswith('custom_') and f[7:] or f
+            if '\n' in fval:
+                big.append((fname.capitalize(), fval))
+            else:
+                txt += format[i%2] % (fname.capitalize(), fval)
+                i += 1
+        if i % 2 == 0:
+            txt += '\n'
+        if big:
+            txt += sep
+            for k,v in big:
+                txt += '\n%s:\n%s\n\n' % (k,v)
         txt += sep
         return txt
 
