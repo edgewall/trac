@@ -112,11 +112,11 @@ function addWikiFormattingToolbar(textarea) {
     }
   }
 
-  addButton("em", "Emphasis: ''Example''", function() {
-    encloseSelection("''", "''");
-  });
-  addButton("strong", "Strong emphasis: '''Example'''", function() {
+  addButton("strong", "Bold text: '''Example'''", function() {
     encloseSelection("'''", "'''");
+  });
+  addButton("em", "Italic text: ''Example''", function() {
+    encloseSelection("''", "''");
   });
   addButton("heading", "Heading: == Example ==", function() {
     encloseSelection("\n== ", " ==\n", "Heading");
