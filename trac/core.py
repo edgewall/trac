@@ -59,23 +59,6 @@ modules = {
     'milestone'   : ('Milestone', 'Milestone', 0)
     }
 
-class TracFieldStorage(cgi.FieldStorage):
-    """
-    FieldStorage class with a few more functions to make it behave a bit
-    more like a dictionary
-    """
-    get = cgi.FieldStorage.getvalue
-
-    def __setitem__(self, name, value):
-        if self.has_key(name):
-            del self[name]
-        self.list.append(cgi.MiniFieldStorage(name, value))
-
-    def __delitem__(self, name):
-        if not self.has_key(name):
-            raise KeyError(name)
-        self.list = filter(lambda x, name=name: x.name != name, self.list)
-
 
 def parse_path_info(args, path_info):
     def set_if_missing(fs, name, value):
@@ -344,55 +327,68 @@ class Request:
 
 class CGIRequest(Request):
 
+    def __init__(self, environ=os.environ, input=sys.stdin, output=sys.stdout):
+        self.__environ = environ
+        self.__input = input
+        self.__output = output
+
     def init_request(self):
         Request.init_request(self)
 
-        self.cgi_location = os.getenv('SCRIPT_NAME')
-        self.remote_addr = os.getenv('REMOTE_ADDR')
-        self.remote_user = os.getenv('REMOTE_USER')
-        self.command = os.getenv('REQUEST_METHOD')
-        host = os.getenv('SERVER_NAME')
-        proto_port = ''
-        port = int(os.environ.get('SERVER_PORT', 80))
+        self.cgi_location = self.__environ.get('SCRIPT_NAME')
+        self.remote_addr = self.__environ.get('REMOTE_ADDR')
+        self.remote_user = self.__environ.get('REMOTE_USER')
+        self.command = self.__environ.get('REQUEST_METHOD')
 
-        if os.getenv('HTTPS') in ('on', '1'):
+        host = self.__environ.get('SERVER_NAME')
+        proto_port = ''
+        port = int(self.__environ.get('SERVER_PORT', 0))
+
+        if self.__environ.get('HTTPS') in ('on', '1'):
             # when you support Apache's way, you get it 60% right
             proto  = 'https'
-            if port != 443:
+            if port and port != 443:
                proto_port = ':%d' % port
         elif port == 443:
             proto = 'https'
         else:
            proto = 'http'
-           if port != 80:
+           if port and port != 80:
                proto_port = ':%d' % port
 
-        if os.getenv('HTTP_X_FORWARDED_HOST'):
-            self.base_url = '%s://%s%s/' % (proto,
-                                            os.getenv('HTTP_X_FORWARDED_HOST'),
-                                            self.cgi_location)
+        if self.__environ.has_key('HTTP_X_FORWARDED_HOST'):
+            self.base_url = '%s://%s%s' % (
+                            proto,
+                            self.__environ['HTTP_X_FORWARDED_HOST'],
+                            self.cgi_location)
         else:
-            self.base_url = '%s://%s%s%s' % (proto, host, proto_port, self.cgi_location)
+            self.base_url = '%s://%s%s%s' % (
+                            proto, host, proto_port, self.cgi_location)
 
-        if os.getenv('HTTP_COOKIE'):
-            self.incookie.load(os.getenv('HTTP_COOKIE'))
-        if os.getenv('HTTP_HOST'):
-            self.hdf.setValue('HTTP.Host', os.getenv('HTTP_HOST').split(':')[0])
-        if os.getenv('PATH_INFO'):
-            self.hdf.setValue('HTTP.PathInfo', os.getenv('PATH_INFO'))
+        self.args = TracFieldStorage(self.__input, environ=self.__environ,
+                                     keep_blank_values=1)
+
+        if self.__environ.get('HTTP_COOKIE'):
+            self.incookie.load(self.__environ.get('HTTP_COOKIE'))
+        if self.__environ.get('HTTP_HOST'):
+            self.hdf.setValue('HTTP.Host',
+                              self.__environ.get('HTTP_HOST').split(':')[0])
+        if self.__environ.get('PATH_INFO'):
+            self.hdf.setValue('HTTP.PathInfo',
+                              self.__environ.get('PATH_INFO'))
 
         self.hdf.setValue('HTTP.Protocol', proto)
         if proto_port:
             self.hdf.setValue('HTTP.Port', str(port))
 
     def read(self, len):
-        return sys.stdin.read(len)
+        return self.__input.read(len)
 
     def write(self, data):
-        return sys.stdout.write(data)
+        return self.__output.write(data)
 
     def get_header(self, name):
-        return os.getenv('HTTP_' + re.sub('-', '_', name.upper()))
+        return self.__environ.get('HTTP_' + re.sub('-', '_', name.upper()))
 
     def send_response(self, code):
         self.write('Status: %d\r\n' % code)
@@ -404,8 +400,27 @@ class CGIRequest(Request):
         self.write('\r\n')
 
 
+class TracFieldStorage(cgi.FieldStorage):
+    """
+    FieldStorage class with a few more functions to make it behave a bit
+    more like a dictionary
+    """
+    get = cgi.FieldStorage.getvalue
+
+    def __setitem__(self, name, value):
+        if self.has_key(name):
+            del self[name]
+        self.list.append(cgi.MiniFieldStorage(name, value))
+
+    def __delitem__(self, name):
+        if not self.has_key(name):
+            raise KeyError(name)
+        self.list = filter(lambda x, name=name: x.name != name, self.list)
+
+
 class NotModifiedException(Exception):
     pass
+
 
 class RedirectException(Exception):
     pass
@@ -476,8 +491,8 @@ def send_pretty_error(e, env, req=None):
     traceback.print_exc(file=tb)
     if not req:
         req = CGIRequest()
-        req.authname = ''
         req.init_request()
+        req.authname = ''
     try:
         if not env:
             env = open_environment()
@@ -514,27 +529,15 @@ def send_pretty_error(e, env, req=None):
         env.log.error(str(e))
         env.log.error(tb.getvalue())
 
-def parse_args(command, path_info, query_string,
-               fp=None, env = None, _headers=None):
-    if not env:
-        env = {'REQUEST_METHOD': command, 'QUERY_STRING': query_string}
-    if command in ['GET', 'HEAD']:
-        _headers = None
-    args = TracFieldStorage(fp, environ=env, headers=_headers, keep_blank_values=1)
-    parse_path_info(args, path_info)
-    return args
-
 def real_cgi_start():
 
-    env = open_environment()
     path_info = os.getenv('PATH_INFO')
 
     req = CGIRequest()
     req.init_request()
-    req.args = parse_args(req.command,
-                          path_info, os.getenv('QUERY_STRING'),
-                          sys.stdin, os.environ)
+    parse_path_info(req.args, path_info)
 
+    env = open_environment()
     env.href = Href.Href(req.cgi_location)
     env.abs_href = Href.Href(req.base_url)
 
