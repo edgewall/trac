@@ -3,7 +3,9 @@
 <div id="page-content">
 <div id="subheader-links">
 <ul class="subheader-links">
+  <?cs if args.mode!= 'attachment' ?>
   <li><a href="<?cs var:file.logurl ?>">Revision Log</a></li>
+  <?cs /if ?>
   <li><a href="<?cs var:file.texturl ?>">View as Text</a></li>
   <li class="last"><a href="<?cs var:file.rawurl ?>">Download File</a></li>
 </ul>
