@@ -131,6 +131,10 @@ def handler(req):
     referrer = req.headers_in.get('Referer', None)
 
     req.content_type = 'text/html'
-    core.dispatch_request(req.path_info, args, mpr, env)
+
+    try:
+        core.dispatch_request(req.path_info, args, mpr, env)
+    except Exception, e:
+        core.send_pretty_error(e, env, mpr)
 
     return apache.OK
