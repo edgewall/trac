@@ -120,9 +120,9 @@ class QueryModule(Module):
 
         cursor = self.db.cursor()
         add_options('status', constraints, 'query.options.', cursor,
-                    "SELECT name FROM enum WHERE type='status'")
+                    "SELECT name FROM enum WHERE type='status' ORDER BY value")
         add_options('resolution', constraints, 'query.options.', cursor,
-                    "SELECT name FROM enum WHERE type='resolution'")
+                    "SELECT name FROM enum WHERE type='resolution' ORDER BY value")
         add_options('component', constraints, 'query.options.', cursor,
                     "SELECT name FROM component ORDER BY name")
         add_options('milestone', constraints, 'query.options.', cursor,
@@ -130,9 +130,9 @@ class QueryModule(Module):
         add_options('version', constraints, 'query.options.', cursor,
                     "SELECT name FROM version ORDER BY name")
         add_options('priority', constraints, 'query.options.', cursor,
-                    "SELECT name FROM enum WHERE type='priority'")
+                    "SELECT name FROM enum WHERE type='priority' ORDER BY value")
         add_options('severity', constraints, 'query.options.', cursor,
-                    "SELECT name FROM enum WHERE type='severity'")
+                    "SELECT name FROM enum WHERE type='severity' ORDER BY value")
 
         custom_fields = get_custom_fields(self.env)
         for custom in custom_fields:
