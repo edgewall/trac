@@ -60,7 +60,7 @@ class CommonFormatter:
               r"""(?P<changesethref>\[[0-9]+\])""",
               r"""(?P<reporthref>\{[0-9]+\})""",
               r"""(?P<svnhref>(svn:[^ ]+[^\., ]))""",
-              r"""(?P<wikilink>(^|(?<=[^A-Za-z]))[A-Z][a-z/]+(?:[A-Z][a-z/]+)+)""",
+              r"""(?P<wikilink>(^|(?<=[^A-Za-z]))[!]?[A-Z][a-z/]+(?:[A-Z][a-z/]+)+)""",
               r"""(?P<fancylink>\[(?P<fancyurl>([a-z]+:[^ ]+)) (?P<linkname>.*?)\])"""]
 
     def replace(self, fullmatch):
@@ -132,6 +132,8 @@ class CommonFormatter:
                                             m.group(1))
     
     def _wikilink_formatter(self, match, fullmatch):
+        if match[0] == '!':
+            return match[1:]
         global page_dict
         if page_dict and not page_dict.has_key(match):
             return '<a class="wiki-missing-page" href="%s">%s?</a>' % \
@@ -194,7 +196,8 @@ class Formatter(CommonFormatter):
               r"""(?P<list>^(?P<ldepth>\s+)(?:\*|[0-9]+\.) )""",
               r"""(?P<indent>^(?P<idepth>\s+)(?=[^\s]))""",
               r"""(?P<imgurl>([a-z]+://[^ ]+)(\.png|\.jpg|\.jpeg|\.gif))""",
-              r"""(?P<url>([a-z]+://[^ ]+[^\., ]))"""]
+              r"""(?P<url>([a-z]+://[^ ]+[^\., ]))""",
+              r"""(?P<table>\|\|.*\|\|)"""]
     
     _compiled_rules = re.compile('(?:' + string.join(_rules, '|') + ')')
 
@@ -238,6 +241,11 @@ class Formatter(CommonFormatter):
         self.open_indentation(depth)
         return ''
 
+    def _table_formatter(self, match, fullmatch):
+        self.open_table()
+        columns = [col.strip() for col in match.split('||')][1:-1]
+        return '<tr>%s</tr>' % (''.join(['<td>%s</td>' % col for col in columns]))
+    
     def close_indentation(self):
         self.out.write(('</blockquote>' + os.linesep) * self.indent_level)
         self.indent_level = 0
@@ -301,12 +309,26 @@ class Formatter(CommonFormatter):
             self.out.write('</p>' + os.linesep)
             self.paragraph_open = 0
 
+    def open_table(self):
+        if not self.in_table:
+            self.in_table = 1
+            self.close_paragraph()
+            self.close_indentation()
+            self.close_list()
+            self.out.write('<table class="wiki">' + os.linesep)
+
+    def close_table(self):
+        if self.in_table:
+            self.out.write('</table>' + os.linesep)
+            self.in_table = 0
+
     def format(self, text, out):
         self.out = out
         self._open_tags = []
         self._list_stack = []
         
         self.in_pre = 0
+        self.in_table = 0
         self.indent_level = 0
         self.paragraph_open = 0
 
@@ -349,8 +371,11 @@ class Formatter(CommonFormatter):
 
             if not self.in_list_item:
                 self.close_list()
-            
-            if len(result) and not self.in_list_item:
+
+            if self.in_table and line[0:2] != '||':
+                self.close_table()
+
+            if len(result) and not self.in_list_item and not self.in_table:
                 self.open_paragraph()
             out.write(result + os.linesep)
             
