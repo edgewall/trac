@@ -25,6 +25,7 @@ import urllib
 
 import perm
 import util
+import sys
 from Module import Module
 from Wiki import wiki_to_oneliner,wiki_to_html
 
@@ -192,9 +193,9 @@ class Timeline (Module):
         # Parse the from date and adjust the timestamp to the last second of the day
         try:
             t = time.strptime(_from, '%x')
-            _from = time.mktime((t[0], t[1], t[2], 23, 59, 59, t[6], t[7], t[8]))
         except:
-            _from = time.time()
+            t = time.localtime()
+        _from = time.mktime((t[0], t[1], t[2], 23, 59, 59, t[6], t[7], t[8]))
         try:
             daysback = int(_daysback)
             assert daysback >= 0
