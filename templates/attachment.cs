@@ -7,54 +7,51 @@
 <div id="content" class="attachment">
 
 <?cs if:attachment.mode == 'new' ?>
- <h1>Add Attachment to <a href="<?cs
-   var:file.attachment_parent_href?>"><?cs var:file.attachment_parent?></a></h1>
- <form id="attachment" method="post" enctype="multipart/form-data" action="<?cs
-   var:cgi_location ?>">
+ <h1>Add Attachment to <a href="<?cs var:attachment.parent_href?>"><?cs
+   var:attachment.parent_name ?></a></h1>
+ <form id="attachment" method="post" enctype="multipart/form-data" action="">
   <div class="field">
-   <label for="file">File:</label>
-   <input type="file" id="file" name="attachment" />
+   <label>File:<br /><input type="file" name="attachment" /></label>
   </div>
   <fieldset>
    <legend>Attachment Info</legend>
    <div class="field">
-    <label for="author">Your email or username:</label><br />
-    <input type="text" id="author" name="author" class="textwidget" size="30"
-        value="<?cs var:attachment.author?>" />
+    <label>Your email or username:<br />
+    <input type="text" name="author" size="30" value="<?cs
+      var:attachment.author?>" /></label>
    </div>
    <div class="field">
-    <label for="description">Description of the file (optional):</label><br />
-    <input type="text" id="description" name="description" class="textwidget"
-        size="60" />
-   </div><br />
+    <label>Description of the file (optional):<br />
+    <input type="text" name="description" size="60" /></label
+   </div>
   </fieldset>
   <div class="buttons">
-   <input type="hidden" name="mode" value="attachment" />
-   <input type="hidden" name="type" value="<?cs var:attachment.type ?>" />
-   <input type="hidden" name="id" value="<?cs var:attachment.id ?>" />
+   <input type="hidden" name="action" value="save" />
+   <input type="hidden" name="type" value="<?cs var:attachment.parent_type ?>" />
+   <input type="hidden" name="id" value="<?cs var:attachment.parent_id ?>" />
    <input type="submit" value="Add Attachment" />
    <input type="submit" name="cancel" value="Cancel" />
   </div>
  </form>
 <?cs else ?>
- <h1><a href="<?cs var:file.attachment_parent_href ?>"><?cs
-   var:file.attachment_parent ?></a>: <?cs var:file.filename ?></h1>
- <div id="preview">
-  <?cs if:file.preview ?>
-   <?cs var:file.preview ?>
-  <?cs elif:file.max_file_size_reached ?>
+ <h1><a href="<?cs var:attachment.parent_href ?>"><?cs
+   var:attachment.parent_name ?></a>: <?cs var:attachment.filename ?></h1>
+ <div id="preview"><?cs
+  if:attachment.preview ?>
+   <?cs var:attachment.preview ?><?cs
+  elif:attachment.max_file_size_reached ?>
    <strong>HTML preview not available</strong>, since file-size exceeds
-   <?cs var:file.max_file_size  ?> bytes.
-   Try <a href="?format=raw">downloading the file</a> instead.
-  <?cs else ?>
-   <strong>HTML preview not available</strong>. To view, <a href="?format=raw">download
-   the file</a>.
-  <?cs /if ?>
+   <?cs var:attachment.max_file_size  ?> bytes. You may <a href="<?cs
+     var:attachment.raw_href ?>">download the file</a> instead.<?cs
+  else ?>
+   <strong>HTML preview not available</strong>. To view the file,
+   <a href="<?cs var:attachment.raw_href ?>">download the file</a>.<?cs
+  /if ?>
  </div>
- <?cs if:attachment.delete_href ?><div class="buttons">
+ <?cs if:attachment.can_delete ?><div class="buttons">
   <form method="get" action=""><div id="delete">
-   <input type="hidden" name="delete" value="yes" />
-    <input type="submit" value="Delete Attachment" onclick="return confirm('Do you really want to delete this attachment?\nThis is an irreversible operation.')" />
+   <input type="hidden" name="action" value="delete" />
+   <input type="submit" value="Delete Attachment" onclick="return confirm('Do you really want to delete this attachment?\nThis is an irreversible operation.')" />
   </div></form>
  </div><?cs /if ?>
 <?cs /if ?>

@@ -71,41 +71,40 @@ def parse_path_info(args, path_info):
         if value and not fs.has_key(name):
             fs.list.append(cgi.MiniFieldStorage(name, value))
 
-    match = re.search('^/(about(?:_trac)?|wiki)(?:/(.*))?', path_info)
+    match = re.search(r'^/(about(?:_trac)?|wiki)(?:/(.*))?', path_info)
     if match:
         set_if_missing(args, 'mode', match.group(1))
         if match.group(2):
             set_if_missing(args, 'page', match.group(2))
         return
-    match = re.search('^/(newticket|timeline|search|roadmap|settings|query)/?', path_info)
+    match = re.search(r'^/(newticket|timeline|search|roadmap|settings|query)/?', path_info)
     if match:
         set_if_missing(args, 'mode', match.group(1))
         return
-    match = re.search('^/(ticket|report)(?:/([0-9]+)/*)?', path_info)
+    match = re.search(r'^/(ticket|report)(?:/([0-9]+)/*)?', path_info)
     if match:
         set_if_missing(args, 'mode', match.group(1))
         if match.group(2):
             set_if_missing(args, 'id', match.group(2))
         return
-    match = re.search('^/(browser|log|file)(?:(/.*))?', path_info)
+    match = re.search(r'^/(browser|log|file)(?:(/.*))?', path_info)
     if match:
         set_if_missing(args, 'mode', match.group(1))
         if match.group(2):
             set_if_missing(args, 'path', match.group(2))
         return
-    match = re.search('^/changeset/([0-9]+)/?', path_info)
+    match = re.search(r'^/changeset/([0-9]+)/?', path_info)
     if match:
         set_if_missing(args, 'mode', 'changeset')
         set_if_missing(args, 'rev', match.group(1))
         return
-    match = re.search('^/attachment/([a-zA-Z_]+)/([^/]+)(?:/(.*)/?)?', path_info)
+    match = re.search(r'^/attachment/(ticket|wiki)(?:/(.*))?', path_info)
     if match:
         set_if_missing(args, 'mode', 'attachment')
         set_if_missing(args, 'type', match.group(1))
-        set_if_missing(args, 'id', urllib.unquote(match.group(2)))
-        set_if_missing(args, 'filename', match.group(3))
+        set_if_missing(args, 'path', match.group(2))
         return
-    match = re.search('^/milestone(?:/([^\?]+))?(?:/(.*)/?)?', path_info)
+    match = re.search(r'^/milestone(?:/([^\?]+))?(?:/(.*)/?)?', path_info)
     if match:
         set_if_missing(args, 'mode', 'milestone')
         if match.group(1):

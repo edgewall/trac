@@ -293,6 +293,7 @@ table.wiki td { border: 1px solid #ccc;  padding: .1em .25em; }
 #attachment fieldset { margin-top: 2em }
 #attachment fieldset .field { float: left; margin: 0 1em .5em 0 }
 #attachment br { clear: left }
+.attachment #preview { margin-top: 1em }
 
 /* Styles for tabular listings such as those used for displaying directory
    contents and report results. */

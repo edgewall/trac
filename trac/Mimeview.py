@@ -130,7 +130,7 @@ class Mimeview:
         Try to detect content by checking the first thousand bytes for zeroes.
         """
         for i in range(0, min(len(str), 1000)):
-            if str[i] == 0:
+            if str[i] == '\0':
                 return 1
         return 0
 

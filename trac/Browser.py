@@ -153,9 +153,7 @@ class BrowserModule(Module):
             req.send_response(200)
             req.send_header('Content-Type', node.content_type)
             req.send_header('Content-Length', node.content_length)
-            req.send_header('Last-Modified',
-                            time.strftime("%a, %d %b %Y %H:%M:%S GMT",
-                                          node.last_modified))
+            req.send_header('Last-Modified', util.http_date(node.last_modified))
             req.end_headers()
 
             content = node.get_content()

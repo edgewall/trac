@@ -249,6 +249,7 @@
       <input type="submit" value="Edit This Page" />
      </div></form>
      <form method="get" action="<?cs var:wiki.attach_href ?>"><div>
+      <input type="hidden" name="action" value="new" />
       <input type="submit" value="Attach File" />
      </div></form>
     <?cs /if ?>
