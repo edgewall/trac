@@ -355,7 +355,7 @@ class Formatter(CommonFormatter):
                     except Exception, e:
                         self.code_text += os.linesep + line
                         self.code_processor = Formatter.builtin_processors['default']
-                        self.out.write('<div class="wiki-error">Failed to load processor macro %s: %s</div>' % (name, e))
+                        self.out.write('<div class="error">Failed to load processor macro %s: %s</div>' % (name, e))
             else:
                 self.code_text += os.linesep + line
                 self.code_processor = Formatter.builtin_processors['default']
@@ -486,9 +486,24 @@ class Wiki(Module):
             row = cursor.fetchone()
             if row == None:
                 break
-            self.cgi.hdf.setValue('wiki.title_index.%d.title' % i, row[0])
-            self.cgi.hdf.setValue('wiki.title_index.%d.href' % i,
-                                  href.wiki(row[0]))
+            n = 'wiki.title_index.%d' % i
+            self.cgi.hdf.setValue(n + '.title', row[0])
+            self.cgi.hdf.setValue(n + '.href', href.wiki(row[0]))
+            i = i + 1
+
+    def generate_recent_changes(self):
+        cursor = self.db.cursor ()
+        cursor.execute ('SELECT name, max(time) FROM wiki GROUP BY name ORDER BY max(time) DESC')
+        i = 0
+        while 1:
+            row = cursor.fetchone()
+            if row == None:
+                break
+            time_str = time.strftime('%x', time.localtime(int(row[1])))
+            n = 'wiki.recent_changes.%d' % i
+            self.cgi.hdf.setValue(n + '.title', row[0])
+            self.cgi.hdf.setValue(n + '.href', href.wiki(row[0]))
+            self.cgi.hdf.setValue(n + '.time', time_str)
             i = i + 1
 
     def generate_history(self, pagename):
@@ -504,11 +519,8 @@ class Wiki(Module):
             elif i==0:
                 self.cgi.hdf.setValue('wiki.history', '1')
 
-            t = int(row[1])
-            if t:
-                time_str = time.strftime('%x', time.localtime(t))
-            else:
-                time_str = ''
+            time_str = time.strftime('%x', time.localtime(int(row[1])))
+
             n = 'wiki.history.%d' % i
             self.cgi.hdf.setValue(n, str(i))
             self.cgi.hdf.setValue(n+'.url', href.wiki(pagename, str(row[0])))
@@ -559,6 +571,9 @@ class Wiki(Module):
 
         if name == 'TitleIndex':
             self.generate_title_index()
+            return
+        elif name == 'RecentChanges':
+            self.generate_recent_changes()
             return
 
         if save:

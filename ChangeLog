@@ -11,6 +11,7 @@ http://svn.edgewall.com/repos/trac/trunk/
  * Download report in CSV (Comma Separated Value) and tab-separated format
  * RSS 2.0 content syndication support in Timeline, Reports and Log/Browser
  * Better, locale-based date and time formatting. 
+ * Wiki RecentChanges support.
  * Overall cosmetic improvements.
  * Fixed bugs: #16, #103, #110, #112, #113, #114, #117,#120
 	

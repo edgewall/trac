@@ -5,8 +5,19 @@
 <div id="subheader-links">
   <a href="<?cs var:$trac.href.wiki ?>">Start Page</a>&nbsp;|
   <a href="<?cs var:$trac.href.wiki ?>TitleIndex">Title Index</a>&nbsp;|
+  <a href="<?cs var:$trac.href.wiki ?>RecentChanges">Recent Changes</a>&nbsp;|
   <a href="javascript:view_history()">Show/Hide History</a>
 </div>
+
+<?cs def:day_separator(date) ?>
+  <?cs if: $date != $current_date ?>
+    <?cs set: $current_date = $date ?>
+    </ul>
+    <h3 class="recentchanges-daysep"><?cs var:date ?>:</h3>
+    <ul>
+  <?cs /if ?>
+<?cs /def ?>
+
 <hr class="hide"/>
 <?cs if $wiki.history ?>
     <table id="wiki-history">
@@ -35,13 +46,25 @@
   <div id="main">
     <div id="main-content">
       <div id="wiki-body">
+
         <?cs if $wiki.title_index.0.title ?>
           <h2>TitleIndex</h2>
+	  <ul>
           <?cs each item = $wiki.title_index ?>
             <li><a href="<?cs var:item.href?>"><?cs var:item.title ?></a></li>
           <?cs /each ?>
-        <?cs elif wiki.action == "diff" ?>
+	  </ul>
 
+        <?cs elif $wiki.recent_changes.0.title ?>
+          <h2>RecentChanges</h2>
+	  <ul>
+          <?cs each item = $wiki.recent_changes ?>
+	    <?cs call:day_separator(item.time) ?>
+            <li><a href="<?cs var:item.href?>"><?cs var:item.title ?></a></li>
+          <?cs /each ?>
+	  </ul>
+
+        <?cs elif wiki.action == "diff" ?>
           <div class="hide">
 	    <hr class="hide" />
 	    <h2>-=&gt; Note: Diff viewing requires CSS2 &lt;=-</h2>
