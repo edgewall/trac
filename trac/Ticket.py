@@ -121,6 +121,8 @@ class Newticket (Module):
 
         global fields
         data = {}
+        if not self.args.get('summary'):
+            raise TracError('Tickets must contain Summary.')
         for field in fields:
             if self.args.has_key(field):
                 data[field] = self.args.get(field)
@@ -242,6 +244,9 @@ class Ticket (Module):
         elif action == 'reopen':
             new['status'] = 'reopened'
             new['resolution'] = ''
+
+        if not new.get('summary'):
+            raise TracError('Tickets must contain Summary.')
 
         changed = 0
         change = ''
