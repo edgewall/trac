@@ -157,16 +157,17 @@ def get_environment(req, mpr):
             send_project_index(req, mpr, env_parent_dir)
             return None
         
-    env_cache_lock.acquire()
-    if not env_path in env_cache:
-        env_cache[env_path] = open_environment(env_path, mpr)
-    env = env_cache[env_path]
-    env_cache_lock.release()
+    try:
+        env = None
+        env_cache_lock.acquire()
+        if not env_path in env_cache:
+            env_cache[env_path] = open_environment(env_path, mpr)
+        env = env_cache[env_path]
+    finally:
+        env_cache_lock.release()
     return env
 
 def handler(req):
-    global projects, projects_lock
-
     mpr = ModPythonRequest(req)
     mpr.init_request()
 
