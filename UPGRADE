@@ -1,9 +1,10 @@
 Upgrade Instructions
 ====================
 
-Upgrading to 0.5.2 from 0.5 and 0.5.1  
+
+Upgrading to 0.6 from 0.5.x  
 -------------------------------------
-* There are no changes to the database schema in 0.5.2, so existing Trac
+* There are no changes to the database schema in 0.6, so existing Trac
   databases don't require any extra steps.
 
   Just install the new version of Trac by running:  ./setup.py install 
@@ -22,7 +23,7 @@ Upgrading to 0.5.2 from 0.5 and 0.5.1
        2. Use trac-admin to load the wiki pages. 
           Example:
       
-            trac-admin myproject.db wiki load /usr/share/trac/wiki-default/
+            trac-admin myproject.db wiki upgrade
 
        3. All done. Please note that you have to repeat this step for each
           Trac database you wish to upgrade.

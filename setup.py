@@ -103,7 +103,7 @@ setup(name="trac",
       data_files=[(_p('share/trac/templates'), glob('templates/*')),
                   (_p('share/trac/htdocs'), glob(_p('htdocs/*.*')) + [_p('htdocs/README')]),
                   (_p('share/trac/htdocs/css'), glob(_p('htdocs/css/*'))),
-                  (_p('share/trac/wiki-default'), glob(_p('wiki-default/*')))],
+                  (_p('share/trac/wiki-default'), glob(_p('wiki-default/[A-Z]*')))],
       scripts=[_p('scripts/trac-admin'), _p('cgi-bin/trac.cgi')],
       cmdclass = {'install': my_install,
                   'install_scripts': my_install_scripts})

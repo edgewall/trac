@@ -952,6 +952,9 @@ SELECT p.value AS __color__,
             elif arg[0] == 'load' and len(arg) in [1,2]:
                 dir = (len(arg) == 2 and arg[1]) or ''
                 self._do_wiki_load(dir)
+            elif arg[0] == 'upgrade' and len(arg) == 1:
+                self._do_wiki_load(trac.siteconfig.__default_wiki_dir__,
+                                   ignore=['WikiStart'])
             else:    
                 self.do_help ('wiki')
         except Exception, e:
@@ -1013,8 +1016,10 @@ SELECT p.value AS __color__,
             print " %s => %s" % (p, dst)
             self._do_wiki_export(p, dst)
 
-    def _do_wiki_load(self, dir,cursor=None):
+    def _do_wiki_load(self, dir,cursor=None, ignore=[]):
         for page in os.listdir(dir):
+            if page in ignore:
+                continue
             filename = os.path.join(dir, page)
             if os.path.isfile(filename):
                 print " %s => %s" % (filename, page)
