@@ -1,14 +1,15 @@
 Trac 0.8 'Qualia' Release Notes
 ==============================
-Nov 15, 2004
+Nov 17, 2004
 
-Edgewall Software proudly announces the immediate availability of our latest
-release, Trac 0.8 'Qualia'.
+Edgewall Software presents, our latest release - Trac 0.8 'Qualia'.
 
-Trac is a minimalistic web-based software project management and bug/issue
-tracking system. It provides an interface to the Subversion revision control
-systems, an integrated wiki, flexible issue tracking and convenient report
-facilities.
+Trac is an enhanced wiki and issue tracking system, integrated with
+Subversion, for software development projects. Trac uses a minimalistic
+approach to web-based software project management. Our mission is simple; to
+help developers write great software while staying out of the way. Trac should
+impose as little as possible on a team's established development process and
+policies.
 
 Trac allows wiki markup in issue descriptions and commit messages, creating
 links and useful structure between bugs, tasks, changesets, files and wiki
@@ -35,12 +36,12 @@ For questions, comments and user discussions, please use the Trac mailing list
 
 What's New
 ----------
-0.8 'Qualia' is the eagerly awaited new release of Trac that brings the 
-largest number of improvements yet. It marks a big step towards the big '1.0', 
-some of the biggest changes being the introduction of a new Roadmap module and
-a user interface for custom ticket queries.
+0.8 'Qualia', a much delayed release of Trac brings the largest number of
+improvements yet. It marks a big step towards the big '1.0' -
+some of the biggest changes being the new Roadmap module and a user interface
+for custom ticket queries.
 
-A summary of major changes for this release:
+A brief summary of major changes for this release:
 
  * Revised database format. (Requires manual upgrade, see the UPGRADE file).
  * Support for custom ticket properties.
@@ -60,10 +61,11 @@ For a more complete list of improvements, see the ChangeLog at:
 
 About Edgewall
 --------------
-Edgewall Software is an independent software development company specialized
-in Linux and open source technologies. Edgewall provides software development
-capabilities and consultancy to clients worldwide, on both short term basis
-and in long term strategic partnerships.
+Edgewall is a highly experienced team of software developers specializing in
+emerging internet and web technologies.
+
+We build professional, innovative and creative solutions for the web based on
+open source components, operating systems and frameworks.
 
 Specific areas of expertise include:
 
@@ -85,11 +87,11 @@ Many thanks to the growing number of people who have, and continue to,
 support the project. Also our thanks to all people providing feedback and bug
 reports that helps us make Trac better, easier to use and more effective.
 
-Without your invaluable help, Trac would not evolve. Thank you.
+Without your invaluable help, Trac would not evolve. Thank you all.
 
-Finally, we hope Trac will prove itself useful to like-minded programmers
-around the world, and that this release will prove an improvement over the
-last.
+Finally, we offer hope that Trac will prove itself useful to like-minded
+programmers around the world, and that this release will prove an improvement
+over the last version.
 
 Please let us know. :-)
 
@@ -99,3 +101,4 @@ Please let us know. :-)
 Copyright (c) 2004 Edgewall Software
 Edgewall Software - Professional GNU/Linux & Open Source Consulting
 <http://www.edgewall.com/>
+
