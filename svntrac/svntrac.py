@@ -1,5 +1,6 @@
 # svntrac
 #
+# Copyright (C) 2003 Xyche Software
 # Copyright (C) 2003 Jonas Borgström <jonas@xyche.com>
 #
 # svntrac is free software; you can redistribute it and/or
@@ -51,7 +52,7 @@ modules = {
     }
 
 def main():
-    mode = 'menu' #default module
+    mode = 'wiki' #default module
     config = load_config()
     
     pool = util.svn_pool_create (None)

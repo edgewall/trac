@@ -1,6 +1,7 @@
 # svntrac
 #
 # Copyright (C) 2003 Xyche Software
+# Copyright (C) 2003 Jonas Borgström <jonas@xyche.com>
 #
 # svntrac is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License as
@@ -29,84 +30,86 @@ from db import get_connection
 from util import *
 from xml.sax.saxutils import quoteattr, escape
 
-
-h1_re = re.compile ('!!!(.*)!!!')
-h2_re = re.compile ('!!(.*)!!')
-h3_re = re.compile ('!(.*)!')
-url_re = re.compile ('((((new|(ht|f)tp)s?://))([a-z0-9_-]+:[a-z0-9_-]+\@)?([a-z0-9]+(\-*[a-z0-9]+)*\.)+[a-z]{2,7}(/~?[a-z0-9_\.%\-]+)?(/[a-z0-9_\.%\-]+)*(/?[a-z0-9_\%\-]+(\.[a-z0-9]+)?(\#[a-zA-Z0-9_\.]+)?)(\?([a-z0-9_\.\%\-]+)\=[a-z0-9_\.\%\/\-]*)?(&([a-z0-9_\.\%\-]+)\=[a-z0-9_\.\%\/\-]*)?(#[a-z0-9]+)?)')
-oldstylelink_re = re.compile ('([[A-Z][a-z]*(?:[A-Z][a-z]+)+)')
-newstylelink_re = re.compile ('\[([^]*])\]')
-list_re = re.compile ('^(([\*#])\\2*) (.*)$')
-newline_re = re.compile ('(%%%)')
-strong_re = re.compile ('\__([^ ]+)\__')
-emph_re = re.compile ("''([^ ]+)''")
-empty_line_re = re.compile ("^[ 	]*$")
-indented_re = re.compile ("^[ 	]")
-
-def format_wiki (text, out):
+class Formatter:
     """
-    some basic wiki style text formatting
+    A simple Wiki formatter
     """
-    def set_list_depth (stack, type, depth):
-        listdepth = len(stack)
-        diff = depth - listdepth
+    _rules = r"""(?:(?P<bold>''')""" \
+             r"""|(?P<italic>'')""" \
+             r"""|(?P<heading>^\s*(?P<hdepth>=+)\s.*\s(?P=hdepth)$)""" \
+             r"""|(?P<listitem>^(?P<ldepth>\s+)(?:\*|[0-9]+\.) .*$)""" \
+             r"""|(?P<wikilink>[[A-Z][a-z]*(?:[A-Z][a-z]+)+)""" \
+             r"""|(?P<underline>__))"""
+
+    def _bold_formatter(self, match, fullmatch):
+        self._is_bold = not self._is_bold
+        return ['</strong>', '<strong>'][self._is_bold]
+
+    def _italic_formatter(self, match, fullmatch):
+        self._is_italic = not self._is_italic
+        return ['</i>', '<i>'][self._is_italic]
+
+    def _underline_formatter(self, match, fullmatch):
+        self._is_underline = not self._is_underline
+        return ['</u>', '<u>'][self._is_underline]
+
+    def _heading_formatter(self, match, fullmatch):
+        depth = min(len(fullmatch.group('hdepth')), 5)
+        self.is_heading = True
+        return '<h%d>%s</h%d>' % (depth, match[depth + 1:len(match) - depth - 1], depth)
+
+    def _set_list_depth(self, depth, type):
+        current_depth = len(self._list_stack)
+        diff = depth - current_depth
         if diff > 0:
-            for i in range (diff):
-                out.write ('<%s>' % type)
-                stack.append('</%s>' % type)
+            for i in range(diff):
+                self.out.write('<%s>' % type)
+                self._list_stack.append('</%s>' % type)
         elif diff < 0:
-            for i in range (-diff):
-                out.write (stack.pop())
-        if depth > 0 and stack[0][2:4] != type:
-            out.write (stack.pop())
-            out.write ('<%s>' % type)
-            stack.append('</%s>' % type)
-            
-    def handle_links (line):
-        line = oldstylelink_re.sub('<a href="?mode=wiki&page=\\1">\\1</a>', line)
-        line = url_re.sub('<a href="\\1">\\1</a>', line)
-        return line
-            
-    newp = 1
-    inverb = 0
-    liststack = []
-
-    for line in text.splitlines():
-        line = escape(line)
-        if empty_line_re.match(line):
-            if not newp:
-                newp = 1
-                set_list_depth (liststack, None, 0)
-                if inverb:
-                    inverb = 0
-                    out.write ('</pre>\n')
-                out.write ('<p>\n')
-            continue
-        if newp and indented_re.match(line):
-            out.write('<pre>\n')
-            inverb = 1
-        newp = 0
+            for i in range(-diff):
+                self.out.write(self._list_stack.pop())
+        elif self._list_stack != [] and self._list_stack[0][2:4] != type:
+            self.out.write(self._list_stack.pop())
+            self.out.write('<%s>' % type)
+            self._list_stack.append('</%s>' % type)
         
-        match = list_re.match(line)
-        if match:
-            depth = len(match.group(1))
-            if match.group(2) == '#':
-                type = 'ol'
-            else:
-                type = 'ul'
-            set_list_depth(liststack, type, depth)
-            line = list_re.sub('<li>\\3', line)
+    def _listitem_formatter(self, match, fullmatch):
+        depth = (len(fullmatch.group('ldepth')) + 1) / 2
+        type = ['ol', 'ul'][match[depth * 2 - 1] == '*']
+        self._set_list_depth(depth, type)
+        
+        return '<li>%s</li>' % match[depth * 2 + 1:]
 
-        line = newline_re.sub('<br>', line)
-        line = handle_links(line)
-        line = h1_re.sub('<h1>\\1</h1>', line)
-        line = h2_re.sub('<h2>\\1</h2>', line)
-        line = h3_re.sub('<h3>\\1</h3>', line)
-        line = strong_re.sub('<strong>\\1</strong>', line)
-        line = emph_re.sub('<em>\\1</em>', line)
-        out.write(line + '\n')
-    if inverb:
-        out.write ('</pre>\n')
+    def _wikilink_formatter(self, match, fullmatch):
+        return '<a href="?mode=wiki&page=%s">%s</a>' % (match, match)
+
+    def replace(self, fullmatch):
+        for type, match in fullmatch.groupdict().items():
+            if match and not type in ('ldepth', 'hdepth'):
+                return getattr(self, '_' + type + '_formatter')(match, fullmatch)
+    
+    def format(self, text, out):
+        self.out = out
+        rules = re.compile(Formatter._rules)
+        p_open = False
+        self.is_heading_p = False
+        self._list_stack = []
+        for line in text.splitlines():
+            self._is_bold = False
+            self._is_italic = False
+            self._is_underline = False
+            line = escape(line)
+            result = re.sub(rules, self.replace, line)
+            if (self.is_heading or result == '') and p_open:
+                self._set_list_depth(0, None)
+                out.write ('</p>')
+                p_open = False
+            elif not p_open and not self.is_heading:
+                p_open = True
+                out.write ('<p>')
+                
+            out.write(result)
+            self.is_heading = False
 
 
 class Page:
@@ -174,7 +177,8 @@ class Page:
         self.render_history(out)
         perm.assert_permission (perm.WIKI_VIEW)
         out.write ('<div class="wikipage">')
-        format_wiki(self.text, out)
+        #format_wiki(self.text, out)
+        Formatter().format(self.text, out)
         out.write ('</div>')
         if edit_button and perm.has_permission (perm.WIKI_MODIFY):
             out.write ('<form action="svntrac.cgi" method="POST">')
@@ -186,9 +190,9 @@ class Page:
     def render_preview (self, out):
         perm.assert_permission (perm.WIKI_MODIFY)
         
-        out.write ('<h3>preview</h3>')
-        self.render_view (out, edit_button=0)
         self.render_edit (out)
+        out.write ('<a name="preview" /><h3>preview</h3>')
+        self.render_view (out, edit_button=0)
         
     def render_history (self, out):
         cnx = get_connection ()
@@ -219,7 +223,8 @@ class Page:
                           row[2], row[3]))
         out.write ('</table>')
 
-class Wiki (Module):
+
+class Wiki(Module):
     template_key = 'wiki_template'
 
     def render(self):
@@ -257,8 +262,6 @@ class Wiki (Module):
             page.render_preview (out)
             self.namespace['title'] = 'wiki - preview'
         else:
-            out.write ('<h2><a href="%s">%s</a></h2>' %
-                       (wiki_href(page.name), page.name))
             page.render_view (out)
             self.namespace['title'] = 'wiki - view'
         self.namespace['content'] = out.getvalue()

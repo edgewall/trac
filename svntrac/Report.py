@@ -1,5 +1,6 @@
 # svntrac
 #
+# Copyright (C) 2003 Xyche Software
 # Copyright (C) 2003 Jonas Borgström <jonas@xyche.com>
 #
 # svntrac is free software; you can redistribute it and/or
