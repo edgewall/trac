@@ -58,7 +58,7 @@
           <?cs call:rss_item('Milestone',
                              'Milestone ' + $item.message.rss + ' reached.',
                              '',
-	       'Milestone ' + $item.tdata + ' reached.') ?>
+               'Milestone ' + $item.tdata + ' reached.') ?>
         <?cs /if ?>
       <?cs /each ?>
     </channel>
