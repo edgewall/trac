@@ -139,14 +139,14 @@
          <?cs if cell.hidden || cell.hidehtml ?>
          <?cs elif name(cell) == "ticket" ?>
            <?cs call:report_cell('ticket',
-                                 '<a title="View ticket #'+$cell+'" href="'+
+                                 '<a title="View ticket" href="'+
                                  $cell.ticket_href+'">#'+$cell+'</a>') ?>
          <?cs elif name(cell) == "summary" ?>
-           <?cs call:report_cell('title', '<a title="View ticket" href="'+
+           <?cs call:report_cell('summary', '<a title="View ticket" href="'+
                                  $cell.ticket_href+'">'+$cell+'</a>') ?>
          <?cs elif name(cell) == "report" ?>
            <?cs call:report_cell('report',
-                '<a title="View Report" href="'+$cell.report_href+'">{'+$cell+'}</a>') ?>
+                '<a title="View report" href="'+$cell.report_href+'">{'+$cell+'}</a>') ?>
            <?cs set:report_href=$cell.report_href ?>
          <?cs elif name(cell) == "time" ?>
            <?cs call:report_cell('date', $cell.date) ?>
@@ -158,7 +158,7 @@
            <?cs call:report_cell('', $cell.parsed) ?>
          <?cs elif name(cell) == "title" && $report.id == -1 ?>
            <?cs call:report_cell('title',
-                                 '<a  title="View Report" href="'+
+                                 '<a  title="View report" href="'+
                                  $report_href+'">'+$cell+'</a>') ?>
          <?cs else ?>
            <?cs call:report_cell(name(cell), $cell) ?>

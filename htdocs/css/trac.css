@@ -167,17 +167,17 @@ label.disabled { color: #d7d7d7 }
  border-right: 1px solid #d7d7d7;
  display: inline;
  font-size: 11px;
+ line-height: 16px;
  padding: 0 1em;
  white-space: nowrap;
 }
 #altlinks li.last { border-right: none }
-#altlinks li :link, #altlinks li :visited { border: 0 }
-#altlinks li a.rss {
- background-image: url(../xml.png);
+#altlinks li :link, #altlinks li :visited {
  background-position: center left;
  background-repeat: no-repeat;
- padding-left: 42px
+ border: none;
 }
+#altlinks li a.rss { background-image: url(../xml.png); padding-left: 42px }
 
 /* Footer */
 #footer {
@@ -244,14 +244,14 @@ a.missing:link,a.missing:visited { background: #fafaf0; color: #998 }
 a.missing:hover { color: #000; }
 
 #content.wiki { line-height: 140%; margin: 1em }
-#wikitoolbar {
+.wikitoolbar {
  border: 1px solid #d7d7d7;
  border-left: none;
  float: left;
  margin: 5px 2px 0;
  height: 18px;
 }
-#wikitoolbar a {
+.wikitoolbar a {
  background: transparent url(../edit_toolbar.png) no-repeat;
  border: 1px solid #fff;
  border-left-color: #d7d7d7;
@@ -261,13 +261,13 @@ a.missing:hover { color: #000; }
  width: 24px;
  height: 16px;
 }
-#wikitoolbar a:hover { background-color: transparent; border: 1px solid #fb2 }
-#wikitoolbar a#em { background-position: 0 0 }
-#wikitoolbar a#strong { background-position: 0 -16px }
-#wikitoolbar a#heading { background-position: 0 -32px }
-#wikitoolbar a#link { background-position: 0 -48px }
-#wikitoolbar a#code { background-position: 0 -64px }
-#wikitoolbar a#hr { background-position: 0 -80px }
+.wikitoolbar a:hover { background-color: transparent; border: 1px solid #fb2 }
+.wikitoolbar a#em { background-position: 0 0 }
+.wikitoolbar a#strong { background-position: 0 -16px }
+.wikitoolbar a#heading { background-position: 0 -32px }
+.wikitoolbar a#link { background-position: 0 -48px }
+.wikitoolbar a#code { background-position: 0 -64px }
+.wikitoolbar a#hr { background-position: 0 -80px }
 
 /* Styles for tabular listings such as those used for displaying directory
    contents and report results. */
@@ -279,15 +279,15 @@ table.listing {
  margin-top: 1em;
  width: 100%;
 }
-table.listing th {
- text-align: left;
- padding: 0 1em .1em 0;
- font-size: 12px;
-}
-table.listing thead th a { background: 0 50% no-repeat; padding-right: 12px }
+table.listing th { text-align: left; padding: 0 1em .1em 0; font-size: 12px }
+table.listing thead th a { padding-right: 12px }
 table.listing th.asc a, table.listing th.desc a { font-weight: bold }
-table.listing th.asc a { background: url(../asc.png) 100% 50% no-repeat }
-table.listing th.desc a { background: url(../desc.png) 100% 50% no-repeat }
+table.listing th.asc a, table.listing th.desc a {
+ background-position: 100% 50%;
+ background-repeat: no-repeat;
+}
+table.listing th.asc a { background-image: url(../asc.png) }
+table.listing th.desc a { background-image: url(../desc.png) }
 table.listing tbody td, table.listing tbody th {
  border: 1px dotted #ddd;
  padding: .33em .5em;
@@ -299,7 +299,7 @@ table.listing tbody td a:hover, table.listing tbody th a:hover {
 table.listing tbody tr { border-top: 1px solid #ddd }
 table.listing tbody tr.even { background-color: #fcfcfc }
 table.listing tbody tr.odd { background-color: #f7f7f7 }
-table.listing tbody tr:hover { background: #eed }
+table.listing tbody tr:hover { background: #eed !important }
 
 .wikipage p { margin-left: 1em }
 pre.wiki, pre.literal-block {

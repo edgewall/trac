@@ -32,10 +32,16 @@
      var:result.priority ?>">
     <?cs each:header = query.headers ?><?cs
      if:name(header) == 0 ?>
-      <td class="ticket"><a href="<?cs var:result.href ?>"><?cs
+      <td class="ticket"><a href="<?cs var:result.href ?>" title="View ticket"><?cs
         var:result.id ?></a></td><?cs
      else ?>
-      <td><?cs call:get(result, header.name) ?></td><?cs
+      <td><?cs if:header.name == 'summary' ?>
+       <a href="<?cs var:result.href ?>" title="View ticket"><?cs
+         call:get(result, header.name) ?></a><?cs
+      else ?>
+       <?cs call:get(result, header.name) ?><?cs
+      /if ?>
+      </td><?cs
      /if ?>
     <?cs /each ?>
    </tr><?cs /each ?>

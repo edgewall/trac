@@ -1,40 +1,24 @@
-//Functions to remember positions when doing preview in wiki
-
-function save_edit_position(textarea, scrollbarposition, selectionStart, selectionEnd)
-{
-  if ((typeof(document["selection"]) == "undefined")
-   && (typeof(textarea["setSelectionRange"]) == "undefined")) {
-    return;
-  }
-
+// Functions to remember positions when doing preview in wiki (Mozilla only)
+function saveEditPosition(textarea, scrollbarPosition, selectionStart, selectionEnd) {
+  if (typeof(textarea["setSelectionRange"]) == "undefined") return;
   textarea.focus();
-  scrollbarposition.value = textarea.scrollTop;
-  if (typeof(document["selection"]) != "undefined") {
-    //Internet Explorer 
-    //selectionStart = textarea.createRange().duplicate();
-  } else if (typeof(textarea["setSelectionRange"]) != "undefined") {
-    //Mozilla/Gecko 
-    selectionStart.value = textarea.selectionStart;
-    selectionEnd.value = textarea.selectionEnd;
-  }
+  scrollbarPosition.value = textarea.scrollTop;
+  selectionStart.value = textarea.selectionStart;
+  selectionEnd.value = textarea.selectionEnd;
+}
+function restoreEditPosition(textarea, scrollbarPosition, selectionStart, selectionEnd) {
+  if (typeof(textarea["setSelectionRange"]) == "undefined") return;
+  textarea.focus();
+  textarea.scrollTop = scrollbarPosition.value;
+  textarea.setSelectionRange(selectionStart.value, selectionEnd.value);
 }
 
-
-function restore_edit_position(textarea, scrollbarposition, selectionStart, selectionEnd)
-{
-  if ((typeof(document["selection"]) == "undefined")
-   && (typeof(textarea["setSelectionRange"]) == "undefined")) {
-    return;
-  }
-
-  textarea.focus();
-  textarea.scrollTop = scrollbarposition.value;
-  if (typeof(document["selection"]) != "undefined") {
-    //selectionStart.select();
-  } else if (typeof(textarea["setSelectionRange"]) != "undefined") {  
-    //Mozilla/Gecko 
-    textarea.setSelectionRange(selectionStart.value, selectionEnd.value);
-  }
+// Used for dynamically updating the height of a textarea
+function resizeTextArea(id, rows) {
+  var textarea = document.getElementById(id);
+  if (!textarea || (typeof(textarea.rows) == "undefined")) return true;
+  textarea.rows = rows;
+  return false;
 }
 
 // A better way than for example hardcoding foo.onload
@@ -122,7 +106,7 @@ function addWikiFormattingToolbar(textarea) {
   }
   
   var toolbar = document.createElement("div");
-  toolbar.id = "wikitoolbar";
+  toolbar.className = "wikitoolbar";
 
   function addButton(id, title, fn) {
     var a = document.createElement("a");
@@ -155,7 +139,7 @@ function addWikiFormattingToolbar(textarea) {
       textarea.caretPos -= suffix.length;
     } else if (typeof(textarea["setSelectionRange"]) != "undefined") {
       textarea.value = textarea.value.substring(0, start) + subst +
-        textarea.value.substring(end);
+                       textarea.value.substring(end);
       if (sel) {
         textarea.setSelectionRange(start + subst.length, start + subst.length);
       } else {

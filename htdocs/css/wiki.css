@@ -1,6 +1,12 @@
 @import url(code.css);
 @import url(diff.css);
 
+/* Styles for the page editing form */
+#changeinfo div { margin: 0 .5em }
+#readonly { margin: .5em 0 1em .5em; vertical-align: middle }
+#delete_ver { margin-left: 6em }
+#preview { background: #f4f4f4 url(../draft.png) }
+
 /* Styles for the page history table
    (extends the styles for "table.listing") */
 #wikihist td { padding: 0 .5em }

@@ -340,8 +340,8 @@ class Report (Module):
                 elif column[0] == '_':
                     value['hidehtml'] = 1
                     column = column[1:]
-                if column in ['ticket', '#']:
-                    value['ticket_href'] = self.env.href.ticket(cell)
+                if column in ['ticket', '#', 'summary']:
+                    value['ticket_href'] = self.env.href.ticket(row['ticket'])
                 elif column == 'description':
                     value['parsed'] = wiki_to_html(cell, self.req.hdf, self.env, self.db)
                 elif column == 'reporter':
