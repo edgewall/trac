@@ -16,7 +16,7 @@
 .timeline-daysep {
   font-size: 105%;
   border-bottom: 1px solid #d7d7d7;
-  
+  background: #f7f7f7;
 }
 .tl-day { 
   line-height: 130%; 

@@ -153,13 +153,9 @@ tr.br-row-even:hover,tr.br-row-odd:hover { background: #eed; }
  padding: 0 .5em;
  font-size: 90%;
 }
-
-table.wiki {
- border: thin outset lightgray;
-}
-table.wiki td {
- border: thin inset lightgray;
-}
+pre.wiki { margin: .5em; padding: .25em; background: #f7f7f7; border: 1px solid #d7d7d7 }
+table.wiki { border: thin outset lightgray; }
+table.wiki td { border: thin inset lightgray; }
 
 #wiki-edit-page:hover { background: #ccb }
 
