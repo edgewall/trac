@@ -24,7 +24,7 @@ import time
 import string
 
 import perm
-from util import TracError, escape, shorten_line, add_dictlist_to_hdf
+from util import TracError, escape, shorten_line, add_to_hdf
 from Module import Module
 
 class Search(Module):
@@ -219,7 +219,7 @@ class Search(Module):
             req.hdf.setValue('search.result_page', str(page))
             info, more = self.perform_query(req, query, changesets, tickets,
                                             wiki, page)
-            add_dictlist_to_hdf(info, req.hdf, 'search.result')
+            add_to_hdf(info, req.hdf, 'search.result')
 
             include = []
             if tickets: include.append('ticket')

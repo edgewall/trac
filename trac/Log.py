@@ -146,7 +146,7 @@ class Log (Module):
                 req.check_modified(date_seconds)
 
             info = self.get_info (self.path, rev)
-            util.add_dictlist_to_hdf(info, req.hdf, 'log.items')
+            util.add_to_hdf(info, req.hdf, 'log.items')
 
         self.generate_path_links(req, rev, rev_specified)
         req.hdf.setValue('title', self.path + ' (log)')

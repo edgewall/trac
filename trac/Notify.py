@@ -30,7 +30,7 @@ import neo_cs
 import neo_util
 
 from __init__ import __version__
-from util import add_dict_to_hdf, CRLF, TRUE, FALSE, TracError
+from util import add_to_hdf, CRLF, TRUE, FALSE, TracError
 import Environment
 import core
 import Ticket
@@ -192,7 +192,7 @@ class TicketNotifyEmail(NotifyEmail):
                                           initial_indent=' ',
                                           subsequent_indent=' ')
         self.ticket['link'] = self.env.abs_href.ticket(ticket['id'])
-        add_dict_to_hdf(self.ticket, self.hdf, 'ticket')
+        add_to_hdf(self.ticket, self.hdf, 'ticket')
         self.hdf.setValue('email.ticket_props', self.format_props())
         self.hdf.setValue('email.ticket_body_hdr', self.format_hdr())
         self.hdf.setValue('ticket.link', self.ticket['link'])

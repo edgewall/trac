@@ -190,7 +190,7 @@ class Browser(Module.Module):
         # Always put directories before files
         info.sort(lambda x, y: cmp(y['is_dir'], x['is_dir']))
 
-        util.add_dictlist_to_hdf(info, req.hdf, 'browser.items')
+        util.add_to_hdf(info, req.hdf, 'browser.items')
 
         self.generate_path_links(req, path, rev, rev_specified)
         if path != '/':

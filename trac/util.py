@@ -25,6 +25,8 @@ import time
 import tempfile
 import StringIO
 from types import *
+from UserDict import UserDict
+from UserList import UserList
 
 TRUE =  ['yes', '1', 1, 'true',  'on',  'aye']
 FALSE = ['no',  '0', 0, 'false', 'off', 'nay']
@@ -136,27 +138,14 @@ def add_to_hdf(obj, hdf, prefix):
     Lists and dictionaries are expanded, all other objects are added
     as strings.
     """
-    if type(obj) is DictType:
+    if type(obj) is DictType or isinstance(obj, UserDict):
         for k in obj.keys():
             add_to_hdf(obj[k], hdf, '%s.%s' % (prefix, k))
-    elif type(obj) is ListType:
+    elif type(obj) is ListType or isinstance(obj, UserList):
         for i in range(len(obj)):
             add_to_hdf(obj[i], hdf, '%s.%d' % (prefix, i))
     else:
         hdf.setValue(prefix, str(obj))
-
-def add_dictlist_to_hdf(list, hdf, prefix):
-    """ Deprecated. Use add_to_hdf instead. """
-    idx = 0
-    for item in list:
-        for key in item.keys():
-            hdf.setValue('%s.%d.%s' % (prefix, idx, key), str(item[key]))
-        idx = idx + 1
-
-def add_dict_to_hdf(dict, hdf, prefix):
-    """ Deprecated. Use add_to_hdf instead. """
-    for key in dict.keys():
-        hdf.setValue('%s.%s' % (prefix, key), str(dict[key]))
 
 def sql_to_hdf (db, sql, hdf, prefix):
     """
