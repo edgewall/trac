@@ -115,7 +115,10 @@ def trac_role(href, name, rawtext, text, lineno):
             g = filter(None, m.groups())
             uri = function(href, g)
             return [nodes.reference(rawtext, text, refuri=uri)], []
-    return [], []
+    warning = nodes.warning(None,
+                            nodes.literal_block(text,
+                               'WARNING: %s is not a valid TracLink' % rawtext))
+    return warning, []
 
 def execute(hdf, text, env):
     def do_trac(name, arguments, options, content, lineno,
