@@ -148,7 +148,7 @@ class Query(object):
                     val = int(val)
                 elif val is None:
                     val = '--'
-                else:
+                elif name != 'description':
                     val = escape(val)
                 result[name] = val
             results.append(result)
