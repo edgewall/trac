@@ -83,10 +83,15 @@ function enableControl(id, enabled) {
   var control = document.getElementById(id);
   if (!control) return;
   control.disabled = !enabled;
-  var labels = document.getElementsByTagName("label");
-  for (var i = 0; i < labels.length; i++) {
-    if (labels[i].htmlFor == id) {
-      labels[i].className = enabled ? "enabled" : "disabled";
+  var label = getAncestorByTagName(control, "label");
+  if (label) {
+    label.className = enabled ? "enabled" : "disabled";
+  } else {
+    var labels = document.getElementsByTagName("label");
+    for (var i = 0; i < labels.length; i++) {
+      if (labels[i].htmlFor == id) {
+        labels[i].className = enabled ? "enabled" : "disabled";
+      }
     }
   }
 }
