@@ -149,13 +149,14 @@ class CommonFormatter:
                 rev = match.group(2)
             if rev:
                 return self.href.browser(args, rev), \
-                       '%s:%s#%s' % (module, args, rev)
+                       '%s:%s#%s' % (module, args, rev), 0
             else:
                 return self.href.browser(args), '%s:%s' % (module, args), 0
         else:
             return None, None, 0
         
     def _modulehref_formatter(self, match, fullmatch):
+        self.env.log.debug("link is: %s" % repr(self._expand_module_link(match)))
         link, text, missing = self._expand_module_link(match)
         if link and missing:
             return '<a class="missing" href="%s">%s?</a>' % (link, text)
