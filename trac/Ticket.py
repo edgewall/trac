@@ -434,20 +434,24 @@ class TicketModule (Module):
         curr_author = None
         curr_date   = 0
         comment = None
-        idx = 0
+        changes = []
         for date, author, field, old, new in changelog:
-            req.hdf.setValue('ticket.changes.%d.date' % idx,
-                             time.strftime('%c', time.localtime(date)))
-            req.hdf.setValue('ticket.changes.%d.time' % idx, str(date))
-            req.hdf.setValue('ticket.changes.%d.author' % idx, util.escape(author))
-            req.hdf.setValue('ticket.changes.%d.field' % idx, field)
-            req.hdf.setValue('ticket.changes.%d.old' % idx, util.escape(old))
+            if date != curr_date or author != curr_author:
+                changes.append({
+                    'date': time.strftime('%c', time.localtime(date)),
+                    'author': util.escape(author),
+                    'fields': {}
+                })
+                curr_date = date
+                curr_author = author
             if field == 'comment':
-                req.hdf.setValue('ticket.changes.%d.new' % idx,
-                                 wiki_to_html(new, req.hdf, self.env, self.db))
+                changes[-1]['comment'] = wiki_to_html(new, req.hdf, self.env,
+                                                      self.db)
+            elif field == 'description':
+                changes[-1]['fields'][field] = {}
             else:
-                req.hdf.setValue('ticket.changes.%d.new' % idx, util.escape(new))
-            idx = idx + 1
+                changes[-1]['fields'][field] = {'old': old, 'new': new}
+        util.add_to_hdf(changes, req.hdf, 'ticket.changes')
 
         insert_custom_fields(self.env, req.hdf, ticket)
         # List attached files

@@ -63,6 +63,8 @@
   set:last_prop = #0 ?>
  </tr></table><?cs if ticket.custom.0.name ?>
  <table><tr><?cs each:prop = ticket.custom ?><?cs
+   if:name(prop) == len(ticket.custom) - 1 ?><?cs set:last_prop = #1 ?><?cs
+   /if ?><?cs
    if:prop.type == "textarea" ?><?cs
     call:ticketprop(prop.label, prop.name, prop.value, 1) ?><?cs
    else ?><?cs
@@ -95,42 +97,29 @@
  /if ?><?cs if ticket.attachments.0.name ?></div><?cs /if ?>
 <?cs /if ?>
 
-<?cs if ticket.changes.0.time ?><h2>Changelog</h2>
-<div id="changelog">
- <?cs set:comment = "" ?>
- <?cs set:curr_time = "" ?>
- <?cs set:curr_author = "" ?>
- <?cs each:change = ticket.changes ?><?cs
-  if $change.time != $curr_time || $change.author != $curr_author ?><?cs
-  if:name(change) > 0 ?></ul><?cs /if ?><?cs
-   if $comment != "" ?>
-    <div class="comment"><?cs var:$comment ?></div><?cs set:comment = "" ?><?cs
-   /if ?>
-   <?cs set:curr_time = $change.time ?>
-   <?cs set:curr_author = $change.author ?>
-   <h3 id="change_<?cs var:name(change) ?>" class="change"><?cs
-     var:change.date ?>: Modified by <?cs var:curr_author ?></h3>
+<?cs if:len(ticket.changes) ?><h2>Changelog</h2>
+<div id="changelog"><?cs
+ each:change = ticket.changes ?>
+  <h3 id="change_<?cs var:name(change) ?>" class="change"><?cs
+   var:change.date ?>: Modified by <?cs var:change.author ?></h3><?cs
+  if:len(change.fields) ?>
    <ul class="changes"><?cs
-  /if ?><?cs
-  if $change.field == "comment" ?><?cs
-   set:$comment = $change.new ?><?cs
-  elif $change.new == "" ?>
-   <li><strong><?cs var:change.field ?></strong> cleared</li><?cs
-  elif $change.field == "attachment" ?>
-   <li><strong>attachment</strong> added: <?cs var:change.new ?></li><?cs
-  elif $change.field == "description" ?>
-   <li><strong><?cs var:change.field ?></strong> changed.</li><?cs
-  elif $change.old == "" ?>
-   <li><strong><?cs var:change.field ?></strong> set to <em><?cs var:change.new ?></em></li><?cs
-  else ?>
-   <li><strong><?cs var:change.field ?></strong> changed from <em><?cs
-     var:change.old ?></em> to <em><?cs var:change.new ?></em></li><?cs
-  /if ?><?cs
- /each ?></ul><?cs
- if $comment != "" ?>
-  <div class="comment"><?cs var:$comment ?></div><?cs
- /if ?>
-</div><?cs /if ?>
+   each:field = change.fields ?>
+    <li><strong><?cs var:name(field) ?></strong> <?cs
+    if:name(field) == 'attachment' ?><em><?cs var:field.new ?></em> added<?cs
+    elif:field.old && field.new ?>changed from <em><?cs
+     var:field.old ?></em> to <em><?cs var:field.new ?></em><?cs
+    elif:!field.old && field.new ?>set to <em><?cs var:field.new ?></em><?cs
+    elif:field.old && !field.new ?>deleted<?cs
+    else ?>changed<?cs
+    /if ?>.</li>
+    <?cs
+   /each ?>
+   </ul><?cs
+  /if ?>
+  <div class="comment"><?cs var:change.comment ?></div><?cs
+ /each ?></div><?cs
+/if ?>
 
 <?cs if $trac.acl.TICKET_MODIFY ?>
 <form action="<?cs var:cgi_location ?>#preview" method="post">
