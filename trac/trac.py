@@ -162,7 +162,7 @@ def real_main():
         argv = _args[x]
         if type(argv) == list:
             argv = argv[0]
-        args[x] = argv.value
+        args[x] = argv.value.replace('\r','')
 
     # Load the selected module
     mode = args.get('mode', 'wiki')
