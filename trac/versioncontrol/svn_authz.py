@@ -19,63 +19,106 @@
 #
 # Author: Francois Harvey <fharvey@securiweb.net>
 
+from __future__ import generators
 from trac.versioncontrol import Authorizer
 
+def SubversionAuthorizer(env, authname):
+    authz_file = env.get_config('trac','authz_file')    
+    if not authz_file:
+        return Authorizer()
 
-class SubversionAuthorizer(Authorizer):
+    module_name = env.get_config('trac','authz_module_name','')
+    db = env.get_db_cnx()
+    return RealSubversionAuthorizer(db, authname, module_name, authz_file)
+
+def parent_iter(path):
+    from trac.util import strip
+    path = strip(path, '/')
+    if path:
+        path = '/' + path + '/'
+    else:
+        path = '/'
+
+    while 1:
+        yield path
+        if path == '/':
+            raise StopIteration()
+        path = path[:-1]
+        yield path
+        idx = path.rfind('/')
+        path = path[:idx + 1]
+
+class RealSubversionAuthorizer(Authorizer):
 
     auth_name = ''
     module_name = ''
     conf_authz = None
-    authz_file = ''
 
-    def __init__(self, env, authname):
-        self.auth_name = authname
-        
-        if env.get_config('trac','authz_module_name','') == '':
-            self.module_name = ''
+    def __init__(self, db, auth_name, module_name, cfg_file, cfg_fp=None):
+        self.db = db
+        self.auth_name = auth_name
+        self.module_name = module_name
+                                
+        from ConfigParser import ConfigParser
+        self.conf_authz = ConfigParser()
+        if cfg_fp:
+            self.conf_authz.readfp(cfg_fp, cfg_file)
+        elif cfg_file:
+            self.conf_authz.read(cfg_file)
+
+        self.groups = self.get_groups()
+
+    def get_groups(self):
+        if not self.conf_authz.has_section('groups'):
+            return []
         else:
-            self.module_name = env.get_config('trac','authz_module_name') + ':'
-                                 
-        self.autz_file = env.get_config('trac','authz_file')    
-        if env.get_config('trac','authz_file'):
-            from ConfigParser import ConfigParser
-            self.conf_authz = ConfigParser()
-            self.conf_authz.read(self.autz_file)
+            return [group for group in self.conf_authz.options('groups') \
+                          if self.in_group(group)]
 
-        self.db = env.get_db_cnx()
-
-    def group_contains_user(self, group_name, user_name):
-        if self.conf_authz.has_section('groups'):
-            if self.conf_authz.has_option('groups', group_name):
-                users_list = self.conf_authz.get('groups', group_name).split(',')
-                return users_list.has_key(user_name)
+    def in_group(self, group):
+        for user in self.conf_authz.get('groups', group).split(','):
+            if self.auth_name == user.strip():
+                return 1
         return 0
 
     def has_permission(self, path):
-        acc = ''
+        if path is None:
+            return 1
 
-        if path != None and self.conf_authz != None:
-            if self.conf_authz.has_section(self.module_name + '/') and \
-                   self.conf_authz.has_option(self.module_name  + '/',
-                                              self.auth_name):
-                acc = self.conf_authz.get(self.module_name + '/',self.auth_name)
-            elif self.conf_authz.has_section(self.module_name + '/') and \
-                 self.conf_authz.has_option(self.module_name  + '/', '*'):
-                     acc = self.conf_authz.get(self.module_name + '/','*')
-            path_comb = ''
-            for path_elem in path.split('/'):
-                if path_elem != '':
-                    path_comb = self.module_name + path_comb + '/' + path_elem
-                    if self.conf_authz.has_section(path_comb) and \
-                           self.conf_authz.has_option(path_comb, self.auth_name):
-                        acc =  self.conf_authz.get(path_comb, self.auth_name)
-                    elif self.conf_authz.has_section(path_comb) and \
-                            self.conf_authz.has_option(path_comb, '*'):
-                        acc =  self.conf_authz.get(path_comb, '*')
-        else:
-            acc = 'r'
-        return acc
+        for p in parent_iter(path):
+            if self.module_name:
+                for perm in self.get_section(self.module_name + ':' + p):
+                    if perm is not None:
+                        return perm
+            for perm in self.get_section(p):
+                if perm is not None:
+                    return perm
+
+        return 0
+
+    def get_section(self, section):
+        if not self.conf_authz.has_section(section):
+            return
+
+        yield self.get_permission(section, self.auth_name)
+
+        group_perm = None
+        for g in self.groups:
+            p = self.get_permission(section, '@' + g)
+            if p is not None:
+                group_perm = p
+
+            if group_perm:
+                yield 1
+
+        yield group_perm
+
+        yield self.get_permission(section, '*')
+
+    def get_permission(self, section, subject):
+        if self.conf_authz.has_option(section, subject):
+            return 'r' in self.conf_authz.get(section, subject)
+        return None
 
     def has_permission_for_changeset(self, rev):
         cursor = self.db.cursor()

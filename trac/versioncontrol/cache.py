@@ -22,7 +22,7 @@
 from __future__ import generators
 
 from trac.util import TracError
-from trac.versioncontrol import Changeset, Node, Repository
+from trac.versioncontrol import Changeset, Node, Repository, Authorizer
 
 
 _kindmap = {'D': Node.DIRECTORY, 'F': Node.FILE}
@@ -52,6 +52,9 @@ class CachedRepository(Repository):
         self.log.debug("Checking whether sync with repository is needed")
         youngest_stored = self.repos.get_youngest_rev_in_cache(self.db)
         if youngest_stored != str(self.repos.youngest_rev):
+            authz = self.repos.authz
+            self.repos.authz = Authorizer() # remove permission checking
+
             kindmap = dict(zip(_kindmap.values(), _kindmap.keys()))
             actionmap = dict(zip(_actionmap.values(), _actionmap.keys()))
             self.log.info("Syncing with repository (%s to %s)"
@@ -80,6 +83,7 @@ class CachedRepository(Repository):
                                    base_path, base_rev))
                 current_rev = self.repos.next_rev(current_rev)
             self.db.commit()
+            self.repos.authz = authz # restore permission checking
 
     def get_node(self, path, rev=None):
         return self.repos.get_node(path, rev)

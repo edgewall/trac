@@ -95,6 +95,10 @@ def rstrip(text, skip):
             break
     return text
 
+def strip(text, skip):
+    """Python < 2.2.2 doesn't support custom skip characters"""
+    return lstrip(rstrip(text, skip), skip)
+
 def to_utf8(text, charset='iso-8859-15'):
     """Convert a string to utf-8, assume the encoding is either utf-8 or latin1"""
     try:
