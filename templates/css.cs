@@ -3,7 +3,7 @@ body {
 	margin: 10px;
 	padding: 0;
 	color: #000;
-	font: normal 100% 'Bitstream Vera Sans', Verdana, Helvetica, Arial, sans-serif;
+	font: normal 12px 'Bitstream Vera Sans', Verdana, Helvetica, Arial, sans-serif;
 }
 .hide { display: none; }
 hr { 
@@ -44,7 +44,8 @@ option {  border-bottom: 1px solid #ccc; }
 #header { }
 #hdrlogo,#hdrlogo img,#hdrlogo:hover {
 	background: transparent;
-	margin-bottom: -1em;
+	margin-bottom: -1.25em;
+	border: none;
 }
 #header-links, #subheader-links, #navbar {
 	font: normal 11px Verdana, 'Bitstream Vera Sans', Helvetica, Arial, sans-serif;
@@ -91,6 +92,7 @@ option {  border-bottom: 1px solid #ccc; }
 	clear: both;
 	border: 1px solid #999;
 	background: #eee;
+	background: url("/gfx/topbar_gradient.png") top left #999; 
 	margin: .15em 0;
 	min-width: 500px;          
         height: 16px;
@@ -100,6 +102,7 @@ a.navbar-link, a.navbar-link-active,a.navbar-link-active:hover {
 	display: block;
 	float: left;
 	border-left: 1px solid #999;
+	border-right: 1px solid #fff;
 	border-bottom: none;
 	margin: 0;
         height: 14px;
@@ -107,11 +110,15 @@ a.navbar-link, a.navbar-link-active,a.navbar-link-active:hover {
 	color: #000;
 	background: url(<?cs var:$htdocs_location ?>dots.gif) top left no-repeat;
 }
-a.navbar-link-active {
-	background: #ccc;
+a.navbar-link-active { 
 	font-weight: bold;
+	background: #ddd;
+	border-right: 1px solid #ddd;
 }
-a.navbar-link:hover { background-color: #ccb; }
+a.navbar-link:hover { 
+	background-color: #ddc; 
+	border-right: 1px solid #ddd;
+}
 #page-content { clear: none; }
 
 /* Wiki */
