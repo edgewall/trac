@@ -1,56 +1,54 @@
 /* Timeline */
-#timeline-hdr { display: inline; }
-#timeline-prefs {
-  background: #f7f7f0;
-  border: 1px outset #998;
-  float: right;
-  font-size: 9px;
-  padding: 1em;
-  margin-left: 1em;
-  margin-bottom: 1em;
-  white-space: nowrap;
+#main.timeline #prefs {
+ background: #f7f7f0;
+ border: 1px outset #998;
+ float: right;
+ font-size: 9px;
+ padding: 1em;
+ margin-left: 1em;
+ margin-bottom: 1em;
+ white-space: nowrap;
 }
-#timeline-prefs input { font-size: 9px; }
+#main.timeline #prefs input { font-size: 9px }
+#main.timeline #prefs fieldset { border: 0; margin: .5em; padding: 0 }
+#main.timeline #prefs .buttons { text-align: right; margin-top: -1em }
 
-#timeline-prefs-checks { }
-#timeline-prefs-btns {
-  text-align: right;
-  margin-top: 1em;
+#main.timeline h2 {
+ background: #f7f7f7;
+ border-bottom: 1px solid #d7d7d7;
+ font-size: 105%;
 }
-.timeline-daysep {
-  font-size: 105%;
-  border-bottom: 1px solid #d7d7d7;
-  background: #f7f7f7;
+#main.timeline dl {
+ line-height: 130%; 
+ margin-left: 1em;
 }
-.tl-day { 
-  line-height: 130%; 
-  margin-left: 1em;
+#main.timeline dt {Êpadding: 1px }
+#main.timeline dt em {
+ border-bottom: 1px dotted #bbb;
+ color: #b00;
+ font-style: normal;
+ text-decoration: none;
 }
-a.tl-item { 
-  display: block;
-  color: #000;
-  padding: 1px 0;
-  margin: 1px; 
-  border: none; 
+#main.timeline dt .time { color: #777 }
+#main.timeline dt :link, #main.timeline dt :visited {
+ background: #fff 3px 50% no-repeat;
+ display: block;
+ border: none;
+ color: #000;
+ padding: 0 2px 2px 22px;
 }
-a.tl-item:hover {
-  background-color: #eed;
-  color: #000;
+#main.timeline dt :link:hover, #main.timeline dt :visited:hover {
+ background-color: #eed;
+ color: #000;
 }
-.tl-item-time { color: #777; }
-.tl-item-link {
-  border-bottom: 1px dotted #bbb;
-  color: #b00;
-  font-weight: normal;
-  text-decoration: none;
+#main.timeline dd {
+ font-size: 80%;
+ margin: 0 0 .5em 5em;
+ padding: 0;
 }
-.tl-item-msg { }
-.tl-item-descr {
-  display: block;
-  margin-left: 6.5em;
-  font-size: 80%;
-}
-.tl-item-icon { 
-  vertical-align: text-top; 
-  margin: 0;
-}
+
+#main.timeline dt.changeset a { background-image: url(../changeset.png) }
+#main.timeline dt.newticket a { background-image: url(../newticket.png) }
+#main.timeline dt.closedticket a { background-image: url(../closedticket.png) }
+#main.timeline dt.wiki a { background-image: url(../wiki.png) }
+#main.timeline dt.milestone a { background-image: url(../milestone.png) }

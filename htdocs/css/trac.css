@@ -10,7 +10,7 @@ h1, h1, h2, h3, h4 {
   font-weight: bold;
   letter-spacing: -0.018em;
 }
-h1 { font-size: 20px }
+h1 { font-size: 21px; margin: .15em 1em 0 0 }
 h2 { font-size: 16px }
 h3 { font-size: 14px }
 hr { border: none;  border-top: 1px solid #ccc; margin: 2em 0; }
@@ -33,12 +33,6 @@ h4 :link, h4 :visited, h5 :link, h5 :visited, h6 :link, h6 :visited {
   color: inherit;
 }
 .noline:link, .noline:visited { border-bottom: none; }
-
-#browser-rev, #file-hdr, #log-hdr,#log-hdr,#timeline-hdr,#chg-hdr,#report-hdr,#tkt-hdr {
-  font-size: 21px;
-  margin-right: 1em;
-  margin-top: .5em;
-}
 
 /* Forms */
 input, textarea, select { margin: 2px }
@@ -199,8 +193,10 @@ form.inline input { margin: 1em }
 #page-content { }
 #main {  margin-bottom: 2em; }
 #main-footer { margin-top: 3em; text-align: center; }
+
 #help { margin: 1em; font-size: 90%; color: #999; text-align: right}
 #help a { color: #b44 }
+#help hr { display: none }
 
 /* Wiki */
 #wiki-history {
