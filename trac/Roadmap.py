@@ -40,7 +40,7 @@ class Roadmap(Module):
         self.req.hdf.setValue('title', 'Roadmap')
 
         icalhref = '?format=ics'
-        show = self.args.get('show', 'current')
+        show = self.req.args.get('show', 'current')
         if show == 'all':
             icalhref += '&show=all'
             query = "SELECT name,due,completed,description FROM milestone " \
@@ -139,7 +139,7 @@ class Roadmap(Module):
             write_prop(name, strftime('%Y%m%dT%H%M%SZ', value), params)
 
         host = self.req.base_url[self.req.base_url.find('://') + 3:]
-        user = self.args.get('user', 'anonymous')
+        user = self.req.args.get('user', 'anonymous')
 
         write_prop('BEGIN', 'VCALENDAR')
         write_prop('VERSION', '2.0')

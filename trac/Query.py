@@ -264,17 +264,17 @@ class QueryModule(Module):
         # A special hack for Safari/WebKit, which will not submit dynamically
         # created check-boxes with their real value, but with the default value
         # 'on'. See also htdocs/query.js#addFilter()
-        checkboxes = [k for k in self.args.keys() if k.startswith('__')]
+        checkboxes = [k for k in self.req.args.keys() if k.startswith('__')]
         if checkboxes:
             import cgi
             for checkbox in checkboxes:
                 (real_k, real_v) = checkbox[2:].split(':', 2)
-                self.args.list.append(cgi.MiniFieldStorage(real_k, real_v))
+                self.req.args.list.append(cgi.MiniFieldStorage(real_k, real_v))
 
         # For clients without JavaScript, we add a new constraint here if
         # requested
         remove_constraints = {}
-        to_remove = [k[10:] for k in self.args.keys()
+        to_remove = [k[10:] for k in self.req.args.keys()
                      if k.startswith('rm_filter_')]
         if to_remove: # either empty or containing a single element
             match = re.match(r'(\w+?)_(\d+)$', to_remove[0])
@@ -283,15 +283,15 @@ class QueryModule(Module):
             else:
                 remove_constraints[to_remove[0]] = -1
 
-        constrained_fields = [k for k in self.args.keys()
+        constrained_fields = [k for k in self.req.args.keys()
                               if k in Ticket.std_fields or k in custom_fields]
         for field in constrained_fields:
-            vals = self.args[field]
+            vals = self.req.args[field]
             if not type(vals) is ListType:
                 vals = [vals]
             vals = map(lambda x: x.value, vals)
             if vals:
-                mode = self.args.get(field + '_mode')
+                mode = self.req.args.get(field + '_mode')
                 if mode:
                     vals = map(lambda x: mode + x, vals)
                 if field in remove_constraints.keys():
@@ -388,7 +388,7 @@ class QueryModule(Module):
         self.perm.assert_permission(perm.TICKET_VIEW)
 
         constraints = self._get_constraints()
-        if not constraints and not self.args.has_key('order'):
+        if not constraints and not self.req.args.has_key('order'):
             # avoid displaying all tickets when the query module is invoked
             # with no parameters. Instead show only open tickets, possibly
             # associated with the user
@@ -401,12 +401,12 @@ class QueryModule(Module):
                 if email or name:
                     constraints['cc'] = [ '~%s' % email or name ]
 
-        query = Query(self.env, constraints, self.args.get('order'),
-                      self.args.has_key('desc'), self.args.get('group'),
-                      self.args.has_key('groupdesc'),
-                      self.args.has_key('verbose'))
+        query = Query(self.env, constraints, self.req.args.get('order'),
+                      self.req.args.has_key('desc'), self.req.args.get('group'),
+                      self.req.args.has_key('groupdesc'),
+                      self.req.args.has_key('verbose'))
 
-        if self.args.has_key('update'):
+        if self.req.args.has_key('update'):
             self.req.redirect(query.get_href())
 
         self.add_link('alternate', query.get_href('rss'), 'RSS Feed',
@@ -435,8 +435,8 @@ class QueryModule(Module):
 
         # For clients without JavaScript, we add a new constraint here if
         # requested
-        if self.args.has_key('add'):
-            field = self.args.get('add_filter')
+        if self.req.args.has_key('add'):
+            field = self.req.args.get('add_filter')
             if field:
                 idx = 0
                 if query.constraints.has_key(field):

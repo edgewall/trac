@@ -149,8 +149,8 @@ class WikiModule(Module):
 
     def generate_diff(self, pagename, version):
         import Diff
-        Diff.get_options(self.env, self.req, self.args)
-        if self.args.has_key('update'):
+        Diff.get_options(self.env, self.req)
+        if self.req.args.has_key('update'):
            self.req.redirect(self.env.href.wiki(pagename, version, 1))
 
         cursor = self.db.cursor()
@@ -187,20 +187,20 @@ class WikiModule(Module):
         builder.close()
 
     def render(self):
-        name = self.args.get('page', 'WikiStart')
-        author = self.args.get('author', get_reporter_id(self.req))
-        edit_version = self.args.get('edit_version', None)
-        delete_ver = self.args.get('delete_ver', None)
-        delete_page = self.args.get('delete_page', None)
-        comment = self.args.get('comment', '')
-        save = self.args.get('save', None)
-        edit = self.args.get('edit', None)
-        diff = self.args.get('diff', None)
-        cancel = self.args.get('cancel', None)
-        preview = self.args.get('preview', None)
-        history = self.args.get('history', None)
-        version = int(self.args.get('version', 0))
-        readonly = self.args.get('readonly', None)
+        name = self.req.args.get('page', 'WikiStart')
+        author = self.req.args.get('author', get_reporter_id(self.req))
+        edit_version = self.req.args.get('edit_version', None)
+        delete_ver = self.req.args.get('delete_ver', None)
+        delete_page = self.req.args.get('delete_page', None)
+        comment = self.req.args.get('comment', '')
+        save = self.req.args.get('save', None)
+        edit = self.req.args.get('edit', None)
+        diff = self.req.args.get('diff', None)
+        cancel = self.req.args.get('cancel', None)
+        preview = self.req.args.get('preview', None)
+        history = self.req.args.get('history', None)
+        version = int(self.req.args.get('version', 0))
+        readonly = self.req.args.get('readonly', None)
 
         # Ask web spiders to not index old version
         if diff or version:
@@ -248,7 +248,7 @@ class WikiModule(Module):
         self.req.hdf.setValue('wiki.namedoublequoted',
                               urllib.quote(urllib.quote(name, '')))
 
-        editrows = self.args.get('editrows')
+        editrows = self.req.args.get('editrows')
         if editrows:
             self.req.hdf.setValue('wiki.edit_rows', editrows)
             pref = self.req.session.get('wiki_editrows', '20')
@@ -267,7 +267,7 @@ class WikiModule(Module):
         elif preview:
             self.req.hdf.setValue('wiki.action', 'preview')
             self.req.hdf.setValue('wiki.scroll_bar_pos',
-                                  self.args.get('scroll_bar_pos', ''))
+                                  self.req.args.get('scroll_bar_pos', ''))
             self.req.hdf.setValue('title', escape(name) + ' (preview)')
         elif diff and version > 0:
             self.req.hdf.setValue('wiki.action', 'diff')
@@ -286,8 +286,8 @@ class WikiModule(Module):
             else:
                 self.add_link('alternate', '?format=txt', 'Plain Text',
                     'text/plain')
-            if self.args.has_key('text'):
-                del self.args['text']
+            if self.req.args.has_key('text'):
+                del self.req.args['text']
             self.req.hdf.setValue('wiki.action', 'view')
             if name == 'WikiStart':
                 self.req.hdf.setValue('title', '')
@@ -297,8 +297,8 @@ class WikiModule(Module):
                                          'wiki.attachments')
 
         self.page = WikiPage(name, version, self.perm, self.db)
-        if self.args.has_key('text'):
-            self.page.set_content (self.args.get('text'))
+        if self.req.args.has_key('text'):
+            self.page.set_content (self.req.args.get('text'))
         else:
             self.page.modified = 0
 

@@ -28,17 +28,14 @@ class Module:
     env = None
     req = None
     _name = None
-    args = None
     template_name = None
     links = None
 
     def __init__(self):
-        self.args = []
         self.links = {}
 
     def run(self, req):
         self.req = req
-        self.args = req.args
         if req.args.has_key('format'):
             disp = getattr(self, 'display_' + req.args.get('format'))
         else:

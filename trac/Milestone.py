@@ -109,21 +109,21 @@ class Milestone(Module):
 
     def save_milestone(self, id):
         self.perm.assert_permission(perm.MILESTONE_MODIFY)
-        if self.args.has_key('save'):
-            name = self.args.get('name', '')
+        if self.req.args.has_key('save'):
+            name = self.req.args.get('name', '')
             if not name:
                 raise TracError('You must provide a name for the milestone.',
                                 'Required Field Missing')
             due = 0
-            due_str = self.args.get('duedate', '')
+            due_str = self.req.args.get('duedate', '')
             if due_str:
                 due = self.parse_date(due_str)
             completed = 0
-            if self.args.has_key('completed'):
-                completed_str = self.args.get('completeddate', '')
+            if self.req.args.has_key('completed'):
+                completed_str = self.req.args.get('completeddate', '')
                 if completed_str:
                     completed = self.parse_date(completed_str)
-            description = self.args.get('description', '')
+            description = self.req.args.get('description', '')
             if not id:
                 self.create_milestone(name, due, completed, description)
             else:
@@ -165,10 +165,10 @@ class Milestone(Module):
     def delete_milestone(self, id):
         self.perm.assert_permission(perm.MILESTONE_DELETE)
         self.get_milestone(id) # check whether the milestone exists
-        if self.args.has_key('delete'):
+        if self.req.args.has_key('delete'):
             cursor = self.db.cursor()
-            if self.args.has_key('retarget'):
-                target = self.args.get('target')
+            if self.req.args.has_key('retarget'):
+                target = self.req.args.get('target')
                 if target:
                     self.log.info('Retargeting milestone field of all '
                                   'tickets associated with milestone %s to '
@@ -191,7 +191,7 @@ class Milestone(Module):
         self.perm.assert_permission(perm.MILESTONE_MODIFY)
         cursor = self.db.cursor()
         self.log.info("Updating milestone '%s'" % id)
-        if self.args.has_key('save'):
+        if self.req.args.has_key('save'):
             self.log.info('Updating milestone field of all tickets '
                           'associated with milestone %s' % id)
             cursor.execute("UPDATE ticket SET milestone=%s "
@@ -263,8 +263,8 @@ class Milestone(Module):
 
         self.add_link('up', self.env.href.roadmap(), 'Roadmap')
 
-        action = self.args.get('action', 'view')
-        id = self.args.get('id')
+        action = self.req.args.get('action', 'view')
+        id = self.req.args.get('id')
 
         if action == 'new':
             self.perm.assert_permission(perm.MILESTONE_CREATE)
@@ -332,7 +332,7 @@ class Milestone(Module):
         add_to_hdf(available_groups, self.req.hdf,
                    'milestone.stats.available_groups')
 
-        by = self.args.get('by', 'component')
+        by = self.req.args.get('by', 'component')
         self.req.hdf.setValue('milestone.stats.grouped_by', by)
 
         tickets = get_tickets_for_milestone(self.env, self.db, id, by)

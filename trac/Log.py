@@ -111,10 +111,10 @@ class Log (Module):
         self.add_link('alternate', '?format=rss', 'RSS Feed',
             'application/rss+xml', 'rss')
 
-        self.path = self.args.get('path', '/')
-        if self.args.has_key('rev'):
+        self.path = self.req.args.get('path', '/')
+        if self.req.args.has_key('rev'):
             try:
-                rev = int(self.args.get('rev'))
+                rev = int(self.req.args.get('rev'))
                 rev_specified = 1
             except ValueError:
                 rev = svn.fs.youngest_rev(self.fs_ptr, self.pool)

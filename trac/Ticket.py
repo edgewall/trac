@@ -271,11 +271,11 @@ class NewticketModule(Module):
     template_name = 'newticket.cs'
 
     def create_ticket(self):
-        if not self.args.get('summary'):
+        if not self.req.args.get('summary'):
             raise util.TracError('Tickets must contain Summary.')
 
         ticket = Ticket()
-        ticket.populate(self.args)
+        ticket.populate(self.req.args)
         ticket.setdefault('reporter',self.req.authname)
 
         # The owner field defaults to the component owner
@@ -297,11 +297,11 @@ class NewticketModule(Module):
     def render (self):
         self.perm.assert_permission(perm.TICKET_CREATE)
 
-        if self.args.has_key('create'):
+        if self.req.args.has_key('create'):
             self.create_ticket()
 
         ticket = Ticket()
-        ticket.populate(self.args)
+        ticket.populate(self.req.args)
         ticket.setdefault('component',
                           self.env.get_config('ticket', 'default_component'))
         ticket.setdefault('milestone',
@@ -347,37 +347,37 @@ class TicketModule (Module):
         self.perm.assert_permission (perm.TICKET_MODIFY)
         ticket = Ticket(self.db, id)
 
-        if not self.args.get('summary'):
+        if not self.req.args.get('summary'):
             raise util.TracError('Tickets must contain Summary.')
 
-        if self.args.has_key('description'):
+        if self.req.args.has_key('description'):
             self.perm.assert_permission (perm.TICKET_ADMIN)
 
-        if self.args.has_key('reporter'):
+        if self.req.args.has_key('reporter'):
             self.perm.assert_permission (perm.TICKET_ADMIN)
 
         # TODO: this should not be hard-coded like this
-        action = self.args.get('action', None)
+        action = self.req.args.get('action', None)
         if action == 'accept':
             ticket['status'] =  'assigned'
             ticket['owner'] = self.req.authname
         if action == 'resolve':
             ticket['status'] = 'closed'
-            ticket['resolution'] = self.args.get('resolve_resolution')
+            ticket['resolution'] = self.req.args.get('resolve_resolution')
         elif action == 'reassign':
-            ticket['owner'] = self.args.get('reassign_owner')
+            ticket['owner'] = self.req.args.get('reassign_owner')
             ticket['status'] = 'new'
         elif action == 'reopen':
             ticket['status'] = 'reopened'
             ticket['resolution'] = ''
 
-        ticket.populate(self.args)
+        ticket.populate(self.req.args)
 
         now = int(time.time())
 
         ticket.save_changes(self.db,
-                            self.args.get('author', self.req.authname),
-                            self.args.get('comment'),
+                            self.req.args.get('author', self.req.authname),
+                            self.req.args.get('comment'),
                             when=now)
 
         tn = TicketNotifyEmail(self.env)
@@ -446,13 +446,13 @@ class TicketModule (Module):
     def render (self):
         self.perm.assert_permission (perm.TICKET_VIEW)
 
-        action = self.args.get('action', 'view')
-        preview = self.args.has_key('preview')
+        action = self.req.args.get('action', 'view')
+        preview = self.req.args.has_key('preview')
 
-        if not self.args.has_key('id'):
+        if not self.req.args.has_key('id'):
             self.req.redirect(self.env.href.wiki())
 
-        id = int(self.args.get('id'))
+        id = int(self.req.args.get('id'))
 
         if not preview \
                and action in ['leave', 'accept', 'reopen', 'resolve', 'reassign']:
@@ -464,11 +464,11 @@ class TicketModule (Module):
         if preview:
             # Use user supplied values
             for field in Ticket.std_fields:
-                if self.args.has_key(field) and field != 'reporter':
-                    ticket[field] = self.args.get(field)
+                if self.req.args.has_key(field) and field != 'reporter':
+                    ticket[field] = self.req.args.get(field)
             self.req.hdf.setValue('ticket.action', action)
-            reporter_id = self.args.get('author')
-            comment = self.args.get('comment')
+            reporter_id = self.req.args.get('author')
+            comment = self.req.args.get('comment')
             if comment:
                 self.req.hdf.setValue('ticket.comment', util.escape(comment))
                 # Wiki format a preview of comment

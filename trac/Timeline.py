@@ -196,8 +196,8 @@ class Timeline (Module):
     def render (self):
         self.perm.assert_permission(perm.TIMELINE_VIEW)
 
-        _from = self.args.get('from', '')
-        _daysback = self.args.get('daysback', '')
+        _from = self.req.args.get('from', '')
+        _daysback = self.req.args.get('daysback', '')
 
         # Parse the from date and adjust the timestamp to the last second of the day
         t = time.localtime()
@@ -218,12 +218,12 @@ class Timeline (Module):
 
         stop  = _from
         start = stop - (daysback + 1) * 86400
-        maxrows = int(self.args.get('max', 0))
+        maxrows = int(self.req.args.get('max', 0))
 
-        wiki = self.args.has_key('wiki') 
-        ticket = self.args.has_key('ticket')
-        changeset = self.args.has_key('changeset')
-        milestone = self.args.has_key('milestone')
+        wiki = self.req.args.has_key('wiki') 
+        ticket = self.req.args.has_key('ticket')
+        changeset = self.req.args.has_key('changeset')
+        milestone = self.req.args.has_key('milestone')
         if not (wiki or ticket or changeset or milestone):
             wiki = ticket = changeset = milestone = 1
 

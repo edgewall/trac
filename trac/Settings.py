@@ -33,7 +33,7 @@ class Settings(Module):
 
     def render(self):
         self.req.hdf.setValue('title', 'Settings')
-        action = self.args.get('action')
+        action = self.req.args.get('action')
         if action == 'save':
             self.save_settings()
         elif action == 'load':
@@ -45,7 +45,7 @@ class Settings(Module):
 
     def save_settings(self):
         for field in self._form_fields:
-            val = self.args.get(field)
+            val = self.req.args.get(field)
             if val:
                 if field =='newsid':
                     self.req.session.change_sid(val)
@@ -54,5 +54,5 @@ class Settings(Module):
         self.req.session.populate_hdf() # Update HDF
 
     def load_session(self):
-        oldsid = self.args.get('loadsid')
+        oldsid = self.req.args.get('loadsid')
         self.req.session.get_session(oldsid)

@@ -120,7 +120,7 @@ class Report (Module):
     def delete_report(self, id):
         self.perm.assert_permission(perm.REPORT_DELETE)
 
-        if not self.args.has_key('cancel'):
+        if not self.req.args.has_key('cancel'):
             cursor = self.db.cursor ()
             cursor.execute('DELETE FROM report WHERE id=%s', id)
             self.db.commit()
@@ -152,11 +152,11 @@ class Report (Module):
         """
         self.perm.assert_permission(perm.REPORT_MODIFY)
 
-        if not self.args.has_key('cancel'):
+        if not self.req.args.has_key('cancel'):
             cursor = self.db.cursor()
-            title = self.args.get('title', '')
-            sql   = self.args.get('sql', '')
-            description   = self.args.get('description', '')
+            title = self.req.args.get('title', '')
+            sql   = self.req.args.get('sql', '')
+            description   = self.req.args.get('description', '')
 
             cursor.execute('UPDATE report SET title=%s, sql=%s, description=%s '
                            ' WHERE id=%s',
@@ -213,10 +213,10 @@ class Report (Module):
 
     def add_alternate_links(self, args):
         params = args
-        if self.args.has_key('sort'):
-            params['sort'] = self.args['sort']
-        if self.args.has_key('asc'):
-            params['asc'] = self.args['asc']
+        if self.req.args.has_key('sort'):
+            params['sort'] = self.req.args['sort']
+        if self.req.args.has_key('asc'):
+            params['asc'] = self.req.args['asc']
         href = ''
         if params:
             href = '&amp;' + urllib.urlencode(params).replace('&', '&amp;')
@@ -274,7 +274,7 @@ class Report (Module):
         descr_html = wiki_to_html(description, self.req.hdf, self.env,self.db)
         self.req.hdf.setValue('report.description', descr_html)
 
-        if self.args.get('format') == 'sql':
+        if self.req.args.get('format') == 'sql':
             return
 
         try:
@@ -304,8 +304,8 @@ class Report (Module):
             self.req.hdf.setValue(prefix, title)
             idx = idx + 1
 
-        if self.args.has_key('sort'):
-            sortCol = self.args.get('sort')
+        if self.req.args.has_key('sort'):
+            sortCol = self.req.args.get('sort')
             colIndex = None
             hiddenCols = 0
             for x in range(len(self.cols)):
@@ -316,7 +316,7 @@ class Report (Module):
                     hiddenCols += 1
             if colIndex != None:
                 k = 'report.headers.%d.asc' % (colIndex - hiddenCols)
-                asc = self.args.get('asc', None)
+                asc = self.req.args.get('asc', None)
                 if asc:
                     sorter = ColumnSorter(colIndex, int(asc))
                     self.req.hdf.setValue(k, asc)
@@ -376,14 +376,14 @@ class Report (Module):
 
     def get_var_args(self):
         report_args = {}
-        for arg in self.args.keys():
+        for arg in self.req.args.keys():
             if not arg == arg.upper():
                 continue
             m = re.search(dynvars_disallowed_var_chars_re, arg)
             if m:
                 raise ValueError("The character '%s' is not allowed "
                                  " in variable names." % m.group())
-            val = self.args.get(arg)
+            val = self.req.args.get(arg)
             m = re.search(dynvars_disallowed_value_chars_re, val)
             if m:
                 raise ValueError("The character '%s' is not allowed "
@@ -400,16 +400,16 @@ class Report (Module):
         self.perm.assert_permission(perm.REPORT_VIEW)
 
         # did the user ask for any special report?
-        id = int(self.args.get('id', -1))
-        action = self.args.get('action', 'list')
+        id = int(self.req.args.get('id', -1))
+        action = self.req.args.get('action', 'list')
 
         if action == 'create':
-            if self.args.has_key('cancel'):
+            if self.req.args.has_key('cancel'):
                 action = 'list'
             else:
-                self.create_report(self.args.get('title', ''),
-                                   self.args.get('description', ''),
-                                   self.args.get('sql', ''))
+                self.create_report(self.req.args.get('title', ''),
+                                   self.req.args.get('description', ''),
+                                   self.req.args.get('sql', ''))
 
         if id != -1 or action == 'new':
             self.add_link('up', self.env.href.report(), 'Available Reports')

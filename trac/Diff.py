@@ -19,6 +19,7 @@
 #
 # Author: Jonas Borgström <jonas@edgewall.com>
 
+from __future__ import nested_scopes
 import re
 from util import add_to_hdf, escape
 
@@ -136,43 +137,43 @@ def get_change_extent(str1, str2):
     return (start, end + 1)
 
 
-def get_options(env, req, args, advanced=0):
+def get_options(env, req, advanced=0):
 
-    def get_bool_option(session, args, name, default=0):
-        pref = int(session.get('diff_' + name, default))
-        arg = int(args.has_key(name))
-        if args.has_key('update') and arg != pref:
-            session['diff_' + name] = arg
+    def get_bool_option(name, default=0):
+        pref = int(req.session.get('diff_' + name, default))
+        arg = int(req.args.has_key(name))
+        if req.args.has_key('update') and arg != pref:
+            req.session['diff_' + name] = arg
         else:
             arg = pref
         return arg
 
     pref = req.session.get('diff_style', 'inline')
-    style = args.get('style', pref)
-    if args.has_key('update') and style != pref:
+    style = req.args.get('style', pref)
+    if req.args.has_key('update') and style != pref:
         req.session['diff_style'] = style
     req.hdf.setValue('diff.style', style)
 
     if advanced:
 
         pref = int(req.session.get('diff_contextlines', 2))
-        arg = int(args.get('contextlines', pref))
-        if args.has_key('update') and arg != pref:
+        arg = int(req.args.get('contextlines', pref))
+        if req.args.has_key('update') and arg != pref:
             req.session['diff_contextlines'] = arg
         options = ['-U%d' % arg]
         req.hdf.setValue('diff.options.contextlines', str(arg))
 
-        arg = get_bool_option(req.session, args, 'ignoreblanklines')
+        arg = get_bool_option('ignoreblanklines')
         if arg:
             options.append('-B')
         req.hdf.setValue('diff.options.ignoreblanklines', str(arg))
 
-        arg = get_bool_option(req.session, args, 'ignorecase')
+        arg = get_bool_option('ignorecase')
         if arg:
             options.append('-i')
         req.hdf.setValue('diff.options.ignorecase', str(arg))
 
-        arg = get_bool_option(req.session, args, 'ignorewhitespace')
+        arg = get_bool_option('ignorewhitespace')
         if arg:
             options.append('-b')
         req.hdf.setValue('diff.options.ignorewhitespace', str(arg))

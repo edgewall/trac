@@ -197,13 +197,13 @@ class Search(Module):
         self.req.hdf.setValue('search.wiki', 'checked')
         self.req.hdf.setValue('search.results_per_page', str(self.RESULTS_PER_PAGE))
         
-        if self.args.has_key('q'):
-            query = self.args.get('q')
+        if self.req.args.has_key('q'):
+            query = self.req.args.get('q')
             self.req.hdf.setValue('title', 'Search Results')
             self.req.hdf.setValue('search.q', query.replace('"', "&#34;"))
-            tickets = self.args.has_key('ticket')
-            changesets = self.args.has_key('changeset')
-            wiki = self.args.has_key('wiki')
+            tickets = self.req.args.has_key('ticket')
+            changesets = self.req.args.has_key('changeset')
+            wiki = self.req.args.has_key('wiki')
 
             # If no search options chosen, choose all
             if not (tickets or changesets or wiki):
@@ -215,7 +215,7 @@ class Search(Module):
             if not wiki:
                 self.req.hdf.setValue('search.wiki', '')
 
-            page = int(self.args.get('page', '0'))
+            page = int(self.req.args.get('page', '0'))
             self.req.hdf.setValue('search.result_page', str(page))
             info, more = self.perform_query(query, changesets, tickets, wiki,
                                             page)

@@ -108,9 +108,9 @@ class Attachment(FileCommon):
     def render(self):
         FileCommon.render(self)
         self.view_form = 0
-        self.attachment_type = self.args.get('type', None)
-        self.attachment_id = self.args.get('id', None)
-        self.filename = self.args.get('filename', None)
+        self.attachment_type = self.req.args.get('type', None)
+        self.attachment_id = self.req.args.get('id', None)
+        self.filename = self.req.args.get('filename', None)
         if self.filename:
             self.filename = os.path.basename(self.filename)
 
@@ -118,7 +118,7 @@ class Attachment(FileCommon):
             raise util.TracError('Unknown request')
 
         if self.filename and len(self.filename) > 0 and \
-               self.args.has_key('delete'):
+               self.req.args.has_key('delete'):
             perm_map = {'ticket': perm.TICKET_ADMIN, 'wiki': perm.WIKI_DELETE}
             self.perm.assert_permission(perm_map[self.attachment_type])
             self.env.delete_attachment(self.db,
@@ -168,12 +168,12 @@ class Attachment(FileCommon):
 
             return
 
-        if self.args.has_key('description') and \
-               self.args.has_key('author') and \
-               self.args.has_key('attachment') and \
-               hasattr(self.args['attachment'], 'file'):
+        if self.req.args.has_key('description') and \
+               self.req.args.has_key('author') and \
+               self.req.args.has_key('attachment') and \
+               hasattr(self.req.args['attachment'], 'file'):
 
-            if self.args.has_key('cancel'):
+            if self.req.args.has_key('cancel'):
                 self.req.redirect(self.get_attachment_parent_link()[1])
 
             # Create a new attachment
@@ -186,9 +186,9 @@ class Attachment(FileCommon):
             filename = self.env.create_attachment(self.db,
                                                   self.attachment_type,
                                                   self.attachment_id,
-                                                  self.args['attachment'],
-                                                  self.args.get('description'),
-                                                  self.args.get('author'),
+                                                  self.req.args['attachment'],
+                                                  self.req.args.get('description'),
+                                                  self.req.args.get('author'),
                                                   self.req.remote_addr)
             # Redirect the user to the newly created attachment
             self.req.redirect(self.env.href.attachment(self.attachment_type,
@@ -255,8 +255,8 @@ class File(FileCommon):
     def render(self):
         FileCommon.render(self)
 
-        self.rev = self.args.get('rev', None)
-        self.path = self.args.get('path', '/')
+        self.rev = self.req.args.get('rev', None)
+        self.path = self.req.args.get('path', '/')
         if not self.rev:
             rev_specified = 0
             self.rev = svn.fs.youngest_rev(self.fs_ptr, self.pool)

@@ -153,10 +153,10 @@ class Browser(Module.Module):
     def render(self):
         self.perm.assert_permission (perm.BROWSER_VIEW)
         
-        rev = self.args.get('rev', None)
-        path = self.args.get('path', '/')
-        order = self.args.get('order', 'name').lower()
-        desc = self.args.has_key('desc')
+        rev = self.req.args.get('rev', None)
+        path = self.req.args.get('path', '/')
+        order = self.req.args.get('order', 'name').lower()
+        desc = self.req.args.has_key('desc')
         
         self.authzperm.assert_permission (path)
         
