@@ -30,6 +30,20 @@ from Module import Module
 from db import get_connection
 from util import *
 
+page_dict = None
+
+def populate_page_dict():
+    """Extract wiki page names. This is used to detect broken wiki-links"""
+    global page_dict
+    page_dict = {}
+    cnx = get_connection()
+    cursor = cnx.cursor()
+    cursor.execute('SELECT DISTINCT name FROM wiki')
+    while 1:
+        row = cursor.fetchone()
+        if not row:
+            break
+        page_dict[row[0]] = 1
 
 class Formatter:
     """
@@ -125,7 +139,11 @@ class Formatter:
         return '<h%d>%s</h%d>' % (depth, match[depth + 1:len(match) - depth - 1], depth)
 
     def _wikilink_formatter(self, match, fullmatch):
-        return '<a href="%s">%s</a>' % (href.wiki(match), match)
+        global page_dict
+        if page_dict and not page_dict.has_key(match):
+            return '<a class="wiki-missing-page" href="%s">%s?</a>' % (href.wiki(match), match)
+        else:
+            return '<a href="%s">%s</a>' % (href.wiki(match), match)
 
     def _imgurl_formatter(self, match, fullmatch):
         return '<img src="%s" />' % match

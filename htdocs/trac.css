@@ -157,6 +157,11 @@ table.wiki-history
   visibility: hidden;
 }
 
+a.wiki-missing-page:link
+{
+  color: #600;
+}
+
 table.diff-table 
 { 
   background-color: #eeeeee; 

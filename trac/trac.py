@@ -82,6 +82,10 @@ def main():
         module.fs_ptr = fs_ptr
         db.sync(rep, fs_ptr, pool)
 
+    # Let the wiki module build a dictionary of all page names
+    import Wiki
+    Wiki.populate_page_dict()
+    
     module.run()
         
     core.svn_pool_destroy(pool)
