@@ -21,6 +21,7 @@
 
 import sys
 import StringIO
+from time import gmtime, strftime
 from svn import fs, util, delta
 
 from Module import Module
@@ -57,8 +58,16 @@ class File (Module):
         root = fs.revision_root(self.fs_ptr, rev, self.pool)
 
         mime_type = self.get_mime_type (root, self.path)
+        size = fs.file_length(root, self.path, self.pool)
+        date = fs.revision_prop(self.fs_ptr, rev,
+                                util.SVN_PROP_REVISION_DATE, self.pool)
+        date_seconds = util.svn_time_from_cstring(date, self.pool) / 1000000
+        date = strftime("%a, %d %b %Y %H:%M:%S GMT", gmtime(date_seconds))
 
-        sys.stdout.write('Content-type: %s\r\n\r\n' % mime_type)
+        sys.stdout.write('Last-Modified: %s\r\n' % date)
+        sys.stdout.write('Content-Length: %d\r\n' % size) 
+        sys.stdout.write('Content-Type: %s\r\n\r\n' % mime_type)
+       
         file = fs.file_contents(root, self.path, self.pool)
         while 1:
             data = util.svn_stream_read(file, self.CHUNK_SIZE)
