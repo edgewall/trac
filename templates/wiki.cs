@@ -184,7 +184,7 @@
               </div></form>
               <form class="inline" method="get" action="<?cs
                      var:cgi_location?>/attachment/wiki/<?cs
-                     var:wiki.name ?>"><div>
+                     var:wiki.namedoublequoted ?>"><div>
                <input type="submit" value="Attach File" />
               </div></form>
               <div class="tiny" style="clear: both">&nbsp;</div>

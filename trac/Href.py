@@ -115,6 +115,7 @@ class Href:
         return href
     
     def attachment(self, module, id, filename, format=None):
+        id = urllib.quote(urllib.quote(id, ''))
         filename = urllib.quote(filename)
         if format:
             return href_join(self.base, 'attachment', module, id, filename) + \

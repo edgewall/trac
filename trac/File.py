@@ -120,7 +120,7 @@ class Attachment(FileCommon):
 
             self.path = os.path.join(self.env.get_attachments_dir(),
                                      self.attachment_type,
-                                     self.attachment_id,
+                                     urllib.quote(self.attachment_id),
                                      urllib.quote(self.filename))
             try:
                 fd = open(self.path, 'rb')

@@ -23,6 +23,7 @@ import re
 import time
 import os
 import string
+import urllib
 import difflib
 from cStringIO import StringIO
 
@@ -693,6 +694,10 @@ class Wiki(Module):
         self.req.hdf.setValue('wiki.name', name)
         self.req.hdf.setValue('wiki.author', author)
         self.req.hdf.setValue('wiki.comment', comment)
+        # Workaround so that we can attach files to wiki pages
+        # even if the page name contains a '/'
+        self.req.hdf.setValue('wiki.namedoublequoted',
+                              urllib.quote(urllib.quote(name, '')))
         if name == 'TitleIndex':
             self.generate_title_index()
             self.req.hdf.setValue('title', 'Title Index (wiki)')

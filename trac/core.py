@@ -24,6 +24,7 @@ import re
 import sys
 import cgi
 import locale
+import urllib
 import warnings
 
 import Href
@@ -112,7 +113,7 @@ def parse_path_info(args, path_info):
     if match:
         set_if_missing(args, 'mode', 'attachment')
         set_if_missing(args, 'type', match.group(1))
-        set_if_missing(args, 'id', match.group(2))
+        set_if_missing(args, 'id', urllib.unquote(match.group(2)))
         set_if_missing(args, 'filename', match.group(3))
         return args
     match = re.search('^/milestone(?:/((?:\w|[\.\-])+))?(?:/(.*)/?)?', path_info)
