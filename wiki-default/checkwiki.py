@@ -36,8 +36,7 @@ wiki_pages = [
  "WikiNewPage",
  "WikiPageNames",
  "WikiProcessors",
- "WikiRestructuredText",
- "WikiStart"
+ "WikiRestructuredText"
  ]
 
 def get_page_from_file (pname):
