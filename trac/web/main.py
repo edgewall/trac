@@ -26,7 +26,6 @@ from trac.web.session import Session
 
 import cgi
 import re
-from types import ListType
 import urllib
 
 
@@ -52,6 +51,7 @@ class Request(object):
     remote_addr = None
     remote_user = None
 
+    args = None
     hdf = None
     authname = None
     session = None
@@ -262,7 +262,6 @@ def absolute_url(req, path=None):
         # Missing host header, so reconstruct the host from the
         # server name and port
         default_port = {'http': 80, 'https': 443}
-        name = req.server_name
         if req.server_port and req.server_port != default_port[req.scheme]:
             host = '%s:%d' % (req.server_name, req.server_port)
         else:
