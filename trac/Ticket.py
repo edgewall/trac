@@ -300,7 +300,7 @@ class TicketModule (Module):
             ticket['resolution'] = self.args.get('resolve_resolution')
         elif action == 'reassign':
             ticket['owner'] = self.args.get('reassign_owner')
-            ticket['status'] = 'assigned'
+            ticket['status'] = 'new'
         elif action == 'reopen':
             ticket['status'] = 'reopened'
             ticket['resolution'] = ''
