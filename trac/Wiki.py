@@ -28,7 +28,6 @@ import StringIO
 import perm
 from Module import Module
 from util import escape, TracError, get_reporter_id
-from Session import Session
 from WikiFormatter import *
 
 
@@ -249,16 +248,15 @@ class WikiModule(Module):
         self.req.hdf.setValue('wiki.namedoublequoted',
                               urllib.quote(urllib.quote(name, '')))
 
-        session = Session(self.env, self.req)
         editrows = self.args.get('editrows')
         if editrows:
             self.req.hdf.setValue('wiki.edit_rows', editrows)
-            pref = session.get('wiki_editrows', '20')
+            pref = self.req.session.get('wiki_editrows', '20')
             if editrows != pref:
-                session.set_var('wiki_editrows', editrows)
+                self.req.session.set_var('wiki_editrows', editrows)
         else:
             self.req.hdf.setValue('wiki.edit_rows',
-                                  session.get('wiki_editrows', '20'))
+                                  self.req.session.get('wiki_editrows', '20'))
 
         if save:
             self.req.hdf.setValue('wiki.action', 'save')
