@@ -147,8 +147,6 @@ class Formatter(CommonFormatter):
     """
     _rules = CommonFormatter._rules + \
              [r"""(?P<fancysvnhref>\[(?P<fancysvnfile>svn:[^ ]+) (?P<svnlinkname>.*?)\])""",
-              r"""(?P<beginpre>\{\{\{$)""",
-              r"""(?P<endpre>\}\}\}$)""",
               r"""(?P<begintt>\{\{\{)""",
               r"""(?P<endtt>\}\}\})""",
               r"""(?P<br>\[\[(br|BR)\]\])""",
@@ -163,20 +161,11 @@ class Formatter(CommonFormatter):
     _helper_patterns = ('idepth', 'ldepth', 'hdepth', 'fancyurl',
                         'linkname', 'fancysvnfile', 'svnlinkname')
 
-    def _beginpre_formatter(self, match, fullmatch):
-        self._in_pre = 1
-        return '<pre>'
-
-    def _endpre_formatter(self, match, fullmatch):
-        in_pre = self._in_pre
-        self._in_pre = 0
-        return ['</tt>', '</pre>'][in_pre]
-
     def _begintt_formatter(self, match, fullmatch):
-        return ['<tt>', ''][self._in_pre]
+        return '<tt>'
 
     def _endtt_formatter(self, match, fullmatch):
-        return ['</tt>', ''][self._in_pre]
+        return '</tt>'
 
     def _fancysvnhref_formatter(self, match, fullmatch):
         path = fullmatch.group('fancysvnfile')
@@ -244,12 +233,25 @@ class Formatter(CommonFormatter):
         self._list_stack = []
         self._in_pre = 0
         for line in text.splitlines():
+            # In a PRE-block no other formatting commands apply
+            if not self._in_pre and re.search('^\{\{\{$', line.strip()):
+                self._in_pre = 1
+                out.write('<pre>')
+                continue
+            if self._in_pre:
+                if re.search('^\}\}\}$', line.strip()):
+                    self._in_pre = 0
+                    out.write('</pre>')
+                    continue
+                else:
+                    out.write(escape(line) + '\n')
+                    continue
+                    
             self._is_bold = 0
             self._is_italic = 0
             self._is_underline = 0
             self._in_list = 0
-            line = escape(line)
-            result = re.sub(rules, self.replace, line)
+            result = re.sub(rules, self.replace, escape(line))
             # close any open list item
             if self._li_open:
                 self._li_open = 0
