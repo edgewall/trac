@@ -1,12 +1,16 @@
 from trac.Ticket import Ticket
-from trac.tests.environment import EnvironmentTestBase
 
 import os
 import tempfile
 import unittest
 
 
-class TicketTestCase(EnvironmentTestBase, unittest.TestCase):
+class TicketTestCase(unittest.TestCase):
+
+    def setUp(self):
+        from trac.test import InMemoryDatabase
+        self.db = InMemoryDatabase()
+
     def test_create_ticket(self):
         """Testing Ticket.insert()"""
         # Multiple test in one method, this sucks
@@ -15,26 +19,30 @@ class TicketTestCase(EnvironmentTestBase, unittest.TestCase):
         ticket['reporter'] = 'santa'
         ticket['summary'] = 'Foo'
         ticket['custom_foo'] = 'This is a custom field'
-        assert ticket['reporter'] == 'santa'
-        assert ticket['summary'] == 'Foo'
-        assert ticket['custom_foo'] == 'This is a custom field'
+        self.assertEqual('santa', ticket['reporter'])
+        self.assertEqual('Foo', ticket['summary'])
+        self.assertEqual('This is a custom field', ticket['custom_foo'])
         ticket.insert(self.db)
+
         # Retrieving ticket
         ticket2 = Ticket(self.db, 1)
-        assert ticket2['id'] == 1
-        assert ticket2['reporter'] == 'santa'
-        assert ticket2['summary'] == 'Foo'
-        assert ticket2['custom_foo'] == 'This is a custom field'
+        self.assertEqual(1, ticket2['id'])
+        self.assertEqual('santa', ticket2['reporter'])
+        self.assertEqual('Foo', ticket2['summary'])
+        self.assertEqual('This is a custom field', ticket2['custom_foo'])
+
         # Modifying ticket
         ticket2['summary'] = 'Bar'
         ticket2['custom_foo'] = 'New value'
         ticket2.save_changes(self.db, 'santa', 'this is my comment')
+
         # Retrieving ticket
         ticket3 = Ticket(self.db, 1)
-        assert ticket3['id'] == 1
+        self.assertEqual(1, ticket3['id'])
         self.assertEqual(ticket3['reporter'], 'santa')
         self.assertEqual(ticket3['summary'], 'Bar')
         self.assertEqual(ticket3['custom_foo'], 'New value')
+
         # Testing get_changelog()
         log = ticket3.get_changelog(self.db)
         self.assertEqual(len(log), 3)
@@ -45,6 +53,7 @@ class TicketTestCase(EnvironmentTestBase, unittest.TestCase):
 
 def suite():
     return unittest.makeSuite(TicketTestCase,'test')
+
 
 if __name__ == '__main__':
     unittest.main()
