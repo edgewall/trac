@@ -286,9 +286,9 @@ class TicketNotifyEmail(NotifyEmail):
                                      self.ticket['summary'])
 
     def get_recipients(self, tktid):
-        val = self.env.get_config('notification', 'always_notify_reporter', 0)
+        val = self.env.get_config('notification', 'always_notify_reporter', '0')
         notify_reporter = val.lower() in TRUE
-        val = self.env.get_config('notification', 'always_notify_owner', 0)
+        val = self.env.get_config('notification', 'always_notify_owner', '0')
         notify_owner = val.lower() in TRUE
         
         recipients = self.prev_cc
