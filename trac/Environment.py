@@ -179,3 +179,40 @@ class Environment:
         wfile = open(os.path.join(dir, filename), 'wb')
         shutil.copyfileobj(attachment.file, wfile)
 
+    def backup(self, dest=None):
+        """Simple SQLite-specific backup. Copy the database file."""
+        db_str = self.get_config('trac', 'database', 'sqlite:db/trac.db')
+        if db_str[:7] != 'sqlite:':
+            raise EnvironmentError, 'Can only backup sqlite databases'
+        db_name = os.path.join(self.path, db_str[7:])
+        if not dest:
+            dest = '%s.%i.bak' % (db_name, self.get_version())
+        shutil.copy (db_name, dest)
+
+    def upgrade(self, backup=None,backup_dest=None):
+        """Upgrade database. Each db version should have its own upgrade
+        module, names upgrades/dbN.py, where 'N' is the version number (int)."""
+        dbver = self.get_version()
+        if dbver == db_default.db_version:
+            return 0
+        elif dbver > db_default.db_version:
+            raise EnvironmentError, 'Database newer than Trac version'
+        else:
+            if backup:
+                self.backup(backup_dest)
+            cnx = self.get_db_cnx()
+            cursor = cnx.cursor()
+            import upgrades
+            for i in xrange(dbver + 1, db_default.db_version + 1):
+                try:
+                    upg  = 'db%i' % i
+                    __import__('upgrades', globals(), locals(),[upg])
+                    d = getattr(upgrades, upg)
+                except AttributeError:
+                    err = 'No upgrade module for version %i (%s.py)' % (i, upg)
+                    raise EnvironmentError, err
+                d.do_upgrade(self, i, cursor)
+            cursor.execute("UPDATE system SET value='%i' WHERE "
+                           "name='database_version'" % db_default.db_version)
+            cnx.commit()
+            return 1
