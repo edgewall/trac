@@ -597,20 +597,25 @@ ORDER BY milestone,
         self.print_listing(['Name', 'Owner'], data)
 
     def _do_component_add(self, name, owner):
-            data = self.db_execsql("INSERT INTO component VALUES('%s', '%s')"
-                                   % (name, owner))
+        data = self.db_execsql("INSERT INTO component VALUES('%s', '%s')"
+                               % (name, owner))
 
     def _do_component_rename(self, name, newname):
-            data = self.db_execsql("UPDATE component SET name='%s' WHERE name='%s'"
-                                   % (newname,name))
+        cnx = sqlite.connect (self.dbname)
+        cursor = cnx.cursor ()
+        self.db_execsql("UPDATE component SET name='%s' WHERE name='%s'"
+                        % (newname,name), cursor)
+        self.db_execsql("UPDATE ticket SET component='%s' WHERE component='%s'"
+                        % (newname,name), cursor)
+        cnx.commit()
 
     def _do_component_remove(self, name):
-            data = self.db_execsql("DELETE FROM component WHERE name='%s'"
-                                   % (name))
+        data = self.db_execsql("DELETE FROM component WHERE name='%s'"
+                               % (name))
 
     def _do_component_set_owner(self, name, owner):
-            data = self.db_execsql("UPDATE component SET owner='%s' WHERE name='%s'"
-                                   % (owner,name))
+        data = self.db_execsql("UPDATE component SET owner='%s' WHERE name='%s'"
+                               % (owner,name))
 
 
     ## Permission
