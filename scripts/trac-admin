@@ -212,7 +212,7 @@ CREATE INDEX wiki_idx		ON wiki(name,version);
                     ('ticket', 'default_severity', 'normal'),
                     ('ticket', 'default_priority', 'normal'),
                     ('ticket', 'default_milestone', ''),
-                    ('ticket', 'default_component', 'general'),
+                    ('ticket', 'default_component', 'component1'),
                     ('header_logo', 'link', 'http://trac.edgewall.com/'),
                     ('header_logo', 'src', 'trac_banner.png'),
                     ('header_logo', 'alt', 'Trac'),
@@ -295,7 +295,18 @@ CREATE INDEX wiki_idx		ON wiki(name,version);
     ##
 
     def arg_tokenize (self, argstr):
-        return shlex.split(argstr) or ['']
+        if hasattr(shlex, 'split'):
+            toks = shlex.split(argstr)
+        else:
+            lexer = shlex.shlex(StringIO.StringIO(text))
+            lexer.wordchars = lexer.wordchars + ".,_/"
+            toks = []
+            while 1:
+                token = lexer.get_token().strip('"').strip("'")
+                if not token:
+                    break
+                toks.append(token)
+        return toks or ['']
 
     def word_complete (self, text, words):
         return [a for a in words if a.startswith (text)]
@@ -352,6 +363,11 @@ CREATE INDEX wiki_idx		ON wiki(name,version);
         ls = os.listdir(d)
         return ls
 
+    def get_enum_list (self, type):
+        data = self.db_execsql("SELECT name FROM enum WHERE type='%s'" % type) 
+        return [r[0] for r in data]
+
+
     ##
     ## Available Commands
     ##
@@ -370,7 +386,8 @@ CREATE INDEX wiki_idx		ON wiki(name,version);
         else:
             docs = (self._help_about + self._help_help + self._help_initdb +
                     self._help_config + self._help_component +
-                    self._help_permission + self._help_wiki)
+                    self._help_permission + self._help_wiki +
+                    self._help_priority)
             print 'trac-admin - The Trac Administration Console %s' % __version__
             if not self.interactive:
                 print
@@ -682,6 +699,75 @@ CREATE INDEX wiki_idx		ON wiki(name,version);
             f = file (filename,'w')
             f.write(text)
             f.close()
+
+
+    ## (Ticket) Priority
+    _help_status = [('prio list', 'Show possible ticket priorities'),
+                       ('prio add <value>', 'Add a priority value option'),
+                       ('prio change <value> <newvalue>',
+                        'Change a priority value'),
+                       ('prio remove <value>', 'Remove priority value')]
+
+    def complete_prio (self, text, line, begidx, endidx):
+        if begidx == 14:
+            comp = self.get_enum_list ('priority')
+        elif begidx < 11:
+            comp = ['list','add','change','remove']
+        return self.word_complete(text, comp)
+
+    def do_prio(self, line):
+        self._do_enum('priority', line)
+        
+    def _do_enum(self, type, line):
+        arg = self.arg_tokenize(line)
+        try:
+            if arg[0]  == 'list':
+                self._do_enum_list()
+            elif arg[0] == 'add' and len(arg)==2:
+                name = arg[1]
+                self._do_enum_add('priority',name)
+            elif arg[0] == 'change'  and len(arg)==3:
+                name = arg[1]
+                newname = arg[2]
+                self._do_enum_change('priority', name, newname)
+            elif arg[0] == 'remove'  and len(arg)==2:
+                name = arg[1]
+                self._do_enum_remove('priority',name)
+            else:    
+                self.do_help ('priority')
+        except Exception, e:
+            print 'Priority %s failed:' % arg[0], e
+
+    def _do_enum_list(self, type):
+        data = self.db_execsql("SELECT name,value FROM enum WHERE type='%s'"
+                               % type)
+        self.print_listing(['Possible Values','id#'], data)
+
+    def _do_enum_add(self, type, name):
+        sql = ("INSERT INTO enum('value','type','name') "
+               " SELECT 1+ifnull(max(value),0),'%(type)s','%(name)s'"
+               "   FROM enum WHERE type='%(type)s'" 
+               % {'type':type,
+                  'name':name})
+        data = self.db_execsql(sql)
+
+    def _do_enum_change(self, type, name, newname):
+        d = {'name':name, 'newname':newname, 'type':type}
+        data = self.db_execsql("SELECT name FROM enum" 
+                               " WHERE type='%(type)s' AND name='%(name)s'" % d)
+        if not data:
+            raise Exception, "No such value '%s'" % name
+        data = self.db_execsql("UPDATE enum SET name='%(newname)s'" 
+                               " WHERE type='%(type)s' AND name='%(name)s'" % d)
+
+    def _do_enum_remove(self, type, name):
+        data = self.db_execsql("SELECT name FROM enum" 
+                               " WHERE type='%s' AND name='%s'" % (type, name))
+        if not data:
+            raise Exception, "No such value '%s'" % name
+        data = self.db_execsql("DELETE FROM enum WHERE type='%s' AND name='%s'"
+                               % (type, name))
+
 
 ## ---------------------------------------------------------------------------
 
