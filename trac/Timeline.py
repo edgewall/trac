@@ -101,23 +101,27 @@ class Timeline (Module):
                     'type': int(row['type']),
                     'message': row['message'] or '',
                     'author': escape(row['author'])
-}
+                    }
 
             if item['type'] == CHANGESET:
                 item['changeset_href'] = self.env.href.changeset(item['idata'])
-                item['message'] = wiki_to_oneliner(item['message'],
-                                                   self.req.hdf, self.env)
+                msg = item['message']
+                item['shortmsg'] = escape(shorten_line(msg))
+                item['msg_nowiki'] = escape(msg)
+                item['message'] = wiki_to_oneliner(msg, self.req.hdf,
+                                                   self.env)
+
             elif item['type'] == WIKI:
-		item['wiki_href'] = self.env.href.wiki(row['tdata'])
+                item['wiki_href'] = self.env.href.wiki(row['tdata'])
                 item['message'] = wiki_to_oneliner(shorten_line(item['message']),
                                                    self.req.hdf, self.env)
-	    elif item['type'] == MILESTONE:
-		item['message'] = escape(item['message'])
-	    else:
-		item['ticket_href'] = self.env.href.ticket(item['idata'])
-		msg = item['message']
-		shortmsg = shorten_line(msg)
-		item['message'] = escape(item['message'])
+            elif item['type'] == MILESTONE:
+                item['message'] = escape(item['message'])
+            else:
+                item['ticket_href'] = self.env.href.ticket(item['idata'])
+                msg = item['message']
+                item['shortmsg'] = escape(shorten_line(msg))
+                item['message'] = escape(item['message'])
 
             info.append(item)
         return info

@@ -219,11 +219,12 @@ def populate_hdf(hdf, env, db, req):
     
     hdf.setValue('header_logo.link', env.get_config('header_logo', 'link'))
     hdf.setValue('header_logo.alt', env.get_config('header_logo', 'alt'))
-    if env.get_config('header_logo', 'src')[0] == '/':
-        hdf.setValue('header_logo.src', env.get_config('header_logo', 'src'))
-    else:
-        hdf.setValue('header_logo.src', htdocs_location +
-                     env.get_config('header_logo', 'src'))
+    src = env.get_config('header_logo', 'src')
+    src_abs = src[:7] == 'http://' and 1 or 0
+    if not src[0] == '/' and not src_abs:
+        src = htdocs_location + src
+    hdf.setValue('header_logo.src', src)
+    hdf.setValue('header_logo.src_abs', str(src_abs))
     hdf.setValue('header_logo.width', env.get_config('header_logo', 'width'))
     hdf.setValue('header_logo.height', env.get_config('header_logo', 'height'))
     hdf.setValue('trac.href.logout', env.href.logout())
