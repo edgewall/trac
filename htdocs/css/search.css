@@ -13,6 +13,4 @@ a.result-title {  color: #33c; }
 }
 .result-match {  background: #ffc800; }
 b { font-weight: normal; }
-#search-notfound { 
-  margin: 2em;
-}
+#search-notfound { margin: 2em; font-size: 110%; }

@@ -69,8 +69,8 @@ Page</a>
     <?cs /if ?>
   
   </div>
-<?cs else ?>
-<div id="search-notfound">No results found.</div>
+<?cs elif $search.q ?>
+ <div id="search-notfound">No matches found.</div>
 <?cs /if ?>
  </div> 
 </div>
