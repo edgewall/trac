@@ -23,6 +23,7 @@ import os
 import re
 import sys
 import cgi
+import Cookie
 import warnings
 
 import perm
@@ -44,61 +45,58 @@ modules = {
     'newticket'   : ('Ticket', 'Newticket', 0),
     }
 
-def parse_args():
+def parse_args(path_info):
     args = {}
-    info = os.getenv ('PATH_INFO')
-    if not info:
-        return args
     
-    match = re.search('/about(/?.*)', info)
+    match = re.search('/about(/?.*)', path_info)
     if match:
         args['mode'] = 'about'
         if len(match.group(1)) > 0:
             args['page'] = match.group(1)
         return args
-    if re.search('/newticket/?', info):
+    if re.search('/newticket/?', path_info):
         args['mode'] = 'newticket'
         return args
-    if re.search('/timeline/?', info):
+    if re.search('/timeline/?', path_info):
         args['mode'] = 'timeline'
         return args
-    if re.search('/search/?', info):
+    if re.search('/search/?', path_info):
         args['mode'] = 'search'
         return args
-    match = re.search('/wiki/(.*[^/])/?', info)
+    match = re.search('/wiki/(.*[^/])/?', path_info)
     if match:
         args['mode'] = 'wiki'
         if len(match.group(1)) > 0:
             args['page'] = match.group(1)
         return args
-    match = re.search('/ticket/([0-9]+)/?', info)
+    match = re.search('/ticket/([0-9]+)/?', path_info)
     if match:
         args['mode'] = 'ticket'
         args['id'] = match.group(1)
         return args
-    match = re.search('/report/([0-9]*)/?', info)
+    match = re.search('/report/([0-9]*)/?', path_info)
     if match:
         args['mode'] = 'report'
         if len(match.group(1)) > 0:
             args['id'] = match.group(1)
         return args
-    match = re.search('/browser(/?.*)', info)
+    match = re.search('/browser(/?.*)', path_info)
     if match:
         args['mode'] = 'browser'
         if len(match.group(1)) > 0:
             args['path'] = match.group(1)
         return args
-    match = re.search('/log/(.+)', info)
+    match = re.search('/log/(.+)', path_info)
     if match:
         args['mode'] = 'log'
         args['path'] = match.group(1)
         return args
-    match = re.search('/file/(.+)/?', info)
+    match = re.search('/file/(.+)/?', path_info)
     if match:
         args['mode'] = 'file'
         args['path'] = match.group(1)
         return args
-    match = re.search('/changeset/([0-9]+)/?', info)
+    match = re.search('/changeset/([0-9]+)/?', path_info)
     if match:
         args['mode'] = 'changeset'
         args['rev'] = match.group(1)
@@ -122,16 +120,46 @@ def real_main():
     import auth
     from util import dict_get_with_default, redirect
 
+    path_info = os.getenv('PATH_INFO')
+    remote_addr = os.getenv('REMOTE_ADDR')
+    remote_user = os.getenv('REMOTE_USER')
+    http_cookie = os.getenv('HTTP_COOKIE')
+    http_referer = os.getenv('HTTP_REFERER')
+    cgi_location = os.getenv('SCRIPT_NAME')
+    
     database = open_database()
     config = database.load_config()
     
-    Href.initialize(config)
+    Href.initialize(cgi_location)
 
-    args = parse_args()
+    # Authenticate the user
+    cookie = Cookie.SimpleCookie(http_cookie)
+    if cookie.has_key('trac_auth'):
+        auth_cookie = cookie['trac_auth'].value
+    else:
+        auth_cookie = None
+
+    authenticator = auth.Authenticator(database, auth_cookie, remote_addr)
+    if path_info == '/logout':
+        authenticator.logout()
+        redirect (http_referer or Href.href.wiki())
+    elif remote_user and authenticator.authname == 'anonymous':
+        auth_cookie = authenticator.login(remote_user, remote_addr)
+        # send the cookie to the browser as a http header
+        cookie = Cookie.SimpleCookie()
+        cookie['trac_auth'] = auth_cookie
+        cookie['trac_auth']['path'] = cgi_location
+        print cookie.output()
+    if path_info == '/login':
+        redirect (http_referer or Href.href.wiki())
+
+    # Parse arguments
+    args = parse_args(path_info)
     _args = cgi.FieldStorage()
     for x in _args.keys():
         args[x] = _args[x].value
 
+    # Load the selected module
     mode = dict_get_with_default(args, 'mode', 'wiki')
     module_name, constructor_name, need_svn = modules[mode]
     module = __import__(module_name, globals(),  locals(), [])
@@ -139,9 +167,11 @@ def real_main():
     module = constructor(config, args)
     module._name = mode
     module.db = database
+    module.authname = authenticator.authname
+    module.remote_addr = remote_addr
+    module.cgi_location = cgi_location
 
-    auth.verify_authentication(database, args)
-    module.perm = perm.PermissionCache(database, auth.get_authname())
+    module.perm = perm.PermissionCache(database, authenticator.authname)
     module.perm.add_to_hdf(module.cgi.hdf)
 
     # Only open the subversion repository for the modules that really
@@ -174,7 +204,6 @@ def real_main():
 def create_error_cgi():
     import neo_cgi
     import os.path
-    from auth import get_authname
     from Href import href
     
     database = open_database()
@@ -190,7 +219,6 @@ def create_error_cgi():
     cgi = neo_cgi.CGI()
     cgi.hdf.setValue('hdf.loadpaths.0', templates_dir)
     cgi.hdf.setValue('htdocs_location', htdocs_location)
-    cgi.hdf.setValue('trac.authname', get_authname())
     cgi.hdf.setValue('trac.href.wiki', href.wiki())
     cgi.hdf.setValue('trac.href.browser', href.browser('/'))
     cgi.hdf.setValue('trac.href.timeline', href.timeline())

@@ -27,7 +27,6 @@ from util import *
 from Href import href
 from Module import Module
 import perm
-import auth
 from Wiki import wiki_to_html
 
 fields = ['time', 'component', 'severity', 'priority', 'milestone', 'reporter',
@@ -94,7 +93,7 @@ class Ticket (Module):
         if new.has_key('action'):
             if new['action'] == 'accept':
                 new['status'] = 'assigned'
-                new['owner'] = auth.get_authname()
+                new['owner'] = self.authname
             if new['action'] == 'resolve':
                 new['status'] = 'closed'
                 new['resolution'] = new['resolve_resolution']
@@ -113,7 +112,7 @@ class Ticket (Module):
             author = new['reporter']
             del new['reporter']
         else:
-            author = auth.get_authname()
+            author = self.authname
         for name in fields:
             if new.has_key(name) and (not old.has_key(name) or old[name] != new[name]):
                 cursor.execute ('INSERT INTO ticket_change '
@@ -151,7 +150,7 @@ class Ticket (Module):
         data['time'] = now
         data['changetime'] = now
         if not data.has_key('reporter'):
-            data['reporter'] = auth.get_authname()
+            data['reporter'] = self.authname
 
         cursor = self.db.cursor()
 

@@ -22,8 +22,6 @@
 import os
 from util import *
 from Href import href
-from perm import PermissionError
-import auth
 import neo_cgi
 
 class Module:
@@ -33,7 +31,7 @@ class Module:
         self.cgi = neo_cgi.CGI()
 
     def run(self):
-        self.cgi.hdf.setValue('cgi_location', os.getenv('SCRIPT_NAME'))
+        self.cgi.hdf.setValue('cgi_location', self.cgi_location)
         self.render()
         self.apply_template()
         
@@ -54,7 +52,7 @@ class Module:
         self.cgi.hdf.setValue('project.name', self.config['project']['name'])
         self.cgi.hdf.setValue('project.descr', self.config['project']['descr'])
         self.cgi.hdf.setValue('trac.active_module', self._name)
-        self.cgi.hdf.setValue('trac.authname', auth.get_authname())
+        self.cgi.hdf.setValue('trac.authname', self.authname)
         self.cgi.hdf.setValue('trac.href.wiki', href.wiki())
         self.cgi.hdf.setValue('trac.href.browser', href.browser('/'))
         self.cgi.hdf.setValue('trac.href.timeline', href.timeline())

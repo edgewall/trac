@@ -25,7 +25,6 @@ import os
 import StringIO
 import string
 
-import auth
 import perm
 from Href import href
 from Module import Module
@@ -374,10 +373,12 @@ def wiki_to_oneliner(wikitext):
 
 
 class Page:
-    def __init__(self, name, version, perm, db):
+    def __init__(self, name, version, perm, db, authname, remote_addr):
         self.db = db
         self.name = name
         self.perm = perm
+        self.authname = authname
+        self.remote_addr = remote_addr
         cursor = self.db.cursor ()
         if version:
             cursor.execute ('SELECT version, text FROM wiki '
@@ -416,8 +417,7 @@ class Page:
                         '(name, version, time, author, ipnr, locked, text) '
                         'VALUES (%s, %s, %s, %s, %s, %s, %s)',
                         self.name, new_version, int(time.time()),
-                        auth.get_authname(), os.getenv('REMOTE_ADDR'),
-                        0, self.text)
+                        self.authname, self.remote_addr, 0, self.text)
         self.db.commit ()
 
 
@@ -492,7 +492,8 @@ class Wiki(Module):
             self.cgi.hdf.setValue('wiki.action', 'view')
             self.cgi.hdf.setValue('title', 'Wiki Page: ' + name)
 
-        page = Page(name, version, self.perm, self.db)
+        page = Page(name, version, self.perm, self.db,
+                    self.authname, self.remote_addr)
         if self.args.has_key('text'):
             page.set_content (self.args['text'])
         

@@ -90,6 +90,6 @@ class Href:
 
 href = None
 
-def initialize(config):
+def initialize(cgi_location):
     global href
-    href = Href(os.getenv('SCRIPT_NAME'))
+    href = Href(cgi_location)
