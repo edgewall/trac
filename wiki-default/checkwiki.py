@@ -15,6 +15,7 @@ import getopt
 # Pages to include in distribution
 wiki_pages = [
  "CamelCase",
+ "TracAccessibility",
  "TracAdmin",
  "TracBrowser",
  "TracChangeset",

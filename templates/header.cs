@@ -1,9 +1,10 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
         "http://www.w3.org/TR/2000/REC-xhtml1-20000126/DTD/xhtml1-strict.dtd">
 
-<?cs def:navlink(text, href, id, aclname) ?><?cs
+<?cs def:navlink(text, href, id, aclname, accesskey) ?><?cs
    if $trac.acl.+aclname ?><li><a href="<?cs var:href ?>" <?cs 
-        if $id == $trac.active_module ?>class="active"<?cs 
+        if $id == $trac.active_module ?>class="active"<?cs /if ?> 
+        <?cs if:$accesskey!="" ?> accesskey="<?cs var:$accesskey ?>"<?cs 
         /if ?>><?cs var:text ?></a></li><?cs 
    /if ?><?cs 
 /def ?>
@@ -68,34 +69,37 @@
       logged in as <?cs var:trac.authname ?> </li>
       <li><a href="<?cs var:trac.href.logout ?>">Logout</a>
     <?cs /if ?></li>
-    <li><a href="<?cs var:trac.href.wiki ?>TracGuide">Help/Guide</a></li>
-    <li class="last"><a href="<?cs var:trac.href.about ?>">About Trac</a></li>
+    <li><a accesskey="6" href="<?cs var:trac.href.wiki ?>TracGuide">Help/Guide</a></li>
+    <li style="display: none"><a accesskey="5" href="<?cs var:trac.href.wiki ?>TracFaq">FAQ</a></li>
+    <li style="display: none"><a accesskey="0" href="<?cs var:trac.href.wiki ?>TracAccessibility">Accessibility</a></li>
+    <li class="last"><a accesskey="9" href="<?cs var:trac.href.about ?>">About Trac</a></li>
    </ul>
   </div>
  </div>
   <div id="navbar">
     <ul>
       <?cs call:navlink("Wiki", $trac.href.wiki, "wiki", 
-                        "WIKI_VIEW") ?>
+                        "WIKI_VIEW", "1") ?>
       <?cs call:navlink("Timeline", $trac.href.timeline, "timeline", 
-                        "TIMELINE_VIEW") ?>
+                        "TIMELINE_VIEW", "2") ?>
       <?cs if $trac.active_module == "log" ?>	
     	<?cs set:$browser_view="log" ?>
       <?cs else  ?>	
     	<?cs set:$browser_view="browser" ?>
       <?cs /if  ?>	
       <?cs call:navlink("Browse Source", $trac.href.browser, $browser_view, 
-                        "BROWSER_VIEW") ?>
+                        "BROWSER_VIEW", "") ?>
       <?cs if $trac.active_module == "ticket" ?>	
     	<?cs set:$ticket_view="ticket" ?>
       <?cs else  ?>	
     	<?cs set:$ticket_view="report" ?>
       <?cs /if  ?>	
       <?cs call:navlink("View Tickets", $trac.href.report, $ticket_view, 
-                        "REPORT_VIEW") ?>
+                        "REPORT_VIEW", "") ?>
+      <a style="display: none" href="<?cs var:$trac.href.newticket ?>" accesskey="7"></a>
       <?cs call:navlink("New Ticket", $trac.href.newticket, "newticket", 
-                        "TICKET_CREATE") ?>
+                        "TICKET_CREATE", "9") ?>
       <?cs call:navlink("Search", $trac.href.search, "search", 
-                        "SEARCH_VIEW") ?>
+                        "SEARCH_VIEW", "4") ?>
     </ul>
   </div>
