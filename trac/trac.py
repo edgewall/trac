@@ -303,6 +303,7 @@ def real_main():
     # We do this even if the cgi will terminate directly after. A pool
     # destruction might trigger important clean-up functions.
     if module.pool:
+        import svn.core
         svn.core.svn_pool_destroy(module.pool)
 
 
