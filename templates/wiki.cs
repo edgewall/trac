@@ -126,7 +126,7 @@
           <?cs if wiki.action == "edit" || wiki.action == "preview" ?>
            <h3>Editing "<?cs var:wiki.page_name ?>"</h3>
            <div style="width: 100%">
-            <form action="<?cs var:wiki.current_href ?>" method="post">
+            <form action="<?cs var:wiki.current_href ?>#preview" method="post">
               <input type="hidden" name="edit_version"
                   value="<?cs var:wiki.edit_version?>" />
               <label for="text">Page source:</label><br />
@@ -153,7 +153,7 @@
                 <div class="buttons">
                     <input type="submit" name="save" value="Save changes" />&nbsp;
                     <input type="submit" name="preview" value="Preview" />&nbsp;
-                    <input type="submit" name="view" value="Cancel" />
+                    <input type="submit" name="cancel" value="Cancel" />
                 </div>
               </fieldset>
             </form>
@@ -161,6 +161,7 @@
           <?cs /if ?>
           <?cs if wiki.action == "view" || wiki.action == "preview" ?>
             <?cs if wiki.action == "preview" ?><hr /><?cs /if ?>
+	    <a name="preview" />
             <div class="wikipage">
                 <div id="searchable">
                  <?cs var:wiki.page_html ?>

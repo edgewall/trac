@@ -212,6 +212,19 @@ def create_unique_file(path):
                 raise Exception('Failed to create unique name: ' + path)
             path = '%s.%d%s' % (parts[0], idx, parts[1])
 
+def get_reporter_id(req):
+    name = req.session.get('name', None)
+    email = req.session.get('email', None)
+    
+    if req.authname != 'anonymous':
+        return req.authname
+    elif name and email:
+        return '%s <%s>' % (name, email)
+    elif not name and email:
+        return email
+    else:
+        return req.authname
+
 
 class TracError(Exception):
     def __init__(self, message, title=None, show_traceback=0):

@@ -12,13 +12,13 @@ addEvent(window, 'load', function() { document.getElementById('summary').focus()
 
 <h3>Create New Ticket:</h3>
 <div id="nt-ticket">
-<form action="<?cs var:cgi_location ?>" method="post">
+<form action="<?cs var:cgi_location ?>#preview" method="post">
 
  <div id="nt-body" style="width: 100%">
   <div class="tkt-prop">
    <label for="reporter">Your email or username:</label><br />
    <input type="text" id="reporter" name="reporter" size="40"
-           class="textwidget" value="<?cs call:session_name_email() ?>" /><br />
+           class="textwidget" value="<?cs var:newticket.reporter ?>" /><br />
   </div>
   <div class="tkt-prop">
    <label for="summary">Short Summary:</label>&nbsp;<br />
@@ -30,6 +30,7 @@ addEvent(window, 'load', function() { document.getElementById('summary').focus()
    <textarea id="description" name="description" class="textwidget" 
             rows="10" cols="78" style="width: 97%"><?cs var:newticket.description ?></textarea>
    <?cs if newticket.description_preview ?>
+     <a name="preview" />
      <fieldset>
      <legend>Description Preview</legend>
        <?cs var:newticket.description_preview ?>

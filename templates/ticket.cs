@@ -149,21 +149,27 @@
 <h3><a name="edit"
 onfocus="document.getElementById('comment').focus()">Add/Change
 #<?cs var:ticket.id ?> (<?cs var:ticket.summary ?>)</a></h3>
-<form action="<?cs var:cgi_location ?>" method="post" enctype="multipart/form-data">
+<form action="<?cs var:cgi_location ?>#preview" method="post" enctype="multipart/form-data">
   <div class="tkt-prop">
    <input type="hidden" name="mode" value="ticket" />
    <input type="hidden" name="id"   value="<?cs var:ticket.id ?>" />
    <label for="reporter">Your email or username:</label><br />
     <input type="text" id="reporter" name="reporter" class="textwidget" size="40"
-           value="<?cs call:session_name_email() ?>" /><br />
+           value="<?cs var:ticket.reporter_id ?>" /><br />
   </div>
   <div class="tkt-prop">
   <label for="comment">Add Comment (You may use 
       <a tabindex="42" href="<?cs var:$trac.href.wiki ?>/WikiFormatting">WikiFormatting</a> here):</label><br />
 
   <textarea id="comment" name="comment" class="textwidget"
-            rows="10" cols="78" style="width: 97%; max-width: 694px"></textarea>
- <br />&nbsp;
+            rows="10" cols="78" style="width: 97%; max-width: 694px"><?cs var:ticket.comment ?></textarea>
+   <?cs if ticket.comment_preview ?>
+     <a name="preview" />
+     <fieldset>
+     <legend>Comment Preview</legend>
+       <?cs var:ticket.comment_preview ?>
+     </fieldset>
+   <?cs /if ?>
   </div>
 
  <fieldset>
@@ -239,6 +245,7 @@ onfocus="document.getElementById('comment').focus()">Add/Change
 
   <div id="nt-buttons" style="clear: both">
    <input type="reset" value="Reset" />&nbsp;
+   <input type="submit" name="preview" value="Preview" />&nbsp;
    <input type="submit" value="Submit changes" /> 
   </div>
  </div>

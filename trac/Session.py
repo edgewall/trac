@@ -56,6 +56,9 @@ class Session:
     def __delitem__(self, key):
         return self.set_var(key, '')
 
+    def get(self, *args):
+        return apply(self.vars.get, args)
+
     def __repr__(self):
         s = "\n session id='%s'" % self.sid
         for k in self.vars.keys():

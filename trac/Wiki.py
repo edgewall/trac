@@ -686,8 +686,12 @@ class Wiki(Module):
         save = self.args.get('save', None)
         edit = self.args.get('edit', None)
         diff = self.args.get('diff', None)
+        cancel = self.args.get('cancel', None)
         preview = self.args.get('preview', None)
         version = int(self.args.get('version', 0))
+
+        if cancel:
+            self.req.redirect(self.env.href.wiki(name))
 
         self.generate_history(name)
 

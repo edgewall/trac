@@ -30,14 +30,14 @@
  </tr><?cs /each ?>
 <?cs /def ?>
 
-<?cs def:session_name_email() ?>
-<?cs var:trac.session.var.name ?><?cs 
-  if:trac.session.var.email ?><?cs 
-    if:trac.session.var.name ?> &lt;<?cs var:trac.session.var.email ?>&gt;<?cs 
-    else ?><?cs var:trac.session.var.email ?><?cs 
-    /if ?><?cs 
-  /if ?><?cs 
-  if:!trac.session.var.name && !trac.session.var.email ?><?cs
+<?cs def:session_name_email() ?><?cs
+  if trac.authname != "anonymous" ?><?cs 
      var:trac.authname ?><?cs 
-  /if ?>
-<?cs /def ?>
+  elif trac.session.var.name && trac.session.var.email ?><?cs
+     var:trac.session.var.name ?> &lt;<?cs var:trac.session.var.email ?>&gt;<?cs 
+  elif !trac.session.var.name && trac.session.var.email ?><?cs 
+     var:trac.session.var.email ?><?cs 
+  else ?><?cs
+     var:trac.authname ?><?cs 
+  /if ?><?cs
+  /def ?>
