@@ -50,13 +50,21 @@ class Module:
             # a pretty error message + traceback.
             import traceback, StringIO
             tb = StringIO.StringIO()
-            traceback.print_exc(file=tb)
-            self.cgi.hdf.setValue('title', 'Oups')
-            self.cgi.hdf.setValue('error.type', 'internal')
-            self.cgi.hdf.setValue('error.message', str(e))
-            self.cgi.hdf.setValue('error.traceback',tb.getvalue())
-            self.template_name = 'error.cs'
-            Module.apply_template(self)
+	    try:
+		traceback.print_exc(file=tb)
+		self.cgi.hdf.setValue('title', 'Oups')
+		self.cgi.hdf.setValue('error.type', 'internal')
+		self.cgi.hdf.setValue('error.message', str(e))
+		self.cgi.hdf.setValue('error.traceback',tb.getvalue())
+		self.template_name = 'error.cs'
+		Module.apply_template(self)
+	    except:
+		print 'Content-Type: text/plain\r\n\r\n',
+		print 'Error Message:'
+		print str(e)
+		print
+		print 'Tracebac:'
+		print tb.getvalue()
         
     def render (self):
         """

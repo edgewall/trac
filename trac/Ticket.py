@@ -188,10 +188,10 @@ class Ticket (Module):
 		break
 
             date   = int(row[0])
-            author = row[1]
-            field  = row[2]
-            old    = row[3]
-            new    = row[4]
+            author = row[1] or ''
+            field  = row[2] or ''
+            old    = row[3] or ''
+            new    = row[4] or ''
 
             hdf.setValue('ticket.changes.%d.date' % idx,
                                   time.strftime('%F %H:%M',
