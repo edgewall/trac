@@ -297,14 +297,17 @@ table.wiki {
 table.wiki td { border: 1px solid #ccc;  padding: .1em .25em; }
 #wiki-edit-page:hover { background: #ccb }
 
-/* Styles for the error page */
-#content.error .message {
+/* Styles for the error page (and rst errors) */
+#content.error .message, div.system-message {
  background: #fdc;
  border: 2px solid #d00;
  color: #500;
  padding: .5em;
  margin: 1em 0;
 }
+
+div.system-message p { margin: 0; }
+div.system-message p.system-message-title { font-weight: bold; }
 
 /* Styles for search word highlighting */
 .searchword0 { background: #ff9 }
