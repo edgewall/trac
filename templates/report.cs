@@ -19,7 +19,7 @@
   <?cs /if ?>
   <a href="<?cs var:$trac.href.report ?>">Report Index</a>&nbsp;
 </div>
-<hr />
+<hr class="hide"/>
 <div id="main">
     <div id="main-content">
 <?cs if report.mode == "list" ?>

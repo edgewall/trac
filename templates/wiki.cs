@@ -7,7 +7,7 @@
   <a href="<?cs var:$trac.href.wiki ?>TitleIndex">Title Index</a> |
   <a href="javascript:view_history()">Show/Hide History</a>
 </div>
-<hr />
+<hr class="hide"/>
 <?cs if $wiki.history ?>
     <table id="wiki-history">
       <tr>
@@ -29,7 +29,7 @@
         </tr>
       <?cs /each ?>
     </table>
-    <hr />
+    <hr class="hide"/>
   <?cs /if ?>
   <div id="main">
     <div id="main-content">

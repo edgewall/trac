@@ -47,12 +47,12 @@
 </div> 
 
 <div class="hide">
-  <hr />
+  <hr class="hide" />
   <h2>-=&gt; Note: Diff viewing requires CSS2 &lt;=-</h2>
   <p>
     Output below might not be useful.
   </p>
-  <hr />
+  <hr class="hide" />
 </div>    
     
 <div id="chg-diff">

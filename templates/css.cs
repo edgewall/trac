@@ -5,7 +5,11 @@ body {
 	color: #000;
 	font: normal 100% 'Bitstream Vera Sans', Verdana, Helvetica, Arial, sans-serif;
 }
-hr,.hide { display: none; }
+.hide { display: none; }
+hr { 
+  border: 0;
+  border-top: 1px solid #ccc;
+}
 a:link, a:visited, a.noline,b.tl-item-link {
 	text-decoration: none;
 	color: #b00;

@@ -61,7 +61,7 @@
 
 </div> <!-- #tkt-ticket -->
 
-<hr />
+<hr class="hide"/>
 
   <h2 id="tkt-changes-hdr">Changelog</h2>
   <div id="tkt-changes">
@@ -116,7 +116,7 @@
     </ul>
   </div>
 
-<hr />
+<hr class="hide"/>
 
 <form action="<?cs var:cgi_location ?>" method="post">
 <h3>Add/Change Information</h3>

@@ -1,4 +1,4 @@
-<hr />
+<hr class="hide"/>
 <div id="footer">
  <a class="noline" href="http://trac.edgewall.com/"><img id="footer-logo"
      src="<?cs var:htdocs_location?>/trac.png" 

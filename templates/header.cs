@@ -21,7 +21,7 @@
       width="<?cs var:header_logo.width ?>" 
       height="<?cs var:header_logo.height ?>" 
       alt="<?cs var:header_logo.alt ?>" /></a>
-  <hr />
+  <hr class="hide"/>
   <div id="header-links">
     <?cs if $trac.authname == "anonymous" ?>
       <a href="<?cs var:trac.href.login ?>" 
