@@ -22,6 +22,7 @@
 from __future__ import nested_scopes
 from time import gmtime, localtime, strftime
 from types import ListType
+import re
 
 import perm
 from Module import Module
@@ -187,13 +188,13 @@ class Query:
             # negation, etc)
             neg = len(v[0]) and v[0][0] == '!'
             mode = ''
-            if len(v[0]) and v[0][neg] in ('~', '^', '$'):
+            if len(v[0]) > neg and v[0][neg] in ('~', '^', '$'):
                 mode = v[0][neg]
 
             # Special case for exact matches on multiple values
             if not mode and len(v) > 1:
                 inlist = ",".join(["'" + sql_escape(val[neg and 1 or 0:]) + "'" for val in v])
-                clauses.append("%s %sIN (%s)" % (k, neg and "NOT " or "", inlist))
+                clauses.append("IFNULL(%s,'') %sIN (%s)" % (k, neg and "NOT " or "", inlist))
             elif len(v) > 1:
                 constraint_sql = [get_constraint_sql(k, val, mode, neg) for val in v]
                 if neg:
@@ -261,8 +262,15 @@ class QueryModule(Module):
 
         # For clients without JavaScript, we add a new constraint here if
         # requested
-        removed_fields = [k[10:] for k in self.args.keys()
-                          if k.startswith('rm_filter_')]
+        remove_constraints = {}
+        to_remove = [k[10:] for k in self.args.keys()
+                     if k.startswith('rm_filter_')]
+        if to_remove: # either empty or containing a single element
+            match = re.match(r'(\w+?)_(\d+)$', to_remove[0])
+            if match:
+                remove_constraints[match.group(1)] = int(match.group(2))
+            else:
+                remove_constraints[to_remove[0]] = -1
 
         constrained_fields = [k for k in self.args.keys()
                               if k in Ticket.std_fields or k in custom_fields]
@@ -275,8 +283,15 @@ class QueryModule(Module):
                 mode = self.args.get(field + '_mode')
                 if mode:
                     vals = map(lambda x: mode + x, vals)
-                if not field in removed_fields:
-                    constraints[field] = vals
+                if field in remove_constraints.keys():
+                    idx = remove_constraints[field]
+                    if idx >= 0:
+                        del vals[idx]
+                        if not vals:
+                            continue
+                    else:
+                        continue
+                constraints[field] = vals
 
         return constraints
 
@@ -303,8 +318,8 @@ class QueryModule(Module):
                                     "ORDER BY value")})
         properties.append({
             'name': 'resolution', 'type': 'radio', 'label': 'Resolution',
-            'options': rows_to_list("SELECT name FROM enum "
-                                    "WHERE type='resolution' ORDER BY value")})
+            'options': [''] + rows_to_list("SELECT name FROM enum "
+                                           "WHERE type='resolution' ORDER BY value")})
         properties.append({
             'name': 'component', 'type': 'select', 'label': 'Component',
             'options': rows_to_list("SELECT name FROM component "
@@ -346,7 +361,7 @@ class QueryModule(Module):
         modes = {}
         modes['text'] = [
             {'name': "contains", 'value': "~"},
-            {'name': "doesn't cointain", 'value': "!~"},
+            {'name': "doesn't contain", 'value': "!~"},
             {'name': "begins with", 'value': "^"},
             {'name': "ends with", 'value': "$"},
             {'name': "is", 'value': ""},
@@ -390,6 +405,21 @@ class QueryModule(Module):
         self.add_link('alternate', query.get_href('tab'), 'Tab-delimited Text',
             'text/plain')
 
+        constraints = {}
+        for k, v in query.constraints.items():
+            constraint = {'values': [], 'mode': ''}
+            for val in v:
+                neg = val[:1] == '!'
+                if neg:
+                    val = val[1:]
+                mode = ''
+                if val[:1] in ('~', '^', '$'):
+                    mode, val = val[:1], val[1:]
+                constraint['mode'] = (neg and '!' or '') + mode
+                constraint['values'].append(val)
+            constraints[k] = constraint
+        add_to_hdf(constraints, self.req.hdf, 'query.constraints')
+
         self.query = query
 
         # For clients without JavaScript, we add a new constraint here if
@@ -397,7 +427,11 @@ class QueryModule(Module):
         if self.args.has_key('add'):
             field = self.args.get('add_filter')
             if field:
-                self.req.hdf.setValue('query.constraints.%s.0' % field, '')
+                idx = 0
+                if query.constraints.has_key(field):
+                    idx = len(query.constraints[field])
+                self.req.hdf.setValue('query.constraints.%s.values.%d'
+                                      % (field, idx), '')
 
     def display(self):
         self.req.hdf.setValue('title', 'Custom Query')
@@ -423,21 +457,6 @@ class QueryModule(Module):
                     escape(self.env.href.query(query.constraints, cols[i],
                                                0, query.group, query.groupdesc,
                                                query.verbose)))
-
-        constraints = {}
-        for k, v in query.constraints.items():
-            constraint = {'values': [], 'mode': ''}
-            for val in v:
-                neg = val[:1] == '!'
-                if neg:
-                    val = val[1:]
-                mode = ''
-                if val[:1] in ('~', '^', '$'):
-                    mode, val = val[:1], val[1:]
-                constraint['mode'] = mode + (neg and '!' or '')
-                constraint['values'].append(val)
-            constraints[k] = constraint
-        add_to_hdf(constraints, self.req.hdf, 'query.constraints')
 
         self.req.hdf.setValue('query.order', query.order)
         if query.desc:

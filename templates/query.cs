@@ -28,8 +28,7 @@
     /if ?><?cs
    /each ?><?cs
   /def ?>
-  <table><col class="header" /><col class="mode" /><col class="filter" />
-   <col class="actions" /><?cs each:property = ticket.properties ?><?cs
+  <table><?cs each:property = ticket.properties ?><?cs
    each:constraint = query.constraints ?><?cs
     if:property.name == name(constraint) ?>
      <tbody><tr class="<?cs var:property.name ?>">
@@ -56,7 +55,7 @@
          if:name(value) != len(constraint.values) - 1 ?>
           </td>
           <td class="actions"><input type="submit" name="rm_filter_<?cs
-             var:property.name ?>" value="-" /></td>
+             var:property.name ?>_<?cs var:name(value) ?>" value="-" /></td>
          </tr><tr class="<?cs var:property.name ?>">
           <th colspan="2"><label>or</label></th>
           <td class="filter"><?cs
@@ -68,7 +67,7 @@
            var:option ?>" name="<?cs var:property.name ?>" value="<?cs
            var:option ?>"<?cs call:checkbox_checked(constraint, option) ?> />
          <label for="<?cs var:property.name ?>_<?cs var:option ?>"><?cs
-           var:option ?></label><?cs
+           alt:option ?>none<?cs /alt ?></label><?cs
         /each ?><?cs
        elif:property.type == "text" ?><?cs
         each:value = constraint.values ?>
@@ -77,7 +76,7 @@
          if:name(value) != len(constraint.values) - 1 ?>
           </td>
           <td class="actions"><input type="submit" name="rm_filter_<?cs
-             var:property.name ?>" value="-" /></td>
+             var:property.name ?>_<?cs var:name(value) ?>" value="-" /></td>
          </tr><tr class="<?cs var:property.name ?>">
           <th colspan="2"><label>or</label></th>
           <td class="filter"><?cs
@@ -86,7 +85,10 @@
        /if ?>
       </td>
       <td class="actions"><input type="submit" name="rm_filter_<?cs
-         var:property.name ?>" value="-" /></td>
+         var:property.name ?><?cs
+         if:property.type != "radio" ?>_<?cs
+          var:len(constraint.values) - 1 ?><?cs
+         /if ?>" value="-" /></td>
      </tr></tbody><?cs /if ?><?cs
     /each ?><?cs
    /each ?>
@@ -103,7 +105,7 @@
          /if ?>><?cs var:property.label ?></option><?cs
       /each ?>	
      </select>
-     <noscript><input type="submit" name="add" value="+" /></noscript>
+     <input type="submit" name="add" value="+" />
     </td>
    </tr>
   </table>
@@ -113,7 +115,8 @@
   <select name="group" id="group">
    <option></option><?cs
    each:property = ticket.properties ?><?cs
-    if:property.type == 'select' || property.type == 'radio' ?>
+    if:property.type == 'select' || property.type == 'radio' ||
+       property.name == 'owner' ?>
      <option value="<?cs var:property.name ?>"<?cs
        if:property.name == query.group ?> selected="selected"<?cs /if ?>><?cs
        var:property.label ?></option><?cs

@@ -1,5 +1,15 @@
 function initializeFilters() {
 
+  // Bail early for Konqueror and IE5.2/Mac, which don't fully support dynamic
+  // creation of form controls
+  try {
+    var test = document.createElement("input");
+    test.type = "button";
+    if (test.type != "button") throw Error();
+  } catch (e) {
+    return;
+  }
+
   // Removes an existing row from the filters table
   function removeRow(button, propertyName) {
     var tr = getAncestorByTagName(button, "tr");
@@ -83,6 +93,8 @@ function initializeFilters() {
   }
 
   // Make the drop-down menu for adding a filter a client-side trigger
+  var addButton = document.forms["query"].elements["add"];
+  addButton.parentNode.removeChild(addButton);
   var select = document.getElementById("add_filter");
   select.onchange = function() {
     if (select.selectedIndex < 1) return;
@@ -168,7 +180,8 @@ function initializeFilters() {
         td.appendChild(createCheckbox("__" + propertyName + ":" + option,
           option, propertyName + "_" + option));
         td.appendChild(document.createTextNode(" "));
-        td.appendChild(createLabel(option, propertyName + "_" + option));
+        td.appendChild(createLabel(option ? option : "none",
+          propertyName + "_" + option));
       }
       tr.appendChild(td);
     } else {
@@ -227,6 +240,6 @@ function initializeFilters() {
     if (property.type == "radio") {
       select.options[select.selectedIndex].disabled = true;
     }
-    select.selectedIndex = -1;
+    select.selectedIndex = 0;
   }
 }

@@ -119,7 +119,7 @@ ORDER BY IFNULL(id,'')='',id""")
         self.assertEqual(sql,
 """SELECT id,summary,status,owner,priority,milestone,component
 FROM ticket
-WHERE status IN ('new','assigned','reopened')
+WHERE IFNULL(status,'') IN ('new','assigned','reopened')
 ORDER BY IFNULL(id,'')='',id""")
 
     def test_constrained_by_owner_containing(self):
@@ -181,7 +181,7 @@ ORDER BY IFNULL(id,'')='',id""")
         self.assertEqual(sql,
 """SELECT id,summary,owner,status,priority,milestone,component
 FROM ticket
-WHERE owner IN ('someone','someone_else')
+WHERE IFNULL(owner,'') IN ('someone','someone_else')
 ORDER BY IFNULL(id,'')='',id""")
 
     def test_constrained_by_multiple_owners_not(self):
@@ -191,7 +191,7 @@ ORDER BY IFNULL(id,'')='',id""")
         self.assertEqual(sql,
 """SELECT id,summary,owner,status,priority,milestone,component
 FROM ticket
-WHERE owner NOT IN ('someone','someone_else')
+WHERE IFNULL(owner,'') NOT IN ('someone','someone_else')
 ORDER BY IFNULL(id,'')='',id""")
 
     def test_constrained_by_multiple_owners_contain(self):
