@@ -39,7 +39,7 @@ class Roadmap(Module):
         self.perm.assert_permission(perm.ROADMAP_VIEW)
         req.hdf.setValue('title', 'Roadmap')
 
-        icalhref = '?format=ics'
+        icalhref = '?format=ics' # FIXME should use the 'webcal:' scheme
         show = req.args.get('show', 'current')
         if show == 'all':
             icalhref += '&show=all'
@@ -150,11 +150,10 @@ class Roadmap(Module):
         for milestone in self.milestones:
             uid = '<%s/milestone/%s@%s>' % (req.cgi_location,
                                             milestone['name'], host)
-            if milestone.has_key('date'):
+            if milestone.has_key('due'):
                 write_prop('BEGIN', 'VEVENT')
                 write_prop('UID', uid)
-                if milestone.has_key('date'):
-                    write_date('DTSTART', localtime(milestone['due']))
+                write_date('DTSTART', localtime(milestone['due']))
                 write_prop('SUMMARY', 'Milestone %s' % milestone['name'])
                 write_prop('URL', req.base_url + '/milestone/' + milestone['name'])
                 if milestone.has_key('description'):
