@@ -75,6 +75,11 @@ def sync(repos, fs_ptr, pool):
     """
     from svn import fs, util, delta, repos
 
+    if util.SVN_VER_MAJOR == 0 and util.SVN_VER_MINOR < 37:
+        raise EnvironmentError, \
+              "Subversion >= 0.37 required: Found %d.%d.%d" % \
+              (util.SVN_VER_MAJOR, util.SVN_VER_MINOR, util.SVN_VER_MICRO)
+
     class ChangeEditor(delta.Editor):
         def __init__(self, rev, old_root, new_root, cursor):
             self.rev = rev
@@ -100,11 +105,16 @@ def sync(repos, fs_ptr, pool):
             self.cursor.execute('INSERT INTO node_change (rev, name, change) '
                                 'VALUES (%s, %s, \'M\')',self.rev, path)
 
+    def insert_change (pool, fs_ptr, rev, cursor):
+        old_root = fs.revision_root(fs_ptr, rev - 1, pool)
+        new_root = fs.revision_root(fs_ptr, rev, pool)
+        
+        editor = ChangeEditor(rev, old_root, new_root, cursor)
+        e_ptr, e_baton = delta.make_editor(editor, pool)
 
-    if util.SVN_VER_MAJOR == 0 and util.SVN_VER_MINOR < 37:
-        raise EnvironmentError, \
-              "Subversion >= 0.37 required: Found %d.%d.%d" % \
-              (util.SVN_VER_MAJOR, util.SVN_VER_MINOR, util.SVN_VER_MICRO)
+        repos.svn_repos_dir_delta(old_root, '', '',
+                                  new_root, '', e_ptr, e_baton, None, None,
+                                  0, 1, 0, 1, pool)
 
     cnx = get_connection()
 
@@ -129,13 +139,3 @@ def sync(repos, fs_ptr, pool):
         insert_change (pool, fs_ptr, rev + offset, cursor)
     cnx.commit()
 
-def insert_change (pool, fs_ptr, rev, cursor):
-    old_root = fs.revision_root(fs_ptr, rev - 1, pool)
-    new_root = fs.revision_root(fs_ptr, rev, pool)
-    
-    editor = ChangeEditor(rev, old_root, new_root, cursor)
-    e_ptr, e_baton = delta.make_editor(editor, pool)
-
-    repos.svn_repos_dir_delta(old_root, '', '',
-                              new_root, '', e_ptr, e_baton, None, None,
-                              0, 1, 0, 1, pool)
