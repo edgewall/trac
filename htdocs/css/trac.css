@@ -104,7 +104,7 @@ legend {
   border: 1px solid;
   padding: 0 .5em;
   display: inline;
-  float: left;
+  margin: 0;
 }
 .menulist {
   padding: 0;
