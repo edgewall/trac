@@ -67,11 +67,11 @@
   <div id="tkt-changes">
     <?cs set:numchanges = 0 ?>
     <?cs set:comment = "" ?>
-    <?cs set:curr_date = "" ?>
+    <?cs set:curr_time = "" ?>
     <?cs set:curr_author = "" ?>
     <?cs each:item = ticket.changes ?>
       <?cs set:numchanges = #numchanges + 1 ?>
-      <?cs if $item.date != $curr_date || $item.author != $curr_author ?>
+      <?cs if $item.time != $curr_time || $item.author != $curr_author ?>
         <?cs if $comment != "" ?>
           <li class="tkt-chg-change">
             <h4 class="tkt-chg-comment-hdr">Comment:</h4>
@@ -79,13 +79,13 @@
             <?cs set:comment = "" ?>
           </li>
         <?cs /if ?>
-        <?cs set:curr_date = $item.date ?>
+        <?cs set:curr_time = $item.time ?>
         <?cs set:curr_author = $item.author ?>
         <?cs if:#numchanges > 1 ?>
           </ul>
-	<?cs /if ?>
+        <?cs /if ?>
         <h3 class="tkt-chg-mod">
-	  <a name="<?cs var:#numchanges ?>"><?cs var:curr_date ?> : Modified by <?cs var:curr_author ?></a>
+          <a name="<?cs var:#numchanges ?>"><?cs var:item.date ?> : Modified by <?cs var:curr_author ?></a>
         </h3>
         <ul class="tkt-chg-list">
       <?cs /if ?>
@@ -107,6 +107,12 @@
         </li>
       <?cs /if ?>
     <?cs /each ?>
+    <?cs if $comment != "" ?>
+       <li class="tkt-chg-change">
+         <h4 class="tkt-chg-comment-hdr">Comment:</h4>
+         <div  class="tkt-chg-comment"><?cs var:$comment ?></div>
+       </li>
+     <?cs /if ?>
     </ul>
   </div>
 

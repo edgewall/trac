@@ -60,7 +60,7 @@ class Newticket (Module):
 class Ticket (Module):
     template_name = 'ticket.cs'
 
-    def get_ticket (self, id):
+    def get_ticket (self, id, escape_values=1):
         global fields
         cnx = db.get_connection ()
         cursor = cnx.cursor ()
@@ -82,8 +82,10 @@ class Ticket (Module):
             # wiki_to_html will take care of that
             if fields[i] == 'description':
                 info[fields[i]] = row[i] or ''
-            else:
+            elif escape_values:
                 info[fields[i]] = escape(row[i])
+            else:
+                info[fields[i]] = row[i]
         return info
 
     def save_changes (self, id, old, new): 
@@ -195,10 +197,10 @@ class Ticket (Module):
                                   time.strftime('%F %H:%M',
                                                 time.localtime(date)))
             
-            hdf.setValue('ticket.changes.%d.author' % idx,
-                                  author)
-            hdf.setValue('ticket.changes.%d.field' % idx,
-                                  field)
+            hdf.setValue('ticket.changes.%d.time' % idx, str(date))
+            
+            hdf.setValue('ticket.changes.%d.author' % idx, author)
+            hdf.setValue('ticket.changes.%d.field' % idx, field)
             hdf.setValue('ticket.changes.%d.old' % idx, old)
             if field == 'comment':
                 hdf.setValue('ticket.changes.%d.new' % idx,
@@ -219,7 +221,7 @@ class Ticket (Module):
 
         if action in ['leave', 'accept', 'reopen', 'resolve', 'reassign']:
             # save changes and redirect to avoid the POST request
-            old = self.get_ticket(id)
+            old = self.get_ticket(id, 0)
             perm.assert_permission (perm.TICKET_MODIFY)
             self.save_changes (id, old, self.args)
             redirect (href.ticket(id))
