@@ -26,6 +26,7 @@ from trac.versioncontrol import Changeset, Node, Repository
 
 import os.path
 import time
+import weakref
 
 from svn import fs, repos, core, delta
 
@@ -51,6 +52,41 @@ def _get_history(path, authz, fs_ptr, pool, start, end=0):
     for item in history:
         yield item
 
+class Pool(str):
+    """
+    A wrapper for a new Subversion `pool` object that ties the lifetime of the
+    pool to that of a  given object.
+    
+    Subversion's bindings use specially formatted strings to refer to objects,
+    so by subclassing `str` we allow instances to be used directly in place of
+    regular pools.
+    """
+    
+    def __new__(klass, parent, parent_pool):
+        """
+        Create a new pool that is a sub-pool of `parent_pool`, and arrange for
+        `self.close` to be called up when the `parent` object is destroyed.
+        
+        The `parent` object must be weak-referenceable.  The returned `Pool`
+        instance will have the value of the newly created pool. 
+        """
+        self = str.__new__(klass, core.svn_pool_create(parent_pool))
+        
+        try:
+            parent._pool_closer = weakref.ref(parent, self.close)
+        except TypeError:
+            self.close()
+            raise
+            
+        return self
+    
+    def close(self, x):
+        """
+        The parent object has been destroyed so it is time for us to go.
+        
+        -- So long, and thanks for all the fish!
+        """
+        core.svn_pool_destroy(self)
 
 class SubversionRepository(Repository):
     """
@@ -73,7 +109,7 @@ class SubversionRepository(Repository):
         core.apr_initialize()
         self.apr_initialized = 1
 
-        self.pool = core.svn_pool_create(None)
+        self.pool = Pool(self, None)
 
         # Remove any trailing slash or else subversion might abort
         if not os.path.split(path)[1]:
@@ -104,7 +140,6 @@ class SubversionRepository(Repository):
     def close(self):
         if self.pool:
             self.log.debug("Closing subversion file-system at %s" % self.path)
-            core.svn_pool_destroy(self.pool)
             self.pool = None
             self.repos = None
             self.fs_ptr = None
@@ -185,7 +220,7 @@ class SubversionNode(Node):
         self.authz = authz
         self.scope = scope
         self.fs_ptr = fs_ptr
-        self.pool = pool
+        self.pool = Pool(self, pool)
         self._requested_rev = rev
 
         self.root = fs.revision_root(fs_ptr, rev, pool)
@@ -246,11 +281,11 @@ class SubversionChangeset(Changeset):
         self.authz = authz
         self.scope = scope
         self.fs_ptr = fs_ptr
-        self.pool = pool
+        self.pool = Pool(self, pool)
         message = self._get_prop(core.SVN_PROP_REVISION_LOG)
         author = self._get_prop(core.SVN_PROP_REVISION_AUTHOR)
         date = self._get_prop(core.SVN_PROP_REVISION_DATE)
-        date = core.svn_time_from_cstring(date, pool) / 1000000
+        date = core.svn_time_from_cstring(date, self.pool) / 1000000
         Changeset.__init__(self, rev, message, author, date)
 
     def get_changes(self):

@@ -56,6 +56,7 @@ class CachedRepository(Repository):
             actionmap = dict(zip(_actionmap.values(), _actionmap.keys()))
             self.log.info("Syncing with repository (%s to %s)"
                           % (youngest_stored, self.repos.youngest_rev))
+            cursor = self.db.cursor()
             if youngest_stored:
                 current_rev = self.repos.next_rev(youngest_stored)
             else:
