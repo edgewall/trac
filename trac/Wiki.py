@@ -60,7 +60,7 @@ class CommonFormatter:
               r"""(?P<tickethref>#[0-9]+)""",
               r"""(?P<changesethref>\[[0-9]+\])""",
               r"""(?P<reporthref>\{[0-9]+\})""",
-              r"""(?P<svnhref>(svn:[^ ]+[^\., ]))""",
+              r"""(?P<modulehref>((?P<modulename>bug|ticket|browser|source|repos|report|changeset|wiki):(?P<moduleargs>[^ ]*[^\., ])))""",
               r"""(?P<wikilink>(^|(?<=[^A-Za-z]))[!]?[A-Z][a-z/]+(?:[A-Z][a-z/]+)+)""",
               r"""(?P<fancylink>\[(?P<fancyurl>([a-z]+:[^ ]+)) (?P<linkname>.*?)\])"""]
 
@@ -122,16 +122,40 @@ class CommonFormatter:
         number = int(match[1:-1])
         return '{<a href="%s">%d</a>}' % (href.report(number), number)
 
-    def _svnhref_formatter(self, match, fullmatch):
-        m = re.search('^svn:(([^#]+)(#([0-9]+))?)', match)
-        if m.group(4):
-            return '<a href="%s">%s</a>' % (href.browser(m.group(2),
-                                                         int(m.group(4))),
-                                            m.group(1))
+    def _expand_module_link(self, text):
+        sep = text.find(':')
+        if sep == -1:
+            return None, None
+        module = text[:sep]
+        args = text[sep+1:]
+        if module in ['bug', 'ticket']:
+            return href.ticket(args), '%s:%s' % (module, args)
+        elif module == 'wiki':
+            return href.wiki(args), '%s:%s' % (module, args)
+        elif module == 'report':
+            return href.report(args), '%s:%s' % (module, args)
+        elif module in ['source', 'repos', 'browser']:
+            rev = None
+            match = re.search('([^#]+)#(.+)', args)
+            if match:
+                args = match.group(1)
+                rev = match.group(2)
+            if rev:
+                return href.browser(args, rev), '%s:%s#%s' % (module, args, rev)
+            else:
+                return href.browser(args), '%s:%s' % (module, args)
         else:
-            return '<a href="%s">%s</a>' % (href.browser(m.group(1)),
-                                            m.group(1))
-    
+            return None, None
+        
+    def _modulehref_formatter(self, match, fullmatch):
+        link, text = self._expand_module_link(match)
+        if not link:
+            return match
+        else:
+            return '<a href="%s">%s</a>' % (link, text)
+        module = fullmatch.group('modulename')
+        args = fullmatch.group('moduleargs')
+
     def _wikilink_formatter(self, match, fullmatch):
         if match[0] == '!':
             return match[1:]
@@ -148,16 +172,12 @@ class CommonFormatter:
     def _fancylink_formatter(self, match, fullmatch):
         link = fullmatch.group('fancyurl')
         name = fullmatch.group('linkname')
-        if link[0:5] == 'wiki:':
-            link = href.wiki(link[5:])
-        elif link[0:4] == 'svn:':
-            m = re.search('^svn:(([^#]+)(#([0-9]+))?)', link)
-            if m.group(4):
-                link = href.browser(m.group(2), int(m.group(4)))
-            else:
-                link = href.browser(m.group(1))
-
-        return '<a href="%s">%s</a>' % (link, name)
+        
+        module_link, t = self._expand_module_link(link)
+        if module_link:
+            return '<a href="%s">%s</a>' % (module_link, name)
+        else:
+            return '<a href="%s">%s</a>' % (link, name)
 
 
 class OneLinerFormatter(CommonFormatter):
@@ -190,7 +210,7 @@ class Formatter(CommonFormatter):
     """
     A simple Wiki formatter
     """
-    _rules = [r"""(?P<svnimg>svn:([^ ]+)(\.png|\.jpg|\.jpeg|\.gif))"""] + \
+    _rules = [r"""(?P<svnimg>(source|repos):([^ ]+)(\.png|\.jpg|\.jpeg|\.gif))"""] + \
              CommonFormatter._rules + \
              [r"""(?P<macro>\[\[(?P<macroname>[a-zA-Z]+)(\((?P<macroargs>[^\)]*)\))?\]\])""",
               r"""(?P<heading>^\s*(?P<hdepth>=+)\s.*\s(?P=hdepth)$)""",
@@ -204,7 +224,8 @@ class Formatter(CommonFormatter):
 
     # RE patterns used by other patterna
     _helper_patterns = ('idepth', 'ldepth', 'hdepth', 'fancyurl',
-                        'linkname', 'macroname', 'macroargs', 'inline')
+                        'linkname', 'macroname', 'macroargs', 'inline',
+                        'modulename', 'moduleargs')
 
 
     def default_processor(hdf, text):
@@ -244,7 +265,9 @@ class Formatter(CommonFormatter):
         return ''
 
     def _svnimg_formatter(self, match, fullmatch):
-        return '<img src="%s" alt="%s" />' % (href.file(match[4:]), match[4:])
+        prefix_len = match.find(':') + 1
+        return '<img src="%s" alt="%s" />' % \
+               (href.file(match[prefix_len:]), match[prefix_len:])
 
     def _imgurl_formatter(self, match, fullmatch):
         return '<img src="%s" alt="%s" />' % (match, match)

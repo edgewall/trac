@@ -97,8 +97,8 @@ class Browser(Module):
         else:
             return '%d MB' % (size / 1024 / 1024)
         
-    def generate_path_links(self):
-        list = self.path[1:].split('/')
+    def generate_path_links(self, path):
+        list = path[1:].split('/')
         path = '/'
         self.cgi.hdf.setValue('browser.path.0', '[root]')
         self.cgi.hdf.setValue('browser.path.0.url' , href.browser(path))
@@ -115,18 +115,21 @@ class Browser(Module):
     def render(self):
         self.perm.assert_permission (perm.BROWSER_VIEW)
 
-        self.rev = self.args.get('rev', None)
-        self.path = self.args.get('path', '/')
+        rev = self.args.get('rev', None)
+        path = self.args.get('path', '/')
         order = self.args.get('order', 'name')
         
-        if not self.rev:
+        if rev in ['head', 'latest', 'trunk']:
+            rev = fs.youngest_rev(self.fs_ptr, self.pool)
+            rev_specified = 1
+        elif not rev:
             rev_specified = 0
             rev = fs.youngest_rev(self.fs_ptr, self.pool)
         else:
             rev_specified = 1
-            rev = int(self.rev)
+            rev = int(rev)
             
-        info = self.get_info(self.path, rev, rev_specified)
+        info = self.get_info(path, rev, rev_specified)
         if order == 'size':
             info.sort(lambda x, y: cmp(x['size_bytes'], y['size_bytes']))
         elif order == 'Size':
@@ -145,14 +148,14 @@ class Browser(Module):
 
         add_dictlist_to_hdf(info, self.cgi.hdf, 'browser.items')
 
-        self.generate_path_links()
+        self.generate_path_links(path)
 
-        if self.path != '/':
-            parent = string.join(self.path.split('/')[:-2], '/') + '/'
+        if path != '/':
+            parent = string.join(path.split('/')[:-2], '/') + '/'
             self.cgi.hdf.setValue('browser.parent_href', href.browser(parent))
 
-        self.cgi.hdf.setValue('title', self.path + ' (browser)')
-        self.cgi.hdf.setValue('browser.path', self.path)
+        self.cgi.hdf.setValue('title', path + ' (browser)')
+        self.cgi.hdf.setValue('browser.path', path)
         self.cgi.hdf.setValue('browser.revision', str(rev))
         self.cgi.hdf.setValue('browser.sort_order', order)
-        self.cgi.hdf.setValue('browser.current_href', href.browser(self.path))
+        self.cgi.hdf.setValue('browser.current_href', href.browser(path))
