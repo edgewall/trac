@@ -39,7 +39,8 @@ def redirect (url):
     """
     redirects the user agent to a different url
     """
-    print 'Location: %s\r\n\r\n' % url
+    import neo_cgi
+    neo_cgi.CGI().redirect(url)
     sys.exit(0)
 
 def enum_selector (sql, name, selected=None,default_empty=0):

@@ -28,7 +28,6 @@ from svn import util, repos, core
 import Href
 
 warnings.filterwarnings('ignore', 'DB-API extension cursor.next() used')
-warnings.filterwarnings('ignore', 'DeprecationWarning: Cookie/SmartCookie class is insecure; do not use it')
 
 import db
 from auth import verify_authentication
