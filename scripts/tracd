@@ -23,7 +23,6 @@
 #
 # Major issues:
 # * No authentication support yet
-# * No HTTP POST request support
 # * Too much code duplication between trac.py and tracd.py
 # * No error (exception) handling.
 
@@ -41,6 +40,7 @@ import BaseHTTPServer
 import neo_cgi
 import neo_cs
 import neo_util
+import svn.core
 
 import trac
 from trac import db
@@ -49,15 +49,15 @@ from trac import perm
 from trac.Href import Href
 from trac import sync
 from trac.util import *
-from trac.trac import parse_args, modules, Request
+from trac.trac import parse_args, modules, Request, open_svn_repos
 from trac import siteconfig
 
-def parse_cgi_args(args, query):
+def parse_qs(args, query):
+    """Parse a HTTP query string, can be used for both GET and POST"""
     for arg in query.split('&'):
         val = arg.split('=', 1)
-        if len(val) != 2:
-            continue
-        args[val[0]] = val[1]
+        if len(val) == 2:
+            args[val[0]] = urllib.unquote(val[1].replace('+', ' '))
 
 class TracHTTPServer(SocketServer.ThreadingMixIn, BaseHTTPServer.HTTPServer):
     pass
@@ -69,8 +69,7 @@ class TracHTTPRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler,
                         '(?:\?(?P<query_string>.*))?')
     server_version = 'tracd/' + trac.__version__
 
-
-    def read(self, data):
+    def read(self, len):
         return self.rfile.read(len)
 
     def write(self, data):
@@ -81,9 +80,6 @@ class TracHTTPRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler,
         if not m:
             raise self.send_error(500, 'Invalid URL')
         self.project, self.path_info, self.query_string = m[0]
-
-    def do_POST(self):
-        assert 0
 
     def do_project_index(self):
         self.send_response(200)
@@ -96,6 +92,7 @@ class TracHTTPRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler,
         self.write('</ul></body><html>')
 
     def do_htdocs_req(self, path):
+        path = urllib.unquote(path)
         # Make sure the path doesn't contain any dangerous ".."-parts.
         path = '/'.join(filter(lambda x: x not in ['..', ''],
                                path.split('/')))
@@ -118,19 +115,28 @@ class TracHTTPRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler,
         self.end_headers()
         shutil.copyfileobj(f, self.wfile)
 
+    def do_POST(self):
+        if not self.headers.has_key('Content-Type') or \
+           not self.headers.has_key('Content-Length') or \
+           self.headers['Content-Type'] != 'application/x-www-form-urlencoded':
+            self.send_error(500, 'Weird POST request')
+            return
+        self.post_query_string = self.read(int(self.headers['Content-Length']))
+        self.do_trac_req()
+
     def do_GET(self):
-        path = urllib.unquote(self.path)
-        if path[0:13] == '/':
+        if self.path[0:13] == '/':
             self.do_project_index()
-            return
-        if path[0:13] == '/trac_common/':
-            self.do_htdocs_req(path[13:])
-            return
+        elif self.path[0:13] == '/trac_common/':
+            self.do_htdocs_req(self.path[13:])
+        else:
+            self.post_query_string = None
+            self.do_trac_req()
         
+    def do_trac_req(self):
         start = time.time()
         self.init_request()
-        self.parse_path(path)
-        
+        self.parse_path(self.path)
         try:
             db_path = self.server.projects[self.project]
         except KeyError:
@@ -147,8 +153,10 @@ class TracHTTPRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler,
 
         # Parse arguments
         args = parse_args(self.path_info)
+        if self.post_query_string:
+            parse_qs(args, self.post_query_string)
         if self.query_string:
-            parse_cgi_args(args, self.query_string)
+            parse_qs(args, self.query_string)
 
         # Load the selected module
         mode = args.get('mode', 'wiki')
@@ -172,19 +180,8 @@ class TracHTTPRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler,
         # Only open the subversion repository for the modules that really
         # need it. This saves us some precious time.
         if need_svn:
-            from svn import util, repos, core
-
-            core.apr_initialize()
-            pool = core.svn_pool_create(None)
-
             repos_dir = config['general']['repository_dir']
-
-            # Remove any trailing slash or else subversion might abort
-            if not os.path.split(repos_dir)[1]:
-                repos_dir = os.path.split(repos_dir)[0]
-            
-            rep = repos.svn_repos_open(repos_dir, pool)
-            fs_ptr = repos.svn_repos_fs(rep)
+            pool, rep, fs_ptr = open_svn_repos(repos_dir)
             module.repos = rep
             module.fs_ptr = fs_ptr
             sync.sync(database, rep, fs_ptr, pool)
@@ -198,7 +195,7 @@ class TracHTTPRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler,
         module.pool = pool
         module.run()
         if pool:
-            core.svn_pool_destroy(pool)
+            svn.core.svn_pool_destroy(pool)
             
         print 'Total request time:', time.time() - start, 'seconds'
 

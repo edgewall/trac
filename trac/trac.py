@@ -132,7 +132,7 @@ class Request:
         self.send_header('Location', url)
         self.send_header('Content-Type', 'text/plain')
         self.end_headers()
-        self.send_data('Redirecting...')
+        self.write('Redirecting...')
 
     def display(self, cs, content_type='text/html'):
         import neo_cgi
@@ -169,6 +169,19 @@ class CGIRequest(Request):
     
     def end_headers(self):
         self.write('\r\n')
+
+def open_svn_repos(repos_dir):
+    from svn import util, repos, core
+
+    core.apr_initialize()
+    pool = core.svn_pool_create(None)
+    # Remove any trailing slash or else subversion might abort
+    if not os.path.split(repos_dir)[1]:
+        repos_dir = os.path.split(repos_dir)[0]
+            
+    rep = repos.svn_repos_open(repos_dir, pool)
+    fs_ptr = repos.svn_repos_fs(rep)
+    return pool, rep, fs_ptr
 
 def real_main():
     import sync
@@ -246,35 +259,20 @@ def real_main():
     # Only open the subversion repository for the modules that really
     # need it. This saves us some precious time.
     if need_svn:
-        from svn import util, repos, core
-
-        core.apr_initialize()
-        pool = core.svn_pool_create(None)
-
         repos_dir = config['general']['repository_dir']
-
-        # Remove any trailing slash or else subversion might abort
-        if not os.path.split(repos_dir)[1]:
-            repos_dir = os.path.split(repos_dir)[0]
-            
-        rep = repos.svn_repos_open(repos_dir, pool)
-        fs_ptr = repos.svn_repos_fs(rep)
+        pool, rep, fs_ptr = open_svn_repos(repos_dir)
         module.repos = rep
         module.fs_ptr = fs_ptr
         sync.sync(database, rep, fs_ptr, pool)
+        module.pool = pool
     else:
-        pool = None
+        module.pool = None
         
     # Let the wiki module build a dictionary of all page names
     import Wiki
     Wiki.populate_page_dict(database)
     
-    module.pool = pool
     module.run()
-    
-    if pool:
-        core.svn_pool_destroy(pool)
-        core.apr_terminate()
 
 def create_error_cgi():
     import neo_cgi
