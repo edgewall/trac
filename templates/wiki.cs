@@ -5,7 +5,11 @@
   <li><a href="<?cs var:$trac.href.wiki ?>">Start Page</a></li>
   <li><a href="<?cs var:$trac.href.wiki ?>TitleIndex">Title Index</a></li>
   <li><a href="<?cs var:$trac.href.wiki ?>RecentChanges">Recent Changes</a></li>
-  <li class="last"><a href="javascript:view_history()">Show/Hide History</a></li>
+  <?cs if $wiki.history ?>
+    <li class="last"><a href="javascript:view_history()">Show/Hide History</a></li>
+  <?cs else ?>
+    <li class="last">Show/Hide History</li>
+  <?cs /if ?>
 </ul>
 
 <?cs def:day_separator(date) ?>

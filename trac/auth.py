@@ -26,7 +26,7 @@ class Authenticator:
     def __init__(self, db, req):
         self.db = db
         self.authname = 'anonymous'
-        if 'trac_auth' in req.incookie:
+        if req.incookie.has_key('trac_auth'):
             cursor = db.cursor ()
             cookie = req.incookie['trac_auth'].value
             cursor.execute ("SELECT name FROM auth_cookie "

@@ -81,11 +81,7 @@ def get_first_line(text, maxlen):
 
 def href_join(u1, *tail):
     for u2 in tail:
-        if u1[-1] == '/' and u2[0] != '/' or \
-            u1[-1] != '/' and u2[0] == '/':
-                u1 = u1 + u2
-        else:
-            u1 = u1 + '/' + u2
+        u1 = u1.rstrip('/') + '/' + u2.lstrip('/')
     return u1
 
 def add_dictlist_to_hdf(list, hdf, prefix):
@@ -106,7 +102,6 @@ def sql_to_hdf (db, sql, hdf, prefix):
     """
     cursor = db.cursor ()
     cursor.execute (sql)
-#    cursor.execute ('SELECT type, name, value FROM enum ORDER BY type,value,name')
     idx = 0
     while 1:
         row = cursor.fetchone()
