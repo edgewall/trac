@@ -233,7 +233,7 @@ onfocus="document.getElementById('comment').focus()">Add/Change
     <input type="radio" id="reassign" name="action" value="reassign" />
     &nbsp;<label for="reassign">reassign ticket to:</label>
     &nbsp;<input type="text" id="reassign_owner" name="reassign_owner" 
-           class="textwidget" value="<?cs var:ticket.owner ?>" />
+           class="textwidget" value="<?cs var:trac.authname ?>" />
    <?cs /if ?>
    </fieldset>
 

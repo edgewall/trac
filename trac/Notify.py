@@ -36,11 +36,18 @@ import Ticket
 
 def wrap(t, cols=75, initial_indent='', subsequent_indent=''):
     try:
-	import textwrap
-	return '\n'.join(textwrap.wrap(t, replace_whitespace=0,
-                                       width=cols, break_long_words=0,
+ 	import textwrap
+        t = t.replace('\r\n', '\n').replace('\r', '\n')
+        wrapper = textwrap.TextWrapper(cols, replace_whitespace=0,
+                                       break_long_words=0,
                                        initial_indent=initial_indent,
-                                       subsequent_indent=subsequent_indent))
+                                       subsequent_indent=subsequent_indent)
+        wrappedLines = []
+        for line in t.split('\n'):
+            wrappedLines += wrapper.wrap(line.rstrip())
+            
+        return '\n'.join(wrappedLines)
+    
     except ImportError:
 	return t
 
@@ -158,7 +165,9 @@ class TicketNotifyEmail(NotifyEmail):
 	self.modtime = modtime
 	self.newticket = newticket
 	self.ticket['description'] = wrap(self.ticket['description'],
-                                          self.COLS)
+                                          self.COLS,
+                                          initial_indent=' ',
+                                          subsequent_indent=' ')
         self.ticket['link'] = self.env.abs_href.ticket(tktid)
 	add_dict_to_hdf(self.ticket, self.hdf, 'ticket')
 	self.hdf.setValue('email.ticket_props', self.format_props())
@@ -181,7 +190,7 @@ class TicketNotifyEmail(NotifyEmail):
 		pfx='ticket.change.%s' % r[1]
 		if r[1] == 'comment':
 		    newv = wrap(r[3], initial_indent=' ',
-                                subsequent_indent=' ').strip()
+                                subsequent_indent=' ')
 		else:
 		    newv = r[3]
 		    l = 7 + len(r[1])

@@ -1,7 +1,7 @@
 <?cs var:$email.ticket_body_hdr ?>
 <?cs var:$email.ticket_props ?><?cs 
 if:$ticket.new ?>
- <?cs var:$ticket.description ?>
+<?cs var:$ticket.description ?>
 <?cs else ?><?cs 
  if:$email.changes_body ?>
 Changes (by <?cs var:$ticket.change.author ?>):
