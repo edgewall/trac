@@ -1,16 +1,3 @@
-// Functions to remember positions when doing preview in wiki (Mozilla only)
-function saveEditPosition(textarea, scrollbarPosition, selectionStart, selectionEnd) {
-  if (typeof(textarea["setSelectionRange"]) == "undefined") return;
-  scrollbarPosition.value = textarea.scrollTop;
-  selectionStart.value = textarea.selectionStart;
-  selectionEnd.value = textarea.selectionEnd;
-}
-function restoreEditPosition(textarea, scrollbarPosition, selectionStart, selectionEnd) {
-  if (typeof(textarea["setSelectionRange"]) == "undefined") return;
-  textarea.scrollTop = scrollbarPosition.value;
-  textarea.setSelectionRange(selectionStart.value, selectionEnd.value);
-}
-
 // Used for dynamically updating the height of a textarea
 function resizeTextArea(id, rows) {
   var textarea = document.getElementById(id);
