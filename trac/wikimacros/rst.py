@@ -130,7 +130,9 @@ def trac(env, name, arguments, options, content, lineno,
         text = None
     reference = trac_get_reference(env, block_text, link, text)
     if reference:
-        return reference
+        p = nodes.paragraph()
+        p += reference
+        return p
     # didn't find a match (invalid TracLink),
     # report a warning
     warning = state_machine.reporter.warning(
