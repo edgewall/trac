@@ -124,7 +124,9 @@ class Timeline (Module):
         stop  = _from
         start = stop - daysback * 86400
 
-        if self.args.has_key('from'):
+        if self.args.has_key('wiki') or \
+               self.args.has_key('ticket') or \
+               self.args.has_key('changeset'):
             wiki = self.args.has_key('wiki')
             ticket = self.args.has_key('ticket')
             changeset = self.args.has_key('changeset')
