@@ -112,7 +112,7 @@ class Timeline (Module):
                     'tdata': row['tdata'],
                     'type': int(row['type']),
                     'message': row['message'] or '',
-                    'author': util.escape(row['author'])
+                    'author': util.escape(row['author'] or 'anonymous')
                     }
 
             if item['type'] == CHANGESET:

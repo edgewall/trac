@@ -180,7 +180,7 @@ class Changeset (Module.Module):
 
         self.req.hdf.setValue('changeset.time',
                               time.asctime (time.localtime(int(changeset_info['time']))))
-        author = changeset_info['author'] or 'None'
+        author = changeset_info['author'] or 'anonymous'
         self.req.hdf.setValue('changeset.author', util.escape(author))
         self.req.hdf.setValue('changeset.message',
                               wiki_to_html(util.wiki_escape_newline(changeset_info['message']),
