@@ -209,9 +209,10 @@ class File(FileCommon):
                                            svn.util.SVN_PROP_MIME_TYPE,
                                            self.pool)
         if not self.mime_type:
-            self.mime_type = mimetypes.guess_type(self.path)[0] or 'text/plain'
+            self.mime_type = self.env.mimeview.get_mimetype(filename=self.path) or 'text/plain'
+#            self.mime_type = mimetypes.guess_type(self.path)[0] or 'text/plain'
         elif self.mime_type == 'application/octet-stream':
-            self.mime_type = mimetypes.guess_type(self.path)[0] or \
+            self.mime_type = self.env.mimeview.get_mimetype(filename=self.path) or \
                              'application/octet-stream'
             
         self.length = svn.fs.file_length(root, self.path, self.pool)

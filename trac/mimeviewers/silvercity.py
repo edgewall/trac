@@ -26,27 +26,27 @@
 import StringIO
 
 supported_types = [               
-    (3, 'application/x-httpd-php'),
-    (3, 'application/x-httpd-php4'),
-    (3, 'application/x-httpd-php3'),
+    (1, 'application/x-httpd-php'),
+    (1, 'application/x-httpd-php4'),
+    (1, 'application/x-httpd-php1'),
     (7, 'application/x-javascript'),
     (7, 'image/svg+xml'),
-    (3, 'text/css'),
-    (3, 'text/html'),
-    (3, 'text/x-asp'),
-    (3, 'text/x-c++src'),
-    (3, 'text/x-c++hdr'),
-    (3, 'text/x-chdr'),
-    (3, 'text/x-csrc'),
-    (3, 'text/x-perl'),
-    (3, 'text/x-php'),
-    (3, 'text/x-psp'),
-    (3, 'text/x-python'),
-    (3, 'text/x-ruby'),
-    (3, 'text/x-sql'),
-    (3, 'text/xml'),
-    (3, 'text/xslt'),
-    (3, 'application/x-test'),
+    (1, 'text/css'),
+    (1, 'text/html'),
+    (1, 'text/x-asp'),
+    (1, 'text/x-c++src'),
+    (1, 'text/x-c++hdr'),
+    (1, 'text/x-chdr'),
+    (1, 'text/x-csrc'),
+    (1, 'text/x-perl'),
+    (1, 'text/x-php'),
+    (1, 'text/x-psp'),
+    (1, 'text/x-python'),
+    (1, 'text/x-ruby'),
+    (1, 'text/x-sql'),
+    (1, 'text/xml'),
+    (1, 'text/xslt'),
+    (1, 'application/x-test'),
     ]
 
 type_lang = { 'text/css':['CSS'],
@@ -91,6 +91,7 @@ def display(data, mimetype, filename, env):
         raise Exception, err
     io = StringIO.StringIO(data)
     generator().generate_html(io, data)
+    env.log.debug("type: %s" % mimetype)
     html = '<div class="code-block">%s</div>\n' % io.getvalue()
     return html
 
