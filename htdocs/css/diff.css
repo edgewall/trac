@@ -139,6 +139,8 @@
 .diff table.inline tbody.add tr.first td.chg { border-top-width: 1px }
 .diff table.inline tbody.mod tr.last td.chg,
 .diff table.inline tbody.add tr.last td.chg { border-bottom-width: 1px }
+.diff table.inline tbody.mod td del { background: #e99; color: #000 }
+.diff table.inline tbody.mod td ins { background: #9e9; color: #000 }
 
 /* Styles for the side-by-side diff */
 .diff table.sidebyside colgroup.content { width: 50% }
@@ -148,3 +150,6 @@
 .diff table.sidebyside tbody.add td.chg { background: #cfc }
 .diff table.sidebyside tbody.rem td.base { background: #f88 }
 .diff table.sidebyside tbody.rem td.chg { background: #faa }
+.diff table.sidebyside tbody.mod del, .diff table.sidebyside tbody.mod ins {
+ background: #fc0;
+}

@@ -20,6 +20,9 @@
 # Author: Jonas Borgström <jonas@edgewall.com>
 
 import re
+from difflib import SequenceMatcher
+from StringIO import StringIO
+from util import add_to_hdf
 
 line_re = re.compile('@@ [+-]([0-9]+),([0-9]+) [+-]([0-9]+),([0-9]+) @@')
 header_re = re.compile('header ([^\|]+) ([^\|]+) \| ([^\|]+) ([^\|]+) redaeh')
@@ -38,24 +41,42 @@ class HDFBuilder:
         self.blockno = 0
         self.offset_base = 0
         self.offset_changed = 0
+        self.matcher = SequenceMatcher()
+
+    def _write_line (self, prefix, oldline, newline):
+        oldval = StringIO()
+        newval = StringIO()
+        self.matcher.set_seq1(oldline)
+        self.matcher.set_seq2(newline)
+        for tag, i1, i2, j1, j2 in self.matcher.get_opcodes():
+            if tag == 'equal':
+                oldval.write(oldline[i1:i2])
+                newval.write(oldline[i1:i2])
+            elif tag == 'delete':
+                oldval.write('<del>%s</del>' % oldline[i1:i2])
+            elif tag == 'insert':
+                newval.write('<ins>%s</ins>' % newline[j1:j2])
+            elif tag == 'replace':
+                oldval.write('<del>%s</del>' % oldline[i1:i2])
+                newval.write('<ins>%s</ins>' % newline[j1:j2])
+        self.hdf.setValue(prefix + '.base.lines.0', oldval.getvalue())
+        self.hdf.setValue(prefix + '.changed.lines.0', newval.getvalue())
 
     def _write_block (self, prefix, dtype, old = None, new = None):
         self.hdf.setValue(prefix + '.type', dtype);
         self.hdf.setValue(prefix + '.base.offset', str(self.offset_base))
         self.hdf.setValue(prefix + '.changed.offset',
                           str(self.offset_changed))
+        if dtype == 'mod' and len(old) == len(new) == 1:
+            self._write_line (prefix, old[0], new[0])
+            return
+
         if old:
-            lineno = 1
-            for line in old:
-                self.hdf.setValue(prefix + '.base.lines.%d' % lineno, line)
-                lineno += 1
-            self.offset_base += lineno - 1
+            add_to_hdf(old, self.hdf, prefix + '.base.lines')
+            self.offset_base += len(old)
         if new:
-            lineno = 1
-            for line in new:
-                self.hdf.setValue(prefix + '.changed.lines.%d' % lineno, line)
-                lineno += 1
-            self.offset_changed += lineno - 1
+            add_to_hdf(new, self.hdf, prefix + '.changed.lines')
+            self.offset_changed += len(new)
 
     def print_block (self):
         prefix = '%s.changes.%d.blocks.%d' % (self.prefix, self.changeno,
