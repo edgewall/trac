@@ -29,28 +29,26 @@
  <table class="listing" id="dirlist">
   <thead>
    <tr>
-    <th class="name"><?cs
-     if browser.sort_order == "name" ?>
-      <a title="Sort by Name (Descending)" href="<?cs
-        var:browser.current_href?>?order=Name">Name</a><?cs
-     else ?>
-      <a title="Sort by Name" href="<?cs
-        var:browser.current_href?>?order=name">Name</a><?cs
-     /if ?></th>
+    <th class="name<?cs if:browser.order == "name" ?> <?cs
+      var:browser.order_dir ?><?cs /if ?>"><a title="Sort by name<?cs
+      if:browser.order == "name" && browser.order_dir == "asc" ?> (descending)<?cs
+      /if ?>" href="<?cs var:browser.current_href?>?order=name<?cs
+      if:browser.order == "name" && browser.order_dir == "asc" ?>&desc=1<?cs
+      /if ?>">Name</a>
+    </th>
     <th class="rev">Rev</th>
-    <th class="age"><?cs
-     if browser.sort_order == "date" ?>
-      <a title="Sort by Age" href="<?cs
-        var:browser.current_href?>?order=Date">Age</a><?cs
-     else ?>
-      <a title="Sort by Age (Descending)" href="<?cs
-        var:browser.current_href?>?order=date">Age</a><?cs
-     /if ?></th>
+    <th class="age<?cs if:browser.order == "date" ?> <?cs
+      var:browser.order_dir ?><?cs /if ?>"><a title="Sort by age<?cs
+      if:browser.order == "date" && browser.order_dir == "asc" ?> (descending)<?cs
+      /if ?>" href="<?cs var:browser.current_href?>?order=date<?cs
+      if:browser.order == "date" && browser.order_dir == "asc" ?>&desc=1<?cs
+      /if ?>">Age</a>
+    </th>
     <th class="change">Last Change</th>
    </tr>
   </thead>
   <tbody>
-   <?cs if $browser.path != "/" ?>
+   <?cs if:browser.path != "/" ?>
     <tr class="even">
      <td class="name" colspan="4">
       <a class="parent" title="Parent Directory" href="<?cs
@@ -83,7 +81,7 @@
  </table>
 
  <div id="help">
-  <strong>Note:</strong> See <a href="<?cs var:$trac.href.wiki
+  <strong>Note:</strong> See <a href="<?cs var:trac.href.wiki
   ?>/TracBrowser">TracBrowser</a> for help on using the browser.
  </div>
 

@@ -148,7 +148,8 @@ class Browser(Module.Module):
 
         rev = self.args.get('rev', None)
         path = self.args.get('path', '/')
-        order = self.args.get('order', 'name')
+        order = self.args.get('order', 'name').lower()
+        desc = self.args.has_key('desc')
 
         if not rev:
             rev_specified = 0
@@ -166,15 +167,19 @@ class Browser(Module.Module):
 
         info = self.get_info(path, rev, rev_specified)
         if order == 'date':
-            info.sort(lambda x, y: cmp(x['date_seconds'], y['date_seconds']))
-        elif order == 'Date':
-            info.sort(lambda y, x: cmp(x['date_seconds'], y['date_seconds']))
-        elif order == 'Name':
-            info.sort(lambda y, x: cmp(util.rstrip(x['name'], '/'),
-                                       util.rstrip(y['name'], '/')))
+            if desc:
+                info.sort(lambda y, x: cmp(x['date_seconds'],
+                                           y['date_seconds']))
+            else:
+                info.sort(lambda x, y: cmp(x['date_seconds'],
+                                           y['date_seconds']))
         else:
-            info.sort(lambda x, y: cmp(util.rstrip(x['name'], '/'),
-                                       util.rstrip(y['name'], '/')))
+            if desc:
+                info.sort(lambda y, x: cmp(util.rstrip(x['name'], '/'),
+                                           util.rstrip(y['name'], '/')))
+            else:
+                info.sort(lambda x, y: cmp(util.rstrip(x['name'], '/'),
+                                           util.rstrip(y['name'], '/')))
 
         # Always put directories before files
         info.sort(lambda x, y: cmp(y['is_dir'], x['is_dir']))
@@ -195,6 +200,7 @@ class Browser(Module.Module):
         self.req.hdf.setValue('title', path)
         self.req.hdf.setValue('browser.path', path)
         self.req.hdf.setValue('browser.revision', str(rev))
-        self.req.hdf.setValue('browser.sort_order', order)
+        self.req.hdf.setValue('browser.order', order)
+        self.req.hdf.setValue('browser.order_dir', desc and 'desc' or 'asc')
         self.req.hdf.setValue('browser.current_href', self.env.href.browser(path))
         self.req.hdf.setValue('browser.log_href', self.env.href.log(path))
