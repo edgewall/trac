@@ -1,6 +1,7 @@
 @import url(diff.css);
 
 /* Changeset overview */
+#overview dt.files { margin-top: 1em }
 #overview dd.files ul { margin: 0; padding: 0 }
 #overview dd.files li { list-style-type: none }
 #overview dd.files li .comment { display: none }

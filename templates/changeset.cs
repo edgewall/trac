@@ -95,7 +95,7 @@
     <li>
      <h2><?cs var:file.name.new ?></h2>
      <?cs if:diff.style == 'sidebyside' ?>
-      <table class="sidebyside" summary="Differences">
+      <table class="sidebyside" summary="Differences" cellspacing="0">
        <colgroup class="base">
         <col class="lineno" /><col class="content" />
        <colgroup class="chg">
@@ -117,7 +117,7 @@
        <?cs /each ?>
       </table>
      <?cs else ?>
-      <table class="inline" summary="Differences">
+      <table class="inline" summary="Differences" cellspacing="0">
        <colgroup>
         <col class="lineno" />
         <col class="lineno" />
@@ -126,12 +126,10 @@
        <thead><tr>
         <th>v<?cs var:file.rev.old ?></th>
         <th>v<?cs var:file.rev.new ?></th>
-        <th></th>
+        <th>&nbsp;</th>
        </tr></thead>
        <?cs each:change = file.changes ?>
-        <tbody>
-         <?cs call:diff_display(change, diff.style) ?>
-        </tbody>
+        <?cs call:diff_display(change, diff.style) ?>
         <?cs if:name(change) < len(file.changes) - 1 ?>
          <tbody class="skippedlines">
           <tr><th>&hellip;</th><th>&hellip;</th><td>&nbsp;</td></tr>

@@ -28,16 +28,17 @@
 <?cs def:diff_display(change, style) ?><?cs
  if:style == 'sidebyside' ?><?cs
   each:block = change.blocks ?><?cs
-   if:block.type == 'unmod' ?><?cs
-    each:line = block.base.lines ?><tr class="unmod">
+   if:block.type == 'unmod' ?><tbody class="unmod"><?cs
+    each:line = block.base.lines ?><tr>
      <th class="base"><?cs var:#block.base.offset + name(line) ?></th>
      <td class="base"><span><?cs var:line ?></span></td>
      <th class="chg"><?cs var:#block.changed.offset + name(line) ?></th>
      <td class="chg"><span><?cs var:line ?></span></td>
-    </tr><?cs /each ?><?cs
-   elif:block.type == 'mod' ?><?cs
+    </tr><?cs /each ?>
+   </tbody><?cs
+   elif:block.type == 'mod' ?><tbody class="mod"><?cs
     if:len(block.base.lines) >= len(block.changed.lines) ?><?cs
-     each:line = block.base.lines ?><tr class="mod">
+     each:line = block.base.lines ?><tr>
       <th class="base"><?cs var:#block.base.offset + name(line) ?></th>
       <td class="base"><del><?cs var:line ?></del></td><?cs
       if:len(block.changed.lines) >= name(line) ?><?cs
@@ -48,12 +49,12 @@
         /if ?><?cs
        /each ?><?cs
       else ?>
-       <th class="chg"></th>
-       <td class="chg"></td><?cs
+       <th class="chg">&nbsp;</th>
+       <td class="chg">&nbsp;</td><?cs
       /if ?>
      </tr><?cs /each ?><?cs
     else ?><?cs
-     each:line = block.changed.lines ?><tr class="mod"><?cs
+     each:line = block.changed.lines ?><tr><?cs
       if:len(block.base.lines) >= name(line) ?><?cs
        each:baseline = block.base.lines ?><?cs
         if:name(baseline) == name(line) ?>
@@ -62,67 +63,73 @@
         /if ?><?cs
        /each ?><?cs
       else ?>
-       <th class="base"></th>
-       <td class="base"></td><?cs
+       <th class="base">&nbsp;</th>
+       <td class="base">&nbsp;</td><?cs
       /if ?>
       <th class="chg"><?cs var:#block.changed.offset + name(line) ?></th>
       <td class="chg"><ins><?cs var:line ?></ins></td>
      </tr><?cs /each ?><?cs
-    /if ?><?cs
-   elif:block.type == 'add' ?><?cs
-    each:line = block.changed.lines ?><tr class="add">
+    /if ?>
+   </tbody><?cs
+   elif:block.type == 'add' ?><tbody class="add"><?cs
+    each:line = block.changed.lines ?><tr>
      <th class="base">&nbsp;</th>
      <td class="base">&nbsp;</td>
      <th class="chg"><?cs var:#block.changed.offset + name(line) ?></th>
      <td class="chg"><ins><?cs var:line ?></ins></td>
     </tr><?cs /each ?><?cs
-   elif:block.type == 'rem' ?><?cs
-    each:line = block.base.lines ?><tr class="rem">
+   elif:block.type == 'rem' ?><tbody class="rem"><?cs
+    each:line = block.base.lines ?><tr>
      <th class="base"><?cs var:#block.base.offset + name(line) ?></th>
      <td class="base"><del><?cs var:line ?></del></td>
      <th class="chg">&nbsp;</th>
      <td class="chg">&nbsp;</td>
     </tr><?cs /each ?><?cs
-   /if ?><?cs
+   /if ?>
+  </tbody><?cs
   /each ?><?cs
  else ?><?cs
-  each:block = change.blocks ?><?cs
-   if:block.type == 'unmod' ?><?cs
-    each:line = block.base.lines ?><tr class="unmod">
+  each:block = change.blocks ?>
+   <?cs if:block.type == 'unmod' ?><tbody class="unmod"><?cs
+    each:line = block.base.lines ?><tr>
      <th class="base"><?cs var:#block.base.offset + name(line) ?></th>
      <th class="chg"><?cs var:#block.changed.offset + name(line) ?></th>
      <td class="base"><span><?cs var:line ?></span></td>
-    </tr><?cs /each ?><?cs
-   elif:block.type == 'mod' ?><?cs
-    each:line = block.base.lines ?><tr class="mod<?cs
+    </tr><?cs /each ?>
+   </tbody>
+   <?cs elif:block.type == 'mod' ?><tbody class="mod"><?cs
+    each:line = block.base.lines ?><tr class="<?cs
       if:name(line) == 1 ?> first<?cs /if ?>">
      <th class="base"><?cs var:#block.base.offset + name(line) ?></th>
      <th class="chg">&nbsp;</th>
      <td class="base"><del><?cs var:line ?></del></td>
     </tr><?cs /each ?><?cs
-    each:line = block.changed.lines ?><tr class="mod<?cs
+    each:line = block.changed.lines ?><tr class="<?cs
       if:name(line) == len(block.changed.lines) ?> last<?cs /if ?>">
      <th class="base">&nbsp;</th>
      <th class="chg"><?cs var:#block.changed.offset + name(line) ?></th>
      <td class="chg"><ins><?cs var:line ?></ins></td>
-    </tr><?cs /each ?><?cs
-   elif:block.type == 'add' ?><?cs
-    each:line = block.changed.lines ?><tr class="add<?cs
+    </tr><?cs /each ?>
+   </tbody>
+   <?cs elif:block.type == 'add' ?><tbody class="add"><?cs
+    each:line = block.changed.lines ?><tr class="<?cs
       if:name(line) == 1 ?> first<?cs /if ?><?cs
       if:name(line) == len(block.changed.lines) ?> last ?><?cs /if ?>">
      <th class="base">&nbsp;</th>
      <th class="chg"><?cs var:#block.changed.offset + name(line) ?></th>
      <td class="chg"><ins><?cs var:line ?></ins></td>
-    </tr><?cs /each ?><?cs
-   elif:block.type == 'rem' ?><?cs
-    each:line = block.base.lines ?><tr class="rem<?cs
+    </tr><?cs /each ?>
+   </tbody>
+   <?cs elif:block.type == 'rem' ?><tbody class="rem"><?cs
+    each:line = block.base.lines ?><tr class="<?cs
       if:name(line) == 1 ?> first<?cs /if ?><?cs
       if:name(line) == len(block.base.lines) ?> last ?><?cs /if ?>">
      <th class="base"><?cs var:#block.base.offset + name(line) ?></th>
      <th class="chg">&nbsp;</th>
      <td class="base"><del><?cs var:line ?></del></td>
-    </tr><?cs /each ?><?cs
-   /if ?><?cs
+    </tr><?cs /each ?>
+   </tbody>
+   <?cs /if ?><?cs
   /each ?><?cs
  /if ?><?cs
 /def ?>

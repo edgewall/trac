@@ -66,9 +66,10 @@
       <h2><?cs var:wiki.diff.name.new ?></h2>
       <?cs if:diff.style == 'sidebyside' ?>
        <table class="sidebyside" summary="Differences">
-        <colgroup>
-         <col class="lineno" /><col class="base" />
-         <col class="lineno" /><col class="chg" />
+        <colgroup class="base">
+         <col class="lineno" /><col class="content" />
+        <colgroup class="chg">
+         <col class="lineno" /><col class="content" />
         </colgroup>
         <thead><tr>
          <th colspan="2">Version <?cs var:wiki.diff.rev.old ?></th>
@@ -93,9 +94,7 @@
          <th></th>
         </tr></thead>
         <?cs each:change = wiki.diff.changes ?>
-         <tbody>
-          <?cs call:diff_display(change, diff.style) ?>
-         </tbody>
+         <?cs call:diff_display(change, diff.style) ?>
         <?cs /each ?>
        </table>
       <?cs /if ?>
