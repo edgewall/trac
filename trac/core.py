@@ -255,6 +255,9 @@ class Request:
 
     def init_request(self):
         import neo_cgi
+        # The following line is needed so that ClearSilver can be loaded when
+        # we are being run in multiple interpreters under mod_python
+        neo_cgi.update()
         import neo_cs
         import neo_util
         import Cookie
@@ -290,6 +293,9 @@ class Request:
 
     def display(self, cs, content_type='text/html', response=200):
         import neo_cgi
+        # The following line is needed so that ClearSilver can be loaded when
+        # we are being run in multiple interpreters under mod_python
+        neo_cgi.update()
         import neo_cs
         import neo_util
         if type(cs) == type(''):
