@@ -147,7 +147,10 @@
    /with ?>
   </div>
   <form id="stats" method="get">
-   <fieldset>
+   <fieldset><?cs
+    if:milestone.id_param ?>
+     <input type="hidden" name="id" value="<?cs var:milestone.name ?>" /><?cs
+    /if ?>
     <legend>
      <label for="by">Ticket status by</label>
      <select id="by" name="by" onchange="this.form.submit()"><?cs
