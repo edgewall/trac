@@ -44,7 +44,14 @@ class Newticket (Module):
         default_severity  = self.config['ticket']['default_severity']
         default_version   = self.config['ticket']['default_version']
         
-        self.cgi.hdf.setValue('newticket.newtitle.title', 'create a new ticket')
+        self.cgi.hdf.setValue('title', 'Create a new ticket')
+        
+        self.cgi.hdf.setValue('newticket.default_component', default_component)
+        self.cgi.hdf.setValue('newticket.default_milestone', default_milestone)
+        self.cgi.hdf.setValue('newticket.default_priority', default_priority)
+        self.cgi.hdf.setValue('newticket.default_severity', default_severity)
+        self.cgi.hdf.setValue('newticket.default_version', default_version)
+        
         sql_to_hdf('SELECT name FROM component ORDER BY name',
                    self.cgi.hdf, 'newticket.components')
         sql_to_hdf('SELECT name FROM milestone ORDER BY name',

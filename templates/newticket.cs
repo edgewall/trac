@@ -25,19 +25,19 @@ value="<?cs var:newticket.reporter ?>" /></td>
 </tr>
 <tr>
 <td align="right">component:</td>
-<td><?cs call:hdf_select(newticket.components, "component", "") ?></td>
+<td><?cs call:hdf_select(newticket.components, "component", newticket.default_component) ?></td>
 <td align="right">milestone:</td>
-<td><?cs call:hdf_select(newticket.milestones, "milestone", "") ?></td>
+<td><?cs call:hdf_select(newticket.milestones, "milestone", newticket.default_milestone) ?></td>
 </tr>
 <tr>
 <td align="right">version:</td>
-<td><?cs call:hdf_select(newticket.versions, "version", "") ?></td>
+<td><?cs call:hdf_select(newticket.versions, "version", newticket.default_version) ?></td>
 <td align="right">assign to:</td>
 <td><input type="text" name="owner" /></td>
 </tr>
 <tr>
 <td align="right">severity:</td>
-<td><?cs call:hdf_select(enums.severity, "severity", "normal") ?></td>
+<td><?cs call:hdf_select(enums.severity, "severity", newticket.default_severity) ?></td>
 </tr>
 <tr>
 <td align="right">cc:</td>
