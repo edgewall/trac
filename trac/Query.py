@@ -154,9 +154,12 @@ class Query(object):
         return results
 
     def get_href(self, format=None):
-        return self.env.href.query(self.constraints, self.order, self.desc,
-                                   self.group, self.groupdesc, self.verbose,
-                                   format)
+        return self.env.href.query(self.constraints, order=self.order,
+                                   desc=self.desc and 1 or None,
+                                   group=self.group,
+                                   groupdesc=self.groupdesc and 1 or None,
+                                   verbose=self.verbose and 1 or None,
+                                   format=format)
 
     def get_sql(self):
         if not self.cols:
@@ -490,17 +493,22 @@ class QueryModule(Module):
 
         cols = query.get_columns()
         for i in range(len(cols)):
-            req.hdf['query.headers.%d.name' % i] = cols[i]
+            header = {'name': cols[i]}
             if cols[i] == query.order:
-                req.hdf['query.headers.%d.href' % i] = escape(
-                    self.env.href.query(query.constraints, query.order,
-                    not query.desc, query.group, query.groupdesc,
-                    query.verbose))
-                req.hdf['query.headers.%d.order' % i] = query.desc and 'desc' or 'asc'
+                href = self.env.href.query(query.constraints, order=query.order,
+                                           desc=query.desc and None or 1,
+                                           group=query.group,
+                                           groupdesc=query.groupdesc and 1 or None,
+                                           verbose=query.verbose and 1 or None)
+                header['href'] = escape(href)
+                header['order'] = query.desc and 'desc' or 'asc'
             else:
-                req.hdf['query.headers.%d.href' % i] = escape(
-                    self.env.href.query(query.constraints, cols[i], 0,
-                    query.group, query.groupdesc, query.verbose))
+                href = self.env.href.query(query.constraints, order=cols[i],
+                                           group=query.group,
+                                           groupdesc=query.groupdesc and 1 or None,
+                                           verbose=query.verbose and 1 or None)
+                header['href'] = escape(href)
+            req.hdf['query.headers.%d' % i] = header
 
         req.hdf['query.order'] = query.order
         if query.desc:

@@ -1,7 +1,7 @@
 # -*- coding: iso8859-1 -*-
 #
-# Copyright (C) 2004 Edgewall Software
-# Copyright (C) 2004 Daniel Lundin
+# Copyright (C) 2005 Edgewall Software
+# Copyright (C) 2005 Christopher Lenz <cmlenz@gmx.de>
 #
 # Trac is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License as
@@ -17,15 +17,22 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #
-# Author: Daniel Lundin <daniel@edgewall.com>
-#
-# Trac support for Textile
-# See also: http://dealmeida.net/projects/textile/ for
-#
+# Author: Christopher Lenz <cmlenz@gmx.de>
 
-from textile import textile
+from trac.web import href
 
-__docformat__ = 'reStructuredText'
+import sys
+import unittest
 
-def execute(hdf, text, env):
-    return textile(text)
+
+def suite():
+    try:
+        from doctest import DocTestSuite
+        return DocTestSuite(href)
+    except ImportError:
+        print>>sys.stderr, "DocTestSuite not available, skipping href tests"
+        return unittest.TestSuite()
+
+if __name__ == '__main__':
+    runner = unittest.TextTestRunner()
+    runner.run(suite())

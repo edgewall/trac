@@ -22,7 +22,7 @@
 from trac import perm
 from trac.Diff import get_diff_options, hdf_diff
 from trac.Module import Module
-from trac.util import escape, TracError, get_reporter_id
+from trac.util import enum, escape, TracError, get_reporter_id
 from trac.WikiFormatter import *
 
 import os
@@ -279,22 +279,19 @@ class WikiModule(Module):
         cursor = self.db.cursor ()
         cursor.execute("SELECT version,time,author,comment,ipnr FROM wiki "
                        "WHERE name=%s ORDER BY version DESC", (pagename,))
-        i = 0
-        while 1:
-            row = cursor.fetchone()
-            if not row:
-                break
+        for i, row in enum(cursor):
+            version, t, author, comment, ipnr = row
             item = {
-                'url': escape(self.env.href.wiki(pagename, row[0])),
-                'diff_url': escape(self.env.href.wiki(pagename, row[0], action='diff')),
-                'version': row[0],
-                'time': time.strftime('%x %X', time.localtime(int(row[1]))),
-                'author': escape(row[2]),
-                'comment': wiki_to_oneliner(row[3] or '', self.env, self.db),
-                'ipaddr': row[4]
+                'url': escape(self.env.href.wiki(pagename, version)),
+                'diff_url': escape(self.env.href.wiki(pagename, version=version,
+                                                      action='diff')),
+                'version': version,
+                'time': time.strftime('%x %X', time.localtime(int(t))),
+                'author': escape(author),
+                'comment': wiki_to_oneliner(comment or '', self.env, self.db),
+                'ipaddr': ipnr
             }
             req.hdf['wiki.history.%d' % i] = item
-            i = i + 1
 
     def _render_view(self, req, pagename):
         self.perm.assert_permission(perm.WIKI_VIEW)
@@ -322,15 +319,13 @@ class WikiModule(Module):
             'readonly': page.readonly,
             'page_html': wiki_to_html(page.text, req.hdf, self.env, self.db),
             'page_source': page.text, # for plain text view
-            'history_href': escape(self.env.href.wiki(page.name,
-                                                      action='history'))
+            'history_href': escape(self.env.href.wiki(page.name, action='history'))
         }
         req.hdf['wiki'] = info
 
         self.env.get_attachments_hdf(self.db, 'wiki', pagename, req.hdf,
                                      'wiki.attachments')
-        req.hdf['wiki.attach_href'] = self.env.href.attachment('wiki',
-                                                               pagename, None)
+        req.hdf['wiki.attach_href'] = self.env.href.attachment('wiki', pagename)
 
     def _save_page(self, req, pagename):
         self.perm.assert_permission(perm.WIKI_MODIFY)

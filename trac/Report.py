@@ -229,15 +229,15 @@ class Report (Module):
         from the database and presents it as a html table.
         """
         if self.perm.has_permission(perm.REPORT_CREATE):
-            req.hdf['report.create_href'] = self.env.href.report(None, 'new')
+            req.hdf['report.create_href'] = self.env.href.report(None, action='new')
 
         if id != -1:
             if self.perm.has_permission(perm.REPORT_MODIFY):
-                req.hdf['report.edit_href'] = self.env.href.report(id, 'edit')
+                req.hdf['report.edit_href'] = self.env.href.report(id, action='edit')
             if self.perm.has_permission(perm.REPORT_CREATE):
-                req.hdf['report.copy_href'] = self.env.href.report(id, 'copy')
+                req.hdf['report.copy_href'] = self.env.href.report(id, action='copy')
             if self.perm.has_permission(perm.REPORT_DELETE):
-                req.hdf['report.delete_href'] = self.env.href.report(id, 'delete')
+                req.hdf['report.delete_href'] = self.env.href.report(id, action='delete')
 
         try:
             args = self.get_var_args(req)

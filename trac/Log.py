@@ -60,7 +60,7 @@ class Log (Module):
             'log'      : wiki_to_oneliner(util.shorten_line(util.wiki_escape_newline(log)),
                                           self.env,self.db),
             'shortlog' : util.escape(shortlog),
-            'file_href': self.env.href.browser(self.path, rev),
+            'file_href': self.env.href.browser(self.path, rev=rev),
             'changeset_href': self.env.href.changeset(rev)
         }
         self.log_info.insert (0, item)
@@ -86,7 +86,7 @@ class Log (Module):
         # after each tag/branch/copy/rename.
         path = self.path
         for item in self.log_info:
-            item['file_href'] = self.env.href.browser(path, item['rev'])
+            item['file_href'] = self.env.href.browser(path, rev=item['rev'])
             if self.branch_info.has_key(item['rev']):
                 for info in self.branch_info[item['rev']]:
                     if path[:len(info[1])] == info[1]:
@@ -103,7 +103,7 @@ class Log (Module):
             req.hdf['log.path.%d' % i] = part or 'root'
             url = ''
             if rev_specified:
-                url = self.env.href.browser(path, rev)
+                url = self.env.href.browser(path, rev=rev)
             else:
                 url = self.env.href.browser(path)
             req.hdf['log.path.%d.url' % i] = url

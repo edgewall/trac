@@ -108,10 +108,9 @@ class Attachment(FileCommon):
     def get_attachment_parent_link(self):
         if self.attachment_type == 'ticket':
             return ('Ticket #' + self.attachment_id,
-                    self.env.href.ticket(int(self.attachment_id)))
+                    self.env.href.ticket(self.attachment_id))
         elif self.attachment_type == 'wiki':
-            return (self.attachment_id,
-                    self.env.href.wiki(self.attachment_id))
+            return (self.attachment_id, self.env.href.wiki(self.attachment_id))
         assert 0
 
     def render(self, req):
@@ -164,12 +163,12 @@ class Attachment(FileCommon):
             self.add_link(req, 'alternate',
                           self.env.href.attachment(self.attachment_type,
                                                    self.attachment_id,
-                                                   self.filename, 'txt'),
+                                                   self.filename, format='txt'),
                           'Plain Text', 'text/plain')
             self.add_link(req, 'alternate',
                           self.env.href.attachment(self.attachment_type,
                                                    self.attachment_id,
-                                                   self.filename, 'raw'),
+                                                   self.filename, format='raw'),
                           'Original Format', self.mime_type)
 
             perm_map = {'ticket': perm.TICKET_ADMIN, 'wiki': perm.WIKI_DELETE}
@@ -237,7 +236,7 @@ class File(FileCommon):
         req.hdf['file.filename'] = list[-1]
         req.hdf['file.path.0'] = 'root'
         if rev_specified:
-            req.hdf['file.path.0.url'] = self.env.href.browser(path, rev)
+            req.hdf['file.path.0.url'] = self.env.href.browser(path, rev=rev)
         else:
             req.hdf['file.path.0.url'] = self.env.href.browser(path)
         i = 0
@@ -247,7 +246,7 @@ class File(FileCommon):
             req.hdf['file.path.%d' % i] = part
             url = ''
             if rev_specified:
-                url = self.env.href.browser(path, rev)
+                url = self.env.href.browser(path, rev=rev)
             else:
                 url = self.env.href.browser(path)
             req.hdf['file.path.%d.url' % i] = url
@@ -320,7 +319,7 @@ class File(FileCommon):
         req.hdf['file.rev_msg'] = msg_html
         req.hdf['file.path'] = self.path
         req.hdf['file.logurl'] = util.escape(self.env.href.log(self.path,
-                                                               self.rev))
+                                                               rev=self.rev))
 
         # Try to do an educated guess about the mime-type
         self.mime_type = svn.fs.node_prop (root, self.path,
@@ -333,9 +332,9 @@ class File(FileCommon):
             self.mime_type = self.env.mimeview.get_mimetype(filename=self.path) or \
                              'application/octet-stream'
 
-        self.add_link(req, 'alternate', self.env.href.file(self.path, self.rev, 'raw'),
+        self.add_link(req, 'alternate', self.env.href.file(self.path, rev=self.rev, format='raw'),
             'Original Format', self.mime_type)
-        self.add_link(req, 'alternate', self.env.href.file(self.path, self.rev, 'txt'),
+        self.add_link(req, 'alternate', self.env.href.file(self.path, rev=self.rev, format='txt'),
             'Plain Text', 'text/plain')
 
         self.length = svn.fs.file_length(root, self.path, self.pool)

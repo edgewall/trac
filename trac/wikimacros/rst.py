@@ -43,7 +43,7 @@ except ImportError:
 if __version__ < docutils_required:
     raise EnvironmentError, 'Docutils version >= %s required, %s found' % (docutils_required, __version__)
 
-from trac.Href import Href
+from trac.web.href import Href
 from trac.WikiFormatter import WikiProcessor
 
 __docformat__ = 'reStructuredText'
@@ -69,7 +69,7 @@ def _changeset(href, args):
 def _browser(href, args):
     path = args[0]
     rev = len(args) == 2 and args[1] or ''
-    return href.browser(path, rev)
+    return href.browser(path, rev=rev)
 
 # TracLink REs and callback functions
 LINKS = [(TICKET_LINK, _ticket),

@@ -1,4 +1,4 @@
-from trac.Href import Href
+from trac.web.href import Href
 from trac.Logging import logger_factory
 from trac.test import Mock
 from trac.util import TracError

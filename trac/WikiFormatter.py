@@ -250,6 +250,7 @@ class CommonFormatter:
         if page.find('#') != -1:
             anchor = page[page.find('#'):]
             page = page[:page.find('#')]
+        page = urllib.unquote(page)
         text = urllib.unquote(text)
         if not self.env._wiki_pages.has_key(page):
             return '<a class="missing wiki" href="%s" rel="nofollow">%s?</a>' \
@@ -322,7 +323,7 @@ class CommonFormatter:
         path = urllib.unquote(path)
         if rev:
             return '<a class="source" href="%s">%s</a>' \
-                   % (self._href.browser(path, rev), text)
+                   % (self._href.browser(path, rev=rev), text)
         else:
             return '<a class="source" href="%s">%s</a>' \
                    % (self._href.browser(path), text)

@@ -19,9 +19,9 @@
 #
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
-from trac.Href import Href
 from trac.util import escape, href_join, TRUE
 from trac.web.auth import Authenticator
+from trac.web.href import Href
 from trac.web.session import Session
 
 import cgi
@@ -357,7 +357,6 @@ def send_pretty_error(e, env, req=None):
         if not env:
             from trac.env import open_environment
             env = open_environment()
-            from trac.Href import Href
             env.href = Href(req.cgi_location)
         populate_hdf(req.hdf, env, req)
 

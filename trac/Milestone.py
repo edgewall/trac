@@ -58,28 +58,20 @@ def get_tickets_for_milestone(env, db, milestone, field='component'):
 
 
 def get_query_links(env, milestone, grouped_by='component', group=None):
-    queries = {}
+    q = {}
     if not group:
-        queries['all_tickets'] = env.href.query({'milestone': milestone})
-        queries['active_tickets'] = env.href.query({
-            'milestone': milestone, 'status': ['new', 'assigned', 'reopened']
-        })
-        queries['closed_tickets'] = env.href.query({
-            'milestone': milestone, 'status': 'closed'
-        })
+        q['all_tickets'] = env.href.query(milestone=milestone)
+        q['active_tickets'] = env.href.query(milestone=milestone,
+                                             status=('new', 'assigned', 'reopened'))
+        q['closed_tickets'] = env.href.query(milestone=milestone, status='closed')
     else:
-        queries['all_tickets'] = env.href.query({
-            'milestone': milestone, grouped_by: group
-        })
-        queries['active_tickets'] = env.href.query({
-            'milestone': milestone, grouped_by: group,
-            'status': ['new', 'assigned', 'reopened']
-        })
-        queries['closed_tickets'] = env.href.query({
-            'milestone': milestone, grouped_by: group,
-            'status': 'closed'
-        })
-    return queries
+        q['all_tickets'] = env.href.query(milestone=milestone, grouped_by=group)
+        q['active_tickets'] = env.href.query(milestone=milestone,
+                                             grouped_by=group,
+                                             status=('new', 'assigned', 'reopened'))
+        q['closed_tickets'] = env.href.query(milestone=milestone, grouped_by=group,
+                                             status='closed')
+    return q
 
 
 def calc_ticket_stats(tickets):
