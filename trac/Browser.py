@@ -89,17 +89,6 @@ class Browser(Module):
         else:
             return '%d MB' % (size / 1024 / 1024)
         
-    def get_path_links(self):
-        list = self.path[1:].split('/')
-        path = '/'
-        str  = '<a href="%s">/</a>' % href.browser('/')
-        for part in list:
-            if part == '':
-                return str
-            path = path + part + '/'
-            str = str + '<a href="%s">%s/</a>' % (href.browser(path), part)
-        return str
-
     def generate_path_links(self):
         list = self.path[1:].split('/')
         path = '/'
@@ -137,4 +126,3 @@ class Browser(Module):
 
         self.cgi.hdf.setValue('browser.path', self.path)
         self.cgi.hdf.setValue('browser.revision', str(rev))
-        self.cgi.hdf.setValue('browser.path_links', self.get_path_links ())
