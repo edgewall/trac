@@ -208,8 +208,6 @@ a:link, a:visited
   text-decoration: none;
 }
 
-a:active { background-color: pink; }
-
 
 /*
  * Navigation bar
@@ -248,8 +246,8 @@ a.topbar-link-active {
   border: solid 1px #300;
   border-width: 1px 0 1px 0;
  
-  padding: 0px 5px;
-  margin: 0 0 0 0;
+  padding: 0;
+  margin: 0;
 }
 
 .navbar { 
@@ -266,6 +264,12 @@ a.navbar-link,a.navbar-link-active {
   border-color: #fff;
   border-width: 0 1px 0 0;
   margin: 0;
+}
+
+a.navbar-link:hover, a.navbar-link-active:hover
+{
+  color: #a00;
+  background-color: #fff;
 }
 
 a.navbar-link-right

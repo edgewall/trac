@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-<title>Edgewall Trac - <?cs var:title ?></title>
+<title>Edgewall Trac <?cs var:title ?></title>
 <link rel="stylesheet" type="text/css" href="<?cs var:htdocs_location ?>/trac.css">
 </head>
 <body marginheight="0" marginwidth="0" rightmargin="0" leftmargin="0" 
