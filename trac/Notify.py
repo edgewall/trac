@@ -241,14 +241,17 @@ class TicketNotifyEmail(NotifyEmail):
         i = 1
         width = [0,0,0,0]
         for f in fields:
-            if not tkt.has_key(f) or str(tkt[f]).find('\n') > -1:
+            if not tkt.has_key(f):
+                continue
+            fval = str(tkt[f])
+            if fval.find('\n') > -1:
                 continue
             fname = f.startswith('custom_') and f[7:] or f
             idx = 2*(i % 2)
             if len(fname) > width[idx]:
                 width[idx] = len(fname)
-            if len(tkt[f]) > width[idx+1]:
-                width[idx+1] = len(tkt[f])
+            if len(fval) > width[idx+1]:
+                width[idx+1] = len(fval)
             i += 1
         format = (' %%%is:  %%-%is%s' % (width[0], width[1], CRLF),
                   '%%%is:  %%-%is  |  ' % (width[2], width[3]))
