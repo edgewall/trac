@@ -39,13 +39,6 @@ class IterableCursor(object):
     def __init__(self, cursor):
         self.cursor = cursor
 
-    def __del__(self):
-        if self.cursor:
-            try:
-                self.cursor.close()
-            except ReferenceError:
-                pass
-
     def __getattr__(self, name):
         return getattr(self.cursor, name)
 
@@ -67,13 +60,6 @@ class ConnectionWrapper(object):
 
     def __init__(self, cnx):
         self.cnx = cnx
-
-    def __del__(self):
-        if self.cnx:
-            try:
-                self.cnx.close()
-            except ReferenceError:
-                pass
 
     def __getattr__(self, name):
         return getattr(self.cnx, name)
