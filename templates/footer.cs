@@ -13,6 +13,7 @@
   <a href="http://trac.edgewall.com/">http://trac.edgewall.com/</a>
  </p>
 </div>
-
+</div>
+<?cs include "site_footer.cs" ?>
  </body>
 </html>

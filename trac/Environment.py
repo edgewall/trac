@@ -86,22 +86,47 @@ class Environment:
                               timeout=10000)
 
     def create(self):
+        def _create_file(fname, data=None):
+            fd = open(fname, 'w')
+            if data: fd.write(data)
+            fd.close()
         # Create the directory structure
         os.mkdir(self.path)
         os.mkdir(os.path.join(self.path, 'conf'))
-        os.mkdir(os.path.join(self.path, 'db'))
         os.mkdir(self.get_log_dir())
         os.mkdir(self.get_attachments_dir())
         os.mkdir(self.get_templates_dir())
         os.mkdir(os.path.join(self.path, 'wiki-macros'))
         # Create a few static files
-        fd = open(os.path.join(self.path, 'VERSION'), 'w')
-        fd.write('Trac Environment Version 1\n')
-        fd = open(os.path.join(self.path, 'README'), 'w')
-        fd.write('This directory contains a Trac project.\n'
-                 'Visit http://trac.edgewall.com/ for more information.\n')
-        fd = open(os.path.join(self.path, 'conf', 'trac.ini'), 'w')
-        fd.close()
+        _create_file(os.path.join(self.path, 'VERSION'),
+                     'Trac Environment Version 1\n')
+        print "hej"
+        _create_file(os.path.join(self.path, 'README'),
+                    'This directory contains a Trac project.\n'
+                    'Visit http://trac.edgewall.com/ for more information.\n')
+        _create_file(os.path.join(self.path, 'conf', 'trac.ini'))
+        _create_file(os.path.join(self.get_templates_dir(), 'README'),
+                     'This directory contains project-specific custom templates and style sheet.\n')
+        _create_file(os.path.join(self.get_templates_dir(), 'site_header.cs'),
+                     """<?cs
+####################################################################
+# Site header - Contents are automatically inserted above Trac HTML
+?>
+""")
+        _create_file(os.path.join(self.get_templates_dir(), 'site_footer.cs'),
+                     """<?cs
+#########################################################################
+# Site footer - Contents are automatically inserted after main Trac HTML
+?>
+""")
+        _create_file(os.path.join(self.get_templates_dir(), 'site_css.cs'),
+                     """<?cs
+##################################################################
+# Site CSS - Place custom CSS, including overriding styles here.
+?>
+""")
+        # Create default database
+        os.mkdir(os.path.join(self.path, 'db'))
         cnx = sqlite.connect(os.path.join(self.path, 'db', 'trac.db'))
         cursor = cnx.cursor()
         cursor.execute(db_default.schema)

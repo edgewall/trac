@@ -24,11 +24,13 @@
    <?cs elif:trac.active_module == 'search' ?>
    @import url("<?cs var:htdocs_location ?>/css/search.css");
    <?cs /if ?>
+   <?cs include "site_css.cs" ?>
   </style>
   <script src="<?cs var:$htdocs_location ?>/trac.js" type="text/javascript"></script>
  </head>
 <body>
-
+<?cs include "site_header.cs" ?>
+<div id="trac-main">
 <div id="header">
   <a id="logo" href="<?cs var:header_logo.link ?>"><img src="<?cs var:header_logo.src ?>"
       width="<?cs var:header_logo.width ?>" height="<?cs var:header_logo.height ?>"
@@ -38,8 +40,8 @@
 
 <form id="search" action="<?cs var:trac.href.search ?>" method="get">
  <div>
-  <label for="query">Search:</label>
-  <input type="text" id="proj-search" name="query" size="10" value="" />
+  <label for="proj-search">Search:</label>
+  <input type="text" id="proj-search" name="proj-search" size="10" value="" />
   <input type="submit" value="Search" />
   <input type="hidden" name="wiki" value="on" />
   <input type="hidden" name="changeset" value="on" />

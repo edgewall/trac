@@ -634,9 +634,9 @@ class Wiki(Module):
             n = 'wiki.history.%d' % i
             self.req.hdf.setValue(n, str(i))
             self.req.hdf.setValue(n+'.url',
-                                  self.env.href.wiki(pagename, str(row[0])))
+                                  escape(self.env.href.wiki(pagename, str(row[0]))))
             self.req.hdf.setValue(n+'.diff_url',
-                                  self.env.href.wiki(pagename, str(row[0]), 1))
+                                  escape(self.env.href.wiki(pagename, str(row[0]), 1)))
             self.req.hdf.setValue(n+'.version', str(row[0]))
             self.req.hdf.setValue(n+'.time', time_str)
             self.req.hdf.setValue(n+'.author', str(row[2]))

@@ -2,7 +2,7 @@
 body {
   background: #fff;
   margin: 10px;
-  padding: 29px 0 0;
+/*   padding: 29px 0 0; */
   color: #000;
   font: normal 13px verdana,arial,'Bitstream Vera Sans',helvetica,sans-serif;
 }
@@ -89,9 +89,10 @@ legend {
 }
 
 /* Header */
-#header { float: left; margin-top: -29px }
+#header { clear: both; float: left; margin-top: -23px}
+/* #header { clear: both; float: left; padding} */
 #header hr { display: none }
-#header img { border: none }
+#header img { border: none; margin-top: 0 }
 #header :link, #header :visited, #header :link:hover, #header :visited:hover {
  background: transparent;
  margin-bottom: 2px;
@@ -210,7 +211,7 @@ legend {
   float: right;
   text-align: right;
 }
-
+#trac-main { padding-top: 23px; }
 #page-content { }
 #main {  margin-bottom: 2em; }
 #main-footer { margin-top: 3em; text-align: center; }
