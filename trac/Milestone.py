@@ -147,11 +147,20 @@ class Milestone(Module):
         milestone = self.get_milestone(id)
         if self.args.has_key('delete'):
             cursor = self.db.cursor()
-            if self.args.has_key('resettickets'):
-                self.env.log.info('Resetting milestone field of all tickets '
-                                  'associated with milestone %s' % id)
-                cursor.execute ('UPDATE ticket SET milestone = NULL '
-                                'WHERE milestone = %s', id)
+            if self.args.has_key('retarget'):
+                target = self.args.get('target')
+                if target:
+                    self.env.log.info('Retargeting milestone field of all '
+                                      'tickets associated with milestone %s to '
+                                      'milestone %s' % (id, target))
+                    cursor.execute ('UPDATE ticket SET milestone = %s '
+                                    'WHERE milestone = %s', target, id)
+                else:
+                    self.env.log.info('Resetting milestone field of all '
+                                      'tickets associated with milestone %s'
+                                      % id)
+                    cursor.execute ('UPDATE ticket SET milestone = NULL '
+                                    'WHERE milestone = %s', id)
             self.env.log.debug('Deleting milestone %s' % id)
             cursor.execute("DELETE FROM milestone WHERE name = %s", id)
             self.db.commit()
@@ -237,8 +246,21 @@ class Milestone(Module):
     def render_confirm(self, id):
         milestone = self.get_milestone(id)
         self.req.hdf.setValue('title', 'Milestone %s' % milestone['name'])
-        self.req.hdf.setValue('milestone.mode', 'delete')
+        self.req.hdf.setValue('milestone.mode', 'delete')        
         add_dict_to_hdf(milestone, self.req.hdf, 'milestone')
+
+        cursor = self.db.cursor()
+        cursor.execute("SELECT name FROM milestone "
+                       "WHERE name != '' ORDER BY name")
+        milestones = []
+        milestone_no = 0
+        while 1:
+            row = cursor.fetchone()
+            if not row:
+                break
+            self.req.hdf.setValue('milestones.%d' % milestone_no, row['name'])
+            milestone_no += 1
+        cursor.close()
 
     def render_editor(self, id):
         if id == -1:

@@ -103,10 +103,15 @@
    <input type="hidden" name="id" value="<?cs var:milestone.name ?>" />
    <input type="hidden" name="action" value="confirm_delete" />
    <p><strong>Are you sure you want to delete this milestone?</strong></p>
-   <input type="checkbox" id="resettickets" name="resettickets"
-     checked="checked"/>
-   <label for="resettickets">Reset the milestone field of all tickets
-   associated with this milestone?</label>
+   <input type="checkbox" id="retarget" name="retarget" checked="checked"
+       onclick="enableControl('target', this.checked)"/>
+   <label for="target">Retarget associated tickets to milestone</label>
+   <select name="target" id="target">
+    <option value="">None</option><?cs
+     each:other = milestones ?><?cs if:other != milestone.name ?>
+      <option><?cs var:other ?></option><?cs 
+     /if ?><?cs /each ?>
+   </select>
    <div class="buttons">
     <input type="submit" name="cancel" value="Cancel" />
     <input type="submit" name="delete" value="Delete Milestone" />
@@ -176,6 +181,11 @@
    </td>
   </tr></tbody>
  </table><?cs /if ?>
+
+ <div id="help">
+  <strong>Note:</strong> See <a href="<?cs
+    var:trac.href.wiki ?>/TracRoadmap">TracRoadmap</a> for help on using the roadmap.
+ </div>
 
 </div>
 <?cs include:"footer.cs"?>

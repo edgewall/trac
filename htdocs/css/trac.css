@@ -61,6 +61,7 @@ legend {
 }
 form.inline { float: left }
 form.inline input { margin: 1em }
+label.disabled { color: #d7d7d7 }
 .att-label { float:left; width: 7em; text-align: right; margin-right: .5em; }
 .buttons { margin: .5em; }
 

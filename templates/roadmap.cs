@@ -41,5 +41,10 @@
   </li>
  <?cs /each ?></ul>
 
+ <div id="help">
+  <strong>Note:</strong> See <a href="<?cs
+    var:trac.href.wiki ?>/TracRoadmap">TracRoadmap</a> for help on using the roadmap.
+ </div>
+
 </div>
 <?cs include:"footer.cs"?>
