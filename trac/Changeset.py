@@ -56,10 +56,6 @@ class HtmlDiffEditor (svn.delta.Editor):
 
         options = Diff.get_options(self.env, self.req, self.args, 1)
 
-        # Make sure we have permission to view this diff
-        if not self.authzperm.has_permission(new_path):
-            return
-
         # Try to figure out the charset used. We assume that both the old
         # and the new version uses the same charset, not always the case
         # but that's all we can do...
@@ -236,7 +232,8 @@ class Changeset (Module.Module):
                               self.args, self.env, self.authzperm)
         e_ptr, e_baton = svn.delta.make_editor(editor, self.pool)
 
-        def authz_cb(root, path, pool): return 1
+        def authz_cb(root, path, pool):
+            return self.authzperm.has_permission(path) and 1 or 0
         svn.repos.svn_repos_dir_delta(old_root, '', '',
                                       new_root, '', e_ptr, e_baton, authz_cb,
                                       0, 1, 0, 1, self.pool)
