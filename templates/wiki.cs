@@ -16,15 +16,6 @@
  <hr />
 </div>
 
-<?cs def:day_separator(date) ?>
-  <?cs if: $date != $current_date ?>
-    <?cs set: $current_date = $date ?>
-    </ul>
-    <h3 class="recentchanges-daysep"><?cs var:date ?>:</h3>
-    <ul>
-  <?cs /if ?>
-<?cs /def ?>
-
 <div id="main" class="wiki">
 
  <?cs if:wiki.action == "diff" ?>
