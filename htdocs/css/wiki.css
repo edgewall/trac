@@ -7,6 +7,7 @@
 #edit #text { clear: both; width: 100% }
 #changeinfo { padding: .5em }
 #changeinfo .field { float: left; margin: 0 1em .5em 0 }
+#changeinfo br { clear: left }
 #changeinfo .options { padding: 0 0 1em 1em }
 #changeinfo .options, #changeinfo .buttons { clear: left }
 #delete_ver { margin-left: 6em }

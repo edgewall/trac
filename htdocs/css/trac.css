@@ -273,6 +273,7 @@ a.missing:hover { color: #000; }
 #attachment label { padding-left: .2em }
 #attachment fieldset { margin-top: 2em }
 #attachment fieldset .field { float: left; margin: 0 1em .5em 0 }
+#attachment br { clear: left }
 
 /* Styles for tabular listings such as those used for displaying directory
    contents and report results. */

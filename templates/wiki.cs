@@ -174,7 +174,7 @@
       <label for="comment">Comment about this change (optional):</label>
       <br /><input id="comment" type="text" name="comment" size="60" value="<?cs
         var:wiki.comment?>" />
-     </div>
+     </div><br />
      <?cs if trac.acl.WIKI_ADMIN ?>
       <div class="options">
        <input type="checkbox" name="readonly" id="readonly"<?cs
