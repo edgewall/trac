@@ -1,7 +1,5 @@
-import time
-
 sql = """
--- Add unique id, descr to 'milestone'
+-- Add readonly flag to 'wiki'
 CREATE TEMP TABLE wiki_old AS SELECT * FROM wiki;
 DROP TABLE wiki;
 CREATE TABLE wiki (

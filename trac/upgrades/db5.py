@@ -1,5 +1,3 @@
-import time
-
 sql = """
 -- Add unique id, descr to 'milestone'
 CREATE TEMP TABLE milestone_old AS SELECT * FROM milestone;
@@ -17,4 +15,3 @@ INSERT INTO milestone(name,time, descr) SELECT name,time,'' FROM milestone_old;
 
 def do_upgrade(env, ver, cursor):
     cursor.execute(sql)
-#    env.save_config()

@@ -12,4 +12,3 @@ CREATE INDEX session_idx ON session(sid,var_name);
 
 def do_upgrade(env, ver, cursor):
     cursor.execute(sql)
-#    env.save_config()
