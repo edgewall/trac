@@ -182,7 +182,7 @@ onfocus="document.getElementById('comment').focus()">Add/Change
             rows="10" cols="78" style="width: 97%; max-width: 694px"><?cs var:ticket.comment ?></textarea>
   <?cs call:wiki_toolbar('comment') ?>
    <?cs if ticket.comment_preview ?>
-     <a name="preview" />
+     <a name="preview" style="clear: left;" />
      <fieldset>
      <legend>Comment Preview</legend>
        <?cs var:ticket.comment_preview ?>
@@ -195,7 +195,7 @@ onfocus="document.getElementById('comment').focus()">Add/Change
  <div id="nt-props"  style="padding: .5em">
 <div style="margin-bottom: 1em">
 <label for="summary" class="nt-label">Summary:</label>
-<input id="summary" type="text" name="summary" class="textwidget" size="80"
+<input id="summary" type="text" name="summary" class="textwidget" size="70"
        value="<?cs var:ticket.summary ?>" />
 <?cs if $trac.acl.TICKET_ADMIN ?>
   <br />
@@ -207,7 +207,7 @@ onfocus="document.getElementById('comment').focus()">Add/Change
   </div>
   <br style="clear: left" />
   <label for="reporter" class="nt-label">Reporter:</label>
-  <input id="reporter" type="text" name="reporter" class="textwidget" size="80"
+  <input id="reporter" type="text" name="reporter" class="textwidget" size="70"
          value="<?cs var:ticket.reporter ?>" />
 <?cs /if ?>
 </div>
@@ -222,7 +222,7 @@ onfocus="document.getElementById('comment').focus()">Add/Change
    <?cs call:hdf_select(enums.severity, "severity", ticket.severity) ?>
    <br />
    <label for="keywords" class="nt-label">Keywords:</label>
-   <input type="text" id="keywords" name="keywords" size="25" class="textwidget" 
+   <input type="text" id="keywords" name="keywords" size="20" class="textwidget" 
           value="<?cs var:ticket.keywords ?>" />
    <br />&nbsp;
   </div>
@@ -238,7 +238,7 @@ onfocus="document.getElementById('comment').focus()">Add/Change
   <br />
   <label for="cc" class="nt-label">Cc:</label>
    <input type="text" id="cc" name="cc" class="textwidget"
-          value="<?cs var:ticket.cc ?>" size="35" />
+          value="<?cs var:ticket.cc ?>" size="30" />
   </div>
  </div>
 
@@ -250,7 +250,7 @@ onfocus="document.getElementById('comment').focus()">Add/Change
  <div id="tkt-submit">
   <fieldset>
    <legend>Action</legend>
-<h1><?cs var:ticket.action ?></h1>
+  <div style="clear: both" />
   <?cs if:!ticket.action ?>
    <?cs set:ticket.action = 'leave' ?>
   <?cs /if ?>
