@@ -415,6 +415,7 @@ default_config = \
   ('trac', 'repository_dir', '/var/svn/myrep'),
   ('trac', 'templates_dir', '/usr/lib/trac/templates'),
   ('trac', 'database', 'sqlite:db/trac.db'),
+  ('trac', 'default_charset', 'iso-8859-15'),
   ('logging', 'log_type', 'none'),
   ('logging', 'log_file', 'trac.log'),
   ('logging', 'log_level', 'DEBUG'),

@@ -47,7 +47,15 @@ class FileCommon(Module.Module):
     def display(self):
         self.env.log.debug("Displaying file: %s  mime-type: %s" % (self.filename,
                                                             self.mime_type))
-        data = util.to_utf8(self.read_func(self.DISP_MAX_FILE_SIZE))
+        # We don't have to guess if the charset is specified in the
+        # svn:mime-type property
+        ctpos = self.mime_type.find('charset=')
+        if ctpos >= 0:
+            charset = self.mime_type[ctpos + 8:]
+            self.env.log.debug("Charset %s selected" % charset)
+        else:
+            charset = self.env.get_config('trac', 'default_charset', 'iso-8859-15')
+        data = util.to_utf8(self.read_func(self.DISP_MAX_FILE_SIZE), charset)
 
         if len(data) == self.DISP_MAX_FILE_SIZE:
             self.req.hdf.setValue('file.max_file_size_reached', '1')

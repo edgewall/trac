@@ -104,14 +104,20 @@ def rstrip(text, skip):
             break
     return text
 
-def to_utf8(text):
+def to_utf8(text, charset='iso-8859-15'):
     """Convert a string to utf-8, assume the encoding is either utf-8 or latin1"""
     try:
+        # Do nothing if it's already utf-8
         u = unicode(text, 'utf-8')
         return text
     except UnicodeError:
-        u = unicode(text, 'iso-8859-15')
-        return u.encode('utf-8')
+        try:
+            # Use the user supplied charset if possible
+            u = unicode(text, charset)
+        except UnicodeError:
+            # This should always work
+            u = unicode(text, 'iso-8859-15')
+        return u.encode('utf-8')    
 
 
 def href_join(u1, *tail):

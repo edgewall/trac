@@ -13,6 +13,7 @@ additional_config = \
  ('logging', 'log_file', 'trac.log'),
  ('logging', 'log_level', 'DEBUG'),
  ('attachment', 'max_size', '262144'),
+ ('trac', 'default_charset', 'iso-8859-15'),
  ('trac', 'database', 'sqlite:db/trac.db'))
 
 def db2env(db_path, env_path):
@@ -24,7 +25,7 @@ def db2env(db_path, env_path):
     new_cursor = new_cnx.cursor()
     convert_config(env, old_cursor)
     convert_db(old_cursor, new_cursor)
-    new_cursor.execute("INSERT INTO system VALUES('database_version', '3')")
+    new_cursor.execute("INSERT INTO system VALUES('database_version', '7')")
     new_cnx.commit()
 
 def convert_config(env, old_cursor):
