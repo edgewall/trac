@@ -35,7 +35,7 @@ class Timeline (Module):
                   changeset, wiki, milestone):
         cursor = self.db.cursor ()
 
-        if tickets == changeset == wiki == 0:
+        if tickets == changeset == wiki == milestone == 0:
             return []
 
         CHANGESET = 1
