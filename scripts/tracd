@@ -256,7 +256,7 @@ class TracHTTPRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler,
 
 
 def usage():
-    print 'usage: %s [options] <database> [database] ...' % sys.argv[0]
+    print 'usage: %s [options] <projenv> [database] ...' % sys.argv[0]
     print '\nOptions:\n'
     print '-a --auth [project],[htdigest_file],[realm]'
     print '-p --port [port]\t\tPort number to use (default: 80)'
