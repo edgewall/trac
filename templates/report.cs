@@ -20,12 +20,9 @@
   <a href="<?cs var:$trac.href.report ?>">Report Index</a>&nbsp;
 </div>
 
-
+  <div id="main">
+    <div id="main-content">
 <?cs if report.mode == "list" ?>
-
-  <div class="report-sidebar">
-  </div>
-
   <h1 id="report-hdr"><?cs var:report.title ?></h1>
 
   <table id="browser-list" cellspacing="0" cellpadding="0">
@@ -36,9 +33,7 @@
     </tr>
 
     <?cs set idx = #0 ?>
-
     <?cs each row = report.items ?>
-
       <?cs if idx % #2 ?>
         <tr class="row-even">
       <?cs else ?>
@@ -49,7 +44,7 @@
       <?cs each cell = row ?>
 
         <?cs if cell.type == "ticket" ?>
-          <td class="ticket-column"><a href="<?cs var:cell.ticket_href ?>" ?>#<?cs var: cell.value ?></a></td>
+          <td class="ticket-column"><a href="<?cs var:cell.ticket_href ?>">#<?cs var: cell.value ?></a></td>
         <?cs elif cell.type == "report" ?>
           <td class="report-column"><a href="<?cs var:cell.report_href ?>">{<?cs var: cell.value ?>}</a></td>
         <?cs elif cell.type == "time" ?>
@@ -75,24 +70,28 @@
 
 <?cs elif report.mode == "editor" ?>
 
-  <form action="<?cs var:cgi_location ?>" method="POST">
-    <input type="hidden" name="mode" value="report">
-    <input type="hidden" name="id" value="<?cs var:report.id ?>">
-    <input type="hidden" name="action" value="<?cs var:report.action ?>">
-    title:<br><input type="text" name="title" value="<?cs var:report.title ?>" size="50">
-    <br>sql query:
-    <br>
-    <textarea name="sql" cols="70" rows="10"><?cs var:report.sql ?></textarea>
-    <br>
-    <input type="submit" value="commit">&nbsp;
-    <input type="reset" value="reset">
+  <h1 id="report-hdr">Create New Report</h1>
+  
+  <form action="<?cs var:cgi_location ?>" method="post">
+    <div>
+      <input type="hidden" name="mode" value="report" />
+      <input type="hidden" name="id" value="<?cs var:report.id ?>" />
+      <input type="hidden" name="action" value="<?cs var:report.action ?>" />
+      Report Title:<br />
+      <input type="text" name="title" value="<?cs var:report.title ?>"
+              size="50" />
+      <br />SQL Query: <br />
+      <textarea name="sql" cols="70" rows="10"><?cs var:report.sql ?></textarea>
+      <br />
+      <input type="submit" value="commit" />&nbsp;
+      <input type="reset" value="reset" />
+    </div>
   </form>
 
 
 <?cs /if?>
 
-
+  </div>
  </div>
-</div>
 </div>
 <?cs include:"footer.cs"?>
