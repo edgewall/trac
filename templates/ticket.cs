@@ -97,8 +97,7 @@
   /each ?></ul><?cs
  /if ?><?cs
  if trac.acl.TICKET_MODIFY ?>
-  <form method="get" action="<?cs var:cgi_location?>/attachment/ticket/<?cs
-    var:ticket.id ?>">
+  <form method="get" action="<?cs var:ticket.attach_href ?>">
    <div><input type="submit" value="Attach File" /></div>
   </form><?cs
  /if ?><?cs if ticket.attachments.0.name ?></div><?cs /if ?>
