@@ -45,7 +45,11 @@
 </div>
 <div id="tkt-right">
   <?cs call:ticketprop("Reporter", ticket.reporter) ?>
+  <?cs if ticket.status == "assigned"?>
+  <?cs call:ticketprop("Assigned to", ticket.owner + " (accepted)") ?>
+  <?cs else ?>
   <?cs call:ticketprop("Assigned to", ticket.owner) ?>
+  <?cs /if ?>
   <?cs call:ticketprop("Status", ticket.status) ?>
   <?cs call:ticketprop("Resolution", ticket.resolution) ?>
 </div>
