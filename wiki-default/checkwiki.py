@@ -50,6 +50,7 @@ wiki_pages = [
  "TracTickets",
  "TracTimeline",
  "TracUnicode",
+ "TracUpgrade",
  "TracWiki",
  "WikiFormatting",
  "WikiHtml",
