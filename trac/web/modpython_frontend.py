@@ -96,11 +96,6 @@ class ModPythonRequest(Request):
         if self.req.headers_in.has_key('Cookie'):
             self.incookie.load(self.req.headers_in['Cookie'])
 
-        # Populate the HDF with some HTTP info
-        # FIXME: Ideally, the templates shouldn't even need this data
-        self.hdf.setValue('HTTP.Host', self.req.hostname)
-        self.hdf.setValue('HTTP.Protocol', scheme)
-
     def read(self, len):
         return self.req.read(len)
 

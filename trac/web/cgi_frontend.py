@@ -75,11 +75,6 @@ class CGIRequest(Request):
         self.args = TracFieldStorage(self.__input, environ=self.__environ,
                                      keep_blank_values=1)
 
-        # Populate the HDF with some HTTP info
-        # FIXME: Ideally, the templates shouldn't even need this data
-        self.hdf.setValue('HTTP.Protocol', scheme)
-        self.hdf.setValue('HTTP.Host', host)
-
     def read(self, len):
         return self.__input.read(len)
 

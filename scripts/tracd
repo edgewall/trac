@@ -152,8 +152,6 @@ class TracHTTPRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler,
     def init_request(self):
         Request.init_request(self)
         self.remote_addr = str(self.client_address[0])
-        self.hdf.setValue('HTTP.Host', self.server.http_host)
-        self.hdf.setValue('HTTP.Protocol', 'http')
         if self.headers.has_key('Cookie'):
             self.incookie.load(self.headers['Cookie'])
 

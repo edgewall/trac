@@ -1,8 +1,5 @@
 <?xml version="1.0"?>
 <rss version="2.0"><?cs
- if:!baseurl ?><?cs
-  set:baseurl = HTTP.Protocol + '://' + HTTP.Host ?><?cs
- /if ?><?cs
  def:rss_item(category,title, link, descr) ?>
   <item><?cs
    if:item.author.email ?>
@@ -22,15 +19,15 @@
   else ?>
    <title><?cs var:title ?></title><?cs
   /if ?>
-  <link><?cs var:baseurl ?><?cs var:trac.href.timeline ?></link>
+  <link><?cs var:base_url ?><?cs var:trac.href.timeline ?></link>
   <description>Trac Timeline</description>
   <language>en-us</language>
   <generator>Trac v<?cs var:trac.version ?></generator>
   <image>
    <title><?cs var:project.name.encoded ?></title>
-   <url><?cs if:!header_logo.src_abs ?><?cs var:baseurl ?><?cs /if ?><?cs
+   <url><?cs if:!header_logo.src_abs ?><?cs var:base_url ?><?cs /if ?><?cs
     var:header_logo.src ?></url>
-   <link><?cs var:baseurl ?><?cs var:trac.href.timeline ?></link>
+   <link><?cs var:base_url ?><?cs var:trac.href.timeline ?></link>
   </image><?cs
   each:item = timeline.items ?><?cs
    if:item.type == 'changeset' ?><?cs

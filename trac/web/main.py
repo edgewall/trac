@@ -241,6 +241,7 @@ def populate_hdf(hdf, env, req=None):
     hdf.setValue('header_logo.height', env.get_config('header_logo', 'height'))
 
     if req:
+        hdf.setValue('base_url', req.base_url)
         hdf.setValue('cgi_location', req.cgi_location)
         hdf.setValue('trac.authname', escape(req.authname))
 

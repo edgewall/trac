@@ -1,6 +1,5 @@
 <?xml version="1.0"?>
 <rss version="2.0">
- <?cs set:base_url = HTTP.Protocol + '://' + HTTP.Host ?>
  <channel><?cs
   if:project.name.encoded ?>
    <title><?cs var:project.name.encoded ?>: Ticket Query</title><?cs
