@@ -336,15 +336,20 @@ class Formatter(CommonFormatter):
             self.in_table = 0
 
     def handle_code_block(self, line):
-        if not self.in_code_block:
-            self.in_code_block = 1
-            self.code_processor = None
-            self.code_text = ''
+        if line.strip() == '{{{':
+            self.in_code_block += 1
+            if self.in_code_block == 1:
+                self.code_processor = None
+                self.code_text = ''
+            else:
+                self.code_text += os.linesep + line
         elif line.strip() == '}}}':
-            self.in_code_block = 0
-            if self.code_processor:
+            self.in_code_block -= 1
+            if self.in_code_block == 0 and self.code_processor:
                 self.close_paragraph()
                 self.out.write(self.code_processor(self.hdf, self.code_text))
+            else:
+                self.code_text += os.linesep + line
         elif not self.code_processor:
             match = processor_re.search(line)
             if match:
