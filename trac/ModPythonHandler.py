@@ -137,8 +137,6 @@ def handler(req):
         return apache.OK
     mpr.authname = authenticator.authname
 
-    # TODO This doesn't handle POST requests yet, because we can't get a
-    #      file-like object for the request body to pass into parse_args
     args = TracFieldStorage(req)
     core.parse_path_info(args, req.path_info)
     core.add_args_to_hdf(args, mpr.hdf)
