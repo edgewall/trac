@@ -96,9 +96,13 @@ class Browser(Module):
             author = svn.fs.revision_prop(self.fs_ptr, created_rev,
                                           svn.util.SVN_PROP_REVISION_AUTHOR,
                                           self.pool)
-            change = svn.fs.revision_prop(self.fs_ptr, created_rev,
-                                          svn.util.SVN_PROP_REVISION_LOG,
-                                          self.pool)
+            if self.authzperm.has_permission_for_changeset(created_rev):
+                change = svn.fs.revision_prop(self.fs_ptr, created_rev,
+                                              svn.util.SVN_PROP_REVISION_LOG,
+                                              self.pool)
+            else:
+                change = "''You do not have permission to view information about this changeset.''"
+            
             item = {
                 'name'         : name,
                 'fullpath'     : fullpath,
@@ -112,6 +116,7 @@ class Browser(Module):
                                                   self.env,self.db),
                 'permission'   : self.authzperm.has_permission(fullpath)
             }
+
             if rev_specified:
                 item['log_href'] = self.env.href.log(fullpath, revision)
                 if is_dir:

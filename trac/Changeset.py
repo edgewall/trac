@@ -24,7 +24,7 @@ from __future__ import nested_scopes
 from trac.Diff import get_diff_options, hdf_diff, unified_diff
 from trac.Module import Module
 from trac.WikiFormatter import wiki_to_html
-from trac import perm
+from trac import authzperm, perm
 
 import svn.core
 import svn.delta
@@ -389,6 +389,10 @@ class Changeset(Module):
             key = (new_path or old_path)
             info.append((key, change, new_path, old_path, old_rev))
 
+        info = filter(lambda x,self=self: self.authzperm.has_permission(x[2]) \
+                                      and self.authzperm.has_permission(x[3]),
+                      info)
+
         info.sort(lambda x,y: cmp(x[0],y[0]))
         self.path_info = {}
         #  path_info is a mapping of paths to sequence number and additional info
@@ -456,6 +460,10 @@ class Changeset(Module):
         req.hdf['changeset.revision'] = self.rev
         req.hdf['changeset.changes'] = change_info
         req.hdf['changeset.href'] = self.env.href.changeset(self.rev)
+        
+        if len(change_info) == 0:
+            raise authzperm.AuthzPermissionError()
+        
         if self.rev > 1:
             self.add_link('first', self.env.href.changeset(1), 'Changeset 1')
             self.add_link('prev', self.env.href.changeset(self.rev - 1),

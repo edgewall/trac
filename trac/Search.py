@@ -197,6 +197,8 @@ class Search(Module):
                     'author': escape(row['author'])}
             if item['type'] == 1:
                 item['changeset_href'] = self.env.href.changeset(int(row['data']))
+                if not self.authzperm.has_permission_for_changeset(int(row['data'])):
+                    continue
             elif item['type'] == 2:
                 item['ticket_href'] = self.env.href.ticket(int(row['data']))
             elif item['type'] == 3:

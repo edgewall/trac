@@ -25,6 +25,7 @@ import time
 from types import ListType
 
 import perm
+import authzperm
 import Environment
 from util import escape, TracError
 
@@ -65,11 +66,10 @@ def module_factory(env, db, req):
 
     # Only open the subversion repository for the modules that really
     # need it. This saves us some precious time.
-    module.authzperm = None
+    module.authzperm = authzperm.AuthzPermission(env, req.authname)
     module.pool = None
     if need_svn:
-        from trac import authzperm, sync
-        module.authzperm = authzperm.AuthzPermission(env, req.authname)
+        from trac import sync
         repos_dir = env.get_config('trac', 'repository_dir')
         pool, rep, fs_ptr = open_svn_repos(repos_dir)
         module.repos = rep

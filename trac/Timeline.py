@@ -20,7 +20,7 @@
 # Author: Jonas Borgström <jonas@edgewall.com>
 
 from trac import perm
-from trac.util import escape, shorten_line
+from trac.util import enum, escape, shorten_line
 from trac.Module import Module
 from trac.WikiFormatter import wiki_to_oneliner, wiki_to_html
 
@@ -148,16 +148,18 @@ class Timeline (Module):
             req.hdf['timeline.%s' % f] = 'checked'
 
         info = self.get_info(req, start, stop, maxrows, filters)
-        for item in info:
+        for idx, item in enum(info):
             render_func = getattr(self, '_render_%s' % item['type'])
             item = render_func(req, item)
-
+            if not item:
+                continue
+        
             if req.args.get('format') == 'rss':
                 # For RSS, author must be an email address
                 if item['author'].find('@') != -1:
                     item['author.email'] = item['author']
-
-        req.hdf['timeline.items'] = info
+        
+            req.hdf['timeline.items.%d' % idx] = item
 
     def display_rss(self, req):
         req.display(self.template_rss_name, 'application/rss+xml')
@@ -167,6 +169,9 @@ class Timeline (Module):
         href = self.env.href
         if absurls:
             href = self.env.abs_href
+
+        if not self.authzperm.has_permission_for_changeset(item['idata']):
+            return None
 
         item['href'] = escape(href.changeset(item['idata']))
         if req.args.get('format') == 'rss':
@@ -196,6 +201,10 @@ class Timeline (Module):
                 if show_files > 0 and len(files) >= show_files:
                     files.append('...')
                     break
+                
+                if not self.authzperm.has_permission(row_node['name']):
+                    continue
+                
                 if row[1] == 'A':
                     files.append('<span class="diff-add">%s</span>' % row[0])
                 elif row[1] == 'M':

@@ -74,8 +74,10 @@ class Log (Module):
         # class provided by modpython might give us some strange string-like
         # object that svn doesn't like.
         path = str(path)
+        def authz_cb(root, path, pool):
+            return self.authzperm.has_permission(path) and 1 or 0
         svn.repos.svn_repos_get_logs(self.repos, [path],
-                                     0, rev, 1, 0, self.log_receiver,
+                                     0, rev, 1, authz_cb, self.log_receiver,
                                      self.pool)
         # Loop through all revisions and update the path
         # after each tag/branch/copy/rename.
@@ -113,6 +115,7 @@ class Log (Module):
             'application/rss+xml', 'rss')
 
         self.path = req.args.get('path', '/')
+        self.authzperm.assert_permission(self.path)
         if req.args.has_key('rev'):
             try:
                 rev = int(req.args.get('rev'))
