@@ -249,7 +249,7 @@ class TracAdmin(cmd.Cmd):
                 print "No documentation found for '%s'" % arg[0]
         else:
             docs = (self._help_about + self._help_help +
-                    self._help_initdb + self._help_upgrade +
+                    self._help_initenv + self._help_upgrade +
                     self._help_wiki +
 #                    self._help_config + self._help_wiki +
                     self._help_permission + self._help_component +
@@ -397,14 +397,17 @@ class TracAdmin(cmd.Cmd):
                         (user, action.upper()))
 
     ## Initdb
-    _help_initdb = [('initdb', 'Create and initializes a new database')]
+    _help_initenv = [('initenv', 'Create and initializes a new environment')]
 
     def do_initdb(self, line):
+        self.do_initenv(line)
+        
+    def do_initenv(self, line):
         if self.env_check():
             print "Initdb for '%s' failed.\nDoes aa environment already exist?" % self.envname
             return
         try:
-            print 'Creating a new Trac project database at %s' % self.envname
+            print 'Creating a new Trac environment at %s' % self.envname
             print
             print 'Trac will first ask a few questions about your environment '
             print 'in order to initalize and prepare the project database.'

@@ -1,38 +1,43 @@
 Upgrade Instructions
 ====================
 
-Upgrading to 0.6.1 from 0.6
------------------------------
-* There are no changes to the database in 0.6.1.
-  Just install the new version of Trac by running the installer (.exe for
-  windows), or otherwise:  ./setup.py install 
+Upgrading to 0.7
+----------------
+Previous versions of Trac stored wiki pages, ticket, reports, 
+settings, etc. in a single sqlite database.
+As of version 0.7 this information is stored in Trac Environments. 
+An Environment is a directory containing among other things a sqlite database,
+human readable configuration file, log-files and attachments.
+
+Old Trac databases can be converted to environments using the "tracdb2env"
+program:
+
+  tracdb2env /path/to/old/project.db /where/to/create/new/env
+
+tracdb2env will create a new environment and copy the information from
+the old database to the new environment. The existing database will
+not be modified.
+
+You also need to update your apache configuration:
+change this line:
+   SetEnv TRAC_DB "/somewhere/myproject.db"
+to:
+   SetEnv TRAC_ENV "/somewhere/myprojectenv"
 
 
-Upgrading to 0.6 from 0.5.x  
------------------------------
-* There are no changes to the database schema in 0.6, so existing Trac
-  databases don't require any extra steps.
+Updating wiki pages
+-------------------
+There are a set of default wiki pages included in the install,
+automatically imported upon creating a new environment with the 
+'trac-admin initenv' command.
 
-  Just install the new version of Trac by running:  ./setup.py install 
-
-* There are now a set of default wiki pages included in the install,
-  automatically imported upon creating a new database with the 
-  'trac-admin initdb' command.
-
-  If you wish to add these pages to an already existing [older] Trac database,
-  you can import the pages manually using trac-admin:
+If you wish to update these pages on an already existing [older] Trac 
+environment, you can import the pages manually using trac-admin:
    
-       1. When running 'setup.py install', note where the install script
-          copies the 'wiki-default' directory. 
-          Default is ($prefix/share/trac/wiki-default)
+ trac-admin myprojectenv wiki upgrade
 
-       2. Use trac-admin to load the wiki pages. 
-          Example:
-      
-            trac-admin myproject.db wiki upgrade
-
-       3. All done. Please note that you have to repeat this step for each
-          Trac database you wish to upgrade.
+Please note that you have to repeat this step for each Trac environment
+you wish to upgrade.
 
 --
 
