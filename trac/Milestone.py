@@ -1,7 +1,7 @@
 # -*- coding: iso8859-1 -*-
 #
-# Copyright (C) 2004 Edgewall Software
-# Copyright (C) 2004 Christopher Lenz <cmlenz@gmx.de>
+# Copyright (C) 2004, 2005 Edgewall Software
+# Copyright (C) 2004, 2005 Christopher Lenz <cmlenz@gmx.de>
 #
 # Trac is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License as
@@ -320,6 +320,12 @@ class Milestone(Module):
         milestone = self.get_milestone(req, id)
         req.hdf.setValue('title', 'Milestone %s' % milestone['name'])
         req.hdf.setValue('milestone.mode', 'view')
+
+        # If the milestone name contains slashes, we'll need to include the 'id'
+        # parameter in the forms for editing/deleting the milestone. See #806.
+        if id.find('/') >= 0:
+            req.hdf.setValue('milestone.id_param', '1')
+
         add_to_hdf(milestone, req.hdf, 'milestone')
 
         available_groups = map(lambda x: {'name': x, 'label': x.capitalize()},

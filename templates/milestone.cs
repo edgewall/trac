@@ -162,13 +162,19 @@
    <div class="buttons"><?cs
     if:trac.acl.MILESTONE_MODIFY ?>
      <form method="get" action=""><div>
-      <input type="hidden" name="action" value="edit" />
+      <input type="hidden" name="action" value="edit" /><?cs
+      if:milestone.id_param ?>
+       <input type="hidden" name="id" value="<?cs var:milestone.name ?>" /><?cs
+      /if ?>
       <input type="submit" value="Edit Milestone Info" />
      </div></form><?cs
     /if ?><?cs
     if:trac.acl.MILESTONE_DELETE ?>
      <form method="get" action=""><div>
-      <input type="hidden" name="action" value="delete" />
+      <input type="hidden" name="action" value="delete" /><?cs
+      if:milestone.id_param ?>
+       <input type="hidden" name="id" value="<?cs var:milestone.name ?>" /><?cs
+      /if ?>
       <input type="submit" value="Delete Milestone" />
      </div></form><?cs
     /if ?>
