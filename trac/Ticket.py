@@ -100,6 +100,11 @@ def insert_custom_fields(env, hdf, vals = {}):
         elif vtype == 'checkbox':
             if vval in TRUE:
                 hdf.setValue('%s.selected' % pfx, '1')
+        elif vtype == 'textarea':
+            cols = allvars.get(name + '.width', allvars.get(name + '.cols', ''))
+            rows = allvars.get(name + '.height', allvars.get(name + '.rows', ''))
+            hdf.setValue('%s.width' % pfx, cols)
+            hdf.setValue('%s.height' % pfx, rows)
         i += 1
 
 
@@ -216,7 +221,7 @@ class Newticket (Module):
 class Ticket (Module):
     template_name = 'ticket.cs'
 
-    _custom_rule = re.compile('(text|checkbox|select|radio)\(([^,\)]*)[ ,]*([^,\)]*)\)')
+    _custom_rule = re.compile('(text|textarea|checkbox|select|radio)\(([^,\)]*)[ ,]*([^,\)]*)\)')
 
     def get_ticket (self, id, escape_values=1):
         return get_ticket(self.db, id, escape_values)

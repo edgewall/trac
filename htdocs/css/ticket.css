@@ -30,13 +30,13 @@
 .tkt-label { color: #996; }
 .tkt-label b { font-weight: normal; }
 .tkt-prop { margin-top: .75em }
-#tkt-descr-hdr { 
+#tkt-custom-hdr,#tkt-descr-hdr { 
  font-size: 100%; 
  margin-top: .25em;
  padding-top: .5em;
  border-top: 1px solid #dd9;
-
 }
+#tkt-custom-hdr { margin-bottom: 0; color: #996; }
 #tkt-descr { line-height: 140%; }
 #tkt-changes-hdr { font-size: 110%; margin-bottom: .5em;  margin-top: 1em; }
 #tkt-changes { 

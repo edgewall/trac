@@ -54,6 +54,16 @@
    <?cs call:ticketprop("Keywords", ticket.keywords) ?>
   </tr>
  </table>
+<?cs if ticket.custom.0.name ?>
+ <hr class="hide" />
+ <h3 id="tkt-custom-hdr">Custom Properties</h3>
+ <table style="width: 100%">
+  <tr>
+  <?cs each c=ticket.custom ?>
+   <?cs call:ticketprop(c.label, c.value) ?>
+  <?cs /each ?>
+  </tr>
+ </table><?cs /if ?>
  <hr class="hide" />
  <h3 id="tkt-descr-hdr">Description by <?cs var:ticket.reporter ?>:</h3>
     <?cs var:ticket.description ?>

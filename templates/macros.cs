@@ -55,7 +55,13 @@
     <?cs if c.type == 'text' ?>
      <input type="text" id="custom_<?cs var c.name ?>" 
             name="custom_<?cs var c.name ?>" value="<?cs var c.value ?>" />
-
+    <?cs elif c.type == 'textarea' ?>
+     <label for="custom_<?cs var c.name ?>">
+      <?cs alt c.label ?><?cs var c.name ?><?cs /alt ?></label>:<br />
+    <textarea
+      cols="<?cs alt c.width ?>60<?cs /alt ?>" 
+      rows="<?cs alt c.height ?>12<?cs /alt ?>"
+      name="custom_<?cs var c.name ?>"><?cs var c.value ?></textarea>
     <?cs elif c.type == 'checkbox' ?>
      <input type="hidden" name="checkbox_<?cs var c.name ?>" 
             value="custom_<?cs var c.name ?>" />
