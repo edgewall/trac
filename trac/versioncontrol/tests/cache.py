@@ -42,7 +42,7 @@ class CacheTestCase(unittest.TestCase):
         repos = Mock(Repository, None, self.log,
                      get_changeset=lambda x: changeset,
                      get_youngest_rev=lambda: 1,
-                     next_rev=lambda x: x == 0 and 1 or None)
+                     next_rev=lambda x: x == '0' and 1 or None)
         cache = CachedRepository(self.db, repos, None, self.log)
         cache.sync()
 
