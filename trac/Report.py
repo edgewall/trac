@@ -80,7 +80,7 @@ class Report (Module):
         try:
             arg = args[aname]
         except KeyError:
-            raise TracError("Dynamic variable '$%s' not defined." % aname)
+            raise util.TracError("Dynamic variable '$%s' not defined." % aname)
         self.req.hdf.setValue('report.var.'+aname , arg)
         sql = m.string[:m.start()] + arg + m.string[m.end():]
         return self.sql_sub_vars(sql, args)
@@ -99,8 +99,8 @@ class Report (Module):
                            ' WHERE id=%s', id)
             row = cursor.fetchone()
             if not row:
-                raise TracError('Report %d does not exist.' % id,
-                                'Invalid Report Number')
+                raise util.TracError('Report %d does not exist.' % id,
+                                     'Invalid Report Number')
             title = row[0] or ''
             sql = row[1]
             description = row[2] or ''
@@ -132,7 +132,7 @@ class Report (Module):
         cursor = self.db.cursor()
         sql = self.sql_sub_vars(sql, args)
         if not sql:
-            raise TracError('Report %s has no SQL query.' % id)
+            raise util.TracError('Report %s has no SQL query.' % id)
         cursor.execute(sql)
 
         if sql.find('__group__') == -1:
@@ -170,8 +170,8 @@ class Report (Module):
         cursor.execute('SELECT title FROM report WHERE id = %s', id)
         row = cursor.fetchone()
         if not row:
-            raise TracError('Report %s does not exist.' % id,
-                            'Invalid Report Number')
+            raise util.TracError('Report %s does not exist.' % id,
+                                 'Invalid Report Number')
         self.req.hdf.setValue('title', 'Delete {%s} %s (report)' % (id, row['title']))
         self.req.hdf.setValue('report.mode', 'delete')
         self.req.hdf.setValue('report.id', str(id))
@@ -188,8 +188,8 @@ class Report (Module):
                            ' WHERE id=%s', id)
             row = cursor.fetchone()
             if not row:
-                raise TracError('Report %s does not exist.' % id,
-                                'Invalid Report Number')
+                raise util.TracError('Report %s does not exist.' % id,
+                                     'Invalid Report Number')
             sql = row[2] or ''
             description = row[1] or ''
             title = row[0] or ''

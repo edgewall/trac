@@ -63,8 +63,8 @@ class Ticket(UserDict):
         cursor.close ()
 
         if not row:
-            raise TracError('Ticket %d does not exist.' % id,
-                            'Invalid Ticket Number')
+            raise util.TracError('Ticket %d does not exist.' % id,
+                                 'Invalid Ticket Number')
 
         self['id'] = id
         # Escape the values so that they are safe to have as html parameters
@@ -217,7 +217,7 @@ class NewticketModule(Module):
 
     def create_ticket(self):
         if not self.args.get('summary'): 
-            raise TracError('Tickets must contain Summary.')
+            raise util.TracError('Tickets must contain Summary.')
 
         ticket = Ticket()
         ticket.populate(self.args)
@@ -286,7 +286,7 @@ class TicketModule (Module):
         ticket = Ticket(self.db, id)
 
         if not self.args.get('summary'): 
-            raise TracError('Tickets must contain Summary.')
+            raise util.TracError('Tickets must contain Summary.')
 
         if self.args.has_key('description'):
             self.perm.assert_permission (perm.TICKET_ADMIN)

@@ -22,6 +22,7 @@
 import time
 
 import perm
+from util import TracError
 from Module import Module
 
 

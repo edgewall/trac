@@ -22,7 +22,7 @@
 import time
 
 from Module import Module
-from util import add_dict_to_hdf
+from util import add_dict_to_hdf, TracError
 from WikiFormatter import wiki_to_html
 import perm
 

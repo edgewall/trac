@@ -34,7 +34,7 @@ import auth
 import Environment
 import Session
 
-from util import sql_to_hdf
+from util import sql_to_hdf, TracError
 from __init__ import __version__
 
 warnings.filterwarnings('ignore', 'DB-API extension cursor.next() used')

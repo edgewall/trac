@@ -27,7 +27,7 @@ import StringIO
 
 import perm
 from Module import Module
-from util import escape
+from util import escape, TracError
 from WikiFormatter import *
 
 
@@ -73,35 +73,41 @@ class WikiPage:
             self.text = 'describe %s here' % name
             self.new = 1
             self.readonly = 0
+        self.old_readonly = self.readonly
+        self.modified = 0
 
     def set_content (self, text):
+        self.modified = self.text != text
         self.text = text
         self.version = self.version + 1
-
-    def set_readonly (self, val):
-        cursor = self.db.cursor ()
-        self.readonly = int(val)
-        cursor.execute ('UPDATE wiki SET readonly=%s WHERE name=%s', self.readonly, self.name)
-        self.db.commit()
 
     def commit (self, author, comment, remote_addr):
         if self.new:
             self.perm.assert_permission (perm.WIKI_CREATE)
         else:
             self.perm.assert_permission (perm.WIKI_MODIFY)
-        cursor = self.db.cursor ()
-        cursor.execute ('SELECT MAX(version) FROM (SELECT MAX(version)+1 '
-                        'FROM wiki WHERE name=%s UNION ALL SELECT 1 '
-                        'AS version)', self.name)
-        row = cursor.fetchone()
-        new_version = int(row[0])
-        cursor.execute ('INSERT INTO WIKI '
-                        '(name, version, time, author, ipnr, text, comment) '
-                        'VALUES (%s, %s, %s, %s, %s, %s, %s)',
-                        self.name, new_version, int(time.time()),
-                        author, remote_addr, self.text, comment)
-        self.db.commit ()
+        if self.readonly:
+            self.perm.assert_permission (perm.WIKI_ADMIN)
 
+        cursor = self.db.cursor ()
+        if not self.modified and self.readonly != self.old_readonly:
+            cursor.execute ('UPDATE wiki SET readonly=%s WHERE name=%s and VERSION=%s',
+                            self.readonly, self.name, self.version - 1)
+            self.db.commit ()
+            self.old_readonly = self.readonly
+        elif self.modified:
+            cursor.execute ('INSERT INTO WIKI '
+                            '(name, version, time, author, ipnr, text, comment, readonly) '
+                            'VALUES (%s, %s, %s, %s, %s, %s, %s, %s)',
+                            self.name, self.version, int(time.time()),
+                            author, remote_addr, self.text, comment, self.readonly)
+            self.db.commit ()
+            self.old_readonly = self.readonly
+            self.modified = 0
+        else:
+            del cursor
+            raise TracError('Page not modified')
+            
 
 class WikiModule(Module):
     template_name = 'wiki.cs'
@@ -241,28 +247,17 @@ class WikiModule(Module):
 
         self.page = WikiPage(name, version, self.perm, self.db)
         if self.args.has_key('text'):
-            self.page.modified = self.page.text != self.args.get('text')
             self.page.set_content (self.args.get('text'))
         else:
             self.page.modified = 0
 
-        # Only WIKI_ADMIN:s can modify read-only pages
-        if self.page.readonly and (edit or save):
-            self.perm.assert_permission (perm.WIKI_ADMIN)
-
         # Modify the read-only flag if it has been changed and the user is WIKI_ADMIN
-        readonly_changed = 0
         if save and self.perm.has_permission(perm.WIKI_ADMIN):
             if readonly:
-                new_readonly = 1
+                self.page.readonly = 1
             else:
-                new_readonly = 0
-            readonly_changed = new_readonly != self.page.readonly
-            if readonly_changed:
-                self.page.set_readonly(new_readonly)
-                if not self.page.modified:
-                    self.req.redirect(self.env.href.wiki(name))
-            
+                self.page.readonly = 0
+                
         self.req.hdf.setValue('wiki.readonly', str(self.page.readonly))
         # We store the page version when we start editing a page.
         # This way we can stop users from saving changes if they are
@@ -275,11 +270,8 @@ class WikiModule(Module):
         if save and edit_version != str(self.page.version - 1):
             raise TracError('Sorry, Cannot create new version, this page has '
                             'already been modified by someone else.')
-        elif save and not self.page.modified:
-            # There is no point in creating a new page version if the content
-            # hasn't changed
-            raise TracError('Page not modified')
-        elif save:
+
+        if save:
             self.page.commit(author, comment, self.req.remote_addr)
             self.req.redirect(self.env.href.wiki(self.page.name))
 

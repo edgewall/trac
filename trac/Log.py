@@ -122,7 +122,7 @@ class Log (Module):
         try:
             root = svn.fs.revision_root(self.fs_ptr, rev, self.pool)
         except svn.core.SubversionException:
-            raise TracError('Invalid revision number: %d' % rev)
+            raise util.TracError('Invalid revision number: %d' % rev)
         
         # We display an error message if the file doesn't exist (any more).
         # All we know is that the path isn't valid in the youngest
@@ -130,9 +130,9 @@ class Log (Module):
         # before, but we don't know for sure...
         if not svn.fs.check_path(root, self.path, self.pool) in \
                [svn.core.svn_node_file, svn.core.svn_node_dir]:
-            raise TracError('The file or directory "%s" doesn\'t exist in the '
-                            'repository at revision %d.' % (self.path, rev),
-                            'Nonexistent path')
+            raise util.TracError('The file or directory "%s" doesn\'t exist in the '
+                                 'repository at revision %d.' % (self.path, rev),
+                                 'Nonexistent path')
         else:
             info = self.get_info (self.path, rev)
             util.add_dictlist_to_hdf(info, self.req.hdf, 'log.items')

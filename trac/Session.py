@@ -21,7 +21,7 @@
 
 import sys
 import time
-from util import hex_entropy, add_dict_to_hdf
+from util import hex_entropy, add_dict_to_hdf, TracError
 
 class Session:
     """Basic session handling and per-session storage."""

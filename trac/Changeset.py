@@ -119,7 +119,7 @@ class Changeset (Module.Module):
                         'WHERE rev=%d', rev)
         row = cursor.fetchone()
         if not row:
-            raise TracError('Changeset %d does not exist.' % rev,
+            raise util.TracError('Changeset %d does not exist.' % rev,
                             'Invalid Changset')
         return row
 
@@ -177,7 +177,7 @@ class Changeset (Module.Module):
             old_root = svn.fs.revision_root(self.fs_ptr, int(self.rev) - 1, self.pool)
             new_root = svn.fs.revision_root(self.fs_ptr, int(self.rev), self.pool)
         except svn.core.SubversionException:
-            raise TracError('Invalid revision number: %d' % int(self.rev))
+            raise util.TracError('Invalid revision number: %d' % int(self.rev))
 
         editor = editor_class(old_root, new_root, int(self.rev), self.req,
                               self.args, self.env)

@@ -30,7 +30,7 @@ import neo_cs
 import neo_util
 
 from __init__ import __version__
-from util import add_dict_to_hdf, CRLF, TRUE, FALSE
+from util import add_dict_to_hdf, CRLF, TRUE, FALSE, TracError
 import Environment
 import core
 import Ticket
@@ -71,8 +71,10 @@ class Notify:
         self.cs.parseFile(tmpl)
 
     def notify(self,resid):
-        if sys.version_info[0] == 2 and sys.version_info[1] < 2:
-            raise TracError, "Email notifications require Python >= 2.2"
+        if sys.version_info[0] == 2 and (sys.version_info[1] < 2 or
+                                         sys.version_info[1] == 2 and
+                                         sys.version_info[2] < 2):
+            raise TracError, "Email notifications require Python >= 2.2.2"
         rcpts = self.get_recipients(resid)
         self.begin_send()
         for to in rcpts:

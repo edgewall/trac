@@ -40,11 +40,11 @@ class Browser(Module.Module):
         try:
             root = svn.fs.revision_root(self.fs_ptr, revision, self.pool)
         except svn.core.SubversionException:
-            raise TracError('Invalid revision number: %d' % revision)
+            raise util.TracError('Invalid revision number: %d' % revision)
 
         node_type = svn.fs.check_path(root, path, self.pool)
         if not node_type in [svn.core.svn_node_dir, svn.core.svn_node_file]:
-            raise TracError('"%s": no such file or directory in revision %d' \
+            raise util.TracError('"%s": no such file or directory in revision %d' \
                             % (path, revision), 'No such file or directory')
 
         # Redirect to the file module if the requested path happens

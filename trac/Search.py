@@ -24,6 +24,7 @@ import time
 import string
 
 import perm
+from util import TracError
 from Module import Module
 
 class Search(Module):
