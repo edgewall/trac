@@ -194,10 +194,12 @@ class Timeline (Module):
         _daysback = self.args.get('daysback', '')
 
         # Parse the from date and adjust the timestamp to the last second of the day
-        try:
-            t = time.strptime(_from, '%x')
-        except:
-            t = time.localtime()
+        t = time.localtime()
+        if _from:
+            try:
+                t = time.strptime(_from, '%x')
+            except:
+                pass
         _from = time.mktime((t[0], t[1], t[2], 23, 59, 59, t[6], t[7], t[8]))
         try:
             daysback = int(_daysback)
