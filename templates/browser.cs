@@ -44,7 +44,7 @@
         <tr class="br-row-even">
           <td class="br-icon-col">
             <a title="Parent Directory" class="block-link" href="<?cs var:browser.parent_href ?>">
-              <img src="<?cs var:htdocs_location ?>/folder.png" 
+              <img src="<?cs var:htdocs_location ?>folder.png" 
                     width="16" height="16" alt="[parent]" />
             </a>
           </td>
@@ -66,7 +66,7 @@
         <?cs if item.is_dir == #1 ?>
           <td class="br-icon-col">
             <a title="Browse Directory" class="block-link"  href="<?cs var:item.browser_href ?>">
-              <img src="<?cs var:htdocs_location ?>/folder.png"
+              <img src="<?cs var:htdocs_location ?>folder.png"
                     width="16" height="16" alt="[dir]" />
             </a>
           </td>
@@ -76,7 +76,7 @@
         <?cs else ?>
           <td class="br-icon-col">
             <a title="View File" class="block-link"  href="<?cs var:item.browser_href ?>">
-              <img src="<?cs var:htdocs_location ?>/file.png"
+              <img src="<?cs var:htdocs_location ?>file.png"
                     width="16" height="16" alt="[file]" />
             </a>
           </td>

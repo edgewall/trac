@@ -183,8 +183,10 @@ def populate_hdf(hdf, env, db, req):
     sql_to_hdf(db, "SELECT name FROM enum WHERE type='severity' "
                "ORDER BY value", hdf, 'enums.severity')
         
-    hdf.setValue('htdocs_location', env.get_config('trac',
-                                                   'htdocs_location'))
+    htdocs_location = env.get_config('trac', 'htdocs_location')
+    if htdocs_location[-1] != '/':
+        htdocs_location += '/'
+    hdf.setValue('htdocs_location', htdocs_location)
     hdf.setValue('project.name', env.get_config('project', 'name'))
     hdf.setValue('project.descr', env.get_config('project', 'descr'))
     
@@ -209,9 +211,8 @@ def populate_hdf(hdf, env, db, req):
     if env.get_config('header_logo', 'src')[0] == '/':
         hdf.setValue('header_logo.src', env.get_config('header_logo', 'src'))
     else:
-        hdf.setValue('header_logo.src', env.get_config('trac',
-                                                       'htdocs_location')
-                     + '/' + env.get_config('header_logo', 'src'))
+        hdf.setValue('header_logo.src', htdocs_location +
+                     env.get_config('header_logo', 'src'))
     hdf.setValue('header_logo.width', env.get_config('header_logo', 'width'))
     hdf.setValue('header_logo.height', env.get_config('header_logo', 'height'))
     hdf.setValue('trac.href.logout', env.href.logout())

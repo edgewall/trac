@@ -9,24 +9,24 @@
    <title>Trac: <?cs var:title ?></title>
   <?cs /if ?>
   <style type="text/css">
-   @import url("<?cs var:htdocs_location ?>/css/trac.css");
-   @import url("<?cs var:htdocs_location ?>/css/code.css");
+   @import url("<?cs var:htdocs_location ?>css/trac.css");
+   @import url("<?cs var:htdocs_location ?>css/code.css");
    <?cs if:trac.active_module == 'browser' || trac.active_module == 'log' || trac.active_module == 'file'?>
-   @import url("<?cs var:htdocs_location ?>/css/browser.css");
+   @import url("<?cs var:htdocs_location ?>css/browser.css");
    <?cs elif:trac.active_module == 'timeline' ?>
-   @import url("<?cs var:htdocs_location ?>/css/timeline.css");
+   @import url("<?cs var:htdocs_location ?>css/timeline.css");
    <?cs elif:trac.active_module == 'changeset' || trac.active_module == 'wiki' ?>
-   @import url("<?cs var:htdocs_location ?>/css/changeset.css");
+   @import url("<?cs var:htdocs_location ?>css/changeset.css");
    <?cs elif:trac.active_module == 'newticket' || trac.active_module == 'ticket' ?>
-   @import url("<?cs var:htdocs_location ?>/css/ticket.css");
+   @import url("<?cs var:htdocs_location ?>css/ticket.css");
    <?cs elif:trac.active_module == 'report' ?>
-   @import url("<?cs var:htdocs_location ?>/css/report.css");
+   @import url("<?cs var:htdocs_location ?>css/report.css");
    <?cs elif:trac.active_module == 'search' ?>
-   @import url("<?cs var:htdocs_location ?>/css/search.css");
+   @import url("<?cs var:htdocs_location ?>css/search.css");
    <?cs /if ?>
    <?cs include "site_css.cs" ?>
   </style>
-  <script src="<?cs var:$htdocs_location ?>/trac.js" type="text/javascript"></script>
+  <script src="<?cs var:$htdocs_location ?>trac.js" type="text/javascript"></script>
  </head>
 <body>
 <?cs include "site_header.cs" ?>
