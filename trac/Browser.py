@@ -27,6 +27,7 @@ import svn
 
 import util
 import perm
+import authzperm
 import Module
 from Wiki import wiki_to_oneliner
 
@@ -98,7 +99,8 @@ class Browser(Module.Module):
                 'is_dir'       : is_dir,
                 'author'       : author,
                 'change'       : wiki_to_oneliner(util.shorten_line(util.wiki_escape_newline(change)),
-                                                  self.req.hdf, self.env,self.db)
+                                                  self.req.hdf, self.env,self.db),
+		'permission'   : self.authzperm.has_permission(fullpath)
                 }
             if rev_specified:
                 item['log_href'] = self.env.href.log(fullpath, revision)

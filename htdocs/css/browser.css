@@ -98,7 +98,10 @@ h1 .sep { color: #666; padding: 0 .1em }
 }
 #dirlist td.name a.parent { background-image: url(../parent.png) }
 #dirlist td.name a.dir { background-image: url(../folder.png) }
+#dirlist td.name a.dirdeny { background-image: url(../folderdeny.png) }
 #dirlist td.name a.file { background-image: url(../file.png) }
+#dirlist td.name a.filedeny { background-image: url(../filedeny.png) }
+
 #dirlist td.name a, #dirlist td.rev a {
  border-bottom: none;
  display: block;

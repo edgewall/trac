@@ -60,12 +60,19 @@
     <tr class="<?cs if:name(item) % #2 ?>even<?cs else ?>odd<?cs /if ?>">
      <td class="name"><?cs
       if:item.is_dir ?>
+       <?cs if:item.permission != '' ?>
        <a class="dir" title="Browse Directory" href="<?cs
-         var:item.browser_href ?>"><?cs var:item.name ?></a><?cs
-      else ?>
-       <a class="file" title="View File" href="<?cs
-         var:item.browser_href ?>"><?cs var:item.name ?></a><?cs
-      /if ?>
+         var:item.browser_href ?>"><?cs var:item.name ?></a>
+	<?cs else ?>
+	 <a class="dirdeny" title="Access Denied" href=""><del><?cs var:item.name ?></del></a>
+	<?cs /if ?>
+      <?cs else ?>
+       <?cs if:item.permission != '' ?>    
+        <a class="file" title="View File" href="<?cs var:item.browser_href ?>"><?cs var:item.name ?></a>
+        <?cs else ?>
+	   <a class="filedeny" title="Access Denied" href=""><del><?cs var:item.name ?></del></a>
+	<?cs /if ?>
+      <?cs /if ?>
      </td>
      <td class="rev"><a title="View Revision Log" href="<?cs
        var:item.log_href ?>"><?cs var:item.created_rev ?></a></td>
