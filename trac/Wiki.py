@@ -217,9 +217,10 @@ class Formatter(CommonFormatter):
             self._list_stack.append('</%s>' % type)
         
     def _listitem_formatter(self, match, fullmatch):
-        depth = int((len(fullmatch.group('ldepth')) + 1) / 2)
+        ldepth = len(fullmatch.group('ldepth'))
+        depth = int((ldepth + 1) / 2)
         #self.out.write('depth:%d' % depth)
-        type = ['ol', 'ul'][match[depth * 2 - 1] == '*']
+        type = ['ol', 'ul'][match[ldepth] == '*']
         self._li_open = 1
         self._set_list_depth(depth, type)
         return '<li>'
