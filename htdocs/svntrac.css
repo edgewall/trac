@@ -109,10 +109,20 @@ table.wiki-history th
   background-color: white;
 }
 
-table.wiki-history
+div.wiki-history
 { 
   float: right;
+}
+
+table.wiki-history
+{ 
+  position: absolute;
   border: thin solid black;
+  background-color: white;
+  left: auto;
+  right: auto;
+  top: auto;
+  bottom: auto;
   visibility: hidden;
 }
 
@@ -296,3 +306,14 @@ option
   border-bottom: thin solid black;
 }
 
+td.ticket-description, td.ticket-comments
+{ 
+  padding: 1em;
+  border: thin dotted black;
+}
+
+div.ticket-modified
+{
+  color: gray;
+  border-bottom: thin solid lightgray;
+}

@@ -28,6 +28,7 @@ from Module import Module
 import perm
 import auth
 import db
+from Wiki import wiki_to_html
 
 fields = ['time', 'component', 'severity', 'priority', 'milestone', 'reporter',
           'owner', 'cc', 'url', 'version', 'status', 'resolution',
@@ -105,7 +106,7 @@ class Ticket (Module):
         cursor = cnx.cursor()
         now = int(time.time())
         authname = auth.get_authname ()
-        for name in fields.keys():
+        for name in fields:
             if new.has_key(name) and (not old.has_key(name) or old[name] != new[name]):
                 cursor.execute ('INSERT INTO ticket_change '
                                 '(ticket, time, author, field, oldvalue, newvalue) '
@@ -118,7 +119,7 @@ class Ticket (Module):
             cursor.execute ('INSERT INTO ticket_change '
                             '(ticket,time,author,field,oldvalue,newvalue) '
                             "VALUES (%s, %s, %s, 'comment', '', %s)",
-                            id, now, authorname, new['comment'])
+                            id, now, authname, new['comment'])
             changed = 1
         if changed:
             cursor.execute ('UPDATE ticket SET changetime=%s WHERE id=%s',
@@ -180,27 +181,27 @@ class Ticket (Module):
             new    = row[4]
             if date != curr_date or author != curr_author:
                 if comment:
-                    out.write ('\ncomment:\n%s\n' % comment)
+                    out.write ('<p>comment:%s</p>' % wiki_to_html(comment))
                     comment = None
                 curr_date = date
                 curr_author = author
-                out.write('\n--- modified by %s %s ---\n\n'
+                out.write('<div class="ticket-modified">modified by %s %s:</div>'
                           % (curr_author,
                              time.strftime('%F %H:%M', time.localtime(curr_date))))
             if field == 'comment':
                 comment = new
                 continue
             if new == '':
-                out.write ("cleared <b>%s</b>\n" %
+                out.write ("<p>cleared <b>%s</b></p>" %
                            (field))
             elif old == '':
-                out.write ("<b>%s</b> set to <b>%s</b>\n" %
+                out.write ("<p><b>%s</b> set to <b>%s</b></p>" %
                            (field, new))
             else:
-                out.write ("<b>%s</b> changed from <b>%s</b> to <b>%s</b>\n" %
+                out.write ("<p><b>%s</b> changed from <b>%s</b> to <b>%s</b></p>" %
                            (field, old, new))
         if comment:
-            out.write ('\ncomment:\n%s\n' % comment)
+            out.write ('<p>comment:%s</p>' % wiki_to_html(comment))
             comment = None
             
         return out.getvalue()
@@ -279,6 +280,8 @@ class Ticket (Module):
 
         self.namespace['actions'] = self.get_actions(info)
         self.namespace['changes'] = self.get_changes(id)
+        self.namespace['description'] = wiki_to_html(info['description'])
+        
         self.namespace['opened']  = time.strftime('%F %H:%M',
                                                   time.localtime(int(info['time'])))
        

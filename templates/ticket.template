@@ -59,15 +59,23 @@
 <td colspan="3"><br><input type="submit" value="commit">
 </tr>
 <tr>
-<td align="right" valign="top">description:</td>
-	<td colspan="3"><hr>
-	<pre>%(description)s</pre>
+<td></td>
+<td colspan="3"><br>description:</td>
+</tr>
+<tr>
+<td></td>
+	<td class="ticket-description" colspan="3">
+	%(description)s
 	</td>
 </tr>
 <tr>
-<td align="right" valign="top">comments:</td>
-	<td colspan="3">
-	<pre>%(changes)s</pre>
+<td></td>
+<td colspan="3"><br>comments:</td>
+</tr>
+<tr>
+<td align="right" valign="top"></td>
+	<td class="ticket-comments" colspan="3">
+	%(changes)s
 	</td>
 </tr>
 </table>
