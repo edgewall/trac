@@ -41,36 +41,21 @@ h4 :link, h4 :visited, h5 :link, h5 :visited, h6 :link, h6 :visited {
 }
 
 /* Forms */
-input,textarea,select { background: #fff; margin: 2px;}
-input[type="submit"]:hover,input[type="reset"]:hover { background: #ccb; }
-input[type="submit"],input[type="reset"]{
+input, textarea, select { margin: 2px }
+input[type=submit]:hover, input[type=reset]:hover { background: #ccb }
+input[type=submit], input[type=reset] {
  background: #eee;
  color: #222;
  border: 1px outset #ccc;
  padding: .1em .5em;
 }
-a.fake-button:hover { background: #ccb; }
-.fake-button,a.fake-button {
- background: #eee;
- color: #222;
- border: 1px outset #ccc;
- padding: .1em .5em;
+input[type=text], input.textwidget, textarea {
+ background: #fff;
+ border: 1px solid #d7d7d7;
+ padding: .25em .5em;
 }
-form.inline { float: left; }
-form.inline input { margin: 1em; }
-.fake-button, a.fake-button {
- display: block;
- float: left;
- width: 9em;
- text-align: center;
- font-size: 80%;
- white-space: nowrap;
- margin: 1em .5em;
-}
-option { border-bottom: 1px dotted #d7d7d7; }
-.textwidget {  border: 1px solid #d7d7d7; padding: .25em .5em }
-textarea,input[type="text"],.input-text { border: 1px solid #d7d7d7; padding: .25em .5em}
-input:focus,textarea:focus { border: 1px solid #886; }
+input[type=text]:focus, textarea:focus { border: 1px solid #886 }
+option { border-bottom: 1px dotted #d7d7d7 }
 fieldset {
  border: 1px solid #d7d7d7;
  padding: 0;
@@ -86,6 +71,8 @@ legend {
  font-size: 75%;
  font-weight: bold;
 }
+form.inline { float: left }
+form.inline input { margin: 1em }
 
 /* Header */
 #header hr { display: none }

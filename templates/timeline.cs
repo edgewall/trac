@@ -13,9 +13,9 @@
 <form action="<?cs var:trac.href.timeline ?>">
   <div id="timeline-prefs">
     <label for="from">View changes from</label>
-    <input size="10" id="from" name="from" value="<?cs var:timeline.from ?>" />
-    and <input size="3" id="daysback" name="daysback" 
-           value="<?cs var:timeline.daysback ?>" />
+    <input type="text" size="10" id="from" name="from"
+        value="<?cs var:timeline.from ?>" /> and <input type="text" size="3"
+        id="daysback" name="daysback"  value="<?cs var:timeline.daysback ?>" />
     <label for="daysback">days back</label>.
   <div id="timeline-prefs-checks">
     <input type="checkbox" id="ticket" name="ticket" 
