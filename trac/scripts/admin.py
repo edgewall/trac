@@ -396,7 +396,7 @@ class TracAdmin(cmd.Cmd):
 
 
     ## Permission
-    _help_permission = [('permission list', 'List permission rules'),
+    _help_permission = [('permission list [user]', 'List permission rules'),
                        ('permission add <user> <action> [action] [...]', 'Add a new permission rule'),
                        ('permission remove <user> <action> [action] [...]', 'Remove permission rule')]
 
@@ -416,7 +416,10 @@ class TracAdmin(cmd.Cmd):
         arg = self.arg_tokenize(line)
         try:
             if arg[0]  == 'list':
-                self._do_permission_list()
+                user = None
+                if len(arg) > 1:
+                    user = arg[1]
+                self._do_permission_list(user)
             elif arg[0] == 'add' and len(arg) >= 3:
                 user = arg[1]
                 for action in arg[2:]:
@@ -426,13 +429,17 @@ class TracAdmin(cmd.Cmd):
                 for action in arg[2:]:
                     self._do_permission_remove(user, action)
             else:
-                self.do_help ('permission')
+                self.do_help('permission')
         except Exception, e:
             print 'Permission %s failed:' % arg[0], e
 
-    def _do_permission_list(self):
-        data = self.db_execsql('SELECT username, action FROM permission ' \
-                               'ORDER BY username, action') 
+    def _do_permission_list(self, user=None):
+        if user:
+            data = self.db_execsql("SELECT username, action FROM permission "
+                                   "WHERE username='%s' ORDER BY action" % user)
+        else:
+            data = self.db_execsql("SELECT username, action FROM permission "
+                                   "ORDER BY username, action")
         self.print_listing(['User', 'Action'], data)
         print
         print 'Available actions:'
