@@ -25,9 +25,9 @@ import string
 import os
 
 class AuthzPermissionError (StandardError):
-    """Insufficient permissions to view this file"""
+    """Insufficient permission to view this file"""
     def __str__ (self):
-        return 'authz read privileges required to view this file'
+        return 'Insufficient permission to view this file (mod_authz_svn)'
     
 
 class AuthzPermission:
@@ -46,7 +46,14 @@ class AuthzPermission:
 	if env.get_config('trac','authz_file'):
 	    self.conf_authz = ConfigParser.ConfigParser()
 	    self.conf_authz.read( self.autz_file )
-	    
+    
+    def group_contains_user(self, group_name, user_name):
+	if self.conf_authz.has_section('groups'):
+	    if self.conf_authz.has_option('groups', group_name):
+		users_list = self.conf_authz.get('groups', group_name).split(',')
+		return users_list.has_key(user_name)
+	return False
+    
     def has_permission(self, path):
 	acc = 'r'
 
