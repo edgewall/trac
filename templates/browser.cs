@@ -1,6 +1,6 @@
 <?cs include: "header.cs"?>
 
-<h3>Revision <?cs var:revision?>: <?cs var:browser.path_links?></h3>
+<h3>Revision <?cs var:browser.revision?>: <?cs var:browser.path_links?></h3>
 
 <form action="<?cs var:cgi_location ?>" method="get">
   <input type="hidden" name="mode" value="browser">

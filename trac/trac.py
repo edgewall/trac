@@ -80,7 +80,7 @@ def parse_args():
         if len(match.group(1)) > 0:
             args['id'] = match.group(1)
         return args
-    match = re.search('/browser/?(.*)', info)
+    match = re.search('/browser(/?.*)', info)
     if match:
         args['mode'] = 'browser'
         if len(match.group(1)) > 0:
