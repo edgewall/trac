@@ -172,3 +172,19 @@ SandBox SandBox, SandBox; SandBox: SandBox. SandBox? SandBox! (SandBox) {SandBox
 <p>
 <a class="missing" href="/wiki/SandBox">SandBox?</a> <a class="missing" href="/wiki/SandBox">SandBox?</a>, <a class="missing" href="/wiki/SandBox">SandBox?</a>; <a class="missing" href="/wiki/SandBox">SandBox?</a>: <a class="missing" href="/wiki/SandBox">SandBox?</a>. <a class="missing" href="/wiki/SandBox">SandBox?</a>? <a class="missing" href="/wiki/SandBox">SandBox?</a>! (<a class="missing" href="/wiki/SandBox">SandBox?</a>) {<a class="missing" href="/wiki/SandBox">SandBox?</a>} [<a class="missing" href="/wiki/SandBox">SandBox?</a>]
 </p>
+==============================
+source:/foo/bar
+
+source:/foo/bar#42
+
+source:/foo/bar#head
+------------------------------
+<p>
+<a title="" href="/browser/foo/bar">source:/foo/bar</a>
+</p>
+<p>
+<a title="" href="/browser/foo/bar?rev=42">source:/foo/bar#42</a>
+</p>
+<p>
+<a title="" href="/browser/foo/bar?rev=head">source:/foo/bar#head</a>
+</p>

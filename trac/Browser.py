@@ -166,7 +166,7 @@ class Browser(Module.Module):
                 rev = int(rev)
                 rev_specified = 1
             except:
-                rev_specified = 0
+                rev_specified = rev.lower() in ['head', 'latest', 'trunk']
                 rev = svn.fs.youngest_rev(self.fs_ptr, self.pool)
 
         info = self.get_info(path, rev, rev_specified)
