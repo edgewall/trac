@@ -20,12 +20,19 @@
 #
 # Author: Jonas Borgström <jonas@edgewall.com>
 
+# TODO:
+# o Verify database version before modifying the database
+
+import os
 import sys
 import sqlite
 
 def usage():
-    print 'usage: %s <command>' % sys.argv[0]
-    print '\n Available commands:\n'
+    print '\nUsage: %s <database> <command>' % sys.argv[0]
+    print '\n Available commands:'
+    print '   initdb'
+    print '   config view'
+    print '   config set <name> <value>'
     print '   component list'
     print '   component add <name> <owner>'
     print '   component remove <name>'
@@ -39,17 +46,253 @@ def open_db(name):
         print 'Failed to open/create database.'
         sys.exit(1)
 
-def cmd_component_list():
+def create_tables (cursor):
+    cursor.execute ("""
+CREATE TABLE revision (
+	rev 		integer PRIMARY KEY,
+	time		integer,
+	author		text,
+	message		text
+);
+CREATE TABLE node_change (
+	rev 		integer,
+	name		text,
+	change		char(1),
+	UNIQUE(rev, name, change)
+);
+CREATE TABLE auth_cookie (
+	cookie		text,
+	name		text,
+	ipnr		text,
+	time		integer,
+	UNIQUE(cookie, name, ipnr)
+);
+CREATE TABLE enum (
+	type		text,
+	name		text,
+	value		text,
+	UNIQUE(name,type)
+);
+CREATE TABLE config (
+	section		text,
+	name		text,
+	value		text,
+	UNIQUE(section, name)
+);
+CREATE TABLE ticket (
+	id		integer PRIMARY KEY,
+	time		integer,	-- the time it was created
+	changetime	integer,
+	component	text,
+	severity	text,
+	priority	text,
+	owner		text,		-- who is this ticket assigned to
+	reporter	text,
+	cc		text,		-- email addresses to notify
+	url		text,		-- url related to this ticket
+	version		text,		-- 
+	milestone	text,		-- 
+	status		text,
+	resolution	text,
+	summary		text,		-- one-line summary
+	description	text		-- problem description (long)
+);
+CREATE TABLE ticket_change (
+	ticket		integer,
+	time		integer,
+	author		text,
+	field		text,
+	oldvalue	text,
+	newvalue	text
+);
+CREATE TABLE report (
+	id		integer PRIMARY KEY,
+	author		text,
+	title		text,
+	sql		text
+);
+CREATE TABLE permission (
+	user		text,		-- 
+	action		text		-- allowable activity
+);
+CREATE TABLE component (
+	 name		 text PRIMARY KEY,
+	 owner		 text
+);
+CREATE TABLE milestone (
+	 name		 text PRIMARY KEY,
+	 time		 integer
+);
+CREATE TABLE version (
+	 name		 text PRIMARY KEY,
+	 time		 integer
+);
+CREATE TABLE wiki (
+	 name		 text,
+	 version		 integer,
+	 time		 integer,
+	 author		 text,
+	 ipnr		 text,
+	 locked		 integer,
+	 text		 text,
+	 UNIQUE(name,version)
+);
+""")
+
+def insert_default_values (cursor):
+    cursor.execute ("""
+CREATE INDEX node_change_idx	ON node_change(rev);
+CREATE INDEX ticket_change_idx	ON ticket_change(ticket, time);
+CREATE INDEX wiki_idx		ON wiki(name,version);
+
+INSERT INTO component (name, owner) VALUES('component1', 'somebody');
+INSERT INTO component (name, owner) VALUES('component2', 'somebody');
+
+INSERT INTO milestone (name, time) VALUES('', 0);
+INSERT INTO milestone (name, time) VALUES('milestone1', 0);
+INSERT INTO milestone (name, time) VALUES('milestone2', 0);
+INSERT INTO milestone (name, time) VALUES('milestone3', 0);
+INSERT INTO milestone (name, time) VALUES('milestone4', 0);
+
+INSERT INTO version (name, time) VALUES('', 0);
+INSERT INTO version (name, time) VALUES('1.0', 0);
+INSERT INTO version (name, time) VALUES('2.0', 0);
+
+INSERT INTO enum (type, name, value) VALUES('status', 'new', 1);
+INSERT INTO enum (type, name, value) VALUES('status', 'assigned', 2);
+INSERT INTO enum (type, name, value) VALUES('status', 'reopened', 3);
+INSERT INTO enum (type, name, value) VALUES('status', 'closed', 4);
+
+INSERT INTO enum (type, name, value) VALUES('resolution', 'fixed', 1);
+INSERT INTO enum (type, name, value) VALUES('resolution', 'invalid', 2);
+INSERT INTO enum (type, name, value) VALUES('resolution', 'wontfix', 3);
+INSERT INTO enum (type, name, value) VALUES('resolution', 'duplicate', 4);
+INSERT INTO enum (type, name, value) VALUES('resolution', 'worksforme', 5);
+
+INSERT INTO enum (type, name, value) VALUES('severity', 'blocker', 1);
+INSERT INTO enum (type, name, value) VALUES('severity', 'critical', 2);
+INSERT INTO enum (type, name, value) VALUES('severity', 'major', 3);
+INSERT INTO enum (type, name, value) VALUES('severity', 'normal', 4);
+INSERT INTO enum (type, name, value) VALUES('severity', 'minor', 5);
+INSERT INTO enum (type, name, value) VALUES('severity', 'trivial', 6);
+INSERT INTO enum (type, name, value) VALUES('severity', 'enhancement', 7);
+
+INSERT INTO enum (type, name, value) VALUES('priority', 'p1', 1);
+INSERT INTO enum (type, name, value) VALUES('priority', 'p2', 2);
+INSERT INTO enum (type, name, value) VALUES('priority', 'p3', 3);
+INSERT INTO enum (type, name, value) VALUES('priority', 'p4', 4);
+INSERT INTO enum (type, name, value) VALUES('priority', 'p5', 5);
+
+INSERT INTO permission (user, action) VALUES('anonymous', 'LOG_VIEW');
+INSERT INTO permission (user, action) VALUES('anonymous', 'FILE_VIEW');
+INSERT INTO permission (user, action) VALUES('anonymous', 'WIKI_VIEW');
+INSERT INTO permission (user, action) VALUES('anonymous', 'SEARCH_VIEW');
+INSERT INTO permission (user, action) VALUES('anonymous', 'REPORT_VIEW');
+INSERT INTO permission (user, action) VALUES('anonymous', 'TICKET_VIEW');
+INSERT INTO permission (user, action) VALUES('anonymous', 'TICKET_CREATE');
+INSERT INTO permission (user, action) VALUES('anonymous', 'BROWSER_VIEW');
+INSERT INTO permission (user, action) VALUES('anonymous', 'TIMELINE_VIEW');
+INSERT INTO permission (user, action) VALUES('anonymous', 'CHANGESET_VIEW');
+
+INSERT INTO config (section, name, value)
+VALUES('trac', 'database_version', '1');
+INSERT INTO config (section, name, value)
+VALUES('general', 'htdocs_location', '/trac/');
+INSERT INTO config (section, name, value)
+VALUES('general', 'repository_dir', '/var/svn/myrep');
+INSERT INTO config (section, name, value)
+VALUES('general', 'templates_dir', '/usr/lib/trac/templates');
+INSERT INTO config (section, name, value)
+VALUES('general', 'cgi_location', '');
+INSERT INTO config (section, name, value)
+VALUES('general', 'href_scheme', 'cgi');
+INSERT INTO config (section, name, value)
+VALUES('ticket', 'default_version', '');
+INSERT INTO config (section, name, value)
+VALUES('ticket', 'default_severity', 'normal');
+INSERT INTO config (section, name, value)
+VALUES('ticket', 'default_priority', 'p2');
+INSERT INTO config (section, name, value)
+VALUES('ticket', 'default_milestone', '');
+INSERT INTO config (section, name, value)
+VALUES('ticket', 'default_component', 'general');
+INSERT INTO config (section, name, value)
+VALUES('header_logo', 'link', 'http://trac.edgewall.com/');
+INSERT INTO config (section, name, value)
+VALUES('header_logo', 'src', 'trac_banner.png');
+INSERT INTO config (section, name, value)
+VALUES('header_logo', 'alt', 'Trac');
+INSERT INTO config (section, name, value)
+VALUES('header_logo', 'width', '500');
+INSERT INTO config (section, name, value)
+VALUES('header_logo', 'height', '70');
+
+INSERT INTO report (id, author, title, sql) 
+	VALUES (1, NULL, 'Active tickets', 
+"SELECT id AS ticket, status, 
+severity, priority, owner, time as created, summary 
+FROM ticket 
+WHERE status IN ('new', 'assigned', 'reopened')
+ORDER BY priority, time"
+);
+""")
+
+def cmd_initdb():
+    dbname = sys.argv[1]
+    if os.access(dbname, os.R_OK):
+        print 'database %s already exists' % dbname
+        sys.exit(1)
+    try:
+        cnx = sqlite.connect (dbname)
+    except Exception, e:
+        print 'Failed to create database %s.' % dbname
+        sys.exit(1)
+    try:
+        cursor = cnx.cursor ()
+        create_tables (cursor)
+        insert_default_values (cursor)
+        cnx.commit()
+    except Exception, e:
+        print 'Failed to initialize database.', e
+        cnx.rollback()
+        sys.exit(1)
+
+def cmd_config_view():
     cnx = open_db(sys.argv[1])
     cursor = cnx.cursor()
-    cursor.execute('SELECT name, owner FROM component')
-    print 'Name                 Owner'
-    print '=========================='
+    cursor.execute('SELECT section, name, value FROM config')
+    print 'Name                           Value'
+    print '============================================================'
     while 1:
         row = cursor.fetchone()
         if row == None:
             break
-        print '%-20s %-20s' % (row[0], row[1])
+        print '%-30s %-20s' % (row[0] + '.' + row[1], row[2])
+    
+def cmd_config_set():
+    name = sys.argv[4]
+    section, name = name.split('.')
+    value = sys.argv[5]
+    cnx = open_db(sys.argv[1])
+    cursor = cnx.cursor()
+    try:
+        cursor.execute('UPDATE config SET value=%s WHERE '
+                       'section=%s AND name=%s', value, section, name)
+        cnx.commit()
+    except Exception, e:
+        print 'Config change failed:', e
+
+def cmd_component_list():
+    cnx = open_db(sys.argv[1])
+    cursor = cnx.cursor()
+    cursor.execute('SELECT name, owner FROM component')
+    print 'Name                           Owner'
+    print '============================================================'
+    while 1:
+        row = cursor.fetchone()
+        if row == None:
+            break
+        print '%-30s %-30s' % (row[0], row[1])
 
 def cmd_component_add():
     name = sys.argv[4]
@@ -87,7 +330,13 @@ def cmd_component_set_owner():
         print 'Owner change failed'
 
 def main():
-    if sys.argv[2:] == ['component', 'list']:
+    if sys.argv[2:] == ['initdb']:
+        cmd_initdb()
+    elif sys.argv[2:] == ['config', 'view']:
+        cmd_config_view()
+    elif sys.argv[2:4] == ['config', 'set'] and len(sys.argv) == 6:
+        cmd_config_set()
+    elif sys.argv[2:] == ['component', 'list']:
         cmd_component_list()
     elif sys.argv[2:4] == ['component', 'add'] and len(sys.argv) == 6:
         cmd_component_add()
