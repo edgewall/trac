@@ -157,8 +157,6 @@ class QueryModule(Module):
         cols = headers
         if not 'priority' in cols:
             cols.append('priority')
-        sql = 'SELECT ' + ', '.join(['ticket.%s AS %s' % (header, header)
-                                     for header in headers])
 
         if order != 'id' and not order in Ticket.std_fields:
             # order by priority by default
@@ -174,45 +172,43 @@ class QueryModule(Module):
                 self.req.hdf.setValue('query.headers.%d.href' % i,
                     self.env.href.query(constraints, headers[i]))
 
+        sql = []
+        sql.append("SELECT " + ", ".join(headers))
         custom_fields = [f['name'] for f in get_custom_fields(self.env)]
-        if [k for k in constraints.keys() if k in custom_fields]:
-            sql += ", ticket_custom.name AS name, " \
-                   "ticket_custom.value AS value " \
-                   "FROM ticket LEFT OUTER JOIN ticket_custom ON id = ticket"
-        else:
-            sql += " FROM ticket"
-        sql += " INNER JOIN (SELECT name AS priority_name, value AS priority_value " \
-               "             FROM enum WHERE type = 'priority') AS p" \
-               " ON priority_name = priority"
+        for k in [k for k in constraints.keys() if k in custom_fields]:
+            sql.append(", %s.value AS %s" % (k, k))
+        sql.append(" FROM ticket")
+        for k in [k for k in constraints.keys() if k in custom_fields]:
+           sql.append(" LEFT OUTER JOIN ticket_custom AS %s ON " \
+                      "(id=%s.ticket AND %s.name='%s')"
+                      % (k, k, k, k))
+
+        for col in [c for c in ['status', 'resolution', 'priority', 'severity']
+                    if c in cols]:
+            sql.append(" INNER JOIN (SELECT name AS %s_name, value AS %s_value " \
+                                   "FROM enum WHERE type='%s')" \
+                       " ON %s_name=%s" % (col, col, col, col, col))
 
         clauses = []
         for k, v in constraints.items():
-            clause = []
-            col = k
-            if not col in Ticket.std_fields:
-                col = 'value'
             if len(v) > 1:
                 inlist = ["'" + util.sql_escape(item) + "'" for item in v]
-                clause.append("%s IN (%s)" % (col, ", ".join(inlist)))
+                clauses.append("%s IN (%s)" % (k, ",".join(inlist)))
             elif k in ['keywords', 'cc']:
-                clause.append("%s LIKE '%%%s%%'" % (col, util.sql_escape(v[0])))
+                clauses.append("%s LIKE '%%%s%%'" % (k, util.sql_escape(v[0])))
             else:
-                clause.append("%s = '%s'" % (col, util.sql_escape(v[0])))
-            if not k in Ticket.std_fields:
-                clauses.append("(name='%s' AND (" % k + " OR ".join(clause) + "))")
-            else:
-                clauses.append(" OR ".join(clause))
+                clauses.append("%s='%s'" % (k, util.sql_escape(v[0])))
         if clauses:
-            sql += " WHERE " + " AND ".join(clauses)
+            sql.append(" WHERE " + " AND ".join(clauses))
 
-        if order in ['priority', 'severity']:
-            sql += " ORDER BY %s_value" % order
+        if order in ['status', 'resolution', 'priority', 'severity']:
+            sql.append(" ORDER BY %s_value" % order)
         else:
-            sql += " ORDER BY " + order
+            sql.append(" ORDER BY " + order)
         if desc:
-            sql += " DESC"
+            sql.append(" DESC")
 
+        sql = "".join(sql)
         self.log.debug("SQL Query: %s" % sql)
-
         results = self.get_results(sql)
         util.add_to_hdf(results, self.req.hdf, 'query.results')
