@@ -139,11 +139,14 @@ class Report (Module):
 
     def delete_report(self, id):
         self.perm.assert_permission(perm.REPORT_DELETE)
-        
-        cursor = self.db.cursor ()
-        cursor.execute('DELETE FROM report WHERE id=%s', id)
-        self.db.commit()
-        self.req.redirect(self.env.href.report())
+
+        if self.args.has_key('delete'):
+            cursor = self.db.cursor ()
+            cursor.execute('DELETE FROM report WHERE id=%s', id)
+            self.db.commit()
+            self.req.redirect(self.env.href.report())
+        else:
+            self.req.redirect(self.env.href.report(id))
 
     def commit_changes(self, id):
         """
@@ -162,6 +165,20 @@ class Report (Module):
         self.db.commit()
         self.req.redirect(self.env.href.report(id))
 
+    def render_confirm_delete(self, id):
+        self.perm.assert_permission(perm.REPORT_DELETE)
+        cursor = self.db.cursor()
+
+        cursor.execute('SELECT title FROM report WHERE id = %s', id)
+        row = cursor.fetchone()
+        if not row:
+            raise TracError('Report %s does not exist.' % id,
+                            'Invalid Report Number')
+        self.req.hdf.setValue('title', '%s (report)' % row['title'])
+        self.req.hdf.setValue('report.mode', 'delete')
+        self.req.hdf.setValue('report.id', str(id))
+        self.req.hdf.setValue('report.title', row['title'])
+
     def render_report_editor(self, id, action='commit', copy=0):
         self.perm.assert_permission(perm.REPORT_MODIFY)
         cursor = self.db.cursor()
@@ -172,7 +189,10 @@ class Report (Module):
             cursor.execute('SELECT title, description, sql FROM report '
                            ' WHERE id=%s', id)
             row = cursor.fetchone()
-            sql = row[2]or ''
+            if not row:
+                raise TracError('Report %s does not exist.' % id,
+                                'Invalid Report Number')
+            sql = row[2] or ''
             description = row[1] or ''
             title = row[0] or ''
 
@@ -345,9 +365,11 @@ class Report (Module):
                                    self.args.get('description', ''),
                                    self.args.get('sql', ''))
         if action == 'delete':
-            self.delete_report(id)
+            self.render_confirm_delete(id)
         elif action == 'commit':
             self.commit_changes(id)
+        elif action == 'confirm_delete':
+            self.delete_report(id)
         elif action == 'new':
             self.render_report_editor(-1, 'create')
         elif action == 'copy':

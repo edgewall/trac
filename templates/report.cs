@@ -158,8 +158,44 @@
     <div id="report-notfound">No matches found.</div>
    <?cs /if ?>
 
- 
+   <?cs if report.id > #0 ?>
+   <?cs set vars='' ?>
+   <?cs each arg = $report.var ?>
+     <?cs set vars=$vars+'&'+name($arg)+'='+$arg ?>
+   <?cs /each ?>
 
+   <?cs set sortInfo='' ?>
+   <?cs if args.sort ?>
+     <?cs set sortInfo=$sortInfo+'&sort='+$args.sort ?>
+   <?cs /if ?>
+   <?cs if args.asc ?>
+     <?cs set sortInfo=$sortInfo+'&asc='+$args.asc ?>
+   <?cs /if ?>
+
+    <div id="main-footer">
+     Download report in other data formats: <br />
+     <a class="noline" href="?format=rss"><img src="<?cs var:htdocs_location
+   ?>xml.png" alt="RSS Feed" style="vertical-align: bottom"/></a>&nbsp;
+     <a href="?format=rss<?cs var $vars ?><?cs var $sortInfo ?>">(RSS 2.0)</a>&nbsp;|
+     <a href="?format=csv<?cs var $vars ?><?cs var $sortInfo ?>">Comma-delimited</a>&nbsp;|
+     <a href="?format=tab<?cs var $vars ?><?cs var $sortInfo
+     ?>">Tab-delimited</a><?cs if $trac.acl.REPORT_SQL_VIEW ?>&nbsp;|
+     <a href="?format=sql">SQL Query</a><?cs /if ?>
+     <br />
+    </div>
+   <?cs /if ?>
+
+ <?cs elif report.mode == "delete" ?>
+
+  <h1 id="report-hdr">Delete Report</h1> 
+  <form action="<?cs var:cgi_location ?>" method="post">
+   <input type="hidden" name="mode" value="report" />   <input type="hidden" name="id" value="<?cs var:report.id ?>" />   <input type="hidden" name="action" value="confirm_delete" />
+   <p><strong>Are you sure you want to delete this report?</strong></p>
+   <div class="buttons">
+    <input type="submit" name="cancel" value="Cancel" />
+    <input type="submit" name="delete" value="Delete Report" />
+   </div>
+  </form>
  
  <?cs elif report.mode == "editor" ?>
  
@@ -193,33 +229,6 @@
   for help on using and creating reports.
  </div>
  
- <?cs if report.id > #0 ?>
- <?cs set vars='' ?>
- <?cs each arg = $report.var ?>
-   <?cs set vars=$vars+'&'+name($arg)+'='+$arg ?>
- <?cs /each ?>
-
- <?cs set sortInfo='' ?>
- <?cs if args.sort ?>
-   <?cs set sortInfo=$sortInfo+'&sort='+$args.sort ?>
- <?cs /if ?>
- <?cs if args.asc ?>
-   <?cs set sortInfo=$sortInfo+'&asc='+$args.asc ?>
- <?cs /if ?>
-
-  <div id="main-footer">
-   Download report in other data formats: <br />
-   <a class="noline" href="?format=rss"><img src="<?cs var:htdocs_location
- ?>xml.png" alt="RSS Feed" style="vertical-align: bottom"/></a>&nbsp;
-   <a href="?format=rss<?cs var $vars ?><?cs var $sortInfo ?>">(RSS 2.0)</a>&nbsp;|
-   <a href="?format=csv<?cs var $vars ?><?cs var $sortInfo ?>">Comma-delimited</a>&nbsp;|
-   <a href="?format=tab<?cs var $vars ?><?cs var $sortInfo
-   ?>">Tab-delimited</a><?cs if $trac.acl.REPORT_SQL_VIEW ?>&nbsp;|
-   <a href="?format=sql">SQL Query</a><?cs /if ?>
-   <br />
-  </div>
- <?cs /if ?>
-
 <?cs /if ?><!-- report.message -->
 
   </div>
