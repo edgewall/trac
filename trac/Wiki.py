@@ -394,6 +394,8 @@ class Formatter(CommonFormatter):
                 self.code_text = ''
             else:
                 self.code_text += os.linesep + line
+                if not self.code_processor:
+                    self.code_processor = Formatter.builtin_processors['default']
         elif line.strip() == '}}}':
             self.in_code_block -= 1
             if self.in_code_block == 0 and self.code_processor:
