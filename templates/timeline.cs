@@ -67,7 +67,7 @@
     <?cs elif:item.type == #3 ?><!-- Closed ticket -->
       <?cs call:tlitem(item.ticket_href, 'closedticket.png',
         'Ticket <b class="tl-item-link">#'+$item.data+'</b>
-         closed by '+$item.author, '') ?>
+         resolved by '+$item.author, '') ?>
     <?cs elif:item.type == #4 ?><!-- Reopened ticket -->
       <?cs call:tlitem(item.ticket_href, 'newticket.png',
         'Ticket <b class="tl-item-link">#'+$item.data+'</b>
