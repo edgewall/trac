@@ -32,7 +32,7 @@ class Database(sqlite.Connection):
         if not create and not os.access(db_name, os.F_OK):
             raise EnvironmentError, 'Database "%s" not found.' % db_name
         
-        directory = os.path.dirname(db_name)
+        directory = os.path.dirname(db_name) or os.curdir
         if not create and not os.access(db_name, os.R_OK + os.W_OK) or \
                not os.access(directory, os.R_OK + os.W_OK):
             tmp = db_name
