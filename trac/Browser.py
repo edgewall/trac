@@ -104,7 +104,7 @@ class Browser(Module):
     def generate_path_links(self, path):
         list = path[1:].split('/')
         path = '/'
-        self.req.hdf.setValue('browser.path.0', '[root]')
+        self.req.hdf.setValue('browser.path.0', 'root')
         self.req.hdf.setValue('browser.path.0.url' , self.env.href.browser(path))
         i = 0
         for part in list:
@@ -115,6 +115,8 @@ class Browser(Module):
             self.req.hdf.setValue('browser.path.%d' % i, part)
             self.req.hdf.setValue('browser.path.%d.url' % i,
                                   self.env.href.browser(path))
+        self.req.hdf.setValue('browser.path.%d.last' % (len(list) - 1), '1')
+                
 
     def render(self):
         self.perm.assert_permission (perm.BROWSER_VIEW)

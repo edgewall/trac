@@ -1,18 +1,26 @@
 <?cs include "header.cs"?>
+<?cs include "macros.cs"?>
 <div id="page-content">
-<div id="subheader-links">
- <br />
-</div>
+<ul class="subheader-links">
+  <li><a href="<?cs var:log.items.0.file_href ?>">View Latest Revision</a></li>
+</ul>
+
  <div id="main">
   <div id="main-content">
-
-  <h1 id="log-hdr">Revision history for <?cs var:log.path ?></h1>
-
-  <div id="browser-pathlinks">
-    <?cs each:part=log.path ?>
-    <a href="<?cs var:part.url ?>"><?cs var:part?></a> /
-    <?cs /each ?>
-    <?cs var:log.filename ?>
+  <h1 id="log-hdr" class="hide">Revision log for <?cs var:log.path ?></h1>
+  <?cs call:browser_path_links(log.path, log) ?>
+  <div id="browser-nav">
+  <ul class="menulist"><li class="last"><a 
+     href="<?cs var:log.items.0.file_href ?>">View Latest Revision</a></li></ul>
+    <form id="browser-chgrev" action="<?cs var:log.items.0.file_href ?>" method="get">
+     <div>
+        <label for="rev">View rev:</label><input
+        type="text" id="rev" name="rev" value="<?cs var:log.items.0.rev ?>"
+          size="4" />
+        <input type="submit" value="View"/>
+      </div>
+    </form>
+    <div class="tiny" style="clear: both">&nbsp;</div>
   </div>
   <table id="browser-list" cellspacing="0" cellpadding="0">
     <tr class="browser-listhdr">

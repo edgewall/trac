@@ -44,10 +44,6 @@ class FileCommon(Module):
         self.perm.assert_permission (perm.FILE_VIEW)
 
     def display(self):
-#         if self.mime_type and self.mime_type[:6] == 'image/':
-#             self.req.hdf.setValue('file.highlighted_html',
-#                                   '<hr /><img src="?format=raw">')
-#         elif self.mime_type and self.mime_type != 'application/octet-stream':
         self.env.log.debug("Displaying file: %s  mime-type: %s" % (self.filename,
                                                             self.mime_type))
         data = self.read_func(self.DISP_MAX_FILE_SIZE)
@@ -79,6 +75,10 @@ class FileCommon(Module):
                 break
             self.req.write(data)
             i += self.CHUNK_SIZE
+
+    def display_text(self):
+        self.mime_type = 'text/plain'
+        self.display_raw()
     
 class Attachment(FileCommon):
     def render(self):
@@ -121,7 +121,7 @@ class File(FileCommon):
         self.filename = list[-1]
         path = '/'
         self.req.hdf.setValue('file.filename', list[-1])
-        self.req.hdf.setValue('file.path.0', '[root]')
+        self.req.hdf.setValue('file.path.0', 'root')
         self.req.hdf.setValue('file.path.0.url' , self.env.href.browser(path))
         i = 0
         for part in list[:-1]:
@@ -146,6 +146,10 @@ class File(FileCommon):
             rev = svn.fs.youngest_rev(self.fs_ptr, self.pool)
         else:
             rev = int(rev)
+        self.req.hdf.setValue('file.rev', str(rev))
+        self.req.hdf.setValue('file.path', self.path)
+        self.req.hdf.setValue('file.url', self.env.href.file(self.path, rev))
+        self.req.hdf.setValue('file.logurl', self.env.href.log(self.path))
         root = svn.fs.revision_root(self.fs_ptr, rev, self.pool)
         
         # Try to do an educated guess about the mime-type

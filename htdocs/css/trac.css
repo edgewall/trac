@@ -20,14 +20,14 @@ a:link, a:visited, a.noline,b.tl-item-link {
   border-bottom: 1px dotted #bbb;
 }
 a[name] { border: none; }
-a:hover { color: #b00; background: #f7f7f7; }
+a:hover { color: #b00; background: #eee; }
 a[name]:hover { color: inherit; background: transparent; }
 a.noline { border-bottom: none; }
 address { font-style: normal; }
 img { border: none; }
 span.underline { text-decoration: underline; }
-#browser-rev, #log-hdr,#log-hdr,#timeline-hdr,#chg-hdr,#report-hdr,#tkt-hdr {
-  font-size: 110%;
+#browser-rev, #file-hdr, #log-hdr,#log-hdr,#timeline-hdr,#chg-hdr,#report-hdr,#tkt-hdr {
+  font-size: 21px;
   margin-right: 1em;
   margin-top: .5em;
 }
@@ -86,19 +86,39 @@ legend {
   font-size: 10px;
   text-align: right; 
 }
-.subheader-links li { 
+.subheader-links li, .menulist li { 
   display: inline;
   border-right: 1px solid #d7d7d7; 
   padding: 0 .75em; 
+  white-space: nowrap;
 }
-.subheader-links li.last { border-right: none }
-.subheader-links  li ul { 
+.menulist li { float: left; }
+.subheader-links li.last,.menulist li.last { border-right: none; }
+.subheader-links  li ul, .menulist { 
   background: #f7f7f7;
   color: #ccc;
   border: 1px solid;
   padding: 0 .5em;
   display: inline;
+  float: left;
 }
+.menulist { 
+  padding: 0;
+  margin: 0;
+  border: 1px solid #d7d7d7;
+  font-size: 11px;
+  white-space: nowrap;
+}
+.menulist li { padding: 0; margin: 0;}
+.menulist a,.menulist a:visited { 
+  display: inline;
+  float: left;
+  padding: .2em .75em; 
+  margin: 0;
+  border: none;
+  color: #000 
+}
+.menulist a:hover { background: #ccb; color: #000; }
 /* Footer */
 #footer {
   font-size: 75%;

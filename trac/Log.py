@@ -61,7 +61,7 @@ class Log (Module):
         path = '/'
         self.req.hdf.setValue('log.filename', list[-1])
         self.req.hdf.setValue('log.href' , self.env.href.log(self.path))
-        self.req.hdf.setValue('log.path.0', '[root]')
+        self.req.hdf.setValue('log.path.0', 'root')
         self.req.hdf.setValue('log.path.0.url' , self.env.href.browser(path))
         i = 0
         for part in list[:-1]:

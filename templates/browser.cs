@@ -1,13 +1,15 @@
 <?cs include: "header.cs"?>
+<?cs include "macros.cs"?>
 <div id="page-content">
- <div class="subheader-links">
-   <br />
- </div>
+ <ul class="subheader-links">
+   <li class="last">&nbsp;</li>
+ </ul>
  <div id="main">
   <div id="main-content">
+   <h1 id="browser-rev" class="hide">Browsing Revision <?cs var:browser.revision?></h1>
    <div id="browser-body">
-    <h1 id="browser-rev">Browsing Revision <?cs var:browser.revision?></h1>
-
+    <?cs call:browser_path_links(browser.path, browser) ?>
+    <div id="browser-nav">
     <form id="browser-chgrev" action="<?cs var:browser_current_href ?>" 
           method="get">
       <div>
@@ -16,42 +18,38 @@
           size="4" />
         <input type="submit" value="View" />
       </div></form>
-    <div id="browser-pathlinks">
-      <?cs each:part=browser.path ?>
-        <?cs if !#first ?><?cs set:first=1 ?><?cs else ?> / <?cs /if ?>
-        <a href="<?cs var:part.url ?>"><?cs var:part?></a>
-      <?cs /each ?>
+    <div class="tiny" style="clear: both">&nbsp;</div>
     </div>
     <table id="browser-list" cellspacing="0" cellpadding="0">
       <tr class="browser-listhdr">
         <th>&nbsp;</th>
 <?cs if browser.sort_order == "name" ?>
-        <th><a href="<?cs var:browser.current_href?>?order=Name">Name</a></th>
+        <th><a title="Sort by Name (Descending)" href="<?cs var:browser.current_href?>?order=Name">Name</a></th>
 <?cs else ?>
-        <th><a href="<?cs var:browser.current_href?>?order=name">Name</a></th>
+        <th><a title="Sort by Name" href="<?cs var:browser.current_href?>?order=name">Name</a></th>
 <?cs /if ?>
 <?cs if browser.sort_order == "size" ?>
-        <th><a href="<?cs var:browser.current_href?>?order=Size">Size</a></th>
+        <th><a title="Sort by size (Descending)" href="<?cs var:browser.current_href?>?order=Size">Size</a></th>
 <?cs else ?>
-        <th><a href="<?cs var:browser.current_href?>?order=size">Size</a></th>
+        <th><a title="Sort by size" href="<?cs var:browser.current_href?>?order=size">Size</a></th>
 <?cs /if ?>
         <th>Rev</th>
 <?cs if browser.sort_order == "date" ?>
-        <th><a href="<?cs var:browser.current_href?>?order=Date">Date</a></th>
+        <th><a title="Sort by Date (Descending)" href="<?cs var:browser.current_href?>?order=Date">Date</a></th>
 <?cs else ?>
-        <th><a href="<?cs var:browser.current_href?>?order=date">Date</a></th>
+        <th><a title="Sort by Date" href="<?cs var:browser.current_href?>?order=date">Date</a></th>
 <?cs /if ?>
       </tr>
       <?cs if $browser.path != "/" ?>
         <tr class="br-row-even">
           <td class="br-icon-col">
-            <a class="block-link" href="<?cs var:browser.parent_href ?>">
+            <a title="Parent Directory" class="block-link" href="<?cs var:browser.parent_href ?>">
               <img src="<?cs var:htdocs_location ?>/folder.png" 
                     width="16" height="16" alt="[parent]" />
             </a>
           </td>
           <td class="br-name-col">
-            <a class="block-link"  href="<?cs var:browser.parent_href ?>">..</a>
+            <a title="Parent Directory" class="block-link"  href="<?cs var:browser.parent_href ?>">..</a>
           </td>
           <td class="br-size-col">&nbsp;</td>
           <td class="br-rev-col">&nbsp;</td>
@@ -67,23 +65,23 @@
         <?cs /if ?>
         <?cs if item.is_dir == #1 ?>
           <td class="br-icon-col">
-            <a class="block-link"  href="<?cs var:item.browser_href ?>">
+            <a title="Browse Directory" class="block-link"  href="<?cs var:item.browser_href ?>">
               <img src="<?cs var:htdocs_location ?>/folder.png"
                     width="16" height="16" alt="[dir]" />
             </a>
           </td>
           <td class="br-name-col">
-            <a class="block-link"  href="<?cs var:item.browser_href ?>"><?cs var:item.name ?></a>
+            <a title="Browse Directory" class="block-link"  href="<?cs var:item.browser_href ?>"><?cs var:item.name ?></a>
           </td>
         <?cs else ?>
           <td class="br-icon-col">
-            <a class="block-link"  href="<?cs var:item.log_href ?>">
+            <a title="View File" class="block-link"  href="<?cs var:item.rev_href ?>">
               <img src="<?cs var:htdocs_location ?>/file.png"
                     width="16" height="16" alt="[file]" />
             </a>
           </td>
           <td class="br-name-col">
-            <a class="block-link"  href="<?cs var:item.log_href ?>"><?cs var:item.name ?></a>
+            <a title="View File" class="block-link"  href="<?cs var:item.rev_href ?>"><?cs var:item.name ?></a>
           </td>
          <?cs /if ?>
          <td class="br-size-col">
@@ -93,9 +91,8 @@
            <?cs if item.is_dir == #1 ?>
              <?cs var:item.created_rev ?>
            <?cs else ?>
-             <a class="block-link" href="<?cs var:item.rev_href ?>">
-               <?cs var:item.created_rev ?>
-             </a>
+             <a title="View Revision Log" class="block-link-nobold" 
+                href="<?cs var:item.log_href ?>"><?cs var:item.created_rev ?></a>
            <?cs /if ?>
          </td>
          <td class="br-date-col">

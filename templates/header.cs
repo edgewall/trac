@@ -21,7 +21,7 @@
       <!--
       @import url("<?cs var:$htdocs_location ?>/css/trac.css");
       @import url("<?cs var:$htdocs_location ?>/css/code.css");
-      <?cs if:trac.active_module == 'browser' || trac.active_module == 'log' ?>
+      <?cs if:trac.active_module == 'browser' || trac.active_module == 'log' || trac.active_module == 'file'?>
       @import url("<?cs var:$htdocs_location ?>/css/browser.css");
       <?cs elif:trac.active_module == 'timeline' ?>
       @import url("<?cs var:$htdocs_location ?>/css/timeline.css");
@@ -85,6 +85,8 @@
                         "TIMELINE_VIEW", "2") ?>
       <?cs if $trac.active_module == "log" ?>	
     	<?cs set:$browser_view="log" ?>
+      <?cs elif $trac.active_module == "file" ?>	
+    	<?cs set:$browser_view="file" ?>
       <?cs else  ?>	
     	<?cs set:$browser_view="browser" ?>
       <?cs /if  ?>	
@@ -97,7 +99,7 @@
       <?cs /if  ?>	
       <?cs call:navlink("View Tickets", $trac.href.report, $ticket_view, 
                         "REPORT_VIEW", "") ?>
-      <a style="display: none" href="<?cs var:$trac.href.newticket ?>" accesskey="7"></a>
+      <li style="display: none"><a href="<?cs var:$trac.href.newticket ?>" accesskey="7"></a></li>
       <?cs call:navlink("New Ticket", $trac.href.newticket, "newticket", 
                         "TICKET_CREATE", "9") ?>
       <?cs call:navlink("Search", $trac.href.search, "search", 

@@ -10,3 +10,15 @@
   </select>
 <?cs /def?>
 
+<?cs def:browser_path_links(path, file) ?>
+<?cs set:first=#1 ?>
+<div id="browser-pathlinks"><?cs 
+   each:part=path ?><a <?cs 
+     if:first ?>class="first" title="Go to root directory"<?cs 
+         set:first=#0  ?><?cs 
+     /if ?>
+     href="<?cs var:part.url ?>"><?cs var:part ?></a><?cs
+   if:!part.last ?><span class="browser-pathsep">/</span><?cs /if ?><?cs 
+ /each ?><?cs if:file.filename ?><span class="filename"><?cs var:file.filename
+ ?></span><?cs /if ?></div>
+<?cs /def ?>
