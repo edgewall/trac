@@ -76,7 +76,7 @@ class Ticket (Module):
 
         if not row:
             del cnx
-            raise Exception('Ticket not found.')
+            raise Exception, 'Ticket %d not found.' % id
 
         info = {'id': id }
         # Escape the values so that they are safe to have as html parameters

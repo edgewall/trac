@@ -24,6 +24,7 @@ import re
 import sys
 import cgi
 import warnings
+from perm import PermissionError
 from util import dict_get_with_default, redirect
 from svn import util, repos, core
 import Href
@@ -110,7 +111,7 @@ def parse_args():
         return args
     return args
 
-def main():
+def real_main():
     db.init()
     config = db.load_config()
     Href.initialize(config)
@@ -153,3 +154,65 @@ def main():
         
     core.svn_pool_destroy(pool)
     core.apr_terminate()
+
+def create_error_cgi():
+    import neo_cgi
+    import os.path
+    cnx = db.get_connection()
+    cursor = cnx.cursor()
+    cursor.execute('SELECT value FROM config WHERE section=%s '
+                   'AND name=%s', 'general', 'templates_dir')
+    row = cursor.fetchone()
+    templates_dir = row[0]
+    cgi = neo_cgi.CGI()
+    cgi.hdf.setValue('hdf.loadpaths.0', templates_dir)
+    return cgi, templates_dir
+
+def main():
+    real_e = None
+    real_tb = None
+    # In case of an exception. First try to display a fancy error
+    # message using the error.cs template. If that failes fall
+    # back to a plain/text version.
+    try:
+        try:
+            real_main()
+        except PermissionError, e:
+            import traceback
+            import StringIO
+            tb = StringIO.StringIO()
+            traceback.print_exc(file=tb)
+            real_e = e
+            real_tb = tb
+            cgi, templates_dir = create_error_cgi()
+            cgi.hdf.setValue('title', 'Permission Denied')
+            cgi.hdf.setValue('error.type', 'permission')
+            cgi.hdf.setValue('error.action', e.action)
+            cgi.hdf.setValue('error.message', str(e))
+            cgi.hdf.setValue('error.traceback',tb.getvalue())
+            name = os.path.join (templates_dir, 'error.cs')
+            cgi.display(name)
+        except Exception, e:
+            import traceback
+            import StringIO
+            tb = StringIO.StringIO()
+            traceback.print_exc(file=tb)
+            real_e = e
+            real_tb = tb
+            cgi, templates_dir = create_error_cgi()
+            cgi.hdf.setValue('title', 'Oups')
+            cgi.hdf.setValue('error.type', 'internal')
+            cgi.hdf.setValue('error.message', str(e))
+            cgi.hdf.setValue('error.traceback',tb.getvalue())
+            name = os.path.join (templates_dir, 'error.cs')
+            cgi.display(name)
+    except Exception:
+        print 'Content-Type: text/plain\r\n\r\n',
+        print 'Oups...'
+        print
+        print 'Trac detected an internal error:'
+        print
+        print real_e
+        print
+        print real_tb.getvalue()
+        sys.exit(0)

@@ -20,6 +20,7 @@
 # Author: Jonas Borgström <jonas@edgewall.com>
 
 import os
+import os.path
 import sqlite
 
 from svn import fs, util, delta, repos
@@ -60,7 +61,18 @@ def init():
     global db_name
     db_name = os.getenv('TRAC_DB')
     if not db_name:
-        raise 'Missing environment variable "TRAC_DB"'
+        raise EnvironmentError, \
+              'Missing environment variable "TRAC_DB". Trac ' \
+              'requires this variable to a valid Trac database.'
+    directory = os.path.dirname(db_name)
+    if not os.access(db_name, os.R_OK + os.W_OK) or \
+           not os.access(directory, os.R_OK + os.W_OK):
+        tmp = db_name
+        db_name = None
+        raise EnvironmentError, \
+              'The web server user requires read _and_ write permission\n' \
+              'to the database %s and the directory this file is located in.' % tmp
+        
 
 def load_config():
     """

@@ -35,36 +35,8 @@ class Module:
 
     def run(self):
         self.cgi.hdf.setValue('cgi_location', os.getenv('SCRIPT_NAME'))
-        try:
-            self.render()
-            self.apply_template()
-        except PermissionError, e:
-            self.cgi.hdf.setValue('title', 'Permission Denied')
-            self.cgi.hdf.setValue('error.type', 'permission')
-            self.cgi.hdf.setValue('error.action', e.action)
-            self.cgi.hdf.setValue('error.message', str(e))
-            self.template_name = 'error.cs'
-            Module.apply_template(self)
-        except Exception, e:
-            # Catch exceptions and let error.cs display
-            # a pretty error message + traceback.
-            import traceback, StringIO
-            tb = StringIO.StringIO()
-	    try:
-		traceback.print_exc(file=tb)
-		self.cgi.hdf.setValue('title', 'Oups')
-		self.cgi.hdf.setValue('error.type', 'internal')
-		self.cgi.hdf.setValue('error.message', str(e))
-		self.cgi.hdf.setValue('error.traceback',tb.getvalue())
-		self.template_name = 'error.cs'
-		Module.apply_template(self)
-	    except:
-		print 'Content-Type: text/plain\r\n\r\n',
-		print 'Error Message:'
-		print str(e)
-		print
-		print 'Tracebac:'
-		print tb.getvalue()
+        self.render()
+        self.apply_template()
         
     def render (self):
         """
