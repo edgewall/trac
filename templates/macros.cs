@@ -23,13 +23,13 @@
 <?cs def:browser_path_links(path, file) ?><?cs
  set:first = #1 ?>
  <h1><?cs
-  each:part=path ?><a <?cs 
-   if:first ?>class="first" title="Go to root directory" <?cs 
+  each:part = path ?><?cs
+   set:last = name(part) == len(path) - #1 ?><a<?cs 
+   if:first ?> class="first" title="Go to root directory"<?cs 
     set:first = #0 ?><?cs 
-   else ?>title="Go to directory" <?cs
-   /if ?>href="<?cs var:part.url ?>"><?cs var:part ?></a><?cs
-   if:!part.last ?><span class="sep">/</span><?cs
-   /if ?><?cs 
+   else ?> title="Go to directory"<?cs
+   /if ?> href="<?cs var:part.url ?>"><?cs var:part ?></a><?cs
+   if:file.filename || !last ?><span class="sep">/</span><?cs /if ?><?cs 
  /each ?><?cs
  if:file.filename ?><span class="filename"><?cs var:file.filename ?></span><?cs
  /if ?></h1>
