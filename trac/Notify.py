@@ -261,7 +261,7 @@ class TicketNotifyEmail(NotifyEmail):
             if not tkt.has_key(f): continue
             fval = tkt[f]
             fname = f.startswith('custom_') and f[7:] or f
-            if '\n' in fval:
+            if '\n' in str(fval):
                 big.append((fname.capitalize(), fval))
             else:
                 txt += format[i%2] % (fname.capitalize(), fval)
