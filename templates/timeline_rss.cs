@@ -25,7 +25,7 @@
       <image>
         <title><?cs var:$project.name?></title>
         <url><?cs if !$header_logo.src_abs ?><?cs var:$base_url ?><?cs /if ?><?cs var $header_logo.src ?></url>
-        <link><?cs var:$base_url ?></link>
+        <link><?cs var:$base_url ?><?cs var:$trac.href.timeline ?></link>
       </image>
       <?cs each:item = $timeline.items ?>
         <?cs if:item.type == #1 ?><!-- Changeset -->
