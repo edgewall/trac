@@ -74,9 +74,9 @@ class Module:
         pass
 
     def apply_template (self):
-        sql_to_hdf("SELECT name FROM enum WHERE type='priority' ORDER BY name",
+        sql_to_hdf("SELECT name FROM enum WHERE type='priority' ORDER BY value",
                    self.cgi.hdf, 'enums.priority')
-        sql_to_hdf("SELECT name FROM enum WHERE type='severity' ORDER BY name",
+        sql_to_hdf("SELECT name FROM enum WHERE type='severity' ORDER BY value",
                    self.cgi.hdf, 'enums.severity')
         
         self.cgi.hdf.setValue('htdocs_location',

@@ -25,21 +25,21 @@
       <span class="nt-label">Component:</span>
       <span class="nt-widget">
         <?cs call:hdf_select(newticket.components, "component",
-             newticket.default_component) ?>
+                             newticket.default_component) ?>
       </span>
     </div>
     <div class="nt-prop">
       <span class="nt-label">Version:</span>
       <span class="nt-widget">
         <?cs call:hdf_select(newticket.versions, "version",
-             newticket.default_version) ?>
+                             newticket.default_version) ?>
       </span>
     </div>
     <div class="nt-prop">
       <span class="nt-label">Severity:</span>
       <span class="nt-widget">
         <?cs call:hdf_select(enums.severity, "severity",
-             newticket.default_severity) ?>
+                             newticket.default_severity) ?>
       </span>
     </div>
   </div>
@@ -47,14 +47,15 @@
     <div class="nt-prop">
     <span class="nt-label">Priority:</span>
       <span class="nt-widget">
-        <?cs call:hdf_select(enums.priority, "priority", "p2") ?>
+        <?cs call:hdf_select(enums.priority, "priority", 
+                             newticket.default_priority) ?>
       </span>
     </div>
     <div class="nt-prop">
       <span class="nt-label">Milestone:</span>
       <span class="nt-widget">
         <?cs call:hdf_select(newticket.milestones, "milestone",
-             newticket.default_milestone) ?>
+                             newticket.default_milestone) ?>
       </span>
     </div>
     <div class="nt-prop">
