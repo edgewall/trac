@@ -38,7 +38,11 @@ What's New
 ----------
 A brief summary of major changes for this release:
 
-XXX: Add highlights from ChangeLog here.
+ * Improved Python 2.1 compatibility.
+ * Layout of navigation bar in Opera fixed.
+ * Execution of Javascript through event handler attributes
+   in HTML code is now forbidden.
+ * Bug fixes.
 
 For a more complete list of improvements, see the ChangeLog at:
 
