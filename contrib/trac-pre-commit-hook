@@ -11,20 +11,21 @@
 #
 #  REPOS="$1"
 #  TXN="$2"
-#  TRAC_DB="/somewhere/db/trac.db"
+#  TRAC_ENV="/somewhere/trac/project/"
 #  LOG=`/usr/bin/svnlook log -t "$TXN" "$REPOS"`
-#  /usr/bin/python /some/path/trac-pre-commit-hook "$TRAC_DB" "$LOG" || exit 1
+#  /usr/bin/python /some/path/trac-pre-commit-hook "$TRAC_ENV" "$LOG" || exit 1
 #
+import os
 import re
 import sys
 import sqlite
 
 def main():
     if len(sys.argv) != 3:
-        print >> sys.stderr, 'Usage: %s <trac_db> <log_message>' % sys.argv[0]
+        print >> sys.stderr, 'Usage: %s <trac_project> <log_message>' % sys.argv[0]
         sys.exit(1)
 
-    db_name = sys.argv[1]
+    env_path = sys.argv[1]
     log = sys.argv[2]
 
     tickets = []
@@ -38,7 +39,7 @@ def main():
               'in the log message.'
         sys.exit(1)
 
-    cnx = sqlite.connect(db_name, timeout=10000)
+    cnx = sqlite.connect(os.path.join(env_path, 'db', 'trac.db'), timeout=10000)
     cursor = cnx.cursor()
     cursor.execute("SELECT COUNT(id) FROM ticket WHERE "
                    "status <> 'closed' AND id IN (%s)" % ','.join(tickets))
