@@ -164,9 +164,15 @@ def render_diffs(fs_ptr, rev, pool):
     editor = DiffEditor(old_root, new_root)
     e_ptr, e_baton = delta.make_editor(editor, pool)
 
-    repos.svn_repos_dir_delta(old_root, '', '',
-                              new_root, '', e_ptr, e_baton, None, None,
-                              0, 1, 0, 1, pool)
+    if util.SVN_VER_MAJOR == 0 and util.SVN_VER_MINOR == 37:
+        repos.svn_repos_dir_delta(old_root, '', '',
+                                  new_root, '', e_ptr, e_baton, None, None,
+                                  0, 1, 0, 1, pool)
+    else:
+        def authz_cb(root, path, pool): return 1
+        repos.svn_repos_dir_delta(old_root, '', '',
+                                  new_root, '', e_ptr, e_baton, authz_cb,
+                                  0, 1, 0, 1, pool)
     sys.stdout = s_o
     return output.getvalue()
 

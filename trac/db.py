@@ -104,7 +104,7 @@ def sync(repos, fs_ptr, pool):
     cnx.commit()
 
 def insert_change (pool, fs_ptr, rev, cursor):
-    from svn import fs, delta, repos
+    from svn import fs, delta, repos, util
     
     class ChangeEditor(delta.Editor):
         def __init__(self, rev, old_root, new_root, cursor):
@@ -138,7 +138,13 @@ def insert_change (pool, fs_ptr, rev, cursor):
     editor = ChangeEditor(rev, old_root, new_root, cursor)
     e_ptr, e_baton = delta.make_editor(editor, pool)
 
-    repos.svn_repos_dir_delta(old_root, '', '',
-                              new_root, '', e_ptr, e_baton, None, None,
-			      0, 1, 0, 1, pool)
+    if util.SVN_VER_MAJOR == 0 and util.SVN_VER_MINOR == 37:
+        repos.svn_repos_dir_delta(old_root, '', '',
+                                  new_root, '', e_ptr, e_baton, None, None,
+                                  0, 1, 0, 1, pool)
+    else:
+        def authz_cb(root, path, pool): return 1
+        repos.svn_repos_dir_delta(old_root, '', '',
+                                  new_root, '', e_ptr, e_baton, authz_cb,
+                                  0, 1, 0, 1, pool)
 
