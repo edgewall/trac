@@ -1,7 +1,8 @@
 <?cs include "header.cs" ?>
-<div id="page-content">
-<h2 class="hide">Report Navigation</h2>
-<ul class="subheader-links">
+
+<div class="nav">
+ <h2>Report Navigation</h2>
+ <ul class="subheader-links">
   <?cs if report.edit_href || report.copy_href || report.delete_href ?>
   <li><b>This report:</b>
     <ul>
@@ -17,10 +18,11 @@
    <li><a href="<?cs var:report.create_href ?>">New Report</a></li>
   <?cs /if ?>
   <li class="last"><a href="<?cs var:$trac.href.report ?>">Report Index</a></li>
-</ul>
-<hr class="hide"/>
-<div id="main">
-    <div id="main-content">
+ </ul>
+</div>
+
+<div id="main" class="report">
+
 <?cs if report.message ?>
  <div class="error"><?cs var report.message ?></div>
 <?cs else ?>
@@ -44,6 +46,10 @@
            </tr><tr><th class="header-left" colspan="100"><?cs var:header ?></th>
          <?cs else ?>
            <?cs if $report.sorting.enabled ?>
+             <?cs set vars='' ?>
+             <?cs each arg = report.var ?>
+               <?cs set vars = vars + '&amp;' + name(arg) + '=' + arg ?>
+             <?cs /each ?>
              <?cs set sortValue = '' ?>
              <?cs if $header.asc == '1' ?>
                <?cs set sortValue = '?sort='+$header.real+'&asc=0' ?>
@@ -51,7 +57,7 @@
                <?cs set sortValue = '?sort='+$header.real+'&asc=1' ?>
              <?cs /if ?>
              <?cs if $header ?>
-             <th class="header-left"><a href="<?cs var:sortValue ?>"><?cs var:header ?></a></th>
+             <th class="header-left"><a href="<?cs var:sortValue ?><?cs var:vars ?>"><?cs var:header ?></a></th>
              <?cs /if ?>
            <?cs elif $header ?>
              <th class="header-left"><?cs var:header ?></th>
@@ -158,33 +164,6 @@
     <div id="report-notfound">No matches found.</div>
    <?cs /if ?>
 
-   <?cs if report.id > #0 ?>
-   <?cs set vars='' ?>
-   <?cs each arg = $report.var ?>
-     <?cs set vars=$vars+'&'+name($arg)+'='+$arg ?>
-   <?cs /each ?>
-
-   <?cs set sortInfo='' ?>
-   <?cs if args.sort ?>
-     <?cs set sortInfo=$sortInfo+'&sort='+$args.sort ?>
-   <?cs /if ?>
-   <?cs if args.asc ?>
-     <?cs set sortInfo=$sortInfo+'&asc='+$args.asc ?>
-   <?cs /if ?>
-
-    <div id="main-footer">
-     Download report in other data formats: <br />
-     <a class="noline" href="?format=rss"><img src="<?cs var:htdocs_location
-   ?>xml.png" alt="RSS Feed" style="vertical-align: bottom"/></a>&nbsp;
-     <a href="?format=rss<?cs var $vars ?><?cs var $sortInfo ?>">(RSS 2.0)</a>&nbsp;|
-     <a href="?format=csv<?cs var $vars ?><?cs var $sortInfo ?>">Comma-delimited</a>&nbsp;|
-     <a href="?format=tab<?cs var $vars ?><?cs var $sortInfo
-     ?>">Tab-delimited</a><?cs if $trac.acl.REPORT_SQL_VIEW ?>&nbsp;|
-     <a href="?format=sql">SQL Query</a><?cs /if ?>
-     <br />
-    </div>
-   <?cs /if ?>
-
  <?cs elif report.mode == "delete" ?>
 
   <h1 id="report-hdr">Delete Report</h1> 
@@ -231,7 +210,5 @@
  
 <?cs /if ?><!-- report.message -->
 
-  </div>
- </div>
 </div>
-<?cs include:"footer.cs"?>
+<?cs include "footer.cs" ?>

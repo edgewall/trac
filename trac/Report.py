@@ -19,11 +19,11 @@
 #
 # Author: Jonas Borgström <jonas@edgewall.com>
 
-import os,os.path
+import os, os.path
 import time
 import re
-import cgi
 import types
+import urllib
 
 from util import *
 from Module import Module
@@ -205,8 +205,27 @@ class Report (Module):
         self.req.hdf.setValue('report.action', action)
         self.req.hdf.setValue('report.sql', sql)
         self.req.hdf.setValue('report.description', description)
-    
-    def render_report_list(self, id, args={}):
+
+    def add_alternate_links(self, args):
+        params = args
+        if self.args.has_key('sort'):
+            params['sort'] = self.args['sort']
+        if self.args.has_key('asc'):
+            params['asc'] = self.args['asc']
+        href = ''
+        if params:
+            href = '&amp;' + urllib.urlencode(params).replace('&', '&amp;')
+        self.add_link('alternate', '?format=rss' + href, 'RSS Feed',
+            'application/rss+xml', 'rss')
+        self.add_link('alternate', '?format=csv' + href,
+            'Comma-delimited Text', 'text/plain')
+        self.add_link('alternate', '?format=tab' + href,
+            'Tab-delimited Text', 'text/plain')
+        if self.perm.has_permission(perm.REPORT_SQL_VIEW):
+            self.add_link('alternate', '?format=sql' + href, 'SQL Query',
+                'text/plain')
+
+    def render_report_list(self, id):
         """
         uses a user specified sql query to extract some information
         from the database and presents it as a html table.
@@ -216,6 +235,7 @@ class Report (Module):
                                   self.env.href.report(None, 'new'))
             
         if id != -1:
+            self.add_alternate_links(args)
             if self.perm.has_permission(perm.REPORT_MODIFY):
                 self.req.hdf.setValue('report.edit_href',
                                       self.env.href.report(id, 'edit'))
@@ -239,6 +259,12 @@ class Report (Module):
         descr_html = wiki_to_html(description, self.req.hdf, self.env)
         self.req.hdf.setValue('report.description', descr_html)
 
+        try:
+            args = self.get_var_args()
+        except ValueError,e:
+            self.req.hdf.setValue('report.message', 'report failed: %s' % e)
+            return
+        
         # Convert the header info to HDF-format
         idx = 0
         for col in self.cols:
@@ -351,12 +377,6 @@ class Report (Module):
         id = int(self.args.get('id', -1))
         action = self.args.get('action', 'list')
 
-        try:
-            report_args = self.get_var_args()
-        except ValueError,e:
-            self.req.hdf.setValue('report.message', 'report failed: %s' % e)
-            return
-        
         if action == 'create':
             if not (self.args.has_key('sql') or self.args.has_key('title')):
                 action = 'list'
@@ -377,7 +397,7 @@ class Report (Module):
         elif action == 'edit':
             self.render_report_editor(id, 'commit')
         elif action == 'list':
-            self.render_report_list(id, report_args)
+            self.render_report_list(id)
 
     def display_rss(self):
         item = self.req.hdf.getObj('report.items')

@@ -244,6 +244,9 @@ class Changeset (Module):
     def render (self):
         self.perm.assert_permission (perm.CHANGESET_VIEW)
 
+        self.add_link('alternate', '?format=diff', 'Unified Diff',
+            'text/plain', 'diff')
+
         if self.args.has_key('rev'):
             self.rev = int(self.args.get('rev'))
         else:

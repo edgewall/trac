@@ -102,6 +102,9 @@ class Log (Module):
     def render (self):
         self.perm.assert_permission (perm.LOG_VIEW)
 
+        self.add_link('alternate', '?format=rss', 'RSS Feed',
+            'application/rss+xml', 'rss')
+
         self.path = self.args.get('path', '/')
         if self.args.has_key('rev'):
             try:
@@ -136,5 +139,5 @@ class Log (Module):
         self.req.hdf.setValue('title', self.path + ' (log)')
         self.req.hdf.setValue('log.path', self.path)
 
-    def display_rss (self):
-        self.req.display(self.template_rss_name, 'text/xml')
+    def display_rss(self):
+        self.req.display(self.template_rss_name, 'application/rss+xml')

@@ -8,6 +8,11 @@
   <?cs else ?>
    <title>Trac: <?cs var:title ?></title>
   <?cs /if ?>
+  <?cs each:rel = links ?><?cs each:link = rel ?><link rel="<?cs
+   var:name(rel) ?>" href="<?cs var:link.href ?>"<?cs
+   if:link.title ?> title="<?cs var:link.title ?>"<?cs /if ?><?cs
+   if:link.type ?> type="<?cs var:link.type ?>"<?cs /if ?> />
+  <?cs /each ?><?cs /each ?>
   <style type="text/css">
    @import url("<?cs var:htdocs_location ?>css/trac.css");
    @import url("<?cs var:htdocs_location ?>css/code.css");

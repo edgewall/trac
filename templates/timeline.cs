@@ -3,7 +3,7 @@
 <div class="nav">
  <h2>Timeline Navigation</h2>
  <ul class="subheader-links">
-   <li class="last"><a href="?daysback=90&amp;max=50&amp;format=rss">RSS Feed</a></li>
+  <li class="last"><a href="?daysback=90&amp;max=50&amp;format=rss">RSS Feed</a></li>
  </ul>
 </div>
 
@@ -90,13 +90,5 @@
  for information about the timeline view.
 </div>
 
- <div id="main-footer">
-  Download in other formats: <br />
-  <a class="noline" href="?daysback=90&amp;max=50&amp;format=rss"><img src="<?cs var:htdocs_location
-?>xml.png" alt="RSS Feed" style="vertical-align: bottom"/></a>&nbsp;
-  <a href="?daysback=90&amp;max=50&amp;format=rss">(RSS 2.0)</a>
-  <br />
- </div>
-
 </div>
-<?cs include:"footer.cs"?>
+<?cs include "footer.cs"?>

@@ -26,6 +26,7 @@ import perm
 
 import time
 import string
+import urllib
 
 class Timeline (Module):
     template_name = 'timeline.cs'
@@ -132,7 +133,10 @@ class Timeline (Module):
         
     def render (self):
         self.perm.assert_permission(perm.TIMELINE_VIEW)
-        
+
+        self.add_link('alternate', '?daysback=90&amp;max=50&amp;format=rss',
+            'RSS Feed', 'application/rss+xml', 'rss')
+
         _from = self.args.get('from', '')
         _daysback = self.args.get('daysback', '')
 
@@ -174,7 +178,6 @@ class Timeline (Module):
                               changeset, wiki, milestone)
         add_dictlist_to_hdf(info, self.req.hdf, 'timeline.items')
         self.req.hdf.setValue('title', 'Timeline')
-
 
     def display_rss(self):
         self.req.display(self.template_rss_name, 'text/xml')

@@ -29,7 +29,8 @@ class Module:
     _name = None
     args = []
     template_name = None
-    
+    link_no = {}
+
     def run(self):
         core.populate_hdf(self.req.hdf, self.env, self.db, self.req)
         self.req.hdf.setValue('trac.active_module', self._name)
@@ -38,12 +39,29 @@ class Module:
         else:
             disp = self.display
         try:
+            self.add_link('start', self.env.href.wiki())
+            self.add_link('search', self.env.href.search())
+            self.add_link('help', self.env.href.wiki('TracGuide'))
             self.render()
+            self.link_no.clear()
             disp()
         except core.RedirectException:
             pass
 
-    def render (self):
+    def add_link(self, rel, href, title=None, type=None, className=None):
+        if not self.link_no.has_key(rel):
+            self.link_no[rel] = 0
+        prefix = 'links.%s.%d' % (rel, self.link_no[rel])
+        self.req.hdf.setValue(prefix + '.href', href)
+        if title:
+            self.req.hdf.setValue(prefix + '.title', title)
+        if type:
+            self.req.hdf.setValue(prefix + '.type', type)
+        if className:
+            self.req.hdf.setValue(prefix + '.class', className)
+        self.link_no[rel] = self.link_no[rel] + 1
+
+    def render(self):
         """
         Override this function to add data the template requires
         to self.req.hdf.

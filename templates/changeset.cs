@@ -1,12 +1,13 @@
 <?cs include "header.cs"?>
 <?cs include "macros.cs"?>
-<div id="page-content">
- <ul class="subheader-links">
-   <li class="last"><a href="?format=diff">Download Diff</a></li>
- </ul>
- <div id="main" class="changeset">
-  <div id="main-content">
 
+<div class="nav">
+ <ul class="subheader-links">
+  <li class="last"><a href="?format=diff">Download Diff</a></li>
+ </ul>
+</div>
+
+<div id="main" class="changeset">
 <h1 id="chg-hdr">Change set <?cs var:changeset.revision ?></h1>
 
 <table id="overview" summary="Changeset overview">
@@ -85,13 +86,5 @@
  </ul>
 </div>
 
- <div id="main-footer">
-  Download in other formats: <br />
-  <a href="?format=diff">Unified Diff</a>
-  <br />
- </div>
-
- </div>
-</div>
 </div>
 <?cs include:"footer.cs"?>
