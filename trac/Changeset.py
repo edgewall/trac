@@ -106,7 +106,6 @@ class DiffColorizer:
             self.block = [text]
             self.type = type
 
-
     def close(self):
         self.print_block()
         self.out.write('</table>')
@@ -157,9 +156,6 @@ class UnifiedDiffEditor(HtmlDiffEditor):
     the output is written to stdout.
     """
     def print_diff (self, old_path, new_path, pool):
-        if not old_path or not new_path:
-            return
-
         options = ['-u']
         options.append('-L')
         options.append("%s\t(revision %d)" % (old_path, self.rev-1))
@@ -176,7 +172,7 @@ class UnifiedDiffEditor(HtmlDiffEditor):
             line = pobj.readline()
 
         
-def render_diffs(fs_ptr, rev, pool, diff_class=HtmlDiffEditor):
+def render_diffs(fs_ptr, rev, pool, diff_class=HtmlDiffEditor, output=None):
     """
     generates a unified diff of the changes for a given changeset.
     the output is written to stdout.
@@ -184,10 +180,13 @@ def render_diffs(fs_ptr, rev, pool, diff_class=HtmlDiffEditor):
     old_root = fs.revision_root(fs_ptr, rev - 1, pool)
     new_root = fs.revision_root(fs_ptr, rev, pool)
 
-    output = StringIO()
+    if not output:
+        output = StringIO()
+        using_stringio = 1
+    else:
+        using_stringio = 0
 
     editor = diff_class(old_root, new_root, rev, output)
-
     e_ptr, e_baton = delta.make_editor(editor, pool)
 
     if util.SVN_VER_MAJOR == 0 and util.SVN_VER_MINOR == 37:
@@ -199,7 +198,9 @@ def render_diffs(fs_ptr, rev, pool, diff_class=HtmlDiffEditor):
         repos.svn_repos_dir_delta(old_root, '', '',
                                   new_root, '', e_ptr, e_baton, authz_cb,
                                   0, 1, 0, 1, pool)
-    return output.getvalue()
+    if using_stringio:
+        return output.getvalue()
+
 
 class Changeset (Module):
     template_name = 'changeset.cs'
@@ -248,23 +249,27 @@ class Changeset (Module):
         self.req.hdf.setValue('changeset.time',
                               time.asctime (time.localtime(int(changeset_info['time']))))
         author = changeset_info['author'] or 'None'
-        # Just recode this to iso8859-15 until we have propper unicode
-        # support
         self.req.hdf.setValue('changeset.author', author)
-        self.req.hdf.setValue('changeset.message', wiki_to_html(changeset_info['message'], self.req.hdf, self.env))
+        self.req.hdf.setValue('changeset.message',
+                              wiki_to_html(changeset_info['message'],
+                                           self.req.hdf, self.env))
         self.req.hdf.setValue('changeset.revision', str(self.rev))
 
         add_dictlist_to_hdf(change_info, self.req.hdf, 'changeset.changes')
         self.req.hdf.setValue('title', '[%d] (changeset)' % self.rev)
-        
+
+    def display(self):
+        """Pretty HTML view of the changeset"""
         difftext = render_diffs(self.fs_ptr, int(self.rev), self.pool)
         self.req.hdf.setValue('changeset.diff_output', difftext)
+        Module.display(self)
 
     def display_diff (self):
+        """Raw Unified Diff version"""
         self.req.send_response(200)
         self.req.send_header('Content-Type', 'text/plain')
         self.req.end_headers()
-        difftext = render_diffs(self.fs_ptr, int(self.rev), self.pool, UnifiedDiffEditor)
-        self.req.write(difftext)
+        render_diffs(self.fs_ptr, int(self.rev), self.pool,
+                     UnifiedDiffEditor, output=self.req)
         
         
