@@ -74,11 +74,16 @@ class Log (Module):
         # class provided by modpython might give us some strange string-like
         # object that svn doesn't like.
         path = str(path)
-        def authz_cb(root, path, pool):
-            return self.authzperm.has_permission(path) and 1 or 0
-        svn.repos.svn_repos_get_logs(self.repos, [path],
-                                     0, rev, 1, authz_cb, self.log_receiver,
-                                     self.pool)
+        try:
+            def authz_cb(root, path, pool):
+                return self.authzperm.has_permission(path) and 1 or 0
+            svn.repos.svn_repos_get_logs2(self.repos, [path], 0, rev, 1, 0,
+                                          authz_cb, self.log_receiver,
+                                          self.pool)
+        except AttributeError: # Subversion 1.0.x
+            svn.repos.svn_repos_get_logs(self.repos, [path],
+                                         0, rev, 1, 0, self.log_receiver,
+                                         self.pool)
         # Loop through all revisions and update the path
         # after each tag/branch/copy/rename.
         path = self.path
