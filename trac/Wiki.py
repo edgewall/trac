@@ -23,6 +23,7 @@ from trac import perm
 from trac.Module import Module
 from trac.util import enum, escape, TracError, get_reporter_id
 from trac.versioncontrol.diff import get_diff_options, hdf_diff
+from trac.web.main import add_link
 from trac.WikiFormatter import *
 
 import os
@@ -303,14 +304,14 @@ class WikiModule(Module):
 
         version = req.args.get('version')
         if version:
-            self.add_link(req, 'alternate',
-                          '?version=%s&amp;format=txt' % version, 'Plain Text',
-                          'text/plain')
+            add_link(req, 'alternate',
+                     '?version=%s&amp;format=txt' % version, 'Plain Text',
+                     'text/plain')
             # Ask web spiders to not index old versions
             req.hdf['html.norobots'] = 1
         else:
-            self.add_link(req, 'alternate', '?format=txt', 'Plain Text',
-                          'text/plain')
+            add_link(req, 'alternate', '?format=txt', 'Plain Text',
+                     'text/plain')
 
         page = WikiPage(pagename, version, self.perm, self.db)
 

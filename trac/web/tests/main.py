@@ -1,5 +1,6 @@
 from trac.test import Mock
-from trac.web.main import absolute_url, Request, RequestDone
+from trac.web.clearsilver import HDFWrapper
+from trac.web.main import absolute_url, add_link, Request, RequestDone
 
 from Cookie import SimpleCookie as Cookie
 from StringIO import StringIO
@@ -83,6 +84,21 @@ class WebMainTestCase(unittest.TestCase):
                           'http://example.org/trac/test')
         self.assertEqual(302, status[0])
         self.assertEqual('http://example.org/trac/test', headers['Location'])
+
+    def test_add_link_simple(self):
+        hdf = HDFWrapper()
+        req = Mock(Request, hdf=hdf)
+        add_link(req, 'start', '/trac/wiki')
+        self.assertEqual('/trac/wiki', hdf['links.start.0.href'])
+
+    def test_add_link_advanced(self):
+        hdf = HDFWrapper()
+        req = Mock(Request, hdf=hdf)
+        add_link(req, 'start', '/trac/wiki', 'Start page', 'text/html', 'home')
+        self.assertEqual('/trac/wiki', hdf['links.start.0.href'])
+        self.assertEqual('Start page', hdf['links.start.0.title'])
+        self.assertEqual('text/html', hdf['links.start.0.type'])
+        self.assertEqual('home', hdf['links.start.0.class'])
 
 
 def suite():

@@ -21,6 +21,7 @@
 
 from trac import perm, util
 from trac.Module import Module
+from trac.web.main import add_link
 from trac.WikiFormatter import wiki_to_html, wiki_to_oneliner
 
 import time
@@ -69,7 +70,7 @@ class BrowserModule(Module):
         path_links = _get_path_links(self.env.href, path, rev)
         req.hdf['browser.path'] = path_links
         if len(path_links) > 1:
-            self.add_link(req, 'up', path_links[-2]['href'], 'Parent directory')
+            add_link(req, 'up', path_links[-2]['href'], 'Parent directory')
 
         repos = self.env.get_repository()
         req.hdf['browser.revision'] = rev or repos.youngest_rev
@@ -180,8 +181,7 @@ class BrowserModule(Module):
 
             raw_href = self.env.href.browser(node.path, rev and node.rev, 'raw')
             req.hdf['file.raw_href'] = raw_href
-            self.add_link(req, 'alternate', raw_href, 'Original Format',
-                          mime_type)
+            add_link(req, 'alternate', raw_href, 'Original Format', mime_type)
 
             req.display('browser.cs')
 
@@ -217,7 +217,7 @@ class LogModule(Module):
         path_links = _get_path_links(self.env.href, path, rev)
         req.hdf['log.path'] = path_links
         if path_links:
-            self.add_link(req, 'up', path_links[-1]['href'], 'Parent directory')
+            add_link(req, 'up', path_links[-1]['href'], 'Parent directory')
 
         repos = self.env.get_repository()
         node = repos.get_node(path, rev)
@@ -238,8 +238,8 @@ class LogModule(Module):
                                               [i['rev'] for i in info])
 
         rss_href = self.env.href.log(path, rev=rev, format='rss')
-        self.add_link(req, 'alternate', rss_href, 'RSS Feed',
-                      'application/rss+xml', 'rss')
+        add_link(req, 'alternate', rss_href, 'RSS Feed', 'application/rss+xml',
+                 'rss')
 
         if req.args.get('format') == 'rss':
             req.display('log_rss.cs', 'application/rss+xml')

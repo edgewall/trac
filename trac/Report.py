@@ -21,6 +21,7 @@
 
 from trac import perm, util
 from trac.Module import Module
+from trac.web.main import add_link
 from trac.WikiFormatter import wiki_to_html
 
 import re
@@ -213,15 +214,15 @@ class Report (Module):
         href = ''
         if params:
             href = '&amp;' + urllib.urlencode(params).replace('&', '&amp;')
-        self.add_link(req, 'alternate', '?format=rss' + href, 'RSS Feed',
-            'application/rss+xml', 'rss')
-        self.add_link(req, 'alternate', '?format=csv' + href,
-            'Comma-delimited Text', 'text/plain')
-        self.add_link(req, 'alternate', '?format=tab' + href,
-            'Tab-delimited Text', 'text/plain')
+        add_link(req, 'alternate', '?format=rss' + href, 'RSS Feed',
+                 'application/rss+xml', 'rss')
+        add_link(req, 'alternate', '?format=csv' + href,
+                 'Comma-delimited Text', 'text/plain')
+        add_link(req, 'alternate', '?format=tab' + href,
+                 'Tab-delimited Text', 'text/plain')
         if self.perm.has_permission(perm.REPORT_SQL_VIEW):
-            self.add_link(req, 'alternate', '?format=sql', 'SQL Query',
-                'text/plain')
+            add_link(req, 'alternate', '?format=sql', 'SQL Query',
+                     'text/plain')
 
     def render_report_list(self, req, id):
         """
@@ -399,7 +400,7 @@ class Report (Module):
                                    req.args.get('sql', ''))
 
         if id != -1 or action == 'new':
-            self.add_link(req, 'up', self.env.href.report(), 'Available Reports')
+            add_link(req, 'up', self.env.href.report(), 'Available Reports')
 
         if action == 'delete':
             self.render_confirm_delete(req, id)

@@ -19,14 +19,15 @@
 #
 # Author: Jonas Borgström <jonas@edgewall.com>
 
-import re
-import time
-import string
-
 from trac import perm
 from trac.Module import Module
 from trac.util import TracError, escape, shorten_line
 from trac.versioncontrol.svn_authz import SubversionAuthorizer
+from trac.web.main import add_link
+
+import re
+import time
+import string
 
 
 class Search(Module):
@@ -250,12 +251,9 @@ class Search(Module):
             if changesets: params.append(('changeset', 'on'))
             if wiki: params.append(('wiki', 'on'))
             if page:
-                self.add_link(req, 'first',
-                              self.env.href.search(params, page=0))
-                self.add_link(req, 'prev',
-                              self.env.href.search(params, page=page - 1))
+                add_link(req, 'first', self.env.href.search(params, page=0))
+                add_link(req, 'prev', self.env.href.search(params, page=page - 1))
             if more:
-                self.add_link(req, 'next',
-                              self.env.href.search(params, page=page + 1))
+                add_link(req, 'next', self.env.href.search(params, page=page + 1))
 
         req.display('search.cs')

@@ -23,6 +23,7 @@ from trac import perm
 from trac.util import enum, escape, shorten_line
 from trac.Module import Module
 from trac.versioncontrol.svn_authz import SubversionAuthorizer
+from trac.web.main import add_link
 from trac.WikiFormatter import wiki_to_oneliner, wiki_to_html
 
 import time
@@ -135,9 +136,10 @@ class Timeline(Module):
         if not filters:
             filters = AVAILABLE_FILTERS[:]
 
-        self.add_link(req, 'alternate', '?daysback=90&max=50&%s&format=rss' \
-                      % '&'.join(['%s=on' % k for k in filters]),
-                      'RSS Feed', 'application/rss+xml', 'rss')
+        rss_href = self.env.href.timeline([(x,'on') for x in filters],
+                                          daysback=90, max=50, format='rss')
+        add_link(req, 'alternate', rss_href, 'RSS Feed', 'application/rss+xml',
+                 'rss')
 
         format = req.args.get('format')
 

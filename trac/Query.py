@@ -22,6 +22,7 @@
 from trac import perm
 from trac.Module import Module
 from trac.Ticket import get_custom_fields, insert_custom_fields, Ticket
+from trac.web.main import add_link
 from trac.WikiFormatter import wiki_to_html, wiki_to_oneliner
 from trac.util import escape, sql_escape
 
@@ -440,12 +441,12 @@ class QueryModule(Module):
         if req.args.has_key('update'):
             req.redirect(query.get_href())
 
-        self.add_link(req, 'alternate', query.get_href('rss'), 'RSS Feed',
-                      'application/rss+xml', 'rss')
-        self.add_link(req, 'alternate', query.get_href('csv'),
-                      'Comma-delimited Text', 'text/plain')
-        self.add_link(req, 'alternate', query.get_href('tab'),
-                      'Tab-delimited Text', 'text/plain')
+        add_link(req, 'alternate', query.get_href('rss'), 'RSS Feed',
+                 'application/rss+xml', 'rss')
+        add_link(req, 'alternate', query.get_href('csv'),
+                 'Comma-delimited Text', 'text/plain')
+        add_link(req, 'alternate', query.get_href('tab'), 'Tab-delimited Text',
+                 'text/plain')
 
         constraints = {}
         for k, v in query.constraints.items():

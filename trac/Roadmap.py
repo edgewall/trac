@@ -23,6 +23,7 @@ from trac import Milestone, perm, __version__
 from trac.util import pretty_timedelta, CRLF, TracError
 from trac.Module import Module
 from trac.Ticket import Ticket
+from trac.web.main import add_link
 from trac.WikiFormatter import wiki_to_html
 
 import re
@@ -35,10 +36,8 @@ class Roadmap(Module):
         self.perm.assert_permission(perm.ROADMAP_VIEW)
         req.hdf['title'] = 'Roadmap'
 
-        icalhref = '?format=ics' # FIXME should use the 'webcal:' scheme
-        show = req.args.get('show', 'current')
+        show = req.args.get('show')
         if show == 'all':
-            icalhref += '&show=all'
             query = "SELECT name,due,completed,description FROM milestone " \
                     "WHERE COALESCE(name,'')!='' " \
                     "ORDER BY COALESCE(due,0)=0,due,name"
@@ -49,14 +48,17 @@ class Roadmap(Module):
                     "AND COALESCE(completed,0)=0 " \
                     "ORDER BY COALESCE(due,0)=0,due,name"
 
+        # FIXME should use the 'webcal:' scheme, probably
+        username = None
         if req.authname and req.authname != 'anonymous':
-            icalhref += '&user=' + req.authname
-        self.add_link(req, 'alternate', icalhref, 'iCalendar', 'text/calendar',
-                      'ics')
+            username = req.authname
+        icshref = self.env.href.roadmap(show=show, username=username,
+                                        format='ics')
+        add_link(req, 'alternate', icshref, 'iCalendar', 'text/calendar', 'ics')
 
         cursor = self.db.cursor()
         cursor.execute(query)
-        self.milestones = []
+        milestones = []
         while 1:
             row = cursor.fetchone()
             if not row:
@@ -81,12 +83,12 @@ class Roadmap(Module):
             if milestone['completed'] > 0:
                 milestone['completed_date'] = strftime('%x', localtime(milestone['completed']))
                 milestone['completed_delta'] = pretty_timedelta(milestone['completed'])
-            self.milestones.append(milestone)
+            milestones.append(milestone)
         cursor.close()
-        req.hdf['roadmap.milestones'] = self.milestones
+        req.hdf['roadmap.milestones'] = milestones
 
         milestone_no = 0
-        for milestone in self.milestones:
+        for milestone in milestones:
             tickets = Milestone.get_tickets_for_milestone(self.env, self.db,
                                                           milestone['name'],
                                                           'owner')
@@ -98,13 +100,13 @@ class Roadmap(Module):
             milestone_no += 1
 
         if req.args.get('format') == 'ics':
-            self.render_ics(req)
+            self.render_ics(req, milestones)
         else:
             req.display('roadmap.cs')
 
-    def render_ics(self, req):
+    def render_ics(self, req, milestones):
         req.send_response(200)
-        req.send_header('Content-Type', 'text/calendar;charset=utf-8')
+        req.send_header('Content-Type', 'text/plain;charset=utf-8')
         req.end_headers()
 
         priority_mapping = {'highest': '1', 'high': '3', 'normal': '5',
@@ -147,7 +149,7 @@ class Roadmap(Module):
                    % __version__)
         write_prop('X-WR-CALNAME',
                    self.env.get_config('project', 'name') + ' - Roadmap')
-        for milestone in self.milestones:
+        for milestone in milestones:
             uid = '<%s/milestone/%s@%s>' % (req.cgi_location,
                                             milestone['name'], host)
             if milestone.has_key('due'):

@@ -29,10 +29,10 @@ import urllib
 from trac import perm, util
 from trac.Module import Module
 from trac.WikiFormatter import wiki_to_html
+from trac.web.main import add_link
 
 
 class AttachmentModule(Module):
-    template_name = 'attachment.cs'
 
     CHUNK_SIZE = 4096
     DISP_MAX_FILE_SIZE = 256 * 1024
@@ -99,19 +99,17 @@ class AttachmentModule(Module):
             self.mime_type = self.env.mimeview.get_mimetype(self.filename) \
                              or 'application/octet-stream'
 
-            self.add_link('alternate',
-                          self.env.href.attachment(self.attachment_type,
-                                                   self.attachment_id,
-                                                   self.filename, 'raw'),
-                'Original Format', self.mime_type)
+            add_link(req, 'alternate',
+                     self.env.href.attachment(self.attachment_type,
+                                              self.attachment_id,
+                                              self.filename, format='raw'),
+                     'Original Format', self.mime_type)
 
             perm_map = {'ticket': perm.TICKET_ADMIN, 'wiki': perm.WIKI_DELETE}
             if self.perm.has_permission(perm_map[self.attachment_type]):
                 req.hdf['attachment.delete_href'] = '?delete=yes'
 
-            return
-
-        if req.args.has_key('description') and \
+        elif req.args.has_key('description') and \
                req.args.has_key('author') and \
                req.args.has_key('attachment') and \
                hasattr(req.args['attachment'], 'file'):
@@ -139,50 +137,55 @@ class AttachmentModule(Module):
                                                   filename))
         else:
             # Display an attachment upload form
-            self.view_form = 1
+            self.render_form(req)
 
-    def display(self, req):
+        if req.args.get('format') in ('raw', 'txt'):
+            self.display_raw(req)
+        else:
+            self.display_html(req)
+
+    def render_form(self, req):
+        req.hdf['attachment.mode'] = 'new'
+        req.hdf['attachment.type'] = self.attachment_type
+        req.hdf['attachment.id'] = self.attachment_id
+        req.hdf['attachment.author'] = util.get_reporter_id(req)
+        req.display('attachment.cs')
+
+    def display_html(self, req):
         text, link = self.get_attachment_parent_link()
-        self.add_link('up', link, text)
+        add_link(req, 'up', link, text)
         req.hdf['title'] = '%s%s: %s' % (
                            self.attachment_type == 'ticket' and '#' or '',
                            self.attachment_id, self.filename)
         req.hdf['file.attachment_parent'] = text
         req.hdf['file.attachment_parent_href'] = link
 
-        if self.view_form:
-            req.hdf['attachment.mode'] = 'new'
-            req.hdf['attachment.type'] = self.attachment_type
-            req.hdf['attachment.id'] = self.attachment_id
-            req.hdf['attachment.author'] = util.get_reporter_id(req)
+        self.log.debug("Displaying file: %s  mime-type: %s"
+                       % (self.filename, self.mime_type))
+        req.hdf['file.filename'] = urllib.unquote(self.filename)
+        req.hdf['trac.active_module'] = self.attachment_type # Kludge
 
+        # We don't have to guess if the charset is specified in the
+        # svn:mime-type property
+        ctpos = self.mime_type.find('charset=')
+        if ctpos >= 0:
+            charset = self.mime_type[ctpos + 8:]
         else:
-            self.log.debug("Displaying file: %s  mime-type: %s"
-                           % (self.filename, self.mime_type))
-            req.hdf['file.filename'] = urllib.unquote(self.filename)
-            req.hdf['trac.active_module'] = self.attachment_type # Kludge
+            charset = self.env.get_config('trac', 'default_charset',
+                                          'iso-8859-15')
+        data = util.to_utf8(self.read_func(self.DISP_MAX_FILE_SIZE),
+                            charset)
 
-            # We don't have to guess if the charset is specified in the
-            # svn:mime-type property
-            ctpos = self.mime_type.find('charset=')
-            if ctpos >= 0:
-                charset = self.mime_type[ctpos + 8:]
-            else:
-                charset = self.env.get_config('trac', 'default_charset',
-                                              'iso-8859-15')
-            data = util.to_utf8(self.read_func(self.DISP_MAX_FILE_SIZE),
-                                charset)
+        if len(data) == self.DISP_MAX_FILE_SIZE:
+            req.hdf['file.max_file_size_reached'] = 1
+            req.hdf['file.max_file_size'] = self.DISP_MAX_FILE_SIZE
+            vdata = ' '
+        else:
+            vdata = self.env.mimeview.display(data, filename=self.filename,
+                                              mimetype=self.mime_type)
+        req.hdf['file.preview'] = vdata
 
-            if len(data) == self.DISP_MAX_FILE_SIZE:
-                req.hdf['file.max_file_size_reached'] = 1
-                req.hdf['file.max_file_size'] = self.DISP_MAX_FILE_SIZE
-                vdata = ' '
-            else:
-                vdata = self.env.mimeview.display(data, filename=self.filename,
-                                                  mimetype=self.mime_type)
-            req.hdf['file.preview'] = vdata
-
-        Module.display(self, req)
+        req.display('attachment.cs')
 
     def display_raw(self, req):
         req.send_response(200)

@@ -38,30 +38,7 @@ class Module:
         req.hdf['trac.active_module'] = self._name
         for action in self.perm.permissions():
             req.hdf['trac.acl.' + action] = 1
-        self._add_default_links(req)
         self.render(req)
-
-    def _add_default_links(self, req):
-        self.add_link(req, 'start', self.env.href.wiki())
-        self.add_link(req, 'search', self.env.href.search())
-        self.add_link(req, 'help', self.env.href.wiki('TracGuide'))
-        icon = self.env.get_config('project', 'icon')
-        if icon:
-            if not icon[0] == '/' and icon.find('://') < 0:
-                icon = req.hdf.get('htdocs_location', '') + icon
-            mimetype = self.env.mimeview.get_mimetype(icon)
-            self.add_link(req, 'icon', icon, type=mimetype)
-            self.add_link(req, 'shortcut icon', icon, type=mimetype)
-
-    def add_link(self, req, rel, href, title=None, type=None, className=None):
-        link = {'href': escape(href)}
-        if title: link['title'] = escape(title)
-        if type: link['type'] = type
-        if className: link['class'] = className
-        idx = 0
-        while req.hdf.get('links.%s.%d.href' % (rel, idx)):
-            idx += 1
-        req.hdf['links.%s.%d' % (rel, idx)] = link
 
     def render(self, req):
         raise NotImplementedError

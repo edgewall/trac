@@ -19,15 +19,16 @@
 #
 # Author: Jonas Borgström <jonas@edgewall.com>
 
+from trac import perm
+from trac.Module import Module
+from trac.versioncontrol import Changeset, Node
+from trac.versioncontrol.diff import get_diff_options, hdf_diff, unified_diff
+from trac.web.main import add_link
+from trac.WikiFormatter import wiki_to_html
+
 import time
 import util
 import re
-
-from trac import perm
-from trac.Module import Module
-from trac.WikiFormatter import wiki_to_html
-from trac.versioncontrol import Changeset, Node
-from trac.versioncontrol.diff import get_diff_options, hdf_diff, unified_diff
 
 
 class ChangesetModule(Module):
@@ -35,10 +36,10 @@ class ChangesetModule(Module):
     def render(self, req):
         self.perm.assert_permission(perm.CHANGESET_VIEW)
 
-        self.add_link(req, 'alternate', '?format=diff', 'Unified Diff',
-                      'text/plain', 'diff')
-        self.add_link(req, 'alternate', '?format=zip', 'Zip Archive',
-                      'application/zip', 'zip')
+        add_link(req, 'alternate', '?format=diff', 'Unified Diff',
+                 'text/plain', 'diff')
+        add_link(req, 'alternate', '?format=zip', 'Zip Archive',
+                 'application/zip', 'zip')
 
         rev = req.args.get('rev')
         repos = self.env.get_repository(req.authname)
@@ -72,18 +73,18 @@ class ChangesetModule(Module):
 
         oldest_rev = repos.oldest_rev
         if chgset.rev != oldest_rev:
-            self.add_link(req, 'first', self.env.href.changeset(oldest_rev),
-                          'Changeset %s' % oldest_rev)
+            add_link(req, 'first', self.env.href.changeset(oldest_rev),
+                     'Changeset %s' % oldest_rev)
             previous_rev = repos.previous_rev(chgset.rev)
-            self.add_link(req, 'prev', self.env.href.changeset(previous_rev),
-                          'Changeset %s' % previous_rev)
+            add_link(req, 'prev', self.env.href.changeset(previous_rev),
+                     'Changeset %s' % previous_rev)
         youngest_rev = repos.youngest_rev
         if chgset.rev != youngest_rev:
             next_rev = repos.next_rev(chgset.rev)
-            self.add_link(req, 'next', self.env.href.changeset(next_rev),
-                          'Changeset %s' % next_rev)
-            self.add_link(req, 'last', self.env.href.changeset(youngest_rev),
-                          'Changeset %s' % youngest_rev)
+            add_link(req, 'next', self.env.href.changeset(next_rev),
+                     'Changeset %s' % next_rev)
+            add_link(req, 'last', self.env.href.changeset(youngest_rev),
+                     'Changeset %s' % youngest_rev)
 
         edits = []
         idx = 0

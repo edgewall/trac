@@ -22,6 +22,7 @@
 from trac import perm
 from trac.Module import Module
 from trac.Ticket import get_custom_fields, Ticket
+from trac.web.main import add_link
 from trac.WikiFormatter import wiki_to_html
 from trac.util import *
 
@@ -252,7 +253,7 @@ class Milestone(Module):
     def render(self, req):
         self.perm.assert_permission(perm.MILESTONE_VIEW)
 
-        self.add_link(req, 'up', self.env.href.roadmap(), 'Roadmap')
+        add_link(req, 'up', self.env.href.roadmap(), 'Roadmap')
 
         action = req.args.get('action', 'view')
         id = req.args.get('id')

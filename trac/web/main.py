@@ -193,6 +193,16 @@ def _parse_path_info(args, path_info):
         return args
     return args
 
+def add_link(req, rel, href, title=None, type=None, class_name=None):
+    link = {'href': escape(href)}
+    if title: link['title'] = escape(title)
+    if type: link['type'] = type
+    if class_name: link['class'] = class_name
+    idx = 0
+    while req.hdf.get('links.%s.%d.href' % (rel, idx)):
+        idx += 1
+    req.hdf['links.%s.%d' % (rel, idx)] = link
+
 def populate_hdf(hdf, env, req=None):
     from trac import __version__
     from time import gmtime, localtime, strftime
@@ -247,6 +257,17 @@ def populate_hdf(hdf, env, req=None):
         'width': env.get_config('header_logo', 'width'),
         'height': env.get_config('header_logo', 'height')
     }
+
+    add_link(req, 'start', env.href.wiki())
+    add_link(req, 'search', env.href.search())
+    add_link(req, 'help', env.href.wiki('TracGuide'))
+    icon = env.get_config('project', 'icon')
+    if icon:
+        if not icon[0] == '/' and icon.find('://') < 0:
+            icon = htdocs_location + icon
+        mimetype = env.mimeview.get_mimetype(icon)
+        add_link(req, 'icon', icon, type=mimetype)
+        add_link(req, 'shortcut icon', icon, type=mimetype)
 
     if req:
         hdf['base_url'] = req.base_url
@@ -379,6 +400,8 @@ def send_pretty_error(e, env, req=None):
             req.hdf['error.traceback'] = escape(tb.getvalue())
             req.display('error.cs', response=500)
 
+    except RequestDone:
+        pass
     except Exception, e2:
         if env and env.log:
             env.log.error('Failed to render pretty error page: %s' % e2)
