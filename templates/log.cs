@@ -5,7 +5,7 @@
  <div id="main">
   <div id="main-content">
 
-<h1 id="log-hdr">Log history for <?cs var:log.path ?></a></h1>
+<h1 id="log-hdr">Log history for <?cs var:log.path ?></h1>
 
 <div id="browser-pathlinks">
   <?cs each:part=log.path ?>
