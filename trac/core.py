@@ -346,6 +346,12 @@ class CGIRequest(Request):
         if os.getenv('HTTP_HOST'):
             self.hdf.setValue('HTTP.Host', os.getenv('HTTP_HOST'))
 
+        script_uri = os.getenv('SCRIPT_URI')
+        if script_uri:
+            i = script_uri.find('://')
+            if i > -1:
+                self.hdf.setValue('HTTP.Protocol', script_uri[:i + 3])
+
     def read(self, len):
         return sys.stdin.read(len)
 
