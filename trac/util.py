@@ -60,7 +60,7 @@ def enum_selector (db, sql, name, selected=None,default_empty=0):
 
 def wiki_escape_newline(text):
     return text.replace(os.linesep, '[[BR]]' + os.linesep)
-	
+
 def escape(text):
     """Escapes &, <, > and \""""
     if not text:
