@@ -55,7 +55,7 @@ supported_types = [
     (2, 'text/x-mail',       'mail'),
     (2, 'text/x-matlab',     'matlab'),
     (2, 'text/x-objc',       'objc'),
-    (2, 'text/x-pascal',     None),
+    (2, 'text/x-pascal',     'pascal'),
     (2, 'text/x-perl',       'perl'),
     (2, 'text/x-pyrex',      'pyrex'),
     (2, 'text/x-python',     'python'),
@@ -67,9 +67,10 @@ supported_types = [
     (2, 'text/x-vba',        'vba'),
     (2, 'text/x-verilog',    'verilog'),
     (2, 'text/x-vhdl',       'vhdl'),
-    (2, 'model/vrml',        None),
+    (2, 'model/vrml',        'vrml'),
     (2, 'application/x-sh',  'sh'),
     (2, 'text/x-zsh',        'zsh'),
+    (2, 'text/vnd.wap.wmlscript', 'wmlscript'),
     ]
 
 # Build type-enscript_suffix map
