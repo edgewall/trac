@@ -128,16 +128,6 @@ def parse_path_info(args, path_info):
         return args
     return args
 
-def parse_args(command, path_info, query_string,
-               fp=None, env = None, _headers=None):
-    if not env:
-        env = {'REQUEST_METHOD': command, 'QUERY_STRING': query_string}
-    if command in ['GET', 'HEAD']:
-        _headers = None
-    args = TracFieldStorage(fp, environ=env, headers=_headers, keep_blank_values=1)
-    parse_path_info(args, path_info)
-    return args
-
 def add_args_to_hdf(args, hdf):
     for key in args.keys():
         if not key:
@@ -148,34 +138,34 @@ def add_args_to_hdf(args, hdf):
             for i in range(len(args[key])):
                 hdf.setValue('args.%s.%d' % (key, i), str(args[key][i].value))
 
-def module_factory(args, env, db, req):
-    mode = args.get('mode', 'wiki')
+def module_factory(env, db, req):
+    mode = req.args.get('mode', 'wiki')
     module_name, constructor_name, need_svn = modules[mode]
     module = __import__(module_name, globals(),  locals())
     constructor = getattr(module, constructor_name)
     module = constructor()
-    module.pool = None
-    module.args = args
+    module._name = mode
+
     module.env = env
     module.log = env.log
-    module.req = req
-    module._name = mode
     module.db = db
     module.perm = perm.PermissionCache(module.db, req.authname)
     module.perm.add_to_hdf(req.hdf)
-    module.authzperm = None
 
     # Only open the subversion repository for the modules that really
     # need it. This saves us some precious time.
+    module.authzperm = None
+    module.pool = None
     if need_svn:
         import sync
-        module.authzperm = authzperm.AuthzPermission(env,req.authname)
+        module.authzperm = authzperm.AuthzPermission(env, req.authname)
         repos_dir = env.get_config('trac', 'repository_dir')
         pool, rep, fs_ptr = open_svn_repos(repos_dir)
         module.repos = rep
         module.fs_ptr = fs_ptr
         sync.sync(module.db, rep, fs_ptr, pool)
         module.pool = pool
+
     return module
 
 def open_environment():
@@ -194,11 +184,18 @@ def open_environment():
         raise TracError('Unknown Trac Environment version (%d).' % version)
     return env
 
-class NotModifiedException(Exception):
-    pass
+def open_svn_repos(repos_dir):
+    from svn import repos, core
 
-class RedirectException(Exception):
-    pass
+    core.apr_initialize()
+    pool = core.svn_pool_create(None)
+    # Remove any trailing slash or else subversion might abort
+    if not os.path.split(repos_dir)[1]:
+        repos_dir = os.path.split(repos_dir)[0]
+
+    rep = repos.svn_repos_open(repos_dir, pool)
+    fs_ptr = repos.svn_repos_fs(rep)
+    return pool, rep, fs_ptr
 
 def populate_hdf(hdf, env, req=None):
     htdocs_location = env.get_config('trac', 'htdocs_location')
@@ -403,7 +400,15 @@ class CGIRequest(Request):
     def end_headers(self):
         self.write('\r\n')
 
-def dispatch_request(path_info, args, req, env):
+
+class NotModifiedException(Exception):
+    pass
+
+class RedirectException(Exception):
+    pass
+
+
+def dispatch_request(path_info, req, env):
 
     db = env.get_db_cnx()
 
@@ -433,16 +438,16 @@ def dispatch_request(path_info, args, req, env):
                 req.redirect(referer or env.href.wiki())
             req.authname = authenticator.authname
 
-            newsession = args.has_key('newsession') and args['newsession']
+            newsession = req.args.has_key('newsession')
             req.session = Session.Session(env, db, req, newsession)
 
-            add_args_to_hdf(args, req.hdf)
+            add_args_to_hdf(req.args, req.hdf)
             try:
                 pool = None
                 # Load the selected module
-                module = module_factory(args, env, db, req)
+                module = module_factory(env, db, req)
                 pool = module.pool
-                module.run()
+                module.run(req)
             finally:
                 # We do this even if the cgi will terminate directly after. A
                 # pool destruction might trigger important clean-up functions.
@@ -460,19 +465,6 @@ def dispatch_request(path_info, args, req, env):
 
     finally:
         db.close()
-
-def open_svn_repos(repos_dir):
-    from svn import repos, core
-
-    core.apr_initialize()
-    pool = core.svn_pool_create(None)
-    # Remove any trailing slash or else subversion might abort
-    if not os.path.split(repos_dir)[1]:
-        repos_dir = os.path.split(repos_dir)[0]
-
-    rep = repos.svn_repos_open(repos_dir, pool)
-    fs_ptr = repos.svn_repos_fs(rep)
-    return pool, rep, fs_ptr
 
 def send_pretty_error(e, env, req=None):
     import traceback
@@ -519,22 +511,31 @@ def send_pretty_error(e, env, req=None):
         env.log.error(str(e))
         env.log.error(tb.getvalue())
 
+def parse_args(command, path_info, query_string,
+               fp=None, env = None, _headers=None):
+    if not env:
+        env = {'REQUEST_METHOD': command, 'QUERY_STRING': query_string}
+    if command in ['GET', 'HEAD']:
+        _headers = None
+    args = TracFieldStorage(fp, environ=env, headers=_headers, keep_blank_values=1)
+    parse_path_info(args, path_info)
+    return args
+
 def real_cgi_start():
 
     env = open_environment()
+    path_info = os.getenv('PATH_INFO')
 
     req = CGIRequest()
     req.init_request()
+    req.args = parse_args(req.command,
+                          path_info, os.getenv('QUERY_STRING'),
+                          sys.stdin, os.environ)
 
     env.href = Href.Href(req.cgi_location)
     env.abs_href = Href.Href(req.base_url)
 
-    # Parse arguments
-    path_info = os.getenv('PATH_INFO')
-    args = parse_args(req.command,
-                      path_info, os.getenv('QUERY_STRING'),
-                      sys.stdin, os.environ)
-    dispatch_request(path_info, args, req, env)
+    dispatch_request(path_info, req, env)
 
 def cgi_start():
     try:

@@ -252,11 +252,11 @@ class TracHTTPRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler,
                 return
 
         # Parse arguments
-        args = trac.core.parse_args(self.command, self.path_info,
-                                    self.query_string,
-                                    self.rfile, None, self.headers)
+        self.args = trac.core.parse_args(self.command, self.path_info,
+                                         self.query_string,
+                                         self.rfile, None, self.headers)
 
-        trac.core.dispatch_request(self.path_info, args, self, self.env)
+        trac.core.dispatch_request(self.path_info, self, self.env)
 
         self.log.debug('Total request time: %f s', time.time() - start)
 

@@ -30,6 +30,7 @@ from util import TracError, href_join, rstrip
 from mod_python import apache, util
 
 class ModPythonRequest(core.Request):
+
     def __init__(self, req):
         self.req = req
 
@@ -186,12 +187,12 @@ def handler(req):
     if not env:
         return apache.OK
 
-    args = TracFieldStorage(req, keep_blank_values=1)
-    core.parse_path_info(args, mpr.path_info)
+    mpr.args = TracFieldStorage(req, keep_blank_values=1)
+    core.parse_path_info(mpr.args, mpr.path_info)
 
     req.content_type = 'text/html'
     try:
-        core.dispatch_request(mpr.path_info, args, mpr, env)
+        core.dispatch_request(mpr.path_info, mpr, env)
     except Exception, e:
         core.send_pretty_error(e, env, mpr)
     return apache.OK

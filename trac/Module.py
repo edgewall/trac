@@ -28,24 +28,29 @@ class Module:
     env = None
     req = None
     _name = None
-    args = []
+    args = None
     template_name = None
-    links = {}
+    links = None
 
-    def run(self):
-        if self.args.has_key('format'):
-            disp = getattr(self, 'display_' + self.args.get('format'))
+    def __init__(self):
+        self.args = []
+        self.links = {}
+
+    def run(self, req):
+        self.req = req
+        self.args = req.args
+        if req.args.has_key('format'):
+            disp = getattr(self, 'display_' + req.args.get('format'))
         else:
             disp = self.display
-        self.add_default_links()
+        core.populate_hdf(req.hdf, self.env, req)
+        self._add_default_links(req)
         self.render()
-        core.populate_hdf(self.req.hdf, self.env, self.req)
-        self.req.hdf.setValue('trac.active_module', self._name)
-        add_to_hdf(self.links, self.req.hdf, 'links')
+        req.hdf.setValue('trac.active_module', self._name)
+        add_to_hdf(self.links, req.hdf, 'links')
         disp()
 
-    def add_default_links(self):
-        self.links.clear()
+    def _add_default_links(self, req):
         self.add_link('start', self.env.href.wiki())
         self.add_link('search', self.env.href.search())
         self.add_link('help', self.env.href.wiki('TracGuide'))
@@ -53,7 +58,7 @@ class Module:
         icon = self.env.get_config('project', 'icon')
         if icon:
             if not icon[0] == '/' and icon.find('://') < 0:
-                icon = self.req.hdf.getValue('htdocs_location', '') + icon
+                icon = req.hdf.getValue('htdocs_location', '') + icon
             mimetype = self.env.mimeview.get_mimetype(icon)
             self.add_link('icon', icon, type=mimetype)
             self.add_link('shortcut icon', icon, type=mimetype)
@@ -96,4 +101,4 @@ class Module:
         self.req.send_response(200)
         self.req.send_header('Content-Type', 'text/plain;charset=utf-8')
         self.req.end_headers()
-        hdf_tree_walk (self.req.hdf.child())
+        hdf_tree_walk(self.req.hdf.child())
