@@ -29,8 +29,11 @@ class Href:
     def log(self, path):
         return href_join(self.base, 'log', path)
         
-    def file(self, path, rev):
-        return href_join(self.base, 'file', path, str(rev))
+    def file(self, path, rev=None):
+        if rev:
+            return href_join(self.base, 'file', path) + '?rev=' + str(rev)
+        else:
+            return href_join(self.base, 'file', path)
 
     def browser(self, path):
         return href_join(self.base, 'browser', path)

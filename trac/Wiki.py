@@ -59,7 +59,7 @@ class CommonFormatter:
               r"""(?P<reporthref>\{[0-9]+\})""",
               r"""(?P<svnhref>(svn:[^ ]+))""",
               r"""(?P<wikilink>(^|(?<=[^A-Za-z]))[A-Z][a-z/]*(?:[A-Z][a-z/]+)+)""",
-              r"""(?P<fancylink>\[(?P<fancyurl>([a-z]+://[^ ]+)) (?P<linkname>.*?)\])"""]
+              r"""(?P<fancylink>\[(?P<fancyurl>([a-z]+:[^ ]+)) (?P<linkname>.*?)\])"""]
 
 
     def compile_rules(self, rules):
@@ -117,6 +117,10 @@ class CommonFormatter:
     def _fancylink_formatter(self, match, fullmatch):
         link = fullmatch.group('fancyurl')
         name = fullmatch.group('linkname')
+        if link[0:5] == 'wiki:':
+            link = href.wiki(link[5:])
+        if link[0:4] == 'svn:':
+            link = href.file(link[4:])
         return '<a href="%s">%s</a>' % (link, name)
 
 
@@ -145,7 +149,8 @@ class Formatter(CommonFormatter):
     """
     A simple Wiki formatter
     """
-    _rules = CommonFormatter._rules + \
+    _rules = [r"""(?P<svnimg>svn:([^ ]+)(\.png|\.jpg|\.jpeg|\.gif))"""] + \
+             CommonFormatter._rules + \
              [r"""(?P<fancysvnhref>\[(?P<fancysvnfile>svn:[^ ]+) (?P<svnlinkname>.*?)\])""",
               r"""(?P<begintt>\{\{\{)""",
               r"""(?P<endtt>\}\}\})""",
@@ -182,6 +187,9 @@ class Formatter(CommonFormatter):
         depth = min(len(fullmatch.group('hdepth')), 5)
         self.is_heading = 1
         return '<h%d>%s</h%d>' % (depth, match[depth + 1:len(match) - depth - 1], depth)
+
+    def _svnimg_formatter(self, match, fullmatch):
+        return '<img src="%s" />' % href.file(match[4:])
 
     def _imgurl_formatter(self, match, fullmatch):
         return '<img src="%s" />' % match
@@ -372,7 +380,7 @@ class Page:
         perm.assert_permission (perm.WIKI_MODIFY)
         
         self.render_edit (out, hdf)
-        out.write ('<a name="preview" /><h3>preview</h3>')
+        out.write ('<a name="preview"></a><h3>preview</h3>')
         self.render_view (out, hdf, edit_button=0)
         
 

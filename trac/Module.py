@@ -37,6 +37,7 @@ class Module:
         self.cgi.hdf.setValue('cgi_location', os.getenv('SCRIPT_NAME'))
         try:
             self.render()
+            self.apply_template()
         except PermissionError, e:
             self.cgi.hdf.setValue('title', 'Permission Denied')
             self.cgi.hdf.setValue('error.type', 'permission')
@@ -54,8 +55,7 @@ class Module:
             self.cgi.hdf.setValue('error.message', str(e))
             self.cgi.hdf.setValue('error.traceback',tb.getvalue())
             self.template_name = 'error.cs'
-            
-        self.apply_template()
+            Module.apply_template(self)
         
     def render (self):
         """

@@ -98,11 +98,10 @@ def parse_args():
         args['mode'] = 'log'
         args['path'] = match.group(1)
         return args
-    match = re.search('/file/(.+)/([0-9]+)/?', info)
+    match = re.search('/file/(.+)/?', info)
     if match:
         args['mode'] = 'file'
         args['path'] = match.group(1)
-        args['rev'] = match.group(2)
         return args
     match = re.search('/changeset/([0-9]+)/?', info)
     if match:
@@ -139,6 +138,7 @@ def main():
     # Only open the subversion repository for the modules that really
     # need it. This saves us some precious time.
     if need_svn:
+
         repos_dir = config['general']['repository_dir']
         rep = repos.svn_repos_open(repos_dir, pool)
         fs_ptr = repos.svn_repos_fs(rep)

@@ -160,7 +160,7 @@ def render_diffs(fs_ptr, rev, pool):
     e_ptr, e_baton = delta.make_editor(editor, pool)
 
     try:
-        repos.svn_repos_dir_delta(old_root, '', None,
+        repos.svn_repos_dir_delta(old_root, '', '',
                                   new_root, '', e_ptr, e_baton, None, None,
                               0, 1, 0, 1, pool)
     except TypeError:

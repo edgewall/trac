@@ -60,7 +60,7 @@ def init():
     global db_name
     db_name = os.getenv('TRAC_DB')
     if not db_name:
-        raise 'Missing environment variable "SVNTRAC_DB"'
+        raise 'Missing environment variable "TRAC_DB"'
 
 def load_config():
     """
@@ -98,7 +98,6 @@ def sync(repos, fs_ptr, pool):
     num = max_rev - youngest_stored
     offset = youngest_stored + 1
     for rev in range(num):
-        
         message = fs.revision_prop(fs_ptr, rev + offset,
                                    util.SVN_PROP_REVISION_LOG, pool)
         author = fs.revision_prop(fs_ptr, rev + offset,
@@ -122,7 +121,7 @@ def insert_change (pool, fs_ptr, rev, cursor):
     e_ptr, e_baton = delta.make_editor(editor, pool)
 
     try:
-        repos.svn_repos_dir_delta(old_root, '', None,
+        repos.svn_repos_dir_delta(old_root, '', '',
                                   new_root, '', e_ptr, e_baton, None, None,
                                   0, 1, 0, 1, pool)
     except TypeError:

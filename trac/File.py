@@ -58,7 +58,7 @@ class File (Module):
 
         mime_type = self.get_mime_type (root, self.path)
 
-        print 'Content-type: %s\n\r\n\r' % mime_type
+        sys.stdout.write('Content-type: %s\r\n\r\n' % mime_type)
         file = fs.file_contents(root, self.path, self.pool)
         while 1:
             data = util.svn_stream_read(file, self.CHUNK_SIZE)
