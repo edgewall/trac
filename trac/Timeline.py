@@ -20,7 +20,6 @@
 # Author: Jonas Borgström <jonas@edgewall.com>
 
 from util import *
-from Href import href
 from Module import Module
 from Wiki import wiki_to_oneliner
 import perm
@@ -95,21 +94,24 @@ class Timeline (Module):
                     'message': row['message'],
                     'author': row['author']}
             if item['type'] == 1:
-                item['changeset_href'] = href.changeset(int(row['data']))
+                item['changeset_href'] = self.href.changeset(int(row['data']))
                 # Just recode this to iso8859-15 until we have propper unicode
                 # support
                 msg = utf8_to_iso(item['message'])
                 shortmsg = shorten_line(msg)
-                item['shortmsg'] = wiki_to_oneliner(shortmsg)
-                item['message'] = wiki_to_oneliner(msg)
+                item['shortmsg'] = wiki_to_oneliner(shortmsg,
+                                                    self.req.hdf, self.href)
+                item['message'] = wiki_to_oneliner(msg,
+                                                   self.req.hdf, self.href)
             elif item['type'] == 5:
-                item['wiki_href'] = href.wiki(row['data'])
+                item['wiki_href'] = self.href.wiki(row['data'])
             else:
-                item['ticket_href'] = href.ticket(int(row['data']))
+                item['ticket_href'] = self.href.ticket(int(row['data']))
                 msg = item['message']
                 shortmsg = shorten_line(msg)
-                item['message'] = wiki_to_oneliner(msg)
-                item['shortmsg'] = wiki_to_oneliner(shortmsg)
+                item['message'] = wiki_to_oneliner(msg, self.req.hdf, self.href)
+                item['shortmsg'] = wiki_to_oneliner(shortmsg, self.req.hdf, self.href)
+
             info.append(item)
         return info
         

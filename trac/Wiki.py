@@ -27,7 +27,6 @@ import difflib
 import StringIO
 
 import perm
-from Href import href
 from Module import Module
 from util import *
 
@@ -63,6 +62,10 @@ class CommonFormatter:
               r"""(?P<modulehref>((?P<modulename>bug|ticket|browser|source|repos|report|changeset|wiki):(?P<moduleargs>[^ ]*[^\., \)])))""",
               r"""(?P<wikilink>(^|(?<=[^A-Za-z]))[!]?[A-Z][a-z/]+(?:[A-Z][a-z/]+)+)""",
               r"""(?P<fancylink>\[(?P<fancyurl>([a-z]+:[^ ]+)) (?P<linkname>.*?)\])"""]
+
+    def __init__(self, hdf, href):
+        self.hdf = hdf
+        self.href = href
 
     def replace(self, fullmatch):
         for type, match in fullmatch.groupdict().items():
@@ -112,15 +115,15 @@ class CommonFormatter:
     
     def _tickethref_formatter(self, match, fullmatch):
         number = int(match[1:])
-        return '<a href="%s">#%d</a>' % (href.ticket(number), number)
+        return '<a href="%s">#%d</a>' % (self.href.ticket(number), number)
 
     def _changesethref_formatter(self, match, fullmatch):
         number = int(match[1:-1])
-        return '[<a href="%s">%d</a>]' % (href.changeset(number), number)
+        return '[<a href="%s">%d</a>]' % (self.href.changeset(number), number)
 
     def _reporthref_formatter(self, match, fullmatch):
         number = int(match[1:-1])
-        return '{<a href="%s">%d</a>}' % (href.report(number), number)
+        return '{<a href="%s">%d</a>}' % (self.href.report(number), number)
 
     def _expand_module_link(self, text):
         sep = text.find(':')
@@ -129,13 +132,13 @@ class CommonFormatter:
         module = text[:sep]
         args = text[sep+1:]
         if module in ['bug', 'ticket']:
-            return href.ticket(args), '%s:%s' % (module, args)
+            return self.href.ticket(args), '%s:%s' % (module, args)
         elif module == 'wiki':
-            return href.wiki(args), '%s:%s' % (module, args)
+            return self.href.wiki(args), '%s:%s' % (module, args)
         elif module == 'report':
-            return href.report(args), '%s:%s' % (module, args)
+            return self.href.report(args), '%s:%s' % (module, args)
         elif module == 'changeset':
-            return href.changeset(args), '%s:%s' % (module, args)
+            return self.href.changeset(args), '%s:%s' % (module, args)
         elif module in ['source', 'repos', 'browser']:
             rev = None
             match = re.search('([^#]+)#(.+)', args)
@@ -143,9 +146,10 @@ class CommonFormatter:
                 args = match.group(1)
                 rev = match.group(2)
             if rev:
-                return href.browser(args, rev), '%s:%s#%s' % (module, args, rev)
+                return self.href.browser(args, rev), \
+                       '%s:%s#%s' % (module, args, rev)
             else:
-                return href.browser(args), '%s:%s' % (module, args)
+                return self.href.browser(args), '%s:%s' % (module, args)
         else:
             return None, None
         
@@ -164,9 +168,9 @@ class CommonFormatter:
         global page_dict
         if page_dict and not page_dict.has_key(match):
             return '<a class="wiki-missing-page" href="%s">%s?</a>' % \
-                   (href.wiki(match), match)
+                   (self.href.wiki(match), match)
         else:
-            return '<a href="%s">%s</a>' % (href.wiki(match), match)
+            return '<a href="%s">%s</a>' % (self.href.wiki(match), match)
 
     def _url_formatter(self, match, fullmatch):
         return '<a href="%s">%s</a>' % (match, match)
@@ -239,9 +243,6 @@ class Formatter(CommonFormatter):
     builtin_processors = { 'html': html_processor,
                            'default': default_processor}
 
-    def __init__(self, hdf = None):
-        self.hdf = hdf
-
     def load_macro(self, name):
         macros = __import__('wikimacros.' + name, globals(),  locals(), [])
         module = getattr(macros, name)
@@ -271,7 +272,7 @@ class Formatter(CommonFormatter):
     def _svnimg_formatter(self, match, fullmatch):
         prefix_len = match.find(':') + 1
         return '<img src="%s" alt="%s" />' % \
-               (href.file(match[prefix_len:]), match[prefix_len:])
+               (self.href.file(match[prefix_len:]), match[prefix_len:])
 
     def _imgurl_formatter(self, match, fullmatch):
         return '<img src="%s" alt="%s" />' % (match, match)
@@ -479,14 +480,14 @@ class Formatter(CommonFormatter):
         self.close_indentation()
         self.close_list()
 
-def wiki_to_html(wikitext):
+def wiki_to_html(wikitext, hdf, href):
     out = StringIO.StringIO()
-    Formatter().format(wikitext, out)
+    Formatter(hdf, href).format(wikitext, out)
     return out.getvalue()
 
-def wiki_to_oneliner(wikitext):
+def wiki_to_oneliner(wikitext, hdf, href):
     out = StringIO.StringIO()
-    OneLinerFormatter().format(wikitext, out)
+    OneLinerFormatter(hdf, href).format(wikitext, out)
     return out.getvalue()
 
 
@@ -552,7 +553,7 @@ class Wiki(Module):
                 break
             n = 'wiki.title_index.%d' % i
             self.req.hdf.setValue(n + '.title', row[0])
-            self.req.hdf.setValue(n + '.href', href.wiki(row[0]))
+            self.req.hdf.setValue(n + '.href', self.href.wiki(row[0]))
             i = i + 1
 
     def generate_recent_changes(self):
@@ -566,7 +567,7 @@ class Wiki(Module):
             time_str = time.strftime('%x', time.localtime(int(row[1])))
             n = 'wiki.recent_changes.%d' % i
             self.req.hdf.setValue(n + '.title', row[0])
-            self.req.hdf.setValue(n + '.href', href.wiki(row[0]))
+            self.req.hdf.setValue(n + '.href', self.href.wiki(row[0]))
             self.req.hdf.setValue(n + '.time', time_str)
             i = i + 1
 
@@ -587,8 +588,10 @@ class Wiki(Module):
 
             n = 'wiki.history.%d' % i
             self.req.hdf.setValue(n, str(i))
-            self.req.hdf.setValue(n+'.url', href.wiki(pagename, str(row[0])))
-            self.req.hdf.setValue(n+'.diff_url', href.wiki(pagename, str(row[0]), 1))
+            self.req.hdf.setValue(n+'.url',
+                                  self.href.wiki(pagename, str(row[0])))
+            self.req.hdf.setValue(n+'.diff_url',
+                                  self.href.wiki(pagename, str(row[0]), 1))
             self.req.hdf.setValue(n+'.version', str(row[0]))
             self.req.hdf.setValue(n+'.time', time_str)
             self.req.hdf.setValue(n+'.author', str(row[2]))
@@ -675,13 +678,14 @@ class Wiki(Module):
         
         if save:
             self.page.commit ()
-            self.req.redirect(href.wiki(self.page.name))
+            self.req.redirect(self.href.wiki(self.page.name))
 
-        self.req.hdf.setValue('wiki.current_href', href.wiki(self.page.name))
+        self.req.hdf.setValue('wiki.current_href',
+                              self.href.wiki(self.page.name))
         self.req.hdf.setValue('wiki.page_name', self.page.name)
         self.req.hdf.setValue('wiki.page_source', escape(self.page.text))
         out = StringIO.StringIO()
-        Formatter(self.req.hdf).format(self.page.text, out)
+        Formatter(self.req.hdf, self.href).format(self.page.text, out)
         self.req.hdf.setValue('wiki.page_html', out.getvalue())
 
     def display_txt(self):

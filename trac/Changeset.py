@@ -21,7 +21,6 @@
 
 from util import *
 from Module import Module
-from Href import href
 from Wiki import wiki_to_html
 import perm
 from xml.sax.saxutils import escape
@@ -201,7 +200,7 @@ class Changeset (Module):
                 break
             info.append({'name': row['name'],
                          'change': row['change'],
-                         'log_href': href.log(row['name'])})
+                         'log_href': self.href.log(row['name'])})
         return info
         
     def render (self):
@@ -214,7 +213,7 @@ class Changeset (Module):
 
         change_info = self.get_change_info (self.rev)
         for item in change_info:
-            item['log_href'] = href.log(item['name'])
+            item['log_href'] = self.href.log(item['name'])
 
         changeset_info = self.get_changeset_info (self.rev)
         
@@ -224,7 +223,7 @@ class Changeset (Module):
         # Just recode this to iso8859-15 until we have propper unicode
         # support
         self.req.hdf.setValue('changeset.author', utf8_to_iso(author))
-        self.req.hdf.setValue('changeset.message', wiki_to_html(utf8_to_iso(changeset_info['message'])))
+        self.req.hdf.setValue('changeset.message', wiki_to_html(utf8_to_iso(changeset_info['message']), self.req.hdf, self.href))
         self.req.hdf.setValue('changeset.revision', str(self.rev))
 
         add_dictlist_to_hdf(change_info, self.req.hdf, 'changeset.changes')

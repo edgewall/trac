@@ -22,7 +22,6 @@
 import os
 import time
 from util import *
-from Href import href
 from __init__ import __version__
 
 class Module:
@@ -58,16 +57,17 @@ class Module:
         self.req.hdf.setValue('project.descr', self.config['project']['descr'])
         self.req.hdf.setValue('trac.active_module', self._name)
         self.req.hdf.setValue('trac.authname', self.authname)
-        self.req.hdf.setValue('trac.href.wiki', href.wiki())
-        self.req.hdf.setValue('trac.href.browser', href.browser('/'))
-        self.req.hdf.setValue('trac.href.timeline', href.timeline())
-        self.req.hdf.setValue('trac.href.report', href.report())
-        self.req.hdf.setValue('trac.href.newticket', href.newticket())
-        self.req.hdf.setValue('trac.href.search', href.search())
-        self.req.hdf.setValue('trac.href.about', href.about())
-        self.req.hdf.setValue('trac.href.about_config', href.about('config/'))
-        self.req.hdf.setValue('trac.href.login', href.login())
-        self.req.hdf.setValue('trac.href.logout', href.logout())
+        self.req.hdf.setValue('trac.href.wiki', self.href.wiki())
+        self.req.hdf.setValue('trac.href.browser', self.href.browser('/'))
+        self.req.hdf.setValue('trac.href.timeline', self.href.timeline())
+        self.req.hdf.setValue('trac.href.report', self.href.report())
+        self.req.hdf.setValue('trac.href.newticket', self.href.newticket())
+        self.req.hdf.setValue('trac.href.search', self.href.search())
+        self.req.hdf.setValue('trac.href.about', self.href.about())
+        self.req.hdf.setValue('trac.href.about_config',
+                              self.href.about('config/'))
+        self.req.hdf.setValue('trac.href.login', self.href.login())
+        self.req.hdf.setValue('trac.href.logout', self.href.logout())
         self.req.hdf.setValue('trac.href.homepage', 'http://trac.edgewall.com/')
         self.req.hdf.setValue('trac.version', __version__)
         self.req.hdf.setValue('trac.time',
@@ -92,7 +92,7 @@ class Module:
                               self.config['header_logo']['width'])
         self.req.hdf.setValue('header_logo.height',
                               self.config['header_logo']['height'])
-        self.req.hdf.setValue('trac.href.logout', href.logout())
+        self.req.hdf.setValue('trac.href.logout', self.href.logout())
 
         templates_dir = self.config['general']['templates_dir']
         self.req.hdf.setValue('hdf.loadpaths.0', templates_dir)

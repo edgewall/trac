@@ -24,7 +24,6 @@ import time
 import re
 
 from util import *
-from Href import href
 from Module import Module
 from Wiki import wiki_to_html
 import perm
@@ -93,7 +92,7 @@ class Report (Module):
                         'VALUES (NULL, %s, %s)', title, sql)
         id = self.db.db.sqlite_last_insert_rowid()
         self.db.commit()
-        self.req.redirect(href.report(id))
+        self.req.redirect(self.href.report(id))
 
     def delete_report(self, id):
         self.perm.assert_permission(perm.REPORT_DELETE)
@@ -101,7 +100,7 @@ class Report (Module):
         cursor = self.db.cursor ()
         cursor.execute('DELETE FROM report WHERE id=%s', id)
         self.db.commit()
-        self.req.redirect(href.report())
+        self.req.redirect(self.href.report())
 
     def commit_changes(self, id):
         """
@@ -116,7 +115,7 @@ class Report (Module):
         cursor.execute('UPDATE report SET title=%s, sql=%s WHERE id=%s',
                        title, sql, id)
         self.db.commit()
-        self.req.redirect(href.report(id))
+        self.req.redirect(self.href.report(id))
 
     def render_report_editor(self, id, action='commit', copy=0):
         self.perm.assert_permission(perm.REPORT_MODIFY)
@@ -146,18 +145,18 @@ class Report (Module):
         """
         if self.perm.has_permission(perm.REPORT_CREATE):
             self.req.hdf.setValue('report.create_href',
-                                  href.report(None, 'new'))
+                                  self.href.report(None, 'new'))
             
         if id != -1:
             if self.perm.has_permission(perm.REPORT_MODIFY):
                 self.req.hdf.setValue('report.edit_href',
-                                      href.report(id, 'edit'))
+                                      self.href.report(id, 'edit'))
             if self.perm.has_permission(perm.REPORT_CREATE):
                 self.req.hdf.setValue('report.copy_href',
-                                      href.report(id, 'copy'))
+                                      self.href.report(id, 'copy'))
             if self.perm.has_permission(perm.REPORT_DELETE):
                 self.req.hdf.setValue('report.delete_href',
-                                      href.report(id, 'delete'))
+                                      self.href.report(id, 'delete'))
 
         self.req.hdf.setValue('report.mode', 'list')
         info = self.get_info(id, args)
@@ -212,11 +211,12 @@ class Report (Module):
                     value['hidehtml'] = 1
                     column = column[1:]
                 if column in ['ticket', '#']:
-                    value['ticket_href'] = href.ticket(cell)
+                    value['ticket_href'] = self.href.ticket(cell)
                 elif column == 'description':
-                    value['parsed'] = wiki_to_html(cell)
+                    value['parsed'] = wiki_to_html(cell, self.req.hdf,
+                                                   self.href)
                 elif column == 'report':
-                    value['report_href'] = href.report(cell)
+                    value['report_href'] = self.href.report(cell)
                 elif column in ['time', 'date','changetime', 'created', 'modified']:
                     t = time.localtime(int(cell))
                     value['date'] = time.strftime('%x', t)

@@ -46,7 +46,7 @@ import trac
 from trac import db
 from trac import auth
 from trac import perm
-from trac import Href
+from trac.Href import Href
 from trac import sync
 from trac.util import *
 from trac.trac import parse_args, modules, Request
@@ -141,7 +141,7 @@ class TracHTTPRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler,
         config = database.load_config()
         config['general']['htdocs_location'] = '/trac_common/'
 
-        remote_addr = ''   #FIXME
+        remote_addr = '' #FIXME
         auth_cookie = '' #FIXME
         authenticator = auth.Authenticator(database, auth_cookie, remote_addr)
 
@@ -161,6 +161,7 @@ class TracHTTPRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler,
         module.req = self
         module._name = mode
         module.db = database
+        module.href = Href('/' + self.project)
         module.authname = authenticator.authname
         module.remote_addr = remote_addr
         cgi_location = '/' + self.project + '/'
@@ -229,11 +230,11 @@ def main():
     projects = {}
     for database in args:
         base = os.path.basename(database)
+        # We assume the database filenames follow the following
+        # naming convention: /some/path/project.whatever
         project = re.search('[a-zA-Z0-9-]+', base).group(0)
-        print 'project', project
         projects[project] = database
         
-    Href.initialize('/test')
     server_address = (hostname, port)
     httpd = TracHTTPServer(server_address, TracHTTPRequestHandler)
     httpd.projects = projects

@@ -176,6 +176,10 @@ def real_main():
     import perm
     import auth
 
+    # We need this to be global to be able to use it later
+    # in the exception handler if something goes wrong.
+    global href
+
     path_info = os.getenv('PATH_INFO')
     remote_addr = os.getenv('REMOTE_ADDR')
     remote_user = os.getenv('REMOTE_USER')
@@ -188,8 +192,8 @@ def real_main():
 
     req = CGIRequest()
     req.init_request()
-    
-    Href.initialize(cgi_location)
+
+    href = Href.Href(cgi_location)
 
     # Authenticate the user
     cookie = Cookie.SimpleCookie(http_cookie)
@@ -202,7 +206,7 @@ def real_main():
     authenticator = auth.Authenticator(database, auth_cookie, remote_addr)
     if path_info == '/logout':
         authenticator.logout()
-        req.redirect (http_referer or Href.href.wiki())
+        req.redirect (http_referer or href.wiki())
     elif remote_user and authenticator.authname == 'anonymous':
         auth_cookie = authenticator.login(remote_user, remote_addr)
         # send the cookie to the browser as a http header
@@ -211,7 +215,7 @@ def real_main():
         cookie['trac_auth']['path'] = cgi_location
         print cookie.output()
     if path_info == '/login':
-        req.redirect (http_referer or Href.href.wiki())
+        req.redirect (http_referer or href.wiki())
 
     # Parse arguments
     args = parse_args(path_info)
@@ -230,6 +234,7 @@ def real_main():
     module = constructor(config, args)
     module._name = mode
     module.db = database
+    module.href = href
     module.authname = authenticator.authname
     module.remote_addr = remote_addr
     module.cgi_location = cgi_location
@@ -274,7 +279,7 @@ def real_main():
 def create_error_cgi():
     import neo_cgi
     import os.path
-    from Href import href
+    global href
     
     database = open_database()
     cursor = database.cursor()

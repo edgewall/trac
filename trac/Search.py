@@ -23,9 +23,7 @@ import string
 import time
 
 from util import *
-from Href import href
 from Module import Module
-from Wiki import wiki_to_oneliner
 import perm
 
 class Search(Module):
@@ -118,12 +116,12 @@ class Search(Module):
                     'datetime' : time.strftime('%c', t),
                     'author': row['author']}
             if item['type'] == 1:
-                item['changeset_href'] = href.changeset(int(row['data']))
+                item['changeset_href'] = self.href.changeset(int(row['data']))
                 msg = utf8_to_iso(msg)
             elif item['type'] == 2:
-                item['ticket_href'] = href.ticket(int(row['data']))
+                item['ticket_href'] = self.href.ticket(int(row['data']))
             elif item['type'] == 3:
-                item['wiki_href'] = href.wiki(row['data'])
+                item['wiki_href'] = self.href.wiki(row['data'])
 
             shortmsg = shorten_line(msg)
             item['shortmsg'] = shortmsg

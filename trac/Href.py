@@ -89,9 +89,3 @@ class Href:
         if action:
             href = href + '?action=' + action
         return href
-
-href = None
-
-def initialize(cgi_location):
-    global href
-    href = Href(cgi_location)

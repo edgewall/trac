@@ -24,7 +24,6 @@ import string
 from types import *
 
 from util import *
-from Href import href
 from Module import Module
 import perm
 from Wiki import wiki_to_html
@@ -171,7 +170,7 @@ class Ticket (Module):
         self.db.commit()
         
         # redirect to the Ticket module to get a GET request
-        self.req.redirect(href.ticket(id))
+        self.req.redirect(self.href.ticket(id))
         
     def insert_ticket_data(self, hdf, id):
         """Inserts ticket data into the hdf"""
@@ -206,7 +205,7 @@ class Ticket (Module):
             hdf.setValue('ticket.changes.%d.old' % idx, old)
             if field == 'comment':
                 hdf.setValue('ticket.changes.%d.new' % idx,
-                                      wiki_to_html(new))
+                                      wiki_to_html(new, self.req.hdf, self.href))
             else:
                 hdf.setValue('ticket.changes.%d.new' % idx, new)
             idx = idx + 1
@@ -219,14 +218,14 @@ class Ticket (Module):
         try:
             id = int(self.args['id'])
         except:
-            self.req.redirect(href.menu())
+            self.req.redirect(self.href.menu())
 
         if action in ['leave', 'accept', 'reopen', 'resolve', 'reassign']:
             # save changes and redirect to avoid the POST request
             old = self.get_ticket(id, 0)
             self.perm.assert_permission (perm.TICKET_MODIFY)
             self.save_changes (id, old, self.args)
-            self.req.redirect(href.ticket(id))
+            self.req.redirect(self.href.ticket(id))
         
         self.perm.assert_permission (perm.TICKET_VIEW)
         
@@ -249,7 +248,7 @@ class Ticket (Module):
         self.req.hdf.setValue('title', '#%d (ticket)' % id)
         self.insert_ticket_data(self.req.hdf, id)
         self.req.hdf.setValue('ticket.description',
-                              wiki_to_html(info['description']))
+                              wiki_to_html(info['description'], self.req.hdf, self.href))
         self.req.hdf.setValue('ticket.opened',
                               time.strftime('%c',
                                             time.localtime(int(info['time']))))
