@@ -19,6 +19,8 @@
 #
 # Author: Jonas Borgström <jonas@edgewall.com>
 
+from __future__ import generators
+
 import os
 import time
 import tempfile
@@ -31,6 +33,7 @@ FALSE = ['no',  '0', 0, 'false', 'off', 'nay']
 
 CRLF = '\r\n'
 
+
 def svn_date_to_string(date, pool):
     from svn import util
     date_seconds = util.svn_time_from_cstring(date,
@@ -39,6 +42,16 @@ def svn_date_to_string(date, pool):
 
 def wiki_escape_newline(text):
     return text.replace(os.linesep, '[[BR]]' + os.linesep)
+
+def enum(iterable):
+    """
+    Python 2.2 doesn't have the enumerate() function, so we provide a simple
+    implementation here.
+    """
+    idx = 0
+    for item in iter(iterable):
+        yield idx, item
+        idx += 1
 
 def escape(text):
     """Escapes &, <, > and \""""
@@ -111,18 +124,13 @@ def sql_escape(text):
 
 def sql_to_hdf (db, sql, hdf, prefix):
     """
-    executes a sql query and insert the first result column
+    Execute a sql query and insert the first result column
     into the hdf at the given prefix
     """
     cursor = db.cursor()
     cursor.execute(sql)
-    idx = 0
-    while 1:
-        row = cursor.fetchone()
-        if not row:
-            break
-        hdf.setValue('%s.%d.name' % (prefix, idx), row[0])
-        idx = idx + 1
+    for idx, row in enum(cursor):
+        hdf['%s.%d.name' % (prefix, idx)] = row[0]
 
 def hdf_add_if_missing(hdf, prefix, value):
     """Loop through the hdf values and add @value if id doesn't exist"""

@@ -425,7 +425,7 @@ class Report (Module):
             item = item.child()
             while item:
                 nodename = 'report.items.%s.summary' % item.name()
-                summary = req.hdf.getValue(nodename, '')
+                summary = req.hdf.get(nodename, '')
                 req.hdf[nodename] = util.escape(summary)
                 item = item.next()
         req.display(self.template_rss_name, 'application/rss+xml')
@@ -453,11 +453,11 @@ class Report (Module):
         req.send_response(200)
         req.send_header('Content-Type', 'text/plain;charset=utf-8')
         req.end_headers()
-        rid = req.hdf.getValue('report.id', '')
+        rid = req.hdf.get('report.id', '')
         if self.error or not rid:
             req.write('Report failed: %s' % self.error)
             return
-        title = req.hdf.getValue('report.title', '')
+        title = req.hdf.get('report.title', '')
         if title:
             req.write('-- ## %s: %s ## --\n\n' % (rid, title))
         cursor = self.db.cursor()

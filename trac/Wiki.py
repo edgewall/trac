@@ -153,7 +153,7 @@ class WikiModule(Module):
         req.send_response(200)
         req.send_header('Content-Type', 'text/plain;charset=utf-8')
         req.end_headers()
-        req.write(req.hdf.getValue('wiki.page_source', ''))
+        req.write(req.hdf.get('wiki.page_source', ''))
 
     def _delete_page(self, req, pagename, version=None):
         self.perm.assert_permission(perm.WIKI_DELETE)

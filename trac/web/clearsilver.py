@@ -19,13 +19,7 @@
 #
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
-from __future__ import nested_scopes
-
-from trac.util import TracError
-
-from types import DictType, ListType, StringType
-from UserDict import UserDict
-from UserList import UserList
+from trac.util import enum, TracError
 
 
 class HDFWrapper:
@@ -131,7 +125,7 @@ class HDFWrapper:
         except ImportError, e:
             raise TracError, "ClearSilver not installed (%s)" % e
         
-        self['hdf.loadpaths'] = loadpaths            
+        self['hdf.loadpaths'] = loadpaths
 
     def __getattr__(self, name):
         # For backwards compatibility, expose the interface of the underlying HDF
@@ -145,7 +139,7 @@ class HDFWrapper:
     def get(self, name, default=None):
         value = self.hdf.getValue(str(name), '<<NONE>>')
         if value == '<<NONE>>':
-            return None
+            return default
         return value
 
     def __getitem__(self, name):
@@ -156,16 +150,18 @@ class HDFWrapper:
 
     def __setitem__(self, name, value):
         def add_value(prefix, value):
-            if type(value) is DictType or isinstance(value, UserDict):
-                keys = value.keys()
-                keys.sort()
-                for k in keys:
+            from UserDict import UserDict
+            if isinstance(value, basestring):
+                self.hdf.setValue(prefix, value)
+            elif isinstance(value, (dict, UserDict)):
+                for k in value.keys():
                     add_value('%s.%s' % (prefix, k), value[k])
-            elif type(value) is ListType or isinstance(value, UserList):
-                for i in range(len(value)):
-                    add_value('%s.%d' % (prefix, i), value[i])
             else:
-                self.hdf.setValue(prefix, str(value))
+                try:
+                    for idx, item in enum(value):
+                        add_value('%s.%d' % (prefix, idx), item)
+                except:
+                    self.hdf.setValue(prefix, str(value))
         add_value(name, value)
 
     def __str__(self):
@@ -208,7 +204,7 @@ class HDFWrapper:
         object, or a string. In the latter case it is interpreted as name of the
         template file.
         """
-        if type(template) is StringType:
+        if isinstance(template, basestring):
             filename = template
             import neo_cs
             template = neo_cs.CS(self.hdf)

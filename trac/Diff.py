@@ -26,7 +26,7 @@ from trac.util import escape
 from difflib import SequenceMatcher
 import re
 
-__all__ = ['hdf_diff', 'unified_diff']
+__all__ = ['get_options', 'hdf_diff', 'unified_diff']
 
 
 def _get_change_extent(str1, str2):
