@@ -80,7 +80,7 @@ class CommonFormatter:
 
     def _underline_formatter(self, match, fullmatch):
         self._is_underline = not self._is_underline
-        return ['</u>', '<u>'][self._is_underline]
+        return ['</span>', '<span class="underline">'][self._is_underline]
 
     def _htmlescapeentity_formatter(self, match, fullmatch):
         #dummy function that match html escape entities in the format:
@@ -178,7 +178,11 @@ class Formatter(CommonFormatter):
         return '<a href="%s">%s</a>' % (href.log(path[4:]), name)
 
     def _hr_formatter(self, match, fullmatch):
-        return '<hr />'
+        self._in_hr = 1
+        if self._p_open:
+            return '</p><hr /><p>'
+        else:
+            return '<hr />'
 
     def _br_formatter(self, match, fullmatch):
         return '<br />'
@@ -189,12 +193,16 @@ class Formatter(CommonFormatter):
         return '<h%d>%s</h%d>' % (depth, match[depth + 1:len(match) - depth - 1], depth)
 
     def _svnimg_formatter(self, match, fullmatch):
-        return '<img src="%s" />' % href.file(match[4:])
+        return '<img src="%s" alt="%s" />' % (href.file(match[4:]), match[4:])
 
     def _imgurl_formatter(self, match, fullmatch):
-        return '<img src="%s" />' % match
+        return '<img src="%s" alt="%s" />' % (match, match)
 
     def _set_list_depth(self, depth, type):
+        if self._p_open and depth > 0:
+            self.out.write('</p>')
+            self._p_open = 0
+            
         self._in_list = depth > 0
         current_depth = len(self._list_stack)
         diff = depth - current_depth
@@ -229,14 +237,15 @@ class Formatter(CommonFormatter):
     def _indent_formatter(self, match, fullmatch):
         depth = int((len(fullmatch.group('idepth')) + 1) / 2)
         #self.out.write('depth:%d' % depth)
-        self._set_list_depth(depth, 'ul')
+        self._set_list_depth(depth, 'blockquote')
+        self._in_blockquote = 1
         return ' '
         #return '<li>%s</li>' % match[depth * 2 + 1:]
         
     def format(self, text, out):
         self.out = out
         rules = self.compile_rules(self._rules)
-        p_open = 0
+        self._p_open = 0
         self.is_heading = 0
         self._li_open = 0
         self._list_stack = []
@@ -244,6 +253,9 @@ class Formatter(CommonFormatter):
         for line in text.splitlines():
             # In a PRE-block no other formatting commands apply
             if not self._in_pre and re.search('^\{\{\{$', line.strip()):
+                if self._p_open:
+                    self._p_open = 0
+                    out.write('</p>')
                 self._in_pre = 1
                 out.write('<pre>')
                 continue
@@ -260,25 +272,29 @@ class Formatter(CommonFormatter):
             self._is_italic = 0
             self._is_underline = 0
             self._in_list = 0
+            self._in_blockquote = 0
+            self._in_hr = 0
             result = re.sub(rules, self.replace, escape(line))
             # close any open list item
             if self._li_open:
                 self._li_open = 0
                 result = result + '</li>'
+                
             # close the paragraph when a heading starts
             # or on an empty line
-            if p_open and self._list_stack != []:
+            if self._p_open and self._list_stack != []:
                 out.write ('</p>')
-                p_open = 0
+                self._p_open = 0
 
             if not self._in_list:
                 self._set_list_depth(0, None)
-            if p_open and (self.is_heading or result == ''):
+            if self._p_open and (self.is_heading or result == ''):
                 out.write ('</p>')
-                p_open = 0
-            elif not p_open and not self.is_heading and not \
-                     self._in_list and result != '':
-                p_open = 1
+                self._p_open = 0
+            elif not self._p_open and not self.is_heading and \
+                     (not self._in_list or self._in_blockquote) and \
+                     not self._in_hr and result != '':
+                self._p_open = 1
                 out.write ('<p>')
                 
             out.write(result)
@@ -286,7 +302,7 @@ class Formatter(CommonFormatter):
             out.write([' ', '\n'][self._in_pre])
         # clean up before we are done
         self._set_list_depth(0, None)
-        if p_open:
+        if self._p_open:
             out.write('</p>')
 
 

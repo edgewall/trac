@@ -18,6 +18,7 @@ a:hover {
 a.noline { border-bottom: none; }
 address { font-style: normal; }
 img { border: none; }
+spam.underline { text-decoration: underline; }
 #browser-rev, #log-hdr,#log-hdr,#timeline-hdr,#chg-hdr,#report-hdr,#tkt-hdr {
 	font-size: 110%;
 	margin-right: 1em;
