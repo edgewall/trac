@@ -30,8 +30,8 @@ class Authenticator:
             cursor = db.cursor ()
             cookie = req.incookie['trac_auth'].value
             cursor.execute ("SELECT name FROM auth_cookie "
-                            "WHERE cookie='%s' AND ipnr='%s'"
-                            % (cookie, req.remote_addr))
+                            "WHERE cookie=%s AND ipnr=%s"
+                            ,cookie, req.remote_addr)
             if cursor.rowcount >= 1:
                 self.authname = cursor.fetchone()[0]
 
@@ -39,8 +39,9 @@ class Authenticator:
         cursor = self.db.cursor ()
         cookie = util.hex_entropy()
         cursor.execute ("INSERT INTO auth_cookie (cookie, name, ipnr, time)" +
-                        "VALUES ('%s', '%s', '%s', %d)"
-                        % (cookie, req.remote_user, req.remote_addr, int(time.time())));
+                        "VALUES (%s, %s, %s, %d)",
+                        cookie, req.remote_user, req.remote_addr,
+                        int(time.time()));
         self.db.commit ()
         self.authname = req.remote_user
         req.outcookie['trac_auth'] = cookie
@@ -48,6 +49,6 @@ class Authenticator:
 
     def logout(self):
         cursor = self.db.cursor ()
-        cursor.execute ("DELETE FROM auth_cookie WHERE name='%s'" %
+        cursor.execute ("DELETE FROM auth_cookie WHERE name=%s",
                         self.authname)
         self.db.commit ()

@@ -94,8 +94,8 @@ class PermissionCache:
                             "WHERE username='anonymous'")
         else:
             cursor.execute ("SELECT action FROM permission "
-                            "WHERE username='%s' OR username='anonymous' "
-                            "OR username = 'authenticated'" % username)
+                            "WHERE username=%s OR username='anonymous' "
+                            "OR username = 'authenticated'", username)
         while 1:
             row = cursor.fetchone()
             if not row:

@@ -29,7 +29,7 @@ import time
 def get_tickets_for_milestone(db, milestone):
     cursor = db.cursor ()
     cursor.execute("SELECT id, status, component FROM ticket "
-                   "WHERE milestone = '%s'" % milestone)
+                   "WHERE milestone = %s", milestone)
     tickets = []
     while 1:
         row = cursor.fetchone()

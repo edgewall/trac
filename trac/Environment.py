@@ -320,8 +320,8 @@ class Environment:
                     err = 'No upgrade module for version %i (%s.py)' % (i, upg)
                     raise EnvironmentError, err
                 d.do_upgrade(self, i, cursor)
-            cursor.execute("UPDATE system SET value='%i' WHERE "
-                           "name='database_version'" % db_default.db_version)
+            cursor.execute("UPDATE system SET value=%i WHERE "
+                           "name='database_version'", db_default.db_version)
             self.log.info('Upgraded db version from %d to %d',
                           dbver, db_default.db_version)
             cnx.commit()
