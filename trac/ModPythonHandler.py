@@ -64,12 +64,17 @@ class ModPythonRequest(core.Request):
         # TODO This will need proxy host name support (see #437 and [581])
         host = self.req.hostname
         port = self.req.connection.local_addr[1]
-        if port == 80:
-            self.base_url = 'http://%s%s' % (host, self.cgi_location)
-        elif port == 443:
-            self.base_url = 'https://%s%s' % (host, self.cgi_location)
+
+        proto_port = ''
+        if port == 443:
+           proto = 'https'
         else:
-            self.base_url = 'http://%s:%d%s' % (host, port, self.cgi_location)
+           proto = 'http'
+           if port != 80:
+               proto_port = ':%d' % port
+
+        self.base_url = '%s://%s%s%s' % (proto, host, proto_port, self.cgi_location)
+
 
         self.remote_addr = self.req.connection.remote_ip
         self.remote_user = self.req.user
@@ -79,6 +84,9 @@ class ModPythonRequest(core.Request):
             self.incookie.load(self.req.headers_in['Cookie'])
 
         self.hdf.setValue('HTTP.Host', self.req.hostname)
+        self.hdf.setValue('HTTP.Protocol', proto)
+        if proto_port:
+            self.hdf.setValue('HTTP.Port', str(port))
 
     def read(self, len):
         return self.req.read(len)
