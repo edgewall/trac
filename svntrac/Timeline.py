@@ -26,6 +26,7 @@ import db
 import perm
 
 import time
+import string
 
 class Timeline (Module):
     template_name = 'timeline.cs'
@@ -35,30 +36,48 @@ class Timeline (Module):
     def __init__(self, config, args, pool):
         Module.__init__(self, config, args, pool)
         
-    def get_info (self, start, stop):
+    def get_info (self, start, stop, tickets, changeset, wiki):
         cnx = db.get_connection()
         cursor = cnx.cursor ()
+
+        if tickets == changeset == wiki == False:
+            return []
 
         # 1: change set
         # 2: new tickets
         # 3: closed tickets
         # 4: reopened tickets
 
-        cursor.execute ("SELECT time, rev AS data, 1 AS type, message, author "
-                        "FROM revision WHERE time>=%s AND time<=%s UNION ALL "
-                        "SELECT time, id AS data, 2 AS type, "
-                        "summary AS message, reporter AS author "
-                        "FROM ticket WHERE time>=%s AND time<=%s UNION ALL "
-                        "SELECT time, ticket AS data, 3 AS type, "
+        q = []
+        if changeset:
+            q.append("SELECT time, rev AS data, 1 AS type, message, author "
+                        "FROM revision WHERE time>=%s AND time<=%s" %
+                     (start, stop))
+        if tickets:
+            q.append("SELECT time, id AS data, 2 AS type, "
+                     "summary AS message, reporter AS author "
+                     "FROM ticket WHERE time>=%s AND time<=%s" %
+                     (start, stop))
+            q.append("SELECT time, ticket AS data, 3 AS type, "
                         "'' AS message, author "
                         "FROM ticket_change WHERE field='status' "
-                        "AND newvalue='closed' AND time>=%s AND time<=%s UNION ALL "
-                        "SELECT time, ticket AS data, 4 AS type, "
-                        "'' AS message, author "
-                        "FROM ticket_change WHERE field='status' "
-                        "AND newvalue='reopened' AND time>=%s AND time<=%s "
-                        "ORDER BY time DESC, message, type",
-                        start, stop, start, stop, start, stop, start, stop)
+                        "AND newvalue='closed' AND time>=%s AND time<=%s" %
+                     (start, stop))
+            q.append("SELECT time, ticket AS data, 4 AS type, "
+                     "'' AS message, author "
+                     "FROM ticket_change WHERE field='status' "
+                     "AND newvalue='reopened' AND time>=%s AND time<=%s" %
+                     (start, stop))
+        if wiki:
+            q.append("SELECT time, name AS data, 5 AS type, "
+                     "'' AS message, author "
+                        "FROM wiki WHERE time>=%s AND time<=%s" %
+                     (start, stop))
+            pass
+
+        q_str = string.join(q, ' UNION ALL ')
+        q_str += ' ORDER BY time DESC'
+        cursor.execute(q_str)
 
         # Make the data more HDF-friendly
         info = []
@@ -67,14 +86,16 @@ class Timeline (Module):
             if not row:
                 break
             t = time.localtime(int(row['time']))
-            item = {'time': time.strftime('%H:%M', t),
-                    'date': time.strftime('%D, %F', t),
+            item = {'time': time.strftime('%R', t),
+                    'date': time.strftime('%F', t),
                     'data': row['data'],
                     'type': row['type'],
                     'message': row['message'],
                     'author': row['author']}
             if row['type'] == '1':
                 item['changeset_href'] = href.changeset(int(row['data']))
+            if row['type'] == '5':
+                item['wiki_href'] = href.wiki(row['data'])
             else:
                 item['ticket_href'] = href.ticket(int(row['data']))
             info.append(item)
@@ -82,11 +103,41 @@ class Timeline (Module):
         
     def render (self):
         perm.assert_permission(perm.TIMELINE_VIEW)
-
-        stop  = int(time.time() - time.timezone)
-        start = stop - 90 * 86400
         
-        info = self.get_info (start, stop)
+        _from = dict_get_with_default(self.args, 'from', '')
+        _daysback = dict_get_with_default(self.args, 'daysback', '')
+
+        try:
+            _from = time.mktime(time.strptime(_from, '%Y-%m-%d'))
+            pass
+        except:
+            _from = time.time()
+        try:
+            daysback = int(_daysback)
+            assert daysback >= 0
+        except:
+            daysback = 90
+        self.cgi.hdf.setValue('timeline.from',
+                              time.strftime('%F', time.localtime(_from)))
+        self.cgi.hdf.setValue('timeline.daysback', str(daysback))
+
+        stop  = _from
+        start = stop - daysback * 86400
+
+        if self.args.has_key('from'):
+            wiki = self.args.has_key('wiki')
+            ticket = self.args.has_key('ticket')
+            changeset = self.args.has_key('changeset')
+        else:
+            wiki = ticket = changeset = True
+        if wiki:
+            self.cgi.hdf.setValue('timeline.wiki', 'checked')
+        if ticket:
+            self.cgi.hdf.setValue('timeline.ticket', 'checked')
+        if changeset:
+            self.cgi.hdf.setValue('timeline.changeset', 'checked')
+        
+        info = self.get_info (start, stop, ticket, changeset, wiki)
 
         add_dictlist_to_hdf(info, self.cgi.hdf, 'timeline.items')
 
