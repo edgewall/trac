@@ -1,0 +1,23 @@
+include AUTHORS ChangeLog COPYING INSTALL MANIFEST.in README README.tracd RELEASE setup.cfg THANKS UPGRADE
+include scripts/trac-admin
+include scripts/tracd
+include scripts/tracdb2env
+include scripts/*.1
+include cgi-bin/trac.cgi
+include trac/tests/*.py
+include trac/tests/wiki-tests.txt
+recursive-include htdocs *.png *.gif *.js *README
+recursive-include htdocs/css *.css
+recursive-include doc *trac_logo.* *README
+recursive-include wiki-default *
+recursive-include templates *.cs *README
+recursive-include contrib *
+global-exclude *~
+global-exclude *.tmp
+global-exclude *.bak
+global-exclude *.old
+global-exclude .svn
+global-exclude .svn/*
+global-exclude .svn/*/*
+global-exclude .svn/*/*/*
+exclude wiki-default/checkwiki.py*
