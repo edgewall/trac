@@ -95,12 +95,14 @@ class Timeline (Module):
                     'author': row['author']}
             if row['type'] == '1':
                 item['changeset_href'] = href.changeset(int(row['data']))
-                item['message'] = wiki_to_oneliner(item['message'])
+                #item['message'] = wiki_to_oneliner(item['message'])
+                item['message'] = item['message']
             elif row['type'] == '5':
                 item['wiki_href'] = href.wiki(row['data'])
             else:
                 item['ticket_href'] = href.ticket(int(row['data']))
-                item['message'] = wiki_to_oneliner(item['message'])
+                #item['message'] = wiki_to_oneliner(item['message'])
+                item['message'] = item['message']
             info.append(item)
         return info
         
