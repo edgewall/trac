@@ -5,7 +5,7 @@
 	Powered by <a href="http://svntrac.edgewall.com/">SVNTRAC</a>
       </td>
       <td align="right" class="footer">
-	Plase visit <a href="http://www.edgewall.com/">www.edgewall.com.</a>
+	Please visit <a href="http://www.edgewall.com/">www.edgewall.com.</a>
       </td>
     </tr>
   </table>
