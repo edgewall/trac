@@ -8,7 +8,7 @@ body {
 }
 .hide { display: none; }
 .tiny { font-size: 1px; height: 1px }
-hr { border: none;  border-top: 1px solid #ccc; }
+hr { border: none;  border-top: 1px solid #ccc; margin: 2em 0; }
 a:link, a:visited, a.noline,b.tl-item-link {
   text-decoration: none;
   color: #b00;
@@ -175,7 +175,7 @@ tr.br-row-odd,tr.row-odd { background-color: #f7f7f7; }
 tr.br-row-even:hover,tr.br-row-odd:hover { background: #eed; }
 .wikipage p {  margin-left: 1em }
 pre.wiki, pre.literal-block { 
- margin: .1em 1.5em;
+ margin: 1em 1.75em;
  padding: .25em;
  background: #f7f7f7;
  border: 1px solid #d7d7d7;
