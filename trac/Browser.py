@@ -87,10 +87,17 @@ class Browser(Module):
                 'size_bytes' : size }
             if rev_specified:
                 item['log_href'] = self.env.href.log(fullpath, revision)
-                item['browser_href'] = self.env.href.browser(fullpath, revision)
+                if is_dir:
+                    item['browser_href'] = self.env.href.browser(fullpath,
+                                                                 revision)
+                else:
+                    item['browser_href'] = self.env.href.file(fullpath, revision)
             else:
                 item['log_href'] = self.env.href.log(fullpath)
-                item['browser_href'] = self.env.href.browser(fullpath)
+                if is_dir:
+                    item['browser_href'] = self.env.href.browser(fullpath)
+                else:
+                    item['browser_href'] = self.env.href.file(fullpath)
                 
             info.append(item)
         return info

@@ -75,13 +75,13 @@
           </td>
         <?cs else ?>
           <td class="br-icon-col">
-            <a title="View File" class="block-link"  href="<?cs var:item.rev_href ?>">
+            <a title="View File" class="block-link"  href="<?cs var:item.browser_href ?>">
               <img src="<?cs var:htdocs_location ?>/file.png"
                     width="16" height="16" alt="[file]" />
             </a>
           </td>
           <td class="br-name-col">
-            <a title="View File" class="block-link"  href="<?cs var:item.rev_href ?>"><?cs var:item.name ?></a>
+            <a title="View File" class="block-link"  href="<?cs var:item.browser_href ?>"><?cs var:item.name ?></a>
           </td>
          <?cs /if ?>
          <td class="br-size-col">
