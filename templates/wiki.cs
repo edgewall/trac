@@ -7,12 +7,13 @@
   <li><a href="<?cs var:$trac.href.wiki ?>">Start Page</a></li>
   <li><a href="<?cs var:$trac.href.wiki ?>/TitleIndex">Title Index</a></li>
   <li><a href="<?cs var:$trac.href.wiki ?>/RecentChanges">Recent Changes</a></li>
-  <?cs if $wiki.history ?>
-   <li class="last"><a href="javascript:view_history()">Show/Hide History</a></li>
+  <?cs if:wiki.history_href ?>
+   <li class="last"><a href="<?cs var:wiki.history_href ?>">Page History</a></li>
   <?cs else ?>
-   <li class="last">Show/Hide History</li>
+   <li class="last">Page History</li>
   <?cs /if ?>
  </ul>
+ <hr />
 </div>
 
 <?cs def:day_separator(date) ?>
@@ -23,33 +24,6 @@
     <ul>
   <?cs /if ?>
 <?cs /def ?>
-
-<hr class="hide"/>
-<?cs if $wiki.history ?>
-    <h3 class="hide">Page History</h3>
-    <table id="wiki-history">
-      <tr>
-        <th>Version</th>
-        <th>Time</th>
-        <th>Author</th>
-        <th>IP#</th>
-      </tr>
-      <?cs each item = $wiki.history ?>
-        <tr class="wiki-history-row">
-          <td><a class="wiki-history-link"
-             href="<?cs var:$item.url ?>"><?cs var:$item.version ?></a>&nbsp;(<a class="wiki-history-link"
-                  href="<?cs var:$item.diff_url ?>">diff</a>)</td>
-          <td><a class="wiki-history-link"
-               href="<?cs var:$item.url ?>"><?cs var:$item.time ?></a></td>
-          <td><a class="wiki-history-link"
-               href="<?cs var:$item.url ?>"><?cs var:$item.author ?></a></td>
-          <td><a class="wiki-history-link"
-               href="<?cs var:$item.url ?>"><?cs var:$item.ipnr ?></a></td>
-        </tr>
-      <?cs /each ?>
-    </table>
-    <hr class="hide"/>
-    <?cs /if ?>
 
 <div id="main" class="wiki">
 
@@ -114,6 +88,35 @@
      </li>
     </ul>
    </div>
+ 
+ <?cs elif wiki.action == "history" ?>
+  <h1>Change History of <?cs var:wiki.page_name ?></h1>
+  <?cs if:wiki.history ?>
+   <table id="wikihist" class="listing">
+    <thead><tr>
+     <th class="date">Date</th>
+     <th class="version">Version</th>
+     <th class="author">Author</th>
+     <th class="comment">Comment</th>
+    </tr></thead>
+    <tbody><?cs each:item = wiki.history ?>
+     <tr class="<?cs if:name(item) % #2 ?>even<?cs else ?>odd<?cs /if ?>">
+      <td class="date"><?cs var:$item.time ?></td>
+      <td class="version">
+       <a href="<?cs var:item.url ?>" title="View version"><?cs
+         var:item.version ?></a>
+       (<a href="<?cs var:item.diff_url ?>" title="Compare to previous version">diff</a>)
+      </td>
+      <td class="author">
+       <span class="name"><?cs var:$item.author ?></span>
+       <span class="ipaddr">(IP: <?cs var:$item.ipaddr ?>)</span>
+      </td>
+      <td class="comment"><?cs var:$item.comment ?></td>
+     </tr>
+    <?cs /each ?></tbody>
+   </table>
+  <?cs /if ?>
+ 
  <?cs else ?>
    <?cs if wiki.action == "edit" || wiki.action == "preview" ?>
     <h3>Editing "<?cs var:wiki.page_name ?>"</h3>

@@ -90,6 +90,7 @@ form.inline input { margin: 1em }
 /* Navigation */
 .nav { height: 1em }
 .nav h2 { display: none }
+.nav hr { display: none }
 .nav ul { margin: 0; padding: 0 }
 .nav li { list-style: none }
 #navbar {
@@ -222,7 +223,7 @@ form.inline input { margin: 1em }
   text-align: right;
 }
 
-#main { margin-bottom: 2em }
+#main { padding-bottom: 2em }
 
 #help {
  clear: both;

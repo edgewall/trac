@@ -619,7 +619,7 @@ class Wiki(Module):
 
     def generate_history(self, pagename):
         cursor = self.db.cursor ()
-        cursor.execute ('SELECT version, time, author, ipnr FROM wiki '
+        cursor.execute ('SELECT version, time, author, comment, ipnr FROM wiki '
                         'WHERE name=%s ORDER BY version DESC', pagename)
         i = 0
         while 1:
@@ -630,7 +630,7 @@ class Wiki(Module):
             elif i==0:
                 self.req.hdf.setValue('wiki.history', '1')
 
-            time_str = time.strftime('%x', time.localtime(int(row[1])))
+            time_str = time.strftime('%x %X', time.localtime(int(row[1])))
 
             n = 'wiki.history.%d' % i
             self.req.hdf.setValue(n, str(i))
@@ -641,7 +641,8 @@ class Wiki(Module):
             self.req.hdf.setValue(n+'.version', str(row[0]))
             self.req.hdf.setValue(n+'.time', time_str)
             self.req.hdf.setValue(n+'.author', str(row[2]))
-            self.req.hdf.setValue(n+'.ipnr', str(row[3]))
+            self.req.hdf.setValue(n+'.comment', row[3] or '')
+            self.req.hdf.setValue(n+'.ipaddr', str(row[4]))
             i = i + 1
 
     def generate_diff(self, pagename, version):
@@ -688,6 +689,7 @@ class Wiki(Module):
         diff = self.args.get('diff', None)
         cancel = self.args.get('cancel', None)
         preview = self.args.get('preview', None)
+        history = self.args.get('history', None)
         version = int(self.args.get('version', 0))
 
         # Ask web spiders to not index old version
@@ -697,8 +699,6 @@ class Wiki(Module):
         if cancel:
             self.req.redirect(self.env.href.wiki(name))
 
-        self.generate_history(name)
-
         self.req.hdf.setValue('wiki.name', name)
         self.req.hdf.setValue('wiki.author', author)
         self.req.hdf.setValue('wiki.comment', comment)
@@ -706,6 +706,7 @@ class Wiki(Module):
         # even if the page name contains a '/'
         self.req.hdf.setValue('wiki.namedoublequoted',
                               urllib.quote(urllib.quote(name, '')))
+
         if name == 'TitleIndex':
             self.generate_title_index()
             self.req.hdf.setValue('title', 'Title Index (wiki)')
@@ -728,6 +729,10 @@ class Wiki(Module):
             self.req.hdf.setValue('wiki.action', 'diff')
             self.generate_diff(name, version)
             self.req.hdf.setValue('title', name + ' (diff)')
+        elif history:
+            self.req.hdf.setValue('wiki.action', 'history')
+            self.generate_history(name)
+            self.req.hdf.setValue('title', name + ' (history)')
         else:
             self.perm.assert_permission (perm.WIKI_VIEW)
             if version:
@@ -775,6 +780,8 @@ class Wiki(Module):
 
         self.req.hdf.setValue('wiki.current_href',
                               self.env.href.wiki(self.page.name))
+        self.req.hdf.setValue('wiki.history_href',
+                              self.env.href.wiki(self.page.name, history=1))
         self.req.hdf.setValue('wiki.page_name', self.page.name)
         self.req.hdf.setValue('wiki.page_source', escape(self.page.text))
         out = StringIO.StringIO()

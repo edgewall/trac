@@ -1,0 +1,9 @@
+/* Styles for the page history table
+   (extends the styles for "table.listing") */
+#wikihist td { padding: 0 .5em }
+#wikihist td.date, #wikihist td.version, #wikihist td.author {
+ white-space: nowrap;
+}
+#wikihist td.version { text-align: center }
+#wikihist td.author .ipaddr { color: #888; font-size: smaller }
+#wikihist td.comment { width: 100% }

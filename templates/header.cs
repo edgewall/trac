@@ -19,14 +19,15 @@
   <style type="text/css">
    @import url("<?cs var:htdocs_location ?>css/trac.css");
    @import url("<?cs var:htdocs_location ?>css/code.css");
-   <?cs if:trac.active_module == 'browser' || trac.active_module == 'log' || trac.active_module == 'file'?>
+   <?cs if:trac.active_module == 'wiki' ?>
+   @import url("<?cs var:htdocs_location ?>css/diff.css");
+   @import url("<?cs var:htdocs_location ?>css/wiki.css");
+   <?cs elif:trac.active_module == 'browser' || trac.active_module == 'log' || trac.active_module == 'file'?>
    @import url("<?cs var:htdocs_location ?>css/browser.css");
    <?cs elif:trac.active_module == 'timeline' ?>
    @import url("<?cs var:htdocs_location ?>css/timeline.css");
    <?cs elif:trac.active_module == 'changeset'?>
    @import url("<?cs var:htdocs_location ?>css/changeset.css");
-   @import url("<?cs var:htdocs_location ?>css/diff.css");
-   <?cs elif:trac.active_module == 'wiki' ?>
    @import url("<?cs var:htdocs_location ?>css/diff.css");
    <?cs elif:trac.active_module == 'newticket' || trac.active_module == 'ticket' ?>
    @import url("<?cs var:htdocs_location ?>css/ticket.css");
