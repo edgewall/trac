@@ -245,8 +245,8 @@ def populate_hdf(hdf, env, req=None):
 
 def _reconstruct_base_url(req):
     host = req.get_header('Host')
-    if req.get_header('X-Forwarded-For'):
-        host = req.get_header('X-Forwarded-For')
+    if req.get_header('X-Forwarded-Host'):
+        host = req.get_header('X-Forwarded-Host')
     if not host:
         # Missing host header, so reconstruct the host from the
         # server name and port
