@@ -19,8 +19,8 @@
 #
 # Author: Jonas Borgström <jonas@edgewall.com>
 
+from __future__ import nested_scopes
 import time
-
 import os
 import sys
 import util
