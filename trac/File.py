@@ -33,6 +33,7 @@ import svn
 import perm
 import util
 from Module import Module
+from Wiki import wiki_to_html
 
 class FileCommon(Module):
     CHUNK_SIZE = 4096
@@ -220,15 +221,37 @@ class File(FileCommon):
             rev = svn.fs.youngest_rev(self.fs_ptr, self.pool)
         else:
             rev = int(rev)
+
+        root = svn.fs.revision_root(self.fs_ptr, rev, self.pool)
+        history = svn.fs.node_history(root, self.path, self.pool)
+        history = svn.fs.history_prev(history, 0, self.pool)
+        history_path, history_rev = svn.fs.history_location(history, self.pool);
+        if rev != history_rev:
+            rev = history_rev
+
+        author = svn.fs.revision_prop(self.fs_ptr, rev,
+                                      svn.core.SVN_PROP_REVISION_AUTHOR, self.pool)
+        msg = svn.fs.revision_prop(self.fs_ptr, rev,
+                                   svn.core.SVN_PROP_REVISION_LOG, self.pool)
+        msg_html = wiki_to_html(msg, self.req.hdf, self.env)
+        date = svn.fs.revision_prop(self.fs_ptr, rev,
+                                    svn.core.SVN_PROP_REVISION_DATE, self.pool)
+        sdate = util.svn_date_to_string(date, self.pool)
+
+
+        self.req.hdf.setValue('file.chgset_href', self.env.href.changeset(rev))
         self.req.hdf.setValue('file.rev', str(rev))
+        self.req.hdf.setValue('file.rev_author', str(author))
+        self.req.hdf.setValue('file.rev_date', sdate)
+        self.req.hdf.setValue('file.rev_msg', msg_html)
         self.req.hdf.setValue('file.path', self.path)
         self.req.hdf.setValue('file.rawurl', self.env.href.file(self.path, rev,
                                                                 'raw'))
         self.req.hdf.setValue('file.texturl', self.env.href.file(self.path, rev,
                                                                  'text'))
         self.req.hdf.setValue('file.logurl', self.env.href.log(self.path))
-        root = svn.fs.revision_root(self.fs_ptr, rev, self.pool)
-        
+
+                
         # Try to do an educated guess about the mime-type
         self.mime_type = svn.fs.node_prop (root, self.path,
                                            svn.util.SVN_PROP_MIME_TYPE,

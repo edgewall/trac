@@ -49,6 +49,13 @@
     </form>
     <div class="tiny" style="clear: both">&nbsp;</div>
     </div>
+  
+   <div id="revinfo">
+     <h2>Revision <a href="<?cs var:file.chgset_href ?>"><?cs var:file.rev ?></a> (by <?cs var:file.rev_author ?>, <?cs var:file.rev_date ?>)</h2>
+     <div id="revchange"><?cs var:file.rev_msg ?></div>
+    <div class="tiny" style="clear: both">&nbsp;</div>
+   </div>
+
   <?cs /if ?>
   <?cs if file.highlighted_html ?>
     <?cs var:file.highlighted_html ?>
