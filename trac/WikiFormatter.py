@@ -95,7 +95,7 @@ class WikiProcessor:
                     self.code_processor = self.mime_processor
                 else:
                     self.code_processor = self.builtin_processors['default']
-                    return 1
+                    return e
         return 0
     
     def load_macro(self, name):
@@ -565,7 +565,8 @@ class Formatter(CommonFormatter):
             if match:
                 name = match.group(1)
                 self.code_processor = WikiProcessor(self.env, name)
-                if self.code_processor.error:
+                e = self.code_processor.error
+                if e:
                     self.out.write(system_message('Error: Failed to load processor <code>%s</code>' % name, e))
                     self.code_text += line + os.linesep
             else:
