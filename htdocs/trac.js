@@ -54,13 +54,15 @@ function searchHighlight() {
         var newNode = node.splitText(pos);
         newNode.nodeValue = newNode.nodeValue.substr(word.length);
         node.parentNode.insertBefore(span, newNode);
+        return true;
       }
     } else if (!node.nodeName.match(/button|select|textarea/i)) {
       // Recurse into child nodes
       for (var i = 0; i < node.childNodes.length; i++) {
-        highlightWord(node.childNodes[i], word, searchwordindex);
+        if (highlightWord(node.childNodes[i], word, searchwordindex)) i++;
       }
     }
+    return false;
   }
 
   var words = getSearchWords(document.URL);
@@ -71,6 +73,3 @@ function searchHighlight() {
     }
   }
 }
-
-// Allow search highlighting of all pages
-addEvent(window, 'load', searchHighlight);
