@@ -1,5 +1,5 @@
 /* Ticket */
-#tkt-hdr { margin: 0 }
+#tkt-hdr { margin: 0; }
 #tkt-subhdr { 
  display: block;
  font-weight: normal; 
@@ -12,7 +12,7 @@
   border: 1px outset #996;
   padding: 1em;
 }
-#tkt-main { max-width: 700px; }
+#tkt-main { max-width: 700px; margin-top: 1.5em;}
 #tkt-ticket td { padding: .2em .5em; }
 #tkt-date { float: right; color: #996; margin-left: 2em; }
 #tkt-summary {  margin: 0; font-size: 100%; font-weight: normal; }

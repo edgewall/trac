@@ -69,7 +69,7 @@ It provides an interface to the Subversion revision control systems, integrated 
   <a href="http://projects.edgewall.com/trac/">http://projects.edgewall.com/trac/</a>
   </p>
   <p>
-  Trac is a product of <a href="http:/www.edgewall.com/">Edgewall Software</a>, provider of professional Linux and software development services.
+  Trac is a product of <a href="http://www.edgewall.com/">Edgewall Software</a>, provider of professional Linux and software development services.
   </p>
 <p>
 Copyright &copy; 2003,2004 <a href="http://www.edgewall.com/">Edgewall Software</a>

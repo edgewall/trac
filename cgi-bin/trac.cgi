@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/python
 # -*- coding: iso8859-1 -*-
 #
 # Copyright (C) 2003, 2004 Edgewall Software
