@@ -52,7 +52,7 @@ function searchHighlight() {
         newNode.nodeValue = newNode.nodeValue.substr(word.length);
         node.parentNode.insertBefore(span, newNode);
       }
-    } else {
+    } else if (!node.nodeName.match(/button|select|textarea/i)) {
       // Recurse into child nodes
       for (var i = 0; i < node.childNodes.length; i++) {
         highlightWord(node.childNodes[i], word, searchwordindex);
