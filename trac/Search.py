@@ -168,9 +168,9 @@ class Search(Module):
             item = {'type': int(row['type']),
                     'keywords': row['keywords'] or '',
                     'data': row['data'],
-                    'title': row['title'],
+                    'title': escape(row['title'] or ''),
                     'datetime' : time.strftime('%c', t),
-                    'author': row['author']}
+                    'author': escape(row['author'])}
             if item['type'] == 1:
                 item['changeset_href'] = self.env.href.changeset(int(row['data']))
             elif item['type'] == 2:
