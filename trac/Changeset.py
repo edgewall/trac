@@ -125,19 +125,14 @@ class DiffEditor (delta.Editor):
         self.output = output
 
     def print_diff (self, old_path, new_path, pool):
-        old_root = new_root = None
-        if old_path:
-            old_root = self.old_root
-            name = old_path
-        if new_path:
-            new_root = self.new_root
-            name = new_path
-        differ = fs.FileDiff(old_root, old_path,
-                             new_root, new_path, pool, ['-u'])
+        if not old_path or not new_path:
+            return
+        differ = fs.FileDiff(self.old_root, old_path,
+                             self.new_root, new_path, pool, ['-u'])
         differ.get_files()
         pobj = differ.get_pipe()
         self.output.write('<div class="chg-diff-file">')
-        self.output.write('<h3 class="chg-diff-hdr">%s</h3>' % name)
+        self.output.write('<h3 class="chg-diff-hdr">%s</h3>' % new_path)
         filter = DiffColorizer(self.output)
         while 1:
             line = pobj.readline()
