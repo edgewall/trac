@@ -76,7 +76,7 @@ class Browser(Module):
                 item['browser_href'] = href.browser(fullpath)
             else:
                 item['log_href'] = href.log(fullpath)
-                item['rev_href'] = href.file(fullpath, created_rev)
+                item['rev_href'] = href.file(fullpath, revision)
                 
             info.append(item)
         return info

@@ -40,7 +40,7 @@ class Timeline (Module):
         cnx = db.get_connection()
         cursor = cnx.cursor ()
 
-        if tickets == changeset == wiki == False:
+        if tickets == changeset == wiki == 0:
             return []
 
         # 1: change set
@@ -129,7 +129,7 @@ class Timeline (Module):
             ticket = self.args.has_key('ticket')
             changeset = self.args.has_key('changeset')
         else:
-            wiki = ticket = changeset = True
+            wiki = ticket = changeset = 1
         if wiki:
             self.cgi.hdf.setValue('timeline.wiki', 'checked')
         if ticket:
