@@ -71,8 +71,14 @@ class Href:
     def roadmap(self):
         return href_join(self.base, 'roadmap')
 
-    def milestone(self, milestone):
-        return href_join(self.base, 'milestone', str(milestone))
+    def milestone(self, milestone, action=None):
+        if milestone:
+            href = href_join(self.base, 'milestone', str(milestone))
+        else:
+            href = href_join(self.base, 'milestone')
+        if action:
+            href = href + '?action=' + action
+        return href
 
     def search(self, query=None):
         uri = 'search'

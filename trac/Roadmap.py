@@ -32,8 +32,12 @@ class Roadmap(Module):
     def render (self):
         self.perm.assert_permission(perm.ROADMAP_VIEW)
         self.req.hdf.setValue('title', 'Roadmap')
-        
-        cursor = self.db.cursor ()
+
+        if self.perm.has_permission(perm.MILESTONE_CREATE):
+            self.req.hdf.setValue('roadmap.href.newmilestone',
+                                   self.env.href.milestone(None, 'new'))
+
+        cursor = self.db.cursor()
         cursor.execute("SELECT name, time FROM milestone "
                        "WHERE name != '' AND (time = 0 OR time > %d) "
                        "ORDER BY time DESC, name" % time.time())

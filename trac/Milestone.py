@@ -62,6 +62,63 @@ def calc_ticket_stats(tickets):
 class Milestone(Module):
     template_name = 'milestone.cs'
 
+    def save_milestone(self, id):
+        self.perm.assert_permission(perm.MILESTONE_MODIFY)
+        if self.args.has_key('save'):
+            name = self.args.get('name', '')
+            datestr = self.args.get('date', '')
+            date = 0
+            if datestr:
+                date = self.parse_date(datestr)
+            if id == -1:
+                self.create_milestone(name, date)
+            else:
+                self.update_milestone(id, name, date)
+        elif id != -1:
+            self.req.redirect(self.env.href.milestone(id))
+        else:
+            self.req.redirect(self.env.href.roadmap())
+
+    def parse_date(self, datestr):
+        seconds = None
+        datestr = datestr.strip()
+        for format in ['%x %X', '%x, %X', '%X %x', '%X, %x', '%x', '%c',
+                       '%b %d, %Y']:
+            try:
+                date = time.strptime(datestr, format)
+                seconds = time.mktime(date)
+                break
+            except ValueError:
+                continue
+        if seconds == None:
+            raise TracError('%s is not a known date format.' % datestr,
+                            'Invalid Date Format')
+        return seconds
+
+    def create_milestone(self, name, date):
+        self.perm.assert_permission(perm.MILESTONE_CREATE)
+        cursor = self.db.cursor()
+        cursor.execute("INSERT INTO milestone (name, time) "
+                        'VALUES (%s, %d)', name, date)
+        self.db.commit()
+        self.req.redirect(self.env.href.milestone(name))
+
+    def delete_milestone(self, id):
+        self.perm.assert_permission(perm.MILESTONE_DELETE)
+        milestone = self.get_milestone(id)
+        cursor = self.db.cursor()
+        cursor.execute("DELETE FROM milestone WHERE name = %s", id)
+        self.db.commit()
+        self.req.redirect(self.env.href.roadmap())
+
+    def update_milestone(self, id, name, date):
+        self.perm.assert_permission(perm.MILESTONE_MODIFY)
+        cursor = self.db.cursor()
+        cursor.execute("UPDATE milestone SET name = %s, time = %d "
+                       "WHERE name = %s", name, date, id)
+        self.db.commit()
+        self.req.redirect(self.env.href.milestone(name))
+
     def get_components(self):
         cursor = self.db.cursor ()
         cursor.execute("SELECT name, owner FROM component ORDER BY name")
@@ -91,12 +148,42 @@ class Milestone(Module):
 
     def render(self):
         action = self.args.get('action', 'view')
+        id = self.args.get('id', -1)
 
-        if not self.args.has_key('id'):
-            self.req.redirect(self.env.href.roadmap())
-        id = self.args.get('id')
+        if action == 'new':
+            self.render_editor(-1)
+        elif action == 'edit':
+            self.render_editor(id)
+        elif action == 'commit':
+            self.save_milestone(id)
+        elif action == 'delete':
+            self.delete_milestone(id)
+        else:
+            self.render_view(id)
 
+    def render_editor(self, id):
         self.perm.assert_permission(perm.MILESTONE_VIEW)
+
+        if id == -1:
+            milestone = { 'name': '', 'date': '' }
+            self.req.hdf.setValue('title', 'New Milestone')
+            self.req.hdf.setValue('milestone.mode', 'new')
+        else:
+            milestone = self.get_milestone(id)
+            self.req.hdf.setValue('title', '%s (milestone)' % milestone['name'])
+            self.req.hdf.setValue('milestone.mode', 'edit')
+        add_dict_to_hdf(milestone, self.req.hdf, 'milestone')
+
+
+    def render_view(self, id):
+        self.perm.assert_permission(perm.MILESTONE_VIEW)
+
+        if self.perm.has_permission(perm.MILESTONE_DELETE):
+            self.req.hdf.setValue('milestone.href.delete',
+                                   self.env.href.milestone(id, 'delete'))
+        if self.perm.has_permission(perm.MILESTONE_MODIFY):
+            self.req.hdf.setValue('milestone.href.edit',
+                                   self.env.href.milestone(id, 'edit'))
 
         milestone = self.get_milestone(id)
         self.req.hdf.setValue('title', '%s (milestone)' % milestone['name'])

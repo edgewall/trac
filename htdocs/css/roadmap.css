@@ -28,7 +28,7 @@ p.percentage { font-size: 10px; line-height: 2.4em }
  font-style: normal;
 }
 #main.roadmap .date {
- color: gray;
+ color: #888;
  font-size: 11px;
  font-style: italic;
  margin: 0;
@@ -61,7 +61,7 @@ p.percentage { font-size: 10px; line-height: 2.4em }
 
 /* Styles for the milestone view */
 #main.milestone h1 em { font-style: normal }
-#main.milestone .date { color: gray; font-style: italic }
+#main.milestone .date { color: #888; font-style: italic }
 #main.milestone .description { margin: 1em 0 2em 1em }
 #main.milestone table {
  margin: 2em 0 0;
@@ -93,4 +93,17 @@ p.percentage { font-size: 10px; line-height: 2.4em }
 #main.milestone tfoot th, #main.milestone tfoot td {
  font-weight: bold;
  padding: 0 .25em;
+}
+
+/* Styles for the milestone edit form */
+#main.milestone form fieldset {
+ padding: .5em;
+}
+#main.milestone form label {
+ font-size: 11px;
+ margin-right: .5em;
+}
+#main.milestone form em {
+ color: #888;
+ font-size: 11px;
 }
