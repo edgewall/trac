@@ -174,6 +174,7 @@ class TicketNotifyEmail(NotifyEmail):
 
     def __init__(self, env):
         NotifyEmail.__init__(self, env, self.template_name)
+        self.prev_cc = []
 
     def notify(self, ticket, newticket=1, modtime=0):
         self.ticket = ticket
@@ -218,6 +219,8 @@ class TicketNotifyEmail(NotifyEmail):
                 if newv:
                     self.hdf.setValue('%s.oldvalue' % pfx, old)
                     self.hdf.setValue('%s.newvalue' % pfx, newv)
+                if field == 'cc':
+                    self.prev_cc += old and self.parse_cc(old) or []
                 self.hdf.setValue('%s.author' % pfx, author)
             if changes:
                 self.hdf.setValue('email.changes_body', changes)
@@ -256,6 +259,9 @@ class TicketNotifyEmail(NotifyEmail):
         txt += sep
         return txt
 
+    def parse_cc(self, txt):
+        return txt.replace(',', ' ').split()
+
     def format_hdr(self):
         return '#%s: %s' % (self.ticket['id'],
                                wrap(self.ticket['summary'], self.COLS))
@@ -271,13 +277,13 @@ class TicketNotifyEmail(NotifyEmail):
         val = self.env.get_config('notification', 'always_notify_reporter', 'false')
         notify_reporter = val.lower() in TRUE
         
-        emails = []
+        emails = self.prev_cc
         cursor = self.db.cursor()
         # Harvest email addresses from the cc field
         cursor.execute('SELECT cc,reporter FROM ticket WHERE id=%s', tktid)
         row = cursor.fetchone()
         if row:
-            emails += row[0] and self.get_email_addresses(row[0]) or []
+            emails += row[0] and self.parse_cc(row[0]) or []
             if notify_reporter:
                 emails += row[1] and self.get_email_addresses(row[1]) or []
 
@@ -291,7 +297,7 @@ class TicketNotifyEmail(NotifyEmail):
         # Add smtp_always_cc address
         acc = self.env.get_config('notification', 'smtp_always_cc', '')
         if acc:
-            emails += self.get_email_addresses(acc)
+            emails += self.parse_cc(acc)
 
         # Remove duplicates
         result = []
