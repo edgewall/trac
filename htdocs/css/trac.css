@@ -335,3 +335,16 @@ table.wiki td { border: 1px solid #ccc;  padding: .1em .25em; }
  #header, #altlinks, #footer { display: none }
  .nav, form { display: none }
 }
+#wiki-toolbar {
+ margin: .5em 0 0 2px;
+ padding: 0;
+ border: 1px solid #d7d7d7;
+ border-left: none;
+ }
+#wiki-toolbar, #wiki-toolbar * { display: block; float: left; }
+#wiki-toolbar :link,#wiki-toolbar :link:visited {
+ border: 1px solid #fff;
+ border-left-color: #d7d7d7;
+}
+#wiki-toolbar :link:hover { border-color: #fb2; }
+.wiki-infobox { margin-left: 1em; margin-top: .25em; }

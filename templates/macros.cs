@@ -103,3 +103,33 @@
  </fieldset>
 <?cs /if ?>
 <?cs /def ?>
+
+<?cs def:wiki_tool(textarea, infobox, img, alt, beg, end, example) ?>
+  addButton('<?cs var:textarea ?>', '<?cs var:infobox ?>', 
+            '<?cs var:$htdocs_location + '/' + $img ?>', '<?cs var:alt ?>',
+            '<?cs var:beg ?>','<?cs var:end ?>','<?cs var:example ?>');
+<?cs /def ?>
+
+<?cs def:wiki_toolbar(textarea) ?>
+<script type='text/javascript'>
+/*<![CDATA[*/
+<?cs set:infobox='wiki-info-' + $textarea ?>
+  document.writeln("<div id='wiki-toolbar'>");
+  <?cs call:wiki_tool($textarea, $infobox, 'edit_bold.png', 'Bold text',
+                      "\'\'\'", "\'\'\'", 'Bold text') ?>
+  <?cs call:wiki_tool($textarea, $infobox, 'edit_italic.png', 'Italic text',
+                      "\'\'","\'\'", 'Italic text') ?>
+  <?cs call:wiki_tool($textarea, $infobox, 'edit_link.png', 'Link',
+                      '[', ']', 'http://example.com/ Link Title') ?>
+  <?cs call:wiki_tool($textarea, $infobox, 'edit_hdr.png', 'Headline',
+                      '\n== ', ' ==\n', 'Headline text') ?>
+  <?cs call:wiki_tool($textarea, $infobox, 'edit_block.png', 'Code Block',
+                      '\n{{{\n ', '\n}}}\n', 'Preformatted block' ) ?>
+  <?cs call:wiki_tool($textarea, $infobox, 'edit_hr.png', 'Horizontal Rule',
+                      '\n----\n','','') ?>
+  document.writeln("</div>");
+  addInfobox('<?cs var:infobox ?>', 'Click a button to get an example text',
+             'Please enter the text you want to be formatted.\\n It will be shown in the infobox for copy and pasting.\\nExample:\\n$1\\nwill become:\\n$2');
+/*]]>*/
+</script>
+<?cs /def ?>

@@ -12,7 +12,7 @@ addEvent(window, 'load', function() { document.getElementById('summary').focus()
 
 <h3>Create New Ticket:</h3>
 <div id="nt-ticket">
-<form action="<?cs var:cgi_location ?>#preview" method="post">
+<form action="<?cs var:cgi_location ?>#preview" method="post" id="ticketform">
 
  <div id="nt-body" style="width: 100%">
   <div class="tkt-prop">
@@ -27,6 +27,7 @@ addEvent(window, 'load', function() { document.getElementById('summary').focus()
   <div class="tkt-prop">
    <label for="description">Full Description (You may use 
       <a tabindex="42" href="<?cs var:$trac.href.wiki ?>/WikiFormatting">WikiFormatting</a> here):</label><br />
+   <?cs call wiki_toolbar('description') ?>
    <textarea id="description" name="description" class="textwidget" 
             rows="10" cols="78" style="width: 97%"><?cs var:newticket.description ?></textarea>
    <?cs if newticket.description_preview ?>

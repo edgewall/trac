@@ -98,11 +98,12 @@
  <?cs else ?>
    <?cs if wiki.action == "edit" || wiki.action == "preview" ?>
     <h3>Editing "<?cs var:wiki.page_name ?>"</h3>
-    <div style="width: 100%">
      <form action="<?cs var:wiki.current_href ?>#preview" method="post">
+      <div style="width: 100%">
        <input type="hidden" name="edit_version"
            value="<?cs var:wiki.edit_version?>" />
        <label for="text">Page source:</label><br />
+       <?cs call wiki_toolbar('text') ?>
        <textarea id="text" name="text" rows="20" cols="80"
            style="width: 97%"><?cs var:wiki.page_source ?></textarea>
        <div id="help">
@@ -129,8 +130,8 @@
              <input type="submit" name="cancel" value="Cancel" />
          </div>
        </fieldset>
+      </div>
      </form>
-    </div>
    <?cs /if ?>
    <?cs if wiki.action == "view" || wiki.action == "preview" ?>
      <?cs if wiki.action == "preview" ?><hr /><?cs /if ?>

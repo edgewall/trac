@@ -45,7 +45,6 @@ def populate_page_dict(db, env):
         page_dict[row[0]] = 1
     env._wiki_pages = page_dict
 
-
 class CommonFormatter:
     """This class contains the patterns common to both Formatter and
     OneLinerFormatter"""

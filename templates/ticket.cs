@@ -25,7 +25,7 @@
   <?cs if:$value ?><i><?cs var:$value ?></i><?cs else ?>&nbsp;<?cs /if ?>
  </td>
  <?cs if numprops % #2 ?>
-  </tr><tr>
+  <?cs if:!$last_prop ?></tr><tr><?cs /if ?>
  <?cs else ?>
   <td class="tkt-prop-sep">&nbsp;</td>
  <?cs /if ?>
@@ -53,6 +53,7 @@
    <?cs call:ticketprop("Version", ticket.version) ?>
    <?cs call:ticketprop("Resolution", ticket.resolution) ?>
    <?cs call:ticketprop("Milestone", ticket.milestone) ?>
+   <?cs set:last_prop = #1 ?>
    <?cs call:ticketprop("Keywords", ticket.keywords) ?>
   </tr>
  </table>
@@ -73,7 +74,7 @@
 </div>
 
 <?cs if trac.acl.TICKET_MODIFY || ticket.attachments.0.name ?>
- <h2 id="tkt-changes-hdr">Attachments</h2>
+ <h2>Attachments</h2>
  <?cs if ticket.attachments.0.name ?>
   <div id="tkt-changes">
    <ul class="tkt-chg-list">
@@ -177,6 +178,7 @@ onfocus="document.getElementById('comment').focus()">Add/Change
   <label for="comment">Add Comment (You may use 
       <a tabindex="42" href="<?cs var:$trac.href.wiki ?>/WikiFormatting">WikiFormatting</a> here):</label><br />
 
+  <?cs call wiki_toolbar('comment') ?>
   <textarea id="comment" name="comment" class="textwidget"
             rows="10" cols="78" style="width: 97%; max-width: 694px"><?cs var:ticket.comment ?></textarea>
    <?cs if ticket.comment_preview ?>
@@ -198,8 +200,12 @@ onfocus="document.getElementById('comment').focus()">Add/Change
 <?cs if $trac.acl.TICKET_ADMIN ?>
   <br />
   <label for="description" class="nt-label">Description:</label>
+  <div style="float: left">
+  <?cs call wiki_toolbar('description') ?><br style="clear: left" />
   <textarea id="description" name="description" class="textwidget"
             rows="10" cols="68"><?cs var:ticket.description ?></textarea>
+  </div>
+  <br style="clear: both" />
 <?cs /if ?>
 </div>
   <div id="nt-left">
