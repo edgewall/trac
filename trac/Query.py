@@ -164,7 +164,7 @@ class QueryModule(Module):
         sql = 'SELECT ' + ', '.join(['ticket.%s AS %s' % (header, header)
                                      for header in headers])
 
-        if not order in Ticket.std_fields:
+        if order != 'id' and not order in Ticket.std_fields:
             # order by priority by default
             order = 'priority'
         for i in range(len(headers)):
