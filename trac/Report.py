@@ -91,41 +91,21 @@ class Report (Module):
         if id == -1:
             # If no particular report was requested, display
             # a list of available reports instead
-            cursor.execute("SELECT id AS report, title "
-                           "FROM report "
-                           "ORDER BY report")
             title = 'Available reports'
+            sql = 'SELECT id AS report, title FROM report ORDER BY report'
             description = 'This is a list of reports available.'
         else:
             cursor.execute('SELECT title, sql, description from report '
                            ' WHERE id=%s', id)
             row = cursor.fetchone()
-            try:
-                if not row:
-                    raise TracError('Report %d does not exist.' % id,
+            if not row:
+                raise TracError('Report %d does not exist.' % id,
                                 'Invalid Report Number')
-                title = row[0] or ''
-                sql   = self.sql_sub_vars(row[1], args)
-                if not sql:
-                    raise TracError('Report %s has no SQL query.' % id)
-                description = row[2] or ''
-                cursor.execute(sql)
+            title = row[0] or ''
+            sql = row[1]
+            description = row[2] or ''
 
-                if sql.find('__group__') == -1:
-                    self.req.hdf.setValue('report.sorting.enabled', '1')
-
-            except Exception, e:
-                self.error = e
-                self.req.hdf.setValue('report.message',
-                                      'report failed: %s' % e)
-                return None
-
-        # FIXME: fetchall should probably not be used.
-        info = cursor.fetchall()
-        cols = cursor.rs.col_defs
-        # Escape the values so that they are safe to have as html parameters
-#        info = map(lambda row: map(lambda x: escape(x), row), info)
-        return [cols, info, title, description]
+        return [title, description, sql]
         
     def create_report(self, title, description, sql):
         self.perm.assert_permission(perm.REPORT_CREATE)
@@ -147,6 +127,24 @@ class Report (Module):
             self.req.redirect(self.env.href.report())
         else:
             self.req.redirect(self.env.href.report(id))
+
+    def execute_report(self, sql, args):
+        cursor = self.db.cursor()
+        sql = self.sql_sub_vars(sql, args)
+        if not sql:
+            raise TracError('Report %s has no SQL query.' % id)
+        cursor.execute(sql)
+
+        if sql.find('__group__') == -1:
+            self.req.hdf.setValue('report.sorting.enabled', '1')
+
+        # FIXME: fetchall should probably not be used.
+        info = cursor.fetchall()
+        cols = cursor.rs.col_defs
+        # Escape the values so that they are safe to have as html parameters
+        #info = map(lambda row: map(lambda x: escape(x), row), info)
+
+        return [cols, info]
 
     def commit_changes(self, id):
         """
@@ -222,7 +220,7 @@ class Report (Module):
         self.add_link('alternate', '?format=tab' + href,
             'Tab-delimited Text', 'text/plain')
         if self.perm.has_permission(perm.REPORT_SQL_VIEW):
-            self.add_link('alternate', '?format=sql' + href, 'SQL Query',
+            self.add_link('alternate', '?format=sql', 'SQL Query',
                 'text/plain')
 
     def render_report_list(self, id):
@@ -233,7 +231,7 @@ class Report (Module):
         if self.perm.has_permission(perm.REPORT_CREATE):
             self.req.hdf.setValue('report.create_href',
                                   self.env.href.report(None, 'new'))
-            
+
         try:
             args = self.get_var_args()
         except ValueError,e:
@@ -256,7 +254,7 @@ class Report (Module):
         info = self.get_info(id, args)
         if not info:
             return
-        [self.cols, self.rows, title, description] = info
+        [title, description, sql] = info
         self.error = None
         
         self.req.hdf.setValue('title', title + ' (report)')
@@ -264,6 +262,17 @@ class Report (Module):
         self.req.hdf.setValue('report.id', str(id))
         descr_html = wiki_to_html(description, self.req.hdf, self.env)
         self.req.hdf.setValue('report.description', descr_html)
+
+        if self.args.get('format') == 'sql':
+            return
+
+        try:
+            [self.cols, self.rows] = self.execute_report(sql, args)
+        except Exception, e:
+            self.error = e
+            self.req.hdf.setValue('report.message',
+                                  'Report failed: %s' % e)
+            return None
 
         # Convert the header info to HDF-format
         idx = 0
@@ -287,13 +296,15 @@ class Report (Module):
         if self.args.has_key('sort'):
             sortCol = self.args.get('sort')
             colIndex = None
-            x = 0
-            while colIndex == None and x < len(self.cols):
-                if self.cols[x][0] == sortCol:
+            hiddenCols = 0
+            for x in range(len(self.cols)):
+                colName = self.cols[x][0]
+                if colName == sortCol:
                     colIndex = x
-                x = x + 1
+                if colName[:2] == '__' and colName[-2:] == '__':
+                    hiddenCols += 1
             if colIndex != None:
-                k = 'report.headers.%d.asc' % (colIndex-1)
+                k = 'report.headers.%d.asc' % (colIndex - hiddenCols)
                 asc = self.args.get('asc', None)
                 if asc:
                     sorter = ColumnSorter(colIndex, int(asc))
