@@ -22,8 +22,9 @@
 import re
 import time
 import os
-import StringIO
 import string
+import difflib
+import StringIO
 
 import perm
 from Href import href
@@ -316,7 +317,7 @@ class Formatter(CommonFormatter):
             if not self.in_pre and line == '{{{':
                 self.in_pre = 1
                 self.close_paragraph()
-                self.out.write('<pre>' + os.linesep)
+                self.out.write('<pre class="wiki">' + os.linesep)
                 continue
             elif self.in_pre:
                 if line == '}}}':
@@ -433,7 +434,7 @@ class Wiki(Module):
                                   href.wiki(row[0]))
             i = i + 1
 
-    def generate_history(self,pagename):
+    def generate_history(self, pagename):
         cursor = self.db.cursor ()
         cursor.execute ('SELECT version, time, author, ipnr FROM wiki '
                         'WHERE name=%s ORDER BY version DESC', pagename)
@@ -454,18 +455,48 @@ class Wiki(Module):
             n = 'wiki.history.%d' % i
             self.cgi.hdf.setValue(n, str(i))
             self.cgi.hdf.setValue(n+'.url', href.wiki(pagename, str(row[0])))
+            self.cgi.hdf.setValue(n+'.diff_url', href.wiki(pagename, str(row[0]), 1))
             self.cgi.hdf.setValue(n+'.version', str(row[0]))
             self.cgi.hdf.setValue(n+'.time', time_str)
             self.cgi.hdf.setValue(n+'.author', str(row[2]))
             self.cgi.hdf.setValue(n+'.ipnr', str(row[3]))
             i = i + 1
 
+    def generate_diff(self, pagename, version):
+        from Changeset import DiffColorizer
+        cursor = self.db.cursor ()
+        cursor.execute ('SELECT text FROM wiki '
+                        'WHERE name=%s AND (version=%s or version=%s)'
+                        'ORDER BY version ASC', pagename, version - 1, version)
+        res = cursor.fetchall()
+        if (len(res) == 1):
+            old = ''
+            new = res[0][0].splitlines()
+        elif (len(res) == 2):
+            old = res[0][0].splitlines()
+            new = res[1][0].splitlines()
+        else:
+            raise Exception('Version %d of page "%s" not found'
+                            % (version, pagename))
+        out = StringIO.StringIO()
+        filter = DiffColorizer(out)
+        filter.writeline('header %s version %d | %s version %d header' %
+                         (pagename, version - 1, pagename, version))
+        for line in difflib.Differ().compare(old, new):
+            if line != '  ':
+                filter.writeline(line)
+        filter.close()
+        self.cgi.hdf.setValue('wiki.diff_output', out.getvalue())
+            
+        
     def render(self):
         name = dict_get_with_default(self.args, 'page', 'WikiStart')
         save = dict_get_with_default(self.args, 'save', None)
         edit = dict_get_with_default(self.args, 'edit', None)
+        diff = dict_get_with_default(self.args, 'diff', None)
         preview = dict_get_with_default(self.args, 'preview', None)
         version = dict_get_with_default(self.args, 'version', 0)
+        version = int(version)
 
         self.generate_history(name)
 
@@ -481,6 +512,9 @@ class Wiki(Module):
         elif preview:
             self.cgi.hdf.setValue('wiki.action', 'preview')
             self.cgi.hdf.setValue('title', name + ' (wiki preview)')
+        elif diff and version > 0:
+            self.cgi.hdf.setValue('wiki.action', 'diff')
+            self.generate_diff(name, version)
         else:
             self.perm.assert_permission (perm.WIKI_VIEW)
             if self.args.has_key('text'):
@@ -496,7 +530,7 @@ class Wiki(Module):
         if save:
             page.commit ()
             redirect (href.wiki(page.name))
-            
+
         self.cgi.hdf.setValue('wiki.current_href', href.wiki(page.name))
         self.cgi.hdf.setValue('wiki.page_name', page.name)
         self.cgi.hdf.setValue('wiki.page_source', escape(page.text))

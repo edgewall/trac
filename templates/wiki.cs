@@ -19,7 +19,8 @@
       <?cs each item = $wiki.history ?>
         <tr class="wiki-history-row">
           <td><a class="wiki-history-link" 
-             href="<?cs var:$item.url ?>"><?cs var:$item.version ?></a></td>
+             href="<?cs var:$item.url ?>"><?cs var:$item.version ?></a>&nbsp;(<a class="wiki-history-link"
+		  href="<?cs var:$item.diff_url ?>">diff</a>)</td>
           <td><a class="wiki-history-link" 
                href="<?cs var:$item.url ?>"><?cs var:$item.time ?></a></td>
           <td><a class="wiki-history-link" 
@@ -39,6 +40,28 @@
           <?cs each item = $wiki.title_index ?>
             <li><a href="<?cs var:item.href?>"><?cs var:item.title ?></a></li>
           <?cs /each ?>
+        <?cs elif wiki.action == "diff" ?>
+
+          <div class="hide">
+	    <hr class="hide" />
+	    <h2>-=&gt; Note: Diff viewing requires CSS2 &lt;=-</h2>
+	    <p>
+	      Output below might not be useful.
+	    </p>
+	    <hr class="hide" />
+	  </div>    
+	  <div id="chg-diff">
+	    <div id="chg-legend">
+	      <h3>Legend</h3>
+	      <span class="diff-legend-add"> </span> Added <br />
+	      <span class="diff-legend-rem"> </span> Removed <br />
+	      <span class="diff-legend-mod"> </span> Modified <br />
+	      <span class="diff-legend-unmod"> </span> Unmodified <br />
+	    </div>
+	  </div>
+	  <div class="chg-diff-file">
+	    <?cs var:wiki.diff_output ?>
+	  </div>
         <?cs else ?>
           <?cs if wiki.action == "edit" || wiki.action == "preview" ?>
             <h3>Edit "<?cs var:wiki.page_name ?>"</h3>

@@ -71,8 +71,10 @@ class Href:
         else:
             return href_join(self.base, 'about_trac/')
 
-    def wiki(self, page = None, version=None):
-        if page and version:
+    def wiki(self, page = None, version=None, diff=0):
+        if page and version and diff:
+            return href_join(self.base, 'wiki', page) + '?version=' + str(version) + '&diff=yes'
+        elif page and version:
             return href_join(self.base, 'wiki', page) + '?version=' + str(version)
         elif page:
             return href_join(self.base, 'wiki', page)

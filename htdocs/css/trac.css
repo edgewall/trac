@@ -115,7 +115,7 @@ a.navbar-link:hover {
   border-spacing: 0;
   padding: .5em;
 }
-a.wiki-history-link { display: block; border: none; }
+a.wiki-history-link { border: none; }
 a.wiki-history-link:hover,tr.wiki-history-row:hover {
   background: #ccb; 
   color: #b00; 

@@ -33,35 +33,37 @@ import string
 from svn import fs, util, delta, repos
 
 line_re = re.compile('@@ [+-]([0-9]+),([0-9]+) [+-]([0-9]+),([0-9]+) @@')
+header_re = re.compile('header ([^\|]+) \| ([^\|]+) header')
 space_re = re.compile('  ')
 
 class DiffColorizer:
-    def __init__(self):
+    def __init__(self, out=sys.stdout):
         self.count = 0
         self.block = []
         self.type  = None
         self.p_block = []
         self.p_type  = None
-        print '<table class="diff-table" cellspacing="0">'
+        self.out = out
+        self.out.write('<table class="diff-table" cellspacing="0">')
 
     def writeadd (self, text):
-        print ('<tr><td class="diff-add-left"></td>'
-               '<td class="diff-add-right">'
-               '%s</td></tr>' % text)
+        self.out.write ('<tr><td class="diff-add-left"></td>'
+                        '<td class="diff-add-right">'
+                        '%s</td></tr>' % text)
         
     def writeremove (self, text):
-        print ('<tr><td class="diff-remove-left">%s</td>'
-               '<td class="diff-remove-right"></td></tr>' % text)
+        self.out.write ('<tr><td class="diff-remove-left">%s</td>'
+                        '<td class="diff-remove-right"></td></tr>' % text)
     
     def writeunmodified (self, text):
-        print ('<tr><td class="diff-unmodified">%s</td>'
-               '<td class="diff-unmodified">%s</td></tr>' %
-               (text, text))
+        self.out.write ('<tr><td class="diff-unmodified">%s</td>'
+                        '<td class="diff-unmodified">%s</td></tr>' %
+                        (text, text))
 
     def writemodified (self, old, new):
-        print ('<tr><td class="diff-modified">%s</td>'
-               '<td class="diff-modified">%s</td></tr>' %
-               (old, new))
+        self.out.write ('<tr><td class="diff-modified">%s</td>'
+                        '<td class="diff-modified">%s</td></tr>' %
+                        (old, new))
         
     def print_block (self):
         if self.p_type == '-' and self.type == '+':
@@ -76,15 +78,21 @@ class DiffColorizer:
         self.block = self.p_block = []
     
     def writeline(self, text):
+        match = header_re.search(text)
+        if match:
+            self.out.write ('<tr><td class="diff-line">%s</td>'
+                            '<td class="diff-line">%s</td></tr>' %
+                            (match.group(1), match.group(2)))
+            return
         self.count = self.count + 1
         if self.count < 3:
             return
         match = line_re.search(text)
         if match:
             self.print_block()
-            print ('<tr><td class="diff-line">line %s</td>'
-                   '<td class="diff-line">line %s</td></tr>' %
-                   (match.group(1), match.group(3)))
+            self.out.write ('<tr><td class="diff-line">line %s</td>'
+                            '<td class="diff-line">line %s</td></tr>' %
+                            (match.group(1), match.group(3)))
             return
         type = text[0]
         text = text[1:]
@@ -103,7 +111,7 @@ class DiffColorizer:
 
     def close(self):
         self.print_block()
-        print '</table>'
+        self.out.write('</table>')
 
 
 class DiffEditor (delta.Editor):

@@ -21,7 +21,7 @@
       @import url("<?cs var:$htdocs_location ?>/css/browser.css");
       <?cs elif:trac.active_module == 'timeline' ?>
       @import url("<?cs var:$htdocs_location ?>/css/timeline.css");
-      <?cs elif:trac.active_module == 'changeset' ?>
+      <?cs elif:trac.active_module == 'changeset' || trac.active_module == 'wiki' ?>
       @import url("<?cs var:$htdocs_location ?>/css/changeset.css");
       <?cs elif:trac.active_module == 'newticket' || trac.active_module == 'ticket' ?>
       @import url("<?cs var:$htdocs_location ?>/css/ticket.css");
