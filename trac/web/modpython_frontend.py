@@ -131,12 +131,13 @@ class FieldStorageWrapper(util.FieldStorage):
         # Populate FieldStorage with the original query string parameters, if
         # they aren't already defined through the request body
         if req.args:
+            qsargs = []
             for pair in util.parse_qsl(req.args, 1):
                 if self.has_key(pair[0]):
                     continue
-                file = StringIO(pair[1])
-                self.list.append(util.Field(pair[0], file, "text/plain", {},
-                                            None, {}))
+                qsargs.append(util.Field(pair[0], StringIO(pair[1]),
+                                         "text/plain", {}, None, {}))
+            self.list += qsargs
 
     def get(self, key, default=''):
         return util.FieldStorage.get(self, key, default)
