@@ -143,6 +143,8 @@ class Environment:
     def set_config(self, section, name, value):
         """Changes a config value, these changes are _not_ persistent
         unless saved with save_config()"""
+        if not self.cfg.has_section(section):
+            self.cfg.add_section(section)
         return self.cfg.set(section, name, value)
 
     def save_config(self):

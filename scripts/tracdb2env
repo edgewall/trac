@@ -5,6 +5,15 @@ import sqlite
 import ConfigParser
 from trac.Environment import Environment
 
+additional_config = \
+(('notification', 'smtp_enabled', 'false'),
+ ('notification', 'smtp_server', 'localhost'),
+ ('notification', 'smtp_replyto', 'trac@localhost'),
+ ('logging', 'log_type', 'none'),
+ ('logging', 'log_file', 'trac.log'),
+ ('logging', 'log_level', 'DEBUG'),
+ ('trac', 'database', 'sqlite:db/trac.db'))
+
 def db2env(db_path, env_path):
     env = Environment(env_path, create=1)
     # Open the databases
@@ -12,13 +21,12 @@ def db2env(db_path, env_path):
     new_cnx = env.get_db_cnx()
     old_cursor = old_cnx.cursor()
     new_cursor = new_cnx.cursor()
-    convert_config(old_cursor, env_path)
+    convert_config(env, old_cursor)
     convert_db(old_cursor, new_cursor)
     new_cursor.execute("INSERT INTO system VALUES('database_version', '2')")
     new_cnx.commit()
 
-def convert_config(old_cursor, env_path):
-    cfg = ConfigParser.ConfigParser()
+def convert_config(env, old_cursor):
     old_cursor.execute('SELECT section, name, value FROM config')
     while 1:
         row = old_cursor.fetchone()
@@ -27,13 +35,12 @@ def convert_config(old_cursor, env_path):
         row = [row[0], row[1], row[2]]
         if row[0] == 'general':
             row[0] = 'trac'
-        if not cfg.has_section(row[0]):
-            cfg.add_section(row[0])
         if row[1] == 'database_version':
             continue
-        cfg.set(row[0], row[1], row[2])
-    cfg.set('trac', 'database', 'sqlite:db/trac.db')
-    cfg.write(open(os.path.join(env_path, 'conf', 'trac.ini'), 'w'))
+        env.set_config(row[0], row[1], row[2])
+    for v in additional_config:
+        env.set_config(*v)
+    env.save_config()
 
 def to_utf8(row):
     x = []
