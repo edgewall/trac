@@ -128,6 +128,11 @@ class NotifyEmail(Notify):
                             ' <b>notification.reply_to</b> are unspecified'
                             ' in configuration.',
                             'SMTP Notification Error')
+
+        # Authentication info (optional)
+        self.user_name = self.env.get_config('notification', 'smtp_user')
+        self.password = self.env.get_config('notification', 'smtp_password', '')
+
         Notify.notify(self, resid)
 
     def get_email_addresses(self, txt):
@@ -137,6 +142,8 @@ class NotifyEmail(Notify):
 
     def begin_send(self):
         self.server = smtplib.SMTP(self.smtp_server)
+        if self.user_name:
+            self.server.login(self.user_name, self.password)
 
     def send(self, rcpt, mime_headers={}):
         from email.MIMEText import MIMEText

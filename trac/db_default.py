@@ -440,6 +440,8 @@ default_config = \
   ('mimeviewer', 'enscript_path', 'enscript'),
   ('notification', 'smtp_enabled', 'false'),
   ('notification', 'smtp_server', 'localhost'),
+  ('notification', 'smtp_user', ''),
+  ('notification', 'smtp_password', ''),
   ('notification', 'smtp_always_cc', ''),
   ('notification', 'always_notify_reporter', 'false'),
   ('notification', 'smtp_from', 'trac@localhost'),
