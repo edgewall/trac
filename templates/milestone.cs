@@ -82,43 +82,74 @@
   <div class="descr"><?cs var:milestone.descr ?></div>
  <?cs /if ?>
 
- <?cs if:milestone.mode == "view" ?><h2 class="stats">Status By Component</h2>
+ <?cs if:milestone.mode == "view" ?>
+ <form action="#stats" id="prefs" method="get">
+  <div>
+   <label for="by">View status by</label>
+   <select id="by" name="by">
+    <option<?cs
+      if:milestone.stats.grouped_by == 'component'?> selected="selected"<?cs
+      /if ?>>component</option>
+    <option<?cs
+      if:milestone.stats.grouped_by == 'version'?> selected="selected"<?cs
+      /if ?>>version</option>
+    <option value="owner"<?cs
+      if:milestone.stats.grouped_by == 'owner'?> selected="selected"<?cs
+      /if ?>>owner</option>
+    <option<?cs
+      if:milestone.stats.grouped_by == 'priority'?> selected="selected"<?cs
+      /if ?>>priority</option>
+    <option<?cs
+      if:milestone.stats.grouped_by == 'severity'?> selected="selected"<?cs
+      /if ?>>severity</option>
+   </select>
+   <div>
+    <input name="showempty" id="showempty" type="checkbox"<?cs
+       if:milestone.stats.show_empty ?> checked="checked"<?cs /if ?>>
+    <label for="showempty">Show groups with no assigned tickets</label>
+   </div>
+   <div class="buttons">
+    <input type="submit" value="Update" />
+   </div>
+  </div>
+ </form>
+ <h2 class="stats">Status by <?cs var:milestone.stats.grouped_by ?></h2>
  <table class="listing" id="stats"
-   summary="Shows the milestone completion status grouped by component">
+   summary="Shows the milestone completion status grouped by <?cs
+     var:milestone.stats.grouped_by ?>">
   <thead><tr>
    <th>&nbsp;</th>
    <th class="tickets" scope="col" colspan="2">Tickets</th>
    <th>&nbsp;</th>
   </tr><tr>
-   <th class="name" scope="col">Component</th>
+   <th class="name" scope="col"><?cs var:milestone.stats.grouped_by ?></th>
    <th class="open" scope="col">Active</th>
    <th class="closed" scope="col">Resolved</th>
    <th class="progress" scope="col">Percent Resolved</th>
   </tr></thead>
-  <tbody>
-   <?cs each:component = milestone.stats.components ?>
-    <tr class="<?cs if:name(component) % 2 ?>odd<?cs else ?>even<?cs /if ?>">
+  <?cs if:len(milestone.stats.groups) ?><tbody>
+   <?cs each:group = milestone.stats.groups ?>
+    <tr class="<?cs if:name(group) % 2 ?>odd<?cs else ?>even<?cs /if ?>">
      <th class="name" scope="row"><a href="<?cs
-       var:component.queries.all_tickets ?>"><?cs
-       var:component.name ?></a></th>
+       var:group.queries.all_tickets ?>"><?cs var:group.name ?></a></th>
      <td class="open tickets"><a href="<?cs
-       var:component.queries.active_tickets ?>"><?cs
-       var:component.active_tickets ?></a></td>
+       var:group.queries.active_tickets ?>"><?cs
+       var:group.active_tickets ?></a></td>
      <td class="closed tickets"><a href="<?cs
-       var:component.queries.closed_tickets ?>"><?cs
-       var:component.closed_tickets ?></a></td>
+       var:group.queries.closed_tickets ?>"><?cs
+       var:group.closed_tickets ?></a></td>
      <td class="progress">
-      <?cs if:#component.total_tickets ?>
+      <?cs if:#group.total_tickets ?>
        <div class="progress" style="width: <?cs
-         var:#component.percent_total * #80 / #100 ?>%"><div style="width: <?cs
-         var:#component.percent_complete ?>%"></div>
+         var:#group.percent_total * #80 / #100 ?>%"><div style="width: <?cs
+         var:#group.percent_complete ?>%"></div>
        </div>
-       <p class="percent"><?cs var:#component.percent_complete ?>%</p>
+       <p class="percent"><?cs var:#group.percent_complete ?>%</p>
       <?cs /if ?>
      </td>
     </tr>
    <?cs /each ?>
-  </tbody>
+  </tbody><?cs /if ?>
   <tbody class="totals"><tr>
    <th class="name" scope="row"><a href="<?cs
      var:milestone.queries.all_tickets ?>">Total</a></th>

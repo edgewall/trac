@@ -51,16 +51,22 @@ li.milestone .descr { clear: both; margin-left: 1em }
 .milestone .date { color: #888; font-style: italic }
 .milestone .descr { margin: 1em 0 2em }
 
+/* Milestone view preferences */
+#prefs { margin-top: -5em }
+#prefs fieldset { margin: 1em .5em .5em; padding: .5em 1em 0 }
+
 /* Styles for the statistics table */
 h2.stats {
  background: #f7f7f7;
  border-bottom: 1px solid #d7d7d7;
- margin: 0;
+ clear: right;
+ margin: -2em 0 0;
  padding: 0 .33em;
 }
 #stats { border-bottom: none; margin-top: 0 }
 #stats thead th { color: #999 }
 #stats td, #stats th { padding: 0 .25em }
+#stats th.name { text-transform: capitalize }
 #stats th.tickets { text-align: center }
 #stats th.open, #stats th.closed {
  font-size: smaller;
@@ -78,7 +84,7 @@ h2.stats {
 #stats td.progress div.progress { margin: 3px .5em 3px 2px }
 #stats td.progress p.percent { font-size: 10px; margin: 0 }
 #stats tbody th { font-weight: normal; text-align: left }
-#stats tbody th.name { line-height: 2em; text-transform: capitalize }
+#stats tbody th.name { line-height: 2em }
 #stats tbody.totals tr { border-bottom: 0 }
 #stats tbody.totals th, #stats tbody.totals td {
  font-weight: bold;

@@ -27,9 +27,9 @@ from WikiFormatter import wiki_to_html
 import perm
 
 
-def get_tickets_for_milestone(db, milestone):
+def get_tickets_for_milestone(db, milestone, field='component'):
     cursor = db.cursor ()
-    cursor.execute("SELECT id, status, component FROM ticket "
+    cursor.execute("SELECT id, status, " + field + " FROM ticket "
                    "WHERE milestone = %s", milestone)
     tickets = []
     while 1:
@@ -39,36 +39,31 @@ def get_tickets_for_milestone(db, milestone):
         ticket = {
             'id': int(row['id']),
             'status': row['status'],
-            'component': row['component']
+            field: row[field]
         }
         tickets.append(ticket)
     return tickets
 
-def get_query_links(env, milestone, component=None):
+def get_query_links(env, milestone, grouped_by='component',group=None):
     queries = {}
-    if not component:
+    if not group:
         queries['all_tickets'] = env.href.query({'milestone': milestone})
         queries['active_tickets'] = env.href.query({
-            'milestone': milestone,
-            'status': ['new', 'assigned', 'reopened']
+            'milestone': milestone, 'status': ['new', 'assigned', 'reopened']
         })
         queries['closed_tickets'] = env.href.query({
-            'milestone': milestone,
-            'status': 'closed'
+            'milestone': milestone, 'status': 'closed'
         })
     else:
         queries['all_tickets'] = env.href.query({
-            'milestone': milestone,
-            'component': component
+            'milestone': milestone, grouped_by: group
         })
         queries['active_tickets'] = env.href.query({
-            'milestone': milestone,
-            'component': component,
+            'milestone': milestone, grouped_by: group,
             'status': ['new', 'assigned', 'reopened']
         })
         queries['closed_tickets'] = env.href.query({
-            'milestone': milestone,
-            'component': component,
+            'milestone': milestone, grouped_by: group,
             'status': 'closed'
         })
     return queries
@@ -177,17 +172,24 @@ class Milestone(Module):
         else:
             self.req.redirect(self.env.href.milestone(id))
 
-    def get_components(self):
+    def get_groups(self, by='component'):
         cursor = self.db.cursor ()
-        cursor.execute("SELECT name, owner FROM component ORDER BY name")
-        components = []
+        groups = []
+        if by in ['status', 'resolution', 'severity', 'priority']:
+            cursor.execute("SELECT name FROM enum WHERE type = %s "
+                           "AND name != '' ORDER BY value", by)
+        elif by in ['component', 'milestone', 'version']:
+            cursor.execute("SELECT name FROM %s "
+                           "WHERE name != '' ORDER BY name" % by)
+        elif by == 'owner':
+            cursor.execute("SELECT DISTINCT owner AS name FROM ticket "
+                           "ORDER BY owner")
         while 1:
             row = cursor.fetchone()
             if not row:
                 break
-            component = ( row['name'], row['owner'] )
-            components.append(component)
-        return components
+            groups.append(row['name'])
+        return groups
 
     def get_milestone(self, name):
         cursor = self.db.cursor()
@@ -260,26 +262,35 @@ class Milestone(Module):
         self.req.hdf.setValue('milestone.mode', 'view')
         add_dict_to_hdf(milestone, self.req.hdf, 'milestone')
 
-        tickets = get_tickets_for_milestone(self.db, id)
+        by = self.args.get('by', 'component')
+        self.req.hdf.setValue('milestone.stats.grouped_by', by)
+
+        tickets = get_tickets_for_milestone(self.db, id, by)
         stats = calc_ticket_stats(tickets)
         add_dict_to_hdf(stats, self.req.hdf, 'milestone.stats')
         queries = get_query_links(self.env, milestone['name'])
         add_dict_to_hdf(queries, self.req.hdf, 'milestone.queries')
 
-        components = self.get_components()
-        comp_no = 0
-        for component, owner in components:
-            prefix = 'milestone.stats.components.%s' % comp_no
-            self.req.hdf.setValue('%s.name' % prefix, component)
-            comp_tickets = [t for t in tickets if t['component'] == component]
+        showempty = self.args.has_key('showempty')
+        if showempty:
+            self.req.hdf.setValue('milestone.stats.show_empty', '1')
+
+        groups = self.get_groups(by)
+        group_no = 0
+        for group in groups:
+            group_tickets = [t for t in tickets if t[by] == group]
+            if not showempty and not group_tickets:
+                group_no += 1
+                continue
+            prefix = 'milestone.stats.groups.%s' % group_no
+            self.req.hdf.setValue('%s.name' % prefix, group)
             percent_total = 0
             if len(tickets) > 0:
-                percent_total = float(len(comp_tickets)) / float(len(tickets))
+                percent_total = float(len(group_tickets)) / float(len(tickets))
             self.req.hdf.setValue('%s.percent_total' % prefix,
                                   str(percent_total * 100))
-            stats = calc_ticket_stats(comp_tickets)
+            stats = calc_ticket_stats(group_tickets)
             add_dict_to_hdf(stats, self.req.hdf, prefix)
-            queries = get_query_links(self.env, milestone['name'], component)
+            queries = get_query_links(self.env, milestone['name'], by, group)
             add_dict_to_hdf(queries, self.req.hdf, '%s.queries' % prefix)
-            comp_no += 1
-
+            group_no += 1
