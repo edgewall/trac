@@ -54,7 +54,6 @@
              <th class="header-left"><?cs var:header ?></th>
            <?cs /if ?>
 
-
            <?cs if $header.breakrow ?>
               </tr><tr>
            <?cs /if ?>

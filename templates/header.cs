@@ -34,6 +34,9 @@
       /* Dynamically/template-generated CSS below */
       #navbar { background: url("<?cs var:$htdocs_location ?>/topbar_gradient.png") top left #eee }  
       a.navbar-link { background: url(<?cs var:$htdocs_location ?>/dots.gif) top left no-repeat; }
+      a.navbar-link-active,a.navbar-link-active:visited { background:
+url("<?cs var:$htdocs_location ?>/topbar_active.png") top left repeat-x #ddd;}  
+
        -->
     </style>
     <script src="<?cs var:$htdocs_location ?>/trac.js" type="text/javascript"></script>
@@ -78,15 +81,20 @@
     <div id="navbar-links">
       <?cs call:navlink("Wiki", $trac.href.wiki, "wiki", 
                         "WIKI_VIEW") ?>
-      <?cs call:navlink("Browser", $trac.href.browser, "browser", 
-                        "BROWSER_VIEW") ?>
       <?cs call:navlink("Timeline", $trac.href.timeline, "timeline", 
                         "TIMELINE_VIEW") ?>
-      <?cs call:navlink("Reports", $trac.href.report, "report", 
+      <?cs call:navlink("Browse Source", $trac.href.browser, "browser", 
+                        "BROWSER_VIEW") ?>
+      <?cs if $trac.active_module == "ticket" ?>	
+    	<?cs set:$ticket_view="ticket" ?>
+      <?cs else  ?>	
+    	<?cs set:$ticket_view="report" ?>
+      <?cs /if  ?>	
+      <?cs call:navlink("View Tickets", $trac.href.report, $ticket_view, 
                         "REPORT_VIEW") ?>
-      <?cs call:navlink("Search", $trac.href.search, "search", 
-                        "SEARCH_VIEW") ?>
       <?cs call:navlink("New Ticket", $trac.href.newticket, "newticket", 
                         "TICKET_CREATE") ?>
+      <?cs call:navlink("Search", $trac.href.search, "search", 
+                        "SEARCH_VIEW") ?>
     </div>
   </div>
