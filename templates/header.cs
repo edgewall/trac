@@ -12,7 +12,7 @@
 <html>
   <head>
     <title>Edgewall Trac | <?cs var:title ?></title>
-    <link rel="stylesheet" type="text/css" href="/trac_common/trac.css" />
+    <link rel="stylesheet" type="text/css" href="<?cs var:htdocs_location?>trac.css" />
   </head>
 <body>
 <div id="header">
@@ -30,7 +30,7 @@
 	 <a href="<?cs var:trac.href.logout ?>" 
             class="navbar-link-right"> logout </a>
       <?cs /if ?>
-      <a href="<?cs var:trac.href.wiki ?>/TracGuide" 
+      <a href="<?cs var:trac.href.wiki ?>TracGuide" 
 	 class="navbar-link-right"> Help/Guide </a> | 
       <a href="<?cs var:trac.href.about ?>" 
 	 class="navbar-link-right"> About Trac </a>
