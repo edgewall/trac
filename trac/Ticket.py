@@ -27,6 +27,7 @@ from util import *
 from Module import Module
 import perm
 from Wiki import wiki_to_html
+from Notify import TicketNotifyEmail
 
 fields = ['time', 'component', 'severity', 'priority', 'milestone', 'reporter',
           'owner', 'cc', 'url', 'version', 'status', 'resolution',
@@ -163,6 +164,10 @@ class Ticket (Module):
             cursor.execute ('UPDATE ticket SET changetime=%s WHERE id=%s',
                             now, id)
             self.db.commit()
+        # Notify
+        tn = TicketNotifyEmail(self.env)
+        tn.notify(id, newticket=0, modtime=now)
+
 
     def create_ticket(self):
         """
@@ -199,6 +204,10 @@ class Ticket (Module):
                        *data.values())
         id = self.db.db.sqlite_last_insert_rowid()
         self.db.commit()
+
+        # Notify
+        tn = TicketNotifyEmail(self.env)
+        tn.notify(id, newticket=1)
         
         # redirect to the Ticket module to get a GET request
         self.req.redirect(self.href.ticket(id))

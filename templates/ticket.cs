@@ -29,11 +29,7 @@
  <?cs set numprops = $numprops + #1 ?>
 <?cs /def ?>
 
-
-
-
 <div id="tkt-main">
-
 <div id="tkt-ticket">
  <div id="tkt-date"><?cs var:ticket.opened ?></div>
 <h1 id="tkt-hdr">Ticket #<?cs var:ticket.id ?><?cs var:status ?><br />

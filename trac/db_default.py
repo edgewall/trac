@@ -380,5 +380,8 @@ default_config = \
   ('header_logo', 'src', 'trac_banner.png'),
   ('header_logo', 'alt', 'Trac'),
   ('header_logo', 'width', '236'),
-  ('header_logo', 'height', '73'))
+  ('header_logo', 'height', '73'),
+  ('notification', 'smtp_enabled', 'false'),
+  ('notification', 'smtp_server', 'localhost'),
+  ('notification', 'smtp_replyto', 'trac@localhost'))
 
