@@ -96,13 +96,13 @@ class Timeline (Module):
             item = {'time': time.strftime('%X', t),
                     'date': time.strftime('%x', t),
                     'datetime': time.strftime('%a, %d %b %Y %H:%M:%S GMT', gmt),
-                    'idata': row['idata'],
+                    'idata': int(row['idata']),
                     'tdata': row['tdata'],
                     'type': row['type'],
                     'message': row['message'],
                     'author': row['author']}
             if item['type'] == CHANGESET:
-                item['changeset_href'] = self.href.changeset(row['idata'])
+                item['changeset_href'] = self.href.changeset(item['idata'])
                 item['shortmsg'] = wiki_to_oneliner(shorten_line(item['message']),
                                                     self.req.hdf, self.href)
                 item['message'] = wiki_to_oneliner(item['message'],
@@ -112,7 +112,7 @@ class Timeline (Module):
 	    elif item['type'] == MILESTONE:
 		item['shortmsg'] = ''
 	    else:
-		item['ticket_href'] = self.href.ticket(row['idata'])
+		item['ticket_href'] = self.href.ticket(item['idata'])
 		msg = item['message']
 		shortmsg = shorten_line(msg)
 		item['message'] = wiki_to_oneliner(item['message'],
