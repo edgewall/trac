@@ -4,7 +4,7 @@ div.progress {
  border: 1px inset black;
 }
 div.progress div {
- background: #d7f0d7;
+ background: #bae0ba;
  height: 1.2em;
 }
 
@@ -22,6 +22,17 @@ div.progress div {
  border-bottom: 1px solid #d7d7d7;
  font-size: 14px;
  margin: 0;
+}
+#main.roadmap h2 :link, #main.roadmap h2 :visited {
+ display: block;
+ border-bottom: none;
+}
+#main.roadmap h2 :link:hover, #main.roadmap h2 :visited:hover {
+ color: inherit;
+}
+#main.roadmap h2 em {
+ color: #b00;
+ font-style: normal;
 }
 #main.roadmap .date {
  color: gray;
@@ -55,6 +66,7 @@ div.progress div {
  margin-left: 1em;
 }
 
+#main.milestone h1 em { font-style: normal }
 #main.milestone .description {
  margin: 1em 0 2em 1em;
 }
@@ -63,7 +75,7 @@ div.progress div {
  font-style: italic;
 }
 #main.milestone table {
- margin: 2em 0 0em 0;
+ margin: 2em 0 0;
  border-collapse: collapse;
  line-height: 130%;
  margin: 0 0 2em;
@@ -76,6 +88,7 @@ div.progress div {
  font-size: 14px;
  text-align: left;
 }
+#main.milestone td, #main.milestone th { padding: 0 .25em }
 #main.milestone th { text-align: left }
 #main.milestone td.progress { width: 70% }
 #main.milestone td div.progress { margin: 3px 2px }
@@ -83,7 +96,6 @@ div.progress div {
  background: #eed;
 }
 #main.milestone tbody td, #main.milestone tbody th {
- padding: 0 .25em;
  border: 1px dotted #ddd
 }
 #main.milestone tbody th { text-align: left; font-weight: normal }

@@ -13,7 +13,7 @@
    <caption>Status By Component</caption>
    <thead><tr>
     <th class="name" scope="col">Component</th>
-    <th class="tickets" scope="col">Open Tickets</th>
+    <th class="tickets" scope="col">Active Tickets</th>
     <th class="progress" scope="col">Percent Complete</th>
    </tr></thead>
    <tbody>
