@@ -136,10 +136,16 @@
  <?cs else ?>
    <?cs if wiki.action == "edit" || wiki.action == "preview" ?>
     <h3>Editing "<?cs var:wiki.page_name ?>"</h3>
-     <form action="<?cs var:wiki.current_href ?>#preview" method="post">
+     <form name="form" action="<?cs var:wiki.current_href ?>#preview" method="post">
       <div style="width: 100%">
        <input type="hidden" name="edit_version"
            value="<?cs var:wiki.edit_version?>" />
+       <input type="hidden" name="scroll_bar_pos" id="scroll_bar_pos"
+           value="<?cs var:wiki.scroll_bar_pos?>" />
+       <input type="hidden" name="selection_start" id="selection_start"
+           value="<?cs var:wiki.selection_start?>" />
+       <input type="hidden" name="selection_end" id="selection_end"
+           value="<?cs var:wiki.selection_end?>" />
        <label for="text">Page source:</label><br />
        <textarea id="text" name="text" rows="20" cols="80"
            style="width: 97%"><?cs var:wiki.page_source ?></textarea>
@@ -170,7 +176,9 @@
 	 <?cs /if ?>
          <div class="buttons">
              <input type="submit" name="save" value="Save changes" />&nbsp;
-             <input type="submit" name="preview" value="Preview" />&nbsp;
+             <input type="submit" name="preview" value="Preview" 
+		onclick="save_edit_position(this.form.text, this.form.scroll_bar_pos, this.form.selection_start, this.form.selection_end);"
+		/>&nbsp;
              <input type="submit" name="cancel" value="Cancel" />
 	     <?cs if trac.acl.WIKI_ADMIN ?>
 	         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -183,11 +191,22 @@
        </fieldset>
       </div>
      </form>
+
+
+<script type='text/javascript'>
+	restore_edit_position(document.getElementById("text"), document.getElementById("scroll_bar_pos"), 
+				document.getElementById("selection_start"), document.getElementById("selection_end"));
+</script>
+
    <?cs /if ?>
    <?cs if wiki.action == "view" || wiki.action == "preview" ?>
      <?cs if wiki.action == "preview" ?><hr /><?cs /if ?>
      <a name="preview" />
-     <div class="wikipage">
+     <div class="wikipage"
+        <?cs if wiki.action == "preview" ?>
+	   bgcolor="#F4F4F4" style="background-image:url(<?cs var:$htdocs_location ?>draft.png); background-color:#F4F4F4;"
+        <?cs /if ?>
+      >
          <div id="searchable">
           <?cs var:wiki.page_html ?>
          </div>
@@ -219,4 +238,59 @@
  <?cs /if ?>
 
 </div>
+
+
+</div>
+ <?cs if wiki.action == "preview" ?>
+     <form action="<?cs var:wiki.current_href ?>#preview" method="post">
+      <div style="width: 100%">
+       <input type="hidden" name="edit_version"
+           value="<?cs var:wiki.edit_version?>" />
+       <input type="hidden" name="scroll_bar_pos" id="scroll_bar_pos"
+           value="<?cs var:wiki.scroll_bar_pos?>" />
+       <input type="hidden" name="selection_start" id="selection_start"
+           value="<?cs var:wiki.selection_start?>" />
+       <input type="hidden" name="selection_end" id="selection_end"
+           value="<?cs var:wiki.selection_end?>" />
+       <label for="text">Page source:</label><br />
+       <fieldset>
+         <legend>Change information</legend>
+         <div style="display: inline; float: left; margin: 0 .5em;">
+           <label for="author">Your email or username:</label><br />
+           <input id="author" type="text" name="author" size="30"
+                value="<?cs call:session_name_email() ?>"/>
+         </div>
+         <div>
+           <label for="comment">Comment about this change (optional):</label>
+           <br />
+           <input id="comment" type="text" name="comment" size="60"
+                 value="<?cs var:wiki.comment?>" />
+         </div>
+	 <?cs if trac.acl.WIKI_ADMIN ?>
+	 <div>
+	   <input type="checkbox" name="readonly"
+           <?cs if wiki.readonly == "1"?>checked="checked"<?cs /if ?> /> Page is read-only.
+	 </div>
+	 <?cs /if ?>
+         <div class="buttons">
+             <input type="submit" name="save" value="Save changes" />&nbsp;
+             <input type="submit" name="preview" value="Preview" 
+		onclick="save_edit_position(document.form.text, this.form.scroll_bar_pos, this.form.selection_start, this.form.selection_end);"
+		/>&nbsp;
+             <input type="submit" name="cancel" value="Cancel" />
+	     <?cs if trac.acl.WIKI_ADMIN ?>
+	         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <input type="submit" name="delete_ver" value="Delete this version"
+                       onClick="return confirm('Do you really want to delete version <?cs var:wiki.edit_version?>?\nThis is an irreversible operation.')"/>
+                 <input type="submit" name="delete_page" value="Delete Page" 
+                        onClick="return confirm('Do you really want to delete all versions of this page?\nThis is an irreversible operation.')"/>
+	     <?cs /if ?>
+         </div>
+       </fieldset>
+      </div>
+     </form>
+ <?cs /if ?>
+</div>
+
+
 <?cs include "footer.cs" ?>

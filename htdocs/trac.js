@@ -1,3 +1,42 @@
+//Functions to remember positions when doing preview in wiki
+
+function save_edit_position(textarea, scrollbarposition, selectionStart, selectionEnd)
+{
+  if ((typeof(document["selection"]) == "undefined")
+   && (typeof(textarea["setSelectionRange"]) == "undefined")) {
+    return;
+  }
+
+  textarea.focus();
+  scrollbarposition.value = textarea.scrollTop;
+  if (typeof(document["selection"]) != "undefined") {
+    //Internet Explorer 
+    //selectionStart = textarea.createRange().duplicate();
+  } else if (typeof(textarea["setSelectionRange"]) != "undefined") {
+    //Mozilla/Gecko 
+    selectionStart.value = textarea.selectionStart;
+    selectionEnd.value = textarea.selectionEnd;
+  }
+}
+
+
+function restore_edit_position(textarea, scrollbarposition, selectionStart, selectionEnd)
+{
+  if ((typeof(document["selection"]) == "undefined")
+   && (typeof(textarea["setSelectionRange"]) == "undefined")) {
+    return;
+  }
+
+  textarea.focus();
+  textarea.scrollTop = scrollbarposition.value;
+  if (typeof(document["selection"]) != "undefined") {
+    //selectionStart.select();
+  } else if (typeof(textarea["setSelectionRange"]) != "undefined") {  
+    //Mozilla/Gecko 
+    textarea.setSelectionRange(selectionStart.value, selectionEnd.value);
+  }
+}
+
 // A better way than for example hardcoding foo.onload
 function addEvent(element, type, func){
   if (element.addEventListener) {

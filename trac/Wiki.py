@@ -196,6 +196,10 @@ class WikiModule(Module):
         version = int(self.args.get('version', 0))
         readonly = self.args.get('readonly', None)
 
+        self.req.hdf.setValue('wiki.scroll_bar_pos', self.args.get('scroll_bar_pos', ''))
+        self.req.hdf.setValue('wiki.selection_start', self.args.get('selection_start', ''))
+        self.req.hdf.setValue('wiki.selection_end', self.args.get('selection_end', ''))
+
         # Ask web spiders to not index old version
         if diff or version:
             self.req.hdf.setValue('html.norobots', '1')
