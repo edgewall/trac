@@ -2,16 +2,21 @@
 <?cs include "header.cs"?>
 <?cs include "macros.cs"?>
 
-<div id="ctxtnav" class="nav">
- <ul>
-  <li class="last"><a href="<?cs var:roadmap.href.list ?>"><?cs
-    if:roadmap.showall ?>Show All Milestones<?cs
-    else ?>Show Upcoming Milestones<?cs /if ?></a></li>
- </ul>
-</div>
+<div id="ctxtnav" class="nav"></div>
 
 <div id="content" class="roadmap">
  <h1>Roadmap</h1>
+
+ <form id="prefs" method="get" action="">
+  <div>
+   <input type="checkbox" id="showall" name="show" value="all"<?cs
+    if:!roadmap.showall ?> checked="checked"<?cs /if ?> />
+   <label for="showall">Show already completed milestones</label>
+  </div>
+  <div class="buttons">
+   <input type="submit" value="Update" />
+  </div>
+ </form>
 
  <ul class="milestones"><?cs each:milestone = roadmap.milestones ?>
   <li class="milestone">

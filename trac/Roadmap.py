@@ -43,15 +43,11 @@ class Roadmap(Module):
         show = self.args.get('show', 'current')
         if show == 'all':
             icalhref += '&show=all'
-            self.req.hdf.setValue('roadmap.href.list',
-                                   self.env.href.roadmap())
             query = "SELECT name,due,completed,description FROM milestone " \
                     "WHERE IFNULL(name,'')!='' " \
                     "ORDER BY IFNULL(due,0)=0,due,name"
         else:
             self.req.hdf.setValue('roadmap.showall', '1')
-            self.req.hdf.setValue('roadmap.href.list',
-                                   self.env.href.roadmap('all'))
             query = "SELECT name,due,completed,description FROM milestone " \
                     "WHERE IFNULL(name,'')!='' " \
                     "AND IFNULL(completed,0)=0 " \

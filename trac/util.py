@@ -216,25 +216,6 @@ def pretty_size(size):
     else:
         return '%d MB' % (size / 1024 / 1024)
 
-def pretty_age(then):
-    """Calculate age (inaccurately, only for decorative purposes ;-) for
-    prettyprinting."""
-    units = ((3600 * 24 * 365, 'year',   'years'),
-             (3600 * 24 * 30,  'month',  'months'),
-             (3600 * 24 * 7,   'week',   'weeks'),
-             (3600 * 24,       'day',    'days'),
-             (3600,            'hour',   'hours'),
-             (60,              'minute', 'minutes'))
-    now = time.time()
-    age_s = int(now - then)
-    if age_s < 60:
-        return '%i second%s' % (age_s, age_s > 1 and 's' or '')
-    for u, unit, unit_plural in units:
-        r = int(age_s / u)
-        if r:
-            return '%i %s' % (r, r == 1 and unit or unit_plural)
-    return ''
-
 def pretty_timedelta(time1, time2=None):
     """Calculate time delta (inaccurately, only for decorative purposes ;-) for
     prettyprinting. If time1 is None, the current time is used."""
