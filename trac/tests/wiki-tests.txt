@@ -132,3 +132,25 @@ A0B1, ST62T53C6, IR32V1H000
 <p>
 A0B1, ST62T53C6, IR32V1H000
 </p>
+==============================
+Paragraph
+ * foo bar
+   boo baz
+   * Subitem
+     Subitem line 2
+ * item 2
+   item 2 line 2
+Paragraph
+------------------------------
+<p>
+Paragraph
+</p>
+<ul><li>foo bar
+boo baz
+<ul><li>Subitem
+Subitem line 2
+</li></ul></li><li>item 2
+item 2 line 2
+</li></ul><p>
+Paragraph
+</p>

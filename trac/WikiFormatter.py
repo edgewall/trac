@@ -376,7 +376,11 @@ class Formatter(CommonFormatter):
 
     def _indent_formatter(self, match, fullmatch):
         depth = int((len(fullmatch.group('idepth')) + 1) / 2)
-        self.open_indentation(depth)
+        list_depth = len(self._list_stack)
+        if list_depth > 0 and depth == list_depth + 1:
+            self.in_list_item = True
+        else:
+            self.open_indentation(depth)
         return ''
 
     def _last_table_cell_formatter(self, match, fullmatch):
