@@ -1,6 +1,7 @@
 /* Timeline */
 
 * html #prefs { width: 34em } /* Set width only for IE */
+#prefs fieldset label { display: block }
 #prefs .buttons { margin-top: -1.6em }
 
 h2 {

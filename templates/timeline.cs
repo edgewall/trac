@@ -4,44 +4,28 @@
 <div id="ctxtnav" class="nav"></div>
 
 <div id="content" class="timeline">
- <h1>Timeline</h1>
+<h1>Timeline</h1>
 
- <form id="prefs" action="<?cs var:trac.href.timeline ?>">
-  <div>
-   <label for="from">View changes from</label>
-   <input type="text" size="10" id="from" name="from"
-       value="<?cs var:timeline.from ?>" /> and <input type="text" size="3"
-       id="daysback" name="daysback"  value="<?cs var:timeline.daysback ?>" />
-   <label for="daysback">days back</label>.
-  </div>
-  <fieldset>
-   <?cs if:trac.acl.TICKET_VIEW ?><div class="field">
-    <input type="checkbox" id="ticket" name="ticket" <?cs
-      if:timeline.ticket ?>checked="checked"<?cs /if ?> />
-    <label for="ticket">Ticket changes</label>
-   </div><?cs /if ?>
-   <?cs if:trac.acl.CHANGESET_VIEW ?><div class="field">
-    <input type="checkbox" id="changeset" name="changeset" <?cs
-      if:timeline.changeset ?>checked="checked"<?cs /if ?> />
-    <label for="changeset">Repository checkins</label>
-   </div><?cs /if ?>
-   <?cs if:trac.acl.WIKI_VIEW ?><div class="field">
-    <input type="checkbox" id="wiki" name="wiki" <?cs
-      if:timeline.wiki ?>checked="checked"<?cs /if ?> />
-    <label for="wiki">Wiki changes</label>
-   </div><?cs /if ?>
-   <?cs if:trac.acl.MILESTONE_VIEW ?><div class="field">
-    <input type="checkbox" id="milestone" name="milestone" <?cs
-      if:timeline.milestone ?>checked="checked"<?cs /if ?> />
-    <label for="milestone">Milestones</label>
-   </div><?cs /if ?>
-  </fieldset>
-  <div class="buttons">
-   <input type="submit" value="Update" />
-  </div>
- </form>
+<form id="prefs" action="">
+ <div>
+  <label>View changes from <input type="text" size="10" name="from" value="<?cs
+    var:timeline.from ?>" /></label> and
+  <label><input type="text" size="3" name="daysback" value="<?cs
+    var:timeline.daysback ?>" /> days back</label>.
+ </div>
+ <fieldset><?cs
+  each:filter = timeline.filters ?>
+   <label><input type="checkbox" name="<?cs var:filter.name ?>"<?cs
+     if:filter.enabled ?> checked="checked"<?cs /if ?> /> <?cs
+     var:filter.label ?></label><?cs
+  /each ?>
+ </fieldset>
+ <div class="buttons">
+  <input type="submit" value="Update" />
+ </div>
+</form><?cs
 
-<?cs def:day_separator(date) ?><?cs
+def:day_separator(date) ?><?cs
  if:date != current_date ?><?cs
   if:current_date ?></dl><?cs /if ?><?cs
   set:current_date = $date ?>
@@ -56,9 +40,9 @@ def:tlitem(url, type, msg, descr) ?>
  </dt><?cs
  if:descr ?><dd><?cs var:descr ?></dd><?cs
  /if ?><?cs
-/def ?>
+/def ?><?cs
 
-<?cs each:item = timeline.items ?><?cs
+each:item = timeline.items ?><?cs
  call:day_separator(item.date) ?><?cs
  if:item.type == 'changeset' ?><?cs
   call:tlitem(item.href, 'changeset',

@@ -28,7 +28,7 @@ from trac.WikiFormatter import wiki_to_oneliner, wiki_to_html
 
 import time
 
-AVAILABLE_FILTERS = ('wiki', 'ticket', 'changeset', 'milestone')
+AVAILABLE_FILTERS = ('ticket', 'changeset', 'wiki', 'milestone')
 
 
 class Timeline(Module):
@@ -89,7 +89,6 @@ class Timeline(Module):
         for idx, row in enum(cursor):
             if idx == 0:
                 req.check_modified(int(row[0]))
-
             t = time.localtime(int(row[0]))
             gmt = time.gmtime(int(row[0]))
             item = {
@@ -109,26 +108,24 @@ class Timeline(Module):
         self.perm.assert_permission(perm.TIMELINE_VIEW)
         self.authzperm = SubversionAuthorizer(self.env, req.authname) # Kludge
 
-        _from = req.args.get('from', '')
-        _daysback = req.args.get('daysback', '')
-
-        # Parse the from date and adjust the timestamp to the last second of the day
+        # Parse the from date and adjust the timestamp to the last second of
+        # the day
         t = time.localtime()
-        if _from:
+        if req.args.has_key('from'):
             try:
-                t = time.strptime(_from, '%x')
+                t = time.strptime(req.args.get('from'), '%x')
             except:
                 pass
-        _from = time.mktime((t[0], t[1], t[2], 23, 59, 59, t[6], t[7], t[8]))
+        fromdate = time.mktime((t[0], t[1], t[2], 23, 59, 59, t[6], t[7], t[8]))
+
         try:
-            daysback = int(_daysback)
-            assert daysback >= 0
-        except:
+            daysback = max(0, int(req.args.get('daysback', '')))
+        except ValueError:
             daysback = 30
-        req.hdf['timeline.from'] = time.strftime('%x', time.localtime(_from))
+        req.hdf['timeline.from'] = time.strftime('%x', time.localtime(fromdate))
         req.hdf['timeline.daysback'] = daysback
 
-        stop  = _from
+        stop = fromdate
         start = stop - (daysback + 1) * 86400
         maxrows = int(req.args.get('max', 0))
 
@@ -136,22 +133,14 @@ class Timeline(Module):
         if not filters:
             filters = AVAILABLE_FILTERS[:]
 
-        rss_href = self.env.href.timeline([(x,'on') for x in filters],
-                                          daysback=90, max=50, format='rss')
-        add_link(req, 'alternate', rss_href, 'RSS Feed', 'application/rss+xml',
-                 'rss')
-
+        req.hdf['title'] = 'Timeline'
         format = req.args.get('format')
 
-        req.hdf['title'] = 'Timeline'
-        for f in filters:
-            req.hdf['timeline.%s' % f] = 'checked'
-
-        info = self.get_info(req, start, stop, maxrows, filters)
-        for idx, item in enum(info):
-            render_func = getattr(self, '_render_%s' % item['type'])
-            item = render_func(req, item)
-            if not item:
+        events = self.get_info(req, start, stop, maxrows, filters)
+        for idx, event in enum(events):
+            render_func = getattr(self, '_render_%s' % event['type'])
+            event = render_func(req, event)
+            if not event:
                 continue
 
             if format == 'rss':
@@ -159,14 +148,34 @@ class Timeline(Module):
                 if item['author'].find('@') != -1:
                     item['author.email'] = item['author']
 
-            req.hdf['timeline.items.%d' % idx] = item
+            req.hdf['timeline.items.%d' % idx] = event
 
         if format == 'rss':
-            self.render_rss(req)
+            self.display_rss(req)
         else:
-            req.display('timeline.cs')
+            self.display_html(req, filters)
 
-    def render_rss(self, req):
+    def display_html(self, req, filters):
+        rss_href = self.env.href.timeline([(x,'on') for x in filters],
+                                          daysback=90, max=50, format='rss')
+        add_link(req, 'alternate', rss_href, 'RSS Feed', 'application/rss+xml',
+                 'rss')
+
+        filter_labels = {'wiki': 'Wiki changes', 'ticket': 'Ticket changes',
+                         'changeset': 'Repository check-ins',
+                         'milestone': 'Milestones'}
+        perm_map = {'ticket': perm.TICKET_VIEW, 'changeset': perm.CHANGESET_VIEW,
+                    'wiki': perm.WIKI_VIEW, 'milestone': perm.MILESTONE_VIEW}
+        for idx,fltr in enum([f for f in AVAILABLE_FILTERS
+                              if self.perm.has_permission(perm_map[f])]):
+            req.hdf['timeline.filters.%d' % idx] = {
+                'name': fltr, 'label': filter_labels[fltr],
+                'enabled': int(fltr in filters)
+            }
+
+        req.display('timeline.cs')
+
+    def display_rss(self, req):
         req.display('timeline_rss.cs', 'application/rss+xml')
 
     def _render_changeset(self, req, item):
@@ -188,25 +197,25 @@ class Timeline(Module):
                                                self.db, absurls=absurls)
 
         try:
-            show_files = int(self.env.get_config('timeline', 'changeset_show_files', 0))
+            show_files = int(self.env.get_config('timeline',
+                                                 'changeset_show_files', 0))
         except ValueError, e:
             self.log.warning("Invalid 'changeset_show_files' value, "
                              "please fix trac.ini: %s" % e)
             show_files = 0
 
-        if show_files != 0:
+        if show_files:
             cursor = self.db.cursor()
             cursor.execute("SELECT path,change FROM node_change WHERE rev=%s",
                            (item['idata']))
             files = []
             class_map = {'A': 'add', 'C': 'add', 'D': 'rem', 'M': 'mod'}
-            for name,change in cursor:
+            for path, change in cursor:
                 if show_files > 0 and len(files) >= show_files:
                     files.append('...')
                     break
-                if not self.authzperm.has_permission(name):
+                if not self.authzperm.has_permission(path):
                     continue
-                
                 files.append('<span class="diff-%s">%s</span>'
                              % (class_map.get(change, 'mod'), name))
             item['node_list'] = ', '.join(files) + ': '
