@@ -81,16 +81,20 @@ def get_first_line(text, maxlen):
 
 def lstrip(text, skip):
     """Python2.1 doesn't support custom skip characters"""
-    for i in range(len(text)):
-        if not text[i] in skip:
-            return text[i:]
+    while text:
+        if text[0] in skip:
+            text = text[1:]
+        else:
+            break
     return text
 
 def rstrip(text, skip):
     """Python2.1 doesn't support custom skip characters"""
-    for i in range(len(text)-1, -1, -1):
-        if not text[i] in skip:
-            return text[:i+1]
+    while text:
+        if text[-1] in skip:
+            text = text[:-1]
+        else:
+            break
     return text
 
 def href_join(u1, *tail):

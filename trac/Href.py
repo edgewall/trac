@@ -29,9 +29,14 @@ class Href:
     def log(self, path):
         return href_join(self.base, 'log', path)
         
-    def file(self, path, rev=None):
-        if rev:
+    def file(self, path, rev=None, format=None):
+        if rev and format:
+            return href_join(self.base, 'file', path) + \
+                   '?rev=%s&format=%s' % (str(rev), format)
+        elif rev:
             return href_join(self.base, 'file', path) + '?rev=' + str(rev)
+        elif format:
+            return href_join(self.base, 'file', path) + '?format=' + format
         else:
             return href_join(self.base, 'file', path)
 
@@ -93,6 +98,10 @@ class Href:
             href = href + '?action=' + action
         return href
     
-    def attachment(self, module, id, filename):
-        return href_join(self.base, 'attachment', module, id, filename)
+    def attachment(self, module, id, filename, format=None):
+        if format:
+            return href_join(self.base, 'attachment', module, id, filename,
+                             '?format='+format)
+        else:
+            return href_join(self.base, 'attachment', module, id, filename)
 

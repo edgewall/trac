@@ -303,7 +303,8 @@ class Formatter(CommonFormatter):
     def _svnimg_formatter(self, match, fullmatch):
         prefix_len = match.find(':') + 1
         return '<img src="%s" alt="%s" />' % \
-               (self.env.href.file(match[prefix_len:]), match[prefix_len:])
+               (self.env.href.file(match[prefix_len:], format='raw'),
+                match[prefix_len:])
 
     def _imgurl_formatter(self, match, fullmatch):
         return '<img src="%s" alt="%s" />' % (match, match)

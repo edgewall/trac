@@ -33,61 +33,113 @@ from Module import Module
 
 class FileCommon(Module):
     CHUNK_SIZE = 4096
+    MAX_FILE_SIZE = 128 * 1024
     
     def render (self):
         self.perm.assert_permission (perm.FILE_VIEW)
 
-    def send_file(self, read_func, mime_type, length, last_modified):
+    def display(self):
+        if self.mime_type and self.mime_type[:6] == 'image/':
+            self.req.hdf.setValue('file.highlighted_html',
+                                  '<hr /><img src="?format=raw">')
+        elif self.mime_type:
+            data = self.read_func(self.MAX_FILE_SIZE)
+            if len(data) == self.MAX_FILE_SIZE:
+                self.req.hdf.setValue('file.max_file_size_reached', '1')
+                self.req.hdf.setValue('file.max_file_size',
+                                      str(self.MAX_FILE_SIZE))
+            self.req.hdf.setValue('file.highlighted_html',
+                                  self.env.mimeview.display(data, self.mime_type))
+        self.req.display('file.cs')
+
+    def display_raw(self):
         self.req.send_response(200)
-        self.req.send_header('Content-Type', mime_type)
-        self.req.send_header('Conten-Length', str(length))
-        self.req.send_header('Last-Modified', last_modified)
+        self.req.send_header('Content-Type', self.mime_type)
+        self.req.send_header('Conten-Length', str(self.length))
+        self.req.send_header('Last-Modified', self.last_modified)
         self.req.end_headers()
         while 1:
-            data = read_func(self.CHUNK_SIZE)
+            data = self.read_func(self.CHUNK_SIZE)
             if not data:
                 break
             self.req.write(data)
-
     
 class Attachment(FileCommon):
-    def display(self):
-        type = self.args.get('type', None)
-        id = self.args.get('id', None)
-        filename = os.path.basename(self.args.get('filename', None))
+    def render(self):
+        FileCommon.render(self)
+        
+        self.attachment_type = self.args.get('type', None)
+        self.attachment_id = self.args.get('id', None)
+        self.filename = os.path.basename(self.args.get('filename', None))
 
-        path = os.path.join(self.env.get_attachments_dir(), type, id, filename)
+        self.path = os.path.join(self.env.get_attachments_dir(),
+                                 self.attachment_type,
+                                 self.attachment_id,
+                                 self.filename)
         try:
-            f = open(path, 'rb')
+            f = open(self.path, 'rb')
         except IOError:
             raise util.TracError('Attachment not found')
         
-        mime_type, enc = mimetypes.guess_type(filename)
+        self.mime_type, enc = mimetypes.guess_type(self.filename)
         stat = os.fstat(f.fileno())
-        length = stat[6]
-        last_modified = time.strftime("%a, %d %b %Y %H:%M:%S GMT",
+        self.length = stat[6]
+        self.last_modified = time.strftime("%a, %d %b %Y %H:%M:%S GMT",
                                       time.gmtime(stat[8]))
-        read_func = lambda x: f.read(x)
-        self.send_file(read_func, mime_type, length, last_modified)
+        self.read_func = lambda x: f.read(x)
+
+    def display(self):
+        self.req.hdf.setValue('file.filename', self.filename)
+        if self.attachment_type == 'ticket':
+            self.req.hdf.setValue('file.attachment_parent',
+                                  '#' + self.attachment_id)
+            self.req.hdf.setValue('file.attachment_parent_href',
+                                  self.env.href.ticket(int(self.attachment_id)))
+        FileCommon.display(self)
 
 
 class File(FileCommon):
-    def display (self):
+    def generate_path_links(self):
+        # FIXME: Browser, Log and File should share implementation of this
+        # function.
+        list = self.path.split('/')
+        path = '/'
+        self.req.hdf.setValue('file.filename', list[-1])
+        self.req.hdf.setValue('file.path.0', '[root]')
+        self.req.hdf.setValue('file.path.0.url' , self.env.href.browser(path))
+        i = 0
+        for part in list[:-1]:
+            i = i + 1
+            if part == '':
+                break
+            path = path + part + '/'
+            self.req.hdf.setValue('file.path.%d' % i, part)
+            self.req.hdf.setValue('file.path.%d.url' % i,
+                                  self.env.href.browser(path))
+
+    def display(self):
+        self.generate_path_links()
+        FileCommon.display(self)
+
+    def render(self):
+        FileCommon.render(self)
+        
         rev = self.args.get('rev', None)
-        path = self.args.get('path', '/')
+        self.path = self.args.get('path', '/')
         if not rev:
             rev = svn.fs.youngest_rev(self.fs_ptr, self.pool)
         else:
             rev = int(rev)
         root = svn.fs.revision_root(self.fs_ptr, rev, self.pool)
-        mime_type = svn.fs.node_prop (root, path, svn.util.SVN_PROP_MIME_TYPE,
-                                      self.pool) or 'text/plain'
-        length = svn.fs.file_length(root, path, self.pool)
+        self.mime_type = svn.fs.node_prop (root, self.path,
+                                           svn.util.SVN_PROP_MIME_TYPE,
+                                           self.pool)
+        self.mime_type = self.mime_type or mimetypes.guess_type(self.path)[0]
+        self.length = svn.fs.file_length(root, self.path, self.pool)
         date = svn.fs.revision_prop(self.fs_ptr, rev,
                                 svn.util.SVN_PROP_REVISION_DATE, self.pool)
         date_seconds = svn.util.svn_time_from_cstring(date, self.pool) / 1000000
-        last_modified = time.strftime("%a, %d %b %Y %H:%M:%S GMT",
+        self.last_modified = time.strftime("%a, %d %b %Y %H:%M:%S GMT",
                                       time.gmtime(date_seconds))
-        f = svn.fs.file_contents(root, path, self.pool)
-        read_func = lambda x: svn.util.svn_stream_read(f, x)
-        self.send_file(read_func, mime_type, length, last_modified)
+        f = svn.fs.file_contents(root, self.path, self.pool)
+        self.read_func = lambda x: svn.util.svn_stream_read(f, x)
