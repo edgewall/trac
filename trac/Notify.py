@@ -231,7 +231,7 @@ class TicketNotifyEmail(NotifyEmail):
         i = 1
         width = [0,0,0,0]
         for f in fields:
-            if not f in tkt: continue
+            if not tkt.has_key(f): continue
             idx = 2*(i % 2)
             if len(f) > width[idx]:
                 width[idx] = len(f)
@@ -245,7 +245,7 @@ class TicketNotifyEmail(NotifyEmail):
         sep = l*'-' + '+' + (self.COLS-l)*'-'
         txt = sep + CRLF
         for f in fields:
-            if not f in tkt: continue
+            if not tkt.has_key(f): continue
             txt += format[i%2] % (f.capitalize(), tkt[f])
             i += 1
         txt += sep

@@ -405,7 +405,7 @@ class TicketModule (Module):
                 if self.args.has_key(field) and field != 'reporter':
                     ticket[field] = self.args.get(field)
             self.req.hdf.setValue('ticket.comment', self.args.get('comment'))
-            reporter_id = self.args.get('reporter')
+            reporter_id = self.args.get('author')
             # Wiki format a preview of comment
             self.req.hdf.setValue('ticket.comment_preview',
                                   wiki_to_html(self.args.get('comment'),
