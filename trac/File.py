@@ -71,4 +71,4 @@ class File (Module):
             data = util.svn_stream_read(file, self.CHUNK_SIZE)
             if not data:
                 break
-            self.req.write(data)
+            self.req.write(data.replace('\r',''))

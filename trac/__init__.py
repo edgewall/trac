@@ -6,12 +6,13 @@ Edgewall Software
 U{http://trac.edgewall.com/}
 
 @author: Jonas Borgström <jonas@edgewall.com>
+@author: Daniel Lundin <daniel@edgewall.com>
 """
 __docformat__ = 'epytext en'
 
 __version__ = '0.7.pre'
 __url__ = 'http://trac.edgewall.com/'
-__copyright__ = '(C) 2003 Edgewall Software'
+__copyright__ = '(C) 2003,2004 Edgewall Software'
 __license__ = 'GNU General Public License version 2'
 __license_long__ = """
  Copyright (C) 2003, 2004 Edgewall Software
