@@ -35,9 +35,9 @@
  /if ?></h1>
 <?cs /def ?>
 
-<?cs def:diff_display(change, style) ?><?cs
+<?cs def:diff_display(diff, style) ?><?cs
  if:style == 'sidebyside' ?><?cs
-  each:block = change.blocks ?><?cs
+  each:block = diff.blocks ?><?cs
    if:block.type == 'unmod' ?><tbody class="unmod"><?cs
     each:line = block.base.lines ?><tr>
      <th class="base"><?cs var:#block.base.offset + name(line) + 1 ?></th>
@@ -99,7 +99,7 @@
   </tbody><?cs
   /each ?><?cs
  else ?><?cs
-  each:block = change.blocks ?>
+  each:block = diff.blocks ?>
    <?cs if:block.type == 'unmod' ?><tbody class="unmod"><?cs
     each:line = block.base.lines ?><tr>
      <th class="base"><?cs var:#block.base.offset + name(line) + #1 ?></th>

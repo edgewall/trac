@@ -48,8 +48,8 @@
 }
 
 /* Styles for the list of diffs */
-.diff ul { clear: both; margin: 0; padding: 0 }
-.diff li {
+.diff ul.entries { clear: both; margin: 0; padding: 0 }
+.diff li.entry {
  background: #f7f7f7;
  border: 1px solid #d7d7d7;
  list-style-type: none;

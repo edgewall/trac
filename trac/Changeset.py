@@ -28,6 +28,7 @@ from zipfile import ZipFile, ZipInfo, ZIP_DEFLATED
 
 import svn
 import svn.delta
+import svn.fs
 
 import Diff
 import perm
@@ -47,16 +48,13 @@ class BaseDiffEditor(svn.delta.Editor):
         self.req = req
         self.args = args
         self.env = env
-        self.fileno = 0
 
-    def add_file(self, path, parent_baton, copyfrom_path,
-                 copyfrom_revision, file_pool):
-        return [None, path, file_pool]
+    def open_directory(self, path, parent_baton, base_revision, dir_pool):
+        return [path, path, dir_pool]
 
     def open_file(self, path, parent_baton, base_revision, file_pool):
         return [path, path, file_pool]
 
-    def apply_textdelta(self, file_baton, base_checksum):
         if file_baton:
             self.print_diff(*file_baton)
 
@@ -67,12 +65,52 @@ class HtmlDiffEditor(BaseDiffEditor):
     the output is written to stdout.
     """
 
-    def print_diff(self, old_path, new_path, pool):
-        if not old_path or not new_path:
+    def __init__(self, old_root, new_root, rev, req, args, env):
+        BaseDiffEditor.__init__(self, old_root, new_root, rev, req, args, env)
+        self.fileno = 0
+
+    def close_file(self, file_baton, pool):
+        self.fileno += 1
+
+    def change_file_prop(self, file_baton, name, value, pool):
+        if not file_baton:
             return
 
+        (old_path, new_path, pool) = file_baton
+        prefix = 'changeset.changes.%d.props.%s' % (self.fileno, name)
+        if old_path:
+            old_value = svn.fs.node_prop(self.old_root, old_path, name, pool)
+            self.req.hdf.setValue(prefix + '.old', old_value)
+        if value:
+            self.req.hdf.setValue(prefix + '.new', value)
+
+    def change_dir_prop(self, dir_baton, name, value, pool):
+        if not dir_baton:
+            return
+
+        (old_path, new_path, pool) = dir_baton
+        prefix = 'changeset.changes.%d.props.%s' % (self.fileno, name)
+        if old_path:
+            old_value = svn.fs.node_prop(self.old_root, old_path, name, pool)
+            if old_value:
+                self.req.hdf.setValue(prefix + '.old', old_value)
+        if value:
+            self.req.hdf.setValue(prefix + '.new', value)
+
+    def apply_textdelta(self, file_baton, base_checksum):
+        if not file_baton:
+            return
+        (old_path, new_path, pool) = file_baton
         old_rev = svn.fs.node_created_rev(self.old_root, old_path, pool)
         new_rev = svn.fs.node_created_rev(self.new_root, new_path, pool)
+
+        prefix = 'changeset.changes.%d' % (self.fileno)
+        self.req.hdf.setValue('%s.rev.old' % prefix, str(old_rev))
+        self.req.hdf.setValue('%s.rev.new' % prefix, str(new_rev))
+        self.req.hdf.setValue('%s.browser_href.old' % prefix,
+                              self.env.href.file(old_path, old_rev))
+        self.req.hdf.setValue('%s.browser_href.new' % prefix,
+                              self.env.href.file(new_path, new_rev))
 
         # Try to figure out the charset used. We assume that both the old
         # and the new version uses the same charset, not always the case
@@ -96,16 +134,9 @@ class HtmlDiffEditor(BaseDiffEditor):
                                  new_path, pool, options)
         differ.get_files()
         pobj = differ.get_pipe()
-        prefix = 'changeset.diff.files.%d' % (self.fileno)
-        self.req.hdf.setValue(prefix + '.browser_href.old',
-                              self.env.href.file(old_path, old_rev))
-        self.req.hdf.setValue(prefix + '.browser_href.new',
-                              self.env.href.file(new_path, new_rev))
+
         tabwidth = int(self.env.get_config('diff', 'tab_width', '8'))
-        builder = Diff.HDFBuilder(self.req.hdf, prefix, tabwidth)
-        self.fileno += 1
-        builder.writeline('header %s %s | %s %s redaeh' % (old_path, old_rev,
-                                                           new_path, new_rev))
+        builder = Diff.HDFBuilder(self.req.hdf, '%s.diff' % prefix, tabwidth)
         while 1:
             line = pobj.readline()
             if not line:
@@ -128,7 +159,10 @@ class UnifiedDiffEditor(BaseDiffEditor):
     the output is written to stdout.
     """
 
-    def print_diff(self, old_path, new_path, pool):
+    def apply_textdelta(self, file_baton, base_checksum):
+        if not file_baton:
+            return
+        (old_path, new_path, pool) = file_baton
         options = ['-u']
         options.append('-L')
         options.append("%s\t(revision %d)" % (old_path, self.rev-1))
@@ -217,7 +251,6 @@ class Changeset (Module.Module):
                 break
             info.append({'name': row['name'],
                          'change': row['change'],
-                         'browser_href': self.env.href.browser(row['name'], rev),
                          'log_href': self.env.href.log(row['name'])})
         return info
 
@@ -252,7 +285,7 @@ class Changeset (Module.Module):
                                            changeset_info['message']),
                                            self.req.hdf, self.env, self.db))
         self.req.hdf.setValue('changeset.revision', str(self.rev))
-        util.add_dictlist_to_hdf(change_info, self.req.hdf, 'changeset.changes')
+        util.add_to_hdf(change_info, self.req.hdf, 'changeset.changes')
 
         self.req.hdf.setValue('changeset.href',
                               self.env.href.changeset(self.rev))

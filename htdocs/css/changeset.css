@@ -18,3 +18,6 @@
  margin-top: 0;
 }
 #overview .files { padding: 1px 0 }
+
+.diff ul.props { font-size: 90%; list-style: disc; margin: .5em 0 0; padding: 0 .5em 1em 2em }
+.diff ul.props li { margin: 0; padding: 0 }

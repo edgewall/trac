@@ -23,7 +23,6 @@ import re
 from util import add_to_hdf, escape
 
 line_re = re.compile('@@ [+-]([0-9]+),([0-9]+) [+-]([0-9]+),([0-9]+) @@')
-header_re = re.compile('header ([^\|]+) ([^\|]+) \| ([^\|]+) ([^\|]+) redaeh')
 space_re = re.compile(' ( +)|^ ')
 
 
@@ -36,7 +35,7 @@ class HDFBuilder:
         self.hdf = hdf
         self.prefix = prefix
         self.tabwidth = tabwidth
-        self.changeno = -1
+        self.changeno = 0
         self.blockno = 0
         self.offset_base = 0
         self.offset_changed = 0
@@ -78,8 +77,7 @@ class HDFBuilder:
             self.offset_changed += len(new)
 
     def print_block(self):
-        prefix = '%s.changes.%d.blocks.%d' % (self.prefix, self.changeno,
-                                              self.blockno)
+        prefix = '%s.%d.blocks.%d' % (self.prefix, self.changeno, self.blockno)
         if self.p_type == '-' and self.ttype == '+':
             self._write_block(prefix, 'mod', old=self.p_block, new=self.block)
         elif self.ttype == '+':
@@ -93,13 +91,6 @@ class HDFBuilder:
         self.blockno += 1
 
     def writeline(self, text):
-        match = header_re.search(text)
-        if match:
-            self.hdf.setValue('%s.name.old' % self.prefix, match.group(1))
-            self.hdf.setValue('%s.rev.old' % self.prefix, match.group(2))
-            self.hdf.setValue('%s.name.new' % self.prefix, match.group(3))
-            self.hdf.setValue('%s.rev.new' % self.prefix, match.group(4))
-            return
         if text[0:2] in ['++', '--']:
             return
         match = line_re.search(text)
@@ -147,8 +138,6 @@ def get_change_extent(str1, str2):
 
 
 def get_options(env, req, args, advanced=0):
-    from Session import Session
-    session = Session(env, req)
 
     def get_bool_option(session, args, name, default=0):
         pref = int(session.get('diff_' + name, default))
@@ -159,32 +148,32 @@ def get_options(env, req, args, advanced=0):
             arg = pref
         return arg
 
-    pref = session.get('diff_style', 'inline')
+    pref = req.session.get('diff_style', 'inline')
     arg = args.get('style', pref)
     if args.has_key('update') and arg != pref:
-        session.set_var('diff_style', arg)
+        req.session.set_var('diff_style', arg)
     req.hdf.setValue('diff.style', arg)
 
     if advanced:
 
-        pref = int(session.get('diff_contextlines', 2))
+        pref = int(req.session.get('diff_contextlines', 2))
         arg = int(args.get('contextlines', pref))
         if args.has_key('update') and arg != pref:
-            session.set_var('diff_contextlines', arg)
+            req.session.set_var('diff_contextlines', arg)
         options = ['-U%d' % arg]
         req.hdf.setValue('diff.options.contextlines', str(arg))
 
-        arg = get_bool_option(session, args, 'ignoreblanklines')
+        arg = get_bool_option(req.session, args, 'ignoreblanklines')
         if arg:
             options.append('-B')
         req.hdf.setValue('diff.options.ignoreblanklines', str(arg))
 
-        arg = get_bool_option(session, args, 'ignorecase')
+        arg = get_bool_option(req.session, args, 'ignorecase')
         if arg:
             options.append('-i')
         req.hdf.setValue('diff.options.ignorecase', str(arg))
 
-        arg = get_bool_option(session, args, 'ignorewhitespace')
+        arg = get_bool_option(req.session, args, 'ignorewhitespace')
         if arg:
             options.append('-b')
         req.hdf.setValue('diff.options.ignorewhitespace', str(arg))

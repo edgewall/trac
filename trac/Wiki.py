@@ -173,13 +173,11 @@ class WikiModule(Module):
         comment = res[-1][2] or ''
         time_str = time.strftime('%c', time.localtime(int(res[-1][3])))
         self.req.hdf.setValue('wiki.version', str(version))
-        self.req.hdf.setValue('wiki.diff.time', time_str)
-        self.req.hdf.setValue('wiki.diff.author', escape(author))
-        self.req.hdf.setValue('wiki.diff.comment', escape(comment))
+        self.req.hdf.setValue('wiki.time', time_str)
+        self.req.hdf.setValue('wiki.author', escape(author))
+        self.req.hdf.setValue('wiki.comment', escape(comment))
 
         builder = Diff.HDFBuilder(self.req.hdf, 'wiki.diff')
-        builder.writeline('header %s %d | %s %d redaeh' %
-                          (pagename, version - 1, pagename, version))
         try:
             for line in difflib.Differ().compare(old, new):
                 if line != '  ':

@@ -44,12 +44,12 @@
   </form>
   <dl id="overview">
    <dt class="author">Author:</dt>
-   <dd><?cs var:wiki.diff.author ?></dd>
+   <dd><?cs var:wiki.author ?></dd>
    <dt class="time">Timestamp:</dt>
-   <dd><?cs var:wiki.diff.time ?></dd>
-   <?cs if:wiki.diff.comment ?>
+   <dd><?cs var:wiki.time ?></dd>
+   <?cs if:wiki.comment ?>
     <dt class="comment">Comment:</dt>
-    <dd><?cs var:wiki.diff.comment ?></dd>
+    <dd><?cs var:wiki.comment ?></dd>
    <?cs /if ?>
   </dl>
   <div class="diff">
@@ -62,27 +62,26 @@
      <dt class="mod"></dt><dd>Modified</dd>
     </dl>
    </div>
-   <ul>
-    <li>
-     <h2><?cs var:wiki.diff.name.new ?></h2>
-     <?cs if:diff.style == 'sidebyside' ?>
+   <ul class="entries">
+    <li class="entry">
+     <h2><?cs var:wiki.page_name ?></h2><?cs
+      if:diff.style == 'sidebyside' ?>
       <table class="sidebyside" summary="Differences">
        <colgroup class="base">
         <col class="lineno" /><col class="content" />
+       </colgroup>
        <colgroup class="chg">
         <col class="lineno" /><col class="content" />
        </colgroup>
        <thead><tr>
-        <th colspan="2">Version <?cs var:wiki.diff.rev.old ?></th>
-        <th colspan="2">Version <?cs var:wiki.diff.rev.new ?></th>
-       </tr></thead>
-       <?cs each:change = wiki.diff.changes ?>
-        <tbody>
-         <?cs call:diff_display(change, diff.style) ?>
-        </tbody>
-       <?cs /each ?>
-      </table>
-     <?cs else ?>
+        <th colspan="2">Version <?cs var:wiki.edit_version - 1 ?></th>
+        <th colspan="2">Version <?cs var:wiki.edit_version ?></th>
+       </tr></thead><?cs
+       each:change = wiki.diff ?>
+        <?cs call:diff_display(change, diff.style) ?><?cs
+       /each ?>
+      </table><?cs
+     else ?>
       <table class="inline" summary="Differences">
        <colgroup>
         <col class="lineno" />
@@ -90,17 +89,17 @@
         <col class="content" />
        </colgroup>
        <thead><tr>
-        <th title="Version <?cs var:wiki.diff.rev.old ?>">v<?cs
-          var:wiki.diff.rev.old ?></th>
-        <th title="Version <?cs var:wiki.diff.rev.new ?>">v<?cs
-          var:wiki.diff.rev.new ?></th>
+        <th title="Version <?cs var:wiki.edit_version - 1 ?>">v<?cs
+          var:wiki.edit_version - 1 ?></th>
+        <th title="Version <?cs var:wiki.edit_version ?>">v<?cs
+          var:wiki.edit_version ?></th>
         <th></th>
-       </tr></thead>
-       <?cs each:change = wiki.diff.changes ?>
-        <?cs call:diff_display(change, diff.style) ?>
-       <?cs /each ?>
-      </table>
-     <?cs /if ?>
+       </tr></thead><?cs
+       each:change = wiki.diff ?>
+        <?cs call:diff_display(change, diff.style) ?><?cs
+       /each ?>
+      </table><?cs
+     /if ?>
     </li>
    </ul>
   </div>

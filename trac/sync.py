@@ -60,28 +60,36 @@ def sync(db, repos, fs_ptr, pool):
     db.commit()
 
 def insert_change (pool, fs_ptr, rev, cursor):
-    
+
     class ChangeEditor(delta.Editor):
         def __init__(self, rev, old_root, new_root, cursor):
             self.rev = rev
             self.cursor = cursor
             self.old_root = old_root
             self.new_root = new_root
-        
+
         def delete_entry(self, path, revision, parent_baton, pool):
             self.cursor.execute('INSERT INTO node_change (rev, name, change) '
                                 'VALUES (%s, %s, \'D\')', self.rev, path)
-        
+
         def add_directory(self, path, parent_baton,
                           copyfrom_path, copyfrom_revision, dir_pool):
             self.cursor.execute('INSERT INTO node_change (rev, name, change) '
                                 'VALUES (%s, %s, \'A\')', self.rev, path)
+            return [None, path, dir_pool]
+
+        def open_directory(self, path, parent_baton, base_revision, dir_pool):
+            return [path, path, dir_pool]
+
+        def change_dir_prop(self, dir_baton, name, value, pool):
+            self.cursor.execute('INSERT INTO node_change (rev, name, change) '
+                                'VALUES (%s, %s, \'M\')', self.rev, dir_baton[1])
 
         def add_file(self, path, parent_baton,
                      copyfrom_path, copyfrom_revision, file_pool):
             self.cursor.execute('INSERT INTO node_change (rev, name, change) '
                                 'VALUES (%s, %s, \'A\')',self.rev, path)
-            
+
         def open_file(self, path, parent_baton, base_revision, file_pool):
             self.cursor.execute('INSERT INTO node_change (rev, name, change) '
                                 'VALUES (%s, %s, \'M\')',self.rev, path)
@@ -97,4 +105,3 @@ def insert_change (pool, fs_ptr, rev, cursor):
     repos.svn_repos_dir_delta(old_root, '', '',
                               new_root, '', e_ptr, e_baton, authz_cb,
                               0, 1, 0, 1, pool)
-    
