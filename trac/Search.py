@@ -24,6 +24,7 @@ import string
 from util import *
 from Href import href
 from Module import Module
+from Wiki import wiki_to_oneliner
 import db
 import perm
 
@@ -71,7 +72,7 @@ class Search(Module):
             if not row:
                 break
             item = {'type': row['type'],
-                    'message': row['message'],
+                    'message': wiki_to_oneliner(row['message']),
                     'data': row['data'],
                     'author': row['author']}
             if row['type'] == '1':

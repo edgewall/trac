@@ -44,6 +44,7 @@ class Module:
             self.cgi.hdf.setValue('error.action', e.action)
             self.cgi.hdf.setValue('error.message', str(e))
             self.template_name = 'error.cs'
+            Module.apply_template(self)
         except Exception, e:
             # Catch exceptions and let error.cs display
             # a pretty error message + traceback.

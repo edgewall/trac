@@ -70,7 +70,7 @@ def parse_args():
     if re.search('/search/?', info):
         args['mode'] = 'search'
         return args
-    match = re.search('/wiki/(.*)/?', info)
+    match = re.search('/wiki/(.*[^/])/?', info)
     if match:
         args['mode'] = 'wiki'
         if len(match.group(1)) > 0:
@@ -124,7 +124,6 @@ def main():
         args[x] = _args[x].value
 
     mode = dict_get_with_default(args, 'mode', 'wiki')
-
     module_name, constructor_name, need_svn = modules[mode]
     module = __import__(module_name, globals(),  locals(), [])
     constructor = getattr(module, constructor_name)
