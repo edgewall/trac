@@ -150,7 +150,11 @@ class WikiModule(Module):
 
     def generate_diff(self, pagename, version):
         import Diff
-        cursor = self.db.cursor ()
+        Diff.get_options(self.env, self.req, self.args)
+        if self.args.has_key('update'):
+           self.req.redirect(self.env.href.wiki(pagename, version, 1))
+
+        cursor = self.db.cursor()
         cursor.execute ('SELECT text,author,comment,time FROM wiki '
                         'WHERE name=%s AND (version=%s or version=%s)'
                         'ORDER BY version ASC', pagename, version - 1, version)
@@ -172,8 +176,6 @@ class WikiModule(Module):
         self.req.hdf.setValue('wiki.diff.time', time_str)
         self.req.hdf.setValue('wiki.diff.author', escape(author))
         self.req.hdf.setValue('wiki.diff.comment', escape(comment))
-
-        Diff.get_options(self.env, self.req, self.args)
 
         builder = Diff.HDFBuilder(self.req.hdf, 'wiki.diff')
         builder.writeline('header %s %d | %s %d redaeh' %
@@ -248,16 +250,17 @@ class WikiModule(Module):
         self.req.hdf.setValue('wiki.namedoublequoted',
                               urllib.quote(urllib.quote(name, '')))
 
-        session = Session(self.env, self.req)
-        editrows = self.args.get('editrows')
-        if editrows:
-            self.req.hdf.setValue('wiki.edit_rows', editrows)
-            pref = session.get('wiki_editrows', '20')
-            if editrows != pref:
-                session.set_var('wiki_editrows', editrows)
-        else:
-            self.req.hdf.setValue('wiki.edit_rows',
-                                  session.get('wiki_editrows', '20'))
+        if save or preview:
+            session = Session(self.env, self.req)
+            editrows = self.args.get('editrows')
+            if editrows:
+                self.req.hdf.setValue('wiki.edit_rows', editrows)
+                pref = session.get('wiki_editrows', '20')
+                if editrows != pref:
+                    session.set_var('wiki_editrows', editrows)
+            else:
+                self.req.hdf.setValue('wiki.edit_rows',
+                                      session.get('wiki_editrows', '20'))
 
         if save:
             self.req.hdf.setValue('wiki.action', 'save')

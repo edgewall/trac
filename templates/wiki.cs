@@ -22,8 +22,12 @@
  <?cs if:wiki.action == "diff" ?>
   <h1>Changes in Version <?cs var:wiki.edit_version?> of <a href="<?cs
     var:wiki.current_href ?>"><?cs var:wiki.page_name ?></a></h1>
-  <form method="post" id="prefs" action="">
+  <form method="post" id="prefs" action="<?cs var:cgi_location ?>">
    <div>
+    <input type="hidden" name="mode" value="wiki" />
+    <input type="hidden" name="diff" value="yes" />
+    <input type="hidden" name="version" value="<?cs var:wiki.edit_version?>" />
+    <input type="hidden" name="update" value="yes" />
     <label for="type">View differences</label>
     <select name="style" onchange="this.form.submit()">
      <option value="inline"<?cs
@@ -34,7 +38,7 @@
        /if ?>>side by side</option>
     </select>
     <noscript><div class="buttons">
-     <input type="submit" name="update" value="Update" />
+     <input type="submit" value="Update" />
     </div></noscript>
    </div>
   </form>

@@ -186,6 +186,10 @@ class Changeset (Module.Module):
         else:
             self.rev = youngest_rev
 
+        Diff.get_options(self.env, self.req, self.args, 1)
+        if self.args.has_key('update'):
+            self.req.redirect(self.env.href.changeset(self.rev))
+
         change_info = self.get_change_info (self.rev)
         changeset_info = self.get_changeset_info (self.rev)
 

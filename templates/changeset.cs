@@ -23,7 +23,7 @@
 <div id="content" class="changeset">
 <h1>Changeset <?cs var:changeset.revision ?></h1>
 
-<form method="post" id="prefs" action="<?cs var:changeset.href ?>">
+<?cs if:len(changeset.diff.files) ?><form method="post" id="prefs" action="">
  <div>
   <label for="style">View differences</label>
   <select id="style" name="style">
@@ -42,18 +42,18 @@
   <fieldset id="ignore">
    <legend>Ignore:</legend>
    <div class="field">
-    <input type="checkbox" id="blanklines" name="ignoreblanklines" <?cs
-      if:diff.options.ignoreblanklines ?>checked="checked"<?cs /if ?>/>
+    <input type="checkbox" id="blanklines" name="ignoreblanklines"<?cs
+      if:diff.options.ignoreblanklines ?> checked="checked"<?cs /if ?> />
     <label for="blanklines">Blank lines</label>
    </div>
    <div class="field">
-    <input type="checkbox" id="case" name="ignorecase" <?cs
-      if:diff.options.ignorecase ?>checked="checked"<?cs /if ?>/>
+    <input type="checkbox" id="case" name="ignorecase"<?cs
+      if:diff.options.ignorecase ?> checked="checked"<?cs /if ?> />
     <label for="case">Case changes</label>
    </div>
    <div class="field">
-    <input type="checkbox" id="whitespace" name="ignorewhitespace" <?cs
-      if:diff.options.ignorewhitespace ?>checked="checked"<?cs /if ?>/>
+    <input type="checkbox" id="whitespace" name="ignorewhitespace"<?cs
+      if:diff.options.ignorewhitespace ?> checked="checked"<?cs /if ?> />
     <label for="whitespace">White space changes</label>
    </div>
   </fieldset>
@@ -61,7 +61,7 @@
    <input type="submit" name="update" value="Update" />
   </div>
  </div>
-</form>
+</form><?cs /if ?>
 
 <dl id="overview">
  <dt class="time">Timestamp:</dt>
