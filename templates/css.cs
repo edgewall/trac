@@ -89,7 +89,6 @@ option {  border-bottom: 1px solid #ccc; }
 /* Navbar  */
 
 #navbar {
-        clear: both;
         border: 1px solid #999;
         background: #eee;
         background: url("<?cs var:$htdocs_location ?>/topbar_gradient.png") top left #999; 

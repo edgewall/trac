@@ -1,15 +1,9 @@
 Trac 0.5.1 Release Notes
-======================
-Feb 24, 2004
+========================
+Feb 25, 2004
 
-Edgewall Software is please to announce the release of Trac 0.5.1, also the
-first public release of the program.
+Edgewall Software is pleased to announce the release of Trac 0.5.1.
 
- Get it at:  <http://trac.edgewall.com/> 
-
-
-About Trac
-----------
 Trac is a minimalistic web-based software project management and bug/issue
 tracking system. It provides an interface to revision control systems
 (Subversion), an integrated Wiki and convenient report facilities. 
