@@ -20,7 +20,8 @@
      var:$htdocs_location ?>trac_logo_mini.png" height="30" width="107"
      alt="Trac Powered"/></a>
  <p class="left">
-  Powered by <strong>Trac <?cs var:trac.version ?></strong><br />
+  Powered by <a href="<?cs var:trac.href.about ?>"><strong>Trac <?cs
+var:trac.version ?></strong></a><br />
   By <a href="http://www.edgewall.com/">Edgewall Software</a>.
  </p>
  <p class="right">
