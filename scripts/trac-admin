@@ -504,7 +504,7 @@ class TracAdmin(cmd.Cmd):
 	print
 	print ' If you\'re using Apache, this config example snippet might be helpful:'
 	print
-	print '    Alias /trac/ "/wherever/you/installed/trac/htdocs/"'
+	print '    Alias /trac "/wherever/you/installed/trac/htdocs/"'
 	print '    <Location "/cgi-bin/trac.cgi">'
         print '        SetEnv TRAC_ENV "%s"' % self.envname
 	print '    </Location>'
