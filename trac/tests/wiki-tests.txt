@@ -33,7 +33,7 @@ Paragraph
 </td></tr><tr><td>Foo</td><td>Bar</td><td>Baz
 </td></tr></table>
 <p>
-<a class="ext-link" href="http://www.edgewall.com/">http://www.edgewall.com/</a>
+<a class="ext-link" title="http://www.edgewall.com/" href="http://www.edgewall.com/">http://www.edgewall.com/</a>
 </p>
 ==============================
 #1, [1], {1}
@@ -53,7 +53,7 @@ ticket:1, changeset:1, report:1, source:foo/bar
 ------------------------------
 <p>
 <a class="missing" href="/ticket/1">ticket 1?</a>, <a class="missing" href="/changeset/1">changeset 1?</a>, <a href="/report/1">report 1</a>, 
-<a href="/browser/foo/bar">source foo/bar</a>, <a class="ext-link" href="http://www.edgewall.com/">edgewall</a>
+<a href="/browser/foo/bar">source foo/bar</a>, <a class="ext-link" title="http://www.edgewall.com/" href="http://www.edgewall.com/">edgewall</a>
 </p>
 ==============================
 CamelCase AlabamA ABc AlaBamA FooBar
@@ -109,13 +109,13 @@ out:
 ''RFCs von ftp://ftp.rfc-editor.org/in-notes/rfcXXXX.txt''
 ------------------------------
 <p>
-<i>RFCs von <a class="ext-link" href="ftp://ftp.rfc-editor.org/in-notes/rfcXXXX.txt">ftp://ftp.rfc-editor.org/in-notes/rfcXXXX.txt</a></i>
+<i>RFCs von <a class="ext-link" title="ftp://ftp.rfc-editor.org/in-notes/rfcXXXX.txt" href="ftp://ftp.rfc-editor.org/in-notes/rfcXXXX.txt">ftp://ftp.rfc-editor.org/in-notes/rfcXXXX.txt</a></i>
 </p>
 ==============================
 [wiki:WikiStart Foo] [http://www.edgewall.com/ Edgewall]
 ------------------------------
 <p>
-<a class="missing" href="/wiki/WikiStart">Foo?</a> <a class="ext-link" href="http://www.edgewall.com/">Edgewall</a>
+<a class="missing" href="/wiki/WikiStart">Foo?</a> <a class="ext-link" title="http://www.edgewall.com/" href="http://www.edgewall.com/">Edgewall</a>
 </p>
 ==============================
 foo (FooBar)

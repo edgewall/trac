@@ -13,9 +13,9 @@ h1, h2, h3, h4 {
  letter-spacing: -0.018em;
 }
 h1 { font-size: 21px; margin: .15em 1em 0 0 }
-h2 { font-size: 16px }
-h3 { font-size: 14px }
-hr { border: none;  border-top: 1px solid #ccc; margin: 2em 0; }
+h2 { font-size: 16px; margin: 2em 0 .5em; }
+h3 { font-size: 14px; margin: 1.5em 0 .5em; }
+hr { border: none;  border-top: 1px solid #ccb; margin: 2em 0; }
 address { font-style: normal }
 img { border: none }
 
@@ -32,10 +32,20 @@ ol.arabic     { list-style-type: decimal }
  color: #b00;
  border-bottom: 1px dotted #bbb;
 }
-:link:hover, :visited:hover { background-color: #eee; color: #b00 }
+:link:hover, :visited:hover {
+ background-color: #eee;
+ border-bottom: 1px solid #ddd; 
+ color: #555;
+
+ }
 h1 :link, h1 :visited ,h2 :link, h2 :visited, h3 :link, h3 :visited,
 h4 :link, h4 :visited, h5 :link, h5 :visited, h6 :link, h6 :visited {
  color: inherit;
+}
+
+.ext-link {
+ background: #fff url(../extlink.gif) no-repeat 0 58%;
+ padding-left: 16px;
 }
 
 /* Forms */
@@ -108,16 +118,16 @@ label.disabled { color: #d7d7d7 }
 /* Main navigation bar */
 #mainnav {
  background: #f7f7f7 url(../topbar_gradient.png) top left;
- border: 1px solid #999;
+ border: 1px solid #555;
  font: normal 10px verdana,'Bitstream Vera Sans',helvetica,arial,sans-serif;
  height: 1.6em;
- margin: .33em 0;
+ margin: .66em 0 .33em;
 }
 #mainnav ul { float: right; padding: 0 }
 #mainnav li { border-right: none; padding: 0 }
 #mainnav :link, #mainnav :visited {
  background: url(../dots.gif) top left no-repeat;
- border-left: 1px solid #999;
+ border-left: 1px solid #555;
  border-right: 1px solid #fff;
  border-bottom: none;
  color: #000;
@@ -126,10 +136,12 @@ label.disabled { color: #d7d7d7 }
  float: left;
  /* Unhide */
  line-height: 1.4em;
- padding: .1em 15px;
+ padding: .1em 20px;
 }
 #mainnav .active:link, #mainnav .active:visited {
  background: #d7d7d7 url(../topbar_active.png) top left repeat-x;
+ background: #000;
+ color: #f7f7f7;
  border-top: none;
  border-right: none !important;
  font-weight: bold;

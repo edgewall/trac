@@ -211,7 +211,7 @@ class CommonFormatter:
             return '<a href="%s">%s</a>' % (self._href.wiki(match), match)
 
     def _url_formatter(self, match, fullmatch):
-        return '<a class="ext-link" href="%s">%s</a>' % (match, match)
+        return '<a class="ext-link" title="%s" href="%s">%s</a>' % (match, match, match)
 
     def _fancylink_formatter(self, match, fullmatch):
         link = fullmatch.group('fancyurl')
@@ -223,7 +223,7 @@ class CommonFormatter:
         elif module_link:
             return '<a href="%s">%s</a>' % (module_link, name)
         else:
-            return '<a class="ext-link" href="%s">%s</a>' % (link, name)
+            return '<a class="ext-link" title="%s" href="%s">%s</a>' % (link, link, name)
 
 
 class OneLinerFormatter(CommonFormatter):
