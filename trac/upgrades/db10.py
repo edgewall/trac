@@ -1,7 +1,13 @@
 sql = """
 -- Make the node_change table contain more information, and force a resync
-DELETE FROM revision;
+DROP TABLE revision;
 DROP TABLE node_change;
+CREATE TABLE revision (
+    rev             text PRIMARY KEY,
+    time            integer,
+    author          text,
+    message         text
+);
 CREATE TABLE node_change (
     rev             text,
     path            text,

@@ -151,7 +151,7 @@ class HDFWrapper:
     def __setitem__(self, name, value):
         def add_value(prefix, value):
             from UserDict import UserDict
-            if isinstance(value, basestring):
+            if isinstance(value, (str, unicode)):
                 self.hdf.setValue(prefix, value)
             elif isinstance(value, (dict, UserDict)):
                 for k in value.keys():
