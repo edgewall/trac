@@ -11,7 +11,7 @@
 #changeinfo .options { padding: 0 0 1em 1em }
 #changeinfo .options, #changeinfo .buttons { clear: left }
 #delete { margin-left: 6em }
-#preview { background: #f4f4f4 url(../draft.png); margin-top: 2em }
+#preview { background: #f4f4f4 url(../draft.png); margin: 1em 0 2em }
 
 /* Styles for the page history table
    (extends the styles for "table.listing") */

@@ -20,15 +20,15 @@
 <div id="content" class="wiki">
 
  <?cs if:wiki.action == "diff" ?>
-  <h1>Changes in Version <?cs var:wiki.edit_version?> of <a href="<?cs
+  <h1>Changes in Version <?cs var:wiki.version?> of <a href="<?cs
     var:wiki.current_href ?>"><?cs var:wiki.page_name ?></a></h1>
   <form method="post" id="prefs" action="<?cs var:wiki.current_href ?>">
    <div>
     <input type="hidden" name="mode" value="wiki" />
-    <input type="hidden" name="diff" value="yes" />
-    <input type="hidden" name="version" value="<?cs var:wiki.edit_version?>" />
+    <input type="hidden" name="action" value="diff" />
+    <input type="hidden" name="version" value="<?cs var:wiki.version ?>" />
     <input type="hidden" name="update" value="yes" />
-    <label for="type">View differences</label>
+    <label>View differences
     <select name="style" onchange="this.form.submit()">
      <option value="inline"<?cs
        if:diff.style == 'inline' ?> selected="selected"<?cs
@@ -36,7 +36,7 @@
      <option value="sidebyside"<?cs
        if:diff.style == 'sidebyside' ?> selected="selected"<?cs
        /if ?>>side by side</option>
-    </select>
+    </select></label>
     <noscript><div class="buttons">
      <input type="submit" value="Update" />
     </div></noscript>
@@ -74,8 +74,8 @@
         <col class="lineno" /><col class="content" />
        </colgroup>
        <thead><tr>
-        <th colspan="2">Version <?cs var:wiki.edit_version - 1 ?></th>
-        <th colspan="2">Version <?cs var:wiki.edit_version ?></th>
+        <th colspan="2">Version <?cs var:wiki.version - 1 ?></th>
+        <th colspan="2">Version <?cs var:wiki.version ?></th>
        </tr></thead><?cs
        each:change = wiki.diff ?>
         <?cs call:diff_display(change, diff.style) ?><?cs
@@ -89,10 +89,10 @@
         <col class="content" />
        </colgroup>
        <thead><tr>
-        <th title="Version <?cs var:wiki.edit_version - 1 ?>">v<?cs
-          var:wiki.edit_version - 1 ?></th>
-        <th title="Version <?cs var:wiki.edit_version ?>">v<?cs
-          var:wiki.edit_version ?></th>
+        <th title="Version <?cs var:wiki.version - 1 ?>">v<?cs
+          var:wiki.version - 1 ?></th>
+        <th title="Version <?cs var:wiki.version ?>">v<?cs
+          var:wiki.version ?></th>
         <th></th>
        </tr></thead><?cs
        each:change = wiki.diff ?>
@@ -107,7 +107,7 @@
  <?cs elif wiki.action == "history" ?>
   <h1>Change History of <a href="<?cs var:wiki.current_href ?>"><?cs
     var:wiki.page_name ?></a></h1>
-  <?cs if:wiki.history ?>
+  <?cs if:len(wiki.history) ?>
    <table id="wikihist" class="listing" summary="Change history">
     <thead><tr>
      <th class="date">Date</th>
@@ -134,11 +134,17 @@
  
  <?cs else ?>
   <?cs if wiki.action == "edit" || wiki.action == "preview" ?>
-   <h3>Editing "<?cs var:wiki.page_name ?>"</h3>
-   <form id="edit" action="<?cs var:wiki.current_href ?>#preview" method="post">
+   <h1>Editing "<?cs var:wiki.page_name ?>"</h1><?cs
+    if wiki.action == "preview" ?>
+     <fieldset id="preview">
+      <legend>Preview (<a href="#edit">skip</a>)</legend>
+      <div class="wikipage"><?cs var:wiki.page_html ?></div>
+     </fieldset><?cs
+    /if ?>
+   <form id="edit" action="<?cs var:wiki.current_href ?>" method="post">
     <fieldset class="iefix">
-     <input type="hidden" name="edit_version" value="<?cs
-       var:wiki.edit_version ?>" />
+     <input type="hidden" name="action" value="save" />
+     <input type="hidden" name="version" value="<?cs var:wiki.version ?>" />
      <input type="hidden" id="scroll_bar_pos" name="scroll_bar_pos" value="<?cs
        var:wiki.scroll_bar_pos ?>" />
      <div id="rows">
@@ -171,37 +177,28 @@
     <fieldset id="changeinfo">
      <legend>Change information</legend>
      <div class="field">
-      <label for="author">Your email or username:</label>
-      <br /><input id="author" type="text" name="author" size="30" value="<?cs
-        var:wiki.author ?>" 
-        onChange="document.getElementById('author_bottom').value = this.value;" />
+      <label>Your email or username:<br />
+      <input id="author" type="text" name="author" size="30" value="<?cs
+        var:wiki.author ?>" /></label>
      </div>
      <div class="field">
-      <label for="comment">Comment about this change (optional):</label>
-      <br /><input id="comment" type="text" name="comment" size="60" value="<?cs
-        var:wiki.comment?>" 
-        onChange="document.getElementById('comment_bottom').value = this.value;" />
+      <label>Comment about this change (optional):<br />
+      <input id="comment" type="text" name="comment" size="60" value="<?cs
+        var:wiki.comment?>" /></label>
      </div><br />
      <?cs if trac.acl.WIKI_ADMIN ?>
       <div class="options">
-       <input type="checkbox" name="readonly" id="readonly"<?cs
-         if wiki.readonly == "1"?>checked="checked"<?cs /if ?>
-                 onChange="document.getElementById('readonly_bottom').checked = this.checked;" />
-       <label for="readonly">Page is read-only</label>
+       <label><input type="checkbox" name="readonly" id="readonly"<?cs
+         if wiki.readonly == "1"?>checked="checked"<?cs /if ?> />
+       Page is read-only</label>
       </div>
      <?cs /if ?>
     </fieldset>
     <div class="buttons">
-     <input type="submit" id="save_button" name="save" value="Save changes" />&nbsp;
-     <input type="submit" id="preview_button" name="preview" value="Preview" />&nbsp;
-     <input type="submit" id="cancel_button" name="cancel" value="Cancel" />
-    </div><?cs
-    if wiki.action == "preview" ?>
-     <fieldset id="preview">
-      <legend>Preview</legend>
-      <div class="wikipage"><?cs var:wiki.page_html ?></div>
-     </fieldset><?cs
-    /if ?>
+     <input type="submit" name="save" value="Save changes" />&nbsp;
+     <input type="submit" name="preview" value="Preview" />&nbsp;
+     <input type="submit" name="cancel" value="Cancel" />
+    </div>
     <script type="text/javascript" src="<?cs
       var:htdocs_location ?>js/wikitoolbar.js"></script>
    </form>
@@ -226,7 +223,7 @@
    <div class="buttons">
     <?cs if:trac.acl.WIKI_MODIFY ?>
      <form method="get" action=""><div>
-      <input type="hidden" name="edit" value="yes" />
+      <input type="hidden" name="action" value="edit" />
       <input type="submit" value="Edit This Page" />
      </div></form>
      <form method="get" action="<?cs var:cgi_location?>/attachment/wiki/<?cs
@@ -236,57 +233,15 @@
     <?cs /if ?>
     <?cs if:trac.acl.WIKI_DELETE ?>
      <form method="post" action=""><div id="delete">
-      <input type="hidden" name="edit_version" value="<?cs
-        var:wiki.edit_version?>" />
-       <input type="submit" name="delete_ver" id="delete_ver" value="Delete This Version" onclick="return confirm('Do you really want to delete version <?cs var:wiki.edit_version?> of this page?\nThis is an irreversible operation.')" />
-       <input type="submit" name="delete_page" value="Delete Page" onclick="return confirm('Do you really want to delete all versions of this page?\nThis is an irreversible operation.')" />
+      <input type="hidden" name="action" value="delete" />
+      <input type="hidden" name="version" value="<?cs var:wiki.version ?>" />
+      <input type="submit" name="delete_version" value="Delete This Version" onclick="return confirm('Do you really want to delete version <?cs var:wiki.version?> of this page?\nThis is an irreversible operation.')" />
+      <input type="submit" value="Delete Page" onclick="return confirm('Do you really want to delete all versions of this page?\nThis is an irreversible operation.')" />
      </div></form>
     <?cs /if ?>
    </div>
   <?cs /if ?>
  <?cs /if ?>
- <?cs /if ?>
-</div>
- <?cs if wiki.action == "preview" ?>
-     <form name="submit_bottom" action="<?cs var:wiki.current_href ?>#preview" method="post">
-      <div style="width: 100%">
-      <label for="text">Page source:</label><br />
-       <fieldset>
-         <legend>Change information</legend>
-         <div style="display: inline; float: left; margin: 0 .5em;">
-           <label for="author">Your email or username:</label><br />
-           <input id="author_bottom" type="text" name="author_bottom" size="30"
-                value="<?cs var:wiki.author ?>"
-                 onChange="document.getElementById('author').value = this.value;" />
-         </div>
-         <div>
-           <label for="comment">Comment about this change (optional):</label>
-           <br />
-           <input id="comment_bottom" type="text" name="comment_bottom" size="60"
-                 value="<?cs var:wiki.comment?>" o
-                 onChange="document.getElementById('comment').value = this.value;" />
-         </div>
-	 <?cs if trac.acl.WIKI_ADMIN ?>
-	 <div>
-	   <input type="checkbox" name="readonly_bottom" id="readonly_bottom"
-           <?cs if wiki.readonly == "1"?>checked="checked"<?cs /if ?> 
-                 onChange="document.getElementById('readonly').checked = this.checked;" />
-                <label for="readonly">Page is read-only</label>
-	 </div>
-	 <?cs /if ?>
-         <div class="buttons">
-             <input type="button"  value="Save changes" 
-                    onClick="document.getElementById('save_button').click();" />&nbsp;
-             <input type="button" value="Preview" 
-		onClick="document.getElementById('preview_button').click();"
-                />&nbsp;
-             <input type="button"  value="Cancel" 
-		onClick="document.getElementById('cancel_button').click();"
-                />
-         </div>
-       </fieldset>
-      </div>
-     </form>
  <?cs /if ?>
 </div>
 

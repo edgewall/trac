@@ -68,9 +68,6 @@ function addWikiFormattingToolbar(textarea) {
   });
 
   textarea.parentNode.insertBefore(toolbar, textarea);
-  var br = document.createElement("br");
-  br.style.clear = "left";
-  textarea.parentNode.insertBefore(br, textarea);
 }
 
 // Add the toolbar to all <textarea> elements on the page with the class
