@@ -66,7 +66,7 @@ class Module:
         self.cgi.hdf.setValue('trac.href.login', href.login())
         self.cgi.hdf.setValue('trac.href.logout', href.logout())
         self.cgi.hdf.setValue('trac.href.homepage', 'http://trac.edgewall.com/')
-        self.cgi.hdf.setValue('trac.version', '0.1')
+        self.cgi.hdf.setValue('trac.version', '0.5')
 
         
         self.cgi.hdf.setValue('header_logo.link',

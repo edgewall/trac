@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: iso8859-1 -*-
-__version__ = '0.1'
+__version__ = '0.5'
 __author__ = 'Daniel Lundin <daniel@edgewall.com>, Jonas Borgström <jonas@edgewall.com>'
 __copyright__ = 'Copyright (c) 2004 Edgewall Research & Development'
 __license__ = """
@@ -704,8 +704,8 @@ CREATE INDEX wiki_idx		ON wiki(name,version);
             if arg[0]  == 'list':
                 self._do_wiki_list()
             elif arg[0] == 'import' and len(arg) == 3:
-                file = arg[1]
-                title = arg[2]
+                title = arg[1]
+                file = arg[2]
                 self._do_wiki_import(file, title)
             elif arg[0] == 'export'  and len(arg) in [2,3]:
                 page = arg[1]

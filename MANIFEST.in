@@ -3,12 +3,13 @@ recursive-include htdocs *
 recursive-include doc *
 recursive-include wiki-default *
 recursive-include templates *.cs README
-prune *~
-prune *.tmp
-prune *.bak
-prune *.old
+prune doc/trac-guide
 prune .svn 
 prune */.svn
 prune */*/.svn
 prune */*/*/.svn
 prune */*/*/*/.svn
+global-exclude *~
+global-exclude *.tmp
+global-exclude *.bak
+global-exclude *.old

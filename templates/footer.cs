@@ -4,7 +4,7 @@
      src="<?cs var:htdocs_location?>/trac.png" 
       width="103" height="20" alt="[Trac Logo] " /></a> 
   <div id="footer-left">
-    Powered by <a href="http://trac.edgewall.com/">Trac 0.1</a><br />
+    Powered by <a href="http://trac.edgewall.com/">Trac <?cs var:trac.version ?></a><br />
     By <a href="http://www.edgewall.com/">Edgewall Research &amp;
 Development</a>.
   </div>
