@@ -90,7 +90,8 @@
    </div>
  
  <?cs elif wiki.action == "history" ?>
-  <h1>Change History of <?cs var:wiki.page_name ?></h1>
+  <h1>Change History of <a href="<?cs var:wiki.current_href ?>"><?cs
+    var:wiki.page_name ?></a></h1>
   <?cs if:wiki.history ?>
    <table id="wikihist" class="listing">
     <thead><tr>
