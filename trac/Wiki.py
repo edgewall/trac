@@ -619,7 +619,7 @@ class Wiki(Module):
         try:
             for line in difflib.Differ().compare(old, new):
                 if line != '  ':
-                    filter.writeline(line)
+                    filter.writeline(escape(line))
         except AttributeError:
             raise TracError('Python >= 2.2 is required for diff support.')
         
