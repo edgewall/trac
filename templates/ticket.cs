@@ -39,7 +39,6 @@
 <div id="ticket">
  <div class="date"><?cs var:ticket.opened ?></div>
  <h2><?cs var:ticket.summary ?></h2>
- <hr />
  <table><tr><?cs
   call:ticketprop("Priority", "priority", ticket.priority, 0) ?><?cs
   call:ticketprop("Reporter", "reporter", ticket.reporter, 0) ?><?cs
@@ -58,7 +57,6 @@
   call:ticketprop("Keywords", "keywords", ticket.keywords, 0) ?><?cs
   set:last_prop = #0 ?>
  </tr></table><?cs if ticket.custom.0.name ?>
- <hr />
  <table><tr><?cs each:prop = ticket.custom ?><?cs
    if:prop.type == "textarea" ?><?cs
     call:ticketprop(prop.label, prop.name, prop.value, 1) ?><?cs
@@ -67,10 +65,9 @@
    /if?><?cs
   /each ?>
  </tr></table><?cs /if ?>
- <hr />
- <div class="description">
+ <?cs if:ticket.description ?><div class="description">
   <?cs var:ticket.description.formatted ?>
- </div>
+ </div><?cs /if ?>
 </div>
 
 <?cs if trac.acl.TICKET_MODIFY || ticket.attachments.0.name ?>
