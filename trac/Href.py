@@ -98,13 +98,22 @@ class Href:
         return href
 
     def milestone(self, milestone, action=None):
+        params = []
         if milestone:
-            milestone = urllib.quote_plus(milestone)
-            href = href_join(self.base, 'milestone', str(milestone))
+            if milestone.find('/') >= 0:
+                # pass the milestone ID as query-string parameter, so the slash
+                # doesn't get interpreted as path separator
+                href = href_join(self.base, 'milestone')
+                params.append(('id', milestone))
+            else:
+                href = href_join(self.base, 'milestone',
+                                 urllib.quote_plus(milestone))
         else:
             href = href_join(self.base, 'milestone')
         if action:
-            href = href + '?action=' + action
+            params.append(('action', action))
+        if params:
+            href += '?' + urllib.urlencode(params)
         return href
 
     def settings(self):
