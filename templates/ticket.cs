@@ -155,7 +155,7 @@ onfocus="document.getElementById('comment').focus()">Add/Change
    <input type="hidden" name="id"   value="<?cs var:ticket.id ?>" />
    <label for="reporter">Your email or username:</label><br />
     <input type="text" id="reporter" name="reporter" class="textwidget" size="40"
-           value="<?cs var:trac.authname ?>" /><br />
+           value="<?cs call:session_name_email() ?>" /><br />
   </div>
   <div class="tkt-prop">
   <label for="comment">Add Comment (You may use 
