@@ -379,6 +379,7 @@ class Formatter(CommonFormatter):
                 self.open_paragraph()
             out.write(result + os.linesep)
             
+        self.close_table()
         self.close_paragraph()
         self.close_indentation()
         self.close_list()
