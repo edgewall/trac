@@ -1,0 +1,12 @@
+2004-02-25  Daniel Lundin  <daniel@edgewall.com>
+
+	* Navbar now works properly on error pages.
+	* Cleaned up source code. Removed ugly tabs.
+	* Added missing COPYING, AUTHORS etc. Cleaned up package.
+	* trac-admin now works with python 2.1.
+	* Fixed bugs: #74, #75, #76, #77.
+	* 0.5.1: Minor Release. 
+	
+2004-02-23 Jonas Borgström <jonas@edgewall.com>
+
+	* 0.5: First release.

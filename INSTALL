@@ -1,24 +1,21 @@
 Trac Installation Guide
------------------------
-
+=======================
 The Trac web-based project management tool is implemented as a server side
 cgi-program. Trac is written in the Python programming language and store it's
 data in a sqlite database.
 
 Dependencies
 ------------
-
 The following dependencies have to be installed:
 
-  * Python, version >= 2.1. http://python.org/
-  * subversion, version >= 0.37. http://subversion.tigris.org/
-  * pysqlite, version >= 0.4.3. http://pysqlite.sf.net/
-  * ClearSilver, version >= 0.9.3. http://clearsilver.net/
+  * Python, version >= 2.1.
+  * subversion, version >= 0.37.
+  * pysqlite, version >= 0.4.3
+  * ClearSilver, version >= 0.9.3
   * A CGI-capable web server (only tested with Apache)
 
 Installing Trac
 ---------------
-
         $ python ./setup.py install
 
 This will byte-compile the python source code and install it in the
@@ -27,7 +24,6 @@ htdocs and wiki-default will be copied into $prefix/share/trac/ .
 
 Initializing the database
 -------------------------
-
 Trac stores wiki pages, tickets and other information in a sqlite database.
 Sqlite databases are just ordinary files on the hard drive, no database server
 is required.
@@ -44,7 +40,6 @@ it can find the trac templates directory (the default value should be fine).
 
 Configuring Apache
 ------------------
-
 copy (or symlink) "trac/cgi-bin/trac.cgi" to you web servers /cgi-bin/
 directory. Of course you can configure apache to use the "trac/cgi-bin/"
 directory directly if you like.
@@ -66,7 +61,7 @@ Alias /trac/ "/where/you/put/trac/htdocs/"
 </location>
 
 What next?
-
+----------
 You should now have a working Trac installation at:
 
 http://<yourhostname>/cgi-bin/trac.cgi
@@ -78,3 +73,12 @@ read TracPermissions on how to grant additional privileges to authenticated
 users.
 
 Enjoy!
+
+/The Trac Team
+
+Please also consider joining the mailing list at
+<http://lists.edgewall.com/mailman/listinfo/trac/>.
+
+
+Visit the Trac open source project at <http://trac.edgewall.com/>
+

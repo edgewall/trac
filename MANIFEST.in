@@ -1,16 +1,15 @@
+include RELEASE COPYING AUTHORS INSTALL
 include scripts/trac-admin
-recursive-include cgi-bin *
-recursive-include htdocs *
-recursive-include doc *
+include cgi-bin/trac.cgi
+recursive-include htdocs *.png *.gif *.js README
+recursive-include doc trac_logo.* README
 recursive-include wiki-default *
-recursive-include templates *.cs README RELEASE
-prune doc/trac-guide
-prune .svn 
-prune */.svn
-prune */*/.svn
-prune */*/*/.svn
-prune */*/*/*/.svn
+recursive-include templates *.cs README
 global-exclude *~
 global-exclude *.tmp
 global-exclude *.bak
 global-exclude *.old
+global-exclude .svn
+global-exclude .svn/*
+global-exclude .svn/*/*
+global-exclude .svn/*/*/*
