@@ -34,6 +34,7 @@ class Module:
         self.cgi = neo_cgi.CGI()
 
     def run(self):
+        self.cgi.hdf.setValue('cgi_location', os.getenv('SCRIPT_NAME'))
         try:
             self.render()
         except PermissionError, e:
@@ -71,7 +72,6 @@ class Module:
         
         self.cgi.hdf.setValue('htdocs_location',
                               self.config['general']['htdocs_location'])
-        self.cgi.hdf.setValue('cgi_location', os.getenv('SCRIPT_NAME'))
         self.cgi.hdf.setValue('trac.active_module', self._name)
         self.cgi.hdf.setValue('trac.authname', auth.get_authname())
         self.cgi.hdf.setValue('trac.href.wiki', href.wiki())
