@@ -23,11 +23,11 @@ from __future__ import generators
 from trac.versioncontrol import Authorizer
 
 def SubversionAuthorizer(env, authname):
-    authz_file = env.get_config('trac','authz_file')    
+    authz_file = env.config.get('trac','authz_file')    
     if not authz_file:
         return Authorizer()
 
-    module_name = env.get_config('trac','authz_module_name','')
+    module_name = env.config.get('trac','authz_module_name','')
     db = env.get_db_cnx()
     return RealSubversionAuthorizer(db, authname, module_name, authz_file)
 

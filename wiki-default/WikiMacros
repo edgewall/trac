@@ -74,7 +74,7 @@ You can also use the environment (env) object to access configuration data.
 Example.
 {{{
 def execute(hdf, txt, env):
-    return env.get_config('trac', 'repository_dir')
+    return env.config.get('trac', 'repository_dir')
 }}}
 ----
 See also:  WikiProcessors, WikiFormatting, TracGuide
