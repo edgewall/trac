@@ -71,6 +71,9 @@ class Ticket (Module):
         row = cursor.fetchone ()
         cursor.close ()
 
+        if not row:
+            raise Exception('Ticket not found.')
+
         info = {'id': id }
         # Escape the values so that they are safe to have as html parameters
         for i in range(len(fields)):
