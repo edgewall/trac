@@ -78,6 +78,7 @@ class NotifyEmail(Notify):
     """Baseclass for notification by email."""
 
     smtp_server = 'localhost'
+    smtp_port = 25
     from_email = 'trac+tickets@localhost'
     subject = ''
     server = None
@@ -88,13 +89,12 @@ class NotifyEmail(Notify):
         enabled = self.env.get_config('notification', 'smtp_enabled', '0')
         if not enabled.lower() in TRUE:
             return
-        self.smtp_server = self.env.get_config('notification',
-                                               'smtp_server',
+        self.smtp_server = self.env.get_config('notification', 'smtp_server',
                                                self.smtp_server)
-        self.from_email = self.env.get_config('notification',
-                                              'smtp_from', '')
-        self.replyto_email = self.env.get_config('notification',
-                                                 'smtp_replyto',
+        self.smtp_port = int(self.env.get_config('notification', 'smtp_port',
+                                                 self.smtp_port))
+        self.from_email = self.env.get_config('notification', 'smtp_from', '')
+        self.replyto_email = self.env.get_config('notification', 'smtp_replyto',
                                                  self.from_email)
         self.from_email = self.from_email or self.replyto_email
         if not self.from_email and not self.replyto_email:
@@ -116,7 +116,7 @@ class NotifyEmail(Notify):
         return filter(lambda x: x.find('@') > -1, emails)
 
     def begin_send(self):
-        self.server = smtplib.SMTP(self.smtp_server)
+        self.server = smtplib.SMTP(self.smtp_server, self.smtp_port)
         if self.user_name:
             self.server.login(self.user_name, self.password)
 
