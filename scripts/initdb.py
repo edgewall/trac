@@ -172,6 +172,7 @@ INSERT INTO enum (type, name, value) VALUES('priority', 'p5', 5);
 
 INSERT INTO permission (user, action) VALUES('anonymous', 'LOG_VIEW');
 INSERT INTO permission (user, action) VALUES('anonymous', 'FILE_VIEW');
+INSERT INTO permission (user, action) VALUES('anonymous', 'WIKI_VIEW');
 INSERT INTO permission (user, action) VALUES('anonymous', 'REPORT_VIEW');
 INSERT INTO permission (user, action) VALUES('anonymous', 'TICKET_VIEW');
 INSERT INTO permission (user, action) VALUES('anonymous', 'BROWSER_VIEW');
@@ -190,6 +191,10 @@ INSERT INTO config (section, name, value)
 VALUES('ticket', 'default_severity', 'normal');
 INSERT INTO config (section, name, value)
 VALUES('ticket', 'default_priority', 'normal');
+INSERT INTO config (section, name, value)
+VALUES('ticket', 'default_milestone', '');
+INSERT INTO config (section, name, value)
+VALUES('ticket', 'default_component', 'general');
 
 INSERT INTO report (id, author, title, sql) 
 	VALUES (1, NULL, 'active tickets', 
