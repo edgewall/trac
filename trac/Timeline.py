@@ -106,7 +106,7 @@ class Timeline (Module):
                 break
             t = time.localtime(int(row['time']))
             gmt = time.gmtime(int(row['time']))
-            item = {'time': time.strftime('%X', t),
+            item = {'time': time.strftime('%H:%M', t),
                     'date': time.strftime('%x', t),
                     'datetime': time.strftime('%a, %d %b %Y %H:%M:%S GMT', gmt),
                     'idata': int(row['idata']),

@@ -53,7 +53,7 @@
 <?cs def:tlitem(url, type, msg, descr) ?>
  <dt class="<?cs var:type ?>">
   <a href="<?cs var:url ?>"><span class="time"><?cs
-    var:item.time ?> :</span> <?cs var:msg ?></a>
+    var:item.time ?></span> <?cs var:msg ?></a>
  </dt>
  <?cs if:descr ?><dd><?cs var:descr ?></dd><?cs /if ?>
 <?cs /def ?>
