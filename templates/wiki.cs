@@ -133,7 +133,7 @@
  <?cs else ?>
   <?cs if wiki.action == "edit" || wiki.action == "preview" ?>
    <h3>Editing "<?cs var:wiki.page_name ?>"</h3>
-   <form name="form" action="<?cs var:wiki.current_href ?>#preview" method="post">
+   <form action="<?cs var:wiki.current_href ?>#preview" method="post">
     <div style="width: 100%">
      <input type="hidden" name="edit_version" value="<?cs
        var:wiki.edit_version?>" />
@@ -157,7 +157,7 @@
       <div style="display: inline; float: left">
        <label for="author">Your email or username:</label><br />
        <input id="author" type="text" name="author" size="30" value="<?cs
-         var:wiki.author ?>"/>
+         var:wiki.author ?>" />
       </div>
       <div>
        <label for="comment">Comment about this change (optional):</label>
@@ -174,7 +174,7 @@
       <?cs /if ?>
       <div class="buttons">
        <input type="submit" name="save" value="Save changes" />&nbsp;
-       <input type="submit" name="preview" value="Preview"  onclick="saveEditPosition(this.form.text, this.form.scroll_bar_pos, this.form.selection_start, this.form.selection_end);"/>&nbsp;
+       <input type="submit" name="preview" value="Preview" onclick="saveEditPosition(this.form.text, this.form.scroll_bar_pos, this.form.selection_start, this.form.selection_end);" />&nbsp;
        <input type="submit" name="cancel" value="Cancel" />
        <?cs if trac.acl.WIKI_DELETE ?>
         <input type="submit" name="delete_ver" id="delete_ver" value="Delete this version" onclick="return confirm('Do you really want to delete version <?cs var:wiki.edit_version?> of this page?\nThis is an irreversible operation.')" />
@@ -220,7 +220,5 @@
   <?cs /if ?>
  <?cs /if ?>
  <?cs /if ?>
- </div>
-</div>
 </div>
 <?cs include "footer.cs" ?>
