@@ -1,7 +1,7 @@
  # -*- coding: iso8859-1 -*-
 #
-# Copyright (C) 2003, 2004 Edgewall Software
-# Copyright (C) 2003, 2004 Jonas Borgström <jonas@edgewall.com>
+# Copyright (C) 2003, 2004, 2005 Edgewall Software
+# Copyright (C) 2003, 2004, 2005 Jonas Borgström <jonas@edgewall.com>
 #
 # Trac is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License as
@@ -267,7 +267,7 @@ class Formatter(CommonFormatter):
 
     _compiled_rules = re.compile('(?:' + string.join(_rules, '|') + ')')
     _processor_re = re.compile('#\!([a-zA-Z0-9/+-]+)')
-    _anchor_re = re.compile('[^\w\d\.-_:]+', re.UNICODE)
+    _anchor_re = re.compile('[^\w\d\.-:]+', re.UNICODE)
     mime_type = ""
     anchors = []
 
@@ -381,7 +381,7 @@ class Formatter(CommonFormatter):
 
         depth = min(len(fullmatch.group('hdepth')), 5)
         heading = match[depth + 1:len(match) - depth - 1]
-        anchor = anchor_base = self._anchor_re.sub('', heading)
+        anchor = anchor_base = self._anchor_re.sub('', heading.decode('utf-8'))
         if not anchor or not anchor[0].isalpha():
             # an ID must start with a letter in HTML
             anchor = 'a' + anchor
@@ -390,7 +390,8 @@ class Formatter(CommonFormatter):
             anchor = anchor_base + str(i)
             i += 1
         self.anchors.append(anchor)
-        self.out.write('<h%d id="%s">%s</h%d>' % (depth, anchor, heading, depth))
+        self.out.write('<h%d id="%s">%s</h%d>' % (depth, anchor.encode('utf-8'),
+                                                  heading, depth))
         return ''
 
     def _svnimg_formatter(self, match, fullmatch):
