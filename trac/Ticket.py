@@ -133,12 +133,13 @@ class Ticket(UserDict):
         self._forget_changes()
         return id
 
-    def save_changes(self, db, author, comment):
+    def save_changes(self, db, author, comment, when = 0):
         """Store ticket changes in the database.
         The ticket must already exist in the database."""
         assert self.has_key('id')
         cursor = db.cursor()
-        now = int(time.time())
+        if not when:
+            when = int(time.time())
         id = self['id']
         
         if not self._old and not comment: return # Not modified
@@ -156,23 +157,29 @@ class Ticket(UserDict):
             cursor.execute ('INSERT INTO ticket_change '
                             '(ticket, time, author, field, oldvalue, newvalue) '
                             'VALUES (%s, %s, %s, %s, %s, %s)',
-                            id, now, author, fname, self._old[name], self[name])
+                            id, when, author, fname, self._old[name], self[name])
         if comment:
             cursor.execute ('INSERT INTO ticket_change '
                             '(ticket,time,author,field,oldvalue,newvalue) '
                             "VALUES (%s, %s, %s, 'comment', '', %s)",
-                            id, now, author, comment)
+                            id, when, author, comment)
 
-        cursor.execute ('UPDATE ticket SET changetime=%s WHERE id=%s', now, id)
+        cursor.execute ('UPDATE ticket SET changetime=%s WHERE id=%s', when, id)
         db.commit()
         self._forget_changes()
 
-    def get_changelog(self, db):
+    def get_changelog(self, db, when=0):
         """Returns the changelog as a list of dictionaries"""
         cursor = db.cursor()
-        cursor.execute('SELECT time, author, field, oldvalue, newvalue '
-                       'FROM ticket_change '
-                       'WHERE ticket=%s ORDER BY time', self['id'])
+        if when:
+            cursor.execute('SELECT time, author, field, oldvalue, newvalue '
+                           'FROM ticket_change '
+                           'WHERE ticket=%s AND time=%s'
+                           'ORDER BY time', self['id'], when)
+        else:
+            cursor.execute('SELECT time, author, field, oldvalue, newvalue '
+                           'FROM ticket_change '
+                           'WHERE ticket=%s ORDER BY time', self['id'])
         log = []
         while 1:
             row = cursor.fetchone()
@@ -314,12 +321,15 @@ class TicketModule (Module):
 
         ticket.populate(self.args)
 
+        now = int(time.time())
+
         ticket.save_changes(self.db,
                             self.args.get('author', self.req.authname),
-                            self.args.get('comment'))
+                            self.args.get('comment'),
+                            when=now)
 
         tn = TicketNotifyEmail(self.env)
-        tn.notify(ticket, newticket=0, modtime=time.time())
+        tn.notify(ticket, newticket=0, modtime=now)
         self.req.redirect(self.env.href.ticket(id))
 
     def insert_ticket_data(self, hdf, id, ticket, reporter_id):

@@ -190,34 +190,30 @@ class TicketNotifyEmail(NotifyEmail):
         self.hdf.setValue('email.subject', subject)
         changes=''
         if not self.newticket and modtime:  # Ticketchange
-            cursor = self.db.cursor()
-            cursor.execute('SELECT author, field, oldvalue, newvalue '
-                           ' FROM ticket_change WHERE ticket=%s AND time=%s',
-                           ticket['id'], modtime)
-            rows=cursor.fetchall()
-            for r in rows:
-                self.hdf.setValue('ticket.change.author', str(r[0]))
-                pfx='ticket.change.%s' % r[1]
+            changelog = ticket.get_changelog(self.db, modtime)
+            for date, author, field, old, new in changelog:
+                self.hdf.setValue('ticket.change.author', author)
+                pfx='ticket.change.%s' % field
                 newv = ''
-                if r[1] == 'comment':
-                    newv = wrap(r[3], self.COLS, ' ', ' ')
-                elif r[1] == 'description':
-                    new_descr = wrap(r[3], self.COLS, ' ', ' ')
-                    old_descr = wrap(r[2], self.COLS, '> ', '> ')
+                if field == 'comment':
+                    newv = wrap(new, self.COLS, ' ', ' ')
+                elif field == 'description':
+                    new_descr = wrap(new, self.COLS, ' ', ' ')
+                    old_descr = wrap(old, self.COLS, '> ', '> ')
                     old_descr = old_descr.replace(2*CRLF, CRLF + '>' + CRLF)
                     cdescr = CRLF
                     cdescr += 'Old description:' + 2*CRLF + old_descr + 2*CRLF
                     cdescr += 'New description:' + 2*CRLF + new_descr + CRLF
                     self.hdf.setValue('email.changes_descr', cdescr)
                 else:
-                    newv = r[3]
-                    l = 7 + len(r[1])
-                    chg = wrap('%s => %s' % (r[2], r[3]), self.COLS-l,'', l*' ')
-                    changes += '  * %s:  %s%s' % (r[1], chg, CRLF)
+                    newv = new
+                    l = 7 + len(field)
+                    chg = wrap('%s => %s' % (old, new), self.COLS-l,'', l*' ')
+                    changes += '  * %s:  %s%s' % (field, chg, CRLF)
                 if newv:
-                    self.hdf.setValue('%s.oldvalue' % pfx, str(r[2]))
+                    self.hdf.setValue('%s.oldvalue' % pfx, old)
                     self.hdf.setValue('%s.newvalue' % pfx, newv)
-                self.hdf.setValue('%s.author' % pfx, str(r[0]))
+                self.hdf.setValue('%s.author' % pfx, author)
             if changes:
                 self.hdf.setValue('email.changes_body', changes)
         NotifyEmail.notify(self, ticket['id'], subject)
