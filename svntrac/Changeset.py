@@ -1,4 +1,4 @@
-# svntrac
+# -*- coding: iso8859-1 -*-
 #
 # Copyright (C) 2003 Edgewall Software
 # Copyright (C) 2003 Jonas Borgström <jonas@edgewall.com>
@@ -28,7 +28,6 @@ from xml.sax.saxutils import escape
 
 import re
 import string
-import StringIO
 from svn import fs, util, delta, repos
 
 line_re = re.compile('@@ [+-]([0-9]+),([0-9]+) [+-]([0-9]+),([0-9]+) @@')
@@ -164,7 +163,7 @@ def render_diffs(fs_ptr, rev, pool):
                               0, 1, 0, 1, pool)
 
 class Changeset (Module):
-    template_name = 'changeset.template'
+    template_name = 'changeset.cs'
 
     def get_changeset_info (self, rev):
         cnx = db.get_connection()
@@ -180,24 +179,15 @@ class Changeset (Module):
 
         cursor.execute ('SELECT name, change FROM node_change ' +
                         'WHERE rev=%d' % rev)
-        return cursor.fetchall()
-        
-    def print_item (self, out, item):
-        action = {
-            'A': 'added',
-            'D': 'deleted',
-            'M': 'modified'
-            }
-        out.write ('<tr>\n')
-        if item['change'] in ['A', 'M']:
-            out.write ('<td><a href="%s">%s</a></td><td>%s</td>'
-                       % (href.log(item['name']),
-                          item['name'],
-                          action[item['change']]))
-        else:
-            out.write ('<td>%s</td><td>%s</td>' % (item['name'],
-                                                   action[item['change']]))
-        out.write ('</tr>')
+        info = []
+        while 1:
+            row = cursor.fetchone()
+            if not row:
+                break
+            info.append({'name': row['name'],
+                         'change': row['change'],
+                         'log_href': href.log(row['name'])})
+        return info
         
     def render (self):
         perm.assert_permission (perm.CHANGESET_VIEW)
@@ -207,22 +197,25 @@ class Changeset (Module):
         else:
             self.rev = fs.youngest_rev(self.fs_ptr, self.pool)
 
-        out = StringIO.StringIO()
         change_info = self.get_change_info (self.rev)
-
         for item in change_info:
-            self.print_item (out, item)
-            
+            item['log_href'] = href.log(item['name'])
+
         changeset_info = self.get_changeset_info (self.rev)
         
-        self.namespace['time'] = time_to_string (int(changeset_info['time']))
-        self.namespace['author']          = changeset_info['author']
-        self.namespace['message']         = changeset_info['message']
-        self.namespace['revision']        = self.rev
-        self.namespace['changeset_info']  = out.getvalue()
+        self.cgi.hdf.setValue('changeset.time',
+                              time_to_string (int(changeset_info['time'])))
+        self.cgi.hdf.setValue('changeset.author', changeset_info['author'])
+        self.cgi.hdf.setValue('changeset.message', changeset_info['message'])
+        self.cgi.hdf.setValue('changeset.revision', str(self.rev))
 
+        add_dictlist_to_hdf(change_info, self.cgi.hdf, 'changeset.changes')
+        
     def apply_template (self):
         Module.apply_template(self)
-        print '<h3>diffs</h3>'
         render_diffs(self.fs_ptr, int(self.rev), self.pool)
-        print self.namespace['footer']
+        import neo_cs
+        cs = neo_cs.CS(self.cgi.hdf)
+        cs.parseFile('../templates/footer.cs')
+        sys.stdout.write(cs.render())
+

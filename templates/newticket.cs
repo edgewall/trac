@@ -1,26 +1,31 @@
-%(header)s
+<?cs include "../templates/header.cs" ?>
 
 <h3>New ticket:</h3>
 
-<form action="%(cgi_name)s" method="POST">
+<form action="<?cs var:cgi_name ?>" method="POST">
 <input type="hidden" name="mode" value="ticket">
 <input type="hidden" name="action" value="create">
 <input type="hidden" name="status" value="new">
 <table>
 <tr>
-<td align="right">reporter:</td><td><input type="text" name="reporter" value="%(reporter)s"></td>
-<td align="right">priority:</td><td>%(priority_select)s</td>
+<td align="right">reporter:</td><td><input type="text" name="reporter" value="<?cs var:newticket.reporter ?>"></td>
+<td align="right">priority:</td>
+<td><?cs var:newticket.priority_select ?></td>
 </tr>
 <tr>
-<td align="right">component:</td><td>%(component_select)s</td>
-<td align="right">milestone:</td><td>%(milestone_select)s</td>
+<td align="right">component:</td>
+<td><?cs var:newticket.component_select ?></td>
+<td align="right">milestone:</td>
+<td<?cs var:newticket.milestone_select ?></td>
 </tr>
 <tr>
-<td align="right">version:</td><td>%(version_select)s</td>
-<td align="right">assign to:</td><td><input type="text" name="owner"></td>
+<td align="right">version:</td>
+<td><?cs var:newticket.version_select ?></td>
+<td align="right">assign to:</td>
+<td><input type="text" name="owner"></td>
 </tr>
 <tr>
-<td align="right">severity:</td><td>%(severity_select)s</td>
+<td align="right">severity:</td><td><?cs var:newticket.severity_select ?></td>
 </tr>
 <tr>
 <td align="right">cc:</td>
@@ -48,4 +53,4 @@
 </table>
 </form>
 
-%(footer)s
+<?cs include "../templates/footer.cs" ?>

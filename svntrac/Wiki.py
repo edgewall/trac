@@ -1,4 +1,4 @@
-# svntrac
+# -*- coding: iso8859-1 -*-
 #
 # Copyright (C) 2003 Edgewall Software
 # Copyright (C) 2003 Jonas Borgström <jonas@edgewall.com>
@@ -290,7 +290,7 @@ class Page:
 
 
 class Wiki(Module):
-    template_name = 'wiki.template'
+    template_name = 'wiki.cs'
 
     def render(self):
         name = dict_get_with_default(self.args, 'page', 'WikiStart')
@@ -310,16 +310,16 @@ class Wiki(Module):
             out.write ('<h2>edit <a href="%s">%s</a></h2>' %
                        (href.wiki(page.name), page.name))
             page.render_edit (out)
-            self.namespace['title'] = 'wiki - edit'
+            self.cgi.hdf.setValue('title', 'wiki - edit')
         elif action == 'preview':
             out.write ('<h2>edit <a href="%s">%s</a></h2>' %
                        (href.wiki(page.name), page.name))
             page.render_preview (out)
-            self.namespace['title'] = 'wiki - preview'
+            self.cgi.hdf.setValue('title', 'wiki - preview')
         else:
             page.render_view (out)
-            self.namespace['title'] = 'wiki - view'
-        self.namespace['content'] = out.getvalue()
+            self.cgi.hdf.setValue('title', 'wiki - view')
+        self.cgi.hdf.setValue('content', out.getvalue())
 
 
 ###

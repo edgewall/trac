@@ -1,4 +1,4 @@
-# svntrac
+# -*- coding: iso8859-1 -*-
 #
 # Copyright (C) 2003 Edgewall Software
 # Copyright (C) 2003 Jonas Borgström <jonas@edgewall.com>
@@ -37,7 +37,7 @@ fields = ['time', 'component', 'severity', 'priority', 'milestone', 'reporter',
           'summary', 'description']
 
 class Newticket (Module):
-    template_name = 'newticket.template'
+    template_name = 'newticket.cs'
     def render (self):
         default_component = self.config['ticket']['default_component']
         default_milestone = self.config['ticket']['default_milestone']
@@ -45,29 +45,34 @@ class Newticket (Module):
         default_severity  = self.config['ticket']['default_severity']
         default_version   = self.config['ticket']['default_version']
         
-        self.namespace['title'] = 'create a new ticket'
-        self.namespace['component_select'] = enum_selector ('SELECT name FROM component ORDER by name',
-                                                            'component',
-                                                            default_component)
-        self.namespace['milestone_select'] = enum_selector ('SELECT name FROM milestone ORDER BY name',
-                                                            'milestone',
-                                                            default_milestone)
-        self.namespace['severity_select'] = enum_selector ('SELECT name FROM enum WHERE type=\'severity\' ORDER BY name',
-                                                           'severity',
-                                                           default_severity)
-        self.namespace['priority_select'] = enum_selector ('SELECT name FROM enum WHERE type=\'priority\' ORDER BY name',
-                                                           'priority',
-                                                           default_priority)
-        self.namespace['version_select'] = enum_selector ('SELECT name FROM version ORDER BY name',
-                                                          'version')
+        self.cgi.hdf.setValue('newticket.newtitle.title', 'create a new ticket')
+        self.cgi.hdf.setValue('newticket.component_select',
+                              enum_selector ('SELECT name FROM component ORDER by name',
+                                             'component',
+                                             default_component))
+        self.cgi.hdf.setValue('newticket.milestone_select',
+                              enum_selector ('SELECT name FROM milestone ORDER BY name',
+                                             'milestone',
+                                             default_milestone))
+        self.cgi.hdf.setValue('newticket.severity_select',
+                              enum_selector ('SELECT name FROM enum WHERE type=\'severity\' ORDER BY name',
+                                             'severity',
+                                             default_severity))
+        self.cgi.hdf.setValue('newticket.priority_select',
+                              enum_selector ('SELECT name FROM enum WHERE type=\'priority\' ORDER BY name',
+                                             'priority',
+                                             default_priority))
+        self.cgi.hdf.setValue('newticket.version_select',
+                              enum_selector ('SELECT name FROM version ORDER BY name',
+                                             'version'))
         if auth.get_authname() == 'anonymous':
-            self.namespace['reporter'] = ''
+            self.cgi.hdf.setValue('newticket.reporter', '')
         else:
-            self.namespace['reporter'] = auth.get_authname()
+            self.cgi.hdf.setValue('newticket.reporter', auth.get_authname())
             
 
 class Ticket (Module):
-    template_name = 'ticket.template'
+    template_name = 'ticket.cs'
 
     def get_ticket (self, id):
         global fields
@@ -80,7 +85,7 @@ class Ticket (Module):
         row = cursor.fetchone ()
         cursor.close ()
 
-        info = {'ticket': id }
+        info = {'id': id }
         # Escape the values so that they are safe to have as html parameters
         for i in range(len(fields)):
 	    info[fields[i]] = escape(row[i])
@@ -175,10 +180,10 @@ class Ticket (Module):
                        'FROM ticket_change '
                        'WHERE ticket=%s ORDER BY time', id)
         
-        out = StringIO.StringIO()
         curr_author = None
         curr_date   = 0
         comment = None
+        idx = 0
 	while 1:
 	    row = cursor.fetchone()
 	    if row == None:
@@ -189,32 +194,22 @@ class Ticket (Module):
             field  = row[2]
             old    = row[3]
             new    = row[4]
-            if date != curr_date or author != curr_author:
-                if comment:
-                    out.write ('<p>comment:%s</p>' % wiki_to_html(comment))
-                    comment = None
-                curr_date = date
-                curr_author = author
-                out.write('<div class="ticket-modified">modified by %s %s:</div>'
-                          % (curr_author,
-                             time.strftime('%F %H:%M', time.localtime(curr_date))))
-            if field == 'comment':
-                comment = new
-                continue
-            if new == '':
-                out.write ("<p>cleared <b>%s</b></p>" %
-                           (field))
-            elif old == '':
-                out.write ("<p><b>%s</b> set to <b>%s</b></p>" %
-                           (field, new))
-            else:
-                out.write ("<p><b>%s</b> changed from <b>%s</b> to <b>%s</b></p>" %
-                           (field, old, new))
-        if comment:
-            out.write ('<p>comment:%s</p>' % wiki_to_html(comment))
-            comment = None
+
+            self.cgi.hdf.setValue('ticket.changes.%d.date' % idx,
+                                  time.strftime('%F %H:%M',
+                                                time.localtime(date)))
             
-        return out.getvalue()
+            self.cgi.hdf.setValue('ticket.changes.%d.author' % idx,
+                                  author)
+            self.cgi.hdf.setValue('ticket.changes.%d.field' % idx,
+                                  field)
+            self.cgi.hdf.setValue('ticket.changes.%d.old' % idx, old)
+            if field == 'comment':
+                self.cgi.hdf.setValue('ticket.changes.%d.new' % idx,
+                                      wiki_to_html(new))
+            else:
+                self.cgi.hdf.setValue('ticket.changes.%d.new' % idx, new)
+            idx = idx + 1
 
     def get_actions(self, info):
         out = StringIO.StringIO()
@@ -263,31 +258,34 @@ class Ticket (Module):
         perm.assert_permission (perm.TICKET_VIEW)
         
         info = self.get_ticket(id)
-	for key in info.keys():
-	    self.namespace[key] = info[key]
+	#for key in info.keys():
+	#    self.namespace[key] = info[key]
+        add_dict_to_hdf(info, self.cgi.hdf, 'ticket')
+        self.cgi.hdf.setValue('ticket.title', 'Ticket #%d' % id)
+        self.cgi.hdf.setValue('ticket.component_select',
+                              enum_selector ('SELECT name FROM component ORDER BY name',
+                                             'component',
+                                             info['component']))
+        self.cgi.hdf.setValue('ticket.milestone_select',
+                              enum_selector ('SELECT name FROM milestone ORDER BY name',
+                                             'milestone',
+                                             info['milestone']))
+        self.cgi.hdf.setValue('ticket.severity_select',
+                              enum_selector ('SELECT name FROM enum WHERE type=\'severity\' ORDER BY name',
+                                             'severity',
+                                             info['severity']))
+        self.cgi.hdf.setValue('ticket.priority_select',
+                              enum_selector ('SELECT name FROM enum WHERE type=\'priority\' ORDER BY name',
+                                             'priority',
+                                             info['priority']))
+        self.cgi.hdf.setValue('ticket.version_select',
+                              enum_selector ('SELECT name FROM version ORDER BY name',
+                                             'version',
+                                             info['version']))
 
-        self.namespace['title'] = 'Ticket #%d' % id
-        
-        self.namespace['component_select'] = enum_selector ('SELECT name FROM component ORDER BY name',
-                                                            'component',
-                                                            info['component'])
-        self.namespace['milestone_select'] = enum_selector ('SELECT name FROM milestone ORDER BY name',
-                                                            'milestone',
-                                                            info['milestone'])
-        self.namespace['severity_select'] = enum_selector ('SELECT name FROM enum WHERE type=\'severity\' ORDER BY name',
-                                                           'severity',
-                                                           info['severity'])
-        self.namespace['priority_select'] = enum_selector ('SELECT name FROM enum WHERE type=\'priority\' ORDER BY name',
-                                                           'priority',
-                                                           info['priority'])
-        self.namespace['version_select'] = enum_selector ('SELECT name FROM version ORDER BY name',
-                                                          'version',
-                                                          info['version'])
-
-        self.namespace['actions'] = self.get_actions(info)
-        self.namespace['changes'] = self.get_changes(id)
-        self.namespace['description'] = wiki_to_html(info['description'])
-        
-        self.namespace['opened']  = time.strftime('%F %H:%M',
-                                                  time.localtime(int(info['time'])))
+        self.cgi.hdf.setValue('ticket.actions', self.get_actions(info))
+        self.get_changes(id)
+        self.cgi.hdf.setValue('ticket.description', wiki_to_html(info['description']))
+        self.cgi.hdf.setValue('ticket.opened', time.strftime('%F %H:%M',
+                                                             time.localtime(int(info['time']))))
        

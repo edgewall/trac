@@ -1,4 +1,4 @@
-# svntrac
+# -*- coding: iso8859-1 -*-
 #
 # Copyright (C) 2003 Edgewall Software
 # Copyright (C) 2003 Jonas Borgström <jonas@edgewall.com>
@@ -26,10 +26,9 @@ import perm
 import db
 
 import time
-import StringIO
 
 class Report (Module):
-    template_name = 'report.template'
+    template_name = 'report.cs'
 
     def __init__(self, config, args, pool):
         Module.__init__(self, config, args, pool)
@@ -59,45 +58,6 @@ class Report (Module):
         info = map(lambda row: map(lambda x: escape(x), row), info)
         return [cols, info, title]
         
-    def render_headers(self, out, row):
-        """
-        render a html table header with the column names from the sql query.
-        """
-        out.write('<tr>')
-	for x in row:
-	    out.write('<th class="listing">%s</th>' % x[0])
-        out.write('</tr>')
-        
-    def render_row(self, out, row, cols, row_idx):
-        """
-        render one html table row from one sql result row.
-
-        Some values are handled specially: ticker and report numbers
-        are hyper linked...
-        """
-        if row_idx % 2:
-            out.write('<tr class="item-row-even">\n')
-        else:
-            out.write('<tr class="item-row-odd">\n')
-
-        idx = 0
-        for value in row:
-            if cols[idx][0] in ['ticket', '#']:
-                out.write('<td class="ticket-column"><a href="%s">#%s</a></td>' % (href.ticket(value),
-                                                            value))
-            elif cols[idx][0] == 'report':
-                out.write('<td class="report-column"><a href="%s">{%s}</a></td>'
-                          % (href.report(value), value))
-                             
-            elif cols[idx][0] in ['time', 'date', 'created', 'modified']:
-                out.write('<td class="%s-column">%s</td>'
-                          % (cols[idx][0], time.strftime('%F', time.localtime(int(value)))))
-
-            else:
-                out.write('<td class="%s-column">%s</td>' % (cols[idx][0], value))
-            idx = idx + 1
-        out.write('</tr>')
-
     def create_report(self, title, sql):
         perm.assert_permission(perm.REPORT_CREATE)
 
@@ -137,7 +97,7 @@ class Report (Module):
         cnx.commit()
         redirect(href.report(id))
 
-    def render_report_editor(self, out, id, action='commit'):
+    def render_report_editor(self, id, action='commit'):
         cnx = db.get_connection()
         cursor = cnx.cursor()
 
@@ -149,58 +109,77 @@ class Report (Module):
             sql = row[1]
             title = row[0]
         
-        out.write(
-            '<form action="%s" method="post">'
-            '<input type="hidden" name="mode" value="report">'
-            '<input type="hidden" name="id" value="%d">'
-            '<input type="hidden" name="action" value="%s">'
-            'title:<br><input type="text" name="title" value="%s" size="50">'
-            '<br>sql query:'
-            '<br>'
-            '<textarea name="sql" cols="70" rows="10">%s</textarea>'
-            '<br>'
-            '<input type="submit" value="commit">&nbsp;'
-            '<input type="reset" value="reset">'
-            '</form>' % (get_cgi_name(), id, action, title, sql)
-            )
+        self.cgi.hdf.setValue('report.mode', 'editor')
+        self.cgi.hdf.setValue('report.title', title)
+        self.cgi.hdf.setValue('report.id', str(id))
+        self.cgi.hdf.setValue('report.action', action)
+        self.cgi.hdf.setValue('report.sql', sql)
     
-    def render_report_list(self, out, id):
+    def render_report_list(self, id):
         """
         uses a user specified sql query to extract some information
         from the database and presents it as a html table.
         """
+        if perm.has_permission(perm.REPORT_CREATE):
+            self.cgi.hdf.setValue('report.create_href',
+                                  href.report(None, 'new'))
+            
+        if id != -1:
+            if perm.has_permission(perm.REPORT_MODIFY):
+                self.cgi.hdf.setValue('report.edit_href',
+                                      href.report(id, 'edit'))
+            if perm.has_permission(perm.REPORT_CREATE):
+                self.cgi.hdf.setValue('report.copy_href',
+                                      href.report(id, 'copy'))
+            if perm.has_permission(perm.REPORT_DELETE):
+                self.cgi.hdf.setValue('report.delete_href',
+                                      href.report(id, 'delete'))
+
+        self.cgi.hdf.setValue('report.mode', 'list')
         try:
             [cols, rows, title] = self.get_info(id)
         except Exception, e:
-            out.write('<h3>report failed: %s</h3>' % e)
-            out.write('<p><a href="%s">edit</a></p>' % href.report(id, 'edit'))
+            self.cgi.hdf.setValue('report.message', 'report failed: %s' % e)
             return
-        if perm.has_permission(perm.REPORT_CREATE):
-            out.write('<a href="%s">new report</a>' % href.report(None, 'new'))
-        out.write('<h3>%s</h3><p>' % title)
-        if id != -1:
-            if perm.has_permission(perm.REPORT_MODIFY):
-                out.write('<a href="%s">edit</a> | ' % href.report(id, 'edit'))
-            if perm.has_permission(perm.REPORT_CREATE):
-                out.write('<a href="%s">copy</a> | ' % href.report(id, 'copy'))
-            if perm.has_permission(perm.REPORT_DELETE):
-                out.write('<a href="%s">delete</a>' % href.report(id, 'delete'))
-        out.write('</p>')
         
-        out.write('<table class="listing" cellspacing="0" cellpadding="0">')
-        self.render_headers(out, cols)
+        self.cgi.hdf.setValue('report.title', title)
+
+        # Convert the header info to HDF-format
+        idx = 0
+	for x in cols:
+            self.cgi.hdf.setValue('report.headers.%d.title' % idx, x[0])
+            idx = idx + 1
+
+        # Convert the rows and cells to HDF-format
         row_idx = 0
         for row in rows:
-            self.render_row(out, row, cols, row_idx)
+            col_idx = 0
+            for cell in row:
+                prefix = 'report.items.%d.%d' % (row_idx, col_idx)
+                self.cgi.hdf.setValue(prefix + '.value', str(cell))
+                if cols[col_idx][0] in ['ticket', '#']:
+                    self.cgi.hdf.setValue(prefix + '.type', 'ticket')
+                    self.cgi.hdf.setValue(prefix + '.ticket_href',
+                                          href.ticket(cell))
+                elif cols[col_idx][0] == 'report':
+                    self.cgi.hdf.setValue(prefix + '.type', 'report')
+                    self.cgi.hdf.setValue(prefix + '.report_href',
+                                          href.report(cell))
+                elif cols[col_idx][0] in ['time', 'date', 'created', 'modified']:
+                    self.cgi.hdf.setValue(prefix + '.type', 'time')
+                    self.cgi.hdf.setValue(prefix + '.value',
+                                          time.strftime('%F',
+                                          time.localtime(int(cell))))
+                else:
+                    self.cgi.hdf.setValue(prefix + '.type', 'unknown')
+                col_idx = col_idx + 1
             row_idx = row_idx + 1
-        out.write('</table>')
+        
 
     def render(self):
         # did the user ask for any special report?
         id = int(dict_get_with_default(self.args, 'id', -1))
         action = dict_get_with_default(self.args, 'action', 'list')
-
-        out = StringIO.StringIO()
 
         if action == 'create':
             self.create_report(self.args['title'], self.args['sql'])
@@ -209,12 +188,11 @@ class Report (Module):
         elif action == 'commit':
             self.commit_changes(id)
         elif action == 'new':
-            self.render_report_editor(out, -1, 'create')
+            self.render_report_editor(-1, 'create')
         elif action == 'copy':
-            self.render_report_editor(out, id, 'create')
+            self.render_report_editor(id, 'create')
         elif action == 'edit':
-            self.render_report_editor(out, id, 'commit')
+            self.render_report_editor(id, 'commit')
         else:
-            self.render_report_list(out, id)
+            self.render_report_list(id)
 
-        self.namespace['content']  = out.getvalue()

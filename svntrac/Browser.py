@@ -1,4 +1,4 @@
-# svntrac
+# -*- coding: iso8859-1 -*-
 #
 # Copyright (C) 2003 Edgewall Software
 # Copyright (C) 2003 Jonas Borgström <jonas@edgewall.com>
@@ -30,7 +30,7 @@ from Href import href
 import perm
 
 class Browser(Module):
-    template_name = 'browser.template'
+    template_name = 'browser.cs'
 
     def __init__(self, config, args, pool):
         Module.__init__(self, config, args, pool)
@@ -72,8 +72,13 @@ class Browser(Module):
                 'created_rev': created_rev,
                 'date'       : date,
                 'is_dir'     : is_dir,
-                'size'       : size
-                }
+                'size'       : self.pretty_size(size) }
+            if is_dir:
+                item['browser_href'] = href.browser(fullpath)
+            else:
+                item['log_href'] = href.log(fullpath)
+                item['rev_href'] = href.file(fullpath, created_rev)
+                
             info.append(item)
         return info
             
@@ -85,35 +90,6 @@ class Browser(Module):
         else:
             return '%d MB' % (size / 1024 / 1024)
         
-    def print_item(self, out, item, idx):
-        if idx % 2:
-            out.write('<tr class="item-row-even">\n')
-        else:
-            out.write('<tr class="item-row-odd">\n')
-        if item['is_dir']:
-            out.write('<td class="icon-column"><a href="%s"><img src="%s" width="16" height="16"></a></td>'
-                       % (href.browser(item['fullpath']),
-                          self.namespace['htdocs_location'] + '/folder.png'))
-            out.write('<td class="name-column"><a href="%s">%s</a></td>'
-                       % (href.browser(item['fullpath']), item['name']))
-            out.write('<td class="size-column">&nbsp;</td>')
-            out.write('<td class="rev-column">%s</td>' %
-                       item['created_rev'])
-        else:
-            out.write('<td class="icon-column"><a href="%s"><img src="%s" width="16" height="16"></a></td>'
-                       % (href.log(item['fullpath']),
-                          self.namespace['htdocs_location'] + '/file.png'))
-            out.write('<td class="name-column"><a href="%s">%s</a></td>'
-                       % (href.log(item['fullpath']), item['name']))
-            out.write('<td class="size-column">%s</td>' %
-                       self.pretty_size(item['size']))
-            out.write('<td class="rev-column"><a href="%s">%s</a></td>'
-                       % (href.file(item['fullpath'],
-                                                item['created_rev']),
-                          item['created_rev']))
-        out.write('<td class="date-column">%s</td>' % item['date'])
-        out.write('\n</tr>\n')
-
     def get_path_links(self):
         list = self.path[1:].split('/')
         path = '/'
@@ -124,7 +100,7 @@ class Browser(Module):
             path = path + part + '/'
             str = str + '<a href="%s">%s/</a>' % (href.browser(path), part)
         return str
-    
+
     def render(self):
         perm.assert_permission (perm.BROWSER_VIEW)
         
@@ -137,25 +113,12 @@ class Browser(Module):
         info.sort(lambda x, y: cmp(x['name'], y['name']))
         info.sort(lambda x, y: cmp(y['is_dir'], x['is_dir']))
 
-        out = StringIO.StringIO()
-        idx = 0
-        # print a '..' list item
+        add_dictlist_to_hdf(info, self.cgi.hdf, 'browser.items')
+
         if self.path != '/':
             parent = string.join(self.path.split('/')[:-2], '/') + '/'
-            out.write('<tr class="item-row-odd">\n')
-            out.write('<td class="icon-column"><a href="%s"><img src="%s" width="16" height="16"></a></td>'
-                       % (href.browser(parent),
-                          self.namespace['htdocs_location'] + '/folder.png'))
-            out.write('<td class="name-column"><a href="%s">..</a></td><td class="size-column">&nbsp;</td><td class="rev-column">&nbsp;</td><td class="date-column">&nbsp;</td>' %
-                       href.browser(parent))
-            out.write('</tr>')
-            idx = 1
-        # print the "ordinary" items
-        for item in info:
-            self.print_item(out, item, idx)
-            idx = idx + 1
+            self.cgi.hdf.setValue('browser.parent_href', href.browser(parent))
 
-        self.namespace['path'] = self.path
-        self.namespace['revision'] = rev
-        self.namespace['path_links'] = self.get_path_links ()
-        self.namespace['dir_entries'] = out.getvalue()
+        self.cgi.hdf.setValue('browser.path', self.path)
+        self.cgi.hdf.setValue('browser.revision', str(rev))
+        self.cgi.hdf.setValue('browser.path_links', self.get_path_links ())

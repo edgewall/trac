@@ -1,4 +1,4 @@
-# svntrac
+# -*- coding: iso8859-1 -*-
 #
 # Copyright (C) 2003 Edgewall Software
 # Copyright (C) 2003 Jonas Borgström <jonas@edgewall.com>
@@ -23,20 +23,21 @@ import os
 import StringIO
 from Toolbar import Toolbar
 from util import *
+import neo_cgi
 
 class Module:
     def __init__(self, config, args, pool):
         self.config = config
-        self.args   = args
-        self.pool   = pool
+        self.args = args
+        self.pool = pool
+        self.cgi = neo_cgi.CGI()
         
         self.toolbar = Toolbar()
-
-        self.namespace = {}
-        self.namespace['title'] = ''
-        self.namespace['svntrac_url'] = 'http://svntrac.edgewall.com/'
-        self.namespace['htdocs_location'] = config['general']['htdocs_location']
-        self.namespace['cgi_name'] = get_cgi_name()
+        self.cgi.hdf.setValue('title', '')
+        self.cgi.hdf.setValue('svntrac_url', 'http://svntrac.edgewall.com/')
+        self.cgi.hdf.setValue('htdocs_location',
+                              config['general']['htdocs_location'])
+        self.cgi.hdf.setValue('cgi_name', get_cgi_name())
 
     def render (self):
         """
@@ -49,19 +50,7 @@ class Module:
         theme_dir = self.config['general']['theme_dir']
         tmpl_filename = os.path.join (theme_dir, self.template_name)
 
-        self.namespace['toolbar'] = self.toolbar.render (self._name)
+        self.cgi.hdf.setValue('toolbar', self.toolbar.render (self._name))
+        self.cgi.display(tmpl_filename)
 
-        header_tmpl = os.path.join (theme_dir, 'header.template')
-        footer_tmpl = os.path.join (theme_dir, 'footer.template')
-        
-        header = open(header_tmpl).read()
-        footer = open(footer_tmpl).read()
-        
-        self.namespace['header'] = header % self.namespace
-        self.namespace['footer'] = footer % self.namespace
-        template = open(tmpl_filename).read ()
-        # Apply the template
-        out = template % self.namespace
-        print 'Content-type: text/html\r\n\r\n'
-        print out
         

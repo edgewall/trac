@@ -1,4 +1,4 @@
-# svntrac
+# -*- coding: iso8859-1 -*-
 #
 # Copyright (C) 2003 Edgewall Software
 # Copyright (C) 2003 Jonas Borgström <jonas@edgewall.com>
@@ -25,11 +25,10 @@ from Module import Module
 import db
 import perm
 
-import StringIO
 import time
 
 class Timeline (Module):
-    template_name = 'timeline.template'
+    template_name = 'timeline.cs'
 
     MAX_MESSAGE_LEN = 75
 
@@ -53,66 +52,33 @@ class Timeline (Module):
                         "AND newvalue='closed' AND time>=%s AND time<=%s "
                         "ORDER BY time DESC, message, type",
                         start, stop, start, stop, start, stop)
-        return cursor.fetchall()
-        
-    def day_separator(self, out, date):
-        if date < self.current_day:
-            self.current_day = (date / 86400) * 86400 + time.timezone
-            out.write ('<tr>')
-            out.write ('<td colspan="2" class="timeline-day">%s</td>'
-                       % time.strftime('%A, %F', time.localtime(date)))
-            out.write ('</tr>')
 
-    def print_changeset (self, out, item):
-        date = int(item['time'])
-        self.day_separator (out, date)
-            
-        out.write ('<tr>')
-        out.write ('<td>%s</td><td>change set [<a href="%s">%s</a>]: %s</td>'
-                   % (time.strftime('%H:%M', time.localtime(date)),
-                      href.changeset(item['data']),
-                      item['data'], get_first_line(item['message'],
-                                                   self.MAX_MESSAGE_LEN)))
-        out.write ('</tr>')
-        
-    def print_new_ticket (self, out, item):
-        date = int(item['time'])
-        self.day_separator (out, date)
-            
-        out.write ('<tr>')
-        out.write ('<td>%s</td><td>ticket <a href="%s">#%s</a> created: %s</td>'
-                   % (time.strftime('%H:%M', time.localtime(date)),
-                      href.ticket(item['data']), item['data'],
-                      get_first_line(item['message'], self.MAX_MESSAGE_LEN)))
-        out.write ('</tr>')
-        
-    def print_closed_ticket (self, out, item):
-        date = int(item['time'])
-        self.day_separator (out, date)
-            
-        out.write ('<tr>')
-        out.write ('<td>%s</td><td>ticket <a href="%s">#%s</a> closed</td>'
-                   % (time.strftime('%H:%M', time.localtime(date)),
-                      href.ticket(item['data']), item['data']))
-        out.write ('</tr>')
+        # Make the data more HDF-friendly
+        info = []
+        while 1:
+            row = cursor.fetchone()
+            if not row:
+                break
+            t = time.localtime(int(row['time']))
+            item = {'time': time.strftime('%H:%M', t),
+                    'date': time.strftime('%D, %F', t),
+                    'data': row['data'],
+                    'type': row['type'],
+                    'message': row['message']}
+            if row['type'] == '1':
+                item['changeset_href'] = href.changeset(int(row['data']))
+            else:
+                item['ticket_href'] = href.ticket(int(row['data']))
+            info.append(item)
+        return info
         
     def render (self):
-        perm.assert_permission (perm.TIMELINE_VIEW)
+        perm.assert_permission(perm.TIMELINE_VIEW)
 
-        out = StringIO.StringIO()
         stop  = int(time.time() - time.timezone)
         start = stop - 90 * 86400
         
         info = self.get_info (start, stop)
 
-        self.current_day = stop + 1
+        add_dictlist_to_hdf(info, self.cgi.hdf, 'timeline.items')
 
-        for item in info:
-            if item['type'] == '1':
-                self.print_changeset (out, item)
-            elif item['type'] == '2':
-                self.print_new_ticket (out, item)
-            elif item['type'] == '3':
-                self.print_closed_ticket (out, item)
-
-        self.namespace['content']  = out.getvalue()

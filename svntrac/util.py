@@ -1,4 +1,4 @@
-# svntrac
+# -*- coding: iso8859-1 -*-
 #
 # Copyright (C) 2003 Edgewall Software
 # Copyright (C) 2003 Jonas Borgström <jonas@edgewall.com>
@@ -119,3 +119,15 @@ def dict_get_with_default(dict, key, default):
         return dict[key]
     else:
         return default
+
+
+def add_dictlist_to_hdf(list, hdf, prefix):
+    idx = 0
+    for item in list:
+        for key in item.keys():
+            hdf.setValue('%s.%d.%s' % (prefix, idx, key), str(item[key]))
+        idx = idx + 1
+
+def add_dict_to_hdf(dict, hdf, prefix):
+    for key in dict.keys():
+        hdf.setValue('%s.%s' % (prefix, key), str(dict[key]))

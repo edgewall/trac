@@ -1,3 +1,4 @@
+# -*- coding: iso8859-1 -*-
 """
 Edgewall Software SVNTRAC
 

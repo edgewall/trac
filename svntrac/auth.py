@@ -1,4 +1,4 @@
-# svntrac
+# -*- coding: iso8859-1 -*-
 #
 # Copyright (C) 2003 Edgewall Software
 # Copyright (C) 2003 Jonas Borgström <jonas@edgewall.com>
@@ -90,7 +90,7 @@ def create_auth_cookie (name, ipnr):
 
 def authenticate_user ():
     flush_auth_cookies ()
-    
+    #return
     cookie = Cookie.Cookie(os.getenv('HTTP_COOKIE'))
     auth_cookie = create_auth_cookie (os.getenv('REMOTE_USER'),
                                       os.getenv('REMOTE_ADDR'))
@@ -101,7 +101,7 @@ def authenticate_user ():
 
 def verify_authentication (args):
     flush_auth_cookies ()
-    
+    #return
     cookie = Cookie.Cookie(os.getenv('HTTP_COOKIE'))
     remote_addr = os.getenv ('REMOTE_ADDR')
     

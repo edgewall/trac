@@ -1,4 +1,4 @@
-# svntrac
+# -*- coding: iso8859-1 -*-
 #
 # Copyright (C) 2003 Edgewall Software
 # Copyright (C) 2003 Jonas Borgström <jonas@edgewall.com>
@@ -24,11 +24,10 @@ from Href import href
 from Module import Module
 import perm
 
-import StringIO
 from svn import util, repos
 
 class Log (Module):
-    template_name = 'log.template'
+    template_name = 'log.cs'
 
     def __init__(self, config, args, pool):
         Module.__init__(self, config, args, pool)
@@ -40,7 +39,9 @@ class Log (Module):
             'rev'    : rev,
             'author' : author,
             'date'   : format_date (date, pool),
-            'log'    : log
+            'log'    : log,
+            'file_href': href.file(self.path, rev),
+            'changeset_href': href.changeset(rev)
             }
         self.log_info.insert (0, item)
 
@@ -51,30 +52,10 @@ class Log (Module):
                                    self.pool)
         return self.log_info
 
-    def print_item (self, out, item, idx):
-        if idx % 2:
-            out.write ('<tr class="item-row-even">\n')
-        else:
-            out.write ('<tr class="item-row-odd">\n')
-            
-        out.write ('<td class="date-column">%s</td>' % (item['date']))
-        out.write ('<td class="rev-column"><a href="%s">%s</a></td>'
-                   % (href.file(self.path, item['rev']), item['rev']))
-        out.write ('<td class="rev-column"><a href="%s">%s</a></td>'
-                   % (href.changeset(item['rev']), item['rev']))
-        out.write ('<td class="summary-column">%s</td>' % (item['log']))
-        out.write ('\n</tr>\n')
-        
     def render (self):
         perm.assert_permission (perm.LOG_VIEW)
             
         info = self.get_info (self.path)
 
-        out = StringIO.StringIO()
-        idx = 0
-        for item in info:
-            self.print_item (out, item, idx)
-            idx = idx + 1
-            
-        self.namespace['path']         = self.path
-        self.namespace['log_entries']  = out.getvalue()
+        self.cgi.hdf.setValue('log.path', self.path)
+        add_dictlist_to_hdf(info, self.cgi.hdf, 'log.items')

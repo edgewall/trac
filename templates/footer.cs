@@ -1,5 +1,5 @@
   </div>
-  <table id="page-footer" width="100%%" bgcolor="#eeeeee">
+  <table id="page-footer" width="100%" bgcolor="#eeeeee">
     <tr>
       <td align="left" class="footer">
 	Email: <a href="mailto:info@edgewall.com">info@edgewall.com</a>

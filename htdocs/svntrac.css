@@ -346,7 +346,7 @@ td.ticket-description, td.ticket-comments
   border: thin dotted black;
 }
 
-div.ticket-modified
+div.ticket-modified, td.ticket-summary-header
 {
   color: gray;
   border-bottom: thin solid lightgray;
