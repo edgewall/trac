@@ -265,6 +265,7 @@ class Request:
     command = None
     hdf = None
     session = None
+    _headers = None # additional headers to send
 
     def init_request(self):
         import neo_cgi
@@ -277,6 +278,7 @@ class Request:
         self.hdf = neo_util.HDF()
         self.incookie = Cookie.SimpleCookie()
         self.outcookie = Cookie.SimpleCookie()
+        self._headers = []
 
     def get_header(self, name):
         raise RuntimeError, 'Virtual method not implemented'
@@ -294,11 +296,11 @@ class Request:
         etag = 'W"%s/%d/%s"' % (self.authname, timesecs, extra)
         inm = self.get_header('If-None-Match')
         if (not inm or inm != etag):
-            self.send_header('ETag', etag)
-            return
-        self.send_response(304)
-        self.end_headers()
-        raise NotModifiedException()
+            self._headers.append(('ETag', etag))
+        else:
+            self.send_response(304)
+            self.end_headers()
+            raise NotModifiedException()
 
     def redirect(self, url):
         self.send_response(302)
@@ -331,6 +333,8 @@ class Request:
         self.send_header('Expires', 'Fri, 01 Jan 1999 00:00:00 GMT')
         self.send_header('Content-Type', content_type + ';charset=utf-8')
         self.send_header('Content-Length', len(data))
+        for name, value in self._headers:
+            self.send_header(name, value)
         cookies = self.outcookie.output(header='')
         for cookie in cookies.splitlines():
             self.send_header('Set-Cookie', cookie.strip())
