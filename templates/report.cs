@@ -1,5 +1,6 @@
 <?cs set:html.stylesheet = 'css/report.css' ?>
 <?cs include "header.cs" ?>
+<?cs include "macros.cs" ?>
 
 <div id="ctxtnav" class="nav">
  <h2>Report Navigation</h2>
@@ -94,7 +95,7 @@
  <?cs set group = '' ?>
  
  <?cs if:report.mode == "list" ?>
-  <h1><?cs var:report.title ?><?cs
+  <h1><?cs var:title ?><?cs
    if:report.numrows && report.id != -1 ?><span class="numrows"> (<?cs
     var:report.numrows ?> matches)</span><?cs
    /if ?></h1>
@@ -175,49 +176,62 @@
 
  <?cs elif report.mode == "delete" ?>
 
-  <h1 id="report-hdr">Delete Report</h1> 
+  <h1><?cs var:title ?></h1>
   <form action="<?cs var:cgi_location ?>" method="post">
-   <input type="hidden" name="mode" value="report" />   <input type="hidden" name="id" value="<?cs var:report.id ?>" />   <input type="hidden" name="action" value="confirm_delete" />
+   <input type="hidden" name="mode" value="report" />
+   <input type="hidden" name="id" value="<?cs var:report.id ?>" />
+   <input type="hidden" name="action" value="confirm_delete" />
    <p><strong>Are you sure you want to delete this report?</strong></p>
    <div class="buttons">
     <input type="submit" name="cancel" value="Cancel" />
-    <input type="submit" name="delete" value="Delete Report" />
+    <input type="submit" value="Delete Report" />
    </div>
   </form>
  
  <?cs elif report.mode == "editor" ?>
  
-   <h1 id="report-hdr">Create New Report</h1>
+   <h1><?cs var:title ?></h1>
    
    <form action="<?cs var:cgi_location ?>" method="post">
-     <div>
-       <input type="hidden" name="mode" value="report" />
-       <input type="hidden" name="id" value="<?cs var:report.id ?>" />
-       <input type="hidden" name="action" value="<?cs var:report.action ?>" />
-       <label for="title">Report Title:</label><br />
-        <input type="text" id="title" name="title"
-               value="<?cs var:report.title ?>" size="50" /><br />
-       <div style="margin-top: 1em">
-       <label for="description">
-        Description:</label> (You may use <a tabindex="42" href="<?cs var:$trac.href.wiki ?>/WikiFormatting">WikiFormatting</a> here)</div>
-       <textarea id="description" name="description" cols="85" rows="5"><?cs var:report.description ?></textarea>
-       <br />
-       <label for="sql" style="display: block; margin-top: 1em">
-        SQL Query for Report:</label>
-       <textarea id="sql" name="sql" cols="85" rows="20"><?cs var:report.sql ?></textarea>
-       <br />
-       <input type="submit" value="Save" />&nbsp;
-       <input type="submit" name="view" value="Cancel" />
+    <div>
+     <input type="hidden" name="mode" value="report" />
+     <input type="hidden" name="id" value="<?cs var:report.id ?>" />
+     <input type="hidden" name="action" value="<?cs var:report.action ?>" />
+     <div class="field">
+      <label for="title">Report Title:</label><br />
+      <input type="text" id="title" name="title"
+             value="<?cs var:report.title ?>" size="50" /><br />
      </div>
+     <div class="field">
+      <label for="description">
+       Description:</label> (You may use <a tabindex="42" href="<?cs
+         var:$trac.href.wiki ?>/WikiFormatting">WikiFormatting</a> here)
+      </label><br />
+      <textarea id="description" name="description" cols="85" rows="5"><?cs
+        var:report.description ?></textarea>
+      <?cs call:wiki_toolbar('description') ?>
+     </div>
+     <div class="field">
+      <label for="sql">
+       SQL Query for Report:</label><br />
+      <textarea id="sql" name="sql" cols="85" rows="20"><?cs
+        var:report.sql ?></textarea>
+     </div>
+     <div class="buttons">
+      <input type="submit" value="Save" />
+      <input type="submit" name="cancel" value="Cancel" />
+     </div>
+    </div>
    </form>
  <?cs /if?>
  
  <div id="help">
-  <strong>Note:</strong> See <a href="<?cs var:$trac.href.wiki ?>/TracReports">TracReports</a> 
-  for help on using and creating reports.
+  <strong>Note:</strong> See <a href="<?cs
+    var:trac.href.wiki ?>/TracReports">TracReports</a> for help on using and
+  creating reports.
  </div>
  
-<?cs /if ?><!-- report.message -->
+<?cs /if ?><?cs #report.message ?>
 
 </div>
 <?cs include "footer.cs" ?>

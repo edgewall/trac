@@ -120,7 +120,7 @@ class Report (Module):
     def delete_report(self, id):
         self.perm.assert_permission(perm.REPORT_DELETE)
 
-        if self.args.has_key('delete'):
+        if not self.args.has_key('cancel'):
             cursor = self.db.cursor ()
             cursor.execute('DELETE FROM report WHERE id=%s', id)
             self.db.commit()
@@ -152,15 +152,16 @@ class Report (Module):
         """
         self.perm.assert_permission(perm.REPORT_MODIFY)
 
-        cursor = self.db.cursor()
-        title = self.args.get('title', '')
-        sql   = self.args.get('sql', '')
-        description   = self.args.get('description', '')
+        if not self.args.has_key('cancel'):
+            cursor = self.db.cursor()
+            title = self.args.get('title', '')
+            sql   = self.args.get('sql', '')
+            description   = self.args.get('description', '')
 
-        cursor.execute('UPDATE report SET title=%s, sql=%s, description=%s '
-                       ' WHERE id=%s',
-                       title, sql, description, id)
-        self.db.commit()
+            cursor.execute('UPDATE report SET title=%s, sql=%s, description=%s '
+                           ' WHERE id=%s',
+                           title, sql, description, id)
+            self.db.commit()
         self.req.redirect(self.env.href.report(id))
 
     def render_confirm_delete(self, id):
@@ -172,7 +173,8 @@ class Report (Module):
         if not row:
             raise util.TracError('Report %s does not exist.' % id,
                                  'Invalid Report Number')
-        self.req.hdf.setValue('title', 'Delete {%s} %s (report)' % (id, row['title']))
+        self.req.hdf.setValue('title',
+                              'Delete Report {%s} %s' % (id, row['title']))
         self.req.hdf.setValue('report.mode', 'delete')
         self.req.hdf.setValue('report.id', str(id))
         self.req.hdf.setValue('report.title', row['title'])
@@ -196,7 +198,12 @@ class Report (Module):
 
         if copy:
             title += ' copy'
-        self.req.hdf.setValue('title', 'Create New Report')
+
+        if action == 'commit':
+            self.req.hdf.setValue('title',
+                                  'Edit Report {%d} %s' % (id, row['title']))
+        else:
+            self.req.hdf.setValue('title', 'Create New Report')
         self.req.hdf.setValue('report.mode', 'editor')
         self.req.hdf.setValue('report.title', title)
         self.req.hdf.setValue('report.id', str(id))
@@ -396,7 +403,7 @@ class Report (Module):
         action = self.args.get('action', 'list')
 
         if action == 'create':
-            if not (self.args.has_key('sql') or self.args.has_key('title')):
+            if self.args.has_key('cancel'):
                 action = 'list'
             else:
                 self.create_report(self.args.get('title', ''),

@@ -1,4 +1,3 @@
-h1 { margin: 0 }
 h1 .numrows { font-size: 65%; color: #999; font-weight: normal }
 h2 {
  background: #f7f7f7;
@@ -55,6 +54,8 @@ h2 {
 #tktlist tr.even.low { background: #dff; border-color: #bee; color: #099 }
 #tktlist tr.odd.lowest { background: #e7eeff; border-color: #cde; color: #469 }
 #tktlist tr.even.lowest { background: #dde7ff; border-color: #cde; color: #469 }
+
+.field { margin-top: 1.3em }
 
 #query fieldset { margin: 1em 0 }
 #query fieldset div { float: left; margin: .5em 2em .5em 0 }
