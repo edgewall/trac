@@ -118,7 +118,8 @@ class Attachment(FileCommon):
 
         if self.filename and len(self.filename) > 0 and \
                self.args.has_key('delete'):
-            self.perm.assert_permission (perm.TRAC_ADMIN)
+            perm_map = {'ticket': perm.TICKET_ADMIN, 'wiki': perm.WIKI_DELETE}
+            self.perm.assert_permission(perm_map[self.attachment_type])
             self.env.delete_attachment(self.db,
                                        self.attachment_type,
                                        self.attachment_id,
@@ -128,8 +129,8 @@ class Attachment(FileCommon):
 
         if self.filename and len(self.filename) > 0:
             # Send an attachment
-            perm_map = {'ticket':perm.TICKET_VIEW, 'wiki': perm.WIKI_VIEW}
-            self.perm.assert_permission (perm_map[self.attachment_type])
+            perm_map = {'ticket': perm.TICKET_VIEW, 'wiki': perm.WIKI_VIEW}
+            self.perm.assert_permission(perm_map[self.attachment_type])
 
             self.path = os.path.join(self.env.get_attachments_dir(),
                                      self.attachment_type,
@@ -158,6 +159,10 @@ class Attachment(FileCommon):
                                                    self.attachment_id,
                                                    self.filename, 'raw'),
                 'Original Format', self.mime_type)
+
+            perm_map = {'ticket': perm.TICKET_ADMIN, 'wiki': perm.WIKI_DELETE}
+            if self.perm.has_permission(perm_map[self.attachment_type]):
+                self.req.hdf.setValue('attachment.delete_href', '?delete=yes')
 
             return
 

@@ -3,7 +3,7 @@
 <?cs include "macros.cs"?>
 
 <div id="ctxtnav" class="nav">
- <?cs if args.mode != 'attachment' && trac.acl.LOG_VIEW ?><ul>
+ <?cs if:args.mode != 'attachment' && trac.acl.LOG_VIEW ?><ul>
   <li class="last"><a href="<?cs var:file.logurl ?>">Revision Log</a></li>
  </ul><?cs /if ?>
 </div>
@@ -49,6 +49,14 @@
    file</a>.
   <?cs /if ?>
  </div>
+
+ <?cs if:attachment.delete_href ?><div class="buttons">
+  <form method="get" action=""><div id="delete">
+   <input type="hidden" name="delete" value="yes" />
+    <input type="submit" value="Delete Attachment" onclick="return confirm('Do you really want to delete this attachment?\nThis is an irreversible operation.')" />
+  </div></form>
+ </div><?cs /if ?>
+
  <?cs if:!file.attachment_parent ?>
   <div id="help">
    <strong>Note:</strong> See <a href="<?cs var:trac.href.wiki
