@@ -89,3 +89,15 @@ Foo123
 <a class="missing" href="/wiki/FooBar1.0">FooBar1.0?</a>.
 <a class="missing" href="/wiki/FooBar1">FooBar1?</a>.
 </p>
+==============================
+||http://example.com/img.png||text||
+------------------------------
+<table class="wiki">
+<tr><td><img src="http://example.com/img.png" alt="http://example.com/img.png" /></td><td>text
+</td></tr></table>
+==============================
+http://example.com/img.png?foo=bar
+------------------------------
+<p>
+<img src="http://example.com/img.png?foo=bar" alt="http://example.com/img.png?foo=bar" />
+</p>
