@@ -30,12 +30,11 @@ from types import ListType
 import urllib
 
 
-class NotModifiedException(Exception):
-    pass
-
-
-class RedirectException(Exception):
-    pass
+class RequestDone(Exception):
+    """
+    Marker exception that indicates whether request processing has completed
+    and a response was sent.
+    """
 
 
 class Request(object):
@@ -65,16 +64,16 @@ class Request(object):
         self._headers = []
 
     def get_header(self, name):
-        raise RuntimeError, 'Virtual method not implemented'
+        raise NotImplementedError
 
     def send_response(self, code):
-        raise RuntimeError, 'Virtual method not implemented'
+        raise NotImplementedError
 
     def send_header(self, name, value):
-        raise RuntimeError, 'Virtual method not implemented'
+        raise NotImplementedError
 
     def end_headers(self):
-        raise RuntimeError, 'Virtual method not implemented'
+        raise NotImplementedError
 
     def check_modified(self, timesecs, extra=''):
         etag = 'W"%s/%d/%s"' % (self.authname, timesecs, extra)
@@ -84,7 +83,7 @@ class Request(object):
         else:
             self.send_response(304)
             self.end_headers()
-            raise NotModifiedException()
+            raise RequestDone()
 
     def redirect(self, url):
         self.send_response(302)
@@ -101,7 +100,7 @@ class Request(object):
             self.send_header('Set-Cookie', cookie.strip())
         self.end_headers()
         self.write('Redirecting...')
-        raise RedirectException()
+        raise RequestDone()
 
     def display(self, cs, content_type='text/html', response=200):
         assert self.hdf, 'HDF dataset not available'
@@ -128,16 +127,18 @@ class Request(object):
         if self.method != 'HEAD':
             self.write(data)
 
+        raise RequestDone()
+
     def read(self, len):
-        raise RuntimeError, 'Virtual method not implemented'
+        raise NotImplementedError
 
     def write(self, data):
-        raise RuntimeError, 'Virtual method not implemented'
+        raise NotImplementedError
 
 
 def _add_args_to_hdf(args, hdf):
     for k in [k for k in args.keys() if k]:
-        if type(args[k]) == ListType:
+        if isinstance(args[k], (list, tuple)):
             for i in range(len(args[k])):
                 hdf['args.%s.%d' % (k, i)] = args[k][i].value
         else:
@@ -328,9 +329,7 @@ def dispatch_request(path_info, req, env):
                 # Give the session a chance to persist changes
                 req.session.save()
 
-        except NotModifiedException:
-            pass
-        except RedirectException:
+        except RequestDone:
             pass
 
     finally:
@@ -351,6 +350,9 @@ def send_pretty_error(e, env, req=None):
             env = open_environment()
             env.href = Href(req.cgi_location)
         populate_hdf(req.hdf, env, req)
+        if env and env.log:
+            env.log.error(str(e))
+            env.log.error(tb.getvalue())
 
         from trac.util import TracError
         from trac.perm import PermissionError
@@ -362,17 +364,22 @@ def send_pretty_error(e, env, req=None):
             req.hdf['error.message'] = e.message
             if e.show_traceback:
                 req.hdf['error.traceback'] = escape(tb.getvalue())
+            req.display('error.cs', response=500)
+
         elif isinstance(e, PermissionError):
             req.hdf['title'] = 'Permission Denied'
             req.hdf['error.type'] = 'permission'
             req.hdf['error.action'] = e.action
             req.hdf['error.message'] = e
+            req.display('error.cs', response=403)
+
         else:
             req.hdf['title'] = 'Oops'
             req.hdf['error.type'] = 'internal'
             req.hdf['error.message'] = escape(str(e))
             req.hdf['error.traceback'] = escape(tb.getvalue())
-        req.display('error.cs', response=500)
+            req.display('error.cs', response=500)
+
     except Exception, e2:
         if env and env.log:
             env.log.error('Failed to render pretty error page: %s' % e2)
@@ -383,6 +390,3 @@ def send_pretty_error(e, env, req=None):
         req.write(str(e))
         req.write('\n')
         req.write(tb.getvalue())
-    if env and env.log:
-        env.log.error(str(e))
-        env.log.error(tb.getvalue())

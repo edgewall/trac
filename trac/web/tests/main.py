@@ -1,5 +1,5 @@
 from trac.test import Mock
-from trac.web.main import absolute_url, RedirectException, Request
+from trac.web.main import absolute_url, Request, RequestDone
 
 from Cookie import SimpleCookie as Cookie
 from StringIO import StringIO
@@ -64,7 +64,7 @@ class WebMainTestCase(unittest.TestCase):
                    send_header=lambda x,y: headers.setdefault(x, y),
                    write=lambda x: body.write(x),
                    send_response=lambda x: status.append(x))
-        self.assertRaises(RedirectException, req.redirect, '/trac/test')
+        self.assertRaises(RequestDone, req.redirect, '/trac/test')
         self.assertEqual(302, status[0])
         self.assertEqual('http://example.org/trac/test', headers['Location'])
 
@@ -79,14 +79,14 @@ class WebMainTestCase(unittest.TestCase):
                    send_header=lambda x,y: headers.setdefault(x, y),
                    write=lambda x: body.write(x),
                    send_response=lambda x: status.append(x))
-        self.assertRaises(RedirectException, req.redirect,
+        self.assertRaises(RequestDone, req.redirect,
                           'http://example.org/trac/test')
         self.assertEqual(302, status[0])
         self.assertEqual('http://example.org/trac/test', headers['Location'])
 
 
 def suite():
-    return unittest.makeSuite(CGIRequestTestCase, 'test')
+    return unittest.makeSuite(WebMainTestCase, 'test')
 
 if __name__ == '__main__':
     unittest.main()
