@@ -41,4 +41,10 @@
 </tr>
 </table>
 
-<h3>diffs</h3>
+<h3>Legend</h3>
+<table class="diff-legend">
+<tr><td><div class="diff-legend-added">&nbsp;</div></td><td>&nbsp;Added</td></tr>
+<tr><td><div class="diff-legend-removed">&nbsp;</div></td><td>&nbsp;Removed</td></tr>
+<tr><td><div class="diff-legend-modified">&nbsp;</div></td><td>&nbsp;Modified</td></tr>
+<tr><td><div class="diff-legend-unmodified">&nbsp;</div></td><td>&nbsp;Unmodified</td></tr>
+</table>

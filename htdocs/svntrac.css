@@ -153,22 +153,33 @@ table.diff-table
   width: 100%;
 }
 
-td.diff-changed { background-color: #ffcc66; }
-td.diff-unchanged {  }
+.diff-legend-added, .diff-legend-removed, 
+.diff-legend-modified, .diff-legend-unmodified
+{
+  border: thin solid black;
+  width: 1em;
+}
+
+table.diff-legend
+{ 
+}
+
+td.diff-modified, .diff-legend-modified { background-color: #ffcc66; }
+td.diff-unmodified, .diff-legend-unmodified { background-color: white }
 td.diff-line { background-color: #dddddd; border-bottom: thin solid gray}
 
-td.diff-remove-left { background-color: #ff8888; }
+td.diff-remove-left, .diff-legend-removed { background-color: #ff8888; }
 td.diff-remove-right { background-color: #ffaaaa; }
 td.diff-add-left { background-color: #ddffdd; }
-td.diff-add-right { background-color: #bbffbb; }
+td.diff-add-right, .diff-legend-added { background-color: #bbffbb; }
 
-td.diff-changed, td.diff-unchanged,
+td.diff-modified, td.diff-unmodified,
 td.diff-remove-left,td.diff-remove-right,
 td.diff-add-left,td.diff-add-right
 {
   font-family: monospace; 
   vertical-align: top;
-  }
+}
 
 body
 {

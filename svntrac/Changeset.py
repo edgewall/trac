@@ -52,26 +52,26 @@ class DiffColorizer:
         print ('<tr><td class="diff-remove-left">%s</td>'
                '<td class="diff-remove-right"></td></tr>' % text)
     
-    def writeunchanged (self, text):
-        print ('<tr><td class="diff-unchanged">%s</td>'
-               '<td class="diff-unchanged">%s</td></tr>' %
+    def writeunmodified (self, text):
+        print ('<tr><td class="diff-unmodified">%s</td>'
+               '<td class="diff-unmodified">%s</td></tr>' %
                (text, text))
 
-    def writechanged (self, old, new):
-        print ('<tr><td class="diff-changed">%s</td>'
-               '<td class="diff-changed">%s</td></tr>' %
+    def writemodified (self, old, new):
+        print ('<tr><td class="diff-modified">%s</td>'
+               '<td class="diff-modified">%s</td></tr>' %
                (old, new))
         
     def print_block (self):
         if self.p_type == '-' and self.type == '+':
-            self.writechanged(string.join(self.p_block, '<br>'),
+            self.writemodified(string.join(self.p_block, '<br>'),
                               string.join(self.block, '<br>'))
         elif self.type == '+':
             self.writeadd(string.join(self.block, '<br>'))
         elif self.type == '-':
             self.writeremove(string.join(self.block, '<br>'))
         elif self.type == ' ':
-            self.writeunchanged(string.join(self.block, '<br>'))
+            self.writeunmodified(string.join(self.block, '<br>'))
         self.block = self.p_block = []
     
     def writeline(self, text):
