@@ -421,6 +421,7 @@ default_config = \
   ('ticket', 'default_priority', 'normal'),
   ('ticket', 'default_milestone', ''),
   ('ticket', 'default_component', 'component1'),
+  ('ticket', 'restrict_owner', 'false'),
   ('header_logo', 'link', 'http://trac.edgewall.com/'),
   ('header_logo', 'src', 'trac_banner.png'),
   ('header_logo', 'alt', 'Trac'),

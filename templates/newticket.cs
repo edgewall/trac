@@ -58,11 +58,16 @@ addEvent(window, 'load', function() { document.getElementById('summary').focus()
    call:hdf_select(enums.priority, "priority", newticket.priority, 0) ?><br />
    <label for="milestone">Milestone:</label><?cs
    call:hdf_select(newticket.milestones, "milestone", newticket.milestone, 1) ?><br />
-   <label for="owner">Assign to:</label>
-   <input type="text" id="owner" name="owner" size="20" value="<?cs
-     var:newticket.owner ?>" /><br />
+   <label for="owner">Assign to:</label><?cs
+   if:len(newticket.users) ?><?cs
+    call:hdf_select(newticket.users, "owner", newticket.owner, 0) ?><?cs
+   else ?>
+    <input type="text" id="owner" name="owner" size="20" value="<?cs
+      var:newticket.owner ?>" /><?cs
+   /if ?><br />
    <label for="cc">Cc:</label>
-   <input type="text" id="cc" name="cc" size="30" value="<?cs var:newticket.cc ?>" />
+   <input type="text" id="cc" name="cc" size="30" value="<?cs
+     var:newticket.cc ?>" />
   </div>
   <?cs if:len(ticket.custom) ?><div class="custom">
    <?cs call:ticket_custom_props(ticket) ?>

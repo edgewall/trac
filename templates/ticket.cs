@@ -229,10 +229,13 @@
    <?cs call:hdf_select(enums.resolution, "resolve_resolution", args.resolve_resolution, 0) ?><br />
    <?cs call:action_radio('reassign') ?>
    <label for="reassign">reassign</label>
-   <label for="reassign_owner">to:</label>
-   <input type="text" id="reassign_owner" name="reassign_owner" size="40" value="<?cs
-     if:args.reassign_to ?><?cs var:args.reassign_to ?><?cs
-     else ?><?cs var:trac.authname ?><?cs /if ?>" /><?cs
+   <label>to:<?cs
+   if:len(ticket.users) ?><?cs
+    call:hdf_select(ticket.users, "reassign_owner", ticket.reassign_owner, 0) ?><?cs
+   else ?>
+    <input type="text" id="reassign_owner" name="reassign_owner" size="40" value="<?cs
+      var:ticket.reassign_owner ?>" /><?cs
+   /if ?></label><?cs
   /if ?><?cs
   if $ticket.status == "new" || $ticket.status == "assigned" || $ticket.status == "reopened" ?>
    <script type="text/javascript">

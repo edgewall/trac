@@ -257,7 +257,7 @@ class Environment:
         self.log.info('New attachment: %s/%s/%s by %s', type, id, filename, author)
         cnx.commit()
         return filename
-    
+
     def delete_attachment(self, cnx, type, id, filename):
         path = os.path.join(self.get_attachments_dir(), type,
                             urllib.quote(id),
@@ -268,6 +268,28 @@ class Environment:
         os.unlink(path)
         self.log.info('Attachment removed: %s/%s/%s', type, id, filename)
         cnx.commit()
+
+    def get_known_users(self, cnx=None):
+        """
+        Generator that yields information about all known users, i.e. users that
+        have logged in to this Trac environment and possibly set their name and
+        email.
+
+        This function generates one tuple for every user, of the form
+        (username, name, email) ordered alpha-numerically by username.
+        """
+        if not cnx:
+            cnx = self.get_db_cnx()
+        cursor = cnx.cursor()
+        cursor.execute("SELECT DISTINCT s.username, n.var_value, e.var_value "
+                       "FROM session AS s "
+                       " LEFT JOIN session AS n ON (n.sid IS NULL "
+                       "  AND n.username=s.username AND n.var_name = 'name') "
+                       " LEFT JOIN session AS e ON (e.sid IS NULL "
+                       "  AND e.username=s.username AND e.var_name = 'email') "
+                       "WHERE s.sid IS NULL ORDER BY s.username")
+        for username,name,email in cursor:
+            yield username, name, email
 
     def backup(self, dest=None):
         """Simple SQLite-specific backup. Copy the database file."""

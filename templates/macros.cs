@@ -1,12 +1,10 @@
 <?cs def:hdf_select(options, name, selected, optional) ?>
  <select size="1" id="<?cs var:name ?>" name="<?cs var:name ?>"><?cs
   if:optional ?><option></option><?cs /if ?><?cs
-  each:option = options ?><?cs
-   if option.name == $selected ?>
-    <option selected="selected"><?cs var:option.name ?></option><?cs
-   else ?>
-    <option><?cs var:option.name ?></option><?cs
-   /if ?><?cs
+  each:option = options ?>
+   <option<?cs if:option.name == selected ?> selected="selected"<?cs /if ?><?cs
+     if:option.label ?> value="<?cs var:option.name ?>"<?cs /if ?>><?cs
+     alt:option.label ?><?cs var:option.name ?><?cs /alt ?></option><?cs
   /each ?>
  </select><?cs
 /def?>

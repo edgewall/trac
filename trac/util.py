@@ -281,14 +281,6 @@ class NaivePopen:
            os.remove(errfile)
 
 
-def mydict(items):
-    """dict() doesn't exist in python 2.1"""
-    d = {}           
-    for k, v in items:
-        d[k] = v
-    return d
-
-
 def wrap(t, cols=75, initial_indent='', subsequent_indent='',
          linesep=os.linesep):
     try:

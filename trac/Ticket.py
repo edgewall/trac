@@ -282,7 +282,7 @@ class NewticketModule(Module):
 
     def create_ticket(self, req):
         if not req.args.get('summary'):
-            raise util.TracError('Tickets must contain Summary.')
+            raise util.TracError('Tickets must contain a summary.')
 
         ticket = Ticket()
         ticket.populate(req.args)
@@ -329,8 +329,8 @@ class NewticketModule(Module):
                                                                     self.db)
 
         req.hdf['title'] = 'New Ticket'
-        evals = util.mydict(zip(ticket.keys(),
-                                map(lambda x: util.escape(x), ticket.values())))
+        evals = dict(zip(ticket.keys(),
+                         map(lambda x: util.escape(x), ticket.values())))
         req.hdf['newticket'] = evals
 
         util.sql_to_hdf(self.db, "SELECT name FROM component ORDER BY name",
@@ -345,6 +345,17 @@ class NewticketModule(Module):
         util.sql_to_hdf(self.db, "SELECT name FROM enum WHERE type='severity' "
                                  "ORDER BY value",
                         req.hdf, 'enums.severity')
+
+        restrict_owner = self.env.get_config('ticket', 'restrict_owner')
+        if restrict_owner.lower() in util.TRUE:
+            users = []
+            for username,name,email in self.env.get_known_users(self.db):
+                label = username
+                if name:
+                    label = '%s (%s)' % (util.escape(username),
+                                         util.escape(name))
+                users.append({'name': username,'label': label})
+            req.hdf['newticket.users'] = users
 
         insert_custom_fields(self.env, req.hdf, ticket)
 
@@ -383,11 +394,8 @@ class TicketModule (Module):
         ticket.populate(req.args)
 
         now = int(time.time())
-
-        ticket.save_changes(self.db,
-                            req.args.get('author', req.authname),
-                            req.args.get('comment'),
-                            when=now)
+        ticket.save_changes(self.db, req.args.get('author', req.authname),
+                            req.args.get('comment'), when=now)
 
         tn = TicketNotifyEmail(self.env)
         tn.notify(ticket, newticket=0, modtime=now)
@@ -395,8 +403,8 @@ class TicketModule (Module):
 
     def insert_ticket_data(self, req, id, ticket, reporter_id):
         """Insert ticket data into the hdf"""
-        evals = util.mydict(zip(ticket.keys(),
-                                map(lambda x: util.escape(x), ticket.values())))
+        evals = dict(zip(ticket.keys(),
+                         map(lambda x: util.escape(x), ticket.values())))
         req.hdf['ticket'] = evals
 
         util.sql_to_hdf(self.db, "SELECT name FROM component ORDER BY name",
@@ -434,6 +442,17 @@ class TicketModule (Module):
         if lastmod != opened:
             req.hdf['ticket.lastmod'] = time.strftime('%c', time.localtime(lastmod))
             req.hdf['ticket.lastmod_delta'] = util.pretty_timedelta(lastmod)
+
+        restrict_owner = self.env.get_config('ticket', 'restrict_owner')
+        if restrict_owner.lower() in util.TRUE:
+            users = []
+            for username,name,email in self.env.get_known_users(self.db):
+                label = username
+                if name:
+                    label = '%s (%s)' % (util.escape(username),
+                                         util.escape(name))
+                users.append({'name': username,'label': label})
+            req.hdf['ticket.users'] = users
 
         changelog = ticket.get_changelog(self.db)
         curr_author = None
@@ -476,7 +495,7 @@ class TicketModule (Module):
         id = int(req.args.get('id'))
 
         if not preview \
-               and action in ['leave', 'accept', 'reopen', 'resolve', 'reassign']:
+           and action in ('leave', 'accept', 'reopen', 'resolve', 'reassign'):
             self.save_changes(req, id)
 
         ticket = Ticket(self.db, id)
@@ -488,6 +507,7 @@ class TicketModule (Module):
                 if req.args.has_key(field) and field != 'reporter':
                     ticket[field] = req.args.get(field)
             req.hdf['ticket.action'] = action
+            req.hdf['ticket.reassign_owner'] = req.args.get('reassign_owner')
             reporter_id = req.args.get('author')
             comment = req.args.get('comment')
             if comment:
@@ -497,6 +517,8 @@ class TicketModule (Module):
                                                                  req.hdf,
                                                                  self.env,
                                                                  self.db)
+        else:
+            req.hdf['ticket.reassign_owner'] = req.authname
 
         self.insert_ticket_data(req, id, ticket, reporter_id)
 
