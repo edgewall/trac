@@ -1,7 +1,7 @@
 # -*- coding: iso8859-1 -*-
 #
-# Copyright (C) 2003, 2004 Edgewall Software
-# Copyright (C) 2003, 2004 Jonas Borgström <jonas@edgewall.com>
+# Copyright (C) 2003, 2004, 2005 Edgewall Software
+# Copyright (C) 2003, 2004, 2005 Jonas Borgström <jonas@edgewall.com>
 #
 # Trac is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License as
@@ -23,11 +23,12 @@ from __future__ import nested_scopes
 import re
 from util import add_to_hdf, escape
 
-line_re = re.compile('^@@ [+-]([0-9]+),([0-9]+) [+-]([0-9]+),([0-9]+) @@$')
+line_re = re.compile('^@@ [+-]([0-9]+)(?:,([0-9]+))? [+-]([0-9]+)(?:,([0-9]+)) @@$')
 space_re = re.compile(' ( +)|^ ')
 
 
 class HDFBuilder:
+
     def __init__(self, hdf, prefix, tabwidth=8):
         self.block = []
         self.ttype  = None
@@ -51,30 +52,29 @@ class HDFBuilder:
         change = ''
         if len(oldline) > start - end:
             change = '<del>%s</del>' % self._escape(oldline[start:end])
-        self.hdf.setValue(prefix + '.base.lines.0',
-                          self._escape(oldline[:start]) + change + self._escape(oldline[end:]))
+        self.hdf[prefix + '.base.lines.0'] = self._escape(oldline[:start]) + \
+                                             change + \
+                                             self._escape(oldline[end:])
         change = ''
         if len(newline) > start - end:
             change = '<ins>%s</ins>' % self._escape(newline[start:end])
-        self.hdf.setValue(prefix + '.changed.lines.0',
-                          self._escape(newline[:start]) + change + self._escape(newline[end:]))
+        self.hdf[prefix + '.changed.lines.0'] = self._escape(newline[:start]) + \
+                                                change + \
+                                                self._escape(newline[end:])
 
     def _write_block(self, prefix, dtype, old=None, new=None):
-        self.hdf.setValue(prefix + '.type', dtype);
-        self.hdf.setValue(prefix + '.base.offset', str(self.offset_base))
-        self.hdf.setValue(prefix + '.changed.offset',
-                          str(self.offset_changed))
+        self.hdf[prefix + '.type'] = dtype
+        self.hdf[prefix + '.base.offset'] = self.offset_base
+        self.hdf[prefix + '.changed.offset'] = self.offset_changed
         if dtype == 'mod' and len(old) == len(new) == 1:
             self._write_line (prefix, old[0], new[0])
             return
 
         if old:
-            add_to_hdf([self._escape(line) for line in old],
-                       self.hdf, prefix + '.base.lines')
+            self.hdf[prefix + '.base.lines'] = [self._escape(l) for l in old]
             self.offset_base += len(old)
         if new:
-            add_to_hdf([self._escape(line) for line in new],
-                       self.hdf, prefix + '.changed.lines')
+            self.hdf[prefix + '.changed.lines'] = [self._escape(l) for l in new]
             self.offset_changed += len(new)
 
     def print_block(self):
@@ -152,7 +152,7 @@ def get_options(env, req, advanced=0):
     style = req.args.get('style', pref)
     if req.args.has_key('update') and style != pref:
         req.session['diff_style'] = style
-    req.hdf.setValue('diff.style', style)
+    req.hdf['diff.style'] = style
 
     if advanced:
 
@@ -161,22 +161,22 @@ def get_options(env, req, advanced=0):
         if req.args.has_key('update') and arg != pref:
             req.session['diff_contextlines'] = arg
         options = ['-U%d' % arg]
-        req.hdf.setValue('diff.options.contextlines', str(arg))
+        req.hdf['diff.options.contextlines'] = arg
 
         arg = get_bool_option('ignoreblanklines')
         if arg:
             options.append('-B')
-        req.hdf.setValue('diff.options.ignoreblanklines', str(arg))
+        req.hdf['diff.options.ignoreblanklines'] = arg
 
         arg = get_bool_option('ignorecase')
         if arg:
             options.append('-i')
-        req.hdf.setValue('diff.options.ignorecase', str(arg))
+        req.hdf['diff.options.ignorecase'] = arg
 
         arg = get_bool_option('ignorewhitespace')
         if arg:
             options.append('-b')
-        req.hdf.setValue('diff.options.ignorewhitespace', str(arg))
+        req.hdf['diff.options.ignorewhitespace'] = arg
 
         return (style, options)
 

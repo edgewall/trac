@@ -26,6 +26,7 @@ from trac.web.session import Session
 
 import cgi
 import re
+from types import ListType
 
 
 class NotModifiedException(Exception):
@@ -117,14 +118,12 @@ class Request:
 
 
 def _add_args_to_hdf(args, hdf):
-    for key in args.keys():
-        if not key:
-            continue
-        if type(args[key]) not in (list, tuple):
-            hdf.setValue('args.%s' % key, str(args[key].value))
+    for k in [k for k in args.keys() if k]:
+        if type(args[k]) == ListType:
+            for i in range(len(args[k])):
+                hdf['args.%s.%d' % (k, i)] = args[k][i].value
         else:
-            for i in range(len(args[key])):
-                hdf.setValue('args.%s.%d' % (key, i), str(args[key][i].value))
+            hdf['args.%s' % k] = args[k].value
 
 def _parse_path_info(args, path_info):
     def set_if_missing(fs, name, value):
@@ -179,61 +178,58 @@ def populate_hdf(hdf, env, req=None):
     htdocs_location = env.get_config('trac', 'htdocs_location')
     if htdocs_location[-1] != '/':
         htdocs_location += '/'
-    hdf.setValue('htdocs_location', htdocs_location)
-    hdf.setValue('project.name', env.get_config('project', 'name'))
+    hdf['htdocs_location'] = htdocs_location
+    hdf['project.name'] = env.get_config('project', 'name')
     # Kludges for RSS, etc
-    hdf.setValue('project.name.encoded',
-                 escape(env.get_config('project', 'name')))
-    hdf.setValue('project.descr', env.get_config('project', 'descr'))
-    hdf.setValue('project.footer', env.get_config('project', 'footer',
+    hdf['project.name.encoded'] = escape(env.get_config('project', 'name'))
+    hdf['project.descr'] = env.get_config('project', 'descr')
+    hdf['project.footer'] = env.get_config('project', 'footer',
                  'Visit the Trac open source project at<br />'
                  '<a href="http://trac.edgewall.com/">'
-                 'http://trac.edgewall.com/</a>'))
-    hdf.setValue('project.url', env.get_config('project', 'url'))
+                 'http://trac.edgewall.com/</a>')
+    hdf['project.url'] = env.get_config('project', 'url')
 
-    hdf.setValue('trac.href.wiki', env.href.wiki())
-    hdf.setValue('trac.href.browser', env.href.browser('/'))
-    hdf.setValue('trac.href.timeline', env.href.timeline())
-    hdf.setValue('trac.href.roadmap', env.href.roadmap())
-    hdf.setValue('trac.href.milestone', env.href.milestone(None))
-    hdf.setValue('trac.href.report', env.href.report())
-    hdf.setValue('trac.href.query', env.href.query())
-    hdf.setValue('trac.href.newticket', env.href.newticket())
-    hdf.setValue('trac.href.search', env.href.search())
-    hdf.setValue('trac.href.about', env.href.about())
-    hdf.setValue('trac.href.about_config', env.href.about('config'))
-    hdf.setValue('trac.href.login', env.href.login())
-    hdf.setValue('trac.href.logout', env.href.logout())
-    hdf.setValue('trac.href.settings', env.href.settings())
-    hdf.setValue('trac.href.homepage', 'http://trac.edgewall.com/')
+    hdf['trac.href'] = {
+        'wiki': env.href.wiki(),
+        'browser': env.href.browser('/'),
+        'timeline': env.href.timeline(),
+        'roadmap': env.href.roadmap(),
+        'milestone': env.href.milestone(None),
+        'report': env.href.report(),
+        'query': env.href.query(),
+        'newticket': env.href.newticket(),
+        'search': env.href.search(),
+        'about': env.href.about(),
+        'about_config': env.href.about('config'),
+        'login': env.href.login(),
+        'logout': env.href.logout(),
+        'settings': env.href.settings(),
+        'homepage': 'http://trac.edgewall.com/'
+    }
 
     from trac import __version__
-    hdf.setValue('trac.version', __version__)
+    hdf['trac.version'] = __version__
     from time import gmtime, localtime, strftime
-    hdf.setValue('trac.time', strftime('%c', localtime()))
-    hdf.setValue('trac.time.gmt',
-                 strftime('%a, %d %b %Y %H:%M:%S GMT', gmtime()))
+    hdf['trac.time'] = strftime('%c', localtime())
+    hdf['trac.time.gmt'] = strftime('%a, %d %b %Y %H:%M:%S GMT', gmtime())
 
-    hdf.setValue('header_logo.link', env.get_config('header_logo', 'link'))
-    hdf.setValue('header_logo.alt',
-                 escape(env.get_config('header_logo', 'alt')))
     src = env.get_config('header_logo', 'src')
     src_abs = re.match(r'https?://', src) != None
     if not src[0] == '/' and not src_abs:
         src = htdocs_location + src
-    hdf.setValue('header_logo.src', src)
-    hdf.setValue('header_logo.src_abs', str(src_abs))
-    hdf.setValue('header_logo.width', env.get_config('header_logo', 'width'))
-    hdf.setValue('header_logo.height', env.get_config('header_logo', 'height'))
+    hdf['header_logo'] = {
+        'link': env.get_config('header_logo', 'link'),
+        'alt': escape(env.get_config('header_logo', 'alt')),
+        'src': src,
+        'src_abs': src_abs,
+        'width': env.get_config('header_logo', 'width'),
+        'height': env.get_config('header_logo', 'height')
+    }
 
     if req:
-        hdf.setValue('base_url', req.base_url)
-        hdf.setValue('cgi_location', req.cgi_location)
-        hdf.setValue('trac.authname', escape(req.authname))
-
-    templates_dir = env.get_config('trac', 'templates_dir')
-    hdf.setValue('hdf.loadpaths.0', env.get_templates_dir())
-    hdf.setValue('hdf.loadpaths.1', templates_dir)
+        hdf['base_url'] = req.base_url
+        hdf['cgi_location'] = req.cgi_location
+        hdf['trac.authname'] = escape(req.authname)
 
 def dispatch_request(path_info, req, env):
     _parse_path_info(req.args, path_info)
@@ -271,7 +267,7 @@ def dispatch_request(path_info, req, env):
             from trac.web.clearsilver import HDFWrapper
             req.hdf = HDFWrapper(loadpaths=[env.get_templates_dir(),
                                             env.get_config('trac', 'templates_dir')])
-            req.hdf.setValue('HTTP.PathInfo', path_info)
+            req.hdf['HTTP.PathInfo'] = path_info
             _add_args_to_hdf(req.args, req.hdf)
             try:
                 pool = None
@@ -318,22 +314,22 @@ def send_pretty_error(e, env, req=None):
         from trac.perm import PermissionError
 
         if isinstance(e, TracError):
-            req.hdf.setValue('title', e.title or 'Error')
-            req.hdf.setValue('error.title', e.title or 'Error')
-            req.hdf.setValue('error.type', 'TracError')
-            req.hdf.setValue('error.message', e.message)
+            req.hdf['title'] = e.title or 'Error'
+            req.hdf['error.title'] = e.title or 'Error'
+            req.hdf['error.type'] = 'TracError'
+            req.hdf['error.message'] = e.message
             if e.show_traceback:
-                req.hdf.setValue('error.traceback', escape(tb.getvalue()))
+                req.hdf['error.traceback'] = escape(tb.getvalue())
         elif isinstance(e, PermissionError):
-            req.hdf.setValue('title', 'Permission Denied')
-            req.hdf.setValue('error.type', 'permission')
-            req.hdf.setValue('error.action', e.action)
-            req.hdf.setValue('error.message', str(e))
+            req.hdf['title'] = 'Permission Denied'
+            req.hdf['error.type'] = 'permission'
+            req.hdf['error.action'] = e.action
+            req.hdf['error.message'] = e
         else:
-            req.hdf.setValue('title', 'Oops')
-            req.hdf.setValue('error.type', 'internal')
-            req.hdf.setValue('error.message', escape(str(e)))
-            req.hdf.setValue('error.traceback', escape(tb.getvalue()))
+            req.hdf['title'] = 'Oops'
+            req.hdf['error.type'] = 'internal'
+            req.hdf['error.message'] = escape(str(e))
+            req.hdf['error.traceback'] = escape(tb.getvalue())
         req.display('error.cs', response=500)
     except Exception:
         req.send_response(500)

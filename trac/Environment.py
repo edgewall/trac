@@ -1,7 +1,7 @@
 # -*- coding: iso8859-1 -*-
 #
-# Copyright (C) 2003, 2004 Edgewall Software
-# Copyright (C) 2003, 2004 Jonas Borgström <jonas@edgewall.com>
+# Copyright (C) 2003, 2004, 2005 Edgewall Software
+# Copyright (C) 2003, 2004, 2005 Jonas Borgström <jonas@edgewall.com>
 #
 # Trac is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License as
@@ -226,17 +226,15 @@ class Environment:
         files = self.get_attachments(cnx, type, id)
         idx = 0
         for file in files:
-            p = '%s.%d' % (prefix, idx)
-            hdf.setValue(p + '.name', file['filename'])
-            hdf.setValue(p + '.descr',
-                         wiki_to_oneliner(file['description'], self, cnx))
-            hdf.setValue(p + '.author', util.escape(file['author']))
-            hdf.setValue(p + '.ipnr', file['ipnr'])
-            hdf.setValue(p + '.size', util.pretty_size(file['size']))
-            hdf.setValue(p + '.time',
-                         time.strftime('%c', time.localtime(file['time'])))
-            hdf.setValue(p + '.href',
-                         self.href.attachment(type, id, file['filename']))
+            hdf['%s.%d' % (prefix, idx)] = {
+                'name': file['filename'],
+                'descr': wiki_to_oneliner(file['description'], self, cnx),
+                'author': util.escape(file['author']),
+                'ipnr': file['ipnr'],
+                'size': util.pretty_size(file['size']),
+                'time': time.strftime('%c', time.localtime(file['time'])),
+                'href': self.href.attachment(type, id, file['filename'])
+            }
             idx += 1
 
     def create_attachment(self, cnx, type, id, attachment,
