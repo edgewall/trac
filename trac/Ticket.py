@@ -62,20 +62,87 @@ def get_ticket (db, id, escape_values=1):
 
 class Newticket (Module):
     template_name = 'newticket.cs'
+    
+    def create_ticket(self):
+        """
+        Insert a new ticket into the database.
+
+        The values are taken from the html form
+        """
+        self.perm.assert_permission(perm.TICKET_CREATE)
+        
+        global fields
+        data = {}
+        for field in fields:
+            if self.args.has_key(field):
+                data[field] = self.args.get(field)
+        now = int(time.time())
+        data['time'] = now
+        data['changetime'] = now
+        data.setdefault('reporter',self.req.authname)
+
+        cursor = self.db.cursor()
+
+        # The owner field defaults to the component owner
+        if data.has_key('component') and \
+               (not data.has_key('owner') or data['owner'] == ''):
+            # Assign it to the default owner
+            cursor.execute('SELECT owner FROM component '
+                           'WHERE name=%s', data['component'])
+            owner = cursor.fetchone()[0]
+            data['owner'] = owner
+        
+        nstr = string.join(data.keys(), ',')
+        vstr = ('%s,' * len(data.keys()))[:-1]
+
+        cursor.execute('INSERT INTO ticket (%s) VALUES(%s)' % (nstr, vstr),
+                       *data.values())
+        id = self.db.db.sqlite_last_insert_rowid()
+        self.db.commit()
+
+        # Notify
+        tn = TicketNotifyEmail(self.env)
+        tn.notify(id, newticket=1)
+        
+        # redirect to the Ticket module to get a GET request
+        self.req.redirect(self.env.href.ticket(id))
+        
     def render (self):
+        if self.args.has_key('create'):
+            self.create_ticket()
+            
         default_component = self.env.get_config('ticket', 'default_component')
         default_milestone = self.env.get_config('ticket', 'default_milestone')
         default_priority  = self.env.get_config('ticket', 'default_priority')
         default_severity  = self.env.get_config('ticket', 'default_severity')
         default_version   = self.env.get_config('ticket', 'default_version')
+
+        component = self.args.get('component', default_component)
+        milestone = self.args.get('milestone', default_milestone)
+        priority = self.args.get('priority', default_priority)
+        severity = self.args.get('severity', default_severity)
+        version = self.args.get('version', default_version)
         
+        cc = self.args.get('cc', '')
+        owner = self.args.get('owner', '')
+        summary = self.args.get('summary', '')
+        keywords = self.args.get('keywords', '')
+        description = self.args.get('description', '')
+        
+        if description:
+            self.req.hdf.setValue('newticket.description_preview',
+                                  wiki_to_html(description, self.req.hdf, self.env))
         self.req.hdf.setValue('title', 'New Ticket')
-        
-        self.req.hdf.setValue('newticket.default_component', default_component)
-        self.req.hdf.setValue('newticket.default_milestone', default_milestone)
-        self.req.hdf.setValue('newticket.default_priority', default_priority)
-        self.req.hdf.setValue('newticket.default_severity', default_severity)
-        self.req.hdf.setValue('newticket.default_version', default_version)
+        self.req.hdf.setValue('newticket.component', component)
+        self.req.hdf.setValue('newticket.milestone', milestone)
+        self.req.hdf.setValue('newticket.priority', priority)
+        self.req.hdf.setValue('newticket.severity', severity)
+        self.req.hdf.setValue('newticket.version', version)
+        self.req.hdf.setValue('newticket.summary', escape(summary))
+        self.req.hdf.setValue('newticket.description', escape(description))
+        self.req.hdf.setValue('newticket.cc', escape(cc))
+        self.req.hdf.setValue('newticket.owner', escape(owner))
+        self.req.hdf.setValue('newticket.keywords', escape(keywords))
         
         sql_to_hdf(self.db, 'SELECT name FROM component ORDER BY name',
                    self.req.hdf, 'newticket.components')
@@ -90,33 +157,6 @@ class Ticket (Module):
 
     def get_ticket (self, id, escape_values=1):
         return get_ticket(self.db, id, escape_values)
-
-    def get_ticket (self, id, escape_values=1):
-        global fields
-        cursor = self.db.cursor ()
-
-        fetch = string.join(fields, ',')
-
-        cursor.execute(('SELECT %s FROM ticket ' % fetch) + 'WHERE id=%s', id)
-        row = cursor.fetchone ()
-        cursor.close ()
-
-        if not row:
-            raise TracError('Ticket %d does not exist.' % id,
-                            'Invalid Ticket Number')
-
-        info = {'id': id }
-        # Escape the values so that they are safe to have as html parameters
-        for i in range(len(fields)):
-            # We shouldn't escape the description
-            # wiki_to_html will take care of that
-            if fields[i] == 'description':
-                info[fields[i]] = row[i] or ''
-            elif escape_values:
-                info[fields[i]] = escape(row[i])
-            else:
-                info[fields[i]] = row[i]
-        return info
 
     def save_changes (self, id, old, new): 
         global fields
@@ -173,50 +213,6 @@ class Ticket (Module):
 	tn = TicketNotifyEmail(self.env)
 	tn.notify(id, newticket=0, modtime=now)
 
-    def create_ticket(self):
-        """
-        Insert a new ticket into the database.
-
-        The values are taken from the html form
-        """
-        self.perm.assert_permission(perm.TICKET_CREATE)
-        
-        global fields
-        data = {}
-        for field in fields:
-            if self.args.has_key(field):
-                data[field] = self.args.get(field)
-        now = int(time.time())
-        data['time'] = now
-        data['changetime'] = now
-        data.setdefault('reporter',self.req.authname)
-
-        cursor = self.db.cursor()
-
-        # The owner field defaults to the component owner
-        if data.has_key('component') and \
-               (not data.has_key('owner') or data['owner'] == ''):
-            # Assign it to the default owner
-            cursor.execute('SELECT owner FROM component '
-                           'WHERE name=%s', data['component'])
-            owner = cursor.fetchone()[0]
-            data['owner'] = owner
-        
-        nstr = string.join(data.keys(), ',')
-        vstr = ('%s,' * len(data.keys()))[:-1]
-
-        cursor.execute('INSERT INTO ticket (%s) VALUES(%s)' % (nstr, vstr),
-                       *data.values())
-        id = self.db.db.sqlite_last_insert_rowid()
-        self.db.commit()
-
-        # Notify
-        tn = TicketNotifyEmail(self.env)
-        tn.notify(id, newticket=1)
-        
-        # redirect to the Ticket module to get a GET request
-        self.req.redirect(self.env.href.ticket(id))
-        
     def insert_ticket_data(self, hdf, id):
         """Inserts ticket data into the hdf"""
         cursor = self.db.cursor()
@@ -258,9 +254,6 @@ class Ticket (Module):
 
     def render (self):
         action = self.args.get('action', 'view')
-            
-        if action == 'create':
-            self.create_ticket ()
             
         if not self.args.has_key('id'):
             self.req.redirect(self.env.href.wiki())
