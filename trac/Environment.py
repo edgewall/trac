@@ -100,7 +100,6 @@ class Environment:
         # Create a few static files
         _create_file(os.path.join(self.path, 'VERSION'),
                      'Trac Environment Version 1\n')
-        print "hej"
         _create_file(os.path.join(self.path, 'README'),
                     'This directory contains a Trac project.\n'
                     'Visit http://trac.edgewall.com/ for more information.\n')
