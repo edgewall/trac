@@ -1,0 +1,124 @@
+.code-block { 
+  border: 1px dotted #d7d7d7;
+  padding: .5em 1em;
+  margin: 1em 0;
+}
+.code_default { font-family: monospace; font-size: 9px; }
+.css_class { color: #900000; }
+.css_comment { color: green; font-style: italic; }
+.css_default { }
+.css_directive { color: #009000; font-weight: bold; }
+.css_doublestring { color: navy; }
+.css_id { color: #900000; }
+.css_identifier { color: black; }
+.css_important { color: blue; }
+.css_operator { color: #000090; font-weight: bold; }
+.css_pseudoclass { color: #900000; }
+.css_singlestring { color: navy; }
+.css_tag { color: #900000; font-weight: bold; }
+.css_unknown_identifier { color: red; }
+.css_unknown_pseudoclass { color: #ff0000; }
+.css_value { color: navy; }
+.c_character { color: olive; }
+.c_comment { color: green; font-style: italic; }
+.c_commentdoc { color: green; font-style: italic; }
+.c_commentdockeyword { color: navy; font-weight: bold; }
+.c_commentdockeyworderror { color: red; font-weight: bold; }
+.c_commentline { color: green; font-style: italic; }
+.c_commentlinedoc { color: green; font-style: italic; }
+.c_default { }
+.c_identifier { color: #060; }
+.c_number { color: #009999; }
+.c_operator { color: black; }
+.c_preprocessor { color: navy;	font-weight: bold; }
+.c_regex { color: olive; }
+.c_string { color: olive; }
+.c_stringeol { color: olive; }
+.c_uuid { color: olive; }
+.c_verbatim { color: olive; }
+.c_word { color: navy; font-weight: bold; }
+.c_word2 { color: navy; font-weight: bold; }
+.h_asp { color: #ffff00; }
+.h_aspat { color: #ffdf00; }
+.h_attribute { color: #008080; }
+.h_attributeunknown { color: #ff0000; }
+.h_cdata { color: #ffdf00; }
+.h_comment { color: #808000; }
+.h_default { }
+.h_doublestring { color: olive; }
+.h_entity { color: #800080; }
+.h_number { color: #009999; }
+.h_other { color: #800080; }
+.h_script { color: #000080; }
+.h_singlestring {
+	color: olive; }
+.h_tag { color: #000080; }
+.h_tagend { color: #000080; }
+.h_tagunknown { color: #ff0000; }
+.h_xmlend { color: #0000ff; }
+.h_xmlstart { color: #0000ff; }
+.pl_array { color: black; }
+.pl_backticks { color: olive; }
+.pl_character { color: olive; }
+.pl_commentline { color: green; font-style: italic; }
+.pl_datasection { color: olive; }
+.pl_default { }
+.pl_error { color: red; font-style: bold; }
+.pl_hash { color: black; }
+.pl_here_delim { color: olive; }
+.pl_here_q { color: olive; }
+.pl_here_qq { color: olive; }
+.pl_here_qx { color: olive; }
+.pl_identifier { color: black; }
+.pl_longquote { color: olive; }
+.pl_number { color: #009999; }
+.pl_operator { color: black; }
+.pl_pod { color: black; font-style: italic; }
+.pl_preprocessor { color: navy; font-weight: bold; }
+.pl_punctuation { color: black; }
+.pl_regex { color: olive; }
+.pl_regsubst { color: olive; }
+.pl_scalar { color: black; }
+.pl_string { color: olive; }
+.pl_string_q { color: olive; }
+.pl_string_qq { color: olive; }
+.pl_string_qr { color: olive; }
+.pl_string_qw { color: olive; }
+.pl_string_qx { color: olive; }
+.pl_symboltable { color: black; }
+.pl_word { color: navy; font-weight: bold; }
+.p_character { color: olive; }
+.p_classname { color: blue; font-weight: bold; }
+.p_commentblock { color: gray; font-style: italic; }
+.p_commentline { color: green; font-style: italic; }
+.p_default { }
+.p_defname { color: #009999; font-weight: bold; }
+.p_identifier { color: black; }
+.p_number { color: #009999; }
+.p_operator { color: black; }
+.p_string { color: olive; }
+.p_stringeol { color: olive; }
+.p_triple { color: olive; }
+.p_tripledouble { color: olive; }
+.p_word { color: navy; font-weight: bold; }
+.hphp_character { color: olive; }
+.hphp_classname { color: blue; font-weight: bold; }
+.hphp_commentblock { color: gray; font-style: italic; }
+.hphp_commentline { color: green; font-style: italic; }
+.hphp_default { }
+.hphp_defname { color: #009999; font-weight: bold; }
+.hphp_identifier { color: black; }
+.hphp_number { color: #009999; }
+.hphp_operator { color: black; }
+.hphp_string { color: olive; }
+.hphp_stringeol { color: olive; }
+.hphp_triple { color: olive; }
+.hphp_tripledouble { color: olive; }
+.hphp_word { color: navy; font-weight: bold; }
+.yaml_comment { color: #008800; font-style: italic; }
+.yaml_default { }
+.yaml_document { color: #808080; font-style: italic; }
+.yaml_identifier { color: navy; font-weight: bold; }
+.yaml_keyword { color: #880088; }
+.yaml_number { color: #880000; }
+.yaml_reference { color: #008888; }

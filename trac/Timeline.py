@@ -103,7 +103,6 @@ class Timeline (Module):
                     'author': row['author']}
 
             if item['type'] == CHANGESET:
-                self.env.log.debug ('type: %s' % item['type'])
                 item['changeset_href'] = self.env.href.changeset(item['idata'])
                 item['shortmsg'] = wiki_to_oneliner(shorten_line(item['message']),
                                                     self.req.hdf, self.env)

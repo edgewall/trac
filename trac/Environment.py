@@ -29,6 +29,7 @@ import ConfigParser
 
 import db_default
 import Logging
+import Mimeview
 
 import sqlite
 
@@ -56,6 +57,7 @@ class Environment:
         except ImportError:
             pass
         self.setup_log()
+        self.setup_mimeviewer()
 
     def verify(self):
         """Verifies that self.path is a compatible trac environment"""
@@ -163,6 +165,9 @@ class Environment:
         logfile = os.path.join(self.get_log_dir(), logfile)
         logid = self.path # Env-path provides process-unique ID
         self.log = Logging.logger_factory(logtype, logfile, loglevel, logid)
+
+    def setup_mimeviewer(self):
+        self.mimeview = Mimeview.Mimeview(self)
     
     def get_attachments_dir(self):
         return os.path.join(self.path, 'attachments')

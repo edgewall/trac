@@ -243,8 +243,35 @@ class Formatter(CommonFormatter):
         return '<pre class="wiki">' + escape(text) + '</pre>'
     def html_processor(hdf, text, env):
         return text
+    def asp_processor(hdf, text, env):
+        return env.mimeview.display(text, 'text/x-asp')
+    def c_processor(hdf, text, env):
+        return env.mimeview.display(text, 'text/x-csrcl')
+    def cpp_processor(hdf, text, env):
+        return env.mimeview.display(text, 'text/x-c++src')
+    def perl_processor(hdf, text, env):
+        return env.mimeview.display(text, 'text/x-perl')
+    def php_processor(hdf, text, env):
+        return env.mimeview.display(text, 'text/x-php')
+    def python_processor(hdf, text, env):
+        return env.mimeview.display(text, 'text/x-python')
+    def ruby_processor(hdf, text, env):
+        return env.mimeview.display(text, 'text/x-ruby')
+    def sql_processor(hdf, text, env):
+        return env.mimeview.display(text, 'text/x-sql')
+    def xml_processor(hdf, text, env):
+        return env.mimeview.display(text, 'text/xml')
 
     builtin_processors = { 'html': html_processor,
+                           'asp': asp_processor,
+                           'c': c_processor,
+                           'cpp': cpp_processor,
+                           'php': php_processor,
+                           'perl': perl_processor,
+                           'python': python_processor,
+                           'ruby': ruby_processor,
+                           'sql': sql_processor,
+                           'xml': xml_processor,
                            'default': default_processor}
 
     def load_macro(self, name):
@@ -398,7 +425,7 @@ class Formatter(CommonFormatter):
                 self.code_processor = None
                 self.code_text = ''
             else:
-                self.code_text += os.linesep + line
+                self.code_text += line + os.linesep
                 if not self.code_processor:
                     self.code_processor = Formatter.builtin_processors['default']
         elif line.strip() == '}}}':
@@ -408,7 +435,7 @@ class Formatter(CommonFormatter):
                 self.close_table()
                 self.out.write(self.code_processor(self.hdf, self.code_text, self.env))
             else:
-                self.code_text += os.linesep + line
+                self.code_text += line + os.linesep
         elif not self.code_processor:
             match = processor_re.search(line)
             if match:
@@ -419,14 +446,14 @@ class Formatter(CommonFormatter):
                     try:
                         self.code_processor = self.load_macro(name)
                     except Exception, e:
-                        self.code_text += os.linesep + line
+                        self.code_text += line + os.linesep 
                         self.code_processor = Formatter.builtin_processors['default']
                         self.out.write('<div class="error">Failed to load processor macro %s: %s</div>' % (name, e))
             else:
-                self.code_text += os.linesep + line
+                self.code_text += line + os.linesep 
                 self.code_processor = Formatter.builtin_processors['default']
         else:
-            self.code_text += os.linesep + line
+            self.code_text += line + os.linesep
 
     def format(self, text, out):
         self.out = out

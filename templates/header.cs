@@ -20,6 +20,7 @@
     <style type="text/css">
       <!--
       @import url("<?cs var:$htdocs_location ?>/css/trac.css");
+      @import url("<?cs var:$htdocs_location ?>/css/code.css");
       <?cs if:trac.active_module == 'browser' || trac.active_module == 'log' ?>
       @import url("<?cs var:$htdocs_location ?>/css/browser.css");
       <?cs elif:trac.active_module == 'timeline' ?>
