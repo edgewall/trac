@@ -31,6 +31,7 @@ import sqlite
 import StringIO
 
 from trac import util
+from trac import sync
 import trac.siteconfig
 import trac.Environment
 
@@ -249,7 +250,7 @@ class TracAdmin(cmd.Cmd):
                 print "No documentation found for '%s'" % arg[0]
         else:
             docs = (self._help_about + self._help_help +
-                    self._help_initenv + self._help_upgrade +
+                    self._help_initenv + self._help_resync + self._help_upgrade +
                     self._help_wiki +
 #                    self._help_config + self._help_wiki +
                     self._help_permission + self._help_component +
@@ -486,7 +487,6 @@ class TracAdmin(cmd.Cmd):
             cursor = cnx.cursor()
             self._do_wiki_load(trac.siteconfig.__default_wiki_dir__,cursor)
 
-            from trac import sync
             print ' Indexing repository'
             sync.sync(cnx, rep, fs_ptr, pool)
             print 'Done.'
@@ -527,7 +527,32 @@ class TracAdmin(cmd.Cmd):
         print
         print 'Congratulations!'
         print
+        
+    _help_resync = [('resync', 'Re-synchronize trac with the repository')]
+    
+    ## Resync
+    def do_resync(self, line):
+        from svn import util, repos, core
+        core.apr_initialize()
+        pool = core.svn_pool_create(None)
 
+        self.db_open() # We need to call this function to open the env, really stupid
+
+        # Remove any trailing slash or else subversion might abort
+        repository_dir = self.__env.get_config('trac', 'repository_dir')
+        if not os.path.split(repository_dir)[1]:
+            repository_dir = os.path.split(repository_dir)[0]
+            
+        rep = repos.svn_repos_open(repository_dir, pool)
+        fs_ptr = repos.svn_repos_fs(rep)
+        
+        cnx = self.__env.get_db_cnx()
+        print 'resyncing...'
+        self.db_execsql("DELETE FROM revision")
+        self.db_execsql("DELETE FROM node_change")
+        sync.sync(cnx, rep, fs_ptr, pool)
+        print 'done.'
+        
     ## Wiki
     _help_wiki = [('wiki list', 'List wiki pages'),
                   ('wiki export <page> [file]',
