@@ -116,11 +116,11 @@ def parse_path_info(args, path_info):
         set_if_missing(args, 'id', urllib.unquote(match.group(2)))
         set_if_missing(args, 'filename', match.group(3))
         return args
-    match = re.search('^/milestone(?:/((?:\w|[\.\-])+))?(?:/(.*)/?)?', path_info)
+    match = re.search('^/milestone(?:/([^\?]+))?(?:/(.*)/?)?', path_info)
     if match:
         set_if_missing(args, 'mode', 'milestone')
         if match.group(1):
-            set_if_missing(args, 'id', match.group(1))
+            set_if_missing(args, 'id', urllib.unquote_plus(match.group(1)))
         return args
     return args
 
