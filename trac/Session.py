@@ -19,6 +19,7 @@
 #
 # Author: Daniel Lundin <daniel@edgewall.com>
 
+import sys
 from util import *
 
 class Session:
@@ -30,6 +31,8 @@ class Session:
     db = None
     vars = {}
 
+    DEPARTURE_INTERVAL = 3600 # If you're idle for an hour, you left
+    UPDATE_INTERVAL = 300  # Update session every 5 mins
     COOKIE_KEY = 'trac_session'
 
     def __init__(self, env, req, newsession = 0):
@@ -71,10 +74,29 @@ class Session:
     def bake_cookie(self):
         self.req.outcookie[self.COOKIE_KEY] = self.sid
         self.req.outcookie[self.COOKIE_KEY]['path'] = self.req.cgi_location
+        self.req.outcookie[self.COOKIE_KEY]['expires'] = 420000000
 
     def populate_hdf(self):
         add_dict_to_hdf(self.vars, self.req.hdf, 'trac.session.var')
         self.req.hdf.setValue('trac.session.id', self.sid)
+        last_visit =  float(self.get('last_visit', 0))
+        if last_visit:
+            self.req.hdf.setValue('trac.session.var.last_visit_txt',
+                                  time.strftime('%x %X', time.localtime(last_visit)))
+        mod_time =  float(self.get('mod_time', 0))
+        if mod_time:
+            self.req.hdf.setValue('trac.session.var.mod_time_txt',
+                                  time.strftime('%x %X', time.localtime(mod_time)))
+
+    def update_sess_time(self):
+        sess_time = int(self.get('mod_time',0))
+        last_visit = int(self.get('last_visit',0))
+        now = int(time.time())
+        idle = now - sess_time
+        if idle > self.DEPARTURE_INTERVAL or not last_visit:
+            self['last_visit'] = sess_time
+        if idle > self.UPDATE_INTERVAL or not sess_time:
+            self['mod_time'] = now
 
     def get_session(self, sid):
         self.sid = sid
@@ -87,6 +109,7 @@ class Session:
             or rows[0][0] == self.req.authname):  # Session is mine
             for u,k,v in rows:
                 self.vars[k] = v
+            self.update_sess_time()
             self.bake_cookie()
             self.populate_hdf()
             return
@@ -104,7 +127,7 @@ class Session:
         raise TracError(err, 'Error accessing authenticated session')
 
     def set_var(self, key, val):
-        currval =  self.vars.get(key)
+        currval =  self.get(key)
         if currval == val:
             return
         curs = self.db.cursor()
@@ -116,14 +139,11 @@ class Session:
             curs.execute('UPDATE session SET username=%s,var_value=%s'
                          ' WHERE sid=%s AND var_name=%s',
                          self.req.authname, val, self.sid, key)
-        self.env.log.debug('Setting session variable: %s::%s = %s' % (self.sid,
-                                                                     key,val))
         self.db.commit()
         self.vars[key] = val
 
     def create_new_sid(self):
-        self.sid = hex_entropy()
-        self.env.log.debug('Creating new session: %s' % self.sid)
+        self.sid = hex_entropy(24)
         self.bake_cookie()
         self.populate_hdf()
 
@@ -141,4 +161,3 @@ class Session:
         self.db.commit()
         self.sid = newsid
         self.bake_cookie()
-        self.env.log.debug('Renamed session %s => %s' % (self.sid, newsid))
