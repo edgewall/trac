@@ -187,7 +187,7 @@ class Timeline (Module):
     def render (self):
         self.perm.assert_permission(perm.TIMELINE_VIEW)
 
-        self.add_link('alternate', '?daysback=90&amp;max=50&amp;format=rss',
+        self.add_link('alternate', '?daysback=90&max=50&format=rss',
             'RSS Feed', 'application/rss+xml', 'rss')
 
         _from = self.args.get('from', '')
