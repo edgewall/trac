@@ -72,7 +72,7 @@ class BrowserModule(Module):
         if len(path_links) > 1:
             add_link(req, 'up', path_links[-2]['href'], 'Parent directory')
 
-        repos = self.env.get_repository()
+        repos = self.env.get_repository(req.authname)
         req.hdf['browser.revision'] = rev or repos.youngest_rev
 
         node = repos.get_node(path, rev)
@@ -218,7 +218,7 @@ class LogModule(Module):
         if path_links:
             add_link(req, 'up', path_links[-1]['href'], 'Parent directory')
 
-        repos = self.env.get_repository()
+        repos = self.env.get_repository(req.authname)
         node = repos.get_node(path, rev)
         if not node:
             # FIXME: we should send a 404 error here
