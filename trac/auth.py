@@ -26,9 +26,9 @@ class Authenticator:
     def __init__(self, db, req):
         self.db = db
         self.authname = 'anonymous'
-        if 'trac_auth' in req.cookie:
+        if 'trac_auth' in req.incookie:
             cursor = db.cursor ()
-            cookie = req.cookie['trac_auth'].value
+            cookie = req.incookie['trac_auth'].value
             cursor.execute ("SELECT name FROM auth_cookie "
                             "WHERE cookie='%s' AND ipnr='%s'"
                             % (cookie, req.remote_addr))
@@ -43,8 +43,8 @@ class Authenticator:
                         % (cookie, req.remote_user, req.remote_addr, int(time.time())));
         self.db.commit ()
         self.authname = req.remote_user
-        req.cookie['trac_auth'] = cookie
-        req.cookie['trac_auth']['path'] = req.cgi_location
+        req.outcookie['trac_auth'] = cookie
+        req.outcookie['trac_auth']['path'] = req.cgi_location
 
     def logout(self):
         cursor = self.db.cursor ()

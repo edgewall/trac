@@ -225,16 +225,17 @@ class Request:
         import neo_util
         import Cookie
         self.hdf = neo_util.HDF()
-        self.cookie = Cookie.SimpleCookie()
+        self.incookie = Cookie.SimpleCookie()
+        self.outcookie = Cookie.SimpleCookie()
         
     def redirect(self, url):
         self.send_response(302)
         self.send_header('Location', url)
         self.send_header('Content-Type', 'text/plain')
         self.send_header('Pragma', 'no-cache')
-        self.send_header('Expires', 'Fri, 01 Jan 1999 00:00:00 GMT')
         self.send_header('Cache-control', 'no-cache')
-        cookie = self.cookie.output(header='')
+        self.send_header('Expires', 'Fri, 01 Jan 1999 00:00:00 GMT')
+        cookie = self.outcookie.output(header='')
         if len(cookie):
             self.send_header('Set-Cookie', cookie)
         self.end_headers()
@@ -251,9 +252,11 @@ class Request:
             cs.parseFile(filename)
         data = cs.render()
         self.send_response(response)
+        self.send_header('Cache-control', 'no-cache')
+        self.send_header('Expires', 'Fri, 01 Jan 1999 00:00:00 GMT')
         self.send_header('Content-Type', content_type + ';charset=utf-8')
         self.send_header('Content-Length', len(data))
-        cookie = self.cookie.output(header='')
+        cookie = self.outcookie.output(header='')
         if len(cookie):
             self.send_header('Set-Cookie', cookie)
         self.end_headers()
@@ -272,7 +275,7 @@ class CGIRequest(Request):
         self.remote_addr = os.getenv('REMOTE_ADDR')
         self.remote_user = os.getenv('REMOTE_USER')
         if os.getenv('HTTP_COOKIE'):
-            self.cookie.load(os.getenv('HTTP_COOKIE'))
+            self.incookie.load(os.getenv('HTTP_COOKIE'))
     
     def read(self, len):
         return sys.stdin.read(len)

@@ -148,7 +148,7 @@ class TracHTTPRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler,
         trac.core.Request.init_request(self)
         self.remote_addr = str(self.client_address[0])
         if 'Cookie' in self.headers:
-            self.cookie.load(self.headers['Cookie'])
+            self.incookie.load(self.headers['Cookie'])
 
     def parse_path(self, path):
         m = self.url_re.findall(self.path)
