@@ -39,11 +39,23 @@ class Roadmap(Module):
             self.req.hdf.setValue('roadmap.href.newmilestone',
                                    self.env.href.milestone(None, 'new'))
 
+        show = self.args.get('show', 'current')
+        if show == 'all':
+            self.req.hdf.setValue('roadmap.href.list',
+                                   self.env.href.roadmap())
+            query = "SELECT name, time, descr FROM milestone " \
+                    "WHERE name != '' " \
+                    "ORDER BY time DESC, name"
+        else:
+            self.req.hdf.setValue('roadmap.showall', '1')
+            self.req.hdf.setValue('roadmap.href.list',
+                                   self.env.href.roadmap('all'))
+            query = "SELECT name, time, descr FROM milestone " \
+                    "WHERE name != '' " \
+                    "AND (time IS NULL OR time = 0 OR time > %d) " \
+                    "ORDER BY time DESC, name" % time.time()
         cursor = self.db.cursor()
-        cursor.execute("SELECT name, time, descr FROM milestone "
-                       "WHERE name != '' "
-                       "AND (time IS NULL OR time = 0 OR time > %d) "
-                       "ORDER BY time DESC, name" % time.time())
+        cursor.execute(query)
         milestones = []
         while 1:
             row = cursor.fetchone()

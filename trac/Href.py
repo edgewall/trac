@@ -89,8 +89,11 @@ class Href:
             href += '?' + ('&').join(params)
         return href
 
-    def roadmap(self):
-        return href_join(self.base, 'roadmap')
+    def roadmap(self, show=None):
+        href = href_join(self.base, 'roadmap')
+        if show:
+            href = href + '?show=' + show
+        return href
 
     def milestone(self, milestone, action=None):
         if milestone:

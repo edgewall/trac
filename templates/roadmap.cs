@@ -4,8 +4,11 @@
 
 <div id="ctxtnav" class="nav">
  <ul>
-  <?cs if:roadmap.href.newmilestone ?><li class="last"><a href="<?cs
+  <?cs if:roadmap.href.newmilestone ?><li><a href="<?cs
     var:roadmap.href.newmilestone ?>">Add New Milestone</a></li><?cs /if ?>
+  <li class="last"><a href="<?cs var:roadmap.href.list ?>"><?cs
+    if:roadmap.showall ?>Show All Milestones<?cs
+    else ?>Show Current Milestones<?cs /if ?></a></li>
  </ul>
 </div>
 
