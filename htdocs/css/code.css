@@ -1,11 +1,11 @@
 .code-block {
  border: 1px dotted #d7d7d7;
  margin: 1em 0;
- padding: 1em 0;
+ padding: .3em;
  overflow: auto
 }
-.image-file { margin: 1em }
-.image-file-frame img { border: 15px solid #d7d7d7 }
+.image-file { background: #eee; padding: .3em }
+.image-file img { background: url(../imggrid.png) }
 
 /* Default */
 .css_default, .c_default, .code_default, .pl_default, .p_default, 

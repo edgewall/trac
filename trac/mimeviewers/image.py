@@ -8,7 +8,6 @@ supported_types = [
 
 def display(data, mimetype, filename, env):
     html = '<div class="image-file">' \
-           '<div class="image-file-frame">' \
            '<img alt="%s" src="?format=raw" />' \
-           '</div></div><br style="clear: both" />' % filename
+           '</div>' % filename
     return html
