@@ -13,7 +13,7 @@ dt em {
 }
 dt .time { color: #777 }
 dt :link, dt :visited {
- background: transparent 3px 50% no-repeat;
+ background: 3px 50% no-repeat;
  display: block;
  border: none;
  color: #000;

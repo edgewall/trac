@@ -27,7 +27,7 @@ img { border: none }
  color: #b00;
  border-bottom: 1px dotted #bbb;
 }
-:link:hover, :visited:hover { background: #eee; color: #b00 }
+:link:hover, :visited:hover { background-color: #eee; color: #b00 }
 h1 :link, h1 :visited ,h2 :link, h2 :visited, h3 :link, h3 :visited,
 h4 :link, h4 :visited, h5 :link, h5 :visited, h6 :link, h6 :visited {
  color: inherit;
