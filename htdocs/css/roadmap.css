@@ -79,15 +79,17 @@ p.percentage { font-size: 10px; line-height: 2.4em }
 }
 #main.milestone td, #main.milestone th { padding: 0 .25em }
 #main.milestone th { text-align: left }
-#main.milestone th.tickets, #main.milestone th.open, #main.milestone th.closed,
-#main.milestone td.open, #main.milestone td.closed {
- text-align: center;
-}
+#main.milestone th.tickets { text-align: center }
 #main.milestone th.open, #main.milestone th.closed {
  font-size: smaller;
+ text-align: center;
  width: 6em;
 }
-#main.milestone td.closed { text-decoration: line-through }
+#main.milestone td.open, #main.milestone td.closed {
+ color: #888;
+ text-align: right;
+ padding-right: 1.5em;
+}
 #main.milestone th.progress { padding-left: 6px; width: 60% }
 #main.milestone td div.progress { margin: 3px .5em 3px 2px }
 #main.milestone td.progress p { font-size: 10px; margin: 3px 0 }
