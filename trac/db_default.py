@@ -411,6 +411,7 @@ default_config = \
   ('header_logo', 'width', '236'),
   ('header_logo', 'height', '73'),
   ('attachment', 'max_size', '262144'),
+  ('mimeviewer', 'enscript_path', 'enscript'),
   ('notification', 'smtp_enabled', 'false'),
   ('notification', 'smtp_server', 'localhost'),
   ('notification', 'smtp_always_cc', ''),

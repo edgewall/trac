@@ -113,10 +113,15 @@ def display(data, mimetype, filename, env):
     except KeyError:
         raise Exception, "Enscript doesn't support %s" % mimetype
     env.log.debug("type: %s enscript-suffix: %s" % (mimetype, lang))
-    enscript_path = '/usr/bin/enscript --color -h -q --language=html '\
-                    '--pretty-print=%s ' \
-                    '-p -' % lang
-    np = NaivePopen(enscript_path, data)
+
+    enscript = env.get_config('mimeviewer', 'enscript_path', 'enscript')
+    enscript += ' --color -h -q --language=html '\
+                '--pretty-print=%s ' \
+                '-p -' % lang
+    np = NaivePopen(enscript, data)
+    if np.errorlevel:
+        err = 'Running (%s) failed: %s.' % (enscript, np.errorlevel)
+        raise Exception, err
     odata = np.out
     # Strip header and footer
     i = odata.find('</H1>')
