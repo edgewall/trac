@@ -192,9 +192,6 @@ class Timeline (Module):
     def render (self):
         self.perm.assert_permission(perm.TIMELINE_VIEW)
 
-        self.add_link('alternate', '?daysback=90&max=50&format=rss',
-            'RSS Feed', 'application/rss+xml', 'rss')
-
         _from = self.args.get('from', '')
         _daysback = self.args.get('daysback', '')
 
@@ -234,6 +231,21 @@ class Timeline (Module):
             self.req.hdf.setValue('timeline.changeset', 'checked')
         if milestone:
             self.req.hdf.setValue('timeline.milestone', 'checked')
+
+        rssargs = []
+        if wiki:
+            rssargs.append('wiki=on')
+        if ticket:
+            rssargs.append('ticket=on')
+        if changeset:
+            rssargs.append('changeset=on')
+        if milestone:
+            rssargs.append('milestone=on')
+        if rssargs:
+            rssargs = '&' + '&'.join(rssargs)
+        self.add_link('alternate',
+            '?daysback=90&max=50%s&format=rss' % rssargs,
+            'RSS Feed', 'application/rss+xml', 'rss')
 
         info = self.get_info (start, stop, maxrows, ticket,
                               changeset, wiki, milestone)
