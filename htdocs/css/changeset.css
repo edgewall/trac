@@ -12,5 +12,7 @@
  overflow: hidden;
  width: .8em; height: .8em;
 }
-#overview .message { border: 1px solid #fff; padding-top: 1em }
-#overview dd.message :first-child { margin-top: 0 }
+#overview .message { padding: 1em 0 1px }
+#overview dd.message p, #overview dd.message ul, #overview dd.message ol { margin-top: 0; margin-bottom: 1em }
+
+#overview .files { padding: 1px 0 }
