@@ -54,6 +54,7 @@ modules = {
     'timeline'    : ('Timeline', 'Timeline', 1),
     'changeset'   : ('Changeset', 'Changeset', 1),
     'newticket'   : ('Ticket', 'NewticketModule', 0),
+    'query'       : ('Ticket', 'QueryModule', 0),
     'attachment'  : ('File', 'Attachment', 0),
     'roadmap'     : ('Roadmap', 'Roadmap', 0),
     'settings'    : ('Settings', 'Settings', 0),
@@ -91,7 +92,7 @@ def parse_path_info(args, path_info):
         if match.group(2):
             set_if_missing(args, 'page', match.group(2))
         return args
-    match = re.search('^/(newticket|timeline|search|roadmap|settings)/?', path_info)
+    match = re.search('^/(newticket|timeline|search|roadmap|settings|query)/?', path_info)
     if match:
         set_if_missing(args, 'mode', match.group(1))
         return args
@@ -139,9 +140,13 @@ def parse_args(command, path_info, query_string,
 
 def add_args_to_hdf(args, hdf):
     for key in args.keys():
-        # FIXME: I guess we should insert lists as well
+        if not key:
+            continue
         if type(args[key]) != list:
-            hdf.setValue('args.' + key, str(args[key].value))
+            hdf.setValue('args.%s' % key, str(args[key].value))
+        else:
+            for i in range(len(args[key])):
+                hdf.setValue('args.%s.%d' % (key, i), str(args[key][i].value))
 
 def module_factory(args, env, db, req):
     mode = args.get('mode', 'wiki')

@@ -416,3 +416,75 @@ class TicketModule (Module):
 
         self.insert_ticket_data(self.req.hdf, id, ticket, reporter_id)
 
+
+class QueryModule (Module):
+    template_name = 'query.cs'
+
+    def get_results(self, sql):
+        cursor = self.db.cursor()
+        cursor.execute(sql)
+        results = []
+        while 1:
+            row = cursor.fetchone()
+            if not row:
+                break
+            id = int(row['id'])
+            result = {
+                'id': id,
+                'href': self.env.href.ticket(id),
+                'summary': row['summary'] or '',
+                'status': row['status'] or '',
+                'component': row['component'] or '',
+                'owner': row['owner'] or '',
+                'priority': row['priority'] or ''
+            }
+            results.append(result)
+        return results
+
+    def render(self):
+        self.perm.assert_permission(perm.TICKET_VIEW)
+
+        headers = [ 'id', 'summary', 'status', 'component', 'owner' ]
+
+        constraints = [k for k in self.args.keys() if k in Ticket.std_fields]
+        self.req.hdf.setValue('constraints', str(constraints))
+
+        sql = 'SELECT * FROM ticket'
+        clauses = []
+        constraints_dict = {}
+        for i in range(len(constraints)):
+            clause = []
+            vals = self.args[constraints[i]]
+            self.req.hdf.setValue('vals', str(vals))
+            if type(vals) == list:
+                for j in range(len(vals)):
+                    clause.append('%s = \'%s\'' % (constraints[i], vals[j]))
+            else:
+                clause.append('%s = \'%s\'' % (constraints[i], vals))
+            clauses.append('(' + ' OR '.join(clause) + ')')
+            constraints_dict[constraints[i]] = vals;
+        if clauses:
+            sql += ' WHERE ' + ' AND '.join(clauses)
+
+        order = self.args.get('order', 'id')
+        if order in Ticket.std_fields:
+            sql += ' ORDER BY ' + order
+        else:
+            sql += ' ORDER BY id'
+        desc = self.args.has_key('desc')
+        if desc:
+            sql += ' DESC'
+
+        for i in range(len(headers)):
+            self.req.hdf.setValue('query.headers.%d.name' % i, headers[i])
+            if headers[i] == order:
+                self.req.hdf.setValue('query.headers.%d.href' % i,
+                    self.env.href.query(constraints_dict, order, not desc))
+                self.req.hdf.setValue('query.headers.%d.ordered' % i, '1')
+            else:
+                self.req.hdf.setValue('query.headers.%d.href' % i,
+                    self.env.href.query(constraints_dict, headers[i]))
+
+        self.req.hdf.setValue('title', 'Ticket Query')
+        results = self.get_results(sql)
+        util.add_dictlist_to_hdf(results, self.req.hdf, 'query.results')

@@ -77,6 +77,8 @@
  /if  ?><?cs
  if $trac.active_module == "ticket" ?><?cs
   set:$ticket_view="ticket" ?><?cs
+ elif $trac.active_module == "query" ?><?cs
+  set:$ticket_view="query" ?><?cs
  else ?><?cs
   set:$ticket_view="report" ?><?cs
  /if  ?><?cs

@@ -68,6 +68,23 @@ class Href:
     def newticket(self):
         return href_join(self.base, 'newticket')
 
+    def query(self, constraints, order=None, desc=0):
+        href = href_join(self.base, 'query')
+        params = []
+        for field in constraints:
+            values = constraints[field]
+            if type(values) != list:
+                values = [values]
+            for value in values:
+                params.append(field + '=' + urllib.quote(value))
+        if order:
+            params.append('order=' + urllib.quote(order))
+        if desc:
+            params.append('desc=1')
+        if params:
+            href += '?' + ('&').join(params)
+        return href
+
     def roadmap(self):
         return href_join(self.base, 'roadmap')
 
