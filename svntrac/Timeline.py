@@ -42,6 +42,7 @@ class Timeline (Module):
         # 1: change set
         # 2: new tickets
         # 3: closed tickets
+        # 4: reopened tickets
 
         cursor.execute ("SELECT time, rev AS data, 1 AS type, message "
                         "FROM revision WHERE time>=%s AND time<=%s UNION ALL "
@@ -49,9 +50,12 @@ class Timeline (Module):
                         "FROM ticket WHERE time>=%s AND time<=%s UNION ALL "
                         "SELECT time, ticket AS data, 3 AS type, '' AS message "
                         "FROM ticket_change WHERE field='status' "
-                        "AND newvalue='closed' AND time>=%s AND time<=%s "
+                        "AND newvalue='closed' AND time>=%s AND time<=%s UNION ALL "
+                        "SELECT time, ticket AS data, 4 AS type, '' AS message "
+                        "FROM ticket_change WHERE field='status' "
+                        "AND newvalue='reopened' AND time>=%s AND time<=%s "
                         "ORDER BY time DESC, message, type",
-                        start, stop, start, stop, start, stop)
+                        start, stop, start, stop, start, stop, start, stop)
 
         # Make the data more HDF-friendly
         info = []

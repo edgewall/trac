@@ -21,7 +21,6 @@
 
 import time
 import string
-import StringIO
 from types import *
 
 from util import *
@@ -199,33 +198,6 @@ class Ticket (Module):
                 hdf.setValue('ticket.changes.%d.new' % idx, new)
             idx = idx + 1
 
-    def get_actions(self, info):
-        out = StringIO.StringIO()
-        out.write ('<input type="radio" name="action" value="leave" '
-                   'checked="checked">&nbsp;leave as %s<br>' % info['status'])
-        
-        if info['status'] == 'new':
-            out.write ('<input type="radio" name="action" value="accept">'
-                       '&nbsp;accept ticket<br>')
-        if info['status'] == 'closed':
-            out.write ('<input type="radio" name="action" value="reopen">'
-                       '&nbsp;reopen ticket<br>')
-        if info['status'] in ['new', 'assigned', 'reopened']:
-            out.write ('<input type="radio" name="action" value="resolve">'
-                       '&nbsp;resolve as: '
-                       '<select name="resolve_resolution">'
-                       '<option selected>fixed</option>'
-                       '<option>invalid</option>'
-                       '<option>wontfix</option>'
-                       '<option>duplicate</option>'
-                       '<option>worksforme</option>'
-                       '</select><br>')
-            out.write ('<input type="radio" name="action" value="reassign">'
-                       '&nbsp;reassign ticket to:'
-                       '&nbsp<input type="text" name="reassign_owner" '
-                       'value="%s">' % info['owner'])
-        return out.getvalue()
-    
     def render (self):
         action = dict_get_with_default(self.args, 'action', 'view')
             
@@ -255,7 +227,6 @@ class Ticket (Module):
         sql_to_hdf('SELECT name FROM version ORDER BY name',
                    self.cgi.hdf, 'ticket.versions')
         self.cgi.hdf.setValue('ticket.title', 'Ticket #%d' % id)
-        self.cgi.hdf.setValue('ticket.actions', self.get_actions(info))
         self.insert_ticket_data(self.cgi.hdf, id)
         self.cgi.hdf.setValue('ticket.description',
                               wiki_to_html(info['description']))

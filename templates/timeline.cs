@@ -34,6 +34,12 @@
       <td><?cs var:item.time?></td>
       <td>ticket <a href="<?cs var:item.ticket_href ?>">#<?cs var:item.data?></a> closed.</td>
     </tr>
+<!-- Reopened ticket -->
+  <?cs elif:item.type == #4 ?>
+    <tr>
+      <td><?cs var:item.time?></td>
+      <td>ticket <a href="<?cs var:item.ticket_href ?>">#<?cs var:item.data?></a> reopened.</td>
+    </tr>
   <?cs /if ?>
 <?cs /each ?>
 

@@ -141,7 +141,35 @@
 <tr>
 <td></td>
 <td colspan="3">
-<?cs var:ticket.actions ?>
+
+
+  <input type="radio" name="action" value="leave" checked="checked">
+  &nbsp;leave as <?cs var:ticket.status ?><br>
+ 
+  <?cs if $ticket.status == "new" ?>
+    <input type="radio" name="action" value="accept">
+    &nbsp;accept ticket<br>
+  <?cs /if ?>
+  <?cs if $ticket.status == "closed" ?>
+    <input type="radio" name="action" value="reopen">
+    &nbsp;reopen ticket<br>
+  <?cs /if ?>
+  <?cs if $ticket.status == "new" || $ticket.status == "assigned" || $ticket.status == "reopened" ?>
+    <input type="radio" name="action" value="resolve">
+    &nbsp;resolve as: 
+    <select name="resolve_resolution">
+      <option selected>fixed</option>
+      <option>invalid</option>
+      <option>wontfix</option>
+      <option>duplicate</option>
+      <option>worksforme</option>
+    </select><br>
+    <input type="radio" name="action" value="reassign">
+    &nbsp;reassign ticket to:
+    &nbsp<input type="text" name="reassign_owner" 
+          value="<?cs var:ticket.owner ?>">
+  <?cs /if ?>
+
 </td>
 </tr>
 <tr>
