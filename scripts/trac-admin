@@ -739,7 +739,7 @@ class TracAdmin(cmd.Cmd):
                        ('milestone add <name> [time]', 'Add milestone'),
                        ('milestone rename <name> <newname>',
                         'Rename milestone'),
-                       ('milestone time <name> <time>', 'Set milestone date/time'),
+                       ('milestone time <name> <time>', 'Set milestone date (Format: "Jun 3, 2003")'),
                        ('milestone remove <name>', 'Remove milestone')]
 
     def complete_milestone (self, text, line, begidx, endidx):
@@ -759,7 +759,7 @@ class TracAdmin(cmd.Cmd):
                        ('version add <name> [time]', 'Add version'),
                        ('version rename <name> <newname>',
                         'Rename version'),
-                       ('version time <name> <time>', 'Set version date/time'),
+                       ('version time <name> <time>', 'Set version date (Format: "Jun 3, 2003")'),
                        ('version remove <name>', 'Remove version')]
 
     def complete_version (self, text, line, begidx, endidx):
@@ -773,7 +773,6 @@ class TracAdmin(cmd.Cmd):
     def do_version(self, line):
         self._do_mile_ver('version', line)
 
-        
     # Milestone and Version are identical,  methods
 
     def _do_mile_ver(self, type, line):
@@ -796,7 +795,7 @@ class TracAdmin(cmd.Cmd):
             elif arg[0] == 'remove'  and len(arg)==2:
                 name = arg[1]
                 self._do_mile_ver_remove(type, name)
-            else:    
+            else:
                 self.do_help (type)
         except Exception, e:
             print 'Command %s failed:' % arg[0], e
@@ -822,7 +821,7 @@ class TracAdmin(cmd.Cmd):
                " VALUES('%(name)s', '%(time)s')" 
                % {'type':type, 'name':name, 'time':time})
         data = self.db_execsql(sql)
-        
+
     def _do_mile_ver_remove(self, type, name):
         d = {'name':name, 'type':type}
         data = self.db_execsql("SELECT name FROM %(type)s" 
@@ -834,12 +833,16 @@ class TracAdmin(cmd.Cmd):
 
     def _do_mile_ver_time(self, type, name, t):
         seconds = None
+        t = t.strip()
         if t == 'now':
             seconds = int(time.time())
         else:
-            for format in ['%x %X', '%x, %X', '%X %x', '%X, %x', '%x', '%c']:
+            for format in ['%x %X', '%x, %X', '%X %x', '%X, %x', '%x', '%c',
+                           '%b %d, %Y']:
                 try:
-                    seconds = str(time.mktime(time.strptime(t, format)))
+                    pt = time.strptime(t, format)
+                    print pt
+                    seconds = str(time.mktime(pt))
                 except ValueError:
                     continue
                 break
