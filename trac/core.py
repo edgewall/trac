@@ -346,6 +346,7 @@ class CGIRequest(Request):
 
     def init_request(self):
         Request.init_request(self)
+
         self.cgi_location = os.getenv('SCRIPT_NAME')
         self.remote_addr = os.getenv('REMOTE_ADDR')
         self.remote_user = os.getenv('REMOTE_USER')
@@ -353,8 +354,14 @@ class CGIRequest(Request):
         host = os.getenv('SERVER_NAME')
         proto_port = ''
         port = int(os.environ.get('SERVER_PORT', 80))
-        if port == 443:
-           proto = 'https'
+
+        if os.getenv('HTTPS') in ('on', '1'):
+            # when you support Apache's way, you get it 60% right
+            proto  = 'https'
+            if port != 443:
+               proto_port = ':%d' % port
+        elif port == 443:
+            proto = 'https'
         else:
            proto = 'http'
            if port != 80:
@@ -392,7 +399,6 @@ class CGIRequest(Request):
 
     def send_header(self, name, value):
         self.write('%s: %s\r\n' % (name, value))
-        pass
 
     def end_headers(self):
         self.write('\r\n')
