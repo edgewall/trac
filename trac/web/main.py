@@ -208,22 +208,22 @@ def populate_hdf(hdf, env, req=None):
         'height': env.get_config('header_logo', 'height')
     }
 
-    add_link(req, 'start', env.href.wiki())
-    add_link(req, 'search', env.href.search())
-    add_link(req, 'help', env.href.wiki('TracGuide'))
-    icon = env.get_config('project', 'icon')
-    if icon:
-        if not icon[0] == '/' and icon.find('://') < 0:
-            icon = htdocs_location + icon
-        mimetype = env.mimeview.get_mimetype(icon)
-        add_link(req, 'icon', icon, type=mimetype)
-        add_link(req, 'shortcut icon', icon, type=mimetype)
-
     if req:
         hdf['base_url'] = req.base_url
         hdf['base_host'] = req.base_url[:req.base_url.rfind(req.cgi_location)]
         hdf['cgi_location'] = req.cgi_location
         hdf['trac.authname'] = escape(req.authname)
+
+        add_link(req, 'start', env.href.wiki())
+        add_link(req, 'search', env.href.search())
+        add_link(req, 'help', env.href.wiki('TracGuide'))
+        icon = env.get_config('project', 'icon')
+        if icon:
+            if not icon[0] == '/' and icon.find('://') < 0:
+                icon = htdocs_location + icon
+            mimetype = env.mimeview.get_mimetype(icon)
+            add_link(req, 'icon', icon, type=mimetype)
+            add_link(req, 'shortcut icon', icon, type=mimetype)
 
 def absolute_url(req, path=None):
     host = req.get_header('Host')
