@@ -72,7 +72,7 @@ class QueryModule(Module):
         self.perm.assert_permission(perm.TICKET_VIEW)
 
         constraints = self.get_constraints()
-        order = self.args.get('order', 'priority')
+        order = self.args.get('order')
         desc = self.args.has_key('desc')
 
         if self.args.has_key('search'):
@@ -80,7 +80,7 @@ class QueryModule(Module):
                                                   action='view'))
 
         action = self.args.get('action')
-        if not action and not constraints:
+        if not (action or constraints or order or desc):
             action = 'edit'
 
         self.req.hdf.setValue('query.action', action or 'view')
@@ -92,7 +92,7 @@ class QueryModule(Module):
     def _render_editor(self, constraints, order, desc):
         self.req.hdf.setValue('title', 'Custom Query')
         util.add_to_hdf(constraints, self.req.hdf, 'query.constraints')
-        self.req.hdf.setValue('query.order', order)
+        self.req.hdf.setValue('query.order', order or 'priority')
         if desc: self.req.hdf.setValue('query.desc', '1')
 
         def add_options(field, constraints, prefix, cursor, sql):
