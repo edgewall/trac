@@ -95,6 +95,7 @@ def authenticate_user ():
     print cookie.output()
 
 def login():
+    flush_auth_cookies ()
     authenticate_user()
     if os.getenv('PATH_INFO') == '/login':
         uri = os.getenv('HTTP_REFERER')
@@ -116,7 +117,6 @@ def logout (auth_cookie):
         util.redirect (uri)
 
 def verify_authentication (args):
-    flush_auth_cookies ()
     cookie = Cookie.SimpleCookie(os.getenv('HTTP_COOKIE'))
     remote_addr = os.getenv ('REMOTE_ADDR')
     
@@ -125,9 +125,8 @@ def verify_authentication (args):
         if os.getenv('PATH_INFO') == '/logout':
             logout (auth_cookie)
         else:
-            if validate_auth_cookie (auth_cookie, remote_addr):
-                update_auth_cookie (auth_cookie, remote_addr)
-            elif os.getenv('REMOTE_USER'):
+            if not validate_auth_cookie (auth_cookie, remote_addr)  \
+                   and os.getenv('REMOTE_USER'):
                 login()
     elif os.getenv('REMOTE_USER'):
         login()

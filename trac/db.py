@@ -53,8 +53,7 @@ class ChangeEditor(delta.Editor):
                             'VALUES (%s, %s, \'M\')',self.rev, path)
 
 def get_youngest_stored(cursor):
-    cursor.execute('SELECT MAX(rev) FROM (SELECT MAX(rev) as rev FROM '
-                   'revision UNION SELECT 0 as rev)')
+    cursor.execute('SELECT ifnull(max(rev), 0) FROM revision')
     return int(cursor.fetchone()[0])
 
 def init():
