@@ -21,6 +21,8 @@
 
 from svn import fs, util, delta, repos, core
 
+import posixpath
+
 
 def sync(db, repos, fs_ptr, pool):
     """
