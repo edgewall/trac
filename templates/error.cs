@@ -41,14 +41,14 @@ This action requires <tt><?cs var:error.action ?></tt> permission.
 
 <p>
 <b>Note</b>: See
-<a href="<?cs var:trac.href.wiki ?>TracPermissions">TracPermissions</a>
+<a href="<?cs var:trac.href.wiki ?>/TracPermissions">TracPermissions</a>
 for help on managing Trac permissions.
 </p>
 
 <?cs /if ?>
 
 <p>
-<a href="<?cs var:trac.href.wiki ?>TracGuide">TracGuide</a>
+<a href="<?cs var:trac.href.wiki ?>/TracGuide">TracGuide</a>
 -- The Trac User and Administration Guide
 </p>
 

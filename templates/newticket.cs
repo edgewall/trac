@@ -26,7 +26,7 @@ addEvent(window, 'load', function() { document.getElementById('summary').focus()
   </div>
   <div class="tkt-prop">
    <label for="description">Full Description (You may use 
-      <a tabindex="42" href="<?cs var:$trac.href.wiki ?>WikiFormatting">WikiFormatting</a> here):</label><br />
+      <a tabindex="42" href="<?cs var:$trac.href.wiki ?>/WikiFormatting">WikiFormatting</a> here):</label><br />
    <textarea id="description" name="description" class="textwidget" 
             rows="10" cols="78" style="width: 97%"></textarea>
   </div>
@@ -78,7 +78,7 @@ addEvent(window, 'load', function() { document.getElementById('summary').focus()
 
  <div id="help">
   <strong>Note:</strong> See <a href="<?cs var:$trac.href.wiki
-  ?>TracTickets">TracTickets</a> for help on using tickets.
+  ?>/TracTickets">TracTickets</a> for help on using tickets.
  </div>
 </div> <!-- #nt-ticket -->
 

@@ -151,7 +151,7 @@ onfocus="document.getElementById('comment').focus()">Add/Change
   </div>
   <div class="tkt-prop">
   <label for="comment">Add Comment (You may use 
-      <a tabindex="42" href="<?cs var:$trac.href.wiki ?>WikiFormatting">WikiFormatting</a> here):</label><br />
+      <a tabindex="42" href="<?cs var:$trac.href.wiki ?>/WikiFormatting">WikiFormatting</a> here):</label><br />
 
   <textarea id="comment" name="comment" class="textwidget"
             rows="10" cols="78" style="width: 97%; max-width: 694px"></textarea>

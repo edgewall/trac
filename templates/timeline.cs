@@ -91,7 +91,7 @@
 <br />
 <hr />
 <div id="help">
- <strong>Note:</strong> See <a href="<?cs var:$trac.href.wiki ?>TracTimeline">TracTimeline</a> 
+ <strong>Note:</strong> See <a href="<?cs var:$trac.href.wiki ?>/TracTimeline">TracTimeline</a> 
  for information about the timeline view.
 </div>
  <div id="main-footer">

@@ -3,8 +3,8 @@
 <h2 class="hide">Wiki Navigation</h2>
 <ul class="subheader-links">
   <li><a href="<?cs var:$trac.href.wiki ?>">Start Page</a></li>
-  <li><a href="<?cs var:$trac.href.wiki ?>TitleIndex">Title Index</a></li>
-  <li><a href="<?cs var:$trac.href.wiki ?>RecentChanges">Recent Changes</a></li>
+  <li><a href="<?cs var:$trac.href.wiki ?>/TitleIndex">Title Index</a></li>
+  <li><a href="<?cs var:$trac.href.wiki ?>/RecentChanges">Recent Changes</a></li>
   <?cs if $wiki.history ?>
     <li class="last"><a href="javascript:view_history()">Show/Hide History</a></li>
   <?cs else ?>
@@ -101,8 +101,8 @@
               </div>
               <div id="help">
               <b>Note:</b> See <a href="<?cs var:$trac.href.wiki
-?>WikiFormatting">WikiFormatting</a> and <a href="<?cs var:$trac.href.wiki
-?>TracWiki">TracWiki</a> for help on editing wiki content.
+?>/WikiFormatting">WikiFormatting</a> and <a href="<?cs var:$trac.href.wiki
+?>/TracWiki">TracWiki</a> for help on editing wiki content.
               </div>
               <fieldset>
                 <legend>Change information</legend>

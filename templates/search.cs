@@ -88,7 +88,7 @@ Page</a>
  </div> 
 
  <div id="help" style="text-align: left; margin-top: 2em">
-  <strong>Note:</strong> See <a href="<?cs var:$trac.href.wiki ?>TracSearch">TracSearch</a>  for help on searching.
+  <strong>Note:</strong> See <a href="<?cs var:$trac.href.wiki ?>/TracSearch">TracSearch</a>  for help on searching.
  </div>
 
 
