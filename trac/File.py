@@ -26,7 +26,6 @@ import os
 import sys
 import time
 import urllib
-from xml.sax import saxutils
 
 import svn
 
@@ -316,7 +315,7 @@ class File(FileCommon):
         self.req.hdf.setValue('file.rev_msg', msg_html)
         self.req.hdf.setValue('file.path', self.path)
         self.req.hdf.setValue('file.logurl',
-            saxutils.escape(self.env.href.log(self.path, self.rev)))
+            util.escape(self.env.href.log(self.path, self.rev)))
 
         # Try to do an educated guess about the mime-type
         self.mime_type = svn.fs.node_prop (root, self.path,
