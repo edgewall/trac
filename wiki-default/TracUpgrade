@@ -23,5 +23,14 @@ The following command will perform the update:
  $ trac-admin /path/to/projectenv wiki upgrade
 }}}
 
+0.8 adds a new roadmap feature which requires additional permissions. While a
+fresh installation will by default grant ROADMAP_VIEW and MILESTONE_VIEW
+permissions to anonymous, these permissions have to be granted manually when
+upgrading:
+{{{
+ $ trac-admin /path/to/projectenv permission add anonymous MILESTONE_VIEW
+ $ trac-admin /path/to/projectenv permission add anonymous ROADMAP_VIEW
+}}}
+
 -----
 See also: TracGuide, TracInstall
