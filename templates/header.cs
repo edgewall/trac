@@ -62,8 +62,8 @@
 </div>
 
 <?cs def:navlink(text, href, id, aclname, accesskey) ?><?cs
- if $aclname ?><li><a href="<?cs var:href ?>" <?cs 
-  if $id == $trac.active_module ?>class="active"<?cs
+ if $aclname ?><li><a href="<?cs var:href ?>"<?cs 
+  if $id == $trac.active_module ?> class="active"<?cs
   /if ?><?cs
   if:$accesskey!="" ?> accesskey="<?cs var:$accesskey ?>"<?cs 
   /if ?>><?cs var:text ?></a></li><?cs 
@@ -102,15 +102,13 @@
   <?cs call:navlink("Timeline", $trac.href.timeline, "timeline",
                     $trac.acl.TIMELINE_VIEW, "2") ?>
   <?cs call:navlink("Roadmap", trac.href.roadmap, $roadmap_view,
-                    $trac.acl.ROADMAP_VIEW, "") ?>
+                    $trac.acl.ROADMAP_VIEW, "3") ?>
   <?cs call:navlink("Browse Source", $trac.href.browser, $browser_view,
                     $trac.acl.BROWSER_VIEW, "") ?>
-  <li style="display: none"><a href="<?cs var:$trac.href.newticket ?>"
-                    accesskey="7">New Ticket (Accessibility)</a></li>
   <?cs call:navlink("View Tickets", $trac.href.report, $ticket_view,
                     $trac.acl.REPORT_VIEW, "") ?>
   <?cs call:navlink("New Ticket", $trac.href.newticket, "newticket",
-                    $trac.acl.TICKET_CREATE, "9") ?>
+                    $trac.acl.TICKET_CREATE, "7") ?>
   <?cs call:navlink("Search", $trac.href.search, "search",
                     $trac.acl.SEARCH_VIEW, "4") ?>
  </ul>
