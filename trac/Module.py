@@ -20,7 +20,7 @@
 # Author: Jonas Borgström <jonas@edgewall.com>
 
 import core
-from util import escape
+from util import add_to_hdf, escape
 
 
 class Module:
@@ -30,7 +30,7 @@ class Module:
     _name = None
     args = []
     template_name = None
-    link_no = {}
+    links = {}
 
     def run(self):
         core.populate_hdf(self.req.hdf, self.env, self.db, self.req)
@@ -42,12 +42,13 @@ class Module:
         self.add_default_links()
         try:
             self.render()
-            self.link_no.clear()
+            add_to_hdf(self.links, self.req.hdf, 'links')
             disp()
         except core.RedirectException:
             pass
 
     def add_default_links(self):
+        self.links.clear()
         self.add_link('start', self.env.href.wiki())
         self.add_link('search', self.env.href.search())
         self.add_link('help', self.env.href.wiki('TracGuide'))
@@ -61,17 +62,13 @@ class Module:
             self.add_link('shortcut icon', icon, type=mimetype)
 
     def add_link(self, rel, href, title=None, type=None, className=None):
-        if not self.link_no.has_key(rel):
-            self.link_no[rel] = 0
-        prefix = 'links.%s.%d' % (rel, self.link_no[rel])
-        self.req.hdf.setValue(prefix + '.href', escape(href))
-        if title:
-            self.req.hdf.setValue(prefix + '.title', escape(title))
-        if type:
-            self.req.hdf.setValue(prefix + '.type', type)
-        if className:
-            self.req.hdf.setValue(prefix + '.class', className)
-        self.link_no[rel] = self.link_no[rel] + 1
+        if not self.links.has_key(rel):
+            self.links[rel] = []
+        link = { 'href': escape(href) }
+        if title: link['title'] = escape(title)
+        if type: link['type'] = type
+        if className: link['class'] = className
+        self.links[rel].append(link)
 
     def render(self):
         """
