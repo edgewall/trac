@@ -23,8 +23,6 @@ import re
 from mod_python import apache, util
 from trac import auth, core, Environment, Href, Session, Wiki
 
-env = None
-
 content_type_re = re.compile(r'^Content-Type$', re.IGNORECASE)
 
 class ModPythonRequest(core.Request):
@@ -63,7 +61,7 @@ class ModPythonRequest(core.Request):
         self.req.write(data)
 
     def get_header(self, name):
-        return self.req.headers_out.get(name)
+        return self.req.headers_in.get(name)
 
     def send_response(self, code):
         self.req.status = code
@@ -77,6 +75,7 @@ class ModPythonRequest(core.Request):
     def end_headers(self):
         pass
 
+
 class TracFieldStorage(util.FieldStorage):
     """
     FieldStorage class with an added get function.
@@ -84,6 +83,8 @@ class TracFieldStorage(util.FieldStorage):
     def get(self, key, default=''):
         return util.FieldStorage.get(self, key, default)
 
+
+env = None
 
 def init(req):
     global env
@@ -107,9 +108,8 @@ def init(req):
         env.href = Href.Href(req.cgi_location)
         env.abs_href = Href.Href(req.base_url)
 
-        database = env.get_db_cnx()
-
         # Let the wiki module build a dictionary of all page names
+        database = env.get_db_cnx()
         Wiki.populate_page_dict(database, env)
 
     except Exception, e:
