@@ -60,7 +60,7 @@ addEvent(window, 'load', function() { document.getElementById('summary').focus()
    call:hdf_select(newticket.milestones, "milestone", newticket.milestone, 1) ?><br />
    <label for="owner">Assign to:</label><?cs
    if:len(newticket.users) ?><?cs
-    call:hdf_select(newticket.users, "owner", newticket.owner, 0) ?><?cs
+    call:hdf_select(newticket.users, "owner", newticket.owner, 1) ?><?cs
    else ?>
     <input type="text" id="owner" name="owner" size="20" value="<?cs
       var:newticket.owner ?>" /><?cs
