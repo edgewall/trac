@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 # -*- coding: iso8859-1 -*-
-__version__ = '0.5.1'
 __author__ = 'Daniel Lundin <daniel@edgewall.com>, Jonas Borgström <jonas@edgewall.com>'
 __copyright__ = 'Copyright (c) 2004 Edgewall Software'
 __license__ = """
@@ -47,7 +46,7 @@ class TracAdmin(cmd.Cmd):
 
     doc_header = 'Trac Admin Console %(ver)s\n' \
                  'Available Commands:\n' \
-                 % {'ver':__version__ }
+                 % {'ver':trac.__version__ }
 
     
     ruler = ''
@@ -242,11 +241,11 @@ CREATE INDEX wiki_idx           ON wiki(name,version);
 
     def run(self):
         self.interactive = 1
-        print 'Welcome to trac-admin %(ver)s\n'                         \
-              'Interactive Trac adminstration console.\n'               \
+        print 'Welcome to trac-admin %(ver)s\n'                \
+              'Interactive Trac adminstration console.\n'       \
               '%(copy)s\n\n'                                    \
               "Type:  '?' or 'help' for help on commands.\n" %  \
-              {'ver':__version__,'copy':__copyright__}
+              {'ver':trac.__version__,'copy':__copyright__}
         while 1:
             try:
                 self.cmdloop()
@@ -417,7 +416,7 @@ CREATE INDEX wiki_idx           ON wiki(name,version);
                     self._help_permission + self._help_component +
                     self._help_priority + self._help_severity + 
                     self._help_version + self._help_milestone)
-            print 'trac-admin - The Trac Administration Console %s' % __version__
+            print 'trac-admin - The Trac Administration Console %s' % trac.__version__
             if not self.interactive:
                 print
                 print "Usage: trac-admin <dbfile> [command [subcommand] [option ...]]\n"
@@ -432,7 +431,7 @@ CREATE INDEX wiki_idx           ON wiki(name,version);
 
     def do_about(self, line):
         print
-        print 'Trac Admin Console %s' % __version__
+        print 'Trac Admin Console %s' % trac.__version__
         print '================================================================='
         print self.license
         print self.credits
