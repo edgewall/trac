@@ -21,6 +21,7 @@
 
 import os
 import os.path
+import shutil
 import sqlite
 import db_default
 
@@ -39,6 +40,7 @@ class Database(sqlite.Connection):
             raise EnvironmentError, \
                   'The web server user requires read _and_ write permission\n' \
                   'to the database %s and the directory this file is located in.' % tmp
+        self.db_name = db_name
         sqlite.Connection.__init__(self, db_name, timeout=10000)
 
     def __del__(self):
@@ -66,7 +68,7 @@ class Database(sqlite.Connection):
         cursor.execute("SELECT value FROM config"
                        " WHERE section='trac' AND name='database_version'")
         row = cursor.fetchone()
-        return row and row[0]
+        return row and int(row[0])
 
     def initdb(self):
         cursor = self.cursor()
@@ -98,3 +100,35 @@ class Database(sqlite.Connection):
                 cursor.execute(sql)
         self.commit()
 
+    def backup(self, dest=None):
+        """Simple SQLite-specific backup. Copy the database file."""
+        if not dest:
+            dest = '%s.%i.bak' % (self.db_name, self.get_version())
+        shutil.copy (self.db_name, dest)
+
+    def upgrade(self, backup=None,backup_dest=None):
+        """Upgrade database. Each db version should have its own upgrade
+        module, names upgrades/dbN.py, where 'N' is the version number (int)."""
+        dbver = self.get_version()
+        if dbver == __db_version__:
+            return 0
+        elif dbver > __db_version__:
+            raise EnvironmentError, 'Database newer than Trac version'
+        else:
+            if backup:
+                self.backup(backup_dest)
+            import upgrades
+            for i in xrange(dbver + 1, __db_version__ + 1):
+                try:
+                    upg  = 'db%i' % i
+                    __import__('upgrades', globals(), locals(),[upg])
+                    d = getattr(upgrades, upg)
+                except AttributeError:
+                    err = 'No upgrade module for version %i (%s.py)' % (i, upg)
+                    raise EnvironmentError, err
+                d.do_upgrade(self, i)
+                cursor = self.cursor()
+                cursor.execute("UPDATE config SET value='%i' WHERE"
+                             " section='trac' AND name='database_version'" % i)
+                self.commit()
+            return 1

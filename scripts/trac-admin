@@ -44,15 +44,11 @@ class TracAdmin(cmd.Cmd):
     intro = ''
     license = trac.__license_long__
     credits = trac.__credits__
-
     doc_header = 'Trac Admin Console %(ver)s\n' \
                  'Available Commands:\n' \
                  % {'ver':trac.__version__ }
-
-    
     ruler = ''
     prompt = "Trac> "
-
     __db = None
     
     def __init__(self,dbfile=None):
@@ -77,7 +73,6 @@ class TracAdmin(cmd.Cmd):
                 break
             except KeyboardInterrupt:
                 print "\n** Interrupt. Use 'quit' to exit **"
-
 
     ##
     ## Database methods
@@ -243,7 +238,8 @@ class TracAdmin(cmd.Cmd):
             except AttributeError:
                 print "No documentation found for '%s'" % arg[0]
         else:
-            docs = (self._help_about + self._help_help + self._help_initdb +
+            docs = (self._help_about + self._help_help +
+                    self._help_initdb + self._help_upgrade +
                     self._help_config + self._help_wiki +
                     self._help_permission + self._help_component +
                     self._help_priority + self._help_severity + 
@@ -877,6 +873,29 @@ class TracAdmin(cmd.Cmd):
                                    " WHERE name='%s'" % (type, seconds, name))
         else:
             print >> sys.stderr, 'Unknown time format'
+
+    _help_upgrade = [('upgrade', 'Upgrade database to current version.')]
+    def do_upgrade(self, line):
+        arg = self.arg_tokenize(line)
+        do_backup = 1
+        if arg[0] in ['-b', '--no-backup']:
+            do_backup = 0
+        db = self.db_open()
+        try:
+            curr = db.get_version()
+            latest = trac.db.__db_version__
+            if  curr < latest:
+                print "Upgrade: Upgrading %s to db version %i" % (db.db_name, latest)
+                if do_backup:
+                    print "Upgrade: Backup of old database saved in " \
+                          "%s.%i.bak" % (db.db_name, curr)
+                else:
+                    print "Upgrade: Backup disabled. Non-existant warranty voided."
+                db.upgrade(do_backup)
+            else:
+                print "Upgrade: Database is up to date, no upgrade necessary."
+        except Exception, e:
+            print "Upgrade failed: ",e
 
 
 ## ---------------------------------------------------------------------------
