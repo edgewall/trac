@@ -34,8 +34,11 @@ class About (Module):
 <div id="page-content">
 <h2 class="hide">About Navigation</h2>
 <ul class="subheader-links">
- <li><a href="<?cs var:trac.href.about ?>">About Trac</a></li>
- <li class="last"><a href="<?cs var:trac.href.about_config ?>">View Config</a></li>
+ <?cs if about.page == "config" ?><li class="last"><a href="<?cs
+  var:trac.href.about ?>">About Trac</a></li><?cs
+  elif:trac.acl.CONFIG_VIEW ?><li class="last"><a href="<?cs
+  var:trac.href.about_config ?>">View Config</a></li>
+ <?cs /if ?>
 </ul>
  <div id="main">
   <div id="main-content">
@@ -53,7 +56,7 @@ class About (Module):
   </table>
 <?cs else ?>
   <a class="noline" href="http://trac.edgewall.com"
-      style="float: right"><img src="<?cs var:htdocs_location ?>trac_banner.png" alt=""/></a>
+      style="float: right; margin-left: 2em"><img src="<?cs var:htdocs_location ?>trac_banner.png" alt=""/></a>
 <h1>About Trac <?cs var:trac.version ?></h1>
 <p>
 Trac is a web-based software project management and bug/issue
