@@ -179,6 +179,11 @@ class Environment:
             self.cfg.add_section(section)
         return self.cfg.set(section, name, value)
 
+    def get_config_items(self, section):
+        if not self.cfg.has_section(section):
+            return None
+        return self.cfg.items(section)
+
     def save_config(self):
         self.cfg.write(open(os.path.join(self.path, 'conf', 'trac.ini'), 'w'))
 
