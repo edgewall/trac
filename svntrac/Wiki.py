@@ -63,7 +63,7 @@ class Formatter:
 
     def _heading_formatter(self, match, fullmatch):
         depth = min(len(fullmatch.group('hdepth')), 5)
-        self.is_heading = True
+        self.is_heading = 1
         return '<h%d>%s</h%d>' % (depth, match[depth + 1:len(match) - depth - 1], depth)
 
     def _wikilink_formatter(self, match, fullmatch):
@@ -96,7 +96,7 @@ class Formatter:
         depth = (len(fullmatch.group('ldepth')) + 1) / 2
         type = ['ol', 'ul'][match[depth * 2 - 1] == '*']
         self._set_list_depth(depth, type)
-        self._li_open = True
+        self._li_open = 1
         return '<li>'
         #return '<li>%s</li>' % match[depth * 2 + 1:]
 
@@ -108,36 +108,36 @@ class Formatter:
     def format(self, text, out):
         self.out = out
         rules = re.compile(Formatter._rules)
-        p_open = False
-        self.is_heading = False
-        self._li_open = False
+        p_open = 0
+        self.is_heading = 0
+        self._li_open = 0
         self._list_stack = []
         for line in text.splitlines():
-            self._is_bold = False
-            self._is_italic = False
-            self._is_underline = False
+            self._is_bold = 0
+            self._is_italic = 0
+            self._is_underline = 0
             line = escape(line)
             result = re.sub(rules, self.replace, line)
             # close any open list item
             if self._li_open:
-                self._li_open = False
+                self._li_open = 0
                 result = result + '</li>'
             # close the paragraph when a heading starts
             # or on an empty line
             if p_open and self._list_stack != []:
                 out.write ('</p>')
-                p_open = False
+                p_open = 0
                 
             if (self.is_heading or result == '') and p_open:
                 self._set_list_depth(0, None)
                 out.write ('</p>')
-                p_open = False
+                p_open = 0
             elif not p_open and not self.is_heading and result != '' and self._list_stack==[]:
-                p_open = True
+                p_open = 1
                 out.write ('<p>')
                 
             out.write(result)
-            self.is_heading = False
+            self.is_heading = 0
         # clean up before we are done
         self._set_list_depth(0, None)
         if p_open:

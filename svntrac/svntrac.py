@@ -22,7 +22,7 @@
 import os
 import sys
 import cgi
-import cgitb; cgitb.enable()
+#import cgitb; cgitb.enable()
 import warnings
 from svn import util, repos
 

@@ -73,7 +73,8 @@ def load_config():
     cursor = cnx.cursor()
     cursor.execute('SELECT section, name, value FROM config')
     config = {}
-    for row in cursor:
+    rows = cursor.fetchall()
+    for row in rows:
         if not config.has_key(row[0]):
             config[row[0]] = {}
         config[row[0]][row[1]] = row[2]

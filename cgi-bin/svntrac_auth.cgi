@@ -22,7 +22,7 @@
 
 import os
 import cgi
-import cgitb; cgitb.enable()
+#import cgitb; cgitb.enable()
 import ConfigParser
 
 import svntrac.db
