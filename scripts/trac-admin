@@ -399,8 +399,15 @@ class TracAdmin(cmd.Cmd):
         self.db_execsql("INSERT INTO permission VALUES('%s', '%s')" % (user, action))
 
     def _do_permission_remove(self, user, action):
-        self.db_execsql("DELETE FROM permission WHERE username='%s' AND action='%s'" %
-                        (user, action.upper()))
+        sql = "DELETE FROM permission"
+        clauses = []
+        if action != '*':
+            clauses.append("action='%s'" % action.upper())
+        if user != '*':
+            clauses.append("username='%s'" % user)
+        if clauses:
+            sql += " WHERE " + " AND ".join(clauses)
+        self.db_execsql(sql)
 
     ## Initenv
     _help_initenv = [('initenv', 'Create and initialize a new environment interactively'),
