@@ -27,24 +27,7 @@
 
 <div id="main" class="wiki">
 
- <?cs if $wiki.title_index.0.title ?>
-   <h2>TitleIndex</h2>
-   <ul>
-   <?cs each item = $wiki.title_index ?>
-     <li><a href="<?cs var:item.href?>"><?cs var:item.title ?></a></li>
-   <?cs /each ?>
-   </ul>
-
- <?cs elif $wiki.recent_changes.0.title ?>
-   <h2>RecentChanges</h2>
-   <ul>
-   <?cs each item = $wiki.recent_changes ?>
-     <?cs call:day_separator(item.time) ?>
-     <li><a href="<?cs var:item.href?>"><?cs var:item.title ?></a></li>
-   <?cs /each ?>
-   </ul>
-
- <?cs elif wiki.action == "diff" ?>
+ <?cs if:wiki.action == "diff" ?>
    <h1>Changes in version <?cs var:wiki.edit_version?> of <?cs var:wiki.page_name ?></h1>
     <table id="overview">
      <tr class="author">

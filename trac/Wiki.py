@@ -35,7 +35,7 @@ processor_re = re.compile('#\!([a-zA-Z]+)')
 
 def populate_page_dict(db, env):
     """Extract wiki page names. This is used to detect broken wiki-links"""
-    page_dict = {'TitleIndex': 1, 'RecentChanges': 1}
+    page_dict = {}
     cursor = db.cursor()
     cursor.execute('SELECT DISTINCT name FROM wiki')
     while 1:
@@ -589,34 +589,6 @@ class Page:
 class Wiki(Module):
     template_name = 'wiki.cs'
 
-    def generate_title_index(self):
-        cursor = self.db.cursor ()
-        cursor.execute ('SELECT DISTINCT name FROM wiki ORDER BY name')
-        i = 0
-        while 1:
-            row = cursor.fetchone()
-            if row == None:
-                break
-            n = 'wiki.title_index.%d' % i
-            self.req.hdf.setValue(n + '.title', row[0])
-            self.req.hdf.setValue(n + '.href', self.env.href.wiki(row[0]))
-            i = i + 1
-
-    def generate_recent_changes(self):
-        cursor = self.db.cursor ()
-        cursor.execute ('SELECT name, max(time) FROM wiki GROUP BY name ORDER BY max(time) DESC')
-        i = 0
-        while 1:
-            row = cursor.fetchone()
-            if row == None:
-                break
-            time_str = time.strftime('%x', time.localtime(int(row[1])))
-            n = 'wiki.recent_changes.%d' % i
-            self.req.hdf.setValue(n + '.title', row[0])
-            self.req.hdf.setValue(n + '.href', self.env.href.wiki(row[0]))
-            self.req.hdf.setValue(n + '.time', time_str)
-            i = i + 1
-
     def generate_history(self, pagename):
         cursor = self.db.cursor ()
         cursor.execute ('SELECT version, time, author, comment, ipnr FROM wiki '
@@ -706,15 +678,6 @@ class Wiki(Module):
         # even if the page name contains a '/'
         self.req.hdf.setValue('wiki.namedoublequoted',
                               urllib.quote(urllib.quote(name, '')))
-
-        if name == 'TitleIndex':
-            self.generate_title_index()
-            self.req.hdf.setValue('title', 'Title Index (wiki)')
-            return
-        elif name == 'RecentChanges':
-            self.generate_recent_changes()
-            self.req.hdf.setValue('title', 'Recent Changes (wiki)')
-            return
 
         if save:
             self.req.hdf.setValue('wiki.action', 'save')
