@@ -211,7 +211,7 @@ class Ticket (Module):
             from Notify import TicketNotifyEmail
             tn = TicketNotifyEmail(self.env)
             tn.notify(id, newticket=1)
-        except:
+        except ImportError:
             self.env.log.warning("Email notifications require Python >= 2.2")
         
         # redirect to the Ticket module to get a GET request
