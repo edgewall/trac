@@ -33,6 +33,8 @@ class Session:
 
     DEPARTURE_INTERVAL = 3600 # If you're idle for an hour, you left
     UPDATE_INTERVAL = 300  # Update session every 5 mins
+#    PURGE_AGE = 3600*24*90 # Purge session after 90 days idle
+    PURGE_AGE = 3600 # Purge session after 90 days idle
     COOKIE_KEY = 'trac_session'
 
     def __init__(self, env, req, newsession = 0):
@@ -132,6 +134,8 @@ class Session:
             return
         curs = self.db.cursor()
         if currval == None:
+            if key == 'last_visit': # Limit the frequency of purging
+                self.purge_expired() 
             curs.execute('INSERT INTO session(sid,username,var_name,var_value)'
                          ' VALUES(%s,%s,%s,%s)',
                          self.sid, self.req.authname, key, val)
@@ -161,3 +165,13 @@ class Session:
         self.db.commit()
         self.sid = newsid
         self.bake_cookie()
+
+    def purge_expired(self):
+        mintime = int(time.time()) - self.PURGE_AGE
+        self.env.log.debug('Purging old, expired, sessions.')
+        curs = self.db.cursor()
+        curs.execute("DELETE FROM session WHERE sid IN"
+                     " (SELECT sid FROM session WHERE var_name='mod_time'"
+                     "  AND var_value  < %i)", mintime)
+        self.db.commit()
+
