@@ -81,8 +81,7 @@ FROM ticket
 ORDER BY COALESCE(version,'')='' DESC,COALESCE(version_time,0)=0 DESC,version_time DESC,version DESC,id""")
 
     def test_constrained_by_milestone(self):
-        query = Query(self.env, order='id')
-        query.constraints['milestone'] = ['milestone1']
+        query = Query.from_string(self.env, 'milestone=milestone1', order='id')
         sql = query.get_sql()
         self.assertEqual(sql,
 """SELECT id,summary,status,owner,priority,component,version,time,changetime,priority_value,milestone
@@ -121,8 +120,7 @@ FROM ticket
 ORDER BY COALESCE(priority,'')='',priority_value,id""")
 
     def test_constrained_by_milestone_not(self):
-        query = Query(self.env, order='id')
-        query.constraints['milestone'] = ['!milestone1']
+        query = Query.from_string(self.env, 'milestone!=milestone1', order='id')
         sql = query.get_sql()
         self.assertEqual(sql,
 """SELECT id,summary,milestone,status,owner,priority,component,time,changetime,priority_value
@@ -132,8 +130,8 @@ WHERE COALESCE(milestone,'')!='milestone1'
 ORDER BY COALESCE(id,0)=0,id""")
 
     def test_constrained_by_status(self):
-        query = Query(self.env, order='id')
-        query.constraints['status'] = ['new', 'assigned', 'reopened']
+        query = Query.from_string(self.env, 'status=new|assigned|reopened',
+                                  order='id')
         sql = query.get_sql()
         self.assertEqual(sql,
 """SELECT id,summary,status,owner,priority,milestone,component,time,changetime,priority_value
@@ -143,8 +141,7 @@ WHERE COALESCE(status,'') IN ('new','assigned','reopened')
 ORDER BY COALESCE(id,0)=0,id""")
 
     def test_constrained_by_owner_containing(self):
-        query = Query(self.env, order='id')
-        query.constraints['owner'] = ['~someone']
+        query = Query.from_string(self.env, 'owner~=someone', order='id')
         sql = query.get_sql()
         self.assertEqual(sql,
 """SELECT id,summary,owner,status,priority,milestone,component,time,changetime,priority_value
@@ -154,8 +151,7 @@ WHERE COALESCE(owner,'') LIKE '%someone%'
 ORDER BY COALESCE(id,0)=0,id""")
 
     def test_constrained_by_owner_not_containing(self):
-        query = Query(self.env, order='id')
-        query.constraints['owner'] = ['!~someone']
+        query = Query.from_string(self.env, 'owner!~=someone', order='id')
         sql = query.get_sql()
         self.assertEqual(sql,
 """SELECT id,summary,owner,status,priority,milestone,component,time,changetime,priority_value
@@ -165,8 +161,7 @@ WHERE COALESCE(owner,'') NOT LIKE '%someone%'
 ORDER BY COALESCE(id,0)=0,id""")
 
     def test_constrained_by_owner_beginswith(self):
-        query = Query(self.env, order='id')
-        query.constraints['owner'] = ['^someone']
+        query = Query.from_string(self.env, 'owner^=someone', order='id')
         sql = query.get_sql()
         self.assertEqual(sql,
 """SELECT id,summary,owner,status,priority,milestone,component,time,changetime,priority_value
@@ -176,8 +171,7 @@ WHERE COALESCE(owner,'') LIKE 'someone%'
 ORDER BY COALESCE(id,0)=0,id""")
 
     def test_constrained_by_owner_endswith(self):
-        query = Query(self.env, order='id')
-        query.constraints['owner'] = ['$someone']
+        query = Query.from_string(self.env, 'owner$=someone', order='id')
         sql = query.get_sql()
         self.assertEqual(sql,
 """SELECT id,summary,owner,status,priority,milestone,component,time,changetime,priority_value
@@ -188,8 +182,7 @@ ORDER BY COALESCE(id,0)=0,id""")
 
     def test_constrained_by_custom_field(self):
         self.env.custom_fields.update({'foo': 'text'})
-        query = Query(self.env, order='id')
-        query.constraints['foo'] = ['something']
+        query = Query.from_string(self.env, 'foo=something', order='id')
         sql = query.get_sql()
         self.assertEqual(sql,
 """SELECT id,summary,status,owner,priority,milestone,component,time,changetime,priority_value, foo.value AS foo
@@ -200,8 +193,8 @@ WHERE COALESCE(foo,'')='something'
 ORDER BY COALESCE(id,0)=0,id""")
 
     def test_constrained_by_multiple_owners(self):
-        query = Query(self.env, order='id')
-        query.constraints['owner'] = ['someone', 'someone_else']
+        query = Query.from_string(self.env, 'owner=someone|someone_else',
+                                  order='id')
         sql = query.get_sql()
         self.assertEqual(sql,
 """SELECT id,summary,owner,status,priority,milestone,component,time,changetime,priority_value
@@ -211,8 +204,8 @@ WHERE COALESCE(owner,'') IN ('someone','someone_else')
 ORDER BY COALESCE(id,0)=0,id""")
 
     def test_constrained_by_multiple_owners_not(self):
-        query = Query(self.env, order='id')
-        query.constraints['owner'] = ['!someone', '!someone_else']
+        query = Query.from_string(self.env, 'owner!=someone|someone_else',
+                                  order='id')
         sql = query.get_sql()
         self.assertEqual(sql,
 """SELECT id,summary,owner,status,priority,milestone,component,time,changetime,priority_value
@@ -222,8 +215,8 @@ WHERE COALESCE(owner,'') NOT IN ('someone','someone_else')
 ORDER BY COALESCE(id,0)=0,id""")
 
     def test_constrained_by_multiple_owners_contain(self):
-        query = Query(self.env, order='id')
-        query.constraints['owner'] = ['~someone', '~someone_else']
+        query = Query.from_string(self.env, 'owner~=someone|someone_else',
+                                  order='id')
         sql = query.get_sql()
         self.assertEqual(sql,
 """SELECT id,summary,owner,status,priority,milestone,component,time,changetime,priority_value

@@ -30,7 +30,11 @@ from types import ListType
 import re
 
 
-class Query:
+class QuerySyntaxError(Exception):
+    pass
+
+
+class Query(object):
 
     def __init__(self, env, constraints=None, order=None, desc=0, group=None,
                  groupdesc = 0, verbose=0):
@@ -46,6 +50,30 @@ class Query:
         if self.order != 'id' and not self.order in Ticket.std_fields:
             # order by priority by default
             self.order = 'priority'
+
+    def from_string(cls, env, string, **kw):
+        filters = string.split('&')
+        constraints = {}
+        for filter in filters:
+            filter = filter.split('=')
+            if len(filter) != 2:
+                raise QuerySyntaxError, 'Query filter requires field and ' \
+                                        'constraints separated by a "="'
+            field,values = filter
+            if not field:#
+                raise QuerySyntaxError, 'Query filter requires field name'
+            values = values.split('|')
+            mode, neg = '', ''
+            if field[-1] in ('~', '^', '$'):
+                mode = field[-1]
+                field = field[:-1]
+            if field[-1] == '!':
+                neg = '!'
+                field = field[:-1]
+            values = map(lambda x: neg + mode + x, values)
+            constraints[field] = values
+        return cls(env, constraints, **kw)
+    from_string = classmethod(from_string)
 
     def get_columns(self):
         if self.cols:
@@ -104,23 +132,23 @@ class Query:
 
         cursor = db.cursor()
         cursor.execute(sql)
+        columns = cursor.description
+        self.env.log.debug("Columns: %s" % (columns,))
         results = []
-        while 1:
-            row = cursor.fetchone()
-            if not row:
-                break
-            id = int(row['id'])
+        for row in cursor:
+            id = int(row[0])
             result = {'id': id, 'href': self.env.href.ticket(id)}
-            for col in self.cols:
-                result[col] = escape(row[col] or '--')
-            result['time'] = row['time']
-            result['changetime'] = row['changetime']
-            result['priority_value'] = row['priority_value']
-            if self.group:
-                result[self.group] = row[self.group] or 'None'
-            if self.verbose:
-                result['description'] = row['description']
-                result['reporter'] = escape(row['reporter'] or 'anonymous')
+            for i in range(1, len(columns)):
+                name, val = columns[i][0], row[i]
+                if name == self.group:
+                    val = escape(val or 'None')
+                elif name == 'reporter':
+                    val = escape(val or 'anonymous')
+                elif name in ['changetime', 'time']:
+                    val = int(val)
+                else:
+                    val = escape(val or '--')
+                result[name] = val
             results.append(result)
         cursor.close()
         return results
@@ -487,7 +515,7 @@ class QueryModule(Module):
             req.session['query_time'] = int(time())
             req.session['query_tickets'] = ' '.join([t['id'] for t in tickets])
         else:
-            orig_list = [id for id in req.session['query_tickets'].split()]
+            orig_list = [int(id) for id in req.session['query_tickets'].split()]
             rest_list = orig_list[:]
             orig_time = int(req.session['query_time'])
         req.session['query_href'] = query.get_href()

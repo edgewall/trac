@@ -189,6 +189,22 @@ source:/foo/bar#head
 <a class="source" href="/browser/foo/bar?rev=head">source:/foo/bar#head</a>
 </p>
 ==============================
+query:?order=priority
+
+query:status=new|reopened
+
+query:milestone!=
+------------------------------
+<p>
+<a class="query" href="/query?order=priority">query:?order=priority</a>
+</p>
+<p>
+<a class="query" href="/query?status=new&status=reopened&order=priority">query:status=new|reopened</a>
+</p>
+<p>
+<a class="query" href="/query?milestone=%21&order=priority">query:milestone!=</a>
+</p>
+==============================
 {{{
 #!html
 <script>alert("");</script>
