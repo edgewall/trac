@@ -106,6 +106,7 @@
  border: 1px solid #d7d7d7;
  }
 .diff table tbody th {
+ font-weight: normal;
  padding: 0 .5em;
  text-align: right;
  vertical-align: top;
