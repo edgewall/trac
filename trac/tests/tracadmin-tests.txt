@@ -30,7 +30,7 @@ priority list                                     -- Show possible ticket priori
 priority add <value>                              -- Add a priority value option
 priority change <value> <newvalue>                -- Change a priority value
 priority remove <value>                           -- Remove priority value
-severity list                                     -- Show possible ticket priorities
+severity list                                     -- Show possible ticket severities
 severity add <value>                              -- Add a severity value option
 severity change <value> <newvalue>                -- Change a severity value
 severity remove <value>                           -- Remove severity value
