@@ -1,14 +1,14 @@
 # -*- coding: iso8859-1 -*-
 #
-# Copyright (C) 2003 Edgewall Software
-# Copyright (C) 2003 Jonas Borgström <jonas@edgewall.com>
+# Copyright (C) 2003, 2004 Edgewall Software
+# Copyright (C) 2003, 2004 Jonas Borgström <jonas@edgewall.com>
 #
-# svntrac is free software; you can redistribute it and/or
+# Trac is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License as
 # published by the Free Software Foundation; either version 2 of the
 # License, or (at your option) any later version.
 #
-# svntrac is distributed in the hope that it will be useful,
+# Trac is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 # General Public License for more details.
@@ -93,7 +93,7 @@ def authenticate_user ():
     cookie = Cookie.SimpleCookie(os.getenv('HTTP_COOKIE'))
     auth_cookie = create_auth_cookie (os.getenv('REMOTE_USER'),
                                       os.getenv('REMOTE_ADDR'))
-    cookie['svntrac_auth'] = auth_cookie
+    cookie['trac_auth'] = auth_cookie
     # send the cookie to the browser as a http header
     print cookie.output()
 
@@ -103,8 +103,8 @@ def verify_authentication (args):
     cookie = Cookie.SimpleCookie(os.getenv('HTTP_COOKIE'))
     remote_addr = os.getenv ('REMOTE_ADDR')
     
-    if cookie.has_key('svntrac_auth'):
-        auth_cookie = cookie['svntrac_auth'].value
+    if cookie.has_key('trac_auth'):
+        auth_cookie = cookie['trac_auth'].value
         if args.has_key ('logout'):
             logout (auth_cookie)
         elif validate_auth_cookie (auth_cookie, remote_addr):
