@@ -8,22 +8,20 @@
    <div id="browser-body">
     <h1 id="browser-rev">Browsing Revision <?cs var:browser.revision?></h1>
 
-    <form id="browser-chgrev" action="<?cs var:browser_current_href ?>" method="get">
+    <form id="browser-chgrev" action="<?cs var:browser_current_href ?>" 
+          method="get">
       <div>
         View rev:
         <input type="text" name="rev" value="<?cs var:browser.revision?>"
           size="4" />
         <input type="submit" value="View" />
-      </div>
-    </form> 
-
+      </div></form>
     <div id="browser-pathlinks">
       <?cs each:part=browser.path ?>
         <?cs if !#first ?><?cs set:first=1 ?><?cs else ?> / <?cs /if ?>
         <a href="<?cs var:part.url ?>"><?cs var:part?></a>
       <?cs /each ?>
     </div>
-
     <table id="browser-list" cellspacing="0" cellpadding="0">
       <tr class="browser-listhdr">
         <th>&nbsp;</th>

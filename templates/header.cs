@@ -54,7 +54,7 @@ url("<?cs var:$htdocs_location ?>/topbar_active.png") top left repeat-x #ddd;}
     <div>
      <label for="proj-search">Search:</label>
      <input type="text" id="proj-search" name="q" size="10" value="" />
-     <input type="submit" value="search" />
+     <input type="submit" value="Search" />
      <input type="hidden" name="wiki" value="on" />
      <input type="hidden" name="changeset" value="on" />
      <input type="hidden" name="ticket" value="on" />

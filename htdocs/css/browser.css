@@ -1,22 +1,24 @@
 /* Browser */
 #browser-chgrev {
-  display: inline;
-  margin: 0;
-  float: right;
-  font-size: 9px;
-  width: 15em;
-  text-align: right;
+/*  position: absolute; */
+/*  right: 0px; */
+ float: right;
+ padding: 0;
+ margin: 0;
 }
-#browser-chgrev input { text-align: center; }
+#browser-chgrev input { text-align: center; padding: 0;}
 #browser-pathlinks {
   padding-bottom: .5em;
-  border-bottom: 1px solid #ccc;
 }
 tr.browser-listhdr { border-bottom: 1px solid #eee; }
 tr.browser-listhdr th {
   text-align: left;
   padding: 0 1em 0 0;
   font-size: 13px;
+}
+#browser-list { 
+ clear: both; 
+ border-top: 1px solid #ccc;
 }
 #browser-list a.block-link { 
   display: block;

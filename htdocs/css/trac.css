@@ -4,9 +4,13 @@ body {
   margin: 10px;
   padding: 0;
   color: #000;
-  font: normal 13px arial,verdana,'Bitstream Vera Sans',helvetica, sans-serif;
+  font: normal 13px verdana,arial,'Bitstream Vera Sans',helvetica, sans-serif;
 }
-h1,h1,h2,h3,h4 { font-weight:bold; letter-spacing:-0.028em; }
+h1,h1,h2,h3,h4 {
+ font-family: arial,verdana,'Bitstream Vera Sans',helvetica, sans-serif;
+ font-weight:bold; 
+ letter-spacing:-0.028em; 
+}
 .hide { display: none; }
 .tiny { font-size: 1px; height: 1px }
 hr { border: none;  border-top: 1px solid #ccc; margin: 2em 0; }
