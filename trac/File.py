@@ -47,7 +47,7 @@ class FileCommon(Module):
         self.env.log.debug("Displaying file: %s  mime-type: %s" % (self.filename,
                                                             self.mime_type))
         data = util.to_utf8(self.read_func(self.DISP_MAX_FILE_SIZE))
-        
+
         if len(data) == self.DISP_MAX_FILE_SIZE:
             self.req.hdf.setValue('file.max_file_size_reached', '1')
             self.req.hdf.setValue('file.max_file_size', str(self.DISP_MAX_FILE_SIZE))
@@ -80,7 +80,7 @@ class FileCommon(Module):
     def display_text(self):
         self.mime_type = 'text/plain'
         self.display_raw()
-    
+
 class Attachment(FileCommon):
     def get_attachment_parent_link(self):
         if self.attachment_type == 'ticket':
@@ -90,7 +90,7 @@ class Attachment(FileCommon):
             return (self.attachment_id,
                     self.env.href.wiki(self.attachment_id))
         assert 0
-    
+
     def render(self):
         FileCommon.render(self)
         self.view_form = 0
@@ -117,7 +117,7 @@ class Attachment(FileCommon):
             # Send an attachment
             perm_map = {'ticket':perm.TICKET_VIEW, 'wiki': perm.WIKI_VIEW}
             self.perm.assert_permission (perm_map[self.attachment_type])
-        
+
             self.path = os.path.join(self.env.get_attachments_dir(),
                                      self.attachment_type,
                                      self.attachment_id,
@@ -142,14 +142,14 @@ class Attachment(FileCommon):
                self.args.has_key('author') and \
                self.args.has_key('attachment') and \
                hasattr(self.args['attachment'], 'file'):
-            
+
             # Create a new attachment
             if not self.attachment_type in ['ticket', 'wiki']:
                 raise util.TracError('Unknown attachment type')
-            
+
             perm_map = {'ticket':perm.TICKET_MODIFY, 'wiki': perm.WIKI_MODIFY}
             self.perm.assert_permission (perm_map[self.attachment_type])
-            
+
             filename = self.env.create_attachment(self.db,
                                                   self.attachment_type,
                                                   self.attachment_id,
@@ -186,6 +186,7 @@ class Attachment(FileCommon):
                                                        self.filename,
                                                        'text'))
         self.req.hdf.setValue('file.filename', urllib.unquote(self.filename))
+        self.req.hdf.setValue('trac.active_module', self.attachment_type) # Kludge
         FileCommon.display(self)
 
 
