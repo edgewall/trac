@@ -190,7 +190,7 @@ class Timeline (Module):
             cursor.execute("SELECT name,change FROM node_change WHERE rev=%s",
                            (item['idata']))
             files = []
-            class_map = {'A': 'diff-add', 'M': 'diff-mod', 'D': 'diff-rem'}
+            class_map = {'A': 'add', 'M': 'mod', 'D': 'rem'}
             for name,change in cursor:
                 if show_files > 0 and len(files) >= show_files:
                     files.append('...')
@@ -198,8 +198,8 @@ class Timeline (Module):
                 if not self.authzperm.has_permission(name):
                     continue
                 
-                files.append('<span class="%s">%s</span>'
-                             % (class_map[change], name))
+                files.append('<span class="diff-%s">%s</span>'
+                             % (class_map.get(change, 'mod'), name))
             item['node_list'] = ', '.join(files) + ': '
 
         return item
