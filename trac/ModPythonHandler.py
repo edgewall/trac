@@ -21,7 +21,7 @@
 
 import os
 import re, threading
-import auth, core, Environment, Href, Session, Wiki
+import auth, core, Environment, Href, Wiki
 from util import TracError, href_join
 from mod_python import apache, util
 
@@ -135,8 +135,8 @@ def get_environment(req, mpr):
     
     if not options.has_key('TracEnv') and not options.has_key('TracEnvParentDir'):
         raise EnvironmentError, \
-              'Missing PythonOption "TracEnv". Trac requires this option '\
-              'to point to a valid Trac Environment.'
+              'Missing PythonOption "TracEnv" or "TracEnvParentDir". Trac '\
+              'requires one of these options to locate the Trac environment(s).'
     
     if options.has_key('TracEnv'):
         env_path = options['TracEnv']
