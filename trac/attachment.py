@@ -174,10 +174,10 @@ class AttachmentModule(Module):
                      self.env.href.attachment(parent_type, parent_id, filename,
                                               format='txt'),
                      'Plain Text', mime_type)
-        if len(data) == self.DISP_MAX_FILE_SIZE:
+        if len(data) >= self.DISP_MAX_FILE_SIZE:
             req.hdf['attachment.max_file_size_reached'] = 1
             req.hdf['attachment.max_file_size'] = self.DISP_MAX_FILE_SIZE
-            vdata = ' '
+            vdata = ''
         else:
             vdata = self.env.mimeview.display(data, filename=filename,
                                               mimetype=mime_type)
