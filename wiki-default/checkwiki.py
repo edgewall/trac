@@ -33,6 +33,7 @@ wiki_pages = [
  "TracSyntaxColoring",
  "TracTickets",
  "TracTimeline",
+ "TracUnicode",
  "TracWiki",
  "WikiFormatting",
  "WikiHtml",
