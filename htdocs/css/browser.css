@@ -4,60 +4,41 @@
 h1 { font-size: 16px; letter-spacing: -0.028em; margin: 0; padding: 0 0 .5em }
 h1 :link, h1 :visited, h1 .filename { border: none; padding: 0 .2em }
 h1 :link, h1 :visited { color: #b00 }
-h1 .first, h1 .first:hover { color: #998 }
+h1 .first:link, h1 .first:visited { color: #998 }
 h1 .sep { color: #666; padding: 0 .1em }
 
-#toolbar {
- background: #f7f7f7;
- border-top: 1px solid #ddd;
- float: left;
- padding: 2px 0;
- margin: .1em 0 1em;
- width: 100%;
-}
-#toolbar ul, #toolbar form { margin: 0 2px }
-#toolbar ul {
- background: #f7f7f7;
- border: 1px outset #d7d7d7;
- color: #ccc;
- display: inline;
- float: left;
- font-size: 11px;
- padding: 0;
-}
-#toolbar li {
- display: inline;
- border-right: 1px solid #d7d7d7;
- float: left;
- margin: 0;
- padding: 0;
+#jumprev { float: right; font-size: 10px; margin: 0 0 0 }
+#jumprev form { margin: 0 }
+#jumprev input { font-size: 10px; margin-right: 0 }
+
+/* Styles for the directory entries table
+   (extends the styles for "table.listing") */
+#dirlist { margin-top: 0 }
+#dirlist td.rev, #dirlist td.age, #dirlist td.change {
+ color: #888;
  white-space: nowrap;
 }
-#toolbar li.last { border-right: none }
-#toolbar li :link, #toolbar li :visited {
- display: inline;
- float: left;
- padding: 0 .75em .1em .5em;
- margin: 0;
- border: none;
- color: #000;
+#dirlist td.name { width: 100% }
+#dirlist td.name a, #dirlist td.name span {
+ background-position: 0% 50%;
+ background-repeat: no-repeat;
+ padding-left: 20px;
 }
-#toolbar li :link:hover, #toolbar li :visited:hover {
- background: #ccb;
- color: #000;
-}
-#toolbar form {
- float: right;
- padding: 0;
- white-space: nowrap;
-}
-#toolbar input, #toolbar label {
- font-size: 10px;
- margin: 0;
- padding: 0;
- text-align: center;
- vertical-align: middle;
-}
+#dirlist td.name a.parent { background-image: url(../parent.png) }
+#dirlist td.name a.dir { background-image: url(../folder.png) }
+#dirlist td.name span.dir { background-image: url(../folderdeny.png) }
+#dirlist td.name a.file { background-image: url(../file.png) }
+#dirlist td.name span.file { background-image: url(../filedeny.png) }
+#dirlist td.name a, #dirlist td.rev a { border-bottom: none; display: block }
+#dirlist td.change * { font-size: 9px }
+
+/* Styles for the revision log table
+   (extends the styles for "table.listing") */
+#chglist { margin-top: 0 }
+#chglist td.date { white-space: nowrap }
+#chglist td.rev, #chglist td.chgset { text-align: center }
+#chglist td.rev a, #chglist td.chgset a { border-bottom: none }
+#chglist td.summary { width: 100% }
 
 /* Styles for the revision info in the file module */
 #info {
@@ -66,7 +47,6 @@ h1 .sep { color: #666; padding: 0 .1em }
  border-collapse: collapse;
  border-spacing: 0;
  clear: both;
- margin: 1em 0 0;
  width: 100%;
 }
 #info th {
@@ -85,38 +65,8 @@ h1 .sep { color: #666; padding: 0 .1em }
 #info .message ul { padding: 0; margin: 0 2em }
 #info .message p { margin: 0; padding: 0 }
 
-.code-block { border-top: 0; margin-top: 0 }
-
-/* Styles for the directory entries table
-   (extends the styles for "table.listing") */
-#dirlist td.rev, #dirlist td.age, #dirlist td.change {
- color: #888;
- white-space: nowrap;
-}
-#dirlist td.name { width: 100% }
-#dirlist td.name a, #dirlist td.name span {
- background-position: 0% 50%;
- background-repeat: no-repeat;
- padding-left: 20px;
-}
-#dirlist td.name a.parent { background-image: url(../parent.png) }
-#dirlist td.name a.dir { background-image: url(../folder.png) }
-#dirlist td.name span.dir { background-image: url(../folderdeny.png) }
-#dirlist td.name a.file { background-image: url(../file.png) }
-#dirlist td.name span.file { background-image: url(../filedeny.png) }
-
-#dirlist td.name a, #dirlist td.rev a {
- border-bottom: none;
- display: block;
-}
-#dirlist td.change * { font-size: 9px }
-
 /* Styles for the HTML preview */
-#preview { background: #fff; clear: both }
-
-/* Styles for the revision log table
-   (extends the styles for "table.listing") */
-#chglist td.date { white-space: nowrap }
-#chglist td.rev, #chglist td.chgset { text-align: center }
-#chglist td.rev a, #chglist td.chgset a { border-bottom: none }
-#chglist td.summary { width: 100% }
+#preview { background: #fff; clear: both; margin: 0 }
+#preview .code-block { border-top: 1px solid #999; margin: 0 }
+#preview .image-file { overflow: hidden }
+#preview .image-file img { max-width: 100% }
