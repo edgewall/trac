@@ -135,7 +135,7 @@ def parse_args(command, path_info, query_string,
         env = {'REQUEST_METHOD': command, 'QUERY_STRING': query_string}
     if command in ['GET', 'HEAD']:
         _headers = None
-    args = TracFieldStorage(fp, environ=env, headers=_headers)
+    args = TracFieldStorage(fp, environ=env, headers=_headers, keep_blank_values=1)
     parse_path_info(args, path_info)
     return args
 

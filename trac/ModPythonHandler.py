@@ -185,7 +185,7 @@ def handler(req):
     if not env:
         return apache.OK
 
-    args = TracFieldStorage(req)
+    args = TracFieldStorage(req, keep_blank_values=1)
     core.parse_path_info(args, mpr.path_info)
 
     req.content_type = 'text/html'
