@@ -19,7 +19,6 @@
 #
 # Author: Jonas Borgström <jonas@edgewall.com>
 
-import StringIO
 import string
 
 from svn import fs, util, delta
