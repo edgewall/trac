@@ -26,7 +26,7 @@ from time import localtime, strftime, time
 from __init__ import __version__
 import perm
 import Milestone
-from util import add_to_hdf, pretty_timedelta, CRLF, TracError
+from util import pretty_timedelta, CRLF, TracError
 from Module import Module
 from Ticket import Ticket
 from Wiki import wiki_to_html

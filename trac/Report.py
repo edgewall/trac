@@ -81,7 +81,7 @@ class Report (Module):
             arg = args[aname]
         except KeyError:
             raise util.TracError("Dynamic variable '$%s' not defined." % aname)
-        req.hdf.setValue('report.var.' + aname , arg)
+        req.hdf['report.var.' + aname] = arg
         sql = m.string[:m.start()] + arg + m.string[m.end():]
         return self.sql_sub_vars(req, sql, args)
 
@@ -133,7 +133,7 @@ class Report (Module):
         if not sql:
             raise util.TracError('Report %s has no SQL query.' % id)
         if sql.find('__group__') == -1:
-            req.hdf.setValue('report.sorting.enabled', '1')
+            req.hdf['report.sorting.enabled'] = 1
 
         cursor = self.db.cursor()
         cursor.execute(sql)
@@ -173,11 +173,10 @@ class Report (Module):
         if not row:
             raise util.TracError('Report %s does not exist.' % id,
                                  'Invalid Report Number')
-        req.hdf.setValue('title',
-                         'Delete Report {%s} %s' % (id, row['title']))
-        req.hdf.setValue('report.mode', 'delete')
-        req.hdf.setValue('report.id', str(id))
-        req.hdf.setValue('report.title', row['title'])
+        req.hdf['title'] = 'Delete Report {%s} %s' % (id, row['title'])
+        req.hdf['report.mode'] = 'delete'
+        req.hdf['report.id'] = id
+        req.hdf['report.title'] = row['title']
 
     def render_report_editor(self, req, id, action='commit', copy=0):
         self.perm.assert_permission(perm.REPORT_MODIFY)
@@ -200,16 +199,15 @@ class Report (Module):
             title += ' copy'
 
         if action == 'commit':
-            req.hdf.setValue('title',
-                                  'Edit Report {%d} %s' % (id, row['title']))
+            req.hdf['title'] = 'Edit Report {%d} %s' % (id, row['title'])
         else:
-            req.hdf.setValue('title', 'Create New Report')
-        req.hdf.setValue('report.mode', 'editor')
-        req.hdf.setValue('report.title', title)
-        req.hdf.setValue('report.id', str(id))
-        req.hdf.setValue('report.action', action)
-        req.hdf.setValue('report.sql', sql)
-        req.hdf.setValue('report.description', description)
+            req.hdf['title'] = 'Create New Report'
+        req.hdf['report.mode'] = 'editor'
+        req.hdf['report.title'] = title
+        req.hdf['report.id'] = id
+        req.hdf['report.action'] = action
+        req.hdf['report.sql'] = sql
+        req.hdf['report.description'] = description
 
     def add_alternate_links(self, req, args):
         params = args
@@ -236,30 +234,26 @@ class Report (Module):
         from the database and presents it as a html table.
         """
         if self.perm.has_permission(perm.REPORT_CREATE):
-            req.hdf.setValue('report.create_href',
-                             self.env.href.report(None, 'new'))
+            req.hdf['report.create_href'] = self.env.href.report(None, 'new')
 
         if id != -1:
             if self.perm.has_permission(perm.REPORT_MODIFY):
-                req.hdf.setValue('report.edit_href',
-                                 self.env.href.report(id, 'edit'))
+                req.hdf['report.edit_href'] = self.env.href.report(id, 'edit')
             if self.perm.has_permission(perm.REPORT_CREATE):
-                req.hdf.setValue('report.copy_href',
-                                 self.env.href.report(id, 'copy'))
+                req.hdf['report.copy_href'] = self.env.href.report(id, 'copy')
             if self.perm.has_permission(perm.REPORT_DELETE):
-                req.hdf.setValue('report.delete_href',
-                                 self.env.href.report(id, 'delete'))
+                req.hdf['report.delete_href'] = self.env.href.report(id, 'delete')
 
         try:
             args = self.get_var_args(req)
         except ValueError,e:
-            req.hdf.setValue('report.message', 'report failed: %s' % e)
+            req.hdf['report.message'] = 'Report failed: %s' % e
             return
 
         if id != -1:
             self.add_alternate_links(req, args)
 
-        req.hdf.setValue('report.mode', 'list')
+        req.hdf['report.mode'] = 'list'
         info = self.get_info(id, args)
         if not info:
             return
@@ -268,11 +262,11 @@ class Report (Module):
 
         if id > 0:
             title = '{%i} %s' % (id, title)
-        req.hdf.setValue('title', title)
-        req.hdf.setValue('report.title', title)
-        req.hdf.setValue('report.id', str(id))
+        req.hdf['title'] = title
+        req.hdf['report.title'] = title
+        req.hdf['report.id'] = id
         descr_html = wiki_to_html(description, req.hdf, self.env,self.db)
-        req.hdf.setValue('report.description', descr_html)
+        req.hdf['report.description'] = descr_html
 
         if req.args.get('format') == 'sql':
             return
@@ -281,8 +275,7 @@ class Report (Module):
             [self.cols, self.rows] = self.execute_report(req, sql, args)
         except Exception, e:
             self.error = e
-            req.hdf.setValue('report.message',
-                                  'Report failed: %s' % e)
+            req.hdf['report.message'] = 'Report failed: %s' % e
             return None
 
         # Convert the header info to HDF-format
@@ -290,18 +283,18 @@ class Report (Module):
         for col in self.cols:
             title=col[0].capitalize()
             prefix = 'report.headers.%d' % idx
-            req.hdf.setValue('%s.real' % prefix, col[0])
+            req.hdf['%s.real' % prefix] = col[0]
             if title[:2] == '__' and title[-2:] == '__':
                 continue
             elif title[0] == '_' and title[-1] == '_':
                 title = title[1:-1].capitalize()
-                req.hdf.setValue(prefix + '.fullrow', '1')
+                req.hdf[prefix + '.fullrow'] = 1
             elif title[0] == '_':
                 continue
             elif title[-1] == '_':
                 title = title[:-1]
-                req.hdf.setValue(prefix + '.breakrow', '1')
-            req.hdf.setValue(prefix, title)
+                req.hdf[prefix + '.breakrow'] = 1
+            req.hdf[prefix] = title
             idx = idx + 1
 
         if req.args.has_key('sort'):
@@ -319,10 +312,10 @@ class Report (Module):
                 asc = req.args.get('asc', None)
                 if asc:
                     sorter = ColumnSorter(colIndex, int(asc))
-                    req.hdf.setValue(k, asc)
+                    req.hdf[k] = asc
                 else:
                     sorter = ColumnSorter(colIndex)
-                    req.hdf.setValue(k, '1')
+                    req.hdf[k] = 1
                 self.rows.sort(sorter.sort)
 
 
@@ -341,7 +334,7 @@ class Report (Module):
                 elif (column[0] == '_' and column[-1] == '_'):
                     value['fullrow'] = 1
                     column = column[1:-1]
-                    req.hdf.setValue(prefix + '.breakrow', '1')
+                    req.hdf[prefix + '.breakrow'] = 1
                 elif column[-1] == '_':
                     value['breakrow'] = 1
                     value['breakafter'] = 1
@@ -366,13 +359,13 @@ class Report (Module):
                     value['gmt'] = time.strftime('%a, %d %b %Y %H:%M:%S GMT',
                                                  time.gmtime(int(cell)))
                 prefix = 'report.items.%d.%s' % (row_idx, str(column))
-                req.hdf.setValue(prefix, util.escape(str(cell)))
+                req.hdf[prefix] = util.escape(str(cell))
                 for key in value.keys():
-                    req.hdf.setValue(prefix + '.' + key, str(value[key]))
+                    req.hdf[prefix + '.' + key] = value[key]
 
                 col_idx += 1
             row_idx += 1
-        req.hdf.setValue('report.numrows', str(row_idx))
+        req.hdf['report.numrows'] = row_idx
 
     def get_var_args(self, req):
         report_args = {}
@@ -435,7 +428,7 @@ class Report (Module):
             while item:
                 nodename = 'report.items.%s.summary' % item.name()
                 summary = req.hdf.getValue(nodename, '')
-                req.hdf.setValue(nodename, util.escape(summary))
+                req.hdf[nodename] = util.escape(summary)
                 item = item.next()
         req.display(self.template_rss_name, 'application/rss+xml')
 

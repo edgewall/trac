@@ -22,7 +22,7 @@
 import time
 
 import perm
-from util import add_to_hdf, escape, shorten_line
+from util import escape, shorten_line
 from Module import Module
 from Wiki import wiki_to_oneliner, wiki_to_html
 

@@ -407,7 +407,7 @@ class Changeset (Module.Module):
         req.hdf['changeset.author'] = util.escape(author)
         message = changeset_info['message'] or '--'
         req.hdf['changeset.message'] = wiki_to_html(util.wiki_escape_newline(message),
-                                                    req.hdf, self.env, self.db))
+                                                    req.hdf, self.env, self.db)
         req.hdf['changeset.revision'] = self.rev
         req.hdf['changeset.changes'] = change_info
         req.hdf['changeset.href'] = self.env.href.changeset(self.rev)

@@ -21,7 +21,7 @@
 
 from __future__ import nested_scopes
 import re
-from util import add_to_hdf, escape
+from util import escape
 
 line_re = re.compile('^@@ [+-]([0-9]+)(?:,([0-9]+))? [+-]([0-9]+)(?:,([0-9]+)) @@$')
 space_re = re.compile(' ( +)|^ ')

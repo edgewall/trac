@@ -19,7 +19,7 @@
 #
 # Author: Jonas Borgström <jonas@edgewall.com>
 
-from trac.util import add_to_hdf, escape
+from trac.util import escape
 from trac.web.main import populate_hdf
 
 

@@ -111,21 +111,6 @@ def sql_escape(text):
     """
     return text.replace("'", "''").replace("\\", "\\\\")
 
-def add_to_hdf(obj, hdf, prefix):
-    """
-    Adds an object to the given HDF under the specified prefix.
-    Lists and dictionaries are expanded, all other objects are added
-    as strings.
-    """
-    if type(obj) is DictType or isinstance(obj, UserDict):
-        for k in obj.keys():
-            add_to_hdf(obj[k], hdf, '%s.%s' % (prefix, k))
-    elif type(obj) is ListType or isinstance(obj, UserList):
-        for i in range(len(obj)):
-            add_to_hdf(obj[i], hdf, '%s.%d' % (prefix, i))
-    else:
-        hdf.setValue(prefix, str(obj))
-
 def sql_to_hdf (db, sql, hdf, prefix):
     """
     executes a sql query and insert the first result column
