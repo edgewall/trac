@@ -1,3 +1,35 @@
+Trac 0.7 'Fulci'  (May __, 2004)
+http://svn.edgewall.com/repos/trac/tags/trac-0.7
+
+ * Revised database format (requires manual upgrade).
+ * Trac standalone daemon, tracd (Experimental).
+ * Greatly improved browser.
+ * Many usability improvements.
+ * UTF-8 character encoding support.
+ * Wiki page attachments.
+ * Syntax coloring supporting >35 languages, using SilverCity or GNU Enscript.
+ * Logging support, including syslog and windows eventlog.
+ * Ticket attachments.
+ * Import tickets from Bugzilla (contributed by Mark Rowe).
+ * Import tickets from SourceForge (contributed by Dmitry Yusupov).
+ * New ticket field: keywords
+ * Ticket email notification.
+ * Localized date and time display.
+ * Viewable SQL for reports.
+ * Improved search facilities.
+ * Windows installer package.
+ * More documentation.
+ * Fixed bugs:  #14, #19, #27, #62, #87, #96, #106, #111, #115, #127,
+	#146, #158, #161, #166, #171, #180, #182, #183, #188, #190, #191,
+	#192, #193, #195, #196, #197, #201, #202, #205, #207, #210, #211,
+	#212, #213, #220, #224, #227, #228, #230, #231, #233, #235, #236,
+	#239, #240, #241, #243, #244, #245, #246, #247, #248, #249, #251,
+	#252, #253, #254, #255, #258, #259, #261, #262, #263, #264, #265,
+	#270, #271, #273, #275, #277, #278, #281, #284, #285, #288, #289,
+	#292, #293, #294, #295, #296, #300, #301, #302, #304, #306, #307,
+	#310, #312, #313, #314, #315, #316, #320, #322, #326, #328, #336,
+	#337, #338, #339, #340, #341, #343
+
 Trac 0.6.1 '245 Trioxin (April 12, 2004)
 http://svn.edgewall.com/repos/trac/tags/trac-0.6.1
 
