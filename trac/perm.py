@@ -113,7 +113,7 @@ class PermissionCache:
         perms = []
         users = ['anonymous']
         if username != 'anonymous':
-            users += [username, 'autenticated']
+            users += [username, 'authenticated']
         while 1:
             num_users = len(users)
             num_perms = len(perms)
