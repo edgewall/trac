@@ -39,7 +39,8 @@ function highlightWord(node,word,searchwordindex) {
 		tempWordVal = word.toLowerCase();
 		if (tempNodeVal.indexOf(tempWordVal) != -1) {
 			pn = node.parentNode;
-			if (pn.className.substring(0,10) != "searchword") {
+			if (pn.className.substring(0,10) != "searchword" && 
+			    pn.className != "result-date") {
 				// word has not already been highlighted!
 				nv = node.nodeValue;
 				ni = tempNodeVal.indexOf(tempWordVal);
