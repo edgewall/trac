@@ -67,6 +67,7 @@ def insert_change (pool, fs_ptr, rev, cursor):
             self.cursor = cursor
             self.old_root = old_root
             self.new_root = new_root
+            self.dir_has_prop_change = 0
 
         def delete_entry(self, path, revision, parent_baton, pool):
             self.cursor.execute('INSERT INTO node_change (rev, name, change) '
@@ -76,14 +77,22 @@ def insert_change (pool, fs_ptr, rev, cursor):
                           copyfrom_path, copyfrom_revision, dir_pool):
             self.cursor.execute('INSERT INTO node_change (rev, name, change) '
                                 'VALUES (%s, %s, \'A\')', self.rev, path)
-            return [None, path, dir_pool]
 
         def open_directory(self, path, parent_baton, base_revision, dir_pool):
+            self.dir_has_prop_change = 0
             return [path, path, dir_pool]
 
         def change_dir_prop(self, dir_baton, name, value, pool):
+            if not dir_baton or self.dir_has_prop_change:
+                return
             self.cursor.execute('INSERT INTO node_change (rev, name, change) '
                                 'VALUES (%s, %s, \'M\')', self.rev, dir_baton[1])
+            self.dir_has_prop_change = 1
+
+        def close_directory(self, dir_baton):
+            if not dir_baton:
+                return
+            self.dir_has_prop_change = 0
 
         def add_file(self, path, parent_baton,
                      copyfrom_path, copyfrom_revision, file_pool):
