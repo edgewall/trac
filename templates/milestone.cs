@@ -118,14 +118,12 @@
    summary="Shows the milestone completion status grouped by <?cs
      var:milestone.stats.grouped_by ?>">
   <thead><tr>
-   <th>&nbsp;</th>
+   <th class="name" rowspan="2"><?cs var:milestone.stats.grouped_by ?></th>
    <th class="tickets" scope="col" colspan="2">Tickets</th>
-   <th>&nbsp;</th>
+   <th class="progress" rowspan="2">Percent Resolved</th>
   </tr><tr>
-   <th class="name" scope="col"><?cs var:milestone.stats.grouped_by ?></th>
    <th class="open" scope="col">Active</th>
    <th class="closed" scope="col">Resolved</th>
-   <th class="progress" scope="col">Percent Resolved</th>
   </tr></thead>
   <?cs if:len(milestone.stats.groups) ?><tbody>
    <?cs each:group = milestone.stats.groups ?>

@@ -15,18 +15,11 @@ h2 {
 #reportlist tbody td :link, #reportlist tbody td :visited,
 #tktlist tbody td :link, #tktlist tbody td :visited { display: block }
 #tktlist { border-bottom: none }
-#tktlist thead th {
- border-bottom: 1px solid #d7d7d7;
- color: #999;
- font-size: 90%;
- padding: 0 .2em .1em;
- text-transform: capitalize;
-}
-#tktlist tbody td, #reportlist tbody td { padding: .1em }
+#tktlist thead th { text-transform: capitalize }
+#tktlist tbody td, #reportlist tbody td { padding: .1em .5em }
 #tktlist tbody td a, #reportlist tbody td a { border-bottom: none }
 #tktlist tbody td.ticket :link, #tktlist tbody td.ticket :visited {
  font-weight: bold;
- padding: .1em .5em;
 }
 #tktlist tbody tr:hover { background: #eed; color: #000 }
 #tktlist tr.color1-odd  { background: #fdc; border-color: #e88; color: #a22 }

@@ -86,7 +86,7 @@ class FileCommon(Module.Module):
             self.req.write(data)
             i += self.CHUNK_SIZE
 
-    def display_text(self):
+    def display_txt(self):
         self.mime_type = 'text/plain;charset=utf-8'
         self.display_raw()
 
@@ -143,6 +143,18 @@ class Attachment(FileCommon):
             self.read_func = lambda x, f=fd: f.read(x)
             self.mime_type = self.env.mimeview.get_mimetype(self.filename) \
                              or 'application/octet-stream'
+
+            self.add_link('alternate',
+                          self.env.href.attachment(self.attachment_type,
+                                                   self.attachment_id,
+                                                   self.filename, 'txt'),
+                'Plain Text', 'text/plain')
+            self.add_link('alternate',
+                          self.env.href.attachment(self.attachment_type,
+                                                   self.attachment_id,
+                                                   self.filename, 'raw'),
+                'Original Format', self.mime_type)
+
             return
 
         if self.args.has_key('description') and \
@@ -189,22 +201,13 @@ class Attachment(FileCommon):
             self.req.hdf.setValue('attachment.author', util.get_reporter_id(self.req))
             self.req.display('attachment.cs')
             return
-        self.req.hdf.setValue('file.rawurl', 
-                              self.env.href.attachment(self.attachment_type,
-                                                       self.attachment_id,
-                                                       self.filename,
-                                                       'raw'))
-        self.req.hdf.setValue('file.texturl', 
-                              self.env.href.attachment(self.attachment_type,
-                                                       self.attachment_id,
-                                                       self.filename,
-                                                       'text'))
         self.req.hdf.setValue('file.filename', urllib.unquote(self.filename))
         self.req.hdf.setValue('trac.active_module', self.attachment_type) # Kludge
         FileCommon.display(self)
 
 
 class File(FileCommon):
+
     def generate_path_links(self, rev, rev_specified):
         # FIXME: Browser, Log and File should share implementation of this
         # function.
@@ -289,32 +292,31 @@ class File(FileCommon):
                                     svn.core.SVN_PROP_REVISION_DATE, self.pool)
         sdate = util.svn_date_to_string(date, self.pool)
 
-
         self.req.hdf.setValue('file.chgset_href', self.env.href.changeset(rev))
         self.req.hdf.setValue('file.rev', str(rev))
         self.req.hdf.setValue('file.rev_author', str(author))
         self.req.hdf.setValue('file.rev_date', sdate)
         self.req.hdf.setValue('file.rev_msg', msg_html)
         self.req.hdf.setValue('file.path', self.path)
-        self.req.hdf.setValue('file.rawurl',
-            saxutils.escape(self.env.href.file(self.path, rev, 'raw')))
-        self.req.hdf.setValue('file.texturl',
-            saxutils.escape(self.env.href.file(self.path, rev, 'text')))
         self.req.hdf.setValue('file.logurl',
             saxutils.escape(self.env.href.log(self.path, rev)))
 
-                
         # Try to do an educated guess about the mime-type
         self.mime_type = svn.fs.node_prop (root, self.path,
                                            svn.util.SVN_PROP_MIME_TYPE,
                                            self.pool)
         if not self.mime_type:
-            self.mime_type = self.env.mimeview.get_mimetype(filename=self.path) or 'text/plain'
-
+            self.mime_type = self.env.mimeview.get_mimetype(filename=self.path) or \
+                             'text/plain'
         elif self.mime_type == 'application/octet-stream':
             self.mime_type = self.env.mimeview.get_mimetype(filename=self.path) or \
                              'application/octet-stream'
-            
+
+        self.add_link('alternate', self.env.href.file(self.path, rev, 'raw'),
+            'Original Format', self.mime_type)
+        self.add_link('alternate', self.env.href.file(self.path, rev, 'txt'),
+            'Plain Text', 'text/plain')
+
         self.length = svn.fs.file_length(root, self.path, self.pool)
         date = svn.fs.revision_prop(self.fs_ptr, rev,
                                 svn.util.SVN_PROP_REVISION_DATE, self.pool)
@@ -323,4 +325,3 @@ class File(FileCommon):
                                       time.gmtime(date_seconds))
         fd = svn.fs.file_contents(root, self.path, self.pool)
         self.read_func = lambda x, f=fd: svn.util.svn_stream_read(f, x)
-        

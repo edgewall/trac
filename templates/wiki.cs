@@ -20,7 +20,7 @@
 <div id="content" class="wiki">
 
  <?cs if:wiki.action == "diff" ?>
-  <h1>Changes in version <?cs var:wiki.edit_version?> of <a href="<?cs
+  <h1>Changes in Version <?cs var:wiki.edit_version?> of <a href="<?cs
     var:wiki.current_href ?>"><?cs var:wiki.page_name ?></a></h1>
   <form method="post" id="prefs" action="">
    <div>

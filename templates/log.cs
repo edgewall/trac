@@ -12,18 +12,12 @@
 <div id="content" class="log">
  <?cs call:browser_path_links(log.path, log) ?>
 
- <div id="toolbar">
-  <ul>
-   <li class="last">
-    <a href="<?cs var:log.items.0.file_href ?>">View Latest Revision</a>
-   </li>
-  </ul>
-  <form action="<?cs var:log.items.0.file_href ?>" method="get">
+ <div id="jumprev">
+  <form action="<?cs var:browser_current_href ?>" method="get">
    <div>
-    <label for="rev">View rev:</label>
+    <label for="rev">View revision:</label>
     <input type="text" id="rev" name="rev" value="<?cs
-      var:log.items.0.rev ?>" size="4" />
-    <input type="submit" value="View"/>
+      var:browser.revision?>" size="4" />
    </div>
   </form>
  </div>

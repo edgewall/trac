@@ -11,17 +11,12 @@
 <div id="content" class="browser">
  <?cs call:browser_path_links(browser.path, browser) ?>
 
- <div id="toolbar">
-  <ul>
-   <li><a title="View revision log" href="<?cs
-     var:browser.log_href ?>">Revision Log</a></li>
-  </ul>
+ <div id="jumprev">
   <form action="<?cs var:browser_current_href ?>" method="get">
    <div>
-    <label for="rev">View rev:</label>
+    <label for="rev">View revision:</label>
     <input type="text" id="rev" name="rev" value="<?cs
       var:browser.revision?>" size="4" />
-    <input type="submit" value="View" />
    </div>
   </form>
  </div>

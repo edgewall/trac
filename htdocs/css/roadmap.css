@@ -53,12 +53,12 @@ h2.stats {
  padding: 0 .33em;
 }
 #stats { border-bottom: none; margin-top: 0 }
-#stats thead th { color: #999 }
 #stats td, #stats th { padding: 0 .25em }
 #stats :link, #stats :visited { display: block; border: none }
 #stats th.name { text-transform: capitalize }
-#stats th.tickets { text-align: center }
+#stats th.tickets { text-align: center; border-bottom: none }
 #stats th.open, #stats th.closed {
+ border-top: none;
  font-size: smaller;
  text-align: center;
  width: 6em;
