@@ -150,8 +150,9 @@ tr.br-row-even:hover,tr.br-row-odd:hover { background: #eed; }
  border: 1px solid #ccc; 
  background: #eee;
  color: #666;
- padding: 0 .5em;
+ padding: .1em .5em;
  font-size: 90%;
+ white-space: nowrap;
 }
 .wikipage p {  margin-left: 1em }
 pre.wiki, pre.literal-block { 
@@ -174,3 +175,8 @@ table.wiki td { border: 1px solid #ccc;  padding: .1em .25em; }
  padding: .25em;
  margin: 1em 0;
 }
+.searchword0 { background: #ff9; }
+.searchword1 { background: #cfc; }
+.searchword2 { background: #cff; }
+.searchword3 { background: #ccf; }
+.searchword4 { background: #fcf; }

@@ -1,0 +1,18 @@
+#search-result { 
+ margin-left: .5em;
+ margin-right: 3em;
+
+}
+.result-item { margin: 1.5em 0; }
+a.result-title {  color: #33c; }
+.result-body { font-size: 80%; }
+.result-author, .result-date { 
+ font-size: 80%;
+ color: #090;
+ background: #fff;
+}
+.result-match {  background: #ffc800; }
+b { font-weight: normal; }
+#search-notfound { 
+  margin: 2em;
+}

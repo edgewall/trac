@@ -7,6 +7,7 @@
 
  <div id="main">
   <div id="main-content">
+   <div id="searchable">
 
 <?cs if:ticket.status == 'closed' ?>
  <?cs set:status = ' (Closed: ' + $ticket.resolution + ')' ?>
@@ -27,6 +28,8 @@
  <?cs /if ?>
  <?cs set numprops = $numprops + #1 ?>
 <?cs /def ?>
+
+
 
 <h1 id="tkt-hdr">Ticket #<?cs var:ticket.id ?><?cs var:status ?></h1>
 
@@ -65,7 +68,7 @@
   <td colspan="5" id="tkt-descr">
    <hr class="hide" />
    <h3 id="tkt-descr-hdr">Description by <?cs var:ticket.reporter ?>:</h3>
-   <?cs var:ticket.description ?>
+    <?cs var:ticket.description ?>
    <hr class="hide"/>
   </td>
  </tr>
@@ -269,7 +272,7 @@
 </form>
 </div> <!-- #tkt-main -->
 
-
+</div>
  </div>
 </div>
 </div>

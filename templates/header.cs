@@ -27,12 +27,15 @@
       @import url("<?cs var:$htdocs_location ?>/css/ticket.css");
       <?cs elif:trac.active_module == 'report' ?>
       @import url("<?cs var:$htdocs_location ?>/css/report.css");
+      <?cs elif:trac.active_module == 'search' ?>
+      @import url("<?cs var:$htdocs_location ?>/css/search.css");
       <?cs /if ?>
       /* Dynamically/template-generated CSS below */
       #navbar { background: url("<?cs var:$htdocs_location ?>/topbar_gradient.png") top left #eee }  
       a.navbar-link { background: url(<?cs var:$htdocs_location ?>/dots.gif) top left no-repeat; }
        -->
     </style>
+    <script src="<?cs var:$htdocs_location ?>/trac.js" type="text/javascript"></script>
 </head>
 <body>
 

@@ -889,7 +889,7 @@ ORDER BY milestone,
                   'text':data})
         self.db_execsql(sql, cursor)
 
-    def _do_wiki_export(self, page):
+    def _do_wiki_export(self, page,filename=''):
         data=self.db_execsql("SELECT text FROM wiki "
                              " WHERE name='%s'"
                              " ORDER BY version DESC LIMIT 1" % page)

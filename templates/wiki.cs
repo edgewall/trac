@@ -1,6 +1,4 @@
 <?cs include "header.cs" ?>
-<script src="<?cs var:htdocs_location ?>/trac.js" type="text/javascript"> 
-</script>
 <div id="page-content">
 <div id="subheader-links">
   <a href="<?cs var:$trac.href.wiki ?>">Start Page</a>&nbsp;|
@@ -106,7 +104,9 @@
           <?cs if wiki.action == "view" || wiki.action == "preview" ?>
 	    <?cs if wiki.action == "preview" ?><hr /><?cs /if ?>
             <div class="wikipage">
-                <?cs var:wiki.page_html ?>
+                <div id="searchable">
+                 <?cs var:wiki.page_html ?>
+                </div>
             </div>
             <?cs if wiki.action == "view" && trac.acl.WIKI_MODIFY ?>
               <p>

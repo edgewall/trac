@@ -22,7 +22,7 @@
   </div>
   <div>
     <b class="chg-name">Message:</b>
-    <div class="chg-val"><?cs var:changeset.message ?></div>
+    <div class="chg-val"><div id="searchable"><?cs var:changeset.message ?></div></div>
     <b class="chg-name">Files:</b>
     <ul class="chg-list">
       <?cs each:item = changeset.changes ?>
