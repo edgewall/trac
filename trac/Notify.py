@@ -267,15 +267,10 @@ class TicketNotifyEmail(NotifyEmail):
     def get_recipients(self, tktid):
         emails = []
         cursor = self.db.cursor()
-        cursor.execute('SELECT reporter,cc FROM ticket WHERE id=%s', tktid)
+        # Harvest email addresses from the cc field
+        cursor.execute('SELECT cc FROM ticket WHERE id=%s', tktid)
         row = cursor.fetchone()
         if row:
-            emails += row[0] and self.get_email_addresses(row[0]) or []
-            emails += row[1] and self.get_email_addresses(row[1]) or []
-        cursor.execute('SELECT DISTINCT author,ticket FROM ticket_change '
-                       ' WHERE ticket=%s', tktid)
-        rows = cursor.fetchall()
-        for row in rows:
             emails += row[0] and self.get_email_addresses(row[0]) or []
 
         # Add smtp_always_cc address
@@ -283,8 +278,9 @@ class TicketNotifyEmail(NotifyEmail):
         if acc:
             emails += self.get_email_addresses(acc)
 
+        # Remove duplicates
         result = []
-        for e in emails:        # Remove duplicates
+        for e in emails:
             if e not in result:
                 result.append(e)
         return result
