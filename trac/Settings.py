@@ -40,7 +40,7 @@ class Settings(Module):
             raise TracError, 'new session'
 
         req.hdf['title'] = 'Settings'
-        req.hdf['settings'] = req.session.data
+        req.hdf['settings'] = req.session
         req.hdf['settings.session_id'] = req.session.sid
 
     def save_settings(self, req):
