@@ -66,6 +66,10 @@
    <li>
     <h2><?cs var:file.name.new ?></h2>
     <table cellspacing="0">
+      <thead class="rev"><tr>
+       <th>Rev <?cs var:file.rev.old ?></th>
+       <th>Rev <?cs var:file.rev.new ?></th>
+      </tr></thead>
      <?cs each:change = file.changes ?>
       <thead><tr>
        <th>line <?cs var:change.line.old ?></th>

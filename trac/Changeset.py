@@ -29,8 +29,12 @@ import string
 from svn import fs, util, delta, repos, core
 
 line_re = re.compile('@@ [+-]([0-9]+),([0-9]+) [+-]([0-9]+),([0-9]+) @@')
-header_re = re.compile('header ([^\|]+) \| ([^\|]+) redaeh')
+#header_re = re.compile('header ([^\|]+) \| ([^\|]+) redaeh')
+header_re = re.compile('header ([^\|]+) ([^\|]+) \| ([^\|]+) ([^\|]+) redaeh')
 space_re = re.compile(' ( +)|^ ')
+
+cnt = 1
+
 
 class DiffColorizer:
     def __init__(self, hdf, prefix, tabwidth=8):
@@ -67,10 +71,15 @@ class DiffColorizer:
         self.blockno += 1
 
     def writeline(self, text):
+        global cnt
+        self.hdf.setValue('foo.%s.rawtext' % cnt, text)
+        cnt += 1
         match = header_re.search(text)
         if match:
             self.hdf.setValue('%s.name.old' % self.prefix, match.group(1))
-            self.hdf.setValue('%s.name.new' % self.prefix, match.group(2))
+            self.hdf.setValue('%s.rev.old' % self.prefix, match.group(2))
+            self.hdf.setValue('%s.name.new' % self.prefix, match.group(3))
+            self.hdf.setValue('%s.rev.new' % self.prefix, match.group(4))
             return
         if text[0:2] in ['++', '--']:
             return
@@ -119,6 +128,8 @@ class HtmlDiffEditor (delta.Editor):
     def print_diff (self, old_path, new_path, pool):
         if not old_path or not new_path:
             return
+        old_rev = fs.node_created_rev(self.old_root, old_path, pool)
+        new_rev = fs.node_created_rev(self.new_root, new_path, pool)
         differ = fs.FileDiff(self.old_root, old_path,
                              self.new_root, new_path, pool, ['-u'])
         differ.get_files()
@@ -127,7 +138,8 @@ class HtmlDiffEditor (delta.Editor):
         tabwidth = int(self.env.get_config('diff', 'tab_width', '8'))
         filtr = DiffColorizer(self.hdf, prefix, tabwidth)
         self.fileno += 1
-        filtr.writeline('header %s | %s redaeh' % (old_path, new_path))
+        filtr.writeline('header %s %s | %s %s redaeh' % (old_path, old_rev,
+                                                         new_path, new_rev))
         while 1:
             line = pobj.readline()
             if not line:

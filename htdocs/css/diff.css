@@ -67,6 +67,11 @@
  font-weight: bold;
  text-align: left;
 }
+.diff table thead.rev th {
+ background: #eee;
+ color: #999;
+ text-align: center;
+}
 .diff table td {
  background: #fff;
  padding: 0 .5em;
