@@ -21,9 +21,15 @@ directly when committing a patch to the repository.
 
 Example:
 
-{{{ $ svn commit -m "Updated foo to bar. See FooBar. This fixes bug #42." }}}
+{{{
+ $ svn commit -m "Updated foo to bar. See FooBar. This fixes bug #42." 
+}}}
 
 This is a subtle but powerful feature.
 
+== RSS Support ==
+The Timeline module supports subscribtion using RSS 2.0 syndication. To subscribe to project events, click the '''RSS Feed''' link in the navigation bar, or the orange XML icon at the bottom of the page. See TracRss for more information on RSS support in Trac.
 
+
+----
 See also: TracGuide, TracWiki, WikiFormatting

@@ -13,7 +13,7 @@ apt-get to download the binaries directly. This will take some time but should w
 The last two dependencies (pysqlite and clearsilver) can't be installed using fink, 
 you have to download and install them manually.
 
-== clearsilver ==
+== Clearsilver ==
 
 Download latest version from http://www.clearsilver.net/. Compile it with Python 
 support and install it in the fink prefix.
@@ -58,4 +58,11 @@ python interpreter (/sw/bin/python2.3) so I placed this dummy {{{trac.cgi}}} in
 
 Keep in mind that these instructions were written from the top of my mind and might be
 incomplete and contain some errors. If you find any errors please correct them by
-editing this page and/or contacting me -- JonasBorgstrom
+editing this page and/or contacting me -- [http://projects.edgewall.com/trac/wiki/JonasBorgstrom JonasBorgstrom]
+
+== Alternative install method: pkgsrc ==
+
+As an alternative to fink and compiling by hand, you can install from pkgsrc (http://www.netbsd.org/Documentation/software/packages.html).  Yes, pkgsrc runs on Mac OS X just as well as it runs on NetBSD or Linux.
+
+See TracOnNetBsd for more information.
+

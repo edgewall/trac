@@ -7,20 +7,36 @@ They allow easy hyperlinking to files, changesets, bugs/issues and wiki pages fr
 TracLinks can refer to tickets, reports and changesets by simply writing the
 ticket, report and changeset numbers in the following notation:
 {{{
- * Ticket #1 
- * Report {1}
- * Changeset [1]
- * File svn:trunk/COPYING.
+ * Ticket #1 or ticket:1
+ * Report {1} or report:1
+ * Changeset [1] or changeset:1
+ * File source:trunk/COPYING.
 }}}
 Display:
- * Ticket #1 
- * Report {1}
- * Changeset [1]
- * File svn:trunk/COPYING.
- 
+ * Ticket #1 or ticket:1
+ * Report {1} or report:1
+ * Changeset [1] or changeset:1
+ * File source:trunk/COPYING.
+
+Trac links can also be given a custom link title like this:
+{{{
+[ticket:1 This is a link to ticket number one].
+}}}
+
+Display:
+
+[ticket:1 This is a link to ticket number one].
+
 It seems a simple enough concept at a glance, but actually allows quite a complex network of information. 
 
 In practice, it's very intuitive and simple to use, and we've found the "link trail" extremely helpful to better understand what's happening in a project or why a particular change was made.
+
+== source: links ==
+
+The default behavior for a source:/some/path link is to open the directory browser if the path points
+to a directory and otherwise open the log view. It's also possible to link directly to a specific
+revision of a file like this: source:/some/file#123 or like this to link to the latest revision:
+source:/some/file#latest.
 
 == Where to use TracLinks ==
 You can use TracLinks in:

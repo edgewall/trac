@@ -60,6 +60,33 @@ Display:
    1. Item 1.1
  1. Item 2
 
+== Preformatted text ==
+Block quotes, also know as preformatted text, is suitable for source code snippets, notes and examples. Use three ''curly braces'' wrapped around the text:
+  
+{{{
+ {{{
+  def HelloWorld()
+      print "Hello World"
+ }}}
+}}}
+
+Display:
+{{{
+ def HelloWorld()
+     print "Hello World"
+}}}
+
+== Tables ==
+
+Simple tables can be created like this:
+{{{
+||Cell 1||Cell 2||Cell 3||
+||Cell 4||Cell 5||Cell 6||
+}}}
+Display:
+||Cell 1||Cell 2||Cell 3||
+||Cell 4||Cell 5||Cell 6||
+
 == Links ==
 
 Hyperlinks are automatically created for WikiPageNames and urls. 
@@ -71,12 +98,12 @@ For example:
 Links can be given a move descriptive title by writing the link followed by
 a space and a title and all this inside two square brackets. Like this:
 {{{
- * [http://www.edgewall.com/ Edgewall Research & Development]
+ * [http://www.edgewall.com/ Edgewall Software]
  * [wiki:TitleIndex Title Index]
 }}}
 Display:
 
- * [http://www.edgewall.com/ Edgewall Research & Development]
+ * [http://www.edgewall.com/ Edgewall Software]
  * [wiki:TitleIndex Title Index]
 
 === Intra Trac Links ===
@@ -88,13 +115,17 @@ ticket, report and changeset numbers in the following notation:
  * Ticket #1 
  * Report {1}
  * Changeset [1]
- * File svn:trunk/COPYING.
+ * File source:trunk/COPYING.
+ * A specific file revision: source:/trunk/COPYING#200
 }}}
 Display:
  * Ticket #1 
  * Report {1}
  * Changeset [1]
- * File svn:trunk/COPYING.
+ * File source:trunk/COPYING.
+ * A specific file revision: source:/trunk/COPYING#200
+
+See TracLinks for more information about intra-trac linking.
 
 == Images ==
 
@@ -108,9 +139,44 @@ Display:
 
 http://www.edgewall.com/gfx/trac_example_image.png
 
+== Macros ==
+Macros are ''custom functions'' to insert dynamic content in a page. See WikiMacros for usage.
 
-== Other stuff ==
+Example:
+{{{
+ [[Timestamp]]
+}}}
+Display:
+ [[Timestamp]]
+
+== Processors ==
+Trac supports alternative markup formats using WikiProcessors. For example, processors are used to write pages in [wiki:WikiRestructuredText reStructuredText] or [wiki:WikiHtml HTML]. See WikiProcessors for documentation.
+
+Example:
+{{{
+#!html
+<pre class="wiki">{{{
+#!html
+&lt;h1 style="text-align: right; color: blue"&gt;HTML Test&lt;/h1&gt;
+}}}</pre>
+}}}
+Display:
+{{{
+#!html
+<h1 style="text-align: right; color: blue">HTML Test</h1>
+}}}
+
+== Miscellaneous ==
 
 Four or more dashes will be replaced by a horizontal line (<HR>)
 
+{{{
+ ----
+}}}
+
+Display:
 ----
+
+
+----
+See also: TracLinks, TracGuide, WikiMacros, WikiProcessors

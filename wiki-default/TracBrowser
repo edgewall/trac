@@ -16,4 +16,7 @@ The default behavior is to use the information from the latest revision but
 another revision can easily be selected using the form at the top of the
 page.
 
+== RSS Support ==
+The browser module supports RSS 2.0 syndication of changes to a single file. To subscribe to an RSS version of the revision log for a file, open a file log in the browser, and click the orange 'XML' icon at the bottom of the page. See TracRss for more information on RSS support in Trac.
+----
 See also: TracGuide, TracChangeset

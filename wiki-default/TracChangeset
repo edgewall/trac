@@ -5,9 +5,7 @@ Trac has a built-in functionality for visualizing diffs - changes to files.
 
 When viewing a commited changeset, such as when clicking a changeset
 [wiki:TracLinks TracLink] or a changeset event-line in the 
-[wiki:TracTimeline timeline], Trac will display what changes this current set
-of patches imposes.
-
+[wiki:TracTimeline timeline], Trac will display what changes this current set of patches imposes.
 
 The changeset view consists of two parts, the '''header''' and the '''diff view'''.
 
@@ -44,5 +42,6 @@ version, each block of lines altered by the changeset has a colored
 background. The color reflect the change, and the meaning the same as in the
 header (see above).
 
-
+----
 See also: TracGuide, TracBrowser
+

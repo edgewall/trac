@@ -25,14 +25,18 @@ wiki_pages = [
  "TracOnOsx",
  "TracPermissions",
  "TracReports",
- "TracReports",
+ "TracRss",
  "TracSupport",
  "TracTickets",
  "TracTimeline",
  "TracWiki",
  "WikiFormatting",
+ "WikiHtml",
+ "WikiMacros",
  "WikiNewPage",
  "WikiPageNames",
+ "WikiProcessors",
+ "WikiRestructuredText",
  "WikiStart"
  ]
 

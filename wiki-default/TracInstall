@@ -2,52 +2,60 @@
 
 The Trac web-based project management tool is implemented as a server
 side cgi-program. Trac is written in the Python programming language
-and store it's data in a sqlite database.
+and uses SQLite as an embedded database. For HTML rendering, Trac uses the Clearsilver template system.
 
-== Dependencies ==
 
-The following dependencies have to be installed:
+== Requirements ==
+
+To install Trac, the following software packages must be installed:
 
  * [http://www.python.org/ Python], version >= 2.1.
- * [http://subversion.tigris.org/ subversion], version >= 0.37.
+ * [http://subversion.tigris.org/ Subversion], version >= 0.37. (>=1.0.1 recommended)
+ * [http://subversion.tigris.org/ Subversion Python bindings].
  * [http://pysqlite.sf.net/ pysqlite], version >= 0.4.3 (>= 0.5 for better performance)
- * [http://clearsilver.net/ ClearSilver], version >= 0.9.3
- * A CGI-capable web server (only tested with Apache)
+ * [http://clearsilver.net/ Clearsilver], version >= 0.9.3
+ * A CGI-capable web server (we QA-test on [http://httpd.apache.org/ Apache2] )
 
 == Installing Trac ==
 {{{
-	$ python ./setup.py install
+$ python ./setup.py install
 }}}
 
 This will byte-compile the python source code and install it in the {{{site-packages}}} directory
-of your python installation. The directories {{{templates}}}, {{{htdocs}}} and {{{wiki-default}}}
-will be copied into $prefix/share/trac/ . 
+of your python installation. The directories {{{cgi-bin}}}, {{{templates}}}, {{{htdocs}}} and {{{wiki-default}}} are all copied to $prefix/share/trac/ . 
 
-== Initializing the database ==
+The script will also install the [wiki:TracAdmin trac-admin] command-line tool, used to create and maintain project databases. Trac-admin is the ''command center'' of Trac.
 
-Trac stores wiki pages, tickets and other information in a sqlite database. 
-Sqlite databases are just ordinary files on the hard drive, no database server
-is required.
-
-A new trac database can be created like this:
-
+=== Advanced Users ===
+To install Trac in a different location, and other advanced installation options, run:
 {{{
-	$ trac-admin /path/to/mydatabase.db initdb
+$ python ./setup.py --help
 }}}
 
-NOTE: The database file have to be located in a directory where the web server
+== Creating a Project Database ==
+
+Trac stores wiki pages, tickets and all other information in a single embedded SQLite database. 
+SQLite databases are stored as a single ordinary file on your filesystem, no separate database server
+or environment is required.
+
+A new trac database is created with {{{trac-admin}}}:
+
+{{{
+$ trac-admin /path/to/mydatabase.db initdb
+}}}
+'''Note:''' The database file have to be located in a directory where the web server
 user has write permission to both the file and the directory.
 
-{{{[wiki:TracAdmin trac-admin]}}} will ask you where your subversion repository is located and
+[wiki:TracAdmin trac-admin] will ask you where your subversion repository is located and
 where it can find the trac templates directory (the default value should be fine).
 
 == Configuring Apache ==
 
-copy (or symlink) "{{{trac/cgi-bin/trac.cgi}}}" to 
-you web servers {{{/cgi-bin/}}} directory. Of course you can configure apache
-to use the "{{{trac/cgi-bin/}}}" directory directly if you like.
+Copy (or symlink) "{{{trac/cgi-bin/trac.cgi}}}" to 
+you web servers {{{/cgi-bin/}}} directory. You can also configure apache
+to use the "{{{trac/cgi-bin/}}}" directory directly if you like, it's a matter of taste.
 
-Finally adjust the filenames and add this config snippet to your web server:
+Finally edit the apache config and add this config snippet, with filenams edited to match your installation:
  
 {{{
 Alias /trac/ "/where/you/put/trac/htdocs/"
@@ -65,18 +73,23 @@ Alias /trac/ "/where/you/put/trac/htdocs/"
 </location>
 }}}
 
-== What next? ==
+'''Note:''' When creating a new database, {{{trac-admin}}} will print a config snippet customized for your project.
+
+== Using Trac ==
 
 You should now have a working Trac installation at:
 
 http://<yourhostname>/cgi-bin/trac.cgi
 
 There you should be able to browse your subversion repository, create tickets,
-view the timeline etc. Keep in mind that anonymous users (before logging in)
-are only able to see/use a subset of all the features provided by Trac. 
-Please read TracPermissions on how to grant additional privileges to authenticated users.
+view the timeline etc. Keep in mind that anonymous users (not logged in)
+can only access a restricted subset of all Trac features. 
 
-Enjoy!
+Please continue to TracPermissions to learn how to grant additional privileges to authenticated users.
 
+For further user-documentation, see TracGuide.
 
-See also:  TracGuide, TracOnNetBsd, TracOnOsx
+''Enjoy!''
+
+----
+See also:  TracGuide, TracPermissions, TracOnNetBsd, TracOnOsx

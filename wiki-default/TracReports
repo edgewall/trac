@@ -2,6 +2,25 @@
 The Trac reports module provides a simple, yet powerful reporting facility
 for presenting information about tickets from the Trac database.
 
+Rather than have its own report format, TracReports relies on standard SQL
+SELECT statements for custom report definition. 
+
+== Alternate Download Formats ==
+Aside from the default HTML view, reports can also be exported in a number of alternate formats.
+At the bottom of the report page, you will find a list of available data formats. Click the desired link to 
+download the alternate report format.
+
+=== Comma-delimited - CSV (Comma Separated Values) ===
+Export the report as plain text, each row on its own line, columns separated by a single comma (',').
+'''Note:''' Column data is stripped from carriage returns, line feeds and commas to preserve structure.
+
+=== Tab-delimited ===
+Like above, but uses tabs (\t) instead of comma.
+
+=== RSS - XML Content Syndication ===
+All reports support syndication using XML/RSS 2.0. To subscribe to a , click the the orange 'XML' icon at the bottom of the page. See TracRss for general information on RSS support in Trac.
+
+----
 == Creating Custom Reports ==
 
 Creating a custom report requires knowing and using the SQL query language.
@@ -14,7 +33,7 @@ Typically, a report consists of a SELECT-expression from the 'ticket' table,
 using the available columns and sorting the way you want it.
 
 == Ticket columns ==
-The '''ticket'' table has the following columns:
+The ''ticket'' table has the following columns:
  * id
  * time
  * changetime
@@ -25,7 +44,7 @@ The '''ticket'' table has the following columns:
  * reporter
  * cc
  * url
- * version -- Version of the project does this ticket pertains to.
+ * version
  * milestone
  * status
  * resolution
@@ -34,25 +53,9 @@ The '''ticket'' table has the following columns:
 
 See TracTickets for a detailed description of the column fields.
 
-== Special Columns ==
-To format the report properly, Trac needs to know the meaning of some result
-columns . This is a list of column names of special meaning to Trac:
- * '''ticket''' -- Ticket ID number. Will become a hyperlink to that ticket.
-
-''Note: In upcoming releases, there will be more special columns added, to create color-coded reports, grouping and other nifty features.''
-
-
-
-== Sample Reports ==
-'''status and summary for all tickets'''
-
-{{{
-SELECT id as ticket, status, summary FROM ticket
-}}}
-
-----
 '''all active tickets, sorted by priority and time'''
 
+'''Example:''' ''All active tickets, sorted by priority and time''
 {{{
 SELECT id AS ticket, status, severity, priority, owner, 
        time as created, summary FROM ticket 
@@ -60,23 +63,117 @@ SELECT id AS ticket, status, severity, priority, owner,
   ORDER BY priority, time
 }}}
 
-----
-'''active tickets, grouped by milestone and sorted by priority'''
 
+----
+
+
+== Advanced Reports: Dynamic Variables ==
+For more flexible reports, Trac supports the use of ''dynamic variables'' in report SQL statements. 
+In short, dynamic variables are ''special'' strings that are replaced by custom data before query execution.
+
+=== Using Variables in a Query ===
+The syntax for dynamic variables is simple, any upper case word beginning with '$' is considered a variable.
+
+Example:
 {{{
-SELECT id AS ticket, milestone, status, severity, 
-       priority, component, owner, summary 
-  FROM ticket 
-  WHERE status IN ('new', 'assigned', 'reopened')
-  ORDER BY milestone, 
-    (CASE priority 
-      WHEN 'highest' THEN 0 
-      WHEN 'high' THEN 1 
-      WHEN 'normal' THEN 2 
-      WHEN 'low' THEN 3 
-      ELSE 4 
-    END), severity, time
+SELECT id AS ticket,summary FROM ticket WHERE priority='$PRIORITY'
+}}}
+
+To assign a value to $PRIORITY when viewing the report, you must define it as an argument in the report URL, leaving out the the leading '$'.
+
+Example:
+{{{
+ http://projects.edgewall.com/trac/reports/14?PRIORITY=high
 }}}
 
 
+=== Special/Constant Variables ===
+There is one ''magic'' dynamic variable to allow practical reports, its value automatically set without having to change the URL. 
+
+ * $USER -- Username of logged in user.
+
+Example (''List all tickets assigned to me''):
+{{{
+SELECT id AS ticket,summary FROM ticket WHERE owner='$USER'
+}}}
+
+
+----
+
+
+== Advanced Reports: Custom Formatting ==
+Trac is also capable of more advanced reports, including custom layouts,
+result grouping and user-defined CSS styles. To create such reports, we'll use
+specialized SQL statements to control the output of the Trac report engine.
+
+== Special Columns ==
+To format reports, TracReports looks for 'magic' column names in the query
+result. These 'magic' names are processed and affect the layout and style of the 
+final report.
+
+=== Automatically formatted columns ===
+ * '''ticket''' -- Ticket ID number. Becomes a hyperlink to that ticket. 
+ * '''created, modified, date, time''' -- Format cell as a date and/or time.
+ * '''description''' -- Ticket description field, parsed through the wiki engine.
+
+'''Example:'''
+{{{
+SELECT id as ticket, created, status, summary FROM ticket 
+}}}
+
+=== Custom formatting columns ===
+Columns whose name begins and ends with '__' (Example: '''__color__''') are
+assumed to be ''formatting hints'', affecting the appearance of the row.
+ 
+ * '''___group___''' -- Group results based on values in this column. Each group will have its own header and table.
+ * '''___color___''' -- Should be a numeric value ranging from 1 to 5 to select a pre-defined row color. Typically used to color rows by issue priority.
+ * '''___style___''' --- A custom CSS style expression to use for the current row. 
+
+'''Example:''' ''List active tickets, grouped by milestone, colored by priority''
+{{{
+SELECT p.value AS __color__,
+     t.milestone AS __group__,
+     (CASE owner WHEN 'daniel' THEN 'font-weight: bold; background: red;' ELSE '' END) AS __style__,
+       t.id AS ticket, summary
+  FROM ticket t,enum p
+  WHERE t.status IN ('new', 'assigned', 'reopened') 
+    AND p.name=t.priority AND p.type='priority'
+  ORDER BY t.milestone, p.value, t.severity, t.time
+}}}
+
+'''Note:''' A table join is used to match ''ticket'' priorities with their
+numeric representation from the ''enum'' table.
+
+=== Changing layout of report rows ===
+By default, all columns on each row are display on a single row in the HTML
+report, possibly formatted according to the descriptions above. However, it's
+also possible to create multi-line report entries.
+
+ * '''column_''' -- ''Break row after this''. By appending an underscore ('_') to the column name, the remaining columns will be be continued on a second line.
+
+ * '''_column_''' -- ''Full row''. By adding an underscore ('_') both at the beginning and the end of a column name, the data will be shown on a separate row.
+
+ * '''_column'''  --  ''Hide data''. Prepending an underscore ('_') to a column name instructs Trac to hide the contents from the HTML output. This is useful fore information to be visible only if downloaded in other formats (like CSV or RSS/XML).
+
+'''Example:''' ''List active tickets, grouped by milestone, colored by priority, with  description and multi-line layout''
+
+{{{
+SELECT p.value AS __color__,
+       t.milestone AS __group__,
+       (CASE owner 
+          WHEN 'daniel' THEN 'font-weight: bold background: red;' 
+          ELSE '' END) AS __style__,
+       t.id AS ticket, summary AS summary_,             -- ## Break line here
+       component,version, severity, milestone, status, owner,
+       time AS created, changetime AS modified,         -- ## Dates are formatted
+       description AS _description_,                    -- ## Uses a full row
+       changetime AS _changetime, reporter AS _reporter -- ## Hidden from HTML output
+  FROM ticket t,enum p
+  WHERE t.status IN ('new', 'assigned', 'reopened') 
+    AND p.name=t.priority AND p.type='priority'
+  ORDER BY t.milestone, p.value, t.severity, t.time
+}}}
+
+
+----
 See also: TracTickets, TracGuide

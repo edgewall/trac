@@ -1,33 +1,26 @@
-== Welcome to your Trac installation ==
+= Welcome to the Trac Project =
 
-Trac is a '''minimalistic''' approach to '''web-based''' management of
-'''software projects'''. Its goal is to simplify effective tracking of
-software issues, enhancements and overall progress.
+Welcome to the [wiki:TracProject Trac open source project].
 
-All aspects of Trac have been designed with the single goal to '''help
-developers write great software''' while '''staying out of the way'''
-and imposing as little as possible on a team's process.
+Trac is a minimalistic web-based software project management and bug/issue
+tracking system. It provides an interface to revision control systems
+([http://subversion.tigris.org/ Subversion]), an integrated Wiki and convenient report facilities. 
 
-As all Wiki pages, this page is editable, this means that you can
-modify the contents of this page simply by using your
-web-browser. Simply click on the "Edit this page" link at the bottom
-of the page. WikiFormatting will give you a detailed description of
-available Wiki formatting commands.
-
-"[wiki:TracAdmin trac-admin] ''yourdatabase.db'' initdb" created
-a new database filled with a default set of wiki pages and some sample
-data. You can use [wiki:TracAdmin trac-admin] to configure
-[http://trac.edgewall.com/ Trac] to better fit your project,
-especially in regard to ''components'', ''versions'' and
-''milestones''.
-
-Enjoy![[BR]]
-The Trac Team
+Trac allows wiki markup in issue descriptions and commit messages, to create 
+links and seamless references between bugs, tasks, changesets, files and wiki
+pages.  A timeline shows all project events in order, making getting an
+overview of the project and tracking progress very easy.
 
 == Good Starting Points ==
 
- * TracGuide --  '''Local Trac Documentation'''
- * [http://projects.edgewall.com/trac/ The Trac project]
- * [http://projects.edgewall.com/trac/wiki/TracFaq Trac FAQ]
+ * TracDownload -- Trac is open source software, available for download,
+ * ChangeLog -- Recent changes between Trac releases,
+ * TracGuide -- Starting point for '''Trac documentation'''.
+ * TracFaq -- Frequently asked questions.
+ * MailingList -- Join the mailinglist for user and developer discussions,
+ * TracProject -- Learn more about the project and get involved (see also, HowToContribute),
+ * RoadMap -- The proverbial road ahead.
+ * TracTeam -- It's their fault - well not really.
 
-For a complete list of local wiki pages, see TitleIndex.
+For a complete list of available wiki pages, see TitleIndex.
+

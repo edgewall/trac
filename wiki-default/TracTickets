@@ -16,7 +16,7 @@ A  ticket contains the following information attributes:
  
  * '''Reporter''' - The author of the ticket.
  * '''Component''' - The project module or subsystem this ticket concerns.
- * '''Version''' - Version of the project does this ticket pertains to.
+ * '''Version''' - Version of the project that this ticket pertains to.
  * '''Severity''' - What are the effects the issue described? Ranges from an ''enhancement'' request to ''blocker'' (must be fixed before next milestone).
  * '''Priority''' - The importance of is the issue relative to other tasks.
  * '''Milestone''' - When this issue should be resolved at the latest.

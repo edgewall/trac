@@ -1,13 +1,12 @@
 = Trac Support =
 
-Like in most [http://www.opensource.org/ open source projects], "free" support
-for Trac is available through the [http://projects.edgewall.com/trac/ Trac
-Project] community itself, specifically on the [http://projects.edgewall.com/trac/wiki/MailingList mailing list].
+Like in most [http://www.opensource.org/ open source projects], "free" Trac support is available primarily through the community itself, mainly through the [http://projects.edgewall.com/trac/wiki/MailingList mailing list] and the project wiki.
+
+There is also an [http://projects.edgewall.com/trac/wiki/IrcChannel IRC channel], where people might be able to help out. Much of the 'live' development discussions also happen there.
 
 == Commercial Support ==
-
-[http://www.edgewall.com/ Edgewall Software] also offers commercial support to individuals and organizations who desire it. 
+Edgewall also offers commercial support to individuals and organizations who desire it. 
 
 For more information, visit our [http://www.edgewall.com/products/trac/support.html commercial support page] for Trac.
 
-You can of course also contact us directly at [mailto:info@edgewall.com info@edgewall.com] if you have any questions.
+You can of course also contact us at any time at [mailto:info@edgewall.com info@edgewall.com] if you have any questions.

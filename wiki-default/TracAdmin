@@ -17,9 +17,8 @@ config list                         -- Show current configuration
 config set <option> <value>         -- Set config
 wiki list                           -- List wiki pages
 wiki export <page> [file]           -- Export wiki page to file or stdout
-wiki import <page> [file]           -- Import wiki page from file
+wiki import <page> [file]           -- Import wiki page from file or stdin
 wiki dump <directory>               -- Export all wiki pages to files named by title
-wiki load <directory>               -- Import all wiki pages from directory
 permission list                     -- List permission rules
 permission add <user> <action>      -- Add a new permission rule
 permission remove <user> <action>   -- Remove permission rule
@@ -53,3 +52,4 @@ milestone remove <name>             -- Remove milestone
 '''trac-admin''' starts in an interactive mode when started with the database 
 filename as the only argument. Commands can then be executed on the selected 
 database using the tab-completing prompt.
+
