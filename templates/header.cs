@@ -52,7 +52,7 @@
 <div class="nav">
  <h2>Navigation</h2>
  <ul class="subheader-links">
-  <li><?cs if:trac.authname == "anonymous" ?>
+  <li><?cs if:trac.authname == "anonymous" || !trac.authname ?>
     <a href="<?cs var:trac.href.login ?>">Login</a>
   <?cs else ?>
     logged in as <?cs var:trac.authname ?> </li>
