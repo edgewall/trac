@@ -360,15 +360,34 @@ class Page:
                        % (href.wiki(self.name, row[0]), row[0], time_str,
                           row[2], row[3]))
         out.write ('</table>')
-
+        
 
 class Wiki(Module):
     template_name = 'wiki.cs'
+
+    def generate_title_index(self):
+        cnx = get_connection ()
+        cursor = cnx.cursor ()
+        
+        cursor.execute ('SELECT DISTINCT name FROM wiki ORDER BY name')
+        i = 0
+	while 1:
+	    row = cursor.fetchone()
+	    if row == None:
+		break
+            self.cgi.hdf.setValue('wiki.title_index.%d.title' % i, row[0])
+            self.cgi.hdf.setValue('wiki.title_index.%d.href' % i,
+                                  href.wiki(row[0]))
+            i = i + 1
 
     def render(self):
         name = dict_get_with_default(self.args, 'page', 'WikiStart')
         action = dict_get_with_default(self.args, 'action', 'view')
         version = dict_get_with_default(self.args, 'version', 0)
+
+        if name == 'TitleIndex':
+            self.generate_title_index()
+            return
             
         page = Page(name, version)
 
