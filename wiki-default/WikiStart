@@ -14,8 +14,8 @@ web-browser. Simply click on the "Edit this page" link at the bottom
 of the page. WikiFormatting will give you a detailed description of
 available Wiki formatting commands.
 
-"[wiki:TracAdmin trac-admin] ''yourdatabase.db'' initdb" created
-a new database environment, containing a default set of wiki pages and some sample
+"[wiki:TracAdmin trac-admin] ''yourenvdir'' initenv" created
+a new Trac environment, containing a default set of wiki pages and some sample
 data. This newly created environment also contains 
 [wiki:TracGuide documentation] to help you get started with your project.
 
