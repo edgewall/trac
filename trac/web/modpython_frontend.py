@@ -19,16 +19,21 @@
 #
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
-from trac.env import open_environment
-from trac.util import TracError, href_join, rstrip
-from trac.web.main import Request, dispatch_request, send_pretty_error
-
-from mod_python import apache, util
-
 import locale
 import os
 import re
 import threading
+
+try:
+    from cStringIO import StringIO
+except ImportError:
+    from StringIO import StringIO
+
+from mod_python import apache, util
+
+from trac.env import open_environment
+from trac.util import TracError, href_join, rstrip
+from trac.web.main import Request, dispatch_request, send_pretty_error
 
 
 class ModPythonRequest(Request):
@@ -50,7 +55,7 @@ class ModPythonRequest(Request):
             self.scheme = 'https'
         if self.req.headers_in.has_key('Cookie'):
             self.incookie.load(self.req.headers_in['Cookie'])
-        self.args = FieldStorageWrapper(self.req, keep_blank_values=1)
+        self.args = FieldStorageWrapper(self.req)
 
         # The root uri sometimes has to be explicitly specified because apache
         # sometimes get req.path_info wrong if many <alias> and <location> directives
@@ -107,6 +112,31 @@ class FieldStorageWrapper(util.FieldStorage):
     default value for the 'default' parameter, mimicking
     trac.web.cgi_frontend.TracFieldStorage
     """
+
+    def __init__(self, req):
+        """
+        The mod_python FieldStorage implementation, unlike cgi.py, always
+        includes GET parameters, even if they are also defined in the body of
+        a POST request. We work around this to provide the behaviour of cgi.py
+        here.
+        """
+        class RequestWrapper(object):
+            def __init__(self, req):
+                self.req = req
+                self.args = ''
+            def __getattr__(self, name):
+                return getattr(self.req, name)
+        util.FieldStorage.__init__(self, RequestWrapper(req), keep_blank_values=1)
+
+        # Populate FieldStorage with the original query string parameters, if
+        # they aren't already defined through the request body
+        if req.args:
+            for pair in util.parse_qsl(req.args, 1):
+                if self.has_key(pair[0]):
+                    continue
+                file = StringIO(pair[1])
+                self.list.append(util.Field(pair[0], file, "text/plain", {},
+                                            None, {}))
 
     def get(self, key, default=''):
         return util.FieldStorage.get(self, key, default)
