@@ -112,7 +112,7 @@ class CommonFormatter:
     def _fancysvnhref_formatter(self, match, fullmatch):
         path = fullmatch.group('fancysvnfile')
         name = fullmatch.group('svnlinkname')
-        return '<a href="%s">%s</a>' % (href.log(path[4:]), name)
+        return '<a href="%s">%s</a>' % (href.browser(path[4:]), name)
 
     def _htmlescapeentity_formatter(self, match, fullmatch):
         #dummy function that match html escape entities in the format:
@@ -134,7 +134,7 @@ class CommonFormatter:
         return '{<a href="%s">%d</a>}' % (href.report(number), number)
 
     def _svnhref_formatter(self, match, fullmatch):
-        return '<a href="%s">%s</a>' % (href.log(match[4:]), match[4:])
+        return '<a href="%s">%s</a>' % (href.browser(match[4:]), match[4:])
 
     def _wikilink_formatter(self, match, fullmatch):
         global page_dict
@@ -153,7 +153,7 @@ class CommonFormatter:
         if link[0:5] == 'wiki:':
             link = href.wiki(link[5:])
         if link[0:4] == 'svn:':
-            link = href.file(link[4:])
+            link = href.browser(link[4:])
         return '<a href="%s">%s</a>' % (link, name)
 
 
