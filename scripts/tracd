@@ -304,9 +304,10 @@ def main():
         httpd.http_host = '%s:%d' % (httpd.server_name, httpd.server_port)
     
     for path in args:
+        # Remove trailing slashes
+        while path and not os.path.split(path)[1]:
+            path = os.path.split(path)[0]
         project = os.path.split(path)[1]
-        if not project:
-            project = os.path.split(path)[0]
         # We assume the projenv filenames follow the following
         # naming convention: /some/path/project
         auth = auths.get(project, None)
