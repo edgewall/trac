@@ -4,13 +4,12 @@
      var:$htdocs_location ?>trac_logo_mini.png" height="30" width="107"
      alt="Trac Powered"/></a>
  <p class="left">
-  Powered by <a href="http://trac.edgewall.com/">Trac <?cs
-  var:trac.version ?></a><br />
+  Powered by <b>Trac <?cs
+  var:trac.version ?></b><br />
   By <a href="http://www.edgewall.com/">Edgewall Software</a>.
  </p>
  <p class="right">
-  Visit the Trac open source project at <br />
-  <a href="http://trac.edgewall.com/">http://trac.edgewall.com/</a>
+  <?cs var $project.footer ?>
  </p>
 </div>
 </div>

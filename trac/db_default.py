@@ -400,6 +400,9 @@ default_config = \
   ('project', 'name', 'My Project'),
   ('project', 'descr', 'My example project'),
   ('project', 'url', 'http://example.com/'),
+  ('project', 'footer',
+   ' Visit the Trac open source project at<br />'
+   '<a href="http://trac.edgewall.com/">http://trac.edgewall.com/</a>'),
   ('ticket', 'default_version', ''),
   ('ticket', 'default_severity', 'normal'),
   ('ticket', 'default_priority', 'normal'),

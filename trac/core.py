@@ -189,6 +189,9 @@ def populate_hdf(hdf, env, db, req):
     hdf.setValue('htdocs_location', htdocs_location)
     hdf.setValue('project.name', env.get_config('project', 'name'))
     hdf.setValue('project.descr', env.get_config('project', 'descr'))
+    hdf.setValue('project.footer', env.get_config('project', 'footer',
+                  ' Visit the Trac open source project at<br />'
+                  '<a href="http://trac.edgewall.com/">http://trac.edgewall.com/</a>'))
     
     hdf.setValue('trac.href.wiki', env.href.wiki())
     hdf.setValue('trac.href.browser', env.href.browser('/'))
