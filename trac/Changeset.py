@@ -332,7 +332,6 @@ class ZipDiffEditor(BaseDiffEditor):
 
 
 class Changeset(Module):
-    template_name = 'changeset.cs'
 
     # set by the module_factory
     authzperm = None
@@ -476,6 +475,14 @@ class Changeset(Module):
             self.add_link('last', self.env.href.changeset(youngest_rev),
                           'Changeset %d' % youngest_rev)
 
+        format = req.args.get('format')
+        if format == 'diff':
+            self.render_diff(req)
+        elif format == 'zip':
+            self.render_zip(req)
+        else:
+            self.render_html(req)
+
     def render_diffs(self, req, editor_class=HtmlDiffEditor):
         """
         Generate a unified diff of the changes for a given changeset.
@@ -491,12 +498,12 @@ class Changeset(Module):
                                       self.new_root, '', e_ptr, e_baton, authz_cb,
                                       0, 1, 0, 1, self.pool)
 
-    def display(self, req):
+    def render_html(self, req):
         """Pretty HTML view of the changeset"""
         self.render_diffs(req)
-        Module.display(self, req)
+        req.display('changeset.cs')
 
-    def display_diff(self, req):
+    def render_diff(self, req):
         """Raw Unified Diff version"""
         req.send_response(200)
         req.send_header('Content-Type', 'text/plain;charset=utf-8')
@@ -505,7 +512,7 @@ class Changeset(Module):
         req.end_headers()
         self.render_diffs(req, UnifiedDiffEditor)
 
-    def display_zip(self, req):
+    def render_zip(self, req):
         """ZIP archive with all the added and/or modified files."""
         req.send_response(200)
         req.send_header('Content-Type', 'application/zip')
@@ -513,7 +520,3 @@ class Changeset(Module):
                         'filename=Changeset%d.zip' % self.rev)
         req.end_headers()
         self.render_diffs(req, ZipDiffEditor)
-
-    def display_hdf(self, req):
-        self.render_diffs(req)
-        Module.display_hdf(self, req)

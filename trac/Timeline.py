@@ -30,8 +30,6 @@ AVAILABLE_FILTERS = ('wiki', 'ticket', 'changeset', 'milestone')
 
 
 class Timeline (Module):
-    template_name = 'timeline.cs'
-    template_rss_name = 'timeline_rss.cs'
 
     def get_info(self, req, start, stop, maxrows, filters=AVAILABLE_FILTERS):
         perm_map = {'ticket': perm.TICKET_VIEW, 'changeset': perm.CHANGESET_VIEW,
@@ -135,9 +133,11 @@ class Timeline (Module):
         if not filters:
             filters = AVAILABLE_FILTERS[:]
 
-        self.add_link('alternate', '?daysback=90&max=50&%s&format=rss' \
+        self.add_link(req, 'alternate', '?daysback=90&max=50&%s&format=rss' \
                       % '&'.join(['%s=on' % k for k in filters]),
                       'RSS Feed', 'application/rss+xml', 'rss')
+
+        format = req.args.get('format')
 
         req.hdf['title'] = 'Timeline'
         for f in filters:
@@ -149,16 +149,21 @@ class Timeline (Module):
             item = render_func(req, item)
             if not item:
                 continue
-        
-            if req.args.get('format') == 'rss':
+
+            if format == 'rss':
                 # For RSS, author must be an email address
                 if item['author'].find('@') != -1:
                     item['author.email'] = item['author']
-        
+
             req.hdf['timeline.items.%d' % idx] = item
 
-    def display_rss(self, req):
-        req.display(self.template_rss_name, 'application/rss+xml')
+        if format == 'rss':
+            self.render_rss(req)
+        else:
+            req.display('timeline.cs')
+
+    def render_rss(self, req):
+        req.display('timeline_rss.cs', 'application/rss+xml')
 
     def _render_changeset(self, req, item):
         absurls = req.args.get('format') == 'rss'

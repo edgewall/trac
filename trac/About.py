@@ -102,6 +102,5 @@ Copyright &copy; 2003,2004 <a href="http://www.edgewall.com/">Edgewall Software<
             # We should probably export more info here like:
             # permissions, components...
 
-    def display(self, req):
         template = req.hdf.parse(self.about_cs)
         req.display(template)

@@ -279,7 +279,6 @@ def insert_custom_fields(env, hdf, vals = {}):
 
 
 class NewticketModule(Module):
-    template_name = 'newticket.cs'
 
     def create_ticket(self, req):
         if not req.args.get('summary'):
@@ -366,9 +365,10 @@ class NewticketModule(Module):
 
         insert_custom_fields(self.env, req.hdf, ticket)
 
+        req.display('newticket.cs')
+
 
 class TicketModule (Module):
-    template_name = 'ticket.cs'
 
     def save_changes(self, req, id):
         self.perm.assert_permission (perm.TICKET_MODIFY)
@@ -539,13 +539,15 @@ class TicketModule (Module):
             if str(id) in tickets:
                 idx = int(tickets.index(str(id)))
                 if idx > 0:
-                    self.add_link('first', self.env.href.ticket(tickets[0]),
+                    self.add_link(req, 'first', self.env.href.ticket(tickets[0]),
                                   'Ticket #%s' % tickets[0])
-                    self.add_link('prev', self.env.href.ticket(tickets[idx - 1]),
+                    self.add_link(req, 'prev', self.env.href.ticket(tickets[idx - 1]),
                                   'Ticket #%s' % tickets[idx - 1])
                 if idx < len(tickets) - 1:
-                    self.add_link('next', self.env.href.ticket(tickets[idx + 1]),
+                    self.add_link(req, 'next', self.env.href.ticket(tickets[idx + 1]),
                                   'Ticket #%s' % tickets[idx + 1])
-                    self.add_link('last', self.env.href.ticket(tickets[-1]),
+                    self.add_link(req, 'last', self.env.href.ticket(tickets[-1]),
                                   'Ticket #%s' % tickets[-1])
-            self.add_link('up', req.session['query_href'])
+            self.add_link(req, 'up', req.session['query_href'])
+
+        req.display('ticket.cs')

@@ -32,7 +32,6 @@ import posixpath
 
 
 class Browser(Module):
-    template_name = 'browser.cs'
 
     # set by the module_factory
     authzperm = None
@@ -213,3 +212,5 @@ class Browser(Module):
         req.hdf['browser.order_dir'] = desc and 'desc' or 'asc'
         req.hdf['browser.current_href'] = self.env.href.browser(path)
         req.hdf['browser.log_href'] = self.env.href.log(path)
+
+        req.display('browser.cs')

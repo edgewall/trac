@@ -24,7 +24,6 @@ from trac.Module import Module
 
 
 class Settings(Module):
-    template_name = 'settings.cs'
 
     _form_fields = ['newsid','name', 'email']
 
@@ -43,6 +42,7 @@ class Settings(Module):
         req.hdf['settings'] = req.session
         if req.session.sid:
             req.hdf['settings.session_id'] = req.session.sid
+        req.display('settings.cs')
 
     def save_settings(self, req):
         for field in self._form_fields:

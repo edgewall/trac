@@ -284,8 +284,6 @@ class Query(object):
 
 
 class QueryModule(Module):
-    template_name = 'query.cs'
-    template_rss_name = 'query_rss.cs'
 
     def _get_constraints(self, req):
         constraints = {}
@@ -439,12 +437,12 @@ class QueryModule(Module):
         if req.args.has_key('update'):
             req.redirect(query.get_href())
 
-        self.add_link('alternate', query.get_href('rss'), 'RSS Feed',
-            'application/rss+xml', 'rss')
-        self.add_link('alternate', query.get_href('csv'), 'Comma-delimited Text',
-            'text/plain')
-        self.add_link('alternate', query.get_href('tab'), 'Tab-delimited Text',
-            'text/plain')
+        self.add_link(req, 'alternate', query.get_href('rss'), 'RSS Feed',
+                      'application/rss+xml', 'rss')
+        self.add_link(req, 'alternate', query.get_href('csv'),
+                      'Comma-delimited Text', 'text/plain')
+        self.add_link(req, 'alternate', query.get_href('tab'),
+                      'Tab-delimited Text', 'text/plain')
 
         constraints = {}
         for k, v in query.constraints.items():
@@ -473,7 +471,17 @@ class QueryModule(Module):
                     idx = len(query.constraints[field])
                 req.hdf['query.constraints.%s.values.%d' % (field, idx)] = ''
 
-    def display(self, req):
+        format = req.args.get('format')
+        if format == 'rss':
+            self.display_rss(req)
+        elif format == 'csv':
+            self.display_csv(req)
+        elif format == 'tab':
+            self.display_csv(req, '\t')
+        else:
+            self.display_html(req)
+
+    def display_html(self, req):
         req.hdf['title'] = 'Custom Query'
         query = self.query
 
@@ -549,8 +557,7 @@ class QueryModule(Module):
         req.hdf['query.results'] = tickets
         req.hdf['session.constraints'] = req.session.get('query_constraints')
         req.hdf['session.tickets'] = req.session.get('query_tickets')
-        req.display(self.template_name, 'text/html')
-
+        req.display('query.cs', 'text/html')
 
     def display_csv(self, req, sep=','):
         req.send_response(200)
@@ -586,4 +593,4 @@ class QueryModule(Module):
                                           gmtime(result['time']))
         req.hdf['query.results'] = results
 
-        req.display(self.template_rss_name, 'text/xml')
+        req.display('query_rss.cs', 'application/rss+xml')

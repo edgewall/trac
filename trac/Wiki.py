@@ -117,7 +117,6 @@ class WikiPage:
 
 
 class WikiModule(Module):
-    template_name = 'wiki.cs'
 
     def render(self, req):
         action = req.args.get('action', 'view')
@@ -149,7 +148,12 @@ class WikiModule(Module):
         else:
             self._render_view(req, pagename)
 
-    def display_txt(self, req):
+        if req.args.get('format') == 'txt':
+            self.render_txt(req)
+        else:
+            req.display('wiki.cs')
+
+    def render_txt(self, req):
         req.send_response(200)
         req.send_header('Content-Type', 'text/plain;charset=utf-8')
         req.end_headers()
@@ -302,13 +306,13 @@ class WikiModule(Module):
 
         version = req.args.get('version')
         if version:
-            self.add_link('alternate',
+            self.add_link(req, 'alternate',
                           '?version=%s&amp;format=txt' % version, 'Plain Text',
                           'text/plain')
             # Ask web spiders to not index old versions
             req.hdf['html.norobots'] = 1
         else:
-            self.add_link('alternate', '?format=txt', 'Plain Text',
+            self.add_link(req, 'alternate', '?format=txt', 'Plain Text',
                           'text/plain')
 
         page = WikiPage(pagename, version, self.perm, self.db)

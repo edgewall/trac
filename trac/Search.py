@@ -29,7 +29,6 @@ import string
 
 
 class Search(Module):
-    template_name = 'search.cs'
 
     RESULTS_PER_PAGE = 10
 
@@ -248,10 +247,12 @@ class Search(Module):
             if changesets: include.append('changeset')
             if wiki: include.append('wiki')
             if page:
-                self.add_link('first',
+                self.add_link(req, 'first',
                               self.env.href.search(query, 0, include))
-                self.add_link('prev',
+                self.add_link(req, 'prev',
                               self.env.href.search(query, page - 1, include))
             if more:
-                self.add_link('next',
+                self.add_link(req, 'next',
                               self.env.href.search(query, page + 1, include))
+
+        req.display('search.cs')

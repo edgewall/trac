@@ -105,7 +105,6 @@ def calc_ticket_stats(tickets):
 
 
 class Milestone(Module):
-    template_name = 'milestone.cs'
 
     def save_milestone(self, req, id):
         self.perm.assert_permission(perm.MILESTONE_MODIFY)
@@ -261,7 +260,7 @@ class Milestone(Module):
     def render(self, req):
         self.perm.assert_permission(perm.MILESTONE_VIEW)
 
-        self.add_link('up', self.env.href.roadmap(), 'Roadmap')
+        self.add_link(req, 'up', self.env.href.roadmap(), 'Roadmap')
 
         action = req.args.get('action', 'view')
         id = req.args.get('id')
@@ -281,6 +280,7 @@ class Milestone(Module):
             self.delete_milestone(req, id)
         else:
             self.render_view(req, id)
+        req.display('milestone.cs')
 
     def render_confirm(self, req, id):
         milestone = self.get_milestone(req, id)

@@ -31,8 +31,6 @@ import svn.util
 import time
 
 class Log (Module):
-    template_name = 'log.cs'
-    template_rss_name = 'log_rss.cs'
 
     # set by the module_factory
     authzperm = None
@@ -110,13 +108,13 @@ class Log (Module):
                 url = self.env.href.browser(path)
             req.hdf['log.path.%d.url' % i] = url
             if i == len(links) - 1:
-                self.add_link('up', url, 'Parent directory')
+                self.add_link(req, 'up', url, 'Parent directory')
             i = i + 1
 
     def render(self, req):
         self.perm.assert_permission(perm.LOG_VIEW)
 
-        self.add_link('alternate', '?format=rss', 'RSS Feed',
+        self.add_link(req, 'alternate', '?format=rss', 'RSS Feed',
             'application/rss+xml', 'rss')
 
         self.path = req.args.get('path', '/')
@@ -163,5 +161,7 @@ class Log (Module):
         req.hdf['log.href'] = self.env.href.log(self.path)
         req.hdf['log.file_href'] = self.env.href.browser(self.path)
 
-    def display_rss(self, req):
-        req.display(self.template_rss_name, 'application/rss+xml')
+        if req.args.get('format') == 'rss':
+            req.display('log_rss.cs', 'application/rss+xml')
+        else:
+            req.display('log.cs')

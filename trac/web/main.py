@@ -105,7 +105,14 @@ class Request(object):
 
     def display(self, cs, content_type='text/html', response=200):
         assert self.hdf, 'HDF dataset not available'
-        data = self.hdf.render(cs)
+        if self.args.has_key('hdfdump'):
+            # FIXME: the administrator should probably be able to disable HDF
+            #        dumps
+            content_type = 'text/plain'
+            data = str(self.hdf)
+        else:
+            data = self.hdf.render(cs)
+
         self.send_response(response)
         self.send_header('Cache-control', 'must-revalidate')
         self.send_header('Expires', 'Fri, 01 Jan 1999 00:00:00 GMT')
@@ -117,6 +124,7 @@ class Request(object):
         for cookie in cookies.splitlines():
             self.send_header('Set-Cookie', cookie.strip())
         self.end_headers()
+
         if self.method != 'HEAD':
             self.write(data)
 

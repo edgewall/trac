@@ -53,9 +53,16 @@ class FileCommon(Module):
     read_func = None
 
     def render(self, req):
-        self.perm.assert_permission (perm.FILE_VIEW)
+        format = req.args.get('format')
+        if format == 'raw':
+            self.display_raw(req)
+        elif format == 'txt':
+            self.mime_type = 'text/plain;charset=utf-8'
+            self.display_raw(req)
+        else:
+            self.display_html(req)
 
-    def display(self, req):
+    def display_html(self, req):
         self.log.debug("Displaying file: %s  mime-type: %s" % (self.filename,
                                                                self.mime_type))
         # We don't have to guess if the charset is specified in the
@@ -95,9 +102,6 @@ class FileCommon(Module):
             req.write(data)
             i += self.CHUNK_SIZE
 
-    def display_txt(self, req):
-        self.mime_type = 'text/plain;charset=utf-8'
-        self.display_raw(req)
 
 class Attachment(FileCommon):
 
@@ -111,7 +115,8 @@ class Attachment(FileCommon):
         assert 0
 
     def render(self, req):
-        FileCommon.render(self, req)
+        self.perm.assert_permission(perm.WIKI_VIEW)
+
         self.view_form = 0
         self.attachment_type = req.args.get('type', None)
         self.attachment_id = req.args.get('id', None)
@@ -156,24 +161,22 @@ class Attachment(FileCommon):
             self.mime_type = self.env.mimeview.get_mimetype(self.filename) \
                              or 'application/octet-stream'
 
-            self.add_link('alternate',
+            self.add_link(req, 'alternate',
                           self.env.href.attachment(self.attachment_type,
                                                    self.attachment_id,
                                                    self.filename, 'txt'),
-                'Plain Text', 'text/plain')
-            self.add_link('alternate',
+                          'Plain Text', 'text/plain')
+            self.add_link(req, 'alternate',
                           self.env.href.attachment(self.attachment_type,
                                                    self.attachment_id,
                                                    self.filename, 'raw'),
-                'Original Format', self.mime_type)
+                          'Original Format', self.mime_type)
 
             perm_map = {'ticket': perm.TICKET_ADMIN, 'wiki': perm.WIKI_DELETE}
             if self.perm.has_permission(perm_map[self.attachment_type]):
                 req.hdf['attachment.delete_href'] = '?delete=yes'
 
-            return
-
-        if req.args.has_key('description') and \
+        elif req.args.has_key('description') and \
                req.args.has_key('author') and \
                req.args.has_key('attachment') and \
                hasattr(req.args['attachment'], 'file'):
@@ -203,9 +206,8 @@ class Attachment(FileCommon):
             # Display an attachment upload form
             self.view_form = 1
 
-    def display(self, req):
         text, link = self.get_attachment_parent_link()
-        self.add_link('up', link, text)
+        self.add_link(req, 'up', link, text)
         req.hdf['title'] = '%s%s: %s' % (
                            self.attachment_type == 'ticket' and '#' or '',
                            self.attachment_id, self.filename)
@@ -219,7 +221,8 @@ class Attachment(FileCommon):
             return
         req.hdf['file.filename'] = urllib.unquote(self.filename)
         req.hdf['trac.active_module'] = self.attachment_type # Kludge
-        FileCommon.display(self, req)
+
+        FileCommon.render(self, req)
 
 
 class File(FileCommon):
@@ -249,15 +252,10 @@ class File(FileCommon):
                 url = self.env.href.browser(path)
             req.hdf['file.path.%d.url' % i] = url
             if i == len(list) - 1:
-                self.add_link('up', url, 'Parent directory')
-
-    def display(self, req):
-        self.authzperm.assert_permission(self.path)
-        req.hdf['title'] = self.path
-        FileCommon.display(self, req)
+                self.add_link(req, 'up', url, 'Parent directory')
 
     def render(self, req):
-        FileCommon.render(self, req)
+        self.perm.assert_permission(perm.FILE_VIEW)
 
         self.rev = req.args.get('rev', None)
         self.path = req.args.get('path', '/')
@@ -271,6 +269,9 @@ class File(FileCommon):
             except ValueError:
                 rev_specified = 0
                 self.rev = svn.fs.youngest_rev(self.fs_ptr, self.pool)
+
+        self.authzperm.assert_permission(self.path)
+        req.hdf['title'] = self.path
 
         date = svn.fs.revision_prop(self.fs_ptr, self.rev,
                                     svn.util.SVN_PROP_REVISION_DATE, self.pool)
@@ -332,11 +333,13 @@ class File(FileCommon):
             self.mime_type = self.env.mimeview.get_mimetype(filename=self.path) or \
                              'application/octet-stream'
 
-        self.add_link('alternate', self.env.href.file(self.path, self.rev, 'raw'),
+        self.add_link(req, 'alternate', self.env.href.file(self.path, self.rev, 'raw'),
             'Original Format', self.mime_type)
-        self.add_link('alternate', self.env.href.file(self.path, self.rev, 'txt'),
+        self.add_link(req, 'alternate', self.env.href.file(self.path, self.rev, 'txt'),
             'Plain Text', 'text/plain')
 
         self.length = svn.fs.file_length(root, self.path, self.pool)
         fd = svn.fs.file_contents(root, self.path, self.pool)
         self.read_func = lambda x, f=fd: svn.util.svn_stream_read(f, x)
+
+        FileCommon.render(self, req)

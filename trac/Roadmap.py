@@ -30,7 +30,6 @@ from time import localtime, strftime, time
 
 
 class Roadmap(Module):
-    template_name = 'roadmap.cs'
 
     def render(self, req):
         self.perm.assert_permission(perm.ROADMAP_VIEW)
@@ -52,7 +51,8 @@ class Roadmap(Module):
 
         if req.authname and req.authname != 'anonymous':
             icalhref += '&user=' + req.authname
-        self.add_link('alternate', icalhref, 'iCalendar', 'text/calendar', 'ics')
+        self.add_link(req, 'alternate', icalhref, 'iCalendar', 'text/calendar',
+                      'ics')
 
         cursor = self.db.cursor()
         cursor.execute(query)
@@ -97,14 +97,19 @@ class Roadmap(Module):
             milestone['tickets'] = tickets # for the iCalendar view
             milestone_no += 1
 
-    def display_ics(self, req):
+        if req.args.get('format') == 'ics':
+            self.render_ics(req)
+        else:
+            req.display('roadmap.cs')
+
+    def render_ics(self, req):
         req.send_response(200)
         req.send_header('Content-Type', 'text/calendar;charset=utf-8')
         req.end_headers()
 
         priority_mapping = {'highest': '1', 'high': '3', 'normal': '5',
                             'low': '7', 'lowest': '9'}
-    
+
         def get_status(ticket):
             status = ticket['status']
             if status == 'new' or status == 'reopened' and not ticket['owner']:

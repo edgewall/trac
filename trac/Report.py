@@ -68,8 +68,6 @@ class ColumnSorter:
 
 
 class Report (Module):
-    template_name = 'report.cs'
-    template_rss_name = 'report_rss.cs'
 
     def sql_sub_vars(self, req, sql, args):
         m = re.search(dynvars_re, sql)
@@ -85,7 +83,6 @@ class Report (Module):
         return self.sql_sub_vars(req, sql, args)
 
     def get_info(self, id, args):
-
         if id == -1:
             # If no particular report was requested, display
             # a list of available reports instead
@@ -216,14 +213,14 @@ class Report (Module):
         href = ''
         if params:
             href = '&amp;' + urllib.urlencode(params).replace('&', '&amp;')
-        self.add_link('alternate', '?format=rss' + href, 'RSS Feed',
+        self.add_link(req, 'alternate', '?format=rss' + href, 'RSS Feed',
             'application/rss+xml', 'rss')
-        self.add_link('alternate', '?format=csv' + href,
+        self.add_link(req, 'alternate', '?format=csv' + href,
             'Comma-delimited Text', 'text/plain')
-        self.add_link('alternate', '?format=tab' + href,
+        self.add_link(req, 'alternate', '?format=tab' + href,
             'Tab-delimited Text', 'text/plain')
         if self.perm.has_permission(perm.REPORT_SQL_VIEW):
-            self.add_link('alternate', '?format=sql', 'SQL Query',
+            self.add_link(req, 'alternate', '?format=sql', 'SQL Query',
                 'text/plain')
 
     def render_report_list(self, req, id):
@@ -402,7 +399,7 @@ class Report (Module):
                                    req.args.get('sql', ''))
 
         if id != -1 or action == 'new':
-            self.add_link('up', self.env.href.report(), 'Available Reports')
+            self.add_link(req, 'up', self.env.href.report(), 'Available Reports')
 
         if action == 'delete':
             self.render_confirm_delete(req, id)
@@ -419,7 +416,19 @@ class Report (Module):
         elif action == 'list':
             self.render_report_list(req, id)
 
-    def display_rss(self, req):
+        format = req.args.get('format')
+        if format == 'rss':
+            self.render_rss(req)
+        elif format == 'csv':
+            self.render_csv(req)
+        elif format == 'tab':
+            self.render_csv(req, '\t')
+        elif format == 'sql':
+            self.render_sql(req)
+        else:
+            req.display('report.cs')
+
+    def render_rss(self, req):
         item = req.hdf.getObj('report.items')
         if item:
             item = item.child()
@@ -428,9 +437,9 @@ class Report (Module):
                 summary = req.hdf.get(nodename, '')
                 req.hdf[nodename] = util.escape(summary)
                 item = item.next()
-        req.display(self.template_rss_name, 'application/rss+xml')
+        req.display('report_rss.cs', 'application/rss+xml')
 
-    def display_csv(self, req, sep=','):
+    def render_csv(self, req, sep=','):
         req.send_response(200)
         req.send_header('Content-Type', 'text/plain;charset=utf-8')
         req.end_headers()
@@ -445,10 +454,7 @@ class Report (Module):
                                        .replace('\r',' ')
             req.write(sep.join(map(sanitize, row)) + '\r\n')
 
-    def display_tab(self, req):
-        self.display_csv(req, '\t')
-
-    def display_sql(self, req):
+    def render_sql(self, req):
         self.perm.assert_permission(perm.REPORT_SQL_VIEW)
         req.send_response(200)
         req.send_header('Content-Type', 'text/plain;charset=utf-8')
