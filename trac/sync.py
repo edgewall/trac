@@ -214,14 +214,14 @@ def insert_change(pool, fs_ptr, rev, cursor):
             """
             for node_type, path, old_path, old_rev, action in self.additions:
                 if self.deletions.has_key(old_path): # normal rename
-                    self.deletions.pop(old_path)
+                    del self.deletions[old_path]
                     action = 'R'
                 elif self.deletions.has_key(path):   # copy+modification in a branch
                     action = 'C'
                     # FIXME: actually, this could be a 'R' if the parent branch
                     #        is a 'R'. This can be fixed if the parent branch
                     #        is recorded in addition to the old_path.
-                    self.deletions.pop(path)
+                    del self.deletions[path]
                 if action == 'A':                    # add on a branch
                     old_path = old_rev = None
                 self._save_change(node_type, action, path, old_path, old_rev)
