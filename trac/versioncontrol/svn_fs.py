@@ -61,7 +61,7 @@ class Pool(object):
     Instances of this type return their associated `pool when called.
     """
     
-    def __init__(self, parent, parent_pool):
+    def __init__(self, parent, parent_pool=lambda: None):
         """
         Create a new pool that is a sub-pool of `parent_pool`, and arrange for
         `self.close` to be called up when the `parent` object is destroyed.
@@ -69,15 +69,17 @@ class Pool(object):
         The `parent` object must be weak-referenceable.  The returned `Pool`
         instance will have the value of the newly created pool. 
         """
-        self.pool = core.svn_pool_create(parent_pool)
+        self.pool = core.svn_pool_create(parent_pool())
+        self.children = []
+        
+        if parent_pool():
+            parent_pool.children.append(self)
         
         try:
             parent._pool_closer = weakref.ref(parent, self.close)
         except TypeError:
-            self.close()
+            self.close(None)
             raise
-            
-        return self
     
     def __call__(self):
         return self.pool
@@ -88,7 +90,14 @@ class Pool(object):
         
         -- So long, and thanks for all the fish!
         """
+        if not self.pool:
+            return
+        
+        while self.children:
+            self.children.pop().close(None)
+        
         core.svn_pool_destroy(self.pool)
+        self.pool = None
 
 
 class SubversionRepository(Repository):
@@ -115,7 +124,7 @@ class SubversionRepository(Repository):
         core.apr_initialize()
         self.apr_initialized = 1
 
-        self.pool = Pool(self, None)
+        self.pool = Pool(self)
 
         # Remove any trailing slash or else subversion might abort
         if not os.path.split(path)[1]:
@@ -158,7 +167,7 @@ class SubversionRepository(Repository):
 
     def get_changeset(self, rev):
         return SubversionChangeset(int(rev), self.authz, self.scope,
-                                   self.fs_ptr, self.pool)
+                                   self.fs_ptr, self._pool)
 
     def get_node(self, path, rev=None):
         self.authz.assert_permission(self.scope + path)
@@ -174,7 +183,7 @@ class SubversionRepository(Repository):
             rev = self.youngest_rev
 
         return SubversionNode(path, rev, self.authz, self.scope, self.fs_ptr,
-                              self.pool)
+                              self._pool)
 
     def get_oldest_rev(self):
         rev = 0
@@ -234,11 +243,11 @@ class SubversionNode(Node):
         self.pool = Pool(self, pool)
         self._requested_rev = rev
 
-        self.root = fs.revision_root(fs_ptr, rev, pool)
+        self.root = fs.revision_root(fs_ptr, rev, self.pool)
         node_type = fs.check_path(self.root, self.scope + path, self.pool)
         if not node_type in _kindmap:
             raise TracError, "No node at %s in revision %s" % (path, rev)
-        self.rev = fs.node_created_rev(self.root, self.scope + path, pool)
+        self.rev = fs.node_created_rev(self.root, self.scope + path, self.pool)
 
         Node.__init__(self, path, self.rev, _kindmap[node_type])
 
@@ -257,7 +266,7 @@ class SubversionNode(Node):
             if not self.authz.has_permission(path):
                 continue
             yield SubversionNode(path, self._requested_rev, self.authz,
-                                 self.scope, self.fs_ptr, self.pool)
+                                 self.scope, self.fs_ptr, self._pool)
 
     def get_history(self):
         history = _get_history(self.scope + self.path, self.authz, self.fs_ptr,
