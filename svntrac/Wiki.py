@@ -38,6 +38,9 @@ class Formatter:
     _url_re = r'(((new|file|(ht|f)tp)s?://))([a-z0-9_-]+:[a-z0-9_-]+\@)?([a-z0-9]+(\-*[a-z0-9]+)*\.)+[a-z]{2,7}(/~?[a-z0-9_\.%\-]+)?(/[a-z0-9_\.%\-]+)*(/?[a-z0-9_\%\-]*(\.[a-z0-9]+)?(\#[a-zA-Z0-9_\.]+)?)(\?([a-z0-9_\.\%\-]+)\=[a-z0-9_\.\%\/\-]*)?(&([a-z0-9_\.\%\-]+)\=[a-z0-9_\.\%\/\-]*)?(#[a-z0-9]+)?'
 
     _rules = r"""(?:(?P<bold>''')""" \
+             r"""|(?P<tickethref> #(?P<ticketnumber>[0-9]+))""" \
+             r"""|(?P<changesethref>\[(?P<changesetnumber>[0-9]+)\])""" \
+             r"""|(?P<reporthref>\{(?P<reportnumber>[0-9]+)\})""" \
              r"""|(?P<italic>'')""" \
              r"""|(?P<hr>-{5,})""" \
              r"""|(?P<heading>^\s*(?P<hdepth>=+)\s.*\s(?P=hdepth)$)""" \
@@ -55,6 +58,18 @@ class Formatter:
     def _bold_formatter(self, match, fullmatch):
         self._is_bold = not self._is_bold
         return ['</strong>', '<strong>'][self._is_bold]
+
+    def _tickethref_formatter(self, match, fullmatch):
+        number = int(fullmatch.group('ticketnumber'))
+        return '<a href="%s">#%d</a>' % (href.ticket(number), number)
+
+    def _changesethref_formatter(self, match, fullmatch):
+        number = int(fullmatch.group('changesetnumber'))
+        return '[<a href="%s">%d</a>]' % (href.changeset(number), number)
+
+    def _reporthref_formatter(self, match, fullmatch):
+        number = int(fullmatch.group('reportnumber'))
+        return '{<a href="%s">%d</a>}' % (href.report(number), number)
 
     def _italic_formatter(self, match, fullmatch):
         self._is_italic = not self._is_italic
@@ -297,7 +312,7 @@ class Wiki(Module):
     def render(self):
         name = dict_get_with_default(self.args, 'page', 'WikiStart')
         action = dict_get_with_default(self.args, 'action', 'view')
-        version = dict_get_with_default(self.args, 'verion', 0)
+        version = dict_get_with_default(self.args, 'version', 0)
             
         page = Page(name, version)
 

@@ -1,6 +1,6 @@
 <?cs include: "../templates/header.cs" ?>
 
-<script language="JavaScript" src="<?cs var:htdocs_location ?>ssvntrac.js">
+<script language="JavaScript" src="<?cs var:htdocs_location ?>svntrac.js">
 </script>
 
 <p>
