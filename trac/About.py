@@ -79,7 +79,7 @@ It provides an interface to the Subversion revision control systems, integrated 
 Copyright &copy; 2003,2004 <a href="http://www.edgewall.com/">Edgewall Software</a>
 </p>
   <a class="noline" href="http://www.edgewall.com/">
-   <img style="display: block; margin: 30px" src="<?cs var:htdocs_location ?>edgewall_logo_left-226x43.png"
+   <img style="display: block; margin: 30px" src="<?cs var:htdocs_location ?>edgewall.png"
      alt="Edgewall Software"/></a>
  <?cs /if ?>
 </div>
