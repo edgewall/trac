@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-# svn-trac-hook 
+# trac-post-commit-hook
 # ----------------------------------------------------------------------------
 # Copyright (c) 2004 Stephen Hansen 
 #
@@ -36,7 +36,7 @@
 # AUTHOR=`/usr/bin/svnlook author -r $REV $REPOS`
 # TRAC_DB='/somewhere/myproject.db'
 #
-# /usr/bin/python /usr/local/src/trac/contrib/svn-trac-hook \
+# /usr/bin/python /usr/local/src/trac/contrib/trac-post-commit-hook \
 #  -d "$TRAC_DB"   \
 #  -r "$REV"       \
 #  -u "$AUTHOR"    \
