@@ -38,6 +38,12 @@
      <input type="text" id="date" name="date" size="8" value="<?cs
        var:milestone.date ?>" /> <em>Format: MM/DD/YY</em>
     </div>
+    <div class="field">
+     <input type="checkbox" id="updatetickets" name="updatetickets"
+       checked="checked" />
+     <label for="updatetickets">Update all tickets associated with this
+     milestone when the name is changed</label>
+    </div>
    </fieldset>
    <fieldset>
     <legend>Description</legend>

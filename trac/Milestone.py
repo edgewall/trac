@@ -133,11 +133,19 @@ class Milestone(Module):
         self.perm.assert_permission(perm.MILESTONE_MODIFY)
         cursor = self.db.cursor()
         self.env.log.debug("Updating milestone '%s'" % id)
-        cursor.execute("UPDATE milestone SET name = %s, time = %d, "
-                       "descr = %s WHERE name = %s",
-                       name, date, descr, id)
-        self.db.commit()
-        self.req.redirect(self.env.href.milestone(name))
+        if self.args.has_key('save'):
+            if self.args.has_key('updatetickets'):
+                self.env.log.info('Updating milestone field of all tickets '
+                                  'associated with milestone %s' % id)
+                cursor.execute ('UPDATE ticket SET milestone = %s '
+                                'WHERE milestone = %s', name, id)
+            cursor.execute("UPDATE milestone SET name = %s, time = %d, "
+                           "descr = %s WHERE name = %s",
+                           name, date, descr, id)
+            self.db.commit()
+            self.req.redirect(self.env.href.milestone(name))
+        else:
+            self.req.redirect(self.env.href.milestone(id))
 
     def get_components(self):
         cursor = self.db.cursor ()
