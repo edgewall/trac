@@ -35,7 +35,7 @@
   <?cs else ?>
    <?cs call:browser_path_links(file.path, file) ?>
    <div id="toolbar">
-    <ul class="menulist">
+    <ul>
      <li><a title="View revision log" href="<?cs
        var:file.logurl ?>">Revision Log</a></li>
      <li><a title="Show file as plain text" href="<?cs

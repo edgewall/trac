@@ -17,10 +17,40 @@ h1 .sep { color: #666; padding: 0 .1em }
  border-top: 1px solid #ddd;
  float: left;
  padding: 2px 0;
- margin: .1em 0;
+ margin: .1em 0 1em;
  width: 100%;
 }
 #toolbar ul, #toolbar form { margin: 0 2px }
+#toolbar ul {
+ background: #f7f7f7;
+ border: 1px outset #d7d7d7;
+ color: #ccc;
+ display: inline;
+ float: left;
+ font-size: 11px;
+ padding: 0;
+}
+#toolbar li {
+ display: inline;
+ border-right: 1px solid #d7d7d7;
+ float: left;
+ margin: 0;
+ padding: 0;
+ white-space: nowrap;
+}
+#toolbar li.last { border-right: none }
+#toolbar li :link, #toolbar li :visited {
+ display: inline;
+ float: left;
+ padding: 0 .75em .1em .5em;
+ margin: 0;
+ border: none;
+ color: #000;
+}
+#toolbar li :link:hover, #toolbar li :visited:hover {
+ background: #ccb;
+ color: #000;
+}
 #toolbar form {
  float: right;
  padding: 0;
@@ -39,7 +69,7 @@ h1 .sep { color: #666; padding: 0 .1em }
  border: 1px solid #d7d7d7;
  border-collapse: collapse;
  border-spacing: 0;
- clear: left;
+ clear: both;
  margin: 1em 0;
  width: 100%;
 }

@@ -133,19 +133,16 @@ form.inline input { margin: 1em }
   font-size: 10px;
   text-align: right;
 }
-.subheader-links li, .menulist li {
+.subheader-links li {
   display: inline;
   border-right: 1px solid #d7d7d7;
   padding: 0;
   white-space: nowrap;
 }
-.subheader-links li { padding: 0 .75em; }
-.subheader-links li a, .menulist li a {
- padding: 0 .5em;
-}
-.menulist li { float: left; }
-.subheader-links li.last,.menulist li.last { border-right: none; }
-.subheader-links li ul, .menulist {
+.subheader-links li { padding: 0 .75em }
+.subheader-links li a { padding: 0 .5em }
+.subheader-links li.last { border-right: none }
+.subheader-links li ul {
   background: #f7f7f7;
   color: #ccc;
   border: 1px solid;
@@ -158,28 +155,6 @@ form.inline input { margin: 1em }
 .subheader-links li li :link:hover, .subheader-links li li :visited:hover {
  background: #bba;
  color: #fff;
-}
-.menulist {
-  float: left;
-  padding: 0;
-  margin: 0;
-  margin-bottom: 2px;
-  border: 1px outset #d7d7d7;
-  font-size: 11px;
-  white-space: nowrap;
-}
-.menulist li { padding: 0; margin: 0 }
-.menulist li :link, .menulist li :visited {
-  display: inline;
-  float: left;
-  padding: 0 .75em .1em;
-  margin: 0;
-  border: none;
-  color: #000;
-}
-.menulist li :link:hover, .menulist li :visited:hover {
- background: #ccb;
- color: #000;
 }
 
 /* Alternate links */

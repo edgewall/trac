@@ -13,7 +13,7 @@
  <?cs call:browser_path_links(log.path, log) ?>
 
  <div id="toolbar">
-  <ul class="menulist">
+  <ul>
    <li class="last">
     <a href="<?cs var:log.items.0.file_href ?>">View Latest Revision</a>
    </li>

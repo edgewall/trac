@@ -12,7 +12,7 @@
  <?cs call:browser_path_links(browser.path, browser) ?>
 
  <div id="toolbar">
-  <ul class="menulist">
+  <ul>
    <li><a title="View revision log" href="<?cs
      var:browser.log_href ?>">Revision Log</a></li>
   </ul>
