@@ -199,7 +199,7 @@ facilities.
       author_email="info@edgewall.com",
       license=LICENSE,
       url=URL,
-      packages=['trac', 'trac.web', 'trac.upgrades', 'trac.wikimacros', 'trac.mimeviewers'],
+      packages=['trac', 'trac.web', 'trac.upgrades', 'trac.wikimacros', 'trac.mimeviewers', 'trac.scripts'],
       data_files=[(_p('share/trac/templates'), glob('templates/*')),
                   (_p('share/trac/htdocs'), glob(_p('htdocs/*.*')) + [_p('htdocs/README')]),
                   (_p('share/trac/htdocs/css'), glob(_p('htdocs/css/*'))),

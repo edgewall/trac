@@ -25,12 +25,19 @@ import trac
 from trac.db_default import data as default_data
 from trac.util import get_date_format_hint, NaivePopen
 from trac.tests.environment import EnvironmentTestBase
+from trac.scripts import admin
 
 import os
 import re
 import sys
 import time
 import unittest
+import shlex
+
+try:
+    from cStringIO import StringIO
+except ImportError:
+    from StringIO import StringIO
 
 STRIP_TRAILING_SPACE = re.compile(r'( +)$', re.MULTILINE)
 
@@ -76,15 +83,25 @@ class TracadminTestCase(EnvironmentTestBase, unittest.TestCase):
             load_expected_results(os.path.join(os.path.split(__file__)[0],
                                                'tracadmin-tests.txt'),
                                   '===== (test_.*) =====')
+    
+    def setUp(self):
+        EnvironmentTestBase.setUp(self)
+        self._admin = admin.TracAdmin()
+        self._admin.env_set(self._get_envpath())
 
     def _execute(self, cmd):
-        trac_admin = 'trac-admin %s %s' % (self.env.path, cmd)
-        np = NaivePopen(trac_admin, None, capturestderr=1)
-        if np.errorlevel or np.err:
-            err = 'Running (%s) failed: %s, %s.' % \
-                  (trac_admin, np.errorlevel, np.err)
-            raise Exception, err
-        return STRIP_TRAILING_SPACE.sub('', np.out)
+        try:
+            _err = sys.stderr
+            _out = sys.stdout
+            sys.stderr = sys.stdout = out = StringIO()
+            try:
+                self._admin.docmd(cmd)
+            except SystemExit, e:
+                pass
+            return STRIP_TRAILING_SPACE.sub('', out.getvalue())
+        finally:
+            sys.stderr = _err
+            sys.stdout = _out
 
     # About test
 

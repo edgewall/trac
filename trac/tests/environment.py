@@ -4,6 +4,7 @@ from trac.Environment import Environment
 import os
 import unittest
 import tempfile
+import shutil
 
 
 class EnvironmentTestBase:
@@ -15,21 +16,10 @@ class EnvironmentTestBase:
 
     def tearDown(self):
         self.env = None
-        self._removeall(self._get_envpath())
+        shutil.rmtree(self._get_envpath())
 
     def _get_envpath(self):
         return os.path.join(tempfile.gettempdir(), 'trac-tempenv')
-    
-    def _removeall(self, path):
-        """Delete a directory and all it's files and subdirectories"""
-        files = os.listdir(path)
-        for name in files:
-            fullpath = os.path.join(path, name)
-            if os.path.isfile(fullpath):
-                os.unlink(fullpath)
-            elif os.path.isdir(fullpath):
-                self._removeall(fullpath)
-        os.rmdir(path)
 
 class EnvironmentTestCase(EnvironmentTestBase, unittest.TestCase):
 
