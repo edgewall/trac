@@ -78,7 +78,12 @@ class Ticket (Module):
         info = {'id': id }
         # Escape the values so that they are safe to have as html parameters
         for i in range(len(fields)):
-	    info[fields[i]] = escape(row[i])
+            # We shouldn't escape the description
+            # wiki_to_html will take care of that
+            if fields[i] == 'description':
+                info[fields[i]] = row[i]
+            else:
+                info[fields[i]] = escape(row[i])
         return info
 
     def save_changes (self, id, old, new): 
