@@ -349,6 +349,7 @@ def cmd_permission_list():
     print ' REPORT_VIEW, REPORT_CREATE, REPORT_MODIFY, REPORT_DELETE, REPORT_ADMIN, '
     print ' WIKI_VIEW, WIKI_CREATE, WIKI_MODIFY, WIKI_DELETE, WIKI_ADMIN, '
     print ' TIMELINE_VIEW and SEARCH_VIEW.'
+    print ' CONFIG_VIEW, TRAC_ADMIN.'
     
 def cmd_permission_add():
     user = sys.argv[4]

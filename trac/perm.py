@@ -54,6 +54,8 @@ TIMELINE_VIEW  = 'TIMELINE_VIEW'
 
 SEARCH_VIEW = 'SEARCH_VIEW'
 
+TRAC_ADMIN = 'TRAC_ADMIN'
+
 meta_permission = {
     'TICKET_ADMIN': [TICKET_VIEW, TICKET_CREATE, TICKET_MODIFY],
     'REPORT_ADMIN': [REPORT_VIEW, REPORT_CREATE, REPORT_MODIFY, REPORT_DELETE],
@@ -95,11 +97,11 @@ def cache_permissions ():
 
 def has_permission (action):
     global perm_cache
-    return perm_cache.has_key (action)
+    return perm_cache.has_key (action) or perm_cache.has_key(TRAC_ADMIN)
 
 def assert_permission (action):
     global perm_cache
-    if not perm_cache.has_key (action):
+    if not (perm_cache.has_key (action) or perm_cache.has_key(TRAC_ADMIN)):
         raise PermissionError (action)
 
 def perm_to_hdf(hdf):
