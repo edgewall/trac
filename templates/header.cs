@@ -2,7 +2,7 @@
         "http://www.w3.org/TR/2000/REC-xhtml1-20000126/DTD/xhtml1-strict.dtd">
 
 <?cs def:navlink(text, href, id, aclname, accesskey) ?><?cs
-   if $trac.acl.+aclname ?><li><a href="<?cs var:href ?>" <?cs 
+   if aclname ?><li><a href="<?cs var:href ?>" <?cs 
         if $id == $trac.active_module ?>class="active"<?cs /if ?> 
         <?cs if:$accesskey!="" ?> accesskey="<?cs var:$accesskey ?>"<?cs 
         /if ?>><?cs var:text ?></a></li><?cs 
@@ -85,9 +85,9 @@
     	<?cs set:$wiki_view="attachment" ?>
       <?cs /if  ?>	
       <?cs call:navlink("Wiki", $trac.href.wiki, $wiki_view, 
-                        "WIKI_VIEW", "1") ?>
+                        $trac.acl.WIKI_VIEW, "1") ?>
       <?cs call:navlink("Timeline", $trac.href.timeline, "timeline", 
-                        "TIMELINE_VIEW", "2") ?>
+                        $trac.acl.TIMELINE_VIEW, "2") ?>
       <?cs if $trac.active_module == "log" ?>	
     	<?cs set:$browser_view="log" ?>
       <?cs elif $trac.active_module == "file" ?>	
@@ -96,18 +96,18 @@
     	<?cs set:$browser_view="browser" ?>
       <?cs /if  ?>	
       <?cs call:navlink("Browse Source", $trac.href.browser, $browser_view, 
-                        "BROWSER_VIEW", "") ?>
+                        $trac.acl.BROWSER_VIEW, "") ?>
       <?cs if $trac.active_module == "ticket" ?>	
     	<?cs set:$ticket_view="ticket" ?>
       <?cs else  ?>	
     	<?cs set:$ticket_view="report" ?>
       <?cs /if  ?>	
       <?cs call:navlink("View Tickets", $trac.href.report, $ticket_view, 
-                        "REPORT_VIEW", "") ?>
+                        $trac.acl.REPORT_VIEW, "") ?>
       <li style="display: none"><a href="<?cs var:$trac.href.newticket ?>" accesskey="7"></a></li>
       <?cs call:navlink("New Ticket", $trac.href.newticket, "newticket", 
-                        "TICKET_CREATE", "9") ?>
+                        $trac.acl.TICKET_CREATE, "9") ?>
       <?cs call:navlink("Search", $trac.href.search, "search", 
-                        "SEARCH_VIEW", "4") ?>
+                        $trac.acl.SEARCH_VIEW, "4") ?>
     </ul>
   </div>
