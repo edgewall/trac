@@ -6,7 +6,7 @@ body
 body, table
 {
   font-family: helvetica,arial;
-  font-size: 12pt;
+  /*font-size: 12pt;*/
 }
 
 pre.file-content
@@ -25,16 +25,17 @@ table.listing
   padding: 0px;
 }
 
-tr.listing-header
-{
-  background-color: white;
-}
-
 th.listing
 {
-  background-color: white;
-  border-bottom: thin solid black;
-  }
+  padding-right: 0.5em;
+  padding-left: 0.2em;
+  text-align: left;
+  white-space: nowrap;
+  background-color: #00659c;
+  /*background-color: #ded100;*/
+  color: white;
+  border-bottom: 2px solid black;
+}
 
 td.timeline-day
 {
@@ -72,6 +73,20 @@ td.date-column
 {
   text-align: left;
   width: 20%;
+  border-left: thin dotted #dddddd;
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+}
+
+td.name-column, td.report-column, td.ticket-column
+{ 
+  padding-left: 0.5em;
+}
+
+td.status-column, td.severity-column, td.priority-column,
+td.owner-column, td.created-column, td.summary-column,
+td.title-column
+{
   border-left: thin dotted #dddddd;
   padding-left: 0.5em;
   padding-right: 0.5em;

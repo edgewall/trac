@@ -8,7 +8,7 @@
 Change revision: <input type="text" name="rev" value="%(revision)d" size="6">
 <input type="submit" value="Change">
 </form>
-
+<br>
 
 <table class="listing" cellspacing="0" cellpadding="0">
 <tr class="listing-header"><th class="listing">name</th><th class="listing">size</th><th class="listing">rev</th><th class="listing">date</th></tr>

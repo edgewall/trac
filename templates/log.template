@@ -1,9 +1,9 @@
 %(header)s
 
-<h3>log history for: %(path)s</h3>
+<h3>Log history for: %(path)s</h3>
 
-<table class="listing">
-<tr class="listing-header"><th>date</th><th>revision</th><th>change set</th><th>log message</th></tr>
+<table class="listing" cellspacing="0" cellpadding="0">
+<tr class="listing-header"><th class="listing">date</th><th class="listing">revision</th><th class="listing">change set</th><th class="listing">log message</th></tr>
 %(log_entries)s
 </table>
 

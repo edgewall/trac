@@ -64,32 +64,36 @@ class Report (Module):
         """
         out.write ('<tr>')
 	for x in row:
-	    out.write ('<th>%s</th>' % x[0])
+	    out.write ('<th class="listing">%s</th>' % x[0])
         out.write ('</tr>')
         
-    def render_row (self, out, row, cols):
+    def render_row (self, out, row, cols, row_idx):
         """
         render one html table row from one sql result row.
 
         Some values are handled specially: ticker and report numbers
         are hyper linked...
         """
-        out.write ('<tr>')
+        if row_idx % 2:
+            out.write ('<tr class="item-row-even">\n')
+        else:
+            out.write ('<tr class="item-row-odd">\n')
+
         idx = 0
         for value in row:
             if cols[idx][0] in ['ticket', '#']:
-                out.write('<td><a href="%s">#%s</a></td>' % (ticket_href(value),
+                out.write('<td class="ticket-column"><a href="%s">#%s</a></td>' % (ticket_href(value),
                                                             value))
             elif cols[idx][0] == 'report':
-                out.write('<td><a href="%s">{%s}</a></td>'
+                out.write('<td class="report-column"><a href="%s">{%s}</a></td>'
                           % (report_href(value), value))
                              
             elif cols[idx][0] in ['time', 'date', 'created', 'modified']:
-                out.write('<td>%s</td>'
-                          % time.strftime('%F', time.localtime(int(value))))
+                out.write('<td class="%s-column">%s</td>'
+                          % (cols[idx][0], time.strftime('%F', time.localtime(int(value)))))
 
             else:
-                out.write('<td>%s</td>' % value)
+                out.write('<td class="%s-column">%s</td>' % (cols[idx][0], value))
             idx = idx + 1
         out.write ('</tr>')
 
@@ -182,10 +186,12 @@ class Report (Module):
                 out.write ('<a href="%s">delete</a>' % report_href(id, 'delete'))
         out.write ('</p>')
         
-        out.write ('<table class="report">')
+        out.write ('<table class="listing" cellspacing="0" cellpadding="0">')
         self.render_headers (out, cols)
+        row_idx = 0
         for row in rows:
-            self.render_row (out, row, cols)
+            self.render_row (out, row, cols, row_idx)
+            row_idx = row_idx + 1
         out.write ('</table>')
 
     def render (self):

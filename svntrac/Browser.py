@@ -96,13 +96,13 @@ class Browser (Module):
         else:
             out.write ('<tr class="item-row-odd">\n')
         if item['is_dir']:
-            out.write ('<td><a href="%s">%s</a></td>'
+            out.write ('<td class="name-column"><a href="%s">%s</a></td>'
                        % (browser_href (item['fullpath']), item['name']))
             out.write ('<td class="size-column">&nbsp;</td>')
             out.write ('<td class="rev-column">%s</td>' %
                        item['created_rev'])
         else:
-            out.write ('<td><a href="%s">%s</a></td>'
+            out.write ('<td class="name-column"><a href="%s">%s</a></td>'
                        % (log_href (item['fullpath']), item['name']))
             out.write ('<td class="size-column">%s</td>' %
                        self.pretty_size(item['size']))

@@ -64,7 +64,7 @@ class Log (Module):
                    % (file_href (self.path, item['rev']), item['rev']))
         out.write ('<td class="rev-column"><a href="%s">%s</a></td>'
                    % (changeset_href (item['rev']), item['rev']))
-        out.write ('<td>%s</td>' % (item['log']))
+        out.write ('<td class="summary-column">%s</td>' % (item['log']))
         out.write ('\n</tr>\n')
         
     def render (self):
