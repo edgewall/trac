@@ -263,7 +263,7 @@ class Ticket (Module):
             self.create_ticket ()
             
         if not self.args.has_key('id'):
-            self.req.redirect(self.env.href.menu())
+            self.req.redirect(self.env.href.wiki())
             
         id = int(self.args.get('id'))
 

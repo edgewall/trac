@@ -60,6 +60,7 @@
  <hr class="hide"/>
 </div>
 
+<?cs if trac.acl.TICKET_MODIFY || ticket.attachments.0.name ?>
 <h2 id="tkt-changes-hdr">Attachments</h2>
 <div id="tkt-changes">
   <ul class="tkt-chg-list">
@@ -70,9 +71,11 @@
         added by <?cs var:a.author ?> on <?cs var:a.time ?>.</li>
   <?cs /each ?>
   </ul>
-<a class="fake-button" href="<?cs var:cgi_location?>/attachment/ticket/<?cs
-var:ticket.id ?>">Add attachment</a><br style="clear: both" />
+<?cs if trac.acl.TICKET_MODIFY ?>
+  <a class="fake-button" href="<?cs var:cgi_location?>/attachment/ticket/<?cs var:ticket.id ?>">Add attachment</a><br style="clear: both" />
+<?cs /if ?>
 </div>
+<?cs /if ?>
 
 
 <?cs if ticket.changes.0.time ?>
