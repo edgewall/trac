@@ -47,7 +47,8 @@ modules = {
 
 def parse_args(path_info):
     args = {}
-    
+    if not path_info:
+        return args
     match = re.search('/about(/?.*)', path_info)
     if match:
         args['mode'] = 'about'
