@@ -1,16 +1,24 @@
 = Syntax Coloring of Source Code =
 Trac supports language-specific colorization (syntax highlighting) of source code in [wiki:WikiFormatting WikiFormatted] text and the [wiki:TracBrowser Source Browser].
 
-To perform this, Trac relies on external software packages with support for a great number of programming languages.
+To do this, Trac uses external libraries with support for a great number of programming languages.
 
-Currently Trac supports syntax coloring using [http://people.ssh.fi/mtr/genscript/ GNU Enscript] and [http://silvercity.sourceforge.net/ SilverCity]. 
+Currently Trac supports syntax coloring using one or more of the following packages:
 
-'''To activate syntax coloring, simply install !SilverCity and/or Enscript.'''
+ * [http://people.ssh.fi/mtr/genscript/ GNU Enscript]
+ * [http://silvercity.sourceforge.net/ SilverCity]
 
-Trac will automatically prioritize using !SilverCity before Enscript if possible. If neither is available, Trac will display the data as plain text. 
+To activate syntax coloring, simply install either one (or more) of these packages. No additional configuration is needed.
 
-'''Note:''' ''Enscript supports a greater number of languages, however !SilverCity is generally faster since it is a library, not having to execute an external process.''
-[[br]]'''Note:''' ''Syntax Coloring is only available on trac >= 0.7.''
+When in use, Trac will automatically prioritize !SilverCity highlighting over Enscript if possible, (see note below). 
+
+If neither package is available, Trac will display the data as plain text. 
+
+'''Note:''' Enscript supports a greater number of languages, however !SilverCity is generally faster since it is a library and isn't executed in an external process.
+
+=== About SilverCity ===
+!SilverCity uses the lexer from [http://www.scintilla.org/ Scintilla]. Scintilla supports more languages than !SilverCity implements. If you want to add a language to !SilverCity supported by Scintilla, it's not very difficult. See [http://projects.edgewall.com/trac/wiki/SilverCityAddLanguage SilverCityAddLanguage] for some information how.
+
 
 == Syntax Coloring Support ==
 
@@ -61,4 +69,4 @@ Trac will automatically prioritize using !SilverCity before Enscript if possible
  * !SilverCity -- http://silvercity.sf.net/
 
 ----
-See also: WikiProcessors, WikiFormatting, TracWiki, TracBrowser.
+See also: WikiProcessors, WikiFormatting, TracWiki, TracBrowser

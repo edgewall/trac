@@ -5,7 +5,7 @@ Trac supports inserting HTML into any wiki context, accomplished using the HTML 
 HTML support is built-in, and does not require installing any additional packages.
 
 == How to Use HTML ==
-To inform the wiki engning a block of text should be treated as HTML, use the ''html'' processor. 
+To inform the wiki engine that a block of text should be treated as HTML, use the ''html'' processor. 
 
 This example should explain:
 {{{

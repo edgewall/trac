@@ -1,24 +1,37 @@
 = Trac Links =
-
 As you might have guessed, TracLinks are a very fundamental feature of Trac.
 
-They allow easy hyperlinking to files, changesets, bugs/issues and wiki pages from anywhere in the system where WikiFormatting is used. 
+They allow hyperlinking between Trac entities (tickets, reports, changesets, Wiki
+pages, milestones and source files) from anywhere WikiFormatting is used.
 
-TracLinks can refer to tickets, reports and changesets by simply writing the
-ticket, report and changeset numbers in the following notation:
-{{{
- * Ticket #1 or ticket:1
- * Report {1} or report:1
- * Changeset [1] or changeset:1
- * File source:trunk/COPYING.
-}}}
+TracLinks are generally of the form '''item:id''' (where ''id'' represents the
+number, name or path of the item) though some frequently used kinds of items
+also have short-hand, alternative, notations. 
+
+Some examples:
+
+ * Tickets: '''!#1''' or '''!ticket:1'''
+ * Reports: '''!{1}''' or '''!report:1'''
+ * Changesets: '''![1]''' or '''!changeset:1'''
+ * Wiki pages: '''CamelCase''' or '''!wiki:CamelCase'''
+ * Milestones: '''!milestone:1.0'''
+ * Files: '''!source:trunk/COPYING'''
+
 Display:
- * Ticket #1 or ticket:1
- * Report {1} or report:1
- * Changeset [1] or changeset:1
- * File source:trunk/COPYING.
+ * Tickets: #1 or ticket:1
+ * Reports: {1} or report:1
+ * Changesets: [1] or changeset:1
+ * Wiki pages: CamelCase or wiki:CamelCase
+ * Milestones: milestone:1.0
+ * Files: source:trunk/COPYING
 
-Trac links can also be given a custom link title like this:
+'''Note:''' The wiki:CamelCase form is rarely used, but it can be convenient to refer to
+pages whose names do not follow WikiPageNames rules, i.e., single words,
+non-alphabetic characters, etc.
+
+Trac links using the full (non-shorthand) notation can also be given a custom
+link title like this:
+
 {{{
 [ticket:1 This is a link to ticket number one].
 }}}
@@ -27,12 +40,12 @@ Display:
 
 [ticket:1 This is a link to ticket number one].
 
-It seems a simple enough concept at a glance, but actually allows quite a complex network of information. 
+It might seem a simple enough concept at a glance, but actually allows quite a complex network of information.
 
-In practice, it's very intuitive and simple to use, and we've found the "link trail" extremely helpful to better understand what's happening in a project or why a particular change was made.
+In practice though, it's very intuitive and simple to use, and we've found the "link trail" extremely helpful to better understand what's
+happening in a project or why a particular change was made.
 
 == source: links ==
-
 The default behavior for a source:/some/path link is to open the directory browser if the path points
 to a directory and otherwise open the log view. It's also possible to link directly to a specific
 revision of a file like this: source:/some/file#123 or like this to link to the latest revision:
@@ -41,9 +54,24 @@ source:/some/file#latest.
 == Where to use TracLinks ==
 You can use TracLinks in:
 
- * Wiki pages
- * Ticket descriptions
  * Source code (Subversion) commit messages
+ * Wiki pages
+ * Full descriptions for tickets, reports and milestones
 
-See also: WikiFormatting
+and any other text fields explicitly marked as supporting WikiFormatting.
+
+== Escaping TracLinks ==
+To prevent parsing of a !TracLink, you can escape it by preceding it with a '!' (exclamation mark).
+
+{{{
+ !NoLinkHere.
+ ![42] is not a link either.
+}}}
+
+Display:
+ !NoLinkHere.
+ ![42] is not a link either.
+
+----
+See also: WikiFormatting, TracWiki
  

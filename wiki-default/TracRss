@@ -1,4 +1,6 @@
 = Using RSS with Trac =
+[[TracGuideToc]]
+
 Several of the Trac modules support content syndication using the RSS (Really Simple Syndication) XML format.
 Using the RSS subscription feature in Trac, you can easily monitor progress of the project, a set of issues or even changes to a single file .
 
@@ -9,13 +11,15 @@ Trac supports RSS feeds in:
  * TracBrowser -- Syndication of file changes.[[br]]Stay up to date with changes to a specific file.
 
 == How to access RSS data ==
-Anywhere in Trac where RSS is available, you should find a small orange 'XML' icon, typically at the bottom of the page. Clicking the icon will access the RSS feed for that specific module.
+Anywhere in Trac where RSS is available, you should find a small orange 'XML' icon, typically placed at the bottom of the page. Clicking the icon will access the RSS feed for that specific resource.
 
 '''Note:''' Different modules provide different data in their RSS feeds. Usually, the syndicated information corresponds to the current view. For example, if you click the RSS link on a report page, the feed will be based on that report. It might be explained by thinking of the RSS feeds as an ''alternate view of the data currently displayed''.
 
 == Links ==
  * http://blogs.law.harvard.edu/tech/rss -- RSS 2.0 Specification
- * http://fls.moo.jp/moz/rssreader.html -- RSS Reader Panel for Mozilla Firefox
-
+ * http://www.mozilla.org/products/firefox/ -- Mozilla Firefox supports [http://www.mozilla.org/products/firefox/live-bookmarks.html live bookmarks] using RSS
+ * http://sage.mozdev.org -- Sage RSS and Atom feed aggregator for Mozilla Firefox
+ * http://www.rssreader.com/ -- Free and powerful RSS Reader for Windows
+ * http://liferea.sourceforge.net/ -- Open source GTK2 RSS Reader for Linux
 ----
 See also: TracGuide, TracTimeline, TracReports, TracBrowser

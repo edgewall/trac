@@ -2,6 +2,8 @@
 
 Tracd is a lightweight stand-alone Trac server. In most cases it's easier to setup and runs faster than trac.cgi.
 
+'''Note: tracd is still experimental.'''
+
 == Pros ==
 
  * Fewer dependencies: You don't need to install apache or any other web-server.
@@ -27,3 +29,7 @@ With htdigest authentication. The file /tmp/users.htdigest contain user accounts
 {{{
  $ tracd -p 8080 --auth project1,/tmp/users.htdigest,mycompany.com /path/to/project1
 }}}
+
+
+----
+See also: TracGuide, TracInstall, TracModPython

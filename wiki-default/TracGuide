@@ -1,11 +1,16 @@
 = The Trac User and Administration Guide =
+[[TracGuideToc]]
+
 The TracGuide is meant to serve as a starting point for all documentation regarding Trac usage and development. The guide is a free document, a collaborative effort, and a part of the [http://projects.edgewall.com/trac/ Trac Project] itself.
 
 == Table of Contents ==
 Currently available documentation:
  * TracGuide (This page)  -- Documentation starting point.
    * TracInstall -- How to install and run Trac.
+   * TracUpgrade -- How to upgrade existing installations.
+   * TracMultipleProjects -- Multiple projects on a single host.
    * TracAdmin -- Administrating a Trac project.
+   * TracImport -- Importing tickets from other bug databases.
    * TracIni -- Trac configuration file reference. 
    * TracPermissions -- Access control and permissions.
    * TracWiki -- How to use the built-in Wiki.
@@ -13,6 +18,8 @@ Currently available documentation:
    * TracChangeset -- Viewing changes to source code.
    * TracTickets -- Using the issue tracker.
    * TracReports -- Writing and using reports.
+   * TracQuery -- Executing custom ticket queries.
+   * TracRoadmap -- The roadmap helps tracking project progress.
    * TracTimeline -- The timeline provides a historic perspective on a project.
    * TracLogging -- The Trac logging facility.
    * TracRss -- RSS content syndication in Trac.
@@ -25,5 +32,4 @@ If you are looking for a good place to ask a question about Trac, look no furthe
 
 See also the TracSupport page for more information resources.
 
-
-If you are interested in commercial support, please contact [http://www.edgewall.com/ Edgewall Software].
+If you are interested in commercial support, please [http://www.edgewall.com/contact/ contact Edgewall Software].

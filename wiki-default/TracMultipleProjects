@@ -1,0 +1,42 @@
+= Configure Apache for multiple projects =
+
+By following these instructions, you will set up Apache to automatically serve multiple Trac projects for you. 
+
+Start out by creating a project directory in your documentroot (/var/www in this example). Projects will be accessed as http://hostname/projects/projectname. Copy (or symlink) trac.cgi to this directory together with a file named index.html. This will be shown when users try to access nonexistent projects.
+
+Then create your trac projects with trac-admin. It's important that they are all placed in the same directory. In this example we'll use /var/lib/trac. Add to your Apache configuration:
+
+{{{
+RewriteEngine on
+RewriteRule ^/projects/+$			/projects/index.html [L]
+RewriteCond /var/lib/trac/$1			-d
+RewriteRule ^/projects/([[:alnum:]]+)(/?.*)	/projects/trac.cgi$2 [S=1,E=TRAC_ENV:/var/lib/trac/$1]
+RewriteRule ^/projects/(.*)			/projects/index.html
+
+<Directory "/var/www/projects">
+	AllowOverride None
+	Options ExecCGI -MultiViews +SymLinksIfOwnerMatch
+	AddHandler cgi-script .cgi
+	Order allow,deny
+	Allow from all
+</Directory>
+
+<LocationMatch "/projects/[[:alnum:]]+/login">
+	AuthType Basic
+	AuthName "trac"
+	AuthUserFile /path/to/trac.htpasswd
+	Require valid-user
+</LocationMatch>
+}}}
+
+Make sure you have the rewrite module loaded or compiled in Apache.
+
+{{{LoadModule rewrite_module modules/mod_rewrite.so}}}
+
+Now, when you add another project, you don't need to edit any apache config. The only file you may want to edit is index.html to make it list the new project. If you think this is too much work, replace it with a python cgi script that does it for you.
+
+[wiki:TracStandalone tracd] and TracModPython can also serve multiple projects.
+
+
+----
+See also: TracGuide, TracInstall

@@ -1,11 +1,15 @@
 = trac.ini Reference =
-Trac 0.7 introduces an editable configuration file, ''trac.ini'', located in {{{<projectenv>/conf/trac.ini}}}.
+[[TracGuideToc]]
+
+Trac configuration is done by editing the ''trac.ini'' config file, located in {{{<projectenv>/conf/trac.ini}}}.
+
 This is a brief reference of available configuration options.
 
 == [project] ==
 || name   || Project name ||
 || descr  || Short project description ||
 || url    || URL to the main project website ||
+|| icon   || URL to icon file to use as shortcut icon (favicon) ||
 || footer || Page footer text (right-aligned) ||
 
 == [trac] ==
@@ -13,6 +17,7 @@ This is a brief reference of available configuration options.
 || htdocs_location || Base URL for static Trac graphics and CSS files ||
 || database        || Database to use for this project ||
 || templates_dir   || Path of Clearsilver templates ||
+|| default_charset || Source files uses this charset ||
 
 == [logging] ==
 || log_type  || Logging facility to use. (none, file, stderr, syslog, winlog) ||
@@ -28,17 +33,18 @@ See also: TracLogging
 || default_milestone || Default milestone for newly created tickets ||
 || default_component || Default component for newly created tickets ||
 
+See also: TracTicketsCustomFields
+
 == [attachment] ==
 || max_size || Maximum allowed file size for ticket and wiki attachments ||
-
-== [diff] ==
-|| tab_width || Displayed tab width in diffs (default is 8) ||
 
 == [notification] ==
 || smtp_enabled   || Enable SMTP (email) notification (true, false) ||
 || smtp_server    || SMTP server to use for email notifications ||
+|| smtp_from      || Sender address to use in notification emails ||
 || smtp_replyto   || Reply-To address to use in notification emails ||
 || smtp_always_cc || Email address(es) to always send notifications to ||
+|| always_notify_reporter || Always send notifications to any address in the ''reporter'' field ||
 
 See also: TracNotification
 
@@ -51,7 +57,13 @@ See also: TracNotification
 
 == [mimeviewer] ==
 || enscript_path || Path to Enscript program ||
- 
+
+== [timeline] ==
+|| changeset_show_files || Number of files to show (-1 for unlimited, 0 to disable) ||
+
+== [diff] ==
+|| tab_width || Displayed tab width in changeset diffs ||
+
 [[BR]]
 ----
 See also: TracGuide, TracAdmin

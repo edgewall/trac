@@ -6,12 +6,12 @@ Trac supports accessibility keys for the most common operations.
 == Accessibility Keys ==
  * 1 - WikiStart
  * 2 - Timeline
+ * 3 - Roadmap
  * 4 - Search
- * 5 - TracGuide / Documentation
+ * 5 - TracFaq
  * 6 - TracGuide / Documentation
  * 7 - New Ticket
- * 8 - About Trac
- * 9 - New Ticket
+ * 9 - About Trac
  * 0 - TracAccessibility 
 
 ----

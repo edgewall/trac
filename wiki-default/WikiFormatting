@@ -1,25 +1,29 @@
 = WikiFormatting =
 
-Wiki serves as the core component of Trac, which tightly integrates all the other parts of Trac into flexible and powerful system.
+Wiki markup is a core feature in Trac, tightly integrating all the other parts of Trac into flexible and powerful whole.
+
 Trac has a built in small and powerful wiki rendering engine. This wiki engine implements an ever growing subset of the commands from other popular Wikis especially [http://moin.sf.net/ MoinWiki]. 
 
-This page demonstrates some of the formatting commands available in the Trac Wiki.
+This page demonstrates the formatting syntax available anywhere WikiFormatting is allowed.
 
 == Font styles ==
 
-The Trac wiki support the following font styles: '''bold''', ''italic''
-and __underline__.
+The Trac wiki support the following font styles: '''bold''', ''italic'',
+__underline__ and ~~strike-through~~.
 
 {{{
-The Trac wiki support the following font styles: '''bold''', ''italic''
-and __underline__.
+The Trac wiki support the following font styles: '''bold''', ''italic'',
+__underline__ and ~~strike-through~~.
 }}}
+
 
 == Heading ==
 
-You can create heading by starting a line with one up to five equal signs
-followed by a space and the headline text. The line should end with a space 
-followed by the same number of equal signs. 
+You can create heading by starting a line with one up to five ''equal\\ '=' characters
+followed by a single space and the headline text. The line should end with a space 
+followed by the same number of ''equal'' characters. 
+
+''Note: As of writing, headings cannot contain TracLinks.''
 
 === Example: ===
 {{{
@@ -31,7 +35,9 @@ followed by the same number of equal signs.
 == Paragraphs ==
 
 A new text paragraph is created whenever two blocks of text are separated
-by an empty line. A newline can also be inserted like this:
+by one or more empty lines.
+
+A forced line break can also be inserted, using:
 {{{
 Line 1[[BR]]Line 2
 }}}
@@ -39,8 +45,11 @@ Display:
 
 Line 1[[BR]]Line 2
 
- Text paragraphs can also be indented by starting the lines with a few spaces.
+  Text paragraphs can be indented by starting the lines with two or more spaces.
+
 == Lists ==
+The wiki supports both ordered/numbered and unordered lists.
+
 Example:
 {{{
  * Item 1
@@ -61,8 +70,9 @@ Display:
  1. Item 2
 
 == Preformatted text ==
-Block quotes, also know as preformatted text, is suitable for source code snippets, notes and examples. Use three ''curly braces'' wrapped around the text:
+Block quotes, preformatted text, are suitable for source code snippets, notes and examples. Use three ''curly braces'' wrapped around the text to define a block quote:
   
+Example:
 {{{
  {{{
   def HelloWorld()
@@ -89,10 +99,10 @@ Display:
 
 == Links ==
 
-Hyperlinks are automatically created for WikiPageNames and urls. !WikiPageLinks can be disabled by
-prepending a bang (!) character like this {{{!WikiPageLink}}}.
+!Hyperlinks are automatically created for WikiPageNames and urls. !WikiPageLinks can be disabled by
+prepending an exclamation mark (!) character, such as {{{!WikiPageLink}}}.
 
-For example:
+Examples:
 
  TitleIndex, http://www.edgewall.com/.
 
@@ -107,30 +117,44 @@ Display:
  * [http://www.edgewall.com/ Edgewall Software]
  * [wiki:TitleIndex Title Index]
 
-=== Intra Trac Links ===
+=== Trac Links ===
 
-Trac allows wiki pages to link directly to other parts of the Trac system.
-Pages can refer to tickets, reports and changesets by simply writing the
-ticket, report and changeset numbers in the following notation:
-{{{
- * Ticket #1 
- * Report {1}
- * Changeset [1]
- * File source:trunk/COPYING.
- * A specific file revision: source:/trunk/COPYING#200
-}}}
+Wiki pages can link directly to other parts of the Trac system.
+Pages can refer to tickets, reports, changesets, milestones, source files and
+other Wiki pages using the following notation:
+ * Tickets: '''!#1''' or '''!ticket:1'''
+ * Reports: '''!{1}''' or '''!report:1'''
+ * Changesets: '''![1]''' or '''!changeset:1'''
+ * Wiki pages: '''CamelCase''' or '''!wiki:CamelCase'''
+ * Milestones: '''!milestone:1.0'''
+ * Files: '''!source:trunk/COPYING'''
+ * A specific file revision: '''!source:/trunk/COPYING#200'''
 Display:
- * Ticket #1 
- * Report {1}
- * Changeset [1]
- * File source:trunk/COPYING.
+ * Tickets: #1 or ticket:1
+ * Reports: {1} or report:1
+ * Changesets: [1] or changeset:1
+ * Wiki pages: CamelCase or wiki:CamelCase
+ * Milestones: milestone:1.0
+ * Files: source:trunk/COPYING
  * A specific file revision: source:/trunk/COPYING#200
 
-See TracLinks for more information about intra-trac linking.
+See TracLinks for more in-depth information.
+
+== Escaping Links and WikiNames ==
+You may avoid making hyperlinks out of TracLinks by preceding an expression with a single '!' (exclamation mark).
+
+{{{
+ !NoHyperLink
+ !#42 is not a link
+}}}
+
+Display:
+ !NoHyperLink
+ !#42 is not a link
 
 == Images ==
 
-Urls ending with .png, .gif or .jpg will be converted to an IMG-tag.
+Urls ending with .png, .gif or .jpg are automatically interpreted as image links, and converted to IMG tags.
 
 Example:
 {{{
@@ -151,7 +175,9 @@ Display:
  [[Timestamp]]
 
 == Processors ==
-Trac supports alternative markup formats using WikiProcessors. For example, processors are used to write pages in [wiki:WikiRestructuredText reStructuredText] or [wiki:WikiHtml HTML]. See WikiProcessors for documentation.
+Trac supports alternative markup formats using WikiProcessors. For example, processors are used to write pages in [wiki:WikiRestructuredText reStructuredText] or [wiki:WikiHtml HTML]. 
+
+See WikiProcessors for more information.
 
 '''Example 1:'''
 {{{
@@ -188,6 +214,7 @@ class Test:
 if __name__ == '__main__':
    Test()
 }}}
+
 == Miscellaneous ==
 
 Four or more dashes will be replaced by a horizontal line (<HR>)
@@ -201,4 +228,5 @@ Display:
 
 
 ----
-See also: TracLinks, TracGuide, WikiMacros, WikiProcessors, TracSyntaxColoring.
+See also: TracLinks, TracGuide, WikiHtml, WikiMacros, WikiProcessors, TracSyntaxColoring.
+

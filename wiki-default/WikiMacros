@@ -1,5 +1,5 @@
 =  Wiki Macros =
-Trac macros are plugins to extend the Trac engine with custom 'functions' written in Python. They allow insertion of custom dynamic HTML data in any module supporting WikiFormatting.
+Trac macros are plugins to extend the Trac engine with custom 'functions' written in Python. A macro inserts dynamic HTML data in any context supporting WikiFormatting.
 
 Another kind of macros are WikiProcessors. They typically deal with alternate markup formats and representation of larger blocks of information (like source code highlighting). See also: WikiProcessors.
 
@@ -22,7 +22,7 @@ Display:
 
 
 == Available Macros ==
-As of 0.6, macros are still a new feature in Trac, and the list of available (and distributed) macros is 
+Macros are still a new feature, and the list of available (and distributed) macros is 
 admittedly not very impressive. In future Trac releases, we hope to build a library of useful macros, and will of course happily include contributed macros (see below). 
 
  * '''!HelloWorld''' -- An example macro, useful for learning how to write macros.
@@ -48,7 +48,7 @@ It's easiest to learn from an example:
 {{{
 # MyMacro.py -- The world's simplest macro
 
-def execute(hdf, args):
+def execute(hdf, args, env):
     return "Hello World called with args: %s" % args
 }}}
 
@@ -58,9 +58,8 @@ For advanced uses, macros can also render structured output in HDF, to be render
 Macros gain direct access to the main HDF tree, and are free to manipulate it. 
 
 Example:
-
 {{{
-def execute(hdf, args):
+def execute(hdf, args, env):
     # Currently hdf is set only when the macro is called
     # From a wiki page
     if hdf:
@@ -71,7 +70,12 @@ def execute(hdf, args):
     return 'Hello World, args = ' + args
 }}}
 
+You can also use the environment (env) object to access configuration data.
 
-
+Example.
+{{{
+def execute(hdf, txt, env):
+    return env.get_config('trac', 'repository_dir')
+}}}
 ----
 See also:  WikiProcessors, WikiFormatting, TracGuide

@@ -1,13 +1,16 @@
 == Trac Permissions ==
+[[TracGuideToc]]
 
-Trac uses a flexible permission system to control what different users can do
-in the system.
+Trac uses a simple but flexible permission system to control what users can and can't access.
 
-When a user first uses a system he/she will be able to do certain things. 
-Exactly what he/she can do depend on which privileges you have granted to
-the special user {{{anonymous}}}.
-In addition to these privileges different users can be granted additional 
-rights as soon as they login into the system.
+Permission privilegies are managed using the [wiki:TracAdmin trac-admin] tool.
+
+Regular visitors, non-authenticated users, accessing the system are assigned the default 
+role (''user'') named {{{anonymous}}}. 
+Assign permissions to the {{{anonymous}}} user to set privilegies for non-authenticated/guest users.
+
+In addition to these privileges users can be granted additional individual 
+rights in effect when authenticated and logged into the system.
 
 === Available privileges ===
 
@@ -17,8 +20,10 @@ rights as soon as they login into the system.
  * {{{CHANGESET_VIEW}}}
  * {{{BROWSER_VIEW}}}
  * {{{TICKET_VIEW, TICKET_CREATE, TICKET_MODIFY, TICKET_ADMIN}}}
- * {{{REPORT_VIEW, REPORT_CREATE, REPORT_MODIFY, REPORT_DELETE, REPORT_ADMIN}}}
+ * {{{REPORT_VIEW, REPORT_CREATE, REPORT_MODIFY, REPORT_DELETE, REPORT_ADMIN, REPORT_SQL_VIEW}}}
  * {{{WIKI_VIEW, WIKI_CREATE, WIKI_MODIFY, WIKI_DELETE, WIKI_ADMIN}}}
+ * {{{MILESTONE_VIEW, MILESTONE_CREATE, MILESTONE_MODIFY, MILESTONE_DELETE}}}
+ * {{{ROADMAP_VIEW, ROADMAP_ADMIN}}}
  * {{{TIMELINE_VIEW}}}
  * {{{SEARCH_VIEW}}}
  * {{{CONFIG_VIEW}}}
@@ -33,13 +38,26 @@ Currently the only way to grant privileges to users is by using the
 with the following command:
 
 {{{
-  $ trac-admin /path/to/my.db permission list
+  $ trac-admin /path/to/projenv permission list
 }}}
 
-This command will let the user ''bob'' to delete reports:
+This command will let the user ''bob'' delete reports:
 
 {{{
-  $ trac-admin /path/to/my.db permission add bob REPORT_DELETE
+  $ trac-admin /path/to/projenv permission add bob REPORT_DELETE
+}}}
+
+=== Permission groups ===
+
+Permissions can be grouped together to form roles such as
+''developer'', ''admin'', etc.
+
+{{{
+  $ trac-admin /path/to/projenv permission add developer WIKI_ADMIN
+  $ trac-admin /path/to/projenv permission add developer REPORT_ADMIN
+  $ trac-admin /path/to/projenv permission add developer TICKET_MODIFY
+  $ trac-admin /path/to/projenv permission add bob developer
+  $ trac-admin /path/to/projenv permission add john developer
 }}}
 
 === Default permissions ===
@@ -48,3 +66,6 @@ Granting privileges to the special user ''anonymous'' can be used to control
 what an anonymous user can do before they have logged in.
 
 In the same way, privileges granted to the special user ''authenticated'' will apply to any authenticated (logged in) user.
+
+----
+See also: TracAdmin, TracGuide

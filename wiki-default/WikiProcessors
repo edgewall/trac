@@ -80,6 +80,7 @@ int main(int argc, char *argv[])
 The following processors are included in the Trac distribution:
  * '''html''' -- Insert custom HTML in a wiki page. See WikiHtml.
  * '''rst''' -- Trac support for Restructured Text. See WikiRestructuredText.
+ * '''textile''' -- Initial support as of aug 2, 2004.  See [http://projects.edgewall.com/trac/ticket/593 ticket 593] and [http://dealmeida.net/projects/textile/ Textile].
 
 === Source Code Support ===
 Trac includes processors to provide inline [wiki:TracSyntaxColoring syntax highlighting] for these languages:
@@ -94,9 +95,23 @@ Trac includes processors to provide inline [wiki:TracSyntaxColoring syntax highl
  * '''xml''' -- XML
 '''Note:''' ''Trac relies on external software packages for syntax coloring. See TracSyntaxColoring for more info.''
 
+By using the mime-type as processor, it is posible to syntax-highlight the same languages that are supported when browsing source code.  (The list of mime-types can be found in [source:trunk/trac/Mimeview.py Mimeview.py]).
 
-For more processor macros developed and/or contributed by users, visit the processor bazaar: 
- http://projects.edgewall.com/trac/wiki/ProcessorBazaar
+For example, you can write:
+
+{{{
+{{{
+#!text/html
+<h1>text</h1>
+}}}
+}}}
+
+The result will be syntax highlighted html code. The same is valid for all other mime types supported.
+
+
+
+For more processor macros developed and/or contributed by users, visit the macro bazaar: 
+ http://projects.edgewall.com/trac/wiki/MacroBazaar
 
 ----
 == Advanced Topics: Developing Processor Macros ==
@@ -106,10 +121,10 @@ Developing processors is no different than WikiMacros. In fact they work the sam
 {{{
 from docutils.core import publish_string
 
-def execute(hdf, text):
+def execute(hdf, text, env):
     html = publish_string(text, writer_name = 'html')
     return html[html.find('<body>')+6:html.find('</body>')].strip()
 }}}
 
 ----
-See also: WikiMacros, WikiHtml, WikiRestructuredText, TracSyntaxColoring, WikiFormatting, TracGuide
+See also : WikiMacros, WikiHtml, WikiRestructuredText, TracSyntaxColoring, WikiFormatting, TracGuide

@@ -1,10 +1,14 @@
 = Email Notification of Ticket Changes =
-Trac supports automatic email notification upon ticket changes. 
+[[TracGuideToc]]
 
-'''Note:''' This feature is disabled by default, and must be configured to be activated.
+Trac supports basic notification for ticket changes using email. 
+
+Email notification is useful to keep users up-to-date on tickets/issues of interest, and also provides a convenient way to post ticket changes to a dedicated mailing list. '''Note:''' As an example, this is how the [http://lists.edgewall.com/archive/trac-tickets/ Trac-tickets] mailing list works.
+
+Disabled by default, notification can be activated and configured in [wiki:TracIni trac.ini].
 
 == Receiving Notification ==
-When reporting a new ticket or adding a comment, if you enter a valid email address in the ''reporter'', ''editor'' or ''cc'' field, you will automatically receive an email upon future changes to the ticket.
+When reporting a new ticket or adding a comment, enter a validing email address in the ''reporter'', ''editor'' or ''cc'' field. Trac will automatically send you an email when changes are made to the ticket.
 
 This is useful to keep up-to-date on an issue or enhancement request that interests you.
 
@@ -14,8 +18,12 @@ This is useful to keep up-to-date on an issue or enhancement request that intere
 These are the available options for the ''[notification]'' section in trac.ini.
  * '''smtp_enabled''': Enable notification.
  * '''smtp_server''': SMTP server used for notification messages.
+ * '''smtp_from''': Email address to use for ''Sender''-headers in notification emails.
  * '''smtp_replyto''': Email address to use for ''Reply-To''-headers in notification emails.
  * '''smtp_always_cc''': List of email addresses to always send notifications to. ''Typically used to post ticket changes to a dedicated mailing list.''
+ * '''always_notify_reporter''':  Always send notifications to any address in the reporter field.
+
+Either '''smtp_from''' or '''smtp_replyto''' (or both) ''must'' be set, otherwise Trac refuses to send notification mails.
 
 === Example Configuration ===
 
@@ -23,6 +31,7 @@ These are the available options for the ''[notification]'' section in trac.ini.
 [notification]
 smtp_enabled = true
 smtp_server = mail.example.com
+smtp_from = notifier@example.com
 smtp_replyto = myproj@projects.example.com
 smtp_always_cc = ticketmaster@example.com, theboss+myproj@example.com
 }}}
@@ -53,4 +62,4 @@ Ticket URL: <http://example.com/trac/ticket/42>
 My Project <http://myproj.example.com/>
 }}}
 ----
-See also: TracTickets
+See also: TracTickets, TracIni, TracGuide

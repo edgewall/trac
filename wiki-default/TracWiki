@@ -1,4 +1,5 @@
 = The Trac Wiki Engine =
+[[TracGuideToc]]
 
 Trac has a built-in wiki engine, used for text and documentation throughout the system. WikiFormatting is used for [wiki:TitleIndex wiki pages], '''tickets''' and '''commit log messages'''. 
 

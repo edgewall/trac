@@ -1,4 +1,5 @@
 = TracAdmin =
+[[TracGuideToc]]
 
 Trac is distributed with a powerful configuration tool. This tool can be used 
 to configure and customize your Trac-installation to better fit your needs.
@@ -6,49 +7,60 @@ to configure and customize your Trac-installation to better fit your needs.
 == Usage ==
 
 {{{
-Usage: trac-admin <dbfile> [command [subcommand] [option ...]]
+Usage: trac-admin </path/to/projenv> [command [subcommand] [option ...]]
 
 Invoking trac-admin without command starts interactive mode.
 
-about                               -- Shows information about trac-admin
-help                                -- Show documentation
-initdb                              -- Create and initializes a new database
-config list                         -- Show current configuration
-config set <option> <value>         -- Set config
-wiki list                           -- List wiki pages
-wiki export <page> [file]           -- Export wiki page to file or stdout
-wiki import <page> [file]           -- Import wiki page from file or stdin
-wiki dump <directory>               -- Export all wiki pages to files named by title
-permission list                     -- List permission rules
-permission add <user> <action>      -- Add a new permission rule
-permission remove <user> <action>   -- Remove permission rule
-component list                      -- Show available components
-component add <name> <owner>        -- Add a new component
-component rename <name> <newname>   -- Rename a component
-component remove <name>             -- Remove/uninstall component
-component chown <name> <owner>      -- Change component ownership
-priority list                       -- Show possible ticket priorities
-priority add <value>                -- Add a priority value option
-priority change <value> <newvalue>  -- Change a priority value
-priority remove <value>             -- Remove priority value
-severity list                       -- Show possible ticket priorities
-severity add <value>                -- Add a severity value option
-severity change <value> <newvalue>  -- Change a severity value
-severity remove <value>             -- Remove severity value
-version list                        -- Show versions
-version add <name> [time]           -- Add version
-version rename <name> <newname>     -- Rename version
-version time <name> <time>          -- Set version date/time
-version remove <name>               -- Remove version
-milestone list                      -- Show milestones
-milestone add <name> [time]         -- Add milestone
-milestone rename <name> <newname>   -- Rename milestone
-milestone time <name> <time>        -- Set milestone date/time
-milestone remove <name>             -- Remove milestone
+about                                             -- Shows information about trac-admin                    
+help                                              -- Show documentation                                    
+initenv                                           -- Create and initialize a new environment interactively 
+initenv <projectname> <repospath> <templatepath>  -- Create and initialize a new environment from arguments
+hotcopy <backupdir>                               -- Make a hot backup copy of an environment.             
+resync                                            -- Re-synchronize trac with the repository               
+upgrade                                           -- Upgrade database to current version.                  
+wiki list                                         -- List wiki pages                                       
+wiki export <page> [file]                         -- Export wiki page to file or stdout                    
+wiki import <page> [file]                         -- Import wiki page from file or stdin                   
+wiki dump <directory>                             -- Export all wiki pages to files named by title         
+wiki load <directory>                             -- Import all wiki pages from directory                  
+wiki upgrade                                      -- Upgrade default wiki pages to current version         
+permission list                                   -- List permission rules                                 
+permission add <user> <action> [action] [...]     -- Add a new permission rule                             
+permission remove <user> <action> [action] [...]  -- Remove permission rule                                
+component list                                    -- Show available components                             
+component add <name> <owner>                      -- Add a new component                                   
+component rename <name> <newname>                 -- Rename a component                                    
+component remove <name>                           -- Remove/uninstall component                            
+component chown <name> <owner>                    -- Change component ownership                            
+priority list                                     -- Show possible ticket priorities                       
+priority add <value>                              -- Add a priority value option                           
+priority change <value> <newvalue>                -- Change a priority value                               
+priority remove <value>                           -- Remove priority value                                 
+severity list                                     -- Show possible ticket priorities                       
+severity add <value>                              -- Add a severity value option                           
+severity change <value> <newvalue>                -- Change a severity value                               
+severity remove <value>                           -- Remove severity value                                 
+version list                                      -- Show versions                                         
+version add <name> [time]                         -- Add version                                           
+version rename <name> <newname>                   -- Rename version                                        
+version time <name> <time>                        -- Set version date (Format: "Jun 3, 2003")              
+version remove <name>                             -- Remove version                                        
+milestone list                                    -- Show milestones                                       
+milestone add <name> [time]                       -- Add milestone                                         
+milestone rename <name> <newname>                 -- Rename milestone                                      
+milestone time <name> <time>                      -- Set milestone date (Format: "Jun 3, 2003")            
+milestone remove <name>                           -- Remove milestone                                      
 }}}
 
-== Interactive mode ==
+== Interactive Mode ==
 
-'''trac-admin''' starts in an interactive mode when started with the database 
-filename as the only argument. Commands can then be executed on the selected 
-database using the tab-completing prompt.
+When passed the database filename as only argument, '''trac-admin''' starts in interactive mode.
+Commands can then be executed on the selected database using the prompt, which offers tab-completion
+(on non-Windows environments) and automatic repetition of the last command issued.
+
+== A Note on Configuration ==
+For configuration of the Trac environment, Trac 0.7 introduced a new storage format, including a separate config file used for settings. See TracIni for details.
+
+
+----
+See Also: TracGuide, TracBackup, TracPermissions. TracEnvironment, TracIni

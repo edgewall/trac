@@ -1,10 +1,20 @@
 = Trac Logging =
+[[TracGuideToc]]
+
 Trac supports logging of system messages using the standard ''logging'' module part of Python 2.3 and newer.
 
-== Supported Methods ==
+'''Note:''' If you are using a Python version older than 2.3, the Trac logging mechanism will be silently disabled.
+
+Logging is configured in the {{{[logging]}}} section in [wiki:TracIni trac.ini].
+
+== Python 2.2 Workaround ==
+If you are using Python 2.2, however, note that the logging package from Python 2.3 works perfectly under 2.2 as well; you can just copy the entire {{{logging}}} directory from the Python 2.3 library into the Python 2.2 lib directory. Perhaps not the most elegant solution, but it works.
+
+
+== Supported Logging Methods ==
  * '''none''' -- Suppress all log messages.
- * '''file''' -- Log messages to a file, specified in the [wiki:TracConfiguration configuration] (Using the ''log_file'' directive in [wiki:TracIni trac.ini]). 
- * '''stderr''' -- Output all log entries to console. (tracd only)
+ * '''file''' -- Log messages to a file, specified with the ''log_file'' directive in [wiki:TracIni trac.ini]. 
+ * '''stderr''' -- Output all log entries to console ([wiki:TracStandalone tracd] only).
  * '''syslog''' -- (UNIX) Send messages to local syslogd via named pipe '/dev/log'.
  * '''winlog''' -- (Windows) Use the system's NT eventlog for Trac logging.
 
@@ -16,7 +26,7 @@ The levels are:
  * ''ERROR'' -- Request failures, bugs and errors. 
  * ''WARN'' -- Warnings, non-interrupting events.
  * ''INFO'' -- Diagnostic information, log information about all requests.
- * ''DEBUG'' -- Development messages, profiling, etc. Not for public consumption.
+ * ''DEBUG'' -- Development messages, profiling, etc. Not fit for human consumption.
 
 ----
-See also: TracIni, TracGuide
+See also: TracIni, TracGuide, TracEnvironment

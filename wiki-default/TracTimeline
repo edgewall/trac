@@ -1,19 +1,22 @@
 = The Trac Timeline =
-The timeline provides a historic view of the project in a simple report.
-It lists all Trac events that have occured in chronological order, with a
+[[TracGuideToc]]
+
+The timeline provides a historic view of the project in a single report.
+
+It lists all Trac events that have occured in chronological order, a
 brief description of each event and if applicable, the person responsible for
 the change.
 
-The timeline lists the following type of events:
+The timeline lists these kinds of events:
  * '''Wiki page events''' -- Creation and changes
  * '''Ticket events''' -- Creation and resolution/closing
  * '''Source code changes ''' -- Subversion commits 
- * '''Milestone ''' -- Milestone completed
+ * '''Milestone ''' -- Milestone reached
 
 Each event entry provides a hyperlink to the specific event in question, and 
-in the case svn commit log messages, displays the commit message. 
+in the case svn commit log messages, displays the commit message itself. 
 
-== Subversion Commit Messages ==
+== Subversion Commit Messages == 
 It's important to note that WikiFormatting can be used in commit log messages,
 including TracLinks.
 
@@ -26,11 +29,11 @@ Example:
  $ svn commit -m "Updated foo to bar. See FooBar. This fixes bug #42." 
 }}}
 
-This is a subtle but powerful feature.
+This is a subtle but quite useful feature.
 
 == RSS Support ==
 The Timeline module supports subscribtion using RSS 2.0 syndication. To subscribe to project events, click the '''RSS Feed''' link in the navigation bar, or the orange XML icon at the bottom of the page. See TracRss for more information on RSS support in Trac.
 
 
 ----
-See also: TracGuide, TracWiki, WikiFormatting
+See also: TracGuide, TracWiki, WikiFormatting, TracRss, TracNotification

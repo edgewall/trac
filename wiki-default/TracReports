@@ -1,8 +1,10 @@
 = Trac Reports =
-The Trac reports module provides a simple, yet powerful reporting facility
-for presenting information about tickets from the Trac database.
+[[TracGuideToc]]
 
-Rather than have its own report format, TracReports relies on standard SQL
+The Trac reports module provides a simple, yet powerful reporting facility
+to present information about tickets in the Trac database.
+
+Rather than have its own report definition format, TracReports relies on standard SQL
 SELECT statements for custom report definition. 
 
 A report consists of these basic parts:
@@ -11,6 +13,12 @@ A report consists of these basic parts:
  * Description  -- A brief description of the report, in WikiFormatting text.
  * Report Body -- List of results from report query, formatted according to the methods described below.
  * Footer -- Links to alternative download formats for this report.
+
+
+== Changing Sort Order ==
+Simple reports - ungrouped reports to be specific - can be changed to be sorted by any column simply by clicking the column header. 
+
+If a column header is a hyperlink (red), click the column you would like to sort by. Clicking the same header again reverses the order.
 
 
 == Alternate Download Formats ==
@@ -28,15 +36,10 @@ Like above, but uses tabs (\t) instead of comma.
 === RSS - XML Content Syndication ===
 All reports support syndication using XML/RSS 2.0. To subscribe to a , click the the orange 'XML' icon at the bottom of the page. See TracRss for general information on RSS support in Trac.
 
-== Changing Sort Order ==
-Simple reports - ungrouped reports to be specific - can be changed to be sorted by any column simply by clicking the column header. 
-
-If a column header is a hyperlink (red), click the column you would like to sort by. Clicking the same header again reverses the order.
-
 ----
 == Creating Custom Reports ==
 
-Creating a custom report requires knowing and using the SQL query language.
+''Creating a custom report requires a comfortable knowledge of SQL.''
 
 A report is basically a single named SQL query, executed and presented by
 Trac.  Reports can be viewed and created from a custom SQL expression directly
@@ -127,6 +130,7 @@ final report.
 === Automatically formatted columns ===
  * '''ticket''' -- Ticket ID number. Becomes a hyperlink to that ticket. 
  * '''created, modified, date, time''' -- Format cell as a date and/or time.
+
  * '''description''' -- Ticket description field, parsed through the wiki engine.
 
 '''Example:'''
@@ -135,12 +139,12 @@ SELECT id as ticket, created, status, summary FROM ticket
 }}}
 
 === Custom formatting columns ===
-Columns whose name begins and ends with '__' (Example: '''__color__''') are
+Columns whose names begin and end with 2 underscores (Example: '''_''''''_color_''''''_''') are
 assumed to be ''formatting hints'', affecting the appearance of the row.
  
- * '''___group___''' -- Group results based on values in this column. Each group will have its own header and table.
- * '''___color___''' -- Should be a numeric value ranging from 1 to 5 to select a pre-defined row color. Typically used to color rows by issue priority.
- * '''___style___''' --- A custom CSS style expression to use for the current row. 
+ * '''_''''''_group_''''''_''' -- Group results based on values in this column. Each group will have its own header and table.
+ * '''_''''''_color_''''''_''' -- Should be a numeric value ranging from 1 to 5 to select a pre-defined row color. Typically used to color rows by issue priority.
+ * '''_''''''_style_''''''_''' -- A custom CSS style expression to use for the current row. 
 
 '''Example:''' ''List active tickets, grouped by milestone, colored by priority''
 {{{
@@ -189,4 +193,4 @@ SELECT p.value AS __color__,
 
 
 ----
-See also: TracTickets, TracGuide
+See also: TracTickets, TracQuery, TracGuide

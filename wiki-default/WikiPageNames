@@ -6,6 +6,13 @@ Page names must follow these rules:
  1. A name must have at least two capital letters.
  1. The first character must be capitalized.
  1. Every capital letter must be followed by one or more lower-case letters. 
+ 1. The use of slash ( / ) is permitted to create a hierarchy inside the wiki.
+
+If you want a to create a wiki page that doesnt follow CamelCase rules you could use the following syntax see #614:
+{{{
+[wiki:NOTCamelCase NOTCamelCase]
+}}}
+
 
 ----
 See also: WikiNewPage, WikiFormatting, TracWiki

@@ -1,134 +1,120 @@
 = TracLinks in reStructuredText =
 
+This document is for testing the ``..trac::`` directive. The page is written like
+
+{{{
+{{{
+#!rst 
+
+Examples
+...
+...
+
+}}}
+}}}
+
+
 This is a list of example uses of the ''trac'' directive, providing use of TracLinks in WikiRestructuredText.
+Note that not all that functionality has been merged yet. The patch attached to #801 provides all of these.
 
-== Examples ==
-{{{
+
 {{{
 #!rst
-===============
-Trac Link Tests
-===============
 
-This document is for testing the ``..trac::`` directive.
+Examples
+--------
+
+trac role
+=========
+Syntax is \`link\`\:trac: or :trac:\`link\`, and could be put anywhere in the text. 'link' has the same format as explain for the ``.. trac::`` directive below.
+
+``In the middle of my text `WikiFormatting`:trac: see!!!!`` 
+   In the middle of my text `WikiFormatting`:trac: see!!!!
+
+or
+
+``In the middle of my text :trac:`WikiFormatting` see!!!!`` 
+   In the middle of my text :trac:`WikiFormatting` see!!!!
+
+
+wiki
+====
+``.. trac:: WikiFormatting``
+	.. trac:: WikiFormatting
+
+``.. trac:: wiki:WikiFormatting``
+       .. trac:: wiki:WikiFormatting
+
+``.. trac:: wiki:WikiFormatting WikiFormatting``
+	.. trac:: wiki:WikiFormatting WikiFormatting
+
+``.. trac:: wiki:WikiFormatting LinkText``
+	.. trac:: wiki:WikiFormatting LinkText
 
 tickets
 =======
 
-``.. trac:: #1``:
+``.. trac:: #1``
 	.. trac:: #1
-``.. trac:: #1 ticket one``:
+``.. trac:: #1 ticket one``
 	.. trac:: #1 ticket one
-``.. trac:: ticket:1``:
+``.. trac:: ticket:1``
 	.. trac:: ticket:1
-``.. trac:: ticket:1 ticket one``:
+``.. trac:: ticket:1 ticket one``
 	.. trac:: ticket:1 ticket one
 
 reports
 =======
 
-``.. trac:: {1}``:
+``.. trac:: {1}``
 	.. trac:: {1}
-``.. trac:: {1} report one``:
-	
+``.. trac:: {1} report one``
         .. trac:: {1} report one
-``.. trac:: report:1``:
+``.. trac:: report:1``
 	.. trac:: report:1
-``.. trac:: report:1 report one``:
+``.. trac:: report:1 report one``
 	.. trac:: report:1 report one
 
 changesets
 ==========
 
-``.. trac:: [42]``: 
+``.. trac:: [42]``
 	.. trac:: [42]
-``.. trac:: [42] changeset 42``: 
+``.. trac:: [42] changeset 42``
 	.. trac:: [42] changeset 42
-``.. trac:: changeset:42``: 
+``.. trac:: changeset:42``
 	.. trac:: changeset:42
-``.. trac:: changeset:42 changeset 42``: 
+``.. trac:: changeset:42 changeset 42``
 	.. trac:: changeset:42 changeset 42
-``.. trac:: foo``: 
+``.. trac:: foo``
 	.. trac:: foo
 
 files
 =====
 
-``.. trac:: browser:foo/hoo``:
-	.. trac:: browser:foo/hoo
-``.. trac:: repos:foo/hoo foo/hoo``:
-	.. trac:: repos:foo/hoo foo/hoo
-``.. trac:: source:foo/hoo hoo in foo``:
-	.. trac:: source:foo/hoo hoo in foo
-``.. trac:: browser:foo/hoo#latest latest of foo/hoo``:
-	.. trac:: browser:foo/hoo#latest latest of foo/hoo
-``.. trac:: repos:foo/hoo#42 foo/hoo in rev 42``:
-	.. trac:: repos:foo/hoo#42 foo/hoo in rev 42
-}}}
-}}}
+``.. trac:: browser:/trunk/trac``
+	.. trac:: browser:/trunk/trac
 
-=== Results in: ===
+The leading ``/`` can be omitted...
 
-{{{
-#!rst
-===============
-Trac Link Tests
-===============
+``.. trac:: repos:trunk/trac trunk/trac``
+	.. trac:: repos:trunk/trac trunk/trac
+``.. trac:: source:trunk/trac Trac source code``
+	.. trac:: source:trunk/trac Trac source code
 
-This document is for testing the ``..trac::`` directive.
+``.. trac:: browser:trunk/README``
+	.. trac:: browser:trunk/README
+``.. trac:: repos:trunk/README trunk/README``
+	.. trac:: repos:trunk/README trunk/README
+``.. trac:: source:trunk/README README in trunk``
+	.. trac:: source:trunk/README README in trunk
 
-tickets
-=======
+Note that if ``hoo`` is a file, the link targets its revision log. In order to see the file's content, you need to specify the revision explicitely, like here:
 
-``.. trac:: #1``:
-	.. trac:: #1
-``.. trac:: #1 ticket one``:
-	.. trac:: #1 ticket one
-``.. trac:: ticket:1``:
-	.. trac:: ticket:1
-``.. trac:: ticket:1 ticket one``:
-	.. trac:: ticket:1 ticket one
-
-reports
-=======
-
-``.. trac:: {1}``:
-	.. trac:: {1}
-``.. trac:: {1} report one``:
-	
-        .. trac:: {1} report one
-``.. trac:: report:1``:
-	.. trac:: report:1
-``.. trac:: report:1 report one``:
-	.. trac:: report:1 report one
-
-changesets
-==========
-
-``.. trac:: [42]``: 
-	.. trac:: [42]
-``.. trac:: [42] changeset 42``: 
-	.. trac:: [42] changeset 42
-``.. trac:: changeset:42``: 
-	.. trac:: changeset:42
-``.. trac:: changeset:42 changeset 42``: 
-	.. trac:: changeset:42 changeset 42
-``.. trac:: foo``: 
-	.. trac:: foo
-
-files
-=====
-
-``.. trac:: browser:foo/hoo``:
-	.. trac:: browser:foo/hoo
-``.. trac:: repos:foo/hoo foo/hoo``:
-	.. trac:: repos:foo/hoo foo/hoo
-``.. trac:: source:foo/hoo hoo in foo``:
-	.. trac:: source:foo/hoo hoo in foo
-``.. trac:: browser:foo/hoo#latest latest of foo/hoo``:
-	.. trac:: browser:foo/hoo#latest latest of foo/hoo
-``.. trac:: repos:foo/hoo#42 foo/hoo in rev 42``:
-	.. trac:: repos:foo/hoo#42 foo/hoo in rev 42
+``.. trac:: browser:/trunk/README#latest latest of trunk/README``
+	.. trac:: browser:/trunk/README#latest latest of trunk/README
+``.. trac:: repos:trunk/README#42 trunk/README in rev 42``
+	.. trac:: repos:trunk/README#42 trunk/README in rev 42
 }}}
 
 ----

@@ -1,0 +1,27 @@
+= Upgrade Instructions =
+[[TracGuideToc]]
+
+Trac environments sometimes need to be upgraded before they can be used 
+in a new version of Trac. This document describes the steps necessary
+to upgrade an environment.
+
+== From 0.7.x to 0.8 ==
+
+The database schema was changed between 0.7.x and 0.8. Existing environments
+must be upgraded before they can be used with Trac 0.8.
+
+The following command will automatically perform the upgrade:
+{{{
+ $ trac-admin /path/to/projectenv upgrade
+}}}
+
+Trac environments are created with a default set of wiki pages. It's 
+recommended to update these pages on existing environments whenever
+Trac is upgraded to get up-to-date documentation and additional functionality.
+The following command will perform the update:
+{{{
+ $ trac-admin /path/to/projectenv wiki upgrade
+}}}
+
+-----
+See also: TracGuide, TracInstall

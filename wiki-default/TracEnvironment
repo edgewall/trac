@@ -1,6 +1,22 @@
 = Trac Storage - The Environment =
 Trac uses a directory structure and an embedded [http://www.sqlite.org/ SQLite] database as storage.
 
+== Creating an Environment ==
+A new Trac environment is created using [wiki:TracAdmin trac-admin], like:
+
+{{{
+$ trac-admin /path/to/projectenv initenv
+}}}
+
+[wiki:TracAdmin trac-admin] will ask you where your subversion repository is located and
+where it can find the trac templates directory (the default value should work for a typical install).
+
+'''Note:''' The web server user will require file system write permission to the environment
+directory and all the files inside. '''Remember to set the appropriate permissions.''
+
+The same applies for the subversion repository files (unless using the [http://svn.collab.net/repos/svn/trunk/notes/fsfs FSFS Subversion backend], something we highly recommend. 
+
+
 
 == Directory Structure ==
 {{{
