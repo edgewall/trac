@@ -31,12 +31,15 @@ def usage():
     print '\nUsage: %s <database> <command>' % sys.argv[0]
     print '\n Available commands:'
     print '   initdb'
-    print '   config view'
+    print '   config list'
     print '   config set <name> <value>'
     print '   component list'
     print '   component add <name> <owner>'
     print '   component remove <name>'
     print '   component set owner <name> <new_owner>'
+    print '   permission list'
+    print '   permission add <user> <action>'
+    print '   permission remove <user> <action>'
     print
 
 def open_db(name):
@@ -257,7 +260,7 @@ def cmd_initdb():
         cnx.rollback()
         sys.exit(1)
 
-def cmd_config_view():
+def cmd_config_list():
     cnx = open_db(sys.argv[1])
     cursor = cnx.cursor()
     cursor.execute('SELECT section, name, value FROM config')
@@ -267,7 +270,7 @@ def cmd_config_view():
         row = cursor.fetchone()
         if row == None:
             break
-        print '%-30s %-20s' % (row[0] + '.' + row[1], row[2])
+        print '%-30s %-30s' % (row[0] + '.' + row[1], row[2])
     
 def cmd_config_set():
     name = sys.argv[4]
@@ -305,6 +308,7 @@ def cmd_component_add():
         cnx.commit()
     except:
         print 'Component addition failed'
+        sys.exit(1)
 
 def cmd_component_remove():
     name = sys.argv[4]
@@ -316,6 +320,7 @@ def cmd_component_remove():
         cnx.commit()
     except:
         print 'Component removal failed'
+        sys.exit(1)
 
 def cmd_component_set_owner():
     name = sys.argv[5]
@@ -328,12 +333,58 @@ def cmd_component_set_owner():
         cnx.commit()
     except:
         print 'Owner change failed'
+        sys.exit(1)
+
+def cmd_permission_list():
+    cnx = open_db(sys.argv[1])
+    cursor = cnx.cursor()
+    cursor.execute('SELECT user, action FROM permission')
+    print 'User                           Action'
+    print '============================================================'
+    while 1:
+        row = cursor.fetchone()
+        if row == None:
+            break
+        print '%-30s %-30s' % (row[0], row[1])
+    print
+    print 'Available action:'
+    print ' LOG_VIEW, FILE_VIEW, CHANGESET_VIEW, BROWSER_VIEW, '
+    print ' TICKET_VIEW, TICKET_CREATE, TICKET_MODIFY, TICKET_ADMIN, '
+    print ' REPORT_VIEW, REPORT_CREATE, REPORT_MODIFY, REPORT_DELETE, REPORT_ADMIN, '
+    print ' WIKI_VIEW, WIKI_CREATE, WIKI_MODIFY, WIKI_DELETE, WIKI_ADMIN, '
+    print ' TIMELINE_VIEW and SEARCH_VIEW.'
+    
+def cmd_permission_add():
+    user = sys.argv[4]
+    action = sys.argv[5]
+    cnx = open_db(sys.argv[1])
+    cursor = cnx.cursor()
+    try:
+        cursor.execute('INSERT INTO permission VALUES(%s, %s)',
+                       user, action)
+        cnx.commit()
+    except:
+        print 'Permission addition failed.'
+        sys.exit(1)
+
+def cmd_permission_remove():
+    user = sys.argv[4]
+    action = sys.argv[5]
+    cnx = open_db(sys.argv[1])
+    cursor = cnx.cursor()
+    try:
+        cursor.execute('DELETE FROM permission WHERE user=%s AND action=%s',
+                       user, action)
+        cnx.commit()
+    except:
+        print 'Permission removal failed'
+        sys.exit(1)
 
 def main():
     if sys.argv[2:] == ['initdb']:
         cmd_initdb()
-    elif sys.argv[2:] == ['config', 'view']:
-        cmd_config_view()
+    elif sys.argv[2:] == ['config', 'list']:
+        cmd_config_list()
     elif sys.argv[2:4] == ['config', 'set'] and len(sys.argv) == 6:
         cmd_config_set()
     elif sys.argv[2:] == ['component', 'list']:
@@ -344,6 +395,12 @@ def main():
         cmd_component_remove()
     elif sys.argv[2:5] == ['component', 'set', 'owner'] and len(sys.argv) == 7:
         cmd_component_set_owner()
+    elif sys.argv[2:] == ['permission', 'list']:
+        cmd_permission_list()
+    elif sys.argv[2:4] == ['permission', 'add'] and len(sys.argv) == 6:
+        cmd_permission_add()
+    elif sys.argv[2:4] == ['permission', 'remove'] and len(sys.argv) == 6:
+        cmd_permission_remove()
     else:
         usage()
 
