@@ -65,7 +65,6 @@ class FileCommon(Module.Module):
             vdata = self.env.mimeview.display(data, filename=self.filename,
                                               mimetype=self.mime_type)
         self.req.hdf.setValue('file.highlighted_html', vdata)
-        self.req.hdf.setValue('title', self.path)
         self.req.display('file.cs')
 
     def display_raw(self):
@@ -176,6 +175,9 @@ class Attachment(FileCommon):
     def display(self):
         text, link = self.get_attachment_parent_link()
         self.add_link('up', link, text)
+        self.req.hdf.setValue('title', '%s%s: %s' % (
+                              self.attachment_type == 'ticket' and '#' or '',
+                              self.attachment_id, self.filename))
         self.req.hdf.setValue('file.attachment_parent', text)
         self.req.hdf.setValue('file.attachment_parent_href', link)
         if self.view_form:
@@ -231,6 +233,7 @@ class File(FileCommon):
 
     def display(self):
         self.authzperm.assert_permission(self.path)
+        self.req.hdf.setValue('title', self.path)
         FileCommon.display(self)
 
     def render(self):
