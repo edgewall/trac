@@ -376,11 +376,21 @@ CREATE INDEX wiki_idx           ON wiki(name,version);
         data = self.db_execsql('SELECT DISTINCT name FROM wiki') 
         return [r[0] for r in data]
 
-    def get_dir_list (self, pathstr):
+    def get_dir_list (self, pathstr,justdirs=0):
         dname = os.path.dirname(pathstr)
         d = os.path.join(os.getcwd(), dname)
-        ls = os.listdir(d)
-        return ls
+        dlist = os.listdir(d)
+        if justdirs:
+            result = []
+            for entry in dlist:
+                try:
+                    if os.path.isdir(entry):
+                        result.append(entry)
+                except:
+                    pass
+        else:
+            result = dlist
+        return result
 
     def get_enum_list (self, type):
         data = self.db_execsql("SELECT name FROM enum WHERE type='%s'" % type) 
@@ -754,26 +764,25 @@ CREATE INDEX wiki_idx           ON wiki(name,version);
                   ('wiki import <page> [file]',
                    'Import wiki page from file or stdin'),
                   ('wiki dump <directory>',
-                   'Export all wiki pages to files named by title')]
+                   'Export all wiki pages to files named by title'),
+                  ('wiki load <directory>',
+                   'Import all wiki pages from directory')]
 
     def complete_wiki (self, text, line, begidx, endidx):
         argv = self.arg_tokenize(line)
         argc = len(argv)
         if line[-1] == ' ': # Space starts new argument
             argc += 1
-        if begidx > 11:
-            if line.startswith('wiki export'):
-                if argc==3:
-                    comp = self.get_wiki_list()
-                elif argc==4:
-                    comp = self.get_dir_list(argv[-1])
-            else:
-                if argc==3:
-                    comp = self.get_dir_list(argv[-1])
-                elif argc==4:
-                    comp = self.get_wiki_list()
+        if argc==2:
+            comp = ['list','import','export','dump','load']
         else:
-            comp = ['list','import','export']
+            if argv[1] in ['dump','load']:
+                comp = self.get_dir_list(argv[-1], 1)
+            elif argv[1] in ['export', 'import']:
+                if argc==3:
+                    comp = self.get_wiki_list()
+                elif argc==4:
+                    comp = self.get_dir_list(argv[-1])
         return self.word_complete(text, comp)
 
     def do_wiki(self, line):
@@ -792,6 +801,9 @@ CREATE INDEX wiki_idx           ON wiki(name,version);
             elif arg[0] == 'dump' and len(arg) in [1,2]:
                 dir = (len(arg) == 2 and arg[1]) or ''
                 self._do_wiki_dump(dir)
+            elif arg[0] == 'load' and len(arg) in [1,2]:
+                dir = (len(arg) == 2 and arg[1]) or ''
+                self._do_wiki_load(dir)
             else:    
                 self.do_help ('wiki')
         except Exception, e:
@@ -843,6 +855,11 @@ CREATE INDEX wiki_idx           ON wiki(name,version);
             print " %s => %s" % (p, dst)
             self._do_wiki_export(p, dst)
 
+    def _do_wiki_load(self, dir):
+        for f in pages:
+            page = os.path.basename(f)
+            print " %s => %s" % (f, page)
+            self._do_wiki_import(f, page)
 
 
     ## (Ticket) Priority
