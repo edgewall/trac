@@ -69,7 +69,7 @@ class Href:
 
     def report(self, report=None, action=None):
         if action:
-	    return self.old_report(self, report, action)
+	    return self.old_report(report, action)
         elif report:
             return href_join(self.base, 'report', str(report))
         else:
