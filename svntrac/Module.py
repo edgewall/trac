@@ -60,6 +60,25 @@ class Module:
         self.cgi.hdf.setValue('svntrac.href.search', href.search())
         self.cgi.hdf.setValue('svntrac.href.login', href.login())
         self.cgi.hdf.setValue('svntrac.href.logout', href.logout())
+        self.cgi.hdf.setValue('svntrac.version', '0.0.1')
+
+        
+        self.cgi.hdf.setValue('header_logo.link',
+                              self.config['header_logo']['link'])
+        self.cgi.hdf.setValue('header_logo.alt',
+                              self.config['header_logo']['alt'])
+        if self.config['header_logo']['src'][0] == '/':
+            self.cgi.hdf.setValue('header_logo.src',
+                                  self.config['header_logo']['src'])
+        else:
+            self.cgi.hdf.setValue('header_logo.src',
+                                  self.config['general']['htdocs_location']
+                                  + '/' + self.config['header_logo']['src'])
+        self.cgi.hdf.setValue('header_logo.width',
+                              self.config['header_logo']['width'])
+        self.cgi.hdf.setValue('header_logo.height',
+                              self.config['header_logo']['height'])
+        self.cgi.hdf.setValue('svntrac.href.logout', href.logout())
         
         templates_dir = self.config['general']['templates_dir']
         tmpl_filename = os.path.join (templates_dir, self.template_name)

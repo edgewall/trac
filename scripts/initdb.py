@@ -182,6 +182,8 @@ INSERT INTO permission (user, action) VALUES('anonymous', 'TIMELINE_VIEW');
 INSERT INTO permission (user, action) VALUES('anonymous', 'CHANGESET_VIEW');
 
 INSERT INTO config (section, name, value)
+VALUES('svntrac', 'database_version', '1');
+INSERT INTO config (section, name, value)
 VALUES('general', 'htdocs_location', '/svntrac/');
 INSERT INTO config (section, name, value)
 VALUES('general', 'repository_dir', '/var/svn/myrep');
@@ -201,6 +203,16 @@ INSERT INTO config (section, name, value)
 VALUES('ticket', 'default_milestone', '');
 INSERT INTO config (section, name, value)
 VALUES('ticket', 'default_component', 'general');
+INSERT INTO config (section, name, value)
+VALUES('header_logo', 'link', 'http://svntrac.edgewall.com/');
+INSERT INTO config (section, name, value)
+VALUES('header_logo', 'src', 'svntrac_logo.png');
+INSERT INTO config (section, name, value)
+VALUES('header_logo', 'alt', 'svntrac');
+INSERT INTO config (section, name, value)
+VALUES('header_logo', 'width', '500');
+INSERT INTO config (section, name, value)
+VALUES('header_logo', 'height', '70');
 
 INSERT INTO report (id, author, title, sql) 
 	VALUES (1, NULL, 'Active tickets', 
