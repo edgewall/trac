@@ -266,8 +266,12 @@ class Request:
     _headers = None # additional headers to send
 
     def init_request(self):
-        from clearsilver import HDFWrapper
-        self.hdf = HDFWrapper()
+        import neo_cgi
+        # The following line is needed so that ClearSilver can be loaded when
+        # we are being run in multiple interpreters under mod_python
+        neo_cgi.update()
+        import neo_util
+        self.hdf = neo_util.HDF()
         import Cookie
         self.incookie = Cookie.SimpleCookie()
         self.outcookie = Cookie.SimpleCookie()
@@ -317,7 +321,7 @@ class Request:
         if type(cs) == type(''):
             filename = cs
             import neo_cs
-            cs = neo_cs.CS(self.hdf.hdf)
+            cs = neo_cs.CS(self.hdf)
             cs.parseFile(filename)
         data = cs.render()
         self.send_response(response)
