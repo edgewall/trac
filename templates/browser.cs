@@ -77,8 +77,8 @@
        /if ?><?cs
       /if ?>
      </td>
-     <td class="rev"><a title="View Revision Log" href="<?cs
-       var:item.log_href ?>"><?cs var:item.created_rev ?></a></td>
+     <td class="rev"><?cs if:item.permission != '' ?><a title="View Revision Log" href="<?cs
+       var:item.log_href ?>"><?cs var:item.created_rev ?></a><?cs else ?><?cs var:item.created_rev ?><?cs /if ?></td>
      <td class="age"><span title="<?cs var:item.date ?>"><?cs
        var:item.age ?></span></td>
      <td class="change">

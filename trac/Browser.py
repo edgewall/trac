@@ -150,12 +150,14 @@ class Browser(Module.Module):
 
     def render(self):
         self.perm.assert_permission (perm.BROWSER_VIEW)
-
+        
         rev = self.args.get('rev', None)
         path = self.args.get('path', '/')
         order = self.args.get('order', 'name').lower()
         desc = self.args.has_key('desc')
-
+        
+        self.authzperm.assert_permission (path)
+        
         if not rev:
             rev_specified = 0
             rev = svn.fs.youngest_rev(self.fs_ptr, self.pool)
