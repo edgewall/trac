@@ -52,7 +52,7 @@ class Browser(Module):
                 self.req.redirect(self.env.href.file(path, revision))
             else:
                 self.req.redirect(self.env.href.log(path))
-            
+
         entries = fs.dir_entries(root, path, self.pool)
         info = []
         for item in entries.keys():
@@ -85,6 +85,7 @@ class Browser(Module):
                 'created_rev': created_rev,
                 'date'       : date,
                 'date_seconds' : date_seconds,
+                'age'       : pretty_age(date_seconds),
                 'is_dir'     : is_dir,
                 'size'       : pretty_size(size),
                 'size_bytes' : size }
@@ -101,10 +102,10 @@ class Browser(Module):
                     item['browser_href'] = self.env.href.browser(fullpath)
                 else:
                     item['browser_href'] = self.env.href.file(fullpath)
-                
+
             info.append(item)
         return info
-            
+
     def generate_path_links(self, path, rev, rev_specified):
         list = path.split('/')
         path = '/'
@@ -129,7 +130,7 @@ class Browser(Module):
                 self.req.hdf.setValue('browser.path.%d.url' % i,
                                       self.env.href.browser(path))
         self.req.hdf.setValue('browser.path.%d.last' % (len(list) - 1), '1')
-                
+
 
     def render(self):
         self.perm.assert_permission (perm.BROWSER_VIEW)
@@ -137,7 +138,7 @@ class Browser(Module):
         rev = self.args.get('rev', None)
         path = self.args.get('path', '/')
         order = self.args.get('order', 'name')
-        
+
         if not rev:
             rev_specified = 0
             rev = fs.youngest_rev(self.fs_ptr, self.pool)
@@ -151,7 +152,7 @@ class Browser(Module):
             except:
                 rev_specified = 0
                 rev = fs.youngest_rev(self.fs_ptr, self.pool)
-            
+
         info = self.get_info(path, rev, rev_specified)
         if order == 'size':
             info.sort(lambda x, y: cmp(x['size_bytes'], y['size_bytes']))
@@ -167,7 +168,7 @@ class Browser(Module):
         else:
             info.sort(lambda x, y: cmp(rstrip(x['name'], '/'),
                                        rstrip(y['name'], '/')))
-            
+
         # Always put directories before files
         info.sort(lambda x, y: cmp(y['is_dir'], x['is_dir']))
 
