@@ -1,3 +1,17 @@
+Trac 0.8.1  (Feb 28, 2005)
+http://svn.edgewall.com/repos/trac/tags/trac-0.8.1
+
+ * Improved Python 2.1 compatibility.
+ * Layout of navigation bar in Opera fixed.
+ * Execution of Javascript through event handler attributes
+   in HTML code is now forbidden.
+ * Fixed bugs: #157, #371, #556, #683, #970, #971, #972,
+   #974, #979, #983, #1001, #1003, #1007, #1008, #1011,
+   #1020, #1026, #1030, #1045, #1054, #1070, #1072, #1074,
+   #1076, #1087, #1090, #1103, #1108, #1111, #1136, #1159,
+   #1164, #1190, #1195
+
+
 Trac 0.8 'Qualia'  (Nov 15, 2004)
 http://svn.edgewall.com/repos/trac/tags/trac-0.8
 
