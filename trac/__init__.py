@@ -11,7 +11,7 @@ __docformat__ = 'epytext en'
 
 __url__ = 'http://trac.edgewall.com/'
 __copyright__ = '(C) 2003 Edgewall Software'
-__license__ = 'GNU Public License'
-__version__ = '0.0.1'
+__license__ = 'GNU General Public License'
+__version__ = '0.1'
 
 from trac import main
