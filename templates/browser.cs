@@ -1,11 +1,12 @@
 <?cs include: "header.cs"?>
 <div id="page-content">
  <div id="subheader-links">
+   <br />
  </div>
  <div id="main">
   <div id="main-content">
    <div id="browser-body">
-    <h1 id="browser-rev">Revision <?cs var:browser.revision?></h1>
+    <h1 id="browser-rev">Browsing Revision <?cs var:browser.revision?></h1>
 
     <form id="browser-chgrev" action="<?cs var:browser_current_href ?>" method="get">
       <div>
