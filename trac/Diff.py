@@ -91,8 +91,6 @@ class HDFBuilder:
         self.blockno += 1
 
     def writeline(self, text):
-        if text[0:2] in ['++', '--']:
-            return
         match = line_re.search(text)
         if match:
             self.print_block()
@@ -101,9 +99,10 @@ class HDFBuilder:
             self.offset_base = int(match.group(1)) - 1
             self.offset_changed = int(match.group(3)) - 1
             return
-        ttype = text[0]
-        text = text[1:]
-        text = text.expandtabs(self.tabwidth)
+        elif not self.changeno:
+            # skip diff header lines
+            return
+        ttype, text = text[0], text[1:].expandtabs(self.tabwidth)
         if ttype == self.ttype:
             self.block.append(text)
         else:
