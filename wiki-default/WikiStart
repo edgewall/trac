@@ -16,8 +16,8 @@ available Wiki formatting commands.
 
 "[wiki:TracAdmin trac-admin] ''yourdatabase.db'' initdb" created
 a new database environment, containing a default set of wiki pages and some sample
-data. This newly created environment also contains [wiki:TracGuide
-documentation] to help you get started with your project.
+data. This newly created environment also contains 
+[wiki:TracGuide documentation] to help you get started with your project.
 
 You can use [wiki:TracAdmin trac-admin] to configure
 [http://trac.edgewall.com/ Trac] to better fit your project, especially in
