@@ -221,8 +221,8 @@ class Changeset (Module):
         author = changeset_info['author'] or 'None'
         # Just recode this to iso8859-15 until we have propper unicode
         # support
-        self.req.hdf.setValue('changeset.author', utf8_to_iso(author))
-        self.req.hdf.setValue('changeset.message', wiki_to_html(utf8_to_iso(changeset_info['message']), self.req.hdf, self.href))
+        self.req.hdf.setValue('changeset.author', author)
+        self.req.hdf.setValue('changeset.message', wiki_to_html(changeset_info['message'], self.req.hdf, self.href))
         self.req.hdf.setValue('changeset.revision', str(self.rev))
 
         add_dictlist_to_hdf(change_info, self.req.hdf, 'changeset.changes')

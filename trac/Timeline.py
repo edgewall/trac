@@ -106,7 +106,7 @@ class Timeline (Module):
                 item['changeset_href'] = self.href.changeset(int(row['data']))
                 # Just recode this to iso8859-15 until we have propper unicode
                 # support
-                msg = utf8_to_iso(item['message'])
+                msg = item['message']
                 shortmsg = shorten_line(msg)
                 item['shortmsg'] = wiki_to_oneliner(shortmsg,
                                                     self.req.hdf, self.href)

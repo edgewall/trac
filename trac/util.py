@@ -124,14 +124,6 @@ def hdf_add_if_missing(hdf, prefix, value):
         i += 1
     hdf.setValue(prefix + '.%d.name' % i, value)
         
-def utf8_to_iso(text):
-    """Re-encode a UTF-8 unicode string to ISO8859-15"""
-    try:
-        utf = unicode(text, 'utf-8')
-        return  utf.encode('iso-8859-15')
-    except UnicodeError:
-        return text
-    
 def shorten_line(text):
     if not text:
         return text

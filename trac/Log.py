@@ -33,13 +33,12 @@ class Log (Module):
     template_rss_name = 'log_rss.cs'
 
     def log_receiver (self, baton, rev, author, date, log, pool):
-        log = utf8_to_iso(log)
         shortlog = shorten_line(log)
         t = util.svn_time_from_cstring(date, pool) / 1000000
         gmt = time.gmtime(t)
         item = {
             'rev'    : rev,
-            'author' : utf8_to_iso(author or 'None'),
+            'author' : author or 'None',
             'date'   : svn_date_to_string (date, pool),
             'gmt'    : time.strftime('%a, %d %b %Y %H:%M:%S GMT', gmt),
             'log.raw'    : escape(log),
