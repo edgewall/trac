@@ -32,10 +32,17 @@ import sqlite
 import StringIO
 import trac.siteconfig
 
+def my_sum(list):
+    """Python2.1 doesn't have sum()"""
+    tot = 0
+    for item in list:
+	tot += item
+    return tot
+
 
 class TracAdmin(cmd.Cmd):
     intro = ''
-    license = trac.__license__
+    license = trac.__license_long__
     credits = trac.__credits__
 
     doc_header = 'Trac Admin Console %(ver)s\n' \
@@ -255,7 +262,7 @@ CREATE INDEX wiki_idx		ON wiki(name,version);
 
     def db_check(self):
         if os.path.isfile(self.dbname):
-            f = file (self.dbname)
+            f = open (self.dbname)
             data = f.read (50)
             if -1 == data.find("This file contains an SQLite"):
                 return 0
@@ -269,7 +276,7 @@ CREATE INDEX wiki_idx		ON wiki(name,version);
                 raise Exception
             return sqlite.connect (self.dbname)
         except Exception, e:
-            print 'Failed to open/create database.'
+            print 'Failed to open/create database.', e
             sys.exit(1)
 
     def db_execsql (self, sql):
@@ -293,11 +300,22 @@ CREATE INDEX wiki_idx		ON wiki(name,version);
         if hasattr(shlex, 'split'):
             toks = shlex.split(argstr)
         else:
-            lexer = shlex.shlex(StringIO.StringIO(argstr))
+	    def my_strip(s, c):
+		"""string::strip in python2.1 doesn't support arguments"""
+		i = j = 0
+		for i in range(len(s)):
+		    if not s[i] in c:
+			break
+		for j in range(len(s), 0, -1):
+		    if not s[j-1] in c:
+			break
+		return s[i:j]
+	
+	    lexer = shlex.shlex(StringIO.StringIO(argstr))
             lexer.wordchars = lexer.wordchars + ".,_/"
             toks = []
             while 1:
-                token = lexer.get_token().strip('"').strip("'")
+                token = my_strip(lexer.get_token(), '"\'')
                 if not token:
                     break
                 toks.append(token)
@@ -329,7 +347,7 @@ CREATE INDEX wiki_idx		ON wiki(name,version);
                 print ("%%-%ds%s" % (colw[cnum], sp)) % (ldata[rnum][cnum] or ''),
             print
             if rnum == 0 and decor:
-                print ''.join(['-' for x in xrange(0,(1+len(sep))*cnum+sum(colw))])
+                print ''.join(['-' for x in xrange(0,(1+len(sep))*cnum+my_sum(colw))])
         print
 
     def print_doc(self,doc,decor=0):
@@ -390,8 +408,8 @@ CREATE INDEX wiki_idx		ON wiki(name,version);
             docs = (self._help_about + self._help_help + self._help_initdb +
                     self._help_config + self._help_wiki +
                     self._help_permission + self._help_component +
-                    self._help_priority + self._help_severity +
-                    self._help_version)
+                    self._help_priority + self._help_severity + 
+                    self._help_version + self._help_milestone)
             print 'trac-admin - The Trac Administration Console %s' % __version__
             if not self.interactive:
                 print
