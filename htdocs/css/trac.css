@@ -19,15 +19,12 @@ hr { border: none;  border-top: 1px solid #ccc; margin: 2em 0; }
 address { font-style: normal }
 img { border: none }
 
-.hide { display: none; }
-
 .underline { text-decoration: underline; }
-
-OL.loweralpha { list-style-type: lower-alpha }
-OL.upperalpha { list-style-type: upper-alpha }
-OL.lowerroman { list-style-type: lower-roman }
-OL.upperroman { list-style-type: upper-roman }
-OL.arabic     { list-style-type: decimal }
+ol.loweralpha { list-style-type: lower-alpha }
+ol.upperalpha { list-style-type: upper-alpha }
+ol.lowerroman { list-style-type: lower-roman }
+ol.upperroman { list-style-type: upper-roman }
+ol.arabic     { list-style-type: decimal }
 
 /* Link styles */
 :link, :visited {
@@ -205,7 +202,7 @@ label.disabled { color: #d7d7d7 }
   text-align: right;
 }
 
-#content { padding-bottom: 2em }
+#content { padding-bottom: 2em; position: relative }
 
 #help {
  clear: both;

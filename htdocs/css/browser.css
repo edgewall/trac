@@ -1,12 +1,7 @@
 @import url(code.css);
 
 /* Browser */
-h1 {
- font: bold 16px arial,verdana,'Bitstream Vera Sans',helvetica, sans-serif;
- letter-spacing: -0.028em; 
- margin: 0;
- padding: 0 0 .5em;
-}
+h1 { font-size: 16px; letter-spacing: -0.028em; margin: 0; padding: 0 0 .5em }
 h1 :link, h1 :visited, h1 .filename { border: none; padding: 0 .2em }
 h1 :link, h1 :visited { color: #b00 }
 h1 .first, h1 .first:hover { color: #998 }
@@ -74,13 +69,14 @@ h1 .sep { color: #666; padding: 0 .1em }
  width: 100%;
 }
 #info th {
- font: bold 11px verdana,arial,'Bitstream Vera Sans',helvetica, sans-serif;
+ font-size: 11px;
+ font-weight: bold;
  padding: 2px .5em;
  white-space: nowrap;
  vertical-align: top;
 }
 #info td.message {
- font: normal 11px verdana,arial,'Bitstream Vera Sans',helvetica, sans-serif;
+ font-size: 11px;
  padding: 2px .5em;
  vertical-align: top;
  width: 100%;
