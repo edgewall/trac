@@ -131,6 +131,10 @@
         <li class="tkt-chg-change">
            <b>Attachment</b> added: <?cs var:item.new ?>
         </li>
+      <?cs elif $item.field == "description" ?>
+        <li class="tkt-chg-change">
+           <b><?cs var:item.field ?></b> changed.
+        </li>
       <?cs elif $item.old == "" ?>
         <li class="tkt-chg-change">
           <b><?cs var:item.field ?></b> set to <b><?cs var:item.new ?></b>
@@ -189,6 +193,12 @@ onfocus="document.getElementById('comment').focus()">Add/Change
 <label for="summary" class="nt-label">Summary:</label>
 <input id="summary" type="text" name="summary" class="textwidget" size="80"
        value="<?cs var:ticket.summary ?>" />
+<?cs if $trac.acl.TICKET_ADMIN ?>
+  <br />
+  <label for="description" class="nt-label">Description:</label>
+  <textarea id="description" name="description" class="textwidget"
+            rows="10" cols="68"><?cs var:ticket.description.raw ?></textarea>
+<?cs /if ?>
 </div>
   <div id="nt-left">
    <label for="component" class="nt-label">Component:</label>

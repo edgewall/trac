@@ -37,15 +37,14 @@ import Ticket
 def wrap(t, cols=75, initial_indent='', subsequent_indent=''):
     try:
         import textwrap
-        t = t.replace('\r\n', '\n').replace('\r', '\n')
-        wrapper = textwrap.TextWrapper(cols, replace_whitespace=0,
-                                       break_long_words=0,
-                                       initial_indent=initial_indent,
-                                       subsequent_indent=subsequent_indent)
+        t = t.strip().replace('\r\n', '\n').replace('\r', '\n')
+        wrapper = textwrap.TextWrapper(cols, replace_whitespace = 0,
+                                       break_long_words = 0,
+                                       initial_indent = initial_indent,
+                                       subsequent_indent = subsequent_indent)
         wrappedLines = []
         for line in t.split('\n'):
-            wrappedLines += wrapper.wrap(line.rstrip())
-
+            wrappedLines += wrapper.wrap(line.rstrip()) or ['']
         return os.linesep.join(wrappedLines)
 
     except ImportError:
@@ -199,17 +198,29 @@ class TicketNotifyEmail(NotifyEmail):
             for r in rows:
                 self.hdf.setValue('ticket.change.author', str(r[0]))
                 pfx='ticket.change.%s' % r[1]
+                newv = ''
                 if r[1] == 'comment':
-                    newv = wrap(r[3], initial_indent=' ',
-                                subsequent_indent=' ')
+                    newv = wrap(r[3], self.COLS, ' ', ' ')
+                elif r[1] == 'description':
+                    new_descr = wrap(r[3], self.COLS, ' ', ' ')
+                    old_descr = wrap(r[2], self.COLS, '> ', '> ')
+                    old_descr = old_descr.replace(2 * os.linesep,
+                                                  os.linesep + '>' + os.linesep)
+                    cdescr = os.linesep
+                    cdescr += 'Old description:' + 2 * os.linesep
+                    cdescr += old_descr + 2 * os.linesep
+                    cdescr += 'New description:' + 2 * os.linesep
+                    cdescr += new_descr + os.linesep
+                    self.hdf.setValue('email.changes_descr', cdescr)
                 else:
                     newv = r[3]
                     l = 7 + len(r[1])
                     chg = wrap('%s => %s' % (r[2], r[3]), self.COLS-l,'', l*' ')
                     changes += '  * %s:  %s%s' % (r[1], chg, os.linesep)
+                if newv:
+                    self.hdf.setValue('%s.oldvalue' % pfx, str(r[2]))
+                    self.hdf.setValue('%s.newvalue' % pfx, newv)
                 self.hdf.setValue('%s.author' % pfx, str(r[0]))
-                self.hdf.setValue('%s.oldvalue' % pfx, str(r[2]))
-                self.hdf.setValue('%s.newvalue' % pfx, newv)
             if changes:
                 self.hdf.setValue('email.changes_body', changes)
         NotifyEmail.notify(self, tktid, subject)

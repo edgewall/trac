@@ -8,7 +8,8 @@ Changes (by <?cs var:$ticket.change.author ?>):
 
 <?cs var:$email.changes_body ?><?cs
  /if ?><?cs 
- if:$ticket.change.comment.newvalue ?>
+var:$email.changes_descr 
+?><?cs if:$ticket.change.comment.newvalue ?>
 Comment<?cs 
  if:!$email.changes_body ?> (by <?cs 
    var:$ticket.change.comment.author ?>)<?cs /if ?>:

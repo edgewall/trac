@@ -316,9 +316,11 @@ class Ticket (Module):
 
         self.req.hdf.setValue('ticket.reporter_id', escape(reporter_id))
         self.req.hdf.setValue('title', '#%d (ticket)' % id)
+
         self.req.hdf.setValue('ticket.description',
                               wiki_to_html(info['description'], self.req.hdf,
                                            self.env))
+        self.req.hdf.setValue('ticket.description.raw', info['description'])
         self.req.hdf.setValue('ticket.opened',
                               time.strftime('%c', time.localtime(int(info['time']))))
 
@@ -386,6 +388,8 @@ class Ticket (Module):
             new = {}
             checkboxes = []
             for name in self.args.keys():
+                if name == 'description':
+                    self.perm.assert_permission (perm.TICKET_ADMIN)
                 new[name] = self.args[name].value
                 if name[:9] == 'checkbox_':
                     checkboxes.append(self.args[name].value)
