@@ -23,61 +23,54 @@ function addEvent(obj, evType, fn){
  }
 } 
 
-// From http://www.kryogenix.org/code/browser/searchhi/ 
-function highlightWord(node,word,searchwordindex) {
-	// Iterate into this nodes childNodes
-	if (node.hasChildNodes) {
-		var hi_cn;
-		for (hi_cn=0;hi_cn<node.childNodes.length;hi_cn++) {
-			highlightWord(node.childNodes[hi_cn],word,searchwordindex);
-		}
-	}
-	
-	// And do this node itself
-	if (node.nodeType == 3) { // text node
-		tempNodeVal = node.nodeValue.toLowerCase();
-		tempWordVal = word.toLowerCase();
-		if (tempNodeVal.indexOf(tempWordVal) != -1) {
-			pn = node.parentNode;
-			if (pn.className.substring(0,10) != "searchword" && 
-			    pn.className != "result-date") {
-				// word has not already been highlighted!
-				nv = node.nodeValue;
-				ni = tempNodeVal.indexOf(tempWordVal);
-				// Create a load of replacement nodes
-				before = document.createTextNode(nv.substr(0,ni));
-				docWordVal = nv.substr(ni,word.length);
-				after = document.createTextNode(nv.substr(ni+word.length));
-				hiwordtext = document.createTextNode(docWordVal);
-				hiword = document.createElement("span");
-				hiword.className = "searchword"+(searchwordindex % 5);
-				hiword.appendChild(hiwordtext);
-				pn.insertBefore(before,node);
-				pn.insertBefore(hiword,node);
-				pn.insertBefore(after,node);
-				pn.removeChild(node);
-			}
-		}
-	}
-}
-
+// Adapted from http://www.kryogenix.org/code/browser/searchhi/
 function searchHighlight() {
-	if (!document.createElement) return;
-	ref = document.URL;
-        if (ref.indexOf('/search/?q') == -1) ref = document.referrer;
-	if (ref.indexOf('?') == -1) return;
-	qs = ref.substr(ref.indexOf('?')+1);
-	qsa = qs.split('&');
-	for (i=0;i<qsa.length;i++) {
-		qsip = qsa[i].split('=');
-	        if (qsip.length == 1) continue;
-        	if (qsip[0] == 'q' || qsip[0] == 'p') { // q= for Google, p= for Yahoo
-			words = unescape(qsip[1].replace(/\+/g,' ')).split(/\s+/);
-	                for (w=0;w<words.length;w++) {
-				highlightWord(document.getElementById("searchable"),words[w],w);
-                	}
-	        }
-	}
+  if (!document.createElement) return;
+
+  function getSearchWords(url) {
+    if (url.indexOf('?') == -1) return [];
+    var queryString = url.substr(url.indexOf('?') + 1);
+    var params = queryString.split('&');
+    for (var p in params) {
+      var param = params[p].split('=');
+      if (param.length < 2) continue;
+      if (param[0] == 'q' || param[0] == 'p') { // q= for Google, p= for Yahoo
+        return unescape(param[1].replace(/\+/g, ' ')).split(/\s+/);
+      }
+    }
+    return [];
+  }
+
+  function highlightWord(node, word, searchwordindex) {
+    // If this node is a text node and contains the search word, highlight it by
+    // surrounding it with a span element
+    if (node.nodeType == 3) { // Node.TEXT_NODE
+      var pos = node.nodeValue.toLowerCase().indexOf(word.toLowerCase());
+      if (pos >= 0 && !node.parentNode.className.match(/^searchword\d/)) {
+        var span = document.createElement("span");
+        span.className = "searchword" + (searchwordindex % 5);
+        span.appendChild(document.createTextNode(
+            node.nodeValue.substr(pos, word.length)));
+        var newNode = node.splitText(pos);
+        newNode.nodeValue = newNode.nodeValue.substr(word.length);
+        node.parentNode.insertBefore(span, newNode);
+      }
+    } else {
+      // Recurse into child nodes
+      for (var i = 0; i < node.childNodes.length; i++) {
+        highlightWord(node.childNodes[i], word, searchwordindex);
+      }
+    }
+  }
+
+  var words = getSearchWords(document.URL);
+  if (!words.length) words = getSearchWords(document.referrer);
+  if (words.length) {
+    var div = document.getElementById("searchable");
+    for (var w in words) {
+      if (words[w].length) highlightWord(div, words[w], w);
+    }
+  }
 }
 
 // Allow search highlighting of all pages
