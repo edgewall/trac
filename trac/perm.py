@@ -32,9 +32,7 @@ permissions = [
     'WIKI_VIEW', 'WIKI_CREATE', 'WIKI_MODIFY', 'WIKI_DELETE',
     
     'MILESTONE_VIEW', 'MILESTONE_CREATE', 'MILESTONE_MODIFY',
-    'MILESTONE_DELETE',
-    
-    'AUTHZSVN_VIEW', 'AUTHZSVN_MODIFY'
+    'MILESTONE_DELETE'
 ]
 
 meta_permissions = {
@@ -46,8 +44,7 @@ meta_permissions = {
                      'REPORT_MODIFY', 'REPORT_DELETE'],
     'WIKI_ADMIN': ['WIKI_VIEW', 'WIKI_CREATE', 'WIKI_MODIFY', 'WIKI_DELETE'],
     'ROADMAP_ADMIN': ['ROADMAP_VIEW', 'MILESTONE_VIEW', 'MILESTONE_CREATE',
-                      'MILESTONE_MODIFY', 'MILESTONE_DELETE'],
-    'AUTHZSVN_ADMIN': ['AUTHZSVN_VIEW', 'AUTHZSVN_MODIFY']
+                      'MILESTONE_MODIFY', 'MILESTONE_DELETE']
 }
 
 # Make the permissions accessible as module-level constants
