@@ -62,7 +62,7 @@
 </div>
 
 <?cs def:navlink(text, href, id, aclname, accesskey) ?><?cs
- if $error.type || $aclname ?><li><a href="<?cs var:href ?>" <?cs 
+ if $aclname ?><li><a href="<?cs var:href ?>" <?cs 
   if $id == $trac.active_module ?>class="active"<?cs
   /if ?><?cs
   if:$accesskey!="" ?> accesskey="<?cs var:$accesskey ?>"<?cs 

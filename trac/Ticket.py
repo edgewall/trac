@@ -252,8 +252,9 @@ class NewticketModule(Module):
 
 
     def render (self):
+        self.perm.assert_permission(perm.TICKET_CREATE)
+
         if self.args.has_key('create'):
-            self.perm.assert_permission(perm.TICKET_CREATE)
             self.create_ticket()
 
         ticket = Ticket()
