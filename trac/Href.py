@@ -71,7 +71,7 @@ class Href:
     def query(self, constraints, order=None, desc=0):
         href = href_join(self.base, 'query')
         params = []
-        for field in constraints:
+        for field in constraints.keys():
             values = constraints[field]
             if type(values) != list:
                 values = [values]
