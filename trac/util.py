@@ -235,6 +235,28 @@ def pretty_age(then):
             return '%i %s' % (r, r == 1 and unit or unit_plural)
     return ''
 
+def pretty_timedelta(time1, time2=None):
+    """Calculate time delta (inaccurately, only for decorative purposes ;-) for
+    prettyprinting. If time1 is None, the current time is used."""
+    if not time1: time1 = time.time()
+    if not time2: time2 = time.time()
+    if time1 > time2:
+        time2, time1 = time1, time2
+    units = ((3600 * 24 * 365, 'year',   'years'),
+             (3600 * 24 * 30,  'month',  'months'),
+             (3600 * 24 * 7,   'week',   'weeks'),
+             (3600 * 24,       'day',    'days'),
+             (3600,            'hour',   'hours'),
+             (60,              'minute', 'minutes'))
+    age_s = int(time2 - time1)
+    if age_s < 60:
+        return '%i second%s' % (age_s, age_s > 1 and 's' or '')
+    for u, unit, unit_plural in units:
+        r = int(age_s / u)
+        if r:
+            return '%i %s' % (r, r == 1 and unit or unit_plural)
+    return ''
+
 def create_unique_file(path):
     """Create a new file. An index is added if the path exists"""
     parts = os.path.splitext(path)
@@ -270,7 +292,16 @@ def get_date_format_hint():
     t = (1999, 10, 29, t[3], t[4], t[5], t[6], t[7], t[8])
     tmpl = time.strftime('%x', t)
     return tmpl.replace('1999', 'YYYY', 1).replace('99', 'YY', 1) \
-               .replace('29', 'DD', 1).replace('10', 'MM')
+               .replace('10', 'MM', 1).replace('29', 'DD', 1)
+
+def get_datetime_format_hint():
+    t = time.localtime(0)
+    t = (1999, 10, 29, 23, 59, 58, t[6], t[7], t[8])
+    tmpl = time.strftime('%x %X', t)
+    return tmpl.replace('1999', 'YYYY', 1).replace('99', 'YY', 1) \
+               .replace('10', 'MM', 1).replace('29', 'DD', 1) \
+               .replace('23', 'hh', 1).replace('59', 'mm', 1) \
+               .replace('58', 'ss', 1)
 
 
 class TracError(Exception):

@@ -22,7 +22,7 @@
 import time
 
 from Module import Module
-from util import add_to_hdf, get_date_format_hint, sql_escape, TracError
+from util import *
 from Ticket import get_custom_fields, Ticket
 from WikiFormatter import wiki_to_html
 import perm
@@ -107,19 +107,20 @@ class Milestone(Module):
             if not name:
                 raise TracError('You must provide a name for the milestone.',
                                 'Required Field Missing')
-            datemode = self.args.get('datemode', 'manual')
-            if datemode == 'now':
-                date = int(time.time())
-            else:
-                datestr = self.args.get('date', '')
-                date = 0
-                if datestr:
-                    date = self.parse_date(datestr)
-            descr = self.args.get('descr', '')
+            due = 0
+            due_str = self.args.get('duedate', '')
+            if due_str:
+                due = self.parse_date(due_str)
+            completed = 0
+            if self.args.has_key('completed'):
+                completed_str = self.args.get('completeddate', '')
+                if completed_str:
+                    completed = self.parse_date(completed_str)
+            description = self.args.get('description', '')
             if not id:
-                self.create_milestone(name, date, descr)
+                self.create_milestone(name, due, completed, description)
             else:
-                self.update_milestone(id, name, date, descr)
+                self.update_milestone(id, name, due, completed, description)
         elif id:
             self.req.redirect(self.env.href.milestone(id))
         else:
@@ -141,15 +142,15 @@ class Milestone(Module):
                             'Invalid Date Format')
         return seconds
 
-    def create_milestone(self, name, date=0, descr=''):
+    def create_milestone(self, name, date=0, description=''):
         self.perm.assert_permission(perm.MILESTONE_CREATE)
         if not name:
             raise TracError('You must provide a name for the milestone.',
                             'Required Field Missing')
         cursor = self.db.cursor()
         self.log.debug("Creating new milestone '%s'" % name)
-        cursor.execute("INSERT INTO milestone (id, name, time, descr) "
-                       "VALUES (NULL, %s, %d, %s)", name, date, descr)
+        cursor.execute("INSERT INTO milestone (id, name, due, description) "
+                       "VALUES (NULL, %s, %d, %s)", name, date, description)
         self.db.commit()
         self.req.redirect(self.env.href.milestone(name))
 
@@ -178,18 +179,18 @@ class Milestone(Module):
         else:
             self.req.redirect(self.env.href.milestone(id))
 
-    def update_milestone(self, id, name, date, descr):
+    def update_milestone(self, id, name, due, completed, description):
         self.perm.assert_permission(perm.MILESTONE_MODIFY)
         cursor = self.db.cursor()
         self.log.info("Updating milestone '%s'" % id)
         if self.args.has_key('save'):
             self.log.info('Updating milestone field of all tickets '
-                              'associated with milestone %s' % id)
-            cursor.execute('UPDATE ticket SET milestone = %s '
-                            'WHERE milestone = %s', name, id)
-            cursor.execute("UPDATE milestone SET name = %s, time = %d, "
-                           "descr = %s WHERE name = %s",
-                           name, date, descr, id)
+                          'associated with milestone %s' % id)
+            cursor.execute("UPDATE ticket SET milestone = %s "
+                           "WHERE milestone = %s", name, id)
+            cursor.execute("UPDATE milestone SET name = %s, due = %d, "
+                           "completed = %d, description = %s WHERE name = %s",
+                           name, due, completed, description, id)
             self.db.commit()
             self.req.redirect(self.env.href.milestone(name))
         else:
@@ -222,21 +223,30 @@ class Milestone(Module):
 
     def get_milestone(self, name):
         cursor = self.db.cursor()
-        cursor.execute("SELECT name, time, descr FROM milestone "
-                       "WHERE name = %s ORDER BY time, name", name)
+        cursor.execute("SELECT name, due, completed, description "
+                       "FROM milestone WHERE name = %s", name)
         row = cursor.fetchone()
         cursor.close()
         if not row:
             raise TracError('Milestone %s does not exist.' % name,
                             'Invalid Milestone Number')
-        milestone = { 'name': row['name'] }
-        descr = row['descr']
-        if descr:
-            milestone['descr_source'] = descr
-            milestone['descr'] = wiki_to_html(descr, self.req.hdf, self.env, self.db)
-        t = row['time'] and int(row['time'])
-        if t > 0:
-            milestone['date'] = time.strftime('%x', time.localtime(t))
+        milestone = {'name': row['name']}
+        description = row['description']
+        if description:
+            milestone['description_source'] = description
+            milestone['description'] = wiki_to_html(description, self.req.hdf, self.env, self.db)
+        due = row['due'] and int(row['due'])
+        if due > 0:
+            milestone['due'] = due
+            milestone['due_date'] = time.strftime('%x', time.localtime(due))
+            milestone['due_delta'] = pretty_timedelta(due)
+            if due < time.time():
+                milestone['late'] = 1
+        completed = row['completed'] and int(row['completed'])
+        if completed > 0:
+            milestone['completed'] = completed
+            milestone['completed_date'] = time.strftime('%x %X', time.localtime(completed))
+            milestone['completed_delta'] = pretty_timedelta(completed)
         return milestone
 
     def render(self):
@@ -284,7 +294,7 @@ class Milestone(Module):
 
     def render_editor(self, id=None):
         if not id:
-            milestone = { 'name': '', 'date': '', 'descr': '' }
+            milestone = { 'name': '', 'date': '', 'description': '' }
             self.req.hdf.setValue('title', 'New Milestone')
             self.req.hdf.setValue('milestone.mode', 'new')
         else:
@@ -293,6 +303,8 @@ class Milestone(Module):
             self.req.hdf.setValue('milestone.mode', 'edit')
         add_to_hdf(milestone, self.req.hdf, 'milestone')
         add_to_hdf(get_date_format_hint(), self.req.hdf, 'milestone.date_hint')
+        add_to_hdf(get_datetime_format_hint(), self.req.hdf, 'milestone.datetime_hint')
+        add_to_hdf(time.strftime('%x %X', time.localtime(time.time())), self.req.hdf, 'milestone.datetime_now')
 
     def render_view(self, id):
         if self.perm.has_permission(perm.MILESTONE_DELETE):

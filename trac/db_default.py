@@ -21,7 +21,7 @@
 
 
 # Database version identifier. Used for automatic upgrades.
-db_version = 7
+db_version = 8
 
 def __mkreports(reps):
     """Utility function used to create report data in same syntax as the

@@ -26,7 +26,7 @@ from time import localtime, strftime, time
 from __init__ import __version__
 import perm
 import Milestone
-from util import add_to_hdf, CRLF, TracError
+from util import add_to_hdf, pretty_timedelta, CRLF, TracError
 from Module import Module
 from Ticket import Ticket
 from Wiki import wiki_to_html
@@ -49,17 +49,17 @@ class Roadmap(Module):
             icalhref += '&show=all'
             self.req.hdf.setValue('roadmap.href.list',
                                    self.env.href.roadmap())
-            query = "SELECT name, time, descr FROM milestone " \
-                    "WHERE name != '' " \
-                    "ORDER BY (IFNULL(time, 0) = 0) ASC, time ASC, name"
+            query = "SELECT name,due,completed,description FROM milestone " \
+                    "WHERE IFNULL(name,'')!='' " \
+                    "ORDER BY IFNULL(due,0)=0,due,name"
         else:
             self.req.hdf.setValue('roadmap.showall', '1')
             self.req.hdf.setValue('roadmap.href.list',
                                    self.env.href.roadmap('all'))
-            query = "SELECT name, time, descr FROM milestone " \
-                    "WHERE name != '' " \
-                    "AND (time IS NULL OR time = 0 OR time > %d) " \
-                    "ORDER BY (IFNULL(time, 0) = 0) ASC, time ASC, name" % time()
+            query = "SELECT name,due,completed,description FROM milestone " \
+                    "WHERE IFNULL(name,'')!='' " \
+                    "AND IFNULL(completed,0)=0 " \
+                    "ORDER BY IFNULL(due,0)=0,due,name"
 
         if self.req.authname and self.req.authname != 'anonymous':
             icalhref += '&user=' + self.req.authname
@@ -75,15 +75,23 @@ class Roadmap(Module):
             milestone = {
                 'name': row['name'],
                 'href': self.env.href.milestone(row['name']),
-                'time': row['time'] and int(row['time'])
+                'due': row['due'] and int(row['due']),
+                'completed': row['completed'] and int(row['completed'])
             }
-            descr = row['descr']
-            if descr:
-                milestone['descr'] = wiki_to_html(descr, self.req.hdf,
-                                                  self.env, self.db)
-                milestone['descr_text'] = descr
-            if milestone['time'] > 0:
-                milestone['date'] = strftime('%x', localtime(milestone['time']))
+            description = row['description']
+            if description:
+                milestone['description'] = wiki_to_html(description,
+                                                        self.req.hdf,
+                                                        self.env, self.db)
+                milestone['description_text'] = description
+            if milestone['due'] > 0:
+                milestone['due_date'] = strftime('%x', localtime(milestone['due']))
+                milestone['due_delta'] = pretty_timedelta(milestone['due'])
+                if milestone['due'] < time():
+                    milestone['late'] = 1
+            if milestone['completed'] > 0:
+                milestone['completed_date'] = strftime('%x', localtime(milestone['completed']))
+                milestone['completed_delta'] = pretty_timedelta(milestone['completed'])
             self.milestones.append(milestone)
         cursor.close()
         add_to_hdf(self.milestones, self.req.hdf, 'roadmap.milestones')
@@ -154,11 +162,11 @@ class Roadmap(Module):
                 write_prop('BEGIN', 'VEVENT')
                 write_prop('UID', uid)
                 if milestone.has_key('date'):
-                    write_date('DTSTART', localtime(milestone['time']))
+                    write_date('DTSTART', localtime(milestone['due']))
                 write_prop('SUMMARY', 'Milestone %s' % milestone['name'])
                 write_prop('URL', self.req.base_url + '/milestone/' + milestone['name'])
-                if milestone.has_key('descr'):
-                    write_prop('DESCRIPTION', milestone['descr_text'])
+                if milestone.has_key('description'):
+                    write_prop('DESCRIPTION', milestone['description_text'])
                 write_prop('END', 'VEVENT')
             for ticket in [ticket for ticket in milestone['tickets']
                           if ticket['owner'] == user]:
@@ -166,7 +174,7 @@ class Roadmap(Module):
                 write_prop('BEGIN', 'VTODO')
                 if milestone.has_key('date'):
                     write_prop('RELATED-TO', uid)
-                    write_date('DUE', localtime(milestone['time']))
+                    write_date('DUE', localtime(milestone['due']))
                 write_prop('SUMMARY', 'Ticket #%i: %s' % (ticket['id'],
                                                           ticket['summary']))
                 write_prop('URL', self.req.base_url + '/ticket/' + str(ticket['id']))

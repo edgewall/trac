@@ -20,8 +20,18 @@
    <div class="info">
     <h2><a href="<?cs var:milestone.href ?>">Milestone: <em><?cs
       var:milestone.name ?></em></a></h2>
-    <p class="date"><?cs if:milestone.date ?>
-     <?cs var:milestone.date ?><?cs else ?>No date set<?cs /if ?>
+    <p class="date"<?cs
+     if:milestone.completed_date ?> title="<?cs var:milestone.completed_date ?>">
+      Completed <?cs var:milestone.completed_delta ?> ago<?cs
+     elif:milestone.due_date ?> title="<?cs var:milestone.due_date ?>"><?cs
+      if:milestone.late ?>
+       <strong><?cs var:milestone.due_delta ?> late</strong><?cs
+      else ?>
+       Due in <?cs var:milestone.due_delta ?><?cs
+      /if ?><?cs
+     else ?>>
+      No date set<?cs
+     /if ?>
     </p>
     <?cs with:stats = milestone.stats ?>
      <?cs if:#stats.total_tickets > #0 ?>
@@ -40,7 +50,7 @@
      <?cs /if ?>
     <?cs /with ?>
    </div>
-   <div class="descr"><?cs var:milestone.descr ?></div>
+   <div class="description"><?cs var:milestone.description ?></div>
   </li>
  <?cs /each ?></ul>
 

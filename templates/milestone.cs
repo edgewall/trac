@@ -43,36 +43,57 @@
  <?cs if:milestone.mode == "edit" || milestone.mode == "new" ?>
   <script type="text/javascript">
     addEvent(window, 'load', function() {
-      document.getElementById('name').focus() }
-    );
+      document.getElementById('name').focus();
+    });
   </script>
   <form id="edit" action="<?cs var:cgi_location ?>" method="post">
    <input type="hidden" name="mode" value="milestone" />
    <input type="hidden" name="id" value="<?cs var:milestone.name ?>" />
    <input type="hidden" name="action" value="commit_changes" />
    <div class="field">
-    <label for="name">Name of the milestone:</label><br />
+    <label>Name of the milestone:<br />
     <input type="text" id="name" name="name" size="32" value="<?cs
-      var:milestone.name ?>" />
+      var:milestone.name ?>" /></label>
    </div>
-   <div class="field">
-    <label for="datemode">Completion date:</label><br />
-    <select name="datemode" id="datemode"
-        onchange="enableControl('date',this.value=='manual');
-                  if (this.value=='manual') document.getElementById('date').focus();">
-     <option value="manual">Set manually</option>
-     <option value="now">Mark as completed now</option>
-    </select>
-    <input type="text" id="date" name="date" size="8" value="<?cs
-      var:milestone.date ?>" title="Format: <?cs var:milestone.date_hint ?>" />
-    <label for="date"><em>Format: <?cs var:milestone.date_hint ?></em></label>
-   </div>
+   <fieldset>
+    <legend>Schedule</legend>
+    <label>Due:<br />
+     <input type="text" id="duedate" name="duedate" size="<?cs
+       var:len(milestone.date_hint) ?>" value="<?cs
+       var:milestone.due_date ?>" title="Format: <?cs var:milestone.date_hint ?>" />
+     <em>Format: <?cs var:milestone.date_hint ?></em>
+    </label>
+    <div class="field">
+     <label>
+      <input type="checkbox" id="completed" name="completed"<?cs
+        if:milestone.completed ?> checked="checked"<?cs /if ?> />
+      Completed:<br />
+     </label>
+     <label>
+      <input type="text" id="completeddate" name="completeddate" size="<?cs
+        var:len(milestone.date_hint) ?>" value="<?cs
+        alt:milestone.completed_date ?><?cs
+         var:milestone.datetime_now ?><?cs
+        /alt ?>" title="Format: <?cs
+        var:milestone.datetime_hint ?>" />
+      <em>Format: <?cs var:milestone.datetime_hint ?></em>
+     </label>
+     <script type="text/javascript">
+       var completed = document.getElementById("completed");
+       var enableCompletedDate = function() {
+         enableControl("completeddate", completed.checked);
+       };
+       addEvent(window, "load", enableCompletedDate);
+       addEvent(completed, "click", enableCompletedDate);
+     </script>
+    </div>
+   </fieldset>
    <div class="field">
     <fieldset class="iefix">
-     <label for="descr">Description (you may use <a tabindex="42" href="<?cs
+     <label for="description">Description (you may use <a tabindex="42" href="<?cs
        var:trac.href.wiki ?>/WikiFormatting">WikiFormatting</a> here):</label>
-     <p><textarea id="descr" name="descr" class="wikitext" rows="10" cols="78"><?cs
-       var:milestone.descr_source ?></textarea></p>
+     <p><textarea id="description" name="description" class="wikitext" rows="10" cols="78"><?cs
+       var:milestone.description_source ?></textarea></p>
     </fieldset>
    </div>
    <div class="buttons">
@@ -107,10 +128,20 @@
    </div>
   </form>
  <?cs else ?>
-  <em class="date"><?cs if:milestone.date ?>
-   <?cs var:milestone.date ?><?cs else ?>No date set<?cs /if ?>
-  </em>
-  <div class="descr"><?cs var:milestone.descr ?></div>
+  <p class="date"><?cs
+   if:milestone.completed_date ?>
+    Completed <?cs var:milestone.completed_delta ?> ago (<?cs var:milestone.completed_date ?>)<?cs
+   elif:milestone.due_date ?><?cs
+    if:milestone.late ?>
+     <strong><?cs var:milestone.due_delta ?> late</strong><?cs
+    else ?>
+     Due in <?cs var:milestone.due_delta ?><?cs
+    /if ?> (<?cs var:milestone.due_date ?>)<?cs
+   else ?>
+    No date set<?cs
+   /if ?>
+  </p>
+  <div class="description"><?cs var:milestone.description ?></div>
  <?cs /if ?>
 
  <?cs if:milestone.mode == "view" ?>

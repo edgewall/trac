@@ -36,11 +36,11 @@ li.milestone .info dl {
 }
 li.milestone .info dt { display: inline; margin-left: .5em }
 li.milestone .info dd { display: inline; margin: 0 1em 0 .5em }
-li.milestone .descr { margin-left: 1em }
+li.milestone .description { margin-left: 1em }
 
 /* Styles for the milestone view */
-.milestone .date { color: #888; font-style: italic }
-.milestone .descr { margin: 1em 0 2em }
+.milestone .date { color: #888; font-style: italic; margin: 0 }
+.milestone .description { margin: 1em 0 2em }
 
 /* Milestone view preferences */
 #prefs fieldset { margin: 1em .5em .5em; padding: .5em 1em 0 }
@@ -86,4 +86,4 @@ h2.stats {
 #edit .disabled em { color: #d7d7d7 }
 #edit .field { margin-top: 1.3em }
 #edit label { padding-left: .2em }
-#edit textarea#descr { width: 97% }
+#edit textarea#description { width: 97% }

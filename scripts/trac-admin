@@ -238,7 +238,7 @@ class TracAdmin(cmd.Cmd):
                            '%b %d, %Y']:
                 try:
                     pt = time.strptime(t, format)
-                    seconds = str(time.mktime(pt))
+                    seconds = int(time.mktime(pt))
                 except ValueError:
                     continue
                 break
@@ -816,11 +816,14 @@ class TracAdmin(cmd.Cmd):
 
     ## Milestone
     _help_milestone = [('milestone list', 'Show milestones'),
-                       ('milestone add <name> [time]', 'Add milestone'),
+                       ('milestone add <name> [due]', 'Add milestone'),
                        ('milestone rename <name> <newname>',
                         'Rename milestone'),
-                       ('milestone time <name> <time>',
-                        'Set milestone date (Format: "%s" or "now")'
+                       ('milestone due <name> <due>',
+                        'Set milestone due date (Format: "%s" or "now")'
+                        % util.get_date_format_hint()),
+                       ('milestone completed <name> <completed>',
+                        'Set milestone completed date (Format: "%s" or "now")'
                         % util.get_date_format_hint()),
                        ('milestone remove <name>', 'Remove milestone')]
 
@@ -839,22 +842,25 @@ class TracAdmin(cmd.Cmd):
             elif arg[0] == 'add' and len(arg) in [2,3]:
                 self._do_milestone_add(arg[1])
                 if len(arg) == 3:
-                    self._do_milestone_time(arg[1], arg[2])
+                    self._do_milestone_set_due(arg[1], arg[2])
             elif arg[0] == 'rename' and len(arg) == 3:
                 self._do_milestone_rename(arg[1], arg[2])
-            elif arg[0] == 'time' and len(arg) == 3:
-                self._do_milestone_time(arg[1], arg[2])
             elif arg[0] == 'remove' and len(arg) == 2:
                 self._do_milestone_remove(arg[1])
+            elif arg[0] == 'due' and len(arg) == 3:
+                self._do_milestone_set_due(arg[1], arg[2])
+            elif arg[0] == 'completed' and len(arg) == 3:
+                self._do_milestone_set_completed(arg[1], arg[2])
             else:
                 self.do_help('milestone')
         except Exception, e:
             print 'Command %s failed:' % arg[0], e
 
     def _do_milestone_list(self):
-        data = self.db_execsql("SELECT name,time FROM milestone ORDER BY time,name")
-        data = map(lambda x: (x[0], x[1] and time.strftime('%c', time.localtime(x[1]))), data)
-        self.print_listing(['Name', 'Time'], data)
+        data = self.db_execsql("SELECT name,due,completed FROM milestone ORDER BY IFNULL(due,0)!=0 DESC, due,name")
+        data = map(lambda x: (x[0], x[1] and time.strftime('%c', time.localtime(x[1])),
+                              x[2] and time.strftime('%c', time.localtime(x[1]))), data)
+        self.print_listing(['Name', 'Due', 'Completed'], data)
 
     def _do_milestone_rename(self, name, newname):
         d = {'name':name, 'newname':newname}
@@ -866,7 +872,7 @@ class TracAdmin(cmd.Cmd):
                                " WHERE name='%(name)s'" % d)
 
     def _do_milestone_add(self, name):
-        data = self.db_execsql("INSERT INTO milestone (name, time) "
+        data = self.db_execsql("INSERT INTO milestone (name, due) "
                                " VALUES('%(name)s', 0)" % {'name':name})
 
     def _do_milestone_remove(self, name):
@@ -878,7 +884,7 @@ class TracAdmin(cmd.Cmd):
         data = self.db_execsql("DELETE FROM milestone" 
                                " WHERE name='%(name)s'" % d)
 
-    def _do_milestone_time(self, name, t):
+    def _do_milestone_set_due(self, name, t):
         d = {'name':name}
         data = self.db_execsql("SELECT name FROM milestone" 
                                " WHERE name='%(name)s'" % d)
@@ -886,7 +892,18 @@ class TracAdmin(cmd.Cmd):
             raise Exception, "No such milestone '%s'" % name
         seconds = self._parse_datetime(t)
         if seconds != None:
-            data = self.db_execsql("UPDATE milestone SET time='%s'" 
+            data = self.db_execsql("UPDATE milestone SET due=%d"
+                                   " WHERE name='%s'" % (seconds, name))
+
+    def _do_milestone_set_completed(self, name, t):
+        d = {'name':name}
+        data = self.db_execsql("SELECT name FROM milestone" 
+                               " WHERE name='%(name)s'" % d)
+        if not data:
+            raise Exception, "No such milestone '%s'" % name
+        seconds = self._parse_datetime(t)
+        if seconds != None:
+            data = self.db_execsql("UPDATE milestone SET completed=%d"
                                    " WHERE name='%s'" % (seconds, name))
 
     ## Version

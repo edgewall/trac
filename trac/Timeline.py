@@ -86,9 +86,9 @@ class Timeline (Module):
                         "FROM wiki WHERE time>=%s AND time<=%s" %
                      (start, stop))
         if milestone:
-            q.append("SELECT time, -1 AS idata, '' AS tdata, 6 AS type, "
+            q.append("SELECT completed AS time, -1 AS idata, '' AS tdata, 6 AS type, "
                      "name AS message, '' AS author " 
-                     "FROM milestone WHERE time>=%s AND time<=%s" %
+                     "FROM milestone WHERE completed>=%s AND completed<=%s" %
                      (start, stop))
 
         q_str = string.join(q, ' UNION ALL ')
