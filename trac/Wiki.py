@@ -238,7 +238,7 @@ class Formatter(CommonFormatter):
         return ''
 
     def close_indentation(self):
-        self.out.write('</blockquote>\n' * self.indent_level)
+        self.out.write(('</blockquote>' + os.linesep) * self.indent_level)
         self.indent_level = 0
         
     def open_indentation(self, depth):
@@ -249,7 +249,7 @@ class Formatter(CommonFormatter):
             self.close_list()
             self.indent_level = depth
             for i in range(depth):
-                self.out.write('<blockquote>\n')
+                self.out.write('<blockquote>' + os.linesep)
 
     def _list_formatter(self, match, fullmatch):
         ldepth = len(fullmatch.group('ldepth'))
@@ -292,12 +292,12 @@ class Formatter(CommonFormatter):
     
     def open_paragraph(self):
         if not self.paragraph_open:
-            self.out.write('<p>\n')
+            self.out.write('<p>' + os.linesep)
             self.paragraph_open = 1
             
     def close_paragraph(self):
         if self.paragraph_open:
-            self.out.write('</p>\n')
+            self.out.write('</p>' + os.linesep)
             self.paragraph_open = 0
 
     def format(self, text, out):
@@ -316,21 +316,21 @@ class Formatter(CommonFormatter):
             if not self.in_pre and line == '{{{':
                 self.in_pre = 1
                 self.close_paragraph()
-                self.out.write('<pre>\n')
+                self.out.write('<pre>' + os.linesep)
                 continue
             elif self.in_pre:
                 if line == '}}}':
-                    out.write('</pre>\n')
+                    out.write('</pre>' + os.linesep)
                     self.in_pre = 0
                 else:
-                    self.out.write(line + '\n')
+                    self.out.write(line + os.linesep)
                 continue
             # Handle Horizontal ruler
             elif line[0:4] == '----':
                 self.close_paragraph()
                 self.close_indentation()
                 self.close_list()
-                self.out.write('<hr />\n')
+                self.out.write('<hr />' + os.linesep)
                 continue
             # Handle new paragraph
             elif line == '':
@@ -351,7 +351,7 @@ class Formatter(CommonFormatter):
             
             if len(result) and not self.in_list_item:
                 self.open_paragraph()
-            out.write(result + '\n')
+            out.write(result + os.linesep)
             
         self.close_paragraph()
         self.close_indentation()

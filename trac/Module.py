@@ -33,8 +33,13 @@ class Module:
 
     def run(self):
         self.cgi.hdf.setValue('cgi_location', self.cgi_location)
+        self.render_global()
         self.render()
-        self.apply_template()
+        try:
+            disp = getattr(self, 'display_' + self.args['format'])
+        except (KeyError,AttributeError):
+            disp = self.display
+        disp()
         
     def render (self):
         """
@@ -42,8 +47,8 @@ class Module:
         to self.cgi.hdf.
         """
         pass
-
-    def apply_template (self):
+    
+    def render_global (self):
         sql_to_hdf(self.db, "SELECT name FROM enum WHERE type='priority' ORDER BY value",
                    self.cgi.hdf, 'enums.priority')
         sql_to_hdf(self.db, "SELECT name FROM enum WHERE type='severity' ORDER BY value",
@@ -84,11 +89,30 @@ class Module:
         self.cgi.hdf.setValue('header_logo.height',
                               self.config['header_logo']['height'])
         self.cgi.hdf.setValue('trac.href.logout', href.logout())
-        
+
+
+
+    def display(self):
         templates_dir = self.config['general']['templates_dir']
         self.cgi.hdf.setValue('hdf.loadpaths.0', templates_dir)
         tmpl_filename = os.path.join (templates_dir, self.template_name)
-
         self.cgi.display(tmpl_filename)
 
+
+    def display_hdf(self):
+        def hdf_tree_walk(node,prefix=''):
+            while node: 
+                nname = node.name()
+                nvalue = node.value()
+                np = (prefix and prefix+'.' or '') + (nname or '')
+                if nvalue:
+                    result.append("%s = %s" % (np,nvalue))
+                hdf_tree_walk(node.child(), np)
+                node = node.next()
+        print "Content-type: text/plain\r\n"
+        result = []
+        hdf_tree_walk (self.cgi.hdf)
+        result.sort()
+        for r in result:
+            print r
         

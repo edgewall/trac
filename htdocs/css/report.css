@@ -26,18 +26,16 @@ tr {
 }
 .report-tktref { display: block; padding: 0 .5em; }
 .report-tktref:hover { background: #ccc; color: #fff; }
-.color1-odd  { background: #fdc; border-color: #db6; color: #844; }
-.color1-even { background: #fed; border-color: #dc7; color: #844; }
-.color2-odd  { background: #ffb; border-color: #dd9; color: #880; }
-.color2-even { background: #ffd; border-color: #ddb; color: #880; }
-.color3-odd  { background: #cfd; border-color: #adb; color: #070; }
-.color3-even { background: #dfe; border-color: #bdc; color: #070; }
-.color4-odd  { background: #cff; border-color: #7dd; color: #099; }
-.color4-even { background: #dff; border-color: #7dd; color: #099; }
-.color5-odd  { background: #ddeeff; border-color: #bcd; color: #469; }
-.color5-even { background: #d0e0ff; border-color: #bcd; color: #469; }
-/* .color5-odd  { background: #e0eeff; border-color: #bcd; color: #669; } */
-/* .color5-even { background: #d7deff; border-color: #bcd; color: #669; } */
+.color1-odd  { background: #fdc; border-color: #ecb; color: #844; }
+.color1-even { background: #fed; border-color: #edc; color: #844; }
+.color2-odd  { background: #ffb; border-color: #eea; color: #880; }
+.color2-even { background: #ffd; border-color: #eec; color: #880; }
+.color3-odd  { background: #cfd; border-color: #bec; color: #070; }
+.color3-even { background: #dfe; border-color: #ced; color: #070; }
+.color4-odd  { background: #cff; border-color: #bee; color: #099; }
+.color4-even { background: #dff; border-color: #cee; color: #099; }
+.color5-odd  { background: #ddeeff; border-color: #ccddee; color: #469; }
+.color5-even { background: #d0e0ff; border-color: #cde; color: #469; }
 .color6-odd  { background: #f0f0f0; border-color: #ddd; color: #888; }
 .color6-even { background: #f7f7f7; border-color: #ddd; color: #888; }
 .color6-odd a, .color6-even a { color: #b66; }

@@ -4,7 +4,6 @@ http://svn.edgewall.com/repos/trac/trunk/
  * Colored reports. Use colors to show priority, etc. 
  * Report groups. Group results by a column.
  * Better, locale-based date and time formatting. 
- * Missing author in changeset messages now works.
  * Fixed bugs: #16, #103, #110, #112, #113, #114, #117,#120
 	
 Trac 0.5.2 (March 2, 2004)

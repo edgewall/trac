@@ -47,6 +47,10 @@ def sync(db, repos, fs_ptr, pool):
                                   util.SVN_PROP_REVISION_AUTHOR, pool)
         date = fs.revision_prop(fs_ptr, rev + offset,
                                 util.SVN_PROP_REVISION_DATE, pool)
+
+        print date
+        print util.svn_time_from_cstring(date, pool)
+
         
         date = util.svn_time_from_cstring(date, pool) / 1000000
         

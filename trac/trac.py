@@ -35,7 +35,7 @@ modules = {
     'log'         : ('Log', 'Log', 1),
     'file'        : ('File', 'File', 1),
     'wiki'        : ('Wiki', 'Wiki', 0),
-    'about'       : ('About', 'About', 0),
+    'about_trac'       : ('About', 'About', 0),
     'search'      : ('Search', 'Search', 0),
     'report'      : ('Report', 'Report', 0),
     'ticket'      : ('Ticket', 'Ticket', 0),
@@ -49,9 +49,9 @@ def parse_args(path_info):
     args = {}
     if not path_info:
         return args
-    match = re.search('/about(/?.*)', path_info)
+    match = re.search('/about_trac(/?.*)', path_info)
     if match:
-        args['mode'] = 'about'
+        args['mode'] = 'about_trac'
         if len(match.group(1)) > 0:
             args['page'] = match.group(1)
         return args
