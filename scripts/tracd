@@ -52,15 +52,10 @@ from trac.util import *
 from trac.trac import parse_args, modules, Request, open_svn_repos, RedirectException
 from trac import siteconfig
 
-def parse_qs(args, query):
-    """Parse a HTTP query string, can be used for both GET and POST"""
-    for arg in query.split('&'):
-        val = arg.split('=', 1)
-        if len(val) == 2:
-            args[val[0]] = urllib.unquote(val[1].replace('+', ' '))
 
 class TracHTTPServer(SocketServer.ThreadingMixIn, BaseHTTPServer.HTTPServer):
     pass
+
 
 class TracHTTPRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler,
                              Request):
@@ -121,7 +116,6 @@ class TracHTTPRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler,
            self.headers['Content-Type'] != 'application/x-www-form-urlencoded':
             self.send_error(500, 'Weird POST request')
             return
-        self.post_query_string = self.read(int(self.headers['Content-Length']))
         self.do_trac_req()
 
     def do_GET(self):
@@ -152,11 +146,8 @@ class TracHTTPRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler,
         authenticator = auth.Authenticator(database, auth_cookie, remote_addr)
 
         # Parse arguments
-        args = parse_args(self.path_info)
-        if self.post_query_string:
-            parse_qs(args, self.post_query_string)
-        if self.query_string:
-            parse_qs(args, self.query_string)
+        args = parse_args(self.command, self.path_info, self.query_string,
+                          self.rfile, None, self.headers)
 
         # Load the selected module
         mode = args.get('mode', 'wiki')

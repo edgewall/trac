@@ -45,7 +45,7 @@ modules = {
     'newticket'   : ('Ticket', 'Newticket', 0),
     }
 
-def parse_args(path_info):
+def parse_path_info(path_info):
     args = {}
     if not path_info:
         return args
@@ -102,6 +102,23 @@ def parse_args(path_info):
         args['mode'] = 'changeset'
         args['rev'] = match.group(1)
         return args
+    return args
+
+def parse_args(command, path_info, query_string,
+               fp=None, env = None, _headers=None):
+    args = parse_path_info(path_info)
+    if not env:
+        env = {'REQUEST_METHOD': command, 'QUERY_STRING': query_string}
+    if command == 'GET':
+        _headers = None
+    fs = cgi.FieldStorage(fp, environ=env, headers=_headers)
+    print env
+    print _headers
+    for x in fs.keys():
+        argv = fs[x]
+        if type(argv) == list:
+            argv = argv[0]
+        args[x] = argv.value.replace('\r','')
     return args
 
 def open_database():
@@ -243,13 +260,9 @@ def real_main():
             pass
 
     # Parse arguments
-    args = parse_args(path_info)
-    _args = cgi.FieldStorage()
-    for x in _args.keys():
-        argv = _args[x]
-        if type(argv) == list:
-            argv = argv[0]
-        args[x] = argv.value.replace('\r','')
+    args = parse_args(os.getenv('REQUEST_METHOD'),
+                      path_info, os.getenv['QUERY_STRING'],
+                      os.environ)
 
     # Load the selected module
     mode = args.get('mode', 'wiki')
