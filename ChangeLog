@@ -8,6 +8,7 @@ http://svn.edgewall.com/repos/trac/tags/trac-0.7
  * UTF-8 character encoding support.
  * Wiki page attachments.
  * Syntax coloring supporting >35 languages, using SilverCity or GNU Enscript.
+ * Better support for ReStructuredText.
  * Logging support, including syslog and windows eventlog.
  * Ticket attachments.
  * Import tickets from Bugzilla (contributed by Mark Rowe).

@@ -1,13 +1,15 @@
 About Trac
 ==========
+
 Trac is a minimalistic web-based software project management and bug/issue
 tracking system. It provides an interface to the Subversion revision control
 systems, an integrated wiki, flexible issue tracking and convenient report
-facilities. 
+facilities.
 
 Trac is distributed using the GNU General Public License.
 
 **For installation instructions, please see the INSTALL. **
+**If you are upgrading from a previous Trac version, please read UPGRADE. **
 
 You might also want to take a look at the RELEASE and ChangeLog files for more
 information.

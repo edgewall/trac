@@ -1,13 +1,14 @@
-Trac 0.6.1 (245 Trioxin) Release Notes
-======================================
-April 12, 2004
+Trac 0.7 (Fulci) Release Notes
+==============================
+May, 2004
 
-Edgewall Software is pleased to announce the release of Trac 0.6.1 '245 Trioxin'.
+Edgewall Software proudly announces the immediate availability of our latest
+release, Trac 0.7 'Fulci'.
 
 Trac is a minimalistic web-based software project management and bug/issue
 tracking system. It provides an interface to the Subversion revision control
 systems, an integrated wiki, flexible issue tracking and convenient report
-facilities. 
+facilities.
 
 Trac allows wiki markup in issue descriptions and commit messages, creating
 links and useful structure between bugs, tasks, changesets, files and wiki
@@ -16,14 +17,14 @@ making tracking progress or getting an overview of a project easy.
 
 For more information, please visit the main Trac web site:
 
-  <http://trac.edgewall.com/> 
+  <http://trac.edgewall.com/>
 
 The software, published under the GNU General Public License, is
 available at:
 
   <http://projects.edgewall.com/trac/download/>
 
-Please report problems and provide feedback in the project issue tracker: 
+Please report problems and provide feedback in the project issue tracker:
 
   <http://projects.edgewall.com/trac/>
 
@@ -34,39 +35,66 @@ For questions, comments and user discussions, please use the Trac mailing list
 
 What's New
 ----------
-This is primarily a bugfix release. 0.6.1 also brings:
+0.7 'Fulci' is an important release for Trac, and also brings the largest number of
+improvements yet. It marks a big step towards the big '1.0', some of the
+biggest changes being the introduction of a new database format and the
+experimental stand-alone Trac daemon.
 
- * RPM package for SuSE Linux 
- * Windows installer, including clearsilver
- * A welcome to a new developer; Rocky Burt
- * Fixed bugs. See ChangeLog for details.
+A summary of major changes for this release:
 
-For complete release details, see the ChangeLog at: 
+ * Revised database format. (Requires manual upgrade).
+ * Trac stand-alone daemon, tracd (Experimental).
+ * Greatly improved browser.
+ * Many usability improvements.
+ * UTF-8 character encoding support.
+ * Wiki page attachments.
+ * Ticket attachments.
+ * Syntax coloring supporting >35 languages, using SilverCity or GNU Enscript.
+ * Better support for ReStructuredText.
+ * Logging support, including syslog and windows event log.
+ * Ticket email notification.
+ * Improved search facilities.
+ * Import tickets from Bugzilla (contributed by Mark Rowe).
+ * Import tickets from SourceForge (contributed by Dmitry Yusupov).
+
+For a more complete list of improvements, see the ChangeLog at:
 
  <http://projects.edgewall.com/trac/wiki/ChangeLog>
 
 About Edgewall
 --------------
-Edgewall Software is a small consulting business focusing on GNU/Linux and
-open source software services. Edgewall offers custom software development,
-Linux consulting and commercial support, including Trac and Subversion
-support.
+Edgewall Software is an independent software development company specialized
+in Linux and open source technologies. Edgewall provides software development
+capabilities and consultancy to clients worldwide, on both short term basis
+and in long term strategic partnerships.
 
-For more information, visit our web site at <http://www.edgewall.com/> 
+Specific areas of expertise include:
+
+    * Python development, including Python extensions and integration.
+    * Web services and application development.
+    * C and C++ application development for UNIX and Linux.
+    * Cross-platform application development and porting.
+    * Open Source development practices, methods and tools.
+
+Edgewall also offers professional Trac support and consulting, including
+customization, integration and custom feature development.
+
+For more information, visit our web site at <http://www.edgewall.com/>
 or email us at <mailto:info@edgewall.com>.
 
 Acknowledgements
 ----------------
-Many thanks to everyone who has, and continue to, contribute to the project.
-Also our thanks to all people providing feedback and bug reports that helps us
-make Trac better, easier to use and more effective. 
+Many thanks to the growing number of people who have, and continue to,
+support the project. Also our thanks to all people providing feedback and bug
+reports that helps us make Trac better, easier to use and more effective.
+
 Without your invaluable help, Trac would not evolve. Thank you.
 
 Finally, we hope Trac will prove itself useful to like-minded programmers
-around the world, and of course that this release is an improvement over the
-last. 
+around the world, and that this release will prove an improvement over the
+last.
 
-Let us know. :-)
+Please let us know. :-)
 
 /The Trac Team <http://trac.edgewall.com/>
 
