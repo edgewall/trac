@@ -77,7 +77,7 @@ class TracFieldStorage(cgi.FieldStorage):
 
 def parse_path_info(args, path_info):
     def set_if_missing(fs, name, value):
-        if not fs.has_key(name):
+        if value and not fs.has_key(name):
             fs.list.append(cgi.MiniFieldStorage(name, value))
 
     if not path_info or path_info in ['/login', '/logout']:
