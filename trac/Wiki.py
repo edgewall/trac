@@ -24,7 +24,7 @@ import time
 import os
 import string
 import difflib
-import StringIO
+from cStringIO import StringIO
 
 import perm
 from Module import Module

@@ -24,13 +24,12 @@ from Module import Module
 from Wiki import wiki_to_html
 import perm
 
-from cStringIO import StringIO
 import re
 import string
 from svn import fs, util, delta, repos
 
 line_re = re.compile('@@ [+-]([0-9]+),([0-9]+) [+-]([0-9]+),([0-9]+) @@')
-header_re = re.compile('header ([^\|]+) \| ([^\|]+) header')
+header_re = re.compile('header ([^\|]+) \| ([^\|]+) redaeh')
 space_re = re.compile('  ')
 
 class DiffColorizer:
@@ -124,7 +123,7 @@ class HtmlDiffEditor (delta.Editor):
         prefix = 'changeset.diff.files.%d' % (self.fileno)
         filtr = DiffColorizer(self.hdf, prefix)
         self.fileno += 1
-        filtr.writeline('header %s | %s header' % (old_path, new_path))
+        filtr.writeline('header %s | %s redaeh' % (old_path, new_path))
         while 1:
             line = pobj.readline()
             if not line:

@@ -93,6 +93,11 @@ def convert_db(old_cursor, new_cursor):
 
 if __name__ == '__main__':
     if len(sys.argv) != 3:
-        print >> sys.stderr, "Usage: %s <db-file> <env-dir>" % sys.argv[0]
+        print >> sys.stderr, 'Usage: %s <db-file> <env-dir>\n' % sys.argv[0]
+        print >> sys.stderr, \
+              'Creates a new Trac environment and initializes it with ' \
+              'information\nfrom an existing pre 0.7 trac database.'
+        print >> sys.stderr
         sys.exit(1)
     db2env(sys.argv[1], sys.argv[2])
+    print >> sys.stderr, 'Environment successfully created.'
