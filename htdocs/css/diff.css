@@ -1,3 +1,22 @@
+/* Diff/change overview */
+#overview {
+ border: 1px solid #d7d7d7;
+ margin-top: 1em;
+ padding: .5em;
+ width: 100%;
+}
+#overview th {
+ padding-right: .5em;
+ text-align: right;
+ width: 8em;
+}
+#overview td,  #overview th {
+ vertical-align: top;
+ background: transparent;
+ color: inherit;
+ border: none;
+}
+
 /* Colors for change types */
 .mod { background: #fd8 !important }
 .rem { background: #f88 !important }
@@ -81,21 +100,3 @@
 }
 .diff table td.left { border-right: dashed 1px #d7d7d7 }
 .diff table td del, .diff table td ins { text-decoration: none }
-
-#overview {
- border: 1px solid #d7d7d7;
- padding: .5em;
- width: 100%;
- margin-top: 1em;
-}
-#overview th {
- padding-right: .5em;
- text-align: right;
- width: 8em;
-}
-#overview td,  #overview th {
- vertical-align: top;
- background: transparent;
- color: inherit;
- border: none;
-}

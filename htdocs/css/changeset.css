@@ -1,29 +1,16 @@
 @import url(diff.css);
 
-/* Changeset */
-#main.changeset #overview {
- border: 1px solid #d7d7d7;
- padding: .5em;
- width: 100%;
-}
-#main.changeset #overview th {
- padding-right: .5em;
- text-align: right;
- width: 8em;
-}
-#main.changeset #overview td, #main.changeset #overview th {
- vertical-align: top;
-}
-#main.changeset #overview tr.files ul { margin: 0; padding: 0 }
-#main.changeset #overview tr.files li { list-style-type: none }
-#main.changeset #overview tr.files li .comment { display: none }
-#main.changeset #overview tr.files li div {
+/* Changeset overview */
+#overview tr.files ul { margin: 0; padding: 0 }
+#overview tr.files li { list-style-type: none }
+#overview tr.files li .comment { display: none }
+#overview tr.files li div {
  border: 1px solid #999;
  float: left;
  margin: .1em .5em .1em 0;
  overflow: hidden;
  width: .8em; height: .8em;
 }
-#main.changeset #overview tr.message td,
-#main.changeset #overview tr.message th { padding-top: 1em }
-#main.changeset #overview tr.message td :first-child { margin-top: 0 }
+#overview tr.message td,
+#overview tr.message th { padding-top: 1em }
+#overview tr.message td :first-child { margin-top: 0 }

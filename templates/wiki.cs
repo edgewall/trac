@@ -20,23 +20,25 @@
 <div id="main" class="wiki">
 
  <?cs if:wiki.action == "diff" ?>
-   <h1>Changes in version <?cs var:wiki.edit_version?> of <?cs var:wiki.page_name ?></h1>
-    <table id="overview">
-     <tr class="author">
-      <th scope="row">Author:</th>
-      <td><?cs var:wiki.diff.author ?></td>
+  <h1>Changes in version <?cs var:wiki.edit_version?> of <a href="<?cs
+    var:wiki.current_href ?>"><?cs var:wiki.page_name ?></a></h1>
+   <table id="overview">
+    <tr class="author">
+     <th scope="row">Author:</th>
+     <td><?cs var:wiki.diff.author ?></td>
+    </tr>
+    <tr class="time">
+     <th scope="row">Timestamp:</th>
+     <td><?cs var:wiki.diff.time ?></td>
+    </tr>
+    <?cs if:wiki.diff.comment ?>
+     <tr class="comment">
+      <th scope="row">Comment:</th>
+      <td><?cs var:wiki.diff.comment ?></td>
      </tr>
-     <tr class="time">
-      <th scope="row">Timestamp:</th>
-      <td><?cs var:wiki.diff.time ?></td>
-     </tr>
-     <?cs if:wiki.diff.comment ?>
-      <tr class="comment">
-       <th scope="row">Comment:</th>
-       <td><?cs var:wiki.diff.comment ?></td>
-      </tr>
-     <?cs /if ?>
-    </table>
+    <?cs /if ?>
+   </table>
+
    <div class="diff">
     <div id="legend">
      <h3>Legend:</h3>
@@ -45,11 +47,11 @@
       <dt class="add"></dt><dd>Added</dd>
       <dt class="rem"></dt><dd>Removed</dd>
       <dt class="mod"></dt><dd>Modified</dd>
-     </ul>
+     </dl>
     </div>
     <ul>
      <li>
-      <table>
+      <table summary="Differences">
        <thead><tr>
         <th><?cs var:wiki.diff.name.old ?></th>
         <th><?cs var:wiki.diff.name.new ?></th>
@@ -68,7 +70,7 @@
   <h1>Change History of <a href="<?cs var:wiki.current_href ?>"><?cs
     var:wiki.page_name ?></a></h1>
   <?cs if:wiki.history ?>
-   <table id="wikihist" class="listing">
+   <table id="wikihist" class="listing" summary="Change history">
     <thead><tr>
      <th class="date">Date</th>
      <th class="version">Version</th>
