@@ -436,6 +436,7 @@ default_config = \
   ('notification', 'smtp_user', ''),
   ('notification', 'smtp_password', ''),
   ('notification', 'smtp_always_cc', ''),
+  ('notification', 'always_notify_owner', 'false'),
   ('notification', 'always_notify_reporter', 'false'),
   ('notification', 'smtp_from', 'trac@localhost'),
   ('notification', 'smtp_replyto', 'trac@localhost'),

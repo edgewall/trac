@@ -299,8 +299,13 @@ class NewticketModule(Module):
         tktid = ticket.insert(self.db)
 
         # Notify
-        tn = TicketNotifyEmail(self.env)
-        tn.notify(ticket, newticket=1)
+        try:
+            tn = TicketNotifyEmail(self.env)
+            tn.notify(ticket, newticket=1)
+        except Exception, e:
+            self.log.exception("Failure sending notification on creation of "
+                               "ticket #%d: %s" % (tktid, e))
+
         req.redirect(self.env.href.ticket(tktid))
 
     def render(self, req):
@@ -397,8 +402,13 @@ class TicketModule (Module):
         ticket.save_changes(self.db, req.args.get('author', req.authname),
                             req.args.get('comment'), when=now)
 
-        tn = TicketNotifyEmail(self.env)
-        tn.notify(ticket, newticket=0, modtime=now)
+        try:
+            tn = TicketNotifyEmail(self.env)
+            tn.notify(ticket, newticket=0, modtime=now)
+        except Exception, e:
+            self.log.exception("Failure sending notification on change to "
+                               "ticket #%d: %s" % (id, e))
+
         req.redirect(self.env.href.ticket(id))
 
     def insert_ticket_data(self, req, id, ticket, reporter_id):
@@ -471,7 +481,7 @@ class TicketModule (Module):
                 changes[-1]['comment'] = wiki_to_html(new, req.hdf, self.env,
                                                       self.db)
             elif field == 'description':
-                changes[-1]['fields'][field] = {}
+                changes[-1]['fields'][field] = ''
             else:
                 changes[-1]['fields'][field] = {'old': old, 'new': new}
         req.hdf['ticket.changes'] = changes

@@ -19,16 +19,16 @@
 #
 # Author: Daniel Lundin <daniel@edgewall.com>
 
-import md5
-import sys
-import time
-import smtplib
-
 from trac import Environment
 from trac.__init__ import __version__
 from trac.util import CRLF, TRUE, FALSE, TracError, wrap
 from trac.web.clearsilver import HDFWrapper
 from trac.web.main import populate_hdf
+
+import md5
+import sys
+import time
+import smtplib
 
 
 class Notify:
@@ -73,7 +73,6 @@ class Notify:
         pass
 
 
-
 class NotifyEmail(Notify):
     """Baseclass for notification by email."""
 
@@ -82,6 +81,17 @@ class NotifyEmail(Notify):
     from_email = 'trac+tickets@localhost'
     subject = ''
     server = None
+    email_map = None
+    template_name = None
+
+    def __init__(self, env):
+        Notify.__init__(self, env)
+
+        # Get the email addresses of all known users
+        self.email_map = {}
+        for username,name,email in self.env.get_known_users(self.db):
+            self.email_map[username] = email
+
 
     def notify(self, resid, subject):
         self.subject = subject
@@ -138,6 +148,8 @@ class NotifyEmail(Notify):
         msg['Date'] = time.strftime('%a, %d %b %Y %H:%M:%S +0000', time.gmtime());
         for hdr in mime_headers.keys():
             msg[hdr] = mime_headers[hdr]
+        self.env.log.debug("Sending SMTP notification to %s on port %d"
+                           % (self.smtp_server, self.smtp_port))
         self.server.sendmail(self.from_email, rcpt, msg.as_string())
 
     def finish_send(self):
@@ -176,8 +188,8 @@ class TicketNotifyEmail(NotifyEmail):
         if not self.newticket:
             subject = 'Re: ' + subject
         self.hdf['email.subject'] = subject
-        changes=''
-        if not self.newticket and modtime:  # Ticketchange
+        changes = ''
+        if not self.newticket and modtime:  # Ticket change
             changelog = ticket.get_changelog(self.db, modtime)
             for date, author, field, old, new in changelog:
                 self.hdf['ticket.change.author'] = author
@@ -265,9 +277,8 @@ class TicketNotifyEmail(NotifyEmail):
         return filter(lambda x: '@' in x, txt.replace(',', ' ').split())
 
     def format_hdr(self):
-        return '#%s: %s' % (self.ticket['id'],
-                               wrap(self.ticket['summary'], self.COLS,
-                                    linesep=CRLF))
+        return '#%s: %s' % (self.ticket['id'], wrap(self.ticket['summary'],
+                                                    self.COLS, linesep=CRLF))
 
     def format_subj(self):
         projname = self.env.get_config('project', 'name')
@@ -275,32 +286,45 @@ class TicketNotifyEmail(NotifyEmail):
                                      self.ticket['summary'])
 
     def get_recipients(self, tktid):
-        # The old notification behavior is still available if always_notify_reporter
-        # is set to true
-        val = self.env.get_config('notification', 'always_notify_reporter', 'false')
+        val = self.env.get_config('notification', 'always_notify_reporter', 0)
         notify_reporter = val.lower() in TRUE
+        val = self.env.get_config('notification', 'always_notify_owner', 0)
+        notify_owner = val.lower() in TRUE
         
-        emails = self.prev_cc
+        recipients = self.prev_cc
         cursor = self.db.cursor()
-        # Harvest email addresses from the cc field
-        cursor.execute('SELECT cc,reporter FROM ticket WHERE id=%s', tktid)
+
+        # Harvest email addresses from the cc, reporter, and owner fields
+        cursor.execute("SELECT cc,reporter,owner FROM ticket WHERE id=%s",
+                       (tktid,))
         row = cursor.fetchone()
         if row:
-            emails += row[0] and self.parse_cc(row[0]) or []
+            recipients += row[0] and row[0].replace(',', ' ').split() or []
             if notify_reporter:
-                emails += row[1] and self.get_email_addresses(row[1]) or []
+                recipients.append(row[1])
+            if notify_owner:
+                recipients.append(row[2])
 
+        # Harvest email addresses from the author field of ticket_change(s)
         if notify_reporter:
-            cursor.execute('SELECT DISTINCT author,ticket FROM ticket_change '
-                           ' WHERE ticket=%s', tktid)
-            rows = cursor.fetchall()
-            for row in rows:
-                emails += row[0] and self.get_email_addresses(row[0]) or []
+            cursor.execute("SELECT DISTINCT author,ticket FROM ticket_change "
+                           "WHERE ticket=%s", (tktid,))
+            for author,ticket in cursor:
+                recipients.append(row[0])
 
         # Add smtp_always_cc address
         acc = self.env.get_config('notification', 'smtp_always_cc', '')
         if acc:
-            emails += self.parse_cc(acc)
+            recipients += acc.replace(',', ' ').split()
+
+        # now convert recipients into email addresses where necessary
+        emails = []
+        for recipient in recipients:
+            if recipient.find('@') >= 0:
+                emails.append(recipient)
+            else:
+                if self.email_map.has_key(recipient):
+                    emails.append(self.email_map[recipient])
 
         # Remove duplicates
         result = []
@@ -327,19 +351,3 @@ class TicketNotifyEmail(NotifyEmail):
             hdrs['In-Reply-To'] = self.get_message_id(rcpt)
             hdrs['References'] = self.get_message_id(rcpt)
         NotifyEmail.send(self, rcpt, hdrs)
-
-
-# A simple test 
-if __name__ == '__main__':
-    import db
-    env = Environment.Environment('/home/daniel/trac/db/tracenv')
-    try:
-        tktid = int(sys.argv[1])
-    except IndexError:
-        tktid = 223
-    tn = TicketNotifyEmail(env)
-#    tn.notify(tktid, 1)
-#    tn.notify(223,0,1081476135)
-#    tn.notify(223,0,1081476765)
-    tn.notify(224,0,1081528294)
-#    tn.display_hdf()
