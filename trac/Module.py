@@ -19,9 +19,10 @@
 #
 # Author: Jonas Borgström <jonas@edgewall.com>
 
-
 import cgi
 import re
+import urllib
+
 
 class Module:
 
