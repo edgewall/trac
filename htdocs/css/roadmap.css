@@ -1,15 +1,11 @@
 /* General styles for the progress bars */
 div.progress { float: left; border: 1px solid #d7d7d7 }
 div.progress div { background: #bae0ba; height: 1.2em }
-p.percent { font-size: 10px; line-height: 2.4em; margin: 0.9em 0 }
+p.percent { font-size: 10px; line-height: 2.4em; margin: 0.9em 0 0 }
 
 /* Styles for the roadmap view */
 ul.milestones { margin: 2em 0 0; padding: 0 }
-li.milestone {
- clear: both;
- list-style: none;
- margin-bottom: 4em;
-}
+li.milestone { list-style: none; margin-bottom: 4em }
 li.milestone .info { white-space: nowrap }
 li.milestone .info h2 {
  background: #f7f7f7;
@@ -31,22 +27,16 @@ li.milestone .info .date {
  font-style: italic;
  margin: 0;
 }
-li.milestone .info .progress { margin: 1em; width: 40em; max-width: 80% }
+li.milestone .info .progress { margin: 1em 1em 0; width: 40em; max-width: 80% }
 li.milestone .info dl {
- clear: both;
- float: left;
  font-size: 10px;
  font-style: italic;
- margin: -1em 0 2em 1em;
+ margin: 0 1em 2em;
  white-space: nowrap;
 }
 li.milestone .info dt { display: inline; margin-left: .5em }
-li.milestone .info dd {
- display: inline;
- margin-left: .5em;
- margin-right: 1em
-}
-li.milestone .descr { clear: both; margin-left: 1em }
+li.milestone .info dd { display: inline; margin: 0 1em 0 .5em }
+li.milestone .descr { margin-left: 1em }
 
 /* Styles for the milestone view */
 .milestone .date { color: #888; font-style: italic }
