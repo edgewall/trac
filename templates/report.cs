@@ -204,7 +204,9 @@
  ?>xml.png" alt="RSS Feed" style="vertical-align: bottom"/></a>&nbsp;
    <a href="?format=rss<?cs var $vars ?><?cs var $sortInfo ?>">(RSS 2.0)</a>&nbsp;|
    <a href="?format=csv<?cs var $vars ?><?cs var $sortInfo ?>">Comma-delimited</a>&nbsp;|
-   <a href="?format=tab<?cs var $vars ?><?cs var $sortInfo ?>">Tab-delimited</a>
+   <a href="?format=tab<?cs var $vars ?><?cs var $sortInfo
+   ?>">Tab-delimited</a><?cs if $trac.acl.REPORT_SQL_VIEW ?>&nbsp;|
+   <a href="?format=sql">SQL Query</a><?cs /if ?>
    <br />
   </div>
  <?cs /if ?>

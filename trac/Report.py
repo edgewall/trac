@@ -131,7 +131,6 @@ class Report (Module):
         self.perm.assert_permission(perm.REPORT_CREATE)
 
         cursor = self.db.cursor()
-        
         cursor.execute('INSERT INTO report (id, title, sql, description)'
                         'VALUES (NULL, %s, %s, %s)', title, sql, description)
         id = self.db.db.sqlite_last_insert_rowid()
@@ -366,8 +365,6 @@ class Report (Module):
             self.req.hdf.setValue(nodename, escape(summary))
             item = item.next()
         self.req.display(self.template_rss_name, 'text/xml')
-
-
             
     def display_csv(self,sep=','):
         self.req.send_response(200)
@@ -384,4 +381,23 @@ class Report (Module):
     def display_tab(self):
         self.display_csv('\t')
 
-
+    def display_sql(self):
+        self.perm.assert_permission(perm.REPORT_SQL_VIEW)
+        self.req.send_response(200)
+        self.req.send_header('Content-Type', 'text/plain')
+        self.req.end_headers()
+        rid = self.req.hdf.getValue('report.id', '')
+        if self.error or not rid:
+            self.req.write('Report failed: %s' % self.error)
+            return
+        title = self.req.hdf.getValue('report.title', '')
+        if title:
+            self.req.write('-- ## %s: %s ## --\n\n' % (rid, title))
+        cursor = self.db.cursor()
+        cursor.execute('SELECT sql,description FROM report WHERE id=%s', rid)
+        row = cursor.fetchone()
+        sql = row[0] or ''
+        if row[1]:
+            descr = '-- %s\n\n' % '\n-- '.join(row[1].splitlines())
+            self.req.write(descr)
+        self.req.write(sql)

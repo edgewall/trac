@@ -21,6 +21,7 @@
 
 import core
 
+
 class Module:
     def run(self):
         core.populate_hdf(self.req.hdf, self.env, self.db, self.href, self.req)
@@ -32,7 +33,7 @@ class Module:
             disp = self.display
         try:
             disp()
-        except RedirectException:
+        except core.RedirectException:
             pass
         
     def render (self):
