@@ -68,7 +68,7 @@
  </table><?cs /if ?>
  <hr class="hide" />
  <h3 id="tkt-descr-hdr">Description by <?cs var:ticket.reporter ?>:</h3>
-    <?cs var:ticket.description ?>
+    <?cs var:ticket.description.formatted ?>
  <hr class="hide"/>
 </div>
 
@@ -169,8 +169,8 @@ onfocus="document.getElementById('comment').focus()">Add/Change
   <div class="tkt-prop">
    <input type="hidden" name="mode" value="ticket" />
    <input type="hidden" name="id"   value="<?cs var:ticket.id ?>" />
-   <label for="reporter">Your email or username:</label><br />
-    <input type="text" id="reporter" name="reporter" class="textwidget" size="40"
+   <label for="author">Your email or username:</label><br />
+    <input type="text" id="author" name="author" class="textwidget" size="40"
            value="<?cs var:ticket.reporter_id ?>" /><br />
   </div>
   <div class="tkt-prop">
@@ -199,7 +199,7 @@ onfocus="document.getElementById('comment').focus()">Add/Change
   <br />
   <label for="description" class="nt-label">Description:</label>
   <textarea id="description" name="description" class="textwidget"
-            rows="10" cols="68"><?cs var:ticket.description.raw ?></textarea>
+            rows="10" cols="68"><?cs var:ticket.description ?></textarea>
 <?cs /if ?>
 </div>
   <div id="nt-left">

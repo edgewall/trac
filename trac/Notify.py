@@ -170,15 +170,15 @@ class TicketNotifyEmail(NotifyEmail):
     def __init__(self, env):
         NotifyEmail.__init__(self, env, self.template_name)
 
-    def notify(self, tktid, newticket=1, modtime=0):
-        self.ticket = Ticket.get_ticket(self.db, tktid)
+    def notify(self, ticket, newticket=1, modtime=0):
+        self.ticket = ticket
         self.modtime = modtime
         self.newticket = newticket
         self.ticket['description'] = wrap(self.ticket['description'],
                                           self.COLS,
                                           initial_indent=' ',
                                           subsequent_indent=' ')
-        self.ticket['link'] = self.env.abs_href.ticket(tktid)
+        self.ticket['link'] = self.env.abs_href.ticket(ticket['id'])
         add_dict_to_hdf(self.ticket, self.hdf, 'ticket')
         self.hdf.setValue('email.ticket_props', self.format_props())
         self.hdf.setValue('email.ticket_body_hdr', self.format_hdr())
@@ -193,7 +193,7 @@ class TicketNotifyEmail(NotifyEmail):
             cursor = self.db.cursor()
             cursor.execute('SELECT author, field, oldvalue, newvalue '
                            ' FROM ticket_change WHERE ticket=%s AND time=%s',
-                           tktid, modtime)
+                           ticket['id'], modtime)
             rows=cursor.fetchall()
             for r in rows:
                 self.hdf.setValue('ticket.change.author', str(r[0]))
@@ -220,7 +220,7 @@ class TicketNotifyEmail(NotifyEmail):
                 self.hdf.setValue('%s.author' % pfx, str(r[0]))
             if changes:
                 self.hdf.setValue('email.changes_body', changes)
-        NotifyEmail.notify(self, tktid, subject)
+        NotifyEmail.notify(self, ticket['id'], subject)
 
     def format_props(self):
         tkt = self.ticket
@@ -235,6 +235,7 @@ class TicketNotifyEmail(NotifyEmail):
         i = 1
         width = [0,0,0,0]
         for f in fields:
+            if not f in tkt: continue
             idx = 2*(i % 2)
             if len(f) > width[idx]:
                 width[idx] = len(f)
@@ -248,6 +249,7 @@ class TicketNotifyEmail(NotifyEmail):
         sep = l*'-' + '+' + (self.COLS-l)*'-'
         txt = sep + CRLF
         for f in fields:
+            if not f in tkt: continue
             txt += format[i%2] % (f.capitalize(), tkt[f])
             i += 1
         txt += sep
@@ -262,16 +264,16 @@ class TicketNotifyEmail(NotifyEmail):
         return '[%s] #%s: %s' % (projname, self.ticket['id'],
                                      self.ticket['summary'])
 
-    def get_recipients(self, tktid):
+    def get_recipients(self, ticket):
         emails = []
         cursor = self.db.cursor()
-        cursor.execute('SELECT reporter,cc FROM ticket WHERE id=%s', tktid)
+        cursor.execute('SELECT reporter,cc FROM ticket WHERE id=%s', ticket['id'])
         row = cursor.fetchone()
         if row:
             emails += row[0] and self.get_email_addresses(row[0]) or []
             emails += row[1] and self.get_email_addresses(row[1]) or []
         cursor.execute('SELECT DISTINCT author,ticket FROM ticket_change '
-                       ' WHERE ticket=%s', tktid)
+                       ' WHERE ticket=%s', ticket['id'])
         rows = cursor.fetchall()
         for row in rows:
             emails += row[0] and self.get_email_addresses(row[0]) or []
