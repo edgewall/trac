@@ -58,7 +58,7 @@ class CommonFormatter:
               r"""(?P<changesethref>\[[0-9]+\])""",
               r"""(?P<reporthref>\{[0-9]+\})""",
               r"""(?P<modulehref>((?P<modulename>bug|ticket|browser|source|repos|report|changeset|wiki|search):(?P<moduleargs>(&#34;(.*?)&#34;|'(.*?)')|([^ ]*[^\., \)]))))""",
-              r"""(?P<wikilink>(^|(?<=[^A-Za-z]))[!]?[A-Z][a-z0-9/]+(?:[A-Z][a-z0-9/]+)+(?=\Z|\s|,|\.|:))""",
+              r"""(?P<wikilink>(^|(?<=[^A-Za-z]))[!]?[A-Z][a-z0-9/.]+(?:[A-Z][a-z0-9/.]*[a-z0-9/])+(?=\Z|\s|,|\.|:))""",
               r"""(?P<fancylink>\[(?P<fancyurl>([a-z]+:[^ ]+)) (?P<linkname>.*?)\])"""]
 
     _open_tags = []

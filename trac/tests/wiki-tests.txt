@@ -77,9 +77,15 @@ CamelCase
 FooBar123
 FooB123ar
 Foo123
+FooBar1.0
+FooBar1.0.
+FooBar1.
 ------------------------------
 <p>
 <a class="missing" href="/wiki/FooBar123">FooBar123?</a>
 <a class="missing" href="/wiki/FooB123ar">FooB123ar?</a>
 Foo123
+<a class="missing" href="/wiki/FooBar1.0">FooBar1.0?</a>
+<a class="missing" href="/wiki/FooBar1.0">FooBar1.0?</a>.
+<a class="missing" href="/wiki/FooBar1">FooBar1?</a>.
 </p>
