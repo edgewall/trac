@@ -241,4 +241,6 @@ class Timeline (Module):
         self.req.hdf.setValue('title', 'Timeline')
 
     def display_rss(self):
+        base_url = self.env.get_config('trac', 'base_url', '')         
+        self.req.hdf.setValue('baseurl', base_url)
         self.req.display(self.template_rss_name, 'text/xml')
