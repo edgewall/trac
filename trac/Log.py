@@ -33,6 +33,8 @@ class Log (Module):
     template_rss_name = 'log_rss.cs'
 
     def log_receiver (self, changed_paths, rev, author, date, log, pool):
+        if not changed_paths: return
+
         # Store the copyfrom-information so we can follow the file/dir
         # through tags/banches/copy/renames.
         for newpath in changed_paths.keys():
