@@ -19,7 +19,7 @@
 #
 # Author: Daniel Lundin <daniel@edgewall.com>
 
-from util import hex_entropy, TracError
+from trac.util import hex_entropy, TracError
 
 import sys
 import time

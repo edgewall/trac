@@ -38,19 +38,19 @@ import mimetypes
 import SocketServer
 import BaseHTTPServer
 
-import svn.core
-
-import trac.core
 import trac.util
-from trac import Session
+from trac import siteconfig
 from trac.Href import Href
-from trac import auth, siteconfig
 from trac.Environment import Environment
+from trac.web.main import Request, dispatch_request, send_pretty_error
+from trac.web.cgi_frontend import TracFieldStorage
 
 
 class DigestAuth:
     """A simple HTTP DigestAuth implementation (rfc2617)"""
+
     MAX_NONCES = 100
+
     def __init__(self, htdigest, realm):
         self.active_nonces = []
         self.hash = {}
@@ -135,7 +135,7 @@ class TracHTTPServer(SocketServer.ThreadingMixIn, BaseHTTPServer.HTTPServer):
 
 
 class TracHTTPRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler,
-                             trac.core.Request):
+                             Request):
     url_re = re.compile('/(?P<project>[^/\?]+)'
                         '(?P<path_info>/?[^\?]*)?'
                         '(?:\?(?P<query_string>.*))?')
@@ -150,7 +150,7 @@ class TracHTTPRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler,
         self.wfile.write(data)
 
     def init_request(self):
-        trac.core.Request.init_request(self)
+        Request.init_request(self)
         self.remote_addr = str(self.client_address[0])
         self.hdf.setValue('HTTP.Host', self.server.http_host)
         self.hdf.setValue('HTTP.Protocol', 'http')
@@ -162,9 +162,8 @@ class TracHTTPRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler,
         headers = self.headers
         if self.command in ('GET', 'HEAD'):
             headers = None
-        self.args = trac.core.TracFieldStorage(self.rfile, environ=environ,
-                                               headers=headers,
-                                               keep_blank_values=1)
+        self.args = TracFieldStorage(self.rfile, environ=environ,
+                                     headers=headers, keep_blank_values=1)
 
     def get_header(self, name):
         return self.headers.get(name)
@@ -244,7 +243,7 @@ class TracHTTPRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler,
         try:
             self.do_real_trac_req()
         except Exception, e:
-            trac.core.send_pretty_error(e, self.env, self)
+            send_pretty_error(e, self.env, self)
 
     def do_real_trac_req(self):
         start = time.time()
@@ -260,7 +259,7 @@ class TracHTTPRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler,
             if not self.remote_user:
                 return
 
-        trac.core.dispatch_request(self.path_info, self, self.env)
+        dispatch_request(self.path_info, self, self.env)
 
         self.log.debug('Total request time: %f s', time.time() - start)
 

@@ -19,8 +19,9 @@
 #
 # Author: Jonas Borgström <jonas@edgewall.com>
 
+from trac import util
+
 import time
-import util
 
 
 class Authenticator:

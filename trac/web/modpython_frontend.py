@@ -1,7 +1,7 @@
 # -*- coding: iso8859-1 -*-
 #
-# Copyright (C) 2004 Edgewall Software
-# Copyright (C) 2004 Christopher Lenz <cmlenz@gmx.de>
+# Copyright (C) 2004, 2005 Edgewall Software
+# Copyright (C) 2004, 2005 Christopher Lenz <cmlenz@gmx.de>
 #
 # Trac is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License as
@@ -19,25 +19,26 @@
 #
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
+from trac import core, Environment, Href
+from trac.util import TracError, href_join, rstrip
+from trac.web.main import Request, dispatch_request, send_pretty_error
+
+from mod_python import apache, util
+
 import locale
 locale.setlocale(locale.LC_ALL, '')
 
 import os
 import re, threading
 
-from trac import auth, core, Environment, Href
-from trac.util import TracError, href_join, rstrip
 
-from mod_python import apache, util
-
-
-class ModPythonRequest(core.Request):
+class ModPythonRequest(Request):
 
     def __init__(self, req):
         self.req = req
 
     def init_request(self):
-        core.Request.init_request(self)
+        Request.init_request(self)
         options = self.req.get_options()
 
         # The root uri sometimes has to be explicitly specified because apache
@@ -200,7 +201,7 @@ def handler(req):
 
     req.content_type = 'text/html'
     try:
-        core.dispatch_request(mpr.path_info, mpr, env)
+        dispatch_request(mpr.path_info, mpr, env)
     except Exception, e:
-        core.send_pretty_error(e, env, mpr)
+        send_pretty_error(e, env, mpr)
     return apache.OK

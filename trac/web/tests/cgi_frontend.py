@@ -1,4 +1,4 @@
-from trac.core import CGIRequest
+from trac.web.cgi_frontend import CGIRequest
 
 import unittest
 

@@ -21,8 +21,8 @@
 # Author: Jonas Borgström <jonas@edgewall.com>
 
 try:
-    import trac.core
-    trac.core.cgi_start()
+    from trac.web import cgi_frontend
+    cgi_frontend.run()
 except Exception, e:
     print 'Content-Type: text/plain\r\n\r\n',
     print 'Oops...'

@@ -1,25 +1,21 @@
 #!/usr/bin/env python
 import unittest
 
-import tests.wiki
-import tests.href
-import tests.ticket
-import tests.perm_test
-import tests.environment
-import tests.diff
-import tests.tracadmin
-import tests.query
+from trac.tests import wiki, ticket, perm_test, environment, diff, tracadmin, query
+from trac.tests import href
+from trac.web.tests import cgi_frontend
 
 def suite():
     suite = unittest.TestSuite()
-    suite.addTest(tests.wiki.suite())
-    suite.addTest(tests.href.suite())
-    suite.addTest(tests.ticket.suite())
-    suite.addTest(tests.perm_test.suite())
-    suite.addTest(tests.environment.suite())
-    suite.addTest(tests.diff.suite())
-    suite.addTest(tests.tracadmin.suite())
-    suite.addTest(tests.query.suite())
+    suite.addTest(wiki.suite())
+    suite.addTest(ticket.suite())
+    suite.addTest(perm_test.suite())
+    suite.addTest(environment.suite())
+    suite.addTest(diff.suite())
+    suite.addTest(tracadmin.suite())
+    suite.addTest(query.suite())
+    suite.addTest(cgi_frontend.suite())
+    suite.addTest(href.suite())
     return suite
 
 if __name__ == '__main__':
