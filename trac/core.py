@@ -399,15 +399,23 @@ def dispatch_request(path_info, args, req, env, database=None):
     authenticator = auth.Authenticator(database, req)
     if path_info == '/logout':
         authenticator.logout()
+        referer = req.get_header('Referer')
+        if referer[0:len(req.base_url)] != req.base_url:
+            # only redirect to referer if the latter is from the same instance
+            referer = None
         try:
-            req.redirect(req.get_header('Referer') or env.href.wiki())
+            req.redirect(referer or env.href.wiki())
         except RedirectException:
             pass
     elif req.remote_user and authenticator.authname == 'anonymous':
         auth_cookie = authenticator.login(req)
     if path_info == '/login':
+        referer = req.get_header('Referer')
+        if referer[0:len(req.base_url)] != req.base_url:
+            # only redirect to referer if the latter is from the same instance
+            referer = None
         try:
-            req.redirect(req.get_header('Referer') or env.href.wiki())
+            req.redirect(referer or env.href.wiki())
         except RedirectException:
             pass
     req.authname = authenticator.authname
