@@ -102,7 +102,7 @@ class Timeline (Module):
         return info
         
     def render (self):
-        perm.assert_permission(perm.TIMELINE_VIEW)
+        self.perm.assert_permission(perm.TIMELINE_VIEW)
         
         _from = dict_get_with_default(self.args, 'from', '')
         _daysback = dict_get_with_default(self.args, 'daysback', '')

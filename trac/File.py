@@ -32,7 +32,7 @@ class File (Module):
     CHUNK_SIZE = 4096
 
     def render (self):
-        perm.assert_permission (perm.FILE_VIEW)
+        self.perm.assert_permission (perm.FILE_VIEW)
 
     def get_mime_type (self, root, path):
         """

@@ -19,21 +19,16 @@
 #
 # Author: Jonas Borgström <jonas@edgewall.com>
 
-from PermissionError import PermissionError
-from auth import get_authname
 from db import get_connection
-
-perm_cache = {}
+from PermissionError import PermissionError
 
 # permissions
+TIMELINE_VIEW  = 'TIMELINE_VIEW'
+SEARCH_VIEW    = 'SEARCH_VIEW'
 CONFIG_VIEW    = 'CONFIG_VIEW'
-
 LOG_VIEW       = 'LOG_VIEW'
-
 FILE_VIEW      = 'FILE_VIEW'
-
 CHANGESET_VIEW = 'CHANGESET_VIEW'
-
 BROWSER_VIEW   = 'BROWSER_VIEW'
 
 TICKET_VIEW    = 'TICKET_VIEW'
@@ -50,55 +45,60 @@ WIKI_CREATE    = 'WIKI_CREATE'
 WIKI_MODIFY    = 'WIKI_MODIFY'
 WIKI_DELETE    = 'WIKI_DELETE'
 
-TIMELINE_VIEW  = 'TIMELINE_VIEW'
-
-SEARCH_VIEW = 'SEARCH_VIEW'
-
 TRAC_ADMIN = 'TRAC_ADMIN'
+TICKET_ADMIN = 'TICKET_ADMIN'
+REPORT_ADMIN = 'REPORT_ADMIN'
+WIKI_ADMIN = 'WIKI_ADMIN'
 
 meta_permission = {
-    'TICKET_ADMIN': [TICKET_VIEW, TICKET_CREATE, TICKET_MODIFY],
-    'REPORT_ADMIN': [REPORT_VIEW, REPORT_CREATE, REPORT_MODIFY, REPORT_DELETE],
-    'WIKI_ADMIN'  : [WIKI_VIEW, WIKI_CREATE, WIKI_MODIFY, WIKI_DELETE]
+    TRAC_ADMIN: [TICKET_ADMIN, REPORT_ADMIN, WIKI_ADMIN,
+                 TIMELINE_VIEW, SEARCH_VIEW, CONFIG_VIEW, LOG_VIEW,
+                 FILE_VIEW, CHANGESET_VIEW, BROWSER_VIEW],
+    TICKET_ADMIN: [TICKET_VIEW, TICKET_CREATE, TICKET_MODIFY],
+    REPORT_ADMIN: [REPORT_VIEW, REPORT_CREATE, REPORT_MODIFY, REPORT_DELETE],
+    WIKI_ADMIN : [WIKI_VIEW, WIKI_CREATE, WIKI_MODIFY, WIKI_DELETE]
     }
 
-def cache_permissions ():
-    global perm_cache, meta_permission
+class PermissionCache:
+    def __init__(self, username):
+        self.perm_cache = {}
 
-    # Special usernames:
-    # 'anonymous':     Permissions granted to this user will apply to anyone.
-    # 'authenticated': Permissions granted to this user will apply to
-    #                  any authenticated (logged in with HTTP_AUTH) user.
+        # Special usernames:
+        # 'anonymous':     Permissions granted to this user will apply to
+        #                  anyone.
+        # 'authenticated': Permissions granted to this user will apply to
+        #                  any authenticated (logged in with HTTP_AUTH) user.
 
-    cnx = get_connection ()
-    if get_authname() == 'anonymous':
-        rs = cnx.db.execute ("SELECT action FROM permission "
-                             "WHERE user='anonymous'")
-    else:
-        rs = cnx.db.execute ("SELECT action FROM permission "
-                             "WHERE user='%s' OR user='anonymous' "
-                             "OR user = 'authenticated'" %
-                             get_authname ())
-    for row in rs.row_list:
-        action = row[0]
+        cnx = get_connection ()
+        cursor = cnx.cursor()
+        if username == 'anonymous':
+            cursor.execute ("SELECT action FROM permission "
+                            "WHERE user='anonymous'")
+        else:
+            cursor.execute ("SELECT action FROM permission "
+                            "WHERE user='%s' OR user='anonymous' "
+                            "OR user = 'authenticated'" % username)
+        while 1:
+            row = cursor.fetchone()
+            if not row:
+                break
+            self.expand_meta_permission(row[0])
+        
+    def expand_meta_permission(self, action):
         if meta_permission.has_key(action):
             for perm in meta_permission[action]:
-                perm_cache[perm] = 1
-#            map (lambda action: perm_cache.__setitem__(action, 1),
-#                 meta_permission[action])
-        perm_cache[action] = 1
+                self.expand_meta_permission(perm)
+        else:
+            self.perm_cache[action] = 1
 
-def has_permission (action):
-    global perm_cache
-    return perm_cache.has_key (action) or perm_cache.has_key(TRAC_ADMIN)
+    def has_permission(self, action):
+        return self.perm_cache.has_key (action)
 
-def assert_permission (action):
-    global perm_cache
-    if not (perm_cache.has_key (action) or perm_cache.has_key(TRAC_ADMIN)):
-        raise PermissionError (action)
+    def assert_permission (self, action):
+        if not self.perm_cache.has_key (action):
+            raise PermissionError (action)
 
-def perm_to_hdf(hdf):
-    global perm_cache
-    for action in perm_cache.keys():
-        hdf.setValue('trac.acl.' + action, 'true')
+    def add_to_hdf(self, hdf):
+        for action in self.perm_cache.keys():
+            hdf.setValue('trac.acl.' + action, 'true')
     

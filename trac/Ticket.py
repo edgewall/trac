@@ -144,7 +144,7 @@ class Ticket (Module):
 
         The values are taken from the html form
         """
-        perm.assert_permission(perm.TICKET_CREATE)
+        self.perm.assert_permission(perm.TICKET_CREATE)
         
         global fields
         data = {}
@@ -231,11 +231,11 @@ class Ticket (Module):
         if action in ['leave', 'accept', 'reopen', 'resolve', 'reassign']:
             # save changes and redirect to avoid the POST request
             old = self.get_ticket(id, 0)
-            perm.assert_permission (perm.TICKET_MODIFY)
+            self.perm.assert_permission (perm.TICKET_MODIFY)
             self.save_changes (id, old, self.args)
             redirect (href.ticket(id))
         
-        perm.assert_permission (perm.TICKET_VIEW)
+        self.perm.assert_permission (perm.TICKET_VIEW)
         
         info = self.get_ticket(id)
         add_dict_to_hdf(info, self.cgi.hdf, 'ticket')

@@ -204,7 +204,7 @@ class Changeset (Module):
         return info
         
     def render (self):
-        perm.assert_permission (perm.CHANGESET_VIEW)
+        self.perm.assert_permission (perm.CHANGESET_VIEW)
         
         if self.args.has_key('rev'):
             self.rev = int(self.args['rev'])

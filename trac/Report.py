@@ -56,7 +56,7 @@ class Report (Module):
         return [cols, info, title]
         
     def create_report(self, title, sql):
-        perm.assert_permission(perm.REPORT_CREATE)
+        self.perm.assert_permission(perm.REPORT_CREATE)
 
         cnx = db.get_connection()
         cursor = cnx.cursor()
@@ -68,7 +68,7 @@ class Report (Module):
         redirect (href.report(id))
 
     def delete_report(self, id):
-        perm.assert_permission(perm.REPORT_DELETE)
+        self.perm.assert_permission(perm.REPORT_DELETE)
         
         cnx = db.get_connection()
         cursor = cnx.cursor ()
@@ -81,7 +81,7 @@ class Report (Module):
         """
         saves report changes to the database
         """
-        perm.assert_permission(perm.REPORT_MODIFY)
+        self.perm.assert_permission(perm.REPORT_MODIFY)
 
         cnx = db.get_connection()
         cursor = cnx.cursor()
@@ -95,7 +95,7 @@ class Report (Module):
         redirect(href.report(id))
 
     def render_report_editor(self, id, action='commit', copy=0):
-        perm.assert_permission(perm.REPORT_MODIFY)
+        self.perm.assert_permission(perm.REPORT_MODIFY)
         cnx = db.get_connection()
         cursor = cnx.cursor()
 
@@ -121,18 +121,18 @@ class Report (Module):
         uses a user specified sql query to extract some information
         from the database and presents it as a html table.
         """
-        if perm.has_permission(perm.REPORT_CREATE):
+        if self.perm.has_permission(perm.REPORT_CREATE):
             self.cgi.hdf.setValue('report.create_href',
                                   href.report(None, 'new'))
             
         if id != -1:
-            if perm.has_permission(perm.REPORT_MODIFY):
+            if self.perm.has_permission(perm.REPORT_MODIFY):
                 self.cgi.hdf.setValue('report.edit_href',
                                       href.report(id, 'edit'))
-            if perm.has_permission(perm.REPORT_CREATE):
+            if self.perm.has_permission(perm.REPORT_CREATE):
                 self.cgi.hdf.setValue('report.copy_href',
                                       href.report(id, 'copy'))
-            if perm.has_permission(perm.REPORT_DELETE):
+            if self.perm.has_permission(perm.REPORT_DELETE):
                 self.cgi.hdf.setValue('report.delete_href',
                                       href.report(id, 'delete'))
 
@@ -183,7 +183,7 @@ class Report (Module):
         
 
     def render(self):
-        perm.assert_permission(perm.REPORT_VIEW)
+        self.perm.assert_permission(perm.REPORT_VIEW)
         # did the user ask for any special report?
         id = int(dict_get_with_default(self.args, 'id', -1))
         action = dict_get_with_default(self.args, 'action', 'list')

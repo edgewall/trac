@@ -107,9 +107,10 @@ def parse_args():
 def real_main():
     import Href
     import db
+    import perm
+    import auth
+    from PermissionError import PermissionError
     from util import dict_get_with_default, redirect
-    from auth import verify_authentication, authenticate_user
-    from perm import cache_permissions, PermissionError, perm_to_hdf
 
     db.init()
     config = db.load_config()
@@ -127,9 +128,9 @@ def real_main():
     module = constructor(config, args)
     module._name = mode
 
-    verify_authentication(args)
-    cache_permissions()
-    perm_to_hdf(module.cgi.hdf)
+    auth.verify_authentication(args)
+    module.perm = perm.PermissionCache(auth.get_authname())
+    module.perm.add_to_hdf(module.cgi.hdf)
 
     # Only open the subversion repository for the modules that really
     # need it. This saves us some precious time.

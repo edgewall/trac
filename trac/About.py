@@ -33,7 +33,7 @@ class About (Module):
         self.cgi.hdf.setValue('title', 'About Trac')
         
         if page[0:7] == '/config':
-            perm.assert_permission(perm.CONFIG_VIEW)
+            self.perm.assert_permission(perm.CONFIG_VIEW)
             self.cgi.hdf.setValue('about.page', 'config')
             # Export the config table to hdf
             i = 0

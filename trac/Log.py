@@ -65,7 +65,7 @@ class Log (Module):
                                   href.browser(path))
 
     def render (self):
-        perm.assert_permission (perm.LOG_VIEW)
+        self.perm.assert_permission (perm.LOG_VIEW)
 
         self.path = dict_get_with_default(self.args, 'path', '/')
         

@@ -376,9 +376,10 @@ def wiki_to_oneliner(wikitext):
 
 
 class Page:
-    def __init__(self, name, version):
+    def __init__(self, name, version, perm):
         
         self.name = name
+        self.perm = perm
         cnx = get_connection ()
         cursor = cnx.cursor ()
         if version:
@@ -404,9 +405,9 @@ class Page:
 
     def commit (self):
         if self.new:
-            perm.assert_permission (perm.WIKI_CREATE)
+            self.perm.assert_permission (perm.WIKI_CREATE)
         else:
-            perm.assert_permission (perm.WIKI_MODIFY)
+            self.perm.assert_permission (perm.WIKI_MODIFY)
         cnx = get_connection ()
         cursor = cnx.cursor ()
         cursor.execute ('SELECT MAX(version)+1 FROM '
@@ -492,12 +493,13 @@ class Wiki(Module):
             self.cgi.hdf.setValue('wiki.action', 'preview')
             self.cgi.hdf.setValue('title', 'Wiki Page: ' + name + ' (preview)')
         else:
+            self.perm.assert_permission (perm.WIKI_VIEW)
             if self.args.has_key('text'):
                 del self.args['text']
             self.cgi.hdf.setValue('wiki.action', 'view')
             self.cgi.hdf.setValue('title', 'Wiki Page: ' + name)
 
-        page = Page(name, version)
+        page = Page(name, version, self.perm)
         if self.args.has_key('text'):
             page.set_content (self.args['text'])
         

@@ -113,7 +113,7 @@ class Browser(Module):
                                   href.browser(path))
 
     def render(self):
-        perm.assert_permission (perm.BROWSER_VIEW)
+        self.perm.assert_permission (perm.BROWSER_VIEW)
 
         self.rev = dict_get_with_default(self.args, 'rev', None)
         self.path = dict_get_with_default(self.args, 'path', '/')

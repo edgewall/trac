@@ -81,7 +81,7 @@ class Search(Module):
         return info
         
     def render (self):
-        perm.assert_permission(perm.SEARCH_VIEW)
+        self.perm.assert_permission(perm.SEARCH_VIEW)
         self.cgi.hdf.setValue('title', 'Search')
         self.cgi.hdf.setValue('search.ticket', 'checked')
         self.cgi.hdf.setValue('search.changeset', 'checked')
