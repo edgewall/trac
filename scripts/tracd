@@ -237,15 +237,13 @@ class TracHTTPRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler,
                 return
 
         Wiki.populate_page_dict(db, self.env)
-        
-        href = Href(self.cgi_location)
-        
+
         authenticator = auth.Authenticator(db, self)
         http_referer = self.headers.get('Referer', None)
         if self.path_info == '/logout':
             authenticator.logout()
             try:
-                self.redirect (http_referer or href.wiki())
+                self.redirect (http_referer or self.env.href.wiki())
             except trac.core.RedirectException:
                 pass
             return
@@ -253,7 +251,7 @@ class TracHTTPRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler,
             authenticator.login(self)
         if self.path_info == '/login':
             try:
-                self.redirect (http_referer or href.wiki())
+                self.redirect (http_referer or self.env.href.wiki())
             except trac.core.RedirectException:
                 pass
             return
@@ -268,7 +266,7 @@ class TracHTTPRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler,
         try:
             pool = None
             # Load the selected module
-            module = trac.core.module_factory(args, self.env, db, self, href)
+            module = trac.core.module_factory(args, self.env, db, self)
             pool = module.pool
             module.run()
         finally:
@@ -311,12 +309,15 @@ def main():
 
     if not args:
         usage()
-    for env in args:
-        project = os.path.basename(env)
+    for path in args:
+        project = os.path.basename(path)
         # We assume the database filenames follow the following
         # naming convention: /some/path/project.whatever
         auth = auths.get(project, None)
-        projects[project] = Environment(env)
+        env = Environment(path)
+        # FIXME: this only needs to be done once
+        env.href = Href('/' + project)
+        projects[project] = env
         projects[project].set_config('trac', 'htdocs_location',
                                      '/trac_common/')
         projects[project].auth = auth

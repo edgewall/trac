@@ -79,9 +79,24 @@ def get_first_line(text, maxlen):
     else:
         return escape(line)
 
+def lstrip(text, skip):
+    """Python2.1 doesn't support custom skip characters"""
+    for i in range(len(text)):
+        if not text[i] in skip:
+            return text[i:]
+    return text
+
+def rstrip(text, skip):
+    """Python2.1 doesn't support custom skip characters"""
+    for i in range(len(text)-1, -1, -1):
+        if not text[i] in skip:
+            return text[:i+1]
+    return text
+
 def href_join(u1, *tail):
+    """Join a list of url components and removes redundant '/' characters"""
     for u2 in tail:
-        u1 = u1.rstrip('/') + '/' + u2.lstrip('/')
+        u1 = rstrip(u1, '/') + '/' + lstrip(u2, '/')
     return u1
 
 def add_dictlist_to_hdf(list, hdf, prefix):
