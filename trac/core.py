@@ -299,9 +299,9 @@ class Request:
         self.send_header('Pragma', 'no-cache')
         self.send_header('Cache-control', 'no-cache')
         self.send_header('Expires', 'Fri, 01 Jan 1999 00:00:00 GMT')
-        cookie = self.outcookie.output(header='')
-        if len(cookie):
-            self.send_header('Set-Cookie', cookie)
+        cookies = self.outcookie.output(header='')
+        for cookie in cookies.splitlines():
+            self.send_header('Set-Cookie', cookie.strip())
         self.end_headers()
         self.write('Redirecting...')
         raise RedirectException()
@@ -323,9 +323,9 @@ class Request:
         self.send_header('Expires', 'Fri, 01 Jan 1999 00:00:00 GMT')
         self.send_header('Content-Type', content_type + ';charset=utf-8')
         self.send_header('Content-Length', len(data))
-        cookie = self.outcookie.output(header='')
-        if len(cookie):
-            self.send_header('Set-Cookie', cookie)
+        cookies = self.outcookie.output(header='')
+        for cookie in cookies.splitlines():
+            self.send_header('Set-Cookie', cookie.strip())
         self.end_headers()
         if self.command != 'HEAD':
             self.write(data)
