@@ -3,8 +3,8 @@
 </script>
 <div id="page-content">
 <div id="subheader-links">
-  <a href="<?cs var:$trac.href.wiki ?>">Start Page</a> |
-  <a href="<?cs var:$trac.href.wiki ?>TitleIndex">Title Index</a> |
+  <a href="<?cs var:$trac.href.wiki ?>">Start Page</a>&nbsp;|
+  <a href="<?cs var:$trac.href.wiki ?>TitleIndex">Title Index</a>&nbsp;|
   <a href="javascript:view_history()">Show/Hide History</a>
 </div>
 <hr class="hide"/>
@@ -62,7 +62,7 @@
             </div>
             <?cs if wiki.action == "view" && trac.acl.WIKI_MODIFY ?>
               <p>
-              <a href="<?cs var:wiki_current_href?>?edit=yes">Edit this page.</a>
+              <a id="wiki-edit-page" href="<?cs var:wiki_current_href?>?edit=yes">edit this page.</a>
               </p>
             <?cs /if ?>
           <?cs /if ?>

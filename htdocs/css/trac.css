@@ -25,9 +25,9 @@ span.underline { text-decoration: underline; }
 }
 
 /* Forms */
-input, textarea, select { border: 1px solid #ccc; background: #fff; }
-input[type="submit"], input[type="reset"] { background: #eee; }
-input[type="submit"]:hover, input[type="reset"]:hover { background: #ccb; }
+input,textarea,select { border: 1px solid #ccc; background: #fff; }
+input[type="submit"]:hover,input[type="reset"]:hover { background: #ccb; }
+input[type="submit"],input[type="reset"] { background: #eee; color: #666; }
 option { border-bottom: 1px solid #ccc; }
 
 /* Header */
@@ -139,6 +139,17 @@ tr.br-row-even, tr.br-row-odd,tr.row-even, tr.row-odd { border-top: 1px solid #d
 tr.br-row-even,tr.row-even { background-color: #fff; }
 tr.br-row-odd,tr.row-odd { background-color: #f7f7f7; }
 tr.br-row-even:hover,tr.br-row-odd:hover { background: #eed; }
+#wiki-edit-page { 
+ display: block;
+ width: 9em; 
+ text-align: center;
+ border: 1px solid #ccc; 
+ background: #eee;
+ color: #666;
+ padding: 0 .5em;
+ font-size: 90%;
+}
+#wiki-edit-page:hover { background: #ccb }
 
 /* Report */
 td.summary-col { border-left: 1px dotted #ccc; }

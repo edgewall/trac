@@ -7,7 +7,7 @@
  <div id="main">
   <div id="main-content">
 
-<h3>New ticket:</h3>
+<h3>New Ticket:</h3>
 
 <form action="<?cs var:cgi_location ?>" method="post">
   <div id="nt-props-left">

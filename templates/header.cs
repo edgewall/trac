@@ -43,14 +43,14 @@
   <div id="header-links">
     <?cs if $trac.authname == "anonymous" ?>
       <a href="<?cs var:trac.href.login ?>" 
-         class="navbar-link-right">Login</a> | 
+         class="navbar-link-right">Login</a>&nbsp;| 
     <?cs else ?> 
-      logged in as <?cs var:trac.authname ?> | 
+      logged in as <?cs var:trac.authname ?>&nbsp;| 
       <a href="<?cs var:trac.href.logout ?>" 
-         class="navbar-link-right"> Logout </a> | 
+         class="navbar-link-right"> Logout </a>&nbsp;| 
     <?cs /if ?>
     <a href="<?cs var:trac.href.wiki ?>TracGuide" 
-       class="navbar-link-right"> Help/Guide </a> | 
+       class="navbar-link-right"> Help/Guide </a>&nbsp;| 
     <a href="<?cs var:trac.href.about ?>" 
        class="navbar-link-right"> About Trac </a>
   </div>
