@@ -71,7 +71,7 @@ MIME_MAP = {
     'v':'text/x-verilog',
     'vhd':'text/x-vhdl',
     'vrml':'model/vrml',
-    'wml':'model/vrml',
+    'wrl':'model/vrml',
     'xml':'text/xml',
     'xsl':'text/xsl',
     'zsh':'text/x-zsh',

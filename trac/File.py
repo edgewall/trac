@@ -25,8 +25,6 @@
 import os
 import sys
 import time
-import StringIO
-import mimetypes
 
 import svn
 
@@ -133,6 +131,8 @@ class Attachment(FileCommon):
             self.last_modified = time.strftime("%a, %d %b %Y %H:%M:%S GMT",
                                                time.gmtime(stat[8]))
             self.read_func = lambda x, f=fd: f.read(x)
+            self.mime_type = self.env.mimeview.get_mimetype(self.filename) \
+                             or 'application/octet-stream'
             return
 
         if self.args.has_key('description') and \
@@ -270,7 +270,7 @@ class File(FileCommon):
                                            self.pool)
         if not self.mime_type:
             self.mime_type = self.env.mimeview.get_mimetype(filename=self.path) or 'text/plain'
-#            self.mime_type = mimetypes.guess_type(self.path)[0] or 'text/plain'
+
         elif self.mime_type == 'application/octet-stream':
             self.mime_type = self.env.mimeview.get_mimetype(filename=self.path) or \
                              'application/octet-stream'
