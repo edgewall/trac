@@ -333,16 +333,15 @@ def safe__import__(module_name):
         raise e
 
 
-class Deuglifier:
-
-    def rules(self):
-        return []
+class Deuglifier(object):
+    def __new__(cls):
+        self = object.__new__(cls)
+        if not hasattr(cls, '_compiled_rules'):
+            cls._compiled_rules = re.compile('(?:' + '|'.join(cls.rules()) + ')')
+        self._compiled_rules = cls._compiled_rules
+        return self
     
     def format(self, indata):
-        if not hasattr(self.__class__, '_compiled_rules'):
-            self.__class__._compiled_rules = re.compile('(?:' + '|'.join(self.rules()) + ')')
-            self.__class__._open_tags = []
-        self._compiled_rules = self.__class__._compiled_rules
         return re.sub(self._compiled_rules, self.replace, indata)
 
     def replace(self, fullmatch):

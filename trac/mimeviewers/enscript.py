@@ -84,7 +84,7 @@ for p,t,s in supported_types:
 
 class EnscriptDeuglifier(Deuglifier):
 
-    def rules(self):
+    def rules(cls):
         return [
             r'(?P<comment><FONT COLOR="#B22222">)',
             r'(?P<keyword><FONT COLOR="#5F9EA0">)',
@@ -97,6 +97,7 @@ class EnscriptDeuglifier(Deuglifier):
             r'(?P<font><FONT.*?>)',
             r'(?P<endfont></FONT>)',
             ]
+    rules = classmethod(rules)
 
 
 def display(data, mimetype, filename, rev, env):

@@ -12,7 +12,7 @@ from trac.util import NaivePopen, Deuglifier
 
 class PhpDeuglifier(Deuglifier):
 
-    def rules(self):
+    def rules(cls):
         return [
             r'(?P<comment><font color="#FF8000">)',
             r'(?P<keyword><font color="#5F9EA0">)',
@@ -22,7 +22,7 @@ class PhpDeuglifier(Deuglifier):
             r'(?P<font><font.*?>)',
             r'(?P<endfont></font>)',
             ]
-
+    rules = classmethod(rules)
 
 def display(data, mimetype, filename, rev, env):
     php_s = 'php -s'
