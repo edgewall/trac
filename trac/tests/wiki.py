@@ -16,12 +16,13 @@ class WikiTestCase(unittest.TestCase):
         class Environment:
             def __init__(self):
                 self.href = Href.Href('/')
+                self._wiki_pages = {}
                 
         out = StringIO.StringIO()
         Formatter(None, Environment()).format(self.input, out)
         if out.getvalue() != self.correct:
-            print "'%s' != '%s'" % (out.getvalue(), correct)
-            assert correct == out.getvalue()
+            print "'%s' != '%s'" % (out.getvalue(), self.correct)
+            assert self.correct == out.getvalue()
 
 def suite():
     suite = unittest.TestSuite()

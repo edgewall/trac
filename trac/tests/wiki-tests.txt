@@ -55,3 +55,21 @@ ticket:1, changeset:1, report:1, source:foo/bar
 <a href="/ticket/1">ticket 1</a>, <a href="/changeset/1">changeset 1</a>, <a href="/report/1">report 1</a>, 
 <a href="/browser/foo/bar">source foo/bar</a>, <a href="http://www.edgewall.com/">edgewall</a>
 </p>
+==============================
+CamelCase AlabamA ABc AlaBamA FooBar
+------------------------------
+<p>
+<a class="missing" href="/wiki/CamelCase">CamelCase?</a> AlabamA ABc AlaBamA <a class="missing" href="/wiki/FooBar">FooBar?</a>
+</p>
+==============================
+CamelCase,CamelCase.CamelCase:CamelCase
+------------------------------
+<p>
+<a class="missing" href="/wiki/CamelCase">CamelCase?</a>,<a class="missing" href="/wiki/CamelCase">CamelCase?</a>.<a class="missing" href="/wiki/CamelCase">CamelCase?</a>:<a class="missing" href="/wiki/CamelCase">CamelCase?</a>
+</p>
+==============================
+!CamelCase
+------------------------------
+<p>
+CamelCase
+</p>
