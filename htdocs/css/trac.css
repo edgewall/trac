@@ -155,8 +155,8 @@ form.inline input { margin: 1em }
  margin: 0;
 }
 #ctxtnav li li { padding: 0; }
-#ctxtnav li li :link, .nav li li :visited { padding: 0 1em }
-#ctxtnav li li :link:hover, .nav li li :visited:hover {
+#ctxtnav li li :link, #ctxtnav li li :visited { padding: 0 1em }
+#ctxtnav li li :link:hover, #ctxtnav li li :visited:hover {
  background: #bba;
  color: #fff;
 }
@@ -208,7 +208,7 @@ form.inline input { margin: 1em }
   text-align: right;
 }
 
-#content { padding-bottom: 2em; position: relative }
+#content { padding-bottom: 2em }
 
 #help {
  clear: both;
