@@ -51,7 +51,7 @@ MIME_MAP = {
     'make':'text/x-makefile', 'mk':'text/x-makefile', 'Makefile':'text/x-makefile',
     'mail':'text/x-mail',
     'pas':'text/x-pascal',
-    'pl':'text/x-perl',
+    'pl':'text/x-perl', 'pm':'text/x-perl', 'PL':'text/x-perl',
     'php':'text/x-php', 'php4':'text/x-php', 'php3':'text/x-php',
     'ps':'application/postscript',
     'psp':'text/x-psp',
