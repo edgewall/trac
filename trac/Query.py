@@ -1,7 +1,7 @@
 # -*- coding: iso8859-1 -*-
 #
-# Copyright (C) 2003, 2004 Edgewall Software
-# Copyright (C) 2003, 2004 Jonas Borgström <jonas@edgewall.com>
+# Copyright (C) 2003, 2004, 2005 Edgewall Software
+# Copyright (C) 2003, 2004, 2005 Jonas Borgström <jonas@edgewall.com>
 #
 # Trac is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License as
@@ -64,7 +64,8 @@ class Query:
             constraint = self.constraints[col]
             if len(constraint) == 1 and constraint[0] \
                     and not constraint[0][0] in ('!', '~', '^', '$'):
-                cols.remove(col)
+                if col in cols:
+                    cols.remove(col)
             if col == 'status' and not 'closed' in constraint \
                     and 'resolution' in cols:
                 cols.remove('resolution')
