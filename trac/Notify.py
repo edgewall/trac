@@ -277,7 +277,7 @@ class TicketNotifyEmail(NotifyEmail):
         return txt
 
     def parse_cc(self, txt):
-        return txt.replace(',', ' ').split()
+        return filter(lambda x: '@' in x, txt.replace(',', ' ').split())
 
     def format_hdr(self):
         return '#%s: %s' % (self.ticket['id'],
