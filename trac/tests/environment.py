@@ -1,10 +1,11 @@
-from trac import db_default, test
+from trac import db_default, test, Logging
 from trac.Environment import Environment
 
 import os
 import unittest
 import tempfile
 import shutil
+import ConfigParser
 
 """
 A subclass of trac.Environment that keeps its' DB in memory.
@@ -14,6 +15,21 @@ class InMemoryEnvironment(Environment):
         if not hasattr(self, '_db'):
             self._db = test.InMemoryDatabase()
         return self._db
+    
+    def create(self):
+        pass
+    
+    def verify(self):
+        return True
+
+    def setup_log(self):
+        self.log = Logging.logger_factory('null')
+    
+    def load_config(self):
+        self.cfg = ConfigParser.ConfigParser()
+
+    def save_config(self):
+        pass
 
 class EnvironmentTestBase:
 
@@ -24,7 +40,6 @@ class EnvironmentTestBase:
 
     def tearDown(self):
         self.env = None
-        shutil.rmtree(self._get_envpath())
 
     def _get_envpath(self):
         return os.path.join(tempfile.gettempdir(), 'trac-tempenv')
