@@ -1,0 +1,48 @@
+<chapter id="tg-install">
+ <title>Installation</title>
+
+  <simplesect>
+    <para>How to install Trac.
+    </para>
+  </simplesect>
+
+
+  <sect1 id="tg-install-sect-1">
+    <title>Getting Trac</title>
+    <para>Where to get it ...
+    </para>
+
+   <sect2>
+    <title>Download using FTP or HTTP</title>
+   </sect2>
+
+   <sect2>
+    <title>Development Releases</title>
+   </sect2>
+
+   <sect2>
+    <title>Physical Media</title>
+    <para>Trac is mainly and foremost distributed over the internet through
+      HTTP, FTP and Subversion protocols.</para>
+
+    <para>However, if you cannot access the regular distribution using the
+      internet,  please contact Edgewall directly for options to receive Trac
+      source code , documentation and related software on CDROM, Floppy or
+      some other media.</para>
+   </sect2>
+
+  </sect1>
+
+  <sect1 id="tg-install-sect-2">
+    <title>Apache Configuration</title>
+    <para>
+    </para>
+  </sect1>
+
+  <sect1 id="tg-install-sect-3">
+    <title>Creating Your First Database</title>
+    <para>
+    </para>
+  </sect1>
+
+</chapter>
