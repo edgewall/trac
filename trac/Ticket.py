@@ -341,7 +341,8 @@ class NewticketModule(Module):
 
         util.sql_to_hdf(self.db, "SELECT name FROM component ORDER BY name",
                         req.hdf, 'newticket.components')
-        util.sql_to_hdf(self.db, "SELECT name FROM milestone ORDER BY name",
+        util.sql_to_hdf(self.db, "SELECT name FROM milestone WHERE completed=0 "
+                                 "ORDER BY name",
                         req.hdf, 'newticket.milestones')
         util.sql_to_hdf(self.db, "SELECT name FROM version ORDER BY name",
                         req.hdf, 'newticket.versions')
