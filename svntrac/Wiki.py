@@ -44,6 +44,7 @@ class Formatter:
              r"""|(?P<listitem>^(?P<ldepth>\s+)(?:\*|[0-9]+\.) )""" \
              r"""|(?P<wikilink>(^|(?<=[^A-Za-z]))[A-Z][a-z]*(?:[A-Z][a-z]+)+)""" \
              r"""|(?P<indent>^(?P<idepth>\s+)(?=[^\s]))""" \
+             r"""|(?P<imgurl>%(url_re)s(\.png|\.jpg|\.jpeg|\.gif))""" \
              r"""|(?P<url>%(url_re)s)""" \
              r"""|(?P<fancylink>\[(?P<fancyurl>%(url_re)s) (?P<linkname>.*?)\])""" \
              r"""|(?P<underline>__))""" % { 'url_re': _url_re}
@@ -73,6 +74,9 @@ class Formatter:
 
     def _wikilink_formatter(self, match, fullmatch):
         return '<a href="%s">%s</a>' % (href.wiki(match), match)
+
+    def _imgurl_formatter(self, match, fullmatch):
+        return '<img src="%s" />' % match
 
     def _url_formatter(self, match, fullmatch):
         return '<a href="%s">%s</a>' % (match, match)
@@ -242,7 +246,7 @@ class Page:
         Formatter().format(self.text, out)
         out.write ('</div><br>')
         if edit_button and perm.has_permission (perm.WIKI_MODIFY):
-            out.write ('<form action="svntrac.cgi" method="POST">')
+            out.write ('<form action="%s" method="POST">' % get_cgi_name())
             out.write ('<input type="hidden" name="mode" value="wiki">')
             out.write ('<input type="hidden" name="page" value="%s">' % self.name)
             out.write ('<input type="submit" name="action" value=" edit page ">')
