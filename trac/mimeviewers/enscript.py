@@ -122,7 +122,7 @@ def display(data, mimetype, filename, env):
     i = odata.find('</H1>')
     beg = i > 0 and i + 7
     i = odata.rfind('</PRE>')
-    end = i > 0 and i or len(odata)
+    end = i > 0 and i + 6 or len(odata)
 
     odata = Deuglifier().format(odata[beg:end])
     return '<div class="code-block">' + odata + '</div>'
