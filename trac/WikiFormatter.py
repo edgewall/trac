@@ -147,20 +147,20 @@ class CommonFormatter:
             return None, None
         module = text[:sep]
         args = text[sep+1:]
-	if module in ['bug', 'ticket']:
-	    cursor = self.db.cursor ()
-	    cursor.execute('SELECT summary,status FROM ticket WHERE id=%s', args)
-	    row = cursor.fetchone ()				    
-	    if row:
-		summary = util.escape(util.shorten_line(row[0]))
-		if row[1] == 'new':
-		    return self._href.ticket(args), '%s:%s*' % (module, args), 0, 'NEW: ' +  summary
-		elif row[1] == 'closed':
-		    return self._href.ticket(args), '<del>%s:%s</del>' % (module, args), 0, 'CLOSED: ' + summary
-		else:
-		    return self._href.ticket(args), '%s:%s' % (module, args), 0, summary
-	    else:
-		return self._href.ticket(args), '%s:%s' % (module, args), 1, ''
+        if module in ['bug', 'ticket']:
+            cursor = self.db.cursor ()
+            cursor.execute('SELECT summary,status FROM ticket WHERE id=%s', args)
+            row = cursor.fetchone ()
+            if row:
+                summary = util.escape(util.shorten_line(row[0]))
+                if row[1] == 'new':
+                    return self._href.ticket(args), '%s:%s*' % (module, args), 0, 'NEW: ' +  summary
+                elif row[1] == 'closed':
+                    return self._href.ticket(args), '<del>%s:%s</del>' % (module, args), 0, 'CLOSED: ' + summary
+                else:
+                    return self._href.ticket(args), '%s:%s' % (module, args), 0, summary
+            else:
+                return self._href.ticket(args), '%s:%s' % (module, args), 1, ''
         elif module == 'wiki':
             if not self.env._wiki_pages.has_key(args):
                 return self._href.wiki(args), '%s:%s' % (module, args), 1, None
@@ -169,14 +169,14 @@ class CommonFormatter:
         elif module == 'report':
             return self._href.report(args), '%s:%s' % (module, args), 0, None
         elif module == 'changeset':
-	    cursor = self.db.cursor ()
-	    cursor.execute('SELECT message FROM revision WHERE rev=%s', args)
-	    row = cursor.fetchone ()
-	    if row:
-		return self._href.changeset(args), '%s:%s' % (module,args), 0,  util.escape(util.shorten_line(row[0]))
-	    else:
-		return self._href.changeset(args), '%s:%s' % (module,args), 1, ''
-	elif module == 'milestone':
+            cursor = self.db.cursor ()
+            cursor.execute('SELECT message FROM revision WHERE rev=%s', args)
+            row = cursor.fetchone ()
+            if row:
+                return self._href.changeset(args), '%s:%s' % (module,args), 0, util.escape(util.shorten_line(row[0]))
+            else:
+                return self._href.changeset(args), '%s:%s' % (module,args), 1, ''
+        elif module == 'milestone':
             return self._href.milestone(args), '%s:%s' % (module, args), 0, None
         elif module == 'search':
             return self._href.search(args), '%s:%s' % (module, args), 0, None

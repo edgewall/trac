@@ -71,14 +71,14 @@ class WikiPage:
             self.readonly = row[2] and int(row[2]) or 0
         else:
             self.version = 0
-	    self.new = 1
-	    if not self.perm.has_permission( 'WIKI_CREATE' ):
-	        self.text = 'Wiki page %s not found' % name
-	        self.readonly = 1			   
-	    else:
-		self.text = 'describe %s here' % name
-		self.readonly = 0
-		
+            self.new = 1
+            if not self.perm.has_permission( 'WIKI_CREATE' ):
+                self.text = 'Wiki page %s not found' % name
+                self.readonly = 1
+            else:
+                self.text = 'describe %s here' % name
+                self.readonly = 0
+                
         self.old_readonly = self.readonly
         self.modified = 0
 
