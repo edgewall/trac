@@ -18,7 +18,8 @@
 import os
 import re
 import sys
-import sqlite
+
+from trac.env import open_environment
 
 def main():
     if len(sys.argv) != 3:
@@ -39,8 +40,10 @@ def main():
               'in the log message.'
         sys.exit(1)
 
-    cnx = sqlite.connect(os.path.join(env_path, 'db', 'trac.db'), timeout=10000)
-    cursor = cnx.cursor()
+    env = open_environment(env_path)
+    db = env.get_db_cnx()
+
+    cursor = db.cursor()
     cursor.execute("SELECT COUNT(id) FROM ticket WHERE "
                    "status <> 'closed' AND id IN (%s)" % ','.join(tickets))
     row = cursor.fetchone()

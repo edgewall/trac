@@ -71,7 +71,8 @@ import os
 import sys
 import time 
 
-import sqlite
+from trac.env import open_environment
+from trac.Ticket import Ticket
 
 try:
     from optparse import OptionParser
@@ -83,15 +84,19 @@ except ImportError:
 
 parser = OptionParser()
 parser.add_option('-e', '--require-envelope', dest='env', default='',
-                  help='Require commands to be enclosed in an envelope. If -e[], then commands must be in the form of [closes #4]. Must be two characters.')
-parser.add_option('-p', '--project', dest='project', help='Path to the Trac project.')
-parser.add_option('-r', '--revision', dest='rev', help='Repository revision number.')
-parser.add_option('-u', '--user', dest='user', help='The user who is responsible for this action')
-parser.add_option('-m', '--msg', dest='msg', help='The log message to search.')
+                  help='Require commands to be enclosed in an envelope. If -e[],'
+                       'then commands must be in the form of [closes #4]. Must '
+                       'be two characters.')
+parser.add_option('-p', '--project', dest='project',
+                  help='Path to the Trac project.')
+parser.add_option('-r', '--revision', dest='rev',
+                  help='Repository revision number.')
+parser.add_option('-u', '--user', dest='user',
+                  help='The user who is responsible for this action')
+parser.add_option('-m', '--msg', dest='msg',
+                  help='The log message to search.')
 
 (options, args) = parser.parse_args(sys.argv[1:])
-
-print options.env
 
 if options.env:
     leftEnv = '\\' + options.env[0]
@@ -99,69 +104,57 @@ if options.env:
 else:
     leftEnv = ''
     rghtEnv = ''
-    
+
 commandPattern = re.compile(leftEnv + r'(?P<action>[A-Za-z]*).?(?P<ticket>#[0-9]+(?:(?:[, &]*|[ ]?and[ ]?)#[0-9]+)*)' + rghtEnv)
 ticketPattern = re.compile(r'#([0-9]*)')
 
+
 class CommitHook:
-    _supported_cmds = { "closes":     '_cmdClose',
-                        "fixes":      '_cmdClose',
-                        "addresses":  '_cmdRefs',
-                        "references": '_cmdRefs',
-                        "refs":       '_cmdRefs',
-                        "re":         '_cmdRefs',
-                      } 
-    def __init__(self, project=options.project, author=options.user, rev=options.rev, msg=options.msg):
+    _supported_cmds = {'closes':     '_cmdClose',
+                       'fixes':      '_cmdClose',
+                       'addresses':  '_cmdRefs',
+                       'references': '_cmdRefs',
+                       'refs':       '_cmdRefs',
+                       're':         '_cmdRefs'}
+
+    def __init__(self, project=options.project, author=options.user,
+                 rev=options.rev, msg=options.msg):
         self.author = author
         self.rev = rev
         self.msg = "(In [%s]) %s" % (rev, msg)
         self.now = int(time.time()) 
-        self.con = sqlite.connect(os.path.join(project, 'db', 'trac.db'), autocommit=0) 
-
-        self.verifyDatabaseVersion()
+        self.env = open_environment(project)
+        self.db = self.env.get_db_cnx()
 
         cmdGroups = commandPattern.findall(msg) 
         for cmd, tkts in cmdGroups:
-            try:
-                if CommitHook._supported_cmds.has_key(cmd.lower()):
-                    getattr(self, CommitHook._supported_cmds[cmd.lower()])(ticketPattern.findall(tkts))
-            except: 
-                self.con.rollback()
-        self.con.commit()
-        
-    def _cmdClose(self, tickets):
-        cur = self.con.cursor() 
-        for tkt in tickets: 
-            cur.execute("SELECT status FROM ticket WHERE id=%d", int(tkt))
-            row = cur.fetchone()
-            oldStatus = row[0]   
-            cur.execute("UPDATE ticket SET status='closed', resolution='fixed', changetime=%s WHERE id=%s", self.now, int(tkt)) 
-            cur.execute("INSERT INTO ticket_change (ticket, time, author, field, oldvalue, newvalue) VALUES (%s, %s, %s, %s, %s, %s)",
-                        int(tkt), self.now, self.author, 'comment', '', self.msg)
-            cur.execute("INSERT INTO ticket_change (ticket, time, author, field, oldvalue, newvalue) VALUES (%s, %s, %s, %s, %s, %s)",
-                        int(tkt), self.now, self.author, 'status', oldStatus, 'closed') 
-            cur.execute("INSERT INTO ticket_change (ticket, time, author, field, oldvalue, newvalue) VALUES (%s, %s, %s, %s, %s, %s)",
-                        int(tkt), self.now, self.author, 'resolution', '', 'fixed') 
-            
-    def _cmdRefs(self, tickets):
-        cur = self.con.cursor() 
-        now = int(time.time())
-        for tkt in tickets: 
-            cur.execute("UPDATE ticket SET changetime=%s WHERE id=%s", self.now, int(tkt))
-            cur.execute("INSERT INTO ticket_change (ticket, time, author, field, oldvalue, newvalue) VALUES (%s, %s, %s, %s, %s, %s)",
-                        int(tkt), self.now, self.author, 'comment', '', self.msg)
+            if CommitHook._supported_cmds.has_key(cmd.lower()):
+                func = getattr(self, CommitHook._supported_cmds[cmd.lower()])
+                func(ticketPattern.findall(tkts))
 
-    def verifyDatabaseVersion(self):
-        """Make sure the database uses a known schema version"""
-        cursor = self.con.cursor()
-        cursor.execute('SELECT value FROM system WHERE '
-                       'name=%s AND value=%s', 'database_version', '8')
-        if not cursor.fetchone():
-            raise Exception('Expected Trac database version 8')
+    def _cmdClose(self, tickets):
+        for tkt_id in tickets:
+            try:
+                ticket = Ticket(self.db, tkt_id)
+                ticket['status'] = 'closed'
+                ticket['resolution'] = 'fixed'
+                ticket.save_changes(self.db, self.author, self.msg, self.now)
+            except Exception, e:
+                print>>sys.stderr, 'Unexpected error while processing ticket ' \
+                                   'ID %s: %s' % (tkt_id, e)
+
+    def _cmdRefs(self, tickets):
+        for tkt_id in tickets: 
+            try:
+                ticket = Ticket(self.db, tkt_id)
+                ticket.save_changes(self.db, self.author, self.msg, self.now)
+            except Exception, e:
+                print>>sys.stderr, 'Unexpected error while processing ticket ' \
+                                   'ID %s: %s' % (tkt_id, e)
+
 
 if __name__ == "__main__":
     if len(sys.argv) < 5:
         print "For usage: %s --help" % (sys.argv[0])
     else:
         CommitHook()
-    
