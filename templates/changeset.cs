@@ -77,7 +77,13 @@
   <?cs each:file = changeset.diff.files ?>
     <div class="chg-diff-file">
       <h3 class="chg-diff-hdr"><?cs var:file.name.new ?></h3>
-      <?cs call:diff_display(file) ?>
+      <table class="diff-table" cellspacing="0">
+        <?cs each:change = file.changes ?>
+          <tr><td class="diff-line">line <?cs var:change.line.old ?></td>
+          <td class="diff-line">line <?cs var:change.line.new ?></td></tr>
+          <?cs call:diff_display(change) ?>
+        <?cs /each ?>
+      </table>
     </div>
   <?cs /each ?>
 </div>

@@ -77,11 +77,11 @@ class DiffColorizer:
             return
         match = line_re.search(text)
         if match:
-            pfx = '%s.changes.%d' % (self.prefix, self.changeno)
+            self.changeno += 1
+            pfx = '%s.changes.%d.line' % (self.prefix, self.changeno)
             self.print_block()
             self.hdf.setValue('%s.old' % pfx, match.group(1))
             self.hdf.setValue('%s.new' % pfx, match.group(3))
-            self.changeno += 1
             return
         ttype = text[0]
         text = text[1:]

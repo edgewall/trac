@@ -23,12 +23,8 @@
  ?></span><?cs /if ?></div>
 <?cs /def ?>
 
-<?cs def:diff_display(node) ?>
- <table class="diff-table" cellspacing="0">
-  <tr><td class="diff-line"><?cs var:node.name.old ?></td>
-  <td class="diff-line"><?cs var:node.name.new ?></td></tr>
-   <?cs each:change = node.changes ?>
-   <?cs each:block = change.blocks ?><tr>
+<?cs def:diff_display(change) ?>
+  <?cs each:block = change.blocks ?><tr>
     <?cs if block.type == "unmod" ?><td class="unmod-left"><?cs
       elif block.type == "mod" ?><td class="mod-left"><?cs
       elif block.type == "add" ?><td class="add-left"><?cs
@@ -39,7 +35,5 @@
       elif block.type == "add" ?><td class="add-right"><?cs
       elif block.type == "rem" ?><td class="rem-right"><?cs
     /if ?><?cs var:block.text.new ?></td></tr>
-   <?cs /each ?>
   <?cs /each ?>
- </table>
 <?cs /def ?>

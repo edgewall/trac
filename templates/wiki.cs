@@ -89,7 +89,13 @@
           </div>
           <div id="chg-diff">
            <div class="chg-diff-file">
-            <?cs call:diff_display(wiki.diff) ?>
+             <table class="diff-table" cellspacing="0">
+               <tr><td class="diff-line"><?cs var:wiki.diff.name.old ?></td>
+               <td class="diff-line"><?cs var:wiki.diff.name.new ?></td></tr>
+               <?cs each:change = wiki.diff.changes ?><?cs
+                 call:diff_display(change) ?><?cs
+                 /each ?>
+             </table>
            </div>
           </div>
         <?cs else ?>
