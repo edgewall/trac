@@ -67,11 +67,21 @@ class PermissionError (StandardError):
 
 def cache_permissions ():
     global perm_cache, meta_permission
-    
+
+    # Special usernames:
+    # 'anonymous':     Permissions granted to this user will apply to anyone.
+    # 'authenticated': Permissions granted to this user will apply to
+    #                  any authenticated (logged in with HTTP_AUTH) user.
+
     cnx = get_connection ()
-    rs = cnx.db.execute ("SELECT action FROM permission "
-                         "WHERE user='%s' OR user='anonymous'" %
-                         get_authname ())
+    if get_authname() == 'anonymous':
+        rs = cnx.db.execute ("SELECT action FROM permission "
+                             "WHERE user='anonymous'")
+    else:
+        rs = cnx.db.execute ("SELECT action FROM permission "
+                             "WHERE user='%s' OR user='anonymous' "
+                             "OR user = 'authenticated'" %
+                             get_authname ())
     for row in rs.row_list:
         action = row[0]
         if meta_permission.has_key(action):
