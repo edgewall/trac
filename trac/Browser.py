@@ -52,7 +52,7 @@ def _get_path_links(href, path, rev):
         path = path + part + '/'
         links.append({
             'name': part or 'root',
-            'href': href.browser(path, rev)
+            'href': href.browser(path, rev=rev)
         })
     return links
 
