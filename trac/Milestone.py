@@ -22,7 +22,7 @@
 import time
 
 from Module import Module
-from util import add_to_hdf, get_date_format_hint, TracError
+from util import add_to_hdf, get_date_format_hint, sql_escape, TracError
 from Ticket import get_custom_fields, Ticket
 from WikiFormatter import wiki_to_html
 import perm
@@ -36,10 +36,10 @@ def get_tickets_for_milestone(env, db, milestone, field='component'):
         sql += 'ticket_custom.value AS %s ' \
                'FROM ticket LEFT OUTER JOIN ticket_custom ON id = ticket ' \
                'WHERE name = \'%s\' AND milestone = \'%s\'' % (
-               field, field, milestone)
+               sql_escape(field), sql_escape(field), sql_escape(milestone))
     else:
         sql += 'ticket.%s AS %s FROM ticket WHERE milestone = \'%s\'' % (
-               field, field, milestone)
+               sql_escape(field), sql_escape(field), sql_escape(milestone))
     
     cursor.execute(sql)
     tickets = []
