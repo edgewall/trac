@@ -22,6 +22,7 @@
 import time
 import string
 import StringIO
+from types import *
 
 from util import *
 from Module import Module
@@ -81,7 +82,10 @@ class Ticket (Module):
         info = {'ticket': id }
         # Escape the values so that they are safe to have as html parameters
         for i in range(len(fields)):
-            info[fields[i]] = escape(row[i] or '')
+	    if type(row[i]) is StringType:
+		info[fields[i]] = escape(row[i] or '')
+	    else:
+		info[fields[i]] = row[i] or ''
         return info
 
     def save_changes (self, id, old, new): 
