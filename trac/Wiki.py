@@ -178,6 +178,7 @@ class WikiModule(Module):
         self.req.hdf.setValue('wiki.comment', escape(comment))
 
         builder = Diff.HDFBuilder(self.req.hdf, 'wiki.diff')
+        builder.writeline('@@ -1,%d +1,%d @@' % (len(old), len(new)))
         try:
             for line in difflib.Differ().compare(old, new):
                 if line != '  ':
