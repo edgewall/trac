@@ -5,10 +5,8 @@
  border-bottom: 2px solid #eee;
  font-size: 150%;
 }
-#report-descr { 
- margin: 0 2em;
- font-size: 90%;
-}
+#numrows { font-size: 65%; color: #999; font-weight: normal; }
+#report-descr { margin: 0 2em; font-size: 90%; }
 .report-list { 
  width: 97%; 
  margin-left: 1em;
@@ -18,10 +16,7 @@
  border: 1px solid #d7d7d7; 
  border-top: none;
 }
-tr { 
- border-bottom: 1px solid #d7d7d7; 
- border-top: none;
-}
+tr { border-bottom: 1px solid #d7d7d7; border-top: none; }
 .report-list th { 
  border-left: 1px solid #fff; 
  border-right: 1px solid #fff; 

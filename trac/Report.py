@@ -301,6 +301,7 @@ class Report (Module):
 
                 col_idx += 1
             row_idx += 1
+        self.req.hdf.setValue('report.numrows', str(row_idx))
 
     def get_var_args(self):
         report_args = {}

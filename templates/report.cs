@@ -82,14 +82,15 @@
  <?cs set group = '' ?>
  
  <?cs if report.mode == "list" ?>
-   <h1 id="report-hdr"><?cs var:report.title ?></h1>
-
+   <h1 id="report-hdr"><?cs var:report.title ?>
+   <?cs if:report.numrows && report.id != -1 ?><span id="numrows">(<?cs var:report.numrows ?> matches)</span><?cs /if ?>
+</h1>
      <?cs if report.description ?>
        <div id="report-descr"><?cs var:report.description ?></div>
      <?cs /if ?>
 
+
      <?cs each row = report.items ?>
- 
        <?cs if group != row.__group__ || idx == #0 ?>
          <?cs set group = row.__group__ ?>
          <?cs call:report_hdr(group) ?>
