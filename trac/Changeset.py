@@ -79,11 +79,15 @@ class HtmlDiffEditor (svn.delta.Editor):
         differ.get_files()
         pobj = differ.get_pipe()
         prefix = 'changeset.diff.files.%d' % (self.fileno)
+        self.req.hdf.setValue(prefix + '.browser_href.old',
+                              self.env.href.file(old_path, old_rev))
+        self.req.hdf.setValue(prefix + '.browser_href.new',
+                              self.env.href.file(new_path, new_rev))
         tabwidth = int(self.env.get_config('diff', 'tab_width', '8'))
         builder = Diff.HDFBuilder(self.req.hdf, prefix, tabwidth)
         self.fileno += 1
         builder.writeline('header %s %s | %s %s redaeh' % (old_path, old_rev,
-                                                               new_path, new_rev))
+                                                           new_path, new_rev))
         while 1:
             line = pobj.readline()
             if not line:
@@ -172,9 +176,6 @@ class Changeset (Module.Module):
             self.rev = svn.fs.youngest_rev(self.fs_ptr, self.pool)
 
         change_info = self.get_change_info (self.rev)
-        for item in change_info:
-            item['log_href'] = self.env.href.log(item['name'])
-
         changeset_info = self.get_changeset_info (self.rev)
 
         self.req.hdf.setValue('changeset.time',

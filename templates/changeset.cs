@@ -59,7 +59,7 @@
  <dt class="message">Message:</dt>
  <dd class="message" id="searchable"><?cs var:changeset.message ?></dd>
  <dt class="files">Files:</dt>
- <dd class="files">
+ <dd class="files"><?cs set:anchor_idx = #0 ?>
   <ul><?cs each:item = changeset.changes ?>
    <li>
     <?cs if:item.change == "A" ?>
@@ -68,8 +68,9 @@
        var:item.name ?></a> <span class="comment">(added)</span>
     <?cs elif:item.change == "M" ?>
      <div class="mod"></div>
-     <a href="<?cs var:item.browser_href?>" title="Show file in browser"><?cs
-       var:item.name ?></a> <span class="comment">(modified)</span>
+     <a href="#file<?cs var:anchor_idx ?>" title="Jump to diffs"><?cs
+       var:item.name ?></a> <span class="comment">(modified)</span><?cs
+       set:anchor_idx = anchor_idx + #1 ?>
     <?cs elif:item.change == "D" ?>
      <div class="rem"></div>
      <?cs var:item.name ?> <span class="comment">(deleted)</span>
@@ -92,8 +93,11 @@
  <ul>
   <?cs each:file = changeset.diff.files ?>
    <?cs if:len(file.changes) ?>
-    <li>
-     <h2><?cs var:file.name.new ?></h2>
+    <li id="file<?cs var:name(file) ?>">
+     <h2><a href="<?cs
+       var:file.browser_href.new ?>" title="Show version <?cs
+       var:file.rev.new ?> of this file in browser"><?cs
+       var:file.name.new ?></a></h2>
      <?cs if:diff.style == 'sidebyside' ?>
       <table class="sidebyside" summary="Differences" cellspacing="0">
        <colgroup class="base">
@@ -102,8 +106,10 @@
         <col class="lineno" /><col class="content" />
        </colgroup>
        <thead><tr>
-        <th colspan="2">Revision <?cs var:file.rev.old ?></th>
-        <th colspan="2">Revision <?cs var:file.rev.new ?></th>
+        <th colspan="2"><a href="<?cs var:file.browser_href.old ?>">Revision <?cs
+          var:file.rev.old ?></a></th>
+        <th colspan="2"><a href="<?cs var:file.browser_href.new ?>">Revision <?cs
+          var:file.rev.new ?></a></th>
        </tr></thead>
        <?cs each:change = file.changes ?>
         <tbody>
@@ -111,7 +117,8 @@
         </tbody>
         <?cs if:name(change) < len(file.changes) - 1 ?>
          <tbody class="skippedlines">
-          <tr><th>&hellip;</th><td>&nbsp;</td><th>&hellip;</th><td>&nbsp;</td></tr>
+          <tr><th>&hellip;</th><td>&nbsp;</td>
+          <th>&hellip;</th><td>&nbsp;</td></tr>
          </tbody>
         <?cs /if ?>
        <?cs /each ?>
@@ -124,10 +131,14 @@
         <col class="content" />
        </colgroup>
        <thead><tr>
-        <th title="Revision <?cs var:file.rev.old ?>">r<?cs
-          var:file.rev.old ?></th>
-        <th title="Revision <?cs var:file.rev.new ?>">r<?cs
-          var:file.rev.new ?></th>
+        <th title="Revision <?cs var:file.rev.old ?>"><a href="<?cs
+          var:file.browser_href.old ?>" title="Show revision <?cs
+          var:file.rev.old ?> of this file in browser">r<?cs
+          var:file.rev.old ?></a></th>
+        <th title="Revision <?cs var:file.rev.new ?>"><a href="<?cs
+          var:file.browser_href.new ?>" title="Show revision <?cs
+          var:file.rev.new ?> of this file in browser">r<?cs
+          var:file.rev.new ?></a></th>
         <th>&nbsp;</th>
        </tr></thead>
        <?cs each:change = file.changes ?>
