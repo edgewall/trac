@@ -61,6 +61,10 @@ class Log (Module):
     def get_info (self, path, rev):
         self.log_info = []
         self.branch_info = {}
+        # We need to really make sure it's an ordinary string. The FieldStorage
+        # class provided by modpython might give us some strange string-like object
+        # that svn doesn't like.
+        path = str(path)
         svn.repos.svn_repos_get_logs (self.repos, [path],
                                    0, rev, 1, 0, self.log_receiver,
                                    self.pool)

@@ -37,6 +37,10 @@ class Browser(Module.Module):
         """
         Extracts information for a given path and revision
         """
+        # We need to really make sure it's an ordinary string. The FieldStorage
+        # class provided by modpython might give us some strange string-like object
+        # that svn doesn't like.
+        path = str(path)
         try:
             root = svn.fs.revision_root(self.fs_ptr, revision, self.pool)
         except svn.core.SubversionException:
