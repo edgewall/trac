@@ -188,3 +188,25 @@ source:/foo/bar#head
 <p>
 <a title="" href="/browser/foo/bar?rev=head">source:/foo/bar#head</a>
 </p>
+==============================
+{{{
+#!html
+<script>alert("");</script>
+}}}
+------------------------------
+<div class="system-message">
+ <strong>Error: HTML block contains disallowed tags.</strong>
+ <pre>&lt;script&gt;alert(&#34;&#34;);&lt;/script&gt;
+</pre>
+</div>
+==============================
+{{{
+#!html
+<div onclick="alert('')">Click me</div>
+}}}
+------------------------------
+<div class="system-message">
+ <strong>Error: HTML block contains disallowed attributes.</strong>
+ <pre>&lt;div onclick=&#34;alert('')&#34;&gt;Click me&lt;/div&gt;
+</pre>
+</div>

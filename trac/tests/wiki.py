@@ -2,9 +2,10 @@ import os
 import StringIO
 import unittest
 
-from Wiki import Formatter
+from trac.Wiki import Formatter
 
 class WikiTestCase(unittest.TestCase):
+
     def __init__(self, input, correct):
         unittest.TestCase.__init__(self, 'test')
         self.input = input
@@ -13,8 +14,10 @@ class WikiTestCase(unittest.TestCase):
     def test(self):
         """Testing WikiFormatter"""
         import Href
+        import Logging
         class Environment:
             def __init__(self):
+                self.log = Logging.logger_factory('null')
                 self.href = Href.Href('/')
                 self._wiki_pages = {}
         class Cursor:
@@ -24,12 +27,9 @@ class WikiTestCase(unittest.TestCase):
             def cursor(self):
                 return Cursor()
 
-                
         out = StringIO.StringIO()
         Formatter(None, Environment(), Connection()).format(self.input, out)
-        if out.getvalue() != self.correct:
-            print "'%s' != '%s'" % (out.getvalue(), self.correct)
-            assert self.correct == out.getvalue()
+        self.assertEquals(self.correct, out.getvalue())
 
 def suite():
     suite = unittest.TestSuite()
@@ -40,4 +40,3 @@ def suite():
         input, correct = test.split('-' * 30 + '\n')
         suite.addTest(WikiTestCase(input, correct))
     return suite
-    
