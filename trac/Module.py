@@ -20,6 +20,7 @@
 # Author: Jonas Borgström <jonas@edgewall.com>
 
 import core
+from util import escape
 
 
 class Module:
@@ -52,9 +53,9 @@ class Module:
         if not self.link_no.has_key(rel):
             self.link_no[rel] = 0
         prefix = 'links.%s.%d' % (rel, self.link_no[rel])
-        self.req.hdf.setValue(prefix + '.href', href)
+        self.req.hdf.setValue(prefix + '.href', escape(href))
         if title:
-            self.req.hdf.setValue(prefix + '.title', title)
+            self.req.hdf.setValue(prefix + '.title', escape(title))
         if type:
             self.req.hdf.setValue(prefix + '.type', type)
         if className:
