@@ -7,7 +7,6 @@ from glob import glob
 from distutils.core import setup
 from distutils.command.install import install
 from distutils.command.install_scripts import install_scripts
-from distutils import log
 from stat import ST_MODE
 
 import trac
@@ -88,11 +87,8 @@ class my_install_scripts (install_scripts):
             # Set the executable bits (owner, group, and world) on
             # all the scripts we just installed.
             for file in self.get_outputs():
-                if self.dry_run:
-                    log.info("changing mode of %s", file)
-                else:
+                if not self.dry_run:
                     mode = ((os.stat(file)[ST_MODE]) | 0555) & 07777
-                    log.info("changing mode of %s to %o", file, mode)
                     os.chmod(file, mode)
 
 
