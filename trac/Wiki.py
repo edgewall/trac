@@ -690,6 +690,10 @@ class Wiki(Module):
         preview = self.args.get('preview', None)
         version = int(self.args.get('version', 0))
 
+        # Ask web spiders to not index old version
+        if diff or version:
+            self.req.hdf.setValue('html.norobots', '1')
+
         if cancel:
             self.req.redirect(self.env.href.wiki(name))
 

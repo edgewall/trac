@@ -8,6 +8,9 @@
   <?cs else ?>
    <title>Trac: <?cs var:title ?></title>
   <?cs /if ?>
+  <?cs if:html.norobots ?>
+  <meta name="ROBOTS" content="NOINDEX, NOFOLLOW" />
+  <?cs /if ?>
   <?cs each:rel = links ?><?cs each:link = rel ?><link rel="<?cs
    var:name(rel) ?>" href="<?cs var:link.href ?>"<?cs
    if:link.title ?> title="<?cs var:link.title ?>"<?cs /if ?><?cs
