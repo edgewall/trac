@@ -2,7 +2,7 @@
   <select size="1" name="<?cs var:name ?>">
   <?cs each:item = $enum ?>
     <?cs if item.name == $selected ?>
-      <option selected><?cs var:item.name ?></option>
+      <option selected="selected"><?cs var:item.name ?></option>
     <?cs else ?>
       <option><?cs var:item.name ?></option>
     <?cs /if ?>

@@ -346,48 +346,83 @@ td.diff-line {
 
 /* Ticket */
 
-#tkt-ticket { 
- background: #ffd;
- border: 1px solid #dd9;
- border-width: 1px 2px 2px 1px;
- padding: .5em;
- max-width: 700px;
+#tkt-ticket,#tkt-changes { 
+	background: #ffd;
+	border: 1px solid #dd9;
+	border-width: 1px 3px 3px 1px;
+	padding: .5em;
+	max-width: 700px;
 }
 #tkt-left { 
- width: 50%;
- float: left;
- border-right: 1px solid #dd9;
- padding: .5em;
+	width: 50%;
+	float: left;
+	border-right: 1px solid #dd9;
+	padding: .5em;
 }
 #tkt-right { 
- padding: .5em;
+	padding: .5em;
 }
 #tkt-date { 
- float: right;
- font-size: 75%;
- color: #996; 
+	float: right;
+	font-size: 75%;
+	color: #996; 
 }
 .tkt-prop { 
-  border-bottom: 1px dotted #eed;
+	border-bottom: 1px dotted #eed;
 }
 .tkt-label { 
- color: #996; 
- font-weight: normal;
- padding: 0 .5em;
- float: left;
- width: 8em;
+	color: #996; 
+	font-weight: normal;
+	padding: 0 .5em;
+	float: left;
+	width: 8em;
 }
 .tkt-val { }
 #tkt-summary { 
- margin: 0;
- font-size: 100%;
- border-bottom: 1px solid #dd9;
- padding-bottom: .25em;
+	margin: 0;
+	font-size: 100%;
+	border-bottom: 1px solid #dd9;
+	padding-bottom: .25em;
 }
 #tkt-descr { 
- border-top: 1px solid #dd9;
- padding-top: .5em;
+	border-top: 1px solid #dd9;
+	padding-top: .5em;
 }
 #tkt-left,#tkt-right { 
- font-size: 80%;
+	font-size: 80%;
+}
+#tkt-changes-hdr { 
+	font-size: 110%;
+	margin-bottom: .5em;
+	margin-top: 1em;
+}
+#tkt-changes { 
+	border-color: #d7d7d7;
+	background: #fff;
+	font-size: 80%;
+	padding: 0 .5em;
+	padding-left: 1.5em;
+}
+.tkt-chg-mod { 
+	color: #999;
+	border-bottom: 1px solid;
+	margin-top: .5em;
+	margin-left: -1em;
+	font-size: 100%;
+	font-weight: normal;
+	padding: 0 .5em;
+}
+ul.tkt-chg-list { 
+	padding: 0 1em;
+	list-style: square;
+}
+li.tkt-chg-change { margin: 0 }
+.tkt-chg-comment-hdr { 
+	margin: 0;
+	font-size: 100%;
+}
+.tkt-chg-comment p { margin: .25em }
+.tkt-chg-comment { 
+	margin: 0;
+	margin-left: 1em;
 }
