@@ -18,7 +18,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #
-# Author: Jonas Borgstršm <jonas@edgewall.com>
+# Author: Jonas Borgström <jonas@edgewall.com>
 
 from trac.db import SQLiteConnection
 
@@ -53,7 +53,7 @@ class InMemoryDatabase(SQLiteConnection):
 def suite():
     from trac.tests import wiki, ticket, perm, environment, diff, query, href, \
                            tracadmin
-    from trac.web.tests import auth, cgi_frontend, clearsilver
+    from trac.web.tests import auth, cgi_frontend, clearsilver, session
 
     suite = unittest.TestSuite()
 
@@ -70,6 +70,7 @@ def suite():
     suite.addTest(auth.suite())
     suite.addTest(cgi_frontend.suite())
     suite.addTest(clearsilver.suite())
+    suite.addTest(session.suite())
 
     # trac-admin
     suite.addTest(tracadmin.suite())

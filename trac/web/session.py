@@ -23,15 +23,14 @@ from trac.util import hex_entropy, TracError
 
 import sys
 import time
-from UserDict import UserDict
 
 
-DEPARTURE_INTERVAL = 3600 # If you're idle for an hour, you left
+UPDATE_INTERVAL = 3600*24 # Update session last_visit time stamp after 1 day
 PURGE_AGE = 3600*24*90 # Purge session after 90 days idle
 COOKIE_KEY = 'trac_session'
 
 
-class Session(UserDict):
+class Session(dict):
     """Basic session handling and per-session storage."""
 
     sid = None
@@ -40,21 +39,18 @@ class Session(UserDict):
     db = None
     _old = {}
 
-    def __init__(self, env, db, req, newsession = 0):
-        UserDict.__init__(self)
+    def __init__(self, env, db, req, newsession=0):
+        dict.__init__(self)
         self.env = env
         self.db = db
         self.req = req
         self.sid = None
         self._old = {}
-        if newsession:
+        if newsession or not req.incookie.has_key(COOKIE_KEY):
             self.create_new_sid()
         else:
-            try:
-                sid = req.incookie[COOKIE_KEY].value
-                self.get_session(sid)
-            except KeyError:
-                self.create_new_sid()
+            sid = req.incookie[COOKIE_KEY].value
+            self.get_session(sid)
 
     def bake_cookie(self):
         self.req.outcookie[COOKIE_KEY] = self.sid
@@ -68,15 +64,15 @@ class Session(UserDict):
                        "WHERE sid=%s", (self.sid,))
         rows = cursor.fetchall()
         if (not rows                              # No session data yet
-            or rows[0][0] == 'anonymous'          # Anon session
+            or rows[0][0] == 'anonymous'          # Anonymous session
             or rows[0][0] == self.req.authname):  # Session is mine
             for u,k,v in rows:
-                self.data[k] = v
-            self._old.update(self.data)
+                self[k] = v
+            self._old.update(self)
             self.bake_cookie()
             return
         if self.req.authname == 'anonymous':
-            err = ('Session cookie requires authentication. <p>'
+            err = ('Session cookie requires authentication.<p>'
                    'Please choose action:</p>'
                    '<ul><li><a href="%s">Log in and continue session</a></li>'
                    '<li><a href="%s?newsession=1">Create new session (no login required)</a></li>'
@@ -108,25 +104,30 @@ class Session(UserDict):
         self.bake_cookie()
 
     def save(self):
-        if not self._old and not self.data:
+        if not self._old and not self.items():
             # The session doesn't have associated data, so there's no need to
             # persist it
             return
 
+        changed = 0
         now = int(time.time())
 
         # Update the session last visit time if it is over an hour old, so that
         # session doesn't get purged
-        last_visit = int(self.data.get('last_visit', 0))
-        if now - last_visit > DEPARTURE_INTERVAL:
-            self.data['last_visit'] = now
+        last_visit = int(self.get('last_visit', 0))
+        if now - last_visit > UPDATE_INTERVAL:
+            self['last_visit'] = now
 
-        changed = 0
+        # If the only data in the session is the last_visit time, it makes no
+        # sense to keep the session around
+        if len(self.items()) == 1:
+            del self['last_visit']
+
         cursor = self.db.cursor()
 
         # Find all new or modified session variables and persist their values to
         # the database
-        for k,v in self.data.items():
+        for k,v in self.items():
             if not self._old.has_key(k):
                 cursor.execute("INSERT INTO session (sid,username,var_name,"
                                "var_value) VALUES(%s,%s,%s,%s)",
@@ -139,7 +140,7 @@ class Session(UserDict):
 
         # Find all variables that have been deleted and also remove them from
         # the database
-        for k in [k for k in self._old.keys() if not self.data.has_key(k)]:
+        for k in [k for k in self._old.keys() if not self.has_key(k)]:
             cursor.execute("DELETE FROM session WHERE sid=%s AND var_name=%s",
                            (self.sid, k))
             changed = 1
