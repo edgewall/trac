@@ -397,7 +397,6 @@ def dispatch_request(path_info, args, req, env, database=None):
         database = env.get_db_cnx()
 
     # Let the wiki module build a dictionary of all page names
-    database = env.get_db_cnx()
     Wiki.populate_page_dict(database, env)
 
     authenticator = auth.Authenticator(database, req)
