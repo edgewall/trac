@@ -269,6 +269,7 @@ class WikiModule(Module):
         }
         if preview:
             info['page_html'] = wiki_to_html(page.text, req.hdf, self.env, self.db)
+            info['readonly'] = int(req.args.has_key('readonly'))
         req.hdf['wiki'] = info
 
     def _render_history(self, req, pagename):
