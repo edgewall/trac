@@ -35,13 +35,24 @@
      else ?>>
       No date set<?cs
      /if ?>
-    </p>
-    <?cs with:stats = milestone.stats ?>
-     <?cs if:#stats.total_tickets > #0 ?>
+    </p><?cs
+    with:stats = milestone.stats ?><?cs
+     if:#stats.total_tickets > #0 ?>
       <div class="progress">
-       <div style="width: <?cs var:#stats.percent_complete ?>%"></div>
+       <a class="closed" href="<?cs
+         var:milestone.queries.closed_tickets ?>" style="width: <?cs
+         var:#stats.percent_closed ?>%" title="<?cs
+         var:#stats.closed_tickets ?> of <?cs
+         var:#stats.total_tickets ?> ticket<?cs
+         if:#stats.total_tickets != #1 ?>s<?cs /if ?> closed"></a>
+       <a class="open" href="<?cs
+         var:milestone.queries.active_tickets ?>" style="width: <?cs
+         var:#stats.percent_active ?>%" title="<?cs
+         var:#stats.active_tickets ?> of <?cs
+         var:#stats.total_tickets ?> ticket<?cs
+         if:#stats.total_tickets != #1 ?>s<?cs /if ?> active"></a>
       </div>
-      <p class="percent"><?cs var:#stats.percent_complete ?>%</p>
+      <p class="percent"><?cs var:#stats.percent_closed ?>%</p>
       <dl>
        <dt>Active tickets:</dt>
        <dd><a href="<?cs var:milestone.queries.active_tickets ?>"><?cs
@@ -49,9 +60,9 @@
        <dt>Closed tickets:</dt>
        <dd><a href="<?cs var:milestone.queries.closed_tickets ?>"><?cs
          var:stats.closed_tickets ?></a></dd>
-      </dl>
-     <?cs /if ?>
-    <?cs /with ?>
+      </dl><?cs
+     /if ?><?cs
+    /with ?>
    </div>
    <div class="description"><?cs var:milestone.description ?></div>
   </li><?cs

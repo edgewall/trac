@@ -1,6 +1,14 @@
 /* General styles for the progress bars */
-div.progress { float: left; border: 1px solid #d7d7d7 }
-div.progress div { background: #bae0ba; height: 1.2em }
+div.progress { border: 1px solid #d7d7d7; float: left }
+div.progress :link, div.progress :visited {
+ background: #fff;
+ border: none;
+ display: block;
+ float: left;
+ height: 1.2em;
+}
+div.progress :link:hover, div.progress :visited:hover { background: #fff }
+div.progress .closed:link, div.progress .closed:visited { background: #bae0ba }
 p.percent { font-size: 10px; line-height: 2.4em; margin: 0.9em 0 0 }
 
 /* Styles for the roadmap view */
@@ -42,43 +50,15 @@ li.milestone .description { margin-left: 1em }
 .milestone .date { color: #888; font-style: italic; margin: 0 }
 .milestone .description { margin: 1em 0 2em }
 
-/* Milestone view preferences */
-#prefs fieldset { margin: 1em .5em .5em; padding: .5em 1em 0 }
-
-/* Styles for the statistics table */
-h2.stats {
- background: #f7f7f7;
- border-bottom: 1px solid #d7d7d7;
- clear: right;
- padding: 0 .33em;
-}
-#stats { border-bottom: none; margin-top: 0 }
-#stats td, #stats th { padding: 0 .25em }
-#stats :link, #stats :visited { display: block; border: none }
-#stats th.name { text-transform: capitalize }
-#stats th.tickets { text-align: center; border-bottom: none }
-#stats th.open, #stats th.closed {
- border-top: none;
- font-size: smaller;
- text-align: center;
- width: 6em;
-}
-#stats td.open, #stats td.closed {
- color: #888;
- text-align: right;
- padding-right: 1.5em;
- vertical-align: middle;
-}
-#stats th.progress { padding-left: 6px; width: 60% }
-#stats td.progress { white-space: nowrap }
-#stats td.progress div.progress { margin: 3px .5em 3px 2px }
-#stats td.progress p.percent { font-size: 10px; margin: 0 }
-#stats tbody th { font-weight: normal; text-align: left }
-#stats tbody th.name { line-height: 2em }
-#stats tbody.totals tr { border-bottom: 0 }
-#stats tbody.totals th, #stats tbody.totals td {
- font-weight: bold;
-}
+/* Styles for the milestone statistics table */
+#stats { float: right; margin: 0 0 2em 2em; width: 300px }
+#stats table { border-collapse: collapse; width: 100% }
+#stats th, #stats td { font-size: 10px; padding: 0; white-space: nowrap }
+#stats th { text-align: right; text-transform: capitalize }
+#stats th :link, #stats th :visited { border: none }
+#stats td { padding-left: 0.5em; width: 100% }
+#stats td div.progress { margin: 3px 4px 3px 0 }
+#stats td p.percent { letter-spacing: -.1em; line-height: 1.2em; margin-top: .4em }
 
 /* Styles for the milestone edit form */
 #edit fieldset { margin: 1em 0 }
