@@ -100,14 +100,14 @@ def suite():
     suite = unittest.TestSuite()
 
     # trac
-    from trac.tests import wiki, ticket, perm, environment, diff, query, href
-    suite.addTest(wiki.suite())
-    suite.addTest(ticket.suite())
-    suite.addTest(perm.suite())
-    suite.addTest(environment.suite())
+    from trac.tests import diff, env, href, perm, query, ticket, wiki
     suite.addTest(diff.suite())
+    suite.addTest(env.suite())
     suite.addTest(href.suite())
+    suite.addTest(perm.suite())
     suite.addTest(query.suite())
+    suite.addTest(ticket.suite())
+    suite.addTest(wiki.suite())
 
     # trac.web
     from trac.web.tests import auth, cgi_frontend, clearsilver, session

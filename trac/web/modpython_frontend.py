@@ -19,7 +19,7 @@
 #
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
-from trac.core import open_environment
+from trac.env import open_environment
 from trac.util import TracError, href_join, rstrip
 from trac.web.main import Request, dispatch_request, send_pretty_error
 

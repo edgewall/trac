@@ -29,18 +29,9 @@ import cmd
 import shlex
 import StringIO
 
-from trac import perm
-from trac import util
-from trac import sync
+from trac import perm, util, sync
+from trac.env import Environment
 import trac.siteconfig
-import trac.Environment
-
-def my_sum(list):
-    """Python2.1 doesn't have sum()"""
-    tot = 0
-    for item in list:
-        tot += item
-    return tot
 
 
 class TracAdmin(cmd.Cmd):
@@ -92,14 +83,14 @@ class TracAdmin(cmd.Cmd):
 
     def env_check(self):
         try:
-            self.__env = trac.Environment.Environment(self.envname)
+            self.__env = Environment(self.envname)
         except:
             return 0
         return 1
         
     def env_create(self):
         try:
-            self.__env = trac.Environment.Environment (self.envname, create=1)
+            self.__env = Environment(self.envname, create=1)
             return self.__env
         except Exception, e:
             print 'Failed to create environment.', e
@@ -108,7 +99,7 @@ class TracAdmin(cmd.Cmd):
     def db_open(self):
         try:
             if not self.__env:
-                self.__env = trac.Environment.Environment (self.envname)
+                self.__env = Environment(self.envname)
             return self.__env.get_db_cnx()
         except Exception, e:
             print 'Failed to open environment.', e
@@ -186,7 +177,7 @@ class TracAdmin(cmd.Cmd):
                 print ("%%-%ds%s" % (colw[cnum], sp)) % (ldata[rnum][cnum] or ''),
             print
             if rnum == 0 and decor:
-                print ''.join(['-' for x in xrange(0,(1+len(sep))*cnum+my_sum(colw))])
+                print ''.join(['-' for x in xrange(0,(1+len(sep))*cnum+sum(colw))])
         print
 
     def print_doc(self,doc,decor=0):

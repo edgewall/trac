@@ -18,9 +18,8 @@
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #
 # Author: Jonas Borgström <jonas@edgewall.com>
-#
-# Todo: Move backup and upgrade from db.py
-#
+
+from __future__ import generators
 
 from trac import db, db_default, Logging, Mimeview, util
 
@@ -330,3 +329,23 @@ class Environment:
                           dbver, db_default.db_version)
             cnx.commit()
             return 1
+
+
+def open_environment(env_path=None):
+    if not env_path:
+        env_path = os.getenv('TRAC_ENV')
+    if not env_path:
+        raise EnvironmentError, \
+              'Missing environment variable "TRAC_ENV". Trac requires this ' \
+              'variable to point to a valid Trac Environment.'
+
+    env = Environment(env_path)
+    version = env.get_version()
+    if version < db_version:
+        raise EnvironmentError, \
+              'The Trac Environment needs to be upgraded. Run "trac-admin %s ' \
+              'upgrade"' % env_path
+    elif version > db_version:
+        raise EnvironmentError, \
+              'Unknown Trac Environment version (%d).' % version
+    return env

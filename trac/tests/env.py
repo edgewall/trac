@@ -1,10 +1,11 @@
 from trac import db_default, test, Logging
-from trac.Environment import Environment
+from trac.env import Environment
 
 import os
 import unittest
 import tempfile
 import shutil
+
 
 class EnvironmentTestBase:
 
@@ -19,6 +20,7 @@ class EnvironmentTestBase:
 
     def _get_envpath(self):
         return os.path.join(tempfile.gettempdir(), 'trac-tempenv')
+
 
 class EnvironmentTestCase(EnvironmentTestBase, unittest.TestCase):
 

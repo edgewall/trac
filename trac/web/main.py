@@ -19,7 +19,6 @@
 #
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
-from trac.core import module_factory, open_environment
 from trac.Href import Href
 from trac.util import escape, href_join, TRUE
 from trac.web.auth import Authenticator
@@ -315,6 +314,7 @@ def dispatch_request(path_info, req, env):
             try:
                 pool = None
                 # Load the selected module
+                from trac.Module import module_factory
                 module = module_factory(env, db, req)
                 pool = module.pool
                 module.run(req)
@@ -347,9 +347,10 @@ def send_pretty_error(e, env, req=None):
         req.authname = ''
     try:
         if not env:
+            from trac.env import open_environment
             env = open_environment()
-        from trac.Href import Href
-        env.href = Href(req.cgi_location)
+            from trac.Href import Href
+            env.href = Href(req.cgi_location)
         populate_hdf(req.hdf, env, req)
 
         from trac.util import TracError

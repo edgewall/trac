@@ -13,7 +13,7 @@ Copyright 2004, Mark Rowe <mrowe@bluewire.net.nz>
 
 from elementtree.ElementTree import ElementTree
 from datetime import datetime
-import trac.Environment
+import trac.env
 
 class FieldParser(object):
     def __init__(self, e):
@@ -115,7 +115,7 @@ class ExportedProjectData(object):
 
 class TracDatabase(object):
     def __init__(self, path):
-        self.env = trac.Environment.Environment(path)
+        self.env = trac.env.Environment(path)
         self._db = self.env.get_db_cnx()
         self._db.autocommit = False
     

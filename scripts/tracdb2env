@@ -3,7 +3,7 @@ import os
 import sys
 import sqlite
 import ConfigParser
-from trac.Environment import Environment
+from trac.env import Environment
 
 additional_config = \
 (('notification', 'smtp_enabled', 'false'),

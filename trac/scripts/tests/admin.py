@@ -23,8 +23,8 @@ __license__ = """
 
 import trac
 from trac.db_default import data as default_data
+from trac.env import Environment
 from trac.scripts import admin
-from trac.Environment import Environment
 from trac.util import get_date_format_hint, NaivePopen
 
 import os
@@ -66,7 +66,7 @@ def load_expected_results(file, pattern):
 
 
 """
-A subclass of trac.Environment that keeps its' DB in memory.
+A subclass of Environment that keeps its' DB in memory.
 """
 class InMemoryEnvironment(Environment):
     def get_db_cnx(self):

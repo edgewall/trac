@@ -108,7 +108,7 @@ import StringIO
 
 import MySQLdb
 import MySQLdb.cursors
-import trac.Environment
+import trac.env
 
 if not hasattr(sys, 'setdefaultencoding'):
     reload(sys)
@@ -134,7 +134,7 @@ statusXlator = FieldTranslator(STATUS_TRANSLATE)
 
 class TracDatabase(object):
     def __init__(self, path):
-        self.env = trac.Environment.Environment(path)
+        self.env = trac.env.Environment(path)
         self._db = self.env.get_db_cnx()
         self._db.autocommit = False
         self.loginNameCache = {}

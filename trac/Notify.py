@@ -19,7 +19,6 @@
 #
 # Author: Daniel Lundin <daniel@edgewall.com>
 
-from trac import Environment
 from trac.__init__ import __version__
 from trac.util import CRLF, TRUE, FALSE, TracError, wrap
 from trac.web.clearsilver import HDFWrapper
@@ -45,7 +44,7 @@ class Notify:
                                          env.get_config('trac', 'templates_dir')])
         populate_hdf(self.hdf, env)
 
-    def notify(self,resid):
+    def notify(self, resid):
         if sys.version_info[0] == 2 and (sys.version_info[1] < 2 or
                                          sys.version_info[1] == 2 and
                                          sys.version_info[2] < 2):
@@ -58,7 +57,7 @@ class Notify:
 
     def get_recipients(self, resid):
         """Return a list of subscribers to the resource 'resid'."""
-        raise Exception, "Notify::get_recipients not implemented"
+        raise NotImplementedError
 
     def begin_send(self):
         """Prepare to send messages. Called before sending begins."""
@@ -66,7 +65,7 @@ class Notify:
 
     def send(self, rcpt):
         """Send message to a recipient 'rcpt'. Called once for each recipient."""
-        raise Exception, "Notify::send not implemented"
+        raise NotImplementedError
 
     def finish_send(self):
         """Clean up after sending all messages. Called after sending all messages."""
@@ -91,7 +90,6 @@ class NotifyEmail(Notify):
         self.email_map = {}
         for username,name,email in self.env.get_known_users(self.db):
             self.email_map[username] = email
-
 
     def notify(self, resid, subject):
         self.subject = subject
@@ -175,10 +173,8 @@ class TicketNotifyEmail(NotifyEmail):
         self.modtime = modtime
         self.newticket = newticket
         self.ticket['description'] = wrap(self.ticket.get('description',''),
-                                          self.COLS,
-                                          initial_indent=' ',
-                                          subsequent_indent=' ',
-                                          linesep=CRLF)
+                                          self.COLS, initial_indent=' ',
+                                          subsequent_indent=' ', linesep=CRLF)
         self.ticket['link'] = self.env.abs_href.ticket(ticket['id'])
         self.hdf['email.ticket_props'] = self.format_props()
         self.hdf['email.ticket_body_hdr'] = self.format_hdr()
