@@ -4,14 +4,12 @@
  border: 1px outset #998;
  float: right;
  font-size: 9px;
- padding: 1em;
- margin-left: 1em;
- margin-bottom: 1em;
- white-space: nowrap;
+ padding: .8em;
+ margin: 0 1em 1em;
 }
 #main.timeline #prefs input { font-size: 9px }
 #main.timeline #prefs fieldset { border: 0; margin: .5em; padding: 0 }
-#main.timeline #prefs .buttons { text-align: right; margin-top: -1em }
+#main.timeline #prefs .buttons { text-align: right; margin-top: -1.6em }
 
 #main.timeline h2 {
  background: #f7f7f7;
