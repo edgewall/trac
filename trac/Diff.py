@@ -20,7 +20,7 @@
 # Author: Jonas Borgström <jonas@edgewall.com>
 
 import re
-from util import add_to_hdf
+from util import add_to_hdf, escape
 
 line_re = re.compile('@@ [+-]([0-9]+),([0-9]+) [+-]([0-9]+),([0-9]+) @@')
 header_re = re.compile('header ([^\|]+) ([^\|]+) \| ([^\|]+) ([^\|]+) redaeh')
@@ -41,18 +41,23 @@ class HDFBuilder:
         self.offset_base = 0
         self.offset_changed = 0
 
+    def _escape(self, text):
+        return space_re.sub(lambda m:
+            len(m.group(0)) / 2 * '&nbsp; ' + len(m.group(0)) % 2 * '&nbsp;',
+            escape(text))
+
     def _write_line(self, prefix, oldline, newline):
         (start, end) = get_change_extent(oldline, newline)
         change = ''
         if len(oldline) > start - end:
-            change = '<del>%s</del>' % oldline[start:end]
+            change = '<del>%s</del>' % self._escape(oldline[start:end])
         self.hdf.setValue(prefix + '.base.lines.0',
-                          oldline[:start] + change + oldline[end:])
+                          self._escape(oldline[:start]) + change + self._escape(oldline[end:]))
         change = ''
         if len(newline) > start - end:
-            change = '<ins>%s</ins>' % newline[start:end]
+            change = '<ins>%s</ins>' % self._escape(newline[start:end])
         self.hdf.setValue(prefix + '.changed.lines.0',
-                          newline[:start] + change + newline[end:])
+                          self._escape(newline[:start]) + change + self._escape(newline[end:]))
 
     def _write_block(self, prefix, dtype, old=None, new=None):
         self.hdf.setValue(prefix + '.type', dtype);
@@ -64,10 +69,12 @@ class HDFBuilder:
             return
 
         if old:
-            add_to_hdf(old, self.hdf, prefix + '.base.lines')
+            add_to_hdf([self._escape(line) for line in old],
+                       self.hdf, prefix + '.base.lines')
             self.offset_base += len(old)
         if new:
-            add_to_hdf(new, self.hdf, prefix + '.changed.lines')
+            add_to_hdf([self._escape(line) for line in new],
+                       self.hdf, prefix + '.changed.lines')
             self.offset_changed += len(new)
 
     def print_block(self):
@@ -105,9 +112,7 @@ class HDFBuilder:
             return
         ttype = text[0]
         text = text[1:]
-        text = space_re.sub(lambda m:
-            len(m.group(0)) / 2 * '&nbsp; ' + len(m.group(0)) % 2 * '&nbsp;',
-            text.expandtabs(self.tabwidth))
+        text = text.expandtabs(self.tabwidth)
         if ttype == self.ttype:
             self.block.append(text)
         else:

@@ -175,7 +175,7 @@ class WikiModule(Module):
         try:
             for line in difflib.Differ().compare(old, new):
                 if line != '  ':
-                    builder.writeline(escape(line))
+                    builder.writeline(line)
         except AttributeError:
             raise TracError('Python >= 2.2 is required for diff support.')
         builder.close()

@@ -92,7 +92,7 @@ class HtmlDiffEditor (svn.delta.Editor):
             line = pobj.readline()
             if not line:
                 break
-            builder.writeline(util.escape(util.to_utf8(line, charset)))
+            builder.writeline(util.to_utf8(line, charset))
         builder.close()
 
     def add_file(self, path, parent_baton, copyfrom_path,
