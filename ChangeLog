@@ -1,12 +1,29 @@
-2004-02-25  Daniel Lundin  <daniel@edgewall.com>
+Trac 0.5.2 (Mars 1, 2004)
+http://svn.edgewall.com/repos/trac/tags/trac-0.5.2
 
-	* Navbar now works properly on error pages.
-	* Cleaned up source code. Removed ugly tabs.
-	* Added missing COPYING, AUTHORS etc. Cleaned up package.
-	* trac-admin now works with python 2.1.
-	* Fixed bugs: #74, #75, #76, #77.
-	* 0.5.1: Minor Release. 
+ * Performance improvements.
+ * Better unicode support in commit-messages.
+ * TRAC_ADMIN is now a real "meta-permission" containing all other permissions.
+ * Wiki-links of the svn:/path format can now also link to directories.
+ * Handle subversion changesets without any "author" specified.
+ * "view" checkboxes in the timeline view now reflect the current state.
+ * The subversion repository is now indexed by "svnadmin initdb" instead of
+   trac.cgi at first execution.
+ * Most of the inline css is removed.
+ * IE6 navbar problem fixed.
+ * Fixed bugs: #69, #79, #73, #77, #85, #86, #90, #91, #93, #89, #78, #97, 
+               #80, #84
 	
-2004-02-23 Jonas Borgström <jonas@edgewall.com>
+Trac 0.5.1 (February 25, 2004)
+http://svn.edgewall.com/repos/trac/tags/trac-0.5.1
+	
+ * Navbar now works properly on error pages.
+ * Cleaned up source code. Removed ugly tabs.
+ * Added missing COPYING, AUTHORS etc. Cleaned up package.
+ * trac-admin now works with python 2.1.
+ * Fixed bugs: #74, #75, #76, #77.
+	
+Trac 0.5 (February 23, 2004)
+http://svn.edgewall.com/repos/trac/tags/trac-0.5.1
 
-	* 0.5: First release.
+ * First release.
