@@ -634,7 +634,7 @@ class TracAdmin(cmd.Cmd):
                 self._do_wiki_load(dir)
             elif arg[0] == 'upgrade' and len(arg) == 1:
                 self._do_wiki_load(trac.siteconfig.__default_wiki_dir__,
-                                   ignore=['WikiStart'])
+                                   ignore=['WikiStart', 'checkwiki.py'])
             else:    
                 self.do_help ('wiki')
         except Exception, e:
