@@ -18,6 +18,9 @@
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #
 # Author: Jonas Borgström <jonas@edgewall.com>
+#
+# FIXME:
+# * We need to figure out the encoding used somehow.
 
 import os
 import sys
@@ -42,7 +45,7 @@ class FileCommon(Module):
         if self.mime_type and self.mime_type[:6] == 'image/':
             self.req.hdf.setValue('file.highlighted_html',
                                   '<hr /><img src="?format=raw">')
-        elif self.mime_type:
+        elif self.mime_type and self.mime_type != 'application/octet-stream':
             data = self.read_func(self.MAX_FILE_SIZE)
             if len(data) == self.MAX_FILE_SIZE:
                 self.req.hdf.setValue('file.max_file_size_reached', '1')
@@ -131,10 +134,17 @@ class File(FileCommon):
         else:
             rev = int(rev)
         root = svn.fs.revision_root(self.fs_ptr, rev, self.pool)
+        
+        # Try to do an educated guess about the mime-type
         self.mime_type = svn.fs.node_prop (root, self.path,
                                            svn.util.SVN_PROP_MIME_TYPE,
                                            self.pool)
-        self.mime_type = self.mime_type or mimetypes.guess_type(self.path)[0]
+        if not self.mime_type:
+            self.mime_type = mimetypes.guess_type(self.path)[0] or 'text/plain'
+        elif self.mime_type == 'application/octet-stream':
+            self.mime_type = mimetypes.guess_type(self.path)[0] or \
+                             'application/octet-stream'
+            
         self.length = svn.fs.file_length(root, self.path, self.pool)
         date = svn.fs.revision_prop(self.fs_ptr, rev,
                                 svn.util.SVN_PROP_REVISION_DATE, self.pool)
