@@ -407,7 +407,7 @@ class TracAdmin(cmd.Cmd):
         print ' ROADMAP_VIEW, ROADMAP_ADMIN, TIMELINE_VIEW, SEARCH_VIEW, '
         print ' CONFIG_VIEW and TRAC_ADMIN.'
         print
-        
+
     def _do_permission_add(self, user, action):
         if not action.islower() and not action.isupper():
             print 'group-names must be in lower case and permissions in upper case'
@@ -418,7 +418,7 @@ class TracAdmin(cmd.Cmd):
         sql = "DELETE FROM permission"
         clauses = []
         if action != '*':
-            clauses.append("action='%s'" % action.upper())
+            clauses.append("action='%s'" % action)
         if user != '*':
             clauses.append("username='%s'" % user)
         if clauses:
