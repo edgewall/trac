@@ -381,7 +381,7 @@ class TicketModule (Module):
         util.hdf_add_if_missing(self.req.hdf, 'enums.severity', ticket['severity'])
 
         self.req.hdf.setValue('ticket.reporter_id', util.escape(reporter_id))
-        self.req.hdf.setValue('title', '#%d (ticket)' % id)
+        self.req.hdf.setValue('title', '#%d (%s)' % (id,ticket['summary']))
         self.req.hdf.setValue('ticket.description.formatted',
                               wiki_to_html(ticket['description'], self.req.hdf,
                                            self.env, self.db))
