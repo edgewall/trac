@@ -174,7 +174,7 @@ also possible to create multi-line report entries.
 SELECT p.value AS __color__,
        t.milestone AS __group__,
        (CASE owner 
-          WHEN 'daniel' THEN 'font-weight: bold background: red;' 
+          WHEN 'daniel' THEN 'font-weight: bold; background: red;' 
           ELSE '' END) AS __style__,
        t.id AS ticket, summary AS summary_,             -- ## Break line here
        component,version, severity, milestone, status, owner,
