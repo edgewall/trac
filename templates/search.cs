@@ -82,6 +82,12 @@ Page</a>
  <div id="search-notfound">No matches found.</div>
 <?cs /if ?>
  </div> 
+
+ <div id="help" style="text-align: left; margin-top: 2em">
+  <strong>Note:</strong> See <a href="<?cs var:$trac.href.wiki ?>TracSearch">TracSearch</a>  for help on searching.
+ </div>
+
+
 </div>
 </div>
 <?cs include "footer.cs"?>

@@ -26,6 +26,7 @@ wiki_pages = [
  "TracPermissions",
  "TracReports",
  "TracRss",
+ "TracSearch",
  "TracSupport",
  "TracTickets",
  "TracTimeline",

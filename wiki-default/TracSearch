@@ -1,0 +1,20 @@
+= Using Search =
+
+Trac has a built-in search engine to allow finding occurrances of keywords and substrings in wiki pages, tickets and changeset descriptions.
+
+Using the Trac search facility is straightforward and its interface should be familiar to most www users.
+
+Apart from the [search: Search module], you will also find a small search field above the navigation bar at all time. There is no 
+
+== Quickjumps ==
+However, for intermediate and advanced use, Trac has a useful way to quickly navigate to a given module and information item, called '''quickjumps'''.
+
+If you enter a [wiki:TracLinks TracLink] in the search field above the navigation bar, Trac will recognize this and assume you know where you're going. 
+
+'''Note:''' ''This is a particularly useful feature to quickly navigate to a specific issue ticket or changeset.''
+
+=== Advanced: Disabling quickjumps ===
+To disable the quickjump feature in a search - to for example search for all occurences of !TracGuide - begin the query with an exclamation mark (!).
+
+----
+See also: TracGuide, TracLinks
