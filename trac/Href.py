@@ -119,10 +119,14 @@ class Href:
     def settings(self):
         return href_join(self.base, 'settings')
 
-    def search(self, query=None):
+    def search(self, query=None, page=0, include=[]):
         uri = 'search'
         if query:
             uri += '?q=' + urllib.quote(query)
+            if page:
+                uri += '&page=%d' % int(page)
+            if include:
+                uri += '&' + '&'.join([i + '=on' for i in include])
         return href_join(self.base, uri)
 
     def about(self, page=None):

@@ -44,7 +44,7 @@ class Search(Module):
             sql_q = string.join(x, ' AND ')
         self.log.debug("SQL Condition: %s" % sql_q)
         return sql_q
-       
+    
     def shorten_result(self, text='', keywords=[], maxlen=240, fuzz=60):
         if not text: text = ''
         text_low = text.lower()
@@ -72,6 +72,8 @@ class Search(Module):
         return msg
     
     def perform_query (self, query, changeset, tickets, wiki, page=0):
+        if not query:
+            return ([], 0)
         keywords = query.split(' ')
 
         if changeset:
@@ -82,7 +84,7 @@ class Search(Module):
             wiki = self.perm.has_permission(perm.WIKI_VIEW)
 
         if changeset == tickets == wiki == 0:
-            return []
+            return ([], 0)
 
         if len(keywords) == 1:
             kwd = keywords[0]
@@ -124,8 +126,8 @@ class Search(Module):
                       self.query_to_sql(query, 'author')))
         if tickets:
             q.append('SELECT DISTINCT 2 as type, a.summary AS title, '
-                     ' a.description AS message, a.reporter AS author, a.keywords as keywords,'
-                     ' a.id AS data, a.time as time, 0 AS ver'
+                     ' a.description AS message, a.reporter AS author, '
+                     ' a.keywords as keywords, a.id AS data, a.time as time, 0 AS ver'
                      ' FROM ticket a LEFT JOIN ticket_change b ON a.id = b.ticket'
                      ' WHERE (b.field=\'comment\' AND %s ) OR'
                      ' %s OR %s OR %s OR %s OR %s' %
@@ -152,16 +154,20 @@ class Search(Module):
 
         q_str = string.join(q, ' UNION ALL ')
         q_str += ' ORDER BY 7 DESC LIMIT %d OFFSET %d' % \
-                 (self.RESULTS_PER_PAGE, self.RESULTS_PER_PAGE * page)
+                 (self.RESULTS_PER_PAGE + 1, self.RESULTS_PER_PAGE * page)
 
         self.log.debug("SQL Query: %s" % q_str)
         cursor.execute(q_str)
 
         # Make the data more HDF-friendly
         info = []
+        more = 0
         while 1:
             row = cursor.fetchone()
             if not row:
+                break
+            if len(info) == self.RESULTS_PER_PAGE:
+                more = 1
                 break
             msg = row['message']
             t = time.localtime(int(row['time']))
@@ -181,7 +187,7 @@ class Search(Module):
             item['shortmsg'] = escape(shorten_line(msg))
             item['message'] = escape(self.shorten_result(msg, keywords))
             info.append(item)
-        return info
+        return info, more
         
     def render (self):
         self.perm.assert_permission(perm.SEARCH_VIEW)
@@ -202,21 +208,28 @@ class Search(Module):
             # If no search options chosen, choose all
             if not (tickets or changesets or wiki):
                 tickets = changesets = wiki = 1
-
-            if self.args.has_key('page'):
-                page = int(self.args.get('page'))
-                self.req.hdf.setValue('search.result.page', str(page))
-            else:
-                page = 0
             if not tickets:
                 self.req.hdf.setValue('search.ticket', '')
             if not changesets:
                 self.req.hdf.setValue('search.changeset', '')
             if not wiki:
                 self.req.hdf.setValue('search.wiki', '')
-            info = self.perform_query(query, changesets, tickets, wiki, page)
-            self.req.hdf.setValue('search.result.count', str(len(info)))
-            if len(info) == self.RESULTS_PER_PAGE:
-                self.req.hdf.setValue('search.result.more', '1')
+
+            page = int(self.args.get('page', '0'))
+            self.req.hdf.setValue('search.result.page', str(page))
+            info, more = self.perform_query(query, changesets, tickets, wiki,
+                                            page)
             add_dictlist_to_hdf(info, self.req.hdf, 'search.result')
 
+            include = []
+            if tickets: include.append('ticket')
+            if changesets: include.append('changeset')
+            if wiki: include.append('wiki')
+            if page:
+                self.add_link('first',
+                              self.env.href.search(query, 0, include))
+                self.add_link('prev',
+                              self.env.href.search(query, page - 1, include))
+            if more:
+                self.add_link('next',
+                              self.env.href.search(query, page + 1, include))

@@ -1,14 +1,9 @@
-#search-hdr { margin-bottom: 1em }
-#search-result { margin-left: .5em; margin-right: 3em; }
-.result-item { margin: 1.5em 0; }
-a.result-title {  color: #33c; }
-.result-keywords { color: #c33; }
-.result-body, .result-keywords { font-size: 80%; }
-.result-author, .result-date { 
- font-size: 80%;
- color: #090;
- background: transparent;
-}
-.result-match {  background: #ffc800; }
-b { font-weight: normal; }
-#search-notfound { margin: 2em; font-size: 110%; }
+#content form { margin-top: 1em }
+#notfound { margin: 2em; font-size: 110% }
+
+#results { margin-right: 3em }
+#results dt { margin: 1.5em 0 0 }
+#results dt a { color: #33c }
+#results dd { font-size: 80%; margin: 0; padding: 0 }
+#results .author, #results .date, #results .keywords { color: #090 }
+#paging { font-size: 85%; margin: -1em 0 1em }

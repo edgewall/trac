@@ -8,88 +8,76 @@ addEvent(window, 'load', function() { document.getElementById('q').focus()});
 
 <div id="content" class="search">
 
+<h1><label for="q">Search</label></h1>
 <form action="<?cs var:trac.href.search ?>" method="get">
-<div>
-<h3 id="search-hdr"><label for="q">Search</label></h3>
-<input type="text" id="q" name="q" size="40" value="<?cs var:search.q ?>" />
-<input type="submit" value="Search" /><br />
-<?cs if:trac.acl.WIKI_VIEW ?>
-<input type="checkbox" <?cs if search.wiki ?>checked="checked"<?cs /if ?> 
-       id="wiki" name="wiki" />
-<label for="wiki">Wiki</label>
-<?cs /if ?>
-<?cs if:trac.acl.TICKET_VIEW ?>
-<input type="checkbox" <?cs if search.ticket ?>checked="checked"<?cs /if ?>
-       id="ticket" name="ticket" />
-<label for="ticket">Tickets</label>
-<?cs /if ?>
-<?cs if:trac.acl.CHANGESET_VIEW ?>
-<input type="checkbox"  <?cs if search.changeset ?>checked="checked"<?cs /if ?>
-       id="changeset" name="changeset" />
-<label for="changeset">Changesets</label>
-<?cs /if ?>
-</div>
+ <div>
+  <input type="text" id="q" name="q" size="40" value="<?cs var:search.q ?>" />
+  <input type="submit" value="Search" /><br /><?cs
+  if:trac.acl.WIKI_VIEW ?>
+   <input type="checkbox" id="wiki" name="wiki" <?cs
+     if:search.wiki ?>checked="checked"<?cs /if ?> />
+   <label for="wiki">Wiki</label><?cs
+  /if ?><?cs
+  if:trac.acl.TICKET_VIEW ?>
+   <input type="checkbox" id="ticket" name="ticket" <?cs
+     if:search.ticket ?>checked="checked"<?cs /if ?> />
+   <label for="ticket">Tickets</label><?cs
+  /if ?><?cs
+  if:trac.acl.CHANGESET_VIEW ?>
+   <input type="checkbox" id="changeset" name="changeset" <?cs
+     if:search.changeset ?>checked="checked"<?cs /if ?> />
+   <label for="changeset">Changesets</label><?cs
+  /if ?>
+ </div>
 </form>
 
 <?cs def result(title, keywords, body, link) ?>
- <div class="result-item">
- <a class="result-title" href="<?cs var:$link ?>"><?cs var:$title ?></a>
- <?cs if:$keywords ?><div class="result-keywords"><?cs var:$keywords ?></div><?cs /if ?>
- <div class="result-body"><?cs var:$body ?></div>
- <span class="result-author">By <?cs var:$item.author ?></span>
- -  <span class="result-date"><?cs var:$item.datetime ?></span>
- </div>
+ <dt><a href="<?cs var:link ?>"><?cs var:title ?></a></dt>
+ <dd><?cs var:body ?></dd>
+ <dd>
+  <span class="author">By <?cs var:item.author ?></span> &mdash;
+  <span class="date"><?cs var:item.datetime ?></span><?cs
+  if:item.keywords ?> &mdash
+   <span class="keywords">Keywords: <em><?cs var:item.keywords ?></em></span><?cs
+  /if ?>
+ </dd>
 <?cs /def ?>
 
-<?cs if ? search.result.0.type ?>
- <h2>Search results
-    <?cs if $search.result.page ?>
-    (<?cs var $search.result.page * $search.results_per_page ?>-<?cs
-          var ((1+$search.result.page) * $search.results_per_page)-1 ?>)
-    <?cs /if ?>
-</h2>
-  <div id="search-result">
-  <div id="searchable">
-
-   <?cs each item=search.result ?> 
-    <?cs if item.type == 1 ?>
-     <?cs call result('['+item.data+']: '+item.shortmsg,
-                      item.keywords,
-                      item.message,
-                      item.changeset_href) ?>
-    <?cs elif item.type == 2 ?>
-     <?cs call result('#'+item.data+': '+item.title,
-                      item.keywords,
-                      item.message,
-                      item.ticket_href) ?>
-    <?cs elif item.type == 3 ?>
-     <?cs call result(item.data+': '+item.shortmsg,
-                      item.keywords,
-                      item.message,
-                      item.wiki_href) ?>
-    <?cs /if ?>
-   <?cs /each ?>
-   </div>
-    <?cs set:url=$trac.href.search+'?q='+ $search.q ?>
-    <?cs if $search.wiki ?><?cs set:url=$url+'&amp;wiki=on' ?><?cs /if 
-      ?><?cs if $search.ticket ?><?cs set:url=$url+'&amp;ticket=on' ?><?cs /if 
-      ?><?cs if $search.changeset ?><?cs set:url=$url+'&amp;changeset=on'
-      ?><?cs /if ?>
-    <?cs set:url=$url+'&amp;page=' ?>
- 
-    <hr />
-    <?cs if $search.result.page ?>
-      <a href="<?cs var:$url ?><?cs var:$search.result.page-#1 ?>">Prev
-Page</a>
-    <?cs if $search.result.more ?>&nbsp;|&nbsp;<?cs /if ?>
-    <?cs /if ?>
-    <?cs if $search.result.more ?>
-     <a href="<?cs var:$url ?><?cs var:$search.result.page+#1 ?>">Next Page</a>
-    <?cs /if ?>
-  
-  </div>
+<?cs if:len(search.result) ?>
+ <hr />
+ <h2>Search results <?cs
+  if:len(links.prev) || len(links.next) ?>(<?cs
+   var:search.result.page * search.results_per_page + 1 ?> - <?cs
+   var:search.result.page * search.results_per_page + len(search.result) - 1 ?>)<?cs
+  /if ?></h2>
+ <div id="searchable">
+  <dl id="results"><?cs
+   each item=search.result ?><?cs
+    if:item.type == 1 ?><?cs
+     call:result('[' + item.data + ']: ' + item.shortmsg, item.keywords,
+                 item.message, item.changeset_href) ?><?cs
+    elif:item.type == 2 ?><?cs
+     call:result('#' + item.data + ': ' + item.title, item.keywords,
+                 item.message, item.ticket_href) ?><?cs
+    elif:item.type == 3 ?><?cs
+     call:result(item.data + ': ' + item.shortmsg, item.keywords,
+                 item.message, item.wiki_href) ?><?cs
+    /if ?><?cs
+   /each ?>
+  </dl>
+  <hr />
+ </div>
+ <p id="paging"><?cs
+  if:len(links.prev) ?>
+   <a href="<?cs var:links.prev.0.href ?>">Previous Page</a><?cs
+     if:len(links.next) ?>&nbsp;|&nbsp;<?cs /if ?><?cs
+  /if ?><?cs
+  if:len(links.next) ?>
+   <a href="<?cs var:links.next.0.href ?>">Next Page</a><?cs
+  /if ?>
+ </p>
 <?cs elif $search.q ?>
- <div id="search-notfound">No matches found.</div>
+ <div id="notfound">No matches found.</div>
 <?cs /if ?>
 
  <div id="help">
