@@ -127,15 +127,16 @@ class NotifyEmail(Notify):
 	self.server = smtplib.SMTP(self.smtp_server)
 
     def send(self, rcpt, mime_headers={}):
-	from email.MIMEText import MIMEText
+        from email.MIMEText import MIMEText
+        from email.Header import Header
 	body = self.cs.render()
-	msg = MIMEText (body)
+	msg = MIMEText(body, 'plain', 'utf-8')
 	msg['X-Mailer'] = 'Trac %s, by Edgewall Software' % __version__
 	msg['X-Trac-Version'] =  __version__
 	projname = self.env.get_config('project','name')
 	msg['X-Trac-Project'] =  projname
 	msg['X-URL'] =  self.env.get_config('project','url')
-	msg['Subject'] = self.subject
+	msg['Subject'] = Header(self.subject, 'utf-8')
 	msg['From'] = '%s <%s>' % (projname, self.from_email)
 	msg['Sender'] = msg['Reply-To'] = self.from_email
 	msg['To'] = rcpt
