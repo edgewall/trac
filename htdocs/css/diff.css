@@ -62,8 +62,7 @@
  font-size: 14px;
  letter-spacing: normal;
  margin: 0 auto;
- padding: .1em 0 .25em;
- text-align: center;
+ padding: .1em 0 .25em .5em;
 }
 
 /* Styles for the actual diff tables (side-by-side and inline) */

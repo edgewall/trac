@@ -67,57 +67,65 @@ class HtmlDiffEditor(BaseDiffEditor):
 
     def __init__(self, old_root, new_root, rev, req, args, env):
         BaseDiffEditor.__init__(self, old_root, new_root, rev, req, args, env)
-        self.fileno = 0
+        self.prev_path = None
+        self.fileno = -1
+        self.prefix = None
 
-    def close_file(self, file_baton, pool):
-        self.fileno += 1
-
-    def change_file_prop(self, file_baton, name, value, pool):
-        if not file_baton:
+    def _check_next(self, old_path, new_path, pool):
+        if self.prev_path == (old_path or new_path):
             return
 
-        (old_path, new_path, pool) = file_baton
-        prefix = 'changeset.changes.%d.props.%s' % (self.fileno, name)
-        if old_path:
-            old_value = svn.fs.node_prop(self.old_root, old_path, name, pool)
-            self.req.hdf.setValue(prefix + '.old', old_value)
-        if value:
-            self.req.hdf.setValue(prefix + '.new', value)
+        self.fileno += 1
+        self.prev_path = old_path or new_path
 
-    def change_dir_prop(self, dir_baton, name, value, pool):
+        self.prefix = 'changeset.changes.%d' % (self.fileno)
+        if old_path:
+            old_rev = svn.fs.node_created_rev(self.old_root, old_path, pool)
+            self.req.hdf.setValue('%s.rev.old' % self.prefix, str(old_rev))
+            self.req.hdf.setValue('%s.browser_href.old' % self.prefix,
+                                  self.env.href.browser(old_path, old_rev))
+        if new_path:
+            new_rev = svn.fs.node_created_rev(self.new_root, new_path, pool)
+            self.req.hdf.setValue('%s.rev.new' % self.prefix, str(new_rev))
+            self.req.hdf.setValue('%s.browser_href.new' % self.prefix,
+                                  self.env.href.browser(new_path, new_rev))
+
+    def add_directory(self, path, parent_baton, copyfrom_path,
+                      copyfrom_revision, dir_pool):
+        self._check_next(None, path, dir_pool)
+
+    def delete_entry(self, path, revision, parent_baton, pool):
+        self._check_next(path, None, pool)
+
+    def change_dir_prop(self, dir_baton, name, value, dir_pool):
         if not dir_baton:
             return
-
         (old_path, new_path, pool) = dir_baton
-        prefix = 'changeset.changes.%d.props.%s' % (self.fileno, name)
+        self._check_next(old_path, new_path, dir_pool)
+
+        prefix = '%s.props.%s' % (self.prefix, name)
         if old_path:
-            old_value = svn.fs.node_prop(self.old_root, old_path, name, pool)
+            old_value = svn.fs.node_prop(self.old_root, old_path, name, dir_pool)
             if old_value:
                 self.req.hdf.setValue(prefix + '.old', old_value)
         if value:
             self.req.hdf.setValue(prefix + '.new', value)
 
+    def add_file(self, path, parent_baton, copyfrom_path, copyfrom_revision,
+                 file_pool):
+        self._check_next(None, path, file_pool)
+
     def apply_textdelta(self, file_baton, base_checksum):
         if not file_baton:
             return
         (old_path, new_path, pool) = file_baton
-        old_rev = svn.fs.node_created_rev(self.old_root, old_path, pool)
-        new_rev = svn.fs.node_created_rev(self.new_root, new_path, pool)
-
-        prefix = 'changeset.changes.%d' % (self.fileno)
-        self.req.hdf.setValue('%s.rev.old' % prefix, str(old_rev))
-        self.req.hdf.setValue('%s.rev.new' % prefix, str(new_rev))
-        self.req.hdf.setValue('%s.browser_href.old' % prefix,
-                              self.env.href.file(old_path, old_rev))
-        self.req.hdf.setValue('%s.browser_href.new' % prefix,
-                              self.env.href.file(new_path, new_rev))
+        self._check_next(old_path, new_path, pool)
 
         # Try to figure out the charset used. We assume that both the old
         # and the new version uses the same charset, not always the case
         # but that's all we can do...
-        mime_type = svn.fs.node_prop (self.new_root, new_path,
-                                      svn.util.SVN_PROP_MIME_TYPE,
-                                      pool)
+        mime_type = svn.fs.node_prop(self.new_root, new_path,
+                                     svn.util.SVN_PROP_MIME_TYPE, pool)
         # We don't have to guess if the charset is specified in the
         # svn:mime-type property
         ctpos = mime_type and mime_type.find('charset=') or -1
@@ -136,7 +144,7 @@ class HtmlDiffEditor(BaseDiffEditor):
         pobj = differ.get_pipe()
 
         tabwidth = int(self.env.get_config('diff', 'tab_width', '8'))
-        builder = Diff.HDFBuilder(self.req.hdf, '%s.diff' % prefix, tabwidth)
+        builder = Diff.HDFBuilder(self.req.hdf, '%s.diff' % self.prefix, tabwidth)
         while 1:
             line = pobj.readline()
             if not line:
@@ -151,6 +159,20 @@ class HtmlDiffEditor(BaseDiffEditor):
             try:
                 os.waitpid(-1, 0)
             except OSError: pass
+
+    def change_file_prop(self, file_baton, name, value, file_pool):
+        if not file_baton:
+            return
+        (old_path, new_path, pool) = file_baton
+        self._check_next(old_path, new_path, file_pool)
+
+        prefix = '%s.props.%s' % (self.prefix, name)
+        if old_path:
+            old_value = svn.fs.node_prop(self.old_root, old_path, name, file_pool)
+            if old_value:
+                self.req.hdf.setValue(prefix + '.old', old_value)
+        if value:
+            self.req.hdf.setValue(prefix + '.new', value)
 
 
 class UnifiedDiffEditor(BaseDiffEditor):
