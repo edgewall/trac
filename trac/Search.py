@@ -101,7 +101,7 @@ class Search(Module):
         q = []
         if changeset:
             q.append('SELECT 1 as type, message AS title, message, author, '
-                     ' "" AS keywords, rev AS data, time,0 AS ver'
+                     ' \'\' AS keywords, rev AS data, time,0 AS ver'
                      ' FROM revision WHERE %s' %
                      self.query_to_sql(query, 'message'))
         if tickets:
@@ -114,7 +114,7 @@ class Search(Module):
                        self.query_to_sql(query, 'description')))
         if wiki:
             q.append('SELECT 3 as type, text AS title, text AS message,'
-                     ' author, '' AS keywords, w1.name AS data, time,'
+                     ' author, \'\' AS keywords, w1.name AS data, time,'
                      ' w1.version as ver'
                      ' FROM wiki w1, '
                      ' (SELECT name,max(version) AS ver '
@@ -147,7 +147,6 @@ class Search(Module):
                     'author': row['author']}
             if item['type'] == 1:
                 item['changeset_href'] = self.href.changeset(int(row['data']))
-                msg = utf8_to_iso(msg)
             elif item['type'] == 2:
                 item['ticket_href'] = self.href.ticket(int(row['data']))
             elif item['type'] == 3:
