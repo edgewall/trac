@@ -28,21 +28,23 @@ import unittest
 from svn import core, repos
 
 from trac.Logging import logger_factory
+from trac.test import TestSetup
 from trac.versioncontrol import Changeset, Node
 from trac.versioncontrol.svn_fs import SubversionRepository
 
+REPOS_PATH = os.path.join(tempfile.gettempdir(), 'trac-svnrepos')
 
-class SubversionRepositoryTestCase(unittest.TestCase):
+
+class SubversionRepositoryTestSetup(TestSetup):
 
     def setUp(self):
-        self.path = os.path.join(tempfile.gettempdir(), 'trac-svnrepos')
         dumpfile = open(os.path.join(os.path.split(__file__)[0], 'svndump.txt'))
 
         core.apr_initialize()
         pool = core.svn_pool_create(None)
         dumpstream = core.svn_stream_from_aprfile(dumpfile, pool)
         try:
-            r = repos.svn_repos_create(self.path, '', '', None, None, pool)
+            r = repos.svn_repos_create(REPOS_PATH, '', '', None, None, pool)
             repos.svn_repos_load_fs(r, dumpstream, None,
                                     repos.svn_repos_load_uuid_default, '', None,
                                     None, pool)
@@ -51,12 +53,18 @@ class SubversionRepositoryTestCase(unittest.TestCase):
             core.svn_pool_destroy(pool)
             core.apr_terminate()
 
-        self.repos = SubversionRepository(self.path, None,
+    def tearDown(self):
+        shutil.rmtree(REPOS_PATH)
+
+
+class SubversionRepositoryTestCase(unittest.TestCase):
+
+    def setUp(self):
+        self.repos = SubversionRepository(REPOS_PATH, None,
                                           logger_factory('test'))
 
     def tearDown(self):
         self.repos = None
-        shutil.rmtree(self.path)
 
     def test_rev_navigation(self):
         self.assertEqual(0, self.repos.oldest_rev)
@@ -202,7 +210,9 @@ class SubversionRepositoryTestCase(unittest.TestCase):
 
 
 def suite():
-    return unittest.makeSuite(SubversionRepositoryTestCase, 'test')
+    return unittest.makeSuite(SubversionRepositoryTestCase, 'test',
+                              suiteClass=SubversionRepositoryTestSetup)
 
 if __name__ == '__main__':
-    unittest.main()
+    runner = unittest.TextTestRunner()
+    runner.run(suite())

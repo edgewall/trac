@@ -82,6 +82,25 @@ def Mock(bases=(), *initargs, **kw):
     return mock
 
 
+class TestSetup(unittest.TestSuite):
+    """
+    Test suite decorator that allows a fixture to be setup for a complete
+    suite of test cases.
+    """
+
+    def setUp(self):
+        pass
+
+    def tearDown(self):
+        pass
+
+    def __call__(self, result):
+        self.setUp()
+        unittest.TestSuite.__call__(self, result)
+        self.tearDown()
+        return result
+
+
 class InMemoryDatabase(SQLiteConnection):
     """
     DB-API connection object for an SQLite in-memory database, containing all
