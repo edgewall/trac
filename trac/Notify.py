@@ -1,7 +1,7 @@
 # -*- coding: iso8859-1 -*-
 #
-# Copyright (C) 2003, 2004 Edgewall Software
-# Copyright (C) 2003, 2004 Daniel Lundin <daniel@edgewall.com>
+# Copyright (C) 2003, 2004, 2005 Edgewall Software
+# Copyright (C) 2003, 2004, 2005 Daniel Lundin <daniel@edgewall.com>
 #
 # Trac is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License as
@@ -65,7 +65,7 @@ class Notify:
         self.env = env
         self.db = env.get_db_cnx()
         self.hdf = neo_util.HDF()
-        core.populate_hdf(self.hdf, env, self.db, None)
+        core.populate_hdf(self.hdf, env)
         tmpl = os.path.join(env.get_config('general','templates_dir'), msg_template)
         self.cs = neo_cs.CS(self.hdf)
         self.cs.parseFile(tmpl)

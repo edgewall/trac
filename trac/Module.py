@@ -1,7 +1,7 @@
 # -*- coding: iso8859-1 -*-
 #
-# Copyright (C) 2003, 2004 Edgewall Software
-# Copyright (C) 2003, 2004 Jonas Borgström <jonas@edgewall.com>
+# Copyright (C) 2003, 2004, 2005 Edgewall Software
+# Copyright (C) 2003, 2004, 2005 Jonas Borgström <jonas@edgewall.com>
 #
 # Trac is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License as
@@ -39,7 +39,7 @@ class Module:
             disp = self.display
         self.add_default_links()
         self.render()
-        core.populate_hdf(self.req.hdf, self.env, self.db, self.req)
+        core.populate_hdf(self.req.hdf, self.env, self.req)
         self.req.hdf.setValue('trac.active_module', self._name)
         add_to_hdf(self.links, self.req.hdf, 'links')
         disp()

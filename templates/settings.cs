@@ -1,7 +1,7 @@
 <?cs include "header.cs"?>
 <?cs include "macros.cs"?>
 
-<div id="contextnav" class="nav"></div>
+<div id="ctxtnav" class="nav"></div>
 
 <div id="content" class="settings">
 

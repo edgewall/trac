@@ -1,7 +1,7 @@
 # -*- coding: iso8859-1 -*-
 #
-# Copyright (C) 2003, 2004 Edgewall Software
-# Copyright (C) 2003, 2004 Jonas Borgström <jonas@edgewall.com>
+# Copyright (C) 2003, 2004, 2005 Edgewall Software
+# Copyright (C) 2003, 2004, 2005 Jonas Borgström <jonas@edgewall.com>
 #
 # Trac is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License as
@@ -27,7 +27,6 @@ import time
 import locale
 import urllib
 import warnings
-import util
 from types import ListType
 
 import Href
@@ -36,8 +35,8 @@ import auth
 import authzperm
 import Environment
 import Session
+from util import escape, TracError
 
-from util import sql_to_hdf, TracError
 from __init__ import __version__
 
 warnings.filterwarnings('ignore', 'DB-API extension cursor.next() used')
@@ -201,7 +200,7 @@ class NotModifiedException(Exception):
 class RedirectException(Exception):
     pass
 
-def populate_hdf(hdf, env, db, req):
+def populate_hdf(hdf, env, req=None):
     htdocs_location = env.get_config('trac', 'htdocs_location')
     if htdocs_location[-1] != '/':
         htdocs_location += '/'
@@ -209,7 +208,7 @@ def populate_hdf(hdf, env, db, req):
     hdf.setValue('project.name', env.get_config('project', 'name'))
     # Kludges for RSS, etc
     hdf.setValue('project.name.encoded',
-                 util.escape(env.get_config('project', 'name')))
+                 escape(env.get_config('project', 'name')))
     hdf.setValue('project.descr', env.get_config('project', 'descr'))
     hdf.setValue('project.footer', env.get_config('project', 'footer',
                   ' Visit the Trac open source project at<br />'
@@ -248,7 +247,7 @@ def populate_hdf(hdf, env, db, req):
     hdf.setValue('trac.href.logout', env.href.logout())
     if req:
         hdf.setValue('cgi_location', req.cgi_location)
-        hdf.setValue('trac.authname', util.escape(req.authname))
+        hdf.setValue('trac.authname', escape(req.authname))
 
     templates_dir = env.get_config('trac', 'templates_dir')
     hdf.setValue('hdf.loadpaths.0', env.get_templates_dir())
@@ -265,6 +264,7 @@ class Request:
 
     command = None
     hdf = None
+    authname = None
     session = None
     _headers = None # additional headers to send
 
@@ -273,10 +273,9 @@ class Request:
         # The following line is needed so that ClearSilver can be loaded when
         # we are being run in multiple interpreters under mod_python
         neo_cgi.update()
-        import neo_cs
         import neo_util
-        import Cookie
         self.hdf = neo_util.HDF()
+        import Cookie
         self.incookie = Cookie.SimpleCookie()
         self.outcookie = Cookie.SimpleCookie()
         self._headers = []
@@ -322,10 +321,9 @@ class Request:
         # The following line is needed so that ClearSilver can be loaded when
         # we are being run in multiple interpreters under mod_python
         neo_cgi.update()
-        import neo_cs
-        import neo_util
         if type(cs) == type(''):
             filename = cs
+            import neo_cs
             cs = neo_cs.CS(self.hdf)
             cs.parseFile(filename)
         data = cs.render()
@@ -349,7 +347,9 @@ class Request:
     def write(self, data):
         assert 0
 
+
 class CGIRequest(Request):
+
     def init_request(self):
         Request.init_request(self)
         self.cgi_location = os.getenv('SCRIPT_NAME')
@@ -422,7 +422,7 @@ def dispatch_request(path_info, args, req, env, database=None):
                 referer = None
             req.redirect(referer or env.href.wiki())
         elif req.remote_user and authenticator.authname == 'anonymous':
-            auth_cookie = authenticator.login(req)
+            authenticator.login(req)
         if path_info == '/login':
             referer = req.get_header('Referer')
             if referer and referer[0:len(req.base_url)] != req.base_url:
@@ -453,7 +453,7 @@ def dispatch_request(path_info, args, req, env, database=None):
         pass
 
 def open_svn_repos(repos_dir):
-    from svn import util, repos, core
+    from svn import repos, core
 
     core.apr_initialize()
     pool = core.svn_pool_create(None)
@@ -466,9 +466,6 @@ def open_svn_repos(repos_dir):
     return pool, rep, fs_ptr
 
 def send_pretty_error(e, env, req=None):
-    import util
-    import Href
-    import os.path
     import traceback
     import StringIO
     tb = StringIO.StringIO()
@@ -481,16 +478,15 @@ def send_pretty_error(e, env, req=None):
         if not env:
             env = open_environment()
         env.href = Href.Href(req.cgi_location)
-        cnx = env.get_db_cnx()
-        populate_hdf(req.hdf, env, cnx, req)
+        populate_hdf(req.hdf, env, req)
 
-        if isinstance(e, util.TracError):
+        if isinstance(e, TracError):
             req.hdf.setValue('title', e.title or 'Error')
             req.hdf.setValue('error.title', e.title or 'Error')
             req.hdf.setValue('error.type', 'TracError')
             req.hdf.setValue('error.message', e.message)
             if e.show_traceback:
-                req.hdf.setValue('error.traceback', util.escape(tb.getvalue()))
+                req.hdf.setValue('error.traceback', escape(tb.getvalue()))
         elif isinstance(e, perm.PermissionError):
             req.hdf.setValue('title', 'Permission Denied')
             req.hdf.setValue('error.type', 'permission')
@@ -499,8 +495,8 @@ def send_pretty_error(e, env, req=None):
         else:
             req.hdf.setValue('title', 'Oops')
             req.hdf.setValue('error.type', 'internal')
-            req.hdf.setValue('error.message', util.escape(str(e)))
-            req.hdf.setValue('error.traceback', util.escape(tb.getvalue()))
+            req.hdf.setValue('error.message', escape(str(e)))
+            req.hdf.setValue('error.traceback', escape(tb.getvalue()))
         req.display('error.cs', response=500)
     except Exception:
         req.send_response(500)
