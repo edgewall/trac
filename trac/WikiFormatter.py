@@ -162,10 +162,10 @@ class CommonFormatter:
             page = page[:page.find('#')]
         if not self.env._wiki_pages.has_key(page):
             return '<a class="missing wiki" href="%s" rel="nofollow">%s?</a>' \
-                   % (self._href.wiki(page + anchor), text)
+                   % (self._href.wiki(page) + anchor, text)
         else:
             return '<a class="wiki" href="%s">%s</a>' \
-                   % (self._href.wiki(page + anchor), text)
+                   % (self._href.wiki(page) + anchor, text)
 
     def _make_changeset_link(self, rev, text):
         cursor = self.db.cursor()
