@@ -7,15 +7,15 @@
   <li>
    <h2><a href="<?cs var:milestone.href ?>">Milestone: <em><?cs
      var:milestone.name ?></em></a></h2>
-   <em class="date"><?cs if:milestone.date ?>
+   <p class="date"><?cs if:milestone.date ?>
     <?cs var:milestone.date ?><?cs else ?>No date set<?cs /if ?>
-   </em>
+   </p>
    <?cs with:stats = milestone.stats ?>
     <?cs if:#stats.total_tickets > #0 ?>
      <div class="progress">
       <div style="width: <?cs var:#stats.percent_complete ?>%"></div>
      </div>
-     <p><?cs var:#stats.percent_complete ?>%</p>
+     <p class="percentage"><?cs var:#stats.percent_complete ?>%</p>
      <dl>
       <dt>Active tickets:</dt>
       <dd><?cs var:stats.active_tickets ?></dd>

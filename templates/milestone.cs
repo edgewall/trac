@@ -31,7 +31,7 @@
           var:#component.percent_complete ?>%"></div>
         </div>
        </div>
-       <?cs var:#component.percent_complete ?>%
+       <p><?cs var:#component.percent_complete ?>%</p>
       </td>
      </tr>
     <?cs /each ?>
@@ -48,7 +48,7 @@
        <div style="width: <?cs var:#stats.percent_complete ?>%"></div>
       </div>
      </div>
-     <?cs var:#stats.percent_complete ?>%
+     <p class="percentage"><?cs var:#stats.percent_complete ?>%</p>
     </td>
    </tr></tfoot>
   </table>

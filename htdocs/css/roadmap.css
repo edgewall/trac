@@ -1,17 +1,10 @@
-div.progress {
- background: white;
- float: left;
- border: 1px inset black;
-}
-div.progress div {
- background: #bae0ba;
- height: 1.2em;
-}
+/* General styles for the progress bars */
+div.progress { float: left; border: 1px inset black }
+div.progress div { background: #bae0ba; height: 1.2em }
+p.percentage { font-size: 10px; line-height: 2.4em }
 
-#main.roadmap ul {
- margin: 0;
- padding: 0;
-}
+/* Styles for the roadmap view */
+#main.roadmap ul { margin: 0; padding: 0 }
 #main.roadmap li {
  clear: both;
  list-style: none;
@@ -38,7 +31,7 @@ div.progress div {
  color: gray;
  font-size: 11px;
  font-style: italic;
- margin-left: 1em;
+ margin: 0;
 }
 #main.roadmap .progress {
  margin: 1em;
@@ -47,7 +40,7 @@ div.progress div {
 #main.roadmap dl {
  clear: both;
  float: left;
- font-size: 9px;
+ font-size: 10px;
  font-style: italic;
  margin: -1em 0 2em 1em;
  white-space: nowrap;
@@ -66,14 +59,10 @@ div.progress div {
  margin-left: 1em;
 }
 
+/* Styles for the milestone view */
 #main.milestone h1 em { font-style: normal }
-#main.milestone .description {
- margin: 1em 0 2em 1em;
-}
-#main.milestone .date {
- color: gray;
- font-style: italic;
-}
+#main.milestone .date { color: gray; font-style: italic }
+#main.milestone .description { margin: 1em 0 2em 1em }
 #main.milestone table {
  margin: 2em 0 0;
  border-collapse: collapse;
@@ -91,14 +80,15 @@ div.progress div {
 #main.milestone td, #main.milestone th { padding: 0 .25em }
 #main.milestone th { text-align: left }
 #main.milestone td.progress { width: 70% }
-#main.milestone td div.progress { margin: 3px 2px }
+#main.milestone td div.progress { margin: 3px .5em 3px 2px }
+#main.milestone td.progress p { font-size: 10px; margin: 3px 0 }
 #main.milestone tbody tr:hover, #main.milestone tbody tr:hover {
  background: #eed;
 }
 #main.milestone tbody td, #main.milestone tbody th {
  border: 1px dotted #ddd
 }
-#main.milestone tbody th { text-align: left; font-weight: normal }
+#main.milestone tbody th { font-weight: normal; text-align: left }
 #main.milestone tfoot tr { border-bottom: 0 }
 #main.milestone tfoot th, #main.milestone tfoot td {
  font-weight: bold;
