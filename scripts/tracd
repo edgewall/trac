@@ -42,6 +42,7 @@ import svn.core
 
 import trac.core
 import trac.util
+from trac import Session
 from trac.Href import Href
 from trac import auth, Wiki, siteconfig
 from trac.Environment import Environment
@@ -268,6 +269,10 @@ class TracHTTPRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler,
         args = trac.core.parse_args(self.command, self.path_info,
                                     self.query_string,
                                     self.rfile, None, self.headers)
+
+        newsession = args.has_key('newsession') and args['newsession']
+        self.session = Session.Session(self.env, self, newsession)
+        
         trac.core.add_args_to_hdf(args, self.hdf)
         try:
             pool = None
