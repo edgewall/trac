@@ -306,7 +306,7 @@ class NewticketModule(Module):
         self.req.hdf.setValue('title', 'New Ticket')
         evals = util.mydict(zip(ticket.keys(),
                                 map(lambda x: util.escape(x), ticket.values())))
-        util.add_dict_to_hdf(evals, self.req.hdf, 'newticket')
+        util.add_to_hdf(evals, self.req.hdf, 'newticket')
 
         util.sql_to_hdf(self.db, 'SELECT name FROM component ORDER BY name',
                         self.req.hdf, 'newticket.components')
@@ -366,7 +366,7 @@ class TicketModule (Module):
         """Insert ticket data into the hdf"""
         evals = util.mydict(zip(ticket.keys(),
                                 map(lambda x: util.escape(x), ticket.values())))
-        util.add_dict_to_hdf(evals, self.req.hdf, 'ticket')
+        util.add_to_hdf(evals, self.req.hdf, 'ticket')
 
         util.sql_to_hdf(self.db, 'SELECT name FROM component ORDER BY name',
                         self.req.hdf, 'ticket.components')
@@ -510,10 +510,10 @@ class QueryModule (Module):
             if type(vals) is ListType:
                 for j in range(len(vals)):
                     vals[j] = vals[j].value
-                    clause.append('%s=\'%s\'' % (col, vals[j]))
+                    clause.append('%s=\'%s\'' % (col, util.sql_escape(vals[j])))
             else:
                 vals = vals.value
-                clause.append('%s=\'%s\'' % (col, vals))
+                clause.append('%s=\'%s\'' % (col, util.sql_escape(vals)))
             if not constraints[i] in Ticket.std_fields:
                 clauses.append('(name=\'%s\' AND (' % constraints[i] +
                                ' OR '.join(clause) + '))')
@@ -545,4 +545,4 @@ class QueryModule (Module):
 
         self.req.hdf.setValue('title', 'Ticket Query')
         results = self.get_results(sql)
-        util.add_dictlist_to_hdf(results, self.req.hdf, 'query.results')
+        util.add_to_hdf(results, self.req.hdf, 'query.results')

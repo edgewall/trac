@@ -125,6 +125,13 @@ def href_join(u1, *tail):
         u1 = rstrip(u1, '/') + '/' + lstrip(u2, '/')
     return u1
 
+def sql_escape(text):
+    """
+    Escapes the given string so that it can be safely used in an SQL
+    statement
+    """
+    return text.replace("'", "''").replace("\\", "\\\\")
+
 def add_to_hdf(obj, hdf, prefix):
     """
     Adds an object to the given HDF under the specified prefix.
