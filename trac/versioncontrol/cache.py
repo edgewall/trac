@@ -50,15 +50,21 @@ class CachedRepository(Repository):
 
     def sync(self):
         self.log.debug("Checking whether sync with repository is needed")
+        youngest_stored = None
         cursor = self.db.cursor()
-        cursor.execute("SELECT COALESCE(max(rev), 0) || '' FROM revision")
-        youngest_stored =  cursor.fetchone()[0]
+        cursor.execute("SELECT rev FROM revision ORDER BY time DESC LIMIT 1")
+        row =  cursor.fetchone()
+        if row:
+            youngest_stored = row[0]
         if youngest_stored != str(self.repos.youngest_rev):
             kindmap = dict(zip(_kindmap.values(), _kindmap.keys()))
             actionmap = dict(zip(_actionmap.values(), _actionmap.keys()))
             self.log.info("Syncing with repository (%s to %s)"
                           % (youngest_stored, self.repos.youngest_rev))
-            current_rev = self.repos.next_rev(youngest_stored)
+            if youngest_stored:
+                current_rev = self.repos.next_rev(youngest_stored)
+            else:
+                current_rev = self.repos.oldest_rev
             while current_rev:
                 changeset = self.repos.get_changeset(current_rev)
                 cursor.execute("INSERT INTO revision (rev,time,author,message) "

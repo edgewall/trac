@@ -41,6 +41,7 @@ class CacheTestCase(unittest.TestCase):
                          get_changes=lambda: iter(changes))
         repos = Mock(Repository, None, self.log,
                      get_changeset=lambda x: changeset,
+                     get_oldest_rev=lambda: 1,
                      get_youngest_rev=lambda: 1,
                      next_rev=lambda x: x == '0' and '1' or None)
         cache = CachedRepository(self.db, repos, None, self.log)
