@@ -41,7 +41,11 @@ class AuthzPermission:
             self.auth_name = '*'
         else:
             self.auth_name = authname
-        self.module_name = env.get_config('project', 'name')
+	if env.get_config('trac','authz_module_name','') == '':
+	    self.module_name = ''
+	else:
+	    self.module_name = env.get_config('trac','authz_module_name') + ':'
+				 
         self.autz_file = env.get_config('trac','authz_file')    
         if env.get_config('trac','authz_file'):
             self.conf_authz = ConfigParser.ConfigParser()
@@ -58,19 +62,18 @@ class AuthzPermission:
         acc = 'r'
 
         if path != None and self.conf_authz != None:
-            if self.conf_authz.has_section(self.module_name + ':/') and \
-                   self.conf_authz.has_option(self.module_name + ':/',
+            if self.conf_authz.has_section(self.module_name + '/') and \
+                   self.conf_authz.has_option(self.module_name  + '/',
                                               self.auth_name):
-                acc = self.conf_authz.get(self.module_name + ':/',self.auth_name)
+                acc = self.conf_authz.get(self.module_name + '/',self.auth_name)
 
             path_comb = ''
             for path_ele in path.split('/'):
                 if path_ele != '':
                     path_comb = path_comb + '/' + path_ele
-                    section_name = self.module_name + ':' + path_comb
-                    if self.conf_authz.has_section(section_name) and \
-                           self.conf_authz.has_option(section_name,self.auth_name):
-                        acc =  self.conf_authz.get(section_name ,self.auth_name)
+                    if self.conf_authz.has_section(self.module_name + path_comb) and \
+                           self.conf_authz.has_option(self.module_name + path_comb,self.auth_name):
+                        acc =  self.conf_authz.get(self.module_name + path_comb,self.auth_name)
         return acc
 
     def assert_permission (self, path):
