@@ -86,12 +86,8 @@ class Timeline (Module):
 
         # Make the data more HDF-friendly
         info = []
-        while 1:
-            row = cursor.fetchone()
-            if not row:
-                break
-
-            if len(info) == 0:
+        for idx, row in enum(cursor):
+            if idx == 0:
                 req.check_modified(int(row[0]))
 
             t = time.localtime(int(row[0]))
@@ -194,23 +190,16 @@ class Timeline (Module):
             cursor.execute("SELECT name,change FROM node_change WHERE rev=%s",
                            (item['idata']))
             files = []
-            while 1:
-                row = cursor.fetchone()
-                if not row:
-                    break
+            class_map = {'A': 'diff-add', 'M': 'diff-mod', 'D': 'diff-rem'}
+            for name,change in cursor:
                 if show_files > 0 and len(files) >= show_files:
                     files.append('...')
                     break
-                
-                if not self.authzperm.has_permission(row_node['name']):
+                if not self.authzperm.has_permission(name):
                     continue
                 
-                if row[1] == 'A':
-                    files.append('<span class="diff-add">%s</span>' % row[0])
-                elif row[1] == 'M':
-                    files.append('<span class="diff-mod">%s</span>' % row[0])
-                elif row[1] == 'D':
-                    files.append('<span class="diff-rem">%s</span>' % row[0])
+                files.append('<span class="%s">%s</span>'
+                             % (class_map[change], name))
             item['node_list'] = ', '.join(files) + ': '
 
         return item
