@@ -70,29 +70,29 @@
                 <textarea name="text" rows="20" cols="80" style="width:100%"><?cs var:wiki.page_source ?></textarea>
               </p>
               <div id="wiki-formatting-help">
-              Read <a href="<?cs var:$trac.href.wiki ?>WikiFormatting">WikiFormatting</a> for more information about available commands.
+              See <a href="<?cs var:$trac.href.wiki
+?>WikiFormatting">WikiFormatting</a> and <a href="<?cs var:$trac.href.wiki ?>TracWiki">TracWiki</a> for help on editing.
               </div>
               <p>
-                <input type="submit" name="save" value="save changes" />&nbsp;
-                <input type="submit" name="preview" value="preview" />&nbsp;
-                <input type="submit" name="view" value="cancel" />
+                <input type="submit" name="save" value="Save changes" />&nbsp;
+                <input type="submit" name="preview" value="Preview" />&nbsp;
+                <input type="submit" name="view" value="Cancel" />
               </p>
             </form>
           <?cs /if ?>
           <?cs if wiki.action == "view" || wiki.action == "preview" ?>
+	    <?cs if wiki.action == "preview" ?><hr /><?cs /if ?>
             <div class="wikipage">
                 <?cs var:wiki.page_html ?>
             </div>
             <?cs if wiki.action == "view" && trac.acl.WIKI_MODIFY ?>
               <p>
-              <a id="wiki-edit-page" href="<?cs var:wiki_current_href?>?edit=yes">edit this page.</a>
+              <a id="wiki-edit-page" href="<?cs var:wiki_current_href?>?edit=yes">Edit this page</a>
               </p>
             <?cs /if ?>
           <?cs /if ?>
         <?cs /if ?>
       </div>
-    </div>
-    <div id="main-sidebar">
     </div>
   </div>
 </div>

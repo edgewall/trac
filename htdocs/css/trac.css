@@ -102,8 +102,9 @@ a.navbar-link:hover {
 }
 #page-content { clear: none; }
 #main {  margin-bottom: 2em; }
-#main-footer { margin-top: 2em; text-align: center }
-
+#main-footer { margin-top: 3em; text-align: center }
+#help { margin: 1em; font-size: 90%; color: #999 }
+#help a { color: #b44 }
 /* Wiki */
 #wiki-history {
   visibility: hidden;
@@ -131,7 +132,7 @@ a.wiki-missing-page:hover { color: #000; }
   float: right;
 }
 #browser-list,#common-list {
-  margin: .5em 0 2em 0;
+  margin: .5em 0 0em 0;
   border-bottom: 1px solid #eee;
   border-collapse: collapse;
   line-height: 130%;

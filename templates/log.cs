@@ -1,11 +1,12 @@
 <?cs include "header.cs"?>
 <div id="page-content">
 <div id="subheader-links">
+ <br />
 </div>
  <div id="main">
   <div id="main-content">
 
-<h1 id="log-hdr">Log history for <?cs var:log.path ?></h1>
+<h1 id="log-hdr">Revision history for <?cs var:log.path ?></h1>
 
 <div id="browser-pathlinks">
   <?cs each:part=log.path ?>
@@ -19,6 +20,7 @@
   <th>Date</th>
   <th>Rev</th>
   <th>Chgset</th>
+  <th>Author</th>
   <th>Log Message</th>
 </tr>
 
@@ -36,6 +38,9 @@
   <td class="br-chg-col">
     <a class="block-link" href="<?cs var:item.changeset_href ?>"><?cs var:item.rev ?></a>
   </td>
+  <td class="br-author-col">
+    <?cs var:item.author ?>
+  </td>
   <td class="br-summary-col"><?cs var:item.log ?></td>
   </tr>
   <?cs set:idx = idx + #1 ?>
@@ -43,7 +48,7 @@
 </table>
 
  <div id="main-footer">
-  Download this log in other formats: <br />
+  Download history in other formats: <br />
   <a class="noline" href="?format=rss"><img src="<?cs var:htdocs_location
 ?>xml.png" alt="RSS Feed" style="vertical-align: bottom"/></a>&nbsp;
   <a href="?format=rss">(RSS 2.0)</a>

@@ -27,7 +27,6 @@
   </div>
   <div id="timeline-prefs-btns">
     <input type="submit" value="Update" /> 
-    <input type="reset" />
   </div>
   </div>
 </form>
@@ -79,15 +78,20 @@
   </div>
 <?cs /each ?>
 
+
+<br />
+<hr />
+<div id="help">
+ <strong>Note:</strong> See <a href="<?cs var:$trac.href.wiki ?>TracTimeline">TracTimeline</a> 
+ for information about the timeline view.
+</div>
  <div id="main-footer">
-  Download timeline in other formats: <br />
+  Download in other formats: <br />
   <a class="noline" href="?daysback=90&max=50&format=rss"><img src="<?cs var:htdocs_location
 ?>xml.png" alt="RSS Feed" style="vertical-align: bottom"/></a>&nbsp;
   <a href="?daysback=90&max=50&format=rss">(RSS 2.0)</a>
   <br />
  </div>
-
-
  </div>
 </div>
 </div>

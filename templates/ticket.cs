@@ -121,10 +121,12 @@
     </ul>
   </div>
 <?cs /if ?>
-<hr class="hide"/>
 
+<br />
+<hr />
 
 <form action="<?cs var:cgi_location ?>" method="post">
+
 <h3>Add/Change Information</h3>
   <div id="nt-props-left">
     <input type="hidden" name="mode" value="ticket" />
@@ -171,7 +173,7 @@
   </div>
   <div id="nt-props-right">
     <div class="nt-prop">
-      <span class="nt-label">Reporter:</span>
+      <span class="nt-label">Editor:</span>
       <span class="nt-widget">
         <input type="text" name="reporter"
               value="<?cs var:trac.authname ?>" />
@@ -259,12 +261,15 @@
           value="<?cs var:ticket.owner ?>" />
   <?cs /if ?>
 <br />
-<input type="submit" value="commit" /> 
+<input type="submit" value="Commit" /> 
     </div>
     </div>
   </div>
 </form>
-
+<div id="help">
+<strong>Note:</strong> See <a href="<?cs var:$trac.href.wiki
+?>TracTickets">TracTickets</a> for help on editing tickets.
+</div>
 
  </div>
 </div>

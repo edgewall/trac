@@ -23,7 +23,7 @@ tr.browser-listhdr th {
   border-bottom: none;
   background: transparent;
 }
-#browser-list td { padding: 0 .5em; }
+#browser-list td { padding: .1em .5em; }
 th { text-align: left; }
 td.br-size-col,td.br-rev-col,td.br-date-col,td.br-summary-col,td.br-chg-col { border-left: 1px solid #eee; }
 td.br-icon-col { }

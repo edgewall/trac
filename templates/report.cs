@@ -127,18 +127,6 @@
     <?cs /each ?>
   </table>
 
-<?cs if report.id > #0 ?>
- <div id="main-footer">
-  Download report in other data formats: <br />
-  <a class="noline" href="?format=rss"><img src="<?cs var:htdocs_location
-?>xml.png" alt="RSS Feed" style="vertical-align: bottom"/></a>&nbsp;
-  <a href="?format=rss">(RSS 2.0)</a>&nbsp;|
-  <a href="?format=csv">Comma-delimited</a>&nbsp;|
-  <a href="?format=tab">Tab-delimited</a>
-  <br />
- </div>
-<?cs /if ?>
-
 <?cs elif report.mode == "editor" ?>
 
   <h1 id="report-hdr">Create New Report</h1>
@@ -154,12 +142,31 @@
       <br />SQL Query: <br />
       <textarea name="sql" cols="70" rows="10"><?cs var:report.sql ?></textarea>
       <br />
-      <input type="submit" value="commit" />&nbsp;
-      <input type="reset" value="reset" />
+      <input type="submit" value="Save" />&nbsp;
+      <input type="submit" name="view" value="Cancel" />
     </div>
   </form>
 <?cs /if?>
-<br />
+
+<div id="help">
+ <strong>Note:</strong> See <a href="<?cs var:$trac.href.wiki ?>TracReports">TracReports</a> 
+ for help on reports.
+</div>
+
+<?cs if report.id > #0 ?>
+ <div id="main-footer">
+  Download report in other data formats: <br />
+  <a class="noline" href="?format=rss"><img src="<?cs var:htdocs_location
+?>xml.png" alt="RSS Feed" style="vertical-align: bottom"/></a>&nbsp;
+  <a href="?format=rss">(RSS 2.0)</a>&nbsp;|
+  <a href="?format=csv">Comma-delimited</a>&nbsp;|
+  <a href="?format=tab">Tab-delimited</a>
+  <br />
+ </div>
+<?cs /if ?>
+
+
+
   </div>
  </div>
 

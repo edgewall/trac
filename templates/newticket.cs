@@ -92,12 +92,16 @@
       </span>
     </div>
     <div id="nt-submit">
-      <input type="reset" value="reset" />&nbsp;
-      <input type="submit" value="commit" />
+      <input type="reset" value="Reset" />&nbsp;
+      <input type="submit" value="Submit ticket" />
     </div>
   </div>
 </form>
 
+<div id="help">
+ <strong>Note:</strong> See <a href="<?cs var:$trac.href.wiki
+?>TracTickets">TracTickets</a> for help on using tickets.
+</div>
  </div>
 </div>
 </div>

@@ -107,9 +107,12 @@
        <?cs set:idx = idx + #1 ?>
      <?cs /each ?>
    </table>
+<div id="help">
+<strong>Note:</strong> See <a href="<?cs var:$trac.href.wiki
+?>TracBrowser">TracBrowser</a> for help on using the browser.
+</div>
   </div>
-  <div id="main-sidebar">
-  </div>
+
 
  </div>
 </div>
