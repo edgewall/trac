@@ -28,12 +28,14 @@ class Href:
         self.base = base
 
     def log(self, path, rev=None):
+        path = urllib.quote(path)
         if rev:
             return href_join(self.base, 'log', path) + '?rev=' + str(rev)
         else:
             return href_join(self.base, 'log', path)
         
     def file(self, path, rev=None, format=None):
+        path = urllib.quote(path)
         if rev and format:
             return href_join(self.base, 'file', path) + \
                    '?rev=%s&format=%s' % (str(rev), format)
@@ -45,6 +47,7 @@ class Href:
             return href_join(self.base, 'file', path)
 
     def browser(self, path, rev=None):
+        path = urllib.quote(path)
         if rev:
             return href_join(self.base, 'browser', path) + '?rev=' + str(rev)
         else:
