@@ -192,12 +192,12 @@ class ChangesetModule(Module):
                           util.CRLF)
                 req.write('+++ %s (revision %s)' % new_node_info +
                           util.CRLF)
-                for line in unified_diff(old_content.split('\n'),
-                                         new_content.split('\n'), context,
+                for line in unified_diff(old_content.splitlines(),
+                                         new_content.splitlines(), context,
                                          ignore_blank_lines='-B' in diff_options,
                                          ignore_case='-i' in diff_options,
                                          ignore_space_changes='-b' in diff_options):
-                    req.write(util.rstrip(line, '\r') + util.CRLF)
+                    req.write(line + util.CRLF)
 
     def render_zip(self, req, repos, chgset):
         """ZIP archive with all the added and/or modified files."""

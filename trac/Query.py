@@ -24,7 +24,7 @@ from trac.Module import Module
 from trac.Ticket import get_custom_fields, insert_custom_fields, Ticket
 from trac.web.main import add_link
 from trac.WikiFormatter import wiki_to_html, wiki_to_oneliner
-from trac.util import escape, sql_escape
+from trac.util import escape, sql_escape, CRLF
 
 from time import gmtime, localtime, strftime, time
 from types import ListType
@@ -575,14 +575,14 @@ class QueryModule(Module):
         req.end_headers()
 
         cols = query.get_columns()
-        req.write(sep.join([col for col in cols]) + '\r\n')
+        req.write(sep.join([col for col in cols]) + CRLF)
 
         results = query.execute(self.db)
         for result in results:
             req.write(sep.join([str(result[col]).replace(sep, '_')
                                                 .replace('\n', ' ')
                                                 .replace('\r', ' ')
-                                for col in cols]) + '\r\n')
+                                for col in cols]) + CRLF)
 
     def display_rss(self, req, query):
         query.verbose = 1
