@@ -404,9 +404,8 @@ class Formatter(CommonFormatter):
             anchor = anchor_base + str(i)
             i += 1
         self.anchors.append(anchor)
-        self.out.write('<h%d id="%s">%s</h%d>' % (depth, anchor.encode('utf-8'),
-                                                  heading, depth))
-        return ''
+        return '<h%d id="%s">%s</h%d>' % (depth, anchor.encode('utf-8'),
+                                          heading, depth)
 
     def _svnimg_formatter(self, match, fullmatch):
         prefix_len = match.find(':') + 1

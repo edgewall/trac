@@ -21,8 +21,8 @@ def execute(hdf, args, env):
             try:
                 module = imp.load_source(file[:-3], os.path.join(dir, file))
                 macros.append(module)
-            except Exception:
-                pass
+            except Exception, e:
+                env.log.info("Cannot display macro in list: %s" % e)
         return macros
 
     macros = []
@@ -40,4 +40,3 @@ def execute(hdf, args, env):
                       % escape(inspect.getdoc(macro)))
     buf.write("</dl>")
     return buf.getvalue()
-

@@ -11,7 +11,11 @@
 #changeinfo .options { padding: 0 0 1em 1em }
 #changeinfo .options, #changeinfo .buttons { clear: left }
 #delete { margin-left: 6em }
-#preview { background: #f4f4f4 url(../draft.png); margin: 1em 0 2em }
+#preview {
+ background: #f4f4f4 url(../draft.png);
+ margin: 1em 0 2em;
+ overflow: auto;
+}
 
 /* Heading anchors */
 .anchor:link, .anchor:visited {
@@ -37,7 +41,7 @@ h4:hover .anchor, h5:hover .anchor, h6:hover .anchor {
 
 /* Styles for the TracGuideToc wikimacro */
 .wiki-toc {
- padding: .5em 0;
+ padding: .5em 1em;
  margin: 0 0 2em 1em;
  float: right;
  border: 1px outset #ddc;
@@ -45,7 +49,8 @@ h4:hover .anchor, h5:hover .anchor, h6:hover .anchor {
  font-size: 85%;
  position: relative;
 }
-.wiki-toc h4 { font-size: 12px; margin: 0 1em; }
-.wiki-toc ul { list-style: none; padding: 0; margin: 0; }
-.wiki-toc li { margin: 0; padding: .2em 1em }
-.wiki-toc .active { background: #ff9; }
+.wiki-toc h4 { font-size: 12px; margin: 0 }
+.wiki-toc ul, .wiki-toc ol { list-style: none; padding: 0; margin: 0 }
+.wiki-toc ul ul, .wiki-toc ol ol { padding-left: 1.2em }
+.wiki-toc li { margin: 0; padding: 0 }
+.wiki-toc .active { background: #ff9 }
