@@ -62,7 +62,7 @@ class CGIRequestTestCase(unittest.TestCase):
 
     def test_base_url_proxy(self):
         environ = {'SCRIPT_NAME': '/trac', 'SERVER_NAME': 'some_proxy.org',
-                   'HTTP_X_FORWARDED_FOR': 'example.org'}
+                   'HTTP_X_FORWARDED_HOST': 'example.org'}
         req = CGIRequest(environ)
         req.base_url = _reconstruct_base_url(req)
         self.assertEqual('http://example.org/trac', req.base_url)
