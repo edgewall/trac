@@ -1,0 +1,15 @@
+Index: trac/wikimacros/rst.py
+===================================================================
+--- trac/wikimacros/rst.py	(revisão 1307)
++++ trac/wikimacros/rst.py	(revisão 1462)
+@@ -123,7 +123,9 @@
+     text = arguments[int(len(arguments) == 2)]
+     reference = trac_get_reference(env, block_text, text)
+     if reference:
+-        return reference
++        p = nodes.paragraph()
++        p += reference
++        return p
+     # didn't find a match (invalid TracLink),
+     # report a warning
+     warning = state_machine.reporter.warning(

@@ -1,0 +1,67 @@
+= Trac and mod_python =
+
+Trac 0.7.1 and later supports [http://www.modpython.org/ mod_python], which speeds up Trac's response times considerably and permits use of many Apache features not possible with tracd/mod_proxy.
+
+== Simple configuration ==
+
+Here's a typical Trac CGI/Apache setup:
+
+{{{
+ScriptAlias /projects/myproject /path/to/python/share/trac/cgi-bin/trac.cgi
+<Location /projects/myproject>
+   SetEnv TRAC_ENV /var/trac/myproject
+</Location>
+}}}
+
+The equivalent mod_python setup is:
+
+{{{
+<Location /projects/myproject>
+   SetHandler mod_python
+   PythonHandler trac.ModPythonHandler
+   PythonOption TracUriRoot "/projects/myproject"
+   PythonOption TracEnv /var/trac/myproject
+</Location>
+}}}
+
+Note that the option ''TracUriRoot'' may or may not be necessary in your setup. Try without first, and if the URLs produced by Trac look wrong, add the ''TracUriRoot'' option.
+
+== Setting up multiple projects ==
+
+The Trac mod_python handler handler supports a configuration option similar to Subversion's {{{SvnParentPath}}}, called {{{TracEnvParentDir}}}:
+
+{{{
+<Location /projects>
+  SetHandler mod_python
+  PythonHandler trac.ModPythonHandler
+  PythonOption TracUriRoot /projects
+  PythonOption TracEnvParentDir "/var/trac"
+</LocationMatch>
+}}}
+
+When you request the {{{/projects}}} URL, you will get a (currently very simple) listing of all subdirectories of the directory you set as {{{TracEnvParentDir}}}. Selecting any project in the list will bring you to the corresponding Trac instance. You should make sure that the configured directory only contains Trac environment directories that match the currently installed Trac version, because that is not checked prior the the generation of the project list.
+
+
+=== Adding authentication ===
+
+Adding authentication is straightforward in both cases. For example:
+
+{{{
+<LocationMatch /projects/[[:alnum:]]+/login>
+  AuthType Basic
+  AuthName "Trac"
+  AuthUserFile /var/www/passwd
+  Require valid-user
+</LocationMatch>
+}}}
+
+=== Win32 Issues ===
+
+If you run trac with mod_python on Windows, attachments will not work.
+
+There is a (simple) workaround for this which is to apply the patch attached to 
+ticket [http://projects.edgewall.com/trac/ticket/554 #554].
+
+
+----
+See also TracGuide, TracInstall, TracMultipleProjects
