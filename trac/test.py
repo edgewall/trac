@@ -73,7 +73,7 @@ def Mock(bases=(), **kw):
     >>> myvar[0]
     1
     """
-    if not type(bases) is tuple:
+    if not isinstance(bases, tuple):
         bases = (bases,)
     cls = type('Mock', bases, {})
     mock = cls()

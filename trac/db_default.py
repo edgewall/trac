@@ -21,7 +21,7 @@
 
 
 # Database version identifier. Used for automatic upgrades.
-db_version = 8
+db_version = 9
 
 def __mkreports(reports):
     """Utility function used to create report data in same syntax as the
@@ -66,13 +66,6 @@ CREATE TABLE enum (
 CREATE TABLE system (
         name            text PRIMARY KEY,
         value           text,
-        UNIQUE(name)
-);
-CREATE TABLE lock (
-        name            text PRIMARY KEY,
-        owner           text,
-        ipnr            text,
-        time            integer,
         UNIQUE(name)
 );
 CREATE TABLE ticket (

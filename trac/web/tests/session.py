@@ -39,27 +39,51 @@ class SessionTestCase(unittest.TestCase):
         """
         incookie = Cookie()
         incookie['trac_session'] = '123456'
+        outcookie = Cookie()
         req = Mock(authname='anonymous', cgi_location='/', incookie=incookie,
-                   outcookie=Cookie())
+                   outcookie=outcookie)
         session = Session(self.env, self.db, req)
         self.assertEquals('123456', session.sid)
+        self.failIf(outcookie.has_key('trac_session'))
 
     def test_authenticated_session(self):
         """
-        Verify that an anonymous user can't take over the session of an
-        authenticated user even if he knows his session key.
+        Verifies that a session cookie does not get used if the user is logged
+        in, and that Trac expires the cookie.
         """
         incookie = Cookie()
         incookie['trac_session'] = '123456'
+        outcookie = Cookie()
         req = Mock(authname='john', cgi_location='/', incookie=incookie,
-                   outcookie=Cookie())
+                   outcookie=outcookie)
         session = Session(self.env, self.db, req)
-        self.assertEqual('123456', session.sid)
+        self.assertEqual(None, session.sid)
         session['foo'] = 'bar'
         session.save()
+        self.assertEquals(0, outcookie['trac_session']['expires'])
 
-        req.authname = 'anonymous'
-        self.assertRaises(TracError, Session, self.env, self.db, req)
+    def test_session_promotion(self):
+        """
+        Verifies that an existing anonymous session gets promoted to an
+        authenticated session when the user logs in.
+        """
+        cursor = self.db.cursor()
+        cursor.execute("INSERT INTO session (sid,username,var_name,var_value) "
+                       "VALUES ('123456', 'anonymous', 'foo', 'bar')")
+
+        incookie = Cookie()
+        incookie['trac_session'] = '123456'
+        outcookie = Cookie()
+        req = Mock(authname='john', cgi_location='/', incookie=incookie,
+                   outcookie=outcookie)
+        session = Session(self.env, self.db, req)
+        self.assertEqual(None, session.sid)
+        session.save()
+
+        cursor.execute("SELECT sid,username FROM session")
+        row = cursor.fetchone()
+        self.assertEqual((None, 'john'), row)
+        self.assertEqual(None, cursor.fetchone())
 
     def test_add_session_var(self):
         """
@@ -71,7 +95,7 @@ class SessionTestCase(unittest.TestCase):
         req = Mock(authname='anonymous', cgi_location='/', incookie=incookie,
                    outcookie=Cookie())
         session = Session(self.env, self.db, req)
-        session['foo'] = 'bar'        
+        session['foo'] = 'bar'
         session.save()
         cursor = self.db.cursor()
         cursor.execute("SELECT var_value FROM session WHERE sid='123456' AND "
@@ -182,10 +206,13 @@ class SessionTestCase(unittest.TestCase):
 
         incookie = Cookie()
         incookie['trac_session'] = '123456'
+        outcookie = Cookie()
         req = Mock(authname='anonymous', cgi_location='/', incookie=incookie,
-                   outcookie=Cookie())
+                   outcookie=outcookie)
         session = Session(self.env, self.db, req)
         session.save() # updating should not require modifications
+
+        self.assertEqual(PURGE_AGE, outcookie['trac_session']['expires'])
 
         cursor.execute("SELECT var_value FROM session WHERE sid='123456' AND "
                        "username='anonymous' AND var_name='last_visit'")

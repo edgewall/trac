@@ -259,13 +259,15 @@ def absolute_url(req, path=None):
             host = '%s:%d' % (req.server_name, req.server_port)
         else:
             host = req.server_name
+    if not path:
+        path = req.cgi_location
     from urlparse import urlunparse
     return urlunparse((req.scheme, host, path, None, None, None))
 
 def dispatch_request(path_info, req, env):
     base_url = env.get_config('trac', 'base_url')
     if not base_url:
-        base_url = absolute_url(req, req.cgi_location)
+        base_url = absolute_url(req)
     req.base_url = base_url
     _parse_path_info(req.args, path_info)
 

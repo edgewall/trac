@@ -41,17 +41,19 @@ class Settings(Module):
 
         req.hdf['title'] = 'Settings'
         req.hdf['settings'] = req.session
-        req.hdf['settings.session_id'] = req.session.sid
+        if req.session.sid:
+            req.hdf['settings.session_id'] = req.session.sid
 
     def save_settings(self, req):
         for field in self._form_fields:
             val = req.args.get(field)
             if val:
-                if field =='newsid':
+                if field == 'newsid' and val:
                     req.session.change_sid(val)
                 else:
                     req.session[field] = val
 
     def load_session(self, req):
-        oldsid = req.args.get('loadsid')
-        req.session.get_session(oldsid)
+        if req.authname == 'anonymous':
+            oldsid = req.args.get('loadsid')
+            req.session.get_session(oldsid)
