@@ -35,7 +35,7 @@ import trac.siteconfig
 
 class TracAdmin(cmd.Cmd):
     intro = ''
-    license = trac.__license_long__
+    license = trac.__license__
     credits = trac.__credits__
 
     doc_header = 'Trac Admin Console %(ver)s\n' \

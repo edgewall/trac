@@ -130,3 +130,15 @@ def sql_to_hdf (sql, hdf, prefix):
         hdf.setValue('%s.%d.name' % (prefix, idx), row[0])
         idx = idx + 1
 
+def hdf_add_if_missing(hdf, prefix, value):
+    """Loop through the hdf values and add @value if id doesn't exist"""
+    node = hdf.getObj(prefix + '.0')
+    i = 0
+    while node:
+        child = node.child()
+        if child and child.value() == value:
+            return
+        node = node.next()
+        i += 1
+    hdf.setValue(prefix + '.%d.name' % i, value)
+        

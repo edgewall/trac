@@ -246,6 +246,12 @@ class Ticket (Module):
                    self.cgi.hdf, 'ticket.milestones')
         sql_to_hdf('SELECT name FROM version ORDER BY name',
                    self.cgi.hdf, 'ticket.versions')
+        hdf_add_if_missing(self.cgi.hdf, 'ticket.components', info['component'])
+        hdf_add_if_missing(self.cgi.hdf, 'ticket.milestones', info['milestone'])
+        hdf_add_if_missing(self.cgi.hdf, 'ticket.versions', info['version'])
+        hdf_add_if_missing(self.cgi.hdf, 'enums.priority', info['priority'])
+        hdf_add_if_missing(self.cgi.hdf, 'enums.severity', info['severity'])
+        
         # Page title
         self.cgi.hdf.setValue('title', 'Ticket #%d' % id)
         self.insert_ticket_data(self.cgi.hdf, id)
