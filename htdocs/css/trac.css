@@ -63,8 +63,8 @@ legend {
 }
 /* Header */
 #header { }
+#hdrlogo { }
 #hdrlogo,#hdrlogo img,#hdrlogo:hover {
-  background: transparent;
   margin-bottom: -1.25em;
   border: none;
 }
