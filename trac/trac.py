@@ -39,6 +39,7 @@ modules = {
     'log'         : ('Log', 'Log', 1),
     'file'        : ('File', 'File', 1),
     'wiki'        : ('Wiki', 'Wiki', 0),
+    'about'       : ('About', 'About', 0),
     'search'      : ('Search', 'Search', 0),
     'report'      : ('Report', 'Report', 0),
     'ticket'      : ('Ticket', 'Ticket', 0),
@@ -54,6 +55,12 @@ def parse_args():
     if not info:
         return None
     
+    match = re.search('/about(/?.*)', info)
+    if match:
+        args['mode'] = 'about'
+        if len(match.group(1)) > 0:
+            args['page'] = match.group(1)
+        return args
     if re.search('/newticket/?', info):
         args['mode'] = 'newticket'
         return args

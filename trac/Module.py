@@ -80,6 +80,8 @@ class Module:
         self.cgi.hdf.setValue('trac.href.report', href.report())
         self.cgi.hdf.setValue('trac.href.newticket', href.newticket())
         self.cgi.hdf.setValue('trac.href.search', href.search())
+        self.cgi.hdf.setValue('trac.href.about', href.about())
+        self.cgi.hdf.setValue('trac.href.about_config', href.about('config/'))
         self.cgi.hdf.setValue('trac.href.login', href.login())
         self.cgi.hdf.setValue('trac.href.logout', href.logout())
         self.cgi.hdf.setValue('trac.href.homepage', 'http://trac.edgewall.com/')

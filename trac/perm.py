@@ -26,6 +26,8 @@ from db import get_connection
 perm_cache = {}
 
 # permissions
+CONFIG_VIEW    = 'CONFIG_VIEW'
+
 LOG_VIEW       = 'LOG_VIEW'
 
 FILE_VIEW      = 'FILE_VIEW'
