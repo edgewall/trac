@@ -137,6 +137,7 @@ label.disabled { color: #d7d7d7 }
 }
 
 /* Context-dependent navigation links */
+#ctxtnav { height: 1em }
 #ctxtnav li ul {
  background: #f7f7f7;
  color: #ccc;
