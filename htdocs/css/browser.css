@@ -24,7 +24,7 @@
   padding-bottom: .5em;
   margin: 0;
   font-family: arial,verdana,'Bitstream Vera Sans',helvetica, sans-serif;
-  font-size: 24px;
+  font-size: 16px;
   letter-spacing:-0.028em; 
  font-weight: bold;
 }
@@ -32,7 +32,7 @@
   border: none;
   padding: 0 .2em;
  }
-#browser-pathlinks a.first { color: #600 }
+#browser-pathlinks a.first { color: #998 }
 #browser-pathlinks .browser-pathsep { color: #666; }
 tr.browser-listhdr { border-bottom: 1px solid #d7d7d7; }
 tr.browser-listhdr th {
@@ -62,10 +62,7 @@ tr.browser-listhdr th {
 }
 #revchange ul { padding: 0; margin: 0 2em; }
 #revchange p { margin: 0; padding: 0; }
-#browser-list { 
- clear: both; 
- margin-top: 1em;
-}
+#browser-list { clear: both; margin-top: 1em; }
 #browser-list a.block-link,#browser-list a.block-link-nobold { 
   display: block;
   border-bottom: none;
@@ -84,15 +81,10 @@ td.br-change-col, td.br-rev-col, td.br-age-col {
   white-space: nowrap;
 }
 td.br-icon-col, td.br-report-col, td.br-ticket-col { width: 1em; }
-td.br-change-col { 
- font-size: 9px;
- line-height: 110%;
-}
-
+td.br-change-col { font-size: 9px; line-height: 110%; }
 td.br-change-col .author { 
   font-weight: normal;
   color: #bbb;
   padding-right: .25em;
 }
-td.br-change-col .change { 
-}
+td.br-change-col .change { }

@@ -115,7 +115,7 @@ class Browser(Module):
     def generate_path_links(self, path, rev, rev_specified):
         list = path.split('/')
         path = '/'
-        self.req.hdf.setValue('browser.path.0', 'root')
+        self.req.hdf.setValue('browser.path.0', ':: root')
         if rev_specified:
             self.req.hdf.setValue('browser.path.0.url',
                                   self.env.href.browser(path, rev))
