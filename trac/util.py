@@ -39,27 +39,6 @@ def svn_date_to_string(date, pool):
                                               pool) / 1000000
     return time.strftime('%x %X', time.localtime(date_seconds))
 
-def enum_selector (db, sql, name, selected=None,default_empty=0):
-    out = StringIO.StringIO()
-    out.write ('<select size="1" name="%s">' % name)
-
-    cursor = db.cursor ()
-    cursor.execute (sql)
-
-    if default_empty:
-        out.write ('<option></option>')
-    while 1:
-        row = cursor.fetchone()
-        if not row:
-            break
-        if selected == row[0]:
-            out.write ('<option selected>%s</option>' % row[0])
-        else:
-            out.write ('<option>%s</option>' % row[0])
-
-    out.write ('</select>')
-    return out.getvalue()
-
 def wiki_escape_newline(text):
     return text.replace(os.linesep, '[[BR]]' + os.linesep)
 
@@ -152,8 +131,8 @@ def sql_to_hdf (db, sql, hdf, prefix):
     executes a sql query and insert the first result column
     into the hdf at the given prefix
     """
-    cursor = db.cursor ()
-    cursor.execute (sql)
+    cursor = db.cursor()
+    cursor.execute(sql)
     idx = 0
     while 1:
         row = cursor.fetchone()
@@ -317,9 +296,3 @@ def mydict(items):
     for k, v in items:
         d[k] = v
     return d
-
-
-if __name__ == '__main__ ':
-    pass
-    #print pre
-
