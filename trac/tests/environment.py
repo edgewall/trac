@@ -1,4 +1,5 @@
-from trac.Environment import Environment, db_default
+from trac import db_default
+from trac.Environment import Environment
 
 import os
 import unittest
@@ -6,6 +7,7 @@ import tempfile
 
 
 class EnvironmentTestBase:
+
     def setUp(self):
         self.env = Environment(self._get_envpath(), create=1)
         self.env.insert_default_data()
@@ -30,6 +32,7 @@ class EnvironmentTestBase:
         os.rmdir(path)
 
 class EnvironmentTestCase(EnvironmentTestBase, unittest.TestCase):
+
     def test_get_version(self):
         """Testing env.get_version"""
         assert self.env.get_version() == db_default.db_version
@@ -68,3 +71,6 @@ class EnvironmentTestCase(EnvironmentTestBase, unittest.TestCase):
 
 def suite():
     return unittest.makeSuite(EnvironmentTestCase,'test')
+
+if __name__ == '__main__':
+    unittest.main()

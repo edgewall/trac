@@ -1,7 +1,5 @@
 from trac.Ticket import Ticket
 
-import os
-import tempfile
 import unittest
 
 

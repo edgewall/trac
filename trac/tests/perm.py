@@ -1,7 +1,5 @@
 from trac import perm
 
-import os
-import tempfile
 import unittest
 
 
