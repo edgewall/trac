@@ -21,6 +21,7 @@
 
 import re
 import os
+import imp
 import time
 import string
 import StringIO
@@ -280,8 +281,13 @@ class Formatter(CommonFormatter):
                            'default': default_processor}
 
     def load_macro(self, name):
-        macros = __import__('wikimacros.' + name, globals(),  locals(), [])
-        module = getattr(macros, name)
+        # Look in envdir/wiki-macros/ first
+        try:
+            module = imp.load_source(name, os.path.join(self.env.path, 'wiki-macros', name+'.py'))
+        except IOError:
+            # fall back to site-wide macros
+            macros = __import__('wikimacros.' + name, globals(),  locals(), [])
+            module = getattr(macros, name)
         return module.execute
 
     def _macro_formatter(self, match, fullmatch):
