@@ -84,7 +84,7 @@ class Report (Module):
         self.req.hdf.setValue('report.var.'+aname , arg)
         sql = m.string[:m.start()] + arg + m.string[m.end():]
         return self.sql_sub_vars(sql, args)
-    
+
     def get_info(self, id, args):
         cursor = self.db.cursor()
 
@@ -106,7 +106,7 @@ class Report (Module):
             description = row[2] or ''
 
         return [title, description, sql]
-        
+
     def create_report(self, title, description, sql):
         self.perm.assert_permission(perm.REPORT_CREATE)
 
@@ -197,7 +197,6 @@ class Report (Module):
         if copy:
             title += ' copy'
         self.req.hdf.setValue('title', 'Create New Report')
-        
         self.req.hdf.setValue('report.mode', 'editor')
         self.req.hdf.setValue('report.title', title)
         self.req.hdf.setValue('report.id', str(id))
@@ -238,7 +237,7 @@ class Report (Module):
         except ValueError,e:
             self.req.hdf.setValue('report.message', 'report failed: %s' % e)
             return
-        
+
         if id != -1:
             self.add_alternate_links(args)
             if self.perm.has_permission(perm.REPORT_MODIFY):
@@ -345,6 +344,9 @@ class Report (Module):
                     value['ticket_href'] = self.env.href.ticket(cell)
                 elif column == 'description':
                     value['parsed'] = wiki_to_html(cell, self.req.hdf, self.env)
+                elif column == 'reporter':
+                    value['reporter'] = cell
+                    value['reporter.rss'] = cell.find('@') and cell or ''
                 elif column == 'report':
                     value['report_href'] = self.env.href.report(cell)
                 elif column in ['time', 'date','changetime', 'created', 'modified']:
@@ -382,7 +384,7 @@ class Report (Module):
         # Set some default dynamic variables
         if hasattr(self.req,'authname'):  # FIXME: Is authname always there? - dln
             report_args['USER'] = self.req.authname
-            
+
         return report_args
 
     def render(self):

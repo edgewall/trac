@@ -4,7 +4,9 @@
    <?cs set base_url = $HTTP.Protocol+$HTTP.Host ?>
    <?cs def:rss_item(category,title, link, descr) ?>
       <item>
-        <author><?cs var:$item.author ?></author>
+        <?cs if:$item.author.rss ?>
+         <author><?cs var:$item.author.rss ?></author>
+        <?cs /if ?>
         <pubDate><?cs var:$item.datetime ?></pubDate>
         <title><?cs var:$title ?></title>	  
         <link><?cs var:$base_url ?><?cs var:$link ?></link>
@@ -35,23 +37,23 @@
         <?cs elif:item.type == #2 ?><!-- New ticket -->
           <?cs call:rss_item('Ticket',
                              'Ticket #'+$item.idata+' created: '+$item.shortmsg,
-                             $item.href, $item.message) ?>
+                             $item.href, $item.message.rss) ?>
         <?cs elif:item.type == #3 ?><!-- Closed ticket -->
           <?cs call:rss_item('Ticket',
                              'Ticket #'+$item.idata+' resolved: '+$item.shortmsg,
-                             $item.href, $item.message) ?>
+                             $item.href, $item.rss.message.rss) ?>
         <?cs elif:item.type == #4 ?><!-- Reopened ticket -->
           <?cs call:rss_item('Ticket',
                              '#'+$item.idata+' reopened: '+$item.shortmsg,
-                             $item.href, $item.message) ?>
+                             $item.href, $item.message.rss) ?>
         <?cs elif:item.type == #5 ?><!-- Wiki change -->
           <?cs call:rss_item('Wiki',
                              $item.tdata+" page edited.",
                              $item.href,
-'Wiki page <a href="'+$base_url+$item.wiki_href+'">'+$item.tdata+'</a> edited by '+$item.author) ?>
+'Wiki page &lt;a href="'+$base_url+$item.wiki_href+'"&gt;'+$item.tdata+'&lt;/a&gt; edited by '+$item.author) ?>
         <?cs elif:item.type == #6 ?><!-- Milestones -->
           <?cs call:rss_item('Milestone',
-                             'Milestone ' + $item.message + ' reached.',
+                             'Milestone ' + $item.message.rss + ' reached.',
                              '',
 	       'Milestone ' + $item.tdata + ' reached.') ?>
         <?cs /if ?>

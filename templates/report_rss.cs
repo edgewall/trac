@@ -27,14 +27,16 @@
           <?cs elif name(item) == 'description' ?>
 	    <?cs set descr = $item ?>
           <?cs elif name(item) == 'reporter' ?>
-	    <?cs set author = $item ?>
+	    <?cs set author = $item.rss ?>
           <?cs elif name(item) == 'time' || name(item) == 'changetime' 
                     || name(item) == 'created' || name(item) == 'modified' ?>
 	    <?cs set pubdate = $item.gmt ?>
           <?cs /if ?>
        <?cs /each ?>
        <item>
-         <author><?cs var:$author ?></author>
+         <?cs if:$author ?>
+          <author><?cs var:$author ?></author>
+         <?cs /if ?>
          <pubDate><?cs var:$pubdate ?></pubDate>
          <title><?cs var:'#'+$id+': '+$title ?></title>	  
          <link><?cs var:$link ?></link>

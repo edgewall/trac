@@ -137,6 +137,12 @@ class Timeline (Module):
                 item['message'] = wiki_to_oneliner(util.shorten_line(item['message']),
                                                    self.req.hdf, self.env)
 
+            # Kludges for RSS
+            item['author.rss'] = util.escape(item['author'] or '')
+            if item['author.rss'].find('@') == -1:
+                item['author.rss'] = ''
+            item['message.rss'] = util.escape(item['message'] or '')
+
             info.append(item)
         return info
 

@@ -14,7 +14,9 @@
       <generator>Trac v<?cs var:$trac.version ?></generator>
       <?cs each:item = $log.items ?>
        <item>
-         <author><?cs var:$item.author ?></author>
+<!--  XXX: author element requires email address in rss 2.0.
+           maybe we should use the DC rdf stuff for metadata instead?
+       <author><?cs var:$item.author ?></author> -->
          <pubDate><?cs var:$item.gmt ?></pubDate>
          <title><?cs var:$item.rev+': '+$item.shortlog ?></title>	  
          <link><?cs var:$base_url+$item.file_href ?></link>
