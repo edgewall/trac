@@ -157,12 +157,12 @@ class SubversionRepository(Repository):
         if path and path[-1] == '/':
             path = path[:-1]
 
-        if rev != None:
-            try:
-                rev = int(rev)
-            except ValueError:
-                rev = None
-        if not rev:
+        try:
+            rev = int(rev)
+        except (ValueError, TypeError):
+            rev = None
+
+        if rev is None:
             rev = self.youngest_rev
 
         return SubversionNode(path, rev, self.authz, self.scope, self.fs_ptr,
