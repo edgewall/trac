@@ -70,7 +70,11 @@ class ModPythonRequest(core.Request):
         port = self.req.connection.local_addr[1]
 
         proto_port = ''
-        if port == 443:
+        if self.req.subprocess_env.get('HTTPS') in ('on', '1'):
+            proto  = 'https'
+            if port != 443:
+               proto_port = ':%d' % port
+        elif port == 443:
            proto = 'https'
         else:
            proto = 'http'
