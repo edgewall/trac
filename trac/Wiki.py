@@ -131,13 +131,16 @@ class CommonFormatter:
         module = text[:sep]
         args = text[sep+1:]
         if module in ['bug', 'ticket']:
-            return self.href.ticket(args), '%s:%s' % (module, args)
+            return self.href.ticket(args), '%s:%s' % (module, args), 0
         elif module == 'wiki':
-            return self.href.wiki(args), '%s:%s' % (module, args)
+            if not self.env._wiki_pages.has_key(args):
+                return self.href.wiki(args), '%s:%s' % (module, args), 1
+            else:
+                return self.href.wiki(args), '%s:%s' % (module, args), 0
         elif module == 'report':
-            return self.href.report(args), '%s:%s' % (module, args)
+            return self.href.report(args), '%s:%s' % (module, args), 0
         elif module == 'changeset':
-            return self.href.changeset(args), '%s:%s' % (module, args)
+            return self.href.changeset(args), '%s:%s' % (module, args), 0
         elif module in ['source', 'repos', 'browser']:
             rev = None
             match = re.search('([^#]+)#(.+)', args)
@@ -148,18 +151,18 @@ class CommonFormatter:
                 return self.href.browser(args, rev), \
                        '%s:%s#%s' % (module, args, rev)
             else:
-                return self.href.browser(args), '%s:%s' % (module, args)
+                return self.href.browser(args), '%s:%s' % (module, args), 0
         else:
-            return None, None
+            return None, None, 0
         
     def _modulehref_formatter(self, match, fullmatch):
-        link, text = self._expand_module_link(match)
-        if not link:
-            return match
-        else:
+        link, text, missing = self._expand_module_link(match)
+        if link and missing:
+            return '<a class="missing" href="%s">%s?</a>' % (link, text)
+        elif link:
             return '<a href="%s">%s</a>' % (link, text)
-        module = fullmatch.group('modulename')
-        args = fullmatch.group('moduleargs')
+        else:
+            return march
 
     def _wikilink_formatter(self, match, fullmatch):
         if match[0] == '!':
@@ -177,8 +180,10 @@ class CommonFormatter:
         link = fullmatch.group('fancyurl')
         name = fullmatch.group('linkname')
         
-        module_link, t = self._expand_module_link(link)
-        if module_link:
+        module_link, t, missing = self._expand_module_link(link)
+        if module_link and missing:
+            return '<a class="missing" href="%s">%s?</a>' % (module_link, name)
+        elif module_link:
             return '<a href="%s">%s</a>' % (module_link, name)
         else:
             return '<a href="%s">%s</a>' % (link, name)
