@@ -79,29 +79,25 @@ class QueryModule(Module):
         self.perm.assert_permission(perm.TICKET_VIEW)
 
         constraints = self.get_constraints()
+        order = self.args.get('order', 'priority')
+        desc = self.args.has_key('desc')
+
+        if self.args.has_key('search'):
+            self.req.redirect(self.env.href.query(constraints, order, desc,
+                                                  action='view'))
 
         action = self.args.get('action')
         if not action and not constraints:
             action = 'edit'
 
-        self.req.hdf.setValue('query.action', action)
+        self.req.hdf.setValue('query.action', action or 'view')
         if action == 'edit':
-            self._render_editor()
+            self._render_editor(constraints, order, desc)
         else:
-            if self.args.has_key('search'):
-                self._redirect_to_results()
-            else:
-                self._render_results()
+            self._render_results(constraints, order, desc)
 
-    def _redirect_to_results(self):
-        constraints = self.get_constraints()
-        order = self.args.get('order', 'id')
-        desc = self.args.has_key('desc')
-        self.req.redirect(self.env.href.query(constraints, order, not desc))
-
-    def _render_editor(self):
+    def _render_editor(self, constraints, order, desc):
         self.req.hdf.setValue('title', 'Advanced Ticket Query')
-        constraints = self.get_constraints()
         util.add_to_hdf(constraints, self.req.hdf, 'query.constraints')
 
         def add_options(field, options, constraints, prefix):
@@ -160,8 +156,14 @@ class QueryModule(Module):
 
         for k in [k for k,v in constraints.items() if not type(v) is ListType]:
             self.req.hdf.setValue('query.%s' % k, constraints[k])
+        self.req.hdf.setValue('query.order', order)
+        self.req.hdf.setValue('query.desc', str(desc))
 
-    def _render_results(self):
+    def _render_results(self, constraints, order, desc):
+        self.req.hdf.setValue('title', 'View Tickets')
+        self.req.hdf.setValue('query.edit_href',
+            self.env.href.query(constraints, order, desc, action='edit'))
+
         # FIXME: the user should be able to configure which columns should
         # be displayed
         headers = [ 'id', 'summary', 'status', 'component', 'owner' ]
@@ -171,14 +173,9 @@ class QueryModule(Module):
         sql = 'SELECT ' + ', '.join(['ticket.%s AS %s' % (header, header)
                                      for header in headers])
 
-        constraints = self.get_constraints()
-        order = self.args.get('order', 'id')
-        desc = self.args.has_key('desc')
-
-        self.req.hdf.setValue('title', 'View Tickets')
-        self.req.hdf.setValue('query.edit_href',
-            self.env.href.query(constraints, order, not desc, action='edit'))
-
+        if not order in Ticket.std_fields:
+            # order by priority by default
+            order = 'priority'
         for i in range(len(headers)):
             self.req.hdf.setValue('query.headers.%d.name' % i, headers[i])
             if headers[i] == order:
@@ -192,14 +189,14 @@ class QueryModule(Module):
 
         custom_fields = [f['name'] for f in get_custom_fields(self.env)]
         if [k for k in constraints.keys() if k in custom_fields]:
-            sql += ', ticket_custom.name AS name, ' \
-                   'ticket_custom.value AS value ' \
-                   'FROM ticket OUTER JOIN ticket_custom ON id = ticket'
+            sql += ", ticket_custom.name AS name, " \
+                   "ticket_custom.value AS value " \
+                   "FROM ticket OUTER JOIN ticket_custom ON id = ticket"
         else:
-            sql += ' FROM ticket'
-        sql += ' INNER JOIN (SELECT name AS priority_name, value AS priority_value ' \
-               '             FROM enum WHERE type = \'priority\') AS p' \
-               ' ON priority_name = priority'
+            sql += " FROM ticket"
+        sql += " INNER JOIN (SELECT name AS priority_name, value AS priority_value " \
+               "             FROM enum WHERE type = 'priority') AS p" \
+               " ON priority_name = priority"
 
         clauses = []
         for k, v in constraints.items():
@@ -219,15 +216,12 @@ class QueryModule(Module):
         if clauses:
             sql += " WHERE " + " AND ".join(clauses)
 
-        if order in Ticket.std_fields:
-            if order == 'priority':
-                sql += " ORDER BY priority_value"
-            else:
-                sql += " ORDER BY " + order
+        if order in ['priority', 'severity']:
+            sql += " ORDER BY %s_value" % order
         else:
-            sql += ' ORDER BY id'
+            sql += " ORDER BY " + order
         if desc:
-            sql += ' DESC'
+            sql += " DESC"
 
         results = self.get_results(sql)
         util.add_to_hdf(results, self.req.hdf, 'query.results')

@@ -72,7 +72,7 @@ class Href:
     def newticket(self):
         return href_join(self.base, 'newticket')
 
-    def query(self, constraints, order=None, desc=0, action=None):
+    def query(self, constraints={}, order=None, desc=0, action=None):
         href = href_join(self.base, 'query')
         params = []
         if action:

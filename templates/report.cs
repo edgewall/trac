@@ -15,10 +15,10 @@
         ?>><a href="<?cs var:report.copy_href ?>">Copy</a></li><?cs /if ?><?cs
     if report.delete_href ?><li class="last"><a href="<?cs var:report.delete_href ?>">Delete</a></li><?cs /if ?></ul></li>
   <?cs /if ?>
-  <?cs if report.create_href ?>
+  <?cs if:report.create_href ?>
    <li><a href="<?cs var:report.create_href ?>">New Report</a></li>
   <?cs /if ?>
-  <li class="last"><a href="<?cs var:$trac.href.report ?>">Report Index</a></li>
+  <li class="last"><a href="<?cs var:$trac.href.query ?>">Custom Query</a></li>
  </ul>
 </div>
 

@@ -14,92 +14,90 @@
 <?cs if:query.action == 'edit' ?>
 
 <form id="query" action="<?cs var:cgi_location ?>" method="post">
- <div>
+ <fieldset>
   <input type="hidden" name="mode" value="query" />
-  <input type="hidden" name="order" value="<?cs var:args.order ?>" />
-  <?cs if:args.desc ?><input type="hidden" name="desc" value="1" /><?cs /if ?>
-  <fieldset>
-   <legend>Ticket Properties</legend>
-   <div>
-    <label for="component" accesskey="c">Component:</label>
-    <?cs call:hdf_select_multiple(query.options.component, 'component', 4) ?>
-   </div>
-   <div>
-    <label for="version" accesskey="v">Version:</label>
-    <?cs call:hdf_select_multiple(query.options.version, 'version', 4) ?>
-   </div>
-   <div>
-    <label for="severity" accesskey="e">Severity:</label>
-    <?cs call:hdf_select_multiple(query.options.severity, 'severity', 4) ?>
-   </div>
-   <br />
-   <div>
-    <label for="keywords">Keywords:</label>
-    <input type="text" name="keywords" id="keywords" accesskey="k" value="<?cs
-      var:query.keywords ?>" />
-   </div>
-   <br />
-   <div>
-    <label for="status" accesskey="s">Status:</label>
-    <?cs call:hdf_select_multiple(query.options.status, 'status', 4) ?>
-   </div>
-   <div>
-    <label for="resolution" accesskey="r">Resolution:</label>
-    <?cs call:hdf_select_multiple(query.options.resolution, 'resolution', 4) ?>
-    <script type="text/javascript">
-      var status = document.getElementById("status");
-      var updateResolution = function() {
-        enableControl('resolution', status.selectedIndex == -1 ||
-                                    status.options[3].selected);
-      };
-      addEvent(window, 'load', updateResolution);
-      addEvent(status, 'change', updateResolution);
-    </script>
-   </div>
-   <div>
-    <label for="milestone" accesskey="m">Milestone:</label>
-    <?cs call:hdf_select_multiple(query.options.milestone, 'milestone', 4) ?>
-   </div>
-   <div>
-    <label for="priority" accesskey="p">Priority:</label>
-    <?cs call:hdf_select_multiple(query.options.priority, 'priority', 4) ?>
-   </div>
-   <br />
-   <div>
-    <label for="owner">Assigned to:</label>
-    <input type="text" name="owner" id="owner" accesskey="a" value="<?cs
-      var:query.owner ?>" />
-   </div>
-   <div>
-    <label for="reporter">Reported by:</label>
-    <input type="text" name="reporter" id="reporter" accesskey="b" value="<?cs
-      var:query.reporter ?>" />
-   </div>
-   <div>
-    <label for="cc">Cc:</label>
-    <input type="text" name="cc" id="cc" value="<?cs var:query.cc ?>" />
-   </div>
-   <?cs if:len(query.custom) ?><?cs set:idx = 0 ?><?cs
-    each:custom = query.custom ?><?cs
-     if:custom.type == 'select' || custom.type == 'radio' ?>
-      <?cs if:idx == 0 ?><br /><?cs /if ?><div>
-       <label for="<?cs var:custom.name ?>"><?cs var:custom.label ?></label>
-       <?cs call:hdf_select_multiple(custom.options, custom.name, 4) ?>
-      </div><?cs set:idx = idx + 1 ?><?cs
-     /if ?><?cs
-    /each ?><?cs set:idx = 0 ?><?cs
-    each:custom = query.custom ?><?cs
-     if:custom.type == 'text' ?>
-      <?cs if:idx == 0 ?><br /><?cs /if ?><div>
-       <label for="<?cs var:custom.name ?>"><?cs var:custom.label ?></label>
-       <input type="text" name="<?cs var:custom.name ?>" id="<?cs
-         var:custom.name ?>" value="<?cs call:get(query, custom.name) ?>" />
-      </div><?cs set:idx = idx + 1 ?><?cs
-     /if ?><?cs
-    /each ?><?cs
-   /if ?>
-  </fieldset>
- </div>
+  <input type="hidden" name="order" value="<?cs var:query.order ?>" />
+  <?cs if:query.desc ?><input type="hidden" name="desc" value="1" /><?cs /if ?>
+  <legend>Ticket Properties</legend>
+  <div>
+   <label for="component" accesskey="c">Component:</label>
+   <?cs call:hdf_select_multiple(query.options.component, 'component', 4) ?>
+  </div>
+  <div>
+   <label for="version" accesskey="v">Version:</label>
+   <?cs call:hdf_select_multiple(query.options.version, 'version', 4) ?>
+  </div>
+  <div>
+   <label for="severity" accesskey="e">Severity:</label>
+   <?cs call:hdf_select_multiple(query.options.severity, 'severity', 4) ?>
+  </div>
+  <br />
+  <div>
+   <label for="keywords">Keywords:</label>
+   <input type="text" name="keywords" id="keywords" accesskey="k" value="<?cs
+     var:query.keywords ?>" />
+  </div>
+  <br />
+  <div>
+   <label for="status" accesskey="s">Status:</label>
+   <?cs call:hdf_select_multiple(query.options.status, 'status', 4) ?>
+  </div>
+  <div>
+   <label for="resolution" accesskey="r">Resolution:</label>
+   <?cs call:hdf_select_multiple(query.options.resolution, 'resolution', 4) ?>
+   <script type="text/javascript">
+     var status = document.getElementById("status");
+     var updateResolution = function() {
+       enableControl('resolution', status.selectedIndex == -1 ||
+                                   status.options[3].selected);
+     };
+     addEvent(window, 'load', updateResolution);
+     addEvent(status, 'change', updateResolution);
+   </script>
+  </div>
+  <div>
+   <label for="milestone" accesskey="m">Milestone:</label>
+   <?cs call:hdf_select_multiple(query.options.milestone, 'milestone', 4) ?>
+  </div>
+  <div>
+   <label for="priority" accesskey="p">Priority:</label>
+   <?cs call:hdf_select_multiple(query.options.priority, 'priority', 4) ?>
+  </div>
+  <br />
+  <div>
+   <label for="owner">Assigned to:</label>
+   <input type="text" name="owner" id="owner" accesskey="a" value="<?cs
+     var:query.owner ?>" />
+  </div>
+  <div>
+   <label for="reporter">Reported by:</label>
+   <input type="text" name="reporter" id="reporter" accesskey="b" value="<?cs
+     var:query.reporter ?>" />
+  </div>
+  <div>
+   <label for="cc">Cc contains:</label>
+   <input type="text" name="cc" id="cc" value="<?cs var:query.cc ?>" />
+  </div>
+  <?cs if:len(query.custom) ?><?cs set:idx = 0 ?><?cs
+   each:custom = query.custom ?><?cs
+    if:custom.type == 'select' || custom.type == 'radio' ?>
+     <?cs if:idx == 0 ?><br /><?cs /if ?><div>
+      <label for="<?cs var:custom.name ?>"><?cs var:custom.label ?></label>
+      <?cs call:hdf_select_multiple(custom.options, custom.name, 4) ?>
+     </div><?cs set:idx = idx + 1 ?><?cs
+    /if ?><?cs
+   /each ?><?cs set:idx = 0 ?><?cs
+   each:custom = query.custom ?><?cs
+    if:custom.type == 'text' ?>
+     <?cs if:idx == 0 ?><br /><?cs /if ?><div>
+      <label for="<?cs var:custom.name ?>"><?cs var:custom.label ?></label>
+      <input type="text" name="<?cs var:custom.name ?>" id="<?cs
+        var:custom.name ?>" value="<?cs call:get(query, custom.name) ?>" />
+     </div><?cs set:idx = idx + 1 ?><?cs
+    /if ?><?cs
+   /each ?><?cs
+  /if ?>
+ </fieldset>
  <div class="buttons">
   <input type="submit" name="search" value="Search">
  </div>
