@@ -494,7 +494,6 @@ class Formatter(CommonFormatter):
                         self.code_processor = self.load_macro(name)
                     except Exception, e:
                         mimeviewer, exists = self.env.mimeview.get_viewer(name)
-                        print mimeviewer, exists, name
                         if exists != -1:
                             self.mime_type = name
                             self.code_processor = self.mime_processor
