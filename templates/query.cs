@@ -49,7 +49,7 @@
      var status = document.getElementById("status");
      var updateResolution = function() {
        enableControl('resolution', status.selectedIndex == -1 ||
-                                   status.options[3].selected);
+                                   status.selectedIndex >= 3);
      };
      addEvent(window, 'load', updateResolution);
      addEvent(status, 'change', updateResolution);

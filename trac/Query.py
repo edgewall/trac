@@ -102,41 +102,37 @@ class QueryModule(Module):
         self.req.hdf.setValue('query.order', order)
         if desc: self.req.hdf.setValue('query.desc', '1')
 
-        def add_options(field, constraints, prefix, options):
+        def add_options(field, constraints, prefix, cursor, sql):
+            options = []
             check = constraints.has_key(field)
-            for option in options:
-                if check and (option['name'] in constraints[field]):
+            cursor.execute(sql)
+            while 1:
+                row = cursor.fetchone()
+                if not row:
+                    break
+                option = {'name': row[0]}
+                if check and (row[0] in constraints[field]):
                     option['selected'] = 1
+                options.append(option)
             util.add_to_hdf(options, self.req.hdf, prefix + field)
             if check:
                 del constraints[field]
 
-        def add_db_options(field, constraints, prefix, cursor, sql):
-            cursor.execute(sql)
-            options = []
-            while 1:
-                row = cursor.fetchone()
-                if not row: break
-                if row[0]: options.append({'name': row[0]})
-            add_options(field, constraints, prefix, options)
-
-        add_options('status', constraints, 'query.options.',
-                    [{'name': 'new'}, {'name': 'assigned'},
-                     {'name': 'reopened'}, {'name': 'closed'}])
-        add_options('resolution', constraints, 'query.options.',
-                    [{'name': 'fixed'}, {'name': 'invalid'}, {'name': 'wontfix'},
-                     {'name': 'duplicate'}, {'name': 'worksforme'}])
         cursor = self.db.cursor()
-        add_db_options('component', constraints, 'query.options.', cursor,
-                       'SELECT name FROM component ORDER BY name', )
-        add_db_options('milestone', constraints, 'query.options.', cursor,
-                       'SELECT name FROM milestone ORDER BY name')
-        add_db_options('version', constraints, 'query.options.', cursor,
-                       'SELECT name FROM version ORDER BY name')
-        add_db_options('priority', constraints, 'query.options.', cursor,
-                       'SELECT name FROM enum WHERE type=\'priority\'')
-        add_db_options('severity', constraints, 'query.options.', cursor,
-                       'SELECT name FROM enum WHERE type=\'severity\'')
+        add_options('status', constraints, 'query.options.', cursor,
+                    "SELECT name FROM enum WHERE type='status'")
+        add_options('resolution', constraints, 'query.options.', cursor,
+                    "SELECT name FROM enum WHERE type='resolution'")
+        add_options('component', constraints, 'query.options.', cursor,
+                    "SELECT name FROM component ORDER BY name")
+        add_options('milestone', constraints, 'query.options.', cursor,
+                    "SELECT name FROM milestone ORDER BY name")
+        add_options('version', constraints, 'query.options.', cursor,
+                    "SELECT name FROM version ORDER BY name")
+        add_options('priority', constraints, 'query.options.', cursor,
+                    "SELECT name FROM enum WHERE type='priority'")
+        add_options('severity', constraints, 'query.options.', cursor,
+                    "SELECT name FROM enum WHERE type='severity'")
 
         custom_fields = get_custom_fields(self.env)
         for custom in custom_fields:
@@ -182,7 +178,7 @@ class QueryModule(Module):
         if [k for k in constraints.keys() if k in custom_fields]:
             sql += ", ticket_custom.name AS name, " \
                    "ticket_custom.value AS value " \
-                   "FROM ticket OUTER JOIN ticket_custom ON id = ticket"
+                   "FROM ticket LEFT OUTER JOIN ticket_custom ON id = ticket"
         else:
             sql += " FROM ticket"
         sql += " INNER JOIN (SELECT name AS priority_name, value AS priority_value " \
