@@ -3,6 +3,7 @@ body {
  background: #fff;
  color: #000;
  margin: 10px;
+ padding: 0;
 }
 body, th, td {
  font: normal 13px verdana,arial,'Bitstream Vera Sans',helvetica,sans-serif;
@@ -234,9 +235,30 @@ label.disabled { color: #d7d7d7 }
 #prefs .buttons { text-align: right }
 
 /* Wiki */
+.wikipage { padding-left: 18px }
+.wikipage h1, .wikipage h2, .wikipage h3 { margin-left: -18px }
+
 a.missing:link, a.missing:visited { background: #fafaf0; color: #998 }
 a.missing:hover { color: #000; }
 a.closed:link, a.closed:visited { text-decoration: line-through }
+
+dl.wiki dt { font-weight: bold }
+dl.compact dt { float: left; padding-right: .5em }
+dl.compact dd { margin: 0; padding: 0 }
+
+pre.wiki, pre.literal-block {
+ background: #f7f7f7;
+ border: 1px solid #d7d7d7;
+ margin: 1em 1.75em;
+ padding: .25em;
+ overflow: auto;
+}
+table.wiki {
+ border: 2px solid #ccc;
+ border-collapse: collapse;
+ border-spacing: 0;
+}
+table.wiki td { border: 1px solid #ccc;  padding: .1em .25em; }
 
 .wikitoolbar {
  border: solid #d7d7d7;
@@ -315,21 +337,6 @@ table.listing tbody tr { border-top: 1px solid #ddd }
 table.listing tbody tr.even { background-color: #fcfcfc }
 table.listing tbody tr.odd { background-color: #f7f7f7 }
 table.listing tbody tr:hover { background: #eed !important }
-
-.wikipage p { margin-left: 1em }
-pre.wiki, pre.literal-block {
- background: #f7f7f7;
- border: 1px solid #d7d7d7;
- margin: 1em 1.75em;
- padding: .25em;
- overflow: auto;
-}
-table.wiki {
- border: 2px solid #ccc;
- border-collapse: collapse;
- border-spacing: 0;
-}
-table.wiki td { border: 1px solid #ccc;  padding: .1em .25em; }
 
 /* Styles for the error page (and rst errors) */
 #content.error .message, div.system-message {
