@@ -63,22 +63,22 @@
 <?cs each:item = timeline.items ?>
  <?cs call:day_separator(item.date) ?>
  <?cs if:item.type == #1 ?><!-- Changeset -->
-  <?cs call:tlitem(item.changeset_href, 'changeset',
+  <?cs call:tlitem(item.href, 'changeset',
     'Changeset <em>['+$item.idata+']</em> by '+$item.author, item.message) ?>
  <?cs elif:item.type == #2 ?><!-- New ticket -->
-  <?cs call:tlitem(item.ticket_href, 'newticket',
+  <?cs call:tlitem(item.href, 'newticket',
     'Ticket <em>#'+$item.idata+'</em> created by '+$item.author, item.message) ?>
  <?cs elif:item.type == #3 ?><!-- Closed ticket -->
-  <?cs call:tlitem(item.ticket_href, 'closedticket',
+  <?cs call:tlitem(item.href, 'closedticket',
     'Ticket <em>#'+$item.idata+'</em> resolved by '+$item.author, '') ?>
  <?cs elif:item.type == #4 ?><!-- Reopened ticket -->
-  <?cs call:tlitem(item.ticket_href, 'newticket',
+  <?cs call:tlitem(item.href, 'newticket',
     'Ticket <em>#'+$item.idata+'</em> reopened by '+$item.author, '') ?>
  <?cs elif:item.type == #5 ?><!-- Wiki change -->
-  <?cs call:tlitem(item.wiki_href, 'wiki',
+  <?cs call:tlitem(item.href, 'wiki',
     '<em>'+$item.tdata+'</em> edited by '+$item.author, item.message) ?>
  <?cs elif:item.type == #6 ?><!-- milestone -->
-  <?cs call:tlitem('item.milestone_href', 'milestone',
+  <?cs call:tlitem(item.href, 'milestone',
     '<em>Milestone '+$item.message+'</em> reached', '') ?>
  <?cs /if ?>
 <?cs /each ?>
