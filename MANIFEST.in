@@ -1,4 +1,4 @@
-include AUTHORS ChangeLog COPYING INSTALL MANIFEST RELEASE THANKS UPGRADE 
+include AUTHORS ChangeLog COPYING INSTALL MANIFEST.in RELEASE setup.cfg THANKS UPGRADE
 include scripts/trac-admin
 include cgi-bin/trac.cgi
 recursive-include htdocs *.png *.gif *.js README

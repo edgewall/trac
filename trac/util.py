@@ -23,7 +23,6 @@ import sys
 import time
 import StringIO
 from types import *
-from xml.sax import saxutils
 
 def svn_date_to_string(date, pool):
     from svn import util
@@ -52,14 +51,16 @@ def enum_selector (db, sql, name, selected=None,default_empty=0):
     out.write ('</select>')
     return out.getvalue()
 
-def escape(text, param={'"':'&#34;'}):
+def escape(text):
     """Escapes &, <, > and \""""
     if not text:
         return ''
-    elif type(text) is StringType:
-        return saxutils.escape(text, param)
-    else:
-        return text
+    if type(text) is StringType:
+        text = text.replace('&', '&amp;') \
+               .replace('<', '&lt;') \
+               .replace('>', '&gt;') \
+               .replace('"', '&#34;')
+    return text
 
 def get_first_line(text, maxlen):
     """
