@@ -287,9 +287,9 @@ CREATE INDEX wiki_idx		ON wiki(name,version);
         if not cursor:
             cnx=self.db_open()
             cursor = cnx.cursor()
-            cursor.execute(sql)
         else:
             cnx = None
+        cursor.execute(sql)
         while 1:
             row = cursor.fetchone()
             if row == None:
