@@ -196,8 +196,9 @@ def populate_hdf(hdf, config, db, href, req):
     hdf.setValue('header_logo.width', config['header_logo']['width'])
     hdf.setValue('header_logo.height', config['header_logo']['height'])
     hdf.setValue('trac.href.logout', href.logout())
-    hdf.setValue('cgi_location', req.cgi_location)
-    hdf.setValue('trac.authname', req.authname)
+    if req:
+        hdf.setValue('cgi_location', req.cgi_location)
+        hdf.setValue('trac.authname', req.authname)
 
     templates_dir = config['general']['templates_dir']
     hdf.setValue('hdf.loadpaths.0', templates_dir)

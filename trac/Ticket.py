@@ -32,6 +32,34 @@ fields = ['time', 'component', 'severity', 'priority', 'milestone', 'reporter',
           'owner', 'cc', 'url', 'version', 'status', 'resolution',
           'summary', 'description']
 
+def get_ticket (db, id, escape_values=1):
+    global fields
+    cursor = db.cursor ()
+
+    fetch = string.join(fields, ',')
+
+    cursor.execute(('SELECT %s FROM ticket ' % fetch) + 'WHERE id=%s', id)
+    row = cursor.fetchone ()
+    cursor.close ()
+
+    if not row:
+        raise TracError('Ticket %d does not exist.' % id,
+                        'Invalid Ticket Number')
+
+    info = {'id': id }
+    # Escape the values so that they are safe to have as html parameters
+    for i in range(len(fields)):
+        # We shouldn't escape the description
+        # wiki_to_html will take care of that
+        if fields[i] == 'description':
+            info[fields[i]] = row[i] or ''
+        elif escape_values:
+            info[fields[i]] = escape(row[i])
+        else:
+            info[fields[i]] = row[i]
+    return info
+
+
 class Newticket (Module):
     template_name = 'newticket.cs'
     def render (self):
@@ -59,6 +87,9 @@ class Newticket (Module):
 
 class Ticket (Module):
     template_name = 'ticket.cs'
+
+    def get_ticket (self, id, escape_values=1):
+        return get_ticket(self.db, id, escape_values)
 
     def get_ticket (self, id, escape_values=1):
         global fields
