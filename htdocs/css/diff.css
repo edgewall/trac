@@ -18,11 +18,9 @@
 #overview dd { margin-left: 8em }
 
 /* Colors for change types */
-.mod { background: #fd8 !important }
-.rem { background: #f88 !important }
-.right.rem { background: #faa !important }
-.add { background: #dfd !important }
-.right.add { background: #cfc !important }
+#overview .mod, .diff #legend .mod { background: #fd8 }
+#overview .rem, .diff #legend .rem { background: #f88 }
+#overview .add, .diff #legend .add { background: #dfd }
 
 /* Legend for diff colors */
 .diff #legend {
