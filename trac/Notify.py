@@ -206,7 +206,7 @@ class TicketNotifyEmail(NotifyEmail):
                     newv = r[3]
                     l = 7 + len(r[1])
                     chg = wrap('%s => %s' % (r[2], r[3]), self.COLS-l,'', l*' ')
-                    changes += '  * %s:  %s\n' % (r[1], chg)
+                    changes += '  * %s:  %s%s' % (r[1], chg, os.linesep)
                 self.hdf.setValue('%s.author' % pfx, str(r[0]))
                 self.hdf.setValue('%s.oldvalue' % pfx, str(r[2]))
                 self.hdf.setValue('%s.newvalue' % pfx, newv)
@@ -233,12 +233,12 @@ class TicketNotifyEmail(NotifyEmail):
             if len(tkt[f]) > width[idx+1]:
                 width[idx+1] = len(tkt[f])
             i += 1
-        format = (' %%%is:  %%-%is\n' % (width[0], width[1]),
+        format = (' %%%is:  %%-%is%s' % (width[0], width[1], os.linesep),
                   '%%%is:  %%-%is  |  ' % (width[2], width[3]))
         i = 1
         l = (width[2] + width[3] + 5)
         sep = l*'-' + '+' + (self.COLS-l)*'-'
-        txt = sep + '\n'
+        txt = sep + os.linesep
         for f in fields:
             txt += format[i%2] % (f.capitalize(), tkt[f])
             i += 1
