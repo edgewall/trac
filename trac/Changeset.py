@@ -30,8 +30,7 @@ from svn import fs, util, delta, repos, core
 
 line_re = re.compile('@@ [+-]([0-9]+),([0-9]+) [+-]([0-9]+),([0-9]+) @@')
 header_re = re.compile('header ([^\|]+) \| ([^\|]+) redaeh')
-space_re = re.compile('  ')
-lspace_re = re.compile('^ [^ ]')
+space_re = re.compile(' ( +)|^ ')
 
 class DiffColorizer:
     def __init__(self, hdf, prefix, tabwidth=8):
@@ -86,9 +85,9 @@ class DiffColorizer:
             return
         ttype = text[0]
         text = text[1:]
-        if lspace_re.match(text):
-            text = '&nbsp;' + text[1:]
-        text = space_re.sub('&nbsp; ', text.expandtabs(self.tabwidth))
+        text = space_re.sub(lambda m:
+            len(m.group(0)) / 2 * '&nbsp; ' + len(m.group(0)) % 2 * '&nbsp;',
+            text.expandtabs(self.tabwidth))
         if ttype == self.ttype:
             self.block.append(text)
         else:
