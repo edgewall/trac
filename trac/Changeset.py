@@ -156,16 +156,30 @@ class ChangesetModule(Module):
         req.end_headers()
 
         for path, kind, change, base_path, base_rev in chgset.get_changes():
-            old_node = repos.get_node(base_path or path, base_rev)
-            new_node = repos.get_node(path, chgset.rev)
+            if change is Changeset.ADD:
+                old_node = None
+            else:
+                old_node = repos.get_node(base_path or path, base_rev)
+            if change is Changeset.DELETE:
+                new_node = None
+            else:
+                new_node = repos.get_node(path, chgset.rev)
 
             # TODO: Property changes
 
             # Content changes
-            old_content = old_node.get_content().read()
+            if kind is 'dir':
+                continue
+            new_content = old_content = ''
+            new_node_info = old_node_info = ('','')
+            if old_node:
+                old_content = old_node.get_content().read()
+                old_node_info = (old_node.path, old_node.rev)
             if self.env.mimeview.is_binary(old_content):
                 continue
-            new_content = new_node.get_content().read()
+            if new_node:
+                new_content = new_node.get_content().read()
+                new_node_info = (new_node.path, new_node.rev)                
             if old_content != new_content:
                 context = 3
                 for option in diff_options:
@@ -174,16 +188,16 @@ class ChangesetModule(Module):
                         break
                 req.write('Index: ' + path + util.CRLF)
                 req.write('=' * 67 + util.CRLF)
-                req.write('--- %s (revision %s)' % (old_node.path, old_node.rev) +
+                req.write('--- %s (revision %s)' % old_node_info +
                           util.CRLF)
-                req.write('+++ %s (revision %s)' % (new_node.path, new_node.rev) +
+                req.write('+++ %s (revision %s)' % new_node_info +
                           util.CRLF)
                 for line in unified_diff(old_content.split('\n'),
                                          new_content.split('\n'), context,
                                          ignore_blank_lines='-B' in diff_options,
                                          ignore_case='-i' in diff_options,
                                          ignore_space_changes='-b' in diff_options):
-                    req.write(line + util.CRLF)
+                    req.write(util.rstrip(line, '\r') + util.CRLF)
 
     def render_zip(self, req, repos, chgset):
         """ZIP archive with all the added and/or modified files."""
