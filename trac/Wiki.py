@@ -155,7 +155,7 @@ class WikiModule(Module):
         req.send_response(200)
         req.send_header('Content-Type', 'text/plain;charset=utf-8')
         req.end_headers()
-        req.write(page.text)
+        req.write(req.hdf.getValue('wiki.page_source', ''))
 
     def _delete_page(self, req, pagename, version=None):
         self.perm.assert_permission(perm.WIKI_DELETE)
@@ -321,6 +321,7 @@ class WikiModule(Module):
             'version': page.version,
             'readonly': page.readonly,
             'page_html': wiki_to_html(page.text, req.hdf, self.env, self.db),
+            'page_source': page.text, # for plain text view
             'history_href': escape(self.env.href.wiki(page.name, action='history')),
             # Workaround so that we can attach files to wiki pages
             # even if the page name contains a '/'
