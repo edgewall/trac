@@ -8,7 +8,7 @@ function resizeTextArea(id, rows) {
 // A better way than for example hardcoding foo.onload
 function addEvent(element, type, func){
   if (element.addEventListener) {
-    element.addEventListener(type, func, true);
+    element.addEventListener(type, func, false);
     return true;
   } else if (element.attachEvent) {
     return element.attachEvent("on" + type, func);
