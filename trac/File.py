@@ -69,4 +69,4 @@ class File (Module):
             data = util.svn_stream_read(file, self.CHUNK_SIZE)
             if not data:
                 break
-            sys.stdout.write(data)
+            sys.stdout.write(data.replace('\r',''))

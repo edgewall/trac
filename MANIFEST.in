@@ -1,11 +1,11 @@
 include AUTHORS ChangeLog COPYING INSTALL MANIFEST.in RELEASE setup.cfg THANKS UPGRADE
 include scripts/trac-admin
 include cgi-bin/trac.cgi
-recursive-include htdocs *.png *.gif *.js README
+recursive-include htdocs *.png *.gif *.js *README
 recursive-include htdocs/css *.css
-recursive-include doc trac_logo.* README
+recursive-include doc *trac_logo.* *README
 recursive-include wiki-default *
-recursive-include templates *.cs README
+recursive-include templates *.cs *README
 recursive-include contrib *
 global-exclude *~
 global-exclude *.tmp
@@ -15,3 +15,4 @@ global-exclude .svn
 global-exclude .svn/*
 global-exclude .svn/*/*
 global-exclude .svn/*/*/*
+exclude wiki-default/checkwiki.py*
