@@ -30,8 +30,9 @@ def execute(hdf, args, env):
     curpage =  '%s' % hdf.getValue('args.page', '')
     for ref,title in TOC:
         if curpage == ref:
-            cls =  'class="active"'
+            cls =  ' class="active"'
         else:
             cls = ''
-        html += '<li %s><a href="%s">%s</a></li>' % (cls, ref, title)
+        html += '<li%s><a href="%s">%s</a></li>' \
+                % (cls, env.href.wiki(ref), title)
     return html + '</ul></div>'
