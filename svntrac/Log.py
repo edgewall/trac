@@ -33,10 +33,7 @@ class Log (Module):
     def __init__(self, config, args, pool):
         Module.__init__(self, config, args, pool)
         
-        if args.has_key('path'):
-            self.path = args['path']
-        else:
-            self.path = '/'
+        self.path = dict_get_with_default(args, 'path', '/')
 
     def log_receiver (self, baton, rev, author, date, log, pool):
         item = {

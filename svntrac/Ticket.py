@@ -244,11 +244,7 @@ class Ticket (Module):
         return out.getvalue()
     
     def render (self):
-
-        if self.args.has_key('action'):
-            action = self.args['action']
-        else:
-            action = 'view'
+        action = dict_get_with_default(self.args, 'action', 'view')
             
         if action == 'create':
             self.create_ticket ()

@@ -29,28 +29,21 @@ from util import *
 from Href import href
 import perm
 
-class Browser (Module):
+class Browser(Module):
     template_name = 'browser.template'
 
     def __init__(self, config, args, pool):
         Module.__init__(self, config, args, pool)
-        
-        if args.has_key('rev'):
-            self.rev = args['rev']
-        else:
-            self.rev = None
-        
-        if args.has_key('path'):
-            self.path = args['path']
-        else:
-            self.path = '/'
+
+        self.rev = dict_get_with_default(args, 'rev', None)
+        self.path = dict_get_with_default(args, 'path', '/')
     
-    def get_info (self, path, revision):
+    def get_info(self, path, revision):
         """
         Extracts information for a given path and revision
         """
         root = fs.revision_root(self.fs_ptr, revision, self.pool)
-        entries = fs.dir_entries (root, path, self.pool)
+        entries = fs.dir_entries(root, path, self.pool)
         info = []
         for item in entries.keys():
             fullpath = path + item
@@ -69,7 +62,7 @@ class Browser (Module):
                                     util.SVN_PROP_REVISION_DATE,
                                     self.pool)
             if date:
-                date = format_date (date, self.pool)
+                date = format_date(date, self.pool)
             else:
                 date = ""
 
@@ -84,7 +77,7 @@ class Browser (Module):
             info.append(item)
         return info
             
-    def pretty_size (self, size):
+    def pretty_size(self, size):
         if size < 1024:
             return '%d bytes' % size
         elif size < 1024 * 1024:
@@ -92,34 +85,36 @@ class Browser (Module):
         else:
             return '%d MB' % (size / 1024 / 1024)
         
-    def print_item (self, out, item, idx):
+    def print_item(self, out, item, idx):
         if idx % 2:
-            out.write ('<tr class="item-row-even">\n')
+            out.write('<tr class="item-row-even">\n')
         else:
-            out.write ('<tr class="item-row-odd">\n')
+            out.write('<tr class="item-row-odd">\n')
         if item['is_dir']:
-            out.write ('<td class="icon-column"><img src="%s" width="16" height="16"></td>'
-                       % (self.namespace['htdocs_location'] + '/folder.png'))
-            out.write ('<td class="name-column"><a href="%s">%s</a></td>'
+            out.write('<td class="icon-column"><a href="%s"><img src="%s" width="16" height="16"></a></td>'
+                       % (href.browser(item['fullpath']),
+                          self.namespace['htdocs_location'] + '/folder.png'))
+            out.write('<td class="name-column"><a href="%s">%s</a></td>'
                        % (href.browser(item['fullpath']), item['name']))
-            out.write ('<td class="size-column">&nbsp;</td>')
-            out.write ('<td class="rev-column">%s</td>' %
+            out.write('<td class="size-column">&nbsp;</td>')
+            out.write('<td class="rev-column">%s</td>' %
                        item['created_rev'])
         else:
-            out.write ('<td class="icon-column"><img src="%s" width="16" height="16"></td>'
-                       % (self.namespace['htdocs_location'] + '/file.png'))
-            out.write ('<td class="name-column"><a href="%s">%s</a></td>'
+            out.write('<td class="icon-column"><a href="%s"><img src="%s" width="16" height="16"></a></td>'
+                       % (href.log(item['fullpath']),
+                          self.namespace['htdocs_location'] + '/file.png'))
+            out.write('<td class="name-column"><a href="%s">%s</a></td>'
                        % (href.log(item['fullpath']), item['name']))
-            out.write ('<td class="size-column">%s</td>' %
+            out.write('<td class="size-column">%s</td>' %
                        self.pretty_size(item['size']))
-            out.write ('<td class="rev-column"><a href="%s">%s</a></td>'
+            out.write('<td class="rev-column"><a href="%s">%s</a></td>'
                        % (href.file(item['fullpath'],
                                                 item['created_rev']),
                           item['created_rev']))
-        out.write ('<td class="date-column">%s</td>' % item['date'])
-        out.write ('\n</tr>\n')
+        out.write('<td class="date-column">%s</td>' % item['date'])
+        out.write('\n</tr>\n')
 
-    def get_path_links (self):
+    def get_path_links(self):
         list = self.path[1:].split('/')
         path = '/'
         str  = '<a href="%s">/</a>' % href.browser('/')
@@ -130,7 +125,7 @@ class Browser (Module):
             str = str + '<a href="%s">%s/</a>' % (href.browser(path), part)
         return str
     
-    def render (self):
+    def render(self):
         perm.assert_permission (perm.BROWSER_VIEW)
         
         if not self.rev:
@@ -138,28 +133,29 @@ class Browser (Module):
         else:
             rev = int(self.rev)
             
-        info = self.get_info (self.path, rev)
-        info.sort (lambda x, y: cmp(x['name'], y['name']))
-        info.sort (lambda x, y: cmp(y['is_dir'], x['is_dir']))
+        info = self.get_info(self.path, rev)
+        info.sort(lambda x, y: cmp(x['name'], y['name']))
+        info.sort(lambda x, y: cmp(y['is_dir'], x['is_dir']))
 
         out = StringIO.StringIO()
         idx = 0
         # print a '..' list item
         if self.path != '/':
             parent = string.join(self.path.split('/')[:-2], '/') + '/'
-            out.write ('<tr class="item-row-odd">\n')
-            out.write ('<td class="icon-column"><img src="%s" width="16" height="16"></td>'
-                       % (self.namespace['htdocs_location'] + '/folder.png'))
-            out.write ('<td class="name-column"><a href="%s">..</a></td><td class="size-column">&nbsp;</td><td class="rev-column">&nbsp;</td><td class="date-column">&nbsp;</td>' %
+            out.write('<tr class="item-row-odd">\n')
+            out.write('<td class="icon-column"><a href="%s"><img src="%s" width="16" height="16"></a></td>'
+                       % (href.browser(parent),
+                          self.namespace['htdocs_location'] + '/folder.png'))
+            out.write('<td class="name-column"><a href="%s">..</a></td><td class="size-column">&nbsp;</td><td class="rev-column">&nbsp;</td><td class="date-column">&nbsp;</td>' %
                        href.browser(parent))
-            out.write ('</tr>')
+            out.write('</tr>')
             idx = 1
         # print the "ordinary" items
         for item in info:
-            self.print_item (out, item, idx)
+            self.print_item(out, item, idx)
             idx = idx + 1
 
-        self.namespace['path']        = self.path
-        self.namespace['path_links']  = self.get_path_links ()
-        self.namespace['revision']    = rev
+        self.namespace['path'] = self.path
+        self.namespace['revision'] = rev
+        self.namespace['path_links'] = self.get_path_links ()
         self.namespace['dir_entries'] = out.getvalue()

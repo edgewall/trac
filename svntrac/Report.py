@@ -36,21 +36,21 @@ class Report (Module):
         
     def get_info (self, id):
         cnx = db.get_connection()
-        cursor = cnx.cursor ()
+        cursor = cnx.cursor()
 
         if id == -1:
             # If no special report was requested, display
             # a list of available reports instead
-            cursor.execute ("SELECT id AS report, title "
-                            "FROM report "
-                            "ORDER BY report")
+            cursor.execute("SELECT id AS report, title "
+                           "FROM report "
+                           "ORDER BY report")
             title = 'available reports'
         else:
-            cursor.execute ('SELECT title, sql from report WHERE id=%s', id)
+            cursor.execute('SELECT title, sql from report WHERE id=%s', id)
             row = cursor.fetchone()
             title = row[0]
             sql   = row[1]
-            cursor.execute (sql)
+            cursor.execute(sql)
 
         # FIXME: fetchall should probably not be used.
         info = cursor.fetchall()
@@ -59,16 +59,16 @@ class Report (Module):
         info = map(lambda row: map(lambda x: escape(x), row), info)
         return [cols, info, title]
         
-    def render_headers (self, out, row):
+    def render_headers(self, out, row):
         """
         render a html table header with the column names from the sql query.
         """
-        out.write ('<tr>')
+        out.write('<tr>')
 	for x in row:
-	    out.write ('<th class="listing">%s</th>' % x[0])
-        out.write ('</tr>')
+	    out.write('<th class="listing">%s</th>' % x[0])
+        out.write('</tr>')
         
-    def render_row (self, out, row, cols, row_idx):
+    def render_row(self, out, row, cols, row_idx):
         """
         render one html table row from one sql result row.
 
@@ -76,9 +76,9 @@ class Report (Module):
         are hyper linked...
         """
         if row_idx % 2:
-            out.write ('<tr class="item-row-even">\n')
+            out.write('<tr class="item-row-even">\n')
         else:
-            out.write ('<tr class="item-row-odd">\n')
+            out.write('<tr class="item-row-odd">\n')
 
         idx = 0
         for value in row:
@@ -96,60 +96,60 @@ class Report (Module):
             else:
                 out.write('<td class="%s-column">%s</td>' % (cols[idx][0], value))
             idx = idx + 1
-        out.write ('</tr>')
+        out.write('</tr>')
 
-    def create_report (self, title, sql):
-        perm.assert_permission (perm.REPORT_CREATE)
+    def create_report(self, title, sql):
+        perm.assert_permission(perm.REPORT_CREATE)
 
         cnx = db.get_connection()
-        cursor = cnx.cursor ()
+        cursor = cnx.cursor()
         
-        cursor.execute ('INSERT INTO report (id, title, sql)'
+        cursor.execute('INSERT INTO report (id, title, sql)'
                         'VALUES (NULL, %s, %s)', title, sql)
-        id = cnx.db.sqlite_last_insert_rowid ()
-        cnx.commit ()
+        id = cnx.db.sqlite_last_insert_rowid()
+        cnx.commit()
         redirect (href.report(id))
 
-    def delete_report (self, id):
-        perm.assert_permission (perm.REPORT_DELETE)
+    def delete_report(self, id):
+        perm.assert_permission(perm.REPORT_DELETE)
         
         cnx = db.get_connection()
         cursor = cnx.cursor ()
 
-        cursor.execute ('DELETE FROM report WHERE id=%s', id)
-        cnx.commit ()
-        redirect (href.report())
+        cursor.execute('DELETE FROM report WHERE id=%s', id)
+        cnx.commit()
+        redirect(href.report())
 
-    def commit_changes (self, id):
+    def commit_changes(self, id):
         """
         saves report changes to the database
         """
-        perm.assert_permission (perm.REPORT_MODIFY)
+        perm.assert_permission(perm.REPORT_MODIFY)
 
         cnx = db.get_connection()
-        cursor = cnx.cursor ()
+        cursor = cnx.cursor()
 
         title = self.args['title']
         sql   = self.args['sql']
 
-        cursor.execute ('UPDATE report SET title=%s, sql=%s WHERE id=%s',
-                        title, sql, id)
-        cnx.commit ()
-        redirect (href.report(id))
+        cursor.execute('UPDATE report SET title=%s, sql=%s WHERE id=%s',
+                       title, sql, id)
+        cnx.commit()
+        redirect(href.report(id))
 
-    def render_report_editor (self, out, id, action='commit'):
+    def render_report_editor(self, out, id, action='commit'):
         cnx = db.get_connection()
         cursor = cnx.cursor()
 
         if id == -1:
             title = sql = ""
         else:
-            cursor.execute ('SELECT title, sql FROM report WHERE id=%s', id)
+            cursor.execute('SELECT title, sql FROM report WHERE id=%s', id)
             row = cursor.fetchone()
+            sql = row[1]
             title = row[0]
-            sql   = row[1]
         
-        out.write (
+        out.write(
             '<form action="%s" method="post">'
             '<input type="hidden" name="mode" value="report">'
             '<input type="hidden" name="id" value="%d">'
@@ -164,64 +164,57 @@ class Report (Module):
             '</form>' % (get_cgi_name(), id, action, title, sql)
             )
     
-    def render_report_list (self, out, id):
+    def render_report_list(self, out, id):
         """
         uses a user specified sql query to extract some information
         from the database and presents it as a html table.
         """
         try:
-            [cols, rows, title] = self.get_info (id)
+            [cols, rows, title] = self.get_info(id)
         except Exception, e:
-            out.write ('<h3>report failed: %s</h3>' % e)
-            out.write ('<p><a href="%s">edit</a></p>' % href.report(id, 'edit'))
+            out.write('<h3>report failed: %s</h3>' % e)
+            out.write('<p><a href="%s">edit</a></p>' % href.report(id, 'edit'))
             return
-        if perm.has_permission (perm.REPORT_CREATE):
-            out.write ('<a href="%s">new report</a>' % href.report(None, 'new'))
-        out.write ('<h3>%s</h3><p>' % title)
+        if perm.has_permission(perm.REPORT_CREATE):
+            out.write('<a href="%s">new report</a>' % href.report(None, 'new'))
+        out.write('<h3>%s</h3><p>' % title)
         if id != -1:
-            if perm.has_permission (perm.REPORT_MODIFY):
-                out.write ('<a href="%s">edit</a> | ' % href.report(id, 'edit'))
-            if perm.has_permission (perm.REPORT_CREATE):
-                out.write ('<a href="%s">copy</a> | ' % href.report(id, 'copy'))
-            if perm.has_permission (perm.REPORT_DELETE):
-                out.write ('<a href="%s">delete</a>' % href.report(id, 'delete'))
-        out.write ('</p>')
+            if perm.has_permission(perm.REPORT_MODIFY):
+                out.write('<a href="%s">edit</a> | ' % href.report(id, 'edit'))
+            if perm.has_permission(perm.REPORT_CREATE):
+                out.write('<a href="%s">copy</a> | ' % href.report(id, 'copy'))
+            if perm.has_permission(perm.REPORT_DELETE):
+                out.write('<a href="%s">delete</a>' % href.report(id, 'delete'))
+        out.write('</p>')
         
-        out.write ('<table class="listing" cellspacing="0" cellpadding="0">')
-        self.render_headers (out, cols)
+        out.write('<table class="listing" cellspacing="0" cellpadding="0">')
+        self.render_headers(out, cols)
         row_idx = 0
         for row in rows:
-            self.render_row (out, row, cols, row_idx)
+            self.render_row(out, row, cols, row_idx)
             row_idx = row_idx + 1
-        out.write ('</table>')
+        out.write('</table>')
 
-    def render (self):
+    def render(self):
         # did the user ask for any special report?
-        if self.args.has_key('id'):
-            id = int(self.args['id'])
-        else:
-            # show a list of available reports
-            id = -1
+        id = int(dict_get_with_default(self.args, 'id', -1))
+        action = dict_get_with_default(self.args, 'action', 'list')
 
-        if self.args.has_key('action'):
-            action = self.args['action']
-        else:
-            action = 'list'
         out = StringIO.StringIO()
 
         if action == 'create':
-            self.create_report (self.args['title'], self.args['sql'])
+            self.create_report(self.args['title'], self.args['sql'])
         elif action == 'delete':
-            self.delete_report (id)
+            self.delete_report(id)
         elif action == 'commit':
-            self.commit_changes (id)
+            self.commit_changes(id)
         elif action == 'new':
-            self.render_report_editor (out, -1, 'create')
+            self.render_report_editor(out, -1, 'create')
         elif action == 'copy':
-            self.render_report_editor (out, id, 'create')
+            self.render_report_editor(out, id, 'create')
         elif action == 'edit':
-            self.render_report_editor (out, id, 'commit')
+            self.render_report_editor(out, id, 'commit')
         else:
-            self.render_report_list (out, id)
+            self.render_report_list(out, id)
 
         self.namespace['content']  = out.getvalue()

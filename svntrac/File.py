@@ -24,6 +24,7 @@ import StringIO
 from svn import fs, util, delta
 
 from Module import Module
+from util import dict_get_with_default
 import perm
 
 class File (Module):
@@ -31,16 +32,9 @@ class File (Module):
 
     def __init__(self, config, args, pool):
         Module.__init__(self, config, args, pool)
-        
-        if args.has_key('rev'):
-            self.rev = args['rev']
-        else:
-            self.rev = None
-        
-        if args.has_key('path'):
-            self.path = args['path']
-        else:
-            self.path = '/'
+
+        self.rev = dict_get_with_default(args, 'rev', None)
+        self.path = dict_get_with_default(args, 'path', '/')
         
     def render (self):
         perm.assert_permission (perm.FILE_VIEW)

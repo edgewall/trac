@@ -112,3 +112,10 @@ def href_join(u1, *tail):
         else:
             u1 = u1 + '/' + u2
     return u1
+
+def dict_get_with_default(dict, key, default):
+    """Returns dict[key] if it exists else default"""
+    if dict.has_key(key):
+        return dict[key]
+    else:
+        return default

@@ -23,7 +23,7 @@ import os
 import sys
 import cgi
 import warnings
-from util import set_cgi_name, set_authcgi_name
+from util import set_cgi_name, set_authcgi_name, dict_get_with_default
 from svn import util, repos, core
 import Href
 
@@ -47,7 +47,6 @@ modules = {
     }
 
 def main():
-    mode = 'wiki' #default module
     db.init()
     config = db.load_config()
     set_cgi_name(config['general']['cgi_name'])
@@ -62,24 +61,25 @@ def main():
     for x in _args.keys():
 	args[x] = _args[x].value
 
-    if args.has_key('mode'):
-        mode = args['mode']
+    mode = dict_get_with_default(args, 'mode', 'wiki')
 
     module_name, constructor_name, need_svn = modules[mode]
     module = __import__(module_name, globals(),  locals(), [])
     constructor = getattr(module, constructor_name)
     module = constructor(config, args, pool)
 
-    verify_authentication (args)
+    verify_authentication(args)
     cache_permissions()
 
+    # Only open the subversion repository for the modules that really
+    # need it. This saves us some precious time.
     if need_svn:
         repos_dir = config['general']['svn_repository']
         rep = repos.svn_repos_open(repos_dir, pool)
         fs_ptr = repos.svn_repos_fs(rep)
         module.repos = rep
         module.fs_ptr = fs_ptr
-        db.sync (rep, fs_ptr, pool)
+        db.sync(rep, fs_ptr, pool)
 
     try:
         module.render()
@@ -91,5 +91,3 @@ def main():
         
     core.svn_pool_destroy(pool)
     core.apr_terminate()
-
-
