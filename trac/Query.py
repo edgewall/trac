@@ -513,11 +513,11 @@ class QueryModule(Module):
             # New query, initialize session vars
             req.session['query_constraints'] = str(query.constraints)
             req.session['query_time'] = int(time())
-            req.session['query_tickets'] = ' '.join([t['id'] for t in tickets])
+            req.session['query_tickets'] = ' '.join([str(t['id']) for t in tickets])
         else:
-            orig_list = [int(id) for id in req.session['query_tickets'].split()]
+            orig_list = [int(id) for id in req.session.get('query_tickets', '').split()]
             rest_list = orig_list[:]
-            orig_time = int(req.session['query_time'])
+            orig_time = int(req.session.get('query_time', 0))
         req.session['query_href'] = query.get_href()
 
         # Find out which tickets originally in the query results no longer
@@ -564,9 +564,9 @@ class QueryModule(Module):
         results = query.execute(self.db)
         for result in results:
             req.write(sep.join([str(result[col]).replace(sep, '_')
-                                                     .replace('\n', ' ')
-                                                     .replace('\r', ' ')
-                                     for col in cols]) + '\r\n')
+                                                .replace('\n', ' ')
+                                                .replace('\r', ' ')
+                                for col in cols]) + '\r\n')
 
     def display_tab(self, req):
         self.display_csv(req, '\t')

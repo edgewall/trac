@@ -293,9 +293,8 @@ def dispatch_request(path_info, req, env):
                     # instance
                     referer = None
                 req.redirect(referer or env.href.wiki())
-            elif req.remote_user and authenticator.authname == 'anonymous':
+            elif path_info == '/login':
                 authenticator.login(req)
-            if path_info == '/login':
                 referer = req.get_header('Referer')
                 if referer and referer[0:len(req.base_url)] != req.base_url:
                     # only redirect to referer if the latter is from the same
