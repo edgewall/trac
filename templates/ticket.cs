@@ -72,7 +72,9 @@
   <?cs /each ?>
   </ul>
 <?cs if trac.acl.TICKET_MODIFY ?>
-  <a class="fake-button" href="<?cs var:cgi_location?>/attachment/ticket/<?cs var:ticket.id ?>">Add attachment</a><br style="clear: both" />
+  <form method="get" action="<?cs var:cgi_location?>/attachment/ticket/<?cs var:ticket.id ?>"><div>
+   <input type="submit" value="Attach File" />
+  </div></form>
 <?cs /if ?>
 </div>
 <?cs /if ?>

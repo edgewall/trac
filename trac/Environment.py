@@ -204,19 +204,24 @@ class Environment:
                           description, author, ipnr):
         # Maximum attachment size (in bytes)
         max_size = int(self.get_config('attachment', 'max_size', '262144'))
-        stat = os.fstat(attachment.file.fileno())
-        if stat[6] > max_size:
+        if hasattr(attachment.file, 'fileno'):
+            stat = os.fstat(attachment.file.fileno())
+            length = stat[6]
+        else:
+            length = attachment.file.len
+        if length > max_size:
             raise util.TracError('Maximum attachment size: %d kB' % max_size,
                                  'Upload failed')
         dir = os.path.join(self.get_attachments_dir(), type, id)
         if not os.access(dir, os.F_OK):
             os.makedirs(dir)
-        filename = os.path.basename(attachment.filename)
+        filename = attachment.filename.replace('\\', '/').replace(':', '/')
+        filename = os.path.basename(filename)
         path, fd = util.create_unique_file(os.path.join(dir, filename))
         filename = os.path.basename(path)
         cursor = cnx.cursor()
         cursor.execute('INSERT INTO attachment VALUES(%s,%s,%s,%s,%s,%s,%s,%s)',
-                       type, id, filename, stat[6], int(time.time()),
+                       type, id, filename, length, int(time.time()),
                        description, author, ipnr)
         shutil.copyfileobj(attachment.file, fd)
         self.log.info('New attachment: %s/%s/%s by %s', type, id, filename, author)
