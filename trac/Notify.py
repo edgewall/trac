@@ -30,27 +30,10 @@ import neo_cs
 import neo_util
 
 from __init__ import __version__
-from util import add_to_hdf, CRLF, TRUE, FALSE, TracError
+from util import add_to_hdf, CRLF, TRUE, FALSE, TracError, wrap
 import Environment
 import core
 import Ticket
-
-
-def wrap(t, cols=75, initial_indent='', subsequent_indent=''):
-    try:
-        import textwrap
-        t = t.strip().replace('\r\n', '\n').replace('\r', '\n')
-        wrapper = textwrap.TextWrapper(cols, replace_whitespace = 0,
-                                       break_long_words = 0,
-                                       initial_indent = initial_indent,
-                                       subsequent_indent = subsequent_indent)
-        wrappedLines = []
-        for line in t.split('\n'):
-            wrappedLines += wrapper.wrap(line.rstrip()) or ['']
-        return CRLF.join(wrappedLines)
-
-    except ImportError:
-        return t
 
 
 class Notify:
@@ -190,7 +173,8 @@ class TicketNotifyEmail(NotifyEmail):
         self.ticket['description'] = wrap(self.ticket.get('description',''),
                                           self.COLS,
                                           initial_indent=' ',
-                                          subsequent_indent=' ')
+                                          subsequent_indent=' ',
+                                          linesep=CRLF)
         self.ticket['link'] = self.env.abs_href.ticket(ticket['id'])
         add_to_hdf(self.ticket, self.hdf, 'ticket')
         self.hdf.setValue('email.ticket_props', self.format_props())
@@ -209,10 +193,10 @@ class TicketNotifyEmail(NotifyEmail):
                 pfx='ticket.change.%s' % field
                 newv = ''
                 if field == 'comment':
-                    newv = wrap(new, self.COLS, ' ', ' ')
+                    newv = wrap(new, self.COLS, ' ', ' ', CRLF)
                 elif field == 'description':
-                    new_descr = wrap(new, self.COLS, ' ', ' ')
-                    old_descr = wrap(old, self.COLS, '> ', '> ')
+                    new_descr = wrap(new, self.COLS, ' ', ' ', CRLF)
+                    old_descr = wrap(old, self.COLS, '> ', '> ', CRLF)
                     old_descr = old_descr.replace(2*CRLF, CRLF + '>' + CRLF)
                     cdescr = CRLF
                     cdescr += 'Old description:' + 2*CRLF + old_descr + 2*CRLF
@@ -221,7 +205,8 @@ class TicketNotifyEmail(NotifyEmail):
                 else:
                     newv = new
                     l = 7 + len(field)
-                    chg = wrap('%s => %s' % (old, new), self.COLS-l,'', l*' ')
+                    chg = wrap('%s => %s' % (old, new), self.COLS-l,'', l*' ',
+                               CRLF)
                     changes += '  * %s:  %s%s' % (field, chg, CRLF)
                 if newv:
                     self.hdf.setValue('%s.oldvalue' % pfx, old)
@@ -290,7 +275,8 @@ class TicketNotifyEmail(NotifyEmail):
 
     def format_hdr(self):
         return '#%s: %s' % (self.ticket['id'],
-                               wrap(self.ticket['summary'], self.COLS))
+                               wrap(self.ticket['summary'], self.COLS,
+                                    linesep=CRLF))
 
     def format_subj(self):
         projname = self.env.get_config('project', 'name')

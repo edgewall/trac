@@ -296,3 +296,21 @@ def mydict(items):
     for k, v in items:
         d[k] = v
     return d
+
+
+def wrap(t, cols=75, initial_indent='', subsequent_indent='',
+         linesep=os.linesep):
+    try:
+        import textwrap
+        t = t.strip().replace('\r\n', '\n').replace('\r', '\n')
+        wrapper = textwrap.TextWrapper(cols, replace_whitespace = 0,
+                                       break_long_words = 0,
+                                       initial_indent = initial_indent,
+                                       subsequent_indent = subsequent_indent)
+        wrappedLines = []
+        for line in t.split('\n'):
+            wrappedLines += wrapper.wrap(line.rstrip()) or ['']
+        return linesep.join(wrappedLines)
+
+    except ImportError:
+        return t

@@ -30,6 +30,7 @@ import shlex
 import sqlite
 import StringIO
 
+from trac import perm
 from trac import util
 from trac import sync
 import trac.siteconfig
@@ -416,31 +417,25 @@ class TracAdmin(cmd.Cmd):
             print 'Permission %s failed:' % arg[0], e
 
     def _do_permission_list(self):
-        data = self.db_execsql('SELECT username, action FROM permission ORDER BY username, action') 
+        data = self.db_execsql('SELECT username, action FROM permission ' \
+                               'ORDER BY username, action') 
         self.print_listing(['User', 'Action'], data)
         print
         print 'Available actions:'
-        print ' LOG_VIEW, FILE_VIEW, CHANGESET_VIEW, BROWSER_VIEW, '
-        print ' TICKET_VIEW, TICKET_CREATE, TICKET_MODIFY, TICKET_ADMIN, '
-        print ' REPORT_VIEW, REPORT_CREATE, REPORT_MODIFY, REPORT_DELETE, REPORT_ADMIN, '
-        print ' WIKI_VIEW, WIKI_CREATE, WIKI_MODIFY, WIKI_DELETE, WIKI_ADMIN, '
-        print ' MILESTONE_VIEW, MILESTONE_CREATE, MILESTONE_MODIFY, MILESTONE_DELETE, '
-        print ' ROADMAP_VIEW, ROADMAP_ADMIN, TIMELINE_VIEW, SEARCH_VIEW, '
-        print ' REPORT_SQL_VIEW, CONFIG_VIEW and TRAC_ADMIN.'
+        actions = perm.permissions + perm.meta_permissions.keys()
+        actions.sort()
+        text = ', '.join(actions)
+        print util.wrap(text, initial_indent=' ', subsequent_indent=' ')
         print
 
     def _do_permission_add(self, user, action):
         if not action.islower() and not action.isupper():
-            print 'group-names must be in lower case and permissions in upper case'
+            print 'Group names must be in lower case and actions in upper case'
             return
-        if not action in ['LOG_VIEW', 'FILE_VIEW', 'CHANGESET_VIEW', 'BROWSER_VIEW', 
-		          'TICKET_VIEW', 'TICKET_CREATE', 'TICKET_MODIFY', 'TICKET_ADMIN',
-                          'REPORT_VIEW', 'REPORT_CREATE', 'REPORT_MODIFY', 'REPORT_DELETE', 'REPORT_ADMIN', 
-                          'WIKI_VIEW', 'WIKI_CREATE', 'WIKI_MODIFY', 'WIKI_DELETE', 'WIKI_ADMIN',
-                          'MILESTONE_VIEW', 'MILESTONE_CREATE', 'MILESTONE_MODIFY', 'MILESTONE_DELETE',
-                          'ROADMAP_VIEW', 'ROADMAP_ADMIN', 'TIMELINE_VIEW', 'SEARCH_VIEW',
-                          'REPORT_SQL_VIEW', 'CONFIG_VIEW', 'TRAC_ADMIN']:
-            print '%s is not a valid permission. Use the permission list command to see allowed permission.' % (action)
+        if action.isupper() and not \
+           action in perm.permissions + perm.meta_permissions.keys():
+            print '%s is not a valid action. Use the permission list command ' \
+                  'to see the available actions.' % (action)
             return
         self.db_execsql("INSERT INTO permission VALUES('%s', '%s')" % (user, action))
 

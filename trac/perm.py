@@ -21,57 +21,44 @@
 
 from exceptions import StandardError
 
-# permissions
-TIMELINE_VIEW  = 'TIMELINE_VIEW'
-SEARCH_VIEW    = 'SEARCH_VIEW'
-CONFIG_VIEW    = 'CONFIG_VIEW'
-LOG_VIEW       = 'LOG_VIEW'
-FILE_VIEW      = 'FILE_VIEW'
-CHANGESET_VIEW = 'CHANGESET_VIEW'
-BROWSER_VIEW   = 'BROWSER_VIEW'
-ROADMAP_VIEW   = 'ROADMAP_VIEW'
 
-TICKET_VIEW    = 'TICKET_VIEW'
-TICKET_CREATE  = 'TICKET_CREATE'
-TICKET_MODIFY  = 'TICKET_MODIFY'
+permissions = [
+    'TIMELINE_VIEW', 'SEARCH_VIEW', 'CONFIG_VIEW', 'LOG_VIEW', 'FILE_VIEW',
+    'CHANGESET_VIEW', 'BROWSER_VIEW', 'ROADMAP_VIEW',
+    
+    'TICKET_VIEW', 'TICKET_CREATE', 'TICKET_MODIFY',
+    
+    'REPORT_VIEW', 'REPORT_SQL_VIEW', 'REPORT_CREATE', 'REPORT_MODIFY',
+    'REPORT_DELETE',
+    
+    'WIKI_VIEW', 'WIKI_CREATE', 'WIKI_MODIFY', 'WIKI_DELETE',
+    
+    'MILESTONE_VIEW', 'MILESTONE_CREATE', 'MILESTONE_MODIFY',
+    'MILESTONE_DELETE',
+    
+    'AUTHZSVN_VIEW', 'AUTHZSVN_MODIFY'
+]
 
-REPORT_VIEW    = 'REPORT_VIEW'
-REPORT_SQL_VIEW = 'REPORT_SQL_VIEW'
-REPORT_CREATE  = 'REPORT_CREATE'
-REPORT_MODIFY  = 'REPORT_MODIFY'
-REPORT_DELETE  = 'REPORT_DELETE'
+meta_permissions = {
+    'TRAC_ADMIN': ['TICKET_ADMIN', 'REPORT_ADMIN', 'WIKI_ADMIN', 'ROADMAP_ADMIN',
+                   'TIMELINE_VIEW', 'SEARCH_VIEW', 'CONFIG_VIEW', 'LOG_VIEW',
+                   'FILE_VIEW', 'CHANGESET_VIEW', 'BROWSER_VIEW'],
+    'TICKET_ADMIN': ['TICKET_VIEW', 'TICKET_CREATE', 'TICKET_MODIFY'],
+    'REPORT_ADMIN': ['REPORT_VIEW', 'REPORT_SQL_VIEW', 'REPORT_CREATE',
+                     'REPORT_MODIFY', 'REPORT_DELETE'],
+    'WIKI_ADMIN': ['WIKI_VIEW', 'WIKI_CREATE', 'WIKI_MODIFY', 'WIKI_DELETE'],
+    'ROADMAP_ADMIN': ['ROADMAP_VIEW', 'MILESTONE_VIEW', 'MILESTONE_CREATE',
+                      'MILESTONE_MODIFY', 'MILESTONE_DELETE'],
+    'AUTHZSVN_ADMIN': ['AUTHZSVN_VIEW', 'AUTHZSVN_MODIFY']
+}
 
-WIKI_VIEW      = 'WIKI_VIEW'
-WIKI_CREATE    = 'WIKI_CREATE'
-WIKI_MODIFY    = 'WIKI_MODIFY'
-WIKI_DELETE    = 'WIKI_DELETE'
-
-MILESTONE_VIEW = 'MILESTONE_VIEW'
-MILESTONE_CREATE = 'MILESTONE_CREATE'
-MILESTONE_MODIFY = 'MILESTONE_MODIFY'
-MILESTONE_DELETE = 'MILESTONE_DELETE'
-
-AUTHZSVN_VIEW = 'AUTHZSVN_VIEW'
-AUTHZSVN_MODIFY = 'AUTHZSVN_MODIFY'
-
-TRAC_ADMIN = 'TRAC_ADMIN'
-TICKET_ADMIN = 'TICKET_ADMIN'
-REPORT_ADMIN = 'REPORT_ADMIN'
-WIKI_ADMIN = 'WIKI_ADMIN'
-ROADMAP_ADMIN = 'ROADMAP_ADMIN'
-AUTHZSVN_ADMIN = 'AUTHZSVN_ADMIN'
-
-meta_permission = {
-    TRAC_ADMIN: [TICKET_ADMIN, REPORT_ADMIN, WIKI_ADMIN, ROADMAP_ADMIN,
-                 TIMELINE_VIEW, SEARCH_VIEW, CONFIG_VIEW, LOG_VIEW,
-                 FILE_VIEW, CHANGESET_VIEW, BROWSER_VIEW],
-    TICKET_ADMIN: [TICKET_VIEW, TICKET_CREATE, TICKET_MODIFY],
-    REPORT_ADMIN: [REPORT_VIEW, REPORT_SQL_VIEW, REPORT_CREATE, REPORT_MODIFY,
-                   REPORT_DELETE],
-    WIKI_ADMIN: [WIKI_VIEW, WIKI_CREATE, WIKI_MODIFY, WIKI_DELETE],
-    ROADMAP_ADMIN: [ROADMAP_VIEW, MILESTONE_VIEW, MILESTONE_CREATE,
-                    MILESTONE_MODIFY, MILESTONE_DELETE],
-    AUTHZSVN_ADMIN: [AUTHZSVN_VIEW, AUTHZSVN_MODIFY]}
+# Make the permissions accessible as module-level constants
+import sys
+for p in permissions:
+    setattr(sys.modules[__name__], p, p)
+for mp in meta_permissions:
+    setattr(sys.modules[__name__], mp, mp)
+del p, mp, sys
 
 
 class PermissionError (StandardError):
@@ -133,8 +120,8 @@ class PermissionCache:
 
     def expand_meta_permission(self, action):
         self.perm_cache[action] = 1
-        if meta_permission.has_key(action):
-            for perm in meta_permission[action]:
+        if meta_permissions.has_key(action):
+            for perm in meta_permissions[action]:
                 self.expand_meta_permission(perm)
 
     def has_permission(self, action):
