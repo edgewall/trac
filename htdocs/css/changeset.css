@@ -21,12 +21,12 @@
 
 .chg-file-add, .chg-file-mod, .chg-file-rem,
 .diff-legend-unmod, .diff-legend-mod, .diff-legend-add, .diff-legend-rem {
+  border: 1px solid #999;
   display: block;
   float: left;
-  width: 1em;
-  height: 1em;
-  margin-right: .5em;
-  border: 1px solid #999;
+  margin: .1em .5em .1em 0;
+  overflow: hidden;
+  width: .8em; height: .8em;
 }
 
 #chg-diff { clear: both; margin-bottom: 3em; }
