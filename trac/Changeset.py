@@ -20,8 +20,13 @@
 # Author: Jonas Borgström <jonas@edgewall.com>
 
 from __future__ import nested_scopes
+
+from trac.Diff import get_diff_options, hdf_diff, unified_diff
+from trac.Module import Module
+from trac.WikiFormatter import wiki_to_html
+from trac import perm
+
 import os
-import sys
 import time
 import util
 import re
@@ -29,15 +34,11 @@ import posixpath
 from StringIO import StringIO
 from zipfile import ZipFile, ZipInfo, ZIP_DEFLATED
 
-import svn
+import svn.core
 import svn.delta
 import svn.fs
-import svn.core
-
-import Diff
-import perm
-import Module
-from WikiFormatter import wiki_to_html
+import svn.repos
+import svn.util
 
 
 class BaseDiffEditor(svn.delta.Editor):
@@ -62,6 +63,16 @@ class BaseDiffEditor(svn.delta.Editor):
     #   This is why we merge the path_info data (obtained during a
     #   'repos.svn_repos_replay' call) back into this process.
     
+    def _read_file(self, root, path, pool, charset):
+        fd = svn.fs.file_contents(root, path, pool)
+        chunks = []
+        while 1:
+            chunk = svn.util.svn_stream_read(fd, svn.core.SVN_STREAM_CHUNK_SIZE)
+            if not chunk:
+                break
+            chunks.append(util.to_utf8(chunk, charset))
+        return ''.join(chunks)
+
     def _retrieve_old_path(self, parent_baton, path, pool):
         old_path = parent_baton[0]
         self.prefix = None
@@ -127,17 +138,20 @@ class HtmlDiffEditor(BaseDiffEditor):
 
     def apply_textdelta(self, file_baton, base_checksum):
         old_path, new_path, pool = file_baton
-        if not self.prefix or not (old_path and new_path):
+        if not old_path or not new_path:
             return
         old_root = self._old_root(new_path, pool)
         if not old_root:
             return
-        
+
         # Try to figure out the charset used. We assume that both the old
         # and the new version uses the same charset, not always the case
         # but that's all we can do...
         mime_type = svn.fs.node_prop(self.new_root, new_path,
                                      svn.util.SVN_PROP_MIME_TYPE, pool)
+        if mime_type and svn.core.svn_mime_type_is_binary(mime_type):
+            return
+
         # We don't have to guess if the charset is specified in the
         # svn:mime-type property
         ctpos = mime_type and mime_type.find('charset=') or -1
@@ -147,31 +161,26 @@ class HtmlDiffEditor(BaseDiffEditor):
             charset = self.env.get_config('trac', 'default_charset',
                                           'iso-8859-15')
 
-        # Start up the diff process
-        differ = svn.fs.FileDiff(old_root, old_path,
-                                 self.new_root, new_path, pool, self.diff_options)
-        differ.get_files()
-        pobj = differ.get_pipe()
+        fromfile = self._read_file(old_root, old_path, pool, charset)
+        tofile = self._read_file(self.new_root, new_path, pool, charset)
+        if self.env.mimeview.is_binary(fromfile):
+            return
 
-        tabwidth = int(self.env.get_config('diff', 'tab_width', '8'))
-        builder = Diff.HDFBuilder(self.req.hdf, '%s.diff' % self.prefix, tabwidth)
-        while 1:
-            line = pobj.readline()
-            if not line:
+        context = 3
+        for option in self.diff_options:
+            if option[:2] == '-U':
+                context = int(option[2:])
                 break
-            builder.writeline(util.to_utf8(line, charset))
-        builder.close()
-        pobj.close()
-        # svn.fs.FileDiff creates a child process and there is no waitpid()
-        # calls to eliminate zombies (this is a problem especially when 
-        # mod_python is used.
-        if sys.platform[:3] != "win" and sys.platform != "os2emx":
-            try:
-                os.waitpid(-1, 0)
-            except OSError: pass
+        tabwidth = int(self.env.get_config('diff', 'tab_width', '8'))
+        changes = hdf_diff(fromfile.split('\n'), tofile.split('\n'),
+                           context, tabwidth,
+                           ignore_blank_lines='-B' in self.diff_options,
+                           ignore_case='-i' in self.diff_options,
+                           ignore_space_changes='-b' in self.diff_options)
+        self.req.hdf[self.prefix + '.diff'] = changes
 
     # -- -- property changes:
-    
+
     def change_dir_prop(self, dir_baton, name, value, dir_pool):
         self._change_prop(dir_baton, name, value, dir_pool)
 
@@ -179,8 +188,6 @@ class HtmlDiffEditor(BaseDiffEditor):
         self._change_prop(file_baton, name, value, file_pool)
 
     def _change_prop(self, baton, name, value, pool):
-        if not self.prefix:
-            return
         old_path, new_path, pool = baton
 
         prefix = '%s.props.%s' % (self.prefix, name)
@@ -202,6 +209,18 @@ class UnifiedDiffEditor(BaseDiffEditor):
     the output is written to stdout.
     """
 
+    def _old_root(self, new_path, pool):
+        if not new_path:
+            return 
+        old_rev = self.path_info[new_path][2]
+        if not old_rev:
+            return 
+        elif old_rev == self.rev - 1:
+            return self.old_root
+        else:
+            return svn.fs.revision_root(svn.fs.root_fs(self.old_root),
+                                        old_rev, pool)
+
     def add_file(self, path, parent_baton, copyfrom_path, copyfrom_revision,
                  file_pool):
         return (None, path, file_pool)
@@ -210,39 +229,62 @@ class UnifiedDiffEditor(BaseDiffEditor):
         if svn.fs.check_path(self.old_root, path, pool) == svn.core.svn_node_file:
             self.apply_textdelta((path, None, pool),None)
 
+    # -- -- textual changes:
+
     def apply_textdelta(self, file_baton, base_checksum):
         if not file_baton:
             return
         (old_path, new_path, pool) = file_baton
-        options = ['-u']
-        options.append('-L')
-        options.append("%s\t(revision %d)" % (old_path, self.rev-1))
-        options.append('-L')
-        options.append("%s\t(revision %d)" % (new_path, self.rev))
+        old_root = self._old_root(new_path, pool)
+        if not old_root:
+            return
 
-        differ = svn.fs.FileDiff(self.old_root, old_path,
-                                 self.new_root, new_path, pool, options)
-        differ.get_files()
-        pobj = differ.get_pipe()
-        line = pobj.readline()
-        # rewrite 'None' as appropriate ('A' and 'D' support)
-        fix_second_line = 0
-        if line[:6] != 'Files ' and line[:7] != 'Binary ':
-            if old_path == None:            # 'A'
-                line = '--- %s %s' % (new_path, line[9:])
-            elif new_path == None:          # 'D'        
-                fix_second_line = 1
-        while line:
-            self.req.write(line)
-            line = pobj.readline()
-            if fix_second_line:         # 'D'
-                line = '--- %s %s' % (old_path, line[9:])
-                fix_second_line = 0
-        pobj.close()
-        if sys.platform[:3] != "win" and sys.platform != "os2emx":
-            try:
-                os.waitpid(-1, 0)
-            except OSError: pass
+        mime_type = svn.fs.node_prop(self.new_root, new_path,
+                                     svn.util.SVN_PROP_MIME_TYPE, pool)
+        if mime_type and svn.core.svn_mime_type_is_binary(mime_type):
+            return
+
+        # We don't have to guess if the charset is specified in the
+        # svn:mime-type property
+        ctpos = mime_type and mime_type.find('charset=') or -1
+        if ctpos >= 0:
+            charset = mime_type[ctpos + 8:]
+        else:
+            charset = self.env.get_config('trac', 'default_charset',
+                                          'iso-8859-15')
+
+        fromfile = self._read_file(old_root, old_path, pool, charset)
+        tofile = self._read_file(self.new_root, new_path, pool, charset)
+        if self.env.mimeview.is_binary(fromfile):
+            return
+
+        context = 3
+        for option in self.diff_options:
+            if option[:2] == '-U':
+                context = int(option[2:])
+                break
+        self.req.write('Index: ' + new_path + util.CRLF)
+        self.req.write('=' * 67 + util.CRLF)
+        self.req.write('--- %s (revision %s)' % (new_path, self.rev - 1) + util.CRLF)
+        self.req.write('+++ %s (revision %s)' % (new_path, self.rev) + util.CRLF)
+        for line in unified_diff(fromfile.split('\n'), tofile.split('\n'),
+                                 context,
+                                 ignore_blank_lines='-B' in self.diff_options,
+                                 ignore_case='-i' in self.diff_options,
+                                 ignore_space_changes='-b' in self.diff_options):
+            self.req.write(line + util.CRLF)
+
+    # -- -- property changes:
+
+    def change_dir_prop(self, dir_baton, name, value, dir_pool):
+        self._change_prop(dir_baton, name, value, dir_pool)
+
+    def change_file_prop(self, file_baton, name, value, file_pool):
+        self._change_prop(file_baton, name, value, file_pool)
+
+    def _change_prop(self, baton, name, value, pool):
+        old_path, new_path, pool = baton
+        # FIXME: print the property change like 'svn diff' does
 
 
 class ZipDiffEditor(BaseDiffEditor):
@@ -287,7 +329,7 @@ class ZipDiffEditor(BaseDiffEditor):
         self.zip.writestr(info, data)
 
 
-class Changeset (Module.Module):
+class Changeset(Module):
     template_name = 'changeset.cs'
     perm = None
     fs_ptr = None
@@ -374,9 +416,9 @@ class Changeset (Module.Module):
         self.perm.assert_permission (perm.CHANGESET_VIEW)
 
         self.add_link('alternate', '?format=diff', 'Unified Diff',
-            'text/plain', 'diff')
+                      'text/plain', 'diff')
         self.add_link('alternate', '?format=zip', 'Zip Archive',
-            'application/zip', 'zip')
+                      'application/zip', 'zip')
 
         youngest_rev = svn.fs.youngest_rev(self.fs_ptr, self.pool)
         if req.args.has_key('rev'):
@@ -384,7 +426,7 @@ class Changeset (Module.Module):
         else:
             self.rev = youngest_rev
 
-        self.diff_options = Diff.get_options(self.env, req, 1)
+        self.diff_options = get_diff_options(req)
         if req.args.has_key('update'):
             req.redirect(self.env.href.changeset(self.rev))
 
@@ -439,7 +481,7 @@ class Changeset (Module.Module):
     def display(self, req):
         """Pretty HTML view of the changeset"""
         self.render_diffs(req)
-        Module.Module.display(self, req)
+        Module.display(self, req)
 
     def display_diff(self, req):
         """Raw Unified Diff version"""
@@ -461,4 +503,4 @@ class Changeset (Module.Module):
 
     def display_hdf(self, req):
         self.render_diffs(req)
-        Module.Module.display_hdf(self, req)
+        Module.display_hdf(self, req)

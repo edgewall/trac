@@ -22,13 +22,13 @@
 import os
 import time
 import urllib
-import difflib
 import StringIO
 
-import perm
-from Module import Module
-from util import escape, TracError, get_reporter_id
-from WikiFormatter import *
+from trac import perm
+from trac.Diff import get_diff_options, hdf_diff
+from trac.Module import Module
+from trac.util import escape, TracError, get_reporter_id
+from trac.WikiFormatter import *
 
 
 __all__ = ['populate_page_dict', 'WikiPage', 'WikiModule']
@@ -189,8 +189,7 @@ class WikiModule(Module):
         # diff-style related item to the HDF
         self.perm.assert_permission(perm.WIKI_VIEW)
 
-        import Diff
-        Diff.get_options(self.env, req)
+        diff_style, diff_options = get_diff_options(req)
         if req.args.has_key('update'):
            req.redirect(self.env.href.wiki(pagename, version, action='diff'))
 
@@ -220,15 +219,19 @@ class WikiModule(Module):
         else:
             oldtext = rows[0][0].splitlines()
         newtext = rows[-1][0].splitlines()
-        builder = Diff.HDFBuilder(req.hdf, 'wiki.diff')
-        builder.writeline('@@ -1,%d +1,%d @@' % (len(oldtext), len(newtext)))
-        try:
-            for line in difflib.Differ().compare(oldtext, newtext):
-                if line != '  ':
-                    builder.writeline(line)
-        except AttributeError:
-            raise TracError('Python >= 2.2 is required for diff support.')
-        builder.close()
+
+        self.log.debug("Diff options: %s" % diff_options)
+
+        context = 3
+        for option in diff_options:
+            if option[:2] == '-U':
+                context = int(option[2:])
+                break
+        changes = hdf_diff(oldtext, newtext, context=context,
+                           ignore_blank_lines='-B' in diff_options,
+                           ignore_case='-i' in diff_options,
+                           ignore_space_changes='-b' in diff_options)
+        req.hdf['wiki.diff'] = changes
 
     def _render_editor(self, req, pagename, preview=0):
         self.perm.assert_permission(perm.WIKI_MODIFY)

@@ -28,13 +28,13 @@
 
 <?cs def:diff_display(diff, style) ?><?cs
  if:style == 'sidebyside' ?><?cs
-  each:block = diff.blocks ?><?cs
+  each:block = diff ?><?cs
    if:block.type == 'unmod' ?><tbody class="unmod"><?cs
     each:line = block.base.lines ?><tr>
      <th class="base"><?cs var:#block.base.offset + name(line) + 1 ?></th>
      <td class="base"><span><?cs var:line ?></span>&nbsp;</td>
      <th class="chg"><?cs var:#block.changed.offset + name(line) + 1 ?></th>
-     <td class="chg"><span><?cs var:line ?></span>&nbsp;</td>
+     <td class="chg"><span><?cs var:block.changed.lines[name(line)] ?></span>&nbsp;</td>
     </tr><?cs /each ?>
    </tbody><?cs
    elif:block.type == 'mod' ?><tbody class="mod"><?cs
@@ -90,7 +90,7 @@
   </tbody><?cs
   /each ?><?cs
  else ?><?cs
-  each:block = diff.blocks ?>
+  each:block = diff ?>
    <?cs if:block.type == 'unmod' ?><tbody class="unmod"><?cs
     each:line = block.base.lines ?><tr>
      <th class="base"><?cs var:#block.base.offset + name(line) + #1 ?></th>

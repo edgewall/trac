@@ -27,7 +27,6 @@
     <input type="hidden" name="mode" value="wiki" />
     <input type="hidden" name="action" value="diff" />
     <input type="hidden" name="version" value="<?cs var:wiki.version ?>" />
-    <input type="hidden" name="update" value="yes" />
     <label>View differences
     <select name="style" onchange="this.form.submit()">
      <option value="inline"<?cs
@@ -37,9 +36,32 @@
        if:diff.style == 'sidebyside' ?> selected="selected"<?cs
        /if ?>>side by side</option>
     </select></label>
-    <noscript><div class="buttons">
-     <input type="submit" value="Update" />
-    </div></noscript>
+    <div class="field">
+     Show <input type="text" name="contextlines" id="contextlines" size="2"
+       maxlength="2" value="<?cs var:diff.options.contextlines ?>" />
+     <label for="contextlines">lines around each change</label>
+    </div>
+    <fieldset id="ignore">
+     <legend>Ignore:</legend>
+     <div class="field">
+      <input type="checkbox" id="blanklines" name="ignoreblanklines"<?cs
+        if:diff.options.ignoreblanklines ?> checked="checked"<?cs /if ?> />
+      <label for="blanklines">Blank lines</label>
+     </div>
+     <div class="field">
+      <input type="checkbox" id="case" name="ignorecase"<?cs
+        if:diff.options.ignorecase ?> checked="checked"<?cs /if ?> />
+      <label for="case">Case changes</label>
+     </div>
+     <div class="field">
+      <input type="checkbox" id="whitespace" name="ignorewhitespace"<?cs
+        if:diff.options.ignorewhitespace ?> checked="checked"<?cs /if ?> />
+      <label for="whitespace">White space changes</label>
+     </div>
+    </fieldset>
+    <div class="buttons">
+     <input type="submit" name="update" value="Update" />
+    </div>
    </div>
   </form>
   <dl id="overview">

@@ -157,7 +157,9 @@ class HDFWrapper:
     def __setitem__(self, name, value):
         def add_value(prefix, value):
             if type(value) is DictType or isinstance(value, UserDict):
-                for k in value.keys():
+                keys = value.keys()
+                keys.sort()
+                for k in keys:
                     add_value('%s.%s' % (prefix, k), value[k])
             elif type(value) is ListType or isinstance(value, UserList):
                 for i in range(len(value)):
