@@ -1,14 +1,14 @@
 <?cs def:hdf_select(enum, name, selected) ?>
-  <select size="1" id="<?cs var:name ?>" name="<?cs var:name ?>">
-  <?cs each:item = $enum ?>
-    <?cs if item.name == $selected ?>
-      <option selected="selected"><?cs var:item.name ?></option>
-    <?cs else ?>
-      <option><?cs var:item.name ?></option>
-    <?cs /if ?>
-  <?cs /each ?>
-  </select>
-<?cs /def?>
+ <select size="1" id="<?cs var:name ?>" name="<?cs var:name ?>"><?cs
+  each:item = $enum ?><?cs
+   if item.name == $selected ?>
+    <option selected="selected"><?cs var:item.name ?></option><?cs
+   else ?>
+    <option><?cs var:item.name ?></option><?cs
+   /if ?><?cs
+  /each ?>
+ </select><?cs
+/def?>
 
 <?cs def:get(map, name) ?><?cs
  each:item = map ?><?cs
@@ -152,57 +152,49 @@
   /if ?><?cs
   /def ?>
 
-<?cs def:ticket_custom_props(ticket) ?>
-<?cs if ticket.custom.0.name ?>
- <fieldset style="clear: both">
-  <legend>Custom Properties</legend>
-  <?cs each c=ticket.custom ?>
-   <div class="custom-prop">
-    <?cs if c.type == 'text' || c.type == 'select' ?>
-     <label for="custom_<?cs var c.name ?>">
-      <?cs alt c.label ?><?cs var c.name ?><?cs /alt ?></label>: 
-    <?cs /if ?>
-    <?cs if c.type == 'text' ?>
-     <input type="text" id="custom_<?cs var c.name ?>" 
-            name="custom_<?cs var c.name ?>" value="<?cs var c.value ?>" />
-    <?cs elif c.type == 'textarea' ?>
-     <label for="custom_<?cs var c.name ?>">
-      <?cs alt c.label ?><?cs var c.name ?><?cs /alt ?></label>:<br />
-    <textarea
-      cols="<?cs alt c.width ?>60<?cs /alt ?>" 
-      rows="<?cs alt c.height ?>12<?cs /alt ?>"
-      name="custom_<?cs var c.name ?>"><?cs var c.value ?></textarea>
-    <?cs elif c.type == 'checkbox' ?>
-     <input type="hidden" name="checkbox_<?cs var c.name ?>" 
-            value="custom_<?cs var c.name ?>" />
-     <input type="checkbox" id="custom_<?cs var c.name ?>" 
-            name="custom_<?cs var c.name ?>" 
-            value="1"
-            <?cs if c.selected ?>checked="checked"<?cs /if ?> />
-     <label for="custom_<?cs var c.name ?>">
-      <?cs alt c.label ?><?cs var c.name ?><?cs /alt ?></label>
-    <?cs elif c.type == 'select' ?>
-     <select name="custom_<?cs var c.name ?>">
-      <?cs each v=c.option ?>
-       <option <?cs if v.selected ?>selected="selected"<?cs /if ?>>
-        <?cs var v ?>
-       </option>
-      <?cs /each ?>
-     </select>
-    <?cs elif c.type == 'radio' ?>
-      <?cs each v=c.option ?>
-       <input type="radio" name="custom_<?cs var c.name ?>" 
-         <?cs if v.selected ?>checked="checked"<?cs /if ?> 
-            value="<?cs var v ?>" id="<?cs var v ?>"/>
-       <label for="<?cs var v ?>">
-        <?cs var v ?></label><br />
-      <?cs /each ?>
-    <?cs /if ?>
-   </div>
-  <?cs /each ?>
- </fieldset>
-<?cs /if ?>
-<?cs /def ?>
+<?cs def:ticket_custom_props(ticket) ?><?cs if ticket.custom.0.name ?><?cs
+ each c=ticket.custom ?>
+  <div class="field custom_<?cs var c.name ?>"><?cs
+   if c.type == 'text' || c.type == 'select' ?>
+    <label for="custom_<?cs var c.name ?>"><?cs alt c.label ?><?cs
+      var c.name ?><?cs /alt ?></label>:<?cs
+   /if ?><?cs
+   if c.type == 'text' ?>
+    <input type="text" id="custom_<?cs var c.name ?>" name="custom_<?cs
+      var c.name ?>" value="<?cs var c.value ?>" /><?cs
+   elif c.type == 'textarea' ?>
+    <label for="custom_<?cs var c.name ?>"><?cs alt c.label ?><?cs
+      var c.name ?><?cs /alt ?></label>:<br />
+    <textarea cols="<?cs alt c.width ?>60<?cs /alt ?>" rows="<?cs
+      alt c.height ?>12<?cs /alt ?>" name="custom_<?cs var c.name ?>"><?cs
+      var c.value ?></textarea><?cs
+   elif c.type == 'checkbox' ?>
+    <input type="hidden" name="checkbox_<?cs var c.name ?>" value="custom_<?cs
+      var c.name ?>" />
+    <input type="checkbox" id="custom_<?cs var c.name ?>" name="custom_<?cs
+      var c.name ?>" value="1" <?cs if c.selected ?>checked="checked"<?cs /if ?> />
+    <label for="custom_<?cs var c.name ?>"><?cs alt c.label ?><?cs
+      var c.name ?><?cs /alt ?></label><?cs
+   elif c.type == 'select' ?>
+    <select name="custom_<?cs var c.name ?>"><?cs each v = c.option ?>
+     <option <?cs if v.selected ?>selected="selected"<?cs /if ?>><?cs
+       var v ?></option><?cs /each ?>
+    </select><?cs
+   elif c.type == 'radio' ?>
+    <fieldset class="radio">
+     <legend><?cs alt c.label ?><?cs var c.name ?><?cs /alt ?>:</legend><?cs
+     each v = c.option ?>
+      <input type="radio" id="custom_<?cs var c.name ?>_<?cs
+        var v ?>" name="custom_<?cs var c.name ?>"<?cs
+        if v.selected ?> checked="checked"<?cs /if ?> value="<?cs var v ?>"/>
+      <label for="custom_<?cs var c.name ?>_<?cs var v ?>"><?cs
+        var v ?></label><?cs
+     /each ?>
+    </fieldset><?cs
+   /if ?>
+  </div><?cs
+ /each ?><?cs
+/if ?><?cs /def ?>
 
 <?cs def:wiki_toolbar(textarea_id) ?>
 <script type='text/javascript'>

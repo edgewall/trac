@@ -1,81 +1,69 @@
 @import url(code.css);
 
-/* Ticket */
-#tkt-hdr { margin: 0; }
-#tkt-subhdr { 
- display: block;
- font-weight: normal; 
- margin-top: .25em;
- padding-bottom: .5em;
- border-bottom: 1px solid #dd9;
-}
-#tkt-ticket,#tkt-changes { 
-  background: #ffd;
-  border: 1px outset #996;
-  padding: 1em;
-}
-#tkt-main { max-width: 700px; margin-top: 1.5em;}
-#tkt-ticket td { padding: .2em .5em; }
-#tkt-date { float: right; color: #996; margin-left: 2em; }
-#tkt-summary {  margin: 0; font-size: 100%; font-weight: normal; }
-.tkt-row-sep { border-bottom: 1px solid #dd9; padding: 0;}
-.tkt-row-sep-vert {
- padding: 0;
- border-bottom: 1px solid #dd9; 
- border-right: 1px solid #dd9; 
-}
-.tkt-label, .tkt-val { 
- font-size: 80%; 
- padding: 2em;
- border-bottom: 1px dotted #eed; 
-}
-.tkt-label { color: #996; }
-.tkt-label b { font-weight: normal; }
-.tkt-prop { margin-top: .75em }
-#tkt-custom-hdr,#tkt-descr-hdr { 
- font-size: 100%; 
- margin-top: .25em;
- padding-top: .5em;
- border-top: 1px solid #dd9;
-}
-#tkt-custom-hdr { margin-bottom: 0; color: #996; }
-#tkt-descr { line-height: 140%; }
-#tkt-changes-hdr { font-size: 110%; margin-bottom: .5em;  margin-top: 1em; }
-#tkt-changes { 
-  background: #fff;
-  padding-left: 1.5em;
-  border: 1px outset #999;
-}
-.tkt-chg-mod { 
-  color: #999;
-  border-bottom: 1px solid #d7d7d7;
+#content { margin-top: 1.5em; width: 700px }
 
-  margin-left: -1em;
-  margin-top: 1px;
-  font-size: 100%;
-  font-weight: normal;
-  padding: 0 .5em;
+#ticket { 
+ background: #ffd;
+ border: 1px outset #996;
+ padding: 1em;
 }
-ul.tkt-chg-list { padding: 0 1em; list-style: square; }
-li.tkt-chg-change { margin: 0; }
-.tkt-chg-comment-hdr { margin: 0;  font-size: 100%; }
-.tkt-chg-comment p { margin: .25em }
-.tkt-chg-comment { margin: 0; margin-left: 1em; }
-#tkt-submit {  padding-top: 1em; line-height: 180%; }
+#ticket h1, #ticket h2 { margin: 0 }
+#ticket h2 { font-weight: normal; font-size: 150%; margin-bottom: 1em }
+#ticket .date { float: right; color: #996 }
 
-/* New Ticket (NOTE: Shared with Ticket) */
+#ticket table { table-layout: fixed; border-collapse: collapse; width: 100% }
+#ticket tr { border-bottom: 1px dotted #eed }
+#ticket td, #ticket th { font-size: 80%; padding: .5em 1em; width: 25% }
+#ticket th { color: #996; font-weight: normal; text-align: left }
+#ticket hr { color: #dd9; border-color: #dd9; border-width: 1px 0 0; height: 1px; margin: .5em 0 0 }
 
-.nt-label { float:left; width: 7em; text-align: right; margin-right: .5em; }
-#nt-ticket { max-width: 700px; line-height: 160% }
-#nt-body { margin: 1em 0}
-#nt-props { white-space: nowrap; line-height: 160%; }
-#nt-left { float: left; border-right: 1px dotted #d7d7d7; width: 45%; }
-#nt-right { margin-left: 40%; }
-#nt-buttons {  padding-top: .5em; text-align: right; }
+#attachments { border: 1px outset #996; padding: 1em }
+#attachments .attachments { list-style: square; margin-left: 2em; padding: 0 }
 
-tr.attachment-listhdr { border-bottom: 1px solid #d7d7d7; }
-tr.attachment-listhdr th {
-  text-align: left;
-  padding: 0 1em 0 0;
-  font-size: 13px;
+#changelog { border: 1px outset #996; padding: 1em }
+#changelog h3 {
+ border-bottom: 1px solid #d7d7d7;
+ color: #999;
+ font-size: 100%;
+ font-weight: normal;
 }
+#changelog .changes { list-style: square; margin-left: 2em; padding: 0 }
+#changelog .comment { margin-left: 2em }
+
+form .field { margin-top: .75em; width: 100% }
+
+#properties { white-space: nowrap; line-height: 160%; padding: .5em }
+#properties .main { margin-bottom: 1em }
+#properties .col1 {
+ border-right: 1px dotted #d7d7d7;
+ float: left;
+ margin-bottom: 1em;
+ width: 45%;
+}
+#properties .col2 { margin-left: 40% }
+#properties .main label, #properties .col1 label, #properties .col2 label {
+ float:left;
+ width: 7em;
+ text-align: right;
+ margin-right: .5em;
+}
+#properties .custom {
+ clear: left;
+ border-top: 1px dotted #d7d7d7;
+ padding-top: 1em
+}
+#properties .custom .field { margin: .25em 0 }
+
+#action { line-height: 2em }
+
+.buttons { padding-top: .5em; text-align: right }
+
+fieldset.radio { border: none; margin: 0; padding: 0 }
+fieldset.radio legend {
+ color: #000;
+ float: left;
+ font-size: 100%;
+ font-weight: normal;
+ padding: 0 1em 0 0;
+}
+fieldset.radio label { padding-right: 1em }

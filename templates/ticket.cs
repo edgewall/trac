@@ -11,294 +11,228 @@
 
 <div id="content" class="ticket">
  <div id="searchable">
+ <?cs def:ticketprop(label, name, value) ?>
+  <th id="h_<?cs var:name ?>"><?cs var:$label ?>:</th>
+  <td headers="h_<?cs var:name ?>"><?cs
+   if:$value ?><?cs var:$value ?><?cs else ?>&nbsp;<?cs
+   /if ?></td><?cs if numprops % #2 && !$last_prop ?>
+ </tr><tr><?cs /if ?><?cs set numprops = $numprops + #1 ?><?cs
+ /def ?>
 
-<?cs if:ticket.status == 'closed' ?>
- <?cs set:status = ' (Closed: ' + $ticket.resolution + ')' ?>
-<?cs elif:ticket.status == 'new' ?>
-<?cs else ?>
- <?cs set:status = ' (' + ticket.status + ')' ?>
-<?cs /if ?>
-
-<?cs def:ticketprop(label, value) ?>
- <td class="tkt-label"><b><?cs var:$label ?>:</b></td>
- <td class="tkt-val">
-  <?cs if:$value ?><i><?cs var:$value ?></i><?cs else ?>&nbsp;<?cs /if ?>
- </td>
- <?cs if numprops % #2 ?>
-  <?cs if:!$last_prop ?></tr><tr><?cs /if ?>
- <?cs else ?>
-  <td class="tkt-prop-sep">&nbsp;</td>
- <?cs /if ?>
- <?cs set numprops = $numprops + #1 ?>
-<?cs /def ?>
-
-<div id="tkt-main">
-<div id="tkt-ticket">
- <div id="tkt-date"><?cs var:ticket.opened ?></div>
-<h1 id="tkt-hdr">Ticket #<?cs var:ticket.id ?><?cs var:status ?><br />
- <span class="hide">-</span> <span id="tkt-subhdr"><?cs var:ticket.summary ?></span></h1>
- <hr class="hide" />
- <table style="width: 100%">
-  <tr>
-   <?cs call:ticketprop("Priority", ticket.priority) ?>
-   <?cs call:ticketprop("Reporter", ticket.reporter) ?>
-   <?cs call:ticketprop("Severity", ticket.severity) ?>
-   <?cs if ticket.status == "assigned"?>
-    <?cs call:ticketprop("Assigned to", ticket.owner + " (accepted)") ?>
-   <?cs else ?>
-    <?cs call:ticketprop("Assigned to", ticket.owner) ?>
-   <?cs /if ?>
-   <?cs call:ticketprop("Component", ticket.component) ?>
-   <?cs call:ticketprop("Status", ticket.status) ?>
-   <?cs call:ticketprop("Version", ticket.version) ?>
-   <?cs call:ticketprop("Resolution", ticket.resolution) ?>
-   <?cs call:ticketprop("Milestone", ticket.milestone) ?>
-   <?cs set:last_prop = #1 ?>
-   <?cs call:ticketprop("Keywords", ticket.keywords) ?>
-  </tr>
- </table>
-<?cs if ticket.custom.0.name ?>
- <hr class="hide" />
- <h3 id="tkt-custom-hdr">Custom Properties</h3>
- <table style="width: 100%">
-  <tr>
-  <?cs each c=ticket.custom ?>
-   <?cs call:ticketprop(c.label, c.value) ?>
-  <?cs /each ?>
-  </tr>
- </table><?cs /if ?>
- <hr class="hide" />
- <h3 id="tkt-descr-hdr">Description by <?cs var:ticket.reporter ?>:</h3>
-    <?cs var:ticket.description.formatted ?>
- <hr class="hide"/>
+<div id="ticket">
+ <div class="date"><?cs var:ticket.opened ?></div>
+ <h1>Ticket #<?cs var:ticket.id ?> <?cs
+ if:ticket.status == 'closed' ?>(Closed: <?cs var:ticket.resolution ?>)<?cs
+ elif:ticket.status != 'new' ?>(<?cs var:ticket.status ?>)<?cs
+ /if ?></h1>
+ <h2><?cs var:ticket.summary ?></h2>
+ <hr />
+ <table><tr><?cs
+  call:ticketprop("Priority", "priority", ticket.priority) ?><?cs
+  call:ticketprop("Reporter", "reporter", ticket.reporter) ?><?cs
+  call:ticketprop("Severity", "severity", ticket.severity) ?><?cs
+  if ticket.status == "assigned"?><?cs
+   call:ticketprop("Assigned to", "assignee", ticket.owner + " (accepted)") ?><?cs
+  else ?><?cs
+   call:ticketprop("Assigned to", "assignee", ticket.owner) ?><?cs
+  /if ?><?cs
+  call:ticketprop("Component", "component", ticket.component) ?><?cs
+  call:ticketprop("Status", "status", ticket.status) ?><?cs
+  call:ticketprop("Version", "version", ticket.version) ?><?cs
+  call:ticketprop("Resolution", "resolution", ticket.resolution) ?><?cs
+  call:ticketprop("Milestone", "milestone", ticket.milestone) ?><?cs
+  set:last_prop = #1 ?><?cs
+  call:ticketprop("Keywords", "keywords", ticket.keywords) ?>
+ </tr></table><?cs if ticket.custom.0.name ?>
+ <hr />
+ <table><tr><?cs each:prop = ticket.custom ?><?cs
+   call:ticketprop(prop.label, prop.name, prop.value) ?><?cs
+  /each ?>
+ </tr></table><?cs /if ?>
+ <hr />
+ <h3>Description<?cs if:ticket.reporter ?> by <?cs
+   var:ticket.reporter ?><?cs /if ?>:</h3>
+ <div class="description">
+  <?cs var:ticket.description.formatted ?>
+ </div>
 </div>
 
 <?cs if trac.acl.TICKET_MODIFY || ticket.attachments.0.name ?>
- <h2>Attachments</h2>
- <?cs if ticket.attachments.0.name ?>
-  <div id="tkt-changes">
-   <ul class="tkt-chg-list">
-    <?cs each:a = ticket.attachments ?>
-     <li class="tkt-chg-change"><a href="<?cs var:a.href ?>">
-      <?cs var:a.name ?></a> (<?cs var:a.size ?>) -
-      <?cs var:a.descr ?>,
-      added by <?cs var:a.author ?> on <?cs var:a.time ?>.</li>
-    <?cs /each ?>
-   </ul>
- <?cs /if ?>
- <?cs if trac.acl.TICKET_MODIFY ?>
-  <form method="get" action="<?cs var:cgi_location?>/attachment/ticket/<?cs var:ticket.id ?>"><div>
-   <input type="submit" value="Attach File" />
-   </div></form>
- <?cs /if ?>
- <?cs if ticket.attachments.0.name ?>
-  </div>
- <?cs /if ?>
+<h2>Attachments</h2><?cs
+ if ticket.attachments.0.name ?><div id="attachments">
+  <ul class="attachments"><?cs each:a = ticket.attachments ?>
+   <li><a href="<?cs var:a.href ?>" title="View attachment"><?cs
+   var:a.name ?></a> (<?cs var:a.size ?>) - <?cs
+   if:a.descr ?><q><?cs var:a.descr ?></q>,<?cs
+   /if ?> added by <em><?cs
+   var:a.author ?></em> on <em><?cs
+   var:a.time ?></em>.</li><?cs
+  /each ?></ul><?cs
+ /if ?><?cs
+ if trac.acl.TICKET_MODIFY ?>
+  <form method="get" action="<?cs var:cgi_location?>/attachment/ticket/<?cs
+    var:ticket.id ?>">
+   <div><input type="submit" value="Attach File" /></div>
+  </form><?cs
+ /if ?><?cs if ticket.attachments.0.name ?></div><?cs /if ?>
 <?cs /if ?>
 
-<?cs if ticket.changes.0.time ?>
-  <h2 id="tkt-changes-hdr">Changelog</h2>
-  <div id="tkt-changes">
-    <?cs set:numchanges = 0 ?>
-    <?cs set:comment = "" ?>
-    <?cs set:curr_time = "" ?>
-    <?cs set:curr_author = "" ?>
-    <?cs each:item = ticket.changes ?>
-      <?cs set:numchanges = #numchanges + 1 ?>
-      <?cs if $item.time != $curr_time || $item.author != $curr_author ?>
-        <?cs if $comment != "" ?>
-          <li class="tkt-chg-change">
-            <h4 class="tkt-chg-comment-hdr">Comment:</h4>
-            <div  class="tkt-chg-comment"><?cs var:$comment ?></div>
-            <?cs set:comment = "" ?>
-          </li>
-        <?cs /if ?>
-        <?cs set:curr_time = $item.time ?>
-        <?cs set:curr_author = $item.author ?>
-        <?cs if:#numchanges > 1 ?>
-          </ul>
-          <hr class="hide"/>
-        <?cs /if ?>
-        <h3 class="tkt-chg-mod">
-          <a name="<?cs var:#numchanges ?>"><?cs var:item.date ?> : Modified by <?cs var:curr_author ?></a>
-        </h3>
-        <ul class="tkt-chg-list">
-      <?cs /if ?>
-      <?cs if $item.field == "comment" ?>
-      <?cs set:$comment = $item.new ?> 
-      <?cs elif $item.new == "" ?>
-        <li class="tkt-chg-change">
-           cleared <b><?cs var:item.field?></b>
-        </li>
-      <?cs elif $item.field == "attachment" ?>
-        <li class="tkt-chg-change">
-           <b>Attachment</b> added: <?cs var:item.new ?>
-        </li>
-      <?cs elif $item.field == "description" ?>
-        <li class="tkt-chg-change">
-           <b><?cs var:item.field ?></b> changed.
-        </li>
-      <?cs elif $item.old == "" ?>
-        <li class="tkt-chg-change">
-          <b><?cs var:item.field ?></b> set to <b><?cs var:item.new ?></b>
-        </li>
-      <?cs else ?>
-        <li class="tkt-chg-change">
-           <b><?cs var:item.field ?></b> changed from
-           <b><?cs var:item.old ?></b> to
-           <b><?cs var:item.new ?></b>
-        </li>
-      <?cs /if ?>
-    <?cs /each ?>
-    <?cs if $comment != "" ?>
-       <li class="tkt-chg-change">
-         <h4 class="tkt-chg-comment-hdr">Comment:</h4>
-         <div  class="tkt-chg-comment"><?cs var:$comment ?></div>
-       </li>
-     <?cs /if ?>
-    </ul>
-  </div>
-<?cs /if ?>
+<?cs if ticket.changes.0.time ?><h2>Changelog</h2>
+<div id="changelog">
+ <?cs set:comment = "" ?>
+ <?cs set:curr_time = "" ?>
+ <?cs set:curr_author = "" ?>
+ <?cs each:change = ticket.changes ?><?cs
+  if $change.time != $curr_time || $change.author != $curr_author ?><?cs
+  if:name(change) > 0 ?></ul><?cs /if ?><?cs
+   if $comment != "" ?>
+    <div class="comment"><?cs var:$comment ?></div><?cs set:comment = "" ?><?cs
+   /if ?>
+   <?cs set:curr_time = $change.time ?>
+   <?cs set:curr_author = $change.author ?>
+   <h3 id="change_<?cs var:name(change) ?>" class="change"><?cs
+     var:change.date ?>: Modified by <?cs var:curr_author ?></h3>
+   <ul class="changes"><?cs
+  /if ?><?cs
+  if $change.field == "comment" ?><?cs
+   set:$comment = $change.new ?><?cs
+  elif $change.new == "" ?>
+   <li><strong><?cs var:change.field ?></strong> cleared</li><?cs
+  elif $change.field == "attachment" ?>
+   <li><strong>attachment</strong> added: <?cs var:change.new ?></li><?cs
+  elif $change.field == "description" ?>
+   <li><strong><?cs var:change.field ?></strong> changed.</li><?cs
+  elif $change.old == "" ?>
+   <li><strong><?cs var:change.field ?></strong> set to <em><?cs var:change.new ?></em></li><?cs
+  else ?>
+   <li><strong><?cs var:change.field ?></strong> changed from <em><?cs
+     var:change.old ?></em> to <em><?cs var:change.new ?></em></li><?cs
+  /if ?><?cs
+ /each ?></ul><?cs
+ if $comment != "" ?>
+  <div class="comment"><?cs var:$comment ?></div><?cs
+ /if ?>
+</div><?cs /if ?>
 
 <?cs if $trac.acl.TICKET_MODIFY ?>
-<br /><hr />
-
-<h3><a name="edit"
-onfocus="document.getElementById('comment').focus()">Add/Change
-#<?cs var:ticket.id ?> (<?cs var:ticket.summary ?>)</a></h3>
-<form action="<?cs var:cgi_location ?>#preview" method="post" enctype="multipart/form-data">
-  <div class="tkt-prop">
-   <input type="hidden" name="mode" value="ticket" />
-   <input type="hidden" name="id"   value="<?cs var:ticket.id ?>" />
-   <label for="author">Your email or username:</label><br />
-    <input type="text" id="author" name="author" class="textwidget" size="40"
-           value="<?cs var:ticket.reporter_id ?>" /><br />
-  </div>
-  <div class="tkt-prop">
-  <label for="comment">Add Comment (You may use 
-      <a tabindex="42" href="<?cs var:$trac.href.wiki ?>/WikiFormatting">WikiFormatting</a> here):</label><br />
-
-  <textarea id="comment" name="comment" class="textwidget"
-            rows="10" cols="78" style="width: 97%; max-width: 694px"><?cs var:ticket.comment ?></textarea>
-  <?cs call:wiki_toolbar('comment') ?>
-   <?cs if ticket.comment_preview ?>
-     <a name="preview" style="clear: left;" />
-     <fieldset>
-     <legend>Comment Preview</legend>
-       <?cs var:ticket.comment_preview ?>
-     </fieldset>
-   <?cs /if ?>
-  </div>
-
- <fieldset>
-   <legend>Change Properties</legend>
- <div id="nt-props"  style="padding: .5em">
-<div style="margin-bottom: 1em">
-<label for="summary" class="nt-label">Summary:</label>
-<input id="summary" type="text" name="summary" class="textwidget" size="70"
-       value="<?cs var:ticket.summary ?>" />
-<?cs if $trac.acl.TICKET_ADMIN ?>
-  <br />
-  <label for="description" class="nt-label">Description:</label>
-  <div style="float: left;">
-  <textarea id="description" name="description" class="textwidget"
-            rows="10" cols="68"><?cs var:ticket.description ?></textarea>
-  <?cs call:wiki_toolbar('description') ?>
-  </div>
-  <br style="clear: left" />
-  <label for="reporter" class="nt-label">Reporter:</label>
-  <input id="reporter" type="text" name="reporter" class="textwidget" size="70"
-         value="<?cs var:ticket.reporter ?>" />
-<?cs /if ?>
-</div>
-  <div id="nt-left">
-   <label for="component" class="nt-label">Component:</label>
-   <?cs call:hdf_select(ticket.components, "component", ticket.component) ?>
-   <br />
-   <label for="version" class="nt-label">Version:</label>
-   <?cs call:hdf_select(ticket.versions, "version", ticket.version) ?>
-   <br />
-   <label for="severity" class="nt-label">Severity:</label>
-   <?cs call:hdf_select(enums.severity, "severity", ticket.severity) ?>
-   <br />
-   <label for="keywords" class="nt-label">Keywords:</label>
-   <input type="text" id="keywords" name="keywords" size="20" class="textwidget" 
-          value="<?cs var:ticket.keywords ?>" />
-   <br />&nbsp;
-  </div>
- <div  id="nt-right" style="">
-  <label for="priority" class="nt-label">Priority:</label>
-  <?cs call:hdf_select(enums.priority, "priority", ticket.priority) ?>
-  <br />
-  <label for="milestone" class="nt-label">Milestone:</label>
-  <?cs call:hdf_select(ticket.milestones, "milestone", ticket.milestone) ?>
-  <br />
-  <span class="nt-label">Assigned to:</span>
-  <?cs var:ticket.owner ?>
-  <br />
-  <label for="cc" class="nt-label">Cc:</label>
-   <input type="text" id="cc" name="cc" class="textwidget"
-          value="<?cs var:ticket.cc ?>" size="30" />
-  </div>
+<hr />
+<h3><a name="edit" onfocus="document.getElementById('comment').focus()">Add/Change #<?cs
+  var:ticket.id ?> (<?cs var:ticket.summary ?>)</a></h3>
+<form action="<?cs var:cgi_location ?>#preview" method="post">
+ <div class="field">
+  <input type="hidden" name="mode" value="ticket" />
+  <input type="hidden" name="id"   value="<?cs var:ticket.id ?>" />
+  <label for="author">Your email or username:</label><br />
+  <input type="text" id="author" name="author" size="40"
+    value="<?cs var:ticket.reporter_id ?>" /><br />
+ </div>
+ <div class="field">
+  <label for="comment">Add comment (you may use <a tabindex="42" href="<?cs
+    var:$trac.href.wiki ?>/WikiFormatting">WikiFormatting</a> here):</label><br />
+  <textarea id="comment" name="comment" rows="10" cols="78" style="width: 97%"><?cs
+    var:ticket.comment ?></textarea><?cs
+  call:wiki_toolbar('comment') ?><?cs
+  if ticket.comment_preview ?>
+   <fieldset id="preview">
+    <legend>Comment Preview</legend>
+    <?cs var:ticket.comment_preview ?>
+   </fieldset><?cs
+  /if ?>
  </div>
 
-<?cs call:ticket_custom_props(ticket) ?>
+ <fieldset id="properties">
+  <legend>Change Properties</legend>
+  <div class="main">
+   <label for="summary">Summary:</label>
+   <input id="summary" type="text" name="summary" size="70" value="<?cs
+     var:ticket.summary ?>" /><?cs
+   if $trac.acl.TICKET_ADMIN ?>
+    <br />
+    <label for="description">Description:</label>
+    <div style="float: left">
+     <textarea id="description" name="description" rows="10" cols="68"><?cs
+       var:ticket.description ?></textarea>
+     <?cs call:wiki_toolbar('description') ?>
+    </div>
+    <br style="clear: left" />
+    <label for="reporter">Reporter:</label>
+    <input id="reporter" type="text" name="reporter" size="70"
+           value="<?cs var:ticket.reporter ?>" /><?cs
+   /if ?>
+  </div>
+  <div class="col1">
+   <label for="component">Component:</label><?cs
+   call:hdf_select(ticket.components, "component", ticket.component) ?>
+   <br />
+   <label for="version">Version:</label><?cs
+   call:hdf_select(ticket.versions, "version", ticket.version) ?>
+   <br />
+   <label for="severity">Severity:</label><?cs
+   call:hdf_select(enums.severity, "severity", ticket.severity) ?>
+   <br />
+   <label for="keywords">Keywords:</label>
+   <input type="text" id="keywords" name="keywords" size="20"
+       value="<?cs var:ticket.keywords ?>" />
+  </div>
+  <div class="col2">
+   <label for="priority">Priority:</label><?cs
+   call:hdf_select(enums.priority, "priority", ticket.priority) ?><br />
+   <label for="milestone">Milestone:</label><?cs
+   call:hdf_select(ticket.milestones, "milestone", ticket.milestone) ?><br />
+   <label for="owner">Assigned to:</label>
+   <input type="text" id="owner" name="owner" size="20" value="<?cs
+     var:ticket.owner ?>" disabled="disabled" /><br />
+   <label for="cc">Cc:</label>
+   <input type="text" id="cc" name="cc" size="30" value="<?cs var:ticket.cc ?>" />
+  </div>
+  <div class="custom">
+   <?cs call:ticket_custom_props(ticket) ?>
+  </div>
+ </fieldset>
 
-  </fieldset>
-
-
- <div id="tkt-submit">
-  <fieldset>
-   <legend>Action</legend>
-  <div style="clear: both" />
-  <?cs if:!ticket.action ?>
-   <?cs set:ticket.action = 'leave' ?>
-  <?cs /if ?>
-  <?cs def:action_radio(id) ?>
-    <input type="radio" id="<?cs var:id ?>" name="action" value="<?cs var:id ?>" 
-      <?cs if:$ticket.action == $id ?>checked="checked"<?cs /if ?>
-     />
-  <?cs /def ?>
+ <fieldset id="action">
+  <legend>Action</legend><?cs
+  if:!ticket.action ?><?cs set:ticket.action = 'leave' ?><?cs
+  /if ?><?cs
+  def:action_radio(id) ?>
+   <input type="radio" id="<?cs var:id ?>" name="action" value="<?cs
+     var:id ?>"<?cs if:$ticket.action == $id ?> checked="checked"<?cs /if ?> /><?cs
+  /def ?>
   <?cs call:action_radio('leave') ?>
-   &nbsp;<label for="leave">leave as <?cs var:ticket.status ?></label><br />
-   <?cs if $ticket.status == "new" ?>
-  <?cs call:action_radio('accept') ?>
-     &nbsp;<label for="accept">accept ticket</label><br />
-   <?cs /if ?>
-   <?cs if $ticket.status == "closed" ?>
-    <?cs call:action_radio('reopen') ?>
-     &nbsp;<label for="reopen">reopen ticket</label><br />
-   <?cs /if ?>
-   <?cs if $ticket.status == "new" || $ticket.status == "assigned" || $ticket.status == "reopened" ?>
-    <?cs call:action_radio('resolve') ?>
-     &nbsp;<label for="resolve">resolve as:</label>
-     <select name="resolve_resolution">
-      <option selected="selected">fixed</option>
-      <option>invalid</option>
-      <option>wontfix</option>
-      <option>duplicate</option>
-      <option>worksforme</option>
-     </select><br />
-    <?cs call:action_radio('reassign') ?>
-    &nbsp;<label for="reassign">reassign ticket to:</label>
-    &nbsp;<input type="text" id="reassign_owner" name="reassign_owner" 
-           class="textwidget" size="40" value="<?cs var:trac.authname ?>" />
-   <?cs /if ?>
-   </fieldset>
+  <label for="leave">leave as <?cs var:ticket.status ?></label><br /><?cs
+  if $ticket.status == "new" ?>
+   <?cs call:action_radio('accept') ?>
+   <label for="accept">accept ticket</label><br /><?cs
+  /if ?><?cs
+  if $ticket.status == "closed" ?>
+   <?cs call:action_radio('reopen') ?>
+   <label for="reopen">reopen ticket</label><br /><?cs
+  /if ?><?cs
+  if $ticket.status == "new" || $ticket.status == "assigned" || $ticket.status == "reopened" ?>
+   <?cs call:action_radio('resolve') ?>
+   <label for="resolve">resolve as:</label>
+    <select name="resolve_resolution">
+     <option selected="selected">fixed</option>
+     <option>invalid</option>
+     <option>wontfix</option>
+     <option>duplicate</option>
+     <option>worksforme</option>
+    </select><br />
+   <?cs call:action_radio('reassign') ?>
+   <label for="reassign">reassign ticket to:</label>
+   <input type="text" id="reassign_owner" name="reassign_owner" size="40" value="<?cs
+     var:trac.authname ?>" /><?cs
+  /if ?>
+ </fieldset>
 
-  <div id="nt-buttons" style="clear: both">
-   <input type="reset" value="Reset" />&nbsp;
-   <input type="submit" name="preview" value="Preview" />&nbsp;
-   <input type="submit" value="Submit changes" /> 
-  </div>
+ <div class="buttons">
+  <input type="reset" value="Reset" />&nbsp;
+  <input type="submit" name="preview" value="Preview" />&nbsp;
+  <input type="submit" value="Submit changes" /> 
  </div>
-
 </form>
 <?cs /if ?>
-
-</div> <!-- #tkt-main -->
 
  </div>
 </div>
 <?cs include "footer.cs"?>
-
