@@ -119,7 +119,7 @@ def real_main():
     import Href
     import perm
     import auth
-    from util import dict_get_with_default, redirect
+    from util import redirect
 
     path_info = os.getenv('PATH_INFO')
     remote_addr = os.getenv('REMOTE_ADDR')
@@ -135,6 +135,7 @@ def real_main():
 
     # Authenticate the user
     cookie = Cookie.SimpleCookie(http_cookie)
+
     if cookie.has_key('trac_auth'):
         auth_cookie = cookie['trac_auth'].value
     else:
@@ -164,7 +165,7 @@ def real_main():
         args[x] = argv.value
 
     # Load the selected module
-    mode = dict_get_with_default(args, 'mode', 'wiki')
+    mode = args.get('mode', 'wiki')
     module_name, constructor_name, need_svn = modules[mode]
     module = __import__(module_name, globals(),  locals(), [])
     constructor = getattr(module, constructor_name)

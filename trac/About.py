@@ -85,7 +85,7 @@ Copyright &copy; 2003,2004 <a href="http://www.edgewall.com/">Edgewall Software<
 """ # about_cs
     
     def render (self):
-        page = util.dict_get_with_default(self.args, 'page', 'default')
+        page = self.args.get('page', 'default')
         self.cgi.hdf.setValue('title', 'About Trac')
         if page[0:7] == '/config':
             self.perm.assert_permission(perm.CONFIG_VIEW)

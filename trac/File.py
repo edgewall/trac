@@ -25,7 +25,6 @@ from time import gmtime, strftime
 from svn import fs, util, delta
 
 from Module import Module
-from util import dict_get_with_default
 import perm
 
 class File (Module):
@@ -44,8 +43,8 @@ class File (Module):
         return type
 
     def display (self):
-        rev = dict_get_with_default(self.args, 'rev', None)
-        path = dict_get_with_default(self.args, 'path', '/')
+        rev = self.args.get('rev', None)
+        path = self.args.get('path', '/')
         
         if not rev:
             rev = fs.youngest_rev(self.fs_ptr, self.pool)

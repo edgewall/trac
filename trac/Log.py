@@ -80,7 +80,7 @@ class Log (Module):
     def render (self):
         self.perm.assert_permission (perm.LOG_VIEW)
 
-        self.path = dict_get_with_default(self.args, 'path', '/')
+        self.path = self.args.get('path', '/')
         
         # We display an error message if the file doesn't exist (any more).
         # All we know is that the path isn't valid in the youngest

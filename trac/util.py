@@ -92,14 +92,6 @@ def href_join(u1, *tail):
             u1 = u1 + '/' + u2
     return u1
 
-def dict_get_with_default(dict, key, default):
-    """Returns dict[key] if it exists else default"""
-    if dict.has_key(key):
-        return dict[key]
-    else:
-        return default
-
-
 def add_dictlist_to_hdf(list, hdf, prefix):
     idx = 0
     for item in list:
@@ -150,7 +142,7 @@ def utf8_to_iso(text):
 def shorten_line(text):
     if not text:
         return text
-    maxlen = 70
+    maxlen = 75
     if len(text) < maxlen:
         shortline = text
     else:

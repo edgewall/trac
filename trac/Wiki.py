@@ -566,13 +566,12 @@ class Wiki(Module):
             
         
     def render(self):
-        name = dict_get_with_default(self.args, 'page', 'WikiStart')
-        save = dict_get_with_default(self.args, 'save', None)
-        edit = dict_get_with_default(self.args, 'edit', None)
-        diff = dict_get_with_default(self.args, 'diff', None)
-        preview = dict_get_with_default(self.args, 'preview', None)
-        version = dict_get_with_default(self.args, 'version', 0)
-        version = int(version)
+        name = self.args.get('page', 'WikiStart')
+        save = self.args.get('save', None)
+        edit = self.args.get('edit', None)
+        diff = self.args.get('diff', None)
+        preview = self.args.get('preview', None)
+        version = int(self.args.get('version', 0))
 
         self.generate_history(name)
 

@@ -38,7 +38,7 @@ class Browser(Module):
         root = fs.revision_root(self.fs_ptr, revision, self.pool)
 
         # Redirect to the file module if the requested path happens
-        # to point to a regular file
+        # to point to a regular filed
         if fs.is_file(root, path, self.pool):
             if rev_specified:
                 redirect(href.file(path, revision))
@@ -115,10 +115,9 @@ class Browser(Module):
     def render(self):
         self.perm.assert_permission (perm.BROWSER_VIEW)
 
-        self.rev = dict_get_with_default(self.args, 'rev', None)
-        self.path = dict_get_with_default(self.args, 'path', '/')
-
-        order = dict_get_with_default(self.args, 'order', 'name')
+        self.rev = self.args.get('rev', None)
+        self.path = self.args.get('path', '/')
+        order = self.args.get('order', 'name')
         
         if not self.rev:
             rev_specified = 0

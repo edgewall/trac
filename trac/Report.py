@@ -169,6 +169,7 @@ class Report (Module):
             col_idx = 0
             numrows = len(row)
             for cell in row:
+                cell = str(cell)
                 column = self.cols[col_idx][0]
                 value = {}
                 # Special columns begin and end with '__'
@@ -210,8 +211,8 @@ class Report (Module):
     def render(self):
         self.perm.assert_permission(perm.REPORT_VIEW)
         # did the user ask for any special report?
-        id = int(dict_get_with_default(self.args, 'id', -1))
-        action = dict_get_with_default(self.args, 'action', 'list')
+        id = int(self.args.get('id', -1))
+        action = self.args.get('action', 'list')
 
         if action == 'create':
             self.create_report(self.args['title'], self.args['sql'])

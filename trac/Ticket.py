@@ -89,21 +89,21 @@ class Ticket (Module):
 
     def save_changes (self, id, old, new): 
         global fields
-        
-        if new.has_key('action'):
-            if new['action'] == 'accept':
-                new['status'] = 'assigned'
-                new['owner'] = self.authname
-            if new['action'] == 'resolve':
-                new['status'] = 'closed'
-                new['resolution'] = new['resolve_resolution']
-            elif new['action'] == 'reassign':
-                new['owner'] = new['reassign_owner']
-                new['status'] = 'assigned'
-            elif new['action'] == 'reopen':
-                new['status'] = 'reopened'
-                new['resolution'] = ''
 
+        action = new.get('action', None)
+        if action == 'accept':
+            new['status'] = 'assigned'
+            new['owner'] = self.authname
+        if action == 'resolve':
+            new['status'] = 'closed'
+            new['resolution'] = new['resolve_resolution']
+        elif action == 'reassign':
+            new['owner'] = new['reassign_owner']
+            new['status'] = 'assigned'
+        elif action == 'reopen':
+            new['status'] = 'reopened'
+            new['resolution'] = ''
+                
         changed = 0
         change = ''
         cursor = self.db.cursor()
@@ -149,8 +149,7 @@ class Ticket (Module):
         now = int(time.time())
         data['time'] = now
         data['changetime'] = now
-        if not data.has_key('reporter'):
-            data['reporter'] = self.authname
+        data.setdefault('reporter',self.authname)
 
         cursor = self.db.cursor()
 
@@ -212,7 +211,7 @@ class Ticket (Module):
             idx = idx + 1
 
     def render (self):
-        action = dict_get_with_default(self.args, 'action', 'view')
+        action = self.args.get('action', 'view')
             
         if action == 'create':
             self.create_ticket ()

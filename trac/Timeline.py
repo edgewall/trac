@@ -118,8 +118,8 @@ class Timeline (Module):
     def render (self):
         self.perm.assert_permission(perm.TIMELINE_VIEW)
         
-        _from = dict_get_with_default(self.args, 'from', '')
-        _daysback = dict_get_with_default(self.args, 'daysback', '')
+        _from = self.args.get('from', '')
+        _daysback = self.args.get('daysback', '')
 
         try:
             _from = time.mktime(time.strptime(_from, '%x')) + 86399
@@ -137,17 +137,14 @@ class Timeline (Module):
 
         stop  = _from
         start = stop - daysback * 86400
+        maxrows = int(self.args.get('max', 0))
 
-        maxrows = int(self.args.has_key('max') and self.args['max'] or 0)
-           
-        if self.args.has_key('wiki') or \
-               self.args.has_key('ticket') or \
-               self.args.has_key('changeset'):
-            wiki = self.args.has_key('wiki')
-            ticket = self.args.has_key('ticket')
-            changeset = self.args.has_key('changeset')
-        else:
+        wiki = self.args.has_key('wiki') 
+        ticket = self.args.has_key('ticket')
+        changeset = self.args.has_key('changeset')
+        if not (wiki or ticket or changeset):
             wiki = ticket = changeset = 1
+           
         if wiki:
             self.cgi.hdf.setValue('timeline.wiki', 'checked')
         if ticket:
