@@ -106,7 +106,12 @@ class Timeline(Module):
 
     def render(self, req):
         self.perm.assert_permission(perm.TIMELINE_VIEW)
-        self.authzperm = SubversionAuthorizer(self.env, req.authname) # Kludge
+
+        # Kludge: needed to force new check-ins to show up in the timeline
+        repos = self.env.get_repository()
+        repos.sync()
+        self.authzperm = repos.authz
+        repos.close()
 
         # Parse the from date and adjust the timestamp to the last second of
         # the day
