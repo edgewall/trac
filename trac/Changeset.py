@@ -408,10 +408,10 @@ class Changeset(Module):
             if new_path:
                 self.path_info[new_path] = (seq, old_path, old_rev)
                 cinfo['rev.new'] = str(rev)
-                cinfo['browser_href.new'] = self.env.href.browser(new_path, rev)
+                cinfo['browser_href.new'] = self.env.href.browser(new_path, rev=rev)
             if old_path:
                 cinfo['rev.old'] = str(old_rev)
-                cinfo['browser_href.old'] = self.env.href.browser(old_path, old_rev)
+                cinfo['browser_href.old'] = self.env.href.browser(old_path, rev=old_rev)
             if change in 'CRm':
                 cinfo['copyfrom_path'] = old_path
             cinfo['change'] = change.upper()
@@ -423,9 +423,9 @@ class Changeset(Module):
     def render(self, req):
         self.perm.assert_permission (perm.CHANGESET_VIEW)
 
-        self.add_link('alternate', '?format=diff', 'Unified Diff',
+        self.add_link(req, 'alternate', '?format=diff', 'Unified Diff',
                       'text/plain', 'diff')
-        self.add_link('alternate', '?format=zip', 'Zip Archive',
+        self.add_link(req, 'alternate', '?format=zip', 'Zip Archive',
                       'application/zip', 'zip')
 
         youngest_rev = svn.fs.youngest_rev(self.fs_ptr, self.pool)
@@ -466,13 +466,14 @@ class Changeset(Module):
             raise authzperm.AuthzPermissionError()
         
         if self.rev > 1:
-            self.add_link('first', self.env.href.changeset(1), 'Changeset 1')
-            self.add_link('prev', self.env.href.changeset(self.rev - 1),
+            self.add_link(req, 'first', self.env.href.changeset(1),
+                          'Changeset 1')
+            self.add_link(req, 'prev', self.env.href.changeset(self.rev - 1),
                           'Changeset %d' % (self.rev - 1))
         if self.rev < youngest_rev:
-            self.add_link('next', self.env.href.changeset(self.rev + 1),
+            self.add_link(req, 'next', self.env.href.changeset(self.rev + 1),
                           'Changeset %d' % (self.rev + 1))
-            self.add_link('last', self.env.href.changeset(youngest_rev),
+            self.add_link(req, 'last', self.env.href.changeset(youngest_rev),
                           'Changeset %d' % youngest_rev)
 
         format = req.args.get('format')
