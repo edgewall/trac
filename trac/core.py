@@ -141,7 +141,7 @@ def add_args_to_hdf(args, hdf):
     for key in args.keys():
         hdf.setValue('args.' + key, str(args[key]))
 
-def module_factory(args, env, db, req, href):
+def module_factory(args, env, db, req):
     mode = args.get('mode', 'wiki')
     module_name, constructor_name, need_svn = modules[mode]
     module = __import__(module_name,
@@ -157,7 +157,7 @@ def module_factory(args, env, db, req, href):
     module.db = db
     module.perm = perm.PermissionCache(module.db, req.authname)
     module.perm.add_to_hdf(req.hdf)
-    module.href = href
+#    module.href = href
     # Only open the subversion repository for the modules that really
     # need it. This saves us some precious time.
     if need_svn:
@@ -182,7 +182,7 @@ def open_environment():
 class RedirectException(Exception):
     pass
 
-def populate_hdf(hdf, env, db, href, req):
+def populate_hdf(hdf, env, db, req):
     sql_to_hdf(db, "SELECT name FROM enum WHERE type='priority' "
                "ORDER BY value", hdf, 'enums.priority')
     sql_to_hdf(db, "SELECT name FROM enum WHERE type='severity' "
@@ -193,16 +193,16 @@ def populate_hdf(hdf, env, db, href, req):
     hdf.setValue('project.name', env.get_config('project', 'name'))
     hdf.setValue('project.descr', env.get_config('project', 'descr'))
     
-    hdf.setValue('trac.href.wiki', href.wiki())
-    hdf.setValue('trac.href.browser', href.browser('/'))
-    hdf.setValue('trac.href.timeline', href.timeline())
-    hdf.setValue('trac.href.report', href.report())
-    hdf.setValue('trac.href.newticket', href.newticket())
-    hdf.setValue('trac.href.search', href.search())
-    hdf.setValue('trac.href.about', href.about())
-    hdf.setValue('trac.href.about_config', href.about('config/'))
-    hdf.setValue('trac.href.login', href.login())
-    hdf.setValue('trac.href.logout', href.logout())
+    hdf.setValue('trac.href.wiki', env.href.wiki())
+    hdf.setValue('trac.href.browser', env.href.browser('/'))
+    hdf.setValue('trac.href.timeline', env.href.timeline())
+    hdf.setValue('trac.href.report', env.href.report())
+    hdf.setValue('trac.href.newticket', env.href.newticket())
+    hdf.setValue('trac.href.search', env.href.search())
+    hdf.setValue('trac.href.about', env.href.about())
+    hdf.setValue('trac.href.about_config', env.href.about('config/'))
+    hdf.setValue('trac.href.login', env.href.login())
+    hdf.setValue('trac.href.logout', env.href.logout())
     hdf.setValue('trac.href.homepage', 'http://trac.edgewall.com/')
     hdf.setValue('trac.version', __version__)
     hdf.setValue('trac.time', time.strftime('%c', time.localtime()))
@@ -219,7 +219,7 @@ def populate_hdf(hdf, env, db, href, req):
                      + '/' + env.get_config('header_logo', 'src'))
     hdf.setValue('header_logo.width', env.get_config('header_logo', 'width'))
     hdf.setValue('header_logo.height', env.get_config('header_logo', 'height'))
-    hdf.setValue('trac.href.logout', href.logout())
+    hdf.setValue('trac.href.logout', env.href.logout())
     if req:
         hdf.setValue('cgi_location', req.cgi_location)
         hdf.setValue('trac.authname', req.authname)
@@ -338,9 +338,9 @@ def send_pretty_error(e, env, req=None):
         req.authname = ''
         req.init_request()
     try:
-        href = Href.Href(req.cgi_location)
+        env.href = Href.Href(req.cgi_location)
         cnx = env.get_db_cnx()
-        populate_hdf(req.hdf, env, cnx, href, req)
+        populate_hdf(req.hdf, env, cnx, req)
 
         if isinstance(e, util.TracError):
             req.hdf.setValue('title', e.title or 'Error')
@@ -384,20 +384,21 @@ def real_cgi_start():
     req = CGIRequest()
     req.init_request()
 
-    href = Href.Href(req.cgi_location)
+    if not hasattr(env, 'href') or not env.href:
+        env.href = Href.Href(req.cgi_location)
 
     authenticator = auth.Authenticator(database, req)
     if path_info == '/logout':
         authenticator.logout()
         try:
-            req.redirect (http_referer or href.wiki())
+            req.redirect (http_referer or env.href.wiki())
         except RedirectException:
             pass
     elif req.remote_user and authenticator.authname == 'anonymous':
         auth_cookie = authenticator.login(req)
     if path_info == '/login':
         try:
-            req.redirect (http_referer or href.wiki())
+            req.redirect (http_referer or env.href.wiki())
         except RedirectException:
             pass
             
@@ -410,7 +411,7 @@ def real_cgi_start():
     try:
         pool = None
         # Load the selected module
-        module = module_factory(args, env, database, req, href)
+        module = module_factory(args, env, database, req)
         pool = module.pool
         module.run()
     finally:

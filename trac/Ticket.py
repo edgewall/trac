@@ -173,7 +173,7 @@ class Ticket (Module):
                             now, id)
             self.db.commit()
         # Notify
-        tn = TicketNotifyEmail(self.env, self.href)
+        tn = TicketNotifyEmail(self.env)
         tn.notify(id, newticket=0, modtime=now)
 
     def create_ticket(self):
@@ -213,11 +213,11 @@ class Ticket (Module):
         self.db.commit()
 
         # Notify
-        tn = TicketNotifyEmail(self.env, self.href)
+        tn = TicketNotifyEmail(self.env)
         tn.notify(id, newticket=1)
         
         # redirect to the Ticket module to get a GET request
-        self.req.redirect(self.href.ticket(id))
+        self.req.redirect(self.env.href.ticket(id))
         
     def insert_ticket_data(self, hdf, id):
         """Inserts ticket data into the hdf"""
@@ -249,10 +249,9 @@ class Ticket (Module):
             hdf.setValue('ticket.changes.%d.old' % idx, old)
             if field == 'comment':
                 hdf.setValue('ticket.changes.%d.new' % idx,
-                                      wiki_to_html(new, self.req.hdf,
-                                                   self.href, self.env))
+                             wiki_to_html(new, self.req.hdf, self.env))
             elif field == 'attachment':
-                tag = '<a href="%s">%s</a>' % (self.href.attachment('ticket', str(id), new), new)
+                tag = '<a href="%s">%s</a>' % (self.env.href.attachment('ticket', str(id), new), new)
                 hdf.setValue('ticket.changes.%d.new' % idx, tag)
             else:
                 hdf.setValue('ticket.changes.%d.new' % idx, new)
@@ -264,7 +263,7 @@ class Ticket (Module):
         for file in files:
             hdf.setValue('ticket.attachments.%d.name' % idx, file)
             hdf.setValue('ticket.attachments.%d.href' % idx,
-                         self.href.attachment('ticket', str(id), file))
+                         self.env.href.attachment('ticket', str(id), file))
             idx += 1
 
     def render (self):
@@ -275,14 +274,14 @@ class Ticket (Module):
         try:
             id = int(self.args['id'])
         except:
-            self.req.redirect(self.href.menu())
+            self.req.redirect(self.env.href.menu())
 
         if action in ['leave', 'accept', 'reopen', 'resolve', 'reassign']:
             # save changes and redirect to avoid the POST request
             old = self.get_ticket(id, 0)
             self.perm.assert_permission (perm.TICKET_MODIFY)
             self.save_changes (id, old, self.args)
-            self.req.redirect(self.href.ticket(id))
+            self.req.redirect(self.env.href.ticket(id))
         
         self.perm.assert_permission (perm.TICKET_VIEW)
         
@@ -306,7 +305,7 @@ class Ticket (Module):
         self.insert_ticket_data(self.req.hdf, id)
         self.req.hdf.setValue('ticket.description',
                               wiki_to_html(info['description'], self.req.hdf,
-                                           self.href, self.env))
+                                           self.env))
         self.req.hdf.setValue('ticket.opened',
                               time.strftime('%c',
                                             time.localtime(int(info['time']))))

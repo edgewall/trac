@@ -88,17 +88,17 @@ class Search(Module):
                 self.req.hdf.setValue('search.q', query)
             # Ticket quickjump
             elif kwd[0] == '#' and kwd[1:].isdigit():
-                redir = self.href.ticket(kwd[1:])
+                redir = self.env.href.ticket(kwd[1:])
             # Changeset quickjump
             elif kwd[0] == '[' and kwd[-1] == ']' and kwd[1:-1].isdigit():
-                redir = self.href.changeset(kwd[1:-1])
+                redir = self.env.href.changeset(kwd[1:-1])
             # Report quickjump
             elif kwd[0] == '{' and kwd[-1] == '}' and kwd[1:-1].isdigit():
-                redir = self.href.report(kwd[1:-1])
+                redir = self.env.href.report(kwd[1:-1])
             elif kwd[0].isupper() and kwd[1].islower():
                 r = "((^|(?<=[^A-Za-z]))[!]?[A-Z][a-z/]+(?:[A-Z][a-z/]+)+)"
                 if re.match (r, kwd):
-                    redir = self.href.wiki(kwd)
+                    redir = self.env.href.wiki(kwd)
             if redir:
                 self.req.hdf.setValue('search.q', '')
                 self.req.redirect(redir)
@@ -155,11 +155,11 @@ class Search(Module):
                     'datetime' : time.strftime('%c', t),
                     'author': row['author']}
             if item['type'] == 1:
-                item['changeset_href'] = self.href.changeset(int(row['data']))
+                item['changeset_href'] = self.env.href.changeset(int(row['data']))
             elif item['type'] == 2:
-                item['ticket_href'] = self.href.ticket(int(row['data']))
+                item['ticket_href'] = self.env.href.ticket(int(row['data']))
             elif item['type'] == 3:
-                item['wiki_href'] = self.href.wiki(row['data'])
+                item['wiki_href'] = self.env.href.wiki(row['data'])
 
             shortmsg = shorten_line(msg)
             item['shortmsg'] = shortmsg

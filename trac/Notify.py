@@ -42,12 +42,11 @@ class Notify:
     hdf = None
     cs = None
     
-    def __init__(self, env, msg_template, href):
+    def __init__(self, env, msg_template):
         self.env = env
         self.db = env.get_db_cnx()
         self.hdf = neo_util.HDF()
-        self.href = href
-        core.populate_hdf(self.hdf, env, self.db, self.href, None)
+        core.populate_hdf(self.hdf, env, self.db, None)
         tmpl = os.path.join(env.get_config('general','templates_dir'), msg_template)
         self.cs = neo_cs.CS(self.hdf)
         self.cs.parseFile(tmpl)
@@ -157,8 +156,8 @@ else:
         from_email = 'trac+ticket@localhost'
         COLS = 75
 
-        def __init__(self, env, href):
-            NotifyEmail.__init__(self, env, self.template_name, href)
+        def __init__(self, env):
+            NotifyEmail.__init__(self, env, self.template_name)
 
         def notify(self, tktid, newticket=1, modtime=0):
             self.ticket = Ticket.get_ticket(self.db, tktid)
@@ -166,7 +165,7 @@ else:
             self.newticket = newticket
             self.ticket['description'] = wrap(self.ticket['description'],
                                               self.COLS)
-            self.ticket['link'] = self.href.ticket(tktid)
+            self.ticket['link'] = self.env.href.ticket(tktid)
             add_dict_to_hdf(self.ticket, self.hdf, 'ticket')
             self.hdf.setValue('email.ticket_props', self.format_props())
             self.hdf.setValue('email.ticket_body_hdr', self.format_hdr())

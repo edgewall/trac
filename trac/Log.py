@@ -42,10 +42,10 @@ class Log (Module):
             'date'   : svn_date_to_string (date, pool),
             'gmt'    : time.strftime('%a, %d %b %Y %H:%M:%S GMT', gmt),
             'log.raw'    : escape(log),
-            'log'    : wiki_to_oneliner(log, self.req.hdf, self.href, self.env),
+            'log'    : wiki_to_oneliner(log, self.req.hdf, self.env),
             'shortlog' : escape(shortlog),
-            'file_href': self.href.file(self.path, rev),
-            'changeset_href': self.href.changeset(rev)
+            'file_href': self.env.href.file(self.path, rev),
+            'changeset_href': self.env.href.changeset(rev)
             }
         self.log_info.insert (0, item)
 
@@ -60,9 +60,9 @@ class Log (Module):
         list = self.path.split('/')
         path = '/'
         self.req.hdf.setValue('log.filename', list[-1])
-        self.req.hdf.setValue('log.href' , self.href.log(self.path))
+        self.req.hdf.setValue('log.href' , self.env.href.log(self.path))
         self.req.hdf.setValue('log.path.0', '[root]')
-        self.req.hdf.setValue('log.path.0.url' , self.href.browser(path))
+        self.req.hdf.setValue('log.path.0.url' , self.env.href.browser(path))
         i = 0
         for part in list[:-1]:
             i = i + 1
@@ -71,7 +71,7 @@ class Log (Module):
             path = path + part + '/'
             self.req.hdf.setValue('log.path.%d' % i, part)
             self.req.hdf.setValue('log.path.%d.url' % i,
-                                  self.href.browser(path))
+                                  self.env.href.browser(path))
 
     def render (self):
         self.perm.assert_permission (perm.LOG_VIEW)

@@ -1,4 +1,4 @@
-def execute(hdf, txt, env, href):
+def execute(hdf, txt, env):
     # Currently hdf is set only when the macro is called
     # From a wiki page
     if hdf:

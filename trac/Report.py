@@ -135,7 +135,7 @@ class Report (Module):
                         'VALUES (NULL, %s, %s, %s)', title, sql, description)
         id = self.db.db.sqlite_last_insert_rowid()
         self.db.commit()
-        self.req.redirect(self.href.report(id))
+        self.req.redirect(self.env.href.report(id))
 
     def delete_report(self, id):
         self.perm.assert_permission(perm.REPORT_DELETE)
@@ -143,7 +143,7 @@ class Report (Module):
         cursor = self.db.cursor ()
         cursor.execute('DELETE FROM report WHERE id=%s', id)
         self.db.commit()
-        self.req.redirect(self.href.report())
+        self.req.redirect(self.env.href.report())
 
     def commit_changes(self, id):
         """
@@ -160,7 +160,7 @@ class Report (Module):
                        ' WHERE id=%s',
                        title, sql, description, id)
         self.db.commit()
-        self.req.redirect(self.href.report(id))
+        self.req.redirect(self.env.href.report(id))
 
     def render_report_editor(self, id, action='commit', copy=0):
         self.perm.assert_permission(perm.REPORT_MODIFY)
@@ -193,18 +193,18 @@ class Report (Module):
         """
         if self.perm.has_permission(perm.REPORT_CREATE):
             self.req.hdf.setValue('report.create_href',
-                                  self.href.report(None, 'new'))
+                                  self.env.href.report(None, 'new'))
             
         if id != -1:
             if self.perm.has_permission(perm.REPORT_MODIFY):
                 self.req.hdf.setValue('report.edit_href',
-                                      self.href.report(id, 'edit'))
+                                      self.env.href.report(id, 'edit'))
             if self.perm.has_permission(perm.REPORT_CREATE):
                 self.req.hdf.setValue('report.copy_href',
-                                      self.href.report(id, 'copy'))
+                                      self.env.href.report(id, 'copy'))
             if self.perm.has_permission(perm.REPORT_DELETE):
                 self.req.hdf.setValue('report.delete_href',
-                                      self.href.report(id, 'delete'))
+                                      self.env.href.report(id, 'delete'))
 
         self.req.hdf.setValue('report.mode', 'list')
         info = self.get_info(id, args)
@@ -216,7 +216,7 @@ class Report (Module):
         self.req.hdf.setValue('title', title + ' (report)')
         self.req.hdf.setValue('report.title', title)
         self.req.hdf.setValue('report.id', str(id))
-        descr_html = wiki_to_html(description, self.req.hdf, self.href, self.env)
+        descr_html = wiki_to_html(description, self.req.hdf, self.env)
         self.req.hdf.setValue('report.description', descr_html)
 
         # Convert the header info to HDF-format
@@ -281,12 +281,11 @@ class Report (Module):
                     value['hidehtml'] = 1
                     column = column[1:]
                 if column in ['ticket', '#']:
-                    value['ticket_href'] = self.href.ticket(cell)
+                    value['ticket_href'] = self.env.href.ticket(cell)
                 elif column == 'description':
-                    value['parsed'] = wiki_to_html(cell, self.req.hdf,
-                                                   self.href, self.env)
+                    value['parsed'] = wiki_to_html(cell, self.req.hdf, self.env)
                 elif column == 'report':
-                    value['report_href'] = self.href.report(cell)
+                    value['report_href'] = self.env.href.report(cell)
                 elif column in ['time', 'date','changetime', 'created', 'modified']:
                     t = time.localtime(int(cell))
                     value['date'] = time.strftime('%x', t)

@@ -24,7 +24,7 @@ import core
 
 class Module:
     def run(self):
-        core.populate_hdf(self.req.hdf, self.env, self.db, self.href, self.req)
+        core.populate_hdf(self.req.hdf, self.env, self.db, self.req)
         self.req.hdf.setValue('trac.active_module', self._name)
         try:
             disp = getattr(self, 'display_' + self.args['format'])

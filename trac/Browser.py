@@ -45,9 +45,9 @@ class Browser(Module):
         # to point to a regular file
         if fs.is_file(root, path, self.pool):
             if rev_specified:
-                self.req.redirect(self.href.file(path, revision))
+                self.req.redirect(self.env.href.file(path, revision))
             else:
-                self.req.redirect(self.href.log(path))
+                self.req.redirect(self.env.href.log(path))
             
         entries = fs.dir_entries(root, path, self.pool)
         info = []
@@ -85,10 +85,10 @@ class Browser(Module):
                 'size'       : self.pretty_size(size),
                 'size_bytes' : size }
             if is_dir:
-                item['browser_href'] = self.href.browser(fullpath)
+                item['browser_href'] = self.env.href.browser(fullpath)
             else:
-                item['log_href'] = self.href.log(fullpath)
-                item['rev_href'] = self.href.file(fullpath, revision)
+                item['log_href'] = self.env.href.log(fullpath)
+                item['rev_href'] = self.env.href.file(fullpath, revision)
                 
             info.append(item)
         return info
@@ -105,7 +105,7 @@ class Browser(Module):
         list = path[1:].split('/')
         path = '/'
         self.req.hdf.setValue('browser.path.0', '[root]')
-        self.req.hdf.setValue('browser.path.0.url' , self.href.browser(path))
+        self.req.hdf.setValue('browser.path.0.url' , self.env.href.browser(path))
         i = 0
         for part in list:
             i = i + 1
@@ -114,7 +114,7 @@ class Browser(Module):
             path = path + part + '/'
             self.req.hdf.setValue('browser.path.%d' % i, part)
             self.req.hdf.setValue('browser.path.%d.url' % i,
-                                  self.href.browser(path))
+                                  self.env.href.browser(path))
 
     def render(self):
         self.perm.assert_permission (perm.BROWSER_VIEW)
@@ -157,10 +157,10 @@ class Browser(Module):
         if path != '/':
             parent = string.join(path.split('/')[:-2], '/') + '/'
             self.req.hdf.setValue('browser.parent_href',
-                                  self.href.browser(parent))
+                                  self.env.href.browser(parent))
 
         self.req.hdf.setValue('title', path + ' (browser)')
         self.req.hdf.setValue('browser.path', path)
         self.req.hdf.setValue('browser.revision', str(rev))
         self.req.hdf.setValue('browser.sort_order', order)
-        self.req.hdf.setValue('browser.current_href', self.href.browser(path))
+        self.req.hdf.setValue('browser.current_href', self.env.href.browser(path))

@@ -128,10 +128,10 @@ def trac(href, name,arguments,options,content,lineno,
             line=lineno)
     return [warning]
 
-def execute(hdf, text, env, href): 
+def execute(hdf, text, env): 
     def do_trac(name,arguments,options,content,lineno,
                 content_offset,block_text,state,state_machine):
-        return trac(href, name,arguments,options,content,lineno,
+        return trac(env.href, name,arguments,options,content,lineno,
                     content_offset,block_text,state,state_machine)
     # 1 required arg, 1 optional arg, spaces allowed in last arg
     do_trac.arguments = (1,1,1)    
