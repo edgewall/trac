@@ -94,8 +94,8 @@ class Report (Module):
             description = 'This is a list of reports available.'
         else:
             cursor = self.db.cursor()
-            cursor.execute('SELECT title, sql, description from report '
-                           ' WHERE id=%s', id)
+            cursor.execute("SELECT title,sql,description from report "
+                           "WHERE id=%s", (id,))
             row = cursor.fetchone()
             if not row:
                 raise util.TracError('Report %d does not exist.' % id,
@@ -110,8 +110,8 @@ class Report (Module):
         self.perm.assert_permission(perm.REPORT_CREATE)
 
         cursor = self.db.cursor()
-        cursor.execute("INSERT INTO report (title, sql, description)"
-                       " VALUES (%s, %s, %s)", title, sql, description)
+        cursor.execute("INSERT INTO report (title,sql,description) "
+                       "VALUES (%s,%s,%s)", (title, sql, description))
         id = self.db.db.sqlite_last_insert_rowid()
         self.db.commit()
         req.redirect(self.env.href.report(id))
@@ -121,7 +121,7 @@ class Report (Module):
 
         if not req.args.has_key('cancel'):
             cursor = self.db.cursor ()
-            cursor.execute('DELETE FROM report WHERE id=%s', id)
+            cursor.execute("DELETE FROM report WHERE id=%s", (id,))
             self.db.commit()
             req.redirect(self.env.href.report())
         else:
@@ -157,9 +157,8 @@ class Report (Module):
             sql = req.args.get('sql', '')
             description = req.args.get('description', '')
 
-            cursor.execute('UPDATE report SET title=%s, sql=%s, description=%s '
-                           ' WHERE id=%s',
-                           title, sql, description, id)
+            cursor.execute("UPDATE report SET title=%s,sql=%s,description=%s "
+                           "WHERE id=%s", (title, sql, description, id))
             self.db.commit()
         req.redirect(self.env.href.report(id))
 
@@ -167,7 +166,7 @@ class Report (Module):
         self.perm.assert_permission(perm.REPORT_DELETE)
 
         cursor = self.db.cursor()
-        cursor.execute('SELECT title FROM report WHERE id = %s', id)
+        cursor.execute("SELECT title FROM report WHERE id = %s", (id,))
         row = cursor.fetchone()
         if not row:
             raise util.TracError('Report %s does not exist.' % id,
@@ -184,8 +183,8 @@ class Report (Module):
             title = sql = description = ''
         else:
             cursor = self.db.cursor()
-            cursor.execute('SELECT title, description, sql FROM report '
-                           ' WHERE id=%s', id)
+            cursor.execute("SELECT title,description,sql FROM report "
+                           "WHERE id=%s", (id,))
             row = cursor.fetchone()
             if not row:
                 raise util.TracError('Report %s does not exist.' % id,
@@ -462,7 +461,7 @@ class Report (Module):
         if title:
             req.write('-- ## %s: %s ## --\n\n' % (rid, title))
         cursor = self.db.cursor()
-        cursor.execute('SELECT sql,description FROM report WHERE id=%s', rid)
+        cursor.execute("SELECT sql,description FROM report WHERE id=%s", (rid,))
         row = cursor.fetchone()
         sql = row[0] or ''
         if row[1]:

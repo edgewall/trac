@@ -63,10 +63,10 @@ class Session(UserDict):
 
     def get_session(self, sid):
         self.sid = sid
-        curs = self.db.cursor()
-        curs.execute("SELECT username,var_name,var_value FROM session"
-                    " WHERE sid=%s", self.sid)
-        rows = curs.fetchall()
+        cursor = self.db.cursor()
+        cursor.execute("SELECT username,var_name,var_value FROM session "
+                       "WHERE sid=%s", (self.sid,))
+        rows = cursor.fetchall()
         if (not rows                              # No session data yet
             or rows[0][0] == 'anonymous'          # Anon session
             or rows[0][0] == self.req.authname):  # Session is mine
@@ -95,14 +95,14 @@ class Session(UserDict):
     def change_sid(self, newsid):
         if newsid == self.sid:
             return
-        curs = self.db.cursor()
-        curs.execute("SELECT sid FROM session WHERE sid=%s", newsid)
-        if curs.fetchone():
+        cursor = self.db.cursor()
+        cursor.execute("SELECT sid FROM session WHERE sid=%s", (newsid,))
+        if cursor.fetchone():
             raise TracError("Session '%s' already exists.<br />"
                             "Please choose a different session id." % newsid,
                             "Error renaming session")
-        curs.execute("UPDATE session SET sid=%s WHERE sid=%s",
-                     newsid, self.sid)
+        cursor.execute("UPDATE session SET sid=%s WHERE sid=%s",
+                       (newsid, self.sid))
         self.db.commit()
         self.sid = newsid
         self.bake_cookie()
@@ -128,20 +128,20 @@ class Session(UserDict):
         # the database
         for k,v in self.data.items():
             if not self._old.has_key(k):
-                cursor.execute("INSERT INTO session(sid,username,var_name,"
+                cursor.execute("INSERT INTO session (sid,username,var_name,"
                                "var_value) VALUES(%s,%s,%s,%s)",
-                               self.sid, self.req.authname, k, v)
+                               (self.sid, self.req.authname, k, v))
                 changed = 1
             elif v != self._old[k]:
                 cursor.execute("UPDATE session SET var_value=%s WHERE sid=%s "
-                               "AND var_name=%s", v, self.sid, k)
+                               "AND var_name=%s", (v, self.sid, k))
                 changed = 1
 
         # Find all variables that have been deleted and also remove them from
         # the database
         for k in [k for k in self._old.keys() if not self.data.has_key(k)]:
             cursor.execute("DELETE FROM session WHERE sid=%s AND var_name=%s",
-                           self.sid, k)
+                           (self.sid, k))
             changed = 1
 
         if changed:
@@ -149,9 +149,8 @@ class Session(UserDict):
             # changed as to minimize the purging.
             mintime = now - PURGE_AGE
             self.env.log.debug('Purging old, expired, sessions.')
-            cursor.execute("DELETE FROM session WHERE sid IN"
-                           " (SELECT sid FROM session"
-                           "  WHERE var_name='last_visit' AND var_value < %s)",
-                           mintime)
+            cursor.execute("DELETE FROM session WHERE sid IN (SELECT sid "
+                           "FROM session WHERE var_name='last_visit' AND "
+                           "var_value < %s)", (mintime,))
 
             self.db.commit()

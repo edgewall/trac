@@ -157,8 +157,8 @@ class Milestone(Module):
         cursor = self.db.cursor()
         self.log.debug("Creating new milestone '%s'" % name)
         cursor.execute("INSERT INTO milestone (name,due,completed,description) "
-                       "VALUES (%s,%s,%s,%s)", name, due, completed,
-                       description)
+                       "VALUES (%s,%s,%s,%s)",
+                       (name, due, completed, description)
         self.db.commit()
         req.redirect(self.env.href.milestone(name))
 
@@ -173,15 +173,15 @@ class Milestone(Module):
                     self.log.info('Retargeting milestone field of all '
                                   'tickets associated with milestone %s to '
                                   'milestone %s' % (id, target))
-                    cursor.execute ('UPDATE ticket SET milestone=%s '
-                                    'WHERE milestone=%s', target, id)
+                    cursor.execute("UPDATE ticket SET milestone=%s "
+                                   "WHERE milestone=%s", (target, id))
                 else:
                     self.log.info('Resetting milestone field of all '
                                   'tickets associated with milestone %s' % id)
-                    cursor.execute ('UPDATE ticket SET milestone=NULL '
-                                    'WHERE milestone=%s', id)
+                    cursor.execute("UPDATE ticket SET milestone=NULL "
+                                   "WHERE milestone=%s", (id,))
             self.log.info('Deleting milestone %s' % id)
-            cursor.execute("DELETE FROM milestone WHERE name = %s", id)
+            cursor.execute("DELETE FROM milestone WHERE name=%s", (id,))
             self.db.commit()
             req.redirect(self.env.href.roadmap())
         else:
@@ -195,10 +195,10 @@ class Milestone(Module):
             self.log.info('Updating milestone field of all tickets '
                           'associated with milestone %s' % id)
             cursor.execute("UPDATE ticket SET milestone=%s "
-                           "WHERE milestone=%s", name, id)
-            cursor.execute("UPDATE milestone SET name=%s, due=%s, "
-                           "completed=%s, description=%s WHERE name=%s",
-                           name, due, completed, description, id)
+                           "WHERE milestone=%s", (name, id))
+            cursor.execute("UPDATE milestone SET name=%s,due=%s,"
+                           "completed=%s,description=%s WHERE name=%s",
+                           (name, due, completed, description, id))
             self.db.commit()
             req.redirect(self.env.href.milestone(name))
         else:
@@ -209,10 +209,10 @@ class Milestone(Module):
         groups = []
         if by in ['status', 'resolution', 'severity', 'priority']:
             cursor.execute("SELECT name FROM enum WHERE type = %s "
-                           "AND COALESCE(name,'')!='' ORDER BY value", by)
+                           "AND COALESCE(name,'')!='' ORDER BY value", (by,))
         elif by in ['component', 'milestone', 'version']:
             cursor.execute("SELECT name FROM %s "
-                           "WHERE COALESCE(name,'')!='' ORDER BY name" % by)
+                           "WHERE COALESCE(name,'')!='' ORDER BY name" % (by,))
         elif by == 'owner':
             cursor.execute("SELECT DISTINCT owner AS name FROM ticket "
                            "ORDER BY owner")
@@ -232,7 +232,7 @@ class Milestone(Module):
     def get_milestone(self, req, name):
         cursor = self.db.cursor()
         cursor.execute("SELECT name, due, completed, description "
-                       "FROM milestone WHERE name = %s", name)
+                       "FROM milestone WHERE name = %s", (name,))
         row = cursor.fetchone()
         cursor.close()
         if not row:

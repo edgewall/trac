@@ -63,7 +63,7 @@ class Authenticator:
         cookie = util.hex_entropy()
         cursor = self.db.cursor()
         cursor.execute("INSERT INTO auth_cookie (cookie,name,ipnr,time) "
-                       "VALUES (%s, %s, %s, %d)",
+                       "VALUES (%s, %s, %s, %s)",
                        (cookie, req.remote_user, req.remote_addr,
                         int(time.time())));
         self.db.commit()

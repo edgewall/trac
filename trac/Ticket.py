@@ -56,34 +56,33 @@ class Ticket(UserDict):
         self._old = {}
 
     def _fetch_ticket(self, db, id):
-        cursor = db.cursor ()
-        fetch = string.join(Ticket.std_fields, ',')
-        cursor.execute(('SELECT %s FROM ticket ' % fetch) + 'WHERE id=%s', id)
-        row = cursor.fetchone ()
-        cursor.close ()
-
+        # Fetch the standard ticket fields
+        cursor = db.cursor()
+        cursor.execute("SELECT %s FROM ticket WHERE id=%%s"
+                       % ','.join(Ticket.std_fields), (id,))
+        row = cursor.fetchone()
         if not row:
             raise util.TracError('Ticket %d does not exist.' % id,
                                  'Invalid Ticket Number')
 
         self['id'] = id
-        # Escape the values so that they are safe to have as html parameters
         for i in range(len(Ticket.std_fields)):
             self[Ticket.std_fields[i]] = row[i] or ''
 
-        cursor = db.cursor ()
-        cursor.execute('SELECT name,value FROM ticket_custom WHERE ticket=%i', id)
+        # Fetch custom fields if available
+        cursor.execute("SELECT name,value FROM ticket_custom WHERE ticket=%s",
+                       (id,))
         rows = cursor.fetchall()
         if rows:
-            for r in rows:
-                self['custom_' + r[0]] = r[1]
+            for row in rows:
+                self['custom_' + row[0]] = row[1]
         self._forget_changes()
 
     def populate(self, dict):
         """Populate the ticket with 'suitable' values from a dictionary"""
-        names = filter(lambda n: n in Ticket.std_fields or \
-                       n[:7] == 'custom_', dict.keys())
-        for name in names:
+        def is_field(name):
+            return name in Ticket.std_fields or name[:7] == 'custom_'
+        for name in filter(is_field, dict.keys()):
             self[name] = dict.get(name, '')
 
         # We have to do an extra trick to catch unchecked checkboxes
@@ -94,7 +93,6 @@ class Ticket(UserDict):
 
     def insert(self, db):
         """Add ticket to database"""
-        cursor = db.cursor()
         assert not self.has_key('id')
 
         # Add a timestamp
@@ -102,17 +100,19 @@ class Ticket(UserDict):
         self['time'] = now
         self['changetime'] = now
 
-        std_fields = filter(lambda n: n[:7] != 'custom_', self.keys())
-        custom_fields = filter(lambda n: n[:7] == 'custom_', self.keys())
-        std_values = map(lambda n, self=self: self[n], std_fields)
-        nstr = string.join(std_fields, ',')
-        vstr = ('%s,' * len(std_fields))[:-1]
-        cursor.execute('INSERT INTO ticket (%s) VALUES(%s)' % (nstr, vstr),
-                       *std_values)
+        cursor = db.cursor()
+
+        std_fields = filter(lambda n: n in Ticket.std_fields, self.keys())
+        cursor.execute("INSERT INTO ticket (%s) VALUES (%s)"
+                       % (','.join(std_fields),
+                          ','.join(['%s'] * len(std_fields))),
+                       map(lambda n, self=self: self[n], std_fields))
         id = db.db.sqlite_last_insert_rowid()
+
+        custom_fields = filter(lambda n: n[:7] == 'custom_', self.keys())
         for name in custom_fields:
-            cursor.execute('INSERT INTO ticket_custom(ticket,name,value)'
-                           ' VALUES(%d, %s, %s)', id, name[7:], self[name])
+            cursor.execute("INSERT INTO ticket_custom(ticket,name,value) "
+                           "VALUES(%s,%s,%s)", (id, name[7:], self[name]))
         db.commit()
         self['id'] = id
         self._forget_changes()
@@ -133,81 +133,81 @@ class Ticket(UserDict):
         # is updated accordingly. (#623).
         if self['status'] == 'new' and self._old.has_key('component') and \
                not self._old.has_key('owner'):
-            cursor.execute('SELECT owner FROM component '
-                           'WHERE name=%s', self._old['component'])
+            cursor.execute("SELECT owner FROM component "
+                           "WHERE name=%s", (self._old['component'],))
             row = cursor.fetchone()
             # If the old component has been removed from the database
             # then we just leave the owner as is.
             if row:
                 old_owner = row[0]
                 if self['owner'] == old_owner:
-                    cursor.execute('SELECT owner FROM component '
-                                   'WHERE name=%s', self['component'])
+                    cursor.execute("SELECT owner FROM component "
+                                   "WHERE name=%s", (self['component'],))
                     self['owner'] = cursor.fetchone()[0]
 
         for name in self._old.keys():
             if name[:7] == 'custom_':
                 fname = name[7:]
-                cursor.execute('REPLACE INTO ticket_custom(ticket,name,value)'
-                               ' VALUES(%s, %s, %s)', id, fname, self[name])
+                cursor.execute("SELECT * FROM ticket_custom " 
+                               "WHERE ticket=%s and name=%s", (id, fname))
+                if cursor.fetchone():
+                    cursor.execute("UPDATE ticket_custom SET value=%s",
+                                   (self[name],))
+                else:
+                    cursor.execute("INSERT INTO ticket_custom (ticket,name,"
+                                   "value) VALUES(%s,%s,%s)",
+                                   (id, fname, self[name]))
             else:
                 fname = name
-                cursor.execute ('UPDATE ticket SET %s=%s WHERE id=%s',
-                                fname, self[name], id)
-
-            cursor.execute ('INSERT INTO ticket_change '
-                            '(ticket, time, author, field, oldvalue, newvalue) '
-                            'VALUES (%s, %s, %s, %s, %s, %s)',
-                            id, when, author, fname, self._old[name], self[name])
+                cursor.execute("UPDATE ticket SET %s=%s WHERE id=%s",
+                               (fname, self[name], id))
+            cursor.execute("INSERT INTO ticket_change "
+                           "(ticket,time,author,field,oldvalue,newvalue) "
+                           "VALUES (%s, %s, %s, %s, %s, %s)",
+                           (id, when, author, fname, self._old[name],
+                            self[name]))
         if comment:
-            cursor.execute ('INSERT INTO ticket_change '
-                            '(ticket,time,author,field,oldvalue,newvalue) '
-                            "VALUES (%s, %s, %s, 'comment', '', %s)",
-                            id, when, author, comment)
+            cursor.execute("INSERT INTO ticket_change "
+                           "(ticket,time,author,field,oldvalue,newvalue) "
+                           "VALUES (%s,%s,%s,'comment','',%s)",
+                           (id, when, author, comment))
 
-        cursor.execute ('UPDATE ticket SET changetime=%s WHERE id=%s', when, id)
+        cursor.execute("UPDATE ticket SET changetime=%s WHERE id=%s",
+                       (when, id))
         db.commit()
         self._forget_changes()
 
     def get_changelog(self, db, when=0):
-        """Returns the changelog as a list of dictionaries"""
+        """
+        Returns the changelog as a list of tuples of the form
+        (time, author, field, oldvalue, newvalue).
+        """
         cursor = db.cursor()
         if when:
-            cursor.execute('SELECT time, author, field, oldvalue, newvalue '
-                           'FROM ticket_change '
-                           'WHERE ticket=%s AND time=%s'
-                           'UNION '
-                           'SELECT time, author, "attachment", null, filename '
-                           'FROM attachment '
-                           'WHERE id=%s AND time=%s '
-                           'ORDER BY time',  self['id'], when, self['id'], when)
+            cursor.execute("SELECT time,author,field,oldvalue,newvalue "
+                           "FROM ticket_change "
+                           "WHERE ticket=%s AND time=%s "
+                           "UNION "
+                           "SELECT time, author, 'attachment', null, filename "
+                           "FROM attachment "
+                           "WHERE id=%s AND time=%s "
+                           "ORDER BY time",
+                           (self['id'], when, self['id'], when))
         else:
-            cursor.execute('SELECT time, author, field, oldvalue, newvalue '
-                           'FROM ticket_change '
-                           'WHERE ticket=%s '
-                           'UNION '
-                           'SELECT time, author, "attachment", null,filename '
-                           'FROM attachment '
-                           'WHERE id = %s '
-                           'ORDER BY time', self['id'],  self['id'])
+            cursor.execute("SELECT time,author,field,oldvalue,newvalue "
+                           "FROM ticket_change WHERE ticket=%s "
+                           "UNION "
+                           "SELECT time, author, 'attachment', null,filename "
+                           "FROM attachment WHERE id = %s "
+                           "ORDER BY time", (self['id'],  self['id']))
         log = []
         while 1:
             row = cursor.fetchone()
-            if not row: break
+            if not row:
+                break
             log.append((int(row[0]), row[1], row[2], row[3] or '', row[4] or ''))
         return log
 
-
-def cmp_by_order(a, b):
-    try:
-        return int(a['order']) - int(b['order'])
-    except:
-        if a['order'] < b['order']:
-            return -1
-        elif a['order'] > b['order']:
-            return 1
-        else:
-            return 0
 
 def get_custom_fields(env):
     cfg = env.get_config_items('ticket-custom')
@@ -234,6 +234,17 @@ def get_custom_fields(env):
             field['width'] = items.get(name + '.cols', '')
             field['height'] = items.get(name + '.rows', '')
         fields.append(field)
+
+    def cmp_by_order(a, b):
+        try:
+            return int(a['order']) - int(b['order'])
+        except:
+            if a['order'] < b['order']:
+                return -1
+            elif a['order'] > b['order']:
+                return 1
+            else:
+                return 0
 
     fields.sort(cmp_by_order)
     return fields
@@ -322,17 +333,17 @@ class NewticketModule(Module):
                                 map(lambda x: util.escape(x), ticket.values())))
         req.hdf['newticket'] = evals
 
-        util.sql_to_hdf(self.db, 'SELECT name FROM component ORDER BY name',
+        util.sql_to_hdf(self.db, "SELECT name FROM component ORDER BY name",
                         req.hdf, 'newticket.components')
-        util.sql_to_hdf(self.db, 'SELECT name FROM milestone ORDER BY name',
+        util.sql_to_hdf(self.db, "SELECT name FROM milestone ORDER BY name",
                         req.hdf, 'newticket.milestones')
-        util.sql_to_hdf(self.db, 'SELECT name FROM version ORDER BY name',
+        util.sql_to_hdf(self.db, "SELECT name FROM version ORDER BY name",
                         req.hdf, 'newticket.versions')
-        util.sql_to_hdf(self.db, "SELECT name FROM enum WHERE type='priority'"
-                                 " ORDER BY value",
+        util.sql_to_hdf(self.db, "SELECT name FROM enum WHERE type='priority' "
+                                 "ORDER BY value",
                         req.hdf, 'enums.priority')
-        util.sql_to_hdf(self.db, "SELECT name FROM enum WHERE type='severity'"
-                                 " ORDER BY value",
+        util.sql_to_hdf(self.db, "SELECT name FROM enum WHERE type='severity' "
+                                 "ORDER BY value",
                         req.hdf, 'enums.severity')
 
         insert_custom_fields(self.env, req.hdf, ticket)
@@ -388,11 +399,11 @@ class TicketModule (Module):
                                 map(lambda x: util.escape(x), ticket.values())))
         req.hdf['ticket'] = evals
 
-        util.sql_to_hdf(self.db, 'SELECT name FROM component ORDER BY name',
+        util.sql_to_hdf(self.db, "SELECT name FROM component ORDER BY name",
                         req.hdf, 'ticket.components')
-        util.sql_to_hdf(self.db, 'SELECT name FROM milestone ORDER BY name',
+        util.sql_to_hdf(self.db, "SELECT name FROM milestone ORDER BY name",
                         req.hdf, 'ticket.milestones')
-        util.sql_to_hdf(self.db, 'SELECT name FROM version ORDER BY name',
+        util.sql_to_hdf(self.db, "SELECT name FROM version ORDER BY name",
                         req.hdf, 'ticket.versions')
         util.sql_to_hdf(self.db, "SELECT name FROM enum WHERE type='priority'"
                                  " ORDER BY value",
@@ -427,7 +438,6 @@ class TicketModule (Module):
         changelog = ticket.get_changelog(self.db)
         curr_author = None
         curr_date   = 0
-        comment = None
         changes = []
         for date, author, field, old, new in changelog:
             if date != curr_date or author != curr_author:

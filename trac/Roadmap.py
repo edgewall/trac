@@ -170,8 +170,8 @@ class Roadmap(Module):
                 if ticket['status'] == 'closed':
                     cursor = self.db.cursor()
                     cursor.execute("SELECT time FROM ticket_change "
-                                   "WHERE ticket = %s AND field = 'status' "
-                                   "ORDER BY time desc LIMIT 1", ticket['id'])
+                                   "WHERE ticket=%s AND field='status' "
+                                   "ORDER BY time desc LIMIT 1", (ticket['id'],))
                     row = cursor.fetchone()
                     if row: write_utctime('COMPLETED', localtime(row['time']))
                 write_prop('END', 'VTODO')

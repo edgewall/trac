@@ -215,7 +215,7 @@ class Environment:
         cursor = cnx.cursor()
         cursor.execute('SELECT filename,description,type,size,time,author,ipnr '
                        'FROM attachment '
-                       'WHERE type=%s AND id=%s ORDER BY time', type, id)
+                       'WHERE type=%s AND id=%s ORDER BY time', (type, id))
         return cursor.fetchall()
     
     def get_attachments_hdf(self, cnx, type, id, hdf, prefix):
@@ -265,8 +265,8 @@ class Environment:
         filename = urllib.unquote(filename)
         cursor = cnx.cursor()
         cursor.execute('INSERT INTO attachment VALUES(%s,%s,%s,%s,%s,%s,%s,%s)',
-                       type, id, filename, length, int(time.time()),
-                       description, author, ipnr)
+                       (type, id, filename, length, int(time.time()),
+                       description, author, ipnr))
         shutil.copyfileobj(attachment.file, fd)
         self.log.info('New attachment: %s/%s/%s by %s', type, id, filename, author)
         cnx.commit()
@@ -278,7 +278,7 @@ class Environment:
                             urllib.quote(filename))
         cursor = cnx.cursor()
         cursor.execute('DELETE FROM attachment WHERE type=%s AND id=%s AND '
-                       'filename=%s', type, id, filename)
+                       'filename=%s', (type, id, filename))
         os.unlink(path)
         self.log.info('Attachment removed: %s/%s/%s', type, id, filename)
         cnx.commit()
@@ -316,8 +316,8 @@ class Environment:
                     err = 'No upgrade module for version %i (%s.py)' % (i, upg)
                     raise EnvironmentError, err
                 d.do_upgrade(self, i, cursor)
-            cursor.execute("UPDATE system SET value=%i WHERE "
-                           "name='database_version'", db_default.db_version)
+            cursor.execute("UPDATE system SET value=%s WHERE "
+                           "name='database_version'", (db_default.db_version))
             self.log.info('Upgraded db version from %d to %d',
                           dbver, db_default.db_version)
             cnx.commit()

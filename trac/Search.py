@@ -36,8 +36,7 @@ class Search(Module):
     def query_to_sql(self, q, name):
         self.log.debug("Query: %s" % q)
         if q[0] == q[-1] == "'" or q[0] == q[-1] == '"':
-            sql_q = "%s like '%%%s%%'" % (name, q[1:-1].replace('\'',
-                                                                '\'\''))
+            sql_q = "%s LIKE '%%%s%%'" % (name, q[1:-1].replace("'''", "''"))
         else:
             q = q.replace('\'', '\'\'')
             keywords = q.split(' ')
@@ -45,7 +44,7 @@ class Search(Module):
             sql_q = string.join(x, ' AND ')
         self.log.debug("SQL Condition: %s" % sql_q)
         return sql_q
-    
+
     def shorten_result(self, text='', keywords=[], maxlen=240, fuzz=60):
         if not text: text = ''
         text_low = text.lower()
@@ -56,7 +55,7 @@ class Search(Module):
                 beg = i
         excerpt_beg = 0
         if beg > fuzz:
-            for sep in ".:;= ":
+            for sep in ('.', ':', ';', '='):
                 eb = text.find(sep, beg - fuzz, beg - 1)
                 if eb > -1:
                     eb += 1
@@ -139,44 +138,43 @@ class Search(Module):
 
         q = []
         if changeset:
-            q.append('SELECT 1 as type, message AS title, message, author, '
-                     ' \'\' AS keywords, rev AS data, time,0 AS ver'
-                     ' FROM revision WHERE %s OR %s' % 
+            q.append("SELECT 1 as type, message AS title, message, author, "
+                     "'' AS keywords, rev AS data, time,0 AS ver "
+                     "FROM revision WHERE %s OR %s" %
                      (self.query_to_sql(query, 'message'),
                       self.query_to_sql(query, 'author')))
         if tickets:
-            q.append('SELECT DISTINCT 2 as type, a.summary AS title, '
-                     ' a.description AS message, a.reporter AS author, '
-                     ' a.keywords as keywords, a.id AS data, a.time as time, 0 AS ver'
-                     ' FROM ticket a LEFT JOIN ticket_change b ON a.id = b.ticket'
-                     ' WHERE (b.field=\'comment\' AND %s ) OR'
-                     ' %s OR %s OR %s OR %s OR %s' %
-                      (self.query_to_sql(query, 'b.newvalue'),
-                       self.query_to_sql(query, 'summary'),
-                       self.query_to_sql(query, 'keywords'),
-                       self.query_to_sql(query, 'description'),
-                       self.query_to_sql(query, 'reporter'),
-                       self.query_to_sql(query, 'cc')))
+            q.append("SELECT DISTINCT 2 as type, a.summary AS title, "
+                     "a.description AS message, a.reporter AS author, "
+                     "a.keywords as keywords, a.id AS data, a.time as time, 0 AS ver "
+                     "FROM ticket a LEFT JOIN ticket_change b ON a.id = b.ticket "
+                     "WHERE (b.field='comment' AND %s ) OR "
+                     "%s OR %s OR %s OR %s OR %s" %
+                     (self.query_to_sql(query, 'b.newvalue'),
+                      self.query_to_sql(query, 'summary'),
+                      self.query_to_sql(query, 'keywords'),
+                      self.query_to_sql(query, 'description'),
+                      self.query_to_sql(query, 'reporter'),
+                      self.query_to_sql(query, 'cc')))
         if wiki:
-            q.append('SELECT 3 as type, text AS title, text AS message,'
-                     ' author, \'\' AS keywords, w1.name AS data, time,'
-                     ' w1.version as ver'
-                     ' FROM wiki w1, '
-                     ' (SELECT name,max(version) AS ver '
-                     '    FROM wiki GROUP BY name) w2'
-                     ' WHERE w1.version = w2.ver AND w1.name = w2.name  AND'
-                     ' (%s OR %s OR %s) ' %
+            q.append("SELECT 3 as type, text AS title, text AS message,"
+                     "author, '' AS keywords, w1.name AS data, time,"
+                     "w1.version as ver "
+                     "FROM wiki w1,"
+                     "(SELECT name,max(version) AS ver "
+                     "FROM wiki GROUP BY name) w2 "
+                     "WHERE w1.version = w2.ver AND w1.name = w2.name  AND "
+                     "(%s OR %s OR %s)" %
                      (self.query_to_sql(query, 'w1.name'),
                       self.query_to_sql(query, 'w1.author'),
                       self.query_to_sql(query, 'w1.text')))
 
-        if not q: return []
+        if not q:
+            return [], 0
 
-        q_str = string.join(q, ' UNION ALL ')
-        q_str += ' ORDER BY 7 DESC LIMIT %d OFFSET %d' % \
-                 (self.RESULTS_PER_PAGE + 1, self.RESULTS_PER_PAGE * page)
-
-        self.log.debug("SQL Query: %s" % q_str)
+        q_str = ' UNION ALL '.join(q) + ' ORDER BY 7 DESC LIMIT %d OFFSET %d' \
+                % (self.RESULTS_PER_PAGE + 1, self.RESULTS_PER_PAGE * page)
+        self.log.debug('SQL Query: %s' % q_str)
         cursor.execute(q_str)
 
         # Make the data more HDF-friendly
