@@ -81,7 +81,7 @@ class Log (Module):
         return self.log_info
 
     def generate_path_links(self, rev, rev_specified):
-        list = self.path.split('/')
+        list = filter(None, self.path.split('/'))
         path = '/'
         self.req.hdf.setValue('log.filename', list[-1])
         self.req.hdf.setValue('log.href' , self.env.href.log(self.path))
@@ -94,11 +94,8 @@ class Log (Module):
         i = 0
         for part in list[:-1]:
             i = i + 1
-            if part == '':
-                continue
             path = path + part + '/'
             self.req.hdf.setValue('log.path.%d' % i, part)
-
             url = ''
             if rev_specified:
                 url = self.env.href.browser(path, rev)

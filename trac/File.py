@@ -223,7 +223,8 @@ class File(FileCommon):
     def generate_path_links(self, rev, rev_specified):
         # FIXME: Browser, Log and File should share implementation of this
         # function.
-        list = self.path.split('/')
+        list = filter(None, self.path.split('/'))
+        self.log.debug("Path links: %s" % list)
         self.filename = list[-1]
         path = '/'
         self.req.hdf.setValue('file.filename', list[-1])
@@ -236,8 +237,6 @@ class File(FileCommon):
         i = 0
         for part in list[:-1]:
             i = i + 1
-            if part == '':
-                continue
             path = path + part + '/'
             self.req.hdf.setValue('file.path.%d' % i, part)
             url = ''

@@ -127,7 +127,7 @@ class Browser(Module.Module):
         return info
 
     def generate_path_links(self, path, rev, rev_specified):
-        list = path.split('/')
+        list = filter(None, path.split('/'))
         path = '/'
         self.req.hdf.setValue('browser.path.0', 'root')
         if rev_specified:
@@ -139,8 +139,6 @@ class Browser(Module.Module):
         i = 0
         for part in list:
             i = i + 1
-            if part == '':
-                continue
             path = path + part + '/'
             self.req.hdf.setValue('browser.path.%d' % i, part)
             url = ''
@@ -151,9 +149,6 @@ class Browser(Module.Module):
             self.req.hdf.setValue('browser.path.%d.url' % i, url)
             if i == len(list) - 1:
                 self.add_link('up', url, 'Parent directory')
-
-        self.req.hdf.setValue('browser.path.%d.last' % (len(list) - 1), '1')
-
 
     def render(self):
         self.perm.assert_permission (perm.BROWSER_VIEW)
