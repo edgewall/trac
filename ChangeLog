@@ -4,6 +4,8 @@ http://svn.edgewall.com/repos/trac/trunk/
  * View diffs between wiki page edits.
  * Support for tables in the wiki. (Thanks to Stephen Hansen)
  * Colored reports. Use colors to show priority, etc. 
+ * Support for custom wiki processor macros.
+ * ReStructuredText support (through a processor macro)
  * Report groups. Group results by a column.
  * Multi-line report rows.
  * Download report in CSV (Comma Separated Value) and tab-separated format

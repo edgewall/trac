@@ -205,8 +205,22 @@ class Formatter(CommonFormatter):
     _helper_patterns = ('idepth', 'ldepth', 'hdepth', 'fancyurl',
                         'linkname', 'macroname', 'macroargs', 'inline')
 
+
+    def default_processor(hdf, text):
+        return '<pre class="wiki">' + escape(text) + '</pre>'
+    def html_processor(hdf, text):
+        return text
+
+    builtin_processors = { 'html': html_processor,
+                           'default': default_processor}
+
     def __init__(self, hdf = None):
         self.hdf = hdf
+
+    def load_macro(self, name):
+        macros = __import__('wikimacros.' + name, globals(),  locals(), [])
+        module = getattr(macros, name)
+        return getattr(module, 'execute')
         
     def _macro_formatter(self, match, fullmatch):
         name = fullmatch.group('macroname')
@@ -214,11 +228,8 @@ class Formatter(CommonFormatter):
             return '<br />'
         args = fullmatch.group('macroargs')
         try:
-            macros = __import__('wikimacros.' + name,
-                                globals(),  locals(), [])
-            module = getattr(macros, name)
-            func = getattr(module, 'execute')
-            return func(self.hdf, args)
+            macro = self.load_macro(name)
+            return macro(self.hdf, args)
         except Exception, e:
             return 'Macro %s(%s) failed: %s' % (name, args, e)
 
@@ -322,31 +333,50 @@ class Formatter(CommonFormatter):
             self.out.write('</table>' + os.linesep)
             self.in_table = 0
 
+    def handle_code_block(self, line):
+        if not self.in_code_block:
+            self.in_code_block = 1
+            self.code_processor = None
+            self.code_text = ''
+        elif line == '}}}':
+            self.in_code_block = 0
+            if self.code_processor:
+                self.close_paragraph()
+                self.out.write(self.code_processor(self.hdf, self.code_text))
+        elif not self.code_processor:
+            if line[0:2] == '#!':
+                name = line[2:]
+                if  Formatter.builtin_processors.has_key(name):
+                    self.code_processor = Formatter.builtin_processors[name]
+                else:
+                    try:
+                        self.code_processor = self.load_macro(name)
+                    except Exception, e:
+                        self.code_text += os.linesep + line
+                        self.code_processor = Formatter.builtin_processors['default']
+                        self.out.write('<pre>Failed to load processor macro %s: %s</pre>' % (name, e))
+            else:
+                self.code_text += os.linesep + line
+                self.code_processor = Formatter.builtin_processors['default']
+        else:
+            self.code_text += os.linesep + line
+
     def format(self, text, out):
         self.out = out
         self._open_tags = []
         self._list_stack = []
         
-        self.in_pre = 0
+        self.in_code_block = 0
         self.in_table = 0
         self.indent_level = 0
         self.paragraph_open = 0
 
         rules = self._compiled_rules
         
-        for line in escape(text).splitlines():
-            # Handle PRE-blocks
-            if not self.in_pre and line == '{{{':
-                self.in_pre = 1
-                self.close_paragraph()
-                self.out.write('<pre class="wiki">' + os.linesep)
-                continue
-            elif self.in_pre:
-                if line == '}}}':
-                    out.write('</pre>' + os.linesep)
-                    self.in_pre = 0
-                else:
-                    self.out.write(line + os.linesep)
+        for line in text.splitlines():
+            # Handle code block
+            if self.in_code_block or line == '{{{':
+                self.handle_code_block(line)
                 continue
             # Handle Horizontal ruler
             elif line[0:4] == '----':
@@ -361,9 +391,9 @@ class Formatter(CommonFormatter):
                 self.close_indentation()
                 self.close_list()
                 continue
-
-            self.in_list_item = 0
             
+            line = escape(line)
+            self.in_list_item = 0
             # Throw a bunch of regexps on the problem
             result = re.sub(rules, self.replace, line)
             # Close all open 'one line'-tags
