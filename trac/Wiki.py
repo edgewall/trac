@@ -345,7 +345,6 @@ class Page:
         out.write ('</form>')
 
     def render_view(self, out, hdf, edit_button=1):
-        self.render_history(out)
         perm.assert_permission (perm.WIKI_VIEW)
         out.write ('<div class="wikipage">')
         #format_wiki(self.text, out)
@@ -366,35 +365,6 @@ class Page:
         out.write ('<a name="preview" /><h3>preview</h3>')
         self.render_view (out, hdf, edit_button=0)
         
-    def render_history (self, out):
-        cnx = get_connection ()
-        cursor = cnx.cursor ()
-        
-        cursor.execute ('SELECT version, time, author, ipnr FROM wiki '
-                        'WHERE name=%s ORDER BY version DESC', self.name)
-
-        out.write ('<div class="wiki-history" align="right">'
-                   '<a href=\"javascript:view_history()\">show/hide history</a>'
-                   '</div>')
-        out.write ('<table class="wiki-history" id="history">')
-        out.write ('<tr class="wiki-history-header"><th>version</th>'
-                   '<th>time</th><th>author</th><th>ipnr</th></tr>')
-	while 1:
-	    row = cursor.fetchone()
-	    if row == None:
-		break
-		   #        for row in cursor:
-            t = int(row[1])
-            if t:
-                time_str = time.strftime('%F', time.localtime(t))
-            else:
-                time_str = ''
-            out.write ('<tr><td><a href="%s">%s</a></td><td>%s</td>'
-                       '<td>%s</td><td>%s</td></tr>'
-                       % (href.wiki(self.name, row[0]), row[0], time_str,
-                          row[2], row[3]))
-        out.write ('</table>')
-        
 
 class Wiki(Module):
     template_name = 'wiki.cs'
@@ -414,10 +384,37 @@ class Wiki(Module):
                                   href.wiki(row[0]))
             i = i + 1
 
+    def generate_history(self,pagename):
+        cnx = get_connection ()
+        cursor = cnx.cursor ()
+        cursor.execute ('SELECT version, time, author, ipnr FROM wiki '
+                        'WHERE name=%s ORDER BY version DESC', pagename)
+        i = 0
+	while 1:
+	    row = cursor.fetchone()
+	    if not row:
+		break
+		   #        for row in cursor:
+            t = int(row[1])
+            if t:
+                time_str = time.strftime('%F', time.localtime(t))
+            else:
+                time_str = ''
+            n = 'wiki.history.%d' % i
+            self.cgi.hdf.setValue(n, str(i))
+            self.cgi.hdf.setValue(n+'.url', href.wiki(pagename, str(row[0])))
+            self.cgi.hdf.setValue(n+'.version', str(row[0]))
+            self.cgi.hdf.setValue(n+'.time', time_str)
+            self.cgi.hdf.setValue(n+'.author', str(row[2]))
+            self.cgi.hdf.setValue(n+'.ipnr', str(row[3]))
+            i = i + 1
+
     def render(self):
         name = dict_get_with_default(self.args, 'page', 'WikiStart')
         action = dict_get_with_default(self.args, 'action', 'view')
         version = dict_get_with_default(self.args, 'version', 0)
+
+        self.generate_history(name)
 
         if name == 'TitleIndex':
             self.generate_title_index()
