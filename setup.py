@@ -7,6 +7,9 @@ from glob import glob
 from distutils.core import setup
 from distutils.command.install import install
 from distutils.command.install_scripts import install_scripts
+from distutils import log
+from stat import ST_MODE
+
 import trac
 
 PACKAGE = 'Trac'
@@ -50,26 +53,47 @@ __default_wiki_dir__ = '%(wiki)s'
          print trac.__credits__
 
 class my_install_scripts (install_scripts):
-     def initialize_options (self):
-          install_scripts.initialize_options(self)
-          self.install_data = None
+    def initialize_options (self):
+        install_scripts.initialize_options(self)
+        self.install_data = None
+        
+    def finalize_options (self):
+        install_scripts.finalize_options(self)
+        self.set_undefined_options('install',
+                                   ('install_data', 'install_data'))
           
-     def finalize_options (self):
-          install_scripts.finalize_options(self)
-          self.set_undefined_options('install',
-                                     ('install_data', 'install_data'))
-          
-     def run (self):
-          if not self.skip_build:
-               self.run_command('build_scripts')
+    def run (self):
+        if not self.skip_build:
+            self.run_command('build_scripts')
 
-          self.mkpath(os.path.normpath(self.install_dir))
-          self.copy_file(os.path.join(self.build_dir, 'trac-admin'),
-                         self.install_dir)
-          cgi_dir = os.path.join(self.install_data, 'share', 'trac', 'cgi-bin')
-          if not os.path.exists(cgi_dir):
-               os.makedirs(cgi_dir)
-          self.copy_file(os.path.join(self.build_dir, 'trac.cgi'), cgi_dir)
+        self.outfiles = []
+
+        self.mkpath(os.path.normpath(self.install_dir))
+        ofile, copied = self.copy_file(os.path.join(self.build_dir,
+                                                     'trac-admin'),
+                                        self.install_dir)
+        if copied:
+            self.outfiles.append(ofile)
+            
+        cgi_dir = os.path.join(self.install_data, 'share', 'trac', 'cgi-bin')
+        if not os.path.exists(cgi_dir):
+            os.makedirs(cgi_dir)
+            
+        ofile, copied = self.copy_file(os.path.join(self.build_dir,
+                                                    'trac.cgi'), cgi_dir)
+        if copied:
+            self.outfiles.append(ofile)
+        
+        if os.name == 'posix':
+            # Set the executable bits (owner, group, and world) on
+            # all the scripts we just installed.
+            for file in self.get_outputs():
+                if self.dry_run:
+                    log.info("changing mode of %s", file)
+                else:
+                    mode = ((os.stat(file)[ST_MODE]) | 0555) & 07777
+                    log.info("changing mode of %s to %o", file, mode)
+                    os.chmod(file, mode)
 
 
 setup(name="trac",
