@@ -17,26 +17,26 @@
       id="daysback" name="daysback"  value="<?cs var:timeline.daysback ?>" />
   <label for="daysback">days back</label>.
   <fieldset>
-   <div class="field">
+   <?cs if:trac.acl.TICKET_VIEW ?><div class="field">
     <input type="checkbox" id="ticket" name="ticket" <?cs
       if:timeline.ticket ?>checked="checked"<?cs /if ?> />
     <label for="ticket">Ticket changes</label>
-   </div>
-   <div class="field">
+   </div><?cs /if ?>
+   <?cs if:trac.acl.CHANGESET_VIEW ?><div class="field">
     <input type="checkbox" id="changeset" name="changeset" <?cs
       if:timeline.changeset ?>checked="checked"<?cs /if ?> />
     <label for="changeset">Repository checkins</label>
-   </div>
-   <div class="field">
+   </div><?cs /if ?>
+   <?cs if:trac.acl.WIKI_VIEW ?><div class="field">
     <input type="checkbox" id="wiki" name="wiki" <?cs
       if:timeline.wiki ?>checked="checked"<?cs /if ?> />
     <label for="wiki">Wiki changes</label>
-   </div>
-   <div class="field">
+   </div><?cs /if ?>
+   <?cs if:trac.acl.MILESTONE_VIEW ?><div class="field">
     <input type="checkbox" id="milestone" name="milestone" <?cs
       if:timeline.milestone ?>checked="checked"<?cs /if ?> />
     <label for="milestone">Milestones</label>
-   </div>
+   </div><?cs /if ?>
   </fieldset>
   <div class="buttons">
    <input type="submit" value="Update" />
