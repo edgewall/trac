@@ -20,9 +20,9 @@
 # Author: Jonas Borgström <jonas@edgewall.com>
 
 import os
-import StringIO
-from Toolbar import Toolbar
 from util import *
+from Href import href
+import auth
 import neo_cgi
 
 class Module:
@@ -32,17 +32,6 @@ class Module:
         self.pool = pool
         self.cgi = neo_cgi.CGI()
         
-        sql_to_hdf("SELECT name FROM enum WHERE type='priority' ORDER BY name",
-                   self.cgi.hdf, 'enums.priority')
-        sql_to_hdf("SELECT name FROM enum WHERE type='severity' ORDER BY name",
-                   self.cgi.hdf, 'enums.severity')
-        self.toolbar = Toolbar()
-        self.cgi.hdf.setValue('title', '')
-        self.cgi.hdf.setValue('svntrac_url', 'http://svntrac.edgewall.com/')
-        self.cgi.hdf.setValue('htdocs_location',
-                              config['general']['htdocs_location'])
-        self.cgi.hdf.setValue('cgi_name', get_cgi_name())
-
     def render (self):
         """
         this function can be overridden to fill self.namespace with
@@ -54,7 +43,25 @@ class Module:
         theme_dir = self.config['general']['theme_dir']
         tmpl_filename = os.path.join (theme_dir, self.template_name)
 
-        self.cgi.hdf.setValue('toolbar', self.toolbar.render (self._name))
+        sql_to_hdf("SELECT name FROM enum WHERE type='priority' ORDER BY name",
+                   self.cgi.hdf, 'enums.priority')
+        sql_to_hdf("SELECT name FROM enum WHERE type='severity' ORDER BY name",
+                   self.cgi.hdf, 'enums.severity')
+        
+        self.cgi.hdf.setValue('title', '')
+        self.cgi.hdf.setValue('htdocs_location',
+                              self.config['general']['htdocs_location'])
+        self.cgi.hdf.setValue('cgi_name', get_cgi_name())
+        self.cgi.hdf.setValue('svntrac.active_module', self._name)
+        self.cgi.hdf.setValue('svntrac.authname', auth.get_authname())
+        self.cgi.hdf.setValue('svntrac.href.wiki', href.wiki())
+        self.cgi.hdf.setValue('svntrac.href.browser', href.browser('/'))
+        self.cgi.hdf.setValue('svntrac.href.timeline', href.timeline())
+        self.cgi.hdf.setValue('svntrac.href.report', href.report())
+        self.cgi.hdf.setValue('svntrac.href.newticket', href.newticket())
+        self.cgi.hdf.setValue('svntrac.href.login', href.login())
+        self.cgi.hdf.setValue('svntrac.href.logout', href.logout())
+        
         self.cgi.display(tmpl_filename)
 
         

@@ -87,3 +87,9 @@ def assert_permission (action):
     global perm_cache
     if not perm_cache.has_key (action):
         raise PermissionError (action)
+
+def perm_to_hdf(hdf):
+    global perm_cache
+    for action in perm_cache.keys():
+        hdf.setValue('svntrac.acl.' + action, 'true')
+    

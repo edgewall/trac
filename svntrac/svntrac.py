@@ -32,7 +32,7 @@ warnings.filterwarnings('ignore', 'DeprecationWarning: Cookie/SmartCookie class 
 
 import db
 from auth import verify_authentication
-from perm import cache_permissions, PermissionError
+from perm import cache_permissions, PermissionError, perm_to_hdf
 
 modules = {
 #  name module class need_db need_svn    
@@ -72,6 +72,7 @@ def main():
 
     verify_authentication(args)
     cache_permissions()
+    perm_to_hdf(module.cgi.hdf)
 
     # Only open the subversion repository for the modules that really
     # need it. This saves us some precious time.

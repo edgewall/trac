@@ -32,5 +32,46 @@ topmargin="0" bottommargin="0" link="#aa0000" alink="#cc0000" vlink="#880000">
 	  </tr>
       </table>
     </div>
-<?cs var:toolbar ?>
+<!-- <?cs var:toolbar ?> -->
+
+<!-- Toolbar -->
+<?cs def:link(text, href, id) ?>
+  <?cs if $id == $svntrac.active_module ?>
+    <a href="<?cs var:href ?>" class="navbar-link-active"><?cs var:text ?></a>
+  <?cs else ?>
+    <a href="<?cs var:href ?>" class="navbar-link"><?cs var:text ?></a>
+  <?cs /if ?>
+<?cs /def ?>
+
+<table width="100%" cellspacing="0" cellpadding="0" id="page-navbar" 
+ cellpadding="10" bgcolor="black" 
+ background="<?cs var:htdocs_location ?>navbar_gradient.png">
+  <tr>
+    <td class="navbar">
+      <?cs if ? $svntrac.acl.WIKI_VIEW ?>
+        <?cs call:link("Wiki", $svntrac.href.wiki, "wiki") ?>
+      <?cs /if ?>
+      <?cs if ? $svntrac.acl.BROWSER_VIEW ?>
+        <?cs call:link("Browse", $svntrac.href.browser, "browser") ?>
+      <?cs /if ?>
+      <?cs if ? $svntrac.acl.TIMELINE_VIEW ?>
+        <?cs call:link("Timeline", $svntrac.href.timeline, "timeline") ?>
+      <?cs /if ?>
+      <?cs if ? $svntrac.acl.REPORT_VIEW ?>
+        <?cs call:link("Reports", $svntrac.href.report, "report") ?>
+      <?cs /if ?>
+      <?cs if ? $svntrac.acl.TICKET_CREATE ?>
+        <?cs call:link("New Ticket", $svntrac.href.newticket, "newticket") ?>
+      <?cs /if ?>
+    </td>
+    <td class="navbar" align="right">
+      <?cs if $svntrac.authname == "anonymous" ?>
+        <?cs call:link("login", $svntrac.href.login, 0) ?>
+      <?cs else ?>
+	logged in as <?cs var:svntrac.authname ?>
+        <?cs call:link("logout", $svntrac.href.logout, 0) ?>
+      <?cs /if ?>
+    </td>
+  </tr>
+</table>
 <div id="page-content">
