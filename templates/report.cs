@@ -29,12 +29,22 @@
     <?cs if idx > 0 ?>
       </table>
     <?cs /if ?>
+    <hr class="hide"/>
     <h2 class="report-hdr"><?cs var:header ?></h2>
   <?cs /if ?>
   <table class="report-list" cellspacing="0" cellpadding="0">
     <tr>
+      <?cs set numcols = #0 ?>
       <?cs each header = report.headers ?>
-        <th class="header-left"><?cs var:header.title ?></th>
+        <?cs if $header.fullrow ?>
+          </tr><tr><th class="header-left" colspan="100"><?cs var:header ?></th>
+        <?cs else ?>
+          <th class="header-left"><?cs var:header ?></th>
+          <?cs if $header.breakrow ?>
+             </tr><tr>
+          <?cs /if ?>
+        <?cs /if ?>
+        <?cs set numcols = numcols + #1 ?>
       <?cs /each ?>
     </tr>
 <?cs /def ?>
@@ -42,10 +52,16 @@
 <?cs def:report_cell(class,contents) ?>
   <?cs if $cell.fullrow ?>
     </tr><tr class="<?cs var: row_class ?>" style="border: none; padding: 0">
-<td colspan="100" style="padding: 0;border: none"><div class="report-fullrow"><?cs var:$contents ?></div></td>
+<td colspan="100" style="padding: 0;border: none"><div class="report-fullrow"><?cs var:$contents ?></div><hr class="hide"/></td>
   <?cs else ?>
-  <td <?cs if $cell.breakrow ?>colspan="100" <?cs /if ?>class="<?cs var:$class ?>"><?cs var:$contents ?></td>
+  <td <?cs if $cell.breakrow || $col == $numcols ?>colspan="100" <?cs /if
+?>class="<?cs var:$class ?>"><?cs if $contents ?><?cs var:$contents ?><?cs /if ?></td>
+
+<?cs if $cell.breakafter ?>
+    </tr><tr class="<?cs var: row_class ?>" style="border: none; padding: 0">
+<?cs /if ?>
   <?cs /if ?>
+  <?cs set col = $col + #1 ?>
 <?cs /def ?>
 
 <?cs set idx = #0 ?>
@@ -84,7 +100,8 @@
       <?cs /if ?>
     
       <tr class="<?cs var: row_class ?>" style="<?cs var: row_style ?>">
-	<?cs set idx = idx + #1 ?>
+      <?cs set idx = idx + #1 ?>
+      <?cs set col = #0 ?>
       <?cs each cell = row ?>
         <?cs if cell.hidden || cell.hidehtml ?>    
         <?cs elif name(cell) == "ticket" ?>

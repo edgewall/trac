@@ -1,4 +1,10 @@
-.report-hdr { margin: 1em; margin-left: 0; }
+.report-hdr { 
+ margin: 1em 0; 
+ margin-top: 2em;
+ padding-left: .25em;
+ border-bottom: 2px solid #eee;
+ font-size: 150%;
+}
 .report-list { 
  width: 97%; 
  margin-left: 1em;
@@ -7,30 +13,29 @@
  line-height: 130%;
 }
 tr { 
- border: 1px solid #d7d7d7; 
+ border-bottom: 1px solid #d7d7d7; 
  border-top: none;
 }
 .report-list th { 
  border-left: 1px solid #fff; 
  border-right: 1px solid #fff; 
  border-bottom: 1px solid #d7d7d7; 
- color: #000;
+ color: #999;
  text-align: left;
  font-size: 90%;
  padding: 0 .2em;
 }
-.report-list td { 
+.report-list td {
  padding: .1em .5em;
  vertical-align: top;
- border: none;
- border-right: 1px dotted #d7d7d7; 
+ border-right: 1px dotted #fff; 
+ border-top: 1px dotted #fff; 
 }
 .report-fullrow { 
  margin: 1px;
  margin-top: 0;
  background: #fff;
  padding-bottom: 2.5em;
- font-size: 90%;
 }
 td.ticket-col { font-weight: bold; }
 td.summary-col {}
@@ -41,7 +46,7 @@ td.component-col {}
 td.version-col {}
 td.status-col {}
 .report-fullrow p { margin: 0; padding: .25em 1em}
-a.report-tktref { display: block; padding: 0 .5em; border: none}
+a.report-tktref,a.report-tktref:visited { display: block; padding: 0 .5em; border: none}
 a.report-tktref:hover { background: #b00; color: #fff; }
 .color1-odd  { background: #fdc; border-color: #ecb; color: #844; }
 .color1-even { background: #fed; border-color: #edc; color: #844; }

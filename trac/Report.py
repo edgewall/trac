@@ -149,24 +149,39 @@ class Report (Module):
         idx = 0
         for col in self.cols:
             title=col[0].capitalize()
-            if not title[0] == '_':
-                self.cgi.hdf.setValue('report.headers.%d.title' % idx, title)
+            prefix = 'report.headers.%d' % idx
+            if title[:2] == '__' and title[-2:] == '__':
+                continue
+            elif title[0] == '_' and title[-1] == '_':
+                title = title[1:-1].capitalize()
+                self.cgi.hdf.setValue(prefix + '.fullrow', '1')
+            elif title[0] == '_':
+                continue
+            elif title[-1] == '_':
+                title = title[:-1]
+                self.cgi.hdf.setValue(prefix + '.breakrow', '1')
+            self.cgi.hdf.setValue(prefix, title)
             idx = idx + 1
 
         # Convert the rows and cells to HDF-format
         row_idx = 0
         for row in self.rows:
             col_idx = 0
+            numrows = len(row)
             for cell in row:
                 column = self.cols[col_idx][0]
                 value = {}
                 # Special columns begin and end with '__'
                 if column[:2] == '__' and column[-2:] == '__':
                     value['hidden'] = 1
-                elif column[0] == '_' and column[-1] == '_':
+                elif (column[0] == '_' and column[-1] == '_'):
                     value['fullrow'] = 1
                     column = column[1:-1]
                     self.cgi.hdf.setValue(prefix + '.breakrow', '1')
+                elif column[-1] == '_':
+                    value['breakrow'] = 1
+                    value['breakafter'] = 1
+                    column = column[:-1]
                 elif column[0] == '_':
                     value['hidehtml'] = 1
                     column = column[1:]
