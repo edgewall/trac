@@ -26,7 +26,7 @@
   </h2>
 
 <?cs def:ticketprop(label, value) ?>
-  <div class="tkt-prop">
+<div class="tkt-prop">
     <b class="tkt-label"><?cs var:label ?>:</b>&nbsp;
     <?cs if:value ?>
       <em class="tkt-val"><?cs var:value ?></em>
@@ -206,7 +206,7 @@
       <span class="nt-label">Summary</span>
       <span class="nt-widget">
         <input type="text" name="summary"
-                value="<?cs var:ticket.summary ?>" size="60" />
+                value="<?cs var:ticket.summary ?>" size="50" />
       </span>
     </div>
   </div>

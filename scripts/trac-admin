@@ -30,18 +30,13 @@ import cmd
 import shlex
 import sqlite
 import StringIO
+import trac.siteconfig
 
 
 class TracAdmin(cmd.Cmd):
     intro = ''
-    license = __license__
-    credits = '\n Visit the Trac Project at http://trac.edgewall.com/ \n'		\
-              '\n Trac is brought to you by: \n' 				\
-              '----------------------------------------------------------------- \n' 	\
-              '                 Edgewall Research & Development \n' 			\
-              '        Professional Linux and software development services \n'		\
-              '              Read more at http://www.edgewall.com/ \n' 			\
-              '----------------------------------------------------------------- \n' 
+    license = trac.__license__
+    credits = trac.__credits__
 
     doc_header = 'Trac Admin Console %(ver)s\n' \
                  'Available Commands:\n' \
@@ -587,7 +582,9 @@ CREATE INDEX wiki_idx		ON wiki(name,version);
                     break
                 print repository_dir, 'doesn\'t look like a subversion repository'
             while 1:
-                templates_dir = raw_input('Trac templates directory> ')
+                dt = trac.siteconfig.__default_templates_dir__
+                prompt = 'Trac templates directory [%s]> ' % dt
+                templates_dir = raw_input(prompt) or dt
                 if os.access(os.path.join(templates_dir, 'browser.cs'), os.F_OK) and \
                    os.access(os.path.join(templates_dir, 'ticket.cs'), os.F_OK):
                     break
