@@ -38,7 +38,12 @@ a.tl-item:hover {
   color: #000;
 }
 .tl-item-time { color: #777; }
-.tl-item-link { font-weight: normal; }
+.tl-item-link {
+  border-bottom: 1px dotted #bbb;
+  color: #b00;
+  font-weight: normal;
+  text-decoration: none;
+}
 .tl-item-msg { }
 .tl-item-descr {
   display: block;
