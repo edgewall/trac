@@ -19,7 +19,7 @@
 #
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
-from trac.core import module_factory
+from trac.core import module_factory, open_environment
 from trac.util import escape
 from trac.web.auth import Authenticator
 from trac.web.session import Session
@@ -50,6 +50,8 @@ class Request:
     hdf = None
     authname = None
     session = None
+    remote_addr = None
+    remote_user = None
     _headers = None # additional headers to send
 
     def init_request(self):

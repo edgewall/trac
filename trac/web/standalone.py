@@ -1,0 +1,292 @@
+# -*- coding: iso8859-1 -*-
+#
+# Copyright (C) 2003, 2004, 2005 Edgewall Software
+# Copyright (C) 2003, 2004, 2005 Jonas Borgström <jonas@edgewall.com>
+#
+# Trac is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License as
+# published by the Free Software Foundation; either version 2 of the
+# License, or (at your option) any later version.
+#
+# Trac is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+#
+# Author: Jonas Borgström <jonas@edgewall.com>
+#
+# Todo:
+# - External auth using mod_proxy / squid.
+
+from trac import Environment, Href, siteconfig, util, __version__
+from trac.web.main import Request, dispatch_request, send_pretty_error
+from trac.web.cgi_frontend import TracFieldStorage
+
+import os
+import re
+import sys
+import md5
+import time
+import shutil
+import urllib
+import urllib2
+import mimetypes
+from SocketServer import ThreadingMixIn
+from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
+
+
+class DigestAuth:
+    """A simple HTTP DigestAuth implementation (rfc2617)"""
+
+    MAX_NONCES = 100
+
+    def __init__(self, htdigest, realm):
+        self.active_nonces = []
+        self.hash = {}
+        self.realm = realm
+        self.load_htdigest(htdigest, realm)
+
+    def load_htdigest(self, filename, realm):
+        """
+        Load account information from apache style htdigest files,
+        only users from the specified realm are used
+        """
+        fd = open(filename, 'r')
+        for line in fd.readlines():
+            u, r, a1 = line.strip().split(':')
+            if r == realm:
+                self.hash[u] = a1
+        if self.hash == {}:
+            print >> sys.stderr, "Warning: found no users in realm:", realm
+        
+    def parse_auth_header(self, authorization):
+        values = {}
+        for value in urllib2.parse_http_list(authorization):
+            n, v = value.split('=', 1)
+            if v[0] == '"' and v[-1] == '"':
+                values[n] = v[1:-1]
+            else:
+                values[n] = v
+        return values
+
+    def send_auth_request(self, req, stale='false'):
+        """
+        Send a digest challange to the browser. Record used nonces
+        to avoid replay attacks.
+        """
+        nonce = util.hex_entropy()
+        self.active_nonces.append(nonce)
+        if len(self.active_nonces) > DigestAuth.MAX_NONCES:
+            self.active_nonces = self.active_nonces[-DigestAuth.MAX_NONCES:]
+        req.send_response(401)
+        req.send_header('WWW-Authenticate',
+                        'Digest realm="%s", nonce="%s", qop="auth", stale="%s"'
+                        % (self.realm, nonce, stale))
+        req.end_headers()
+
+    def do_auth(self, req):
+        if not 'Authorization' in req.headers or \
+               req.headers['Authorization'][:6] != 'Digest':
+            self.send_auth_request(req)
+            return None
+        auth = self.parse_auth_header(req.headers['Authorization'][7:])
+        required_keys = ['username', 'realm', 'nonce', 'uri', 'response',
+                           'nc', 'cnonce']
+        # Invalid response?
+        for key in required_keys:
+            if not auth.has_key(key):
+                self.send_auth_request(req)
+                return None
+        # Unknown user?
+        if not self.hash.has_key(auth['username']):
+            self.send_auth_request(req)
+            return None
+
+        kd = lambda x: md5.md5(':'.join(x)).hexdigest()
+        a1 = self.hash[auth['username']]
+        a2 = kd([req.command, auth['uri']])
+        # Is the response correct?
+        correct = kd([a1, auth['nonce'], auth['nc'],
+                      auth['cnonce'], auth['qop'], a2])
+        if auth['response'] != correct:
+            self.send_auth_request(req)
+            return None
+        # Is the nonce active, if not ask the client to use a new one
+        if not auth['nonce'] in self.active_nonces:
+            self.send_auth_request(req, stale='true')
+            return None
+        self.active_nonces.remove(auth['nonce'])
+        return auth['username']
+
+
+class TracHTTPServer(ThreadingMixIn, HTTPServer):
+
+    projects = None
+
+    def __init__(self, server_address, env_paths, auths):
+        HTTPServer.__init__(self, server_address, TracHTTPRequestHandler)
+
+        if self.server_port == 80:
+            self.http_host = self.server_name
+        else:
+            self.http_host = '%s:%d' % (self.server_name, self.server_port)
+
+        self.projects = {}
+        for path in env_paths:
+            # Remove trailing slashes
+            while path and not os.path.split(path)[1]:
+                path = os.path.split(path)[0]
+            project = os.path.split(path)[1]
+            # We assume the projenv filenames follow the following
+            # naming convention: /some/path/project
+            auth = auths.get(project, None)
+            env = Environment.Environment(path)
+            env.href = Href.Href('/' + project)
+            env.abs_href = Href.Href('http://%s/%s' % (self.http_host, project))
+            env.set_config('trac', 'htdocs_location', '/trac_common/')
+            self.projects[project] = env
+            self.projects[project].auth = auth
+
+
+class TracHTTPRequestHandler(BaseHTTPRequestHandler):
+
+    server_version = 'tracd/' + __version__
+    url_re = re.compile('/(?P<project>[^/\?]+)'
+                        '(?P<path_info>/?[^\?]*)?'
+                        '(?:\?(?P<query_string>.*))?')
+
+    env = None
+    log = None
+    project_name = None
+
+    def log_message(self, format, *args):
+        if self.log:
+            self.log.debug(format % args)
+
+    def do_project_index(self):
+        self.send_response(200)
+        self.send_header('Content-Type', 'text/html')
+        self.end_headers()
+        self.wfile.write('<html><head><title>Available Projects</title></head>')
+        self.wfile.write('<body><h1>Available Projects</h1><ul>')
+        for proj in self.server.projects.keys():
+            self.wfile.write('<li><a href="%s">%s</a></li>' % (proj, proj))
+        self.wfile.write('</ul></body><html>')
+
+    def do_htdocs_req(self, path):
+        """This function serves request for static img/css files"""
+        path = urllib.unquote(path)
+        # Make sure the path doesn't contain any dangerous ".."-parts.
+        path = '/'.join(filter(lambda x: x not in ['..', ''],
+                               path.split('/')))
+        filename = os.path.join(siteconfig.__default_htdocs_dir__,
+                                os.path.normcase(path))
+        try:
+            f = open(filename, 'rb')
+        except IOError:
+            self.send_error(404, path)
+            return
+        self.send_response(200)
+        mtype, enc = mimetypes.guess_type(filename)
+        stat = os.fstat(f.fileno())
+        content_length = stat[6]
+        last_modified = time.strftime("%a, %d %b %Y %H:%M:%S GMT",
+                                      time.gmtime(stat[8]))
+        self.send_header('Content-Type', mtype)
+        self.send_header('Conten-Length', str(content_length))
+        self.send_header('Last-Modified', last_modified)
+        self.end_headers()
+        shutil.copyfileobj(f, self.wfile)
+
+    def do_POST(self):
+        self.do_trac_req()
+
+    def do_HEAD(self):
+        self.do_GET()
+
+    def do_GET(self):
+        if self.path[0:13] == '/':
+            self.do_project_index()
+        elif self.path[0:13] == '/trac_common/':
+            self.do_htdocs_req(self.path[13:])
+        else:
+            self.do_trac_req()
+
+    def do_trac_req(self):
+        m = self.url_re.findall(self.path)
+        if not m:
+            self.send_error(400, 'Bad Request')
+            return
+        self.project_name, self.path_info, self.query_string = m[0]
+        if not self.server.projects.has_key(self.project_name):
+            self.send_error(404, 'Not Found')
+            return
+        self.path_info = urllib.unquote(self.path_info)
+        self.env = self.server.projects[self.project_name]
+        self.log = self.env.log
+
+        req = TracHTTPRequest(self)
+        req.init_request()
+        req.remote_user = None
+        if self.path_info == '/login':
+            if not self.env.auth:
+                raise util.TracError('Authentication not enabled. '
+                                     'Please use the tracd --auth option.\n')
+            req.remote_user = self.env.auth.do_auth(self)
+            if not req.remote_user:
+                return
+
+        try:
+            start = time.time()
+            dispatch_request(self.path_info, req, self.env)
+            self.log.debug('Total request time: %f s', time.time() - start)
+        except Exception, e:
+            send_pretty_error(e, self.env, req)
+
+
+class TracHTTPRequest(Request):
+
+    __handler = None
+
+    def __init__(self, handler):
+        self.__handler = handler
+
+    def init_request(self):
+        Request.init_request(self)
+        self.remote_addr = str(self.__handler.client_address[0])
+        if self.__handler.headers.has_key('Cookie'):
+            self.incookie.load(self.__handler.headers['Cookie'])
+
+        self.cgi_location = '/' + self.__handler.project_name
+        self.base_url = 'http://%s/%s' % (self.__handler.server.http_host,
+                                          self.__handler.project_name)
+
+        environ = {'REQUEST_METHOD': self.__handler.command,
+                   'QUERY_STRING': self.__handler.query_string}
+        headers = self.__handler.headers
+        if self.__handler.command in ('GET', 'HEAD'):
+            headers = None
+        self.args = TracFieldStorage(self.__handler.rfile, environ=environ,
+                                     headers=headers, keep_blank_values=1)
+
+    def read(self, len):
+        return self.__handler.rfile.read(len)
+
+    def write(self, data):
+        self.__handler.wfile.write(data)
+
+    def get_header(self, name):
+        return self.__handler.headers.get(name)
+
+    def send_response(self, code):
+        self.__handler.send_response(code)
+
+    def send_header(self, name, value):
+        self.__handler.send_header(name, value)
+
+    def end_headers(self):
+        self.__handler.end_headers()
