@@ -51,7 +51,7 @@ li.milestone { list-style: none; margin-bottom: 4em }
 .milestone .description { margin: 1em 0 2em }
 
 /* Styles for the milestone statistics table */
-#stats { float: right; margin: 0 0 2em 2em; width: 500px; max-width: 30% }
+#stats { float: right; margin: 0 0 2em 2em; width: 400px; max-width: 40% }
 #stats legend { white-space: nowrap }
 #stats table { border-collapse: collapse; width: 100% }
 #stats th, #stats td { font-size: 10px; padding: 0; white-space: nowrap }

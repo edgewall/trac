@@ -104,47 +104,6 @@
   </form>
  <?cs else ?>
  <?cs if:milestone.mode == "view" ?>
-  <form id="stats" method="get">
-   <fieldset>
-    <legend>
-     <label for="by">Ticket status by</label>
-     <select id="by" name="by" onchange="this.form.submit()"><?cs
-     each:group = milestone.stats.available_groups ?>
-      <option value="<?cs var:group.name ?>" <?cs
-        if:milestone.stats.grouped_by == group.name ?> selected="selected"<?cs
-        /if ?>><?cs var:group.label ?></option><?cs
-     /each ?></select>
-    </legend>
-    <table summary="Shows the milestone completion status grouped by <?cs
-      var:milestone.stats.grouped_by ?>"><?cs
-     each:group = milestone.stats.groups ?>
-      <tr>
-       <th scope="row"><a href="<?cs
-         var:group.queries.all_tickets ?>"><?cs var:group.name ?></a></th>
-       <td nowrap=nowrap><?cs if:#group.total_tickets ?>
-        <div class="progress" style="width: <?cs
-          var:#group.percent_total * #80 / #milestone.stats.max_percent_total ?>%">
-         <a class="closed" href="<?cs
-           var:group.queries.closed_tickets ?>" style="width: <?cs
-           var:#group.percent_closed ?>%" title="<?cs
-          var:group.closed_tickets ?> of <?cs
-          var:group.total_tickets ?> ticket<?cs
-          if:group.total_tickets != #1 ?>s<?cs /if ?> closed"></a>
-         <a class="open" href="<?cs
-           var:group.queries.active_tickets ?>" style="width: <?cs
-           var:#group.percent_active - 1 ?>%" title="<?cs
-          var:group.active_tickets ?> of <?cs
-          var:group.total_tickets ?> ticket<?cs
-          if:group.total_tickets != 1 ?>s<?cs /if ?> active"></a>
-        </div>
-        <p class="percent"><?cs var:group.closed_tickets ?>/<?cs
-         var:group.total_tickets ?></p>
-       <?cs /if ?></td>
-      </tr><?cs
-     /each ?>
-    </table><?cs /if ?>
-   </fieldset>
-  </form>
   <div class="info">
    <p class="date"><?cs
     if:milestone.completed_date ?>
@@ -187,6 +146,47 @@
     /if ?><?cs
    /with ?>
   </div>
+  <form id="stats" method="get">
+   <fieldset>
+    <legend>
+     <label for="by">Ticket status by</label>
+     <select id="by" name="by" onchange="this.form.submit()"><?cs
+     each:group = milestone.stats.available_groups ?>
+      <option value="<?cs var:group.name ?>" <?cs
+        if:milestone.stats.grouped_by == group.name ?> selected="selected"<?cs
+        /if ?>><?cs var:group.label ?></option><?cs
+     /each ?></select>
+    </legend>
+    <table summary="Shows the milestone completion status grouped by <?cs
+      var:milestone.stats.grouped_by ?>"><?cs
+     each:group = milestone.stats.groups ?>
+      <tr>
+       <th scope="row"><a href="<?cs
+         var:group.queries.all_tickets ?>"><?cs var:group.name ?></a></th>
+       <td nowrap=nowrap><?cs if:#group.total_tickets ?>
+        <div class="progress" style="width: <?cs
+          var:#group.percent_total * #80 / #milestone.stats.max_percent_total ?>%">
+         <a class="closed" href="<?cs
+           var:group.queries.closed_tickets ?>" style="width: <?cs
+           var:#group.percent_closed ?>%" title="<?cs
+          var:group.closed_tickets ?> of <?cs
+          var:group.total_tickets ?> ticket<?cs
+          if:group.total_tickets != #1 ?>s<?cs /if ?> closed"></a>
+         <a class="open" href="<?cs
+           var:group.queries.active_tickets ?>" style="width: <?cs
+           var:#group.percent_active - 1 ?>%" title="<?cs
+          var:group.active_tickets ?> of <?cs
+          var:group.total_tickets ?> ticket<?cs
+          if:group.total_tickets != 1 ?>s<?cs /if ?> active"></a>
+        </div>
+        <p class="percent"><?cs var:group.closed_tickets ?>/<?cs
+         var:group.total_tickets ?></p>
+       <?cs /if ?></td>
+      </tr><?cs
+     /each ?>
+    </table><?cs /if ?>
+   </fieldset>
+  </form>
   <div class="description"><?cs var:milestone.description ?></div><?cs
   if:trac.acl.MILESTONE_MODIFY || trac.acl.MILESTONE_DELETE ?>
    <div class="buttons"><?cs
