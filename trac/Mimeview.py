@@ -41,7 +41,7 @@ MIME_MAP = {
     'cc':'text/x-c++src', 'cpp':'text/x-c++src', 'CC':'text/x-c++src',
     'hh':'text/x-c++hdr', 'HH':'text/x-c++hdr',  'hpp':'text/x-c++hdr',
     'hs':'text/x-haskell',
-    'ico':'image/ico',
+    'ico':'image/x-icon',
     'idl':'text/x-idl',
     'inf':'text/x-inf',
     'java':'text/x-java',
@@ -59,12 +59,12 @@ MIME_MAP = {
     'py':'text/x-python',
     'pyx':'text/x-pyrex',
     'nroff':'application/x-troff', 'roff':'application/x-troff', 'troff':'application/x-troff',
-
     'rb':'text/x-ruby',
     'rfc':'text/x-rfc',
     'scm':'text/x-scheme',
     'sh':'application/x-sh',
     'sql':'text/x-sql',
+    'svg':'image/svg+xml',
     'tcl':'text/x-tcl',
     'tex':'text/x-tex',
     'vba':'text/x-vba',
@@ -125,7 +125,7 @@ class Mimeview:
         except:
             return None
 
-    def display(self, data, mimetype=None, filename=None):
+    def display(self, data, mimetype=None, filename=None, rev=None):
         if not data:
             return ''
         if filename:
@@ -135,7 +135,7 @@ class Mimeview:
         while not idx == -1:
             viewer,idx = self.get_viewer (mimetype, idx)
             try:
-                return viewer.display(data, mimetype, filename, self.env)
+                return viewer.display(data, mimetype, filename, rev, self.env)
             except Exception, e:
                 if self.env:
                     self.env.log.warning('Display failed: %s' % e)

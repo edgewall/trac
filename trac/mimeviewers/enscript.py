@@ -107,7 +107,7 @@ class Deuglifier:
                 return '<span class="code-%s">' % mtype
 
 
-def display(data, mimetype, filename, env):
+def display(data, mimetype, filename, rev, env):
     try:
         lang = types[mimetype]
     except KeyError:

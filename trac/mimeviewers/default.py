@@ -2,7 +2,7 @@ from trac.util import escape
 
 supported_types = [(9, None)]
 
-def display(data, mimetype, filename, env):
+def display(data, mimetype, filename, rev, env):
     env.log.debug("Mimetype: %s   filename: %s" % (mimetype, filename))
     if not mimetype or not mimetype[:5] == 'text/':
         env.log.debug("Binary data. Displaying summary.")

@@ -71,7 +71,7 @@ type_lang = { 'text/css':['CSS'],
               'image/svg+xml':['XML'],
               }
 
-def display(data, mimetype, filename, env):
+def display(data, mimetype, filename, rev, env):
     import SilverCity
     from SilverCity import LanguageInfo
     try:

@@ -40,7 +40,9 @@ class FileCommon(Module.Module):
     DISP_MAX_FILE_SIZE = 256 * 1024
 
     filename = None
+    rev = None
     mime_type = None
+
     def render (self):
         self.perm.assert_permission (perm.FILE_VIEW)
 
@@ -63,6 +65,7 @@ class FileCommon(Module.Module):
             vdata = ' '
         else:
             vdata = self.env.mimeview.display(data, filename=self.filename,
+                                              rev=self.rev,
                                               mimetype=self.mime_type)
         self.req.hdf.setValue('file.highlighted_html', vdata)
         self.req.display('file.cs')
@@ -91,6 +94,7 @@ class FileCommon(Module.Module):
         self.display_raw()
 
 class Attachment(FileCommon):
+
     def get_attachment_parent_link(self):
         if self.attachment_type == 'ticket':
             return ('Ticket #' + self.attachment_id,
@@ -245,31 +249,31 @@ class File(FileCommon):
     def render(self):
         FileCommon.render(self)
 
-        rev = self.args.get('rev', None)
+        self.rev = self.args.get('rev', None)
         self.path = self.args.get('path', '/')
-        if not rev:
+        if not self.rev:
             rev_specified = 0
-            rev = svn.fs.youngest_rev(self.fs_ptr, self.pool)
+            self.rev = svn.fs.youngest_rev(self.fs_ptr, self.pool)
         else:
             rev_specified = 1
             try:
-                rev = int(rev)
+                self.rev = int(self.rev)
             except ValueError:
                 rev_specified = 0
-                rev = svn.fs.youngest_rev(self.fs_ptr, self.pool)
+                self.rev = svn.fs.youngest_rev(self.fs_ptr, self.pool)
 
-        self.generate_path_links(rev, rev_specified)
+        self.generate_path_links(self.rev, rev_specified)
 
         try:
-            root = svn.fs.revision_root(self.fs_ptr, rev, self.pool)
+            root = svn.fs.revision_root(self.fs_ptr, self.rev, self.pool)
         except svn.core.SubversionException:
-            rev = svn.fs.youngest_rev(self.fs_ptr, self.pool)
-            root = svn.fs.revision_root(self.fs_ptr, rev, self.pool)
+            self.rev = svn.fs.youngest_rev(self.fs_ptr, self.pool)
+            root = svn.fs.revision_root(self.fs_ptr, self.rev, self.pool)
 
         node_type = svn.fs.check_path(root, self.path, self.pool)
         if not node_type in [svn.core.svn_node_dir, svn.core.svn_node_file]:
-            rev = svn.fs.youngest_rev(self.fs_ptr, self.pool)
-            root = svn.fs.revision_root(self.fs_ptr, rev, self.pool)
+            self.rev = svn.fs.youngest_rev(self.fs_ptr, self.pool)
+            root = svn.fs.revision_root(self.fs_ptr, self.rev, self.pool)
             oh = svn.fs.node_history(root, self.path, self.pool)
             while oh:
                 h = oh
@@ -280,26 +284,26 @@ class File(FileCommon):
             history = svn.fs.history_prev(history, 0, self.pool)
         history_path, history_rev = svn.fs.history_location(history, self.pool);
 
-        if rev != history_rev:
-            rev = history_rev
+        if self.rev != history_rev:
+            self.rev = history_rev
 
-        author = svn.fs.revision_prop(self.fs_ptr, rev,
+        author = svn.fs.revision_prop(self.fs_ptr, self.rev,
                                       svn.core.SVN_PROP_REVISION_AUTHOR, self.pool)
-        msg = svn.fs.revision_prop(self.fs_ptr, rev,
+        msg = svn.fs.revision_prop(self.fs_ptr, self.rev,
                                    svn.core.SVN_PROP_REVISION_LOG, self.pool)
         msg_html = wiki_to_html(util.wiki_escape_newline(msg), self.req.hdf, self.env, self.db)
-        date = svn.fs.revision_prop(self.fs_ptr, rev,
+        date = svn.fs.revision_prop(self.fs_ptr, self.rev,
                                     svn.core.SVN_PROP_REVISION_DATE, self.pool)
         sdate = util.svn_date_to_string(date, self.pool)
 
-        self.req.hdf.setValue('file.chgset_href', self.env.href.changeset(rev))
-        self.req.hdf.setValue('file.rev', str(rev))
+        self.req.hdf.setValue('file.chgset_href', self.env.href.changeset(self.rev))
+        self.req.hdf.setValue('file.rev', str(self.rev))
         self.req.hdf.setValue('file.rev_author', str(author))
         self.req.hdf.setValue('file.rev_date', sdate)
         self.req.hdf.setValue('file.rev_msg', msg_html)
         self.req.hdf.setValue('file.path', self.path)
         self.req.hdf.setValue('file.logurl',
-            saxutils.escape(self.env.href.log(self.path, rev)))
+            saxutils.escape(self.env.href.log(self.path, self.rev)))
 
         # Try to do an educated guess about the mime-type
         self.mime_type = svn.fs.node_prop (root, self.path,
@@ -312,13 +316,13 @@ class File(FileCommon):
             self.mime_type = self.env.mimeview.get_mimetype(filename=self.path) or \
                              'application/octet-stream'
 
-        self.add_link('alternate', self.env.href.file(self.path, rev, 'raw'),
+        self.add_link('alternate', self.env.href.file(self.path, self.rev, 'raw'),
             'Original Format', self.mime_type)
-        self.add_link('alternate', self.env.href.file(self.path, rev, 'txt'),
+        self.add_link('alternate', self.env.href.file(self.path, self.rev, 'txt'),
             'Plain Text', 'text/plain')
 
         self.length = svn.fs.file_length(root, self.path, self.pool)
-        date = svn.fs.revision_prop(self.fs_ptr, rev,
+        date = svn.fs.revision_prop(self.fs_ptr, self.rev,
                                 svn.util.SVN_PROP_REVISION_DATE, self.pool)
         date_seconds = svn.util.svn_time_from_cstring(date, self.pool) / 1000000
         self.last_modified = time.strftime("%a, %d %b %Y %H:%M:%S GMT",
