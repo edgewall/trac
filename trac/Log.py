@@ -49,20 +49,24 @@ class Log (Module):
             }
         self.log_info.insert (0, item)
 
-    def get_info (self, path):
+    def get_info (self, path, rev):
         self.log_info = []
         repos.svn_repos_get_logs (self.repos, [path],
-                                   0, -1, 0, 1, self.log_receiver,
+                                   0, rev, 0, 0, self.log_receiver,
                                    self.pool)
         return self.log_info
 
-    def generate_path_links(self):
+    def generate_path_links(self, rev, rev_specified):
         list = self.path.split('/')
         path = '/'
         self.req.hdf.setValue('log.filename', list[-1])
         self.req.hdf.setValue('log.href' , self.env.href.log(self.path))
         self.req.hdf.setValue('log.path.0', 'root')
-        self.req.hdf.setValue('log.path.0.url' , self.env.href.browser(path))
+        if rev_specified:
+            self.req.hdf.setValue('log.path.0.url' ,
+                                  self.env.href.browser(path, rev))
+        else:
+            self.req.hdf.setValue('log.path.0.url' , self.env.href.browser(path))
         i = 0
         for part in list[:-1]:
             i = i + 1
@@ -70,30 +74,43 @@ class Log (Module):
                 break
             path = path + part + '/'
             self.req.hdf.setValue('log.path.%d' % i, part)
-            self.req.hdf.setValue('log.path.%d.url' % i,
-                                  self.env.href.browser(path))
+            if rev_specified:
+                self.req.hdf.setValue('log.path.%d.url' % i,
+                                      self.env.href.browser(path, rev))
+            else:
+                self.req.hdf.setValue('log.path.%d.url' % i,
+                                      self.env.href.browser(path))
 
     def render (self):
         self.perm.assert_permission (perm.LOG_VIEW)
 
         self.path = self.args.get('path', '/')
-        
+        if self.args.has_key('rev'):
+            try:
+                rev = int(self.args.get('rev'))
+                rev_specified = 1
+            except ValueError:
+                rev = fs.youngest_rev(self.fs_ptr, self.pool)
+                rev_specified = 0
+        else:
+            rev = fs.youngest_rev(self.fs_ptr, self.pool)
+            rev_specified = 0
+            
         # We display an error message if the file doesn't exist (any more).
         # All we know is that the path isn't valid in the youngest
         # revision of the repository. The file might have existed
         # before, but we don't know for sure...
-        revision = fs.youngest_rev(self.fs_ptr, self.pool)
-        root = fs.revision_root(self.fs_ptr, revision, self.pool)
-        if fs.check_path(root, self.path, self.pool) != core.svn_node_file:
-            raise TracError('The file "%s" doesn\'t currently exist in the '
-                            'repository. The file might have been deleted '
-                            'or never existed in the first place.' \
-                            % self.path, 'Nonexistent path')
+        root = fs.revision_root(self.fs_ptr, rev, self.pool)
+        if not fs.check_path(root, self.path, self.pool) in \
+               [core.svn_node_file, core.svn_node_dir]:
+            raise TracError('The file or directory "%s" doesn\'t exist in the '
+                            'repository at revision %d.' % (self.path, rev),
+                            'Nonexistent path')
         else:
-            info = self.get_info (self.path)
+            info = self.get_info (self.path, rev)
             add_dictlist_to_hdf(info, self.req.hdf, 'log.items')
 
-        self.generate_path_links()
+        self.generate_path_links(rev, rev_specified)
         self.req.hdf.setValue('title', self.path + ' (log)')
         self.req.hdf.setValue('log.path', self.path)
 

@@ -20,6 +20,7 @@
 # Author: Jonas Borgström <jonas@edgewall.com>
 
 import string
+import posixpath
 
 from svn import core, fs, util, delta
 
@@ -52,7 +53,7 @@ class Browser(Module):
         entries = fs.dir_entries(root, path, self.pool)
         info = []
         for item in entries.keys():
-            fullpath = path + item
+            fullpath = posixpath.join(path, item)
 
             is_dir = fs.is_dir(root, fullpath, self.pool)
             if is_dir:
@@ -84,17 +85,12 @@ class Browser(Module):
                 'is_dir'     : is_dir,
                 'size'       : pretty_size(size),
                 'size_bytes' : size }
-            if is_dir:
-                if rev_specified:
-                    item['browser_href'] = self.env.href.browser(fullpath, revision)
-                else:
-                    item['browser_href'] = self.env.href.browser(fullpath)
+            if rev_specified:
+                item['log_href'] = self.env.href.log(fullpath, revision)
+                item['browser_href'] = self.env.href.browser(fullpath, revision)
             else:
                 item['log_href'] = self.env.href.log(fullpath)
-                if rev_specified:
-                    item['rev_href'] = self.env.href.file(fullpath, revision)
-                else:
-                    item['rev_href'] = self.env.href.file(fullpath)
+                item['browser_href'] = self.env.href.browser(fullpath)
                 
             info.append(item)
         return info
@@ -171,8 +167,12 @@ class Browser(Module):
 
         if path != '/':
             parent = string.join(path.split('/')[:-2], '/') + '/'
-            self.req.hdf.setValue('browser.parent_href',
-                                  self.env.href.browser(parent))
+            if rev_specified:
+                self.req.hdf.setValue('browser.parent_href',
+                                      self.env.href.browser(parent, rev))
+            else:
+                self.req.hdf.setValue('browser.parent_href',
+                                      self.env.href.browser(parent))
 
         self.req.hdf.setValue('title', path + ' (browser)')
         self.req.hdf.setValue('browser.path', path)

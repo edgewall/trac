@@ -26,8 +26,11 @@ class Href:
     def __init__(self, base):
         self.base = base
 
-    def log(self, path):
-        return href_join(self.base, 'log', path)
+    def log(self, path, rev=None):
+        if rev:
+            return href_join(self.base, 'log', path) + '?rev=' + str(rev)
+        else:
+            return href_join(self.base, 'log', path)
         
     def file(self, path, rev=None, format=None):
         if rev and format:

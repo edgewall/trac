@@ -88,12 +88,8 @@
            <?cs if item.size != #0 ?><?cs var:item.size ?><?cs /if ?>
          </td>
          <td class="br-rev-col">
-           <?cs if item.is_dir == #1 ?>
-             <?cs var:item.created_rev ?>
-           <?cs else ?>
-             <a title="View Revision Log" class="block-link-nobold" 
-                href="<?cs var:item.log_href ?>"><?cs var:item.created_rev ?></a>
-           <?cs /if ?>
+           <a title="View Revision Log" class="block-link-nobold" 
+              href="<?cs var:item.log_href ?>"><?cs var:item.created_rev ?></a>
          </td>
          <td class="br-date-col">
            <?cs var:item.date ?>

@@ -186,7 +186,7 @@ class Attachment(FileCommon):
 
 
 class File(FileCommon):
-    def generate_path_links(self):
+    def generate_path_links(self, rev, rev_specified):
         # FIXME: Browser, Log and File should share implementation of this
         # function.
         list = self.path.split('/')
@@ -194,7 +194,11 @@ class File(FileCommon):
         path = '/'
         self.req.hdf.setValue('file.filename', list[-1])
         self.req.hdf.setValue('file.path.0', 'root')
-        self.req.hdf.setValue('file.path.0.url' , self.env.href.browser(path))
+        if rev_specified:
+            self.req.hdf.setValue('file.path.0.url' , self.env.href.browser(path,
+                                                                            rev))
+        else:
+            self.req.hdf.setValue('file.path.0.url' , self.env.href.browser(path))
         i = 0
         for part in list[:-1]:
             i = i + 1
@@ -202,11 +206,14 @@ class File(FileCommon):
                 break
             path = path + part + '/'
             self.req.hdf.setValue('file.path.%d' % i, part)
-            self.req.hdf.setValue('file.path.%d.url' % i,
-                                  self.env.href.browser(path))
+            if rev_specified:
+                self.req.hdf.setValue('file.path.%d.url' % i,
+                                      self.env.href.browser(path, rev))
+            else:
+                self.req.hdf.setValue('file.path.%d.url' % i,
+                                      self.env.href.browser(path))
 
     def display(self):
-        self.generate_path_links()
         FileCommon.display(self)
 
     def render(self):
@@ -215,9 +222,17 @@ class File(FileCommon):
         rev = self.args.get('rev', None)
         self.path = self.args.get('path', '/')
         if not rev:
+            rev_specified = 0
             rev = svn.fs.youngest_rev(self.fs_ptr, self.pool)
         else:
-            rev = int(rev)
+            rev_specified = 1
+            try:
+                rev = int(rev)
+            except ValueError:
+                rev_specified = 0
+                rev = svn.fs.youngest_rev(self.fs_ptr, self.pool)
+
+        self.generate_path_links(rev, rev_specified)
 
         root = svn.fs.revision_root(self.fs_ptr, rev, self.pool)
         history = svn.fs.node_history(root, self.path, self.pool)
