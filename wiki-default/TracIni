@@ -31,6 +31,9 @@ See also: TracLogging
 == [attachment] ==
 || max_size || Maximum allowed file size for ticket and wiki attachments ||
 
+== [diff] ==
+|| tab_width || Displayed tab width in diffs (default is 8) ||
+
 == [notification] ==
 || smtp_enabled   || Enable SMTP (email) notification (true, false) ||
 || smtp_server    || SMTP server to use for email notifications ||
