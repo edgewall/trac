@@ -36,7 +36,7 @@ __all__ = ['Ticket', 'NewticketModule', 'TicketModule']
 class Ticket(UserDict):
     std_fields = ['time', 'component', 'severity', 'priority', 'milestone',
                   'reporter', 'owner', 'cc', 'url', 'version', 'status', 'resolution',
-                  'keywords', 'summary', 'description']
+                  'keywords', 'summary', 'description', 'reporter']
 
     def __init__(self, *args):
         UserDict.__init__(self)
@@ -288,6 +288,9 @@ class TicketModule (Module):
             raise util.TracError('Tickets must contain Summary.')
 
         if self.args.has_key('description'):
+            self.perm.assert_permission (perm.TICKET_ADMIN)
+
+        if self.args.has_key('reporter'):
             self.perm.assert_permission (perm.TICKET_ADMIN)
 
         # TODO: this should not be hard-coded like this

@@ -334,20 +334,20 @@ class CGIRequest(Request):
         self.command = os.getenv('REQUEST_METHOD')
         host = os.getenv('SERVER_NAME')
         proto_port = ''
-        port = os.environ.get('SERVER_PORT', 80)
+        port = int(os.environ.get('SERVER_PORT', 80))
         if port == 443:
            proto = 'https'
         else:
            proto = 'http'
-           if not port == 80:
-               proto_port = ':%s' % port
+           if port != 80:
+               proto_port = ':%d' % port
 
         if os.getenv('HTTP_X_FORWARDED_HOST'):
             self.base_url = '%s://%s%s/' % (proto,
                                             os.getenv('HTTP_X_FORWARDED_HOST'),
                                             self.cgi_location)
         else:
-            self.base_url = '%s://%s%s%s' % (proto, proto_port, host, self.cgi_location)
+            self.base_url = '%s://%s%s%s' % (proto, host, proto_port, self.cgi_location)
 
         if os.getenv('HTTP_COOKIE'):
             self.incookie.load(os.getenv('HTTP_COOKIE'))
@@ -357,7 +357,6 @@ class CGIRequest(Request):
         self.hdf.setValue('HTTP.Protocol', proto)
         if proto_port:
             self.hdf.setValue('HTTP.Port', str(port))
-
 
     def read(self, len):
         return sys.stdin.read(len)

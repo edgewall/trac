@@ -206,6 +206,9 @@ onfocus="document.getElementById('comment').focus()">Add/Change
   <?cs call:wiki_toolbar('description') ?>
   </div>
   <br style="clear: left" />
+  <label for="reporter" class="nt-label">Reporter:</label>
+  <input id="reporter" type="text" name="reporter" class="textwidget" size="80"
+         value="<?cs var:ticket.reporter ?>" />
 <?cs /if ?>
 </div>
   <div id="nt-left">
