@@ -34,7 +34,7 @@ class Timeline (Module):
     template_rss_name = 'timeline_rss.cs'
 
     def get_info(self, req, start, stop, maxrows, filters=AVAILABLE_FILTERS):
-        perm_map = {'tickets': perm.TICKET_VIEW, 'changeset': perm.CHANGESET_VIEW,
+        perm_map = {'ticket': perm.TICKET_VIEW, 'changeset': perm.CHANGESET_VIEW,
                     'wiki': perm.WIKI_VIEW, 'milestone': perm.MILESTONE_VIEW}
         filters = list(filters) # copy list so we can make modifications
         for k,v in perm_map.items():
