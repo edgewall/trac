@@ -128,7 +128,9 @@ class Timeline (Module):
                                                                absurls=1))
                 item['message'] = wiki_to_oneliner(msg, self.req.hdf,
                                                    self.env, self.db,absurls=1)
-                if self.env.get_config('timeline', 'changeset_show_files','False').lower() in util.TRUE:
+                
+		max_node = int(self.env.get_config('timeline', 'changeset_show_files',0))
+		if max_node != 0:
                     cursor_node = self.db.cursor ()
                     cursor_node.execute("SELECT name, change "
                                         "FROM node_change WHERE rev=%d" % item['idata'])
@@ -137,10 +139,11 @@ class Timeline (Module):
                     node_count = 0;
                     while 1:
                         row_node = cursor_node.fetchone()
-                        if not row_node:break
+                        if not row_node:
+			    break
                         if node_count != 0:
                             node_list += ', '
-                        if node_count >= int(self.env.get_config('timeline', 'changeset_files_count','3')):
+                        if (max_node != -1) and (node_count >= max_node):
                             node_list += '...'
                             break
                         if row_node['change'] == 'A':
