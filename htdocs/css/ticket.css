@@ -14,6 +14,7 @@
 }
 #ticket h2 { margin: 0 0 1em }
 #ticket .date { color: #996; float: right; font-size: 85%; position: relative }
+#ticket .date p { margin: 0 }
 
 #ticket table {
  border-top: 1px solid #dd9;

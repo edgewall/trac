@@ -36,8 +36,9 @@ __all__ = ['Ticket', 'NewticketModule', 'TicketModule']
 
 class Ticket(UserDict):
     std_fields = ['time', 'component', 'severity', 'priority', 'milestone',
-                  'reporter', 'owner', 'cc', 'url', 'version', 'status', 'resolution',
-                  'keywords', 'summary', 'description']
+                  'reporter', 'owner', 'cc', 'url', 'version', 'status',
+                  'resolution', 'keywords', 'summary', 'description',
+                  'changetime']
 
     def __init__(self, *args):
         UserDict.__init__(self)
@@ -416,7 +417,18 @@ class TicketModule (Module):
         req.hdf.setValue('ticket.description.formatted',
                          wiki_to_html(ticket['description'], req.hdf,
                                       self.env, self.db))
-        req.hdf.setValue('ticket.opened', time.strftime('%c', time.localtime(int(ticket['time']))))
+
+        opened = int(ticket['time'])
+        req.hdf.setValue('ticket.opened',
+                         time.strftime('%c', time.localtime(opened)))
+        req.hdf.setValue('ticket.opened_delta',
+                         util.pretty_timedelta(opened))
+        lastmod = int(ticket['changetime'])
+        if lastmod != opened:
+            req.hdf.setValue('ticket.lastmod',
+                             time.strftime('%c', time.localtime(lastmod)))
+            req.hdf.setValue('ticket.lastmod_delta',
+                             util.pretty_timedelta(lastmod))
 
         changelog = ticket.get_changelog(self.db)
         curr_author = None

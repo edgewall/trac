@@ -37,7 +37,12 @@
  /def ?>
 
 <div id="ticket">
- <div class="date"><?cs var:ticket.opened ?></div>
+ <div class="date">
+  <p title="<?cs var:ticket.opened ?>">Opened <?cs var:ticket.opened_delta ?> ago</p><?cs
+  if:ticket.lastmod ?>
+   <p title="<?cs var:ticket.lastmod ?>">Last modified <?cs var:ticket.lastmod_delta ?> ago</p>
+  <?cs /if ?>
+ </div>
  <h2><?cs var:ticket.summary ?></h2>
  <table><tr><?cs
   call:ticketprop("Priority", "priority", ticket.priority, 0) ?><?cs
