@@ -39,6 +39,7 @@ try:
 except AttributeError:
     _StringTypes = [types.StringType]
 
+
 class ColumnSorter:
 
     def __init__(self, columnIndex, asc=1):
@@ -70,7 +71,6 @@ class ColumnSorter:
 class Report (Module):
     template_name = 'report.cs'
     template_rss_name = 'report_rss.cs'
-    template_csv_name = 'report_csv.cs'
 
     def sql_sub_vars(self, sql, args):
         m = re.search(dynvars_re, sql)
@@ -86,7 +86,6 @@ class Report (Module):
         return self.sql_sub_vars(sql, args)
 
     def get_info(self, id, args):
-        cursor = self.db.cursor()
 
         if id == -1:
             # If no particular report was requested, display
@@ -95,6 +94,7 @@ class Report (Module):
             sql = 'SELECT id AS report, title FROM report ORDER BY report'
             description = 'This is a list of reports available.'
         else:
+            cursor = self.db.cursor()
             cursor.execute('SELECT title, sql, description from report '
                            ' WHERE id=%s', id)
             row = cursor.fetchone()
@@ -129,18 +129,20 @@ class Report (Module):
             self.req.redirect(self.env.href.report(id))
 
     def execute_report(self, sql, args):
-        cursor = self.db.cursor()
         sql = self.sql_sub_vars(sql, args)
         if not sql:
             raise util.TracError('Report %s has no SQL query.' % id)
-        cursor.execute(sql)
-
         if sql.find('__group__') == -1:
             self.req.hdf.setValue('report.sorting.enabled', '1')
+
+        cursor = self.db.cursor()
+        cursor.execute(sql)
 
         # FIXME: fetchall should probably not be used.
         info = cursor.fetchall()
         cols = cursor.description
+
+        self.db.rollback()
 
         return [cols, info]
 
@@ -164,8 +166,8 @@ class Report (Module):
 
     def render_confirm_delete(self, id):
         self.perm.assert_permission(perm.REPORT_DELETE)
-        cursor = self.db.cursor()
 
+        cursor = self.db.cursor()
         cursor.execute('SELECT title FROM report WHERE id = %s', id)
         row = cursor.fetchone()
         if not row:
@@ -179,11 +181,11 @@ class Report (Module):
 
     def render_report_editor(self, id, action='commit', copy=0):
         self.perm.assert_permission(perm.REPORT_MODIFY)
-        cursor = self.db.cursor()
 
         if id == -1:
             title = sql = description = ''
         else:
+            cursor = self.db.cursor()
             cursor.execute('SELECT title, description, sql FROM report '
                            ' WHERE id=%s', id)
             row = cursor.fetchone()
@@ -396,6 +398,7 @@ class Report (Module):
 
     def render(self):
         self.perm.assert_permission(perm.REPORT_VIEW)
+
         # did the user ask for any special report?
         id = int(self.args.get('id', -1))
         action = self.args.get('action', 'list')
@@ -447,7 +450,10 @@ class Report (Module):
             return
         self.req.write(sep.join([c[0] for c in self.cols]) + '\r\n')
         for row in self.rows:
-            self.req.write(sep.join([str(c).replace(sep,"_").replace('\n',' ').replace('\r',' ') for c in row]) + '\r\n')
+            sanitize = lambda x: str(x).replace(sep,"_") \
+                                       .replace('\n',' ') \
+                                       .replace('\r',' ')
+            self.req.write(sep.join(map(sanitize, row)) + '\r\n')
 
     def display_tab(self):
         self.display_csv('\t')

@@ -19,86 +19,51 @@
 #
 # Author: Daniel Lundin <daniel@edgewall.com>
 
+from util import hex_entropy, add_to_hdf, TracError
+
 import sys
 import time
-from util import hex_entropy, add_dict_to_hdf, TracError
+from UserDict import UserDict
 
-class Session:
+
+DEPARTURE_INTERVAL = 3600 # If you're idle for an hour, you left
+PURGE_AGE = 3600*24*90 # Purge session after 90 days idle
+COOKIE_KEY = 'trac_session'
+
+
+class Session(UserDict):
     """Basic session handling and per-session storage."""
 
     sid = None
     req = None
     env = None
     db = None
-    vars = {}
+    _old = {}
 
-    DEPARTURE_INTERVAL = 3600 # If you're idle for an hour, you left
-    UPDATE_INTERVAL = 300  # Update session every 5 mins
-    PURGE_AGE = 3600*24*90 # Purge session after 90 days idle
-    COOKIE_KEY = 'trac_session'
-
-    def __init__(self, env, req, newsession = 0):
+    def __init__(self, env, db, req, newsession = 0):
+        UserDict.__init__(self)
         self.env = env
-        self.db = self.env.get_db_cnx()
+        self.db = db
         self.req = req
         self.sid = None
-        self.vars = {}
+        self._old = {}
         if newsession:
             self.create_new_sid()
         else:
             try:
-                sid = req.incookie[self.COOKIE_KEY].value
+                sid = req.incookie[COOKIE_KEY].value
                 self.get_session(sid)
             except KeyError:
                 self.create_new_sid()
 
-    def __getitem__(self, key):
-        return self.vars[key]
-
-    def __setitem__(self, key, val):
-        return self.set_var(key, val)
-
-    def __delitem__(self, key):
-        return self.set_var(key, '')
-
-    def get(self, *args):
-        return apply(self.vars.get, args)
-
-    def __repr__(self):
-        s = "\n session id='%s'" % self.sid
-        for k in self.vars.keys():
-            s += "\n  %s='%s'" % (k, self.vars[k])
-        return s
-
-    def keys(self):
-        return self.vars.keys()
-
     def bake_cookie(self):
-        self.req.outcookie[self.COOKIE_KEY] = self.sid
-        self.req.outcookie[self.COOKIE_KEY]['path'] = self.req.cgi_location
-        self.req.outcookie[self.COOKIE_KEY]['expires'] = 420000000
+        self.req.outcookie[COOKIE_KEY] = self.sid
+        self.req.outcookie[COOKIE_KEY]['path'] = self.req.cgi_location
+        self.req.outcookie[COOKIE_KEY]['expires'] = 420000000
 
     def populate_hdf(self):
-        add_dict_to_hdf(self.vars, self.req.hdf, 'trac.session.var')
         self.req.hdf.setValue('trac.session.id', self.sid)
-        last_visit =  float(self.get('last_visit', 0))
-        if last_visit:
-            self.req.hdf.setValue('trac.session.var.last_visit_txt',
-                                  time.strftime('%x %X', time.localtime(last_visit)))
-        mod_time =  float(self.get('mod_time', 0))
-        if mod_time:
-            self.req.hdf.setValue('trac.session.var.mod_time_txt',
-                                  time.strftime('%x %X', time.localtime(mod_time)))
-
-    def update_sess_time(self):
-        sess_time = int(self.get('mod_time',0))
-        last_visit = int(self.get('last_visit',0))
-        now = int(time.time())
-        idle = now - sess_time
-        if idle > self.DEPARTURE_INTERVAL or not last_visit:
-            self['last_visit'] = sess_time
-        if idle > self.UPDATE_INTERVAL or not sess_time:
-            self['mod_time'] = now
+        add_to_hdf(self.data, self.req.hdf, 'trac.session.var')
 
     def get_session(self, sid):
         self.sid = sid
@@ -110,8 +75,8 @@ class Session:
             or rows[0][0] == 'anonymous'          # Anon session
             or rows[0][0] == self.req.authname):  # Session is mine
             for u,k,v in rows:
-                self.vars[k] = v
-            self.update_sess_time()
+                self.data[k] = v
+            self._old.update(self.data)
             self.bake_cookie()
             self.populate_hdf()
             return
@@ -127,24 +92,6 @@ class Session:
                    '<p><a href="%s?newsession=1">'
                    'Create new session</a></p>' % self.env.href.settings())
         raise TracError(err, 'Error accessing authenticated session')
-
-    def set_var(self, key, val):
-        currval =  self.get(key)
-        if currval == val:
-            return
-        curs = self.db.cursor()
-        if currval == None:
-            if key == 'last_visit': # Limit the frequency of purging
-                self.purge_expired() 
-            curs.execute('INSERT INTO session(sid,username,var_name,var_value)'
-                         ' VALUES(%s,%s,%s,%s)',
-                         self.sid, self.req.authname, key, val)
-        else:
-            curs.execute('UPDATE session SET username=%s,var_value=%s'
-                         ' WHERE sid=%s AND var_name=%s',
-                         self.req.authname, val, self.sid, key)
-        self.db.commit()
-        self.vars[key] = val
 
     def create_new_sid(self):
         self.sid = hex_entropy(24)
@@ -166,12 +113,51 @@ class Session:
         self.sid = newsid
         self.bake_cookie()
 
-    def purge_expired(self):
-        mintime = int(time.time()) - self.PURGE_AGE
-        self.env.log.debug('Purging old, expired, sessions.')
-        curs = self.db.cursor()
-        curs.execute("DELETE FROM session WHERE sid IN"
-                     " (SELECT sid FROM session WHERE var_name='mod_time'"
-                     "  AND var_value < %s)", mintime)
-        self.db.commit()
+    def save(self):
+        if not self._old and not self.data:
+            # The session doesn't have associated data, so there's no need to
+            # persist it
+            return
 
+        now = int(time.time())
+
+        # Update the session last visit time if it is over an hour old, so that
+        # session doesn't get purged
+        last_visit = int(self.data.get('last_visit', 0))
+        if now - last_visit > DEPARTURE_INTERVAL:
+            self.data['last_visit'] = now
+
+        changed = 0
+        cursor = self.db.cursor()
+
+        # Find all new or modified session variables and persist their values to
+        # the database
+        for k,v in self.data.items():
+            if not self._old.has_key(k):
+                cursor.execute("INSERT INTO session(sid,username,var_name,"
+                               "var_value) VALUES(%s,%s,%s,%s)",
+                               self.sid, self.req.authname, k, v)
+                changed = 1
+            elif v != self._old[k]:
+                cursor.execute("UPDATE session SET var_value=%s WHERE sid=%s "
+                               "AND var_name=%s", v, self.sid, k)
+                changed = 1
+
+        # Find all variables that have been deleted and also remove them from
+        # the database
+        for k in [k for k in self._old.keys() if not self.data.has_key(k)]:
+            cursor.execute("DELETE FROM session WHERE sid=%s AND var_name=%s",
+                           self.sid, k)
+            changed = 1
+
+        if changed:
+            # Purge expired sessions. We do this only when the session was
+            # changed as to minimize the purging.
+            mintime = now - PURGE_AGE
+            self.env.log.debug('Purging old, expired, sessions.')
+            cursor.execute("DELETE FROM session WHERE sid IN"
+                           " (SELECT sid FROM session"
+                           "  WHERE var_name='last_visit' AND var_value < %s)",
+                           mintime)
+
+            self.db.commit()

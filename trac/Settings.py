@@ -29,12 +29,11 @@ from Module import Module
 class Settings(Module):
     template_name = 'settings.cs'
 
-    _form_fields = ['newsid','name', 'email', 'tz']
+    _form_fields = ['newsid','name', 'email']
 
     def render(self):
         self.req.hdf.setValue('title', 'Settings')
         action = self.args.get('action')
-        self.log.debug('Session action: %s' % action)
         if action == 'save':
             self.save_settings()
         elif action == 'load':

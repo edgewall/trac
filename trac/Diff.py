@@ -142,7 +142,7 @@ def get_options(env, req, args, advanced=0):
         pref = int(session.get('diff_' + name, default))
         arg = int(args.has_key(name))
         if args.has_key('update') and arg != pref:
-            session.set_var('diff_' + name, arg)
+            session['diff_' + name] = arg
         else:
             arg = pref
         return arg
@@ -150,7 +150,7 @@ def get_options(env, req, args, advanced=0):
     pref = req.session.get('diff_style', 'inline')
     style = args.get('style', pref)
     if args.has_key('update') and style != pref:
-        req.session.set_var('diff_style', style)
+        req.session['diff_style'] = style
     req.hdf.setValue('diff.style', style)
 
     if advanced:
@@ -158,7 +158,7 @@ def get_options(env, req, args, advanced=0):
         pref = int(req.session.get('diff_contextlines', 2))
         arg = int(args.get('contextlines', pref))
         if args.has_key('update') and arg != pref:
-            req.session.set_var('diff_contextlines', arg)
+            req.session['diff_contextlines'] = arg
         options = ['-U%d' % arg]
         req.hdf.setValue('diff.options.contextlines', str(arg))
 

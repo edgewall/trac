@@ -403,54 +403,63 @@ class CGIRequest(Request):
     def end_headers(self):
         self.write('\r\n')
 
-def dispatch_request(path_info, args, req, env, database=None):
-    import Wiki
+def dispatch_request(path_info, args, req, env):
 
-    if not database:
-        database = env.get_db_cnx()
+    db = env.get_db_cnx()
 
     # Let the wiki module build a dictionary of all page names
-    Wiki.populate_page_dict(database, env)
+    import Wiki
+    Wiki.populate_page_dict(db, env)
 
     try:
-        authenticator = auth.Authenticator(database, req)
-        if path_info == '/logout':
-            authenticator.logout()
-            referer = req.get_header('Referer')
-            if referer and referer[0:len(req.base_url)] != req.base_url:
-                # only redirect to referer if the latter is from the same instance
-                referer = None
-            req.redirect(referer or env.href.wiki())
-        elif req.remote_user and authenticator.authname == 'anonymous':
-            authenticator.login(req)
-        if path_info == '/login':
-            referer = req.get_header('Referer')
-            if referer and referer[0:len(req.base_url)] != req.base_url:
-                # only redirect to referer if the latter is from the same instance
-                referer = None
-            req.redirect(referer or env.href.wiki())
-        req.authname = authenticator.authname
-
-        newsession = args.has_key('newsession') and args['newsession']
-        req.session = Session.Session(env, req, newsession)
-
-        add_args_to_hdf(args, req.hdf)
         try:
-            pool = None
-            # Load the selected module
-            module = module_factory(args, env, database, req)
-            pool = module.pool
-            module.run()
-        finally:
-            # We do this even if the cgi will terminate directly after. A pool
-            # destruction might trigger important clean-up functions.
-            if pool:
-                import svn.core
-                svn.core.svn_pool_destroy(pool)
-    except NotModifiedException:
-        pass
-    except RedirectException:
-        pass
+            authenticator = auth.Authenticator(db, req)
+            if path_info == '/logout':
+                authenticator.logout()
+                referer = req.get_header('Referer')
+                if referer and referer[0:len(req.base_url)] != req.base_url:
+                    # only redirect to referer if the latter is from the same
+                    # instance
+                    referer = None
+                req.redirect(referer or env.href.wiki())
+            elif req.remote_user and authenticator.authname == 'anonymous':
+                authenticator.login(req)
+            if path_info == '/login':
+                referer = req.get_header('Referer')
+                if referer and referer[0:len(req.base_url)] != req.base_url:
+                    # only redirect to referer if the latter is from the same
+                    # instance
+                    referer = None
+                req.redirect(referer or env.href.wiki())
+            req.authname = authenticator.authname
+
+            newsession = args.has_key('newsession') and args['newsession']
+            req.session = Session.Session(env, db, req, newsession)
+
+            add_args_to_hdf(args, req.hdf)
+            try:
+                pool = None
+                # Load the selected module
+                module = module_factory(args, env, db, req)
+                pool = module.pool
+                module.run()
+            finally:
+                # We do this even if the cgi will terminate directly after. A
+                # pool destruction might trigger important clean-up functions.
+                if pool:
+                    import svn.core
+                    svn.core.svn_pool_destroy(pool)
+
+                # Give the session a chance to persist changes
+                req.session.save()
+
+        except NotModifiedException:
+            pass
+        except RedirectException:
+            pass
+
+    finally:
+        db.close()
 
 def open_svn_repos(repos_dir):
     from svn import repos, core
