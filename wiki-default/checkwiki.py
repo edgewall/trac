@@ -20,6 +20,7 @@ wiki_pages = [
  "TracBrowser",
  "TracChangeset",
  "TracGuide",
+ "TracIni",
  "TracInstall",
  "TracLinks",
  "TracLogging",
