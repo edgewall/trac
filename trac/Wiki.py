@@ -195,7 +195,8 @@ class WikiModule(Module):
 
         diff_style, diff_options = get_diff_options(req)
         if req.args.has_key('update'):
-           req.redirect(self.env.href.wiki(pagename, version, action='diff'))
+           req.redirect(self.env.href.wiki(pagename, version=version,
+                                           action='diff'))
 
         # Ask web spiders to not index old versions
         req.hdf['html.norobots'] = 1
