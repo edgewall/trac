@@ -36,7 +36,7 @@
    <title><?cs var:project.name.encoded ?></title>
    <url><?cs if:!header_logo.src_abs ?><?cs var:base_url ?><?cs /if ?><?cs
     var:header_logo.src ?></url>
-   <link><?cs var:trac.href.timeline ?></link>
+   <link><?cs var:base_url ?><?cs var:trac.href.timeline ?></link>
   </image><?cs
   each:item = timeline.items ?><?cs
    if:item.type == 'changeset' ?><?cs
