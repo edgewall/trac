@@ -23,6 +23,7 @@
 #
 
 import os
+import sys
 import shutil
 import ConfigParser
 
@@ -48,7 +49,10 @@ class Environment:
             self.create()
         self.verify()
         self.load_config()
-        self.setup_log()
+        if sys.platform == "win32": # Use binary I/O on Windows
+            import msvcrt
+            msvcrt.setmode(sys.stdout.fileno(), os.O_BINARY)
+            self.setup_log()
 
     def verify(self):
         """Verifies that self.path is a compatible trac environment"""
