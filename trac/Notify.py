@@ -31,7 +31,6 @@ from __init__ import __version__
 from util import *
 import Environment
 import core
-import Href
 import Ticket
 
 
@@ -43,11 +42,11 @@ class Notify:
     hdf = None
     cs = None
     
-    def __init__(self, env, msg_template):
+    def __init__(self, env, msg_template, href):
         self.env = env
         self.db = env.get_db_cnx()
         self.hdf = neo_util.HDF()
-        self.href = Href.Href(env.get_config('trac', 'cgi_location'))
+        self.href = href
         core.populate_hdf(self.hdf, env, self.db, self.href, None)
         tmpl = os.path.join(env.get_config('general','templates_dir'), msg_template)
         self.cs = neo_cs.CS(self.hdf)
@@ -101,7 +100,6 @@ else:
     class NotifyEmail(Notify):
         """Baseclass for notification by email."""
 
-        smtp_enabled = 0
         smtp_server = 'localhost'
         from_email = 'trac+tickets@localhost'
         subject = ''
@@ -110,9 +108,9 @@ else:
         def notify(self, resid, subject):
             self.subject = subject
 
-            enabled = self.env.get_config('notification', 'smtp_enabled', 0)
-            if enabled.lower() in TRUE:
-                self.smtp_enabled = 1
+            enabled = self.env.get_config('notification', 'smtp_enabled', '0')
+            if not enabled.lower() in TRUE:
+                return
             self.smtp_server = self.env.get_config('notification',
                                                    'smtp_server',
                                                    self.smtp_server)
@@ -129,8 +127,6 @@ else:
             self.server = smtplib.SMTP(self.smtp_server)
 
         def send(self, rcpt, mime_headers={}):
-            if not self.smtp_enabled:
-                return
             body = self.cs.render()
             msg = MIMEText (body)
             msg['X-Mailer'] = 'Trac %s, by Edgewall Software' % __version__
@@ -161,8 +157,8 @@ else:
         from_email = 'trac+ticket@localhost'
         COLS = 75
 
-        def __init__(self, env):
-            NotifyEmail.__init__(self, env, self.template_name)
+        def __init__(self, env, href):
+            NotifyEmail.__init__(self, env, self.template_name, href)
 
         def notify(self, tktid, newticket=1, modtime=0):
             self.ticket = Ticket.get_ticket(self.db, tktid)

@@ -164,7 +164,7 @@ class Ticket (Module):
                             now, id)
             self.db.commit()
         # Notify
-        tn = TicketNotifyEmail(self.env)
+        tn = TicketNotifyEmail(self.env, self.href)
         tn.notify(id, newticket=0, modtime=now)
 
     def create_ticket(self):
@@ -204,7 +204,7 @@ class Ticket (Module):
         self.db.commit()
 
         # Notify
-        tn = TicketNotifyEmail(self.env)
+        tn = TicketNotifyEmail(self.env, self.href)
         tn.notify(id, newticket=1)
         
         # redirect to the Ticket module to get a GET request
