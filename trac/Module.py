@@ -19,10 +19,9 @@
 #
 # Author: Jonas Borgström <jonas@edgewall.com>
 
-from trac.perm import PermissionCache
-from trac.util import escape
-from trac.web.main import populate_hdf
 
+import cgi
+import re
 
 class Module:
 
@@ -32,13 +31,6 @@ class Module:
     perm = None
 
     _name = None
-
-    def run(self, req):
-        populate_hdf(req.hdf, self.env, req)
-        req.hdf['trac.active_module'] = self._name
-        for action in self.perm.permissions():
-            req.hdf['trac.acl.' + action] = 1
-        self.render(req)
 
     def render(self, req):
         raise NotImplementedError
@@ -65,17 +57,56 @@ modules = {
     'wiki'        : ('Wiki',        'WikiModule'),
 }
 
-def module_factory(env, db, req):
-    mode = req.args.get('mode', 'wiki')
+def module_factory(mode):
     module_name, constructor_name = modules[mode]
     module = __import__(module_name, globals(),  locals())
     constructor = getattr(module, constructor_name)
     module = constructor()
     module._name = mode
-
-    module.env = env
-    module.log = env.log
-    module.db = db
-    module.perm = PermissionCache(module.db, req.authname)
-
     return module
+
+def parse_path_info(args, path_info):
+    def set_if_missing(fs, name, value):
+        if value and not fs.has_key(name):
+            fs.list.append(cgi.MiniFieldStorage(name, value))
+
+    match = re.search('^/(about(?:_trac)?|wiki)(?:/(.*))?', path_info)
+    if match:
+        set_if_missing(args, 'mode', match.group(1))
+        if match.group(2):
+            set_if_missing(args, 'page', match.group(2))
+        return
+    match = re.search('^/(newticket|timeline|search|roadmap|settings|query)/?', path_info)
+    if match:
+        set_if_missing(args, 'mode', match.group(1))
+        return
+    match = re.search('^/(ticket|report)(?:/([0-9]+)/*)?', path_info)
+    if match:
+        set_if_missing(args, 'mode', match.group(1))
+        if match.group(2):
+            set_if_missing(args, 'id', match.group(2))
+        return
+    match = re.search('^/(browser|log|file)(?:(/.*))?', path_info)
+    if match:
+        set_if_missing(args, 'mode', match.group(1))
+        if match.group(2):
+            set_if_missing(args, 'path', match.group(2))
+        return
+    match = re.search('^/changeset/([0-9]+)/?', path_info)
+    if match:
+        set_if_missing(args, 'mode', 'changeset')
+        set_if_missing(args, 'rev', match.group(1))
+        return
+    match = re.search('^/attachment/([a-zA-Z_]+)/([^/]+)(?:/(.*)/?)?', path_info)
+    if match:
+        set_if_missing(args, 'mode', 'attachment')
+        set_if_missing(args, 'type', match.group(1))
+        set_if_missing(args, 'id', urllib.unquote(match.group(2)))
+        set_if_missing(args, 'filename', match.group(3))
+        return
+    match = re.search('^/milestone(?:/([^\?]+))?(?:/(.*)/?)?', path_info)
+    if match:
+        set_if_missing(args, 'mode', 'milestone')
+        if match.group(1):
+            set_if_missing(args, 'id', urllib.unquote(match.group(1)))
+        return
