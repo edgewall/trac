@@ -57,22 +57,22 @@ Trac is brought to you by:
 
 User       Action         
 --------------------------
-anonymous  LOG_VIEW       
+anonymous  BROWSER_VIEW   
+anonymous  CHANGESET_VIEW 
 anonymous  FILE_VIEW      
-anonymous  WIKI_VIEW      
-anonymous  WIKI_CREATE    
-anonymous  WIKI_MODIFY    
-anonymous  SEARCH_VIEW    
-anonymous  REPORT_VIEW    
+anonymous  LOG_VIEW       
+anonymous  MILESTONE_VIEW 
 anonymous  REPORT_SQL_VIEW
-anonymous  TICKET_VIEW    
+anonymous  REPORT_VIEW    
+anonymous  ROADMAP_VIEW   
+anonymous  SEARCH_VIEW    
 anonymous  TICKET_CREATE  
 anonymous  TICKET_MODIFY  
-anonymous  BROWSER_VIEW   
+anonymous  TICKET_VIEW    
 anonymous  TIMELINE_VIEW  
-anonymous  CHANGESET_VIEW 
-anonymous  ROADMAP_VIEW   
-anonymous  MILESTONE_VIEW 
+anonymous  WIKI_CREATE    
+anonymous  WIKI_MODIFY    
+anonymous  WIKI_VIEW      
 
 
 Available actions:
@@ -88,22 +88,22 @@ Available actions:
 
 User       Action         
 --------------------------
-anonymous  LOG_VIEW       
+anonymous  BROWSER_VIEW   
+anonymous  CHANGESET_VIEW 
 anonymous  FILE_VIEW      
-anonymous  WIKI_VIEW      
-anonymous  WIKI_CREATE    
-anonymous  WIKI_MODIFY    
-anonymous  SEARCH_VIEW    
-anonymous  REPORT_VIEW    
+anonymous  LOG_VIEW       
+anonymous  MILESTONE_VIEW 
 anonymous  REPORT_SQL_VIEW
-anonymous  TICKET_VIEW    
+anonymous  REPORT_VIEW    
+anonymous  ROADMAP_VIEW   
+anonymous  SEARCH_VIEW    
 anonymous  TICKET_CREATE  
 anonymous  TICKET_MODIFY  
-anonymous  BROWSER_VIEW   
+anonymous  TICKET_VIEW    
 anonymous  TIMELINE_VIEW  
-anonymous  CHANGESET_VIEW 
-anonymous  ROADMAP_VIEW   
-anonymous  MILESTONE_VIEW 
+anonymous  WIKI_CREATE    
+anonymous  WIKI_MODIFY    
+anonymous  WIKI_VIEW      
 test_user  WIKI_VIEW      
 
 
@@ -120,24 +120,24 @@ Available actions:
 
 User       Action         
 --------------------------
-anonymous  LOG_VIEW       
+anonymous  BROWSER_VIEW   
+anonymous  CHANGESET_VIEW 
 anonymous  FILE_VIEW      
-anonymous  WIKI_VIEW      
-anonymous  WIKI_CREATE    
-anonymous  WIKI_MODIFY    
-anonymous  SEARCH_VIEW    
-anonymous  REPORT_VIEW    
+anonymous  LOG_VIEW       
+anonymous  MILESTONE_VIEW 
 anonymous  REPORT_SQL_VIEW
-anonymous  TICKET_VIEW    
+anonymous  REPORT_VIEW    
+anonymous  ROADMAP_VIEW   
+anonymous  SEARCH_VIEW    
 anonymous  TICKET_CREATE  
 anonymous  TICKET_MODIFY  
-anonymous  BROWSER_VIEW   
+anonymous  TICKET_VIEW    
 anonymous  TIMELINE_VIEW  
-anonymous  CHANGESET_VIEW 
-anonymous  ROADMAP_VIEW   
-anonymous  MILESTONE_VIEW 
-test_user  LOG_VIEW       
+anonymous  WIKI_CREATE    
+anonymous  WIKI_MODIFY    
+anonymous  WIKI_VIEW      
 test_user  FILE_VIEW      
+test_user  LOG_VIEW       
 
 
 Available actions:
@@ -153,21 +153,21 @@ Available actions:
 
 User       Action         
 --------------------------
-anonymous  LOG_VIEW       
+anonymous  BROWSER_VIEW   
+anonymous  CHANGESET_VIEW 
 anonymous  FILE_VIEW      
-anonymous  WIKI_VIEW      
+anonymous  LOG_VIEW       
+anonymous  MILESTONE_VIEW 
+anonymous  REPORT_SQL_VIEW
+anonymous  REPORT_VIEW    
+anonymous  ROADMAP_VIEW   
+anonymous  SEARCH_VIEW    
+anonymous  TICKET_CREATE  
+anonymous  TICKET_VIEW    
+anonymous  TIMELINE_VIEW  
 anonymous  WIKI_CREATE    
 anonymous  WIKI_MODIFY    
-anonymous  SEARCH_VIEW    
-anonymous  REPORT_VIEW    
-anonymous  REPORT_SQL_VIEW
-anonymous  TICKET_VIEW    
-anonymous  TICKET_CREATE  
-anonymous  BROWSER_VIEW   
-anonymous  TIMELINE_VIEW  
-anonymous  CHANGESET_VIEW 
-anonymous  ROADMAP_VIEW   
-anonymous  MILESTONE_VIEW 
+anonymous  WIKI_VIEW      
 
 
 Available actions:
@@ -183,20 +183,20 @@ Available actions:
 
 User       Action         
 --------------------------
-anonymous  LOG_VIEW       
+anonymous  BROWSER_VIEW   
+anonymous  CHANGESET_VIEW 
 anonymous  FILE_VIEW      
-anonymous  WIKI_VIEW      
-anonymous  SEARCH_VIEW    
-anonymous  REPORT_VIEW    
+anonymous  LOG_VIEW       
+anonymous  MILESTONE_VIEW 
 anonymous  REPORT_SQL_VIEW
-anonymous  TICKET_VIEW    
+anonymous  REPORT_VIEW    
+anonymous  ROADMAP_VIEW   
+anonymous  SEARCH_VIEW    
 anonymous  TICKET_CREATE  
 anonymous  TICKET_MODIFY  
-anonymous  BROWSER_VIEW   
+anonymous  TICKET_VIEW    
 anonymous  TIMELINE_VIEW  
-anonymous  CHANGESET_VIEW 
-anonymous  ROADMAP_VIEW   
-anonymous  MILESTONE_VIEW 
+anonymous  WIKI_VIEW      
 
 
 Available actions:

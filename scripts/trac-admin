@@ -395,7 +395,7 @@ class TracAdmin(cmd.Cmd):
             print 'Permission %s failed:' % arg[0], e
 
     def _do_permission_list(self):
-        data = self.db_execsql('SELECT username, action FROM permission') 
+        data = self.db_execsql('SELECT username, action FROM permission ORDER BY username, action') 
         self.print_listing(['User', 'Action'], data)
         print
         print 'Available actions:'
