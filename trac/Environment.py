@@ -264,7 +264,8 @@ class Environment:
         return filename
     
     def delete_attachment(self, cnx, type, id, filename):
-        path = os.path.join(self.get_attachments_dir(), type, id, filename)
+        path = os.path.join(self.get_attachments_dir(), type, id,
+                            urllib.quote(filename))
         cursor = cnx.cursor()
         cursor.execute('DELETE FROM attachment WHERE type=%s AND id=%s AND '
                        'filename=%s', type, id, filename)
