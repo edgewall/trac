@@ -6,6 +6,7 @@ recursive-include htdocs/css *.css
 recursive-include doc trac_logo.* README
 recursive-include wiki-default *
 recursive-include templates *.cs README
+recursive-include contrib/*
 global-exclude *~
 global-exclude *.tmp
 global-exclude *.bak
