@@ -31,6 +31,7 @@ import warnings
 import Href
 import perm
 import auth
+import authzperm
 import Environment
 import Session
 
@@ -156,11 +157,13 @@ def module_factory(args, env, db, req):
     module.db = db
     module.perm = perm.PermissionCache(module.db, req.authname)
     module.perm.add_to_hdf(req.hdf)
+    module.authzperm = None
 
     # Only open the subversion repository for the modules that really
     # need it. This saves us some precious time.
     if need_svn:
         import sync
+        module.authzperm = authzperm.AuthzPermission(env,req.authname)
         repos_dir = env.get_config('trac', 'repository_dir')
         pool, rep, fs_ptr = open_svn_repos(repos_dir)
         module.repos = rep

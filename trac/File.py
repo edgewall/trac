@@ -226,6 +226,7 @@ class File(FileCommon):
                                       self.env.href.browser(path))
 
     def display(self):
+        self.authzperm.assert_permission(self.path)
         FileCommon.display(self)
 
     def render(self):

@@ -35,13 +35,14 @@ class HtmlDiffEditor (svn.delta.Editor):
     generates a htmlized unified diff of the changes for a given changeset.
     the output is written to stdout.
     """
-    def __init__(self, old_root, new_root, rev, req, args, env):
+    def __init__(self, old_root, new_root, rev, req, args, env, authzperm):
         self.old_root = old_root
         self.new_root = new_root
         self.rev = rev
         self.req = req
         self.args = args
         self.env = env
+        self.authzperm = authzperm
         self.fileno = 0
 
     def print_diff (self, old_path, new_path, pool):
@@ -52,8 +53,13 @@ class HtmlDiffEditor (svn.delta.Editor):
         new_rev = svn.fs.node_created_rev(self.new_root, new_path, pool)
 
         options = Diff.get_options(self.env, self.req, self.args, 1)
-        differ = svn.fs.FileDiff(self.old_root, old_path, self.new_root, new_path,
-                             pool, options)
+
+        # Make sure we have permission to view this diff
+        if not self.authzperm.has_permission(new_path):
+            return
+        
+        differ = svn.fs.FileDiff(self.old_root, old_path, self.new_root,
+                                 new_path, pool, options)
         differ.get_files()
         pobj = differ.get_pipe()
         prefix = 'changeset.diff.files.%d' % (self.fileno)
@@ -61,7 +67,7 @@ class HtmlDiffEditor (svn.delta.Editor):
         builder = Diff.HDFBuilder(self.req.hdf, prefix, tabwidth)
         self.fileno += 1
         builder.writeline('header %s %s | %s %s redaeh' % (old_path, old_rev,
-                                                           new_path, new_rev))
+                                                               new_path, new_rev))
         while 1:
             line = pobj.readline()
             if not line:
@@ -86,8 +92,8 @@ class UnifiedDiffEditor(HtmlDiffEditor):
     the output is written to stdout.
     """
 
-    def __init__(self, old_root, new_root, rev, req, args, env):
-        HtmlDiffEditor.__init__(self, old_root, new_root, rev, req, args, env)
+    def __init__(self, old_root, new_root, rev, req, args, env, authzperm):
+        HtmlDiffEditor.__init__(self, old_root, new_root, rev, req, args, env, authzperm)
         self.output = req
 
     def print_diff (self, old_path, new_path, pool):
@@ -180,7 +186,7 @@ class Changeset (Module.Module):
             raise util.TracError('Invalid revision number: %d' % int(self.rev))
 
         editor = editor_class(old_root, new_root, int(self.rev), self.req,
-                              self.args, self.env)
+                              self.args, self.env, self.authzperm)
         e_ptr, e_baton = svn.delta.make_editor(editor, self.pool)
 
         def authz_cb(root, path, pool): return 1
