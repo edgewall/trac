@@ -7,7 +7,7 @@ a.result-title {  color: #33c; }
 .result-author, .result-date { 
  font-size: 80%;
  color: #090;
- background: #fff;
+ background: transparent;
 }
 .result-match {  background: #ffc800; }
 b { font-weight: normal; }

@@ -54,6 +54,7 @@
 }
 .diff #legend h3 { display: none; }
 .diff #legend dt {
+ background: #fff;
  border: 1px solid #999;
  float: left;
  margin: .1em .5em .1em 2em;
