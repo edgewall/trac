@@ -2,16 +2,15 @@
 body {
  background: #fff;
  color: #000;
- font: normal 13px verdana,arial,'Bitstream Vera Sans',helvetica,sans-serif;
  margin: 10px;
+}
+body, th, td {
+ font: normal 13px verdana,arial,'Bitstream Vera Sans',helvetica,sans-serif;
 }
 h1, h2, h3, h4 {
  font-family: arial,verdana,'Bitstream Vera Sans',helvetica,sans-serif;
  font-weight: bold;
  letter-spacing: -0.018em;
-}
-th, td { /* For IE5/Win */
- font: normal 13px verdana,arial,'Bitstream Vera Sans',helvetica,sans-serif;
 }
 h1 { font-size: 21px; margin: .15em 1em 0 0 }
 h2 { font-size: 16px }
@@ -21,25 +20,22 @@ address { font-style: normal }
 img { border: none }
 
 .hide { display: none; }
-.tiny { font-size: 1px; height: 1px }
-span.underline { text-decoration: underline; }
 
 /* Link styles */
 :link, :visited {
-  text-decoration: none;
-  color: #b00;
-  border-bottom: 1px dotted #bbb;
+ text-decoration: none;
+ color: #b00;
+ border-bottom: 1px dotted #bbb;
 }
 :link:hover, :visited:hover { background: #eee; color: #b00 }
 h1 :link, h1 :visited ,h2 :link, h2 :visited, h3 :link, h3 :visited,
 h4 :link, h4 :visited, h5 :link, h5 :visited, h6 :link, h6 :visited {
-  color: inherit;
+ color: inherit;
 }
-.noline:link, .noline:visited { border: none }
-.noline:link:hover, .noline:visited:hover { background: transparent }
 
 /* Forms */
 input, textarea, select { margin: 2px }
+input, select { vertical-align: middle }
 input[type=submit], input[type=reset] {
  background: #eee;
  color: #222;
@@ -55,12 +51,7 @@ input[type=text], input.textwidget, textarea {
 }
 input[type=text]:focus, textarea:focus { border: 1px solid #886 }
 option { border-bottom: 1px dotted #d7d7d7 }
-fieldset {
- border: 1px solid #d7d7d7;
- padding: .5em;
- margin: 0;
- width: 99%;
-}
+fieldset { border: 1px solid #d7d7d7; padding: .5em; margin: 0; width: 99% }
 legend {
  background: #fff;
  color: #d7d7d7;
@@ -100,9 +91,7 @@ form.inline input { margin: 1em }
  display: block;
  font-size: 10px;
  margin: 0;
- margin: 0;
- padding: 0;
- padding-bottom: .25em;
+ padding: 0 0 .25em;
  text-align: right;
 }
 .nav li {
@@ -164,12 +153,11 @@ form.inline input { margin: 1em }
 /* Alternate links */
 #altlinks { clear: both; text-align: center }
 #altlinks h3 { font-size: 12px; letter-spacing: normal; margin: 0 }
-#altlinks ul { margin: 0; padding: 0 0 1em }
+#altlinks ul { list-style: none; margin: 0; padding: 0 0 1em }
 #altlinks li {
  border-right: 1px solid #d7d7d7;
  display: inline;
  font-size: 11px;
- list-style-type: none;
  padding: 0 1em;
  white-space: nowrap;
 }
@@ -246,11 +234,7 @@ form.inline input { margin: 1em }
 a.missing:link,a.missing:visited { background: #fafaf0; color: #998 }
 a.missing:hover { color: #000; }
 
-#content.wiki { line-height: 140%; margin: 1em; }
-#wiki-formatting-help {
-  font: normal 11px Verdana, 'Bitstream Vera Sans', Helvetica, Arial, sans-serif;
-  float: right;
-}
+#content.wiki { line-height: 140%; margin: 1em }
 #wikitoolbar {
  border: 1px solid #d7d7d7;
  border-left: none;
@@ -275,7 +259,6 @@ a.missing:hover { color: #000; }
 #wikitoolbar a#link { background-position: 0 -48px }
 #wikitoolbar a#code { background-position: 0 -64px }
 #wikitoolbar a#hr { background-position: 0 -80px }
-br#wikitoolbar-break { clear: left; }
 
 /* Styles for tabular listings such as those used for displaying directory
    contents and report results. */
@@ -322,7 +305,6 @@ table.wiki {
  border-spacing: 0;
 }
 table.wiki td { border: 1px solid #ccc;  padding: .1em .25em; }
-#wiki-edit-page:hover { background: #ccb }
 
 /* Styles for the error page (and rst errors) */
 #content.error .message, div.system-message {
@@ -332,7 +314,6 @@ table.wiki td { border: 1px solid #ccc;  padding: .1em .25em; }
  padding: .5em;
  margin: 1em 0;
 }
-
 div.system-message p { margin: 0; }
 div.system-message p.system-message-title { font-weight: bold; }
 

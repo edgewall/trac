@@ -72,7 +72,6 @@ function addWikiFormattingToolbar(textarea) {
   var toolbar = document.createElement("div");
   toolbar.id = "wikitoolbar";
 
-
   function addButton(id, title, fn) {
     var a = document.createElement("a");
     a.href = "#";
@@ -135,6 +134,6 @@ function addWikiFormattingToolbar(textarea) {
 
   textarea.parentNode.insertBefore(toolbar, textarea);
   var br = document.createElement("br");
-  br.id = "wikitoolbar-break";
+  br.style.clear = "left";
   textarea.parentNode.insertBefore(br, textarea);
 }

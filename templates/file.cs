@@ -16,20 +16,19 @@
 
   <?cs if file.attachment_parent ?>
 
-    <h1><a href="<?cs var:file.attachment_parent_href ?>">
-    <?cs var:file.attachment_parent ?></a>: <?cs var:file.filename ?></h1>
-    <div id="browser-nav">
-    <ul class="menulist">
-      <li><a title="Show file as plaintext" 
+    <h1><a href="<?cs var:file.attachment_parent_href ?>"><?cs
+      var:file.attachment_parent ?></a>: <?cs var:file.filename ?></h1>
+    <div id="toolbar">
+     <ul>
+      <li><a title="Show file as plain text" 
        href="<?cs var:file.texturl ?>">View as Text</a></li>
       <li><a title="Download this revision" 
           href="<?cs var:file.rawurl ?>">Download File</a></li>
       <?cs if $trac.acl.TRAC_ADMIN ?>
-      <li><a title="Delete This Attachment" 
+      <li><a title="Delete this attachment" 
           href="?delete=yes">Delete Attachment</a></li>
       <?cs /if ?>
-      </ul>
-    <div class="tiny" style="clear: both">&nbsp;</div>
+     </ul>
     </div>
 
   <?cs else ?>
