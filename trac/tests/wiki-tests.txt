@@ -226,6 +226,37 @@ query:milestone!=
 </p>
 ==============================
 {{{
+Preformatted text.
+}}}
+------------------------------
+<pre class="wiki">Preformatted text.
+</pre>
+==============================
+{{{
+#!default
+Preformatted text.
+}}}
+------------------------------
+<pre class="wiki">Preformatted text.
+</pre>
+==============================
+{{{
+#!/bin/sh
+echo "foo"
+}}}
+------------------------------
+<pre class="wiki">#!/bin/sh
+echo &#34;foo&#34;
+</pre>
+==============================
+{{{
+#!html
+<p>Hello World</p>
+}}}
+------------------------------
+<p>Hello World</p>
+==============================
+{{{
 #!html
 <script>alert("");</script>
 }}}

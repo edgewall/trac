@@ -50,7 +50,7 @@ class WikiProcessor:
         self.error = self.set_code_processor(name)
     
     def default_processor(hdf, text, env):
-        return '<pre class="wiki">' + util.escape(text) + '</pre>'
+        return '<pre class="wiki">' + util.escape(text) + '</pre>\n'
     
     def html_processor(hdf, text, env):
         if Formatter._htmlproc_disallow_rule.search(text):
@@ -372,7 +372,7 @@ class Formatter(CommonFormatter):
               r"""(?P<table_cell>\|\|)"""]
 
     _compiled_rules = re.compile('(?:' + string.join(_rules, '|') + ')')
-    _processor_re = re.compile('#\!([\w/+-]+)')
+    _processor_re = re.compile('#\!([\w+-]+)')
     _anchor_re = re.compile('[^\w\d\.-:]+', re.UNICODE)
     anchors = None
 
