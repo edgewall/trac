@@ -114,6 +114,9 @@ def open_database():
         
     return db.Database(db_name)
 
+class RedirectException(Exception):
+    pass
+
 class Request:
     """
     This class is used to abstract the interface between different frontends.
@@ -133,19 +136,22 @@ class Request:
         self.send_header('Content-Type', 'text/plain')
         self.end_headers()
         self.write('Redirecting...')
+        raise RedirectException()
 
     def display(self, cs, content_type='text/html'):
         import neo_cgi
         import neo_cs
         import neo_util
-        self.send_response(200)
-        self.send_header('Content-Type', content_type)
-        self.end_headers()
         if type(cs) == type(''):
             filename = cs
             cs = neo_cs.CS(self.hdf)
             cs.parseFile(filename)
-        self.write(cs.render())
+        data = cs.render()
+        self.send_response(200)
+        self.send_header('Content-Type', content_type)
+        self.send_header('Content-Length', len(data))
+        self.end_headers()
+        self.write(data)
 
     def read(self, len):
         assert 0
@@ -219,7 +225,10 @@ def real_main():
     authenticator = auth.Authenticator(database, auth_cookie, remote_addr)
     if path_info == '/logout':
         authenticator.logout()
-        req.redirect (http_referer or href.wiki())
+        try:
+            req.redirect (http_referer or href.wiki())
+        except RedirectException:
+            pass
     elif remote_user and authenticator.authname == 'anonymous':
         auth_cookie = authenticator.login(remote_user, remote_addr)
         # send the cookie to the browser as a http header
@@ -228,7 +237,10 @@ def real_main():
         cookie['trac_auth']['path'] = cgi_location
         print cookie.output()
     if path_info == '/login':
-        req.redirect (http_referer or href.wiki())
+        try:
+            req.redirect (http_referer or href.wiki())
+        except RedirectException:
+            pass
 
     # Parse arguments
     args = parse_args(path_info)
@@ -271,8 +283,10 @@ def real_main():
     # Let the wiki module build a dictionary of all page names
     import Wiki
     Wiki.populate_page_dict(database)
-    
-    module.run()
+    try:
+        module.run()
+    except RedirectException:
+        pass
 
 def create_error_cgi():
     import neo_cgi

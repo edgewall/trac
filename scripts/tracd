@@ -49,7 +49,7 @@ from trac import perm
 from trac.Href import Href
 from trac import sync
 from trac.util import *
-from trac.trac import parse_args, modules, Request, open_svn_repos
+from trac.trac import parse_args, modules, Request, open_svn_repos, RedirectException
 from trac import siteconfig
 
 def parse_qs(args, query):
@@ -193,7 +193,11 @@ class TracHTTPRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler,
         Wiki.populate_page_dict(database)
         
         module.pool = pool
-        module.run()
+        try:
+            module.run()
+        except RedirectException:
+            pass
+        
         if pool:
             svn.core.svn_pool_destroy(pool)
             
