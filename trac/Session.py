@@ -172,6 +172,6 @@ class Session:
         curs = self.db.cursor()
         curs.execute("DELETE FROM session WHERE sid IN"
                      " (SELECT sid FROM session WHERE var_name='mod_time'"
-                     "  AND var_value  < %i)", mintime)
+                     "  AND var_value < %s)", mintime)
         self.db.commit()
 

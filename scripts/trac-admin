@@ -694,9 +694,10 @@ class TracAdmin(cmd.Cmd):
         data = data.replace("'", "''") # Escape ' for safe SQL
         f.close()
         
-        sql = ("INSERT INTO wiki('version','name','time','author','ipnr','text') "
-               " SELECT 1+ifnull(max(version),0),'%(title)s','%(time)s','%(author)s',"
-               "   '%(ipnr)s','%(text)s' FROM wiki WHERE name='%(title)s'" 
+        sql = ("INSERT INTO wiki(version,name,time,author,ipnr,text) "
+               " SELECT 1+COALESCE(max(version),0),'%(title)s','%(time)s',"
+               " '%(author)s','%(ipnr)s','%(text)s' FROM wiki "
+               " WHERE name='%(title)s'" 
                % {'title':title,
                   'time':int(time.time()),
                   'author':'trac',
@@ -798,8 +799,8 @@ class TracAdmin(cmd.Cmd):
         self.print_listing(['Possible Values'], data)
 
     def _do_enum_add(self, type, name):
-        sql = ("INSERT INTO enum('value','type','name') "
-               " SELECT 1+ifnull(max(value),0),'%(type)s','%(name)s'"
+        sql = ("INSERT INTO enum(value,type,name) "
+               " SELECT 1+COALESCE(max(value),0),'%(type)s','%(name)s'"
                "   FROM enum WHERE type='%(type)s'" 
                % {'type':type,
                   'name':name})
@@ -867,7 +868,7 @@ class TracAdmin(cmd.Cmd):
 
     def _do_milestone_list(self):
         data = self.db_execsql("SELECT name,due,completed FROM milestone "
-                               "ORDER BY IFNULL(due,0)!=0 DESC,due,name")
+                               "ORDER BY COALESCE(due,0)!=0 DESC,due,name")
         data = map(lambda x: (x[0], x[1] and time.strftime('%c', time.localtime(x[1])),
                               x[2] and time.strftime('%c', time.localtime(x[2]))), data)
         self.print_listing(['Name', 'Due', 'Completed'], data)
@@ -1007,7 +1008,7 @@ class TracAdmin(cmd.Cmd):
                     print "Upgrade: Backup of old database saved in " \
                           "%s/db/trac.db.%i.bak" % (self.envname, curr)
                 else:
-                    print "Upgrade: Backup disabled. Non-existant warranty voided."
+                    print "Upgrade: Backup disabled. Non-existent warranty voided."
                 self.__env.upgrade(do_backup)
             else:
                 print "Upgrade: Database is up to date, no upgrade necessary."

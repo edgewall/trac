@@ -38,7 +38,7 @@ def get_tickets_for_milestone(env, db, milestone, field='component'):
                "WHERE name='%s' AND milestone='%s'" % (
                sql_escape(field), sql_escape(field), sql_escape(milestone))
     else:
-        sql += "ticket.%s AS %s FROM ticket WHERE milestone = '%s'" % (
+        sql += "ticket.%s AS %s FROM ticket WHERE milestone='%s'" % (
                field, field, sql_escape(milestone))
     sql += " ORDER BY %s" % field
 
@@ -157,7 +157,7 @@ class Milestone(Module):
         cursor = self.db.cursor()
         self.log.debug("Creating new milestone '%s'" % name)
         cursor.execute("INSERT INTO milestone (name,due,completed,description) "
-                       "VALUES (%s,%d,%d,%s)", name, due, completed,
+                       "VALUES (%s,%s,%s,%s)", name, due, completed,
                        description)
         self.db.commit()
         self.req.redirect(self.env.href.milestone(name))
@@ -173,13 +173,13 @@ class Milestone(Module):
                     self.log.info('Retargeting milestone field of all '
                                   'tickets associated with milestone %s to '
                                   'milestone %s' % (id, target))
-                    cursor.execute ('UPDATE ticket SET milestone = %s '
-                                    'WHERE milestone = %s', target, id)
+                    cursor.execute ('UPDATE ticket SET milestone=%s '
+                                    'WHERE milestone=%s', target, id)
                 else:
                     self.log.info('Resetting milestone field of all '
                                   'tickets associated with milestone %s' % id)
-                    cursor.execute ('UPDATE ticket SET milestone = NULL '
-                                    'WHERE milestone = %s', id)
+                    cursor.execute ('UPDATE ticket SET milestone=NULL '
+                                    'WHERE milestone=%s', id)
             self.log.info('Deleting milestone %s' % id)
             cursor.execute("DELETE FROM milestone WHERE name = %s", id)
             self.db.commit()
@@ -194,10 +194,10 @@ class Milestone(Module):
         if self.args.has_key('save'):
             self.log.info('Updating milestone field of all tickets '
                           'associated with milestone %s' % id)
-            cursor.execute("UPDATE ticket SET milestone = %s "
-                           "WHERE milestone = %s", name, id)
-            cursor.execute("UPDATE milestone SET name = %s, due = %d, "
-                           "completed = %d, description = %s WHERE name = %s",
+            cursor.execute("UPDATE ticket SET milestone=%s "
+                           "WHERE milestone=%s", name, id)
+            cursor.execute("UPDATE milestone SET name=%s, due=%s, "
+                           "completed=%s, description=%s WHERE name=%s",
                            name, due, completed, description, id)
             self.db.commit()
             self.req.redirect(self.env.href.milestone(name))
@@ -209,10 +209,10 @@ class Milestone(Module):
         groups = []
         if by in ['status', 'resolution', 'severity', 'priority']:
             cursor.execute("SELECT name FROM enum WHERE type = %s "
-                           "AND IFNULL(name,'') != '' ORDER BY value", by)
+                           "AND COALESCE(name,'')!='' ORDER BY value", by)
         elif by in ['component', 'milestone', 'version']:
             cursor.execute("SELECT name FROM %s "
-                           "WHERE IFNULL(name,'') != '' ORDER BY name" % by)
+                           "WHERE COALESCE(name,'')!='' ORDER BY name" % by)
         elif by == 'owner':
             cursor.execute("SELECT DISTINCT owner AS name FROM ticket "
                            "ORDER BY owner")

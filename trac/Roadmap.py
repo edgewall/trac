@@ -44,14 +44,14 @@ class Roadmap(Module):
         if show == 'all':
             icalhref += '&show=all'
             query = "SELECT name,due,completed,description FROM milestone " \
-                    "WHERE IFNULL(name,'')!='' " \
-                    "ORDER BY IFNULL(due,0)=0,due,name"
+                    "WHERE COALESCE(name,'')!='' " \
+                    "ORDER BY COALESCE(due,0)=0,due,name"
         else:
             self.req.hdf.setValue('roadmap.showall', '1')
             query = "SELECT name,due,completed,description FROM milestone " \
-                    "WHERE IFNULL(name,'')!='' " \
-                    "AND IFNULL(completed,0)=0 " \
-                    "ORDER BY IFNULL(due,0)=0,due,name"
+                    "WHERE COALESCE(name,'')!='' " \
+                    "AND COALESCE(completed,0)=0 " \
+                    "ORDER BY COALESCE(due,0)=0,due,name"
 
         if self.req.authname and self.req.authname != 'anonymous':
             icalhref += '&user=' + self.req.authname
@@ -176,7 +176,7 @@ class Roadmap(Module):
                 if ticket['status'] == 'closed':
                     cursor = self.db.cursor()
                     cursor.execute("SELECT time FROM ticket_change "
-                                   "WHERE ticket = %i AND field = 'status' "
+                                   "WHERE ticket = %s AND field = 'status' "
                                    "ORDER BY time desc LIMIT 1", ticket['id'])
                     row = cursor.fetchone()
                     if row: write_utctime('COMPLETED', localtime(row['time']))

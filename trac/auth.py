@@ -33,8 +33,9 @@ class Authenticator:
             cursor.execute ("SELECT name FROM auth_cookie "
                             "WHERE cookie=%s AND ipnr=%s"
                             ,cookie, req.remote_addr)
-            if cursor.rowcount >= 1:
-                self.authname = cursor.fetchone()[0]
+            row = cursor.fetchone()
+            if row:
+                self.authname = row[0]
 
     def login(self, req):
         cursor = self.db.cursor ()

@@ -140,9 +140,9 @@ class Timeline (Module):
                     max_node = 0
                     
                 if max_node != 0:
-                    cursor_node = self.db.cursor ()
+                    cursor_node = self.db.cursor()
                     cursor_node.execute("SELECT name, change "
-                                        "FROM node_change WHERE rev=%d" % item['idata'])
+                                        "FROM node_change WHERE rev=%s", item['idata'])
                     node_list = ''
                     node_data = ''
                     node_count = 0;

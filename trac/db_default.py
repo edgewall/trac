@@ -23,15 +23,13 @@
 # Database version identifier. Used for automatic upgrades.
 db_version = 8
 
-def __mkreports(reps):
+def __mkreports(reports):
     """Utility function used to create report data in same syntax as the
     default data. This extra step is done to simplify editing the default
     reports."""
     result = []
-    i = 1
-    for r in reps:
-        result.append ((i, None, r[0], r[2], r[1]))
-        i = i + 1
+    for report in reports:
+        result.append((None, report[0], report[2], report[1]))
     return result
 
 
@@ -295,7 +293,7 @@ SELECT p.value AS __color__,
   FROM ticket t,enum p
   WHERE p.name=t.priority AND p.type='priority'
   ORDER BY (milestone IS NULL), milestone DESC, (status = 'closed'), 
-        (CASE status WHEN 'closed' THEN modified ELSE -p.value END) DESC
+        (CASE status WHEN 'closed' THEN modified ELSE (-1)*p.value END) DESC
 """),
 #----------------------------------------------------------------------------
 ('My Tickets',
@@ -406,7 +404,7 @@ data = (('component',
              ('name', 'value'),
                (('database_version', str(db_version)),)),
            ('report',
-             ('id', 'author', 'title', 'sql', 'description'),
+             ('author', 'title', 'sql', 'description'),
                __mkreports(reports)))
 
 default_config = \

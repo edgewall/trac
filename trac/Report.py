@@ -111,8 +111,8 @@ class Report (Module):
         self.perm.assert_permission(perm.REPORT_CREATE)
 
         cursor = self.db.cursor()
-        cursor.execute('INSERT INTO report (id, title, sql, description)'
-                        'VALUES (NULL, %s, %s, %s)', title, sql, description)
+        cursor.execute("INSERT INTO report (title, sql, description)"
+                       " VALUES (%s, %s, %s)", title, sql, description)
         id = self.db.db.sqlite_last_insert_rowid()
         self.db.commit()
         self.req.redirect(self.env.href.report(id))
@@ -140,9 +140,7 @@ class Report (Module):
 
         # FIXME: fetchall should probably not be used.
         info = cursor.fetchall()
-        cols = cursor.rs.col_defs
-        # Escape the values so that they are safe to have as html parameters
-        #info = map(lambda row: map(lambda x: escape(x), row), info)
+        cols = cursor.description
 
         return [cols, info]
 

@@ -295,18 +295,18 @@ class Changeset (Module.Module):
 
     def get_changeset_info (self, rev):
         cursor = self.db.cursor ()
-        cursor.execute ('SELECT time, author, message FROM revision ' +
-                        'WHERE rev=%d', rev)
+        cursor.execute ("SELECT time, author, message FROM revision "
+                        "WHERE rev=%s", rev)
         row = cursor.fetchone()
         if not row:
-            raise util.TracError('Changeset %d does not exist.' % rev,
+            raise util.TracError('Changeset %s does not exist.' % rev,
                                  'Invalid Changset')
         return row
 
     def get_change_info(self, rev):
         cursor = self.db.cursor ()
-        cursor.execute ('SELECT name, change FROM node_change ' +
-                        'WHERE rev=%d', rev)
+        cursor.execute ("SELECT name, change FROM node_change "
+                        "WHERE rev=%s", rev)
         info = []
         while 1:
             row = cursor.fetchone()

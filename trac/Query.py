@@ -172,16 +172,17 @@ class Query:
         def get_constraint_sql(name, value, mode, neg):
             value = sql_escape(value[len(mode and '!' or '' + mode):])
             if mode == '~' and value:
-                return "IFNULL(%s,'') %sLIKE '%%%s%%'" % (
+                return "COALESCE(%s,'') %sLIKE '%%%s%%'" % (
                        name, neg and 'NOT ' or '', value)
             elif mode == '^' and value:
-                return "IFNULL(%s,'') %sLIKE '%s%%'" % (
+                return "COALESCE(%s,'') %sLIKE '%s%%'" % (
                        name, neg and 'NOT ' or '', value)
             elif mode == '$' and value:
-                return "IFNULL(%s,'') %sLIKE '%%%s'" % (
+                return "COALESCE(%s,'') %sLIKE '%%%s'" % (
                        name, neg and 'NOT ' or '', value)
             elif mode == '':
-                return "IFNULL(%s,'')%s='%s'" % (name, neg and '!' or '', value)
+                return "COALESCE(%s,'')%s='%s'" % (
+                       name, neg and '!' or '', value)
 
         clauses = []
         for k, v in self.constraints.items():
@@ -195,7 +196,7 @@ class Query:
             # Special case for exact matches on multiple values
             if not mode and len(v) > 1:
                 inlist = ",".join(["'" + sql_escape(val[neg and 1 or 0:]) + "'" for val in v])
-                clauses.append("IFNULL(%s,'') %sIN (%s)" % (k, neg and "NOT " or "", inlist))
+                clauses.append("COALESCE(%s,'') %sIN (%s)" % (k, neg and "NOT " or "", inlist))
             elif len(v) > 1:
                 constraint_sql = [get_constraint_sql(k, val, mode, neg) for val in v]
                 if neg:
@@ -214,10 +215,19 @@ class Query:
         if self.group and self.group != self.order:
             order_cols.insert(0, (self.group, self.groupdesc))
         for col, desc in order_cols:
-            if desc:
-                sql.append("IFNULL(%s,'')='' DESC," % col)
+            if col == 'id':
+                # FIXME: This is a somewhat ugly hack.  Can we also have the
+                #        column type for this?  If it's an integer, we do first
+                #        one, if text, we do 'else'
+                if desc:
+                    sql.append("COALESCE(%s,0)=0 DESC," % col)
+                else:
+                    sql.append("COALESCE(%s,0)=0," % col)
             else:
-                sql.append("IFNULL(%s,'')=''," % col)
+                if desc:
+                    sql.append("COALESCE(%s,'')='' DESC," % col)
+                else:
+                    sql.append("COALESCE(%s,'')=''," % col)
             if col in ['status', 'resolution', 'priority', 'severity']:
                 if desc:
                     sql.append("%s_value DESC" % col)
@@ -225,10 +235,10 @@ class Query:
                     sql.append("%s_value" % col)
             elif col in ['milestone', 'version']:
                 if desc:
-                    sql.append("IFNULL(%s_time,0)=0 DESC,%s_time DESC,%s DESC"
+                    sql.append("COALESCE(%s_time,0)=0 DESC,%s_time DESC,%s DESC"
                                % (col, col, col))
                 else:
-                    sql.append("IFNULL(%s_time,0)=0,%s_time,%s"
+                    sql.append("COALESCE(%s_time,0)=0,%s_time,%s"
                                % (col, col, col))
             else:
                 if desc:
