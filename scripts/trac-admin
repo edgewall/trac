@@ -488,8 +488,6 @@ class TracAdmin(cmd.Cmd):
             print 'Done.'
         except Exception, e:
             print 'Failed to initialize database.', e
-            if cnx:
-                cnx.rollback()
             sys.exit(2)
 
 

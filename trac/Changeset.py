@@ -34,7 +34,6 @@ space_re = re.compile('  ')
 
 class DiffColorizer:
     def __init__(self, hdf, prefix='changeset.diff'):
-        self.count = 0
         self.block = []
         self.ttype  = None
         self.p_block = []
@@ -72,8 +71,7 @@ class DiffColorizer:
             self.hdf.setValue('%s.name.old' % self.prefix, match.group(1))
             self.hdf.setValue('%s.name.new' % self.prefix, match.group(2))
             return
-        self.count = self.count + 1
-        if self.count < 3:
+        if text[0:2] in ['++', '--']:
             return
         match = line_re.search(text)
         if match:
