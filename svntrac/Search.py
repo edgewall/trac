@@ -37,7 +37,11 @@ class Search(Module):
     def query_to_sql(self, query, name):
         query = query.replace('\'', '\'\'\'\'')
         keywords = query.split(' ')
-        x = map(lambda x: name + ' LIKE \'%' + x + '%\'', keywords)
+        # The line below doesn't work in python2.1
+        # x = map(lambda x: name + ' LIKE \'%' + x + '%\'', keywords)
+        x = []
+        for keyword in keywords:
+            x.append(name + ' LIKE \'%' + keyword + '%\'')
         return string.join(x, ' AND ')
     
     def perform_query (self, query, changeset, tickets):
