@@ -232,20 +232,24 @@
    <label for="reassign_owner">to:</label>
    <input type="text" id="reassign_owner" name="reassign_owner" size="40" value="<?cs
      var:trac.authname ?>" /><?cs
-  /if ?>
-  <script type="text/javascript">
-    var resolve = document.getElementById("resolve");
-    var reassign = document.getElementById("reassign");
-    var updateActionFields = function() {
-      enableControl('resolve_resolution', resolve.checked);
-      enableControl('reassign_owner', reassign.checked);
-    };
-    addEvent(window, 'load', updateActionFields);
-    addEvent(document.getElementById("leave"), 'click', updateActionFields);
-    addEvent(document.getElementById("accept"), 'click', updateActionFields);
+  /if ?><?cs
+  if $ticket.status == "new" || $ticket.status == "assigned" || $ticket.status == "reopened" ?>
+   <script type="text/javascript">
+     var resolve = document.getElementById("resolve");
+     var reassign = document.getElementById("reassign");
+     var updateActionFields = function() {
+       enableControl('resolve_resolution', resolve.checked);
+       enableControl('reassign_owner', reassign.checked);
+     };
+     addEvent(window, 'load', updateActionFields);
+     addEvent(document.getElementById("leave"), 'click', updateActionFields);<?cs
+    if $ticket.status == "new" ?>
+     addEvent(document.getElementById("accept"), 'click', updateActionFields);<?cs
+    /if ?>
     addEvent(resolve, 'click', updateActionFields);
     addEvent(reassign, 'click', updateActionFields);
-  </script>
+   </script><?cs
+  /if ?>
  </fieldset>
 
  <div class="buttons">
