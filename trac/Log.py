@@ -29,7 +29,7 @@ import perm
 import neo_cgi
 import neo_cs
 
-from svn import util, repos
+from svn import util, repos, fs, core
 
 class Log (Module):
     template_name = 'log.cs'
@@ -82,12 +82,21 @@ class Log (Module):
 
         self.path = dict_get_with_default(self.args, 'path', '/')
         
-        info = self.get_info (self.path)
+        # We display an error message if the file doesn't exist (any more).
+        # All we know is that the path isn't valid in the youngest
+        # revision of the repository. The file might have existed
+        # before, but we don't know for sure...
+        revision = fs.youngest_rev(self.fs_ptr, self.pool)
+        root = fs.revision_root(self.fs_ptr, revision, self.pool)
+        if fs.check_path(root, self.path, self.pool) != core.svn_node_file:
+            self.cgi.hdf.setValue('log.nonexistent_path', 'true')
+        else:
+            info = self.get_info (self.path)
+            add_dictlist_to_hdf(info, self.cgi.hdf, 'log.items')
 
         self.generate_path_links()
         self.cgi.hdf.setValue('title', self.path + ' (log)')
         self.cgi.hdf.setValue('log.path', self.path)
-        add_dictlist_to_hdf(info, self.cgi.hdf, 'log.items')
 
 
     def display_rss (self):
