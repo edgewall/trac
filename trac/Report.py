@@ -184,6 +184,7 @@ class Report (Module):
         
 
     def render(self):
+        perm.assert_permission(perm.REPORT_VIEW)
         # did the user ask for any special report?
         id = int(dict_get_with_default(self.args, 'id', -1))
         action = dict_get_with_default(self.args, 'action', 'list')
