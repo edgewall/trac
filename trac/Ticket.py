@@ -103,7 +103,7 @@ class Ticket(UserDict):
         # We have to do an extra trick to catch unchecked checkboxes
         checkboxes = filter(lambda n: n[:9] == 'checkbox_', dict.keys())
         for name in ['custom_' + n[9:] for n in checkboxes]:
-            if not name in dict:
+            if not dict.has_key(name):
                 self[name] = '0'
 
     def insert(self, db):
@@ -265,13 +265,13 @@ class NewticketModule(Module):
                           self.env.get_config('ticket', 'default_version'))
         ticket.setdefault('reporter', get_reporter_id(self.req))
 
-        if 'description' in ticket:
+        if ticket.has_key('descrption'):
             self.req.hdf.setValue('newticket.description_preview',
                                   wiki_to_html(ticket['description'],
                                                self.req.hdf, self.env))
             
         self.req.hdf.setValue('title', 'New Ticket')
-        evals = dict(zip(ticket.keys(), map(lambda x: escape(x), ticket.values())))
+        evals = mydict(zip(ticket.keys(), map(lambda x: escape(x), ticket.values())))
         add_dict_to_hdf(evals, self.req.hdf, 'newticket')
         
         sql_to_hdf(self.db, 'SELECT name FROM component ORDER BY name',
@@ -324,7 +324,7 @@ class TicketModule (Module):
 
     def insert_ticket_data(self, hdf, id, ticket, reporter_id):
         """Insert ticket data into the hdf"""
-        evals = dict(zip(ticket.keys(), map(lambda x: escape(x), ticket.values())))
+        evals = mydict(zip(ticket.keys(), map(lambda x: escape(x), ticket.values())))
         add_dict_to_hdf(evals, self.req.hdf, 'ticket')
 
         sql_to_hdf(self.db, 'SELECT name FROM component ORDER BY name',
