@@ -210,6 +210,9 @@ onfocus="document.getElementById('comment').focus()">Add/Change
           value="<?cs var:ticket.cc ?>" size="35" />
   </div>
  </div>
+
+<?cs call:ticket_custom_props(ticket) ?>
+
   </fieldset>
 
 

@@ -41,3 +41,49 @@
      var:trac.authname ?><?cs 
   /if ?><?cs
   /def ?>
+
+<?cs def:ticket_custom_props(ticket) ?>
+<?cs if ticket.custom.0.name ?>
+ <fieldset style="clear: both">
+  <legend>Custom Properties</legend>
+  <?cs each c=ticket.custom ?>
+   <div class="custom-prop">
+    <?cs if c.type == 'text' || c.type == 'select' ?>
+     <label for="custom_<?cs var c.name ?>">
+      <?cs alt c.label ?><?cs var c.name ?><?cs /alt ?></label>: 
+    <?cs /if ?>
+    <?cs if c.type == 'text' ?>
+     <input type="text" id="custom_<?cs var c.name ?>" 
+            name="custom_<?cs var c.name ?>" value="<?cs var c.value ?>" />
+
+    <?cs elif c.type == 'checkbox' ?>
+     <input type="hidden" name="checkbox_<?cs var c.name ?>" 
+            value="custom_<?cs var c.name ?>" />
+     <input type="checkbox" id="custom_<?cs var c.name ?>" 
+            name="custom_<?cs var c.name ?>" 
+            value="1"
+            <?cs if c.selected ?>checked="checked"<?cs /if ?> />
+     <label for="custom_<?cs var c.name ?>">
+      <?cs alt c.label ?><?cs var c.name ?><?cs /alt ?></label>
+    <?cs elif c.type == 'select' ?>
+     <select name="custom_<?cs var c.name ?>">
+      <?cs each v=c.option ?>
+       <option <?cs if v.selected ?>selected="selected"<?cs /if ?>>
+        <?cs var v ?>
+       </option>
+      <?cs /each ?>
+     </select>
+    <?cs elif c.type == 'radio' ?>
+      <?cs each v=c.option ?>
+       <input type="radio" name="custom_<?cs var c.name ?>" 
+         <?cs if v.selected ?>checked="checked"<?cs /if ?> 
+            value="<?cs var v ?>" id="<?cs var v ?>"/>
+       <label for="<?cs var v ?>">
+        <?cs var v ?></label><br />
+      <?cs /each ?>
+    <?cs /if ?>
+   </div>
+  <?cs /each ?>
+ </fieldset>
+<?cs /if ?>
+<?cs /def ?>

@@ -74,6 +74,8 @@ addEvent(window, 'load', function() { document.getElementById('summary').focus()
 	value="<?cs var:newticket.cc ?>" /><br />
   </div>
  </div>
+
+<?cs call:ticket_custom_props(ticket) ?>
  </fieldset>
 
  <div id="nt-buttons">
