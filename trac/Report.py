@@ -19,20 +19,19 @@
 #
 # Author: Jonas Borgström <jonas@edgewall.com>
 
+import time
+
 from util import *
 from Href import href
 from Module import Module
 import perm
-import db
 
-import time
 
 class Report (Module):
     template_name = 'report.cs'
 
     def get_info (self, id):
-        cnx = db.get_connection()
-        cursor = cnx.cursor()
+        cursor = self.db.cursor()
 
         if id == -1:
             # If no special report was requested, display
@@ -58,23 +57,20 @@ class Report (Module):
     def create_report(self, title, sql):
         self.perm.assert_permission(perm.REPORT_CREATE)
 
-        cnx = db.get_connection()
-        cursor = cnx.cursor()
+        cursor = self.db.cursor()
         
         cursor.execute('INSERT INTO report (id, title, sql)'
                         'VALUES (NULL, %s, %s)', title, sql)
-        id = cnx.db.sqlite_last_insert_rowid()
-        cnx.commit()
+        id = self.db.db.sqlite_last_insert_rowid()
+        self.db.commit()
         redirect (href.report(id))
 
     def delete_report(self, id):
         self.perm.assert_permission(perm.REPORT_DELETE)
         
-        cnx = db.get_connection()
-        cursor = cnx.cursor ()
-
+        cursor = self.db.cursor ()
         cursor.execute('DELETE FROM report WHERE id=%s', id)
-        cnx.commit()
+        self.db.commit()
         redirect(href.report())
 
     def commit_changes(self, id):
@@ -83,21 +79,18 @@ class Report (Module):
         """
         self.perm.assert_permission(perm.REPORT_MODIFY)
 
-        cnx = db.get_connection()
-        cursor = cnx.cursor()
-
+        cursor = self.db.cursor()
         title = self.args['title']
         sql   = self.args['sql']
 
         cursor.execute('UPDATE report SET title=%s, sql=%s WHERE id=%s',
                        title, sql, id)
-        cnx.commit()
+        self.db.commit()
         redirect(href.report(id))
 
     def render_report_editor(self, id, action='commit', copy=0):
         self.perm.assert_permission(perm.REPORT_MODIFY)
-        cnx = db.get_connection()
-        cursor = cnx.cursor()
+        cursor = self.db.cursor()
 
         if id == -1:
             title = sql = ""

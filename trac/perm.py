@@ -19,8 +19,7 @@
 #
 # Author: Jonas Borgström <jonas@edgewall.com>
 
-from db import get_connection
-from PermissionError import PermissionError
+from exceptions import StandardError
 
 # permissions
 TIMELINE_VIEW  = 'TIMELINE_VIEW'
@@ -59,8 +58,17 @@ meta_permission = {
     WIKI_ADMIN : [WIKI_VIEW, WIKI_CREATE, WIKI_MODIFY, WIKI_DELETE]
     }
 
+
+class PermissionError (StandardError):
+    """Insufficient permissions to complete the operation"""
+    def __init__ (self, action):
+        self.action = action
+    def __str__ (self):
+        return '%s privileges required to perform this operation' % self.action
+
+
 class PermissionCache:
-    def __init__(self, username):
+    def __init__(self, db, username):
         self.perm_cache = {}
 
         # Special usernames:
@@ -69,8 +77,7 @@ class PermissionCache:
         # 'authenticated': Permissions granted to this user will apply to
         #                  any authenticated (logged in with HTTP_AUTH) user.
 
-        cnx = get_connection ()
-        cursor = cnx.cursor()
+        cursor = db.cursor()
         if username == 'anonymous':
             cursor.execute ("SELECT action FROM permission "
                             "WHERE user='anonymous'")

@@ -29,18 +29,16 @@ import auth
 import perm
 from Href import href
 from Module import Module
-from db import get_connection
 from util import *
 
 page_dict = None
 
 
-def populate_page_dict():
+def populate_page_dict(db):
     """Extract wiki page names. This is used to detect broken wiki-links"""
     global page_dict
     page_dict = {'TitleIndex': 1}
-    cnx = get_connection()
-    cursor = cnx.cursor()
+    cursor = db.cursor()
     cursor.execute('SELECT DISTINCT name FROM wiki')
     while 1:
         row = cursor.fetchone()
@@ -376,12 +374,11 @@ def wiki_to_oneliner(wikitext):
 
 
 class Page:
-    def __init__(self, name, version, perm):
-        
+    def __init__(self, name, version, perm, db):
+        self.db = db
         self.name = name
         self.perm = perm
-        cnx = get_connection ()
-        cursor = cnx.cursor ()
+        cursor = self.db.cursor ()
         if version:
             cursor.execute ('SELECT version, text FROM wiki '
                             'WHERE name=%s AND version=%s',
@@ -408,8 +405,7 @@ class Page:
             self.perm.assert_permission (perm.WIKI_CREATE)
         else:
             self.perm.assert_permission (perm.WIKI_MODIFY)
-        cnx = get_connection ()
-        cursor = cnx.cursor ()
+        cursor = self.db.cursor ()
         cursor.execute ('SELECT MAX(version)+1 FROM '
                         '(SELECT version FROM wiki WHERE name=%s '
                         'UNION ALL SELECT 0 as version)', self.name)
@@ -422,16 +418,14 @@ class Page:
                         self.name, new_version, int(time.time()),
                         auth.get_authname(), os.getenv('REMOTE_ADDR'),
                         0, self.text)
-        cnx.commit ()
+        self.db.commit ()
 
 
 class Wiki(Module):
     template_name = 'wiki.cs'
 
     def generate_title_index(self):
-        cnx = get_connection ()
-        cursor = cnx.cursor ()
-        
+        cursor = self.db.cursor ()
         cursor.execute ('SELECT DISTINCT name FROM wiki ORDER BY name')
         i = 0
         while 1:
@@ -444,8 +438,7 @@ class Wiki(Module):
             i = i + 1
 
     def generate_history(self,pagename):
-        cnx = get_connection ()
-        cursor = cnx.cursor ()
+        cursor = self.db.cursor ()
         cursor.execute ('SELECT version, time, author, ipnr FROM wiki '
                         'WHERE name=%s ORDER BY version DESC', pagename)
         i = 0
@@ -499,7 +492,7 @@ class Wiki(Module):
             self.cgi.hdf.setValue('wiki.action', 'view')
             self.cgi.hdf.setValue('title', 'Wiki Page: ' + name)
 
-        page = Page(name, version, self.perm)
+        page = Page(name, version, self.perm, self.db)
         if self.args.has_key('text'):
             page.set_content (self.args['text'])
         

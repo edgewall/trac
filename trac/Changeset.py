@@ -23,7 +23,6 @@ from util import *
 from Module import Module
 from Href import href
 from Wiki import wiki_to_html
-import db
 import perm
 from xml.sax.saxutils import escape
 
@@ -180,16 +179,14 @@ class Changeset (Module):
     template_name = 'changeset.cs'
 
     def get_changeset_info (self, rev):
-        cnx = db.get_connection()
-        cursor = cnx.cursor ()
+        cursor = self.db.cursor ()
 
         cursor.execute ('SELECT time, author, message FROM revision ' +
                         'WHERE rev=%d' % rev)
         return cursor.fetchone()
         
     def get_change_info (self, rev):
-        cnx = db.get_connection()
-        cursor = cnx.cursor ()
+        cursor = self.db.cursor ()
 
         cursor.execute ('SELECT name, change FROM node_change ' +
                         'WHERE rev=%d' % rev)

@@ -24,7 +24,8 @@ import re
 import sys
 import cgi
 import warnings
-from PermissionError import PermissionError
+
+import perm
 
 warnings.filterwarnings('ignore', 'DB-API extension cursor.next() used')
 
@@ -104,16 +105,26 @@ def parse_args():
         return args
     return args
 
-def real_main():
-    import Href
+def open_database():
     import db
+    db_name = os.getenv('TRAC_DB')
+    if not db_name:
+        raise EnvironmentError, \
+              'Missing environment variable "TRAC_DB". Trac ' \
+              'requires this variable to a valid Trac database.'
+        
+    return db.Database(db_name)
+
+def real_main():
+    import sync
+    import Href
     import perm
     import auth
-    from PermissionError import PermissionError
     from util import dict_get_with_default, redirect
 
-    db.init()
-    config = db.load_config()
+    database = open_database()
+    config = database.load_config()
+    
     Href.initialize(config)
 
     args = parse_args()
@@ -127,9 +138,10 @@ def real_main():
     constructor = getattr(module, constructor_name)
     module = constructor(config, args)
     module._name = mode
+    module.db = database
 
-    auth.verify_authentication(args)
-    module.perm = perm.PermissionCache(auth.get_authname())
+    auth.verify_authentication(database, args)
+    module.perm = perm.PermissionCache(database, auth.get_authname())
     module.perm.add_to_hdf(module.cgi.hdf)
 
     # Only open the subversion repository for the modules that really
@@ -145,13 +157,13 @@ def real_main():
         fs_ptr = repos.svn_repos_fs(rep)
         module.repos = rep
         module.fs_ptr = fs_ptr
-        db.sync(rep, fs_ptr, pool)
+        sync.sync(database, rep, fs_ptr, pool)
     else:
         pool = None
         
     # Let the wiki module build a dictionary of all page names
     import Wiki
-    Wiki.populate_page_dict()
+    Wiki.populate_page_dict(database)
     module.pool = pool
     module.run()
     
@@ -162,12 +174,11 @@ def real_main():
 def create_error_cgi():
     import neo_cgi
     import os.path
-    import db
     from auth import get_authname
     from Href import href
     
-    cnx = db.get_connection()
-    cursor = cnx.cursor()
+    database = open_database()
+    cursor = database.cursor()
     cursor.execute('SELECT value FROM config WHERE section=%s '
                    'AND name=%s', 'general', 'templates_dir')
     row = cursor.fetchone()
@@ -202,7 +213,7 @@ def main():
     try:
         try:
             real_main()
-        except PermissionError, e:
+        except perm.PermissionError, e:
             import traceback
             import StringIO
             tb = StringIO.StringIO()

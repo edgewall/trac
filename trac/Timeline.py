@@ -23,7 +23,6 @@ from util import *
 from Href import href
 from Module import Module
 from Wiki import wiki_to_oneliner
-import db
 import perm
 
 import time
@@ -35,8 +34,7 @@ class Timeline (Module):
     MAX_MESSAGE_LEN = 75
 
     def get_info (self, start, stop, tickets, changeset, wiki):
-        cnx = db.get_connection()
-        cursor = cnx.cursor ()
+        cursor = self.db.cursor ()
 
         if tickets == changeset == wiki == 0:
             return []

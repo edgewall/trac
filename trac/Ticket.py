@@ -28,7 +28,6 @@ from Href import href
 from Module import Module
 import perm
 import auth
-import db
 from Wiki import wiki_to_html
 
 fields = ['time', 'component', 'severity', 'priority', 'milestone', 'reporter',
@@ -52,11 +51,11 @@ class Newticket (Module):
         self.cgi.hdf.setValue('newticket.default_severity', default_severity)
         self.cgi.hdf.setValue('newticket.default_version', default_version)
         
-        sql_to_hdf('SELECT name FROM component ORDER BY name',
+        sql_to_hdf(self.db, 'SELECT name FROM component ORDER BY name',
                    self.cgi.hdf, 'newticket.components')
-        sql_to_hdf('SELECT name FROM milestone ORDER BY name',
+        sql_to_hdf(self.db, 'SELECT name FROM milestone ORDER BY name',
                    self.cgi.hdf, 'newticket.milestones')
-        sql_to_hdf('SELECT name FROM version ORDER BY name',
+        sql_to_hdf(self.db, 'SELECT name FROM version ORDER BY name',
                    self.cgi.hdf, 'newticket.versions')
             
 
@@ -65,8 +64,7 @@ class Ticket (Module):
 
     def get_ticket (self, id, escape_values=1):
         global fields
-        cnx = db.get_connection ()
-        cursor = cnx.cursor ()
+        cursor = self.db.cursor ()
 
         fetch = string.join(fields, ',')
 
@@ -75,7 +73,6 @@ class Ticket (Module):
         cursor.close ()
 
         if not row:
-            del cnx
             raise Exception, 'Ticket %d not found.' % id
 
         info = {'id': id }
@@ -110,8 +107,7 @@ class Ticket (Module):
 
         changed = 0
         change = ''
-        cnx = db.get_connection ()
-        cursor = cnx.cursor()
+        cursor = self.db.cursor()
         now = int(time.time())
         if new.has_key('reporter'):
             author = new['reporter']
@@ -136,7 +132,7 @@ class Ticket (Module):
         if changed:
             cursor.execute ('UPDATE ticket SET changetime=%s WHERE id=%s',
                             now, id)
-            cnx.commit()
+            self.db.commit()
 
     def create_ticket(self):
         """
@@ -157,8 +153,7 @@ class Ticket (Module):
         if not data.has_key('reporter'):
             data['reporter'] = auth.get_authname()
 
-        cnx = db.get_connection()
-        cursor = cnx.cursor()
+        cursor = self.db.cursor()
 
         # The owner field defaults to the component owner
         if not data.has_key('owner') or data['owner'] == '':
@@ -173,16 +168,15 @@ class Ticket (Module):
 
         cursor.execute('INSERT INTO ticket (%s) VALUES(%s)' % (nstr, vstr),
                        *data.values())
-        id = cnx.db.sqlite_last_insert_rowid()
-        cnx.commit()
+        id = self.db.db.sqlite_last_insert_rowid()
+        self.db.commit()
         
         # redirect to the Ticket module to get a GET request
         redirect (href.ticket(id))
         
     def insert_ticket_data(self, hdf, id):
         """Inserts ticket data into the hdf"""
-        cnx = db.get_connection ()
-        cursor = cnx.cursor()
+        cursor = self.db.cursor()
         cursor.execute('SELECT time, author, field, oldvalue, newvalue '
                        'FROM ticket_change '
                        'WHERE ticket=%s ORDER BY time', id)
@@ -240,11 +234,11 @@ class Ticket (Module):
         info = self.get_ticket(id)
         add_dict_to_hdf(info, self.cgi.hdf, 'ticket')
         
-        sql_to_hdf('SELECT name FROM component ORDER BY name',
+        sql_to_hdf(self.db, 'SELECT name FROM component ORDER BY name',
                    self.cgi.hdf, 'ticket.components')
-        sql_to_hdf('SELECT name FROM milestone ORDER BY name',
+        sql_to_hdf(self.db, 'SELECT name FROM milestone ORDER BY name',
                    self.cgi.hdf, 'ticket.milestones')
-        sql_to_hdf('SELECT name FROM version ORDER BY name',
+        sql_to_hdf(self.db, 'SELECT name FROM version ORDER BY name',
                    self.cgi.hdf, 'ticket.versions')
         hdf_add_if_missing(self.cgi.hdf, 'ticket.components', info['component'])
         hdf_add_if_missing(self.cgi.hdf, 'ticket.milestones', info['milestone'])

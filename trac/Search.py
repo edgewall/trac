@@ -25,7 +25,6 @@ from util import *
 from Href import href
 from Module import Module
 from Wiki import wiki_to_oneliner
-import db
 import perm
 
 class Search(Module):
@@ -42,8 +41,7 @@ class Search(Module):
         return string.join(x, ' AND ')
     
     def perform_query (self, query, changeset, tickets):
-        cnx = db.get_connection()
-        cursor = cnx.cursor ()
+        cursor = self.db.cursor ()
 
         q = []
         if changeset:

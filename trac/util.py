@@ -23,7 +23,6 @@ import sys
 import time
 import StringIO
 from types import *
-from db import get_connection
 from xml.sax import saxutils
 
 def svn_date_to_string(date, pool):
@@ -40,12 +39,11 @@ def redirect (url):
     neo_cgi.CGI().redirectUri(url)
     sys.exit(0)
 
-def enum_selector (sql, name, selected=None,default_empty=0):
+def enum_selector (db, sql, name, selected=None,default_empty=0):
     out = StringIO.StringIO()
     out.write ('<select size="1" name="%s">' % name)
 
-    cnx = get_connection()
-    cursor = cnx.cursor ()
+    cursor = db.cursor ()
     cursor.execute (sql)
 
     if default_empty:
@@ -113,13 +111,12 @@ def add_dict_to_hdf(dict, hdf, prefix):
     for key in dict.keys():
         hdf.setValue('%s.%s' % (prefix, key), str(dict[key]))
 
-def sql_to_hdf (sql, hdf, prefix):
+def sql_to_hdf (db, sql, hdf, prefix):
     """
     executes a sql query and insert the first result column
     into the hdf at the given prefix
     """
-    cnx = get_connection()
-    cursor = cnx.cursor ()
+    cursor = db.cursor ()
     cursor.execute (sql)
 #    cursor.execute ('SELECT type, name, value FROM enum ORDER BY type,value,name')
     idx = 0
