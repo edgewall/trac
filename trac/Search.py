@@ -21,6 +21,7 @@
 
 import string
 import time
+import re
 
 from util import *
 from Module import Module
@@ -69,6 +70,32 @@ class Search(Module):
     
     def perform_query (self, query, changeset, tickets, wiki, page=0):
         keywords = query.split(' ')
+
+        if len(keywords) == 1:
+            kwd = keywords[0]
+            redir = None
+            # Prepending a '!' disables quickjump feature
+            if kwd[0] == '!':
+                keywords[0] = kwd[1:]
+                query = query[1:]
+                self.req.hdf.setValue('search.q', query)
+            # Ticket quickjump
+            elif kwd[0] == '#' and kwd[1:].isdigit():
+                redir = self.href.ticket(kwd[1:])
+            # Changeset quickjump
+            elif kwd[0] == '[' and kwd[-1] == ']' and kwd[1:-1].isdigit():
+                redir = self.href.changeset(kwd[1:-1])
+            # Report quickjump
+            elif kwd[0] == '{' and kwd[-1] == '}' and kwd[1:-1].isdigit():
+                redir = self.href.report(kwd[1:-1])
+            elif kwd[0].isupper() and kwd[1].islower():
+                r = "((^|(?<=[^A-Za-z]))[!]?[A-Z][a-z/]+(?:[A-Z][a-z/]+)+)"
+                if re.match (r, kwd):
+                    redir = self.href.wiki(kwd)
+            if redir:
+                self.req.hdf.setValue('search.q', '')
+                self.req.redirect(redir)
+
         cursor = self.db.cursor ()
 
         q = []

@@ -78,7 +78,7 @@ legend {
  font-size: 10px;
 }
 #search input { padding: 1px;  font-size: 10px; }
-#search input[type="submit"] { }
+#search label { display: none; }
 #hdrlogo { }
 #hdrlogo,#hdrlogo img,#hdrlogo:hover {
  float: left;
