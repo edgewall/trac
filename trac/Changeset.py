@@ -22,99 +22,9 @@
 from util import *
 from Module import Module
 from Wiki import wiki_to_html
-import perm
+import Diff, perm
 
-import re
-import string
 from svn import fs, util, delta, repos, core
-
-line_re = re.compile('@@ [+-]([0-9]+),([0-9]+) [+-]([0-9]+),([0-9]+) @@')
-header_re = re.compile('header ([^\|]+) ([^\|]+) \| ([^\|]+) ([^\|]+) redaeh')
-space_re = re.compile(' ( +)|^ ')
-
-class DiffColorizer:
-    def __init__(self, hdf, prefix, tabwidth=8):
-        self.block = []
-        self.ttype  = None
-        self.p_block = []
-        self.p_type  = None
-        self.hdf = hdf
-        self.prefix = prefix
-        self.tabwidth = tabwidth
-        self.changeno = -1
-        self.blockno = 0
-        self.offset_base = 0
-        self.offset_changed = 0
-
-    def _write_block (self, prefix, dtype, old = None, new = None):
-        self.hdf.setValue(prefix + '.type', dtype);
-        self.hdf.setValue(prefix + '.base.offset', str(self.offset_base))
-        self.hdf.setValue(prefix + '.changed.offset',
-                          str(self.offset_changed))
-        if old:
-            lineno = 1
-            for line in old:
-                self.hdf.setValue(prefix + '.base.lines.%d' % lineno, line)
-                lineno += 1
-            self.offset_base += lineno - 1
-        if new:
-            lineno = 1
-            for line in new:
-                self.hdf.setValue(prefix + '.changed.lines.%d' % lineno, line)
-                lineno += 1
-            self.offset_changed += lineno - 1
-
-    def print_block (self):
-        prefix = '%s.changes.%d.blocks.%d' % (self.prefix, self.changeno,
-                                              self.blockno)
-        if self.p_type == '-' and self.ttype == '+':
-            self._write_block(prefix, 'mod', old=self.p_block, new=self.block)
-        elif self.ttype == '+':
-            self._write_block(prefix, 'add', new=self.block)
-        elif self.ttype == '-':
-            self._write_block(prefix, 'rem', old=self.block)
-        elif self.ttype == ' ':
-            self._write_block(prefix, 'unmod', old=self.block, new=self.block)
-        self.block = self.p_block = []
-        self.blockno += 1
-
-    def writeline(self, text):
-        match = header_re.search(text)
-        if match:
-            self.hdf.setValue('%s.name.old' % self.prefix, match.group(1))
-            self.hdf.setValue('%s.rev.old' % self.prefix, match.group(2))
-            self.hdf.setValue('%s.name.new' % self.prefix, match.group(3))
-            self.hdf.setValue('%s.rev.new' % self.prefix, match.group(4))
-            return
-        if text[0:2] in ['++', '--']:
-            return
-        match = line_re.search(text)
-        if match:
-            self.print_block()
-            self.changeno += 1
-            self.blockno = 0
-            self.offset_base = int(match.group(1)) - 1
-            self.offset_changed = int(match.group(3)) - 1
-            return
-        ttype = text[0]
-        text = text[1:]
-        text = space_re.sub(lambda m:
-            len(m.group(0)) / 2 * '&nbsp; ' + len(m.group(0)) % 2 * '&nbsp;',
-            text.expandtabs(self.tabwidth))
-        if ttype == self.ttype:
-            self.block.append(text)
-        else:
-            if ttype == '+' and self.ttype == '-':
-                self.p_block = self.block
-                self.p_type = self.ttype
-            else:
-                self.print_block()
-            self.block = [text]
-            self.ttype = ttype
-
-    def close(self):
-        self.print_block()
-
 
 class HtmlDiffEditor (delta.Editor):
     """
@@ -125,7 +35,7 @@ class HtmlDiffEditor (delta.Editor):
         self.old_root = old_root
         self.new_root = new_root
         self.rev = rev
-        self.hdf = req.hdf
+        self.req = req
         self.args = args
         self.env = env
         self.fileno = 0
@@ -137,35 +47,23 @@ class HtmlDiffEditor (delta.Editor):
         old_rev = fs.node_created_rev(self.old_root, old_path, pool)
         new_rev = fs.node_created_rev(self.new_root, new_path, pool)
 
-        num = int(self.args.get('contextlines', '2'))
-        options = ['-u%d' % num]
-        self.hdf.setValue('diff.options.contextlines', str(num))
-        if self.args.has_key('ignoreblanklines'):
-            options.append('-B')
-            self.hdf.setValue('diff.options.ignoreblanklines', '1')
-        if self.args.has_key('ignorecase'):
-            options.append('-i')
-            self.hdf.setValue('diff.options.ignorecase', '1')
-        if self.args.has_key('ignorewhitespace'):
-            options.append('-b')
-            self.hdf.setValue('diff.options.ignorewhitespace', '1')
-
+        options = Diff.get_options(self.env, self.req, self.args, 1)
         differ = fs.FileDiff(self.old_root, old_path, self.new_root, new_path,
                              pool, options)
         differ.get_files()
         pobj = differ.get_pipe()
         prefix = 'changeset.diff.files.%d' % (self.fileno)
         tabwidth = int(self.env.get_config('diff', 'tab_width', '8'))
-        filtr = DiffColorizer(self.hdf, prefix, tabwidth)
+        builder = Diff.HDFBuilder(self.req.hdf, prefix, tabwidth)
         self.fileno += 1
-        filtr.writeline('header %s %s | %s %s redaeh' % (old_path, old_rev,
-                                                         new_path, new_rev))
+        builder.writeline('header %s %s | %s %s redaeh' % (old_path, old_rev,
+                                                           new_path, new_rev))
         while 1:
             line = pobj.readline()
             if not line:
                 break
-            filtr.writeline(escape(to_utf8(line)))
-        filtr.close()
+            builder.writeline(escape(to_utf8(line)))
+        builder.close()
 
     def add_file(self, path, parent_baton, copyfrom_path,
                  copyfrom_revision, file_pool):
@@ -247,10 +145,6 @@ class Changeset (Module):
         else:
             self.rev = fs.youngest_rev(self.fs_ptr, self.pool)
 
-        style = 'inline'
-        if self.args.has_key('style'):
-            style = self.args.get('style')
-
         change_info = self.get_change_info (self.rev)
         for item in change_info:
             item['log_href'] = self.env.href.log(item['name'])
@@ -268,7 +162,6 @@ class Changeset (Module):
         add_dictlist_to_hdf(change_info, self.req.hdf, 'changeset.changes')
         self.req.hdf.setValue('changeset.href',
             self.env.href.changeset(self.rev))
-        self.req.hdf.setValue('diff.style', style)
         self.req.hdf.setValue('title', '[%d] (changeset)' % self.rev)
 
     def render_diffs(self, editor_class=HtmlDiffEditor):
@@ -311,4 +204,3 @@ class Changeset (Module):
         self.req.send_header('Content-Type', 'text/plain')
         self.req.end_headers()
         self.render_diffs(UnifiedDiffEditor)
-

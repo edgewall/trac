@@ -617,7 +617,7 @@ class Wiki(Module):
             i = i + 1
 
     def generate_diff(self, pagename, version):
-        from Changeset import DiffColorizer
+        import Diff
         cursor = self.db.cursor ()
         cursor.execute ('SELECT text,author,comment,time FROM wiki '
                         'WHERE name=%s AND (version=%s or version=%s)'
@@ -641,21 +641,18 @@ class Wiki(Module):
         self.req.hdf.setValue('wiki.diff.author', escape(author))
         self.req.hdf.setValue('wiki.diff.comment', escape(comment))
 
-        style = 'inline'
-        if self.args.has_key('style'):
-            style = self.args.get('style')
-        self.req.hdf.setValue('diff.style', style)
+        Diff.get_options(self.env, self.req, self.args)
 
-        filtr = DiffColorizer(self.req.hdf, 'wiki.diff')
-        filtr.writeline('header %s %d | %s %d redaeh' %
-                         (pagename, version - 1, pagename, version))
+        builder = Diff.HDFBuilder(self.req.hdf, 'wiki.diff')
+        builder.writeline('header %s %d | %s %d redaeh' %
+                          (pagename, version - 1, pagename, version))
         try:
             for line in difflib.Differ().compare(old, new):
                 if line != '  ':
-                    filtr.writeline(escape(line))
+                    builder.writeline(escape(line))
         except AttributeError:
             raise TracError('Python >= 2.2 is required for diff support.')
-        filtr.close()
+        builder.close()
 
     def render(self):
         name = self.args.get('page', 'WikiStart')

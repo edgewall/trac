@@ -36,7 +36,7 @@
         /if ?>>side by side</option>
      </select>
      <div class="buttons">
-      <input type="submit" value="Update" />
+      <input type="submit" name="update" value="Update" />
      </div>
     </div>
    </form>
