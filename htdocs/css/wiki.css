@@ -2,8 +2,13 @@
 @import url(diff.css);
 
 /* Styles for the page editing form */
-#changeinfo div { margin: 0 .5em }
-#readonly { margin: .5em 0 1em .5em; vertical-align: middle }
+#edit #rows { float: right; font-size: 80% }
+#edit #rows select { font-size: 90% }
+#edit #text { clear: both; width: 100% }
+#changeinfo { padding: .5em }
+#changeinfo .field { float: left; margin: 0 1em .5em 0 }
+#changeinfo .options { padding: 0 0 1em 1em }
+#changeinfo .options, #changeinfo .buttons { clear: left }
 #delete_ver { margin-left: 6em }
 #preview { background: #f4f4f4 url(../draft.png) }
 

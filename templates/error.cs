@@ -12,22 +12,19 @@
 
  <?cs elif error.type == "internal" ?>
   <h3>Oops...</h3>
-  <p class="message">
-  Trac detected an internal error:
-  <pre>
-  <?cs var:error.message ?>
-  </pre>
+  <div class="message">
+   <strong>Trac detected an internal error:</strong>
+   <pre><?cs var:error.message ?></pre>
   </div>
   <p>
-  If you think this really should work and you can reproduce it. Then you 
-  should consider to report this problem to the Trac team.
+   If you think this really should work and you can reproduce it. Then you 
+   should consider to report this problem to the Trac team.
   </p>
   <p>
-  Go to
-  <a href="<?cs var:trac.href.homepage ?>"><?cs var:trac.href.homepage ?></a> 
-  and create a new ticket where you describe
-  the problem, how to reproduce it and don't forget to include the python
-  traceback found below.
+   Go to <a href="<?cs var:trac.href.homepage ?>"><?cs
+     var:trac.href.homepage ?></a>  and create a new ticket where you describe
+   the problem, how to reproduce it. Don't forget to include the python
+   traceback found below.
   </p>
 
  <?cs elif error.type == "permission" ?>
@@ -45,14 +42,12 @@
 
  <p>
   <a href="<?cs var:trac.href.wiki ?>/TracGuide">TracGuide</a>
-  -- The Trac User and Administration Guide
+  &mdash; The Trac User and Administration Guide
  </p>
 
  <?cs if $error.traceback ?>
- <h4>Python traceback</h4>
- <pre>
- <?cs var:error.traceback ?>
- </pre>
+  <h4>Python traceback</h4>
+  <pre><?cs var:error.traceback ?></pre>
  <?cs /if ?>
 
 </div>

@@ -133,8 +133,8 @@
  <?cs else ?>
   <?cs if wiki.action == "edit" || wiki.action == "preview" ?>
    <h3>Editing "<?cs var:wiki.page_name ?>"</h3>
-   <form action="<?cs var:wiki.current_href ?>#preview" method="post">
-    <div style="width: 100%">
+   <form id="edit" action="<?cs var:wiki.current_href ?>#preview" method="post">
+    <fieldset class="iefix">
      <input type="hidden" name="edit_version" value="<?cs
        var:wiki.edit_version?>" />
      <input type="hidden" name="scroll_bar_pos" id="scroll_bar_pos" value="<?cs
@@ -143,45 +143,54 @@
        var:wiki.selection_start?>" />
      <input type="hidden" name="selection_end" id="selection_end" value="<?cs
        var:wiki.selection_end?>" />
-     <label for="text">Page source:</label><br />
-     <textarea id="text" name="text" rows="20" cols="80" style="width: 97%"><?cs
-       var:wiki.page_source ?></textarea>
+     <div id="rows">
+      <label for="editrows">Adjust edit area height:</label>
+      <select size="1" name="editrows" id="editrows" tabindex="43"
+        onchange="resizeTextArea('text', this.options[selectedIndex].value)"><?cs
+       loop:rows = 8, 42, 4 ?>
+        <option<?cs
+          if:rows == wiki.edit_rows ?> selected="selected"<?cs /if ?>><?cs
+          var:rows ?></option><?cs
+       /loop ?>
+      </select>
+     </div>
+     <p><textarea id="text" name="text" rows="<?cs var:wiki.edit_rows ?>" cols="80"><?cs
+       var:wiki.page_source ?></textarea></p>
      <?cs call:wiki_toolbar('text') ?>
-     <div id="help">
-      <b>Note:</b> See <a href="<?cs var:$trac.href.wiki
+    </fieldset>
+    <div id="help">
+     <b>Note:</b> See <a href="<?cs var:$trac.href.wiki
 ?>/WikiFormatting">WikiFormatting</a> and <a href="<?cs var:$trac.href.wiki
 ?>/TracWiki">TracWiki</a> for help on editing wiki content.
+    </div>
+    <fieldset id="changeinfo">
+     <legend>Change information</legend>
+     <div class="field">
+      <label for="author">Your email or username:</label>
+      <br /><input id="author" type="text" name="author" size="30" value="<?cs
+        var:wiki.author ?>" />
      </div>
-     <fieldset id="changeinfo">
-      <legend>Change information</legend>
-      <div style="display: inline; float: left">
-       <label for="author">Your email or username:</label><br />
-       <input id="author" type="text" name="author" size="30" value="<?cs
-         var:wiki.author ?>" />
+     <div class="field">
+      <label for="comment">Comment about this change (optional):</label>
+      <br /><input id="comment" type="text" name="comment" size="60" value="<?cs
+        var:wiki.comment?>" />
+     </div>
+     <?cs if trac.acl.WIKI_ADMIN ?>
+      <div class="options">
+       <input type="checkbox" name="readonly" id="readonly"<?cs
+         if wiki.readonly == "1"?>checked="checked"<?cs /if ?> />
+       <label for="readonly">Page is read-only</label>
       </div>
-      <div>
-       <label for="comment">Comment about this change (optional):</label>
-       <br />
-       <input id="comment" type="text" name="comment" size="60" value="<?cs
-         var:wiki.comment?>" />
-      </div>
-      <?cs if trac.acl.WIKI_ADMIN ?>
-       <div>
-        <input type="checkbox" name="readonly" id="readonly"<?cs
-          if wiki.readonly == "1"?>checked="checked"<?cs /if ?> />
-        <label for="readonly">Page is read-only</label>
-       </div>
-      <?cs /if ?>
-      <div class="buttons">
-       <input type="submit" name="save" value="Save changes" />&nbsp;
-       <input type="submit" name="preview" value="Preview" onclick="saveEditPosition(this.form.text, this.form.scroll_bar_pos, this.form.selection_start, this.form.selection_end);" />&nbsp;
-       <input type="submit" name="cancel" value="Cancel" />
-       <?cs if trac.acl.WIKI_DELETE ?>
-        <input type="submit" name="delete_ver" id="delete_ver" value="Delete this version" onclick="return confirm('Do you really want to delete version <?cs var:wiki.edit_version?> of this page?\nThis is an irreversible operation.')" />
-        <input type="submit" name="delete_page" value="Delete Page" onclick="return confirm('Do you really want to delete all versions of this page?\nThis is an irreversible operation.')" />
-       <?cs /if ?>
-      </div>
-     </fieldset>
+     <?cs /if ?>
+    </fieldset>
+    <div class="buttons">
+     <input type="submit" name="save" value="Save changes" />&nbsp;
+     <input type="submit" name="preview" value="Preview" onclick="saveEditPosition(this.form.text, this.form.scroll_bar_pos, this.form.selection_start, this.form.selection_end);" />&nbsp;
+     <input type="submit" name="cancel" value="Cancel" />
+     <?cs if trac.acl.WIKI_DELETE ?>
+      <input type="submit" name="delete_ver" id="delete_ver" value="Delete this version" onclick="return confirm('Do you really want to delete version <?cs var:wiki.edit_version?> of this page?\nThis is an irreversible operation.')" />
+      <input type="submit" name="delete_page" value="Delete Page" onclick="return confirm('Do you really want to delete all versions of this page?\nThis is an irreversible operation.')" />
+     <?cs /if ?>
     </div>
    </form>
    <script type='text/javascript'>

@@ -14,9 +14,8 @@ function restoreEditPosition(textarea, scrollbarPosition, selectionStart, select
 // Used for dynamically updating the height of a textarea
 function resizeTextArea(id, rows) {
   var textarea = document.getElementById(id);
-  if (!textarea || (typeof(textarea.rows) == "undefined")) return true;
+  if (!textarea || (typeof(textarea.rows) == "undefined")) return;
   textarea.rows = rows;
-  return false;
 }
 
 // A better way than for example hardcoding foo.onload

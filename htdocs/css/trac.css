@@ -52,23 +52,25 @@ input[type=text], input.textwidget, textarea {
  background: #fff;
  color: #000;
  border: 1px solid #d7d7d7;
- padding: .25em .5em;
 }
+input[type=text], input.textwidget { padding: 0 .5em }
 input[type=text]:focus, textarea:focus { border: 1px solid #886 }
 option { border-bottom: 1px dotted #d7d7d7 }
-fieldset { border: 1px solid #d7d7d7; padding: .5em; margin: 0; width: 99% }
+fieldset { border: 1px solid #d7d7d7; padding: .5em; margin: 0 }
+fieldset.iefix { border: none; padding: 0; margin: 0 }
+* html fieldset.iefix { weidth: 98% }
+fieldset.iefix p { margin: 0 }
 legend {
- background: #fff;
- color: #d7d7d7;
+ color: #999;
  padding: 0 .25em;
- font-size: smaller;
+ font-size: 90%;
  font-weight: bold;
 }
 label.disabled { color: #d7d7d7 }
 .att-label { float:left; width: 7em; text-align: right; margin-right: .5em; }
-.buttons { margin: .5em; }
+.buttons { margin: .5em .5em .5em 0 }
 .buttons form, .buttons form div { display: inline }
-.buttons form input { margin: 1em }
+.buttons input { margin: 1em .5em .1em 0 }
 
 /* Header */
 #header hr { display: none }
@@ -87,7 +89,7 @@ label.disabled { color: #d7d7d7 }
  margin: 0 0 1em;
  text-align: right;
 }
-#search input { font-size: 10px; padding: 1px }
+#search input { font-size: 10px }
 #search label { display: none }
 
 /* Navigation */
@@ -174,7 +176,6 @@ label.disabled { color: #d7d7d7 }
 #altlinks li :link, #altlinks li :visited {
  background-position: 0 -1px;
  background-repeat: no-repeat;
- padding-left: 42px
  border: none;
 }
 #altlinks li a.ics { background-image: url(../ics.png); padding-left: 22px }
@@ -245,15 +246,14 @@ label.disabled { color: #d7d7d7 }
 a.missing:link,a.missing:visited { background: #fafaf0; color: #998 }
 a.missing:hover { color: #000; }
 
-#content.wiki { line-height: 140%; margin: 1em }
+#content.wiki { line-height: 140% }
 .wikitoolbar {
- border: 1px solid #d7d7d7;
- border-left: none;
+ border: solid #d7d7d7;
+ border-width: 1px 1px 1px 0;
  float: left;
- margin: 5px 2px 0;
  height: 18px;
 }
-.wikitoolbar a {
+.wikitoolbar :link, .wikitoolbar :visited {
  background: transparent url(../edit_toolbar.png) no-repeat;
  border: 1px solid #fff;
  border-left-color: #d7d7d7;
@@ -263,7 +263,10 @@ a.missing:hover { color: #000; }
  width: 24px;
  height: 16px;
 }
-.wikitoolbar a:hover { background-color: transparent; border: 1px solid #fb2 }
+.wikitoolbar :link:hover, .wikitoolbar :visited:hover {
+ background-color: transparent;
+ border: 1px solid #fb2;
+}
 .wikitoolbar a#em { background-position: 0 0 }
 .wikitoolbar a#strong { background-position: 0 -16px }
 .wikitoolbar a#heading { background-position: 0 -32px }
@@ -282,7 +285,7 @@ table.listing {
  width: 100%;
 }
 table.listing th { text-align: left; padding: 0 1em .1em 0; font-size: 12px }
-table.listing thead th a { padding-right: 12px }
+table.listing thead th a { border: none; padding-right: 12px }
 table.listing th.asc a, table.listing th.desc a { font-weight: bold }
 table.listing th.asc a, table.listing th.desc a {
  background-position: 100% 50%;
@@ -326,6 +329,7 @@ table.wiki td { border: 1px solid #ccc;  padding: .1em .25em; }
  padding: .5em;
  margin: 1em 0;
 }
+#content.error pre, div.system-message pre { margin-left: 1em; overflow: auto }
 div.system-message p { margin: 0; }
 div.system-message p.system-message-title { font-weight: bold; }
 

@@ -162,7 +162,7 @@
   /if ?><?cs
   /def ?>
 
-<?cs def:ticket_custom_props(ticket) ?><?cs if ticket.custom.0.name ?><?cs
+<?cs def:ticket_custom_props(ticket) ?><?cs
  each c=ticket.custom ?>
   <div class="field custom_<?cs var c.name ?>"><?cs
    if c.type == 'text' || c.type == 'select' ?>
@@ -204,7 +204,7 @@
    /if ?>
   </div><?cs
  /each ?><?cs
-/if ?><?cs /def ?>
+/def ?>
 
 <?cs def:wiki_toolbar(textarea_id) ?>
 <script type='text/javascript'>

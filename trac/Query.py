@@ -160,7 +160,7 @@ class QueryModule(Module):
         self.req.hdf.setValue('query.desc', str(desc))
 
     def _render_results(self, constraints, order, desc):
-        self.req.hdf.setValue('title', 'View Tickets')
+        self.req.hdf.setValue('title', 'Advanced Ticket Query')
         self.req.hdf.setValue('query.edit_href',
             self.env.href.query(constraints, order, desc, action='edit'))
 

@@ -66,23 +66,23 @@
     <input type="text" id="date" name="date" size="8" value="<?cs
       var:milestone.date ?>" title="Format: MM/DD/YY" />
     <label for="date"><em>Format: MM/DD/YY</em></label>
-    </fieldset>
    </div>
    <div class="field">
-    <label for="descr">Description (you may use <a tabindex="42" href="<?cs
-      var:trac.href.wiki ?>/WikiFormatting">WikiFormatting</a> here):</label><br />
-    <textarea id="descr" name="descr" rows="12" cols="80"><?cs
-      var:milestone.descr_source ?></textarea>
-    <?cs call:wiki_toolbar('descr') ?>
+    <fieldset class="iefix">
+     <label for="descr">Description (you may use <a tabindex="42" href="<?cs
+       var:trac.href.wiki ?>/WikiFormatting">WikiFormatting</a> here):</label>
+     <p><textarea id="descr" name="descr" rows="12" cols="80"><?cs
+       var:milestone.descr_source ?></textarea></p>
+     <?cs call:wiki_toolbar('descr') ?>
+    </fieldset>
    </div>
    <div class="buttons">
-    <input type="submit" name="cancel" value="Cancel" />
-    <input type="reset" type="Reset" value="Reset" />
     <?cs if:milestone.mode == "new"
      ?><input type="submit" name="save" value="Add Milestone" /><?cs
     else
      ?><input type="submit" name="save" value="Save Changes" /><?cs
     /if ?>
+    <input type="submit" name="cancel" value="Cancel" />
    </div>
   </form>
  <?cs elif:milestone.mode == "delete" ?>

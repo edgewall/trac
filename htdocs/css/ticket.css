@@ -1,6 +1,9 @@
 @import url(code.css);
 
-#content { margin-top: 1.5em; width: 700px; max-width: 80% }
+#content { margin-top: 1.5em; width: 700px; max-width: 90% }
+
+#newticket #description { width: 100% }
+#newticket #properties { width: 100% }
 
 #ticket { 
  background: #ffd;
@@ -32,6 +35,7 @@
 #changelog .comment { margin-left: 2em }
 
 form .field { margin-top: .75em; width: 100% }
+form #comment { width: 100% }
 
 #properties { white-space: nowrap; line-height: 160%; padding: .5em }
 #properties .main { margin-bottom: 1em }
@@ -56,8 +60,6 @@ form .field { margin-top: .75em; width: 100% }
 #properties .custom .field { margin: .25em 0 }
 
 #action { line-height: 2em }
-
-.buttons { padding-top: .5em; text-align: right }
 
 fieldset.radio { border: none; margin: 0; padding: 0 }
 fieldset.radio legend {

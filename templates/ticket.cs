@@ -132,11 +132,13 @@
     value="<?cs var:ticket.reporter_id ?>" /><br />
  </div>
  <div class="field">
-  <label for="comment">Add comment (you may use <a tabindex="42" href="<?cs
-    var:$trac.href.wiki ?>/WikiFormatting">WikiFormatting</a> here):</label><br />
-  <textarea id="comment" name="comment" rows="10" cols="78" style="width: 97%"><?cs
-    var:ticket.comment ?></textarea><?cs
-  call:wiki_toolbar('comment') ?><?cs
+  <fieldset class="iefix">
+   <label for="comment">Comment (you may use <a tabindex="42" href="<?cs
+     var:$trac.href.wiki ?>/WikiFormatting">WikiFormatting</a> here):</label><br />
+   <p><textarea id="comment" name="comment" rows="10" cols="78"><?cs
+     var:ticket.comment ?></textarea></p><?cs
+   call:wiki_toolbar('comment') ?>
+  </fieldset><?cs
   if ticket.comment_preview ?>
    <fieldset id="preview">
     <legend>Comment Preview</legend>
@@ -190,9 +192,9 @@
    <label for="cc">Cc:</label>
    <input type="text" id="cc" name="cc" size="30" value="<?cs var:ticket.cc ?>" />
   </div>
-  <div class="custom">
+  <?cs if:len(ticket.custom) ?><div class="custom">
    <?cs call:ticket_custom_props(ticket) ?>
-  </div>
+  </div><?cs /if ?>
  </fieldset>
 
  <fieldset id="action">
@@ -201,7 +203,8 @@
   /if ?><?cs
   def:action_radio(id) ?>
    <input type="radio" id="<?cs var:id ?>" name="action" value="<?cs
-     var:id ?>"<?cs if:$ticket.action == $id ?> checked="checked"<?cs /if ?> /><?cs
+     var:id ?>"<?cs if:$ticket.action == $id ?> checked="checked"<?cs
+     /if ?> /><?cs
   /def ?>
   <?cs call:action_radio('leave') ?>
   <label for="leave">leave as <?cs var:ticket.status ?></label><br /><?cs
@@ -215,19 +218,34 @@
   /if ?><?cs
   if $ticket.status == "new" || $ticket.status == "assigned" || $ticket.status == "reopened" ?>
    <?cs call:action_radio('resolve') ?>
-   <label for="resolve">resolve as:</label>
-    <select name="resolve_resolution">
-     <option selected="selected">fixed</option>
-     <option>invalid</option>
-     <option>wontfix</option>
-     <option>duplicate</option>
-     <option>worksforme</option>
-    </select><br />
+   <label for="resolve">resolve</label>
+   <label for="resolve_resolution">as:</label>
+   <select id="resolve_resolution" name="resolve_resolution">
+    <option>fixed</option>
+    <option>invalid</option>
+    <option>wontfix</option>
+    <option>duplicate</option>
+    <option>worksforme</option>
+   </select><br />
    <?cs call:action_radio('reassign') ?>
-   <label for="reassign">reassign ticket to:</label>
+   <label for="reassign">reassign</label>
+   <label for="reassign_owner">to:</label>
    <input type="text" id="reassign_owner" name="reassign_owner" size="40" value="<?cs
      var:trac.authname ?>" /><?cs
   /if ?>
+  <script type="text/javascript">
+    var resolve = document.getElementById("resolve");
+    var reassign = document.getElementById("reassign");
+    var updateActionFields = function() {
+      enableControl('resolve_resolution', resolve.checked);
+      enableControl('reassign_owner', reassign.checked);
+    };
+    addEvent(window, 'load', updateActionFields);
+    addEvent(document.getElementById("leave"), 'click', updateActionFields);
+    addEvent(document.getElementById("accept"), 'click', updateActionFields);
+    addEvent(resolve, 'click', updateActionFields);
+    addEvent(reassign, 'click', updateActionFields);
+  </script>
  </fieldset>
 
  <div class="buttons">

@@ -10,7 +10,7 @@ addEvent(window, 'load', function() { document.getElementById('summary').focus()
 <div id="content" class="ticket">
 
 <h3>Create New Ticket:</h3>
-<form action="<?cs var:cgi_location ?>#preview" method="post">
+<form id="newticket" action="<?cs var:cgi_location ?>#preview" method="post">
  <div class="field">
   <label for="reporter">Your email or username:</label><br />
   <input type="text" id="reporter" name="reporter" size="40" value="<?cs
@@ -23,7 +23,7 @@ addEvent(window, 'load', function() { document.getElementById('summary').focus()
  <div class="field">
   <label for="description">Full description (you may use <a tabindex="42" href="<?cs
     var:$trac.href.wiki ?>/WikiFormatting">WikiFormatting</a> here):</label><br />
-  <textarea id="description" name="description" rows="10" cols="78" style="width: 97%"><?cs
+  <textarea id="description" name="description" rows="10" cols="78"><?cs
     var:newticket.description ?></textarea><?cs
   call:wiki_toolbar('description') ?><?cs
   if:newticket.description_preview ?>
@@ -64,13 +64,12 @@ addEvent(window, 'load', function() { document.getElementById('summary').focus()
    <label for="cc">Cc:</label>
    <input type="text" id="cc" name="cc" size="30" value="<?cs var:newticket.cc ?>" />
   </div>
-  <div class="custom">
+  <?cs if:len(ticket.custom) ?><div class="custom">
    <?cs call:ticket_custom_props(ticket) ?>
-  </div>
+  </div><?cs /if ?>
  </fieldset>
 
  <div class="buttons">
-  <input type="reset" value="Reset" />&nbsp;
   <input type="submit" value="Preview" />&nbsp;
   <input type="submit" name="create" value="Submit ticket" />
  </div>
