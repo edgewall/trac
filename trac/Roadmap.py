@@ -19,6 +19,7 @@
 #
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
+from __future__ import nested_scopes
 import re
 from time import localtime, strftime, time
 
