@@ -448,7 +448,7 @@ class Wiki(Module):
 
             t = int(row[1])
             if t:
-                time_str = time.strftime('%F', time.localtime(t))
+                time_str = time.strftime('%x', time.localtime(t))
             else:
                 time_str = ''
             n = 'wiki.history.%d' % i

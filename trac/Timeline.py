@@ -82,8 +82,8 @@ class Timeline (Module):
             if not row:
                 break
             t = time.localtime(int(row['time']))
-            item = {'time': time.strftime('%R', t),
-                    'date': time.strftime('%F', t),
+            item = {'time': time.strftime('%X', t),
+                    'date': time.strftime('%x', t),
                     'data': row['data'],
                     'type': int(row['type']),
                     'message': row['message'],
@@ -108,7 +108,7 @@ class Timeline (Module):
         _daysback = dict_get_with_default(self.args, 'daysback', '')
 
         try:
-            _from = time.mktime(time.strptime(_from, '%Y-%m-%d')) + 86399
+            _from = time.mktime(time.strptime(_from, '%x')) + 86399
             pass
         except:
             _from = time.time()
@@ -118,7 +118,7 @@ class Timeline (Module):
         except:
             daysback = 90
         self.cgi.hdf.setValue('timeline.from',
-                              time.strftime('%F', time.localtime(_from)))
+                              time.strftime('%x', time.localtime(_from)))
         self.cgi.hdf.setValue('timeline.daysback', str(daysback))
 
         stop  = _from

@@ -168,7 +168,7 @@ class Report (Module):
                         type='report'
                         value = {'report_href':href.report(cell), 'value':str(cell)}
                     elif column in ['time', 'date', 'created', 'modified']:
-                        t=time.strftime('%F', time.localtime(int(cell)))
+                        t=time.strftime('%x', time.localtime(int(cell)))
                         type='time'
                         value = {'value':t}
                     elif column in ['summary', 'owner', 'severity',

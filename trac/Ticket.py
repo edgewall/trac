@@ -196,7 +196,7 @@ class Ticket (Module):
             new    = row[4] or ''
 
             hdf.setValue('ticket.changes.%d.date' % idx,
-                                  time.strftime('%F %H:%M',
+                                  time.strftime('%c',
                                                 time.localtime(date)))
             
             hdf.setValue('ticket.changes.%d.time' % idx, str(date))
@@ -251,6 +251,6 @@ class Ticket (Module):
         self.cgi.hdf.setValue('ticket.description',
                               wiki_to_html(info['description']))
         self.cgi.hdf.setValue('ticket.opened',
-                              time.strftime('%F %H:%M',
+                              time.strftime('%c',
                                             time.localtime(int(info['time']))))
        
