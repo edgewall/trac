@@ -44,14 +44,17 @@ class Timeline (Module):
         # 3: closed tickets
         # 4: reopened tickets
 
-        cursor.execute ("SELECT time, rev AS data, 1 AS type, message "
+        cursor.execute ("SELECT time, rev AS data, 1 AS type, message, author "
                         "FROM revision WHERE time>=%s AND time<=%s UNION ALL "
-                        "SELECT time, id AS data, 2 AS type, summary AS message "
+                        "SELECT time, id AS data, 2 AS type, "
+                        "summary AS message, reporter AS author "
                         "FROM ticket WHERE time>=%s AND time<=%s UNION ALL "
-                        "SELECT time, ticket AS data, 3 AS type, '' AS message "
+                        "SELECT time, ticket AS data, 3 AS type, "
+                        "'' AS message, author "
                         "FROM ticket_change WHERE field='status' "
                         "AND newvalue='closed' AND time>=%s AND time<=%s UNION ALL "
-                        "SELECT time, ticket AS data, 4 AS type, '' AS message "
+                        "SELECT time, ticket AS data, 4 AS type, "
+                        "'' AS message, author "
                         "FROM ticket_change WHERE field='status' "
                         "AND newvalue='reopened' AND time>=%s AND time<=%s "
                         "ORDER BY time DESC, message, type",
@@ -68,7 +71,8 @@ class Timeline (Module):
                     'date': time.strftime('%D, %F', t),
                     'data': row['data'],
                     'type': row['type'],
-                    'message': row['message']}
+                    'message': row['message'],
+                    'author': row['author']}
             if row['type'] == '1':
                 item['changeset_href'] = href.changeset(int(row['data']))
             else:

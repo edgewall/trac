@@ -2,13 +2,10 @@
   <table id="page-footer" width="100%" bgcolor="#eeeeee">
     <tr>
       <td align="left" class="footer">
-	Email: <a href="mailto:info@edgewall.com">info@edgewall.com</a>
-	<br />
-	  <a href="http://www.edgewall.com/contact/">Contact information</a>
+	Powered by <a href="http://svntrac.edgewall.com/">SVNTRAC</a>
       </td>
-      <td align="right" class="footer">Copyright (c)2003 
-	<a href="http://www.edgewall.com/">Edgewall Software</a> . 
-	All rights reserved.<br />
+      <td align="right" class="footer">
+	Plase visit <a href="http://www.edgewall.com/">www.edgewall.com.</a>
       </td>
     </tr>
   </table>
