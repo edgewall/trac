@@ -155,7 +155,7 @@ class SubversionRepository(Repository):
         self.close()
 
     def close(self):
-        if self.pool:
+        if self._pool:
             self.log.debug("Closing subversion file-system at %s" % self.path)
             self.pool = None
             self.repos = None
