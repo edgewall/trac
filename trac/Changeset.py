@@ -140,9 +140,8 @@ class DiffEditor (delta.Editor):
         filter.close()
         print '</div>'
 
-    def add_file(self, path, parent_baton,
-                 copyfrom_path, copyfrom_revision, file_pool):
-        self.print_diff (None, path, file_pool)
+    def add_file(self, path, parent_baton, copyfrom_path,
+                 copyfrom_revision, file_pool):
         return [None, path, file_pool]
     
     def open_file(self, path, parent_baton, base_revision, file_pool):
@@ -165,19 +164,8 @@ def render_diffs(fs_ptr, rev, pool):
     editor = DiffEditor(old_root, new_root)
     e_ptr, e_baton = delta.make_editor(editor, pool)
 
-    try:
-        repos.svn_repos_dir_delta(old_root, '', '',
-                                  new_root, '', e_ptr, e_baton, None, None,
-                              0, 1, 0, 1, pool)
-    except RuntimeError:
-        repos.svn_repos_dir_delta(old_root, '', None,
-                                  new_root, '', e_ptr, e_baton, None, None,
-                              0, 1, 0, 1, pool)
-    except (RuntimeError, TypeError):
-        # Subversion frequently changes the API
-        # dir_delta on subversion < 0.33 only takes 12 arguments
-        repos.svn_repos_dir_delta(old_root, '', None,
-                                  new_root, '', e_ptr, e_baton,
+    repos.svn_repos_dir_delta(old_root, '', '',
+                              new_root, '', e_ptr, e_baton, None, None,
                               0, 1, 0, 1, pool)
     sys.stdout = s_o
     return output.getvalue()

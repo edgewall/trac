@@ -59,6 +59,10 @@ def get_youngest_stored(cursor):
 
 def init():
     global db_name
+    if util.SVN_VER_MAJOR == 0 and util.SVN_VER_MINOR < 37:
+        raise EnvironmentError, \
+              "Subversion >= 0.37 required: Found %d.%d.%d" % \
+              (util.SVN_VER_MAJOR, util.SVN_VER_MINOR, util.SVN_VER_MICRO)
     db_name = os.getenv('TRAC_DB')
     if not db_name:
         raise EnvironmentError, \
@@ -130,13 +134,6 @@ def insert_change (pool, fs_ptr, rev, cursor):
     editor = ChangeEditor(rev, old_root, new_root, cursor)
     e_ptr, e_baton = delta.make_editor(editor, pool)
 
-    try:
-        repos.svn_repos_dir_delta(old_root, '', '',
-                                  new_root, '', e_ptr, e_baton, None, None,
-                                  0, 1, 0, 1, pool)
-    except TypeError:
-        # Subversion frequently changes the API
-        # dir_delta on subversion < 0.33 only takes 12 arguments
-        repos.svn_repos_dir_delta(old_root, '', None,
-                                  new_root, '', e_ptr, e_baton,
-                                  0, 1, 0, 1, pool)
+    repos.svn_repos_dir_delta(old_root, '', '',
+                              new_root, '', e_ptr, e_baton, None, None,
+                              0, 1, 0, 1, pool)
