@@ -149,21 +149,22 @@ class Milestone(Module):
                             'Invalid Date Format')
         return seconds
 
-    def create_milestone(self, name, date=0, description=''):
+    def create_milestone(self, name, due=0, completed=0, description=''):
         self.perm.assert_permission(perm.MILESTONE_CREATE)
         if not name:
             raise TracError('You must provide a name for the milestone.',
                             'Required Field Missing')
         cursor = self.db.cursor()
         self.log.debug("Creating new milestone '%s'" % name)
-        cursor.execute("INSERT INTO milestone (id, name, due, description) "
-                       "VALUES (NULL, %s, %d, %s)", name, date, description)
+        cursor.execute("INSERT INTO milestone (name,due,completed,description) "
+                       "VALUES (%s,%d,%d,%s)", name, due, completed,
+                       description)
         self.db.commit()
         self.req.redirect(self.env.href.milestone(name))
 
     def delete_milestone(self, id):
         self.perm.assert_permission(perm.MILESTONE_DELETE)
-        milestone = self.get_milestone(id)
+        self.get_milestone(id) # check whether the milestone exists
         if self.args.has_key('delete'):
             cursor = self.db.cursor()
             if self.args.has_key('retarget'):
@@ -290,7 +291,6 @@ class Milestone(Module):
         cursor = self.db.cursor()
         cursor.execute("SELECT name FROM milestone "
                        "WHERE name != '' ORDER BY name")
-        milestones = []
         milestone_no = 0
         while 1:
             row = cursor.fetchone()
