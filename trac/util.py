@@ -99,6 +99,16 @@ def rstrip(text, skip):
             break
     return text
 
+def to_utf8(text):
+    """Convert a string to utf-8, assume the encoding is either utf-8 or latin1"""
+    try:
+        u = unicode(text, 'utf-8')
+        return text
+    except UnicodeError:
+        u = unicode(text, 'iso-8859-15')
+        return u.encode('utf-8')
+
+
 def href_join(u1, *tail):
     """Join a list of url components and removes redundant '/' characters"""
     for u2 in tail:

@@ -102,7 +102,8 @@ CREATE TABLE ticket_change (
         author          text,
         field           text,
         oldvalue        text,
-        newvalue        text
+        newvalue        text,
+        UNIQUE(ticket, time, field)
 );
 CREATE TABLE report (
         id              integer PRIMARY KEY,
@@ -113,7 +114,8 @@ CREATE TABLE report (
 );
 CREATE TABLE permission (
         username        text,           -- 
-        action          text            -- allowable activity
+        action          text,           -- allowable activity
+        UNIQUE(username,action)
 );
 CREATE TABLE component (
          name            text PRIMARY KEY,

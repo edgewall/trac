@@ -287,6 +287,8 @@ class CGIRequest(Request):
         self.remote_user = os.getenv('REMOTE_USER')
         if os.getenv('HTTP_COOKIE'):
             self.incookie.load(os.getenv('HTTP_COOKIE'))
+        if os.getenv('HTTP_HOST'):
+            self.hdf.setValue('HTTP.Host', os.getenv('HTTP_HOST'))
     
     def read(self, len):
         return sys.stdin.read(len)

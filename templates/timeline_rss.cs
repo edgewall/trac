@@ -25,30 +25,30 @@
       <?cs each:item = $timeline.items ?>
         <?cs if:item.type == #1 ?><!-- Changeset -->
           <?cs call:rss_item('Changeset',
-                             '['+$item.data+']: '+$item.shortmsg, 
+                             '['+$item.idata+']: '+$item.shortmsg, 
                              $item.changeset_href, $item.message) ?>
         <?cs elif:item.type == #2 ?><!-- New ticket -->
           <?cs call:rss_item('Ticket',
-                             '#'+$item.data+' created: '+$item.shortmsg,
+                             '#'+$item.idata+' created: '+$item.shortmsg,
                              $item.ticket_href, $item.message) ?>
         <?cs elif:item.type == #3 ?><!-- Closed ticket -->
           <?cs call:rss_item('Ticket',
-                             '#'+$item.data+' resolved: '+$item.shortmsg,
+                             '#'+$item.idata+' resolved: '+$item.shortmsg,
                              $item.ticket_href, $item.message) ?>
         <?cs elif:item.type == #4 ?><!-- Reopened ticket -->
           <?cs call:rss_item('Ticket',
-                             '#'+$item.data+' reopened: '+$item.shortmsg,
+                             '#'+$item.idata+' reopened: '+$item.shortmsg,
                              $item.ticket_href, $item.message) ?>
         <?cs elif:item.type == #5 ?><!-- Reopened ticket -->
           <?cs call:rss_item('Wiki',
-                             $item.data+" page edited.",
+                             $item.tdata+" page edited.",
                              $item.wiki_href,
-'Wiki page <a href="'+$base_url+$item.wiki_href+'">'+$item.data+'</a> edited by '+$item.author) ?>
+'Wiki page <a href="'+$base_url+$item.wiki_href+'">'+$item.tdata+'</a> edited by '+$item.author) ?>
         <?cs elif:item.type == #6 ?><!-- Milestones -->
           <?cs call:rss_item('Milestone',
-                             'Milestone ' + $item.data + ' reached.',
+                             'Milestone ' + $item.tdata + ' reached.',
                              '',
-	       'Milestone ' + $item.data + ' reached.') ?>
+	       'Milestone ' + $item.tdata + ' reached.') ?>
         <?cs /if ?>
       <?cs /each ?>
     </channel>

@@ -47,7 +47,8 @@ class FileCommon(Module):
     def display(self):
         self.env.log.debug("Displaying file: %s  mime-type: %s" % (self.filename,
                                                             self.mime_type))
-        data = self.read_func(self.DISP_MAX_FILE_SIZE)
+        data = util.to_utf8(self.read_func(self.DISP_MAX_FILE_SIZE))
+        
         if len(data) == self.DISP_MAX_FILE_SIZE:
             self.req.hdf.setValue('file.max_file_size_reached', '1')
             self.req.hdf.setValue('file.max_file_size', str(self.DISP_MAX_FILE_SIZE))

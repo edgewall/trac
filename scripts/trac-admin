@@ -29,6 +29,8 @@ import cmd
 import shlex
 import sqlite
 import StringIO
+
+from trac import util
 import trac.siteconfig
 import trac.Environment
 
@@ -625,19 +627,11 @@ class TracAdmin(cmd.Cmd):
         self.print_listing(['Title', 'Edits', 'Modified'], ldata)
 
     def _do_wiki_import(self, filename, title, cursor=None):
-        def to_utf8(text):
-            try:
-                u = unicode(text, 'utf-8')
-                return text
-            except UnicodeError:
-                u = unicode(text, 'iso-8859-15')
-                return u.encode('utf-8')
-
         if not os.path.isfile(filename):
             print "%s is not a file" % filename
             return
         f = open(filename,'r')
-        data=to_utf8(f.read())
+        data = util.to_utf8(f.read())
 
         # Make sure we don't insert the exact same page twice
         old = self.db_execsql("SELECT text FROM wiki "
