@@ -483,6 +483,7 @@ class Formatter(CommonFormatter):
                 self.close_paragraph()
                 self.close_indentation()
                 self.close_list()
+                self.close_table()
                 self.out.write('<hr />' + os.linesep)
                 continue
             # Handle new paragraph
@@ -514,6 +515,7 @@ class Formatter(CommonFormatter):
         self.close_paragraph()
         self.close_indentation()
         self.close_list()
+
 
 def wiki_to_html(wikitext, hdf, env):
     out = StringIO.StringIO()

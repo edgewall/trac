@@ -101,3 +101,23 @@ http://example.com/img.png?foo=bar
 <p>
 <img src="http://example.com/img.png?foo=bar" alt="http://example.com/img.png?foo=bar" />
 </p>
+==============================
+in:
+|| RPC# || parameter len || ..... parameter ..... ||
+out:
+|| RPC# || parameter len || ..... parameter ..... ||
+----
+------------------------------
+<p>
+in:
+</p>
+<table class="wiki">
+<tr><td> RPC# </td><td> parameter len </td><td> ..... parameter ..... 
+</td></tr></table>
+<p>
+out:
+</p>
+<table class="wiki">
+<tr><td> RPC# </td><td> parameter len </td><td> ..... parameter ..... 
+</td></tr></table>
+<hr />
