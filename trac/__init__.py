@@ -10,14 +10,14 @@ U{http://trac.edgewall.com/}
 """
 __docformat__ = 'epytext en'
 
-__version__ = '0.8'
+__version__ = '0.8.1'
 __url__ = 'http://trac.edgewall.com/'
 __copyright__ = '(C) 2003,2004 Edgewall Software'
 __license__ = 'GNU General Public License version 2'
 __license_long__ = """
- Copyright (C) 2003, 2004 Edgewall Software
- Copyright (C) 2003, 2004 Jonas Borgström <jonas@edgewall.com>
- Copyright (C) 2003, 2004 Daniel Lundin <daniel@edgewall.com>
+ Copyright (C) 2003, 2004, 2005 Edgewall Software
+ Copyright (C) 2003, 2004, 2005 Jonas Borgström <jonas@edgewall.com>
+ Copyright (C) 2003, 2004, 2005 Daniel Lundin <daniel@edgewall.com>
 
  Trac is free software; you can redistribute it and/or
  modify it under the terms of the GNU General Public License as
