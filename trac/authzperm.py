@@ -37,10 +37,8 @@ class AuthzPermission:
     authz_file = ''
     
     def __init__(self,env,authname):
-        if authname == 'anonymous':
-            self.auth_name = '*'
-        else:
-            self.auth_name = authname
+	self.auth_name = authname
+	
 	if env.get_config('trac','authz_module_name','') == '':
 	    self.module_name = ''
 	else:
@@ -59,14 +57,16 @@ class AuthzPermission:
         return False
     
     def has_permission(self, path):
-        acc = 'r'
+        acc = ''
 
         if path != None and self.conf_authz != None:
             if self.conf_authz.has_section(self.module_name + '/') and \
                    self.conf_authz.has_option(self.module_name  + '/',
                                               self.auth_name):
                 acc = self.conf_authz.get(self.module_name + '/',self.auth_name)
-
+	    elif self.conf_authz.has_section(self.module_name + '/') and \
+	         self.conf_authz.has_option(self.module_name  + '/', '*'):
+		     acc = self.conf_authz.get(self.module_name + '/','*')
             path_comb = ''
             for path_ele in path.split('/'):
                 if path_ele != '':
@@ -74,6 +74,10 @@ class AuthzPermission:
                     if self.conf_authz.has_section(self.module_name + path_comb) and \
                            self.conf_authz.has_option(self.module_name + path_comb,self.auth_name):
                         acc =  self.conf_authz.get(self.module_name + path_comb,self.auth_name)
+		    elif self.conf_authz.has_section(self.module_name + path_comb) and \
+		            self.conf_authz.has_option(self.module_name + path_comb,'*'):
+		        acc =  self.conf_authz.get(self.module_name + path_comb,'*')
+		    
         return acc
 
     def assert_permission (self, path):
