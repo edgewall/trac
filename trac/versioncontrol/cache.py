@@ -64,7 +64,7 @@ class CachedRepository(Repository):
             while current_rev is not None:
                 changeset = self.repos.get_changeset(current_rev)
                 cursor.execute("INSERT INTO revision (rev,time,author,message) "
-                               "VALUES (%s,%s,%s,%s)", (current_rev,
+                               "VALUES (%s,%s,%s,%s)", (str(current_rev),
                                changeset.date, changeset.author,
                                changeset.message))
                 for path,kind,action,base_path,base_rev in changeset.get_changes():
@@ -75,8 +75,9 @@ class CachedRepository(Repository):
                     action = actionmap[action]
                     cursor.execute("INSERT INTO node_change (rev,path,kind,"
                                    "change,base_path,base_rev) "
-                                   "VALUES (%s,%s,%s,%s,%s,%s)", (current_rev,
-                                   path, kind, action, base_path, base_rev))
+                                   "VALUES (%s,%s,%s,%s,%s,%s)",
+                                   (str(current_rev), path, kind, action,
+                                   base_path, base_rev))
                 current_rev = self.repos.next_rev(current_rev)
             self.db.commit()
 

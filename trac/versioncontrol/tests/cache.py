@@ -34,18 +34,35 @@ class CacheTestCase(unittest.TestCase):
         self.db = InMemoryDatabase()
         self.log = logger_factory('test')
 
+    def test_initial_sync_with_empty_repos(self):
+        changeset = Mock(Changeset, 0, '', '', 42000,
+                         get_changes=lambda: [])
+        repos = Mock(Repository, None, self.log,
+                     get_changeset=lambda x: changeset,
+                     get_oldest_rev=lambda: 0,
+                     get_youngest_rev=lambda: 0,
+                     next_rev=lambda x: None)
+        cache = CachedRepository(self.db, repos, None, self.log)
+        cache.sync()
+
+        cursor = self.db.cursor()
+        cursor.execute("SELECT rev,time,author,message FROM revision")
+        self.assertEquals(('0', 42000, '', ''), cursor.fetchone())
+        cursor.execute("SELECT COUNT(*) FROM node_change")
+        self.assertEquals(0, cursor.fetchone()[0])
+
     def test_initial_sync(self):
         changes = [('trunk', Node.DIRECTORY, Changeset.ADD, None, None),
                    ('trunk/README', Node.FILE, Changeset.ADD, None, None)]
         changesets = [Mock(Changeset, 0, '', '', 41000,
-                         get_changes=lambda: []),
+                           get_changes=lambda: []),
                       Mock(Changeset, 1, 'Import', 'joe', 42000,
-                         get_changes=lambda: iter(changes))]
+                           get_changes=lambda: iter(changes))]
         repos = Mock(Repository, None, self.log,
                      get_changeset=lambda x: changesets[int(x)],
                      get_oldest_rev=lambda: 0,
                      get_youngest_rev=lambda: 1,
-                     next_rev=lambda x: int(x) == 0 and '1' or None)
+                     next_rev=lambda x: int(x) == 0 and 1 or None)
         cache = CachedRepository(self.db, repos, None, self.log)
         cache.sync()
 
@@ -74,12 +91,12 @@ class CacheTestCase(unittest.TestCase):
                             ('trunk/README', 'F', 'A', None, None)])
 
         changes = [('trunk/README', Node.FILE, Changeset.EDIT, 'trunk/README', 1)]
-        changeset = Mock(Changeset, '2', 'Update', 'joe', 42042,
+        changeset = Mock(Changeset, 2, 'Update', 'joe', 42042,
                          get_changes=lambda: iter(changes))
         repos = Mock(Repository, None, self.log,
                      get_changeset=lambda x: changeset,
-                     get_youngest_rev=lambda: '2',
-                     next_rev=lambda x: x == '1' and '2' or None)
+                     get_youngest_rev=lambda: 2,
+                     next_rev=lambda x: int(x) == 1 and 2 or None)
         cache = CachedRepository(self.db, repos, None, self.log)
         cache.sync()
 
@@ -106,11 +123,11 @@ class CacheTestCase(unittest.TestCase):
 
         repos = Mock(Repository, None, self.log,
                      get_changeset=lambda x: None,
-                     get_youngest_rev=lambda: '1',
+                     get_youngest_rev=lambda: 1,
                      next_rev=lambda x: None)
         cache = CachedRepository(self.db, repos, None, self.log)
-        self.assertEqual('1', cache.youngest_rev)
-        changeset = cache.get_changeset('1')
+        self.assertEqual(1, cache.youngest_rev)
+        changeset = cache.get_changeset(1)
         self.assertEqual('joe', changeset.author)
         self.assertEqual('Import', changeset.message)
         self.assertEqual(42000, changeset.date)
@@ -120,6 +137,7 @@ class CacheTestCase(unittest.TestCase):
         self.assertEqual(('trunk/README', Node.FILE, Changeset.ADD, None, None),
                          changes.next())
         self.assertRaises(StopIteration, changes.next)
+
 
 def suite():
     return unittest.makeSuite(CacheTestCase, 'test')
