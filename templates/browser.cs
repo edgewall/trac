@@ -28,7 +28,7 @@
       var:browser.order_dir ?><?cs /if ?>"><a title="Sort by name<?cs
       if:browser.order == "name" && browser.order_dir == "asc" ?> (descending)<?cs
       /if ?>" href="<?cs var:browser.current_href?>?order=name<?cs
-      if:browser.order == "name" && browser.order_dir == "asc" ?>&desc=1<?cs
+      if:browser.order == "name" && browser.order_dir == "asc" ?>&amp;desc=1<?cs
       /if ?>">Name</a>
     </th>
     <th class="rev">Rev</th>
@@ -36,7 +36,7 @@
       var:browser.order_dir ?><?cs /if ?>"><a title="Sort by age<?cs
       if:browser.order == "date" && browser.order_dir == "asc" ?> (descending)<?cs
       /if ?>" href="<?cs var:browser.current_href?>?order=date<?cs
-      if:browser.order == "date" && browser.order_dir == "asc" ?>&desc=1<?cs
+      if:browser.order == "date" && browser.order_dir == "asc" ?>&amp;desc=1<?cs
       /if ?>">Age</a>
     </th>
     <th class="change">Last Change</th>

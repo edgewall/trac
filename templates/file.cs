@@ -45,7 +45,7 @@
    Try <a href="?format=raw">downloading the file</a> instead.
   <?cs else ?>
    <strong>HTML preview not available</strong>. To view, <a href="<?cs
-   var:file.filename + '?rev=' + file.rev ?>&format=raw">download the
+   var:file.filename + '?rev=' + file.rev ?>&amp;format=raw">download the
    file</a>.
   <?cs /if ?>
  </div>
