@@ -22,29 +22,64 @@
 <hr class="hide"/>
 <div id="main">
     <div id="main-content">
-<?cs if report.mode == "list" ?>
-  <h1 id="report-hdr"><?cs var:report.title ?></h1>
 
-  <table id="browser-list" cellspacing="0" cellpadding="0">
+
+<?cs def:report_hdr(header) ?>
+  <?cs if $header ?>
+    <?cs if idx > 0 ?>
+      </table>
+    <?cs /if ?>
+    <h2 class="report-hdr"><?cs var:header ?></h2>
+  <?cs /if ?>
+  <table class="report-list" cellspacing="0" cellpadding="0">
     <tr>
       <?cs each header = report.headers ?>
         <th class="header-left"><?cs var:header.title ?></th>
       <?cs /each ?>
     </tr>
+<?cs /def ?>
 
-    <?cs set idx = #0 ?>
+<?cs set idx = #0 ?>
+<?cs set group = '' ?>
+
+<?cs if report.mode == "list" ?>
+  <h1 id="report-hdr"><?cs var:report.title ?></h1>
+
     <?cs each row = report.items ?>
-      <?cs if idx % #2 ?>
-        <tr class="row-even">
-      <?cs else ?>
-        <tr class="row-odd">
+
+      <?cs if group != row._group.value || idx == #0 ?>
+        <?cs set group = row._group.value ?>
+        <?cs call:report_hdr(group) ?>
       <?cs /if ?>
-      <?cs set idx = idx + #1 ?>
+    
+      <?cs if row._color.value ?>
+        <?cs set rstem='color'+$row._color.value ?>
+      <?cs else ?>
+       <?cs set rstem='row' ?>
+      <?cs /if ?>
+      <?cs if idx % #2 ?>
+        <?cs set row_class=$rstem+'-even' ?>
+      <?cs else ?>
+        <?cs set row_class=$rstem+'-odd' ?>
+      <?cs /if ?>
 
+      <?cs set row_style='' ?>
+      <?cs if row._bgcolor.value ?>
+        <?cs set row_style='background: ' + row._bgcolor.value + ';' ?>
+      <?cs /if ?>
+      <?cs if row._fgcolor.value ?>
+        <?cs set row_style=$row_style + 'color: ' + row._fgcolor.value + ';' ?>
+      <?cs /if ?>
+      <?cs if row._style.value ?>
+        <?cs set row_style=$row_style + row._style.value + ';' ?>
+      <?cs /if ?>
+    
+      <tr class="<?cs var: row_class ?>" style="<?cs var: row_style ?>">
+	<?cs set idx = idx + #1 ?>
       <?cs each cell = row ?>
-
-        <?cs if cell.type == "ticket" ?>
-          <td class="ticket-column"><a href="<?cs var:cell.ticket_href ?>">#<?cs var: cell.value ?></a></td>
+        <?cs if cell.type == "special" ?>    
+        <?cs elif cell.type == "ticket" ?>
+          <td class="ticket-column"><a class="report-tktref" href="<?cs var:cell.ticket_href ?>">#<?cs var: cell.value ?></a></td>
         <?cs elif cell.type == "report" ?>
           <td class="report-col"><a href="<?cs var:cell.report_href ?>">{<?cs var: cell.value ?>}</a></td>
         <?cs elif cell.type == "time" ?>
@@ -90,7 +125,7 @@
 
 
 <?cs /if?>
-
+<br />
   </div>
  </div>
 </div>

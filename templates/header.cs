@@ -25,6 +25,8 @@
       @import url("<?cs var:$htdocs_location ?>/css/changeset.css");
       <?cs elif:trac.active_module == 'newticket' || trac.active_module == 'ticket' ?>
       @import url("<?cs var:$htdocs_location ?>/css/ticket.css");
+      <?cs elif:trac.active_module == 'report' ?>
+      @import url("<?cs var:$htdocs_location ?>/css/report.css");
       <?cs /if ?>
       /* Dynamically/template-generated CSS below */
       #navbar { background: url("<?cs var:$htdocs_location ?>/topbar_gradient.png") top left #eee }  

@@ -142,8 +142,10 @@ class Report (Module):
 
         # Convert the header info to HDF-format
         idx = 0
-        for x in cols:
-            self.cgi.hdf.setValue('report.headers.%d.title' % idx, x[0])
+        for col in cols:
+            title=col[0]
+            if not title[0] == '_':
+                self.cgi.hdf.setValue('report.headers.%d.title' % idx, title)
             idx = idx + 1
 
         # Convert the rows and cells to HDF-format
@@ -151,28 +153,37 @@ class Report (Module):
         for row in rows:
             col_idx = 0
             for cell in row:
-                prefix = 'report.items.%d.%d' % (row_idx, col_idx)
-                self.cgi.hdf.setValue(prefix + '.value', str(cell))
-                if cols[col_idx][0] in ['ticket', '#']:
-                    self.cgi.hdf.setValue(prefix + '.type', 'ticket')
-                    self.cgi.hdf.setValue(prefix + '.ticket_href',
-                                          href.ticket(cell))
-                elif cols[col_idx][0] == 'report':
-                    self.cgi.hdf.setValue(prefix + '.type', 'report')
-                    self.cgi.hdf.setValue(prefix + '.report_href',
-                                          href.report(cell))
-                elif cols[col_idx][0] in ['time', 'date', 'created', 'modified']:
-                    self.cgi.hdf.setValue(prefix + '.type', 'time')
-                    self.cgi.hdf.setValue(prefix + '.value',
-                                          time.strftime('%F',
-                                          time.localtime(int(cell))))
-                elif cols[col_idx][0] in ['summary', 'owner',
-                                          'severity', 'status', 'priority']:
-                    self.cgi.hdf.setValue(prefix + '.type', cols[col_idx][0])
+                column = cols[col_idx][0]
+                # Special columns begin with '_'
+                if column[0] == '_':
+                    prefix = 'report.items.%d.%s' % (row_idx, column)
+                    type='special'
+                    value = {'value':cell}
                 else:
-                    self.cgi.hdf.setValue(prefix + '.type', 'unknown')
-                col_idx = col_idx + 1
-            row_idx = row_idx + 1
+                    prefix = 'report.items.%d.%d' % (row_idx, col_idx)
+                    if column in ['ticket', '#']:
+                        type = 'ticket'
+                        value = {'ticket_href':href.ticket(cell)}
+                    elif column == 'report':
+                        type='report'
+                        value = {'report_href':href.report(cell), 'value':str(cell)}
+                    elif column in ['time', 'date', 'created', 'modified']:
+                        t=time.strftime('%F', time.localtime(int(cell)))
+                        type='time'
+                        value = {'value':t}
+                    elif column in ['summary', 'owner', 'severity',
+                                        'status', 'priority']:
+                            type=column
+                            value = {'value':cell}
+                    else:
+                        type='unknown'
+                        value = {'value':cell}
+                self.cgi.hdf.setValue(prefix + '.type', str(type))
+                self.cgi.hdf.setValue(prefix + '.value', str(cell))
+                for key in value.keys():
+                    self.cgi.hdf.setValue(prefix + '.' + key, value[key])
+                col_idx += 1
+            row_idx += 1
         
 
     def render(self):

@@ -228,7 +228,57 @@ CREATE INDEX wiki_idx           ON wiki(name,version);
                      "SELECT id AS ticket, status, severity, priority, owner, "
                      "time as created, summary FROM ticket "
                      "WHERE status IN ('new', 'assigned', 'reopened')"
-                     "ORDER BY priority, time"),)))
+                     "ORDER BY priority, time"),
+                    ('2', None, 'Active Tickets by Milestone',
+"""SELECT (CASE priority
+         WHEN 'highest' THEN 1
+         WHEN 'high' THEN 2
+         WHEN 'normal' THEN 3
+         WHEN 'low' THEN 4
+         WHEN 'lowest' THEN 5
+         ELSE '' END) AS _color,
+       milestone AS _group,
+ id AS ticket, status, 
+severity, priority, component, owner, summary 
+FROM ticket 
+WHERE status IN ('new', 'assigned', 'reopened')
+ORDER BY milestone, 
+         (CASE priority
+            WHEN 'highest' THEN 1
+            WHEN 'high' THEN 2
+            WHEN 'normal' THEN 3
+            WHEN 'low' THEN 4
+            WHEN 'lowest' THEN 5
+          END),
+         severity, time"""),
+                    ('3', None, 'All Tickets by Component',
+"""SELECT (CASE status WHEN 'closed' THEN 6
+        ELSE 
+          (CASE priority
+             WHEN 'highest' THEN 1
+             WHEN 'high' THEN 2
+             WHEN 'normal' THEN 3
+             WHEN 'low' THEN 4
+             WHEN 'lowest' THEN 5
+           ELSE '' 
+           END)
+        END) AS _color,
+        component AS _group,
+        id AS ticket,
+        version, status, severity, priority, 
+        owner, summary 
+  FROM ticket 
+  ORDER BY component, 
+           (CASE status WHEN 'closed' THEN 1 ELSE 0 END),
+           (CASE priority
+              WHEN 'highest' THEN 1
+              WHEN 'high' THEN 2
+              WHEN 'normal' THEN 3
+              WHEN 'low' THEN 4
+              WHEN 'lowest' THEN 5
+            END),
+           severity, time"""),
+                    )))
     
     def __init__(self,dbfile=None):
         cmd.Cmd.__init__(self)
