@@ -13,10 +13,12 @@
 #browser-nav { 
   clear: both;
   background: #f7f7f7;
+  float: left;
   padding: 0 2px;
   padding-top: 2px;
   margin: .1em 0;
   border-top: 1px solid #ddd;
+  width: 100%;
 }
 #browser-nav input, #browser-nav label { padding: 0; font-size: 10px; }
 #browser-pathlinks {
@@ -34,12 +36,7 @@
  }
 #browser-pathlinks a.first { color: #998 }
 #browser-pathlinks .browser-pathsep { color: #666; }
-tr.browser-listhdr { border-bottom: 1px solid #d7d7d7; }
-tr.browser-listhdr th {
-  text-align: left;
-  padding: 0 1em 0 0;
-  font-size: 13px;
-}
+
 #revinfo { 
   border: 1px solid #d7d7d7;
   background: #f7f7f0;
@@ -62,28 +59,31 @@ tr.browser-listhdr th {
 }
 #revchange ul { padding: 0; margin: 0 2em; }
 #revchange p { margin: 0; padding: 0; }
-#browser-list { clear: both; margin-top: 1em; }
-#browser-list a.block-link,#browser-list a.block-link-nobold { 
-  display: block;
-  border-bottom: none;
-  background: transparent;
+
+/* Styles for the directory entries table
+   (extends the styles for "table.listing") */
+#dirlist td.rev, #dirlist td.age, #dirlist td.change {
+ color: #888;
+ white-space: nowrap;
 }
-#browser-list td { padding: .2em .5em; }
-th { text-align: left; }
-td.br-change-col,td.br-rev-col,td.br-age-col,td.br-summary-col,td.br-chg-col { border-left: 1px solid #eee; }
-td.br-icon-col { }
-td.br-rev-col, td.br-chg-col { text-align: center; }
-td.br-rev-col a { font-weight: bold; }
-#browser-list a.block-link-nobold { font-weight: normal; }
-td.br-name-col { width: 100%; }
-td.br-change-col, td.br-rev-col, td.br-age-col {
-  color: #888;
-  white-space: nowrap;
+#dirlist td.name { width: 100% }
+#dirlist td.name a {
+ background-position: 0% 50%;
+ background-repeat: no-repeat;
+ padding-left: 20px;
 }
-td.br-icon-col, td.br-report-col, td.br-ticket-col { width: 1em; }
-td.br-change-col { font-size: 9px; line-height: 110%; }
-td.br-change-col .author { 
-  color: #bbb;
-  padding-right: .25em;
+#dirlist td.name a.parent { background-image: url(../parent.png) }
+#dirlist td.name a.dir { background-image: url(../folder.png) }
+#dirlist td.name a.file { background-image: url(../file.png) }
+#dirlist td.name a, #dirlist td.rev a {
+ border-bottom: none;
+ display: block;
 }
-td.br-change-col .change { }
+#dirlist td.change * { font-size: 9px }
+
+/* Styles for the revision log table
+   (extends the styles for "table.listing") */
+#chglist td.date { white-space: nowrap }
+#chglist td.rev, #chglist td.chgset { text-align: center }
+#chglist td.rev a, #chglist td.chgset a { border-bottom: none }
+#chglist td.summary { width: 100% }

@@ -9,52 +9,52 @@
 </div>
 
 <div id="main" class="log">
-  <h1 id="log-hdr" class="hide">Revision log for <?cs var:log.path ?></h1>
-  <?cs call:browser_path_links(log.path, log) ?>
-  <div id="browser-nav">
-  <ul class="menulist"><li class="last"><a 
-     href="<?cs var:log.items.0.file_href ?>">View Latest Revision</a></li></ul>
-    <form id="browser-chgrev" action="<?cs var:log.items.0.file_href ?>" method="get">
-     <div>
-      <label for="rev">View rev:</label>
-      <input type="text" id="rev" name="rev" value="<?cs
-        var:log.items.0.rev ?>" size="4" />
-      <input type="submit" value="View"/>
-     </div>
-    </form>
-    <div class="tiny" style="clear: both">&nbsp;</div>
-  </div>
-  <table id="browser-list" cellspacing="0" cellpadding="0">
-    <tr class="browser-listhdr">
-      <th>Date</th>
-      <th>Rev</th>
-      <th>Chgset</th>
-      <th>Author</th>
-      <th>Log Message</th>
+ <h1 id="log-hdr" class="hide">Revision log for <?cs var:log.path ?></h1>
+ <?cs call:browser_path_links(log.path, log) ?>
+
+ <div id="browser-nav">
+  <ul class="menulist">
+   <li class="last">
+    <a href="<?cs var:log.items.0.file_href ?>">View Latest Revision</a>
+   </li>
+  </ul>
+  <form id="browser-chgrev" action="<?cs
+    var:log.items.0.file_href ?>" method="get">
+   <div>
+    <label for="rev">View rev:</label>
+    <input type="text" id="rev" name="rev" value="<?cs
+      var:log.items.0.rev ?>" size="4" />
+    <input type="submit" value="View"/>
+   </div>
+  </form>
+ </div>
+
+ <table id="chglist" class="listing">
+  <thead>
+   <tr>
+    <th class="data">Date</th>
+    <th class="rev">Rev</th>
+    <th class="chgset">Chgset</th>
+    <th class="author">Author</th>
+    <th class="summary">Log Message</th>
+   </tr>
+  </thead>
+  <tbody>
+   <?cs each:item = log.items ?>
+    <tr class="<?cs if:name(item) % #2 ?>even<?cs else ?>odd<?cs /if ?>">
+     <td class="date"><?cs var:item.date ?></td>
+     <td class="rev">
+      <a href="<?cs var:item.file_href ?>"><?cs var:item.rev ?></a>
+     </td>
+     <td class="chgset">
+      <a class="block-link" href="<?cs var:item.changeset_href ?>"><?cs var:item.rev ?></a>
+     </td>
+     <td class="author"><?cs var:item.author ?></td>
+     <td class="summary"><?cs var:item.log ?></td>
     </tr>
-    
-    <?cs each:item = log.items ?>
-    <?cs if idx % #2 ?>
-    <tr class="br-row-even">
-      <?cs else ?>
-    <tr class="br-row-odd">
-      <?cs /if ?>
-      
-      <td class="br-date-col"><?cs var:item.date ?></td>
-      <td class="br-rev-col">
-       <a class="block-link" href="<?cs var:item.file_href ?>"><?cs var:item.rev ?></a>
-      </td>
-      <td class="br-chg-col">
-       <a class="block-link" href="<?cs var:item.changeset_href ?>"><?cs var:item.rev ?></a>
-      </td>
-      <td class="br-author-col">
-       <?cs var:item.author ?>
-      </td>
-      <td class="br-summary-col"><?cs var:item.log ?></td>
-    </tr>
-    <?cs set:idx = idx + #1 ?>
-    <?cs /each ?>
-  </table>
+   <?cs /each ?>
+  </tbody>
+ </table>
 
 </div>
 <?cs include "footer.cs"?>

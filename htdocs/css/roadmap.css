@@ -64,51 +64,28 @@ p.percentage { font-size: 10px; line-height: 2.4em }
 /* Styles for the milestone view */
 #main.milestone .date { color: #888; font-style: italic }
 #main.milestone .descr { margin: 1em 0 2em }
-#main.milestone .stats {
- margin: 2em 0 0;
- border-collapse: collapse;
- line-height: 130%;
- margin: 0 0 2em;
- width: 100%;
-}
-#main.milestone .stats caption {
- background: #f7f7f7;
- border-bottom: 1px solid #d7d7d7;
- margin: 0 0 1em;
- font-size: 14px;
- text-align: left;
-}
-#main.milestone .stats td, #main.milestone .stats th { padding: 0 .25em }
-#main.milestone .stats th { text-align: left }
-#main.milestone .stats th.tickets { text-align: center }
-#main.milestone .stats th.open, #main.milestone .stats th.closed {
+
+#stats { border-bottom: none }
+#stats td, #stats th { padding: 0 .25em }
+#stats th.tickets { text-align: center }
+#stats th.open, #stats th.closed {
  font-size: smaller;
  text-align: center;
  width: 6em;
 }
-#main.milestone .stats td.open, #main.milestone .stats td.closed {
+#stats td.open, #stats td.closed {
  color: #888;
  text-align: right;
  padding-right: 1.5em;
+ vertical-align: middle;
 }
-#main.milestone .stats th.progress { padding-left: 6px; width: 60% }
-#main.milestone .stats td div.progress { margin: 3px .5em 3px 2px }
-#main.milestone .stats td.progress p { font-size: 10px; margin: 3px 0 }
-#main.milestone .stats tbody tr:hover, #main.milestone .stats tbody tr:hover {
- background: #eed;
-}
-#main.milestone .stats tbody td, #main.milestone .stats tbody th {
- border: 1px dotted #ddd
-}
-#main.milestone .stats tbody th { font-weight: normal; text-align: left }
-#main.milestone .stats tbody th.name, #main.milestone .stats tfoot th.name {
- line-height: 2em;
-}
-#main.milestone .stats tfoot tr { border-bottom: 0 }
-#main.milestone .stats tfoot th, #main.milestone .stats tfoot td {
- font-weight: bold;
- padding: 0 .25em;
-}
+#stats th.progress { padding-left: 6px; width: 60% }
+#stats td div.progress { margin: 3px .5em 3px 2px }
+#stats td.progress p { font-size: 10px; margin: 3px 0 }
+#stats tbody th { font-weight: normal; text-align: left }
+#stats tbody th.name, #stats tfoot th.name { line-height: 2em }
+#stats tfoot tr { border-bottom: 0 }
+#stats tfoot th, #stats tfoot td { font-weight: bold; padding: 0 .25em }
 
 /* Styles for the milestone edit form */
 #main.milestone form fieldset {

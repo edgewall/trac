@@ -31,19 +31,19 @@
      <?cs if idx > 0 ?>
        </table>
      <?cs /if ?>
-     <hr class="hide"/>
-     <h2 class="report-hdr"><?cs var:header ?></h2>
    <?cs /if ?>
    <?cs if $report.id == -1 ?>
-     <table class="report-list-reports" cellspacing="0" cellpadding="0">
+     <table id="reportlist" class="listing">
    <?cs else ?>
-     <table class="report-list" cellspacing="0" cellpadding="0">
+     <table id="tktlist" class="listing">
    <?cs /if ?>
+    <?cs if:header ?><caption><?cs var:header ?></caption><?cs /if ?>
+    <thead>
      <tr>
        <?cs set numcols = #0 ?>
        <?cs each header = report.headers ?>
          <?cs if $header.fullrow ?>
-           </tr><tr><th class="header-left" colspan="100"><?cs var:header ?></th>
+           </tr><tr><th colspan="100"><?cs var:header ?></th>
          <?cs else ?>
            <?cs if $report.sorting.enabled ?>
              <?cs set vars='' ?>
@@ -57,12 +57,11 @@
                <?cs set sortValue = '?sort='+$header.real+'&amp;asc=1' ?>
              <?cs /if ?>
              <?cs if $header ?>
-             <th class="header-left"><a href="<?cs var:sortValue ?><?cs var:vars ?>"><?cs var:header ?></a></th>
+             <th><a href="<?cs var:sortValue ?><?cs var:vars ?>"><?cs var:header ?></a></th>
              <?cs /if ?>
            <?cs elif $header ?>
-             <th class="header-left"><?cs var:header ?></th>
+             <th><?cs var:header ?></th>
            <?cs /if ?>
-
            <?cs if $header.breakrow ?>
               </tr><tr>
            <?cs /if ?>
@@ -70,12 +69,15 @@
          <?cs set numcols = numcols + #1 ?>
        <?cs /each ?>
      </tr>
+    </thead>
  <?cs /def ?>
  
  <?cs def:report_cell(class,contents) ?>
    <?cs if $cell.fullrow ?>
-     </tr><tr class="<?cs var: row_class ?>" style="<?cs var: row_style ?>;border: none; padding: 0;">
- <td colspan="100" style="padding: 0;border: none"><div class="report-fullrow"><?cs var:$contents ?></div><hr class="hide"/></td>
+     </tr><tr class="<?cs var:row_class ?>" style="<?cs var: row_style ?>;border: none; padding: 0;">
+      <td class="fullrow" colspan="100">
+       <?cs var:$contents ?><hr />
+      </td>
    <?cs else ?>
    <td <?cs if $cell.breakrow || $col == $numcols ?>colspan="100" <?cs /if
  ?>class="<?cs var:$class ?>"><?cs if $contents ?><?cs var:$contents ?><?cs /if ?></td>
@@ -93,16 +95,18 @@
  <?cs if report.mode == "list" ?>
    <h1 id="report-hdr"><?cs var:report.title ?>
    <?cs if:report.numrows && report.id != -1 ?><span id="numrows">(<?cs var:report.numrows ?> matches)</span><?cs /if ?>
-</h1>
+   </h1>
+
      <?cs if report.description ?>
        <div id="report-descr"><?cs var:report.description ?></div>
      <?cs /if ?>
 
-
      <?cs each row = report.items ?>
        <?cs if group != row.__group__ || idx == #0 ?>
+         <?cs if:idx != #0 ?></tbody><?cs /if ?>
          <?cs set group = row.__group__ ?>
          <?cs call:report_hdr(group) ?>
+         <tbody>
        <?cs /if ?>
 
        <?cs if row.__color__ ?>
@@ -133,31 +137,32 @@
        <?cs each cell = row ?>
          <?cs if cell.hidden || cell.hidehtml ?>
          <?cs elif name(cell) == "ticket" ?>
-           <?cs call:report_cell('ticket-col',
-                                 '<a title="View ticket #'+$cell+'" class="block" href="'+
+           <?cs call:report_cell('ticket',
+                                 '<a title="View ticket #'+$cell+'" href="'+
                                  $cell.ticket_href+'">#'+$cell+'</a>') ?>
          <?cs elif name(cell) == "report" ?>
-           <?cs call:report_cell('report-col',
-                '<a title="View Report" class="block" href="'+$cell.report_href+'">{'+$cell+'}</a>') ?>
+           <?cs call:report_cell('report',
+                '<a title="View Report" href="'+$cell.report_href+'">{'+$cell+'}</a>') ?>
            <?cs set:report_href=$cell.report_href ?>
          <?cs elif name(cell) == "time" ?>
-           <?cs call:report_cell('date-column', $cell.date) ?>
+           <?cs call:report_cell('date', $cell.date) ?>
          <?cs elif name(cell) == "date" || name(cell) == "created" || name(cell) == "modified" ?>
-           <?cs call:report_cell('date-column', $cell.date) ?>
+           <?cs call:report_cell('date', $cell.date) ?>
          <?cs elif name(cell) == "datetime"  ?>
-           <?cs call:report_cell('date-column', $cell.datetime) ?>
+           <?cs call:report_cell('date', $cell.datetime) ?>
          <?cs elif name(cell) == "description" ?>
            <?cs call:report_cell('', $cell.parsed) ?>
          <?cs elif name(cell) == "title" && $report.id == -1 ?>
-           <?cs call:report_cell('title-col',
-                                 '<a  title="View Report" class="block" href="'+
+           <?cs call:report_cell('title',
+                                 '<a  title="View Report" href="'+
                                  $report_href+'">'+$cell+'</a>') ?>
          <?cs else ?>
-           <?cs call:report_cell(name(cell)+'-col', $cell) ?>
+           <?cs call:report_cell(name(cell), $cell) ?>
          <?cs /if ?>
        <?cs /each ?>
        </tr>
      <?cs /each ?>
+    </tbody>
    </table>
 
    <?cs if $idx == #0 ?>
@@ -203,7 +208,7 @@
    </form>
  <?cs /if?>
  
- <div id="help" style="text-align: left; margin-top: 2em">
+ <div id="help">
   <strong>Note:</strong> See <a href="<?cs var:$trac.href.wiki ?>/TracReports">TracReports</a> 
   for help on using and creating reports.
  </div>

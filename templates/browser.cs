@@ -1,107 +1,84 @@
 <?cs include: "header.cs"?>
 <?cs include "macros.cs"?>
-<div id="page-content">
- <ul class="subheader-links">
-   <li class="last">&nbsp;</li>
- </ul>
- <div id="main">
-  <div id="main-content">
-   <h1 id="browser-rev" class="hide">Browsing Revision <?cs var:browser.revision?></h1>
-   <div id="browser-body">
-    <?cs call:browser_path_links(browser.path, browser) ?>
-    <div id="browser-nav">
-    <form id="browser-chgrev" action="<?cs var:browser_current_href ?>" method="get">
-     <div>
-      <label for="rev">View rev:</label>
-      <input type="text" id="rev" name="rev" value="<?cs
-        var:browser.revision?>" size="4" />
-      <input type="submit" value="View" />
-     </div>
-    </form>
-    <div class="tiny" style="clear: both">&nbsp;</div>
-    </div>
-    <table id="browser-list" cellspacing="0" cellpadding="0">
-      <tr class="browser-listhdr">
-        <th>&nbsp;</th>
-<?cs if browser.sort_order == "name" ?>
-        <th><a title="Sort by Name (Descending)" href="<?cs var:browser.current_href?>?order=Name">Name</a></th>
-<?cs else ?>
-        <th><a title="Sort by Name" href="<?cs var:browser.current_href?>?order=name">Name</a></th>
-<?cs /if ?>
-        <th>Rev</th>
-<?cs if browser.sort_order == "date" ?>
-        <th><a title="Sort by Age" href="<?cs var:browser.current_href?>?order=Date">Age</a></th>
-<?cs else ?>
-        <th><a title="Sort by Age (Descending)" href="<?cs var:browser.current_href?>?order=date">Age</a></th>
-<?cs /if ?>
-        <th>Last Change</th>
-      </tr>
-      <?cs if $browser.path != "/" ?>
-        <tr class="even">
-          <td class="br-icon-col">
-            <a title="Parent Directory" class="block-link" href="<?cs var:browser.parent_href ?>">
-              <img src="<?cs var:htdocs_location ?>parent.png" 
-                    width="16" height="16" alt="[parent]" />
-            </a>
-          </td>
-          <td class="br-name-col">
-            <a title="Parent Directory" class="block-link"  href="<?cs var:browser.parent_href ?>">..</a>
-          </td>
-          <td class="br-rev-col">&nbsp;</td>
-          <td class="br-age-col">&nbsp;</td>
-          <td class="br-change-col">&nbsp;</td>
-        </tr>
-      <?cs /if ?>
-      <?cs set:idx = #0 ?>
-      <?cs each:item = browser.items ?>
-        <?cs if idx % #2 ?>
-          <tr class="even">
-        <?cs else ?>
-          <tr class="odd">
-        <?cs /if ?>
-        <?cs if item.is_dir == #1 ?>
-          <td class="br-icon-col">
-            <a title="Browse Directory" class="block-link"  
-               href="<?cs var:item.browser_href ?>"><img src="<?cs var:htdocs_location ?>folder.png"
-                    width="16" height="16" alt="[dir]" /></a>
-          </td>
-          <td class="br-name-col">
-            <a title="Browse Directory" class="block-link"  href="<?cs var:item.browser_href ?>"><?cs var:item.name ?></a>
-          </td>
-        <?cs else ?>
-          <td class="br-icon-col">
-            <a title="View File" class="block-link"  href="<?cs var:item.browser_href ?>">
-              <img src="<?cs var:htdocs_location ?>file.png"
-                    width="16" height="16" alt="[file]" />
-            </a>
-          </td>
-          <td class="br-name-col">
-            <a title="View File" class="block-link"  href="<?cs var:item.browser_href ?>"><?cs var:item.name ?></a>
-          </td>
-         <?cs /if ?>
-         <td class="br-rev-col">
-           <a title="View Revision Log" class="block-link-nobold" 
-              href="<?cs var:item.log_href ?>"><?cs var:item.created_rev ?></a>
-         </td>
-         <td class="br-age-col">
-          <a class="age" title="<?cs var:item.date ?>"><?cs var:item.age ?></a>
-         </td>
-         <td class="br-change-col">
-           <span class="author"><?cs var:item.author ?>:</span>
-           <span class="change"><?cs var:item.change ?></span>
-         </td>
-       </tr>
-       <?cs set:idx = idx + #1 ?>
-     <?cs /each ?>
-   </table>
-  <div id="help">
-   <strong>Note:</strong> See <a href="<?cs var:$trac.href.wiki
-    ?>/TracBrowser">TracBrowser</a> for help on using the browser.
-  </div>
- </div>
 
-
- </div>
+<div class="nav">
 </div>
+
+<div id="main" class="browser">
+ <h1 id="browser-rev" class="hide">Browsing Revision <?cs var:browser.revision?></h1>
+ <?cs call:browser_path_links(browser.path, browser) ?>
+
+ <div id="browser-nav">
+  <form id="browser-chgrev" action="<?cs var:browser_current_href ?>" method="get">
+   <div>
+    <label for="rev">View rev:</label>
+    <input type="text" id="rev" name="rev" value="<?cs
+      var:browser.revision?>" size="4" />
+    <input type="submit" value="View" />
+   </div>
+  </form>
+ </div>
+
+ <table class="listing" id="dirlist">
+  <thead>
+   <tr>
+    <th class="name"><?cs
+     if browser.sort_order == "name" ?>
+      <a title="Sort by Name (Descending)" href="<?cs
+        var:browser.current_href?>?order=Name">Name</a><?cs
+     else ?>
+      <a title="Sort by Name" href="<?cs
+        var:browser.current_href?>?order=name">Name</a><?cs
+     /if ?></th>
+    <th class="rev">Rev</th>
+    <th class="age"><?cs
+     if browser.sort_order == "date" ?>
+      <a title="Sort by Age" href="<?cs
+        var:browser.current_href?>?order=Date">Age</a><?cs
+     else ?>
+      <a title="Sort by Age (Descending)" href="<?cs
+        var:browser.current_href?>?order=date">Age</a><?cs
+     /if ?></th>
+    <th class="change">Last Change</th>
+   </tr>
+  </thead>
+  <tbody>
+   <?cs if $browser.path != "/" ?>
+    <tr class="even">
+     <td class="name" colspan="4">
+      <a class="parent" title="Parent Directory" href="<?cs
+        var:browser.parent_href ?>">../</a>
+     </td>
+    </tr>
+   <?cs /if ?>
+   <?cs each:item = browser.items ?>
+    <tr class="<?cs if:name(item) % #2 ?>even<?cs else ?>odd<?cs /if ?>">
+     <td class="name"><?cs
+      if:item.is_dir ?>
+       <a class="dir" title="Browse Directory" href="<?cs
+         var:item.browser_href ?>"><?cs var:item.name ?></a><?cs
+      else ?>
+       <a class="file" title="View File" href="<?cs
+         var:item.browser_href ?>"><?cs var:item.name ?></a><?cs
+      /if ?>
+     </td>
+     <td class="rev"><a title="View Revision Log" href="<?cs
+       var:item.log_href ?>"><?cs var:item.created_rev ?></a></td>
+     <td class="age"><span title="<?cs var:item.date ?>"><?cs
+       var:item.age ?></span></td>
+     <td class="change">
+      <span class="author"><?cs var:item.author ?>:</span>
+      <span class="change"><?cs var:item.change ?></span>
+     </td>
+    </tr>
+   <?cs /each ?>
+  </tbody>
+ </table>
+
+ <div id="help">
+  <strong>Note:</strong> See <a href="<?cs var:$trac.href.wiki
+  ?>/TracBrowser">TracBrowser</a> for help on using the browser.
+ </div>
+
 </div>
 <?cs include:"footer.cs"?>

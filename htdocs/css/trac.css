@@ -88,6 +88,7 @@ form.inline input { margin: 1em }
 #search label { display: none }
 
 /* Navigation */
+.nav { height: 1em }
 .nav h2 { display: none }
 .nav ul { margin: 0; padding: 0 }
 .nav li { list-style: none }
@@ -261,19 +262,44 @@ a.missing:hover { color: #000; }
   font: normal 11px Verdana, 'Bitstream Vera Sans', Helvetica, Arial, sans-serif;
   float: right;
 }
-#browser-list,#common-list {
-  margin: .5em 0 0em 0;
-  border-bottom: 1px solid #eee;
-  border-collapse: collapse;
-  line-height: 130%;
+
+/* Styles for tabular listings such as those used for displaying directory
+   contents and report results. */
+table.listing {
+ clear: both;
+ border-bottom: 1px solid #d7d7d7;
+ border-collapse: collapse;
+ border-spacing: 0;
+ margin-top: 1em;
+ width: 100%;
 }
-#browser-list td { padding: 0 .25em; border: 1px dotted #ddd; }
-#browser-list { width: 100%; }
-tr.even, tr.odd { border-top: 1px solid #ddd; }
-tr.even { background-color: #fcfcfc; }
-tr.odd { background-color: #f7f7f7; }
-#browser-list tr.even:hover, #browser-list tr.odd:hover { background: #eed; }
-.wikipage p {  margin-left: 1em }
+table.listing caption {
+ background: #f7f7f7;
+ border-bottom: 1px solid #d7d7d7;
+ font-weight: bold;
+ margin: 0 0 1em;
+ font-size: 14px;
+ text-align: left;
+}
+table.listing th {
+ text-align: left;
+ padding: 0 1em .1em 0;
+ font-size: 12px;
+}
+table.listing tbody td, table.listing tbody th {
+ border: 1px dotted #ddd;
+ padding: .33em .5em;
+ vertical-align: top;
+}
+table.listing tbody td a:hover, table.listing tbody th a:hover {
+ background-color: transparent;
+}
+table.listing tbody tr { border-top: 1px solid #ddd }
+table.listing tbody tr.even { background-color: #fcfcfc }
+table.listing tbody tr.odd { background-color: #f7f7f7 }
+table.listing tbody tr:hover { background: #eed }
+
+.wikipage p { margin-left: 1em }
 pre.wiki, pre.literal-block {
  margin: 1em 1.75em;
  padding: .25em;

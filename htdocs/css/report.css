@@ -1,74 +1,48 @@
 .report-hdr { 
- margin: 1em 0; 
- margin-top: 2em;
+ margin: 2em 0; 
  padding-left: .25em;
  border-bottom: 2px solid #eee;
  font-size: 150%;
 }
 #numrows { font-size: 65%; color: #999; font-weight: normal; }
 #report-descr { margin: 0 2em; font-size: 90%; }
-.report-list, .report-list-reports  { 
- width: 97%; 
- margin-left: 1em;
- border-collapse: collapse;
- line-height: 130%;
- border: 1px solid #d7d7d7; 
- border-top: none;
-}
 
-tr { border-bottom: 1px solid #d7d7d7; border-top: none; }
-tr:hover { background: #d7d7d7; color: #000; border-color: #fff; }
-table.report-list-reports tr:hover,table.report-list-reports tr:hover a { 
- background: #ccb; color: #000;
-}
-
-th { 
- border-left: 1px solid #fff; 
- border-right: 1px solid #fff; 
- border-bottom: 1px solid #d7d7d7; 
- color: #999;
- text-align: left;
- text-transform: capitalize;
- font-size: 90%;
- padding: 0 .2em;
-}
-.report-list td {
- vertical-align: top;
- border-right: 1px dotted #d7d7d7; 
- border-top: 1px dotted #fff; 
-}
-.report-list td { padding: .1em .5em;  }
-.report-fullrow { 
- margin: 1px;
- margin-top: 0;
- background: #fff;
- padding-bottom: 2.5em;
- font-size: 90%;
-}
-td.ticket-col { font-weight: bold; padding: 0;}
-td.summary-col {}
-td.severity-col {}
-td.priority-col {}
-td.report-col {}
-td.component-col {}
-td.version-col {}
-td.status-col {}
-.report-fullrow p { margin: 0; padding: .25em 1em}
-a.block,a.block:visited { display: block; border: none; padding: .1em .5em;}
-a.block:hover { background: #b00; color: #fff; }
-.report-list-reports td a { padding: .1em .5em;  }
-.header-left a { display: block; margin-bottom: .25em; border: none; }
-.color1-odd  { background: #fdc; border-color: #e88; color: #a22; }
-.color1-even { background: #fed; border-color: #e99; color: #a22; }
-.color2-odd  { background: #ffb; border-color: #eea; color: #880; }
-.color2-even { background: #ffd; border-color: #dd8; color: #880; }
-.color3-odd  { background: #fbfbfb; border-color: #ddd; color: #444; }
-.color3-even { background: #f6f6f6; border-color: #ccc; color: #333; }
-.color4-odd { background: #e7ffff; border-color: #cee; color: #099; }
-.color4-even  { background: #dff; border-color: #bee; color: #099; }
-.color5-odd  { background: #e7eeff; border-color: #ccddee; color: #469; }
-.color5-even { background: #dde7ff; border-color: #cde; color: #469; }
-.color6-odd  { background: #f0f0f0; border-color: #ddd; color: #888; }
-.color6-even { background: #f7f7f7; border-color: #ddd; color: #888; }
-.color6-odd a, .color6-even a { color: #b66; }
 #report-notfound { margin: 2em; font-size: 110%; }
+
+/* Styles for the report list and the report results table
+   (extends the styles for "table.listing") */
+#reportlist td.title { width: 100% }
+#tktlist { border-bottom: none }
+#tktlist caption { margin-top: 2em }
+#tktlist thead th {
+ border-bottom: 1px solid #d7d7d7;
+ color: #999;
+ font-size: 90%;
+ padding: 0 .2em .1em;
+ text-transform: capitalize;
+}
+#tktlist tbody td, #reportlist tbody td { padding: .1em }
+#tktlist tbody td a, #reportlist tbody td a { border-bottom: none }
+#tktlist tr.color1-odd  { background: #fdc; border-color: #e88; color: #a22 }
+#tktlist tr.color1-even { background: #fed; border-color: #e99; color: #a22 }
+#tktlist tr.color2-odd  { background: #ffb; border-color: #eea; color: #880 }
+#tktlist tr.color2-even { background: #ffd; border-color: #dd8; color: #880 }
+#tktlist tr.color3-odd  { background: #fbfbfb; border-color: #ddd; color: #444 }
+#tktlist tr.color3-even { background: #f6f6f6; border-color: #ccc; color: #333 }
+#tktlist tr.color4-odd { background: #e7ffff; border-color: #cee; color: #099 }
+#tktlist tr.color4-even { background: #dff; border-color: #bee; color: #099 }
+#tktlist tr.color5-odd { background: #e7eeff; border-color: #cde; color: #469 }
+#tktlist tr.color5-even { background: #dde7ff; border-color: #cde; color: #469 }
+#tktlist tr.color6-odd  { background: #f0f0f0; border-color: #ddd; color: #888 }
+#tktlist tr.color6-even { background: #f7f7f7; border-color: #ddd; color: #888 }
+#tktlist tr.color6-odd a, .color6-even a { color: #b66 }
+#tktlist tbody td.fullrow { 
+ border: none;
+ color: #333;
+ background: #fff;
+ padding-bottom: 2.5em !important;
+ font-size: 90%;
+}
+#tktlist td.fullrow p { margin: 0; padding: .25em 1em }
+#tktlist td.fullrow hr { display: none }
+

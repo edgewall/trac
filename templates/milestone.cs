@@ -82,8 +82,8 @@
  <?cs /if ?>
 
  <?cs with:stats = milestone.stats ?>
-  <table class="stats" summary="Shows the milestone completion status grouped
-                                by component">
+  <table class="listing" id="stats"
+    summary="Shows the milestone completion status grouped by component">
    <caption>Status By Component</caption>
    <thead><tr>
     <th>&nbsp;</th>
