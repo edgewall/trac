@@ -141,6 +141,9 @@ def hdf_add_if_missing(hdf, prefix, value):
         
 def utf8_to_iso(text):
     """Re-encode a UTF-8 unicode string to ISO8859-15"""
-    utf = unicode(text, 'utf-8')
-    return  utf.encode('iso-8859-15')
+    try:
+        utf = unicode(text, 'utf-8')
+        return  utf.encode('iso-8859-15')
+    except UnicodeEncodeError:
+        return 'Invalid utf-8 string'
     

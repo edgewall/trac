@@ -90,7 +90,9 @@ class Timeline (Module):
                     'author': row['author']}
             if item['type'] == 1:
                 item['changeset_href'] = href.changeset(int(row['data']))
-                item['message'] = wiki_to_oneliner(item['message'])
+                # Just recode this to iso8859-15 until we have propper unicode
+                # support
+                item['message'] = wiki_to_oneliner(utf8_to_iso(item['message']))
             elif item['type'] == 5:
                 item['wiki_href'] = href.wiki(row['data'])
             else:

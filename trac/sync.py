@@ -52,7 +52,7 @@ def sync(db, repos, fs_ptr, pool):
         
         cursor.execute ('INSERT INTO revision (rev, time, author, message) '
                         'VALUES (%s, %s, %s, %s)', rev + offset, date,
-                        utf8_to_iso(author), utf8_to_iso(message))
+                        author, message)
         insert_change (pool, fs_ptr, rev + offset, cursor)
     db.commit()
 

@@ -217,8 +217,10 @@ class Changeset (Module):
         self.cgi.hdf.setValue('changeset.time',
                               time.asctime (time.localtime(int(changeset_info['time']))))
         author = changeset_info['author'] or 'None'
-        self.cgi.hdf.setValue('changeset.author', author)
-        self.cgi.hdf.setValue('changeset.message', wiki_to_html(changeset_info['message']))
+        # Just recode this to iso8859-15 until we have propper unicode
+        # support
+        self.cgi.hdf.setValue('changeset.author', utf8_to_iso(author))
+        self.cgi.hdf.setValue('changeset.message', wiki_to_html(utf8_to_iso(changeset_info['message'])))
         self.cgi.hdf.setValue('changeset.revision', str(self.rev))
 
         add_dictlist_to_hdf(change_info, self.cgi.hdf, 'changeset.changes')
