@@ -142,7 +142,8 @@ class QueryModule(Module):
         for custom in custom_fields:
             if custom['type'] == 'select' or custom['type'] == 'radio':
                 check = constraints.has_key(custom['name'])
-                for i in range(len(reduce(None, custom['options']))):
+                options = filter(None, custom['options'])
+                for i in range(len(options)):
                     options[i] = {'name': options[i]}
                     if check and (options[i]['name'] in constraints[custom['name']]):
                         options[i]['selected'] = 1
