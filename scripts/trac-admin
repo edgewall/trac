@@ -387,7 +387,7 @@ CREATE INDEX wiki_idx		ON wiki(name,version);
             docs = (self._help_about + self._help_help + self._help_initdb +
                     self._help_config + self._help_component +
                     self._help_permission + self._help_wiki +
-                    self._help_priority)
+                    self._help_priority + self._help_severity)
             print 'trac-admin - The Trac Administration Console %s' % __version__
             if not self.interactive:
                 print
@@ -624,7 +624,7 @@ CREATE INDEX wiki_idx		ON wiki(name,version);
                    'Import wiki page from file or stdin')]
 
     def complete_wiki (self, text, line, begidx, endidx):
-        argv = shlex.split(line)
+        argv = self.arg_tokenize(line)
         argc = len(argv)
         if line[-1] == ' ': # Space starts new argument
             argc += 1
@@ -702,46 +702,66 @@ CREATE INDEX wiki_idx		ON wiki(name,version);
 
 
     ## (Ticket) Priority
-    _help_status = [('prio list', 'Show possible ticket priorities'),
-                       ('prio add <value>', 'Add a priority value option'),
-                       ('prio change <value> <newvalue>',
+    _help_priority = [('priority list', 'Show possible ticket priorities'),
+                       ('priority add <value>', 'Add a priority value option'),
+                       ('priority change <value> <newvalue>',
                         'Change a priority value'),
-                       ('prio remove <value>', 'Remove priority value')]
+                       ('priority remove <value>', 'Remove priority value')]
 
-    def complete_prio (self, text, line, begidx, endidx):
-        if begidx == 14:
+    def complete_priority (self, text, line, begidx, endidx):
+        if begidx == 16:
             comp = self.get_enum_list ('priority')
-        elif begidx < 11:
+        elif begidx < 15:
             comp = ['list','add','change','remove']
         return self.word_complete(text, comp)
 
-    def do_prio(self, line):
+    def do_priority(self, line):
         self._do_enum('priority', line)
+
+    ## (Ticket) Severity
+    _help_severity = [('severity list', 'Show possible ticket priorities'),
+                       ('severity add <value>', 'Add a severity value option'),
+                       ('severity change <value> <newvalue>',
+                        'Change a severity value'),
+                       ('severity remove <value>', 'Remove severity value')]
+
+    def complete_severity (self, text, line, begidx, endidx):
+        if begidx == 16:
+            comp = self.get_enum_list ('severity')
+        elif begidx < 15:
+            comp = ['list','add','change','remove']
+        return self.word_complete(text, comp)
+
+    def do_severity(self, line):
+        self._do_enum('severity', line)
+
+
+
         
     def _do_enum(self, type, line):
         arg = self.arg_tokenize(line)
         try:
             if arg[0]  == 'list':
-                self._do_enum_list()
+                self._do_enum_list(type)
             elif arg[0] == 'add' and len(arg)==2:
                 name = arg[1]
-                self._do_enum_add('priority',name)
+                self._do_enum_add(type, name)
             elif arg[0] == 'change'  and len(arg)==3:
                 name = arg[1]
                 newname = arg[2]
-                self._do_enum_change('priority', name, newname)
+                self._do_enum_change(type, name, newname)
             elif arg[0] == 'remove'  and len(arg)==2:
                 name = arg[1]
-                self._do_enum_remove('priority',name)
+                self._do_enum_remove(type, name)
             else:    
-                self.do_help ('priority')
+                self.do_help (type)
         except Exception, e:
             print 'Priority %s failed:' % arg[0], e
 
     def _do_enum_list(self, type):
-        data = self.db_execsql("SELECT name,value FROM enum WHERE type='%s'"
+        data = self.db_execsql("SELECT name FROM enum WHERE type='%s'"
                                % type)
-        self.print_listing(['Possible Values','id#'], data)
+        self.print_listing(['Possible Values'], data)
 
     def _do_enum_add(self, type, name):
         sql = ("INSERT INTO enum('value','type','name') "
