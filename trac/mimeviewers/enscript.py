@@ -26,7 +26,7 @@ import re
 import sys
 import os
 
-from trac.util import NaivePopen, escape
+from trac.util import NaivePopen, escape, Deuglifier
 
 supported_types = [
     (2, 'application/postscript', 'postscript'),
@@ -82,33 +82,21 @@ for p,t,s in supported_types:
     types[t] = s
 
 
-class Deuglifier:
+class EnscriptDeuglifier(Deuglifier):
 
-    _rules = [r'(?P<comment><FONT COLOR="#B22222">)',
-              r'(?P<keyword><FONT COLOR="#5F9EA0">)',
-              r'(?P<type><FONT COLOR="#228B22">)',
-              r'(?P<string><FONT COLOR="#BC8F8F">)',
-              r'(?P<func><FONT COLOR="#0000FF">)',
-              r'(?P<prep><FONT COLOR="#B8860B">)',
-              r'(?P<lang><FONT COLOR="#A020F0">)',
-              r'(?P<var><FONT COLOR="#DA70D6">)',
-              r'(?P<font><FONT.*?>)',
-              r'(?P<endfont></FONT>)']
-
-    _compiled_rules = re.compile('(?:' + '|'.join(_rules) + ')')
-    _open_tags = []
-
-    def format(self, indata):
-        return re.sub(self._compiled_rules, self.replace, indata)
-
-    def replace(self, fullmatch):
-        for mtype, match in fullmatch.groupdict().items():
-            if match:
-                if mtype == 'font':
-                    return '<span>'
-                elif mtype == 'endfont':
-                    return '</span>'
-                return '<span class="code-%s">' % mtype
+    def rules(self):
+        return [
+            r'(?P<comment><FONT COLOR="#B22222">)',
+            r'(?P<keyword><FONT COLOR="#5F9EA0">)',
+            r'(?P<type><FONT COLOR="#228B22">)',
+            r'(?P<string><FONT COLOR="#BC8F8F">)',
+            r'(?P<func><FONT COLOR="#0000FF">)',
+            r'(?P<prep><FONT COLOR="#B8860B">)',
+            r'(?P<lang><FONT COLOR="#A020F0">)',
+            r'(?P<var><FONT COLOR="#DA70D6">)',
+            r'(?P<font><FONT.*?>)',
+            r'(?P<endfont></FONT>)',
+            ]
 
 
 def display(data, mimetype, filename, rev, env):
@@ -134,5 +122,5 @@ def display(data, mimetype, filename, rev, env):
     i = odata.rfind('</PRE>')
     end = i > 0 and i + 6 or len(odata)
 
-    odata = Deuglifier().format(odata[beg:end])
+    odata = EnscriptDeuglifier().format(odata[beg:end])
     return '<div class="code-block">' + odata + '</div>'

@@ -25,6 +25,7 @@ import os
 import sys
 import time
 import tempfile
+import re
 
 TRUE =  ['yes', '1', 1, 'true',  'on',  'aye']
 FALSE = ['no',  '0', 0, 'false', 'off', 'nay']
@@ -331,3 +332,24 @@ def safe__import__(module_name):
                 del(sys.modules[modname])
         raise e
 
+
+class Deuglifier:
+
+    def rules(self):
+        return []
+    
+    def format(self, indata):
+        if not hasattr(self.__class__, '_compiled_rules'):
+            self.__class__._compiled_rules = re.compile('(?:' + '|'.join(self.rules()) + ')')
+            self.__class__._open_tags = []
+        self._compiled_rules = self.__class__._compiled_rules
+        return re.sub(self._compiled_rules, self.replace, indata)
+
+    def replace(self, fullmatch):
+        for mtype, match in fullmatch.groupdict().items():
+            if match:
+                if mtype == 'font':
+                    return '<span>'
+                elif mtype == 'endfont':
+                    return '</span>'
+                return '<span class="code-%s">' % mtype
