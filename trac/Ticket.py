@@ -144,7 +144,13 @@ class Ticket (Module):
         else:
             author = self.req.authname
         for name in fields:
-            if new.has_key(name) and (not old.has_key(name) or old[name] != new[name]):
+            # Make sure to only log changes of interest. For example
+            # we consider field values of '' and NULL to be identical
+            if new.has_key(name) and \
+               ((not old[name] and new[name]) or \
+                (old[name] and not new[name]) or \
+                (old[name] and new[name] and old[name] != new[name])):
+
                 cursor.execute ('INSERT INTO ticket_change '
                                 '(ticket, time, author, field, oldvalue, newvalue) '
                                 'VALUES (%s, %s, %s, %s, %s, %s)',

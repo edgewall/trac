@@ -24,7 +24,7 @@
     <span class="chg-val"><?cs var:changeset.author ?></span>
   </div>
   <div>
-    <b class="chg-name">Message:</b>
+    <b class="chg-name">Message:</b><br />
     <div class="chg-val"><div id="searchable"><?cs var:changeset.message ?></div></div>
   </div>
   </div>
