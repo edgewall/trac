@@ -193,8 +193,8 @@ class TicketNotifyEmail(NotifyEmail):
         if not self.newticket and modtime:  # Ticketchange
             cursor = self.db.cursor()
             cursor.execute('SELECT author, field, oldvalue, newvalue '
-                           ' FROM ticket_change WHERE ticket=%s ANd time=%s' %
-                           (tktid, modtime))
+                           ' FROM ticket_change WHERE ticket=%s AND time=%s',
+                           tktid, modtime)
             rows=cursor.fetchall()
             for r in rows:
                 self.hdf.setValue('ticket.change.author', str(r[0]))
