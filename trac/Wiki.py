@@ -220,8 +220,6 @@ class WikiModule(Module):
             oldtext = rows[0][0].splitlines()
         newtext = rows[-1][0].splitlines()
 
-        self.log.debug("Diff options: %s" % diff_options)
-
         context = 3
         for option in diff_options:
             if option[:2] == '-U':

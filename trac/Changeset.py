@@ -172,7 +172,7 @@ class HtmlDiffEditor(BaseDiffEditor):
                 context = int(option[2:])
                 break
         tabwidth = int(self.env.get_config('diff', 'tab_width', '8'))
-        changes = hdf_diff(fromfile.split('\n'), tofile.split('\n'),
+        changes = hdf_diff(fromfile.splitlines(), tofile.splitlines(),
                            context, tabwidth,
                            ignore_blank_lines='-B' in self.diff_options,
                            ignore_case='-i' in self.diff_options,
