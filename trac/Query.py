@@ -395,9 +395,9 @@ class QueryModule(Module):
         for field in [field for field in custom_fields
                       if field['type'] in ['text', 'radio', 'select']]:
             property = {'name': field['name'], 'type': field['type'],
-                        'label': field['label']}
+                        'label': field['label'] or field['name']}
             if field.has_key('options'):
-                property['options'] = field['options']
+                property['options'] = filter(None, field['options'])
             if field['type'] == 'radio':
                 property['options'].insert(0, '')
             properties.append(property)
