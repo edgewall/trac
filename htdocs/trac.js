@@ -127,7 +127,7 @@ function addWikiFormattingToolbar(textarea) {
   addButton("code", "Code block: {{{ example }}}", function() {
     encloseSelection("\n{{{\n", "\n}}}\n");
   });
-  addButton("hr", "Horizontal rule: ====", function() {
+  addButton("hr", "Horizontal rule: ----", function() {
     encloseSelection("\n----\n", "");
   });
 
