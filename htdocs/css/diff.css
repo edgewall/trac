@@ -142,7 +142,6 @@
 .diff table td ins { color: #060 }
 
 /* Styles for the inline diff */
-.diff table.inline col.content { width: 100% }
 .diff table.inline del, .diff table.inline ins, .diff table.inline span {
  height: 1.5em;
 }
