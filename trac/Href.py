@@ -19,71 +19,13 @@
 #
 # Author: Jonas Borgström <jonas@edgewall.com>
 
+import os
 from util import *
 
 class Href:
     def __init__(self, base):
         self.base = base
 
-    def log(self, path):
-        return '%strac.cgi?mode=log&path=%s' % (self.base, path)
-        
-    def file(self, path, rev):
-        return '%strac.cgi?mode=file&path=%s&rev=%s' % (self.base, path, rev)
-
-    def browser(self, path):
-        return '%strac.cgi?mode=browser&path=%s' % (self.base, path)
-
-    def login(self):
-        return '%strac_auth.cgi' % self.base
-
-    def logout(self):
-        return '%strac.cgi?logout=now' % self.base
-
-    def timeline(self):
-        return '%strac.cgi?mode=timeline' % self.base
-
-    def changeset(self, rev):
-        return '%strac.cgi?mode=changeset&rev=%s' % (self.base, rev)
-
-    def ticket(self, ticket):
-        return '%strac.cgi?mode=ticket&id=%s' % (self.base, ticket)
-
-    def newticket(self):
-        return '%strac.cgi?mode=newticket' % self.base
-
-    def search(self):
-        return '%strac.cgi?mode=search' % self.base
-
-    def wiki(self, page = None, version=None):
-        if page and version:
-            return '%strac.cgi?mode=wiki&page=%s&version=%s' % \
-                   (self.base, page, version)
-        elif page:
-            return '%strac.cgi?mode=wiki&page=%s' % (self.base, page)
-        else:
-            return '%strac.cgi?mode=wiki' % self.base
-
-    def report(self, report=None, action=None):
-        if report and action:
-            return '%strac.cgi?mode=report&id=%s&action=%s' % \
-                   (self.base, report, action)
-        elif report:
-            return '%strac.cgi?mode=report&id=%s' % (self.base, report)
-        elif action:
-            return '%strac.cgi?mode=report&action=%s' % (self.base,
-                                                            action)
-        else:
-            return '%strac.cgi?mode=report' % self.base
-
-
-class RewriteHref(Href):
-    """
-    Alternative href scheme using mod_rewrite
-
-    This scheme produces more 'attractive' links but need
-    server side configuration to work correctly
-    """
     def log(self, path):
         return href_join(self.base, 'log', path)
         
@@ -93,6 +35,12 @@ class RewriteHref(Href):
     def browser(self, path):
         return href_join(self.base, 'browser', path)
 
+    def login(self):
+        return '%s/login' % self.base
+
+    def logout(self):
+        return '%s/logout' % self.base
+
     def timeline(self):
         return href_join(self.base, 'timeline/')
 
@@ -101,6 +49,9 @@ class RewriteHref(Href):
 
     def ticket(self, ticket):
         return href_join(self.base, 'ticket', str(ticket))
+
+    def newticket(self):
+        return '%s?mode=newticket' % self.base
 
     def newticket(self):
         return href_join(self.base, 'newticket/')
@@ -118,24 +69,27 @@ class RewriteHref(Href):
 
     def report(self, report=None, action=None):
         if action:
-	    return Href.report(self, report, action)
+	    return self.old_report(self, report, action)
         elif report:
             return href_join(self.base, 'report', str(report))
         else:
             return href_join(self.base, 'report/')
 
-
+    def old_report(self, report=None, action=None):
+        if report and action:
+            return '%s?mode=report&id=%s&action=%s' % \
+                   (self.base, report, action)
+        elif report:
+            return '%s?mode=report&id=%s' % (self.base, report)
+        elif action:
+            return '%s?mode=report&action=%s' % (self.base,
+                                                            action)
+        else:
+            return '%s?mode=report' % self.base
 
 
 href = None
 
 def initialize(config):
     global href
-    
-    href_scheme = config['general']['href_scheme']
-    cgi_location = config['general']['cgi_location']
-    
-    if href_scheme == 'rewrite':
-        href = RewriteHref(cgi_location)
-    else:
-        href = Href(cgi_location)
+    href = Href(os.getenv('SCRIPT_NAME'))

@@ -20,17 +20,18 @@
 # Author: Jonas Borgström <jonas@edgewall.com>
 
 import os
+import re
 import sys
 import cgi
 import warnings
-from util import dict_get_with_default
+from util import dict_get_with_default, redirect
 from svn import util, repos, core
 import Href
 
 warnings.filterwarnings('ignore', 'DB-API extension cursor.next() used')
 
 import db
-from auth import verify_authentication
+from auth import verify_authentication, authenticate_user
 from perm import cache_permissions, PermissionError, perm_to_hdf
 
 modules = {
@@ -47,6 +48,62 @@ modules = {
     'newticket'   : ('Ticket', 'Newticket', 0),
     }
 
+def parse_args():
+    args = {}
+    info = os.getenv ('PATH_INFO')
+    if not info:
+        return None
+    
+    if re.search('/newticket/?', info):
+        args['mode'] = 'newticket'
+        return args
+    if re.search('/timeline/?', info):
+        args['mode'] = 'timeline'
+        return args
+    if re.search('/search/?', info):
+        args['mode'] = 'search'
+        return args
+    match = re.search('/wiki/(.*)/?', info)
+    if match:
+        args['mode'] = 'wiki'
+        if len(match.group(1)) > 0:
+            args['page'] = match.group(1)
+        return args
+    match = re.search('/ticket/([0-9]+)/?', info)
+    if match:
+        args['mode'] = 'ticket'
+        args['id'] = match.group(1)
+        return args
+    match = re.search('/report/([0-9]*)/?', info)
+    if match:
+        args['mode'] = 'report'
+        if len(match.group(1)) > 0:
+            args['id'] = match.group(1)
+        return args
+    match = re.search('/browser/?(.*)', info)
+    if match:
+        args['mode'] = 'browser'
+        if len(match.group(1)) > 0:
+            args['path'] = match.group(1)
+        return args
+    match = re.search('/log/(.+)', info)
+    if match:
+        args['mode'] = 'log'
+        args['path'] = match.group(1)
+        return args
+    match = re.search('/file/(.+)/([0-9]+)/?', info)
+    if match:
+        args['mode'] = 'file'
+        args['path'] = match.group(1)
+        args['rev'] = match.group(2)
+        return args
+    match = re.search('/changeset/([0-9]+)/?', info)
+    if match:
+        args['mode'] = 'changeset'
+        args['rev'] = match.group(1)
+        return args
+    return None
+
 def main():
     db.init()
     config = db.load_config()
@@ -54,11 +111,20 @@ def main():
 
     core.apr_initialize()
     pool = core.svn_pool_create(None)
-    
-    _args = cgi.FieldStorage()
-    args = {}
-    for x in _args.keys():
-	args[x] = _args[x].value
+
+    if os.getenv('REMOTE_USER'):
+        authenticate_user()
+        uri = os.getenv('HTTP_REFERER')
+        if not uri:
+            uri = Href.href.wiki()
+        redirect (uri)
+        
+    args = parse_args()
+    if not args:
+        _args = cgi.FieldStorage()
+        args = {}
+        for x in _args.keys():
+            args[x] = _args[x].value
 
     mode = dict_get_with_default(args, 'mode', 'wiki')
 

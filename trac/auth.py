@@ -105,7 +105,7 @@ def verify_authentication (args):
     
     if cookie.has_key('trac_auth'):
         auth_cookie = cookie['trac_auth'].value
-        if args.has_key ('logout'):
+        if os.getenv('PATH_INFO') == '/logout':
             logout (auth_cookie)
         elif validate_auth_cookie (auth_cookie, remote_addr):
             update_auth_cookie (auth_cookie, remote_addr)

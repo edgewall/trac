@@ -206,10 +206,6 @@ VALUES('general', 'repository_dir', '/var/svn/myrep');
 INSERT INTO config (section, name, value)
 VALUES('general', 'templates_dir', '/usr/lib/trac/templates');
 INSERT INTO config (section, name, value)
-VALUES('general', 'cgi_location', '');
-INSERT INTO config (section, name, value)
-VALUES('general', 'href_scheme', 'cgi');
-INSERT INTO config (section, name, value)
 VALUES('ticket', 'default_version', '');
 INSERT INTO config (section, name, value)
 VALUES('ticket', 'default_severity', 'normal');
