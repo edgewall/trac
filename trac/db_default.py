@@ -418,5 +418,6 @@ default_config = \
   ('notification', 'smtp_enabled', 'false'),
   ('notification', 'smtp_server', 'localhost'),
   ('notification', 'smtp_always_cc', ''),
+  ('notification', 'smtp_from', 'trac@localhost'),
   ('notification', 'smtp_replyto', 'trac@localhost'))
 
