@@ -16,6 +16,11 @@ import MySQLdb
 import MySQLdb.cursors
 import trac.Environment
 
+if not hasattr(sys, 'setdefaultencoding'):
+    reload(sys)
+
+sys.setdefaultencoding('latin1')
+
 class TracDatabase(object):
     def __init__(self, path):
         self.env = trac.Environment.Environment(path)
@@ -40,7 +45,7 @@ class TracDatabase(object):
         for value, i in s:
             print "inserting severity ", value, " ", i
             c.execute("""INSERT INTO enum (type, name, value) VALUES (%s, %s, %s)""",
-                      "severity", value, i)
+                      "severity", value.encode('utf-8'), i)
         self.db().commit()
     
     def setPriorityList(self, s):
@@ -54,7 +59,7 @@ class TracDatabase(object):
             print "inserting priority ", value, " ", i
             c.execute("""INSERT INTO enum (type, name, value) VALUES (%s, %s, %s)""",
                       "priority",
-                      value,
+                      value.encode('utf-8'),
                       i)
         self.db().commit()
 
@@ -69,7 +74,7 @@ class TracDatabase(object):
         for comp in l:
             print "inserting component ", comp[key]
             c.execute("""INSERT INTO component (name) VALUES (%s)""",
-                      comp[key])
+                      comp[key].encode('utf-8'))
         self.db().commit()
     
     def setVersionList(self, v, key):
@@ -82,7 +87,7 @@ class TracDatabase(object):
         for vers in v:
             print "inserting version ", vers[key]
             c.execute("""INSERT INTO version (name) VALUES (%s)""",
-                      vers[key])
+                      vers[key].encode('utf-8'))
         self.db().commit()
         
     def setMilestoneList(self, m, key):
@@ -95,7 +100,7 @@ class TracDatabase(object):
         for ms in m:
             print "inserting milestone ", ms[key]
             c.execute("""INSERT INTO milestone (name) VALUES (%s)""",
-                      ms[key])
+                      ms[key].encode('utf-8'))
         self.db().commit()
     
     def addTicket(self, time, changetime, component,
@@ -112,10 +117,10 @@ class TracDatabase(object):
                                          %s, %s, %s, %s, %s,
                                          %s, %s, %s, %s,
                                          %s, %s, %s)""",
-                  time.strftime('%s'), changetime.strftime('%s'), component,
-                  severity, priority, owner, reporter, cc,
-                  version, milestone, status.lower(), resolution,
-                  summary, '{{{\n%s\n}}}' % (description, ), keywords)
+                  time.strftime('%s'), changetime.strftime('%s'), component.encode('utf-8'),
+                  severity.encode('utf-8'), priority.encode('utf-8'), owner, reporter, cc,
+                  version, milestone.encode('utf-8'), status.lower(), resolution,
+                  summary.encode('utf-8'), '{{{\n%s\n}}}' % (description.encode('utf-8'), ), keywords)
         self.db().commit()
         return self.db().db.sqlite_last_insert_rowid()
     
@@ -123,14 +128,14 @@ class TracDatabase(object):
         c = self.db().cursor()
         c.execute("""INSERT INTO ticket_change (ticket, time, author, field, oldvalue, newvalue)
                                  VALUES        (%s, %s, %s, %s, %s, %s)""",
-                  ticket, time.strftime('%s'), author, 'comment', '', '{{{\n%s\n}}}' % (value, ))
+                  ticket, time.strftime('%s'), author, 'comment', '', '{{{\n%s\n}}}' % (value.encode('utf-8'), ))
         self.db().commit()
 
     def addTicketChange(self, ticket, time, author, field, oldvalue, newvalue):
         c = self.db().cursor()
         c.execute("""INSERT INTO ticket_change (ticket, time, author, field, oldvalue, newvalue)
                                  VALUES        (%s, %s, %s, %s, %s, %s)""",
-                  ticket, time.strftime('%s'), author, field, oldvalue, newvalue)
+                  ticket, time.strftime('%s'), author, field, oldvalue.encode('utf-8'), newvalue.encode('utf-8'))
         self.db().commit()
 
 class TheBugzillaConverter:
