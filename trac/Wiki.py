@@ -36,7 +36,7 @@ page_dict = None
 def populate_page_dict():
     """Extract wiki page names. This is used to detect broken wiki-links"""
     global page_dict
-    page_dict = {}
+    page_dict = {'TitleIndex': 1}
     cnx = get_connection()
     cursor = cnx.cursor()
     cursor.execute('SELECT DISTINCT name FROM wiki')
@@ -53,7 +53,8 @@ class CommonFormatter:
     _rules = [r"""(?P<bold>''')""",
               r"""(?P<italic>'')""",
               r"""(?P<underline>__)""",
-              r"""(?P<tickethref> #[0-9]+)""",
+              r"""(?P<htmlescapeentity>&#[0-9]+;)""",
+              r"""(?P<tickethref>#[0-9]+)""",
               r"""(?P<changesethref>\[[0-9]+\])""",
               r"""(?P<reporthref>\{[0-9]+\})""",
               r"""(?P<svnhref>(svn:[^ ]+))""",
@@ -81,8 +82,15 @@ class CommonFormatter:
         self._is_underline = not self._is_underline
         return ['</u>', '<u>'][self._is_underline]
 
+    def _htmlescapeentity_formatter(self, match, fullmatch):
+        #dummy function that match html escape entities in the format:
+        # &#[0-9]+;
+        # This function is used to avoid these being matched by
+        # the tickethref regexp
+        return match
+    
     def _tickethref_formatter(self, match, fullmatch):
-        number = int(match[2:])
+        number = int(match[1:])
         return '<a href="%s">#%d</a>' % (href.ticket(number), number)
 
     def _changesethref_formatter(self, match, fullmatch):
