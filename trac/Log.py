@@ -40,7 +40,7 @@ class Log (Module):
             if change.copyfrom_path:
                 self.branch_info[rev] = (change.copyfrom_path, newpath)
 
-        shortlog = shorten_line(log)
+        shortlog = shorten_line(wiki_escape_newline(log))
         t = util.svn_time_from_cstring(date, pool) / 1000000
         gmt = time.gmtime(t)
         item = {
@@ -49,7 +49,7 @@ class Log (Module):
             'date'     : svn_date_to_string (date, pool),
             'gmt'      : time.strftime('%a, %d %b %Y %H:%M:%S GMT', gmt),
             'log.raw'  : escape(log),
-            'log'      : wiki_to_oneliner(log, self.req.hdf, self.env),
+            'log'      : wiki_to_oneliner(shorten_line(wiki_escape_newline(log)), self.req.hdf, self.env),
             'shortlog' : escape(shortlog),
             'file_href': self.env.href.browser(self.path, rev),
             'changeset_href': self.env.href.changeset(rev)

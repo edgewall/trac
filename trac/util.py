@@ -58,6 +58,9 @@ def enum_selector (db, sql, name, selected=None,default_empty=0):
     out.write ('</select>')
     return out.getvalue()
 
+def wiki_escape_newline(text):
+    return text.replace(os.linesep, '[[BR]]' + os.linesep)
+
 def escape(text):
     """Escapes &, <, > and \""""
     if not text:
@@ -158,7 +161,10 @@ def hdf_add_if_missing(hdf, prefix, value):
 def shorten_line(text, maxlen = 75):
     if not text:
         return ''
-    if len(text) < maxlen:
+    i = text.find('[[BR]]')
+    if i < maxlen:
+	    shortline = text[:i]+' ...'
+    elif len(text) < maxlen:
         shortline = text
     else:
         i = text[:maxlen].rfind(' ')

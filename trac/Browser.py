@@ -92,7 +92,7 @@ class Browser(Module):
                 'age'          : pretty_age(date_seconds),
                 'is_dir'       : is_dir,
                 'author'       : author,
-                'change'       : wiki_to_oneliner(shorten_line(change),
+                'change'       : wiki_to_oneliner(shorten_line(wiki_escape_newline(change)),
                                                   self.req.hdf, self.env)
                 }
             if rev_specified:

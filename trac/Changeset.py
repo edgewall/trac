@@ -156,7 +156,7 @@ class Changeset (Module):
         author = changeset_info['author'] or 'None'
         self.req.hdf.setValue('changeset.author', escape(author))
         self.req.hdf.setValue('changeset.message',
-                              wiki_to_html(changeset_info['message'],
+                              wiki_to_html(wiki_escape_newline(changeset_info['message']),
                                            self.req.hdf, self.env))
         self.req.hdf.setValue('changeset.revision', str(self.rev))
         add_dictlist_to_hdf(change_info, self.req.hdf, 'changeset.changes')
