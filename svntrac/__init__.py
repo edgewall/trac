@@ -12,4 +12,4 @@ __copyright__ = '(C) 2003 Xyche Software'
 __license__ = 'GNU Public License'
 __version__ = '0.0.1'
 
-from svntrac import main, load_config
+from svntrac import main

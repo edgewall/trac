@@ -36,8 +36,7 @@ if __name__ == '__main__':
                'svntrac missconfigured, please enable apache auth on this url'
                '</pre></body></html>')
     else:
-        config = svntrac.load_config()
-        svntrac.db.init (config)
-        authenticate_user ()
-        redirect (wiki_href ())
+        svntrac.db.init()
+        authenticate_user()
+        redirect (wiki_href())
 

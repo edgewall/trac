@@ -19,13 +19,14 @@
 #
 # Author: Jonas Borgström <jonas@xyche.com>
 
+import os
 import sqlite
 
 from svn import fs, util, delta, repos
 
 db_name = None
 
-class ChangeEditor (delta.Editor):
+class ChangeEditor(delta.Editor):
     def __init__(self, rev, old_root, new_root, cursor):
         self.rev = rev
         self.cursor = cursor
@@ -33,57 +34,78 @@ class ChangeEditor (delta.Editor):
         self.new_root = new_root
         
     def delete_entry(self, path, revision, parent_baton, pool):
-        self.cursor.execute ('INSERT INTO node_change (rev, name, change) '
-                             'VALUES (%s, %s, \'D\')', self.rev, path)
+        self.cursor.execute('INSERT INTO node_change (rev, name, change) '
+                            'VALUES (%s, %s, \'D\')', self.rev, path)
         
     def add_directory(self, path, parent_baton,
                       copyfrom_path, copyfrom_revision, dir_pool):
-        self.cursor.execute ('INSERT INTO node_change (rev, name, change) '
-                             'VALUES (%s, %s, \'A\')', self.rev, path)
+        self.cursor.execute('INSERT INTO node_change (rev, name, change) '
+                            'VALUES (%s, %s, \'A\')', self.rev, path)
 
     def add_file(self, path, parent_baton,
                  copyfrom_path, copyfrom_revision, file_pool):
-        self.cursor.execute ('INSERT INTO node_change (rev, name, change) '
-                             'VALUES (%s, %s, \'A\')',self.rev, path)
+        self.cursor.execute('INSERT INTO node_change (rev, name, change) '
+                            'VALUES (%s, %s, \'A\')',self.rev, path)
 
     def open_file(self, path, parent_baton, base_revision, file_pool):
-        self.cursor.execute ('INSERT INTO node_change (rev, name, change) '
-                             'VALUES (%s, %s, \'M\')',self.rev, path)
+        self.cursor.execute('INSERT INTO node_change (rev, name, change) '
+                            'VALUES (%s, %s, \'M\')',self.rev, path)
 
-def get_youngest_stored (cursor):
-    cursor.execute ('SELECT MAX(rev) FROM (SELECT MAX(rev) as rev FROM '
-                    'revision UNION SELECT 0 as rev)')
+def get_youngest_stored(cursor):
+    cursor.execute('SELECT MAX(rev) FROM (SELECT MAX(rev) as rev FROM '
+                   'revision UNION SELECT 0 as rev)')
     return int(cursor.fetchone()[0])
 
-def init (conf):
+def init():
     global db_name
-    db_name = conf.get('general', 'database')
+    db_name = os.getenv('SVNTRAC_DB')
+    if not db_name:
+        raise 'Missing environment variable "SVNTRAC_DB"'
 
-def get_connection ():
-    return sqlite.connect (db_name)
+def load_config():
+    """
+    load configuration from the config table.
 
-def sync (repos, fs_ptr, pool):
+    The configuration is returned as a section-dictionary containing
+    name-value dictionaries.
+    """
+    cnx = get_connection()
+    cursor = cnx.cursor()
+    cursor.execute('SELECT section, name, value FROM config')
+    config = {}
+    for row in cursor:
+        if not config.has_key(row[0]):
+            config[row[0]] = {}
+        config[row[0]][row[1]] = row[2]
+    return config
+
+
+def get_connection():
+    return sqlite.connect(db_name)
+
+
+def sync(repos, fs_ptr, pool):
     """
     updates the revision and node_change tables to be in sync with
     the repository.
     """
-    cnx = get_connection ()
+    cnx = get_connection()
 
-    cursor  = cnx.cursor ()
-    youngest_stored  = get_youngest_stored (cursor)
+    cursor = cnx.cursor()
+    youngest_stored = get_youngest_stored(cursor)
     max_rev = fs.youngest_rev(fs_ptr, pool)
     num = max_rev - youngest_stored
     offset = youngest_stored + 1
-    for rev in range (num):
+    for rev in range(num):
         
         message = fs.revision_prop(fs_ptr, rev + offset,
                                    util.SVN_PROP_REVISION_LOG, pool)
-        author  = fs.revision_prop(fs_ptr, rev + offset,
-                                   util.SVN_PROP_REVISION_AUTHOR, pool)
-        date    = fs.revision_prop(fs_ptr, rev + offset,
-                                   util.SVN_PROP_REVISION_DATE, pool)
+        author = fs.revision_prop(fs_ptr, rev + offset,
+                                  util.SVN_PROP_REVISION_AUTHOR, pool)
+        date = fs.revision_prop(fs_ptr, rev + offset,
+                                util.SVN_PROP_REVISION_DATE, pool)
         
-        date    = util.svn_time_from_cstring(date, pool) / 1000000
+        date = util.svn_time_from_cstring(date, pool) / 1000000
         
         cursor.execute ('INSERT INTO revision (rev, time, author, message) '
                         'VALUES (%s, %s, %s, %s)', rev + offset, date,

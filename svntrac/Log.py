@@ -27,7 +27,7 @@ import StringIO
 from svn import util, repos
 
 class Log (Module):
-    template_key = 'log_template'
+    template_name = 'log.template'
 
     def __init__(self, config, args, pool):
         Module.__init__(self, config, args, pool)

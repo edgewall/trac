@@ -28,7 +28,7 @@ import string
 from svn import fs, util, delta
 
 class Browser (Module):
-    template_key = 'browser_template'
+    template_name = 'browser.template'
 
     def __init__(self, config, args, pool):
         Module.__init__(self, config, args, pool)

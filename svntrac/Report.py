@@ -28,7 +28,7 @@ import time
 import StringIO
 
 class Report (Module):
-    template_key = 'report_template'
+    template_name = 'report.template'
 
     def __init__(self, config, args, pool):
         Module.__init__(self, config, args, pool)
@@ -139,7 +139,7 @@ class Report (Module):
         if id == -1:
             title = sql = ""
         else:
-            rs = cursor.execute ('SELECT title, sql FROM report WHERE id=%s', id)
+            cursor.execute ('SELECT title, sql FROM report WHERE id=%s', id)
             row = cursor.fetchone()
             title = row[0]
             sql   = row[1]

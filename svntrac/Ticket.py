@@ -35,13 +35,13 @@ fields = ['time', 'component', 'severity', 'priority', 'milestone', 'reporter',
           'summary', 'description']
 
 class Newticket (Module):
-    template_key = 'newticket_template'
+    template_name = 'newticket.template'
     def render (self):
-        default_component = self.config.get('ticket', 'default_component')
-        default_milestone = self.config.get('ticket', 'default_milestone')
-        default_priority  = self.config.get('ticket', 'default_priority')
-        default_severity  = self.config.get('ticket', 'default_severity')
-        default_version   = self.config.get('ticket', 'default_version')
+        default_component = self.config['ticket']['default_component']
+        default_milestone = self.config['ticket']['default_milestone']
+        default_priority  = self.config['ticket']['default_priority']
+        default_severity  = self.config['ticket']['default_severity']
+        default_version   = self.config['ticket']['default_version']
         
         self.namespace['title'] = 'create a new ticket'
         self.namespace['component_select'] = enum_selector ('SELECT name FROM component ORDER by name',
@@ -65,7 +65,7 @@ class Newticket (Module):
             
 
 class Ticket (Module):
-    template_key = 'ticket_template'
+    template_name = 'ticket.template'
 
     def get_ticket (self, id):
         global fields

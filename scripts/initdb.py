@@ -57,6 +57,12 @@ CREATE TABLE enum (
 	value		text,
 	UNIQUE(name,type)
 );
+CREATE TABLE config (
+	section		text,
+	name		text,
+	value		text,
+	UNIQUE(section, name, value)
+);
 CREATE TABLE ticket (
 	id		integer PRIMARY KEY,
 	time		integer,	-- the time it was created
@@ -171,6 +177,19 @@ INSERT INTO permission (user, action) VALUES('anonymous', 'TICKET_VIEW');
 INSERT INTO permission (user, action) VALUES('anonymous', 'BROWSER_VIEW');
 INSERT INTO permission (user, action) VALUES('anonymous', 'TIMELINE_VIEW');
 INSERT INTO permission (user, action) VALUES('anonymous', 'CHANGESET_VIEW');
+
+INSERT INTO config (section, name, value)
+VALUES('general', 'htdocs_location', '/svntrac/');
+INSERT INTO config (section, name, value)
+VALUES('general', 'svn_repository', '/var/svn/myrep');
+INSERT INTO config (section, name, value)
+VALUES('general', 'theme_dir', '/usr/lib/svntrac/templates');
+INSERT INTO config (section, name, value)
+VALUES('ticket', 'default_version', '');
+INSERT INTO config (section, name, value)
+VALUES('ticket', 'default_severity', 'normal');
+INSERT INTO config (section, name, value)
+VALUES('ticket', 'default_priority', 'normal');
 
 INSERT INTO report (id, author, title, sql) 
 	VALUES (1, NULL, 'active tickets', 

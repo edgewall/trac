@@ -34,8 +34,7 @@ class Module:
         self.namespace = {}
         self.namespace['title'] = ''
         self.namespace['svntrac_url'] = 'http://svntrac.xyche.com/'
-        self.namespace['htdocs_location'] = config.get('general',
-                                                       'htdocs_location')
+        self.namespace['htdocs_location'] = config['general']['htdocs_location']
 
     def render (self):
         """
@@ -45,16 +44,13 @@ class Module:
         pass
 
     def apply_template (self):
-        svntrac_home = self.config.get('general', 'svntrac_home')
-        tmpl_filename = self.config.get('templates', self.template_key)
-        tmpl_filename = os.path.join (svntrac_home, tmpl_filename)
+        theme_dir = self.config['general']['theme_dir']
+        tmpl_filename = os.path.join (theme_dir, self.template_name)
 
         self.namespace['toolbar'] = self.toolbar.render ()
 
-        header_tmpl = self.config.get('templates', 'header_template')
-        footer_tmpl = self.config.get('templates', 'footer_template')
-        header_tmpl = os.path.join (svntrac_home, header_tmpl)
-        footer_tmpl = os.path.join (svntrac_home, footer_tmpl)
+        header_tmpl = os.path.join (theme_dir, 'header.template')
+        footer_tmpl = os.path.join (theme_dir, 'footer.template')
         
         header = open(header_tmpl).read()
         footer = open(footer_tmpl).read()

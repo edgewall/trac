@@ -262,7 +262,7 @@ class Page:
 
 
 class Wiki(Module):
-    template_key = 'wiki_template'
+    template_name = 'wiki.template'
 
     def render(self):
         if self.args.has_key('page'):

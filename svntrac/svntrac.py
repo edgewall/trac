@@ -32,12 +32,6 @@ import db
 from auth import verify_authentication
 from perm import cache_permissions, PermissionError
 
-def load_config():
-    import ConfigParser
-    config = ConfigParser.ConfigParser()
-    config.read('/home/jonas/badger/src/svntrac/svntrac.conf')
-    return config
-
 modules = {
 #  name module class need_db need_svn    
     'log'         : ('Log', 'Log', 1),
@@ -53,7 +47,8 @@ modules = {
 
 def main():
     mode = 'wiki' #default module
-    config = load_config()
+    db.init()
+    config = db.load_config()
     
     pool = util.svn_pool_create (None)
     
@@ -70,12 +65,11 @@ def main():
     constructor = getattr (module, constructor_name)
     module = constructor(config, args, pool)
 
-    db.init (config)
     verify_authentication (args)
     cache_permissions ()
 
     if need_svn:
-        repos_dir   = config.get('general', 'repository_dir')
+        repos_dir   = config['general']['svn_repository']
         rep         = repos.svn_repos_open(repos_dir, pool)
         fs_ptr      = repos.svn_repos_fs(rep)
         module.repos  = rep

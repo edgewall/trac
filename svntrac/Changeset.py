@@ -163,7 +163,7 @@ def render_diffs(fs_ptr, rev, pool):
                               0, 1, 0, 1, pool)
 
 class Changeset (Module):
-    template_key = 'changeset_template'
+    template_name = 'changeset.template'
 
     def get_changeset_info (self, rev):
         cnx = db.get_connection()

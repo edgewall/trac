@@ -28,7 +28,7 @@ import StringIO
 import time
 
 class Timeline (Module):
-    template_key = 'timeline_template'
+    template_name = 'timeline.template'
 
     MAX_MESSAGE_LEN = 75
 
