@@ -6,6 +6,7 @@ import sys
 from glob import glob
 from distutils.core import setup
 from distutils.command.install import install
+from distutils.command.install_scripts import install_scripts
 import trac
 
 PACKAGE = 'Trac'
@@ -44,6 +45,26 @@ __default_wiki_dir__ = '%(wiki)s'
          print "Thank you for choosing Trac %s. Enjoy your stay!" % VERSION
          print trac.__credits__
 
+class my_install_scripts (install_scripts):
+     def initialize_options (self):
+          install_scripts.initialize_options(self)
+          self.install_data = None
+          
+     def finalize_options (self):
+          install_scripts.finalize_options(self)
+          self.set_undefined_options('install',
+                                     ('install_data', 'install_data'))
+
+     def run (self):
+          if not self.skip_build:
+               self.run_command('build_scripts')
+ 
+          self.copy_file(os.path.join(self.build_dir, 'trac-admin'),
+                         self.install_dir)
+          self.copy_file(os.path.join(self.build_dir, 'trac.cgi'),
+                         os.path.join(self.install_data, 'share', 'trac', 'cgi-bin'))
+
+
 setup(name="trac",
       description="Trac - Wiki-based issue tracker and project environment",
       version=VERSION,
@@ -56,8 +77,9 @@ setup(name="trac",
                   (_p('share/trac/htdocs'), glob(_p('htdocs/*.*')) + [_p('htdocs/README')]),
                   (_p('share/trac/htdocs/css'), glob(_p('htdocs/css/*'))),
                   (_p('share/trac/wiki-default'), glob(_p('wiki-default/*')))],
-      scripts=[_p('scripts/trac-admin')],
-      cmdclass = {'install': my_install})
+      scripts=[_p('scripts/trac-admin'), _p('cgi-bin/trac.cgi')],
+      cmdclass = {'install': my_install,
+                  'install_scripts': my_install_scripts})
 
 
 
