@@ -93,59 +93,49 @@ label.disabled { color: #d7d7d7 }
 #search label { display: none }
 
 /* Navigation */
-.nav { height: 1em }
 .nav h2, .nav hr { display: none }
-.nav ul {
- display: block;
- font-size: 10px;
- margin: 0;
- padding: 0 0 .25em;
- text-align: right;
-}
+.nav ul { font-size: 10px; list-style: none; margin: 0; text-align: right }
 .nav li {
- display: inline;
  border-right: 1px solid #d7d7d7;
- list-style: none;
+ display: inline;
  padding: 0 .75em;
  white-space: nowrap;
 }
-.nav li :link, .nav li :visited { padding: 0 .5em }
 .nav li.last { border-right: none }
+
 /* Main navigation bar */
 #mainnav {
- background: #f7f7f7 url(../topbar_gradient.png) top left;
+ background: #f7f7f7 url(../topbar_gradient.png) 0 0;
  border: 1px solid #000;
  font: normal 10px verdana,'Bitstream Vera Sans',helvetica,arial,sans-serif;
- height: 1.6em;
  margin: .66em 0 .33em;
+ padding: .2em 0;
 }
-#mainnav ul { float: right; padding: 0 }
-#mainnav li { border-right: none; padding: 0 }
+#mainnav li { border-right: none; padding: .25em 0 }
 #mainnav :link, #mainnav :visited {
- background: url(../dots.gif) top left no-repeat;
- border-left: 1px solid #555;
+ background: url(../dots.gif) 0 0 no-repeat;
  border-right: 1px solid #fff;
  border-bottom: none;
+ border-left: 1px solid #555;
  color: #000;
- /* Hide from IE/Mac \*/
- display: block;
- float: left;
- /* Unhide */
- line-height: 1.4em;
- padding: .1em 20px;
+ padding: .2em 20px;
 }
-#mainnav .active:link, #mainnav .active:visited {
- background: #333 url(../topbar_gradient2.png) top left repeat-x;
- color: #eee;
- border-top: none;
- border-right: none !important;
- border-right: 1px solid #000;
- font-weight: bold;
-}
+* html #mainnav :link, * html #mainnav :visited { background-position: 1px 0 }
 #mainnav :link:hover, #mainnav :visited:hover {
  background-color: #ccc;
  border-right: 1px solid #ddd;
 }
+#mainnav .active:link, #mainnav .active:visited {
+ background: #333 url(../topbar_gradient2.png) 0 0 repeat-x;
+ border-top: none;
+ border-right: 1px solid #000;
+ color: #eee;
+ font-weight: bold;
+}
+#mainnav .active:link:hover, #mainnav .active:visited:hover {
+ border-right: 1px solid #000;
+}
+
 /* Context-dependent navigation links */
 #ctxtnav li ul {
  background: #f7f7f7;
