@@ -6,6 +6,7 @@ import tests.href
 import tests.ticket
 import tests.perm_test
 import tests.environment
+import tests.diff
 import tests.tracadmin
 
 def suite():
@@ -15,6 +16,7 @@ def suite():
     suite.addTest(tests.ticket.suite())
     suite.addTest(tests.perm_test.suite())
     suite.addTest(tests.environment.suite())
+    suite.addTest(tests.diff.suite())
     suite.addTest(tests.tracadmin.suite())
     return suite
 

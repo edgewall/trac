@@ -20,13 +20,12 @@
 # Author: Jonas Borgström <jonas@edgewall.com>
 
 import re
-from difflib import SequenceMatcher
-from StringIO import StringIO
 from util import add_to_hdf
 
 line_re = re.compile('@@ [+-]([0-9]+),([0-9]+) [+-]([0-9]+),([0-9]+) @@')
 header_re = re.compile('header ([^\|]+) ([^\|]+) \| ([^\|]+) ([^\|]+) redaeh')
 space_re = re.compile(' ( +)|^ ')
+
 
 class HDFBuilder:
     def __init__(self, hdf, prefix, tabwidth=8):
@@ -41,28 +40,21 @@ class HDFBuilder:
         self.blockno = 0
         self.offset_base = 0
         self.offset_changed = 0
-        self.matcher = SequenceMatcher()
 
-    def _write_line (self, prefix, oldline, newline):
-        oldval = StringIO()
-        newval = StringIO()
-        self.matcher.set_seq1(oldline)
-        self.matcher.set_seq2(newline)
-        for tag, i1, i2, j1, j2 in self.matcher.get_opcodes():
-            if tag == 'equal':
-                oldval.write(oldline[i1:i2])
-                newval.write(oldline[i1:i2])
-            elif tag == 'delete':
-                oldval.write('<del>%s</del>' % oldline[i1:i2])
-            elif tag == 'insert':
-                newval.write('<ins>%s</ins>' % newline[j1:j2])
-            elif tag == 'replace':
-                oldval.write('<del>%s</del>' % oldline[i1:i2])
-                newval.write('<ins>%s</ins>' % newline[j1:j2])
-        self.hdf.setValue(prefix + '.base.lines.0', oldval.getvalue())
-        self.hdf.setValue(prefix + '.changed.lines.0', newval.getvalue())
+    def _write_line(self, prefix, oldline, newline):
+        (start, end) = get_change_extent(oldline, newline)
+        change = ''
+        if len(oldline) > start - end:
+            change = '<del>%s</del>' % oldline[start:end]
+        self.hdf.setValue(prefix + '.base.lines.0',
+                          oldline[:start] + change + oldline[end:])
+        change = ''
+        if len(newline) > start - end:
+            change = '<ins>%s</ins>' % newline[start:end]
+        self.hdf.setValue(prefix + '.changed.lines.0',
+                          newline[:start] + change + newline[end:])
 
-    def _write_block (self, prefix, dtype, old = None, new = None):
+    def _write_block(self, prefix, dtype, old=None, new=None):
         self.hdf.setValue(prefix + '.type', dtype);
         self.hdf.setValue(prefix + '.base.offset', str(self.offset_base))
         self.hdf.setValue(prefix + '.changed.offset',
@@ -78,7 +70,7 @@ class HDFBuilder:
             add_to_hdf(new, self.hdf, prefix + '.changed.lines')
             self.offset_changed += len(new)
 
-    def print_block (self):
+    def print_block(self):
         prefix = '%s.changes.%d.blocks.%d' % (self.prefix, self.changeno,
                                               self.blockno)
         if self.p_type == '-' and self.ttype == '+':
@@ -129,6 +121,24 @@ class HDFBuilder:
 
     def close(self):
         self.print_block()
+
+
+def get_change_extent(str1, str2):
+    """
+    Determines the extent of differences between two strings. Returns a tuple
+    containing the offset at which the changes start, and the negative offset
+    at which the changes end. If the two strings have neither a common prefix
+    nor a common suffix, (0, 0) is returned.
+    """
+    start = 0
+    limit = min(len(str1), len(str2))
+    while start < limit and str1[start] == str2[start]:
+        start += 1
+    end = -1
+    limit = limit - start
+    while -end <= limit and str1[end] == str2[end]:
+        end -= 1
+    return (start, end + 1)
 
 
 def get_options(env, req, args, advanced=0):
