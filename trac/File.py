@@ -42,10 +42,11 @@ class FileCommon(Module.Module):
     rev = None
     mime_type = None
 
-    def render (self):
+    def render(self, req):
+        self.req = req # FIXME
         self.perm.assert_permission (perm.FILE_VIEW)
 
-    def display(self):
+    def display(self, req):
         self.log.debug("Displaying file: %s  mime-type: %s" % (self.filename,
                                                                self.mime_type))
         # We don't have to guess if the charset is specified in the
@@ -69,30 +70,30 @@ class FileCommon(Module.Module):
         self.req.hdf.setValue('file.highlighted_html', vdata)
         self.req.display('file.cs')
 
-    def display_raw(self):
-        self.req.send_response(200)
-        self.req.send_header('Content-Type', self.mime_type)
-        self.req.send_header('Content-Length', str(self.length))
-        self.req.send_header('Last-Modified',
+    def display_raw(self, req):
+        req.send_response(200)
+        req.send_header('Content-Type', self.mime_type)
+        req.send_header('Content-Length', str(self.length))
+        req.send_header('Last-Modified',
                              time.strftime("%a, %d %b %Y %H:%M:%S GMT",
                                            self.last_modified))
-        self.req.send_header('Pragma', 'no-cache')
-        self.req.send_header('Expires', 'Mon, 26 Jul 1997 05:00:00 GMT')
-        self.req.send_header('Cache-Control',
+        req.send_header('Pragma', 'no-cache')
+        req.send_header('Expires', 'Mon, 26 Jul 1997 05:00:00 GMT')
+        req.send_header('Cache-Control',
                              'no-store, no-cache, must-revalidate, max-age=0')
-        self.req.send_header('Cache-Control', 'post-check=0, pre-check=0')
-        self.req.end_headers()
+        req.send_header('Cache-Control', 'post-check=0, pre-check=0')
+        req.end_headers()
         i = 0
         while 1:
             data = self.read_func(self.CHUNK_SIZE)
             if not data:
                 break
-            self.req.write(data)
+            req.write(data)
             i += self.CHUNK_SIZE
 
-    def display_txt(self):
+    def display_txt(self, req):
         self.mime_type = 'text/plain;charset=utf-8'
-        self.display_raw()
+        self.display_raw(req)
 
 class Attachment(FileCommon):
 
@@ -105,8 +106,8 @@ class Attachment(FileCommon):
                     self.env.href.wiki(self.attachment_id))
         assert 0
 
-    def render(self):
-        FileCommon.render(self)
+    def render(self, req):
+        FileCommon.render(self, req)
         self.view_form = 0
         self.attachment_type = self.req.args.get('type', None)
         self.attachment_id = self.req.args.get('id', None)
@@ -198,23 +199,23 @@ class Attachment(FileCommon):
             # Display an attachment upload form
             self.view_form = 1
 
-    def display(self):
+    def display(self, req):
         text, link = self.get_attachment_parent_link()
         self.add_link('up', link, text)
-        self.req.hdf.setValue('title', '%s%s: %s' % (
+        req.hdf.setValue('title', '%s%s: %s' % (
                               self.attachment_type == 'ticket' and '#' or '',
                               self.attachment_id, self.filename))
-        self.req.hdf.setValue('file.attachment_parent', text)
-        self.req.hdf.setValue('file.attachment_parent_href', link)
+        req.hdf.setValue('file.attachment_parent', text)
+        req.hdf.setValue('file.attachment_parent_href', link)
         if self.view_form:
-            self.req.hdf.setValue('attachment.type', self.attachment_type)
-            self.req.hdf.setValue('attachment.id', self.attachment_id)
-            self.req.hdf.setValue('attachment.author', util.get_reporter_id(self.req))
-            self.req.display('attachment.cs')
+            req.hdf.setValue('attachment.type', self.attachment_type)
+            req.hdf.setValue('attachment.id', self.attachment_id)
+            req.hdf.setValue('attachment.author', util.get_reporter_id(self.req))
+            req.display('attachment.cs')
             return
-        self.req.hdf.setValue('file.filename', urllib.unquote(self.filename))
-        self.req.hdf.setValue('trac.active_module', self.attachment_type) # Kludge
-        FileCommon.display(self)
+        req.hdf.setValue('file.filename', urllib.unquote(self.filename))
+        req.hdf.setValue('trac.active_module', self.attachment_type) # Kludge
+        FileCommon.display(self, req)
 
 
 class File(FileCommon):
@@ -247,13 +248,13 @@ class File(FileCommon):
             if i == len(list) - 1:
                 self.add_link('up', url, 'Parent directory')
 
-    def display(self):
+    def display(self, req):
         self.authzperm.assert_permission(self.path)
-        self.req.hdf.setValue('title', self.path)
-        FileCommon.display(self)
+        req.hdf.setValue('title', self.path)
+        FileCommon.display(self, req)
 
-    def render(self):
-        FileCommon.render(self)
+    def render(self, req):
+        FileCommon.render(self, req)
 
         self.rev = self.req.args.get('rev', None)
         self.path = self.req.args.get('path', '/')

@@ -105,7 +105,8 @@ class Log (Module):
             if i == len(list) - 1:
                 self.add_link('up', url, 'Parent directory')
 
-    def render(self):
+    def render(self, req):
+        self.req = req # FIXME
         self.perm.assert_permission(perm.LOG_VIEW)
 
         self.add_link('alternate', '?format=rss', 'RSS Feed',
@@ -152,5 +153,5 @@ class Log (Module):
         self.req.hdf.setValue('title', self.path + ' (log)')
         self.req.hdf.setValue('log.path', self.path)
 
-    def display_rss(self):
-        self.req.display(self.template_rss_name, 'application/rss+xml')
+    def display_rss(self, req):
+        req.display(self.template_rss_name, 'application/rss+xml')

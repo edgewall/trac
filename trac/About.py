@@ -86,27 +86,26 @@ Copyright &copy; 2003,2004 <a href="http://www.edgewall.com/">Edgewall Software<
 <?cs include "footer.cs"?>
 """ # about_cs
 
-    def render (self):
-        page = self.req.args.get('page', 'default')
-        self.req.hdf.setValue('title', 'About Trac')
+    def render(self, req):
+        page = req.args.get('page', 'default')
+        req.hdf.setValue('title', 'About Trac')
         if page[0:7] == 'config':
             self.perm.assert_permission(perm.CONFIG_VIEW)
-            self.req.hdf.setValue('about.page', 'config')
+            req.hdf.setValue('about.page', 'config')
             # Export the config table to hdf
             i = 0
             for section in self.env.cfg.sections():
                 for name in self.env.cfg.options(section):
                     value = self.env.get_config(section, name)
-                    self.req.hdf.setValue('about.config.%d.section' % i, section)
-                    self.req.hdf.setValue('about.config.%d.name' % i, name)
-                    self.req.hdf.setValue('about.config.%d.value' % i, value)
+                    req.hdf.setValue('about.config.%d.section' % i, section)
+                    req.hdf.setValue('about.config.%d.name' % i, name)
+                    req.hdf.setValue('about.config.%d.value' % i, value)
                     i = i + 1
             # TODO:
             # We should probably export more info here like:
             # permissions, components...
 
-
-    def display (self):
-        cs = neo_cs.CS(self.req.hdf)
+    def display(self, req):
+        cs = neo_cs.CS(req.hdf)
         cs.parseStr(self.about_cs)
-        self.req.display(cs)
+        req.display(cs)

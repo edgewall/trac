@@ -384,7 +384,8 @@ class QueryModule(Module):
         ]
         return modes
 
-    def render(self):
+    def render(self, req):
+        self.req = req # FIXME
         self.perm.assert_permission(perm.TICKET_VIEW)
 
         constraints = self._get_constraints()
@@ -444,40 +445,40 @@ class QueryModule(Module):
                 self.req.hdf.setValue('query.constraints.%s.values.%d'
                                       % (field, idx), '')
 
-    def display(self):
-        self.req.hdf.setValue('title', 'Custom Query')
+    def display(self, req):
+        req.hdf.setValue('title', 'Custom Query')
         query = self.query
 
         props = self._get_ticket_properties()
-        add_to_hdf(props, self.req.hdf, 'ticket.properties')
+        add_to_hdf(props, req.hdf, 'ticket.properties')
         modes = self._get_constraint_modes()
-        add_to_hdf(modes, self.req.hdf, 'query.modes')
+        add_to_hdf(modes, req.hdf, 'query.modes')
 
         cols = query.get_columns()
         for i in range(len(cols)):
-            self.req.hdf.setValue('query.headers.%d.name' % i, cols[i])
+            req.hdf.setValue('query.headers.%d.name' % i, cols[i])
             if cols[i] == query.order:
-                self.req.hdf.setValue('query.headers.%d.href' % i,
+                req.hdf.setValue('query.headers.%d.href' % i,
                     escape(self.env.href.query(query.constraints, query.order,
                                                not query.desc, query.group,
                                                query.groupdesc, query.verbose)))
-                self.req.hdf.setValue('query.headers.%d.order' % i,
-                    query.desc and 'desc' or 'asc')
+                req.hdf.setValue('query.headers.%d.order' % i,
+                                 query.desc and 'desc' or 'asc')
             else:
-                self.req.hdf.setValue('query.headers.%d.href' % i,
+                req.hdf.setValue('query.headers.%d.href' % i,
                     escape(self.env.href.query(query.constraints, cols[i],
                                                0, query.group, query.groupdesc,
                                                query.verbose)))
 
-        self.req.hdf.setValue('query.order', query.order)
+        req.hdf.setValue('query.order', query.order)
         if query.desc:
-            self.req.hdf.setValue('query.desc', '1')
+            req.hdf.setValue('query.desc', '1')
         if query.group:
-            self.req.hdf.setValue('query.group', query.group)
+            req.hdf.setValue('query.group', query.group)
             if query.groupdesc:
-                self.req.hdf.setValue('query.groupdesc', '1')
+                req.hdf.setValue('query.groupdesc', '1')
         if query.verbose:
-            self.req.hdf.setValue('query.verbose', '1')
+            req.hdf.setValue('query.verbose', '1')
 
         results = query.execute(self.db)
         for result in results:
@@ -486,29 +487,29 @@ class QueryModule(Module):
                                                      None, self.env, self.db)
             if result.has_key('created'):
                 result['created'] = strftime('%c', localtime(result['created']))
-        add_to_hdf(results, self.req.hdf, 'query.results')
-        self.req.display(self.template_name, 'text/html')
+        add_to_hdf(results, req.hdf, 'query.results')
+        req.display(self.template_name, 'text/html')
 
-    def display_csv(self, sep=','):
-        self.req.send_response(200)
-        self.req.send_header('Content-Type', 'text/plain;charset=utf-8')
-        self.req.end_headers()
+    def display_csv(self, req, sep=','):
+        req.send_response(200)
+        req.send_header('Content-Type', 'text/plain;charset=utf-8')
+        req.end_headers()
         query = self.query
 
         cols = query.get_columns()
-        self.req.write(sep.join([col for col in cols]) + '\r\n')
+        req.write(sep.join([col for col in cols]) + '\r\n')
 
         results = query.execute(self.db)
         for result in results:
-            self.req.write(sep.join([str(result[col]).replace(sep, '_')
+            req.write(sep.join([str(result[col]).replace(sep, '_')
                                                      .replace('\n', ' ')
                                                      .replace('\r', ' ')
                                      for col in cols]) + '\r\n')
 
-    def display_tab(self):
-        self.display_csv('\t')
+    def display_tab(self, req):
+        self.display_csv(req, '\t')
 
-    def display_rss(self):
+    def display_rss(self, req):
         query = self.query
         query.verbose = 1
         results = query.execute(self.db)
@@ -521,6 +522,6 @@ class QueryModule(Module):
             if result['created']:
                 result['created'] = strftime('%a, %d %b %Y %H:%M:%S GMT',
                                              gmtime(result['created']))
-        add_to_hdf(results, self.req.hdf, 'query.results')
+        add_to_hdf(results, req.hdf, 'query.results')
 
-        self.req.display(self.template_rss_name, 'text/xml')
+        req.display(self.template_rss_name, 'text/xml')

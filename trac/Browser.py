@@ -150,7 +150,8 @@ class Browser(Module.Module):
             if i == len(list) - 1:
                 self.add_link('up', url, 'Parent directory')
 
-    def render(self):
+    def render(self, req):
+        self.req = req # FIXME
         self.perm.assert_permission (perm.BROWSER_VIEW)
         
         rev = self.req.args.get('rev', None)

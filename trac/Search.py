@@ -71,7 +71,7 @@ class Search(Module):
             msg = msg + ' ...'
         return msg
     
-    def perform_query (self, query, changeset, tickets, wiki, page=0):
+    def perform_query(self, req, query, changeset, tickets, wiki, page=0):
         if not query:
             return ([], 0)
         keywords = query.split(' ')
@@ -93,7 +93,7 @@ class Search(Module):
             if kwd[0] == '!':
                 keywords[0] = kwd[1:]
                 query = query[1:]
-                self.req.hdf.setValue('search.q', query)
+                req.hdf.setValue('search.q', query)
             # Ticket quickjump
             elif kwd[0] == '#' and kwd[1:].isdigit():
                 redir = self.env.href.ticket(kwd[1:])
@@ -108,8 +108,8 @@ class Search(Module):
                 if re.match (r, kwd):
                     redir = self.env.href.wiki(kwd)
             if redir:
-                self.req.hdf.setValue('search.q', '')
-                self.req.redirect(redir)
+                req.hdf.setValue('search.q', '')
+                req.redirect(redir)
             elif len(query) < 3:
                 raise TracError('Search query too short. '
                                 'Query must be at least 3 characters long.',
@@ -189,37 +189,37 @@ class Search(Module):
             info.append(item)
         return info, more
         
-    def render (self):
+    def render(self, req):
         self.perm.assert_permission(perm.SEARCH_VIEW)
-        self.req.hdf.setValue('title', 'Search')
-        self.req.hdf.setValue('search.ticket', 'checked')
-        self.req.hdf.setValue('search.changeset', 'checked')
-        self.req.hdf.setValue('search.wiki', 'checked')
-        self.req.hdf.setValue('search.results_per_page', str(self.RESULTS_PER_PAGE))
+        req.hdf.setValue('title', 'Search')
+        req.hdf.setValue('search.ticket', 'checked')
+        req.hdf.setValue('search.changeset', 'checked')
+        req.hdf.setValue('search.wiki', 'checked')
+        req.hdf.setValue('search.results_per_page', str(self.RESULTS_PER_PAGE))
         
-        if self.req.args.has_key('q'):
-            query = self.req.args.get('q')
-            self.req.hdf.setValue('title', 'Search Results')
-            self.req.hdf.setValue('search.q', query.replace('"', "&#34;"))
-            tickets = self.req.args.has_key('ticket')
-            changesets = self.req.args.has_key('changeset')
-            wiki = self.req.args.has_key('wiki')
+        if req.args.has_key('q'):
+            query = req.args.get('q')
+            req.hdf.setValue('title', 'Search Results')
+            req.hdf.setValue('search.q', query.replace('"', "&#34;"))
+            tickets = req.args.has_key('ticket')
+            changesets = req.args.has_key('changeset')
+            wiki = req.args.has_key('wiki')
 
             # If no search options chosen, choose all
             if not (tickets or changesets or wiki):
                 tickets = changesets = wiki = 1
             if not tickets:
-                self.req.hdf.setValue('search.ticket', '')
+                req.hdf.setValue('search.ticket', '')
             if not changesets:
-                self.req.hdf.setValue('search.changeset', '')
+                req.hdf.setValue('search.changeset', '')
             if not wiki:
-                self.req.hdf.setValue('search.wiki', '')
+                req.hdf.setValue('search.wiki', '')
 
-            page = int(self.req.args.get('page', '0'))
-            self.req.hdf.setValue('search.result_page', str(page))
-            info, more = self.perform_query(query, changesets, tickets, wiki,
-                                            page)
-            add_dictlist_to_hdf(info, self.req.hdf, 'search.result')
+            page = int(req.args.get('page', '0'))
+            req.hdf.setValue('search.result_page', str(page))
+            info, more = self.perform_query(req, query, changesets, tickets,
+                                            wiki, page)
+            add_dictlist_to_hdf(info, req.hdf, 'search.result')
 
             include = []
             if tickets: include.append('ticket')

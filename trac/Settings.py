@@ -31,28 +31,28 @@ class Settings(Module):
 
     _form_fields = ['newsid','name', 'email']
 
-    def render(self):
-        self.req.hdf.setValue('title', 'Settings')
-        action = self.req.args.get('action')
+    def render(self, req):
+        req.hdf.setValue('title', 'Settings')
+        action = req.args.get('action')
         if action == 'save':
-            self.save_settings()
+            self.save_settings(req)
         elif action == 'load':
-            self.load_session()
+            self.load_session(req)
         elif action == 'login':
-            self.req.redirect (self.env.href.login())
+            req.redirect (self.env.href.login())
         elif action == 'newsession':
             raise TracError, 'new session'
 
-    def save_settings(self):
+    def save_settings(self, req):
         for field in self._form_fields:
-            val = self.req.args.get(field)
+            val = req.args.get(field)
             if val:
                 if field =='newsid':
-                    self.req.session.change_sid(val)
+                    req.session.change_sid(val)
                 else:
-                    self.req.session[field] = val
-        self.req.session.populate_hdf() # Update HDF
+                    req.session[field] = val
+        req.session.populate_hdf() # Update HDF
 
-    def load_session(self):
-        oldsid = self.req.args.get('loadsid')
-        self.req.session.get_session(oldsid)
+    def load_session(self, req):
+        oldsid = req.args.get('loadsid')
+        req.session.get_session(oldsid)

@@ -294,7 +294,8 @@ class NewticketModule(Module):
         self.req.redirect(self.env.href.ticket(tktid))
 
 
-    def render (self):
+    def render(self, req):
+        self.req = req # FIXME
         self.perm.assert_permission(perm.TICKET_CREATE)
 
         if self.req.args.has_key('create'):
@@ -443,7 +444,8 @@ class TicketModule (Module):
         self.env.get_attachments_hdf(self.db, 'ticket', str(id), self.req.hdf,
                                      'ticket.attachments')
 
-    def render (self):
+    def render(self, req):
+        self.req = req # FIXME
         self.perm.assert_permission (perm.TICKET_VIEW)
 
         action = self.req.args.get('action', 'view')

@@ -396,7 +396,8 @@ class Report (Module):
 
         return report_args
 
-    def render(self):
+    def render(self, req):
+        self.req = req # FIXME
         self.perm.assert_permission(perm.REPORT_VIEW)
 
         # did the user ask for any special report?
@@ -429,52 +430,52 @@ class Report (Module):
         elif action == 'list':
             self.render_report_list(id)
 
-    def display_rss(self):
-        item = self.req.hdf.getObj('report.items')
+    def display_rss(self, req):
+        item = req.hdf.getObj('report.items')
         if item:
             item = item.child()
             while item:
                 nodename = 'report.items.%s.summary' % item.name()
-                summary = self.req.hdf.getValue(nodename, '')
-                self.req.hdf.setValue(nodename, util.escape(summary))
+                summary = req.hdf.getValue(nodename, '')
+                req.hdf.setValue(nodename, util.escape(summary))
                 item = item.next()
-        self.req.display(self.template_rss_name, 'text/xml')
+        req.display(self.template_rss_name, 'text/xml')
 
-    def display_csv(self,sep=','):
-        self.req.send_response(200)
-        self.req.send_header('Content-Type', 'text/plain;charset=utf-8')
-        self.req.end_headers()
+    def display_csv(self, req, sep=','):
+        req.send_response(200)
+        req.send_header('Content-Type', 'text/plain;charset=utf-8')
+        req.end_headers()
         titles = ''
         if self.error:
-            self.req.write('Report failed: %s' % self.error)
+            req.write('Report failed: %s' % self.error)
             return
-        self.req.write(sep.join([c[0] for c in self.cols]) + '\r\n')
+        req.write(sep.join([c[0] for c in self.cols]) + '\r\n')
         for row in self.rows:
             sanitize = lambda x: str(x).replace(sep,"_") \
                                        .replace('\n',' ') \
                                        .replace('\r',' ')
-            self.req.write(sep.join(map(sanitize, row)) + '\r\n')
+            req.write(sep.join(map(sanitize, row)) + '\r\n')
 
-    def display_tab(self):
-        self.display_csv('\t')
+    def display_tab(self, req):
+        self.display_csv(req, '\t')
 
-    def display_sql(self):
+    def display_sql(self, req):
         self.perm.assert_permission(perm.REPORT_SQL_VIEW)
-        self.req.send_response(200)
-        self.req.send_header('Content-Type', 'text/plain;charset=utf-8')
-        self.req.end_headers()
-        rid = self.req.hdf.getValue('report.id', '')
+        req.send_response(200)
+        req.send_header('Content-Type', 'text/plain;charset=utf-8')
+        req.end_headers()
+        rid = req.hdf.getValue('report.id', '')
         if self.error or not rid:
-            self.req.write('Report failed: %s' % self.error)
+            req.write('Report failed: %s' % self.error)
             return
-        title = self.req.hdf.getValue('report.title', '')
+        title = req.hdf.getValue('report.title', '')
         if title:
-            self.req.write('-- ## %s: %s ## --\n\n' % (rid, title))
+            req.write('-- ## %s: %s ## --\n\n' % (rid, title))
         cursor = self.db.cursor()
         cursor.execute('SELECT sql,description FROM report WHERE id=%s', rid)
         row = cursor.fetchone()
         sql = row[0] or ''
         if row[1]:
             descr = '-- %s\n\n' % '\n-- '.join(row[1].splitlines())
-            self.req.write(descr)
-        self.req.write(sql)
+            req.write(descr)
+        req.write(sql)

@@ -57,7 +57,7 @@ def get_tickets_for_milestone(env, db, milestone, field='component'):
     return tickets
 
 
-def get_query_links(env, milestone, grouped_by='component',group=None):
+def get_query_links(env, milestone, grouped_by='component', group=None):
     queries = {}
     if not group:
         queries['all_tickets'] = env.href.query({'milestone': milestone})
@@ -258,7 +258,8 @@ class Milestone(Module):
             milestone['completed_delta'] = pretty_timedelta(completed)
         return milestone
 
-    def render(self):
+    def render(self, req):
+        self.req = req # FIXME
         self.perm.assert_permission(perm.MILESTONE_VIEW)
 
         self.add_link('up', self.env.href.roadmap(), 'Roadmap')

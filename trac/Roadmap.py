@@ -35,7 +35,8 @@ from Wiki import wiki_to_html
 class Roadmap(Module):
     template_name = 'roadmap.cs'
 
-    def render(self):
+    def render(self, req):
+        self.req = req # FIXME
         self.perm.assert_permission(perm.ROADMAP_VIEW)
         self.req.hdf.setValue('title', 'Roadmap')
 
@@ -102,13 +103,13 @@ class Roadmap(Module):
             milestone['tickets'] = tickets
             milestone_no += 1
 
-    def display_ics(self):
-        self.req.send_response(200)
-        self.req.send_header('Content-Type', 'text/calendar;charset=utf-8')
-        self.req.end_headers()
+    def display_ics(self, req):
+        req.send_response(200)
+        req.send_header('Content-Type', 'text/calendar;charset=utf-8')
+        req.end_headers()
 
-        priority_mapping = { 'highest': '1', 'high': '3', 'normal': '5',
-                             'low': '7', 'lowest': '9' }
+        priority_mapping = {'highest': '1', 'high': '3', 'normal': '5',
+                            'low': '7', 'lowest': '9'}
     
         def get_status(ticket):
             status = ticket['status']
@@ -128,7 +129,7 @@ class Roadmap(Module):
             while text:
                 if not firstline: text = ' ' + text
                 else: firstline = 0
-                self.req.write(text[:75] + CRLF)
+                req.write(text[:75] + CRLF)
                 text = text[75:]
 
         def write_date(name, value, params={}):
@@ -138,8 +139,8 @@ class Roadmap(Module):
         def write_utctime(name, value, params={}):
             write_prop(name, strftime('%Y%m%dT%H%M%SZ', value), params)
 
-        host = self.req.base_url[self.req.base_url.find('://') + 3:]
-        user = self.req.args.get('user', 'anonymous')
+        host = req.base_url[req.base_url.find('://') + 3:]
+        user = req.args.get('user', 'anonymous')
 
         write_prop('BEGIN', 'VCALENDAR')
         write_prop('VERSION', '2.0')
@@ -148,7 +149,7 @@ class Roadmap(Module):
         write_prop('X-WR-CALNAME',
                    self.env.get_config('project', 'name') + ' - Roadmap')
         for milestone in self.milestones:
-            uid = '<%s/milestone/%s@%s>' % (self.req.cgi_location,
+            uid = '<%s/milestone/%s@%s>' % (req.cgi_location,
                                             milestone['name'], host)
             if milestone.has_key('date'):
                 write_prop('BEGIN', 'VEVENT')
@@ -156,7 +157,7 @@ class Roadmap(Module):
                 if milestone.has_key('date'):
                     write_date('DTSTART', localtime(milestone['due']))
                 write_prop('SUMMARY', 'Milestone %s' % milestone['name'])
-                write_prop('URL', self.req.base_url + '/milestone/' + milestone['name'])
+                write_prop('URL', req.base_url + '/milestone/' + milestone['name'])
                 if milestone.has_key('description'):
                     write_prop('DESCRIPTION', milestone['description_text'])
                 write_prop('END', 'VEVENT')
@@ -169,7 +170,7 @@ class Roadmap(Module):
                     write_date('DUE', localtime(milestone['due']))
                 write_prop('SUMMARY', 'Ticket #%i: %s' % (ticket['id'],
                                                           ticket['summary']))
-                write_prop('URL', self.req.base_url + '/ticket/' + str(ticket['id']))
+                write_prop('URL', req.base_url + '/ticket/' + str(ticket['id']))
                 write_prop('DESCRIPTION', ticket['description'])
                 write_prop('PRIORITY', priority_mapping[ticket['priority']])
                 write_prop('STATUS', get_status(ticket))

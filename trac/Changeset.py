@@ -369,7 +369,8 @@ class Changeset (Module.Module):
             seq += 1
         return sinfo
 
-    def render(self):
+    def render(self, req):
+        self.req = req # FIXME
         self.perm.assert_permission (perm.CHANGESET_VIEW)
 
         self.add_link('alternate', '?format=diff', 'Unified Diff',
@@ -439,27 +440,29 @@ class Changeset (Module.Module):
                                       self.new_root, '', e_ptr, e_baton, authz_cb,
                                       0, 1, 0, 1, self.pool)
 
-    def display(self):
+    def display(self, req):
         """Pretty HTML view of the changeset"""
         self.render_diffs()
-        Module.Module.display(self)
+        Module.Module.display(self, req)
 
-    def display_diff(self):
+    def display_diff(self, req):
         """Raw Unified Diff version"""
-        self.req.send_response(200)
-        self.req.send_header('Content-Type', 'text/plain;charset=utf-8')
-        self.req.send_header('Content-Disposition', 'filename=Changeset%d.diff' % self.rev)
-        self.req.end_headers()
+        req.send_response(200)
+        req.send_header('Content-Type', 'text/plain;charset=utf-8')
+        req.send_header('Content-Disposition',
+                        'filename=Changeset%d.diff' % self.rev)
+        req.end_headers()
         self.render_diffs(UnifiedDiffEditor)
 
-    def display_zip(self):
+    def display_zip(self, req):
         """ZIP archive with all the added and/or modified files."""
-        self.req.send_response(200)
-        self.req.send_header('Content-Type', 'application/zip')
-        self.req.send_header('Content-Disposition', 'filename=Changeset%d.zip' % self.rev)
-        self.req.end_headers()
+        req.send_response(200)
+        req.send_header('Content-Type', 'application/zip')
+        req.send_header('Content-Disposition',
+                        'filename=Changeset%d.zip' % self.rev)
+        req.end_headers()
         self.render_diffs(ZipDiffEditor)
 
-    def display_hdf(self):
+    def display_hdf(self, req):
         self.render_diffs()
-        Module.Module.display_hdf(self)
+        Module.Module.display_hdf(self, req)

@@ -35,17 +35,16 @@ class Module:
         self.links = {}
 
     def run(self, req):
-        self.req = req
         if req.args.has_key('format'):
             disp = getattr(self, 'display_' + req.args.get('format'))
         else:
             disp = self.display
         core.populate_hdf(req.hdf, self.env, req)
         self._add_default_links(req)
-        self.render()
+        self.render(req)
         req.hdf.setValue('trac.active_module', self._name)
         add_to_hdf(self.links, req.hdf, 'links')
-        disp()
+        disp(req)
 
     def _add_default_links(self, req):
         self.add_link('start', self.env.href.wiki())
@@ -69,33 +68,33 @@ class Module:
         if className: link['class'] = className
         self.links[rel].append(link)
 
-    def render(self):
+    def render(self, req):
         """
         Override this function to add data the template requires
-        to self.req.hdf.
+        in the HDF.
         """
         pass
 
-    def display(self):
-        self.req.display(self.template_name)
+    def display(self, req):
+        req.display(self.template_name)
 
-    def display_hdf(self):
+    def display_hdf(self, req):
         def hdf_tree_walk(node,prefix=''):
             while node: 
                 name = node.name() or ''
                 if not node.child():
                     value = node.value()
-                    self.req.write('%s%s = ' % (prefix, name))
+                    req.write('%s%s = ' % (prefix, name))
                     if value.find('\n') == -1:
-                        self.req.write('%s\r\n' % value)
+                        req.write('%s\r\n' % value)
                     else:
-                        self.req.write('<< EOM\r\n%s\r\nEOM\r\n' % value)
+                        req.write('<< EOM\r\n%s\r\nEOM\r\n' % value)
                 else:
-                    self.req.write('%s%s {\r\n' % (prefix, name))
+                    req.write('%s%s {\r\n' % (prefix, name))
                     hdf_tree_walk(node.child(), prefix + '  ')
-                    self.req.write('%s}\r\n' % prefix)
+                    req.write('%s}\r\n' % prefix)
                 node = node.next()
-        self.req.send_response(200)
-        self.req.send_header('Content-Type', 'text/plain;charset=utf-8')
-        self.req.end_headers()
-        hdf_tree_walk(self.req.hdf.child())
+        req.send_response(200)
+        req.send_header('Content-Type', 'text/plain;charset=utf-8')
+        req.end_headers()
+        hdf_tree_walk(req.hdf.child())

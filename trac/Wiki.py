@@ -186,28 +186,29 @@ class WikiModule(Module):
             raise TracError('Python >= 2.2 is required for diff support.')
         builder.close()
 
-    def render(self):
-        name = self.req.args.get('page', 'WikiStart')
-        author = self.req.args.get('author', get_reporter_id(self.req))
-        edit_version = self.req.args.get('edit_version', None)
-        delete_ver = self.req.args.get('delete_ver', None)
-        delete_page = self.req.args.get('delete_page', None)
-        comment = self.req.args.get('comment', '')
-        save = self.req.args.get('save', None)
-        edit = self.req.args.get('edit', None)
-        diff = self.req.args.get('diff', None)
-        cancel = self.req.args.get('cancel', None)
-        preview = self.req.args.get('preview', None)
-        history = self.req.args.get('history', None)
-        version = int(self.req.args.get('version', 0))
-        readonly = self.req.args.get('readonly', None)
+    def render(self, req):
+        self.req = req # FIXME
+        name = req.args.get('page', 'WikiStart')
+        author = req.args.get('author', get_reporter_id(self.req))
+        edit_version = req.args.get('edit_version', None)
+        delete_ver = req.args.get('delete_ver', None)
+        delete_page = req.args.get('delete_page', None)
+        comment = req.args.get('comment', '')
+        save = req.args.get('save', None)
+        edit = req.args.get('edit', None)
+        diff = req.args.get('diff', None)
+        cancel = req.args.get('cancel', None)
+        preview = req.args.get('preview', None)
+        history = req.args.get('history', None)
+        version = int(req.args.get('version', 0))
+        readonly = req.args.get('readonly', None)
 
         # Ask web spiders to not index old version
         if diff or version:
-            self.req.hdf.setValue('html.norobots', '1')
+            req.hdf.setValue('html.norobots', '1')
 
         if cancel:
-            self.req.redirect(self.env.href.wiki(name))
+            req.redirect(self.env.href.wiki(name))
             # Not reached
 
         if delete_ver and edit_version and name:
@@ -219,12 +220,12 @@ class WikiModule(Module):
             self.db.commit()
             self.log.info('Deleted version %d of page %s' % (int(edit_version), name))
             if int(edit_version) > 1:
-                self.req.redirect(self.env.href.wiki(name))
+                req.redirect(self.env.href.wiki(name))
             else:
                 # Delete orphaned attachments
                 for attachment in self.env.get_attachments(self.db, 'wiki', name):
                     self.env.delete_attachment(self.db, 'wiki', name, attachment[0])
-                self.req.redirect(self.env.href.wiki())
+                req.redirect(self.env.href.wiki())
             # Not reached
 
         if delete_page and name:
@@ -237,46 +238,46 @@ class WikiModule(Module):
             # Delete orphaned attachments
             for attachment in self.env.get_attachments(self.db, 'wiki', name):
                 self.env.delete_attachment(self.db, 'wiki', name, attachment[0])
-            self.req.redirect(self.env.href.wiki())
+            req.redirect(self.env.href.wiki())
             # Not reached
 
-        self.req.hdf.setValue('wiki.name', escape(name))
-        self.req.hdf.setValue('wiki.author', escape(author))
-        self.req.hdf.setValue('wiki.comment', escape(comment))
+        req.hdf.setValue('wiki.name', escape(name))
+        req.hdf.setValue('wiki.author', escape(author))
+        req.hdf.setValue('wiki.comment', escape(comment))
         # Workaround so that we can attach files to wiki pages
         # even if the page name contains a '/'
-        self.req.hdf.setValue('wiki.namedoublequoted',
+        req.hdf.setValue('wiki.namedoublequoted',
                               urllib.quote(urllib.quote(name, '')))
 
-        editrows = self.req.args.get('editrows')
+        editrows = req.args.get('editrows')
         if editrows:
-            self.req.hdf.setValue('wiki.edit_rows', editrows)
-            pref = self.req.session.get('wiki_editrows', '20')
+            req.hdf.setValue('wiki.edit_rows', editrows)
+            pref = req.session.get('wiki_editrows', '20')
             if editrows != pref:
-                self.req.session.set_var('wiki_editrows', editrows)
+                req.session.set_var('wiki_editrows', editrows)
         else:
-            self.req.hdf.setValue('wiki.edit_rows',
-                                  self.req.session.get('wiki_editrows', '20'))
+            req.hdf.setValue('wiki.edit_rows',
+                                  req.session.get('wiki_editrows', '20'))
 
         if save:
-            self.req.hdf.setValue('wiki.action', 'save')
+            req.hdf.setValue('wiki.action', 'save')
         elif edit:
             self.perm.assert_permission (perm.WIKI_MODIFY)
-            self.req.hdf.setValue('wiki.action', 'edit')
-            self.req.hdf.setValue('title', escape(name) + ' (edit)')
+            req.hdf.setValue('wiki.action', 'edit')
+            req.hdf.setValue('title', escape(name) + ' (edit)')
         elif preview:
-            self.req.hdf.setValue('wiki.action', 'preview')
-            self.req.hdf.setValue('wiki.scroll_bar_pos',
-                                  self.req.args.get('scroll_bar_pos', ''))
-            self.req.hdf.setValue('title', escape(name) + ' (preview)')
+            req.hdf.setValue('wiki.action', 'preview')
+            req.hdf.setValue('wiki.scroll_bar_pos',
+                                  req.args.get('scroll_bar_pos', ''))
+            req.hdf.setValue('title', escape(name) + ' (preview)')
         elif diff and version > 0:
-            self.req.hdf.setValue('wiki.action', 'diff')
+            req.hdf.setValue('wiki.action', 'diff')
             self.generate_diff(name, version)
-            self.req.hdf.setValue('title', escape(name) + ' (diff)')
+            req.hdf.setValue('title', escape(name) + ' (diff)')
         elif history:
-            self.req.hdf.setValue('wiki.action', 'history')
+            req.hdf.setValue('wiki.action', 'history')
             self.generate_history(name)
-            self.req.hdf.setValue('title', escape(name) + ' (history)')
+            req.hdf.setValue('title', escape(name) + ' (history)')
         else:
             self.perm.assert_permission (perm.WIKI_VIEW)
             if version:
@@ -286,19 +287,19 @@ class WikiModule(Module):
             else:
                 self.add_link('alternate', '?format=txt', 'Plain Text',
                     'text/plain')
-            if self.req.args.has_key('text'):
-                del self.req.args['text']
-            self.req.hdf.setValue('wiki.action', 'view')
+            if req.args.has_key('text'):
+                del req.args['text']
+            req.hdf.setValue('wiki.action', 'view')
             if name == 'WikiStart':
-                self.req.hdf.setValue('title', '')
+                req.hdf.setValue('title', '')
             else:
-                self.req.hdf.setValue('title', escape(name))
-            self.env.get_attachments_hdf(self.db, 'wiki', name, self.req.hdf,
+                req.hdf.setValue('title', escape(name))
+            self.env.get_attachments_hdf(self.db, 'wiki', name, req.hdf,
                                          'wiki.attachments')
 
         self.page = WikiPage(name, version, self.perm, self.db)
-        if self.req.args.has_key('text'):
-            self.page.set_content (self.req.args.get('text'))
+        if req.args.has_key('text'):
+            self.page.set_content (req.args.get('text'))
         else:
             self.page.modified = 0
 
@@ -309,36 +310,36 @@ class WikiModule(Module):
             else:
                 self.page.readonly = 0
                 
-        self.req.hdf.setValue('wiki.readonly', str(self.page.readonly))
+        req.hdf.setValue('wiki.readonly', str(self.page.readonly))
         # We store the page version when we start editing a page.
         # This way we can stop users from saving changes if they are
         # not based on the latest version any more
         if edit_version:
-            self.req.hdf.setValue('wiki.edit_version', edit_version)
+            req.hdf.setValue('wiki.edit_version', edit_version)
         else:
-            self.req.hdf.setValue('wiki.edit_version', str(self.page.version))
+            req.hdf.setValue('wiki.edit_version', str(self.page.version))
 
         if save and edit_version != str(self.page.version - 1):
             raise TracError('Sorry, Cannot create new version, this page has '
                             'already been modified by someone else.')
 
         if save:
-            self.page.commit(author, comment, self.req.remote_addr)
-            self.req.redirect(self.env.href.wiki(self.page.name))
+            self.page.commit(author, comment, req.remote_addr)
+            req.redirect(self.env.href.wiki(self.page.name))
 
-        self.req.hdf.setValue('wiki.current_href',
+        req.hdf.setValue('wiki.current_href',
                               escape(self.env.href.wiki(self.page.name)))
-        self.req.hdf.setValue('wiki.history_href',
+        req.hdf.setValue('wiki.history_href',
                               escape(self.env.href.wiki(self.page.name,
                                                         history=1)))
-        self.req.hdf.setValue('wiki.page_name', escape(self.page.name))
-        self.req.hdf.setValue('wiki.page_source', escape(self.page.text))
+        req.hdf.setValue('wiki.page_name', escape(self.page.name))
+        req.hdf.setValue('wiki.page_source', escape(self.page.text))
         out = StringIO.StringIO()
-        Formatter(self.req.hdf, self.env,self.db).format(self.page.text, out)
-        self.req.hdf.setValue('wiki.page_html', out.getvalue())
+        Formatter(req.hdf, self.env,self.db).format(self.page.text, out)
+        req.hdf.setValue('wiki.page_html', out.getvalue())
 
-    def display_txt(self):
-        self.req.send_response(200)
-        self.req.send_header('Content-Type', 'text/plain;charset=utf-8')
-        self.req.end_headers()
-        self.req.write(self.page.text)
+    def display_txt(self, req):
+        req.send_response(200)
+        req.send_header('Content-Type', 'text/plain;charset=utf-8')
+        req.end_headers()
+        req.write(self.page.text)

@@ -193,7 +193,8 @@ class Timeline (Module):
             info.append(item)
         return info
 
-    def render (self):
+    def render(self, req):
+        self.req = req # FIXME
         self.perm.assert_permission(perm.TIMELINE_VIEW)
 
         _from = self.req.args.get('from', '')
@@ -256,7 +257,7 @@ class Timeline (Module):
         if milestone:
             self.req.hdf.setValue('timeline.milestone', 'checked')
 
-    def display_rss(self):
+    def display_rss(self, req):
         base_url = self.env.get_config('trac', 'base_url', '')
-        self.req.hdf.setValue('baseurl', base_url)
-        self.req.display(self.template_rss_name, 'text/xml')
+        req.hdf.setValue('baseurl', base_url)
+        req.display(self.template_rss_name, 'text/xml')
