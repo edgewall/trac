@@ -27,7 +27,7 @@
  padding: .5em 0;
  margin: 0 0 2em 1em;
  float: right;
- border: 1px solid #ddc;
+ border: 1px outset #ddc;
  background: #ffd;
  font-size: 85%;
  position: relative;
