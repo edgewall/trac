@@ -1,16 +1,18 @@
 @import url(diff.css);
 
 /* Changeset overview */
-#overview dt.files { margin-top: 1em }
-#overview dd.files ul { margin: 0; padding: 0 }
-#overview dd.files li { list-style-type: none }
-#overview dd.files li .comment { display: none }
-#overview dd.files li div {
+#overview .files { padding-top: 1em }
+#overview .files ul { margin: 0; padding: 0 }
+#overview .files li { list-style-type: none }
+#overview .files li .comment { display: none }
+#overview .files li div {
  border: 1px solid #999;
  float: left;
  margin: .2em .5em 0 0;
  overflow: hidden;
  width: .8em; height: .8em;
 }
-#overview dt.message { margin-top: 1em }
-#overview dd.message :first-child { margin-top: 0 }
+#overview .message { border: 1px solid #fff }
+#overview dt.message { padding-top: 1em }
+#overview dd.message { margin-right: 24em }
+#overview dd.message p { margin: 1em 0 }

@@ -208,7 +208,7 @@ form.inline input { margin: 1em }
   text-align: right;
 }
 
-#content { padding-bottom: 2em }
+#content { padding-bottom: 2em; position: relative }
 
 #help {
  clear: both;

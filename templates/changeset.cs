@@ -13,8 +13,8 @@
 
 <form id="prefs" action="<?cs var:changeset.href ?>">
  <div>
-  <label for="type">View differences</label>
-  <select name="style">
+  <label for="style">View differences</label>
+  <select id="style" name="style">
    <option value="inline"<?cs
      if:diff.style == 'inline' ?> selected="selected"<?cs
      /if ?>>inline</option>

@@ -28,14 +28,13 @@
 }
 #overview dt {
  font-weight: bold;
- margin: .25em 0 0;
- padding: 0 .5em 0 0;
+ padding-right: .25em;
+ position: absolute;
+ left: 0;
  text-align: right;
- width: 7em;
+ width: 7.75em;
 }
-#overview dd {
- margin: -1.3em 0 0 8em;
-}
+#overview dd { margin-left: 8em }
 
 /* Colors for change types */
 .mod { background: #fd8 !important }
@@ -70,7 +69,6 @@
 }
 
 /* Styles for the list of diffs */
-.diff { width: 100% }
 .diff ul { clear: both; margin: 0; padding: 0 }
 .diff li {
  background: #f7f7f7;
