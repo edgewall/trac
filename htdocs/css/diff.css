@@ -20,7 +20,9 @@
 /* Colors for change types */
 #overview .mod, .diff #legend .mod { background: #fd8 }
 #overview .rem, .diff #legend .rem { background: #f88 }
-#overview .add, .diff #legend .add { background: #dfd }
+#overview .add, .diff #legend .add { background: #bfb }
+#overview .cp, .diff #legend .cp { background: #88f }
+#overview .mv, .diff #legend .mv { background: #ccc }
 
 /* Legend for diff colors */
 .diff #legend {
@@ -46,7 +48,12 @@
  margin: 0;
  margin-right: .5em;
 }
-
+.diff #legend dt.unmod div.mod {
+ border: 0;
+ margin: 0;
+ float: right;
+ width: .4em; height: .8em;
+}
 /* Styles for the list of diffs */
 .diff ul.entries { clear: both; margin: 0; padding: 0 }
 .diff li.entry {
