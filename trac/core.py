@@ -134,7 +134,7 @@ def parse_args(command, path_info, query_string,
         if argv.filename:
             args[x] = argv
         else:
-            args[x] = argv.value.replace('\r','')
+            args[x] = argv.value
     return args
 
 def add_args_to_hdf(args, hdf):

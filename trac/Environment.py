@@ -49,10 +49,13 @@ class Environment:
             self.create()
         self.verify()
         self.load_config()
-        if sys.platform == "win32": # Use binary I/O on Windows
+        try: # Use binary I/O on Windows
             import msvcrt
+            msvcrt.setmode(sys.stdin.fileno(), os.O_BINARY)
             msvcrt.setmode(sys.stdout.fileno(), os.O_BINARY)
-            self.setup_log()
+        except ImportError:
+            pass
+        self.setup_log()
 
     def verify(self):
         """Verifies that self.path is a compatible trac environment"""
