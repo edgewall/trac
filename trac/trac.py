@@ -112,13 +112,6 @@ def main():
     core.apr_initialize()
     pool = core.svn_pool_create(None)
 
-    if os.getenv('REMOTE_USER'):
-        authenticate_user()
-        uri = os.getenv('HTTP_REFERER')
-        if not uri:
-            uri = Href.href.wiki()
-        redirect (uri)
-        
     args = parse_args()
     if not args:
         _args = cgi.FieldStorage()

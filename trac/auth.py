@@ -22,6 +22,7 @@
 import os
 import Cookie
 import time
+import util
 import random
 from db import get_connection
 
@@ -31,12 +32,6 @@ authname = 'anonymous'
 
 def get_authname ():
     return authname
-
-def logout (auth_cookie):
-    cnx = get_connection ()
-    cursor = cnx.cursor ()
-    cursor.execute ("DELETE FROM auth_cookie WHERE cookie='%s'" % auth_cookie)
-    cnx.commit ()
 
 def flush_auth_cookies ():
     """
@@ -94,9 +89,31 @@ def authenticate_user ():
     auth_cookie = create_auth_cookie (os.getenv('REMOTE_USER'),
                                       os.getenv('REMOTE_ADDR'))
     cookie['trac_auth'] = auth_cookie
+    cookie['trac_auth']['path'] = os.getenv('SCRIPT_NAME')
+    #cookie['trac_auth']['secure'] = 'true'
     # send the cookie to the browser as a http header
     print cookie.output()
 
+def login():
+    authenticate_user()
+    if os.getenv('PATH_INFO') == '/login':
+        uri = os.getenv('HTTP_REFERER')
+        if not uri:
+            import Href
+            uri = Href.href.wiki()
+        util.redirect (uri)
+
+def logout (auth_cookie):
+    cnx = get_connection ()
+    cursor = cnx.cursor ()
+    cursor.execute ("DELETE FROM auth_cookie WHERE cookie='%s'" % auth_cookie)
+    cnx.commit ()
+    if os.getenv('PATH_INFO') == '/logout':
+        uri = os.getenv('HTTP_REFERER')
+        if not uri:
+            import Href
+            uri = Href.href.wiki()
+        util.redirect (uri)
 
 def verify_authentication (args):
     flush_auth_cookies ()
@@ -107,5 +124,11 @@ def verify_authentication (args):
         auth_cookie = cookie['trac_auth'].value
         if os.getenv('PATH_INFO') == '/logout':
             logout (auth_cookie)
-        elif validate_auth_cookie (auth_cookie, remote_addr):
-            update_auth_cookie (auth_cookie, remote_addr)
+        else:
+            if validate_auth_cookie (auth_cookie, remote_addr):
+                update_auth_cookie (auth_cookie, remote_addr)
+            elif os.getenv('REMOTE_USER'):
+                login()
+    elif os.getenv('REMOTE_USER'):
+        login()
+        
