@@ -38,5 +38,9 @@ if __name__ == '__main__':
         config = trac.db.load_config()
         Href.initialize(config)
         authenticate_user()
-        redirect (Href.href.wiki())
+        # Try to redirect the user to the same page he came from
+        uri = os.getenv('HTTP_REFERER')
+        if not uri:
+            uri = Href.href.wiki()
+        redirect (uri)
 
