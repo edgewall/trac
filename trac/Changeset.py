@@ -183,7 +183,11 @@ class Changeset (Module):
 
         cursor.execute ('SELECT time, author, message FROM revision ' +
                         'WHERE rev=%d' % rev)
-        return cursor.fetchone()
+        row = cursor.fetchone()
+        if not row:
+            raise TracError('Changeset %d does not exist.' % rev,
+                            'Invalid Changset')
+        return row
         
     def get_change_info (self, rev):
         cursor = self.db.cursor ()

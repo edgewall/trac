@@ -578,8 +578,9 @@ class Wiki(Module):
             old = res[0][0].splitlines()
             new = res[1][0].splitlines()
         else:
-            raise Exception('Version %d of page "%s" not found'
-                            % (version, pagename))
+            raise TracError('Version %d of page "%s" not found.'
+                            % (version, pagename),
+                            'Page Not Found')
         out = StringIO.StringIO()
         filter = DiffColorizer(out)
         filter.writeline('header %s version %d | %s version %d header' %
@@ -589,7 +590,7 @@ class Wiki(Module):
                 if line != '  ':
                     filter.writeline(line)
         except AttributeError:
-            raise Exception('Python >= 2.2 is required for diff support.')
+            raise TracError('Python >= 2.2 is required for diff support.')
         
         filter.close()
         self.cgi.hdf.setValue('wiki.diff_output', out.getvalue())

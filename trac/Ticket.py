@@ -72,7 +72,8 @@ class Ticket (Module):
         cursor.close ()
 
         if not row:
-            raise Exception, 'Ticket %d not found.' % id
+            raise TracError('Ticket %d does not exist.' % id,
+                            'Invalid Ticket Number')
 
         info = {'id': id }
         # Escape the values so that they are safe to have as html parameters

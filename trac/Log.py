@@ -89,7 +89,10 @@ class Log (Module):
         revision = fs.youngest_rev(self.fs_ptr, self.pool)
         root = fs.revision_root(self.fs_ptr, revision, self.pool)
         if fs.check_path(root, self.path, self.pool) != core.svn_node_file:
-            self.cgi.hdf.setValue('log.nonexistent_path', 'true')
+            raise TracError('The file "%s" doesn\'t currently exist in the '
+                            'repository. The file might have been deleted '
+                            'or never existed in the first place.' \
+                            % self.path, 'Nonexistent path')
         else:
             info = self.get_info (self.path)
             add_dictlist_to_hdf(info, self.cgi.hdf, 'log.items')

@@ -1,15 +1,23 @@
 <?cs include "header.cs"?>
 
-<?cs if error.type == "internal" ?>
+<?cs if error.type == "TracError" ?>
+
+<h3><?cs var:error.title ?></h3>
+
+<div class="error">
+<?cs var:error.message ?>
+</div>
+
+<?cs elif error.type == "internal" ?>
 
 <h3>Oops...</h3>
 
-<p>
+<div class="error">
 Trac detected an internal error:
-</p>
 <pre>
 <?cs var:error.message ?>
 </pre>
+</div>
 
 <p>
 If you think this really should work and you can reproduce it. Then you 
@@ -18,36 +26,31 @@ should consider to report this problem to the Trac team.
 <p>
 Go to
 <a href="<?cs var:trac.href.homepage ?>"><?cs var:trac.href.homepage ?></a> 
-and there you create a new ticket where you describe
+and create a new ticket where you describe
 the problem, how to reproduce it and don't forget to include the python
 traceback found below.
 </p>
 
 <?cs elif error.type == "permission" ?>
 
-<h3>Permission denied</h3>
-<p>
+<h3>Permission Denied</h3>
+
+<div class="error">
 This action requires <tt><?cs var:error.action ?></tt> permission.
-</p>
+</div>
 
 <p>
-The Trac administration program <tt>trac_admin.py</tt> can be used to grant 
-permissions to users like this:
-
-<pre>
-  $ trac-admin /path/to/trac.db permission add <i>username</i> <?cs var:error.action ?>
-</pre>
-or to any authenticated users:
-<pre>
-  $ trac-admin /path/to/trac.db permission add authenticated <?cs var:error.action ?>
-</pre>
-or to everybody:
-<pre>
-  $ trac-admin /path/to/trac.db permission add anonymous <?cs var:error.action ?>
-</pre>
+<b>Note</b>: See
+<a href="<?cs var:trac.href.wiki ?>TracPermissions">TracPermissions</a>
+for help on managing Trac permissions.
 </p>
 
 <?cs /if ?>
+
+<p>
+<a href="<?cs var:trac.href.wiki ?>TracGuide">TracGuide</a>
+-- The Trac User and Administration Guide
+</p>
 
 <?cs if $error.traceback ?>
 <h4>Python traceback</h4>

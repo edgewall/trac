@@ -21,7 +21,7 @@
 
 import string
 
-from svn import fs, util, delta
+from svn import core, fs, util, delta
 
 from Module import Module
 from util import *
@@ -36,6 +36,11 @@ class Browser(Module):
         Extracts information for a given path and revision
         """
         root = fs.revision_root(self.fs_ptr, revision, self.pool)
+
+        node_type = fs.check_path(root, path, self.pool)
+        if node_type != core.svn_node_dir:
+            raise TracError('"%s": is not a directory in revision %d' \
+                            % (path, revision), 'Not a directory')
 
         # Redirect to the file module if the requested path happens
         # to point to a regular file

@@ -151,3 +151,10 @@ def shorten_line(text):
             i = maxlen
         shortline = text[:i]+' ...'
     return shortline
+
+class TracError(Exception):
+    def __init__(self, message, title=None, show_traceback=0):
+        Exception.__init__(self, message)
+        self.message = message
+        self.title = title
+        self.show_traceback = show_traceback

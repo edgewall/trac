@@ -6,13 +6,6 @@
  <div id="main">
   <div id="main-content">
 
-<?cs if ? log.nonexistent_path ?>
-
-The file "<?cs var:log.path ?>" doesn't currently exist in the repository.
-The file might have been deleted or never existed in the first place.
-
-<?cs else ?>
-
   <h1 id="log-hdr">Revision history for <?cs var:log.path ?></h1>
 
   <div id="browser-pathlinks">
@@ -59,7 +52,6 @@ The file might have been deleted or never existed in the first place.
    <a href="?format=rss">(RSS 2.0)</a>
    <br />
  </div>
-<?cs /if ?>
 
  </div>
 </div>

@@ -243,6 +243,7 @@ def create_error_cgi():
     return cgi, templates_dir
 
 def main():
+    import util
     real_e = None
     real_tb = None
     # In case of an exception. First try to display a fancy error
@@ -251,6 +252,22 @@ def main():
     try:
         try:
             real_main()
+        except util.TracError, e:
+            import traceback
+            import StringIO
+            tb = StringIO.StringIO()
+            traceback.print_exc(file=tb)
+            real_e = e
+            real_tb = tb
+            cgi, templates_dir = create_error_cgi()
+            cgi.hdf.setValue('title', e.title or 'Error')
+            cgi.hdf.setValue('error.title', e.title or 'Error')
+            cgi.hdf.setValue('error.type', 'TracError')
+            cgi.hdf.setValue('error.message', e.message)
+            if e.show_traceback:
+                cgi.hdf.setValue('error.traceback',tb.getvalue())
+            name = os.path.join (templates_dir, 'error.cs')
+            cgi.display(name)
         except perm.PermissionError, e:
             import traceback
             import StringIO
@@ -263,7 +280,6 @@ def main():
             cgi.hdf.setValue('error.type', 'permission')
             cgi.hdf.setValue('error.action', e.action)
             cgi.hdf.setValue('error.message', str(e))
-            cgi.hdf.setValue('error.traceback',tb.getvalue())
             name = os.path.join (templates_dir, 'error.cs')
             cgi.display(name)
         except Exception, e:

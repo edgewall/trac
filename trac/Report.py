@@ -66,9 +66,18 @@ class Report (Module):
         else:
             cursor.execute('SELECT title, sql from report WHERE id=%s', id)
             row = cursor.fetchone()
+            if not row:
+                raise TracError('Report %d does not exist.' % id,
+                                'Invalid Report Number')
             title = row[0]
             sql   = self.sql_sub_vars(row[1], args)
-            cursor.execute(sql)
+            try:
+                cursor.execute(sql)
+            except Exception, e:
+                self.error = e
+                self.cgi.hdf.setValue('report.message',
+                                      'report failed: %s' % e)
+                return None
 
         # FIXME: fetchall should probably not be used.
         info = cursor.fetchall()
@@ -153,13 +162,11 @@ class Report (Module):
                                       href.report(id, 'delete'))
 
         self.cgi.hdf.setValue('report.mode', 'list')
-        try:
-            [self.cols, self.rows, title] = self.get_info(id, args)
-            self.error = None
-        except Exception, e:
-            self.error = e
-            self.cgi.hdf.setValue('report.message', 'report failed: %s' % e)
+        info = self.get_info(id, args)
+        if not info:
             return
+        [self.cols, self.rows, title] = info
+        self.error = None
         
         self.cgi.hdf.setValue('title', title + ' (report)')
         self.cgi.hdf.setValue('report.title', title)
