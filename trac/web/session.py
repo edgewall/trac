@@ -110,7 +110,7 @@ class Session(dict):
                'Cannot promote session of anonymous user'
 
         self.env.log.debug('Promoting anonymous session %s to authenticated '
-                           'session for user %s' % (sid, req.authname))
+                           'session for user %s' % (sid, self.req.authname))
         cursor = self.db.cursor()
         cursor.execute("SELECT COUNT(*) FROM session WHERE username=%s",
                        (self.req.authname,))
