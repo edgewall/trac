@@ -41,13 +41,13 @@ addEvent(window, 'load', function() { document.getElementById('summary').focus()
   <input type="hidden" name="status" value="new" />
   <div class="col1">
    <label for="component">Component:</label><?cs
-   call:hdf_select(newticket.components, "component", newticket.component) ?>
+   call:hdf_select(newticket.components, "component", newticket.component, 0) ?>
    <br />
    <label for="version">Version:</label><?cs
-   call:hdf_select(newticket.versions, "version", newticket.version) ?>
+   call:hdf_select(newticket.versions, "version", newticket.version, 0) ?>
    <br />
    <label for="severity">Severity:</label><?cs
-   call:hdf_select(enums.severity, "severity", newticket.severity) ?>
+   call:hdf_select(enums.severity, "severity", newticket.severity, 0) ?>
    <br />
    <label for="keywords">Keywords:</label>
    <input type="text" id="keywords" name="keywords" size="20"
@@ -55,9 +55,9 @@ addEvent(window, 'load', function() { document.getElementById('summary').focus()
   </div>
   <div class="col2">
    <label for="priority">Priority:</label><?cs
-   call:hdf_select(enums.priority, "priority", newticket.priority) ?><br />
+   call:hdf_select(enums.priority, "priority", newticket.priority, 0) ?><br />
    <label for="milestone">Milestone:</label><?cs
-   call:hdf_select(newticket.milestones, "milestone", newticket.milestone) ?><br />
+   call:hdf_select(newticket.milestones, "milestone", newticket.milestone, 1) ?><br />
    <label for="owner">Assign to:</label>
    <input type="text" id="owner" name="owner" size="20" value="<?cs
      var:newticket.owner ?>" /><br />

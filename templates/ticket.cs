@@ -169,13 +169,13 @@
   </div>
   <div class="col1">
    <label for="component">Component:</label><?cs
-   call:hdf_select(ticket.components, "component", ticket.component) ?>
+   call:hdf_select(ticket.components, "component", ticket.component, 0) ?>
    <br />
    <label for="version">Version:</label><?cs
-   call:hdf_select(ticket.versions, "version", ticket.version) ?>
+   call:hdf_select(ticket.versions, "version", ticket.version, 0) ?>
    <br />
    <label for="severity">Severity:</label><?cs
-   call:hdf_select(enums.severity, "severity", ticket.severity) ?>
+   call:hdf_select(enums.severity, "severity", ticket.severity, 0) ?>
    <br />
    <label for="keywords">Keywords:</label>
    <input type="text" id="keywords" name="keywords" size="20"
@@ -183,9 +183,9 @@
   </div>
   <div class="col2">
    <label for="priority">Priority:</label><?cs
-   call:hdf_select(enums.priority, "priority", ticket.priority) ?><br />
+   call:hdf_select(enums.priority, "priority", ticket.priority, 0) ?><br />
    <label for="milestone">Milestone:</label><?cs
-   call:hdf_select(ticket.milestones, "milestone", ticket.milestone) ?><br />
+   call:hdf_select(ticket.milestones, "milestone", ticket.milestone, 1) ?><br />
    <label for="owner">Assigned to:</label>
    <input type="text" id="owner" name="owner" size="20" value="<?cs
      var:ticket.owner ?>" disabled="disabled" /><br />
@@ -220,7 +220,7 @@
    <?cs call:action_radio('resolve') ?>
    <label for="resolve">resolve</label>
    <label for="resolve_resolution">as:</label>
-   <?cs call:hdf_select(enums.resolution, "resolve_resolution", args.resolve_resolution) ?><br />
+   <?cs call:hdf_select(enums.resolution, "resolve_resolution", args.resolve_resolution, 0) ?><br />
    <?cs call:action_radio('reassign') ?>
    <label for="reassign">reassign</label>
    <label for="reassign_owner">to:</label>

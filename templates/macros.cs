@@ -1,5 +1,6 @@
-<?cs def:hdf_select(options, name, selected) ?>
+<?cs def:hdf_select(options, name, selected, optional) ?>
  <select size="1" id="<?cs var:name ?>" name="<?cs var:name ?>"><?cs
+  if:optional ?><option></option><?cs /if ?><?cs
   each:option = options ?><?cs
    if option.name == $selected ?>
     <option selected="selected"><?cs var:option.name ?></option><?cs
@@ -9,16 +10,6 @@
   /each ?>
  </select><?cs
 /def?>
-
-<?cs def:hdf_select_multiple(options, name, size) ?>
- <select size="<?cs var:size ?>" id="<?cs var:name ?>" name="<?cs
-   var:name ?>" multiple="multiple"><?cs
-  each:option = options ?>
-   <option<?cs if:option.selected ?> selected="selected"<?cs /if ?>><?cs
-    var:option.name ?></option><?cs
-  /each ?>
- </select><?cs
-/def ?>
 
 <?cs def:browser_path_links(path, file) ?><?cs
  set:first = #1 ?>
