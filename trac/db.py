@@ -25,6 +25,9 @@ import sqlite
 
 class Database(sqlite.Connection):
     def __init__(self, db_name):
+        if not os.access(db_name, os.F_OK):
+            raise EnvironmentError, 'Database "%s" not found.' % db_name
+        
         directory = os.path.dirname(db_name)
         if not os.access(db_name, os.R_OK + os.W_OK) or \
                not os.access(directory, os.R_OK + os.W_OK):
