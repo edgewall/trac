@@ -47,13 +47,53 @@ This is some **text** with a footnote [*]_.
 
 .. [*] This is the footnote.
 }}}
+----
+'''Example 3''' (''inserting a block of C source code in wiki text''):
 
+{{{
+#!html
+<pre class="wiki">{{{
+#!c
+int main(int argc, char *argv[])
+{
+  printf("Hello World\n");
+  return 0;
+}
+}}}</pre>
+}}}
+
+'''Results in:'''
+{{{
+#!c
+int main(int argc, char *argv[])
+{
+  printf("Hello World\n");
+  return 0;
+}
+}}}
 
 ----
+
+
+
 == Available Processors ==
 The following processors are included in the Trac distribution:
  * '''html''' -- Insert custom HTML in a wiki page. See WikiHtml.
  * '''rst''' -- Trac support for Restructured Text. See WikiRestructuredText.
+
+=== Source Code Support ===
+Trac includes processors to provide inline [wiki:TracSyntaxColoring syntax highlighting] for these languages:
+ * '''c''' -- C
+ * '''cpp''' -- C++
+ * '''python''' -- Python
+ * '''perl''' -- Perl
+ * '''ruby''' -- Ruby
+ * '''php''' -- PHP
+ * '''asp''' --- ASP
+ * '''sql''' -- SQL
+ * '''xml''' -- XML
+'''Note:''' ''Trac relies on external software packages for syntax coloring. See TracSyntaxColoring for more info.''
+
 
 For more processor macros developed and/or contributed by users, visit the processor bazaar: 
  http://projects.edgewall.com/trac/wiki/ProcessorBazaar
@@ -72,4 +112,4 @@ def execute(hdf, text):
 }}}
 
 ----
-See also: WikiMacros, WikiHtml, WikiRestructuredText, WikiFormatting, TracGuide
+See also: WikiMacros, WikiHtml, WikiRestructuredText, TracSyntaxColoring, WikiFormatting, TracGuide

@@ -5,6 +5,14 @@ for presenting information about tickets from the Trac database.
 Rather than have its own report format, TracReports relies on standard SQL
 SELECT statements for custom report definition. 
 
+A report consists of these basic parts:
+ * ID -- Unique (sequential) identifier 
+ * Title  -- Descriptive title
+ * Description  -- A brief description of the report, in WikiFormatting text.
+ * Report Body -- List of results from report query, formatted according to the methods described below.
+ * Footer -- Links to alternative download formats for this report.
+
+
 == Alternate Download Formats ==
 Aside from the default HTML view, reports can also be exported in a number of alternate formats.
 At the bottom of the report page, you will find a list of available data formats. Click the desired link to 
@@ -19,6 +27,11 @@ Like above, but uses tabs (\t) instead of comma.
 
 === RSS - XML Content Syndication ===
 All reports support syndication using XML/RSS 2.0. To subscribe to a , click the the orange 'XML' icon at the bottom of the page. See TracRss for general information on RSS support in Trac.
+
+== Changing Sort Order ==
+Simple reports - ungrouped reports to be specific - can be changed to be sorted by any column simply by clicking the column header. 
+
+If a column header is a hyperlink (red), click the column you would like to sort by. Clicking the same header again reverses the order.
 
 ----
 == Creating Custom Reports ==
@@ -153,7 +166,7 @@ also possible to create multi-line report entries.
 
  * '''_column_''' -- ''Full row''. By adding an underscore ('_') both at the beginning and the end of a column name, the data will be shown on a separate row.
 
- * '''_column'''  --  ''Hide data''. Prepending an underscore ('_') to a column name instructs Trac to hide the contents from the HTML output. This is useful fore information to be visible only if downloaded in other formats (like CSV or RSS/XML).
+ * '''_column'''  --  ''Hide data''. Prepending an underscore ('_') to a column name instructs Trac to hide the contents from the HTML output. This is useful for information to be visible only if downloaded in other formats (like CSV or RSS/XML).
 
 '''Example:''' ''List active tickets, grouped by milestone, colored by priority, with  description and multi-line layout''
 

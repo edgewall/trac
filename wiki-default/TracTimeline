@@ -8,6 +8,7 @@ The timeline lists the following type of events:
  * '''Wiki page events''' -- Creation and changes
  * '''Ticket events''' -- Creation and resolution/closing
  * '''Source code changes ''' -- Subversion commits 
+ * '''Milestone ''' -- Milestone completed
 
 Each event entry provides a hyperlink to the specific event in question, and 
 in the case svn commit log messages, displays the commit message. 

@@ -10,9 +10,10 @@ and uses SQLite as an embedded database. For HTML rendering, Trac uses the Clear
 To install Trac, the following software packages must be installed:
 
  * [http://www.python.org/ Python], version >= 2.1.
+   * Please keep in mind, that for RPM-based systems you will also need python-devel and python-xml packages.
  * [http://subversion.tigris.org/ Subversion], version >= 0.37. (>=1.0.1 recommended)
  * [http://subversion.tigris.org/ Subversion Python bindings].
- * [http://pysqlite.sf.net/ pysqlite], version >= 0.4.3 (>= 0.5 for better performance)
+ * [http://pysqlite.sf.net/ PySQLite], version >= 0.4.3 (>= 0.5 for better performance)
  * [http://clearsilver.net/ Clearsilver], version >= 0.9.3
  * A CGI-capable web server (we QA-test on [http://httpd.apache.org/ Apache2] )
 
@@ -24,7 +25,21 @@ $ python ./setup.py install
 This will byte-compile the python source code and install it in the {{{site-packages}}} directory
 of your python installation. The directories {{{cgi-bin}}}, {{{templates}}}, {{{htdocs}}} and {{{wiki-default}}} are all copied to $prefix/share/trac/ . 
 
-The script will also install the [wiki:TracAdmin trac-admin] command-line tool, used to create and maintain project databases. Trac-admin is the ''command center'' of Trac.
+The script will also install the [wiki:TracAdmin trac-admin] command-line tool, used to create and maintain project 
+environments. Trac-admin is the ''command center'' of Trac.
+
+'''Note:''' you'll need root permissions or equivalent for this step.
+
+For more information on installing Trac on specific platforms, see:
+
+ * TracOnOsx
+ * TracOnMandrakelinux
+ * TracOnGentoo
+ * TracOnFreeBsd
+ * TracOnNetBsd
+ * TracOnDebian
+ * TracOnWindows
+ * TracOnRedhat
 
 === Advanced Users ===
 To install Trac in a different location, and other advanced installation options, run:
@@ -32,19 +47,20 @@ To install Trac in a different location, and other advanced installation options
 $ python ./setup.py --help
 }}}
 
-== Creating a Project Database ==
+== Creating a Project Environment ==
 
-Trac stores wiki pages, tickets and all other information in a single embedded SQLite database. 
-SQLite databases are stored as a single ordinary file on your filesystem, no separate database server
-or environment is required.
+''Trac Environment'' is the backend storage format where Trac stores
+information like wiki pages, tickets, reports, settings, etc.
+A Trac environment consist of a directory containing an SQLite database, 
+human-readable configuration file, log-files and attachments.
 
-A new trac database is created with {{{trac-admin}}}:
+A new Trac environment is created with {{{trac-admin}}}:
 
 {{{
-$ trac-admin /path/to/mydatabase.db initdb
+$ trac-admin /path/to/projectenv initenv
 }}}
-'''Note:''' The database file have to be located in a directory where the web server
-user has write permission to both the file and the directory.
+'''Note:''' The web server user need write permission to the environment
+directory and all the files inside.
 
 [wiki:TracAdmin trac-admin] will ask you where your subversion repository is located and
 where it can find the trac templates directory (the default value should be fine).
@@ -58,13 +74,25 @@ to use the "{{{trac/cgi-bin/}}}" directory directly if you like, it's a matter o
 Finally edit the apache config and add this config snippet, with filenams edited to match your installation:
  
 {{{
-Alias /trac/ "/where/you/put/trac/htdocs/"
+Alias /trac/ "/usr/share/trac/htdocs/" #or where you installed the trac docs
+#You have to allow people to read the files in htdocs
+<Directory "/usr/share/trac/htdocs/">
+	Options Indexes MultiViews
+	AllowOverride None
+	Order allow,deny
+	Allow from all
+</Directory>
+
+
 # Trac need to know where the database is located
 <Location "/cgi-bin/trac.cgi">
-	SetEnv TRAC_DB "/somewhere/myproject.db"
+	SetEnv TRAC_ENV "/path/to/projectenv"
 </Location>
 
 # You need this to allow users to authenticate
+# trac.htpasswd can be created with 
+# cmd 'htpasswd -c trac.htpasswd' (UNIX)
+# do 'man htpasswd' to see all the options
 <Location "/cgi-bin/trac.cgi/login">
 	AuthType Basic
 	AuthName "trac"
@@ -73,7 +101,7 @@ Alias /trac/ "/where/you/put/trac/htdocs/"
 </location>
 }}}
 
-'''Note:''' When creating a new database, {{{trac-admin}}} will print a config snippet customized for your project.
+'''Note:''' When creating a new environment, {{{trac-admin}}} will print a config snippet customized for your project.
 
 == Using Trac ==
 
@@ -92,4 +120,4 @@ For further user-documentation, see TracGuide.
 ''Enjoy!''
 
 ----
-See also:  TracGuide, TracPermissions, TracOnNetBsd, TracOnOsx
+See also:  TracGuide, TracPermissions, TracOnFreeBsd, TracOnNetBsd, TracOnOsx, TracOnMandrakelinux, TracOnDebian, TracOnGentoo

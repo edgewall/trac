@@ -95,7 +95,7 @@ For example:
 
  TitleIndex, http://www.edgewall.com/.
 
-Links can be given a move descriptive title by writing the link followed by
+Links can be given a more descriptive title by writing the link followed by
 a space and a title and all this inside two square brackets. Like this:
 {{{
  * [http://www.edgewall.com/ Edgewall Software]
@@ -152,7 +152,7 @@ Display:
 == Processors ==
 Trac supports alternative markup formats using WikiProcessors. For example, processors are used to write pages in [wiki:WikiRestructuredText reStructuredText] or [wiki:WikiHtml HTML]. See WikiProcessors for documentation.
 
-Example:
+'''Example 1:'''
 {{{
 #!html
 <pre class="wiki">{{{
@@ -166,6 +166,27 @@ Display:
 <h1 style="text-align: right; color: blue">HTML Test</h1>
 }}}
 
+'''Example 2:'''
+{{{
+#!html
+<pre class="wiki">{{{
+#!python
+class Test:
+    def __init__(self):
+        print "Hello World"
+if __name__ == '__main__':
+   Test()
+}}}</pre>
+}}}
+Display:
+{{{
+#!python
+class Test:
+    def __init__(self):
+        print "Hello World"
+if __name__ == '__main__':
+   Test()
+}}}
 == Miscellaneous ==
 
 Four or more dashes will be replaced by a horizontal line (<HR>)
@@ -179,4 +200,4 @@ Display:
 
 
 ----
-See also: TracLinks, TracGuide, WikiMacros, WikiProcessors
+See also: TracLinks, TracGuide, WikiMacros, WikiProcessors, TracSyntaxColoring.

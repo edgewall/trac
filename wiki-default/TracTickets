@@ -2,11 +2,11 @@
 
 The Trac issue database provides simple but effective tracking of issues and bugs within the project.
 
-As the central project management element of Trac, tickets are be used for '''bug reports''',  '''feature requests'''. '''software support issues''' and '''project tasks'''. 
+As the central project management element of Trac, tickets are used for '''bug reports''',  '''feature requests''', '''software support issues''' and '''project tasks'''. 
 
 As with the TracWiki, this subsystem has been designed with the goal of making user contribution and participation as simple as possible. It should be easy to report bugs, ask questions and suggest improvements.
 
-An issue is assigned a person who must resolve it or reassign the ticket to
+An issue is assigned to a person who must resolve it or reassign the ticket to
 someone else. All tickets can be edited, annotated, assigned, prioritized and
 discussed at any time.
 

@@ -1,0 +1,135 @@
+= TracLinks in reStructuredText =
+
+This is a list of example uses of the ''trac'' directive, providing use of TracLinks in WikiRestructuredText.
+
+== Examples ==
+{{{
+{{{
+#!rst
+===============
+Trac Link Tests
+===============
+
+This document is for testing the ``..trac::`` directive.
+
+tickets
+=======
+
+``.. trac:: #1``:
+	.. trac:: #1
+``.. trac:: #1 ticket one``:
+	.. trac:: #1 ticket one
+``.. trac:: ticket:1``:
+	.. trac:: ticket:1
+``.. trac:: ticket:1 ticket one``:
+	.. trac:: ticket:1 ticket one
+
+reports
+=======
+
+``.. trac:: {1}``:
+	.. trac:: {1}
+``.. trac:: {1} report one``:
+	
+        .. trac:: {1} report one
+``.. trac:: report:1``:
+	.. trac:: report:1
+``.. trac:: report:1 report one``:
+	.. trac:: report:1 report one
+
+changesets
+==========
+
+``.. trac:: [42]``: 
+	.. trac:: [42]
+``.. trac:: [42] changeset 42``: 
+	.. trac:: [42] changeset 42
+``.. trac:: changeset:42``: 
+	.. trac:: changeset:42
+``.. trac:: changeset:42 changeset 42``: 
+	.. trac:: changeset:42 changeset 42
+``.. trac:: foo``: 
+	.. trac:: foo
+
+files
+=====
+
+``.. trac:: browser:foo/hoo``:
+	.. trac:: browser:foo/hoo
+``.. trac:: repos:foo/hoo foo/hoo``:
+	.. trac:: repos:foo/hoo foo/hoo
+``.. trac:: source:foo/hoo hoo in foo``:
+	.. trac:: source:foo/hoo hoo in foo
+``.. trac:: browser:foo/hoo#latest latest of foo/hoo``:
+	.. trac:: browser:foo/hoo#latest latest of foo/hoo
+``.. trac:: repos:foo/hoo#42 foo/hoo in rev 42``:
+	.. trac:: repos:foo/hoo#42 foo/hoo in rev 42
+}}}
+}}}
+
+=== Results in: ===
+
+{{{
+#!rst
+===============
+Trac Link Tests
+===============
+
+This document is for testing the ``..trac::`` directive.
+
+tickets
+=======
+
+``.. trac:: #1``:
+	.. trac:: #1
+``.. trac:: #1 ticket one``:
+	.. trac:: #1 ticket one
+``.. trac:: ticket:1``:
+	.. trac:: ticket:1
+``.. trac:: ticket:1 ticket one``:
+	.. trac:: ticket:1 ticket one
+
+reports
+=======
+
+``.. trac:: {1}``:
+	.. trac:: {1}
+``.. trac:: {1} report one``:
+	
+        .. trac:: {1} report one
+``.. trac:: report:1``:
+	.. trac:: report:1
+``.. trac:: report:1 report one``:
+	.. trac:: report:1 report one
+
+changesets
+==========
+
+``.. trac:: [42]``: 
+	.. trac:: [42]
+``.. trac:: [42] changeset 42``: 
+	.. trac:: [42] changeset 42
+``.. trac:: changeset:42``: 
+	.. trac:: changeset:42
+``.. trac:: changeset:42 changeset 42``: 
+	.. trac:: changeset:42 changeset 42
+``.. trac:: foo``: 
+	.. trac:: foo
+
+files
+=====
+
+``.. trac:: browser:foo/hoo``:
+	.. trac:: browser:foo/hoo
+``.. trac:: repos:foo/hoo foo/hoo``:
+	.. trac:: repos:foo/hoo foo/hoo
+``.. trac:: source:foo/hoo hoo in foo``:
+	.. trac:: source:foo/hoo hoo in foo
+``.. trac:: browser:foo/hoo#latest latest of foo/hoo``:
+	.. trac:: browser:foo/hoo#latest latest of foo/hoo
+``.. trac:: repos:foo/hoo#42 foo/hoo in rev 42``:
+	.. trac:: repos:foo/hoo#42 foo/hoo in rev 42
+}}}
+
+----
+See also: WikiRestructuredTextLinks, TracLinks

@@ -3,12 +3,13 @@
 Fink (http://fink.sf.net/) can be used to install most of Trac's dependencies:
 {{{
  $ apt-get install sqlite
- $ fink install svn-client svn-swig-py
+ $ apt-get install svn-client svn-swig-py23
 }}}
 
-Subversion is currently in fink's unstable tree (this will probably change soon).
-This means that you have to use fink to compile the packages instead of simply using
-apt-get to download the binaries directly. This will take some time but should work.
+If you need to use a secure protocol with subversion, you need to install the -ssl variants:
+{{{
+ $ apt-get install svn-client-ssl svn-ssl-swig-py23
+}}}
 
 The last two dependencies (pysqlite and clearsilver) can't be installed using fink, 
 you have to download and install them manually.
@@ -65,4 +66,3 @@ editing this page and/or contacting me -- [http://projects.edgewall.com/trac/wik
 As an alternative to fink and compiling by hand, you can install from pkgsrc (http://www.netbsd.org/Documentation/software/packages.html).  Yes, pkgsrc runs on Mac OS X just as well as it runs on NetBSD or Linux.
 
 See TracOnNetBsd for more information.
-

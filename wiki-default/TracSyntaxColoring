@@ -1,0 +1,64 @@
+= Syntax Coloring of Source Code =
+Trac supports language-specific colorization (syntax highlighting) of source code in [wiki:WikiFormatting WikiFormatted] text and the [wiki:TracBrowser Source Browser].
+
+To perform this, Trac relies on external software packages with support for a great number of programming languages.
+
+Currently Trac supports syntax coloring using [http://people.ssh.fi/mtr/genscript/ GNU Enscript] and [http://silvercity.sourceforge.net/ SilverCity]. 
+
+'''To activate syntax coloring, simply install !SilverCity and/or Enscript.'''
+
+Trac will automatically prioritize using !SilverCity before Enscript if possible. If neither is available, Trac will display the data as plain text. 
+
+'''Note:''' ''Enscript supports a greater number of languages, however !SilverCity is generally faster since it is a library, not having to execute an external process.''
+[[br]]'''Note:''' ''Syntax Coloring is only available on trac >= 0.7.''
+
+== Syntax Coloring Support ==
+
+|| || !SilverCity || Enscript ||
+|| Ada      ||   || X ||
+|| Asm      ||   || X ||
+|| * ASP    || X || X ||
+|| * C      || X || X ||
+|| * C++    || X || X ||
+|| * Java   ||   || X ||
+|| Awk      ||   || X ||
+|| CSS      || X ||   ||
+|| Diff     ||   || X ||
+|| Eiffel   ||   || X ||
+|| Elisp    ||   || X ||
+|| Fortran  ||   || X ||
+|| Haskell  ||   || X ||
+|| HTML     || X || X ||
+|| IDL      ||   || X ||
+|| Javascript || X || X ||
+|| m4       ||   || X ||
+|| Makefile ||   || X ||
+|| Matlab   ||   || X ||
+|| Objective-C|| || X ||
+|| Pascal   ||   || X ||
+|| * Perl   || X || X ||
+|| * PHP    || X || X ||
+|| PSP      || X ||   ||
+|| Pyrex    ||   || X ||
+|| * Python || X || X ||
+|| * Ruby   || X || X ||
+|| Scheme   ||   || X ||
+|| Shell    ||   || X ||
+|| SQL      || X || X ||
+|| Troff    ||   || X ||
+|| TCL      ||   || X ||
+|| Tex      ||   || X ||
+|| Verilog  ||   || X ||
+|| VHDL     ||   || X ||
+|| Visual Basic |||| X ||
+|| VRML     ||   || X ||
+|| XML      || X || X ||
+
+''(*) Supported as inline code blocks in [wiki:WikiFormatting Wiki text] using WikiProcessors.''
+
+== Extra Software ==
+ * GNU Enscript -- http://people.ssh.fi/mtr/genscript/
+ * !SilverCity -- http://silvercity.sf.net/
+
+----
+See also: WikiProcessors, WikiFormatting, TracWiki, TracBrowser.

@@ -1,0 +1,19 @@
+= Unicode Support in Trac =
+Trac stores all text using UTF-8 encoding, including text in tickets and wiki pages. 
+
+As such, it supports most (all?) commonly used character encodings.
+
+
+== Examples ==
+
+=== Swedish ===
+
+''Räven raskar över isen med luva på.''
+
+=== Français ===
+
+''Il est possible d'écrire en Français : à, ç, û, ...''
+
+=== Icelandic ===
+
+''Ævar sagði við ömmu sína: Sjáðu hvað ég er stór!''

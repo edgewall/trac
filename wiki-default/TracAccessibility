@@ -1,0 +1,18 @@
+= Accessibility Support in Trac =
+Not every user has a graphic environment with a mouse or other pointing device. Some users rely on keyboard, alternative keyboard or voice input to navigate links, activate form controls, etc. In Trac, we work to assure users may interact with devices other than a pointing device.
+
+Trac supports accessibility keys for the most common operations.
+
+== Accessibility Keys ==
+ * 1 - WikiStart
+ * 2 - Timeline
+ * 4 - Search
+ * 5 - TracGuide / Documentation
+ * 6 - TracGuide / Documentation
+ * 7 - New Ticket
+ * 8 - About Trac
+ * 9 - New Ticket
+ * 0 - TracAccessibility 
+
+----
+See also: TracGuide
