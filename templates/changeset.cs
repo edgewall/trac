@@ -124,8 +124,10 @@
         <col class="content" />
        </colgroup>
        <thead><tr>
-        <th>v<?cs var:file.rev.old ?></th>
-        <th>v<?cs var:file.rev.new ?></th>
+        <th title="Revision <?cs var:file.rev.old ?>">r<?cs
+          var:file.rev.old ?></th>
+        <th title="Revision <?cs var:file.rev.new ?>">r<?cs
+          var:file.rev.new ?></th>
         <th>&nbsp;</th>
        </tr></thead>
        <?cs each:change = file.changes ?>

@@ -89,8 +89,10 @@
          <col class="content" />
         </colgroup>
         <thead><tr>
-         <th>v<?cs var:wiki.diff.rev.old ?></th>
-         <th>v<?cs var:wiki.diff.rev.new ?></th>
+         <th title="Version <?cs var:wiki.diff.rev.old ?>">v<?cs
+           var:wiki.diff.rev.old ?></th>
+         <th title="Version <?cs var:wiki.diff.rev.new ?>">v<?cs
+           var:wiki.diff.rev.new ?></th>
          <th></th>
         </tr></thead>
         <?cs each:change = wiki.diff.changes ?>
