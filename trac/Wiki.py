@@ -231,7 +231,7 @@ class Formatter(CommonFormatter):
             macro = self.load_macro(name)
             return macro(self.hdf, args)
         except Exception, e:
-            return '<span class="wiki-error">Macro %s(%s) failed: %s</span' \
+            return '<span class="error">Macro %s(%s) failed: %s</span' \
                    % (name, args, e)
 
     def _heading_formatter(self, match, fullmatch):

@@ -167,9 +167,10 @@ table.wiki {
 }
 table.wiki td { border: 1px solid #ccc;  padding: .1em .25em; }
 #wiki-edit-page:hover { background: #ccb }
-.wiki-error { 
+.error { 
  background: #fdc; 
  border: 1px solid #b00;
  color: #b00;
  padding: .25em;
+ margin: 1em 0;
 }
