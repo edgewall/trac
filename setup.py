@@ -6,8 +6,9 @@ import sys
 from glob import glob
 from distutils.core import setup
 from distutils.command.install import install
+from distutils.command.install_data import install_data
 from distutils.command.install_scripts import install_scripts
-from stat import ST_MODE
+from stat import ST_MODE, S_ISDIR
 
 import trac
 
@@ -102,6 +103,20 @@ class my_install_scripts (install_scripts):
                     os.chmod(file, mode)
 
 
+class my_install_data (install_data):
+    def run (self):
+        install_data.run(self)
+
+        if os.name == 'posix' and not self.dry_run:
+            # Make the data files we just installed world-readable,
+            # and the directories world-executable as well.
+            for path in self.get_outputs():
+                mode = os.stat(path)[ST_MODE]
+                if S_ISDIR(mode):
+                    mode |= 011
+                mode |= 044
+                os.chmod(path, mode)
+
 
 # Our custom bdist_wininst
 import distutils.command.bdist_wininst
@@ -138,7 +153,8 @@ facilities.
                _p('scripts/tracdb2env'),
                _p('cgi-bin/trac.cgi')],
       cmdclass = {'install': my_install,
-                  'install_scripts': my_install_scripts})
+                  'install_scripts': my_install_scripts,
+                  'install_data': my_install_data})
 
 
 
