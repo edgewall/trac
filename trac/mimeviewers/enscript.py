@@ -120,8 +120,6 @@ def display(data, mimetype, filename, env):
         enscript += lang
 
     np = NaivePopen(enscript, data, capturestderr=1)
-    env.log.debug("err: %s" % (np.err))
-    env.log.debug("errlevel: %s" % (np.errorlevel))
     if np.errorlevel or np.err:
         err = 'Running (%s) failed: %s, %s.' % (enscript, np.errorlevel, np.err)
         raise Exception, err
