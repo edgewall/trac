@@ -128,11 +128,10 @@ CREATE TABLE component (
          owner           text
 );
 CREATE TABLE milestone (
-         id              integer PRIMARY KEY,
-         name            text,
-         time            integer,
-         descr           text,
-         UNIQUE(name)
+         name            text PRIMARY KEY,
+         due             integer,
+         completed       integer,
+         description     text
 );
 CREATE TABLE version (
          name            text PRIMARY KEY,
@@ -169,7 +168,7 @@ CREATE TABLE session (
          UNIQUE(sid,var_name)
 );
 
-CREATE INDEX node_change_idx ON node_change(rev);
+CREATE INDEX node_change_idx    ON node_change(rev);
 CREATE INDEX ticket_change_idx  ON ticket_change(ticket, time);
 CREATE INDEX wiki_idx           ON wiki(name,version);
 CREATE INDEX session_idx        ON session(sid,var_name);
@@ -351,12 +350,12 @@ data = (('component',
                (('component1', 'somebody'),
                 ('component2', 'somebody'))),
            ('milestone',
-             ('name', 'time'),
-               (('', 0), 
-                ('milestone1', 0),
-                ('milestone2', 0),
-                ('milestone3', 0),
-                ('milestone4', 0))),
+             ('name', 'due', 'completed'),
+               (('', 0, 0), 
+                ('milestone1', 0, 0),
+                ('milestone2', 0, 0),
+                ('milestone3', 0, 0),
+                ('milestone4', 0, 0))),
            ('version',
              ('name', 'time'),
                (('', 0),

@@ -164,9 +164,10 @@ class Query:
                        " ON %s_name=%s" % (col, col, col, col, col))
         for col in [c for c in ['milestone', 'version']
                     if c == self.order or c == self.group]:
+            time_col = col == 'milestone' and 'due' or 'time'
             sql.append("\n  LEFT OUTER JOIN (SELECT name AS %s_name, " \
-                                            "time AS %s_time FROM %s)" \
-                       " ON %s_name=%s" % (col, col, col, col, col))
+                                            "%s AS %s_time FROM %s)" \
+                       " ON %s_name=%s" % (col, time_col, col, col, col, col))
 
         def get_constraint_sql(name, value, mode, neg):
             value = sql_escape(value[len(mode and '!' or '' + mode):])

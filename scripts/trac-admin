@@ -857,9 +857,10 @@ class TracAdmin(cmd.Cmd):
             print 'Command %s failed:' % arg[0], e
 
     def _do_milestone_list(self):
-        data = self.db_execsql("SELECT name,due,completed FROM milestone ORDER BY IFNULL(due,0)!=0 DESC, due,name")
+        data = self.db_execsql("SELECT name,due,completed FROM milestone "
+                               "ORDER BY IFNULL(due,0)!=0 DESC,due,name")
         data = map(lambda x: (x[0], x[1] and time.strftime('%c', time.localtime(x[1])),
-                              x[2] and time.strftime('%c', time.localtime(x[1]))), data)
+                              x[2] and time.strftime('%c', time.localtime(x[2]))), data)
         self.print_listing(['Name', 'Due', 'Completed'], data)
 
     def _do_milestone_rename(self, name, newname):
@@ -892,7 +893,7 @@ class TracAdmin(cmd.Cmd):
             raise Exception, "No such milestone '%s'" % name
         seconds = self._parse_datetime(t)
         if seconds != None:
-            data = self.db_execsql("UPDATE milestone SET due=%d"
+            data = self.db_execsql("UPDATE milestone SET due=%s"
                                    " WHERE name='%s'" % (seconds, name))
 
     def _do_milestone_set_completed(self, name, t):
@@ -903,7 +904,7 @@ class TracAdmin(cmd.Cmd):
             raise Exception, "No such milestone '%s'" % name
         seconds = self._parse_datetime(t)
         if seconds != None:
-            data = self.db_execsql("UPDATE milestone SET completed=%d"
+            data = self.db_execsql("UPDATE milestone SET completed=%s"
                                    " WHERE name='%s'" % (seconds, name))
 
     ## Version

@@ -40,9 +40,10 @@ version rename <name> <newname>                   -- Rename version
 version time <name> <time>                        -- Set version date (Format: "%(date_format_hint)s" or "now")
 version remove <name>                             -- Remove version
 milestone list                                    -- Show milestones
-milestone add <name> [time]                       -- Add milestone
+milestone add <name> [due]                        -- Add milestone
 milestone rename <name> <newname>                 -- Rename milestone
-milestone time <name> <time>                      -- Set milestone date (Format: "%(date_format_hint)s" or "now")
+milestone due <name> <due>                        -- Set milestone due date (Format: "%(date_format_hint)s" or "now")
+milestone completed <name> <completed>            -- Set milestone completed date (Format: "%(date_format_hint)s" or "now")
 milestone remove <name>                           -- Remove milestone
 
 Visit the Trac Project at http://trac.edgewall.com/
@@ -407,59 +408,71 @@ Name  Time
 Command remove failed: No such version 'bad_version'
 ===== test_milestone_list_ok =====
 
-Name        Time
-----------------
-                
-milestone1      
-milestone2      
-milestone3      
-milestone4      
+Name        Due  Completed
+--------------------------
+
+milestone1
+milestone2
+milestone3
+milestone4
 
 ===== test_milestone_add_ok =====
 
-Name           Time                    
----------------------------------------
-                                       
-milestone1                             
-milestone2                             
-milestone3                             
-milestone4                             
+Name           Due                       Completed
+--------------------------------------------------
 new_milestone  Thu Jan  1 00:00:00 2004
+
+milestone1
+milestone2
+milestone3
+milestone4
 
 ===== test_milestone_add_error_already_exists =====
 Command add failed: column name is not unique
 ===== test_milestone_rename_ok =====
 
-Name               Time
------------------------
-                       
-changed_milestone      
-milestone2             
-milestone3             
-milestone4             
+Name               Due  Completed
+---------------------------------
+
+changed_milestone
+milestone2
+milestone3
+milestone4
 
 ===== test_milestone_rename_error_bad_milestone =====
 Command rename failed: No such milestone 'bad_milestone'
-===== test_milestone_time_ok =====
+===== test_milestone_due_ok =====
 
-Name        Time                    
-------------------------------------
-                                    
-milestone1                          
-milestone3                          
-milestone4                          
+Name        Due                       Completed
+-----------------------------------------------
 milestone2  Thu Jan  1 00:00:00 2004
 
-===== test_milestone_time_error_bad_milestone =====
-Command time failed: No such milestone 'bad_milestone'
+milestone1
+milestone3
+milestone4
+
+===== test_milestone_due_error_bad_milestone =====
+Command due failed: No such milestone 'bad_milestone'
+===== test_milestone_completed_ok =====
+
+Name        Due  Completed
+-----------------------------------------
+
+milestone1
+milestone2       Thu Jan  1 00:00:00 2004
+milestone3
+milestone4
+
+===== test_milestone_completed_error_bad_milestone =====
+Command completed failed: No such milestone 'bad_milestone'
 ===== test_milestone_remove_ok =====
 
-Name        Time
-----------------
-                
-milestone1      
-milestone2      
-milestone4      
+Name        Due  Completed
+--------------------------
+
+milestone1
+milestone2
+milestone4
 
 ===== test_milestone_remove_error_bad_milestone =====
 Command remove failed: No such milestone 'bad_milestone'

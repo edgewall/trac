@@ -579,25 +579,47 @@ Trac Admin Console %s
         test_results = self._execute('milestone rename bad_milestone changed_name')
         self.assertEquals(self.expected_results[test_name], test_results)
 
-    def test_milestone_time_ok(self):
+    def test_milestone_due_ok(self):
         """
-        Tests the 'milestone time' command in trac-admin.  This particular
+        Tests the 'milestone due' command in trac-admin.  This particular
         test passes valid arguments and checks for success.
         """
         test_name = sys._getframe().f_code.co_name
         new_years = time.strftime('%b %d, %Y', (2004, 1, 1, 0, 0, 0, 3, 1, -1))
-        self._execute('milestone time milestone2 "%s"' % new_years)
+        self._execute('milestone due milestone2 "%s"' % new_years)
         test_results = self._execute('milestone list')
         self.assertEquals(self.expected_results[test_name], test_results)
 
-    def test_milestone_time_error_bad_milestone(self):
+    def test_milestone_due_error_bad_milestone(self):
         """
-        Tests the 'milestone time' command in trac-admin.  This particular
-        test tries to change the time on a milestone that does not exist.
+        Tests the 'milestone due' command in trac-admin.  This particular
+        test tries to change the due date on a milestone that does not exist.
         """
         test_name = sys._getframe().f_code.co_name
         new_years = time.strftime('%b %d, %Y', (2004, 1, 1, 0, 0, 0, 3, 1, -1))
-        test_results = self._execute('milestone time bad_milestone "%s"' % new_years)
+        test_results = self._execute('milestone due bad_milestone "%s"' % new_years)
+        self.assertEquals(self.expected_results[test_name], test_results)
+
+    def test_milestone_completed_ok(self):
+        """
+        Tests the 'milestone completed' command in trac-admin.  This particular
+        test passes valid arguments and checks for success.
+        """
+        test_name = sys._getframe().f_code.co_name
+        new_years = time.strftime('%b %d, %Y', (2004, 1, 1, 0, 0, 0, 3, 1, -1))
+        self._execute('milestone completed milestone2 "%s"' % new_years)
+        test_results = self._execute('milestone list')
+        self.assertEquals(self.expected_results[test_name], test_results)
+
+    def test_milestone_completed_error_bad_milestone(self):
+        """
+        Tests the 'milestone completed' command in trac-admin.  This particular
+        test tries to change the completed date on a milestone that does not
+        exist.
+        """
+        test_name = sys._getframe().f_code.co_name
+        new_years = time.strftime('%b %d, %Y', (2004, 1, 1, 0, 0, 0, 3, 1, -1))
+        test_results = self._execute('milestone completed bad_milestone "%s"' % new_years)
         self.assertEquals(self.expected_results[test_name], test_results)
 
     def test_milestone_remove_ok(self):

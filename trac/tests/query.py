@@ -81,7 +81,7 @@ ORDER BY IFNULL(id,'')='',id""")
         self.assertEqual(sql,
 """SELECT id,summary,status,owner,priority,component,version,milestone
 FROM ticket
-  LEFT OUTER JOIN (SELECT name AS milestone_name, time AS milestone_time FROM milestone) ON milestone_name=milestone
+  LEFT OUTER JOIN (SELECT name AS milestone_name, due AS milestone_time FROM milestone) ON milestone_name=milestone
 ORDER BY IFNULL(milestone,'')='',IFNULL(milestone_time,0)=0,milestone_time,milestone,IFNULL(id,'')='',id""")
 
     def test_all_grouped_by_milestone_desc(self):
@@ -90,7 +90,7 @@ ORDER BY IFNULL(milestone,'')='',IFNULL(milestone_time,0)=0,milestone_time,miles
         self.assertEqual(sql,
 """SELECT id,summary,status,owner,priority,component,version,milestone
 FROM ticket
-  LEFT OUTER JOIN (SELECT name AS milestone_name, time AS milestone_time FROM milestone) ON milestone_name=milestone
+  LEFT OUTER JOIN (SELECT name AS milestone_name, due AS milestone_time FROM milestone) ON milestone_name=milestone
 ORDER BY IFNULL(milestone,'')='' DESC,IFNULL(milestone_time,0)=0 DESC,milestone_time DESC,milestone DESC,IFNULL(id,'')='',id""")
 
     def test_grouped_by_priority(self):
