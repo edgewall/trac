@@ -406,7 +406,7 @@ class Report (Module):
             if req.args.has_key('cancel'):
                 action = 'list'
             else:
-                self.create_report(req.args.get('title', ''),
+                self.create_report(req, req.args.get('title', ''),
                                    req.args.get('description', ''),
                                    req.args.get('sql', ''))
 

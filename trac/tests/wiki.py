@@ -18,7 +18,9 @@ class WikiTestCase(unittest.TestCase):
         class Environment:
             def __init__(self):
                 self.log = Logging.logger_factory('null')
+                self.get_config = lambda x,y,z=None: z
                 self.href = Href.Href('/')
+                self.abs_href = Href.Href('http://www.example.com/')
                 self._wiki_pages = {}
         class Cursor:
             def execute(self, *kwargs): pass
