@@ -94,11 +94,10 @@ class PermissionCache:
             self.expand_meta_permission(row[0])
         
     def expand_meta_permission(self, action):
+        self.perm_cache[action] = 1
         if meta_permission.has_key(action):
             for perm in meta_permission[action]:
                 self.expand_meta_permission(perm)
-        else:
-            self.perm_cache[action] = 1
 
     def has_permission(self, action):
         return self.perm_cache.has_key (action)
