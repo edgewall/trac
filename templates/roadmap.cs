@@ -13,8 +13,7 @@
   <li class="milestone">
    <div class="info">
     <h2><a href="<?cs var:milestone.href ?>">Milestone: <em><?cs
-      var:milestone.name ?><?cs if:milestone.title ?> &#8216;<?cs
-      var:milestone.title ?>&#8217;<?cs /if ?></em></a></h2>
+      var:milestone.name ?></em></a></h2>
     <p class="date"><?cs if:milestone.date ?>
      <?cs var:milestone.date ?><?cs else ?>No date set<?cs /if ?>
     </p>
@@ -33,7 +32,7 @@
      <?cs /if ?>
     <?cs /with ?>
    </div>
-   <div class="description"><?cs var:milestone.description ?></div>
+   <div class="descr"><?cs var:milestone.descr ?></div>
   </li>
  <?cs /each ?></ul>
 

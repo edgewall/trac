@@ -20,8 +20,8 @@
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
 import re
+import auth, core, Environment, Href, Session, Wiki
 from mod_python import apache, util
-from trac import auth, core, Environment, Href, Session, Wiki
 
 content_type_re = re.compile(r'^Content-Type$', re.IGNORECASE)
 
@@ -89,32 +89,27 @@ env = None
 def init(req):
     global env
 
-    try:
-        options = req.req.get_options()
-        if not options.has_key('TracEnv'):
-            raise EnvironmentError, \
-                  'Missing PythonOption "TracEnv". Trac requires this option '\
-                  'to point to a valid Trac Environment.'
-        env_path = options['TracEnv']
+    options = req.req.get_options()
+    if not options.has_key('TracEnv'):
+        raise EnvironmentError, \
+            'Missing PythonOption "TracEnv". Trac requires this option '\
+            'to point to a valid Trac Environment.'
+    env_path = options['TracEnv']
 
-        env = Environment.Environment(env_path)
-        version = env.get_version()
-        if version < Environment.db_version:
-            raise TracError('The Trac environment needs to be upgraded. '
-                            'Run "trac-admin %s upgrade"' % path)
-        elif version > Environment.db_version:
-            raise TracError('Unknown Trac Environment version (%d).' % version)
+    env = Environment.Environment(env_path)
+    version = env.get_version()
+    if version < Environment.db_version:
+        raise TracError('The Trac environment needs to be upgraded. '
+                        'Run "trac-admin %s upgrade"' % env_path)
+    elif version > Environment.db_version:
+        raise TracError('Unknown Trac Environment version (%d).' % version)
 
-        env.href = Href.Href(req.cgi_location)
-        env.abs_href = Href.Href(req.base_url)
+    env.href = Href.Href(req.cgi_location)
+    env.abs_href = Href.Href(req.base_url)
 
-        # Let the wiki module build a dictionary of all page names
-        database = env.get_db_cnx()
-        Wiki.populate_page_dict(database, env)
-
-    except Exception, e:
-        apache.log_error(str(e))
-        raise apache.SERVER_RETURN, apache.HTTP_INTERNAL_SERVER_ERROR
+    # Let the wiki module build a dictionary of all page names
+    database = env.get_db_cnx()
+    Wiki.populate_page_dict(database, env)
 
 def handler(req):
     global env

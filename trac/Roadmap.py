@@ -39,9 +39,9 @@ class Roadmap(Module):
                                    self.env.href.milestone(None, 'new'))
 
         cursor = self.db.cursor()
-        cursor.execute("SELECT name, title, time, description FROM milestone "
+        cursor.execute("SELECT name, time, descr FROM milestone "
                        "WHERE name != '' AND (time = 0 OR time > %d) "
-                       "ORDER BY time DESC, name, title" % time.time())
+                       "ORDER BY time DESC, name" % time.time())
         milestones = []
         while 1:
             row = cursor.fetchone()
@@ -49,13 +49,11 @@ class Roadmap(Module):
                 break
             milestone = {
                 'name': row['name'],
-                'title': row['title'] or '',
                 'href': self.env.href.milestone(row['name'])
             }
-            description = row['description']
-            if description:
-                milestone['description'] = wiki_to_html(description,
-                                                        self.req.hdf, self.env)
+            descr = row['descr']
+            if descr:
+                milestone['descr'] = wiki_to_html(descr, self.req.hdf, self.env)
             t = int(row['time'])
             if t > 0:
                 milestone['date'] = time.strftime('%x', time.localtime(t))

@@ -56,14 +56,14 @@ p.percentage { font-size: 10px; line-height: 2.4em }
  margin-left: .5em;
  margin-right: 1em
 }
-#main.roadmap li.milestone .description {
+#main.roadmap li.milestone .descr {
  clear: both;
  margin-left: 1em;
 }
 
 /* Styles for the milestone view */
 #main.milestone .date { color: #888; font-style: italic }
-#main.milestone .description { margin: 1em 0 2em }
+#main.milestone .descr { margin: 1em 0 2em }
 #main.milestone .stats {
  margin: 2em 0 0;
  border-collapse: collapse;
