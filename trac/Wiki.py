@@ -42,6 +42,10 @@ class Formatter:
              r"""|(?P<changesethref>\[[0-9]+\])""" \
              r"""|(?P<reporthref>\{[0-9]+\})""" \
              r"""|(?P<italic>'')""" \
+             r"""|(?P<beginpre>\{\{\{$)""" \
+             r"""|(?P<endpre>\}\}\}$)""" \
+             r"""|(?P<begintt>\{\{\{)""" \
+             r"""|(?P<endtt>\}\}\})""" \
              r"""|(?P<hr>-{5,})""" \
              r"""|(?P<heading>^\s*(?P<hdepth>=+)\s.*\s(?P=hdepth)$)""" \
              r"""|(?P<listitem>^(?P<ldepth>\s+)(?:\*|[0-9]+\.) )""" \
@@ -58,6 +62,21 @@ class Formatter:
     def _bold_formatter(self, match, fullmatch):
         self._is_bold = not self._is_bold
         return ['</strong>', '<strong>'][self._is_bold]
+
+    def _beginpre_formatter(self, match, fullmatch):
+        self._in_pre = 1
+        return '<pre>'
+
+    def _endpre_formatter(self, match, fullmatch):
+        in_pre = self._in_pre
+        self._in_pre = 0
+        return ['</tt>', '</pre>'][in_pre]
+
+    def _begintt_formatter(self, match, fullmatch):
+        return ['<tt>', ''][self._in_pre]
+
+    def _endtt_formatter(self, match, fullmatch):
+        return ['</tt>', ''][self._in_pre]
 
     def _tickethref_formatter(self, match, fullmatch):
         number = int(match[2:])
@@ -181,6 +200,7 @@ class Formatter:
                 
             out.write(result)
             self.is_heading = 0
+            out.write([' ', '\n'][self._in_pre])
         # clean up before we are done
         self._set_list_depth(0, None)
         if p_open:
@@ -352,7 +372,7 @@ test_in = '''
   Hoj2
 Hoj3
 '''
-test_out = '''<ul><li>Foo</li><ul><li>Foo 2</li></ul></ul><ol><li>Foo 3</li></ol><h3>FooBar</h3><ul> Hoj Hoj2</ul><p>Hoj3</p>'''
+test_out = ''' <ul><li>Foo</li> <ul><li>Foo 2</li> </ul></ul><ol><li>Foo 3</li> </ol><h3>FooBar</h3> <ul> Hoj  Hoj2 </ul><p>Hoj3 </p>'''
 
 def test():
     result = StringIO.StringIO()
