@@ -1,0 +1,15 @@
+= Installing and Running Trac on Gentoo =
+
+Trac 0.6.1 is included in portage as of 2004/04/29.  The current ebuild is marked with ~x86, so you will have to emerge with ACCEPT_KEYWORDS=~x86 set, or include the following in your /etc/portage/package.keywords:
+
+{{{
+  net-www/trac ~x86
+}}}
+
+You may need to do the same thing for clearsilver because currently, clearsilver only has ~x86 ebuilds in the main portage tree.  Once that is done, installing is as simple as:
+
+{{{
+  emerge trac
+}}}
+
+Past that, normal Trac configuration should apply.

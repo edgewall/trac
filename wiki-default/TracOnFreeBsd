@@ -1,0 +1,18 @@
+= Installing Trac on FreeBSD =
+
+Kuei-Feng Li, Rui Lopes and Pav Lucistnik kindly [http://www.freebsd.org/cgi/query-pr.cgi?pr=ports/65690 added] Trac to the [http://www.freebsd.org/ FreeBSD] ports collection.
+
+For more information:
+ * http://www.freebsd.org/ports/
+ * http://www.freebsd.org/cgi/cvsweb.cgi/ports/www/trac/
+
+= Having trouble using the ports ? =
+
+You may have to use some additional ports from [http://www.freshports.org freshports].
+I found these ones useful:
+
+ * [http://www.freshports.org/devel/subversion-python subversion-python]
+ * [http://www.freshports.org/www/clearsilver-python clearsilver-python]
+ * [http://www.freshports.org/www/clearsilver clearsilver]
+
+Just add them to your /usr/ports tree before using the trac port mentioned above.

@@ -1,0 +1,86 @@
+= Installing and Running Trac on Debian =
+
+== Notes from a debian sarge install ==
+
+As has been previously pointed out, a Debian package does not exist, hence you need to build it yourself. This isn't ''too'' onerous if you know where you might get bitten. Hopefully the following should be of some use.
+
+'''Warning''': The instructions within will modify your system from the standard Debian install. Some packages will be pulled from the unstable distribution, and some packages are installed manually on your system. This may make it difficult to uninstall the software, or upgrade it in the future as Debian packages arrive. But for what it's worth, this setup seems to work fine.
+
+First you need the SQLite, Subversion and the related python modules. Note that you need to use the version of subversion from unstable. Don't worry as Debians unstable is not really unstable, it's about as stable as typical redhat packages.
+
+You might want to use apt-pinning, which is basically a way of stopping unstable dependancies from getting installed all over the place (try this [http://jaqque.sbih.org/kplug/apt-pinning.html guide for beginners]). Create or edit '''{{{/etc/apt/preferences}}}''' and insert
+
+{{{
+Package: *
+Pin: release a=testing
+Pin-Priority: 650
+                                                                                                
+Package: *
+Pin: release a=unstable
+Pin-Priority: 600
+}}}
+
+You'll also need to add unstable to the '''{{{/etc/apt/sources.list}}}'''
+
+{{{
+deb http://security.debian.org/ stable/updates main
+deb http://ftp.uk.debian.org/debian/ testing non-free
+deb http://ftp.uk.debian.org/debian/ testing contrib
+deb http://ftp.uk.debian.org/debian/ testing main
+deb http://ftp.uk.debian.org/debian/ unstable main
+}}}
+
+Thats what mine looks like
+
+{{{
+apt-get install sqlite python2.3-subversion python2.3-sqlite 
+apt-get -t unstable install subversion
+}}}
+
+Clearsilver isn't available as a package so get clearsilver from http://www.clearsilver.net/ (tested [http://www.clearsilver.net/downloads/clearsilver-0.9.8.tar.gz 0.9.8])
+
+{{{
+tar xvfz clearsilver-0.9.8.tar.gz
+cd clearsilver-0.9.8
+./configure
+make
+make install
+cd python/
+ln -s /usr/bin/python2.3 /usr/bin/python
+make
+make install
+}}}
+
+This should then allow you to build and initialise trac.
+
+Note:  I found I needed to change the first line in scripts/document.py from '#!/usr/local/bin/python' to '#!/usr/bin/python' --Tom Hoffman
+
+When you come to running it though you'll also have to add the env_module using the following line in your '''{{{/etc/apache/modules.conf}}}'''
+
+{{{
+LoadModule env_module /usr/lib/apache/1.3/mod_env.so
+}}}
+
+I then set up a trac.conf in my '''{{{/etc/apache/conf.d}}}''' folder like so
+
+{{{
+<VirtualHost local.trac>
+    alias /trac/ "/usr/share/trac/htdocs/"
+    ServerAdmin youremail@yourdomain.tld
+    DocumentRoot /home/tim/myTrac
+    ServerName local.trac
+    ErrorLog /home/tim/myTrac/logs/error.log
+    CustomLog /home/tim/myTrac/logs/access_log common
+    AddHandler cgi-script cgi
+    <Location "/cgi-bin/trac.cgi">
+      SetEnv TRAC_DB "/home/tim/myTrac/tracdb/mydb"
+      Options FollowSymLinks +ExecCGI
+      AllowOverride None
+    </Location>
+</VirtualHost>
+}}}
+Don't forget to create those log folders though (apachectl configtest doesn't warn you about that one)
+
+
+
+
