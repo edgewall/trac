@@ -403,7 +403,7 @@ def dispatch_request(path_info, args, req, env, database=None):
     if path_info == '/logout':
         authenticator.logout()
         referer = req.get_header('Referer')
-        if referer[0:len(req.base_url)] != req.base_url:
+        if referer and referer[0:len(req.base_url)] != req.base_url:
             # only redirect to referer if the latter is from the same instance
             referer = None
         try:
@@ -414,7 +414,7 @@ def dispatch_request(path_info, args, req, env, database=None):
         auth_cookie = authenticator.login(req)
     if path_info == '/login':
         referer = req.get_header('Referer')
-        if referer[0:len(req.base_url)] != req.base_url:
+        if referer and referer[0:len(req.base_url)] != req.base_url:
             # only redirect to referer if the latter is from the same instance
             referer = None
         try:
