@@ -98,12 +98,31 @@ class Search(Module):
             # Ticket quickjump
             elif kwd[0] == '#' and kwd[1:].isdigit():
                 redir = self.env.href.ticket(kwd[1:])
+            elif kwd[0:len('ticket:')] == 'ticket:' and kwd[len('ticket:'):].isdigit():
+                redir = self.env.href.ticket(kwd[len('ticket:'):])
+            elif kwd[0:len('bug:')] == 'bug:' and kwd[len('bug:'):].isdigit():
+                redir = self.env.href.ticket(kwd[len('bug:'):])
             # Changeset quickjump
             elif kwd[0] == '[' and kwd[-1] == ']' and kwd[1:-1].isdigit():
                 redir = self.env.href.changeset(kwd[1:-1])
+            elif kwd[0:len('changeset:')] == 'changeset:' and kwd[len('changeset:'):].isdigit():
+                redir = self.env.href.changeset(kwd[len('changeset:'):])
             # Report quickjump
             elif kwd[0] == '{' and kwd[-1] == '}' and kwd[1:-1].isdigit():
                 redir = self.env.href.report(kwd[1:-1])
+            elif kwd[0:len('report:')] == 'report:' and kwd[len('report:'):].isdigit():
+                redir = self.env.href.report(kwd[len('report:'):])
+            # Milestone quickjump
+            elif kwd[0:len('milestone:')] == 'milestone:':
+                redir = self.env.href.milestone(kwd[len('milestone:'):])
+            # Source quickjump
+            elif kwd[0:len('source:')] == 'source:':
+                redir = self.env.href.browser(kwd[len('source:'):])
+            # Wiki quickjump
+            elif kwd[0:len('wiki:')] == 'wiki:':
+                r = "((^|(?<=[^A-Za-z]))[!]?[A-Z][a-z/]+(?:[A-Z][a-z/]+)+)"
+                if re.match (r, kwd[len('wiki:'):]):
+                    redir = self.env.href.wiki(kwd[len('wiki:'):])
             elif kwd[0].isupper() and kwd[1].islower():
                 r = "((^|(?<=[^A-Za-z]))[!]?[A-Z][a-z/]+(?:[A-Z][a-z/]+)+)"
                 if re.match (r, kwd):
