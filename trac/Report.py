@@ -437,7 +437,7 @@ class Report (Module):
                 summary = req.hdf.getValue(nodename, '')
                 req.hdf.setValue(nodename, util.escape(summary))
                 item = item.next()
-        req.display(self.template_rss_name, 'text/xml')
+        req.display(self.template_rss_name, 'application/rss+xml')
 
     def display_csv(self, req, sep=','):
         req.send_response(200)
