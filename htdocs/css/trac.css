@@ -35,17 +35,14 @@ ol.arabic     { list-style-type: decimal }
 :link:hover, :visited:hover {
  background-color: #eee;
  color: #555;
-
- }
+}
 h1 :link, h1 :visited ,h2 :link, h2 :visited, h3 :link, h3 :visited,
 h4 :link, h4 :visited, h5 :link, h5 :visited, h6 :link, h6 :visited {
  color: inherit;
 }
 
-.ext-link {
- background: #fff url(../extlink.gif) no-repeat 0 58%;
- padding-left: 16px;
-}
+.ext-link { background: url(../extlink.gif) no-repeat 0 58%; padding-left: 16px }
+* html .ext-link { background-position: 0 .35em } /* IE hack, see #937 */
 
 /* Forms */
 input, textarea, select { margin: 2px }
