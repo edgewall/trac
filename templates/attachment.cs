@@ -17,7 +17,7 @@
    <div style="align: right">
     <label for="author" class="att-label">Author:</label>
     <input type="text" id="author" name="author" class="textwidget" size="40"
-        value="<?cs var:trac.authname?>" />
+        value="<?cs var:attachment.author?>" />
     <br />
     <label for="description" class="att-label">Description:</label>
     <input type="text" id="description" name="description" class="textwidget"

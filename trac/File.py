@@ -181,6 +181,7 @@ class Attachment(FileCommon):
         if self.view_form:
             self.req.hdf.setValue('attachment.type', self.attachment_type)
             self.req.hdf.setValue('attachment.id', self.attachment_id)
+            self.req.hdf.setValue('attachment.author', util.get_reporter_id(self.req))
             self.req.display('attachment.cs')
             return
         self.req.hdf.setValue('file.rawurl', 
