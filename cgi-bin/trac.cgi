@@ -29,5 +29,5 @@ except Exception, e:
     print
     print 'Trac detected an internal error:'
     print
-    print real_e
+    print e
     print

@@ -35,11 +35,15 @@ The Trac administration program <tt>trac_admin.py</tt> can be used to grant
 permissions to users like this:
 
 <pre>
-  $ trac_admin.py /path/to/trac.db permission add <?cs var:trac.authname ?> <?cs var:error.action ?>
+  $ trac-admin /path/to/trac.db permission add <i>username</i> <?cs var:error.action ?>
 </pre>
-or to all unauthenticated users:
+or to any authenticated users:
 <pre>
-  $ trac_admin.py /path/to/trac.db permission add anonymous <?cs var:error.action ?>
+  $ trac-admin /path/to/trac.db permission add authenticated <?cs var:error.action ?>
+</pre>
+or to everybody:
+<pre>
+  $ trac-admin /path/to/trac.db permission add anonymous <?cs var:error.action ?>
 </pre>
 </p>
 

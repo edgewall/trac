@@ -162,6 +162,8 @@ def create_error_cgi():
     import neo_cgi
     import os.path
     import db
+    from auth import get_authname
+    
     cnx = db.get_connection()
     cursor = cnx.cursor()
     cursor.execute('SELECT value FROM config WHERE section=%s '
@@ -175,6 +177,7 @@ def create_error_cgi():
     cgi = neo_cgi.CGI()
     cgi.hdf.setValue('hdf.loadpaths.0', templates_dir)
     cgi.hdf.setValue('htdocs_location', htdocs_location)
+    cgi.hdf.setValue('trac.authname', get_authname())
     return cgi, templates_dir
 
 def main():
