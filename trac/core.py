@@ -249,7 +249,7 @@ def populate_hdf(hdf, env, db, req):
     hdf.setValue('trac.href.logout', env.href.logout())
     if req:
         hdf.setValue('cgi_location', req.cgi_location)
-        hdf.setValue('trac.authname', req.authname)
+        hdf.setValue('trac.authname', util.escape(req.authname))
 
     templates_dir = env.get_config('trac', 'templates_dir')
     hdf.setValue('hdf.loadpaths.0', env.get_templates_dir())
