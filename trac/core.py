@@ -68,7 +68,7 @@ class TracFieldStorage(cgi.FieldStorage):
     def __delitem__(self, name):
         if not self.has_key(name):
             raise KeyError(name)
-        self.list = filter(lambda x: x.name != name, self.list)
+        self.list = filter(lambda x, name=name: x.name != name, self.list)
 
 
 def parse_path_info(args, path_info):

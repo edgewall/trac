@@ -124,16 +124,15 @@ class Attachment(FileCommon):
                                      self.attachment_id,
                                      self.filename)
             try:
-                self.attachment_fd = open(self.path, 'rb')
+                fd = open(self.path, 'rb')
             except IOError:
                 raise util.TracError('Attachment not found')
 
-            stat = os.fstat(self.attachment_fd.fileno())
+            stat = os.fstat(fd.fileno())
             self.length = stat[6]
             self.last_modified = time.strftime("%a, %d %b %Y %H:%M:%S GMT",
                                                time.gmtime(stat[8]))
-            #self.read_func = lambda x: f.read(x)
-            self.read_func = self.read_attachment
+            self.read_func = lambda x, f=fd: f.read(x)
             return
 
         if self.args.has_key('description') and \
@@ -162,9 +161,6 @@ class Attachment(FileCommon):
         else:
             # Display an attachment upload form
             self.view_form = 1
-
-    def read_attachment(self, bytes):
-        return self.attachment_fd.read(bytes)
 
     def display(self):
         text, link = self.get_attachment_parent_link()
@@ -270,10 +266,6 @@ class File(FileCommon):
         date_seconds = svn.util.svn_time_from_cstring(date, self.pool) / 1000000
         self.last_modified = time.strftime("%a, %d %b %Y %H:%M:%S GMT",
                                       time.gmtime(date_seconds))
-        self.svn_fd = svn.fs.file_contents(root, self.path, self.pool)
-        self.read_func = self.read_svn
-        #self.read_func = lambda x: svn.util.svn_stream_read(f, x)
-
-    def read_svn(self, bytes):
-        return svn.util.svn_stream_read(self.svn_fd, bytes)
+        fd = svn.fs.file_contents(root, self.path, self.pool)
+        self.read_func = lambda x, f=fd: svn.util.svn_stream_read(f, x)
         

@@ -40,11 +40,7 @@ class Search(Module):
         else:
             q = q.replace('\'', '\'\'')
             keywords = q.split(' ')
-            # The line below doesn't work in python2.1
-            # x = map(lambda x: name + ' LIKE \'%' + x + '%\'', keywords)
-            x = []
-            for keyword in keywords:
-                x.append(name + ' LIKE \'%' + keyword + '%\'')
+            x = map(lambda x, name=name: name + ' LIKE \'%' + x + '%\'', keywords)
             sql_q = string.join(x, ' AND ')
         self.log.debug("SQL Condition: %s" % sql_q)
         return sql_q
