@@ -22,8 +22,8 @@
 import re
 from util import add_to_hdf, escape
 
-line_re = re.compile('@@ [+-]([0-9]+),([0-9]+) [+-]([0-9]+),([0-9]+) @@')
-header_re = re.compile('header ([^\|]+) ([^\|]+) \| ([^\|]+) ([^\|]+) redaeh')
+line_re = re.compile('^@@ [+-]([0-9]+),([0-9]+) [+-]([0-9]+),([0-9]+) @@$')
+header_re = re.compile('^header ([^\|]+) ([^\|]+) \| ([^\|]+) ([^\|]+) redaeh$')
 space_re = re.compile(' ( +)|^ ')
 
 
@@ -36,7 +36,7 @@ class HDFBuilder:
         self.hdf = hdf
         self.prefix = prefix
         self.tabwidth = tabwidth
-        self.changeno = -1
+        self.changeno = 0
         self.blockno = 0
         self.offset_base = 0
         self.offset_changed = 0

@@ -180,6 +180,7 @@ class WikiModule(Module):
         builder = Diff.HDFBuilder(self.req.hdf, 'wiki.diff')
         builder.writeline('header %s %d | %s %d redaeh' %
                           (pagename, version - 1, pagename, version))
+        builder.writeline('@@ -1,%d +1,%d @@' % (len(old), len(new)))
         try:
             for line in difflib.Differ().compare(old, new):
                 if line != '  ':
