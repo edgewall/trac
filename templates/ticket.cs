@@ -70,7 +70,8 @@
         added by <?cs var:a.author ?> on <?cs var:a.time ?>.</li>
   <?cs /each ?>
   </ul>
-<a class="fake-button" href="<?cs var:cgi_location?>/attachment/ticket/<?cs var:ticket.id ?>">Add attachment</a>
+<a class="fake-button" href="<?cs var:cgi_location?>/attachment/ticket/<?cs
+var:ticket.id ?>">Add attachment</a><br style="clear: both" />
 </div>
 
 

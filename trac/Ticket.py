@@ -27,7 +27,6 @@ from util import *
 from Module import Module
 import perm
 from Wiki import wiki_to_html
-from Notify import TicketNotifyEmail
 
 fields = ['time', 'component', 'severity', 'priority', 'milestone', 'reporter',
           'owner', 'cc', 'url', 'version', 'status', 'resolution',
@@ -164,6 +163,7 @@ class Ticket (Module):
                             now, id)
             self.db.commit()
         # Notify
+        from Notify import TicketNotifyEmail
         tn = TicketNotifyEmail(self.env)
         tn.notify(id, newticket=0, modtime=now)
 

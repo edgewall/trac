@@ -82,7 +82,7 @@ try:
     from email.MIMEText import MIMEText
     import smtplib
 except ImportError:
-    print >> sys.stderr, "Email notifications require Python >= 2.2"
+    raise TracError, "Email notifications require Python >= 2.2"
 else:
     # >=2.3 modules
     try:

@@ -149,7 +149,7 @@ class TracHTTPRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler,
     def init_request(self):
         trac.core.Request.init_request(self)
         self.remote_addr = str(self.client_address[0])
-        if 'Cookie' in self.headers:
+        if self.headers.has_key('Cookie'):
             self.incookie.load(self.headers['Cookie'])
 
     def parse_path(self, path):
@@ -157,7 +157,7 @@ class TracHTTPRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler,
         if not m:
             raise trac.util.TracError('Unknown URI')
         self.project_name, self.path_info, self.query_string = m[0]
-        if self.project_name not in self.server.projects:
+        if not self.server.projects.has_key(self.project_name):
             raise trac.util.TracError('Unknown Project')
         self.env = self.server.projects[self.project_name]
         self.log = self.env.log
