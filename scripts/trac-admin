@@ -22,8 +22,10 @@ __license__ = """
  along with this program; if not, write to the Free Software
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA."""
 
+import os
 import os.path
 import sys
+import time
 import cmd
 import shlex
 import sqlite
@@ -235,8 +237,8 @@ CREATE INDEX wiki_idx		ON wiki(name,version);
 
     def run(self):
         self.interactive = 1
-        print 'Welcome to trac-admin %(ver)s,' 			\
-              'the Trac adminstration console.\n' 		\
+        print 'Welcome to trac-admin %(ver)s\n' 			\
+              'Interactive Trac adminstration console.\n' 		\
               '%(copy)s\n\n' 					\
               "Type:  '?' or 'help' for help on commands.\n" % 	\
               {'ver':__version__,'copy':__copyright__}
@@ -307,7 +309,7 @@ CREATE INDEX wiki_idx		ON wiki(name,version);
         ncols = len(ldata[0]) # assumes all rows are of equal length
         for cnum in xrange(0, ncols):
             mw = 0
-            for cell in [d[cnum] or '' for d in ldata]:
+            for cell in [str(d[cnum]) or '' for d in ldata]:
                 if len(cell) > mw:
                     mw = len(cell)
             colw.append(mw)
@@ -340,6 +342,15 @@ CREATE INDEX wiki_idx		ON wiki(name,version);
         data = self.db_execsql ("SELECT DISTINCT user FROM permission")
         return [r[0] for r in data]
 
+    def get_wiki_list (self):
+        data = self.db_execsql('SELECT DISTINCT name FROM wiki') 
+        return [r[0] for r in data]
+
+    def get_dir_list (self, pathstr):
+        dname = os.path.dirname(pathstr)
+        d = os.path.join(os.getcwd(), dname)
+        ls = os.listdir(d)
+        return ls
 
     ##
     ## Available Commands
@@ -358,11 +369,12 @@ CREATE INDEX wiki_idx		ON wiki(name,version);
                 print "No documentation found for '%s'" % arg[0]
         else:
             docs = (self._help_about + self._help_help + self._help_initdb +
-                    self._help_config +self._help_component)
+                    self._help_config + self._help_component +
+                    self._help_permission + self._help_wiki)
             print 'trac-admin - The Trac Administration Console %s' % __version__
             if not self.interactive:
                 print
-                print "Usage: trac-admin <dbfile> [command] [args ...]\n"
+                print "Usage: trac-admin <dbfile> [command [subcommand] [option ...]]\n"
                 print "Invoking trac-admin without command starts "\
                        "interactive mode."
             self.print_doc (docs)
@@ -537,10 +549,9 @@ CREATE INDEX wiki_idx		ON wiki(name,version);
     _help_initdb = [('initdb', 'Create and initializes a new database')]
 
     def do_initdb(self, line):
-        print "initializing..."
         if self.db_check():
             print "Initdb for '%s' failed.\nDoes a database already exist?" % self.dbname
-            sys.exit(1)
+            return
         try:
             cnx = sqlite.connect (self.dbname)
             cursor = cnx.cursor ()
@@ -550,7 +561,6 @@ CREATE INDEX wiki_idx		ON wiki(name,version);
         except Exception, e:
             print 'Failed to initialize database.', e
             cnx.rollback()
-            sys.exit(1)
 
     def initdb_create_tables (self, cursor):
             cursor.execute (self.db_schema)
@@ -562,13 +572,99 @@ CREATE INDEX wiki_idx		ON wiki(name,version);
             for row in self.db_data[t][2]:
                 values = ','.join([v and '"%s"' % v or 'NULL' for v in row])
                 sql = "INSERT INTO %s (%s) VALUES(%s);" % (table, cols, values)
-                print sql
                 cursor.execute(sql)
 
+
+    ## Wiki
+    _help_wiki = [('wiki list', 'List wiki pages'),
+                  ('wiki export <page> [file]',
+                   'Export wiki page to file or stdout'),
+                  ('wiki import <page> [file]',
+                   'Import wiki page from file or stdin')]
+
+    def complete_wiki (self, text, line, begidx, endidx):
+        argv = shlex.split(line)
+        argc = len(argv)
+        if line[-1] == ' ': # Space starts new argument
+            argc += 1
+        if begidx > 11:
+            if line.startswith('wiki export'):
+                if argc==3:
+                    comp = self.get_wiki_list()
+                elif argc==4:
+                    comp = self.get_dir_list(argv[-1])
+            else:
+                if argc==3:
+                    comp = self.get_dir_list(argv[-1])
+                elif argc==4:
+                    comp = self.get_wiki_list()
+        else:
+            comp = ['list','import','export']
+        return self.word_complete(text, comp)
+
+    def do_wiki(self, line):
+        arg = self.arg_tokenize(line)
+        try:
+            if arg[0]  == 'list':
+                self._do_wiki_list()
+            elif arg[0] == 'import' and len(arg) == 3:
+                file = arg[1]
+                title = arg[2]
+                self._do_wiki_import(file, title)
+            elif arg[0] == 'export'  and len(arg) in [2,3]:
+                page = arg[1]
+                file = (len(arg) == 3 and arg[2]) or None
+                self._do_wiki_export(page, file)
+            else:    
+                self.do_help ('wiki')
+        except Exception, e:
+            print 'Wiki %s failed:' % arg[0], e
+
+    def _do_wiki_list(self):
+        data = self.db_execsql('SELECT name,max(version),time'
+                               ' FROM wiki GROUP BY name ORDER BY name')
+        ldata = [(d[0], d[1], time.ctime(d[2])) for d in data]
+        self.print_listing(['Title', 'Edits', 'Modified'], ldata)
+
+    def _do_wiki_import(self, filename, title):
+        f = file(filename,'r')
+        data=f.read()
+        data = data.replace("'", "''") # Escape ' for safe SQL
+        f.close()
+        sql = ("INSERT INTO wiki('version','name','time','author','ipnr','text') "
+               " SELECT 1+ifnull(max(version),0),'%(title)s','%(time)s','%(author)s',"
+               "   '%(ipnr)s','%(text)s' FROM wiki WHERE name='%(title)s'" 
+               % {'title':title,
+                  'time':int(time.time()),
+                  'author':'trac',
+                  'ipnr':'127.0.0.1',
+                  'locked':'0',
+                  'text':data})
+        self.db_execsql(sql)
+
+#        sql = "INSERT INTO wiki('version','name','time','author',
+#        select max(version) from wiki where name="HejsanHoppsan";
+
+    def _do_wiki_export(self, page, filename):
+        data=self.db_execsql("SELECT text FROM wiki "
+                             " WHERE name='%s'"
+                             " ORDER BY version DESC LIMIT 1" % page)
+        text = data[0][0]
+        if not filename:
+            print text
+        else:
+            if os.path.isfile(filename):
+                raise Exception("File '%s' exists" % filename)
+            f = file (filename,'w')
+            f.write(text)
+            f.close()
+
+## ---------------------------------------------------------------------------
 
 ##
 ## Main
 ##
+
 def main():
     tracadm = TracAdmin()
     if len (sys.argv) > 1:
