@@ -20,7 +20,7 @@
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
 import re
-from mod_python import apache
+from mod_python import apache, util
 from trac import auth, core, Environment, Href, Session, Wiki
 
 env = None
@@ -68,6 +68,14 @@ class ModPythonRequest(core.Request):
 
     def end_headers(self):
         pass
+
+class TracFieldStorage(util.FieldStorage):
+    """
+    FieldStorage class with an added get function.
+    """
+    def get(self, key, default=''):
+        return util.FieldStorage.get(self, key, default)
+
 
 def init(req):
     global env
@@ -131,7 +139,8 @@ def handler(req):
 
     # TODO This doesn't handle POST requests yet, because we can't get a
     #      file-like object for the request body to pass into parse_args
-    args = core.parse_args(req.method, req.path_info, req.args)
+    args = TracFieldStorage(req)
+    core.parse_path_info(args, req.path_info)
     core.add_args_to_hdf(args, mpr.hdf)
 
     newsession = args.has_key('newsession') and args['newsession']
