@@ -42,20 +42,20 @@ class Newticket (Module):
         default_severity  = self.config['ticket']['default_severity']
         default_version   = self.config['ticket']['default_version']
         
-        self.cgi.hdf.setValue('title', 'New Ticket')
+        self.req.hdf.setValue('title', 'New Ticket')
         
-        self.cgi.hdf.setValue('newticket.default_component', default_component)
-        self.cgi.hdf.setValue('newticket.default_milestone', default_milestone)
-        self.cgi.hdf.setValue('newticket.default_priority', default_priority)
-        self.cgi.hdf.setValue('newticket.default_severity', default_severity)
-        self.cgi.hdf.setValue('newticket.default_version', default_version)
+        self.req.hdf.setValue('newticket.default_component', default_component)
+        self.req.hdf.setValue('newticket.default_milestone', default_milestone)
+        self.req.hdf.setValue('newticket.default_priority', default_priority)
+        self.req.hdf.setValue('newticket.default_severity', default_severity)
+        self.req.hdf.setValue('newticket.default_version', default_version)
         
         sql_to_hdf(self.db, 'SELECT name FROM component ORDER BY name',
-                   self.cgi.hdf, 'newticket.components')
+                   self.req.hdf, 'newticket.components')
         sql_to_hdf(self.db, 'SELECT name FROM milestone ORDER BY name',
-                   self.cgi.hdf, 'newticket.milestones')
+                   self.req.hdf, 'newticket.milestones')
         sql_to_hdf(self.db, 'SELECT name FROM version ORDER BY name',
-                   self.cgi.hdf, 'newticket.versions')
+                   self.req.hdf, 'newticket.versions')
             
 
 class Ticket (Module):
@@ -171,7 +171,7 @@ class Ticket (Module):
         self.db.commit()
         
         # redirect to the Ticket module to get a GET request
-        redirect (href.ticket(id))
+        self.req.redirect(href.ticket(id))
         
     def insert_ticket_data(self, hdf, id):
         """Inserts ticket data into the hdf"""
@@ -219,38 +219,38 @@ class Ticket (Module):
         try:
             id = int(self.args['id'])
         except:
-            redirect (href.menu())
+            self.req.redirect(href.menu())
 
         if action in ['leave', 'accept', 'reopen', 'resolve', 'reassign']:
             # save changes and redirect to avoid the POST request
             old = self.get_ticket(id, 0)
             self.perm.assert_permission (perm.TICKET_MODIFY)
             self.save_changes (id, old, self.args)
-            redirect (href.ticket(id))
+            self.req.redirect(href.ticket(id))
         
         self.perm.assert_permission (perm.TICKET_VIEW)
         
         info = self.get_ticket(id)
-        add_dict_to_hdf(info, self.cgi.hdf, 'ticket')
+        add_dict_to_hdf(info, self.req.hdf, 'ticket')
         
         sql_to_hdf(self.db, 'SELECT name FROM component ORDER BY name',
-                   self.cgi.hdf, 'ticket.components')
+                   self.req.hdf, 'ticket.components')
         sql_to_hdf(self.db, 'SELECT name FROM milestone ORDER BY name',
-                   self.cgi.hdf, 'ticket.milestones')
+                   self.req.hdf, 'ticket.milestones')
         sql_to_hdf(self.db, 'SELECT name FROM version ORDER BY name',
-                   self.cgi.hdf, 'ticket.versions')
-        hdf_add_if_missing(self.cgi.hdf, 'ticket.components', info['component'])
-        hdf_add_if_missing(self.cgi.hdf, 'ticket.milestones', info['milestone'])
-        hdf_add_if_missing(self.cgi.hdf, 'ticket.versions', info['version'])
-        hdf_add_if_missing(self.cgi.hdf, 'enums.priority', info['priority'])
-        hdf_add_if_missing(self.cgi.hdf, 'enums.severity', info['severity'])
+                   self.req.hdf, 'ticket.versions')
+        hdf_add_if_missing(self.req.hdf, 'ticket.components', info['component'])
+        hdf_add_if_missing(self.req.hdf, 'ticket.milestones', info['milestone'])
+        hdf_add_if_missing(self.req.hdf, 'ticket.versions', info['version'])
+        hdf_add_if_missing(self.req.hdf, 'enums.priority', info['priority'])
+        hdf_add_if_missing(self.req.hdf, 'enums.severity', info['severity'])
         
         # Page title
-        self.cgi.hdf.setValue('title', '#%d (ticket)' % id)
-        self.insert_ticket_data(self.cgi.hdf, id)
-        self.cgi.hdf.setValue('ticket.description',
+        self.req.hdf.setValue('title', '#%d (ticket)' % id)
+        self.insert_ticket_data(self.req.hdf, id)
+        self.req.hdf.setValue('ticket.description',
                               wiki_to_html(info['description']))
-        self.cgi.hdf.setValue('ticket.opened',
+        self.req.hdf.setValue('ticket.opened',
                               time.strftime('%c',
                                             time.localtime(int(info['time']))))
        

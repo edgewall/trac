@@ -60,7 +60,7 @@ addEvent(window, 'load', function() { document.getElementById('q').focus()});
     <?cs /if ?>
    <?cs /each ?>
    </div>
-    <?cs set:url=$trac.href.search+'?q='+url_escape($search.q) ?>
+    <?cs set:url=$trac.href.search+'?q='+ $search.q ?>
     <?cs if $search.wiki ?><?cs set:url=$url+'&wiki=on' ?><?cs /if 
       ?><?cs if $search.ticket ?><?cs set:url=$url+'&ticket=on' ?><?cs /if 
       ?><?cs if $search.changeset ?><?cs set:url=$url+'&changeset=on'

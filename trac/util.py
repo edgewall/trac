@@ -31,14 +31,6 @@ def svn_date_to_string(date, pool):
                                               pool) / 1000000
     return time.asctime(time.localtime(date_seconds))[4:-8]
 
-def redirect (url):
-    """
-    redirects the user agent to a different url
-    """
-    import neo_cgi
-    neo_cgi.CGI().redirectUri(url)
-    sys.exit(0)
-
 def enum_selector (db, sql, name, selected=None,default_empty=0):
     out = StringIO.StringIO()
     out.write ('<select size="1" name="%s">' % name)

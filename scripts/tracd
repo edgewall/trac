@@ -1,0 +1,154 @@
+#!/usr/bin/env python
+# -*- coding: iso8859-1 -*-
+#
+# Copyright (C) 2003, 2004 Edgewall Software
+# Copyright (C) 2003, 2004 Jonas Borgström <jonas@edgewall.com>
+#
+# Trac is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License as
+# published by the Free Software Foundation; either version 2 of the
+# License, or (at your option) any later version.
+#
+# Trac is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+#
+# Author: Jonas Borgström <jonas@edgewall.com>
+
+import os
+import re
+import time
+import Cookie
+import SocketServer
+import BaseHTTPServer
+
+import neo_cgi
+import neo_cs
+import neo_util
+
+import trac
+from trac import db
+from trac import auth
+from trac import perm
+from trac import Href
+from trac import sync
+from trac.util import *
+from trac.trac import parse_args, modules, Request
+
+url_re = re.compile('(/[^\?]*)(\?(.*))?')
+
+def parse_cgi_args(args, query):
+    for arg in query.split('&'):
+        val = arg.split('=', 1)
+        if len(val) != 2:
+            continue
+        args[val[0]] = val[1]
+
+class TracHTTPServer(SocketServer.ThreadingMixIn, BaseHTTPServer.HTTPServer):
+    pass
+
+class TracHTTPRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler,
+                             Request):
+    server_version = 'tracd/' + trac.__version__
+
+    def read(self, data):
+        return self.rfile.read(len)
+
+    def write(self, data):
+        self.wfile.write(data)
+
+    def do_GET(self):
+        self.init_request()
+        start = time.time()
+        #TODO REMOTE_USER, REMOTE_ADDR, HTTP_COOKIE
+        
+        match = url_re.search(self.path)
+        self.path_info = match.group(1)
+        self.query_string = match.group(3)
+
+        database = db.Database('./foo.db') #FIXME
+        # FIXME: we only need to load this once
+        config = database.load_config()
+
+        # Authenticate the user
+        http_cookie = '' #FIXME
+        cookie = Cookie.SimpleCookie(http_cookie)
+        if cookie.has_key('trac_auth'):
+            auth_cookie = cookie['trac_auth'].value
+        else:
+            auth_cookie = None
+        remote_addr='' #FIXME
+        authenticator = auth.Authenticator(database, auth_cookie, remote_addr)
+
+        # Parse arguments
+        print self.path_info
+        args = parse_args(self.path_info)
+        if self.query_string:
+            parse_cgi_args(args, self.query_string)
+#        _args = cgi.FieldStorage()
+#        for x in _args.keys():
+#            args[x] = _args[x].value
+
+        # Load the selected module
+        mode = args.get('mode', 'wiki')
+        module_name, constructor_name, need_svn = modules[mode]
+        module = __import__('trac.' + module_name, globals(),  locals(), ['trac'])
+        constructor = getattr(module, constructor_name)
+        module = constructor(config, args)
+
+        module.req = self
+        module._name = mode
+        module.db = database
+        module.authname = authenticator.authname
+        module.remote_addr = remote_addr
+        cgi_location = '/foo/' #FIXME
+        module.cgi_location = cgi_location
+        module.perm = perm.PermissionCache(database, authenticator.authname)
+        module.perm.add_to_hdf(self.hdf)
+
+        # Only open the subversion repository for the modules that really
+        # need it. This saves us some precious time.
+        if need_svn:
+            from svn import util, repos, core
+
+            core.apr_initialize()
+            pool = core.svn_pool_create(None)
+
+            repos_dir = config['general']['repository_dir']
+
+            # Remove any trailing slash or else subversion might abort
+            if not os.path.split(repos_dir)[1]:
+                repos_dir = os.path.split(repos_dir)[0]
+            
+            rep = repos.svn_repos_open(repos_dir, pool)
+            fs_ptr = repos.svn_repos_fs(rep)
+            module.repos = rep
+            module.fs_ptr = fs_ptr
+            sync.sync(database, rep, fs_ptr, pool)
+        else:
+            pool = None
+
+        # FIXME: do this only once(ish)
+        from trac import Wiki
+        Wiki.populate_page_dict(database)
+        
+        module.pool = pool
+        module.run()
+        if pool:
+            core.svn_pool_destroy(pool)
+            
+        print 'Total request time:', time.time() - start, 'seconds'
+        
+def main():
+    Href.initialize('/')
+    server_address = ('', 8000)
+    httpd = TracHTTPServer(server_address, TracHTTPRequestHandler)
+    httpd.serve_forever()
+
+if __name__ == '__main__':
+    main()

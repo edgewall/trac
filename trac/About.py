@@ -86,18 +86,18 @@ Copyright &copy; 2003,2004 <a href="http://www.edgewall.com/">Edgewall Software<
     
     def render (self):
         page = self.args.get('page', 'default')
-        self.cgi.hdf.setValue('title', 'About Trac')
+        self.req.hdf.setValue('title', 'About Trac')
         if page[0:7] == '/config':
             self.perm.assert_permission(perm.CONFIG_VIEW)
-            self.cgi.hdf.setValue('about.page', 'config')
+            self.req.hdf.setValue('about.page', 'config')
             # Export the config table to hdf
             i = 0
             for section in self.config.keys():
                 for name in self.config[section].keys():
                     value = self.config[section][name]
-                    self.cgi.hdf.setValue('about.config.%d.section' % i, section)
-                    self.cgi.hdf.setValue('about.config.%d.name' % i, name)
-                    self.cgi.hdf.setValue('about.config.%d.value' % i, value)
+                    self.req.hdf.setValue('about.config.%d.section' % i, section)
+                    self.req.hdf.setValue('about.config.%d.name' % i, name)
+                    self.req.hdf.setValue('about.config.%d.value' % i, value)
                     i = i + 1
             # TODO:
             # We should probably export more info here like:
@@ -105,7 +105,6 @@ Copyright &copy; 2003,2004 <a href="http://www.edgewall.com/">Edgewall Software<
 
 
     def display (self):
-        cs = neo_cs.CS(self.cgi.hdf)
+        cs = neo_cs.CS(self.req.hdf)
         cs.parseStr(self.about_cs)
-        print "Content-type: text/html\r\n"
-        print cs.render()
+        self.req.display(cs)

@@ -35,7 +35,7 @@ modules = {
     'log'         : ('Log', 'Log', 1),
     'file'        : ('File', 'File', 1),
     'wiki'        : ('Wiki', 'Wiki', 0),
-    'about_trac'       : ('About', 'About', 0),
+    'about_trac'  : ('About', 'About', 0),
     'search'      : ('Search', 'Search', 0),
     'report'      : ('Report', 'Report', 0),
     'ticket'      : ('Ticket', 'Ticket', 0),
@@ -114,12 +114,67 @@ def open_database():
         
     return db.Database(db_name)
 
+class Request:
+    """
+    This class is used to abstract the interface between different frontends.
+
+    Trac modules must use this interface. It is not allowed to have
+    frontend (cgi, tracd, mod_python) specific code in the modules.
+    """
+    def init_request(self):
+        import neo_cgi
+        import neo_cs
+        import neo_util
+        self.hdf = neo_util.HDF()
+        
+    def redirect(self, url):
+        self.send_response(302)
+        self.send_header('Location', url)
+        self.send_header('Content-Type', 'text/plain')
+        self.end_headers()
+        self.send_data('Redirecting...')
+
+    def display(self, cs, content_type='text/html'):
+        import neo_cgi
+        import neo_cs
+        import neo_util
+        self.send_response(200)
+        self.send_header('Content-Type', content_type)
+        self.end_headers()
+        if type(cs) == type(''):
+            filename = cs
+            cs = neo_cs.CS(self.hdf)
+            cs.parseFile(filename)
+        self.write(cs.render())
+
+    def read(self, len):
+        assert 0
+    
+    def write(self, data):
+        assert 0
+
+class CGIRequest(Request):
+    def read(self, len):
+        return sys.stdin.read(len)
+    
+    def write(self, data):
+        return sys.stdout.write(data)
+
+    def send_response(self, code):
+        pass
+    
+    def send_header(self, name, value):
+        self.write('%s: %s\r\n' % (name, value))
+        pass
+    
+    def end_headers(self):
+        self.write('\r\n')
+
 def real_main():
     import sync
     import Href
     import perm
     import auth
-    from util import redirect
 
     path_info = os.getenv('PATH_INFO')
     remote_addr = os.getenv('REMOTE_ADDR')
@@ -130,6 +185,9 @@ def real_main():
     
     database = open_database()
     config = database.load_config()
+
+    req = CGIRequest()
+    req.init_request()
     
     Href.initialize(cgi_location)
 
@@ -144,7 +202,7 @@ def real_main():
     authenticator = auth.Authenticator(database, auth_cookie, remote_addr)
     if path_info == '/logout':
         authenticator.logout()
-        redirect (http_referer or Href.href.wiki())
+        req.redirect (http_referer or Href.href.wiki())
     elif remote_user and authenticator.authname == 'anonymous':
         auth_cookie = authenticator.login(remote_user, remote_addr)
         # send the cookie to the browser as a http header
@@ -153,7 +211,7 @@ def real_main():
         cookie['trac_auth']['path'] = cgi_location
         print cookie.output()
     if path_info == '/login':
-        redirect (http_referer or Href.href.wiki())
+        req.redirect (http_referer or Href.href.wiki())
 
     # Parse arguments
     args = parse_args(path_info)
@@ -175,9 +233,10 @@ def real_main():
     module.authname = authenticator.authname
     module.remote_addr = remote_addr
     module.cgi_location = cgi_location
+    module.req = req
 
     module.perm = perm.PermissionCache(database, authenticator.authname)
-    module.perm.add_to_hdf(module.cgi.hdf)
+    module.perm.add_to_hdf(module.req.hdf)
 
     # Only open the subversion repository for the modules that really
     # need it. This saves us some precious time.
@@ -204,6 +263,7 @@ def real_main():
     # Let the wiki module build a dictionary of all page names
     import Wiki
     Wiki.populate_page_dict(database)
+    
     module.pool = pool
     module.run()
     

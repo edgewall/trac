@@ -551,8 +551,8 @@ class Wiki(Module):
             if row == None:
                 break
             n = 'wiki.title_index.%d' % i
-            self.cgi.hdf.setValue(n + '.title', row[0])
-            self.cgi.hdf.setValue(n + '.href', href.wiki(row[0]))
+            self.req.hdf.setValue(n + '.title', row[0])
+            self.req.hdf.setValue(n + '.href', href.wiki(row[0]))
             i = i + 1
 
     def generate_recent_changes(self):
@@ -565,9 +565,9 @@ class Wiki(Module):
                 break
             time_str = time.strftime('%x', time.localtime(int(row[1])))
             n = 'wiki.recent_changes.%d' % i
-            self.cgi.hdf.setValue(n + '.title', row[0])
-            self.cgi.hdf.setValue(n + '.href', href.wiki(row[0]))
-            self.cgi.hdf.setValue(n + '.time', time_str)
+            self.req.hdf.setValue(n + '.title', row[0])
+            self.req.hdf.setValue(n + '.href', href.wiki(row[0]))
+            self.req.hdf.setValue(n + '.time', time_str)
             i = i + 1
 
     def generate_history(self, pagename):
@@ -581,18 +581,18 @@ class Wiki(Module):
                 break
                    #        for row in cursor:
             elif i==0:
-                self.cgi.hdf.setValue('wiki.history', '1')
+                self.req.hdf.setValue('wiki.history', '1')
 
             time_str = time.strftime('%x', time.localtime(int(row[1])))
 
             n = 'wiki.history.%d' % i
-            self.cgi.hdf.setValue(n, str(i))
-            self.cgi.hdf.setValue(n+'.url', href.wiki(pagename, str(row[0])))
-            self.cgi.hdf.setValue(n+'.diff_url', href.wiki(pagename, str(row[0]), 1))
-            self.cgi.hdf.setValue(n+'.version', str(row[0]))
-            self.cgi.hdf.setValue(n+'.time', time_str)
-            self.cgi.hdf.setValue(n+'.author', str(row[2]))
-            self.cgi.hdf.setValue(n+'.ipnr', str(row[3]))
+            self.req.hdf.setValue(n, str(i))
+            self.req.hdf.setValue(n+'.url', href.wiki(pagename, str(row[0])))
+            self.req.hdf.setValue(n+'.diff_url', href.wiki(pagename, str(row[0]), 1))
+            self.req.hdf.setValue(n+'.version', str(row[0]))
+            self.req.hdf.setValue(n+'.time', time_str)
+            self.req.hdf.setValue(n+'.author', str(row[2]))
+            self.req.hdf.setValue(n+'.ipnr', str(row[3]))
             i = i + 1
 
     def generate_diff(self, pagename, version):
@@ -624,7 +624,7 @@ class Wiki(Module):
             raise TracError('Python >= 2.2 is required for diff support.')
         
         filter.close()
-        self.cgi.hdf.setValue('wiki.diff_output', out.getvalue())
+        self.req.hdf.setValue('wiki.diff_output', out.getvalue())
             
         
     def render(self):
@@ -639,34 +639,34 @@ class Wiki(Module):
 
         if name == 'TitleIndex':
             self.generate_title_index()
-            self.cgi.hdf.setValue('title', 'Title Index (wiki)')
+            self.req.hdf.setValue('title', 'Title Index (wiki)')
             return
         elif name == 'RecentChanges':
             self.generate_recent_changes()
-            self.cgi.hdf.setValue('title', 'Recent Changes (wiki)')
+            self.req.hdf.setValue('title', 'Recent Changes (wiki)')
             return
 
         if save:
-            self.cgi.hdf.setValue('wiki.action', 'save')
+            self.req.hdf.setValue('wiki.action', 'save')
         elif edit:
-            self.cgi.hdf.setValue('wiki.action', 'edit')
-            self.cgi.hdf.setValue('title', name + ' (wiki edit)')
+            self.req.hdf.setValue('wiki.action', 'edit')
+            self.req.hdf.setValue('title', name + ' (wiki edit)')
         elif preview:
-            self.cgi.hdf.setValue('wiki.action', 'preview')
-            self.cgi.hdf.setValue('title', name + ' (wiki preview)')
+            self.req.hdf.setValue('wiki.action', 'preview')
+            self.req.hdf.setValue('title', name + ' (wiki preview)')
         elif diff and version > 0:
-            self.cgi.hdf.setValue('wiki.action', 'diff')
+            self.req.hdf.setValue('wiki.action', 'diff')
             self.generate_diff(name, version)
-            self.cgi.hdf.setValue('title', name + ' (diff)')
+            self.req.hdf.setValue('title', name + ' (diff)')
         else:
             self.perm.assert_permission (perm.WIKI_VIEW)
             if self.args.has_key('text'):
                 del self.args['text']
-            self.cgi.hdf.setValue('wiki.action', 'view')
+            self.req.hdf.setValue('wiki.action', 'view')
             if name == 'WikiStart':
-                self.cgi.hdf.setValue('title', '')
+                self.req.hdf.setValue('title', '')
             else:
-                self.cgi.hdf.setValue('title', name + ' (wiki)')
+                self.req.hdf.setValue('title', name + ' (wiki)')
 
         self.page = Page(name, version, self.perm, self.db,
                     self.authname, self.remote_addr)
@@ -675,18 +675,20 @@ class Wiki(Module):
         
         if save:
             self.page.commit ()
-            redirect (href.wiki(self.page.name))
+            self.req.redirect(href.wiki(self.page.name))
 
-        self.cgi.hdf.setValue('wiki.current_href', href.wiki(self.page.name))
-        self.cgi.hdf.setValue('wiki.page_name', self.page.name)
-        self.cgi.hdf.setValue('wiki.page_source', escape(self.page.text))
+        self.req.hdf.setValue('wiki.current_href', href.wiki(self.page.name))
+        self.req.hdf.setValue('wiki.page_name', self.page.name)
+        self.req.hdf.setValue('wiki.page_source', escape(self.page.text))
         out = StringIO.StringIO()
-        Formatter(self.cgi.hdf).format(self.page.text, out)
-        self.cgi.hdf.setValue('wiki.page_html', out.getvalue())
+        Formatter(self.req.hdf).format(self.page.text, out)
+        self.req.hdf.setValue('wiki.page_html', out.getvalue())
 
     def display_txt(self):
-        print "Content-type: text/plain\r\n"
-        print self.page.text
+        self.req.send_response(200)
+        self.req.send_header('Content-Type', 'text/plain')
+        self.req.end_headers()
+        self.req.write(self.page.text)
 
 ###
 ### A simple unit test

@@ -133,34 +133,34 @@ class Search(Module):
         
     def render (self):
         self.perm.assert_permission(perm.SEARCH_VIEW)
-        self.cgi.hdf.setValue('title', 'Search')
-        self.cgi.hdf.setValue('search.ticket', 'checked')
-        self.cgi.hdf.setValue('search.changeset', 'checked')
-        self.cgi.hdf.setValue('search.wiki', 'checked')
-        self.cgi.hdf.setValue('search.results_per_page', str(self.RESULTS_PER_PAGE))
+        self.req.hdf.setValue('title', 'Search')
+        self.req.hdf.setValue('search.ticket', 'checked')
+        self.req.hdf.setValue('search.changeset', 'checked')
+        self.req.hdf.setValue('search.wiki', 'checked')
+        self.req.hdf.setValue('search.results_per_page', str(self.RESULTS_PER_PAGE))
         
         if self.args.has_key('q'):
             query = self.args['q']
-            self.cgi.hdf.setValue('title', 'Search Results (search)')
-            self.cgi.hdf.setValue('search.q', query)
+            self.req.hdf.setValue('title', 'Search Results (search)')
+            self.req.hdf.setValue('search.q', query)
             tickets = self.args.has_key('ticket')
             changesets = self.args.has_key('changeset')
             wiki = self.args.has_key('wiki')
 
             if self.args.has_key('page'):
                 page = int(self.args['page'])
-                self.cgi.hdf.setValue('search.result.page', str(page))
+                self.req.hdf.setValue('search.result.page', str(page))
             else:
                 page = 0
             if not tickets:
-                self.cgi.hdf.setValue('search.ticket', '')
+                self.req.hdf.setValue('search.ticket', '')
             if not changesets:
-                self.cgi.hdf.setValue('search.changeset', '')
+                self.req.hdf.setValue('search.changeset', '')
             if not wiki:
-                self.cgi.hdf.setValue('search.wiki', '')
+                self.req.hdf.setValue('search.wiki', '')
             info = self.perform_query(query, changesets, tickets, wiki, page)
-            self.cgi.hdf.setValue('search.result.count', str(len(info)))
+            self.req.hdf.setValue('search.result.count', str(len(info)))
             if len(info) == self.RESULTS_PER_PAGE:
-                self.cgi.hdf.setValue('search.result.more', '1')
-            add_dictlist_to_hdf(info, self.cgi.hdf, 'search.result')
+                self.req.hdf.setValue('search.result.more', '1')
+            add_dictlist_to_hdf(info, self.req.hdf, 'search.result')
 

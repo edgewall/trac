@@ -24,8 +24,6 @@ from Href import href
 from Module import Module
 from Wiki import wiki_to_oneliner
 import perm
-import neo_cgi
-import neo_cs
 
 import time
 import string
@@ -131,9 +129,9 @@ class Timeline (Module):
             assert daysback >= 0
         except:
             daysback = 90
-        self.cgi.hdf.setValue('timeline.from',
+        self.req.hdf.setValue('timeline.from',
                               time.strftime('%x', time.localtime(_from)))
-        self.cgi.hdf.setValue('timeline.daysback', str(daysback))
+        self.req.hdf.setValue('timeline.daysback', str(daysback))
 
         stop  = _from
         start = stop - daysback * 86400
@@ -146,19 +144,16 @@ class Timeline (Module):
             wiki = ticket = changeset = 1
            
         if wiki:
-            self.cgi.hdf.setValue('timeline.wiki', 'checked')
+            self.req.hdf.setValue('timeline.wiki', 'checked')
         if ticket:
-            self.cgi.hdf.setValue('timeline.ticket', 'checked')
+            self.req.hdf.setValue('timeline.ticket', 'checked')
         if changeset:
-            self.cgi.hdf.setValue('timeline.changeset', 'checked')
+            self.req.hdf.setValue('timeline.changeset', 'checked')
         
         info = self.get_info (start, stop, maxrows, ticket, changeset, wiki)
-        add_dictlist_to_hdf(info, self.cgi.hdf, 'timeline.items')
-        self.cgi.hdf.setValue('title', 'Timeline')
+        add_dictlist_to_hdf(info, self.req.hdf, 'timeline.items')
+        self.req.hdf.setValue('title', 'Timeline')
 
 
     def display_rss(self):
-        cs = neo_cs.CS(self.cgi.hdf)
-        cs.parseFile(self.template_rss_name)
-        print "Content-type: text/xml\r\n"
-        print cs.render()
+        self.req.display(self.template_rss_name, 'text/xml')
