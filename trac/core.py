@@ -376,7 +376,7 @@ class CGIRequest(Request):
         if os.getenv('HTTP_COOKIE'):
             self.incookie.load(os.getenv('HTTP_COOKIE'))
         if os.getenv('HTTP_HOST'):
-            self.hdf.setValue('HTTP.Host', os.getenv('HTTP_HOST'))
+            self.hdf.setValue('HTTP.Host', os.getenv('HTTP_HOST').split(':')[0])
         if os.getenv('PATH_INFO'):
             self.hdf.setValue('HTTP.PathInfo', os.getenv('PATH_INFO'))
 
