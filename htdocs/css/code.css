@@ -180,3 +180,17 @@
 .yaml_keyword { color: #880088; }
 .yaml_number { color: #880000; }
 .yaml_reference { color: #008888; }
+.v_comment { color: gray; font-style: italic; }
+.v_commentline { color: red; font-style: italic; }
+.v_commentlinebang { color: red; font-style: italic; }
+.v_default { }
+.v_identifier { color: black; }
+.v_number { color: #009999; }
+.v_operator{color: black;}
+.v_preprocessor{color: #009999;}
+.v_string{color: olive;}
+.v_stringeol{color: olive;}
+.v_user{ color: blue; font-weight: bold; }
+.v_word { color: navy; font-weight: bold; }
+.v_word2 { color: green; font-weight: bold; }
+.v_word3{color: navy;font-weight: bold; }

@@ -255,6 +255,8 @@ class Formatter(CommonFormatter):
         return env.mimeview.display(text, 'text/x-sql')
     def xml_processor(hdf, text, env):
         return env.mimeview.display(text, 'text/xml')
+    def verilog_processor(hdf, text, env):
+        return env.mimeview.display(text, 'text/x-verilog')
 
     def html_processor(hdf, text, env):
         if Formatter._htmlproc_disallow_rule.search(text):
@@ -278,6 +280,7 @@ class Formatter(CommonFormatter):
                            'ruby': ruby_processor,
                            'sql': sql_processor,
                            'xml': xml_processor,
+                           'verilog': verilog_processor,
                            'default': default_processor}
 
     def load_macro(self, name):

@@ -29,15 +29,25 @@
 
 import re
 
-from docutils import nodes
-from docutils.core import publish_string
-from docutils.parsers import rst
+docutils_required = '0.3.3'
+
+try:
+    from docutils import nodes
+    from docutils.core import publish_string
+    from docutils.parsers import rst
+    from docutils.__init__ import __version__
+except ImportError:
+    raise EnvironmentError, 'Docutils >= %s not found' % docutils_required
+
+if __version__ < docutils_required:
+    raise EnvironmentError, 'Docutils version >= %s required, %s found' % (docutils_required, __version__)
 
 from trac.Href import Href
 
 __docformat__ = 'reStructuredText'
 
-WIKI_LINK = re.compile(r'(?:wiki:)?(?P<w>(^|(?<=[^A-Za-z]))[!]?[A-Z][a-z/]+(?:[A-Z][a-z/]+)+)')
+WIKI_LINK = re.compile(r'(?:wiki:)?(?P<w>[A-Za-z][\w\#\?]*[^\w\#\?]*)') # Links must begin with Letters, \# ? so we can link inside pages.
+#WIKI_LINK = re.compile(r'(?:wiki:)?(?P<w>(^|(?<=[^A-Za-z]))[!]?[A-Z][a-z/]+(?:[A-Z][a-z/]+)+)')
 TICKET_LINK = re.compile(r'(?:#(\d+))|(?:ticket:(\d+))')
 REPORT_LINK = re.compile(r'(?:{(\d+)})|(?:report:(\d+))')
 CHANGESET_LINK = re.compile(r'(?:\[(\d+)\])|(?:changeset:(\d+))')
@@ -67,7 +77,26 @@ LINKS = [(WIKI_LINK, _wikipage),
          (CHANGESET_LINK, _changeset),
          (FILE_LINK, _browser)]
 
-def trac(href, name, arguments, options, content, lineno,
+
+def trac_get_reference(env, rawtext, text):
+    for (pattern, function) in LINKS:
+        m = pattern.match(text)
+        if m:
+            g = filter(None, m.groups())
+            missing = False
+            if pattern == WIKI_LINK:
+                if not (env._wiki_pages.has_key(g[0])):
+                        missing = True
+                        text = text + "?"
+            uri = function(env.href, g)
+            reference = nodes.reference(rawtext, text)
+            reference['refuri']= uri
+            if missing:
+                reference.set_class('missing')
+            return reference
+    return None
+
+def trac(env, name, arguments, options, content, lineno,
          content_offset, block_text, state, state_machine):
     """Inserts a `reference` node into the document 
     for a given `TracLink`_, based on the content 
@@ -90,16 +119,10 @@ def trac(href, name, arguments, options, content, lineno,
 
     .. _TracLink: http://projects.edgewall.com/trac/wiki/TracLinks
     """
-    for (pattern, function) in LINKS:
-        m = pattern.match(arguments[0])
-        if m:
-            text = arguments[int(len(arguments) == 2)]
-            g = filter(None, m.groups())
-            uri = function(href, g)
-            reference = nodes.reference(block_text, text)
-            reference['refuri']= uri
-            return reference
-
+    text = arguments[int(len(arguments) == 2)]
+    reference = trac_get_reference(env, block_text, text)
+    if reference:
+        return reference
     # didn't find a match (invalid TracLink),
     # report a warning
     warning = state_machine.reporter.warning(
@@ -108,37 +131,80 @@ def trac(href, name, arguments, options, content, lineno,
             line=lineno)
     return [warning]
 
-def trac_role(href, name, rawtext, text, lineno):
-    for (pattern, function) in LINKS:
-        m = pattern.match(text)
-        if m:
-            g = filter(None, m.groups())
-            uri = function(href, g)
-            return [nodes.reference(rawtext, text, refuri=uri)], []
+
+def trac_role(env, name, rawtext, text, lineno, inliner, options={}, content=[]):
+    reference = trac_get_reference(env, rawtext, text)
+    if reference:
+        return [reference], []
     warning = nodes.warning(None,
                             nodes.literal_block(text,
                                'WARNING: %s is not a valid TracLink' % rawtext))
     return warning, []
+    
 
 def execute(hdf, text, env):
     def do_trac(name, arguments, options, content, lineno,
                 content_offset, block_text, state, state_machine):
-        return trac(env.href, name, arguments, options, content, lineno,
+        return trac(env, name, arguments, options, content, lineno,
                     content_offset, block_text, state, state_machine)
 
-    def do_trac_role(name, rawtext, text, lineno):
-        return trac_role(env.href, name, rawtext, text, lineno)
+    def do_trac_role(name, rawtext, text, lineno, inliner, options={}, content=[]):
+        return trac_role(env, name, rawtext, text, lineno, inliner, options, content)
 
     # 1 required arg, 1 optional arg, spaces allowed in last arg
     do_trac.arguments = (1,1,1)
     do_trac.options = None
     do_trac.content = None
     rst.directives.register_directive('trac', do_trac)
-    local_roles = {'trac': do_trac_role}
+    rst.roles.register_local_role('trac', do_trac_role)
 
-    _inliner = rst.states.Inliner(roles = local_roles)
+    # The code_block could is taken from the leo plugin rst2
+    def code_block(name,arguments,options,content,lineno,content_offset,block_text,state,state_machine):
+
+        """Create a code-block directive for docutils.
+
+        Usage: .. code-block:: language
+
+        If the language can be syntax highlighted it will be."""
+
+
+        
+        from trac.WikiFormatter import Formatter
+        
+        language = arguments[0]
+
+        code_processor = None
+        if  Formatter.builtin_processors.has_key(language):
+            code_processor = Formatter.builtin_processors[language]
+        else:
+            code_processor = Formatter.builtin_processors['default']
+
+
+        html = code_processor(hdf, '\n'.join(content), env)        
+        raw = nodes.raw('',html, format='html') #(self, rawsource='', text='', *children, **attributes):
+        return [raw]
+
+    # These are documented at http://docutils.sourceforge.net/spec/howto/rst-directives.html.
+    code_block.arguments = (
+        1, # Number of required arguments.
+        0, # Number of optional arguments.
+        0) # True if final argument may contain whitespace.
+    
+    
+    # A mapping from option name to conversion function.
+    code_block.options = {
+        'language' :
+        rst.directives.unchanged # Return the text argument, unchanged
+        }
+    code_block.content = 1 # True if content is allowed.
+    # Register the directive with docutils.
+    rst.directives.register_directive('code-block',code_block)
+    
+    
+
+    _inliner = rst.states.Inliner()
     _parser = rst.Parser(inliner = _inliner)
 
     html = publish_string(text, writer_name = 'html', parser = _parser,
-                          enable_exit=0, settings_overrides = {'halt_level':6})
+                          settings_overrides = {'halt_level':6})
     return html[html.find('<body>')+6:html.find('</body>')].strip()
