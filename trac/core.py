@@ -30,6 +30,7 @@ import Href
 import perm
 import auth
 import Environment
+import Logging
 
 from util import *
 from __init__ import __version__
@@ -242,6 +243,7 @@ class Request:
         self.hdf = neo_util.HDF()
         self.incookie = Cookie.SimpleCookie()
         self.outcookie = Cookie.SimpleCookie()
+#        self.logger = Logging.get_logger()
         
     def redirect(self, url):
         self.send_response(302)
@@ -365,6 +367,8 @@ def send_pretty_error(e, env, req=None):
         req.write(str(e))
         req.write('\n')
         req.write(tb.getvalue())
+    env.log.error(str(e))
+    env.log.error(tb.getvalue())
 
 def real_cgi_start():
     path_info = os.getenv('PATH_INFO')

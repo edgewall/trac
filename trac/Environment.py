@@ -27,6 +27,7 @@ import shutil
 import ConfigParser
 
 import db_default
+import Logging
 
 import sqlite
 
@@ -47,6 +48,7 @@ class Environment:
             self.create()
         self.verify()
         self.load_config()
+        self.setup_log()
 
     def verify(self):
         """Verifies that self.path is a compatible trac environment"""
@@ -75,8 +77,9 @@ class Environment:
         os.mkdir(self.path)
         os.mkdir(os.path.join(self.path, 'conf'))
         os.mkdir(os.path.join(self.path, 'db'))
-        os.mkdir(os.path.join(self.path, 'attachments'))
-        os.mkdir(os.path.join(self.path, 'templates'))
+        os.mkdir(self.get_log_dir())
+        os.mkdir(self.get_attachments_dir())
+        os.mkdir(self.get_templates_dir())
         os.mkdir(os.path.join(self.path, 'wiki-macros'))
         # Create a few static files
         fd = open(os.path.join(self.path, 'VERSION'), 'w')
@@ -142,9 +145,20 @@ class Environment:
     def get_templates_dir(self):
         return os.path.join(self.path, 'templates')
 
+    def get_log_dir(self):
+        return os.path.join(self.path, 'log')
+
+    def setup_log(self):
+        logtype = self.get_config('logging','log_type','file')
+        loglevel = self.get_config('logging','log_level','warn')
+        logfile = self.get_config('logging','log_file','trac.log')
+        logfile = os.path.join(self.get_log_dir(), logfile)
+        logid = self.path # Env-path provides process-unique ID
+        self.log = Logging.logger_factory(logtype, logfile, loglevel, logid)
+    
     def get_attachments_dir(self):
         return os.path.join(self.path, 'attachments')
-    
+
     def get_attachments(self, module, id):
         try:
             return os.listdir(os.path.join(self.get_attachments_dir(), module, id))
@@ -158,4 +172,4 @@ class Environment:
             os.makedirs(dir)
         wfile = open(os.path.join(dir, filename), 'wb')
         shutil.copyfileobj(attachment.file, wfile)
-    
+

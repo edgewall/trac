@@ -46,6 +46,7 @@ from trac.Href import Href
 from trac import siteconfig
 from trac.Environment import Environment
 
+
 class DigestAuth:
     """A simple HTTP DigestAuth implementation (rfc2617)"""
     MAX_NONCES = 100
@@ -138,6 +139,8 @@ class TracHTTPRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler,
                         '(?:\?(?P<query_string>.*))?')
     server_version = 'tracd/' + trac.__version__
 
+    env = None
+
     def read(self, len):
         return self.rfile.read(len)
 
@@ -158,7 +161,12 @@ class TracHTTPRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler,
         if self.project_name not in self.server.projects:
             raise trac.util.TracError('Unknown Project')
         self.env = self.server.projects[self.project_name]
+        self.log = self.env.log
         self.cgi_location = '/' + self.project_name
+
+    def log_message(self, format, *args):
+        if self.env:
+            self.log.debug(format%args)
 
     def do_project_index(self):
         self.send_response(200)
@@ -269,7 +277,8 @@ class TracHTTPRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler,
         finally:
             if pool:
                 svn.core.svn_pool_destroy(pool)
-        print 'Total request time:', time.time() - start, 'seconds'
+        self.log.debug('Total request time: %f s', time.time() - start)
+
 
 
 def usage():
