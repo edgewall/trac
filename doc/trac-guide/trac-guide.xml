@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE article PUBLIC "-//Norman Walsh//DTD DocBookk XML V4.2//EN"
+"/usr/share/sgml/docbook/dtd/xml/4.2/docbookx.dtd"
+[
+<!ENTITY % vers   SYSTEM "version.xml">
+%vers;
+<!ENTITY preface     SYSTEM "preface.xml">
+<!ENTITY intro       SYSTEM "intro.xml">
+<!ENTITY install     SYSTEM "install.xml">
+<!ENTITY admin     SYSTEM "admin.xml">
+<!ENTITY user     SYSTEM "user.xml">
+]>
+
+<book id="tracguide">
+  <title>The Trac Guide</title>
+  <subtitle>&svn.version;</subtitle>
+
+  <bookinfo>
+    <edition>Draft</edition>
+    <authorgroup>
+
+      <author>
+	<firstname>Daniel</firstname>
+	<surname>Lundin</surname>
+	<email>daniel@edgewall.com</email>
+      </author>
+
+      <author>
+	<firstname>Jonas</firstname>
+	<surname>Borgström</surname>
+	<email>jonas@edgewall.com</email>
+      </author>
+
+    </authorgroup>
+
+    <editor>
+      <firstname>Jennifer</firstname>
+      <surname>Murtell</surname>
+      <email>jen@edgewall.com</email>
+    </editor>
+
+    <date>2004/01/11</date>
+    <copyright>
+      <year>2004</year>
+      <holder>Edgewall HB</holder>
+    </copyright>
+    <copyright>
+      <year>2004</year>
+      <holder>Daniel Lundin</holder>
+    </copyright>
+    <copyright>
+      <year>2004</year>
+      <holder>Jonas Borgström</holder>
+    </copyright>
+
+    <legalnotice>
+      <simpara>
+      (Some license)
+      </simpara>
+    </legalnotice>
+  </bookinfo>
+
+  <!-- External entities -->
+
+  &preface;
+  &intro;
+  &install;
+  &admin;
+  &user;
+
+</book>
+

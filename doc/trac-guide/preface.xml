@@ -1,0 +1,28 @@
+<preface id="tg-pre">
+  <title>Preface</title>
+  <simplesect>
+    <para>
+      A gentle introduction
+    </para>
+  </simplesect>
+
+ <sect1 id="tg-pre-sect-1">
+    <title>Purpose of This Book</title>
+    <para>
+    </para>
+  </sect1>
+
+ <sect1 id="tg-pre-sect-2">
+    <title>Edgewall Research &amp; Development</title>
+    <para>
+     The short descr of Edgewall.
+    </para>
+  </sect1>
+
+ <sect1 id="tg-pre-sect-3">
+    <title>Acknowledgments</title>
+    <para>
+    </para>
+  </sect1>
+
+</preface>
