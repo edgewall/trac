@@ -217,7 +217,7 @@ class Timeline(Module):
                 if not self.authzperm.has_permission(path):
                     continue
                 files.append('<span class="diff-%s">%s</span>'
-                             % (class_map.get(change, 'mod'), name))
+                             % (class_map.get(change, 'mod'), path))
             item['node_list'] = ', '.join(files) + ': '
 
         return item
