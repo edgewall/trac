@@ -9,16 +9,14 @@
   <div id="main-content">
 
 <h3>Create New Ticket:</h3>
-
 <form action="<?cs var:cgi_location ?>" method="post">
- <input type="hidden" name="mode" value="ticket" />
- <input type="hidden" name="action" value="create" />
- <input type="hidden" name="status" value="new" />
-
  <table id="nt-upper">
   <tr class="nt-prop">
    <td class="nt-label">Reporter:</td>
    <td class="nt-widget">
+    <input type="hidden" name="mode" value="ticket" />
+    <input type="hidden" name="action" value="create" />
+    <input type="hidden" name="status" value="new" />
     <input type="text" name="reporter" value="<?cs var:trac.authname ?>" />
    </td>
    <td class="nt-prop-sep">&nbsp;</td>
@@ -62,9 +60,9 @@
     <td class="nt-widget"></td>
    </tr>
  <tr>
-  <td colspan="2" id="nt-row-sep">&nbsp;</td>
+  <td colspan="2" class="nt-row-sep">&nbsp;</td>
   <td class="nt-prop-sep">&nbsp;</td>
-  <td colspan="2" id="nt-row-sep">&nbsp</td>
+  <td colspan="2" class="nt-row-sep">&nbsp</td>
 </tr>
 </table>
 
@@ -72,19 +70,19 @@
  <tr>
   <td class="nt-label">Cc:</td>
   <td class="nt-widget">
-   <input type="text" name="cc" size="50" />
+   <input type="text" name="cc" size="66" />
   </td>
  </tr>
  <tr>
   <td class="nt-label">URL:</td>
   <td class="nt-widget">
-   <input type="text" name="url" size="50" />
+   <input type="text" name="url" size="66" />
   </td>
  </tr>
  <tr>
   <td class="nt-label">Summary:</td>
   <td class="nt-widget">
-   <input type="text" name="summary" size="50" />
+   <input type="text" name="summary" size="66" />
   </td>
  </tr>
  <tr><td colspan="2" id="nt-row-sep">&nbsp;<hr class="hide" /></td></tr>
@@ -93,7 +91,7 @@
  </tr>
  <tr>
   <td colspan="2" class="nt-widget">
-        <textarea name="description" rows="10" cols="66"></textarea>
+        <textarea name="description" rows="11" cols="78"></textarea>
   </td>
  </tr>
  <tr>

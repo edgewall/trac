@@ -3,39 +3,33 @@
   background: #ffd;
   border: 1px solid #dd9;
   border-width: 1px 3px 3px 1px;
-  padding: .5em;
-  max-width: 700px;
-}
-#tkt-left { 
-  width: 50%;
-  float: left;
-  border-right: 1px solid #dd9;
+  border-spacing: 0;
   padding: .5em;
 }
-#tkt-right { padding: .5em; }
-#tkt-date { float: right; font-size: 75%;  color: #996; }
-.tkt-prop { border-bottom: 1px dotted #eed; }
-.tkt-label { 
-  color: #996; 
-  font-weight: normal;
-  padding: 0 .5em;
-  float: left;
-  width: 8em;
+#tkt-main { max-width: 700px; }
+#tkt-ticket td { padding: .2em .5em; }
+#tkt-date { float: right; color: #996; margin-left: 2em; }
+#tkt-summary {  margin: 0; font-size: 100%; font-weight: normal; }
+.tkt-row-sep { border-bottom: 1px solid #dd9; padding: 0;}
+.tkt-row-sep-vert {
+ padding: 0;
+ border-bottom: 1px solid #dd9; 
+ border-right: 1px solid #dd9; 
 }
-.tkt-val { }
-#tkt-summary { 
-  margin: 0;
-  font-size: 100%;
-  border-bottom: 1px solid #dd9;
-  padding-bottom: .25em;
+.tkt-label, .tkt-val { 
+ font-size: 80%; 
+ padding: 2em;
+ border-bottom: 1px dotted #eed; 
 }
-#tkt-descr { border-top: 1px solid #dd9; padding-top: .5em; }
-#tkt-left,#tkt-right { font-size: 80%; }
+.tkt-label { color: #996; }
+.tkt-label b { font-weight: normal; }
+.tkt-prop-sep { border-right: 1px solid #dd9; border-bottom: 1px dotted #eed; }
+#tkt-descr-hdr { font-size: 100%; margin-top: .25em }
+#tkt-descr { line-height: 140%; }
 #tkt-changes-hdr { font-size: 110%; margin-bottom: .5em;  margin-top: 1em; }
 #tkt-changes { 
   border-color: #d7d7d7;
   background: #fff;
-  font-size: 80%;
   padding: 0 .5em;
   padding-left: 1.5em;
 }
@@ -44,31 +38,21 @@
   border-bottom: 1px solid;
   margin-top: .5em;
   margin-left: -1em;
-  font-size: 100%;
   font-weight: normal;
   padding: 0 .5em;
 }
 ul.tkt-chg-list { padding: 0 1em; list-style: square; }
-li.tkt-chg-change { margin: 0 }
+li.tkt-chg-change { margin: 0; }
 .tkt-chg-comment-hdr { margin: 0;  font-size: 100%; }
 .tkt-chg-comment p { margin: .25em }
-.tkt-chg-comment { 
-  margin: 0;
-  margin-left: 1em;
-}
+.tkt-chg-comment { margin: 0; margin-left: 1em; }
+#tkt-submit {  padding-top: .5em; }
 
 /* New Ticket (NOTE: Shared with Ticket) */
 #nt-upper { border-bottom: 1px dotted #d7d7d7; margin-bottom: 1em; }
-#nt-lower { }
 #nt-submit {  padding-top: .5em; text-align: right; }
 #nt-descr {  padding-top: 1em; border-top: 1px dotted #d7d7d7; }
-
-.nt-prop {  }
-.nt-label { 
-  text-align: right;
-  min-width: 6em;
-  margin-right: .5em;
-}
+.nt-label { text-align: right; min-width: 6em; margin-right: .5em; }
 table {  border-collapse: separate; border-spacing: 10px 0; }
-.nt-rowsep { padding-top: 1em; }
+.nt-row-sep { padding-top: 1em; }
 .nt-prop-sep { border-right: 1px dotted #d7d7d7; }
