@@ -94,6 +94,7 @@ class Session(dict):
             raise TracError("Session '%s' already exists.<br />"
                             "Please choose a different session id." % new_sid,
                             "Error renaming session")
+        self.env.log.debug('Changing session ID %s to %s' % (self.sid, newsid))
         cursor.execute("UPDATE session SET sid=%s WHERE sid=%s",
                        (new_sid, self.sid))
         self.db.commit()
@@ -108,7 +109,9 @@ class Session(dict):
         assert self.req.authname != 'anonymous', \
                'Cannot promote session of anonymous user'
 
-        cursor = self.db.cursor()        
+        self.env.log.debug('Promoting anonymous session %s to authenticated '
+                           'session for user %s' % (sid, req.authname))
+        cursor = self.db.cursor()
         cursor.execute("SELECT COUNT(*) FROM session WHERE username=%s",
                        (self.req.authname,))
         if cursor.fetchone()[0]:
@@ -149,11 +152,17 @@ class Session(dict):
         # the database
         for k,v in self.items():
             if not self._old.has_key(k):
+                self.env.log.debug('Adding variable %s with value "%s" to '
+                                   'session %s' % (k, v,
+                                   self.sid or self.req.authname))
                 cursor.execute("INSERT INTO session (sid,username,var_name,"
                                "var_value) VALUES(%s,%s,%s,%s)",
                                (self.sid, self.req.authname, k, v))
                 changed = 1
             elif v != self._old[k]:
+                self.env.log.debug('Changing variable %s from "%s" to "%s" in '
+                                   'session %s' % (k, self._old[k], v,
+                                   self.sid or self.req.authname))
                 cursor.execute("UPDATE session SET var_value=%s WHERE sid=%s "
                                "AND username=%s AND var_name=%s",
                                (v, self.sid, self.req.authname, k))
@@ -162,6 +171,8 @@ class Session(dict):
         # Find all variables that have been deleted and also remove them from
         # the database
         for k in [k for k in self._old.keys() if not self.has_key(k)]:
+            self.env.log.debug('Deleting variable %s from session %s'
+                               % (k, self.sid or self.req.authname))
             cursor.execute("DELETE FROM session WHERE sid=%s AND username=%s "
                            "AND var_name=%s", (self.sid, self.req.authname, k))
             changed = 1
