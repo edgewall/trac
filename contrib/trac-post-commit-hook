@@ -106,6 +106,7 @@ ticketPattern = re.compile(r'#([0-9]*)')
 class CommitHook:
     _supported_cmds = { "closes":     '_cmdClose',
                         "fixes":      '_cmdClose',
+                        "addresses":  '_cmdRefs',
                         "references": '_cmdRefs',
                         "refs":       '_cmdRefs',
                         "re":         '_cmdRefs',

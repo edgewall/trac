@@ -27,11 +27,13 @@ import Cookie
 import warnings
 
 import perm
+from util import *
+from __init__ import __version__
 
 warnings.filterwarnings('ignore', 'DB-API extension cursor.next() used')
 
 modules = {
-#  name module class need_db need_svn    
+#    name             module class need_svn    
     'log'         : ('Log', 'Log', 1),
     'file'        : ('File', 'File', 1),
     'wiki'        : ('Wiki', 'Wiki', 0),
@@ -119,7 +121,7 @@ def parse_args(command, path_info, query_string,
         args[x] = argv.value.replace('\r','')
     return args
 
-def module_factory(args, db, config, req, authname):
+def module_factory(args, db, config, req):
     mode = args.get('mode', 'wiki')
     module_name, constructor_name, need_svn = modules[mode]
     module = __import__(module_name,
@@ -129,8 +131,7 @@ def module_factory(args, db, config, req, authname):
     module.req = req
     module._name = mode
     module.db = db
-    module.authname = authname
-    module.perm = perm.PermissionCache(db, authname)
+    module.perm = perm.PermissionCache(db, req.authname)
     module.perm.add_to_hdf(req.hdf)
     # Only open the subversion repository for the modules that really
     # need it. This saves us some precious time.
@@ -159,6 +160,49 @@ def open_database():
 class RedirectException(Exception):
     pass
 
+def populate_hdf(hdf, config, db, href, req):
+    sql_to_hdf(db, "SELECT name FROM enum WHERE type='priority' "
+               "ORDER BY value", hdf, 'enums.priority')
+    sql_to_hdf(db, "SELECT name FROM enum WHERE type='severity' "
+               "ORDER BY value", hdf, 'enums.severity')
+        
+    hdf.setValue('htdocs_location', config['general']['htdocs_location'])
+    hdf.setValue('project.name', config['project']['name'])
+    hdf.setValue('project.descr', config['project']['descr'])
+    
+    hdf.setValue('trac.href.wiki', href.wiki())
+    hdf.setValue('trac.href.browser', href.browser('/'))
+    hdf.setValue('trac.href.timeline', href.timeline())
+    hdf.setValue('trac.href.report', href.report())
+    hdf.setValue('trac.href.newticket', href.newticket())
+    hdf.setValue('trac.href.search', href.search())
+    hdf.setValue('trac.href.about', href.about())
+    hdf.setValue('trac.href.about_config', href.about('config/'))
+    hdf.setValue('trac.href.login', href.login())
+    hdf.setValue('trac.href.logout', href.logout())
+    hdf.setValue('trac.href.homepage', 'http://trac.edgewall.com/')
+    hdf.setValue('trac.version', __version__)
+    hdf.setValue('trac.time', time.strftime('%c', time.localtime()))
+    hdf.setValue('trac.time.gmt', time.strftime('%a, %d %b %Y %H:%M:%S GMT',
+                                                time.gmtime()))
+    
+    hdf.setValue('header_logo.link', config['header_logo']['link'])
+    hdf.setValue('header_logo.alt', config['header_logo']['alt'])
+    if config['header_logo']['src'][0] == '/':
+        hdf.setValue('header_logo.src', config['header_logo']['src'])
+    else:
+        hdf.setValue('header_logo.src', config['general']['htdocs_location']
+                     + '/' + config['header_logo']['src'])
+    hdf.setValue('header_logo.width', config['header_logo']['width'])
+    hdf.setValue('header_logo.height', config['header_logo']['height'])
+    hdf.setValue('trac.href.logout', href.logout())
+    hdf.setValue('cgi_location', req.cgi_location)
+    hdf.setValue('trac.authname', req.authname)
+
+    templates_dir = config['general']['templates_dir']
+    hdf.setValue('hdf.loadpaths.0', templates_dir)
+
+
 class Request:
     """
     This class is used to abstract the interface between different frontends.
@@ -180,7 +224,7 @@ class Request:
         self.write('Redirecting...')
         raise RedirectException()
 
-    def display(self, cs, content_type='text/html'):
+    def display(self, cs, content_type='text/html', response=200):
         import neo_cgi
         import neo_cs
         import neo_util
@@ -189,7 +233,7 @@ class Request:
             cs = neo_cs.CS(self.hdf)
             cs.parseFile(filename)
         data = cs.render()
-        self.send_response(200)
+        self.send_response(response)
         self.send_header('Content-Type', content_type)
         self.send_header('Content-Length', len(data))
         self.end_headers()
@@ -202,6 +246,11 @@ class Request:
         assert 0
 
 class CGIRequest(Request):
+    def init_request(self):
+        Request.init_request(self)
+        self.cgi_location = os.getenv('SCRIPT_NAME')
+        self.remote_addr = os.getenv('REMOTE_ADDR')
+    
     def read(self, len):
         return sys.stdin.read(len)
     
@@ -218,6 +267,7 @@ class CGIRequest(Request):
     def end_headers(self):
         self.write('\r\n')
 
+
 def open_svn_repos(repos_dir):
     from svn import util, repos, core
 
@@ -231,14 +281,58 @@ def open_svn_repos(repos_dir):
     fs_ptr = repos.svn_repos_fs(rep)
     return pool, rep, fs_ptr
 
-def real_main():
+def send_pretty_error(e, req=None, database=None, config=None):
+    import util
+    import Href
+    import os.path
+    import traceback
+    import StringIO
+    tb = StringIO.StringIO()
+    traceback.print_exc(file=tb)
+    if not req:
+        req = CGIRequest()
+        req.init_request()
+    try:
+        if not config:
+            config = database.load_config()
+        href = Href.Href(req.cgi_location)
+
+        populate_hdf(req.hdf, config, database, href, req)
+        templates_dir = config['general']['templates_dir']
+
+        if isinstance(e, util.TracError):
+            req.hdf.setValue('title', e.title or 'Error')
+            req.hdf.setValue('error.title', e.title or 'Error')
+            req.hdf.setValue('error.type', 'TracError')
+            req.hdf.setValue('error.message', e.message)
+            if e.show_traceback:
+                req.hdf.setValue('error.traceback',tb.getvalue())
+        elif isinstance(e, perm.PermissionError):
+            req.hdf.setValue('title', 'Permission Denied')
+            req.hdf.setValue('error.type', 'permission')
+            req.hdf.setValue('error.action', e.action)
+            req.hdf.setValue('error.message', str(e))
+        else:
+            req.hdf.setValue('title', 'Oops')
+            req.hdf.setValue('error.type', 'internal')
+            req.hdf.setValue('error.message', str(e))
+            req.hdf.setValue('error.traceback',tb.getvalue())
+        name = os.path.join (templates_dir, 'error.cs')
+        req.display(name, response=500)
+    except:
+        req.send_response(500)
+        req.send_header('Content-Type', 'text/plain')
+        req.end_headers()
+        req.write('Oops...\n\nTrac detected an internal error:\n\n')
+        req.write(str(e))
+        req.write('\n')
+        req.write(tb.getvalue())
+
+def real_cgi_start():
+    import Wiki
     import Href
     import perm
     import auth
-
-    # We need this to be global to be able to use it later
-    # in the exception handler if something goes wrong.
-    global href
 
     path_info = os.getenv('PATH_INFO')
     remote_addr = os.getenv('REMOTE_ADDR')
@@ -251,7 +345,6 @@ def real_main():
     config = database.load_config()
 
     # Let the wiki module build a dictionary of all page names
-    import Wiki
     Wiki.populate_page_dict(database)
     
     req = CGIRequest()
@@ -286,18 +379,16 @@ def real_main():
             req.redirect (http_referer or href.wiki())
         except RedirectException:
             pass
-
+            
     # Parse arguments
     args = parse_args(os.getenv('REQUEST_METHOD'),
                       path_info, os.getenv('QUERY_STRING'),
                       sys.stdin, os.environ)
 
+    req.authname = authenticator.authname
     # Load the selected module
-    module = module_factory(args, database, config, req,
-                            authenticator.authname)
+    module = module_factory(args, database, config, req)
     module.href = href
-    module.remote_addr = remote_addr
-    module.cgi_location = cgi_location
         
     module.run()
     # We do this even if the cgi will terminate directly after. A pool
@@ -306,98 +397,8 @@ def real_main():
         import svn.core
         svn.core.svn_pool_destroy(module.pool)
 
-
-def create_error_cgi():
-    import neo_cgi
-    import os.path
-    global href
-    
-    database = open_database()
-    cursor = database.cursor()
-    cursor.execute('SELECT value FROM config WHERE section=%s '
-                   'AND name=%s', 'general', 'templates_dir')
-    row = cursor.fetchone()
-    templates_dir = row[0]
-    cursor.execute('SELECT value FROM config WHERE section=%s '
-                   'AND name=%s', 'general', 'htdocs_location')
-    row = cursor.fetchone()
-    htdocs_location = row[0]
-    cgi = neo_cgi.CGI()
-    cgi.hdf.setValue('hdf.loadpaths.0', templates_dir)
-    cgi.hdf.setValue('htdocs_location', htdocs_location)
-    cgi.hdf.setValue('trac.href.wiki', href.wiki())
-    cgi.hdf.setValue('trac.href.browser', href.browser('/'))
-    cgi.hdf.setValue('trac.href.timeline', href.timeline())
-    cgi.hdf.setValue('trac.href.report', href.report())
-    cgi.hdf.setValue('trac.href.newticket', href.newticket())
-    cgi.hdf.setValue('trac.href.search', href.search())
-    cgi.hdf.setValue('trac.href.about', href.about())
-    cgi.hdf.setValue('trac.href.about_config', href.about('config/'))
-    cgi.hdf.setValue('trac.href.login', href.login())
-    cgi.hdf.setValue('trac.href.logout', href.logout())
-    cgi.hdf.setValue('trac.href.homepage', 'http://trac.edgewall.com/')
-    return cgi, templates_dir
-
-def main():
-    import util
-    real_e = None
-    real_tb = None
-    # In case of an exception. First try to display a fancy error
-    # message using the error.cs template. If that failes fall
-    # back to a plain/text version.
+def cgi_start():
     try:
-        try:
-            real_main()
-        except util.TracError, e:
-            import traceback
-            import StringIO
-            tb = StringIO.StringIO()
-            traceback.print_exc(file=tb)
-            real_e = e
-            real_tb = tb
-            cgi, templates_dir = create_error_cgi()
-            cgi.hdf.setValue('title', e.title or 'Error')
-            cgi.hdf.setValue('error.title', e.title or 'Error')
-            cgi.hdf.setValue('error.type', 'TracError')
-            cgi.hdf.setValue('error.message', e.message)
-            if e.show_traceback:
-                cgi.hdf.setValue('error.traceback',tb.getvalue())
-            name = os.path.join (templates_dir, 'error.cs')
-            cgi.display(name)
-        except perm.PermissionError, e:
-            import traceback
-            import StringIO
-            tb = StringIO.StringIO()
-            traceback.print_exc(file=tb)
-            real_e = e
-            real_tb = tb
-            cgi, templates_dir = create_error_cgi()
-            cgi.hdf.setValue('title', 'Permission Denied')
-            cgi.hdf.setValue('error.type', 'permission')
-            cgi.hdf.setValue('error.action', e.action)
-            cgi.hdf.setValue('error.message', str(e))
-            name = os.path.join (templates_dir, 'error.cs')
-            cgi.display(name)
-        except Exception, e:
-            import traceback
-            import StringIO
-            tb = StringIO.StringIO()
-            traceback.print_exc(file=tb)
-            real_e = e
-            real_tb = tb
-            cgi, templates_dir = create_error_cgi()
-            cgi.hdf.setValue('title', 'Oops')
-            cgi.hdf.setValue('error.type', 'internal')
-            cgi.hdf.setValue('error.message', str(e))
-            cgi.hdf.setValue('error.traceback',tb.getvalue())
-            name = os.path.join (templates_dir, 'error.cs')
-            cgi.display(name)
-    except Exception:
-        print 'Content-Type: text/plain\r\n\r\n',
-        print 'Oops...'
-        print
-        print 'Trac detected an internal error:'
-        print
-        print real_e
-        print
-        print real_tb.getvalue()
+        real_cgi_start()
+    except Exception, e:
+        send_pretty_error(e, database=open_database())

@@ -672,7 +672,7 @@ class Wiki(Module):
                 self.req.hdf.setValue('title', name + ' (wiki)')
 
         self.page = Page(name, version, self.perm, self.db,
-                    self.authname, self.remote_addr)
+                    self.req.authname, self.req.remote_addr)
         if self.args.has_key('text'):
             self.page.set_content (self.args['text'])
         

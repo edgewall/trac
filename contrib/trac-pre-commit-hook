@@ -28,7 +28,7 @@ def main():
     log = sys.argv[2]
 
     tickets = []
-    for tmp in re.findall('(?:closes|fixes|references|refs|re)'
+    for tmp in re.findall('(?:closes|fixes|addresses|references|refs|re)'
                           '.?(#[0-9]+(?:(?:[, &]+| *and *)#[0-9]+)*)', log):
         tickets += re.findall('#([0-9]+)', tmp)
     

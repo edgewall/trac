@@ -39,6 +39,3 @@ Trac is brought to you by:
         Professional Linux and software development services
               Read more at http://www.edgewall.com/
 -----------------------------------------------------------------""" % __url__
-
-
-from trac import main

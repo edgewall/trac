@@ -93,7 +93,7 @@ class Ticket (Module):
         action = new.get('action', None)
         if action == 'accept':
             new['status'] = 'assigned'
-            new['owner'] = self.authname
+            new['owner'] = self.req.authname
         if action == 'resolve':
             new['status'] = 'closed'
             new['resolution'] = new['resolve_resolution']
@@ -112,7 +112,7 @@ class Ticket (Module):
             author = new['reporter']
             del new['reporter']
         else:
-            author = self.authname
+            author = self.req.authname
         for name in fields:
             if new.has_key(name) and (not old.has_key(name) or old[name] != new[name]):
                 cursor.execute ('INSERT INTO ticket_change '
@@ -149,7 +149,7 @@ class Ticket (Module):
         now = int(time.time())
         data['time'] = now
         data['changetime'] = now
-        data.setdefault('reporter',self.authname)
+        data.setdefault('reporter',self.req.authname)
 
         cursor = self.db.cursor()
 

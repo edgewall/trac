@@ -250,7 +250,7 @@ class Report (Module):
 
         # Set some default dynamic variables
         if hasattr(self,'authname'):  # FIXME: Is authname always there? - dln
-            report_args['USER'] = self.authname
+            report_args['USER'] = self.req.authname
             
         return report_args
 

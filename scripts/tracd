@@ -23,8 +23,6 @@
 #
 # Major issues:
 # * No authentication support yet
-# * Too much code duplication between trac.py and tracd.py
-# * No error (exception) handling.
 
 import os
 import re
@@ -40,20 +38,19 @@ import BaseHTTPServer
 
 import svn.core
 
-import trac
+import trac.core
+import trac.util
 from trac import db
 from trac import auth
 from trac.Href import Href
-from trac.trac import parse_args, modules, Request, open_svn_repos, RedirectException, module_factory
 from trac import siteconfig
 
 
 class TracHTTPServer(SocketServer.ThreadingMixIn, BaseHTTPServer.HTTPServer):
     pass
 
-
 class TracHTTPRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler,
-                             Request):
+                             trac.core.Request):
     url_re = re.compile('/(?P<project>[^/]+)'
                         '(?P<path_info>/[^\?]*)?'
                         '(?:\?(?P<query_string>.*))?')
@@ -68,8 +65,10 @@ class TracHTTPRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler,
     def parse_path(self, path):
         m = self.url_re.findall(self.path)
         if not m:
-            raise self.send_error(500, 'Invalid URL')
+            return 0
         self.project, self.path_info, self.query_string = m[0]
+        self.cgi_location = '/' + self.project + '/'
+        return 1
 
     def do_project_index(self):
         self.send_response(200)
@@ -82,6 +81,7 @@ class TracHTTPRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler,
         self.write('</ul></body><html>')
 
     def do_htdocs_req(self, path):
+        """This function serves request for static img/css files"""
         path = urllib.unquote(path)
         # Make sure the path doesn't contain any dangerous ".."-parts.
         path = '/'.join(filter(lambda x: x not in ['..', ''],
@@ -106,11 +106,6 @@ class TracHTTPRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler,
         shutil.copyfileobj(f, self.wfile)
 
     def do_POST(self):
-        if not self.headers.has_key('Content-Type') or \
-           not self.headers.has_key('Content-Length') or \
-           self.headers['Content-Type'] != 'application/x-www-form-urlencoded':
-            self.send_error(500, 'Weird POST request')
-            return
         self.do_trac_req()
 
     def do_GET(self):
@@ -119,43 +114,53 @@ class TracHTTPRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler,
         elif self.path[0:13] == '/trac_common/':
             self.do_htdocs_req(self.path[13:])
         else:
-            self.post_query_string = None
             self.do_trac_req()
         
-    def do_trac_req(self):
-        start = time.time()
-        self.init_request()
-        self.parse_path(self.path)
+    def open_database(self):
         try:
             db_path = self.server.projects[self.project]
         except KeyError:
             self.send_error(500, 'Unknown project: "%s"' % self.project)
-            return
-        database = db.Database(db_path)
-        # FIXME: we only need to load this once per project
-        config = database.load_config()
-        config['general']['htdocs_location'] = '/trac_common/'
+        return db.Database(db_path)
+    
+    def do_trac_req(self):
+        config = database = None
+        try:
+            self.parse_path(self.path)
+            if not self.project in self.server.projects:
+                raise trac.util.TracError('Unknown project')
+            db_path = self.server.projects[self.project]
+            database = db.Database(db_path)
+            config = database.load_config()
+            config['general']['htdocs_location'] = '/trac_common/'
+            self.do_real_trac_req(database, config)
+        except Exception, e:
+            trac.core.send_pretty_error(e, self, database, config)
+
+    def do_real_trac_req(self, database, config):
+        self.init_request()
+        start = time.time()
 
         # FIXME: do this only once per project
         from trac import Wiki
         Wiki.populate_page_dict(database)
         
-        remote_addr = '' #FIXME
+        self.remote_addr = str(self.client_address[0])
         auth_cookie = '' #FIXME
-        authenticator = auth.Authenticator(database, auth_cookie, remote_addr)
+        authenticator = auth.Authenticator(database, auth_cookie,
+                                           self.remote_addr)
+        self.authname = authenticator.authname
 
         # Parse arguments
-        args = parse_args(self.command, self.path_info, self.query_string,
-                          self.rfile, None, self.headers)
+        args = trac.core.parse_args(self.command, self.path_info,
+                                    self.query_string,
+                                    self.rfile, None, self.headers)
 
         # Load the selected module
-        module = module_factory(args, database, config, self,
-                                authenticator.authname)
+        module = trac.core.module_factory(args, database, config, self)
 
         module.href = Href('/' + self.project)
-        module.remote_addr = remote_addr
-        module.cgi_location = '/' + self.project + '/'
-
+        module.cgi_location = self.cgi_location
         module.run()
         
         if module.pool:
