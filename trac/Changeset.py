@@ -86,7 +86,7 @@ class DiffColorizer:
         text = text[1:]
         text = space_re.sub(lambda m:
             len(m.group(0)) / 2 * '&nbsp; ' + len(m.group(0)) % 2 * '&nbsp;',
-            text.expandtabs(self.tabwidth))
+            text.expandtabs(8))
         if ttype == self.ttype:
             self.block.append(text)
         else:
