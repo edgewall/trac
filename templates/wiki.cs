@@ -128,11 +128,16 @@
          </ul>
          <?cs /if ?>         
             <?cs if wiki.action == "view" && trac.acl.WIKI_MODIFY ?>
-              <p>
-		<a class="fake-button" href="<?cs var:cgi_location?>/attachment/wiki/<?cs var:wiki.name ?>">Add attachment</a>
-              <a class="fake-button" href="<?cs var:wiki_current_href?>?edit=yes">Edit this page</a>
-	      <div style="clear: both" />
-              </p>
+	      <form class="inline" method="get" action=""><div>
+               <input type="hidden" name="edit" value="yes" />
+               <input type="submit" value="Edit This Page" />
+	      </div></form>
+	      <form class="inline" method="get" action="<?cs 
+                     var:cgi_location?>/attachment/wiki/<?cs 
+                     var:wiki.name ?>"><div>
+               <input type="submit" value="Attach File" />
+	      </div></form>
+              <div class="tiny" style="clear: both">&nbsp;</div>
             <?cs /if ?>
           <?cs /if ?>
         <?cs /if ?>

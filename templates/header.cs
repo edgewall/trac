@@ -79,7 +79,12 @@
  </div>
   <div id="navbar">
     <ul>
-      <?cs call:navlink("Wiki", $trac.href.wiki, "wiki", 
+      <?cs if $trac.active_module == "wiki" ?>	
+    	<?cs set:$wiki_view="wiki" ?>
+      <?cs else  ?>	
+    	<?cs set:$wiki_view="attachment" ?>
+      <?cs /if  ?>	
+      <?cs call:navlink("Wiki", $trac.href.wiki, $wiki_view, 
                         "WIKI_VIEW", "1") ?>
       <?cs call:navlink("Timeline", $trac.href.timeline, "timeline", 
                         "TIMELINE_VIEW", "2") ?>

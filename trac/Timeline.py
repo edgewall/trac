@@ -100,7 +100,8 @@ class Timeline (Module):
                     'tdata': row['tdata'],
                     'type': int(row['type']),
                     'message': row['message'],
-                    'author': row['author']}
+                    'author': escape(row['author'])
+}
 
             if item['type'] == CHANGESET:
                 item['changeset_href'] = self.env.href.changeset(item['idata'])
@@ -139,7 +140,7 @@ class Timeline (Module):
             daysback = int(_daysback)
             assert daysback >= 0
         except:
-            daysback = 90
+            daysback = 30
         self.req.hdf.setValue('timeline.from',
                               time.strftime('%x', time.localtime(_from)))
         self.req.hdf.setValue('timeline.daysback', str(daysback))

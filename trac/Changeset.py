@@ -227,6 +227,7 @@ class Changeset (Module):
                 break
             info.append({'name': row['name'],
                          'change': row['change'],
+                         'file_href': self.env.href.file(row['name']),
                          'log_href': self.env.href.log(row['name'])})
         return info
         

@@ -5,9 +5,9 @@
 <div id="page-content">
 <div id="subheader-links">
 <ul class="subheader-links">
-  <li class="last"><a href="<?cs var:file.logurl ?>">Revision Log</a></li>
+  <li><a href="<?cs var:file.logurl ?>">Revision Log</a></li>
   <li><a href="<?cs var:file.texturl ?>">View as Text</a></li>
-  <li><a href="<?cs var:file.rawurl ?>">Download File</a></li>
+  <li class="last"><a href="<?cs var:file.rawurl ?>">Download File</a></li>
 </ul>
 </div>
  <div id="main">
@@ -15,9 +15,8 @@
 
   <?cs if file.attachment_parent ?>
 
-    <h3>Attachment</h3>
-    <a href="<?cs var:file.attachment_parent_href ?>">
-    <?cs var:file.attachment_parent ?></a>: <?cs var:file.filename ?>
+    <h1><a href="<?cs var:file.attachment_parent_href ?>">
+    <?cs var:file.attachment_parent ?></a>: <?cs var:file.filename ?></h1>
 
   <?cs else ?>
     <h1 id="file-hdr" class="hide"><?cs var:file.filename ?></h1>
@@ -44,9 +43,11 @@
   <?cs if file.highlighted_html ?>
     <?cs var:file.highlighted_html ?>
   <?cs else ?>
-    <hr />
-    Html preview unavailable. Click
-    <a href="<a href="<?cs var:file.filename+'?rev='+file.rev ?>&format=raw">here</a> for raw version.
+    <div class="code-block">
+    Html preview unavailable. To view, 
+    <a href="<?cs var:file.filename+'?rev='+file.rev ?>&format=raw">download
+    the file</a>.
+    </div>
   <?cs /if ?>
 
   <?cs if $file.max_file_size_reached ?>

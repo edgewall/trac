@@ -24,20 +24,57 @@ MIME_MAP = {
     'css':'text/css',
     'html':'text/html',
     'txt':'text/plain', 'TXT':'text/plain', 'text':'text/plain',
+    'README':'text/plain', 'INSTALL':'text/plain', 
+    'AUTHORS':'text/plain', 'COPYING':'text/plain', 
+    'ChangeLog':'text/plain', 'RELEASE':'text/plain', 
+    'ada':'text/x-ada',
+    'asm':'text/x-asm',
     'asp':'text/x-asp',
+    'awk':'text/x-awk',
     'c':'text/x-csrc',
+    'csh':'application/x-csh',
+    'diff':'text/x-diff', 'patch':'text/x-diff',
+    'e':'text/x-eiffel',
+    'el':'text/x-elisp',
+    'f':'text/x-fortran',
     'h':'text/x-chdr',
     'cc':'text/x-c++src', 'cpp':'text/x-c++src', 'CC':'text/x-c++src',
     'hh':'text/x-c++hdr', 'HH':'text/x-c++hdr',  'hpp':'text/x-c++hdr',
+    'hs':'text/x-haskell',
+    'idl':'text/x-idl',
+    'inf':'text/x-inf',
+    'java':'text/x-java',
     'js':'application/x-javascript',
+    'ksh':'text/x-ksh',
+    'm':'text/x-objc',
+    'm4':'text/x-m4',
+    'make':'text/x-makefile', 'mk':'text/x-makefile', 'Makefile':'text/x-makefile',
+    'mail':'text/x-mail',
+    'pas':'text/x-pascal',
     'pl':'text/x-perl',
     'php':'text/x-php', 'php4':'text/x-php', 'php3':'text/x-php',
+    'ps':'application/postscript',
     'psp':'text/x-psp',
     'py':'text/x-python',
+    'pyx':'text/x-pyrex',
+    'nroff':'application/x-troff', 'roff':'application/x-troff', 'troff':'application/x-troff',
+
     'rb':'text/x-ruby',
+    'rfc':'text/x-rfc',
+    'scm':'text/x-scheme',
+    'sh':'application/x-sh',
     'sql':'text/x-sql',
+    'tcl':'text/x-tcl',
+    'tex':'text/x-tex',
+    'vba':'text/x-vba',
+    'bas':'text/x-vba',
+    'v':'text/x-verilog',
+    'vhd':'text/x-vhdl',
+    'vrml':'model/vrml',
+    'wml':'model/vrml',
     'xml':'text/xml',
     'xsl':'text/xsl',
+    'zsh':'text/x-zsh',
     'barf':'application/x-test',
  }
 
@@ -55,9 +92,8 @@ class Mimeview:
         for name in mimeviewers.__all__:
             v = __import__('mimeviewers.' + name, globals(),  locals(), [])
             viewer = getattr(mimeviewers, name)
-
-            for prio, mimetype in viewer.supported_types:
-                self.add_viewer (mimetype, viewer, prio)
+            for st in viewer.supported_types:
+                self.add_viewer (st[1], viewer, st[0])
                 
     def add_viewer(self, type, viewer, prio=0):
         if not self.viewers.has_key(type):
@@ -90,8 +126,11 @@ class Mimeview:
     def display(self, data, mimetype=None, filename=None):
         if not data:
             return ''
-        if not mimetype and filename:
-            mimetype = self.get_mimetype(filename)
+        if filename:
+            if not mimetype:
+                mimetype = self.get_mimetype(filename)
+#             elif not mimetype == 'application/octet-stream':
+#                 mimetype = self.get_mimetype(filename)
         idx = 0
         while not idx == -1:
             viewer,idx = self.get_viewer (mimetype, idx)
@@ -99,5 +138,5 @@ class Mimeview:
                 return viewer.display(data, mimetype, filename, self.env)
             except Exception, e:
                 if self.env:
-                    self.env.log.error('Display failed: %s' % e)
+                    self.env.log.warning('Display failed: %s' % e)
                 idx += 1

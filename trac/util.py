@@ -19,6 +19,8 @@
 #
 # Author: Jonas Borgström <jonas@edgewall.com>
 
+import tempfile
+import os
 import sys
 import time
 import StringIO
@@ -174,3 +176,30 @@ class TracError(Exception):
         self.message = message
         self.title = title
         self.show_traceback = show_traceback
+
+
+class NaivePopen:
+   """
+   This is a deadlock-safe version of popen that returns
+   an object with errorlevel, out (a string) and err (a string).
+   (capturestderr may not work under windows.)
+   Example: print Popen3('grep spam','\n\nhere spam\n\n').out
+   """
+   def __init__(self,command,input=None,capturestderr=None):
+       outfile=tempfile.mktemp()
+       command="( %s ) > %s" % (command,outfile)
+       if input:
+           infile=tempfile.mktemp()
+           open(infile,"w").write(input)
+           command=command+" <"+infile
+       if capturestderr:
+           errfile=tempfile.mktemp()
+           command=command+" 2>"+errfile
+       self.errorlevel=os.system(command) >> 8
+       self.out=open(outfile,"r").read()
+       os.remove(outfile)
+       if input:
+           os.remove(infile)
+       if capturestderr:
+           self.err=open(errfile,"r").read()
+           os.remove(errfile)

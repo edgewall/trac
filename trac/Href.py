@@ -32,7 +32,7 @@ class Href:
     def file(self, path, rev=None, format=None):
         if rev and format:
             return href_join(self.base, 'file', path) + \
-                   '?rev=%s&format=%s' % (str(rev), format)
+                   '?rev=%s&amp;format=%s' % (str(rev), format)
         elif rev:
             return href_join(self.base, 'file', path) + '?rev=' + str(rev)
         elif format:
@@ -81,7 +81,7 @@ class Href:
 
     def wiki(self, page = None, version=None, diff=0):
         if page and version and diff:
-            return href_join(self.base, 'wiki', page) + '?version=' + str(version) + '&diff=yes'
+            return href_join(self.base, 'wiki', page) + '?version=' + str(version) + '&amp;diff=yes'
         elif page and version:
             return href_join(self.base, 'wiki', page) + '?version=' + str(version)
         elif page:

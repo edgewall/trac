@@ -40,12 +40,16 @@ input[type="submit"],input[type="reset"],.fake-button,a.fake-button {
  border: 1px outset #ccc;
  padding: .1em .5em;
 }
+form.inline { float: left; }
+form.inline input { margin: 1em; }
 .fake-button, a.fake-button { 
  display: block;
+ float: left;
  width: 9em; 
  text-align: center;
  font-size: 80%;
  white-space: nowrap;
+ margin: 1em .5em;
 }
 option { border-bottom: 1px dotted #d7d7d7; }
 .textwidget {  border: 1px solid #d7d7d7; padding: .25em .5em }
@@ -105,7 +109,7 @@ legend {
 .menulist { 
   padding: 0;
   margin: 0;
-  border: 1px solid #d7d7d7;
+  border: 1px outset #d7d7d7;
   font-size: 11px;
   white-space: nowrap;
 }
