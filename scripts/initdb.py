@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: iso8859-1 -*-
 #
 # Copyright (C) 2003 Edgewall Software
 # Copyright (C) 2003 Jonas Borgström <jonas@edgewall.com>
@@ -177,6 +178,7 @@ INSERT INTO permission (user, action) VALUES('anonymous', 'WIKI_VIEW');
 INSERT INTO permission (user, action) VALUES('anonymous', 'SEARCH_VIEW');
 INSERT INTO permission (user, action) VALUES('anonymous', 'REPORT_VIEW');
 INSERT INTO permission (user, action) VALUES('anonymous', 'TICKET_VIEW');
+INSERT INTO permission (user, action) VALUES('anonymous', 'TICKET_CREATE');
 INSERT INTO permission (user, action) VALUES('anonymous', 'BROWSER_VIEW');
 INSERT INTO permission (user, action) VALUES('anonymous', 'TIMELINE_VIEW');
 INSERT INTO permission (user, action) VALUES('anonymous', 'CHANGESET_VIEW');
