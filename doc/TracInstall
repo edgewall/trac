@@ -1,0 +1,86 @@
+= Trac Installation Guide =
+
+The Trac web-based project management tool is implemented as a server side
+cgi-program. Trac is written in the Python programming language and store it's
+data in a sqlite database.
+
+== Dependencies ==
+
+The following dependencies have to be installed:
+
+  * Python, version >= 2.1.
+  * subversion, version >= 0.29.
+  * pysqlite, version >= 0.4.3
+  * ClearSilver, version >= 0.9.3
+  * A CGI-capable webserver (only tested with Apache)
+
+== Installing Trac ==
+
+ $ python ./setup.py build
+ $ python ./setup.py install
+
+== Initializing the database ==
+
+Trac stores wiki pages, tickes and other information in a sqlite database.
+Sqlite databases ar just ordinary files on the harddrive, no database server is
+required.
+
+A new trac database can be created like this:
+
+ $ trac_admin.py /path/to/mydatabase.db initdb
+
+NOTE: The database file have to be located in a directory where the webserver
+user has write permission to both the file and the directory.
+
+This creates a new database using default values. Some settings still need to
+be modified to get your Trac installation up and running. The following command
+will display the trac configuration:
+
+ $ trac_admin.py /path/to/mydatabase.db config list
+
+Most settings should be okey, but you have to verify that these settings are
+correct:
+
+  * general.repository_dir. This should be the path to the svn repository.
+  * general.templates_dir. This should be the path to the trac template
+    directory.
+
+A config value is modified like this:
+
+ $ trac_admin.py /path/to/mydatabase.db config set <name> <value>
+
+== Configuring Apache ==
+
+copy "trac/cgi-bin/trac.cgi" to you webservers /cgi-bin/ directory. Of course
+you can configure apache to use the "trac/cgi-bin/" directory directly if you
+like.
+
+Finally adjust the filenames and add this config snippet to your webserver:
+
+Alias /trac/ "/where/you/put/trac/htdocs/"
+# Trac need to know where the database is located
+<Location "/cgi-bin/trac.cgi">
+     SetEnv TRAC_DB "/somewhere/myproject.db"
+</Location>
+
+# You need this to let users authenticate
+<Location "/cgi-bin/trac.cgi/login">
+     AuthType Basic
+     AuthName "trac"
+     AuthUserFile /somewhere/trac.htpasswd
+     Require valid-user
+</location>
+
+== What next? ==
+
+You should now have a working Trac installation at:
+
+http://<yourhostname>/cgi-bin/trac.cgi
+
+There you should be able to browse your subversion repository, create tickets,
+view the timeline etc. Keep in mind that anonymous users (before logging in)
+are only able to see/use a subset of all the features provided by Trac. Please
+read TracPermissions on how to grant additional privileges to authenticated
+users.
+
+Enjoy!
