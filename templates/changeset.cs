@@ -2,57 +2,48 @@
 <?cs include "macros.cs"?>
 <div id="page-content">
  <ul class="subheader-links">
-   <li><a href="?format=diff">Download Diff</a></li>
+   <li class="last"><a href="?format=diff">Download Diff</a></li>
  </ul>
- <div id="main">
+ <div id="main" class="changeset">
   <div id="main-content">
 
 <h1 id="chg-hdr">Change set <?cs var:changeset.revision ?></h1>
 
-<div id="chg-preface">
-  <div id="chg-info">
-  <div>
-    <b class="chg-name">Revision:</b>
-    <span class="chg-val"><?cs var:changeset.revision ?></span>
-  </div>
-  <div>
-    <b class="chg-name">Timestamp:</b>
-    <span class="chg-val"><?cs var:changeset.time ?></span>
-  </div>
-  <div>
-    <b class="chg-name">Author:</b>
-    <span class="chg-val"><?cs var:changeset.author ?></span>
-  </div>
-  <div>
-    <b class="chg-name">Message:</b><br />
-    <div class="chg-val"><div id="searchable"><?cs var:changeset.message ?></div></div>
-  </div>
-  </div>
-    <div id="chg-files">
-    <b>Files:</b>
-    <ul>
-      <?cs each:item = changeset.changes ?>
-        <li>
-          <?cs if item.change == "A" ?>
-            <span  class="chg-file-add"> </span>
-            <a href="<?cs var:item.browser_href?>"><?cs var:item.name ?></a>
-            <span class="chg-file-comment">(added)</span>
-          <?cs elif item.change == "M" ?>
-            <span  class="chg-file-mod"> </span>
-            <a href="<?cs var:item.browser_href?>"><?cs var:item.name ?></a>
-            <span class="chg-file-comment">(modified)</span>
-          <?cs elif item.change == "D" ?>
-            <span  class="chg-file-rem"> </span>
-            <?cs var:item.name ?>
-          <span class="chg-file-comment">(deleted)</span>
-          <?cs /if ?>
-          <div class="tiny"><br /></div>
-        </li>
-      <?cs /each ?>
-    </ul>
-   </div>
- <br style="clear: both" /><div class="tiny">&nbsp;</div>
-</div> 
+<table id="overview" summary="Changeset overview">
+ <tr class="time">
+  <th scope="row">Timestamp:</th>
+  <td><?cs var:changeset.time ?></td>
+ </tr>
+ <tr class="author">
+  <th scope="row">Author:</th>
+  <td><?cs var:changeset.author ?></td>
+ </tr>
+ <tr class="files">
+  <th scope="row">Files:</th>
+  <td>
+   <ul><?cs each:item = changeset.changes ?>
+    <li>
+     <?cs if:item.change == "A" ?>
+      <span class="chg-file-add"> </span>
+      <a href="<?cs var:item.browser_href?>" title="Show file in browser"><?cs
+        var:item.name ?></a> <span class="comment">(added)</span>
+     <?cs elif:item.change == "M" ?>
+      <span class="chg-file-mod"> </span>
+      <a href="<?cs var:item.browser_href?>" title="Show file in browser"><?cs
+        var:item.name ?></a> <span class="comment">(modified)</span>
+     <?cs elif:item.change == "D" ?>
+      <span class="chg-file-rem"> </span>
+      <?cs var:item.name ?> <span class="comment">(deleted)</span>
+     <?cs /if ?>
+    </li>
+   <?cs /each ?></ul>
+  </td>
+ </tr>
+ <tr class="message">
+  <th scope="row">Message:</th>
+  <td id="searchable"><?cs var:changeset.message ?></td>
+ </tr>
+</table>
 
 <div class="hide">
   <hr class="hide" />

@@ -3,7 +3,7 @@
 <div id="page-content">
 <h2 class="hide">Ticket Navigation</h2>
 <ul class="subheader-links">
- <li><a href="#edit">Add/Change Info</a></li>
+ <li class="last"><a href="#edit">Add/Change Info</a></li>
 </ul>
 
  <div id="main">

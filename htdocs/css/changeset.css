@@ -1,25 +1,26 @@
 /* Changeset */
-#chg-preface { border: 1px solid #d7d7d7; padding: .5em; }
-#chg-info { float: left; width: 60%}
-#chg-files { float: right; margin-left: 3em; }
-#chg-files ul { list-style: none; padding: 0; margin: .5em; }
-#chg-files li { margin: .1em; }
-.chg-name {
-  display: block;
-  float: left;
-  width: 8em;
-  text-align: right;
-  margin-right: .5em;
+#main.changeset #overview {
+ border: 1px solid #d7d7d7;
+ padding: .5em;
+ width: 100%;
 }
-.chg-val { }
-ul.chg-list { padding: .5em; margin-left: 8em; list-style: none; }
-.chg-file-comment {
-  display: none;
-  color: #bbb;
-  margin-left: .5em;
-  font-size: 75%;
+#main.changeset #overview th {
+ padding-right: .5em;
+ text-align: right;
+ width: 8em;
 }
-.chg-file-add,.chg-file-mod,.chg-file-rem,.diff-legend-unmod,.diff-legend-mod,.diff-legend-add,.diff-legend-rem {
+#main.changeset #overview td, #main.changeset #overview th {
+ vertical-align: top;
+}
+#main.changeset #overview tr.files ul { margin: 0; padding: 0 }
+#main.changeset #overview tr.files li { list-style-type: none }
+#main.changeset #overview tr.files li .comment { display: none }
+#main.changeset #overview tr.message td,
+#main.changeset #overview tr.message th { padding-top: 1em }
+#main.changeset #overview tr.message td :first-child { margin-top: 0 }
+
+.chg-file-add, .chg-file-mod, .chg-file-rem,
+.diff-legend-unmod, .diff-legend-mod, .diff-legend-add, .diff-legend-rem {
   display: block;
   float: left;
   width: 1em;
@@ -27,6 +28,7 @@ ul.chg-list { padding: .5em; margin-left: 8em; list-style: none; }
   margin-right: .5em;
   border: 1px solid #999;
 }
+
 #chg-diff { clear: both; margin-bottom: 3em; }
 #chg-legend {
  margin: 1em 0;
