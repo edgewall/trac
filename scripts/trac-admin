@@ -29,7 +29,7 @@ import time
 import cmd
 import shlex
 import sqlite
-
+import StringIO
 
 
 class TracAdmin(cmd.Cmd):
@@ -298,7 +298,7 @@ CREATE INDEX wiki_idx		ON wiki(name,version);
         if hasattr(shlex, 'split'):
             toks = shlex.split(argstr)
         else:
-            lexer = shlex.shlex(StringIO.StringIO(text))
+            lexer = shlex.shlex(StringIO.StringIO(argstr))
             lexer.wordchars = lexer.wordchars + ".,_/"
             toks = []
             while 1:
