@@ -44,6 +44,35 @@ def get_tickets_for_milestone(db, milestone):
         tickets.append(ticket)
     return tickets
 
+def get_query_links(env, milestone, component=None):
+    queries = {}
+    if not component:
+        queries['all_tickets'] = env.href.query({'milestone': milestone})
+        queries['active_tickets'] = env.href.query({
+            'milestone': milestone,
+            'status': ['new', 'assigned', 'reopened']
+        })
+        queries['closed_tickets'] = env.href.query({
+            'milestone': milestone,
+            'status': 'closed'
+        })
+    else:
+        queries['all_tickets'] = env.href.query({
+            'milestone': milestone,
+            'component': component
+        })
+        queries['active_tickets'] = env.href.query({
+            'milestone': milestone,
+            'component': component,
+            'status': ['new', 'assigned', 'reopened']
+        })
+        queries['closed_tickets'] = env.href.query({
+            'milestone': milestone,
+            'component': component,
+            'status': 'closed'
+        })
+    return queries
+
 def calc_ticket_stats(tickets):
     total_cnt = len(tickets)
     active = [ticket for ticket in tickets if ticket['status'] != 'closed']
@@ -233,6 +262,8 @@ class Milestone(Module):
         tickets = get_tickets_for_milestone(self.db, id)
         stats = calc_ticket_stats(tickets)
         add_dict_to_hdf(stats, self.req.hdf, 'milestone.stats')
+        queries = get_query_links(self.env, milestone['name'])
+        add_dict_to_hdf(queries, self.req.hdf, 'milestone.queries')
 
         components = self.get_components()
         comp_no = 0
@@ -247,5 +278,7 @@ class Milestone(Module):
                                   str(percent_total * 100))
             stats = calc_ticket_stats(comp_tickets)
             add_dict_to_hdf(stats, self.req.hdf, prefix)
+            queries = get_query_links(self.env, milestone['name'], component)
+            add_dict_to_hdf(queries, self.req.hdf, '%s.queries' % prefix)
             comp_no += 1
 

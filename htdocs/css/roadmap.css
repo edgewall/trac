@@ -78,10 +78,11 @@ h2.stats {
 #stats td.progress div.progress { margin: 3px .5em 3px 2px }
 #stats td.progress p.percent { font-size: 10px; margin: 0 }
 #stats tbody th { font-weight: normal; text-align: left }
-#stats tbody th.name, #stats tfoot th.name { line-height: 2em }
-#stats tbody th.name { text-transform: capitalize }
-#stats tfoot tr { border-bottom: 0 }
-#stats tfoot th, #stats tfoot td { font-weight: bold; padding: 0 .25em }
+#stats tbody th.name { line-height: 2em; text-transform: capitalize }
+#stats tbody.totals tr { border-bottom: 0 }
+#stats tbody.totals th, #stats tbody.totals td {
+ font-weight: bold;
+}
 
 /* Styles for the milestone edit form */
 #edit fieldset { margin: 1em 0 }

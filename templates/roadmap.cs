@@ -28,9 +28,11 @@
       <p class="percent"><?cs var:#stats.percent_complete ?>%</p>
       <dl>
        <dt>Active tickets:</dt>
-       <dd><?cs var:stats.active_tickets ?></dd>
+       <dd><a href="<?cs var:milestone.queries.active_tickets ?>"><?cs
+         var:stats.active_tickets ?></a></dd>
        <dt>Resolved tickets:</dt>
-       <dd><?cs var:stats.closed_tickets ?></dd>
+       <dd><a href="<?cs var:milestone.queries.closed_tickets ?>"><?cs
+         var:stats.closed_tickets ?></a></dd>
       </dl>
      <?cs /if ?>
     <?cs /with ?>

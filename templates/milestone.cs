@@ -82,53 +82,62 @@
   <div class="descr"><?cs var:milestone.descr ?></div>
  <?cs /if ?>
 
- <?cs with:stats = milestone.stats ?>
-  <h2 class="stats">Status By Component</h2>
-  <table class="listing" id="stats"
-    summary="Shows the milestone completion status grouped by component">
-   <thead><tr>
-    <th>&nbsp;</th>
-    <th class="tickets" scope="col" colspan="2">Tickets</th>
-    <th>&nbsp;</th>
-   </tr><tr>
-    <th class="name" scope="col">Component</th>
-    <th class="open" scope="col">Active</th>
-    <th class="closed" scope="col">Resolved</th>
-    <th class="progress" scope="col">Percent Resolved</th>
-   </tr></thead>
-   <tbody>
-    <?cs each:component = milestone.stats.components ?>
-     <tr class="<?cs if:name(component) % 2 ?>odd<?cs else ?>even<?cs /if ?>">
-      <th class="name" scope="row"><?cs var:component.name ?></th>
-      <td class="open tickets"><?cs var:component.active_tickets ?></td>
-      <td class="closed tickets"><?cs var:component.closed_tickets ?></td>
-      <td class="progress">
-       <?cs if:#component.total_tickets ?>
-        <div class="progress" style="width: <?cs
-          var:#component.percent_total * #80 / #100 ?>%"><div style="width: <?cs
-          var:#component.percent_complete ?>%"></div>
-        </div>
-        <p class="percent"><?cs var:#component.percent_complete ?>%</p>
-       <?cs /if ?>
-      </td>
-     </tr>
-    <?cs /each ?>
-   </tbody>
-   <tfoot><tr>
-    <th class="name" scope="row">Total</th>
-    <td class="open tickets"><?cs var:stats.active_tickets ?></td>
-    <td class="closed tickets"><?cs var:stats.closed_tickets ?></td>
-    <td class="progress">
-     <?cs if:#stats.total_tickets ?>
-      <div class="progress" style="width: 80%">
-       <div style="width: <?cs var:#stats.percent_complete ?>%"></div>
-      </div>
-      <p class="percent"><?cs var:#stats.percent_complete ?>%</p>
-     <?cs /if ?>
-    </td>
-   </tr></tfoot>
-  </table>
- <?cs /with ?>
+ <h2 class="stats">Status By Component</h2>
+ <table class="listing" id="stats"
+   summary="Shows the milestone completion status grouped by component">
+  <thead><tr>
+   <th>&nbsp;</th>
+   <th class="tickets" scope="col" colspan="2">Tickets</th>
+   <th>&nbsp;</th>
+  </tr><tr>
+   <th class="name" scope="col">Component</th>
+   <th class="open" scope="col">Active</th>
+   <th class="closed" scope="col">Resolved</th>
+   <th class="progress" scope="col">Percent Resolved</th>
+  </tr></thead>
+  <tbody>
+   <?cs each:component = milestone.stats.components ?>
+    <tr class="<?cs if:name(component) % 2 ?>odd<?cs else ?>even<?cs /if ?>">
+     <th class="name" scope="row"><a href="<?cs
+       var:component.queries.all_tickets ?>"><?cs
+       var:component.name ?></a></th>
+     <td class="open tickets"><a href="<?cs
+       var:component.queries.active_tickets ?>"><?cs
+       var:component.active_tickets ?></a></td>
+     <td class="closed tickets"><a href="<?cs
+       var:component.queries.closed_tickets ?>"><?cs
+       var:component.closed_tickets ?></a></td>
+     <td class="progress">
+      <?cs if:#component.total_tickets ?>
+       <div class="progress" style="width: <?cs
+         var:#component.percent_total * #80 / #100 ?>%"><div style="width: <?cs
+         var:#component.percent_complete ?>%"></div>
+       </div>
+       <p class="percent"><?cs var:#component.percent_complete ?>%</p>
+      <?cs /if ?>
+     </td>
+    </tr>
+   <?cs /each ?>
+  </tbody>
+  <tbody class="totals"><tr>
+   <th class="name" scope="row"><a href="<?cs
+     var:milestone.queries.all_tickets ?>">Total</a></th>
+   <td class="open tickets"><a href="<?cs
+     var:milestone.queries.active_tickets ?>"><?cs
+     var:milestone.stats.active_tickets ?></a></td>
+   <td class="closed tickets"><a href="<?cs
+     var:milestone.queries.closed_tickets ?>"><?cs
+     var:milestone.stats.closed_tickets ?></a></td>
+   <td class="progress">
+    <?cs if:#milestone.stats.total_tickets ?>
+     <div class="progress" style="width: 80%">
+      <div style="width: <?cs var:#stats.percent_complete ?>%"></div>
+     </div>
+     <p class="percent"><?cs var:#milestone.stats.percent_complete ?>%</p>
+    <?cs /if ?>
+   </td>
+  </tr></tbody>
+ </table>
 
 </div>
 <?cs include:"footer.cs"?>

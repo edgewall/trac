@@ -51,7 +51,7 @@ class Roadmap(Module):
                 break
             milestone = {
                 'name': row['name'],
-                'href': self.env.href.milestone(row['name'])
+                'href': self.env.href.milestone(row['name']),
             }
             descr = row['descr']
             if descr:
@@ -71,4 +71,7 @@ class Roadmap(Module):
             stats = Milestone.calc_ticket_stats(tickets)
             util.add_dict_to_hdf(stats, self.req.hdf,
                 'roadmap.milestones.%s.stats' % int(milestone_no))
+            queries = Milestone.get_query_links(self.env, milestone['name'])
+            util.add_dict_to_hdf(queries, self.req.hdf,
+                'roadmap.milestones.%s.queries' % int(milestone_no))
             milestone_no += 1
