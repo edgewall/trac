@@ -19,6 +19,7 @@
 #
 # Author: Jonas Borgström <jonas@edgewall.com>
 
+from __future__ import nested_scopes
 from types import ListType
 
 import perm
@@ -37,14 +38,13 @@ class QueryModule(Module):
                               if k in Ticket.std_fields or k in custom_fields]
         for field in constrained_fields:
             vals = self.args[field]
-            if not vals:
-                continue
             if type(vals) is ListType:
-                for j in range(len(vals)):
-                    vals[j] = vals[j].value
+                vals = map(lambda x: x.value, filter(None, vals))
+            elif vals.value:
+                vals = [vals.value]
             else:
-                vals = vals.value
-            constraints[field] = vals;
+                continue
+            constraints[field] = vals
         return constraints
 
     def get_results(self, sql):
@@ -97,10 +97,12 @@ class QueryModule(Module):
             self._render_results(constraints, order, desc)
 
     def _render_editor(self, constraints, order, desc):
-        self.req.hdf.setValue('title', 'Advanced Ticket Query')
+        self.req.hdf.setValue('title', 'Custom Query')
         util.add_to_hdf(constraints, self.req.hdf, 'query.constraints')
+        self.req.hdf.setValue('query.order', order)
+        if desc: self.req.hdf.setValue('query.desc', '1')
 
-        def add_options(field, options, constraints, prefix):
+        def add_options(field, constraints, prefix, options):
             check = constraints.has_key(field)
             for option in options:
                 if check and (option['name'] in constraints[field]):
@@ -109,58 +111,46 @@ class QueryModule(Module):
             if check:
                 del constraints[field]
 
-        def add_db_options(field, db, sql, constraints, prefix):
+        def add_db_options(field, constraints, prefix, cursor, sql):
             cursor.execute(sql)
             options = []
             while 1:
                 row = cursor.fetchone()
                 if not row: break
                 if row[0]: options.append({'name': row[0]})
-            add_options(field, options, constraints, prefix)
+            add_options(field, constraints, prefix, options)
 
-        add_options('status', [{'name': 'new'}, {'name': 'assigned'},
-                               {'name': 'reopened'}, {'name': 'closed'}],
-                    constraints, 'query.options.')
-        add_options('resolution', [{'name': 'fixed'}, {'name': 'invalid'},
-                                   {'name': 'wontfix'}, {'name': 'duplicate'},
-                                   {'name': 'worksforme'}],
-                    constraints, 'query.options.')
+        add_options('status', constraints, 'query.options.',
+                    [{'name': 'new'}, {'name': 'assigned'},
+                     {'name': 'reopened'}, {'name': 'closed'}])
+        add_options('resolution', constraints, 'query.options.',
+                    [{'name': 'fixed'}, {'name': 'invalid'}, {'name': 'wontfix'},
+                     {'name': 'duplicate'}, {'name': 'worksforme'}])
         cursor = self.db.cursor()
-        add_db_options('component', cursor,
-                       'SELECT name FROM component ORDER BY name', constraints,
-                       'query.options.')
-        add_db_options('milestone', cursor,
-                       'SELECT name FROM milestone ORDER BY name', constraints,
-                       'query.options.')
-        add_db_options('version', cursor,
-                       'SELECT name FROM version ORDER BY name', constraints,
-                       'query.options.')
-        add_db_options('priority', cursor,
-                       'SELECT name FROM enum WHERE type=\'priority\'',
-                       constraints, 'query.options.')
-        add_db_options('severity', cursor,
-                       'SELECT name FROM enum WHERE type=\'severity\'',
-                       constraints, 'query.options.')
+        add_db_options('component', constraints, 'query.options.', cursor,
+                       'SELECT name FROM component ORDER BY name', )
+        add_db_options('milestone', constraints, 'query.options.', cursor,
+                       'SELECT name FROM milestone ORDER BY name')
+        add_db_options('version', constraints, 'query.options.', cursor,
+                       'SELECT name FROM version ORDER BY name')
+        add_db_options('priority', constraints, 'query.options.', cursor,
+                       'SELECT name FROM enum WHERE type=\'priority\'')
+        add_db_options('severity', constraints, 'query.options.', cursor,
+                       'SELECT name FROM enum WHERE type=\'severity\'')
 
         custom_fields = get_custom_fields(self.env)
         for custom in custom_fields:
             if custom['type'] == 'select' or custom['type'] == 'radio':
                 check = constraints.has_key(custom['name'])
-                options = [option for option in custom['options'] if option]
-                for i in range(len(options)):
+                for i in range(len(reduce(None, custom['options']))):
                     options[i] = {'name': options[i]}
                     if check and (options[i]['name'] in constraints[custom['name']]):
                         options[i]['selected'] = 1
                 custom['options'] = options
         util.add_to_hdf(custom_fields, self.req.hdf, 'query.custom')
 
-        for k in [k for k,v in constraints.items() if not type(v) is ListType]:
-            self.req.hdf.setValue('query.%s' % k, constraints[k])
-        self.req.hdf.setValue('query.order', order)
-        self.req.hdf.setValue('query.desc', str(desc))
-
     def _render_results(self, constraints, order, desc):
-        self.req.hdf.setValue('title', 'Advanced Ticket Query')
+        self.req.hdf.setValue('title', 'Custom Query')
         self.req.hdf.setValue('query.edit_href',
             self.env.href.query(constraints, order, desc, action='edit'))
 
@@ -204,13 +194,13 @@ class QueryModule(Module):
             col = k
             if not col in Ticket.std_fields:
                 col = 'value'
-            if type(v) is ListType:
+            if len(v) > 1:
                 inlist = ["'" + util.sql_escape(item) + "'" for item in v]
                 clause.append("%s IN (%s)" % (col, ", ".join(inlist)))
             elif k in ['keywords', 'cc']:
-                clause.append("%s LIKE '%%%s%%'" % (col, util.sql_escape(v)))
+                clause.append("%s LIKE '%%%s%%'" % (col, util.sql_escape(v[0])))
             else:
-                clause.append("%s = '%s'" % (col, util.sql_escape(v)))
+                clause.append("%s = '%s'" % (col, util.sql_escape(v[0])))
             if not k in Ticket.std_fields:
                 clauses.append("(name='%s' AND (" % k + " OR ".join(clause) + "))")
             else:

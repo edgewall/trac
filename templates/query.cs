@@ -35,7 +35,7 @@
   <div>
    <label for="keywords">Keywords contain:</label>
    <input type="text" name="keywords" id="keywords" accesskey="k" value="<?cs
-     var:query.keywords ?>" />
+     var:query.constraints.keywords.0 ?>" />
   </div>
   <br />
   <div>
@@ -67,16 +67,17 @@
   <div>
    <label for="owner">Assigned to:</label>
    <input type="text" name="owner" id="owner" accesskey="a" value="<?cs
-     var:query.owner ?>" />
+     var:query.constraints.owner.0 ?>" />
   </div>
   <div>
    <label for="reporter">Reported by:</label>
    <input type="text" name="reporter" id="reporter" accesskey="b" value="<?cs
-     var:query.reporter ?>" />
+     var:query.constraints.reporter.0 ?>" />
   </div>
   <div>
    <label for="cc">Cc contains:</label>
-   <input type="text" name="cc" id="cc" value="<?cs var:query.cc ?>" />
+   <input type="text" name="cc" id="cc" value="<?cs
+     var:query.constraints.cc.0 ?>" />
   </div>
   <?cs if:len(query.custom) ?><?cs set:idx = 0 ?><?cs
    each:custom = query.custom ?><?cs
