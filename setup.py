@@ -14,6 +14,10 @@ VERSION = str(trac.__version__)
 URL = trac.__url__
 LICENSE = trac.__license__
 
+if sys.version_info<(2,1):
+    print >>sys.stderr, "You need at least Python 2.1 for %s %s" % (PACKAGE, VERSION)
+    sys.exit(3)
+
 def _p(unix_path):
      return os.path.normpath(unix_path)
 
@@ -54,15 +58,18 @@ class my_install_scripts (install_scripts):
           install_scripts.finalize_options(self)
           self.set_undefined_options('install',
                                      ('install_data', 'install_data'))
-
+          
      def run (self):
           if not self.skip_build:
                self.run_command('build_scripts')
- 
+
+          self.mkpath(os.path.normpath(self.install_dir))
           self.copy_file(os.path.join(self.build_dir, 'trac-admin'),
                          self.install_dir)
-          self.copy_file(os.path.join(self.build_dir, 'trac.cgi'),
-                         os.path.join(self.install_data, 'share', 'trac', 'cgi-bin'))
+          cgi_dir = os.path.join(self.install_data, 'share', 'trac', 'cgi-bin')
+          if not os.path.exists(cgi_dir):
+               os.makedirs(cgi_dir)
+          self.copy_file(os.path.join(self.build_dir, 'trac.cgi'), cgi_dir)
 
 
 setup(name="trac",
