@@ -81,7 +81,8 @@ def convert_db(old_cursor, new_cursor):
     copy_tuples('ticket_change', old_cursor, new_cursor)
     copy_tuples('permission', old_cursor, new_cursor)
     copy_tuples('component', old_cursor, new_cursor)
-    copy_tuples('milestone', old_cursor, new_cursor)
+    copy_tuples('milestone', old_cursor, new_cursor, "name, time")
+    new_cursor.execute("UPDATE milestone SET descr=''")
     copy_tuples('version', old_cursor, new_cursor)
     copy_tuples('report', old_cursor, new_cursor,
                 'id,author,title,sql')

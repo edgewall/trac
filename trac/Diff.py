@@ -137,7 +137,7 @@ def get_options(env, req, args, advanced=0):
 
     def get_bool_option(session, args, name, default=0):
         pref = int(session.get('diff_' + name, default))
-        arg = args.has_key(name)
+        arg = int(args.has_key(name))
         if args.has_key('update') and arg != pref:
             session.set_var('diff_' + name, arg)
         else:
