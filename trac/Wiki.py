@@ -533,10 +533,10 @@ class Page:
         new_version = int(row[0])
         
         cursor.execute ('INSERT INTO WIKI '
-                        '(name, version, time, author, ipnr, locked, text) '
-                        'VALUES (%s, %s, %s, %s, %s, %s, %s)',
+                        '(name, version, time, author, ipnr, text) '
+                        'VALUES (%s, %s, %s, %s, %s, %s)',
                         self.name, new_version, int(time.time()),
-                        self.authname, self.remote_addr, 0, self.text)
+                        self.authname, self.remote_addr, self.text)
         self.db.commit ()
 
 

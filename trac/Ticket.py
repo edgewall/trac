@@ -63,11 +63,11 @@ def get_ticket (db, id, escape_values=1):
 class Newticket (Module):
     template_name = 'newticket.cs'
     def render (self):
-        default_component = self.config['ticket']['default_component']
-        default_milestone = self.config['ticket']['default_milestone']
-        default_priority  = self.config['ticket']['default_priority']
-        default_severity  = self.config['ticket']['default_severity']
-        default_version   = self.config['ticket']['default_version']
+        default_component = self.env.get_config('ticket', 'default_component')
+        default_milestone = self.env.get_config('ticket', 'default_milestone')
+        default_priority  = self.env.get_config('ticket', 'default_priority')
+        default_severity  = self.env.get_config('ticket', 'default_severity')
+        default_version   = self.env.get_config('ticket', 'default_version')
         
         self.req.hdf.setValue('title', 'New Ticket')
         

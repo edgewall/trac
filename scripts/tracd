@@ -41,10 +41,10 @@ import svn.core
 
 import trac.core
 import trac.util
-from trac import db
 from trac import auth
 from trac.Href import Href
 from trac import siteconfig
+from trac.Environment import Environment
 
 class DigestAuth:
     """A simple HTTP DigestAuth implementation (rfc2069)"""
@@ -147,7 +147,7 @@ class TracHTTPRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler,
         if not m:
             raise trac.util.TracError('Unknown URI')
         self.project_name, self.path_info, self.query_string = m[0]
-        self.project = self.server.projects[self.project_name]
+        self.env = self.server.projects[self.project_name]
         self.cgi_location = '/' + self.project_name
         return 1
 
@@ -201,30 +201,29 @@ class TracHTTPRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler,
         config = database = None
         try:
             self.parse_path(self.path)
-            database = db.Database(self.project.db_path)
-            config = database.load_config()
-            config['general']['htdocs_location'] = '/trac_common/'
-            self.do_real_trac_req(database, config)
+            self.do_real_trac_req()
         except Exception, e:
-            trac.core.send_pretty_error(e, self, database, config)
+            trac.core.send_pretty_error(e, self.env, self)
 
-    def do_real_trac_req(self, database, config):
+    def do_real_trac_req(self):
         start = time.time()
         self.init_request()
 
+        db = self.env.get_db_cnx()
+
         self.remote_user = None
         if self.path_info == '/login':
-            self.remote_user = self.project.auth.do_auth(self)
+            self.remote_user = self.env.auth.do_auth(self)
             if not self.remote_user:
                 return
 
         # FIXME: do this only once per project
         from trac import Wiki
-        Wiki.populate_page_dict(database)
+        Wiki.populate_page_dict(db)
         
         href = Href(self.cgi_location)
         
-        authenticator = auth.Authenticator(database, self)
+        authenticator = auth.Authenticator(db, self)
         http_referer = self.headers.get('Referer', None)
         if self.path_info == '/logout':
             authenticator.logout()
@@ -251,19 +250,13 @@ class TracHTTPRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler,
 
         try:
             # Load the selected module
-            module = trac.core.module_factory(args, database, config,
-                                              self, href)
+            module = trac.core.module_factory(args, self.env, db, self, href)
             module.run()
         finally:
             if module.pool:
                 svn.core.svn_pool_destroy(module.pool)
         print 'Total request time:', time.time() - start, 'seconds'
 
-
-class Project:
-    def __init__(self, db_path, auth):
-        self.db_path = db_path
-        self.auth = auth
 
 def usage():
     print 'usage: %s [options] <database> [database] ...' % sys.argv[0]
@@ -298,13 +291,15 @@ def main():
 
     if not args:
         usage()
-    for database in args:
-        base = os.path.basename(database)
+    for env in args:
+        project = os.path.basename(env)
         # We assume the database filenames follow the following
         # naming convention: /some/path/project.whatever
-        project = re.search('[a-zA-Z0-9-]+', base).group(0)
         auth = auths.get(project, None)
-        projects[project] = Project(database, auth)
+        projects[project] = Environment(env)
+        projects[project].set_config('trac', 'htdocs_location',
+                                     '/trac_common/')
+        projects[project].auth = auth
         
     server_address = (hostname, port)
     httpd = TracHTTPServer(server_address, TracHTTPRequestHandler)

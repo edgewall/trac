@@ -25,7 +25,12 @@ import sys
 import cgi
 import warnings
 
+import Wiki
+import Href
 import perm
+import auth
+import Environment
+
 from util import *
 from __init__ import __version__
 
@@ -120,55 +125,56 @@ def parse_args(command, path_info, query_string,
         args[x] = argv.value.replace('\r','')
     return args
 
-def module_factory(args, db, config, req, href):
+def module_factory(args, env, db, req, href):
     mode = args.get('mode', 'wiki')
     module_name, constructor_name, need_svn = modules[mode]
     module = __import__(module_name,
                         globals(),  locals())
     constructor = getattr(module, constructor_name)
-    module = constructor(config, args)
+    module = constructor()
+    module.pool = None
+    module.args = args
+    module.env = env
     module.req = req
     module._name = mode
     module.db = db
-    module.perm = perm.PermissionCache(db, req.authname)
+    module.perm = perm.PermissionCache(module.db, req.authname)
     module.perm.add_to_hdf(req.hdf)
     module.href = href
     # Only open the subversion repository for the modules that really
     # need it. This saves us some precious time.
     if need_svn:
         import sync
-        repos_dir = config['general']['repository_dir']
+        repos_dir = env.get_config('trac', 'repository_dir')
         pool, rep, fs_ptr = open_svn_repos(repos_dir)
         module.repos = rep
         module.fs_ptr = fs_ptr
-        sync.sync(db, rep, fs_ptr, pool)
+        sync.sync(module.db, rep, fs_ptr, pool)
         module.pool = pool
-    else:
-        module.pool = None
     return module
 
-def open_database():
-    import db
-    db_name = os.getenv('TRAC_DB')
-    if not db_name:
+def open_environment():
+    env_path = os.getenv('TRAC_ENV')
+    if not env_path:
         raise EnvironmentError, \
-              'Missing environment variable "TRAC_DB". Trac ' \
-              'requires this variable to a valid Trac database.'
+              'Missing environment variable "TRAC_ENV". Trac ' \
+              'requires this variable to point to a valid Trac Environment.'
         
-    return db.Database(db_name)
+    return Environment.Environment(env_path)
 
 class RedirectException(Exception):
     pass
 
-def populate_hdf(hdf, config, db, href, req):
+def populate_hdf(hdf, env, db, href, req):
     sql_to_hdf(db, "SELECT name FROM enum WHERE type='priority' "
                "ORDER BY value", hdf, 'enums.priority')
     sql_to_hdf(db, "SELECT name FROM enum WHERE type='severity' "
                "ORDER BY value", hdf, 'enums.severity')
         
-    hdf.setValue('htdocs_location', config['general']['htdocs_location'])
-    hdf.setValue('project.name', config['project']['name'])
-    hdf.setValue('project.descr', config['project']['descr'])
+    hdf.setValue('htdocs_location', env.get_config('trac',
+                                                   'htdocs_location'))
+    hdf.setValue('project.name', env.get_config('project', 'name'))
+    hdf.setValue('project.descr', env.get_config('project', 'descr'))
     
     hdf.setValue('trac.href.wiki', href.wiki())
     hdf.setValue('trac.href.browser', href.browser('/'))
@@ -186,21 +192,22 @@ def populate_hdf(hdf, config, db, href, req):
     hdf.setValue('trac.time.gmt', time.strftime('%a, %d %b %Y %H:%M:%S GMT',
                                                 time.gmtime()))
     
-    hdf.setValue('header_logo.link', config['header_logo']['link'])
-    hdf.setValue('header_logo.alt', config['header_logo']['alt'])
-    if config['header_logo']['src'][0] == '/':
-        hdf.setValue('header_logo.src', config['header_logo']['src'])
+    hdf.setValue('header_logo.link', env.get_config('header_logo', 'link'))
+    hdf.setValue('header_logo.alt', env.get_config('header_logo', 'alt'))
+    if env.get_config('header_logo', 'src')[0] == '/':
+        hdf.setValue('header_logo.src', env.get_config('header_logo', 'src'))
     else:
-        hdf.setValue('header_logo.src', config['general']['htdocs_location']
-                     + '/' + config['header_logo']['src'])
-    hdf.setValue('header_logo.width', config['header_logo']['width'])
-    hdf.setValue('header_logo.height', config['header_logo']['height'])
+        hdf.setValue('header_logo.src', env.get_config('trac',
+                                                       'htdocs_location')
+                     + '/' + env.get_config('header_logo', 'src'))
+    hdf.setValue('header_logo.width', env.get_config('header_logo', 'width'))
+    hdf.setValue('header_logo.height', env.get_config('header_logo', 'height'))
     hdf.setValue('trac.href.logout', href.logout())
     if req:
         hdf.setValue('cgi_location', req.cgi_location)
         hdf.setValue('trac.authname', req.authname)
 
-    templates_dir = config['general']['templates_dir']
+    templates_dir = env.get_config('trac', 'templates_dir')
     hdf.setValue('hdf.loadpaths.0', templates_dir)
 
 
@@ -223,6 +230,9 @@ class Request:
         self.send_response(302)
         self.send_header('Location', url)
         self.send_header('Content-Type', 'text/plain')
+        self.send_header('Pragma', 'no-cache')
+        self.send_header('Expires', 'Fri, 01 Jan 1999 00:00:00 GMT')
+        self.send_header('Cache-control', 'no-cache')
         cookie = self.cookie.output(header='')
         if len(cookie):
             self.send_header('Set-Cookie', cookie)
@@ -240,7 +250,7 @@ class Request:
             cs.parseFile(filename)
         data = cs.render()
         self.send_response(response)
-        self.send_header('Content-Type', content_type)
+        self.send_header('Content-Type', content_type + ';charset=utf-8')
         self.send_header('Content-Length', len(data))
         cookie = self.cookie.output(header='')
         if len(cookie):
@@ -270,7 +280,7 @@ class CGIRequest(Request):
         return sys.stdout.write(data)
 
     def send_response(self, code):
-        pass
+        self.write('Status: %d\r\n' % code)
     
     def send_header(self, name, value):
         self.write('%s: %s\r\n' % (name, value))
@@ -293,7 +303,7 @@ def open_svn_repos(repos_dir):
     fs_ptr = repos.svn_repos_fs(rep)
     return pool, rep, fs_ptr
 
-def send_pretty_error(e, req=None, database=None, config=None):
+def send_pretty_error(e, env, req=None):
     import util
     import Href
     import os.path
@@ -303,14 +313,13 @@ def send_pretty_error(e, req=None, database=None, config=None):
     traceback.print_exc(file=tb)
     if not req:
         req = CGIRequest()
+        req.authname = ''
         req.init_request()
     try:
-        if not config:
-            config = database.load_config()
         href = Href.Href(req.cgi_location)
-
-        populate_hdf(req.hdf, config, database, href, req)
-        templates_dir = config['general']['templates_dir']
+        cnx = env.get_db_cnx()
+        populate_hdf(req.hdf, env, cnx, href, req)
+        templates_dir = env.get_config('trac', 'templates_dir')
 
         if isinstance(e, util.TracError):
             req.hdf.setValue('title', e.title or 'Error')
@@ -331,7 +340,7 @@ def send_pretty_error(e, req=None, database=None, config=None):
             req.hdf.setValue('error.traceback',tb.getvalue())
         name = os.path.join (templates_dir, 'error.cs')
         req.display(name, response=500)
-    except:
+    except Exception, e:
         req.send_response(500)
         req.send_header('Content-Type', 'text/plain')
         req.end_headers()
@@ -341,17 +350,12 @@ def send_pretty_error(e, req=None, database=None, config=None):
         req.write(tb.getvalue())
 
 def real_cgi_start():
-    import Wiki
-    import Href
-    import perm
-    import auth
-
     path_info = os.getenv('PATH_INFO')
     http_referer = os.getenv('HTTP_REFERER')
-    
-    database = open_database()
-    config = database.load_config()
 
+    env = open_environment()
+    database = env.get_db_cnx()
+    
     # Let the wiki module build a dictionary of all page names
     Wiki.populate_page_dict(database)
     
@@ -383,7 +387,7 @@ def real_cgi_start():
     req.authname = authenticator.authname
     try:
         # Load the selected module
-        module = module_factory(args, database, config, req, href)
+        module = module_factory(args, env, database, req, href)
         module.run()
     finally:
         # We do this even if the cgi will terminate directly after. A pool
@@ -396,4 +400,4 @@ def cgi_start():
     try:
         real_cgi_start()
     except Exception, e:
-        send_pretty_error(e, database=open_database())
+        send_pretty_error(e, open_environment())

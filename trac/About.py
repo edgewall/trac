@@ -92,9 +92,9 @@ Copyright &copy; 2003,2004 <a href="http://www.edgewall.com/">Edgewall Software<
             self.req.hdf.setValue('about.page', 'config')
             # Export the config table to hdf
             i = 0
-            for section in self.config.keys():
-                for name in self.config[section].keys():
-                    value = self.config[section][name]
+            for section in self.env.cfg.sections():
+                for name in self.env.cfg.options(section):
+                    value = self.env.get_config(section, name)
                     self.req.hdf.setValue('about.config.%d.section' % i, section)
                     self.req.hdf.setValue('about.config.%d.name' % i, name)
                     self.req.hdf.setValue('about.config.%d.value' % i, value)

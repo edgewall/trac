@@ -30,7 +30,7 @@ import shlex
 import sqlite
 import StringIO
 import trac.siteconfig
-import trac.db
+import trac.Environment
 
 def my_sum(list):
     """Python2.1 doesn't have sum()"""
@@ -49,13 +49,13 @@ class TracAdmin(cmd.Cmd):
                  % {'ver':trac.__version__ }
     ruler = ''
     prompt = "Trac> "
-    __db = None
+    __env = None
     
-    def __init__(self,dbfile=None):
+    def __init__(self,envdir=None):
         cmd.Cmd.__init__(self)
         self.interactive = 0
-        if dbfile:
-            self.db_set(dbfile)
+        if envdir:
+            self.env_set(envdir)
 
     def docmd(self, cmd='help'):
         self.onecmd(cmd)
@@ -75,27 +75,35 @@ class TracAdmin(cmd.Cmd):
                 print "\n** Interrupt. Use 'quit' to exit **"
 
     ##
-    ## Database methods
+    ## Environment methods
     ##
 
-    def db_set(self, dbfile):
-        self.dbname = dbfile
-        self.prompt = "Trac [%s]> " % self.dbname
+    def env_set(self, envname):
+        self.envname = envname
+        self.prompt = "Trac [%s]> " % self.envname
 
-    def db_check(self):
+    def env_check(self):
         try:
-            self.__db = trac.db.Database (self.dbname)
+            self.__db = trac.Environment.Environment(self.envname)
         except:
             return 0
         return 1
         
+    def env_create(self):
+        try:
+            self.__env = trac.Environment.Environment (self.envname, create=1)
+            return self.__env
+        except Exception, e:
+            print 'Failed to create environment.', e
+            sys.exit(1)
+
     def db_open(self):
         try:
-            if not self.__db or self.__db.closed:
-                self.__db = trac.db.Database (self.dbname)
-            return self.__db
+            if not self.__env:
+                self.__env = trac.Environment.Environment (self.envname)
+            return self.__env.get_db_cnx()
         except Exception, e:
-            print 'Failed to open database.', e
+            print 'Failed to open environment.', e
             sys.exit(1)
 
     def db_execsql (self, sql, cursor=None):
@@ -181,9 +189,9 @@ class TracAdmin(cmd.Cmd):
         data = self.db_execsql ("SELECT name FROM component")
         return [r[0] for r in data]
 
-    def get_config_list (self):
-        data = self.db_execsql ("SELECT section||'.'||name FROM config")
-        return [r[0] for r in data]
+#    def get_config_list (self):
+#        data = self.db_execsql ("SELECT section||'.'||name FROM config")
+#        return [r[0] for r in data]
 
     def get_user_list (self):
         data = self.db_execsql ("SELECT DISTINCT user FROM permission")
@@ -240,7 +248,8 @@ class TracAdmin(cmd.Cmd):
         else:
             docs = (self._help_about + self._help_help +
                     self._help_initdb + self._help_upgrade +
-                    self._help_config + self._help_wiki +
+                    self._help_wiki +
+#                    self._help_config + self._help_wiki +
                     self._help_permission + self._help_component +
                     self._help_priority + self._help_severity + 
                     self._help_version + self._help_milestone)
@@ -277,47 +286,47 @@ class TracAdmin(cmd.Cmd):
 
 
     ## Config
-    _help_config = [('config list', 'Show current configuration'),
-                     ('config set <option> <value>', 'Set config')]
+#    _help_config = [('config list', 'Show current configuration'),
+#                     ('config set <option> <value>', 'Set config')]
 
-    def complete_config (self, text, line, begidx, endidx):
-        if begidx > 10 and line.startswith('config set'):
-            comp = self.get_config_list()
-        else:
-            comp = ['list','show','set']
-        return self.word_complete(text, comp)
+#    def complete_config (self, text, line, begidx, endidx):
+#        if begidx > 10 and line.startswith('config set'):
+#            comp = self.get_config_list()
+#        else:
+#            comp = ['list','show','set']
+#        return self.word_complete(text, comp)
 
-    def do_config(self, line):
-        arg = self.arg_tokenize(line)        
-        try:
-            if arg[0] in ['list', 'show']:
-                self._do_config_list()
-            elif arg[0] == 'set' and len(arg)==3:
-                name = arg[1]
-                value = arg[2]
-                self._do_config_set(name, value)
-            else:    
-                self.do_help('config')
-        except Exception, e:
-            print "Config %s failed:" % arg[0], e
+#    def do_config(self, line):
+#        arg = self.arg_tokenize(line)        
+#        try:
+#            if arg[0] in ['list', 'show']:
+#                self._do_config_list()
+#            elif arg[0] == 'set' and len(arg)==3:
+#                name = arg[1]
+#                value = arg[2]
+#                self._do_config_set(name, value)
+#            else:    
+#                self.do_help('config')
+#        except Exception, e:
+#            print "Config %s failed:" % arg[0], e
 
-    def _do_config_list(self):
-        data = self.db_execsql ('SELECT section, name, value FROM config')
-        ldata = [[r[0]+'.'+r[1],r[2]] for r in data]
-        self.print_listing(['Name', 'Value'], ldata)
+#    def _do_config_list(self):
+#        data = self.db_execsql ('SELECT section, name, value FROM config')
+#        ldata = [[r[0]+'.'+r[1],r[2]] for r in data]
+#        self.print_listing(['Name', 'Value'], ldata)
 
-    def _do_config_set(self, name, value):
-        try:
-            cfsection, cfname = name.split('.')
-        except ValueError, e:
-            raise Exception, "No such config option '%s'" % name
-        data = self.db_execsql ("SELECT value FROM config WHERE "
-                                    "section='%s' AND name='%s'" % (cfsection, cfname))
-        if not data:
-            raise Exception, "No such config option '%s'" % name
-        self.db_execsql("UPDATE config SET value='%s' WHERE "
-                        "section='%s' AND name='%s'" % (value, cfsection, cfname))
-    ## Component
+#    def _do_config_set(self, name, value):
+#        try:
+#            cfsection, cfname = name.split('.')
+#        except ValueError, e:
+#            raise Exception, "No such config option '%s'" % name
+#        data = self.db_execsql ("SELECT value FROM config WHERE "
+#                                    "section='%s' AND name='%s'" % (cfsection, cfname))
+#        if not data:
+#            raise Exception, "No such config option '%s'" % name
+#        self.db_execsql("UPDATE config SET value='%s' WHERE "
+#                        "section='%s' AND name='%s'" % (value, cfsection, cfname))
+#    ## Component
     _help_component = [('component list', 'Show available components'),
                        ('component add <name> <owner>', 'Add a new component'),
                        ('component rename <name> <newname>', 'Rename a component'),
@@ -431,11 +440,11 @@ class TracAdmin(cmd.Cmd):
     _help_initdb = [('initdb', 'Create and initializes a new database')]
 
     def do_initdb(self, line):
-        if self.db_check():
-            print "Initdb for '%s' failed.\nDoes a database already exist?" % self.dbname
+        if self.env_check():
+            print "Initdb for '%s' failed.\nDoes aa environment already exist?" % self.envname
             return
         try:
-            print 'Creating a new Trac project database at %s' % self.dbname
+            print 'Creating a new Trac project database at %s' % self.envname
             print
             print 'Trac will first ask a few questions about your environment '
             print 'in order to initalize and prepare the project database.'
@@ -492,26 +501,25 @@ class TracAdmin(cmd.Cmd):
             return
         try:
             print 'Creating and Initializing Project'
-            cnx = trac.db.Database (self.dbname, create=1)
-            cursor = cnx.cursor ()
-            print ' Creating tables'
-            cnx.initdb()
+            self.env_create()
             print ' Inserting default data'
-            cnx.insert_default_data()
-
+            self.__env.insert_default_data()
+            
             print ' Configuring Project'
-            print '  general.repository_dir'
-            self._do_config_set('general.repository_dir', repository_dir)
-            print '  general.templates_dir'
-            self._do_config_set('general.templates_dir', templates_dir)
+            print '  trac.repository_dir'
+            self.__env.set_config('trac', 'repository_dir', repository_dir)
+            print '  trac.templates_dir'
+            self.__env.set_config('trac', 'templates_dir', templates_dir)
             print '  project.name'
-            self._do_config_set('project.name', project_name)
+            self.__env.set_config('project', 'name', project_name)
+            self.__env.save_config()
             # Add a few default wiki pages
             print ' Installing wiki pages'
+            cnx = self.__env.get_db_cnx()
+            cursor = cnx.cursor()
             self._do_wiki_load(trac.siteconfig.__default_wiki_dir__,cursor)
-            cnx.commit()
 
-            from trac import sync, db
+            from trac import sync
             print ' Indexing repository'
             sync.sync(cnx, rep, fs_ptr, pool)
             print 'Done.'
@@ -526,7 +534,7 @@ class TracAdmin(cmd.Cmd):
         print
         print ' Customize settings for your project using the command:'
         print
-        print '   trac-admin %s' % self.dbname
+        print '   trac-admin %s' % self.envname
         print
         print ' Don\'t forget, you also need to copy (or symlink) "trac/cgi-bin/trac.cgi"'
 	print ' to you web server\'s /cgi-bin/ directory, and then configure the server.'
@@ -535,7 +543,7 @@ class TracAdmin(cmd.Cmd):
 	print
 	print '    Alias /trac/ "/wherever/you/installed/trac/htdocs/"'
 	print '    <Location "/cgi-bin/trac.cgi">'
-        print '        SetEnv TRAC_DB "%s"' % self.dbname
+        print '        SetEnv TRAC_ENV "%s"' % self.envname
 	print '    </Location>'
 	print
 	print '    # You need something like this to authenticate users'
@@ -912,7 +920,7 @@ def main():
         elif sys.argv[1] in ['-v','--version','about']:
             tracadm.docmd ("about")
         else:
-            tracadm.db_set(sys.argv[1])
+            tracadm.env_set(sys.argv[1])
             if len (sys.argv) > 2:
                 s_args = ' '.join(["'%s'" % c for c in sys.argv[3:]])
                 command = sys.argv[2] + ' ' +s_args

@@ -21,7 +21,7 @@
 
 
 # Database version identifier. Used for automatic upgrades.
-db_version = 1
+db_version = 2
 
 def __mkreports(reps):
     """Utility function used to create report data in same syntax as the
@@ -65,11 +65,17 @@ CREATE TABLE enum (
         value           text,
         UNIQUE(name,type)
 );
-CREATE TABLE config (
-        section         text,
-        name            text,
+CREATE TABLE system (
+        name            text PRIMARY KEY,
         value           text,
-        UNIQUE(section, name)
+        UNIQUE(name)
+);
+CREATE TABLE lock (
+        name            text PRIMARY KEY,
+        owner           text,
+        ipnr            text,
+        time            integer,
+        UNIQUE(name)
 );
 CREATE TABLE ticket (
         id              integer PRIMARY KEY,
@@ -87,7 +93,8 @@ CREATE TABLE ticket (
         status          text,
         resolution      text,
         summary         text,           -- one-line summary
-        description     text            -- problem description (long)
+        description     text,           -- problem description (long)
+        keywords        text
 );
 CREATE TABLE ticket_change (
         ticket          integer,
@@ -101,7 +108,8 @@ CREATE TABLE report (
         id              integer PRIMARY KEY,
         author          text,
         title           text,
-        sql             text
+        sql             text,
+        description
 );
 CREATE TABLE permission (
         user            text,           -- 
@@ -121,12 +129,12 @@ CREATE TABLE version (
 );
 CREATE TABLE wiki (
          name            text,
-         version                 integer,
+         version         integer,
          time            integer,
          author          text,
          ipnr            text,
-         locked          integer,
          text            text,
+         comment         text,
          UNIQUE(name,version)
 );
 CREATE INDEX node_change_idx ON node_change(rev);
@@ -348,27 +356,29 @@ data = (('component',
                 ('anonymous', 'BROWSER_VIEW'),
                 ('anonymous', 'TIMELINE_VIEW'),
                 ('anonymous', 'CHANGESET_VIEW'))),
-           ('config',
-             ('section', 'name', 'value'),
-               (('trac', 'database_version', '%i' % db_version),
-                ('general', 'htdocs_location', '/trac/'),
-                ('general', 'repository_dir', '/var/svn/myrep'),
-                ('general', 'templates_dir', '/usr/lib/trac/templates'),
-                ('project', 'name', 'My Project'),
-                ('project', 'descr', 'My example project'),
-                ('project', 'url', 'http://example.com/'),
-                ('ticket', 'default_version', ''),
-                ('ticket', 'default_severity', 'normal'),
-                ('ticket', 'default_priority', 'normal'),
-                ('ticket', 'default_milestone', ''),
-                ('ticket', 'default_component', 'component1'),
-                ('header_logo', 'link', 'http://trac.edgewall.com/'),
-                ('header_logo', 'src', 'trac_banner.png'),
-                ('header_logo', 'alt', 'Trac'),
-                ('header_logo', 'width', '236'),
-                ('header_logo', 'height', '73'))),
+           ('system',
+             ('name', 'value'),
+               (('database_version', str(db_version)),)),
            ('report',
              ('id', 'author', 'title', 'sql'),
                __mkreports(reports)))
 
+default_config = \
+ (('trac', 'htdocs_location', '/trac/'),
+  ('trac', 'repository_dir', '/var/svn/myrep'),
+  ('trac', 'templates_dir', '/usr/lib/trac/templates'),
+  ('trac', 'database', 'sqlite:db/trac.db'),
+  ('project', 'name', 'My Project'),
+  ('project', 'descr', 'My example project'),
+  ('project', 'url', 'http://example.com/'),
+  ('ticket', 'default_version', ''),
+  ('ticket', 'default_severity', 'normal'),
+  ('ticket', 'default_priority', 'normal'),
+  ('ticket', 'default_milestone', ''),
+  ('ticket', 'default_component', 'component1'),
+  ('header_logo', 'link', 'http://trac.edgewall.com/'),
+  ('header_logo', 'src', 'trac_banner.png'),
+  ('header_logo', 'alt', 'Trac'),
+  ('header_logo', 'width', '236'),
+  ('header_logo', 'height', '73'))
 

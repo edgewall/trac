@@ -1,0 +1,90 @@
+#!/usr/bin/env python
+import os
+import sys
+import sqlite
+import ConfigParser
+from trac.Environment import Environment
+
+def db2env(db_path, env_path):
+    env = Environment(env_path, create=1)
+    # Open the databases
+    old_cnx = sqlite.connect(db_path)
+    new_cnx = env.get_db_cnx()
+    old_cursor = old_cnx.cursor()
+    new_cursor = new_cnx.cursor()
+    convert_config(old_cursor, env_path)
+    convert_db(old_cursor, new_cursor)
+    new_cursor.execute("INSERT INTO system VALUES('database_version', '2')")
+    new_cnx.commit()
+
+def convert_config(old_cursor, env_path):
+    cfg = ConfigParser.ConfigParser()
+    old_cursor.execute('SELECT section, name, value FROM config')
+    while 1:
+        row = old_cursor.fetchone()
+        if not row:
+            break
+        row = [row[0], row[1], row[2]]
+        if row[0] == 'general':
+            row[0] = 'trac'
+        if not cfg.has_section(row[0]):
+            cfg.add_section(row[0])
+        if row[1] == 'database_version':
+            continue
+        cfg.set(row[0], row[1], row[2])
+    cfg.set('trac', 'database', 'sqlite:db/trac.db')
+    cfg.write(open(os.path.join(env_path, 'conf', 'trac.ini'), 'w'))
+
+def to_utf8(row):
+    x = []
+    for v in row:
+        if type(v) == type(''):
+            try:
+                u = unicode(v, 'utf-8')
+                x.append(v)
+            except UnicodeError:
+                u = unicode(v, 'iso-8859-15')
+                x.append(u.encode('utf-8'))
+        else:
+            x.append(v)
+    return x
+
+def copy_tuples(table, from_cursor, to_cursor, fields='*'):
+    from_cursor.execute('SELECT %s FROM %s' % (fields, table))
+    while 1:
+        row = from_cursor.fetchone()
+        if not row:
+            break
+        row = to_utf8(row)
+        if fields == '*':
+            to_cursor.execute('INSERT INTO %s VALUES(%s)' \
+                              % (table, ', '.join(['%s'] * len(row))), *row)
+        else:
+            to_cursor.execute('INSERT INTO %s (%s) VALUES(%s)' \
+                              % (table, fields,
+                                 ', '.join(['%s'] * len(row))), *row)
+
+def convert_db(old_cursor, new_cursor):
+    copy_tuples('revision', old_cursor, new_cursor)
+    copy_tuples('node_change', old_cursor, new_cursor)
+    copy_tuples('auth_cookie', old_cursor, new_cursor)
+    copy_tuples('enum', old_cursor, new_cursor)
+    copy_tuples('ticket_change', old_cursor, new_cursor)
+    copy_tuples('permission', old_cursor, new_cursor)
+    copy_tuples('component', old_cursor, new_cursor)
+    copy_tuples('milestone', old_cursor, new_cursor)
+    copy_tuples('version', old_cursor, new_cursor)
+    copy_tuples('report', old_cursor, new_cursor,
+                'id,author,title,sql')
+    copy_tuples('ticket', old_cursor, new_cursor,
+                'id,time,changetime,component,severity,priority,'
+                'owner,reporter,cc,url,version,milestone,status,'
+                'resolution,summary,description')
+    copy_tuples('wiki', old_cursor, new_cursor,
+                'name,version,time,author,ipnr,text')
+
+if __name__ == '__main__':
+    if len(sys.argv) != 3:
+        print >> sys.stderr, "Usage: %s <db-file> <env-dir>" % sys.argv[0]
+        sys.exit(1)
+    db2env(sys.argv[1], sys.argv[2])
