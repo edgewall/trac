@@ -174,12 +174,7 @@ class OneLinerFormatter(CommonFormatter):
 	    return ''
         self.out = out
         self._open_tags = []
-        self._list_stack = []
         
-        self.in_pre = 0
-        self.indent_level = 0
-        self.paragraph_open = 0
-
         rules = self._compiled_rules
 
         result = re.sub(rules, self.replace, escape(text.strip()))
@@ -492,6 +487,8 @@ class Wiki(Module):
             self.cgi.hdf.setValue('wiki.action', 'preview')
             self.cgi.hdf.setValue('title', 'Wiki Page: ' + name + ' (preview)')
         else:
+            if self.args.has_key('text'):
+                del self.args['text']
             self.cgi.hdf.setValue('wiki.action', 'view')
             self.cgi.hdf.setValue('title', 'Wiki Page: ' + name)
 
@@ -505,7 +502,7 @@ class Wiki(Module):
             
         self.cgi.hdf.setValue('wiki.current_href', href.wiki(page.name))
         self.cgi.hdf.setValue('wiki.page_name', page.name)
-        self.cgi.hdf.setValue('wiki.page_source', page.text)
+        self.cgi.hdf.setValue('wiki.page_source', escape(page.text))
         out = StringIO.StringIO()
         Formatter(self.cgi.hdf).format(page.text, out)
         self.cgi.hdf.setValue('wiki.page_html', out.getvalue())

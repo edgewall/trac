@@ -42,11 +42,13 @@
         <?cs else ?>
 	  <?cs if wiki.action == "edit" || wiki.action == "preview" ?>
             <h3>Edit "<?cs var:wiki.page_name ?>"</h3>
-	    <a href="<?cs var:$trac.href.wiki ?>WikiFormatting">WikiFormatting</a>
             <form action="<?cs var:wiki.current_href ?>" method="post">
               <p>
 	        <textarea name="text" rows="20" cols="80" style="width:100%"><?cs var:wiki.page_source ?></textarea>
 	      </p>
+	      <div id="wiki-formatting-help">
+	      Read <a href="<?cs var:$trac.href.wiki ?>WikiFormatting">WikiFormatting</a> for more information about available commands.
+	      </div>
 	      <p>
 	        <input type="submit" name="save" value="save changes" />&nbsp;
 	        <input type="submit" name="preview" value="preview" />&nbsp;

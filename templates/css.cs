@@ -148,6 +148,11 @@ a.wiki-missing-page:hover { color: #000; }
 	margin: 1em;
 }
 
+#wiki-formatting-help {
+	font: normal 11px Verdana, 'Bitstream Vera Sans', Helvetica, Arial, sans-serif;
+	float: right;
+}
+
 #browser-list,#common-list {
 	margin: .5em 0 2em 0;
 	border-bottom: 1px solid #eee;
