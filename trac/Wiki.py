@@ -134,6 +134,8 @@ class CommonFormatter:
             return href.wiki(args), '%s:%s' % (module, args)
         elif module == 'report':
             return href.report(args), '%s:%s' % (module, args)
+        elif module == 'changeset':
+            return href.changeset(args), '%s:%s' % (module, args)
         elif module in ['source', 'repos', 'browser']:
             rev = None
             match = re.search('([^#]+)#(.+)', args)
