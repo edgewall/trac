@@ -112,7 +112,7 @@ class Report (Module):
         cursor = self.db.cursor()
         cursor.execute("INSERT INTO report (title,sql,description) "
                        "VALUES (%s,%s,%s)", (title, sql, description))
-        id = self.db.db.sqlite_last_insert_rowid()
+        id = self.db.get_last_id()
         self.db.commit()
         req.redirect(self.env.href.report(id))
 

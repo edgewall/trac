@@ -20,6 +20,8 @@
 #
 # Author: Jonas Borgstršm <jonas@edgewall.com>
 
+from trac.db import SQLiteConnection
+
 import unittest
 
 
@@ -34,22 +36,18 @@ class Mock(object):
             setattr(self, k, v)
 
 
-class InMemoryDatabase(object):
+class InMemoryDatabase(SQLiteConnection):
     """
     DB-API connection object for an SQLite in-memory database, containing all
     the default Trac tables but no data.
     """
     def __init__(self):
-        import sqlite
-        self.__db = sqlite.connect(':memory:')
-        cursor = self.__db.cursor()
+        SQLiteConnection.__init__(self, ':memory:')
 
+        cursor = self.cnx.cursor()
         from trac.db_default import schema
         cursor.execute(schema)
-        self.__db.commit()
-
-    def __getattr__(self, name):
-        return getattr(self.__db, name)
+        self.cnx.commit()
 
 
 def suite():

@@ -22,9 +22,7 @@
 # Todo: Move backup and upgrade from db.py
 #
 
-from trac import db_default, Logging, Mimeview, util
-
-import sqlite
+from trac import db, db_default, Logging, Mimeview, util
 
 import ConfigParser
 import os
@@ -69,20 +67,7 @@ class Environment:
         fd.close()
 
     def get_db_cnx(self):
-        db_str = self.get_config('trac', 'database', 'sqlite:db/trac.db')
-        assert db_str[:7] == 'sqlite:'
-        db_name = os.path.join(self.path, db_str[7:])
-        if not os.access(db_name, os.F_OK):
-            raise EnvironmentError, 'Database "%s" not found.' % db_name
-        
-        directory = os.path.dirname(db_name)
-        if not os.access(db_name, os.R_OK + os.W_OK) or \
-               not os.access(directory, os.R_OK + os.W_OK):
-            raise EnvironmentError, \
-                  'The web server user requires read _and_ write permission\n' \
-                  'to the database %s and the directory this file is located in.' % db_name
-        return sqlite.connect(os.path.join(self.path, db_str[7:]),
-                              timeout=10000)
+        return db.get_cnx(self)
 
     def create(self):
         def _create_file(fname, data=None):
@@ -124,6 +109,7 @@ class Environment:
 ?>
 """)
         # Create default database
+        import sqlite
         os.mkdir(os.path.join(self.path, 'db'))
         cnx = sqlite.connect(os.path.join(self.path, 'db', 'trac.db'))
         cursor = cnx.cursor()
