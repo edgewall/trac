@@ -53,14 +53,13 @@ class CommonFormatter:
     _rules = [r"""(?P<bold>''')""",
               r"""(?P<italic>'')""",
               r"""(?P<underline>__)""",
-              r"""(?P<begintt>\{\{\{)""",
-              r"""(?P<endtt>\}\}\})""",
+              r"""(?P<inlinecode>\{\{\{(?P<inline>.*)\}\}\})""",
               r"""(?P<htmlescapeentity>&#[0-9]+;)""",
               r"""(?P<tickethref>#[0-9]+)""",
               r"""(?P<changesethref>\[[0-9]+\])""",
               r"""(?P<reporthref>\{[0-9]+\})""",
               r"""(?P<svnhref>(svn:[^ ]+[^\., ]))""",
-              r"""(?P<wikilink>(^|(?<=[^A-Za-z]))[A-Z][a-z/]*(?:[A-Z][a-z/]+)+)""",
+              r"""(?P<wikilink>(^|(?<=[^A-Za-z]))[A-Z][a-z/]+(?:[A-Z][a-z/]+)+)""",
               r"""(?P<fancylink>\[(?P<fancyurl>([a-z]+:[^ ]+)) (?P<linkname>.*?)\])"""]
 
     def replace(self, fullmatch):
@@ -99,11 +98,8 @@ class CommonFormatter:
     def _underline_formatter(self, match, fullmatch):
         return self.simple_tag_handler('<span class="underline">', '</span>')
 
-    def _begintt_formatter(self, match, fullmatch):
-        return '<tt>'
-
-    def _endtt_formatter(self, match, fullmatch):
-        return '</tt>'
+    def _inlinecode_formatter(self, match, fullmatch):
+        return '<tt>%s</tt>' % fullmatch.group('inline')
 
     def _htmlescapeentity_formatter(self, match, fullmatch):
         #dummy function that match html escape entities in the format:
@@ -203,7 +199,7 @@ class Formatter(CommonFormatter):
 
     # RE patterns used by other patterna
     _helper_patterns = ('idepth', 'ldepth', 'hdepth', 'fancyurl',
-                        'linkname', 'macroname', 'macroargs')
+                        'linkname', 'macroname', 'macroargs', 'inline')
 
     def __init__(self, hdf = None):
         self.hdf = hdf
