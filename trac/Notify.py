@@ -68,7 +68,6 @@ class Notify:
 
     def send(self, rcpt):
         """Send message to a recipient 'rcpt'. Called once for each recipient."""
-        print self.cs.render()
         raise Exception, "Notify::send not implemented"
     
     def finish_send(self):
@@ -139,7 +138,6 @@ else:
             msg['To'] = rcpt
             for hdr in mime_headers.keys():
                 msg[hdr] = mime_headers[hdr]
-#            print msg
             self.server.sendmail(self.from_email, rcpt, msg.as_string())
             
         def finish_send(self):
@@ -267,7 +265,7 @@ else:
 
         def get_message_id(self, rcpt, modtime=0):
             """Generate a predictable, but sufficiently unique message ID."""
-            s = '%s.%08d.%d.%s' % (self.env.get_config('project','link'),
+            s = '%s.%08d.%d.%s' % (self.env.get_config('project','url'),
                                 int(self.ticket['id']), modtime, rcpt)
             dig = md5.new(s).hexdigest()
             host = self.from_email[self.from_email.find('@')+1:]

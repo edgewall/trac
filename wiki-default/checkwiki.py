@@ -23,6 +23,7 @@ wiki_pages = [
  "TracInstall",
  "TracLinks",
  "TracLogging",
+ "TracNotification",
  "TracOnNetBsd",
  "TracOnOsx",
  "TracPermissions",
