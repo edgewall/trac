@@ -392,16 +392,16 @@ class Page:
     def render_edit(self, out, hdf):
         perm.assert_permission (perm.WIKI_MODIFY)
         out.write ('<h3>source</h3>')
-        out.write ('<form action="%s" method="POST">' %
+        out.write ('<form action="%s" method="post"><p>' %
                    hdf.getValue('cgi_location', ''))
-        out.write ('<input type="hidden" name="page" value="%s">' % self.name)
-        out.write ('<input type="hidden" name="mode" value="wiki">')
+        out.write ('<input type="hidden" name="page" value="%s" />' % self.name)
+        out.write ('<input type="hidden" name="mode" value="wiki" />')
         out.write ('<textarea name="text" rows="15" cols="80">')
         out.write(escape(self.text))
-        out.write ('</textarea><p>')
-        out.write ('<input type="submit" name="action" value="preview">&nbsp;')
-        out.write ('<input type="submit" name="action" value="save changes">')
-        out.write ('</form>')
+        out.write ('</textarea></p><p>')
+        out.write ('<input type="submit" name="action" value="preview" />&nbsp;')
+        out.write ('<input type="submit" name="action" value="save changes" />')
+        out.write ('</p></form>')
 
     def render_view(self, out, hdf, edit_button=1):
         perm.assert_permission (perm.WIKI_VIEW)
@@ -410,12 +410,12 @@ class Page:
         Formatter().format(self.text, out)
         out.write ('</div><br />')
         if edit_button and perm.has_permission (perm.WIKI_MODIFY):
-            out.write ('<form action="%s" method="POST">' %
+            out.write ('<form action="%s" method="post"><p>' %
                        hdf.getValue('cgi_location', ''))
-            out.write ('<input type="hidden" name="mode" value="wiki">')
-            out.write ('<input type="hidden" name="page" value="%s">' % self.name)
-            out.write ('<input type="submit" name="action" value=" edit page ">')
-            out.write ('</form>')
+            out.write ('<input type="hidden" name="mode" value="wiki" />')
+            out.write ('<input type="hidden" name="page" value="%s" />' % self.name)
+            out.write ('<input type="submit" name="action" value=" edit page " />')
+            out.write ('</p></form>')
         
     def render_preview (self, out, hdf):
         perm.assert_permission (perm.WIKI_MODIFY)
