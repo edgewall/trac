@@ -59,6 +59,7 @@ td.size-column
   width: 10%;
   border-left: thin dotted #dddddd;
   padding-right: 0.5em;
+  white-space: nowrap;
 }
 
 td.rev-column
@@ -76,6 +77,7 @@ td.date-column
   border-left: thin dotted #dddddd;
   padding-left: 0.5em;
   padding-right: 0.5em;
+  white-space: nowrap;
 }
 
 td.summary-column
@@ -85,7 +87,7 @@ td.summary-column
 
 td.icon-column
 {
-  width: 10px;
+  width: 1%;
 }
 
 td.name-column, td.report-column, td.ticket-column
