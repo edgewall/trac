@@ -21,7 +21,7 @@
 
 
 # Database version identifier. Used for automatic upgrades.
-db_version = 4
+db_version = 5
 
 def __mkreports(reps):
     """Utility function used to create report data in same syntax as the
@@ -122,8 +122,11 @@ CREATE TABLE component (
          owner           text
 );
 CREATE TABLE milestone (
-         name            text PRIMARY KEY,
-         time            integer
+         id              integer PRIMARY KEY,
+         name            text,
+         time            integer,
+         descr           text,
+         UNIQUE(name)
 );
 CREATE TABLE version (
          name            text PRIMARY KEY,
