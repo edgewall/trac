@@ -147,11 +147,23 @@ a.wiki-missing-page:hover { color: #000; }
 	border-collapse: collapse;
 	line-height: 130%;
 }
+#browser-list td { 
+padding: 0 .25em; 
+	border: 1px dotted #ddd;
+
+}
+
 #browser-list { width: 100%; }
 tr.br-row-even, tr.br-row-odd,tr.row-even, tr.row-odd { border-top: 1px solid #ddd; }
 tr.br-row-even,tr.row-even { background-color: #fff; }
 tr.br-row-odd,tr.row-odd { background-color: #f7f7f7; }
 tr.br-row-even:hover,tr.br-row-odd:hover { background: #eed; }
+
+<?cs if:trac.active_module == 'report'?>
+td.summary-col { border-left: 1px dotted #ccc; }
+td.report-col { width: 1px; }
+<?cs /if ?>
+
 
 <?cs if:trac.active_module == 'browser' ?>
 /* Browser */
@@ -191,10 +203,6 @@ td.br-size-col, td.br-rev-col, td.br-date-col {
 	white-space: nowrap;
 }
 td.br-icon-col, td.br-report-col, td.br-ticket-col { width: 1em; }
-td.br-summary-col {
-	padding-top: 1em;
-	font-size: 12px;
-}
 <?cs /if ?>
 
 

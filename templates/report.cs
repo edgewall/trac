@@ -46,11 +46,11 @@
         <?cs if cell.type == "ticket" ?>
           <td class="ticket-column"><a href="<?cs var:cell.ticket_href ?>">#<?cs var: cell.value ?></a></td>
         <?cs elif cell.type == "report" ?>
-          <td class="report-column"><a href="<?cs var:cell.report_href ?>">{<?cs var: cell.value ?>}</a></td>
+          <td class="report-col"><a href="<?cs var:cell.report_href ?>">{<?cs var: cell.value ?>}</a></td>
         <?cs elif cell.type == "time" ?>
           <td class="date-column"><?cs var: cell.value ?></td>
         <?cs elif cell.type == "summary" ?>
-          <td class="summary-column"><?cs var: cell.value ?></td>
+          <td class="summary-col"><?cs var: cell.value ?></td>
         <?cs elif cell.type == "owner" ?>
           <td class="owner-column"><?cs var: cell.value ?></td>
         <?cs elif cell.type == "severity" ?>
