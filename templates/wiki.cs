@@ -1,5 +1,5 @@
 <?cs include "header.cs" ?>
-<script src="/trac_common/trac.js" type="text/javascript"> 
+<script src="<?cs var:htdocs_location ?>/trac.js" type="text/javascript"> 
 </script>
 <div id="page-content">
 <div id="subheader-links">
@@ -37,12 +37,33 @@
         <?cs if $wiki.title_index.0.title ?>
           <h2>TitleIndex</h2>
           <?cs each item = $wiki.title_index ?>
-            <li>
-              <a href="<?cs var:item.href?>"><?cs var:item.title ?></a>
-            </li>
+            <li><a href="<?cs var:item.href?>"><?cs var:item.title ?></a></li>
           <?cs /each ?>
         <?cs else ?>
-          <?cs var:content ?>
+	  <?cs if wiki.action == "edit" || wiki.action == "preview" ?>
+            <h3>Edit "<?cs var:wiki.page_name ?>"</h3>
+	    <a href="<?cs var:$trac.href.wiki ?>WikiFormatting">WikiFormatting</a>
+            <form action="<?cs var:wiki.current_href ?>" method="post">
+              <p>
+	        <textarea name="text" rows="20" cols="80" style="width:100%"><?cs var:wiki.page_source ?></textarea>
+	      </p>
+	      <p>
+	        <input type="submit" name="save" value="save changes" />&nbsp;
+	        <input type="submit" name="preview" value="preview" />&nbsp;
+	        <input type="submit" name="view" value="cancel" />
+	      </p>
+	    </form>
+	  <?cs /if ?>
+	  <?cs if wiki.action == "view" || wiki.action == "preview" ?>
+	    <div class="wikipage">
+	        <?cs var:wiki.page_html ?>
+	    </div>
+	    <?cs if wiki.action == "view" && trac.acl.WIKI_MODIFY ?>
+	      <p>
+	      <a href="<?cs var:wiki_current_href?>?edit=yes">Edit this page.</a>
+	      </p>
+	    <?cs /if ?>
+	  <?cs /if ?>
         <?cs /if ?>
       </div>
     </div>

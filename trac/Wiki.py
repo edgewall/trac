@@ -56,14 +56,16 @@ class CommonFormatter:
     _rules = [r"""(?P<bold>''')""",
               r"""(?P<italic>'')""",
               r"""(?P<underline>__)""",
+              r"""(?P<begintt>\{\{\{)""",
+              r"""(?P<endtt>\}\}\})""",
               r"""(?P<htmlescapeentity>&#[0-9]+;)""",
               r"""(?P<tickethref>#[0-9]+)""",
               r"""(?P<changesethref>\[[0-9]+\])""",
               r"""(?P<reporthref>\{[0-9]+\})""",
               r"""(?P<svnhref>(svn:[^ ]+[^\., ]))""",
               r"""(?P<wikilink>(^|(?<=[^A-Za-z]))[A-Z][a-z/]*(?:[A-Z][a-z/]+)+)""",
-              r"""(?P<fancylink>\[(?P<fancyurl>([a-z]+:[^ ]+)) (?P<linkname>.*?)\])"""]
-
+              r"""(?P<fancylink>\[(?P<fancyurl>([a-z]+:[^ ]+)) (?P<linkname>.*?)\])""",
+              r"""(?P<fancysvnhref>\[(?P<fancysvnfile>svn:[^ ]+) (?P<svnlinkname>.*?)\])"""]
 
     def compile_rules(self, rules):
         return re.compile('(?:' + string.join(rules, '|') + ')')
@@ -103,6 +105,17 @@ class CommonFormatter:
 
     def _underline_formatter(self, match, fullmatch):
         return self.simple_tag_handler('<span class="underline">', '</span>')
+
+    def _begintt_formatter(self, match, fullmatch):
+        return '<tt>'
+
+    def _endtt_formatter(self, match, fullmatch):
+        return '</tt>'
+
+    def _fancysvnhref_formatter(self, match, fullmatch):
+        path = fullmatch.group('fancysvnfile')
+        name = fullmatch.group('svnlinkname')
+        return '<a href="%s">%s</a>' % (href.log(path[4:]), name)
 
     def _htmlescapeentity_formatter(self, match, fullmatch):
         #dummy function that match html escape entities in the format:
@@ -182,10 +195,7 @@ class Formatter(CommonFormatter):
     """
     _rules = [r"""(?P<svnimg>svn:([^ ]+)(\.png|\.jpg|\.jpeg|\.gif))"""] + \
              CommonFormatter._rules + \
-             [r"""(?P<fancysvnhref>\[(?P<fancysvnfile>svn:[^ ]+) (?P<svnlinkname>.*?)\])""",
-              r"""(?P<begintt>\{\{\{)""",
-              r"""(?P<endtt>\}\}\})""",
-              r"""(?P<br>\[\[(br|BR)\]\])""",
+             [r"""(?P<br>\[\[(br|BR)\]\])""",
               r"""(?P<heading>^\s*(?P<hdepth>=+)\s.*\s(?P=hdepth)$)""",
               r"""(?P<list>^(?P<ldepth>\s+)(?:\*|[0-9]+\.) )""",
               r"""(?P<indent>^(?P<idepth>\s+)(?=[^\s]))""",
@@ -195,17 +205,6 @@ class Formatter(CommonFormatter):
     # RE patterns used by other patterna
     _helper_patterns = ('idepth', 'ldepth', 'hdepth', 'fancyurl',
                         'linkname', 'fancysvnfile', 'svnlinkname')
-
-    def _begintt_formatter(self, match, fullmatch):
-        return '<tt>'
-
-    def _endtt_formatter(self, match, fullmatch):
-        return '</tt>'
-
-    def _fancysvnhref_formatter(self, match, fullmatch):
-        path = fullmatch.group('fancysvnfile')
-        name = fullmatch.group('svnlinkname')
-        return '<a href="%s">%s</a>' % (href.log(path[4:]), name)
 
     def _br_formatter(self, match, fullmatch):
         return '<br />'
@@ -230,7 +229,7 @@ class Formatter(CommonFormatter):
         return ''
 
     def close_indentation(self):
-        self.out.write('</blockquote>' * self.indent_level)
+        self.out.write('</blockquote>\n' * self.indent_level)
         self.indent_level = 0
         
     def open_indentation(self, depth):
@@ -241,7 +240,7 @@ class Formatter(CommonFormatter):
             self.close_list()
             self.indent_level = depth
             for i in range(depth):
-                self.out.write('<blockquote>')
+                self.out.write('<blockquote>\n')
 
     def _list_formatter(self, match, fullmatch):
         ldepth = len(fullmatch.group('ldepth'))
@@ -312,7 +311,7 @@ class Formatter(CommonFormatter):
                 continue
             elif self.in_pre:
                 if line == '}}}':
-                    out.write('</pre>')
+                    out.write('</pre>\n')
                     self.in_pre = 0
                 else:
                     self.out.write(line + '\n')
@@ -408,41 +407,6 @@ class Page:
                         0, self.text)
         cnx.commit ()
 
-    def render_edit(self, out, hdf):
-        perm.assert_permission (perm.WIKI_MODIFY)
-        out.write ('<h3>source</h3>')
-        out.write ('<form action="%s" method="post"><p>' %
-                   hdf.getValue('cgi_location', ''))
-        out.write ('<input type="hidden" name="page" value="%s" />' % self.name)
-        out.write ('<input type="hidden" name="mode" value="wiki" />')
-        out.write ('<textarea name="text" rows="15" cols="80">')
-        out.write(escape(self.text))
-        out.write ('</textarea></p><p>')
-        out.write ('<input type="submit" name="action" value="preview" />&nbsp;')
-        out.write ('<input type="submit" name="action" value="save changes" />')
-        out.write ('</form>')
-
-    def render_view(self, out, hdf, edit_button=1):
-        perm.assert_permission (perm.WIKI_VIEW)
-        out.write ('<div class="wikipage">')
-        #format_wiki(self.text, out)
-        Formatter().format(self.text, out)
-        out.write ('</div><br />')
-        if edit_button and perm.has_permission (perm.WIKI_MODIFY):
-            out.write ('<form action="%s" method="post"><p>' %
-                       hdf.getValue('cgi_location', ''))
-            out.write ('<input type="hidden" name="mode" value="wiki" />')
-            out.write ('<input type="hidden" name="page" value="%s" />' % self.name)
-            out.write ('<input type="submit" name="action" value=" edit page " />')
-            out.write ('</p></form>')
-        
-    def render_preview (self, out, hdf):
-        perm.assert_permission (perm.WIKI_MODIFY)
-        
-        self.render_edit (out, hdf)
-        out.write ('<a name="preview"></a><h3>preview</h3>')
-        self.render_view (out, hdf, edit_button=0)
-        
 
 class Wiki(Module):
     template_name = 'wiki.cs'
@@ -492,7 +456,9 @@ class Wiki(Module):
 
     def render(self):
         name = dict_get_with_default(self.args, 'page', 'WikiStart')
-        action = dict_get_with_default(self.args, 'action', 'view')
+        save = dict_get_with_default(self.args, 'save', None)
+        edit = dict_get_with_default(self.args, 'edit', None)
+        preview = dict_get_with_default(self.args, 'preview', None)
         version = dict_get_with_default(self.args, 'version', 0)
 
         self.generate_history(name)
@@ -500,32 +466,33 @@ class Wiki(Module):
         if name == 'TitleIndex':
             self.generate_title_index()
             return
-            
-        page = Page(name, version)
 
-        if self.args.has_key('text'):
-            page.set_content (self.args['text'])
-            
-        out = StringIO.StringIO()
-        if action == 'save changes':
-            page.commit ()
-            redirect (href.wiki(page.name))
-        elif action == ' edit page ':
-            out.write ('<h2>edit <a href="%s">%s</a></h2>' %
-                       (href.wiki(page.name), page.name))
-            page.render_edit (out, self.cgi.hdf)
+        if save:
+            self.cgi.hdf.setValue('wiki.action', 'save')
+        elif edit:
+            self.cgi.hdf.setValue('wiki.action', 'edit')
             self.cgi.hdf.setValue('title', 'Wiki Page: ' + name + ' (edit)')
-        elif action == 'preview':
-            out.write ('<h2>edit <a href="%s">%s</a></h2>' %
-                       (href.wiki(page.name), page.name))
-            page.render_preview (out, self.cgi.hdf)
+        elif preview:
+            self.cgi.hdf.setValue('wiki.action', 'preview')
             self.cgi.hdf.setValue('title', 'Wiki Page: ' + name + ' (preview)')
         else:
-            page.render_view (out, self.cgi.hdf)
+            self.cgi.hdf.setValue('wiki.action', 'view')
             self.cgi.hdf.setValue('title', 'Wiki Page: ' + name)
-        self.cgi.hdf.setValue('content', out.getvalue())
 
-
+        page = Page(name, version)
+        if self.args.has_key('text'):
+            page.set_content (self.args['text'])
+        
+        if save:
+            page.commit ()
+            redirect (href.wiki(page.name))
+            
+        self.cgi.hdf.setValue('wiki.current_href', href.wiki(page.name))
+        self.cgi.hdf.setValue('wiki.page_name', page.name)
+        self.cgi.hdf.setValue('wiki.page_source', page.text)
+        out = StringIO.StringIO()
+        Formatter().format(page.text, out)
+        self.cgi.hdf.setValue('wiki.page_html', out.getvalue())
 
 ###
 ### A simple unit test
