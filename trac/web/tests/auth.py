@@ -72,18 +72,27 @@ class AuthTestCase(unittest.TestCase):
     def test_login_no_username(self):
         req = Mock(incookie=Cookie(), remote_addr='127.0.0.1', remote_user=None)
         auth = Authenticator(self.db, req)
-        self.assertRaises(AssertionError, lambda: auth.login(req))
+        self.assertRaises(AssertionError, auth.login, req)
 
-    def test_already_logged_in(self):
+    def test_already_logged_in_same_user(self):
         cursor = self.db.cursor()
         cursor.execute("INSERT INTO auth_cookie (cookie, name, ipnr) "
                        "VALUES ('123', 'john', '127.0.0.1')")
         incookie = Cookie()
         incookie['trac_auth'] = '123'
-        req = Mock(incookie=incookie, remote_addr='127.0.0.1', remote_user=None)
+        req = Mock(incookie=incookie, remote_addr='127.0.0.1', remote_user='john')
+        auth = Authenticator(self.db, req)
+        auth.login(req) # this shouldn't raise an error
+
+    def test_already_logged_in_different_user(self):
+        cursor = self.db.cursor()
+        cursor.execute("INSERT INTO auth_cookie (cookie, name, ipnr) "
+                       "VALUES ('123', 'john', '127.0.0.1')")
+        incookie = Cookie()
+        incookie['trac_auth'] = '123'
+        req = Mock(incookie=incookie, remote_addr='127.0.0.1', remote_user='tom')
         auth = Authenticator(self.db, req)
         self.assertRaises(AssertionError, auth.login, req)
-
 
     def test_logout(self):
         cursor = self.db.cursor()
@@ -100,7 +109,7 @@ class AuthTestCase(unittest.TestCase):
     def test_logout_not_logged_in(self):
         req = Mock(incookie=Cookie(), remote_addr='127.0.0.1', remote_user=None)
         auth = Authenticator(self.db, req)
-        self.assertRaises(AssertionError, auth.logout)
+        auth.logout() # this shouldn't raise an error
 
 
 def suite():

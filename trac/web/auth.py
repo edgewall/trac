@@ -62,7 +62,11 @@ class Authenticator:
         requests is sent back to the client.
         """
         assert req.remote_user, 'Authentication information not available.'
-        assert self.authname == 'anonymous', 'Already logged in.'
+        if self.authname == req.remote_user:
+            # Already logged in with the same user name
+            return
+        assert self.authname == 'anonymous', \
+               'Already logged in as %s.' % self.authname
 
         cookie = util.hex_entropy()
         cursor = self.db.cursor()
@@ -80,7 +84,9 @@ class Authenticator:
         Logs the user out. Simply deletes the corresponding record from the
         auth_cookie table.
         """
-        assert self.authname != 'anonymous', 'Not logged in.'
+        if self.authname == 'anonymous':
+            # Not logged in
+            return
 
         cursor = self.db.cursor()
         cursor.execute("DELETE FROM auth_cookie WHERE name=%s", self.authname)
