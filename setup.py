@@ -97,8 +97,27 @@ class my_install_scripts (install_scripts):
                     os.chmod(file, mode)
 
 
+
+# Our custom bdist_wininst
+import distutils.command.bdist_wininst
+from distutils.command.bdist_wininst import bdist_wininst
+class my_bdist_wininst(bdist_wininst):
+    def initialize_options(self):
+        bdist_wininst.initialize_options(self)
+        self.title = "Trac %s" % VERSION
+        self.bitmap = "setup_wininst.bmp"
+distutils.command.bdist_wininst.bdist_wininst = my_bdist_wininst
+
+
 setup(name="trac",
-      description="Trac - Wiki-based issue tracker and project environment",
+      description="Integrated scm, wiki, issue tracker and project environment",
+      long_description=\
+"""
+Trac is a minimalistic web-based software project management and bug/issue
+tracking system. It provides an interface to the Subversion revision control
+systems, an integrated wiki, flexible issue tracking and convenient report
+facilities.
+""",
       version=VERSION,
       author="Edgewall Software",
       author_email="info@edgewall.com",
