@@ -111,7 +111,7 @@ class Timeline (Module):
         _daysback = dict_get_with_default(self.args, 'daysback', '')
 
         try:
-            _from = time.mktime(time.strptime(_from, '%Y-%m-%d'))
+            _from = time.mktime(time.strptime(_from, '%Y-%m-%d')) + 86399
             pass
         except:
             _from = time.time()

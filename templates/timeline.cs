@@ -3,10 +3,9 @@
 <h3>Timeline</h3>
 
 
-<form action="<?cs var:cgi_location ?>">
+<form action="<?cs var:trac.href.timeline ?>">
 <div>
 View changes from 
-<input type="hidden" name="mode" value="timeline">
 <input size="10" name="from" value="<?cs var:timeline.from ?>"> 
 and 
 <input size="3" name="daysback" value="<?cs var:timeline.daysback ?>">
