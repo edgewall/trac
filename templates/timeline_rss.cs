@@ -18,8 +18,8 @@
       </item>
    <?cs /def ?>
     <channel>
-      <?cs if $project.name ?>
-        <title><?cs var:$project.name?>: <?cs var:$title ?></title>
+      <?cs if $project.name.encoded ?>
+        <title><?cs var:$project.name.encoded ?>: <?cs var:$title ?></title>
       <?cs else ?>
         <title><?cs var:$title ?></title>
       <?cs /if ?>
@@ -28,7 +28,7 @@
       <language>en-us</language>
       <generator>Trac v<?cs var:$trac.version ?></generator>
       <image>
-        <title><?cs var:$project.name?></title>
+        <title><?cs var:$project.name.encoded ?></title>
         <url><?cs if !$header_logo.src_abs ?><?cs var:$base_url ?><?cs /if ?><?cs var $header_logo.src ?></url>
         <link><?cs var:$base_url ?><?cs var:$trac.href.timeline ?></link>
       </image>

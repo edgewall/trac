@@ -3,8 +3,8 @@
 <rss version="2.0">
    <?cs set base_url = "http://"+$HTTP.Host ?>
     <channel>
-      <?cs if $project.name ?>
-        <title><?cs var:$project.name?>: Revisions of <?cs var:$log.path ?></title>
+      <?cs if $project.name.encoded ?>
+        <title><?cs var:$project.name.encoded ?>: Revisions of <?cs var:$log.path ?></title>
       <?cs else ?>
         <title>Revisions of <?cs var:$log.filename ?></title>
       <?cs /if ?>

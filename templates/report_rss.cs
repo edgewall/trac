@@ -3,8 +3,8 @@
 <rss version="2.0">
    <?cs set base_url = "http://"+$HTTP.Host ?>
     <channel>
-      <?cs if $project.name ?>
-        <title><?cs var:$project.name?>: <?cs var:$report.title ?></title>
+      <?cs if $project.name.encoded ?>
+        <title><?cs var:$project.name.encoded ?>: <?cs var:$report.title ?></title>
 
       <?cs else ?>
         <title><?cs var:$title ?></title>
