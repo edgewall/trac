@@ -386,15 +386,17 @@ def real_cgi_start():
 
     req.authname = authenticator.authname
     try:
+        pool = None
         # Load the selected module
         module = module_factory(args, env, database, req, href)
+        pool = module.pool
         module.run()
     finally:
         # We do this even if the cgi will terminate directly after. A pool
         # destruction might trigger important clean-up functions.
-        if module.pool:
+        if pool:
             import svn.core
-            svn.core.svn_pool_destroy(module.pool)
+            svn.core.svn_pool_destroy(pool)
 
 def cgi_start():
     try:

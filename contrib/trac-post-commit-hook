@@ -34,7 +34,7 @@
 # REV="$2"
 # LOG=`/usr/bin/svnlook log -r $REV $REPOS`
 # AUTHOR=`/usr/bin/svnlook author -r $REV $REPOS`
-# TRAC_DB='/somewhere/myproject.db'
+# TRAC_DB='/somewhere/db/trac.db'
 #
 # /usr/bin/python /usr/local/src/trac/contrib/trac-post-commit-hook \
 #  -d "$TRAC_DB"   \
@@ -153,11 +153,10 @@ class CommitHook:
     def verifyDatabaseVersion(self):
         """Make sure the database uses a known schema version"""
         cursor = self.con.cursor()
-        cursor.execute('SELECT value FROM config WHERE '
-                       'section=%s AND name=%s AND value=%s',
-                       'trac', 'database_version', '1')
+        cursor.execute('SELECT value FROM system WHERE '
+                       'name=%s AND value=%s', 'database_version', '2')
         if not cursor.fetchone():
-            raise Exception('Expected Trac database version 1')
+            raise Exception('Expected Trac database version 2')
                         
 if __name__ == "__main__":
     if len(sys.argv) < 5:

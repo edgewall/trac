@@ -11,7 +11,7 @@
 #
 #  REPOS="$1"
 #  TXN="$2"
-#  TRAC_DB="/path/to/project.db"
+#  TRAC_DB="/somewhere/db/trac.db"
 #  LOG=`/usr/bin/svnlook log -t "$TXN" "$REPOS"`
 #  /usr/bin/python /some/path/trac-pre-commit-hook "$TRAC_DB" "$LOG" || exit 1
 #

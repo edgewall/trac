@@ -249,12 +249,14 @@ class TracHTTPRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler,
                                     self.rfile, None, self.headers)
 
         try:
+            pool = None
             # Load the selected module
             module = trac.core.module_factory(args, self.env, db, self, href)
+            pool = module.pool
             module.run()
         finally:
-            if module.pool:
-                svn.core.svn_pool_destroy(module.pool)
+            if pool:
+                svn.core.svn_pool_destroy(pool)
         print 'Total request time:', time.time() - start, 'seconds'
 
 
