@@ -32,8 +32,8 @@ except ImportError:
 from mod_python import apache, util
 
 from trac.env import open_environment
-from trac.util import TracError, href_join, rstrip
-from trac.web.main import Request, dispatch_request, send_pretty_error
+from trac.util import TracError, enum, href_join, rstrip
+from trac.web.main import Request, RequestDone, dispatch_request, send_pretty_error
 
 
 class ModPythonRequest(Request):
@@ -143,14 +143,52 @@ class FieldStorageWrapper(util.FieldStorage):
         return util.FieldStorage.get(self, key, default)
 
 
-def send_project_index(req, mpr, dir):
-    req.content_type = 'text/html'
-    req.write('<html><head><title>Available Projects</title></head>')
-    req.write('<body><h1>Available Projects</h1><ul>')
-    for project in os.listdir(dir):
-        req.write('<li><a href="%s">%s</a></li>'
-                  % (href_join(mpr.idx_location, project), project))
-    req.write('</ul></body><html>')
+def send_project_index(req, mpr, dir, options):
+    from trac.web.clearsilver import HDFWrapper
+
+    if 'TracEnvIndexTemplate' in options:
+        # Custom project listing template configured
+        tmpl_path, template = os.path.split(options['TracEnvIndexTemplate'])
+
+        from trac.siteconfig import __default_templates_dir__ as def_path
+        mpr.hdf = HDFWrapper(loadpaths=[def_path, tmpl_path])
+
+        tmpl_vars = {}
+        if 'TracTemplateVars' in options:
+            pairs = options['TracTemplateVars'].split(',')
+            for pair in pairs:
+                key,val = pair.split('=')
+                mpr.hdf[key] = val
+
+    else:
+        # Use the default project listing template
+        mpr.hdf = HDFWrapper()
+        template = mpr.hdf.parse("""<html>
+<head><title>Available Projects</title></head>
+<body><h1>Available Projects</h1><ul><?cs
+ each:project = projects ?><li><a href="<?cs
+  var:project.href ?>"><?cs var:project.name ?></a></li><?cs
+ /each ?></ul></body>
+</html>""")
+
+    try:
+        for idx, project in enum(os.listdir(dir)):
+            env_path = os.path.join(dir, project)
+            if not os.path.isdir(env_path):
+                continue
+            try:
+                env = open_environment(env_path)
+                mpr.hdf['projects.%d' % idx] = {
+                    'name': env.config.get('project', 'name'),
+                    'description': env.config.get('project', 'descr'),
+                    'href': href_join(mpr.idx_location, project)
+                }
+            except EnvironmentError, e:
+                req.log_error('Error opening environment at %s: %s'
+                              % (env_path, e))
+        mpr.display(template, response=200)
+    except RequestDone:
+        pass
 
 env_cache = {}
 env_cache_lock = threading.Lock()
@@ -165,7 +203,7 @@ def get_environment(req, mpr, options):
         env_name = mpr.cgi_location.split('/')[-1]
         env_path = os.path.join(env_parent_dir, env_name)
         if len(env_name) == 0 or not os.path.exists(env_path):
-            send_project_index(req, mpr, env_parent_dir)
+            send_project_index(req, mpr, env_parent_dir, options)
             return None
     else:
         raise TracError, \
