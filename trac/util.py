@@ -27,14 +27,6 @@ from svn import util
 from db import get_connection
 from xml.sax import saxutils
 
-def time_to_string(date):
-    date = time.asctime(time.localtime(date))
-    return date[4:-8]
-
-def format_date(date, pool):
-    date = util.svn_time_from_cstring(date, pool)
-    return time_to_string (date / 1000000)
-
 def redirect (url):
     """
     redirects the user agent to a different url

@@ -27,10 +27,22 @@
     <table id="browser-list" cellspacing="0" cellpadding="0">
       <tr class="browser-listhdr">
         <th>&nbsp;</th>
-        <th>Name</th>
-        <th>Size</th>
+<?cs if browser.sort_order == "name" ?>
+        <th><a href="<?cs var:browser.current_href?>?order=Name">Name</a></th>
+<?cs else ?>
+        <th><a href="<?cs var:browser.current_href?>?order=name">Name</a></th>
+<?cs /if ?>
+<?cs if browser.sort_order == "size" ?>
+        <th><a href="<?cs var:browser.current_href?>?order=Size">Size</a></th>
+<?cs else ?>
+        <th><a href="<?cs var:browser.current_href?>?order=size">Size</a></th>
+<?cs /if ?>
         <th>Rev</th>
-        <th>Date</th>
+<?cs if browser.sort_order == "date" ?>
+        <th><a href="<?cs var:browser.current_href?>?order=Date">Date</a></th>
+<?cs else ?>
+        <th><a href="<?cs var:browser.current_href?>?order=date">Date</a></th>
+<?cs /if ?>
       </tr>
       <?cs if $browser.path != "/" ?>
         <tr class="br-row-even">

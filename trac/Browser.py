@@ -61,17 +61,22 @@ class Browser(Module):
                                     util.SVN_PROP_REVISION_DATE,
                                     self.pool)
             if date:
-                date = format_date(date, self.pool)
+                date_seconds = util.svn_time_from_cstring(date,
+                                                          self.pool) / 1000000
+                date = time.asctime(time.localtime(date_seconds))[4:-8]
             else:
-                date = ""
+                date_seconds = 0
+                date = ''
 
             item = {
                 'name'       : name,
                 'fullpath'   : fullpath,
                 'created_rev': created_rev,
                 'date'       : date,
+                'date_seconds' : date_seconds,
                 'is_dir'     : is_dir,
-                'size'       : self.pretty_size(size) }
+                'size'       : self.pretty_size(size),
+                'size_bytes' : size }
             if is_dir:
                 item['browser_href'] = href.browser(fullpath)
             else:
@@ -106,6 +111,7 @@ class Browser(Module):
 
     def render(self):
         perm.assert_permission (perm.BROWSER_VIEW)
+        order = dict_get_with_default(self.args, 'order', 'name')
         
         if not self.rev:
             rev = fs.youngest_rev(self.fs_ptr, self.pool)
@@ -113,7 +119,20 @@ class Browser(Module):
             rev = int(self.rev)
             
         info = self.get_info(self.path, rev)
-        info.sort(lambda x, y: cmp(x['name'], y['name']))
+        if order == 'size':
+            info.sort(lambda x, y: cmp(x['size'], y['size']))
+        elif order == 'Size':
+            info.sort(lambda y, x: cmp(x['size'], y['size']))
+        elif order == 'date':
+            info.sort(lambda x, y: cmp(x['date_seconds'], y['date_seconds']))
+        elif order == 'Date':
+            info.sort(lambda y, x: cmp(x['date_seconds'], y['date_seconds']))
+        elif order == 'Name':
+            info.sort(lambda y, x: cmp(x['name'], y['name']))
+        else:
+            info.sort(lambda x, y: cmp(x['name'], y['name']))
+            
+        # Always put directories before files
         info.sort(lambda x, y: cmp(y['is_dir'], x['is_dir']))
 
         add_dictlist_to_hdf(info, self.cgi.hdf, 'browser.items')
@@ -126,4 +145,5 @@ class Browser(Module):
 
         self.cgi.hdf.setValue('browser.path', self.path)
         self.cgi.hdf.setValue('browser.revision', str(rev))
+        self.cgi.hdf.setValue('browser.sort_order', order)
         self.cgi.hdf.setValue('browser.current_href', href.browser(self.path))
