@@ -334,7 +334,7 @@ class Formatter(CommonFormatter):
             macro = self.load_macro(name)
             return macro(self.hdf, args, self.env)
         except Exception, e:
-            return '<div class="system-message">Macro %s(%s) failed: %s</span' \
+            return '<div class="system-message">Macro %s(%s) failed: %s</div>' \
                    % (name, args, e)
 
     def _heading_formatter(self, match, fullmatch):
