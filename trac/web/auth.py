@@ -37,15 +37,19 @@ class Authenticator:
     to identify the user in subsequent requests to non-protected resources.
     """
 
-    def __init__(self, db, req):
+    def __init__(self, db, req, check_ip=1):
         self.db = db
         self.authname = 'anonymous'
         if req.incookie.has_key('trac_auth'):
             cookie = req.incookie['trac_auth'].value
             cursor = db.cursor()
-            cursor.execute("SELECT name FROM auth_cookie "
-                           "WHERE cookie=%s AND ipnr=%s",
-                           (cookie, req.remote_addr))
+            if check_ip:
+                cursor.execute("SELECT name FROM auth_cookie "
+                               "WHERE cookie=%s AND ipnr=%s",
+                               (cookie, req.remote_addr))
+            else:
+                cursor.execute("SELECT name FROM auth_cookie WHERE cookie=%s",
+                               (cookie,))
             row = cursor.fetchone()
             if row:
                 self.authname = row[0]

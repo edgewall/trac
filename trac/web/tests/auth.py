@@ -43,6 +43,16 @@ class AuthTestCase(unittest.TestCase):
         auth = Authenticator(self.db, req)
         self.assertEqual('anonymous', auth.authname)
 
+    def test_known_cookie_ip_check_disabled(self):
+        cursor = self.db.cursor()
+        cursor.execute("INSERT INTO auth_cookie (cookie, name, ipnr) "
+                       "VALUES ('123', 'john', '127.0.0.1')")
+        incookie = Cookie()
+        incookie['trac_auth'] = '123'
+        req = Mock(incookie=incookie, remote_addr='192.168.0.100')
+        auth = Authenticator(self.db, req, check_ip=0)
+        self.assertEqual('john', auth.authname)
+
     def test_login(self):
         outcookie = Cookie()
         req = Mock(cgi_location='/trac', incookie=Cookie(), outcookie=outcookie,

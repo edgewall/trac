@@ -21,7 +21,7 @@
 
 from trac.core import module_factory, open_environment
 from trac.Href import Href
-from trac.util import escape, href_join
+from trac.util import escape, href_join, TRUE
 from trac.web.auth import Authenticator
 from trac.web.session import Session
 
@@ -282,7 +282,9 @@ def dispatch_request(path_info, req, env):
 
     try:
         try:
-            authenticator = Authenticator(db, req)
+            check_ip = env.get_config('trac', 'check_auth_ip', '1')
+            check_ip = check_ip.strip().lower() in TRUE
+            authenticator = Authenticator(db, req, check_ip)
             if path_info == '/logout':
                 authenticator.logout()
                 referer = req.get_header('Referer')
