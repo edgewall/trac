@@ -22,6 +22,7 @@
 from __future__ import generators
 
 import os
+import sys
 import time
 import tempfile
 from types import *
@@ -308,3 +309,23 @@ def wrap(t, cols=75, initial_indent='', subsequent_indent='',
 
     except ImportError:
         return t
+
+
+def safe__import__(module_name):
+    """
+    Safe imports: rollback after a failed import.
+    
+    Initially inspired from the RollbackImporter in PyUnit,
+    but it's now much simpler and work better for our needs.
+    
+    See http://pyunit.sourceforge.net/notes/reloading.html
+    """
+    already_imported = sys.modules.copy()
+    try:
+        return __import__(module_name, globals(), locals(), [])
+    except Exception, e:
+        for modname in sys.modules.copy():
+            if not already_imported.has_key(modname):
+                del(sys.modules[modname])
+        raise e
+

@@ -46,6 +46,7 @@ class WikiProcessor:
 
     def __init__(self, env, name):
         self.env = env
+        self.name = name
         self.error = self.set_code_processor(name)
     
     def default_processor(hdf, text, env):
@@ -69,6 +70,8 @@ class WikiProcessor:
                            'default': default_processor}
 
     def process(self, hdf, text, inline=False):
+        if self.error:
+            return system_message('Error: Failed to load processor <code>%s</code>' % self.name, self.error)
         text = self.code_processor(hdf, text, self.env)
         if inline:
             code_block_start = re.compile('^<div class="code-block">')
@@ -105,7 +108,7 @@ class WikiProcessor:
             module = imp.load_source(name, os.path.join(self.env.path, 'wiki-macros', name+'.py'))
         except IOError:
             # fall back to site-wide macros
-            macros = __import__('wikimacros.' + name, globals(),  locals(), [])
+            macros = util.safe__import__('wikimacros.' + name)
             module = getattr(macros, name)
         return module.execute
 
@@ -569,10 +572,6 @@ class Formatter(CommonFormatter):
             if match:
                 name = match.group(1)
                 self.code_processor = WikiProcessor(self.env, name)
-                e = self.code_processor.error
-                if e:
-                    self.out.write(system_message('Error: Failed to load processor <code>%s</code>' % name, e))
-                    self.code_text += line + os.linesep
             else:
                 self.code_text += line + os.linesep 
                 self.code_processor = WikiProcessor(self.env, 'default')
