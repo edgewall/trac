@@ -29,11 +29,10 @@ import neo_cgi
 import neo_cs
 import neo_util
 
-from __init__ import __version__
-from util import add_to_hdf, CRLF, TRUE, FALSE, TracError, wrap
-import Environment
-import core
-import Ticket
+from trac import Environment
+from trac.__init__ import __version__
+from trac.util import add_to_hdf, CRLF, TRUE, FALSE, TracError, wrap
+from trac.web.main import populate_hdf
 
 
 class Notify:
@@ -48,7 +47,7 @@ class Notify:
         self.env = env
         self.db = env.get_db_cnx()
         self.hdf = neo_util.HDF()
-        core.populate_hdf(self.hdf, env)
+        populate_hdf(self.hdf, env)
         tmpl = os.path.join(env.get_config('general','templates_dir'), msg_template)
         self.cs = neo_cs.CS(self.hdf)
         self.cs.parseFile(tmpl)

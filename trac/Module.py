@@ -19,11 +19,12 @@
 #
 # Author: Jonas Borgström <jonas@edgewall.com>
 
-import core
-from util import add_to_hdf, escape
+from trac.util import add_to_hdf, escape
+from trac.web.main import populate_hdf
 
 
 class Module:
+
     db = None
     env = None
     req = None
@@ -39,7 +40,7 @@ class Module:
             disp = getattr(self, 'display_' + req.args.get('format'))
         else:
             disp = self.display
-        core.populate_hdf(req.hdf, self.env, req)
+        populate_hdf(req.hdf, self.env, req)
         for action in self.perm.permissions():
             req.hdf.setValue('trac.acl.' + action, 'true')
         self._add_default_links(req)
