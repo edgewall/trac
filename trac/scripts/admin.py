@@ -400,6 +400,18 @@ class TracAdmin(cmd.Cmd):
                        ('permission add <user> <action> [action] [...]', 'Add a new permission rule'),
                        ('permission remove <user> <action> [action] [...]', 'Remove permission rule')]
 
+    def complete_permission(self, text, line, begidx, endidx):
+        argv = self.arg_tokenize(line)
+        argc = len(argv)
+        if line[-1] == ' ': # Space starts new argument
+            argc += 1
+        if argc == 2:
+            comp = ['list','add','remove']
+        elif argc >= 4:
+            comp = perm.permissions + perm.meta_permissions.keys()
+            comp.sort()
+        return self.word_complete(text, comp)
+
     def do_permission(self, line):
         arg = self.arg_tokenize(line)
         try:
@@ -413,7 +425,7 @@ class TracAdmin(cmd.Cmd):
                 user = arg[1]
                 for action in arg[2:]:
                     self._do_permission_remove(user, action)
-            else:    
+            else:
                 self.do_help ('permission')
         except Exception, e:
             print 'Permission %s failed:' % arg[0], e
@@ -606,13 +618,13 @@ class TracAdmin(cmd.Cmd):
                   ('wiki upgrade',
                    'Upgrade default wiki pages to current version')]
 
-    def complete_wiki (self, text, line, begidx, endidx):
+    def complete_wiki(self, text, line, begidx, endidx):
         argv = self.arg_tokenize(line)
         argc = len(argv)
         if line[-1] == ' ': # Space starts new argument
             argc += 1
-        if argc==2:
-            comp = ['list','remove','import','export','dump','load']
+        if argc == 2:
+            comp = ['list','remove','import','export','dump','load', 'upgrade']
         else:
             if argv[1] in ['dump','load']:
                 comp = self.get_dir_list(argv[-1], 1)
