@@ -82,7 +82,7 @@
     '<em>Milestone '+$item.message+'</em> reached', '') ?>
  <?cs /if ?>
 <?cs /each ?>
-<?cs if:subcount(timeline.items) ?></dl><?cs /if ?>
+<?cs if:len(timeline.items) ?></dl><?cs /if ?>
 
 <div id="help">
  <hr />
