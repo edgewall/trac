@@ -19,12 +19,11 @@
 #
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
+import os
 import re, threading
 import auth, core, Environment, Href, Session, Wiki
 from util import TracError
 from mod_python import apache, util
-
-content_type_re = re.compile(r'^Content-Type$', re.IGNORECASE)
 
 class ModPythonRequest(core.Request):
 
@@ -33,19 +32,35 @@ class ModPythonRequest(core.Request):
 
     def init_request(self):
         core.Request.init_request(self)
+        options = self.req.get_options()
+
+        if options.has_key('TracEnvParentDir') and self.req.path_info:
+            # We have to remove one path element from path_info when we're
+            # using TracEnvParentDir
+            self.path_info = re.sub('/[^/]+', '', self.req.path_info, 1)
+        else:
+            self.path_info = self.req.path_info
+            
+        if len(self.path_info):
+            self.cgi_location = self.req.uri[:-len(self.path_info)]
+        else:
+            self.cgi_location = self.req.uri
+
+        if len(self.req.path_info):
+            self.idx_location = self.req.uri[:-len(self.req.path_info)]
+        else:
+            self.idx_location = self.req.uri
 
         # TODO This will need proxy host name support (see #437 and [581])
         host = self.req.hostname
         port = self.req.connection.local_addr[1]
-        path = re.sub('%s$' % re.escape(self.req.path_info), '', self.req.uri)
         if port == 80:
-            self.base_url = 'http://%s%s' % (host, path)
+            self.base_url = 'http://%s%s' % (host, self.cgi_location)
         elif port == 443:
-            self.base_url = 'https://%s%s' % (host, path)
+            self.base_url = 'https://%s%s' % (host, self.cgi_location)
         else:
-            self.base_url = 'http://%s:%d%s' % (host, port, path)
+            self.base_url = 'http://%s:%d%s' % (host, port, cgi_location)
 
-        self.cgi_location = path
         self.remote_addr = self.req.connection.remote_ip
         self.remote_user = self.req.user
         self.command = self.req.method
@@ -68,7 +83,7 @@ class ModPythonRequest(core.Request):
         self.req.status = code
 
     def send_header(self, name, value):
-        if content_type_re.match(name):
+        if name.lower() == 'content-type':
             self.req.content_type = value
         else:
             self.req.headers_out.add(name, str(value))
@@ -85,15 +100,16 @@ class TracFieldStorage(util.FieldStorage):
         return util.FieldStorage.get(self, key, default)
 
 
-def init_env(req):
+def send_project_index(req, mpr, dir):
+    req.content_type = 'text/html'
+    req.write('<html><head><title>Available Projects</title></head>')
+    req.write('<body><h1>Available Projects</h1><ul>')
+    for project in os.listdir(dir):
+        req.write('<li><a href="%s">%s</a></li>' % (mpr.idx_location + '/' + project,
+                                                    project))
+    req.write('</ul></body><html>')
 
-    options = req.req.get_options()
-    if not options.has_key('TracEnv'):
-        raise EnvironmentError, \
-            'Missing PythonOption "TracEnv". Trac requires this option '\
-            'to point to a valid Trac Environment.'
-    env_path = options['TracEnv']
-
+def open_environment(env_path, mpr):
     env = Environment.Environment(env_path)
     version = env.get_version()
     if version < Environment.db_version:
@@ -102,18 +118,42 @@ def init_env(req):
     elif version > Environment.db_version:
         raise TracError('Unknown Trac Environment version (%d).' % version)
 
-    env.href = Href.Href(req.cgi_location)
-    env.abs_href = Href.Href(req.base_url)
-
+    env.href = Href.Href(mpr.cgi_location)
+    env.abs_href = Href.Href(mpr.base_url)
     # Let the wiki module build a dictionary of all page names
     database = env.get_db_cnx()
     Wiki.populate_page_dict(database, env)
-
     return env
 
+env_cache = {}
+env_cache_lock = threading.Lock()
 
-projects = {}
-projects_lock = threading.Lock()
+def get_environment(req, mpr):
+    global env_cache, env_cache_lock
+    options = req.get_options()
+    
+    if not options.has_key('TracEnv') and not options.has_key('TracEnvParentDir'):
+        raise EnvironmentError, \
+              'Missing PythonOption "TracEnv". Trac requires this option '\
+              'to point to a valid Trac Environment.'
+    
+    if options.has_key('TracEnv'):
+        env_path = options['TracEnv']
+        
+    elif options.has_key('TracEnvParentDir'):
+        env_parent_dir = options['TracEnvParentDir']
+        env_name = mpr.cgi_location.split('/')[-1]
+        env_path = os.path.join(env_parent_dir, env_name)
+        if len(env_name) == 0 or not os.path.exists(env_path):
+            send_project_index(req, mpr, env_parent_dir)
+            return None
+        
+    env_cache_lock.acquire()
+    if not env_path in env_cache:
+        env_cache[env_path] = open_environment(env_path, mpr)
+    env = env_cache[env_path]
+    env_cache_lock.release()
+    return env
 
 def handler(req):
     global projects, projects_lock
@@ -121,20 +161,16 @@ def handler(req):
     mpr = ModPythonRequest(req)
     mpr.init_request()
 
-    projects_lock.acquire()
-    env = projects.get(req.filename, None)
+    env = get_environment(req, mpr)
     if not env:
-        env = init_env(mpr)
-        projects[req.filename] = env
-    projects_lock.release()
+        return apache.OK
 
     args = TracFieldStorage(req)
-    core.parse_path_info(args, req.path_info)
+    core.parse_path_info(args, mpr.path_info)
 
     req.content_type = 'text/html'
     try:
-        core.dispatch_request(req.path_info, args, mpr, env)
+        core.dispatch_request(mpr.path_info, args, mpr, env)
     except Exception, e:
         core.send_pretty_error(e, env, mpr)
-
     return apache.OK
