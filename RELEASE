@@ -1,6 +1,6 @@
 Trac 0.5.2 Release Notes
 ========================
-March 1, 2004
+March 2, 2004
 
 Edgewall Software is pleased to announce the release of Trac 0.5.2.
 
@@ -31,6 +31,15 @@ For more information, please visit the main Trac web site:
 
   <http://trac.edgewall.com/> 
 
+Updates in This Release
+-----------------------
+This is primarily a bugfix  release, primarily fixing bugs found in 0.5.1.
+Higlights include performance improvements including cacheable CSS
+stylesheets.
+
+For complete details, see the ChangeLog at: 
+
+ <http://projects.edgewall.com/trac/wiki/ChangeLog>
 
 About Edgewall
 --------------
@@ -42,8 +51,14 @@ Trac.
 For more information, visit our web site at <http://www.edgewall.com/> 
 or email us at <mailto:info@edgewall.com>.
 
+Thank You
+---------
+Many thanks to everyone who has already contributed to the project, even at
+this early stage. Also thanks to everyone providing the feedback that helps
+us make Trac better, easier to use and more effective.
 
-We hope Trac will be useful, and look forward to public feedback.
+We hope this version Trac will prove itself useful to programmers all over the
+world and that it's improved from the last release. Let us know :-)
 
 Cheers,
 

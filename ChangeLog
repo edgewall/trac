@@ -1,4 +1,4 @@
-Trac 0.5.2 (March 1, 2004)
+Trac 0.5.2 (March 2, 2004)
 http://svn.edgewall.com/repos/trac/tags/trac-0.5.2
 
  * Performance improvements.
@@ -9,7 +9,8 @@ http://svn.edgewall.com/repos/trac/tags/trac-0.5.2
  * "view" checkboxes in the timeline view now reflect the current state.
  * The subversion repository is now indexed by "svnadmin initdb" instead of
    trac.cgi at first execution.
- * trac-admin now has a 'wiki dump' command to export all pages.
+ * trac-admin now has a 'wiki dump' and 'wiki load' commands to
+    export/import all pages to/from a directory.
  * Most of the inline css is removed.
  * IE6 navbar problem fixed.
  * Fixed bugs: #69, #73, #77, #78, #79, #80, #84, #85, #86, #89, #90, 

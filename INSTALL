@@ -10,7 +10,7 @@ The following dependencies have to be installed:
 
   * Python, version >= 2.1.
   * subversion, version >= 0.37.
-  * pysqlite, version >= 0.4.3
+  * pysqlite, version >= 0.4.3 (>= 0.5 for better performance)
   * ClearSilver, version >= 0.9.3
   * A CGI-capable web server (only tested with Apache)
 
@@ -81,4 +81,3 @@ Please also consider joining the mailing list at
 
 
 Visit the Trac open source project at <http://trac.edgewall.com/>
-
