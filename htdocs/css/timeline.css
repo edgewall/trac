@@ -1,0 +1,47 @@
+/* Timeline */
+#timeline-prefs {
+  background: #f7f7f0;
+  border: 1px solid #d7d7d7;
+  float: right;
+  font-size: 9px;
+  padding: .5em;
+  margin-left: 1em;
+  margin-bottom: 1em;
+}
+#timeline-prefs-checks { }
+#timeline-prefs-btns {
+  text-align: right;
+  margin-top: 1em;
+}
+.timeline-daysep {
+  font-size: 105%;
+  border-bottom: 1px solid #d7d7d7;
+  
+}
+.tl-day { 
+  line-height: 130%; 
+  margin-left: 1em;
+}
+a.tl-item { 
+  display: block;
+  color: #000;
+  padding: 1px 0;
+  margin: 1px; 
+  border: none; 
+}
+a.tl-item:hover {
+  background-color: #eed;
+  color: #000;
+}
+.tl-item-time { color: #777; }
+.tl-item-link { font-weight: normal; }
+.tl-item-msg { }
+.tl-item-descr {
+  display: block;
+  margin-left: 6.5em;
+  font-size: 80%;
+}
+.tl-item-icon { 
+  vertical-align: text-top; 
+  margin: 0;
+}

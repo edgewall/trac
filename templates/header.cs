@@ -15,7 +15,21 @@
       <title>Trac | <?cs var:title ?></title>
     <?cs /if ?>
     <style type="text/css">
-      <?cs include "css.cs" ?>
+      <!--
+      @import url("<?cs var:$htdocs_location ?>/css/trac.css");
+      <?cs if:trac.active_module == 'browser' ?>
+      @import url("<?cs var:$htdocs_location ?>/css/browser.css");
+      <?cs elif:trac.active_module == 'timeline' ?>
+      @import url("<?cs var:$htdocs_location ?>/css/timeline.css");
+      <?cs elif:trac.active_module == 'changeset' ?>
+      @import url("<?cs var:$htdocs_location ?>/css/changeset.css");
+      <?cs elif:trac.active_module == 'newticket' || trac.active_module == 'ticket' ?>
+      @import url("<?cs var:$htdocs_location ?>/css/ticket.css");
+      <?cs /if ?>
+      /* Dynamically/template-generated CSS below */
+      #navbar { background: url("<?cs var:$htdocs_location ?>/topbar_gradient.png") top left #eee }  
+      a.navbar-link { background: url(<?cs var:$htdocs_location ?>/dots.gif) top left no-repeat; }
+       -->
     </style>
 </head>
 <body>

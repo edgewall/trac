@@ -1,0 +1,145 @@
+/* Trac CSS */
+body {
+  background: #fff;
+  margin: 10px;
+  padding: 0;
+  color: #000;
+  font: normal 12px 'Bitstream Vera Sans', Verdana, Helvetica, Arial, sans-serif;
+}
+.hide { display: none; }
+hr { border: none;  border-top: 1px solid #ccc; }
+a:link, a:visited, a.noline,b.tl-item-link {
+  text-decoration: none;
+  color: #b00;
+  border-bottom: 1px dotted #bbb;
+}
+a:hover { color: #b00; background: #f7f7f7; }
+a.noline { border-bottom: none; }
+address { font-style: normal; }
+img { border: none; }
+span.underline { text-decoration: underline; }
+#browser-rev, #log-hdr,#log-hdr,#timeline-hdr,#chg-hdr,#report-hdr,#tkt-hdr {
+  font-size: 110%;
+  margin-right: 1em;
+  margin-top: .5em;
+}
+
+/* Forms */
+input, textarea, select { border: 1px solid #ccc; background: #fff; }
+input[type="submit"], input[type="reset"] { background: #eee; }
+input[type="submit"]:hover, input[type="reset"]:hover { background: #ccb; }
+option { border-bottom: 1px solid #ccc; }
+
+/* Header */
+#header { }
+#hdrlogo,#hdrlogo img,#hdrlogo:hover {
+  background: transparent;
+  margin-bottom: -1.25em;
+  border: none;
+}
+#header-links, #subheader-links, #navbar {
+  font: normal 11px Verdana, 'Bitstream Vera Sans', Helvetica, Arial, sans-serif;
+  color: #000;
+}
+#header-links, #subheader-links { padding: 2px 0em; text-align: right; }
+#subheader-links a,#header-links a { padding: 0 .5em; }
+.subheader-sublinks { 
+  background: #f7f7f7;
+  border: 1px solid #ccc;
+  color: #888;
+  padding: 0 .5em;
+  text-align: left;
+}
+
+/* Footer */
+#footer {
+  font-size: 75%;
+  color: #bbb;
+  border-top: 1px solid;
+  padding: .5em 0;
+}
+#footer a { color: #bbb; }
+#footer-left {
+  float: left;
+  padding: 0 1em;
+  border-left: 1px dashed;
+  border-right: 1px dashed;
+}
+#footer-right { text-align: right; }
+#footer-logo { float: left; margin-right: 1em; margin-top: .3em; }
+
+/* Navbar  */
+#navbar {
+  border: 1px solid #999;
+  margin: .15em 0;
+  min-width: 500px;          
+  height: 16px;
+  /* NOTE: Changes dynamically in header.cs */
+}
+#navbar-links { float: right; }
+a.navbar-link, a.navbar-link-active,a.navbar-link-active:hover,a.navbar-link:visited,a.navbar-link-active:visited {
+  display: block;
+  float: left;
+  border: none;
+  border-left: 1px solid #999;
+  border-right: 1px solid #fff;
+  margin: 0;
+  height: 14px;
+  padding: .1em 1.5em;
+  color: #000;
+  /* NOTE: Changes dynamically augmented in header.cs */
+}
+a.navbar-link-active,a.navbar-link-active:visited { 
+  font-weight: bold;
+  background-color: #ddd;
+  border-right: 1px solid #ddd;
+
+}
+a.navbar-link:hover { 
+  background-color: #ddc; 
+  border-right: 1px solid #ddd;
+}
+#page-content { clear: none; }
+
+/* Wiki */
+#wiki-history {
+  visibility: hidden;
+  background: #f7f7f0;
+  border: 1px solid #999;
+  font-size: 75%;
+  position: absolute;
+  display: inline;
+  margin: 10px;
+  right:10px;
+  border-collapse: separate;
+  border-spacing: 0;
+  padding: .5em;
+}
+a.wiki-history-link { display: block; border: none; }
+a.wiki-history-link:hover,tr.wiki-history-row:hover {
+  background: #ccb; 
+  color: #b00; 
+}
+a.wiki-missing-page:link { color: #998; background: #fafaf0; }
+a.wiki-missing-page:hover { color: #000; }
+#wiki-body { line-height: 140%; margin: 1em; }
+#wiki-formatting-help {
+  font: normal 11px Verdana, 'Bitstream Vera Sans', Helvetica, Arial, sans-serif;
+  float: right;
+}
+#browser-list,#common-list {
+  margin: .5em 0 2em 0;
+  border-bottom: 1px solid #eee;
+  border-collapse: collapse;
+  line-height: 130%;
+}
+#browser-list td { padding: 0 .25em; border: 1px dotted #ddd; }
+#browser-list { width: 100%; }
+tr.br-row-even, tr.br-row-odd,tr.row-even, tr.row-odd { border-top: 1px solid #ddd; }
+tr.br-row-even,tr.row-even { background-color: #fff; }
+tr.br-row-odd,tr.row-odd { background-color: #f7f7f7; }
+tr.br-row-even:hover,tr.br-row-odd:hover { background: #eed; }
+
+/* Report */
+td.summary-col { border-left: 1px dotted #ccc; }
+td.report-col { width: 1px; }

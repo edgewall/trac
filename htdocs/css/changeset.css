@@ -1,0 +1,76 @@
+/* Changeset */
+.chg-name {
+  display: block;
+  float: left;
+  width: 8em;
+  text-align: right;
+  margin-right: .5em;
+}
+.chg-val { }
+ul.chg-list {
+  padding: .5em;
+  margin-left: 8em;
+  list-style: none;
+}
+.chg-file-comment {
+  display: none;
+  color: #bbb;
+  margin-left: .5em;
+  font-size: 75%;
+}
+.chg-file-add,.chg-file-mod,.chg-file-rem,.diff-legend-unmod,.diff-legend-mod,.diff-legend-add,.diff-legend-rem {
+  display: block;
+  float: left;
+  width: 1em;
+  height: 1em;
+  margin-right: .5em;
+  border: 1px solid #999;
+}
+#chg-diff { border-top: 1px solid #d7d7d7; margin-bottom: 3em; }
+#chg-legend { }
+table.diff-table { 
+  border: 1px solid #d7d7d7; 
+  border-left: 1px solid #999; 
+  border-right: 1px solid #fff; 
+  border-bottom: 1px solid #fff; 
+  width: 100%;
+  font-size: 12px;
+  border-collapse: collapse;
+  margin-left: 1px;
+}
+.chg-diff-file { 
+  background: #eee;
+  padding: 5px;
+  padding-top: 0;
+  margin-top: 2em;
+  border: 1px solid #d7d7d7; 
+}
+.chg-diff-hdr { 
+  font-size: 11px;
+  color: #666; 
+  padding: 2px .25em;
+  border-bottom: 1px solid #999; 
+  margin: 0;
+  margin-bottom: 1px;
+}
+table.diff-table td { 
+  border-left: dashed 1px #d7d7d7;
+  padding: 0 .5em;
+  font-family: monospace;
+  vertical-align: top;
+  margin-top: 1em;
+}
+td.diff-line { 
+  background: #eed;
+  border: 1px solid #d7d7d7;
+  border-top: 1px solid #fff;
+  border-bottom: 1px solid #998;
+  font-weight: bold;
+  font-size: 11px;
+}
+.diff-modified,.chg-file-mod,.diff-legend-mod { background-color: #fd8; }
+.diff-unmodified, .diff-legend-unmod { background-color: #fff }
+.diff-remove-left,.chg-file-rem,.diff-legend-rem { background-color: #f88; }
+.diff-remove-right { background-color: #ffaaaa; }
+.diff-add-left,.chg-file-add { background-color: #dfd; }
+.diff-add-right, .diff-legend-add { background-color: #cfc; }

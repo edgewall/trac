@@ -1,0 +1,84 @@
+/* Ticket */
+#tkt-ticket,#tkt-changes { 
+  background: #ffd;
+  border: 1px solid #dd9;
+  border-width: 1px 3px 3px 1px;
+  padding: .5em;
+  max-width: 700px;
+}
+#tkt-left { 
+  width: 50%;
+  float: left;
+  border-right: 1px solid #dd9;
+  padding: .5em;
+}
+#tkt-right { padding: .5em; }
+#tkt-date { float: right; font-size: 75%;  color: #996; }
+.tkt-prop { border-bottom: 1px dotted #eed; }
+.tkt-label { 
+  color: #996; 
+  font-weight: normal;
+  padding: 0 .5em;
+  float: left;
+  width: 8em;
+}
+.tkt-val { }
+#tkt-summary { 
+  margin: 0;
+  font-size: 100%;
+  border-bottom: 1px solid #dd9;
+  padding-bottom: .25em;
+}
+#tkt-descr { border-top: 1px solid #dd9; padding-top: .5em; }
+#tkt-left,#tkt-right { font-size: 80%; }
+#tkt-changes-hdr { font-size: 110%; margin-bottom: .5em;  margin-top: 1em; }
+#tkt-changes { 
+  border-color: #d7d7d7;
+  background: #fff;
+  font-size: 80%;
+  padding: 0 .5em;
+  padding-left: 1.5em;
+}
+.tkt-chg-mod { 
+  color: #999;
+  border-bottom: 1px solid;
+  margin-top: .5em;
+  margin-left: -1em;
+  font-size: 100%;
+  font-weight: normal;
+  padding: 0 .5em;
+}
+ul.tkt-chg-list { padding: 0 1em; list-style: square; }
+li.tkt-chg-change { margin: 0 }
+.tkt-chg-comment-hdr { margin: 0;  font-size: 100%; }
+.tkt-chg-comment p { margin: .25em }
+.tkt-chg-comment { 
+  margin: 0;
+  margin-left: 1em;
+}
+
+/* New Ticket (NOTE: Shared with Ticket) */
+#nt-props-left, #nt-props-right { 
+  display: block;
+  float: left;
+  padding-bottom: .5em;
+}
+#nt-props-left { border-right: 1px dotted #d7d7d7; }
+#nt-props-middle,#nt-props-bottom { 
+  clear: both;
+  border-top: 1px dotted #d7d7d7;
+  margin-bottom: .5em;
+  padding-top: .5em;
+  width: 38em;
+}
+#nt-submit {  margin: .5em 1em; text-align: right; }
+#nt-submit2 { margin: .5em 1em; }
+.nt-prop { margin: .25em; }
+.nt-label { 
+  display: block;
+  float: left;
+  min-width: 6em;
+  margin-right: .5em;
+  text-align: right;
+}
+.nt-widget { padding-right: .5em }
