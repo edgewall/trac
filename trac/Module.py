@@ -26,12 +26,12 @@ class Module:
     def run(self):
         core.populate_hdf(self.req.hdf, self.env, self.db, self.href, self.req)
         self.req.hdf.setValue('trac.active_module', self._name)
-        self.render()
         try:
             disp = getattr(self, 'display_' + self.args['format'])
         except (KeyError,AttributeError):
             disp = self.display
         try:
+            self.render()
             disp()
         except core.RedirectException:
             pass

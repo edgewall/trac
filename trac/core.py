@@ -49,64 +49,72 @@ modules = {
     'timeline'    : ('Timeline', 'Timeline', 1),
     'changeset'   : ('Changeset', 'Changeset', 1),
     'newticket'   : ('Ticket', 'Newticket', 0),
+    'attachment'  : ('File', 'Attachment', 0),
     }
 
 def parse_path_info(path_info):
     args = {}
     if not path_info:
         return args
-    match = re.search('/about_trac(/?.*)', path_info)
+    match = re.search('^/about_trac(/?.*)', path_info)
     if match:
         args['mode'] = 'about_trac'
         if len(match.group(1)) > 0:
             args['page'] = match.group(1)
         return args
-    if re.search('/newticket/?', path_info):
+    if re.search('^/newticket/?', path_info):
         args['mode'] = 'newticket'
         return args
-    if re.search('/timeline/?', path_info):
+    if re.search('^/timeline/?', path_info):
         args['mode'] = 'timeline'
         return args
-    if re.search('/search/?', path_info):
+    if re.search('^/search/?', path_info):
         args['mode'] = 'search'
         return args
-    match = re.search('/wiki/(.*[^/])/?', path_info)
+    match = re.search('^/wiki/(.*[^/])/?', path_info)
     if match:
         args['mode'] = 'wiki'
         if len(match.group(1)) > 0:
             args['page'] = match.group(1)
         return args
-    match = re.search('/ticket/([0-9]+)/?', path_info)
+    match = re.search('^/ticket/([0-9]+)/?', path_info)
     if match:
         args['mode'] = 'ticket'
         args['id'] = match.group(1)
         return args
-    match = re.search('/report/([0-9]*)/?', path_info)
+    match = re.search('^/report/([0-9]*)/?', path_info)
     if match:
         args['mode'] = 'report'
         if len(match.group(1)) > 0:
             args['id'] = match.group(1)
         return args
-    match = re.search('/browser(/?.*)', path_info)
+    match = re.search('^/browser(/?.*)', path_info)
     if match:
         args['mode'] = 'browser'
         if len(match.group(1)) > 0:
             args['path'] = match.group(1)
         return args
-    match = re.search('/log/(.+)', path_info)
+    match = re.search('^/log/(.+)', path_info)
     if match:
         args['mode'] = 'log'
         args['path'] = match.group(1)
         return args
-    match = re.search('/file/(.+)/?', path_info)
+    match = re.search('^/file/(.+)/?', path_info)
     if match:
         args['mode'] = 'file'
         args['path'] = match.group(1)
         return args
-    match = re.search('/changeset/([0-9]+)/?', path_info)
+    match = re.search('^/changeset/([0-9]+)/?', path_info)
     if match:
         args['mode'] = 'changeset'
         args['rev'] = match.group(1)
+        return args
+    match = re.search('^/attachment/([a-zA-Z_]+)/([0-9]+)/(.*)/?', path_info)
+    if match:
+        args['mode'] = 'attachment'
+        args['type'] = match.group(1)
+        args['id'] = match.group(2)
+        args['filename'] = match.group(3)
         return args
     return args
 
@@ -122,7 +130,10 @@ def parse_args(command, path_info, query_string,
         argv = fs[x]
         if type(argv) == list:
             argv = argv[0]
-        args[x] = argv.value.replace('\r','')
+        if argv.filename:
+            args[x] = argv
+        else:
+            args[x] = argv.value.replace('\r','')
     return args
 
 def add_args_to_hdf(args, hdf):

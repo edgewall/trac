@@ -89,3 +89,7 @@ class Href:
         if action:
             href = href + '?action=' + action
         return href
+    
+    def attachment(self, module, id, filename):
+        return href_join(self.base, 'attachment', module, id, filename)
+

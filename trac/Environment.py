@@ -23,6 +23,7 @@
 #
 
 import os
+import shutil
 import ConfigParser
 
 import db_default
@@ -140,6 +141,21 @@ class Environment:
 
     def get_templates_dir(self):
         return os.path.join(self.path, 'templates')
-    
+
     def get_attachments_dir(self):
         return os.path.join(self.path, 'attachments')
+    
+    def get_attachments(self, module, id):
+        try:
+            return os.listdir(os.path.join(self.get_attachments_dir(), module, id))
+        except OSError:
+            return []
+    
+    def create_attachment(self, module, id, attachment):
+        filename = os.path.basename(attachment.filename)
+        dir = os.path.join(self.get_attachments_dir(), module, id)
+        if not os.access(dir, os.F_OK):
+            os.makedirs(dir)
+        wfile = open(os.path.join(dir, filename), 'wb')
+        shutil.copyfileobj(attachment.file, wfile)
+    

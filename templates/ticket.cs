@@ -59,6 +59,15 @@
  <hr class="hide"/>
 </div>
 
+<?cs if ticket.attachments.0.href ?>
+<h2 id="tkt-changes-hdr">Attachments</h2>
+<div id="tkt-attachments">
+  <?cs each:attachment = ticket.attachments ?>
+    <a href="<?cs var:attachment.href ?>"><?cs var:attachment.name ?></a>&nbsp;
+  <?cs /each ?>
+</div>
+<?cs /if ?>
+
 <?cs if ticket.changes.0.time ?>
   <h2 id="tkt-changes-hdr">Changelog</h2>
   <div id="tkt-changes">
@@ -93,6 +102,10 @@
         <li class="tkt-chg-change">
            cleared <b><?cs var:item.field?></b>
         </li>
+      <?cs elif $item.field == "attachment" ?>
+        <li class="tkt-chg-change">
+           <b>Attachment</b> added: <?cs var:item.new ?>
+        </li>
       <?cs elif $item.old == "" ?>
         <li class="tkt-chg-change">
           <b><?cs var:item.field ?></b> set to <b><?cs var:item.new ?></b>
@@ -121,7 +134,7 @@
 <h3><a name="edit"
 onfocus="document.getElementById('comment').focus()">Add/Change
 #<?cs var:ticket.id ?> (<?cs var:ticket.summary ?>)</a></h3>
-<form action="<?cs var:cgi_location ?>" method="post">
+<form action="<?cs var:cgi_location ?>" method="post" enctype="multipart/form-data">
   <div class="tkt-prop">
    <input type="hidden" name="mode" value="ticket" />
    <input type="hidden" name="id"   value="<?cs var:ticket.id ?>" />
@@ -137,6 +150,12 @@ onfocus="document.getElementById('comment').focus()">Add/Change
             rows="10" cols="78" style="width: 97%; max-width: 694px"></textarea>
  <br />&nbsp;
   </div>
+
+ <div class="tkt-prop">
+   <label for="attachment">Add Attachment:</label><br/>
+   <input type="file" name="attachment"/>
+   </div>
+ <br/>
 
  <fieldset>
    <legend>Change Properties</legend>
