@@ -179,6 +179,7 @@ class proxy_bdist_rpm(bdist_rpm):
         for distro in rpm_distros.keys():
             r = generic_bdist_rpm(self.dist, distro)
             r.initialize_options()
+            self.dist._set_command_options(r, self.dist.command_options['bdist_rpm'])
             r.finalize_options()
             r.run()
 
