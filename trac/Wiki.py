@@ -58,7 +58,6 @@ class CommonFormatter:
               r"""(?P<reporthref>\{[0-9]+\})""",
               r"""(?P<svnhref>(svn:[^ ]+))""",
               r"""(?P<wikilink>(^|(?<=[^A-Za-z]))[A-Z][a-z]*(?:[A-Z][a-z]+)+)""",
-              r"""(?P<url>([a-z]+://[^ ]+))""",
               r"""(?P<fancylink>\[(?P<fancyurl>([a-z]+://[^ ]+)) (?P<linkname>.*?)\])"""]
 
 
@@ -120,6 +119,9 @@ class OneLinerFormatter(CommonFormatter):
     for rendering short wiki-formatted messages on a single line
     """
     
+    _rules = CommonFormatter._rules + \
+             [r"""(?P<url>([a-z]+://[^ ]+))"""]
+
     def format(self, text, out):
         self.out = out
         rules = self.compile_rules(self._rules)
@@ -146,7 +148,8 @@ class Formatter(CommonFormatter):
               r"""(?P<heading>^\s*(?P<hdepth>=+)\s.*\s(?P=hdepth)$)""",
               r"""(?P<listitem>^(?P<ldepth>\s+)(?:\*|[0-9]+\.) )""",
               r"""(?P<indent>^(?P<idepth>\s+)(?=[^\s]))""",
-              r"""(?P<imgurl>([a-z]+://[^ ]+)(\.png|\.jpg|\.jpeg|\.gif))"""]
+              r"""(?P<imgurl>([a-z]+://[^ ]+)(\.png|\.jpg|\.jpeg|\.gif))""",
+              r"""(?P<url>([a-z]+://[^ ]+))"""]
     
     # RE patterns used by other patterna
     _helper_patterns = ('idepth', 'ldepth', 'hdepth', 'fancyurl',
