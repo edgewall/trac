@@ -184,6 +184,8 @@ class WikiModule(Module):
         name = self.args.get('page', 'WikiStart')
         author = self.args.get('author', self.req.authname)
         edit_version = self.args.get('edit_version', None)
+        delete_ver = self.args.get('delete_ver', None)
+        delete_page = self.args.get('delete_page', None)
         comment = self.args.get('comment', '')
         save = self.args.get('save', None)
         edit = self.args.get('edit', None)
@@ -200,6 +202,37 @@ class WikiModule(Module):
 
         if cancel:
             self.req.redirect(self.env.href.wiki(name))
+            # Not reached
+
+        if delete_ver and edit_version and name:
+            # Delete only a specific page version
+            self.perm.assert_permission(perm.WIKI_ADMIN)
+            cursor = self.db.cursor()
+            cursor.execute ('DELETE FROM wiki WHERE name=%s and version=%s',
+                            name, int(edit_version))
+            self.db.commit()
+            self.env.log.info('Deleted version %d of page %s' % (int(edit_version), name))
+            if int(edit_version) > 1:
+                self.req.redirect(self.env.href.wiki(name))
+            else:
+                # Delete orphaned attachments
+                for attachment in self.env.get_attachments(self.db, 'wiki', name):
+                    self.env.delete_attachment(self.db, 'wiki', name, attachment[0])
+                self.req.redirect(self.env.href.wiki())
+            # Not reached
+                
+        if delete_page and name:
+            # Delete a wiki page completely
+            self.perm.assert_permission(perm.WIKI_ADMIN)
+            cursor = self.db.cursor()
+            cursor.execute ('DELETE FROM wiki WHERE name=%s', name)
+            self.db.commit()
+            self.env.log.info('Deleted version %d of page ' + name)
+            # Delete orphaned attachments
+            for attachment in self.env.get_attachments(self.db, 'wiki', name):
+                self.env.delete_attachment(self.db, 'wiki', name, attachment[0])
+            self.req.redirect(self.env.href.wiki())
+            # Not reached
 
         self.req.hdf.setValue('wiki.name', name)
         self.req.hdf.setValue('wiki.author', author)

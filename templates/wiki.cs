@@ -172,6 +172,13 @@
              <input type="submit" name="save" value="Save changes" />&nbsp;
              <input type="submit" name="preview" value="Preview" />&nbsp;
              <input type="submit" name="cancel" value="Cancel" />
+	     <?cs if trac.acl.WIKI_ADMIN ?>
+	         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <input type="submit" name="delete_ver" value="Delete this version"
+                       onClick="return confirm('Do you really want to delete version <?cs var:wiki.edit_version?>?\nThis is an irreversible operation.')"/>
+                 <input type="submit" name="delete_page" value="Delete Page" 
+                        onClick="return confirm('Do you really want to delete all versions of this page?\nThis is an irreversible operation.')"/>
+	     <?cs /if ?>
          </div>
        </fieldset>
       </div>

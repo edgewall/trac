@@ -104,7 +104,7 @@ class Ticket(UserDict):
 
         std_fields = filter(lambda n: n[:7] != 'custom_', self.keys())
         custom_fields = filter(lambda n: n[:7] == 'custom_', self.keys())
-        std_values = map(lambda n: self[n], std_fields)
+        std_values = map(lambda n, self=self: self[n], std_fields)
         nstr = string.join(std_fields, ',')
         vstr = ('%s,' * len(std_fields))[:-1]
         cursor.execute('INSERT INTO ticket (%s) VALUES(%s)' % (nstr, vstr),
