@@ -402,71 +402,78 @@ class TracAdmin(cmd.Cmd):
         self.db_execsql("DELETE FROM permission WHERE username='%s' AND action='%s'" %
                         (user, action.upper()))
 
-    ## Initdb
-    _help_initenv = [('initenv', 'Create and initializes a new environment')]
+    ## Initenv
+    _help_initenv = [('initenv', 'Create and initialize a new environment interactively'),
+                     ('initenv <projectname> <repospath> <templatepath>',
+                      'Create and initialize a new environment from arguments')]
 
     def do_initdb(self, line):
         self.do_initenv(line)
         
+    def get_initenv_args(self):
+        returnvals = []
+        print 'Creating a new Trac environment at %s' % self.envname
+        print
+        print 'Trac will first ask a few questions about your environment '
+        print 'in order to initalize and prepare the project database.'
+        print
+        print " Please enter the name of your project."
+        print " This name will be used in page titles and descriptions."
+        print
+        dp = 'My Project'
+        returnvals.append(raw_input('Project Name [%s]> ' % dp) or dp)
+        print
+        print ' Please specify the absolute path to the project Subversion repository.'
+        print ' Repository must be local, and trac-admin requires read+write'
+        print ' permission to initialize the Trac database.'
+        print
+        drp = '/var/svn/test'
+        prompt = 'Path to repository [%s]> ' % drp
+        returnvals.append(raw_input(prompt) or drp)
+        print
+        print ' Please enter location of Trac page templates.'
+        print ' Default is the location of the site-wide templates installed with Trac.'
+        print
+        dt = trac.siteconfig.__default_templates_dir__
+        prompt = 'Templates directory [%s]> ' % dt
+        returnvals.append(raw_input(prompt) or dt)
+        return returnvals
+         
     def do_initenv(self, line):
         if self.env_check():
-            print "Initdb for '%s' failed.\nDoes aa environment already exist?" % self.envname
+            print "Initenv for '%s' failed.\nDoes an environment already exist?" % self.envname
             return
+        arg = self.arg_tokenize(line)
+        project_name = None
+        repository_dir = None
+        templates_dir = None
+        if len(arg) == 1:
+            returnvals = self.get_initenv_args()
+            project_name = returnvals[0]
+            repository_dir = returnvals[1]
+            templates_dir = returnvals[2]
+        elif len(arg)!= 3:
+            print 'Wrong number of arguments to initenv %d' % len(arg)
+            return
+        else:
+            project_name = arg[0]
+            repository_dir = arg[1]
+            templates_dir = arg[2]
+        from svn import util, repos, core
+        core.apr_initialize()
+        pool = core.svn_pool_create(None)
         try:
-            print 'Creating a new Trac environment at %s' % self.envname
-            print
-            print 'Trac will first ask a few questions about your environment '
-            print 'in order to initalize and prepare the project database.'
-            print
-            print " Please enter the name of your project."
-            print " This name will be used in page titles and descriptions."
-            print
-            dp = 'My Project'
-            project_name = raw_input('Project Name [%s]> ' % dp) or dp
-
-            from svn import util, repos, core
-            core.apr_initialize()
-            pool = core.svn_pool_create(None)
-            print
-            print ' Please specify the absolute path to the project Subversion repository.'
-            print ' Repository must be local, and trac-admin requires read+write'
-            print ' permission to initialize the Trac database.'
-            print
-            while 1:
-                try:
-                    drp = '/var/svn/test'
-                    prompt = 'Path to repository [%s]> ' % drp
-                    repository_dir = raw_input(prompt) or drp
-                    
-                    # Remove any trailing slash or else subversion might abort
-                    if not os.path.split(repository_dir)[1]:
-                        repository_dir = os.path.split(repository_dir)[0]
-                        
-                    rep = repos.svn_repos_open(repository_dir, pool)
-                    fs_ptr = repos.svn_repos_fs(rep)
-                    break
-                except KeyboardInterrupt:
-                    raise KeyboardInterrupt
-                except Exception, e:
-                    print repository_dir, 'Repository access error: %s' % e
-
-            print
-            print ' Please enter location of Trac page templates.'
-            print ' Default is the location of the site-wide templates' \
-                  'installed with Trac.'
-            
-            print
-            dt = trac.siteconfig.__default_templates_dir__
-            prompt = 'Templates directory [%s]> ' % dt
-            while 1:
-                templates_dir = raw_input(prompt) or dt
-                if os.access(os.path.join(templates_dir, 'browser.cs'), os.F_OK) and \
-                   os.access(os.path.join(templates_dir, 'ticket.cs'), os.F_OK):
-                    break
-                print templates_dir, 'doesn\'t look like a Trac templates directory'
-            
-        except KeyboardInterrupt:
-            print '\n* initdb aborted'
+            # Remove any trailing slash or else subversion might abort
+            if not os.path.split(repository_dir)[1]:
+                repository_dir = os.path.split(repository_dir)[0]
+            rep = repos.svn_repos_open(repository_dir, pool)
+            fs_ptr = repos.svn_repos_fs(rep)
+        except Exception, e:
+            print repository_dir, 'Repository access error: %s' % e
+            return
+        if not os.access(os.path.join(templates_dir, 'browser.cs'), os.F_OK) \
+           or not os.access(os.path.join(templates_dir, 'ticket.cs'), os.F_OK):
+            print templates_dir, "doesn't look like a Trac templates directory"
             return
         try:
             print 'Creating and Initializing Project'
@@ -490,7 +497,6 @@ class TracAdmin(cmd.Cmd):
 
             print ' Indexing repository'
             sync.sync(cnx, rep, fs_ptr, pool)
-            print 'Done.'
         except Exception, e:
             print 'Failed to initialize database.', e
             sys.exit(2)
@@ -794,9 +800,9 @@ class TracAdmin(cmd.Cmd):
 
     def complete_version (self, text, line, begidx, endidx):
 
-        if begidx in [15,17]:
+        if begidx in [13, 15]:
             comp = self.get_version_list ()
-        elif begidx < 15:
+        elif begidx < 13:
             comp = ['list','add','rename','time','remove']
         return self.word_complete(text, comp)
 
@@ -836,7 +842,7 @@ class TracAdmin(cmd.Cmd):
         data = self.db_execsql("SELECT name,time FROM %s ORDER BY time,name"
                                % type)
         data = map(lambda x: (x[0], x[1] and time.strftime('%c', time.localtime(x[1]))), data)
-        print data
+        #print data
         self.print_listing(['Name', 'Time'], data)
 
     def _do_mile_ver_rename(self, type, name, newname):
@@ -873,7 +879,7 @@ class TracAdmin(cmd.Cmd):
                            '%b %d, %Y']:
                 try:
                     pt = time.strptime(t, format)
-                    print pt
+                    #print pt
                     seconds = str(time.mktime(pt))
                 except ValueError:
                     continue
