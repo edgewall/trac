@@ -64,6 +64,9 @@ class TracAdmin(cmd.Cmd):
     def docmd(self, cmd='help'):
         self.onecmd(cmd)
 
+    def emptyline(self):
+        pass
+
     def run(self):
         self.interactive = 1
         print 'Welcome to trac-admin %(ver)s\n'                \
