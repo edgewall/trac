@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: iso8859-1 -*-
 __author__ = 'Daniel Lundin <daniel@edgewall.com>, Jonas Borgström <jonas@edgewall.com>'
-__copyright__ = 'Copyright (c) 2004 Edgewall Software'
+__copyright__ = 'Copyright (c) 2005 Edgewall Software'
 __license__ = """
- Copyright (C) 2003, 2004 Edgewall Software
+ Copyright (C) 2003, 2004, 2005 Edgewall Software
  Copyright (C) 2003, 2004 Jonas Borgström <jonas@edgewall.com>
  Copyright (C) 2003, 2004 Daniel Lundin <daniel@edgewall.com>
 
