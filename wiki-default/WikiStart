@@ -14,8 +14,8 @@ web-browser. Simply click on the "Edit this page" link at the bottom
 of the page. WikiFormatting will give you a detailed description of
 available Wiki formatting commands.
 
-"{{{[wiki:TracAdmin trac-admin] ''yourdatabase.db'' initdb}}}" created
-a new database filled with a set of default wiki pages and some sample
+"[wiki:TracAdmin trac-admin] ''yourdatabase.db'' initdb" created
+a new database filled with a default set of wiki pages and some sample
 data. You can use [wiki:TracAdmin trac-admin] to configure
 [http://trac.edgewall.com/ Trac] to better fit your project,
 especially in regard to ''components'', ''versions'' and

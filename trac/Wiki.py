@@ -657,6 +657,7 @@ class Wiki(Module):
         elif diff and version > 0:
             self.cgi.hdf.setValue('wiki.action', 'diff')
             self.generate_diff(name, version)
+            self.cgi.hdf.setValue('title', name + ' (diff)')
         else:
             self.perm.assert_permission (perm.WIKI_VIEW)
             if self.args.has_key('text'):
