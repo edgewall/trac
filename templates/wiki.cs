@@ -71,6 +71,23 @@
           </ul>
 
         <?cs elif wiki.action == "diff" ?>
+          <h1>Changes in version <?cs var:wiki.edit_version?> of <?cs var:wiki.page_name ?></h1>
+           <table id="overview">
+            <tr class="author">
+             <th scope="row">Author:</th>
+             <td><?cs var:wiki.diff.author ?></td>
+            </tr>
+            <tr class="time">
+             <th scope="row">Timestamp:</th>
+             <td><?cs var:wiki.diff.time ?></td>
+            </tr>
+            <?cs if:wiki.diff.comment ?>
+             <tr class="comment">
+              <th scope="row">Comment:</th>
+              <td><?cs var:wiki.diff.comment ?></td>
+             </tr>
+            <?cs /if ?>
+           </table>
           <div class="hide">
             <hr />
             <h2>-=&gt; Note: Diff viewing requires CSS2 &lt;=-</h2>
