@@ -224,7 +224,7 @@ class Changeset (Module):
         changeset_info = self.get_changeset_info (self.rev)
         
         self.cgi.hdf.setValue('changeset.time',
-                              time_to_string (int(changeset_info['time'])))
+                              time.asctime (time.localtime(int(changeset_info['time']))))
         self.cgi.hdf.setValue('changeset.author', changeset_info['author'])
         self.cgi.hdf.setValue('changeset.message', wiki_to_html(changeset_info['message']))
         self.cgi.hdf.setValue('changeset.revision', str(self.rev))

@@ -12,23 +12,7 @@
   <head>
     <title>Edgewall Trac | <?cs var:title ?></title>
     <style type="text/css">
-    .tl-item a {
-	border: none;
-	background: url(<?cs var:htdocs_location?>topangle.gif) top left no-repeat;
-    }
-    </style>
-    <link rel="stylesheet" type="text/css" href="<?cs var:htdocs_location?>trac.css" />
-    <style type="text/css">
-    a.navbar-link, a.navbar-link-active,a.navbar-link-active:hover {
-	display: block;
-	float: left;
-	border-left: 1px solid #999;
-	border-bottom: none;
-	margin: 0;
-	padding: .1em 1.5em;
-	color: #000;
-	background: url(<?cs var:htdocs_location?>dots.gif) top left no-repeat;
-    }
+      <?cs include "css.cs" ?>
     </style>
   </head>
 <body>
