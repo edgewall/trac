@@ -385,8 +385,9 @@ class TracAdmin(cmd.Cmd):
         print ' TICKET_VIEW, TICKET_CREATE, TICKET_MODIFY, TICKET_ADMIN, '
         print ' REPORT_VIEW, REPORT_CREATE, REPORT_MODIFY, REPORT_DELETE, REPORT_ADMIN, '
         print ' WIKI_VIEW, WIKI_CREATE, WIKI_MODIFY, WIKI_DELETE, WIKI_ADMIN, '
-        print ' TIMELINE_VIEW and SEARCH_VIEW.'
-        print ' CONFIG_VIEW, TRAC_ADMIN.'
+        print ' MILESTONE_VIEW, MILESTONE_CREATE, MILESTONE_MODIFY, MILESTONE_DELETE, '
+        print ' ROADMAP_VIEW, ROADMAP_ADMIN, TIMELINE_VIEW, SEARCH_VIEW, '
+        print ' CONFIG_VIEW and TRAC_ADMIN.'
         print
         
     def _do_permission_add(self, user, action):
