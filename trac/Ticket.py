@@ -151,8 +151,9 @@ class Ticket(UserDict):
                 cursor.execute("SELECT * FROM ticket_custom " 
                                "WHERE ticket=%s and name=%s", (id, fname))
                 if cursor.fetchone():
-                    cursor.execute("UPDATE ticket_custom SET value=%s",
-                                   (self[name],))
+                    cursor.execute("UPDATE ticket_custom SET value=%s "
+                                   "WHERE ticket=%s AND name=%s",
+                                   (self[name], id, fname))
                 else:
                     cursor.execute("INSERT INTO ticket_custom (ticket,name,"
                                    "value) VALUES(%s,%s,%s)",
