@@ -21,6 +21,7 @@
 
 from util import *
 from Module import Module
+from Wiki import wiki_to_html
 import perm
 
 import time
@@ -66,14 +67,16 @@ class Milestone(Module):
         self.perm.assert_permission(perm.MILESTONE_MODIFY)
         if self.args.has_key('save'):
             name = self.args.get('name', '')
+            title = self.args.get('title', '')
             datestr = self.args.get('date', '')
             date = 0
             if datestr:
                 date = self.parse_date(datestr)
+            description = self.args.get('description', '')
             if id == -1:
-                self.create_milestone(name, date)
+                self.create_milestone(name, title, date, description)
             else:
-                self.update_milestone(id, name, date)
+                self.update_milestone(id, name, title, date, description)
         elif id != -1:
             self.req.redirect(self.env.href.milestone(id))
         else:
@@ -95,11 +98,12 @@ class Milestone(Module):
                             'Invalid Date Format')
         return seconds
 
-    def create_milestone(self, name, date):
+    def create_milestone(self, name, title='', date=0, description=''):
         self.perm.assert_permission(perm.MILESTONE_CREATE)
         cursor = self.db.cursor()
-        cursor.execute("INSERT INTO milestone (name, time) "
-                        'VALUES (%s, %d)', name, date)
+        cursor.execute("INSERT INTO milestone (name, title, time, description) "
+                       "VALUES (%s, %s, %d, %s)",
+                       name, title, date, description)
         self.db.commit()
         self.req.redirect(self.env.href.milestone(name))
 
@@ -111,11 +115,12 @@ class Milestone(Module):
         self.db.commit()
         self.req.redirect(self.env.href.roadmap())
 
-    def update_milestone(self, id, name, date):
+    def update_milestone(self, id, name, title, date, description):
         self.perm.assert_permission(perm.MILESTONE_MODIFY)
         cursor = self.db.cursor()
-        cursor.execute("UPDATE milestone SET name = %s, time = %d "
-                       "WHERE name = %s", name, date, id)
+        cursor.execute("UPDATE milestone SET name = %s, title = %s, time = %d, "
+                       "description = %s WHERE name = %s",
+                       name, title, date, description, id)
         self.db.commit()
         self.req.redirect(self.env.href.milestone(name))
 
@@ -133,14 +138,22 @@ class Milestone(Module):
 
     def get_milestone(self, name):
         cursor = self.db.cursor()
-        cursor.execute("SELECT name, time FROM milestone "
-                       "WHERE name = '%s' ORDER BY time, name" % name)
+        cursor.execute("SELECT name, title, time, description FROM milestone "
+                       "WHERE name = %s ORDER BY time, name", name)
         row = cursor.fetchone()
         cursor.close()
         if not row:
             raise TracError('Milestone %s does not exist.' % id,
                             'Invalid Milestone Number')
-        milestone = { 'name': row['name'] }
+        milestone = {
+            'name': row['name'],
+            'title': row['title'] or ''
+        }
+        description = row['description']
+        if description:
+            milestone['description_source'] = description
+            milestone['description'] = wiki_to_html(description, self.req.hdf,
+                                                    self.env)
         t = int(row['time'])
         if t > 0:
             milestone['date'] = time.strftime('%x', time.localtime(t))
@@ -165,7 +178,12 @@ class Milestone(Module):
         self.perm.assert_permission(perm.MILESTONE_VIEW)
 
         if id == -1:
-            milestone = { 'name': '', 'date': '' }
+            milestone = {
+                'name': '',
+                'title': '',
+                'date': '',
+                'description': ''
+            }
             self.req.hdf.setValue('title', 'New Milestone')
             self.req.hdf.setValue('milestone.mode', 'new')
         else:
@@ -173,7 +191,6 @@ class Milestone(Module):
             self.req.hdf.setValue('title', '%s (milestone)' % milestone['name'])
             self.req.hdf.setValue('milestone.mode', 'edit')
         add_dict_to_hdf(milestone, self.req.hdf, 'milestone')
-
 
     def render_view(self, id):
         self.perm.assert_permission(perm.MILESTONE_VIEW)

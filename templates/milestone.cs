@@ -14,7 +14,7 @@
  <?cs elif:milestone.mode == "edit" ?>
  <h1>Edit Milestone</h1>
  <?cs else ?>
- <h1>Milestone <em><?cs var:milestone.name ?></em></h1>
+ <h1>Milestone <?cs var:milestone.name ?><?cs if:milestone.title ?> <em>&#8216;<?cs var:milestone.title ?>&#8217;</em><?cs /if ?></h1>
  <?cs /if ?>
 
  <?cs if:milestone.mode == "edit" || milestone.mode == "new" ?>
@@ -25,15 +25,31 @@
   </script>
   <form action="<?cs var:cgi_location ?>" method="post">
    <input type="hidden" name="mode" value="milestone" />   <input type="hidden" name="id" value="<?cs var:milestone.name ?>" />   <input type="hidden" name="action" value="commit" />   <fieldset>
+    <legend>Properties</legend>
     <div class="field">
      <label for="name">Name:</label>
      <input type="text" id="name" name="name" value="<?cs
        var:milestone.name ?>" />
     </div>
     <div class="field">
+     <label for="title">Title:</label>
+     <input type="text" id="title" name="title" value="<?cs
+       var:milestone.title ?>" />
+    </div>
+    <div class="field">
      <label for="date">Date:</label>
      <input type="text" id="date" name="date" size="8" value="<?cs
        var:milestone.date ?>" /> <em>Format: MM/DD/YY</em>
+    </div>
+   </fieldset>
+   <fieldset>
+    <legend>Description</legend>
+    <div class="field">
+     <label for="description">You may use <a tabindex="42"
+       href="<?cs var:trac.href.wiki ?>/WikiFormatting">WikiFormatting</a>
+       here:</label>
+     <textarea id="description" name="description" rows="15" cols="80"
+         style="width: 97%"><?cs var:milestone.description_source ?></textarea>
     </div>
    </fieldset>
    <div class="buttons">
@@ -50,7 +66,7 @@
  <?cs /if ?>
 
  <?cs with:stats = milestone.stats ?>
-  <table summary="Shows the milestone completion status grouped by component">
+  <table class="stats" summary="Shows the milestone completion status grouped by component">
    <caption>Status By Component</caption>
    <thead><tr>
     <th>&nbsp;</th>

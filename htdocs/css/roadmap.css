@@ -4,40 +4,42 @@ div.progress div { background: #bae0ba; height: 1.2em }
 p.percentage { font-size: 10px; line-height: 2.4em }
 
 /* Styles for the roadmap view */
-#main.roadmap ul { margin: 0; padding: 0 }
-#main.roadmap li {
+#main.roadmap ul.milestones { margin: 2em 0 0; padding: 0 }
+#main.roadmap li.milestone {
  clear: both;
  list-style: none;
  margin-bottom: 4em;
 }
-#main.roadmap h2 {
+#main.roadmap li.milestone .info h2 {
  background: #f7f7f7;
  border-bottom: 1px solid #d7d7d7;
  font-size: 14px;
  margin: 0;
 }
-#main.roadmap h2 :link, #main.roadmap h2 :visited {
+#main.roadmap li.milestone .info h2 :link,
+#main.roadmap li.milestone .info h2 :visited {
  display: block;
  border-bottom: none;
 }
-#main.roadmap h2 :link:hover, #main.roadmap h2 :visited:hover {
+#main.roadmap li.milestone .info h2 :link:hover,
+#main.roadmap li.milestone .info h2 :visited:hover {
  color: inherit;
 }
-#main.roadmap h2 em {
+#main.roadmap li.milestone .info h2 em {
  color: #b00;
  font-style: normal;
 }
-#main.roadmap .date {
+#main.roadmap li.milestone .info .date {
  color: #888;
  font-size: 11px;
  font-style: italic;
  margin: 0;
 }
-#main.roadmap .progress {
+#main.roadmap li.milestone .info .progress {
  margin: 1em;
  width: 40em;
 }
-#main.roadmap dl {
+#main.roadmap li.milestone .info dl {
  clear: both;
  float: left;
  font-size: 10px;
@@ -45,69 +47,69 @@ p.percentage { font-size: 10px; line-height: 2.4em }
  margin: -1em 0 2em 1em;
  white-space: nowrap;
 }
-#main.roadmap dt {
+#main.roadmap li.milestone .info dt {
  display: inline;
  margin-left: .5em;
 }
-#main.roadmap dd {
+#main.roadmap li.milestone .info dd {
  display: inline;
  margin-left: .5em;
  margin-right: 1em
 }
-#main.roadmap .description {
+#main.roadmap li.milestone .description {
  clear: both;
  margin-left: 1em;
 }
 
 /* Styles for the milestone view */
-#main.milestone h1 em { font-style: normal }
 #main.milestone .date { color: #888; font-style: italic }
-#main.milestone .description { margin: 1em 0 2em 1em }
-#main.milestone table {
+#main.milestone .description { margin: 1em 0 2em }
+#main.milestone .stats {
  margin: 2em 0 0;
  border-collapse: collapse;
  line-height: 130%;
  margin: 0 0 2em;
  width: 100%;
 }
-#main.milestone caption {
+#main.milestone .stats caption {
  background: #f7f7f7;
  border-bottom: 1px solid #d7d7d7;
  margin: 0 0 1em;
  font-size: 14px;
  text-align: left;
 }
-#main.milestone td, #main.milestone th { padding: 0 .25em }
-#main.milestone th { text-align: left }
-#main.milestone th.tickets { text-align: center }
-#main.milestone th.open, #main.milestone th.closed {
+#main.milestone .stats td, #main.milestone .stats th { padding: 0 .25em }
+#main.milestone .stats th { text-align: left }
+#main.milestone .stats th.tickets { text-align: center }
+#main.milestone .stats th.open, #main.milestone .stats th.closed {
  font-size: smaller;
  text-align: center;
  width: 6em;
 }
-#main.milestone td.open, #main.milestone td.closed {
+#main.milestone .stats td.open, #main.milestone .stats td.closed {
  color: #888;
  text-align: right;
  padding-right: 1.5em;
 }
-#main.milestone th.progress { padding-left: 6px; width: 60% }
-#main.milestone td div.progress { margin: 3px .5em 3px 2px }
-#main.milestone td.progress p { font-size: 10px; margin: 3px 0 }
-#main.milestone tbody tr:hover, #main.milestone tbody tr:hover {
+#main.milestone .stats th.progress { padding-left: 6px; width: 60% }
+#main.milestone .stats td div.progress { margin: 3px .5em 3px 2px }
+#main.milestone .stats td.progress p { font-size: 10px; margin: 3px 0 }
+#main.milestone .stats tbody tr:hover, #main.milestone .stats tbody tr:hover {
  background: #eed;
 }
-#main.milestone tbody td, #main.milestone tbody th {
+#main.milestone .stats tbody td, #main.milestone .stats tbody th {
  border: 1px dotted #ddd
 }
-#main.milestone tbody th { font-weight: normal; text-align: left }
-#main.milestone tfoot tr { border-bottom: 0 }
-#main.milestone tfoot th, #main.milestone tfoot td {
+#main.milestone .stats tbody th { font-weight: normal; text-align: left }
+#main.milestone .stats tfoot tr { border-bottom: 0 }
+#main.milestone .stats tfoot th, #main.milestone .stats tfoot td {
  font-weight: bold;
  padding: 0 .25em;
 }
 
 /* Styles for the milestone edit form */
 #main.milestone form fieldset {
+ margin: 1em 0;
  padding: .5em;
 }
 #main.milestone form label {
