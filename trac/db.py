@@ -22,14 +22,17 @@
 import os
 import os.path
 import sqlite
+import db_default
+
+__db_version__ = db_default.db_version
 
 class Database(sqlite.Connection):
-    def __init__(self, db_name):
-        if not os.access(db_name, os.F_OK):
+    def __init__(self, db_name, create=0):
+        if not create and not os.access(db_name, os.F_OK):
             raise EnvironmentError, 'Database "%s" not found.' % db_name
         
         directory = os.path.dirname(db_name)
-        if not os.access(db_name, os.R_OK + os.W_OK) or \
+        if not create and not os.access(db_name, os.R_OK + os.W_OK) or \
                not os.access(directory, os.R_OK + os.W_OK):
             tmp = db_name
             db_name = None
@@ -37,6 +40,9 @@ class Database(sqlite.Connection):
                   'The web server user requires read _and_ write permission\n' \
                   'to the database %s and the directory this file is located in.' % tmp
         sqlite.Connection.__init__(self, db_name, timeout=10000)
+
+    def __del__(self):
+        pass 
         
     def load_config(self):
         """
@@ -54,3 +60,41 @@ class Database(sqlite.Connection):
                 config[row[0]] = {}
             config[row[0]][row[1]] = row[2]
         return config
+
+    def get_version(self):
+        cursor = self.cursor()
+        cursor.execute("SELECT value FROM config"
+                       " WHERE section='trac' AND name='database_version'")
+        row = cursor.fetchone()
+        return row and row[0]
+
+    def initdb(self):
+        cursor = self.cursor()
+        try:
+            if self.get_version():
+                raise EnvironmentError, 'Trac database already exists.'
+        except:
+            pass
+        cursor.execute (db_default.schema)
+        self.commit()
+        
+    def insert_default_data (self):
+        def prep_value(v):
+            if v == None:
+                return 'NULL'
+            else:
+                return '"%s"' % v
+
+        if self.get_version():
+            raise EnvironmentError, 'Database already has data.'
+        cursor = self.cursor()
+        
+        for t in xrange(0, len(db_default.data)):
+            table = db_default.data[t][0]
+            cols = ','.join(db_default.data[t][1])
+            for row in db_default.data[t][2]:
+                values = ','.join(map(prep_value, row))
+                sql = "INSERT INTO %s (%s) VALUES(%s);" % (table, cols, values)
+                cursor.execute(sql)
+        self.commit()
+
