@@ -51,7 +51,8 @@ class Formatter:
              r"""|(?P<endpre>\}\}\}$)""" \
              r"""|(?P<begintt>\{\{\{)""" \
              r"""|(?P<endtt>\}\}\})""" \
-             r"""|(?P<hr>-{5,})""" \
+             r"""|(?P<br>\[\[(br|BR)\]\])""" \
+             r"""|(?P<hr>-{4,})""" \
              r"""|(?P<heading>^\s*(?P<hdepth>=+)\s.*\s(?P=hdepth)$)""" \
              r"""|(?P<listitem>^(?P<ldepth>\s+)(?:\*|[0-9]+\.) )""" \
              r"""|(?P<wikilink>(^|(?<=[^A-Za-z]))[A-Z][a-z]*(?:[A-Z][a-z]+)+)""" \
@@ -110,6 +111,9 @@ class Formatter:
 
     def _hr_formatter(self, match, fullmatch):
         return '<hr />'
+
+    def _br_formatter(self, match, fullmatch):
+        return '<br />'
 
     def _underline_formatter(self, match, fullmatch):
         self._is_underline = not self._is_underline
@@ -385,8 +389,9 @@ test_in = '''
   Hoj
   Hoj2
 Hoj3
+Line1[[br]]Line2
 '''
-test_out = ''' <ul><li>Foo</li> <ul><li>Foo 2</li> </ul></ul><ol><li>Foo 3</li> </ol><h3>FooBar</h3> <ul> Hoj  Hoj2 </ul><p>Hoj3 </p>'''
+test_out = ''' <ul><li>Foo</li> <ul><li>Foo 2</li> </ul></ul><ol><li>Foo 3</li> </ol><h3>FooBar</h3> <ul> Hoj  Hoj2 </ul><p>Hoj3 Line1<br />Line2 </p>'''
 
 def test():
     result = StringIO.StringIO()
