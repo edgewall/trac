@@ -62,8 +62,11 @@ class Href:
     def newticket(self):
         return href_join(self.base, 'newticket/')
 
-    def search(self):
-        return href_join(self.base, 'search/')
+    def search(self, query=None):
+        uri = 'search/'
+        if query:
+            uri += '?q=' + query.replace(' ','%20')
+        return href_join(self.base, uri)
 
     def about(self, page=None):
         if page:

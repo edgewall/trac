@@ -57,7 +57,7 @@ class CommonFormatter:
               r"""(?P<tickethref>#[0-9]+)""",
               r"""(?P<changesethref>\[[0-9]+\])""",
               r"""(?P<reporthref>\{[0-9]+\})""",
-              r"""(?P<modulehref>((?P<modulename>bug|ticket|browser|source|repos|report|changeset|wiki):(?P<moduleargs>[^ ]*[^\., \)])))""",
+              r"""(?P<modulehref>((?P<modulename>bug|ticket|browser|source|repos|report|changeset|wiki|search):(?P<moduleargs>(&#34;(.*?)&#34;|'(.*?)')|([^ ]*[^\., \)]))))""",
               r"""(?P<wikilink>(^|(?<=[^A-Za-z]))[!]?[A-Z][a-z/]+(?:[A-Z][a-z/]+)+)""",
               r"""(?P<fancylink>\[(?P<fancyurl>([a-z]+:[^ ]+)) (?P<linkname>.*?)\])"""]
 
@@ -141,6 +141,8 @@ class CommonFormatter:
             return self.href.report(args), '%s:%s' % (module, args), 0
         elif module == 'changeset':
             return self.href.changeset(args), '%s:%s' % (module, args), 0
+        elif module == 'search':
+            return self.href.search(args), '%s:%s' % (module, args), 0
         elif module in ['source', 'repos', 'browser']:
             rev = None
             match = re.search('([^#]+)#(.+)', args)
@@ -156,14 +158,13 @@ class CommonFormatter:
             return None, None, 0
         
     def _modulehref_formatter(self, match, fullmatch):
-        self.env.log.debug("link is: %s" % repr(self._expand_module_link(match)))
         link, text, missing = self._expand_module_link(match)
         if link and missing:
             return '<a class="missing" href="%s">%s?</a>' % (link, text)
         elif link:
             return '<a href="%s">%s</a>' % (link, text)
         else:
-            return march
+            return match
 
     def _wikilink_formatter(self, match, fullmatch):
         if match[0] == '!':

@@ -151,6 +151,7 @@ def module_factory(args, env, db, req, href):
     module.pool = None
     module.args = args
     module.env = env
+    module.log = env.log
     module.req = req
     module._name = mode
     module.db = db

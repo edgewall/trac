@@ -32,16 +32,23 @@ class Search(Module):
 
     RESULTS_PER_PAGE = 10
 
-    def query_to_sql(self, query, name):
-        query = query.replace('\'', '\'\'\'\'')
-        keywords = query.split(' ')
-        # The line below doesn't work in python2.1
-        # x = map(lambda x: name + ' LIKE \'%' + x + '%\'', keywords)
-        x = []
-        for keyword in keywords:
-            x.append(name + ' LIKE \'%' + keyword + '%\'')
-        return string.join(x, ' AND ')
-
+    def query_to_sql(self, q, name):
+        self.log.debug("Query: %s" % q)
+        if q[0] == q[-1] == "'" or q[0] == q[-1] == '"':
+            sql_q = "%s like '%%%s%%'" % (name, q[1:-1].replace('\'',
+                                                                '\'\''))
+        else:
+            q = q.replace('\'', '\'\'')
+            keywords = q.split(' ')
+            # The line below doesn't work in python2.1
+            # x = map(lambda x: name + ' LIKE \'%' + x + '%\'', keywords)
+            x = []
+            for keyword in keywords:
+                x.append(name + ' LIKE \'%' + keyword + '%\'')
+            sql_q = string.join(x, ' AND ')
+        self.log.debug("SQL Condition: %s" % sql_q)
+        return sql_q
+       
     def shorten_result(self, text='', keywords=[], maxlen=240, fuzz=60):
         if not text: text = ''
         text_low = text.lower()
@@ -129,6 +136,8 @@ class Search(Module):
         q_str = string.join(q, ' UNION ALL ')
         q_str += ' ORDER BY time DESC LIMIT %d OFFSET %d' % \
                  (self.RESULTS_PER_PAGE, self.RESULTS_PER_PAGE * page)
+
+        self.log.debug("SQL Query: %s" % q_str)
         cursor.execute(q_str)
 
         # Make the data more HDF-friendly
@@ -169,10 +178,14 @@ class Search(Module):
         if self.args.has_key('q'):
             query = self.args['q']
             self.req.hdf.setValue('title', 'Search Results (search)')
-            self.req.hdf.setValue('search.q', query)
+            self.req.hdf.setValue('search.q', query.replace('"', "&#34;"))
             tickets = self.args.has_key('ticket')
             changesets = self.args.has_key('changeset')
             wiki = self.args.has_key('wiki')
+
+            # If no search options chosen, choose all
+            if not (tickets or changesets or wiki):
+                tickets = changesets = wiki = 1
 
             if self.args.has_key('page'):
                 page = int(self.args['page'])
