@@ -38,6 +38,7 @@ class CommonFormatter:
     _rules = [r"""(?P<bold>''')""",
               r"""(?P<italic>'')""",
               r"""(?P<underline>__)""",
+	      r"""(?P<strike>~~)""",
               r"""(?P<inlinecode>!?\{\{\{(?P<inline>.*?)\}\}\})""",
               r"""(?P<htmlescapeentity>!?&#\d+;)""",
               r"""(?P<tickethref>!?#\d+)""",
@@ -97,6 +98,9 @@ class CommonFormatter:
     def _underline_formatter(self, match, fullmatch):
         return self.simple_tag_handler('<span class="underline">', '</span>')
 
+    def _strike_formatter(self, match, fullmatch):
+	return self.simple_tag_handler('<del>', '</del>')
+    
     def _inlinecode_formatter(self, match, fullmatch):
         return '<tt>%s</tt>' % fullmatch.group('inline')
 
