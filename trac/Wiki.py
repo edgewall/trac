@@ -220,7 +220,8 @@ class Formatter(CommonFormatter):
               r"""(?P<indent>^(?P<idepth>\s+)(?=[^\s]))""",
               r"""(?P<imgurl>([a-z]+://[^ ]+)(\.png|\.jpg|\.jpeg|\.gif))""",
               r"""(?P<url>([a-z]+://[^ ]+[^\., \)\]\}]))""",
-              r"""(?P<table>\|\|.*\|\|)"""]
+              r"""(?P<last_table_cell>\|\|$)""",
+              r"""(?P<table_cell>\|\|)"""]
     
     _compiled_rules = re.compile('(?:' + string.join(_rules, '|') + ')')
 
@@ -280,10 +281,17 @@ class Formatter(CommonFormatter):
         self.open_indentation(depth)
         return ''
 
-    def _table_formatter(self, match, fullmatch):
+    def _last_table_cell_formatter(self, match, fullmatch):
+        return ''
+    
+    def _table_cell_formatter(self, match, fullmatch):
         self.open_table()
-        columns = [col.strip() for col in match.split('||')][1:-1]
-        return '<tr>%s</tr>' % (''.join(['<td>%s</td>' % col for col in columns]))
+        self.open_table_row()
+        if self.in_table_cell:
+            return '</td><td>'
+        else:
+            self.in_table_cell = 1
+            return '<td>'
     
     def close_indentation(self):
         self.out.write(('</blockquote>' + os.linesep) * self.indent_level)
@@ -357,8 +365,24 @@ class Formatter(CommonFormatter):
             self.in_table = 1
             self.out.write('<table class="wiki">' + os.linesep)
 
+    def open_table_row(self):
+        if not self.in_table_row:
+            self.open_table()
+            self.in_table_row = 1
+            self.out.write('<tr>')
+
+    def close_table_row(self):
+        if self.in_table_row:
+            self.in_table_row = 0
+            if self.in_table_cell:
+                self.in_table_cell = 0
+                self.out.write('</td>')
+                
+            self.out.write('</tr>')
+
     def close_table(self):
         if self.in_table:
+            self.close_table_row()
             self.out.write('</table>' + os.linesep)
             self.in_table = 0
 
@@ -404,6 +428,8 @@ class Formatter(CommonFormatter):
         
         self.in_code_block = 0
         self.in_table = 0
+        self.in_table_row = 0
+        self.in_table_cell = 0
         self.indent_level = 0
         self.paragraph_open = 0
 
@@ -444,6 +470,7 @@ class Formatter(CommonFormatter):
             if len(result) and not self.in_list_item and not self.in_table:
                 self.open_paragraph()
             out.write(result + os.linesep)
+            self.close_table_row()
             
         self.close_table()
         self.close_paragraph()
