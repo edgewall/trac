@@ -52,7 +52,7 @@ class Log (Module):
             'gmt'      : time.strftime('%a, %d %b %Y %H:%M:%S GMT', gmt),
             'log.raw'  : util.escape(log),
             'log'      : wiki_to_oneliner(util.shorten_line(util.wiki_escape_newline(log)),
-                                          None, self.env,self.db),
+                                          self.env,self.db),
             'shortlog' : util.escape(shortlog),
             'file_href': self.env.href.browser(self.path, rev),
             'changeset_href': self.env.href.changeset(rev)

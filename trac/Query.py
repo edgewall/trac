@@ -482,7 +482,7 @@ class QueryModule(Module):
         for result in results:
             if result.has_key('description'):
                 result['description'] = wiki_to_oneliner(result['description'] or '',
-                                                     None, self.env, self.db)
+                                                         self.env, self.db)
             if result.has_key('created'):
                 result['created'] = strftime('%c', localtime(result['created']))
         add_to_hdf(results, req.hdf, 'query.results')

@@ -49,12 +49,10 @@ class CommonFormatter:
               r"""(?P<fancylink>!?\[(?P<fancyurl>([a-z]+:[^ ]+)) (?P<linkname>.*?)\])"""]
 
     _open_tags = []
-    hdf = None
     env = None
     absurls = 0
 
-    def __init__(self, hdf, env, db, absurls=0):
-        self.hdf = hdf
+    def __init__(self, env, db, absurls=0):
         self.env = env
         self.db = db
         self._href = absurls and env.abs_href or env.href
@@ -271,7 +269,8 @@ class Formatter(CommonFormatter):
     _processor_re = re.compile('#\!([a-zA-Z0-9/+-]+)')
     mime_type = ""
     
-
+    hdf = None
+    
     # RE patterns used by other patterna
     _helper_patterns = ('idepth', 'ldepth', 'hdepth', 'fancyurl',
                         'linkname', 'macroname', 'macroargs', 'inline',
@@ -282,6 +281,10 @@ class Formatter(CommonFormatter):
                                          'iframe|frame|frameset|link|style|'
                                          'meta|param|doctype)')
     _htmlproc_disallow_attribute = re.compile('(?i)<[^>]*\s+(on\w+)=')
+
+    def __init__(self, hdf, env, db, absurls=0):
+        CommonFormatter.__init__(self, env, db, absurls)
+        self.hdf = hdf
 
     def default_processor(hdf, text, env):
         return '<pre class="wiki">' + util.escape(text) + '</pre>'
@@ -604,7 +607,8 @@ def wiki_to_html(wikitext, hdf, env, db, absurls=0):
     Formatter(hdf, env, db, absurls).format(wikitext, out)
     return out.getvalue()
 
-def wiki_to_oneliner(wikitext, hdf, env, db,absurls=0):
+
+def wiki_to_oneliner(wikitext, env, db,absurls=0):
     out = StringIO.StringIO()
-    OneLinerFormatter(hdf, env, db, absurls).format(wikitext, out)
+    OneLinerFormatter(env, db, absurls).format(wikitext, out)
     return out.getvalue()

@@ -144,8 +144,7 @@ class WikiModule(Module):
             req.hdf.setValue(n+'.time', time_str)
             req.hdf.setValue(n+'.author', str(row[2]))
             req.hdf.setValue(n+'.comment', wiki_to_oneliner(row[3] or '',
-                                                            req.hdf, self.env,
-                                                            self.db))
+                                                            self.env, self.db))
             req.hdf.setValue(n+'.ipaddr', str(row[4]))
             i = i + 1
 

@@ -130,8 +130,8 @@ class Timeline (Module):
                                                                self.env,
                                                                self.db,
                                                                absurls=1))
-                item['message'] = wiki_to_oneliner(msg, req.hdf,
-                                                   self.env, self.db,absurls=1)
+                item['message'] = wiki_to_oneliner(msg, self.env, self.db,
+                                                   absurls=1)
                 try:
                     max_node = int(self.env.get_config('timeline', 'changeset_show_files', 0))
                 except ValueError, e:
@@ -168,7 +168,7 @@ class Timeline (Module):
             elif item['type'] == WIKI:
                 item['href'] = util.escape(self.env.href.wiki(row['tdata']))
                 item['message'] = wiki_to_oneliner(util.shorten_line(item['message']),
-                                                   req.hdf, self.env, self.db, absurls=1)
+                                                   self.env, self.db, absurls=1)
             elif item['type'] == MILESTONE:
                 item['href'] = util.escape(self.env.href.milestone(item['message']))
                 item['message'] = util.escape(item['message'])
@@ -176,9 +176,8 @@ class Timeline (Module):
                 item['href'] = util.escape(self.env.href.ticket(item['idata']))
                 msg = item['message']
                 item['shortmsg'] = util.escape(util.shorten_line(msg))
-                item['message'] = wiki_to_oneliner(
-                    util.shorten_line(item['message']),
-                    req.hdf, self.env, self.db, absurls=1)
+                item['message'] = wiki_to_oneliner(util.shorten_line(item['message']),
+                                                   self.env, self.db, absurls=1)
                 item['msg_escwiki'] = util.escape(wiki_to_html(msg,
                                                                req.hdf,
                                                                self.env,
