@@ -120,9 +120,9 @@ class Browser(Module):
             
         info = self.get_info(self.path, rev)
         if order == 'size':
-            info.sort(lambda x, y: cmp(x['size'], y['size']))
+            info.sort(lambda x, y: cmp(x['size_bytes'], y['size_bytes']))
         elif order == 'Size':
-            info.sort(lambda y, x: cmp(x['size'], y['size']))
+            info.sort(lambda y, x: cmp(x['size_bytes'], y['size_bytes']))
         elif order == 'date':
             info.sort(lambda x, y: cmp(x['date_seconds'], y['date_seconds']))
         elif order == 'Date':
