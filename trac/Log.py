@@ -161,6 +161,7 @@ class Log (Module):
         req.hdf['title'] = self.path + ' (log)'
         req.hdf['log.path'] = self.path
         req.hdf['log.href'] = self.env.href.log(self.path)
+        req.hdf['log.file_href'] = self.env.href.browser(self.path)
 
     def display_rss(self, req):
         req.display(self.template_rss_name, 'application/rss+xml')

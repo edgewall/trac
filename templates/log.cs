@@ -5,7 +5,7 @@
 <div id="ctxtnav" class="nav">
  <ul>
   <li class="last"><a href="<?cs
-    var:log.items.0.file_href ?>">View Latest Revision</a></li>
+    var:log.file_href ?>">View Latest Revision</a></li>
  </ul>
 </div>
 
