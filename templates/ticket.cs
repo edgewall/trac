@@ -54,7 +54,8 @@
   <?cs call:ticketprop("Resolution", ticket.resolution) ?>
 </div>
 
-<br style="clear: both" />
+<br style="clear: right" />
+<div style="font-size: 1px; height: 1px"><br /></div>
 
 <div id="tkt-descr">
   <b>Description by <?cs var:ticket.reporter ?>:
