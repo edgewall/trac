@@ -123,7 +123,8 @@ class CommitHook:
         cmdGroups = commandPattern.findall(msg) 
         for cmd, tkts in cmdGroups:
             try:
-                getattr(self, CommitHook._supported_cmds[cmd.lower()])(ticketPattern.findall(tkts))
+                if CommitHook._supported_cmds.has_key(cmd.lower()):
+                    getattr(self, CommitHook._supported_cmds[cmd.lower()])(ticketPattern.findall(tkts))
             except: 
                 self.con.rollback()
         self.con.commit()
