@@ -76,9 +76,6 @@ class FileCommon(Module.Module):
         self.req.send_header('Last-Modified', self.last_modified)
         self.req.send_header('Pragma', 'no-cache')
         self.req.send_header('Expires', 'Mon, 26 Jul 1997 05:00:00 GMT')
-        self.req.send_header('Cache-Control',
-                             'no-store, no-cache, must-revalidate, max-age=0')
-        self.req.send_header('Cache-Control', 'post-check=0, pre-check=0')
         self.req.end_headers()
         i = 0
         while 1:
