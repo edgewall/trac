@@ -119,9 +119,11 @@ def display(data, mimetype, filename, env):
     if lang:
         enscript += lang
 
-    np = NaivePopen(enscript, data)
-    if np.errorlevel:
-        err = 'Running (%s) failed: %s.' % (enscript, np.errorlevel)
+    np = NaivePopen(enscript, data, capturestderr=1)
+    env.log.debug("err: %s" % (np.err))
+    env.log.debug("errlevel: %s" % (np.errorlevel))
+    if np.errorlevel or np.err:
+        err = 'Running (%s) failed: %s, %s.' % (enscript, np.errorlevel, np.err)
         raise Exception, err
     odata = np.out
     # Strip header and footer

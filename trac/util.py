@@ -243,10 +243,10 @@ class NaivePopen:
        os.remove(outfile)
        if input:
            os.remove(infile)
+       self.err = None
        if capturestderr:
            self.err=open(errfile,"r").read()
            os.remove(errfile)
-
 
 
 if __name__ == '__main__ ':
