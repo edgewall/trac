@@ -155,6 +155,9 @@ class TracHTTPRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler,
         if self.headers.has_key('Cookie'):
             self.incookie.load(self.headers['Cookie'])
 
+    def get_header(self, name):
+        return self.headers.get(name)
+
     def parse_path(self, path):
         m = self.url_re.findall(self.path)
         if not m:
@@ -244,15 +247,12 @@ class TracHTTPRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler,
         db = self.env.get_db_cnx()
         Wiki.populate_page_dict(db, self.env)
 
-        http_referer = self.headers.get('Referer', None)
-
         # Parse arguments
         args = trac.core.parse_args(self.command, self.path_info,
                                     self.query_string,
                                     self.rfile, None, self.headers)
 
-        trac.core.dispatch_request(self.path_info, http_referer, args, self,
-                                   self.env, db)
+        trac.core.dispatch_request(self.path_info, args, self, self.env, db)
 
         self.log.debug('Total request time: %f s', time.time() - start)
 

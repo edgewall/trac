@@ -62,6 +62,9 @@ class ModPythonRequest(core.Request):
     def write(self, data):
         self.req.write(data)
 
+    def get_header(self, name):
+        return self.req.headers_out.get(name)
+
     def send_response(self, code):
         self.req.status = code
 
@@ -128,6 +131,6 @@ def handler(req):
     referrer = req.headers_in.get('Referer', None)
 
     req.content_type = 'text/html'
-    core.dispatch_request(req.path_info, referrer, args, mpr, env)
+    core.dispatch_request(req.path_info, args, mpr, env)
 
     return apache.OK

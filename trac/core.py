@@ -262,6 +262,9 @@ class Request:
         self.incookie = Cookie.SimpleCookie()
         self.outcookie = Cookie.SimpleCookie()
 
+    def get_header(self, name):
+        raise RuntimeError, 'Virtual method not implemented'
+
     def send_response(self, code):
         raise RuntimeError, 'Virtual method not implemented'
 
@@ -343,6 +346,9 @@ class CGIRequest(Request):
     def write(self, data):
         return sys.stdout.write(data)
 
+    def get_header(self, name):
+        return os.getenv('HTTP_' + re.sub('-', '_', name.upper()))
+
     def send_response(self, code):
         self.write('Status: %d\r\n' % code)
 
@@ -353,7 +359,7 @@ class CGIRequest(Request):
     def end_headers(self):
         self.write('\r\n')
 
-def dispatch_request(path_info, referrer, args, req, env, database=None):
+def dispatch_request(path_info, args, req, env, database=None):
     if not database:
         database = env.get_db_cnx()
 
@@ -361,14 +367,14 @@ def dispatch_request(path_info, referrer, args, req, env, database=None):
     if path_info == '/logout':
         authenticator.logout()
         try:
-            req.redirect (referrer or env.href.wiki())
+            req.redirect(req.get_header('Referer') or env.href.wiki())
         except RedirectException:
             pass
     elif req.remote_user and authenticator.authname == 'anonymous':
         auth_cookie = authenticator.login(req)
     if path_info == '/login':
         try:
-            req.redirect (referrer or env.href.wiki())
+            req.redirect(req.get_header('Referer') or env.href.wiki())
         except RedirectException:
             pass
     req.authname = authenticator.authname
@@ -454,8 +460,6 @@ def send_pretty_error(e, env, req=None):
 
 def real_cgi_start():
     import Wiki
-    path_info = os.getenv('PATH_INFO')
-    http_referer = os.getenv('HTTP_REFERER')
 
     env = open_environment()
     database = env.get_db_cnx()
@@ -470,10 +474,11 @@ def real_cgi_start():
     env.abs_href = Href.Href(req.base_url)
 
     # Parse arguments
+    path_info = os.getenv('PATH_INFO')
     args = parse_args(req.command,
                       path_info, os.getenv('QUERY_STRING'),
                       sys.stdin, os.environ)
-    dispatch_request(path_info, http_referer, args, req, env, database)
+    dispatch_request(path_info, args, req, env, database)
 
 def cgi_start():
     try:
