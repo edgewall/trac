@@ -2,7 +2,8 @@
 <?cs include "macros.cs"?>
 <div id="page-content">
 <ul class="subheader-links">
-  <li><a href="<?cs var:log.items.0.file_href ?>">View Latest Revision</a></li>
+  <li class="last"><a href="<?cs
+    var:log.items.0.file_href ?>">View Latest Revision</a></li>
 </ul>
 
  <div id="main">
