@@ -93,7 +93,7 @@
      <?cs if:idx == 0 ?><br /><?cs /if ?><div>
       <label for="<?cs var:custom.name ?>"><?cs var:custom.label ?></label>
       <input type="text" name="<?cs var:custom.name ?>" id="<?cs
-        var:custom.name ?>" value="<?cs call:get(query, custom.name) ?>" />
+        var:custom.name ?>" value="<?cs var:query[custom.name] ?>" />
      </div><?cs set:idx = idx + 1 ?><?cs
     /if ?><?cs
    /each ?><?cs
@@ -137,9 +137,9 @@
      else ?>
       <td><?cs if:header.name == 'summary' ?>
        <a href="<?cs var:result.href ?>" title="View ticket"><?cs
-         call:get(result, header.name) ?></a><?cs
+         var:result[header.name] ?></a><?cs
       else ?>
-       <?cs call:get(result, header.name) ?><?cs
+       <?cs var:result[header.name] ?><?cs
       /if ?>
       </td><?cs
      /if ?>

@@ -64,13 +64,15 @@
    <li>
     <?cs if:item.change == "A" ?>
      <div class="add"></div>
-     <a href="<?cs var:item.browser_href?>" title="Show file in browser"><?cs
+     <a href="<?cs var:item.browser_href ?>" title="Show file in browser"><?cs
        var:item.name ?></a> <span class="comment">(added)</span>
     <?cs elif:item.change == "M" ?>
      <div class="mod"></div>
-     <a href="#file<?cs var:anchor_idx ?>" title="Jump to diffs"><?cs
+     <a href="<?cs var:item.browser_href ?>" title="Show file in browser"><?cs
        var:item.name ?></a> <span class="comment">(modified)</span><?cs
-       set:anchor_idx = anchor_idx + #1 ?>
+     if:len(changeset.diff.files[anchor_idx].changes) ?>
+      (<a href="#file<?cs var:anchor_idx ?>" title="Show differences">diff</a>)<?cs
+     /if ?><?cs set:anchor_idx = anchor_idx + #1 ?>
     <?cs elif:item.change == "D" ?>
      <div class="rem"></div>
      <?cs var:item.name ?> <span class="comment">(deleted)</span>

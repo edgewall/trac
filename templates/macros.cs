@@ -20,12 +20,6 @@
  </select><?cs
 /def ?>
 
-<?cs def:get(map, name) ?><?cs
- each:item = map ?><?cs
-  if:name(item) == name ?><?cs var:item ?><?cs /if ?><?cs 
- /each ?><?cs 
-/def ?>
-
 <?cs def:browser_path_links(path, file) ?><?cs
  set:first = #1 ?>
  <h1><?cs
