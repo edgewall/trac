@@ -67,32 +67,20 @@ class Href:
 
     def wiki(self, page = None, version=None):
         if page and version:
-            return href_join(self.base, 'wiki', page, str(version))
+            return href_join(self.base, 'wiki', page) + '?version=' + str(version)
         elif page:
             return href_join(self.base, 'wiki', page)
         else:
             return href_join(self.base, 'wiki/')
 
     def report(self, report=None, action=None):
+        if report:
+            href = href_join(self.base, 'report', str(report))
+        else:
+            href = href_join(self.base, 'report/')
         if action:
-	    return self.old_report(report, action)
-        elif report:
-            return href_join(self.base, 'report', str(report))
-        else:
-            return href_join(self.base, 'report/')
-
-    def old_report(self, report=None, action=None):
-        if report and action:
-            return '%s?mode=report&id=%s&action=%s' % \
-                   (self.base, report, action)
-        elif report:
-            return '%s?mode=report&id=%s' % (self.base, report)
-        elif action:
-            return '%s?mode=report&action=%s' % (self.base,
-                                                            action)
-        else:
-            return '%s?mode=report' % self.base
-
+            href = href + '?action=' + action
+        return href
 
 href = None
 

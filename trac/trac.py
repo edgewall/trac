@@ -53,7 +53,7 @@ def parse_args():
     args = {}
     info = os.getenv ('PATH_INFO')
     if not info:
-        return None
+        return args
     
     match = re.search('/about(/?.*)', info)
     if match:
@@ -109,7 +109,7 @@ def parse_args():
         args['mode'] = 'changeset'
         args['rev'] = match.group(1)
         return args
-    return None
+    return args
 
 def main():
     db.init()
@@ -120,11 +120,9 @@ def main():
     pool = core.svn_pool_create(None)
 
     args = parse_args()
-    if not args:
-        _args = cgi.FieldStorage()
-        args = {}
-        for x in _args.keys():
-            args[x] = _args[x].value
+    _args = cgi.FieldStorage()
+    for x in _args.keys():
+        args[x] = _args[x].value
 
     mode = dict_get_with_default(args, 'mode', 'wiki')
 
