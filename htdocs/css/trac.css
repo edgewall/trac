@@ -9,8 +9,11 @@ body {
 h1,h1,h2,h3,h4 {
  font-family: arial,verdana,'Bitstream Vera Sans',helvetica, sans-serif;
  font-weight:bold;
- letter-spacing:-0.028em;
+ letter-spacing:-0.018em;
 }
+h1 { font-size: 20px; }
+h2 { font-size: 16px;}
+h3 { font-size: 14px;}
 .hide { display: none; }
 .tiny { font-size: 1px; height: 1px }
 hr { border: none;  border-top: 1px solid #ccc; margin: 2em 0; }
@@ -23,6 +26,7 @@ a[name] { border: none; }
 a:hover { color: #b00; background: #eee; }
 a[name]:hover { color: inherit; background: transparent; }
 a.noline { border-bottom: none; }
+h1 a:link, h1 a:visited,h2 a:link,h2 a:visited,h3 a:link,h3 a:visited,h4 a:link,h4 a:visited { color: inherit; }
 address { font-style: normal; }
 img { border: none; }
 span.underline { text-decoration: underline; }
