@@ -502,6 +502,7 @@ class TracAdmin(cmd.Cmd):
         try:
             print 'Creating and Initializing Project'
             self.env_create()
+            cnx = self.__env.get_db_cnx()
             print ' Inserting default data'
             self.__env.insert_default_data()
             
@@ -515,7 +516,6 @@ class TracAdmin(cmd.Cmd):
             self.__env.save_config()
             # Add a few default wiki pages
             print ' Installing wiki pages'
-            cnx = self.__env.get_db_cnx()
             cursor = cnx.cursor()
             self._do_wiki_load(trac.siteconfig.__default_wiki_dir__,cursor)
 
@@ -525,7 +525,9 @@ class TracAdmin(cmd.Cmd):
             print 'Done.'
         except Exception, e:
             print 'Failed to initialize database.', e
-            cnx.rollback()
+            if cnx:
+                cnx.rollback()
+            sys.exit(2)
 
 
         print "---------------------------------------------------------------------"

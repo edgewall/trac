@@ -30,7 +30,7 @@ def __mkreports(reps):
     result = []
     i = 1
     for r in reps:
-        result.append ((i, None, r[0], r[1]))
+        result.append ((i, None, r[0], r[2], r[1]))
         i = i + 1
     return result
 
@@ -149,10 +149,11 @@ CREATE INDEX wiki_idx           ON wiki(name,version);
 reports = (
 ('Active Tickets',
 """
--- List all active tickets by priority
--- Color each row based on priority
--- If a ticket has been accepted, a '*' is appended after the owner's name
-
+ * List all active tickets by priority.
+ * Color each row based on priority.
+ * If a ticket has been accepted, a '*' is appended after the owner's name
+""",
+"""
 SELECT p.value AS __color__,
    id AS ticket, summary, component, version, milestone, severity, 
    (CASE status WHEN 'assigned' THEN owner||' *' ELSE owner END) AS owner,
@@ -167,11 +168,13 @@ AND p.name = t.priority AND p.type = 'priority'
 #----------------------------------------------------------------------------
  ('Active Tickets by Version',
 """
--- This report shows how to color results based on priority,
--- group results based on milestone. Last modification time, 
--- description and reporter are included as hidden fields for 
--- a useful RSS export.
+This report shows how to color results by priority,
+while grouping results by version.
 
+Last modification time, description and reporter are included as hidden fields
+for useful RSS export.
+""",
+"""
 SELECT p.value AS __color__,
    version AS __group__,
    id AS ticket, summary, component, version, severity, 
@@ -187,11 +190,13 @@ AND p.name = t.priority AND p.type = 'priority'
 #----------------------------------------------------------------------------
 ('All Tickets by Milestone',
 """
--- This report shows how to color results based on priority,
--- group results based on milestone. Last modification time, 
--- description and reporter are included as hidden fields for 
--- a useful RSS export.
+This report shows how to color results by priority,
+while grouping results by milestone.
 
+Last modification time, description and reporter are included as hidden fields
+for useful RSS export.
+""",
+"""
 SELECT p.value AS __color__,
    milestone||' Release' AS __group__,
    id AS ticket, summary, component, version, severity, 
@@ -207,7 +212,9 @@ AND p.name = t.priority AND p.type = 'priority'
 #----------------------------------------------------------------------------
 ('Assigned, Active Tickets by Owner',
 """
--- List assigned tickets, group by ticket owner, sorted by priority
+List assigned tickets, group by ticket owner, sorted by priority.
+""",
+"""
 
 SELECT p.value AS __color__,
    owner AS __group__,
@@ -222,9 +229,10 @@ AND p.name=t.priority AND p.type='priority'
 #----------------------------------------------------------------------------
 ('Assigned, Active Tickets by Owner (Full Description)',
 """
--- List tickets assigned, group by ticket owner
--- This report demonstrates the use of full-row display.
-
+List tickets assigned, group by ticket owner.
+This report demonstrates the use of full-row display.
+""",
+"""
 SELECT p.value AS __color__,
    owner AS __group__,
    id AS ticket, summary, component, milestone, severity, time AS created,
@@ -238,8 +246,9 @@ AND p.name = t.priority AND p.type = 'priority'
 #----------------------------------------------------------------------------
 ('All Tickets By Milestone  (Including closed)',
 """
--- A more complex example to show how to make advanced reports
-
+A more complex example to show how to make advanced reports.
+""",
+"""
 SELECT p.value AS __color__,
    t.milestone AS __group__,
    (CASE status 
@@ -259,10 +268,11 @@ SELECT p.value AS __color__,
 #----------------------------------------------------------------------------
 ('My Tickets',
 """
--- This report demonstrates the use of the automatically set 
--- $USER dynamic variable, replaced with the username of the
--- logged in user when executed.
-
+This report demonstrates the use of the automatically set 
+$USER dynamic variable, replaced with the username of the
+logged in user when executed.
+""",
+"""
 SELECT p.value AS __color__,
    (CASE status WHEN 'assigned' THEN 'Assigned' ELSE 'Owned' END) AS __group__,
    id AS ticket, summary, component, version, milestone,
@@ -277,9 +287,10 @@ AND p.name = t.priority AND p.type = 'priority' AND owner = '$USER'
 #----------------------------------------------------------------------------
 ('Active Tickets, Mine first',
 """
--- List all active tickets by priority
--- Show all tickets owned by the logged in user in a group first.
-
+ * List all active tickets by priority.
+ * Show all tickets owned by the logged in user in a group first.
+""",
+"""
 SELECT p.value AS __color__,
    (CASE owner 
      WHEN '$USER' THEN 'My Tickets' 
@@ -360,7 +371,7 @@ data = (('component',
              ('name', 'value'),
                (('database_version', str(db_version)),)),
            ('report',
-             ('id', 'author', 'title', 'sql'),
+             ('id', 'author', 'title', 'sql', 'description'),
                __mkreports(reports)))
 
 default_config = \

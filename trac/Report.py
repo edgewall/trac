@@ -95,15 +95,18 @@ class Report (Module):
                            "FROM report "
                            "ORDER BY report")
             title = 'Available reports'
+            description = 'This is a list of reports available.'
         else:
-            cursor.execute('SELECT title, sql from report WHERE id=%s', id)
+            cursor.execute('SELECT title, sql, description from report '
+                           ' WHERE id=%s', id)
             row = cursor.fetchone()
             try:
                 if not row:
                     raise TracError('Report %d does not exist.' % id,
                                 'Invalid Report Number')
-                title = row[0]
+                title = row[0] or ''
                 sql   = self.sql_sub_vars(row[1], args)
+                description = row[2] or ''
                 cursor.execute(sql)
 
                 if sql.find('__group__') == -1:
@@ -120,7 +123,7 @@ class Report (Module):
         cols = cursor.rs.col_defs
         # Escape the values so that they are safe to have as html parameters
 #        info = map(lambda row: map(lambda x: escape(x), row), info)
-        return [cols, info, title]
+        return [cols, info, title, description]
         
     def create_report(self, title, sql):
         self.perm.assert_permission(perm.REPORT_CREATE)
@@ -150,9 +153,11 @@ class Report (Module):
         cursor = self.db.cursor()
         title = self.args['title']
         sql   = self.args['sql']
+        description   = self.args['description']
 
-        cursor.execute('UPDATE report SET title=%s, sql=%s WHERE id=%s',
-                       title, sql, id)
+        cursor.execute('UPDATE report SET title=%s, sql=%s, description=%s '
+                       ' WHERE id=%s',
+                       title, sql, description, id)
         self.db.commit()
         self.req.redirect(self.href.report(id))
 
@@ -163,10 +168,12 @@ class Report (Module):
         if id == -1:
             title = sql = ""
         else:
-            cursor.execute('SELECT title, sql FROM report WHERE id=%s', id)
+            cursor.execute('SELECT title, description, sql FROM report '
+                           ' WHERE id=%s', id)
             row = cursor.fetchone()
-            sql = row[1]
-            title = row[0]
+            sql = row[2]or ''
+            description = row[1] or ''
+            title = row[0] or ''
 
         if copy:
             title += ' copy'
@@ -176,6 +183,7 @@ class Report (Module):
         self.req.hdf.setValue('report.id', str(id))
         self.req.hdf.setValue('report.action', action)
         self.req.hdf.setValue('report.sql', sql)
+        self.req.hdf.setValue('report.description', description)
     
     def render_report_list(self, id, args={}):
         """
@@ -201,12 +209,14 @@ class Report (Module):
         info = self.get_info(id, args)
         if not info:
             return
-        [self.cols, self.rows, title] = info
+        [self.cols, self.rows, title, description] = info
         self.error = None
         
         self.req.hdf.setValue('title', title + ' (report)')
         self.req.hdf.setValue('report.title', title)
         self.req.hdf.setValue('report.id', str(id))
+        descr_html = wiki_to_html(description, self.req.hdf, self.href)
+        self.req.hdf.setValue('report.description', descr_html)
 
         # Convert the header info to HDF-format
         idx = 0

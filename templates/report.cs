@@ -84,6 +84,10 @@
  <?cs if report.mode == "list" ?>
    <h1 id="report-hdr"><?cs var:report.title ?></h1>
 
+     <?cs if report.description ?>
+       <div id="report-descr"><?cs var:report.description ?></div>
+     <?cs /if ?>
+
      <?cs each row = report.items ?>
  
        <?cs if group != row.__group__ || idx == #0 ?>
@@ -160,9 +164,14 @@
        <label for="title">Report Title:</label><br />
         <input type="text" id="title" name="title"
                value="<?cs var:report.title ?>" size="50" /><br />
+       <div style="margin-top: 1em">
+       <label for="description">
+        Description:</label> (You may use <a tabindex="42" href="<?cs var:$trac.href.wiki ?>WikiFormatting">WikiFormatting</a> here)</div>
+       <textarea id="description" name="description" cols="85" rows="5"><?cs var:report.description ?></textarea>
+       <br />
        <label for="sql" style="display: block; margin-top: 1em">
         SQL Query for Report:</label>
-       <textarea id="sql" name="sql" cols="85" rows="24"><?cs var:report.sql ?></textarea>
+       <textarea id="sql" name="sql" cols="85" rows="20"><?cs var:report.sql ?></textarea>
        <br />
        <input type="submit" value="Save" />&nbsp;
        <input type="submit" name="view" value="Cancel" />

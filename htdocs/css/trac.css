@@ -173,7 +173,7 @@ a.wiki-history-link:hover,tr.wiki-history-row:hover {
   background: #ccb; 
   color: #b00; 
 }
-a.wiki-missing-page:link { color: #998; background: #fafaf0; }
+a.wiki-missing-page:link,a.wiki-missing-page:visited { color: #998; background: #fafaf0; }
 a.wiki-missing-page:hover { color: #000; }
 #wiki-body { line-height: 140%; margin: 1em; }
 #wiki-formatting-help {

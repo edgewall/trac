@@ -5,6 +5,10 @@
  border-bottom: 2px solid #eee;
  font-size: 150%;
 }
+#report-descr { 
+ margin: 0 2em;
+ font-size: 90%;
+}
 .report-list { 
  width: 97%; 
  margin-left: 1em;
