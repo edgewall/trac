@@ -124,8 +124,14 @@ class CommonFormatter:
 		return '<a href="%s" title="%s">#%d</a>' % (self._href.ticket(number), summary, number)
 
     def _changesethref_formatter(self, match, fullmatch):
-        number = int(match[1:-1])
-        return '[<a href="%s">%d</a>]' % (self._href.changeset(number), number)
+	number = int(match[1:-1])
+	cursor = self.db.cursor ()
+	cursor.execute('SELECT message FROM revision WHERE rev=%d', number)
+	row = cursor.fetchone ()
+	if not row:
+	    return '[<a class="missing" href="%s">%d</a>]' % (self._href.changeset(number), number)
+	else:
+	    return '[<a title="%s" href="%s">%d</a>]' % (row[0],self._href.changeset(number), number)
 
     def _reporthref_formatter(self, match, fullmatch):
         number = int(match[1:-1])
