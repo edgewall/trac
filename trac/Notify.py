@@ -153,6 +153,7 @@ class NotifyEmail(Notify):
         msg['Sender'] = self.from_email
         msg['Reply-To'] = self.replyto_email
         msg['To'] = rcpt
+        msg['Date'] = time.strftime('%a, %d %b %Y %H:%M:%S +0000', time.gmtime());
         for hdr in mime_headers.keys():
             msg[hdr] = mime_headers[hdr]
         self.server.sendmail(self.from_email, rcpt, msg.as_string())
