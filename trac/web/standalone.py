@@ -22,9 +22,11 @@
 # Todo:
 # - External auth using mod_proxy / squid.
 
-from trac import Environment, Href, siteconfig, util, __version__
+from trac import siteconfig, util, __version__
+from trac.env import open_environment
 from trac.web.main import Request, dispatch_request, send_pretty_error
 from trac.web.cgi_frontend import TracFieldStorage
+from trac.web import href
 
 import os
 import re
@@ -144,9 +146,9 @@ class TracHTTPServer(ThreadingMixIn, HTTPServer):
             # We assume the projenv filenames follow the following
             # naming convention: /some/path/project
             auth = auths.get(project, None)
-            env = Environment.Environment(path)
-            env.href = Href.Href('/' + project)
-            env.abs_href = Href.Href('http://%s/%s' % (self.http_host, project))
+            env = open_environment(path)
+            env.href = href.Href('/' + project)
+            env.abs_href = href.Href('http://%s/%s' % (self.http_host, project))
             env.set_config('trac', 'htdocs_location', '/trac_common/')
             self.projects[project] = env
             self.projects[project].auth = auth
