@@ -144,18 +144,6 @@
  /if ?><?cs
 /def ?>
 
-<?cs def:session_name_email() ?><?cs
-  if trac.authname != "anonymous" ?><?cs 
-     var:trac.authname ?><?cs 
-  elif trac.session.var.name && trac.session.var.email ?><?cs
-     var:trac.session.var.name ?> &lt;<?cs var:trac.session.var.email ?>&gt;<?cs 
-  elif !trac.session.var.name && trac.session.var.email ?><?cs 
-     var:trac.session.var.email ?><?cs 
-  else ?><?cs
-     var:trac.authname ?><?cs 
-  /if ?><?cs
-  /def ?>
-
 <?cs def:ticket_custom_props(ticket) ?><?cs
  each c=ticket.custom ?>
   <div class="field custom_<?cs var c.name ?>"><?cs

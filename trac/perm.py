@@ -76,8 +76,10 @@ meta_permission = {
 
 class PermissionError (StandardError):
     """Insufficient permissions to complete the operation"""
+
     def __init__ (self, action):
         self.action = action
+
     def __str__ (self):
         return '%s privileges required to perform this operation' % self.action
 
@@ -104,10 +106,11 @@ class PermissionCache:
      'authenticated': Permissions granted to this user will apply to
                       any authenticated (logged in with HTTP_AUTH) user.
     """
+
     def __init__(self, db, username):
         self.perm_cache = {}
         cursor = db.cursor()
-        cursor.execute ("SELECT username, action FROM permission")
+        cursor.execute("SELECT username, action FROM permission")
         result = cursor.fetchall()
 
         perms = []
@@ -127,7 +130,7 @@ class PermissionCache:
                 break
         for perm in perms:
             self.expand_meta_permission(perm)
-        
+
     def expand_meta_permission(self, action):
         self.perm_cache[action] = 1
         if meta_permission.has_key(action):
@@ -135,13 +138,11 @@ class PermissionCache:
                 self.expand_meta_permission(perm)
 
     def has_permission(self, action):
-        return self.perm_cache.has_key (action)
+        return self.perm_cache.has_key(action)
 
-    def assert_permission (self, action):
-        if not self.perm_cache.has_key (action):
-            raise PermissionError (action)
+    def assert_permission(self, action):
+        if not self.perm_cache.has_key(action):
+            raise PermissionError(action)
 
-    def add_to_hdf(self, hdf):
-        for action in self.perm_cache.keys():
-            hdf.setValue('trac.acl.' + action, 'true')
-    
+    def permissions(self):
+        return self.perm_cache.keys()

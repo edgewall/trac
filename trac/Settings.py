@@ -21,8 +21,7 @@
 
 import time
 
-import perm
-from util import TracError
+from util import add_to_hdf, TracError
 from Module import Module
 
 
@@ -32,16 +31,20 @@ class Settings(Module):
     _form_fields = ['newsid','name', 'email']
 
     def render(self, req):
-        req.hdf.setValue('title', 'Settings')
         action = req.args.get('action')
         if action == 'save':
             self.save_settings(req)
         elif action == 'load':
             self.load_session(req)
         elif action == 'login':
-            req.redirect (self.env.href.login())
+            req.redirect(self.env.href.login())
         elif action == 'newsession':
             raise TracError, 'new session'
+
+        req.hdf.setValue('title', 'Settings')
+        req.hdf.setValue('settings.session_id', req.session.sid)
+        add_to_hdf(req.session.data, req.hdf, 'settings')
+
 
     def save_settings(self, req):
         for field in self._form_fields:
@@ -51,7 +54,6 @@ class Settings(Module):
                     req.session.change_sid(val)
                 else:
                     req.session[field] = val
-        req.session.populate_hdf() # Update HDF
 
     def load_session(self, req):
         oldsid = req.args.get('loadsid')

@@ -150,7 +150,6 @@ def module_factory(env, db, req):
     module.log = env.log
     module.db = db
     module.perm = perm.PermissionCache(module.db, req.authname)
-    module.perm.add_to_hdf(req.hdf)
 
     # Only open the subversion repository for the modules that really
     # need it. This saves us some precious time.
@@ -163,7 +162,7 @@ def module_factory(env, db, req):
         pool, rep, fs_ptr = open_svn_repos(repos_dir)
         module.repos = rep
         module.fs_ptr = fs_ptr
-        sync.sync(module.db, rep, fs_ptr, pool)
+        sync.sync(db, rep, fs_ptr, pool)
         module.pool = pool
 
     return module
@@ -232,7 +231,7 @@ def populate_hdf(hdf, env, req=None):
                                                 time.gmtime()))
 
     hdf.setValue('header_logo.link', env.get_config('header_logo', 'link'))
-    hdf.setValue('header_logo.alt', env.get_config('header_logo', 'alt'))
+    hdf.setValue('header_logo.alt', escape(env.get_config('header_logo', 'alt')))
     src = env.get_config('header_logo', 'src')
     src_abs = src[:7] == 'http://' and 1 or 0
     if not src[0] == '/' and not src_abs:

@@ -19,7 +19,7 @@
 #
 # Author: Daniel Lundin <daniel@edgewall.com>
 
-from util import hex_entropy, add_to_hdf, TracError
+from util import hex_entropy, TracError
 
 import sys
 import time
@@ -61,10 +61,6 @@ class Session(UserDict):
         self.req.outcookie[COOKIE_KEY]['path'] = self.req.cgi_location
         self.req.outcookie[COOKIE_KEY]['expires'] = 420000000
 
-    def populate_hdf(self):
-        self.req.hdf.setValue('trac.session.id', self.sid)
-        add_to_hdf(self.data, self.req.hdf, 'trac.session.var')
-
     def get_session(self, sid):
         self.sid = sid
         curs = self.db.cursor()
@@ -78,7 +74,6 @@ class Session(UserDict):
                 self.data[k] = v
             self._old.update(self.data)
             self.bake_cookie()
-            self.populate_hdf()
             return
         if self.req.authname == 'anonymous':
             err = ('Session cookie requires authentication. <p>'
@@ -96,7 +91,6 @@ class Session(UserDict):
     def create_new_sid(self):
         self.sid = hex_entropy(24)
         self.bake_cookie()
-        self.populate_hdf()
 
     def change_sid(self, newsid):
         if newsid == self.sid:

@@ -40,6 +40,8 @@ class Module:
         else:
             disp = self.display
         core.populate_hdf(req.hdf, self.env, req)
+        for action in self.perm.permissions():
+            req.hdf.setValue('trac.acl.' + action, 'true')
         self._add_default_links(req)
         self.render(req)
         req.hdf.setValue('trac.active_module', self._name)
