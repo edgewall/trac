@@ -219,7 +219,7 @@ class WikiModule(Module):
             cursor.execute ('DELETE FROM wiki WHERE name=%s and version=%s',
                             name, int(edit_version))
             self.db.commit()
-            self.env.log.info('Deleted version %d of page %s' % (int(edit_version), name))
+            self.log.info('Deleted version %d of page %s' % (int(edit_version), name))
             if int(edit_version) > 1:
                 self.req.redirect(self.env.href.wiki(name))
             else:
@@ -235,7 +235,7 @@ class WikiModule(Module):
             cursor = self.db.cursor()
             cursor.execute ('DELETE FROM wiki WHERE name=%s', name)
             self.db.commit()
-            self.env.log.info('Deleted version %d of page ' + name)
+            self.log.info('Deleted version %d of page ' + name)
             # Delete orphaned attachments
             for attachment in self.env.get_attachments(self.db, 'wiki', name):
                 self.env.delete_attachment(self.db, 'wiki', name, attachment[0])

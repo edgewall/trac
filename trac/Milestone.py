@@ -147,7 +147,7 @@ class Milestone(Module):
             raise TracError('You must provide a name for the milestone.',
                             'Required Field Missing')
         cursor = self.db.cursor()
-        self.env.log.debug("Creating new milestone '%s'" % name)
+        self.log.debug("Creating new milestone '%s'" % name)
         cursor.execute("INSERT INTO milestone (id, name, time, descr) "
                        "VALUES (NULL, %s, %d, %s)", name, date, descr)
         self.db.commit()
@@ -161,18 +161,17 @@ class Milestone(Module):
             if self.args.has_key('retarget'):
                 target = self.args.get('target')
                 if target:
-                    self.env.log.info('Retargeting milestone field of all '
-                                      'tickets associated with milestone %s to '
-                                      'milestone %s' % (id, target))
+                    self.log.info('Retargeting milestone field of all '
+                                  'tickets associated with milestone %s to '
+                                  'milestone %s' % (id, target))
                     cursor.execute ('UPDATE ticket SET milestone = %s '
                                     'WHERE milestone = %s', target, id)
                 else:
-                    self.env.log.info('Resetting milestone field of all '
-                                      'tickets associated with milestone %s'
-                                      % id)
+                    self.log.info('Resetting milestone field of all '
+                                  'tickets associated with milestone %s' % id)
                     cursor.execute ('UPDATE ticket SET milestone = NULL '
                                     'WHERE milestone = %s', id)
-            self.env.log.debug('Deleting milestone %s' % id)
+            self.log.info('Deleting milestone %s' % id)
             cursor.execute("DELETE FROM milestone WHERE name = %s", id)
             self.db.commit()
             self.req.redirect(self.env.href.roadmap())
@@ -182,9 +181,9 @@ class Milestone(Module):
     def update_milestone(self, id, name, date, descr):
         self.perm.assert_permission(perm.MILESTONE_MODIFY)
         cursor = self.db.cursor()
-        self.env.log.debug("Updating milestone '%s'" % id)
+        self.log.info("Updating milestone '%s'" % id)
         if self.args.has_key('save'):
-            self.env.log.info('Updating milestone field of all tickets '
+            self.log.info('Updating milestone field of all tickets '
                               'associated with milestone %s' % id)
             cursor.execute('UPDATE ticket SET milestone = %s '
                             'WHERE milestone = %s', name, id)

@@ -34,7 +34,7 @@ class Settings(Module):
     def render(self):
         self.req.hdf.setValue('title', 'Settings')
         action = self.args.get('action')
-        self.env.log.debug('Session action: %s' % action)
+        self.log.debug('Session action: %s' % action)
         if action == 'save':
             self.save_settings()
         elif action == 'load':

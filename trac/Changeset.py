@@ -71,7 +71,7 @@ class HtmlDiffEditor (svn.delta.Editor):
         ctpos = mime_type and mime_type.find('charset=') or -1
         if ctpos >= 0:
             charset = mime_type[ctpos + 8:]
-            self.env.log.debug("Charset %s selected" % charset)
+            self.log.debug("Charset %s selected" % charset)
         else:
             charset = self.env.get_config('trac', 'default_charset', 'iso-8859-15')
 
@@ -178,7 +178,7 @@ class Changeset (Module.Module):
                          'log_href': self.env.href.log(row['name'])})
         return info
 
-    def render (self):
+    def render(self):
         self.perm.assert_permission (perm.CHANGESET_VIEW)
 
         self.add_link('alternate', '?format=diff', 'Unified Diff',

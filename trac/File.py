@@ -47,14 +47,14 @@ class FileCommon(Module.Module):
         self.perm.assert_permission (perm.FILE_VIEW)
 
     def display(self):
-        self.env.log.debug("Displaying file: %s  mime-type: %s" % (self.filename,
-                                                            self.mime_type))
+        self.log.debug("Displaying file: %s  mime-type: %s" % (self.filename,
+                                                               self.mime_type))
         # We don't have to guess if the charset is specified in the
         # svn:mime-type property
         ctpos = self.mime_type.find('charset=')
         if ctpos >= 0:
             charset = self.mime_type[ctpos + 8:]
-            self.env.log.debug("Charset %s selected" % charset)
+            self.log.debug("Charset %s selected" % charset)
         else:
             charset = self.env.get_config('trac', 'default_charset', 'iso-8859-15')
         data = util.to_utf8(self.read_func(self.DISP_MAX_FILE_SIZE), charset)
