@@ -200,12 +200,12 @@ onfocus="document.getElementById('comment').focus()">Add/Change
 <?cs if $trac.acl.TICKET_ADMIN ?>
   <br />
   <label for="description" class="nt-label">Description:</label>
-  <div style="float: left">
+  <div style="float: left;">
   <textarea id="description" name="description" class="textwidget"
             rows="10" cols="68"><?cs var:ticket.description ?></textarea>
   <?cs call:wiki_toolbar('description') ?>
   </div>
-  <br style="clear: both" />
+  <br style="clear: left" />
 <?cs /if ?>
 </div>
   <div id="nt-left">

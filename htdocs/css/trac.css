@@ -252,6 +252,7 @@ a.missing:hover { color: #000; }
 #wikitoolbar a#link { background-position: 0 -48px }
 #wikitoolbar a#code { background-position: 0 -64px }
 #wikitoolbar a#hr { background-position: 0 -80px }
+br#wikitoolbar-break { clear: left; }
 
 /* Styles for tabular listings such as those used for displaying directory
    contents and report results. */
