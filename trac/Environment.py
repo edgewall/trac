@@ -29,9 +29,11 @@ import shutil
 import ConfigParser
 
 import util
+import urllib
 import db_default
 import Logging
 import Mimeview
+import unicodedata
 
 import sqlite
 
@@ -234,15 +236,24 @@ class Environment:
         else:
             length = attachment.file.len
         if length > max_size:
-            raise util.TracError('Maximum attachment size: %d kB' % max_size,
+            raise util.TracError('Maximum attachment size: %d bytes' % max_size,
                                  'Upload failed')
         dir = os.path.join(self.get_attachments_dir(), type, id)
         if not os.access(dir, os.F_OK):
             os.makedirs(dir)
         filename = attachment.filename.replace('\\', '/').replace(':', '/')
         filename = os.path.basename(filename)
+
+        # We try to normalize the filename to utf-8 NFC if we can.
+        # Files uploaded from OS X might be in NFD.
+        if sys.version_info[0] > 2 or \
+           (sys.version_info[0] == 2 and sys.version_info[1] >= 3):
+            filename = unicodedata.normalize('NFC', unicode(filename, 'utf-8')).encode('utf-8')
+            
+        filename = urllib.quote(filename)
         path, fd = util.create_unique_file(os.path.join(dir, filename))
         filename = os.path.basename(path)
+        filename = urllib.unquote(filename)
         cursor = cnx.cursor()
         cursor.execute('INSERT INTO attachment VALUES(%s,%s,%s,%s,%s,%s,%s,%s)',
                        type, id, filename, length, int(time.time()),

@@ -25,6 +25,7 @@
 import os
 import sys
 import time
+import urllib
 
 import svn
 
@@ -125,6 +126,8 @@ class Attachment(FileCommon):
                 fd = open(self.path, 'rb')
             except IOError:
                 raise util.TracError('Attachment not found')
+            
+            self.path = urllib.unquote(self.path)
 
             stat = os.fstat(fd.fileno())
             self.length = stat[6]
@@ -154,6 +157,7 @@ class Attachment(FileCommon):
                                                   self.args.get('description'),
                                                   self.args.get('author'),
                                                   self.req.remote_addr)
+            filename = urllib.quote(filename)
             # Redirect the user to the newly created attachment
             self.req.redirect(self.env.href.attachment(self.attachment_type,
                                                        self.attachment_id,
@@ -181,7 +185,7 @@ class Attachment(FileCommon):
                                                        self.attachment_id,
                                                        self.filename,
                                                        'text'))
-        self.req.hdf.setValue('file.filename', self.filename)
+        self.req.hdf.setValue('file.filename', urllib.unquote(self.filename))
         FileCommon.display(self)
 
 
