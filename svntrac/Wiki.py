@@ -225,10 +225,11 @@ class Page:
                         0, self.text)
         cnx.commit ()
 
-    def render_edit(self, out):
+    def render_edit(self, out, hdf):
         perm.assert_permission (perm.WIKI_MODIFY)
         out.write ('<h3>source</h3>')
-        out.write ('<form action="%s" method="POST">' % get_cgi_name())
+        out.write ('<form action="%s" method="POST">' %
+                   hdf.getValue('cgi_location', ''))
         out.write ('<input type="hidden" name="page" value="%s">' % self.name)
         out.write ('<input type="hidden" name="mode" value="wiki">')
         out.write ('<textarea name="text" rows="15" cols="80">')
@@ -238,7 +239,7 @@ class Page:
         out.write ('<input type="submit" name="action" value="save changes">')
         out.write ('</form>')
 
-    def render_view(self, out, edit_button=1):
+    def render_view(self, out, hdf, edit_button=1):
         self.render_history(out)
         perm.assert_permission (perm.WIKI_VIEW)
         out.write ('<div class="wikipage">')
@@ -246,18 +247,19 @@ class Page:
         Formatter().format(self.text, out)
         out.write ('</div><br>')
         if edit_button and perm.has_permission (perm.WIKI_MODIFY):
-            out.write ('<form action="%s" method="POST">' % get_cgi_name())
+            out.write ('<form action="%s" method="POST">' %
+                       hdf.getValue('cgi_location', ''))
             out.write ('<input type="hidden" name="mode" value="wiki">')
             out.write ('<input type="hidden" name="page" value="%s">' % self.name)
             out.write ('<input type="submit" name="action" value=" edit page ">')
             out.write ('</form>')
         
-    def render_preview (self, out):
+    def render_preview (self, out, hdf):
         perm.assert_permission (perm.WIKI_MODIFY)
         
-        self.render_edit (out)
+        self.render_edit (out, hdf)
         out.write ('<a name="preview" /><h3>preview</h3>')
-        self.render_view (out, edit_button=0)
+        self.render_view (out, hdf, edit_button=0)
         
     def render_history (self, out):
         cnx = get_connection ()
@@ -309,15 +311,15 @@ class Wiki(Module):
         elif action == ' edit page ':
             out.write ('<h2>edit <a href="%s">%s</a></h2>' %
                        (href.wiki(page.name), page.name))
-            page.render_edit (out)
+            page.render_edit (out, self.cgi.hdf)
             self.cgi.hdf.setValue('title', 'wiki - edit')
         elif action == 'preview':
             out.write ('<h2>edit <a href="%s">%s</a></h2>' %
                        (href.wiki(page.name), page.name))
-            page.render_preview (out)
+            page.render_preview (out, self.cgi.hdf)
             self.cgi.hdf.setValue('title', 'wiki - preview')
         else:
-            page.render_view (out)
+            page.render_view (out, self.cgi.hdf)
             self.cgi.hdf.setValue('title', 'wiki - view')
         self.cgi.hdf.setValue('content', out.getvalue())
 

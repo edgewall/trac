@@ -66,7 +66,7 @@
 
 <?cs elif report.mode == "editor" ?>
 
-  <form action="<?cs var:cgi_name ?>" method="post">
+  <form action="<?cs var:cgi_location ?>" method="POST">
     <input type="hidden" name="mode" value="report">
     <input type="hidden" name="id" value="<?cs var:report.id ?>">
     <input type="hidden" name="action" value="<?cs var:report.action ?>">

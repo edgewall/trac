@@ -184,13 +184,11 @@ INSERT INTO permission (user, action) VALUES('anonymous', 'CHANGESET_VIEW');
 INSERT INTO config (section, name, value)
 VALUES('general', 'htdocs_location', '/svntrac/');
 INSERT INTO config (section, name, value)
-VALUES('general', 'svn_repository', '/var/svn/myrep');
+VALUES('general', 'repository_dir', '/var/svn/myrep');
 INSERT INTO config (section, name, value)
-VALUES('general', 'theme_dir', '/usr/lib/svntrac/templates');
+VALUES('general', 'templates_dir', '/usr/lib/svntrac/templates');
 INSERT INTO config (section, name, value)
-VALUES('general', 'cgi_name', 'svntrac.cgi');
-INSERT INTO config (section, name, value)
-VALUES('general', 'authcgi_name', 'svntrac_auth.cgi');
+VALUES('general', 'cgi_location', '');
 INSERT INTO config (section, name, value)
 VALUES('general', 'href_scheme', 'cgi');
 INSERT INTO config (section, name, value)

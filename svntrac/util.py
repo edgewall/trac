@@ -27,23 +27,6 @@ from svn import util
 from db import get_connection
 from xml.sax import saxutils
 
-cgi_name = 'svntrac.cgi'
-authcgi_name = 'svntrac_auth.cgi'
-
-def set_cgi_name(name):
-    global cgi_name
-    cgi_name = name
-
-def get_cgi_name():
-    return cgi_name
-
-def set_authcgi_name(name):
-    global authcgi_name
-    authcgi_name = name
-
-def get_authcgi_name():
-    return authcgi_name
-
 def time_to_string(date):
     date = time.asctime(time.localtime(date))
     return date[4:-8]

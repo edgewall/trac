@@ -40,9 +40,6 @@ class Module:
         pass
 
     def apply_template (self):
-        theme_dir = self.config['general']['theme_dir']
-        tmpl_filename = os.path.join (theme_dir, self.template_name)
-
         sql_to_hdf("SELECT name FROM enum WHERE type='priority' ORDER BY name",
                    self.cgi.hdf, 'enums.priority')
         sql_to_hdf("SELECT name FROM enum WHERE type='severity' ORDER BY name",
@@ -51,7 +48,8 @@ class Module:
         self.cgi.hdf.setValue('title', '')
         self.cgi.hdf.setValue('htdocs_location',
                               self.config['general']['htdocs_location'])
-        self.cgi.hdf.setValue('cgi_name', get_cgi_name())
+        self.cgi.hdf.setValue('cgi_location',
+                              self.config['general']['cgi_location'])
         self.cgi.hdf.setValue('svntrac.active_module', self._name)
         self.cgi.hdf.setValue('svntrac.authname', auth.get_authname())
         self.cgi.hdf.setValue('svntrac.href.wiki', href.wiki())
@@ -63,6 +61,9 @@ class Module:
         self.cgi.hdf.setValue('svntrac.href.login', href.login())
         self.cgi.hdf.setValue('svntrac.href.logout', href.logout())
         
+        templates_dir = self.config['general']['templates_dir']
+        tmpl_filename = os.path.join (templates_dir, self.template_name)
+
         self.cgi.display(tmpl_filename)
 
         

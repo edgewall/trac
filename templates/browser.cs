@@ -2,7 +2,7 @@
 
 <h3>Revision <?cs var:revision?>: <?cs var:browser.path_links?></h3>
 
-<form action="<?cs var:cgi_name?>" method="get">
+<form action="<?cs var:cgi_location ?>" method="get">
   <input type="hidden" name="mode" value="browser">
   <input type="hidden" name="path" value="<?cs var:browser.path?>">
   Change revision: 

@@ -23,7 +23,7 @@ import os
 import sys
 import cgi
 import warnings
-from util import set_cgi_name, set_authcgi_name, dict_get_with_default
+from util import dict_get_with_default
 from svn import util, repos, core
 import Href
 
@@ -51,8 +51,6 @@ modules = {
 def main():
     db.init()
     config = db.load_config()
-    set_cgi_name(config['general']['cgi_name'])
-    set_authcgi_name(config['general']['authcgi_name'])
     Href.initialize(config)
 
     core.apr_initialize()
@@ -78,7 +76,7 @@ def main():
     # Only open the subversion repository for the modules that really
     # need it. This saves us some precious time.
     if need_svn:
-        repos_dir = config['general']['svn_repository']
+        repos_dir = config['general']['repository_dir']
         rep = repos.svn_repos_open(repos_dir, pool)
         fs_ptr = repos.svn_repos_fs(rep)
         module.repos = rep

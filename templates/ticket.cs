@@ -69,7 +69,7 @@
 </tr>
 </table>
 
-<form action="<?cs var:cgi_name ?>" method="POST">
+<form action="<?cs var:cgi_location ?>" method="POST">
 <input type="hidden" name="mode" value="ticket">
 <input type="hidden" name="id"   value="<?cs var:ticket.id ?>">
 

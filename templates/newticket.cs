@@ -3,7 +3,7 @@
 
 <h3>New ticket:</h3>
 
-<form action="<?cs var:cgi_name ?>" method="POST">
+<form action="<?cs var:cgi_location ?>" method="POST">
 <input type="hidden" name="mode" value="ticket">
 <input type="hidden" name="action" value="create">
 <input type="hidden" name="status" value="new">
