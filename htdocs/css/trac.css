@@ -176,7 +176,7 @@ form.inline input { margin: 1em }
 .menulist a:hover { background: #ccb; color: #000; }
 
 /* Alternate links */
-#altlinks { text-align: center }
+#altlinks { clear: both; text-align: center }
 #altlinks h3 { font-size: 12px; letter-spacing: normal; margin: 0 }
 #altlinks ul { margin: 0; padding: 0 0 1em }
 #altlinks li {

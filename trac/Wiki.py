@@ -730,6 +730,13 @@ class Wiki(Module):
             self.req.hdf.setValue('title', name + ' (diff)')
         else:
             self.perm.assert_permission (perm.WIKI_VIEW)
+            if version:
+                self.add_link('alternate',
+                    '?version=%d&amp;format=txt' % version, 'Plain Text',
+                    'text/plain')
+            else:
+                self.add_link('alternate', '?format=txt', 'Plain Text',
+                    'text/plain')
             if self.args.has_key('text'):
                 del self.args['text']
             self.req.hdf.setValue('wiki.action', 'view')
