@@ -53,3 +53,258 @@ Trac is brought to you by:
         Professional Linux and software development services
               Read more at http://www.edgewall.com/
 -----------------------------------------------------------------
+===== test_component_list_ok =====
+
+Name        Owner   
+--------------------
+component1  somebody
+component2  somebody
+
+===== test_component_add_ok =====
+
+Name           Owner   
+-----------------------
+component1     somebody
+component2     somebody
+new_component  new_user
+
+===== test_component_add_error_already_exists =====
+Component add failed: column name is not unique
+===== test_component_rename_ok =====
+
+Name          Owner   
+----------------------
+changed_name  somebody
+component2    somebody
+
+===== test_component_rename_error_bad_component =====
+Component rename failed: No such component 'bad_component'
+===== test_component_rename_error_bad_new_name =====
+Component rename failed: column name is not unique
+===== test_component_chown_ok =====
+
+Name        Owner        
+-------------------------
+component1  somebody     
+component2  changed_owner
+
+===== test_component_chown_error_bad_component =====
+Component chown failed: No such component 'bad_component'
+===== test_component_remove_ok =====
+
+Name        Owner   
+--------------------
+component2  somebody
+
+===== test_component_remove_error_bad_component =====
+Component remove failed: No such component 'bad_component'
+===== test_priority_list_ok =====
+
+Possible Values
+---------------
+highest        
+high           
+normal         
+low            
+lowest         
+
+===== test_priority_add_ok =====
+
+Possible Values
+---------------
+highest        
+high           
+normal         
+low            
+lowest         
+new_priority   
+
+===== test_priority_add_error_already_exists =====
+Command add failed: columns name, type are not unique
+===== test_priority_change_ok =====
+
+Possible Values
+---------------
+highest        
+high           
+abby_normal    
+low            
+lowest         
+
+===== test_priority_change_error_bad_priority =====
+Command change failed: No such value 'bad_priority'
+===== test_priority_change_error_bad_new_name =====
+Command change failed: columns name, type are not unique
+===== test_priority_remove_ok =====
+
+Possible Values
+---------------
+highest        
+high           
+normal         
+lowest         
+
+===== test_priority_remove_error_bad_priority =====
+Command remove failed: No such value 'bad_priority'
+===== test_severity_list_ok =====
+
+Possible Values
+---------------
+blocker        
+critical       
+major          
+normal         
+minor          
+trivial        
+enhancement    
+
+===== test_severity_add_ok =====
+
+Possible Values
+---------------
+blocker        
+critical       
+major          
+normal         
+minor          
+trivial        
+enhancement    
+new_severity   
+
+===== test_severity_add_error_already_exists =====
+Command add failed: columns name, type are not unique
+===== test_severity_change_ok =====
+
+Possible Values 
+----------------
+blocker         
+end-of-the-world
+major           
+normal          
+minor           
+trivial         
+enhancement     
+
+===== test_severity_change_error_bad_severity =====
+Command change failed: No such value 'bad_severity'
+===== test_severity_change_error_bad_new_name =====
+Command change failed: columns name, type are not unique
+===== test_severity_remove_ok =====
+
+Possible Values
+---------------
+blocker        
+critical       
+major          
+normal         
+minor          
+enhancement    
+
+===== test_severity_remove_error_bad_severity =====
+Command remove failed: No such value 'bad_severity'
+===== test_version_list_ok =====
+
+Name  Time
+----------
+          
+1.0       
+2.0       
+
+===== test_version_add_ok =====
+
+Name  Time                    
+------------------------------
+                              
+1.0                           
+2.0                           
+9.9   Thu Jan  1 00:00:00 2004
+
+===== test_version_add_error_already_exists =====
+Command add failed: column name is not unique
+===== test_version_rename_ok =====
+
+Name  Time
+----------
+          
+2.0       
+9.9       
+
+===== test_version_rename_error_bad_version =====
+Command rename failed: No such version 'bad_version'
+===== test_version_time_ok =====
+
+Name  Time                    
+------------------------------
+                              
+1.0                           
+2.0   Thu Jan  1 00:00:00 2004
+
+===== test_version_time_error_bad_version =====
+Command time failed: No such version 'bad_version'
+===== test_version_remove_ok =====
+
+Name  Time
+----------
+          
+2.0       
+
+===== test_version_remove_error_bad_version =====
+Command remove failed: No such version 'bad_version'
+===== test_milestone_list_ok =====
+
+Name        Time
+----------------
+                
+milestone1      
+milestone2      
+milestone3      
+milestone4      
+
+===== test_milestone_add_ok =====
+
+Name           Time                    
+---------------------------------------
+                                       
+milestone1                             
+milestone2                             
+milestone3                             
+milestone4                             
+new_milestone  Thu Jan  1 00:00:00 2004
+
+===== test_milestone_add_error_already_exists =====
+Command add failed: column name is not unique
+===== test_milestone_rename_ok =====
+
+Name               Time
+-----------------------
+                       
+changed_milestone      
+milestone2             
+milestone3             
+milestone4             
+
+===== test_milestone_rename_error_bad_milestone =====
+Command rename failed: No such milestone 'bad_milestone'
+===== test_milestone_time_ok =====
+
+Name        Time                    
+------------------------------------
+                                    
+milestone1                          
+milestone3                          
+milestone4                          
+milestone2  Thu Jan  1 00:00:00 2004
+
+===== test_milestone_time_error_bad_milestone =====
+Command time failed: No such milestone 'bad_milestone'
+===== test_milestone_remove_ok =====
+
+Name        Time
+----------------
+                
+milestone1      
+milestone2      
+milestone4      
+
+===== test_milestone_remove_error_bad_milestone =====
+Command remove failed: No such milestone 'bad_milestone'

@@ -17,9 +17,16 @@ class WikiTestCase(unittest.TestCase):
             def __init__(self):
                 self.href = Href.Href('/')
                 self._wiki_pages = {}
+        class Cursor:
+            def execute(self, *kwargs): pass
+            def fetchone(self): return []
+        class Connection:
+            def cursor(self):
+                return Cursor()
+
                 
         out = StringIO.StringIO()
-        Formatter(None, Environment()).format(self.input, out)
+        Formatter(None, Environment(), Connection()).format(self.input, out)
         if out.getvalue() != self.correct:
             print "'%s' != '%s'" % (out.getvalue(), self.correct)
             assert self.correct == out.getvalue()

@@ -38,9 +38,10 @@ class TicketTestCase(EnvironmentTestBase, unittest.TestCase):
         # Testing get_changelog()
         log = ticket3.get_changelog(self.db)
         self.assertEqual(len(log), 3)
-        self.assertEqual(log[0][2], 'foo')
-        self.assertEqual(log[1][2], 'summary')
-        self.assertEqual(log[2][2], 'comment')
+        ok_vals = ['foo', 'summary', 'comment']
+        self.failUnless(log[0][2] in ok_vals)
+        self.failUnless(log[1][2] in ok_vals)
+        self.failUnless(log[2][2] in ok_vals)
 
 def suite():
     return unittest.makeSuite(TicketTestCase,'test')

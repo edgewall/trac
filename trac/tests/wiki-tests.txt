@@ -39,7 +39,7 @@ Paragraph
 #1, [1], {1}
 ------------------------------
 <p>
-<a href="/ticket/1">#1</a>, [<a href="/changeset/1">1</a>], {<a href="/report/1">1</a>}
+<a class="missing" href="/ticket/1">#1</a>, [<a class="missing" href="/changeset/1">1</a>], {<a href="/report/1">1</a>}
 </p>
 ==============================
 ticket:1, changeset:1, report:1, source:foo/bar
