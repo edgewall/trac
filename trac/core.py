@@ -30,6 +30,7 @@ import Href
 import perm
 import auth
 import Environment
+import Session
 
 from util import *
 from __init__ import __version__
@@ -37,7 +38,7 @@ from __init__ import __version__
 warnings.filterwarnings('ignore', 'DB-API extension cursor.next() used')
 
 modules = {
-#    name             module class need_svn    
+#    name           (module_name, class_name, requires_svn)
     'log'         : ('Log', 'Log', 1),
     'file'        : ('File', 'File', 1),
     'wiki'        : ('Wiki', 'Wiki', 0),
@@ -51,6 +52,7 @@ modules = {
     'newticket'   : ('Ticket', 'Newticket', 0),
     'attachment'  : ('File', 'Attachment', 0),
     'roadmap'     : ('Roadmap', 'Roadmap', 0),
+    'settings'    : ('Settings', 'Settings', 0),
     'milestone'   : ('Milestone', 'Milestone', 0)
     }
 
@@ -76,8 +78,8 @@ def parse_path_info(args, path_info):
     def set_if_missing(fs, name, value):
         if not fs.has_key(name):
             fs.list.append(cgi.MiniFieldStorage(name, value))
-            
-    if not path_info:
+
+    if not path_info or path_info in ['/login', '/logout']:
         return args
     match = re.search('^/(about_trac|wiki)(?:/(.*))?', path_info)
     if match:
@@ -85,7 +87,7 @@ def parse_path_info(args, path_info):
         if match.group(2):
             set_if_missing(args, 'page', match.group(2))
         return args
-    match = re.search('^/(newticket|timeline|search|roadmap)/?', path_info)
+    match = re.search('^/(newticket|timeline|search|roadmap|settings)/?', path_info)
     if match:
         set_if_missing(args, 'mode', match.group(1))
         return args
@@ -140,8 +142,7 @@ def add_args_to_hdf(args, hdf):
 def module_factory(args, env, db, req):
     mode = args.get('mode', 'wiki')
     module_name, constructor_name, need_svn = modules[mode]
-    module = __import__(module_name,
-                        globals(),  locals())
+    module = __import__(module_name, globals(),  locals())
     constructor = getattr(module, constructor_name)
     module = constructor()
     module.pool = None
@@ -153,6 +154,7 @@ def module_factory(args, env, db, req):
     module.db = db
     module.perm = perm.PermissionCache(module.db, req.authname)
     module.perm.add_to_hdf(req.hdf)
+
     # Only open the subversion repository for the modules that really
     # need it. This saves us some precious time.
     if need_svn:
@@ -171,7 +173,7 @@ def open_environment():
         raise EnvironmentError, \
               'Missing environment variable "TRAC_ENV". Trac ' \
               'requires this variable to point to a valid Trac Environment.'
-        
+
     env = Environment.Environment(env_path)
     version = env.get_version()
     if version < Environment.db_version:
@@ -189,7 +191,7 @@ def populate_hdf(hdf, env, db, req):
                "ORDER BY value", hdf, 'enums.priority')
     sql_to_hdf(db, "SELECT name FROM enum WHERE type='severity' "
                "ORDER BY value", hdf, 'enums.severity')
-        
+
     htdocs_location = env.get_config('trac', 'htdocs_location')
     if htdocs_location[-1] != '/':
         htdocs_location += '/'
@@ -199,7 +201,7 @@ def populate_hdf(hdf, env, db, req):
     hdf.setValue('project.footer', env.get_config('project', 'footer',
                   ' Visit the Trac open source project at<br />'
                   '<a href="http://trac.edgewall.com/">http://trac.edgewall.com/</a>'))
-    
+
     hdf.setValue('trac.href.wiki', env.href.wiki())
     hdf.setValue('trac.href.browser', env.href.browser('/'))
     hdf.setValue('trac.href.timeline', env.href.timeline())
@@ -211,12 +213,13 @@ def populate_hdf(hdf, env, db, req):
     hdf.setValue('trac.href.about_config', env.href.about('config'))
     hdf.setValue('trac.href.login', env.href.login())
     hdf.setValue('trac.href.logout', env.href.logout())
+    hdf.setValue('trac.href.settings', env.href.settings())
     hdf.setValue('trac.href.homepage', 'http://trac.edgewall.com/')
     hdf.setValue('trac.version', __version__)
     hdf.setValue('trac.time', time.strftime('%c', time.localtime()))
     hdf.setValue('trac.time.gmt', time.strftime('%a, %d %b %Y %H:%M:%S GMT',
                                                 time.gmtime()))
-    
+
     hdf.setValue('header_logo.link', env.get_config('header_logo', 'link'))
     hdf.setValue('header_logo.alt', env.get_config('header_logo', 'alt'))
     src = env.get_config('header_logo', 'src')
@@ -246,6 +249,8 @@ class Request:
     """
 
     command = None
+    hdf = None
+    session = None
 
     def init_request(self):
         import neo_cgi
@@ -302,7 +307,7 @@ class Request:
 
     def read(self, len):
         assert 0
-    
+
     def write(self, data):
         assert 0
 
@@ -330,20 +335,20 @@ class CGIRequest(Request):
             self.incookie.load(os.getenv('HTTP_COOKIE'))
         if os.getenv('HTTP_HOST'):
             self.hdf.setValue('HTTP.Host', os.getenv('HTTP_HOST'))
-    
+
     def read(self, len):
         return sys.stdin.read(len)
-    
+
     def write(self, data):
         return sys.stdout.write(data)
 
     def send_response(self, code):
         self.write('Status: %d\r\n' % code)
-    
+
     def send_header(self, name, value):
         self.write('%s: %s\r\n' % (name, value))
         pass
-    
+
     def end_headers(self):
         self.write('\r\n')
 
@@ -356,7 +361,7 @@ def open_svn_repos(repos_dir):
     # Remove any trailing slash or else subversion might abort
     if not os.path.split(repos_dir)[1]:
         repos_dir = os.path.split(repos_dir)[0]
-            
+
     rep = repos.svn_repos_open(repos_dir, pool)
     fs_ptr = repos.svn_repos_fs(rep)
     return pool, rep, fs_ptr
@@ -374,8 +379,8 @@ def send_pretty_error(e, env, req=None):
         req.authname = ''
         req.init_request()
     try:
-	if not env:
-	    env = open_environment()
+        if not env:
+            env = open_environment()
         env.href = Href.Href(req.cgi_location)
         cnx = env.get_db_cnx()
         populate_hdf(req.hdf, env, cnx, req)
@@ -407,8 +412,8 @@ def send_pretty_error(e, env, req=None):
         req.write('\n')
         req.write(tb.getvalue())
     if env and env.log != None:
-	env.log.error(str(e))
-	env.log.error(tb.getvalue())
+        env.log.error(str(e))
+        env.log.error(tb.getvalue())
 
 def real_cgi_start():
     import Wiki
@@ -417,10 +422,10 @@ def real_cgi_start():
 
     env = open_environment()
     database = env.get_db_cnx()
-    
+
     # Let the wiki module build a dictionary of all page names
     Wiki.populate_page_dict(database, env)
-    
+
     req = CGIRequest()
     req.init_request()
 
@@ -441,13 +446,18 @@ def real_cgi_start():
             req.redirect (http_referer or env.href.wiki())
         except RedirectException:
             pass
-            
+
     # Parse arguments
     args = parse_args(req.command,
                       path_info, os.getenv('QUERY_STRING'),
                       sys.stdin, os.environ)
     add_args_to_hdf(args, req.hdf)
     req.authname = authenticator.authname
+
+    if not path_info == '/login':
+        newsession = args.has_key('newsession') and args['newsession']
+        req.session = Session.Session(env, req, newsession)
+
     try:
         pool = None
         # Load the selected module

@@ -144,7 +144,7 @@ class Search(Module):
         self.log.debug("SQL Query: %s" % q_str)
         cursor.execute(q_str)
 
-        # Make the data more HDF-friendly2
+        # Make the data more HDF-friendly
         info = []
         while 1:
             row = cursor.fetchone()

@@ -48,7 +48,7 @@ def populate_page_dict(db, env):
 class CommonFormatter:
     """This class contains the patterns common to both Formatter and
     OneLinerFormatter"""
-    
+
     _rules = [r"""(?P<bold>''')""",
               r"""(?P<italic>'')""",
               r"""(?P<underline>__)""",
@@ -73,7 +73,7 @@ class CommonFormatter:
         for itype, match in fullmatch.groupdict().items():
             if match and not itype in Formatter._helper_patterns:
                 return getattr(self, '_' + itype + '_formatter')(match, fullmatch)
-    
+
     def tag_open_p(self, tag):
         """Do we currently have any open tag with @tag as end-tag"""
         return tag in self._open_tags
@@ -87,7 +87,7 @@ class CommonFormatter:
 
     def open_tag(self, tag):
         self._open_tags.append(tag)
-        
+
     def simple_tag_handler(self, open_tag, close_tag):
         """Generic handler for simple binary style tags"""
         if self.tag_open_p(close_tag):
@@ -95,10 +95,10 @@ class CommonFormatter:
         else:
             self.open_tag(close_tag)
             return open_tag
-        
+
     def _bold_formatter(self, match, fullmatch):
         return self.simple_tag_handler('<strong>', '</strong>')
-    
+
     def _italic_formatter(self, match, fullmatch):
         return self.simple_tag_handler('<i>', '</i>')
 
@@ -114,7 +114,7 @@ class CommonFormatter:
         # This function is used to avoid these being matched by
         # the tickethref regexp
         return match
-    
+
     def _tickethref_formatter(self, match, fullmatch):
         number = int(match[1:])
         return '<a href="%s">#%d</a>' % (self.env.href.ticket(number), number)
@@ -159,7 +159,7 @@ class CommonFormatter:
                 return self.env.href.browser(args), '%s:%s' % (module, args), 0
         else:
             return None, None, 0
-        
+
     def _modulehref_formatter(self, match, fullmatch):
         link, text, missing = self._expand_module_link(match)
         if link and missing:
@@ -184,7 +184,7 @@ class CommonFormatter:
     def _fancylink_formatter(self, match, fullmatch):
         link = fullmatch.group('fancyurl')
         name = fullmatch.group('linkname')
-        
+
         module_link, t, missing = self._expand_module_link(link)
         if module_link and missing:
             return '<a class="missing" href="%s">%s?</a>' % (module_link, name)
@@ -200,10 +200,10 @@ class OneLinerFormatter(CommonFormatter):
     subset of the wiki formatting functions. This version is useful
     for rendering short wiki-formatted messages on a single line
     """
-    
+
     _rules = CommonFormatter._rules + \
              [r"""(?P<url>([a-z]+://[^ ]+[^\., ]))"""]
-    
+
     _compiled_rules = re.compile('(?:' + string.join(_rules, '|') + ')')
 
     def format(self, text, out):
@@ -211,7 +211,7 @@ class OneLinerFormatter(CommonFormatter):
             return
         self.out = out
         self._open_tags = []
-        
+
         rules = self._compiled_rules
 
         result = re.sub(rules, self.replace, escape(text.strip()))
@@ -234,7 +234,7 @@ class Formatter(CommonFormatter):
               r"""(?P<url>([a-z]+://[^ ]+[^\., \)\]\}]))""",
               r"""(?P<last_table_cell>\|\|$)""",
               r"""(?P<table_cell>\|\|)"""]
-    
+
     _compiled_rules = re.compile('(?:' + string.join(_rules, '|') + ')')
 
     # RE patterns used by other patterna
@@ -295,7 +295,7 @@ class Formatter(CommonFormatter):
         macros = __import__('wikimacros.' + name, globals(),  locals(), [])
         module = getattr(macros, name)
         return module.execute
-        
+
     def _macro_formatter(self, match, fullmatch):
         name = fullmatch.group('macroname')
         if name in ['br', 'BR']:
@@ -333,7 +333,7 @@ class Formatter(CommonFormatter):
 
     def _last_table_cell_formatter(self, match, fullmatch):
         return ''
-    
+
     def _table_cell_formatter(self, match, fullmatch):
         self.open_table()
         self.open_table_row()
@@ -342,11 +342,11 @@ class Formatter(CommonFormatter):
         else:
             self.in_table_cell = 1
             return '<td>'
-    
+
     def close_indentation(self):
         self.out.write(('</blockquote>' + os.linesep) * self.indent_level)
         self.indent_level = 0
-        
+
     def open_indentation(self, depth):
         diff = depth - self.indent_level
         if diff != 0:
@@ -363,7 +363,7 @@ class Formatter(CommonFormatter):
         type_ = ['ol', 'ul'][match[ldepth] == '*']
         self._set_list_depth(depth, type_)
         return ''
-    
+
     def _set_list_depth(self, depth, type_):
         current_depth = len(self._list_stack)
         diff = depth - current_depth
@@ -395,12 +395,12 @@ class Formatter(CommonFormatter):
     def close_list(self):
         if self._list_stack != []:
             self._set_list_depth(0, None)
-    
+
     def open_paragraph(self):
         if not self.paragraph_open:
             self.out.write('<p>' + os.linesep)
             self.paragraph_open = 1
-            
+
     def close_paragraph(self):
         if self.paragraph_open:
             self.out.write('</p>' + os.linesep)
@@ -426,7 +426,7 @@ class Formatter(CommonFormatter):
             if self.in_table_cell:
                 self.in_table_cell = 0
                 self.out.write('</td>')
-                
+
             self.out.write('</tr>')
 
     def close_table(self):
@@ -476,7 +476,7 @@ class Formatter(CommonFormatter):
         self.out = out
         self._open_tags = []
         self._list_stack = []
-        
+
         self.in_code_block = 0
         self.in_table = 0
         self.in_table_row = 0
@@ -485,7 +485,7 @@ class Formatter(CommonFormatter):
         self.paragraph_open = 0
 
         rules = self._compiled_rules
-        
+
         for line in text.splitlines():
             # Handle code block
             if self.in_code_block or line.strip() == '{{{':
@@ -504,7 +504,7 @@ class Formatter(CommonFormatter):
                 self.close_indentation()
                 self.close_list()
                 continue
-            
+
             line = escape(line)
             self.in_list_item = 0
             # Throw a bunch of regexps on the problem
@@ -522,7 +522,7 @@ class Formatter(CommonFormatter):
                 self.open_paragraph()
             out.write(result + os.linesep)
             self.close_table_row()
-            
+
         self.close_table()
         self.close_paragraph()
         self.close_indentation()

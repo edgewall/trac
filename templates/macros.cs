@@ -29,3 +29,15 @@
   <td class="<?cs var:block.type ?> right"><?cs var:block.text.new ?></td>
  </tr><?cs /each ?>
 <?cs /def ?>
+
+<?cs def:session_name_email() ?>
+<?cs var:trac.session.var.name ?><?cs 
+  if:trac.session.var.email ?><?cs 
+    if:trac.session.var.name ?> &lt;<?cs var:trac.session.var.email ?>&gt;<?cs 
+    else ?><?cs var:trac.session.var.email ?><?cs 
+    /if ?><?cs 
+  /if ?><?cs 
+  if:!trac.session.var.name && !trac.session.var.email ?><?cs
+     var:trac.authname ?><?cs 
+  /if ?>
+<?cs /def ?>

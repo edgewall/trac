@@ -1,6 +1,7 @@
 <?cs include "header.cs" ?>
 <?cs include "macros.cs" ?>
 <div id="page-content">
+
 <h2 class="hide">Wiki Navigation</h2>
 <ul class="subheader-links">
   <li><a href="<?cs var:$trac.href.wiki ?>">Start Page</a></li>

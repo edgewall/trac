@@ -80,6 +80,9 @@ class Href:
             href = href + '?action=' + action
         return href
 
+    def settings(self):
+        return href_join(self.base, 'settings')
+
     def search(self, query=None):
         uri = 'search'
         if query:

@@ -52,9 +52,10 @@ input[type=text]:focus, textarea:focus { border: 1px solid #886 }
 option { border-bottom: 1px dotted #d7d7d7 }
 fieldset {
  border: 1px solid #d7d7d7;
- padding: 0;
- padding-top: .5em;
- padding-bottom: .75em;
+/*  padding: 0; */
+/*  padding-top: .5em; */
+/*  padding-bottom: .75em; */
+ padding: .5em;
  margin: 0;
  width: 99%;
 }
@@ -262,9 +263,9 @@ table.wiki td { border: 1px solid #ccc;  padding: .1em .25em; }
 /* Styles for the error page */
 #main.error .message {
  background: #fdc;
- border: 1px solid #b00;
- color: #b00;
- padding: .25em;
+ border: 2px solid #d00;
+ color: #500;
+ padding: .5em;
  margin: 1em 0;
 }
 

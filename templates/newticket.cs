@@ -18,7 +18,7 @@ addEvent(window, 'load', function() { document.getElementById('summary').focus()
   <div class="tkt-prop">
    <label for="reporter">Your email or username:</label><br />
    <input type="text" id="reporter" name="reporter" size="40"
-           class="textwidget" value="<?cs var:trac.authname ?>" /><br />
+           class="textwidget" value="<?cs call:session_name_email() ?>" /><br />
   </div>
   <div class="tkt-prop">
    <label for="summary">Short Summary:</label>&nbsp;<br />
