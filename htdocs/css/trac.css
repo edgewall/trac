@@ -136,7 +136,7 @@ legend {
 #navbar .active:link, #navbar .active:visited {
   background: url(../topbar_active.png) top left repeat-x #d7d7d7;
   border-top: none;
-  border-right: none;
+  border-right: none !important;
   font-weight: bold;
 }
 #navbar :link:hover, #navbar :visited:hover {
