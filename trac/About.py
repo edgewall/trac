@@ -34,10 +34,10 @@ class About (Module):
 <div id="page-content">
 <h2 class="hide">About Navigation</h2>
 <ul class="subheader-links">
- <li<?cs if about.page == "config" ?><?cs else ?> class="last"<?cs
-   /if ?>><a href="<?cs var:trac.href.about ?>">About Trac</a></li>
+ <li<?cs if:!trac.acl.CONFIG_VIEW ?> class="last"<?cs /if ?>><a href="<?cs
+  var:trac.href.about ?>">About Trac</a></li>
  <?cs if:trac.acl.CONFIG_VIEW ?><li class="last"><a href="<?cs
-   var:trac.href.about_config ?>">View Config</a></li>
+  var:trac.href.about_config ?>">View Config</a></li>
  <?cs /if ?>
 </ul>
  <div id="main">

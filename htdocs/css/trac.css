@@ -32,7 +32,8 @@ h1 :link, h1 :visited ,h2 :link, h2 :visited, h3 :link, h3 :visited,
 h4 :link, h4 :visited, h5 :link, h5 :visited, h6 :link, h6 :visited {
   color: inherit;
 }
-.noline:link, .noline:visited { border-bottom: none; }
+.noline:link, .noline:visited { border: none }
+.noline:link:hover, .noline:visited:hover { background: transparent }
 
 /* Forms */
 input, textarea, select { margin: 2px }
@@ -185,6 +186,7 @@ form.inline input { margin: 1em }
 #footer :link, #footer :visited { color: #bbb; }
 #footer hr { display: none }
 #footer #tracpowered { border: 0; float: left }
+#footer #tracpowered:hover { background: transparent }
 #footer p { margin: 0 }
 #footer p.left {
   float: left;
