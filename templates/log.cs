@@ -17,7 +17,7 @@
    <div>
     <label for="rev">View revision:</label>
     <input type="text" id="rev" name="rev" value="<?cs
-      var:browser.revision?>" size="4" />
+      var:log.items.0.rev ?>" size="4" />
    </div>
   </form>
  </div>

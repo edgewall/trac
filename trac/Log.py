@@ -120,12 +120,12 @@ class Log (Module):
                 rev = int(self.args.get('rev'))
                 rev_specified = 1
             except ValueError:
-                rev = fs.youngest_rev(self.fs_ptr, self.pool)
+                rev = svn.fs.youngest_rev(self.fs_ptr, self.pool)
                 rev_specified = 0
         else:
             rev = svn.fs.youngest_rev(self.fs_ptr, self.pool)
             rev_specified = 0
-            
+
         try:
             root = svn.fs.revision_root(self.fs_ptr, rev, self.pool)
         except svn.core.SubversionException:

@@ -161,9 +161,6 @@ class Browser(Module.Module):
         if not rev:
             rev_specified = 0
             rev = svn.fs.youngest_rev(self.fs_ptr, self.pool)
-        elif rev.lower() in ['head', 'latest', 'trunk']:
-            rev = svn.fs.youngest_rev(self.fs_ptr, self.pool)
-            rev_specified = 1
         else:
             try:
                 rev = int(rev)
