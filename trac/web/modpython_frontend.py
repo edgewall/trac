@@ -19,7 +19,7 @@
 #
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
-from trac import core, Environment, Href
+from trac.core import open_environment
 from trac.util import TracError, href_join, rstrip
 from trac.web.main import Request, dispatch_request, send_pretty_error
 
@@ -35,7 +35,7 @@ class ModPythonRequest(Request):
 
     idx_location = None
 
-    def __init__(self, req):
+    def __init__(self, req, options):
         Request.__init__(self)
         self.req = req
 
@@ -45,13 +45,12 @@ class ModPythonRequest(Request):
         self.remote_addr = self.req.connection.remote_ip
         self.remote_user = self.req.user
         self.scheme = 'http'
-        if self.req.subprocess_env.get('HTTPS') in ('on', '1') or self.server_port == 443:
+        if self.req.subprocess_env.get('HTTPS') in ('on', '1') \
+                or self.server_port == 443:
             self.scheme = 'https'
         if self.req.headers_in.has_key('Cookie'):
             self.incookie.load(self.req.headers_in['Cookie'])
         self.args = FieldStorageWrapper(self.req, keep_blank_values=1)
-
-        options = self.req.get_options()
 
         # The root uri sometimes has to be explicitly specified because apache
         # sometimes get req.path_info wrong if many <alias> and <location> directives
@@ -122,32 +121,14 @@ def send_project_index(req, mpr, dir):
                   % (href_join(mpr.idx_location, project), project))
     req.write('</ul></body><html>')
 
-def open_environment(env_path, mpr):
-    env = Environment.Environment(env_path)
-    version = env.get_version()
-    if version < Environment.db_version:
-        raise TracError('The Trac environment needs to be upgraded. '
-                        'Run "trac-admin %s upgrade"' % env_path)
-    elif version > Environment.db_version:
-        raise TracError('Unknown Trac Environment version (%d).' % version)
-
-    return env
-
 env_cache = {}
 env_cache_lock = threading.Lock()
 
-def get_environment(req, mpr):
+def get_environment(req, mpr, options):
     global env_cache, env_cache_lock
-    options = req.get_options()
-    
-    if not options.has_key('TracEnv') and not options.has_key('TracEnvParentDir'):
-        raise EnvironmentError, \
-              'Missing PythonOption "TracEnv" or "TracEnvParentDir". Trac '\
-              'requires one of these options to locate the Trac environment(s).'
-    
+
     if options.has_key('TracEnv'):
         env_path = options['TracEnv']
-        
     elif options.has_key('TracEnvParentDir'):
         env_parent_dir = options['TracEnvParentDir']
         env_name = mpr.cgi_location.split('/')[-1]
@@ -155,22 +136,30 @@ def get_environment(req, mpr):
         if len(env_name) == 0 or not os.path.exists(env_path):
             send_project_index(req, mpr, env_parent_dir)
             return None
-        
+    else:
+        raise TracError, \
+              'Missing PythonOption "TracEnv" or "TracEnvParentDir". Trac ' \
+              'requires one of these options to locate the Trac environment(s).'
+
+    env = None
     try:
-        env = None
         env_cache_lock.acquire()
         if not env_path in env_cache:
-            env_cache[env_path] = open_environment(env_path, mpr)
+            env_cache[env_path] = open_environment(env_path)
         env = env_cache[env_path]
     finally:
         env_cache_lock.release()
     return env
 
 def handler(req):
-    locale.setlocale(locale.LC_ALL, '')
+    options = req.get_options()
+    if options.has_key('TracLocale'):
+        locale.setlocale(locale.LC_ALL, options['TracLocale'])
+    else:
+        locale.setlocale(locale.LC_ALL, '')
 
-    mpr = ModPythonRequest(req)
-    env = get_environment(req, mpr)
+    mpr = ModPythonRequest(req, options)
+    env = get_environment(req, mpr, options)
     if not env:
         return apache.OK
 

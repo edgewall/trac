@@ -79,8 +79,9 @@ def module_factory(env, db, req):
 
     return module
 
-def open_environment():
-    env_path = os.getenv('TRAC_ENV')
+def open_environment(env_path=None):
+    if not env_path:
+        env_path = os.getenv('TRAC_ENV')
     if not env_path:
         raise EnvironmentError, \
               'Missing environment variable "TRAC_ENV". Trac ' \
