@@ -6,14 +6,17 @@ Currently available documentation:
  * TracGuide (This page)  -- Documentation starting point.
    * TracInstall -- How to install and run Trac.
    * TracAdmin -- Administrating a Trac project.
+   * TracIni -- Trac configuration file reference. 
+   * TracPermissions -- Access control and permissions.
    * TracWiki -- How to use the built-in Wiki.
    * TracBrowser -- Browsing source code with Trac.
    * TracChangeset -- Viewing changes to source code.
    * TracTickets -- Using the issue tracker.
    * TracReports -- Writing and using reports.
    * TracTimeline -- The timeline provides a historic perspective on a project.
+   * TracLogging -- The Trac logging facility.
    * TracRss -- RSS content syndication in Trac.
-
+   * TracNotification -- Email notification.
 
  * [http://projects.edgewall.com/trac/wiki/TracFaq Trac FAQ] - A collection of Frequently Asked Questions (on the project website)
 

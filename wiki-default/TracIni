@@ -1,0 +1,49 @@
+= trac.ini Reference =
+Trac 0.7 introduces an editable configuration file, ''trac.ini'', located in {{{<projectenv>/conf/trac.ini}}}.
+This is a brief reference of available configuration options.
+
+== [project] ==
+|| name  || Project name ||
+|| descr || Short project description ||
+|| url   || URL to the main project website ||
+
+== [trac] ==
+|| repository_dir  || Path to local Subversion repository ||
+|| htdocs_location || Base URL for static Trac graphics and CSS files ||
+|| database        || Database to use for this project ||
+|| templates_dir   || Path of Clearsilver templates ||
+
+== [logging] ==
+|| log_type  || Logging facility to use. (none, file, stderr, syslog, winlog) ||
+|| log_file  || If ''log_type'' is ''file'', this should be a path to the log-file ||
+|| log_level || Level of verbosity in log (CRITICAL, ERROR, WARN, INFO, DEBUG) ||
+
+See also: TracLogging
+
+== [ticket] ==
+|| default_version   || Default version for newly created tickets ||
+|| default_severity  || Default severity for newly created tickets ||
+|| default_priority  || Default priority for newly created tickets ||
+|| default_milestone || Default milestone for newly created tickets ||
+|| default_component || Default component for newly created tickets ||
+
+== [attachment] ==
+|| max_size || Maximum allowed file size for ticket and wiki attachments ||
+
+== [notification] ==
+|| smtp_enabled   || Enable SMTP (email) notification (true, false) ||
+|| smtp_server    || SMTP server to use for email notifications ||
+|| smtp_replyto   || Reply-To address to use in notification emails ||
+|| smtp_always_cc || Email address(es) to always send notifications to ||
+
+See also: TracNotification
+
+== [header_logo] ==
+|| src    || URL to image to use as header logo || 
+|| link   || Destination URL to link to from header logo ||
+|| alt    || ''alt'' text for header logo ||
+|| width  || Header logo width in pixels ||
+|| height || Header logo height in pixels ||
+
+----
+See also: TracGuide, TracAdmin
