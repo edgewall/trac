@@ -40,6 +40,7 @@
             <?cs var:item.name ?>
           <span class="chg-file-comment">(deleted)</span>
           <?cs /if ?>
+          <div class="tiny"><br /></div>
         </li>
       <?cs /each ?>
     </ul>
@@ -58,10 +59,14 @@
 <div id="chg-diff">
   <div id="chg-legend">
     <h3>Legend</h3>
-    <span class="diff-legend-add"> </span> Added <br />
-    <span class="diff-legend-rem"> </span> Removed <br />
-    <span class="diff-legend-mod"> </span> Modified <br />
-    <span class="diff-legend-unmod"> </span> Unmodified <br />
+    <span class="diff-legend-add"> </span>Added 
+    <div class="tiny"><br /></div>
+    <span class="diff-legend-rem"> </span>Removed
+    <div class="tiny"><br /></div>
+    <span class="diff-legend-mod"> </span>Modified
+    <div class="tiny"><br /></div>
+    <span class="diff-legend-unmod"> </span>Unmodified
+    <div class="tiny"><br /></div>
   </div>
 
   <?cs var:changeset.diff_output ?>
