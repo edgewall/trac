@@ -150,6 +150,9 @@ class Attachment(FileCommon):
                self.args.has_key('attachment') and \
                hasattr(self.args['attachment'], 'file'):
 
+            if self.args.has_key('cancel'):
+                self.req.redirect(self.get_attachment_parent_link()[1])
+
             # Create a new attachment
             if not self.attachment_type in ['ticket', 'wiki']:
                 raise util.TracError('Unknown attachment type')

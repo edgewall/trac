@@ -55,6 +55,7 @@ input[type=text], input.textwidget, textarea {
 }
 input[type=text], input.textwidget { padding: .25em .5em }
 input[type=text]:focus, textarea:focus { border: 1px solid #886 }
+input[type=file] { margin: 0; padding: 0 }
 option { border-bottom: 1px dotted #d7d7d7 }
 fieldset { border: 1px solid #d7d7d7; padding: .5em; margin: 0 }
 fieldset.iefix { border: none; padding: 0; margin: 0 }
@@ -62,7 +63,6 @@ fieldset.iefix { border: none; padding: 0; margin: 0 }
 fieldset.iefix p { margin: 0 }
 legend { color: #999; padding: 0 .25em; font-size: 90%; font-weight: bold }
 label.disabled { color: #d7d7d7 }
-.att-label { float:left; width: 7em; text-align: right; margin-right: .5em; }
 .buttons { margin: .5em .5em .5em 0 }
 .buttons form, .buttons form div { display: inline }
 .buttons input { margin: 1em .5em .1em 0 }
@@ -268,6 +268,10 @@ a.missing:hover { color: #000; }
 .wikitoolbar a#link { background-position: 0 -48px }
 .wikitoolbar a#code { background-position: 0 -64px }
 .wikitoolbar a#hr { background-position: 0 -80px }
+
+/* Styles for the form for adding attachments. */
+#attachment .field { margin-top: 1.3em }
+#attachment label { padding-left: .2em }
 
 /* Styles for tabular listings such as those used for displaying directory
    contents and report results. */
