@@ -199,42 +199,54 @@ def get_custom_fields(env):
     cfg = env.get_config_items('ticket-custom')
     if not cfg:
         return []
-    return [k for k,v in cfg if '.' not in k]
+    names = []
+    items = {}
+    for k, v in cfg:
+        items[k] = v
+        if '.' not in k:
+            names.append(k)
+    fields = []
+    for name in names:
+        field = {
+            'name': name,
+            'type': items[name],
+            'label': items.get(name + '.label', ''),
+            'value': items.get(name + '.value', '')
+        }
+        if field['type'] == 'select' or field['type'] == 'radio':
+            field['options'] = items.get(name + '.options', '').split('|')
+        elif field['type'] == 'textarea':
+            field['width'] = items.get(name + '.cols', '')
+            field['height'] = items.get(name + '.rows', '')
+        fields.append(field)
+
+    return fields
 
 
 def insert_custom_fields(env, hdf, vals = {}):
-    vnames = get_custom_fields(env)
-    if not vnames:
-        return None,None
-    items = {}
-    cfg = env.get_config_items('ticket-custom')
-    for k, v in cfg:
-        items[k] = v
+    fields = get_custom_fields(env)
     i = 0
-    for name in vnames:
-        vtype = items.get(name)
-        vval = vals.get('custom_' + name, items.get(name + '.value', ''))
+    for f in fields:
+        name = f['name']
+        val = vals.get('custom_' + name, f['value'])
         pfx = 'ticket.custom.%i' % i
-        hdf.setValue('%s.name' % pfx, name)
-        hdf.setValue('%s.type' % pfx, vtype)
-        hdf.setValue('%s.label' % pfx, items.get(name + '.label', ''))
-        hdf.setValue('%s.value' % pfx, vval)
-        if vtype == 'select' or vtype == 'radio':
-            opts = items.get(name + '.options', '').split('|')
+        hdf.setValue('%s.name' % pfx, f['name'])
+        hdf.setValue('%s.type' % pfx, f['type'])
+        hdf.setValue('%s.label' % pfx, f['label'])
+        hdf.setValue('%s.value' % pfx, val)
+        if f['type'] == 'select' or f['type'] == 'radio':
             j = 0
-            for o in opts:
-                hdf.setValue('%s.option.%d' % (pfx, j), o)
-                if vval and (o == vval or str(j) == vval):
-                    hdf.setValue('%s.option.%d.selected' % (pfx, j), '1')
+            for option in f['options']:
+                hdf.setValue('%s.option.%d' % (pfx, j), option)
+                if val and (option == val or str(j) == val):
+                    hdf.setValue('%s.option.%i.selected' % (pfx, j), '1')
                 j += 1
-        elif vtype == 'checkbox':
-            if vval in util.TRUE:
+        elif f['type'] == 'checkbox':
+            if val in util.TRUE:
                 hdf.setValue('%s.selected' % pfx, '1')
-        elif vtype == 'textarea':
-            cols = items.get(name + '.width', items.get(name + '.cols', ''))
-            rows = items.get(name + '.height', items.get(name + '.rows', ''))
-            hdf.setValue('%s.width' % pfx, cols)
-            hdf.setValue('%s.height' % pfx, rows)
+        elif f['type'] == 'textarea':
+            hdf.setValue('%s.width' % pfx, f['width'])
+            hdf.setValue('%s.height' % pfx, f['height'])
         i += 1
 
 
@@ -473,7 +485,7 @@ class QueryModule (Module):
         if not 'priority' in cols:
             cols.append('priority')
 
-        custom_fields = get_custom_fields(self.env)
+        custom_fields = [f['name'] for f in get_custom_fields(self.env)]
         constraints = [k for k in self.args.keys()
                        if k in Ticket.std_fields or k in custom_fields]
         sql = 'SELECT ' + ', '.join(['ticket.%s AS %s' % (header, header)

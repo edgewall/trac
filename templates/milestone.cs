@@ -23,23 +23,11 @@
  <form action="#stats" id="prefs" method="get">
   <div>
    <label for="by">View status by</label>
-   <select id="by" name="by">
+   <select id="by" name="by"><?cs each:group = milestone.stats.available_groups ?>
     <option<?cs
-      if:milestone.stats.grouped_by == 'component'?> selected="selected"<?cs
-      /if ?>>component</option>
-    <option<?cs
-      if:milestone.stats.grouped_by == 'version'?> selected="selected"<?cs
-      /if ?>>version</option>
-    <option value="owner"<?cs
-      if:milestone.stats.grouped_by == 'owner'?> selected="selected"<?cs
-      /if ?>>owner</option>
-    <option<?cs
-      if:milestone.stats.grouped_by == 'priority'?> selected="selected"<?cs
-      /if ?>>priority</option>
-    <option<?cs
-      if:milestone.stats.grouped_by == 'severity'?> selected="selected"<?cs
-      /if ?>>severity</option>
-   </select>
+      if:milestone.stats.grouped_by == group?> selected="selected"<?cs
+      /if ?>><?cs var:group ?></option>
+   <?cs /each ?></select>
    <div>
     <input name="showempty" id="showempty" type="checkbox"<?cs
        if:milestone.stats.show_empty ?> checked="checked"<?cs /if ?>>

@@ -22,8 +22,8 @@
 import time
 
 import perm
-import util
 import Milestone
+from util import add_to_hdf, TracError
 from Module import Module
 from Wiki import wiki_to_html
 
@@ -63,15 +63,16 @@ class Roadmap(Module):
             else:
                 milestones.append(milestone)
         cursor.close()
-        util.add_dictlist_to_hdf(milestones, self.req.hdf, 'roadmap.milestones')
+        add_to_hdf(milestones, self.req.hdf, 'roadmap.milestones')
 
         milestone_no = 0
         for milestone in milestones:
-            tickets = Milestone.get_tickets_for_milestone(self.db, milestone['name'])
+            tickets = Milestone.get_tickets_for_milestone(self.env, self.db,
+                                                          milestone['name'])
             stats = Milestone.calc_ticket_stats(tickets)
-            util.add_dict_to_hdf(stats, self.req.hdf,
-                'roadmap.milestones.%s.stats' % int(milestone_no))
+            add_to_hdf(stats, self.req.hdf,
+                       'roadmap.milestones.%d.stats' % int(milestone_no))
             queries = Milestone.get_query_links(self.env, milestone['name'])
-            util.add_dict_to_hdf(queries, self.req.hdf,
-                'roadmap.milestones.%s.queries' % int(milestone_no))
+            add_to_hdf(queries, self.req.hdf,
+                       'roadmap.milestones.%d.queries' % int(milestone_no))
             milestone_no += 1

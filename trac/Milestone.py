@@ -22,15 +22,26 @@
 import time
 
 from Module import Module
-from util import add_dict_to_hdf, TracError
+from util import add_to_hdf, TracError
+from Ticket import get_custom_fields, Ticket
 from WikiFormatter import wiki_to_html
 import perm
 
 
-def get_tickets_for_milestone(db, milestone, field='component'):
-    cursor = db.cursor ()
-    cursor.execute("SELECT id, status, " + field + " FROM ticket "
-                   "WHERE milestone = %s", milestone)
+def get_tickets_for_milestone(env, db, milestone, field='component'):
+    custom = field not in Ticket.std_fields
+    cursor = db.cursor()
+    sql = 'SELECT ticket.id AS id, ticket.status AS status, '
+    if custom:
+        sql += 'ticket_custom.value AS %s ' \
+               'FROM ticket LEFT OUTER JOIN ticket_custom ON id = ticket ' \
+               'WHERE name = \'%s\' AND milestone = \'%s\'' % (
+               field, field, milestone)
+    else:
+        sql += 'ticket.%s AS %s FROM ticket WHERE milestone = \'%s\'' % (
+               field, field, milestone)
+    
+    cursor.execute(sql)
     tickets = []
     while 1:
         row = cursor.fetchone()
@@ -197,6 +208,12 @@ class Milestone(Module):
         elif by == 'owner':
             cursor.execute("SELECT DISTINCT owner AS name FROM ticket "
                            "ORDER BY owner")
+        elif by not in Ticket.std_fields:
+            fields = get_custom_fields(self.env)
+            field = [f for f in fields if f['name'] == by]
+            if not field:
+                return []
+            return [o for o in field[0]['options'] if o != '']
         while 1:
             row = cursor.fetchone()
             if not row:
@@ -251,7 +268,7 @@ class Milestone(Module):
         milestone = self.get_milestone(id)
         self.req.hdf.setValue('title', 'Milestone %s' % milestone['name'])
         self.req.hdf.setValue('milestone.mode', 'delete')        
-        add_dict_to_hdf(milestone, self.req.hdf, 'milestone')
+        add_to_hdf(milestone, self.req.hdf, 'milestone')
 
         cursor = self.db.cursor()
         cursor.execute("SELECT name FROM milestone "
@@ -275,7 +292,7 @@ class Milestone(Module):
             milestone = self.get_milestone(id)
             self.req.hdf.setValue('title', 'Milestone %s' % milestone['name'])
             self.req.hdf.setValue('milestone.mode', 'edit')
-        add_dict_to_hdf(milestone, self.req.hdf, 'milestone')
+        add_to_hdf(milestone, self.req.hdf, 'milestone')
 
     def render_view(self, id):
         if self.perm.has_permission(perm.MILESTONE_DELETE):
@@ -288,16 +305,23 @@ class Milestone(Module):
         milestone = self.get_milestone(id)
         self.req.hdf.setValue('title', 'Milestone %s' % milestone['name'])
         self.req.hdf.setValue('milestone.mode', 'view')
-        add_dict_to_hdf(milestone, self.req.hdf, 'milestone')
+        add_to_hdf(milestone, self.req.hdf, 'milestone')
+
+        available_groups = [ 'component', 'version', 'severity', 'priority',
+                             'owner' ]
+        available_groups += [f['name'] for f in get_custom_fields(self.env)
+                             if f['type'] == 'select' or f['type'] == 'radio']
+        add_to_hdf(available_groups, self.req.hdf,
+                   'milestone.stats.available_groups')
 
         by = self.args.get('by', 'component')
         self.req.hdf.setValue('milestone.stats.grouped_by', by)
 
-        tickets = get_tickets_for_milestone(self.db, id, by)
+        tickets = get_tickets_for_milestone(self.env, self.db, id, by)
         stats = calc_ticket_stats(tickets)
-        add_dict_to_hdf(stats, self.req.hdf, 'milestone.stats')
+        add_to_hdf(stats, self.req.hdf, 'milestone.stats')
         queries = get_query_links(self.env, milestone['name'])
-        add_dict_to_hdf(queries, self.req.hdf, 'milestone.queries')
+        add_to_hdf(queries, self.req.hdf, 'milestone.queries')
 
         showempty = self.args.has_key('showempty')
         if showempty:
@@ -317,7 +341,7 @@ class Milestone(Module):
             self.req.hdf.setValue('%s.percent_total' % prefix,
                                   str(percent_total * 100))
             stats = calc_ticket_stats(group_tickets)
-            add_dict_to_hdf(stats, self.req.hdf, prefix)
+            add_to_hdf(stats, self.req.hdf, prefix)
             queries = get_query_links(self.env, milestone['name'], by, group)
-            add_dict_to_hdf(queries, self.req.hdf, '%s.queries' % prefix)
+            add_to_hdf(queries, self.req.hdf, '%s.queries' % prefix)
             group_no += 1
