@@ -27,6 +27,7 @@ from util import *
 from Module import Module
 import perm
 from Wiki import wiki_to_html
+from Notify import TicketNotifyEmail
 
 fields = ['time', 'component', 'severity', 'priority', 'milestone', 'reporter',
           'owner', 'cc', 'url', 'version', 'status', 'resolution',
@@ -168,13 +169,9 @@ class Ticket (Module):
             cursor.execute ('UPDATE ticket SET changetime=%s WHERE id=%s',
                             now, id)
             self.db.commit()
-        # Notify
-        try:
-            from Notify import TicketNotifyEmail
-            tn = TicketNotifyEmail(self.env)
-            tn.notify(id, newticket=0, modtime=now)
-        except ImportError:
-            self.env.log.warning("Email notifications require Python >= 2.2")
+
+	tn = TicketNotifyEmail(self.env)
+	tn.notify(id, newticket=0, modtime=now)
 
     def create_ticket(self):
         """
