@@ -38,13 +38,13 @@ class CommonFormatter:
     _rules = [r"""(?P<bold>''')""",
               r"""(?P<italic>'')""",
               r"""(?P<underline>__)""",
-	      r"""(?P<strike>~~)""",
+              r"""(?P<strike>~~)""",
               r"""(?P<inlinecode>!?\{\{\{(?P<inline>.*?)\}\}\})""",
               r"""(?P<htmlescapeentity>!?&#\d+;)""",
               r"""(?P<tickethref>!?#\d+)""",
               r"""(?P<changesethref>!?\[\d+\])""",
               r"""(?P<reporthref>!?\{\d+\})""",
-              r"""(?P<modulehref>!?((?P<modulename>bug|ticket|browser|source|repos|report|changeset|wiki|search):(?P<moduleargs>(&#34;(.*?)&#34;|'(.*?)')|([^ ]*[^\., \)]))))""",
+              r"""(?P<modulehref>!?((?P<modulename>bug|ticket|browser|source|repos|report|changeset|wiki|milestone|search):(?P<moduleargs>(&#34;(.*?)&#34;|'(.*?)')|([^ ]*[^\., \)]))))""",
               r"""(?P<wikilink>!?(^|(?<=[^A-Za-z]))[A-Z][a-z0-9/.]+(?:[A-Z][a-z0-9/.]*[a-z0-9/])+(?=\Z|\s|,|\.|:|\)))""",
               r"""(?P<fancylink>!?\[(?P<fancyurl>([a-z]+:[^ ]+)) (?P<linkname>.*?)\])"""]
 
@@ -54,9 +54,9 @@ class CommonFormatter:
     absurls = 0
 
     def __init__(self, hdf, env, db, absurls=0):
-	self.hdf = hdf
+        self.hdf = hdf
         self.env = env
-	self.db = db
+        self.db = db
         self._href = absurls and env.abs_href or env.href
 
     def replace(self, fullmatch):
@@ -99,7 +99,7 @@ class CommonFormatter:
         return self.simple_tag_handler('<span class="underline">', '</span>')
 
     def _strike_formatter(self, match, fullmatch):
-	return self.simple_tag_handler('<del>', '</del>')
+        return self.simple_tag_handler('<del>', '</del>')
     
     def _inlinecode_formatter(self, match, fullmatch):
         return '<tt>%s</tt>' % fullmatch.group('inline')
@@ -112,30 +112,30 @@ class CommonFormatter:
         return match
 
     def _tickethref_formatter(self, match, fullmatch):
-	number = int(match[1:])
-	cursor = self.db.cursor ()
-	cursor.execute('SELECT summary,status FROM ticket WHERE id=%s', number)
-	row = cursor.fetchone ()
-	if not row:
-	    return '<a class="missing" href="%s">#%d</a>' % (self._href.ticket(number), number)
-	else:
-	    summary = row[0]
-	    if row[1] == 'new':
-		return '<a href="%s" title="NEW : %s">#%d*</a>' % (self._href.ticket(number), summary, number)
-	    elif row[1] == 'closed':
-		return '<a href="%s" title="CLOSED : %s"><del>#%d</del></a>' % (self._href.ticket(number), summary, number)
-	    else:
-		return '<a href="%s" title="%s">#%d</a>' % (self._href.ticket(number), summary, number)
+        number = int(match[1:])
+        cursor = self.db.cursor ()
+        cursor.execute('SELECT summary,status FROM ticket WHERE id=%s', number)
+        row = cursor.fetchone ()
+        if not row:
+            return '<a class="missing" href="%s">#%d</a>' % (self._href.ticket(number), number)
+        else:
+            summary = row[0]
+            if row[1] == 'new':
+                return '<a href="%s" title="NEW : %s">#%d*</a>' % (self._href.ticket(number), summary, number)
+            elif row[1] == 'closed':
+                return '<a href="%s" title="CLOSED : %s"><del>#%d</del></a>' % (self._href.ticket(number), summary, number)
+            else:
+                return '<a href="%s" title="%s">#%d</a>' % (self._href.ticket(number), summary, number)
 
     def _changesethref_formatter(self, match, fullmatch):
-	number = int(match[1:-1])
-	cursor = self.db.cursor ()
-	cursor.execute('SELECT message FROM revision WHERE rev=%d', number)
-	row = cursor.fetchone ()
-	if not row:
-	    return '[<a class="missing" href="%s">%d</a>]' % (self._href.changeset(number), number)
-	else:
-	    return '[<a title="%s" href="%s">%d</a>]' % (row[0],self._href.changeset(number), number)
+        number = int(match[1:-1])
+        cursor = self.db.cursor ()
+        cursor.execute('SELECT message FROM revision WHERE rev=%d', number)
+        row = cursor.fetchone ()
+        if not row:
+            return '[<a class="missing" href="%s">%d</a>]' % (self._href.changeset(number), number)
+        else:
+            return '[<a title="%s" href="%s">%d</a>]' % (row[0],self._href.changeset(number), number)
 
     def _reporthref_formatter(self, match, fullmatch):
         number = int(match[1:-1])
@@ -158,6 +158,8 @@ class CommonFormatter:
             return self._href.report(args), '%s:%s' % (module, args), 0
         elif module == 'changeset':
             return self._href.changeset(args), '%s:%s' % (module, args), 0
+        elif module == 'milestone':
+            return self._href.milestone(args), '%s:%s' % (module, args), 0
         elif module == 'search':
             return self._href.search(args), '%s:%s' % (module, args), 0
         elif module in ['source', 'repos', 'browser']:
