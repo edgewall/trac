@@ -1,0 +1,27 @@
+%(header)s
+%(toolbar)s
+
+<h3>Change set %(revision)s</h3>
+
+<table>
+<tr>
+<td align="right">revision:</td><td>%(revision)d</td>
+</tr>
+<tr>
+<td align="right">time:</td><td>%(time)s</td>
+</tr>
+<tr>
+<td align="right">author:</td><td>%(author)s</td>
+</tr>
+<tr>
+<td align="right">message:</td><td>%(message)s</td>
+</tr>
+<tr>
+<td align="right" valign="top">files:</td>
+<td>
+<table>
+%(changeset_info)s
+</table>
+</td>
+</tr>
+</table>

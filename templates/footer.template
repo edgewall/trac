@@ -1,0 +1,16 @@
+  <br />
+  <table id="page-footer" width="100%%" bgcolor="#eeeeee">
+    <tr>
+      <td align="left" class="footer">
+	Email: <a href="mailto:info@xyche.com">info@xyche.com</a>
+	<br />
+	  <a href="/contact/">Contact information</a>
+      </td>
+      <td align="right" class="footer">Copyright (c)2003 
+	<a href="http://www.xyche.com/">Xyche Software</a> . 
+	All rights reserved.<br />
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

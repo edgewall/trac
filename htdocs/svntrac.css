@@ -1,0 +1,295 @@
+body {
+	background-color: white;
+}
+
+body, table {
+	font-family: helvetica,arial;
+	font-size: 12pt;
+}
+
+pre.file-content {
+	border: thin solid black;
+	padding: 1em;
+	background-color: #eeeeee;
+	font-size: 10pt;
+}
+
+table.listing {
+	width: 600px;
+	background-color: white;
+	border: solid black 1px;
+	padding: 0px;
+}
+
+tr.listing-header {
+	background-color: white;
+}
+
+th.listing {
+	background-color: white;
+        border-bottom: thin solid black;
+}
+
+td.timeline-day {
+        padding-top: 1em;
+        font-weight: bold;
+}
+
+tr.item-row-even {
+	background-color: #ffffff;
+}
+
+tr.item-row-odd {
+	background-color: #f5f5f5;
+}
+
+td.size-column {
+	text-align: right;
+	width: 20%;
+        border-left: thin dotted #dddddd;
+        padding-right: 0.5em;
+}
+
+td.rev-column {
+	text-align: right;
+	width: 10%;
+        border-left: thin dotted #dddddd;
+        padding-right: 0.5em;
+}
+
+td.date-column {
+	text-align: left;
+	width: 20%;
+        border-left: thin dotted #dddddd;
+        padding-left: 0.5em;
+        padding-right: 0.5em;
+}
+
+table.toolbar {
+	border: thin solid black;
+	background-color: #dddddd;
+	padding: 1px;
+        width: 100%;
+}
+
+div.footer {
+	border-top: thin solid black;
+	margin-top: 3em;
+}
+
+td.rev-header {
+	text-align: right;
+}
+
+table.rev-headers {
+	background-color: #dddddd;
+	border: solid black 1px;
+	padding: 1px;
+}
+
+div.wikipage { }
+
+table.wiki-history th { border-bottom: thin solid black;
+                        background-color: white;
+                         }
+table.wiki-history { 
+                     float: right;
+                     border: thin solid black;
+                     visibility: hidden;
+                     }
+
+table.diff-table { background-color: #eeeeee; 
+                   border: thin solid black; 
+                   width: 100% }
+td.diff-changed { background-color: #ffcc66; }
+td.diff-unchanged {  }
+td.diff-line { background-color: #dddddd; border-bottom: thin solid gray}
+
+td.diff-remove-left { background-color: #ff8888; }
+td.diff-remove-right { background-color: #ffaaaa; }
+td.diff-add-left { background-color: #ddffdd; }
+td.diff-add-right { background-color: #bbffbb; }
+
+td.diff-changed, td.diff-unchanged,
+td.diff-remove-left,td.diff-remove-right,
+td.diff-add-left,td.diff-add-right { font-family: monospace; 
+                                     vertical-align: top; }
+
+
+/* xyche */
+body, p, td, div {
+  font: normal 12px Bitstream Vera Sans, Verdana, Helvetica, sans-serif;
+  color: black;
+} 
+
+img { 
+ border: none;
+}
+
+td img {display: block;}
+
+table,td,tr { 
+ margin: 0;
+ padding: 0;
+}
+
+a:link, a:visited {
+  color: #a00;
+  text-decoration: none;
+#  font-weight: bold; 
+}
+
+a:active { 
+ background-color: pink;
+}
+
+
+
+/*
+ * Navigation bar
+ */
+
+#page-topbar,.topbar {
+  font: 9px Verdana, Helvetica, sans-serif;
+  color: #ddd; 
+  background-color: #900;                   
+  border: solid 1px #600;
+  border-width: 0 0 1px 0;
+  white-space: nowrap;
+  padding: 0px 5px;
+}
+
+a.topbar-link { 
+  color: #ccc; 
+  text-decoration: none;
+  font-weight: bold; 
+  padding: 0;
+}
+
+
+/*
+ * Navigation bar
+ */
+
+#page-navbar {
+  background-color: black;                   
+  border: solid 1px #900;
+  border-width: 1px 0 0 0;
+//  white-space: nowrap;
+  padding: 2px 5px;
+  margin: 0;
+}
+
+.navbar { 
+  color: white;
+  font: 11px Verdana, Helvetica, sans-serif;
+}
+
+a.navbar-link,a.navbar-link-active {
+  color: white;
+  text-decoration: none;
+  font-weight: bold; 
+  padding: 0 5px;
+}
+
+a.navbar-link-active { 
+  background-color: #880000;                    
+}
+
+
+/*
+ * Languages
+ */
+.toplang, .bottomlang { 
+  color: white;
+  font: 9px Verdana, Helvetica, sans-serif;
+}
+
+.bottomlang { 
+  color: black;
+  text-align: right;
+}
+
+a.toplang-link {
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+                 
+}
+
+
+#page-header {
+  background-color: #800;                   
+  margin: 0px;
+  padding: 0px;
+}
+
+
+#page-menu-bar {
+  background-color: black;                   
+}
+
+
+#page-content { }
+
+#content-main {  margin: 0; padding: 1em; }
+
+
+/*
+ * Sidebar
+ */
+
+#page-sidebar { 
+ background-color: #f7f7f7;
+ border: dotted 1px #ccc;
+  border-width: 0 1px 0 0;
+}
+
+.sidebar-section { 
+ padding: 0 1em;
+ margin: 0;
+}
+
+.sidebar-spacer { 
+  border: dotted 1px #ccc;
+  border-width: 1px 1px 0 0;
+  margin: 0;
+  padding: 0;
+}
+
+
+/*
+ * Footer
+ */
+
+#page-footer { 
+  margin: 0; 
+  padding: 0.5em;
+  border: dotted 1px #ccc;
+  border-width: 1px 0 0 0;
+}
+
+.footer { 
+  font-size: 10pt;
+  color: #bbb;
+}
+
+#page-footer a { 
+  text-decoration: none;
+  font-weight: bold;
+  color: #bbb;
+
+}
+
+
+/* Forms */
+
+input, textarea, select { 
+  border: thin solid black;
+}
+
+option {
+         border-bottom: thin solid black;
+}
+
+td img {display: block;}

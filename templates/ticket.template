@@ -1,0 +1,77 @@
+%(header)s
+%(toolbar)s
+
+<h1>svntrac</h1>
+
+<h3>ticket: #%(ticket)d</h3>
+
+<form action="svntrac.cgi" method="POST">
+<input type="hidden" name="mode" value="ticket">
+<input type="hidden" name="id"   value="%(ticket)d">
+<table>
+<tr>
+<td align="right">opened:</td><td>%(opened)s</td>
+<td align="right">reporter:</td><td>%(reporter)s</td>
+</tr>
+<tr>
+<td align="right">component:</td><td>%(component_select)s</td>
+<td align="right">priority:</td><td>%(priority_select)s</td>
+</tr>
+<tr>
+<td align="right">version:</td><td>%(version_select)s</td>
+<td align="right">milestone:</td><td>%(milestone_select)s</td>
+</tr>
+<tr>
+<td align="right">severity:</td><td>%(severity_select)s</td>
+<td align="right">assigned to:</td><td>%(owner)s</td>
+</tr>
+<tr>
+<td align="right">status:</td><td>%(status)s</td>
+<td align="right">resolution:</td><td>%(resolution)s</td>
+</tr>
+<tr>
+<td align="right">cc:</td>
+<td><input type="text" name="cc" value="%(cc)s"></td>
+</tr>
+<tr>
+<td align="right"><a href="%(url)s">url</a>:</td>
+<td colspan="3"><input type="text" name="url" value="%(url)s" size="50"></td>
+</tr>
+<tr>
+</tr>
+<tr>
+<td align="right">summary:</td>
+<td colspan="3"><input type="text" name="summary" value="%(summary)s" size="50"></td>
+</tr>
+<tr>
+<td align="right">additional comments:</td>
+	<td colspan="3">
+	<textarea name="comment" rows="8" cols="70"></textarea>
+	</td>
+</tr>
+<tr>
+<td></td>
+<td colspan="3">
+%(actions)s
+</td>
+</tr>
+<tr>
+<td></td>
+<td colspan="3"><br><input type="submit" value="commit">
+</tr>
+<tr>
+<td align="right" valign="top">description:</td>
+	<td colspan="3"><hr>
+	<pre>%(description)s</pre>
+	</td>
+</tr>
+<tr>
+<td align="right" valign="top">comments:</td>
+	<td colspan="3">
+	<pre>%(changes)s</pre>
+	</td>
+</tr>
+</table>
+</form>
+
+%(footer)s

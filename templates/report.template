@@ -1,0 +1,11 @@
+%(header)s
+%(toolbar)s
+
+<h3>Reports</h3>
+
+%(content)s
+</td>
+</tr>
+</table>
+
+%(footer)s

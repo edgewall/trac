@@ -1,0 +1,11 @@
+%(header)s
+%(toolbar)s
+
+<script language="JavaScript" src="%(htdocs_location)ssvntrac.js">
+</script>
+
+<p>
+%(content)s
+</p>
+
+%(footer)s

@@ -1,0 +1,13 @@
+%(header)s
+%(toolbar)s
+
+<h1>svntrac</h1>
+
+<h3>log history for: %(path)s</h3>
+
+<table class="listing">
+<tr class="listing-header"><th>date</th><th>revision</th><th>change set</th><th>log message</th></tr>
+%(log_entries)s
+</table>
+
+%(footer)s
