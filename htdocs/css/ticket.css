@@ -13,7 +13,7 @@
 
 #ticket table { table-layout: fixed; border-collapse: collapse; width: 100% }
 #ticket tr { border-bottom: 1px dotted #eed }
-#ticket td, #ticket th { font-size: 80%; padding: .5em 1em; width: 25% }
+#ticket td, #ticket th { font-size: 80%; padding: .5em 1em }
 #ticket th { color: #996; font-weight: normal; text-align: left }
 #ticket hr { color: #dd9; border-color: #dd9; border-width: 1px 0 0; height: 1px; margin: .5em 0 0 }
 

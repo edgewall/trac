@@ -11,12 +11,12 @@
 
 <div id="content" class="ticket">
  <div id="searchable">
- <?cs def:ticketprop(label, name, value) ?>
+ <?cs def:ticketprop(label, name, value, fullrow) ?>
   <th id="h_<?cs var:name ?>"><?cs var:$label ?>:</th>
-  <td headers="h_<?cs var:name ?>"><?cs
+  <td headers="h_<?cs var:name ?>"<?cs if:fullrow ?> colspan="3"<?cs /if ?>><?cs
    if:$value ?><?cs var:$value ?><?cs else ?>&nbsp;<?cs
-   /if ?></td><?cs if numprops % #2 && !$last_prop ?>
- </tr><tr><?cs /if ?><?cs set numprops = $numprops + #1 ?><?cs
+   /if ?></td><?cs if numprops % #2 && !$last_prop || fullrow ?>
+ </tr><tr><?cs /if ?><?cs set numprops = $numprops + #1 - fullrow ?><?cs
  /def ?>
 
 <div id="ticket">
@@ -28,25 +28,30 @@
  <h2><?cs var:ticket.summary ?></h2>
  <hr />
  <table><tr><?cs
-  call:ticketprop("Priority", "priority", ticket.priority) ?><?cs
-  call:ticketprop("Reporter", "reporter", ticket.reporter) ?><?cs
-  call:ticketprop("Severity", "severity", ticket.severity) ?><?cs
+  call:ticketprop("Priority", "priority", ticket.priority, 0) ?><?cs
+  call:ticketprop("Reporter", "reporter", ticket.reporter, 0) ?><?cs
+  call:ticketprop("Severity", "severity", ticket.severity, 0) ?><?cs
   if ticket.status == "assigned"?><?cs
-   call:ticketprop("Assigned to", "assignee", ticket.owner + " (accepted)") ?><?cs
+   call:ticketprop("Assigned to", "assignee", ticket.owner + " (accepted)", 0) ?><?cs
   else ?><?cs
-   call:ticketprop("Assigned to", "assignee", ticket.owner) ?><?cs
+   call:ticketprop("Assigned to", "assignee", ticket.owner, 0) ?><?cs
   /if ?><?cs
-  call:ticketprop("Component", "component", ticket.component) ?><?cs
-  call:ticketprop("Status", "status", ticket.status) ?><?cs
-  call:ticketprop("Version", "version", ticket.version) ?><?cs
-  call:ticketprop("Resolution", "resolution", ticket.resolution) ?><?cs
-  call:ticketprop("Milestone", "milestone", ticket.milestone) ?><?cs
+  call:ticketprop("Component", "component", ticket.component, 0) ?><?cs
+  call:ticketprop("Status", "status", ticket.status, 0) ?><?cs
+  call:ticketprop("Version", "version", ticket.version, 0) ?><?cs
+  call:ticketprop("Resolution", "resolution", ticket.resolution, 0) ?><?cs
+  call:ticketprop("Milestone", "milestone", ticket.milestone, 0) ?><?cs
   set:last_prop = #1 ?><?cs
-  call:ticketprop("Keywords", "keywords", ticket.keywords) ?>
+  call:ticketprop("Keywords", "keywords", ticket.keywords, 0) ?><?cs
+  set:last_prop = #0 ?>
  </tr></table><?cs if ticket.custom.0.name ?>
  <hr />
  <table><tr><?cs each:prop = ticket.custom ?><?cs
-   call:ticketprop(prop.label, prop.name, prop.value) ?><?cs
+   if:prop.type == "textarea" ?><?cs
+    call:ticketprop(prop.label, prop.name, prop.value, 1) ?><?cs
+   else ?><?cs
+    call:ticketprop(prop.label, prop.name, prop.value, 0) ?><?cs
+   /if?><?cs
   /each ?>
  </tr></table><?cs /if ?>
  <hr />
