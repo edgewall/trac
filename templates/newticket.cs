@@ -27,9 +27,9 @@ addEvent(window, 'load', function() { document.getElementById('summary').focus()
   <div class="tkt-prop">
    <label for="description">Full Description (You may use 
       <a tabindex="42" href="<?cs var:$trac.href.wiki ?>/WikiFormatting">WikiFormatting</a> here):</label><br />
-   <?cs call wiki_toolbar('description') ?>
    <textarea id="description" name="description" class="textwidget" 
             rows="10" cols="78" style="width: 97%"><?cs var:newticket.description ?></textarea>
+   <?cs call:wiki_toolbar('description') ?>
    <?cs if newticket.description_preview ?>
      <a name="preview" />
      <fieldset>

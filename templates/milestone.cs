@@ -27,7 +27,10 @@
     );
   </script>
   <form action="<?cs var:cgi_location ?>" method="post">
-   <input type="hidden" name="mode" value="milestone" />   <input type="hidden" name="id" value="<?cs var:milestone.name ?>" />   <input type="hidden" name="action" value="commit_changes" />   <fieldset>
+   <input type="hidden" name="mode" value="milestone" />
+   <input type="hidden" name="id" value="<?cs var:milestone.name ?>" />
+   <input type="hidden" name="action" value="commit_changes" />
+   <fieldset>
     <legend>Properties</legend>
     <div class="field">
      <label for="name">Name:</label>
@@ -54,6 +57,7 @@
        here:</label>
      <textarea id="descr" name="descr" rows="15" cols="80"
          style="width: 97%"><?cs var:milestone.descr_source ?></textarea>
+     <?cs call:wiki_toolbar('descr') ?>
     </div>
    </fieldset>
    <div class="buttons">

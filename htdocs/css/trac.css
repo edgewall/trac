@@ -216,29 +216,10 @@ form.inline input { margin: 1em }
  margin: 1em;
  text-align: right
 }
-#help a { color: #b44 }
+#help :link, #help :visited { color: #b44; cursor: help }
 #help hr { display: none }
 
 /* Wiki */
-#wiki-history {
-  visibility: hidden;
-  background: #f7f7f0;
-  border: 1px outset #999;
-  color: #000;
-  font-size: 75%;
-  position: absolute;
-  display: inline;
-  margin: 10px;
-  right:10px;
-  border-collapse: separate;
-  border-spacing: 0;
-  padding: .5em;
-}
-#wiki-history a { padding: 0 .5em; }
-#wiki-history a { border: none; }
-#wiki-history a:hover,#wiki-history tr:hover {
-  background: #ddd;
-}
 a.missing:link,a.missing:visited { background: #fafaf0; color: #998 }
 a.missing:hover { color: #000; }
 
@@ -247,6 +228,30 @@ a.missing:hover { color: #000; }
   font: normal 11px Verdana, 'Bitstream Vera Sans', Helvetica, Arial, sans-serif;
   float: right;
 }
+#wikitoolbar {
+ border: 1px solid #d7d7d7;
+ border-left: none;
+ float: left;
+ margin: 0 2px 2px;
+ height: 18px;
+}
+#wikitoolbar a {
+ background: transparent url(../edit_toolbar.png) no-repeat;
+ border: 1px solid #fff;
+ border-left-color: #d7d7d7;
+ cursor: default;
+ display: block;
+ float: left;
+ width: 24px;
+ height: 16px;
+}
+#wikitoolbar a:hover { background-color: transparent; border: 1px solid #fb2 }
+#wikitoolbar a#em { background-position: 0 0 }
+#wikitoolbar a#strong { background-position: 0 -16px }
+#wikitoolbar a#heading { background-position: 0 -32px }
+#wikitoolbar a#link { background-position: 0 -48px }
+#wikitoolbar a#code { background-position: 0 -64px }
+#wikitoolbar a#hr { background-position: 0 -80px }
 
 /* Styles for tabular listings such as those used for displaying directory
    contents and report results. */
@@ -319,16 +324,3 @@ table.wiki td { border: 1px solid #ccc;  padding: .1em .25em; }
  #header, #altlinks, #footer { display: none }
  .nav, form { display: none }
 }
-#wiki-toolbar {
- margin: .5em 0 0 2px;
- padding: 0;
- border: 1px solid #d7d7d7;
- border-left: none;
- }
-#wiki-toolbar, #wiki-toolbar * { display: block; float: left; }
-#wiki-toolbar :link,#wiki-toolbar :link:visited {
- border: 1px solid #fff;
- border-left-color: #d7d7d7;
-}
-#wiki-toolbar :link:hover { border-color: #fb2; }
-.wiki-infobox { margin-left: 1em; margin-top: .25em; }

@@ -141,9 +141,9 @@
        <input type="hidden" name="edit_version"
            value="<?cs var:wiki.edit_version?>" />
        <label for="text">Page source:</label><br />
-       <?cs call wiki_toolbar('text') ?>
        <textarea id="text" name="text" rows="20" cols="80"
            style="width: 97%"><?cs var:wiki.page_source ?></textarea>
+       <?cs call:wiki_toolbar('text') ?>
        <div id="help">
        <b>Note:</b> See <a href="<?cs var:$trac.href.wiki
 ?>/WikiFormatting">WikiFormatting</a> and <a href="<?cs var:$trac.href.wiki

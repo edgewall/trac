@@ -178,9 +178,9 @@ onfocus="document.getElementById('comment').focus()">Add/Change
   <label for="comment">Add Comment (You may use 
       <a tabindex="42" href="<?cs var:$trac.href.wiki ?>/WikiFormatting">WikiFormatting</a> here):</label><br />
 
-  <?cs call wiki_toolbar('comment') ?>
   <textarea id="comment" name="comment" class="textwidget"
             rows="10" cols="78" style="width: 97%; max-width: 694px"><?cs var:ticket.comment ?></textarea>
+  <?cs call:wiki_toolbar('comment') ?>
    <?cs if ticket.comment_preview ?>
      <a name="preview" />
      <fieldset>
@@ -201,9 +201,9 @@ onfocus="document.getElementById('comment').focus()">Add/Change
   <br />
   <label for="description" class="nt-label">Description:</label>
   <div style="float: left">
-  <?cs call wiki_toolbar('description') ?><br style="clear: left" />
   <textarea id="description" name="description" class="textwidget"
             rows="10" cols="68"><?cs var:ticket.description ?></textarea>
+  <?cs call:wiki_toolbar('description') ?>
   </div>
   <br style="clear: both" />
 <?cs /if ?>
