@@ -52,6 +52,7 @@ def _get_history(path, authz, fs_ptr, pool, start, end=0):
     for item in history:
         yield item
 
+
 class Pool(object):
     """
     A wrapper for a new Subversion `pool` object that ties the lifetime of the
@@ -94,7 +95,10 @@ class SubversionRepository(Repository):
     """
     Repository implementation based on the svn.fs API.
     """
-    pool = property(lambda self: self._pool(), lambda self, pool: setattr(self, '_pool', pool))
+
+    pool = property(fget=lambda self: self._pool(),
+                    fset=lambda self, pool: setattr(self, '_pool', pool))
+
     def __init__(self, path, authz, log):
         Repository.__init__(self, authz, log)
 
@@ -186,7 +190,7 @@ class SubversionRepository(Repository):
 
     def previous_rev(self, rev):
         rev = int(rev)
-        if rev == 1:
+        if rev == 0:
             return None
         if self.scope == '/':
             return rev - 1
@@ -219,7 +223,10 @@ class SubversionRepository(Repository):
 
 
 class SubversionNode(Node):
-    pool = property(lambda self: self._pool(), lambda self, pool: setattr(self, '_pool', pool))
+
+    pool = property(fget=lambda self: self._pool(),
+                    fset=lambda self, pool: setattr(self, '_pool', pool))
+
     def __init__(self, path, rev, authz, scope, fs_ptr, pool):
         self.authz = authz
         self.scope = scope
@@ -260,12 +267,19 @@ class SubversionNode(Node):
                 yield path[len(self.scope):], rev
 
     def get_properties(self):
-        return fs.node_proplist(self.root, self.scope + self.path, self.pool)
+        props = fs.node_proplist(self.root, self.scope + self.path, self.pool)
+        for name,value in props.items():
+            props[name] = str(value) # Make sure the value is a proper string
+        return props
 
     def get_content_length(self):
+        if self.isdir:
+            return None
         return fs.file_length(self.root, self.scope + self.path, self.pool)
 
     def get_content_type(self):
+        if self.isdir:
+            return None
         return self._get_prop(core.SVN_PROP_MIME_TYPE)
 
     def get_last_modified(self):
@@ -278,7 +292,10 @@ class SubversionNode(Node):
 
 
 class SubversionChangeset(Changeset):
-    pool = property(lambda self: self._pool(), lambda self, pool: setattr(self, '_pool', pool))
+
+    pool = property(fget=lambda self: self._pool(),
+                    fset=lambda self, pool: setattr(self, '_pool', pool))
+
     def __init__(self, rev, authz, scope, fs_ptr, pool):
         self.rev = rev
         self.authz = authz
