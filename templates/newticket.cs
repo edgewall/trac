@@ -18,14 +18,14 @@ addEvent(window, 'load', function() { document.getElementById('summary').focus()
  </div>
  <div class="field">
   <label for="summary">Short summary:</label><br />
-  <input id="summary" type="text" name="summary" size="80" value="<?cs var:newticket.summary ?>"/>
+  <input id="summary" type="text" name="summary" size="80" value="<?cs
+    var:newticket.summary ?>"/>
  </div>
  <div class="field">
   <label for="description">Full description (you may use <a tabindex="42" href="<?cs
     var:$trac.href.wiki ?>/WikiFormatting">WikiFormatting</a> here):</label><br />
-  <textarea id="description" name="description" rows="10" cols="78"><?cs
+  <textarea id="description" name="description" class="wikitext" rows="10" cols="78"><?cs
     var:newticket.description ?></textarea><?cs
-  call:wiki_toolbar('description') ?><?cs
   if:newticket.description_preview ?>
    <fieldset id="preview">
     <legend>Description Preview</legend>
@@ -68,6 +68,9 @@ addEvent(window, 'load', function() { document.getElementById('summary').focus()
    <?cs call:ticket_custom_props(ticket) ?>
   </div><?cs /if ?>
  </fieldset>
+
+ <script type="text/javascript" src="<?cs
+   var:htdocs_location ?>js/wikitoolbar.js"></script>
 
  <div class="buttons">
   <input type="submit" value="Preview" />&nbsp;

@@ -207,9 +207,8 @@
        Description:</label> (You may use <a tabindex="42" href="<?cs
          var:$trac.href.wiki ?>/WikiFormatting">WikiFormatting</a> here)
       </label><br />
-      <textarea id="description" name="description" cols="85" rows="5"><?cs
+      <textarea id="description" name="description" class="wikitext" rows="10" cols="78"><?cs
         var:report.description ?></textarea>
-      <?cs call:wiki_toolbar('description') ?>
      </div>
      <div class="field">
       <label for="sql">
@@ -222,6 +221,8 @@
       <input type="submit" name="cancel" value="Cancel" />
      </div>
     </div>
+    <script type="text/javascript" src="<?cs
+      var:htdocs_location ?>js/wikitoolbar.js"></script>
    </form>
  <?cs /if?>
  

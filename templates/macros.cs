@@ -199,9 +199,3 @@
   </div><?cs
  /each ?><?cs
 /def ?>
-
-<?cs def:wiki_toolbar(textarea_id) ?>
-<script type='text/javascript'>
- addWikiFormattingToolbar(document.getElementById("<?cs var:textarea_id ?>"));
-</script>
-<?cs /def ?>

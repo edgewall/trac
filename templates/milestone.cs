@@ -71,9 +71,8 @@
     <fieldset class="iefix">
      <label for="descr">Description (you may use <a tabindex="42" href="<?cs
        var:trac.href.wiki ?>/WikiFormatting">WikiFormatting</a> here):</label>
-     <p><textarea id="descr" name="descr" rows="12" cols="80"><?cs
+     <p><textarea id="descr" name="descr" class="wikitext" rows="10" cols="78"><?cs
        var:milestone.descr_source ?></textarea></p>
-     <?cs call:wiki_toolbar('descr') ?>
     </fieldset>
    </div>
    <div class="buttons">
@@ -84,6 +83,8 @@
     /if ?>
     <input type="submit" name="cancel" value="Cancel" />
    </div>
+   <script type="text/javascript" src="<?cs
+     var:htdocs_location ?>js/wikitoolbar.js"></script>
   </form>
  <?cs elif:milestone.mode == "delete" ?>
   <form action="<?cs var:cgi_location ?>" method="post">

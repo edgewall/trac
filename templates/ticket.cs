@@ -146,9 +146,8 @@
   <fieldset class="iefix">
    <label for="comment">Comment (you may use <a tabindex="42" href="<?cs
      var:$trac.href.wiki ?>/WikiFormatting">WikiFormatting</a> here):</label><br />
-   <p><textarea id="comment" name="comment" rows="10" cols="78"><?cs
-     var:ticket.comment ?></textarea></p><?cs
-   call:wiki_toolbar('comment') ?>
+   <p><textarea id="comment" name="comment" class="wikitext" rows="10" cols="78"><?cs
+     var:ticket.comment ?></textarea></p>
   </fieldset><?cs
   if ticket.comment_preview ?>
    <fieldset id="preview">
@@ -168,9 +167,8 @@
     <br />
     <label for="description">Description:</label>
     <div style="float: left">
-     <textarea id="description" name="description" rows="10" cols="68"><?cs
+     <textarea id="description" name="description" class="wikitext" rows="10" cols="68"><?cs
        var:ticket.description ?></textarea>
-     <?cs call:wiki_toolbar('description') ?>
     </div>
     <br style="clear: left" />
     <label for="reporter">Reporter:</label>
@@ -257,6 +255,9 @@
    </script><?cs
   /if ?>
  </fieldset>
+
+ <script type="text/javascript" src="<?cs
+   var:htdocs_location ?>js/wikitoolbar.js"></script>
 
  <div class="buttons">
   <input type="reset" value="Reset" />&nbsp;

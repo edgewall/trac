@@ -153,9 +153,8 @@
        /loop ?>
       </select>
      </div>
-     <p><textarea id="text" name="text" cols="80" rows="<?cs
+     <p><textarea id="text" class="wikitext" name="text" cols="80" rows="<?cs
        var:wiki.edit_rows ?>"><?cs var:wiki.page_source ?></textarea></p>
-     <?cs call:wiki_toolbar('text') ?>
      <script type="text/javascript">
        var scrollBarPos = document.getElementById("scroll_bar_pos");
        var text = document.getElementById("text");
@@ -201,6 +200,8 @@
       <div class="wikipage"><?cs var:wiki.page_html ?></div>
      </fieldset><?cs
     /if ?>
+    <script type="text/javascript" src="<?cs
+      var:htdocs_location ?>js/wikitoolbar.js"></script>
    </form>
   <?cs /if ?>
   <?cs if wiki.action == "view" ?>
