@@ -33,6 +33,13 @@ from trac import perm, util
 from trac.env import Environment
 import trac.siteconfig
 
+def my_sum(list):
+    """Python2.2 doesn't have sum()"""
+    tot = 0
+    for item in list:
+        tot += item
+    return tot
+
 
 class TracAdmin(cmd.Cmd):
     intro = ''
@@ -177,7 +184,7 @@ class TracAdmin(cmd.Cmd):
                 print ("%%-%ds%s" % (colw[cnum], sp)) % (ldata[rnum][cnum] or ''),
             print
             if rnum == 0 and decor:
-                print ''.join(['-' for x in xrange(0,(1+len(sep))*cnum+sum(colw))])
+                print ''.join(['-' for x in xrange(0,(1+len(sep))*cnum+my_sum(colw))])
         print
 
     def print_doc(self,doc,decor=0):
