@@ -477,14 +477,14 @@ def send_pretty_error(e, env, req=None):
             req.hdf.setValue('title', e.title or 'Error')
             req.hdf.setValue('error.title', e.title or 'Error')
             req.hdf.setValue('error.type', 'TracError')
-            req.hdf.setValue('error.message', util.escape(e.message))
+            req.hdf.setValue('error.message', e.message)
             if e.show_traceback:
-                req.hdf.setValue('error.traceback',tb.getvalue())
+                req.hdf.setValue('error.traceback', tb.getvalue())
         elif isinstance(e, perm.PermissionError):
             req.hdf.setValue('title', 'Permission Denied')
             req.hdf.setValue('error.type', 'permission')
             req.hdf.setValue('error.action', e.action)
-            req.hdf.setValue('error.message', util.escape(str(e)))
+            req.hdf.setValue('error.message', str(e))
         else:
             req.hdf.setValue('title', 'Oops')
             req.hdf.setValue('error.type', 'internal')
