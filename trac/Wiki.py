@@ -299,6 +299,8 @@ class WikiModule(Module):
                 self.req.hdf.setValue('title', escape(name))
             self.env.get_attachments_hdf(self.db, 'wiki', name, self.req.hdf,
                                          'wiki.attachments')
+            self.req.hdf.setValue('wiki.attach_href',
+                                  self.env.href.attachment('wiki', name, None))
 
         self.page = WikiPage(name, version, self.perm, self.db)
         if self.args.has_key('text'):

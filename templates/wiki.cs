@@ -226,8 +226,7 @@
       <input type="hidden" name="edit" value="yes" />
       <input type="submit" value="Edit This Page" />
      </div></form>
-     <form method="get" action="<?cs var:cgi_location?>/attachment/wiki/<?cs
-       var:wiki.namedoublequoted ?>"><div>
+     <form method="get" action="<?cs var:wiki.attach_href ?>"><div>
       <input type="submit" value="Attach File" />
      </div></form>
     <?cs /if ?>

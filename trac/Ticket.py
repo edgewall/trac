@@ -430,6 +430,8 @@ class TicketModule (Module):
         # List attached files
         self.env.get_attachments_hdf(self.db, 'ticket', str(id), self.req.hdf,
                                      'ticket.attachments')
+        self.req.hdf.setValue('ticket.attach_href',
+                              self.env.href.attachment('ticket', str(id), None))
 
     def render (self):
         self.perm.assert_permission (perm.TICKET_VIEW)
