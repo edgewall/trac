@@ -415,14 +415,15 @@ class Report (Module):
 
     def display_rss(self):
         item = self.req.hdf.getObj('report.items')
-        item = item.child()
-        while item:
-            nodename = 'report.items.%s.summary' % item.name()
-            summary = self.req.hdf.getValue(nodename, '')
-            self.req.hdf.setValue(nodename, util.escape(summary))
-            item = item.next()
+        if item:
+            item = item.child()
+            while item:
+                nodename = 'report.items.%s.summary' % item.name()
+                summary = self.req.hdf.getValue(nodename, '')
+                self.req.hdf.setValue(nodename, util.escape(summary))
+                item = item.next()
         self.req.display(self.template_rss_name, 'text/xml')
-            
+
     def display_csv(self,sep=','):
         self.req.send_response(200)
         self.req.send_header('Content-Type', 'text/plain')
