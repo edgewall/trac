@@ -25,7 +25,7 @@ import sqlite
 
 def usage():
     print
-    print 'Initializes/creates a new (empty) svntrac database'
+    print 'Initializes/creates a new (empty) trac database'
     print
     print 'usage: %s <dbfilename>' % sys.argv[0]
     print
@@ -184,13 +184,13 @@ INSERT INTO permission (user, action) VALUES('anonymous', 'TIMELINE_VIEW');
 INSERT INTO permission (user, action) VALUES('anonymous', 'CHANGESET_VIEW');
 
 INSERT INTO config (section, name, value)
-VALUES('svntrac', 'database_version', '1');
+VALUES('trac', 'database_version', '1');
 INSERT INTO config (section, name, value)
-VALUES('general', 'htdocs_location', '/svntrac/');
+VALUES('general', 'htdocs_location', '/trac/');
 INSERT INTO config (section, name, value)
 VALUES('general', 'repository_dir', '/var/svn/myrep');
 INSERT INTO config (section, name, value)
-VALUES('general', 'templates_dir', '/usr/lib/svntrac/templates');
+VALUES('general', 'templates_dir', '/usr/lib/trac/templates');
 INSERT INTO config (section, name, value)
 VALUES('general', 'cgi_location', '');
 INSERT INTO config (section, name, value)
@@ -206,11 +206,11 @@ VALUES('ticket', 'default_milestone', '');
 INSERT INTO config (section, name, value)
 VALUES('ticket', 'default_component', 'general');
 INSERT INTO config (section, name, value)
-VALUES('header_logo', 'link', 'http://svntrac.edgewall.com/');
+VALUES('header_logo', 'link', 'http://trac.edgewall.com/');
 INSERT INTO config (section, name, value)
-VALUES('header_logo', 'src', 'svntrac_logo.png');
+VALUES('header_logo', 'src', 'trac_logo.png');
 INSERT INTO config (section, name, value)
-VALUES('header_logo', 'alt', 'svntrac');
+VALUES('header_logo', 'alt', 'Trac');
 INSERT INTO config (section, name, value)
 VALUES('header_logo', 'width', '500');
 INSERT INTO config (section, name, value)

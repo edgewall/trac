@@ -1,16 +1,16 @@
 #!/usr/bin/env python
 
 from distutils.core import setup
-import svntrac
+import trac
 
-VERSION = str(svntrac.__version__)
-URL = svntrac.__url__
-LICENSE = svntrac.__license__
+VERSION = str(trac.__version__)
+URL = trac.__url__
+LICENSE = trac.__license__
 
-setup(name="svntrac",
+setup(name="trac",
       description="",
       version=VERSION,
       license=LICENSE,
       url=URL,
-      packages=['svntrac'])
+      packages=['trac'])
 

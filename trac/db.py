@@ -58,7 +58,7 @@ def get_youngest_stored(cursor):
 
 def init():
     global db_name
-    db_name = os.getenv('SVNTRAC_DB')
+    db_name = os.getenv('TRAC_DB')
     if not db_name:
         raise 'Missing environment variable "SVNTRAC_DB"'
 
