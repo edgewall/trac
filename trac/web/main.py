@@ -150,7 +150,7 @@ def _parse_path_info(args, path_info):
 
     if not path_info or path_info in ['/login', '/logout']:
         return args
-    match = re.search('^/(about_trac|wiki)(?:/(.*))?', path_info)
+    match = re.search('^/(about(?:_trac)?|wiki)(?:/(.*))?', path_info)
     if match:
         set_if_missing(args, 'mode', match.group(1))
         if match.group(2):

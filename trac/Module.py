@@ -69,6 +69,7 @@ class Module:
 
 modules = {
 #    name           (module_name,   class_name)
+    'about'       : ('About',       'About'),
     'about_trac'  : ('About',       'About'),
     'attachment'  : ('attachment',  'AttachmentModule'),
     'browser'     : ('Browser',     'BrowserModule'),
