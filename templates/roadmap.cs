@@ -8,7 +8,7 @@
     var:roadmap.href.newmilestone ?>">Add New Milestone</a></li><?cs /if ?>
   <li class="last"><a href="<?cs var:roadmap.href.list ?>"><?cs
     if:roadmap.showall ?>Show All Milestones<?cs
-    else ?>Show Current Milestones<?cs /if ?></a></li>
+    else ?>Show Upcoming Milestones<?cs /if ?></a></li>
  </ul>
 </div>
 
@@ -33,7 +33,7 @@
        <dt>Active tickets:</dt>
        <dd><a href="<?cs var:milestone.queries.active_tickets ?>"><?cs
          var:stats.active_tickets ?></a></dd>
-       <dt>Resolved tickets:</dt>
+       <dt>Closed tickets:</dt>
        <dd><a href="<?cs var:milestone.queries.closed_tickets ?>"><?cs
          var:stats.closed_tickets ?></a></dd>
       </dl>

@@ -123,7 +123,7 @@
    <th class="progress" rowspan="2">Percent Resolved</th>
   </tr><tr>
    <th class="open" scope="col">Active</th>
-   <th class="closed" scope="col">Resolved</th>
+   <th class="closed" scope="col">Closed</th>
   </tr></thead>
   <?cs if:len(milestone.stats.groups) ?><tbody>
    <?cs each:group = milestone.stats.groups ?>

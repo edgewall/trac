@@ -50,7 +50,7 @@ class Roadmap(Module):
                                    self.env.href.roadmap())
             query = "SELECT name, time, descr FROM milestone " \
                     "WHERE name != '' " \
-                    "ORDER BY time DESC, name"
+                    "ORDER BY (IFNULL(time, 0) = 0) ASC, time ASC, name"
         else:
             self.req.hdf.setValue('roadmap.showall', '1')
             self.req.hdf.setValue('roadmap.href.list',
@@ -58,7 +58,7 @@ class Roadmap(Module):
             query = "SELECT name, time, descr FROM milestone " \
                     "WHERE name != '' " \
                     "AND (time IS NULL OR time = 0 OR time > %d) " \
-                    "ORDER BY time DESC, name" % time()
+                    "ORDER BY (IFNULL(time, 0) = 0) ASC, time ASC, name" % time()
 
         if self.req.authname and self.req.authname != 'anonymous':
             icalhref += '&user=' + self.req.authname
@@ -83,9 +83,7 @@ class Roadmap(Module):
                 milestone['descr_text'] = descr
             if milestone['time'] > 0:
                 milestone['date'] = strftime('%x', localtime(milestone['time']))
-                self.milestones.insert(0, milestone)
-            else:
-                self.milestones.append(milestone)
+            self.milestones.append(milestone)
         cursor.close()
         add_to_hdf(self.milestones, self.req.hdf, 'roadmap.milestones')
 
