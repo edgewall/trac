@@ -506,7 +506,6 @@ class QueryModule (Module):
             if not col in Ticket.std_fields:
                 col = 'value'
             vals = self.args[constraints[i]]
-            self.req.hdf.setValue('vals', str(vals))
             if type(vals) is ListType:
                 for j in range(len(vals)):
                     vals[j] = vals[j].value
