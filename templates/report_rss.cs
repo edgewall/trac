@@ -9,7 +9,7 @@
       <?cs else ?>
         <title><?cs var:$title ?></title>
       <?cs /if ?>
-      <link><?cs var:$base_url ?><?cs var:$trac.href.report ?><?cs var:$report.id ?></link>
+      <link><?cs var:$base_url ?><?cs var:$trac.href.report ?>/<?cs var:$report.id ?></link>
       <description>Trac Report - <?cs var:$report.title ?></description>
       <language>en-us</language>
       <generator>Trac v<?cs var:$trac.version ?></generator>
