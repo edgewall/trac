@@ -139,6 +139,13 @@
       </span>
     </div>
     <div class="nt-prop">
+      <span class="nt-label">Component:</span>
+      <span class="nt-widget">
+        <?cs call:hdf_select(ticket.components, "component",
+                             ticket.component) ?>
+      </span>
+    </div>
+    <div class="nt-prop">
       <span class="nt-label">Severity:</span>
       <span class="nt-widget">
         <?cs call:hdf_select(enums.severity, "severity",
@@ -155,6 +162,7 @@
         <span class="nt-widget"><?cs var:ticket.resolution ?></span>
       </div>
     <?cs /if ?>
+
   </div>
   <div id="nt-props-right">
     <div class="nt-prop">
