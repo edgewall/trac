@@ -1,0 +1,38 @@
+Upgrade Instructions
+====================
+
+Upgrading to 0.5.2 from 0.5 and 0.5.1  
+-------------------------------------
+* There are no changes to the database schema in 0.5.2, so existing Trac
+  databases don't require any extra steps.
+
+  Just install the new version of Trac by running:  ./setup.py install 
+
+* There are now a set of default wiki pages included in the install,
+  automatically imported upon creating a new database with the 
+  'trac-admin initdb' command.
+
+  If you wish to add these pages to an already existing [older] Trac database,
+  you can import the pages manually using trac-admin:
+   
+       1. When running 'setup.py install', note where the install script
+          copies the 'wiki-default' directory. 
+          Default is ($prefix/share/trac/wiki-default)
+
+       2. Use trac-admin to load the wiki pages. 
+          Example:
+      
+            trac-admin myproject.db load /usr/share/trac/wiki-default/
+
+       3. All done. Please note that you have to repeat this step for each
+          Trac database you wish to upgrade.
+
+--
+
+If you have trouble upgrading Trac, please ask questions on the mailing list:
+
+  <http://projects.edgewall.com/trac/wiki/MailingList>
+
+Or for other support options, see:
+
+  <http://projects.edgewall.com/trac/wiki/TracSupport>
