@@ -121,6 +121,9 @@ class ChangesetModule(Module):
                         changed_props[k] = {'new': v}
                 req.hdf['changeset.changes.%d.props' % idx] = changed_props
 
+            if kind == Node.DIRECTORY:
+                continue
+
             # Content changes
             old_content = old_node.get_content().read()
             if self.env.mimeview.is_binary(old_content):
@@ -140,6 +143,7 @@ class ChangesetModule(Module):
                                    ignore_case='-i' in diff_options,
                                    ignore_space_changes='-b' in diff_options)
                 req.hdf['changeset.changes.%d.diff' % idx] = changes
+
         req.display('changeset.cs')
 
     def render_diff(self, req, repos, chgset, diff_options):
