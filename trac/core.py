@@ -193,7 +193,7 @@ def populate_hdf(hdf, env, db, req):
     hdf.setValue('trac.href.newticket', env.href.newticket())
     hdf.setValue('trac.href.search', env.href.search())
     hdf.setValue('trac.href.about', env.href.about())
-    hdf.setValue('trac.href.about_config', env.href.about('config/'))
+    hdf.setValue('trac.href.about_config', env.href.about('config'))
     hdf.setValue('trac.href.login', env.href.login())
     hdf.setValue('trac.href.logout', env.href.logout())
     hdf.setValue('trac.href.homepage', 'http://trac.edgewall.com/')
@@ -357,7 +357,7 @@ def send_pretty_error(e, env, req=None):
             req.hdf.setValue('error.message', str(e))
             req.hdf.setValue('error.traceback',tb.getvalue())
         req.display('error.cs', response=500)
-    except Exception, e:
+    except Exception:
         req.send_response(500)
         req.send_header('Content-Type', 'text/plain')
         req.end_headers()

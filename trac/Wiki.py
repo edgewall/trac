@@ -672,7 +672,7 @@ class Wiki(Module):
         except AttributeError:
             raise TracError('Python >= 2.2 is required for diff support.')
         
-        filter.close()
+        filtr.close()
         self.req.hdf.setValue('wiki.diff_output', out.getvalue())
         
     def render(self):
