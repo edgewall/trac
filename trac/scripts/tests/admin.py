@@ -86,7 +86,7 @@ class TracadminTestCase(EnvironmentTestBase, unittest.TestCase):
     def setUp(self):
         EnvironmentTestBase.setUp(self)
         self._admin = admin.TracAdmin()
-        self._admin.env_set(self._get_envpath())
+        self._admin.env_set(self._get_envpath(), self.env)
 
     def _execute(self, cmd):
         try:

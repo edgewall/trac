@@ -1,4 +1,4 @@
-from trac import db_default
+from trac import db_default, test
 from trac.Environment import Environment
 
 import os
@@ -6,11 +6,19 @@ import unittest
 import tempfile
 import shutil
 
+"""
+A subclass of trac.Environment that keeps its' DB in memory.
+"""
+class InMemoryEnvironment(Environment):
+    def get_db_cnx(self):
+        if not hasattr(self, '_db'):
+            self._db = test.InMemoryDatabase()
+        return self._db
 
 class EnvironmentTestBase:
 
     def setUp(self):
-        self.env = Environment(self._get_envpath(), create=1)
+        self.env = InMemoryEnvironment(self._get_envpath(), create=1)
         self.env.insert_default_data()
         self.db = self.env.get_db_cnx()
 

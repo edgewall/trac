@@ -84,9 +84,11 @@ class TracAdmin(cmd.Cmd):
     ## Environment methods
     ##
 
-    def env_set(self, envname):
+    def env_set(self, envname, env=None):
         self.envname = envname
         self.prompt = "Trac [%s]> " % self.envname
+        if env is not None:
+            self.__env = env
 
     def env_check(self):
         try:
