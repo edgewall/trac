@@ -48,7 +48,7 @@ class Report (Module):
         try:
             arg = args[aname]
         except KeyError:
-            raise Exception("Dynamic variable '$%s' not defined." % aname)
+            raise TracError("Dynamic variable '$%s' not defined." % aname)
         self.cgi.hdf.setValue('report.var.'+aname , arg)
         sql = m.string[:m.start()] + arg + m.string[m.end():]
         return self.sql_sub_vars(sql, args)
@@ -70,8 +70,8 @@ class Report (Module):
                 raise TracError('Report %d does not exist.' % id,
                                 'Invalid Report Number')
             title = row[0]
-            sql   = self.sql_sub_vars(row[1], args)
             try:
+                sql   = self.sql_sub_vars(row[1], args)
                 cursor.execute(sql)
             except Exception, e:
                 self.error = e

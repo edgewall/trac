@@ -151,7 +151,7 @@
                value="<?cs var:report.title ?>" size="50" /><br />
        <label for="sql" style="display: block; margin-top: 1em">
         SQL Query for Report:</label>
-       <textarea id="sql" name="sql" cols="70" rows="12"><?cs var:report.sql ?></textarea>
+       <textarea id="sql" name="sql" cols="85" rows="24"><?cs var:report.sql ?></textarea>
        <br />
        <input type="submit" value="Save" />&nbsp;
        <input type="submit" name="view" value="Cancel" />

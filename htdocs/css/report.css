@@ -11,6 +11,8 @@
  padding: 1em;
  border-collapse: collapse;
  line-height: 130%;
+ border: 1px solid #d7d7d7; 
+ border-top: none;
 }
 tr { 
  border-bottom: 1px solid #d7d7d7; 
@@ -22,6 +24,7 @@ tr {
  border-bottom: 1px solid #d7d7d7; 
  color: #999;
  text-align: left;
+ text-transform: capitalize;
  font-size: 90%;
  padding: 0 .2em;
 }
@@ -49,16 +52,16 @@ td.status-col {}
 .report-fullrow p { margin: 0; padding: .25em 1em}
 a.report-tktref,a.report-tktref:visited { display: block; padding: 0 .5em; border: none}
 a.report-tktref:hover { background: #b00; color: #fff; }
-.color1-odd  { background: #fdc; border-color: #ecb; color: #844; }
-.color1-even { background: #fed; border-color: #edc; color: #844; }
+.color1-odd  { background: #fdc; border-color: #e88; color: #a22; }
+.color1-even { background: #fed; border-color: #e99; color: #a22; }
 .color2-odd  { background: #ffb; border-color: #eea; color: #880; }
-.color2-even { background: #ffd; border-color: #eec; color: #880; }
-.color3-odd  { background: #cfd; border-color: #bec; color: #070; }
-.color3-even { background: #dfe; border-color: #ced; color: #070; }
-.color4-odd  { background: #cff; border-color: #bee; color: #099; }
-.color4-even { background: #dff; border-color: #cee; color: #099; }
-.color5-odd  { background: #ddeeff; border-color: #ccddee; color: #469; }
-.color5-even { background: #d0e0ff; border-color: #cde; color: #469; }
+.color2-even { background: #ffd; border-color: #dd8; color: #880; }
+.color3-odd  { background: #fbfbfb; border-color: #ddd; color: #444; }
+.color3-even { background: #f6f6f6; border-color: #ccc; color: #333; }
+.color4-odd { background: #e7ffff; border-color: #cee; color: #099; }
+.color4-even  { background: #dff; border-color: #bee; color: #099; }
+.color5-odd  { background: #e7eeff; border-color: #ccddee; color: #469; }
+.color5-even { background: #dde7ff; border-color: #cde; color: #469; }
 .color6-odd  { background: #f0f0f0; border-color: #ddd; color: #888; }
 .color6-even { background: #f7f7f7; border-color: #ddd; color: #888; }
 .color6-odd a, .color6-even a { color: #b66; }
