@@ -112,14 +112,27 @@ def parse_args(command, path_info, query_string,
     if command == 'GET':
         _headers = None
     fs = cgi.FieldStorage(fp, environ=env, headers=_headers)
-    print env
-    print _headers
     for x in fs.keys():
         argv = fs[x]
         if type(argv) == list:
             argv = argv[0]
         args[x] = argv.value.replace('\r','')
     return args
+
+def module_factory(args, db, config, req, authname):
+    mode = args.get('mode', 'wiki')
+    module_name, constructor_name, need_svn = modules[mode]
+    module = __import__(module_name,
+                        globals(),  locals())
+    constructor = getattr(module, constructor_name)
+    module = constructor(config, args)
+    module.req = req
+    module._name = mode
+    module.db = db
+    module.authname = authname
+    module.perm = perm.PermissionCache(db, authname)
+    module.perm.add_to_hdf(req.hdf)
+    return module, need_svn
 
 def open_database():
     import db
@@ -261,25 +274,15 @@ def real_main():
 
     # Parse arguments
     args = parse_args(os.getenv('REQUEST_METHOD'),
-                      path_info, os.getenv['QUERY_STRING'],
+                      path_info, os.getenv('QUERY_STRING'),
                       os.environ)
 
     # Load the selected module
-    mode = args.get('mode', 'wiki')
-    module_name, constructor_name, need_svn = modules[mode]
-    module = __import__(module_name, globals(),  locals(), [])
-    constructor = getattr(module, constructor_name)
-    module = constructor(config, args)
-    module._name = mode
-    module.db = database
+    module, need_svn = module_factory(args, database, config, req,
+                                      authenticator.authname)
     module.href = href
-    module.authname = authenticator.authname
     module.remote_addr = remote_addr
     module.cgi_location = cgi_location
-    module.req = req
-
-    module.perm = perm.PermissionCache(database, authenticator.authname)
-    module.perm.add_to_hdf(module.req.hdf)
 
     # Only open the subversion repository for the modules that really
     # need it. This saves us some precious time.

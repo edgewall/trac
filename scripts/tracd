@@ -49,7 +49,7 @@ from trac import perm
 from trac.Href import Href
 from trac import sync
 from trac.util import *
-from trac.trac import parse_args, modules, Request, open_svn_repos, RedirectException
+from trac.trac import parse_args, modules, Request, open_svn_repos, RedirectException, module_factory
 from trac import siteconfig
 
 
@@ -150,23 +150,12 @@ class TracHTTPRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler,
                           self.rfile, None, self.headers)
 
         # Load the selected module
-        mode = args.get('mode', 'wiki')
-        module_name, constructor_name, need_svn = modules[mode]
-        module = __import__('trac.' + module_name,
-                            globals(),  locals(), ['trac'])
-        constructor = getattr(module, constructor_name)
-        module = constructor(config, args)
+        module, need_svn = module_factory(args, database, config, self,
+                                          authenticator.authname)
 
-        module.req = self
-        module._name = mode
-        module.db = database
         module.href = Href('/' + self.project)
-        module.authname = authenticator.authname
         module.remote_addr = remote_addr
-        cgi_location = '/' + self.project + '/'
-        module.cgi_location = cgi_location
-        module.perm = perm.PermissionCache(database, authenticator.authname)
-        module.perm.add_to_hdf(self.hdf)
+        module.cgi_location = '/' + self.project + '/'
 
         # Only open the subversion repository for the modules that really
         # need it. This saves us some precious time.
