@@ -67,9 +67,6 @@ class CommonFormatter:
               r"""(?P<fancylink>\[(?P<fancyurl>([a-z]+:[^ ]+)) (?P<linkname>.*?)\])""",
               r"""(?P<fancysvnhref>\[(?P<fancysvnfile>svn:[^ ]+) (?P<svnlinkname>.*?)\])"""]
 
-    def compile_rules(self, rules):
-        return re.compile('(?:' + string.join(rules, '|') + ')')
-
     def replace(self, fullmatch):
         for type, match in fullmatch.groupdict().items():
             if match and not type in Formatter._helper_patterns:
@@ -169,6 +166,8 @@ class OneLinerFormatter(CommonFormatter):
     
     _rules = CommonFormatter._rules + \
              [r"""(?P<url>([a-z]+://[^ ]+[^\., ]))"""]
+    
+    _compiled_rules = re.compile('(?:' + string.join(_rules, '|') + ')')
 
     def format(self, text, out):
 	if not text:
@@ -181,7 +180,7 @@ class OneLinerFormatter(CommonFormatter):
         self.indent_level = 0
         self.paragraph_open = 0
 
-        rules = self.compile_rules(self._rules)
+        rules = self._compiled_rules
 
         result = re.sub(rules, self.replace, escape(text.strip()))
         # Close all open 'one line'-tags
@@ -202,6 +201,8 @@ class Formatter(CommonFormatter):
               r"""(?P<imgurl>([a-z]+://[^ ]+)(\.png|\.jpg|\.jpeg|\.gif))""",
               r"""(?P<url>([a-z]+://[^ ]+[^\., ]))"""]
     
+    _compiled_rules = re.compile('(?:' + string.join(_rules, '|') + ')')
+
     # RE patterns used by other patterna
     _helper_patterns = ('idepth', 'ldepth', 'hdepth', 'fancyurl',
                         'linkname', 'fancysvnfile', 'svnlinkname')
@@ -300,7 +301,7 @@ class Formatter(CommonFormatter):
         self.indent_level = 0
         self.paragraph_open = 0
 
-        rules = self.compile_rules(self._rules)
+        rules = self._compiled_rules
         
         for line in escape(text).splitlines():
             # Handle PRE-blocks
