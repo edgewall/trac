@@ -72,7 +72,11 @@
   <?cs call:tlitem(item.href, 'newticket',
     'Ticket <em>#'+$item.idata+'</em> created by '+$item.author, item.message) ?>
  <?cs elif:item.type == #3 ?><!-- Closed ticket -->
-  <?cs if:item.message ?><?cs set:imessage=' - '+$item.message ?><?cs /if ?>
+  <?cs if:item.message ?>
+   <?cs set:imessage = ' - ' + $item.message ?>
+  <?cs else ?>
+   <?cs set:imessage = '' ?>
+  <?cs /if ?>
   <?cs call:tlitem(item.href, 'closedticket',
     'Ticket <em>#'+$item.idata+'</em> resolved by '+$item.author, 
     $item.tdata+$imessage) ?>
