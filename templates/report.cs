@@ -36,9 +36,9 @@
    <?cs /if ?>
    <?cs if:header ?><h2><?cs var:header ?></h2><?cs /if ?>
    <?cs if $report.id == -1 ?>
-     <table id="reportlist" class="listing">
+     <table class="listing reports">
    <?cs else ?>
-     <table id="tktlist" class="listing">
+     <table class="listing tickets">
    <?cs /if ?>
     <thead>
      <tr>

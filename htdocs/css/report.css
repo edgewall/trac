@@ -1,4 +1,6 @@
-h1 .numrows { font-size: 65%; color: #999; font-weight: normal }
+@import url(code.css);
+
+h1 .numrows { color: #999; font-size: 65%; font-weight: normal }
 h2 {
  background: #f7f7f7;
  border-bottom: 1px solid #d7d7d7;
@@ -8,58 +10,71 @@ h2 {
 #report-descr { margin: 0 2em; font-size: 90% }
 #report-notfound { margin: 2em; font-size: 110% }
 
+#query { clear: right }
+#query fieldset, #query fieldset input, #query fieldset select { font-size: 11px }
+#query fieldset { margin-top: 1em }
+#query .option, #query .option input, #query .option select { font-size: 11px }
+#query .option { float: left; line-height: 2em; margin: .9em 2.5em 0 .5em; padding: 0 0 .1em }
+#query .buttons { float: right; margin-top: .5em }
+#query .buttons input { margin: .5em }
+#query hr { clear: both; margin: 0; visibility: hidden }
+
+#filters table { width: 100% }
+#filters tr { height: 2em }
+#filters th, #filters td { padding: 0 .2em; vertical-align: middle }
+#filters th { font-size: 11px; text-align: right; white-space: nowrap; }
+#filters td label { font-size: 11px }
+#filters td.mode { text-align: right }
+#filters td.filter { width: 100% }
+#filters td.filter label { padding-right: 1em }
+#filters td.actions { text-align: right; white-space: nowrap }
+
 /* Styles for the report list and the report results table
    (extends the styles for "table.listing") */
-#reportlist td.title { width: 100% }
-#reportlist tbody td :link, #reportlist tbody td :visited,
-#tktlist tbody td :link, #tktlist tbody td :visited { display: block }
-#tktlist { border-bottom: none }
-#tktlist thead th { text-transform: capitalize }
-#tktlist tbody td, #reportlist tbody td { padding: .1em .5em }
-#tktlist tbody td a, #reportlist tbody td a { border-bottom: none }
-#tktlist tbody td.ticket :link, #tktlist tbody td.ticket :visited {
+.reports td.title { width: 100% }
+.reports tbody td :link, .reports tbody td :visited,
+.tickets tbody td :link, .tickets tbody td :visited { display: block }
+.tickets { border-bottom: none }
+.tickets thead th { text-transform: capitalize }
+.tickets tbody td, .reports tbody td { padding: .1em .5em !important }
+.tickets tbody td a, .reports tbody td a { border-bottom: none }
+.tickets tbody td.ticket :link, .tickets tbody td.ticket :visited {
  font-weight: bold;
 }
-#tktlist tbody tr:hover { background: #eed; color: #000 }
-#tktlist tr.color1-odd  { background: #fdc; border-color: #e88; color: #a22 }
-#tktlist tr.color1-even { background: #fed; border-color: #e99; color: #a22 }
-#tktlist tr.color2-odd  { background: #ffb; border-color: #eea; color: #880 }
-#tktlist tr.color2-even { background: #ffd; border-color: #dd8; color: #880 }
-#tktlist tr.color3-odd  { background: #fbfbfb; border-color: #ddd; color: #444 }
-#tktlist tr.color3-even { background: #f6f6f6; border-color: #ccc; color: #333 }
-#tktlist tr.color4-odd { background: #e7ffff; border-color: #cee; color: #099 }
-#tktlist tr.color4-even { background: #dff; border-color: #bee; color: #099 }
-#tktlist tr.color5-odd { background: #e7eeff; border-color: #cde; color: #469 }
-#tktlist tr.color5-even { background: #dde7ff; border-color: #cde; color: #469 }
-#tktlist tr.color6-odd  { background: #f0f0f0; border-color: #ddd; color: #888 }
-#tktlist tr.color6-even { background: #f7f7f7; border-color: #ddd; color: #888 }
-#tktlist tr.color6-odd a, .color6-even a { color: #b66 }
-#tktlist tbody td.fullrow {
+.tickets tbody tr:hover { background: #eed; color: #000 }
+.tickets tr.color1-odd  { background: #fdc; border-color: #e88; color: #a22 }
+.tickets tr.color1-even { background: #fed; border-color: #e99; color: #a22 }
+.tickets tr.color2-odd  { background: #ffb; border-color: #eea; color: #880 }
+.tickets tr.color2-even { background: #ffd; border-color: #dd8; color: #880 }
+.tickets tr.color3-odd  { background: #fbfbfb; border-color: #ddd; color: #444 }
+.tickets tr.color3-even { background: #f6f6f6; border-color: #ccc; color: #333 }
+.tickets tr.color4-odd { background: #e7ffff; border-color: #cee; color: #099 }
+.tickets tr.color4-even { background: #dff; border-color: #bee; color: #099 }
+.tickets tr.color5-odd { background: #e7eeff; border-color: #cde; color: #469 }
+.tickets tr.color5-even { background: #dde7ff; border-color: #cde; color: #469 }
+.tickets tr.color6-odd  { background: #f0f0f0; border-color: #ddd; color: #888 }
+.tickets tr.color6-even { background: #f7f7f7; border-color: #ddd; color: #888 }
+.tickets tr.color6-odd a, .color6-even a { color: #b66 }
+.tickets tbody tr.fullrow td, .tickets tbody td.fullrow {
  border: none;
  color: #333;
- background: #fff;
- padding-bottom: 2.5em !important;
- font-size: 90%;
+ background: transparent;
+ padding: 0 1em 2em 2em !important;
+ font-size: 85%;
 }
-#tktlist td.fullrow :link, #tktlist td.fullrow :visited { display: inline }
-#tktlist td.fullrow p { margin: 0; padding: .25em 1em }
-#tktlist td.fullrow hr { display: none }
+.tickets tbody tr.fullrow:hover { background: transparent !important }
+.tickets .fullrow :link, .tickets .fullrow :visited { display: inline }
+.tickets .fullrow .meta { color: #999; margin-bottom: -.5em; margin-left: -1em }
+.tickets .fullrow hr { display: none }
 
-#tktlist tr.odd.highest { background: #fdc; border-color: #e88; color: #a22 }
-#tktlist tr.even.highest { background: #fed; border-color: #e99; color: #a22 }
-#tktlist tr.odd.high { background: #ffb; border-color: #eea; color: #880 }
-#tktlist tr.even.high { background: #ffd; border-color: #dd8; color: #880 }
-#tktlist tr.odd.normal  { background: #fbfbfb; border-color: #ddd; color: #444 }
-#tktlist tr.even.normal { background: #f6f6f6; border-color: #ccc; color: #333 }
-#tktlist tr.odd.low { background: #e7ffff; border-color: #cee; color: #099 }
-#tktlist tr.even.low { background: #dff; border-color: #bee; color: #099 }
-#tktlist tr.odd.lowest { background: #e7eeff; border-color: #cde; color: #469 }
-#tktlist tr.even.lowest { background: #dde7ff; border-color: #cde; color: #469 }
-
-.field { margin-top: 1.3em }
-
-#query fieldset { margin: 1em 0 }
-#query fieldset div { float: left; margin: .5em 2em .5em 0 }
-#query fieldset label { display: block }
-#query fieldset select { width: 10em }
-#query br, #query .buttons { clear: left }
+/* Query results table */
+table.tickets tbody tr.highest { background: #fdc; border-color: #e88; color: #a22 }
+table.tickets tbody tr.even.highest { background: #fed; border-color: #e99 }
+table.tickets tbody tr.high { background: #ffb; border-color: #eea; color: #880 }
+table.tickets tbody tr.even.high { background: #ffd; border-color: #dd8 }
+table.tickets tbody tr.normal  { background: #fbfbfb; border-color: #ddd; color: #444 }
+table.tickets tbody tr.even.normal { background: #f6f6f6; border-color: #ccc }
+table.tickets tbody tr.low { background: #e7ffff; border-color: #cee; color: #099 }
+table.tickets tbody tr.even.low { background: #dff; border-color: #bee }
+table.tickets tbody tr.lowest { background: #e7eeff; border-color: #cde; color: #469 }
+table.tickets tbody tr.even.lowest { background: #dde7ff; border-color: #cde }

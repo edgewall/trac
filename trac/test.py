@@ -8,6 +8,7 @@ import tests.perm_test
 import tests.environment
 import tests.diff
 import tests.tracadmin
+import tests.query
 
 def suite():
     suite = unittest.TestSuite()
@@ -18,6 +19,7 @@ def suite():
     suite.addTest(tests.environment.suite())
     suite.addTest(tests.diff.suite())
     suite.addTest(tests.tracadmin.suite())
+    suite.addTest(tests.query.suite())
     return suite
 
 if __name__ == '__main__':

@@ -47,13 +47,15 @@ h4 :link, h4 :visited, h5 :link, h5 :visited, h6 :link, h6 :visited {
 /* Forms */
 input, textarea, select { margin: 2px }
 input, select { vertical-align: middle }
-input[type=submit], input[type=reset] {
+input[type=button], input[type=submit], input[type=reset] {
  background: #eee;
  color: #222;
  border: 1px outset #ccc;
  padding: .1em .5em;
 }
-input[type=submit]:hover, input[type=reset]:hover { background: #ccb }
+input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover {
+ background: #ccb;
+}
 input[type=text], input.textwidget, textarea {
  background: #fff;
  color: #000;

@@ -20,35 +20,88 @@
 # Author: Jonas Borgström <jonas@edgewall.com>
 
 from __future__ import nested_scopes
+from time import gmtime, localtime, strftime
 from types import ListType
 
 import perm
-import util
 from Module import Module
 from Ticket import get_custom_fields, insert_custom_fields, Ticket
+from Wiki import wiki_to_html, wiki_to_oneliner
+from util import add_to_hdf, escape, sql_escape
 
 
-class QueryModule(Module):
-    template_name = 'query.cs'
+class Query:
 
-    def get_constraints(self):
-        constraints = {}
-        custom_fields = [f['name'] for f in get_custom_fields(self.env)]
-        constrained_fields = [k for k in self.args.keys()
-                              if k in Ticket.std_fields or k in custom_fields]
-        for field in constrained_fields:
-            vals = self.args[field]
-            if type(vals) is ListType:
-                vals = map(lambda x: x.value, filter(None, vals))
-            elif vals.value:
-                vals = [vals.value]
-            else:
-                continue
-            constraints[field] = vals
-        return constraints
+    def __init__(self, env, constraints=None, order=None, desc=0, group=None,
+                 groupdesc = 0, verbose=0):
+        self.env = env
+        self.constraints = constraints or {}
+        self.order = order
+        self.desc = desc
+        self.group = group
+        self.groupdesc = groupdesc
+        self.verbose = verbose
+        self.cols = [] # lazily initialized
 
-    def get_results(self, sql):
-        cursor = self.db.cursor()
+        if self.order != 'id' and not self.order in Ticket.std_fields:
+            # order by priority by default
+            self.order = 'priority'
+
+    def get_columns(self):
+        if self.cols:
+            return self.cols
+
+        # FIXME: the user should be able to configure which columns should
+        # be displayed
+        cols = [ 'id', 'summary', 'status', 'owner', 'priority', 'milestone',
+                 'component', 'version', 'severity', 'resolution', 'reporter' ]
+        cols += [f['name'] for f in get_custom_fields(self.env)]
+
+        # Semi-intelligently remove columns that are restricted to a single
+        # value by a query constraint.
+        for col in [k for k in self.constraints.keys() if k in cols]:
+            constraint = self.constraints[col]
+            if len(constraint) == 1 and constraint[0] \
+                    and not constraint[0][0] in '!~^$':
+                cols.remove(col)
+            if col == 'status' and not 'closed' in constraint \
+                    and 'resolution' in cols:
+                cols.remove('resolution')
+        if self.group in cols:
+            cols.remove(self.group)
+
+        def sort_columns(col1, col2):
+            constrained_fields = self.constraints.keys()
+            # Ticket ID is always the first column
+            if 'id' in [col1, col2]:
+                return col1 == 'id' and -1 or 1
+            # Ticket summary is always the second column
+            elif 'summary' in [col1, col2]:
+                return col1 == 'summary' and -1 or 1
+            # Constrained columns appear before other columns
+            elif col1 in constrained_fields or col2 in constrained_fields:
+                return col1 in constrained_fields and -1 or 1
+            return 0
+        cols.sort(sort_columns)
+
+        # Only display the first seven columns by default
+        # FIXME: Make this configurable on a per-user and/or per-query basis
+        self.cols = cols[:7]
+        if not self.order in self.cols and not self.order == self.group:
+            # Make sure the column we order by is visible, if it isn't also
+            # the column we group by
+            self.cols[-1] = self.order
+
+        return self.cols
+
+    def execute(self, db):
+        if not self.cols:
+            self.get_columns()
+
+        sql = self.get_sql()
+        self.env.log.debug("Query SQL: %s" % sql)
+
+        cursor = db.cursor()
         cursor.execute(sql)
         results = []
         while 1:
@@ -56,152 +109,387 @@ class QueryModule(Module):
             if not row:
                 break
             id = int(row['id'])
-            results.append({
-                'id': id,
-                'href': self.env.href.ticket(id),
-                'summary': util.escape(row['summary'] or '(no summary)'),
-                'status': row['status'] or '',
-                'component': row['component'] or '',
-                'owner': row['owner'] or '',
-                'priority': row['priority'] or ''
-            })
+            result = { 'id': id, 'href': self.env.href.ticket(id) }
+            for col in self.cols:
+                result[col] = escape(row[col] or '--')
+            if self.group:
+                result[self.group] = row[self.group] or 'None'
+            if self.verbose:
+                result['description'] = row['description']
+                result['reporter'] = escape(row['reporter'] or 'anonymous')
+                result['created'] = int(row['time'])
+            results.append(result)
         cursor.close()
         return results
 
-    def render(self):
-        self.perm.assert_permission(perm.TICKET_VIEW)
+    def get_href(self, format=None):
+        return self.env.href.query(self.constraints, self.order, self.desc,
+                                   self.group, self.groupdesc, self.verbose,
+                                   format)
 
-        constraints = self.get_constraints()
-        order = self.args.get('order')
-        desc = self.args.has_key('desc')
+    def get_sql(self):
+        if not self.cols:
+            self.get_columns()
 
-        if self.args.has_key('search'):
-            self.req.redirect(self.env.href.query(constraints, order, desc,
-                                                  action='view'))
+        cols = self.cols[:]
+        if not self.order in cols:
+            cols += [self.order]
+        if self.group and not self.group in cols:
+            cols += [self.group]
+        if not 'priority' in cols:
+            # Always add the priority column for coloring the resolt rows
+            cols += ['priority']
+        if self.verbose:
+            cols += ['reporter', 'time', 'description']
+        cols.extend([c for c in self.constraints.keys() if not c in cols])
 
-        action = self.args.get('action')
-        if not (action or constraints or order or desc):
-            action = 'edit'
+        custom_fields = [f['name'] for f in get_custom_fields(self.env)]
 
-        self.req.hdf.setValue('query.action', action or 'view')
-        if action == 'edit':
-            self._render_editor(constraints, order, desc)
-        else:
-            self._render_results(constraints, order, desc)
+        sql = []
+        sql.append("SELECT " + ",".join([c for c in cols
+                                         if c not in custom_fields]))
+        for k in [k for k in cols if k in custom_fields]:
+            sql.append(", %s.value AS %s" % (k, k))
+        sql.append("\nFROM ticket")
+        for k in [k for k in cols if k in custom_fields]:
+           sql.append("\n  LEFT OUTER JOIN ticket_custom AS %s ON " \
+                      "(id=%s.ticket AND %s.name='%s')" % (k, k, k, k))
 
-    def _render_editor(self, constraints, order, desc):
-        self.req.hdf.setValue('title', 'Custom Query')
-        util.add_to_hdf(constraints, self.req.hdf, 'query.constraints')
-        self.req.hdf.setValue('query.order', order or 'priority')
-        if desc: self.req.hdf.setValue('query.desc', '1')
+        for col in [c for c in ['status', 'resolution', 'priority', 'severity']
+                    if c == self.order or c == self.group]:
+            sql.append("\n  LEFT OUTER JOIN (SELECT name AS %s_name, " \
+                                            "value AS %s_value " \
+                                            "FROM enum WHERE type='%s')" \
+                       " ON %s_name=%s" % (col, col, col, col, col))
+        for col in [c for c in ['milestone', 'version']
+                    if c == self.order or c == self.group]:
+            sql.append("\n  LEFT OUTER JOIN (SELECT name AS %s_name, " \
+                                            "time AS %s_time FROM %s)" \
+                       " ON %s_name=%s" % (col, col, col, col, col))
 
-        def add_options(field, constraints, prefix, cursor, sql):
-            options = []
-            check = constraints.has_key(field)
+        def get_constraint_sql(name, value, mode, neg):
+            value = sql_escape(value[len(mode and '!' or '' + mode):])
+            if mode == '~' and value:
+                return "IFNULL(%s,'') %sLIKE '%%%s%%'" % (
+                       name, neg and 'NOT ' or '', value)
+            elif mode == '^' and value:
+                return "IFNULL(%s,'') %sLIKE '%s%%'" % (
+                       name, neg and 'NOT ' or '', value)
+            elif mode == '$' and value:
+                return "IFNULL(%s,'') %sLIKE '%%%s'" % (
+                       name, neg and 'NOT ' or '', value)
+            elif mode == '':
+                return "IFNULL(%s,'')%s='%s'" % (name, neg and '!' or '', value)
+
+        clauses = []
+        for k, v in self.constraints.items():
+            # Determine the match mode of the constraint (contains, starts-with,
+            # negation, etc)
+            neg = len(v[0]) and v[0][0] == '!'
+            mode = ''
+            if len(v[0]) and v[0][neg] in "~^$":
+                mode = v[0][neg]
+
+            # Special case for exact matches on multiple values
+            if not mode and len(v) > 1:
+                inlist = ",".join(["'" + sql_escape(val[neg and 1 or 0:]) + "'" for val in v])
+                clauses.append("%s %sIN (%s)" % (k, neg and "NOT " or "", inlist))
+            elif len(v) > 1:
+                constraint_sql = [get_constraint_sql(k, val, mode, neg) for val in v]
+                if neg:
+                    clauses.append("(" + " AND ".join(constraint_sql) + ")")
+                else:
+                    clauses.append("(" + " OR ".join(constraint_sql) + ")")
+            elif len(v) == 1:
+                clauses.append(get_constraint_sql(k, v[0][neg and 1 or 0:], mode, neg))
+
+        if clauses:
+            sql.append("\nWHERE " + " AND ".join(filter(None, clauses)))
+
+        sql.append("\nORDER BY ")
+        order_cols = [(self.order, self.desc)]
+        if self.group and self.group != self.order:
+            order_cols.insert(0, (self.group, self.groupdesc))
+        for col, desc in order_cols:
+            if desc:
+                sql.append("IFNULL(%s,'')='' DESC," % col)
+            else:
+                sql.append("IFNULL(%s,'')=''," % col)
+            if col in ['status', 'resolution', 'priority', 'severity']:
+                if desc:
+                    sql.append("%s_value DESC" % col)
+                else:
+                    sql.append("%s_value" % col)
+            elif col in ['milestone', 'version']:
+                if desc:
+                    sql.append("IFNULL(%s_time,0)=0 DESC,%s_time DESC,%s DESC"
+                               % (col, col, col))
+                else:
+                    sql.append("IFNULL(%s_time,0)=0,%s_time,%s"
+                               % (col, col, col))
+            else:
+                if desc:
+                    sql.append("%s DESC" % col)
+                else:
+                    sql.append("%s" % col)
+            if col == self.group and not col == self.order:
+                sql.append(",")
+        if self.order != 'id':
+            sql.append(",id")
+
+        return "".join(sql)
+
+
+class QueryModule(Module):
+    template_name = 'query.cs'
+    template_rss_name = 'query_rss.cs'
+
+    def _get_constraints(self):
+        constraints = {}
+        custom_fields = [f['name'] for f in get_custom_fields(self.env)]
+
+        # A special hack for Safari/WebKit, which will not submit dynamically
+        # created check-boxes with their real value, but with the default value
+        # 'on'. See also htdocs/query.js#addFilter()
+        checkboxes = [k for k in self.args.keys() if k.startswith('__')]
+        if checkboxes:
+            import cgi
+            for checkbox in checkboxes:
+                (real_k, real_v) = checkbox[2:].split(':', 2)
+                self.args.list.append(cgi.MiniFieldStorage(real_k, real_v))
+
+        # For clients without JavaScript, we add a new constraint here if
+        # requested
+        removed_fields = [k[10:] for k in self.args.keys()
+                          if k.startswith('rm_filter_')]
+
+        constrained_fields = [k for k in self.args.keys()
+                              if k in Ticket.std_fields or k in custom_fields]
+        for field in constrained_fields:
+            vals = self.args[field]
+            if not type(vals) is ListType:
+                vals = [vals]
+            vals = map(lambda x: x.value, vals)
+            if vals:
+                mode = self.args.get(field + '_mode')
+                if mode:
+                    vals = map(lambda x: mode + x, vals)
+                if not field in removed_fields:
+                    constraints[field] = vals
+
+        return constraints
+
+    def _get_ticket_properties(self):
+        properties = []
+
+        cursor = self.db.cursor()
+
+        def rows_to_list(sql):
+            list = []
             cursor.execute(sql)
             while 1:
                 row = cursor.fetchone()
                 if not row:
                     break
-                option = {'name': row[0]}
-                if check and (row[0] in constraints[field]):
-                    option['selected'] = 1
-                options.append(option)
-            util.add_to_hdf(options, self.req.hdf, prefix + field)
-            if check:
-                del constraints[field]
+                list.append(row[0])
+            return list
 
-        cursor = self.db.cursor()
-        add_options('status', constraints, 'query.options.', cursor,
-                    "SELECT name FROM enum WHERE type='status' ORDER BY value")
-        add_options('resolution', constraints, 'query.options.', cursor,
-                    "SELECT name FROM enum WHERE type='resolution' ORDER BY value")
-        add_options('component', constraints, 'query.options.', cursor,
-                    "SELECT name FROM component ORDER BY name")
-        add_options('milestone', constraints, 'query.options.', cursor,
-                    "SELECT name FROM milestone ORDER BY name")
-        add_options('version', constraints, 'query.options.', cursor,
-                    "SELECT name FROM version ORDER BY name")
-        add_options('priority', constraints, 'query.options.', cursor,
-                    "SELECT name FROM enum WHERE type='priority' ORDER BY value")
-        add_options('severity', constraints, 'query.options.', cursor,
-                    "SELECT name FROM enum WHERE type='severity' ORDER BY value")
+        properties.append({'name': 'summary', 'type': 'text',
+                           'label': 'Summary'})
+        properties.append({
+            'name': 'status', 'type': 'radio', 'label': 'Status',
+            'options': rows_to_list("SELECT name FROM enum WHERE type='status' "
+                                    "ORDER BY value")})
+        properties.append({
+            'name': 'resolution', 'type': 'radio', 'label': 'Resolution',
+            'options': rows_to_list("SELECT name FROM enum "
+                                    "WHERE type='resolution' ORDER BY value")})
+        properties.append({
+            'name': 'component', 'type': 'select', 'label': 'Component',
+            'options': rows_to_list("SELECT name FROM component "
+                                    "ORDER BY name")})
+        properties.append({
+            'name': 'milestone', 'type': 'select', 'label': 'Milestone',
+            'options': rows_to_list("SELECT name FROM milestone "
+                                    "ORDER BY name")})
+        properties.append({
+            'name': 'version', 'type': 'select', 'label': 'Version',
+            'options': rows_to_list("SELECT name FROM version ORDER BY name")})
+        properties.append({
+            'name': 'priority', 'type': 'select', 'label': 'Priority',
+            'options': rows_to_list("SELECT name FROM enum "
+                                    "WHERE type='priority' ORDER BY value")})
+        properties.append({
+            'name': 'severity', 'type': 'select', 'label': 'Severity',
+            'options': rows_to_list("SELECT name FROM enum "
+                                    "WHERE type='severity' ORDER BY value")})
+        properties.append({'name': 'keywords', 'type': 'text',
+                           'label': 'Keywords'})
+        properties.append({'name': 'owner', 'type': 'text', 'label': 'Owner'})
+        properties.append({'name': 'reporter', 'type': 'text',
+                           'label': 'Reporter'})
+        properties.append({'name': 'cc', 'type': 'text', 'label': 'CC list'})
 
         custom_fields = get_custom_fields(self.env)
-        for custom in custom_fields:
-            if custom['type'] == 'select' or custom['type'] == 'radio':
-                check = constraints.has_key(custom['name'])
-                options = filter(None, custom['options'])
-                for i in range(len(options)):
-                    options[i] = {'name': options[i]}
-                    if check and (options[i]['name'] in constraints[custom['name']]):
-                        options[i]['selected'] = 1
-                custom['options'] = options
-        util.add_to_hdf(custom_fields, self.req.hdf, 'query.custom')
+        for field in [field for field in custom_fields
+                      if field['type'] in ['text', 'radio', 'select']]:
+            property = {'name': field['name'], 'type': field['type'],
+                        'label': field['label']}
+            if field.has_key('options'):
+                property['options'] = field['options']
+            properties.append(property)
 
-    def _render_results(self, constraints, order, desc):
+        return properties
+
+    def _get_constraint_modes(self):
+        modes = {}
+        modes['text'] = [
+            {'name': "contains", 'value': "~"},
+            {'name': "doesn't cointain", 'value': "!~"},
+            {'name': "begins with", 'value': "^"},
+            {'name': "ends with", 'value': "$"},
+            {'name': "is", 'value': ""},
+            {'name': "is not", 'value': "!"}
+        ]
+        modes['select'] = [
+            {'name': "is", 'value': ""},
+            {'name': "is not", 'value': "!"}
+        ]
+        return modes
+
+    def render(self):
+        self.perm.assert_permission(perm.TICKET_VIEW)
+
+        constraints = self._get_constraints()
+        if not constraints and not self.args.has_key('order'):
+            # avoid displaying all tickets when the query module is invoked
+            # with no parameters. Instead show only open tickets, possibly
+            # associated with the user
+            constraints = { 'status': [ 'new', 'assigned', 'reopened' ] }
+            if self.req.authname and self.req.authname != 'anonymous':
+                constraints['owner'] = [ self.req.authname ]
+            else:
+                email = self.req.session.get('email')
+                name = self.req.session.get('name')
+                if email or name:
+                    constraints['cc'] = [ '~%s' % email or name ]
+
+        query = Query(self.env, constraints, self.args.get('order'),
+                      self.args.has_key('desc'), self.args.get('group'),
+                      self.args.has_key('groupdesc'),
+                      self.args.has_key('verbose'))
+
+        if self.args.has_key('update'):
+            self.req.redirect(query.get_href())
+
+        self.add_link('alternate', query.get_href('rss'), 'RSS Feed',
+            'application/rss+xml', 'rss')
+        self.add_link('alternate', query.get_href('csv'), 'Comma-delimited Text',
+            'text/plain')
+        self.add_link('alternate', query.get_href('tab'), 'Tab-delimited Text',
+            'text/plain')
+
+        self.query = query
+
+        # For clients without JavaScript, we add a new constraint here if
+        # requested
+        if self.args.has_key('add'):
+            field = self.args.get('add_filter')
+            if field:
+                self.req.hdf.setValue('query.constraints.%s.0' % field, '')
+
+    def display(self):
         self.req.hdf.setValue('title', 'Custom Query')
-        self.req.hdf.setValue('query.edit_href',
-            self.env.href.query(constraints, order, desc, action='edit'))
+        query = self.query
 
-        # FIXME: the user should be able to configure which columns should
-        # be displayed
-        headers = [ 'id', 'summary', 'status', 'component', 'owner' ]
-        cols = headers
-        if not 'priority' in cols:
-            cols.append('priority')
+        props = self._get_ticket_properties()
+        add_to_hdf(props, self.req.hdf, 'ticket.properties')
+        modes = self._get_constraint_modes()
+        add_to_hdf(modes, self.req.hdf, 'query.modes')
 
-        if order != 'id' and not order in Ticket.std_fields:
-            # order by priority by default
-            order = 'priority'
-        for i in range(len(headers)):
-            self.req.hdf.setValue('query.headers.%d.name' % i, headers[i])
-            if headers[i] == order:
+        cols = query.get_columns()
+        for i in range(len(cols)):
+            self.req.hdf.setValue('query.headers.%d.name' % i, cols[i])
+            if cols[i] == query.order:
                 self.req.hdf.setValue('query.headers.%d.href' % i,
-                    self.env.href.query(constraints, order, not desc))
+                    escape(self.env.href.query(query.constraints, query.order,
+                                               not query.desc, query.group,
+                                               query.groupdesc, query.verbose)))
                 self.req.hdf.setValue('query.headers.%d.order' % i,
-                    desc and 'desc' or 'asc')
+                    query.desc and 'desc' or 'asc')
             else:
                 self.req.hdf.setValue('query.headers.%d.href' % i,
-                    self.env.href.query(constraints, headers[i]))
+                    escape(self.env.href.query(query.constraints, cols[i],
+                                               0, query.group, query.groupdesc,
+                                               query.verbose)))
 
-        sql = []
-        sql.append("SELECT " + ", ".join(headers))
-        custom_fields = [f['name'] for f in get_custom_fields(self.env)]
-        for k in [k for k in constraints.keys() if k in custom_fields]:
-            sql.append(", %s.value AS %s" % (k, k))
-        sql.append(" FROM ticket")
-        for k in [k for k in constraints.keys() if k in custom_fields]:
-           sql.append(" LEFT OUTER JOIN ticket_custom AS %s ON " \
-                      "(id=%s.ticket AND %s.name='%s')"
-                      % (k, k, k, k))
+        constraints = {}
+        for k, v in query.constraints.items():
+            constraint = {'values': [], 'mode': ''}
+            for val in v:
+                neg = val[:1] == '!'
+                if neg:
+                    val = val[1:]
+                mode = ''
+                if val[:1] in "~^$":
+                    mode, val = val[:1], val[1:]
+                constraint['mode'] = mode + (neg and '!' or '')
+                constraint['values'].append(val)
+            constraints[k] = constraint
+        add_to_hdf(constraints, self.req.hdf, 'query.constraints')
 
-        for col in [c for c in ['status', 'resolution', 'priority', 'severity']
-                    if c in cols]:
-            sql.append(" INNER JOIN (SELECT name AS %s_name, value AS %s_value " \
-                                   "FROM enum WHERE type='%s')" \
-                       " ON %s_name=%s" % (col, col, col, col, col))
+        self.req.hdf.setValue('query.order', query.order)
+        if query.desc:
+            self.req.hdf.setValue('query.desc', '1')
+        if query.group:
+            self.req.hdf.setValue('query.group', query.group)
+            if query.groupdesc:
+                self.req.hdf.setValue('query.groupdesc', '1')
+        if query.verbose:
+            self.req.hdf.setValue('query.verbose', '1')
 
-        clauses = []
-        for k, v in constraints.items():
-            if len(v) > 1:
-                inlist = ["'" + util.sql_escape(item) + "'" for item in v]
-                clauses.append("%s IN (%s)" % (k, ",".join(inlist)))
-            elif k in ['keywords', 'cc']:
-                clauses.append("%s LIKE '%%%s%%'" % (k, util.sql_escape(v[0])))
-            else:
-                clauses.append("%s='%s'" % (k, util.sql_escape(v[0])))
-        if clauses:
-            sql.append(" WHERE " + " AND ".join(clauses))
+        results = query.execute(self.db)
+        for result in results:
+            if result.has_key('description'):
+                result['description'] = wiki_to_oneliner(result['description'] or '',
+                                                     None, self.env, self.db)
+            if result.has_key('created'):
+                result['created'] = strftime('%c', localtime(result['created']))
+        add_to_hdf(results, self.req.hdf, 'query.results')
+        self.req.display(self.template_name, 'text/html')
 
-        if order in ['status', 'resolution', 'priority', 'severity']:
-            sql.append(" ORDER BY %s_value" % order)
-        else:
-            sql.append(" ORDER BY " + order)
-        if desc:
-            sql.append(" DESC")
+    def display_csv(self, sep=','):
+        self.req.send_response(200)
+        self.req.send_header('Content-Type', 'text/plain;charset=utf-8')
+        self.req.end_headers()
+        query = self.query
 
-        sql = "".join(sql)
-        self.log.debug("SQL Query: %s" % sql)
-        results = self.get_results(sql)
-        util.add_to_hdf(results, self.req.hdf, 'query.results')
+        cols = query.get_columns()
+        self.req.write(sep.join([col for col in cols]) + '\r\n')
+
+        results = query.execute(self.db)
+        for result in results:
+            self.req.write(sep.join([str(result[col]).replace(sep, '_')
+                                                     .replace('\n', ' ')
+                                                     .replace('\r', ' ')
+                                     for col in cols]) + '\r\n')
+
+    def display_tab(self):
+        self.display_csv('\t')
+
+    def display_rss(self):
+        query = self.query
+        query.verbose = 1
+        results = query.execute(self.db)
+        for result in results:
+            if result['reporter'].find('@') == -1:
+                result['reporter'] = ''
+            if result['description']:
+                result['description'] = escape(wiki_to_html(result['description'] or '',
+                                                            None, self.env, self.db, 1))
+            if result['created']:
+                result['created'] = strftime('%a, %d %b %Y %H:%M:%S GMT',
+                                             gmtime(result['created']))
+        add_to_hdf(results, self.req.hdf, 'query.results')
+
+        self.req.display(self.template_rss_name, 'text/xml')

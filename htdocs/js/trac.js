@@ -16,6 +16,14 @@ function addEvent(element, type, func){
   return false;
 }
 
+// Convenience function for the nearest ancestor element with a specific tag
+// name
+function getAncestorByTagName(e, tagName) {
+  tagName = tagName.toLowerCase();
+  do { e = e.parentNode } while (e.tagName.toLowerCase() != tagName);
+  return e;
+}
+
 // Adapted from http://www.kryogenix.org/code/browser/searchhi/
 function searchHighlight() {
   if (!document.createElement) return;
