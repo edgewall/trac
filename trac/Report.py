@@ -19,16 +19,15 @@
 #
 # Author: Jonas Borgström <jonas@edgewall.com>
 
-import os
+from trac import perm, util
+from trac.Module import Module
+from trac.WikiFormatter import wiki_to_html
+
 import re
 import time
 import types
 import urllib
 
-import perm
-import util
-from Module import Module
-from WikiFormatter import wiki_to_html
 
 dynvars_re = re.compile('\$([A-Z]+)')
 dynvars_disallowed_var_chars_re = re.compile('[^A-Z0-9_]')

@@ -1,7 +1,7 @@
 # -*- coding: iso8859-1 -*-
 #
-# Copyright (C) 2003, 2004 Edgewall Software
-# Copyright (C) 2003, 2004 Jonas Borgström <jonas@edgewall.com>
+# Copyright (C) 2003, 2004, 2005 Edgewall Software
+# Copyright (C) 2003, 2004, 2005 Jonas Borgström <jonas@edgewall.com>
 #
 # Trac is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License as
@@ -26,6 +26,12 @@ from trac.Module import Module
 from trac.WikiFormatter import wiki_to_html
 from trac import perm
 
+import svn.core
+import svn.delta
+import svn.fs
+import svn.repos
+import svn.util
+
 import os
 import time
 import util
@@ -33,12 +39,6 @@ import re
 import posixpath
 from StringIO import StringIO
 from zipfile import ZipFile, ZipInfo, ZIP_DEFLATED
-
-import svn.core
-import svn.delta
-import svn.fs
-import svn.repos
-import svn.util
 
 
 class BaseDiffEditor(svn.delta.Editor):
@@ -331,9 +331,12 @@ class ZipDiffEditor(BaseDiffEditor):
 
 class Changeset(Module):
     template_name = 'changeset.cs'
-    perm = None
+
+    # set by the module_factory
+    authzperm = None
     fs_ptr = None
     pool = None
+    repos = None
 
     def get_changeset_info (self, rev):
         cursor = self.db.cursor ()

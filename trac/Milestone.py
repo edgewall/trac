@@ -19,13 +19,13 @@
 #
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
-import time
+from trac import perm
+from trac.Module import Module
+from trac.Ticket import get_custom_fields, Ticket
+from trac.WikiFormatter import wiki_to_html
+from trac.util import *
 
-from Module import Module
-from util import *
-from Ticket import get_custom_fields, Ticket
-from WikiFormatter import wiki_to_html
-import perm
+import time
 
 
 def get_tickets_for_milestone(env, db, milestone, field='component'):

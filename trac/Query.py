@@ -19,16 +19,15 @@
 #
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
-from __future__ import nested_scopes
+from trac import perm
+from trac.Module import Module
+from trac.Ticket import get_custom_fields, insert_custom_fields, Ticket
+from trac.WikiFormatter import wiki_to_html, wiki_to_oneliner
+from trac.util import escape, sql_escape
+
 from time import gmtime, localtime, strftime, time
 from types import ListType
 import re
-
-import perm
-from Module import Module
-from Ticket import get_custom_fields, insert_custom_fields, Ticket
-from Wiki import wiki_to_html, wiki_to_oneliner
-from util import escape, sql_escape
 
 
 class Query:

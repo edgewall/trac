@@ -21,16 +21,16 @@ __license__ = """
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA."""
 
 
+import trac
+from trac.db_default import data as default_data
+from trac.util import get_date_format_hint, NaivePopen
+from trac.tests.environment import EnvironmentTestBase
+
 import os
 import re
 import sys
 import time
 import unittest
-
-import trac
-from trac.db_default import data as default_data
-from trac.util import get_date_format_hint, NaivePopen
-from environment import EnvironmentTestBase
 
 STRIP_TRAILING_SPACE = re.compile(r'( +)$', re.MULTILINE)
 

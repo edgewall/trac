@@ -22,20 +22,17 @@
 # Todo: Move backup and upgrade from db.py
 #
 
-import os
-import sys
-import time
-import shutil
-import ConfigParser
-
-import util
-import urllib
-import db_default
-import Logging
-import Mimeview
-import unicodedata
+from trac import db_default, Logging, Mimeview, util
 
 import sqlite
+
+import ConfigParser
+import os
+import shutil
+import sys
+import time
+import urllib
+import unicodedata
 
 db_version = db_default.db_version
 

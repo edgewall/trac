@@ -1,9 +1,9 @@
+from trac.Ticket import Ticket
+from trac.tests.environment import EnvironmentTestBase
+
 import os
 import tempfile
 import unittest
-
-from Ticket import Ticket
-from environment import EnvironmentTestBase
 
 
 class TicketTestCase(EnvironmentTestBase, unittest.TestCase):
@@ -45,3 +45,6 @@ class TicketTestCase(EnvironmentTestBase, unittest.TestCase):
 
 def suite():
     return unittest.makeSuite(TicketTestCase,'test')
+
+if __name__ == '__main__':
+    unittest.main()

@@ -19,13 +19,14 @@
 #
 # Author: Jonas Borgström <jonas@edgewall.com>
 
+from trac import perm
+from trac.util import TracError, escape, shorten_line
+from trac.Module import Module
+
 import re
 import time
 import string
 
-import perm
-from util import TracError, escape, shorten_line
-from Module import Module
 
 class Search(Module):
     template_name = 'search.cs'

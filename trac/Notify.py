@@ -23,7 +23,6 @@ import md5
 import sys
 import time
 import smtplib
-import os.path
 
 from trac import Environment
 from trac.__init__ import __version__

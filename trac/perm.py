@@ -19,8 +19,6 @@
 #
 # Author: Jonas Borgström <jonas@edgewall.com>
 
-from exceptions import StandardError
-
 
 permissions = [
     'TIMELINE_VIEW', 'SEARCH_VIEW', 'CONFIG_VIEW', 'LOG_VIEW', 'FILE_VIEW',
@@ -61,10 +59,11 @@ for mp in meta_permissions.keys():
 del p, mp, sys
 
 
-class PermissionError (StandardError):
+class PermissionError(StandardError):
     """Insufficient permissions to complete the operation"""
 
     def __init__ (self, action):
+        StandardError.__init__(self)
         self.action = action
 
     def __str__ (self):

@@ -19,19 +19,26 @@
 #
 # Author: Jonas Borgström <jonas@edgewall.com>
 
+from trac import perm, util
+from trac.Module import Module
+from trac.WikiFormatter import wiki_to_oneliner
+
+import svn.core
+import svn.fs
+import svn.util
+
 import time
 import posixpath
 
-import svn
 
-import util
-import perm
-import authzperm
-import Module
-from Wiki import wiki_to_oneliner
-
-class Browser(Module.Module):
+class Browser(Module):
     template_name = 'browser.cs'
+
+    # set by the module_factory
+    authzperm = None
+    fs_ptr = None
+    pool = None
+    repos = None
 
     def get_info(self, req, path, revision, rev_specified):
         """

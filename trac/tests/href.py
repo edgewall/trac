@@ -1,10 +1,10 @@
-import os
-import StringIO
+from trac.Href import Href
+
 import unittest
 
-from Href import Href
 
 class HrefTestCase(unittest.TestCase):
+
     def setUp(self):
         self.href = Href('/')
     
@@ -96,3 +96,6 @@ class HrefTestCase(unittest.TestCase):
 
 def suite():
     return unittest.makeSuite(HrefTestCase,'test')
+
+if __name__ == '__main__':
+    unittest.main()

@@ -19,12 +19,10 @@
 #
 # Author: Francois Harvey <fharvey@securiweb.net>
 
-from exceptions import StandardError
 import ConfigParser
-import string
-import os
 
-class AuthzPermissionError (StandardError):
+
+class AuthzPermissionError(StandardError):
     """Insufficient permission to view this file"""
     def __str__ (self):
         return 'Insufficient permission to view this file (mod_authz_svn)'

@@ -20,10 +20,8 @@
 # Author: Jonas Borgström <jonas@edgewall.com>
 
 import os
-import sys
 import time
 import tempfile
-import StringIO
 from types import *
 from UserDict import UserDict
 from UserList import UserList

@@ -1,8 +1,8 @@
+from trac.Environment import Environment, db_default
+
 import os
 import unittest
 import tempfile
-
-from trac.Environment import Environment, db_default
 
 
 class EnvironmentTestBase:

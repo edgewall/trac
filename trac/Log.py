@@ -19,18 +19,26 @@
 #
 # Author: Jonas Borgström <jonas@edgewall.com>
 
+from trac import perm, util
+from trac.Module import Module
+from trac.WikiFormatter import wiki_to_oneliner
+
+import svn.core
+import svn.fs
+import svn.repos
+import svn.util
+
 import time
-
-import perm
-import util
-from Module import Module
-from Wiki import wiki_to_oneliner
-
-import svn
 
 class Log (Module):
     template_name = 'log.cs'
     template_rss_name = 'log_rss.cs'
+
+    # set by the module_factory
+    authzperm = None
+    fs_ptr = None
+    pool = None
+    repos = None
 
     def log_receiver(self, changed_paths, rev, author, date, log, pool):
         if not changed_paths: return
@@ -63,12 +71,12 @@ class Log (Module):
         self.log_info = []
         self.branch_info = {}
         # We need to really make sure it's an ordinary string. The FieldStorage
-        # class provided by modpython might give us some strange string-like object
-        # that svn doesn't like.
+        # class provided by modpython might give us some strange string-like
+        # object that svn doesn't like.
         path = str(path)
-        svn.repos.svn_repos_get_logs (self.repos, [path],
-                                   0, rev, 1, 0, self.log_receiver,
-                                   self.pool)
+        svn.repos.svn_repos_get_logs(self.repos, [path],
+                                     0, rev, 1, 0, self.log_receiver,
+                                     self.pool)
         # Loop through all revisions and update the path
         # after each tag/branch/copy/rename.
         path = self.path

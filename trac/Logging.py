@@ -20,7 +20,6 @@
 # Author: Daniel Lundin <daniel@edgewall.com>
 
 import sys
-import util
 
 def logger_factory(logtype='syslog', logfile=None, level='WARNING',
                    logid='Trac'):

@@ -19,17 +19,15 @@
 #
 # Author: Jonas Borgström <jonas@edgewall.com>
 
-import re
+from trac import perm, util
+from trac.Module import Module
+from trac.WikiFormatter import wiki_to_html
+from trac.Notify import TicketNotifyEmail
+
 import time
 import string
 from types import ListType
 from UserDict import UserDict
-
-import perm
-import util
-from Module import Module
-from WikiFormatter import wiki_to_html
-from Notify import TicketNotifyEmail
 
 __all__ = ['Ticket', 'NewticketModule', 'TicketModule']
 

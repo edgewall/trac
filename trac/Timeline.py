@@ -19,12 +19,12 @@
 #
 # Author: Jonas Borgström <jonas@edgewall.com>
 
-import time
+from trac import perm
+from trac.util import escape, shorten_line
+from trac.Module import Module
+from trac.WikiFormatter import wiki_to_oneliner, wiki_to_html
 
-import perm
-from util import escape, shorten_line
-from Module import Module
-from Wiki import wiki_to_oneliner, wiki_to_html
+import time
 
 AVAILABLE_FILTERS = ('wiki', 'ticket', 'changeset', 'milestone')
 

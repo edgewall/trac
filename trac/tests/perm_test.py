@@ -1,9 +1,9 @@
+from trac import perm
+from trac.tests.environment import EnvironmentTestBase
+
 import os
 import tempfile
 import unittest
-
-import perm
-from environment import EnvironmentTestBase
 
 
 class PermTestCase(EnvironmentTestBase, unittest.TestCase):
@@ -37,3 +37,6 @@ class PermTestCase(EnvironmentTestBase, unittest.TestCase):
         
 def suite():
     return unittest.makeSuite(PermTestCase,'test')
+
+if __name__ == '__main__':
+    unittest.main()

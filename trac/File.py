@@ -22,25 +22,35 @@
 # FIXME:
 # * We need to figure out the encoding used somehow.
 
+from trac import perm, util
+from trac.Module import Module
+from trac.WikiFormatter import wiki_to_html
+
+import svn.core
+import svn.fs
+import svn.util
+
 import os
-import sys
 import time
 import urllib
 
-import svn
 
-import perm
-import util
-import Module
-from WikiFormatter import wiki_to_html
-
-class FileCommon(Module.Module):
+class FileCommon(Module):
     CHUNK_SIZE = 4096
     DISP_MAX_FILE_SIZE = 256 * 1024
+
+    # set by the module_factory
+    authzperm = None
+    fs_ptr = None
+    pool = None
+    repos = None
 
     filename = None
     rev = None
     mime_type = None
+    last_modified = None
+    length = None
+    read_func = None
 
     def render(self, req):
         self.perm.assert_permission (perm.FILE_VIEW)

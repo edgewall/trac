@@ -19,12 +19,14 @@
 #
 # Author: Jonas Borgström <jonas@edgewall.com>
 
-import os
+from trac.util import href_join
+
 import urllib
 from types import ListType
-from util import href_join
+
 
 class Href:
+
     def __init__(self, base):
         self.base = base
 

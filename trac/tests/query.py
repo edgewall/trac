@@ -1,6 +1,7 @@
+from trac.Query import Query
+
 import unittest
 
-from trac.Query import Query
 
 class QueryTestCase(unittest.TestCase):
 

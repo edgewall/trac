@@ -19,16 +19,15 @@
 #
 # Author: Jonas Borgström <jonas@edgewall.com>
 
-import os
-import time
-import urllib
-import StringIO
-
 from trac import perm
 from trac.Diff import get_diff_options, hdf_diff
 from trac.Module import Module
 from trac.util import escape, TracError, get_reporter_id
 from trac.WikiFormatter import *
+
+import os
+import time
+import StringIO
 
 
 __all__ = ['populate_page_dict', 'WikiPage', 'WikiModule']

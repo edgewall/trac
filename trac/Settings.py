@@ -19,10 +19,8 @@
 #
 # Author: Daniel Lundin <daniel@edgewall.com>
 
-import time
-
-from util import TracError
-from Module import Module
+from trac.util import TracError
+from trac.Module import Module
 
 
 class Settings(Module):

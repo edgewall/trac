@@ -1,8 +1,8 @@
+from trac.WikiFormatter import Formatter
+
 import os
 import StringIO
 import unittest
-
-from trac.WikiFormatter import Formatter
 
 class WikiTestCase(unittest.TestCase):
 

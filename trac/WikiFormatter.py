@@ -22,7 +22,6 @@
 import re
 import os
 import imp
-import time
 import string
 import StringIO
 

@@ -27,6 +27,9 @@ class Module:
 
     db = None
     env = None
+    log = None
+    perm = None
+
     _name = None
     template_name = None
     links = None

@@ -19,17 +19,14 @@
 #
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
-from __future__ import nested_scopes
+from trac import Milestone, perm, __version__
+from trac.util import pretty_timedelta, CRLF, TracError
+from trac.Module import Module
+from trac.Ticket import Ticket
+from trac.WikiFormatter import wiki_to_html
+
 import re
 from time import localtime, strftime, time
-
-from __init__ import __version__
-import perm
-import Milestone
-from util import pretty_timedelta, CRLF, TracError
-from Module import Module
-from Ticket import Ticket
-from Wiki import wiki_to_html
 
 
 class Roadmap(Module):
