@@ -265,19 +265,20 @@ def dispatch_request(path_info, req, env):
             if path_info == '/logout':
                 authenticator.logout()
                 referer = req.get_header('Referer')
-                if referer and referer[0:len(req.base_url)] != req.base_url:
+                if referer and not referer.startswith(req.base_url):
                     # only redirect to referer if the latter is from the same
                     # instance
                     referer = None
                 req.redirect(referer or env.href.wiki())
-            elif path_info == '/login':
+            elif req.remote_user:
                 authenticator.login(req)
-                referer = req.get_header('Referer')
-                if referer and referer[0:len(req.base_url)] != req.base_url:
-                    # only redirect to referer if the latter is from the same
-                    # instance
-                    referer = None
-                req.redirect(referer or env.href.wiki())
+                if path_info == '/login':
+                    referer = req.get_header('Referer')
+                    if referer and not referer.startswith(req.base_url):
+                        # only redirect to referer if the latter is from the
+                        # same instance
+                        referer = None
+                    req.redirect(referer or env.href.wiki())
             req.authname = authenticator.authname
 
             from trac.web.clearsilver import HDFWrapper
