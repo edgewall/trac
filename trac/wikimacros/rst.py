@@ -18,7 +18,8 @@
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #
 # Author: Daniel Lundin
-#         Oliver Rutherfurd
+#         Oliver Rutherfurd (initial implementation)
+#         Nuutti Kotivuori (role support)
 #
 # Trac support for reStructured Text, including a custom 'trac' directive
 #
@@ -30,7 +31,7 @@ import re
 
 from docutils import nodes
 from docutils.core import publish_string
-from docutils.parsers.rst import directives
+from docutils.parsers import rst
 
 from trac.Href import Href
 
@@ -42,45 +43,22 @@ REPORT_LINK = re.compile(r'(?:{(\d+)})|(?:report:(\d+))')
 CHANGESET_LINK = re.compile(r'(?:\[(\d+)\])|(?:changeset:(\d+))')
 FILE_LINK = re.compile(r'(?:browser|repos|source):([^#]+)#?(.*)')
 
-def _wikipage(href, match, arguments):
-    """_wiki(match,arguments) -> (uri,text)"""
-    template = '../wiki/%s'
-    page = filter(None,match.groups())[0]
-    text = arguments[int(len(arguments) == 2)]
-    uri = href.wiki(page)
-    return (uri, text)
+def _wikipage(href, args):
+    return href.wiki(args[0])
 
-def _ticket(href, match, arguments):
-    """_ticket(match,arguments) -> (uri,text)"""
-    ticket = int(filter(None,match.groups())[0])
-    text = arguments[int(len(arguments) == 2)]
-    uri = href.ticket(ticket)
-    return (uri, text)
+def _ticket(href, args):
+    return href.ticket(args[0])
 
-def _report(href, match, arguments):
-    """_report(match,arguments) -> (uri,text)"""
-    report = int(filter(None,match.groups())[0])
-    text = arguments[int(len(arguments) == 2)]
-    uri = href.report(report)
-    return (uri, text)
+def _report(href, args):
+    return href.report(args[0])
 
-def _changeset(href, match, arguments):
-    """_changeset(match,arguments) -> (uri,text)"""
-    changeset = int(filter(None,match.groups())[0])
-    text = arguments[int(len(arguments) == 2)]
-    uri = href.changeset(changeset)
-    return (uri, text)
+def _changeset(href, args):
+    return href.changeset(int(args[0]))
 
-def _browser(href, match, arguments):
-    """_browser(match,arguments) -> (uri,text)"""
-    matches = filter(None,match.groups())
-    if len(matches) == 2:
-        path,revision = matches
-    else:
-        path,revision = matches[0],''
-    uri = href.browser(path, revision)
-    text = arguments[int(len(arguments) == 2)]
-    return (uri, text)
+def _browser(href, args):
+    path = args[0]
+    rev = len(args) == 2 and args[1] or ''
+    return href.browser(path, rev)
 
 # TracLink REs and callback functions
 LINKS = [(WIKI_LINK, _wikipage),
@@ -89,8 +67,8 @@ LINKS = [(WIKI_LINK, _wikipage),
          (CHANGESET_LINK, _changeset),
          (FILE_LINK, _browser)]
 
-def trac(href, name,arguments,options,content,lineno,
-         content_offset,block_text,state,state_machine):
+def trac(href, name, arguments, options, content, lineno,
+         content_offset, block_text, state, state_machine):
     """Inserts a `reference` node into the document 
     for a given `TracLink`_, based on the content 
     of the arguments.
@@ -115,12 +93,14 @@ def trac(href, name,arguments,options,content,lineno,
     for (pattern, function) in LINKS:
         m = pattern.match(arguments[0])
         if m:
-            uri,text = function(href, m,arguments)
+            text = arguments[int(len(arguments) == 2)]
+            g = filter(None, m.groups())
+            uri = function(href, g)
             reference = nodes.reference(block_text, text)
             reference['refuri']= uri
             return reference
 
-    # didn't find a match (invalid TracLink), 
+    # didn't find a match (invalid TracLink),
     # report a warning
     warning = state_machine.reporter.warning(
             '%s is not a valid TracLink' % (arguments[0]),
@@ -128,16 +108,33 @@ def trac(href, name,arguments,options,content,lineno,
             line=lineno)
     return [warning]
 
-def execute(hdf, text, env): 
-    def do_trac(name,arguments,options,content,lineno,
-                content_offset,block_text,state,state_machine):
-        return trac(env.href, name,arguments,options,content,lineno,
-                    content_offset,block_text,state,state_machine)
+def trac_role(href, name, rawtext, text, lineno):
+    for (pattern, function) in LINKS:
+        m = pattern.match(text)
+        if m:
+            g = filter(None, m.groups())
+            uri = function(href, g)
+            return [nodes.reference(rawtext, text, refuri=uri)], []
+    return [], []
+
+def execute(hdf, text, env):
+    def do_trac(name, arguments, options, content, lineno,
+                content_offset, block_text, state, state_machine):
+        return trac(env.href, name, arguments, options, content, lineno,
+                    content_offset, block_text, state, state_machine)
+
+    def do_trac_role(name, rawtext, text, lineno):
+        return trac_role(env.href, name, rawtext, text, lineno)
+
     # 1 required arg, 1 optional arg, spaces allowed in last arg
-    do_trac.arguments = (1,1,1)    
+    do_trac.arguments = (1,1,1)
     do_trac.options = None
     do_trac.content = None
-    directives.register_directive('trac', do_trac)
+    rst.directives.register_directive('trac', do_trac)
+    local_roles = {'trac': do_trac_role}
 
-    html = publish_string(text, writer_name = 'html')
+    _inliner = rst.states.Inliner(roles = local_roles)
+    _parser = rst.Parser(inliner = _inliner)
+
+    html = publish_string(text, writer_name = 'html', parser = _parser)
     return html[html.find('<body>')+6:html.find('</body>')].strip()
