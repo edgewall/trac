@@ -24,7 +24,8 @@ import time
 import StringIO
 from svn import util
 from db import get_connection
-from xml.sax.saxutils import escape
+from xml.sax import saxutils
+
 
 def time_to_string(date):
     date = time.asctime(time.localtime(date))
@@ -107,6 +108,10 @@ def enum_selector (sql, name, selected=None,default_empty=0):
 
     out.write ('</select>')
     return out.getvalue()
+
+def escape(text, param={'"':'&#34;'}):
+    """Escapes &, <, > and \""""
+    return saxutils.escape(text, param)
 
 def get_first_line(text, maxlen):
     """

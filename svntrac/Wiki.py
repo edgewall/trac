@@ -28,7 +28,7 @@ import perm
 from Module import Module
 from db import get_connection
 from util import *
-from xml.sax.saxutils import quoteattr, escape
+from xml.sax.saxutils import escape
 
 
 class Formatter:

@@ -55,7 +55,7 @@ class Report (Module):
         info = cursor.fetchall()
         cols = cursor.rs.col_defs
         # Set all NULL elements to ''
-        info = map(lambda row: map(lambda x: x or '', row), info)
+        info = map(lambda row: map(lambda x: escape(x or ''), row), info)
         return [cols, info, title]
         
     def render_headers (self, out, row):

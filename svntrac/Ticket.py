@@ -79,8 +79,9 @@ class Ticket (Module):
         cursor.close ()
 
         info = {'ticket': id }
+        # Escape the values so that they are safe to have as html parameters
         for i in range(len(fields)):
-            info[fields[i]] = row[i] or ''
+            info[fields[i]] = escape(row[i] or '')
         return info
 
     def save_changes (self, id, old, new): 
@@ -156,7 +157,7 @@ class Ticket (Module):
         
         nstr = string.join(data.keys(), ',')
         vstr = ('%s,' * len(data.keys()))[:-1]
-        
+
         cursor.execute('INSERT INTO ticket (%s) VALUES(%s)' % (nstr, vstr),
                        *data.values())
         id = cnx.db.sqlite_last_insert_rowid()
