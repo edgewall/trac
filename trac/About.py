@@ -105,8 +105,6 @@ Copyright &copy; 2003,2004 <a href="http://www.edgewall.com/">Edgewall Software<
 
 
     def display (self):
-        templates_dir = self.config['general']['templates_dir']
-        self.cgi.hdf.setValue('hdf.loadpaths.0', templates_dir)
         cs = neo_cs.CS(self.cgi.hdf)
         cs.parseStr(self.about_cs)
         print "Content-type: text/html\r\n"

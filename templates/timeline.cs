@@ -1,14 +1,14 @@
 <?cs include "header.cs"?>
 <div id="page-content">
- <div id="subheader-links">
-   <br />
- </div>
+<div id="subheader-links">
+  <a href="?daysback=90&max=50&format=rss">RSS Feed </a>
+
+</div>
 
 <div id="main">
   <div id="main-content">
 
 <h1 id="timeline-hdr">Timeline</h1>
-
 <form action="<?cs var:trac.href.timeline ?>">
   <div id="timeline-prefs">
     View changes from 

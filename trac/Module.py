@@ -90,13 +90,12 @@ class Module:
                               self.config['header_logo']['height'])
         self.cgi.hdf.setValue('trac.href.logout', href.logout())
 
+        templates_dir = self.config['general']['templates_dir']
+        self.cgi.hdf.setValue('hdf.loadpaths.0', templates_dir)
 
 
     def display(self):
-        templates_dir = self.config['general']['templates_dir']
-        self.cgi.hdf.setValue('hdf.loadpaths.0', templates_dir)
-        tmpl_filename = os.path.join (templates_dir, self.template_name)
-        self.cgi.display(tmpl_filename)
+        self.cgi.display(self.template_name)
 
 
     def display_hdf(self):

@@ -101,6 +101,10 @@ a.navbar-link:hover {
 }
 #page-content { clear: none; }
 
+#main { 
+ margin-bottom: 2em;
+}
+
 /* Wiki */
 #wiki-history {
   visibility: hidden;

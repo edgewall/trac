@@ -24,16 +24,19 @@ from Href import href
 from Module import Module
 from Wiki import wiki_to_oneliner
 import perm
+import neo_cgi
+import neo_cs
 
 import time
 import string
 
 class Timeline (Module):
     template_name = 'timeline.cs'
+    template_rss_name = 'timeline_rss.cs'
 
     MAX_MESSAGE_LEN = 75
 
-    def get_info (self, start, stop, tickets, changeset, wiki):
+    def get_info (self, start, stop, maxrows, tickets, changeset, wiki):
         cursor = self.db.cursor ()
 
         if tickets == changeset == wiki == 0:
@@ -73,6 +76,9 @@ class Timeline (Module):
 
         q_str = string.join(q, ' UNION ALL ')
         q_str += ' ORDER BY time DESC'
+        if maxrows:
+            q_str += ' LIMIT %d' % maxrows
+
         cursor.execute(q_str)
 
         # Make the data more HDF-friendly
@@ -82,8 +88,10 @@ class Timeline (Module):
             if not row:
                 break
             t = time.localtime(int(row['time']))
+            gmt = time.gmtime(int(row['time']))
             item = {'time': time.strftime('%X', t),
                     'date': time.strftime('%x', t),
+                    'datetime': time.strftime('%a, %d %b %Y %H:%M:%S GMT', gmt),
                     'data': row['data'],
                     'type': int(row['type']),
                     'message': row['message'],
@@ -92,12 +100,18 @@ class Timeline (Module):
                 item['changeset_href'] = href.changeset(int(row['data']))
                 # Just recode this to iso8859-15 until we have propper unicode
                 # support
-                item['message'] = wiki_to_oneliner(utf8_to_iso(item['message']))
+                msg = utf8_to_iso(item['message'])
+                shortmsg = shorten_line(msg)
+                item['shortmsg'] = wiki_to_oneliner(shortmsg)
+                item['message'] = wiki_to_oneliner(msg)
             elif item['type'] == 5:
                 item['wiki_href'] = href.wiki(row['data'])
             else:
                 item['ticket_href'] = href.ticket(int(row['data']))
-                item['message'] = wiki_to_oneliner(item['message'])
+                msg = item['message']
+                shortmsg = shorten_line(msg)
+                item['message'] = wiki_to_oneliner(msg)
+                item['shortmsg'] = wiki_to_oneliner(shortmsg)
             info.append(item)
         return info
         
@@ -124,6 +138,8 @@ class Timeline (Module):
         stop  = _from
         start = stop - daysback * 86400
 
+        maxrows = int(self.args.has_key('max') and self.args['max'] or 0)
+           
         if self.args.has_key('wiki') or \
                self.args.has_key('ticket') or \
                self.args.has_key('changeset'):
@@ -139,7 +155,13 @@ class Timeline (Module):
         if changeset:
             self.cgi.hdf.setValue('timeline.changeset', 'checked')
         
-        info = self.get_info (start, stop, ticket, changeset, wiki)
+        info = self.get_info (start, stop, maxrows, ticket, changeset, wiki)
         add_dictlist_to_hdf(info, self.cgi.hdf, 'timeline.items')
         self.cgi.hdf.setValue('title', 'Timeline')
 
+
+    def display_rss(self):
+        cs = neo_cs.CS(self.cgi.hdf)
+        cs.parseFile(self.template_rss_name)
+        print "Content-type: text/xml\r\n"
+        print cs.render()

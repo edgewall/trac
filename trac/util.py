@@ -147,3 +147,15 @@ def utf8_to_iso(text):
     except UnicodeError:
         return text
     
+def shorten_line(text):
+    if not text:
+        return text
+    maxlen = 70
+    if len(text) < maxlen:
+        shortline = text
+    else:
+        i = text[:maxlen].rfind(' ')
+        if i == -1:
+            i = maxlen
+        shortline = text[:i]+' ...'
+    return shortline
