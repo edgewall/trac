@@ -60,7 +60,7 @@ class CommonFormatter:
               r"""(?P<tickethref>#[0-9]+)""",
               r"""(?P<changesethref>\[[0-9]+\])""",
               r"""(?P<reporthref>\{[0-9]+\})""",
-              r"""(?P<modulehref>((?P<modulename>bug|ticket|browser|source|repos|report|changeset|wiki):(?P<moduleargs>[^ ]*[^\., ])))""",
+              r"""(?P<modulehref>((?P<modulename>bug|ticket|browser|source|repos|report|changeset|wiki):(?P<moduleargs>[^ ]*[^\., \)])))""",
               r"""(?P<wikilink>(^|(?<=[^A-Za-z]))[!]?[A-Z][a-z/]+(?:[A-Z][a-z/]+)+)""",
               r"""(?P<fancylink>\[(?P<fancyurl>([a-z]+:[^ ]+)) (?P<linkname>.*?)\])"""]
 
