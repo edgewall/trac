@@ -1,9 +1,9 @@
 /* Trac CSS */
 body {
   background: #fff;
-  margin: 10px;
   color: #000;
   font: normal 13px verdana,arial,'Bitstream Vera Sans',helvetica,sans-serif;
+  margin: 10px;
 }
 h1, h1, h2, h3, h4 {
   font-family: arial,verdana,'Bitstream Vera Sans',helvetica,sans-serif;
@@ -27,7 +27,7 @@ span.underline { text-decoration: underline; }
   color: #b00;
   border-bottom: 1px dotted #bbb;
 }
-:link:hover, :visited:hover { color: #b00; background: #eee; }
+:link:hover, :visited:hover { background: #eee; color: #b00 }
 h1 :link, h1 :visited ,h2 :link, h2 :visited, h3 :link, h3 :visited,
 h4 :link, h4 :visited, h5 :link, h5 :visited, h6 :link, h6 :visited {
   color: inherit;
@@ -36,15 +36,16 @@ h4 :link, h4 :visited, h5 :link, h5 :visited, h6 :link, h6 :visited {
 
 /* Forms */
 input, textarea, select { margin: 2px }
-input[type=submit]:hover, input[type=reset]:hover { background: #ccb }
 input[type=submit], input[type=reset] {
  background: #eee;
  color: #222;
  border: 1px outset #ccc;
  padding: .1em .5em;
 }
+input[type=submit]:hover, input[type=reset]:hover { background: #ccb }
 input[type=text], input.textwidget, textarea {
  background: #fff;
+ color: #000;
  border: 1px solid #d7d7d7;
  padding: .25em .5em;
 }
@@ -52,16 +53,13 @@ input[type=text]:focus, textarea:focus { border: 1px solid #886 }
 option { border-bottom: 1px dotted #d7d7d7 }
 fieldset {
  border: 1px solid #d7d7d7;
-/*  padding: 0; */
-/*  padding-top: .5em; */
-/*  padding-bottom: .75em; */
  padding: .5em;
  margin: 0;
  width: 99%;
 }
 legend {
- color: #d7d7d7;
  background: #fff;
+ color: #d7d7d7;
  padding: 0 .25em;
  font-size: 75%;
  font-weight: bold;
@@ -93,7 +91,7 @@ form.inline input { margin: 1em }
 .nav ul { margin: 0; padding: 0 }
 .nav li { list-style: none }
 #navbar {
-  background: url(../topbar_gradient.png) top left #f7f7f7;
+  background: #f7f7f7 url(../topbar_gradient.png) top left;
   border: 1px solid #999;
   font: normal 10px verdana,'Bitstream Vera Sans',helvetica,arial,sans-serif;
   height: 1.6em;
@@ -115,7 +113,7 @@ form.inline input { margin: 1em }
   padding: .1em 15px;
 }
 #navbar .active:link, #navbar .active:visited {
-  background: url(../topbar_active.png) top left repeat-x #d7d7d7;
+  background: #d7d7d7 url(../topbar_active.png) top left repeat-x;
   border-top: none;
   border-right: none !important;
   font-weight: bold;
@@ -212,6 +210,7 @@ form.inline input { margin: 1em }
   visibility: hidden;
   background: #f7f7f0;
   border: 1px outset #999;
+  color: #000;
   font-size: 75%;
   position: absolute;
   display: inline;
@@ -226,7 +225,7 @@ form.inline input { margin: 1em }
 #wiki-history a:hover,#wiki-history tr:hover {
   background: #ddd;
 }
-a.missing:link,a.missing:visited { color: #998; background: #fafaf0; }
+a.missing:link,a.missing:visited { background: #fafaf0; color: #998 }
 a.missing:hover { color: #000; }
 #wiki-body { line-height: 140%; margin: 1em; }
 #wiki-formatting-help {
