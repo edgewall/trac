@@ -20,7 +20,6 @@
 # Author: Jonas Borgström <jonas@edgewall.com>
 
 import time
-import string
 import posixpath
 
 import svn
@@ -52,13 +51,6 @@ class Browser(Module.Module):
             raise util.TracError('"%s": no such file or directory in revision %d' \
                             % (path, revision), 'No such file or directory')
 
-        date = svn.fs.revision_prop(self.fs_ptr, revision,
-                                    svn.util.SVN_PROP_REVISION_DATE,
-                                    self.pool)
-        if date:
-            date_seconds = svn.util.svn_time_from_cstring(date, self.pool) / 1000000
-            req.check_modified(date_seconds)
-
         # Redirect to the file module if the requested path happens
         # to point to a regular file
         if svn.fs.is_file(root, path, self.pool):
@@ -66,6 +58,10 @@ class Browser(Module.Module):
                 req.redirect(self.env.href.file(path, revision))
             else:
                 req.redirect(self.env.href.log(path))
+
+        date = svn.fs.revision_prop(self.fs_ptr, revision,
+                                    svn.util.SVN_PROP_REVISION_DATE,
+                                    self.pool)
 
         entries = svn.fs.dir_entries(root, path, self.pool)
         info = []
@@ -194,7 +190,7 @@ class Browser(Module.Module):
 
         self.generate_path_links(req, path, rev, rev_specified)
         if path != '/':
-            parent = string.join(path.split('/')[:-2], '/') + '/'
+            parent = '/'.join(path.split('/')[:-2]) + '/'
             if rev_specified:
                 req.hdf.setValue('browser.parent_href',
                                  self.env.href.browser(parent, rev))
