@@ -22,7 +22,7 @@
 import re
 from util import add_to_hdf, escape
 
-line_re = re.compile('@@ [+-]([0-9]+),([0-9]+) [+-]([0-9]+),([0-9]+) @@')
+line_re = re.compile('^@@ [+-]([0-9]+),([0-9]+) [+-]([0-9]+),([0-9]+) @@$')
 space_re = re.compile(' ( +)|^ ')
 
 
