@@ -49,7 +49,7 @@ class ModPythonRequest(core.Request):
             self.path_info = self.req.uri[len(root_uri):]
         else:
             self.path_info = self.req.path_info
-    
+
         if len(self.path_info):
             self.idx_location = self.req.uri[:-len(self.path_info)]
         else:
@@ -59,9 +59,9 @@ class ModPythonRequest(core.Request):
             # We have to remove one path element from path_info when we're
             # using TracEnvParentDir
             self.path_info = re.sub('/[^/]+', '', self.path_info, 1)
-            
+
         if len(self.path_info):
-            self.cgi_location = self.req.uri[:-len(self.path_info)]
+            self.cgi_location = self.req.uri[:-len(self.path_info)] or '/'
         else:
             self.cgi_location = self.req.uri
 
@@ -77,7 +77,8 @@ class ModPythonRequest(core.Request):
            if port != 80:
                proto_port = ':%d' % port
 
-        self.base_url = '%s://%s%s%s' % (proto, host, proto_port, self.cgi_location)
+        self.base_url = '%s://%s%s%s' % (proto, host, proto_port,
+                                         self.cgi_location)
 
         self.remote_addr = self.req.connection.remote_ip
         self.remote_user = self.req.user
