@@ -21,6 +21,12 @@
 </div>
 
 <div id="content" class="ticket">
+
+ <h1>Ticket #<?cs var:ticket.id ?> <?cs
+ if:ticket.status == 'closed' ?>(Closed: <?cs var:ticket.resolution ?>)<?cs
+ elif:ticket.status != 'new' ?>(<?cs var:ticket.status ?>)<?cs
+ /if ?></h1>
+
  <div id="searchable">
  <?cs def:ticketprop(label, name, value, fullrow) ?>
   <th id="h_<?cs var:name ?>"><?cs var:$label ?>:</th>
@@ -32,10 +38,6 @@
 
 <div id="ticket">
  <div class="date"><?cs var:ticket.opened ?></div>
- <h1>Ticket #<?cs var:ticket.id ?> <?cs
- if:ticket.status == 'closed' ?>(Closed: <?cs var:ticket.resolution ?>)<?cs
- elif:ticket.status != 'new' ?>(<?cs var:ticket.status ?>)<?cs
- /if ?></h1>
  <h2><?cs var:ticket.summary ?></h2>
  <hr />
  <table><tr><?cs
@@ -66,8 +68,6 @@
   /each ?>
  </tr></table><?cs /if ?>
  <hr />
- <h3>Description<?cs if:ticket.reporter ?> by <?cs
-   var:ticket.reporter ?><?cs /if ?>:</h3>
  <div class="description">
   <?cs var:ticket.description.formatted ?>
  </div>

@@ -12,14 +12,14 @@ h1, h2, h3, h4 {
  font-weight: bold;
  letter-spacing: -0.018em;
 }
-h1 { font-size: 21px; margin: .15em 1em 0 0 }
-h2 { font-size: 16px; margin: 2em 0 .5em; }
-h3 { font-size: 14px; margin: 1.5em 0 .5em; }
-hr { border: none;  border-top: 1px solid #ccb; margin: 2em 0; }
+h1 { font-size: 19px; margin: .15em 1em 0 0 }
+h2 { font-size: 16px; margin: 2em 0 .5em }
+h3 { font-size: 14px; margin: 1.5em 0 .5em }
+hr { border: none;  border-top: 1px solid #ccb; margin: 2em 0 }
 address { font-style: normal }
 img { border: none }
 
-.underline { text-decoration: underline; }
+.underline { text-decoration: underline }
 ol.loweralpha { list-style-type: lower-alpha }
 ol.upperalpha { list-style-type: upper-alpha }
 ol.lowerroman { list-style-type: lower-roman }
@@ -248,7 +248,6 @@ label.disabled { color: #d7d7d7 }
 a.missing:link,a.missing:visited { background: #fafaf0; color: #998 }
 a.missing:hover { color: #000; }
 
-#content.wiki { line-height: 140% }
 .wikitoolbar {
  border: solid #d7d7d7;
  border-width: 1px 1px 1px 0;

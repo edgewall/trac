@@ -1,7 +1,7 @@
 @import url(code.css);
 
 /* Browser */
-h1 { font-size: 16px; letter-spacing: -0.028em; margin: 0; padding: 0 0 .5em }
+h1 { margin: 0; padding: 0 0 .5em }
 h1 :link, h1 :visited, h1 .filename { border: none; padding: 0 .2em }
 h1 :link, h1 :visited { color: #b00 }
 h1 .first:link, h1 .first:visited { color: #998 }

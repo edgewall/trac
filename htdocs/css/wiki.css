@@ -34,5 +34,5 @@
 }
 .wiki-toc h4 { font-size: 12px; margin: 0 1em; }
 .wiki-toc ul { list-style: none; padding: 0; margin: 0; }
-.wiki-toc li { margin: 0; padding: 0 1em; }
+.wiki-toc li { margin: 0; padding: .2em 1em }
 .wiki-toc .active { background: #ff9; }
