@@ -6,8 +6,9 @@
  font-size: 9px;
  padding: .8em;
  margin: 0 1em 1em;
+ width: 36em;
 }
-#main.timeline #prefs input { font-size: 9px }
+#main.timeline #prefs input { font-size: 9px; vertical-align: middle }
 #main.timeline #prefs fieldset { border: 0; margin: .5em; padding: 0 }
 #main.timeline #prefs .buttons { text-align: right; margin-top: -1.6em }
 
