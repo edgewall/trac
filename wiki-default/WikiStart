@@ -1,8 +1,7 @@
-== Welcome to Trac 0.6 'Solanum' ==
+= Welcome to Trac 0.7 'Fulci' =
 
 Trac is a '''minimalistic''' approach to '''web-based''' management of
-'''software projects'''. Its goal is to simplify effective tracking and
-handling of software issues, enhancements and overall progress.
+'''software projects'''. Its goal is to simplify effective tracking and handling of software issues, enhancements and overall progress.
 
 All aspects of Trac have been designed with the single goal to 
 '''help developers write great software''' while '''staying out of the way'''
@@ -16,11 +15,14 @@ of the page. WikiFormatting will give you a detailed description of
 available Wiki formatting commands.
 
 "[wiki:TracAdmin trac-admin] ''yourdatabase.db'' initdb" created
-a new database filled with a default set of wiki pages and some sample
-data. You can use [wiki:TracAdmin trac-admin] to configure
-[http://trac.edgewall.com/ Trac] to better fit your project,
-especially in regard to ''components'', ''versions'' and
-''milestones''. 
+a new database environment, containing a default set of wiki pages and some sample
+data. This newly created environment also contains [wiki:TracGuide
+documentation] to help you get started with your project.
+
+You can use [wiki:TracAdmin trac-admin] to configure
+[http://trac.edgewall.com/ Trac] to better fit your project, especially in
+regard to ''components'', ''versions'' and ''milestones''. 
+
 
 TracGuide is a good place to start.
 
@@ -35,3 +37,8 @@ Enjoy![[BR]]
  * TracSupport --  Trac Support
 
 For a complete list of local wiki pages, see TitleIndex.
+
+Trac is brought to you by [http://www.edgewall.com/ Edgewall Software],
+providing professional Linux and software development services to clients
+worldwide. Visit http://www.edgewall.com/ for more information.
+
