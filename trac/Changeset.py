@@ -26,7 +26,7 @@ import perm
 
 import re
 import string
-from svn import fs, util, delta, repos
+from svn import fs, util, delta, repos, core
 
 line_re = re.compile('@@ [+-]([0-9]+),([0-9]+) [+-]([0-9]+),([0-9]+) @@')
 header_re = re.compile('header ([^\|]+) \| ([^\|]+) redaeh')
@@ -184,8 +184,11 @@ def render_diffs(fs_ptr, rev, pool, req, editor_class=HtmlDiffEditor):
     generates a unified diff of the changes for a given changeset.
     the output is written to stdout.
     """
-    old_root = fs.revision_root(fs_ptr, rev - 1, pool)
-    new_root = fs.revision_root(fs_ptr, rev, pool)
+    try:
+        old_root = fs.revision_root(fs_ptr, rev - 1, pool)
+        new_root = fs.revision_root(fs_ptr, rev, pool)
+    except core.SubversionException:
+        raise TracError('Invalid revision number: %d' % rev)
 
     editor = editor_class(old_root, new_root, rev, req)
     e_ptr, e_baton = delta.make_editor(editor, pool)

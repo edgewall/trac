@@ -35,7 +35,10 @@ class Browser(Module):
         """
         Extracts information for a given path and revision
         """
-        root = fs.revision_root(self.fs_ptr, revision, self.pool)
+        try:
+            root = fs.revision_root(self.fs_ptr, revision, self.pool)
+        except core.SubversionException:
+            raise TracError('Invalid revision number: %d' % revision)
 
         node_type = fs.check_path(root, path, self.pool)
         if not node_type in [core.svn_node_dir, core.svn_node_file]:

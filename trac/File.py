@@ -233,8 +233,12 @@ class File(FileCommon):
                 rev = svn.fs.youngest_rev(self.fs_ptr, self.pool)
 
         self.generate_path_links(rev, rev_specified)
-
-        root = svn.fs.revision_root(self.fs_ptr, rev, self.pool)
+        
+        try:
+            root = svn.fs.revision_root(self.fs_ptr, rev, self.pool)
+        except svn.core.SubversionException:
+            raise util.TracError('Invalid revision number: %d' % rev)
+        
         history = svn.fs.node_history(root, self.path, self.pool)
         history = svn.fs.history_prev(history, 0, self.pool)
         history_path, history_rev = svn.fs.history_location(history, self.pool);

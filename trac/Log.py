@@ -114,11 +114,15 @@ class Log (Module):
             rev = fs.youngest_rev(self.fs_ptr, self.pool)
             rev_specified = 0
             
+        try:
+            root = fs.revision_root(self.fs_ptr, rev, self.pool)
+        except core.SubversionException:
+            raise TracError('Invalid revision number: %d' % rev)
+        
         # We display an error message if the file doesn't exist (any more).
         # All we know is that the path isn't valid in the youngest
         # revision of the repository. The file might have existed
         # before, but we don't know for sure...
-        root = fs.revision_root(self.fs_ptr, rev, self.pool)
         if not fs.check_path(root, self.path, self.pool) in \
                [core.svn_node_file, core.svn_node_dir]:
             raise TracError('The file or directory "%s" doesn\'t exist in the '
