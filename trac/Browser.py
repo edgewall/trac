@@ -58,7 +58,6 @@ class Browser(Module.Module):
         if date:
             date_seconds = svn.util.svn_time_from_cstring(date, self.pool) / 1000000
             self.req.check_modified(date_seconds)
-        self.log.debug("Not using HTTP cache, regenerating page.")
 
         # Redirect to the file module if the requested path happens
         # to point to a regular file

@@ -147,7 +147,6 @@ class Log (Module):
             if date:
                 date_seconds = svn.util.svn_time_from_cstring(date, self.pool) / 1000000
                 self.req.check_modified(date_seconds)
-            self.log.debug("Not using HTTP cache, regenerating page.")
 
             info = self.get_info (self.path, rev)
             util.add_dictlist_to_hdf(info, self.req.hdf, 'log.items')

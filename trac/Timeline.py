@@ -26,7 +26,6 @@ import sys
 
 import perm
 import util
-from core import RedirectException
 from Module import Module
 from Wiki import wiki_to_oneliner,wiki_to_html
 
@@ -108,7 +107,6 @@ class Timeline (Module):
 
             if len(info) == 0:
                 self.req.check_modified(int(row['time']))
-            self.log.debug("Not using HTTP cache, regenerating page.")
 
             t = time.localtime(int(row['time']))
             gmt = time.gmtime(int(row['time']))

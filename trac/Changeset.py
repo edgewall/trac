@@ -44,7 +44,8 @@ class BaseDiffEditor(svn.delta.Editor):
     Base class for diff renderers.
     """
 
-    def __init__(self, old_root, new_root, rev, req, args, env, path_info):
+    def __init__(self, old_root, new_root, rev, req, args, env, path_info,
+                 diff_options):
         self.path_info = path_info
         self.old_root = old_root
         self.new_root = new_root
@@ -52,6 +53,7 @@ class BaseDiffEditor(svn.delta.Editor):
         self.req = req
         self.args = args
         self.env = env
+        self.diff_options = diff_options
 
     # svn.delta.Editor callbacks:
     #   This editor will be driven by a 'repos.svn_repos_dir_delta' call.
@@ -88,9 +90,10 @@ class HtmlDiffEditor(BaseDiffEditor):
     the output is written to stdout.
     """
 
-    def __init__(self, old_root, new_root, rev, req, args, env, change_info):
+    def __init__(self, old_root, new_root, rev, req, args, env, change_info,
+                 diff_options):
         BaseDiffEditor.__init__(self, old_root, new_root, rev, req, args,
-                                env, change_info)
+                                env, change_info, diff_options)
         self.prefix = None
 
     def add_directory(self, path, parent_baton, copyfrom_path,
@@ -145,9 +148,8 @@ class HtmlDiffEditor(BaseDiffEditor):
                                           'iso-8859-15')
 
         # Start up the diff process
-        options = Diff.get_options(self.env, self.req, self.args, 1)
         differ = svn.fs.FileDiff(old_root, old_path,
-                                 self.new_root, new_path, pool, options)
+                                 self.new_root, new_path, pool, self.diff_options)
         differ.get_files()
         pobj = differ.get_pipe()
 
@@ -248,9 +250,10 @@ class ZipDiffEditor(BaseDiffEditor):
     Generates a ZIP archive containing the modified and added files.
     """
 
-    def __init__(self, old_root, new_root, rev, req, args, env, path_info):
+    def __init__(self, old_root, new_root, rev, req, args, env, path_info,
+                 diff_options):
         BaseDiffEditor.__init__(self, old_root, new_root, rev, req, args,
-                                env, path_info)
+                                env, path_info, diff_options)
         self.buffer = StringIO()
         self.zip = ZipFile(self.buffer, 'w', ZIP_DEFLATED)
 
@@ -381,7 +384,7 @@ class Changeset (Module.Module):
         else:
             self.rev = youngest_rev
 
-        Diff.get_options(self.env, self.req, self.args, 1)
+        self.diff_options = Diff.get_options(self.env, self.req, self.args, 1)
         if self.args.has_key('update'):
             self.req.redirect(self.env.href.changeset(self.rev))
 
@@ -394,8 +397,8 @@ class Changeset (Module.Module):
             raise util.TracError('Invalid revision number: %d' % int(self.rev))
 
         changeset_info = self.get_changeset_info(self.rev)
-        self.req.check_modified(int(changeset_info['time']))
-
+        self.req.check_modified(int(changeset_info['time']),
+                                self.diff_options[0] + "".join(self.diff_options[1]))
         change_info = self.get_change_info(self.rev)
 
         self.req.hdf.setValue('title', '[%d] (changeset)' % self.rev)
@@ -428,7 +431,7 @@ class Changeset (Module.Module):
         The output is written to stdout.
         """
         editor = editor_class(self.old_root, self.new_root, int(self.rev), self.req,
-                              self.args, self.env, self.path_info)
+                              self.args, self.env, self.path_info, self.diff_options[1])
         e_ptr, e_baton = svn.delta.make_editor(editor, self.pool)
 
         def authz_cb(root, path, pool):

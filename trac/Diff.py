@@ -149,10 +149,10 @@ def get_options(env, req, args, advanced=0):
         return arg
 
     pref = req.session.get('diff_style', 'inline')
-    arg = args.get('style', pref)
-    if args.has_key('update') and arg != pref:
-        req.session.set_var('diff_style', arg)
-    req.hdf.setValue('diff.style', arg)
+    style = args.get('style', pref)
+    if args.has_key('update') and style != pref:
+        req.session.set_var('diff_style', style)
+    req.hdf.setValue('diff.style', style)
 
     if advanced:
 
@@ -178,6 +178,6 @@ def get_options(env, req, args, advanced=0):
             options.append('-b')
         req.hdf.setValue('diff.options.ignorewhitespace', str(arg))
 
-        return options
+        return (style, options)
 
-    return []
+    return (style, [])

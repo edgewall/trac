@@ -290,8 +290,8 @@ class Request:
     def end_headers(self):
         raise RuntimeError, 'Virtual method not implemented'
 
-    def check_modified(self, timesecs):
-        etag = 'W"%s/%d"' % (self.authname, timesecs)
+    def check_modified(self, timesecs, extra=''):
+        etag = 'W"%s/%d/%s"' % (self.authname, timesecs, extra)
         inm = self.get_header('If-None-Match')
         if (not inm or inm != etag):
             self.send_header('ETag', etag)
