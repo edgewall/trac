@@ -56,6 +56,7 @@ class CommonFormatter:
         self.env = env
         self.db = db
         self._href = absurls and env.abs_href or env.href
+        self._local = env.get_config('project', 'url') or env.abs_href.base
 
     def replace(self, fullmatch):
         for itype, match in fullmatch.groupdict().items():
@@ -149,7 +150,10 @@ class CommonFormatter:
             return self._make_ext_link(link, text)
 
     def _make_ext_link(self, url, text):
-        return '<a class="ext-link" href="%s">%s</a>' % (url, text)
+        if not url.startswith(self._local):
+            return '<a class="ext-link" href="%s">%s</a>' % (url, text)
+        else:
+            return '<a href="%s">%s</a>' % (url, text)
 
     def _make_wiki_link(self, page, text):
         if not self.env._wiki_pages.has_key(page):
