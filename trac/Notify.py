@@ -264,16 +264,16 @@ class TicketNotifyEmail(NotifyEmail):
         return '[%s] #%s: %s' % (projname, self.ticket['id'],
                                      self.ticket['summary'])
 
-    def get_recipients(self, ticket):
+    def get_recipients(self, tktid):
         emails = []
         cursor = self.db.cursor()
-        cursor.execute('SELECT reporter,cc FROM ticket WHERE id=%s', ticket['id'])
+        cursor.execute('SELECT reporter,cc FROM ticket WHERE id=%s', tktid)
         row = cursor.fetchone()
         if row:
             emails += row[0] and self.get_email_addresses(row[0]) or []
             emails += row[1] and self.get_email_addresses(row[1]) or []
         cursor.execute('SELECT DISTINCT author,ticket FROM ticket_change '
-                       ' WHERE ticket=%s', ticket['id'])
+                       ' WHERE ticket=%s', tktid)
         rows = cursor.fetchall()
         for row in rows:
             emails += row[0] and self.get_email_addresses(row[0]) or []

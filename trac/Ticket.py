@@ -141,7 +141,7 @@ class Ticket(UserDict):
         now = int(time.time())
         id = self['id']
         
-        if not self._old: return # Not modified
+        if not self._old and not comment: return # Not modified
         
         for name in self._old.keys():
             if name[:7] == 'custom_':
