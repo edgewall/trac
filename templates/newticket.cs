@@ -1,14 +1,14 @@
+<?cs set:html.stylesheet = 'css/ticket.css' ?>
 <?cs include "header.cs" ?>
 <?cs include "macros.cs" ?>
 <script type="text/javascript">
 addEvent(window, 'load', function() { document.getElementById('summary').focus()}); 
 </script>
-<div id="page-content">
-<div id="subheader-links">
-<br />
+
+<div class="nav">
 </div>
- <div id="main">
-  <div id="main-content">
+
+<div id="main" class="ticket">
 
 <h3>Create New Ticket:</h3>
 <div id="nt-ticket">
@@ -92,8 +92,6 @@ addEvent(window, 'load', function() { document.getElementById('summary').focus()
  </div>
 </div> <!-- #nt-ticket -->
 
- </div>
-</div>
 </div>
 
 <?cs include "footer.cs" ?>

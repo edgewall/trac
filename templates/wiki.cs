@@ -1,3 +1,4 @@
+<?cs set:html.stylesheet = 'css/wiki.css' ?>
 <?cs include "header.cs" ?>
 <?cs include "macros.cs" ?>
 

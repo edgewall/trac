@@ -1,3 +1,6 @@
+@import url(code.css);
+@import url(diff.css);
+
 /* Styles for the page history table
    (extends the styles for "table.listing") */
 #wikihist td { padding: 0 .5em }

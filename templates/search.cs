@@ -1,3 +1,4 @@
+<?cs set:html.stylesheet = 'css/search.css' ?>
 <?cs include "header.cs"?>
 <script type="text/javascript">
 addEvent(window, 'load', function() { document.getElementById('q').focus()}); 

@@ -1,3 +1,4 @@
+<?cs set:html.stylesheet = 'css/report.css' ?>
 <?cs include "header.cs" ?>
 
 <div class="nav">

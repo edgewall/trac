@@ -1,17 +1,18 @@
+<?cs set:html.stylesheet = 'css/browser.css' ?>
 <?cs include "header.cs"?>
 <?cs include "macros.cs"?>
-<div id="page-content">
-<div id="subheader-links">
-<ul class="subheader-links">
+
+<div class="nav">
+ <ul class="subheader-links">
   <?cs if args.mode!= 'attachment' ?>
   <li><a href="<?cs var:file.logurl ?>">Revision Log</a></li>
   <?cs /if ?>
   <li><a href="<?cs var:file.texturl ?>">View as Text</a></li>
   <li class="last"><a href="<?cs var:file.rawurl ?>">Download File</a></li>
-</ul>
+ </ul>
 </div>
- <div id="main">
-  <div id="main-content">
+
+<div id="main" class="file">
 
   <?cs if file.attachment_parent ?>
 
@@ -75,8 +76,7 @@
          Try <a href="?format=raw">downloading the file</a> instead.
     </div>
   <?cs /if ?>
- </div>
-</div>
-</div>
-<?cs include:"footer.cs"?>
 
+</div>
+
+<?cs include "footer.cs"?>

@@ -1,14 +1,16 @@
+<?cs set:html.stylesheet = 'css/ticket.css' ?>
 <?cs include "header.cs" ?>
 <?cs include "macros.cs" ?>
-<div id="page-content">
-<h2 class="hide">Ticket Navigation</h2>
-<ul class="subheader-links">
- <li class="last"><a href="#edit">Add/Change Info</a></li>
-</ul>
 
- <div id="main">
-  <div id="main-content">
-   <div id="searchable">
+<div class="nav">
+ <h2>Ticket Navigation</h2>
+ <ul class="subheader-links">
+  <li class="last"><a href="#edit">Add/Change Info</a></li>
+ </ul>
+</div>
+
+<div id="main" class="ticket">
+ <div id="searchable">
 
 <?cs if:ticket.status == 'closed' ?>
  <?cs set:status = ' (Closed: ' + $ticket.resolution + ')' ?>
@@ -273,16 +275,11 @@ onfocus="document.getElementById('comment').focus()">Add/Change
   </div>
  </div>
 
-
 </form>
-
-
 
 </div> <!-- #tkt-main -->
 
-</div>
  </div>
 </div>
-</div>
-<?cs include:"footer.cs"?>
+<?cs include "footer.cs"?>
 

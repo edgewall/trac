@@ -325,13 +325,13 @@ table.wiki td { border: 1px solid #ccc;  padding: .1em .25em; }
 }
 
 /* Styles for search word highlighting */
-.searchword0 { background: #ff9; }
-.searchword1 { background: #cfc; }
-.searchword2 { background: #cff; }
-.searchword3 { background: #ccf; }
-.searchword4 { background: #fcf; }
+.searchword0 { background: #ff9 }
+.searchword1 { background: #cfc }
+.searchword2 { background: #cff }
+.searchword3 { background: #ccf }
+.searchword4 { background: #fcf }
 
 @media print {
- #header, #footer { display: none }
+ #header, #altlinks, #footer { display: none }
  .nav, form { display: none }
 }

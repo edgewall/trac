@@ -17,30 +17,12 @@
    if:link.type ?> type="<?cs var:link.type ?>"<?cs /if ?> />
   <?cs /each ?><?cs /each ?>
   <style type="text/css">
-   @import url("<?cs var:htdocs_location ?>css/trac.css");
-   @import url("<?cs var:htdocs_location ?>css/code.css");
-   <?cs if:trac.active_module == 'wiki' ?>
-   @import url("<?cs var:htdocs_location ?>css/diff.css");
-   @import url("<?cs var:htdocs_location ?>css/wiki.css");
-   <?cs elif:trac.active_module == 'browser' || trac.active_module == 'log' || trac.active_module == 'file'?>
-   @import url("<?cs var:htdocs_location ?>css/browser.css");
-   <?cs elif:trac.active_module == 'timeline' ?>
-   @import url("<?cs var:htdocs_location ?>css/timeline.css");
-   <?cs elif:trac.active_module == 'changeset'?>
-   @import url("<?cs var:htdocs_location ?>css/changeset.css");
-   @import url("<?cs var:htdocs_location ?>css/diff.css");
-   <?cs elif:trac.active_module == 'newticket' || trac.active_module == 'ticket' ?>
-   @import url("<?cs var:htdocs_location ?>css/ticket.css");
-   <?cs elif:trac.active_module == 'report' ?>
-   @import url("<?cs var:htdocs_location ?>css/report.css");
-   <?cs elif:trac.active_module == 'roadmap' || trac.active_module == 'milestone' ?>
-   @import url("<?cs var:htdocs_location ?>css/roadmap.css");
-   <?cs elif:trac.active_module == 'search' ?>
-   @import url("<?cs var:htdocs_location ?>css/search.css");
-   <?cs /if ?>
+   @import url(<?cs var:htdocs_location ?>css/trac.css);
+   <?cs if:html.stylesheet ?>@import url(<?cs var:htdocs_location ?><?cs
+     var:html.stylesheet ?>);<?cs /if ?>
    <?cs include "site_css.cs" ?>
   </style>
-  <script src="<?cs var:$htdocs_location ?>trac.js" type="text/javascript"></script>
+  <script src="<?cs var:htdocs_location ?>trac.js" type="text/javascript"></script>
  </head>
 <body>
 <?cs include "site_header.cs" ?>
@@ -80,34 +62,36 @@
 </div>
 
 <?cs def:navlink(text, href, id, aclname, accesskey) ?><?cs
-   if $error.type || $aclname ?><li><a href="<?cs var:href ?>" <?cs 
-        if $id == $trac.active_module ?>class="active"<?cs /if ?><?cs
-        if:$accesskey!="" ?> accesskey="<?cs var:$accesskey ?>"<?cs 
-        /if ?>><?cs var:text ?></a></li><?cs 
-   /if ?><?cs /def ?>
+ if $error.type || $aclname ?><li><a href="<?cs var:href ?>" <?cs 
+  if $id == $trac.active_module ?>class="active"<?cs
+  /if ?><?cs
+  if:$accesskey!="" ?> accesskey="<?cs var:$accesskey ?>"<?cs 
+  /if ?>><?cs var:text ?></a></li><?cs 
+ /if ?><?cs
+/def ?>
 
-  <?cs if $trac.active_module == "wiki" ?>
-    <?cs set:$wiki_view="wiki" ?>
-  <?cs else  ?>
-    <?cs set:$wiki_view="attachment" ?>
-  <?cs /if  ?>
-  <?cs if $trac.active_module == "ticket" ?>
-    <?cs set:$ticket_view="ticket" ?>
-  <?cs else  ?>
-    <?cs set:$ticket_view="report" ?>
-  <?cs /if  ?>
-  <?cs if $trac.active_module == "log" ?>
-    <?cs set:$browser_view="log" ?>
-  <?cs elif $trac.active_module == "file" ?>
-    <?cs set:$browser_view="file" ?>
-  <?cs else  ?>
-    <?cs set:$browser_view="browser" ?>
-  <?cs /if  ?>
-  <?cs if $trac.active_module == "milestone" ?>
-    <?cs set:$roadmap_view="milestone" ?>
-  <?cs else ?>
-    <?cs set:$roadmap_view="roadmap" ?>
-  <?cs /if ?>
+<?cs if $trac.active_module == "wiki" ?><?cs
+  set:$wiki_view="wiki" ?><?cs
+ else  ?><?cs
+  set:$wiki_view="attachment" ?><?cs
+ /if  ?><?cs
+ if $trac.active_module == "ticket" ?><?cs
+  set:$ticket_view="ticket" ?><?cs
+ else ?><?cs
+  set:$ticket_view="report" ?><?cs
+ /if  ?><?cs
+ if $trac.active_module == "log" ?><?cs
+  set:$browser_view="log" ?><?cs
+ elif $trac.active_module == "file" ?><?cs
+  set:$browser_view="file" ?><?cs
+ else  ?><?cs
+  set:$browser_view="browser" ?><?cs
+ /if  ?><?cs
+ if $trac.active_module == "milestone" ?><?cs
+  set:$roadmap_view="milestone" ?><?cs
+ else ?><?cs
+  set:$roadmap_view="roadmap" ?><?cs 
+ /if ?>
 
 <div id="navbar" class="nav">
  <ul>
