@@ -95,6 +95,7 @@ class Report (Module):
         redirect(href.report(id))
 
     def render_report_editor(self, id, action='commit', copy=0):
+        perm.assert_permission(perm.REPORT_MODIFY)
         cnx = db.get_connection()
         cursor = cnx.cursor()
 

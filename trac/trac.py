@@ -163,6 +163,7 @@ def create_error_cgi():
     import os.path
     import db
     from auth import get_authname
+    from Href import href
     
     cnx = db.get_connection()
     cursor = cnx.cursor()
@@ -178,6 +179,17 @@ def create_error_cgi():
     cgi.hdf.setValue('hdf.loadpaths.0', templates_dir)
     cgi.hdf.setValue('htdocs_location', htdocs_location)
     cgi.hdf.setValue('trac.authname', get_authname())
+    cgi.hdf.setValue('trac.href.wiki', href.wiki())
+    cgi.hdf.setValue('trac.href.browser', href.browser('/'))
+    cgi.hdf.setValue('trac.href.timeline', href.timeline())
+    cgi.hdf.setValue('trac.href.report', href.report())
+    cgi.hdf.setValue('trac.href.newticket', href.newticket())
+    cgi.hdf.setValue('trac.href.search', href.search())
+    cgi.hdf.setValue('trac.href.about', href.about())
+    cgi.hdf.setValue('trac.href.about_config', href.about('config/'))
+    cgi.hdf.setValue('trac.href.login', href.login())
+    cgi.hdf.setValue('trac.href.logout', href.logout())
+    cgi.hdf.setValue('trac.href.homepage', 'http://trac.edgewall.com/')
     return cgi, templates_dir
 
 def main():
