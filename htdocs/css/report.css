@@ -63,7 +63,7 @@ h2 {
 #tktlist tr.odd.lowest { background: #e7eeff; border-color: #cde; color: #469 }
 #tktlist tr.even.lowest { background: #dde7ff; border-color: #cde; color: #469 }
 
-#query fieldset { float: left; margin: 1em 0 }
+#query fieldset { margin: 1em 0 }
 #query fieldset div { float: left; margin: .5em 2em .5em 0 }
 #query fieldset label { display: block }
 #query fieldset select { width: 10em }

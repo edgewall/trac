@@ -97,6 +97,7 @@
     /if ?><?cs
    /each ?><?cs
   /if ?>
+  <br />
  </fieldset>
  <div class="buttons">
   <input type="submit" name="search" value="Search">
