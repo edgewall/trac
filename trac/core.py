@@ -23,7 +23,6 @@ import os
 import re
 import sys
 import cgi
-import Cookie
 import warnings
 
 import perm
@@ -215,12 +214,17 @@ class Request:
         import neo_cgi
         import neo_cs
         import neo_util
+        import Cookie
         self.hdf = neo_util.HDF()
+        self.cookie = Cookie.SimpleCookie()
         
     def redirect(self, url):
         self.send_response(302)
         self.send_header('Location', url)
         self.send_header('Content-Type', 'text/plain')
+        cookie = self.cookie.output(header='')
+        if len(cookie):
+            self.send_header('Set-Cookie', cookie)
         self.end_headers()
         self.write('Redirecting...')
         raise RedirectException()
@@ -237,6 +241,9 @@ class Request:
         self.send_response(response)
         self.send_header('Content-Type', content_type)
         self.send_header('Content-Length', len(data))
+        cookie = self.cookie.output(header='')
+        if len(cookie):
+            self.send_header('Set-Cookie', cookie)
         self.end_headers()
         self.write(data)
 
@@ -251,6 +258,8 @@ class CGIRequest(Request):
         Request.init_request(self)
         self.cgi_location = os.getenv('SCRIPT_NAME')
         self.remote_addr = os.getenv('REMOTE_ADDR')
+        self.remote_user = os.getenv('REMOTE_USER')
+        self.cookie.load(os.getenv('HTTP_COOKIE'))
     
     def read(self, len):
         return sys.stdin.read(len)
@@ -336,11 +345,7 @@ def real_cgi_start():
     import auth
 
     path_info = os.getenv('PATH_INFO')
-    remote_addr = os.getenv('REMOTE_ADDR')
-    remote_user = os.getenv('REMOTE_USER')
-    http_cookie = os.getenv('HTTP_COOKIE')
     http_referer = os.getenv('HTTP_REFERER')
-    cgi_location = os.getenv('SCRIPT_NAME')
     
     database = open_database()
     config = database.load_config()
@@ -351,30 +356,17 @@ def real_cgi_start():
     req = CGIRequest()
     req.init_request()
 
-    href = Href.Href(cgi_location)
+    href = Href.Href(req.cgi_location)
 
-    # Authenticate the user
-    cookie = Cookie.SimpleCookie(http_cookie)
-
-    if cookie.has_key('trac_auth'):
-        auth_cookie = cookie['trac_auth'].value
-    else:
-        auth_cookie = None
-
-    authenticator = auth.Authenticator(database, auth_cookie, remote_addr)
+    authenticator = auth.Authenticator(database, req)
     if path_info == '/logout':
         authenticator.logout()
         try:
             req.redirect (http_referer or href.wiki())
         except RedirectException:
             pass
-    elif remote_user and authenticator.authname == 'anonymous':
-        auth_cookie = authenticator.login(remote_user, remote_addr)
-        # send the cookie to the browser as a http header
-        cookie = Cookie.SimpleCookie()
-        cookie['trac_auth'] = auth_cookie
-        cookie['trac_auth']['path'] = cgi_location
-        print cookie.output()
+    elif req.remote_user and authenticator.authname == 'anonymous':
+        auth_cookie = authenticator.login(req)
     if path_info == '/login':
         try:
             req.redirect (http_referer or href.wiki())

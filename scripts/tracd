@@ -19,19 +19,20 @@
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #
 # Author: Jonas Borgström <jonas@edgewall.com>
-
 #
-# Major issues:
-# * No authentication support yet
+# Todo:
+# - External auth using mod_proxy / squid.
+
 
 import os
 import re
 import sys
+import md5
 import time
 import shutil
 import getopt
-import Cookie
 import urllib
+import urllib2
 import mimetypes
 import SocketServer
 import BaseHTTPServer
@@ -44,6 +45,79 @@ from trac import db
 from trac import auth
 from trac.Href import Href
 from trac import siteconfig
+
+class DigestAuth:
+    """A simple HTTP DigestAuth implementation (rfc2069)"""
+    MAX_NONCES = 100
+    def __init__(self, htdigest, realm):
+        self.active_nonces = []
+        self.hash = {}
+        self.realm = realm
+        self.load_htdigest(htdigest, realm)
+
+    def load_htdigest(self, filename, realm):
+        """
+        Load account information from apache style htdigest files,
+        only users from the specified realm are used
+        """
+        fd = open(filename, 'r')
+        for line in fd.readlines():
+            u, r, a1 = line.strip().split(':')
+            if r == realm:
+                self.hash[u] = a1
+        if self.hash == {}:
+            print >> sys.stderr, "Warning: found no users in realm:", realm
+        
+    def parse_auth_header(self, authorization):
+        values = {}
+        for value in urllib2.parse_http_list(authorization):
+            n, v = value.split('=', 1)
+            if v[0] == '"' and v[-1] == '"':
+                values[n] = v[1:-1]
+            else:
+                values[n] = v
+        return values
+
+    def send_auth_request(self, req, stale='false'):
+        """
+        Send a digest challange to the browser. Record used nonces
+        to avoid replay attacks.
+        """
+        nonce = trac.util.hex_entropy()
+        self.active_nonces.append(nonce)
+        if len(self.active_nonces) > DigestAuth.MAX_NONCES:
+            self.active_nonces = self.active_nonces[-DigestAuth.MAX_NONCES:]
+        req.send_response(401)
+        req.send_header('WWW-Authenticate',
+                        'Digest realm="%s", nonce="%s", stale="%s"'
+                        % (self.realm, nonce, stale))
+        req.end_headers()
+
+    def do_auth(self, req):
+        if not 'Authorization' in req.headers or \
+               req.headers['Authorization'][:6] != 'Digest':
+            self.send_auth_request(req)
+            return None
+        auth = self.parse_auth_header(req.headers['Authorization'][7:])
+        if not auth.has_key('username') or not auth.has_key('realm') or \
+               not auth.has_key('nonce') or not auth.has_key('uri') or \
+               not auth.has_key('response') or \
+               not self.hash.has_key(auth['username']):
+            self.send_auth_request(req)
+            return None
+        kd = lambda x: md5.md5(':'.join(x)).hexdigest()
+        a1 = self.hash[auth['username']]
+        a2 = kd([req.command, auth['uri']])
+        # Is the response correct?
+        if kd([a1, auth['nonce'], a2]) != auth['response']:
+            self.send_auth_request(req)
+            return None
+        # Is the nonce active, if not ask the client to use a new one
+        if not auth['nonce'] in self.active_nonces:
+            self.send_auth_request(req, stale='true')
+            return None
+        self.active_nonces.remove(auth['nonce'])
+        return auth['username']
 
 
 class TracHTTPServer(SocketServer.ThreadingMixIn, BaseHTTPServer.HTTPServer):
@@ -62,12 +136,19 @@ class TracHTTPRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler,
     def write(self, data):
         self.wfile.write(data)
 
+    def init_request(self):
+        trac.core.Request.init_request(self)
+        self.remote_addr = str(self.client_address[0])
+        if 'Cookie' in self.headers:
+            self.cookie.load(self.headers['Cookie'])
+
     def parse_path(self, path):
         m = self.url_re.findall(self.path)
         if not m:
-            return 0
-        self.project, self.path_info, self.query_string = m[0]
-        self.cgi_location = '/' + self.project + '/'
+            raise trac.util.TracError('Unknown URI')
+        self.project_name, self.path_info, self.query_string = m[0]
+        self.project = self.server.projects[self.project_name]
+        self.cgi_location = '/' + self.project_name
         return 1
 
     def do_project_index(self):
@@ -116,21 +197,11 @@ class TracHTTPRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler,
         else:
             self.do_trac_req()
         
-    def open_database(self):
-        try:
-            db_path = self.server.projects[self.project]
-        except KeyError:
-            self.send_error(500, 'Unknown project: "%s"' % self.project)
-        return db.Database(db_path)
-    
     def do_trac_req(self):
         config = database = None
         try:
             self.parse_path(self.path)
-            if not self.project in self.server.projects:
-                raise trac.util.TracError('Unknown project')
-            db_path = self.server.projects[self.project]
-            database = db.Database(db_path)
+            database = db.Database(self.project.db_path)
             config = database.load_config()
             config['general']['htdocs_location'] = '/trac_common/'
             self.do_real_trac_req(database, config)
@@ -138,20 +209,41 @@ class TracHTTPRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler,
             trac.core.send_pretty_error(e, self, database, config)
 
     def do_real_trac_req(self, database, config):
-        self.init_request()
         start = time.time()
+        self.init_request()
+
+        self.remote_user = None
+        if self.path_info == '/login':
+            self.remote_user = self.project.auth.do_auth(self)
+            if not self.remote_user:
+                return
 
         # FIXME: do this only once per project
         from trac import Wiki
         Wiki.populate_page_dict(database)
+        
         href = Href(self.cgi_location)
         
-        self.remote_addr = str(self.client_address[0])
-        auth_cookie = '' #FIXME
-        authenticator = auth.Authenticator(database, auth_cookie,
-                                           self.remote_addr)
-        self.authname = authenticator.authname
+        authenticator = auth.Authenticator(database, self)
+        http_referer = self.headers.get('Referer', None)
+        if self.path_info == '/logout':
+            authenticator.logout()
+            try:
+                self.redirect (http_referer or href.wiki())
+            except trac.core.RedirectException:
+                pass
+            return
+        if self.remote_user and authenticator.authname == 'anonymous':
+            authenticator.login(self)
+        if self.path_info == '/login':
+            try:
+                self.redirect (http_referer or href.wiki())
+            except trac.core.RedirectException:
+                pass
+            return
 
+        self.authname = authenticator.authname
+        
         # Parse arguments
         args = trac.core.parse_args(self.command, self.path_info,
                                     self.query_string,
@@ -165,13 +257,18 @@ class TracHTTPRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler,
         finally:
             if module.pool:
                 svn.core.svn_pool_destroy(module.pool)
-            
         print 'Total request time:', time.time() - start, 'seconds'
 
+
+class Project:
+    def __init__(self, db_path, auth):
+        self.db_path = db_path
+        self.auth = auth
 
 def usage():
     print 'usage: %s [options] <database> [database] ...' % sys.argv[0]
     print '\nOptions:\n'
+    print '-a --auth [project],[htdigest_file],[realm]'
     print '-p --port [port]\t\tPort number to use (default: 80)'
     print '-b --hostname [hostname]\tIP to bind to (default: \'\')'
     print
@@ -180,12 +277,20 @@ def usage():
 def main():
     port = 80
     hostname = ''
+    auths = {}
+    projects = {}
     try:
-        opts, args = getopt.getopt(sys.argv[1:], "p:b:",
-                                   ["port=", "hostname="])
+        opts, args = getopt.getopt(sys.argv[1:], "a:p:b:",
+                                   ["auth=", "port=", "hostname="])
     except getopt.GetoptError:
         usage()
     for o, a in opts:
+        if o in ("-a", "--auth"):
+            info = a.split(',', 3)
+            if len(info) != 3:
+                usage()
+            p, h, r = info
+            auths[p] = DigestAuth(h, r)
         if o in ("-p", "--port"):
             port = int(a)
         elif o in ("-b", "--hostname"):
@@ -193,13 +298,13 @@ def main():
 
     if not args:
         usage()
-    projects = {}
     for database in args:
         base = os.path.basename(database)
         # We assume the database filenames follow the following
         # naming convention: /some/path/project.whatever
         project = re.search('[a-zA-Z0-9-]+', base).group(0)
-        projects[project] = database
+        auth = auths.get(project, None)
+        projects[project] = Project(database, auth)
         
     server_address = (hostname, port)
     httpd = TracHTTPServer(server_address, TracHTTPRequestHandler)
