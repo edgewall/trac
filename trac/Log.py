@@ -38,7 +38,7 @@ class Log (Module):
         for newpath in changed_paths.keys():
             change = changed_paths[newpath]
             if change.copyfrom_path:
-                self.branch_info[rev] = (change.copyfrom_path, newpath)
+                self.branch_info.setdefault(rev, []).append((change.copyfrom_path, newpath))
 
         shortlog = shorten_line(wiki_escape_newline(log))
         t = util.svn_time_from_cstring(date, pool) / 1000000
@@ -68,10 +68,10 @@ class Log (Module):
         for item in self.log_info:
             item['file_href'] = self.env.href.browser(path, item['rev'])
             if self.branch_info.has_key(item['rev']):
-                info = self.branch_info[item['rev']]
-                if path[:len(info[1])] == info[1]:
-                    rel_path = path[len(info[1]):]
-                    path = info[0]+rel_path
+                for info in self.branch_info[item['rev']]:
+                    if path[:len(info[1])] == info[1]:
+                        rel_path = path[len(info[1]):]
+                        path = info[0]+rel_path
         return self.log_info
 
     def generate_path_links(self, rev, rev_specified):

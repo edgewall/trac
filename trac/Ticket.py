@@ -272,7 +272,7 @@ class NewticketModule(Module):
                           self.env.get_config('ticket', 'default_version'))
         ticket.setdefault('reporter', get_reporter_id(self.req))
 
-        if ticket.has_key('descrption'):
+        if ticket.has_key('description'):
             self.req.hdf.setValue('newticket.description_preview',
                                   wiki_to_html(ticket['description'],
                                                self.req.hdf, self.env))
