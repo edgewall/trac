@@ -48,7 +48,7 @@ supported_types = [
     (2, 'text/x-idl',        'idl'),
     (2, 'text/x-inf',        'inf'),
     (2, 'text/x-java',       'java'),
-    (2, 'text/x-javascript', 'javacsript'),
+    (2, 'text/x-javascript', 'javascript'),
     (2, 'text/x-ksh',        'ksh'),
     (2, 'text/x-m4',         'm4'),
     (2, 'text/x-makefile',   'makefile'),

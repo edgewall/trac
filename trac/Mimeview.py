@@ -44,7 +44,7 @@ MIME_MAP = {
     'idl':'text/x-idl',
     'inf':'text/x-inf',
     'java':'text/x-java',
-    'js':'application/x-javascript',
+    'js':'text/x-javascript',
     'ksh':'text/x-ksh',
     'm':'text/x-objc',
     'm4':'text/x-m4',
