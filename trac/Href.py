@@ -35,8 +35,11 @@ class Href:
         else:
             return href_join(self.base, 'file', path)
 
-    def browser(self, path):
-        return href_join(self.base, 'browser', path)
+    def browser(self, path, rev=None):
+        if rev:
+            return href_join(self.base, 'browser', path) + '?rev=' + str(rev)
+        else:
+            return href_join(self.base, 'browser', path)
 
     def login(self):
         return '%s/login' % self.base

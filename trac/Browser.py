@@ -31,7 +31,7 @@ import perm
 class Browser(Module):
     template_name = 'browser.cs'
 
-    def get_info(self, path, revision):
+    def get_info(self, path, revision, rev_specified):
         """
         Extracts information for a given path and revision
         """
@@ -40,7 +40,10 @@ class Browser(Module):
         # Redirect to the file module if the requested path happens
         # to point to a regular file
         if fs.is_file(root, path, self.pool):
-            redirect(href.file(path, revision))
+            if rev_specified:
+                redirect(href.file(path, revision))
+            else:
+                redirect(href.log(path))
             
         entries = fs.dir_entries(root, path, self.pool)
         info = []
@@ -118,11 +121,13 @@ class Browser(Module):
         order = dict_get_with_default(self.args, 'order', 'name')
         
         if not self.rev:
+            rev_specified = 0
             rev = fs.youngest_rev(self.fs_ptr, self.pool)
         else:
+            rev_specified = 1
             rev = int(self.rev)
             
-        info = self.get_info(self.path, rev)
+        info = self.get_info(self.path, rev, rev_specified)
         if order == 'size':
             info.sort(lambda x, y: cmp(x['size_bytes'], y['size_bytes']))
         elif order == 'Size':

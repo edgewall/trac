@@ -64,8 +64,7 @@ class CommonFormatter:
               r"""(?P<reporthref>\{[0-9]+\})""",
               r"""(?P<svnhref>(svn:[^ ]+[^\., ]))""",
               r"""(?P<wikilink>(^|(?<=[^A-Za-z]))[A-Z][a-z/]*(?:[A-Z][a-z/]+)+)""",
-              r"""(?P<fancylink>\[(?P<fancyurl>([a-z]+:[^ ]+)) (?P<linkname>.*?)\])""",
-              r"""(?P<fancysvnhref>\[(?P<fancysvnfile>svn:[^ ]+) (?P<svnlinkname>.*?)\])"""]
+              r"""(?P<fancylink>\[(?P<fancyurl>([a-z]+:[^ ]+)) (?P<linkname>.*?)\])"""]
 
     def replace(self, fullmatch):
         for type, match in fullmatch.groupdict().items():
@@ -109,11 +108,6 @@ class CommonFormatter:
     def _endtt_formatter(self, match, fullmatch):
         return '</tt>'
 
-    def _fancysvnhref_formatter(self, match, fullmatch):
-        path = fullmatch.group('fancysvnfile')
-        name = fullmatch.group('svnlinkname')
-        return '<a href="%s">%s</a>' % (href.browser(path[4:]), name)
-
     def _htmlescapeentity_formatter(self, match, fullmatch):
         #dummy function that match html escape entities in the format:
         # &#[0-9]+;
@@ -134,8 +128,15 @@ class CommonFormatter:
         return '{<a href="%s">%d</a>}' % (href.report(number), number)
 
     def _svnhref_formatter(self, match, fullmatch):
-        return '<a href="%s">%s</a>' % (href.browser(match[4:]), match[4:])
-
+        m = re.match('^svn:(([^#]+)(#([0-9]+))?)$', match)
+        if m.group(3):
+            return '<a href="%s">%s</a>' % (href.browser(m.group(2),
+                                                         int(m.group(4))),
+                                            m.group(1))
+        else:
+            return '<a href="%s">%s</a>' % (href.browser(m.group(1)),
+                                            m.group(1))
+    
     def _wikilink_formatter(self, match, fullmatch):
         global page_dict
         if page_dict and not page_dict.has_key(match):
@@ -152,8 +153,13 @@ class CommonFormatter:
         name = fullmatch.group('linkname')
         if link[0:5] == 'wiki:':
             link = href.wiki(link[5:])
-        if link[0:4] == 'svn:':
-            link = href.browser(link[4:])
+        elif link[0:4] == 'svn:':
+            m = re.match('^svn:(([^#]+)(#([0-9]+))?)$', link)
+            if m.group(4):
+                link = href.browser(m.group(2), int(m.group(4)))
+            else:
+                link = href.browser(m.group(1))
+
         return '<a href="%s">%s</a>' % (link, name)
 
 
@@ -200,8 +206,7 @@ class Formatter(CommonFormatter):
 
     # RE patterns used by other patterna
     _helper_patterns = ('idepth', 'ldepth', 'hdepth', 'fancyurl',
-                        'linkname', 'fancysvnfile', 'svnlinkname',
-                        'macroname', 'macroargs')
+                        'linkname', 'macroname', 'macroargs')
 
     def __init__(self, hdf = None):
         self.hdf = hdf
