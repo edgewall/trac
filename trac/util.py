@@ -233,9 +233,10 @@ def pretty_timedelta(time1, time2=None):
     if age_s < 60:
         return '%i second%s' % (age_s, age_s > 1 and 's' or '')
     for u, unit, unit_plural in units:
-        r = int(age_s / u)
-        if r:
-            return '%i %s' % (r, r == 1 and unit or unit_plural)
+        r = float(age_s) / float(u)
+        if r >= 0.9:
+            r = int(round(r))
+            return '%d %s' % (r, r == 1 and unit or unit_plural)
     return ''
 
 def create_unique_file(path):
