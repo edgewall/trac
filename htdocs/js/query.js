@@ -125,10 +125,10 @@ function initializeFilters() {
     }
 
     // Convenience function for creating a <select>
-    function createSelect(name, options, id) {
+    function createSelect(name, options, optional) {
       var e = document.createElement("select");
       if (name) e.name = name;
-      e.options[0] = new Option();
+      if (optional) e.options[0] = new Option();
       if (options) {
         for (var i = 0; i < options.length; i++) {
           var option;
@@ -140,7 +140,6 @@ function initializeFilters() {
           e.options[e.options.length] = option;
         }
       }
-      if (id) e.id = id;
       return e;
     }
 
@@ -199,7 +198,7 @@ function initializeFilters() {
       td = document.createElement("td");
       td.className = "filter";
       if (property.type == "select") {
-        var element = createSelect(propertyName, property.options);
+        var element = createSelect(propertyName, property.options, true);
       } else if (property.type == "text") {
         var element = document.createElement("input");
         element.type = "text";
