@@ -126,33 +126,40 @@ class Ticket (Module):
                             now, id)
             cnx.commit()
 
-    def create_ticket (self):
-        perm.assert_permission (perm.TICKET_CREATE)
+    def create_ticket(self):
+        """
+        Insert a new ticket into the database.
+
+        The values are taken from the html form
+        """
+        perm.assert_permission(perm.TICKET_CREATE)
         
-        cnx = db.get_connection ()
-        cursor = cnx.cursor()
         global fields
         data = {}
         for field in fields:
             if self.args.has_key(field):
                 data[field] = self.args[field]
         now = int(time.time())
-        data['time']       = now
+        data['time'] = now
         data['changetime'] = now
 
+        cnx = db.get_connection()
+        cursor = cnx.cursor()
+
+        # The owner field defaults to the component owner
         if not data.has_key('owner') or data['owner'] == '':
             # Assign it to the default owner
             cursor.execute('SELECT owner FROM component '
                            'WHERE name=%s', data['component'])
             owner = cursor.fetchone()[0]
-            data['owner']      = owner
+            data['owner'] = owner
         
-        nstr  = string.join (data.keys(), ',')
+        nstr = string.join(data.keys(), ',')
         vstr = ('%s,' * len(data.keys()))[:-1]
         
-        cursor.execute ('INSERT INTO ticket (%s) VALUES(%s)' % (nstr, vstr),
-                        *data.values())
-        id = cnx.db.sqlite_last_insert_rowid ()
+        cursor.execute('INSERT INTO ticket (%s) VALUES(%s)' % (nstr, vstr),
+                       *data.values())
+        id = cnx.db.sqlite_last_insert_rowid()
         cnx.commit()
         
         # redirect to the Ticket module to get a GET request

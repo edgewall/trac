@@ -8,7 +8,7 @@
 <input type="hidden" name="status" value="new">
 <table>
 <tr>
-<td align="right">reporter:</td><td><input type="text name="reporter" value="%(reporter)s"></td>
+<td align="right">reporter:</td><td><input type="text" name="reporter" value="%(reporter)s"></td>
 <td align="right">priority:</td><td>%(priority_select)s</td>
 </tr>
 <tr>

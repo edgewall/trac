@@ -134,6 +134,7 @@ INSERT INTO component (name, owner) VALUES('report system', 'jonas');
 INSERT INTO component (name, owner) VALUES('browser', 'jonas');
 INSERT INTO component (name, owner) VALUES('timeline', 'jonas');
 INSERT INTO component (name, owner) VALUES('ticket system', 'jonas');
+INSERT INTO component (name, owner) VALUES('wiki', 'jonas');
 
 INSERT INTO milestone (name, time) VALUES('', 0);
 INSERT INTO milestone (name, time) VALUES('milestone1', 0);
@@ -190,14 +191,14 @@ VALUES('ticket', 'default_version', '');
 INSERT INTO config (section, name, value)
 VALUES('ticket', 'default_severity', 'normal');
 INSERT INTO config (section, name, value)
-VALUES('ticket', 'default_priority', 'normal');
+VALUES('ticket', 'default_priority', 'p2');
 INSERT INTO config (section, name, value)
 VALUES('ticket', 'default_milestone', '');
 INSERT INTO config (section, name, value)
 VALUES('ticket', 'default_component', 'general');
 
 INSERT INTO report (id, author, title, sql) 
-	VALUES (1, NULL, 'active tickets', 
+	VALUES (1, NULL, 'Active tickets', 
 "SELECT id AS ticket, status, 
 severity, priority, owner, time as created, summary 
 FROM ticket 

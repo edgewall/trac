@@ -1,7 +1,5 @@
 %(header)s
 
-<h1>svntrac</h1>
-
 <h3>ticket: #%(ticket)d</h3>
 
 <form action="svntrac.cgi" method="POST">

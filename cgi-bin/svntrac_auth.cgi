@@ -20,9 +20,6 @@
 # Author: Jonas Borgström <jonas@xyche.com>
 
 import os
-import cgi
-#import cgitb; cgitb.enable()
-import ConfigParser
 
 import svntrac.db
 from svntrac.util import *

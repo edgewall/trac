@@ -50,7 +50,7 @@ def main():
     db.init()
     config = db.load_config()
     
-    pool = util.svn_pool_create (None)
+    pool = util.svn_pool_create(None)
     
     _args = cgi.FieldStorage()
     args = {}
@@ -62,23 +62,23 @@ def main():
 
     module_name, constructor_name, need_svn = modules[mode]
     module = __import__(module_name, globals(),  locals(), [])
-    constructor = getattr (module, constructor_name)
+    constructor = getattr(module, constructor_name)
     module = constructor(config, args, pool)
 
     verify_authentication (args)
-    cache_permissions ()
+    cache_permissions()
 
     if need_svn:
-        repos_dir   = config['general']['svn_repository']
-        rep         = repos.svn_repos_open(repos_dir, pool)
-        fs_ptr      = repos.svn_repos_fs(rep)
-        module.repos  = rep
+        repos_dir = config['general']['svn_repository']
+        rep = repos.svn_repos_open(repos_dir, pool)
+        fs_ptr = repos.svn_repos_fs(rep)
+        module.repos = rep
         module.fs_ptr = fs_ptr
         db.sync (rep, fs_ptr, pool)
 
     try:
-        module.render ()
-        module.apply_template ()
+        module.render()
+        module.apply_template()
     except PermissionError, e:
         print 'Content-Type: text/plain\r\n\r\n',
         print 'page render failed:', e
