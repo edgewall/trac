@@ -750,7 +750,7 @@ class TracAdmin(cmd.Cmd):
         self._do_enum('priority', line)
 
     ## (Ticket) Severity
-    _help_severity = [('severity list', 'Show possible ticket priorities'),
+    _help_severity = [('severity list', 'Show possible ticket severities'),
                        ('severity add <value>', 'Add a severity value option'),
                        ('severity change <value> <newvalue>',
                         'Change a severity value'),
