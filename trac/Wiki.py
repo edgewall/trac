@@ -198,6 +198,18 @@ class Formatter(CommonFormatter):
     def _imgurl_formatter(self, match, fullmatch):
         return '<img src="%s" alt="%s" />' % (match, match)
 
+    def _set_indent_depth(self, depth):
+        current_depth = len(self._indent_stack)
+        diff = depth - current_depth
+        self._in_indent = depth > 0
+        if diff > 0:
+            for i in range(diff):
+                self.out.write('<blockquote>')
+                self._indent_stack.append('</blockquote>')
+        elif diff < 0:
+            for i in range(-diff):
+                self.out.write(self._indent_stack.pop())
+        
     def _set_list_depth(self, depth, type):
         if self._p_open and depth > 0:
             self.out.write('</p>')
@@ -208,21 +220,25 @@ class Formatter(CommonFormatter):
         diff = depth - current_depth
         if diff > 0:
             for i in range(diff):
-                self.out.write('<%s>' % type)
-                self._list_stack.append('</%s>' % type)
+                self.out.write('<%s><li>' % type)
+                self._list_stack.append('</li></%s>' % type)
         elif diff < 0:
             for i in range(-diff):
                 self.out.write(self._list_stack.pop())
             # If the list type changes...
-            if self._list_stack != [] and self._list_stack[0][2:4] != type:
+            if self._list_stack != [] and self._list_stack[0][-3:-1] != type:
                 self.out.write(self._list_stack.pop())
-                self.out.write('<%s>' % type)
-                self._list_stack.append('</%s>' % type)
+                self.out.write('<%s><li>' % type)
+                self._list_stack.append('</li></%s>' % type)
+            elif depth > 0:
+                self.out.write('</li><li>')
         # If the list type changes...
-        elif self._list_stack != [] and self._list_stack[0][2:4] != type:
+        elif self._list_stack != [] and self._list_stack[0][-3:-1] != type:
             self.out.write(self._list_stack.pop())
-            self.out.write('<%s>' % type)
-            self._list_stack.append('</%s>' % type)
+            self.out.write('<%s><li>' % type)
+            self._list_stack.append('</li></%s>' % type)
+        elif depth > 0:
+            self.out.write('</li><li>')
         
     def _listitem_formatter(self, match, fullmatch):
         ldepth = len(fullmatch.group('ldepth'))
@@ -230,14 +246,15 @@ class Formatter(CommonFormatter):
         #self.out.write('depth:%d' % depth)
         type = ['ol', 'ul'][match[ldepth] == '*']
         self._li_open = 1
+        self._set_indent_depth(0)
         self._set_list_depth(depth, type)
-        return '<li>'
+        return ''
         #return '<li>%s</li>' % match[depth * 2 + 1:]
 
     def _indent_formatter(self, match, fullmatch):
         depth = int((len(fullmatch.group('idepth')) + 1) / 2)
         #self.out.write('depth:%d' % depth)
-        self._set_list_depth(depth, 'blockquote')
+        self._set_indent_depth(depth)
         self._in_blockquote = 1
         return ' '
         #return '<li>%s</li>' % match[depth * 2 + 1:]
@@ -249,6 +266,7 @@ class Formatter(CommonFormatter):
         self.is_heading = 0
         self._li_open = 0
         self._list_stack = []
+        self._indent_stack = []
         self._in_pre = 0
         for line in text.splitlines():
             # In a PRE-block no other formatting commands apply
@@ -272,13 +290,14 @@ class Formatter(CommonFormatter):
             self._is_italic = 0
             self._is_underline = 0
             self._in_list = 0
+            self._in_indent = 0
             self._in_blockquote = 0
             self._in_hr = 0
             result = re.sub(rules, self.replace, escape(line))
             # close any open list item
-            if self._li_open:
-                self._li_open = 0
-                result = result + '</li>'
+            #if self._li_open:
+            #    self._li_open = 0
+            #    result = result + '</li>'
                 
             # close the paragraph when a heading starts
             # or on an empty line
@@ -288,20 +307,25 @@ class Formatter(CommonFormatter):
 
             if not self._in_list:
                 self._set_list_depth(0, None)
+                
             if self._p_open and (self.is_heading or result == ''):
                 out.write ('</p>')
-                self._p_open = 0
+                self._p_open = 0                
             elif not self._p_open and not self.is_heading and \
                      (not self._in_list or self._in_blockquote) and \
                      not self._in_hr and result != '':
                 self._p_open = 1
                 out.write ('<p>')
                 
-            out.write(result)
+            if not self._in_indent:
+                self._set_indent_depth(0)
+                
+            out.write(result + '\n')
             self.is_heading = 0
-            out.write([' ', '\n'][self._in_pre])
+            
         # clean up before we are done
         self._set_list_depth(0, None)
+        self._set_indent_depth(0)
         if self._p_open:
             out.write('</p>')
 
@@ -488,14 +512,10 @@ class Wiki(Module):
 ###
 
 test_in = '''
+foo
  * Foo
-   * Foo 2
- 1. Foo 3
-=== FooBar ===
-  Hoj
-  Hoj2
-Hoj3
-Line1[[br]]Line2
+ 1. Foo 2
+ * Foo 3
 '''
 test_out = ''' <ul><li>Foo</li> <ul><li>Foo 2</li> </ul></ul><ol><li>Foo 3</li> </ol><h3>FooBar</h3> <ul> Hoj  Hoj2 </ul><p>Hoj3 Line1<br />Line2 </p>'''
 
@@ -504,7 +524,7 @@ def test():
     Formatter().format(test_in, result)
     if result.getvalue() != test_out:
         print 'now:', result.getvalue()
-        print 'correct:', test_out
+        #print 'correct:', test_out
 
 if __name__ == '__main__':
     test()
