@@ -20,12 +20,9 @@
 # Author: Jonas Borgström <jonas@edgewall.com>
 
 import time
-import string
-import urllib
-import sys
 
 import perm
-import util
+from util import add_to_hdf, escape, shorten_line
 from Module import Module
 from Wiki import wiki_to_oneliner, wiki_to_html
 
@@ -37,12 +34,12 @@ class Timeline (Module):
     template_rss_name = 'timeline_rss.cs'
 
     def get_info(self, req, start, stop, maxrows,
-                 filters=('tickets', 'changeset', 'wiki', 'milestone'),
-                 absurls=0):
+                 filters=('tickets', 'changeset', 'wiki', 'milestone')):
         perm_map = {'tickets': perm.TICKET_VIEW, 'changeset': perm.CHANGESET_VIEW,
                     'wiki': perm.WIKI_VIEW, 'milestone': perm.MILESTONE_VIEW}
         for k,v in perm_map.items():
-            if not self.perm.has_permission(v): filters.remove(k)
+            if not self.perm.has_permission(v):
+                filters.remove(k)
         if not filters:
             return []
 
@@ -55,11 +52,11 @@ class Timeline (Module):
             sql.append("SELECT time,id,'','newticket',summary,reporter"
                        " FROM ticket WHERE time>=%s AND time<=%s")
             params += (start, stop)
-            sql.append("SELECT time,ticket,'','closedticket','',author "
+            sql.append("SELECT time,ticket,'','reopenedticket','',author "
                        "FROM ticket_change WHERE field='status' "
                        "AND newvalue='reopened' AND time>=%s AND time<=%s")
             params += (start, stop)
-            sql.append("SELECT t1.time,t1.ticket,t2.newvalue,'reopenedticket',"
+            sql.append("SELECT t1.time,t1.ticket,t2.newvalue,'closedticket',"
                        "t3.newvalue,t1.author"
                        " FROM ticket_change t1"
                        "   INNER JOIN ticket_change t2 ON t1.ticket = t2.ticket"
@@ -75,7 +72,7 @@ class Timeline (Module):
                        " FROM wiki WHERE time>=%s AND time<=%s")
             params += (start, stop)
         if 'milestone' in filters:
-            sql.append("SELECT completed,-1,'','milestone',name,''" 
+            sql.append("SELECT completed AS time,-1,name,'milestone','',''" 
                        " FROM milestone WHERE completed>=%s AND completed<=%s")
             params += (start, stop)
 
@@ -86,10 +83,6 @@ class Timeline (Module):
 
         cursor = self.db.cursor()
         cursor.execute(sql, params)
-
-        href = self.env.href
-        if absurls:
-            href = self.env.abs_href
 
         # Make the data more HDF-friendly
         info = []
@@ -108,82 +101,11 @@ class Timeline (Module):
                 'date': time.strftime('%x', t),
                 'datetime': time.strftime('%a, %d %b %Y %H:%M:%S GMT', gmt),
                 'idata': int(row[1]),
-                'tdata': util.escape(row[2]),
+                'tdata': escape(row[2]),
                 'type': row[3],
                 'message': row[4] or '',
-                'author': util.escape(row[5] or 'anonymous')
+                'author': escape(row[5] or 'anonymous')
             }
-
-            if item['type'] == 'changeset':
-                item['href'] = util.escape(href.changeset(item['idata']))
-                msg = item['message']
-                item['shortmsg'] = util.escape(util.shorten_line(msg))
-                item['msg_nowiki'] = util.escape(msg)
-                item['msg_escwiki'] = util.escape(wiki_to_html(msg,
-                                                               req.hdf,
-                                                               self.env,
-                                                               self.db,
-                                                               absurls=absurls))
-                item['message'] = wiki_to_oneliner(msg, self.env, self.db,
-                                                   absurls=absurls)
-                try:
-                    max_node = int(self.env.get_config('timeline', 'changeset_show_files', 0))
-                except ValueError, e:
-                    self.env.log.warning("Invalid 'changeset_show_files' value, "
-                                         "please edit trac.ini : %s" % e)
-                    max_node = 0
-                    
-                if max_node != 0:
-                    cursor_node = self.db.cursor()
-                    cursor_node.execute("SELECT name, change "
-                                        "FROM node_change WHERE rev=%s", item['idata'])
-                    node_list = ''
-                    node_data = ''
-                    node_count = 0;
-                    while 1:
-                        row_node = cursor_node.fetchone()
-                        if not row_node:
-                            break
-                        if node_count != 0:
-                            node_list += ', '
-                        if (max_node != -1) and (node_count >= max_node):
-                            node_list += '...'
-                            break
-                        if row_node['change'] == 'A':
-                            node_data = '<span class="diff-add">' + row_node['name'] + "</span>"
-                        elif row_node['change'] == 'M':
-                            node_data = '<span class="diff-mod">' + row_node['name'] + "</span>"
-                        elif row_node['change'] == 'D':
-                            node_data = '<span class="diff-rem">' + row_node['name'] + "</span>"
-                        node_list += node_data
-                        node_count += 1
-                    item['node_list'] = node_list + ': '
-
-            elif item['type'] == 'wiki':
-                item['href'] = util.escape(href.wiki(item['tdata']))
-                item['message'] = wiki_to_oneliner(util.shorten_line(item['message']),
-                                                   self.env, self.db, absurls=absurls)
-                item['msg_escwiki'] = util.escape(item['message'])
-            elif item['type'] == 'milestone':
-                item['href'] = util.escape(href.milestone(item['message']))
-                item['message'] = util.escape(item['message'])
-            else: # newticket, closedticket, reopenedticket
-                item['href'] = util.escape(href.ticket(item['idata']))
-                msg = item['message']
-                item['shortmsg'] = util.escape(util.shorten_line(msg))
-                item['message'] = wiki_to_oneliner(util.shorten_line(item['message']),
-                                                   self.env, self.db, absurls=absurls)
-                item['msg_escwiki'] = util.escape(wiki_to_html(msg,
-                                                               req.hdf,
-                                                               self.env,
-                                                               self.db,
-                                                               absurls=absurls))
-            # Kludges for RSS
-            item['author.rss'] = item['author']
-            if item['author.rss'].find('@') == -1:
-                item['author.rss'] = ''
-            item['message.rss'] = util.escape(item['message'] or '')
-
             info.append(item)
         return info
 
@@ -226,14 +148,104 @@ class Timeline (Module):
         for f in filters:
             req.hdf.setValue('timeline.%s' % f, 'checked')
 
-        absurls = 0
-        if req.args.get('format') == 'rss':
-            absurls = 1
-        info = self.get_info(req, start, stop, maxrows, filters,
-                             absurls=absurls)
-        util.add_to_hdf(info, req.hdf, 'timeline.items')
+        info = self.get_info(req, start, stop, maxrows, filters)
+        for item in info:
+            render_func = getattr(self, '_render_%s' % item['type'])
+            item = render_func(req, item)
+
+            if req.args.get('format') == 'rss':
+                # For RSS, author must be an email address
+                if item['author'].find('@') == -1:
+                    item['author'] = ''
+
+        add_to_hdf(info, req.hdf, 'timeline.items')
 
     def display_rss(self, req):
         base_url = self.env.get_config('trac', 'base_url', '')
         req.hdf.setValue('baseurl', base_url)
         req.display(self.template_rss_name, 'text/xml')
+
+    def _render_changeset(self, req, item):
+        absurls = req.args.get('format') == 'rss'
+        href = self.env.href
+        if absurls:
+            href = self.env.abs_href
+
+        item['href'] = escape(href.changeset(item['idata']))
+        if req.args.get('format') == 'rss':
+            item['message'] = escape(wiki_to_html(item['message'], req.hdf,
+                                                  self.env, self.db,
+                                                  absurls=absurls))
+        else:
+            item['message'] = wiki_to_oneliner(item['message'], self.env,
+                                               self.db, absurls=absurls)
+
+        try:
+            show_files = int(self.env.get_config('timeline', 'changeset_show_files', 0))
+        except ValueError, e:
+            self.log.warning("Invalid 'changeset_show_files' value, "
+                             "please fix trac.ini: %s" % e)
+            show_files = 0
+
+        if show_files != 0:
+            cursor = self.db.cursor()
+            cursor.execute("SELECT name,change FROM node_change WHERE rev=%s",
+                           (item['idata']))
+            files = []
+            while 1:
+                row = cursor.fetchone()
+                if not row:
+                    break
+                if show_files > 0 and len(files) >= show_files:
+                    files.append('...')
+                    break
+                if row[1] == 'A':
+                    files.append('<span class="diff-add">%s</span>' % row[0])
+                elif row[1] == 'M':
+                    files.append('<span class="diff-mod">%s</span>' % row[0])
+                elif row[1] == 'D':
+                    files.append('<span class="diff-rem">%s</span>' % row[0])
+            item['node_list'] = ', '.join(files) + ': '
+
+        return item
+
+    def _render_ticket(self, req, item):
+        absurls = req.args.get('format') == 'rss'
+        href = self.env.href
+        if absurls:
+            href = self.env.abs_href
+
+        item['href'] = escape(href.ticket(item['idata']))
+        if req.args.get('format') == 'rss':
+            item['message'] = escape(wiki_to_html(item['message'],
+                                                  req.hdf, self.env,
+                                                  self.db, absurls=absurls))
+        else:
+            item['message'] = wiki_to_oneliner(shorten_line(item['message']),
+                                               self.env, self.db, absurls=absurls)
+        return item
+    _render_reopenedticket = _render_ticket
+    _render_newticket = _render_ticket
+    _render_closedticket = _render_ticket
+
+    def _render_milestone(self, req, item):
+        absurls = req.args.get('format') == 'rss'
+        href = self.env.href
+        if absurls:
+            href = self.env.abs_href
+
+        item['href'] = escape(href.milestone(item['tdata']))
+        return item
+
+    def _render_wiki(self, req, item):
+        absurls = req.args.get('format') == 'rss'
+        href = self.env.href
+        if absurls:
+            href = self.env.abs_href
+
+        item['href'] = escape(href.wiki(item['tdata']))
+        item['message'] = wiki_to_oneliner(shorten_line(item['message']),
+                                           self.env, self.db, absurls=absurls)
+        if req.args.get('format') == 'rss':
+            item['message'] = escape(item['message'])
+        return item
