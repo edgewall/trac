@@ -5,16 +5,13 @@
   <?cs if report.edit_href || report.copy_href || report.delete_href ?>
   <li><b>This report:</b>
     <ul>
-      <?cs if report.edit_href?>
-       <li><a href="<?cs var:report.edit_href ?>">Edit</a></li>
-      <?cs /if ?>
-      <?cs if report.copy_href ?>
-       <li><a href="<?cs var:report.copy_href ?>">Copy</a></li>
-      <?cs /if ?>
-      <?cs if report.delete_href ?>
-       <li class="last"><a href="<?cs var:report.delete_href ?>">Delete</a></li>
-      <?cs /if ?>
-     </ul></li>
+      <?cs if report.edit_href
+        ?><li <?cs if !report.delete_href && !report.copy_href ?>class="last"<?cs /if
+          ?>><a href="<?cs var:report.edit_href ?>">Edit</a></li><?cs
+       /if ?><?cs
+       if report.copy_href ?><li <?cs if !report.delete_href ?>class="last"<?cs /if
+          ?>><a href="<?cs var:report.copy_href ?>">Copy</a></li><?cs /if ?><?cs
+      if report.delete_href ?><li class="last"><a href="<?cs var:report.delete_href ?>">Delete</a></li><?cs /if ?></ul></li>
   <?cs /if ?>
   <?cs if report.create_href ?>
    <li><a href="<?cs var:report.create_href ?>">New Report</a></li>
