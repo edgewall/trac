@@ -280,14 +280,16 @@ class TracAdmin(cmd.Cmd):
 
     ## Quit / EOF
     _help_quit = [['quit', 'Exit the program']]
+    _help_exit = _help_quit
     _help_EOF = _help_quit
 
     def do_quit(self,line):
         print
         sys.exit()
 
+    do_exit = do_quit # Alias
     do_EOF = do_quit # Alias
-    
+
 #    ## Component
     _help_component = [('component list', 'Show available components'),
                        ('component add <name> <owner>', 'Add a new component'),
