@@ -2,7 +2,7 @@
 
 <?cs if error.type == "internal" ?>
 
-<h3>Oups...</h3>
+<h3>Oops...</h3>
 
 <p>
 Trac detected an internal error:

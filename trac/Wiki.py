@@ -558,9 +558,13 @@ class Wiki(Module):
         filter = DiffColorizer(out)
         filter.writeline('header %s version %d | %s version %d header' %
                          (pagename, version - 1, pagename, version))
-        for line in difflib.Differ().compare(old, new):
-            if line != '  ':
-                filter.writeline(line)
+        try:
+            for line in difflib.Differ().compare(old, new):
+                if line != '  ':
+                    filter.writeline(line)
+        except AttributeError:
+            raise Exception('Python >= 2.2 is required for diff support.')
+        
         filter.close()
         self.cgi.hdf.setValue('wiki.diff_output', out.getvalue())
             
