@@ -158,6 +158,7 @@ def real_main():
 def create_error_cgi():
     import neo_cgi
     import os.path
+    import db
     cnx = db.get_connection()
     cursor = cnx.cursor()
     cursor.execute('SELECT value FROM config WHERE section=%s '
@@ -215,4 +216,3 @@ def main():
         print real_e
         print
         print real_tb.getvalue()
-        sys.exit(0)
