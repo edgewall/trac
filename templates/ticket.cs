@@ -4,12 +4,12 @@
 <h3>ticket: #<?cs var:ticket.id ?></h3>
 
 <!-- Short summary -->
-<table style="border: thin dotted black" width="80%" cellspacing="0"> 
+<table class="listing">
 <tr>
-  <td class="ticket-summary-header">Component</td>
-  <td class="ticket-summary-header">Version</td>
-  <td class="ticket-summary-header">Status</td>
-  <td class="ticket-summary-header" width="50%">Summary</td>
+  <th class="header-left">Component</th>
+  <th class="header-left">Version</th>
+  <th class="header-left">Status</th>
+  <th class="header-left" width="50%">Summary</th>
 </tr>
 <tr>
   <td><?cs var:ticket.component ?></td>
@@ -23,7 +23,7 @@
 <p>
   <br>Description:
 </p>
-<table style="border: thin dotted black" width="80%">
+<table class="listing">
 <tr>
   <td colspan="4">
 
@@ -76,7 +76,7 @@
 <p>
   <br>Additional information:
 </p>
-<table style="border: thin dotted black" width="80%">
+<table class="listing">
   <tr>
     <td align="right">opened:</td><td><?cs var:ticket.opened ?></td>
     <td align="right">reporter:</td><td><?cs var:ticket.reporter ?></td>

@@ -22,7 +22,7 @@
   <table class="listing" cellspacing="0" cellpadding="0">
     <tr>
       <?cs each header = report.headers ?>
-        <th class="listing"><?cs var:header.title ?></th>
+        <th class="header-left"><?cs var:header.title ?></th>
       <?cs /each ?>
     </tr>
 
@@ -45,6 +45,16 @@
           <td class="report-column"><a href="<?cs var:cell.report_href ?>">{<?cs var: cell.value ?>}</a></td>
         <?cs elif cell.type == "time" ?>
           <td class="date-column"><?cs var: cell.value ?></td>
+        <?cs elif cell.type == "summary" ?>
+          <td class="summary-column"><?cs var: cell.value ?></td>
+        <?cs elif cell.type == "owner" ?>
+          <td class="owner-column"><?cs var: cell.value ?></td>
+        <?cs elif cell.type == "severity" ?>
+          <td class="severity-column"><?cs var: cell.value ?></td>
+        <?cs elif cell.type == "priority" ?>
+          <td class="priority-column"><?cs var: cell.value ?></td>
+        <?cs elif cell.type == "status" ?>
+          <td class="status-column"><?cs var: cell.value ?></td>
         <?cs else ?>
           <td><?cs var: cell.value ?></td>
         <?cs /if ?>

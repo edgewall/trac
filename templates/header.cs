@@ -66,10 +66,14 @@ topmargin="0" bottommargin="0" link="#aa0000" alink="#cc0000" vlink="#880000">
     </td>
     <td class="navbar" align="right">
       <?cs if $svntrac.authname == "anonymous" ?>
-        <?cs call:link("login", $svntrac.href.login, 0) ?>
+	 <a href="<?cs var:svntrac.href.login ?>" class="navbar-link-right">
+	      login
+	 </a>
       <?cs else ?>
-	logged in as <?cs var:svntrac.authname ?>
-        <?cs call:link("logout", $svntrac.href.logout, 0) ?>
+	logged in as <?cs var:svntrac.authname ?>&nbsp;
+	 <a href="<?cs var:svntrac.href.logout ?>" class="navbar-link-right">
+	      logout
+	 </a>
       <?cs /if ?>
     </td>
   </tr>

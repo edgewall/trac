@@ -170,6 +170,9 @@ class Report (Module):
                     self.cgi.hdf.setValue(prefix + '.value',
                                           time.strftime('%F',
                                           time.localtime(int(cell))))
+                elif cols[col_idx][0] in ['summary', 'owner',
+                                          'severity', 'status', 'priority']:
+                    self.cgi.hdf.setValue(prefix + '.type', cols[col_idx][0])
                 else:
                     self.cgi.hdf.setValue(prefix + '.type', 'unknown')
                 col_idx = col_idx + 1

@@ -3,11 +3,6 @@ body
   background-color: white;
 }
 
-body, p, td, div {
-  font: normal 12pt Verdana, Verdana, Helvetica, sans-serif;
-  color: black;
-} 
-
 pre.file-content
 {
   border: thin solid black;
@@ -18,22 +13,30 @@ pre.file-content
 
 table.listing
 {
-  width: 600px;
+  width: 90%;
   background-color: white;
-  border: solid black 1px;
+  border: thin solid lightgray;
   padding: 0px;
 }
 
-th.listing
+th.header-left
 {
   padding-right: 0.5em;
   padding-left: 0.2em;
   text-align: left;
   white-space: nowrap;
-  background-color: #00659c;
-  /*background-color: #ded100;*/
-  color: white;
-  border-bottom: 2px solid black;
+  border-bottom: thin solid lightgray;
+  font: bold 12px Bitstream Vera Sans, Verdana, Helvetica, sans-serif;
+}
+
+th.header-right
+{
+  padding-right: 0.5em;
+  padding-left: 0.2em;
+  text-align: right;
+  white-space: nowrap;
+  border-bottom: thin solid lightgray;
+  font: bold 12px Bitstream Vera Sans, Verdana, Helvetica, sans-serif;
 }
 
 td.timeline-day
@@ -84,7 +87,7 @@ td.icon-column
 
 td.name-column, td.report-column, td.ticket-column
 { 
-  padding-left: 0.5em;
+  border-left: thin dotted #dddddd;
 }
 
 td.status-column, td.severity-column, td.priority-column,
@@ -253,6 +256,18 @@ a.navbar-link,a.navbar-link-active {
   margin: 0;
 }
 
+a.navbar-link-right
+{ 
+  color: white;
+  text-decoration: none;
+  font-weight: bold; 
+  padding: 0 10px;
+  border-style: solid;
+  border-color: #fff;
+  border-width: 0 0 0 1px;
+  margin: 0;
+}
+
 a.navbar-link-active { 
   background-color: #fff;                    
   color: black;
@@ -338,12 +353,6 @@ input[type="submit"], input[type="reset"]
 option
 {
   border-bottom: thin solid black;
-}
-
-td.ticket-description, td.ticket-comments
-{ 
-  padding: 1em;
-  border: thin dotted black;
 }
 
 div.ticket-modified, td.ticket-summary-header

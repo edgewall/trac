@@ -14,15 +14,15 @@
 <table class="listing" cellspacing="0" cellpadding="0">
 
 <tr class="listing-header">
-  <th class="listing">&nbsp;</th>
-  <th class="listing">name</th>
-  <th class="listing">size</th>
-  <th class="listing">rev</th>
-  <th class="listing">date</th>
+  <th class="header-left">&nbsp;</th>
+  <th class="header-left">name</th>
+  <th class="header-right">size</th>
+  <th class="header-right">rev</th>
+  <th class="header-left">date</th>
 </tr>
 
 <?cs if $browser.path != "/" ?>
-  <tr class="item-row-odd">
+  <tr class="item-row-even">
     <td class="icon-column">
       <a href="<?cs var:browser.parent_href ?>">
         <img src="<?cs var:htdocs_location ?>/folder.png" 
