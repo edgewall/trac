@@ -112,14 +112,15 @@ class DiffColorizer:
         self.out.write('</table>')
 
 
-class DiffEditor (delta.Editor):
+class HtmlDiffEditor (delta.Editor):
     """
-    generates a unified diff of the changes for a given changeset.
+    generates a htmlized unified diff of the changes for a given changeset.
     the output is written to stdout.
     """
-    def __init__(self, old_root, new_root, output):
+    def __init__(self, old_root, new_root, rev, output):
         self.old_root = old_root
         self.new_root = new_root
+        self.rev = rev
         self.output = output
 
     def print_diff (self, old_path, new_path, pool):
@@ -149,8 +150,33 @@ class DiffEditor (delta.Editor):
 
     def apply_textdelta(self, file_baton, base_checksum):
         self.print_diff (*file_baton)
+
+class UnifiedDiffEditor(HtmlDiffEditor):
+    """
+    generates a unified diff of the changes for a given changeset.
+    the output is written to stdout.
+    """
+    def print_diff (self, old_path, new_path, pool):
+        if not old_path or not new_path:
+            return
+
+        options = ['-u']
+        options.append('-L')
+        options.append("%s\t(revision %d)" % (old_path, self.rev-1))
+        options.append('-L')
+        options.append("%s\t(revision %d)" % (new_path, self.rev))
+
+        differ = fs.FileDiff(self.old_root, old_path,
+                             self.new_root, new_path, pool, options)
+        differ.get_files()
+        pobj = differ.get_pipe()
+        line = pobj.readline()
+        while line:
+            self.output.write(line)
+            line = pobj.readline()
+
         
-def render_diffs(fs_ptr, rev, pool):
+def render_diffs(fs_ptr, rev, pool, diff_class=HtmlDiffEditor):
     """
     generates a unified diff of the changes for a given changeset.
     the output is written to stdout.
@@ -159,7 +185,9 @@ def render_diffs(fs_ptr, rev, pool):
     new_root = fs.revision_root(fs_ptr, rev, pool)
 
     output = StringIO()
-    editor = DiffEditor(old_root, new_root, output)
+
+    editor = diff_class(old_root, new_root, rev, output)
+
     e_ptr, e_baton = delta.make_editor(editor, pool)
 
     if util.SVN_VER_MAJOR == 0 and util.SVN_VER_MINOR == 37:
@@ -230,3 +258,12 @@ class Changeset (Module):
         
         difftext = render_diffs(self.fs_ptr, int(self.rev), self.pool)
         self.req.hdf.setValue('changeset.diff_output', difftext)
+
+    def display_diff (self):
+        self.req.send_response(200)
+        self.req.send_header('Content-Type', 'text/plain')
+        self.req.end_headers()
+        difftext = render_diffs(self.fs_ptr, int(self.rev), self.pool, UnifiedDiffEditor)
+        self.req.write(difftext)
+        
+        

@@ -1,8 +1,8 @@
 <?cs include "header.cs"?>
 <div id="page-content">
- <div id="subheader-links">
-  <br />
- </div>
+ <ul class="subheader-links">
+   <li><a href="?format=diff">Download Diff</a></li>
+ </ul>
  <div id="main">
   <div id="main-content">
 
@@ -75,6 +75,12 @@
 <div id="chg-diff">
   <?cs var:changeset.diff_output ?>
 </div>
+
+ <div id="main-footer">
+  Download in other formats: <br />
+  <a href="?format=diff">Unified Diff</a>
+  <br />
+ </div>
 
  </div>
 </div>
