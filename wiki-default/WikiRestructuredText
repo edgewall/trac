@@ -1,0 +1,74 @@
+= reStructuredText Support in Trac =
+
+Since 0.6, Trac supports using ''reStructuredText'' (RST) as an alternative to wiki markup in any context where WikiFormatting is used.
+
+From the reStucturedText webpage:
+ "''reStructuredText is an easy-to-read, what-you-see-is-what-you-get plaintext markup syntax and parser   system. It is useful for in-line program documentation (such as Python docstrings), for quickly creating  simple web pages, and for standalone documents. reStructuredText is designed for extensibility for  specific application domains. ''"
+
+== Using RST in Trac ==
+To specify that a block of text should be parsed using RST, use the ''rst'' proceessor. The example below should be self-explanatory:
+{{{
+#!html
+<pre class="wiki">{{{
+#!rst
+FooBar Header
+=============
+reStructuredText is **nice**. It has its own webpage_.
+
+A table:
+
+=====  =====  ======
+   Inputs     Output
+------------  ------
+  A      B    A or B
+=====  =====  ======
+False  False  False
+True   False  True
+False  True   True
+True   True   True
+=====  =====  ======
+
+.. _webpage: http://docutils.sourceforge.net/rst.html
+}}}</pre>
+}}}
+
+
+Results in:
+{{{
+#!rst
+FooBar Header
+=============
+reStructuredText is **nice**. It has its own webpage_.
+
+A table:
+
+=====  =====  ======
+   Inputs     Output
+------------  ------
+  A      B    A or B
+=====  =====  ======
+False  False  False
+True   False  True
+False  True   True
+True   True   True
+=====  =====  ======
+
+.. _webpage: http://docutils.sourceforge.net/rst.html
+}}}
+
+
+----
+== Requirements ==
+Note that to activate RST support in Trac, the python docutils package must be installed. 
+If not already available on your operating system, you can download it at the [http://docutils.sourceforge.net/rst.html RST Website].
+
+
+
+== More information on RST ==
+
+ * reStructuredText Website -- http://docutils.sourceforge.net/rst.html
+ * RST Quick Reference -- http://docutils.sourceforge.net/docs/rst/quickref.html
+
+
+----
+See also: WikiProcessors, WikiFormatting
