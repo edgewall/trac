@@ -129,8 +129,8 @@ class Timeline (Module):
                 item['message'] = wiki_to_oneliner(msg, self.req.hdf,
                                                    self.env, self.db,absurls=1)
                 
-		max_node = int(self.env.get_config('timeline', 'changeset_show_files',0))
-		if max_node != 0:
+                max_node = int(self.env.get_config('timeline', 'changeset_show_files', 0))
+                if max_node != 0:
                     cursor_node = self.db.cursor ()
                     cursor_node.execute("SELECT name, change "
                                         "FROM node_change WHERE rev=%d" % item['idata'])
@@ -140,7 +140,7 @@ class Timeline (Module):
                     while 1:
                         row_node = cursor_node.fetchone()
                         if not row_node:
-			    break
+                            break
                         if node_count != 0:
                             node_list += ', '
                         if (max_node != -1) and (node_count >= max_node):
@@ -176,7 +176,7 @@ class Timeline (Module):
                                                                self.db,
                                                                absurls=1))
             # Kludges for RSS
-            item['author.rss'] = util.escape(item['author'] or '')
+            item['author.rss'] = item['author']
             if item['author.rss'].find('@') == -1:
                 item['author.rss'] = ''
             item['message.rss'] = util.escape(item['message'] or '')
