@@ -41,6 +41,7 @@ h2 {
  padding-bottom: 2.5em !important;
  font-size: 90%;
 }
+#tktlist td.fullrow :link, #tktlist td.fullrow :visited { display: inline }
 #tktlist td.fullrow p { margin: 0; padding: .25em 1em }
 #tktlist td.fullrow hr { display: none }
 
