@@ -3,7 +3,7 @@ import unittest
 
 from trac.tests import wiki, ticket, perm_test, environment, diff, tracadmin, query
 from trac.tests import href
-from trac.web.tests import cgi_frontend
+from trac.web.tests import cgi_frontend, clearsilver
 
 def suite():
     suite = unittest.TestSuite()
@@ -15,6 +15,7 @@ def suite():
     suite.addTest(tracadmin.suite())
     suite.addTest(query.suite())
     suite.addTest(cgi_frontend.suite())
+    suite.addTest(clearsilver.suite())
     suite.addTest(href.suite())
     return suite
 

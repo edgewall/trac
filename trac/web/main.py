@@ -51,12 +51,6 @@ class Request:
     _headers = None # additional headers to send
 
     def init_request(self):
-        import neo_cgi
-        # The following line is needed so that ClearSilver can be loaded when
-        # we are being run in multiple interpreters under mod_python
-        neo_cgi.update()
-        import neo_util
-        self.hdf = neo_util.HDF()
         import Cookie
         self.incookie = Cookie.SimpleCookie()
         self.outcookie = Cookie.SimpleCookie()
@@ -99,16 +93,8 @@ class Request:
         raise RedirectException()
 
     def display(self, cs, content_type='text/html', response=200):
-        import neo_cgi
-        # The following line is needed so that ClearSilver can be loaded when
-        # we are being run in multiple interpreters under mod_python
-        neo_cgi.update()
-        if type(cs) == type(''):
-            filename = cs
-            import neo_cs
-            cs = neo_cs.CS(self.hdf)
-            cs.parseFile(filename)
-        data = cs.render()
+        assert self.hdf, 'HDF dataset not available'
+        data = self.hdf.render(cs)
         self.send_response(response)
         self.send_header('Cache-control', 'must-revalidate')
         self.send_header('Expires', 'Fri, 01 Jan 1999 00:00:00 GMT')
@@ -251,8 +237,6 @@ def populate_hdf(hdf, env, req=None):
 
 def dispatch_request(path_info, req, env):
     _parse_path_info(req.args, path_info)
-    req.hdf.setValue('HTTP.PathInfo', path_info)
-
     db = env.get_db_cnx()
 
     # Let the wiki module build a dictionary of all page names
@@ -284,6 +268,10 @@ def dispatch_request(path_info, req, env):
             newsession = req.args.has_key('newsession')
             req.session = Session(env, db, req, newsession)
 
+            from trac.web.clearsilver import HDFWrapper
+            req.hdf = HDFWrapper(loadpaths=[env.get_templates_dir(),
+                                            env.get_config('trac', 'templates_dir')])
+            req.hdf.setValue('HTTP.PathInfo', path_info)
             _add_args_to_hdf(req.args, req.hdf)
             try:
                 pool = None

@@ -1,8 +1,8 @@
 # -*- coding: iso8859-1 -*-
 #
-# Copyright (C) 2004 Edgewall Software
-# Copyright (C) 2004 Jonas Borgström <jonas@edgewall.com>
-# Copyright (C) 2004 Daniel Lundin <daniel@edgewall.com>
+# Copyright (C) 2004, 2005 Edgewall Software
+# Copyright (C) 2004, 2005 Jonas Borgström <jonas@edgewall.com>
+# Copyright (C) 2004, 2005 Daniel Lundin <daniel@edgewall.com>
 #
 # Trac is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License as
@@ -20,14 +20,10 @@
 #
 # Author: Jonas Borgström <jonas@edgewall.com>
 
-import util
-import perm
-from Module import Module
-import neo_cgi
-import neo_cs
+from trac import perm
+from trac.Module import Module
 
-class About (Module):
-    template_name = ''
+class About(Module):
 
     about_cs = """
 <?cs include "header.cs"?>
@@ -55,8 +51,10 @@ class About (Module):
   <?cs /each ?>
   </table>
  <?cs else ?>
-  <a class="noline" href="http://trac.edgewall.com"
-      style="float: right; margin-left: 2em"><img src="<?cs var:htdocs_location ?>trac_banner.png" alt=""/></a>
+  <a href="http://trac.edgewall.com" style="border: none; float: right; margin-left: 2em">
+   <img style="display: block" src="<?cs var:htdocs_location ?>trac_banner.png"
+     alt="Trac: Integrated SCM &amp; Project Management"/>
+  </a>
 <h1>About Trac <?cs var:trac.version ?></h1>
 <p>
 Trac is a web-based software project management and bug/issue
@@ -78,7 +76,7 @@ It provides an interface to the Subversion revision control systems, integrated 
 <p>
 Copyright &copy; 2003,2004 <a href="http://www.edgewall.com/">Edgewall Software</a>
 </p>
-  <a class="noline" href="http://www.edgewall.com/">
+  <a href="http://www.edgewall.com/">
    <img style="display: block; margin: 30px" src="<?cs var:htdocs_location ?>edgewall.png"
      alt="Edgewall Software"/></a>
  <?cs /if ?>
@@ -88,24 +86,22 @@ Copyright &copy; 2003,2004 <a href="http://www.edgewall.com/">Edgewall Software<
 
     def render(self, req):
         page = req.args.get('page', 'default')
-        req.hdf.setValue('title', 'About Trac')
+        req.hdf['title'] = 'About Trac'
         if page[0:7] == 'config':
             self.perm.assert_permission(perm.CONFIG_VIEW)
-            req.hdf.setValue('about.page', 'config')
+            req.hdf['about.page'] = 'config'
             # Export the config table to hdf
-            i = 0
+            sections = []
             for section in self.env.cfg.sections():
                 for name in self.env.cfg.options(section):
                     value = self.env.get_config(section, name)
-                    req.hdf.setValue('about.config.%d.section' % i, section)
-                    req.hdf.setValue('about.config.%d.name' % i, name)
-                    req.hdf.setValue('about.config.%d.value' % i, value)
-                    i = i + 1
+                    sections.append({'section': section, 'name': name,
+                                     'value': value})
+            req.hdf['about.config'] = sections
             # TODO:
             # We should probably export more info here like:
             # permissions, components...
 
     def display(self, req):
-        cs = neo_cs.CS(req.hdf)
-        cs.parseStr(self.about_cs)
-        req.display(cs)
+        template = req.hdf.parse(self.about_cs)
+        req.display(template)

@@ -25,13 +25,10 @@ import time
 import smtplib
 import os.path
 
-import neo_cgi
-import neo_cs
-import neo_util
-
 from trac import Environment
 from trac.__init__ import __version__
 from trac.util import add_to_hdf, CRLF, TRUE, FALSE, TracError, wrap
+from trac.web.clearsilver import HDFWrapper
 from trac.web.main import populate_hdf
 
 
@@ -41,16 +38,13 @@ class Notify:
 
     db = None
     hdf = None
-    cs = None
 
-    def __init__(self, env, msg_template):
+    def __init__(self, env):
         self.env = env
         self.db = env.get_db_cnx()
-        self.hdf = neo_util.HDF()
+        self.hdf = HDFWrapper(loadpaths=[env.get_templates_dir(),
+                                         env.get_config('trac', 'templates_dir')])
         populate_hdf(self.hdf, env)
-        tmpl = os.path.join(env.get_config('general','templates_dir'), msg_template)
-        self.cs = neo_cs.CS(self.hdf)
-        self.cs.parseFile(tmpl)
 
     def notify(self,resid):
         if sys.version_info[0] == 2 and (sys.version_info[1] < 2 or
@@ -130,7 +124,7 @@ class NotifyEmail(Notify):
     def send(self, rcpt, mime_headers={}):
         from email.MIMEText import MIMEText
         from email.Header import Header
-        body = self.cs.render()
+        body = self.hdf.render(self.template_name)
         msg = MIMEText(body, 'plain', 'utf-8')
         msg['X-Mailer'] = 'Trac %s, by Edgewall Software' % __version__
         msg['X-Trac-Version'] =  __version__
@@ -162,7 +156,7 @@ class TicketNotifyEmail(NotifyEmail):
     COLS = 75
 
     def __init__(self, env):
-        NotifyEmail.__init__(self, env, self.template_name)
+        NotifyEmail.__init__(self, env)
         self.prev_cc = []
 
     def notify(self, ticket, newticket=1, modtime=0):
