@@ -11,10 +11,12 @@
     <?cs call:browser_path_links(browser.path, browser) ?>
     <div id="browser-nav">
     <form id="browser-chgrev" action="<?cs var:browser_current_href ?>" method="get">
+     <div>
       <label for="rev">View rev:</label>
       <input type="text" id="rev" name="rev" value="<?cs
         var:browser.revision?>" size="4" />
       <input type="submit" value="View" />
+     </div>
     </form>
     <div class="tiny" style="clear: both">&nbsp;</div>
     </div>
@@ -85,8 +87,8 @@
           <a class="age" title="<?cs var:item.date ?>"><?cs var:item.age ?></a>
          </td>
          <td class="br-change-col">
-           <b class="author"><?cs var:item.author ?>:</b>
-           <a class="change"><?cs var:item.change ?></a>
+           <span class="author"><?cs var:item.author ?>:</span>
+           <span class="change"><?cs var:item.change ?></span>
          </td>
        </tr>
        <?cs set:idx = idx + #1 ?>

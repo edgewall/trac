@@ -26,6 +26,7 @@ import os
 import sys
 import time
 import urllib
+from xml.sax import saxutils
 
 import svn
 
@@ -263,11 +264,12 @@ class File(FileCommon):
         self.req.hdf.setValue('file.rev_date', sdate)
         self.req.hdf.setValue('file.rev_msg', msg_html)
         self.req.hdf.setValue('file.path', self.path)
-        self.req.hdf.setValue('file.rawurl', self.env.href.file(self.path, rev,
-                                                                'raw'))
-        self.req.hdf.setValue('file.texturl', self.env.href.file(self.path, rev,
-                                                                 'text'))
-        self.req.hdf.setValue('file.logurl', self.env.href.log(self.path, rev))
+        self.req.hdf.setValue('file.rawurl',
+            saxutils.escape(self.env.href.file(self.path, rev, 'raw')))
+        self.req.hdf.setValue('file.texturl',
+            saxutils.escape(self.env.href.file(self.path, rev, 'text')))
+        self.req.hdf.setValue('file.logurl',
+            saxutils.escape(self.env.href.log(self.path, rev)))
 
                 
         # Try to do an educated guess about the mime-type

@@ -71,11 +71,11 @@ addEvent(window, 'load', function() { document.getElementById('q').focus()});
    <?cs /each ?>
    </div>
     <?cs set:url=$trac.href.search+'?q='+ $search.q ?>
-    <?cs if $search.wiki ?><?cs set:url=$url+'&wiki=on' ?><?cs /if 
-      ?><?cs if $search.ticket ?><?cs set:url=$url+'&ticket=on' ?><?cs /if 
-      ?><?cs if $search.changeset ?><?cs set:url=$url+'&changeset=on'
+    <?cs if $search.wiki ?><?cs set:url=$url+'&amp;wiki=on' ?><?cs /if 
+      ?><?cs if $search.ticket ?><?cs set:url=$url+'&amp;ticket=on' ?><?cs /if 
+      ?><?cs if $search.changeset ?><?cs set:url=$url+'&amp;changeset=on'
       ?><?cs /if ?>
-    <?cs set:url=$url+'&page=' ?>
+    <?cs set:url=$url+'&amp;page=' ?>
  
     <hr />
     <?cs if $search.result.page ?>

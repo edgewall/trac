@@ -52,9 +52,9 @@
              <?cs /each ?>
              <?cs set sortValue = '' ?>
              <?cs if $header.asc == '1' ?>
-               <?cs set sortValue = '?sort='+$header.real+'&asc=0' ?>
+               <?cs set sortValue = '?sort='+$header.real+'&amp;asc=0' ?>
              <?cs else ?>
-               <?cs set sortValue = '?sort='+$header.real+'&asc=1' ?>
+               <?cs set sortValue = '?sort='+$header.real+'&amp;asc=1' ?>
              <?cs /if ?>
              <?cs if $header ?>
              <th class="header-left"><a href="<?cs var:sortValue ?><?cs var:vars ?>"><?cs var:header ?></a></th>

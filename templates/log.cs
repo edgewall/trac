@@ -15,10 +15,12 @@
   <ul class="menulist"><li class="last"><a 
      href="<?cs var:log.items.0.file_href ?>">View Latest Revision</a></li></ul>
     <form id="browser-chgrev" action="<?cs var:log.items.0.file_href ?>" method="get">
+     <div>
       <label for="rev">View rev:</label>
       <input type="text" id="rev" name="rev" value="<?cs
         var:log.items.0.rev ?>" size="4" />
       <input type="submit" value="View"/>
+     </div>
     </form>
     <div class="tiny" style="clear: both">&nbsp;</div>
   </div>

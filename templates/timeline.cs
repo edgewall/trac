@@ -11,11 +11,13 @@
  <h1>Timeline</h1>
 
  <form id="prefs" action="<?cs var:trac.href.timeline ?>">
-  <label for="from">View changes from</label>
-  <input type="text" size="10" id="from" name="from"
-      value="<?cs var:timeline.from ?>" /> and <input type="text" size="3"
-      id="daysback" name="daysback"  value="<?cs var:timeline.daysback ?>" />
-  <label for="daysback">days back</label>.
+  <div>
+   <label for="from">View changes from</label>
+   <input type="text" size="10" id="from" name="from"
+       value="<?cs var:timeline.from ?>" /> and <input type="text" size="3"
+       id="daysback" name="daysback"  value="<?cs var:timeline.daysback ?>" />
+   <label for="daysback">days back</label>.
+  </div>
   <fieldset>
    <?cs if:trac.acl.TICKET_VIEW ?><div class="field">
     <input type="checkbox" id="ticket" name="ticket" <?cs

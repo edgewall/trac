@@ -83,7 +83,6 @@ td.br-change-col, td.br-rev-col, td.br-age-col {
 td.br-icon-col, td.br-report-col, td.br-ticket-col { width: 1em; }
 td.br-change-col { font-size: 9px; line-height: 110%; }
 td.br-change-col .author { 
-  font-weight: normal;
   color: #bbb;
   padding-right: .25em;
 }
