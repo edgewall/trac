@@ -143,7 +143,7 @@ a.navbar-link-active,a.navbar-link-active:visited {
   font-weight: bold;
   background-color: #ddd;
   border-top: none;
-  border-right: none; */
+  border-right: none;
 }
 a.navbar-link:hover { 
   background-color: #ddc;
@@ -156,7 +156,7 @@ a.navbar-link:hover {
 #help a { color: #b44 }
 /* Wiki */
 #wiki-history {
-  visibility: hidden;
+/*   visibility: hidden; */
   background: #f7f7f0;
   border: 1px solid #999;
   font-size: 75%;
