@@ -45,22 +45,22 @@ class DiffColorizer:
         self.out.write('<table class="diff-table" cellspacing="0">')
 
     def writeadd (self, text):
-        self.out.write ('<tr><td class="diff-add-left"></td>'
-                        '<td class="diff-add-right">'
+        self.out.write ('<tr><td class="add-left"></td>'
+                        '<td class="add-right">'
                         '%s</td></tr>' % text)
         
     def writeremove (self, text):
-        self.out.write ('<tr><td class="diff-remove-left">%s</td>'
-                        '<td class="diff-remove-right"></td></tr>' % text)
+        self.out.write ('<tr><td class="rem-left">%s</td>'
+                        '<td class="rem-right"></td></tr>' % text)
     
     def writeunmodified (self, text):
-        self.out.write ('<tr><td class="diff-unmodified">%s</td>'
-                        '<td class="diff-unmodified">%s</td></tr>' %
+        self.out.write ('<tr><td class="unmod-left">%s</td>'
+                        '<td class="unmod-right">%s</td></tr>' %
                         (text, text))
 
     def writemodified (self, old, new):
-        self.out.write ('<tr><td class="diff-modified">%s</td>'
-                        '<td class="diff-modified">%s</td></tr>' %
+        self.out.write ('<tr><td class="mod-left">%s</td>'
+                        '<td class="mod-right">%s</td></tr>' %
                         (old, new))
         
     def print_block (self):

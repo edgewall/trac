@@ -1,8 +1,9 @@
 <?cs include "header.cs"?>
 <div id="page-content">
-<div id="subheader-links">
-  <a href="?daysback=90&amp;max=50&amp;format=rss">RSS Feed </a>
-</div>
+<h2 class="hide">Timeline Navigation</h2>
+<ul class="subheader-links">
+  <li class="last"><a href="?daysback=90&amp;max=50&amp;format=rss">RSS Feed</a></li>
+</ul>
 
 <div id="main">
   <div id="main-content">

@@ -165,7 +165,7 @@ class CommonFormatter:
         if match[0] == '!':
             return match[1:]
         if not self.env._wiki_pages.has_key(match):
-            return '<a class="wiki-missing-page" href="%s">%s?</a>' % \
+            return '<a class="missing" href="%s">%s?</a>' % \
                    (self.href.wiki(match), match)
         else:
             return '<a href="%s">%s</a>' % (self.href.wiki(match), match)

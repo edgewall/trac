@@ -1,13 +1,15 @@
 <?cs include "header.cs"?>
 <div id="page-content">
  <div id="subheader-links">
+  <br />
  </div>
  <div id="main">
   <div id="main-content">
 
 <h1 id="chg-hdr">Change set <?cs var:changeset.revision ?></h1>
 
-<div class="chg-preface">
+<div id="chg-preface">
+  <div id="chg-info">
   <div>
     <b class="chg-name">Revision:</b>
     <span class="chg-val"><?cs var:changeset.revision ?></span>
@@ -23,8 +25,11 @@
   <div>
     <b class="chg-name">Message:</b>
     <div class="chg-val"><div id="searchable"><?cs var:changeset.message ?></div></div>
-    <b class="chg-name">Files:</b>
-    <ul class="chg-list">
+  </div>
+  </div>
+    <div id="chg-files">
+    <b>Files:</b>
+    <ul>
       <?cs each:item = changeset.changes ?>
         <li>
           <?cs if item.change == "A" ?>
@@ -44,7 +49,8 @@
         </li>
       <?cs /each ?>
     </ul>
-  </div>
+   </div>
+ <br style="clear: both" /><div class="tiny">&nbsp;</div>
 </div> 
 
 <div class="hide">
@@ -55,20 +61,18 @@
   </p>
   <hr class="hide" />
 </div>    
-    
-<div id="chg-diff">
-  <div id="chg-legend">
-    <h3>Legend</h3>
-    <span class="diff-legend-add"> </span>Added 
-    <div class="tiny"><br /></div>
-    <span class="diff-legend-rem"> </span>Removed
-    <div class="tiny"><br /></div>
-    <span class="diff-legend-mod"> </span>Modified
-    <div class="tiny"><br /></div>
-    <span class="diff-legend-unmod"> </span>Unmodified
-    <div class="tiny"><br /></div>
-  </div>
 
+<div id="chg-legend">
+  <h3>Legend:</h3>
+  <ul>
+    <li><span class="diff-legend-unmod"> </span>Unmodified</li>
+    <li><span class="diff-legend-add"> </span>Added</li>
+    <li><span class="diff-legend-rem"> </span>Removed</li>
+    <li><span class="diff-legend-mod"> </span>Modified</li>
+   </ul>
+</div>
+
+<div id="chg-diff">
   <?cs var:changeset.diff_output ?>
 </div>
 

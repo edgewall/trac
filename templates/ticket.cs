@@ -1,9 +1,10 @@
 <?cs include "header.cs" ?>
 <?cs include "macros.cs" ?>
 <div id="page-content">
-<div id="subheader-links">
-<a href="#edit">Add/Change Info</a>
-</div>
+<h2 class="hide">Ticket Navigation</h2>
+<ul id="subheader-links">
+ <li><a href="#edit">Add/Change Info</a></li>
+</ul>
 
  <div id="main">
   <div id="main-content">

@@ -1,6 +1,6 @@
 <?cs include: "header.cs"?>
 <div id="page-content">
- <div id="subheader-links">
+ <div class="subheader-links">
    <br />
  </div>
  <div id="main">
@@ -61,9 +61,9 @@
       <?cs set:idx = #0 ?>
       <?cs each:item = browser.items ?>
         <?cs if idx % #2 ?>
-          <tr class="br-row-even">
+          <tr class="even">
         <?cs else ?>
-          <tr class="br-row-odd">
+          <tr class="odd">
         <?cs /if ?>
         <?cs if item.is_dir == #1 ?>
           <td class="br-icon-col">

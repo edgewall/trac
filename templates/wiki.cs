@@ -1,11 +1,12 @@
 <?cs include "header.cs" ?>
 <div id="page-content">
-<div id="subheader-links">
-  <a href="<?cs var:$trac.href.wiki ?>">Start Page</a>&nbsp;|
-  <a href="<?cs var:$trac.href.wiki ?>TitleIndex">Title Index</a>&nbsp;|
-  <a href="<?cs var:$trac.href.wiki ?>RecentChanges">Recent Changes</a>&nbsp;|
-  <a href="javascript:view_history()">Show/Hide History</a>
-</div>
+<h2 class="hide">Wiki Navigation</h2>
+<ul class="subheader-links">
+  <li><a href="<?cs var:$trac.href.wiki ?>">Start Page</a></li>
+  <li><a href="<?cs var:$trac.href.wiki ?>TitleIndex">Title Index</a></li>
+  <li><a href="<?cs var:$trac.href.wiki ?>RecentChanges">Recent Changes</a></li>
+  <li class="last"><a href="javascript:view_history()">Show/Hide History</a></li>
+</ul>
 
 <?cs def:day_separator(date) ?>
   <?cs if: $date != $current_date ?>
@@ -18,6 +19,7 @@
 
 <hr class="hide"/>
 <?cs if $wiki.history ?>
+    <h3 class="hide">Page History</h3>
     <table id="wiki-history">
       <tr>
         <th>Version</th>

@@ -1,29 +1,29 @@
 <?cs include "header.cs" ?>
 <div id="page-content">
-<div id="subheader-links">
+<h2 class="hide">Report Navigation</h2>
+<ul class="subheader-links">
   <?cs if report.edit_href || report.copy_href || report.delete_href ?>
-  <?cs if report.edit_href?>
-    <span class="subheader-sublinks"><b>This report:</b>&nbsp;
-      [ <a href="<?cs var:report.edit_href ?>">edit</a>&nbsp;
-  <?cs /if ?>
-  <?cs if report.copy_href ?>
-   | <a href="<?cs var:report.copy_href ?>">copy</a>&nbsp;
-  <?cs /if ?>
-  <?cs if report.delete_href ?>
-   | <a href="<?cs var:report.delete_href ?>">delete</a>
-  <?cs /if ?>
-  ]</span> |
+  <li><b>This report:</b>
+    <ul>
+      <?cs if report.edit_href?>
+       <li><a href="<?cs var:report.edit_href ?>">Edit</a></li>
+      <?cs /if ?>
+      <?cs if report.copy_href ?>
+       <li><a href="<?cs var:report.copy_href ?>">Copy</a></li>
+      <?cs /if ?>
+      <?cs if report.delete_href ?>
+       <li class="last"><a href="<?cs var:report.delete_href ?>">Delete</a></li>
+      <?cs /if ?>
+     </ul></li>
   <?cs /if ?>
   <?cs if report.create_href ?>
-   <a href="<?cs var:report.create_href ?>">New Report</a>&nbsp;|
+   <li><a href="<?cs var:report.create_href ?>">New Report</a></li>
   <?cs /if ?>
-  <a href="<?cs var:$trac.href.report ?>">Report Index</a>&nbsp;
-</div>
+  <li class="last"><a href="<?cs var:$trac.href.report ?>">Report Index</a></li>
+</ul>
 <hr class="hide"/>
 <div id="main">
     <div id="main-content">
-
-
 <?cs if report.message ?>
  <div class="error"><?cs var report.message ?></div>
 <?cs else ?>
@@ -96,14 +96,14 @@
        <?cs /if ?>
      
        <?cs if row.__color__ ?>
-         <?cs set rstem='color'+$row.__color__ ?>
+         <?cs set rstem='color'+$row.__color__ +'-' ?>
        <?cs else ?>
-        <?cs set rstem='row' ?>
+        <?cs set rstem='' ?>
        <?cs /if ?>
        <?cs if idx % #2 ?>
-         <?cs set row_class=$rstem+'-even' ?>
+         <?cs set row_class=$rstem+'even' ?>
        <?cs else ?>
-         <?cs set row_class=$rstem+'-odd' ?>
+         <?cs set row_class=$rstem+'odd' ?>
        <?cs /if ?>
  
        <?cs set row_style='' ?>

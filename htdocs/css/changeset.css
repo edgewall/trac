@@ -1,4 +1,9 @@
 /* Changeset */
+#chg-preface { border: 1px solid #d7d7d7; padding: .5em; }
+#chg-info { float: left; width: 60%}
+#chg-files { float: right; margin-left: 3em; }
+#chg-files ul { list-style: none; padding: 0; margin: .5em; }
+#chg-files li { margin: .1em; }
 .chg-name {
   display: block;
   float: left;
@@ -26,51 +31,76 @@ ul.chg-list {
   margin-right: .5em;
   border: 1px solid #999;
 }
-#chg-diff { border-top: 1px solid #d7d7d7; margin-bottom: 3em; }
-#chg-legend { }
+#chg-diff { 
+  clear: both;
+  margin-bottom: 3em; 
+}
+#chg-legend { 
+ margin: 1em 0;
+ font-size: 9px;
+ display: inline;
+ float: right;
+ border: 1px solid #d7d7d7;
+ padding: .5em;
+}
+#chg-legend h3 { 
+  display: none;
+}
+#chg-legend ul, #chg-legend ul li { 
+ display: inline;
+ float: left;
+ padding: 0;
+ margin: 0;
+ margin-right: .5em;
+}
 table.diff-table { 
-  border: 1px solid #d7d7d7; 
-  border-left: 1px solid #999; 
-  border-right: 1px solid #fff; 
-  border-bottom: 1px solid #fff; 
+  border: 1px inset #ddd; 
+  padding: 5px;
   width: 100%;
   font-size: 12px;
   border-collapse: collapse;
   margin-left: 1px;
 }
 .chg-diff-file { 
-  background: #eee;
-  padding: 5px;
-  padding-top: 0;
-  margin-top: 2em;
-  border: 1px solid #d7d7d7; 
+  background: #f7f7f7; 
+  border: 1px solid #d7d7d7;  
+  padding: 2px;
+  margin: 0;
+  margin-bottom: 3em;
 }
 .chg-diff-hdr { 
-  font-size: 11px;
-  color: #666; 
-  padding: 2px .25em;
-  border-bottom: 1px solid #999; 
+  font-size: 14px;
+  color: #333; 
+  padding: .1em 1em;
+  text-align: center;
   margin: 0;
   margin-bottom: 1px;
+  border-bottom: 1px solid #d7d7d7; 
+  letter-spacing: normal;
 }
 table.diff-table td { 
-  border-left: dashed 1px #d7d7d7;
   padding: 0 .5em;
   font-family: monospace;
+  font-size: 10px;
   vertical-align: top;
-  margin-top: 1em;
 }
 td.diff-line { 
   background: #eed;
   border: 1px solid #d7d7d7;
-  border-top: 1px solid #fff;
+  border-top: 1px solid #f7f7f0;
   border-bottom: 1px solid #998;
+  color: #886;
   font-weight: bold;
-  font-size: 11px;
+  font-size: 11px; 
 }
-.diff-modified,.chg-file-mod,.diff-legend-mod { background-color: #fd8; }
-.diff-unmodified, .diff-legend-unmod { background-color: #fff }
-.diff-remove-left,.chg-file-rem,.diff-legend-rem { background-color: #f88; }
-.diff-remove-right { background-color: #ffaaaa; }
-.diff-add-left,.chg-file-add { background-color: #dfd; }
-.diff-add-right, .diff-legend-add { background-color: #cfc; }
+.mod-left,.mod-right,.chg-file-mod,.diff-legend-mod { 
+  background-color: #fd8; 
+}
+.unmod-left,.unmod-right, .diff-legend-unmod { background-color: #fff }
+.rem-left,.chg-file-rem,.diff-legend-rem { background-color: #f88; }
+.rem-right { background-color: #ffaaaa; }
+.add-left,.chg-file-add { background-color: #dfd; }
+.add-right, .diff-legend-add { background-color: #cfc; }
+.add-left, .rem-left,.mod-left,.unmod-left { 
+  border-right: dashed 1px #d7d7d7;
+}

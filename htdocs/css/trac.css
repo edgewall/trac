@@ -67,21 +67,9 @@ legend {
  font-weight: bold; 
 }
 /* Header */
-#header { 
- position: relative;
- width: 100%;
- float: left;
-}
-#header-right { 
- position: absolute;
- bottom: 0px;
- right: 0px;
-}
-#search { 
- text-align: right;
- margin: 1em 0;
- font-size: 10px;
-}
+#header { position: relative;  width: 100%; float: left; }
+#header-right { position: absolute; bottom: 0px; right: 0px; }
+#search { text-align: right; margin: 1em 0; font-size: 10px; }
 #search input { padding: 1px;  font-size: 10px; }
 #search label { display: none; }
 #hdrlogo { }
@@ -90,21 +78,27 @@ legend {
  margin-bottom: 2px;
  border: none;
 }
-#header-links, #subheader-links { font-size: 11px; }
-#navbar {
-  font: normal 10px verdana, 'Bitstream Vera Sans', Helvetica, Arial, sans-serif; 
-  color: #000;
+.subheader-links { 
+  display: block; 
+  padding: 0;
+  padding-bottom: .25em;
+  margin: 0;
+  font-size: 10px;
+  text-align: right; 
 }
-#header-links,#subheader-links { padding: 2px 0em; text-align: right; }
-#subheader-links a,#header-links a { padding: 0 .5em; }
-.subheader-sublinks { 
+.subheader-links li { 
+  display: inline;
+  border-right: 1px solid #d7d7d7; 
+  padding: 0 .75em; 
+}
+.subheader-links li.last { border-right: none }
+.subheader-links  li ul { 
   background: #f7f7f7;
-  border: 1px solid #ccc;
-  color: #888;
+  color: #ccc;
+  border: 1px solid;
   padding: 0 .5em;
-  text-align: left;
+  display: inline;
 }
-
 /* Footer */
 #footer {
   font-size: 75%;
@@ -116,14 +110,16 @@ legend {
 #footer-left {
   float: left;
   padding: 0 1em;
-  border-left: 1px dashed;
-  border-right: 1px dashed;
+  border-left: 1px solid #d7d7d7;
+  border-right: 1px solid #d7d7d7;
 }
 #footer-right { text-align: right; }
 #footer-logo { float: left; margin-right: 1em; margin-top: 0; }
 
 /* Navbar  */
 #navbar {
+  font: normal 10px verdana, 'Bitstream Vera Sans', Helvetica, Arial, sans-serif; 
+  color: #000;
   clear: left;
   border: 1px solid #999;
   margin: .15em 0;
@@ -131,29 +127,34 @@ legend {
   height: 16px;
   /* NOTE: Changes dynamically in header.cs */
 }
-#navbar-links { float: right; }
-a.navbar-link, a.navbar-link-active,a.navbar-link-active:hover,a.navbar-link:visited,a.navbar-link-active:visited {
-  display: block;
-  float: left;
+#navbar ul {
+  display: inline; 
+  float: right;
+  padding: 0; 
+  margin: 0;
+}
+#navbar ul li { 
+ display: inline; 
+ list-style: none;
+}
+#navbar ul li a {
+  display: block; 
+  float: left; 
   height: 14px;
-  border: none;
   border-left: 1px solid #999;
   border-right: 1px solid #fff;
+  border-bottom: none;
   padding: 1px 15px;
   color: #000;
   /* NOTE: Changes dynamically augmented in header.cs */
 }
-a.navbar-link-active,a.navbar-link-active:visited { 
+#navbar a.active, #navbar a.active:visited { 
   font-weight: bold;
-  background-color: #ddd;
   border-top: none;
   border-right: none;
 }
-a.navbar-link:hover { 
-  background-color: #ddc;
-  border-right: 1px solid #ddd;
-}
-#page-content { clear: none; }
+#navbar a:hover { background-color: #d7d7d7; border-right: 1px solid #ddd; }
+#page-content { }
 #main {  margin-bottom: 2em; }
 #main-footer { margin-top: 3em; text-align: center; }
 #help { margin: 1em; font-size: 90%; color: #999; text-align: right}
@@ -162,7 +163,7 @@ a.navbar-link:hover {
 #wiki-history {
   visibility: hidden;
   background: #f7f7f0;
-  border: 1px solid #999;
+  border: 1px outset #999;
   font-size: 75%;
   position: absolute;
   display: inline;
@@ -172,13 +173,13 @@ a.navbar-link:hover {
   border-spacing: 0;
   padding: .5em;
 }
-a.wiki-history-link { border: none; }
-a.wiki-history-link:hover,tr.wiki-history-row:hover {
-  background: #ccb; 
-  color: #b00; 
+#wiki-history a { padding: 0 .5em; }
+#wiki-history a { border: none; }
+#wiki-history a:hover,#wiki-history tr:hover {
+  background: #ddd; 
 }
-a.wiki-missing-page:link,a.wiki-missing-page:visited { color: #998; background: #fafaf0; }
-a.wiki-missing-page:hover { color: #000; }
+a.missing:link,a.missing:visited { color: #998; background: #fafaf0; }
+a.missing:hover { color: #000; }
 #wiki-body { line-height: 140%; margin: 1em; }
 #wiki-formatting-help {
   font: normal 11px Verdana, 'Bitstream Vera Sans', Helvetica, Arial, sans-serif;
@@ -192,10 +193,10 @@ a.wiki-missing-page:hover { color: #000; }
 }
 #browser-list td { padding: 0 .25em; border: 1px dotted #ddd; }
 #browser-list { width: 100%; }
-tr.br-row-even, tr.br-row-odd,tr.row-even, tr.row-odd { border-top: 1px solid #ddd; }
-tr.br-row-even,tr.row-even { background-color: #fcfcfc; }
-tr.br-row-odd,tr.row-odd { background-color: #f7f7f7; }
-tr.br-row-even:hover,tr.br-row-odd:hover { background: #eed; }
+tr.even, tr.odd { border-top: 1px solid #ddd; }
+tr.even { background-color: #fcfcfc; }
+tr.odd { background-color: #f7f7f7; }
+#browser-list tr.even:hover, #browser-list tr.odd:hover { background: #eed; }
 .wikipage p {  margin-left: 1em }
 pre.wiki, pre.literal-block { 
  margin: 1em 1.75em;

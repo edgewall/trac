@@ -32,10 +32,11 @@ class About (Module):
     about_cs = """
 <?cs include "header.cs"?>
 <div id="page-content">
-<div id="subheader-links">
- <a href="<?cs var:trac.href.about ?>">About Trac</a>&nbsp;
- | <a href="<?cs var:trac.href.about_config ?>">View Config</a>&nbsp;
-</div>
+<h2 class="hide">About Navigation</h2>
+<ul class="subheader-links">
+ <li><a href="<?cs var:trac.href.about ?>">About Trac</a></li>
+ <li class="last"><a href="<?cs var:trac.href.about_config ?>">View Config</a></li>
+</ul>
  <div id="main">
   <div id="main-content">
 <?cs if about.page == "config"?>

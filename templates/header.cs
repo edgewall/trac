@@ -1,12 +1,13 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
         "http://www.w3.org/TR/2000/REC-xhtml1-20000126/DTD/xhtml1-strict.dtd">
 
-<?cs def:navlink(text, href, id, aclname) ?>
-  <?cs if $trac.acl.+aclname ?>
-      <a href="<?cs var:href ?>" class="navbar-link<?cs if $id == $trac.active_module ?>-active<?cs /if ?>"><?cs var:text ?></a>
-    <span class="hide"> | </span>
-  <?cs /if ?>
-<?cs /def ?>
+<?cs def:navlink(text, href, id, aclname) ?><?cs
+   if $trac.acl.+aclname ?><li><a href="<?cs var:href ?>" <?cs 
+        if $id == $trac.active_module ?>class="active"<?cs 
+        /if ?>><?cs var:text ?></a></li><?cs 
+   /if ?><?cs 
+/def ?>
+
 <html>
   <head>
     <?cs if $project.name ?>
@@ -32,10 +33,9 @@
       @import url("<?cs var:$htdocs_location ?>/css/search.css");
       <?cs /if ?>
       /* Dynamically/template-generated CSS below */
-      #navbar { background: url("<?cs var:$htdocs_location ?>/topbar_gradient.png") top left #eee }  
-      a.navbar-link { background: url(<?cs var:$htdocs_location ?>/dots.gif) top left no-repeat; }
-      a.navbar-link-active,a.navbar-link-active:visited { background:
-url("<?cs var:$htdocs_location ?>/topbar_active.png") top left repeat-x #ddd;}  
+      #navbar { background: url("<?cs var:$htdocs_location ?>/topbar_gradient.png") top left #f7f7f7 }  
+      #navbar a { background: url(<?cs var:$htdocs_location ?>/dots.gif) top left no-repeat; }
+      #navbar a.active,#navbar a.active:visited { background: url("<?cs var:$htdocs_location ?>/topbar_active.png") top left repeat-x #d7d7d7;}  
 
        -->
     </style>
@@ -49,6 +49,7 @@ url("<?cs var:$htdocs_location ?>/topbar_active.png") top left repeat-x #ddd;}
       height="<?cs var:header_logo.height ?>" 
       alt="<?cs var:header_logo.alt ?>" /></a>
   <hr class="hide"/>
+  <h2 class="hide">Navigation</h2>
   <div id="header-right">
    <form id="search" action="<?cs var:trac.href.search ?>" method="get">
     <div>
@@ -60,25 +61,20 @@ url("<?cs var:$htdocs_location ?>/topbar_active.png") top left repeat-x #ddd;}
      <input type="hidden" name="ticket" value="on" />
     </div>
    </form>
-   <div id="header-links">
-    <?cs if $trac.authname == "anonymous" ?>
-      <a href="<?cs var:trac.href.login ?>" 
-         class="navbar-link-right">Login</a>&nbsp;| 
+   <ul class="subheader-links">
+    <li><?cs if $trac.authname == "anonymous" ?>
+      <a href="<?cs var:trac.href.login ?>">Login</a>
     <?cs else ?> 
-      logged in as <?cs var:trac.authname ?>&nbsp;| 
-      <a href="<?cs var:trac.href.logout ?>" 
-         class="navbar-link-right"> Logout </a>&nbsp;| 
-    <?cs /if ?>
-    <a href="<?cs var:trac.href.wiki ?>TracGuide" 
-       class="navbar-link-right"> Help/Guide </a>&nbsp;| 
-    <a href="<?cs var:trac.href.about ?>" 
-       class="navbar-link-right"> About Trac </a>
-   </div>
+      logged in as <?cs var:trac.authname ?> </li>
+      <li><a href="<?cs var:trac.href.logout ?>">Logout</a>
+    <?cs /if ?></li>
+    <li><a href="<?cs var:trac.href.wiki ?>TracGuide">Help/Guide</a></li>
+    <li class="last"><a href="<?cs var:trac.href.about ?>">About Trac</a></li>
+   </ul>
   </div>
  </div>
-
   <div id="navbar">
-    <div id="navbar-links">
+    <ul>
       <?cs call:navlink("Wiki", $trac.href.wiki, "wiki", 
                         "WIKI_VIEW") ?>
       <?cs call:navlink("Timeline", $trac.href.timeline, "timeline", 
@@ -101,5 +97,5 @@ url("<?cs var:$htdocs_location ?>/topbar_active.png") top left repeat-x #ddd;}
                         "TICKET_CREATE") ?>
       <?cs call:navlink("Search", $trac.href.search, "search", 
                         "SEARCH_VIEW") ?>
-    </div>
+    </ul>
   </div>
