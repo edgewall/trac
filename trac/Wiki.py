@@ -690,6 +690,7 @@ class Wiki(Module):
         if save:
             self.req.hdf.setValue('wiki.action', 'save')
         elif edit:
+            self.perm.assert_permission (perm.WIKI_MODIFY)
             self.req.hdf.setValue('wiki.action', 'edit')
             self.req.hdf.setValue('title', name + ' (wiki edit)')
         elif preview:

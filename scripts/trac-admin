@@ -285,49 +285,7 @@ class TracAdmin(cmd.Cmd):
         sys.exit()
 
     do_EOF = do_quit # Alias
-
-
-    ## Config
-#    _help_config = [('config list', 'Show current configuration'),
-#                     ('config set <option> <value>', 'Set config')]
-
-#    def complete_config (self, text, line, begidx, endidx):
-#        if begidx > 10 and line.startswith('config set'):
-#            comp = self.get_config_list()
-#        else:
-#            comp = ['list','show','set']
-#        return self.word_complete(text, comp)
-
-#    def do_config(self, line):
-#        arg = self.arg_tokenize(line)        
-#        try:
-#            if arg[0] in ['list', 'show']:
-#                self._do_config_list()
-#            elif arg[0] == 'set' and len(arg)==3:
-#                name = arg[1]
-#                value = arg[2]
-#                self._do_config_set(name, value)
-#            else:    
-#                self.do_help('config')
-#        except Exception, e:
-#            print "Config %s failed:" % arg[0], e
-
-#    def _do_config_list(self):
-#        data = self.db_execsql ('SELECT section, name, value FROM config')
-#        ldata = [[r[0]+'.'+r[1],r[2]] for r in data]
-#        self.print_listing(['Name', 'Value'], ldata)
-
-#    def _do_config_set(self, name, value):
-#        try:
-#            cfsection, cfname = name.split('.')
-#        except ValueError, e:
-#            raise Exception, "No such config option '%s'" % name
-#        data = self.db_execsql ("SELECT value FROM config WHERE "
-#                                    "section='%s' AND name='%s'" % (cfsection, cfname))
-#        if not data:
-#            raise Exception, "No such config option '%s'" % name
-#        self.db_execsql("UPDATE config SET value='%s' WHERE "
-#                        "section='%s' AND name='%s'" % (value, cfsection, cfname))
+    
 #    ## Component
     _help_component = [('component list', 'Show available components'),
                        ('component add <name> <owner>', 'Add a new component'),
@@ -378,7 +336,7 @@ class TracAdmin(cmd.Cmd):
                                % (name, owner))
 
     def _do_component_rename(self, name, newname):
-        cnx = sqlite.connect (self.dbname)
+        cnx = self.db_open()
         cursor = cnx.cursor ()
         self.db_execsql("UPDATE component SET name='%s' WHERE name='%s'"
                         % (newname,name), cursor)
@@ -843,6 +801,8 @@ class TracAdmin(cmd.Cmd):
     def _do_mile_ver_list(self, type):
         data = self.db_execsql("SELECT name,time FROM %s ORDER BY time,name"
                                % type)
+        data = map(lambda x: (x[0], x[1] and time.strftime('%c', time.localtime(x[1]))), data)
+        print data
         self.print_listing(['Name', 'Time'], data)
 
     def _do_mile_ver_rename(self, type, name, newname):
@@ -872,15 +832,20 @@ class TracAdmin(cmd.Cmd):
     def _do_mile_ver_time(self, type, name, t):
         seconds = None
         if t == 'now':
-            seconds = str(int(time.time()))
+            seconds = int(time.time())
         else:
-            for format in ['%x %X', '%x, %X', '%X %x', '%X, %x', '%x']:
+            for format in ['%x %X', '%x, %X', '%X %x', '%X, %x', '%x', '%c']:
                 try:
                     seconds = str(time.mktime(time.strptime(t, format)))
                 except ValueError:
                     continue
                 break
-        if seconds:
+        if seconds == None:
+            try:
+                seconds = int(t)
+            except ValueError:
+                pass
+        if seconds != None:
             data = self.db_execsql("UPDATE %s SET time='%s'" 
                                    " WHERE name='%s'" % (type, seconds, name))
         else:

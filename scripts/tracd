@@ -134,8 +134,8 @@ class TracHTTPServer(SocketServer.ThreadingMixIn, BaseHTTPServer.HTTPServer):
 
 class TracHTTPRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler,
                              trac.core.Request):
-    url_re = re.compile('/(?P<project>[^/]+)'
-                        '(?P<path_info>/[^\?]*)?'
+    url_re = re.compile('/(?P<project>[^/\?]+)'
+                        '(?P<path_info>/?[^\?]*)?'
                         '(?:\?(?P<query_string>.*))?')
     server_version = 'tracd/' + trac.__version__
 
@@ -316,7 +316,9 @@ def main():
     if not args:
         usage()
     for path in args:
-        project = os.path.basename(path)
+        project = os.path.split(path)[1]
+        if not project:
+            project = os.path.split(path)[0]
         # We assume the database filenames follow the following
         # naming convention: /some/path/project.whatever
         auth = auths.get(project, None)
