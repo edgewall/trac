@@ -82,7 +82,7 @@ class Ticket(UserDict):
     def populate(self, dict):
         """Populate the ticket with 'suitable' values from a dictionary"""
         names = filter(lambda n: n in Ticket.std_fields or \
-                       n[:7] == 'custom_', dict.keys()) 
+                       n[:7] == 'custom_', dict.keys())
         for name in names:
             self[name] = dict.get(name, '')
 
@@ -105,7 +105,6 @@ class Ticket(UserDict):
         std_fields = filter(lambda n: n[:7] != 'custom_', self.keys())
         custom_fields = filter(lambda n: n[:7] == 'custom_', self.keys())
         std_values = map(lambda n: self[n], std_fields)
-        
         nstr = string.join(std_fields, ',')
         vstr = ('%s,' * len(std_fields))[:-1]
         cursor.execute('INSERT INTO ticket (%s) VALUES(%s)' % (nstr, vstr),
@@ -127,9 +126,9 @@ class Ticket(UserDict):
         if not when:
             when = int(time.time())
         id = self['id']
-        
+
         if not self._old and not comment: return # Not modified
-        
+
         for name in self._old.keys():
             if name[:7] == 'custom_':
                 fname = name[7:]
@@ -139,7 +138,7 @@ class Ticket(UserDict):
                 fname = name
                 cursor.execute ('UPDATE ticket SET %s=%s WHERE id=%s',
                                 fname, self[name], id)
-                
+
             cursor.execute ('INSERT INTO ticket_change '
                             '(ticket, time, author, field, oldvalue, newvalue) '
                             'VALUES (%s, %s, %s, %s, %s, %s)',
@@ -216,7 +215,7 @@ class NewticketModule(Module):
     template_name = 'newticket.cs'
 
     def create_ticket(self):
-        if not self.args.get('summary'): 
+        if not self.args.get('summary'):
             raise util.TracError('Tickets must contain Summary.')
 
         ticket = Ticket()
@@ -230,9 +229,9 @@ class NewticketModule(Module):
                            'WHERE name=%s', ticket['component'])
             owner = cursor.fetchone()[0]
             ticket['owner'] = owner
-        print ticket
+
         tktid = ticket.insert(self.db)
-        
+
         # Notify
         tn = TicketNotifyEmail(self.env)
         tn.notify(ticket, newticket=1)
@@ -262,12 +261,12 @@ class NewticketModule(Module):
             self.req.hdf.setValue('newticket.description_preview',
                                   wiki_to_html(ticket['description'],
                                                self.req.hdf, self.env))
-            
+
         self.req.hdf.setValue('title', 'New Ticket')
         evals = util.mydict(zip(ticket.keys(),
                                 map(lambda x: util.escape(x), ticket.values())))
         util.add_dict_to_hdf(evals, self.req.hdf, 'newticket')
-        
+
         util.sql_to_hdf(self.db, 'SELECT name FROM component ORDER BY name',
                         self.req.hdf, 'newticket.components')
         util.sql_to_hdf(self.db, 'SELECT name FROM milestone ORDER BY name',
@@ -281,11 +280,11 @@ class NewticketModule(Module):
 class TicketModule (Module):
     template_name = 'ticket.cs'
 
-    def save_changes (self, id): 
+    def save_changes (self, id):
         self.perm.assert_permission (perm.TICKET_MODIFY)
         ticket = Ticket(self.db, id)
 
-        if not self.args.get('summary'): 
+        if not self.args.get('summary'):
             raise util.TracError('Tickets must contain Summary.')
 
         if self.args.has_key('description'):
@@ -345,7 +344,6 @@ class TicketModule (Module):
         self.req.hdf.setValue('ticket.opened', time.strftime('%c', time.localtime(int(ticket['time']))))
 
         changelog = ticket.get_changelog(self.db)
-        
         curr_author = None
         curr_date   = 0
         comment = None

@@ -178,7 +178,7 @@ class TicketNotifyEmail(NotifyEmail):
         self.ticket = ticket
         self.modtime = modtime
         self.newticket = newticket
-        self.ticket['description'] = wrap(self.ticket['description'],
+        self.ticket['description'] = wrap(self.ticket.get('description',''),
                                           self.COLS,
                                           initial_indent=' ',
                                           subsequent_indent=' ')
