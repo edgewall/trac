@@ -605,52 +605,124 @@ CREATE INDEX wiki_idx           ON wiki(name,version);
             print "Initdb for '%s' failed.\nDoes a database already exist?" % self.dbname
             return
         try:
+            print 'Creating a new Trac project database at %s' % self.dbname
             print
-            print 'Trac need to known a few installation-specific settings'
-            print 'when creating a new database.'
+            print 'Trac will first ask a few questions about your environment '
+            print 'in order to initalize and prepare the project database.'
+            print
+            print " Please enter the name of your project."
+            print " This name will be used in page titles and descriptions."
+            print
+            dp = 'My Project'
+            project_name = raw_input('Project Name [%s]> ' % dp) or dp
+
+            from svn import util, repos, core
+            core.apr_initialize()
+            pool = core.svn_pool_create(None)
+            print
+            print ' Please specify the absolute path to the project Subversion repository.'
+            print ' Repository must be local, and trac-admin requires read+write'
+            print ' permission to initialize the Trac database.'
             print
             while 1:
-                project_name = raw_input('Project name (will be displayed in the page title)> ')
-                repository_dir = raw_input('Subversion repository> ')
-                if os.access(os.path.join(repository_dir, 'README.txt'), os.F_OK) and \
-                   os.access(os.path.join(repository_dir, 'conf'), os.F_OK):
+                try:
+                    drp = '/var/svn/test'
+                    prompt = 'Path to repository [%s]> ' % drp
+                    repository_dir = raw_input(prompt) or drp
+                    rep = repos.svn_repos_open(repository_dir, pool)
+                    fs_ptr = repos.svn_repos_fs(rep)
                     break
-                print repository_dir, 'doesn\'t look like a subversion repository'
+                except KeyboardInterrupt:
+                    raise KeyboardInterrupt
+                except Exception, e:
+                    print repository_dir, 'Repository access error: %s' % e
+
+            print
+            print ' Please enter location of Trac page templates.'
+            print ' Default is the location of the site-wide templates' \
+                  'installed with Trac.'
+            
+            print
+            dt = trac.siteconfig.__default_templates_dir__
+            prompt = 'Templates directory [%s]> ' % dt
             while 1:
-                dt = trac.siteconfig.__default_templates_dir__
-                prompt = 'Trac templates directory [%s]> ' % dt
                 templates_dir = raw_input(prompt) or dt
                 if os.access(os.path.join(templates_dir, 'browser.cs'), os.F_OK) and \
                    os.access(os.path.join(templates_dir, 'ticket.cs'), os.F_OK):
                     break
                 print templates_dir, 'doesn\'t look like a Trac templates directory'
+            
         except KeyboardInterrupt:
-            print 'initdb aborted'
+            print '\n* initdb aborted'
             return
         try:
+            print 'Creating and Initializing Project'
             cnx = sqlite.connect (self.dbname)
             cursor = cnx.cursor ()
+            print ' Creating tables'
             self.initdb_create_tables(cursor)
+            print ' Inserting default data'
             self.initdb_insert_default_data (cursor)
-            cursor.execute('UPDATE config SET value=%s WHERE section=%s AND name=%s',
-                           project_name, 'project', 'name')
-            cursor.execute('UPDATE config SET value=%s WHERE name=%s',
-                           repository_dir, 'repository_dir')
-            cursor.execute('UPDATE config SET value=%s WHERE name=%s',
-                           templates_dir, 'templates_dir')
+            cnx.commit()
             
+            print ' Configuring Project'
+            print '  general.repository_dir'
+            self._do_config_set('general.repository_dir', repository_dir)
+            print '  general.templates_dir'
+            self._do_config_set('general.templates_dir', templates_dir)
+            print '  project.name'
+            self._do_config_set('project.name', project_name)
             # Add a few default wiki pages
             pages = os.listdir(trac.siteconfig.__default_wiki_dir__)
+            print ' Installing wiki pages'
             for page in pages:
-                print 'Importing page', page
+                print ' ', page
                 filename = os.path.join(trac.siteconfig.__default_wiki_dir__,
                                         page)
                 self._do_wiki_import(filename, page, cursor)
             cnx.commit()
-            
+
+            from trac import sync, db
+            print ' Indexing repository'
+            sync.sync(cnx, rep, fs_ptr, pool)
+            print 'Done.'
         except Exception, e:
             print 'Failed to initialize database.', e
             cnx.rollback()
+
+
+        print "---------------------------------------------------------------------"
+        print
+        print 'Project database for \'%s\' created.' % project_name
+        print
+        print ' Customize settings for your project using the command:'
+        print
+        print '   trac-admin %s' % self.dbname
+        print
+        print ' Don\'t forget, you also need to copy (or symlink) "trac/cgi-bin/trac.cgi"'
+	print ' to you web server\'s /cgi-bin/ directory, and then configure the server.'
+	print
+	print ' If you\'re using Apache, this config example snippet might be helpful:'
+	print
+	print '    Alias /trac/ "/wherever/you/installed/trac/htdocs/"'
+	print '    <Location "/cgi-bin/trac.cgi">'
+        print '        SetEnv TRAC_DB "%s"' % self.dbname
+	print '    </Location>'
+	print
+	print '    # You need something like this to authenticate users'
+	print '    <Location "/cgi-bin/trac.cgi/login">'
+        print '        AuthType Basic'
+        print '        AuthName "%s"' % project_name
+        print '        AuthUserFile /somewhere/trac.htpasswd'
+        print '        Require valid-user'
+	print '    </Location>'
+	print
+
+        print ' The latest documentation can also always be found on the project website:'
+        print ' http://projects.edgewall.com/trac/'
+        print
+        print 'Congratulations!'
+        print
 
     def initdb_create_tables (self, cursor):
             cursor.execute (self.db_schema)
