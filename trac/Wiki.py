@@ -224,13 +224,13 @@ class Formatter(CommonFormatter):
     """
     A simple Wiki formatter
     """
-    _rules = [r"""(?P<svnimg>(source|repos):([^ ]+)(\.png|\.jpg|\.jpeg|\.gif))"""] + \
+    _rules = [r"""(?P<svnimg>(source|repos):([^ ]+)\.(PNG|png|JPG|jpg|JPEG|jpeg|GIF|gif))"""] + \
              CommonFormatter._rules + \
              [r"""(?P<macro>\[\[(?P<macroname>[a-zA-Z]+)(\((?P<macroargs>[^\)]*)\))?\]\])""",
               r"""(?P<heading>^\s*(?P<hdepth>=+)\s.*\s(?P=hdepth)$)""",
               r"""(?P<list>^(?P<ldepth>\s+)(?:\*|[0-9]+\.) )""",
               r"""(?P<indent>^(?P<idepth>\s+)(?=[^\s]))""",
-              r"""(?P<imgurl>([a-z]+://[^ ]+)(\.png|\.jpg|\.jpeg|\.gif)(\\?[^\s])*)""",
+              r"""(?P<imgurl>([a-z]+://[^ ]+)\.(PNG|png|JPG|jpg|JPEG|jpeg|GIF|gif)(\\?[^\s])*)""",
               r"""(?P<url>([a-z]+://[^ ]+[^\., \)\]\}]))""",
               r"""(?P<last_table_cell>\|\|$)""",
               r"""(?P<table_cell>\|\|)"""]
