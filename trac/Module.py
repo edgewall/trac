@@ -50,8 +50,9 @@ class Module:
         sql_to_hdf("SELECT name FROM enum WHERE type='severity' ORDER BY value",
                    self.cgi.hdf, 'enums.severity')
         
-        self.cgi.hdf.setValue('htdocs_location',
-                              self.config['general']['htdocs_location'])
+        self.cgi.hdf.setValue('htdocs_location', self.config['general']['htdocs_location'])
+        self.cgi.hdf.setValue('project.name', self.config['project']['name'])
+        self.cgi.hdf.setValue('project.descr', self.config['project']['descr'])
         self.cgi.hdf.setValue('trac.active_module', self._name)
         self.cgi.hdf.setValue('trac.authname', auth.get_authname())
         self.cgi.hdf.setValue('trac.href.wiki', href.wiki())

@@ -139,4 +139,5 @@ class Timeline (Module):
         
         info = self.get_info (start, stop, ticket, changeset, wiki)
         add_dictlist_to_hdf(info, self.cgi.hdf, 'timeline.items')
+        self.cgi.hdf.setValue('title', 'Timeline')
 

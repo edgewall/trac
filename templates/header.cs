@@ -9,7 +9,7 @@
 <?cs /def ?>
 <html>
   <head>
-    <title>Edgewall Trac | <?cs var:title ?></title>
+    <title>Edgewall Trac | <?cs var:project.name?> | <?cs var:title ?></title>
     <style type="text/css">
       <?cs include "css.cs" ?>
     </style>

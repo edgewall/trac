@@ -30,6 +30,8 @@ class About (Module):
     def render (self):
         page = util.dict_get_with_default(self.args, 'page', 'default')
         
+        self.cgi.hdf.setValue('title', 'About Trac')
+        
         if page[0:7] == '/config':
             perm.assert_permission(perm.CONFIG_VIEW)
             self.cgi.hdf.setValue('about.page', 'config')
