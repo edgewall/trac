@@ -26,6 +26,8 @@
  </head>
 <body>
 <?cs include "site_header.cs" ?>
+<div id="banner">
+
 <div id="header">
   <a id="logo" href="<?cs var:header_logo.link ?>"><img src="<?cs var:header_logo.src ?>"
       width="<?cs var:header_logo.width ?>" height="<?cs var:header_logo.height ?>"
@@ -47,7 +49,7 @@
 <div id="metanav" class="nav">
  <h2>Navigation</h2>
  <ul>
-  <li><?cs if:trac.authname == "anonymous" || !trac.authname ?>
+  <li class="first"><?cs if:trac.authname == "anonymous" || !trac.authname ?>
     <a href="<?cs var:trac.href.login ?>">Login</a>
   <?cs else ?>
     logged in as <?cs var:trac.authname ?> </li>
@@ -59,6 +61,8 @@
   <li style="display: none"><a accesskey="0" href="<?cs var:trac.href.wiki ?>/TracAccessibility">Accessibility</a></li>
   <li class="last"><a accesskey="9" href="<?cs var:trac.href.about ?>">About Trac</a></li>
  </ul>
+</div>
+
 </div>
 
 <?cs def:navlink(text, href, id, aclname, accesskey) ?><?cs
