@@ -89,6 +89,7 @@ option {  border-bottom: 1px solid #ccc; }
 	margin: .15em 0;
 }
 #navbar-links { float: right; }
+/* moved to header.cs
 a.navbar-link, a.navbar-link-active,a.navbar-link-active:hover {
 	display: block;
 	float: left;
@@ -98,7 +99,7 @@ a.navbar-link, a.navbar-link-active,a.navbar-link-active:hover {
 	padding: .1em 1.5em;
 	color: #000;
 	background: url(/trac_common/dots.gif) top left no-repeat;
-}
+} */
 a.navbar-link-active {
 	background: #ccc;
 	font-weight: bold;
@@ -219,10 +220,12 @@ td.br-summary-col {
 	border-bottom: 1px solid #d7d7d7;
 }
 .tl-item { margin: 1px; font-size: 90%; }
+/* Moved to header.cs 
 .tl-item a {
 	border: none;
 	background: url(/trac_common/topangle.gif) top left no-repeat;
 }
+*/
 .tl-item a:hover {
 	background-color: #eed;
 	color: #000;
