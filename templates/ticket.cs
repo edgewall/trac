@@ -118,78 +118,107 @@
 <?cs /if ?>
 <hr class="hide"/>
 
+
 <form action="<?cs var:cgi_location ?>" method="post">
 <h3>Add/Change Information</h3>
-<p>
-  <input type="hidden" name="mode" value="ticket" />
-  <input type="hidden" name="id"   value="<?cs var:ticket.id ?>" />
-</p>
-<table class="listing">
-  <tr>
-    <td align="right">opened:</td><td><?cs var:ticket.opened ?></td>
-    <td align="right">reporter:</td><td><input type="text" name="reporter" value="<?cs var:trac.authname ?>"/></td>
-  </tr>
-  <tr>
-    <td align="right">component:</td>
-    <td><?cs call:hdf_select(ticket.components, 
-                             "component",
-                             ticket.component) ?>
-    </td>
-    <td align="right">priority:</td>
-    <td><?cs call:hdf_select(enums.priority, 
-                             "priority",
-                             ticket.priority) ?>
-    </td>
-  </tr>
-  <tr>
-    <td align="right">version:</td>
-    <td><?cs call:hdf_select(ticket.versions, 
-                             "version",
+  <div id="nt-props-left">
+    <input type="hidden" name="mode" value="ticket" />
+    <input type="hidden" name="id"   value="<?cs var:ticket.id ?>" />
+
+    <div class="nt-prop">
+      <span class="nt-label">Opened:</span>
+      <span class="nt-widget">
+        <?cs var:ticket.opened ?>
+      </span>
+    </div>
+    <div class="nt-prop">
+      <span class="nt-label">Version:</span>
+      <span class="nt-widget">
+        <?cs call:hdf_select(ticket.versions, "version",
                              ticket.version) ?>
-    </td>
-    <td align="right">milestone:</td>
-    <td><?cs call:hdf_select(ticket.milestones, 
-                             "milestone",
-                             ticket.milestone) ?>
-    </td>
-  </tr>
-  <tr>
-    <td align="right">severity:</td>
-    <td><?cs call:hdf_select(enums.severity, 
-                             "severity",
+      </span>
+    </div>
+    <div class="nt-prop">
+      <span class="nt-label">Severity:</span>
+      <span class="nt-widget">
+        <?cs call:hdf_select(enums.severity, "severity",
                              ticket.severity) ?>
-    </td>
-    <td align="right">assigned to:</td><td><?cs var:ticket.owner ?></td>
-  </tr>
-  <tr>
-    <td align="right">status:</td>
-    <td><?cs var:ticket.status ?></td>
-<td align="right">resolution:</td><td><?cs var:ticket.resolution ?></td>
-</tr>
-<tr>
-<td align="right">cc:</td>
-<td><input type="text" name="cc" value="<?cs var:ticket.cc ?>" /></td>
-</tr>
-<tr>
-<td align="right"><a href="<?cs var:ticket.url ?>">url</a>:</td>
-<td colspan="3">
-  <input type="text" name="url" value="<?cs var:ticket.url ?>" size="50" /></td>
-</tr>
-<tr>
-<td align="right">summary:</td>
-<td colspan="3">
-  <input type="text" name="summary" value="<?cs var:ticket.summary ?>"
-  size="50" /></td>
-</tr>
-<tr>
-<td align="right">additional comments:</td>
-	<td colspan="3">
-	<textarea name="comment" rows="8" cols="70"></textarea>
-	</td>
-</tr>
-<tr>
-<td></td>
-<td colspan="3">
+      </span>
+    </div>
+    <div class="nt-prop">
+      <span class="nt-label">Status:</span>
+      <span class="nt-widget"><?cs var:ticket.status ?></span>
+    </div>
+    <?cs if:ticket.resolution ?>
+      <div class="nt-prop">
+        <span class="nt-label">Resolution:</span>
+        <span class="nt-widget"><?cs var:ticket.resolution ?></span>
+      </div>
+    <?cs /if ?>
+  </div>
+  <div id="nt-props-right">
+    <div class="nt-prop">
+      <span class="nt-label">Reporter:</span>
+      <span class="nt-widget">
+        <input type="text" name="reporter"
+              value="<?cs var:trac.authname ?>" />
+      </span>
+    </div>
+    <div class="nt-prop">
+      <span class="nt-label">Priority:</span>
+      <span class="nt-widget">
+        <?cs call:hdf_select(enums.priority, "priority",
+                             ticket.priority) ?>
+      </span>
+    </div>
+    <div class="nt-prop">
+      <span class="nt-label">Milestone:</span>
+      <span class="nt-widget">
+        <?cs call:hdf_select(ticket.milestones, "milestone",
+                             ticket.milestone) ?>
+      </span>
+    </div>
+    <?cs if:ticket.owner ?>
+      <div class="nt-prop">
+        <span class="nt-label">Assigned To:</span>
+        <span class="nt-widget"><?cs var:ticket.owner ?></span>
+      </div>
+    <?cs /if ?>
+  </div>
+  <div><br style="clear: both" /></div>
+  <div id="nt-props-middle">
+    <div class="nt-prop">
+      <span class="nt-label">Cc:</span>
+      <span class="nt-widget">
+         <input type="text" name="cc" value="<?cs var:ticket.cc ?>" />
+      </span>
+    </div>
+    <div class="nt-prop">
+      <span class="nt-label">
+        <a href="<?cs var:ticket.url ?>">URL</a>:
+      </span>
+      <span class="nt-widget">
+        <input type="text" name="url"
+                value="<?cs var:ticket.url ?>" size="50" />
+      </span>
+    </div>
+    <div class="nt-prop">
+      <span class="nt-label">Summary</span>
+      <span class="nt-widget">
+        <input type="text" name="summary"
+                value="<?cs var:ticket.summary ?>" size="60" />
+      </span>
+    </div>
+  </div>
+  <div><br style="clear: both" /></div>
+  <div id="nt-props-bottom">
+    <div class="nt-prop">
+      <div class="nt-label">Additional Comments:</div>
+      <br style="clear: both"/>
+      <span class="nt-widget" style="clear: both">
+        <textarea name="comment" rows="10" cols="66"></textarea>
+      </span>
+    <div id="nt-submit2">
   <input type="radio" name="action" value="leave" checked="checked" />
   &nbsp;leave as <?cs var:ticket.status ?><br />
  
@@ -216,15 +245,13 @@
     &nbsp;<input type="text" name="reassign_owner" 
           value="<?cs var:ticket.owner ?>" />
   <?cs /if ?>
-
-</td>
-</tr>
-<tr>
-<td></td>
-<td colspan="3"><br /><input type="submit" value="commit" /> </td>
-</tr>
-</table>
+<br />
+<input type="submit" value="commit" /> 
+    </div>
+    </div>
+  </div>
 </form>
+
 
  </div>
 </div>

@@ -436,12 +436,14 @@ li.tkt-chg-change { margin: 0 }
 <?cs /if ?>
 
 
-<?cs if:trac.active_module == 'newticket' ?>
-/* New Ticket */
+<?cs if:trac.active_module == 'newticket' || trac.active_module == 'ticket'?>
+
+/* New Ticket (NOTE: Shared with Ticket) */
 
 #nt-props-left, #nt-props-right { 
  display: block;
  float: left;
+ padding-bottom: .5em;
 }
 
 #nt-props-left { 
@@ -451,14 +453,18 @@ li.tkt-chg-change { margin: 0 }
 #nt-props-middle,#nt-props-bottom { 
  clear: both;
  border-top: 1px dotted #d7d7d7;
- margin-bottom: .5em 0;
- padding: .5em 0;
+ margin-bottom: .5em;
+ padding-top: .5em;
  width: 38em;
 }
 
 #nt-submit {
  margin: .5em 1em;
  text-align: right;
+}
+
+#nt-submit2 {
+ margin: .5em 1em;
 }
 
 

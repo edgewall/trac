@@ -62,6 +62,7 @@
       <span class="nt-widget"><input type="text" name="owner" /></span>
     </div>
   </div>
+  <div><br style="clear: both"/></div>
   <div id="nt-props-middle">
     <div class="nt-prop">
       <span class="nt-label">Cc:</span>
