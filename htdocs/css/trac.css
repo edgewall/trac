@@ -136,13 +136,13 @@ form.inline input { margin: 1em }
   padding: 0;
   white-space: nowrap;
 }
-.subheader-links > li { padding: 0 .75em; }
+.subheader-links li { padding: 0 .75em; }
 .subheader-links li a, .menulist li a {
  padding: 0 .5em;
 }
 .menulist li { float: left; }
 .subheader-links li.last,.menulist li.last { border-right: none; }
-.subheader-links > li > ul, .menulist {
+.subheader-links li ul, .menulist {
   background: #f7f7f7;
   color: #ccc;
   border: 1px solid;
@@ -150,8 +150,9 @@ form.inline input { margin: 1em }
   display: inline;
   margin: 0;
 }
-.subheader-links > li > ul > li > a { padding: 0 1em; }
-.subheader-links > li > ul > li > a:hover { color: #fff; background: #bba; }
+.subheader-links li ul li { padding: 0; }
+.subheader-links li ul li a { padding: 0 1em; }
+.subheader-links li ul li a:hover { color: #fff; background: #bba; }
 .menulist {
   float: left;
   padding: 0;
