@@ -3,14 +3,20 @@
 <?cs include "macros.cs"?>
 
 <div class="nav">
+ <ul class="subheader-links">
+  <li><a href="<?cs var:browser.log_href ?>">Revision Log</a></li>
+ </ul>
 </div>
 
 <div id="main" class="browser">
- <h1 id="browser-rev" class="hide">Browsing Revision <?cs var:browser.revision?></h1>
  <?cs call:browser_path_links(browser.path, browser) ?>
 
- <div id="browser-nav">
-  <form id="browser-chgrev" action="<?cs var:browser_current_href ?>" method="get">
+ <div id="toolbar">
+  <ul class="menulist">
+   <li><a title="View revision log" href="<?cs
+     var:browser.log_href ?>">Revision Log</a></li>
+  </ul>
+  <form action="<?cs var:browser_current_href ?>" method="get">
    <div>
     <label for="rev">View rev:</label>
     <input type="text" id="rev" name="rev" value="<?cs

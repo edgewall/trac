@@ -10,17 +10,15 @@
 </div>
 
 <div id="main" class="log">
- <h1 id="log-hdr" class="hide">Revision log for <?cs var:log.path ?></h1>
  <?cs call:browser_path_links(log.path, log) ?>
 
- <div id="browser-nav">
+ <div id="toolbar">
   <ul class="menulist">
    <li class="last">
     <a href="<?cs var:log.items.0.file_href ?>">View Latest Revision</a>
    </li>
   </ul>
-  <form id="browser-chgrev" action="<?cs
-    var:log.items.0.file_href ?>" method="get">
+  <form action="<?cs var:log.items.0.file_href ?>" method="get">
    <div>
     <label for="rev">View rev:</label>
     <input type="text" id="rev" name="rev" value="<?cs
