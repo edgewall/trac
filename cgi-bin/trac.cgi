@@ -20,7 +20,14 @@
 #
 # Author: Jonas Borgström <jonas@edgewall.com>
 
-if __name__ == '__main__':
+try:
     import trac
     trac.main()
-
+except Exception, e:
+    print 'Content-Type: text/plain\r\n\r\n',
+    print 'Oups...'
+    print
+    print 'Trac detected an internal error:'
+    print
+    print real_e
+    print

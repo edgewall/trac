@@ -650,11 +650,17 @@ CREATE INDEX wiki_idx		ON wiki(name,version);
             cursor.execute (self.db_schema)
 
     def initdb_insert_default_data (self, cursor):
+        def prep_value(v):
+            if v == None:
+                return 'NULL'
+            else:
+                return '"%s"' % v
+
         for t in xrange(0, len(self.db_data)):
             table = self.db_data[t][0]
             cols = ','.join(self.db_data[t][1])
             for row in self.db_data[t][2]:
-                values = ','.join([v and '"%s"' % v or 'NULL' for v in row])
+                values = ','.join(map(prep_value, row))
                 sql = "INSERT INTO %s (%s) VALUES(%s);" % (table, cols, values)
                 cursor.execute(sql)
 
