@@ -364,6 +364,8 @@ class CGIRequest(Request):
             self.incookie.load(os.getenv('HTTP_COOKIE'))
         if os.getenv('HTTP_HOST'):
             self.hdf.setValue('HTTP.Host', os.getenv('HTTP_HOST'))
+        if os.getenv('PATH_INFO'):
+            self.hdf.setValue('HTTP.PathInfo', os.getenv('PATH_INFO'))
 
         self.hdf.setValue('HTTP.Protocol', proto)
         if proto_port:

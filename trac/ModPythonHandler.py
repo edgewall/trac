@@ -85,6 +85,7 @@ class ModPythonRequest(core.Request):
         if self.req.headers_in.has_key('Cookie'):
             self.incookie.load(self.req.headers_in['Cookie'])
 
+        self.hdf.setValue('HTTP.PathInfo', self.path_info)
         self.hdf.setValue('HTTP.Host', self.req.hostname)
         self.hdf.setValue('HTTP.Protocol', proto)
         if proto_port:
