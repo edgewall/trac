@@ -3,6 +3,7 @@
 import os
 import os.path
 import sys
+import string
 from glob import glob
 from distutils.core import setup
 from distutils.command.install import install
@@ -161,7 +162,7 @@ class generic_bdist_rpm(bdist_rpm):
     def run(self):
         bdist_rpm.run(self)
         if hasattr(self, 'version_suffix'):
-            prefix = os.path.join(self.dist_dir, 'trac-0.7-1')
+            prefix = os.path.join(self.dist_dir, string.lower(PACKAGE)+'-'+VERSION+'-1')
             os.rename(prefix+'.noarch.rpm', prefix+self.version_suffix+'.noarch.rpm')
             os.rename(prefix+'.src.rpm', prefix+self.version_suffix+'.src.rpm')
 
