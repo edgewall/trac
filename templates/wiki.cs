@@ -236,61 +236,7 @@
      <?cs /if ?>
    <?cs /if ?>
  <?cs /if ?>
-
+ </div>
 </div>
-
-
 </div>
- <?cs if wiki.action == "preview" ?>
-     <form action="<?cs var:wiki.current_href ?>#preview" method="post">
-      <div style="width: 100%">
-       <input type="hidden" name="edit_version"
-           value="<?cs var:wiki.edit_version?>" />
-       <input type="hidden" name="scroll_bar_pos" id="scroll_bar_pos"
-           value="<?cs var:wiki.scroll_bar_pos?>" />
-       <input type="hidden" name="selection_start" id="selection_start"
-           value="<?cs var:wiki.selection_start?>" />
-       <input type="hidden" name="selection_end" id="selection_end"
-           value="<?cs var:wiki.selection_end?>" />
-       <label for="text">Page source:</label><br />
-       <fieldset>
-         <legend>Change information</legend>
-         <div style="display: inline; float: left; margin: 0 .5em;">
-           <label for="author">Your email or username:</label><br />
-           <input id="author" type="text" name="author" size="30"
-                value="<?cs call:session_name_email() ?>"/>
-         </div>
-         <div>
-           <label for="comment">Comment about this change (optional):</label>
-           <br />
-           <input id="comment" type="text" name="comment" size="60"
-                 value="<?cs var:wiki.comment?>" />
-         </div>
-	 <?cs if trac.acl.WIKI_ADMIN ?>
-	 <div>
-	   <input type="checkbox" name="readonly"
-           <?cs if wiki.readonly == "1"?>checked="checked"<?cs /if ?> /> Page is read-only.
-	 </div>
-	 <?cs /if ?>
-         <div class="buttons">
-             <input type="submit" name="save" value="Save changes" />&nbsp;
-             <input type="submit" name="preview" value="Preview" 
-		onclick="save_edit_position(document.form.text, this.form.scroll_bar_pos, this.form.selection_start, this.form.selection_end);"
-		/>&nbsp;
-             <input type="submit" name="cancel" value="Cancel" />
-	     <?cs if trac.acl.WIKI_DELETE ?>
-	         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <input type="submit" name="delete_ver" value="Delete this version"
-                       onClick="return confirm('Do you really want to delete version <?cs var:wiki.edit_version?>?\nThis is an irreversible operation.')"/>
-                 <input type="submit" name="delete_page" value="Delete Page" 
-                        onClick="return confirm('Do you really want to delete all versions of this page?\nThis is an irreversible operation.')"/>
-	     <?cs /if ?>
-         </div>
-       </fieldset>
-      </div>
-     </form>
- <?cs /if ?>
-</div>
-
-
 <?cs include "footer.cs" ?>
