@@ -144,6 +144,7 @@ class TracHTTPRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler,
         # FIXME: do this only once per project
         from trac import Wiki
         Wiki.populate_page_dict(database)
+        href = Href(self.cgi_location)
         
         self.remote_addr = str(self.client_address[0])
         auth_cookie = '' #FIXME
@@ -156,15 +157,14 @@ class TracHTTPRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler,
                                     self.query_string,
                                     self.rfile, None, self.headers)
 
-        # Load the selected module
-        module = trac.core.module_factory(args, database, config, self)
-
-        module.href = Href('/' + self.project)
-        module.cgi_location = self.cgi_location
-        module.run()
-        
-        if module.pool:
-            svn.core.svn_pool_destroy(module.pool)
+        try:
+            # Load the selected module
+            module = trac.core.module_factory(args, database, config,
+                                              self, href)
+            module.run()
+        finally:
+            if module.pool:
+                svn.core.svn_pool_destroy(module.pool)
             
         print 'Total request time:', time.time() - start, 'seconds'
 

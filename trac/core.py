@@ -121,7 +121,7 @@ def parse_args(command, path_info, query_string,
         args[x] = argv.value.replace('\r','')
     return args
 
-def module_factory(args, db, config, req):
+def module_factory(args, db, config, req, href):
     mode = args.get('mode', 'wiki')
     module_name, constructor_name, need_svn = modules[mode]
     module = __import__(module_name,
@@ -133,6 +133,7 @@ def module_factory(args, db, config, req):
     module.db = db
     module.perm = perm.PermissionCache(db, req.authname)
     module.perm.add_to_hdf(req.hdf)
+    module.href = href
     # Only open the subversion repository for the modules that really
     # need it. This saves us some precious time.
     if need_svn:
@@ -386,16 +387,16 @@ def real_cgi_start():
                       sys.stdin, os.environ)
 
     req.authname = authenticator.authname
-    # Load the selected module
-    module = module_factory(args, database, config, req)
-    module.href = href
-        
-    module.run()
-    # We do this even if the cgi will terminate directly after. A pool
-    # destruction might trigger important clean-up functions.
-    if module.pool:
-        import svn.core
-        svn.core.svn_pool_destroy(module.pool)
+    try:
+        # Load the selected module
+        module = module_factory(args, database, config, req, href)
+        module.run()
+    finally:
+        # We do this even if the cgi will terminate directly after. A pool
+        # destruction might trigger important clean-up functions.
+        if module.pool:
+            import svn.core
+            svn.core.svn_pool_destroy(module.pool)
 
 def cgi_start():
     try:
