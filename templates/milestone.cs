@@ -53,18 +53,21 @@
   <table summary="Shows the milestone completion status grouped by component">
    <caption>Status By Component</caption>
    <thead><tr>
+    <th>&nbsp;</th>
+    <th class="tickets" scope="col" colspan="2">Tickets</th>
+    <th>&nbsp;</th>
+   </tr><tr>
     <th class="name" scope="col">Component</th>
-    <th class="tickets" scope="col">Active Tickets</th>
-    <th class="progress" scope="col">Percent Complete</th>
+    <th class="open" scope="col">Active</th>
+    <th class="closed" scope="col">Resolved</th>
+    <th class="progress" scope="col">Percent Resolved</th>
    </tr></thead>
    <tbody>
     <?cs each:component = milestone.stats.components ?>
      <tr class="<?cs if:name(component) % 2 ?>odd<?cs else ?>even<?cs /if ?>">
       <th class="name" scope="row"><?cs var:component.name ?></th>
-      <td class="tickets">
-       <?cs var:component.active_tickets ?> /
-       <?cs var:component.closed_tickets ?>
-      </td>
+      <td class="open tickets"><?cs var:component.active_tickets ?></td>
+      <td class="closed tickets"><?cs var:component.closed_tickets ?></td>
       <td class="progress">
        <div style="width: 80%">
         <div class="progress" style="width: <?cs
@@ -79,10 +82,8 @@
    </tbody>
    <tfoot><tr>
     <th class="name" scope="row">Total</th>
-    <td class="tickets">
-     <?cs var:stats.active_tickets ?> /
-     <?cs var:stats.closed_tickets ?>
-    </td>
+    <td class="open tickets"><?cs var:stats.active_tickets ?></td>
+    <td class="closed tickets"><?cs var:stats.closed_tickets ?></td>
     <td class="progress">
      <div style="width: 80%">
       <div class="progress" style="width: 100%">
