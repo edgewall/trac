@@ -1,3 +1,4 @@
+<script type="text/javascript">searchHighlight()</script>
 <div id="footer">
  <hr />
  <a id="tracpowered" href="http://trac.edgewall.com/"><img src="<?cs

@@ -31,7 +31,8 @@
    <?cs /if ?>
    <?cs include "site_css.cs" ?>
   </style>
-  <script src="<?cs var:$htdocs_location ?>trac.js" type="text/javascript"></script>
+  <script src="<?cs var:$htdocs_location ?>trac.js" type="text/javascript"
+      defer="defer"></script>
  </head>
 <body>
 <?cs include "site_header.cs" ?>
