@@ -1,0 +1,45 @@
+== Trac Permissions ==
+
+Trac uses a flexible permission system to control what different users can do
+in the system.
+
+When a user first uses a system he/she will be able to do certain things. 
+Exactly what he/she can do depend on which privileges you have granted to
+the special user {{{anonymous}}}.
+In addition to these privileges different users can be granted additional 
+rights as soon as they login into the system.
+
+=== Available privileges ===
+
+ * {{{LOG_VIEW}}}
+ * {{{FILE_VIEW}}}
+ * {{{CHANGESET_VIEW}}}
+ * {{{BROWSER_VIEW}}}
+ * {{{TICKET_VIEW, TICKET_CREATE, TICKET_MODIFY, TICKET_ADMIN}}}
+ * {{{REPORT_VIEW, REPORT_CREATE, REPORT_MODIFY, REPORT_DELETE, REPORT_ADMIN}}}
+ * {{{WIKI_VIEW, WIKI_CREATE, WIKI_MODIFY, WIKI_DELETE, WIKI_ADMIN}}}
+ * {{{TIMELINE_VIEW}}}
+ * {{{SEARCH_VIEW}}}
+
+The {{{something_ADMIN}}} privileges are just shortcuts that can be used to grant a user all the ''something'' privileges in one go.
+
+=== Granting privileges ===
+
+Currently the only way to grant privileges to users is by using the
+{{{trac_admin.py}}} script. The current set of privileges can be listed
+with the following command:
+
+{{{
+  $ trac_admin.py /path/to/my.db permission list
+}}}
+
+This command will let the user ''bob'' to delete reports:
+
+{{{
+  $ trac_admin.py /path/to/my.db permission add bob REPORT_DELETE
+}}}
+
+=== Default permissions ===
+
+Granting privileges to the special user ''anonymous'' can be used to control
+what an anonymous user can do before they have logged in.

@@ -1,0 +1,53 @@
+= TracAdmin =
+
+Trac is distributed with a powerful configuration tool. This tool can be used 
+to configure and customize your Trac-installation to better fit your needs.
+
+== Usage ==
+
+{{{
+Usage: trac-admin <dbfile> [command [subcommand] [option ...]]
+
+Invoking trac-admin without command starts interactive mode.
+
+about                               -- Shows information about trac-admin
+help                                -- Show documentation
+initdb                              -- Create and initializes a new database
+config list                         -- Show current configuration
+config set <option> <value>         -- Set config
+wiki list                           -- List wiki pages
+wiki export <page> [file]           -- Export wiki page to file or stdout
+wiki import <page> [file]           -- Import wiki page from file or stdin
+permission list                     -- List permission rules
+permission add <user> <action>      -- Add a new permission rule
+permission remove <user> <action>   -- Remove permission rule
+component list                      -- Show available components
+component add <name> <owner>        -- Add a new component
+component rename <name> <newname>   -- Rename a component
+component remove <name>             -- Remove/uninstall component
+component chown <name> <owner>      -- Change component ownership
+priority list                       -- Show possible ticket priorities
+priority add <value>                -- Add a priority value option
+priority change <value> <newvalue>  -- Change a priority value
+priority remove <value>             -- Remove priority value
+severity list                       -- Show possible ticket priorities
+severity add <value>                -- Add a severity value option
+severity change <value> <newvalue>  -- Change a severity value
+severity remove <value>             -- Remove severity value
+version list                        -- Show versions
+version add <name> [time]           -- Add version
+version rename <name> <newname>     -- Rename version
+version time <name> <time>          -- Set version date/time
+version remove <name>               -- Remove version
+milestone list                      -- Show milestones
+milestone add <name> [time]         -- Add milestone
+milestone rename <name> <newname>   -- Rename milestone
+milestone time <name> <time>        -- Set milestone date/time
+milestone remove <name>             -- Remove milestone
+}}}
+
+== Interactive mode ==
+
+'''trac-admin''' starts in an interactive mode when started with the database 
+filename as the only argument. Commands can then be executed on the selected 
+database using the tab-completing prompt.

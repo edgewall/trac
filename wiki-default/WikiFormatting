@@ -1,0 +1,116 @@
+= WikiFormatting =
+
+Trac implements a simple Wiki engine. The main goal is to have a simple small
+and fast engine that uses the same command syntax as other well known wikis, especially [http://moin.sf.net/ MoinWiki]. The wiki also serves as the core 
+component of Trac, which tightly integrates all the other parts of Trac into
+flexible and powerful system.
+
+This page will demonstrate some of the formatting commands available in the Trac Wiki.
+
+== Font styles ==
+
+The Trac wiki support the following font styles: '''bold''', ''italic''
+and __underline__.
+
+{{{
+The Trac wiki support the following font styles: '''bold''', ''italic''
+and __underline__.
+}}}
+
+== Heading ==
+
+You can create heading by starting a line with one up to five equal signs
+followed by a space and the headline text. The line should end with a space 
+followed by the same number of equal signs. 
+
+=== Example: ===
+{{{
+= Heading =
+== Subheading ==
+}}}
+
+
+== Paragraphs ==
+
+A new text paragraph is created whenever two blocks of text are separated
+by an empty line. A newline can also be inserted like this:
+{{{
+Line 1[[BR]]Line 2
+}}}
+Display:
+
+Line 1[[BR]]Line 2
+
+ Text paragraphs can also be indented by starting the lines with a few spaces.
+== Lists ==
+Example:
+{{{
+ * Item 1
+   * Item 1.1
+ * Item 2
+
+ 1. Item 1
+   1. Item 1.1
+ 1. Item 2
+}}}
+Display:
+ * Item 1
+   * Item 1.1
+ * Item 2
+
+ 1. Item 1
+   1. Item 1.1
+ 1. Item 2
+
+== Links ==
+
+Hyperlinks are automatically created for wiki names and urls. For example:
+
+ TitleIndex, http://www.edgewall.com/.
+
+Links can be given a move descriptive title by writing the link followed by
+a space and a title and all this inside two square brackets. Like this:
+{{{
+ * [http://www.edgewall.com/ Edgewall Research & Development]
+ * [wiki:TitleIndex Title Index]
+}}}
+Display:
+
+ * [http://www.edgewall.com/ Edgewall Research & Development]
+ * [wiki:TitleIndex Title Index]
+
+=== Intra Trac Links ===
+
+Trac allows wiki pages to link directly to other parts of the Trac system.
+Pages can refer to tickets, reports and changesets by simply writing the
+ticket, report and changeset numbers in the following notation:
+{{{
+ * Ticket #1 
+ * Report {1}
+ * Changeset [1]
+ * File svn:trunk/COPYING.
+}}}
+Display:
+ * Ticket #1 
+ * Report {1}
+ * Changeset [1]
+ * File svn:trunk/COPYING.
+
+== Images ==
+
+Urls ending with .png, .gif or .jpg will be converted to an IMG-tag.
+
+Example:
+{{{
+http://www.edgewall.com/gfx/media/edgewall_logo_symbol_only_152x142.png
+}}}
+Display:
+
+http://www.edgewall.com/gfx/media/edgewall_logo_symbol_only_152x142.png
+
+
+== Other stuff ==
+
+Four or more dashes will be replaced by a horizontal line (<HR>)
+
+----

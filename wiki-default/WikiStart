@@ -1,0 +1,25 @@
+== Welcome to your Trac installation ==
+
+Trac is a '''minimalistic''' approach to '''web-based''' management of
+'''software projects'''. Its goal is to simplify effective tracking of
+software issues, enhancements and overall progress.
+
+All aspects of Trac have been designed with the single goal to '''help
+developers write great software''' while '''staying out of the way'''
+and imposing as little as possible on a team's process.
+
+As all Wiki pages, this page is editable, this means that you can
+modify the contents of this page simply by using your
+web-browser. Simply click on the "Edit this page" link at the bottom
+of the page. WikiFormatting will give you a detailed description of
+available Wiki formatting commands.
+
+"{{{[wiki:TracAdmin trac-admin] ''yourdatabase.db'' initdb}}}" created
+a new database filled with a set of default wiki pages and some sample
+data. You can use [wiki:TracAdmin trac-admin] to configure
+[http://trac.edgewall.com/ Trac] to better fit your project,
+especially in regard to ''components'', ''versions'' and
+''milestones''.
+
+Good luck![[BR]]
+The Trac Team
