@@ -148,7 +148,7 @@
       <select size="1" name="editrows" id="editrows" tabindex="43"
         onchange="resizeTextArea('text', this.options[selectedIndex].value)"><?cs
        loop:rows = 8, 42, 4 ?>
-        <option<?cs
+        <option value="<?cs var:rows ?>"<?cs
           if:rows == wiki.edit_rows ?> selected="selected"<?cs /if ?>><?cs
           var:rows ?></option><?cs
        /loop ?>
