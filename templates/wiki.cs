@@ -22,22 +22,34 @@
  <?cs if:wiki.action == "diff" ?>
   <h1>Changes in version <?cs var:wiki.edit_version?> of <a href="<?cs
     var:wiki.current_href ?>"><?cs var:wiki.page_name ?></a></h1>
-   <table id="overview">
-    <tr class="author">
-     <th scope="row">Author:</th>
-     <td><?cs var:wiki.diff.author ?></td>
-    </tr>
-    <tr class="time">
-     <th scope="row">Timestamp:</th>
-     <td><?cs var:wiki.diff.time ?></td>
-    </tr>
+   <form id="prefs" action="<?cs var:wiki.current_href ?>">
+    <input type="hidden" name="version" value="<?cs var:wiki.version ?>" />
+    <input type="hidden" name="diff" value="yes" />
+    <div>
+     <label for="type">View differences</label>
+     <select name="style">
+      <option value="inline"<?cs
+        if:diff.style == 'inline' ?> selected="selected"<?cs
+        /if ?>>inline</option>
+      <option value="sidebyside"<?cs
+        if:diff.style == 'sidebyside' ?> selected="selected"<?cs
+        /if ?>>side by side</option>
+     </select>
+     <div class="buttons">
+      <input type="submit" value="Update" />
+     </div>
+    </div>
+   </form>
+   <dl id="overview">
+    <dt class="author">Author:</dt>
+    <dd><?cs var:wiki.diff.author ?></dd>
+    <dt class="time">Timestamp:</dt>
+    <dd><?cs var:wiki.diff.time ?></dd>
     <?cs if:wiki.diff.comment ?>
-     <tr class="comment">
-      <th scope="row">Comment:</th>
-      <td><?cs var:wiki.diff.comment ?></td>
-     </tr>
+     <dt class="comment">Comment:</dt>
+     <dd><?cs var:wiki.diff.comment ?></dd>
     <?cs /if ?>
-   </table>
+   </dl>
 
    <div class="diff">
     <div id="legend">
@@ -51,17 +63,42 @@
     </div>
     <ul>
      <li>
-      <table summary="Differences">
-       <thead><tr>
-        <th colspan="2"><?cs var:wiki.diff.name.old ?></th>
-        <th colspan="2"><?cs var:wiki.diff.name.new ?></th>
-       </tr></thead>
-       <tbody>
-        <?cs each:change = wiki.diff.changes ?><?cs
-          call:diff_display(change, 'sidebyside') ?><?cs
-          /each ?>
-       </tbody>
-      </table>
+      <h2><?cs var:wiki.diff.name.new ?></h2>
+      <?cs if:diff.style == 'sidebyside' ?>
+       <table class="sidebyside" summary="Differences">
+        <colgroup>
+         <col class="lineno" /><col class="base" />
+         <col class="lineno" /><col class="chg" />
+        </colgroup>
+        <thead><tr>
+         <th colspan="2">Version <?cs var:wiki.diff.rev.old ?></th>
+         <th colspan="2">Version <?cs var:wiki.diff.rev.new ?></th>
+        </tr></thead>
+        <?cs each:change = wiki.diff.changes ?>
+         <tbody>
+          <?cs call:diff_display(change, diff.style) ?>
+         </tbody>
+        <?cs /each ?>
+       </table>
+      <?cs else ?>
+       <table class="inline" summary="Differences">
+        <colgroup>
+         <col class="lineno" />
+         <col class="lineno" />
+         <col class="content" />
+        </colgroup>
+        <thead><tr>
+         <th>v<?cs var:wiki.diff.rev.old ?></th>
+         <th>v<?cs var:wiki.diff.rev.new ?></th>
+         <th></th>
+        </tr></thead>
+        <?cs each:change = wiki.diff.changes ?>
+         <tbody>
+          <?cs call:diff_display(change, diff.style) ?>
+         </tbody>
+        <?cs /each ?>
+       </table>
+      <?cs /if ?>
      </li>
     </ul>
    </div>

@@ -139,16 +139,16 @@ class HtmlDiffEditor (delta.Editor):
 
         num = int(self.args.get('contextlines', '2'))
         options = ['-u%d' % num]
-        self.hdf.setValue('changeset.options.contextlines', str(num))
+        self.hdf.setValue('diff.options.contextlines', str(num))
         if self.args.has_key('ignoreblanklines'):
             options.append('-B')
-            self.hdf.setValue('changeset.options.ignoreblanklines', '1')
+            self.hdf.setValue('diff.options.ignoreblanklines', '1')
         if self.args.has_key('ignorecase'):
             options.append('-i')
-            self.hdf.setValue('changeset.options.ignorecase', '1')
+            self.hdf.setValue('diff.options.ignorecase', '1')
         if self.args.has_key('ignorewhitespace'):
             options.append('-b')
-            self.hdf.setValue('changeset.options.ignorewhitespace', '1')
+            self.hdf.setValue('diff.options.ignorewhitespace', '1')
 
         differ = fs.FileDiff(self.old_root, old_path, self.new_root, new_path,
                              pool, options)
@@ -268,7 +268,7 @@ class Changeset (Module):
         add_dictlist_to_hdf(change_info, self.req.hdf, 'changeset.changes')
         self.req.hdf.setValue('changeset.href',
             self.env.href.changeset(self.rev))
-        self.req.hdf.setValue('changeset.style', style)
+        self.req.hdf.setValue('diff.style', style)
         self.req.hdf.setValue('title', '[%d] (changeset)' % self.rev)
 
     def render_diffs(self, editor_class=HtmlDiffEditor):

@@ -11,74 +11,38 @@
 <div id="main" class="changeset">
 <h1>Changeset <?cs var:changeset.revision ?></h1>
 
-<table id="overview" summary="Changeset overview">
- <tr class="time">
-  <th scope="row">Timestamp:</th>
-  <td><?cs var:changeset.time ?></td>
- </tr>
- <tr class="author">
-  <th scope="row">Author:</th>
-  <td><?cs var:changeset.author ?></td>
- </tr>
- <tr class="files">
-  <th scope="row">Files:</th>
-  <td>
-   <ul><?cs each:item = changeset.changes ?>
-    <li>
-     <?cs if:item.change == "A" ?>
-      <div class="add"></div>
-      <a href="<?cs var:item.browser_href?>" title="Show file in browser"><?cs
-        var:item.name ?></a> <span class="comment">(added)</span>
-     <?cs elif:item.change == "M" ?>
-      <div class="mod"></div>
-      <a href="<?cs var:item.browser_href?>" title="Show file in browser"><?cs
-        var:item.name ?></a> <span class="comment">(modified)</span>
-     <?cs elif:item.change == "D" ?>
-      <div class="rem"></div>
-      <?cs var:item.name ?> <span class="comment">(deleted)</span>
-     <?cs /if ?>
-    </li>
-   <?cs /each ?></ul>
-  </td>
- </tr>
- <tr class="message">
-  <th scope="row">Message:</th>
-  <td id="searchable"><?cs var:changeset.message ?></td>
- </tr>
-</table>
-
 <form id="prefs" action="<?cs var:changeset.href ?>">
  <div>
   <label for="type">View differences</label>
   <select name="style">
    <option value="inline"<?cs
-     if:changeset.style == 'inline' ?> selected="selected"<?cs
+     if:diff.style == 'inline' ?> selected="selected"<?cs
      /if ?>>inline</option>
    <option value="sidebyside"<?cs
-     if:changeset.style == 'sidebyside' ?> selected="selected"<?cs
+     if:diff.style == 'sidebyside' ?> selected="selected"<?cs
      /if ?>>side by side</option>
   </select>
   <div class="field">
    Show <input type="text" name="contextlines" id="contextlines" size="2"
-     maxlength="2" value="<?cs var:changeset.options.contextlines ?>" />
+     maxlength="2" value="<?cs var:diff.options.contextlines ?>" />
    <label for="contextlines">lines around each change</label>
   </div>
   <fieldset id="ignore">
    <legend>Ignore:</legend>
    <div class="field">
     <input type="checkbox" id="blanklines" name="ignoreblanklines" <?cs
-      if:changeset.options.ignoreblanklines ?>checked="checked"<?cs /if ?>/>
+      if:diff.options.ignoreblanklines ?>checked="checked"<?cs /if ?>/>
     <label for="blanklines">Blank lines</label>
    </div>
    <div class="field">
     <input type="checkbox" id="case" name="ignorecase" <?cs
-      if:changeset.options.ignorecase ?>checked="checked"<?cs /if ?>/>
+      if:diff.options.ignorecase ?>checked="checked"<?cs /if ?>/>
     <label for="case">Case changes</label>
    </div>
    <div class="field">
     <input type="checkbox" id="whitespace" name="ignorewhitespace" <?cs
-      if:changeset.options.ignorewhitespace ?>checked="checked"<?cs /if ?>/>
-    <label for="spacechanges">White space changes</label>
+      if:diff.options.ignorewhitespace ?>checked="checked"<?cs /if ?>/>
+    <label for="whitespace">White space changes</label>
    </div>
   </fieldset>
   <div class="buttons">
@@ -86,6 +50,34 @@
   </div>
  </div>
 </form>
+
+<dl id="overview">
+ <dt class="time">Timestamp:</dt>
+ <dd class="time"><?cs var:changeset.time ?></dd>
+ <dt class="author">Author:</dt>
+ <dd class="author"><?cs var:changeset.author ?></dd>
+ <dt class="files">Files:</dt>
+ <dd class="files">
+  <ul><?cs each:item = changeset.changes ?>
+   <li>
+    <?cs if:item.change == "A" ?>
+     <div class="add"></div>
+     <a href="<?cs var:item.browser_href?>" title="Show file in browser"><?cs
+       var:item.name ?></a> <span class="comment">(added)</span>
+    <?cs elif:item.change == "M" ?>
+     <div class="mod"></div>
+     <a href="<?cs var:item.browser_href?>" title="Show file in browser"><?cs
+       var:item.name ?></a> <span class="comment">(modified)</span>
+    <?cs elif:item.change == "D" ?>
+     <div class="rem"></div>
+     <?cs var:item.name ?> <span class="comment">(deleted)</span>
+    <?cs /if ?>
+   </li>
+  <?cs /each ?></ul>
+ </dd>
+ <dt class="message">Message:</dt>
+ <dd class="message" id="searchable"><?cs var:changeset.message ?></dd>
+</dl>
 
 <div class="diff">
  <div id="legend">
@@ -102,15 +94,20 @@
    <?cs if:len(file.changes) ?>
     <li>
      <h2><?cs var:file.name.new ?></h2>
-     <?cs if:changeset.style == 'sidebyside' ?>
-      <table class="sidebyside">
-       <thead class="rev"><tr>
-        <th colspan="2">Rev <?cs var:file.rev.old ?></th>
-        <th colspan="2">Rev <?cs var:file.rev.new ?></th>
+     <?cs if:diff.style == 'sidebyside' ?>
+      <table class="sidebyside" summary="Differences">
+       <colgroup class="base">
+        <col class="lineno" /><col class="content" />
+       <colgroup class="chg">
+        <col class="lineno" /><col class="content" />
+       </colgroup>
+       <thead><tr>
+        <th colspan="2">Revision <?cs var:file.rev.old ?></th>
+        <th colspan="2">Revision <?cs var:file.rev.new ?></th>
        </tr></thead>
        <?cs each:change = file.changes ?>
         <tbody>
-         <?cs call:diff_display(change, changeset.style) ?>
+         <?cs call:diff_display(change, diff.style) ?>
         </tbody>
         <?cs if:name(change) < len(file.changes) - 1 ?>
          <tbody class="skippedlines">
@@ -120,15 +117,20 @@
        <?cs /each ?>
       </table>
      <?cs else ?>
-      <table class="inline">
-       <thead class="rev"><tr>
-        <th>Rev <?cs var:file.rev.old ?></th>
-        <th>Rev <?cs var:file.rev.new ?></th>
+      <table class="inline" summary="Differences">
+       <colgroup>
+        <col class="lineno" />
+        <col class="lineno" />
+        <col class="content" />
+       </colgroup>
+       <thead><tr>
+        <th>v<?cs var:file.rev.old ?></th>
+        <th>v<?cs var:file.rev.new ?></th>
         <th></th>
        </tr></thead>
        <?cs each:change = file.changes ?>
         <tbody>
-         <?cs call:diff_display(change, changeset.style) ?>
+         <?cs call:diff_display(change, diff.style) ?>
         </tbody>
         <?cs if:name(change) < len(file.changes) - 1 ?>
          <tbody class="skippedlines">

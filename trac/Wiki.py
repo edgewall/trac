@@ -636,11 +636,18 @@ class Wiki(Module):
         author = res[-1][1] or ''
         comment = res[-1][2] or ''
         time_str = time.strftime('%c', time.localtime(int(res[-1][3])))
+        self.req.hdf.setValue('wiki.version', str(version))
         self.req.hdf.setValue('wiki.diff.time', time_str)
         self.req.hdf.setValue('wiki.diff.author', escape(author))
         self.req.hdf.setValue('wiki.diff.comment', escape(comment))
+
+        style = 'inline'
+        if self.args.has_key('style'):
+            style = self.args.get('style')
+        self.req.hdf.setValue('diff.style', style)
+
         filtr = DiffColorizer(self.req.hdf, 'wiki.diff')
-        filtr.writeline('header %s version %d | %s version %d redaeh' %
+        filtr.writeline('header %s %d | %s %d redaeh' %
                          (pagename, version - 1, pagename, version))
         try:
             for line in difflib.Differ().compare(old, new):

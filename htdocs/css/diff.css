@@ -1,20 +1,40 @@
+/* Diff preferences */
+#prefs {
+ background: #f7f7f0;
+ border: 1px outset #998;
+ float: right;
+ font-size: 9px;
+ padding: .8em;
+ margin: 0 1em 1em;
+ width: 26em;
+}
+#prefs input, #prefs select { font-size: 9px; vertical-align: middle }
+#prefs fieldset { border: none; margin: 1em .5em .5em; padding: .5em 1em 0 }
+#prefs fieldset legend {
+ background: transparent;
+ color: #000;
+ font-size: 9px;
+ font-weight: normal;
+ margin: 0 0 0 -1.5em;
+ padding: 0;
+}
+#prefs .buttons { text-align: right }
+
 /* Diff/change overview */
 #overview {
- border: 1px solid #d7d7d7;
+ line-height: 130%;
  margin-top: 1em;
  padding: .5em;
- width: 100%;
 }
-#overview th {
- padding-right: .5em;
+#overview dt {
+ font-weight: bold;
+ margin: .25em 0 0;
+ padding: 0 .5em 0 0;
  text-align: right;
- width: 8em;
+ width: 7em;
 }
-#overview td, #overview th {
- vertical-align: top;
- background: transparent;
- color: inherit;
- border: none;
+#overview dd {
+ margin: -1.3em 0 0 8em;
 }
 
 /* Colors for change types */
@@ -48,16 +68,16 @@
  margin-right: .5em;
 }
 
-/* Styles for the actual diffs */
+/* Styles for the list of diffs */
 .diff { width: 100% }
 .diff ul { clear: both; margin: 0; padding: 0 }
 .diff li {
  background: #f7f7f7;
  border: 1px solid #d7d7d7;
  list-style-type: none;
- margin: 0;
- margin-bottom: 3em;
+ margin: 0 0 2em;
  padding: 2px;
+ position: relative;
 }
 .diff h2 {
  color: #333;
@@ -67,50 +87,87 @@
  padding: .1em 0 .25em;
  text-align: center;
 }
+
+/* Styles for the actual diff tables (side-by-side and inline) */
 .diff table {
  border: 1px solid #ddd;
- border-top: 0;
- padding: 5px;
- width: 100%;
- font-size: 12px;
  border-collapse: collapse;
  border-spacing: 0;
+ border-top: 0;
+ font-size: 12px;
+ line-height: 130%;
+ padding: 5px;
  margin: 0 auto;
+ table-layout: fixed;
+ width: 100%;
 }
+.diff table col.lineno { width: 4em }
 .diff table th {
- background: #eed;
  border: 1px solid #d7d7d7;
  border-bottom: 1px solid #998;
- color: #886;
  font-size: 11px;
- font-weight: bold;
- text-align: left;
 }
-.diff table thead.rev th {
+.diff table thead th {
  background: #eee;
  color: #999;
  padding: 0 .25em;
  text-align: center;
  white-space: nowrap;
 }
-.diff table tbody td {
- background: #fff;
- padding: 0 .5em;
- font: normal 11px monospace;
- vertical-align: top;
-}
-.diff table.inline tbody td { width: 100% }
-.diff table.sidebyside tbody td { width: 50% }
-.diff table tbody.skippedlines td {
- background: #f7f7f7;
- border: 1px solid #d7d7d7;
- }
 .diff table tbody th {
+ background: #eed;
+ color: #886;
  font-weight: normal;
  padding: 0 .5em;
  text-align: right;
  vertical-align: top;
 }
-.diff table td del, .diff table td ins { text-decoration: none }
-.diff table td del { color: #800 }
-.diff table td ins { color: #080 }
+.diff table tbody td {
+ background: #fff;
+ font: normal 11px monospace;
+ padding: 0;
+ vertical-align: top;
+}
+.diff table tbody.skippedlines td {
+ background: #f7f7f7;
+ border: 1px solid #d7d7d7;
+}
+.diff table td del, .diff table td ins, .diff table td span {
+ display: block;
+ overflow: hidden;
+ padding: 0 3px;
+ text-decoration: none;
+}
+.diff table td del { color: #600 }
+.diff table td ins { color: #060 }
+
+/* Styles for the inline diff */
+.diff table.inline col.content { width: 100% }
+.diff table.inline del, .diff table.inline ins, .diff table.inline span {
+ height: 1.5em;
+}
+.diff table.inline del {
+ background: #fdd;
+ border-color: #c00;
+ border-style: solid;
+ border-width: 0 1px 0 1px;
+}
+.diff table.inline tr.first del { border-top-width: 1px }
+.diff table.inline tr.last del { border-bottom-width: 1px }
+.diff table.inline ins {
+ background: #dfd;
+ border-color: #0a0;
+ border-style: solid;
+ border-width: 0 1px 0 1px;
+}
+.diff table.inline tr.first ins { border-top-width: 1px }
+.diff table.inline tr.last ins { border-bottom-width: 1px }
+
+/* Styles for the side-by-side diff */
+.diff table.sidebyside colgroup.content { width: 50% }
+.diff table.sidebyside tr.mod td.base { background: #fe9 }
+.diff table.sidebyside tr.mod td.chg { background: #fd8 }
+.diff table.sidebyside tr.add td.base { background: #dfd }
+.diff table.sidebyside tr.add td.chg { background: #cfc }
+.diff table.sidebyside tr.rem td.base { background: #f88 }
+.diff table.sidebyside tr.rem td.chg { background: #faa }

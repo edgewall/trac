@@ -1,14 +1,17 @@
 /* Trac CSS */
 body {
-  background: #fff;
-  color: #000;
-  font: normal 13px verdana,arial,'Bitstream Vera Sans',helvetica,sans-serif;
-  margin: 10px;
+ background: #fff;
+ color: #000;
+ font: normal 13px verdana,arial,'Bitstream Vera Sans',helvetica,sans-serif;
+ margin: 10px;
 }
 h1, h1, h2, h3, h4 {
-  font-family: arial,verdana,'Bitstream Vera Sans',helvetica,sans-serif;
-  font-weight: bold;
-  letter-spacing: -0.018em;
+ font-family: arial,verdana,'Bitstream Vera Sans',helvetica,sans-serif;
+ font-weight: bold;
+ letter-spacing: -0.018em;
+}
+th, td { /* For IE5/Win */
+ font: normal 13px verdana,arial,'Bitstream Vera Sans',helvetica,sans-serif;
 }
 h1 { font-size: 21px; margin: .15em 1em 0 0 }
 h2 { font-size: 16px }
