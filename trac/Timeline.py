@@ -33,10 +33,10 @@ class Timeline (Module):
     template_name = 'timeline.cs'
     template_rss_name = 'timeline_rss.cs'
 
-    def get_info(self, req, start, stop, maxrows,
-                 filters=('tickets', 'changeset', 'wiki', 'milestone')):
+    def get_info(self, req, start, stop, maxrows, filters=AVAILABLE_FILTERS):
         perm_map = {'tickets': perm.TICKET_VIEW, 'changeset': perm.CHANGESET_VIEW,
                     'wiki': perm.WIKI_VIEW, 'milestone': perm.MILESTONE_VIEW}
+        filters = list(filters) # copy list so we can make modifications
         for k,v in perm_map.items():
             if not self.perm.has_permission(v):
                 filters.remove(k)
@@ -155,15 +155,15 @@ class Timeline (Module):
 
             if req.args.get('format') == 'rss':
                 # For RSS, author must be an email address
-                if item['author'].find('@') == -1:
-                    item['author'] = ''
+                if item['author'].find('@') != -1:
+                    item['author.email'] = item['author']
 
         add_to_hdf(info, req.hdf, 'timeline.items')
 
     def display_rss(self, req):
         base_url = self.env.get_config('trac', 'base_url', '')
         req.hdf.setValue('baseurl', base_url)
-        req.display(self.template_rss_name, 'text/xml')
+        req.display(self.template_rss_name, 'application/rss+xml')
 
     def _render_changeset(self, req, item):
         absurls = req.args.get('format') == 'rss'

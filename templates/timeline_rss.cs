@@ -11,8 +11,8 @@
 
  def:rss_item(category,title, link, descr) ?>
   <item><?cs
-   if:item.author ?>
-    <author><?cs var:item.author ?></author><?cs
+   if:item.author.email ?>
+    <author><?cs var:item.author.email ?></author><?cs
    /if ?>
    <pubDate><?cs var:item.datetime ?></pubDate>
    <title><?cs var:title ?></title>
