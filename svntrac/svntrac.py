@@ -22,10 +22,9 @@
 import os
 import sys
 import cgi
-#import cgitb; cgitb.enable()
 import warnings
 from util import set_cgi_name, set_authcgi_name
-from svn import util, repos
+from svn import util, repos, core
 import Href
 
 warnings.filterwarnings('ignore', 'DB-API extension cursor.next() used')
@@ -55,7 +54,8 @@ def main():
     set_authcgi_name(config['general']['authcgi_name'])
     Href.initialize(config)
 
-    pool = util.svn_pool_create(None)
+    core.apr_initialize()
+    pool = core.svn_pool_create(None)
     
     _args = cgi.FieldStorage()
     args = {}
@@ -84,8 +84,12 @@ def main():
     try:
         module.render()
         module.apply_template()
-    except PermissionError, e:
+    except Exception, e:
         print 'Content-Type: text/plain\r\n\r\n',
-        print 'page render failed:', e
+        import traceback
+        traceback.print_exc(file=sys.stdout)
+        
+    core.svn_pool_destroy(pool)
+    core.apr_terminate()
 
 
