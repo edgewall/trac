@@ -43,7 +43,7 @@
 .timeline dt.changeset, .timeline dt.changeset a {
  background-image: url(../changeset.png);
 }
-.timeline dt.newticket, .timeine dt.newticket a {
+.timeline dt.newticket, .timeline dt.newticket a {
  background-image: url(../newticket.png);
 }
 .timeline dt.closedticket, .timeline dt.closedticket a {
