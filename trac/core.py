@@ -26,7 +26,6 @@ import cgi
 import locale
 import warnings
 
-import Wiki
 import Href
 import perm
 import auth
@@ -370,6 +369,7 @@ def send_pretty_error(e, env, req=None):
     env.log.error(tb.getvalue())
 
 def real_cgi_start():
+    import Wiki
     path_info = os.getenv('PATH_INFO')
     http_referer = os.getenv('HTTP_REFERER')
 

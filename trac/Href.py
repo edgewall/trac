@@ -20,6 +20,7 @@
 # Author: Jonas Borgström <jonas@edgewall.com>
 
 import os
+import urllib
 from util import *
 
 class Href:
@@ -35,7 +36,7 @@ class Href:
     def file(self, path, rev=None, format=None):
         if rev and format:
             return href_join(self.base, 'file', path) + \
-                   '?rev=%s&amp;format=%s' % (str(rev), format)
+                   '?rev=%s&format=%s' % (str(rev), format)
         elif rev:
             return href_join(self.base, 'file', path) + '?rev=' + str(rev)
         elif format:
@@ -50,13 +51,13 @@ class Href:
             return href_join(self.base, 'browser', path)
 
     def login(self):
-        return '%s/login' % self.base
+        return href_join(self.base, 'login')
 
     def logout(self):
-        return '%s/logout' % self.base
+        return href_join(self.base, 'logout')
 
     def timeline(self):
-        return href_join(self.base, 'timeline/')
+        return href_join(self.base, 'timeline')
 
     def changeset(self, rev):
         return href_join(self.base, 'changeset', str(rev))
@@ -65,38 +66,35 @@ class Href:
         return href_join(self.base, 'ticket', str(ticket))
 
     def newticket(self):
-        return '%s?mode=newticket' % self.base
-
-    def newticket(self):
-        return href_join(self.base, 'newticket/')
+        return href_join(self.base, 'newticket')
 
     def search(self, query=None):
-        uri = 'search/'
+        uri = 'search'
         if query:
-            uri += '?q=' + query.replace(' ','%20')
+            uri += '?q=' + urllib.quote(query)
         return href_join(self.base, uri)
 
     def about(self, page=None):
         if page:
-            return href_join(self.base, 'about_trac/', page)
+            return href_join(self.base, 'about_trac', page)
         else:
-            return href_join(self.base, 'about_trac/')
+            return href_join(self.base, 'about_trac')
 
     def wiki(self, page = None, version=None, diff=0):
         if page and version and diff:
-            return href_join(self.base, 'wiki', page) + '?version=' + str(version) + '&amp;diff=yes'
+            return href_join(self.base, 'wiki', page) + '?version=' + str(version) + '&diff=yes'
         elif page and version:
             return href_join(self.base, 'wiki', page) + '?version=' + str(version)
         elif page:
             return href_join(self.base, 'wiki', page)
         else:
-            return href_join(self.base, 'wiki/')
+            return href_join(self.base, 'wiki')
 
     def report(self, report=None, action=None):
         if report:
             href = href_join(self.base, 'report', str(report))
         else:
-            href = href_join(self.base, 'report/')
+            href = href_join(self.base, 'report')
         if action:
             href = href + '?action=' + action
         return href

@@ -750,28 +750,3 @@ class Wiki(Module):
         self.req.send_header('Content-Type', 'text/plain')
         self.req.end_headers()
         self.req.write(self.page.text)
-
-###
-### A simple unit test
-###
-
-
-test_in = \
-"""Foo
-
- * Foo
- * Bar
- * Baz
-"""
-
-test_out = ''' <ul><li>Foo</li> <ul><li>Foo 2</li> </ul></ul><ol><li>Foo 3</li> </ol><h3>FooBar</h3> <ul> Hoj  Hoj2 </ul><p>Hoj3 Line1<br />Line2 </p>'''
-
-def test():
-    result = StringIO.StringIO()
-    Formatter().format(test_in, result)
-    if result.getvalue() != test_out:
-        print 'now:', result.getvalue()
-        print 'correct:', test_out
-
-if __name__ == '__main__':
-    test()
