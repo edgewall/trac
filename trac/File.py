@@ -231,7 +231,7 @@ class File(FileCommon):
 
     def render(self):
         FileCommon.render(self)
-        
+
         rev = self.args.get('rev', None)
         self.path = self.args.get('path', '/')
         if not rev:
@@ -246,15 +246,27 @@ class File(FileCommon):
                 rev = svn.fs.youngest_rev(self.fs_ptr, self.pool)
 
         self.generate_path_links(rev, rev_specified)
-        
+
         try:
             root = svn.fs.revision_root(self.fs_ptr, rev, self.pool)
         except svn.core.SubversionException:
-            raise util.TracError('Invalid revision number: %d' % rev)
-        
-        history = svn.fs.node_history(root, self.path, self.pool)
-        history = svn.fs.history_prev(history, 0, self.pool)
+            rev = svn.fs.youngest_rev(self.fs_ptr, self.pool)
+            root = svn.fs.revision_root(self.fs_ptr, rev, self.pool)
+
+        node_type = svn.fs.check_path(root, self.path, self.pool)
+        if not node_type in [svn.core.svn_node_dir, svn.core.svn_node_file]:
+            rev = svn.fs.youngest_rev(self.fs_ptr, self.pool)
+            root = svn.fs.revision_root(self.fs_ptr, rev, self.pool)
+            oh = svn.fs.node_history(root, self.path, self.pool)
+            while oh:
+                h = oh
+                oh = svn.fs.history_prev(h, 0, self.pool)
+            history = h
+        else:
+            history = svn.fs.node_history(root, self.path, self.pool)
+            history = svn.fs.history_prev(history, 0, self.pool)
         history_path, history_rev = svn.fs.history_location(history, self.pool);
+
         if rev != history_rev:
             rev = history_rev
 
