@@ -737,7 +737,6 @@ ORDER BY milestone,
             print '  project.name'
             self._do_config_set('project.name', project_name)
             # Add a few default wiki pages
-            pages = os.listdir(trac.siteconfig.__default_wiki_dir__)
             print ' Installing wiki pages'
             self._do_wiki_load(trac.siteconfig.__default_wiki_dir__,cursor)
             cnx.commit()
@@ -871,7 +870,7 @@ ORDER BY milestone,
         # Make sure we don't insert the exact same page twice
         old = self.db_execsql("SELECT text FROM wiki "
                               "WHERE name='%s' "
-                              "ORDER BY version DESC LIMIT 1" % title)
+                              "ORDER BY version DESC LIMIT 1" % title, cursor)
         if old and data == old[0][0]:
             print '  %s already up to date.' % title
             return
@@ -889,9 +888,6 @@ ORDER BY milestone,
                   'locked':'0',
                   'text':data})
         self.db_execsql(sql, cursor)
-
-#        sql = "INSERT INTO wiki('version','name','time','author',
-#        select max(version) from wiki where name="HejsanHoppsan";
 
     def _do_wiki_export(self, page):
         data=self.db_execsql("SELECT text FROM wiki "
