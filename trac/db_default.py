@@ -112,7 +112,7 @@ CREATE TABLE report (
         description
 );
 CREATE TABLE permission (
-        user            text,           -- 
+        username        text,           -- 
         action          text            -- allowable activity
 );
 CREATE TABLE component (

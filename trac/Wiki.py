@@ -526,9 +526,9 @@ class Page:
         else:
             self.perm.assert_permission (perm.WIKI_MODIFY)
         cursor = self.db.cursor ()
-        cursor.execute ('SELECT MAX(version)+1 FROM '
-                        '(SELECT version FROM wiki WHERE name=%s '
-                        'UNION ALL SELECT 0 as version)', self.name)
+        cursor.execute ('SELECT MAX(version) FROM (SELECT MAX(version)+1 '
+                        'FROM wiki WHERE name=%s UNION ALL SELECT 1 '
+                        'AS version)', self.name)
         row = cursor.fetchone()
         new_version = int(row[0])
         

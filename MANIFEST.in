@@ -1,6 +1,7 @@
 include AUTHORS ChangeLog COPYING INSTALL MANIFEST.in RELEASE setup.cfg THANKS UPGRADE
 include scripts/trac-admin
 include scripts/tracd
+include scripts/tracdb2env
 include cgi-bin/trac.cgi
 recursive-include htdocs *.png *.gif *.js README
 recursive-include htdocs/css *.css

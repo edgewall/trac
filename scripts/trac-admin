@@ -194,7 +194,7 @@ class TracAdmin(cmd.Cmd):
 #        return [r[0] for r in data]
 
     def get_user_list (self):
-        data = self.db_execsql ("SELECT DISTINCT user FROM permission")
+        data = self.db_execsql ("SELECT DISTINCT username FROM permission")
         return [r[0] for r in data]
 
     def get_wiki_list (self):
@@ -417,7 +417,7 @@ class TracAdmin(cmd.Cmd):
             print 'Permission %s failed:' % arg[0], e
 
     def _do_permission_list(self):
-        data = self.db_execsql('SELECT user, action FROM permission') 
+        data = self.db_execsql('SELECT username, action FROM permission') 
         self.print_listing(['User', 'Action'], data)
         print
         print 'Available actions:'
@@ -433,7 +433,7 @@ class TracAdmin(cmd.Cmd):
         self.db_execsql("INSERT INTO permission VALUES('%s', '%s')" % (user, action))
 
     def _do_permission_remove(self, user, action):
-        self.db_execsql("DELETE FROM permission WHERE user='%s' AND action='%s'" %
+        self.db_execsql("DELETE FROM permission WHERE username='%s' AND action='%s'" %
                         (user, action))
 
     ## Initdb
