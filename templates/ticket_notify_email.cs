@@ -16,6 +16,6 @@ Comment<?cs
 <?cs var:$ticket.change.comment.newvalue ?>
 <?cs /if ?><?cs 
 /if ?>
---
+-- 
 Ticket URL: <<?cs var:$ticket.link ?>>
 <?cs var:$project.name ?> <<?cs var:$trac.href.homepage ?>>
