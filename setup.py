@@ -20,6 +20,7 @@ class my_install (install):
      def siteconfig(self):
          templates_dir = os.path.join(self.prefix, 'share/trac/templates')
          htdocs_dir = os.path.join(self.prefix, 'share/trac/htdocs')
+         wiki_dir = os.path.join(self.prefix, 'share/trac/wiki-default')
 
          f = open('trac/siteconfig.py','w')
          f.write("""
@@ -28,8 +29,10 @@ class my_install (install):
 #
 __default_templates_dir__ = '%(templates)s'
 __default_htdocs_dir__ = '%(htdocs)s'
+__default_wiki_dir__ = '%(wiki)s'
 
-""" % {'trac':PACKAGE, 'ver':VERSION, 'templates':templates_dir, 'htdocs':htdocs_dir})
+""" % {'trac':PACKAGE, 'ver':VERSION, 'templates':templates_dir,
+       'htdocs':htdocs_dir, 'wiki':wiki_dir})
          f.close()
 
          # Run actual install
@@ -50,7 +53,8 @@ setup(name="trac",
       url=URL,
       packages=['trac'],
       data_files=[('share/trac/templates', glob.glob('templates/*')),
-                  ('share/trac/htdocs', glob.glob('htdocs/*'))],
+                  ('share/trac/htdocs', glob.glob('htdocs/*')),
+                  ('share/trac/wiki-default', glob.glob('wiki-default/*'))],
       scripts=[os.path.join('scripts', 'trac-admin')],
       cmdclass = {'install': my_install})
 

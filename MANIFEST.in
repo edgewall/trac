@@ -1,6 +1,7 @@
 include scripts/trac-admin
 recursive-include htdocs *
 recursive-include doc *
+recursive-include wiki-default *
 recursive-include templates *.cs README
 prune *~
 prune *.tmp

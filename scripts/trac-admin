@@ -279,17 +279,21 @@ CREATE INDEX wiki_idx		ON wiki(name,version);
             print 'Failed to open/create database.', e
             sys.exit(1)
 
-    def db_execsql (self, sql):
-        cnx=self.db_open()
-        cursor = cnx.cursor()
-        cursor.execute(sql)
+    def db_execsql (self, sql, cursor=None):
         data = []
+        if not cursor:
+            cnx=self.db_open()
+            cursor = cnx.cursor()
+            cursor.execute(sql)
+        else:
+            cnx = None
         while 1:
             row = cursor.fetchone()
             if row == None:
                 break
             data.append(row)
-        cnx.commit()
+        if cnx:
+            cnx.commit()
         return data
 
     ##
@@ -628,7 +632,16 @@ CREATE INDEX wiki_idx		ON wiki(name,version);
                            repository_dir, 'repository_dir')
             cursor.execute('UPDATE config SET value=%s WHERE name=%s',
                            templates_dir, 'templates_dir')
+            
+            # Add a few default wiki pages
+            pages = os.listdir(trac.siteconfig.__default_wiki_dir__)
+            for page in pages:
+                print 'Importing page', page
+                filename = os.path.join(trac.siteconfig.__default_wiki_dir__,
+                                        page)
+                self._do_wiki_import(filename, page, cursor)
             cnx.commit()
+            
         except Exception, e:
             print 'Failed to initialize database.', e
             cnx.rollback()
@@ -697,7 +710,7 @@ CREATE INDEX wiki_idx		ON wiki(name,version);
         ldata = [(d[0], d[1], time.ctime(d[2])) for d in data]
         self.print_listing(['Title', 'Edits', 'Modified'], ldata)
 
-    def _do_wiki_import(self, filename, title):
+    def _do_wiki_import(self, filename, title, cursor=None):
         f = file(filename,'r')
         data=f.read()
         data = data.replace("'", "''") # Escape ' for safe SQL
@@ -711,7 +724,7 @@ CREATE INDEX wiki_idx		ON wiki(name,version);
                   'ipnr':'127.0.0.1',
                   'locked':'0',
                   'text':data})
-        self.db_execsql(sql)
+        self.db_execsql(sql, cursor)
 
 #        sql = "INSERT INTO wiki('version','name','time','author',
 #        select max(version) from wiki where name="HejsanHoppsan";
