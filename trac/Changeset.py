@@ -406,9 +406,9 @@ class Changeset (Module.Module):
                               time.asctime(time.localtime(int(changeset_info['time']))))
         author = changeset_info['author'] or 'anonymous'
         self.req.hdf.setValue('changeset.author', util.escape(author))
+        message = changeset_info['message'] or '--'
         self.req.hdf.setValue('changeset.message',
-                              wiki_to_html(util.wiki_escape_newline(
-                                           changeset_info['message']),
+                              wiki_to_html(util.wiki_escape_newline(message),
                                            self.req.hdf, self.env, self.db))
         self.req.hdf.setValue('changeset.revision', str(self.rev))
         util.add_to_hdf(change_info, self.req.hdf, 'changeset.changes')
