@@ -19,7 +19,7 @@
 #
 # Author: Jonas Borgström <jonas@edgewall.com>
 
-from exceptions import StandardError
+from PermissionError import PermissionError
 from auth import get_authname
 from db import get_connection
 
@@ -61,13 +61,6 @@ meta_permission = {
     'REPORT_ADMIN': [REPORT_VIEW, REPORT_CREATE, REPORT_MODIFY, REPORT_DELETE],
     'WIKI_ADMIN'  : [WIKI_VIEW, WIKI_CREATE, WIKI_MODIFY, WIKI_DELETE]
     }
-
-class PermissionError (StandardError):
-    """Insufficient permissions to complete the operation"""
-    def __init__ (self, action):
-        self.action = action
-    def __str__ (self):
-        return '%s privileges required to perform this operation' % self.action
 
 def cache_permissions ():
     global perm_cache, meta_permission

@@ -24,16 +24,9 @@ import re
 import sys
 import cgi
 import warnings
-from perm import PermissionError
-from util import dict_get_with_default, redirect
-from svn import util, repos, core
-import Href
+from PermissionError import PermissionError
 
 warnings.filterwarnings('ignore', 'DB-API extension cursor.next() used')
-
-import db
-from auth import verify_authentication, authenticate_user
-from perm import cache_permissions, PermissionError, perm_to_hdf
 
 modules = {
 #  name module class need_db need_svn    
@@ -112,6 +105,13 @@ def parse_args():
     return args
 
 def real_main():
+    import Href
+    import db
+    from util import dict_get_with_default, redirect
+    from auth import verify_authentication, authenticate_user
+    from perm import cache_permissions, PermissionError, perm_to_hdf
+    from svn import util, repos, core
+    
     db.init()
     config = db.load_config()
     Href.initialize(config)
