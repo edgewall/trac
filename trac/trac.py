@@ -165,8 +165,13 @@ def create_error_cgi():
                    'AND name=%s', 'general', 'templates_dir')
     row = cursor.fetchone()
     templates_dir = row[0]
+    cursor.execute('SELECT value FROM config WHERE section=%s '
+                   'AND name=%s', 'general', 'htdocs_location')
+    row = cursor.fetchone()
+    htdocs_location = row[0]
     cgi = neo_cgi.CGI()
     cgi.hdf.setValue('hdf.loadpaths.0', templates_dir)
+    cgi.hdf.setValue('htdocs_location', htdocs_location)
     return cgi, templates_dir
 
 def main():
