@@ -1,14 +1,12 @@
 // Functions to remember positions when doing preview in wiki (Mozilla only)
 function saveEditPosition(textarea, scrollbarPosition, selectionStart, selectionEnd) {
   if (typeof(textarea["setSelectionRange"]) == "undefined") return;
-  textarea.focus();
   scrollbarPosition.value = textarea.scrollTop;
   selectionStart.value = textarea.selectionStart;
   selectionEnd.value = textarea.selectionEnd;
 }
 function restoreEditPosition(textarea, scrollbarPosition, selectionStart, selectionEnd) {
   if (typeof(textarea["setSelectionRange"]) == "undefined") return;
-  textarea.focus();
   textarea.scrollTop = scrollbarPosition.value;
   textarea.setSelectionRange(selectionStart.value, selectionEnd.value);
 }
