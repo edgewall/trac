@@ -422,6 +422,7 @@ default_config = \
   ('project', 'name', 'My Project'),
   ('project', 'descr', 'My example project'),
   ('project', 'url', 'http://example.com/'),
+  ('project', 'icon', 'trac.ico'),
   ('project', 'footer',
    ' Visit the Trac open source project at<br />'
    '<a href="http://trac.edgewall.com/">http://trac.edgewall.com/</a>'),

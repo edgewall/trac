@@ -41,6 +41,7 @@ MIME_MAP = {
     'cc':'text/x-c++src', 'cpp':'text/x-c++src', 'CC':'text/x-c++src',
     'hh':'text/x-c++hdr', 'HH':'text/x-c++hdr',  'hpp':'text/x-c++hdr',
     'hs':'text/x-haskell',
+    'ico':'image/ico',
     'idl':'text/x-idl',
     'inf':'text/x-inf',
     'java':'text/x-java',

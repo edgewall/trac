@@ -39,15 +39,26 @@ class Module:
             disp = getattr(self, 'display_' + self.args.get('format'))
         else:
             disp = self.display
+        self.add_default_links()
         try:
-            self.add_link('start', self.env.href.wiki())
-            self.add_link('search', self.env.href.search())
-            self.add_link('help', self.env.href.wiki('TracGuide'))
             self.render()
             self.link_no.clear()
             disp()
         except core.RedirectException:
             pass
+
+    def add_default_links(self):
+        self.add_link('start', self.env.href.wiki())
+        self.add_link('search', self.env.href.search())
+        self.add_link('help', self.env.href.wiki('TracGuide'))
+        
+        icon = self.env.get_config('project', 'icon')
+        if icon:
+            if not icon[0] == '/' and icon.find('://') < 0:
+                icon = self.req.hdf.getValue('htdocs_location', '') + icon
+            mimetype = self.env.mimeview.get_mimetype(icon)
+            self.add_link('icon', icon, type=mimetype)
+            self.add_link('shortcut icon', icon, type=mimetype)
 
     def add_link(self, rel, href, title=None, type=None, className=None):
         if not self.link_no.has_key(rel):
