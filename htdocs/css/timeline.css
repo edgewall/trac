@@ -3,8 +3,20 @@
 #prefs .buttons { margin-top: -1.6em }
 
 h2 { background: #f7f7f7; border-bottom: 1px solid #d7d7d7; font-size: 105% }
-dl { line-height: 130%; margin-left: 1em }
-dt { background: 4px 50% no-repeat; padding: 1px }
+dl { line-height: 1.3em; margin-left: 1em }
+dt { background: 3px 1px no-repeat; padding: 0 0 }
+dt :link, dt :visited {
+ background: 3px 0 no-repeat;
+ border: none;
+ color: #000;
+ padding: 0 4px 2px 22px;
+}
+dt>:link, dt>:visited {
+ /* Hide from IE/Win */
+ background-position: 3px 1px;
+ display: block;
+}
+dt :link:hover, dt :visited:hover { background-color: #eed; color: #000 }
 dt em {
  border-bottom: 1px dotted #bbb;
  color: #b00;
@@ -12,24 +24,16 @@ dt em {
  text-decoration: none;
 }
 dt .time { color: #777 }
-dt :link, dt :visited {
- background: 3px 50% no-repeat;
- display: block;
- border: none;
- color: #000;
- padding: 0 2px 2px 22px;
-}
-dt :link:hover, dt :visited:hover { background-color: #eed; color: #000 }
 dd { font-size: 80%; margin: 0 0 .5em 5em; padding: 0 }
 
 /* Apply icon background-image twice to avoid hover-flicker in IE/Win */
-dt.changeset, dt.changeset a { background-image: url(../changeset.png) }
-dt.newticket, dt.newticket a { background-image: url(../newticket.png) }
-dt.closedticket, dt.closedticket a { background-image: url(../closedticket.png) }
-dt.wiki, dt.wiki a { background-image: url(../wiki.png) }
-dt.milestone, dt.milestone a { background-image: url(../milestone.png) }
+dt.changeset, dt.changeset a { background-image: url(../changeset.png) !important }
+dt.newticket, dt.newticket a { background-image: url(../newticket.png) !important }
+dt.closedticket, dt.closedticket a { background-image: url(../closedticket.png) !important }
+dt.wiki, dt.wiki a { background-image: url(../wiki.png) !important }
+dt.milestone, dt.milestone a { background-image: url(../milestone.png) !important }
 
 .diff-unmod { color: #000 }
-.diff-rem { color: #e00; }
-.diff-add { color: #2e2; }
-.diff-mod { color: #e84; }
+.diff-rem { color: #e00 }
+.diff-add { color: #2e2 }
+.diff-mod { color: #e84 }
