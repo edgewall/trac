@@ -56,7 +56,7 @@ tr.item-row-odd
 td.size-column
 {
   text-align: right;
-  width: 20%;
+  width: 10%;
   border-left: thin dotted #dddddd;
   padding-right: 0.5em;
 }
@@ -72,15 +72,20 @@ td.rev-column
 td.date-column
 {
   text-align: left;
-  width: 20%;
+  width: 10%;
   border-left: thin dotted #dddddd;
   padding-left: 0.5em;
   padding-right: 0.5em;
 }
 
+td.summary-column
+{
+  width: 50%;
+}
+
 td.icon-column
 {
-  width: 20px;
+  width: 10px;
 }
 
 td.name-column, td.report-column, td.ticket-column
