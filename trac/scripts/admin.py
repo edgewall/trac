@@ -27,7 +27,6 @@ import sys
 import time
 import cmd
 import shlex
-import sqlite
 import StringIO
 
 from trac import perm
@@ -359,8 +358,8 @@ class TracAdmin(cmd.Cmd):
         self.print_listing(['Name', 'Owner'], data)
 
     def _do_component_add(self, name, owner):
-        data = self.db_execsql("INSERT INTO component VALUES('%s', '%s')"
-                               % (name, owner))
+        self.db_execsql("INSERT INTO component VALUES('%s', '%s')"
+                        % (name, owner))
 
     def _do_component_rename(self, name, newname):
         cnx = self.db_open()
@@ -510,7 +509,7 @@ class TracAdmin(cmd.Cmd):
             project_name = arg[0]
             repository_dir = arg[1]
             templates_dir = arg[2]
-        from svn import util, repos, core
+        from svn import repos, core
         core.apr_initialize()
         pool = core.svn_pool_create(None)
         try:
@@ -590,7 +589,7 @@ class TracAdmin(cmd.Cmd):
     
     ## Resync
     def do_resync(self, line):
-        from svn import util, repos, core
+        from svn import repos, core
         core.apr_initialize()
         pool = core.svn_pool_create(None)
 
@@ -814,9 +813,8 @@ class TracAdmin(cmd.Cmd):
         sql = ("INSERT INTO enum(value,type,name) "
                " SELECT 1+COALESCE(max(value),0),'%(type)s','%(name)s'"
                "   FROM enum WHERE type='%(type)s'" 
-               % {'type':type,
-                  'name':name})
-        data = self.db_execsql(sql)
+               % {'type':type, 'name':name})
+        self.db_execsql(sql)
 
     def _do_enum_change(self, type, name, newname):
         d = {'name':name, 'newname':newname, 'type':type}
@@ -895,8 +893,8 @@ class TracAdmin(cmd.Cmd):
                                " WHERE name='%(name)s'" % d)
 
     def _do_milestone_add(self, name):
-        data = self.db_execsql("INSERT INTO milestone (name, due) "
-                               " VALUES('%(name)s', 0)" % {'name':name})
+        self.db_execsql("INSERT INTO milestone (name, due) "
+                        "VALUES('%(name)s', 0)" % {'name':name})
 
     def _do_milestone_remove(self, name):
         d = {'name':name}
@@ -981,8 +979,8 @@ class TracAdmin(cmd.Cmd):
                                " WHERE name='%(name)s'" % d)
 
     def _do_version_add(self, name):
-        data = self.db_execsql("INSERT INTO version (name, time) "
-                               " VALUES('%(name)s', 0)" % {'name':name})
+        self.db_execsql("INSERT INTO version (name, time) "
+                        "VALUES('%(name)s', 0)" % {'name':name})
 
     def _do_version_remove(self, name):
         d = {'name':name}
@@ -1010,7 +1008,7 @@ class TracAdmin(cmd.Cmd):
         do_backup = 1
         if arg[0] in ['-b', '--no-backup']:
             do_backup = 0
-        db = self.db_open()
+        self.db_open()
         try:
             curr = self.__env.get_version()
             latest = trac.db_default.db_version

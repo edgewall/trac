@@ -23,9 +23,9 @@ __license__ = """
 
 import trac
 from trac.db_default import data as default_data
-from trac.util import get_date_format_hint, NaivePopen
-from trac.tests.environment import EnvironmentTestBase
 from trac.scripts import admin
+from trac.tests.environment import EnvironmentTestBase
+from trac.util import get_date_format_hint, NaivePopen
 
 import os
 import re
@@ -72,7 +72,6 @@ class TracadminTestCase(EnvironmentTestBase, unittest.TestCase):
     """
 
     def __init__(self, method_name):
-
         """
         Loads the expected test results in addition to the normal
         initialization done by unittest.TestCase.
@@ -81,7 +80,7 @@ class TracadminTestCase(EnvironmentTestBase, unittest.TestCase):
         unittest.TestCase.__init__(self, method_name)
         self.expected_results = \
             load_expected_results(os.path.join(os.path.split(__file__)[0],
-                                               'tracadmin-tests.txt'),
+                                               'admin-tests.txt'),
                                   '===== (test_.*) =====')
     
     def setUp(self):
