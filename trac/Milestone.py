@@ -115,11 +115,19 @@ class Milestone(Module):
     def delete_milestone(self, id):
         self.perm.assert_permission(perm.MILESTONE_DELETE)
         milestone = self.get_milestone(id)
-        cursor = self.db.cursor()
-        self.env.log.debug("Deleting milestone '%s'" % id)
-        cursor.execute("DELETE FROM milestone WHERE name = %s", id)
-        self.db.commit()
-        self.req.redirect(self.env.href.roadmap())
+        if self.args.has_key('delete'):
+            cursor = self.db.cursor()
+            if self.args.has_key('resettickets'):
+                self.env.log.info('Resetting milestone field of all tickets '
+                                  'associated with milestone %s' % id)
+                cursor.execute ('UPDATE ticket SET milestone = NULL '
+                                'WHERE milestone = %s', id)
+            self.env.log.debug('Deleting milestone %s' % id)
+            cursor.execute("DELETE FROM milestone WHERE name = %s", id)
+            self.db.commit()
+            self.req.redirect(self.env.href.roadmap())
+        else:
+            self.req.redirect(self.env.href.milestone(id))
 
     def update_milestone(self, id, name, date, descr):
         self.perm.assert_permission(perm.MILESTONE_MODIFY)
@@ -172,12 +180,21 @@ class Milestone(Module):
         elif action == 'edit':
             self.perm.assert_permission(perm.MILESTONE_MODIFY)
             self.render_editor(id)
-        elif action == 'commit':
-            self.save_milestone(id)
         elif action == 'delete':
+            self.perm.assert_permission(perm.MILESTONE_DELETE)
+            self.render_confirm(id)
+        elif action == 'commit_changes':
+            self.save_milestone(id)
+        elif action == 'confirm_delete':
             self.delete_milestone(id)
         else:
             self.render_view(id)
+
+    def render_confirm(self, id):
+        milestone = self.get_milestone(id)
+        self.req.hdf.setValue('title', '%s (milestone)' % milestone['name'])
+        self.req.hdf.setValue('milestone.mode', 'delete')
+        add_dict_to_hdf(milestone, self.req.hdf, 'milestone')
 
     def render_editor(self, id):
         if id == -1:
