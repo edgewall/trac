@@ -1,0 +1,61 @@
+Trac 0.5 Release Notes
+======================
+Feb 24, 2004
+
+Edgewall Software is please to announce the release of Trac 0.5, also the
+first public release of the program.
+
+ Get it at:  <http://trac.edgewall.com/> 
+
+
+About Trac
+----------
+Trac is a minimalistic web-based bug/issue tracking and software
+project management system. It provides an interface to revision control
+systems (Subversion), an integrated Wiki and convenient report facilities. 
+
+Trac allows wiki markup in issue descriptions and commit messages, to create 
+links and seamless references between bugs, tasks, changesets, files and wiki
+pages.  A timeline shows all project events in order, making getting an
+overview of the project and tracking progress very easy.
+
+The software is published under the GNU General Public License, and is
+available for download at:
+
+  <http://projects.edgewall.com/trac/download/>
+
+Please report problems and provide feedback using the issue tracker at: 
+
+  <http://projects.edgewall.com/trac/>
+
+For questions, comments and discussions, please use the Trac mailing list -
+list info, subscription and archive available at:
+
+  <http://lists.edgewall.com/mailman/listinfo/trac/>
+
+For more information, please visit the main Trac web site:
+
+  <http://trac.edgewall.com/> 
+
+
+About Edgewall
+--------------
+Edgewall Software is a small consulting business focusing on GNU/Linux and
+open source software services. Edgewall offers custom software development,
+technical consulting and commercial support, including support options for
+Trac. 
+
+For more information, visit our web site at <http://www.edgewall.com/> 
+or email us at <mailto:info@edgewall.com>.
+
+
+We hope Trac will be useful, and look forward to public feedback.
+
+Cheers,
+
+The Trac Team <http://trac.edgewall.com/>
+
+-- 
+Copyright (c)2004 Edgewall Software
+Edgewall - Professional GNU/Linux & Open Source Consulting
+<http://www.edgewall.com/>
