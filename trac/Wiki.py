@@ -55,7 +55,7 @@ class CommonFormatter:
     _rules = [r"""(?P<bold>''')""",
               r"""(?P<italic>'')""",
               r"""(?P<underline>__)""",
-              r"""(?P<inlinecode>\{\{\{(?P<inline>.*)\}\}\})""",
+              r"""(?P<inlinecode>\{\{\{(?P<inline>.*?)\}\}\})""",
               r"""(?P<htmlescapeentity>&#[0-9]+;)""",
               r"""(?P<tickethref>#[0-9]+)""",
               r"""(?P<changesethref>\[[0-9]+\])""",
