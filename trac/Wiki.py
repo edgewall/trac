@@ -661,7 +661,7 @@ class Wiki(Module):
                             % (version, pagename),
                             'Page Not Found')
         filtr = DiffColorizer(self.req.hdf, 'wiki.diff')
-        filtr.writeline('header %s version %d | %s version %d header' %
+        filtr.writeline('header %s version %d | %s version %d redaeh' %
                          (pagename, version - 1, pagename, version))
         try:
             for line in difflib.Differ().compare(old, new):
