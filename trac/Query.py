@@ -28,7 +28,7 @@ import perm
 from Module import Module
 from Ticket import get_custom_fields, insert_custom_fields, Ticket
 from Wiki import wiki_to_html, wiki_to_oneliner
-from util import add_to_hdf, escape, sql_escape
+from util import escape, sql_escape
 
 
 class Query:
@@ -429,7 +429,7 @@ class QueryModule(Module):
                 constraint['mode'] = (neg and '!' or '') + mode
                 constraint['values'].append(val)
             constraints[k] = constraint
-        add_to_hdf(constraints, req.hdf, 'query.constraints')
+        req.hdf['query.constraints'] = constraints
 
         self.query = query
 
@@ -441,43 +441,38 @@ class QueryModule(Module):
                 idx = 0
                 if query.constraints.has_key(field):
                     idx = len(query.constraints[field])
-                req.hdf.setValue('query.constraints.%s.values.%d'
-                                 % (field, idx), '')
+                req.hdf['query.constraints.%s.values.%d' % (field, idx)] = ''
 
     def display(self, req):
-        req.hdf.setValue('title', 'Custom Query')
+        req.hdf['title'] = 'Custom Query'
         query = self.query
 
-        props = self._get_ticket_properties()
-        add_to_hdf(props, req.hdf, 'ticket.properties')
-        modes = self._get_constraint_modes()
-        add_to_hdf(modes, req.hdf, 'query.modes')
+        req.hdf['ticket.properties'] = self._get_ticket_properties()
+        req.hdf['query.modes'] = self._get_constraint_modes()
 
         cols = query.get_columns()
         for i in range(len(cols)):
-            req.hdf.setValue('query.headers.%d.name' % i, cols[i])
+            req.hdf['query.headers.%d.name' % i] = cols[i]
             if cols[i] == query.order:
-                req.hdf.setValue('query.headers.%d.href' % i,
-                    escape(self.env.href.query(query.constraints, query.order,
-                                               not query.desc, query.group,
-                                               query.groupdesc, query.verbose)))
-                req.hdf.setValue('query.headers.%d.order' % i,
-                                 query.desc and 'desc' or 'asc')
+                req.hdf['query.headers.%d.href' % i] = escape(
+                    self.env.href.query(query.constraints, query.order,
+                    not query.desc, query.group, query.groupdesc,
+                    query.verbose))
+                req.hdf['query.headers.%d.order' % i] = query.desc and 'desc' or 'asc'
             else:
-                req.hdf.setValue('query.headers.%d.href' % i,
-                    escape(self.env.href.query(query.constraints, cols[i],
-                                               0, query.group, query.groupdesc,
-                                               query.verbose)))
+                req.hdf['query.headers.%d.href' % i] = escape(
+                    self.env.href.query(query.constraints, cols[i], 0,
+                    query.group, query.groupdesc, query.verbose))
 
-        req.hdf.setValue('query.order', query.order)
+        req.hdf['query.order'] = query.order
         if query.desc:
-            req.hdf.setValue('query.desc', '1')
+            req.hdf['query.desc'] = 1
         if query.group:
-            req.hdf.setValue('query.group', query.group)
+            req.hdf['query.group'] = query.group
             if query.groupdesc:
-                req.hdf.setValue('query.groupdesc', '1')
+                req.hdf['query.groupdesc'] = 1
         if query.verbose:
-            req.hdf.setValue('query.verbose', '1')
+            req.hdf['query.verbose'] = 1
 
         results = query.execute(self.db)
         for result in results:
@@ -486,7 +481,7 @@ class QueryModule(Module):
                                                          self.env, self.db)
             if result.has_key('created'):
                 result['created'] = strftime('%c', localtime(result['created']))
-        add_to_hdf(results, req.hdf, 'query.results')
+        req.hdf['query.results'] = results
         req.display(self.template_name, 'text/html')
 
     def display_csv(self, req, sep=','):
@@ -521,6 +516,6 @@ class QueryModule(Module):
             if result['created']:
                 result['created'] = strftime('%a, %d %b %Y %H:%M:%S GMT',
                                              gmtime(result['created']))
-        add_to_hdf(results, req.hdf, 'query.results')
+        req.hdf['query.results'] = results
 
         req.display(self.template_rss_name, 'text/xml')

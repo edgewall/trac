@@ -27,7 +27,7 @@ import StringIO
 
 import perm
 from Module import Module
-from util import add_to_hdf, escape, TracError, get_reporter_id
+from util import escape, TracError, get_reporter_id
 from WikiFormatter import *
 
 
@@ -123,10 +123,9 @@ class WikiModule(Module):
     def render(self, req):
         action = req.args.get('action', 'view')
         pagename = req.args.get('page', 'WikiStart')
-        req.hdf.setValue('wiki.action', action)
-        req.hdf.setValue('wiki.page_name', escape(pagename))
-        req.hdf.setValue('wiki.current_href',
-                         escape(self.env.href.wiki(pagename)))
+        req.hdf['wiki.action'] = action
+        req.hdf['wiki.page_name'] = escape(pagename)
+        req.hdf['wiki.current_href'] = escape(self.env.href.wiki(pagename))
 
         if action == 'diff':
             version = int(req.args.get('version', 0))
@@ -144,7 +143,7 @@ class WikiModule(Module):
             if req.args.has_key('cancel'):
                 req.redirect(self.env.href.wiki(pagename))
             elif req.args.has_key('preview'):
-                req.hdf.setValue('wiki.action', 'preview')
+                req.hdf['wiki.action'] = 'preview'
                 self._render_editor(req, pagename, 1)
             else:
                 self._save_page(req, pagename)
@@ -196,7 +195,7 @@ class WikiModule(Module):
            req.redirect(self.env.href.wiki(pagename, version, action='diff'))
 
         # Ask web spiders to not index old versions
-        req.hdf.setValue('html.norobots', '1')
+        req.hdf['html.norobots'] = 1
 
         cursor = self.db.cursor()
         cursor.execute("SELECT text,author,comment,time FROM wiki "
@@ -214,7 +213,7 @@ class WikiModule(Module):
             'comment': escape(rows[-1][2] or ''),
             'history_href': escape(self.env.href.wiki(pagename, action='history'))
         }
-        add_to_hdf(info, req.hdf, 'wiki')
+        req.hdf['wiki'] = info
 
         if len(rows) == 1:
             oldtext = ''
@@ -251,7 +250,7 @@ class WikiModule(Module):
         else:
             editrows = req.session.get('wiki_editrows', '20')
 
-        req.hdf.setValue('title', escape(page.name) + ' (edit)')
+        req.hdf['title'] = escape(page.name) + ' (edit)'
         info = {
             'page_source': escape(page.text),
             'version': page.version,
@@ -264,7 +263,7 @@ class WikiModule(Module):
         }
         if preview:
             info['page_html'] = wiki_to_html(page.text, req.hdf, self.env, self.db)
-        add_to_hdf(info, req.hdf, 'wiki')
+        req.hdf['wiki'] = info
 
     def _render_history(self, req, pagename):
         """
@@ -290,16 +289,16 @@ class WikiModule(Module):
                 'comment': wiki_to_oneliner(row[3] or '', self.env, self.db),
                 'ipaddr': row[4]
             }
-            add_to_hdf(item, req.hdf, 'wiki.history.%d' % i)
+            req.hdf['wiki.history.%d' % i] = item
             i = i + 1
 
     def _render_view(self, req, pagename):
         self.perm.assert_permission(perm.WIKI_VIEW)
 
         if pagename == 'WikiStart':
-            req.hdf.setValue('title', '')
+            req.hdf['title'] = ''
         else:
-            req.hdf.setValue('title', escape(pagename))
+            req.hdf['title'] = escape(pagename)
 
         version = req.args.get('version')
         if version:
@@ -310,7 +309,7 @@ class WikiModule(Module):
             self.add_link('alternate', '?format=txt', 'Plain Text',
                 'text/plain')
             # Ask web spiders to not index old versions
-            req.hdf.setValue('html.norobots', '1')
+            req.hdf['html.norobots'] = 1
 
         page = WikiPage(pagename, version, self.perm, self.db)
 
@@ -322,12 +321,12 @@ class WikiModule(Module):
             'history_href': escape(self.env.href.wiki(page.name,
                                                       action='history'))
         }
-        add_to_hdf(info, req.hdf, 'wiki')
+        req.hdf['wiki'] = info
 
         self.env.get_attachments_hdf(self.db, 'wiki', pagename, req.hdf,
                                      'wiki.attachments')
-        req.hdf.setValue('wiki.attach_href',
-                         self.env.href.attachment('wiki', pagename, None)) 
+        req.hdf['wiki.attach_href'] = self.env.href.attachment('wiki',
+                                                               pagename, None)
 
     def _save_page(self, req, pagename):
         self.perm.assert_permission(perm.WIKI_MODIFY)

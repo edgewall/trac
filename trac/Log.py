@@ -87,13 +87,13 @@ class Log (Module):
         i = 0
         for part in links:
             path = path + part + '/'
-            req.hdf.setValue('log.path.%d' % i, part or 'root')
+            req.hdf['log.path.%d' % i] = part or 'root'
             url = ''
             if rev_specified:
                 url = self.env.href.browser(path, rev)
             else:
                 url = self.env.href.browser(path)
-            req.hdf.setValue('log.path.%d.url' % i, url)
+            req.hdf['log.path.%d.url' % i] = url
             if i == len(links) - 1:
                 self.add_link('up', url, 'Parent directory')
             i = i + 1
@@ -138,13 +138,13 @@ class Log (Module):
                 date_seconds = svn.util.svn_time_from_cstring(date, self.pool) / 1000000
                 req.check_modified(date_seconds)
 
-            info = self.get_info (self.path, rev)
-            util.add_to_hdf(info, req.hdf, 'log.items')
+            info = self.get_info(self.path, rev)
+            req.hdf['log.items'] = info
 
         self.generate_path_links(req, rev, rev_specified)
-        req.hdf.setValue('title', self.path + ' (log)')
-        req.hdf.setValue('log.path', self.path)
-        req.hdf.setValue('log.href', self.env.href.log(self.path))
+        req.hdf['title'] = self.path + ' (log)'
+        req.hdf['log.path'] = self.path
+        req.hdf['log.href'] = self.env.href.log(self.path)
 
     def display_rss(self, req):
         req.display(self.template_rss_name, 'application/rss+xml')

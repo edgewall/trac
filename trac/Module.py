@@ -27,7 +27,6 @@ class Module:
 
     db = None
     env = None
-    req = None
     _name = None
     template_name = None
     links = None
@@ -42,11 +41,11 @@ class Module:
             disp = self.display
         populate_hdf(req.hdf, self.env, req)
         for action in self.perm.permissions():
-            req.hdf.setValue('trac.acl.' + action, 'true')
+            req.hdf['trac.acl.' + action] = 1
         self._add_default_links(req)
         self.render(req)
-        req.hdf.setValue('trac.active_module', self._name)
-        add_to_hdf(self.links, req.hdf, 'links')
+        req.hdf['trac.active_module'] = self._name
+        req.hdf['links'] = self.links
         disp(req)
 
     def _add_default_links(self, req):
@@ -57,7 +56,7 @@ class Module:
         icon = self.env.get_config('project', 'icon')
         if icon:
             if not icon[0] == '/' and icon.find('://') < 0:
-                icon = req.hdf.getValue('htdocs_location', '') + icon
+                icon = req.hdf.get('htdocs_location', '') + icon
             mimetype = self.env.mimeview.get_mimetype(icon)
             self.add_link('icon', icon, type=mimetype)
             self.add_link('shortcut icon', icon, type=mimetype)
@@ -82,24 +81,7 @@ class Module:
         req.display(self.template_name)
 
     def display_hdf(self, req):
-        def hdf_tree_walk(node,prefix=''):
-            while node: 
-                name = node.name() or ''
-                req.write('%s%s' % (prefix, name))
-                value = node.value()
-                if value:
-                    if value.find('\n') == -1:
-                        req.write(' = %s' % value)
-                    else:
-                        req.write(' = << EOM\r\n%s\r\nEOM' % value)
-                if node.child():
-                    req.write(' {\r\n')
-                    hdf_tree_walk(node.child(), prefix + '  ')
-                    req.write('%s}\r\n' % prefix)
-                else:
-                    req.write('\r\n')
-                node = node.next()
         req.send_response(200)
         req.send_header('Content-Type', 'text/plain;charset=utf-8')
         req.end_headers()
-        hdf_tree_walk(req.hdf.child())
+        req.write(str(req.hdf))

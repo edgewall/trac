@@ -284,9 +284,9 @@ class Milestone(Module):
 
     def render_confirm(self, req, id):
         milestone = self.get_milestone(req, id)
-        req.hdf.setValue('title', 'Milestone %s' % milestone['name'])
-        req.hdf.setValue('milestone.mode', 'delete')
-        add_to_hdf(milestone, req.hdf, 'milestone')
+        req.hdf['title'] = 'Milestone %s' % milestone['name']
+        req.hdf['milestone.mode'] = 'delete'
+        req.hdf['milestone'] = milestone
 
         cursor = self.db.cursor()
         cursor.execute("SELECT name FROM milestone "
@@ -296,37 +296,36 @@ class Milestone(Module):
             row = cursor.fetchone()
             if not row:
                 break
-            req.hdf.setValue('milestones.%d' % milestone_no, row['name'])
+            req.hdf['milestones.%d' % milestone_no] = row['name']
             milestone_no += 1
         cursor.close()
 
     def render_editor(self, req, id=None):
         if not id:
             milestone = { 'name': '', 'date': '', 'description': '' }
-            req.hdf.setValue('title', 'New Milestone')
-            req.hdf.setValue('milestone.mode', 'new')
+            req.hdf['title'] = 'New Milestone'
+            req.hdf['milestone.mode'] = 'new'
         else:
             milestone = self.get_milestone(req, id)
-            req.hdf.setValue('title', 'Milestone %s' % milestone['name'])
-            req.hdf.setValue('milestone.mode', 'edit')
-        add_to_hdf(milestone, req.hdf, 'milestone')
-        add_to_hdf(get_date_format_hint(), req.hdf, 'milestone.date_hint')
-        add_to_hdf(get_datetime_format_hint(), req.hdf,
-                   'milestone.datetime_hint')
-        add_to_hdf(time.strftime('%x %X', time.localtime(time.time())),
-                   req.hdf, 'milestone.datetime_now')
+            req.hdf['title'] = 'Milestone %s' % milestone['name']
+            req.hdf['milestone.mode'] = 'edit'
+        req.hdf['milestone'] = milestone
+        req.hdf['milestone.date_hint'] = get_date_format_hint()
+        req.hdf['milestone.datetime_hint'] = get_datetime_format_hint()
+        req.hdf['milestone.datetime_now'] = time.strftime('%x %X',
+                                                          time.localtime(time.time()))
 
     def render_view(self, req, id):
         milestone = self.get_milestone(req, id)
-        req.hdf.setValue('title', 'Milestone %s' % milestone['name'])
-        req.hdf.setValue('milestone.mode', 'view')
+        req.hdf['title'] = 'Milestone %s' % milestone['name']
+        req.hdf['milestone.mode'] = 'view'
 
         # If the milestone name contains slashes, we'll need to include the 'id'
         # parameter in the forms for editing/deleting the milestone. See #806.
         if id.find('/') >= 0:
-            req.hdf.setValue('milestone.id_param', '1')
+            req.hdf['milestone.id_param'] = 1
 
-        add_to_hdf(milestone, req.hdf, 'milestone')
+        req.hdf['milestone'] = milestone
 
         available_groups = map(lambda x: {'name': x, 'label': x.capitalize()},
                                ['component', 'version', 'severity', 'priority',
@@ -335,17 +334,16 @@ class Milestone(Module):
                                  for f in get_custom_fields(self.env)
                                  if f['type'] == 'select'
                                  or f['type'] == 'radio'])
-        add_to_hdf(available_groups, req.hdf,
-                   'milestone.stats.available_groups')
+        req.hdf['milestone.stats.available_groups'] = available_groups
 
         by = req.args.get('by', 'component')
-        req.hdf.setValue('milestone.stats.grouped_by', by)
+        req.hdf['milestone.stats.grouped_by'] = by
 
         tickets = get_tickets_for_milestone(self.env, self.db, id, by)
         stats = calc_ticket_stats(tickets)
-        add_to_hdf(stats, req.hdf, 'milestone.stats')
+        req.hdf['milestone.stats'] = stats
         queries = get_query_links(self.env, milestone['name'])
-        add_to_hdf(queries, req.hdf, 'milestone.queries')
+        req.hdf['milestone.queries'] = queries
 
         groups = self.get_groups(by)
         group_no = 0
@@ -355,18 +353,16 @@ class Milestone(Module):
             if not group_tickets:
                 continue
             prefix = 'milestone.stats.groups.%s' % group_no
-            req.hdf.setValue('%s.name' % prefix, group)
+            req.hdf['%s.name' % prefix] = group
             percent_total = 0
             if len(tickets) > 0:
                 percent_total = float(len(group_tickets)) / float(len(tickets))
                 if percent_total > max_percent_total:
                     max_percent_total = percent_total
-            req.hdf.setValue('%s.percent_total' % prefix,
-                             str(percent_total * 100))
+            req.hdf['%s.percent_total' % prefix] = percent_total * 100
             stats = calc_ticket_stats(group_tickets)
-            add_to_hdf(stats, req.hdf, prefix)
+            req.hdf[prefix] = stats
             queries = get_query_links(self.env, milestone['name'], by, group)
-            add_to_hdf(queries, req.hdf, '%s.queries' % prefix)
+            req.hdf['%s.queries' % prefix] = queries
             group_no += 1
-        add_to_hdf(str(max_percent_total * 100), req.hdf,
-                   'milestone.stats.max_percent_total')
+        req.hdf['milestone.stats.max_percent_total'] = max_percent_total * 100

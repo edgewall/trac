@@ -24,7 +24,7 @@ import time
 import string
 
 import perm
-from util import TracError, escape, shorten_line, add_to_hdf
+from util import TracError, escape, shorten_line
 from Module import Module
 
 class Search(Module):
@@ -93,7 +93,7 @@ class Search(Module):
             if kwd[0] == '!':
                 keywords[0] = kwd[1:]
                 query = query[1:]
-                req.hdf.setValue('search.q', query)
+                req.hdf['search.q'] = query
             # Ticket quickjump
             elif kwd[0] == '#' and kwd[1:].isdigit():
                 redir = self.env.href.ticket(kwd[1:])
@@ -108,7 +108,7 @@ class Search(Module):
                 if re.match (r, kwd):
                     redir = self.env.href.wiki(kwd)
             if redir:
-                req.hdf.setValue('search.q', '')
+                req.hdf['search.q'] = ''
                 req.redirect(redir)
             elif len(query) < 3:
                 raise TracError('Search query too short. '
@@ -191,16 +191,18 @@ class Search(Module):
         
     def render(self, req):
         self.perm.assert_permission(perm.SEARCH_VIEW)
-        req.hdf.setValue('title', 'Search')
-        req.hdf.setValue('search.ticket', 'checked')
-        req.hdf.setValue('search.changeset', 'checked')
-        req.hdf.setValue('search.wiki', 'checked')
-        req.hdf.setValue('search.results_per_page', str(self.RESULTS_PER_PAGE))
+        req.hdf['title'] = 'Search'
+        req.hdf['search'] = {
+            'ticket': 'checked',
+            'changeset': 'checked',
+            'wiki': 'checked',
+            'results_per_page': self.RESULTS_PER_PAGE
+        }
         
         if req.args.has_key('q'):
             query = req.args.get('q')
-            req.hdf.setValue('title', 'Search Results')
-            req.hdf.setValue('search.q', query.replace('"', "&#34;"))
+            req.hdf['title'] = 'Search Results'
+            req.hdf['search.q'] = query.replace('"', "&#34;")
             tickets = req.args.has_key('ticket')
             changesets = req.args.has_key('changeset')
             wiki = req.args.has_key('wiki')
@@ -209,17 +211,17 @@ class Search(Module):
             if not (tickets or changesets or wiki):
                 tickets = changesets = wiki = 1
             if not tickets:
-                req.hdf.setValue('search.ticket', '')
+                req.hdf['search.ticket'] = ''
             if not changesets:
-                req.hdf.setValue('search.changeset', '')
+                req.hdf['search.changeset'] = ''
             if not wiki:
-                req.hdf.setValue('search.wiki', '')
+                req.hdf['search.wiki'] = ''
 
             page = int(req.args.get('page', '0'))
-            req.hdf.setValue('search.result_page', str(page))
+            req.hdf['search.result_page'] = page
             info, more = self.perform_query(req, query, changesets, tickets,
                                             wiki, page)
-            add_to_hdf(info, req.hdf, 'search.result')
+            req.hdf['search.result'] = info
 
             include = []
             if tickets: include.append('ticket')

@@ -248,23 +248,23 @@ def insert_custom_fields(env, hdf, vals = {}):
         name = f['name']
         val = vals.get('custom_' + name, f['value'])
         pfx = 'ticket.custom.%i' % i
-        hdf.setValue('%s.name' % pfx, f['name'])
-        hdf.setValue('%s.type' % pfx, f['type'])
-        hdf.setValue('%s.label' % pfx, f['label'])
-        hdf.setValue('%s.value' % pfx, val)
+        hdf['%s.name' % pfx] = f['name']
+        hdf['%s.type' % pfx] = f['type']
+        hdf['%s.label' % pfx] = f['label']
+        hdf['%s.value' % pfx] = val
         if f['type'] == 'select' or f['type'] == 'radio':
             j = 0
             for option in f['options']:
-                hdf.setValue('%s.option.%d' % (pfx, j), option)
+                hdf['%s.option.%d' % (pfx, j)] = option
                 if val and (option == val or str(j) == val):
-                    hdf.setValue('%s.option.%i.selected' % (pfx, j), '1')
+                    hdf['%s.option.%i.selected' % (pfx, j)] = 1
                 j += 1
         elif f['type'] == 'checkbox':
             if val in util.TRUE:
-                hdf.setValue('%s.selected' % pfx, '1')
+                hdf['%s.selected' % pfx] = 1
         elif f['type'] == 'textarea':
-            hdf.setValue('%s.width' % pfx, f['width'])
-            hdf.setValue('%s.height' % pfx, f['height'])
+            hdf['%s.width' % pfx] = f['width']
+            hdf['%s.height' % pfx] = f['height']
         i += 1
 
 
@@ -315,14 +315,14 @@ class NewticketModule(Module):
         ticket.setdefault('reporter', util.get_reporter_id(req))
 
         if ticket.has_key('description'):
-            req.hdf.setValue('newticket.description_preview',
-                             wiki_to_html(ticket['description'], req.hdf,
-                                          self.env, self.db))
+            req.hdf['newticket.description_preview'] = wiki_to_html(ticket['description'],
+                                                                    req.hdf, self.env,
+                                                                    self.db)
 
-        req.hdf.setValue('title', 'New Ticket')
+        req.hdf['title'] = 'New Ticket'
         evals = util.mydict(zip(ticket.keys(),
                                 map(lambda x: util.escape(x), ticket.values())))
-        util.add_to_hdf(evals, req.hdf, 'newticket')
+        req.hdf['newticket'] = evals
 
         util.sql_to_hdf(self.db, 'SELECT name FROM component ORDER BY name',
                         req.hdf, 'newticket.components')
@@ -388,7 +388,7 @@ class TicketModule (Module):
         """Insert ticket data into the hdf"""
         evals = util.mydict(zip(ticket.keys(),
                                 map(lambda x: util.escape(x), ticket.values())))
-        util.add_to_hdf(evals, req.hdf, 'ticket')
+        req.hdf['ticket'] = evals
 
         util.sql_to_hdf(self.db, 'SELECT name FROM component ORDER BY name',
                         req.hdf, 'ticket.components')
@@ -412,23 +412,19 @@ class TicketModule (Module):
         util.hdf_add_if_missing(req.hdf, 'enums.severity', ticket['severity'])
         util.hdf_add_if_missing(req.hdf, 'enums.resolution', 'fixed')
 
-        req.hdf.setValue('ticket.reporter_id', util.escape(reporter_id))
-        req.hdf.setValue('title', '#%d (%s)' % (id, util.escape(ticket['summary'])))
-        req.hdf.setValue('ticket.description.formatted',
-                         wiki_to_html(ticket['description'], req.hdf,
-                                      self.env, self.db))
+        req.hdf['ticket.reporter_id'] = util.escape(reporter_id)
+        req.hdf['title'] = '#%d (%s)' % (id, util.escape(ticket['summary']))
+        req.hdf['ticket.description.formatted'] = wiki_to_html(ticket['description'],
+                                                               req.hdf, self.env,
+                                                               self.db)
 
         opened = int(ticket['time'])
-        req.hdf.setValue('ticket.opened',
-                         time.strftime('%c', time.localtime(opened)))
-        req.hdf.setValue('ticket.opened_delta',
-                         util.pretty_timedelta(opened))
+        req.hdf['ticket.opened'] = time.strftime('%c', time.localtime(opened))
+        req.hdf['ticket.opened_delta'] = util.pretty_timedelta(opened)
         lastmod = int(ticket['changetime'])
         if lastmod != opened:
-            req.hdf.setValue('ticket.lastmod',
-                             time.strftime('%c', time.localtime(lastmod)))
-            req.hdf.setValue('ticket.lastmod_delta',
-                             util.pretty_timedelta(lastmod))
+            req.hdf['ticket.lastmod'] = time.strftime('%c', time.localtime(lastmod))
+            req.hdf['ticket.lastmod_delta'] = util.pretty_timedelta(lastmod)
 
         changelog = ticket.get_changelog(self.db)
         curr_author = None
@@ -451,7 +447,7 @@ class TicketModule (Module):
                 changes[-1]['fields'][field] = {}
             else:
                 changes[-1]['fields'][field] = {'old': old, 'new': new}
-        util.add_to_hdf(changes, req.hdf, 'ticket.changes')
+        req.hdf['ticket.changes'] = changes
 
         insert_custom_fields(self.env, req.hdf, ticket)
         # List attached files
@@ -481,15 +477,16 @@ class TicketModule (Module):
             for field in Ticket.std_fields:
                 if req.args.has_key(field) and field != 'reporter':
                     ticket[field] = req.args.get(field)
-            req.hdf.setValue('ticket.action', action)
+            req.hdf['ticket.action'] = action
             reporter_id = req.args.get('author')
             comment = req.args.get('comment')
             if comment:
-                req.hdf.setValue('ticket.comment', util.escape(comment))
+                req.hdf['ticket.comment'] = util.escape(comment)
                 # Wiki format a preview of comment
-                req.hdf.setValue('ticket.comment_preview',
-                                 wiki_to_html(comment, req.hdf, self.env,
-                                              self.db))
+                req.hdf['ticket.comment_preview'] = wiki_to_html(comment,
+                                                                 req.hdf,
+                                                                 self.env,
+                                                                 self.db)
 
         self.insert_ticket_data(req, id, ticket, reporter_id)
 

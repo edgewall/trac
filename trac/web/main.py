@@ -27,6 +27,7 @@ from trac.web.session import Session
 import cgi
 import re
 from types import ListType
+import urllib
 
 
 class NotModifiedException(Exception):
@@ -261,14 +262,15 @@ def dispatch_request(path_info, req, env):
                 req.redirect(referer or env.href.wiki())
             req.authname = authenticator.authname
 
-            newsession = req.args.has_key('newsession')
-            req.session = Session(env, db, req, newsession)
-
             from trac.web.clearsilver import HDFWrapper
             req.hdf = HDFWrapper(loadpaths=[env.get_templates_dir(),
                                             env.get_config('trac', 'templates_dir')])
             req.hdf['HTTP.PathInfo'] = path_info
             _add_args_to_hdf(req.args, req.hdf)
+
+            newsession = req.args.has_key('newsession')
+            req.session = Session(env, db, req, newsession)
+
             try:
                 pool = None
                 # Load the selected module
@@ -331,7 +333,9 @@ def send_pretty_error(e, env, req=None):
             req.hdf['error.message'] = escape(str(e))
             req.hdf['error.traceback'] = escape(tb.getvalue())
         req.display('error.cs', response=500)
-    except Exception:
+    except Exception, e2:
+        if env and env.log:
+            env.log.error('Failed to render pretty error page: %s' % e2)
         req.send_response(500)
         req.send_header('Content-Type', 'text/plain')
         req.end_headers()

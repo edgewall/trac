@@ -191,9 +191,9 @@ class HtmlDiffEditor(BaseDiffEditor):
                 if old_value:
                     if value == old_value:
                         return # spurious change prop after a copy
-                    self.req.hdf.setValue(prefix + '.old', util.escape(old_value))
+                    self.req.hdf[prefix + '.old'] = util.escape(old_value)
         if value:
-            self.req.hdf.setValue(prefix + '.new', util.escape(value))
+            self.req.hdf[prefix + '.new'] = util.escape(value)
 
 
 class UnifiedDiffEditor(BaseDiffEditor):
@@ -401,20 +401,16 @@ class Changeset (Module.Module):
                            self.diff_options[0] + "".join(self.diff_options[1]))
         change_info = self.get_change_info(self.rev)
 
-        req.hdf.setValue('title', '[%d] (changeset)' % self.rev)
-        req.hdf.setValue('changeset.time',
-                              time.asctime(time.localtime(int(changeset_info['time']))))
+        req.hdf['title'] = '[%d] (changeset)' % self.rev
+        req.hdf['changeset.time'] = time.asctime(time.localtime(int(changeset_info['time'])))
         author = changeset_info['author'] or 'anonymous'
-        req.hdf.setValue('changeset.author', util.escape(author))
+        req.hdf['changeset.author'] = util.escape(author)
         message = changeset_info['message'] or '--'
-        req.hdf.setValue('changeset.message',
-                         wiki_to_html(util.wiki_escape_newline(message),
-                                      req.hdf, self.env, self.db))
-        req.hdf.setValue('changeset.revision', str(self.rev))
-        util.add_to_hdf(change_info, req.hdf, 'changeset.changes')
-
-        req.hdf.setValue('changeset.href',
-                              self.env.href.changeset(self.rev))
+        req.hdf['changeset.message'] = wiki_to_html(util.wiki_escape_newline(message),
+                                                    req.hdf, self.env, self.db))
+        req.hdf['changeset.revision'] = self.rev
+        req.hdf['changeset.changes'] = change_info
+        req.hdf['changeset.href'] = self.env.href.changeset(self.rev)
         if self.rev > 1:
             self.add_link('first', self.env.href.changeset(1), 'Changeset 1')
             self.add_link('prev', self.env.href.changeset(self.rev - 1),
