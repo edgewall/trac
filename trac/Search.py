@@ -86,6 +86,7 @@ class Search(Module):
         
         if self.args.has_key('q'):
             query = self.args['q']
+            self.cgi.hdf.setValue('title', 'Search Results (search)')
             self.cgi.hdf.setValue('search.q', query)
             tickets = self.args.has_key('ticket')
             changesets = self.args.has_key('changeset')

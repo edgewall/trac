@@ -42,7 +42,7 @@ class Newticket (Module):
         default_severity  = self.config['ticket']['default_severity']
         default_version   = self.config['ticket']['default_version']
         
-        self.cgi.hdf.setValue('title', 'Create a new ticket')
+        self.cgi.hdf.setValue('title', 'New Ticket')
         
         self.cgi.hdf.setValue('newticket.default_component', default_component)
         self.cgi.hdf.setValue('newticket.default_milestone', default_milestone)
@@ -246,7 +246,7 @@ class Ticket (Module):
         hdf_add_if_missing(self.cgi.hdf, 'enums.severity', info['severity'])
         
         # Page title
-        self.cgi.hdf.setValue('title', 'Ticket #%d' % id)
+        self.cgi.hdf.setValue('title', '#%d (ticket)' % id)
         self.insert_ticket_data(self.cgi.hdf, id)
         self.cgi.hdf.setValue('ticket.description',
                               wiki_to_html(info['description']))

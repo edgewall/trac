@@ -224,7 +224,7 @@ class Changeset (Module):
         self.cgi.hdf.setValue('changeset.revision', str(self.rev))
 
         add_dictlist_to_hdf(change_info, self.cgi.hdf, 'changeset.changes')
-        self.cgi.hdf.setValue('title', 'Changeset [%d]' % self.rev)
+        self.cgi.hdf.setValue('title', '[%d] (changeset)' % self.rev)
         
     def apply_template (self):
         difftext = render_diffs(self.fs_ptr, int(self.rev), self.pool)

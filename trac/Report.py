@@ -136,7 +136,7 @@ class Report (Module):
             self.cgi.hdf.setValue('report.message', 'report failed: %s' % e)
             return
         
-        self.cgi.hdf.setValue('title', 'Report: ' + title)
+        self.cgi.hdf.setValue('title', title + ' (report)')
         self.cgi.hdf.setValue('report.title', title)
         self.cgi.hdf.setValue('report.id', str(id))
 

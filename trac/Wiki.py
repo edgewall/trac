@@ -481,16 +481,16 @@ class Wiki(Module):
             self.cgi.hdf.setValue('wiki.action', 'save')
         elif edit:
             self.cgi.hdf.setValue('wiki.action', 'edit')
-            self.cgi.hdf.setValue('title', 'Wiki Page: ' + name + ' (edit)')
+            self.cgi.hdf.setValue('title', name + ' (wiki edit)')
         elif preview:
             self.cgi.hdf.setValue('wiki.action', 'preview')
-            self.cgi.hdf.setValue('title', 'Wiki Page: ' + name + ' (preview)')
+            self.cgi.hdf.setValue('title', name + ' (wiki preview)')
         else:
             self.perm.assert_permission (perm.WIKI_VIEW)
             if self.args.has_key('text'):
                 del self.args['text']
             self.cgi.hdf.setValue('wiki.action', 'view')
-            self.cgi.hdf.setValue('title', 'Wiki Page: ' + name)
+            self.cgi.hdf.setValue('title', name + ' (wiki)')
 
         page = Page(name, version, self.perm, self.db,
                     self.authname, self.remote_addr)

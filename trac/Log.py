@@ -72,6 +72,6 @@ class Log (Module):
         info = self.get_info (self.path)
 
         self.generate_path_links()
-        self.cgi.hdf.setValue('title', 'Log: ' + self.path)
+        self.cgi.hdf.setValue('title', self.path + ' (log)')
         self.cgi.hdf.setValue('log.path', self.path)
         add_dictlist_to_hdf(info, self.cgi.hdf, 'log.items')
