@@ -234,8 +234,9 @@ label.disabled { color: #d7d7d7 }
 #prefs .buttons { text-align: right }
 
 /* Wiki */
-a.missing:link,a.missing:visited { background: #fafaf0; color: #998 }
+a.missing:link, a.missing:visited { background: #fafaf0; color: #998 }
 a.missing:hover { color: #000; }
+a.closed:link, a.closed:visited { text-decoration: line-through }
 
 .wikitoolbar {
  border: solid #d7d7d7;

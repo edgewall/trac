@@ -35,18 +35,18 @@ class CommonFormatter:
     """This class contains the patterns common to both Formatter and
     OneLinerFormatter"""
 
-    _rules = [r"""(?P<bold>''')""",
-              r"""(?P<italic>'')""",
-              r"""(?P<underline>__)""",
-              r"""(?P<strike>~~)""",
-              r"""(?P<inlinecode>!?\{\{\{(?P<inline>.*?)\}\}\})""",
-              r"""(?P<htmlescapeentity>!?&#\d+;)""",
-              r"""(?P<tickethref>!?#\d+)""",
-              r"""(?P<changesethref>!?\[\d+\])""",
-              r"""(?P<reporthref>!?\{\d+\})""",
-              r"""(?P<modulehref>!?((?P<modulename>bug|ticket|browser|source|repos|report|changeset|wiki|milestone|search):(?P<moduleargs>(&#34;(.*?)&#34;|'(.*?)')|([^ ]*[^'~_\., \)]))))""",
-              r"""(?P<wikilink>!?(^|(?<=[^A-Za-z]))[A-Z][a-z]+(?:[A-Z][a-z]*[a-z/])+(?=\Z|\s|[.,;:!?\)}\]]))""",
-              r"""(?P<fancylink>!?\[(?P<fancyurl>([a-z]+:[^ ]+)) (?P<linkname>.*?)\])"""]
+    _rules = [r"(?P<bold>''')",
+              r"(?P<italic>'')",
+              r"(?P<underline>__)",
+              r"(?P<strike>~~)",
+              r"(?P<inlinecode>!?\{\{\{(?P<inline>.*?)\}\}\})",
+              r"(?P<htmlescapeentity>!?&#\d+;)",
+              r"(?P<tickethref>!?#\d+)",
+              r"(?P<changesethref>!?(\[\d+\]|\br\d+\b))",
+              r"(?P<reporthref>!?\{\d+\})",
+              r"(?P<modulehref>!?((?P<modulename>bug|ticket|browser|source|repos|report|changeset|wiki|milestone|search):(?P<moduleargs>(&#34;(.*?)&#34;|'(.*?)')|([^ ]*[^'~_\., \)]))))",
+              r"(?P<wikihref>!?(^|(?<=[^A-Za-z]))[A-Z][a-z]+(?:[A-Z][a-z]*[a-z/])+(?=\Z|\s|[.,;:!?\)}\]]))",
+              r"(?P<fancylink>!?\[(?P<fancyurl>([a-z]+:[^ ]+)) (?P<linkname>.*?)\])"]
 
     _open_tags = []
     env = None
@@ -98,7 +98,7 @@ class CommonFormatter:
 
     def _strike_formatter(self, match, fullmatch):
         return self.simple_tag_handler('<del>', '</del>')
-    
+
     def _inlinecode_formatter(self, match, fullmatch):
         return '<tt>%s</tt>' % fullmatch.group('inline')
 
@@ -110,118 +110,110 @@ class CommonFormatter:
         return match
 
     def _tickethref_formatter(self, match, fullmatch):
-        number = int(match[1:])
-        cursor = self.db.cursor ()
-        cursor.execute('SELECT summary,status FROM ticket WHERE id=%s', number)
-        row = cursor.fetchone ()
-        if not row:
-            return '<a class="missing" href="%s">#%d</a>' % (self._href.ticket(number), number)
-        else:
-            summary =  util.escape(util.shorten_line(row[0]))
-            if row[1] == 'new':
-                return '<a href="%s" title="NEW : %s">#%d*</a>' % (self._href.ticket(number), summary, number)
-            elif row[1] == 'closed':
-                return '<a href="%s" title="CLOSED : %s"><del>#%d</del></a>' % (self._href.ticket(number), summary, number)
-            else:
-                return '<a href="%s" title="%s">#%d</a>' % (self._href.ticket(number), summary, number)
+        return self._make_ticket_link(match[1:], match)
 
     def _changesethref_formatter(self, match, fullmatch):
-        number = int(match[1:-1])
-        cursor = self.db.cursor ()
-        cursor.execute('SELECT message FROM revision WHERE rev=%d', number)
-        row = cursor.fetchone ()
-        if not row:
-            return '[<a class="missing" href="%s">%d</a>]' % (self._href.changeset(number), number)
+        if match[0] == 'r':
+            rev = match[1:]
         else:
-            return '[<a title="%s" href="%s">%d</a>]' % ( util.escape(util.shorten_line(row[0])),self._href.changeset(number), number)
+            rev = match[1:-1]
+        return self._make_changeset_link(rev, match)
 
     def _reporthref_formatter(self, match, fullmatch):
-        number = int(match[1:-1])
-        return '{<a href="%s">%d</a>}' % (self._href.report(number), number)
-
-    def _expand_module_link(self, text):
-        sep = text.find(':')
-        if sep == -1:
-            return None, None
-        module = text[:sep]
-        args = text[sep+1:]
-        if module in ['bug', 'ticket']:
-            cursor = self.db.cursor ()
-            cursor.execute('SELECT summary,status FROM ticket WHERE id=%s', args)
-            row = cursor.fetchone ()
-            if row:
-                summary = util.escape(util.shorten_line(row[0]))
-                if row[1] == 'new':
-                    return self._href.ticket(args), '%s:%s*' % (module, args), 0, 'NEW: ' +  summary
-                elif row[1] == 'closed':
-                    return self._href.ticket(args), '<del>%s:%s</del>' % (module, args), 0, 'CLOSED: ' + summary
-                else:
-                    return self._href.ticket(args), '%s:%s' % (module, args), 0, summary
-            else:
-                return self._href.ticket(args), '%s:%s' % (module, args), 1, ''
-        elif module == 'wiki':
-            if not self.env._wiki_pages.has_key(args):
-                return self._href.wiki(args), '%s:%s' % (module, args), 1, None
-            else:
-                return self._href.wiki(args), '%s:%s' % (module, args), 0, None
-        elif module == 'report':
-            return self._href.report(args), '%s:%s' % (module, args), 0, None
-        elif module == 'changeset':
-            cursor = self.db.cursor ()
-            cursor.execute('SELECT message FROM revision WHERE rev=%s', args)
-            row = cursor.fetchone ()
-            if row:
-                return self._href.changeset(args), '%s:%s' % (module,args), 0, util.escape(util.shorten_line(row[0]))
-            else:
-                return self._href.changeset(args), '%s:%s' % (module,args), 1, ''
-        elif module == 'milestone':
-            return self._href.milestone(args), '%s:%s' % (module, args), 0, None
-        elif module == 'search':
-            return self._href.search(args), '%s:%s' % (module, args), 0, None
-        elif module in ['source', 'repos', 'browser']:
-            rev = None
-            match = re.search('([^#]+)#(.+)', args)
-            if match:
-                args = match.group(1)
-                rev = match.group(2)
-            if rev:
-                return self._href.browser(args, rev), \
-                       '%s:%s#%s' % (module, args, rev), 0, None
-            else:
-                return self._href.browser(args), '%s:%s' % (module, args), 0, None
-        else:
-            return None, None, 0, None
+        return self._make_report_link(match[1:-1], match)
 
     def _modulehref_formatter(self, match, fullmatch):
-        link, text, missing, title = self._expand_module_link(match)
-        if link and missing:
-            return '<a title="%s" class="missing" href="%s">%s?</a>' % (title,link, text)
-        elif link:
-            return '<a title="%s" href="%s">%s</a>' % (title or '',link, text)
-        else:
-            return match
+        return self._make_module_link(match, match)
 
-    def _wikilink_formatter(self, match, fullmatch):
-        if not self.env._wiki_pages.has_key(match):
-            return '<a class="missing" href="%s">%s?</a>' % \
-                   (self._href.wiki(match), match)
-        else:
-            return '<a href="%s">%s</a>' % (self._href.wiki(match), match)
+    def _wikihref_formatter(self, match, fullmatch):
+        return self._make_wiki_link(match, match)
 
     def _url_formatter(self, match, fullmatch):
-        return '<a class="ext-link" title="%s" href="%s">%s</a>' % (match, match, match)
+        return self._make_ext_link(match, match)
 
     def _fancylink_formatter(self, match, fullmatch):
         link = fullmatch.group('fancyurl')
-        name = fullmatch.group('linkname')
+        text = fullmatch.group('linkname')
+        return self._make_module_link(link, text)
 
-        module_link, t, missing, title = self._expand_module_link(link)
-        if module_link and missing:
-            return '<a class="missing" href="%s">%s?</a>' % (module_link, name)
-        elif module_link:
-            return '<a href="%s">%s</a>' % (module_link, name)
+    def _make_module_link(self, link, text):
+        sep = link.find(':')
+        if sep == -1:
+            return None, None
+        module = link[:sep]
+        args = link[sep + 1:]
+        make_link = getattr(self, '_make_' + module + '_link', None)
+        if make_link:
+            return make_link(args, text)
         else:
-            return '<a class="ext-link" title="%s" href="%s">%s</a>' % (link, link, name)
+            return self._make_ext_link(link, text)
+
+    def _make_ext_link(self, url, text):
+        return '<a class="ext-link" href="%s">%s</a>' % (url, text)
+
+    def _make_wiki_link(self, page, text):
+        if not self.env._wiki_pages.has_key(page):
+            return '<a class="missing wiki" href="%s" rel="nofollow">%s?</a>' \
+                   % (self._href.wiki(page), text)
+        else:
+            return '<a class="wiki" href="%s">%s</a>' \
+                   % (self._href.wiki(page), text)
+
+    def _make_changeset_link(self, rev, text):
+        cursor = self.db.cursor()
+        cursor.execute('SELECT message FROM revision WHERE rev=%s', (rev,))
+        row = cursor.fetchone()
+        if row:
+            return '<a class="changeset" title="%s" href="%s">%s</a>' \
+                   % (util.escape(util.shorten_line(row[0])),
+                      self._href.changeset(rev), text)
+        else:
+            return '<a class="missing changeset" href="%s" rel="nofollow">%s</a>' \
+                   % (self._href.changeset(rev), text)
+
+    def _make_ticket_link(self, id, text):
+        cursor = self.db.cursor()
+        cursor.execute("SELECT summary,status FROM ticket WHERE id=%s", (id,))
+        row = cursor.fetchone()
+        if row:
+            summary = util.escape(util.shorten_line(row[0]))
+            if row[1] in ('new', 'closed'):
+                return '<a class="%s ticket" href="%s" title="%s (%s)">%s</a>' \
+                       % (row[1], self._href.ticket(id), summary, row[1], text)
+            else:
+                return '<a class="ticket" href="%s" title="%s">%s</a>' \
+                       % (self._href.ticket(id), summary, text)
+        else:
+            return '<a class="missing ticket" href="%s" rel="nofollow">%s</a>' \
+                   % (self._href.ticket(id), text)
+    _make_bug_link = _make_ticket_link # alias
+
+    def _make_milestone_link(self, name, text):
+        return '<a class="milestone" href="%s">%s</a>' \
+               % (self._href.milestone(name), text)
+
+    def _make_report_link(self, id, text):
+        return '<a class="report" href="%s">%s</a>' \
+               % (self._href.report(id), text)
+
+    def _make_search_link(self, query, text):
+        return '<a class="search" href="%s">%s</a>' \
+               % (self._href.search(query), text)
+
+    def _make_source_link(self, path, text):
+        rev = None
+        match = re.search('([^#]+)#(.+)', path)
+        if match:
+            path = match.group(1)
+            rev = match.group(2)
+        if rev:
+            return '<a class="source" href="%s">%s</a>' \
+                   % (self._href.browser(path, rev), text)
+        else:
+            return '<a class="source" href="%s">%s</a>' \
+                   % (self._href.browser(path), text)
+    _make_browser_link = _make_source_link # alias
+    _make_repos_link = _make_source_link # alias
 
 
 class OneLinerFormatter(CommonFormatter):
@@ -268,9 +260,9 @@ class Formatter(CommonFormatter):
     _compiled_rules = re.compile('(?:' + string.join(_rules, '|') + ')')
     _processor_re = re.compile('#\!([a-zA-Z0-9/+-]+)')
     mime_type = ""
-    
+
     hdf = None
-    
+
     # RE patterns used by other patterna
     _helper_patterns = ('idepth', 'ldepth', 'hdepth', 'fancyurl',
                         'linkname', 'macroname', 'macroargs', 'inline',
