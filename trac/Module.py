@@ -20,6 +20,7 @@
 # Author: Jonas Borgström <jonas@edgewall.com>
 
 import os
+import time
 from util import *
 from Href import href
 from __init__ import __version__
@@ -71,6 +72,11 @@ class Module:
         self.cgi.hdf.setValue('trac.href.logout', href.logout())
         self.cgi.hdf.setValue('trac.href.homepage', 'http://trac.edgewall.com/')
         self.cgi.hdf.setValue('trac.version', __version__)
+        self.cgi.hdf.setValue('trac.time',
+                              time.strftime('%c', time.localtime()))
+        self.cgi.hdf.setValue('trac.time.gmt',
+                              time.strftime('%a, %d %b %Y %H:%M:%S GMT',
+                                            time.gmtime()))
 
         
         self.cgi.hdf.setValue('header_logo.link',
@@ -101,17 +107,21 @@ class Module:
     def display_hdf(self):
         def hdf_tree_walk(node,prefix=''):
             while node: 
-                nname = node.name()
+                np = (prefix and prefix+'.' or '') + (node.name() or '')
                 nvalue = node.value()
-                np = (prefix and prefix+'.' or '') + (nname or '')
-                if nvalue:
-                    result.append("%s = %s" % (np,nvalue))
+                if nvalue: result.append((np, nvalue))
                 hdf_tree_walk(node.child(), np)
                 node = node.next()
         print "Content-type: text/plain\r\n"
         result = []
         hdf_tree_walk (self.cgi.hdf)
         result.sort()
-        for r in result:
-            print r
+        for (name,value) in result:
+            print name,
+            if value.find('\n') == -1:
+                print '=',value
+            else:
+                print '<< EOM'
+                print value
+                print 'EOM'
         

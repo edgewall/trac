@@ -19,16 +19,21 @@
 #
 # Author: Jonas Borgström <jonas@edgewall.com>
 
+import os,os.path
 import time
 
 from util import *
 from Href import href
 from Module import Module
+from Wiki import wiki_to_html
 import perm
-
+import neo_cgi
+import neo_cs
 
 class Report (Module):
     template_name = 'report.cs'
+    template_rss_name = 'report_rss.cs'
+    template_csv_name = 'report_csv.cs'
 
     def get_info (self, id):
         cursor = self.db.cursor()
@@ -51,7 +56,7 @@ class Report (Module):
         info = cursor.fetchall()
         cols = cursor.rs.col_defs
         # Escape the values so that they are safe to have as html parameters
-        info = map(lambda row: map(lambda x: escape(x), row), info)
+#        info = map(lambda row: map(lambda x: escape(x), row), info)
         return [cols, info, title]
         
     def create_report(self, title, sql):
@@ -131,7 +136,7 @@ class Report (Module):
 
         self.cgi.hdf.setValue('report.mode', 'list')
         try:
-            [cols, rows, title] = self.get_info(id)
+            [self.cols, self.rows, title] = self.get_info(id)
         except Exception, e:
             self.cgi.hdf.setValue('report.message', 'report failed: %s' % e)
             return
@@ -142,46 +147,47 @@ class Report (Module):
 
         # Convert the header info to HDF-format
         idx = 0
-        for col in cols:
-            title=col[0]
+        for col in self.cols:
+            title=col[0].capitalize()
             if not title[0] == '_':
                 self.cgi.hdf.setValue('report.headers.%d.title' % idx, title)
             idx = idx + 1
 
         # Convert the rows and cells to HDF-format
         row_idx = 0
-        for row in rows:
+        for row in self.rows:
             col_idx = 0
             for cell in row:
-                column = cols[col_idx][0]
-                # Special columns begin with '_'
-                if column[0] == '_':
-                    prefix = 'report.items.%d.%s' % (row_idx, column)
-                    type='special'
-                    value = {'value':cell}
-                else:
-                    prefix = 'report.items.%d.%d' % (row_idx, col_idx)
-                    if column in ['ticket', '#']:
-                        type = 'ticket'
-                        value = {'ticket_href':href.ticket(cell)}
-                    elif column == 'report':
-                        type='report'
-                        value = {'report_href':href.report(cell), 'value':str(cell)}
-                    elif column in ['time', 'date', 'created', 'modified']:
-                        t=time.strftime('%x', time.localtime(int(cell)))
-                        type='time'
-                        value = {'value':t}
-                    elif column in ['summary', 'owner', 'severity',
-                                        'status', 'priority']:
-                            type=column
-                            value = {'value':cell}
-                    else:
-                        type='unknown'
-                        value = {'value':cell}
-                self.cgi.hdf.setValue(prefix + '.type', str(type))
-                self.cgi.hdf.setValue(prefix + '.value', str(cell))
+                column = self.cols[col_idx][0]
+                value = {}
+                # Special columns begin and end with '__'
+                if column[:2] == '__' and column[-2:] == '__':
+                    value['hidden'] = 1
+                elif column[0] == '_' and column[-1] == '_':
+                    value['fullrow'] = 1
+                    column = column[1:-1]
+                    self.cgi.hdf.setValue(prefix + '.breakrow', '1')
+                elif column[0] == '_':
+                    value['hidehtml'] = 1
+                    column = column[1:]
+                if column in ['ticket', '#']:
+                    value['ticket_href'] = href.ticket(cell)
+                elif column == 'description':
+                    value['parsed'] = wiki_to_html(cell)
+                elif column == 'report':
+                    value['report_href'] = href.report(cell)
+                elif column in ['time', 'date','changetime', 'created', 'modified']:
+                    t = time.localtime(int(cell))
+                    value['date'] = time.strftime('%x', t)
+                    value['time'] = time.strftime('%X', t)
+                    value['datetime'] = time.strftime('%c', t)
+                    value['gmt'] = time.strftime('%a, %d %b %Y %H:%M:%S GMT',
+                                                 time.gmtime(int(cell)))
+                prefix = 'report.items.%d.%s' % (row_idx, str(column))
+                self.cgi.hdf.setValue(prefix, escape(str(cell)))
                 for key in value.keys():
-                    self.cgi.hdf.setValue(prefix + '.' + key, value[key])
+                    self.cgi.hdf.setValue(prefix + '.' + key, str(value[key]))
+
                 col_idx += 1
             row_idx += 1
         
@@ -206,4 +212,21 @@ class Report (Module):
             self.render_report_editor(id, 'commit')
         else:
             self.render_report_list(id)
+
+
+    def display_rss(self):
+        cs = neo_cs.CS(self.cgi.hdf)
+        cs.parseFile(self.template_rss_name)
+        print "Content-type: text/xml\r\n"
+        print cs.render()
+
+    def display_csv(self,sep=','):
+        print "Content-type: text/plain\r\n"
+        titles = ''
+        print sep.join([c[0] for c in self.cols])
+        for row in self.rows:
+            print sep.join([str(c).replace(sep,"_").replace('\n',' ').replace('\r',' ') for c in row])
+
+    def display_tab(self):
+        self.display_csv('\t')
 

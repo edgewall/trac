@@ -16,6 +16,7 @@ tr {
  border-bottom: 1px solid #d7d7d7; 
  color: #000;
  text-align: left;
+ font-size: 90%;
  padding: 0 .2em;
 }
 .report-list td { 
@@ -24,8 +25,24 @@ tr {
  border: none;
  border-right: 1px dotted #d7d7d7; 
 }
-.report-tktref { display: block; padding: 0 .5em; }
-.report-tktref:hover { background: #ccc; color: #fff; }
+.report-fullrow { 
+ margin: 1px;
+ margin-top: 0;
+ background: #fff;
+ padding-bottom: 2.5em;
+ font-size: 90%;
+}
+td.ticket-col { font-weight: bold; }
+td.summary-col {}
+td.severity-col {}
+td.priority-col {}
+td.report-col {}
+td.component-col {}
+td.version-col {}
+td.status-col {}
+.report-fullrow p { margin: 0; padding: .25em 1em}
+a.report-tktref { display: block; padding: 0 .5em; border: none}
+a.report-tktref:hover { background: #b00; color: #fff; }
 .color1-odd  { background: #fdc; border-color: #ecb; color: #844; }
 .color1-even { background: #fed; border-color: #edc; color: #844; }
 .color2-odd  { background: #ffb; border-color: #eea; color: #880; }
@@ -39,4 +56,3 @@ tr {
 .color6-odd  { background: #f0f0f0; border-color: #ddd; color: #888; }
 .color6-even { background: #f7f7f7; border-color: #ddd; color: #888; }
 .color6-odd a, .color6-even a { color: #b66; }
-

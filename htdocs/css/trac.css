@@ -101,9 +101,9 @@ a.navbar-link:hover {
 }
 #page-content { clear: none; }
 
-#main { 
- margin-bottom: 2em;
-}
+#main {  margin-bottom: 2em; }
+
+#main-footer { margin-top: 2em; text-align: center; }
 
 /* Wiki */
 #wiki-history {
@@ -163,6 +163,3 @@ table.wiki td {
 
 #wiki-edit-page:hover { background: #ccb }
 
-/* Report */
-td.summary-col { border-left: 1px dotted #ccc; }
-td.report-col { width: 1px; }

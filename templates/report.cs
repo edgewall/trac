@@ -39,6 +39,15 @@
     </tr>
 <?cs /def ?>
 
+<?cs def:report_cell(class,contents) ?>
+  <?cs if $cell.fullrow ?>
+    </tr><tr class="<?cs var: row_class ?>" style="border: none; padding: 0">
+<td colspan="100" style="padding: 0;border: none"><div class="report-fullrow"><?cs var:$contents ?></div></td>
+  <?cs else ?>
+  <td <?cs if $cell.breakrow ?>colspan="100" <?cs /if ?>class="<?cs var:$class ?>"><?cs var:$contents ?></td>
+  <?cs /if ?>
+<?cs /def ?>
+
 <?cs set idx = #0 ?>
 <?cs set group = '' ?>
 
@@ -47,13 +56,13 @@
 
     <?cs each row = report.items ?>
 
-      <?cs if group != row._group.value || idx == #0 ?>
-        <?cs set group = row._group.value ?>
+      <?cs if group != row.__group__ || idx == #0 ?>
+        <?cs set group = row.__group__ ?>
         <?cs call:report_hdr(group) ?>
       <?cs /if ?>
     
-      <?cs if row._color.value ?>
-        <?cs set rstem='color'+$row._color.value ?>
+      <?cs if row.__color__ ?>
+        <?cs set rstem='color'+$row.__color__ ?>
       <?cs else ?>
        <?cs set rstem='row' ?>
       <?cs /if ?>
@@ -64,44 +73,54 @@
       <?cs /if ?>
 
       <?cs set row_style='' ?>
-      <?cs if row._bgcolor.value ?>
-        <?cs set row_style='background: ' + row._bgcolor.value + ';' ?>
+      <?cs if row.__bgcolor__ ?>
+        <?cs set row_style='background: ' + row.__bgcolor__ + ';' ?>
       <?cs /if ?>
-      <?cs if row._fgcolor.value ?>
-        <?cs set row_style=$row_style + 'color: ' + row._fgcolor.value + ';' ?>
+      <?cs if row.__fgcolor__ ?>
+        <?cs set row_style=$row_style + 'color: ' + row.__fgcolor__ + ';' ?>
       <?cs /if ?>
-      <?cs if row._style.value ?>
-        <?cs set row_style=$row_style + row._style.value + ';' ?>
+      <?cs if row.__style__ ?>
+        <?cs set row_style=$row_style + row.__style__ + ';' ?>
       <?cs /if ?>
     
       <tr class="<?cs var: row_class ?>" style="<?cs var: row_style ?>">
 	<?cs set idx = idx + #1 ?>
       <?cs each cell = row ?>
-        <?cs if cell.type == "special" ?>    
-        <?cs elif cell.type == "ticket" ?>
-          <td class="ticket-column"><a class="report-tktref" href="<?cs var:cell.ticket_href ?>">#<?cs var: cell.value ?></a></td>
-        <?cs elif cell.type == "report" ?>
-          <td class="report-col"><a href="<?cs var:cell.report_href ?>">{<?cs var: cell.value ?>}</a></td>
-        <?cs elif cell.type == "time" ?>
-          <td class="date-column"><?cs var: cell.value ?></td>
-        <?cs elif cell.type == "summary" ?>
-          <td class="summary-col"><?cs var: cell.value ?></td>
-        <?cs elif cell.type == "owner" ?>
-          <td class="owner-column"><?cs var: cell.value ?></td>
-        <?cs elif cell.type == "severity" ?>
-          <td class="severity-column"><?cs var: cell.value ?></td>
-        <?cs elif cell.type == "priority" ?>
-          <td class="priority-column"><?cs var: cell.value ?></td>
-        <?cs elif cell.type == "status" ?>
-          <td class="status-column"><?cs var: cell.value ?></td>
+        <?cs if cell.hidden || cell.hidehtml ?>    
+        <?cs elif name(cell) == "ticket" ?>
+          <?cs call:report_cell('ticket-col', 
+            	                '<a class="report-tktref" href="'+
+                                $cell.ticket_href+'">#'+$cell+'</a>') ?>
+        <?cs elif name(cell) == "report" ?>
+          <?cs call:report_cell('report-col', 
+               '<a href="'+$cell.report_href+'">{'+$cell+'}</a>') ?>
+        <?cs elif name(cell) == "time" ?>
+          <?cs call:report_cell('date-column', $cell.date) ?>
+        <?cs elif name(cell) == "date" || name(cell) == "created" || name(cell) == "modified" ?>
+          <?cs call:report_cell('date-column', $cell.date) ?>
+        <?cs elif name(cell) == "datetime"  ?>
+          <?cs call:report_cell('date-column', $cell.datetime) ?>
+        <?cs elif name(cell) == "description" ?>
+          <?cs call:report_cell('', $cell.parsed) ?>
         <?cs else ?>
-          <td><?cs var: cell.value ?></td>
+          <?cs call:report_cell(name(cell)+'-col', $cell) ?>
         <?cs /if ?>
-
       <?cs /each ?>
       </tr>
     <?cs /each ?>
   </table>
+
+<?cs if report.id > #0 ?>
+ <div id="main-footer">
+  Download report in other data formats: <br />
+  <a class="noline" href="?format=rss"><img src="<?cs var:htdocs_location
+?>xml.png" alt="RSS Feed" style="vertical-align: bottom"/></a>&nbsp;
+  <a href="?format=rss">(RSS 2.0)</a>&nbsp;|
+  <a href="?format=csv">Comma-delimited</a>&nbsp;|
+  <a href="?format=tab">Tab-delimited</a>
+  <br />
+ </div>
+<?cs /if ?>
 
 <?cs elif report.mode == "editor" ?>
 
@@ -128,5 +147,7 @@
 <br />
   </div>
  </div>
+
+
 </div>
 <?cs include:"footer.cs"?>
