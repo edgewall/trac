@@ -359,7 +359,7 @@ class Page:
         out.write ('<div class="wikipage">')
         #format_wiki(self.text, out)
         Formatter().format(self.text, out)
-        out.write ('</div><br>')
+        out.write ('</div><br />')
         if edit_button and perm.has_permission (perm.WIKI_MODIFY):
             out.write ('<form action="%s" method="POST">' %
                        hdf.getValue('cgi_location', ''))

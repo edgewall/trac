@@ -8,7 +8,6 @@
   <?cs /if ?>
 <?cs /def ?>
 
-
 <html>
   <head>
     <title>Edgewall Trac | <?cs var:title ?></title>
@@ -16,26 +15,30 @@
   </head>
 <body>
 <div id="header">
- <a id="hdrlogo" href="<?cs var:header_logo.link ?>"><img src="<?cs var:header_logo.src ?>" 
+  <a id="hdrlogo" href="<?cs var:header_logo.link ?>"><img src="<?cs var:header_logo.src ?>" 
       width="<?cs var:header_logo.width ?>" 
       height="<?cs var:header_logo.height ?>" 
       alt="<?cs var:header_logo.alt ?>" /></a>
-<hr />
+<!--  <a id="trac-logo" href="http://trac.edgewall.com/"><img 
+     src="<?cs var:htdocs_location?>/trac_logo_mini.png" 
+      width="128" height="25" border="0" alt="- Trac -" /></a>
+-->
+  <hr />
   <div id="header-links">
-      <?cs if $trac.authname == "anonymous" ?>
-	 <a href="<?cs var:trac.href.login ?>" 
-            class="navbar-link-right">Login</a> | 
-      <?cs else ?>
-	logged in as <?cs var:trac.authname ?>&nbsp;
-	 <a href="<?cs var:trac.href.logout ?>" 
-            class="navbar-link-right"> logout </a>
-      <?cs /if ?>
-      <a href="<?cs var:trac.href.wiki ?>TracGuide" 
-	 class="navbar-link-right"> Help/Guide </a> | 
-      <a href="<?cs var:trac.href.about ?>" 
-	 class="navbar-link-right"> About Trac </a>
+    <?cs if $trac.authname == "anonymous" ?>
+      <a href="<?cs var:trac.href.login ?>" 
+         class="navbar-link-right">Login</a> | 
+    <?cs else ?> 
+      logged in as <?cs var:trac.authname ?> | 
+      <a href="<?cs var:trac.href.logout ?>" 
+         class="navbar-link-right"> Logout </a> | 
+    <?cs /if ?>
+    <a href="<?cs var:trac.href.wiki ?>TracGuide" 
+       class="navbar-link-right"> Help/Guide </a> | 
+    <a href="<?cs var:trac.href.about ?>" 
+       class="navbar-link-right"> About Trac </a>
   </div>
-    <div id="navbar">
+  <div id="navbar">
     <div id="navbar-links">
       <?cs call:navlink("Wiki", $trac.href.wiki, "wiki", 
                         "WIKI_VIEW") ?>
@@ -49,9 +52,8 @@
                         "SEARCH_VIEW") ?>
       <?cs call:navlink("New Ticket", $trac.href.newticket, "search", 
                         "TICKET_CREATE") ?>
+    </div>
+    <div style="clear: both"></div>
   </div>
-  <div style="clear: both" />
- </div>
 </div>
-
 <div id="page-content">

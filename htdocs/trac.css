@@ -1,73 +1,121 @@
 body {
  background: #fff;
- margin: .5em;
+ margin: 10px;
  padding: 0;
  color: #000;
  font: normal 100% 'Bitstream Vera Sans', Verdana, Helvetica, Arial, sans-serif;
 }
-
 hr,.hide { display: none; }
-
-a,a.noline {
+a:link, a:visited, a.noline {
  text-decoration: none;
  color: #b00;
  border-bottom: 1px dotted #bbb;
 }
-
-a:hover { color: #999; }
-
+a:hover { 
+ color: #b00; 
+ background: #f7f7f7;
+}
 a.noline { border-bottom: none; }
-
 address { font-style: normal; }
+img {}
 
-img { b}
+/* Header */
 
+#header { 
+}
+#hdrlogo { border: none; }
+#hdrlogo img { border: none }
 #header-links, #subheader-links, #navbar { 
  font: normal 11px Verdana, 'Bitstream Vera Sans', Helvetica, Arial, sans-serif;
  color: #000;
 }
-
 #header-links, #subheader-links { 
  padding: 0 1em;
  text-align: right; 
 }
-
+#subheader-links a,#header-links a { 
+  padding: 0 .5em;
+}
 
 /* Navbar  */ 
+
+#trac-logo {
+ display: block;
+ border: none;
+ margin-top: -2px;
+ background: #fff;
+}
+
 #navbar { 
  border: 1px solid #999;
  background: #eee;
+ margin: .15em 0;
+ height: 17px;
 }
-
-#navbar-links { float: right;}
-
-.navbar-link,.navbar-link-active,.navbar-link-active:hover { 
+#navbar-links { float: right }
+a.navbar-link, a.navbar-link-active,a.navbar-link-active:hover { 
  display: block;
  float: left;
  border-left: 1px solid #999;
  border-bottom: none;
  margin: 0;
+ height: 15px;
  padding: .1em 1.5em;
  color: #000;
  background: url(/trac_common/dots.gif) top left no-repeat;
-
 }
-
-.navbar-link-active { 
+a.navbar-link-active { 
  background: #ccc;
  font-weight: bold;
 }
-
-.navbar-link:hover { 
+a.navbar-link:hover { 
  background-color: #ccb;
 }
 
+#page-content { 
+ clear: both;
+}
+
+/* Wiki */
+
+#wiki-history { 
+ visibility: hidden;
+ background: #f7f7f0;
+ border: 1px solid #999;
+ font-size: 75%;
+ position: absolute;
+ display: inline;
+ margin: 10px;
+ right:10px;
+ border-collapse: separate;
+ border-spacing: 0;
+ padding: .5em;
+}
+a.wiki-history-link { 
+ display: block;
+ border: none;
+}
+a.wiki-history-link:hover,tr.wiki-history-row:hover {  
+ background: #ccb;
+ color: #b00;
+}
+a.wiki-missing-page:link
+{
+  color: #998;
+  background: #fafaf0;
+}
+a.wiki-missing-page:hover { 
+ color: #000;
+}
 
 
-#hdrlogo { border: none; }
+#wiki-body { 
+ line-height: 140%;
+ margin: 1em;
+}
 
-#hdrlogo img { border: none }
 
+/* Footer */
 
 #footer { 
  font-size: 75%;
@@ -75,10 +123,8 @@ img { b}
  border-top: 1px solid #d7d7d7;
  padding: .5em;
 }
-
 #footer-left { 
  float: left; 
  width: 50%;
 }
-
 #footer-right { text-align: right; }
