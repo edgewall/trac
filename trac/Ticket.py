@@ -194,7 +194,8 @@ class Ticket (Module):
         cursor = self.db.cursor()
 
         # The owner field defaults to the component owner
-        if not data.has_key('owner') or data['owner'] == '':
+        if data.has_key('component') and \
+               (not data.has_key('owner') or data['owner'] == ''):
             # Assign it to the default owner
             cursor.execute('SELECT owner FROM component '
                            'WHERE name=%s', data['component'])
@@ -210,12 +211,8 @@ class Ticket (Module):
         self.db.commit()
 
         # Notify
-        try:
-            from Notify import TicketNotifyEmail
-            tn = TicketNotifyEmail(self.env)
-            tn.notify(id, newticket=1)
-        except ImportError:
-            self.env.log.warning("Email notifications require Python >= 2.2")
+        tn = TicketNotifyEmail(self.env)
+        tn.notify(id, newticket=1)
         
         # redirect to the Ticket module to get a GET request
         self.req.redirect(self.env.href.ticket(id))
