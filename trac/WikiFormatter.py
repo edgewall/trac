@@ -250,8 +250,9 @@ class Formatter(CommonFormatter):
               r"""(?P<table_cell>\|\|)"""]
 
     _compiled_rules = re.compile('(?:' + string.join(_rules, '|') + ')')
-    _processor_re = re.compile('#\!([a-zA-Z]+)')
-
+    _processor_re = re.compile('#\!([a-zA-Z0-9/+-]+)')
+    mime_type = ""
+    
 
     # RE patterns used by other patterna
     _helper_patterns = ('idepth', 'ldepth', 'hdepth', 'fancyurl',
@@ -286,7 +287,6 @@ class Formatter(CommonFormatter):
         return env.mimeview.display(text, 'text/xml')
     def verilog_processor(hdf, text, env):
         return env.mimeview.display(text, 'text/x-verilog')
-
     def html_processor(hdf, text, env):
         if Formatter._htmlproc_disallow_rule.search(text):
             err = """\
@@ -297,6 +297,8 @@ class Formatter(CommonFormatter):
             env.log.error(err)
             return err
         return text
+    def mime_processor(self, hdf, text, env):
+        return env.mimeview.display(text, self.mime_type)
 
     builtin_processors = { 'html': html_processor,
                            'asp': asp_processor,
@@ -491,9 +493,15 @@ class Formatter(CommonFormatter):
                     try:
                         self.code_processor = self.load_macro(name)
                     except Exception, e:
-                        self.code_text += line + os.linesep 
-                        self.code_processor = Formatter.builtin_processors['default']
-                        self.out.write('<div class="error">Failed to load processor macro %s: %s</div>' % (name, e))
+                        mimeviewer, exists = self.env.mimeview.get_viewer(name)
+                        print mimeviewer, exists, name
+                        if exists != -1:
+                            self.mime_type = name
+                            self.code_processor = self.mime_processor
+                        else:
+                            self.code_text += line + os.linesep 
+                            self.code_processor = Formatter.builtin_processors['default']
+                            self.out.write('<div class="error">Failed to load processor macro %s: %s t %s</div>' % (name, line, e))
             else:
                 self.code_text += line + os.linesep 
                 self.code_processor = Formatter.builtin_processors['default']

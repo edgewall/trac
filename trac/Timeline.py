@@ -75,9 +75,9 @@ class Timeline (Module):
                      "   INNER JOIN ticket_change t2 ON t1.ticket = t2.ticket"
                      "     AND t1.time = t2.time"
                      "   LEFT OUTER JOIN ticket_change t3 ON t1.time = t3.time"
-                     "     AND t1.ticket = t3.ticket"
+                     "     AND t1.ticket = t3.ticket AND t3.field = 'comment'"
                      " WHERE t1.field = 'status' AND t1.newvalue = 'closed'"
-                     "   AND t2.field = 'resolution' AND t3.field = 'comment'"
+                     "   AND t2.field = 'resolution'"
                      "   AND t1.time >= %s AND t1.time <= %s" % (start,stop))
         if wiki:
             q.append("SELECT time, -1 AS idata, name AS tdata, 5 AS type, "
