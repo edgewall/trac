@@ -225,5 +225,7 @@ class QueryModule(Module):
         if desc:
             sql += " DESC"
 
+        self.log.debug("SQL Query: %s" % sql)
+
         results = self.get_results(sql)
         util.add_to_hdf(results, self.req.hdf, 'query.results')
