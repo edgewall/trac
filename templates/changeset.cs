@@ -1,50 +1,73 @@
 <?cs include "header.cs"?>
+<div id="page-content">
+ <div id="subheader-links">
+ </div>
+ <div id="main">
+  <div id="main-content">
 
-<h3>Change set <?cs var:changeset.revision ?></h3>
+<h1 id="chg-hdr">Change set <?cs var:changeset.revision ?></h1>
 
-<table>
-<tr>
-<td align="right">revision:</td><td><?cs var:changeset.revision ?></td>
-</tr>
-<tr>
-<td align="right">time:</td><td><?cs var:changeset.time ?></td>
-</tr>
-<tr>
-<td align="right">author:</td><td><?cs var:changeset.author ?></td>
-</tr>
-<tr>
-<td align="right">message:</td><td><?cs var:changeset.message ?></td>
-</tr>
-<tr>
-<td align="right" valign="top">files:</td>
-<td>
+<div class="chg-preface">
+  <div>
+    <b class="chg-name">Revision:</b>
+    <span class="chg-val"><?cs var:changeset.revision ?></span>
+  </div>
+  <div>
+    <b class="chg-name">Timestamp:</b>
+    <span class="chg-val"><?cs var:changeset.time ?></span>
+  </div>
+  <div>
+    <b class="chg-name">Author:</b>
+    <span class="chg-val"><?cs var:changeset.author ?></span>
+  </div>
+  <div>
+    <b class="chg-name">Message:</b>
+    <div class="chg-val"><?cs var:changeset.message ?></div>
+    <b class="chg-name">Files:</b>
+    <ul class="chg-list">
+      <?cs each:item = changeset.changes ?>
+        <li>
+          <?cs if item.change == "A" ?>
+	    <span  class="chg-file-add"> </span>
+            <a href="<?cs var:item.log_href?>"><?cs var:item.name ?></a>
+            <span class="chg-file-comment">(added)</span>
+          <?cs elif item.change == "M" ?>
+	    <span  class="chg-file-mod"> </span>
+            <a href="<?cs var:item.log_href?>"><?cs var:item.name ?></a>
+            <span class="chg-file-comment">(modified)</span>
+          <?cs elif item.change == "D" ?>
+	    <span  class="chg-file-rem"> </span>
+            <?cs var:item.name ?>
+  	  <span class="chg-file-comment">(deleted)</span>
+          <?cs /if ?>
+        </li>
+      <?cs /each ?>
+    </ul>
+  </div>
+</div> 
 
-<table>
+<div class="hide">
+  <hr />
+  <h2>-=&gt; Note: Diff viewing requires CSS2 &lt;=-</h2>
+  <p>
+    Output below might not be useful.
+  </p>
+  <hr />
+</div>    
+    
+<div id="chg-diff">
+  <div id="chg-legend">
+    <h3>Legend</h3>
+    <span class="diff-legend-add"> </span> Added <br />
+    <span class="diff-legend-rem"> </span> Removed <br />
+    <span class="diff-legend-mod"> </span> Modified <br />
+    <span class="diff-legend-unmod"> </span> Unmodified <br />
+  </div>
 
-  <?cs each:item = changeset.changes ?>
-    <tr>
-      <?cs if item.change == "A" ?>
-        <td><a href="<?cs var:item.log_href?>"><?cs var:item.name ?></a></td>
-        <td>added</td>
-      <?cs elif item.change == "M" ?>
-        <td><a href="<?cs var:item.log_href?>"><?cs var:item.name ?></a></td>
-        <td>modified</td>
-      <?cs elif item.change == "D" ?>
-        <td><?cs var:item.name ?></td><td>deleted</td>
-      <?cs /if ?>
-    </tr>
-  <?cs /each ?>
+  <?cs var:changeset.diff_output ?>
+</div>
 
-</table>
-
-</td>
-</tr>
-</table>
-
-<h3>Legend</h3>
-<table class="diff-legend">
-<tr><td><div class="diff-legend-added">&nbsp;</div></td><td>&nbsp;Added</td></tr>
-<tr><td><div class="diff-legend-removed">&nbsp;</div></td><td>&nbsp;Removed</td></tr>
-<tr><td><div class="diff-legend-modified">&nbsp;</div></td><td>&nbsp;Modified</td></tr>
-<tr><td><div class="diff-legend-unmodified">&nbsp;</div></td><td>&nbsp;Unmodified</td></tr>
-</table>
+ </div>
+</div>
+</div>
+<?cs include:"footer.cs"?>

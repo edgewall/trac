@@ -34,13 +34,13 @@
       <?cs if $browser.path != "/" ?>
         <tr class="br-row-even">
           <td class="br-icon-col">
-            <a href="<?cs var:browser.parent_href ?>">
+            <a class="block-link" href="<?cs var:browser.parent_href ?>">
               <img src="<?cs var:htdocs_location ?>/folder.png" 
                     width="16" height="16" alt="[parent]" />
             </a>
           </td>
           <td class="br-name-col">
-            <a href="<?cs var:browser.parent_href ?>">..</a>
+            <a class="block-link"  href="<?cs var:browser.parent_href ?>">..</a>
           </td>
           <td class="br-size-col">&nbsp;</td>
           <td class="br-rev-col">&nbsp;</td>
@@ -56,23 +56,23 @@
         <?cs /if ?>
         <?cs if item.is_dir == #1 ?>
           <td class="br-icon-col">
-            <a href="<?cs var:item.browser_href ?>">
+            <a class="block-link"  href="<?cs var:item.browser_href ?>">
               <img src="<?cs var:htdocs_location ?>/folder.png"
                     width="16" height="16" alt="[dir]" />
             </a>
           </td>
           <td class="br-name-col">
-            <a href="<?cs var:item.browser_href ?>"><?cs var:item.name ?></a>
+            <a class="block-link"  href="<?cs var:item.browser_href ?>"><?cs var:item.name ?></a>
           </td>
         <?cs else ?>
           <td class="br-icon-col">
-            <a href="<?cs var:item.log_href ?>">
+            <a class="block-link"  href="<?cs var:item.log_href ?>">
               <img src="<?cs var:htdocs_location ?>/file.png"
                     width="16" height="16" alt="[file]" />
             </a>
           </td>
           <td class="br-name-col">
-            <a href="<?cs var:item.log_href ?>"><?cs var:item.name ?></a>
+            <a class="block-link"  href="<?cs var:item.log_href ?>"><?cs var:item.name ?></a>
           </td>
          <?cs /if ?>
          <td class="br-size-col">
@@ -82,7 +82,7 @@
            <?cs if item.is_dir == #1 ?>
              <?cs var:item.created_rev ?>
            <?cs else ?>
-             <a href="<?cs var:item.rev_href ?>">
+             <a class="block-link" href="<?cs var:item.rev_href ?>">
 	       <?cs var:item.created_rev ?>
 	     </a>
            <?cs /if ?>

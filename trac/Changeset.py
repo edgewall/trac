@@ -27,6 +27,8 @@ import db
 import perm
 from xml.sax.saxutils import escape
 
+import sys
+from cStringIO import StringIO
 import re
 import string
 from svn import fs, util, delta, repos
@@ -41,7 +43,6 @@ class DiffColorizer:
         self.type  = None
         self.p_block = []
         self.p_type  = None
-
         print '<table class="diff-table" cellspacing="0">'
 
     def writeadd (self, text):
@@ -65,14 +66,14 @@ class DiffColorizer:
         
     def print_block (self):
         if self.p_type == '-' and self.type == '+':
-            self.writemodified(string.join(self.p_block, '<br>'),
-                              string.join(self.block, '<br>'))
+            self.writemodified(string.join(self.p_block, '<br />'),
+                              string.join(self.block, '<br />'))
         elif self.type == '+':
-            self.writeadd(string.join(self.block, '<br>'))
+            self.writeadd(string.join(self.block, '<br />'))
         elif self.type == '-':
-            self.writeremove(string.join(self.block, '<br>'))
+            self.writeremove(string.join(self.block, '<br />'))
         elif self.type == ' ':
-            self.writeunmodified(string.join(self.block, '<br>'))
+            self.writeunmodified(string.join(self.block, '<br />'))
         self.block = self.p_block = []
     
     def writeline(self, text):
@@ -114,6 +115,7 @@ class DiffEditor (delta.Editor):
     def __init__(self, old_root, new_root):
         self.old_root = old_root
         self.new_root = new_root
+        self._drender = ''
 
     def print_diff (self, old_path, new_path, pool):
         old_root = new_root = None
@@ -127,7 +129,8 @@ class DiffEditor (delta.Editor):
                              new_root, new_path, pool, ['-u'])
         differ.get_files()
         pobj = differ.get_pipe()
-        print '<h3>%s</h3>' % name
+        print '<div class="chg-diff-file">'
+        print '<h3 class="chg-diff-hdr">%s</h3>' % name
         filter = DiffColorizer()
         while 1:
             line = pobj.readline()
@@ -135,7 +138,7 @@ class DiffEditor (delta.Editor):
                 break
             filter.writeline(escape(line))
         filter.close()
-
+        print '</div>'
 
     def add_file(self, path, parent_baton,
                  copyfrom_path, copyfrom_revision, file_pool):
@@ -155,7 +158,10 @@ def render_diffs(fs_ptr, rev, pool):
     """
     old_root = fs.revision_root(fs_ptr, rev - 1, pool)
     new_root = fs.revision_root(fs_ptr, rev, pool)
-    
+
+    output = StringIO()
+    s_o = sys.stdout
+    sys.stdout = output
     editor = DiffEditor(old_root, new_root)
     e_ptr, e_baton = delta.make_editor(editor, pool)
 
@@ -163,13 +169,18 @@ def render_diffs(fs_ptr, rev, pool):
         repos.svn_repos_dir_delta(old_root, '', '',
                                   new_root, '', e_ptr, e_baton, None, None,
                               0, 1, 0, 1, pool)
-    except TypeError:
+    except RuntimeError:
+        repos.svn_repos_dir_delta(old_root, '', None,
+                                  new_root, '', e_ptr, e_baton, None, None,
+                              0, 1, 0, 1, pool)
+    except (RuntimeError, TypeError):
         # Subversion frequently changes the API
         # dir_delta on subversion < 0.33 only takes 12 arguments
         repos.svn_repos_dir_delta(old_root, '', None,
                                   new_root, '', e_ptr, e_baton,
                               0, 1, 0, 1, pool)
-        
+    sys.stdout = s_o
+    return output.getvalue()
 
 class Changeset (Module):
     template_name = 'changeset.cs'
@@ -221,10 +232,7 @@ class Changeset (Module):
         add_dictlist_to_hdf(change_info, self.cgi.hdf, 'changeset.changes')
         
     def apply_template (self):
+        difftext = render_diffs(self.fs_ptr, int(self.rev), self.pool)
+        self.cgi.hdf.setValue('changeset.diff_output', difftext)
         Module.apply_template(self)
-        render_diffs(self.fs_ptr, int(self.rev), self.pool)
-        import neo_cs
-        cs = neo_cs.CS(self.cgi.hdf)
-        cs.parseFile('../templates/footer.cs')
-        sys.stdout.write(cs.render())
 

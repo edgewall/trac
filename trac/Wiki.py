@@ -414,6 +414,9 @@ class Wiki(Module):
 	    if not row:
 		break
 		   #        for row in cursor:
+            elif i==0:
+                self.cgi.hdf.setValue('wiki.history', '1')
+
             t = int(row[1])
             if t:
                 time_str = time.strftime('%F', time.localtime(t))

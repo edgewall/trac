@@ -8,7 +8,7 @@
   <a href="javascript:view_history()">Show/Hide History</a>
 </div>
 <hr />
-  <?cs if $wiki.history.0 == '0' ?>
+  <?cs if $wiki.history ?>
     <table id="wiki-history">
       <tr>
         <th>Version</th>
