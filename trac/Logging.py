@@ -1,7 +1,7 @@
 # -*- coding: iso8859-1 -*-
 #
-# Copyright (C) 2003, 2004 Edgewall Software
-# Copyright (C) 2003, 2004 Daniel Lundin <daniel@edgewall.com>
+# Copyright (C) 2003, 2004, 2005 Edgewall Software
+# Copyright (C) 2003, 2004, 2005 Daniel Lundin <daniel@edgewall.com>
 #
 # Trac is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License as
@@ -63,15 +63,14 @@ def logger_factory(logtype='syslog', logfile=None, level='WARNING',
 
     # Logging only supported in Python >= 2.3
     # Disable logging by using a generic 'black hole' class
-    except (ImportError, ValueError): 
+    except (ImportError, ValueError):
         class DummyLogger:
             """The world's most fake logger."""
-            def __call__(self, *args):
-                self.dummy()
-            def __getattr__(self, name):
-                return self.__dummy
-            def __dummy(self, *args):
+            def __noop(self, *args):
                 pass
+            debug = info = warning = error = critical = log = exception = __noop
+            warn = fatal = __noop
+            getEffectiveLevel = lambda self: 0
+            isEnabledFor = lambda self, level: 0
         logger = DummyLogger()
     return logger
-
