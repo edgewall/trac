@@ -203,7 +203,7 @@ class File(FileCommon):
         for part in list[:-1]:
             i = i + 1
             if part == '':
-                break
+                continue
             path = path + part + '/'
             self.req.hdf.setValue('file.path.%d' % i, part)
             if rev_specified:

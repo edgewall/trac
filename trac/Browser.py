@@ -116,7 +116,7 @@ class Browser(Module):
         for part in list:
             i = i + 1
             if part == '':
-                break
+                continue
             path = path + part + '/'
             self.req.hdf.setValue('browser.path.%d' % i, part)
             if rev_specified:

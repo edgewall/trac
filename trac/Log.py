@@ -32,28 +32,46 @@ class Log (Module):
     template_name = 'log.cs'
     template_rss_name = 'log_rss.cs'
 
-    def log_receiver (self, baton, rev, author, date, log, pool):
+    def log_receiver (self, changed_paths, rev, author, date, log, pool):
+        # Store the copyfrom-information so we can follow the file/dir
+        # through tags/banches/copy/renames.
+        for newpath in changed_paths.keys():
+            change = changed_paths[newpath]
+            if change.copyfrom_path:
+                self.branch_info[rev] = (change.copyfrom_path, newpath)
+
         shortlog = shorten_line(log)
         t = util.svn_time_from_cstring(date, pool) / 1000000
         gmt = time.gmtime(t)
         item = {
-            'rev'    : rev,
-            'author' : author or 'None',
-            'date'   : svn_date_to_string (date, pool),
-            'gmt'    : time.strftime('%a, %d %b %Y %H:%M:%S GMT', gmt),
-            'log.raw'    : escape(log),
-            'log'    : wiki_to_oneliner(log, self.req.hdf, self.env),
+            'rev'      : rev,
+            'author'   : author or 'None',
+            'date'     : svn_date_to_string (date, pool),
+            'gmt'      : time.strftime('%a, %d %b %Y %H:%M:%S GMT', gmt),
+            'log.raw'  : escape(log),
+            'log'      : wiki_to_oneliner(log, self.req.hdf, self.env),
             'shortlog' : escape(shortlog),
-            'file_href': self.env.href.file(self.path, rev),
+            'file_href': self.env.href.browser(self.path, rev),
             'changeset_href': self.env.href.changeset(rev)
             }
         self.log_info.insert (0, item)
 
     def get_info (self, path, rev):
         self.log_info = []
+        self.branch_info = {}
         repos.svn_repos_get_logs (self.repos, [path],
-                                   0, rev, 0, 0, self.log_receiver,
+                                   0, rev, 1, 0, self.log_receiver,
                                    self.pool)
+        # Loop through all revisions and update the path
+        # after each tag/branch/copy/rename.
+        path = self.path
+        for item in self.log_info:
+            item['file_href'] = self.env.href.browser(path, item['rev'])
+            if self.branch_info.has_key(item['rev']):
+                info = self.branch_info[item['rev']]
+                if path[:len(info[1])] == info[1]:
+                    rel_path = path[len(info[1]):]
+                    path = info[0]+rel_path
         return self.log_info
 
     def generate_path_links(self, rev, rev_specified):
@@ -71,7 +89,7 @@ class Log (Module):
         for part in list[:-1]:
             i = i + 1
             if part == '':
-                break
+                continue
             path = path + part + '/'
             self.req.hdf.setValue('log.path.%d' % i, part)
             if rev_specified:

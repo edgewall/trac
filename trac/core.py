@@ -94,7 +94,7 @@ def parse_path_info(args, path_info):
         if match.group(2):
             set_if_missing(args, 'id', match.group(2))
         return args
-    match = re.search('^/(browser|log|file)(?:/?(.*))?', path_info)
+    match = re.search('^/(browser|log|file)(?:(/.*))?', path_info)
     if match:
         set_if_missing(args, 'mode', match.group(1))
         if match.group(2):
