@@ -355,22 +355,22 @@ class TracAdmin(cmd.Cmd):
 
     ## Permission
     _help_permission = [('permission list', 'List permission rules'),
-                       ('permission add <user> <action>', 'Add a new permission rule'),
-                       ('permission remove <user> <action>', 'Remove permission rule')]
+                       ('permission add <user> <action> [action] [...]', 'Add a new permission rule'),
+                       ('permission remove <user> <action> [action] [...]', 'Remove permission rule')]
 
     def do_permission(self, line):
         arg = self.arg_tokenize(line)
         try:
             if arg[0]  == 'list':
                 self._do_permission_list()
-            elif arg[0] == 'add' and len(arg)==3:
+            elif arg[0] == 'add' and len(arg) >= 3:
                 user = arg[1]
-                action = arg[2]
-                self._do_permission_add(user, action)
-            elif arg[0] == 'remove'  and len(arg)==3:
+                for action in arg[2:]:
+                    self._do_permission_add(user, action)
+            elif arg[0] == 'remove'  and len(arg) >= 3:
                 user = arg[1]
-                action = arg[2]
-                self._do_permission_remove(user, action)
+                for action in arg[2:]:
+                    self._do_permission_remove(user, action)
             else:    
                 self.do_help ('permission')
         except Exception, e:
