@@ -117,7 +117,7 @@ class WikiPage:
 class WikiModule(Module):
     template_name = 'wiki.cs'
 
-    def generate_history(self, pagename):
+    def generate_history(self, req, pagename):
         """
         Extract the complete history for a given page and stores it in the hdf.
         This information is used to present a changelog/history for a given page
@@ -130,28 +130,31 @@ class WikiModule(Module):
             row = cursor.fetchone()
             if not row: break
             elif i == 0:
-                self.req.hdf.setValue('wiki.history', '1')
+                req.hdf.setValue('wiki.history', '1')
 
             time_str = time.strftime('%x %X', time.localtime(int(row[1])))
 
             n = 'wiki.history.%d' % i
-            self.req.hdf.setValue(n, str(i))
-            self.req.hdf.setValue(n+'.url',
-                                  escape(self.env.href.wiki(pagename, str(row[0]))))
-            self.req.hdf.setValue(n+'.diff_url',
-                                  escape(self.env.href.wiki(pagename, str(row[0]), 1)))
-            self.req.hdf.setValue(n+'.version', str(row[0]))
-            self.req.hdf.setValue(n+'.time', time_str)
-            self.req.hdf.setValue(n+'.author', str(row[2]))
-            self.req.hdf.setValue(n+'.comment', wiki_to_oneliner(row[3] or '', self.req.hdf, self.env, self.db))
-            self.req.hdf.setValue(n+'.ipaddr', str(row[4]))
+            req.hdf.setValue(n, str(i))
+            req.hdf.setValue(n+'.url',
+                             escape(self.env.href.wiki(pagename, str(row[0]))))
+            req.hdf.setValue(n+'.diff_url',
+                             escape(self.env.href.wiki(pagename, str(row[0]), 1)))
+            req.hdf.setValue(n+'.version', str(row[0]))
+            req.hdf.setValue(n+'.time', time_str)
+            req.hdf.setValue(n+'.author', str(row[2]))
+            req.hdf.setValue(n+'.comment', wiki_to_oneliner(row[3] or '',
+                                                            req.hdf, self.env,
+                                                            self.db))
+            req.hdf.setValue(n+'.ipaddr', str(row[4]))
             i = i + 1
 
-    def generate_diff(self, pagename, version):
+    def generate_diff(self, req, pagename, version):
+        # Store the diff style in the session if it has been changed
         import Diff
-        Diff.get_options(self.env, self.req)
-        if self.req.args.has_key('update'):
-           self.req.redirect(self.env.href.wiki(pagename, version, 1))
+        Diff.get_options(self.env, req)
+        if req.args.has_key('update'):
+           req.redirect(self.env.href.wiki(pagename, version, 1))
 
         cursor = self.db.cursor()
         cursor.execute ('SELECT text,author,comment,time FROM wiki '
@@ -171,12 +174,12 @@ class WikiModule(Module):
         author = res[-1][1] or ''
         comment = res[-1][2] or ''
         time_str = time.strftime('%c', time.localtime(int(res[-1][3])))
-        self.req.hdf.setValue('wiki.version', str(version))
-        self.req.hdf.setValue('wiki.time', time_str)
-        self.req.hdf.setValue('wiki.author', escape(author))
-        self.req.hdf.setValue('wiki.comment', escape(comment))
+        req.hdf.setValue('wiki.version', str(version))
+        req.hdf.setValue('wiki.time', time_str)
+        req.hdf.setValue('wiki.author', escape(author))
+        req.hdf.setValue('wiki.comment', escape(comment))
 
-        builder = Diff.HDFBuilder(self.req.hdf, 'wiki.diff')
+        builder = Diff.HDFBuilder(req.hdf, 'wiki.diff')
         builder.writeline('@@ -1,%d +1,%d @@' % (len(old), len(new)))
         try:
             for line in difflib.Differ().compare(old, new):
@@ -187,9 +190,8 @@ class WikiModule(Module):
         builder.close()
 
     def render(self, req):
-        self.req = req # FIXME
         name = req.args.get('page', 'WikiStart')
-        author = req.args.get('author', get_reporter_id(self.req))
+        author = req.args.get('author', get_reporter_id(req))
         edit_version = req.args.get('edit_version', None)
         delete_ver = req.args.get('delete_ver', None)
         delete_page = req.args.get('delete_page', None)
@@ -272,11 +274,11 @@ class WikiModule(Module):
             req.hdf.setValue('title', escape(name) + ' (preview)')
         elif diff and version > 0:
             req.hdf.setValue('wiki.action', 'diff')
-            self.generate_diff(name, version)
+            self.generate_diff(req, name, version)
             req.hdf.setValue('title', escape(name) + ' (diff)')
         elif history:
             req.hdf.setValue('wiki.action', 'history')
-            self.generate_history(name)
+            self.generate_history(req, name)
             req.hdf.setValue('title', escape(name) + ' (history)')
         else:
             self.perm.assert_permission (perm.WIKI_VIEW)

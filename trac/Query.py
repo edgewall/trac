@@ -257,24 +257,24 @@ class QueryModule(Module):
     template_name = 'query.cs'
     template_rss_name = 'query_rss.cs'
 
-    def _get_constraints(self):
+    def _get_constraints(self, req):
         constraints = {}
         custom_fields = [f['name'] for f in get_custom_fields(self.env)]
 
         # A special hack for Safari/WebKit, which will not submit dynamically
         # created check-boxes with their real value, but with the default value
         # 'on'. See also htdocs/query.js#addFilter()
-        checkboxes = [k for k in self.req.args.keys() if k.startswith('__')]
+        checkboxes = [k for k in req.args.keys() if k.startswith('__')]
         if checkboxes:
             import cgi
             for checkbox in checkboxes:
                 (real_k, real_v) = checkbox[2:].split(':', 2)
-                self.req.args.list.append(cgi.MiniFieldStorage(real_k, real_v))
+                req.args.list.append(cgi.MiniFieldStorage(real_k, real_v))
 
         # For clients without JavaScript, we add a new constraint here if
         # requested
         remove_constraints = {}
-        to_remove = [k[10:] for k in self.req.args.keys()
+        to_remove = [k[10:] for k in req.args.keys()
                      if k.startswith('rm_filter_')]
         if to_remove: # either empty or containing a single element
             match = re.match(r'(\w+?)_(\d+)$', to_remove[0])
@@ -283,15 +283,15 @@ class QueryModule(Module):
             else:
                 remove_constraints[to_remove[0]] = -1
 
-        constrained_fields = [k for k in self.req.args.keys()
+        constrained_fields = [k for k in req.args.keys()
                               if k in Ticket.std_fields or k in custom_fields]
         for field in constrained_fields:
-            vals = self.req.args[field]
+            vals = req.args[field]
             if not type(vals) is ListType:
                 vals = [vals]
             vals = map(lambda x: x.value, vals)
             if vals:
-                mode = self.req.args.get(field + '_mode')
+                mode = req.args.get(field + '_mode')
                 if mode:
                     vals = map(lambda x: mode + x, vals)
                 if field in remove_constraints.keys():
@@ -310,7 +310,6 @@ class QueryModule(Module):
         properties = []
 
         cursor = self.db.cursor()
-
         def rows_to_list(sql):
             list = []
             cursor.execute(sql)
@@ -385,30 +384,29 @@ class QueryModule(Module):
         return modes
 
     def render(self, req):
-        self.req = req # FIXME
         self.perm.assert_permission(perm.TICKET_VIEW)
 
-        constraints = self._get_constraints()
-        if not constraints and not self.req.args.has_key('order'):
+        constraints = self._get_constraints(req)
+        if not constraints and not req.args.has_key('order'):
             # avoid displaying all tickets when the query module is invoked
             # with no parameters. Instead show only open tickets, possibly
             # associated with the user
             constraints = { 'status': [ 'new', 'assigned', 'reopened' ] }
-            if self.req.authname and self.req.authname != 'anonymous':
-                constraints['owner'] = [ self.req.authname ]
+            if req.authname and req.authname != 'anonymous':
+                constraints['owner'] = [ req.authname ]
             else:
-                email = self.req.session.get('email')
-                name = self.req.session.get('name')
+                email = req.session.get('email')
+                name = req.session.get('name')
                 if email or name:
                     constraints['cc'] = [ '~%s' % email or name ]
 
-        query = Query(self.env, constraints, self.req.args.get('order'),
-                      self.req.args.has_key('desc'), self.req.args.get('group'),
-                      self.req.args.has_key('groupdesc'),
-                      self.req.args.has_key('verbose'))
+        query = Query(self.env, constraints, req.args.get('order'),
+                      req.args.has_key('desc'), req.args.get('group'),
+                      req.args.has_key('groupdesc'),
+                      req.args.has_key('verbose'))
 
-        if self.req.args.has_key('update'):
-            self.req.redirect(query.get_href())
+        if req.args.has_key('update'):
+            req.redirect(query.get_href())
 
         self.add_link('alternate', query.get_href('rss'), 'RSS Feed',
             'application/rss+xml', 'rss')
@@ -430,20 +428,20 @@ class QueryModule(Module):
                 constraint['mode'] = (neg and '!' or '') + mode
                 constraint['values'].append(val)
             constraints[k] = constraint
-        add_to_hdf(constraints, self.req.hdf, 'query.constraints')
+        add_to_hdf(constraints, req.hdf, 'query.constraints')
 
         self.query = query
 
         # For clients without JavaScript, we add a new constraint here if
         # requested
-        if self.req.args.has_key('add'):
-            field = self.req.args.get('add_filter')
+        if req.args.has_key('add'):
+            field = req.args.get('add_filter')
             if field:
                 idx = 0
                 if query.constraints.has_key(field):
                     idx = len(query.constraints[field])
-                self.req.hdf.setValue('query.constraints.%s.values.%d'
-                                      % (field, idx), '')
+                req.hdf.setValue('query.constraints.%s.values.%d'
+                                 % (field, idx), '')
 
     def display(self, req):
         req.hdf.setValue('title', 'Custom Query')

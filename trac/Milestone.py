@@ -107,31 +107,31 @@ def calc_ticket_stats(tickets):
 class Milestone(Module):
     template_name = 'milestone.cs'
 
-    def save_milestone(self, id):
+    def save_milestone(self, req, id):
         self.perm.assert_permission(perm.MILESTONE_MODIFY)
-        if self.req.args.has_key('save'):
-            name = self.req.args.get('name', '')
+        if req.args.has_key('save'):
+            name = req.args.get('name', '')
             if not name:
                 raise TracError('You must provide a name for the milestone.',
                                 'Required Field Missing')
             due = 0
-            due_str = self.req.args.get('duedate', '')
+            due_str = req.args.get('duedate', '')
             if due_str:
                 due = self.parse_date(due_str)
             completed = 0
-            if self.req.args.has_key('completed'):
-                completed_str = self.req.args.get('completeddate', '')
+            if req.args.has_key('completed'):
+                completed_str = req.args.get('completeddate', '')
                 if completed_str:
                     completed = self.parse_date(completed_str)
-            description = self.req.args.get('description', '')
+            description = req.args.get('description', '')
             if not id:
-                self.create_milestone(name, due, completed, description)
+                self.create_milestone(req, name, due, completed, description)
             else:
-                self.update_milestone(id, name, due, completed, description)
+                self.update_milestone(req, id, name, due, completed, description)
         elif id:
-            self.req.redirect(self.env.href.milestone(id))
+            req.redirect(self.env.href.milestone(id))
         else:
-            self.req.redirect(self.env.href.roadmap())
+            req.redirect(self.env.href.roadmap())
 
     def parse_date(self, datestr):
         seconds = None
@@ -149,7 +149,7 @@ class Milestone(Module):
                             'Invalid Date Format')
         return seconds
 
-    def create_milestone(self, name, due=0, completed=0, description=''):
+    def create_milestone(self, req, name, due=0, completed=0, description=''):
         self.perm.assert_permission(perm.MILESTONE_CREATE)
         if not name:
             raise TracError('You must provide a name for the milestone.',
@@ -160,15 +160,15 @@ class Milestone(Module):
                        "VALUES (%s,%s,%s,%s)", name, due, completed,
                        description)
         self.db.commit()
-        self.req.redirect(self.env.href.milestone(name))
+        req.redirect(self.env.href.milestone(name))
 
-    def delete_milestone(self, id):
+    def delete_milestone(self, req, id):
         self.perm.assert_permission(perm.MILESTONE_DELETE)
-        self.get_milestone(id) # check whether the milestone exists
-        if self.req.args.has_key('delete'):
+        self.get_milestone(req, id) # check whether the milestone exists
+        if req.args.has_key('delete'):
             cursor = self.db.cursor()
-            if self.req.args.has_key('retarget'):
-                target = self.req.args.get('target')
+            if req.args.has_key('retarget'):
+                target = req.args.get('target')
                 if target:
                     self.log.info('Retargeting milestone field of all '
                                   'tickets associated with milestone %s to '
@@ -183,15 +183,15 @@ class Milestone(Module):
             self.log.info('Deleting milestone %s' % id)
             cursor.execute("DELETE FROM milestone WHERE name = %s", id)
             self.db.commit()
-            self.req.redirect(self.env.href.roadmap())
+            req.redirect(self.env.href.roadmap())
         else:
-            self.req.redirect(self.env.href.milestone(id))
+            req.redirect(self.env.href.milestone(id))
 
-    def update_milestone(self, id, name, due, completed, description):
+    def update_milestone(self, req, id, name, due, completed, description):
         self.perm.assert_permission(perm.MILESTONE_MODIFY)
         cursor = self.db.cursor()
         self.log.info("Updating milestone '%s'" % id)
-        if self.req.args.has_key('save'):
+        if req.args.has_key('save'):
             self.log.info('Updating milestone field of all tickets '
                           'associated with milestone %s' % id)
             cursor.execute("UPDATE ticket SET milestone=%s "
@@ -200,9 +200,9 @@ class Milestone(Module):
                            "completed=%s, description=%s WHERE name=%s",
                            name, due, completed, description, id)
             self.db.commit()
-            self.req.redirect(self.env.href.milestone(name))
+            req.redirect(self.env.href.milestone(name))
         else:
-            self.req.redirect(self.env.href.milestone(id))
+            req.redirect(self.env.href.milestone(id))
 
     def get_groups(self, by='component'):
         cursor = self.db.cursor ()
@@ -229,7 +229,7 @@ class Milestone(Module):
             groups.append(row['name'] or '')
         return groups
 
-    def get_milestone(self, name):
+    def get_milestone(self, req, name):
         cursor = self.db.cursor()
         cursor.execute("SELECT name, due, completed, description "
                        "FROM milestone WHERE name = %s", name)
@@ -242,7 +242,7 @@ class Milestone(Module):
         description = row['description']
         if description:
             milestone['description_source'] = description
-            milestone['description'] = wiki_to_html(description, self.req.hdf,
+            milestone['description'] = wiki_to_html(description, req.hdf,
                                                     self.env, self.db)
         due = row['due'] and int(row['due'])
         if due > 0:
@@ -259,35 +259,34 @@ class Milestone(Module):
         return milestone
 
     def render(self, req):
-        self.req = req # FIXME
         self.perm.assert_permission(perm.MILESTONE_VIEW)
 
         self.add_link('up', self.env.href.roadmap(), 'Roadmap')
 
-        action = self.req.args.get('action', 'view')
-        id = self.req.args.get('id')
+        action = req.args.get('action', 'view')
+        id = req.args.get('id')
 
         if action == 'new':
             self.perm.assert_permission(perm.MILESTONE_CREATE)
-            self.render_editor()
+            self.render_editor(req)
         elif action == 'edit':
             self.perm.assert_permission(perm.MILESTONE_MODIFY)
-            self.render_editor(id)
+            self.render_editor(req, id)
         elif action == 'delete':
             self.perm.assert_permission(perm.MILESTONE_DELETE)
-            self.render_confirm(id)
+            self.render_confirm(req, id)
         elif action == 'commit_changes':
-            self.save_milestone(id)
+            self.save_milestone(req, id)
         elif action == 'confirm_delete':
-            self.delete_milestone(id)
+            self.delete_milestone(req, id)
         else:
-            self.render_view(id)
+            self.render_view(req, id)
 
-    def render_confirm(self, id):
-        milestone = self.get_milestone(id)
-        self.req.hdf.setValue('title', 'Milestone %s' % milestone['name'])
-        self.req.hdf.setValue('milestone.mode', 'delete')
-        add_to_hdf(milestone, self.req.hdf, 'milestone')
+    def render_confirm(self, req, id):
+        milestone = self.get_milestone(req, id)
+        req.hdf.setValue('title', 'Milestone %s' % milestone['name'])
+        req.hdf.setValue('milestone.mode', 'delete')
+        add_to_hdf(milestone, req.hdf, 'milestone')
 
         cursor = self.db.cursor()
         cursor.execute("SELECT name FROM milestone "
@@ -297,31 +296,31 @@ class Milestone(Module):
             row = cursor.fetchone()
             if not row:
                 break
-            self.req.hdf.setValue('milestones.%d' % milestone_no, row['name'])
+            req.hdf.setValue('milestones.%d' % milestone_no, row['name'])
             milestone_no += 1
         cursor.close()
 
-    def render_editor(self, id=None):
+    def render_editor(self, req, id=None):
         if not id:
             milestone = { 'name': '', 'date': '', 'description': '' }
-            self.req.hdf.setValue('title', 'New Milestone')
-            self.req.hdf.setValue('milestone.mode', 'new')
+            req.hdf.setValue('title', 'New Milestone')
+            req.hdf.setValue('milestone.mode', 'new')
         else:
-            milestone = self.get_milestone(id)
-            self.req.hdf.setValue('title', 'Milestone %s' % milestone['name'])
-            self.req.hdf.setValue('milestone.mode', 'edit')
-        add_to_hdf(milestone, self.req.hdf, 'milestone')
-        add_to_hdf(get_date_format_hint(), self.req.hdf, 'milestone.date_hint')
-        add_to_hdf(get_datetime_format_hint(), self.req.hdf,
+            milestone = self.get_milestone(req, id)
+            req.hdf.setValue('title', 'Milestone %s' % milestone['name'])
+            req.hdf.setValue('milestone.mode', 'edit')
+        add_to_hdf(milestone, req.hdf, 'milestone')
+        add_to_hdf(get_date_format_hint(), req.hdf, 'milestone.date_hint')
+        add_to_hdf(get_datetime_format_hint(), req.hdf,
                    'milestone.datetime_hint')
         add_to_hdf(time.strftime('%x %X', time.localtime(time.time())),
-                   self.req.hdf, 'milestone.datetime_now')
+                   req.hdf, 'milestone.datetime_now')
 
-    def render_view(self, id):
-        milestone = self.get_milestone(id)
-        self.req.hdf.setValue('title', 'Milestone %s' % milestone['name'])
-        self.req.hdf.setValue('milestone.mode', 'view')
-        add_to_hdf(milestone, self.req.hdf, 'milestone')
+    def render_view(self, req, id):
+        milestone = self.get_milestone(req, id)
+        req.hdf.setValue('title', 'Milestone %s' % milestone['name'])
+        req.hdf.setValue('milestone.mode', 'view')
+        add_to_hdf(milestone, req.hdf, 'milestone')
 
         available_groups = map(lambda x: {'name': x, 'label': x.capitalize()},
                                ['component', 'version', 'severity', 'priority',
@@ -330,17 +329,17 @@ class Milestone(Module):
                                  for f in get_custom_fields(self.env)
                                  if f['type'] == 'select'
                                  or f['type'] == 'radio'])
-        add_to_hdf(available_groups, self.req.hdf,
+        add_to_hdf(available_groups, req.hdf,
                    'milestone.stats.available_groups')
 
-        by = self.req.args.get('by', 'component')
-        self.req.hdf.setValue('milestone.stats.grouped_by', by)
+        by = req.args.get('by', 'component')
+        req.hdf.setValue('milestone.stats.grouped_by', by)
 
         tickets = get_tickets_for_milestone(self.env, self.db, id, by)
         stats = calc_ticket_stats(tickets)
-        add_to_hdf(stats, self.req.hdf, 'milestone.stats')
+        add_to_hdf(stats, req.hdf, 'milestone.stats')
         queries = get_query_links(self.env, milestone['name'])
-        add_to_hdf(queries, self.req.hdf, 'milestone.queries')
+        add_to_hdf(queries, req.hdf, 'milestone.queries')
 
         groups = self.get_groups(by)
         group_no = 0
@@ -350,18 +349,18 @@ class Milestone(Module):
             if not group_tickets:
                 continue
             prefix = 'milestone.stats.groups.%s' % group_no
-            self.req.hdf.setValue('%s.name' % prefix, group)
+            req.hdf.setValue('%s.name' % prefix, group)
             percent_total = 0
             if len(tickets) > 0:
                 percent_total = float(len(group_tickets)) / float(len(tickets))
                 if percent_total > max_percent_total:
                     max_percent_total = percent_total
-            self.req.hdf.setValue('%s.percent_total' % prefix,
-                                  str(percent_total * 100))
+            req.hdf.setValue('%s.percent_total' % prefix,
+                             str(percent_total * 100))
             stats = calc_ticket_stats(group_tickets)
-            add_to_hdf(stats, self.req.hdf, prefix)
+            add_to_hdf(stats, req.hdf, prefix)
             queries = get_query_links(self.env, milestone['name'], by, group)
-            add_to_hdf(queries, self.req.hdf, '%s.queries' % prefix)
+            add_to_hdf(queries, req.hdf, '%s.queries' % prefix)
             group_no += 1
-        add_to_hdf(str(max_percent_total * 100), self.req.hdf,
+        add_to_hdf(str(max_percent_total * 100), req.hdf,
                    'milestone.stats.max_percent_total')

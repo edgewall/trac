@@ -27,16 +27,15 @@ import sys
 import perm
 import util
 from Module import Module
-from Wiki import wiki_to_oneliner,wiki_to_html
+from Wiki import wiki_to_oneliner, wiki_to_html
 
 
 class Timeline (Module):
     template_name = 'timeline.cs'
     template_rss_name = 'timeline_rss.cs'
 
-    def get_info (self, start, stop, maxrows, tickets,
-                  changeset, wiki, milestone):
-        cursor = self.db.cursor ()
+    def get_info(self, req, start, stop, maxrows, tickets, changeset, wiki,
+                 milestone):
 
         tickets = tickets and self.perm.has_permission(perm.TICKET_VIEW)
         changeset = changeset and self.perm.has_permission(perm.CHANGESET_VIEW)
@@ -96,6 +95,7 @@ class Timeline (Module):
         if maxrows:
             q_str += ' LIMIT %d' % maxrows
 
+        cursor = self.db.cursor()
         cursor.execute(q_str)
 
         # Make the data more HDF-friendly
@@ -106,7 +106,7 @@ class Timeline (Module):
                 break
 
             if len(info) == 0:
-                self.req.check_modified(int(row['time']))
+                req.check_modified(int(row['time']))
 
             t = time.localtime(int(row['time']))
             gmt = time.gmtime(int(row['time']))
@@ -126,11 +126,11 @@ class Timeline (Module):
                 item['shortmsg'] = util.escape(util.shorten_line(msg))
                 item['msg_nowiki'] = util.escape(msg)
                 item['msg_escwiki'] = util.escape(wiki_to_html(msg,
-                                                               self.req.hdf,
+                                                               req.hdf,
                                                                self.env,
                                                                self.db,
                                                                absurls=1))
-                item['message'] = wiki_to_oneliner(msg, self.req.hdf,
+                item['message'] = wiki_to_oneliner(msg, req.hdf,
                                                    self.env, self.db,absurls=1)
                 try:
                     max_node = int(self.env.get_config('timeline', 'changeset_show_files', 0))
@@ -168,7 +168,7 @@ class Timeline (Module):
             elif item['type'] == WIKI:
                 item['href'] = util.escape(self.env.href.wiki(row['tdata']))
                 item['message'] = wiki_to_oneliner(util.shorten_line(item['message']),
-                                                   self.req.hdf, self.env, self.db, absurls=1)
+                                                   req.hdf, self.env, self.db, absurls=1)
             elif item['type'] == MILESTONE:
                 item['href'] = util.escape(self.env.href.milestone(item['message']))
                 item['message'] = util.escape(item['message'])
@@ -178,9 +178,9 @@ class Timeline (Module):
                 item['shortmsg'] = util.escape(util.shorten_line(msg))
                 item['message'] = wiki_to_oneliner(
                     util.shorten_line(item['message']),
-                    self.req.hdf, self.env, self.db, absurls=1)
+                    req.hdf, self.env, self.db, absurls=1)
                 item['msg_escwiki'] = util.escape(wiki_to_html(msg,
-                                                               self.req.hdf,
+                                                               req.hdf,
                                                                self.env,
                                                                self.db,
                                                                absurls=1))
@@ -194,11 +194,10 @@ class Timeline (Module):
         return info
 
     def render(self, req):
-        self.req = req # FIXME
         self.perm.assert_permission(perm.TIMELINE_VIEW)
 
-        _from = self.req.args.get('from', '')
-        _daysback = self.req.args.get('daysback', '')
+        _from = req.args.get('from', '')
+        _daysback = req.args.get('daysback', '')
 
         # Parse the from date and adjust the timestamp to the last second of the day
         t = time.localtime()
@@ -213,18 +212,18 @@ class Timeline (Module):
             assert daysback >= 0
         except:
             daysback = 30
-        self.req.hdf.setValue('timeline.from',
+        req.hdf.setValue('timeline.from',
                               time.strftime('%x', time.localtime(_from)))
-        self.req.hdf.setValue('timeline.daysback', str(daysback))
+        req.hdf.setValue('timeline.daysback', str(daysback))
 
         stop  = _from
         start = stop - (daysback + 1) * 86400
-        maxrows = int(self.req.args.get('max', 0))
+        maxrows = int(req.args.get('max', 0))
 
-        wiki = self.req.args.has_key('wiki') 
-        ticket = self.req.args.has_key('ticket')
-        changeset = self.req.args.has_key('changeset')
-        milestone = self.req.args.has_key('milestone')
+        wiki = req.args.has_key('wiki') 
+        ticket = req.args.has_key('ticket')
+        changeset = req.args.has_key('changeset')
+        milestone = req.args.has_key('milestone')
         if not (wiki or ticket or changeset or milestone):
             wiki = ticket = changeset = milestone = 1
 
@@ -243,19 +242,19 @@ class Timeline (Module):
             '?daysback=90&max=50%s&format=rss' % rssargs,
             'RSS Feed', 'application/rss+xml', 'rss')
 
-        info = self.get_info (start, stop, maxrows, ticket,
-                              changeset, wiki, milestone)
-        util.add_to_hdf(info, self.req.hdf, 'timeline.items')
+        info = self.get_info(req, start, stop, maxrows, ticket, changeset, wiki,
+                             milestone)
+        util.add_to_hdf(info, req.hdf, 'timeline.items')
 
-        self.req.hdf.setValue('title', 'Timeline')
+        req.hdf.setValue('title', 'Timeline')
         if wiki:
-            self.req.hdf.setValue('timeline.wiki', 'checked')
+            req.hdf.setValue('timeline.wiki', 'checked')
         if ticket:
-            self.req.hdf.setValue('timeline.ticket', 'checked')
+            req.hdf.setValue('timeline.ticket', 'checked')
         if changeset:
-            self.req.hdf.setValue('timeline.changeset', 'checked')
+            req.hdf.setValue('timeline.changeset', 'checked')
         if milestone:
-            self.req.hdf.setValue('timeline.milestone', 'checked')
+            req.hdf.setValue('timeline.milestone', 'checked')
 
     def display_rss(self, req):
         base_url = self.env.get_config('trac', 'base_url', '')

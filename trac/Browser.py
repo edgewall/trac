@@ -34,7 +34,7 @@ from Wiki import wiki_to_oneliner
 class Browser(Module.Module):
     template_name = 'browser.cs'
 
-    def get_info(self, path, revision, rev_specified):
+    def get_info(self, req, path, revision, rev_specified):
         """
         Extracts information for a given path and revision
         """
@@ -57,15 +57,15 @@ class Browser(Module.Module):
                                     self.pool)
         if date:
             date_seconds = svn.util.svn_time_from_cstring(date, self.pool) / 1000000
-            self.req.check_modified(date_seconds)
+            req.check_modified(date_seconds)
 
         # Redirect to the file module if the requested path happens
         # to point to a regular file
         if svn.fs.is_file(root, path, self.pool):
             if rev_specified:
-                self.req.redirect(self.env.href.file(path, revision))
+                req.redirect(self.env.href.file(path, revision))
             else:
-                self.req.redirect(self.env.href.log(path))
+                req.redirect(self.env.href.log(path))
 
         entries = svn.fs.dir_entries(root, path, self.pool)
         info = []
@@ -106,7 +106,7 @@ class Browser(Module.Module):
                 'is_dir'       : is_dir,
                 'author'       : author,
                 'change'       : wiki_to_oneliner(util.shorten_line(util.wiki_escape_newline(change)),
-                                                  self.req.hdf, self.env,self.db),
+                                                  req.hdf, self.env,self.db),
                 'permission'   : self.authzperm.has_permission(fullpath)
             }
             if rev_specified:
@@ -126,38 +126,37 @@ class Browser(Module.Module):
             info.append(item)
         return info
 
-    def generate_path_links(self, path, rev, rev_specified):
+    def generate_path_links(self, req, path, rev, rev_specified):
         list = filter(None, path.split('/'))
         path = '/'
-        self.req.hdf.setValue('browser.path.0', 'root')
+        req.hdf.setValue('browser.path.0', 'root')
         if rev_specified:
-            self.req.hdf.setValue('browser.path.0.url',
-                                  self.env.href.browser(path, rev))
+            req.hdf.setValue('browser.path.0.url',
+                             self.env.href.browser(path, rev))
         else:
-            self.req.hdf.setValue('browser.path.0.url',
-                                  self.env.href.browser(path))
+            req.hdf.setValue('browser.path.0.url',
+                             self.env.href.browser(path))
         i = 0
         for part in list:
             i = i + 1
             path = path + part + '/'
-            self.req.hdf.setValue('browser.path.%d' % i, part)
+            req.hdf.setValue('browser.path.%d' % i, part)
             url = ''
             if rev_specified:
                 url = self.env.href.browser(path, rev)
             else:
                 url = self.env.href.browser(path)
-            self.req.hdf.setValue('browser.path.%d.url' % i, url)
+            req.hdf.setValue('browser.path.%d.url' % i, url)
             if i == len(list) - 1:
                 self.add_link('up', url, 'Parent directory')
 
     def render(self, req):
-        self.req = req # FIXME
         self.perm.assert_permission (perm.BROWSER_VIEW)
         
-        rev = self.req.args.get('rev', None)
-        path = self.req.args.get('path', '/')
-        order = self.req.args.get('order', 'name').lower()
-        desc = self.req.args.has_key('desc')
+        rev = req.args.get('rev', None)
+        path = req.args.get('path', '/')
+        order = req.args.get('order', 'name').lower()
+        desc = req.args.has_key('desc')
         
         self.authzperm.assert_permission (path)
         
@@ -172,7 +171,7 @@ class Browser(Module.Module):
                 rev_specified = rev.lower() in ['head', 'latest', 'trunk']
                 rev = svn.fs.youngest_rev(self.fs_ptr, self.pool)
 
-        info = self.get_info(path, rev, rev_specified)
+        info = self.get_info(req, path, rev, rev_specified)
         if order == 'date':
             if desc:
                 info.sort(lambda y, x: cmp(x['date_seconds'],
@@ -191,23 +190,22 @@ class Browser(Module.Module):
         # Always put directories before files
         info.sort(lambda x, y: cmp(y['is_dir'], x['is_dir']))
 
-        util.add_dictlist_to_hdf(info, self.req.hdf, 'browser.items')
+        util.add_dictlist_to_hdf(info, req.hdf, 'browser.items')
 
-        self.generate_path_links(path, rev, rev_specified)
-
+        self.generate_path_links(req, path, rev, rev_specified)
         if path != '/':
             parent = string.join(path.split('/')[:-2], '/') + '/'
             if rev_specified:
-                self.req.hdf.setValue('browser.parent_href',
-                                      self.env.href.browser(parent, rev))
+                req.hdf.setValue('browser.parent_href',
+                                 self.env.href.browser(parent, rev))
             else:
-                self.req.hdf.setValue('browser.parent_href',
-                                      self.env.href.browser(parent))
+                req.hdf.setValue('browser.parent_href',
+                                 self.env.href.browser(parent))
 
-        self.req.hdf.setValue('title', path)
-        self.req.hdf.setValue('browser.path', path)
-        self.req.hdf.setValue('browser.revision', str(rev))
-        self.req.hdf.setValue('browser.order', order)
-        self.req.hdf.setValue('browser.order_dir', desc and 'desc' or 'asc')
-        self.req.hdf.setValue('browser.current_href', self.env.href.browser(path))
-        self.req.hdf.setValue('browser.log_href', self.env.href.log(path))
+        req.hdf.setValue('title', path)
+        req.hdf.setValue('browser.path', path)
+        req.hdf.setValue('browser.revision', str(rev))
+        req.hdf.setValue('browser.order', order)
+        req.hdf.setValue('browser.order_dir', desc and 'desc' or 'asc')
+        req.hdf.setValue('browser.current_href', self.env.href.browser(path))
+        req.hdf.setValue('browser.log_href', self.env.href.log(path))

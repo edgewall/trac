@@ -370,7 +370,6 @@ class Changeset (Module.Module):
         return sinfo
 
     def render(self, req):
-        self.req = req # FIXME
         self.perm.assert_permission (perm.CHANGESET_VIEW)
 
         self.add_link('alternate', '?format=diff', 'Unified Diff',
@@ -379,14 +378,14 @@ class Changeset (Module.Module):
             'application/zip', 'zip')
 
         youngest_rev = svn.fs.youngest_rev(self.fs_ptr, self.pool)
-        if self.req.args.has_key('rev'):
-            self.rev = int(self.req.args.get('rev'))
+        if req.args.has_key('rev'):
+            self.rev = int(req.args.get('rev'))
         else:
             self.rev = youngest_rev
 
-        self.diff_options = Diff.get_options(self.env, self.req, 1)
-        if self.req.args.has_key('update'):
-            self.req.redirect(self.env.href.changeset(self.rev))
+        self.diff_options = Diff.get_options(self.env, req, 1)
+        if req.args.has_key('update'):
+            req.redirect(self.env.href.changeset(self.rev))
 
         try:
             self.old_root = svn.fs.revision_root(self.fs_ptr,
@@ -397,23 +396,23 @@ class Changeset (Module.Module):
             raise util.TracError('Invalid revision number: %d' % int(self.rev))
 
         changeset_info = self.get_changeset_info(self.rev)
-        self.req.check_modified(int(changeset_info['time']),
-                                self.diff_options[0] + "".join(self.diff_options[1]))
+        req.check_modified(int(changeset_info['time']),
+                           self.diff_options[0] + "".join(self.diff_options[1]))
         change_info = self.get_change_info(self.rev)
 
-        self.req.hdf.setValue('title', '[%d] (changeset)' % self.rev)
-        self.req.hdf.setValue('changeset.time',
+        req.hdf.setValue('title', '[%d] (changeset)' % self.rev)
+        req.hdf.setValue('changeset.time',
                               time.asctime(time.localtime(int(changeset_info['time']))))
         author = changeset_info['author'] or 'anonymous'
-        self.req.hdf.setValue('changeset.author', util.escape(author))
+        req.hdf.setValue('changeset.author', util.escape(author))
         message = changeset_info['message'] or '--'
-        self.req.hdf.setValue('changeset.message',
-                              wiki_to_html(util.wiki_escape_newline(message),
-                                           self.req.hdf, self.env, self.db))
-        self.req.hdf.setValue('changeset.revision', str(self.rev))
-        util.add_to_hdf(change_info, self.req.hdf, 'changeset.changes')
+        req.hdf.setValue('changeset.message',
+                         wiki_to_html(util.wiki_escape_newline(message),
+                                      req.hdf, self.env, self.db))
+        req.hdf.setValue('changeset.revision', str(self.rev))
+        util.add_to_hdf(change_info, req.hdf, 'changeset.changes')
 
-        self.req.hdf.setValue('changeset.href',
+        req.hdf.setValue('changeset.href',
                               self.env.href.changeset(self.rev))
         if self.rev > 1:
             self.add_link('first', self.env.href.changeset(1), 'Changeset 1')
@@ -425,12 +424,12 @@ class Changeset (Module.Module):
             self.add_link('last', self.env.href.changeset(youngest_rev),
                           'Changeset %d' % youngest_rev)
 
-    def render_diffs(self, editor_class=HtmlDiffEditor):
+    def render_diffs(self, req, editor_class=HtmlDiffEditor):
         """
         Generate a unified diff of the changes for a given changeset.
         The output is written to stdout.
         """
-        editor = editor_class(self.old_root, self.new_root, int(self.rev), self.req,
+        editor = editor_class(self.old_root, self.new_root, int(self.rev), req,
                               self.env, self.path_info, self.diff_options[1])
         e_ptr, e_baton = svn.delta.make_editor(editor, self.pool)
 
@@ -442,7 +441,7 @@ class Changeset (Module.Module):
 
     def display(self, req):
         """Pretty HTML view of the changeset"""
-        self.render_diffs()
+        self.render_diffs(req)
         Module.Module.display(self, req)
 
     def display_diff(self, req):
@@ -452,7 +451,7 @@ class Changeset (Module.Module):
         req.send_header('Content-Disposition',
                         'filename=Changeset%d.diff' % self.rev)
         req.end_headers()
-        self.render_diffs(UnifiedDiffEditor)
+        self.render_diffs(req, UnifiedDiffEditor)
 
     def display_zip(self, req):
         """ZIP archive with all the added and/or modified files."""
@@ -461,8 +460,8 @@ class Changeset (Module.Module):
         req.send_header('Content-Disposition',
                         'filename=Changeset%d.zip' % self.rev)
         req.end_headers()
-        self.render_diffs(ZipDiffEditor)
+        self.render_diffs(req, ZipDiffEditor)
 
     def display_hdf(self, req):
-        self.render_diffs()
+        self.render_diffs(req)
         Module.Module.display_hdf(self, req)

@@ -36,26 +36,25 @@ class Roadmap(Module):
     template_name = 'roadmap.cs'
 
     def render(self, req):
-        self.req = req # FIXME
         self.perm.assert_permission(perm.ROADMAP_VIEW)
-        self.req.hdf.setValue('title', 'Roadmap')
+        req.hdf.setValue('title', 'Roadmap')
 
         icalhref = '?format=ics'
-        show = self.req.args.get('show', 'current')
+        show = req.args.get('show', 'current')
         if show == 'all':
             icalhref += '&show=all'
             query = "SELECT name,due,completed,description FROM milestone " \
                     "WHERE COALESCE(name,'')!='' " \
                     "ORDER BY COALESCE(due,0)=0,due,name"
         else:
-            self.req.hdf.setValue('roadmap.showall', '1')
+            req.hdf.setValue('roadmap.showall', '1')
             query = "SELECT name,due,completed,description FROM milestone " \
                     "WHERE COALESCE(name,'')!='' " \
                     "AND COALESCE(completed,0)=0 " \
                     "ORDER BY COALESCE(due,0)=0,due,name"
 
-        if self.req.authname and self.req.authname != 'anonymous':
-            icalhref += '&user=' + self.req.authname
+        if req.authname and req.authname != 'anonymous':
+            icalhref += '&user=' + req.authname
         self.add_link('alternate', icalhref, 'iCalendar', 'text/calendar', 'ics')
 
         cursor = self.db.cursor()
@@ -74,7 +73,7 @@ class Roadmap(Module):
             description = row['description']
             if description:
                 milestone['description'] = wiki_to_html(description,
-                                                        self.req.hdf,
+                                                        req.hdf,
                                                         self.env, self.db)
                 milestone['description_text'] = description
             if milestone['due'] > 0:
@@ -87,7 +86,7 @@ class Roadmap(Module):
                 milestone['completed_delta'] = pretty_timedelta(milestone['completed'])
             self.milestones.append(milestone)
         cursor.close()
-        add_to_hdf(self.milestones, self.req.hdf, 'roadmap.milestones')
+        add_to_hdf(self.milestones, req.hdf, 'roadmap.milestones')
 
         milestone_no = 0
         for milestone in self.milestones:
@@ -95,10 +94,10 @@ class Roadmap(Module):
                                                           milestone['name'],
                                                           'owner')
             stats = Milestone.calc_ticket_stats(tickets)
-            add_to_hdf(stats, self.req.hdf,
+            add_to_hdf(stats, req.hdf,
                        'roadmap.milestones.%d.stats' % int(milestone_no))
             queries = Milestone.get_query_links(self.env, milestone['name'])
-            add_to_hdf(queries, self.req.hdf,
+            add_to_hdf(queries, req.hdf,
                        'roadmap.milestones.%d.queries' % int(milestone_no))
             milestone['tickets'] = tickets
             milestone_no += 1
