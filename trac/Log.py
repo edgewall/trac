@@ -52,10 +52,27 @@ class Log (Module):
                                    self.pool)
         return self.log_info
 
+    def generate_path_links(self):
+        list = self.path.split('/')
+        path = '/'
+        self.cgi.hdf.setValue('log.filename', list[-1])
+        self.cgi.hdf.setValue('log.path.0', '[root]')
+        self.cgi.hdf.setValue('log.path.0.url' , href.browser(path))
+        i = 0
+        for part in list[:-1]:
+            i = i + 1
+            if part == '':
+                break
+            path = path + part + '/'
+            self.cgi.hdf.setValue('log.path.%d' % i, part)
+            self.cgi.hdf.setValue('log.path.%d.url' % i,
+                                  href.browser(path))
+
     def render (self):
         perm.assert_permission (perm.LOG_VIEW)
-            
+
         info = self.get_info (self.path)
 
+        self.generate_path_links()
         self.cgi.hdf.setValue('log.path', self.path)
         add_dictlist_to_hdf(info, self.cgi.hdf, 'log.items')

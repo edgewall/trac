@@ -136,7 +136,7 @@ a.wiki-missing-page:hover { color: #000; }
 
 /* Browser */
 
-#browser-rev { 
+#browser-rev, #log-hdr{ 
  font-size: 110%; 
  margin-right: 1em;
  }
@@ -149,39 +149,55 @@ a.wiki-missing-page:hover { color: #000; }
  text-align: right;
 }
 #browser-chgrev input { text-align: center }
-#browser-pathlinks { padding: 0; }
-#browser-list
-{
+#browser-pathlinks { 
+ padding-bottom: .5em; 
+ border-bottom: 1px solid #ccc;
+}
+#browser-list {
   clear: both;
-  margin: 1em 0 2em 0;
+  margin: .5em 0 2em 0;
   border-bottom: 1px solid #eee;
   width: 100%;
   border-collapse: collapse;
-  font-size: 12px;
   line-height: 130%;
 }
 tr.browser-listhdr { border-bottom: 1px solid #eee; }
 tr.browser-listhdr th { 
  text-align: left;
- padding: 0 .5em;
+ padding: 0 1em 0 0;
  font-size: 13px;
 }
 #browser-list a { 
   display: block;
- border-bottom: none;
- background: transparent;
+  border-bottom: none;
+  background: transparent;
 }
-#browser-list td { padding: 0 .25em; }
-tr.br-row-even, tr.br-row-odd { border-top: 1px solid #eee; }
+#browser-list td { 
+ padding: 0 .5em; 
+
+}
+tr.br-row-even, tr.br-row-odd { border-top: 1px solid #ddd; }
 tr.br-row-even { background-color: #fff; }
 tr.br-row-odd { background-color: #f7f7f7; }
-tr.br-row-even:hover,tr.br-row-odd:hover { 
- background: #eed;
-}
-td.br-size-col,td.br-rev-col,td.br-date-col { 
- border-left: thin dotted #dddddd; 
+tr.br-row-even:hover,tr.br-row-odd:hover { background: #eed; }
+td.br-size-col,td.br-rev-col,td.br-date-col,td.br-summary-col,td.br-chg-col{ 
+ border-left: 1px solid #eee; 
 }
 td.br-icon-col { }
-td.br-rev-col { text-align: center }
-td.br-size-col, td.br-rev-col, td.br-date-col { color: #888 }
+td.br-rev-col, td.br-chg-col { text-align: center }
+td.br-rev-col a { font-weight: bold; }
+
+td.br-size-col, td.br-rev-col, td.br-date-col { 
+ color: #888; 
+ white-space: nowrap;
+}
 td.br-icon-col, td.br-report-col, td.br-ticket-col { width: 1em; }
+td.br-summary-col { 
+ padding-top: 1em;
+ font-size: 12px;
+}
+
+/* Log */
+log-hdr {  
+font-size: 110%;
+}

@@ -28,10 +28,10 @@
     <table id="browser-list" cellspacing="0" cellpadding="0">
       <tr class="browser-listhdr">
         <th>&nbsp;</th>
-        <th>name</th>
-        <th>size</th>
-        <th>rev</th>
-        <th>date</th>
+        <th>Name</th>
+        <th>Size</th>
+        <th>Rev</th>
+        <th>Date</th>
       </tr>
       <?cs if $browser.path != "/" ?>
         <tr class="br-row-even">
@@ -77,7 +77,6 @@
             <a href="<?cs var:item.log_href ?>"><?cs var:item.name ?></a>
           </td>
          <?cs /if ?>
-
          <td class="br-size-col">
            <?cs if item.size != #0 ?><?cs var:item.size ?><?cs /if ?>
          </td>
