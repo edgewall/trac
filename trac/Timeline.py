@@ -67,7 +67,7 @@ class Timeline (Module):
                      (start, stop))
         if wiki:
             q.append("SELECT time, -1 AS idata, name AS tdata, 5 AS type, "
-                     "'' AS message, author "
+                     "comment AS message, author "
                         "FROM wiki WHERE time>=%s AND time<=%s" %
                      (start, stop))
             pass
@@ -99,7 +99,7 @@ class Timeline (Module):
                     'idata': int(row['idata']),
                     'tdata': row['tdata'],
                     'type': int(row['type']),
-                    'message': row['message'],
+                    'message': row['message'] or '',
                     'author': escape(row['author'])
 }
 
@@ -111,6 +111,8 @@ class Timeline (Module):
                                                    self.req.hdf, self.env)
             elif item['type'] == WIKI:
 		item['wiki_href'] = self.env.href.wiki(row['tdata'])
+                item['message'] = wiki_to_oneliner(shorten_line(item['message']),
+                                                   self.req.hdf, self.env)
 	    elif item['type'] == MILESTONE:
 		item['shortmsg'] = ''
 	    else:

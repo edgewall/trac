@@ -79,7 +79,7 @@
     <?cs elif:item.type == #5 ?><!-- Wiki change -->
       <?cs call:tlitem(item.wiki_href, 'wiki.png',
         '<b class="tl-item-link">'+$item.tdata+'</b>
-         edited by '+$item.author, '') ?>
+         edited by '+$item.author, item.message) ?>
     <?cs elif:item.type == #6 ?><!-- milestone -->
       <?cs call:tlitem('', 'milestone.png',
 	 '<b class="tl-item-link">Milestone '+$item.tdata+' reached</b>', '') ?>

@@ -102,11 +102,20 @@
 ?>WikiFormatting">WikiFormatting</a> and <a href="<?cs var:$trac.href.wiki
 ?>TracWiki">TracWiki</a> for help on editing wiki content.
               </div>
-              <p>
+	      <fieldset>
+		<legend>Change information</legend>
+		<label for="author">Your email or username:</label><br />
+		<input id="author" type="text" name="author" size="40" 
+                       value="<?cs var:wiki.author?>"/>
+		<br />
+		<label for="comment">Comment about this change (optional):</label>
+		<br />
+		<input id="comment" type="text" name="comment" size="40" 
+		       value="<?cs var:wiki.comment?>"/>
                 <input type="submit" name="save" value="Save changes" />&nbsp;
                 <input type="submit" name="preview" value="Preview" />&nbsp;
                 <input type="submit" name="view" value="Cancel" />
-              </p>
+              </fieldset>
             </form>
           <?cs /if ?>
           <?cs if wiki.action == "view" || wiki.action == "preview" ?>

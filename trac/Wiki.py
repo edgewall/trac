@@ -524,12 +524,10 @@ def wiki_to_oneliner(wikitext, hdf, env):
 
 
 class Page:
-    def __init__(self, name, version, perm, db, authname, remote_addr):
+    def __init__(self, name, version, perm, db):
         self.db = db
         self.name = name
         self.perm = perm
-        self.authname = authname
-        self.remote_addr = remote_addr
         cursor = self.db.cursor ()
         if version:
             cursor.execute ('SELECT version, text FROM wiki '
@@ -552,7 +550,7 @@ class Page:
         self.text = text
         self.version = self.version + 1
 
-    def commit (self):
+    def commit (self, author, comment, remote_addr):
         if self.new:
             self.perm.assert_permission (perm.WIKI_CREATE)
         else:
@@ -565,10 +563,10 @@ class Page:
         new_version = int(row[0])
         
         cursor.execute ('INSERT INTO WIKI '
-                        '(name, version, time, author, ipnr, text) '
-                        'VALUES (%s, %s, %s, %s, %s, %s)',
+                        '(name, version, time, author, ipnr, text, comment) '
+                        'VALUES (%s, %s, %s, %s, %s, %s, %s)',
                         self.name, new_version, int(time.time()),
-                        self.authname, self.remote_addr, self.text)
+                        author, remote_addr, self.text, comment)
         self.db.commit ()
 
 
@@ -663,6 +661,8 @@ class Wiki(Module):
         
     def render(self):
         name = self.args.get('page', 'WikiStart')
+        author = self.args.get('author', self.req.authname)
+        comment = self.args.get('comment', '')
         save = self.args.get('save', None)
         edit = self.args.get('edit', None)
         diff = self.args.get('diff', None)
@@ -672,6 +672,8 @@ class Wiki(Module):
         self.generate_history(name)
 
         self.req.hdf.setValue('wiki.name', name)
+        self.req.hdf.setValue('wiki.author', author)
+        self.req.hdf.setValue('wiki.comment', comment)
         if name == 'TitleIndex':
             self.generate_title_index()
             self.req.hdf.setValue('title', 'Title Index (wiki)')
@@ -705,13 +707,12 @@ class Wiki(Module):
             self.env.get_attachments_hdf(self.db, 'wiki', name, self.req.hdf,
                                          'wiki.attachments')
 
-        self.page = Page(name, version, self.perm, self.db,
-                    self.req.authname, self.req.remote_addr)
+        self.page = Page(name, version, self.perm, self.db)
         if self.args.has_key('text'):
             self.page.set_content (self.args.get('text'))
         
         if save:
-            self.page.commit ()
+            self.page.commit(author, comment, self.req.remote_addr)
             self.req.redirect(self.env.href.wiki(self.page.name))
 
         self.req.hdf.setValue('wiki.current_href',
