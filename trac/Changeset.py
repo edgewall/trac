@@ -206,7 +206,7 @@ class ChangesetModule(Module):
                 node = repos.get_node(path, chgset.rev)
                 zipinfo = ZipInfo()
                 zipinfo.filename = node.path
-                zipinfo.date_time = node.last_modified[:6]
+                zipinfo.date_time = time.gmtime(node.last_modified)[:6]
                 zipinfo.compress_type = ZIP_DEFLATED
                 zipfile.writestr(zipinfo, node.get_content().read())
         zipfile.close()

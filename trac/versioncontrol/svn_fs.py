@@ -89,6 +89,7 @@ class Pool(object):
         """
         core.svn_pool_destroy(self.pool)
 
+
 class SubversionRepository(Repository):
     """
     Repository implementation based on the svn.fs API.
@@ -270,8 +271,7 @@ class SubversionNode(Node):
     def get_last_modified(self):
         date = fs.revision_prop(self.fs_ptr, self.rev,
                                 core.SVN_PROP_REVISION_DATE, self.pool)
-        seconds = core.svn_time_from_cstring(date, self.pool) / 1000000
-        return time.gmtime(seconds)
+        return core.svn_time_from_cstring(date, self.pool) / 1000000
 
     def _get_prop(self, name):
         return fs.node_prop(self.root, self.scope + self.path, name, self.pool)

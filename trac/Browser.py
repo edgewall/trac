@@ -177,7 +177,8 @@ class BrowserModule(Module):
                                                     mimetype=mime_type)
             req.hdf['file.preview'] = preview
 
-            raw_href = self.env.href.browser(node.path, rev and node.rev, 'raw')
+            raw_href = self.env.href.browser(node.path, rev=rev and node.rev,
+                                             format='raw')
             req.hdf['file.raw_href'] = raw_href
             add_link(req, 'alternate', raw_href, 'Original Format', mime_type)
 
