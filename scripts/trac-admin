@@ -58,7 +58,7 @@ class TracAdmin(cmd.Cmd):
         cmd.Cmd.__init__(self)
         self.interactive = 0
         if envdir:
-            self.env_set(envdir)
+            self.env_set(os.path.abspath(envdir))
 
     def docmd(self, cmd='help'):
         self.onecmd(cmd)
@@ -960,7 +960,7 @@ def main():
         elif sys.argv[1] in ['-v','--version','about']:
             tracadm.docmd ("about")
         else:
-            tracadm.env_set(sys.argv[1])
+            tracadm.env_set(os.path.abspath(sys.argv[1]))
             if len (sys.argv) > 2:
                 s_args = ' '.join(["'%s'" % c for c in sys.argv[3:]])
                 command = sys.argv[2] + ' ' +s_args
