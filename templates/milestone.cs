@@ -82,7 +82,7 @@
   <div class="descr"><?cs var:milestone.descr ?></div>
  <?cs /if ?>
 
- <h2 class="stats">Status By Component</h2>
+ <?cs if:milestone.mode == "view" ?><h2 class="stats">Status By Component</h2>
  <table class="listing" id="stats"
    summary="Shows the milestone completion status grouped by component">
   <thead><tr>
@@ -137,7 +137,7 @@
     <?cs /if ?>
    </td>
   </tr></tbody>
- </table>
+ </table><?cs /if ?>
 
 </div>
 <?cs include:"footer.cs"?>

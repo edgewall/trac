@@ -257,6 +257,7 @@ class Milestone(Module):
 
         milestone = self.get_milestone(id)
         self.req.hdf.setValue('title', 'Milestone %s' % milestone['name'])
+        self.req.hdf.setValue('milestone.mode', 'view')
         add_dict_to_hdf(milestone, self.req.hdf, 'milestone')
 
         tickets = get_tickets_for_milestone(self.db, id)
