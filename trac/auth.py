@@ -81,7 +81,7 @@ def create_auth_cookie (db, name, ipnr):
 def authenticate_user (db):
     flush_auth_cookies (db)
     cookie = Cookie.SimpleCookie(os.getenv('HTTP_COOKIE'))
-    auth_cookie = create_auth_cookie (os.getenv('REMOTE_USER'),
+    auth_cookie = create_auth_cookie (db, os.getenv('REMOTE_USER'),
                                       os.getenv('REMOTE_ADDR'))
     cookie['trac_auth'] = auth_cookie
     cookie['trac_auth']['path'] = os.getenv('SCRIPT_NAME')
