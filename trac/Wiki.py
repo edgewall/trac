@@ -61,14 +61,18 @@ class CommonFormatter:
               r"""(?P<wikilink>(^|(?<=[^A-Za-z]))[!]?[A-Z][a-z/]+(?:[A-Z][a-z/]+)+(?=\Z|\s|,|\.|:))""",
               r"""(?P<fancylink>\[(?P<fancyurl>([a-z]+:[^ ]+)) (?P<linkname>.*?)\])"""]
 
+    _open_tags = []
+    hdf = None
+    env = None
+
     def __init__(self, hdf, env):
         self.hdf = hdf
         self.env = env
 
     def replace(self, fullmatch):
-        for type, match in fullmatch.groupdict().items():
-            if match and not type in Formatter._helper_patterns:
-                return getattr(self, '_' + type + '_formatter')(match, fullmatch)
+        for itype, match in fullmatch.groupdict().items():
+            if match and not itype in Formatter._helper_patterns:
+                return getattr(self, '_' + itype + '_formatter')(match, fullmatch)
     
     def tag_open_p(self, tag):
         """Do we currently have any open tag with @tag as end-tag"""
@@ -204,7 +208,7 @@ class OneLinerFormatter(CommonFormatter):
 
     def format(self, text, out):
         if not text:
-            return ''
+            return
         self.out = out
         self._open_tags = []
         
@@ -238,11 +242,10 @@ class Formatter(CommonFormatter):
                         'linkname', 'macroname', 'macroargs', 'inline',
                         'modulename', 'moduleargs')
 
+    _htmlproc_disallow_rule = re.compile('(?i)<(script|noscript|embed|object|iframe|frame|frameset|link|style|meta|param|doctype)')
 
     def default_processor(hdf, text, env):
         return '<pre class="wiki">' + escape(text) + '</pre>'
-    def html_processor(hdf, text, env):
-        return text
     def asp_processor(hdf, text, env):
         return env.mimeview.display(text, 'text/x-asp')
     def c_processor(hdf, text, env):
@@ -264,6 +267,17 @@ class Formatter(CommonFormatter):
     def xml_processor(hdf, text, env):
         return env.mimeview.display(text, 'text/xml')
 
+    def html_processor(hdf, text, env):
+        if Formatter._htmlproc_disallow_rule.search(text):
+            err = """\
+<div class="error">Error: HTML block contains disallowed tags.
+<pre>
+%s</pre>
+</div>""" % escape(text)
+            env.log.error(err)
+            return err
+        return text
+
     builtin_processors = { 'html': html_processor,
                            'asp': asp_processor,
                            'c': c_processor,
@@ -280,7 +294,7 @@ class Formatter(CommonFormatter):
     def load_macro(self, name):
         macros = __import__('wikimacros.' + name, globals(),  locals(), [])
         module = getattr(macros, name)
-        return getattr(module, 'execute')
+        return module.execute
         
     def _macro_formatter(self, match, fullmatch):
         name = fullmatch.group('macroname')
@@ -340,8 +354,7 @@ class Formatter(CommonFormatter):
             self.close_indentation()
             self.close_list()
             self.indent_level = depth
-            for i in range(depth):
-                self.out.write('<blockquote>' + os.linesep)
+            self.out.write(('<blockquote>' + os.linesep) * depth)
 
     def _list_formatter(self, match, fullmatch):
         ldepth = len(fullmatch.group('ldepth'))
@@ -649,13 +662,13 @@ class Wiki(Module):
                             % (version, pagename),
                             'Page Not Found')
         out = StringIO.StringIO()
-        filter = DiffColorizer(out)
-        filter.writeline('header %s version %d | %s version %d header' %
+        filtr = DiffColorizer(out)
+        filtr.writeline('header %s version %d | %s version %d header' %
                          (pagename, version - 1, pagename, version))
         try:
             for line in difflib.Differ().compare(old, new):
                 if line != '  ':
-                    filter.writeline(escape(line))
+                    filtr.writeline(escape(line))
         except AttributeError:
             raise TracError('Python >= 2.2 is required for diff support.')
         

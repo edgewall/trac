@@ -23,6 +23,13 @@ import core
 
 
 class Module:
+    db = None
+    env = None
+    req = None
+    _name = None
+    args = []
+    template_name = None
+    
     def run(self):
         core.populate_hdf(self.req.hdf, self.env, self.db, self.req)
         self.req.hdf.setValue('trac.active_module', self._name)
@@ -35,14 +42,14 @@ class Module:
             disp()
         except core.RedirectException:
             pass
-        
+
     def render (self):
         """
         Override this function to add data the template requires
         to self.req.hdf.
         """
         pass
-    
+
     def display(self):
         self.req.display(self.template_name)
 
@@ -66,4 +73,4 @@ class Module:
                 self.req.write('= %s\r\n' % value)
             else:
                 self.req.write('<< EOM\r\n%s\r\nEOM\r\n' % value)
-        
+
