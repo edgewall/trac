@@ -8,30 +8,29 @@
 <a href="javascript:view_history()">Show/Hide History</a>
 </div>
 <hr />
-  <?cs if $wiki.history.0 == '0' ?>
-    <table id="wiki-history">
+<?cs if $wiki.history.0 == '0' ?>
+  <table id="wiki-history">
     <tr>
-     <th>Version</th>
-     <th>Time</th>
-     <th>Author</th>
-     <th>IP#</th>
+      <th>Version</th>
+      <th>Time</th>
+      <th>Author</th>
+      <th>IP#</th>
     </tr>
     <?cs each item = $wiki.history ?>
       <tr class="wiki-history-row">
         <td><a class="wiki-history-link" 
-             href="<?cs var:$item.url ?>"><?cs var:$item.version ?></a></td>
+           href="<?cs var:$item.url ?>"><?cs var:$item.version ?></a></td>
         <td><a class="wiki-history-link" 
              href="<?cs var:$item.url ?>"><?cs var:$item.time ?></a></td>
         <td><a class="wiki-history-link" 
-               href="<?cs var:$item.url ?>"><?cs var:$item.author ?></a></td>
+             href="<?cs var:$item.url ?>"><?cs var:$item.author ?></a></td>
         <td><a class="wiki-history-link" 
-               href="<?cs var:$item.url ?>"><?cs var:$item.ipnr ?></a><td>
+             href="<?cs var:$item.url ?>"><?cs var:$item.ipnr ?></a></td>
       </tr>
     <?cs /each ?>
-   </table>
-  <?cs /if ?>
-
-
+  </table>
+  <hr />
+<?cs /if ?>
 <div id="main">
   <div id="main-content">
     <div id="wiki-body">

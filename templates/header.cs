@@ -19,10 +19,6 @@
       width="<?cs var:header_logo.width ?>" 
       height="<?cs var:header_logo.height ?>" 
       alt="<?cs var:header_logo.alt ?>" /></a>
-<!--  <a id="trac-logo" href="http://trac.edgewall.com/"><img 
-     src="<?cs var:htdocs_location?>/trac_logo_mini.png" 
-      width="128" height="25" border="0" alt="- Trac -" /></a>
--->
   <hr />
   <div id="header-links">
     <?cs if $trac.authname == "anonymous" ?>

@@ -222,9 +222,9 @@ VALUES('header_logo', 'src', 'trac_banner.png');
 INSERT INTO config (section, name, value)
 VALUES('header_logo', 'alt', 'Trac');
 INSERT INTO config (section, name, value)
-VALUES('header_logo', 'width', '500');
+VALUES('header_logo', 'width', '199');
 INSERT INTO config (section, name, value)
-VALUES('header_logo', 'height', '70');
+VALUES('header_logo', 'height', '38');
 
 INSERT INTO report (id, author, title, sql) 
 	VALUES (1, NULL, 'Active tickets', 

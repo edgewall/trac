@@ -21,10 +21,12 @@ img {}
 
 /* Header */
 
-#header { 
+#header { }
+#hdrlogo,#hdrlogo img,#hdrlogo:hover { 
+ border: none;
+ background: transparent;
+ margin-bottom: -1em;
 }
-#hdrlogo { border: none; }
-#hdrlogo img { border: none }
 #header-links, #subheader-links, #navbar { 
  font: normal 11px Verdana, 'Bitstream Vera Sans', Helvetica, Arial, sans-serif;
  color: #000;
@@ -39,14 +41,8 @@ img {}
 
 /* Navbar  */ 
 
-#trac-logo {
- display: block;
- border: none;
- margin-top: -2px;
- background: #fff;
-}
-
 #navbar { 
+ clear: both;
  border: 1px solid #999;
  background: #eee;
  margin: .15em 0;
@@ -108,23 +104,31 @@ a.wiki-missing-page:hover {
  color: #000;
 }
 
-
 #wiki-body { 
  line-height: 140%;
  margin: 1em;
 }
 
-
 /* Footer */
 
 #footer { 
  font-size: 75%;
- color: #999;
- border-top: 1px solid #d7d7d7;
- padding: .5em;
+ color: #bbb;
+ border-top: 1px solid;
+ padding: .5em 0;
 }
+#footer a { color: #bbb }
 #footer-left { 
  float: left; 
- width: 50%;
+ padding: 0 1em;
+ border-left: 1px dashed;
+ border-right: 1px dashed;
 }
-#footer-right { text-align: right; }
+#footer-right {  text-align: right }
+#footer-logo {
+ float: left;
+ border: none;
+ margin-right: 1em; 
+ margin-top: .3em;
+}
+
