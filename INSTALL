@@ -26,6 +26,17 @@ $prefix/share/trac/ .
 
 For more install configuration options, run 'python ./setup.py --help'.
 
+Installing Trac on Windows
+--------------------------
+If you downloaded the Trac installer (the .exe file), installing is simply a
+matter of running the installer. 
+
+ * NOTE: The windows installer also includes the Clearsilver DLL, so you do
+         _NOT_ have to install it manually when using the installer.
+
+After running the installer, configuration and installation is the same as
+for other platforms.
+
 Initializing the database
 -------------------------
 Trac stores wiki pages, tickets and other information in a sqlite database.

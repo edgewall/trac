@@ -1,9 +1,15 @@
 Upgrade Instructions
 ====================
 
+Upgrading to 0.6.1 from 0.6
+-----------------------------
+* There are no changes to the database in 0.6.1.
+  Just install the new version of Trac by running the installer (.exe for
+  windows), or otherwise:  ./setup.py install 
+
 
 Upgrading to 0.6 from 0.5.x  
--------------------------------------
+-----------------------------
 * There are no changes to the database schema in 0.6, so existing Trac
   databases don't require any extra steps.
 
