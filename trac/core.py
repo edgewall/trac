@@ -88,7 +88,7 @@ def parse_path_info(args, path_info):
     if match:
         set_if_missing(args, 'mode', match.group(1))
         return args
-    match = re.search('^/(ticket|report)(/([0-9]+)/*)?', path_info)
+    match = re.search('^/(ticket|report)(?:/([0-9]+)/*)?', path_info)
     if match:
         set_if_missing(args, 'mode', match.group(1))
         if match.group(2):
