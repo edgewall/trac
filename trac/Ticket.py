@@ -182,7 +182,7 @@ class Ticket (Module):
         data = {}
         for field in fields:
             if self.args.has_key(field):
-                data[field] = self.args[field]
+                data[field] = self.args.get(field)
         now = int(time.time())
         data['time'] = now
         data['changetime'] = now
@@ -261,16 +261,20 @@ class Ticket (Module):
             
         if action == 'create':
             self.create_ticket ()
-        try:
-            id = int(self.args['id'])
-        except:
+            
+        if not self.args.has_key('id'):
             self.req.redirect(self.env.href.menu())
+            
+        id = int(self.args.get('id'))
 
         if action in ['leave', 'accept', 'reopen', 'resolve', 'reassign']:
             # save changes and redirect to avoid the POST request
-            old = self.get_ticket(id, 0)
             self.perm.assert_permission (perm.TICKET_MODIFY)
-            self.save_changes (id, old, self.args)
+            old = self.get_ticket(id, 0)
+            new = {}
+            for name in self.args:
+                new[name] = self.args[name].value
+            self.save_changes (id, old, new)
             self.req.redirect(self.env.href.ticket(id))
         
         self.perm.assert_permission (perm.TICKET_VIEW)

@@ -53,88 +53,75 @@ modules = {
     'attachment'  : ('File', 'Attachment', 0),
     }
 
-def parse_path_info(path_info):
-    args = {}
+class TracFieldStorage(cgi.FieldStorage):
+    """
+    FieldStorage class with a few more functions to make it behave a bit
+    more like a dictionary
+    """
+    get = cgi.FieldStorage.getvalue
+
+    def __setitem__(self, name, value):
+        if self.has_key(name):
+            del self[name]
+        self.list.append(cgi.MiniFieldStorage(name, value))
+
+    def __delitem__(self, name):
+        if not self.has_key(name):
+            raise KeyError(name)
+        self.list = filter(lambda x: x.name != name, self.list)
+
+
+def parse_path_info(args, path_info):
+    def set_if_missing(fs, name, value):
+        if not fs.has_key(name):
+            fs.list.append(cgi.MiniFieldStorage(name, value))
+            
     if not path_info:
         return args
-    match = re.search('^/about_trac(/?.*)', path_info)
+    match = re.search('^/(about_trac|wiki)(?:/(.*))?', path_info)
     if match:
-        args['mode'] = 'about_trac'
-        if len(match.group(1)) > 0:
-            args['page'] = match.group(1)
+        set_if_missing(args, 'mode', match.group(1))
+        if match.group(2):
+            set_if_missing(args, 'page', match.group(2))
         return args
-    if re.search('^/newticket/?', path_info):
-        args['mode'] = 'newticket'
-        return args
-    if re.search('^/timeline/?', path_info):
-        args['mode'] = 'timeline'
-        return args
-    if re.search('^/search/?', path_info):
-        args['mode'] = 'search'
-        return args
-    match = re.search('^/wiki/(.*[^/])/?', path_info)
+    match = re.search('^/(newticket|timeline|search)/?', path_info)
     if match:
-        args['mode'] = 'wiki'
-        if len(match.group(1)) > 0:
-            args['page'] = match.group(1)
+        set_if_missing(args, 'mode', match.group(1))
         return args
-    match = re.search('^/ticket/([0-9]+)/?', path_info)
+    match = re.search('^/(ticket|report)/([0-9]+)?/?', path_info)
     if match:
-        args['mode'] = 'ticket'
-        args['id'] = match.group(1)
+        set_if_missing(args, 'mode', match.group(1))
+        if match.group(2):
+            set_if_missing(args, 'id', match.group(2))
         return args
-    match = re.search('^/report/([0-9]*)/?', path_info)
+    match = re.search('^/(browser|log|file)(?:/?(.*))?', path_info)
     if match:
-        args['mode'] = 'report'
-        if len(match.group(1)) > 0:
-            args['id'] = match.group(1)
-        return args
-    match = re.search('^/browser(/?.*)', path_info)
-    if match:
-        args['mode'] = 'browser'
-        if len(match.group(1)) > 0:
-            args['path'] = match.group(1)
-        return args
-    match = re.search('^/log/(.+)', path_info)
-    if match:
-        args['mode'] = 'log'
-        args['path'] = match.group(1)
-        return args
-    match = re.search('^/file/(.+)/?', path_info)
-    if match:
-        args['mode'] = 'file'
-        args['path'] = match.group(1)
+        set_if_missing(args, 'mode', match.group(1))
+        if match.group(2):
+            set_if_missing(args, 'path', match.group(2))
         return args
     match = re.search('^/changeset/([0-9]+)/?', path_info)
     if match:
-        args['mode'] = 'changeset'
-        args['rev'] = match.group(1)
+        set_if_missing(args, 'mode', 'changeset')
+        set_if_missing(args, 'rev', match.group(1))
         return args
     match = re.search('^/attachment/([a-zA-Z_]+)/([^/]+)(?:/(.*)/?)?', path_info)
     if match:
-        args['mode'] = 'attachment'
-        args['type'] = match.group(1)
-        args['id'] = match.group(2)
-        args['filename'] = match.group(3)
+        set_if_missing(args, 'mode', 'attachment')
+        set_if_missing(args, 'type', match.group(1))
+        set_if_missing(args, 'id', match.group(2))
+        set_if_missing(args, 'filename', match.group(3))
         return args
     return args
 
 def parse_args(command, path_info, query_string,
                fp=None, env = None, _headers=None):
-    args = parse_path_info(path_info)
     if not env:
         env = {'REQUEST_METHOD': command, 'QUERY_STRING': query_string}
     if command == 'GET':
         _headers = None
-    fs = cgi.FieldStorage(fp, environ=env, headers=_headers)
-    for x in fs.keys():
-        argv = fs[x]
-        if type(argv) == list:
-            argv = argv[0]
-        if argv.filename:
-            args[x] = argv
-        else:
-            args[x] = argv.value
+    args = TracFieldStorage(fp, environ=env, headers=_headers)
+    parse_path_info(args, path_info)
     return args
 
 def add_args_to_hdf(args, hdf):

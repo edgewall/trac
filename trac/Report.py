@@ -239,7 +239,7 @@ class Report (Module):
             idx = idx + 1
 
         if self.args.has_key('sort'):
-            sortCol = self.args['sort']
+            sortCol = self.args.get('sort')
             colIndex = None
             x = 0
             while colIndex == None and x < len(self.cols):
@@ -248,9 +248,10 @@ class Report (Module):
                 x = x + 1
             if colIndex != None:
                 k = 'report.headers.%d.asc' % (colIndex-1)
-                if self.args.has_key('asc'):
-                    sorter = ColumnSorter(colIndex, int(self.args['asc']))
-                    self.req.hdf.setValue(k, self.args['asc'])
+                asc = self.args.get('asc', None)
+                if asc:
+                    sorter = ColumnSorter(colIndex, int(asc))
+                    self.req.hdf.setValue(k, asc)
                 else:
                     sorter = ColumnSorter(colIndex)
                     self.req.hdf.setValue(k, '1')
@@ -310,7 +311,7 @@ class Report (Module):
             if m:
                 raise ValueError("The character '%s' is not allowed "
                                  " in variable names." % m.group())
-            val = self.args[arg]
+            val = self.args.get(arg)
             m = re.search(dynvars_disallowed_value_chars_re, val)
             if m:
                 raise ValueError("The character '%s' is not allowed "

@@ -137,9 +137,11 @@ class Browser(Module):
         elif order == 'Date':
             info.sort(lambda y, x: cmp(x['date_seconds'], y['date_seconds']))
         elif order == 'Name':
-            info.sort(lambda y, x: cmp(x['name'], y['name']))
+            info.sort(lambda y, x: cmp(rstrip(x['name'], '/'),
+                                       rstrip(y['name'], '/')))
         else:
-            info.sort(lambda x, y: cmp(x['name'], y['name']))
+            info.sort(lambda x, y: cmp(rstrip(x['name'], '/'),
+                                       rstrip(y['name'], '/')))
             
         # Always put directories before files
         info.sort(lambda x, y: cmp(y['is_dir'], x['is_dir']))

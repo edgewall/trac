@@ -88,7 +88,7 @@ Copyright &copy; 2003,2004 <a href="http://www.edgewall.com/">Edgewall Software<
     def render (self):
         page = self.args.get('page', 'default')
         self.req.hdf.setValue('title', 'About Trac')
-        if page[0:7] == '/config':
+        if page[0:7] == 'config':
             self.perm.assert_permission(perm.CONFIG_VIEW)
             self.req.hdf.setValue('about.page', 'config')
             # Export the config table to hdf

@@ -235,7 +235,7 @@ class Changeset (Module):
         self.perm.assert_permission (perm.CHANGESET_VIEW)
         
         if self.args.has_key('rev'):
-            self.rev = int(self.args['rev'])
+            self.rev = int(self.args.get('rev'))
         else:
             self.rev = fs.youngest_rev(self.fs_ptr, self.pool)
 

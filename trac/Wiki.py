@@ -708,7 +708,7 @@ class Wiki(Module):
         self.page = Page(name, version, self.perm, self.db,
                     self.req.authname, self.req.remote_addr)
         if self.args.has_key('text'):
-            self.page.set_content (self.args['text'])
+            self.page.set_content (self.args.get('text'))
         
         if save:
             self.page.commit ()

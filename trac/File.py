@@ -151,8 +151,8 @@ class Attachment(FileCommon):
                                                   self.attachment_type,
                                                   self.attachment_id,
                                                   self.args['attachment'],
-                                                  self.args['description'],
-                                                  self.args['author'],
+                                                  self.args.get('description'),
+                                                  self.args.get('author'),
                                                   self.req.remote_addr)
             # Redirect the user to the newly created attachment
             self.req.redirect(self.env.href.attachment(self.attachment_type,

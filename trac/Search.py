@@ -176,7 +176,7 @@ class Search(Module):
         self.req.hdf.setValue('search.results_per_page', str(self.RESULTS_PER_PAGE))
         
         if self.args.has_key('q'):
-            query = self.args['q']
+            query = self.args.get('q')
             self.req.hdf.setValue('title', 'Search Results (search)')
             self.req.hdf.setValue('search.q', query.replace('"', "&#34;"))
             tickets = self.args.has_key('ticket')
@@ -188,7 +188,7 @@ class Search(Module):
                 tickets = changesets = wiki = 1
 
             if self.args.has_key('page'):
-                page = int(self.args['page'])
+                page = int(self.args.get('page'))
                 self.req.hdf.setValue('search.result.page', str(page))
             else:
                 page = 0
