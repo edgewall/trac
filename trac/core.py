@@ -55,7 +55,7 @@ modules = {
     'timeline'    : ('Timeline', 'Timeline', 1),
     'changeset'   : ('Changeset', 'Changeset', 1),
     'newticket'   : ('Ticket', 'NewticketModule', 0),
-    'query'       : ('Ticket', 'QueryModule', 0),
+    'query'       : ('Query', 'QueryModule', 0),
     'attachment'  : ('File', 'Attachment', 0),
     'roadmap'     : ('Roadmap', 'Roadmap', 0),
     'settings'    : ('Settings', 'Settings', 0),

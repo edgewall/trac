@@ -1,0 +1,233 @@
+# -*- coding: iso8859-1 -*-
+#
+# Copyright (C) 2003, 2004 Edgewall Software
+# Copyright (C) 2003, 2004 Jonas Borgström <jonas@edgewall.com>
+#
+# Trac is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License as
+# published by the Free Software Foundation; either version 2 of the
+# License, or (at your option) any later version.
+#
+# Trac is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+#
+# Author: Jonas Borgström <jonas@edgewall.com>
+
+from types import ListType
+
+import perm
+import util
+from Module import Module
+from Ticket import get_custom_fields, insert_custom_fields, Ticket
+
+
+class QueryModule(Module):
+    template_name = 'query.cs'
+
+    def get_constraints(self):
+        constraints = {}
+        custom_fields = [f['name'] for f in get_custom_fields(self.env)]
+        constrained_fields = [k for k in self.args.keys()
+                              if k in Ticket.std_fields or k in custom_fields]
+        for field in constrained_fields:
+            vals = self.args[field]
+            if not vals:
+                continue
+            if type(vals) is ListType:
+                for j in range(len(vals)):
+                    vals[j] = vals[j].value
+            else:
+                vals = vals.value
+            constraints[field] = vals;
+        return constraints
+
+    def get_results(self, sql):
+        cursor = self.db.cursor()
+        cursor.execute(sql)
+        results = []
+        previous_id = 0
+        while 1:
+            row = cursor.fetchone()
+            if not row:
+                break
+            id = int(row['id'])
+            if id == previous_id:
+                result = results[-1]
+                result[row['name']] = row['value']
+            else:
+                result = {
+                    'id': id,
+                    'href': self.env.href.ticket(id),
+                    'summary': util.escape(row['summary'] or '(no summary)'),
+                    'status': row['status'] or '',
+                    'component': row['component'] or '',
+                    'owner': row['owner'] or '',
+                    'priority': row['priority'] or ''
+                }
+                results.append(result)
+                previous_id = id
+        cursor.close()
+        return results
+
+    def render(self):
+        self.perm.assert_permission(perm.TICKET_VIEW)
+
+        constraints = self.get_constraints()
+
+        action = self.args.get('action')
+        if not action and not constraints:
+            action = 'edit'
+
+        self.req.hdf.setValue('query.action', action)
+        if action == 'edit':
+            self._render_editor()
+        else:
+            if self.args.has_key('search'):
+                self._redirect_to_results()
+            else:
+                self._render_results()
+
+    def _redirect_to_results(self):
+        constraints = self.get_constraints()
+        order = self.args.get('order', 'id')
+        desc = self.args.has_key('desc')
+        self.req.redirect(self.env.href.query(constraints, order, not desc))
+
+    def _render_editor(self):
+        self.req.hdf.setValue('title', 'Advanced Ticket Query')
+        constraints = self.get_constraints()
+        util.add_to_hdf(constraints, self.req.hdf, 'query.constraints')
+
+        def add_options(field, options, constraints, prefix):
+            check = constraints.has_key(field)
+            for option in options:
+                if check and (option['name'] in constraints[field]):
+                    option['selected'] = 1
+            util.add_to_hdf(options, self.req.hdf, prefix + field)
+            if check:
+                del constraints[field]
+
+        def add_db_options(field, db, sql, constraints, prefix):
+            cursor.execute(sql)
+            options = []
+            while 1:
+                row = cursor.fetchone()
+                if not row: break
+                if row[0]: options.append({'name': row[0]})
+            add_options(field, options, constraints, prefix)
+
+        add_options('status', [{'name': 'new'}, {'name': 'assigned'},
+                               {'name': 'reopened'}, {'name': 'closed'}],
+                    constraints, 'query.options.')
+        add_options('resolution', [{'name': 'fixed'}, {'name': 'invalid'},
+                                   {'name': 'wontfix'}, {'name': 'duplicate'},
+                                   {'name': 'worksforme'}],
+                    constraints, 'query.options.')
+        cursor = self.db.cursor()
+        add_db_options('component', cursor,
+                       'SELECT name FROM component ORDER BY name', constraints,
+                       'query.options.')
+        add_db_options('milestone', cursor,
+                       'SELECT name FROM milestone ORDER BY name', constraints,
+                       'query.options.')
+        add_db_options('version', cursor,
+                       'SELECT name FROM version ORDER BY name', constraints,
+                       'query.options.')
+        add_db_options('priority', cursor,
+                       'SELECT name FROM enum WHERE type=\'priority\'',
+                       constraints, 'query.options.')
+        add_db_options('severity', cursor,
+                       'SELECT name FROM enum WHERE type=\'severity\'',
+                       constraints, 'query.options.')
+
+        custom_fields = get_custom_fields(self.env)
+        for custom in custom_fields:
+            if custom['type'] == 'select' or custom['type'] == 'radio':
+                check = constraints.has_key(custom['name'])
+                options = [option for option in custom['options'] if option]
+                for i in range(len(options)):
+                    options[i] = {'name': options[i]}
+                    if check and (options[i]['name'] in constraints[custom['name']]):
+                        options[i]['selected'] = 1
+                custom['options'] = options
+        util.add_to_hdf(custom_fields, self.req.hdf, 'query.custom')
+
+        for k in [k for k,v in constraints.items() if not type(v) is ListType]:
+            self.req.hdf.setValue('query.%s' % k, constraints[k])
+
+    def _render_results(self):
+        # FIXME: the user should be able to configure which columns should
+        # be displayed
+        headers = [ 'id', 'summary', 'status', 'component', 'owner' ]
+        cols = headers
+        if not 'priority' in cols:
+            cols.append('priority')
+        sql = 'SELECT ' + ', '.join(['ticket.%s AS %s' % (header, header)
+                                     for header in headers])
+
+        constraints = self.get_constraints()
+        order = self.args.get('order', 'id')
+        desc = self.args.has_key('desc')
+
+        self.req.hdf.setValue('title', 'View Tickets')
+        self.req.hdf.setValue('query.edit_href',
+            self.env.href.query(constraints, order, not desc, action='edit'))
+
+        for i in range(len(headers)):
+            self.req.hdf.setValue('query.headers.%d.name' % i, headers[i])
+            if headers[i] == order:
+                self.req.hdf.setValue('query.headers.%d.href' % i,
+                    self.env.href.query(constraints, order, not desc))
+                self.req.hdf.setValue('query.headers.%d.order' % i,
+                    desc and 'desc' or 'asc')
+            else:
+                self.req.hdf.setValue('query.headers.%d.href' % i,
+                    self.env.href.query(constraints, headers[i]))
+
+        custom_fields = [f['name'] for f in get_custom_fields(self.env)]
+        if [k for k in constraints.keys() if k in custom_fields]:
+            sql += ', ticket_custom.name AS name, ' \
+                   'ticket_custom.value AS value ' \
+                   'FROM ticket OUTER JOIN ticket_custom ON id = ticket'
+        else:
+            sql += ' FROM ticket'
+        sql += ' INNER JOIN (SELECT name AS priority_name, value AS priority_value ' \
+               '             FROM enum WHERE type = \'priority\') AS p' \
+               ' ON priority_name = priority'
+
+        clauses = []
+        for k, v in constraints.items():
+            clause = []
+            col = k
+            if not col in Ticket.std_fields:
+                col = 'value'
+            if type(v) is ListType:
+                for j in range(len(v)):
+                    clause.append('%s=\'%s\'' % (col, util.sql_escape(v[j])))
+            else:
+                clause.append('%s=\'%s\'' % (col, util.sql_escape(v)))
+            if not k in Ticket.std_fields:
+                clauses.append("(name='%s' AND (" % k + " OR ".join(clause) + "))")
+            else:
+                clauses.append("(" + " OR ".join(clause) + ")")
+        if clauses:
+            sql += " WHERE " + " AND ".join(clauses)
+
+        if order in Ticket.std_fields:
+            if order == 'priority':
+                sql += " ORDER BY priority_value"
+            else:
+                sql += " ORDER BY " + order
+        else:
+            sql += ' ORDER BY id'
+        if desc:
+            sql += ' DESC'
+
+        results = self.get_results(sql)
+        util.add_to_hdf(results, self.req.hdf, 'query.results')

@@ -1,14 +1,24 @@
-<?cs def:hdf_select(enum, name, selected) ?>
+<?cs def:hdf_select(options, name, selected) ?>
  <select size="1" id="<?cs var:name ?>" name="<?cs var:name ?>"><?cs
-  each:item = $enum ?><?cs
-   if item.name == $selected ?>
-    <option selected="selected"><?cs var:item.name ?></option><?cs
+  each:option = options ?><?cs
+   if option.name == $selected ?>
+    <option selected="selected"><?cs var:option.name ?></option><?cs
    else ?>
-    <option><?cs var:item.name ?></option><?cs
+    <option><?cs var:option.name ?></option><?cs
    /if ?><?cs
   /each ?>
  </select><?cs
 /def?>
+
+<?cs def:hdf_select_multiple(options, name, size) ?>
+ <select size="<?cs var:size ?>" id="<?cs var:name ?>" name="<?cs
+   var:name ?>" multiple="multiple"><?cs
+  each:option = options ?>
+   <option<?cs if:option.selected ?> selected="selected"<?cs /if ?>><?cs
+    var:option.name ?></option><?cs
+  /each ?>
+ </select><?cs
+/def ?>
 
 <?cs def:get(map, name) ?><?cs
  each:item = map ?><?cs
