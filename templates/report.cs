@@ -35,7 +35,11 @@
      <hr class="hide"/>
      <h2 class="report-hdr"><?cs var:header ?></h2>
    <?cs /if ?>
-   <table class="report-list" cellspacing="0" cellpadding="0">
+   <?cs if $report.id == -1 ?>
+     <table class="report-list-reports" cellspacing="0" cellpadding="0">
+   <?cs else ?>
+     <table class="report-list" cellspacing="0" cellpadding="0">
+   <?cs /if ?>
      <tr>
        <?cs set numcols = #0 ?>
        <?cs each header = report.headers ?>
@@ -49,8 +53,10 @@
              <?cs else ?>
                <?cs set sortValue = '?sort='+$header.real+'&asc=1' ?>
              <?cs /if ?>
+             <?cs if $header ?>
              <th class="header-left"><a href="<?cs var:sortValue ?>"><?cs var:header ?></a></th>
-           <?cs else ?>
+             <?cs /if ?>
+           <?cs elif $header ?>
              <th class="header-left"><?cs var:header ?></th>
            <?cs /if ?>
 
@@ -95,7 +101,7 @@
          <?cs set group = row.__group__ ?>
          <?cs call:report_hdr(group) ?>
        <?cs /if ?>
-     
+
        <?cs if row.__color__ ?>
          <?cs set rstem='color'+$row.__color__ +'-' ?>
        <?cs else ?>
@@ -106,7 +112,7 @@
        <?cs else ?>
          <?cs set row_class=$rstem+'odd' ?>
        <?cs /if ?>
- 
+
        <?cs set row_style='' ?>
        <?cs if row.__bgcolor__ ?>
          <?cs set row_style='background: ' + row.__bgcolor__ + ';' ?>
@@ -117,19 +123,20 @@
        <?cs if row.__style__ ?>
          <?cs set row_style=$row_style + row.__style__ + ';' ?>
        <?cs /if ?>
-     
+
        <tr class="<?cs var: row_class ?>" style="<?cs var: row_style ?>">
        <?cs set idx = idx + #1 ?>
        <?cs set col = #0 ?>
        <?cs each cell = row ?>
-         <?cs if cell.hidden || cell.hidehtml ?>    
+         <?cs if cell.hidden || cell.hidehtml ?>
          <?cs elif name(cell) == "ticket" ?>
-           <?cs call:report_cell('ticket-col', 
-             	                '<a class="report-tktref" href="'+
+           <?cs call:report_cell('ticket-col',
+                                 '<a title="View ticket #'+$cell+'" class="block" href="'+
                                  $cell.ticket_href+'">#'+$cell+'</a>') ?>
          <?cs elif name(cell) == "report" ?>
-           <?cs call:report_cell('report-col', 
-                '<a href="'+$cell.report_href+'">{'+$cell+'}</a>') ?>
+           <?cs call:report_cell('report-col',
+                '<a title="View Report" class="block" href="'+$cell.report_href+'">{'+$cell+'}</a>') ?>
+           <?cs set:report_href=$cell.report_href ?>
          <?cs elif name(cell) == "time" ?>
            <?cs call:report_cell('date-column', $cell.date) ?>
          <?cs elif name(cell) == "date" || name(cell) == "created" || name(cell) == "modified" ?>
@@ -138,6 +145,10 @@
            <?cs call:report_cell('date-column', $cell.datetime) ?>
          <?cs elif name(cell) == "description" ?>
            <?cs call:report_cell('', $cell.parsed) ?>
+         <?cs elif name(cell) == "title" && $report.id == -1 ?>
+           <?cs call:report_cell('title-col',
+                                 '<a  title="View Report" class="block" href="'+
+                                 $report_href+'">'+$cell+'</a>') ?>
          <?cs else ?>
            <?cs call:report_cell(name(cell)+'-col', $cell) ?>
          <?cs /if ?>

@@ -7,17 +7,22 @@
 }
 #numrows { font-size: 65%; color: #999; font-weight: normal; }
 #report-descr { margin: 0 2em; font-size: 90%; }
-.report-list { 
+.report-list, .report-list-reports  { 
  width: 97%; 
  margin-left: 1em;
- padding: 1em;
  border-collapse: collapse;
  line-height: 130%;
  border: 1px solid #d7d7d7; 
  border-top: none;
 }
+
 tr { border-bottom: 1px solid #d7d7d7; border-top: none; }
-.report-list th { 
+tr:hover { background: #d7d7d7; color: #000; border-color: #fff; }
+table.report-list-reports tr:hover,table.report-list-reports tr:hover a { 
+ background: #ccb; color: #000;
+}
+
+th { 
  border-left: 1px solid #fff; 
  border-right: 1px solid #fff; 
  border-bottom: 1px solid #d7d7d7; 
@@ -28,11 +33,11 @@ tr { border-bottom: 1px solid #d7d7d7; border-top: none; }
  padding: 0 .2em;
 }
 .report-list td {
- padding: .1em .5em;
  vertical-align: top;
  border-right: 1px dotted #d7d7d7; 
  border-top: 1px dotted #fff; 
 }
+.report-list td { padding: .1em .5em;  }
 .report-fullrow { 
  margin: 1px;
  margin-top: 0;
@@ -40,7 +45,7 @@ tr { border-bottom: 1px solid #d7d7d7; border-top: none; }
  padding-bottom: 2.5em;
  font-size: 90%;
 }
-td.ticket-col { font-weight: bold; }
+td.ticket-col { font-weight: bold; padding: 0;}
 td.summary-col {}
 td.severity-col {}
 td.priority-col {}
@@ -49,8 +54,9 @@ td.component-col {}
 td.version-col {}
 td.status-col {}
 .report-fullrow p { margin: 0; padding: .25em 1em}
-a.report-tktref,a.report-tktref:visited { display: block; padding: 0 .5em; border: none}
-a.report-tktref:hover { background: #b00; color: #fff; }
+a.block,a.block:visited { display: block; border: none; padding: .1em .5em;}
+a.block:hover { background: #b00; color: #fff; }
+.report-list-reports td a { padding: .1em .5em;  }
 .header-left a { display: block; margin-bottom: .25em; border: none; }
 .color1-odd  { background: #fdc; border-color: #e88; color: #a22; }
 .color1-even { background: #fed; border-color: #e99; color: #a22; }
