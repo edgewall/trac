@@ -138,3 +138,7 @@ foo (<a class="missing" href="/wiki/FooBar">FooBar?</a>)
 <p>
 foo (<a class="missing" href="/wiki/FooBar">FooBar?</a> )
 </p>
+==============================
+== Heading with trailing white-space == 
+------------------------------
+<h2>Heading with trailing white-space</h2>

@@ -212,7 +212,7 @@ class Formatter(CommonFormatter):
     _rules = [r"""(?P<svnimg>(source|repos):([^ ]+)\.(PNG|png|JPG|jpg|JPEG|jpeg|GIF|gif))"""] + \
              CommonFormatter._rules + \
              [r"""(?P<macro>\[\[(?P<macroname>[a-zA-Z]+)(\((?P<macroargs>[^\)]*)\))?\]\])""",
-              r"""(?P<heading>^\s*(?P<hdepth>=+)\s.*\s(?P=hdepth)$)""",
+              r"""(?P<heading>^\s*(?P<hdepth>=+)\s.*\s(?P=hdepth)\s*$)""",
               r"""(?P<list>^(?P<ldepth>\s+)(?:\*|[0-9]+\.) )""",
               r"""(?P<indent>^(?P<idepth>\s+)(?=\S))""",
               r"""(?P<imgurl>([a-z]+://[^ ]+)\.(PNG|png|JPG|jpg|JPEG|jpeg|GIF|gif)(\?\S+)?)""",
@@ -296,6 +296,7 @@ class Formatter(CommonFormatter):
                    % (name, args, e)
 
     def _heading_formatter(self, match, fullmatch):
+        match = match.strip()
         depth = min(len(fullmatch.group('hdepth')), 5)
         self.close_table()
         self.close_paragraph()
