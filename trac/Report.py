@@ -22,11 +22,14 @@
 import os,os.path
 import time
 import re
+import cgi
 
 from util import *
 from Module import Module
 from Wiki import wiki_to_html
 import perm
+
+
 
 dynvars_re = re.compile('\$([A-Z]+)')
 dynvars_disallowed_var_chars_re = re.compile('[^A-Z0-9_]')
@@ -282,8 +285,17 @@ class Report (Module):
             self.render_report_list(id, report_args)
 
     def display_rss(self):
+        item = self.req.hdf.getObj('report.items')
+        item = item.child()
+        while item:
+            nodename = 'report.items.%s.summary' % item.name()
+            summary = self.req.hdf.getValue(nodename, '')
+            self.req.hdf.setValue(nodename, escape(summary))
+            item = item.next()
         self.req.display(self.template_rss_name, 'text/xml')
 
+
+            
     def display_csv(self,sep=','):
         self.req.send_response(200)
         self.req.send_header('Content-Type', 'text/plain')
