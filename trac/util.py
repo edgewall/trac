@@ -65,12 +65,10 @@ def escape(text):
     """Escapes &, <, > and \""""
     if not text:
         return ''
-    if type(text) is StringType:
-        text = text.replace('&', '&amp;') \
-               .replace('<', '&lt;') \
-               .replace('>', '&gt;') \
-               .replace('"', '&#34;')
-    return text
+    return str(text).replace('&', '&amp;') \
+                    .replace('<', '&lt;') \
+                    .replace('>', '&gt;') \
+                    .replace('"', '&#34;')
 
 def get_first_line(text, maxlen):
     """
