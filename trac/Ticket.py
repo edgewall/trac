@@ -458,9 +458,11 @@ class QueryModule (Module):
             self.req.hdf.setValue('vals', str(vals))
             if type(vals) == list:
                 for j in range(len(vals)):
-                    clause.append('%s = \'%s\'' % (constraints[i], vals[j].value))
+                    vals[j] = vals[j].value
+                    clause.append('%s = \'%s\'' % (constraints[i], vals[j]))
             else:
-                clause.append('%s = \'%s\'' % (constraints[i], vals.value))
+                vals = vals.value
+                clause.append('%s = \'%s\'' % (constraints[i], vals))
             clauses.append('(' + ' OR '.join(clause) + ')')
             constraints_dict[constraints[i]] = vals;
         if clauses:
