@@ -78,6 +78,11 @@ td.date-column
   padding-right: 0.5em;
 }
 
+td.icon-column
+{
+  width: 16px;
+}
+
 td.name-column, td.report-column, td.ticket-column
 { 
   padding-left: 0.5em;

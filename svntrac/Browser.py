@@ -19,13 +19,14 @@
 #
 # Author: Jonas Borgström <jonas@xyche.com>
 
+import StringIO
+import string
+
+from svn import fs, util, delta
+
 from Module import Module
 from util import *
 import perm
-
-import StringIO
-import string
-from svn import fs, util, delta
 
 class Browser (Module):
     template_name = 'browser.template'
@@ -96,12 +97,16 @@ class Browser (Module):
         else:
             out.write ('<tr class="item-row-odd">\n')
         if item['is_dir']:
+            out.write ('<td class="icon-column"><img src="%s" width="16" height="16"></td>'
+                       % (self.namespace['htdocs_location'] + '/folder.png'))
             out.write ('<td class="name-column"><a href="%s">%s</a></td>'
                        % (browser_href (item['fullpath']), item['name']))
             out.write ('<td class="size-column">&nbsp;</td>')
             out.write ('<td class="rev-column">%s</td>' %
                        item['created_rev'])
         else:
+            out.write ('<td class="icon-column"><img src="%s" width="16" height="16"></td>'
+                       % (self.namespace['htdocs_location'] + '/file.png'))
             out.write ('<td class="name-column"><a href="%s">%s</a></td>'
                        % (log_href (item['fullpath']), item['name']))
             out.write ('<td class="size-column">%s</td>' %
@@ -142,6 +147,8 @@ class Browser (Module):
         if self.path != '/':
             parent = string.join(self.path.split('/')[:-2], '/') + '/'
             out.write ('<tr class="item-row-odd">\n')
+            out.write ('<td class="icon-column"><img src="%s" width="16" height="16"></td>'
+                       % (self.namespace['htdocs_location'] + '/folder.png'))
             out.write ('<td class="name-column"><a href="%s">..</a></td><td class="size-column">&nbsp;</td><td class="rev-column">&nbsp;</td><td class="date-column">&nbsp;</td>' %
                        browser_href(parent))
             out.write ('</tr>')
