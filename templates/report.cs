@@ -42,7 +42,19 @@
          <?cs if $header.fullrow ?>
            </tr><tr><th class="header-left" colspan="100"><?cs var:header ?></th>
          <?cs else ?>
-           <th class="header-left"><?cs var:header ?></th>
+           <?cs if $report.sorting.enabled ?>
+             <?cs set sortValue = '' ?>
+             <?cs if $header.real == $Query.sort ?>
+               <?cs set sortValue = '?sort='+$header.real+'&asc=0' ?>
+             <?cs else ?>
+               <?cs set sortValue = '?sort='+$header.real+'&asc=1' ?>
+             <?cs /if ?>
+             <th class="header-left"><a href="<?cs var:sortValue ?>"><?cs var:header ?></a></th>
+           <?cs else ?>
+             <th class="header-left"><?cs var:header ?></th>
+           <?cs /if ?>
+
+
            <?cs if $header.breakrow ?>
               </tr><tr>
            <?cs /if ?>
@@ -170,13 +182,21 @@
    <?cs set vars=$vars+'&'+name($arg)+'='+$arg ?>
  <?cs /each ?>
 
+ <?cs set sortInfo='' ?>
+ <?cs if Query.sort ?>
+   <?cs set sortInfo=$sortInfo+'&sort='+$Query.sort ?>
+ <?cs /if ?>
+ <?cs if Query.asc ?>
+   <?cs set sortInfo=$sortInfo+'&asc='+$Query.asc ?>
+ <?cs /if ?>
+
   <div id="main-footer">
    Download report in other data formats: <br />
    <a class="noline" href="?format=rss"><img src="<?cs var:htdocs_location
  ?>xml.png" alt="RSS Feed" style="vertical-align: bottom"/></a>&nbsp;
-   <a href="?format=rss<?cs var $vars ?>">(RSS 2.0)</a>&nbsp;|
-   <a href="?format=csv<?cs var $vars ?>">Comma-delimited</a>&nbsp;|
-   <a href="?format=tab<?cs var $vars ?>">Tab-delimited</a>
+   <a href="?format=rss<?cs var $vars ?><?cs var $sortInfo ?>">(RSS 2.0)</a>&nbsp;|
+   <a href="?format=csv<?cs var $vars ?><?cs var $sortInfo ?>">Comma-delimited</a>&nbsp;|
+   <a href="?format=tab<?cs var $vars ?><?cs var $sortInfo ?>">Tab-delimited</a>
    <br />
   </div>
  <?cs /if ?>

@@ -52,6 +52,7 @@ td.status-col {}
 .report-fullrow p { margin: 0; padding: .25em 1em}
 a.report-tktref,a.report-tktref:visited { display: block; padding: 0 .5em; border: none}
 a.report-tktref:hover { background: #b00; color: #fff; }
+.header-left a { display: block; margin-bottom: .25em; border: none; }
 .color1-odd  { background: #fdc; border-color: #e88; color: #a22; }
 .color1-even { background: #fed; border-color: #e99; color: #a22; }
 .color2-odd  { background: #ffb; border-color: #eea; color: #880; }

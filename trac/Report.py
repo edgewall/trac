@@ -23,17 +23,49 @@ import os,os.path
 import time
 import re
 import cgi
+import types
 
 from util import *
 from Module import Module
 from Wiki import wiki_to_html
 import perm
 
-
-
 dynvars_re = re.compile('\$([A-Z]+)')
 dynvars_disallowed_var_chars_re = re.compile('[^A-Z0-9_]')
 dynvars_disallowed_value_chars_re = re.compile('[^a-zA-Z0-9-_@.,]')
+
+try:
+    _StringTypes = [types.StringType, types.UnicodeType]
+except AttributeError:
+    _StringTypes = [types.StringType]
+
+class ColumnSorter:
+
+    def __init__(self, columnIndex, asc=1):
+        self.columnIndex = columnIndex
+        self.asc = asc
+
+    def sort(self, x, y):
+        const = -1
+        if not self.asc:
+            const = 1
+
+        # make sure to ignore case in comparisons
+        realX = x[self.columnIndex]
+        if type(realX) in _StringTypes:
+            realX = realX.lower()
+        realY = y[self.columnIndex]
+        if type(realY) in _StringTypes:
+            realY = realY.lower()
+
+        result = 0
+        if realX < realY:
+            result = const * 1
+        elif realX > realY:
+            result = const * -1
+
+        return result
+
 
 class Report (Module):
     template_name = 'report.cs'
@@ -73,6 +105,10 @@ class Report (Module):
                 title = row[0]
                 sql   = self.sql_sub_vars(row[1], args)
                 cursor.execute(sql)
+
+                if sql.find('__group__') == -1:
+                    self.req.hdf.setValue('report.sorting.enabled', '1')
+
             except Exception, e:
                 self.error = e
                 self.req.hdf.setValue('report.message',
@@ -177,6 +213,7 @@ class Report (Module):
         for col in self.cols:
             title=col[0].capitalize()
             prefix = 'report.headers.%d' % idx
+            self.req.hdf.setValue('%s.real' % prefix, col[0])
             if title[:2] == '__' and title[-2:] == '__':
                 continue
             elif title[0] == '_' and title[-1] == '_':
@@ -189,6 +226,22 @@ class Report (Module):
                 self.req.hdf.setValue(prefix + '.breakrow', '1')
             self.req.hdf.setValue(prefix, title)
             idx = idx + 1
+
+        if self.args.has_key('sort'):
+            sortCol = self.args['sort']
+            colIndex = None
+            x = 0
+            while colIndex == None and x < len(self.cols):
+                if self.cols[x][0] == sortCol:
+                    colIndex = x
+                x = x + 1
+            if colIndex != None:
+                if self.args.has_key('asc'):
+                    sorter = ColumnSorter(colIndex, int(self.args['asc']))
+                else:
+                    sorter = ColumnSorter(colIndex)
+                self.rows.sort(sorter.sort)
+
 
         # Convert the rows and cells to HDF-format
         row_idx = 0
@@ -252,7 +305,7 @@ class Report (Module):
             report_args[arg] = val
 
         # Set some default dynamic variables
-        if hasattr(self,'authname'):  # FIXME: Is authname always there? - dln
+        if hasattr(self.req,'authname'):  # FIXME: Is authname always there? - dln
             report_args['USER'] = self.req.authname
             
         return report_args
