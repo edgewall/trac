@@ -77,7 +77,8 @@ class AuthzPermission:
 		    elif self.conf_authz.has_section(self.module_name + path_comb) and \
 		            self.conf_authz.has_option(self.module_name + path_comb,'*'):
 		        acc =  self.conf_authz.get(self.module_name + path_comb,'*')
-		    
+        else
+            acc = 'r'
         return acc
 
     def assert_permission (self, path):
