@@ -192,10 +192,6 @@ class TracAdmin(cmd.Cmd):
         data = self.db_execsql ("SELECT name FROM component")
         return [r[0] for r in data]
 
-#    def get_config_list (self):
-#        data = self.db_execsql ("SELECT section||'.'||name FROM config")
-#        return [r[0] for r in data]
-
     def get_user_list (self):
         data = self.db_execsql ("SELECT DISTINCT username FROM permission")
         return [r[0] for r in data]
@@ -231,6 +227,29 @@ class TracAdmin(cmd.Cmd):
     def get_version_list (self):
         data = self.db_execsql("SELECT name FROM version") 
         return [r[0] for r in data]
+
+    def _parse_datetime(self, t):
+        seconds = None
+        t = t.strip()
+        if t == 'now':
+            seconds = int(time.time())
+        else:
+            for format in ['%x %X', '%x, %X', '%X %x', '%X, %x', '%x', '%c',
+                           '%b %d, %Y']:
+                try:
+                    pt = time.strptime(t, format)
+                    seconds = str(time.mktime(pt))
+                except ValueError:
+                    continue
+                break
+        if seconds == None:
+            try:
+                seconds = int(t)
+            except ValueError:
+                pass
+        if seconds == None:
+            print >> sys.stderr, 'Unknown time format'
+        return seconds
 
 
     ##
@@ -536,23 +555,23 @@ class TracAdmin(cmd.Cmd):
         print '   trac-admin %s' % self.envname
         print
         print ' Don\'t forget, you also need to copy (or symlink) "trac/cgi-bin/trac.cgi"'
-	print ' to you web server\'s /cgi-bin/ directory, and then configure the server.'
-	print
-	print ' If you\'re using Apache, this config example snippet might be helpful:'
-	print
-	print '    Alias /trac "/wherever/you/installed/trac/htdocs/"'
-	print '    <Location "/cgi-bin/trac.cgi">'
+        print ' to you web server\'s /cgi-bin/ directory, and then configure the server.'
+        print
+        print ' If you\'re using Apache, this config example snippet might be helpful:'
+        print
+        print '    Alias /trac "/wherever/you/installed/trac/htdocs/"'
+        print '    <Location "/cgi-bin/trac.cgi">'
         print '        SetEnv TRAC_ENV "%s"' % self.envname
-	print '    </Location>'
-	print
-	print '    # You need something like this to authenticate users'
-	print '    <Location "/cgi-bin/trac.cgi/login">'
+        print '    </Location>'
+        print
+        print '    # You need something like this to authenticate users'
+        print '    <Location "/cgi-bin/trac.cgi/login">'
         print '        AuthType Basic'
         print '        AuthName "%s"' % project_name
         print '        AuthUserFile /somewhere/trac.htpasswd'
         print '        Require valid-user'
-	print '    </Location>'
-	print
+        print '    </Location>'
+        print
 
         print ' The latest documentation can also always be found on the project website:'
         print ' http://projects.edgewall.com/trac/'
@@ -800,11 +819,12 @@ class TracAdmin(cmd.Cmd):
                        ('milestone add <name> [time]', 'Add milestone'),
                        ('milestone rename <name> <newname>',
                         'Rename milestone'),
-                       ('milestone time <name> <time>', 'Set milestone date (Format: "Jun 3, 2003")'),
+                       ('milestone time <name> <time>',
+                        'Set milestone date (Format: "%s" or "now")'
+                        % util.get_date_format_hint()),
                        ('milestone remove <name>', 'Remove milestone')]
 
     def complete_milestone (self, text, line, begidx, endidx):
-
         if begidx in [15,17]:
             comp = self.get_milestone_list ()
         elif begidx < 15:
@@ -812,19 +832,74 @@ class TracAdmin(cmd.Cmd):
         return self.word_complete(text, comp)
 
     def do_milestone(self, line):
-        self._do_mile_ver('milestone', line)
+        arg = self.arg_tokenize(line)
+        try:
+            if arg[0]  == 'list':
+                self._do_milestone_list()
+            elif arg[0] == 'add' and len(arg) in [2,3]:
+                self._do_milestone_add(arg[1])
+                if len(arg) == 3:
+                    self._do_milestone_time(arg[1], arg[2])
+            elif arg[0] == 'rename' and len(arg) == 3:
+                self._do_milestone_rename(arg[1], arg[2])
+            elif arg[0] == 'time' and len(arg) == 3:
+                self._do_milestone_time(arg[1], arg[2])
+            elif arg[0] == 'remove' and len(arg) == 2:
+                self._do_milestone_remove(arg[1])
+            else:
+                self.do_help('milestone')
+        except Exception, e:
+            print 'Command %s failed:' % arg[0], e
 
+    def _do_milestone_list(self):
+        data = self.db_execsql("SELECT name,time FROM milestone ORDER BY time,name")
+        data = map(lambda x: (x[0], x[1] and time.strftime('%c', time.localtime(x[1]))), data)
+        self.print_listing(['Name', 'Time'], data)
+
+    def _do_milestone_rename(self, name, newname):
+        d = {'name':name, 'newname':newname}
+        data = self.db_execsql("SELECT name FROM milestone" 
+                               " WHERE name='%(name)s'" % d)
+        if not data:
+            raise Exception, "No such milestone '%s'" % name
+        data = self.db_execsql("UPDATE milestone SET name='%(newname)s'" 
+                               " WHERE name='%(name)s'" % d)
+
+    def _do_milestone_add(self, name):
+        data = self.db_execsql("INSERT INTO milestone (name, time) "
+                               " VALUES('%(name)s', 0)" % {'name':name})
+
+    def _do_milestone_remove(self, name):
+        d = {'name':name}
+        data = self.db_execsql("SELECT name FROM milestone" 
+                               " WHERE name='%(name)s'" % d)
+        if not data:
+            raise Exception, "No such milestone '%s'" % name
+        data = self.db_execsql("DELETE FROM milestone" 
+                               " WHERE name='%(name)s'" % d)
+
+    def _do_milestone_time(self, name, t):
+        d = {'name':name}
+        data = self.db_execsql("SELECT name FROM milestone" 
+                               " WHERE name='%(name)s'" % d)
+        if not data:
+            raise Exception, "No such milestone '%s'" % name
+        seconds = self._parse_datetime(t)
+        if seconds != None:
+            data = self.db_execsql("UPDATE milestone SET time='%s'" 
+                                   " WHERE name='%s'" % (seconds, name))
 
     ## Version
     _help_version = [('version list', 'Show versions'),
                        ('version add <name> [time]', 'Add version'),
                        ('version rename <name> <newname>',
                         'Rename version'),
-                       ('version time <name> <time>', 'Set version date (Format: "Jun 3, 2003")'),
+                       ('version time <name> <time>',
+                        'Set version date (Format: "%s" or "now")'
+                        % util.get_date_format_hint()),
                        ('version remove <name>', 'Remove version')]
 
     def complete_version (self, text, line, begidx, endidx):
-
         if begidx in [13, 15]:
             comp = self.get_version_list ()
         elif begidx < 13:
@@ -832,100 +907,64 @@ class TracAdmin(cmd.Cmd):
         return self.word_complete(text, comp)
 
     def do_version(self, line):
-        self._do_mile_ver('version', line)
-
-    # Milestone and Version are identical,  methods
-
-    def _do_mile_ver(self, type, line):
         arg = self.arg_tokenize(line)
         try:
             if arg[0]  == 'list':
-                self._do_mile_ver_list(type)
+                self._do_version_list()
             elif arg[0] == 'add' and len(arg) in [2,3]:
-                name = arg[1]
-                self._do_mile_ver_add(type, name)
+                self._do_version_add(arg[1])
                 if len(arg) == 3:
-                    time = arg[2]
-                    self._do_mile_ver_time(type, name, time)
-            elif arg[0] == 'rename'  and len(arg)==3:
-                name = arg[1]
-                newname = arg[2]
-                self._do_mile_ver_rename(type, name, newname)
-            elif arg[0] == 'time'  and len(arg)==3:
-                name = arg[1]
-                time = arg[2]
-                self._do_mile_ver_time(type, name, time)
-            elif arg[0] == 'remove'  and len(arg)==2:
-                name = arg[1]
-                self._do_mile_ver_remove(type, name)
+                    self._do_version_time(arg[1], arg[2])
+            elif arg[0] == 'rename' and len(arg) == 3:
+                self._do_version_rename(arg[1], arg[2])
+            elif arg[0] == 'time' and len(arg) == 3:
+                self._do_version_time(arg[1], arg[2])
+            elif arg[0] == 'remove' and len(arg) == 2:
+                self._do_version_remove(arg[1])
             else:
-                self.do_help (type)
+                self.do_help('version')
         except Exception, e:
             print 'Command %s failed:' % arg[0], e
 
-    def _do_mile_ver_list(self, type):
-        data = self.db_execsql("SELECT name,time FROM %s ORDER BY time,name"
-                               % type)
+    def _do_version_list(self):
+        data = self.db_execsql("SELECT name,time FROM version ORDER BY time,name")
         data = map(lambda x: (x[0], x[1] and time.strftime('%c', time.localtime(x[1]))), data)
-        #print data
         self.print_listing(['Name', 'Time'], data)
 
-    def _do_mile_ver_rename(self, type, name, newname):
-        d = {'name':name, 'newname':newname, 'type':type}
-        data = self.db_execsql("SELECT name FROM %(type)s" 
+    def _do_version_rename(self, name, newname):
+        d = {'name':name, 'newname':newname}
+        data = self.db_execsql("SELECT name FROM version" 
                                " WHERE name='%(name)s'" % d)
         if not data:
-            raise Exception, "No such %s '%s'" % (type, name)
-        data = self.db_execsql("UPDATE %(type)s SET name='%(newname)s'" 
+            raise Exception, "No such version '%s'" % name
+        data = self.db_execsql("UPDATE version SET name='%(newname)s'" 
                                " WHERE name='%(name)s'" % d)
 
-    def _do_mile_ver_add(self, type, name):
-        sql = ("INSERT INTO %(type)s('name', 'time') "
-               " VALUES('%(name)s', 0)" 
-               % {'type':type, 'name':name})
-        data = self.db_execsql(sql)
+    def _do_version_add(self, name):
+        data = self.db_execsql("INSERT INTO version (name, time) "
+                               " VALUES('%(name)s', 0)" % {'name':name})
 
-    def _do_mile_ver_remove(self, type, name):
-        d = {'name':name, 'type':type}
-        data = self.db_execsql("SELECT name FROM %(type)s" 
+    def _do_version_remove(self, name):
+        d = {'name':name}
+        data = self.db_execsql("SELECT name FROM version" 
                                " WHERE name='%(name)s'" % d)
         if not data:
-            raise Exception, "No such %s '%s'" % (type, name)
-        data = self.db_execsql("DELETE FROM %(type)s" 
+            raise Exception, "No such version '%s'" % name
+        data = self.db_execsql("DELETE FROM version" 
                                " WHERE name='%(name)s'" % d)
 
-    def _do_mile_ver_time(self, type, name, t):
-        d = {'name':name, 'type':type}
-        data = self.db_execsql("SELECT name FROM %(type)s" 
+    def _do_version_time(self, name, t):
+        d = {'name':name}
+        data = self.db_execsql("SELECT name FROM version" 
                                " WHERE name='%(name)s'" % d)
         if not data:
-            raise Exception, "No such %s '%s'" % (type, name)
-        seconds = None
-        t = t.strip()
-        if t == 'now':
-            seconds = int(time.time())
-        else:
-            for format in ['%x %X', '%x, %X', '%X %x', '%X, %x', '%x', '%c',
-                           '%b %d, %Y']:
-                try:
-                    pt = time.strptime(t, format)
-                    #print pt
-                    seconds = str(time.mktime(pt))
-                except ValueError:
-                    continue
-                break
-        if seconds == None:
-            try:
-                seconds = int(t)
-            except ValueError:
-                pass
+            raise Exception, "No such version '%s'" % name
+        seconds = self._parse_datetime(t)
         if seconds != None:
-            data = self.db_execsql("UPDATE %s SET time='%s'" 
-                                   " WHERE name='%s'" % (type, seconds, name))
-        else:
-            print >> sys.stderr, 'Unknown time format'
+            data = self.db_execsql("UPDATE version SET time='%s'" 
+                                   " WHERE name='%s'" % (seconds, name))
 
-    _help_upgrade = [('upgrade', 'Upgrade database to current version.')]
+    _help_upgrade = [('upgrade', 'Upgrade database to current version')]
     def do_upgrade(self, line):
         arg = self.arg_tokenize(line)
         do_backup = 1
@@ -948,7 +987,7 @@ class TracAdmin(cmd.Cmd):
         except Exception, e:
             print "Upgrade failed: ",e
 
-    _help_hotcopy = [('hotcopy <backupdir>', 'Make a hot backup copy of an environment.')]
+    _help_hotcopy = [('hotcopy <backupdir>', 'Make a hot backup copy of an environment')]
     def do_hotcopy(self, line):
         arg = self.arg_tokenize(line)
         if arg[0]:
