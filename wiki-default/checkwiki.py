@@ -21,6 +21,7 @@ wiki_pages = [
  "TracGuide",
  "TracInstall",
  "TracLinks",
+ "TracLogging",
  "TracOnNetBsd",
  "TracOnOsx",
  "TracPermissions",
@@ -37,7 +38,8 @@ wiki_pages = [
  "WikiNewPage",
  "WikiPageNames",
  "WikiProcessors",
- "WikiRestructuredText"
+ "WikiRestructuredText",
+ "WikiRestructuredTextLinks"
  ]
 
 def get_page_from_file (pname):

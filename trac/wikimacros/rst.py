@@ -32,57 +32,64 @@ from docutils import nodes
 from docutils.core import publish_string
 from docutils.parsers.rst import directives
 
+from trac.Href import Href
+
 __docformat__ = 'reStructuredText'
 
+WIKI_LINK = re.compile(r'(?:wiki:)?(?P<w>(^|(?<=[^A-Za-z]))[!]?[A-Z][a-z/]+(?:[A-Z][a-z/]+)+)')
 TICKET_LINK = re.compile(r'(?:#(\d+))|(?:ticket:(\d+))')
 REPORT_LINK = re.compile(r'(?:{(\d+)})|(?:report:(\d+))')
 CHANGESET_LINK = re.compile(r'(?:\[(\d+)\])|(?:changeset:(\d+))')
 FILE_LINK = re.compile(r'(?:browser|repos|source):([^#]+)#?(.*)')
 
-def _ticket(match,arguments):
+def _wikipage(href, match, arguments):
+    """_wiki(match,arguments) -> (uri,text)"""
+    template = '../wiki/%s'
+    page = filter(None,match.groups())[0]
+    text = arguments[int(len(arguments) == 2)]
+    uri = href.wiki(page)
+    return (uri, text)
+
+def _ticket(href, match, arguments):
     """_ticket(match,arguments) -> (uri,text)"""
-    template = 'ticket/%s'
     ticket = int(filter(None,match.groups())[0])
     text = arguments[int(len(arguments) == 2)]
-    return (template % (ticket,), text)
+    uri = href.ticket(ticket)
+    return (uri, text)
 
-def _report(match,arguments):
+def _report(href, match, arguments):
     """_report(match,arguments) -> (uri,text)"""
-    template = 'report/%d'
     report = int(filter(None,match.groups())[0])
     text = arguments[int(len(arguments) == 2)]
-    return (template % (report,), text)
+    uri = href.report(report)
+    return (uri, text)
 
-def _changeset(match,arguments):
+def _changeset(href, match, arguments):
     """_changeset(match,arguments) -> (uri,text)"""
-    template = 'changeset/%d'
     changeset = int(filter(None,match.groups())[0])
     text = arguments[int(len(arguments) == 2)]
-    return (template % (changeset,), text)
+    uri = href.changeset(changeset)
+    return (uri, text)
 
-def _browser(match,arguments):
+def _browser(href, match, arguments):
     """_browser(match,arguments) -> (uri,text)"""
-    template = 'browser/%s'
     matches = filter(None,match.groups())
     if len(matches) == 2:
         path,revision = matches
     else:
         path,revision = matches[0],''
-    uri = template % path
-    if revision:
-        uri += '?rev=%s' % revision
+    uri = href.browser(path, revision)
     text = arguments[int(len(arguments) == 2)]
     return (uri, text)
 
 # TracLink REs and callback functions
-LINKS = [
-    (TICKET_LINK, _ticket),
-    (REPORT_LINK, _report),
-    (CHANGESET_LINK, _changeset),
-    (FILE_LINK, _browser),
-]
+LINKS = [(WIKI_LINK, _wikipage),
+         (TICKET_LINK, _ticket),
+         (REPORT_LINK, _report),
+         (CHANGESET_LINK, _changeset),
+         (FILE_LINK, _browser)]
 
-def trac(name,arguments,options,content,lineno,
+def trac(href, name,arguments,options,content,lineno,
          content_offset,block_text,state,state_machine):
     """Inserts a `reference` node into the document 
     for a given `TracLink`_, based on the content 
@@ -94,7 +101,8 @@ def trac(name,arguments,options,content,lineno,
 
     ``target`` may be one of the following:
 
-      * For tickets: ``#1`` or ``ticket:1``
+      * For wiki: ``WikiName`` or ``wiki:WikiName``
+       * For tickets: ``#1`` or ``ticket:1``
       * For reports: ``{1}`` or ``report:1``
       * For changesets: ``[1]`` or ``changeset:1``
       * For files: ``source:trunk/COPYING``
@@ -104,12 +112,11 @@ def trac(name,arguments,options,content,lineno,
 
     .. _TracLink: http://projects.edgewall.com/trac/wiki/TracLinks
     """
-
     for (pattern, function) in LINKS:
         m = pattern.match(arguments[0])
         if m:
-            uri,text = function(m,arguments)
-            reference = nodes.reference(block_text,text)
+            uri,text = function(href, m,arguments)
+            reference = nodes.reference(block_text, text)
             reference['refuri']= uri
             return reference
 
@@ -121,78 +128,16 @@ def trac(name,arguments,options,content,lineno,
             line=lineno)
     return [warning]
 
-trac.arguments = (1,1,1)    # 1 required arg, 1 optional arg, spaces allowed in last arg
-trac.options = None
-trac.content = None
-directives.register_directive('trac', trac)
+def execute(hdf, text, env, href): 
+    def do_trac(name,arguments,options,content,lineno,
+                content_offset,block_text,state,state_machine):
+        return trac(href, name,arguments,options,content,lineno,
+                    content_offset,block_text,state,state_machine)
+    # 1 required arg, 1 optional arg, spaces allowed in last arg
+    do_trac.arguments = (1,1,1)    
+    do_trac.options = None
+    do_trac.content = None
+    directives.register_directive('trac', do_trac)
 
-def execute(hdf, text):
     html = publish_string(text, writer_name = 'html')
     return html[html.find('<body>')+6:html.find('</body>')].strip()
-
-# A naive test
-if __name__ == '__main__':
-    __test = """
-===============
-Trac Link Tests
-===============
-
-This document is for testing the ``..trac::`` directive.
-
-tickets
-=======
-
-``.. trac:: #1``:
-	.. trac:: #1
-``.. trac:: #1 ticket one``:
-	.. trac:: #1 ticket one
-``.. trac:: ticket:1``:
-	.. trac:: ticket:1
-``.. trac:: ticket:1 ticket one``:
-	.. trac:: ticket:1 ticket one
-
-reports
-=======
-
-``.. trac:: {1}``:
-	.. trac:: {1}
-``.. trac:: {1} report one``:
-	.. trac:: {1} report one
-``.. trac:: report:1``:
-	.. trac:: report:1
-``.. trac:: report:1 report one``:
-	.. trac:: report:1 report one
-
-changesets
-==========
-
-``.. trac:: [42]``: 
-	.. trac:: [42]
-``.. trac:: [42] changeset 42``: 
-	.. trac:: [42] changeset 42
-``.. trac:: changeset:42``: 
-	.. trac:: changeset:42
-``.. trac:: changeset:42 changeset 42``: 
-	.. trac:: changeset:42 changeset 42
-``.. trac:: foo``: 
-	.. trac:: foo
-
-files
-=====
-
-``.. trac:: browser:foo/hoo``:
-	.. trac:: browser:foo/hoo
-``.. trac:: repos:foo/hoo foo/hoo``:
-	.. trac:: repos:foo/hoo foo/hoo
-``.. trac:: source:foo/hoo hoo in foo``:
-	.. trac:: source:foo/hoo hoo in foo
-``.. trac:: browser:foo/hoo#latest latest of foo/hoo``:
-	.. trac:: browser:foo/hoo#latest latest of foo/hoo
-``.. trac:: repos:foo/hoo#42 foo/hoo in rev 42``:
-	.. trac:: repos:foo/hoo#42 foo/hoo in rev 42
-"""
-
-    html = publish_string(__test, writer_name = 'html')
-    print html
-    
-

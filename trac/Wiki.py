@@ -238,9 +238,9 @@ class Formatter(CommonFormatter):
                         'modulename', 'moduleargs')
 
 
-    def default_processor(hdf, text):
+    def default_processor(hdf, text, env, href):
         return '<pre class="wiki">' + escape(text) + '</pre>'
-    def html_processor(hdf, text):
+    def html_processor(hdf, text, env, href):
         return text
 
     builtin_processors = { 'html': html_processor,
@@ -258,7 +258,7 @@ class Formatter(CommonFormatter):
         args = fullmatch.group('macroargs')
         try:
             macro = self.load_macro(name)
-            return macro(self.hdf, args)
+            return macro(self.hdf, args, self.env, self.href)
         except Exception, e:
             return '<span class="error">Macro %s(%s) failed: %s</span' \
                    % (name, args, e)
@@ -405,7 +405,8 @@ class Formatter(CommonFormatter):
             if self.in_code_block == 0 and self.code_processor:
                 self.close_paragraph()
                 self.close_table()
-                self.out.write(self.code_processor(self.hdf, self.code_text))
+                self.out.write(self.code_processor(self.hdf, self.code_text,
+                                                   self.env, self.href))
             else:
                 self.code_text += os.linesep + line
         elif not self.code_processor:
