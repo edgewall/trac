@@ -22,6 +22,7 @@
 from util import *
 from Module import Module
 from Href import href
+from Wiki import wiki_to_html
 import db
 import perm
 from xml.sax.saxutils import escape
@@ -214,7 +215,7 @@ class Changeset (Module):
         self.cgi.hdf.setValue('changeset.time',
                               time_to_string (int(changeset_info['time'])))
         self.cgi.hdf.setValue('changeset.author', changeset_info['author'])
-        self.cgi.hdf.setValue('changeset.message', changeset_info['message'])
+        self.cgi.hdf.setValue('changeset.message', wiki_to_html(changeset_info['message']))
         self.cgi.hdf.setValue('changeset.revision', str(self.rev))
 
         add_dictlist_to_hdf(change_info, self.cgi.hdf, 'changeset.changes')

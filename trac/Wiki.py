@@ -25,6 +25,7 @@ import os
 import StringIO
 import auth
 import perm
+import string
 from Href import href
 from Module import Module
 from db import get_connection
@@ -45,59 +46,41 @@ def populate_page_dict():
             break
         page_dict[row[0]] = 1
 
-class Formatter:
-    """
-    A simple Wiki formatter
-    """
-    _url_re = r'([a-z]+://[^ ]+)'
-#    _url_re = r'(((new|file|(ht|f)tp)s?://))([a-z0-9_-]+:[a-z0-9_-]+\@)?([a-z0-9]+(\-*[a-z0-9]+)*\.)+[a-z]{2,7}(/~?[a-z0-9_\.%\-]+)?(/[a-z0-9_\.%\-]+)*(/?[a-z0-9_\%\-]*(\.[a-z0-9]+)?(\#[a-zA-Z0-9_\.]+)?)(\?([a-z0-9_\.\%\-]+)\=[a-z0-9_\.\%\/\-]*)?(&([a-z0-9_\.\%\-]+)\=[a-z0-9_\.\%\/\-]*)?(#[a-z0-9]+)?'
-
-
-
-    _rules = r"""(?:(?P<bold>''')""" \
-             r"""|(?P<tickethref> #[0-9]+)""" \
-             r"""|(?P<changesethref>\[[0-9]+\])""" \
-             r"""|(?P<reporthref>\{[0-9]+\})""" \
-             r"""|(?P<svnhref>(svn:[^ ]+))""" \
-             r"""|(?P<fancysvnhref>\[(?P<fancysvnfile>svn:[^ ]+) (?P<svnlinkname>.*?)\])""" \
-             r"""|(?P<italic>'')""" \
-             r"""|(?P<beginpre>\{\{\{$)""" \
-             r"""|(?P<endpre>\}\}\}$)""" \
-             r"""|(?P<begintt>\{\{\{)""" \
-             r"""|(?P<endtt>\}\}\})""" \
-             r"""|(?P<br>\[\[(br|BR)\]\])""" \
-             r"""|(?P<hr>-{4,})""" \
-             r"""|(?P<heading>^\s*(?P<hdepth>=+)\s.*\s(?P=hdepth)$)""" \
-             r"""|(?P<listitem>^(?P<ldepth>\s+)(?:\*|[0-9]+\.) )""" \
-             r"""|(?P<wikilink>(^|(?<=[^A-Za-z]))[A-Z][a-z]*(?:[A-Z][a-z]+)+)""" \
-             r"""|(?P<indent>^(?P<idepth>\s+)(?=[^\s]))""" \
-             r"""|(?P<imgurl>%(url_re)s(\.png|\.jpg|\.jpeg|\.gif))""" \
-             r"""|(?P<url>%(url_re)s)""" \
-             r"""|(?P<fancylink>\[(?P<fancyurl>%(url_re)s) (?P<linkname>.*?)\])""" \
-             r"""|(?P<underline>__))""" % { 'url_re': _url_re}
+class CommonFormatter:
+    """This class contains the patterns common to both Formatter and
+    OneLinerFormatter"""
     
-    # RE patterns used by other patterna
-    _helper_patterns = ('idepth', 'ldepth', 'hdepth', 'fancyurl',
-                        'linkname', 'fancysvnfile', 'svnlinkname')
+    _rules = [r"""(?P<bold>''')""",
+              r"""(?P<italic>'')""",
+              r"""(?P<underline>__)""",
+              r"""(?P<tickethref> #[0-9]+)""",
+              r"""(?P<changesethref>\[[0-9]+\])""",
+              r"""(?P<reporthref>\{[0-9]+\})""",
+              r"""(?P<svnhref>(svn:[^ ]+))""",
+              r"""(?P<wikilink>(^|(?<=[^A-Za-z]))[A-Z][a-z]*(?:[A-Z][a-z]+)+)""",
+              r"""(?P<url>([a-z]+://[^ ]+))""",
+              r"""(?P<fancylink>\[(?P<fancyurl>([a-z]+://[^ ]+)) (?P<linkname>.*?)\])"""]
 
+
+    def compile_rules(self, rules):
+        return re.compile('(?:' + string.join(rules, '|') + ')')
+
+    def replace(self, fullmatch):
+        for type, match in fullmatch.groupdict().items():
+            if match and not type in Formatter._helper_patterns:
+                return getattr(self, '_' + type + '_formatter')(match, fullmatch)
+    
     def _bold_formatter(self, match, fullmatch):
         self._is_bold = not self._is_bold
         return ['</strong>', '<strong>'][self._is_bold]
 
-    def _beginpre_formatter(self, match, fullmatch):
-        self._in_pre = 1
-        return '<pre>'
+    def _italic_formatter(self, match, fullmatch):
+        self._is_italic = not self._is_italic
+        return ['</i>', '<i>'][self._is_italic]
 
-    def _endpre_formatter(self, match, fullmatch):
-        in_pre = self._in_pre
-        self._in_pre = 0
-        return ['</tt>', '</pre>'][in_pre]
-
-    def _begintt_formatter(self, match, fullmatch):
-        return ['<tt>', ''][self._in_pre]
-
-    def _endtt_formatter(self, match, fullmatch):
-        return ['</tt>', ''][self._in_pre]
+    def _underline_formatter(self, match, fullmatch):
+        self._is_underline = not self._is_underline
+        return ['</u>', '<u>'][self._is_underline]
 
     def _tickethref_formatter(self, match, fullmatch):
         number = int(match[2:])
@@ -114,39 +97,12 @@ class Formatter:
     def _svnhref_formatter(self, match, fullmatch):
         return '<a href="%s">%s</a>' % (href.log(match[4:]), match[4:])
 
-    def _fancysvnhref_formatter(self, match, fullmatch):
-        path = fullmatch.group('fancysvnfile')
-        name = fullmatch.group('svnlinkname')
-        return '<a href="%s">%s</a>' % (href.log(path[4:]), name)
-
-    def _italic_formatter(self, match, fullmatch):
-        self._is_italic = not self._is_italic
-        return ['</i>', '<i>'][self._is_italic]
-
-    def _hr_formatter(self, match, fullmatch):
-        return '<hr />'
-
-    def _br_formatter(self, match, fullmatch):
-        return '<br />'
-
-    def _underline_formatter(self, match, fullmatch):
-        self._is_underline = not self._is_underline
-        return ['</u>', '<u>'][self._is_underline]
-
-    def _heading_formatter(self, match, fullmatch):
-        depth = min(len(fullmatch.group('hdepth')), 5)
-        self.is_heading = 1
-        return '<h%d>%s</h%d>' % (depth, match[depth + 1:len(match) - depth - 1], depth)
-
     def _wikilink_formatter(self, match, fullmatch):
         global page_dict
         if page_dict and not page_dict.has_key(match):
             return '<a class="wiki-missing-page" href="%s">%s?</a>' % (href.wiki(match), match)
         else:
             return '<a href="%s">%s</a>' % (href.wiki(match), match)
-
-    def _imgurl_formatter(self, match, fullmatch):
-        return '<img src="%s" />' % match
 
     def _url_formatter(self, match, fullmatch):
         return '<a href="%s">%s</a>' % (match, match)
@@ -155,6 +111,80 @@ class Formatter:
         link = fullmatch.group('fancyurl')
         name = fullmatch.group('linkname')
         return '<a href="%s">%s</a>' % (link, name)
+
+
+class OneLinerFormatter(CommonFormatter):
+    """
+    A special version of the wiki formatter that only implement a
+    subset of the wiki formatting functions. This version is useful
+    for rendering short wiki-formatted messages on a single line
+    """
+    
+    def format(self, text, out):
+        self.out = out
+        rules = self.compile_rules(self._rules)
+        p_open = 0
+        self._is_bold = 0
+        self._is_italic = 0
+        self._is_underline = 0
+        text = escape(text)
+        result = re.sub(rules, self.replace, text)
+        out.write(result)
+
+class Formatter(CommonFormatter):
+    """
+    A simple Wiki formatter
+    """
+    _rules = CommonFormatter._rules + \
+             [r"""(?P<fancysvnhref>\[(?P<fancysvnfile>svn:[^ ]+) (?P<svnlinkname>.*?)\])""",
+              r"""(?P<beginpre>\{\{\{$)""",
+              r"""(?P<endpre>\}\}\}$)""",
+              r"""(?P<begintt>\{\{\{)""",
+              r"""(?P<endtt>\}\}\})""",
+              r"""(?P<br>\[\[(br|BR)\]\])""",
+              r"""(?P<hr>-{4,})""",
+              r"""(?P<heading>^\s*(?P<hdepth>=+)\s.*\s(?P=hdepth)$)""",
+              r"""(?P<listitem>^(?P<ldepth>\s+)(?:\*|[0-9]+\.) )""",
+              r"""(?P<indent>^(?P<idepth>\s+)(?=[^\s]))""",
+              r"""(?P<imgurl>([a-z]+://[^ ]+)(\.png|\.jpg|\.jpeg|\.gif))"""]
+    
+    # RE patterns used by other patterna
+    _helper_patterns = ('idepth', 'ldepth', 'hdepth', 'fancyurl',
+                        'linkname', 'fancysvnfile', 'svnlinkname')
+
+    def _beginpre_formatter(self, match, fullmatch):
+        self._in_pre = 1
+        return '<pre>'
+
+    def _endpre_formatter(self, match, fullmatch):
+        in_pre = self._in_pre
+        self._in_pre = 0
+        return ['</tt>', '</pre>'][in_pre]
+
+    def _begintt_formatter(self, match, fullmatch):
+        return ['<tt>', ''][self._in_pre]
+
+    def _endtt_formatter(self, match, fullmatch):
+        return ['</tt>', ''][self._in_pre]
+
+    def _fancysvnhref_formatter(self, match, fullmatch):
+        path = fullmatch.group('fancysvnfile')
+        name = fullmatch.group('svnlinkname')
+        return '<a href="%s">%s</a>' % (href.log(path[4:]), name)
+
+    def _hr_formatter(self, match, fullmatch):
+        return '<hr />'
+
+    def _br_formatter(self, match, fullmatch):
+        return '<br />'
+
+    def _heading_formatter(self, match, fullmatch):
+        depth = min(len(fullmatch.group('hdepth')), 5)
+        self.is_heading = 1
+        return '<h%d>%s</h%d>' % (depth, match[depth + 1:len(match) - depth - 1], depth)
+
+    def _imgurl_formatter(self, match, fullmatch):
+        return '<img src="%s" />' % match
 
     def _set_list_depth(self, depth, type):
         self._in_list = depth > 0
@@ -194,14 +224,9 @@ class Formatter:
         return ' '
         #return '<li>%s</li>' % match[depth * 2 + 1:]
         
-    def replace(self, fullmatch):
-        for type, match in fullmatch.groupdict().items():
-            if match and not type in Formatter._helper_patterns:
-                return getattr(self, '_' + type + '_formatter')(match, fullmatch)
-    
     def format(self, text, out):
         self.out = out
-        rules = re.compile(Formatter._rules)
+        rules = self.compile_rules(self._rules)
         p_open = 0
         self.is_heading = 0
         self._li_open = 0
@@ -247,6 +272,12 @@ def wiki_to_html(wikitext):
     out = StringIO.StringIO()
     Formatter().format(wikitext, out)
     return out.getvalue()
+
+def wiki_to_oneliner(wikitext):
+    out = StringIO.StringIO()
+    OneLinerFormatter().format(wikitext, out)
+    return out.getvalue()
+
 
 class Page:
     def __init__(self, name, version):

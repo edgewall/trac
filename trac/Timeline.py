@@ -22,6 +22,7 @@
 from util import *
 from Href import href
 from Module import Module
+from Wiki import wiki_to_oneliner
 import db
 import perm
 
@@ -94,10 +95,12 @@ class Timeline (Module):
                     'author': row['author']}
             if row['type'] == '1':
                 item['changeset_href'] = href.changeset(int(row['data']))
-            if row['type'] == '5':
+                item['message'] = wiki_to_oneliner(item['message'])
+            elif row['type'] == '5':
                 item['wiki_href'] = href.wiki(row['data'])
             else:
                 item['ticket_href'] = href.ticket(int(row['data']))
+                item['message'] = wiki_to_oneliner(item['message'])
             info.append(item)
         return info
         
@@ -138,6 +141,5 @@ class Timeline (Module):
             self.cgi.hdf.setValue('timeline.changeset', 'checked')
         
         info = self.get_info (start, stop, ticket, changeset, wiki)
-
         add_dictlist_to_hdf(info, self.cgi.hdf, 'timeline.items')
 
