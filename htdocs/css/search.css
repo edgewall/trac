@@ -1,4 +1,6 @@
-#content form { margin-top: 1em }
+#content form { margin: 1em 0 0 }
+#content form p { margin: .5em 0 }
+#content hr { clear: left; margin-bottom: 0 }
 #notfound { margin: 2em; font-size: 110% }
 
 #results { margin-right: 3em }
@@ -6,4 +8,6 @@
 #results dt a { color: #33c }
 #results dd { font-size: 80%; margin: 0; padding: 0 }
 #results .author, #results .date, #results .keywords { color: #090 }
-#paging { font-size: 85%; margin: -1em 0 1em }
+
+#paging { margin: 0 0 2em }
+#paging ul { text-align: left }

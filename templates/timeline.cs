@@ -1,12 +1,7 @@
 <?cs set:html.stylesheet = 'css/timeline.css' ?>
 <?cs include "header.cs"?>
 
-<div id="ctxtnav" class="nav">
- <h2>Timeline Navigation</h2>
- <ul>
-  <li class="last"><a href="?daysback=90&amp;max=50&amp;format=rss">RSS Feed</a></li>
- </ul>
-</div>
+<div id="ctxtnav" class="nav"></div>
 
 <div id="content" class="timeline">
  <h1>Timeline</h1>

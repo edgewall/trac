@@ -4,15 +4,33 @@
 addEvent(window, 'load', function() { document.getElementById('q').focus()}); 
 </script>
 
-<div id="ctxtnav" class="nav"></div>
+<div id="ctxtnav" class="nav">
+ <h2>Search Navigation</h2>
+ <ul><?cs
+  if:len(links.prev) ?>
+   <li class="first<?cs if:!len(links.next) ?> last<?cs /if ?>">
+    <a href="<?cs var:links.prev.0.href ?>" title="<?cs
+      var:links.prev.0.title ?>">Previous Page</a>
+   </li><?cs
+  /if ?><?cs
+  if:len(links.next) ?>
+   <li class="<?cs if:len(links.prev) ?>first <?cs /if ?>last">
+    <a href="<?cs var:links.next.0.href ?>" title="<?cs
+      var:links.next.0.title ?>">Next Page</a>
+   </li><?cs
+  /if ?>
+ </ul>
+</div>
 
 <div id="content" class="search">
 
 <h1><label for="q">Search</label></h1>
 <form action="<?cs var:trac.href.search ?>" method="get">
- <div>
+ <p>
   <input type="text" id="q" name="q" size="40" value="<?cs var:search.q ?>" />
-  <input type="submit" value="Search" /><br /><?cs
+  <input type="submit" value="Search" />
+ </p>
+ <p><?cs
   if:trac.acl.WIKI_VIEW ?>
    <input type="checkbox" id="wiki" name="wiki" <?cs
      if:search.wiki ?>checked="checked"<?cs /if ?> />
@@ -28,7 +46,7 @@ addEvent(window, 'load', function() { document.getElementById('q').focus()});
      if:search.changeset ?>checked="checked"<?cs /if ?> />
    <label for="changeset">Changesets</label><?cs
   /if ?>
- </div>
+ </p>
 </form>
 
 <?cs def result(title, keywords, body, link) ?>
@@ -47,8 +65,8 @@ addEvent(window, 'load', function() { document.getElementById('q').focus()});
  <hr />
  <h2>Search results <?cs
   if:len(links.prev) || len(links.next) ?>(<?cs
-   var:search.result.page * search.results_per_page + 1 ?> - <?cs
-   var:search.result.page * search.results_per_page + len(search.result) - 1 ?>)<?cs
+   var:search.result_page * search.results_per_page + 1 ?> - <?cs
+   var:search.result_page * search.results_per_page + len(search.result) ?>)<?cs
   /if ?></h2>
  <div id="searchable">
   <dl id="results"><?cs
@@ -67,15 +85,25 @@ addEvent(window, 'load', function() { document.getElementById('q').focus()});
   </dl>
   <hr />
  </div>
- <p id="paging"><?cs
-  if:len(links.prev) ?>
-   <a href="<?cs var:links.prev.0.href ?>">Previous Page</a><?cs
-     if:len(links.next) ?>&nbsp;|&nbsp;<?cs /if ?><?cs
-  /if ?><?cs
-  if:len(links.next) ?>
-   <a href="<?cs var:links.next.0.href ?>">Next Page</a><?cs
-  /if ?>
- </p>
+ <?cs if:len(links.prev) || len(links.next) ?>
+  <div id="paging" class="nav">
+   <ul><?cs
+    if:len(links.prev) ?>
+     <li class="first<?cs if:!len(links.next) ?> last<?cs /if ?>">
+      <a href="<?cs var:links.prev.0.href ?>" title="<?cs
+        var:links.prev.0.title ?>">Previous Page</a>
+     </li><?cs
+    /if ?><?cs
+    if:len(links.next) ?>
+     <li class="<?cs if:len(links.prev) ?>first <?cs /if ?>last">
+      <a href="<?cs var:links.next.0.href ?>" title="<?cs
+        var:links.next.0.title ?>">Next Page</a>
+     </li><?cs
+    /if ?>
+   </ul>
+  </div>
+ <?cs /if ?>
+
 <?cs elif $search.q ?>
  <div id="notfound">No matches found.</div>
 <?cs /if ?>

@@ -445,3 +445,18 @@ class TicketModule (Module):
                                                self.req.hdf, self.env, self.db))
 
         self.insert_ticket_data(self.req.hdf, id, ticket, reporter_id)
+
+        cursor = self.db.cursor()
+        cursor.execute("SELECT max(id) FROM ticket")
+        row = cursor.fetchone()
+        if row:
+            max_id = int(row[0])
+            if id > 1:
+                self.add_link('first', self.env.href.ticket(1), 'Ticket #1')
+                self.add_link('prev', self.env.href.ticket(id - 1),
+                              'Ticket #%d' % (id - 1))
+            if id < max_id:
+                self.add_link('next', self.env.href.ticket(id + 1),
+                              'Ticket #%d' % (id + 1))
+                self.add_link('last', self.env.href.ticket(max_id),
+                              'Ticket #%d' % (max_id))

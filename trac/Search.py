@@ -216,7 +216,7 @@ class Search(Module):
                 self.req.hdf.setValue('search.wiki', '')
 
             page = int(self.args.get('page', '0'))
-            self.req.hdf.setValue('search.result.page', str(page))
+            self.req.hdf.setValue('search.result_page', str(page))
             info, more = self.perform_query(query, changesets, tickets, wiki,
                                             page)
             add_dictlist_to_hdf(info, self.req.hdf, 'search.result')

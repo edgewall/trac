@@ -170,26 +170,38 @@ class Changeset (Module.Module):
         self.add_link('alternate', '?format=diff', 'Unified Diff',
             'text/plain', 'diff')
 
+        youngest_rev = svn.fs.youngest_rev(self.fs_ptr, self.pool)
         if self.args.has_key('rev'):
             self.rev = int(self.args.get('rev'))
         else:
-            self.rev = svn.fs.youngest_rev(self.fs_ptr, self.pool)
+            self.rev = youngest_rev
 
         change_info = self.get_change_info (self.rev)
         changeset_info = self.get_changeset_info (self.rev)
 
+        self.req.hdf.setValue('title', '[%d] (changeset)' % self.rev)
         self.req.hdf.setValue('changeset.time',
-                              time.asctime (time.localtime(int(changeset_info['time']))))
+                              time.asctime(time.localtime(int(changeset_info['time']))))
         author = changeset_info['author'] or 'anonymous'
         self.req.hdf.setValue('changeset.author', util.escape(author))
         self.req.hdf.setValue('changeset.message',
-                              wiki_to_html(util.wiki_escape_newline(changeset_info['message']),
+                              wiki_to_html(util.wiki_escape_newline(
+                                           changeset_info['message']),
                                            self.req.hdf, self.env, self.db))
         self.req.hdf.setValue('changeset.revision', str(self.rev))
         util.add_dictlist_to_hdf(change_info, self.req.hdf, 'changeset.changes')
+
         self.req.hdf.setValue('changeset.href',
-            self.env.href.changeset(self.rev))
-        self.req.hdf.setValue('title', '[%d] (changeset)' % self.rev)
+                              self.env.href.changeset(self.rev))
+        if self.rev > 1:
+            self.add_link('first', self.env.href.changeset(1), 'Changeset 1')
+            self.add_link('prev', self.env.href.changeset(self.rev - 1),
+                          'Changeset %d' % (self.rev - 1))
+        if self.rev < youngest_rev:
+            self.add_link('next', self.env.href.changeset(self.rev + 1),
+                          'Changeset %d' % (self.rev + 1))
+            self.add_link('last', self.env.href.changeset(youngest_rev),
+                          'Changeset %d' % youngest_rev)
 
     def render_diffs(self, editor_class=HtmlDiffEditor):
         """
