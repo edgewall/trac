@@ -66,11 +66,11 @@ class Report (Module):
         else:
             cursor.execute('SELECT title, sql from report WHERE id=%s', id)
             row = cursor.fetchone()
-            if not row:
-                raise TracError('Report %d does not exist.' % id,
-                                'Invalid Report Number')
-            title = row[0]
             try:
+                if not row:
+                    raise TracError('Report %d does not exist.' % id,
+                                'Invalid Report Number')
+                title = row[0]
                 sql   = self.sql_sub_vars(row[1], args)
                 cursor.execute(sql)
             except Exception, e:
@@ -301,4 +301,5 @@ class Report (Module):
 
     def display_tab(self):
         self.display_csv('\t')
+
 
