@@ -1,0 +1,19 @@
+= The Trac Browser =
+
+The Trac browser can be used to browse directories, change logs 
+and specific revisions of files stored in a subversion repository.
+
+Directory entries are displayed in a list with sortable columns. The list 
+entries can be sorted '''by name''', '''size''' or '''date''' by clicking on the column headers.
+The sorting order can be reversed by clicking on a given column header again.
+
+The browser can be used to navigate through the directory structure 
+by clicking on the directory names. Clicking on filenames on the other 
+hand will display the files change log.
+
+It's also possible to browse directories as they were at any given repository revision. 
+The default behavior is to use the information from the latest revision but
+another revision can easily be selected using the form at the top of the
+page.
+
+See also: TracGuide, TracChangeset

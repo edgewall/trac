@@ -1,0 +1,9 @@
+= Installing and Running Trac on NetBSD =
+
+epg has kindly added Trac to the [http://www.netbsd.org/ NetBSD] package collection.
+
+It should install without trouble.
+
+See also:
+ * http://www.netbsd.org/Documentation/software/packages.html
+ * http://cvsweb.netbsd.org/bsdweb.cgi/pkgsrc/www/trac/

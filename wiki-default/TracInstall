@@ -10,13 +10,13 @@ The following dependencies have to be installed:
 
  * [http://www.python.org/ Python], version >= 2.1.
  * [http://subversion.tigris.org/ subversion], version >= 0.37.
- * [http://pysqlite.sf.net/ pysqlite], version >= 0.4.3
+ * [http://pysqlite.sf.net/ pysqlite], version >= 0.4.3 (>= 0.5 for better performance)
  * [http://clearsilver.net/ ClearSilver], version >= 0.9.3
  * A CGI-capable web server (only tested with Apache)
 
 == Installing Trac ==
 {{{
-        $ python ./setup.py install
+	$ python ./setup.py install
 }}}
 
 This will byte-compile the python source code and install it in the {{{site-packages}}} directory
@@ -32,7 +32,7 @@ is required.
 A new trac database can be created like this:
 
 {{{
-        $ trac-admin /path/to/mydatabase.db initdb
+	$ trac-admin /path/to/mydatabase.db initdb
 }}}
 
 NOTE: The database file have to be located in a directory where the web server
@@ -53,15 +53,15 @@ Finally adjust the filenames and add this config snippet to your web server:
 Alias /trac/ "/where/you/put/trac/htdocs/"
 # Trac need to know where the database is located
 <Location "/cgi-bin/trac.cgi">
-        SetEnv TRAC_DB "/somewhere/myproject.db"
+	SetEnv TRAC_DB "/somewhere/myproject.db"
 </Location>
 
 # You need this to allow users to authenticate
 <Location "/cgi-bin/trac.cgi/login">
-        AuthType Basic
-        AuthName "trac"
-        AuthUserFile /somewhere/trac.htpasswd
-        Require valid-user
+	AuthType Basic
+	AuthName "trac"
+	AuthUserFile /somewhere/trac.htpasswd
+	Require valid-user
 </location>
 }}}
 
@@ -78,3 +78,5 @@ Please read TracPermissions on how to grant additional privileges to authenticat
 
 Enjoy!
 
+
+See also:  TracGuide, TracOnNetBsd, TracOnOsx

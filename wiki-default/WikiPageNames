@@ -1,0 +1,10 @@
+Wiki page names are written using CamelCase. Within a wiki text, any word in CamelCase automatically becomes a hyperlink to the wiki page with that same name.
+
+Page names must follow these rules:
+
+ 1. The name must consist of alphabetic characters only. No digits, spaces, punctuation, or underscores are allowed.
+ 1. A name must have at least two capital letters.
+ 1. The first character must be capitalized.
+ 1. Every capital letter must be followed by one or more lower-case letters. 
+
+See also: WikiNewPage, WikiFormatting, TracWiki

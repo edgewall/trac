@@ -1,0 +1,48 @@
+= Trac Changeset Module =
+Trac has a built-in functionality for visualizing diffs - changes to files.
+
+== The Changeset View ==
+
+When viewing a commited changeset, such as when clicking a changeset
+[wiki:TracLinks TracLink] or a changeset event-line in the 
+[wiki:TracTimeline timeline], Trac will display what changes this current set
+of patches imposes.
+
+
+The changeset view consists of two parts, the '''header''' and the '''diff view'''.
+
+=== Changeset Header ===
+
+The diff body shows an overview of the whole changeset.
+Here you will find information such as:
+
+ * Revision -- The unique revision ID for this changeset.
+ * Timestamp -- When the changeset was commited.
+ * Author -- Who commited the changeset.
+ * Message -- A brief description from the author (the commit log message).
+ * Files -- A list of files affected by this changeset.
+
+In front of each listed file, you'll find  a colored rectangle. The color
+indicates how the file is affected by the changeset.
+ 
+ * Green: Added
+ * Red: Removed
+ * Orange: Modified
+
+The color legend is located below the header as a reminder.
+
+=== Diff View ===
+Below the header is the main part of the changeset, the diff view.
+
+Each file is shown in a separate section, divided by a dashed line in the
+center. This is a '''side-by-side''' view showing only the portions of the file
+affected by this changeset.
+
+On the left hand side are the contents of the old version of the file, on the
+right side the new. To visualize the difference between the old and new
+version, each block of lines altered by the changeset has a colored
+background. The color reflect the change, and the meaning the same as in the
+header (see above).
+
+
+See also: TracGuide, TracBrowser

@@ -1,0 +1,47 @@
+= The Trac Ticket System =
+
+The Trac issue database provides simple but effective tracking of issues and bugs within the project.
+
+As the central project management element of Trac, tickets are be used for '''bug reports''',  '''feature requests'''. '''software support issues''' and '''project tasks'''. 
+
+As with the TracWiki, this subsystem has been designed with the goal of making user contribution and participation as simple as possible. It should be easy to report bugs, ask questions and suggest improvements.
+
+An issue is assigned a person who must resolve it or reassign the ticket to
+someone else. All tickets can be edited, annotated, assigned, prioritized and
+discussed at any time.
+
+== Ticket Fields ==
+
+A  ticket contains the following information attributes:
+ 
+ * '''Reporter''' - The author of the ticket.
+ * '''Component''' - The project module or subsystem this ticket concerns.
+ * '''Version''' - Version of the project does this ticket pertains to.
+ * '''Severity''' - What are the effects the issue described? Ranges from an ''enhancement'' request to ''blocker'' (must be fixed before next milestone).
+ * '''Priority''' - The importance of is the issue relative to other tasks.
+ * '''Milestone''' - When this issue should be resolved at the latest.
+ * '''Assigned to''' - Principal person responsible for handling the issue.
+ * '''Cc''' - A list of other associated people. ''note: this does '''not''' imply responsiblity or any other policy. 
+
+ * '''Status''' - What is the current status?
+
+ * '''Summary''' - A brief description summarizing the problem or issue.
+ * '''Description''' - The body of the ticket. A good description should be '''specific, descriptive and to the point'''.
+
+== Changing and Commenting Tickets ==
+
+Once a ticket has been entered into Trac, you can at any time change the
+information by '''annotating''' the bug. This means changes and comments to
+the ticket are logged as a part of the ticket itself.
+
+When viewing a ticket, this log of changes will appear below the main ticket area.
+
+''In the Trac project, we use ticket comments to discuss issues and
+tasks. This makes understanding the motivation behind a design- or implementation choice easier, when returning to it later.''
+
+'''Note:''' An important feature is being able to use TracLinks and
+WikiFormatting in ticket descriptions and comments. Use TracLinks to refer to
+other issues, changesets or files to make your ticket more specific and easier
+to understand.
+
+See also:  TracGuide, TracWiki

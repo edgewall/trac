@@ -1,0 +1,82 @@
+= Trac Reports =
+The Trac reports module provides a simple, yet powerful reporting facility
+for presenting information about tickets from the Trac database.
+
+== Creating Custom Reports ==
+
+Creating a custom report requires knowing and using the SQL query language.
+
+A report is basically a single named SQL query, executed and presented by
+Trac.  Reports can be viewed and created from a custom SQL expression directly
+in from the web interface.
+
+Typically, a report consists of a SELECT-expression from the 'ticket' table,
+using the available columns and sorting the way you want it.
+
+== Ticket columns ==
+The '''ticket'' table has the following columns:
+ * id
+ * time
+ * changetime
+ * component
+ * severity  
+ * priority 
+ * owner
+ * reporter
+ * cc
+ * url
+ * version -- Version of the project does this ticket pertains to.
+ * milestone
+ * status
+ * resolution
+ * summary
+ * description
+
+See TracTickets for a detailed description of the column fields.
+
+== Special Columns ==
+To format the report properly, Trac needs to know the meaning of some result
+columns . This is a list of column names of special meaning to Trac:
+ * '''ticket''' -- Ticket ID number. Will become a hyperlink to that ticket.
+
+''Note: In upcoming releases, there will be more special columns added, to create color-coded reports, grouping and other nifty features.''
+
+
+
+== Sample Reports ==
+'''status and summary for all tickets'''
+
+{{{
+SELECT id as ticket, status, summary FROM ticket
+}}}
+
+----
+'''all active tickets, sorted by priority and time'''
+
+{{{
+SELECT id AS ticket, status, severity, priority, owner, 
+       time as created, summary FROM ticket 
+  WHERE status IN ('new', 'assigned', 'reopened')
+  ORDER BY priority, time
+}}}
+
+----
+'''active tickets, grouped by milestone and sorted by priority'''
+
+{{{
+SELECT id AS ticket, milestone, status, severity, 
+       priority, component, owner, summary 
+  FROM ticket 
+  WHERE status IN ('new', 'assigned', 'reopened')
+  ORDER BY milestone, 
+    (CASE priority 
+      WHEN 'highest' THEN 0 
+      WHEN 'high' THEN 1 
+      WHEN 'normal' THEN 2 
+      WHEN 'low' THEN 3 
+      ELSE 4 
+    END), severity, time
+}}}
+
+
+See also: TracTickets, TracGuide

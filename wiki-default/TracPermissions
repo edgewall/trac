@@ -11,6 +11,7 @@ rights as soon as they login into the system.
 
 === Available privileges ===
 
+ * {{{TRAC_ADMIN}}}
  * {{{LOG_VIEW}}}
  * {{{FILE_VIEW}}}
  * {{{CHANGESET_VIEW}}}
@@ -20,26 +21,30 @@ rights as soon as they login into the system.
  * {{{WIKI_VIEW, WIKI_CREATE, WIKI_MODIFY, WIKI_DELETE, WIKI_ADMIN}}}
  * {{{TIMELINE_VIEW}}}
  * {{{SEARCH_VIEW}}}
+ * {{{CONFIG_VIEW}}}
 
-The {{{something_ADMIN}}} privileges are just shortcuts that can be used to grant a user all the ''something'' privileges in one go.
+The {{{something_ADMIN}}} privileges are just shortcuts that can be used to grant a user all the ''something'' privileges in one go. Having {{{TRAC_ADMIN}}}
+is like being {{{root}}} on a *NIX system, it will let you do anything you want.
 
 === Granting privileges ===
 
 Currently the only way to grant privileges to users is by using the
-{{{trac_admin.py}}} script. The current set of privileges can be listed
+{{{trac-admin}}} script. The current set of privileges can be listed
 with the following command:
 
 {{{
-  $ trac_admin.py /path/to/my.db permission list
+  $ trac-admin /path/to/my.db permission list
 }}}
 
 This command will let the user ''bob'' to delete reports:
 
 {{{
-  $ trac_admin.py /path/to/my.db permission add bob REPORT_DELETE
+  $ trac-admin /path/to/my.db permission add bob REPORT_DELETE
 }}}
 
 === Default permissions ===
 
 Granting privileges to the special user ''anonymous'' can be used to control
 what an anonymous user can do before they have logged in.
+
+In the same way, privileges granted to the special user ''authenticated'' will apply to any authenticated (logged in) user.

@@ -1,11 +1,9 @@
 = WikiFormatting =
 
-Trac implements a simple Wiki engine. The main goal is to have a simple small
-and fast engine that uses the same command syntax as other well known wikis, especially [http://moin.sf.net/ MoinWiki]. The wiki also serves as the core 
-component of Trac, which tightly integrates all the other parts of Trac into
-flexible and powerful system.
+Wiki serves as the core component of Trac, which tightly integrates all the other parts of Trac into flexible and powerful system.
+Trac has a built in small and powerful wiki rendering engine. This wiki engine implements an ever growing subset of the commands from other popular Wikis especially [http://moin.sf.net/ MoinWiki]. 
 
-This page will demonstrate some of the formatting commands available in the Trac Wiki.
+This page demonstrates some of the formatting commands available in the Trac Wiki.
 
 == Font styles ==
 
@@ -64,19 +62,21 @@ Display:
 
 == Links ==
 
-Hyperlinks are automatically created for wiki names and urls. For example:
+Hyperlinks are automatically created for WikiPageNames and urls. 
+
+For example:
 
  TitleIndex, http://www.edgewall.com/.
 
 Links can be given a move descriptive title by writing the link followed by
 a space and a title and all this inside two square brackets. Like this:
 {{{
- * [http://www.edgewall.com/ Edgewall Software]
+ * [http://www.edgewall.com/ Edgewall Research & Development]
  * [wiki:TitleIndex Title Index]
 }}}
 Display:
 
- * [http://www.edgewall.com/ Edgewall Software]
+ * [http://www.edgewall.com/ Edgewall Research & Development]
  * [wiki:TitleIndex Title Index]
 
 === Intra Trac Links ===

@@ -1,0 +1,33 @@
+= Trac Links =
+
+As you might have guessed, TracLinks are a very fundamental feature of Trac.
+
+They allow easy hyperlinking to files, changesets, bugs/issues and wiki pages from anywhere in the system where WikiFormatting is used. 
+
+TracLinks can refer to tickets, reports and changesets by simply writing the
+ticket, report and changeset numbers in the following notation:
+{{{
+ * Ticket #1 
+ * Report {1}
+ * Changeset [1]
+ * File svn:trunk/COPYING.
+}}}
+Display:
+ * Ticket #1 
+ * Report {1}
+ * Changeset [1]
+ * File svn:trunk/COPYING.
+ 
+It seems a simple enough concept at a glance, but actually allows quite a complex network of information. 
+
+In practice, it's very intuitive and simple to use, and we've found the "link trail" extremely helpful to better understand what's happening in a project or why a particular change was made.
+
+== Where to use TracLinks ==
+You can use TracLinks in:
+
+ * Wiki pages
+ * Ticket descriptions
+ * Source code (Subversion) commit messages
+
+See also: WikiFormatting
+ 
