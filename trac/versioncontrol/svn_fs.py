@@ -208,7 +208,7 @@ class SubversionNode(Node):
         history = _get_history(self.scope + self.path, self.authz, self.fs_ptr,
                                self.pool, self.rev)
         for path, rev in history:
-            if path.startswith(self.scope):
+            if rev > 0 and path.startswith(self.scope):
                 yield path[len(self.scope):], rev
 
     def get_properties(self):
