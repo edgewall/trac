@@ -171,10 +171,10 @@ class Href:
 
     def attachment(self, module, id, filename, format=None):
         id = urllib.quote(urllib.quote(id, ''))
-        filename = urllib.quote(filename)
+        href = href_join(self.base, 'attachment', module, id)
+        if filename:
+            filename = urllib.quote(filename)
+            href = href_join(href, filename)
         if format:
-            return href_join(self.base, 'attachment', module, id, filename) + \
-                   '?format='+format
-        else:
-            return href_join(self.base, 'attachment', module, id, filename)
-
+            href += '?format=%s' % format
+        return href

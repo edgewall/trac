@@ -1,7 +1,7 @@
 # -*- coding: iso8859-1 -*-
 #
-# Copyright (C) 2003, 2004 Edgewall Software
-# Copyright (C) 2003, 2004 Jonas Borgström <jonas@edgewall.com>
+# Copyright (C) 2003, 2004, 2005 Edgewall Software
+# Copyright (C) 2003, 2004, 2005 Jonas Borgström <jonas@edgewall.com>
 #
 # Trac is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License as
@@ -138,7 +138,7 @@ class WikiModule(Module):
         elif action == 'delete':
             version = None
             if req.args.has_key('delete_version'):
-                version = int(req.args.get('version'))
+                version = int(req.args['version'])
             self._delete_page(req, pagename, version)
         elif action == 'save':
             if req.args.has_key('cancel'):
@@ -237,11 +237,8 @@ class WikiModule(Module):
         page = WikiPage(pagename, None, self.perm, self.db)
         if req.args.has_key('text'):
             page.set_content(req.args.get('text'))
-        self.log.debug(" -> readonly = %s" % page.readonly)
         if preview:
             page.readonly = req.args.has_key('readonly')
-
-        self.log.debug("readonly = %s" % page.readonly)
 
         author = req.args.get('author', get_reporter_id(req))
         version = req.args.get('edit_version', None)
@@ -322,14 +319,15 @@ class WikiModule(Module):
             'readonly': page.readonly,
             'page_html': wiki_to_html(page.text, req.hdf, self.env, self.db),
             'page_source': page.text, # for plain text view
-            'history_href': escape(self.env.href.wiki(page.name, action='history')),
-            # Workaround so that we can attach files to wiki pages
-            # even if the page name contains a '/'
-            'namedoublequoted': urllib.quote(urllib.quote(page.name, ''))
+            'history_href': escape(self.env.href.wiki(page.name,
+                                                      action='history'))
         }
         add_to_hdf(info, req.hdf, 'wiki')
+
         self.env.get_attachments_hdf(self.db, 'wiki', pagename, req.hdf,
                                      'wiki.attachments')
+        req.hdf.setValue('wiki.attach_href',
+                         self.env.href.attachment('wiki', pagename, None)) 
 
     def _save_page(self, req, pagename):
         self.perm.assert_permission(perm.WIKI_MODIFY)

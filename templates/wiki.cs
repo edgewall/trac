@@ -222,17 +222,16 @@
       && (wiki.readonly == "0" || trac.acl.WIKI_ADMIN) ?>
    <div class="buttons">
     <?cs if:trac.acl.WIKI_MODIFY ?>
-     <form method="get" action=""><div>
+     <form method="get" action="<?cs var:wiki.current_href ?>"><div>
       <input type="hidden" name="action" value="edit" />
       <input type="submit" value="Edit This Page" />
      </div></form>
-     <form method="get" action="<?cs var:cgi_location?>/attachment/wiki/<?cs
-       var:wiki.namedoublequoted ?>"><div>
+     <form method="get" action="<?cs var:wiki.attach_href ?>"><div>
       <input type="submit" value="Attach File" />
      </div></form>
     <?cs /if ?>
     <?cs if:trac.acl.WIKI_DELETE ?>
-     <form method="post" action=""><div id="delete">
+     <form method="post" action="<?cs var:wiki.current_href ?>"><div id="delete">
       <input type="hidden" name="action" value="delete" />
       <input type="hidden" name="version" value="<?cs var:wiki.version ?>" />
       <input type="submit" name="delete_version" value="Delete This Version" onclick="return confirm('Do you really want to delete version <?cs var:wiki.version?> of this page?\nThis is an irreversible operation.')" />
