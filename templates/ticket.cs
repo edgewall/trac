@@ -1,23 +1,82 @@
 <?cs include "header.cs" ?>
 <?cs include "macros.cs" ?>
+<div id="page-content">
+<div id="page-content">
+<div id="subheader-links">
+</div>
 
-<h3>ticket: #<?cs var:ticket.id ?></h3>
+ <div id="main">
+  <div id="main-content">
 
-<!-- Short summary -->
-<table class="listing">
-<tr>
-  <th class="header-left">Component</th>
-  <th class="header-left">Version</th>
-  <th class="header-left">Status</th>
-  <th class="header-left" width="50%">Summary</th>
-</tr>
-<tr>
-  <td><?cs var:ticket.component ?></td>
-  <td><?cs var:ticket.version ?></td>
-  <td><?cs var:ticket.status ?></td>
-  <td><?cs var:ticket.summary ?></td>
-</tr>
-</table>
+
+<h1 id="tkt-hdr">ticket: #<?cs var:ticket.id ?></h1>
+
+<div id="tkt-ticket">
+  <span id="tkt-date">
+    <?cs var:ticket.opened ?>
+  </span>
+  <h2 id="tkt-summary">
+    #<?cs var:ticket.id ?> : <?cs var:ticket.summary ?>
+  </h2>
+
+<div id="tkt-left">
+
+<div class="tkt-prop">
+  <b class="tkt-label">Priority:</b>&nbsp;
+  <em class="tkt-val"><?cs var:ticket.priority ?></em>
+</div>
+<div class="tkt-prop">
+  <b class="tkt-label">Severity:</b>&nbsp;
+  <em class="tkt-val"><?cs var:ticket.severity ?></em>
+</div>
+
+<div class="tkt-prop">
+  <b class="tkt-label">Component:</b>&nbsp;
+  <em class="tkt-val"><?cs var:ticket.component ?></em>
+</div>
+<div class="tkt-prop">
+  <b class="tkt-label">Version:</b>&nbsp;
+  <em class="tkt-val"><?cs var:ticket.version ?></em>
+</div>
+<div class="tkt-prop">
+  <b class="tkt-label">Milestone:</b>&nbsp;
+  <em class="tkt-val"><?cs var:ticket.milestone ?></em>
+</div>
+
+</div>
+<div id="tkt-right">
+  <div class="tkt-prop">
+    <b class="tkt-label">Reporter:</b>&nbsp;
+    <em class="tkt-val"><?cs var:ticket.reporter ?></em>
+  </div>
+  <div class="tkt-prop">
+    <b class="tkt-label">Assigned to:</b>&nbsp;
+    <em class="tkt-val"><?cs var:ticket.owner ?></em>
+  </div>
+<div class="tkt-prop">
+  <b class="tkt-label">Status:</b>&nbsp;
+  <em class="tkt-val"><?cs var:ticket.status ?></em>
+</div>
+  <div class="tkt-prop">
+    <b class="tkt-label">Resolution:</b>&nbsp;
+    <em class="tkt-val"><?cs var:ticket.resolution ?></em>
+  </div>
+</div>
+
+<br style="clear: both" />
+
+<div id="tkt-descr">
+  <b>Description by 
+    <?cs var:ticket.reporter ?>, <?cs var:ticket.opened ?>
+  </b>
+  <br />
+  <?cs var:ticket.description ?>
+</div>
+
+</div>
+
+<hr style="margin: 2em; display: block"/>
+
 
 <!-- Long description -->
 <p>
@@ -26,12 +85,6 @@
 <table class="listing">
 <tr>
   <td colspan="4">
-
-  <!-- First the original description -->
-  <div class="ticket-modified">description by 
-    <?cs var:ticket.reporter ?> <?cs var:ticket.opened ?>:
-  </div>
-  <?cs var:ticket.description ?>
 
   <!-- Then eventual additional comments -->
   <?cs set:comment = "" ?>
@@ -179,4 +232,8 @@
 </table>
 </form>
 
-<?cs include "footer.cs" ?>
+ </div>
+</div>
+</div>
+<?cs include:"footer.cs"?>
+
