@@ -121,3 +121,9 @@ out:
 <tr><td> RPC# </td><td> parameter len </td><td> ..... parameter ..... 
 </td></tr></table>
 <hr />
+==============================
+''RFCs von ftp://ftp.rfc-editor.org/in-notes/rfcXXXX.txt''
+------------------------------
+<p>
+<i>RFCs von <a href="ftp://ftp.rfc-editor.org/in-notes/rfcXXXX.txt">ftp://ftp.rfc-editor.org/in-notes/rfcXXXX.txt</a></i>
+</p>

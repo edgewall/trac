@@ -216,7 +216,7 @@ class Formatter(CommonFormatter):
               r"""(?P<list>^(?P<ldepth>\s+)(?:\*|[0-9]+\.) )""",
               r"""(?P<indent>^(?P<idepth>\s+)(?=\S))""",
               r"""(?P<imgurl>([a-z]+://[^ ]+)\.(PNG|png|JPG|jpg|JPEG|jpeg|GIF|gif)(\?\S+)?)""",
-              r"""(?P<url>([a-z]+://[^ ]+[^\., \)\]\}]))""",
+              r"""(?P<url>([a-z]+://[^ ]+[^\.,' \)\]\}]))""",
               r"""(?P<last_table_cell>\|\|$)""",
               r"""(?P<table_cell>\|\|)"""]
 
