@@ -1,7 +1,7 @@
 # -*- coding: iso8859-1 -*-
 #
-# Copyright (C) 2004 Edgewall Software
-# Copyright (C) 2004 Daniel Lundin <daniel@edgewall.com>
+# Copyright (C) 2004, 2005 Edgewall Software
+# Copyright (C) 2004, 2005 Daniel Lundin <daniel@edgewall.com>
 #
 # Trac is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License as
@@ -21,7 +21,7 @@
 
 import time
 
-from util import add_to_hdf, TracError
+from util import TracError
 from Module import Module
 
 
@@ -41,10 +41,9 @@ class Settings(Module):
         elif action == 'newsession':
             raise TracError, 'new session'
 
-        req.hdf.setValue('title', 'Settings')
-        req.hdf.setValue('settings.session_id', req.session.sid)
-        add_to_hdf(req.session.data, req.hdf, 'settings')
-
+        req.hdf['title'] = 'Settings'
+        req.hdf['settings'] = req.session.data
+        req.hdf['settings.session_id'] = req.session.sid
 
     def save_settings(self, req):
         for field in self._form_fields:

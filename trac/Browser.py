@@ -1,7 +1,7 @@
 # -*- coding: iso8859-1 -*-
 #
-# Copyright (C) 2003, 2004 Edgewall Software
-# Copyright (C) 2003, 2004 Jonas Borgström <jonas@edgewall.com>
+# Copyright (C) 2003, 2004, 2005 Edgewall Software
+# Copyright (C) 2003, 2004, 2005 Jonas Borgström <jonas@edgewall.com>
 #
 # Trac is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License as
@@ -125,24 +125,22 @@ class Browser(Module.Module):
     def generate_path_links(self, req, path, rev, rev_specified):
         list = filter(None, path.split('/'))
         path = '/'
-        req.hdf.setValue('browser.path.0', 'root')
+        req.hdf['browser.path.0'] = 'root'
         if rev_specified:
-            req.hdf.setValue('browser.path.0.url',
-                             self.env.href.browser(path, rev))
+            req.hdf['browser.path.0.url'] = self.env.href.browser(path, rev)
         else:
-            req.hdf.setValue('browser.path.0.url',
-                             self.env.href.browser(path))
+            req.hdf['browser.path.0.url'] = self.env.href.browser(path)
         i = 0
         for part in list:
             i = i + 1
             path = path + part + '/'
-            req.hdf.setValue('browser.path.%d' % i, part)
+            req.hdf['browser.path.%d' % i] = part
             url = ''
             if rev_specified:
                 url = self.env.href.browser(path, rev)
             else:
                 url = self.env.href.browser(path)
-            req.hdf.setValue('browser.path.%d.url' % i, url)
+            req.hdf['browser.path.%d.url' % i] = url
             if i == len(list) - 1:
                 self.add_link('up', url, 'Parent directory')
 
@@ -186,22 +184,20 @@ class Browser(Module.Module):
         # Always put directories before files
         info.sort(lambda x, y: cmp(y['is_dir'], x['is_dir']))
 
-        util.add_to_hdf(info, req.hdf, 'browser.items')
+        req.hdf['browser.items'] = info
 
         self.generate_path_links(req, path, rev, rev_specified)
         if path != '/':
             parent = '/'.join(path.split('/')[:-2]) + '/'
             if rev_specified:
-                req.hdf.setValue('browser.parent_href',
-                                 self.env.href.browser(parent, rev))
+                req.hdf['browser.parent_href'] = self.env.href.browser(parent, rev)
             else:
-                req.hdf.setValue('browser.parent_href',
-                                 self.env.href.browser(parent))
+                req.hdf['browser.parent_href'] = self.env.href.browser(parent)
 
-        req.hdf.setValue('title', path)
-        req.hdf.setValue('browser.path', path)
-        req.hdf.setValue('browser.revision', str(rev))
-        req.hdf.setValue('browser.order', order)
-        req.hdf.setValue('browser.order_dir', desc and 'desc' or 'asc')
-        req.hdf.setValue('browser.current_href', self.env.href.browser(path))
-        req.hdf.setValue('browser.log_href', self.env.href.log(path))
+        req.hdf['title'] = path
+        req.hdf['browser.path'] = path
+        req.hdf['browser.revision'] = rev
+        req.hdf['browser.order'] = order
+        req.hdf['browser.order_dir'] = desc and 'desc' or 'asc'
+        req.hdf['browser.current_href'] = self.env.href.browser(path)
+        req.hdf['browser.log_href'] = self.env.href.log(path)

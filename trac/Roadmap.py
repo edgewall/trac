@@ -1,7 +1,7 @@
 # -*- coding: iso8859-1 -*-
 #
-# Copyright (C) 2004 Edgewall Software
-# Copyright (C) 2004 Christopher Lenz <cmlenz@gmx.de>
+# Copyright (C) 2004, 2005 Edgewall Software
+# Copyright (C) 2004, 2005 Christopher Lenz <cmlenz@gmx.de>
 #
 # Trac is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License as
@@ -37,7 +37,7 @@ class Roadmap(Module):
 
     def render(self, req):
         self.perm.assert_permission(perm.ROADMAP_VIEW)
-        req.hdf.setValue('title', 'Roadmap')
+        req.hdf['title'] = 'Roadmap'
 
         icalhref = '?format=ics' # FIXME should use the 'webcal:' scheme
         show = req.args.get('show', 'current')
@@ -47,7 +47,7 @@ class Roadmap(Module):
                     "WHERE COALESCE(name,'')!='' " \
                     "ORDER BY COALESCE(due,0)=0,due,name"
         else:
-            req.hdf.setValue('roadmap.showall', '1')
+            req.hdf['roadmap.showall'] = 1
             query = "SELECT name,due,completed,description FROM milestone " \
                     "WHERE COALESCE(name,'')!='' " \
                     "AND COALESCE(completed,0)=0 " \
@@ -86,7 +86,7 @@ class Roadmap(Module):
                 milestone['completed_delta'] = pretty_timedelta(milestone['completed'])
             self.milestones.append(milestone)
         cursor.close()
-        add_to_hdf(self.milestones, req.hdf, 'roadmap.milestones')
+        req.hdf['roadmap.milestones'] = self.milestones
 
         milestone_no = 0
         for milestone in self.milestones:
@@ -94,12 +94,10 @@ class Roadmap(Module):
                                                           milestone['name'],
                                                           'owner')
             stats = Milestone.calc_ticket_stats(tickets)
-            add_to_hdf(stats, req.hdf,
-                       'roadmap.milestones.%d.stats' % int(milestone_no))
+            req.hdf['roadmap.milestones.%s.stats' % milestone_no] = stats
             queries = Milestone.get_query_links(self.env, milestone['name'])
-            add_to_hdf(queries, req.hdf,
-                       'roadmap.milestones.%d.queries' % int(milestone_no))
-            milestone['tickets'] = tickets
+            req.hdf['roadmap.milestones.%s.queries' % milestone_no] = queries
+            milestone['tickets'] = tickets # for the iCalendar view
             milestone_no += 1
 
     def display_ics(self, req):

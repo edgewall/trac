@@ -1,7 +1,7 @@
 # -*- coding: iso8859-1 -*-
 #
-# Copyright (C) 2003, 2004 Edgewall Software
-# Copyright (C) 2003, 2004 Jonas Borgström <jonas@edgewall.com>
+# Copyright (C) 2003, 2004, 2005 Edgewall Software
+# Copyright (C) 2003, 2004, 2005 Jonas Borgström <jonas@edgewall.com>
 #
 # Trac is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License as
@@ -59,14 +59,14 @@ class FileCommon(Module.Module):
         data = util.to_utf8(self.read_func(self.DISP_MAX_FILE_SIZE), charset)
 
         if len(data) == self.DISP_MAX_FILE_SIZE:
-            req.hdf.setValue('file.max_file_size_reached', '1')
-            req.hdf.setValue('file.max_file_size', str(self.DISP_MAX_FILE_SIZE))
+            req.hdf['file.max_file_size_reached'] = 1
+            req.hdf['file.max_file_size'] = self.DISP_MAX_FILE_SIZE
             vdata = ' '
         else:
             vdata = self.env.mimeview.display(data, filename=self.filename,
                                               rev=self.rev,
                                               mimetype=self.mime_type)
-        req.hdf.setValue('file.highlighted_html', vdata)
+        req.hdf['file.highlighted_html'] = vdata
         req.display('file.cs')
 
     def display_raw(self, req):
@@ -159,7 +159,7 @@ class Attachment(FileCommon):
 
             perm_map = {'ticket': perm.TICKET_ADMIN, 'wiki': perm.WIKI_DELETE}
             if self.perm.has_permission(perm_map[self.attachment_type]):
-                req.hdf.setValue('attachment.delete_href', '?delete=yes')
+                req.hdf['attachment.delete_href'] = '?delete=yes'
 
             return
 
@@ -196,19 +196,19 @@ class Attachment(FileCommon):
     def display(self, req):
         text, link = self.get_attachment_parent_link()
         self.add_link('up', link, text)
-        req.hdf.setValue('title', '%s%s: %s' % (
-                              self.attachment_type == 'ticket' and '#' or '',
-                              self.attachment_id, self.filename))
-        req.hdf.setValue('file.attachment_parent', text)
-        req.hdf.setValue('file.attachment_parent_href', link)
+        req.hdf['title'] = '%s%s: %s' % (
+                           self.attachment_type == 'ticket' and '#' or '',
+                           self.attachment_id, self.filename)
+        req.hdf['file.attachment_parent'] = text
+        req.hdf['file.attachment_parent_href'] = link
         if self.view_form:
-            req.hdf.setValue('attachment.type', self.attachment_type)
-            req.hdf.setValue('attachment.id', self.attachment_id)
-            req.hdf.setValue('attachment.author', util.get_reporter_id(req))
+            req.hdf['attachment.type'] = self.attachment_type
+            req.hdf['attachment.id'] = self.attachment_id
+            req.hdf['attachment.author'] = util.get_reporter_id(req)
             req.display('attachment.cs')
             return
-        req.hdf.setValue('file.filename', urllib.unquote(self.filename))
-        req.hdf.setValue('trac.active_module', self.attachment_type) # Kludge
+        req.hdf['file.filename'] = urllib.unquote(self.filename)
+        req.hdf['trac.active_module'] = self.attachment_type # Kludge
         FileCommon.display(self, req)
 
 
@@ -221,29 +221,29 @@ class File(FileCommon):
         self.log.debug("Path links: %s" % list)
         self.filename = list[-1]
         path = '/'
-        req.hdf.setValue('file.filename', list[-1])
-        req.hdf.setValue('file.path.0', 'root')
+        req.hdf['file.filename'] = list[-1]
+        req.hdf['file.path.0'] = 'root'
         if rev_specified:
-            req.hdf.setValue('file.path.0.url', self.env.href.browser(path, rev))
+            req.hdf['file.path.0.url'] = self.env.href.browser(path, rev)
         else:
-            req.hdf.setValue('file.path.0.url', self.env.href.browser(path))
+            req.hdf['file.path.0.url'] = self.env.href.browser(path)
         i = 0
         for part in list[:-1]:
             i = i + 1
             path = path + part + '/'
-            req.hdf.setValue('file.path.%d' % i, part)
+            req.hdf['file.path.%d' % i] = part
             url = ''
             if rev_specified:
                 url = self.env.href.browser(path, rev)
             else:
                 url = self.env.href.browser(path)
-            req.hdf.setValue('file.path.%d.url' % i, url)
+            req.hdf['file.path.%d.url' % i] = url
             if i == len(list) - 1:
                 self.add_link('up', url, 'Parent directory')
 
     def display(self, req):
         self.authzperm.assert_permission(self.path)
-        req.hdf.setValue('title', self.path)
+        req.hdf['title'] = self.path
         FileCommon.display(self, req)
 
     def render(self, req):
@@ -302,14 +302,14 @@ class File(FileCommon):
                                     svn.core.SVN_PROP_REVISION_DATE, self.pool)
         sdate = util.svn_date_to_string(date, self.pool)
 
-        req.hdf.setValue('file.chgset_href', self.env.href.changeset(self.rev))
-        req.hdf.setValue('file.rev', str(self.rev))
-        req.hdf.setValue('file.rev_author', str(author))
-        req.hdf.setValue('file.rev_date', sdate)
-        req.hdf.setValue('file.rev_msg', msg_html)
-        req.hdf.setValue('file.path', self.path)
-        req.hdf.setValue('file.logurl', util.escape(self.env.href.log(self.path,
-                                                                      self.rev)))
+        req.hdf['file.chgset_href'] = self.env.href.changeset(self.rev)
+        req.hdf['file.rev'] = self.rev
+        req.hdf['file.rev_author'] = author
+        req.hdf['file.rev_date'] = sdate
+        req.hdf['file.rev_msg'] = msg_html
+        req.hdf['file.path'] = self.path
+        req.hdf['file.logurl'] = util.escape(self.env.href.log(self.path,
+                                                               self.rev))
 
         # Try to do an educated guess about the mime-type
         self.mime_type = svn.fs.node_prop (root, self.path,

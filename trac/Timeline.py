@@ -1,7 +1,7 @@
 # -*- coding: iso8859-1 -*-
 #
-# Copyright (C) 2003, 2004 Edgewall Software
-# Copyright (C) 2003, 2004 Jonas Borgström <jonas@edgewall.com>
+# Copyright (C) 2003, 2004, 2005 Edgewall Software
+# Copyright (C) 2003, 2004, 2005 Jonas Borgström <jonas@edgewall.com>
 #
 # Trac is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License as
@@ -128,9 +128,8 @@ class Timeline (Module):
             assert daysback >= 0
         except:
             daysback = 30
-        req.hdf.setValue('timeline.from',
-                              time.strftime('%x', time.localtime(_from)))
-        req.hdf.setValue('timeline.daysback', str(daysback))
+        req.hdf['timeline.from'] = time.strftime('%x', time.localtime(_from))
+        req.hdf['timeline.daysback'] = daysback
 
         stop  = _from
         start = stop - (daysback + 1) * 86400
@@ -144,9 +143,9 @@ class Timeline (Module):
                       % '&'.join(['%s=on' % k for k in filters]),
                       'RSS Feed', 'application/rss+xml', 'rss')
 
-        req.hdf.setValue('title', 'Timeline')
+        req.hdf['title'] = 'Timeline'
         for f in filters:
-            req.hdf.setValue('timeline.%s' % f, 'checked')
+            req.hdf['timeline.%s' % f] = 'checked'
 
         info = self.get_info(req, start, stop, maxrows, filters)
         for item in info:
@@ -158,11 +157,9 @@ class Timeline (Module):
                 if item['author'].find('@') != -1:
                     item['author.email'] = item['author']
 
-        add_to_hdf(info, req.hdf, 'timeline.items')
+        req.hdf['timeline.items'] = info
 
     def display_rss(self, req):
-        base_url = self.env.get_config('trac', 'base_url', '')
-        req.hdf.setValue('baseurl', base_url)
         req.display(self.template_rss_name, 'application/rss+xml')
 
     def _render_changeset(self, req, item):
