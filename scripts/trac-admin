@@ -678,7 +678,7 @@ CREATE INDEX wiki_idx           ON wiki(name,version);
             print ' Inserting default data'
             self.initdb_insert_default_data (cursor)
             cnx.commit()
-            
+
             print ' Configuring Project'
             print '  general.repository_dir'
             self._do_config_set('general.repository_dir', repository_dir)
@@ -689,11 +689,7 @@ CREATE INDEX wiki_idx           ON wiki(name,version);
             # Add a few default wiki pages
             pages = os.listdir(trac.siteconfig.__default_wiki_dir__)
             print ' Installing wiki pages'
-            for page in pages:
-                print ' ', page
-                filename = os.path.join(trac.siteconfig.__default_wiki_dir__,
-                                        page)
-                self._do_wiki_import(filename, page, cursor)
+            self._do_wiki_load(trac.siteconfig.__default_wiki_dir__,cursor)
             cnx.commit()
 
             from trac import sync, db
@@ -816,6 +812,9 @@ CREATE INDEX wiki_idx           ON wiki(name,version);
         self.print_listing(['Title', 'Edits', 'Modified'], ldata)
 
     def _do_wiki_import(self, filename, title, cursor=None):
+        if not os.path.isfile(filename):
+            print "%s is not a file" % filename
+            return
         f = open(filename,'r')
         data=f.read()
         data = data.replace("'", "''") # Escape ' for safe SQL
@@ -834,7 +833,7 @@ CREATE INDEX wiki_idx           ON wiki(name,version);
 #        sql = "INSERT INTO wiki('version','name','time','author',
 #        select max(version) from wiki where name="HejsanHoppsan";
 
-    def _do_wiki_export(self, page, filename):
+    def _do_wiki_export(self, page):
         data=self.db_execsql("SELECT text FROM wiki "
                              " WHERE name='%s'"
                              " ORDER BY version DESC LIMIT 1" % page)
@@ -855,11 +854,12 @@ CREATE INDEX wiki_idx           ON wiki(name,version);
             print " %s => %s" % (p, dst)
             self._do_wiki_export(p, dst)
 
-    def _do_wiki_load(self, dir):
-        for f in pages:
-            page = os.path.basename(f)
-            print " %s => %s" % (f, page)
-            self._do_wiki_import(f, page)
+    def _do_wiki_load(self, dir,cursor=None):
+        for page in os.listdir(dir):
+            filename = os.path.join(dir, page)
+            if os.path.isfile(filename):
+                print " %s => %s" % (filename, page)
+                self._do_wiki_import(filename, page, cursor)
 
 
     ## (Ticket) Priority
