@@ -58,27 +58,17 @@ li.tkt-chg-change { margin: 0 }
 }
 
 /* New Ticket (NOTE: Shared with Ticket) */
-#nt-props-left, #nt-props-right { 
-  display: block;
-  float: left;
-  padding-bottom: .5em;
-}
-#nt-props-left { border-right: 1px dotted #d7d7d7; }
-#nt-props-middle,#nt-props-bottom { 
-  clear: both;
-  border-top: 1px dotted #d7d7d7;
-  margin-bottom: .5em;
-  padding-top: .5em;
-  width: 38em;
-}
-#nt-submit {  margin: .5em 1em; text-align: right; }
-#nt-submit2 { margin: .5em 1em; }
-.nt-prop { margin: .25em; }
+#nt-upper { border-bottom: 1px dotted #d7d7d7; margin-bottom: 1em; }
+#nt-lower { }
+#nt-submit {  padding-top: .5em; text-align: right; }
+#nt-descr {  padding-top: 1em; border-top: 1px dotted #d7d7d7; }
+
+.nt-prop {  }
 .nt-label { 
-  display: block;
-  float: left;
+  text-align: right;
   min-width: 6em;
   margin-right: .5em;
-  text-align: right;
 }
-.nt-widget { padding-right: .5em }
+table {  border-collapse: separate; border-spacing: 10px 0; }
+.nt-rowsep { padding-top: 1em; }
+.nt-prop-sep { border-right: 1px dotted #d7d7d7; }

@@ -14,6 +14,7 @@ a:link, a:visited, a.noline,b.tl-item-link {
   color: #b00;
   border-bottom: 1px dotted #bbb;
 }
+a[name] { border: none; }
 a:hover { color: #b00; background: #f7f7f7; }
 a.noline { border-bottom: none; }
 address { font-style: normal; }
@@ -24,7 +25,6 @@ span.underline { text-decoration: underline; }
   margin-right: 1em;
   margin-top: .5em;
 }
-
 /* Forms */
 input,textarea,select { border: 1px solid #ccc; background: #fff; }
 input[type="submit"]:hover,input[type="reset"]:hover { background: #ccb; }
@@ -153,9 +153,23 @@ tr.br-row-even:hover,tr.br-row-odd:hover { background: #eed; }
  padding: 0 .5em;
  font-size: 90%;
 }
-pre.wiki { margin: .5em; padding: .25em; background: #f7f7f7; border: 1px solid #d7d7d7 }
-table.wiki { border: thin outset lightgray; }
-table.wiki td { border: thin inset lightgray; }
-
+.wikipage p {  margin-left: 1em }
+pre.wiki, pre.literal-block { 
+ margin: .1em 1.5em;
+ padding: .25em;
+ background: #f7f7f7;
+ border: 1px solid #d7d7d7;
+}
+table.wiki {
+ border: 2px solid #ccc;
+ border-collapse: collapse;
+ border-spacing: 0;
+}
+table.wiki td { border: 1px solid #ccc;  padding: .1em .25em; }
 #wiki-edit-page:hover { background: #ccb }
-
+.wiki-error { 
+ background: #fdc; 
+ border: 1px solid #b00;
+ color: #b00;
+ padding: .25em;
+}
