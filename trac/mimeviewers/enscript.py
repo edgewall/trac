@@ -39,6 +39,7 @@ supported_types = [
     (2, 'text/x-c++src',     'cpp'),
     (2, 'text/x-c++hdr',     'cpp'),
     (2, 'text/x-chdr',       'c'),
+    (2, 'text/x-csh',        'csh'),
     (2, 'text/x-csrc',       'c'),
     (2, 'text/x-diff',       'diffu'), # Assume unified diff (works otherwise)
     (2, 'text/x-eiffel',     'eiffel'),
@@ -60,6 +61,8 @@ supported_types = [
     (2, 'text/x-pyrex',      'pyrex'),
     (2, 'text/x-python',     'python'),
     (2, 'text/x-rfc',        'rfc'),
+    (2, 'text/x-ruby',       'ruby'),
+    (2, 'text/x-sh',         'sh'),
     (2, 'text/x-scheme',     'scheme'),
     (2, 'text/x-sql',        'sql'),
     (2, 'text/x-tcl',        'tcl'),

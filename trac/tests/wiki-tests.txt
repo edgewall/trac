@@ -250,6 +250,14 @@ echo &#34;foo&#34;
 </pre>
 ==============================
 {{{
+#!text/x-python
+print "foo"
+}}}
+------------------------------
+<div class="code-block"><span class="p_word">print</span><span class="p_default">&nbsp;</span><span class="p_string">"foo"</span><span class="p_default"><br/>
+</span></div>
+==============================
+{{{
 #!html
 <p>Hello World</p>
 }}}

@@ -373,7 +373,7 @@ class Formatter(CommonFormatter):
               r"""(?P<table_cell>\|\|)"""]
 
     _compiled_rules = re.compile('(?:' + string.join(_rules, '|') + ')')
-    _processor_re = re.compile('#\!([\w+-]+)')
+    _processor_re = re.compile('#\!([\w+-][\w+-/]*)')
     _anchor_re = re.compile('[^\w\d\.-:]+', re.UNICODE)
     anchors = None
 
