@@ -74,13 +74,8 @@ class FileCommon(Module.Module):
         req.send_header('Content-Type', self.mime_type)
         req.send_header('Content-Length', str(self.length))
         req.send_header('Last-Modified',
-                             time.strftime("%a, %d %b %Y %H:%M:%S GMT",
-                                           self.last_modified))
-        req.send_header('Pragma', 'no-cache')
-        req.send_header('Expires', 'Mon, 26 Jul 1997 05:00:00 GMT')
-        req.send_header('Cache-Control',
-                             'no-store, no-cache, must-revalidate, max-age=0')
-        req.send_header('Cache-Control', 'post-check=0, pre-check=0')
+                        time.strftime("%a, %d %b %Y %H:%M:%S GMT",
+                                      self.last_modified))
         req.end_headers()
         i = 0
         while 1:
