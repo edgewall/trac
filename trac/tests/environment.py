@@ -5,7 +5,7 @@ import tempfile
 from Environment import Environment, db_default
 
 
-class EnvironmentTestCase(unittest.TestCase):
+class EnvironmentTestBase:
     def setUp(self):
         self.env = Environment(self._get_envpath(), create=1)
         self.env.insert_default_data()
@@ -29,6 +29,7 @@ class EnvironmentTestCase(unittest.TestCase):
                 self._removeall(fullpath)
         os.rmdir(path)
 
+class EnvironmentTestCase(EnvironmentTestBase, unittest.TestCase):
     def test_get_version(self):
         """Testing env.get_version"""
         assert self.env.get_version() == db_default.db_version

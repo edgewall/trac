@@ -2,34 +2,11 @@ import os
 import tempfile
 import unittest
 
-from Environment import Environment
 from Ticket import Ticket
+from environment import EnvironmentTestBase
 
 
-class TicketTestCase(unittest.TestCase):
-    def setUp(self):
-        self.env = Environment(self._get_envpath(), create=1)
-        self.env.insert_default_data()
-        self.db = self.env.get_db_cnx()
-
-    def tearDown(self):
-        self.env = None
-        self._removeall(self._get_envpath())
-
-    def _get_envpath(self):
-        return os.path.join(tempfile.gettempdir(), 'trac-tempenv')
-    
-    def _removeall(self, path):
-        """Delete a directory and all it's files and subdirectories"""
-        files = os.listdir(path)
-        for name in files:
-            fullpath = os.path.join(path, name)
-            if os.path.isfile(fullpath):
-                os.unlink(fullpath)
-            elif os.path.isdir(fullpath):
-                self._removeall(fullpath)
-        os.rmdir(path)
-
+class TicketTestCase(EnvironmentTestBase, unittest.TestCase):
     def test_create_ticket(self):
         """Testing Ticket.insert()"""
         # Multiple test in one method, this sucks

@@ -391,7 +391,10 @@ class TracAdmin(cmd.Cmd):
         print
         
     def _do_permission_add(self, user, action):
-        self.db_execsql("INSERT INTO permission VALUES('%s', '%s')" % (user, action.upper()))
+        if not action.islower() and not action.isupper():
+            print 'group-names must be in lower case and permissions in upper case'
+            return
+        self.db_execsql("INSERT INTO permission VALUES('%s', '%s')" % (user, action))
 
     def _do_permission_remove(self, user, action):
         self.db_execsql("DELETE FROM permission WHERE username='%s' AND action='%s'" %

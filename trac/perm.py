@@ -79,28 +79,50 @@ class PermissionError (StandardError):
 
 
 class PermissionCache:
+    """
+    Permission groups can be created in Trac by assigning
+    permissions to an imaginary user with the same name as
+    the group.
+    Example:
+    
+    $ trac-admin myenv permission add developer WIKI_ADMIN
+    $ trac-admin myenv permission add developer TICKET_ADMIN
+    $ trac-admin myenv permission add developer REPORT_ADMIN
+    
+    Grant "developer privileges" to some users:
+    
+    $ trac-admin myenv permission add bob developer
+    $ trac-admin myenv permission add john developer
+    
+    Special 'groups':
+     'anonymous':     Permissions granted to this user will apply to
+                      anyone.
+     'authenticated': Permissions granted to this user will apply to
+                      any authenticated (logged in with HTTP_AUTH) user.
+    """
     def __init__(self, db, username):
         self.perm_cache = {}
-
-        # Special usernames:
-        # 'anonymous':     Permissions granted to this user will apply to
-        #                  anyone.
-        # 'authenticated': Permissions granted to this user will apply to
-        #                  any authenticated (logged in with HTTP_AUTH) user.
-
         cursor = db.cursor()
-        if username == 'anonymous':
-            cursor.execute ("SELECT action FROM permission "
-                            "WHERE username='anonymous'")
-        else:
-            cursor.execute ("SELECT action FROM permission "
-                            "WHERE username=%s OR username='anonymous' "
-                            "OR username = 'authenticated'", username)
+        cursor.execute ("SELECT username, action FROM permission")
+        result = cursor.fetchall()
+
+        perms = []
+        users = ['anonymous']
+        if username != 'anonymous':
+            users += [username, 'autenticated']
         while 1:
-            row = cursor.fetchone()
-            if not row:
+            num_users = len(users)
+            num_perms = len(perms)
+            for u, a in result:
+                if u in users:
+                    if not a in perms:
+                        perms.append(a)
+                    if a.islower() and not a in users:
+                        users.append(a)
+            if num_users == len(users) and num_perms == len(perms):
                 break
-            self.expand_meta_permission(row[0])
+        for perm in perms:
+            self.expand_meta_permission(perm)
         
     def expand_meta_permission(self, action):
         self.perm_cache[action] = 1
