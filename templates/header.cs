@@ -44,7 +44,7 @@
                         "BROWSER_VIEW") ?>
       <?cs call:navlink("Timeline", $trac.href.timeline, "timeline", 
                         "TIMELINE_VIEW") ?>
-      <?cs call:navlink("Report", $trac.href.report, "report", 
+      <?cs call:navlink("Reports", $trac.href.report, "report", 
                         "REPORT_VIEW") ?>
       <?cs call:navlink("Search", $trac.href.search, "search", 
                         "SEARCH_VIEW") ?>

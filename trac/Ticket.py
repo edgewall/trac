@@ -58,10 +58,6 @@ class Newticket (Module):
                    self.cgi.hdf, 'newticket.milestones')
         sql_to_hdf('SELECT name FROM version ORDER BY name',
                    self.cgi.hdf, 'newticket.versions')
-        if auth.get_authname() == 'anonymous':
-            self.cgi.hdf.setValue('newticket.reporter', '')
-        else:
-            self.cgi.hdf.setValue('newticket.reporter', auth.get_authname())
             
 
 class Ticket (Module):
@@ -117,13 +113,17 @@ class Ticket (Module):
         cnx = db.get_connection ()
         cursor = cnx.cursor()
         now = int(time.time())
-        authname = auth.get_authname ()
+        if new.has_key('reporter'):
+            author = new['reporter']
+            del new['reporter']
+        else:
+            author = auth.get_authname()
         for name in fields:
             if new.has_key(name) and (not old.has_key(name) or old[name] != new[name]):
                 cursor.execute ('INSERT INTO ticket_change '
                                 '(ticket, time, author, field, oldvalue, newvalue) '
                                 'VALUES (%s, %s, %s, %s, %s, %s)',
-                                id, now, authname, name, old[name], new[name])
+                                id, now, author, name, old[name], new[name])
                 cursor.execute ('UPDATE ticket SET %s=%s WHERE id=%s',
                                 name, new[name], id)
                 changed = 1
@@ -131,7 +131,7 @@ class Ticket (Module):
             cursor.execute ('INSERT INTO ticket_change '
                             '(ticket,time,author,field,oldvalue,newvalue) '
                             "VALUES (%s, %s, %s, 'comment', '', %s)",
-                            id, now, authname, new['comment'])
+                            id, now, author, new['comment'])
             changed = 1
         if changed:
             cursor.execute ('UPDATE ticket SET changetime=%s WHERE id=%s',
@@ -154,6 +154,8 @@ class Ticket (Module):
         now = int(time.time())
         data['time'] = now
         data['changetime'] = now
+        if not data.has_key('reporter'):
+            data['reporter'] = auth.get_authname()
 
         cnx = db.get_connection()
         cursor = cnx.cursor()

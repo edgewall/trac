@@ -62,7 +62,7 @@
 </div> <!-- #tkt-ticket -->
 
 <hr class="hide"/>
-
+<?cs if ticket.changes.0.time ?>
   <h2 id="tkt-changes-hdr">Changelog</h2>
   <div id="tkt-changes">
     <?cs set:numchanges = 0 ?>
@@ -115,7 +115,7 @@
      <?cs /if ?>
     </ul>
   </div>
-
+<?cs /if ?>
 <hr class="hide"/>
 
 <form action="<?cs var:cgi_location ?>" method="post">
@@ -127,7 +127,7 @@
 <table class="listing">
   <tr>
     <td align="right">opened:</td><td><?cs var:ticket.opened ?></td>
-    <td align="right">reporter:</td><td><?cs var:ticket.reporter ?></td>
+    <td align="right">reporter:</td><td><input type="text" name="reporter" value="<?cs var:trac.authname ?>"/></td>
   </tr>
   <tr>
     <td align="right">component:</td>

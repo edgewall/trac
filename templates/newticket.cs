@@ -18,7 +18,7 @@
       <span class="nt-label">Reporter:</span>
       <span class="nt-widget">
         <input type="text" name="reporter"
-              value="<?cs var:newticket.reporter ?>" />
+              value="<?cs var:trac.authname ?>" />
       </span>
     </div>
     <div class="nt-prop">
