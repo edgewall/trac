@@ -1,5 +1,15 @@
+Trac 0.6.1 '245 Trioxin (April 12, 2004)
+http://svn.edgewall.com/repos/trac/tags/trac-0.6.1
+
+ * RSS now escapes entities in summary.
+ * Search results won't highlight dates anymore.
+ * RPM for SuSE Linux.
+ * Preliminary Windows Installer.
+ * More documentation.
+ * Fixed bugs: #163, #165, #189, #198, #200, #206, #209, #214, #223
+
 Trac 0.6 'Solanum' (March 23, 2004)
-http://svn.edgewall.com/repos/trac/trunk/
+http://svn.edgewall.com/repos/trac/tags/trac-0.6
 
  * View diffs between wiki page edits.
  * Improved Search module.

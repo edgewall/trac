@@ -1,8 +1,8 @@
-Trac 0.6 (Solanum) Release Notes
-================================
-March 23, 2004
+Trac 0.6.1 (245 Trioxin) Release Notes
+======================================
+April 12, 2004
 
-Edgewall Software is pleased to announce the release of Trac 0.6 'Solanum'.
+Edgewall Software is pleased to announce the release of Trac 0.6.1 '245 Trioxin'.
 
 Trac is a minimalistic web-based software project management and bug/issue
 tracking system. It provides an interface to the Subversion revision control
@@ -27,21 +27,19 @@ Please report problems and provide feedback in the project issue tracker:
 
   <http://projects.edgewall.com/trac/>
 
-For questions, comments and user discussions, please use the Trac mailing 
-list. List information, subscription and archive available at:
+For questions, comments and user discussions, please use the Trac mailing list
+. List information, subscription and archive available at:
 
   <http://projects.edgewall.com/trac/wiki/MailingList>
 
 What's New
 ----------
-Highlights in this release include:
+This is primarily a bugfix release. 0.6.1 also brings:
 
- * Trac now also supports reStructuredText (ReST) and HTML markup.
- * RSS/XML support for timeline, reports and subversion changesets.
- * Export report data for download.
- * Many usability improvements.
- * Colored, grouped reports.
- * Powerful search capability.
+ * RPM package for SuSE Linux 
+ * Windows installer, including clearsilver
+ * A welcome to a new developer; Rocky Burt
+ * Fixed bugs. See ChangeLog for details.
 
 For complete release details, see the ChangeLog at: 
 
