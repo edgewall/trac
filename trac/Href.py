@@ -21,6 +21,7 @@
 
 import os
 import urllib
+from types import ListType
 from util import href_join
 
 class Href:
@@ -76,7 +77,7 @@ class Href:
         params = []
         for field in constraints.keys():
             values = constraints[field]
-            if type(values) != list:
+            if type(values) is not ListType:
                 values = [values]
             for value in values:
                 params.append(field + '=' + urllib.quote(value))

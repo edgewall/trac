@@ -28,6 +28,7 @@ import locale
 import urllib
 import warnings
 import util
+from types import ListType
 
 import Href
 import perm
@@ -142,7 +143,7 @@ def add_args_to_hdf(args, hdf):
     for key in args.keys():
         if not key:
             continue
-        if type(args[key]) != list:
+        if type(args[key]) is not ListType:
             hdf.setValue('args.%s' % key, str(args[key].value))
         else:
             for i in range(len(args[key])):

@@ -22,6 +22,7 @@
 import re
 import time
 import string
+from types import ListType
 from UserDict import UserDict
 
 import perm
@@ -506,7 +507,7 @@ class QueryModule (Module):
                 col = 'value'
             vals = self.args[constraints[i]]
             self.req.hdf.setValue('vals', str(vals))
-            if type(vals) == list:
+            if type(vals) is ListType:
                 for j in range(len(vals)):
                     vals[j] = vals[j].value
                     clause.append('%s=\'%s\'' % (col, vals[j]))
