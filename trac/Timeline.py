@@ -123,9 +123,10 @@ class Timeline (Module):
                 item['msg_escwiki'] = util.escape(wiki_to_html(msg,
                                                                self.req.hdf,
                                                                self.env,
+							       self.db,
                                                                absurls=1))
                 item['message'] = wiki_to_oneliner(msg, self.req.hdf,
-                                                   self.env, absurls=1)
+                                                   self.env, self.db,absurls=1)
 		if self.env.get_config('timeline', 'changeset_show_files','False').lower() in util.TRUE:
 		    cursor_node = self.db.cursor ()
 		    cursor_node.execute("SELECT name, change "
@@ -154,7 +155,7 @@ class Timeline (Module):
             elif item['type'] == WIKI:
                 item['href'] = self.env.href.wiki(row['tdata'])
                 item['message'] = wiki_to_oneliner(util.shorten_line(item['message']),
-                                                   self.req.hdf, self.env, absurls=1)
+                                                   self.req.hdf, self.env, self.db, absurls=1)
             elif item['type'] == MILESTONE:
                 item['href'] = self.env.href.milestone(item['message'])
                 item['message'] = util.escape(item['message'])
@@ -164,10 +165,11 @@ class Timeline (Module):
                 item['shortmsg'] = util.escape(util.shorten_line(msg))
                 item['message'] = wiki_to_oneliner(
                     util.shorten_line(item['message']),
-                    self.req.hdf, self.env,absurls=1)
+                    self.req.hdf, self.env, self.db, absurls=1)
                 item['msg_escwiki'] = util.escape(wiki_to_html(msg,
                                                                self.req.hdf,
                                                                self.env,
+							       self.db,
                                                                absurls=1))
             # Kludges for RSS
             item['author.rss'] = util.escape(item['author'] or '')

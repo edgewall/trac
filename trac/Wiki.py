@@ -138,7 +138,7 @@ class WikiModule(Module):
             self.req.hdf.setValue(n+'.version', str(row[0]))
             self.req.hdf.setValue(n+'.time', time_str)
             self.req.hdf.setValue(n+'.author', str(row[2]))
-            self.req.hdf.setValue(n+'.comment', row[3] or '')
+            self.req.hdf.setValue(n+'.comment', wiki_to_oneliner(row[3] or '', self.req.hdf, self.env, self.db))
             self.req.hdf.setValue(n+'.ipaddr', str(row[4]))
             i = i + 1
 
@@ -315,7 +315,7 @@ class WikiModule(Module):
         self.req.hdf.setValue('wiki.page_name', self.page.name)
         self.req.hdf.setValue('wiki.page_source', escape(self.page.text))
         out = StringIO.StringIO()
-        Formatter(self.req.hdf, self.env).format(self.page.text, out)
+        Formatter(self.req.hdf, self.env,self.db).format(self.page.text, out)
         self.req.hdf.setValue('wiki.page_html', out.getvalue())
 
     def display_txt(self):

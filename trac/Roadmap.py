@@ -55,7 +55,7 @@ class Roadmap(Module):
             }
             descr = row['descr']
             if descr:
-                milestone['descr'] = wiki_to_html(descr, self.req.hdf, self.env)
+                milestone['descr'] = wiki_to_html(descr, self.req.hdf, self.env,self.db)
             t = row['time'] and int(row['time'])
             if t > 0:
                 milestone['date'] = time.strftime('%x', time.localtime(t))

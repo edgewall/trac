@@ -52,9 +52,10 @@ class CommonFormatter:
     env = None
     absurls = 0
 
-    def __init__(self, hdf, env, absurls=0):
-        self.hdf = hdf
+    def __init__(self, hdf, env, db, absurls=0):
+	self.hdf = hdf
         self.env = env
+	self.db = db
         self._href = absurls and env.abs_href or env.href
 
     def replace(self, fullmatch):
@@ -107,8 +108,20 @@ class CommonFormatter:
         return match
 
     def _tickethref_formatter(self, match, fullmatch):
-        number = int(match[1:])
-        return '<a href="%s">#%d</a>' % (self._href.ticket(number), number)
+	number = int(match[1:])
+	cursor = self.db.cursor ()
+	cursor.execute('SELECT summary,status FROM ticket WHERE id=%s', number)
+	row = cursor.fetchone ()
+	if not row:
+	    return '<a class="missing" href="%s">#%d</a>' % (self._href.ticket(number), number)
+	else:
+	    summary = row[0]
+	    if row[1] == 'new':
+		return '<a href="%s" title="NEW : %s">#%d*</a>' % (self._href.ticket(number), summary, number)
+	    elif row[1] == 'closed':
+		return '<a href="%s" title="CLOSED : %s"><del>#%d</del></a>' % (self._href.ticket(number), summary, number)
+	    else:
+		return '<a href="%s" title="%s">#%d</a>' % (self._href.ticket(number), summary, number)
 
     def _changesethref_formatter(self, match, fullmatch):
         number = int(match[1:-1])
@@ -530,12 +543,12 @@ class Formatter(CommonFormatter):
         self.close_list()
 
 
-def wiki_to_html(wikitext, hdf, env, absurls=0):
+def wiki_to_html(wikitext, hdf, env, db, absurls=0):
     out = StringIO.StringIO()
-    Formatter(hdf, env, absurls).format(wikitext, out)
+    Formatter(hdf, env, db, absurls).format(wikitext, out)
     return out.getvalue()
 
-def wiki_to_oneliner(wikitext, hdf, env, absurls=0):
+def wiki_to_oneliner(wikitext, hdf, env, db,absurls=0):
     out = StringIO.StringIO()
-    OneLinerFormatter(hdf, env, absurls).format(wikitext, out)
+    OneLinerFormatter(hdf, env, db, absurls).format(wikitext, out)
     return out.getvalue()

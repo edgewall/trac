@@ -301,7 +301,7 @@ class NewticketModule(Module):
         if ticket.has_key('description'):
             self.req.hdf.setValue('newticket.description_preview',
                                   wiki_to_html(ticket['description'],
-                                               self.req.hdf, self.env))
+                                               self.req.hdf, self.env, self.db))
 
         self.req.hdf.setValue('title', 'New Ticket')
         evals = util.mydict(zip(ticket.keys(),
@@ -384,7 +384,7 @@ class TicketModule (Module):
         self.req.hdf.setValue('title', '#%d (ticket)' % id)
         self.req.hdf.setValue('ticket.description.formatted',
                               wiki_to_html(ticket['description'], self.req.hdf,
-                                           self.env))
+                                           self.env, self.db))
         self.req.hdf.setValue('ticket.opened', time.strftime('%c', time.localtime(int(ticket['time']))))
 
         changelog = ticket.get_changelog(self.db)
@@ -401,7 +401,7 @@ class TicketModule (Module):
             hdf.setValue('ticket.changes.%d.old' % idx, util.escape(old))
             if field == 'comment':
                 hdf.setValue('ticket.changes.%d.new' % idx,
-                             wiki_to_html(new, self.req.hdf, self.env))
+                             wiki_to_html(new, self.req.hdf, self.env, self.db))
             else:
                 hdf.setValue('ticket.changes.%d.new' % idx, util.escape(new))
             idx = idx + 1
@@ -440,7 +440,7 @@ class TicketModule (Module):
             # Wiki format a preview of comment
             self.req.hdf.setValue('ticket.comment_preview',
                                   wiki_to_html(self.args.get('comment'),
-                                               self.req.hdf, self.env))
+                                               self.req.hdf, self.env, self.db))
 
         self.insert_ticket_data(self.req.hdf, id, ticket, reporter_id)
 

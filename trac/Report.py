@@ -262,7 +262,7 @@ class Report (Module):
         self.req.hdf.setValue('title', title)
         self.req.hdf.setValue('report.title', title)
         self.req.hdf.setValue('report.id', str(id))
-        descr_html = wiki_to_html(description, self.req.hdf, self.env)
+        descr_html = wiki_to_html(description, self.req.hdf, self.env,self.db)
         self.req.hdf.setValue('report.description', descr_html)
 
         if self.args.get('format') == 'sql':
@@ -343,7 +343,7 @@ class Report (Module):
                 if column in ['ticket', '#']:
                     value['ticket_href'] = self.env.href.ticket(cell)
                 elif column == 'description':
-                    value['parsed'] = wiki_to_html(cell, self.req.hdf, self.env)
+                    value['parsed'] = wiki_to_html(cell, self.req.hdf, self.env, self.db)
                 elif column == 'reporter':
                     value['reporter'] = cell
                     value['reporter.rss'] = cell.find('@') and cell or ''

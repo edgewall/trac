@@ -277,7 +277,7 @@ class File(FileCommon):
                                       svn.core.SVN_PROP_REVISION_AUTHOR, self.pool)
         msg = svn.fs.revision_prop(self.fs_ptr, rev,
                                    svn.core.SVN_PROP_REVISION_LOG, self.pool)
-        msg_html = wiki_to_html(util.wiki_escape_newline(msg), self.req.hdf, self.env)
+        msg_html = wiki_to_html(util.wiki_escape_newline(msg), self.req.hdf, self.env, self.db)
         date = svn.fs.revision_prop(self.fs_ptr, rev,
                                     svn.core.SVN_PROP_REVISION_DATE, self.pool)
         sdate = util.svn_date_to_string(date, self.pool)
