@@ -46,7 +46,7 @@ def wrap(t, cols=75, initial_indent='', subsequent_indent=''):
         for line in t.split('\n'):
             wrappedLines += wrapper.wrap(line.rstrip())
 
-        return '\n'.join(wrappedLines)
+        return os.linesep.join(wrappedLines)
 
     except ImportError:
         return t
