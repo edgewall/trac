@@ -12,14 +12,18 @@
  <p><?cs var:len(query.results) ?> tickets matched this query.</p>
  <table id="tktlist" class="listing">
   <thead><tr><?cs each:header = query.headers ?><?cs
-   if:name(header) == 0 ?><th class="ticket">
-    <?cs if:header.ordered ?><strong><?cs /if ?>
-    <a href="<?cs var:header.href ?>">Ticket</a>
-    <?cs if:header.ordered ?></strong><?cs /if ?></th><?cs
+   if:name(header) == 0 ?><th class="ticket<?cs
+    if:header.order ?> <?cs var:header.order ?><?cs /if ?>">
+    <a href="<?cs var:header.href ?>" title="Sort by ID (<?cs
+      if:header.order == 'asc' ?>descending<?cs
+      else ?>ascending<?cs /if ?>)">Ticket</a>
+    </th><?cs
    else ?>
-    <th><?cs if:header.ordered ?><strong><?cs /if ?>
-     <a href="<?cs var:header.href ?>"><?cs var:header.name ?></a>
-    <?cs if:header.ordered ?></strong><?cs /if ?></th><?cs
+    <th<?cs if:header.order ?> class="<?cs var:header.order ?>"<?cs /if ?>>
+     <a href="<?cs var:header.href ?>" title="Sort by <?cs
+       var:header.name ?> (<?cs if:header.order == 'asc' ?>descending<?cs
+       else ?>ascending<?cs /if ?>)"><?cs var:header.name ?></a>
+    </th><?cs
    /if ?>
   <?cs /each ?></tr></thead>
   <tbody>

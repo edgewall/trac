@@ -482,7 +482,8 @@ class QueryModule (Module):
             if headers[i] == order:
                 self.req.hdf.setValue('query.headers.%d.href' % i,
                     self.env.href.query(constraints_dict, order, not desc))
-                self.req.hdf.setValue('query.headers.%d.ordered' % i, '1')
+                self.req.hdf.setValue('query.headers.%d.order' % i,
+                    desc and 'desc' or 'asc')
             else:
                 self.req.hdf.setValue('query.headers.%d.href' % i,
                     self.env.href.query(constraints_dict, headers[i]))
