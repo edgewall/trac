@@ -119,10 +119,10 @@ class DiffEditor (delta.Editor):
     generates a unified diff of the changes for a given changeset.
     the output is written to stdout.
     """
-    def __init__(self, old_root, new_root):
+    def __init__(self, old_root, new_root, output):
         self.old_root = old_root
         self.new_root = new_root
-        self._drender = ''
+        self.output = output
 
     def print_diff (self, old_path, new_path, pool):
         old_root = new_root = None
@@ -136,16 +136,16 @@ class DiffEditor (delta.Editor):
                              new_root, new_path, pool, ['-u'])
         differ.get_files()
         pobj = differ.get_pipe()
-        print '<div class="chg-diff-file">'
-        print '<h3 class="chg-diff-hdr">%s</h3>' % name
-        filter = DiffColorizer()
+        self.output.write('<div class="chg-diff-file">')
+        self.output.write('<h3 class="chg-diff-hdr">%s</h3>' % name)
+        filter = DiffColorizer(self.output)
         while 1:
             line = pobj.readline()
             if not line:
                 break
             filter.writeline(escape(line))
         filter.close()
-        print '</div>'
+        self.output.write('</div>')
 
     def add_file(self, path, parent_baton, copyfrom_path,
                  copyfrom_revision, file_pool):
@@ -166,9 +166,7 @@ def render_diffs(fs_ptr, rev, pool):
     new_root = fs.revision_root(fs_ptr, rev, pool)
 
     output = StringIO()
-    s_o = sys.stdout
-    sys.stdout = output
-    editor = DiffEditor(old_root, new_root)
+    editor = DiffEditor(old_root, new_root, output)
     e_ptr, e_baton = delta.make_editor(editor, pool)
 
     if util.SVN_VER_MAJOR == 0 and util.SVN_VER_MINOR == 37:
@@ -180,7 +178,6 @@ def render_diffs(fs_ptr, rev, pool):
         repos.svn_repos_dir_delta(old_root, '', '',
                                   new_root, '', e_ptr, e_baton, authz_cb,
                                   0, 1, 0, 1, pool)
-    sys.stdout = s_o
     return output.getvalue()
 
 class Changeset (Module):

@@ -20,7 +20,7 @@
 # Author: Jonas Borgström <jonas@edgewall.com>
 
 from util import *
-from svn import fs, util, delta, repos
+from svn import fs, util, delta, repos, core
 
 def sync(db, repos, fs_ptr, pool):
     """
@@ -40,24 +40,24 @@ def sync(db, repos, fs_ptr, pool):
     num = max_rev - youngest_stored
     offset = youngest_stored + 1
     
+    subpool = core.svn_pool_create(pool)
     for rev in range(num):
         message = fs.revision_prop(fs_ptr, rev + offset,
-                                   util.SVN_PROP_REVISION_LOG, pool)
+                                   util.SVN_PROP_REVISION_LOG, subpool)
         author = fs.revision_prop(fs_ptr, rev + offset,
-                                  util.SVN_PROP_REVISION_AUTHOR, pool)
+                                  util.SVN_PROP_REVISION_AUTHOR, subpool)
         date = fs.revision_prop(fs_ptr, rev + offset,
-                                util.SVN_PROP_REVISION_DATE, pool)
+                                util.SVN_PROP_REVISION_DATE, subpool)
 
-        print date
-        print util.svn_time_from_cstring(date, pool)
-
-        
-        date = util.svn_time_from_cstring(date, pool) / 1000000
+        date = util.svn_time_from_cstring(date, subpool) / 1000000
         
         cursor.execute ('INSERT INTO revision (rev, time, author, message) '
                         'VALUES (%s, %s, %s, %s)', rev + offset, date,
                         author, message)
-        insert_change (pool, fs_ptr, rev + offset, cursor)
+        insert_change (subpool, fs_ptr, rev + offset, cursor)
+        core.svn_pool_clear(subpool)
+
+    core.svn_pool_destroy(subpool)
     db.commit()
 
 def insert_change (pool, fs_ptr, rev, cursor):
