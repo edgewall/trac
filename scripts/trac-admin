@@ -260,7 +260,7 @@ class TracAdmin(cmd.Cmd):
             print 'trac-admin - The Trac Administration Console %s' % trac.__version__
             if not self.interactive:
                 print
-                print "Usage: trac-admin <dbfile> [command [subcommand] [option ...]]\n"
+                print "Usage: trac-admin </path/to/projenv> [command [subcommand] [option ...]]\n"
                 print "Invoking trac-admin without command starts "\
                        "interactive mode."
             self.print_doc (docs)
