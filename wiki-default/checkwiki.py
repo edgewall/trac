@@ -19,6 +19,7 @@ wiki_pages = [
  "TitleIndex",
  "TracAccessibility",
  "TracAdmin",
+ "TracBackup",
  "TracBrowser",
  "TracChangeset",
  "TracGuide",
