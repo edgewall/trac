@@ -36,7 +36,7 @@ class ModPythonRequest(core.Request):
         # TODO This will need proxy host name support (see #437 and [581])
         host = self.req.hostname
         port = self.req.connection.local_addr[1]
-        path = re.sub(self.req.path_info + '$', '', self.req.uri)
+        path = re.sub('%s$' % re.escape(self.req.path_info), '', self.req.uri)
         if port == 80:
             self.base_url = 'http://%s%s' % (host, path)
         elif port == 443:
