@@ -1,7 +1,7 @@
 ===== test_help_ok =====
 trac-admin - The Trac Administration Console %s
 
-Usage: trac-admin <dbfile> [command [subcommand] [option ...]]
+Usage: trac-admin </path/to/projenv> [command [subcommand] [option ...]]
 
 Invoking trac-admin without command starts interactive mode.
 
