@@ -121,14 +121,12 @@ class Attachment(FileCommon):
             self.path = os.path.join(self.env.get_attachments_dir(),
                                      self.attachment_type,
                                      self.attachment_id,
-                                     self.filename)
+                                     urllib.quote(self.filename))
             try:
                 fd = open(self.path, 'rb')
             except IOError:
                 raise util.TracError('Attachment not found')
             
-            self.path = urllib.unquote(self.path)
-
             stat = os.fstat(fd.fileno())
             self.length = stat[6]
             self.last_modified = time.strftime("%a, %d %b %Y %H:%M:%S GMT",
@@ -157,7 +155,6 @@ class Attachment(FileCommon):
                                                   self.args.get('description'),
                                                   self.args.get('author'),
                                                   self.req.remote_addr)
-            filename = urllib.quote(filename)
             # Redirect the user to the newly created attachment
             self.req.redirect(self.env.href.attachment(self.attachment_type,
                                                        self.attachment_id,
