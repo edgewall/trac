@@ -33,7 +33,7 @@ def svn_date_to_string(date, pool):
     from svn import util
     date_seconds = util.svn_time_from_cstring(date,
                                               pool) / 1000000
-    return time.asctime(time.localtime(date_seconds))[4:-8]
+    return time.strftime('%x %X', time.localtime(date_seconds))
 
 def enum_selector (db, sql, name, selected=None,default_empty=0):
     out = StringIO.StringIO()

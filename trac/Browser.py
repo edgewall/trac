@@ -71,7 +71,7 @@ class Browser(Module):
             if date:
                 date_seconds = util.svn_time_from_cstring(date,
                                                           self.pool) / 1000000
-                date = time.asctime(time.localtime(date_seconds))[4:-8]
+                date = time.strftime('%x %X', time.localtime(date_seconds))
             else:
                 date_seconds = 0
                 date = ''

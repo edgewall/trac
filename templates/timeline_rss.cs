@@ -39,7 +39,7 @@
           <?cs call:rss_item('Ticket',
                              '#'+$item.idata+' reopened: '+$item.shortmsg,
                              $item.ticket_href, $item.message) ?>
-        <?cs elif:item.type == #5 ?><!-- Reopened ticket -->
+        <?cs elif:item.type == #5 ?><!-- Wiki change -->
           <?cs call:rss_item('Wiki',
                              $item.tdata+" page edited.",
                              $item.wiki_href,

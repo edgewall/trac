@@ -261,7 +261,7 @@ class File(FileCommon):
                                                                 'raw'))
         self.req.hdf.setValue('file.texturl', self.env.href.file(self.path, rev,
                                                                  'text'))
-        self.req.hdf.setValue('file.logurl', self.env.href.log(self.path))
+        self.req.hdf.setValue('file.logurl', self.env.href.log(self.path, rev))
 
                 
         # Try to do an educated guess about the mime-type

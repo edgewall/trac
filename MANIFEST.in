@@ -3,6 +3,8 @@ include scripts/trac-admin
 include scripts/tracd
 include scripts/tracdb2env
 include cgi-bin/trac.cgi
+include trac/tests/*.py
+include trac/tests/wiki-tests.txt
 recursive-include htdocs *.png *.gif *.js *README
 recursive-include htdocs/css *.css
 recursive-include doc *trac_logo.* *README

@@ -45,7 +45,7 @@ class Log (Module):
         gmt = time.gmtime(t)
         item = {
             'rev'      : rev,
-            'author'   : author or 'None',
+            'author'   : author and escape(author) or 'None',
             'date'     : svn_date_to_string (date, pool),
             'gmt'      : time.strftime('%a, %d %b %Y %H:%M:%S GMT', gmt),
             'log.raw'  : escape(log),
