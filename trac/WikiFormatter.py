@@ -37,14 +37,14 @@ class CommonFormatter:
     _rules = [r"""(?P<bold>''')""",
               r"""(?P<italic>'')""",
               r"""(?P<underline>__)""",
-              r"""(?P<inlinecode>\{\{\{(?P<inline>.*?)\}\}\})""",
-              r"""(?P<htmlescapeentity>&#\d+;)""",
-              r"""(?P<tickethref>#\d+)""",
-              r"""(?P<changesethref>\[\d+\])""",
-              r"""(?P<reporthref>\{\d+\})""",
-              r"""(?P<modulehref>((?P<modulename>bug|ticket|browser|source|repos|report|changeset|wiki|search):(?P<moduleargs>(&#34;(.*?)&#34;|'(.*?)')|([^ ]*[^\., \)]))))""",
-              r"""(?P<wikilink>(^|(?<=[^A-Za-z]))[!]?[A-Z][a-z0-9/.]+(?:[A-Z][a-z0-9/.]*[a-z0-9/])+(?=\Z|\s|,|\.|:|\)))""",
-              r"""(?P<fancylink>\[(?P<fancyurl>([a-z]+:[^ ]+)) (?P<linkname>.*?)\])"""]
+              r"""(?P<inlinecode>!?\{\{\{(?P<inline>.*?)\}\}\})""",
+              r"""(?P<htmlescapeentity>!?&#\d+;)""",
+              r"""(?P<tickethref>!?#\d+)""",
+              r"""(?P<changesethref>!?\[\d+\])""",
+              r"""(?P<reporthref>!?\{\d+\})""",
+              r"""(?P<modulehref>!?((?P<modulename>bug|ticket|browser|source|repos|report|changeset|wiki|search):(?P<moduleargs>(&#34;(.*?)&#34;|'(.*?)')|([^ ]*[^\., \)]))))""",
+              r"""(?P<wikilink>!?(^|(?<=[^A-Za-z]))[A-Z][a-z0-9/.]+(?:[A-Z][a-z0-9/.]*[a-z0-9/])+(?=\Z|\s|,|\.|:|\)))""",
+              r"""(?P<fancylink>!?\[(?P<fancyurl>([a-z]+:[^ ]+)) (?P<linkname>.*?)\])"""]
 
     _open_tags = []
     hdf = None
@@ -57,6 +57,9 @@ class CommonFormatter:
     def replace(self, fullmatch):
         for itype, match in fullmatch.groupdict().items():
             if match and not itype in Formatter._helper_patterns:
+                # Check for preceding escape character '!'
+                if match[0] == '!':
+                    return match[1:]
                 return getattr(self, '_' + itype + '_formatter')(match, fullmatch)
 
     def tag_open_p(self, tag):
@@ -155,8 +158,6 @@ class CommonFormatter:
             return match
 
     def _wikilink_formatter(self, match, fullmatch):
-        if match[0] == '!':
-            return match[1:]
         if not self.env._wiki_pages.has_key(match):
             return '<a class="missing" href="%s">%s?</a>' % \
                    (self.env.href.wiki(match), match)
@@ -211,12 +212,12 @@ class Formatter(CommonFormatter):
     """
     _rules = [r"""(?P<svnimg>(source|repos):([^ ]+)\.(PNG|png|JPG|jpg|JPEG|jpeg|GIF|gif))"""] + \
              CommonFormatter._rules + \
-             [r"""(?P<macro>\[\[(?P<macroname>[a-zA-Z]+)(\((?P<macroargs>[^\)]*)\))?\]\])""",
+             [r"""(?P<macro>!?\[\[(?P<macroname>[a-zA-Z]+)(\((?P<macroargs>[^\)]*)\))?\]\])""",
               r"""(?P<heading>^\s*(?P<hdepth>=+)\s.*\s(?P=hdepth)\s*$)""",
               r"""(?P<list>^(?P<ldepth>\s+)(?:\*|[0-9]+\.) )""",
               r"""(?P<indent>^(?P<idepth>\s+)(?=\S))""",
-              r"""(?P<imgurl>([a-z]+://[^ ]+)\.(PNG|png|JPG|jpg|JPEG|jpeg|GIF|gif)(\?\S+)?)""",
-              r"""(?P<url>([a-z]+://[^ ]+[^\.,' \)\]\}]))""",
+              r"""(?P<imgurl>!?([a-z]+://[^ ]+)\.(PNG|png|JPG|jpg|JPEG|jpeg|GIF|gif)(\?\S+)?)""",
+              r"""(?P<url>!?([a-z]+://[^ ]+[^\.,' \)\]\}]))""",
               r"""(?P<last_table_cell>\|\|$)""",
               r"""(?P<table_cell>\|\|)"""]
 
