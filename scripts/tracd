@@ -235,56 +235,26 @@ class TracHTTPRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler,
         start = time.time()
         self.init_request()
 
-        db = self.env.get_db_cnx()
-
         self.remote_user = None
         if self.path_info == '/login':
             self.remote_user = self.env.auth.do_auth(self)
             if not self.remote_user:
                 return
 
+        db = self.env.get_db_cnx()
         Wiki.populate_page_dict(db, self.env)
 
-        authenticator = auth.Authenticator(db, self)
         http_referer = self.headers.get('Referer', None)
-        if self.path_info == '/logout':
-            authenticator.logout()
-            try:
-                self.redirect (http_referer or self.env.href.wiki())
-            except trac.core.RedirectException:
-                pass
-            return
-        if self.remote_user and authenticator.authname == 'anonymous':
-            authenticator.login(self)
-        if self.path_info == '/login':
-            try:
-                self.redirect (http_referer or self.env.href.wiki())
-            except trac.core.RedirectException:
-                pass
-            return
 
-        self.authname = authenticator.authname
-        
         # Parse arguments
         args = trac.core.parse_args(self.command, self.path_info,
                                     self.query_string,
                                     self.rfile, None, self.headers)
 
-        newsession = args.has_key('newsession') and args['newsession']
-        self.session = Session.Session(self.env, self, newsession)
-        
-        trac.core.add_args_to_hdf(args, self.hdf)
-        try:
-            pool = None
-            # Load the selected module
-            module = trac.core.module_factory(args, self.env, db, self)
-            pool = module.pool
-            module.run()
-        finally:
-            if pool:
-                svn.core.svn_pool_destroy(pool)
-        self.log.debug('Total request time: %f s', time.time() - start)
+        trac.core.dispatch_request(self.path_info, http_referer, args, self,
+                                   self.env, db)
 
+        self.log.debug('Total request time: %f s', time.time() - start)
 
 
 def usage():

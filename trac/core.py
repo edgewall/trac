@@ -353,6 +353,42 @@ class CGIRequest(Request):
     def end_headers(self):
         self.write('\r\n')
 
+def dispatch_request(path_info, referrer, args, req, env, database=None):
+    if not database:
+        database = env.get_db_cnx()
+
+    authenticator = auth.Authenticator(database, req)
+    if path_info == '/logout':
+        authenticator.logout()
+        try:
+            req.redirect (referrer or env.href.wiki())
+        except RedirectException:
+            pass
+    elif req.remote_user and authenticator.authname == 'anonymous':
+        auth_cookie = authenticator.login(req)
+    if path_info == '/login':
+        try:
+            req.redirect (referrer or env.href.wiki())
+        except RedirectException:
+            pass
+    req.authname = authenticator.authname
+
+    newsession = args.has_key('newsession') and args['newsession']
+    req.session = Session.Session(env, req, newsession)
+
+    add_args_to_hdf(args, req.hdf)
+    try:
+        pool = None
+        # Load the selected module
+        module = module_factory(args, env, database, req)
+        pool = module.pool
+        module.run()
+    finally:
+        # We do this even if the cgi will terminate directly after. A pool
+        # destruction might trigger important clean-up functions.
+        if pool:
+            import svn.core
+            svn.core.svn_pool_destroy(pool)
 
 def open_svn_repos(repos_dir):
     from svn import util, repos, core
@@ -433,44 +469,11 @@ def real_cgi_start():
     env.href = Href.Href(req.cgi_location)
     env.abs_href = Href.Href(req.base_url)
 
-    authenticator = auth.Authenticator(database, req)
-    if path_info == '/logout':
-        authenticator.logout()
-        try:
-            req.redirect (http_referer or env.href.wiki())
-        except RedirectException:
-            pass
-    elif req.remote_user and authenticator.authname == 'anonymous':
-        auth_cookie = authenticator.login(req)
-    if path_info == '/login':
-        try:
-            req.redirect (http_referer or env.href.wiki())
-        except RedirectException:
-            pass
-
     # Parse arguments
     args = parse_args(req.command,
                       path_info, os.getenv('QUERY_STRING'),
                       sys.stdin, os.environ)
-    add_args_to_hdf(args, req.hdf)
-    req.authname = authenticator.authname
-
-    if not path_info == '/login':
-        newsession = args.has_key('newsession') and args['newsession']
-        req.session = Session.Session(env, req, newsession)
-
-    try:
-        pool = None
-        # Load the selected module
-        module = module_factory(args, env, database, req)
-        pool = module.pool
-        module.run()
-    finally:
-        # We do this even if the cgi will terminate directly after. A pool
-        # destruction might trigger important clean-up functions.
-        if pool:
-            import svn.core
-            svn.core.svn_pool_destroy(pool)
+    dispatch_request(path_info, http_referer, args, req, env, database)
 
 def cgi_start():
     try:

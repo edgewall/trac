@@ -122,47 +122,12 @@ def handler(req):
     if not env:
         init(mpr)
 
-    database = env.get_db_cnx()
-    authenticator = auth.Authenticator(database, mpr)
-    referrer = req.headers_in.get('Referer', None)
-    if req.path_info == '/logout':
-        authenticator.logout()
-        try:
-            mpr.redirect(referrer or env.href.wiki())
-        except core.RedirectException:
-            pass
-        return apache.OK
-    if mpr.remote_user and authenticator.authname == 'anonymous':
-        authenticator.login(mpr)
-    if req.path_info == '/login':
-        try:
-            mpr.redirect(referrer or env.href.wiki())
-        except core.RedirectException:
-            pass
-        return apache.OK
-    mpr.authname = authenticator.authname
-
     args = TracFieldStorage(req)
     core.parse_path_info(args, req.path_info)
-    core.add_args_to_hdf(args, mpr.hdf)
 
-    newsession = args.has_key('newsession') and args['newsession']
-    mpr.session = Session.Session(env, mpr, newsession)
+    referrer = req.headers_in.get('Referer', None)
 
-    # TODO This needs to be done by the modules, because it can not be
-    #      overridden later. Ideally, there'd be a set_content_type method in
-    #      trac.core.Request
     req.content_type = 'text/html'
-
-    pool = None
-    try:
-        # Load the selected module
-        module = core.module_factory(args, env, database, mpr)
-        pool = module.pool
-        module.run()
-    finally:
-        if pool:
-            import svn.core
-            svn.core.svn_pool_destroy(pool)
+    core.dispatch_request(req.path_info, referrer, args, mpr, env)
 
     return apache.OK
