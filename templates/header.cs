@@ -9,7 +9,11 @@
 <?cs /def ?>
 <html>
   <head>
-    <title>Edgewall Trac | <?cs var:project.name?> | <?cs var:title ?></title>
+    <?cs if $project.name ?>
+      <title>Trac | <?cs var:project.name?> | <?cs var:title ?></title>
+    <?cs else ?>
+      <title>Trac | <?cs var:title ?></title>
+    <?cs /if ?>
     <style type="text/css">
       <?cs include "css.cs" ?>
     </style>
