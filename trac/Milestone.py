@@ -200,10 +200,10 @@ class Milestone(Module):
         groups = []
         if by in ['status', 'resolution', 'severity', 'priority']:
             cursor.execute("SELECT name FROM enum WHERE type = %s "
-                           "AND name != '' ORDER BY value", by)
+                           "AND IFNULL(name,'') != '' ORDER BY value", by)
         elif by in ['component', 'milestone', 'version']:
             cursor.execute("SELECT name FROM %s "
-                           "WHERE name != '' ORDER BY name" % by)
+                           "WHERE IFNULL(name,'') != '' ORDER BY name" % by)
         elif by == 'owner':
             cursor.execute("SELECT DISTINCT owner AS name FROM ticket "
                            "ORDER BY owner")
@@ -212,12 +212,12 @@ class Milestone(Module):
             field = [f for f in fields if f['name'] == by]
             if not field:
                 return []
-            return [o for o in field[0]['options'] if o != '']
+            return [o for o in field[0]['options'] if o]
         while 1:
             row = cursor.fetchone()
             if not row:
                 break
-            groups.append(row['name'])
+            groups.append(row['name'] or '')
         return groups
 
     def get_milestone(self, name):
