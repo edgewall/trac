@@ -33,7 +33,7 @@
   </div>
   <br />
   <div>
-   <label for="keywords">Keywords:</label>
+   <label for="keywords">Keywords contain:</label>
    <input type="text" name="keywords" id="keywords" accesskey="k" value="<?cs
      var:query.keywords ?>" />
   </div>

@@ -205,14 +205,16 @@ class QueryModule(Module):
             if not col in Ticket.std_fields:
                 col = 'value'
             if type(v) is ListType:
-                for j in range(len(v)):
-                    clause.append('%s=\'%s\'' % (col, util.sql_escape(v[j])))
+                inlist = ["'" + util.sql_escape(item) + "'" for item in v]
+                clause.append("%s IN (%s)" % (col, ", ".join(inlist)))
+            elif k in ['keywords', 'cc']:
+                clause.append("%s LIKE '%%%s%%'" % (col, util.sql_escape(v)))
             else:
-                clause.append('%s=\'%s\'' % (col, util.sql_escape(v)))
+                clause.append("%s = '%s'" % (col, util.sql_escape(v)))
             if not k in Ticket.std_fields:
                 clauses.append("(name='%s' AND (" % k + " OR ".join(clause) + "))")
             else:
-                clauses.append("(" + " OR ".join(clause) + ")")
+                clauses.append(" OR ".join(clause))
         if clauses:
             sql += " WHERE " + " AND ".join(clauses)
 
