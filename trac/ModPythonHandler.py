@@ -25,6 +25,8 @@ from trac import auth, core, Environment, Href, Session, Wiki
 
 env = None
 
+content_type_re = re.compile(r'^Content-Type$', re.IGNORECASE)
+
 class ModPythonRequest(core.Request):
 
     def __init__(self, req):
@@ -64,7 +66,10 @@ class ModPythonRequest(core.Request):
         self.req.status = code
 
     def send_header(self, name, value):
-        self.req.headers_out.add(name, str(value))
+        if content_type_re.match(name):
+            self.req.content_type = value
+        else:
+            self.req.headers_out.add(name, str(value))
 
     def end_headers(self):
         pass
