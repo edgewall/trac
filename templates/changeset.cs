@@ -11,7 +11,7 @@
 <div id="content" class="changeset">
 <h1>Changeset <?cs var:changeset.revision ?></h1>
 
-<form id="prefs" action="<?cs var:changeset.href ?>">
+<form method="post" id="prefs" action="<?cs var:changeset.href ?>">
  <div>
   <label for="style">View differences</label>
   <select id="style" name="style">

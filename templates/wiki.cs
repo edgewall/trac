@@ -22,7 +22,7 @@
  <?cs if:wiki.action == "diff" ?>
   <h1>Changes in version <?cs var:wiki.edit_version?> of <a href="<?cs
     var:wiki.current_href ?>"><?cs var:wiki.page_name ?></a></h1>
-  <form id="prefs" action="<?cs var:wiki.current_href ?>">
+  <form method="post" id="prefs" action="<?cs var:wiki.current_href ?>">
    <input type="hidden" name="version" value="<?cs var:wiki.version ?>" />
    <input type="hidden" name="diff" value="yes" />
    <div>
