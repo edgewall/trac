@@ -684,10 +684,10 @@ class Wiki(Module):
         elif edit:
             self.perm.assert_permission (perm.WIKI_MODIFY)
             self.req.hdf.setValue('wiki.action', 'edit')
-            self.req.hdf.setValue('title', name + ' (wiki edit)')
+            self.req.hdf.setValue('title', name + ' (edit)')
         elif preview:
             self.req.hdf.setValue('wiki.action', 'preview')
-            self.req.hdf.setValue('title', name + ' (wiki preview)')
+            self.req.hdf.setValue('title', name + ' (preview)')
         elif diff and version > 0:
             self.req.hdf.setValue('wiki.action', 'diff')
             self.generate_diff(name, version)
@@ -711,7 +711,7 @@ class Wiki(Module):
             if name == 'WikiStart':
                 self.req.hdf.setValue('title', '')
             else:
-                self.req.hdf.setValue('title', name + ' (wiki)')
+                self.req.hdf.setValue('title', name)
             self.env.get_attachments_hdf(self.db, 'wiki', name, self.req.hdf,
                                          'wiki.attachments')
 

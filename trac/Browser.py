@@ -187,7 +187,7 @@ class Browser(Module):
                 self.req.hdf.setValue('browser.parent_href',
                                       self.env.href.browser(parent))
 
-        self.req.hdf.setValue('title', path + ' (browser)')
+        self.req.hdf.setValue('title', path)
         self.req.hdf.setValue('browser.path', path)
         self.req.hdf.setValue('browser.revision', str(rev))
         self.req.hdf.setValue('browser.sort_order', order)

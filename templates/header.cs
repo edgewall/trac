@@ -3,8 +3,8 @@
 <html>
  <head>
   <?cs if:project.name ?>
-   <title><?cs var:project.name?><?cs if:title ?>: <?cs var:title ?><?cs
-   /if ?> - Trac</title>
+   <title><?cs if:title ?><?cs var:title ?> - <?cs
+   /if ?><?cs var:project.name?> - Trac</title>
   <?cs else ?>
    <title>Trac: <?cs var:title ?></title>
   <?cs /if ?>

@@ -199,7 +199,7 @@ class Search(Module):
         
         if self.args.has_key('q'):
             query = self.args.get('q')
-            self.req.hdf.setValue('title', 'Search Results (search)')
+            self.req.hdf.setValue('title', 'Search Results')
             self.req.hdf.setValue('search.q', query.replace('"', "&#34;"))
             tickets = self.args.has_key('ticket')
             changesets = self.args.has_key('changeset')

@@ -91,7 +91,7 @@ class Report (Module):
         if id == -1:
             # If no particular report was requested, display
             # a list of available reports instead
-            title = 'Available reports'
+            title = 'Available Reports'
             sql = 'SELECT id AS report, title FROM report ORDER BY report'
             description = 'This is a list of reports available.'
         else:
@@ -172,7 +172,7 @@ class Report (Module):
         if not row:
             raise TracError('Report %s does not exist.' % id,
                             'Invalid Report Number')
-        self.req.hdf.setValue('title', '%s (report)' % row['title'])
+        self.req.hdf.setValue('title', 'Delete {%s} %s (report)' % (id, row['title']))
         self.req.hdf.setValue('report.mode', 'delete')
         self.req.hdf.setValue('report.id', str(id))
         self.req.hdf.setValue('report.title', row['title'])
@@ -196,6 +196,7 @@ class Report (Module):
 
         if copy:
             title += ' copy'
+        self.req.hdf.setValue('title', 'Create New Report')
         
         self.req.hdf.setValue('report.mode', 'editor')
         self.req.hdf.setValue('report.title', title)
@@ -256,8 +257,10 @@ class Report (Module):
             return
         [title, description, sql] = info
         self.error = None
-        
-        self.req.hdf.setValue('title', title + ' (report)')
+
+        if id > 0:
+            title = '{%i} %s' % (id, title)
+        self.req.hdf.setValue('title', title)
         self.req.hdf.setValue('report.title', title)
         self.req.hdf.setValue('report.id', str(id))
         descr_html = wiki_to_html(description, self.req.hdf, self.env)

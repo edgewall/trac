@@ -57,6 +57,7 @@ class FileCommon(Module):
             vdata = self.env.mimeview.display(data, filename=self.filename,
                                               mimetype=self.mime_type)
         self.req.hdf.setValue('file.highlighted_html', vdata)
+        self.req.hdf.setValue('title', self.path)
         self.req.display('file.cs')
 
     def display_raw(self):

@@ -200,7 +200,7 @@ class Milestone(Module):
 
     def render_confirm(self, id):
         milestone = self.get_milestone(id)
-        self.req.hdf.setValue('title', '%s (milestone)' % milestone['name'])
+        self.req.hdf.setValue('title', 'Milestone %s' % milestone['name'])
         self.req.hdf.setValue('milestone.mode', 'delete')
         add_dict_to_hdf(milestone, self.req.hdf, 'milestone')
 
@@ -211,7 +211,7 @@ class Milestone(Module):
             self.req.hdf.setValue('milestone.mode', 'new')
         else:
             milestone = self.get_milestone(id)
-            self.req.hdf.setValue('title', '%s (milestone)' % milestone['name'])
+            self.req.hdf.setValue('title', 'Milestone %s' % milestone['name'])
             self.req.hdf.setValue('milestone.mode', 'edit')
         add_dict_to_hdf(milestone, self.req.hdf, 'milestone')
 
@@ -226,7 +226,7 @@ class Milestone(Module):
                                    self.env.href.milestone(id, 'edit'))
 
         milestone = self.get_milestone(id)
-        self.req.hdf.setValue('title', '%s (milestone)' % milestone['name'])
+        self.req.hdf.setValue('title', 'Milestone %s' % milestone['name'])
         add_dict_to_hdf(milestone, self.req.hdf, 'milestone')
 
         tickets = get_tickets_for_milestone(self.db, id)
