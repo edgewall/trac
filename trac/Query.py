@@ -51,27 +51,20 @@ class QueryModule(Module):
         cursor = self.db.cursor()
         cursor.execute(sql)
         results = []
-        previous_id = 0
         while 1:
             row = cursor.fetchone()
             if not row:
                 break
             id = int(row['id'])
-            if id == previous_id:
-                result = results[-1]
-                result[row['name']] = row['value']
-            else:
-                result = {
-                    'id': id,
-                    'href': self.env.href.ticket(id),
-                    'summary': util.escape(row['summary'] or '(no summary)'),
-                    'status': row['status'] or '',
-                    'component': row['component'] or '',
-                    'owner': row['owner'] or '',
-                    'priority': row['priority'] or ''
-                }
-                results.append(result)
-                previous_id = id
+            results.append({
+                'id': id,
+                'href': self.env.href.ticket(id),
+                'summary': util.escape(row['summary'] or '(no summary)'),
+                'status': row['status'] or '',
+                'component': row['component'] or '',
+                'owner': row['owner'] or '',
+                'priority': row['priority'] or ''
+            })
         cursor.close()
         return results
 
