@@ -628,6 +628,11 @@ CREATE INDEX wiki_idx           ON wiki(name,version);
                     drp = '/var/svn/test'
                     prompt = 'Path to repository [%s]> ' % drp
                     repository_dir = raw_input(prompt) or drp
+                    
+                    # Remove any trailing slash or else subversion might abort
+                    if not os.path.split(repository_dir)[1]:
+                        repository_dir = os.path.split(repository_dir)[0]
+                        
                     rep = repos.svn_repos_open(repository_dir, pool)
                     fs_ptr = repos.svn_repos_fs(rep)
                     break

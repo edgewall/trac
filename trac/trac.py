@@ -184,6 +184,11 @@ def real_main():
         pool = core.svn_pool_create(None)
 
         repos_dir = config['general']['repository_dir']
+
+        # Remove any trailing slash or else subversion might abort
+        if not os.path.split(repos_dir)[1]:
+            repos_dir = os.path.split(repos_dir)[0]
+            
         rep = repos.svn_repos_open(repos_dir, pool)
         fs_ptr = repos.svn_repos_fs(rep)
         module.repos = rep
