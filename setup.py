@@ -129,6 +129,60 @@ class my_bdist_wininst(bdist_wininst):
 distutils.command.bdist_wininst.bdist_wininst = my_bdist_wininst
 
 
+# parameters for various rpm distributions
+rpm_distros = {
+    'suse_options': { 'version_suffix': 'SuSE',
+                      'requires': """python >= 2.1
+                        subversion >= 1.0.0
+                        pysqlite >= 0.4.3
+                        clearsilver >= 0.9.3
+                        httpd""" },
+
+    'fedora_options': { 'version_suffix': 'fc'}
+    }
+
+
+# Our custom bdist_rpm
+import distutils.command.bdist_rpm
+from distutils.command.bdist_rpm import bdist_rpm
+class generic_bdist_rpm(bdist_rpm):
+
+    def __init__(self, dist, distro):
+        self.distro = distro
+        bdist_rpm.__init__(self, dist)
+
+    def initialize_options(self):
+        bdist_rpm.initialize_options(self)
+        self.title = "Trac %s" % VERSION
+        self.packager = "Edgewall Software <info@edgewall.com>"
+        for x in rpm_distros[self.distro].keys():
+            setattr(self, x, rpm_distros[self.distro][x])
+
+    def run(self):
+        bdist_rpm.run(self)
+        if hasattr(self, 'version_suffix'):
+            prefix = os.path.join(self.dist_dir, 'trac-0.7-1')
+            os.rename(prefix+'.noarch.rpm', prefix+self.version_suffix+'.noarch.rpm')
+            os.rename(prefix+'.src.rpm', prefix+self.version_suffix+'.src.rpm')
+
+class proxy_bdist_rpm(bdist_rpm):
+
+    def __init__(self, dist):
+        bdist_rpm.__init__(self, dist)
+        self.dist = dist
+
+    def initialize_options(self):
+        bdist_rpm.initialize_options(self)
+
+    def run(self):
+        for distro in rpm_distros.keys():
+            r = generic_bdist_rpm(self.dist, distro)
+            r.initialize_options()
+            r.finalize_options()
+            r.run()
+
+distutils.command.bdist_rpm.bdist_rpm = proxy_bdist_rpm
+
 setup(name="trac",
       description="Integrated scm, wiki, issue tracker and project environment",
       long_description=\
