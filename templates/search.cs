@@ -13,15 +13,21 @@ addEvent(window, 'load', function() { document.getElementById('q').focus()});
 <h3 id="search-hdr"><label for="q">Search</label></h3>
 <input type="text" id="q" name="q" size="40" value="<?cs var:search.q ?>" />
 <input type="submit" value="Search" /><br />
+<?cs if:trac.acl.WIKI_VIEW ?>
 <input type="checkbox" <?cs if search.wiki ?>checked="checked"<?cs /if ?> 
        id="wiki" name="wiki" />
 <label for="wiki">Wiki</label>
+<?cs /if ?>
+<?cs if:trac.acl.TICKET_VIEW ?>
 <input type="checkbox" <?cs if search.ticket ?>checked="checked"<?cs /if ?>
        id="ticket" name="ticket" />
 <label for="ticket">Tickets</label>
+<?cs /if ?>
+<?cs if:trac.acl.CHANGESET_VIEW ?>
 <input type="checkbox"  <?cs if search.changeset ?>checked="checked"<?cs /if ?>
        id="changeset" name="changeset" />
 <label for="changeset">Changesets</label>
+<?cs /if ?>
 </div>
 </form>
 

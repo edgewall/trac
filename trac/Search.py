@@ -74,6 +74,16 @@ class Search(Module):
     def perform_query (self, query, changeset, tickets, wiki, page=0):
         keywords = query.split(' ')
 
+        if changeset:
+            changeset = self.perm.has_permission(perm.CHANGESET_VIEW)
+        if tickets:
+            tickets = self.perm.has_permission(perm.TICKET_VIEW)
+        if wiki:
+            wiki = self.perm.has_permission(perm.WIKI_VIEW)
+
+        if changeset == tickets == wiki == 0:
+            return []
+
         if len(keywords) == 1:
             kwd = keywords[0]
             redir = None
