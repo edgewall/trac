@@ -158,7 +158,7 @@ class Milestone(Module):
         self.log.debug("Creating new milestone '%s'" % name)
         cursor.execute("INSERT INTO milestone (name,due,completed,description) "
                        "VALUES (%s,%s,%s,%s)",
-                       (name, due, completed, description)
+                       (name, due, completed, description))
         self.db.commit()
         req.redirect(self.env.href.milestone(name))
 
