@@ -22,7 +22,7 @@
 import time
 
 from Module import Module
-from util import add_to_hdf, TracError
+from util import add_to_hdf, get_date_format_hint, TracError
 from Ticket import get_custom_fields, Ticket
 from WikiFormatter import wiki_to_html
 import perm
@@ -292,6 +292,7 @@ class Milestone(Module):
             self.req.hdf.setValue('title', 'Milestone %s' % milestone['name'])
             self.req.hdf.setValue('milestone.mode', 'edit')
         add_to_hdf(milestone, self.req.hdf, 'milestone')
+        add_to_hdf(get_date_format_hint(), self.req.hdf, 'milestone.date_hint')
 
     def render_view(self, id):
         if self.perm.has_permission(perm.MILESTONE_DELETE):

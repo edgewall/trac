@@ -265,6 +265,13 @@ def get_reporter_id(req):
     else:
         return req.authname
 
+def get_date_format_hint():
+    t = time.localtime(0)
+    t = (1999, 10, 29, t[3], t[4], t[5], t[6], t[7], t[8])
+    tmpl = time.strftime('%x', t)
+    return tmpl.replace('1999', 'YYYY', 1).replace('99', 'YY', 1) \
+               .replace('29', 'DD', 1).replace('10', 'MM')
+
 
 class TracError(Exception):
     def __init__(self, message, title=None, show_traceback=0):

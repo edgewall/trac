@@ -64,8 +64,8 @@
      <option value="now">Mark as completed now</option>
     </select>
     <input type="text" id="date" name="date" size="8" value="<?cs
-      var:milestone.date ?>" title="Format: MM/DD/YY" />
-    <label for="date"><em>Format: MM/DD/YY</em></label>
+      var:milestone.date ?>" title="Format: <?cs var:milestone.date_hint ?>" />
+    <label for="date"><em>Format: <?cs var:milestone.date_hint ?></em></label>
    </div>
    <div class="field">
     <fieldset class="iefix">
