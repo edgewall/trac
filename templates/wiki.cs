@@ -154,7 +154,7 @@
          <div style="display: inline; float: left; margin: 0 .5em;">
            <label for="author">Your email or username:</label><br />
            <input id="author" type="text" name="author" size="30"
-                value="<?cs call:session_name_email() ?>"/>
+                value="<?cs var:wiki.author ?>"/>
          </div>
          <div>
            <label for="comment">Comment about this change (optional):</label>

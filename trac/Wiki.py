@@ -27,7 +27,7 @@ import StringIO
 
 import perm
 from Module import Module
-from util import escape, TracError
+from util import escape, TracError, get_reporter_id
 from WikiFormatter import *
 
 
@@ -182,7 +182,7 @@ class WikiModule(Module):
 
     def render(self):
         name = self.args.get('page', 'WikiStart')
-        author = self.args.get('author', self.req.authname)
+        author = self.args.get('author', get_reporter_id(self.req))
         edit_version = self.args.get('edit_version', None)
         delete_ver = self.args.get('delete_ver', None)
         delete_page = self.args.get('delete_page', None)
