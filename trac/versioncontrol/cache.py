@@ -50,12 +50,7 @@ class CachedRepository(Repository):
 
     def sync(self):
         self.log.debug("Checking whether sync with repository is needed")
-        youngest_stored = None
-        cursor = self.db.cursor()
-        cursor.execute("SELECT rev FROM revision ORDER BY time DESC LIMIT 1")
-        row =  cursor.fetchone()
-        if row:
-            youngest_stored = row[0]
+        youngest_stored = self.repos.get_youngest_rev_in_cache(self.db)
         if youngest_stored != str(self.repos.youngest_rev):
             kindmap = dict(zip(_kindmap.values(), _kindmap.keys()))
             actionmap = dict(zip(_actionmap.values(), _actionmap.keys()))

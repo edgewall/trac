@@ -169,6 +169,15 @@ class SubversionRepository(Repository):
             return self.history[idx - 1]
         return None
 
+    def get_youngest_rev_in_cache(self, db):
+        """
+        Get the latest stored revision by sorting the revision strings numerically
+        """
+        cursor = db.cursor()
+        cursor.execute("SELECT rev FROM revision ORDER BY -LENGTH(rev), rev DESC LIMIT 1")
+        row = cursor.fetchone()
+        return row and row[0] or None
+
 
 class SubversionNode(Node):
 

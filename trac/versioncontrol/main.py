@@ -77,6 +77,17 @@ class Repository(object):
         """
         raise NotImplementedError
 
+    def get_youngest_rev_in_cache(self, db):
+        """
+        Return the youngest revision currently cached.
+        The way revisions are sequenced is version control specific.
+        By default, one assumes that the revisions are sequenced in time.
+        """
+        cursor = db.cursor()
+        cursor.execute("SELECT rev FROM revision ORDER BY time DESC LIMIT 1")
+        row = cursor.fetchone()
+        return row and row[0] or None
+        
 
 class Node(object):
     """
