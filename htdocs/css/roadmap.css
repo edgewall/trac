@@ -101,6 +101,9 @@ p.percentage { font-size: 10px; line-height: 2.4em }
  border: 1px dotted #ddd
 }
 #main.milestone .stats tbody th { font-weight: normal; text-align: left }
+#main.milestone .stats tbody th.name, #main.milestone .stats tfoot th.name {
+ line-height: 2em;
+}
 #main.milestone .stats tfoot tr { border-bottom: 0 }
 #main.milestone .stats tfoot th, #main.milestone .stats tfoot td {
  font-weight: bold;
