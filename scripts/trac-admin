@@ -534,7 +534,9 @@ class TracAdmin(cmd.Cmd):
                   ('wiki dump <directory>',
                    'Export all wiki pages to files named by title'),
                   ('wiki load <directory>',
-                   'Import all wiki pages from directory')]
+                   'Import all wiki pages from directory'),
+                  ('wiki upgrade',
+                   'Upgrade default wiki pages to current version')]
 
     def complete_wiki (self, text, line, begidx, endidx):
         argv = self.arg_tokenize(line)
