@@ -250,18 +250,27 @@ onfocus="document.getElementById('comment').focus()">Add/Change
  <div id="tkt-submit">
   <fieldset>
    <legend>Action</legend>
-  <input type="radio" id="leave" name="action" value="leave" checked="checked" />
+<h1><?cs var:ticket.action ?></h1>
+  <?cs if:!ticket.action ?>
+   <?cs set:ticket.action = 'leave' ?>
+  <?cs /if ?>
+  <?cs def:action_radio(id) ?>
+    <input type="radio" id="<?cs var:id ?>" name="action" value="<?cs var:id ?>" 
+      <?cs if:$ticket.action == $id ?>checked="checked"<?cs /if ?>
+     />
+  <?cs /def ?>
+  <?cs call:action_radio('leave') ?>
    &nbsp;<label for="leave">leave as <?cs var:ticket.status ?></label><br />
    <?cs if $ticket.status == "new" ?>
-    <input type="radio" id="accept" name="action" value="accept" />
+  <?cs call:action_radio('accept') ?>
      &nbsp;<label for="accept">accept ticket</label><br />
    <?cs /if ?>
    <?cs if $ticket.status == "closed" ?>
-    <input type="radio" id="reopen" name="action" value="reopen" />
+    <?cs call:action_radio('reopen') ?>
      &nbsp;<label for="reopen">reopen ticket</label><br />
    <?cs /if ?>
    <?cs if $ticket.status == "new" || $ticket.status == "assigned" || $ticket.status == "reopened" ?>
-    <input type="radio" id="resolve" name="action" value="resolve" />
+    <?cs call:action_radio('resolve') ?>
      &nbsp;<label for="resolve">resolve as:</label>
      <select name="resolve_resolution">
       <option selected="selected">fixed</option>
@@ -270,7 +279,7 @@ onfocus="document.getElementById('comment').focus()">Add/Change
       <option>duplicate</option>
       <option>worksforme</option>
      </select><br />
-    <input type="radio" id="reassign" name="action" value="reassign" />
+    <?cs call:action_radio('reassign') ?>
     &nbsp;<label for="reassign">reassign ticket to:</label>
     &nbsp;<input type="text" id="reassign_owner" name="reassign_owner" 
            class="textwidget" size="40" value="<?cs var:trac.authname ?>" />

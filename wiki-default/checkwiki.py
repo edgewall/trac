@@ -22,6 +22,7 @@ wiki_pages = [
  "TracBackup",
  "TracBrowser",
  "TracChangeset",
+ "TracEnvironment",
  "TracGuide",
  "TracIni",
  "TracInstall",
