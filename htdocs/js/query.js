@@ -128,6 +128,7 @@ function initializeFilters() {
     function createSelect(name, options, id) {
       var e = document.createElement("select");
       if (name) e.name = name;
+      e.options[0] = new Option();
       if (options) {
         for (var i = 0; i < options.length; i++) {
           var option;
