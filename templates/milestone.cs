@@ -18,6 +18,11 @@
  <?cs /if ?>
 
  <?cs if:milestone.mode == "edit" || milestone.mode == "new" ?>
+  <script type="text/javascript">
+    addEvent(window, 'load', function() {
+      document.getElementById('name').focus() }
+    ); 
+  </script>
   <form action="<?cs var:cgi_location ?>" method="post">
    <input type="hidden" name="mode" value="milestone" />   <input type="hidden" name="id" value="<?cs var:milestone.name ?>" />   <input type="hidden" name="action" value="commit" />   <fieldset>
     <div class="field">
