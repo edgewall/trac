@@ -45,14 +45,14 @@ Paragraph
 ticket:1, changeset:1, report:1, source:foo/bar
 ------------------------------
 <p>
-<a href="/ticket/1">ticket:1</a>, <a href="/changeset/1">changeset:1</a>, <a href="/report/1">report:1</a>, <a href="/browser/foo/bar">source:foo/bar</a>
+<a title="" class="missing" href="/ticket/1">ticket:1?</a>, <a title="" class="missing" href="/changeset/1">changeset:1?</a>, <a title="" href="/report/1">report:1</a>, <a title="" href="/browser/foo/bar">source:foo/bar</a>
 </p>
 ==============================
 [ticket:1 ticket 1], [changeset:1 changeset 1], [report:1 report 1], 
 [source:foo/bar source foo/bar], [http://www.edgewall.com/ edgewall]
 ------------------------------
 <p>
-<a href="/ticket/1">ticket 1</a>, <a href="/changeset/1">changeset 1</a>, <a href="/report/1">report 1</a>, 
+<a class="missing" href="/ticket/1">ticket 1?</a>, <a class="missing" href="/changeset/1">changeset 1?</a>, <a href="/report/1">report 1</a>, 
 <a href="/browser/foo/bar">source foo/bar</a>, <a href="http://www.edgewall.com/">edgewall</a>
 </p>
 ==============================

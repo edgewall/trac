@@ -199,7 +199,7 @@ class CommonFormatter:
         if link and missing:
             return '<a title="%s" class="missing" href="%s">%s?</a>' % (title,link, text)
         elif link:
-            return '<a title="%s" href="%s">%s</a>' % (title,link, text)
+            return '<a title="%s" href="%s">%s</a>' % (title or '',link, text)
         else:
             return match
 
