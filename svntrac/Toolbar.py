@@ -54,9 +54,8 @@ class Toolbar:
     def render (self):
         out = StringIO.StringIO()
         out.write ('<table width="100%" cellspacing="0" cellpadding="0"><tr><td class="navbar" bgcolor="black">')
+        out.write ('<a href="%s" class="navbar-link">wiki</a> |' % wiki_href ())
 
-        out.write ('<a href="%s" class="navbar-link">menu</a> |' % menu_href ())
-        
         if perm.has_permission (perm.BROWSER_VIEW):
             out.write ('<a href="%s" class="navbar-link">browse</a> |'
                        % browser_href (self.browser_path))
@@ -66,9 +65,6 @@ class Toolbar:
             
         if perm.has_permission (perm.REPORT_VIEW):
             out.write ('<a href="%s" class="navbar-link">reports</a> |' % report_href ())
-        
-        if perm.has_permission (perm.WIKI_VIEW):
-            out.write ('<a href="%s" class="navbar-link">wiki</a> |' % wiki_href ())
         
         if perm.has_permission (perm.TICKET_CREATE):
             out.write ('<a href="%s" class="navbar-link">new ticket</a> |' % newticket_href ())

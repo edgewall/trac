@@ -40,7 +40,7 @@ class Formatter:
     _rules = r"""(?:(?P<bold>''')""" \
              r"""|(?P<italic>'')""" \
              r"""|(?P<heading>^\s*(?P<hdepth>=+)\s.*\s(?P=hdepth)$)""" \
-             r"""|(?P<listitem>^(?P<ldepth>\s+)(?:\*|[0-9]+\.) .*$)""" \
+             r"""|(?P<listitem>^(?P<ldepth>\s+)(?:\*|[0-9]+\.) )""" \
              r"""|(?P<wikilink>[[A-Z][a-z]*(?:[A-Z][a-z]+)+)""" \
              r"""|(?P<url>%(url_re)s)""" \
              r"""|(?P<fancylink>\[(?P<fancyurl>%(url_re)s) (?P<linkname>.*?)\])""" \
@@ -96,8 +96,9 @@ class Formatter:
         depth = (len(fullmatch.group('ldepth')) + 1) / 2
         type = ['ol', 'ul'][match[depth * 2 - 1] == '*']
         self._set_list_depth(depth, type)
-        
-        return '<li>%s</li>' % match[depth * 2 + 1:]
+        self._li_open = True
+        return '<li>'
+        #return '<li>%s</li>' % match[depth * 2 + 1:]
 
     def replace(self, fullmatch):
         for type, match in fullmatch.groupdict().items():
@@ -109,6 +110,7 @@ class Formatter:
         rules = re.compile(Formatter._rules)
         p_open = False
         self.is_heading = False
+        self._li_open = False
         self._list_stack = []
         for line in text.splitlines():
             self._is_bold = False
@@ -116,18 +118,29 @@ class Formatter:
             self._is_underline = False
             line = escape(line)
             result = re.sub(rules, self.replace, line)
+            # close any open list item
+            if self._li_open:
+                self._li_open = False
+                result = result + '</li>'
+            # close the paragraph when a heading starts
+            # or on an empty line
+            if p_open and self._list_stack != []:
+                out.write ('</p>')
+                p_open = False
+                
             if (self.is_heading or result == '') and p_open:
                 self._set_list_depth(0, None)
                 out.write ('</p>')
                 p_open = False
-            elif not p_open and not self.is_heading:
+            elif not p_open and not self.is_heading and result != '' and self._list_stack==[]:
                 p_open = True
                 out.write ('<p>')
                 
             out.write(result)
             self.is_heading = False
+        # clean up before we are done
+        self._set_list_depth(0, None)
         if p_open:
-            self._set_list_depth(0, None)
             out.write('</p>')
 
 
@@ -194,7 +207,7 @@ class Page:
         out.write(escape(self.text))
         out.write ('</textarea><p>')
         out.write ('<input type="submit" name="action" value="preview">&nbsp;')
-        out.write ('<input type="submit" name="action" value="commit">')
+        out.write ('<input type="submit" name="action" value="save changes">')
         out.write ('</form>')
 
     def render_view(self, out, edit_button=1):
@@ -203,12 +216,12 @@ class Page:
         out.write ('<div class="wikipage">')
         #format_wiki(self.text, out)
         Formatter().format(self.text, out)
-        out.write ('</div>')
+        out.write ('</div><br>')
         if edit_button and perm.has_permission (perm.WIKI_MODIFY):
             out.write ('<form action="svntrac.cgi" method="POST">')
             out.write ('<input type="hidden" name="mode" value="wiki">')
             out.write ('<input type="hidden" name="page" value="%s">' % self.name)
-            out.write ('<input type="submit" name="action" value=" edit ">')
+            out.write ('<input type="submit" name="action" value=" edit page ">')
             out.write ('</form>')
         
     def render_preview (self, out):
@@ -272,10 +285,10 @@ class Wiki(Module):
             page.set_content (self.args['text'])
             
         out = StringIO.StringIO()
-        if action == 'commit':
+        if action == 'save changes':
             page.commit ()
             redirect (wiki_href (page.name))
-        elif action == ' edit ':
+        elif action == ' edit page ':
             out.write ('<h2>edit <a href="%s">%s</a></h2>' %
                        (wiki_href(page.name), page.name))
             page.render_edit (out)

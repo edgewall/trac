@@ -39,5 +39,5 @@ if __name__ == '__main__':
         config = svntrac.load_config()
         svntrac.db.init (config)
         authenticate_user ()
-        redirect (menu_href ())
+        redirect (wiki_href ())
 

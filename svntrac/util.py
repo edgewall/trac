@@ -58,9 +58,6 @@ def changeset_href (rev):
 def ticket_href (ticket):
     return 'svntrac.cgi?mode=ticket&id=%s' % ticket
 
-def menu_href ():
-    return 'svntrac.cgi?mode=menu'
-
 def newticket_href ():
     return 'svntrac.cgi?mode=newticket'
 

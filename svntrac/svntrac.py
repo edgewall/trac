@@ -42,7 +42,6 @@ modules = {
 #  name module class need_db need_svn    
     'log'         : ('Log', 'Log', 1),
     'file'        : ('File', 'File', 1),
-    'menu'        : ('Menu', 'Menu', 0),
     'wiki'        : ('Wiki', 'Wiki', 0),
     'report'      : ('Report', 'Report', 0),
     'ticket'      : ('Ticket', 'Ticket', 0),
