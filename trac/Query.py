@@ -1,7 +1,7 @@
 # -*- coding: iso8859-1 -*-
 #
 # Copyright (C) 2003, 2004, 2005 Edgewall Software
-# Copyright (C) 2003, 2004, 2005 Jonas Borgström <jonas@edgewall.com>
+# Copyright (C) 2003, 2004, 2005 Christopher Lenz <cmlenz@gmx.de>
 #
 # Trac is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License as
@@ -17,10 +17,10 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #
-# Author: Jonas Borgström <jonas@edgewall.com>
+# Author: Christopher Lenz <cmlenz@gmx.de>
 
 from __future__ import nested_scopes
-from time import gmtime, localtime, strftime
+from time import gmtime, localtime, strftime, time
 from types import ListType
 import re
 
@@ -54,8 +54,8 @@ class Query:
 
         # FIXME: the user should be able to configure which columns should
         # be displayed
-        cols = [ 'id', 'summary', 'status', 'owner', 'priority', 'milestone',
-                 'component', 'version', 'severity', 'resolution', 'reporter' ]
+        cols = ['id', 'summary', 'status', 'owner', 'priority', 'milestone',
+                'component', 'version', 'severity', 'resolution', 'reporter']
         cols += [f['name'] for f in get_custom_fields(self.env)]
 
         # Semi-intelligently remove columns that are restricted to a single
@@ -111,15 +111,16 @@ class Query:
             if not row:
                 break
             id = int(row['id'])
-            result = { 'id': id, 'href': self.env.href.ticket(id) }
+            result = {'id': id, 'href': self.env.href.ticket(id)}
             for col in self.cols:
                 result[col] = escape(row[col] or '--')
+            result['time'] = row['time']
+            result['changetime'] = row['changetime']
             if self.group:
                 result[self.group] = row[self.group] or 'None'
             if self.verbose:
                 result['description'] = row['description']
                 result['reporter'] = escape(row['reporter'] or 'anonymous')
-                result['created'] = int(row['time'])
             results.append(result)
         cursor.close()
         return results
@@ -134,15 +135,14 @@ class Query:
             self.get_columns()
 
         cols = self.cols[:]
-        if not self.order in cols:
-            cols += [self.order]
         if self.group and not self.group in cols:
             cols += [self.group]
-        if not 'priority' in cols:
-            # Always add the priority column for coloring the resolt rows
-            cols += ['priority']
         if self.verbose:
-            cols += ['reporter', 'time', 'description']
+            cols += ['reporter', 'description']
+        for col in ('priority', 'time', 'changetime', self.order):
+            # Add default columns
+            if not col in cols:
+                cols += [col]
         cols.extend([c for c in self.constraints.keys() if not c in cols])
 
         custom_fields = [f['name'] for f in get_custom_fields(self.env)]
@@ -272,7 +272,7 @@ class QueryModule(Module):
                 (real_k, real_v) = checkbox[2:].split(':', 2)
                 req.args.list.append(cgi.MiniFieldStorage(real_k, real_v))
 
-        # For clients without JavaScript, we add a new constraint here if
+        # For clients without JavaScript, we remove constraints here if
         # requested
         remove_constraints = {}
         to_remove = [k[10:] for k in req.args.keys()
@@ -308,6 +308,7 @@ class QueryModule(Module):
         return constraints
 
     def _get_ticket_properties(self):
+        # FIXME: This should be in the ticket module
         properties = []
 
         cursor = self.db.cursor()
@@ -474,15 +475,53 @@ class QueryModule(Module):
         if query.verbose:
             req.hdf['query.verbose'] = 1
 
-        results = query.execute(self.db)
-        for result in results:
-            if result.has_key('description'):
-                result['description'] = wiki_to_oneliner(result['description'] or '',
+        tickets = query.execute(self.db)
+
+        # The most recent query is stored in the user session
+        orig_list = rest_list = None
+        orig_time = int(time())
+        if str(query.constraints) != req.session.get('query_constraints'):
+            # New query, initialize session vars
+            req.session['query_constraints'] = str(query.constraints)
+            req.session['query_time'] = int(time())
+            req.session['query_tickets'] = ' '.join([t['id'] for t in tickets])
+        else:
+            orig_list = [id for id in req.session['query_tickets'].split()]
+            rest_list = orig_list[:]
+            orig_time = int(req.session['query_time'])
+        req.session['query_href'] = query.get_href()
+
+        # Find out which tickets originally in the query results no longer
+        # match the constraints
+        if rest_list:
+            for tid in [t['id'] for t in tickets if t['id'] in rest_list]:
+                rest_list.remove(tid)
+            for rest_id in rest_list:
+                ticket = {}
+                ticket.update(Ticket(self.db, int(rest_id)).data)
+                ticket['removed'] = 1
+                tickets.insert(orig_list.index(rest_id), ticket)
+
+        for ticket in tickets:
+            if orig_list:
+                # Mark tickets added or changed since the query was first
+                # executed
+                if int(ticket['time']) > orig_time:
+                    ticket['added'] = 1
+                elif int(ticket['changetime']) > orig_time:
+                    ticket['changed'] = 1
+            ticket['time'] = strftime('%c', localtime(ticket['time']))
+            if ticket.has_key('description'):
+                ticket['description'] = wiki_to_oneliner(ticket['description'] or '',
                                                          self.env, self.db)
-            if result.has_key('created'):
-                result['created'] = strftime('%c', localtime(result['created']))
-        req.hdf['query.results'] = results
+
+        req.session['query_tickets'] = ' '.join([str(t['id']) for t in tickets])
+
+        req.hdf['query.results'] = tickets
+        req.hdf['session.constraints'] = req.session.get('query_constraints')
+        req.hdf['session.tickets'] = req.session.get('query_tickets')
         req.display(self.template_name, 'text/html')
+
 
     def display_csv(self, req, sep=','):
         req.send_response(200)
@@ -513,9 +552,9 @@ class QueryModule(Module):
             if result['description']:
                 result['description'] = escape(wiki_to_html(result['description'] or '',
                                                             None, self.env, self.db, 1))
-            if result['created']:
-                result['created'] = strftime('%a, %d %b %Y %H:%M:%S GMT',
-                                             gmtime(result['created']))
+            if result['time']:
+                result['time'] = strftime('%a, %d %b %Y %H:%M:%S GMT',
+                                          gmtime(result['time']))
         req.hdf['query.results'] = results
 
         req.display(self.template_rss_name, 'text/xml')

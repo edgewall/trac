@@ -68,13 +68,16 @@ h2 {
 .tickets .fullrow hr { display: none }
 
 /* Query results table */
-table.tickets tbody tr.highest { background: #fdc; border-color: #e88; color: #a22 }
+table.tickets tbody tr.added td { font-weight: bold }
+table.tickets tbody tr.changed td { font-style: italic }
+table.tickets tbody tr.removed td { color: #999 }
+table.tickets tbody tr.highest { background: #fdc; border-color: #e88 }
 table.tickets tbody tr.even.highest { background: #fed; border-color: #e99 }
-table.tickets tbody tr.high { background: #ffb; border-color: #eea; color: #880 }
+table.tickets tbody tr.high { background: #ffb; border-color: #eea }
 table.tickets tbody tr.even.high { background: #ffd; border-color: #dd8 }
-table.tickets tbody tr.normal  { background: #fbfbfb; border-color: #ddd; color: #444 }
+table.tickets tbody tr.normal  { background: #fbfbfb; border-color: #ddd }
 table.tickets tbody tr.even.normal { background: #f6f6f6; border-color: #ccc }
-table.tickets tbody tr.low { background: #e7ffff; border-color: #cee; color: #099 }
+table.tickets tbody tr.low { background: #e7ffff; border-color: #cee }
 table.tickets tbody tr.even.low { background: #dff; border-color: #bee }
-table.tickets tbody tr.lowest { background: #e7eeff; border-color: #cde; color: #469 }
+table.tickets tbody tr.lowest { background: #e7eeff; border-color: #cde }
 table.tickets tbody tr.even.lowest { background: #dde7ff; border-color: #cde }

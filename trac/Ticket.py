@@ -1,7 +1,7 @@
 # -*- coding: iso8859-1 -*-
 #
-# Copyright (C) 2003, 2004 Edgewall Software
-# Copyright (C) 2003, 2004 Jonas Borgström <jonas@edgewall.com>
+# Copyright (C) 2003, 2004, 2005 Edgewall Software
+# Copyright (C) 2003, 2004, 2005 Jonas Borgström <jonas@edgewall.com>
 #
 # Trac is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License as
@@ -490,17 +490,20 @@ class TicketModule (Module):
 
         self.insert_ticket_data(req, id, ticket, reporter_id)
 
-        cursor = self.db.cursor()
-        cursor.execute("SELECT max(id) FROM ticket")
-        row = cursor.fetchone()
-        if row:
-            max_id = int(row[0])
-            if id > 1:
-                self.add_link('first', self.env.href.ticket(1), 'Ticket #1')
-                self.add_link('prev', self.env.href.ticket(id - 1),
-                              'Ticket #%d' % (id - 1))
-            if id < max_id:
-                self.add_link('next', self.env.href.ticket(id + 1),
-                              'Ticket #%d' % (id + 1))
-                self.add_link('last', self.env.href.ticket(max_id),
-                              'Ticket #%d' % (max_id))
+        # If the ticket is being shown in the context of a query, add
+        # links to help navigate in the query result set
+        if 'query_tickets' in req.session:
+            tickets = req.session['query_tickets'].split()
+            if str(id) in tickets:
+                idx = int(tickets.index(str(id)))
+                if idx > 0:
+                    self.add_link('first', self.env.href.ticket(tickets[0]),
+                                  'Ticket #%s' % tickets[0])
+                    self.add_link('prev', self.env.href.ticket(tickets[idx - 1]),
+                                  'Ticket #%s' % tickets[idx - 1])
+                if idx < len(tickets) - 1:
+                    self.add_link('next', self.env.href.ticket(tickets[idx + 1]),
+                                  'Ticket #%s' % tickets[idx + 1])
+                    self.add_link('last', self.env.href.ticket(tickets[-1]),
+                                  'Ticket #%s' % tickets[-1])
+            self.add_link('up', req.session['query_href'])

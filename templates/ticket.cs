@@ -6,15 +6,22 @@
  <h2>Ticket Navigation</h2>
  <ul><?cs
   if:len(links.prev) ?>
-   <li class="first<?cs if:!len(links.next) ?> last<?cs /if ?>">
-    <a href="<?cs var:links.prev.0.href ?>" title="<?cs
+   <li class="first<?cs if:!len(links.up) && !len(links.next) ?> last<?cs /if ?>">
+    &larr; <a href="<?cs var:links.prev.0.href ?>" title="<?cs
       var:links.prev.0.title ?>">Previous Ticket</a>
    </li><?cs
   /if ?><?cs
+  if:len(links.up) ?>
+   <li class="<?cs if:!len(links.prev) ?>first<?cs /if ?><?cs
+                   if:!len(links.next) ?> last<?cs /if ?>">
+    <a href="<?cs var:links.up.0.href ?>" title="<?cs
+      var:links.up.0.title ?>">Back to Query</a>
+   </li><?cs
+  /if ?><?cs
   if:len(links.next) ?>
-   <li class="<?cs if:len(links.prev) ?>first <?cs /if ?>last">
+   <li class="<?cs if:!len(links.prev) && !len(links.up) ?>first <?cs /if ?>last">
     <a href="<?cs var:links.next.0.href ?>" title="<?cs
-      var:links.next.0.title ?>">Next Ticket</a>
+      var:links.next.0.title ?>">Next Ticket</a> &rarr;
    </li><?cs
   /if ?>
  </ul>

@@ -195,7 +195,10 @@
   /if ?>
   <tr class="<?cs
    if:name(result) % 2 ?>odd<?cs else ?>even<?cs /if ?> <?cs
-   var:result.priority ?>"><?cs
+   var:result.priority ?><?cs
+   if:result.added ?> added<?cs /if ?><?cs
+   if:result.changed ?> changed<?cs /if ?><?cs
+   if:result.removed ?> removed<?cs /if ?>"><?cs
   each:header = query.headers ?><?cs
    if:name(header) == 0 ?>
     <td class="ticket"><a href="<?cs var:result.href ?>" title="View ticket"><?cs
@@ -205,7 +208,7 @@
      <a href="<?cs var:result.href ?>" title="View ticket"><?cs
        var:result[header.name] ?></a><?cs
     else ?>
-     <?cs var:result[header.name] ?><?cs
+     <span><?cs var:result[header.name] ?></span><?cs
     /if ?>
     </td><?cs
    /if ?><?cs
@@ -213,7 +216,7 @@
   <?cs if:query.verbose ?>
    </tr><tr class="fullrow"><td colspan="<?cs var:len(query.headers) ?>">
     <p class="meta">Reported by <strong><?cs var:result.reporter ?></strong>,
-    <?cs var:result.created ?><?cs if:result.description ?>:<?cs /if ?></p>
+    <?cs var:result.time ?><?cs if:result.description ?>:<?cs /if ?></p>
     <?cs if:result.description ?><p><?cs var:result.description ?></p><?cs /if ?>
    </td>
   <?cs /if ?><?cs set:prev_group = result[query.group] ?>
