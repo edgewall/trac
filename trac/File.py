@@ -124,9 +124,6 @@ class Attachment(FileCommon):
             self.read_func = self.read_attachment
             return
 
-    def read_attachment(self, bytes):
-        return self.attachment_fd.read(bytes)
-
         if self.args.has_key('description') and \
                self.args.has_key('author') and \
                self.args.has_key('attachment') and \
@@ -151,6 +148,9 @@ class Attachment(FileCommon):
         else:
             # Display an attachment upload form
             self.view_form = 1
+
+    def read_attachment(self, bytes):
+        return self.attachment_fd.read(bytes)
 
     def display(self):
         text, link = self.get_attachment_parent_link()
