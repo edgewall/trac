@@ -243,6 +243,10 @@ class TracHTTPRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler,
 
         self.remote_user = None
         if self.path_info == '/login':
+            if not self.env.auth:
+                raise trac.util.TracError('Authentication not enabled. '
+                                          'Please use the tracd --auth option.\n')
+
             self.remote_user = self.env.auth.do_auth(self)
             if not self.remote_user:
                 return
@@ -303,8 +307,8 @@ def main():
         project = os.path.split(path)[1]
         if not project:
             project = os.path.split(path)[0]
-        # We assume the database filenames follow the following
-        # naming convention: /some/path/project.whatever
+        # We assume the projenv filenames follow the following
+        # naming convention: /some/path/project
         auth = auths.get(project, None)
         env = Environment(path)
         # Upgrade the database schema if needed
