@@ -25,6 +25,7 @@ import posixpath
 from svn import core, fs, util, delta
 
 from Module import Module
+from Wiki import wiki_to_oneliner
 from util import *
 import perm
 
@@ -62,9 +63,7 @@ class Browser(Module):
             if is_dir:
                 name = item + '/'
                 fullpath = fullpath + '/'
-                size = 0
             else:
-                size = fs.file_length(root, fullpath, self.pool)
                 name = item
 
             created_rev = fs.node_created_rev(root, fullpath, self.pool)
@@ -78,17 +77,24 @@ class Browser(Module):
             else:
                 date_seconds = 0
                 date = ''
-
+            author = fs.revision_prop(self.fs_ptr, created_rev,
+                                      util.SVN_PROP_REVISION_AUTHOR,
+                                      self.pool)
+            change = fs.revision_prop(self.fs_ptr, created_rev,
+                                             util.SVN_PROP_REVISION_LOG,
+                                             self.pool)
             item = {
-                'name'       : name,
-                'fullpath'   : fullpath,
-                'created_rev': created_rev,
-                'date'       : date,
+                'name'         : name,
+                'fullpath'     : fullpath,
+                'created_rev'  : created_rev,
+                'date'         : date,
                 'date_seconds' : date_seconds,
-                'age'       : pretty_age(date_seconds),
-                'is_dir'     : is_dir,
-                'size'       : pretty_size(size),
-                'size_bytes' : size }
+                'age'          : pretty_age(date_seconds),
+                'is_dir'       : is_dir,
+                'author'       : author,
+                'change'       : wiki_to_oneliner(shorten_line(change),
+                                                  self.req.hdf, self.env)
+                }
             if rev_specified:
                 item['log_href'] = self.env.href.log(fullpath, revision)
                 if is_dir:
@@ -154,11 +160,7 @@ class Browser(Module):
                 rev = fs.youngest_rev(self.fs_ptr, self.pool)
 
         info = self.get_info(path, rev, rev_specified)
-        if order == 'size':
-            info.sort(lambda x, y: cmp(x['size_bytes'], y['size_bytes']))
-        elif order == 'Size':
-            info.sort(lambda y, x: cmp(x['size_bytes'], y['size_bytes']))
-        elif order == 'date':
+        if order == 'date':
             info.sort(lambda x, y: cmp(x['date_seconds'], y['date_seconds']))
         elif order == 'Date':
             info.sort(lambda y, x: cmp(x['date_seconds'], y['date_seconds']))

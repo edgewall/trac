@@ -153,10 +153,9 @@ def hdf_add_if_missing(hdf, prefix, value):
         i += 1
     hdf.setValue(prefix + '.%d.name' % i, value)
         
-def shorten_line(text):
+def shorten_line(text, maxlen = 75):
     if not text:
-        return text
-    maxlen = 75
+        return ''
     if len(text) < maxlen:
         shortline = text
     else:
