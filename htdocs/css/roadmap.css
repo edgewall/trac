@@ -1,0 +1,94 @@
+div.progress {
+ background: white;
+ float: left;
+ border: 1px inset black;
+}
+div.progress div {
+ background: #d7f0d7;
+ height: 1.2em;
+}
+
+#main.roadmap ul {
+ margin: 0;
+ padding: 0;
+}
+#main.roadmap li {
+ clear: both;
+ list-style: none;
+ margin-bottom: 4em;
+}
+#main.roadmap h2 {
+ background: #f7f7f7;
+ border-bottom: 1px solid #d7d7d7;
+ font-size: 14px;
+ margin: 0;
+}
+#main.roadmap .date {
+ color: gray;
+ font-size: 11px;
+ font-style: italic;
+ margin-left: 1em;
+}
+#main.roadmap .progress {
+ margin: 1em;
+ width: 40em;
+}
+#main.roadmap dl {
+ clear: both;
+ float: left;
+ font-size: 9px;
+ font-style: italic;
+ margin: -1em 0 2em 1em;
+ white-space: nowrap;
+}
+#main.roadmap dt {
+ display: inline;
+ margin-left: .5em;
+}
+#main.roadmap dd {
+ display: inline;
+ margin-left: .5em;
+ margin-right: 1em
+}
+#main.roadmap .description {
+ clear: both;
+ margin-left: 1em;
+}
+
+#main.milestone .description {
+ margin: 1em 0 2em 1em;
+}
+#main.milestone .date {
+ color: gray;
+ font-style: italic;
+}
+#main.milestone table {
+ margin: 2em 0 0em 0;
+ border-collapse: collapse;
+ line-height: 130%;
+ margin: 0 0 2em;
+ width: 100%;
+}
+#main.milestone caption {
+ background: #f7f7f7;
+ border-bottom: 1px solid #d7d7d7;
+ margin: 0 0 1em;
+ font-size: 14px;
+ text-align: left;
+}
+#main.milestone th { text-align: left }
+#main.milestone td.progress { width: 70% }
+#main.milestone td div.progress { margin: 3px 2px }
+#main.milestone tbody tr:hover, #main.milestone tbody tr:hover {
+ background: #eed;
+}
+#main.milestone tbody td, #main.milestone tbody th {
+ padding: 0 .25em;
+ border: 1px dotted #ddd
+}
+#main.milestone tbody th { text-align: left; font-weight: normal }
+#main.milestone tfoot tr { border-bottom: 0 }
+#main.milestone tfoot th, #main.milestone tfoot td {
+ font-weight: bold;
+ padding: 0 .25em;
+}

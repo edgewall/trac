@@ -68,6 +68,12 @@ class Href:
     def newticket(self):
         return href_join(self.base, 'newticket')
 
+    def roadmap(self):
+        return href_join(self.base, 'roadmap')
+
+    def milestone(self, milestone):
+        return href_join(self.base, 'milestone', str(milestone))
+
     def search(self, query=None):
         uri = 'search'
         if query:

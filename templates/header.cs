@@ -24,6 +24,8 @@
    @import url("<?cs var:htdocs_location ?>css/ticket.css");
    <?cs elif:trac.active_module == 'report' ?>
    @import url("<?cs var:htdocs_location ?>css/report.css");
+   <?cs elif:trac.active_module == 'roadmap' || trac.active_module == 'milestone' ?>
+   @import url("<?cs var:htdocs_location ?>css/roadmap.css");
    <?cs elif:trac.active_module == 'search' ?>
    @import url("<?cs var:htdocs_location ?>css/search.css");
    <?cs /if ?>
@@ -91,6 +93,11 @@
   <?cs else  ?>
     <?cs set:$browser_view="browser" ?>
   <?cs /if  ?>
+  <?cs if $trac.active_module == "milestone" ?>
+    <?cs set:$roadmap_view="milestone" ?>
+  <?cs else ?>
+    <?cs set:$roadmap_view="roadmap" ?>
+  <?cs /if ?>
 
 <div id="navbar" class="nav">
  <ul>
@@ -98,6 +105,8 @@
                     $trac.acl.WIKI_VIEW, "1") ?>
   <?cs call:navlink("Timeline", $trac.href.timeline, "timeline",
                     $trac.acl.TIMELINE_VIEW, "2") ?>
+  <?cs call:navlink("Roadmap", trac.href.roadmap, $roadmap_view,
+                    $trac.acl.ROADMAP_VIEW, "") ?>
   <?cs call:navlink("Browse Source", $trac.href.browser, $browser_view,
                     $trac.acl.BROWSER_VIEW, "") ?>
   <li style="display: none"><a href="<?cs var:$trac.href.newticket ?>"

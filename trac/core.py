@@ -51,6 +51,8 @@ modules = {
     'changeset'   : ('Changeset', 'Changeset', 1),
     'newticket'   : ('Ticket', 'Newticket', 0),
     'attachment'  : ('File', 'Attachment', 0),
+    'roadmap'     : ('Roadmap', 'Roadmap', 0),
+    'milestone'   : ('Milestone', 'Milestone', 0)
     }
 
 class TracFieldStorage(cgi.FieldStorage):
@@ -84,7 +86,7 @@ def parse_path_info(args, path_info):
         if match.group(2):
             set_if_missing(args, 'page', match.group(2))
         return args
-    match = re.search('^/(newticket|timeline|search)/?', path_info)
+    match = re.search('^/(newticket|timeline|search|roadmap)/?', path_info)
     if match:
         set_if_missing(args, 'mode', match.group(1))
         return args
@@ -111,6 +113,12 @@ def parse_path_info(args, path_info):
         set_if_missing(args, 'type', match.group(1))
         set_if_missing(args, 'id', match.group(2))
         set_if_missing(args, 'filename', match.group(3))
+        return args
+    match = re.search('^/milestone/((?:\w|[\.\-])+)(?:/(.*)/?)?', path_info)
+    if match:
+        set_if_missing(args, 'mode', 'milestone')
+        if match.group(1):
+            set_if_missing(args, 'id', match.group(1))
         return args
     return args
 
@@ -196,6 +204,7 @@ def populate_hdf(hdf, env, db, req):
     hdf.setValue('trac.href.wiki', env.href.wiki())
     hdf.setValue('trac.href.browser', env.href.browser('/'))
     hdf.setValue('trac.href.timeline', env.href.timeline())
+    hdf.setValue('trac.href.roadmap', env.href.roadmap())
     hdf.setValue('trac.href.report', env.href.report())
     hdf.setValue('trac.href.newticket', env.href.newticket())
     hdf.setValue('trac.href.search', env.href.search())
