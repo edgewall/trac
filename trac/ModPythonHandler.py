@@ -19,6 +19,9 @@
 #
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
+import locale
+locale.setlocale(locale.LC_ALL, '')
+
 import os
 import re, threading
 import auth, core, Environment, Href
@@ -75,7 +78,6 @@ class ModPythonRequest(core.Request):
 
         self.base_url = '%s://%s%s%s' % (proto, host, proto_port, self.cgi_location)
 
-
         self.remote_addr = self.req.connection.remote_ip
         self.remote_user = self.req.user
         self.command = self.req.method
@@ -112,7 +114,8 @@ class ModPythonRequest(core.Request):
 
 class TracFieldStorage(util.FieldStorage):
     """
-    FieldStorage class with an added get function.
+    FieldStorage class with a get function that provides an empty string as the
+    default value for the 'default' parameter, mimicking the CGI interface.
     """
     def get(self, key, default=''):
         return util.FieldStorage.get(self, key, default)
@@ -123,9 +126,8 @@ def send_project_index(req, mpr, dir):
     req.write('<html><head><title>Available Projects</title></head>')
     req.write('<body><h1>Available Projects</h1><ul>')
     for project in os.listdir(dir):
-        req.write('<li><a href="%s">%s</a></li>' % (href_join(mpr.idx_location,
-                                                              project),
-                                                    project))
+        req.write('<li><a href="%s">%s</a></li>'
+                  % (href_join(mpr.idx_location, project), project))
     req.write('</ul></body><html>')
 
 def open_environment(env_path, mpr):
