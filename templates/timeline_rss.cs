@@ -44,6 +44,11 @@
                              $item.data+" page edited.",
                              $item.wiki_href,
 'Wiki page <a href="'+$base_url+$item.wiki_href+'">'+$item.data+'</a> edited by '+$item.author) ?>
+        <?cs elif:item.type == #6 ?><!-- Milestones -->
+          <?cs call:rss_item('Milestone',
+                             'Milestone ' + $item.data + ' reached.',
+                             '',
+	       'Milestone ' + $item.data + ' reached.') ?>
         <?cs /if ?>
       <?cs /each ?>
     </channel>

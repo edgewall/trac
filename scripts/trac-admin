@@ -1209,6 +1209,22 @@ SELECT p.value AS __color__,
         data = self.db_execsql("DELETE FROM %(type)s" 
                                " WHERE name='%(name)s'" % d)
 
+    def _do_mile_ver_time(self, type, name, t):
+        seconds = None
+        if t == 'now':
+            seconds = str(int(time.time()))
+        else:
+            for format in ['%x %X', '%x, %X', '%X %x', '%X, %x', '%x']:
+                try:
+                    seconds = str(time.mktime(time.strptime(t, format)))
+                except ValueError:
+                    continue
+                break
+        if seconds:
+            data = self.db_execsql("UPDATE %s SET time='%s'" 
+                                   " WHERE name='%s'" % (type, seconds, name))
+        else:
+            print >> sys.stderr, 'Unknown time format'
 
 
 ## ---------------------------------------------------------------------------

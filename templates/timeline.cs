@@ -25,7 +25,10 @@
     <label for="changeset">Repository checkins</label><br />
     <input type="checkbox" id="wiki" name="wiki"
            <?cs if:timeline.wiki ?>checked="checked"<?cs /if ?> />
-   <label for="wiki">Wiki changes</label>
+    <label for="wiki">Wiki changes</label><br />
+    <input type="checkbox" id="milestone" name="milestone"
+           <?cs if:timeline.milestone ?>checked="checked"<?cs /if ?> />
+    <label for="milestone">Milestones</label>
   </div>
   <div id="timeline-prefs-btns">
     <input type="submit" value="Update" /> 
@@ -76,6 +79,9 @@
       <?cs call:tlitem(item.wiki_href, 'wiki.png',
         '<b class="tl-item-link">'+$item.data+'</b>
          edited by '+$item.author, '') ?>
+    <?cs elif:item.type == #6 ?><!-- milestone -->
+      <?cs call:tlitem('', 'milestone.png',
+	 '<b class="tl-item-link">Milestone '+$item.data+' reached</b>', '') ?>
     <?cs /if ?>
   </div>
 <?cs /each ?>

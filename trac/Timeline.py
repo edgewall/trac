@@ -33,7 +33,8 @@ class Timeline (Module):
 
     MAX_MESSAGE_LEN = 75
 
-    def get_info (self, start, stop, maxrows, tickets, changeset, wiki):
+    def get_info (self, start, stop, maxrows, tickets,
+                  changeset, wiki, milestone):
         cursor = self.db.cursor ()
 
         if tickets == changeset == wiki == 0:
@@ -43,7 +44,9 @@ class Timeline (Module):
         # 2: new tickets
         # 3: closed tickets
         # 4: reopened tickets
-
+        # 5: wiki
+        # 6: milestone
+        
         q = []
         if changeset:
             q.append("SELECT time, rev AS data, 1 AS type, message, author "
@@ -70,6 +73,12 @@ class Timeline (Module):
                         "FROM wiki WHERE time>=%s AND time<=%s" %
                      (start, stop))
             pass
+
+	if milestone:
+	    q.append("SELECT time, name AS data, 6 AS type, "
+	             "'' AS message, '' AS author " 
+		     "FROM milestone WHERE time>=%s AND time<=%s" %
+		     (start, stop))
 
         q_str = string.join(q, ' UNION ALL ')
         q_str += ' ORDER BY time DESC'
@@ -104,13 +113,17 @@ class Timeline (Module):
                 item['message'] = wiki_to_oneliner(msg,
                                                    self.req.hdf, self.href)
             elif item['type'] == 5:
-                item['wiki_href'] = self.href.wiki(row['data'])
-            else:
-                item['ticket_href'] = self.href.ticket(int(row['data']))
-                msg = item['message']
-                shortmsg = shorten_line(msg)
-                item['message'] = wiki_to_oneliner(msg, self.req.hdf, self.href)
-                item['shortmsg'] = wiki_to_oneliner(shortmsg, self.req.hdf, self.href)
+		item['wiki_href'] = self.href.wiki(row['data'])
+	    elif item['type'] == 6:
+		item['shortmsg'] = ''
+	    else:
+		item['ticket_href'] = self.href.ticket(int(row['data']))
+		msg = item['message']
+		shortmsg = shorten_line(msg)
+		item['message'] = wiki_to_oneliner(msg, self.req.hdf,
+                                                   self.href)
+		item['shortmsg'] = wiki_to_oneliner(shortmsg, self.req.hdf,
+                                                    self.href)
 
             info.append(item)
         return info
@@ -142,8 +155,9 @@ class Timeline (Module):
         wiki = self.args.has_key('wiki') 
         ticket = self.args.has_key('ticket')
         changeset = self.args.has_key('changeset')
-        if not (wiki or ticket or changeset):
-            wiki = ticket = changeset = 1
+        milestone = self.args.has_key('milestone')
+        if not (wiki or ticket or changeset or milestone):
+            wiki = ticket = changeset = milestone = 1
            
         if wiki:
             self.req.hdf.setValue('timeline.wiki', 'checked')
@@ -151,8 +165,11 @@ class Timeline (Module):
             self.req.hdf.setValue('timeline.ticket', 'checked')
         if changeset:
             self.req.hdf.setValue('timeline.changeset', 'checked')
+        if milestone:
+            self.req.hdf.setValue('timeline.milestone', 'checked')
         
-        info = self.get_info (start, stop, maxrows, ticket, changeset, wiki)
+        info = self.get_info (start, stop, maxrows, ticket,
+                              changeset, wiki, milestone)
         add_dictlist_to_hdf(info, self.req.hdf, 'timeline.items')
         self.req.hdf.setValue('title', 'Timeline')
 
