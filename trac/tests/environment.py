@@ -2,7 +2,7 @@ import os
 import unittest
 import tempfile
 
-from Environment import Environment, db_default
+from trac.Environment import Environment, db_default
 
 
 class EnvironmentTestBase:

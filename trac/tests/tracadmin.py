@@ -644,3 +644,6 @@ Trac Admin Console %s
 
 def suite():
     return unittest.makeSuite(TracadminTestCase, 'test')
+
+if __name__ == '__main__':
+    unittest.main()

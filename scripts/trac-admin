@@ -610,6 +610,7 @@ class TracAdmin(cmd.Cmd):
         
     ## Wiki
     _help_wiki = [('wiki list', 'List wiki pages'),
+                  ('wiki remove <name>', 'Remove wiki page'),
                   ('wiki export <page> [file]',
                    'Export wiki page to file or stdout'),
                   ('wiki import <page> [file]',
@@ -627,7 +628,7 @@ class TracAdmin(cmd.Cmd):
         if line[-1] == ' ': # Space starts new argument
             argc += 1
         if argc==2:
-            comp = ['list','import','export','dump','load']
+            comp = ['list','remove','import','export','dump','load']
         else:
             if argv[1] in ['dump','load']:
                 comp = self.get_dir_list(argv[-1], 1)
@@ -643,6 +644,9 @@ class TracAdmin(cmd.Cmd):
         try:
             if arg[0]  == 'list':
                 self._do_wiki_list()
+            elif arg[0] == 'remove'  and len(arg)==2:
+                name = arg[1]
+                self._do_wiki_remove(name)
             elif arg[0] == 'import' and len(arg) == 3:
                 title = arg[1]
                 file = arg[2]
@@ -670,6 +674,16 @@ class TracAdmin(cmd.Cmd):
                                ' FROM wiki GROUP BY name ORDER BY name')
         ldata = [(d[0], d[1], time.ctime(d[2])) for d in data]
         self.print_listing(['Title', 'Edits', 'Modified'], ldata)
+
+    def _do_wiki_remove(self, name):
+        cnx = self.db_open()
+        cursor = cnx.cursor ()
+        cursor.execute('SELECT name FROM wiki WHERE name=%s', name)
+        data = cursor.fetchone()
+        if not data:
+            raise Exception("No such wiki page '%s'" % name)
+        data = self.db_execsql("DELETE FROM wiki WHERE name='%s'"
+                               % (name))
 
     def _do_wiki_import(self, filename, title, cursor=None):
         if not os.path.isfile(filename):
