@@ -142,7 +142,7 @@ class Browser (Module):
         if self.path != '/':
             parent = string.join(self.path.split('/')[:-2], '/') + '/'
             out.write ('<tr class="item-row-odd">\n')
-            out.write ('<td><a href="%s">..</a></td><td class="size-column">&nbsp;</td><td class="rev-column">&nbsp;</td><td class="date-column">&nbsp;</td>' %
+            out.write ('<td class="name-column"><a href="%s">..</a></td><td class="size-column">&nbsp;</td><td class="rev-column">&nbsp;</td><td class="date-column">&nbsp;</td>' %
                        browser_href(parent))
             out.write ('</tr>')
             idx = 1

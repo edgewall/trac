@@ -54,8 +54,8 @@ class Report (Module):
         # FIXME: fetchall should probably not be used.
         info = cursor.fetchall()
         cols = cursor.rs.col_defs
-        # Set all NULL elements to ''
-        info = map(lambda row: map(lambda x: escape(x or ''), row), info)
+        # Escape the values so that they are safe to have as html parameters
+        info = map(lambda row: map(lambda x: escape(x), row), info)
         return [cols, info, title]
         
     def render_headers (self, out, row):

@@ -22,6 +22,7 @@
 import sys
 import time
 import StringIO
+from types import *
 from svn import util
 from db import get_connection
 from xml.sax import saxutils
@@ -111,7 +112,12 @@ def enum_selector (sql, name, selected=None,default_empty=0):
 
 def escape(text, param={'"':'&#34;'}):
     """Escapes &, <, > and \""""
-    return saxutils.escape(text, param)
+    if not text:
+	return ''
+    elif type(text) is StringType:
+	return saxutils.escape(text, param)
+    else:
+	return text
 
 def get_first_line(text, maxlen):
     """

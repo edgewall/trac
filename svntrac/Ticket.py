@@ -82,10 +82,7 @@ class Ticket (Module):
         info = {'ticket': id }
         # Escape the values so that they are safe to have as html parameters
         for i in range(len(fields)):
-	    if type(row[i]) is StringType:
-		info[fields[i]] = escape(row[i] or '')
-	    else:
-		info[fields[i]] = row[i] or ''
+	    info[fields[i]] = escape(row[i])
         return info
 
     def save_changes (self, id, old, new): 
