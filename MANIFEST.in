@@ -1,4 +1,4 @@
-include AUTHORS ChangeLog COPYING INSTALL MANIFEST.in RELEASE setup.cfg THANKS UPGRADE
+include AUTHORS ChangeLog COPYING INSTALL MANIFEST.in README README.tracd RELEASE setup.cfg THANKS UPGRADE
 include scripts/trac-admin
 include scripts/tracd
 include scripts/tracdb2env
