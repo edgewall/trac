@@ -231,7 +231,7 @@ def populate_hdf(hdf, env, req=None):
     hdf.setValue('header_logo.link', env.get_config('header_logo', 'link'))
     hdf.setValue('header_logo.alt', escape(env.get_config('header_logo', 'alt')))
     src = env.get_config('header_logo', 'src')
-    src_abs = src[:7] == 'http://' and 1 or 0
+    src_abs = re.match(r'https?://', src) != None
     if not src[0] == '/' and not src_abs:
         src = htdocs_location + src
     hdf.setValue('header_logo.src', src)
