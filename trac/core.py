@@ -23,6 +23,7 @@ import os
 import re
 import sys
 import cgi
+import locale
 import warnings
 
 import Wiki
@@ -420,6 +421,7 @@ def real_cgi_start():
 
 def cgi_start():
     try:
+        locale.setlocale(locale.LC_ALL, '')
         real_cgi_start()
     except Exception, e:
         send_pretty_error(e, open_environment())

@@ -31,6 +31,7 @@ import md5
 import time
 import shutil
 import getopt
+import locale
 import urllib
 import urllib2
 import mimetypes
@@ -290,6 +291,7 @@ def usage():
     sys.exit(1)
         
 def main():
+    locale.setlocale(locale.LC_ALL, '')
     port = 80
     hostname = ''
     auths = {}
