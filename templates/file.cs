@@ -40,12 +40,10 @@
       title="Download this revision"  
        href="<?cs var:file.rawurl ?>">Download File</a></li></ul>
     <form id="browser-chgrev" action="" method="get">
-     <div>
-        <label for="rev">View rev:</label><input
-        type="text" id="rev" name="rev" value="<?cs var:file.rev ?>"
-          size="4" />
-        <input type="submit" value="View"/>
-      </div>
+      <label for="rev">View rev:</label>
+      <input type="text" id="rev" name="rev" value="<?cs
+        var:file.rev ?>" size="4" />
+      <input type="submit" value="View"/>
     </form>
     <div class="tiny" style="clear: both">&nbsp;</div>
     </div>
