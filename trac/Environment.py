@@ -200,7 +200,6 @@ class Environment:
                          self.href.attachment(type, id, file['filename']))
             idx += 1
 
-    
     def create_attachment(self, cnx, type, id, attachment,
                           description, author, ipnr):
         # Maximum attachment size (in bytes)
@@ -213,12 +212,22 @@ class Environment:
         if not os.access(dir, os.F_OK):
             os.makedirs(dir)
         filename = os.path.basename(attachment.filename)
-        wfile = open(os.path.join(dir, filename), 'wb')
-        shutil.copyfileobj(attachment.file, wfile)
+        path, fd = util.create_unique_file(os.path.join(dir, filename))
+        filename = os.path.basename(path)
         cursor = cnx.cursor()
         cursor.execute('INSERT INTO attachment VALUES(%s,%s,%s,%s,%s,%s,%s,%s)',
                        type, id, filename, stat[6], int(time.time()),
                        description, author, ipnr)
+        shutil.copyfileobj(attachment.file, fd)
+        cnx.commit()
+        return filename
+    
+    def delete_attachment(self, cnx, type, id, filename):
+        path = os.path.join(self.get_attachments_dir(), type, id, filename)
+        cursor = cnx.cursor()
+        cursor.execute('DELETE FROM attachment WHERE type=%s AND id=%s AND '
+                       'filename=%s', type, id, filename)
+        os.unlink(path)
         cnx.commit()
 
     def backup(self, dest=None):

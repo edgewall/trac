@@ -170,6 +170,25 @@ def pretty_size(size):
         return '%d MB' % (size / 1024 / 1024)
 
 
+def create_unique_file(path):
+    """Create a new file. An index is added if the path exists"""
+    parts = os.path.splitext(path)
+    idx = 1
+    while 1:
+        try:
+            flags = os.O_CREAT + os.O_WRONLY + os.O_EXCL
+            if hasattr(os, 'O_BINARY'):
+                flags += os.O_BINARY
+            return path, os.fdopen(os.open(path, flags), 'w')
+        except OSError, e:
+            idx += 1
+            # A sanity check
+            if idx > 100:
+                raise Exception('Failed to create unique name: ' + path)
+            path = '%s.%d%s' % (parts[0], idx, parts[1])
+
+
+
 class TracError(Exception):
     def __init__(self, message, title=None, show_traceback=0):
         Exception.__init__(self, message)

@@ -102,6 +102,16 @@ class Attachment(FileCommon):
         if not self.attachment_type or not self.attachment_id:
             raise util.TracError('Unknown request')
 
+        if self.filename and len(self.filename) > 0 and \
+               self.args.has_key('delete'):
+            self.perm.assert_permission (perm.TRAC_ADMIN)
+            self.env.delete_attachment(self.db,
+                                       self.attachment_type,
+                                       self.attachment_id,
+                                       self.filename)
+            text, link = self.get_attachment_parent_link()
+            self.req.redirect(link)
+
         if self.filename and len(self.filename) > 0:
             # Send an attachment
             perm_map = {'ticket':perm.TICKET_VIEW, 'wiki': perm.WIKI_VIEW}
@@ -136,15 +146,17 @@ class Attachment(FileCommon):
             perm_map = {'ticket':perm.TICKET_MODIFY, 'wiki': perm.WIKI_MODIFY}
             self.perm.assert_permission (perm_map[self.attachment_type])
             
-            self.env.create_attachment(self.db,
-                                       self.attachment_type,
-                                       self.attachment_id,
-                                       self.args['attachment'],
-                                       self.args['description'],
-                                       self.args['author'],
-                                       self.req.remote_addr)
-            text, link = self.get_attachment_parent_link()
-            self.req.redirect(link)
+            filename = self.env.create_attachment(self.db,
+                                                  self.attachment_type,
+                                                  self.attachment_id,
+                                                  self.args['attachment'],
+                                                  self.args['description'],
+                                                  self.args['author'],
+                                                  self.req.remote_addr)
+            # Redirect the user to the newly created attachment
+            self.req.redirect(self.env.href.attachment(self.attachment_type,
+                                                       self.attachment_id,
+                                                       filename))
         else:
             # Display an attachment upload form
             self.view_form = 1
