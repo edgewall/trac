@@ -129,6 +129,19 @@ class Ticket(UserDict):
 
         if not self._old and not comment: return # Not modified
 
+        # If the component is changed on a 'new' ticket then owner field
+        # is updated accordingly. (#623).
+        if self['status'] == 'new' and self._old.has_key('component') and \
+               not self._old.has_key('owner'):
+            cursor.execute('SELECT owner FROM component '
+                           'WHERE name=%s', self._old['component'])
+            old_owner = cursor.fetchone()[0]
+            if self['owner'] == old_owner:
+                cursor.execute('SELECT owner FROM component '
+                               'WHERE name=%s', self['component'])
+                self['owner'] = cursor.fetchone()[0]
+           
+
         for name in self._old.keys():
             if name[:7] == 'custom_':
                 fname = name[7:]
