@@ -21,6 +21,8 @@ img { border: none }
 
 .hide { display: none; }
 
+.underline { text-decoration: underline; }
+
 /* Link styles */
 :link, :visited {
  text-decoration: none;

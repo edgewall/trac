@@ -266,6 +266,8 @@ class Formatter(CommonFormatter):
         return env.mimeview.display(text, 'text/x-asp')
     def c_processor(hdf, text, env):
         return env.mimeview.display(text, 'text/x-csrc')
+    def css_processor(hdf, text, env):
+        return env.mimeview.display(text, 'text/css')
     def java_processor(hdf, text, env):
         return env.mimeview.display(text, 'text/x-java')
     def cpp_processor(hdf, text, env):
@@ -299,6 +301,7 @@ class Formatter(CommonFormatter):
     builtin_processors = { 'html': html_processor,
                            'asp': asp_processor,
                            'c': c_processor,
+                           'css': css_processor,
                            'cpp': cpp_processor,
                            'java': java_processor,
                            'php': php_processor,
