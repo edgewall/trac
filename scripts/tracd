@@ -47,7 +47,7 @@ from trac import siteconfig
 from trac.Environment import Environment
 
 class DigestAuth:
-    """A simple HTTP DigestAuth implementation (rfc2069)"""
+    """A simple HTTP DigestAuth implementation (rfc2617)"""
     MAX_NONCES = 100
     def __init__(self, htdigest, realm):
         self.active_nonces = []
@@ -89,7 +89,7 @@ class DigestAuth:
             self.active_nonces = self.active_nonces[-DigestAuth.MAX_NONCES:]
         req.send_response(401)
         req.send_header('WWW-Authenticate',
-                        'Digest realm="%s", nonce="%s", stale="%s"'
+                        'Digest realm="%s", nonce="%s", qop="auth", stale="%s"'
                         % (self.realm, nonce, stale))
         req.end_headers()
 
@@ -99,17 +99,25 @@ class DigestAuth:
             self.send_auth_request(req)
             return None
         auth = self.parse_auth_header(req.headers['Authorization'][7:])
-        if not auth.has_key('username') or not auth.has_key('realm') or \
-               not auth.has_key('nonce') or not auth.has_key('uri') or \
-               not auth.has_key('response') or \
-               not self.hash.has_key(auth['username']):
+        required_keys = ['username', 'realm', 'nonce', 'uri', 'response',
+                           'nc', 'cnonce']
+        # Invalid response?
+        for key in required_keys:
+            if not auth.has_key(key):
+                self.send_auth_request(req)
+                return None
+        # Unknown user?
+        if not self.hash.has_key(auth['username']):
             self.send_auth_request(req)
             return None
+
         kd = lambda x: md5.md5(':'.join(x)).hexdigest()
         a1 = self.hash[auth['username']]
         a2 = kd([req.command, auth['uri']])
         # Is the response correct?
-        if kd([a1, auth['nonce'], a2]) != auth['response']:
+        correct = kd([a1, auth['nonce'], auth['nc'],
+                      auth['cnonce'], auth['qop'], a2])
+        if auth['response'] != correct:
             self.send_auth_request(req)
             return None
         # Is the nonce active, if not ask the client to use a new one
