@@ -109,6 +109,9 @@ h1 .sep { color: #666; padding: 0 .1em }
 }
 #dirlist td.change * { font-size: 9px }
 
+/* Styles for the HTML preview */
+#preview { background: #fff }
+
 /* Styles for the revision log table
    (extends the styles for "table.listing") */
 #chglist td.date { white-space: nowrap }

@@ -25,7 +25,7 @@
       <div class="progress">
        <div style="width: <?cs var:#stats.percent_complete ?>%"></div>
       </div>
-      <p class="percentage"><?cs var:#stats.percent_complete ?>%</p>
+      <p class="percent"><?cs var:#stats.percent_complete ?>%</p>
       <dl>
        <dt>Active tickets:</dt>
        <dd><?cs var:stats.active_tickets ?></dd>

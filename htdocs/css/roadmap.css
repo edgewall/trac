@@ -1,7 +1,7 @@
 /* General styles for the progress bars */
 div.progress { float: left; border: 1px solid #d7d7d7 }
 div.progress div { background: #bae0ba; height: 1.2em }
-p.percentage { font-size: 10px; line-height: 2.4em }
+p.percent { font-size: 10px; line-height: 2.4em; margin: 0.9em 0 }
 
 /* Styles for the roadmap view */
 ul.milestones { margin: 2em 0 0; padding: 0 }
@@ -13,15 +13,15 @@ li.milestone {
 li.milestone .info h2 {
  background: #f7f7f7;
  border-bottom: 1px solid #d7d7d7;
- font-size: 14px;
  margin: 0;
 }
 li.milestone .info h2 :link, li.milestone .info h2 :visited {
+ color: #000;
  display: block;
  border-bottom: none;
 }
 li.milestone .info h2 :link:hover, li.milestone .info h2 :visited:hover {
- color: inherit;
+ color: #000;
 }
 li.milestone .info h2 em { color: #b00; font-style: normal }
 li.milestone .info .date {
@@ -51,7 +51,15 @@ li.milestone .descr { clear: both; margin-left: 1em }
 .milestone .date { color: #888; font-style: italic }
 .milestone .descr { margin: 1em 0 2em }
 
-#stats { border-bottom: none }
+/* Styles for the statistics table */
+h2.stats {
+ background: #f7f7f7;
+ border-bottom: 1px solid #d7d7d7;
+ margin: 0;
+ padding: 0 .33em;
+}
+#stats { border-bottom: none; margin-top: 0 }
+#stats thead th { color: #999 }
 #stats td, #stats th { padding: 0 .25em }
 #stats th.tickets { text-align: center }
 #stats th.open, #stats th.closed {
@@ -66,14 +74,17 @@ li.milestone .descr { clear: both; margin-left: 1em }
  vertical-align: middle;
 }
 #stats th.progress { padding-left: 6px; width: 60% }
-#stats td div.progress { margin: 3px .5em 3px 2px }
-#stats td.progress p { font-size: 10px; margin: 3px 0 }
+#stats td.progress { white-space: nowrap }
+#stats td.progress div.progress { margin: 3px .5em 3px 2px }
+#stats td.progress p.percent { font-size: 10px; margin: 0 }
 #stats tbody th { font-weight: normal; text-align: left }
 #stats tbody th.name, #stats tfoot th.name { line-height: 2em }
+#stats tbody th.name { text-transform: capitalize }
 #stats tfoot tr { border-bottom: 0 }
 #stats tfoot th, #stats tfoot td { font-weight: bold; padding: 0 .25em }
 
 /* Styles for the milestone edit form */
-.milestone form fieldset { margin: 1em 0; padding: .5em }
-.milestone form label { font-size: 11px; margin-right: .5em }
-.milestone form em { color: #888; font-size: 11px }
+#edit fieldset { margin: 1em 0 }
+#edit em { color: #888; font-size: smaller }
+#edit label { display: block; margin-top: 1.3em; padding-left: 0.2em }
+#edit textarea#descr { width: 97% }

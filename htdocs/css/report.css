@@ -1,19 +1,18 @@
-.report-hdr { 
- margin: 2em 0; 
- padding-left: .25em;
- border-bottom: 2px solid #eee;
- font-size: 150%;
+h1 { margin: 0 }
+h1 .numrows { font-size: 65%; color: #999; font-weight: normal }
+h2 {
+ background: #f7f7f7;
+ border-bottom: 1px solid #d7d7d7;
+ margin: 2em 0 0;
+ padding: 0 .33em;
 }
-#numrows { font-size: 65%; color: #999; font-weight: normal; }
-#report-descr { margin: 0 2em; font-size: 90%; }
-
-#report-notfound { margin: 2em; font-size: 110%; }
+#report-descr { margin: 0 2em; font-size: 90% }
+#report-notfound { margin: 2em; font-size: 110% }
 
 /* Styles for the report list and the report results table
    (extends the styles for "table.listing") */
 #reportlist td.title { width: 100% }
 #tktlist { border-bottom: none }
-#tktlist caption { margin-top: 2em }
 #tktlist thead th {
  border-bottom: 1px solid #d7d7d7;
  color: #999;

@@ -136,11 +136,10 @@ class Milestone(Module):
         cursor = self.db.cursor()
         self.env.log.debug("Updating milestone '%s'" % id)
         if self.args.has_key('save'):
-            if self.args.has_key('updatetickets'):
-                self.env.log.info('Updating milestone field of all tickets '
-                                  'associated with milestone %s' % id)
-                cursor.execute ('UPDATE ticket SET milestone = %s '
-                                'WHERE milestone = %s', name, id)
+            self.env.log.info('Updating milestone field of all tickets '
+                              'associated with milestone %s' % id)
+            cursor.execute ('UPDATE ticket SET milestone = %s '
+                            'WHERE milestone = %s', name, id)
             cursor.execute("UPDATE milestone SET name = %s, time = %d, "
                            "descr = %s WHERE name = %s",
                            name, date, descr, id)

@@ -33,12 +33,12 @@
        </table>
      <?cs /if ?>
    <?cs /if ?>
+   <?cs if:header ?><h2><?cs var:header ?></h2><?cs /if ?>
    <?cs if $report.id == -1 ?>
      <table id="reportlist" class="listing">
    <?cs else ?>
      <table id="tktlist" class="listing">
    <?cs /if ?>
-    <?cs if:header ?><caption><?cs var:header ?></caption><?cs /if ?>
     <thead>
      <tr>
        <?cs set numcols = #0 ?>
@@ -93,14 +93,14 @@
  <?cs set idx = #0 ?>
  <?cs set group = '' ?>
  
- <?cs if report.mode == "list" ?>
-   <h1 id="report-hdr"><?cs var:report.title ?>
-   <?cs if:report.numrows && report.id != -1 ?><span id="numrows">(<?cs var:report.numrows ?> matches)</span><?cs /if ?>
-   </h1>
-
-     <?cs if report.description ?>
-       <div id="report-descr"><?cs var:report.description ?></div>
-     <?cs /if ?>
+ <?cs if:report.mode == "list" ?>
+  <h1><?cs var:report.title ?><?cs
+   if:report.numrows && report.id != -1 ?><span class="numrows"> (<?cs
+    var:report.numrows ?> matches)</span><?cs
+   /if ?></h1>
+  <?cs if:report.description ?><div id="description"><?cs
+    var:report.description ?></div><?cs
+   /if ?>
 
      <?cs each row = report.items ?>
        <?cs if group != row.__group__ || idx == #0 ?>
