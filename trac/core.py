@@ -30,7 +30,6 @@ import Href
 import perm
 import auth
 import Environment
-import Logging
 
 from util import *
 from __init__ import __version__
@@ -244,6 +243,9 @@ class Request:
     Trac modules must use this interface. It is not allowed to have
     frontend (cgi, tracd, mod_python) specific code in the modules.
     """
+
+    command = None
+
     def init_request(self):
         import neo_cgi
         import neo_cs
@@ -252,8 +254,16 @@ class Request:
         self.hdf = neo_util.HDF()
         self.incookie = Cookie.SimpleCookie()
         self.outcookie = Cookie.SimpleCookie()
-#        self.logger = Logging.get_logger()
-        
+
+    def send_response(self, code):
+        raise RuntimeError, 'Virtual method not implemented'
+
+    def send_header(self, name, value):
+        raise RuntimeError, 'Virtual method not implemented'
+
+    def end_headers(self):
+        raise RuntimeError, 'Virtual method not implemented'
+
     def redirect(self, url):
         self.send_response(302)
         self.send_header('Location', url)
@@ -307,7 +317,9 @@ class CGIRequest(Request):
             port = int(os.getenv('SERVER_PORT'))
         except TypeError:
             port = 80
-        if port == 80:
+        if os.getenv('HTTP_X_FORWARDED_HOST'):
+            self.base_url = 'http://%s%s/' % (os.getenv('HTTP_X_FORWARDED_HOST'), self.cgi_location)
+        elif port == 80:
             self.base_url = 'http://%s%s' % (host, self.cgi_location)
         elif port == 443:
             self.base_url = 'https://%s%s' % (host, self.cgi_location)
