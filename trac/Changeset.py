@@ -138,7 +138,7 @@ class HtmlDiffEditor(BaseDiffEditor):
 
     def apply_textdelta(self, file_baton, base_checksum):
         old_path, new_path, pool = file_baton
-        if not old_path or not new_path:
+        if not self.prefix or not (old_path and new_path):
             return
         old_root = self._old_root(new_path, pool)
         if not old_root:
@@ -188,6 +188,8 @@ class HtmlDiffEditor(BaseDiffEditor):
         self._change_prop(file_baton, name, value, file_pool)
 
     def _change_prop(self, baton, name, value, pool):
+        if not self.prefix:
+            return
         old_path, new_path, pool = baton
 
         prefix = '%s.props.%s' % (self.prefix, name)
