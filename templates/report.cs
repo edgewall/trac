@@ -44,6 +44,10 @@
            </tr><tr><th class="header-left" colspan="100"><?cs var:header ?></th>
          <?cs else ?>
            <?cs if $report.sorting.enabled ?>
+             <?cs set vars='' ?>
+             <?cs each arg = $report.var ?>
+               <?cs set vars=$vars+'&'+name($arg)+'='+$arg ?>
+             <?cs /each ?>
              <?cs set sortValue = '' ?>
              <?cs if $header.asc == '1' ?>
                <?cs set sortValue = '?sort='+$header.real+'&asc=0' ?>
@@ -51,7 +55,7 @@
                <?cs set sortValue = '?sort='+$header.real+'&asc=1' ?>
              <?cs /if ?>
              <?cs if $header ?>
-             <th class="header-left"><a href="<?cs var:sortValue ?>"><?cs var:header ?></a></th>
+             <th class="header-left"><a href="<?cs var:sortValue ?><?cs var:vars ?>"><?cs var:header ?></a></th>
              <?cs /if ?>
            <?cs elif $header ?>
              <th class="header-left"><?cs var:header ?></th>
