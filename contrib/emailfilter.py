@@ -31,10 +31,12 @@ Todo
 
 TRAC_ENV_PATH = '/var/trac/test'
 
-from trac import Environment, Ticket
-
 import email
 import sys
+
+from trac.env import Environment
+from trac.Ticket import Ticket
+
 
 class TicketEmailParser(object):
 
@@ -42,21 +44,22 @@ class TicketEmailParser(object):
 
     def __init__(self, env):
         self.env = env
+        self.config = env.config
 
     def parse(self, fp):
         msg = email.message_from_file(fp)
         db = self.env.get_db_cnx()
-        tkt = Ticket.Ticket()
+        tkt = Ticket()
         tkt['status'] = 'new'
-        tkt['component'] = self.env.get_config('ticket', 'default_component')
+        tkt['component'] = self.config.get('ticket', 'default_component')
         cursor = db.cursor()
         cursor.execute('SELECT owner FROM component '
                        'WHERE name=%s', tkt['component'])
         tkt['owner'] = cursor.fetchone()[0]
-        tkt['milestone'] = self.env.get_config('ticket', 'default_milestone')
-        tkt['priority'] = self.env.get_config('ticket', 'default_priority')
-        tkt['severity'] = self.env.get_config('ticket', 'default_severity')
-        tkt['version'] = self.env.get_config('ticket', 'default_version')
+        tkt['milestone'] = self.config.get('ticket', 'default_milestone')
+        tkt['priority'] = self.config.get('ticket', 'default_priority')
+        tkt['severity'] = self.config.get('ticket', 'default_severity')
+        tkt['version'] = self.config.get('ticket', 'default_version')
         tkt['reporter'] = msg['from']
         tkt['summary'] = msg['subject']
         for part in msg.walk():
@@ -67,7 +70,6 @@ class TicketEmailParser(object):
             tkt.insert(db)
 
 if __name__ == '__main__':
-    env = Environment.Environment(TRAC_ENV_PATH, create=0)
+    env = Environment(TRAC_ENV_PATH, create=0)
     tktparser = TicketEmailParser(env)
     tktparser.parse(sys.stdin)
-

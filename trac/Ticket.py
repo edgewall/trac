@@ -26,8 +26,6 @@ from trac.web.main import add_link
 from trac.WikiFormatter import wiki_to_html
 
 import time
-import string
-from types import ListType
 from UserDict import UserDict
 
 __all__ = ['Ticket', 'NewticketModule', 'TicketModule']
@@ -212,7 +210,7 @@ class Ticket(UserDict):
 
 
 def get_custom_fields(env):
-    cfg = env.get_config_items('ticket-custom')
+    cfg = env.config.options('ticket-custom')
     if not cfg:
         return []
     names = []
@@ -318,15 +316,15 @@ class NewticketModule(Module):
         ticket = Ticket()
         ticket.populate(req.args)
         ticket.setdefault('component',
-                          self.env.get_config('ticket', 'default_component'))
+                          self.config.get('ticket', 'default_component'))
         ticket.setdefault('milestone',
-                          self.env.get_config('ticket', 'default_milestone'))
+                          self.config.get('ticket', 'default_milestone'))
         ticket.setdefault('priority',
-                          self.env.get_config('ticket', 'default_priority'))
+                          self.config.get('ticket', 'default_priority'))
         ticket.setdefault('severity',
-                          self.env.get_config('ticket', 'default_severity'))
+                          self.config.get('ticket', 'default_severity'))
         ticket.setdefault('version',
-                          self.env.get_config('ticket', 'default_version'))
+                          self.config.get('ticket', 'default_version'))
         ticket.setdefault('reporter', util.get_reporter_id(req))
 
         if ticket.has_key('description'):
@@ -353,7 +351,7 @@ class NewticketModule(Module):
                                  "ORDER BY value",
                         req.hdf, 'enums.severity')
 
-        restrict_owner = self.env.get_config('ticket', 'restrict_owner')
+        restrict_owner = self.config.get('ticket', 'restrict_owner')
         if restrict_owner.lower() in util.TRUE:
             users = []
             for username,name,email in self.env.get_known_users(self.db):
@@ -456,7 +454,7 @@ class TicketModule (Module):
             req.hdf['ticket.lastmod'] = time.strftime('%c', time.localtime(lastmod))
             req.hdf['ticket.lastmod_delta'] = util.pretty_timedelta(lastmod)
 
-        restrict_owner = self.env.get_config('ticket', 'restrict_owner')
+        restrict_owner = self.config.get('ticket', 'restrict_owner')
         if restrict_owner.lower() in util.TRUE:
             users = []
             for username,name,email in self.env.get_known_users(self.db):

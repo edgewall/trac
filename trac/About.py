@@ -91,10 +91,10 @@ Copyright &copy; 2003,2004 <a href="http://www.edgewall.com/">Edgewall Software<
             self.perm.assert_permission(perm.CONFIG_VIEW)
             req.hdf['about.page'] = 'config'
             # Export the config table to hdf
+            config = self.env.config
             sections = []
-            for section in self.env.cfg.sections():
-                for name in self.env.cfg.options(section):
-                    value = self.env.get_config(section, name)
+            for section in config.sections():
+                for name,value in config.options(section):
                     sections.append({'section': section, 'name': name,
                                      'value': value})
             req.hdf['about.config'] = sections

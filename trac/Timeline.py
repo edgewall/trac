@@ -202,8 +202,7 @@ class Timeline(Module):
                                                self.db, absurls=absurls)
 
         try:
-            show_files = int(self.env.get_config('timeline',
-                                                 'changeset_show_files', 0))
+            show_files = int(self.config.get('timeline', 'changeset_show_files'))
         except ValueError, e:
             self.log.warning("Invalid 'changeset_show_files' value, "
                              "please fix trac.ini: %s" % e)

@@ -146,8 +146,7 @@ class BrowserModule(Module):
         if ctpos >= 0:
             charset = mime_type[ctpos + 8:]
         else:
-            charset = self.env.get_config('trac', 'default_charset',
-                                          'iso-8859-15')
+            charset = self.config.get('trac', 'default_charset')
 
         if req.args.get('format') == 'raw':
             req.send_response(200)

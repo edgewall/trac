@@ -1,10 +1,11 @@
 import unittest
 
-from trac.tests import env, perm, query, ticket, wiki
+from trac.tests import config, env, perm, query, ticket, wiki
 
 def suite():
 
     suite = unittest.TestSuite()
+    suite.addTest(config.suite())
     suite.addTest(env.suite())
     suite.addTest(perm.suite())
     suite.addTest(query.suite())

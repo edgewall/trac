@@ -148,7 +148,7 @@ class Roadmap(Module):
         write_prop('PRODID', '-//Edgewall Software//NONSGML Trac %s//EN'
                    % __version__)
         write_prop('X-WR-CALNAME',
-                   self.env.get_config('project', 'name') + ' - Roadmap')
+                   self.config.get('project', 'name') + ' - Roadmap')
         for milestone in milestones:
             uid = '<%s/milestone/%s@%s>' % (req.cgi_location,
                                             milestone['name'], host)

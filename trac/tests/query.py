@@ -1,3 +1,4 @@
+from trac.test import Mock
 from trac.Query import Query
 
 import unittest
@@ -6,14 +7,7 @@ import unittest
 class QueryTestCase(unittest.TestCase):
 
     def setUp(self):
-        class EnvironmentStub(object):
-            def __init__(self):
-                self.custom_fields = {}
-            def get_config_items(self, section):
-                if section != 'ticket-custom':
-                    return None
-                return self.custom_fields.items()
-        self.env = EnvironmentStub()
+        self.env = Mock(config=Mock(options=lambda x: []))
 
     def test_all_ordered_by_id(self):
         query = Query(self.env, order='id')
@@ -181,7 +175,7 @@ WHERE COALESCE(owner,'') LIKE '%someone'
 ORDER BY COALESCE(id,0)=0,id""")
 
     def test_constrained_by_custom_field(self):
-        self.env.custom_fields.update({'foo': 'text'})
+        self.env.config.options = lambda x: [('foo', 'text')]
         query = Query.from_string(self.env, 'foo=something', order='id')
         sql = query.get_sql()
         self.assertEqual(sql,

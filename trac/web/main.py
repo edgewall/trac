@@ -180,32 +180,32 @@ def populate_hdf(hdf, env, req=None):
     }
 
     hdf['project'] = {
-        'name': env.get_config('project', 'name'),
-        'name.encoded': escape(env.get_config('project', 'name')),
-        'descr': env.get_config('project', 'descr'),
-        'footer': env.get_config('project', 'footer',
+        'name': env.config.get('project', 'name'),
+        'name.encoded': escape(env.config.get('project', 'name')),
+        'descr': env.config.get('project', 'descr'),
+        'footer': env.config.get('project', 'footer',
                  'Visit the Trac open source project at<br />'
                  '<a href="http://trac.edgewall.com/">'
                  'http://trac.edgewall.com/</a>'),
-        'url': env.get_config('project', 'url')
+        'url': env.config.get('project', 'url')
     }
 
-    htdocs_location = env.get_config('trac', 'htdocs_location')
+    htdocs_location = env.config.get('trac', 'htdocs_location')
     if htdocs_location[-1] != '/':
         htdocs_location += '/'
     hdf['htdocs_location'] = htdocs_location
 
-    src = env.get_config('header_logo', 'src')
+    src = env.config.get('header_logo', 'src')
     src_abs = re.match(r'https?://', src) != None
     if not src[0] == '/' and not src_abs:
         src = htdocs_location + src
     hdf['header_logo'] = {
-        'link': env.get_config('header_logo', 'link'),
-        'alt': escape(env.get_config('header_logo', 'alt')),
+        'link': env.config.get('header_logo', 'link'),
+        'alt': escape(env.config.get('header_logo', 'alt')),
         'src': src,
         'src_abs': src_abs,
-        'width': env.get_config('header_logo', 'width'),
-        'height': env.get_config('header_logo', 'height')
+        'width': env.config.get('header_logo', 'width'),
+        'height': env.config.get('header_logo', 'height')
     }
 
     if req:
@@ -217,7 +217,7 @@ def populate_hdf(hdf, env, req=None):
         add_link(req, 'start', env.href.wiki())
         add_link(req, 'search', env.href.search())
         add_link(req, 'help', env.href.wiki('TracGuide'))
-        icon = env.get_config('project', 'icon')
+        icon = env.config.get('project', 'icon')
         if icon:
             if not icon[0] == '/' and icon.find('://') < 0:
                 icon = htdocs_location + icon
@@ -243,7 +243,11 @@ def absolute_url(req, path=None):
     return urlunparse((req.scheme, host, path, None, None, None))
 
 def dispatch_request(path_info, req, env):
-    base_url = env.get_config('trac', 'base_url')
+    # Re-parse the configuration file if it changed since the last the time it
+    # was parsed
+    env.config.parse_if_needed()
+
+    base_url = env.config.get('trac', 'base_url')
     if not base_url:
         base_url = absolute_url(req)
     req.base_url = base_url
@@ -259,7 +263,7 @@ def dispatch_request(path_info, req, env):
 
     try:
         try:
-            check_ip = env.get_config('trac', 'check_auth_ip', '1')
+            check_ip = env.config.get('trac', 'check_auth_ip')
             check_ip = check_ip.strip().lower() in TRUE
             authenticator = Authenticator(db, req, check_ip)
             if path_info == '/logout':
@@ -283,7 +287,7 @@ def dispatch_request(path_info, req, env):
 
             from trac.web.clearsilver import HDFWrapper
             req.hdf = HDFWrapper(loadpaths=[env.get_templates_dir(),
-                                            env.get_config('trac', 'templates_dir')])
+                                            env.config.get('trac', 'templates_dir')])
             populate_hdf(req.hdf, env, req)
             req.hdf['HTTP.PathInfo'] = path_info
             _add_args_to_hdf(req.args, req.hdf)
@@ -297,6 +301,7 @@ def dispatch_request(path_info, req, env):
                 parse_path_info(req.args, path_info)
                 module = module_factory(req.args.get('mode', 'wiki'))
                 module.env = env
+                module.config = env.config
                 module.log = env.log
                 module.db = db
                 module.perm = PermissionCache(module.db, req.authname)

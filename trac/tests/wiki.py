@@ -15,11 +15,12 @@ class WikiTestCase(unittest.TestCase):
     def test(self):
         """Testing WikiFormatter"""
         from trac import Mimeview, Logging
+        from trac.config import Configuration
         from trac.web.href import Href
         class Environment:
             def __init__(self):
                 self.log = Logging.logger_factory('null')
-                self.get_config = lambda x,y,z=None: z
+                self.config = Configuration(None)
                 self.href = Href('/')
                 self.abs_href = Href('http://www.example.com/')
                 self._wiki_pages = {}

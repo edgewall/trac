@@ -140,7 +140,7 @@ class CommonFormatter:
         self.env = env
         self.db = db
         self._href = absurls and env.abs_href or env.href
-        self._local = env.get_config('project', 'url') or env.abs_href.base
+        self._local = env.config.get('project', 'url', '') or env.abs_href.base
 
     def replace(self, fullmatch):
         for itype, match in fullmatch.groupdict().items():

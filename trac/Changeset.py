@@ -138,7 +138,7 @@ class ChangesetModule(Module):
                     if option[:2] == '-U':
                         context = int(option[2:])
                         break
-                tabwidth = int(self.env.get_config('diff', 'tab_width', '8'))
+                tabwidth = int(self.config.get('diff', 'tab_width'))
                 changes = hdf_diff(old_content.splitlines(),
                                    new_content.splitlines(),
                                    context, tabwidth,

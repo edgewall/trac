@@ -99,7 +99,7 @@ class SQLiteConnection(ConnectionWrapper):
 
 
 def get_cnx(env):
-    db_str = env.get_config('trac', 'database', 'sqlite:db/trac.db')
+    db_str = env.config.get('trac', 'database')
     scheme, rest = db_str.split(':', 1)
 
     if scheme == 'sqlite':

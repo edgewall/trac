@@ -39,9 +39,10 @@ class Notify:
 
     def __init__(self, env):
         self.env = env
+        self.config = env.config
         self.db = env.get_db_cnx()
         self.hdf = HDFWrapper(loadpaths=[env.get_templates_dir(),
-                                         env.get_config('trac', 'templates_dir')])
+                                         self.config.get('trac', 'templates_dir')])
         populate_hdf(self.hdf, env)
 
     def notify(self, resid):
@@ -94,16 +95,13 @@ class NotifyEmail(Notify):
     def notify(self, resid, subject):
         self.subject = subject
 
-        enabled = self.env.get_config('notification', 'smtp_enabled', '0')
+        enabled = self.config.get('notification', 'smtp_enabled')
         if not enabled.lower() in TRUE:
             return
-        self.smtp_server = self.env.get_config('notification', 'smtp_server',
-                                               self.smtp_server)
-        self.smtp_port = int(self.env.get_config('notification', 'smtp_port',
-                                                 self.smtp_port))
-        self.from_email = self.env.get_config('notification', 'smtp_from', '')
-        self.replyto_email = self.env.get_config('notification', 'smtp_replyto',
-                                                 self.from_email)
+        self.smtp_server = self.config.get('notification', 'smtp_server')
+        self.smtp_port = int(self.config.get('notification', 'smtp_port'))
+        self.from_email = self.config.get('notification', 'smtp_from')
+        self.replyto_email = self.config.get('notification', 'smtp_replyto')
         self.from_email = self.from_email or self.replyto_email
         if not self.from_email and not self.replyto_email:
             raise TracError('Unable to send email due to identity crisis. <br />'
@@ -113,8 +111,8 @@ class NotifyEmail(Notify):
                             'SMTP Notification Error')
 
         # Authentication info (optional)
-        self.user_name = self.env.get_config('notification', 'smtp_user')
-        self.password = self.env.get_config('notification', 'smtp_password', '')
+        self.user_name = self.config.get('notification', 'smtp_user')
+        self.password = self.config.get('notification', 'smtp_password')
 
         Notify.notify(self, resid)
 
@@ -135,9 +133,9 @@ class NotifyEmail(Notify):
         msg = MIMEText(body, 'plain', 'utf-8')
         msg['X-Mailer'] = 'Trac %s, by Edgewall Software' % __version__
         msg['X-Trac-Version'] =  __version__
-        projname = self.env.get_config('project','name')
+        projname = self.config.get('project','name')
         msg['X-Trac-Project'] =  projname
-        msg['X-URL'] =  self.env.get_config('project','url')
+        msg['X-URL'] =  self.config.get('project','url')
         msg['Subject'] = Header(self.subject, 'utf-8')
         msg['From'] = '%s <%s>' % (projname, self.from_email)
         msg['Sender'] = self.from_email
@@ -277,14 +275,14 @@ class TicketNotifyEmail(NotifyEmail):
                                                     self.COLS, linesep=CRLF))
 
     def format_subj(self):
-        projname = self.env.get_config('project', 'name')
+        projname = self.config.get('project', 'name')
         return '[%s] #%s: %s' % (projname, self.ticket['id'],
                                      self.ticket['summary'])
 
     def get_recipients(self, tktid):
-        val = self.env.get_config('notification', 'always_notify_reporter', '0')
+        val = self.config.get('notification', 'always_notify_reporter')
         notify_reporter = val.lower() in TRUE
-        val = self.env.get_config('notification', 'always_notify_owner', '0')
+        val = self.config.get('notification', 'always_notify_owner')
         notify_owner = val.lower() in TRUE
         
         recipients = self.prev_cc
@@ -309,7 +307,7 @@ class TicketNotifyEmail(NotifyEmail):
                 recipients.append(row[0])
 
         # Add smtp_always_cc address
-        acc = self.env.get_config('notification', 'smtp_always_cc', '')
+        acc = self.config.get('notification', 'smtp_always_cc')
         if acc:
             recipients += acc.replace(',', ' ').split()
 
@@ -331,10 +329,10 @@ class TicketNotifyEmail(NotifyEmail):
 
     def get_message_id(self, rcpt, modtime=0):
         """Generate a predictable, but sufficiently unique message ID."""
-        s = '%s.%08d.%d.%s' % (self.env.get_config('project','url'),
-                            int(self.ticket['id']), modtime, rcpt)
+        s = '%s.%08d.%d.%s' % (self.config.get('project', 'url'),
+                               int(self.ticket['id']), modtime, rcpt)
         dig = md5.new(s).hexdigest()
-        host = self.from_email[self.from_email.find('@')+1:]
+        host = self.from_email[self.from_email.find('@') + 1:]
         msgid = '<%03d.%s@%s>' % (len(s), dig, host)
         return msgid
 

@@ -23,6 +23,7 @@ __license__ = """
 
 import trac
 from trac.db_default import data as default_data
+from trac.config import Configuration
 from trac.env import Environment
 from trac.scripts import admin
 from trac.util import get_date_format_hint, NaivePopen
@@ -69,6 +70,7 @@ def load_expected_results(file, pattern):
 A subclass of Environment that keeps its' DB in memory.
 """
 class InMemoryEnvironment(Environment):
+
     def get_db_cnx(self):
         if not hasattr(self, '_db'):
             self._db = trac.test.InMemoryDatabase()
@@ -76,15 +78,15 @@ class InMemoryEnvironment(Environment):
 
     def create(self):
         pass
-    
+
     def verify(self):
         return True
 
     def setup_log(self):
         self.log = trac.Logging.logger_factory('null')
-    
+
     def load_config(self):
-        self.cfg = ConfigParser.ConfigParser()
+        self.config = Configuration(None)
 
     def save_config(self):
         pass

@@ -22,8 +22,8 @@
 from __future__ import generators
 
 from trac import db, db_default, Logging, Mimeview, util
+from trac.config import Configuration
 
-import ConfigParser
 import os
 import shutil
 import sys
@@ -72,7 +72,7 @@ class Environment:
         from trac.versioncontrol.cache import CachedRepository
         from trac.versioncontrol.svn_authz import SubversionAuthorizer
         from trac.versioncontrol.svn_fs import SubversionRepository
-        repos_dir = self.get_config('trac', 'repository_dir')
+        repos_dir = self.config.get('trac', 'repository_dir')
         if not repos_dir:
             raise EnvironmentError, 'Path to repository not configured'
         authz = None
@@ -136,7 +136,7 @@ class Environment:
                 return '"%s"' % v
         cnx = self.get_db_cnx()
         cursor = cnx.cursor()
-        
+
         for t in xrange(0, len(db_default.data)):
             table = db_default.data[t][0]
             cols = ','.join(db_default.data[t][1])
@@ -144,11 +144,11 @@ class Environment:
                 values = ','.join(map(prep_value, row))
                 sql = "INSERT INTO %s (%s) VALUES(%s);" % (table, cols, values)
                 cursor.execute(sql)
-        for s,n,v in db_default.default_config:
-            if not self.cfg.has_section(s):
-                self.cfg.add_section(s)
-            self.cfg.set(s, n, v)
-        self.save_config()
+
+        for section,name,value in db_default.default_config:
+            self.config.set(section, name, value)
+        self.config.save()
+
         cnx.commit()
 
     def get_version(self):
@@ -159,35 +159,9 @@ class Environment:
         return row and int(row[0])
 
     def load_config(self):
-        self.cfg = ConfigParser.ConfigParser()
-        self.cfg.read(os.path.join(self.path, 'conf', 'trac.ini'))
-
-    def get_config(self, section, name, default=''):
-        if not self.cfg.has_option(section, name):
-            return default
-        return self.cfg.get(section, name)
-
-    def set_config(self, section, name, value):
-        """Changes a config value, these changes are _not_ persistent
-        unless saved with save_config()"""
-        if not self.cfg.has_section(section):
-            self.cfg.add_section(section)
-        return self.cfg.set(section, name, value)
-
-    def get_config_items(self, section):
-        if not self.cfg.has_section(section):
-            return None
-        try:
-            return self.cfg.items(section)
-        except AttributeError:
-            items=[]
-            for option in self.cfg.options(section):
-                items.append((option,self.cfg.get(section,option)))
-            return items    
-
-
-    def save_config(self):
-        self.cfg.write(open(os.path.join(self.path, 'conf', 'trac.ini'), 'w'))
+        self.config = Configuration(os.path.join(self.path, 'conf', 'trac.ini'))
+        for section,name,value in db_default.default_config:
+            self.config.setdefault(section, name, value)
 
     def get_templates_dir(self):
         return os.path.join(self.path, 'templates')
@@ -196,9 +170,9 @@ class Environment:
         return os.path.join(self.path, 'log')
 
     def setup_log(self):
-        logtype = self.get_config('logging','log_type','file')
-        loglevel = self.get_config('logging','log_level','warn')
-        logfile = self.get_config('logging','log_file','trac.log')
+        logtype = self.config.get('logging', 'log_type')
+        loglevel = self.config.get('logging', 'log_level')
+        logfile = self.config.get('logging', 'log_file')
         logfile = os.path.join(self.get_log_dir(), logfile)
         logid = self.path # Env-path provides process-unique ID
         self.log = Logging.logger_factory(logtype, logfile, loglevel, logid)
@@ -235,7 +209,7 @@ class Environment:
     def create_attachment(self, cnx, type, id, attachment,
                           description, author, ipnr):
         # Maximum attachment size (in bytes)
-        max_size = int(self.get_config('attachment', 'max_size', '262144'))
+        max_size = int(self.config.get('attachment', 'max_size'))
         if hasattr(attachment.file, 'fileno'):
             stat = os.fstat(attachment.file.fileno())
             length = stat[6]
@@ -317,7 +291,7 @@ class Environment:
 
     def backup(self, dest=None):
         """Simple SQLite-specific backup. Copy the database file."""
-        db_str = self.get_config('trac', 'database', 'sqlite:db/trac.db')
+        db_str = self.config.get('trac', 'database')
         if db_str[:7] != 'sqlite:':
             raise EnvironmentError, 'Can only backup sqlite databases'
         db_name = os.path.join(self.path, db_str[7:])

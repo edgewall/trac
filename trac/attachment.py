@@ -134,7 +134,7 @@ class AttachmentModule(Module):
         length = stat[6]
         mime_type = self.env.mimeview.get_mimetype(filename) or \
                     'application/octet-stream'
-        charset = self.env.get_config('trac', 'default_charset', 'iso-8859-15')
+        charset = self.config.get('trac', 'default_charset')
 
         if req.args.get('format') in ('raw', 'txt'):
             self.render_view_raw(req, fd, mime_type, charset, length,

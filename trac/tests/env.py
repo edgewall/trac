@@ -7,36 +7,20 @@ import tempfile
 import shutil
 
 
-class EnvironmentTestBase:
+class EnvironmentTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.env = Environment(self._get_envpath(), create=1)
+        env_path = os.path.join(tempfile.gettempdir(), 'trac-tempenv')
+        self.env = Environment(env_path, create=1)
         self.env.insert_default_data()
         self.db = self.env.get_db_cnx()
 
     def tearDown(self):
-        self.env = None
-        shutil.rmtree(self._get_envpath())
-
-    def _get_envpath(self):
-        return os.path.join(tempfile.gettempdir(), 'trac-tempenv')
-
-
-class EnvironmentTestCase(EnvironmentTestBase, unittest.TestCase):
+        shutil.rmtree(self.env.path)
 
     def test_get_version(self):
         """Testing env.get_version"""
         assert self.env.get_version() == db_default.db_version
-
-    def test_config(self):
-        """Testing env.get/set_config"""
-        assert self.env.get_config('trac', 'database') == 'sqlite:db/trac.db'
-        self.env.set_config('foo', 'bar', 'baz')
-        self.env.save_config()
-        assert self.env.get_config('foo', 'bar') == 'baz'
-        assert self.env.get_config('non', 'existent') == ''
-        assert self.env.get_config('non', 'existent', None) == None
-        assert self.env.get_config('non', 'existent', 'default') == 'default'
 
     def test_attachment(self):
         """Testing env.get/add/delete_attachment"""

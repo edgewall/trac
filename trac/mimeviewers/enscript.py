@@ -118,7 +118,7 @@ def display(data, mimetype, filename, rev, env):
         raise Exception, "Enscript doesn't support %s" % mimetype
     env.log.debug("type: %s enscript-suffix: %s" % (mimetype, lang))
 
-    enscript = env.get_config('mimeviewer', 'enscript_path', 'enscript')
+    enscript = env.config.get('mimeviewer', 'enscript_path')
     enscript += ' --color -h -q --language=html -p - -E'
     if lang:
         enscript += lang

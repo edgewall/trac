@@ -539,15 +539,17 @@ class TracAdmin(cmd.Cmd):
             cnx = self.__env.get_db_cnx()
             print ' Inserting default data'
             self.__env.insert_default_data()
-            
+
             print ' Configuring Project'
+            config = self.__env.config
             print '  trac.repository_dir'
-            self.__env.set_config('trac', 'repository_dir', repository_dir)
+            config.set('trac', 'repository_dir', repository_dir)
             print '  trac.templates_dir'
-            self.__env.set_config('trac', 'templates_dir', templates_dir)
+            config.set('trac', 'templates_dir', templates_dir)
             print '  project.name'
-            self.__env.set_config('project', 'name', project_name)
-            self.__env.save_config()
+            config.set('project', 'name', project_name)
+            config.save()
+
             # Add a few default wiki pages
             print ' Installing wiki pages'
             cursor = cnx.cursor()
