@@ -42,7 +42,7 @@ class Log (Module):
             'date'   : svn_date_to_string (date, pool),
             'gmt'    : time.strftime('%a, %d %b %Y %H:%M:%S GMT', gmt),
             'log.raw'    : escape(log),
-            'log'    : wiki_to_oneliner(log, self.req.hdf, self.href),
+            'log'    : wiki_to_oneliner(log, self.req.hdf, self.href, self.env),
             'shortlog' : escape(shortlog),
             'file_href': self.href.file(self.path, rev),
             'changeset_href': self.href.changeset(rev)

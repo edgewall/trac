@@ -127,8 +127,7 @@ class Environment:
     def get_version(self):
         cnx = self.get_db_cnx()
         cursor = cnx.cursor()
-        cursor.execute("SELECT value FROM system"
-                       " WHERE name='database_version'")
+        cursor.execute("SELECT value FROM system WHERE name='database_version'")
         row = cursor.fetchone()
         return row and int(row[0])
 

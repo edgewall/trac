@@ -249,7 +249,8 @@ class Ticket (Module):
             hdf.setValue('ticket.changes.%d.old' % idx, old)
             if field == 'comment':
                 hdf.setValue('ticket.changes.%d.new' % idx,
-                                      wiki_to_html(new, self.req.hdf, self.href))
+                                      wiki_to_html(new, self.req.hdf,
+                                                   self.href, self.env))
             elif field == 'attachment':
                 tag = '<a href="%s">%s</a>' % (self.href.attachment('ticket', str(id), new), new)
                 hdf.setValue('ticket.changes.%d.new' % idx, tag)
@@ -304,7 +305,8 @@ class Ticket (Module):
         self.req.hdf.setValue('title', '#%d (ticket)' % id)
         self.insert_ticket_data(self.req.hdf, id)
         self.req.hdf.setValue('ticket.description',
-                              wiki_to_html(info['description'], self.req.hdf, self.href))
+                              wiki_to_html(info['description'], self.req.hdf,
+                                           self.href, self.env))
         self.req.hdf.setValue('ticket.opened',
                               time.strftime('%c',
                                             time.localtime(int(info['time']))))

@@ -30,14 +30,11 @@ import perm
 from Module import Module
 from util import *
 
-page_dict = None
-
 processor_re = re.compile('#\!([a-zA-Z]+)')
 
-def populate_page_dict(db):
+def populate_page_dict(db, env):
     """Extract wiki page names. This is used to detect broken wiki-links"""
-    global page_dict
-    page_dict = {'TitleIndex': 1}
+    page_dict = {'TitleIndex': 1, 'RecentChanges': 1}
     cursor = db.cursor()
     cursor.execute('SELECT DISTINCT name FROM wiki')
     while 1:
@@ -45,6 +42,7 @@ def populate_page_dict(db):
         if not row:
             break
         page_dict[row[0]] = 1
+    env._wiki_pages = page_dict
 
 
 class CommonFormatter:
@@ -63,9 +61,10 @@ class CommonFormatter:
               r"""(?P<wikilink>(^|(?<=[^A-Za-z]))[!]?[A-Z][a-z/]+(?:[A-Z][a-z/]+)+)""",
               r"""(?P<fancylink>\[(?P<fancyurl>([a-z]+:[^ ]+)) (?P<linkname>.*?)\])"""]
 
-    def __init__(self, hdf, href):
+    def __init__(self, hdf, href, env):
         self.hdf = hdf
         self.href = href
+        self.env = env
 
     def replace(self, fullmatch):
         for type, match in fullmatch.groupdict().items():
@@ -165,8 +164,7 @@ class CommonFormatter:
     def _wikilink_formatter(self, match, fullmatch):
         if match[0] == '!':
             return match[1:]
-        global page_dict
-        if page_dict and not page_dict.has_key(match):
+        if not self.env._wiki_pages.has_key(match):
             return '<a class="wiki-missing-page" href="%s">%s?</a>' % \
                    (self.href.wiki(match), match)
         else:
@@ -480,14 +478,14 @@ class Formatter(CommonFormatter):
         self.close_indentation()
         self.close_list()
 
-def wiki_to_html(wikitext, hdf, href):
+def wiki_to_html(wikitext, hdf, href, env):
     out = StringIO.StringIO()
-    Formatter(hdf, href).format(wikitext, out)
+    Formatter(hdf, href, env).format(wikitext, out)
     return out.getvalue()
 
-def wiki_to_oneliner(wikitext, hdf, href):
+def wiki_to_oneliner(wikitext, hdf, href, env):
     out = StringIO.StringIO()
-    OneLinerFormatter(hdf, href).format(wikitext, out)
+    OneLinerFormatter(hdf, href, env).format(wikitext, out)
     return out.getvalue()
 
 
@@ -685,7 +683,7 @@ class Wiki(Module):
         self.req.hdf.setValue('wiki.page_name', self.page.name)
         self.req.hdf.setValue('wiki.page_source', escape(self.page.text))
         out = StringIO.StringIO()
-        Formatter(self.req.hdf, self.href).format(self.page.text, out)
+        Formatter(self.req.hdf, self.href, self.env).format(self.page.text, out)
         self.req.hdf.setValue('wiki.page_html', out.getvalue())
 
     def display_txt(self):

@@ -378,7 +378,7 @@ def real_cgi_start():
     database = env.get_db_cnx()
     
     # Let the wiki module build a dictionary of all page names
-    Wiki.populate_page_dict(database)
+    Wiki.populate_page_dict(database, env)
     
     req = CGIRequest()
     req.init_request()

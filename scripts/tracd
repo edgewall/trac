@@ -41,9 +41,8 @@ import svn.core
 
 import trac.core
 import trac.util
-from trac import auth
 from trac.Href import Href
-from trac import siteconfig
+from trac import auth, Wiki, siteconfig
 from trac.Environment import Environment
 
 
@@ -237,9 +236,7 @@ class TracHTTPRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler,
             if not self.remote_user:
                 return
 
-        # FIXME: do this only once per project
-        from trac import Wiki
-        Wiki.populate_page_dict(db)
+        Wiki.populate_page_dict(db, self.env)
         
         href = Href(self.cgi_location)
         

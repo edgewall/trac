@@ -216,7 +216,7 @@ class Report (Module):
         self.req.hdf.setValue('title', title + ' (report)')
         self.req.hdf.setValue('report.title', title)
         self.req.hdf.setValue('report.id', str(id))
-        descr_html = wiki_to_html(description, self.req.hdf, self.href)
+        descr_html = wiki_to_html(description, self.req.hdf, self.href, self.env)
         self.req.hdf.setValue('report.description', descr_html)
 
         # Convert the header info to HDF-format
@@ -284,7 +284,7 @@ class Report (Module):
                     value['ticket_href'] = self.href.ticket(cell)
                 elif column == 'description':
                     value['parsed'] = wiki_to_html(cell, self.req.hdf,
-                                                   self.href)
+                                                   self.href, self.env)
                 elif column == 'report':
                     value['report_href'] = self.href.report(cell)
                 elif column in ['time', 'date','changetime', 'created', 'modified']:

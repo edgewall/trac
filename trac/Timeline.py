@@ -104,9 +104,11 @@ class Timeline (Module):
             if item['type'] == CHANGESET:
                 item['changeset_href'] = self.href.changeset(item['idata'])
                 item['shortmsg'] = wiki_to_oneliner(shorten_line(item['message']),
-                                                    self.req.hdf, self.href)
+                                                    self.req.hdf, self.href,
+                                                    self.env)
                 item['message'] = wiki_to_oneliner(item['message'],
-                                                   self.req.hdf, self.href)
+                                                   self.req.hdf, self.href,
+                                                   self.env)
             elif item['type'] == WIKI:
 		item['wiki_href'] = self.href.wiki(row['tdata'])
 	    elif item['type'] == MILESTONE:
@@ -116,9 +118,11 @@ class Timeline (Module):
 		msg = item['message']
 		shortmsg = shorten_line(msg)
 		item['message'] = wiki_to_oneliner(item['message'],
-                                                   self.req.hdf, self.href)
+                                                   self.req.hdf, self.href,
+                                                   self.env)
 		item['shortmsg'] = wiki_to_oneliner(shorten_line(item['message']),
-                                                    self.req.hdf, self.href)
+                                                    self.req.hdf, self.href,
+                                                    self.env)
 
             info.append(item)
         return info
