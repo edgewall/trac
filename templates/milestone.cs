@@ -131,7 +131,7 @@
    <td class="progress">
     <?cs if:#milestone.stats.total_tickets ?>
      <div class="progress" style="width: 80%">
-      <div style="width: <?cs var:#stats.percent_complete ?>%"></div>
+      <div style="width: <?cs var:#milestone.stats.percent_complete ?>%"></div>
      </div>
      <p class="percent"><?cs var:#milestone.stats.percent_complete ?>%</p>
     <?cs /if ?>
