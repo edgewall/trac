@@ -44,6 +44,8 @@ class Formatter:
              r"""|(?P<tickethref> #[0-9]+)""" \
              r"""|(?P<changesethref>\[[0-9]+\])""" \
              r"""|(?P<reporthref>\{[0-9]+\})""" \
+             r"""|(?P<svnhref>(svn:[^ ]+))""" \
+             r"""|(?P<fancysvnhref>\[(?P<fancysvnfile>svn:[^ ]+) (?P<svnlinkname>.*?)\])""" \
              r"""|(?P<italic>'')""" \
              r"""|(?P<beginpre>\{\{\{$)""" \
              r"""|(?P<endpre>\}\}\}$)""" \
@@ -60,7 +62,8 @@ class Formatter:
              r"""|(?P<underline>__))""" % { 'url_re': _url_re}
     
     # RE patterns used by other patterna
-    _helper_patterns = ('idepth', 'ldepth', 'hdepth', 'fancyurl', 'linkname')
+    _helper_patterns = ('idepth', 'ldepth', 'hdepth', 'fancyurl',
+                        'linkname', 'fancysvnfile', 'svnlinkname')
 
     def _bold_formatter(self, match, fullmatch):
         self._is_bold = not self._is_bold
@@ -92,6 +95,14 @@ class Formatter:
     def _reporthref_formatter(self, match, fullmatch):
         number = int(match[1:-1])
         return '{<a href="%s">%d</a>}' % (href.report(number), number)
+
+    def _svnhref_formatter(self, match, fullmatch):
+        return '<a href="%s">%s</a>' % (href.log(match[4:]), match[4:])
+
+    def _fancysvnhref_formatter(self, match, fullmatch):
+        path = fullmatch.group('fancysvnfile')
+        name = fullmatch.group('svnlinkname')
+        return '<a href="%s">%s</a>' % (href.log(path[4:]), name)
 
     def _italic_formatter(self, match, fullmatch):
         self._is_italic = not self._is_italic
