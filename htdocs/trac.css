@@ -85,7 +85,7 @@ td.summary-column
   width: 50%;
 }
 
-td.icon-column
+td.icon-column, td.report-column, td.ticket-column
 {
   width: 1%;
 }

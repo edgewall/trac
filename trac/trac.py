@@ -82,13 +82,7 @@ def main():
         module.fs_ptr = fs_ptr
         db.sync(rep, fs_ptr, pool)
 
-    try:
-        module.render()
-        module.apply_template()
-    except Exception, e:
-        print 'Content-Type: text/plain\r\n\r\n',
-        import traceback
-        traceback.print_exc(file=sys.stdout)
+    module.run()
         
     core.svn_pool_destroy(pool)
     core.apr_terminate()

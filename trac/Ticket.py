@@ -72,6 +72,7 @@ class Ticket (Module):
         cursor.close ()
 
         if not row:
+            del cnx
             raise Exception('Ticket not found.')
 
         info = {'id': id }

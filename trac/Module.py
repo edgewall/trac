@@ -22,6 +22,7 @@
 import os
 from util import *
 from Href import href
+from perm import PermissionError
 import auth
 import neo_cgi
 
@@ -31,6 +32,29 @@ class Module:
         self.args = args
         self.pool = pool
         self.cgi = neo_cgi.CGI()
+
+    def run(self):
+        try:
+            self.render()
+        except PermissionError, e:
+            self.cgi.hdf.setValue('title', 'Permission Denied')
+            self.cgi.hdf.setValue('error.type', 'permission')
+            self.cgi.hdf.setValue('error.action', e.action)
+            self.cgi.hdf.setValue('error.message', str(e))
+            self.template_name = 'error.cs'
+        except Exception, e:
+            # Catch exceptions and let error.cs display
+            # a pretty error message + traceback.
+            import traceback, StringIO
+            tb = StringIO.StringIO()
+            traceback.print_exc(file=tb)
+            self.cgi.hdf.setValue('title', 'Oups')
+            self.cgi.hdf.setValue('error.type', 'internal')
+            self.cgi.hdf.setValue('error.message', str(e))
+            self.cgi.hdf.setValue('error.traceback',tb.getvalue())
+            self.template_name = 'error.cs'
+            
+        self.apply_template()
         
     def render (self):
         """
@@ -45,7 +69,6 @@ class Module:
         sql_to_hdf("SELECT name FROM enum WHERE type='severity' ORDER BY name",
                    self.cgi.hdf, 'enums.severity')
         
-        self.cgi.hdf.setValue('title', '')
         self.cgi.hdf.setValue('htdocs_location',
                               self.config['general']['htdocs_location'])
         self.cgi.hdf.setValue('cgi_location',
@@ -60,6 +83,7 @@ class Module:
         self.cgi.hdf.setValue('trac.href.search', href.search())
         self.cgi.hdf.setValue('trac.href.login', href.login())
         self.cgi.hdf.setValue('trac.href.logout', href.logout())
+        self.cgi.hdf.setValue('trac.href.homepage', 'http://trac.edgewall.com/')
         self.cgi.hdf.setValue('trac.version', '0.0.1')
 
         
