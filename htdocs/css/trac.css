@@ -295,10 +295,11 @@ table.listing tbody tr:hover { background: #eed }
 
 .wikipage p { margin-left: 1em }
 pre.wiki, pre.literal-block {
- margin: 1em 1.75em;
- padding: .25em;
  background: #f7f7f7;
  border: 1px solid #d7d7d7;
+ margin: 1em 1.75em;
+ padding: .25em;
+ overflow: auto;
 }
 table.wiki {
  border: 2px solid #ccc;
