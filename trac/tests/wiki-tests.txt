@@ -127,3 +127,14 @@ out:
 <p>
 <i>RFCs von <a href="ftp://ftp.rfc-editor.org/in-notes/rfcXXXX.txt">ftp://ftp.rfc-editor.org/in-notes/rfcXXXX.txt</a></i>
 </p>
+==============================
+foo (FooBar)
+
+foo (FooBar )
+------------------------------
+<p>
+foo (<a class="missing" href="/wiki/FooBar">FooBar?</a>)
+</p>
+<p>
+foo (<a class="missing" href="/wiki/FooBar">FooBar?</a> )
+</p>
