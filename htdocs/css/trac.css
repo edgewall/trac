@@ -194,7 +194,13 @@ form.inline input { margin: 1em }
 #main {  margin-bottom: 2em; }
 #main-footer { margin-top: 3em; text-align: center; }
 
-#help { margin: 1em; font-size: 90%; color: #999; text-align: right}
+#help {
+ clear: both;
+ color: #999;
+ font-size: 90%;
+ margin: 1em;
+ text-align: right
+}
 #help a { color: #b44 }
 #help hr { display: none }
 
