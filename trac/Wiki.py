@@ -646,20 +646,26 @@ class Wiki(Module):
     def generate_diff(self, pagename, version):
         from Changeset import DiffColorizer
         cursor = self.db.cursor ()
-        cursor.execute ('SELECT text FROM wiki '
+        cursor.execute ('SELECT text,author,comment,time FROM wiki '
                         'WHERE name=%s AND (version=%s or version=%s)'
                         'ORDER BY version ASC', pagename, version - 1, version)
         res = cursor.fetchall()
-        if (len(res) == 1):
-            old = ''
-            new = res[0][0].splitlines()
-        elif (len(res) == 2):
-            old = res[0][0].splitlines()
-            new = res[1][0].splitlines()
-        else:
+        if not res:
             raise TracError('Version %d of page "%s" not found.'
                             % (version, pagename),
                             'Page Not Found')
+
+        if len(res) == 1:
+            old = ''
+        else:
+            old = res[0][0].splitlines()
+        new = res[-1][0].splitlines()
+        author = res[-1][1] or ''
+        comment = res[-1][2] or ''
+        time_str = time.strftime('%c', time.localtime(int(res[-1][3])))
+        self.req.hdf.setValue('wiki.diff.time', time_str)
+        self.req.hdf.setValue('wiki.diff.author', escape(author))
+        self.req.hdf.setValue('wiki.diff.comment', escape(comment))
         filtr = DiffColorizer(self.req.hdf, 'wiki.diff')
         filtr.writeline('header %s version %d | %s version %d redaeh' %
                          (pagename, version - 1, pagename, version))
