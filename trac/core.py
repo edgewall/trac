@@ -428,6 +428,8 @@ class RedirectException(Exception):
 
 def dispatch_request(path_info, req, env):
 
+    parse_path_info(req.args, path_info)
+
     db = env.get_db_cnx()
 
     # Let the wiki module build a dictionary of all page names
@@ -535,7 +537,6 @@ def real_cgi_start():
 
     req = CGIRequest()
     req.init_request()
-    parse_path_info(req.args, path_info)
 
     env = open_environment()
     env.href = Href.Href(req.cgi_location)

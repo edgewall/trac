@@ -193,7 +193,6 @@ def handler(req):
         return apache.OK
 
     mpr.args = TracFieldStorage(req, keep_blank_values=1)
-    core.parse_path_info(mpr.args, mpr.path_info)
 
     req.content_type = 'text/html'
     try:

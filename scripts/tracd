@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: iso8859-1 -*-
 #
-# Copyright (C) 2003, 2004 Edgewall Software
-# Copyright (C) 2003, 2004 Jonas Borgström <jonas@edgewall.com>
+# Copyright (C) 2003, 2004, 2005 Edgewall Software
+# Copyright (C) 2003, 2004, 2005 Jonas Borgström <jonas@edgewall.com>
 #
 # Trac is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License as
@@ -133,6 +133,7 @@ class DigestAuth:
 class TracHTTPServer(SocketServer.ThreadingMixIn, BaseHTTPServer.HTTPServer):
     pass
 
+
 class TracHTTPRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler,
                              trac.core.Request):
     url_re = re.compile('/(?P<project>[^/\?]+)'
@@ -156,6 +157,15 @@ class TracHTTPRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler,
         self.hdf.setValue('HTTP.PathInfo', self.path_info)
         if self.headers.has_key('Cookie'):
             self.incookie.load(self.headers['Cookie'])
+
+        environ = {'REQUEST_METHOD': self.command,
+                   'QUERY_STRING': self.query_string}
+        headers = self.headers
+        if self.command in ('GET', 'HEAD'):
+            headers = None
+        self.args = trac.core.TracFieldStorage(self.rfile, environ=environ,
+                                               headers=headers,
+                                               keep_blank_values=1)
 
     def get_header(self, name):
         return self.headers.get(name)
@@ -250,11 +260,6 @@ class TracHTTPRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler,
             self.remote_user = self.env.auth.do_auth(self)
             if not self.remote_user:
                 return
-
-        # Parse arguments
-        self.args = trac.core.parse_args(self.command, self.path_info,
-                                         self.query_string,
-                                         self.rfile, None, self.headers)
 
         trac.core.dispatch_request(self.path_info, self, self.env)
 
