@@ -128,10 +128,10 @@
 </div><?cs /if ?>
 
 <?cs if $trac.acl.TICKET_MODIFY ?>
-<hr />
-<h3><a name="edit" onfocus="document.getElementById('comment').focus()">Add/Change #<?cs
-  var:ticket.id ?> (<?cs var:ticket.summary ?>)</a></h3>
 <form action="<?cs var:cgi_location ?>#preview" method="post">
+ <hr />
+ <h3><a name="edit" onfocus="document.getElementById('comment').focus()">Add/Change #<?cs
+   var:ticket.id ?> (<?cs var:ticket.summary ?>)</a></h3>
  <div class="field">
   <input type="hidden" name="mode" value="ticket" />
   <input type="hidden" name="id"   value="<?cs var:ticket.id ?>" />

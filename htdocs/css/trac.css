@@ -354,13 +354,15 @@ div.system-message p { margin: 0; }
 div.system-message p.system-message-title { font-weight: bold; }
 
 /* Styles for search word highlighting */
-.searchword0 { background: #ff9 }
-.searchword1 { background: #cfc }
-.searchword2 { background: #cff }
-.searchword3 { background: #ccf }
-.searchword4 { background: #fcf }
+@media screen {
+ .searchword0 { background: #ff9 }
+ .searchword1 { background: #cfc }
+ .searchword2 { background: #cff }
+ .searchword3 { background: #ccf }
+ .searchword4 { background: #fcf }
+}
 
 @media print {
  #header, #altlinks, #footer { display: none }
- .nav, form { display: none }
+ .nav, form, .buttons form { display: none }
 }
