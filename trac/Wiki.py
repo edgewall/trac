@@ -250,17 +250,16 @@ class WikiModule(Module):
         self.req.hdf.setValue('wiki.namedoublequoted',
                               urllib.quote(urllib.quote(name, '')))
 
-        if save or preview:
-            session = Session(self.env, self.req)
-            editrows = self.args.get('editrows')
-            if editrows:
-                self.req.hdf.setValue('wiki.edit_rows', editrows)
-                pref = session.get('wiki_editrows', '20')
-                if editrows != pref:
-                    session.set_var('wiki_editrows', editrows)
-            else:
-                self.req.hdf.setValue('wiki.edit_rows',
-                                      session.get('wiki_editrows', '20'))
+        session = Session(self.env, self.req)
+        editrows = self.args.get('editrows')
+        if editrows:
+            self.req.hdf.setValue('wiki.edit_rows', editrows)
+            pref = session.get('wiki_editrows', '20')
+            if editrows != pref:
+                session.set_var('wiki_editrows', editrows)
+        else:
+            self.req.hdf.setValue('wiki.edit_rows',
+                                  session.get('wiki_editrows', '20'))
 
         if save:
             self.req.hdf.setValue('wiki.action', 'save')
