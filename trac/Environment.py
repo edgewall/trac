@@ -238,7 +238,8 @@ class Environment:
         if length > max_size:
             raise util.TracError('Maximum attachment size: %d bytes' % max_size,
                                  'Upload failed')
-        dir = os.path.join(self.get_attachments_dir(), type, id)
+        dir = os.path.join(self.get_attachments_dir(), type,
+                           urllib.quote(id))
         if not os.access(dir, os.F_OK):
             os.makedirs(dir)
         filename = attachment.filename.replace('\\', '/').replace(':', '/')
@@ -264,7 +265,8 @@ class Environment:
         return filename
     
     def delete_attachment(self, cnx, type, id, filename):
-        path = os.path.join(self.get_attachments_dir(), type, id,
+        path = os.path.join(self.get_attachments_dir(), type,
+                            urllib.quote(id),
                             urllib.quote(filename))
         cursor = cnx.cursor()
         cursor.execute('DELETE FROM attachment WHERE type=%s AND id=%s AND '
