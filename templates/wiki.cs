@@ -209,17 +209,18 @@
   <?cs /if ?>
   <?cs if wiki.action == "view" && trac.acl.WIKI_MODIFY &&
        (wiki.readonly == "0" || trac.acl.WIKI_ADMIN) ?>
-       <form class="inline" method="get" action=""><div>
-        <input type="hidden" name="edit" value="yes" />
-        <input type="submit" value="Edit This Page" />
-       </div></form>
-       <form class="inline" method="get" action="<?cs
-              var:cgi_location?>/attachment/wiki/<?cs
-              var:wiki.namedoublequoted ?>"><div>
-        <input type="submit" value="Attach File" />
-       </div></form>
-     <?cs /if ?>
-   <?cs /if ?>
+   <div class="buttons">
+    <form method="get" action=""><div>
+     <input type="hidden" name="edit" value="yes" />
+     <input type="submit" value="Edit This Page" />
+    </div></form>
+    <form method="get" action="<?cs var:cgi_location?>/attachment/wiki/<?cs
+      var:wiki.namedoublequoted ?>"><div>
+     <input type="submit" value="Attach File" />
+    </div></form>
+   </div>
+  <?cs /if ?>
+ <?cs /if ?>
  <?cs /if ?>
  </div>
 </div>

@@ -64,11 +64,11 @@ legend {
  font-size: smaller;
  font-weight: bold;
 }
-form.inline { float: left }
-form.inline input { margin: 1em }
 label.disabled { color: #d7d7d7 }
 .att-label { float:left; width: 7em; text-align: right; margin-right: .5em; }
 .buttons { margin: .5em; }
+.buttons form, .buttons form div { display: inline }
+.buttons form input { margin: 1em }
 
 /* Header */
 #header hr { display: none }
@@ -118,15 +118,17 @@ label.disabled { color: #d7d7d7 }
  margin: .33em 0;
 }
 #mainnav ul { float: right; padding: 0 }
-#mainnav li { border-right: none; float: left; padding: 0 }
+#mainnav li { border-right: none; padding: 0 }
 #mainnav :link, #mainnav :visited {
  background: url(../dots.gif) top left no-repeat;
  border-left: 1px solid #999;
  border-right: 1px solid #fff;
  border-bottom: none;
  color: #000;
+ /* Hide from IE/Mac \*/
  display: block;
  float: left;
+ /* Unhide */
  line-height: 1.4em;
  padding: .1em 15px;
 }
