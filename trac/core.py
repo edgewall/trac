@@ -335,6 +335,8 @@ def send_pretty_error(e, env, req=None):
         req.authname = ''
         req.init_request()
     try:
+	if not env:
+	    env = open_environment()
         env.href = Href.Href(req.cgi_location)
         cnx = env.get_db_cnx()
         populate_hdf(req.hdf, env, cnx, req)
@@ -365,8 +367,9 @@ def send_pretty_error(e, env, req=None):
         req.write(str(e))
         req.write('\n')
         req.write(tb.getvalue())
-    env.log.error(str(e))
-    env.log.error(tb.getvalue())
+    if env and env.log:
+	env.log.error(str(e))
+	env.log.error(tb.getvalue())
 
 def real_cgi_start():
     import Wiki
@@ -424,4 +427,4 @@ def cgi_start():
         locale.setlocale(locale.LC_ALL, '')
         real_cgi_start()
     except Exception, e:
-        send_pretty_error(e, open_environment())
+        send_pretty_error(e, None)
