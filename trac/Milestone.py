@@ -173,7 +173,7 @@ class Milestone(Module):
         if descr:
             milestone['descr_source'] = descr
             milestone['descr'] = wiki_to_html(descr, self.req.hdf, self.env)
-        t = int(row['time'])
+        t = row['time'] and int(row['time'])
         if t > 0:
             milestone['date'] = time.strftime('%x', time.localtime(t))
         return milestone

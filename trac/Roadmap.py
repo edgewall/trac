@@ -40,7 +40,8 @@ class Roadmap(Module):
 
         cursor = self.db.cursor()
         cursor.execute("SELECT name, time, descr FROM milestone "
-                       "WHERE name != '' AND (time = 0 OR time > %d) "
+                       "WHERE name != '' "
+                       "AND (time IS NULL OR time = 0 OR time > %d) "
                        "ORDER BY time DESC, name" % time.time())
         milestones = []
         while 1:
@@ -54,7 +55,7 @@ class Roadmap(Module):
             descr = row['descr']
             if descr:
                 milestone['descr'] = wiki_to_html(descr, self.req.hdf, self.env)
-            t = int(row['time'])
+            t = row['time'] and int(row['time'])
             if t > 0:
                 milestone['date'] = time.strftime('%x', time.localtime(t))
                 milestones.insert(0, milestone)
