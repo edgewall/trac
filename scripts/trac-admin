@@ -36,7 +36,7 @@ def my_sum(list):
     """Python2.1 doesn't have sum()"""
     tot = 0
     for item in list:
-	tot += item
+        tot += item
     return tot
 
 
@@ -55,97 +55,97 @@ class TracAdmin(cmd.Cmd):
 
     db_schema = """
 CREATE TABLE revision (
-	rev 		integer PRIMARY KEY,
-	time		integer,
-	author		text,
-	message		text
+        rev             integer PRIMARY KEY,
+        time            integer,
+        author          text,
+        message         text
 );
 CREATE TABLE node_change (
-	rev 		integer,
-	name		text,
-	change		char(1),
-	UNIQUE(rev, name, change)
+        rev             integer,
+        name            text,
+        change          char(1),
+        UNIQUE(rev, name, change)
 );
 CREATE TABLE auth_cookie (
-	cookie		text,
-	name		text,
-	ipnr		text,
-	time		integer,
-	UNIQUE(cookie, name, ipnr)
+        cookie          text,
+        name            text,
+        ipnr            text,
+        time            integer,
+        UNIQUE(cookie, name, ipnr)
 );
 CREATE TABLE enum (
-	type		text,
-	name		text,
-	value		text,
-	UNIQUE(name,type)
+        type            text,
+        name            text,
+        value           text,
+        UNIQUE(name,type)
 );
 CREATE TABLE config (
-	section		text,
-	name		text,
-	value		text,
-	UNIQUE(section, name)
+        section         text,
+        name            text,
+        value           text,
+        UNIQUE(section, name)
 );
 CREATE TABLE ticket (
-	id		integer PRIMARY KEY,
-	time		integer,	-- the time it was created
-	changetime	integer,
-	component	text,
-	severity	text,
-	priority	text,
-	owner		text,		-- who is this ticket assigned to
-	reporter	text,
-	cc		text,		-- email addresses to notify
-	url		text,		-- url related to this ticket
-	version		text,		-- 
-	milestone	text,		-- 
-	status		text,
-	resolution	text,
-	summary		text,		-- one-line summary
-	description	text		-- problem description (long)
+        id              integer PRIMARY KEY,
+        time            integer,        -- the time it was created
+        changetime      integer,
+        component       text,
+        severity        text,
+        priority        text,
+        owner           text,           -- who is this ticket assigned to
+        reporter        text,
+        cc              text,           -- email addresses to notify
+        url             text,           -- url related to this ticket
+        version         text,           -- 
+        milestone       text,           -- 
+        status          text,
+        resolution      text,
+        summary         text,           -- one-line summary
+        description     text            -- problem description (long)
 );
 CREATE TABLE ticket_change (
-	ticket		integer,
-	time		integer,
-	author		text,
-	field		text,
-	oldvalue	text,
-	newvalue	text
+        ticket          integer,
+        time            integer,
+        author          text,
+        field           text,
+        oldvalue        text,
+        newvalue        text
 );
 CREATE TABLE report (
-	id		integer PRIMARY KEY,
-	author		text,
-	title		text,
-	sql		text
+        id              integer PRIMARY KEY,
+        author          text,
+        title           text,
+        sql             text
 );
 CREATE TABLE permission (
-	user		text,		-- 
-	action		text		-- allowable activity
+        user            text,           -- 
+        action          text            -- allowable activity
 );
 CREATE TABLE component (
-	 name		 text PRIMARY KEY,
-	 owner		 text
+         name            text PRIMARY KEY,
+         owner           text
 );
 CREATE TABLE milestone (
-	 name		 text PRIMARY KEY,
-	 time		 integer
+         name            text PRIMARY KEY,
+         time            integer
 );
 CREATE TABLE version (
-	 name		 text PRIMARY KEY,
-	 time		 integer
+         name            text PRIMARY KEY,
+         time            integer
 );
 CREATE TABLE wiki (
-	 name		 text,
-	 version		 integer,
-	 time		 integer,
-	 author		 text,
-	 ipnr		 text,
-	 locked		 integer,
-	 text		 text,
-	 UNIQUE(name,version)
+         name            text,
+         version                 integer,
+         time            integer,
+         author          text,
+         ipnr            text,
+         locked          integer,
+         text            text,
+         UNIQUE(name,version)
 );
 CREATE INDEX node_change_idx ON node_change(rev);
-CREATE INDEX ticket_change_idx	ON ticket_change(ticket, time);
-CREATE INDEX wiki_idx		ON wiki(name,version);
+CREATE INDEX ticket_change_idx  ON ticket_change(ticket, time);
+CREATE INDEX wiki_idx           ON wiki(name,version);
 """
 
     # Default data for database
@@ -242,10 +242,10 @@ CREATE INDEX wiki_idx		ON wiki(name,version);
 
     def run(self):
         self.interactive = 1
-        print 'Welcome to trac-admin %(ver)s\n' 			\
-              'Interactive Trac adminstration console.\n' 		\
-              '%(copy)s\n\n' 					\
-              "Type:  '?' or 'help' for help on commands.\n" % 	\
+        print 'Welcome to trac-admin %(ver)s\n'                         \
+              'Interactive Trac adminstration console.\n'               \
+              '%(copy)s\n\n'                                    \
+              "Type:  '?' or 'help' for help on commands.\n" %  \
               {'ver':__version__,'copy':__copyright__}
         while 1:
             try:
@@ -307,18 +307,18 @@ CREATE INDEX wiki_idx		ON wiki(name,version);
         if hasattr(shlex, 'split'):
             toks = shlex.split(argstr)
         else:
-	    def my_strip(s, c):
-		"""string::strip in python2.1 doesn't support arguments"""
-		i = j = 0
-		for i in range(len(s)):
-		    if not s[i] in c:
-			break
-		for j in range(len(s), 0, -1):
-		    if not s[j-1] in c:
-			break
-		return s[i:j]
-	
-	    lexer = shlex.shlex(StringIO.StringIO(argstr))
+            def my_strip(s, c):
+                """string::strip in python2.1 doesn't support arguments"""
+                i = j = 0
+                for i in range(len(s)):
+                    if not s[i] in c:
+                        break
+                for j in range(len(s), 0, -1):
+                    if not s[j-1] in c:
+                        break
+                return s[i:j]
+        
+            lexer = shlex.shlex(StringIO.StringIO(argstr))
             lexer.wordchars = lexer.wordchars + ".,_/"
             toks = []
             while 1:

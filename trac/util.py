@@ -51,7 +51,7 @@ def enum_selector (sql, name, selected=None,default_empty=0):
     if default_empty:
         out.write ('<option></option>')
     while 1:
-	row = cursor.fetchone()
+        row = cursor.fetchone()
         if not row:
             break
         if selected == row[0]:
@@ -65,11 +65,11 @@ def enum_selector (sql, name, selected=None,default_empty=0):
 def escape(text, param={'"':'&#34;'}):
     """Escapes &, <, > and \""""
     if not text:
-	return ''
+        return ''
     elif type(text) is StringType:
-	return saxutils.escape(text, param)
+        return saxutils.escape(text, param)
     else:
-	return text
+        return text
 
 def get_first_line(text, maxlen):
     """
@@ -124,7 +124,7 @@ def sql_to_hdf (sql, hdf, prefix):
 #    cursor.execute ('SELECT type, name, value FROM enum ORDER BY type,value,name')
     idx = 0
     while 1:
-	row = cursor.fetchone()
+        row = cursor.fetchone()
         if not row:
             break
         hdf.setValue('%s.%d.name' % (prefix, idx), row[0])

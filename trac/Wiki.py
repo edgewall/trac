@@ -170,8 +170,8 @@ class OneLinerFormatter(CommonFormatter):
     _compiled_rules = re.compile('(?:' + string.join(_rules, '|') + ')')
 
     def format(self, text, out):
-	if not text:
-	    return ''
+        if not text:
+            return ''
         self.out = out
         self._open_tags = []
         
@@ -330,15 +330,15 @@ class Formatter(CommonFormatter):
             # Handle Horizontal ruler
             elif line[0:4] == '----':
                 self.close_paragraph()
-		self.close_indentation()
-		self.close_list()
+                self.close_indentation()
+                self.close_list()
                 self.out.write('<hr />\n')
                 continue
             # Handle new paragraph
             elif line == '':
                 self.close_paragraph()
-		self.close_indentation()
-		self.close_list()
+                self.close_indentation()
+                self.close_list()
                 continue
 
             self.in_list_item = 0
@@ -428,10 +428,10 @@ class Wiki(Module):
         
         cursor.execute ('SELECT DISTINCT name FROM wiki ORDER BY name')
         i = 0
-	while 1:
-	    row = cursor.fetchone()
-	    if row == None:
-		break
+        while 1:
+            row = cursor.fetchone()
+            if row == None:
+                break
             self.cgi.hdf.setValue('wiki.title_index.%d.title' % i, row[0])
             self.cgi.hdf.setValue('wiki.title_index.%d.href' % i,
                                   href.wiki(row[0]))
@@ -443,11 +443,11 @@ class Wiki(Module):
         cursor.execute ('SELECT version, time, author, ipnr FROM wiki '
                         'WHERE name=%s ORDER BY version DESC', pagename)
         i = 0
-	while 1:
-	    row = cursor.fetchone()
-	    if not row:
-		break
-		   #        for row in cursor:
+        while 1:
+            row = cursor.fetchone()
+            if not row:
+                break
+                   #        for row in cursor:
             elif i==0:
                 self.cgi.hdf.setValue('wiki.history', '1')
 

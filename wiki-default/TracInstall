@@ -16,7 +16,7 @@ The following dependencies have to be installed:
 
 == Installing Trac ==
 {{{
-	$ python ./setup.py install
+        $ python ./setup.py install
 }}}
 
 This will byte-compile the python source code and install it in the {{{site-packages}}} directory
@@ -32,7 +32,7 @@ is required.
 A new trac database can be created like this:
 
 {{{
-	$ trac-admin /path/to/mydatabase.db initdb
+        $ trac-admin /path/to/mydatabase.db initdb
 }}}
 
 NOTE: The database file have to be located in a directory where the web server
@@ -53,15 +53,15 @@ Finally adjust the filenames and add this config snippet to your web server:
 Alias /trac/ "/where/you/put/trac/htdocs/"
 # Trac need to know where the database is located
 <Location "/cgi-bin/trac.cgi">
-	SetEnv TRAC_DB "/somewhere/myproject.db"
+        SetEnv TRAC_DB "/somewhere/myproject.db"
 </Location>
 
 # You need this to allow users to authenticate
 <Location "/cgi-bin/trac.cgi/login">
-	AuthType Basic
-	AuthName "trac"
-	AuthUserFile /somewhere/trac.htpasswd
-	Require valid-user
+        AuthType Basic
+        AuthName "trac"
+        AuthUserFile /somewhere/trac.htpasswd
+        Require valid-user
 </location>
 }}}
 
@@ -77,6 +77,4 @@ are only able to see/use a subset of all the features provided by Trac.
 Please read TracPermissions on how to grant additional privileges to authenticated users.
 
 Enjoy!
-
-
 

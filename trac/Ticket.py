@@ -191,10 +191,10 @@ class Ticket (Module):
         curr_date   = 0
         comment = None
         idx = 0
-	while 1:
-	    row = cursor.fetchone()
-	    if row == None:
-		break
+        while 1:
+            row = cursor.fetchone()
+            if row == None:
+                break
 
             date   = int(row[0])
             author = row[1] or ''

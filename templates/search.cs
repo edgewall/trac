@@ -25,15 +25,15 @@
       <?cs /if ?>
       <?cs if item.type == 1 ?>
       <td>
-	Changeset [<a href="<?cs var:item.changeset_href ?>"><?cs var:item.data ?></a>] by <?cs var:item.author ?>: <?cs var:item.message ?>
+        Changeset [<a href="<?cs var:item.changeset_href ?>"><?cs var:item.data ?></a>] by <?cs var:item.author ?>: <?cs var:item.message ?>
       </td>
       <?cs elif item.type == 2 ?>
       <td>
-	Ticket <a href="<?cs var:item.ticket_href ?>">#<?cs var:item.data ?></a> by <?cs var:item.author ?>: <?cs var:item.message ?>
+        Ticket <a href="<?cs var:item.ticket_href ?>">#<?cs var:item.data ?></a> by <?cs var:item.author ?>: <?cs var:item.message ?>
       </td>
       <?cs elif item.type == 3 ?>
       <td>
-	Wiki page <a href="<?cs var:item.wiki_href ?>"><?cs var:item.data ?></a> by <?cs var:item.author ?>
+        Wiki page <a href="<?cs var:item.wiki_href ?>"><?cs var:item.data ?></a> by <?cs var:item.author ?>
       </td>
       <?cs /if ?>
     </tr>

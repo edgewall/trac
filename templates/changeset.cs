@@ -28,17 +28,17 @@
       <?cs each:item = changeset.changes ?>
         <li>
           <?cs if item.change == "A" ?>
-	    <span  class="chg-file-add"> </span>
+            <span  class="chg-file-add"> </span>
             <a href="<?cs var:item.log_href?>"><?cs var:item.name ?></a>
             <span class="chg-file-comment">(added)</span>
           <?cs elif item.change == "M" ?>
-	    <span  class="chg-file-mod"> </span>
+            <span  class="chg-file-mod"> </span>
             <a href="<?cs var:item.log_href?>"><?cs var:item.name ?></a>
             <span class="chg-file-comment">(modified)</span>
           <?cs elif item.change == "D" ?>
-	    <span  class="chg-file-rem"> </span>
+            <span  class="chg-file-rem"> </span>
             <?cs var:item.name ?>
-  	  <span class="chg-file-comment">(deleted)</span>
+          <span class="chg-file-comment">(deleted)</span>
           <?cs /if ?>
         </li>
       <?cs /each ?>

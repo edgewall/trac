@@ -3,7 +3,7 @@ recursive-include cgi-bin *
 recursive-include htdocs *
 recursive-include doc *
 recursive-include wiki-default *
-recursive-include templates *.cs README
+recursive-include templates *.cs README RELEASE
 prune doc/trac-guide
 prune .svn 
 prune */.svn

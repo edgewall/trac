@@ -148,7 +148,7 @@ class Report (Module):
 
         # Convert the header info to HDF-format
         idx = 0
-	for x in cols:
+        for x in cols:
             self.cgi.hdf.setValue('report.headers.%d.title' % idx, x[0])
             idx = idx + 1
 

@@ -15,15 +15,15 @@
     <authorgroup>
 
       <author>
-	<firstname>Daniel</firstname>
-	<surname>Lundin</surname>
-	<email>daniel@edgewall.com</email>
+        <firstname>Daniel</firstname>
+        <surname>Lundin</surname>
+        <email>daniel@edgewall.com</email>
       </author>
 
       <author>
-	<firstname>Jonas</firstname>
-	<surname>Borgström</surname>
-	<email>jonas@edgewall.com</email>
+        <firstname>Jonas</firstname>
+        <surname>Borgström</surname>
+        <email>jonas@edgewall.com</email>
       </author>
 
     </authorgroup>

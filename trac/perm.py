@@ -82,8 +82,8 @@ def cache_permissions ():
     for row in rs.row_list:
         action = row[0]
         if meta_permission.has_key(action):
-	    for perm in meta_permission[action]:
-		perm_cache[perm] = 1
+            for perm in meta_permission[action]:
+                perm_cache[perm] = 1
 #            map (lambda action: perm_cache.__setitem__(action, 1),
 #                 meta_permission[action])
         perm_cache[action] = 1

@@ -96,8 +96,8 @@
              <?cs var:item.created_rev ?>
            <?cs else ?>
              <a class="block-link" href="<?cs var:item.rev_href ?>">
-	       <?cs var:item.created_rev ?>
-	     </a>
+               <?cs var:item.created_rev ?>
+             </a>
            <?cs /if ?>
          </td>
          <td class="br-date-col">
