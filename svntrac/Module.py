@@ -1,7 +1,7 @@
 # svntrac
 #
-# Copyright (C) 2003 Xyche Software
-# Copyright (C) 2003 Jonas Borgström <jonas@xyche.com>
+# Copyright (C) 2003 Edgewall Software
+# Copyright (C) 2003 Jonas Borgström <jonas@edgewall.com>
 #
 # svntrac is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License as
@@ -17,7 +17,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #
-# Author: Jonas Borgström <jonas@xyche.com>
+# Author: Jonas Borgström <jonas@edgewall.com>
 
 import os
 import StringIO
@@ -34,7 +34,7 @@ class Module:
 
         self.namespace = {}
         self.namespace['title'] = ''
-        self.namespace['svntrac_url'] = 'http://svntrac.xyche.com/'
+        self.namespace['svntrac_url'] = 'http://svntrac.edgewall.com/'
         self.namespace['htdocs_location'] = config['general']['htdocs_location']
         self.namespace['cgi_name'] = get_cgi_name()
 
@@ -49,7 +49,7 @@ class Module:
         theme_dir = self.config['general']['theme_dir']
         tmpl_filename = os.path.join (theme_dir, self.template_name)
 
-        self.namespace['toolbar'] = self.toolbar.render ()
+        self.namespace['toolbar'] = self.toolbar.render (self._name)
 
         header_tmpl = os.path.join (theme_dir, 'header.template')
         footer_tmpl = os.path.join (theme_dir, 'footer.template')

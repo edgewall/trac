@@ -1,7 +1,7 @@
 # svntrac
 #
-# Copyright (C) 2003 Xyche Software
-# Copyright (C) 2003 Jonas Borgström <jonas@xyche.com>
+# Copyright (C) 2003 Edgewall Software
+# Copyright (C) 2003 Jonas Borgström <jonas@edgewall.com>
 #
 # svntrac is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License as
@@ -17,7 +17,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #
-# Author: Jonas Borgström <jonas@xyche.com>
+# Author: Jonas Borgström <jonas@edgewall.com>
 
 import os
 import sys
@@ -67,6 +67,7 @@ def main():
     module = __import__(module_name, globals(),  locals(), [])
     constructor = getattr(module, constructor_name)
     module = constructor(config, args, pool)
+    module._name = mode
 
     verify_authentication(args)
     cache_permissions()

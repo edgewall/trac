@@ -3,11 +3,10 @@ body
   background-color: white;
 }
 
-body, table
-{
-  font-family: helvetica,arial;
-  /*font-size: 12pt;*/
-}
+body, p, td, div {
+  font: normal 12pt Verdana, Verdana, Helvetica, sans-serif;
+  color: black;
+} 
 
 pre.file-content
 {
@@ -195,27 +194,32 @@ a:link, a:visited
 
 a:active { background-color: pink; }
 
+
 /*
  * Navigation bar
  */
 
-#page-topbar,.topbar
-{
+#page-topbar {
   font: 9px Verdana, Helvetica, sans-serif;
-  color: #ddd; 
-  background-color: #900;                   
-  border: solid 1px #600;
+  color: #999; 
+  background-color: #eee;                   
+  border: solid 1px #999;
   border-width: 0 0 1px 0;
   white-space: nowrap;
+  padding: 2px 5px;
+}
+
+a.topbar-link,a.topbar-link-active { 
+  font: 9px Verdana, Helvetica, sans-serif;
+  color: #666; 
+  text-decoration: none;
+  font-weight: bold; 
   padding: 0px 5px;
 }
 
-a.topbar-link
-{ 
-  color: #ccc; 
-  text-decoration: none;
-  font-weight: bold; 
-  padding: 0;
+a.topbar-link-active { 
+  background-color: #ccc;
+  color: #b00;
 }
 
 
@@ -223,30 +227,40 @@ a.topbar-link
  * Navigation bar
  */
 
-#page-navbar
-{
-  background-color: black;                   
-  border: solid 1px #900;
-  border-width: 1px 0 0 0;
-  padding: 2px 5px;
-  margin: 0;
+#page-navbar {
+  background-color: #900;                   
+  border: solid 1px #300;
+  border-width: 1px 0 1px 0;
+ 
+//  white-space: nowrap;
+  padding: 0px 5px;
+  margin: 0 0 0 0;
 }
 
-.navbar
-{ 
+.navbar { 
   color: white;
   font: 11px Verdana, Helvetica, sans-serif;
-  }
+}
 
-a.navbar-link,a.navbar-link-active
-{
+a.navbar-link,a.navbar-link-active {
   color: white;
   text-decoration: none;
   font-weight: bold; 
-  padding: 0 5px;
+  padding: 0 10px;
+  border-style: solid;
+  border-color: #fff;
+  border-width: 0 1px 0 0;
+  margin: 0;
 }
 
-a.navbar-link-active { background-color: #880000; }
+a.navbar-link-active { 
+  background-color: #fff;                    
+  color: black;
+}
+
+
+
+
 
 
 #page-header

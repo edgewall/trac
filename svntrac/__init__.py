@@ -1,14 +1,14 @@
 """
-Xyche Software svntrac
+Edgewall Software SVNTRAC
 
-U{http://svntrac.xyche.com/}
+U{http://svntrac.edgewall.com/}
 
-@author: Jonas Borgström <jonas@xyche.com>
+@author: Jonas Borgström <jonas@edgewall.com>
 """
 __docformat__ = 'epytext en'
 
-__url__ = 'http://svntrac.xyche.com/'
-__copyright__ = '(C) 2003 Xyche Software'
+__url__ = 'http://svntrac.edgewall.com/'
+__copyright__ = '(C) 2003 Edgewall Software'
 __license__ = 'GNU Public License'
 __version__ = '0.0.1'
 

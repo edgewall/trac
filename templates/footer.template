@@ -2,12 +2,12 @@
   <table id="page-footer" width="100%%" bgcolor="#eeeeee">
     <tr>
       <td align="left" class="footer">
-	Email: <a href="mailto:info@xyche.com">info@xyche.com</a>
+	Email: <a href="mailto:info@edgewall.com">info@edgewall.com</a>
 	<br />
-	  <a href="/contact/">Contact information</a>
+	  <a href="http://www.edgewall.com/contact/">Contact information</a>
       </td>
       <td align="right" class="footer">Copyright (c)2003 
-	<a href="http://www.xyche.com/">Xyche Software</a> . 
+	<a href="http://www.edgewall.com/">Edgewall Software</a> . 
 	All rights reserved.<br />
       </td>
     </tr>

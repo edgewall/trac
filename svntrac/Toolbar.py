@@ -1,7 +1,7 @@
 # svntrac
 #
-# Copyright (C) 2003 Xyche Software
-# Copyright (C) 2003 Jonas Borgström <jonas@xyche.com>
+# Copyright (C) 2003 Edgewall Software
+# Copyright (C) 2003 Jonas Borgström <jonas@edgewall.com>
 #
 # svntrac is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License as
@@ -17,7 +17,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #
-# Author: Jonas Borgström <jonas@xyche.com>
+# Author: Jonas Borgström <jonas@edgewall.com>
 
 import StringIO
 from util import *
@@ -52,37 +52,38 @@ class Toolbar:
     def enable_timeline (self, enable=1):
         self.timeline = enable
     
-    def render (self):
+    def render (self, mode):
+        def link(text, href, active=0):
+            if active:
+                return '<a href="%s" class="navbar-link-active">%s</a>' \
+                       % (href, text)
+            else:
+                return '<a href="%s" class="navbar-link">%s</a>' % (href, text)
+        
         out = StringIO.StringIO()
-        out.write ('<table width="100%" cellspacing="0" cellpadding="0"><tr><td class="navbar" bgcolor="black">')
-        out.write ('<a href="%s" class="navbar-link">wiki</a> |' % href.wiki())
+        out.write ('<table width="100%" cellspacing="0" cellpadding="0" id="page-navbar" cellpadding="10" bgcolor="black" background="/svntraccommon/navbar_gradient.png"><tr><td class="navbar">')
+        out.write (link('Wiki', href.wiki(), mode == 'wiki'))
 
         if perm.has_permission (perm.BROWSER_VIEW):
-            out.write ('<a href="%s" class="navbar-link">browse</a> |'
-                       % href.browser(self.browser_path))
+            out.write (link('Browse', href.browser(self.browser_path),
+                            mode == 'browser'))
         if perm.has_permission (perm.TIMELINE_VIEW):
-            out.write ('<a href="%s" class="navbar-link">timeline</a> | '
-                       % href.timeline())
+            out.write (link('Timeline', href.timeline(), mode == 'timeline'))
             
         if perm.has_permission (perm.REPORT_VIEW):
-            out.write ('<a href="%s" class="navbar-link">reports</a> |' % href.report())
+            out.write (link('Reports', href.report(), mode == 'report'))
         
         if perm.has_permission (perm.TICKET_CREATE):
-            out.write ('<a href="%s" class="navbar-link">new ticket</a> |' % href.newticket())
+            out.write (link('New Ticket', href.newticket(),
+                            mode == 'newticket'))
 
-        if self.log:
-            out.write ('<a href="%s" class="navbar-link">log</a> |'
-                       % href.log(self.log_path))
-        if self.changeset:
-            out.write ('<a href="%s" class="navbar-link">change set</a> |'
-                       % href.changeset(self.changeset_rev))
-            
-        out.write ('</td><td align="right" class="navbar" bgcolor="black">')
+        out.write ('</td><td align="right" class="navbar">')
         authname = get_authname ()        
         if authname == 'anonymous':
-            out.write ('<a href="%s" class="navbar-link">login</a>' % href.login())
+            out.write (link('Login', href.login()))
         else:
-            out.write ('logged in as %s | <a href="%s" class="navbar-link">logout</a>' % (authname, href.logout()))
+            out.write ('logged in as %s |' % authname)
+            out.write (link('Logout', href.logout()))
         out.write ('</td>')
         out.write ('</td></tr></table>')
         return out.getvalue()
