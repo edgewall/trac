@@ -110,7 +110,7 @@ def parse_path_info(path_info):
         args['mode'] = 'changeset'
         args['rev'] = match.group(1)
         return args
-    match = re.search('^/attachment/([a-zA-Z_]+)/([0-9]+)/(.*)/?', path_info)
+    match = re.search('^/attachment/([a-zA-Z_]+)/([^/]+)(?:/(.*)/?)?', path_info)
     if match:
         args['mode'] = 'attachment'
         args['type'] = match.group(1)
@@ -157,7 +157,6 @@ def module_factory(args, env, db, req):
     module.db = db
     module.perm = perm.PermissionCache(module.db, req.authname)
     module.perm.add_to_hdf(req.hdf)
-#    module.href = href
     # Only open the subversion repository for the modules that really
     # need it. This saves us some precious time.
     if need_svn:
@@ -177,7 +176,14 @@ def open_environment():
               'Missing environment variable "TRAC_ENV". Trac ' \
               'requires this variable to point to a valid Trac Environment.'
         
-    return Environment.Environment(env_path)
+    env = Environment.Environment(env_path)
+    version = env.get_version()
+    if version < Environment.db_version:
+        raise TracError('The Trac Environment needs to be upgraded. '
+                        'Run "trac-admin %s upgrade"' % env_path)
+    elif version > Environment.db_version:
+        raise TracError('Unknown Trac Environment version (%d).' % version)
+    return env
 
 class RedirectException(Exception):
     pass

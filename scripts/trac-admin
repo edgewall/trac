@@ -900,16 +900,16 @@ class TracAdmin(cmd.Cmd):
             do_backup = 0
         db = self.db_open()
         try:
-            curr = db.get_version()
-            latest = trac.db.__db_version__
+            curr = self.__env.get_version()
+            latest = trac.db_default.db_version
             if  curr < latest:
-                print "Upgrade: Upgrading %s to db version %i" % (db.db_name, latest)
+                print "Upgrade: Upgrading %s to db version %i" % (self.envname, latest)
                 if do_backup:
                     print "Upgrade: Backup of old database saved in " \
-                          "%s.%i.bak" % (db.db_name, curr)
+                          "%s/db/trac.db.%i.bak" % (self.envname, curr)
                 else:
                     print "Upgrade: Backup disabled. Non-existant warranty voided."
-                db.upgrade(do_backup)
+                self.__env.upgrade(do_backup)
             else:
                 print "Upgrade: Database is up to date, no upgrade necessary."
         except Exception, e:

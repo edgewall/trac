@@ -116,9 +116,22 @@
                  <?cs var:wiki.page_html ?>
                 </div>
             </div>
+          <?cs if $wiki.attachments.0.name ?>
+           <h3 id="tkt-changes-hdr">Attachments</h3>
+           <ul class="tkt-chg-list">
+           <?cs each:a = wiki.attachments ?>
+             <li class="tkt-chg-change"><a href="<?cs var:a.href ?>">
+             <?cs var:a.name ?></a> (<?cs var:a.size ?>) -
+             <?cs var:a.descr ?>,
+             added by <?cs var:a.author ?> on <?cs var:a.time ?>.</li>
+           <?cs /each ?>
+         </ul>
+         <?cs /if ?>         
             <?cs if wiki.action == "view" && trac.acl.WIKI_MODIFY ?>
               <p>
+		<a class="fake-button" href="<?cs var:cgi_location?>/attachment/wiki/<?cs var:wiki.name ?>">Add attachment</a>
               <a class="fake-button" href="<?cs var:wiki_current_href?>?edit=yes">Edit this page</a>
+	      <div style="clear: both" />
               </p>
             <?cs /if ?>
           <?cs /if ?>

@@ -71,3 +71,9 @@ li.tkt-chg-change { margin: 0; }
 #nt-right { margin-left: 40%; }
 #nt-buttons {  padding-top: .5em; text-align: right; }
 
+tr.attachment-listhdr { border-bottom: 1px solid #d7d7d7; }
+tr.attachment-listhdr th {
+  text-align: left;
+  padding: 0 1em 0 0;
+  font-size: 13px;
+}

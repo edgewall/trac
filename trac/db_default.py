@@ -21,7 +21,7 @@
 
 
 # Database version identifier. Used for automatic upgrades.
-db_version = 2
+db_version = 3
 
 def __mkreports(reps):
     """Utility function used to create report data in same syntax as the
@@ -137,6 +137,18 @@ CREATE TABLE wiki (
          comment         text,
          UNIQUE(name,version)
 );
+CREATE TABLE attachment (
+         type            text,
+         id              text,
+         filename        text,
+         size            integer,
+         time            integer,
+         description     text,
+         author          text,
+         ipnr            text,
+         UNIQUE(type,id,filename)
+);
+
 CREATE INDEX node_change_idx ON node_change(rev);
 CREATE INDEX ticket_change_idx  ON ticket_change(ticket, time);
 CREATE INDEX wiki_idx           ON wiki(name,version);
@@ -396,6 +408,7 @@ default_config = \
   ('header_logo', 'alt', 'Trac'),
   ('header_logo', 'width', '236'),
   ('header_logo', 'height', '73'),
+  ('attachment', 'max_size', '262144'),
   ('notification', 'smtp_enabled', 'false'),
   ('notification', 'smtp_server', 'localhost'),
   ('notification', 'smtp_replyto', 'trac@localhost'))

@@ -159,6 +159,15 @@ def hex_entropy(bytes=32):
     import random
     return md5.md5(str(random.random() + time.time())).hexdigest()[:bytes]
 
+def pretty_size(size):
+    if size < 1024:
+        return '%d bytes' % size
+    elif size < 1024 * 1024:
+        return '%d kB' % (size / 1024)
+    else:
+        return '%d MB' % (size / 1024 / 1024)
+
+
 class TracError(Exception):
     def __init__(self, message, title=None, show_traceback=0):
         Exception.__init__(self, message)

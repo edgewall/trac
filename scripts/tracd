@@ -315,7 +315,8 @@ def main():
         # naming convention: /some/path/project.whatever
         auth = auths.get(project, None)
         env = Environment(path)
-        # FIXME: this only needs to be done once
+        # Upgrade the database schema if needed
+        env.upgrade(backup=1)
         env.href = Href('/' + project)
         projects[project] = env
         projects[project].set_config('trac', 'htdocs_location',

@@ -81,35 +81,83 @@ class FileCommon(Module):
         self.display_raw()
     
 class Attachment(FileCommon):
+    def get_attachment_parent_link(self):
+        if self.attachment_type == 'ticket':
+            return ('#' + self.attachment_id,
+                    self.env.href.ticket(int(self.attachment_id)))
+        elif self.attachment_type == 'wiki':
+            return (self.attachment_id,
+                    self.env.href.wiki(self.attachment_id))
+        assert 0
+    
     def render(self):
         FileCommon.render(self)
-        
+        self.view_form = 0
         self.attachment_type = self.args.get('type', None)
         self.attachment_id = self.args.get('id', None)
-        self.filename = os.path.basename(self.args.get('filename', None))
+        self.filename = self.args.get('filename', None)
+        if self.filename:
+            self.filename = os.path.basename(self.filename)
 
-        self.path = os.path.join(self.env.get_attachments_dir(),
-                                 self.attachment_type,
-                                 self.attachment_id,
-                                 self.filename)
-        try:
-            f = open(self.path, 'rb')
-        except IOError:
-            raise util.TracError('Attachment not found')
+        if not self.attachment_type or not self.attachment_id:
+            raise util.TracError('Unknown request')
 
-        stat = os.fstat(f.fileno())
-        self.length = stat[6]
-        self.last_modified = time.strftime("%a, %d %b %Y %H:%M:%S GMT",
-                                      time.gmtime(stat[8]))
-        self.read_func = lambda x: f.read(x)
+        if self.filename and len(self.filename) > 0:
+            # Send an attachment
+            perm_map = {'ticket':perm.TICKET_VIEW, 'wiki': perm.WIKI_VIEW}
+            self.perm.assert_permission (perm_map[self.attachment_type])
+        
+            self.path = os.path.join(self.env.get_attachments_dir(),
+                                     self.attachment_type,
+                                     self.attachment_id,
+                                     self.filename)
+            try:
+                f = open(self.path, 'rb')
+            except IOError:
+                raise util.TracError('Attachment not found')
+
+            stat = os.fstat(f.fileno())
+            self.length = stat[6]
+            self.last_modified = time.strftime("%a, %d %b %Y %H:%M:%S GMT",
+                                               time.gmtime(stat[8]))
+            self.read_func = lambda x: f.read(x)
+            return
+
+        if self.args.has_key('description') and \
+               self.args.has_key('author') and \
+               self.args.has_key('attachment') and \
+               hasattr(self.args['attachment'], 'file'):
+            
+            # Create a new attachment
+            if not self.attachment_type in ['ticket', 'wiki']:
+                raise util.TracError('Unknown attachment type')
+            
+            perm_map = {'ticket':perm.TICKET_MODIFY, 'wiki': perm.WIKI_MODIFY}
+            self.perm.assert_permission (perm_map[self.attachment_type])
+            
+            self.env.create_attachment(self.db,
+                                       self.attachment_type,
+                                       self.attachment_id,
+                                       self.args['attachment'],
+                                       self.args['description'],
+                                       self.args['author'],
+                                       self.req.remote_addr)
+            text, link = self.get_attachment_parent_link()
+            self.req.redirect(link)
+        else:
+            # Display an attachment upload form
+            self.view_form = 1
 
     def display(self):
+        text, link = self.get_attachment_parent_link()
+        self.req.hdf.setValue('file.attachment_parent', text)
+        self.req.hdf.setValue('file.attachment_parent_href', link)
+        if self.view_form:
+            self.req.hdf.setValue('attachment.type', self.attachment_type)
+            self.req.hdf.setValue('attachment.id', self.attachment_id)
+            self.req.display('attachment.cs')
+            return
         self.req.hdf.setValue('file.filename', self.filename)
-        if self.attachment_type == 'ticket':
-            self.req.hdf.setValue('file.attachment_parent',
-                                  '#' + self.attachment_id)
-            self.req.hdf.setValue('file.attachment_parent_href',
-                                  self.env.href.ticket(int(self.attachment_id)))
         FileCommon.display(self)
 
 

@@ -660,7 +660,6 @@ class Wiki(Module):
         
         filter.close()
         self.req.hdf.setValue('wiki.diff_output', out.getvalue())
-            
         
     def render(self):
         name = self.args.get('page', 'WikiStart')
@@ -672,6 +671,7 @@ class Wiki(Module):
 
         self.generate_history(name)
 
+        self.req.hdf.setValue('wiki.name', name)
         if name == 'TitleIndex':
             self.generate_title_index()
             self.req.hdf.setValue('title', 'Title Index (wiki)')
@@ -702,6 +702,8 @@ class Wiki(Module):
                 self.req.hdf.setValue('title', '')
             else:
                 self.req.hdf.setValue('title', name + ' (wiki)')
+            self.env.get_attachments_hdf(self.db, 'wiki', name, self.req.hdf,
+                                         'wiki.attachments')
 
         self.page = Page(name, version, self.perm, self.db,
                     self.req.authname, self.req.remote_addr)

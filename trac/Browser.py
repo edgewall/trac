@@ -82,7 +82,7 @@ class Browser(Module):
                 'date'       : date,
                 'date_seconds' : date_seconds,
                 'is_dir'     : is_dir,
-                'size'       : self.pretty_size(size),
+                'size'       : pretty_size(size),
                 'size_bytes' : size }
             if is_dir:
                 item['browser_href'] = self.env.href.browser(fullpath)
@@ -93,14 +93,6 @@ class Browser(Module):
             info.append(item)
         return info
             
-    def pretty_size(self, size):
-        if size < 1024:
-            return '%d bytes' % size
-        elif size < 1024 * 1024:
-            return '%d kb' % (size / 1024)
-        else:
-            return '%d MB' % (size / 1024 / 1024)
-        
     def generate_path_links(self, path):
         list = path[1:].split('/')
         path = '/'

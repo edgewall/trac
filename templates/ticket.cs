@@ -60,14 +60,19 @@
  <hr class="hide"/>
 </div>
 
-<?cs if ticket.attachments.0.href ?>
 <h2 id="tkt-changes-hdr">Attachments</h2>
-<div id="tkt-attachments">
-  <?cs each:attachment = ticket.attachments ?>
-    <a href="<?cs var:attachment.href ?>"><?cs var:attachment.name ?></a>&nbsp;
+<div id="tkt-changes">
+  <ul class="tkt-chg-list">
+  <?cs each:a = ticket.attachments ?>
+    <li class="tkt-chg-change"><a href="<?cs var:a.href ?>">
+        <?cs var:a.name ?></a> (<?cs var:a.size ?>) -
+        <?cs var:a.descr ?>,
+        added by <?cs var:a.author ?> on <?cs var:a.time ?>.</li>
   <?cs /each ?>
+  </ul>
+<a class="fake-button" href="<?cs var:cgi_location?>/attachment/ticket/<?cs var:ticket.id ?>">Add attachment</a>
 </div>
-<?cs /if ?>
+
 
 <?cs if ticket.changes.0.time ?>
   <h2 id="tkt-changes-hdr">Changelog</h2>
@@ -151,12 +156,6 @@ onfocus="document.getElementById('comment').focus()">Add/Change
             rows="10" cols="78" style="width: 97%; max-width: 694px"></textarea>
  <br />&nbsp;
   </div>
-
- <div class="tkt-prop">
-   <label for="attachment">Add Attachment:</label><br/>
-   <input type="file" name="attachment"/>
-   </div>
- <br/>
 
  <fieldset>
    <legend>Change Properties</legend>

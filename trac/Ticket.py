@@ -153,15 +153,6 @@ class Ticket (Module):
                 cursor.execute ('UPDATE ticket SET %s=%s WHERE id=%s',
                                 name, new[name], id)
                 changed = 1
-        if new.has_key('attachment'):
-            attachment = new['attachment']
-            if hasattr(attachment, 'filename') and attachment.filename:
-                self.env.create_attachment('ticket', str(id), attachment)
-                cursor.execute ('INSERT INTO ticket_change '
-                                '(ticket,time,author,field,oldvalue,newvalue) '
-                                "VALUES (%s, %s, %s, 'attachment', '', %s)",
-                                id, now, author, attachment.filename)
-                changed = 1
         if new.has_key('comment') and len(new['comment']) > 0:
             cursor.execute ('INSERT INTO ticket_change '
                             '(ticket,time,author,field,oldvalue,newvalue) '
@@ -250,21 +241,13 @@ class Ticket (Module):
             if field == 'comment':
                 hdf.setValue('ticket.changes.%d.new' % idx,
                              wiki_to_html(new, self.req.hdf, self.env))
-            elif field == 'attachment':
-                tag = '<a href="%s">%s</a>' % (self.env.href.attachment('ticket', str(id), new), new)
-                hdf.setValue('ticket.changes.%d.new' % idx, tag)
             else:
                 hdf.setValue('ticket.changes.%d.new' % idx, new)
             idx = idx + 1
             
         # List attached files
-        files = self.env.get_attachments('ticket', str(id))
-        idx = 0
-        for file in files:
-            hdf.setValue('ticket.attachments.%d.name' % idx, file)
-            hdf.setValue('ticket.attachments.%d.href' % idx,
-                         self.env.href.attachment('ticket', str(id), file))
-            idx += 1
+        self.env.get_attachments_hdf(self.db, 'ticket', str(id), self.req.hdf,
+                                     'ticket.attachments')
 
     def render (self):
         action = self.args.get('action', 'view')

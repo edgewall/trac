@@ -24,14 +24,18 @@
 
 import os
 import sys
+import time
 import shutil
 import ConfigParser
 
+import util
 import db_default
 import Logging
 import Mimeview
 
 import sqlite
+
+db_version = db_default.db_version
 
 class Environment:
     """
@@ -172,19 +176,50 @@ class Environment:
     def get_attachments_dir(self):
         return os.path.join(self.path, 'attachments')
 
-    def get_attachments(self, module, id):
-        try:
-            return os.listdir(os.path.join(self.get_attachments_dir(), module, id))
-        except OSError:
-            return []
+    def get_attachments(self, cnx, type, id):
+        cursor = cnx.cursor()
+        cursor.execute('SELECT filename,description,type,size,time,author,ipnr '
+                       'FROM attachment '
+                       'WHERE type=%s AND id=%s ORDER BY time', type, id)
+        return cursor.fetchall()
     
-    def create_attachment(self, module, id, attachment):
-        filename = os.path.basename(attachment.filename)
-        dir = os.path.join(self.get_attachments_dir(), module, id)
+    def get_attachments_hdf(self, cnx, type, id, hdf, prefix):
+        from Wiki import wiki_to_oneliner
+        files = self.get_attachments(cnx, type, id)
+        idx = 0
+        for file in files:
+            p = '%s.%d' % (prefix, idx)
+            hdf.setValue(p + '.name', file['filename'])
+            hdf.setValue(p + '.descr', wiki_to_oneliner(file['description'], hdf, self))
+            hdf.setValue(p + '.author', file['author'])
+            hdf.setValue(p + '.ipnr', file['ipnr'])
+            hdf.setValue(p + '.size', util.pretty_size(file['size']))
+            hdf.setValue(p + '.time',
+                         time.strftime('%c', time.localtime(file['time'])))
+            hdf.setValue(p + '.href',
+                         self.href.attachment(type, id, file['filename']))
+            idx += 1
+
+    
+    def create_attachment(self, cnx, type, id, attachment,
+                          description, author, ipnr):
+        # Maximum attachment size (in bytes)
+        max_size = int(self.get_config('attachment', 'max_size', '262144'))
+        stat = os.fstat(attachment.file.fileno())
+        if stat[6] > max_size:
+            raise util.TracError('Maximum attachment size: %d kB' % max_size,
+                                 'Upload failed')
+        dir = os.path.join(self.get_attachments_dir(), type, id)
         if not os.access(dir, os.F_OK):
             os.makedirs(dir)
+        filename = os.path.basename(attachment.filename)
         wfile = open(os.path.join(dir, filename), 'wb')
         shutil.copyfileobj(attachment.file, wfile)
+        cursor = cnx.cursor()
+        cursor.execute('INSERT INTO attachment VALUES(%s,%s,%s,%s,%s,%s,%s,%s)',
+                       type, id, filename, stat[6], int(time.time()),
+                       description, author, ipnr)
+        cnx.commit()
 
     def backup(self, dest=None):
         """Simple SQLite-specific backup. Copy the database file."""
