@@ -170,10 +170,12 @@ label.disabled { color: #d7d7d7 }
 }
 #altlinks li.last { border-right: none }
 #altlinks li :link, #altlinks li :visited {
- background-position: center left;
+ background-position: 0 -1px;
  background-repeat: no-repeat;
+ padding-left: 42px
  border: none;
 }
+#altlinks li a.ics { background-image: url(../ics.png); padding-left: 22px }
 #altlinks li a.rss { background-image: url(../xml.png); padding-left: 42px }
 
 /* Footer */
