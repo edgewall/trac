@@ -1,4 +1,5 @@
 include scripts/trac-admin
+recursive-include cgi-bin *
 recursive-include htdocs *
 recursive-include doc *
 recursive-include wiki-default *

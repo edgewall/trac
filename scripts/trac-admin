@@ -723,7 +723,7 @@ CREATE INDEX wiki_idx		ON wiki(name,version);
         self.print_listing(['Title', 'Edits', 'Modified'], ldata)
 
     def _do_wiki_import(self, filename, title, cursor=None):
-        f = file(filename,'r')
+        f = open(filename,'r')
         data=f.read()
         data = data.replace("'", "''") # Escape ' for safe SQL
         f.close()
@@ -751,7 +751,7 @@ CREATE INDEX wiki_idx		ON wiki(name,version);
         else:
             if os.path.isfile(filename):
                 raise Exception("File '%s' exists" % filename)
-            f = file (filename,'w')
+            f = open(filename,'w')
             f.write(text)
             f.close()
 
