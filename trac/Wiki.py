@@ -194,7 +194,7 @@ class Formatter(CommonFormatter):
     """
     _rules = [r"""(?P<svnimg>svn:([^ ]+)(\.png|\.jpg|\.jpeg|\.gif))"""] + \
              CommonFormatter._rules + \
-             [r"""(?P<br>\[\[(br|BR)\]\])""",
+             [r"""(?P<macro>\[\[(?P<macroname>[a-zA-Z]+)(\((?P<macroargs>[^\)]*)\))?\]\])""",
               r"""(?P<heading>^\s*(?P<hdepth>=+)\s.*\s(?P=hdepth)$)""",
               r"""(?P<list>^(?P<ldepth>\s+)(?:\*|[0-9]+\.) )""",
               r"""(?P<indent>^(?P<idepth>\s+)(?=[^\s]))""",
@@ -205,10 +205,25 @@ class Formatter(CommonFormatter):
 
     # RE patterns used by other patterna
     _helper_patterns = ('idepth', 'ldepth', 'hdepth', 'fancyurl',
-                        'linkname', 'fancysvnfile', 'svnlinkname')
+                        'linkname', 'fancysvnfile', 'svnlinkname',
+                        'macroname', 'macroargs')
 
-    def _br_formatter(self, match, fullmatch):
-        return '<br />'
+    def __init__(self, hdf = None):
+        self.hdf = hdf
+        
+    def _macro_formatter(self, match, fullmatch):
+        name = fullmatch.group('macroname')
+        if name in ['br', 'BR']:
+            return '<br />'
+        args = fullmatch.group('macroargs')
+        try:
+            macros = __import__('wikimacros.' + name,
+                                globals(),  locals(), [])
+            module = getattr(macros, name)
+            func = getattr(module, 'execute')
+            return func(self.hdf, args)
+        except Exception, e:
+            return 'Macro %s(%s) failed: %s' % (name, args, e)
 
     def _heading_formatter(self, match, fullmatch):
         depth = min(len(fullmatch.group('hdepth')), 5)
@@ -492,7 +507,7 @@ class Wiki(Module):
         self.cgi.hdf.setValue('wiki.page_name', page.name)
         self.cgi.hdf.setValue('wiki.page_source', page.text)
         out = StringIO.StringIO()
-        Formatter().format(page.text, out)
+        Formatter(self.cgi.hdf).format(page.text, out)
         self.cgi.hdf.setValue('wiki.page_html', out.getvalue())
 
 ###
