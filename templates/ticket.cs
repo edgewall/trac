@@ -61,24 +61,27 @@
 </div>
 
 <?cs if trac.acl.TICKET_MODIFY || ticket.attachments.0.name ?>
-<h2 id="tkt-changes-hdr">Attachments</h2>
-<div id="tkt-changes">
-  <ul class="tkt-chg-list">
-  <?cs each:a = ticket.attachments ?>
-    <li class="tkt-chg-change"><a href="<?cs var:a.href ?>">
-        <?cs var:a.name ?></a> (<?cs var:a.size ?>) -
-        <?cs var:a.descr ?>,
-        added by <?cs var:a.author ?> on <?cs var:a.time ?>.</li>
-  <?cs /each ?>
-  </ul>
-<?cs if trac.acl.TICKET_MODIFY ?>
+ <h2 id="tkt-changes-hdr">Attachments</h2>
+ <?cs if ticket.attachments.0.name ?>
+  <div id="tkt-changes">
+   <ul class="tkt-chg-list">
+    <?cs each:a = ticket.attachments ?>
+     <li class="tkt-chg-change"><a href="<?cs var:a.href ?>">
+      <?cs var:a.name ?></a> (<?cs var:a.size ?>) -
+      <?cs var:a.descr ?>,
+      added by <?cs var:a.author ?> on <?cs var:a.time ?>.</li>
+    <?cs /each ?>
+   </ul>
+ <?cs /if ?>
+ <?cs if trac.acl.TICKET_MODIFY ?>
   <form method="get" action="<?cs var:cgi_location?>/attachment/ticket/<?cs var:ticket.id ?>"><div>
    <input type="submit" value="Attach File" />
-  </div></form>
+   </div></form>
+ <?cs /if ?>
+ <?cs if ticket.attachments.0.name ?>
+  </div>
+ <?cs /if ?>
 <?cs /if ?>
-</div>
-<?cs /if ?>
-
 
 <?cs if ticket.changes.0.time ?>
   <h2 id="tkt-changes-hdr">Changelog</h2>
