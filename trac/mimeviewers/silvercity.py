@@ -72,7 +72,6 @@ type_lang = { 'text/css':['CSS'],
               }
 
 def display(data, mimetype, filename, env):
-    import SilverCity
     from SilverCity import LanguageInfo
     try:
         typelang = type_lang[mimetype]

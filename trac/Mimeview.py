@@ -94,14 +94,14 @@ class Mimeview:
             viewer = getattr(mimeviewers, name)
             for st in viewer.supported_types:
                 self.add_viewer (st[1], viewer, st[0])
-                
+
     def add_viewer(self, type, viewer, prio=0):
         if not self.viewers.has_key(type):
             self.viewers[type] = []
         if not viewer in self.viewers[type]:
             self.viewers[type].append([prio, viewer])
         self.viewers[type].sort()
-    
+
     def get_viewer(self, mimetype, _idx=0):
         try:
             if mimetype:
@@ -111,7 +111,7 @@ class Mimeview:
             return self.viewers[mimetype][_idx][1], i
         except (KeyError, IndexError):
             return self.get_viewer(None)
-        
+
     def get_mimetype(self, filename):
         try:
             i = filename.rfind('.')
@@ -122,15 +122,13 @@ class Mimeview:
             return mimetypes.guess_type(filename)[0]
         except:
             return None
-        
+
     def display(self, data, mimetype=None, filename=None):
         if not data:
             return ''
         if filename:
             if not mimetype:
                 mimetype = self.get_mimetype(filename)
-#             elif not mimetype == 'application/octet-stream':
-#                 mimetype = self.get_mimetype(filename)
         idx = 0
         while not idx == -1:
             viewer,idx = self.get_viewer (mimetype, idx)
