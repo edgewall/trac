@@ -315,6 +315,14 @@ def main():
 
     if not args:
         usage()
+        
+    server_address = (hostname, port)
+    httpd = TracHTTPServer(server_address, TracHTTPRequestHandler)
+    if httpd.server_port == 80:
+        httpd.http_host = httpd.server_name
+    else:
+        httpd.http_host = '%s:%d' % (httpd.server_name, httpd.server_port)
+    
     for path in args:
         project = os.path.split(path)[1]
         if not project:
@@ -326,17 +334,12 @@ def main():
         # Upgrade the database schema if needed
         env.upgrade(backup=1)
         env.href = Href('/' + project)
+        env.abs_href = Href('http://%s/%s' % (httpd.http_host, project))
         projects[project] = env
         projects[project].set_config('trac', 'htdocs_location',
                                      '/trac_common/')
         projects[project].auth = auth
         
-    server_address = (hostname, port)
-    httpd = TracHTTPServer(server_address, TracHTTPRequestHandler)
-    if httpd.server_port == 80:
-        httpd.http_host = httpd.server_name
-    else:
-        httpd.http_host = '%s:%d' % (httpd.server_name, httpd.server_port)
     httpd.projects = projects
     httpd.serve_forever()
 

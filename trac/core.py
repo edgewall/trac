@@ -126,7 +126,9 @@ def parse_args(command, path_info, query_string,
 
 def add_args_to_hdf(args, hdf):
     for key in args.keys():
-        hdf.setValue('args.' + key, str(args[key]))
+        # FIXME: I guess we should insert lists as well
+        if type(args[key]) != list:
+            hdf.setValue('args.' + key, str(args[key].value))
 
 def module_factory(args, env, db, req):
     mode = args.get('mode', 'wiki')
@@ -287,6 +289,17 @@ class CGIRequest(Request):
         self.remote_addr = os.getenv('REMOTE_ADDR')
         self.remote_user = os.getenv('REMOTE_USER')
         self.command = os.getenv('REQUEST_METHOD')
+        host = os.getenv('SERVER_NAME')
+        try:
+            port = int(os.getenv('SERVER_PORT'))
+        except TypeError:
+            port = 80
+        if port == 80:
+            self.base_url = 'http://%s%s' % (host, self.cgi_location)
+        elif port == 443:
+            self.base_url = 'https://%s%s' % (host, self.cgi_location)
+        else:
+            self.base_url = 'http://%s:%d%s' % (host, port, self.cgi_location)
         if os.getenv('HTTP_COOKIE'):
             self.incookie.load(os.getenv('HTTP_COOKIE'))
         if os.getenv('HTTP_HOST'):
@@ -385,8 +398,8 @@ def real_cgi_start():
     req = CGIRequest()
     req.init_request()
 
-    if not hasattr(env, 'href') or not env.href:
-        env.href = Href.Href(req.cgi_location)
+    env.href = Href.Href(req.cgi_location)
+    env.abs_href = Href.Href(req.base_url)
 
     authenticator = auth.Authenticator(database, req)
     if path_info == '/logout':

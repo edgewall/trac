@@ -41,7 +41,7 @@
 <form id="search" action="<?cs var:trac.href.search ?>" method="get">
  <div>
   <label for="proj-search">Search:</label>
-  <input type="text" id="proj-search" name="proj-search" size="10" value="" />
+  <input type="text" id="proj-search" name="q" size="10" value="" />
   <input type="submit" value="Search" />
   <input type="hidden" name="wiki" value="on" />
   <input type="hidden" name="changeset" value="on" />

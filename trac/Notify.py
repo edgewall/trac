@@ -163,7 +163,7 @@ else:
             self.newticket = newticket
             self.ticket['description'] = wrap(self.ticket['description'],
                                               self.COLS)
-            self.ticket['link'] = self.env.href.ticket(tktid)
+            self.ticket['link'] = self.env.abs_href.ticket(tktid)
             add_dict_to_hdf(self.ticket, self.hdf, 'ticket')
             self.hdf.setValue('email.ticket_props', self.format_props())
             self.hdf.setValue('email.ticket_body_hdr', self.format_hdr())

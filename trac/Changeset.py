@@ -71,7 +71,7 @@ class DiffColorizer:
             self.hdf.setValue('%s.name.old' % self.prefix, match.group(1))
             self.hdf.setValue('%s.name.new' % self.prefix, match.group(2))
             return
-        if text[0:2] in ['++', '--']:
+        if text[0:2] in ['+++', '---']:
             return
         match = line_re.search(text)
         if match:

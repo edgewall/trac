@@ -70,7 +70,7 @@ class Module:
         for (name,value) in result:
             self.req.write(name)
             if value.find('\n') == -1:
-                self.req.write('= %s\r\n' % value)
+                self.req.write(' = %s\r\n' % value)
             else:
-                self.req.write('<< EOM\r\n%s\r\nEOM\r\n' % value)
+                self.req.write(' << EOM\r\n%s\r\nEOM\r\n' % value)
 
