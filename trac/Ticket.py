@@ -167,7 +167,7 @@ class Ticket (Module):
             from Notify import TicketNotifyEmail
             tn = TicketNotifyEmail(self.env)
             tn.notify(id, newticket=0, modtime=now)
-        except:
+        except ImportError:
             self.env.log.warning("Email notifications require Python >= 2.2")
 
     def create_ticket(self):
