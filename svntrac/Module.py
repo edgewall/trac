@@ -32,6 +32,10 @@ class Module:
         self.pool = pool
         self.cgi = neo_cgi.CGI()
         
+        sql_to_hdf("SELECT name FROM enum WHERE type='priority' ORDER BY name",
+                   self.cgi.hdf, 'enums.priority')
+        sql_to_hdf("SELECT name FROM enum WHERE type='severity' ORDER BY name",
+                   self.cgi.hdf, 'enums.severity')
         self.toolbar = Toolbar()
         self.cgi.hdf.setValue('title', '')
         self.cgi.hdf.setValue('svntrac_url', 'http://svntrac.edgewall.com/')

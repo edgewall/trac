@@ -1,4 +1,5 @@
 <?cs include "../templates/header.cs" ?>
+<?cs include "../templates/macros.cs" ?>
 
 <h3>ticket: #<?cs var:ticket.id ?></h3>
 
@@ -82,22 +83,39 @@
   </tr>
   <tr>
     <td align="right">component:</td>
-    <td><?cs var:ticket.component_select ?></td>
-    <td align="right">priority:</td><td>
-    <?cs var:ticket.priority_select ?></td>
+    <td><?cs call:hdf_select(ticket.components, 
+                             "component",
+                             ticket.component) ?>
+    </td>
+    <td align="right">priority:</td>
+    <td><?cs call:hdf_select(enums.priority, 
+                             "priority",
+                             ticket.priority) ?>
+    </td>
   </tr>
   <tr>
     <td align="right">version:</td>
-    <td><?cs var:ticket.version_select ?></td>
+    <td><?cs call:hdf_select(ticket.versions, 
+                             "version",
+                             ticket.version) ?>
+    </td>
     <td align="right">milestone:</td>
-    <td><?cs var:ticket.milestone_select ?></td>
+    <td><?cs call:hdf_select(ticket.milestones, 
+                             "milestone",
+                             ticket.milestone) ?>
+    </td>
   </tr>
   <tr>
-    <td align="right">severity:</td><td><?cs var:ticket.severity_select ?></td>
+    <td align="right">severity:</td>
+    <td><?cs call:hdf_select(enums.severity, 
+                             "severity",
+                             ticket.severity) ?>
+    </td>
     <td align="right">assigned to:</td><td><?cs var:ticket.owner ?></td>
   </tr>
   <tr>
-<td align="right">status:</td><td><?cs var:ticket.status ?></td>
+    <td align="right">status:</td>
+    <td><?cs var:ticket.status ?></td>
 <td align="right">resolution:</td><td><?cs var:ticket.resolution ?></td>
 </tr>
 <tr>

@@ -26,13 +26,13 @@
   <?cs elif:item.type == #2 ?>
     <tr>
       <td><?cs var:item.time?></td>
-      <td>ticket [<a href="<?cs var:item.ticket_href ?>"><?cs var:item.data?></a>] created: <?cs var:item.message?></td>
+      <td>ticket <a href="<?cs var:item.ticket_href ?>">#<?cs var:item.data?></a> created: <?cs var:item.message?></td>
     </tr>
 <!-- Closed ticket -->
   <?cs elif:item.type == #3 ?>
     <tr>
       <td><?cs var:item.time?></td>
-      <td>ticket [<a href="<?cs var:item.ticket_href ?>"><?cs var:item.data?></a>] closed.</td>
+      <td>ticket <a href="<?cs var:item.ticket_href ?>">#<?cs var:item.data?></a> closed.</td>
     </tr>
   <?cs /if ?>
 <?cs /each ?>

@@ -1,4 +1,5 @@
 <?cs include "../templates/header.cs" ?>
+<?cs include "../templates/macros.cs" ?>
 
 <h3>New ticket:</h3>
 
@@ -10,22 +11,25 @@
 <tr>
 <td align="right">reporter:</td><td><input type="text" name="reporter" value="<?cs var:newticket.reporter ?>"></td>
 <td align="right">priority:</td>
-<td><?cs var:newticket.priority_select ?></td>
+<td><?cs call:hdf_select(enums.priority, "priority", "p2") ?>
+</td>
 </tr>
 <tr>
 <td align="right">component:</td>
-<td><?cs var:newticket.component_select ?></td>
+<td><?cs call:hdf_select(newticket.components, "component", "") ?>
 <td align="right">milestone:</td>
-<td<?cs var:newticket.milestone_select ?></td>
+<td><?cs call:hdf_select(newticket.milestones, "milestone", "") ?>
 </tr>
 <tr>
 <td align="right">version:</td>
-<td><?cs var:newticket.version_select ?></td>
+<td><?cs call:hdf_select(newticket.versions, "version", "") ?>
 <td align="right">assign to:</td>
 <td><input type="text" name="owner"></td>
 </tr>
 <tr>
-<td align="right">severity:</td><td><?cs var:newticket.severity_select ?></td>
+<td align="right">severity:</td>
+<td><?cs call:hdf_select(enums.severity, "severity", "normal") ?>
+</td>
 </tr>
 <tr>
 <td align="right">cc:</td>

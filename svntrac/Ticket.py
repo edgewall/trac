@@ -46,25 +46,12 @@ class Newticket (Module):
         default_version   = self.config['ticket']['default_version']
         
         self.cgi.hdf.setValue('newticket.newtitle.title', 'create a new ticket')
-        self.cgi.hdf.setValue('newticket.component_select',
-                              enum_selector ('SELECT name FROM component ORDER by name',
-                                             'component',
-                                             default_component))
-        self.cgi.hdf.setValue('newticket.milestone_select',
-                              enum_selector ('SELECT name FROM milestone ORDER BY name',
-                                             'milestone',
-                                             default_milestone))
-        self.cgi.hdf.setValue('newticket.severity_select',
-                              enum_selector ('SELECT name FROM enum WHERE type=\'severity\' ORDER BY name',
-                                             'severity',
-                                             default_severity))
-        self.cgi.hdf.setValue('newticket.priority_select',
-                              enum_selector ('SELECT name FROM enum WHERE type=\'priority\' ORDER BY name',
-                                             'priority',
-                                             default_priority))
-        self.cgi.hdf.setValue('newticket.version_select',
-                              enum_selector ('SELECT name FROM version ORDER BY name',
-                                             'version'))
+        sql_to_hdf('SELECT name FROM component ORDER BY name',
+                   self.cgi.hdf, 'newticket.components')
+        sql_to_hdf('SELECT name FROM milestone ORDER BY name',
+                   self.cgi.hdf, 'newticket.milestones')
+        sql_to_hdf('SELECT name FROM version ORDER BY name',
+                   self.cgi.hdf, 'newticket.versions')
         if auth.get_authname() == 'anonymous':
             self.cgi.hdf.setValue('newticket.reporter', '')
         else:
@@ -173,7 +160,8 @@ class Ticket (Module):
         # redirect to the Ticket module to get a GET request
         redirect (href.ticket(id))
         
-    def get_changes(self, id):
+    def insert_ticket_data(self, hdf, id):
+        """Inserts ticket data into the hdf"""
         cnx = db.get_connection ()
         cursor = cnx.cursor()
         cursor.execute('SELECT time, author, field, oldvalue, newvalue '
@@ -195,20 +183,20 @@ class Ticket (Module):
             old    = row[3]
             new    = row[4]
 
-            self.cgi.hdf.setValue('ticket.changes.%d.date' % idx,
+            hdf.setValue('ticket.changes.%d.date' % idx,
                                   time.strftime('%F %H:%M',
                                                 time.localtime(date)))
             
-            self.cgi.hdf.setValue('ticket.changes.%d.author' % idx,
+            hdf.setValue('ticket.changes.%d.author' % idx,
                                   author)
-            self.cgi.hdf.setValue('ticket.changes.%d.field' % idx,
+            hdf.setValue('ticket.changes.%d.field' % idx,
                                   field)
-            self.cgi.hdf.setValue('ticket.changes.%d.old' % idx, old)
+            hdf.setValue('ticket.changes.%d.old' % idx, old)
             if field == 'comment':
-                self.cgi.hdf.setValue('ticket.changes.%d.new' % idx,
+                hdf.setValue('ticket.changes.%d.new' % idx,
                                       wiki_to_html(new))
             else:
-                self.cgi.hdf.setValue('ticket.changes.%d.new' % idx, new)
+                hdf.setValue('ticket.changes.%d.new' % idx, new)
             idx = idx + 1
 
     def get_actions(self, info):
@@ -258,34 +246,20 @@ class Ticket (Module):
         perm.assert_permission (perm.TICKET_VIEW)
         
         info = self.get_ticket(id)
-	#for key in info.keys():
-	#    self.namespace[key] = info[key]
         add_dict_to_hdf(info, self.cgi.hdf, 'ticket')
+        
+        sql_to_hdf('SELECT name FROM component ORDER BY name',
+                   self.cgi.hdf, 'ticket.components')
+        sql_to_hdf('SELECT name FROM milestone ORDER BY name',
+                   self.cgi.hdf, 'ticket.milestones')
+        sql_to_hdf('SELECT name FROM version ORDER BY name',
+                   self.cgi.hdf, 'ticket.versions')
         self.cgi.hdf.setValue('ticket.title', 'Ticket #%d' % id)
-        self.cgi.hdf.setValue('ticket.component_select',
-                              enum_selector ('SELECT name FROM component ORDER BY name',
-                                             'component',
-                                             info['component']))
-        self.cgi.hdf.setValue('ticket.milestone_select',
-                              enum_selector ('SELECT name FROM milestone ORDER BY name',
-                                             'milestone',
-                                             info['milestone']))
-        self.cgi.hdf.setValue('ticket.severity_select',
-                              enum_selector ('SELECT name FROM enum WHERE type=\'severity\' ORDER BY name',
-                                             'severity',
-                                             info['severity']))
-        self.cgi.hdf.setValue('ticket.priority_select',
-                              enum_selector ('SELECT name FROM enum WHERE type=\'priority\' ORDER BY name',
-                                             'priority',
-                                             info['priority']))
-        self.cgi.hdf.setValue('ticket.version_select',
-                              enum_selector ('SELECT name FROM version ORDER BY name',
-                                             'version',
-                                             info['version']))
-
         self.cgi.hdf.setValue('ticket.actions', self.get_actions(info))
-        self.get_changes(id)
-        self.cgi.hdf.setValue('ticket.description', wiki_to_html(info['description']))
-        self.cgi.hdf.setValue('ticket.opened', time.strftime('%F %H:%M',
-                                                             time.localtime(int(info['time']))))
+        self.insert_ticket_data(self.cgi.hdf, id)
+        self.cgi.hdf.setValue('ticket.description',
+                              wiki_to_html(info['description']))
+        self.cgi.hdf.setValue('ticket.opened',
+                              time.strftime('%F %H:%M',
+                                            time.localtime(int(info['time']))))
        

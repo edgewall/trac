@@ -131,3 +131,21 @@ def add_dictlist_to_hdf(list, hdf, prefix):
 def add_dict_to_hdf(dict, hdf, prefix):
     for key in dict.keys():
         hdf.setValue('%s.%s' % (prefix, key), str(dict[key]))
+
+def sql_to_hdf (sql, hdf, prefix):
+    """
+    executes a sql query and insert the first result column
+    into the hdf at the given prefix
+    """
+    cnx = get_connection()
+    cursor = cnx.cursor ()
+    cursor.execute (sql)
+#    cursor.execute ('SELECT type, name, value FROM enum ORDER BY type,value,name')
+    idx = 0
+    while 1:
+	row = cursor.fetchone()
+        if not row:
+            break
+        hdf.setValue('%s.%d.name' % (prefix, idx), row[0])
+        idx = idx + 1
+
