@@ -134,7 +134,6 @@ class Query(object):
         cursor = db.cursor()
         cursor.execute(sql)
         columns = cursor.description
-        self.env.log.debug("Columns: %s" % (columns,))
         results = []
         for row in cursor:
             id = int(row[0])
@@ -147,8 +146,10 @@ class Query(object):
                     val = escape(val or 'anonymous')
                 elif name in ['changetime', 'time']:
                     val = int(val)
+                elif val is None:
+                    val = '--'
                 else:
-                    val = escape(val or '--')
+                    val = escape(val)
                 result[name] = val
             results.append(result)
         cursor.close()
@@ -166,17 +167,19 @@ class Query(object):
         if not self.cols:
             self.get_columns()
 
+        # Build the list of actual columns to query
         cols = self.cols[:]
+        def add_cols(*args):
+            for col in args:
+                if not col in cols:
+                    cols.append(col)
         if self.group and not self.group in cols:
-            cols += [self.group]
+            add_cols(self.group)
         if self.verbose:
-            cols += ['reporter', 'description']
-        for col in ('priority', 'time', 'changetime', self.order):
-            # Add default columns
-            if not col in cols:
-                cols += [col]
-        cols += ['priority_value']
+            add_cols('reporter', 'description')
+        add_cols('priority', 'time', 'changetime', self.order)
         cols.extend([c for c in self.constraints.keys() if not c in cols])
+        add_cols('priority.value AS priority_value') # for row coloring
 
         custom_fields = [f['name'] for f in get_custom_fields(self.env)]
 
@@ -192,16 +195,11 @@ class Query(object):
 
         for col in [c for c in ['status', 'resolution', 'priority', 'severity']
                     if c == self.order or c == self.group or c == 'priority']:
-            sql.append("\n  LEFT OUTER JOIN (SELECT name AS %s_name, " \
-                                            "value AS %s_value " \
-                                            "FROM enum WHERE type='%s')" \
-                       " ON %s_name=%s" % (col, col, col, col, col))
+            sql.append("\n  LEFT OUTER JOIN enum AS %s ON (%s.type='%s' AND %s.name=%s)"
+                       % (col, col, col, col, col))
         for col in [c for c in ['milestone', 'version']
                     if c == self.order or c == self.group]:
-            time_col = col == 'milestone' and 'due' or 'time'
-            sql.append("\n  LEFT OUTER JOIN (SELECT name AS %s_name, " \
-                                            "%s AS %s_time FROM %s)" \
-                       " ON %s_name=%s" % (col, time_col, col, col, col, col))
+            sql.append("\n  LEFT OUTER JOIN %s ON (%s.name=%s)" % (col, col, col))
 
         def get_constraint_sql(name, value, mode, neg):
             value = sql_escape(value[len(mode and '!' or '' + mode):])
@@ -229,10 +227,13 @@ class Query(object):
 
             # Special case for exact matches on multiple values
             if not mode and len(v) > 1:
-                inlist = ",".join(["'" + sql_escape(val[neg and 1 or 0:]) + "'" for val in v])
-                clauses.append("COALESCE(%s,'') %sIN (%s)" % (k, neg and "NOT " or "", inlist))
+                inlist = ",".join(["'" + sql_escape(val[neg and 1 or 0:]) + "'"
+                                   for val in v])
+                clauses.append("COALESCE(%s,'') %sIN (%s)"
+                               % (k, neg and 'NOT ' or '', inlist))
             elif len(v) > 1:
-                constraint_sql = [get_constraint_sql(k, val, mode, neg) for val in v]
+                constraint_sql = [get_constraint_sql(k, val, mode, neg)
+                                  for val in v]
                 if neg:
                     clauses.append("(" + " AND ".join(constraint_sql) + ")")
                 else:
@@ -264,16 +265,17 @@ class Query(object):
                     sql.append("COALESCE(%s,'')=''," % col)
             if col in ['status', 'resolution', 'priority', 'severity']:
                 if desc:
-                    sql.append("%s_value DESC" % col)
+                    sql.append("%s.value DESC" % col)
                 else:
-                    sql.append("%s_value" % col)
+                    sql.append("%s.value" % col)
             elif col in ['milestone', 'version']:
+                time_col = col == 'milestone' and 'due' or 'time'
                 if desc:
-                    sql.append("COALESCE(%s_time,0)=0 DESC,%s_time DESC,%s DESC"
-                               % (col, col, col))
+                    sql.append("COALESCE(%s.%s,0)=0 DESC,%s.%s DESC,%s DESC"
+                               % (col, time_col, col, time_col, col))
                 else:
-                    sql.append("COALESCE(%s_time,0)=0,%s_time,%s"
-                               % (col, col, col))
+                    sql.append("COALESCE(%s.%s,0)=0,%s.%s,%s"
+                               % (col, time_col, col, time_col, col))
             else:
                 if desc:
                     sql.append("%s DESC" % col)
@@ -319,7 +321,7 @@ class QueryModule(Module):
                               if k in Ticket.std_fields or k in custom_fields]
         for field in constrained_fields:
             vals = req.args[field]
-            if not type(vals) is ListType:
+            if not isinstance(vals, (list, tuple)):
                 vals = [vals]
             vals = map(lambda x: x.value, vals)
             if vals:
@@ -396,6 +398,8 @@ class QueryModule(Module):
                         'label': field['label']}
             if field.has_key('options'):
                 property['options'] = field['options']
+            if field['type'] == 'radio':
+                property['options'].insert(0, '')
             properties.append(property)
 
         return properties
@@ -424,14 +428,14 @@ class QueryModule(Module):
             # avoid displaying all tickets when the query module is invoked
             # with no parameters. Instead show only open tickets, possibly
             # associated with the user
-            constraints = { 'status': [ 'new', 'assigned', 'reopened' ] }
+            constraints = {'status': ('new', 'assigned', 'reopened')}
             if req.authname and req.authname != 'anonymous':
-                constraints['owner'] = [ req.authname ]
+                constraints['owner'] = (req.authname,)
             else:
                 email = req.session.get('email')
                 name = req.session.get('name')
                 if email or name:
-                    constraints['cc'] = [ '~%s' % email or name ]
+                    constraints['cc'] = ('~%s' % email or name,)
 
         query = Query(self.env, constraints, req.args.get('order'),
                       req.args.has_key('desc'), req.args.get('group'),
@@ -463,7 +467,21 @@ class QueryModule(Module):
             constraints[k] = constraint
         req.hdf['query.constraints'] = constraints
 
-        self.query = query
+        format = req.args.get('format')
+        if format == 'rss':
+            self.display_rss(req, query)
+        elif format == 'csv':
+            self.display_csv(req, query)
+        elif format == 'tab':
+            self.display_csv(req, query, '\t')
+        else:
+            self.display_html(req, query)
+
+    def display_html(self, req, query):
+        req.hdf['title'] = 'Custom Query'
+
+        req.hdf['ticket.properties'] = self._get_ticket_properties()
+        req.hdf['query.modes'] = self._get_constraint_modes()
 
         # For clients without JavaScript, we add a new constraint here if
         # requested
@@ -474,23 +492,6 @@ class QueryModule(Module):
                 if query.constraints.has_key(field):
                     idx = len(query.constraints[field])
                 req.hdf['query.constraints.%s.values.%d' % (field, idx)] = ''
-
-        format = req.args.get('format')
-        if format == 'rss':
-            self.display_rss(req)
-        elif format == 'csv':
-            self.display_csv(req)
-        elif format == 'tab':
-            self.display_csv(req, '\t')
-        else:
-            self.display_html(req)
-
-    def display_html(self, req):
-        req.hdf['title'] = 'Custom Query'
-        query = self.query
-
-        req.hdf['ticket.properties'] = self._get_ticket_properties()
-        req.hdf['query.modes'] = self._get_constraint_modes()
 
         cols = query.get_columns()
         for i in range(len(cols)):
@@ -568,11 +569,10 @@ class QueryModule(Module):
         req.hdf['session.tickets'] = req.session.get('query_tickets')
         req.display('query.cs', 'text/html')
 
-    def display_csv(self, req, sep=','):
+    def display_csv(self, req, query, sep=','):
         req.send_response(200)
         req.send_header('Content-Type', 'text/plain;charset=utf-8')
         req.end_headers()
-        query = self.query
 
         cols = query.get_columns()
         req.write(sep.join([col for col in cols]) + '\r\n')
@@ -584,11 +584,7 @@ class QueryModule(Module):
                                                 .replace('\r', ' ')
                                 for col in cols]) + '\r\n')
 
-    def display_tab(self, req):
-        self.display_csv(req, '\t')
-
-    def display_rss(self, req):
-        query = self.query
+    def display_rss(self, req, query):
         query.verbose = 1
         results = query.execute(self.db)
         for result in results:
