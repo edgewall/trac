@@ -83,7 +83,12 @@ url("<?cs var:$htdocs_location ?>/topbar_active.png") top left repeat-x #ddd;}
                         "WIKI_VIEW") ?>
       <?cs call:navlink("Timeline", $trac.href.timeline, "timeline", 
                         "TIMELINE_VIEW") ?>
-      <?cs call:navlink("Browse Source", $trac.href.browser, "browser", 
+      <?cs if $trac.active_module == "log" ?>	
+    	<?cs set:$browser_view="log" ?>
+      <?cs else  ?>	
+    	<?cs set:$browser_view="browser" ?>
+      <?cs /if  ?>	
+      <?cs call:navlink("Browse Source", $trac.href.browser, $browser_view, 
                         "BROWSER_VIEW") ?>
       <?cs if $trac.active_module == "ticket" ?>	
     	<?cs set:$ticket_view="ticket" ?>
