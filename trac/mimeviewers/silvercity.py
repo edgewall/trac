@@ -21,11 +21,11 @@
 #
 # Syntax highlighting module, based on the SilverCity module.
 # Get it at: http://silvercity.sourceforge.net/
-# 
+#
 
 import StringIO
 
-supported_types = [               
+supported_types = [
     (1, 'application/x-httpd-php'),
     (1, 'application/x-httpd-php4'),
     (1, 'application/x-httpd-php1'),
@@ -82,7 +82,7 @@ def display(data, mimetype, filename, env):
         try:
             allprops = typelang[1]
             propset = SilverCity.PropertySet()
-            for p in allprops.keys():            
+            for p in allprops.keys():
                 propset[p] = allprops[p]
         except IndexError:
             pass
@@ -95,4 +95,3 @@ def display(data, mimetype, filename, env):
     html = '<div class="code-block">%s</div>\n' % io.getvalue()
     return html
 
-    

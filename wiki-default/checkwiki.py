@@ -107,4 +107,4 @@ if __name__ == '__main__':
     for p in wiki_pages:
         data[p] = get_page (p)
     check_links(data)
-    
+

@@ -8,8 +8,8 @@ body {
 }
 h1,h1,h2,h3,h4 {
  font-family: arial,verdana,'Bitstream Vera Sans',helvetica, sans-serif;
- font-weight:bold; 
- letter-spacing:-0.028em; 
+ font-weight:bold;
+ letter-spacing:-0.028em;
 }
 .hide { display: none; }
 .tiny { font-size: 1px; height: 1px }
@@ -36,16 +36,16 @@ input,textarea,select { background: #fff; margin: 2px;}
 input[type="submit"]:hover,input[type="reset"]:hover,a.fake-button:hover { background: #ccb; }
 input[type="submit"],input[type="reset"],.fake-button,a.fake-button {
  background: #eee;
- color: #222; 
+ color: #222;
  border: 1px outset #ccc;
  padding: .1em .5em;
 }
 form.inline { float: left; }
 form.inline input { margin: 1em; }
-.fake-button, a.fake-button { 
+.fake-button, a.fake-button {
  display: block;
  float: left;
- width: 9em; 
+ width: 9em;
  text-align: center;
  font-size: 80%;
  white-space: nowrap;
@@ -55,20 +55,20 @@ option { border-bottom: 1px dotted #d7d7d7; }
 .textwidget {  border: 1px solid #d7d7d7; padding: .25em .5em }
 textarea,input[type="text"],.input-text { border: 1px solid #d7d7d7; padding: .25em .5em}
 input:focus,textarea:focus { border: 1px solid #886; }
-fieldset { 
- border: 1px solid #d7d7d7; 
+fieldset {
+ border: 1px solid #d7d7d7;
  padding: 0;
- padding-top: .5em; 
+ padding-top: .5em;
  padding-bottom: .75em;
  margin: 0;
- width: 99%; 
+ width: 99%;
 }
-legend { 
- color: #d7d7d7; 
+legend {
+ color: #d7d7d7;
  background: #fff;
  padding: 0 .25em;
- font-size: 75%; 
- font-weight: bold; 
+ font-size: 75%;
+ font-weight: bold;
 }
 /* Header */
 #header { position: relative;  width: 100%; float: left; }
@@ -82,23 +82,23 @@ legend {
  margin-bottom: 2px;
  border: none;
 }
-.subheader-links { 
-  display: block; 
+.subheader-links {
+  display: block;
   padding: 0;
   padding-bottom: .25em;
   margin: 0;
   font-size: 10px;
-  text-align: right; 
+  text-align: right;
 }
-.subheader-links li, .menulist li { 
+.subheader-links li, .menulist li {
   display: inline;
-  border-right: 1px solid #d7d7d7; 
-  padding: 0 .75em; 
+  border-right: 1px solid #d7d7d7;
+  padding: 0 .75em;
   white-space: nowrap;
 }
 .menulist li { float: left; }
 .subheader-links li.last,.menulist li.last { border-right: none; }
-.subheader-links  li ul, .menulist { 
+.subheader-links  li ul, .menulist {
   background: #f7f7f7;
   color: #ccc;
   border: 1px solid;
@@ -106,7 +106,7 @@ legend {
   display: inline;
   float: left;
 }
-.menulist { 
+.menulist {
   padding: 0;
   margin: 0;
   border: 1px outset #d7d7d7;
@@ -114,13 +114,13 @@ legend {
   white-space: nowrap;
 }
 .menulist li { padding: 0; margin: 0;}
-.menulist a,.menulist a:visited { 
+.menulist a,.menulist a:visited {
   display: inline;
   float: left;
-  padding: .2em .75em; 
+  padding: .2em .75em;
   margin: 0;
   border: none;
-  color: #000 
+  color: #000;
 }
 .menulist a:hover { background: #ccb; color: #000; }
 /* Footer */
@@ -142,28 +142,28 @@ legend {
 
 /* Navbar  */
 #navbar {
-  font: normal 10px verdana, 'Bitstream Vera Sans', Helvetica, Arial, sans-serif; 
+  font: normal 10px verdana, 'Bitstream Vera Sans', Helvetica, Arial, sans-serif;
   color: #000;
   clear: left;
   border: 1px solid #999;
   margin: .15em 0;
-  min-width: 500px;          
+  min-width: 500px;
   height: 16px;
   /* NOTE: Changes dynamically in header.cs */
 }
 #navbar ul {
-  display: inline; 
+  display: inline;
   float: right;
-  padding: 0; 
+  padding: 0;
   margin: 0;
 }
-#navbar ul li { 
- display: inline; 
+#navbar ul li {
+ display: inline;
  list-style: none;
 }
 #navbar ul li a {
-  display: block; 
-  float: left; 
+  display: block;
+  float: left;
   height: 14px;
   border-left: 1px solid #999;
   border-right: 1px solid #fff;
@@ -172,7 +172,7 @@ legend {
   color: #000;
   /* NOTE: Changes dynamically augmented in header.cs */
 }
-#navbar a.active, #navbar a.active:visited { 
+#navbar a.active, #navbar a.active:visited {
   font-weight: bold;
   border-top: none;
   border-right: none;
@@ -200,7 +200,7 @@ legend {
 #wiki-history a { padding: 0 .5em; }
 #wiki-history a { border: none; }
 #wiki-history a:hover,#wiki-history tr:hover {
-  background: #ddd; 
+  background: #ddd;
 }
 a.missing:link,a.missing:visited { color: #998; background: #fafaf0; }
 a.missing:hover { color: #000; }
@@ -222,7 +222,7 @@ tr.even { background-color: #fcfcfc; }
 tr.odd { background-color: #f7f7f7; }
 #browser-list tr.even:hover, #browser-list tr.odd:hover { background: #eed; }
 .wikipage p {  margin-left: 1em }
-pre.wiki, pre.literal-block { 
+pre.wiki, pre.literal-block {
  margin: 1em 1.75em;
  padding: .25em;
  background: #f7f7f7;
@@ -235,8 +235,8 @@ table.wiki {
 }
 table.wiki td { border: 1px solid #ccc;  padding: .1em .25em; }
 #wiki-edit-page:hover { background: #ccb }
-.error { 
- background: #fdc; 
+.error {
+ background: #fdc;
  border: 1px solid #b00;
  color: #b00;
  padding: .25em;
@@ -248,3 +248,4 @@ table.wiki td { border: 1px solid #ccc;  padding: .1em .25em; }
 .searchword3 { background: #ccf; }
 .searchword4 { background: #fcf; }
 .att-label { float:left; width: 7em; text-align: right; margin-right: .5em; }
+.buttons { margin: .5em; }

@@ -33,69 +33,69 @@
       </tr>
       <?cs each item = $wiki.history ?>
         <tr class="wiki-history-row">
-          <td><a class="wiki-history-link" 
+          <td><a class="wiki-history-link"
              href="<?cs var:$item.url ?>"><?cs var:$item.version ?></a>&nbsp;(<a class="wiki-history-link"
-		  href="<?cs var:$item.diff_url ?>">diff</a>)</td>
-          <td><a class="wiki-history-link" 
+                  href="<?cs var:$item.diff_url ?>">diff</a>)</td>
+          <td><a class="wiki-history-link"
                href="<?cs var:$item.url ?>"><?cs var:$item.time ?></a></td>
-          <td><a class="wiki-history-link" 
+          <td><a class="wiki-history-link"
                href="<?cs var:$item.url ?>"><?cs var:$item.author ?></a></td>
-          <td><a class="wiki-history-link" 
+          <td><a class="wiki-history-link"
                href="<?cs var:$item.url ?>"><?cs var:$item.ipnr ?></a></td>
         </tr>
       <?cs /each ?>
     </table>
     <hr class="hide"/>
-  <?cs /if ?>
+    <?cs /if ?>
   <div id="main">
     <div id="main-content">
-      <div id="wiki-body">
+    <div id="wiki-body">
 
         <?cs if $wiki.title_index.0.title ?>
           <h2>TitleIndex</h2>
-	  <ul>
+          <ul>
           <?cs each item = $wiki.title_index ?>
             <li><a href="<?cs var:item.href?>"><?cs var:item.title ?></a></li>
           <?cs /each ?>
-	  </ul>
+          </ul>
 
         <?cs elif $wiki.recent_changes.0.title ?>
           <h2>RecentChanges</h2>
-	  <ul>
+          <ul>
           <?cs each item = $wiki.recent_changes ?>
-	    <?cs call:day_separator(item.time) ?>
+            <?cs call:day_separator(item.time) ?>
             <li><a href="<?cs var:item.href?>"><?cs var:item.title ?></a></li>
           <?cs /each ?>
-	  </ul>
+          </ul>
 
         <?cs elif wiki.action == "diff" ?>
           <div class="hide">
-	    <hr class="hide" />
-	    <h2>-=&gt; Note: Diff viewing requires CSS2 &lt;=-</h2>
-	    <p>
-	      Output below might not be useful.
-	    </p>
-	    <hr class="hide" />
-	  </div>    
-	  <div id="chg-diff">
-	    <div id="chg-legend">
-	      <h3>Legend</h3>
-	      <span class="diff-legend-add"> </span> Added <br />
-	      <span class="diff-legend-rem"> </span> Removed <br />
-	      <span class="diff-legend-mod"> </span> Modified <br />
-	      <span class="diff-legend-unmod"> </span> Unmodified <br />
-	    </div>
-	  </div>
-	  <div class="chg-diff-file">
-	    <?cs var:wiki.diff_output ?>
-	  </div>
+            <hr class="hide" />
+            <h2>-=&gt; Note: Diff viewing requires CSS2 &lt;=-</h2>
+            <p>
+              Output below might not be useful.
+            </p>
+            <hr class="hide" />
+          </div>
+          <div id="chg-diff">
+            <div id="chg-legend">
+              <h3>Legend</h3>
+              <span class="diff-legend-add"> </span> Added <br />
+              <span class="diff-legend-rem"> </span> Removed <br />
+              <span class="diff-legend-mod"> </span> Modified <br />
+              <span class="diff-legend-unmod"> </span> Unmodified <br />
+            </div>
+          </div>
+          <div class="chg-diff-file">
+            <?cs var:wiki.diff_output ?>
+          </div>
         <?cs else ?>
           <?cs if wiki.action == "edit" || wiki.action == "preview" ?>
             <h3>Editing "<?cs var:wiki.page_name ?>"</h3>
             <form action="<?cs var:wiki.current_href ?>" method="post">
-              <input type="hidden" name="edit_version" 
-                     value="<?cs var:wiki.edit_version?>" />
               <div>
+                <input type="hidden" name="edit_version"
+                     value="<?cs var:wiki.edit_version?>" />
                 <label for="text">Page source:</label><br />
                 <textarea id="text" name="text" rows="20" cols="80" style="width:100%"><?cs var:wiki.page_source ?></textarea>
               </div>
@@ -104,25 +104,29 @@
 ?>WikiFormatting">WikiFormatting</a> and <a href="<?cs var:$trac.href.wiki
 ?>TracWiki">TracWiki</a> for help on editing wiki content.
               </div>
-	      <fieldset>
-		<legend>Change information</legend>
-		<label for="author">Your email or username:</label><br />
-		<input id="author" type="text" name="author" size="40" 
+              <fieldset>
+                <legend>Change information</legend>
+                <div style="display: inline; float: left; margin: 0 .5em;">
+                  <label for="author">Your email or username:</label><br />
+                  <input id="author" type="text" name="author" size="30"
                        value="<?cs var:wiki.author?>"/>
-		<br />
-		<label for="comment">Comment about this change (optional):</label>
-		<br />
-		<input id="comment" type="text" name="comment" size="40" 
-		       value="<?cs var:wiki.comment?>"/>
-                <input type="submit" name="save" value="Save changes" />&nbsp;
-                <input type="submit" name="preview" value="Preview" />&nbsp;
-
-                <input type="submit" name="view" value="Cancel" />
+                </div>
+                <div>
+                  <label for="comment">Comment about this change (optional):</label>
+                  <br />
+                  <input id="comment" type="text" name="comment" size="60"
+                        value="<?cs var:wiki.comment?>" />
+                </div>
+                <div class="buttons">
+                    <input type="submit" name="save" value="Save changes" />&nbsp;
+                    <input type="submit" name="preview" value="Preview" />&nbsp;
+                    <input type="submit" name="view" value="Cancel" />
+                </div>
               </fieldset>
             </form>
           <?cs /if ?>
           <?cs if wiki.action == "view" || wiki.action == "preview" ?>
-	    <?cs if wiki.action == "preview" ?><hr /><?cs /if ?>
+            <?cs if wiki.action == "preview" ?><hr /><?cs /if ?>
             <div class="wikipage">
                 <div id="searchable">
                  <?cs var:wiki.page_html ?>
@@ -138,17 +142,17 @@
              added by <?cs var:a.author ?> on <?cs var:a.time ?>.</li>
            <?cs /each ?>
          </ul>
-         <?cs /if ?>         
-            <?cs if wiki.action == "view" && trac.acl.WIKI_MODIFY ?>
-	      <form class="inline" method="get" action=""><div>
+         <?cs /if ?>
+         <?cs if wiki.action == "view" && trac.acl.WIKI_MODIFY ?>
+           <form class="inline" method="get" action=""><div>
                <input type="hidden" name="edit" value="yes" />
                <input type="submit" value="Edit This Page" />
-	      </div></form>
-	      <form class="inline" method="get" action="<?cs 
-                     var:cgi_location?>/attachment/wiki/<?cs 
+              </div></form>
+              <form class="inline" method="get" action="<?cs
+                     var:cgi_location?>/attachment/wiki/<?cs
                      var:wiki.name ?>"><div>
                <input type="submit" value="Attach File" />
-	      </div></form>
+              </div></form>
               <div class="tiny" style="clear: both">&nbsp;</div>
             <?cs /if ?>
           <?cs /if ?>

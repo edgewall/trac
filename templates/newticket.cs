@@ -64,7 +64,7 @@ addEvent(window, 'load', function() { document.getElementById('summary').focus()
           value="<?cs var:newticket.default_owner ?>" /><br />
   <label for="cc" class="nt-label">Cc:</label>
    <input type="text" id="cc" name="cc" size="35" class="textwidget" 
-          value="" /><br />
+	value="" /><br />
   </div>
  </div>
  </fieldset>
