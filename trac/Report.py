@@ -234,6 +234,12 @@ class Report (Module):
             self.req.hdf.setValue('report.create_href',
                                   self.env.href.report(None, 'new'))
             
+        try:
+            args = self.get_var_args()
+        except ValueError,e:
+            self.req.hdf.setValue('report.message', 'report failed: %s' % e)
+            return
+        
         if id != -1:
             self.add_alternate_links(args)
             if self.perm.has_permission(perm.REPORT_MODIFY):
@@ -259,12 +265,6 @@ class Report (Module):
         descr_html = wiki_to_html(description, self.req.hdf, self.env)
         self.req.hdf.setValue('report.description', descr_html)
 
-        try:
-            args = self.get_var_args()
-        except ValueError,e:
-            self.req.hdf.setValue('report.message', 'report failed: %s' % e)
-            return
-        
         # Convert the header info to HDF-format
         idx = 0
         for col in self.cols:
