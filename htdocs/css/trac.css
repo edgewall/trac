@@ -225,6 +225,7 @@ label.disabled { color: #d7d7d7 }
  float: right;
  font-size: 9px;
  padding: .8em;
+ position: relative;
  margin: 0 1em 1em;
  width: 26em;
 }

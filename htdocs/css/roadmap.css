@@ -10,6 +10,7 @@ li.milestone {
  list-style: none;
  margin-bottom: 4em;
 }
+li.milestone .info { white-space: nowrap }
 li.milestone .info h2 {
  background: #f7f7f7;
  border-bottom: 1px solid #d7d7d7;
@@ -30,7 +31,7 @@ li.milestone .info .date {
  font-style: italic;
  margin: 0;
 }
-li.milestone .info .progress { margin: 1em; width: 40em }
+li.milestone .info .progress { margin: 1em; width: 40em; max-width: 80% }
 li.milestone .info dl {
  clear: both;
  float: left;

@@ -1,15 +1,16 @@
 @import url(code.css);
 
-#content { margin-top: 1.5em; width: 700px }
+#content { margin-top: 1.5em; width: 700px; max-width: 80% }
 
 #ticket { 
  background: #ffd;
  border: 1px outset #996;
  padding: 1em;
+ position: relative;
 }
 #ticket h1, #ticket h2 { margin: 0 }
 #ticket h2 { font-weight: normal; font-size: 150%; margin-bottom: 1em }
-#ticket .date { float: right; color: #996 }
+#ticket .date { color: #996; float: right; position: relative }
 
 #ticket table { table-layout: fixed; border-collapse: collapse; width: 100% }
 #ticket tr { border-bottom: 1px dotted #eed }

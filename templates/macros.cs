@@ -47,21 +47,21 @@
    if:block.type == 'unmod' ?><tbody class="unmod"><?cs
     each:line = block.base.lines ?><tr>
      <th class="base"><?cs var:#block.base.offset + name(line) + 1 ?></th>
-     <td class="base"><span><?cs var:line ?></span></td>
+     <td class="base"><span><?cs var:line ?></span>&nbsp;</td>
      <th class="chg"><?cs var:#block.changed.offset + name(line) + 1 ?></th>
-     <td class="chg"><span><?cs var:line ?></span></td>
+     <td class="chg"><span><?cs var:line ?></span>&nbsp;</td>
     </tr><?cs /each ?>
    </tbody><?cs
    elif:block.type == 'mod' ?><tbody class="mod"><?cs
     if:len(block.base.lines) >= len(block.changed.lines) ?><?cs
      each:line = block.base.lines ?><tr>
       <th class="base"><?cs var:#block.base.offset + name(line) + 1 ?></th>
-      <td class="base"><?cs var:line ?></td><?cs
+      <td class="base"><?cs var:line ?>&nbsp;</td><?cs
       if:len(block.changed.lines) >= name(line) + 1 ?><?cs
        each:changedline = block.changed.lines ?><?cs
         if:name(changedline) == name(line) ?>
          <th class="chg"><?cs var:#block.changed.offset + name(changedline) + 1 ?></th>
-         <td class="chg"><?cs var:changedline ?></td><?cs
+         <td class="chg"><?cs var:changedline ?>&nbsp;</td><?cs
         /if ?><?cs
        /each ?><?cs
       else ?>
@@ -75,7 +75,7 @@
        each:baseline = block.base.lines ?><?cs
         if:name(baseline) == name(line) ?>
          <th class="base"><?cs var:#block.base.offset + name(baseline) + 1 ?></th>
-         <td class="base"><?cs var:baseline ?></td><?cs
+         <td class="base"><?cs var:baseline ?>&nbsp;</td><?cs
         /if ?><?cs
        /each ?><?cs
       else ?>
@@ -83,7 +83,7 @@
        <td class="base">&nbsp;</td><?cs
       /if ?>
       <th class="chg"><?cs var:#block.changed.offset + name(line) + 1 ?></th>
-      <td class="chg"><?cs var:line ?></td>
+      <td class="chg"><?cs var:line ?>&nbsp;</td>
      </tr><?cs /each ?><?cs
     /if ?>
    </tbody><?cs
@@ -92,12 +92,12 @@
      <th class="base">&nbsp;</th>
      <td class="base">&nbsp;</td>
      <th class="chg"><?cs var:#block.changed.offset + name(line) + 1 ?></th>
-     <td class="chg"><ins><?cs var:line ?></ins></td>
+     <td class="chg"><ins><?cs var:line ?></ins>&nbsp;</td>
     </tr><?cs /each ?><?cs
    elif:block.type == 'rem' ?><tbody class="rem"><?cs
     each:line = block.base.lines ?><tr>
      <th class="base"><?cs var:#block.base.offset + name(line) + 1 ?></th>
-     <td class="base"><del><?cs var:line ?></del></td>
+     <td class="base"><del><?cs var:line ?></del>&nbsp;</td>
      <th class="chg">&nbsp;</th>
      <td class="chg">&nbsp;</td>
     </tr><?cs /each ?><?cs
@@ -110,7 +110,7 @@
     each:line = block.base.lines ?><tr>
      <th class="base"><?cs var:#block.base.offset + name(line) + #1 ?></th>
      <th class="chg"><?cs var:#block.changed.offset + name(line) + #1 ?></th>
-     <td class="base"><span><?cs var:line ?></span></td>
+     <td class="base"><span><?cs var:line ?></span>&nbsp;</td>
     </tr><?cs /each ?>
    </tbody>
    <?cs elif:block.type == 'mod' ?><tbody class="mod"><?cs
@@ -118,13 +118,13 @@
       if:name(line) == 0 ?>first<?cs /if ?>">
      <th class="base"><?cs var:#block.base.offset + name(line) + #1 ?></th>
      <th class="chg">&nbsp;</th>
-     <td class="base"><?cs var:line ?></td>
+     <td class="base"><?cs var:line ?>&nbsp;</td>
     </tr><?cs /each ?><?cs
     each:line = block.changed.lines ?><tr class="<?cs
       if:name(line) + 1 == len(block.changed.lines) ?> last<?cs /if ?>">
      <th class="base">&nbsp;</th>
      <th class="chg"><?cs var:#block.changed.offset + name(line) + #1 ?></th>
-     <td class="chg"><?cs var:line ?></td>
+     <td class="chg"><?cs var:line ?>&nbsp;</td>
     </tr><?cs /each ?>
    </tbody>
    <?cs elif:block.type == 'add' ?><tbody class="add"><?cs
@@ -133,7 +133,7 @@
       if:name(line) + 1 == len(block.changed.lines) ?> last ?><?cs /if ?>">
      <th class="base">&nbsp;</th>
      <th class="chg"><?cs var:#block.changed.offset + name(line) + #1 ?></th>
-     <td class="chg"><ins><?cs var:line ?></ins></td>
+     <td class="chg"><ins><?cs var:line ?></ins>&nbsp;</td>
     </tr><?cs /each ?>
    </tbody>
    <?cs elif:block.type == 'rem' ?><tbody class="rem"><?cs
@@ -142,7 +142,7 @@
       if:name(line) + 1 == len(block.base.lines) ?> last ?><?cs /if ?>">
      <th class="base"><?cs var:#block.base.offset + name(line) + 1 ?></th>
      <th class="chg">&nbsp;</th>
-     <td class="base"><del><?cs var:line ?></del></td>
+     <td class="base"><del><?cs var:line ?></del>&nbsp;</td>
     </tr><?cs /each ?>
    </tbody>
    <?cs /if ?><?cs
