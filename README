@@ -1,21 +1,22 @@
 About Trac
 ==========
-Trac is a minimalistic web-based software project management and issue
-tracking system. It provides an interface to revision control systems
-(Subversion), an integrated Wiki and convenient report facilities.
+Trac is a minimalistic web-based software project management and bug/issue
+tracking system. It provides an interface to the Subversion revision control
+systems, an integrated wiki, flexible issue tracking and convenient report
+facilities. 
 
 Trac is distributed using the GNU General Public License.
 
-For installation instructions, please see the INSTALL. 
+**For installation instructions, please see the INSTALL. **
 
-You might also want to take a look at RELEASE and ChangeLog.
+You might also want to take a look at the RELEASE and ChangeLog files for more
+information.
 
-For more information, please visit the main Trac web site:
+Otherwise, the primary source of information is the main Trac web site:
 
-http://trac.edgewall.com/
+ <http://trac.edgewall.com/>
 
-
-We hope you like it,
+We hope you enjoy it,
 
 /The Trac Team
 

@@ -1,43 +1,49 @@
-Trac 0.6-pre (unreleased) Release Notes
-=======================================
-March 2, 2004
+Trac 0.6 (Solanum) Release Notes
+================================
+March 23, 2004
 
-Edgewall Software is pleased to announce the release of Trac 0.6-pre.
+Edgewall Software is pleased to announce the release of Trac 0.6 'Solanum'.
 
 Trac is a minimalistic web-based software project management and bug/issue
-tracking system. It provides an interface to revision control systems
-(Subversion), an integrated Wiki and convenient report facilities. 
+tracking system. It provides an interface to the Subversion revision control
+systems, an integrated wiki, flexible issue tracking and convenient report
+facilities. 
 
-Trac allows wiki markup in issue descriptions and commit messages, to create 
-links and seamless references between bugs, tasks, changesets, files and wiki
-pages.  A timeline shows all project events in order, making getting an
-overview of the project and tracking progress very easy.
-
-The software is published under the GNU General Public License, and is
-available for download at:
-
-  <http://projects.edgewall.com/trac/download/>
-
-Please report problems and provide feedback using the issue tracker at: 
-
-  <http://projects.edgewall.com/trac/>
-
-For questions, comments and discussions, please use the Trac mailing list -
-list info, subscription and archive available at:
-
-  <http://lists.edgewall.com/mailman/listinfo/trac/>
+Trac allows wiki markup in issue descriptions and commit messages, creating
+links and useful structure between bugs, tasks, changesets, files and wiki
+pages.  A timeline view presents all project events in chronological order,
+making tracking progress or getting an overview of a project easy.
 
 For more information, please visit the main Trac web site:
 
   <http://trac.edgewall.com/> 
 
-Updates in This Release
------------------------
-This is primarily a bug fix  release, primarily fixing bugs found in 0.5.1.
-Highlights include performance improvements and cache-able CSS
-stylesheets.
+The software, published under the GNU General Public License, is
+available at:
 
-For complete details, see the ChangeLog at: 
+  <http://projects.edgewall.com/trac/download/>
+
+Please report problems and provide feedback in the project issue tracker: 
+
+  <http://projects.edgewall.com/trac/>
+
+For questions, comments and user discussions, please use the Trac mailing list
+. List information, subscription and archive available at:
+
+  <http://projects.edgewall.com/trac/wiki/MailingList>
+
+What's New
+----------
+Highlights in this release include:
+
+ * Trac now also supports reStructuredText (ReST) and HTML markup.
+ * RSS/XML support for timeline, reports and subversion changesets.
+ * Export report data for download.
+ * Many usability improvements.
+ * Colored, grouped reports.
+ * Powerful search capability.
+
+For complete release details, see the ChangeLog at: 
 
  <http://projects.edgewall.com/trac/wiki/ChangeLog>
 
@@ -45,26 +51,28 @@ About Edgewall
 --------------
 Edgewall Software is a small consulting business focusing on GNU/Linux and
 open source software services. Edgewall offers custom software development,
-technical consulting and commercial support, including support options for
-Trac. 
+Linux consulting and commercial support, including Trac and Subversion
+support.
 
 For more information, visit our web site at <http://www.edgewall.com/> 
 or email us at <mailto:info@edgewall.com>.
 
-Thank You
----------
-Many thanks to everyone who has already contributed to the project, even at
-this early stage. Also thanks to everyone providing the feedback that helps
-us make Trac better, easier to use and more effective.
+Acknowledgements
+----------------
+Many thanks to everyone who has, and continue to, contribute to the project.
+Also our thanks to all people providing feedback and bug reports that helps us
+make Trac better, easier to use and more effective. 
+Without your invaluable help, Trac would not evolve. Thank you.
 
-We hope this version Trac will prove itself useful to programmers all over the
-world and that it's improved from the last release. Let us know :-)
+Finally, we hope Trac will prove itself useful to like-minded programmers
+around the world, and of course that this release is an improvement over the
+last. 
 
-Cheers,
+Let us know. :-)
 
-The Trac Team <http://trac.edgewall.com/>
+/The Trac Team <http://trac.edgewall.com/>
 
 -- 
 Copyright (c) 2004 Edgewall Software
-Edgewall - Professional GNU/Linux & Open Source Consulting
+Edgewall Software - Professional GNU/Linux & Open Source Consulting
 <http://www.edgewall.com/>

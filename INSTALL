@@ -9,18 +9,22 @@ Dependencies
 The following dependencies have to be installed:
 
   * Python, version >= 2.1.
-  * subversion, version >= 0.37.
+  * Subversion, version >= 0.37. (>=1.0.1 recommended)
+  * Subversion Python bindings.
   * pysqlite, version >= 0.4.3 (>= 0.5 for better performance)
   * ClearSilver, version >= 0.9.3
-  * A CGI-capable web server (only tested with Apache)
+  * A CGI-capable web server (We QA-test on Apache)
 
 Installing Trac
 ---------------
         $ python ./setup.py install
 
 This will byte-compile the python source code and install it in the
-site-packages directory of your python installation. The directories templates,
-htdocs and wiki-default will be copied into $prefix/share/trac/ .
+site-packages directory of your python installation. The directories
+cgi-bin, templates, htdocs and wiki-default will all be copied into
+$prefix/share/trac/ .
+
+For more install configuration options, run 'python ./setup.py --help'.
 
 Initializing the database
 -------------------------
