@@ -272,7 +272,7 @@ class Ticket (Module):
             self.perm.assert_permission (perm.TICKET_MODIFY)
             old = self.get_ticket(id, 0)
             new = {}
-            for name in self.args:
+            for name in self.args.keys():
                 new[name] = self.args[name].value
             self.save_changes (id, old, new)
             self.req.redirect(self.env.href.ticket(id))

@@ -85,19 +85,30 @@ class Browser(Module):
                 'size'       : pretty_size(size),
                 'size_bytes' : size }
             if is_dir:
-                item['browser_href'] = self.env.href.browser(fullpath)
+                if rev_specified:
+                    item['browser_href'] = self.env.href.browser(fullpath, revision)
+                else:
+                    item['browser_href'] = self.env.href.browser(fullpath)
             else:
                 item['log_href'] = self.env.href.log(fullpath)
-                item['rev_href'] = self.env.href.file(fullpath, revision)
+                if rev_specified:
+                    item['rev_href'] = self.env.href.file(fullpath, revision)
+                else:
+                    item['rev_href'] = self.env.href.file(fullpath)
                 
             info.append(item)
         return info
             
-    def generate_path_links(self, path):
-        list = path[1:].split('/')
+    def generate_path_links(self, path, rev, rev_specified):
+        list = path.split('/')
         path = '/'
         self.req.hdf.setValue('browser.path.0', 'root')
-        self.req.hdf.setValue('browser.path.0.url' , self.env.href.browser(path))
+        if rev_specified:
+            self.req.hdf.setValue('browser.path.0.url',
+                                  self.env.href.browser(path, rev))
+        else:
+            self.req.hdf.setValue('browser.path.0.url',
+                                  self.env.href.browser(path))
         i = 0
         for part in list:
             i = i + 1
@@ -105,8 +116,12 @@ class Browser(Module):
                 break
             path = path + part + '/'
             self.req.hdf.setValue('browser.path.%d' % i, part)
-            self.req.hdf.setValue('browser.path.%d.url' % i,
-                                  self.env.href.browser(path))
+            if rev_specified:
+                self.req.hdf.setValue('browser.path.%d.url' % i,
+                                      self.env.href.browser(path, rev))
+            else:
+                self.req.hdf.setValue('browser.path.%d.url' % i,
+                                      self.env.href.browser(path))
         self.req.hdf.setValue('browser.path.%d.last' % (len(list) - 1), '1')
                 
 
@@ -117,15 +132,19 @@ class Browser(Module):
         path = self.args.get('path', '/')
         order = self.args.get('order', 'name')
         
-        if rev in ['head', 'latest', 'trunk']:
-            rev = fs.youngest_rev(self.fs_ptr, self.pool)
-            rev_specified = 1
-        elif not rev:
+        if not rev:
             rev_specified = 0
             rev = fs.youngest_rev(self.fs_ptr, self.pool)
-        else:
+        elif rev.lower() in ['head', 'latest', 'trunk']:
+            rev = fs.youngest_rev(self.fs_ptr, self.pool)
             rev_specified = 1
-            rev = int(rev)
+        else:
+            try:
+                rev = int(rev)
+                rev_specified = 1
+            except:
+                rev_specified = 0
+                rev = fs.youngest_rev(self.fs_ptr, self.pool)
             
         info = self.get_info(path, rev, rev_specified)
         if order == 'size':
@@ -148,7 +167,7 @@ class Browser(Module):
 
         add_dictlist_to_hdf(info, self.req.hdf, 'browser.items')
 
-        self.generate_path_links(path)
+        self.generate_path_links(path, rev, rev_specified)
 
         if path != '/':
             parent = string.join(path.split('/')[:-2], '/') + '/'

@@ -206,6 +206,9 @@ class TracHTTPRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler,
     def do_POST(self):
         self.do_trac_req()
 
+    def do_HEAD(self):
+        self.do_GET()
+        
     def do_GET(self):
         if self.path[0:13] == '/':
             self.do_project_index()

@@ -118,7 +118,7 @@ def parse_args(command, path_info, query_string,
                fp=None, env = None, _headers=None):
     if not env:
         env = {'REQUEST_METHOD': command, 'QUERY_STRING': query_string}
-    if command == 'GET':
+    if command in ['GET', 'HEAD']:
         _headers = None
     args = TracFieldStorage(fp, environ=env, headers=_headers)
     parse_path_info(args, path_info)
@@ -271,7 +271,8 @@ class Request:
         if len(cookie):
             self.send_header('Set-Cookie', cookie)
         self.end_headers()
-        self.write(data)
+        if self.command != 'HEAD':
+            self.write(data)
 
     def read(self, len):
         assert 0
@@ -285,6 +286,7 @@ class CGIRequest(Request):
         self.cgi_location = os.getenv('SCRIPT_NAME')
         self.remote_addr = os.getenv('REMOTE_ADDR')
         self.remote_user = os.getenv('REMOTE_USER')
+        self.command = os.getenv('REQUEST_METHOD')
         if os.getenv('HTTP_COOKIE'):
             self.incookie.load(os.getenv('HTTP_COOKIE'))
         if os.getenv('HTTP_HOST'):
@@ -398,7 +400,7 @@ def real_cgi_start():
             pass
             
     # Parse arguments
-    args = parse_args(os.getenv('REQUEST_METHOD'),
+    args = parse_args(req.command,
                       path_info, os.getenv('QUERY_STRING'),
                       sys.stdin, os.environ)
     add_args_to_hdf(args, req.hdf)
