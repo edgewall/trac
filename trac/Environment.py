@@ -228,7 +228,7 @@ class Environment:
         for file in files:
             p = '%s.%d' % (prefix, idx)
             hdf.setValue(p + '.name', file['filename'])
-            hdf.setValue(p + '.descr', wiki_to_oneliner(file['description'], hdf, self,self.get_db_cnx))
+            hdf.setValue(p + '.descr', wiki_to_oneliner(file['description'], hdf, self,self.get_db_cnx() ))
             hdf.setValue(p + '.author', util.escape(file['author']))
             hdf.setValue(p + '.ipnr', file['ipnr'])
             hdf.setValue(p + '.size', util.pretty_size(file['size']))
