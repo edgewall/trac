@@ -236,8 +236,8 @@ class WikiModule(Module):
             # Not reached
 
         self.req.hdf.setValue('wiki.name', name)
-        self.req.hdf.setValue('wiki.author', author)
-        self.req.hdf.setValue('wiki.comment', comment)
+        self.req.hdf.setValue('wiki.author', escape(author))
+        self.req.hdf.setValue('wiki.comment', escape(comment))
         # Workaround so that we can attach files to wiki pages
         # even if the page name contains a '/'
         self.req.hdf.setValue('wiki.namedoublequoted',
