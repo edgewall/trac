@@ -17,13 +17,13 @@
     <input size="3" name="daysback" value="<?cs var:timeline.daysback ?>" />
     days back:
   <div id="timeline-prefs-checks">
-    <input type="checkbox" name="ticket" checked="<?cs var:timeline.ticket ?>" />
+    <input type="checkbox" name="ticket" <?cs var:timeline.ticket ?> />
     view ticket changes
   <br />
-    <input type="checkbox" name="changeset" checked="<?cs var:timeline.changeset ?>" />
+    <input type="checkbox" name="changeset" <?cs var:timeline.changeset ?> />
     view repository checkins
   <br />
-    <input type="checkbox" name="wiki" checked="<?cs var:timeline.wiki ?>" />
+    <input type="checkbox" name="wiki" <?cs var:timeline.wiki ?> />
    view wiki changes
   </div>
   <div id="timeline-prefs-btns">
