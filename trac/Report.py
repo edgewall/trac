@@ -400,6 +400,10 @@ class Report (Module):
                 self.create_report(self.args.get('title', ''),
                                    self.args.get('description', ''),
                                    self.args.get('sql', ''))
+
+        if id != -1 or action == 'new':
+            self.add_link('up', self.env.href.report(), 'Available Reports')
+
         if action == 'delete':
             self.render_confirm_delete(id)
         elif action == 'commit':

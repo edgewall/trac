@@ -224,6 +224,10 @@ class Milestone(Module):
         return milestone
 
     def render(self):
+        self.perm.assert_permission(perm.MILESTONE_VIEW)
+
+        self.add_link('up', self.env.href.roadmap(), 'Roadmap')
+
         action = self.args.get('action', 'view')
         id = self.args.get('id', -1)
 
@@ -274,8 +278,6 @@ class Milestone(Module):
         add_dict_to_hdf(milestone, self.req.hdf, 'milestone')
 
     def render_view(self, id):
-        self.perm.assert_permission(perm.MILESTONE_VIEW)
-
         if self.perm.has_permission(perm.MILESTONE_DELETE):
             self.req.hdf.setValue('milestone.href.delete',
                                    self.env.href.milestone(id, 'delete'))

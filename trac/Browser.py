@@ -134,12 +134,15 @@ class Browser(Module.Module):
                 continue
             path = path + part + '/'
             self.req.hdf.setValue('browser.path.%d' % i, part)
+            url = ''
             if rev_specified:
-                self.req.hdf.setValue('browser.path.%d.url' % i,
-                                      self.env.href.browser(path, rev))
+                url = self.env.href.browser(path, rev)
             else:
-                self.req.hdf.setValue('browser.path.%d.url' % i,
-                                      self.env.href.browser(path))
+                url = self.env.href.browser(path)
+            self.req.hdf.setValue('browser.path.%d.url' % i, url)
+            if i == len(list) - 1:
+                self.add_link('up', url, 'Parent directory')
+
         self.req.hdf.setValue('browser.path.%d.last' % (len(list) - 1), '1')
 
 

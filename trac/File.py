@@ -94,7 +94,7 @@ class FileCommon(Module.Module):
 class Attachment(FileCommon):
     def get_attachment_parent_link(self):
         if self.attachment_type == 'ticket':
-            return ('#' + self.attachment_id,
+            return ('Ticket #' + self.attachment_id,
                     self.env.href.ticket(int(self.attachment_id)))
         elif self.attachment_type == 'wiki':
             return (self.attachment_id,
@@ -175,6 +175,7 @@ class Attachment(FileCommon):
 
     def display(self):
         text, link = self.get_attachment_parent_link()
+        self.add_link('up', link, text)
         self.req.hdf.setValue('file.attachment_parent', text)
         self.req.hdf.setValue('file.attachment_parent_href', link)
         if self.view_form:
@@ -218,12 +219,14 @@ class File(FileCommon):
                 continue
             path = path + part + '/'
             self.req.hdf.setValue('file.path.%d' % i, part)
+            url = ''
             if rev_specified:
-                self.req.hdf.setValue('file.path.%d.url' % i,
-                                      self.env.href.browser(path, rev))
+                url = self.env.href.browser(path, rev)
             else:
-                self.req.hdf.setValue('file.path.%d.url' % i,
-                                      self.env.href.browser(path))
+                url = self.env.href.browser(path)
+            self.req.hdf.setValue('file.path.%d.url' % i, url)
+            if i == len(list) - 1:
+                self.add_link('up', url, 'Parent directory')
 
     def display(self):
         self.authzperm.assert_permission(self.path)

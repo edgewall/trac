@@ -98,12 +98,15 @@ class Log (Module):
                 continue
             path = path + part + '/'
             self.req.hdf.setValue('log.path.%d' % i, part)
+
+            url = ''
             if rev_specified:
-                self.req.hdf.setValue('log.path.%d.url' % i,
-                                      self.env.href.browser(path, rev))
+                url = self.env.href.browser(path, rev)
             else:
-                self.req.hdf.setValue('log.path.%d.url' % i,
-                                      self.env.href.browser(path))
+                url = self.env.href.browser(path)
+            self.req.hdf.setValue('log.path.%d.url' % i, url)
+            if i == len(list) - 1:
+                self.add_link('up', url, 'Parent directory')
 
     def render (self):
         self.perm.assert_permission (perm.LOG_VIEW)
