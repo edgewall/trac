@@ -132,6 +132,15 @@ class Search(Module):
                        self.query_to_sql(query, 'description'),
                        self.query_to_sql(query, 'reporter'),
                        self.query_to_sql(query, 'cc')))
+            # Ticket comments
+            q.append('SELECT 2 as type, a.summary AS title, '
+                     ' b.newvalue AS message, a.reporter AS author,'
+                     ' a.keywords as keywords,'
+                     ' a.id AS data, a.time AS time,0 AS ver'
+                     ' FROM ticket a, ticket_change b'
+                     ' WHERE a.id = b.ticket AND b.field=\'comment\' AND %s' %
+                      (self.query_to_sql(query, 'b.newvalue')))
+
         if wiki:
             q.append('SELECT 3 as type, text AS title, text AS message,'
                      ' author, \'\' AS keywords, w1.name AS data, time,'

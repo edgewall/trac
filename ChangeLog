@@ -1,3 +1,16 @@
+Trac 0.7.1 'Argento'  (Jun, 2004)
+http://svn.edgewall.com/repos/trac/tags/trac-0.7.1
+
+ * Bugfixes for 0.7
+ * Fixes security hole in auth.py
+ * Experimental support for mod_python
+ * Improved MIME-types
+ * Fixed bugs: #93, #202, #307, #312, #342, #345, #350, #353, #355, #391,
+	#393, #401, #404, #406, #415, #417, #419, #420, #421, #422, #424,
+	#425, #428, #429, #432, #435, #437, #441, #442, #448, #451, #452,
+	#456, #457, #461, #463, #466, #467, #470, #, #497, #498, #502,
+	#504
+
 Trac 0.7 'Fulci'  (May 18, 2004)
 http://svn.edgewall.com/repos/trac/tags/trac-0.7
 
