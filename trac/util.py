@@ -203,6 +203,8 @@ def pretty_age(then):
              (60,              'minute', 'minutes'))
     now = time.time()
     age_s = int(now - then)
+    if age_s < 60:
+        return '%i second%s' % (age_s, age_s > 1 and 's' or '')
     for u, unit, unit_plural in units:
         r = int(age_s / u)
         if r:
