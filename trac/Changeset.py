@@ -55,9 +55,6 @@ class BaseDiffEditor(svn.delta.Editor):
     def open_file(self, path, parent_baton, base_revision, file_pool):
         return [path, path, file_pool]
 
-        if file_baton:
-            self.print_diff(*file_baton)
-
 
 class HtmlDiffEditor(BaseDiffEditor):
     """
