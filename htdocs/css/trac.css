@@ -33,8 +33,15 @@ span.underline { text-decoration: underline; }
 }
 /* Forms */
 input,textarea,select { background: #fff; margin: 2px;}
-input[type="submit"]:hover,input[type="reset"]:hover,a.fake-button:hover { background: #ccb; }
-input[type="submit"],input[type="reset"],.fake-button,a.fake-button {
+input[type="submit"]:hover,input[type="reset"]:hover { background: #ccb; }
+input[type="submit"],input[type="reset"]{
+ background: #eee;
+ color: #222;
+ border: 1px outset #ccc;
+ padding: .1em .5em;
+}
+a.fake-button:hover { background: #ccb; }
+.fake-button,a.fake-button {
  background: #eee;
  color: #222;
  border: 1px outset #ccc;
@@ -107,8 +114,10 @@ legend {
   margin: 0;
 }
 .menulist {
+  float: left;
   padding: 0;
   margin: 0;
+  margin-bottom: 2px;
   border: 1px outset #d7d7d7;
   font-size: 11px;
   white-space: nowrap;
