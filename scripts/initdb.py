@@ -208,7 +208,7 @@ VALUES('ticket', 'default_component', 'general');
 INSERT INTO config (section, name, value)
 VALUES('header_logo', 'link', 'http://trac.edgewall.com/');
 INSERT INTO config (section, name, value)
-VALUES('header_logo', 'src', 'trac_logo.png');
+VALUES('header_logo', 'src', 'trac_banner.png');
 INSERT INTO config (section, name, value)
 VALUES('header_logo', 'alt', 'Trac');
 INSERT INTO config (section, name, value)
