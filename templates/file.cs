@@ -34,8 +34,8 @@
 
   <?cs if $file.max_file_size_reached ?>
     <div id="main-footer">
-     Note: File truncated, only the first <?cs var:$file.max_file_size  ?>
-     bytes displayed.
+     <b>Note:</b> HTML preview not available, since file-size exceeds <?cs var:$file.max_file_size  ?> bytes.
+         Try <a href="?format=raw">downloading the file</a> instead.
     </div>
   <?cs /if ?>
  </div>

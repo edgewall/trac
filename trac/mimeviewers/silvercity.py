@@ -26,6 +26,11 @@
 import StringIO
 
 supported_types = [               
+    (1, 'application/x-httpd-php'),
+    (1, 'application/x-httpd-php4'),
+    (1, 'application/x-httpd-php3'),
+    (7, 'application/x-javascript'),
+    (7, 'image/svg+xml'),
     (1, 'text/css'),
     (1, 'text/html'),
     (1, 'text/x-asp'),
@@ -36,9 +41,6 @@ supported_types = [
     (1, 'text/x-perl'),
     (1, 'text/x-php'),
     (1, 'text/x-psp'),
-    (1,  'application/x-httpd-php'),
-    (1,  'application/x-httpd-php4'),
-    (1,  'application/x-httpd-php3'),
     (1, 'text/x-python'),
     (1, 'text/x-ruby'),
     (1, 'text/x-sql'),
@@ -49,6 +51,7 @@ supported_types = [
 
 type_lang = { 'text/css':['CSS'],
               'text/html':['HyperText', {'asp.default.language':1}],
+              'application/x-javascript':['CPP'], # Kludgy.
               'text/x-asp':['HyperText', {'asp.default.language':2}],
               'text/x-c++hdr':['CPP'],
               'text/x-c++src':['CPP'],
@@ -56,12 +59,16 @@ type_lang = { 'text/css':['CSS'],
               'text/x-csrc':['CPP'],
               'text/x-perl':['Perl'],
               'text/x-php':['HyperText', {'asp.default.language':4}],
+              'application/x-httpd-php':['HyperText', {'asp.default.language':4}],
+              'application/x-httpd-php4':['HyperText', {'asp.default.language':4}],
+              'application/x-httpd-php3':['HyperText', {'asp.default.language':4}],
               'text/x-psp':['HyperText', {'asp.default.language':3}],
               'text/x-python':['Python'],
               'text/x-ruby':['Ruby'],
               'text/x-sql':['SQL'],
               'text/xml':['XML'],
               'text/xslt':['XSLT'],
+              'image/svg+xml':['XML'],
               }
 
 def display(data, mimetype, filename, env):

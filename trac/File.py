@@ -36,36 +36,49 @@ from Module import Module
 
 class FileCommon(Module):
     CHUNK_SIZE = 4096
-    MAX_FILE_SIZE = 128 * 1024
-    
+    DISP_MAX_FILE_SIZE = 256 * 1024
+
+    filename = None
+    mime_type = None
     def render (self):
         self.perm.assert_permission (perm.FILE_VIEW)
 
     def display(self):
-        if self.mime_type and self.mime_type[:6] == 'image/':
-            self.req.hdf.setValue('file.highlighted_html',
-                                  '<hr /><img src="?format=raw">')
-        elif self.mime_type and self.mime_type != 'application/octet-stream':
-            data = self.read_func(self.MAX_FILE_SIZE)
-            if len(data) == self.MAX_FILE_SIZE:
-                self.req.hdf.setValue('file.max_file_size_reached', '1')
-                self.req.hdf.setValue('file.max_file_size',
-                                      str(self.MAX_FILE_SIZE))
-            self.req.hdf.setValue('file.highlighted_html',
-                                  self.env.mimeview.display(data, self.mime_type))
+#         if self.mime_type and self.mime_type[:6] == 'image/':
+#             self.req.hdf.setValue('file.highlighted_html',
+#                                   '<hr /><img src="?format=raw">')
+#         elif self.mime_type and self.mime_type != 'application/octet-stream':
+        self.env.log.debug("Displaying file: %s  mime-type: %s" % (self.filename,
+                                                            self.mime_type))
+        data = self.read_func(self.DISP_MAX_FILE_SIZE)
+        if len(data) == self.DISP_MAX_FILE_SIZE:
+            self.req.hdf.setValue('file.max_file_size_reached', '1')
+            self.req.hdf.setValue('file.max_file_size', str(self.DISP_MAX_FILE_SIZE))
+            vdata = ' '
+        else:
+            vdata = self.env.mimeview.display(data, filename=self.filename,
+                                              mimetype=self.mime_type)
+        self.req.hdf.setValue('file.highlighted_html', vdata)
         self.req.display('file.cs')
 
     def display_raw(self):
         self.req.send_response(200)
         self.req.send_header('Content-Type', self.mime_type)
-        self.req.send_header('Conten-Length', str(self.length))
+        self.req.send_header('Content-Length', str(self.length))
         self.req.send_header('Last-Modified', self.last_modified)
+        self.req.send_header('Pragma', 'no-cache')
+        self.req.send_header('Expires', 'Mon, 26 Jul 1997 05:00:00 GMT')
+        self.req.send_header('Cache-Control',
+                             'no-store, no-cache, must-revalidate, max-age=0')
+        self.req.send_header('Cache-Control', 'post-check=0, pre-check=0')
         self.req.end_headers()
+        i = 0
         while 1:
             data = self.read_func(self.CHUNK_SIZE)
             if not data:
                 break
             self.req.write(data)
+            i += self.CHUNK_SIZE
     
 class Attachment(FileCommon):
     def render(self):
@@ -83,8 +96,7 @@ class Attachment(FileCommon):
             f = open(self.path, 'rb')
         except IOError:
             raise util.TracError('Attachment not found')
-        
-        self.mime_type, enc = mimetypes.guess_type(self.filename)
+
         stat = os.fstat(f.fileno())
         self.length = stat[6]
         self.last_modified = time.strftime("%a, %d %b %Y %H:%M:%S GMT",
@@ -106,6 +118,7 @@ class File(FileCommon):
         # FIXME: Browser, Log and File should share implementation of this
         # function.
         list = self.path.split('/')
+        self.filename = list[-1]
         path = '/'
         self.req.hdf.setValue('file.filename', list[-1])
         self.req.hdf.setValue('file.path.0', '[root]')

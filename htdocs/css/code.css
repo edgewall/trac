@@ -3,6 +3,9 @@
   padding: .5em 1em;
   margin: 1em 0;
 }
+.image-file { margin: 1em; }
+.image-file-frame { }
+.image-file-frame img {  border: 15px solid #d7d7d7; }
 .code_default { font-family: monospace; font-size: 9px; }
 .css_class { color: #900000; }
 .css_comment { color: green; font-style: italic; }

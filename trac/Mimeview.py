@@ -29,6 +29,7 @@ MIME_MAP = {
     'h':'text/x-chdr',
     'cc':'text/x-c++src', 'cpp':'text/x-c++src', 'CC':'text/x-c++src',
     'hh':'text/x-c++hdr', 'HH':'text/x-c++hdr',  'hpp':'text/x-c++hdr',
+    'js':'application/x-javascript',
     'pl':'text/x-perl',
     'php':'text/x-php', 'php4':'text/x-php', 'php3':'text/x-php',
     'psp':'text/x-psp',

@@ -1,1 +1,1 @@
-__all__=['default', 'silvercity', 'test']
+__all__=['default', 'silvercity', 'test', 'image']
