@@ -139,5 +139,5 @@ def execute(hdf, text, env):
     _inliner = rst.states.Inliner(roles = local_roles)
     _parser = rst.Parser(inliner = _inliner)
 
-    html = publish_string(text, writer_name = 'html', parser = _parser)
+    html = publish_string(text, writer_name = 'html', parser = _parser, enable_exit=0)
     return html[html.find('<body>')+6:html.find('</body>')].strip()
