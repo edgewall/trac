@@ -19,46 +19,60 @@
 #
 # Author: Jonas Borgström <jonas@edgewall.com>
 
-import time
-
 import os
 import sys
+import time
 import util
+from StringIO import StringIO
+from zipfile import ZipFile, ZipInfo, ZIP_DEFLATED
+
+import svn
+import svn.delta
+
 import Diff
 import perm
 import Module
 from WikiFormatter import wiki_to_html
 
-import svn.delta
-import svn
 
-class HtmlDiffEditor (svn.delta.Editor):
+class BaseDiffEditor(svn.delta.Editor):
     """
-    generates a htmlized unified diff of the changes for a given changeset.
-    the output is written to stdout.
+    Base class for diff renderers.
     """
-    def __init__(self, old_root, new_root, rev, req, args, env, authzperm):
+
+    def __init__(self, old_root, new_root, rev, req, args, env):
         self.old_root = old_root
         self.new_root = new_root
         self.rev = rev
         self.req = req
         self.args = args
         self.env = env
-        self.authzperm = authzperm
         self.fileno = 0
 
-    def print_diff (self, old_path, new_path, pool):
+    def add_file(self, path, parent_baton, copyfrom_path,
+                 copyfrom_revision, file_pool):
+        return [None, path, file_pool]
+
+    def open_file(self, path, parent_baton, base_revision, file_pool):
+        return [path, path, file_pool]
+
+    def apply_textdelta(self, file_baton, base_checksum):
+        if file_baton:
+            self.print_diff(*file_baton)
+
+
+class HtmlDiffEditor(BaseDiffEditor):
+    """
+    Generates a htmlized unified diff of the changes for a given changeset.
+    the output is written to stdout.
+    """
+
+    def print_diff(self, old_path, new_path, pool):
         if not old_path or not new_path:
             return
 
         old_rev = svn.fs.node_created_rev(self.old_root, old_path, pool)
         new_rev = svn.fs.node_created_rev(self.new_root, new_path, pool)
-
-        options = Diff.get_options(self.env, self.req, self.args, 1)
-
-        # Make sure we have permission to view this diff
-        if not self.authzperm.has_permission(new_path):
-            return
 
         # Try to figure out the charset used. We assume that both the old
         # and the new version uses the same charset, not always the case
@@ -73,9 +87,11 @@ class HtmlDiffEditor (svn.delta.Editor):
             charset = mime_type[ctpos + 8:]
             self.log.debug("Charset %s selected" % charset)
         else:
-            charset = self.env.get_config('trac', 'default_charset', 'iso-8859-15')
+            charset = self.env.get_config('trac', 'default_charset',
+                                          'iso-8859-15')
 
         # Start up the diff process
+        options = Diff.get_options(self.env, self.req, self.args, 1)
         differ = svn.fs.FileDiff(self.old_root, old_path, self.new_root,
                                  new_path, pool, options)
         differ.get_files()
@@ -105,28 +121,14 @@ class HtmlDiffEditor (svn.delta.Editor):
                 os.waitpid(-1, 0)
             except OSError: pass
 
-    def add_file(self, path, parent_baton, copyfrom_path,
-                 copyfrom_revision, file_pool):
-        return [None, path, file_pool]
 
-    def open_file(self, path, parent_baton, base_revision, file_pool):
-        return [path, path, file_pool]
-
-    def apply_textdelta(self, file_baton, base_checksum):
-        self.print_diff (*file_baton)
-
-
-class UnifiedDiffEditor(HtmlDiffEditor):
+class UnifiedDiffEditor(BaseDiffEditor):
     """
-    generates a unified diff of the changes for a given changeset.
+    Generates a unified diff of the changes for a given changeset.
     the output is written to stdout.
     """
 
-    def __init__(self, old_root, new_root, rev, req, args, env, authzperm):
-        HtmlDiffEditor.__init__(self, old_root, new_root, rev, req, args, env, authzperm)
-        self.output = req
-
-    def print_diff (self, old_path, new_path, pool):
+    def print_diff(self, old_path, new_path, pool):
         options = ['-u']
         options.append('-L')
         options.append("%s\t(revision %d)" % (old_path, self.rev-1))
@@ -134,18 +136,59 @@ class UnifiedDiffEditor(HtmlDiffEditor):
         options.append("%s\t(revision %d)" % (new_path, self.rev))
 
         differ = svn.fs.FileDiff(self.old_root, old_path,
-                             self.new_root, new_path, pool, options)
+                                 self.new_root, new_path, pool, options)
         differ.get_files()
         pobj = differ.get_pipe()
         line = pobj.readline()
         while line:
-            self.output.write(line)
+            self.req.write(line)
             line = pobj.readline()
         pobj.close()
         if sys.platform[:3] != "win" and sys.platform != "os2emx":
             try:
                 os.waitpid(-1, 0)
             except OSError: pass
+
+
+class ZipDiffEditor(BaseDiffEditor):
+    """
+    Generates a ZIP archive containing the modified and added files.
+    """
+
+    def __init__(self, old_root, new_root, rev, req, args, env):
+        BaseDiffEditor.__init__(self, old_root, new_root, rev, req, args, env)
+        self.buffer = StringIO()
+        self.zip = ZipFile(self.buffer, 'w', ZIP_DEFLATED)
+
+    def add_file(self, path, parent_baton, copyfrom_path,
+                 copyfrom_revision, file_pool):
+        self._add_file_to_zip(path, file_pool)
+
+    def open_file(self, path, parent_baton, base_revision, file_pool):
+        self._add_file_to_zip(path, file_pool)
+
+    def close_edit(self):
+        self.zip.close()
+        self.req.write(self.buffer.getvalue())
+
+    def _add_file_to_zip(self, path, pool):
+        fd = svn.fs.file_contents(self.new_root, path, pool)
+        info = ZipInfo()
+        info.filename = path
+        date = svn.fs.revision_prop(svn.fs.root_fs(self.new_root), self.rev,
+                                    svn.util.SVN_PROP_REVISION_DATE, pool)
+        date = svn.util.svn_time_from_cstring(date, pool) / 1000000
+        date = time.localtime(date)
+        info.date_time = date[:6]
+        info.compress_type = ZIP_DEFLATED
+        data = ""
+        while 1:
+            chunk = svn.util.svn_stream_read(fd, 512)
+            if not chunk:
+                break
+            data = data + chunk
+        self.zip.writestr(info, data)
+
 
 class Changeset (Module.Module):
     template_name = 'changeset.cs'
@@ -183,6 +226,8 @@ class Changeset (Module.Module):
 
         self.add_link('alternate', '?format=diff', 'Unified Diff',
             'text/plain', 'diff')
+        self.add_link('alternate', '?format=zip', 'Zip Archive',
+            'application/zip', 'zip')
 
         youngest_rev = svn.fs.youngest_rev(self.fs_ptr, self.pool)
         if self.args.has_key('rev'):
@@ -233,10 +278,11 @@ class Changeset (Module.Module):
             raise util.TracError('Invalid revision number: %d' % int(self.rev))
 
         editor = editor_class(old_root, new_root, int(self.rev), self.req,
-                              self.args, self.env, self.authzperm)
+                              self.args, self.env)
         e_ptr, e_baton = svn.delta.make_editor(editor, self.pool)
 
-        def authz_cb(root, path, pool): return 1
+        def authz_cb(root, path, pool):
+            return self.authzperm.has_permission(path) and 1 or 0
         svn.repos.svn_repos_dir_delta(old_root, '', '',
                                       new_root, '', e_ptr, e_baton, authz_cb,
                                       0, 1, 0, 1, self.pool)
@@ -246,13 +292,22 @@ class Changeset (Module.Module):
         self.render_diffs()
         Module.Module.display(self)
 
-    def display_hdf(self):
-        self.render_diffs()
-        Module.Module.display_hdf(self)
-
-    def display_diff (self):
+    def display_diff(self):
         """Raw Unified Diff version"""
         self.req.send_response(200)
         self.req.send_header('Content-Type', 'text/plain;charset=utf-8')
+        self.req.send_header('Content-Disposition', 'filename=Changeset%d.diff' % self.rev)
         self.req.end_headers()
         self.render_diffs(UnifiedDiffEditor)
+
+    def display_zip(self):
+        """ZIP archive with all the added and/or modified files."""
+        self.req.send_response(200)
+        self.req.send_header('Content-Type', 'application/zip')
+        self.req.send_header('Content-Disposition', 'filename=Changeset%d.zip' % self.rev)
+        self.req.end_headers()
+        self.render_diffs(ZipDiffEditor)
+
+    def display_hdf(self):
+        self.render_diffs()
+        Module.Module.display_hdf(self)
