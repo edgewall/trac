@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import os
 from distutils.core import setup
 import trac
 
@@ -12,5 +13,6 @@ setup(name="trac",
       version=VERSION,
       license=LICENSE,
       url=URL,
-      packages=['trac'])
+      packages=['trac'],
+      scripts=[os.path.join('scripts', 'trac_admin.py')])
 
