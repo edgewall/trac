@@ -19,7 +19,7 @@
 #
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
-import re
+import re, threading
 import auth, core, Environment, Href, Session, Wiki
 from util import TracError
 from mod_python import apache, util
@@ -113,18 +113,20 @@ def init_env(req):
 
 
 projects = {}
+projects_lock = threading.Lock()
 
 def handler(req):
-    global projects
+    global projects, projects_lock
 
     mpr = ModPythonRequest(req)
     mpr.init_request()
 
-    # TODO Write access to the projects dict should be synchronized somehow
+    projects_lock.acquire()
     env = projects.get(req.filename, None)
     if not env:
         env = init_env(mpr)
         projects[req.filename] = env
+    projects_lock.release()
 
     args = TracFieldStorage(req)
     core.parse_path_info(args, req.path_info)
