@@ -28,3 +28,8 @@ dt.newticket, dt.newticket a { background-image: url(../newticket.png) }
 dt.closedticket, dt.closedticket a { background-image: url(../closedticket.png) }
 dt.wiki, dt.wiki a { background-image: url(../wiki.png) }
 dt.milestone, dt.milestone a { background-image: url(../milestone.png) }
+
+.diff-unmod { color: #000 }
+.diff-rem { color: #e00; }
+.diff-add { color: #2e2; }
+.diff-mod { color: #e84; }

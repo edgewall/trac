@@ -67,7 +67,7 @@
  <?cs call:day_separator(item.date) ?>
  <?cs if:item.type == #1 ?><!-- Changeset -->
   <?cs call:tlitem(item.href, 'changeset',
-    'Changeset <em>['+$item.idata+']</em> by '+$item.author, item.message) ?>
+    'Changeset <em>['+$item.idata+']</em> by '+$item.author,$item.node_list+item.message) ?>
  <?cs elif:item.type == #2 ?><!-- New ticket -->
   <?cs call:tlitem(item.href, 'newticket',
     'Ticket <em>#'+$item.idata+'</em> created by '+$item.author, item.message) ?>

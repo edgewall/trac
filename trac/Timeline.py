@@ -126,6 +126,30 @@ class Timeline (Module):
                                                                absurls=1))
                 item['message'] = wiki_to_oneliner(msg, self.req.hdf,
                                                    self.env, absurls=1)
+		if self.env.get_config('timeline', 'changeset_show_files','False').lower() in util.TRUE:
+		    cursor_node = self.db.cursor ()
+		    cursor_node.execute("SELECT name, change "
+		                        "FROM node_change WHERE rev=%d" % item['idata'])
+		    node_list = ''
+		    node_data = ''
+		    node_count = 0;
+		    while 1:
+			row_node = cursor_node.fetchone()
+			if not row_node:break
+			if node_count != 0:
+			    node_list += ', '
+			if node_count >= int(self.env.get_config('timeline', 'changeset_files_count','3')):
+			    node_list += '...'
+			    break
+		        if row_node['change'] == 'A':
+			    node_data = '<span class="diff-add">' + row_node['name'] + "</span>"
+			elif row_node['change'] == 'M':
+			    node_data = '<span class="diff-mod">' + row_node['name'] + "</span>"
+			elif row_node['change'] == 'D':
+			    node_data = '<span class="diff-rem">' + row_node['name'] + "</span>"
+			node_list += node_data
+			node_count += 1
+		    item['node_list'] = node_list + ': '
 
             elif item['type'] == WIKI:
                 item['href'] = self.env.href.wiki(row['tdata'])

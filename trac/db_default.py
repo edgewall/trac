@@ -443,5 +443,7 @@ default_config = \
   ('notification', 'smtp_always_cc', ''),
   ('notification', 'always_notify_reporter', 'false'),
   ('notification', 'smtp_from', 'trac@localhost'),
-  ('notification', 'smtp_replyto', 'trac@localhost'))
-
+  ('notification', 'smtp_replyto', 'trac@localhost'),
+  ('timeline', 'changeset_show_files', 'false'),
+  ('timeline', 'changeset_files_count', 3))
+   
