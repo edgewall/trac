@@ -12,6 +12,8 @@ h2 {
 /* Styles for the report list and the report results table
    (extends the styles for "table.listing") */
 #reportlist td.title { width: 100% }
+#reportlist tbody td :link, #reportlist tbody td :visited,
+#tktlist tbody td :link, #tktlist tbody td :visited { display: block }
 #tktlist { border-bottom: none }
 #tktlist thead th {
  border-bottom: 1px solid #d7d7d7;
@@ -23,15 +25,10 @@ h2 {
 #tktlist tbody td, #reportlist tbody td { padding: .1em }
 #tktlist tbody td a, #reportlist tbody td a { border-bottom: none }
 #tktlist tbody td.ticket :link, #tktlist tbody td.ticket :visited {
- display: block;
  font-weight: bold;
  padding: .1em .5em;
 }
-#tktlist tbody td.ticket :link:hover, #tktlist tbody td.ticket :visited:hover {
- background: #b00;
- color: #fff;
-}
-#tktlist tbody tr:hover { background: #d7d7d7; color: #000 }
+#tktlist tbody tr:hover { background: #eed; color: #000 }
 #tktlist tr.color1-odd  { background: #fdc; border-color: #e88; color: #a22 }
 #tktlist tr.color1-even { background: #fed; border-color: #e99; color: #a22 }
 #tktlist tr.color2-odd  { background: #ffb; border-color: #eea; color: #880 }
@@ -45,7 +42,7 @@ h2 {
 #tktlist tr.color6-odd  { background: #f0f0f0; border-color: #ddd; color: #888 }
 #tktlist tr.color6-even { background: #f7f7f7; border-color: #ddd; color: #888 }
 #tktlist tr.color6-odd a, .color6-even a { color: #b66 }
-#tktlist tbody td.fullrow { 
+#tktlist tbody td.fullrow {
  border: none;
  color: #333;
  background: #fff;

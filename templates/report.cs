@@ -141,6 +141,9 @@
            <?cs call:report_cell('ticket',
                                  '<a title="View ticket #'+$cell+'" href="'+
                                  $cell.ticket_href+'">#'+$cell+'</a>') ?>
+         <?cs elif name(cell) == "summary" ?>
+           <?cs call:report_cell('title', '<a title="View ticket" href="'+
+                                 $cell.ticket_href+'">'+$cell+'</a>') ?>
          <?cs elif name(cell) == "report" ?>
            <?cs call:report_cell('report',
                 '<a title="View Report" href="'+$cell.report_href+'">{'+$cell+'}</a>') ?>
