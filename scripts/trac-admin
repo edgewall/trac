@@ -340,6 +340,10 @@ class TracAdmin(cmd.Cmd):
     def _do_component_rename(self, name, newname):
         cnx = self.db_open()
         cursor = cnx.cursor ()
+        cursor.execute('SELECT name FROM component WHERE name=%s', name)
+        data = cursor.fetchone()
+        if not data:
+            raise Exception("No such component '%s'" % name)
         self.db_execsql("UPDATE component SET name='%s' WHERE name='%s'"
                         % (newname,name), cursor)
         self.db_execsql("UPDATE ticket SET component='%s' WHERE component='%s'"
@@ -347,10 +351,22 @@ class TracAdmin(cmd.Cmd):
         cnx.commit()
 
     def _do_component_remove(self, name):
+        cnx = self.db_open()
+        cursor = cnx.cursor ()
+        cursor.execute('SELECT name FROM component WHERE name=%s', name)
+        data = cursor.fetchone()
+        if not data:
+            raise Exception("No such component '%s'" % name)
         data = self.db_execsql("DELETE FROM component WHERE name='%s'"
                                % (name))
 
     def _do_component_set_owner(self, name, owner):
+        cnx = self.db_open()
+        cursor = cnx.cursor ()
+        cursor.execute('SELECT name FROM component WHERE name=%s', name)
+        data = cursor.fetchone()
+        if not data:
+            raise Exception("No such component '%s'" % name)
         data = self.db_execsql("UPDATE component SET owner='%s' WHERE name='%s'"
                                % (owner,name))
 
@@ -744,7 +760,7 @@ class TracAdmin(cmd.Cmd):
             else:    
                 self.do_help (type)
         except Exception, e:
-            print 'Priority %s failed:' % arg[0], e
+            print 'Command %s failed:' % arg[0], e
 
     def _do_enum_list(self, type):
         data = self.db_execsql("SELECT name FROM enum WHERE type='%s'"
@@ -877,6 +893,11 @@ class TracAdmin(cmd.Cmd):
                                " WHERE name='%(name)s'" % d)
 
     def _do_mile_ver_time(self, type, name, t):
+        d = {'name':name, 'type':type}
+        data = self.db_execsql("SELECT name FROM %(type)s" 
+                               " WHERE name='%(name)s'" % d)
+        if not data:
+            raise Exception, "No such %s '%s'" % (type, name)
         seconds = None
         t = t.strip()
         if t == 'now':
