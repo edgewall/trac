@@ -132,7 +132,19 @@ def module_factory(args, db, config, req, authname):
     module.authname = authname
     module.perm = perm.PermissionCache(db, authname)
     module.perm.add_to_hdf(req.hdf)
-    return module, need_svn
+    # Only open the subversion repository for the modules that really
+    # need it. This saves us some precious time.
+    if need_svn:
+        import sync
+        repos_dir = config['general']['repository_dir']
+        pool, rep, fs_ptr = open_svn_repos(repos_dir)
+        module.repos = rep
+        module.fs_ptr = fs_ptr
+        sync.sync(db, rep, fs_ptr, pool)
+        module.pool = pool
+    else:
+        module.pool = None
+    return module
 
 def open_database():
     import db
@@ -220,7 +232,6 @@ def open_svn_repos(repos_dir):
     return pool, rep, fs_ptr
 
 def real_main():
-    import sync
     import Href
     import perm
     import auth
@@ -239,6 +250,10 @@ def real_main():
     database = open_database()
     config = database.load_config()
 
+    # Let the wiki module build a dictionary of all page names
+    import Wiki
+    Wiki.populate_page_dict(database)
+    
     req = CGIRequest()
     req.init_request()
 
@@ -275,34 +290,21 @@ def real_main():
     # Parse arguments
     args = parse_args(os.getenv('REQUEST_METHOD'),
                       path_info, os.getenv('QUERY_STRING'),
-                      os.environ)
+                      sys.stdin, os.environ)
 
     # Load the selected module
-    module, need_svn = module_factory(args, database, config, req,
-                                      authenticator.authname)
+    module = module_factory(args, database, config, req,
+                            authenticator.authname)
     module.href = href
     module.remote_addr = remote_addr
     module.cgi_location = cgi_location
-
-    # Only open the subversion repository for the modules that really
-    # need it. This saves us some precious time.
-    if need_svn:
-        repos_dir = config['general']['repository_dir']
-        pool, rep, fs_ptr = open_svn_repos(repos_dir)
-        module.repos = rep
-        module.fs_ptr = fs_ptr
-        sync.sync(database, rep, fs_ptr, pool)
-        module.pool = pool
-    else:
-        module.pool = None
         
-    # Let the wiki module build a dictionary of all page names
-    import Wiki
-    Wiki.populate_page_dict(database)
-    try:
-        module.run()
-    except RedirectException:
-        pass
+    module.run()
+    # We do this even if the cgi will terminate directly after. A pool
+    # destruction might trigger important clean-up functions.
+    if module.pool:
+        svn.core.svn_pool_destroy(module.pool)
+
 
 def create_error_cgi():
     import neo_cgi
