@@ -196,7 +196,7 @@ class Formatter(CommonFormatter):
               r"""(?P<list>^(?P<ldepth>\s+)(?:\*|[0-9]+\.) )""",
               r"""(?P<indent>^(?P<idepth>\s+)(?=[^\s]))""",
               r"""(?P<imgurl>([a-z]+://[^ ]+)(\.png|\.jpg|\.jpeg|\.gif))""",
-              r"""(?P<url>([a-z]+://[^ ]+[^\., ]))""",
+              r"""(?P<url>([a-z]+://[^ ]+[^\., \)\]\}]))""",
               r"""(?P<table>\|\|.*\|\|)"""]
     
     _compiled_rules = re.compile('(?:' + string.join(_rules, '|') + ')')
@@ -231,7 +231,8 @@ class Formatter(CommonFormatter):
             macro = self.load_macro(name)
             return macro(self.hdf, args)
         except Exception, e:
-            return 'Macro %s(%s) failed: %s' % (name, args, e)
+            return '<span class="wiki-error">Macro %s(%s) failed: %s</span' \
+                   % (name, args, e)
 
     def _heading_formatter(self, match, fullmatch):
         depth = min(len(fullmatch.group('hdepth')), 5)
@@ -338,7 +339,7 @@ class Formatter(CommonFormatter):
             self.in_code_block = 1
             self.code_processor = None
             self.code_text = ''
-        elif line == '}}}':
+        elif line.strip() == '}}}':
             self.in_code_block = 0
             if self.code_processor:
                 self.close_paragraph()
@@ -354,7 +355,7 @@ class Formatter(CommonFormatter):
                     except Exception, e:
                         self.code_text += os.linesep + line
                         self.code_processor = Formatter.builtin_processors['default']
-                        self.out.write('<pre>Failed to load processor macro %s: %s</pre>' % (name, e))
+                        self.out.write('<div class="wiki-error">Failed to load processor macro %s: %s</div>' % (name, e))
             else:
                 self.code_text += os.linesep + line
                 self.code_processor = Formatter.builtin_processors['default']
@@ -375,7 +376,7 @@ class Formatter(CommonFormatter):
         
         for line in text.splitlines():
             # Handle code block
-            if self.in_code_block or line == '{{{':
+            if self.in_code_block or line.strip() == '{{{':
                 self.handle_code_block(line)
                 continue
             # Handle Horizontal ruler
