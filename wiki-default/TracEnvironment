@@ -1,0 +1,42 @@
+= Trac Storage - The Environment =
+Trac uses a directory structure and an embedded [http://www.sqlite.org/ SQLite] database as storage.
+
+
+== Directory Structure ==
+{{{
+ EnvDir
+   |-- README
+   |-- VERSION
+   |-- attachments
+   |   |-- ticket
+   |   `-- wiki
+   |-- conf
+   |   `-- trac.ini
+   |-- db
+   |   `-- trac.db
+   |-- log
+   |   `-- trac.log
+   |-- templates
+   |   |-- site_css.cs
+   |   |-- site_footer.cs
+   |   `-- site_header.cs
+   `-- wiki-macros
+}}}
+
+ * '''README''' - Brief description of the environment.
+ * '''VERSION''' - Contains the environment version identifier.
+ * '''attachments''' - All attached files go in here.
+   * '''ticket''' - Ticket attachments.
+   * '''wiki''' - Wiki attachments.
+ * '''conf'''
+   * '''trac.ini''' - Main configuration file. See TracIni.
+ * '''db'''
+   * '''trac.db''' - SQLite database.
+ * '''templates''' - Custom (environment-specific) templates.
+   * '''site_css.cs''' - Custom CSS stylesheet.
+   * '''site_footer.cs''' - Custom footer.
+   * '''site_header.cs''' - Custom header.
+ * '''wiki-macros''' - Environment-specific WikiMacros.
+
+----
+See also: TracBackup, TracIni, TracGuide

@@ -1,0 +1,16 @@
+= Trac Ticket Queries =
+
+In addition to [wiki:TracReports reports], Trac provides support for custom ticket queries that can be used to display lists of tickets meeting specific criteria. To configure and execute a custom query, switch to the ''View Tickets'' module from the navigation bar, and select the ''Custom Query'' link.
+
+== Query Form ==
+
+You will be presented a form that lets you select or enter values for any of the ticket properties (both built-in and custom). Any value selected/entered in this form will be used to constrain the list of tickets to only those of which the properties have been set to the selected values.
+
+== Results Display ==
+
+After executing the search, you will be presented a list of tickets meeting the criteria just defined. By default, the list is sorted by priority, but you can change the sorting to any other visible column by clicking on the corresponding column header. Clicking on the same header again will reverse the sorting.
+
+You can also go back to the query form by clicking ''Refine Query''.
+
+----
+See also: TracTickets, TracReports, TracGuide

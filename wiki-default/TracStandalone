@@ -1,0 +1,29 @@
+= Tracd =
+
+Tracd is a lightweight stand-alone Trac server. In most cases it's easier to setup and runs faster than trac.cgi.
+
+== Pros ==
+
+ * Fewer dependencies: You don't need to install apache or any other web-server.
+ * Fast: Should be as fast as the ModPython version (much faster than the cgi).
+
+== Cons ==
+
+ * Less features: Tracd implements a very simple web-server and is not as configurable as apache.
+ * Only htdigest authentication: Tracd can currently only authenticate users against apache-htdigest files.
+ * No native https support: [http://www.rickk.com/sslwrap/ sslwrap] can be used instead.
+
+== Usage examples ==
+
+A single project on port 8080. (http://localhost:8080/)
+{{{
+ $ tracd -p 8080 /path/to/project
+}}}
+With more than one project. (http://localhost:8080/project1/ and http://localhost:8080/project2/)
+{{{
+ $ tracd -p 8080 /path/to/project1 /path/to/project2
+}}}
+With htdigest authentication. The file /tmp/users.htdigest contain user accounts for project1 with the realm "mycompany.com".
+{{{
+ $ tracd -p 8080 --auth project1,/tmp/users.htdigest,mycompany.com /path/to/project1
+}}}

@@ -15,6 +15,7 @@ import getopt
 # Pages to include in distribution
 wiki_pages = [
  "CamelCase",
+ "ModPython",
  "RecentChanges",
  "TitleIndex",
  "TracAccessibility",
@@ -38,9 +39,12 @@ wiki_pages = [
  "TracOnGentoo",
  "TracOnRedhat",
  "TracPermissions",
+ "TracQuery",
  "TracReports",
+ "TracRoadmap",
  "TracRss",
  "TracSearch",
+ "TracStandalone",
  "TracSupport",
  "TracSyntaxColoring",
  "TracTickets",
