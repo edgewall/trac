@@ -34,8 +34,8 @@ class Module:
         
     def render (self):
         """
-        this function can be overridden to fill self.namespace with
-        useful content.
+        Override this function to add data the template requires
+        to self.cgi.hdf.
         """
         pass
 
@@ -59,6 +59,7 @@ class Module:
         self.cgi.hdf.setValue('svntrac.href.timeline', href.timeline())
         self.cgi.hdf.setValue('svntrac.href.report', href.report())
         self.cgi.hdf.setValue('svntrac.href.newticket', href.newticket())
+        self.cgi.hdf.setValue('svntrac.href.search', href.search())
         self.cgi.hdf.setValue('svntrac.href.login', href.login())
         self.cgi.hdf.setValue('svntrac.href.logout', href.logout())
         

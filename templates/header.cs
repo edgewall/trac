@@ -60,6 +60,9 @@ topmargin="0" bottommargin="0" link="#aa0000" alink="#cc0000" vlink="#880000">
       <?cs if ? $svntrac.acl.REPORT_VIEW ?>
         <?cs call:link("Reports", $svntrac.href.report, "report") ?>
       <?cs /if ?>
+      <?cs if ? $svntrac.acl.SEARCH_VIEW ?>
+        <?cs call:link("Search", $svntrac.href.search, "search") ?>
+      <?cs /if ?>
       <?cs if ? $svntrac.acl.TICKET_CREATE ?>
         <?cs call:link("New Ticket", $svntrac.href.newticket, "newticket") ?>
       <?cs /if ?>

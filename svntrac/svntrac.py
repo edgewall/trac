@@ -39,6 +39,7 @@ modules = {
     'log'         : ('Log', 'Log', 1),
     'file'        : ('File', 'File', 1),
     'wiki'        : ('Wiki', 'Wiki', 0),
+    'search'      : ('Search', 'Search', 0),
     'report'      : ('Report', 'Report', 0),
     'ticket'      : ('Ticket', 'Ticket', 0),
     'browser'     : ('Browser', 'Browser', 1),

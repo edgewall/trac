@@ -53,6 +53,9 @@ class Href:
     def newticket(self):
         return '%s?mode=newticket' % self.cgi_name
 
+    def search(self):
+        return '%s?mode=search' % self.cgi_name
+
     def wiki(self, page = None, version=None):
         if page and version:
             return '%s?mode=wiki&page=%s&version=%s' % \
@@ -99,6 +102,9 @@ class RewriteHref(Href):
 
     def newticket(self):
         return href_join(self.cgi_name, 'newticket/')
+
+    def search(self):
+        return href_join(self.cgi_name, 'search/')
 
     def wiki(self, page = None, version=None):
         if page and version:

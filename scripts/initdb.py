@@ -174,6 +174,7 @@ INSERT INTO enum (type, name, value) VALUES('priority', 'p5', 5);
 INSERT INTO permission (user, action) VALUES('anonymous', 'LOG_VIEW');
 INSERT INTO permission (user, action) VALUES('anonymous', 'FILE_VIEW');
 INSERT INTO permission (user, action) VALUES('anonymous', 'WIKI_VIEW');
+INSERT INTO permission (user, action) VALUES('anonymous', 'SEARCH_VIEW');
 INSERT INTO permission (user, action) VALUES('anonymous', 'REPORT_VIEW');
 INSERT INTO permission (user, action) VALUES('anonymous', 'TICKET_VIEW');
 INSERT INTO permission (user, action) VALUES('anonymous', 'BROWSER_VIEW');
