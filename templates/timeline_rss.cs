@@ -32,28 +32,28 @@
         <url><?cs if !$header_logo.src_abs ?><?cs var:$base_url ?><?cs /if ?><?cs var $header_logo.src ?></url>
         <link><?cs var:$base_url ?><?cs var:$trac.href.timeline ?></link>
       </image>
-      <?cs each:item = $timeline.items ?>
-        <?cs if:item.type == #1 ?><!-- Changeset -->
-          <?cs call:rss_item('Changeset',
-                             'Changeset ['+$item.idata+']: '+$item.shortmsg, 
-                             $item.href, $item.msg_nowiki) ?>
-        <?cs elif:item.type == #2 ?><!-- New ticket -->
-          <?cs call:rss_item('Ticket',
-                             'Ticket #'+$item.idata+' created: '+$item.shortmsg,
-                             $item.href, $item.message.rss) ?>
-        <?cs elif:item.type == #3 ?><!-- Closed ticket -->
-          <?cs call:rss_item('Ticket',
+      <?cs each:item = $timeline.items ?><?cs
+        if:item.type == #1 
+        ?><!-- Changeset --><?cs call:rss_item('Changeset',
+                             'Changeset ['+$item.idata+'] by '+$item.author, 
+                             $item.href, $item.msg_escwiki) 
+        ?><?cs elif:item.type == #2 
+        ?><!-- New ticket --> <?cs call:rss_item('Ticket',
+                             'Ticket #'+$item.idata+' created by '+$item.author,
+                             $item.href, $item.msg_escwiki) 
+        ?><?cs elif:item.type == #3
+        ?><!-- Closed ticket --> <?cs call:rss_item('Ticket',
                              'Ticket #'+$item.idata+' resolved: '+$item.shortmsg,
-                             $item.href, $item.rss.message.rss) ?>
-        <?cs elif:item.type == #4 ?><!-- Reopened ticket -->
-          <?cs call:rss_item('Ticket',
+                             $item.href, $item.msg_escwiki) 
+        ?><?cs elif:item.type == #4 
+        ?><!-- Reopened ticket --><?cs call:rss_item('Ticket',
                              '#'+$item.idata+' reopened: '+$item.shortmsg,
-                             $item.href, $item.message.rss) ?>
-        <?cs elif:item.type == #5 ?><!-- Wiki change -->
-          <?cs call:rss_item('Wiki',
+                             $item.href, $item.msg_escwiki) 
+        ?><?cs elif:item.type == #5 
+        ?><!-- Wiki change --><?cs call:rss_item('Wiki',
                              $item.tdata+" page edited.",
                              $item.href,
-'Wiki page &lt;a href="'+$base_url+$item.wiki_href+'"&gt;'+$item.tdata+'&lt;/a&gt; edited by '+$item.author) ?>
+'Wiki page &lt;a href="'+$base_url+$item.href+'"&gt;'+$item.tdata+'&lt;/a&gt; edited by '+$item.author) ?>
         <?cs elif:item.type == #6 ?><!-- Milestones -->
           <?cs call:rss_item('Milestone',
                              'Milestone ' + $item.message.rss + ' reached.',

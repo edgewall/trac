@@ -46,7 +46,7 @@ def populate_page_dict(db, env):
         page_dict[row[0]] = 1
     env._wiki_pages = page_dict
 
- 
+
 class WikiPage:
     """WikiPage: Represents a wiki page (new or existing).
     """

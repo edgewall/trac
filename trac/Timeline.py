@@ -26,7 +26,7 @@ import urllib
 import perm
 import util
 from Module import Module
-from Wiki import wiki_to_oneliner
+from Wiki import wiki_to_oneliner,wiki_to_html
 
 
 class Timeline (Module):
@@ -120,23 +120,31 @@ class Timeline (Module):
                 msg = item['message']
                 item['shortmsg'] = util.escape(util.shorten_line(msg))
                 item['msg_nowiki'] = util.escape(msg)
+                item['msg_escwiki'] = util.escape(wiki_to_html(msg,
+                                                               self.req.hdf,
+                                                               self.env,
+                                                               absurls=1))
                 item['message'] = wiki_to_oneliner(msg, self.req.hdf,
-                                                   self.env)
+                                                   self.env, absurls=1)
 
             elif item['type'] == WIKI:
                 item['href'] = self.env.href.wiki(row['tdata'])
                 item['message'] = wiki_to_oneliner(util.shorten_line(item['message']),
-                                                   self.req.hdf, self.env)
+                                                   self.req.hdf, self.env, absurls=1)
             elif item['type'] == MILESTONE:
                 item['href'] = self.env.href.milestone(item['message'])
                 item['message'] = util.escape(item['message'])
-            else:
+            else:               # TICKET
                 item['href'] = self.env.href.ticket(item['idata'])
                 msg = item['message']
                 item['shortmsg'] = util.escape(util.shorten_line(msg))
-                item['message'] = wiki_to_oneliner(util.shorten_line(item['message']),
-                                                   self.req.hdf, self.env)
-
+                item['message'] = wiki_to_oneliner(
+                    util.shorten_line(item['message']),
+                    self.req.hdf, self.env,absurls=1)
+                item['msg_escwiki'] = util.escape(wiki_to_html(msg,
+                                                               self.req.hdf,
+                                                               self.env,
+                                                               absurls=1))
             # Kludges for RSS
             item['author.rss'] = util.escape(item['author'] or '')
             if item['author.rss'].find('@') == -1:

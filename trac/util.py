@@ -168,8 +168,11 @@ def shorten_line(text, maxlen = 75):
     if not text:
         return ''
     i = text.find('[[BR]]')
+    j = text.find('\n')
     if i > -1 and i < maxlen:
         shortline = text[:i]+' ...'
+    elif j > -1 and j < maxlen:
+        shortline = text[:j]+' ...'
     elif len(text) < maxlen:
         shortline = text
     else:

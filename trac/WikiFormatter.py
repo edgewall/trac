@@ -50,10 +50,12 @@ class CommonFormatter:
     _open_tags = []
     hdf = None
     env = None
+    absurls = 0
 
-    def __init__(self, hdf, env):
+    def __init__(self, hdf, env, absurls=0):
         self.hdf = hdf
         self.env = env
+        self._href = absurls and env.abs_href or env.href
 
     def replace(self, fullmatch):
         for itype, match in fullmatch.groupdict().items():
@@ -106,15 +108,15 @@ class CommonFormatter:
 
     def _tickethref_formatter(self, match, fullmatch):
         number = int(match[1:])
-        return '<a href="%s">#%d</a>' % (self.env.href.ticket(number), number)
+        return '<a href="%s">#%d</a>' % (self._href.ticket(number), number)
 
     def _changesethref_formatter(self, match, fullmatch):
         number = int(match[1:-1])
-        return '[<a href="%s">%d</a>]' % (self.env.href.changeset(number), number)
+        return '[<a href="%s">%d</a>]' % (self._href.changeset(number), number)
 
     def _reporthref_formatter(self, match, fullmatch):
         number = int(match[1:-1])
-        return '{<a href="%s">%d</a>}' % (self.env.href.report(number), number)
+        return '{<a href="%s">%d</a>}' % (self._href.report(number), number)
 
     def _expand_module_link(self, text):
         sep = text.find(':')
@@ -123,18 +125,18 @@ class CommonFormatter:
         module = text[:sep]
         args = text[sep+1:]
         if module in ['bug', 'ticket']:
-            return self.env.href.ticket(args), '%s:%s' % (module, args), 0
+            return self._href.ticket(args), '%s:%s' % (module, args), 0
         elif module == 'wiki':
             if not self.env._wiki_pages.has_key(args):
-                return self.env.href.wiki(args), '%s:%s' % (module, args), 1
+                return self._href.wiki(args), '%s:%s' % (module, args), 1
             else:
-                return self.env.href.wiki(args), '%s:%s' % (module, args), 0
+                return self._href.wiki(args), '%s:%s' % (module, args), 0
         elif module == 'report':
-            return self.env.href.report(args), '%s:%s' % (module, args), 0
+            return self._href.report(args), '%s:%s' % (module, args), 0
         elif module == 'changeset':
-            return self.env.href.changeset(args), '%s:%s' % (module, args), 0
+            return self._href.changeset(args), '%s:%s' % (module, args), 0
         elif module == 'search':
-            return self.env.href.search(args), '%s:%s' % (module, args), 0
+            return self._href.search(args), '%s:%s' % (module, args), 0
         elif module in ['source', 'repos', 'browser']:
             rev = None
             match = re.search('([^#]+)#(.+)', args)
@@ -142,10 +144,10 @@ class CommonFormatter:
                 args = match.group(1)
                 rev = match.group(2)
             if rev:
-                return self.env.href.browser(args, rev), \
+                return self._href.browser(args, rev), \
                        '%s:%s#%s' % (module, args, rev), 0
             else:
-                return self.env.href.browser(args), '%s:%s' % (module, args), 0
+                return self._href.browser(args), '%s:%s' % (module, args), 0
         else:
             return None, None, 0
 
@@ -161,9 +163,9 @@ class CommonFormatter:
     def _wikilink_formatter(self, match, fullmatch):
         if not self.env._wiki_pages.has_key(match):
             return '<a class="missing" href="%s">%s?</a>' % \
-                   (self.env.href.wiki(match), match)
+                   (self._href.wiki(match), match)
         else:
-            return '<a href="%s">%s</a>' % (self.env.href.wiki(match), match)
+            return '<a href="%s">%s</a>' % (self._href.wiki(match), match)
 
     def _url_formatter(self, match, fullmatch):
         return '<a href="%s">%s</a>' % (match, match)
@@ -318,7 +320,7 @@ class Formatter(CommonFormatter):
     def _svnimg_formatter(self, match, fullmatch):
         prefix_len = match.find(':') + 1
         return '<img src="%s" alt="%s" />' % \
-               (self.env.href.file(match[prefix_len:], format='raw'),
+               (self._href.file(match[prefix_len:], format='raw'),
                 match[prefix_len:])
 
     def _imgurl_formatter(self, match, fullmatch):
@@ -528,12 +530,12 @@ class Formatter(CommonFormatter):
         self.close_list()
 
 
-def wiki_to_html(wikitext, hdf, env):
+def wiki_to_html(wikitext, hdf, env, absurls=0):
     out = StringIO.StringIO()
-    Formatter(hdf, env).format(wikitext, out)
+    Formatter(hdf, env, absurls).format(wikitext, out)
     return out.getvalue()
 
-def wiki_to_oneliner(wikitext, hdf, env):
+def wiki_to_oneliner(wikitext, hdf, env, absurls=0):
     out = StringIO.StringIO()
-    OneLinerFormatter(hdf, env).format(wikitext, out)
+    OneLinerFormatter(hdf, env, absurls).format(wikitext, out)
     return out.getvalue()
