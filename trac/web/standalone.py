@@ -33,6 +33,7 @@ import re
 import sys
 import md5
 import time
+import socket, errno
 import shutil
 import urllib
 import urllib2
@@ -192,18 +193,24 @@ class TracHTTPRequestHandler(BaseHTTPRequestHandler):
         except IOError:
             self.send_error(404, path)
             return
-        self.send_response(200)
-        mtype, enc = mimetypes.guess_type(filename)
-        stat = os.fstat(f.fileno())
-        content_length = stat[6]
-        last_modified = time.strftime("%a, %d %b %Y %H:%M:%S GMT",
-                                      time.gmtime(stat[8]))
-        self.send_header('Content-Type', mtype)
-        self.send_header('Conten-Length', str(content_length))
-        self.send_header('Last-Modified', last_modified)
-        self.end_headers()
-        shutil.copyfileobj(f, self.wfile)
-
+        try:
+            self.send_response(200)
+            mtype, enc = mimetypes.guess_type(filename)
+            stat = os.fstat(f.fileno())
+            content_length = stat[6]
+            last_modified = time.strftime("%a, %d %b %Y %H:%M:%S GMT",
+                                          time.gmtime(stat[8]))
+            self.send_header('Content-Type', mtype)
+            self.send_header('Content-Length', str(content_length))
+            self.send_header('Last-Modified', last_modified)
+            self.end_headers()
+            shutil.copyfileobj(f, self.wfile)
+        except socket.error, (code, msg):
+            if code == errno.EPIPE or code == 10053: # Windows
+                self.log_message('Lost connection to client: %s', self.address_string())
+            else:
+                raise
+ 
     def do_POST(self):
         self.do_trac_req()
 
@@ -245,8 +252,19 @@ class TracHTTPRequestHandler(BaseHTTPRequestHandler):
             start = time.time()
             dispatch_request(path_info, req, env)
             self.log.debug('Total request time: %f s', time.time() - start)
+        except socket.error, (code, msg):
+            if code == errno.EPIPE or code == 10053: # Windows
+                self.log_message('Lost connection to client: %s', self.address_string())
+            else:
+                raise
         except Exception, e:
-            send_pretty_error(e, env, req)
+            try:
+                send_pretty_error(e, env, req)
+            except socket.error, (code, msg):
+                if code == errno.EPIPE or code == 10053: # Windows
+                    self.log_message('Lost connection to client: %s', self.address_string())
+                else:
+                    raise
 
 
 class TracHTTPRequest(Request):
