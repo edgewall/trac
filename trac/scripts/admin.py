@@ -28,6 +28,7 @@ import time
 import cmd
 import shlex
 import StringIO
+import urllib
 
 from trac import perm, util
 from trac.env import Environment
@@ -738,7 +739,7 @@ class TracAdmin(cmd.Cmd):
     def _do_wiki_dump(self, dir):
         pages = self.get_wiki_list()
         for p in pages:
-            dst = os.path.join(dir,p)
+            dst = os.path.join(dir, urllib.quote(p, ''))
             print " %s => %s" % (p, dst)
             self._do_wiki_export(p, dst)
 
@@ -747,6 +748,7 @@ class TracAdmin(cmd.Cmd):
             if page in ignore:
                 continue
             filename = os.path.join(dir, page)
+            page = urllib.unquote(page)
             if os.path.isfile(filename):
                 print " %s => %s" % (filename, page)
                 self._do_wiki_import(filename, page, cursor)
