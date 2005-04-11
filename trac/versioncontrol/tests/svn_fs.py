@@ -25,6 +25,11 @@ import sys
 import tempfile
 import unittest
 
+try:
+    from cStringIO import StringIO
+except ImportError:
+    from StringIO import StringIO
+
 from svn import core, repos
 
 from trac.Logging import logger_factory
@@ -42,14 +47,21 @@ class SubversionRepositoryTestSetup(TestSetup):
 
         core.apr_initialize()
         pool = core.svn_pool_create(None)
-        dumpstream = core.svn_stream_from_aprfile(dumpfile, pool)
+        dumpstream = None
         try:
             r = repos.svn_repos_create(REPOS_PATH, '', '', None, None, pool)
-            repos.svn_repos_load_fs(r, dumpstream, None,
-                                    repos.svn_repos_load_uuid_default, '', None,
-                                    None, pool)
+            if hasattr(repos, 'svn_repos_load_fs2'):
+                repos.svn_repos_load_fs2(r, dumpfile, StringIO(),
+                                        repos.svn_repos_load_uuid_default, '',
+                                        0, 0, None, pool)
+            else:
+                dumpstream = core.svn_stream_from_aprfile(dumpfile, pool)
+                repos.svn_repos_load_fs(r, dumpstream, None,
+                                        repos.svn_repos_load_uuid_default, '', None,
+                                        None, pool)
         finally:
-            core.svn_stream_close(dumpstream)
+            if dumpstream:
+                core.svn_stream_close(dumpstream)
             core.svn_pool_destroy(pool)
             core.apr_terminate()
 
