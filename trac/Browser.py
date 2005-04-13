@@ -97,6 +97,8 @@ class BrowserModule(Module):
                 'name': entry.name,
                 'fullpath': entry.path,
                 'is_dir': int(entry.isdir),
+                'content_length': entry.content_length,
+                'size': util.pretty_size(entry.content_length),
                 'rev': entry.rev,
                 'permission': 1, # FIXME
                 'log_href': self.env.href.log(entry.path, rev=rev),
@@ -113,6 +115,8 @@ class BrowserModule(Module):
             if order == 'date':
                 return neg * cmp(changes[b['rev']]['date_seconds'],
                                  changes[a['rev']]['date_seconds'])
+            elif order == 'size':
+                return neg * cmp(a['content_length'], b['content_length'])
             else:
                 return neg * cmp(a['name'].lower(), b['name'].lower())
         info.sort(cmp_func)

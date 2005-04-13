@@ -24,16 +24,11 @@
  <?cs if:browser.is_dir ?>
   <table class="listing" id="dirlist">
    <thead>
-    <tr>
-     <th class="name<?cs if:browser.order == 'name' ?> <?cs if:browser.desc ?>desc<?cs else ?>asc<?cs /if ?><?cs /if ?>">
-      <a title="Sort by name<?cs if:browser.order == 'name' && !browser.desc ?> (descending)<?cs /if ?>"
-         href="?order=name<?cs if:browser.order == 'name' && !browser.desc ?>&desc=1<?cs /if ?>">Name</a>
-     </th>
-     <th class="rev">Rev</th>
-     <th class="age<?cs if:browser.order == 'date' ?> <?cs if:browser.desc ?>desc<?cs else ?>asc<?cs /if ?><?cs /if ?>">
-      <a title="Sort by age<?cs if:browser.order == 'date' && !browser.desc ?> (descending)<?cs /if ?>"
-         href="?order=date<?cs if:browser.order == 'date' && !browser.desc ?>&desc=1<?cs /if ?>">Age</a>
-     </th>
+    <tr><?cs 
+     call:sortable_th(browser.order, browser.desc, 'name', 'Name') ?><?cs 
+     call:sortable_th(browser.order, browser.desc, 'size', 'Size') ?>
+     <th class="rev">Rev</th><?cs 
+     call:sortable_th(browser.order, browser.desc, 'date', 'Age') ?>
      <th class="change">Last Change</th>
     </tr>
    </thead>
@@ -68,6 +63,7 @@
         /if ?><?cs
        /if ?>
       </td>
+      <td class="size"><?cs var:item.size ?></td>
       <td class="rev"><?cs if:item.permission != '' ?><a title="View Revision Log" href="<?cs
         var:item.log_href ?>"><?cs var:item.rev ?></a><?cs else ?><?cs var:item.rev ?><?cs /if ?></td>
       <td class="age"><span title="<?cs var:item.date ?>"><?cs

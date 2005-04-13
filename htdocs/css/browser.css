@@ -18,6 +18,13 @@ h1 .sep { color: #666; padding: 0 .1em }
  color: #888;
  white-space: nowrap;
 }
+#dirlist td.size {  
+ color: #888;
+ white-space: nowrap;
+ text-align: right;
+ vertical-align: middle;
+ font-size: 9px;
+}
 #dirlist td.name { width: 100% }
 #dirlist td.name a, #dirlist td.name span {
  background-position: 0% 50%;

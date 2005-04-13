@@ -174,3 +174,10 @@
   </div><?cs
  /each ?><?cs
 /def ?>
+
+<?cs def:sortable_th(order, desc, class, title) ?>
+ <th class="<?cs var:class ?><?cs if:order == class ?> <?cs if:desc ?>desc<?cs else ?>asc<?cs /if ?><?cs /if ?>">
+  <a title="Sort by <?cs var:class ?><?cs if:order == class && !desc ?> (descending)<?cs /if ?>"
+     href="?order=<?cs var:class ?><?cs if:order == class && !desc ?>&desc=1<?cs /if ?>"><?cs var:title ?></a>
+ </th><?cs
+/def ?>
