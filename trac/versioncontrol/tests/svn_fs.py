@@ -20,6 +20,8 @@
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
 import os.path
+import os
+import stat
 import shutil
 import sys
 import tempfile
@@ -37,7 +39,7 @@ from trac.test import TestSetup
 from trac.versioncontrol import Changeset, Node
 from trac.versioncontrol.svn_fs import SubversionRepository
 
-REPOS_PATH = os.path.join(tempfile.gettempdir(), 'trac-svnrepos')
+REPOS_PATH = os.path.join(tempfile.gettempdir(), 'trac-svnrepo5')
 
 
 class SubversionRepositoryTestSetup(TestSetup):
@@ -66,6 +68,8 @@ class SubversionRepositoryTestSetup(TestSetup):
             core.apr_terminate()
 
     def tearDown(self):
+        os.chmod(os.path.join(REPOS_PATH, 'format'), stat.S_IRWXU)
+        # Windows version of shutil.rmtree needs the above line, in order to force the deletion
         shutil.rmtree(REPOS_PATH)
 
 

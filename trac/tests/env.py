@@ -16,6 +16,7 @@ class EnvironmentTestCase(unittest.TestCase):
         self.db = self.env.get_db_cnx()
 
     def tearDown(self):
+        self.db.close()
         shutil.rmtree(self.env.path)
 
     def test_get_version(self):
