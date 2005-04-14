@@ -74,7 +74,7 @@ It provides an interface to the Subversion revision control systems, integrated 
   Trac is a product of <a href="http://www.edgewall.com/">Edgewall Software</a>, provider of professional Linux and software development services.
   </p>
 <p>
-Copyright &copy; 2003,2004 <a href="http://www.edgewall.com/">Edgewall Software</a>
+Copyright &copy; 2003-2005 <a href="http://www.edgewall.com/">Edgewall Software</a>
 </p>
   <a href="http://www.edgewall.com/">
    <img style="display: block; margin: 30px" src="<?cs var:htdocs_location ?>edgewall.png"
