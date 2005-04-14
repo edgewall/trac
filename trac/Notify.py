@@ -129,6 +129,7 @@ class NotifyEmail(Notify):
     def send(self, rcpt, mime_headers={}):
         from email.MIMEText import MIMEText
         from email.Header import Header
+        from email.Utils import formatdate
         body = self.hdf.render(self.template_name)
         msg = MIMEText(body, 'plain', 'utf-8')
         msg['X-Mailer'] = 'Trac %s, by Edgewall Software' % __version__
@@ -141,7 +142,7 @@ class NotifyEmail(Notify):
         msg['Sender'] = self.from_email
         msg['Reply-To'] = self.replyto_email
         msg['To'] = rcpt
-        msg['Date'] = time.strftime('%a, %d %b %Y %H:%M:%S +0000', time.gmtime());
+        msg['Date'] = formatdate()
         for hdr in mime_headers.keys():
             msg[hdr] = mime_headers[hdr]
         self.env.log.debug("Sending SMTP notification to %s on port %d"
