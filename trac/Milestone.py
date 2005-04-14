@@ -323,7 +323,7 @@ class Milestone(Module):
         available_groups = map(lambda x: {'name': x, 'label': x.capitalize()},
                                ['component', 'version', 'severity', 'priority',
                                 'owner'])
-        available_groups.extend([{'name': f['name'], 'label': f['label']}
+        available_groups.extend([{'name': f['name'], 'label': f['label'] or f['name']}
                                  for f in get_custom_fields(self.env)
                                  if f['type'] == 'select'
                                  or f['type'] == 'radio'])
