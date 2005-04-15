@@ -42,6 +42,7 @@ h1 .sep { color: #666; padding: 0 .1em }
 /* Styles for the revision log table
    (extends the styles for "table.listing") */
 #chglist { margin-top: 0 }
+#chglist td.old_path { font-weight: bold }
 #chglist td.date { white-space: nowrap }
 #chglist td.rev, #chglist td.chgset { text-align: center }
 #chglist td.rev a, #chglist td.chgset a { border-bottom: none }

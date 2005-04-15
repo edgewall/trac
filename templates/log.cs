@@ -32,8 +32,15 @@
     <th class="summary">Log Message</th>
    </tr>
   </thead>
-  <tbody>
-   <?cs each:item = log.items ?>
+  <tbody><?cs 
+   each:item = log.items ?><?cs
+    if:item.old_path ?>
+     <tr>
+      <td class="old_path" colspan="5">
+       Previous location: <a href="<?cs var:item.browser_href ?>"?><?cs var:item.old_path ?></a>
+      </td>
+     </tr><?cs 
+    /if ?>
     <tr class="<?cs if:name(item) % #2 ?>even<?cs else ?>odd<?cs /if ?>">
      <td class="date"><?cs var:log.changes[item.rev].date ?></td>
      <td class="rev">
@@ -44,8 +51,8 @@
      </td>
      <td class="author"><?cs var:log.changes[item.rev].author ?></td>
      <td class="summary"><?cs var:log.changes[item.rev].message ?></td>
-    </tr>
-   <?cs /each ?>
+    </tr><?cs
+   /each ?>
   </tbody>
  </table>
 

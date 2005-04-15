@@ -226,15 +226,20 @@ class LogModule(Module):
         if not node:
             # FIXME: we should send a 404 error here
             raise util.TracError("The file or directory '%s' doesn't exist in "
-                                 "the repository at revision %d." % (path, rev),
+                                 "the repository at revision %s." % (path, rev),
                                  'Nonexistent path')
         info = []
+        previous_path = path.strip('/')
         for old_path, old_rev in node.get_history():
-            info.append({
+            item = {
                 'rev': old_rev,
                 'browser_href': self.env.href.browser(old_path, rev=old_rev),
-                'changeset_href': self.env.href.changeset(old_rev)
-            })
+                'changeset_href': self.env.href.changeset(old_rev),
+            }
+            if previous_path != old_path:
+                item['old_path'] = old_path
+                previous_path = old_path
+            info.append(item)
         req.hdf['log.items'] = info
         req.hdf['log.changes'] = _get_changes(self.env, self.db, repos,
                                               [i['rev'] for i in info])
