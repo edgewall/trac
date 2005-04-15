@@ -36,11 +36,11 @@
 
  <div id="searchable">
  <?cs def:ticketprop(label, name, value, fullrow) ?>
-  <th id="h_<?cs var:name ?>"><?cs var:$label ?>:</th>
+  <th id="h_<?cs var:name ?>"><?cs var:label ?>:</th>
   <td headers="h_<?cs var:name ?>"<?cs if:fullrow ?> colspan="3"<?cs /if ?>><?cs
-   if:$value ?><?cs var:$value ?><?cs else ?>&nbsp;<?cs
-   /if ?></td><?cs if numprops % #2 && !$last_prop || fullrow ?>
- </tr><tr><?cs /if ?><?cs set numprops = $numprops + #1 - fullrow ?><?cs
+   if:value ?><?cs var:value ?><?cs else ?>&nbsp;<?cs
+   /if ?></td><?cs if:numprops % #2 && !last_prop || fullrow ?>
+ </tr><tr><?cs /if ?><?cs set numprops = numprops + #1 - fullrow ?><?cs
  /def ?>
 
 <div id="ticket">
@@ -68,7 +68,7 @@
   set:last_prop = #1 ?><?cs
   call:ticketprop("Keywords", "keywords", ticket.keywords, 0) ?><?cs
   set:last_prop = #0 ?>
- </tr></table><?cs if ticket.custom.0.name ?>
+ </tr></table><?cs if:ticket.custom.0.name ?>
  <table><tr><?cs each:prop = ticket.custom ?><?cs
    if:name(prop) == len(ticket.custom) - 1 ?><?cs set:last_prop = #1 ?><?cs
    /if ?><?cs
@@ -86,7 +86,7 @@
 
 <?cs if:ticket.attach_href || len(ticket.attachments) ?>
 <h2>Attachments</h2><?cs
- if ticket.attachments.0.name ?><div id="attachments">
+ if:len(ticket.attachments) ?><div id="attachments">
   <ul class="attachments"><?cs each:a = ticket.attachments ?>
    <li><a href="<?cs var:a.href ?>" title="View attachment"><?cs
    var:a.name ?></a> (<?cs var:a.size ?>) - <?cs
@@ -101,7 +101,7 @@
    <input type="hidden" name="action" value="new" />
    <input type="submit" value="Attach File" />
   </div></form><?cs
- /if ?><?cs if ticket.attachments.0.name ?></div><?cs /if ?>
+ /if ?><?cs if:len(ticket.attachments) ?></div><?cs /if ?>
 <?cs /if ?>
 
 <?cs if:len(ticket.changes) ?><h2>Changelog</h2>
@@ -128,7 +128,7 @@
  /each ?></div><?cs
 /if ?>
 
-<?cs if $trac.acl.TICKET_MODIFY ?>
+<?cs if:trac.acl.TICKET_CHGPROP || trac.acl.TICKET_APPEND ?>
 <form action="<?cs var:cgi_location ?>#preview" method="post">
  <hr />
  <h3><a name="edit" onfocus="document.getElementById('comment').focus()">Add/Change #<?cs
@@ -143,7 +143,7 @@
  <div class="field">
   <fieldset class="iefix">
    <label for="comment">Comment (you may use <a tabindex="42" href="<?cs
-     var:$trac.href.wiki ?>/WikiFormatting">WikiFormatting</a> here):</label><br />
+     var:trac.href.wiki ?>/WikiFormatting">WikiFormatting</a> here):</label><br />
    <p><textarea id="comment" name="comment" class="wikitext" rows="10" cols="78"><?cs
      var:ticket.comment ?></textarea></p>
   </fieldset><?cs
@@ -155,13 +155,13 @@
   /if ?>
  </div>
 
- <fieldset id="properties">
+ <?cs if:trac.acl.TICKET_CHGPROP ?><fieldset id="properties">
   <legend>Change Properties</legend>
   <div class="main">
    <label for="summary">Summary:</label>
    <input id="summary" type="text" name="summary" size="70" value="<?cs
      var:ticket.summary ?>" /><?cs
-   if $trac.acl.TICKET_ADMIN ?>
+   if:trac.acl.TICKET_ADMIN ?>
     <br />
     <label for="description">Description:</label>
     <div style="float: left">
@@ -202,33 +202,38 @@
   <?cs if:len(ticket.custom) ?><div class="custom">
    <?cs call:ticket_custom_props(ticket) ?>
   </div><?cs /if ?>
- </fieldset>
+ </fieldset><?cs /if ?>
 
+ <?cs if:ticket.actions.accept || ticket.actions.reopen ||
+         ticket.actions.resolve || ticket.actions.reassign ?>
  <fieldset id="action">
   <legend>Action</legend><?cs
   if:!ticket.action ?><?cs set:ticket.action = 'leave' ?><?cs
   /if ?><?cs
   def:action_radio(id) ?>
    <input type="radio" id="<?cs var:id ?>" name="action" value="<?cs
-     var:id ?>"<?cs if:$ticket.action == $id ?> checked="checked"<?cs
+     var:id ?>"<?cs if:ticket.action == id ?> checked="checked"<?cs
      /if ?> /><?cs
   /def ?>
   <?cs call:action_radio('leave') ?>
-  <label for="leave">leave as <?cs var:ticket.status ?></label><br /><?cs
-  if $ticket.status == "new" ?>
-   <?cs call:action_radio('accept') ?>
+   <label for="leave">leave as <?cs var:ticket.status ?></label><br /><?cs
+  if:ticket.actions.accept ?><?cs
+   call:action_radio('accept') ?>
    <label for="accept">accept ticket</label><br /><?cs
   /if ?><?cs
-  if $ticket.status == "closed" ?>
-   <?cs call:action_radio('reopen') ?>
+  if:ticket.actions.reopen ?><?cs
+   call:action_radio('reopen') ?>
    <label for="reopen">reopen ticket</label><br /><?cs
   /if ?><?cs
-  if $ticket.status == "new" || $ticket.status == "assigned" || $ticket.status == "reopened" ?>
-   <?cs call:action_radio('resolve') ?>
+  if:ticket.actions.resolve ?><?cs
+   call:action_radio('resolve') ?>
    <label for="resolve">resolve</label>
    <label for="resolve_resolution">as:</label>
-   <?cs call:hdf_select(enums.resolution, "resolve_resolution", args.resolve_resolution, 0) ?><br />
-   <?cs call:action_radio('reassign') ?>
+   <?cs call:hdf_select(enums.resolution, "resolve_resolution",
+                        ticket.resolve_resolution, 0) ?><br /><?cs
+  /if ?><?cs
+  if:ticket.actions.reassign ?><?cs
+   call:action_radio('reassign') ?>
    <label for="reassign">reassign</label>
    <label>to:<?cs
    if:len(ticket.users) ?><?cs
@@ -238,24 +243,23 @@
       var:ticket.reassign_owner ?>" /><?cs
    /if ?></label><?cs
   /if ?><?cs
-  if $ticket.status == "new" || $ticket.status == "assigned" || $ticket.status == "reopened" ?>
-   <script type="text/javascript">
-     var resolve = document.getElementById("resolve");
-     var reassign = document.getElementById("reassign");
+  if ticket.actions.resolve || ticket.actions.reassign ?>
+   <script type="text/javascript"><?cs
+    each:action = ticket.actions ?>
+     var <?cs var:name(action) ?> = document.getElementById("<?cs var:name(action) ?>");<?cs
+    /each ?>
      var updateActionFields = function() {
-       enableControl('resolve_resolution', resolve.checked);
-       enableControl('reassign_owner', reassign.checked);
+       <?cs if:ticket.actions.resolve ?> enableControl('resolve_resolution', resolve.checked);<?cs /if ?>
+       <?cs if:ticket.actions.reassign ?> enableControl('reassign_owner', reassign.checked);<?cs /if ?>
      };
-     addEvent(window, 'load', updateActionFields);
-     addEvent(document.getElementById("leave"), 'click', updateActionFields);<?cs
-    if $ticket.status == "new" ?>
-     addEvent(document.getElementById("accept"), 'click', updateActionFields);<?cs
-    /if ?>
-    addEvent(resolve, 'click', updateActionFields);
-    addEvent(reassign, 'click', updateActionFields);
+     addEvent(window, 'load', updateActionFields);<?cs
+     each:action = ticket.actions ?>
+      addEvent(<?cs var:name(action) ?>, 'click', updateActionFields);<?cs
+     /each ?>
    </script><?cs
   /if ?>
  </fieldset>
+ <?cs /if ?>
 
  <script type="text/javascript" src="<?cs
    var:htdocs_location ?>js/wikitoolbar.js"></script>
@@ -263,7 +267,7 @@
  <div class="buttons">
   <input type="reset" value="Reset" />&nbsp;
   <input type="submit" name="preview" value="Preview" />&nbsp;
-  <input type="submit" value="Submit changes" /> 
+  <input type="submit" value="Submit changes" />
  </div>
 </form>
 <?cs /if ?>

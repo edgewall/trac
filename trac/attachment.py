@@ -63,7 +63,7 @@ class AttachmentModule(Module):
                 self.render_view(req, parent_type, parent_id, filename)
 
     def render_form(self, req, parent_type, parent_id):
-        perm_map = {'ticket': perm.TICKET_MODIFY, 'wiki': perm.WIKI_MODIFY}
+        perm_map = {'ticket': perm.TICKET_APPEND, 'wiki': perm.WIKI_MODIFY}
         self.perm.assert_permission(perm_map[parent_type])
 
         text, link = self.get_parent_link(parent_type, parent_id)
@@ -79,7 +79,7 @@ class AttachmentModule(Module):
         req.display('attachment.cs')
 
     def save_attachment(self, req, parent_type, parent_id):
-        perm_map = {'ticket': perm.TICKET_MODIFY, 'wiki': perm.WIKI_MODIFY}
+        perm_map = {'ticket': perm.TICKET_APPEND, 'wiki': perm.WIKI_MODIFY}
         self.perm.assert_permission(perm_map[parent_type])
 
         if req.args.has_key('cancel'):

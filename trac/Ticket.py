@@ -26,19 +26,18 @@ from trac.web.main import add_link
 from trac.WikiFormatter import wiki_to_html
 
 import time
-from UserDict import UserDict
 
 __all__ = ['Ticket', 'NewticketModule', 'TicketModule']
 
 
-class Ticket(UserDict):
+class Ticket(dict):
     std_fields = ['time', 'component', 'severity', 'priority', 'milestone',
                   'reporter', 'owner', 'cc', 'url', 'version', 'status',
                   'resolution', 'keywords', 'summary', 'description',
                   'changetime']
 
     def __init__(self, *args):
-        UserDict.__init__(self)
+        dict.__init__(self)
         self._old = {}
         if len(args) == 2:
             self._fetch_ticket(*args)
@@ -49,7 +48,7 @@ class Ticket(UserDict):
             return
         if not self._old.has_key(name):
             self._old[name] = self.get(name, None)
-        self.data[name] = value
+        dict.__setitem__(self, name, value)
 
     def _forget_changes(self):
         self._old = {}
@@ -259,7 +258,7 @@ def insert_custom_fields(env, hdf, vals = {}):
         pfx = 'ticket.custom.%i' % i
         hdf['%s.name' % pfx] = f['name']
         hdf['%s.type' % pfx] = f['type']
-        hdf['%s.label' % pfx] = f['label']
+        hdf['%s.label' % pfx] = f['label'] or f['name']
         hdf['%s.value' % pfx] = val
         if f['type'] == 'select' or f['type'] == 'radio':
             j = 0
@@ -333,9 +332,8 @@ class NewticketModule(Module):
                                                                     self.db)
 
         req.hdf['title'] = 'New Ticket'
-        evals = dict(zip(ticket.keys(),
-                         map(lambda x: util.escape(x), ticket.values())))
-        req.hdf['newticket'] = evals
+        req.hdf['newticket'] = dict(zip(ticket.keys(),
+                                    map(lambda x: util.escape(x), ticket.values())))
 
         util.sql_to_hdf(self.db, "SELECT name FROM component ORDER BY name",
                         req.hdf, 'newticket.components')
@@ -366,24 +364,54 @@ class NewticketModule(Module):
 
         req.display('newticket.cs')
 
+def available_actions(ticket, perm_):
+    """ Returns the actions that can be performed on the ticket"""
+    actions = {
+        'new':      ['leave', 'resolve', 'reassign', 'accept'],
+        'assigned': ['leave', 'resolve', 'reassign'          ],
+        'reopened': ['leave', 'resolve', 'reassign'          ],
+        'closed':   ['leave',                        'reopen']
+    }
+    perm_map = {
+        'resolve': perm.TICKET_MODIFY,
+        'reassign': perm.TICKET_CHGPROP,
+        'accept': perm.TICKET_CHGPROP,
+        'reopen': perm.TICKET_CREATE
+    }
+    def has_permission(action):
+        if not action in perm_map:
+            return 1
+        return perm_.has_permission(perm_map[action])
+    return filter(has_permission, actions.get(ticket['status'], ['leave']))
 
-class TicketModule (Module):
+
+class TicketModule(Module):
 
     def save_changes(self, req, id):
-        self.perm.assert_permission (perm.TICKET_MODIFY)
-        ticket = Ticket(self.db, id)
+        if self.perm.has_permission(perm.TICKET_CHGPROP):
+            # TICKET_CHGPROP gives permission to edit the ticket
+            if not req.args.get('summary'):
+                raise util.TracError('Tickets must contain summary.')
 
-        if not req.args.get('summary'):
-            raise util.TracError('Tickets must contain Summary.')
+            ticket = Ticket(self.db, id)
+            if 'description' in req.args or 'reporter' in req.args:
+                self.perm.assert_permission(perm.TICKET_ADMIN)
 
-        if req.args.has_key('description'):
-            self.perm.assert_permission (perm.TICKET_ADMIN)
+            ticket.populate(req.args)
 
-        if req.args.has_key('reporter'):
-            self.perm.assert_permission (perm.TICKET_ADMIN)
+        elif self.perm.has_permission(perm.TICKET_APPEND):
+            # Allow appending a comment to the ticket only
+            ticket = Ticket(self.db, id)
+
+        else:
+            raise perm.PermissionError(perm.TICKET_CHGPROP)
+
+        # Do any action on the ticket?
+        action = req.args.get('action', 'leave')
+        if action not in available_actions(ticket, self.perm):
+            raise util.TracError('Invalid action')
 
         # TODO: this should not be hard-coded like this
-        action = req.args.get('action', None)
         if action == 'accept':
             ticket['status'] =  'assigned'
             ticket['owner'] = req.authname
@@ -396,8 +424,6 @@ class TicketModule (Module):
         elif action == 'reopen':
             ticket['status'] = 'reopened'
             ticket['resolution'] = ''
-
-        ticket.populate(req.args)
 
         now = int(time.time())
         ticket.save_changes(self.db, req.args.get('author', req.authname),
@@ -414,9 +440,8 @@ class TicketModule (Module):
 
     def insert_ticket_data(self, req, id, ticket, reporter_id):
         """Insert ticket data into the hdf"""
-        evals = dict(zip(ticket.keys(),
-                         map(lambda x: util.escape(x), ticket.values())))
-        req.hdf['ticket'] = evals
+        req.hdf['ticket'] = dict(zip(ticket.keys(),
+                                 map(lambda x: util.escape(x), ticket.values())))
 
         util.sql_to_hdf(self.db, "SELECT name FROM component ORDER BY name",
                         req.hdf, 'ticket.components')
@@ -491,10 +516,15 @@ class TicketModule (Module):
         # List attached files
         self.env.get_attachments_hdf(self.db, 'ticket', str(id), req.hdf,
                                      'ticket.attachments')
-        req.hdf['ticket.attach_href'] = self.env.href.attachment('ticket', id)
+        if self.perm.has_permission(perm.TICKET_APPEND):
+            req.hdf['ticket.attach_href'] = self.env.href.attachment('ticket', id)
+
+        # Add the possible actions to hdf
+        for action in available_actions(ticket, self.perm):
+            req.hdf['ticket.actions.' + action] = '1'
 
     def render(self, req):
-        self.perm.assert_permission (perm.TICKET_VIEW)
+        self.perm.assert_permission(perm.TICKET_VIEW)
 
         action = req.args.get('action', 'view')
         preview = req.args.has_key('preview')
@@ -515,7 +545,9 @@ class TicketModule (Module):
             # Use user supplied values
             ticket.populate(req.args)
             req.hdf['ticket.action'] = action
-            req.hdf['ticket.reassign_owner'] = req.args.get('reassign_owner')
+            req.hdf['ticket.reassign_owner'] = req.args.get('reassign_owner') \
+                                               or req.authname
+            req.hdf['ticket.resolve_resolution'] = req.args.get('resolve_resolution')
             reporter_id = req.args.get('author')
             comment = req.args.get('comment')
             if comment:

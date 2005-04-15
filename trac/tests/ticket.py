@@ -1,4 +1,5 @@
-from trac.Ticket import Ticket
+from trac.Ticket import Ticket, available_actions
+from trac.test import Mock
 
 import unittest
 
@@ -49,9 +50,53 @@ class TicketTestCase(unittest.TestCase):
         self.failUnless(log[1][2] in ok_vals)
         self.failUnless(log[2][2] in ok_vals)
 
+    def test_available_actions_full_perms(self):
+        perm = Mock(has_permission=lambda x: 1)
+        self.assertEqual(['leave', 'resolve', 'reassign', 'accept'],
+                         available_actions({'status': 'new'}, perm))
+        self.assertEqual(['leave', 'resolve', 'reassign'],
+                         available_actions({'status': 'assigned'}, perm))
+        self.assertEqual(['leave', 'resolve', 'reassign'],
+                         available_actions({'status': 'reopened'}, perm))
+        self.assertEqual(['leave', 'reopen'],
+                         available_actions({'status': 'closed'}, perm))
+
+    def test_available_actions_no_perms(self):
+        perm = Mock(has_permission=lambda x: 0)
+        self.assertEqual(['leave'],
+                         available_actions({'status': 'new'}, perm))
+        self.assertEqual(['leave'],
+                         available_actions({'status': 'assigned'}, perm))
+        self.assertEqual(['leave'],
+                         available_actions({'status': 'reopened'}, perm))
+        self.assertEqual(['leave'],
+                         available_actions({'status': 'closed'}, perm))
+
+    def test_available_actions_create_only(self):
+        perm = Mock(has_permission=lambda x: x == 'TICKET_CREATE')
+        self.assertEqual(['leave'],
+                         available_actions({'status': 'new'}, perm))
+        self.assertEqual(['leave'],
+                         available_actions({'status': 'assigned'}, perm))
+        self.assertEqual(['leave'],
+                         available_actions({'status': 'reopened'}, perm))
+        self.assertEqual(['leave', 'reopen'],
+                         available_actions({'status': 'closed'}, perm))
+
+    def test_available_actions_chgprop_only(self):
+        perm = Mock(has_permission=lambda x: x == 'TICKET_CHGPROP')
+        self.assertEqual(['leave', 'reassign', 'accept'],
+                         available_actions({'status': 'new'}, perm))
+        self.assertEqual(['leave', 'reassign'],
+                         available_actions({'status': 'assigned'}, perm))
+        self.assertEqual(['leave', 'reassign'],
+                         available_actions({'status': 'reopened'}, perm))
+        self.assertEqual(['leave'],
+                         available_actions({'status': 'closed'}, perm))
+
+
 def suite():
     return unittest.makeSuite(TicketTestCase,'test')
-
 
 if __name__ == '__main__':
     unittest.main()

@@ -135,14 +135,6 @@ class Request(object):
         raise NotImplementedError
 
 
-def _add_args_to_hdf(args, hdf):
-    for k in [k for k in args.keys() if k]:
-        if isinstance(args[k], (list, tuple)):
-            for i in range(len(args[k])):
-                hdf['args.%s.%d' % (k, i)] = args[k][i].value
-        else:
-            hdf['args.%s' % k] = args[k].value
-
 def add_link(req, rel, href, title=None, type=None, class_name=None):
     link = {'href': escape(href)}
     if title: link['title'] = escape(title)
@@ -290,7 +282,6 @@ def dispatch_request(path_info, req, env):
                                             env.config.get('trac', 'templates_dir')])
             populate_hdf(req.hdf, env, req)
             req.hdf['HTTP.PathInfo'] = path_info
-            _add_args_to_hdf(req.args, req.hdf)
 
             newsession = req.args.has_key('newsession')
             req.session = Session(env, db, req, newsession)
