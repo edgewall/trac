@@ -20,7 +20,6 @@
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
 import os.path
-import os
 import stat
 import shutil
 import sys
@@ -86,9 +85,10 @@ class SubversionRepositoryTestCase(unittest.TestCase):
         self.assertEqual(0, self.repos.oldest_rev)
         self.assertEqual(None, self.repos.previous_rev(0))
         self.assertEqual(0, self.repos.previous_rev(1))
-        self.assertEqual(6, self.repos.youngest_rev)
+        self.assertEqual(7, self.repos.youngest_rev)
         self.assertEqual(6, self.repos.next_rev(5))
-        self.assertEqual(None, self.repos.next_rev(6))
+        self.assertEqual(7, self.repos.next_rev(6))
+        self.assertEqual(None, self.repos.next_rev(7))
 
     def test_get_node(self):
         node = self.repos.get_node('/trunk')
@@ -158,6 +158,14 @@ class SubversionRepositoryTestCase(unittest.TestCase):
         node = self.repos.get_node('/trunk/README2.txt')
         history = node.get_history()
         self.assertEqual(('trunk/README2.txt', 6), history.next())
+        self.assertEqual(('trunk/README.txt', 3), history.next())
+        self.assertEqual(('trunk/README.txt', 2), history.next())
+        self.assertRaises(StopIteration, history.next)
+
+    def test_get_node_history2(self):
+        node = self.repos.get_node('/tags/v1/README.txt')
+        history = node.get_history()
+        self.assertEqual(('tags/v1/README.txt', 7), history.next())
         self.assertEqual(('trunk/README.txt', 3), history.next())
         self.assertEqual(('trunk/README.txt', 2), history.next())
         self.assertRaises(StopIteration, history.next)

@@ -33,7 +33,7 @@ from svn import fs, repos, core, delta
 _kindmap = {core.svn_node_dir: Node.DIRECTORY,
             core.svn_node_file: Node.FILE}
 
-def _get_history(path, authz, fs_ptr, pool, start, end=0):
+def _get_history(path, authz, fs_ptr, pool, start, end):
     history = []
     if hasattr(repos, 'svn_repos_history2'):
         # For Subversion >= 1.1
@@ -148,7 +148,7 @@ class SubversionRepository(Repository):
         if self.scope != '/':
             self.history = []
             for path,rev in _get_history(self.scope[1:], self.authz,
-                                         self.fs_ptr, self.pool, self.rev):
+                                         self.fs_ptr, self.pool, 0, self.rev):
                 self.history.append(rev)
 
     def __del__(self):
@@ -239,28 +239,36 @@ class SubversionNode(Node):
     def __init__(self, path, rev, authz, scope, fs_ptr, pool):
         self.authz = authz
         self.scope = scope
+        if scope != '/':
+            self.scoped_path = scope + path
+        else:
+            self.scoped_path = path
         self.fs_ptr = fs_ptr
         self.pool = Pool(self, pool)
         self._requested_rev = rev
 
         self.root = fs.revision_root(fs_ptr, rev, self.pool)
-        node_type = fs.check_path(self.root, self.scope + path, self.pool)
+        node_type = fs.check_path(self.root, self.scoped_path, self.pool)
         if not node_type in _kindmap:
             raise TracError, "No node at %s in revision %s" % (path, rev)
-        self.rev = fs.node_created_rev(self.root, self.scope + path, self.pool)
-
+        self.created_rev = fs.node_created_rev(self.root, self.scoped_path, self.pool)
+        self.created_path = fs.node_created_path(self.root, self.scoped_path, self.pool)
+        # 'created_path' differs from 'path' if the last operation is a copy,
+        # and furthermore, 'path' might not exist at 'create_rev'
+        self.rev = self.created_rev
+        
         Node.__init__(self, path, self.rev, _kindmap[node_type])
 
     def get_content(self):
         if self.isdir:
             return None
-        return core.Stream(fs.file_contents(self.root, self.scope + self.path,
+        return core.Stream(fs.file_contents(self.root, self.scoped_path,
                                             self.pool))
 
     def get_entries(self):
         if self.isfile:
             return
-        entries = fs.dir_entries(self.root, self.scope + self.path, self.pool)
+        entries = fs.dir_entries(self.root, self.scoped_path, self.pool)
         for item in entries.keys():
             path = '/'.join((self.path, item))
             if not self.authz.has_permission(path):
@@ -269,14 +277,14 @@ class SubversionNode(Node):
                                  self.scope, self.fs_ptr, self._pool)
 
     def get_history(self):
-        history = _get_history(self.scope + self.path, self.authz, self.fs_ptr,
-                               self.pool, self.rev)
+        history = _get_history(self.scoped_path, self.authz, self.fs_ptr,
+                               self.pool, 0, self._requested_rev)
         for path, rev in history:
             if rev > 0 and path.startswith(self.scope):
                 yield path[len(self.scope):], rev
 
     def get_properties(self):
-        props = fs.node_proplist(self.root, self.scope + self.path, self.pool)
+        props = fs.node_proplist(self.root, self.scoped_path, self.pool)
         for name,value in props.items():
             props[name] = str(value) # Make sure the value is a proper string
         return props
@@ -284,7 +292,7 @@ class SubversionNode(Node):
     def get_content_length(self):
         if self.isdir:
             return None
-        return fs.file_length(self.root, self.scope + self.path, self.pool)
+        return fs.file_length(self.root, self.scoped_path, self.pool)
 
     def get_content_type(self):
         if self.isdir:
@@ -292,12 +300,12 @@ class SubversionNode(Node):
         return self._get_prop(core.SVN_PROP_MIME_TYPE)
 
     def get_last_modified(self):
-        date = fs.revision_prop(self.fs_ptr, self.rev,
+        date = fs.revision_prop(self.fs_ptr, self.created_rev,
                                 core.SVN_PROP_REVISION_DATE, self.pool)
         return core.svn_time_from_cstring(date, self.pool) / 1000000
 
     def _get_prop(self, name):
-        return fs.node_prop(self.root, self.scope + self.path, name, self.pool)
+        return fs.node_prop(self.root, self.scoped_path, name, self.pool)
 
 
 class SubversionChangeset(Changeset):

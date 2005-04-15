@@ -236,3 +236,28 @@ Node-copyfrom-rev: 3
 Node-copyfrom-path: trunk/README.txt
 
 
+Revision-number: 7
+Prop-content-length: 151
+Content-length: 151
+
+K 7
+svn:log
+V 42
+test the tag operation (copy of directory)
+K 10
+svn:author
+V 13
+Administrator
+K 8
+svn:date
+V 27
+2005-04-14T15:06:20.717616Z
+PROPS-END
+
+Node-path: tags/v1
+Node-kind: dir
+Node-action: add
+Node-copyfrom-rev: 6
+Node-copyfrom-path: trunk
+
+
