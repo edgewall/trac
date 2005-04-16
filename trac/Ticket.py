@@ -407,7 +407,7 @@ class TicketModule(Module):
             raise perm.PermissionError(perm.TICKET_CHGPROP)
 
         # Do any action on the ticket?
-        action = req.args.get('action', 'leave')
+        action = req.args.get('action')
         if action not in available_actions(ticket, self.perm):
             raise util.TracError('Invalid action')
 

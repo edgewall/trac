@@ -258,8 +258,10 @@
      /each ?>
    </script><?cs
   /if ?>
- </fieldset>
- <?cs /if ?>
+ </fieldset><?cs
+ else ?>
+  <input type="hidden" name="action" value="leave" /><?cs
+ /if ?>
 
  <script type="text/javascript" src="<?cs
    var:htdocs_location ?>js/wikitoolbar.js"></script>
