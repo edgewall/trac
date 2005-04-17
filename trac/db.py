@@ -25,7 +25,7 @@ from trac.util import TracError
 
 import os
 import os.path
-from threading import Condition, Lock
+import urllib
 
 
 class IterableCursor(object):
@@ -70,44 +70,108 @@ class ConnectionWrapper(object):
 
 
 class SQLiteConnection(ConnectionWrapper):
-    """
-    Connection wrapper for SQLite.
-    """
+    """Connection wrapper for SQLite."""
 
     __slots__ = ['cnx']
 
-    def __init__(self, dbpath, timeout=10000):
+    def __init__(self, path, params={}):
         self.cnx = None
-        if dbpath != ':memory:':
-            if not os.access(dbpath, os.F_OK):
-                raise TracError, 'Database "%s" not found.' % dbpath
-            
-            dbdir = os.path.dirname(dbpath)
-            if not os.access(dbpath, os.R_OK + os.W_OK) or \
+        if path != ':memory:':
+            if not os.access(path, os.F_OK):
+                raise TracError, 'Database "%s" not found.' % path
+
+            dbdir = os.path.dirname(path)
+            if not os.access(path, os.R_OK + os.W_OK) or \
                    not os.access(dbdir, os.R_OK + os.W_OK):
                 raise TracError, 'The web server user requires read _and_ ' \
                                  'write permission to the database %s and ' \
                                  'the directory this file is located in.' \
-                                 % dbpath
+                                 % path
 
         import sqlite
-        cnx = sqlite.connect(dbpath, timeout=timeout)
+        cnx = sqlite.connect(path, timeout=int(params.get('timeout', 10000)))
         ConnectionWrapper.__init__(self, cnx)
 
-    def get_last_id(self):
+    def get_last_id(self, table, column='id'):
         return self.cnx.db.sqlite_last_insert_rowid()
 
 
+_cnx_map = {'sqlite': SQLiteConnection}
+
 def get_cnx(env):
     db_str = env.config.get('trac', 'database')
-    scheme, rest = db_str.split(':', 1)
+    scheme, args = _parse_db_str(db_str)
+    if not scheme in _cnx_map:
+        raise TracError, 'Unsupported database type "%s"' % scheme
 
     if scheme == 'sqlite':
-        if not rest.startswith('/'):
-            rest = os.path.join(env.path, rest)
-        return SQLiteConnection(rest)
+        # Special case for SQLite to support a path relative to the
+        # environment directory
+        if args['path'] != ':memory:' and not args['path'].startswith('/'):
+            args['path'] = os.path.join(env.path, args['path'].lstrip('/'))
 
-    raise TracError, 'Unsupported database type "%s"' % scheme
+    return _cnx_map[scheme](**args)
+
+def _parse_db_str(db_str):
+    scheme, rest = db_str.split(':', 1)
+
+    if not rest.startswith('/'):
+        if scheme == 'sqlite':
+            # Support for relative and in-memory SQLite connection strings
+            host = None
+            path = rest
+        else:
+            raise TracError, 'Database connection string %s must start with ' \
+                             'scheme:/' % db_str
+    else:
+        if rest.startswith('/') and not rest.startswith('//'):
+            host = None
+            rest = rest[1:]
+        elif rest.startswith('///'):
+            host = None
+            rest = rest[3:]
+        else:
+            rest = rest[2:]
+            if rest.find('/') == -1:
+                host = rest
+                rest = ''
+            else:
+                host, rest = rest.split('/', 1)
+        path = None
+
+    if host and host.find('@') != -1:
+        user, host = host.split('@', 1)
+        if user.find(':') != -1:
+            user, password = user.split(':', 1)
+        else:
+            password = None
+    else:
+        user = password = None
+    if host and host.find(':') != -1:
+        host, port = host.split(':')
+        port = int(port)
+    else:
+        port = None
+
+    if not path:
+        path = '/' + rest
+    if os.name == 'nt':
+        # Support local paths containing drive letters on Win32
+        if len(rest) > 1 and rest[1] == '|':
+            path = "%s:%s" % (rest[0], rest[2:])
+
+    params = {}
+    if path.find('?') != -1:
+        path, qs = path.split('?', 1)
+        qs = qs.split('&')
+        for param in qs:
+            name, value = param.split('=', 1)
+            value = urllib.unquote(value)
+            params[name] = value
+
+    args = zip(('user', 'password', 'host', 'port', 'path', 'params'),
+               (user, password, host, port, path, params))
+    return scheme, dict(filter(lambda x: x[1], args))
 
 
 __all__ = ['get_cnx']

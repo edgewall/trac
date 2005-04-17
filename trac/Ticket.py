@@ -105,7 +105,7 @@ class Ticket(dict):
                        % (','.join(std_fields),
                           ','.join(['%s'] * len(std_fields))),
                        map(lambda n, self=self: self[n], std_fields))
-        id = db.get_last_id()
+        id = db.get_last_id('ticket')
 
         custom_fields = filter(lambda n: n[:7] == 'custom_', self.keys())
         for name in custom_fields:
