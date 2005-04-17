@@ -38,7 +38,7 @@ from trac.test import TestSetup
 from trac.versioncontrol import Changeset, Node
 from trac.versioncontrol.svn_fs import SubversionRepository
 
-REPOS_PATH = os.path.join(tempfile.gettempdir(), 'trac-svnrepo5')
+REPOS_PATH = os.path.join(tempfile.gettempdir(), 'trac-svnrepos')
 
 
 class SubversionRepositoryTestSetup(TestSetup):
@@ -162,7 +162,7 @@ class SubversionRepositoryTestCase(unittest.TestCase):
         self.assertEqual(('trunk/README.txt', 2), history.next())
         self.assertRaises(StopIteration, history.next)
 
-    def test_get_node_history2(self):
+    def test_get_node_history_cross_copy(self):
         node = self.repos.get_node('/tags/v1/README.txt')
         history = node.get_history()
         self.assertEqual(('tags/v1/README.txt', 7), history.next())

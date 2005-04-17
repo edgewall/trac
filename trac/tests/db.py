@@ -19,7 +19,7 @@ class DBTestCase(unittest.TestCase):
         self.assertEqual(('sqlite', {'path': '/var/db/trac.db'}),
                          _parse_db_str('sqlite:/var/db/trac.db'))
 
-    def test_db_str_sqlite_memory_with_timeout(self):
+    def test_db_str_sqlite_with_timeout_param(self):
         # In-memory database
         self.assertEqual(('sqlite', {'path': 'db/trac.db',
                                      'params': {'timeout': '10000'}}),
