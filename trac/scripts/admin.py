@@ -447,7 +447,8 @@ class TracAdmin(cmd.Cmd):
         actions = perm.permissions + perm.meta_permissions.keys()
         actions.sort()
         text = ', '.join(actions)
-        print util.wrap(text, initial_indent=' ', subsequent_indent=' ')
+        print util.wrap(text, initial_indent=' ', subsequent_indent=' ',
+                        linesep='\n')
         print
 
     def _do_permission_add(self, user, action):

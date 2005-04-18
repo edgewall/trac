@@ -44,7 +44,7 @@ REPOS_PATH = os.path.join(tempfile.gettempdir(), 'trac-svnrepos')
 class SubversionRepositoryTestSetup(TestSetup):
 
     def setUp(self):
-        dumpfile = open(os.path.join(os.path.split(__file__)[0], 'svndump.txt'))
+        dumpfile = open(os.path.join(os.path.split(__file__)[0], 'svnrepos.dump'))
 
         core.apr_initialize()
         pool = core.svn_pool_create(None)
