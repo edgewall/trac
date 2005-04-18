@@ -17,6 +17,13 @@
  overflow: auto;
 }
 
+/* Diff view */
+#overview .ipnr {
+ color: #999;
+ font-size: 80%;
+}
+#overview .comment { padding: 1em 0 0 }
+
 /* Heading anchors */
 .anchor:link, .anchor:visited {
  border: none;

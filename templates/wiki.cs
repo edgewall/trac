@@ -66,13 +66,12 @@
   </form>
   <dl id="overview">
    <dt class="author">Author:</dt>
-   <dd><?cs var:wiki.author ?></dd>
+   <dd class="author"><?cs var:wiki.author ?>
+   <span class="ipnr">(IP: <?cs var:wiki.ipnr ?>)</span></dd>
    <dt class="time">Timestamp:</dt>
-   <dd><?cs var:wiki.time ?></dd>
-   <?cs if:wiki.comment ?>
-    <dt class="comment">Comment:</dt>
-    <dd><?cs var:wiki.comment ?></dd>
-   <?cs /if ?>
+   <dd class="time"><?cs var:wiki.time ?></dd>
+   <dt class="comment">Comment:</dt>
+   <dd class="comment"><?cs var:wiki.comment ?></dd>
   </dl>
   <div class="diff">
    <div id="legend">

@@ -202,7 +202,7 @@ class WikiModule(Module):
         req.hdf['html.norobots'] = 1
 
         cursor = self.db.cursor()
-        cursor.execute("SELECT text,author,comment,time FROM wiki "
+        cursor.execute("SELECT text,author,ipnr,comment,time FROM wiki "
                        "WHERE name=%s AND version IN (%s,%s) ORDER BY version",
                        (pagename, version - 1, version))
         rows = cursor.fetchall()
@@ -212,9 +212,10 @@ class WikiModule(Module):
                             'Page Not Found')
         info = {
             'version': version,
-            'time': time.strftime('%c', time.localtime(int(rows[-1][3]))),
+            'time': time.strftime('%c', time.localtime(int(rows[-1][4]))),
             'author': escape(rows[-1][1] or ''),
-            'comment': escape(rows[-1][2] or ''),
+            'ipnr': escape(rows[-1][2] or ''),
+            'comment': escape(rows[-1][3] or '--'),
             'history_href': escape(self.env.href.wiki(pagename, action='history'))
         }
         req.hdf['wiki'] = info
