@@ -63,11 +63,15 @@ class WikiProcessor:
             return err
         return text
 
+    def comment_processor(hdf, text, env):
+        return ''
+
     def mime_processor(self, hdf, text, env):
         return env.mimeview.display(text, self.mime_type)
     
     builtin_processors = { 'html': html_processor,
-                           'default': default_processor}
+                           'default': default_processor,
+                           'comment': comment_processor}
 
     def process(self, hdf, text, inline=False):
         if self.error:

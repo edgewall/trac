@@ -322,3 +322,19 @@ Inline [[html(<B> Test </B>)]] text
 <p>
 Inline <B> Test </B> text
 </p>
+==============================
+Test comment blocks
+{{{
+#!comment
+This is simply removed from the output
+}}}
+------------------------------
+<p>
+Test comment blocks
+</p>
+==============================
+Inline [[comment(This should not be seen)]] comment
+------------------------------
+<p>
+Inline  comment
+</p>
