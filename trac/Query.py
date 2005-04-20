@@ -545,7 +545,7 @@ class QueryModule(Module):
                 rest_list.remove(tid)
             for rest_id in rest_list:
                 ticket = {}
-                ticket.update(Ticket(self.db, int(rest_id)).data)
+                ticket.update(Ticket(self.db, int(rest_id)))
                 ticket['removed'] = 1
                 tickets.insert(orig_list.index(rest_id), ticket)
 
