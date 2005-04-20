@@ -6,11 +6,43 @@
  <ul>
   <li class="last"><a href="<?cs
     var:log.browser_href ?>">View Latest Revision</a></li>
+  <li class="last"><?cs
+   if:log.action == "path" ?>
+    <a title="Revision Log" 
+       href="<?cs var:log.log_href ?>">Node history</a><?cs
+   else ?>
+    <a title="Search for all revisions of the path '<?cs var:log.path ?>...'"
+       href="<?cs var:log.path_log_href ?>">Path history</a><?cs
+   /if ?>
+  </li>
  </ul>
 </div>
 
+
 <div id="content" class="log">
  <?cs call:browser_path_links(log.path, log) ?>
+ <h3><?cs
+  if:log.action == "path" ?>
+   All revisions found on the current path, up to revision <?cs var:log.rev ?><?cs
+  else ?>
+   Revision Log starting at revision <?cs var:log.rev ?><?cs
+  /if ?>
+ </h3>
+
+ <div class="diff">
+  <div id="legend">
+   <h3>Legend:</h3>
+   <dl>
+    <dt class="add"></dt><dd>Added</dd><?cs
+    if:log.action == "path" ?>
+     <dt class="rem"></dt><dd>Removed</dd><?cs
+    /if ?>
+    <dt class="mod"></dt><dd>Modified</dd>
+    <dt class="cp"></dt><dd>Copied or Renamed</dd>
+    <!-- <dt class="move"></dt><dd>Unknown</dd> -->
+   </dl>
+  </div>
+ </div>
 
  <div id="jumprev">
   <form action="<?cs var:browser_current_href ?>" method="get">
@@ -25,6 +57,7 @@
  <table id="chglist" class="listing">
   <thead>
    <tr>
+    <th class="change"></th>
     <th class="data">Date</th>
     <th class="rev">Rev</th>
     <th class="chgset">Chgset</th>
@@ -32,16 +65,26 @@
     <th class="summary">Log Message</th>
    </tr>
   </thead>
-  <tbody><?cs 
+  <tbody><?cs
+   set:indent = #1 ?><?cs
    each:item = log.items ?><?cs
-    if:item.old_path ?>
-     <tr>
-      <td class="old_path" colspan="5">
-       Previous location: <a href="<?cs var:item.browser_href ?>"?><?cs var:item.old_path ?></a>
+    if:item.old_path && !(log.action == "path" && item.old_path == log.path) ?>
+     <tr class="<?cs if:name(item) % #2 ?>even<?cs else ?>odd<?cs /if ?>">
+      <td class="old_path" colspan="6" style="padding-left: <?cs var:indent ?>em">
+       copied from <a href="<?cs var:item.browser_href ?>"?><?cs var:item.old_path ?></a>:
       </td>
-     </tr><?cs 
+     </tr><?cs
+     set:indent = indent + #1 ?><?cs
+    elif:log.action == "path" ?><?cs
+      set:indent = #1 ?><?cs
     /if ?>
     <tr class="<?cs if:name(item) % #2 ?>even<?cs else ?>odd<?cs /if ?>">
+     <td class="change" style="padding-left:<?cs var:indent ?>em">
+      <a title="Examine node history starting from here" href="<?cs var:item.log_href ?>">
+       <div class="<?cs var:item.change ?>"></div>
+       <span class="comment">(<?cs var:item.change ?>)</span>
+      </a>
+     </td>
      <td class="date"><?cs var:log.changes[item.rev].date ?></td>
      <td class="rev">
       <a href="<?cs var:item.browser_href ?>"><?cs var:item.rev ?></a>

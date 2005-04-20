@@ -87,6 +87,26 @@ class Repository(object):
         cursor.execute("SELECT rev FROM revision ORDER BY time DESC LIMIT 1")
         row = cursor.fetchone()
         return row and row[0] or None
+
+    def get_path_history(self, path, rev):
+        """
+        Retrieve all the revisions containing this path (no newer than 'rev').
+        The result format should be the same as the one of Node.get_history()
+        """
+        raise NotImplementedError
+
+    def normalize_path(self, path):
+        """
+        Return a canonical representation of path in the repos.
+        """
+        return NotImplementedError
+
+    def normalize_rev(self, rev):
+        """
+        Return a canonical representation of a revision in the repos.
+        'None' is a valid revision value and represents the youngest revision.
+        """
+        return NotImplementedError
         
 
 class Node(object):
@@ -118,13 +138,15 @@ class Node(object):
         """
         raise NotImplementedError
 
-    def get_history(self):
+    def get_history(self, limit=None, skip=None):
         """
-        Generator that yields (path, rev) tuples, one for each revision in which
+        Generator that yields (path, rev, chg) tuples, one for each revision in which
         the node was changed. This generator will follow copies and moves of a
         node (if the underlying version control system supports that), which
         will be indicated by the first element of the tuple (i.e. the path)
         changing.
+        Return at most 'limit' tuples, and skip the first 'skip' number of revisions
+        (paging support)
         """
         raise NotImplementedError
 

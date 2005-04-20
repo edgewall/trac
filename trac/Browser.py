@@ -38,8 +38,9 @@ def _get_changes(env, db, repos, revs):
             'date': time.strftime('%x %X', time.localtime(changeset.date)),
             'age': util.pretty_timedelta(changeset.date),
             'author': changeset.author or 'anonymous',
-            'message': wiki_to_oneliner(util.shorten_line(util.wiki_escape_newline(changeset.message)),
-                                        env, db)
+            'message': changeset.message and \
+            wiki_to_oneliner(util.shorten_line(util.wiki_escape_newline(changeset.message)),
+                             env, db) or '--'
         }
     return changes
 
@@ -135,8 +136,9 @@ class BrowserModule(Module):
             'date': time.strftime('%x %X', time.localtime(changeset.date)),
             'age': util.pretty_timedelta(changeset.date),
             'author': changeset.author or 'anonymous',
-            'message': wiki_to_html(util.wiki_escape_newline(changeset.message),
-                                    req.hdf, self.env, self.db)
+            'message': changeset.message and \
+            wiki_to_html(util.wiki_escape_newline(changeset.message),
+                         req.hdf, self.env, self.db) or '--'
         }
 
         mime_type = node.content_type
@@ -209,37 +211,60 @@ class LogModule(Module):
 
         path = req.args.get('path', '/')
         rev = req.args.get('rev')
-
+        action = req.args.get('action', 'node')
+        repos = self.env.get_repository(req.authname)
+        rev = repos.normalize_rev(rev)
+        
 #       self.authzperm.assert_permission(self.path)
 
         req.hdf['title'] = path + ' (log)'
         req.hdf['log.path'] = path
-        req.hdf['log.browser_href'] = self.env.href.browser(path)
+        req.hdf['log.rev'] = rev
+        req.hdf['log.browser_href'] = self.env.href.browser(path, rev=rev)
+        req.hdf['log.log_href'] = self.env.href.log(path, rev=rev)
+        req.hdf['log.path_log_href'] = self.env.href.log(path, rev=rev, action='path')
 
         path_links = _get_path_links(self.env.href, path, rev)
         req.hdf['log.path'] = path_links
         if path_links:
             add_link(req, 'up', path_links[-1]['href'], 'Parent directory')
+        
+        if action == 'node':
+            try:
+                node = repos.get_node(path, rev)
+            except util.TracError:
+                node = None
+            if not node:
+                action = 'path' # show path history instead of node history
+            else:
+                history = node.get_history
 
-        repos = self.env.get_repository(req.authname)
-        node = repos.get_node(path, rev)
-        if not node:
-            # FIXME: we should send a 404 error here
-            raise util.TracError("The file or directory '%s' doesn't exist in "
-                                 "the repository at revision %s." % (path, rev),
-                                 'Nonexistent path')
+        req.hdf['log.action'] = action
+
+        if action == 'path':
+            def history():
+                for h in repos.get_path_history(path, rev):
+                    yield h
         info = []
-        previous_path = path.strip('/')
-        for old_path, old_rev in node.get_history():
+        previous_path = repos.normalize_path(path)
+        for old_path, old_rev, old_chg in history():
+            old_path = repos.normalize_path(old_path)
             item = {
                 'rev': old_rev,
+                'log_href': self.env.href.log(old_path, rev=old_rev),
                 'browser_href': self.env.href.browser(old_path, rev=old_rev),
                 'changeset_href': self.env.href.changeset(old_rev),
+                'change': old_chg
             }
-            if previous_path != old_path:
+            if action != 'path' and old_path != previous_path:
                 item['old_path'] = old_path
-                previous_path = old_path
+            previous_path = old_path
             info.append(item)
+        if info == []:
+            # FIXME: we should send a 404 error here
+            raise util.TracError("The file or directory '%s' doesn't exist "
+                                 "at revision %s or in any previous revision." % (path, rev),
+                                 'Nonexistent path')
         req.hdf['log.items'] = info
         req.hdf['log.changes'] = _get_changes(self.env, self.db, repos,
                                               [i['rev'] for i in info])

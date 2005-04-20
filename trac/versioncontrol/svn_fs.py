@@ -120,6 +120,7 @@ class SubversionRepository(Repository):
         self.pool = None
         self.repos = None
         self.fs_ptr = None
+        self.path = path
 
         core.apr_initialize()
         self.apr_initialized = 1
@@ -154,6 +155,20 @@ class SubversionRepository(Repository):
     def __del__(self):
         self.close()
 
+    def normalize_path(self, path):
+        return path == '/' and path or path.strip('/')
+
+    def normalize_rev(self, rev):
+        try:
+            rev =  int(rev)
+        except (ValueError, TypeError):
+            rev = None
+        if rev is None:
+            rev = self.youngest_rev
+        elif rev > self.youngest_rev:
+            raise TracError, "Revision %s doesn't exist yet" % rev
+        return rev
+
     def close(self):
         if self._pool:
             self.log.debug("Closing subversion file-system at %s" % self.path)
@@ -174,13 +189,7 @@ class SubversionRepository(Repository):
         if path and path[-1] == '/':
             path = path[:-1]
 
-        try:
-            rev = int(rev)
-        except (ValueError, TypeError):
-            rev = None
-
-        if rev is None:
-            rev = self.youngest_rev
+        rev = self.normalize_rev(rev)
 
         return SubversionNode(path, rev, self.authz, self.scope, self.fs_ptr,
                               self._pool)
@@ -230,6 +239,34 @@ class SubversionRepository(Repository):
         row = cursor.fetchone()
         return row and row[0] or None
 
+    def get_path_history(self, path, rev):
+        path = self.normalize_path(path)
+        rev = self.normalize_rev(rev)
+        expect_deletion = 0
+        while rev:
+            rev_root = fs.revision_root(self.fs_ptr, rev, self.pool)
+            node_type = fs.check_path(rev_root, path, self.pool)
+            if node_type in _kindmap: # tehn path exists at that rev
+                if expect_deletion: # then rev+1 must be a delete
+                    yield path, rev+1, Changeset.DELETE
+                last = previous = None
+                for p, r in _get_history(path, self.authz, self.fs_ptr, self.pool, 0, rev):
+                    last = (p == '/' and p or p.strip('/'), r, Changeset.ADD)
+                    if previous:
+                        if last[0] == path: # still on the path: previous was an edit
+                            yield previous[0], previous[1], Changeset.EDIT
+                            rev = self.previous_rev(previous[1])
+                        else:
+                            last = (previous[0], previous[1], Changeset.COPY)
+                            break # a copy was detected, stop here
+                    previous = last
+                if last:
+                    yield last
+                    rev = self.previous_rev(last[1])
+            else:
+                expect_deletion = 1
+                rev = self.previous_rev(rev)
+
 
 class SubversionNode(Node):
 
@@ -276,12 +313,26 @@ class SubversionNode(Node):
             yield SubversionNode(path, self._requested_rev, self.authz,
                                  self.scope, self.fs_ptr, self._pool)
 
-    def get_history(self):
-        history = _get_history(self.scoped_path, self.authz, self.fs_ptr,
-                               self.pool, 0, self._requested_rev)
-        for path, rev in history:
+    def get_history(self, limit=None, skip=None):
+        skipped = nrev = 0
+        newer = None
+        for path, rev in _get_history(self.scoped_path, self.authz, self.fs_ptr,
+                                      self.pool, 0, self._requested_rev):
             if rev > 0 and path.startswith(self.scope):
-                yield path[len(self.scope):], rev
+                if skip and skipped < skip:
+                    skipped += 1
+                else:
+                    older = (path[len(self.scope):], rev, Changeset.ADD)
+                    nrev += 1
+                    if newer:
+                        change = newer[0] == older[0] and Changeset.EDIT or Changeset.COPY
+                        yield newer[0], newer[1], change
+                    if limit and nrev == limit:
+                        older = (older[0], older[1], Changeset.MOVED) # unknown, actually
+                        break
+                    newer = older
+        if older:
+            yield older
 
     def get_properties(self):
         props = fs.node_proplist(self.root, self.scoped_path, self.pool)

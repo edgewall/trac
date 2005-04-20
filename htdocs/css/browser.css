@@ -1,4 +1,5 @@
 @import url(code.css);
+@import url(diff.css);
 
 /* Browser */
 h1 { margin: 0; padding: 0 0 .5em }
@@ -42,7 +43,16 @@ h1 .sep { color: #666; padding: 0 .1em }
 /* Styles for the revision log table
    (extends the styles for "table.listing") */
 #chglist { margin-top: 0 }
-#chglist td.old_path { font-weight: bold }
+#chglist td.change { 
+ white-space: nowrap; 
+}
+#chglist td.change div { 
+ border: 1px solid #999;
+ margin: .2em .5em 0 0;
+ width: .8em; height: .8em;
+}
+#chglist td.change .comment { display: none }
+#chglist td.old_path { font-style: italic }
 #chglist td.date { white-space: nowrap }
 #chglist td.rev, #chglist td.chgset { text-align: center }
 #chglist td.rev a, #chglist td.chgset a { border-bottom: none }
