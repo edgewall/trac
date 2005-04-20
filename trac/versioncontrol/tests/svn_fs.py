@@ -157,17 +157,17 @@ class SubversionRepositoryTestCase(unittest.TestCase):
     def test_get_node_history(self):
         node = self.repos.get_node('/trunk/README2.txt')
         history = node.get_history()
-        self.assertEqual(('trunk/README2.txt', 6), history.next())
-        self.assertEqual(('trunk/README.txt', 3), history.next())
-        self.assertEqual(('trunk/README.txt', 2), history.next())
+        self.assertEqual(('trunk/README2.txt', 6, 'copy'), history.next())
+        self.assertEqual(('trunk/README.txt', 3, 'edit'), history.next())
+        self.assertEqual(('trunk/README.txt', 2, 'add'), history.next())
         self.assertRaises(StopIteration, history.next)
 
     def test_get_node_history_cross_copy(self):
         node = self.repos.get_node('/tags/v1/README.txt')
         history = node.get_history()
-        self.assertEqual(('tags/v1/README.txt', 7), history.next())
-        self.assertEqual(('trunk/README.txt', 3), history.next())
-        self.assertEqual(('trunk/README.txt', 2), history.next())
+        self.assertEqual(('tags/v1/README.txt', 7, 'copy'), history.next())
+        self.assertEqual(('trunk/README.txt', 3, 'edit'), history.next())
+        self.assertEqual(('trunk/README.txt', 2, 'add'), history.next())
         self.assertRaises(StopIteration, history.next)
 
     def test_changeset_repos_creation(self):
