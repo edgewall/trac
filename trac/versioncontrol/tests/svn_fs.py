@@ -162,12 +162,42 @@ class SubversionRepositoryTestCase(unittest.TestCase):
         self.assertEqual(('trunk/README.txt', 2, 'add'), history.next())
         self.assertRaises(StopIteration, history.next)
 
+    def test_get_history_limit(self):
+        node = self.repos.get_node('/trunk/README2.txt')
+        history = node.get_history(limit=2)
+        self.assertEqual(('trunk/README2.txt', 6, 'copy'), history.next())
+        self.assertEqual(('trunk/README.txt', 3, 'edit'), history.next())
+        self.assertRaises(StopIteration, history.next)
+
+    def test_get_history_skip(self):
+        node = self.repos.get_node('/trunk/README2.txt')
+        history = node.get_history(limit=None,skip=1)
+        self.assertEqual(('trunk/README.txt', 3, 'edit'), history.next())
+        self.assertEqual(('trunk/README.txt', 2, 'add'), history.next())
+        self.assertRaises(StopIteration, history.next)
+
+    def test_get_history_limit_skip(self):
+        node = self.repos.get_node('/trunk/README2.txt')
+        history = node.get_history(limit=1,skip=1)
+        self.assertEqual(('trunk/README.txt', 3, 'edit'), history.next())
+        self.assertRaises(StopIteration, history.next)
+
     def test_get_node_history_cross_copy(self):
         node = self.repos.get_node('/tags/v1/README.txt')
         history = node.get_history()
         self.assertEqual(('tags/v1/README.txt', 7, 'copy'), history.next())
         self.assertEqual(('trunk/README.txt', 3, 'edit'), history.next())
         self.assertEqual(('trunk/README.txt', 2, 'add'), history.next())
+        self.assertRaises(StopIteration, history.next)
+
+    def test_get_path_history(self):
+        history = self.repos.get_path_history('/trunk/README2.txt', None)
+        self.assertEqual(('trunk/README2.txt', 6, 'copy'), history.next())
+        self.assertRaises(StopIteration, history.next)
+
+    def test_get_path_history_cross_copy(self):
+        history = self.repos.get_path_history('/tags/v1/README.txt', None)
+        self.assertEqual(('tags/v1/README.txt', 7, 'copy'), history.next())
         self.assertRaises(StopIteration, history.next)
 
     def test_changeset_repos_creation(self):

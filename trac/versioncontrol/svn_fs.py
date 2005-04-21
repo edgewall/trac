@@ -239,14 +239,14 @@ class SubversionRepository(Repository):
         row = cursor.fetchone()
         return row and row[0] or None
 
-    def get_path_history(self, path, rev):
+    def get_path_history(self, path, rev=None):
         path = self.normalize_path(path)
         rev = self.normalize_rev(rev)
         expect_deletion = 0
         while rev:
             rev_root = fs.revision_root(self.fs_ptr, rev, self.pool)
             node_type = fs.check_path(rev_root, path, self.pool)
-            if node_type in _kindmap: # tehn path exists at that rev
+            if node_type in _kindmap: # then path exists at that rev
                 if expect_deletion: # then rev+1 must be a delete
                     yield path, rev+1, Changeset.DELETE
                 last = previous = None
@@ -315,22 +315,24 @@ class SubversionNode(Node):
 
     def get_history(self, limit=None, skip=None):
         skipped = nrev = 0
-        newer = None
+        newer = None # 'newer' is the previously seen history tuple
+        older = None # 'older' is the currently examined history tuple
         for path, rev in _get_history(self.scoped_path, self.authz, self.fs_ptr,
                                       self.pool, 0, self._requested_rev):
             if rev > 0 and path.startswith(self.scope):
-                if skip and skipped < skip:
-                    skipped += 1
-                else:
-                    older = (path[len(self.scope):], rev, Changeset.ADD)
-                    nrev += 1
-                    if newer:
-                        change = newer[0] == older[0] and Changeset.EDIT or Changeset.COPY
-                        yield newer[0], newer[1], change
-                    if limit and nrev == limit:
-                        older = (older[0], older[1], Changeset.MOVED) # unknown, actually
-                        break
-                    newer = older
+                older = (path[len(self.scope):], rev, Changeset.ADD)
+                if newer:
+                    change = newer[0] == older[0] and Changeset.EDIT or Changeset.COPY
+                    newer = (newer[0], newer[1], change)
+                    if skip and skipped < skip:
+                        skipped += 1
+                    else:
+                      if limit and nrev >= limit - 1:
+                          older = newer
+                          break
+                      nrev += 1
+                      yield newer
+                newer = older
         if older:
             yield older
 
