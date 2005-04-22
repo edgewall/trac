@@ -261,3 +261,128 @@ Node-copyfrom-rev: 6
 Node-copyfrom-path: trunk
 
 
+Revision-number: 8
+Prop-content-length: 124
+Content-length: 124
+
+K 7
+svn:log
+V 15
+Fix stuff in v1
+K 10
+svn:author
+V 13
+Administrator
+K 8
+svn:date
+V 27
+2005-04-22T08:57:33.499643Z
+PROPS-END
+
+Node-path: branches/v1x
+Node-kind: dir
+Node-action: add
+Node-copyfrom-rev: 7
+Node-copyfrom-path: tags/v1
+
+
+Revision-number: 9
+Prop-content-length: 127
+Content-length: 127
+
+K 7
+svn:log
+V 18
+Now that's the fix
+K 10
+svn:author
+V 13
+Administrator
+K 8
+svn:date
+V 27
+2005-04-22T08:59:24.308979Z
+PROPS-END
+
+Node-path: branches/v1x/README.txt
+Node-kind: file
+Node-action: change
+Text-content-length: 16
+Text-content-md5: 02bcabffffd16fe0fc250f08cad95e0c
+Content-length: 16
+
+This is a test.
+
+
+Revision-number: 10
+Prop-content-length: 141
+Content-length: 141
+
+K 7
+svn:log
+V 32
+Tagging v1.1 from the fix branch
+K 10
+svn:author
+V 13
+Administrator
+K 8
+svn:date
+V 27
+2005-04-22T09:00:34.549980Z
+PROPS-END
+
+Node-path: tags/v1.1
+Node-kind: dir
+Node-action: add
+Node-copyfrom-rev: 9
+Node-copyfrom-path: branches/v1x
+
+
+Revision-number: 11
+Prop-content-length: 191
+Content-length: 191
+
+K 7
+svn:log
+V 82
+''(a few months later)'' We don't need the fix branch anymore, 1.1 is super-stable
+K 10
+svn:author
+V 13
+Administrator
+K 8
+svn:date
+V 27
+2005-04-22T09:01:38.361737Z
+PROPS-END
+
+Node-path: branches/v1x
+Node-action: delete
+
+
+Revision-number: 12
+Prop-content-length: 166
+Content-length: 166
+
+K 7
+svn:log
+V 57
+''(a few years later)'' Argh... v1.1 was buggy, after all
+K 10
+svn:author
+V 13
+Administrator
+K 8
+svn:date
+V 27
+2005-04-22T09:06:37.011174Z
+PROPS-END
+
+Node-path: branches/v1x
+Node-kind: dir
+Node-action: add
+Node-copyfrom-rev: 11
+Node-copyfrom-path: tags/v1.1
+
+

@@ -67,8 +67,9 @@ class SubversionRepositoryTestSetup(TestSetup):
             core.apr_terminate()
 
     def tearDown(self):
+        # The Windows version of 'shutil.rmtree' doesn't force the permission
+        # of the r--r--r-- format file to 'rw-rw-rw-', so we have to do it
         os.chmod(os.path.join(REPOS_PATH, 'format'), stat.S_IRWXU)
-        # Windows version of shutil.rmtree needs the above line, in order to force the deletion
         shutil.rmtree(REPOS_PATH)
 
 
@@ -85,10 +86,11 @@ class SubversionRepositoryTestCase(unittest.TestCase):
         self.assertEqual(0, self.repos.oldest_rev)
         self.assertEqual(None, self.repos.previous_rev(0))
         self.assertEqual(0, self.repos.previous_rev(1))
-        self.assertEqual(7, self.repos.youngest_rev)
+        self.assertEqual(12, self.repos.youngest_rev)
         self.assertEqual(6, self.repos.next_rev(5))
         self.assertEqual(7, self.repos.next_rev(6))
-        self.assertEqual(None, self.repos.next_rev(7))
+        # ...
+        self.assertEqual(None, self.repos.next_rev(12))
 
     def test_get_node(self):
         node = self.repos.get_node('/trunk')
@@ -202,6 +204,18 @@ class SubversionRepositoryTestCase(unittest.TestCase):
     def test_get_path_history_cross_copy(self):
         history = self.repos.get_path_history('/tags/v1/README.txt', None)
         self.assertEqual(('tags/v1/README.txt', 7, 'copy'), history.next())
+        self.assertRaises(StopIteration, history.next)
+        history = self.repos.get_path_history('/branches/v1x/README.txt', None)
+        self.assertEqual(('branches/v1x/README.txt', 12, 'copy'), history.next())
+        self.assertEqual(('branches/v1x/README.txt', 11, 'delete'), history.next())
+        self.assertEqual(('branches/v1x/README.txt', 9, 'edit'), history.next())
+        self.assertEqual(('branches/v1x/README.txt', 8, 'copy'), history.next())
+        self.assertRaises(StopIteration, history.next)
+
+    def test_get_path_history_limit(self):
+        history = self.repos.get_path_history('/branches/v1x/README.txt', None, 2)
+        self.assertEqual(('branches/v1x/README.txt', 12, 'copy'), history.next())
+        self.assertEqual(('branches/v1x/README.txt', 11, 'delete'), history.next())
         self.assertRaises(StopIteration, history.next)
 
     def test_changeset_repos_creation(self):

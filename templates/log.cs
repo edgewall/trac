@@ -33,11 +33,11 @@
 
 <div id="content" class="log">
  <?cs call:browser_path_links(log.path, log) ?>
- <h3><?cs
+ <h3>Revision Log showing <?cs
   if:log.action == "path" ?>
-   All Revisions Found on the Current Path, up to Revision <?cs var:log.rev ?><?cs
+   Path History, up to Revision <?cs var:log.rev ?><?cs
   else ?>
-   Revision Log starting at Revision <?cs var:log.rev ?><?cs
+   Node History, starting at Revision <?cs var:log.rev ?><?cs
   /if ?><?cs 
   if:len(links.prev) + len(links.next) > #0 ?>
    (Page <?cs var:log.page ?>)<?cs
