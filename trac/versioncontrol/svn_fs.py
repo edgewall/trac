@@ -21,7 +21,7 @@
 
 from __future__ import generators
 
-from trac.util import TracError
+from trac.util import TracError, Pager
 from trac.versioncontrol import Changeset, Node, Repository
 
 import os.path
@@ -239,7 +239,8 @@ class SubversionRepository(Repository):
         row = cursor.fetchone()
         return row and row[0] or None
 
-    def get_path_history(self, path, rev=None):
+    def get_path_history(self, path, rev=None, limit=None, skip=None):
+        pager = Pager(limit, skip)
         path = self.normalize_path(path)
         rev = self.normalize_rev(rev)
         expect_deletion = 0
@@ -247,22 +248,36 @@ class SubversionRepository(Repository):
             rev_root = fs.revision_root(self.fs_ptr, rev, self.pool)
             node_type = fs.check_path(rev_root, path, self.pool)
             if node_type in _kindmap: # then path exists at that rev
-                if expect_deletion: # then rev+1 must be a delete
-                    yield path, rev+1, Changeset.DELETE
-                last = previous = None
-                for p, r in _get_history(path, self.authz, self.fs_ptr, self.pool, 0, rev):
-                    last = (p == '/' and p or p.strip('/'), r, Changeset.ADD)
-                    if previous:
-                        if last[0] == path: # still on the path: previous was an edit
-                            yield previous[0], previous[1], Changeset.EDIT
-                            rev = self.previous_rev(previous[1])
+                if expect_deletion:
+                    # it was missing, now it's there again: rev+1 must be a delete
+                    if not pager.skipping():
+                        if pager.next():
+                            yield path, rev+1, Changeset.DELETE
                         else:
-                            last = (previous[0], previous[1], Changeset.COPY)
-                            break # a copy was detected, stop here
-                    previous = last
-                if last:
-                    yield last
-                    rev = self.previous_rev(last[1])
+                            return
+                newer = None # 'newer' is the previously seen history tuple
+                older = None # 'older' is the currently examined history tuple
+                for p, r in _get_history(path, self.authz, self.fs_ptr, self.pool, 0, rev):
+                    older = (self.normalize_path(p), r, Changeset.ADD)
+                    if newer:
+                        if older[0] == path: # still on the path: 'newer' was an edit
+                            if not pager.skipping():
+                                if pager.next():
+                                    yield newer[0], newer[1], Changeset.EDIT
+                                else:
+                                    return
+                            rev = self.previous_rev(newer[1])
+                        else: # a copy was detected, stop here
+                            older = (newer[0], newer[1], Changeset.COPY)
+                            break 
+                    newer = older
+                if older:
+                    if not pager.skipping():
+                        if pager.next():
+                            yield older
+                        else:
+                            return
+                    rev = self.previous_rev(older[1])
             else:
                 expect_deletion = 1
                 rev = self.previous_rev(rev)
@@ -314,7 +329,8 @@ class SubversionNode(Node):
                                  self.scope, self.fs_ptr, self._pool)
 
     def get_history(self, limit=None, skip=None):
-        skipped = nrev = 0
+        pager = Pager(limit, skip)
+        pager.next() # consume one entry, as there will be one final yield
         newer = None # 'newer' is the previously seen history tuple
         older = None # 'older' is the currently examined history tuple
         for path, rev in _get_history(self.scoped_path, self.authz, self.fs_ptr,
@@ -324,17 +340,14 @@ class SubversionNode(Node):
                 if newer:
                     change = newer[0] == older[0] and Changeset.EDIT or Changeset.COPY
                     newer = (newer[0], newer[1], change)
-                    if skip and skipped < skip:
-                        skipped += 1
-                    else:
-                      if limit and nrev >= limit - 1:
-                          older = newer
-                          break
-                      nrev += 1
-                      yield newer
+                    if not pager.skipping():
+                        if pager.next():
+                            yield newer
+                        else:
+                            break
                 newer = older
-        if older:
-            yield older
+        if newer and not pager.skipping():
+            yield newer
 
     def get_properties(self):
         props = fs.node_proplist(self.root, self.scoped_path, self.pool)

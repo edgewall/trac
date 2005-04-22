@@ -100,8 +100,8 @@ class CachedRepository(Repository):
     def next_rev(self, rev):
         return self.repos.next_rev(rev)
 
-    def get_path_history(self, path, rev=None):
-        return self.repos.get_path_history(path, rev)
+    def get_path_history(self, path, rev=None, limit=None, skip=None):
+        return self.repos.get_path_history(path, rev, limit, skip)
 
     def normalize_path(self, path):
         return self.repos.normalize_path(path)

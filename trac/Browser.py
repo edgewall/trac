@@ -211,7 +211,12 @@ class LogModule(Module):
 
         path = req.args.get('path', '/')
         rev = req.args.get('rev')
+        skip = int(req.args.get('skip', '0') or 0)
+        limit = int(req.args.get('limit') or self.config.get('log', 'limit', '100'))
+        # Note that 100 has often been suggested as a reasonable default
+
         action = req.args.get('action', 'node')
+        
         repos = self.env.get_repository(req.authname)
         rev = repos.normalize_rev(rev)
         
@@ -220,6 +225,8 @@ class LogModule(Module):
         req.hdf['title'] = path + ' (log)'
         req.hdf['log.path'] = path
         req.hdf['log.rev'] = rev
+        req.hdf['log.page'] = 1 + skip / limit
+        req.hdf['log.limit'] = limit
         req.hdf['log.browser_href'] = self.env.href.browser(path, rev=rev)
         req.hdf['log.log_href'] = self.env.href.log(path, rev=rev)
         req.hdf['log.path_log_href'] = self.env.href.log(path, rev=rev, action='path')
@@ -242,12 +249,12 @@ class LogModule(Module):
         req.hdf['log.action'] = action
 
         if action == 'path':
-            def history():
-                for h in repos.get_path_history(path, rev):
+            def history(limit, skip):
+                for h in repos.get_path_history(path, rev, limit, skip):
                     yield h
         info = []
         previous_path = repos.normalize_path(path)
-        for old_path, old_rev, old_chg in history():
+        for old_path, old_rev, old_chg in history(limit, skip):
             old_path = repos.normalize_path(old_path)
             item = {
                 'rev': old_rev,
@@ -260,7 +267,7 @@ class LogModule(Module):
                 item['old_path'] = old_path
             previous_path = old_path
             info.append(item)
-        if info == []:
+        if info == [] and skip == 0:
             # FIXME: we should send a 404 error here
             raise util.TracError("The file or directory '%s' doesn't exist "
                                  "at revision %s or in any previous revision." % (path, rev),
@@ -268,6 +275,23 @@ class LogModule(Module):
         req.hdf['log.items'] = info
         req.hdf['log.changes'] = _get_changes(self.env, self.db, repos,
                                               [i['rev'] for i in info])
+
+        if skip > 0: # need to be able to go to previous, i.e. more recent entries
+            previous_skip = skip - limit
+            if previous_skip < 0: # no need to jump on the first page
+                previous_skip = 0
+            else:
+                add_link(req, 'first', self.env.href.log(path, rev=rev, action=action),
+                         'Revision log (Page 1)')
+            add_link(req, 'prev',
+                     self.env.href.log(path, rev=rev, action=action, skip=previous_skip),
+                     'Revision log (Page %d)' % (1 + previous_skip / limit))
+
+        if len(info) == limit:
+            next_skip = skip + limit
+            add_link(req, 'next',
+                     self.env.href.log(path, rev=rev, action=action, skip=next_skip),
+                     'Revision log (Page %d)' % (1 + next_skip / limit))
 
         rss_href = self.env.href.log(path, rev=rev, format='rss')
         add_link(req, 'alternate', rss_href, 'RSS Feed', 'application/rss+xml',

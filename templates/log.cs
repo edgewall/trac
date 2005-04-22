@@ -9,12 +9,24 @@
   <li class="last"><?cs
    if:log.action == "path" ?>
     <a title="Revision Log" 
-       href="<?cs var:log.log_href ?>">Node history</a><?cs
+       href="<?cs var:log.log_href ?>">Node History</a><?cs
    else ?>
     <a title="Search for all revisions of the path '<?cs var:log.path ?>...'"
-       href="<?cs var:log.path_log_href ?>">Path history</a><?cs
+       href="<?cs var:log.path_log_href ?>">Path History</a><?cs
    /if ?>
-  </li>
+  </li><?cs
+  if:len(links.prev) ?>
+   <li class="first<?cs if:!len(links.next) ?> last<?cs /if ?>">
+    &larr; <a href="<?cs var:links.prev.0.href ?>" title="<?cs
+      var:links.prev.0.title ?>">Newer Revisions</a>
+   </li><?cs
+  /if ?><?cs
+  if:len(links.next) ?>
+   <li class="<?cs if:!len(links.prev) ?>first <?cs /if ?>last">
+    <a href="<?cs var:links.next.0.href ?>" title="<?cs
+      var:links.next.0.title ?>">Older Revisions</a> &rarr;
+   </li><?cs
+  /if ?>
  </ul>
 </div>
 
@@ -23,9 +35,12 @@
  <?cs call:browser_path_links(log.path, log) ?>
  <h3><?cs
   if:log.action == "path" ?>
-   All revisions found on the current path, up to revision <?cs var:log.rev ?><?cs
+   All Revisions Found on the Current Path, up to Revision <?cs var:log.rev ?><?cs
   else ?>
-   Revision Log starting at revision <?cs var:log.rev ?><?cs
+   Revision Log starting at Revision <?cs var:log.rev ?><?cs
+  /if ?><?cs 
+  if:len(links.prev) + len(links.next) > #0 ?>
+   (Page <?cs var:log.page ?>)<?cs
   /if ?>
  </h3>
 
@@ -39,7 +54,6 @@
     /if ?>
     <dt class="mod"></dt><dd>Modified</dd>
     <dt class="cp"></dt><dd>Copied or Renamed</dd>
-    <!-- <dt class="move"></dt><dd>Unknown</dd> -->
    </dl>
   </div>
  </div>

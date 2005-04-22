@@ -154,6 +154,8 @@ class SubversionRepositoryTestCase(unittest.TestCase):
         self.assertEqual('native', props['svn:eol-style'])
         self.assertEqual('text/plain', props['svn:mime-type'])
 
+    # Revision Log / node history 
+
     def test_get_node_history(self):
         node = self.repos.get_node('/trunk/README2.txt')
         history = node.get_history()
@@ -189,6 +191,8 @@ class SubversionRepositoryTestCase(unittest.TestCase):
         self.assertEqual(('trunk/README.txt', 3, 'edit'), history.next())
         self.assertEqual(('trunk/README.txt', 2, 'add'), history.next())
         self.assertRaises(StopIteration, history.next)
+
+    # Revision Log / path history 
 
     def test_get_path_history(self):
         history = self.repos.get_path_history('/trunk/README2.txt', None)

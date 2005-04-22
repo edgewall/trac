@@ -334,7 +334,7 @@ def safe__import__(module_name):
     Safe imports: rollback after a failed import.
     
     Initially inspired from the RollbackImporter in PyUnit,
-    but it's now much simpler and work better for our needs.
+    but it's now much simpler and works better for our needs.
     
     See http://pyunit.sourceforge.net/notes/reloading.html
     """
@@ -367,3 +367,23 @@ class Deuglifier(object):
                 elif mtype == 'endfont':
                     return '</span>'
                 return '<span class="code-%s">' % mtype
+
+class Pager:
+    def __init__(self, limit, skip):
+        self.limit = limit
+        self.skip = skip
+        self.count = self.skipped = 0
+
+    def skipping(self):
+        if self.skip and self.skipped < self.skip:
+            self.skipped += 1
+            return True
+        else:
+            return False
+
+    def next(self):
+        self.count += 1
+        if self.limit and self.count > self.limit:
+            return False
+        else:
+            return True
