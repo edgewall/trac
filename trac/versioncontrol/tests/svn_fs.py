@@ -173,19 +173,6 @@ class SubversionRepositoryTestCase(unittest.TestCase):
         self.assertEqual(('trunk/README.txt', 3, 'edit'), history.next())
         self.assertRaises(StopIteration, history.next)
 
-    def test_get_history_skip(self):
-        node = self.repos.get_node('/trunk/README2.txt')
-        history = node.get_history(limit=None,skip=1)
-        self.assertEqual(('trunk/README.txt', 3, 'edit'), history.next())
-        self.assertEqual(('trunk/README.txt', 2, 'add'), history.next())
-        self.assertRaises(StopIteration, history.next)
-
-    def test_get_history_limit_skip(self):
-        node = self.repos.get_node('/trunk/README2.txt')
-        history = node.get_history(limit=1,skip=1)
-        self.assertEqual(('trunk/README.txt', 3, 'edit'), history.next())
-        self.assertRaises(StopIteration, history.next)
-
     def test_get_node_history_cross_copy(self):
         node = self.repos.get_node('/tags/v1/README.txt')
         history = node.get_history()

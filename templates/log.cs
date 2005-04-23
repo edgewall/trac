@@ -12,7 +12,7 @@
        href="<?cs var:log.log_href ?>">Node History</a><?cs
    else ?>
     <a title="Search for all revisions of the path '<?cs var:log.path ?>...'"
-       href="<?cs var:log.path_log_href ?>">Path History</a><?cs
+       href="<?cs var:log.log_path_history_href ?>">Path History</a><?cs
    /if ?>
   </li><?cs
   if:len(links.prev) ?>

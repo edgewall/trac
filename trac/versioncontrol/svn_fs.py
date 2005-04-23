@@ -91,7 +91,7 @@ class Pool(object):
     def _child_closed(self, child):
         self._children.remove(child)
         if self._waiting_to_close:
-            self._close(x)
+            self._close(None)
     
     def _close(self, x):
         """
@@ -257,8 +257,8 @@ class SubversionRepository(Repository):
         row = cursor.fetchone()
         return row and row[0] or None
 
-    def get_path_history(self, path, rev=None, limit=None, skip=None):
-        pager = Pager(limit, skip)
+    def get_path_history(self, path, rev=None, limit=None):
+        pager = Pager(limit, None)
         path = self.normalize_path(path)
         rev = self.normalize_rev(rev)
         expect_deletion = 0
@@ -346,8 +346,8 @@ class SubversionNode(Node):
             yield SubversionNode(path, self._requested_rev, self.authz,
                                  self.scope, self.fs_ptr, self._pool)
 
-    def get_history(self, limit=None, skip=None):
-        pager = Pager(limit, skip)
+    def get_history(self, limit=None):
+        pager = Pager(limit, None)
         pager.next() # consume one entry, as there will be one final yield
         newer = None # 'newer' is the previously seen history tuple
         older = None # 'older' is the currently examined history tuple

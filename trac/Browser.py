@@ -27,6 +27,7 @@ from trac.web.main import add_link
 from trac.WikiFormatter import wiki_to_html, wiki_to_oneliner
 
 import time
+import urllib
 
 CHUNK_SIZE = 4096
 DISP_MAX_FILE_SIZE = 256 * 1024
@@ -213,53 +214,73 @@ class LogModule(Module):
 
         path = req.args.get('path', '/')
         rev = req.args.get('rev')
-        skip = int(req.args.get('skip', '0') or 0)
-        limit = int(req.args.get('limit') or self.config.get('log', 'limit', '100'))
-        # Note that 100 has often been suggested as a reasonable default
-
-        action = req.args.get('action', 'node')
+        page = int(req.args.get('page', '1'))
         
+        # -- Paging support
+        limit = int(req.args.get('limit') or self.config.get('log', 'limit', '100'))
+        # (Note: 100 has often been suggested as a reasonable default)
+        pages = urllib.unquote_plus(req.args.get('pages', '')).split(' ')
+        if page and page > 0 and page * 2 - 1 < len(pages):
+            page_rev = pages[page * 2 - 2]
+            page_path = pages[page * 2 - 1]
+        else:
+            page = 1
+            page_rev = rev
+            page_path = path
+            pages = None
+            
         repos = self.env.get_repository(req.authname)
-        rev = repos.normalize_rev(rev)
+        rev = str(repos.normalize_rev(rev))
+        page_rev = str(repos.normalize_rev(page_rev))
+        if pages == None:
+            pages = [page_rev, page_path]
         
 #       self.authzperm.assert_permission(self.path)
 
         req.hdf['title'] = path + ' (log)'
         req.hdf['log.path'] = path
         req.hdf['log.rev'] = rev
-        req.hdf['log.page'] = 1 + skip / limit
+        req.hdf['log.page'] = page
         req.hdf['log.limit'] = limit
         req.hdf['log.browser_href'] = self.env.href.browser(path, rev=rev)
         req.hdf['log.log_href'] = self.env.href.log(path, rev=rev)
-        req.hdf['log.path_log_href'] = self.env.href.log(path, rev=rev, action='path')
+        req.hdf['log.log_path_history_href'] = self.env.href.log(path, rev=rev,
+                                                                 action='path')
 
         path_links = _get_path_links(self.env.href, path, rev)
         req.hdf['log.path'] = path_links
         if path_links:
             add_link(req, 'up', path_links[-1]['href'], 'Parent directory')
-        
+
+        # 'node' or 'path' history: use get_node()/get_history() or get_path_history()
+        action = req.args.get('action', 'node')
         if action == 'node':
             try:
-                node = repos.get_node(path, rev)
+                node = repos.get_node(page_path == '' and path or page_path,
+                                      page_rev)
             except util.TracError:
                 node = None
             if not node:
-                action = 'path' # show path history instead of node history
+                action = 'path' # show 'path' history instead of 'node' history
             else:
                 history = node.get_history
 
         req.hdf['log.action'] = action
 
         if action == 'path':
-            def history(limit, skip):
-                for h in repos.get_path_history(path, rev, limit, skip):
+            def history(limit):
+                for h in repos.get_path_history(path, page_rev, limit):
                     yield h
+
+        # -- retrieve history, asking for limit+1 results
         info = []
         previous_path = repos.normalize_path(path)
-        for old_path, old_rev, old_chg in history(limit, skip):
+        for old_path, old_rev, old_chg in history(limit+1):
             old_path = repos.normalize_path(old_path)
             item = {
-                'rev': old_rev,
+                'rev': str(old_rev),
+                'path': old_path == path and '' or str(old_path),
+                # Optimization: if path is '', this means it's log.path
                 'log_href': self.env.href.log(old_path, rev=old_rev),
                 'browser_href': self.env.href.browser(old_path, rev=old_rev),
                 'changeset_href': self.env.href.changeset(old_rev),
@@ -269,31 +290,35 @@ class LogModule(Module):
                 item['old_path'] = old_path
             previous_path = old_path
             info.append(item)
-        if info == [] and skip == 0:
+        if info == [] and rev == page_rev:
             # FIXME: we should send a 404 error here
             raise util.TracError("The file or directory '%s' doesn't exist "
-                                 "at revision %s or in any previous revision." % (path, rev),
+                                 "at revision %s or at any previous revision." % (path, rev),
                                  'Nonexistent path')
+
+        # -- first, previous and next page links
+        def add_page_link(what, page):
+            add_link(req, what,
+                     self.env.href.log(path, rev=rev, action=action, page=page,
+                                       pages=urllib.quote_plus(' '.join(pages))),
+                     'Revision Log (Page %d)' % (page))
+
+        if page > 1: # then, one needs to be able to go to previous page
+            if page > 2: # then one can directly jump to the first page
+                add_page_link('first', 1)
+            add_page_link('prev', page - 1)
+
+        if len(info) == limit+1: # limit+1 reached, there _might_ be some more
+            if page * 2  == len(pages):
+                pages.append(info[-1]['rev'])
+                pages.append(info[-1]['path'])
+            add_page_link('next', page + 1)
+            # now, only show 'limit' results
+            del info[-1]
+        
         req.hdf['log.items'] = info
         req.hdf['log.changes'] = _get_changes(self.env, self.db, repos,
                                               [i['rev'] for i in info])
-
-        if skip > 0: # need to be able to go to previous, i.e. more recent entries
-            previous_skip = skip - limit
-            if previous_skip < 0: # no need to jump on the first page
-                previous_skip = 0
-            else:
-                add_link(req, 'first', self.env.href.log(path, rev=rev, action=action),
-                         'Revision log (Page 1)')
-            add_link(req, 'prev',
-                     self.env.href.log(path, rev=rev, action=action, skip=previous_skip),
-                     'Revision log (Page %d)' % (1 + previous_skip / limit))
-
-        if len(info) == limit:
-            next_skip = skip + limit
-            add_link(req, 'next',
-                     self.env.href.log(path, rev=rev, action=action, skip=next_skip),
-                     'Revision log (Page %d)' % (1 + next_skip / limit))
 
         rss_href = self.env.href.log(path, rev=rev, format='rss')
         add_link(req, 'alternate', rss_href, 'RSS Feed', 'application/rss+xml',
