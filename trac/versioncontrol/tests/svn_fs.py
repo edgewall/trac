@@ -166,13 +166,6 @@ class SubversionRepositoryTestCase(unittest.TestCase):
         self.assertEqual(('trunk/README.txt', 2, 'add'), history.next())
         self.assertRaises(StopIteration, history.next)
 
-    def test_get_history_limit(self):
-        node = self.repos.get_node('/trunk/README2.txt')
-        history = node.get_history(limit=2)
-        self.assertEqual(('trunk/README2.txt', 6, 'copy'), history.next())
-        self.assertEqual(('trunk/README.txt', 3, 'edit'), history.next())
-        self.assertRaises(StopIteration, history.next)
-
     def test_get_node_history_cross_copy(self):
         node = self.repos.get_node('/tags/v1/README.txt')
         history = node.get_history()
@@ -197,12 +190,6 @@ class SubversionRepositoryTestCase(unittest.TestCase):
         self.assertEqual(('branches/v1x/README.txt', 11, 'delete'), history.next())
         self.assertEqual(('branches/v1x/README.txt', 9, 'edit'), history.next())
         self.assertEqual(('branches/v1x/README.txt', 8, 'copy'), history.next())
-        self.assertRaises(StopIteration, history.next)
-
-    def test_get_path_history_limit(self):
-        history = self.repos.get_path_history('/branches/v1x/README.txt', None, 2)
-        self.assertEqual(('branches/v1x/README.txt', 12, 'copy'), history.next())
-        self.assertEqual(('branches/v1x/README.txt', 11, 'delete'), history.next())
         self.assertRaises(StopIteration, history.next)
 
     def test_changeset_repos_creation(self):

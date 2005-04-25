@@ -368,22 +368,3 @@ class Deuglifier(object):
                     return '</span>'
                 return '<span class="code-%s">' % mtype
 
-class Pager:
-    def __init__(self, limit, skip):
-        self.limit = limit
-        self.skip = skip
-        self.count = self.skipped = 0
-
-    def skipping(self):
-        if self.skip and self.skipped < self.skip:
-            self.skipped += 1
-            return True
-        else:
-            return False
-
-    def next(self):
-        self.count += 1
-        if self.limit and self.count > self.limit:
-            return False
-        else:
-            return True

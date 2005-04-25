@@ -77,6 +77,13 @@ class Repository(object):
         """
         raise NotImplementedError
 
+    def rev_older_than(self, rev1, rev2):
+        """
+        Return True if rev1 is older than rev2, i.e. if rev1 comes before rev2
+        in the revision sequence.
+        """
+        raise NotImplementedError
+
     def get_youngest_rev_in_cache(self, db):
         """
         Return the youngest revision currently cached.
@@ -88,7 +95,7 @@ class Repository(object):
         row = cursor.fetchone()
         return row and row[0] or None
 
-    def get_path_history(self, path, rev=None, limit=None):
+    def get_path_history(self, path, rev=None):
         """
         Retrieve all the revisions containing this path (no newer than 'rev').
         The result format should be the same as the one of Node.get_history()
@@ -138,14 +145,13 @@ class Node(object):
         """
         raise NotImplementedError
 
-    def get_history(self, limit=None):
+    def get_history(self):
         """
         Generator that yields (path, rev, chg) tuples, one for each revision in which
         the node was changed. This generator will follow copies and moves of a
         node (if the underlying version control system supports that), which
         will be indicated by the first element of the tuple (i.e. the path)
         changing.
-        Return at most 'limit' tuples.
         """
         raise NotImplementedError
 

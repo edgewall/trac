@@ -21,7 +21,7 @@
 
 from __future__ import generators
 
-from trac.util import TracError, Pager
+from trac.util import TracError
 from trac.versioncontrol import Changeset, Node, Repository
 
 import os.path
@@ -248,6 +248,9 @@ class SubversionRepository(Repository):
             return self.history[idx - 1]
         return None
 
+    def rev_older_than(self, rev1, rev2):
+        return self.normalize_rev(rev1) < self.normalize_rev(rev2)
+
     def get_youngest_rev_in_cache(self, db):
         """
         Get the latest stored revision by sorting the revision strings numerically
@@ -257,8 +260,7 @@ class SubversionRepository(Repository):
         row = cursor.fetchone()
         return row and row[0] or None
 
-    def get_path_history(self, path, rev=None, limit=None):
-        pager = Pager(limit, None)
+    def get_path_history(self, path, rev=None):
         path = self.normalize_path(path)
         rev = self.normalize_rev(rev)
         expect_deletion = 0
@@ -268,33 +270,21 @@ class SubversionRepository(Repository):
             if node_type in _kindmap: # then path exists at that rev
                 if expect_deletion:
                     # it was missing, now it's there again: rev+1 must be a delete
-                    if not pager.skipping():
-                        if pager.next():
-                            yield path, rev+1, Changeset.DELETE
-                        else:
-                            return
+                    yield path, rev+1, Changeset.DELETE
                 newer = None # 'newer' is the previously seen history tuple
                 older = None # 'older' is the currently examined history tuple
                 for p, r in _get_history(path, self.authz, self.fs_ptr, self.pool, 0, rev):
                     older = (self.normalize_path(p), r, Changeset.ADD)
                     if newer:
                         if older[0] == path: # still on the path: 'newer' was an edit
-                            if not pager.skipping():
-                                if pager.next():
-                                    yield newer[0], newer[1], Changeset.EDIT
-                                else:
-                                    return
+                            yield newer[0], newer[1], Changeset.EDIT
                             rev = self.previous_rev(newer[1])
                         else: # a copy was detected, stop here
                             older = (newer[0], newer[1], Changeset.COPY)
                             break 
                     newer = older
                 if older:
-                    if not pager.skipping():
-                        if pager.next():
-                            yield older
-                        else:
-                            return
+                    yield older
                     rev = self.previous_rev(older[1])
             else:
                 expect_deletion = 1
@@ -346,9 +336,7 @@ class SubversionNode(Node):
             yield SubversionNode(path, self._requested_rev, self.authz,
                                  self.scope, self.fs_ptr, self._pool)
 
-    def get_history(self, limit=None):
-        pager = Pager(limit, None)
-        pager.next() # consume one entry, as there will be one final yield
+    def get_history(self):
         newer = None # 'newer' is the previously seen history tuple
         older = None # 'older' is the currently examined history tuple
         for path, rev in _get_history(self.scoped_path, self.authz, self.fs_ptr,
@@ -358,13 +346,9 @@ class SubversionNode(Node):
                 if newer:
                     change = newer[0] == older[0] and Changeset.EDIT or Changeset.COPY
                     newer = (newer[0], newer[1], change)
-                    if not pager.skipping():
-                        if pager.next():
-                            yield newer
-                        else:
-                            break
+                    yield newer
                 newer = older
-        if newer and not pager.skipping():
+        if newer:
             yield newer
 
     def get_properties(self):

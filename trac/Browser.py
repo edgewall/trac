@@ -32,18 +32,23 @@ import urllib
 CHUNK_SIZE = 4096
 DISP_MAX_FILE_SIZE = 256 * 1024
 
-def _get_changes(env, db, repos, revs):
+def _get_changes(env, db, repos, revs, full=None):
     changes = {}
     for rev in filter(lambda x: x in revs, revs):
         changeset = repos.get_changeset(rev)
+        if changeset.message:
+            message = util.wiki_escape_newline(changeset.message) # FIXME (#48)
+            if not full:
+                message = util.shorten_line(message)
+            message = wiki_to_oneliner(message, env, db)
+        else:
+            message = '--'
         changes[rev] = {
             'date_seconds': changeset.date,
             'date': time.strftime('%x %X', time.localtime(changeset.date)),
             'age': util.pretty_timedelta(changeset.date),
             'author': changeset.author or 'anonymous',
-            'message': changeset.message and \
-            wiki_to_oneliner(util.shorten_line(util.wiki_escape_newline(changeset.message)),
-                             env, db) or '--'
+            'message': message
         }
     return changes
 
@@ -214,12 +219,14 @@ class LogModule(Module):
 
         path = req.args.get('path', '/')
         rev = req.args.get('rev')
+        stop_rev = req.args.get('stop_rev')
+        follow_copy = req.args.get('follow_copy', '')
+        full_messages = req.args.get('full_messages', '')
         page = int(req.args.get('page', '1'))
-        
-        # -- Paging support
         limit = int(req.args.get('limit') or self.config.get('log', 'limit', '100'))
         # (Note: 100 has often been suggested as a reasonable default)
         pages = urllib.unquote_plus(req.args.get('pages', '')).split(' ')
+
         if page and page > 0 and page * 2 - 1 < len(pages):
             page_rev = pages[page * 2 - 2]
             page_path = pages[page * 2 - 1]
@@ -230,6 +237,7 @@ class LogModule(Module):
             pages = None
             
         repos = self.env.get_repository(req.authname)
+        normpath = repos.normalize_path(path)
         rev = str(repos.normalize_rev(rev))
         page_rev = str(repos.normalize_rev(page_rev))
         if pages == None:
@@ -242,6 +250,10 @@ class LogModule(Module):
         req.hdf['log.rev'] = rev
         req.hdf['log.page'] = page
         req.hdf['log.limit'] = limit
+        req.hdf['log.follow_copy'] = follow_copy
+        req.hdf['log.full_messages'] = full_messages
+        if stop_rev:
+            req.hdf['log.stop_rev'] = stop_rev
         req.hdf['log.browser_href'] = self.env.href.browser(path, rev=rev)
         req.hdf['log.log_href'] = self.env.href.log(path, rev=rev)
         req.hdf['log.log_path_history_href'] = self.env.href.log(path, rev=rev,
@@ -256,8 +268,7 @@ class LogModule(Module):
         action = req.args.get('action', 'node')
         if action == 'node':
             try:
-                node = repos.get_node(page_path == '' and path or page_path,
-                                      page_rev)
+                node = repos.get_node(page_path or path, page_rev)
             except util.TracError:
                 node = None
             if not node:
@@ -268,39 +279,59 @@ class LogModule(Module):
         req.hdf['log.action'] = action
 
         if action == 'path':
-            def history(limit):
-                for h in repos.get_path_history(path, page_rev, limit):
+            def history():
+                for h in repos.get_path_history(path, page_rev):
                     yield h
 
         # -- retrieve history, asking for limit+1 results
         info = []
         previous_path = repos.normalize_path(path)
-        for old_path, old_rev, old_chg in history(limit+1):
+        for old_path, old_rev, old_chg in history():
+            if stop_rev and repos.rev_older_than(old_rev, stop_rev):
+                break
             old_path = repos.normalize_path(old_path)
             item = {
                 'rev': str(old_rev),
-                'path': old_path == path and '' or str(old_path),
-                # Optimization: if path is '', this means it's log.path
+                'path': str(old_path),
                 'log_href': self.env.href.log(old_path, rev=old_rev),
                 'browser_href': self.env.href.browser(old_path, rev=old_rev),
                 'changeset_href': self.env.href.changeset(old_rev),
                 'change': old_chg
             }
-            if action != 'path' and old_path != previous_path:
-                item['old_path'] = old_path
-            previous_path = old_path
+            # we optimize for the case old_path is the log.path:
+            if old_path == normpath:
+                item['path'] = ''
             info.append(item)
+            if old_path and old_path != previous_path:
+                item['old_path'] = old_path
+                if not follow_copy:
+                    break
+            if len(info) > limit: # we want limit+1 entries
+                break
+            previous_path = old_path
         if info == [] and rev == page_rev:
             # FIXME: we should send a 404 error here
             raise util.TracError("The file or directory '%s' doesn't exist "
                                  "at revision %s or at any previous revision." % (path, rev),
                                  'Nonexistent path')
 
-        # -- first, previous and next page links
+        # -- first, previous and next page links:
+        #    The page "history" information is encoded in the URL, not optimal
+        #    but still better than putting that information in the session or
+        #    recomputing the full history each time.
         def add_page_link(what, page):
-            add_link(req, what,
-                     self.env.href.log(path, rev=rev, action=action, page=page,
-                                       pages=urllib.quote_plus(' '.join(pages))),
+            args = {
+                'rev': rev,
+                'action': action,
+                'limit': limit,
+                'page': page,
+                'pages': urllib.quote_plus(' '.join(pages)),
+                }
+            if follow_copy:
+                args['follow_copy'] = follow_copy
+            if full_messages:
+                args['full_messages'] = full_messages
+            add_link(req, what, self.env.href.log(path, **args),
                      'Revision Log (Page %d)' % (page))
 
         if page > 1: # then, one needs to be able to go to previous page
@@ -318,7 +349,8 @@ class LogModule(Module):
         
         req.hdf['log.items'] = info
         req.hdf['log.changes'] = _get_changes(self.env, self.db, repos,
-                                              [i['rev'] for i in info])
+                                              [i['rev'] for i in info],
+                                              full_messages)
 
         rss_href = self.env.href.log(path, rev=rev, format='rss')
         add_link(req, 'alternate', rss_href, 'RSS Feed', 'application/rss+xml',

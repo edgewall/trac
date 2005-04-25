@@ -5,14 +5,14 @@
 <div id="ctxtnav" class="nav">
  <ul>
   <li class="last"><a href="<?cs
-    var:log.browser_href ?>">View Latest Revision</a></li>
+    var:log.browser_href ?>">Browse Latest Revision</a></li>
   <li class="last"><?cs
    if:log.action == "path" ?>
-    <a title="Revision Log" 
-       href="<?cs var:log.log_href ?>">Node History</a><?cs
+    <a title="Revision Log, optionally following copy operations" 
+       href="<?cs var:log.log_href ?>">Switch to Node History</a><?cs
    else ?>
-    <a title="Search for all revisions of the path '<?cs var:log.path ?>...'"
-       href="<?cs var:log.log_path_history_href ?>">Path History</a><?cs
+    <a title="Search the repository for all the revisions involving path '<?cs var:log.path ?>'"
+       href="<?cs var:log.log_path_history_href ?>">Switch to Path History</a><?cs
    /if ?>
   </li><?cs
   if:len(links.prev) ?>
@@ -58,15 +58,38 @@
   </div>
  </div>
 
- <div id="jumprev">
-  <form action="<?cs var:browser_current_href ?>" method="get">
-   <div>
-    <label for="rev">View revision:</label>
-    <input type="text" id="rev" name="rev" value="<?cs
-      var:log.items.0.rev ?>" size="4" />
-   </div>
-  </form>
- </div>
+ <form id="prefs" action="<?cs var:browser_current_href ?>" method="get">
+  <div>
+   <input type="hidden" name="action" value="<?cs var:log.action ?>" />
+   <label for="rev">View log starting from revision:</label>
+   <input type="text" id="rev" name="rev" value="<?cs 
+    var:log.items.0.rev ?>" size="4" />
+   <label for="stop_rev">to:</label>
+   <input type="text" id="stop_rev" name="stop_rev" value="<?cs
+    var:log.stop_rev ?>" size="4" />
+   <br />
+   <label for="limit">
+    Show at most <input type="text" id="limit" name="limit" 
+                        size="2" value="<?cs var:log.limit ?>" /> entries
+   </label><?cs 
+   if:log.action != "path" ?>
+    <br />
+    <label for="follow_copy">
+     Follow copy operations <input type="checkbox" id="follow_copy" name="follow_copy" <?cs
+                             if:log.follow_copy ?> checked="checked" <?cs /if ?> />
+    </label><?cs
+   /if ?>
+   <br />
+   <label for="full_messages">
+    Show full log messages <input type="checkbox" id="full_messages" name="full_messages" <?cs
+                            if:log.full_messages ?> checked="checked" <?cs /if ?> />
+   </label>
+  </div>
+  <div class="buttons">
+   <input type="submit" value="Update" 
+          title="Warning: by updating, you will clear the page history" />
+  </div>
+ </form>
 
  <table id="chglist" class="listing">
   <thead>

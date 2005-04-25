@@ -1,6 +1,9 @@
 @import url(code.css);
 @import url(diff.css);
 
+* html #prefs { width: 34em } /* Set width only for IE */
+#prefs .buttons { margin-top: -1.6em }
+
 /* Browser */
 h1 { margin: 0; padding: 0 0 .5em }
 h1 :link, h1 :visited, h1 .filename { border: none; padding: 0 .2em }
