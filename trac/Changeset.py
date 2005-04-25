@@ -79,7 +79,7 @@ class ChangesetModule(Module):
             add_link(req, 'prev', self.env.href.changeset(previous_rev),
                      'Changeset %s' % previous_rev)
         youngest_rev = repos.youngest_rev
-        if chgset.rev != youngest_rev:
+        if str(chgset.rev) != str(youngest_rev):
             next_rev = repos.next_rev(chgset.rev)
             add_link(req, 'next', self.env.href.changeset(next_rev),
                      'Changeset %s' % next_rev)
