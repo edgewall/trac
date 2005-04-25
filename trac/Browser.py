@@ -25,6 +25,7 @@ from trac import perm, util
 from trac.Module import Module
 from trac.web.main import add_link
 from trac.WikiFormatter import wiki_to_html, wiki_to_oneliner
+from trac.versioncontrol import Changeset
 
 import time
 import urllib
@@ -32,7 +33,7 @@ import urllib
 CHUNK_SIZE = 4096
 DISP_MAX_FILE_SIZE = 256 * 1024
 
-def _get_changes(env, db, repos, revs, full=None):
+def _get_changes(env, db, repos, revs, full=None, req=None):
     changes = {}
     for rev in filter(lambda x: x in revs, revs):
         changeset = repos.get_changeset(rev)
@@ -40,7 +41,9 @@ def _get_changes(env, db, repos, revs, full=None):
             message = util.wiki_escape_newline(changeset.message) # FIXME (#48)
             if not full:
                 message = util.shorten_line(message)
-            message = wiki_to_oneliner(message, env, db)
+                message = wiki_to_oneliner(message, env, db)
+            else:
+                message = wiki_to_html(message, req.hdf, env, db)
         else:
             message = '--'
         changes[rev] = {
@@ -220,7 +223,7 @@ class LogModule(Module):
         path = req.args.get('path', '/')
         rev = req.args.get('rev')
         stop_rev = req.args.get('stop_rev')
-        follow_copy = req.args.get('follow_copy', '')
+        log_mode = req.args.get('log_mode', 'stop_on_copy')
         full_messages = req.args.get('full_messages', '')
         page = int(req.args.get('page', '1'))
         limit = int(req.args.get('limit') or self.config.get('log', 'limit', '100'))
@@ -242,7 +245,7 @@ class LogModule(Module):
         page_rev = str(repos.normalize_rev(page_rev))
         if pages == None:
             pages = [page_rev, page_path]
-        
+
 #       self.authzperm.assert_permission(self.path)
 
         req.hdf['title'] = path + ' (log)'
@@ -250,14 +253,14 @@ class LogModule(Module):
         req.hdf['log.rev'] = rev
         req.hdf['log.page'] = page
         req.hdf['log.limit'] = limit
-        req.hdf['log.follow_copy'] = follow_copy
+        req.hdf['log.mode'] = log_mode
         req.hdf['log.full_messages'] = full_messages
         if stop_rev:
             req.hdf['log.stop_rev'] = stop_rev
         req.hdf['log.browser_href'] = self.env.href.browser(path, rev=rev)
         req.hdf['log.log_href'] = self.env.href.log(path, rev=rev)
         req.hdf['log.log_path_history_href'] = self.env.href.log(path, rev=rev,
-                                                                 action='path')
+                                                                 log_mode='path_history')
 
         path_links = _get_path_links(self.env.href, path, rev)
         req.hdf['log.path'] = path_links
@@ -265,20 +268,17 @@ class LogModule(Module):
             add_link(req, 'up', path_links[-1]['href'], 'Parent directory')
 
         # 'node' or 'path' history: use get_node()/get_history() or get_path_history()
-        action = req.args.get('action', 'node')
-        if action == 'node':
+        if log_mode != 'path_history':
             try:
                 node = repos.get_node(page_path or path, page_rev)
             except util.TracError:
                 node = None
             if not node:
-                action = 'path' # show 'path' history instead of 'node' history
+                log_mode = 'path_history' # show 'path' history instead of 'node' history
             else:
                 history = node.get_history
 
-        req.hdf['log.action'] = action
-
-        if action == 'path':
+        if log_mode == 'path_history':
             def history():
                 for h in repos.get_path_history(path, page_rev):
                     yield h
@@ -301,10 +301,11 @@ class LogModule(Module):
             # we optimize for the case old_path is the log.path:
             if old_path == normpath:
                 item['path'] = ''
-            info.append(item)
+            if not (log_mode == 'path_history' and old_chg == Changeset.EDIT):
+                info.append(item)
             if old_path and old_path != previous_path:
                 item['old_path'] = old_path
-                if not follow_copy:
+                if log_mode == 'stop_on_copy':
                     break
             if len(info) > limit: # we want limit+1 entries
                 break
@@ -322,13 +323,11 @@ class LogModule(Module):
         def add_page_link(what, page):
             args = {
                 'rev': rev,
-                'action': action,
+                'log_mode': log_mode,
                 'limit': limit,
                 'page': page,
                 'pages': urllib.quote_plus(' '.join(pages)),
                 }
-            if follow_copy:
-                args['follow_copy'] = follow_copy
             if full_messages:
                 args['full_messages'] = full_messages
             add_link(req, what, self.env.href.log(path, **args),
@@ -350,7 +349,7 @@ class LogModule(Module):
         req.hdf['log.items'] = info
         req.hdf['log.changes'] = _get_changes(self.env, self.db, repos,
                                               [i['rev'] for i in info],
-                                              full_messages)
+                                              full_messages, req)
 
         rss_href = self.env.href.log(path, rev=rev, format='rss')
         add_link(req, 'alternate', rss_href, 'RSS Feed', 'application/rss+xml',

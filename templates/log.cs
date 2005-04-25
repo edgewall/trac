@@ -5,16 +5,7 @@
 <div id="ctxtnav" class="nav">
  <ul>
   <li class="last"><a href="<?cs
-    var:log.browser_href ?>">Browse Latest Revision</a></li>
-  <li class="last"><?cs
-   if:log.action == "path" ?>
-    <a title="Revision Log, optionally following copy operations" 
-       href="<?cs var:log.log_href ?>">Switch to Node History</a><?cs
-   else ?>
-    <a title="Search the repository for all the revisions involving path '<?cs var:log.path ?>'"
-       href="<?cs var:log.log_path_history_href ?>">Switch to Path History</a><?cs
-   /if ?>
-  </li><?cs
+    var:log.browser_href ?>">View Latest Revision</a></li><?cs
   if:len(links.prev) ?>
    <li class="first<?cs if:!len(links.next) ?> last<?cs /if ?>">
     &larr; <a href="<?cs var:links.prev.0.href ?>" title="<?cs
@@ -34,7 +25,7 @@
 <div id="content" class="log">
  <?cs call:browser_path_links(log.path, log) ?>
  <h3>Revision Log showing <?cs
-  if:log.action == "path" ?>
+  if:log.mode == "path" ?>
    Path History, up to Revision <?cs var:log.rev ?><?cs
   else ?>
    Node History, starting at Revision <?cs var:log.rev ?><?cs
@@ -49,7 +40,7 @@
    <h3>Legend:</h3>
    <dl>
     <dt class="add"></dt><dd>Added</dd><?cs
-    if:log.action == "path" ?>
+    if:log.mode == "path" ?>
      <dt class="rem"></dt><dd>Removed</dd><?cs
     /if ?>
     <dt class="mod"></dt><dd>Modified</dd>
@@ -60,7 +51,7 @@
 
  <form id="prefs" action="<?cs var:browser_current_href ?>" method="get">
   <div>
-   <input type="hidden" name="action" value="<?cs var:log.action ?>" />
+   <input type="hidden" name="action" value="<?cs var:log.mode ?>" />
    <label for="rev">View log starting from revision:</label>
    <input type="text" id="rev" name="rev" value="<?cs 
     var:log.items.0.rev ?>" size="4" />
@@ -71,18 +62,30 @@
    <label for="limit">
     Show at most <input type="text" id="limit" name="limit" 
                         size="2" value="<?cs var:log.limit ?>" /> entries
-   </label><?cs 
-   if:log.action != "path" ?>
-    <br />
-    <label for="follow_copy">
-     Follow copy operations <input type="checkbox" id="follow_copy" name="follow_copy" <?cs
-                             if:log.follow_copy ?> checked="checked" <?cs /if ?> />
-    </label><?cs
-   /if ?>
-   <br />
+   </label>
+    <fieldset>
+     <legend>Mode:</legend>
+     <label for="stop_on_copy">
+      <input type="radio" id="stop_on_copy" name="log_mode" value="stop_on_copy" <?cs
+       if:log.mode != "follow_copy" || log.mode != "path_history" ?> checked="checked" <?cs
+       /if ?> />
+      Stop on copy 
+     </label>
+     <label for="follow_copy">
+      <input type="radio" id="follow_copy" name="log_mode" value="follow_copy" <?cs
+       if:log.mode == "follow_copy" ?> checked="checked" <?cs /if ?> />
+      Follow copy operations
+     </label>
+     <label for="path_history">
+      <input type="radio" id="path_history" name="log_mode" value="path_history" <?cs
+       if:log.mode == "path_history" ?> checked="checked" <?cs /if ?> />
+      Show only add, move and delete operations
+     </label>
+    </fieldset>
    <label for="full_messages">
-    Show full log messages <input type="checkbox" id="full_messages" name="full_messages" <?cs
-                            if:log.full_messages ?> checked="checked" <?cs /if ?> />
+    <input type="checkbox" id="full_messages" name="full_messages" <?cs
+     if:log.full_messages ?> checked="checked" <?cs /if ?> />
+    Show full log messages
    </label>
   </div>
   <div class="buttons">
@@ -105,14 +108,14 @@
   <tbody><?cs
    set:indent = #1 ?><?cs
    each:item = log.items ?><?cs
-    if:item.old_path && !(log.action == "path" && item.old_path == log.path) ?>
+    if:item.old_path && !(log.mode == "path" && item.old_path == log.path) ?>
      <tr class="<?cs if:name(item) % #2 ?>even<?cs else ?>odd<?cs /if ?>">
       <td class="old_path" colspan="6" style="padding-left: <?cs var:indent ?>em">
        copied from <a href="<?cs var:item.browser_href ?>"?><?cs var:item.old_path ?></a>:
       </td>
      </tr><?cs
      set:indent = indent + #1 ?><?cs
-    elif:log.action == "path" ?><?cs
+    elif:log.mode == "path" ?><?cs
       set:indent = #1 ?><?cs
     /if ?>
     <tr class="<?cs if:name(item) % #2 ?>even<?cs else ?>odd<?cs /if ?>">
