@@ -394,7 +394,7 @@ class TicketModule(Module):
                 raise util.TracError('Tickets must contain summary.')
 
             ticket = Ticket(self.db, id)
-            if 'description' in req.args or 'reporter' in req.args:
+            if 'description' in req.args.keys() or 'reporter' in req.args.keys():
                 self.perm.assert_permission(perm.TICKET_ADMIN)
 
             ticket.populate(req.args)
