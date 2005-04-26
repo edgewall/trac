@@ -303,8 +303,9 @@ class LogModule(Module):
                 item['path'] = ''
             if not (log_mode == 'path_history' and old_chg == Changeset.EDIT):
                 info.append(item)
-            if old_path and old_path != previous_path:
-                item['old_path'] = old_path
+            if old_path and old_path != previous_path \
+               and not (log_mode == 'path_history' and old_path == normpath):
+                item['copyfrom_path'] = old_path
                 if log_mode == 'stop_on_copy':
                     break
             if len(info) > limit: # we want limit+1 entries

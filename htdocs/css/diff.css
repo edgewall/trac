@@ -23,6 +23,7 @@
 #chglist .add, #overview .add, .diff #legend .add { background: #bfb }
 #chglist .copy, #overview .cp, .diff #legend .cp { background: #88f }
 #chglist .move, #overview .mv, .diff #legend .mv { background: #ccc }
+#chglist .unknown { background: #fff }
 
 /* Legend for diff colors */
 .diff #legend {

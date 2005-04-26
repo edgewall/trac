@@ -25,7 +25,7 @@
 <div id="content" class="log">
  <?cs call:browser_path_links(log.path, log) ?>
  <h3>Revision Log showing <?cs
-  if:log.mode == "path" ?>
+  if:log.mode == "path_history" ?>
    Path History, up to Revision <?cs var:log.rev ?><?cs
   else ?>
    Node History, starting at Revision <?cs var:log.rev ?><?cs
@@ -40,7 +40,7 @@
    <h3>Legend:</h3>
    <dl>
     <dt class="add"></dt><dd>Added</dd><?cs
-    if:log.mode == "path" ?>
+    if:log.mode == "path_history" ?>
      <dt class="rem"></dt><dd>Removed</dd><?cs
     /if ?>
     <dt class="mod"></dt><dd>Modified</dd>
@@ -63,6 +63,7 @@
     Show at most <input type="text" id="limit" name="limit" 
                         size="2" value="<?cs var:log.limit ?>" /> entries
    </label>
+   <div class="choice" ?>
     <fieldset>
      <legend>Mode:</legend>
      <label for="stop_on_copy">
@@ -82,6 +83,7 @@
       Show only add, move and delete operations
      </label>
     </fieldset>
+   </div>
    <label for="full_messages">
     <input type="checkbox" id="full_messages" name="full_messages" <?cs
      if:log.full_messages ?> checked="checked" <?cs /if ?> />
@@ -108,14 +110,14 @@
   <tbody><?cs
    set:indent = #1 ?><?cs
    each:item = log.items ?><?cs
-    if:item.old_path && !(log.mode == "path" && item.old_path == log.path) ?>
+    if:item.copyfrom_path ?>
      <tr class="<?cs if:name(item) % #2 ?>even<?cs else ?>odd<?cs /if ?>">
-      <td class="old_path" colspan="6" style="padding-left: <?cs var:indent ?>em">
-       copied from <a href="<?cs var:item.browser_href ?>"?><?cs var:item.old_path ?></a>:
+      <td class="copyfrom_path" colspan="6" style="padding-left: <?cs var:indent ?>em">
+       copied from <a href="<?cs var:item.browser_href ?>"?><?cs var:item.copyfrom_path ?></a>:
       </td>
      </tr><?cs
      set:indent = indent + #1 ?><?cs
-    elif:log.mode == "path" ?><?cs
+    elif:log.mode == "path_history" ?><?cs
       set:indent = #1 ?><?cs
     /if ?>
     <tr class="<?cs if:name(item) % #2 ?>even<?cs else ?>odd<?cs /if ?>">

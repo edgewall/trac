@@ -263,7 +263,7 @@ class SubversionRepository(Repository):
     def get_path_history(self, path, rev=None):
         path = self.normalize_path(path)
         rev = self.normalize_rev(rev)
-        expect_deletion = 0
+        expect_deletion = False
         while rev:
             rev_root = fs.revision_root(self.fs_ptr, rev, self.pool)
             node_type = fs.check_path(rev_root, path, self.pool)
@@ -275,19 +275,20 @@ class SubversionRepository(Repository):
                 older = None # 'older' is the currently examined history tuple
                 for p, r in _get_history(path, self.authz, self.fs_ptr, self.pool, 0, rev):
                     older = (self.normalize_path(p), r, Changeset.ADD)
+                    rev = self.previous_rev(r)
                     if newer:
                         if older[0] == path: # still on the path: 'newer' was an edit
                             yield newer[0], newer[1], Changeset.EDIT
-                            rev = self.previous_rev(newer[1])
-                        else: # a copy was detected, stop here
-                            older = (newer[0], newer[1], Changeset.COPY)
-                            break 
+                        else: # the path changed: 'newer' was a copy
+                            rev = self.previous_rev(newer[1]) # restart before the copy op
+                            yield newer[0], newer[1], Changeset.COPY
+                            older = (older[0], older[1], 'unknown')
+                            break
                     newer = older
-                if older:
+                if older: # either a real ADD or the source of a COPY
                     yield older
-                    rev = self.previous_rev(older[1])
             else:
-                expect_deletion = 1
+                expect_deletion = True
                 rev = self.previous_rev(rev)
 
 
