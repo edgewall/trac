@@ -61,14 +61,14 @@ class ChangesetModule(Module):
 
     def render_html(self, req, repos, chgset, diff_options):
         """HTML version"""
-
         req.hdf['title'] = '[%s]' % chgset.rev
         req.hdf['changeset'] = {
             'revision': chgset.rev,
             'time': time.asctime(time.localtime(chgset.date)),
             'author': util.escape(chgset.author or 'anonymous'),
-            'message': wiki_to_html(util.wiki_escape_newline(chgset.message or '--'),
-                                    req.hdf, self.env, self.db)
+            'message': wiki_to_html(chgset.message or '--',
+                                    req.hdf, self.env, self.db,
+                                    escape_newlines=True)
         }
 
         oldest_rev = repos.oldest_rev

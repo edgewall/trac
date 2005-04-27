@@ -33,9 +33,6 @@ FALSE = ['no',  '0', 0, 'false', 'off', 'nay']
 CRLF = '\r\n'
 
 
-def wiki_escape_newline(text):
-    return text.replace(os.linesep, '[[BR]]' + os.linesep)
-
 def enum(iterable):
     """
     Python 2.2 doesn't have the enumerate() function, so we provide a simple
@@ -153,19 +150,23 @@ def hdf_add_if_missing(hdf, prefix, value):
 def shorten_line(text, maxlen = 75):
     if not text:
         return ''
-    i = text.find('[[BR]]')
-    j = text.find('\n')
-    if i > -1 and i < maxlen:
-        shortline = text[:i]+' ...'
-    elif j > -1 and j < maxlen:
-        shortline = text[:j]+' ...'
     elif len(text) < maxlen:
         shortline = text
     else:
-        i = text[:maxlen].rfind(' ')
-        if i == -1:
-            i = maxlen
-        shortline = text[:i]+' ...'
+        last_cut = i = j = -1
+        cut = 0
+        while cut < maxlen and cut > last_cut:
+            last_cut = cut
+            i = text.find('[[BR]]', i+1)
+            j = text.find('\n', j+1)
+            cut = max(i,j)
+        if last_cut > 0:
+            shortline = text[:last_cut]+' ...'
+        else:
+            i = text[:maxlen].rfind(' ')
+            if i == -1:
+                i = maxlen
+            shortline = text[:i]+' ...'
     return shortline
 
 def hex_entropy(bytes=32):

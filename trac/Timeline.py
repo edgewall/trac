@@ -198,8 +198,8 @@ class Timeline(Module):
                                                   self.env, self.db,
                                                   absurls=absurls))
         else:
-            item['message'] = wiki_to_oneliner(item['message'], self.env,
-                                               self.db, absurls=absurls)
+            item['message'] = wiki_to_oneliner(shorten_line(item['message']),
+                                               self.env, self.db, absurls=absurls)
 
         try:
             show_files = int(self.config.get('timeline', 'changeset_show_files'))

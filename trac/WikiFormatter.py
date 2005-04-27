@@ -583,7 +583,7 @@ class Formatter(CommonFormatter):
         else:
             self.code_text += line + os.linesep
 
-    def format(self, text, out):
+    def format(self, text, out, escape_newlines=False):
         self.out = out
         self._open_tags = []
         self._list_stack = []
@@ -618,6 +618,8 @@ class Formatter(CommonFormatter):
                 continue
 
             line = util.escape(line)
+            if escape_newlines:
+                line += ' [[BR]]'
             self.in_list_item = 0
             # Throw a bunch of regexps on the problem
             result = re.sub(rules, self.replace, line)
@@ -641,9 +643,9 @@ class Formatter(CommonFormatter):
         self.close_list()
 
 
-def wiki_to_html(wikitext, hdf, env, db, absurls=0):
+def wiki_to_html(wikitext, hdf, env, db, absurls=0, escape_newlines=False):
     out = StringIO.StringIO()
-    Formatter(hdf, env, db, absurls).format(wikitext, out)
+    Formatter(hdf, env, db, absurls).format(wikitext, out, escape_newlines)
     return out.getvalue()
 
 

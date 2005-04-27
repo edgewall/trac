@@ -33,21 +33,23 @@ import urllib
 CHUNK_SIZE = 4096
 DISP_MAX_FILE_SIZE = 256 * 1024
 
-def _get_changes(env, db, repos, revs, full=None, req=None, raw=False):
+def _get_changes(env, db, repos, revs, full=None, req=None, format=None):
     changes = {}
     files = None
     for rev in filter(lambda x: x in revs, revs):
         changeset = repos.get_changeset(rev)
         message = changeset.message
-        if raw:
+        if format == 'changelog':
             files = [c[0] for c in changeset.get_changes()]
         elif message:
-            message = util.wiki_escape_newline(changeset.message) # FIXME (#48)
+            message = changeset.message
             if not full:
                 message = util.shorten_line(message)
                 message = wiki_to_oneliner(message, env, db)
             else:
-                message = wiki_to_html(message, req.hdf, env, db)
+                message = wiki_to_html(message, req.hdf, env, db,
+                                       absurls=(format == 'rss'),
+                                       escape_newlines=True)
         if not message:
             message = '--'
         changes[rev] = {
@@ -152,10 +154,10 @@ class BrowserModule(Module):
             'date': time.strftime('%x %X', time.localtime(changeset.date)),
             'age': util.pretty_timedelta(changeset.date),
             'author': changeset.author or 'anonymous',
-            'message': changeset.message and \
-            wiki_to_html(util.wiki_escape_newline(changeset.message),
-                         req.hdf, self.env, self.db) or '--'
-        }
+            'message': wiki_to_html(changeset.message or '--',
+                                    req.hdf, self.env, self.db,
+                                    escape_newlines=True),
+            }
 
         mime_type = node.content_type
         if not mime_type or mime_type == 'application/octet-stream':
@@ -357,7 +359,7 @@ class LogModule(Module):
 
         changes = _get_changes(self.env, self.db, repos,
                                [i['rev'] for i in info],
-                               full_messages, req, format == 'changelog')
+                               full_messages, req, format)
         if format == 'rss':
             for cs in changes.values():
                 cs['message'] = util.escape(cs['message'])
