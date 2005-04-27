@@ -33,25 +33,30 @@ import urllib
 CHUNK_SIZE = 4096
 DISP_MAX_FILE_SIZE = 256 * 1024
 
-def _get_changes(env, db, repos, revs, full=None, req=None):
+def _get_changes(env, db, repos, revs, full=None, req=None, raw=False):
     changes = {}
+    files = None
     for rev in filter(lambda x: x in revs, revs):
         changeset = repos.get_changeset(rev)
-        if changeset.message:
+        message = changeset.message
+        if raw:
+            files = [c[0] for c in changeset.get_changes()]
+        elif message:
             message = util.wiki_escape_newline(changeset.message) # FIXME (#48)
             if not full:
                 message = util.shorten_line(message)
                 message = wiki_to_oneliner(message, env, db)
             else:
                 message = wiki_to_html(message, req.hdf, env, db)
-        else:
+        if not message:
             message = '--'
         changes[rev] = {
             'date_seconds': changeset.date,
             'date': time.strftime('%x %X', time.localtime(changeset.date)),
             'age': util.pretty_timedelta(changeset.date),
             'author': changeset.author or 'anonymous',
-            'message': message
+            'message': message,
+            'files': files,
         }
     return changes
 
@@ -222,6 +227,7 @@ class LogModule(Module):
 
         path = req.args.get('path', '/')
         rev = req.args.get('rev')
+        format = req.args.get('format')
         stop_rev = req.args.get('stop_rev')
         log_mode = req.args.get('log_mode', 'stop_on_copy')
         full_messages = req.args.get('full_messages', '')
@@ -259,8 +265,6 @@ class LogModule(Module):
             req.hdf['log.stop_rev'] = stop_rev
         req.hdf['log.browser_href'] = self.env.href.browser(path, rev=rev)
         req.hdf['log.log_href'] = self.env.href.log(path, rev=rev)
-        req.hdf['log.log_path_history_href'] = self.env.href.log(path, rev=rev,
-                                                                 log_mode='path_history')
 
         path_links = _get_path_links(self.env.href, path, rev)
         req.hdf['log.path'] = path_links
@@ -321,17 +325,19 @@ class LogModule(Module):
         #    The page "history" information is encoded in the URL, not optimal
         #    but still better than putting that information in the session or
         #    recomputing the full history each time.
-        def add_page_link(what, page):
-            args = {
+        def make_log_href(**args):
+            args.update({
                 'rev': rev,
                 'log_mode': log_mode,
                 'limit': limit,
-                'page': page,
-                'pages': urllib.quote_plus(' '.join(pages)),
-                }
+                })
             if full_messages:
                 args['full_messages'] = full_messages
-            add_link(req, what, self.env.href.log(path, **args),
+            return self.env.href.log(path, **args)
+        
+        def add_page_link(what, page):
+            add_link(req, what, make_log_href(page=page,
+                                              pages=urllib.quote_plus(' '.join(pages))),
                      'Revision Log (Page %d)' % (page))
 
         if page > 1: # then, one needs to be able to go to previous page
@@ -348,15 +354,26 @@ class LogModule(Module):
             del info[-1]
         
         req.hdf['log.items'] = info
-        req.hdf['log.changes'] = _get_changes(self.env, self.db, repos,
-                                              [i['rev'] for i in info],
-                                              full_messages, req)
 
-        rss_href = self.env.href.log(path, rev=rev, format='rss')
-        add_link(req, 'alternate', rss_href, 'RSS Feed', 'application/rss+xml',
-                 'rss')
+        changes = _get_changes(self.env, self.db, repos,
+                               [i['rev'] for i in info],
+                               full_messages, req, format == 'changelog')
+        if format == 'rss':
+            for cs in changes.values():
+                cs['message'] = util.escape(cs['message'])
+        elif format == 'changelog':
+            for cs in changes.values():
+                cs['message'] = '\n'.join(['\t' + m for m in cs['message'].split('\n')])
+        req.hdf['log.changes'] = changes
+        
+        add_link(req, 'alternate', make_log_href(format='rss', stop_rev=stop_rev),
+                 'RSS Feed', 'application/rss+xml', 'rss')
+        add_link(req, 'alternate', make_log_href(format='changelog', stop_rev=stop_rev),
+                 'ChangeLog', 'text/plain')
 
-        if req.args.get('format') == 'rss':
+        if format == 'rss':
             req.display('log_rss.cs', 'application/rss+xml')
+        elif format == 'changelog':
+            req.display('log_changelog.cs', 'text/plain')
         else:
             req.display('log.cs')
