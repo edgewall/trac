@@ -29,12 +29,13 @@ def execute(hdf, args, env):
     html = '<div class="wiki-toc">' \
            '<h4>Table of Contents</h4>' \
            '<ul>'
-    curpage =  '%s' % hdf.getValue('args.page', '')
-    for ref,title in TOC:
-        if curpage == ref:
+    curpage = '%s' % hdf.getValue('wiki.page_name', '')
+    lang, page = '/' in curpage and curpage.split('/', 1) or ('', curpage)
+    for ref, title in TOC:
+        if page == ref:
             cls =  ' class="active"'
         else:
             cls = ''
         html += '<li%s><a href="%s">%s</a></li>' \
-                % (cls, env.href.wiki(ref), title)
+                % (cls, env.href.wiki(lang+ref), title)
     return html + '</ul></div>'
