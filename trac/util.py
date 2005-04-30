@@ -184,27 +184,20 @@ def http_date(t):
            t.tm_hour, t.tm_min, t.tm_sec)
 
 def pretty_size(size):
-    jump = 512
     if size is None:
         return ''
-    if size < jump:
-        unit = 'bytes'
-    else:
-        size /= 1024.0
-        if size < jump:
-            unit = 'kB'
-        else:
-            size /= 1024.0
-            if size < jump:
-                unit = 'MB'
-            else:
-                size /= 1024.0
-                if size < jump:
-                    unit = 'GB'
-                else:
-                    unit = 'TB'
-    return ('%.1f %s' % (size, unit)).replace('.0','')
 
+    jump = 512
+    if size < jump:
+        return '%d bytes' % size
+
+    units = ['kB', 'MB', 'GB', 'TB']
+    i = 0
+    while size > jump and i < len(units):
+        i += 1
+        size /= 1024.
+
+    return '%.1f %s' % (size, units[i - 1])
 
 def pretty_timedelta(time1, time2=None):
     """Calculate time delta (inaccurately, only for decorative purposes ;-) for
