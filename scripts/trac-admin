@@ -484,7 +484,7 @@ class TracAdmin(cmd.Cmd):
             project_name = arg[0]
             repository_dir = arg[1]
             templates_dir = arg[2]
-        from svn import util, repos, core
+        from svn import core, repos
         core.apr_initialize()
         pool = core.svn_pool_create(None)
         try:

@@ -74,21 +74,21 @@ class Browser(Module.Module):
 
             created_rev = svn.fs.node_created_rev(root, fullpath, self.pool)
             date = svn.fs.revision_prop(self.fs_ptr, created_rev,
-                                    svn.util.SVN_PROP_REVISION_DATE,
+                                    svn.core.SVN_PROP_REVISION_DATE,
                                     self.pool)
             if date:
-                date_seconds = svn.util.svn_time_from_cstring(date,
-                                                          self.pool) / 1000000
+                date_seconds = svn.core.svn_time_from_cstring(date,
+                                                              self.pool) / 1000000
                 date = time.strftime('%x %X', time.localtime(date_seconds))
             else:
                 date_seconds = 0
                 date = ''
             author = svn.fs.revision_prop(self.fs_ptr, created_rev,
-                                      svn.util.SVN_PROP_REVISION_AUTHOR,
-                                      self.pool)
+                                          svn.core.SVN_PROP_REVISION_AUTHOR,
+                                          self.pool)
             change = svn.fs.revision_prop(self.fs_ptr, created_rev,
-                                             svn.util.SVN_PROP_REVISION_LOG,
-                                             self.pool)
+                                          svn.core.SVN_PROP_REVISION_LOG,
+                                          self.pool)
             item = {
                 'name'         : name,
                 'fullpath'     : fullpath,

@@ -19,7 +19,7 @@
 #
 # Author: Jonas Borgström <jonas@edgewall.com>
 
-from svn import fs, util, delta, repos, core
+from svn import core, fs, delta, repos
 
 def sync(db, repos, fs_ptr, pool):
     """
@@ -27,10 +27,10 @@ def sync(db, repos, fs_ptr, pool):
     the repository.
     """
 
-    if util.SVN_VER_MAJOR < 1:
+    if core.SVN_VER_MAJOR < 1:
         raise EnvironmentError, \
               "Subversion >= 1.0 required: Found %d.%d.%d" % \
-              (util.SVN_VER_MAJOR, util.SVN_VER_MINOR, util.SVN_VER_MICRO)
+              (core.SVN_VER_MAJOR, core.SVN_VER_MINOR, core.SVN_VER_MICRO)
 
     cursor = db.cursor()
     cursor.execute('SELECT ifnull(max(rev), 0) FROM revision')
@@ -42,13 +42,13 @@ def sync(db, repos, fs_ptr, pool):
     subpool = core.svn_pool_create(pool)
     for rev in range(num):
         message = fs.revision_prop(fs_ptr, rev + offset,
-                                   util.SVN_PROP_REVISION_LOG, subpool)
+                                   core.SVN_PROP_REVISION_LOG, subpool)
         author = fs.revision_prop(fs_ptr, rev + offset,
-                                  util.SVN_PROP_REVISION_AUTHOR, subpool)
+                                  core.SVN_PROP_REVISION_AUTHOR, subpool)
         date = fs.revision_prop(fs_ptr, rev + offset,
-                                util.SVN_PROP_REVISION_DATE, subpool)
+                                core.SVN_PROP_REVISION_DATE, subpool)
 
-        date = util.svn_time_from_cstring(date, subpool) / 1000000
+        date = core.svn_time_from_cstring(date, subpool) / 1000000
         
         cursor.execute ('INSERT INTO revision (rev, time, author, message) '
                         'VALUES (%s, %s, %s, %s)', rev + offset, date,

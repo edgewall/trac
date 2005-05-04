@@ -43,7 +43,7 @@ class Log (Module):
                 self.branch_info.setdefault(rev, []).append((change.copyfrom_path, newpath))
 
         shortlog = util.shorten_line(util.wiki_escape_newline(log))
-        t = svn.util.svn_time_from_cstring(date, pool) / 1000000
+        t = svn.core.svn_time_from_cstring(date, pool) / 1000000
         gmt = time.gmtime(t)
         item = {
             'rev'      : rev,

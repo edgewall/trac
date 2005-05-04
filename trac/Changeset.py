@@ -59,9 +59,9 @@ class HtmlDiffEditor (svn.delta.Editor):
         # Try to figure out the charset used. We assume that both the old
         # and the new version uses the same charset, not always the case
         # but that's all we can do...
-        mime_type = svn.fs.node_prop (self.new_root, new_path,
-                                      svn.util.SVN_PROP_MIME_TYPE,
-                                      pool)
+        mime_type = svn.fs.node_prop(self.new_root, new_path,
+                                     svn.core.SVN_PROP_MIME_TYPE,
+                                     pool)
         # We don't have to guess if the charset is specified in the
         # svn:mime-type property
         ctpos = mime_type and mime_type.find('charset=') or -1

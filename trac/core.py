@@ -447,7 +447,7 @@ def dispatch_request(path_info, args, req, env, database=None):
             svn.core.svn_pool_destroy(pool)
 
 def open_svn_repos(repos_dir):
-    from svn import util, repos, core
+    from svn import core, repos
 
     core.apr_initialize()
     pool = core.svn_pool_create(None)

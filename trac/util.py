@@ -32,8 +32,8 @@ FALSE = ['no',  '0', 0, 'false', 'off', 'nay']
 CRLF = '\r\n'
 
 def svn_date_to_string(date, pool):
-    from svn import util
-    date_seconds = util.svn_time_from_cstring(date,
+    from svn import core
+    date_seconds = core.svn_time_from_cstring(date,
                                               pool) / 1000000
     return time.strftime('%x %X', time.localtime(date_seconds))
 
