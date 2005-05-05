@@ -168,7 +168,7 @@ class WikiModule(Component):
             if req.args.has_key('cancel'):
                 req.redirect(self.env.href.wiki(pagename))
             elif req.args.has_key('preview'):
-                req.hdf['wiki.action'] = 'preview'
+                action = 'preview'
                 self._render_editor(req, db, pagename, 1)
             else:
                 self._save_page(req, db, pagename)
