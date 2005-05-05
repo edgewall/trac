@@ -19,6 +19,7 @@
 #
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
+from trac.core import *
 from trac.perm import PermissionCache, PermissionError
 from trac.util import escape, href_join, TracError, TRUE
 from trac.web.auth import Authenticator
@@ -53,6 +54,7 @@ class Request(object):
     args = None
     hdf = None
     authname = None
+    perm = None
     session = None
     _headers = None # additional headers to send
 
@@ -135,15 +137,64 @@ class Request(object):
         raise NotImplementedError
 
 
-def add_link(req, rel, href, title=None, type=None, class_name=None):
-    link = {'href': escape(href)}
-    if title: link['title'] = escape(title)
-    if type: link['type'] = type
-    if class_name: link['class'] = class_name
-    idx = 0
-    while req.hdf.get('links.%s.%d.href' % (rel, idx)):
-        idx += 1
-    req.hdf['links.%s.%d' % (rel, idx)] = link
+class IRequestHandler(Interface):
+
+    def match_request(req):
+        """
+        Return whether the handler wants to process the given request.
+        """
+
+    def process_request(req):
+        """
+        Process the request. Should return a (template_name, content_type)
+        tuple, where `template` is the ClearSilver template to use (either
+        a `neo_cs.CS` object, or the file name of the template), and
+        `content_type` is the MIME type of the content. If `content_type` is
+        `None`, "text/html" is assumed.
+
+        Note that if template processing should not occur, this method can
+        simply send the response itself and not return anything.
+        """
+
+
+class RequestDispatcher(Component):
+
+    handlers = ExtensionPoint(IRequestHandler)
+
+    def dispatch(self, req):
+        from trac.web.clearsilver import HDFWrapper
+        req.hdf = HDFWrapper(loadpaths=[self.env.get_templates_dir(),
+                                        self.config.get('trac', 'templates_dir')])
+        populate_hdf(req.hdf, self.env, req)
+
+        # Select the component that should handle the request
+        chosen_handler = None
+        default_handler = None
+        if not req.path_info or req.path_info == '/':
+            default_handler = self.config.get('trac', 'default_handler')
+        for handler in self.handlers:
+            if handler.match_request(req) or \
+               handler.__class__.__name__ == default_handler:
+                chosen_handler = handler
+                break
+
+        from trac.web.chrome import Chrome
+        chrome = Chrome(self.env)
+        chrome.populate_hdf(req, chosen_handler)
+
+        if not chosen_handler:
+            # FIXME: Should return '404 Not Found' to the client
+            raise TracError, 'No handler matched request to %s' % req.path_info
+
+
+        resp = chosen_handler.process_request(req)
+        if resp:
+            template, content_type = resp
+            if not content_type:
+                content_type = 'text/html'
+
+            req.display(template, content_type or 'text/html')
+
 
 def populate_hdf(hdf, env, req=None):
     from trac import __version__
@@ -182,40 +233,13 @@ def populate_hdf(hdf, env, req=None):
         'url': env.config.get('project', 'url')
     }
 
-    htdocs_location = env.config.get('trac', 'htdocs_location')
-    if htdocs_location[-1] != '/':
-        htdocs_location += '/'
-    hdf['htdocs_location'] = htdocs_location
-
-    src = env.config.get('header_logo', 'src')
-    src_abs = re.match(r'https?://', src) != None
-    if not src[0] == '/' and not src_abs:
-        src = htdocs_location + src
-    hdf['header_logo'] = {
-        'link': env.config.get('header_logo', 'link'),
-        'alt': escape(env.config.get('header_logo', 'alt')),
-        'src': src,
-        'src_abs': src_abs,
-        'width': env.config.get('header_logo', 'width'),
-        'height': env.config.get('header_logo', 'height')
-    }
-
     if req:
         hdf['base_url'] = req.base_url
         hdf['base_host'] = req.base_url[:req.base_url.rfind(req.cgi_location)]
         hdf['cgi_location'] = req.cgi_location
         hdf['trac.authname'] = escape(req.authname)
-
-        add_link(req, 'start', env.href.wiki())
-        add_link(req, 'search', env.href.search())
-        add_link(req, 'help', env.href.wiki('TracGuide'))
-        icon = env.config.get('project', 'icon')
-        if icon:
-            if not icon[0] == '/' and icon.find('://') < 0:
-                icon = htdocs_location + icon
-            mimetype = env.mimeview.get_mimetype(icon)
-            add_link(req, 'icon', icon, type=mimetype)
-            add_link(req, 'shortcut icon', icon, type=mimetype)
+        for action in req.perm.permissions():
+            req.hdf['trac.acl.' + action] = 1
 
 def absolute_url(req, path=None):
     host = req.get_header('Host')
@@ -243,6 +267,7 @@ def dispatch_request(path_info, req, env):
     if not base_url:
         base_url = absolute_url(req)
     req.base_url = base_url
+    req.path_info = path_info
 
     env.href = Href(req.cgi_location)
     env.abs_href = Href(req.base_url)
@@ -276,30 +301,14 @@ def dispatch_request(path_info, req, env):
                         referer = None
                     req.redirect(referer or env.href.wiki())
             req.authname = authenticator.authname
-
-            from trac.web.clearsilver import HDFWrapper
-            req.hdf = HDFWrapper(loadpaths=[env.get_templates_dir(),
-                                            env.config.get('trac', 'templates_dir')])
-            populate_hdf(req.hdf, env, req)
-            req.hdf['HTTP.PathInfo'] = path_info
+            req.perm = PermissionCache(db, req.authname)
 
             newsession = req.args.has_key('newsession')
             req.session = Session(env, db, req, newsession)
 
             try:
-                # Load the selected module
-                from trac.Module import module_factory, parse_path_info
-                parse_path_info(req.args, path_info)
-                module = module_factory(req.args.get('mode', 'wiki'))
-                module.env = env
-                module.config = env.config
-                module.log = env.log
-                module.db = db
-                module.perm = PermissionCache(module.db, req.authname)
-                req.hdf['trac.active_module'] = module._name
-                for action in module.perm.permissions():
-                    req.hdf['trac.acl.' + action] = 1
-                module.render(req)
+                dispatcher = RequestDispatcher(env)
+                dispatcher.dispatch(req)
             finally:
                 # Give the session a chance to persist changes
                 req.session.save()

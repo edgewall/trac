@@ -5,9 +5,9 @@
 <div id="ctxtnav" class="nav">
  <h2>Wiki Navigation</h2>
  <ul>
-  <li><a href="<?cs var:$trac.href.wiki ?>">Start Page</a></li>
-  <li><a href="<?cs var:$trac.href.wiki ?>/TitleIndex">Title Index</a></li>
-  <li><a href="<?cs var:$trac.href.wiki ?>/RecentChanges">Recent Changes</a></li>
+  <li><a href="<?cs var:trac.href.wiki ?>">Start Page</a></li>
+  <li><a href="<?cs var:trac.href.wiki ?>/TitleIndex">Title Index</a></li>
+  <li><a href="<?cs var:trac.href.wiki ?>/RecentChanges">Recent Changes</a></li>
   <?cs if:wiki.history_href ?>
    <li class="last"><a href="<?cs var:wiki.history_href ?>">Page History</a></li>
   <?cs else ?>
@@ -24,7 +24,6 @@
     var:wiki.current_href ?>"><?cs var:wiki.page_name ?></a></h1>
   <form method="post" id="prefs" action="<?cs var:wiki.current_href ?>">
    <div>
-    <input type="hidden" name="mode" value="wiki" />
     <input type="hidden" name="action" value="diff" />
     <input type="hidden" name="version" value="<?cs var:wiki.version ?>" />
     <label>View differences

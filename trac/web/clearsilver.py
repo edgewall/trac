@@ -163,17 +163,16 @@ class HDFWrapper:
 
     def __setitem__(self, name, value):
         def add_value(prefix, value):
-            from UserDict import UserDict
             if isinstance(value, (str, unicode)):
                 self.hdf.setValue(prefix, value)
-            elif isinstance(value, (dict, UserDict)):
+            elif isinstance(value, dict):
                 for k in value.keys():
                     add_value('%s.%s' % (prefix, k), value[k])
             else:
-                try:
+                if hasattr(value, '__iter__'):
                     for idx, item in enum(value):
                         add_value('%s.%d' % (prefix, idx), item)
-                except:
+                else:
                     self.hdf.setValue(prefix, str(value))
         add_value(name, value)
 

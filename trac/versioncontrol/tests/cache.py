@@ -19,7 +19,7 @@
 #
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
-from trac.Logging import logger_factory
+from trac.log import logger_factory
 from trac.test import Mock, InMemoryDatabase
 from trac.versioncontrol import Repository, Changeset, Node
 from trac.versioncontrol.cache import CachedRepository

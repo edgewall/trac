@@ -19,22 +19,33 @@
 #
 # Author: Jonas Borgström <jonas@edgewall.com>
 
-from trac import perm
-from trac.Module import Module
+from trac import perm, util
+from trac.core import *
+from trac.Timeline import ITimelineEventProvider
 from trac.versioncontrol import Changeset, Node
 from trac.versioncontrol.diff import get_diff_options, hdf_diff, unified_diff
-from trac.web.main import add_link
-from trac.WikiFormatter import wiki_to_html
+from trac.web.chrome import add_link
+from trac.web.main import IRequestHandler
+from trac.WikiFormatter import wiki_to_html, wiki_to_oneliner
 
 import time
-import util
 import re
 
 
-class ChangesetModule(Module):
+class ChangesetModule(Component):
 
-    def render(self, req):
-        self.perm.assert_permission(perm.CHANGESET_VIEW)
+    implements(IRequestHandler, ITimelineEventProvider)
+
+    # IRequestHandler methods
+
+    def match_request(self, req):
+        match = re.match(r'/changeset/([0-9]+)$', req.path_info)
+        if match:
+            req.args['rev'] = match.group(1)
+            return 1
+
+    def process_request(self, req):
+        req.perm.assert_permission(perm.CHANGESET_VIEW)
 
         add_link(req, 'alternate', '?format=diff', 'Unified Diff',
                  'text/plain', 'diff')
@@ -58,17 +69,61 @@ class ChangesetModule(Module):
             self.render_zip(req, repos, chgset)
         else:
             self.render_html(req, repos, chgset, diff_options)
+            return 'changeset.cs', None
+
+    # ITimelineEventProvider methods
+
+    def get_timeline_filters(self, req):
+        if req.perm.has_permission(perm.CHANGESET_VIEW):
+            yield ('changeset', 'Repository checkins')
+
+    def get_timeline_events(self, req, start, stop, filters):
+        if 'changeset' in filters:
+            absurls = req.args.get('format') == 'rss' # Kludge
+            show_files = int(self.config.get('timeline',
+                                             'changeset_show_files'))
+            db = self.env.get_db_cnx()
+            repos = self.env.get_repository()
+            rev = repos.youngest_rev
+            while rev:
+                chgset = repos.get_changeset(rev)
+                if chgset.date < start:
+                    return
+                if chgset.date < stop:
+                    if absurls:
+                        href = self.env.abs_href.changeset(chgset.rev)
+                    else:
+                        href = self.env.href.changeset(chgset.rev)
+                    title = 'Changeset <em>[%s]</em> by %s' % (
+                            util.escape(chgset.rev), util.escape(chgset.author))
+                    message = wiki_to_oneliner(util.shorten_line(chgset.message or '--'),
+                                               self.env, db, absurls=absurls)
+                    if show_files:
+                        files = []
+                        for chg in chgset.get_changes():
+                            if show_files > 0 and len(files) >= show_files:
+                                files.append('...')
+                                break
+                            files.append('<span class="%s">%s</span>'
+                                         % (chg[2], util.escape(chg[0])))
+                        message = '<span class="changes">' + ', '.join(files) +\
+                                  '</span>: ' + message
+                    yield 'changeset', href, title, chgset.date, chgset.author,\
+                          message
+                rev = repos.previous_rev(rev)
+
+    # Internal methods
 
     def render_html(self, req, repos, chgset, diff_options):
         """HTML version"""
+        db = self.env.get_db_cnx()
         req.hdf['title'] = '[%s]' % chgset.rev
         req.hdf['changeset'] = {
             'revision': chgset.rev,
             'time': time.asctime(time.localtime(chgset.date)),
             'author': util.escape(chgset.author or 'anonymous'),
-            'message': wiki_to_html(chgset.message or '--',
-                                    req.hdf, self.env, self.db,
-                                    escape_newlines=True)
+            'message': wiki_to_html(chgset.message or '--', req.hdf, self.env,
+                                    db, escape_newlines=True)
         }
 
         oldest_rev = repos.oldest_rev
@@ -147,8 +202,6 @@ class ChangesetModule(Module):
                                    ignore_space_changes='-b' in diff_options)
                 req.hdf['changeset.changes.%d.diff' % idx] = changes
 
-        req.display('changeset.cs')
-
     def render_diff(self, req, repos, chgset, diff_options):
         """Raw Unified Diff version"""
         req.send_response(200)
@@ -181,7 +234,7 @@ class ChangesetModule(Module):
                 continue
             if new_node:
                 new_content = new_node.get_content().read()
-                new_node_info = (new_node.path, new_node.rev)                
+                new_node_info = (new_node.path, new_node.rev)
             if old_content != new_content:
                 context = 3
                 for option in diff_options:

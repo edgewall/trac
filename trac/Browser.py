@@ -22,8 +22,9 @@
 from __future__ import generators
 
 from trac import perm, util
-from trac.Module import Module
-from trac.web.main import add_link
+from trac.core import *
+from trac.web.chrome import add_link, INavigationContributor
+from trac.web.main import IRequestHandler
 from trac.WikiFormatter import wiki_to_html, wiki_to_oneliner
 from trac.versioncontrol import Changeset
 
@@ -33,7 +34,8 @@ import urllib
 CHUNK_SIZE = 4096
 DISP_MAX_FILE_SIZE = 256 * 1024
 
-def _get_changes(env, db, repos, revs, full=None, req=None, format=None):
+def _get_changes(env, repos, revs, full=None, req=None, format=None):
+    db = env.get_db_cnx()
     changes = {}
     files = None
     for rev in filter(lambda x: x in revs, revs):
@@ -77,11 +79,37 @@ def _get_path_links(href, path, rev):
     return links
 
 
-class BrowserModule(Module):
+class BrowserModule(Component):
 
-    def render(self, req):
-        rev = req.args.get('rev')
+    implements(INavigationContributor, IRequestHandler)
+
+    # INavigationContributor methods
+
+    def get_active_navigation_item(self, req):
+        return 'browser'
+
+    def get_navigation_items(self, req):
+        if not req.perm.has_permission(perm.BROWSER_VIEW):
+            return
+        yield 'mainnav', 'browser', '<a href="%s">Browse Source</a>' \
+              % util.escape(self.env.href.browser())
+
+    # IRequestHandler methods
+
+    def match_request(self, req):
+        import re
+        match = re.match(r'/(browser|file)(?:(/.*))?', req.path_info)
+        if match:
+            req.args['path'] = match.group(2) or '/'
+            if match.group(1) == 'file':
+                # FIXME: This should be a permanent redirect
+                req.redirect(self.env.href.browser(req.args.get('path'),
+                                                   rev=req.args.get('rev') or None))
+            return 1
+
+    def process_request(self, req):
         path = req.args.get('path', '/')
+        rev = req.args.get('rev')
 
         req.hdf['title'] = path
         req.hdf['browser'] = {'path': path, 'log_href': self.env.href.log(path)}
@@ -97,12 +125,16 @@ class BrowserModule(Module):
         node = repos.get_node(path, rev)
         if node.isdir:
             req.hdf['browser.is_dir'] = 1
-            self.render_directory(req, repos, node, rev)
+            self._render_directory(req, repos, node, rev)
         else:
-            self.render_file(req, repos, node, rev)
+            self._render_file(req, repos, node, rev)
 
-    def render_directory(self, req, repos, node, rev=None):
-        self.perm.assert_permission(perm.BROWSER_VIEW)
+        return 'browser.cs', None
+
+    # Internal methods
+
+    def _render_directory(self, req, repos, node, rev=None):
+        req.perm.assert_permission(perm.BROWSER_VIEW)
 
         order = req.args.get('order', 'name').lower()
         req.hdf['browser.order'] = order
@@ -123,8 +155,7 @@ class BrowserModule(Module):
                 'log_href': self.env.href.log(entry.path, rev=rev),
                 'browser_href': self.env.href.browser(entry.path, rev=rev)
             })
-        changes = _get_changes(self.env, self.db, repos,
-                               [i['rev'] for i in info])
+        changes = _get_changes(self.env, repos, [i['rev'] for i in info])
 
         def cmp_func(a, b):
             dir_cmp = (a['is_dir'] and -1 or 0) + (b['is_dir'] and 1 or 0)
@@ -142,11 +173,11 @@ class BrowserModule(Module):
 
         req.hdf['browser.items'] = info
         req.hdf['browser.changes'] = changes
-        req.display('browser.cs')
 
-    def render_file(self, req, repos, node, rev=None):
-        self.perm.assert_permission(perm.FILE_VIEW)
+    def _render_file(self, req, repos, node, rev=None):
+        req.perm.assert_permission(perm.FILE_VIEW)
 
+        db = self.env.get_db_cnx()
         changeset = repos.get_changeset(node.rev)
         req.hdf['file'] = {
             'rev': node.rev,
@@ -154,10 +185,9 @@ class BrowserModule(Module):
             'date': time.strftime('%x %X', time.localtime(changeset.date)),
             'age': util.pretty_timedelta(changeset.date),
             'author': changeset.author or 'anonymous',
-            'message': wiki_to_html(changeset.message or '--',
-                                    req.hdf, self.env, self.db,
-                                    escape_newlines=True),
-            }
+            'message': wiki_to_html(changeset.message or '--', req.hdf,
+                                    self.env, db, escape_newlines=True)
+        }
 
         mime_type = node.content_type
         if not mime_type or mime_type == 'application/octet-stream':
@@ -205,27 +235,30 @@ class BrowserModule(Module):
             req.hdf['file.raw_href'] = raw_href
             add_link(req, 'alternate', raw_href, 'Original Format', mime_type)
 
-            req.display('browser.cs')
 
+class LogModule(Component):
 
-class FileModule(Module):
-    """
-    Legacy module that redirects to the browser for URI backwards compatibility.
-    """
+    implements(INavigationContributor, IRequestHandler)
 
-    def render(self, req):
-        path = req.args.get('path', '/')
-        rev = req.args.get('rev')
-        # FIXME: This should be a permanent redirect
-        req.redirect(self.env.href.browser(path, rev))
+    # INavigationContributor methods
 
+    def get_active_navigation_item(self, req):
+        return 'browser'
 
-class LogModule(Module):
-    template_name = 'log.cs'
-    template_rss_name = 'log_rss.cs'
+    def get_navigation_items(self, req):
+        return []
 
-    def render(self, req):
-        self.perm.assert_permission(perm.LOG_VIEW)
+    # IRequestHandler methods
+
+    def match_request(self, req):
+        import re
+        match = re.match(r'/log(?:(/.*))?', req.path_info)
+        if match:
+            req.args['path'] = match.group(1)
+            return 1
+
+    def process_request(self, req):
+        req.perm.assert_permission(perm.LOG_VIEW)
 
         path = req.args.get('path', '/')
         rev = req.args.get('rev')
@@ -357,25 +390,26 @@ class LogModule(Module):
         
         req.hdf['log.items'] = info
 
-        changes = _get_changes(self.env, self.db, repos,
-                               [i['rev'] for i in info],
+        changes = _get_changes(self.env, repos, [i['rev'] for i in info],
                                full_messages, req, format)
         if format == 'rss':
             for cs in changes.values():
                 cs['message'] = util.escape(cs['message'])
         elif format == 'changelog':
             for cs in changes.values():
-                cs['message'] = '\n'.join(['\t' + m for m in cs['message'].split('\n')])
+                cs['message'] = '\n'.join(['\t' + m for m in
+                                           cs['message'].split('\n')])
         req.hdf['log.changes'] = changes
-        
-        add_link(req, 'alternate', make_log_href(format='rss', stop_rev=stop_rev),
-                 'RSS Feed', 'application/rss+xml', 'rss')
-        add_link(req, 'alternate', make_log_href(format='changelog', stop_rev=stop_rev),
-                 'ChangeLog', 'text/plain')
 
-        if format == 'rss':
-            req.display('log_rss.cs', 'application/rss+xml')
-        elif format == 'changelog':
-            req.display('log_changelog.cs', 'text/plain')
-        else:
-            req.display('log.cs')
+        if req.args.get('format') == 'changelog':
+            return 'log_changelog.cs', 'application/rss+xml'
+        elif req.args.get('format') == 'rss':
+            return 'log_rss.cs', 'application/rss+xml'
+
+        rss_href = make_log_href(format='rss', stop_rev=stop_rev)
+        add_link(req, 'alternate', rss_href, 'RSS Feed', 'application/rss+xml',
+                 'rss')
+        changelog_href = make_log_href(format='changelog', stop_rev=stop_rev)
+        add_link(req, 'alternate', changelog_href, 'ChangeLog', 'text/plain')
+
+        return 'log.cs', None

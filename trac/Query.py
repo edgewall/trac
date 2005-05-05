@@ -20,14 +20,14 @@
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
 from trac import perm
-from trac.Module import Module
+from trac.core import *
 from trac.Ticket import get_custom_fields, insert_custom_fields, Ticket
-from trac.web.main import add_link
+from trac.web.chrome import add_link, INavigationContributor
+from trac.web.main import IRequestHandler
 from trac.WikiFormatter import wiki_to_html, wiki_to_oneliner
 from trac.util import escape, sql_escape, CRLF
 
 from time import gmtime, localtime, strftime, time
-from types import ListType
 import re
 
 
@@ -289,7 +289,83 @@ class Query(object):
         return "".join(sql)
 
 
-class QueryModule(Module):
+class QueryModule(Component):
+
+    implements(IRequestHandler, INavigationContributor)
+
+    # INavigationContributor methods
+
+    def get_active_navigation_item(self, req):
+        return 'tickets'
+
+    def get_navigation_items(self, req):
+        return []
+
+    # IRequestHandler methods
+
+    def match_request(self, req):
+        return req.path_info == '/query'
+
+    def process_request(self, req):
+        req.perm.assert_permission(perm.TICKET_VIEW)
+
+        constraints = self._get_constraints(req)
+        if not constraints and not req.args.has_key('order'):
+            # avoid displaying all tickets when the query module is invoked
+            # with no parameters. Instead show only open tickets, possibly
+            # associated with the user
+            constraints = {'status': ('new', 'assigned', 'reopened')}
+            if req.authname and req.authname != 'anonymous':
+                constraints['owner'] = (req.authname,)
+            else:
+                email = req.session.get('email')
+                name = req.session.get('name')
+                if email or name:
+                    constraints['cc'] = ('~%s' % email or name,)
+
+        query = Query(self.env, constraints, req.args.get('order'),
+                      req.args.has_key('desc'), req.args.get('group'),
+                      req.args.has_key('groupdesc'),
+                      req.args.has_key('verbose'))
+
+        if req.args.has_key('update'):
+            req.redirect(query.get_href())
+
+        add_link(req, 'alternate', query.get_href('rss'), 'RSS Feed',
+                 'application/rss+xml', 'rss')
+        add_link(req, 'alternate', query.get_href('csv'),
+                 'Comma-delimited Text', 'text/plain')
+        add_link(req, 'alternate', query.get_href('tab'), 'Tab-delimited Text',
+                 'text/plain')
+
+        constraints = {}
+        for k, v in query.constraints.items():
+            constraint = {'values': [], 'mode': ''}
+            for val in v:
+                neg = val[:1] == '!'
+                if neg:
+                    val = val[1:]
+                mode = ''
+                if val[:1] in ('~', '^', '$'):
+                    mode, val = val[:1], val[1:]
+                constraint['mode'] = (neg and '!' or '') + mode
+                constraint['values'].append(val)
+            constraints[k] = constraint
+        req.hdf['query.constraints'] = constraints
+
+        format = req.args.get('format')
+        if format == 'rss':
+            self.display_rss(req, query)
+            return 'query_rss.cs', 'application/rss+xml'
+        elif format == 'csv':
+            self.display_csv(req, query)
+        elif format == 'tab':
+            self.display_csv(req, query, '\t')
+        else:
+            self.display_html(req, query)
+            return 'query.cs', None
+
+    # Internal methods
 
     def _get_constraints(self, req):
         constraints = {}
@@ -340,11 +416,11 @@ class QueryModule(Module):
 
         return constraints
 
-    def _get_ticket_properties(self):
+    def _get_ticket_properties(self, db):
         # FIXME: This should be in the ticket module
         properties = []
 
-        cursor = self.db.cursor()
+        cursor = db.cursor()
         def rows_to_list(sql):
             list = []
             cursor.execute(sql)
@@ -420,67 +496,12 @@ class QueryModule(Module):
         ]
         return modes
 
-    def render(self, req):
-        self.perm.assert_permission(perm.TICKET_VIEW)
-
-        constraints = self._get_constraints(req)
-        if not constraints and not req.args.has_key('order'):
-            # avoid displaying all tickets when the query module is invoked
-            # with no parameters. Instead show only open tickets, possibly
-            # associated with the user
-            constraints = {'status': ('new', 'assigned', 'reopened')}
-            if req.authname and req.authname != 'anonymous':
-                constraints['owner'] = (req.authname,)
-            else:
-                email = req.session.get('email')
-                name = req.session.get('name')
-                if email or name:
-                    constraints['cc'] = ('~%s' % email or name,)
-
-        query = Query(self.env, constraints, req.args.get('order'),
-                      req.args.has_key('desc'), req.args.get('group'),
-                      req.args.has_key('groupdesc'),
-                      req.args.has_key('verbose'))
-
-        if req.args.has_key('update'):
-            req.redirect(query.get_href())
-
-        add_link(req, 'alternate', query.get_href('rss'), 'RSS Feed',
-                 'application/rss+xml', 'rss')
-        add_link(req, 'alternate', query.get_href('csv'),
-                 'Comma-delimited Text', 'text/plain')
-        add_link(req, 'alternate', query.get_href('tab'), 'Tab-delimited Text',
-                 'text/plain')
-
-        constraints = {}
-        for k, v in query.constraints.items():
-            constraint = {'values': [], 'mode': ''}
-            for val in v:
-                neg = val[:1] == '!'
-                if neg:
-                    val = val[1:]
-                mode = ''
-                if val[:1] in ('~', '^', '$'):
-                    mode, val = val[:1], val[1:]
-                constraint['mode'] = (neg and '!' or '') + mode
-                constraint['values'].append(val)
-            constraints[k] = constraint
-        req.hdf['query.constraints'] = constraints
-
-        format = req.args.get('format')
-        if format == 'rss':
-            self.display_rss(req, query)
-        elif format == 'csv':
-            self.display_csv(req, query)
-        elif format == 'tab':
-            self.display_csv(req, query, '\t')
-        else:
-            self.display_html(req, query)
-
     def display_html(self, req, query):
         req.hdf['title'] = 'Custom Query'
 
-        req.hdf['ticket.properties'] = self._get_ticket_properties()
+        db = self.env.get_db_cnx()
+
+        req.hdf['ticket.properties'] = self._get_ticket_properties(db)
         req.hdf['query.modes'] = self._get_constraint_modes()
 
         # For clients without JavaScript, we add a new constraint here if
@@ -522,7 +543,7 @@ class QueryModule(Module):
         if query.verbose:
             req.hdf['query.verbose'] = 1
 
-        tickets = query.execute(self.db)
+        tickets = query.execute(db)
 
         # The most recent query is stored in the user session
         orig_list = rest_list = None
@@ -545,7 +566,7 @@ class QueryModule(Module):
                 rest_list.remove(tid)
             for rest_id in rest_list:
                 ticket = {}
-                ticket.update(Ticket(self.db, int(rest_id)))
+                ticket.update(Ticket(db, int(rest_id)))
                 ticket['removed'] = 1
                 tickets.insert(orig_list.index(rest_id), ticket)
 
@@ -560,14 +581,13 @@ class QueryModule(Module):
             ticket['time'] = strftime('%c', localtime(ticket['time']))
             if ticket.has_key('description'):
                 ticket['description'] = wiki_to_oneliner(ticket['description'] or '',
-                                                         self.env, self.db)
+                                                         self.env, db)
 
         req.session['query_tickets'] = ' '.join([str(t['id']) for t in tickets])
 
         req.hdf['query.results'] = tickets
         req.hdf['session.constraints'] = req.session.get('query_constraints')
         req.hdf['session.tickets'] = req.session.get('query_tickets')
-        req.display('query.cs', 'text/html')
 
     def display_csv(self, req, query, sep=','):
         req.send_response(200)
@@ -577,7 +597,7 @@ class QueryModule(Module):
         cols = query.get_columns()
         req.write(sep.join([col for col in cols]) + CRLF)
 
-        results = query.execute(self.db)
+        results = query.execute(self.env.get_db_cnx())
         for result in results:
             req.write(sep.join([str(result[col]).replace(sep, '_')
                                                 .replace('\n', ' ')
@@ -586,16 +606,15 @@ class QueryModule(Module):
 
     def display_rss(self, req, query):
         query.verbose = 1
-        results = query.execute(self.db)
+        db = self.env.get_db_cnx()
+        results = query.execute(db)
         for result in results:
             if result['reporter'].find('@') == -1:
                 result['reporter'] = ''
             if result['description']:
                 result['description'] = escape(wiki_to_html(result['description'] or '',
-                                                            None, self.env, self.db, 1))
+                                                            None, self.env, db, 1))
             if result['time']:
                 result['time'] = strftime('%a, %d %b %Y %H:%M:%S GMT',
                                           gmtime(result['time']))
         req.hdf['query.results'] = results
-
-        req.display('query_rss.cs', 'application/rss+xml')

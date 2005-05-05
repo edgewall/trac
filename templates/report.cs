@@ -177,8 +177,7 @@
  <?cs elif report.mode == "delete" ?>
 
   <h1><?cs var:title ?></h1>
-  <form action="<?cs var:cgi_location ?>" method="post">
-   <input type="hidden" name="mode" value="report" />
+  <form action="<?cs var:report.href ?>" method="post">
    <input type="hidden" name="id" value="<?cs var:report.id ?>" />
    <input type="hidden" name="action" value="confirm_delete" />
    <p><strong>Are you sure you want to delete this report?</strong></p>
@@ -191,11 +190,8 @@
  <?cs elif report.mode == "editor" ?>
  
    <h1><?cs var:title ?></h1>
-   
-   <form action="<?cs var:cgi_location ?>" method="post">
+   <form action="<?cs var:report.href ?>" method="post">
     <div>
-     <input type="hidden" name="mode" value="report" />
-     <input type="hidden" name="id" value="<?cs var:report.id ?>" />
      <input type="hidden" name="action" value="<?cs var:report.action ?>" />
      <div class="field">
       <label for="title">Report Title:</label><br />

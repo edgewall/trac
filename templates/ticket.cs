@@ -129,13 +129,11 @@
 /if ?>
 
 <?cs if:trac.acl.TICKET_CHGPROP || trac.acl.TICKET_APPEND ?>
-<form action="<?cs var:cgi_location ?>#preview" method="post">
+<form action="<?cs var:ticket.href ?>#preview" method="post">
  <hr />
  <h3><a name="edit" onfocus="document.getElementById('comment').focus()">Add/Change #<?cs
    var:ticket.id ?> (<?cs var:ticket.summary ?>)</a></h3>
  <div class="field">
-  <input type="hidden" name="mode" value="ticket" />
-  <input type="hidden" name="id"   value="<?cs var:ticket.id ?>" />
   <label for="author">Your email or username:</label><br />
   <input type="text" id="author" name="author" size="40"
     value="<?cs var:ticket.reporter_id ?>" /><br />

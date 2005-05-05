@@ -61,7 +61,7 @@ class Configuration:
 
     def options(self, section):
         if not self.parser.has_section(section):
-            return None
+            return []
         try:
             return self.parser.items(section)
         except AttributeError:

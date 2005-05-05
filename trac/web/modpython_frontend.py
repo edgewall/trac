@@ -108,9 +108,8 @@ class ModPythonRequest(Request):
 
 class FieldStorageWrapper(util.FieldStorage):
     """
-    FieldStorage class with a get function that provides an empty string as the
-    default value for the 'default' parameter, mimicking
-    trac.web.cgi_frontend.TracFieldStorage
+    mod_python FieldStorage wrapper that improves compatibility with the other
+    front-ends.
     """
 
     def __init__(self, req):
@@ -139,8 +138,13 @@ class FieldStorageWrapper(util.FieldStorage):
                                          "text/plain", {}, None, {}))
             self.list += qsargs
 
-    def get(self, key, default=''):
+    def get(self, key, default=None):
         return util.FieldStorage.get(self, key, default)
+
+    def __setitem__(self, key, value):
+        if not key in self:
+            self.list.append(util.Field(key, StringIO(value), 'text/plain',
+                             {}, None, {}))
 
 
 def send_project_index(req, mpr, dir, options):

@@ -19,15 +19,32 @@
 #
 # Author: Daniel Lundin <daniel@edgewall.com>
 
-from trac.util import TracError
-from trac.Module import Module
+from trac.core import *
+from trac.util import escape, TracError
+from trac.web.chrome import INavigationContributor
+from trac.web.main import IRequestHandler
 
+class SettingsModule(Component):
 
-class Settings(Module):
+    implements(INavigationContributor, IRequestHandler)
 
     _form_fields = ['newsid','name', 'email']
 
-    def render(self, req):
+    # INavigationContributor methods
+
+    def get_active_navigation_item(self, req):
+        return 'settings'
+
+    def get_navigation_items(self, req):
+        yield 'metanav', 'settings', '<a href="%s">Settings</a>' \
+              % escape(self.env.href.settings())
+
+    # IRequestHandler methods
+
+    def match_request(self, req):
+        return req.path_info == '/settings'
+
+    def process_request(self, req):
         action = req.args.get('action')
         if action == 'save':
             self.save_settings(req)
@@ -42,7 +59,10 @@ class Settings(Module):
         req.hdf['settings'] = req.session
         if req.session.sid:
             req.hdf['settings.session_id'] = req.session.sid
-        req.display('settings.cs')
+
+        return 'settings.cs', None
+
+    # Internal methods
 
     def save_settings(self, req):
         for field in self._form_fields:

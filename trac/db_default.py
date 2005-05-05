@@ -409,7 +409,10 @@ default_config = \
   ('trac', 'templates_dir', '/usr/lib/trac/templates'),
   ('trac', 'database', 'sqlite:db/trac.db'),
   ('trac', 'default_charset', 'iso-8859-15'),
+  ('trac', 'default_handler', 'WikiModule'),
   ('trac', 'check_auth_ip', 'true'),
+  ('trac', 'metanav', 'login,logout,settings,help,about'),
+  ('trac', 'mainnav', 'wiki,timeline,roadmap,browser,tickets,newticket,search'),
   ('logging', 'log_type', 'none'),
   ('logging', 'log_file', 'trac.log'),
   ('logging', 'log_level', 'DEBUG'),
@@ -444,4 +447,10 @@ default_config = \
   ('notification', 'always_notify_reporter', 'false'),
   ('notification', 'smtp_from', 'trac@localhost'),
   ('notification', 'smtp_replyto', 'trac@localhost'),
-  ('timeline', 'changeset_show_files', '0'))
+  ('timeline', 'changeset_show_files', '0'),
+)
+
+default_components = ('trac.About', 'trac.attachment', 'trac.Browser',
+                      'trac.Changeset', 'trac.Query', 'trac.Report',
+                      'trac.Roadmap', 'trac.Search', 'trac.Settings',
+                      'trac.Ticket', 'trac.Timeline', 'trac.Wiki')

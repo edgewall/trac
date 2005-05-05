@@ -20,27 +20,40 @@
 # Author: Jonas Borgström <jonas@edgewall.com>
 
 import os
+import re
 import urllib
 
 from trac import perm, util
-from trac.Module import Module
-from trac.web.main import add_link
+from trac.core import *
+from trac.web.chrome import add_link, INavigationContributor
+from trac.web.main import IRequestHandler
 
 
-class AttachmentModule(Module):
+class AttachmentModule(Component):
+
+    implements(IRequestHandler, INavigationContributor)
 
     CHUNK_SIZE = 4096
     DISP_MAX_FILE_SIZE = 256 * 1024
 
-    def get_parent_link(self, parent_type, parent_id):
-        if parent_type == 'ticket':
-            return ('Ticket #' + parent_id, self.env.href.ticket(parent_id))
-        elif parent_type == 'wiki':
-            return (parent_id, self.env.href.wiki(parent_id))
-        else:
-            return (None, None)
+    # INavigationContributor methods
 
-    def render(self, req):
+    def get_active_navigation_item(self, req):
+        return req.args.get('type')
+
+    def get_navigation_items(self, req):
+        return []
+
+    # IReqestHandler methods
+
+    def match_request(self, req):
+        match = re.match(r'^/attachment/(ticket|wiki)(?:/(.*))?$', req.path_info)
+        if match:
+            req.args['type'] = match.group(1)
+            req.args['path'] = match.group(2)
+            return 1
+
+    def process_request(self, req):
         parent_type = req.args.get('type')
         path = req.args.get('path')
         if not parent_type or not path:
@@ -51,6 +64,7 @@ class AttachmentModule(Module):
         action = req.args.get('action', 'view')
         if action == 'new':
             self.render_form(req, parent_type, path)
+            return 'attachment.cs', None
         elif action == 'save':
             self.save_attachment(req, parent_type, path)
         else:
@@ -61,10 +75,21 @@ class AttachmentModule(Module):
                 self.delete_attachment(req, parent_type, parent_id, filename)
             else:
                 self.render_view(req, parent_type, parent_id, filename)
+                return 'attachment.cs', None
+
+    # Internal methods
+
+    def get_parent_link(self, parent_type, parent_id):
+        if parent_type == 'ticket':
+            return ('Ticket #' + parent_id, self.env.href.ticket(parent_id))
+        elif parent_type == 'wiki':
+            return (parent_id, self.env.href.wiki(parent_id))
+        else:
+            return (None, None)
 
     def render_form(self, req, parent_type, parent_id):
         perm_map = {'ticket': perm.TICKET_APPEND, 'wiki': perm.WIKI_MODIFY}
-        self.perm.assert_permission(perm_map[parent_type])
+        req.perm.assert_permission(perm_map[parent_type])
 
         text, link = self.get_parent_link(parent_type, parent_id)
         req.hdf['attachment'] = {
@@ -76,11 +101,9 @@ class AttachmentModule(Module):
             'author': util.get_reporter_id(req)
         }
 
-        req.display('attachment.cs')
-
     def save_attachment(self, req, parent_type, parent_id):
         perm_map = {'ticket': perm.TICKET_APPEND, 'wiki': perm.WIKI_MODIFY}
-        self.perm.assert_permission(perm_map[parent_type])
+        req.perm.assert_permission(perm_map[parent_type])
 
         if req.args.has_key('cancel'):
             req.redirect(self.get_parent_link(parent_type, parent_id)[1])
@@ -91,7 +114,7 @@ class AttachmentModule(Module):
         description = req.args.get('description')
         author = req.args.get('author')
 
-        filename = self.env.create_attachment(self.db, parent_type, parent_id,
+        filename = self.env.create_attachment(parent_type, parent_id,
                                               attachment, description, author,
                                               req.remote_addr)
 
@@ -101,7 +124,7 @@ class AttachmentModule(Module):
 
     def delete_attachment(self, req, parent_type, parent_id, filename):
         perm_map = {'ticket': perm.TICKET_ADMIN, 'wiki': perm.WIKI_DELETE}
-        self.perm.assert_permission(perm_map[parent_type])
+        req.perm.assert_permission(perm_map[parent_type])
 
         self.env.delete_attachment(self.db, parent_type, parent_id, filename)
         text, link = self.get_parent_link(parent_type, parent_id)
@@ -111,7 +134,7 @@ class AttachmentModule(Module):
 
     def render_view(self, req, parent_type, parent_id, filename):
         perm_map = {'ticket': perm.TICKET_VIEW, 'wiki': perm.WIKI_VIEW}
-        self.perm.assert_permission(perm_map[parent_type])
+        req.perm.assert_permission(perm_map[parent_type])
 
         filename = os.path.basename(filename)
         path = os.path.join(self.env.get_attachments_dir(), parent_type,
@@ -162,7 +185,7 @@ class AttachmentModule(Module):
         }
 
         perm_map = {'ticket': perm.TICKET_ADMIN, 'wiki': perm.WIKI_DELETE}
-        if self.perm.has_permission(perm_map[parent_type]):
+        if req.perm.has_permission(perm_map[parent_type]):
             req.hdf['attachment.can_delete'] = 1
 
         self.log.debug("Rendering preview of file %s with mime-type %s"
@@ -182,8 +205,6 @@ class AttachmentModule(Module):
             vdata = self.env.mimeview.display(data, filename=filename,
                                               mimetype=mime_type)
         req.hdf['attachment.preview'] = vdata
-
-        req.display('attachment.cs')
 
     def render_view_raw(self, req, fd, mime_type, charset, length,
                         last_modified):

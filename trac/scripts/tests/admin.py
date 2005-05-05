@@ -83,7 +83,8 @@ class InMemoryEnvironment(Environment):
         return True
 
     def setup_log(self):
-        self.log = trac.Logging.logger_factory('null')
+        from trac.log import logger_factory
+        self.log = logger_factory('null')
 
     def load_config(self):
         self.config = Configuration(None)

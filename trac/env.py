@@ -21,8 +21,9 @@
 
 from __future__ import generators
 
-from trac import db, db_default, Logging, Mimeview, util
+from trac import db, db_default, Mimeview, util
 from trac.config import Configuration
+from trac.core import ComponentManager
 
 import os
 import shutil
@@ -33,7 +34,8 @@ import unicodedata
 
 db_version = db_default.db_version
 
-class Environment:
+
+class Environment(ComponentManager):
     """
     Trac stores project information in a Trac environment.
 
@@ -44,20 +46,67 @@ class Environment:
      * Project specific templates and wiki macros.
      * wiki and ticket attachments.
     """
+    __cnx_pool = None
+
     def __init__(self, path, create=0):
+        ComponentManager.__init__(self)
         self.path = path
         if create:
             self.create()
         self.verify()
         self.load_config()
+
         try: # Use binary I/O on Windows
             import msvcrt
             msvcrt.setmode(sys.stdin.fileno(), os.O_BINARY)
             msvcrt.setmode(sys.stdout.fileno(), os.O_BINARY)
         except ImportError:
             pass
+
         self.setup_log()
+        self.load_components()
         self.setup_mimeviewer()
+
+    def load_components(self):
+        configured_modules = []
+        for section in self.config.sections():
+            for name,value in self.config.options(section):
+                if name == 'module':
+                    configured_modules.append(value)
+                    path = self.config.get(section, 'path')
+                    try:
+                        self.load_component(value, path)
+                    except ImportError, e:
+                        self.log.error('Component module %s not found (%s)'
+                                       % (value, e))
+        for module in db_default.default_components:
+            if not module in configured_modules:
+                self.load_component(module)
+
+    def load_component(self, name, path=None):
+        self.log.debug('Loading component module %s from %s'
+                       % (name, path or 'default path'))
+        try:
+            return sys.modules[name]
+        except KeyError:
+            import imp
+            parts = name.split('.')
+            for part in parts:
+                fd, path, desc = imp.find_module(part, path and [path] or None)
+                if part == parts[-1]:
+                    imp.load_module(name, fd, path, desc)
+
+    def component_activated(self, component):
+        component.env = self
+        component.config = self.config
+        component.log = self.log
+
+    def is_component_enabled(self, cls):
+        component_name = (cls.__module__ + '.' + cls.__name__).lower()
+        for name,value in self.config.options('disabled_components'):
+            if value in util.TRUE and component_name.startswith(name):
+                return False
+        return True
 
     def verify(self):
         """Verifies that self.path is a compatible trac environment"""
@@ -66,7 +115,9 @@ class Environment:
         fd.close()
 
     def get_db_cnx(self):
-        return db.get_cnx(self)
+        if not self.__cnx_pool:
+            self.__cnx_pool = db.get_cnx_pool(self)
+        return self.__cnx_pool.get_cnx()
 
     def get_repository(self, authname=None):
         from trac.versioncontrol.cache import CachedRepository
@@ -170,12 +221,13 @@ class Environment:
         return os.path.join(self.path, 'log')
 
     def setup_log(self):
+        from trac.log import logger_factory
         logtype = self.config.get('logging', 'log_type')
         loglevel = self.config.get('logging', 'log_level')
         logfile = self.config.get('logging', 'log_file')
         logfile = os.path.join(self.get_log_dir(), logfile)
         logid = self.path # Env-path provides process-unique ID
-        self.log = Logging.logger_factory(logtype, logfile, loglevel, logid)
+        self.log = logger_factory(logtype, logfile, loglevel, logid)
 
     def setup_mimeviewer(self):
         self.mimeview = Mimeview.Mimeview(self)
@@ -183,31 +235,33 @@ class Environment:
     def get_attachments_dir(self):
         return os.path.join(self.path, 'attachments')
 
-    def get_attachments(self, cnx, type, id):
-        cursor = cnx.cursor()
+    def get_attachments(self, type, id):
+        db = self.get_db_cnx()
+        cursor = db.cursor()
         cursor.execute('SELECT filename,description,type,size,time,author,ipnr '
                        'FROM attachment '
                        'WHERE type=%s AND id=%s ORDER BY time', (type, id))
         return cursor.fetchall()
-    
-    def get_attachments_hdf(self, cnx, type, id, hdf, prefix):
+
+    def get_attachments_hdf(self, type, id, hdf, prefix):
         from Wiki import wiki_to_oneliner
-        files = self.get_attachments(cnx, type, id)
+        db = self.get_db_cnx()
+        attachments = self.get_attachments(type, id)
         idx = 0
-        for file in files:
+        for filename, description, type, size, t, author, ipnr in attachments:
             hdf['%s.%d' % (prefix, idx)] = {
-                'name': file['filename'],
-                'descr': wiki_to_oneliner(file['description'], self, cnx),
-                'author': util.escape(file['author']),
-                'ipnr': file['ipnr'],
-                'size': util.pretty_size(file['size']),
-                'time': time.strftime('%c', time.localtime(file['time'])),
-                'href': self.href.attachment(type, id, file['filename'])
+                'name': filename,
+                'descr': wiki_to_oneliner(description, self, db),
+                'author': util.escape(author),
+                'ipnr': ipnr,
+                'size': util.pretty_size(size),
+                'time': time.strftime('%c', time.localtime(t)),
+                'href': self.href.attachment(type, id, filename)
             }
             idx += 1
 
-    def create_attachment(self, cnx, type, id, attachment,
-                          description, author, ipnr):
+    def create_attachment(self, type, id, attachment, description, author,
+                          ipnr):
         # Maximum attachment size (in bytes)
         max_size = int(self.config.get('attachment', 'max_size'))
         if hasattr(attachment.file, 'fileno'):
@@ -236,17 +290,21 @@ class Environment:
         path, fd = util.create_unique_file(os.path.join(dir, filename))
         filename = os.path.basename(path)
         filename = urllib.unquote(filename)
-        cursor = cnx.cursor()
+
+        db = self.get_db_cnx()
+        cursor = db.cursor()
         cursor.execute('INSERT INTO attachment VALUES(%s,%s,%s,%s,%s,%s,%s,%s)',
                        (type, id, filename, length, int(time.time()),
                        description, author, ipnr))
         shutil.copyfileobj(attachment.file, fd)
         self.log.info('New attachment: %s/%s/%s by %s', type, id, filename, author)
-        cnx.commit()
+        db.commit()
+
         return filename
 
-    def delete_attachment(self, cnx, type, id, filename):
-        cursor = cnx.cursor()
+    def delete_attachment(self, type, id, filename):
+        db = self.get_db_cnx()
+        cursor = db.cursor()
         cursor.execute('DELETE FROM attachment WHERE type=%s AND id=%s AND '
                        'filename=%s', (type, id, filename))
 
@@ -265,7 +323,7 @@ class Environment:
                 raise util.TracError, 'Attachment not found'
 
         self.log.info('Attachment removed: %s/%s/%s', type, id, filename)
-        cnx.commit()
+        db.commit()
 
     def get_known_users(self, cnx=None):
         """

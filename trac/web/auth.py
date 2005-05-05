@@ -19,9 +19,11 @@
 #
 # Author: Jonas Borgström <jonas@edgewall.com>
 
-from trac import util
-
 import time
+
+from trac import util
+from trac.core import *
+from trac.web.chrome import INavigationContributor
 
 
 class Authenticator:
@@ -91,3 +93,20 @@ class Authenticator:
         cursor = self.db.cursor()
         cursor.execute("DELETE FROM auth_cookie WHERE name=%s", self.authname)
         self.db.commit()
+
+
+class LoginModule(Component):
+
+    implements(INavigationContributor)
+
+    # INavigationContributor methods
+
+    def get_navigation_items(self, req):
+        if req.authname and req.authname != 'anonymous':
+            yield 'metanav', 'login', 'logged in as %s' \
+                  % util.escape(req.authname)
+            yield 'metanav', 'logout', '<a href="%s">Logout</a>' \
+                  % util.escape(self.env.href.logout())
+        else:
+            yield 'metanav', 'login', '<a href="%s">Login</a>' \
+                  % util.escape(self.env.href.login())

@@ -47,75 +47,27 @@
  </div><?cs /if ?>
 </form>
 
-<div id="metanav" class="nav">
- <h2>Navigation</h2>
- <ul>
-  <li class="first"><?cs if:trac.authname == "anonymous" || !trac.authname ?>
-    <a href="<?cs var:trac.href.login ?>">Login</a>
-  <?cs else ?>
-    logged in as <?cs var:trac.authname ?> </li>
-    <li><a href="<?cs var:trac.href.logout ?>">Logout</a>
-  <?cs /if ?></li>
-  <li><a href="<?cs var:trac.href.settings ?>">Settings</a></li>
-  <li><a accesskey="6" href="<?cs var:trac.href.wiki ?>/TracGuide">Help/Guide</a></li>
-  <li style="display: none"><a accesskey="5" href="http://projects.edgewall.com/trac/wiki/TracFaq">FAQ</a></li>
-  <li style="display: none"><a accesskey="0" href="<?cs var:trac.href.wiki ?>/TracAccessibility">Accessibility</a></li>
-  <li class="last"><a accesskey="9" href="<?cs var:trac.href.about ?>">About Trac</a></li>
- </ul>
-</div>
-
-</div>
-
-<?cs def:navlink(text, href, id, aclname, accesskey) ?><?cs
- if $aclname ?><li><a href="<?cs var:href ?>"<?cs 
-  if $id == $trac.active_module ?> class="active"<?cs
-  /if ?><?cs
-  if:$accesskey!="" ?> accesskey="<?cs var:$accesskey ?>"<?cs 
-  /if ?>><?cs var:text ?></a></li><?cs 
+<?cs def:nav(items) ?><?cs
+ if:len(items) ?><ul><?cs
+  set:idx = 0 ?><?cs
+  set:max = len(items) - 1 ?><?cs
+  each:item = items ?><?cs
+   set:first = idx == 0 ?><?cs
+   set:last = idx == max ?><li<?cs
+   if:first || last || item.active ?> class="<?cs
+    if:item.active ?>active<?cs /if ?><?cs
+    if:item.active && (first || last) ?> <?cs /if ?><?cs
+    if:first ?>first<?cs /if ?><?cs
+    if:(item.active || first) && last ?> <?cs /if ?><?cs
+    if:last ?>last<?cs /if ?>"<?cs
+   /if ?>><?cs var:item ?></li><?cs
+   set:idx = idx + 1 ?><?cs
+  /each ?></ul><?cs
  /if ?><?cs
 /def ?>
 
-<?cs if $trac.active_module == "wiki" ?><?cs
-  set:$wiki_view="wiki" ?><?cs
- else  ?><?cs
-  set:$wiki_view="attachment" ?><?cs
- /if  ?><?cs
- if $trac.active_module == "ticket" ?><?cs
-  set:$ticket_view="ticket" ?><?cs
- elif $trac.active_module == "query" ?><?cs
-  set:$ticket_view="query" ?><?cs
- else ?><?cs
-  set:$ticket_view="report" ?><?cs
- /if  ?><?cs
- if $trac.active_module == "log" ?><?cs
-  set:$browser_view="log" ?><?cs
- elif $trac.active_module == "file" ?><?cs
-  set:$browser_view="file" ?><?cs
- else  ?><?cs
-  set:$browser_view="browser" ?><?cs
- /if  ?><?cs
- if $trac.active_module == "milestone" ?><?cs
-  set:$roadmap_view="milestone" ?><?cs
- else ?><?cs
-  set:$roadmap_view="roadmap" ?><?cs 
- /if ?>
-
-<div id="mainnav" class="nav">
- <ul><?cs
-  call:navlink("Wiki", trac.href.wiki, wiki_view,
-               trac.acl.WIKI_VIEW, "1") ?><?cs
-  call:navlink("Timeline", trac.href.timeline, "timeline",
-               trac.acl.TIMELINE_VIEW, "2") ?><?cs
-  call:navlink("Roadmap", trac.href.roadmap, roadmap_view,
-               trac.acl.ROADMAP_VIEW, "3") ?><?cs
-  call:navlink("Browse Source", trac.href.browser, browser_view,
-               trac.acl.BROWSER_VIEW, "") ?><?cs
-  call:navlink("View Tickets", trac.href.report, ticket_view,
-               trac.acl.REPORT_VIEW, "") ?><?cs
-  call:navlink("New Ticket", trac.href.newticket, "newticket",
-               trac.acl.TICKET_CREATE, "7") ?><?cs
-  call:navlink("Search", trac.href.search, "search",
-               trac.acl.SEARCH_VIEW, "4") ?></ul>
+<div id="metanav" class="nav"><?cs call:nav(chrome.metanav) ?></div>
 </div>
 
+<div id="mainnav" class="nav"><?cs call:nav(chrome.mainnav) ?></div>
 <div id="main">

@@ -33,7 +33,7 @@ except ImportError:
 
 from svn import core, repos
 
-from trac.Logging import logger_factory
+from trac.log import logger_factory
 from trac.test import TestSetup
 from trac.versioncontrol import Changeset, Node
 from trac.versioncontrol.svn_fs import SubversionRepository

@@ -6,7 +6,7 @@
 <div id="content" class="timeline">
 <h1>Timeline</h1>
 
-<form id="prefs" action="">
+<form id="prefs" method="get" action="<?cs var:trac.href.timeline ?>">
  <div>
   <label>View changes from <input type="text" size="10" name="from" value="<?cs
     var:timeline.from ?>" /></label> and
@@ -28,51 +28,17 @@
 def:day_separator(date) ?><?cs
  if:date != current_date ?><?cs
   if:current_date ?></dl><?cs /if ?><?cs
-  set:current_date = $date ?>
+  set:current_date = date ?>
   <h2><?cs var:date ?>:</h2><dl><?cs
  /if ?><?cs
 /def ?><?cs
-
-def:tlitem(url, type, msg, descr) ?>
- <dt class="<?cs var:type ?>">
-  <a href="<?cs var:url ?>"><span class="time"><?cs
-    var:item.time ?></span> <?cs var:msg ?></a>
- </dt><?cs
- if:descr ?><dd><?cs var:descr ?></dd><?cs
- /if ?><?cs
-/def ?><?cs
-
-each:item = timeline.items ?><?cs
- call:day_separator(item.date) ?><?cs
- if:item.type == 'changeset' ?><?cs
-  call:tlitem(item.href, 'changeset',
-              'Changeset <em>[' + item.idata + ']</em> by ' + item.author,
-              item.node_list + item.message) ?><?cs
- elif:item.type == 'newticket' ?><?cs
-  call:tlitem(item.href, 'newticket',
-              'Ticket <em>#' + item.idata + '</em> created by ' + item.author,
-              item.message) ?><?cs
- elif:item.type == 'closedticket' ?><?cs
-  if:item.message ?><?cs
-   set:imessage = ' - ' + item.message ?><?cs
-  else ?><?cs
-   set:imessage = '' ?><?cs
+each:event = timeline.events ?><?cs
+ call:day_separator(event.date) ?><dt class="<?cs
+ var:event.kind ?>"><a href="<?cs var:event.href ?>"><span class="time"><?cs
+ var:event.time ?></span> <?cs var:event.title ?></a></dt><?cs
+  if:event.message ?><dd class="<?cs var:event.kind ?>"><?cs
+   var:event.message ?></dd><?cs
   /if ?><?cs
-  call:tlitem(item.href, 'closedticket',
-              'Ticket <em>#' + item.idata + '</em> resolved by ' + item.author,
-              item.tdata + imessage) ?><?cs
- elif:item.type == 'reopenedticket' ?><?cs
-  call:tlitem(item.href, 'newticket',
-              'Ticket <em>#' + item.idata + '</em> reopened by ' + item.author,
-              '') ?><?cs
- elif:item.type == 'wiki' ?><?cs
-  call:tlitem(item.href, 'wiki',
-              '<em>' + item.tdata + '</em> edited by ' + item.author,
-              item.message) ?><?cs
- elif:item.type == 'milestone' ?><?cs
-  call:tlitem(item.href, 'milestone',
-              '<em>Milestone ' + item.tdata + '</em> reached', '') ?><?cs
- /if ?><?cs
 /each ?><?cs
 if:len(timeline.items) ?></dl><?cs /if ?>
 

@@ -124,14 +124,14 @@ label.disabled { color: #d7d7d7 }
  background-color: #ccc;
  border-right: 1px solid #ddd;
 }
-#mainnav .active:link, #mainnav .active:visited {
+#mainnav .active :link, #mainnav .active :visited {
  background: #333 url(../topbar_gradient2.png) 0 0 repeat-x;
  border-top: none;
  border-right: 1px solid #000;
  color: #eee;
  font-weight: bold;
 }
-#mainnav .active:link:hover, #mainnav .active:visited:hover {
+#mainnav .active :link:hover, #mainnav .active :visited:hover {
  border-right: 1px solid #000;
 }
 

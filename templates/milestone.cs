@@ -21,8 +21,7 @@
       document.getElementById('name').focus();
     });
   </script>
-  <form id="edit" action="<?cs var:cgi_location ?>" method="post">
-   <input type="hidden" name="mode" value="milestone" />
+  <form id="edit" action="<?cs var:milestone.href ?>" method="post">
    <input type="hidden" name="id" value="<?cs var:milestone.name ?>" />
    <input type="hidden" name="action" value="commit_changes" />
    <div class="field">
@@ -83,7 +82,7 @@
      var:htdocs_location ?>js/wikitoolbar.js"></script>
   </form>
  <?cs elif:milestone.mode == "delete" ?>
-  <form action="<?cs var:cgi_location ?>" method="post">
+  <form action="<?cs var:milestone.href ?>" method="post">
    <input type="hidden" name="mode" value="milestone" />
    <input type="hidden" name="id" value="<?cs var:milestone.name ?>" />
    <input type="hidden" name="action" value="confirm_delete" />

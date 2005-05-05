@@ -1,0 +1,36 @@
+/* About config */
+#content.about_config table {
+ border-collapse: collapse;
+ margin: 2em 0;
+}
+#content.about_config th {
+ background: #f7f7f0;
+ font-weight: bold;
+ text-align: right;
+ vertical-align: top;
+}
+#content.about_config th, #content.about_config td {
+ border: 1px solid #ddd;
+ padding: 3px;
+}
+
+/* About plugins */
+#content.about_plugins h2 {
+ background: #f7f7f7;
+ border-bottom: 1px solid #d7d7d7;
+ margin: 2em 0 0;
+}
+#content.about_plugins table {
+ border-collapse: collapse;
+ margin: 1em 0;
+ table-layout: fixed;
+ width: 100%;
+}
+#content.about_plugins th, #content.about_plugins td { border: 1px solid #ddd; padding: 3px }
+#content.about_plugins th { background: #f7f7f0; font-weight: bold; text-align: right; vertical-align: top; width: 12em }
+#content.about_plugins td.module { font-family: monospace; }
+#content.about_plugins td.module .path { color: #999; font-size: 90%; }
+
+#content.about_plugins td.xtnpts { margin-top: 1em; }
+#content.about_plugins td.xtnpts ul { list-style: none; margin: 0; padding: 0; }
+#content.about_plugins td.xtnpts ul ul { list-style: square; margin: 0; padding: 0 0 0 2em; }

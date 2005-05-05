@@ -20,8 +20,9 @@
 # Author: Jonas Borgström <jonas@edgewall.com>
 
 from trac import perm, util
-from trac.Module import Module
-from trac.web.main import add_link
+from trac.core import *
+from trac.web.chrome import add_link, INavigationContributor
+from trac.web.main import IRequestHandler
 from trac.WikiFormatter import wiki_to_html
 
 import re
@@ -68,7 +69,79 @@ class ColumnSorter:
         return result
 
 
-class Report (Module):
+class ReportModule(Component):
+
+    implements(INavigationContributor, IRequestHandler)
+
+    # INavigationContributor methods
+
+    def get_active_navigation_item(self, req):
+        return 'tickets'
+
+    def get_navigation_items(self, req):
+        if not req.perm.has_permission(perm.REPORT_VIEW):
+            return
+        yield 'mainnav', 'tickets', '<a href="%s">View Tickets</a>' \
+              % util.escape(self.env.href.report())
+
+    # IRequestHandler methods
+
+    def match_request(self, req):
+        match = re.match(r'/report(?:/([0-9]+))?', req.path_info)
+        if match:
+            if match.group(1):
+                req.args['id'] = match.group(1)
+            return 1
+
+    def process_request(self, req):
+        req.perm.assert_permission(perm.REPORT_VIEW)
+
+        # did the user ask for any special report?
+        id = int(req.args.get('id', -1))
+        action = req.args.get('action', 'list')
+
+        db = self.env.get_db_cnx()
+
+        if action == 'create':
+            if req.args.has_key('cancel'):
+                action = 'list'
+            else:
+                self.create_report(req, db, req.args.get('title', ''),
+                                   req.args.get('description', ''),
+                                   req.args.get('sql', ''))
+
+        if id != -1 or action == 'new':
+            add_link(req, 'up', self.env.href.report(), 'Available Reports')
+
+        if action == 'delete':
+            self.render_confirm_delete(req, db, id)
+        elif action == 'commit':
+            self.commit_changes(req, db, id)
+        elif action == 'confirm_delete':
+            self.delete_report(req, db, id)
+        elif action == 'new':
+            self.render_report_editor(req, db, -1, 'create')
+        elif action == 'copy':
+            self.render_report_editor(req, db, id, 'create', 1)
+        elif action == 'edit':
+            self.render_report_editor(req, db, id, 'commit')
+        elif action == 'list':
+            self.render_report_list(req, db, id)
+
+        format = req.args.get('format')
+        if format == 'rss':
+            self.render_rss(req, db)
+            return 'report_rss.cs', 'application/rss+xml'
+        elif format == 'csv':
+            self.render_csv(req, db)
+        elif format == 'tab':
+            self.render_csv(req, db, '\t')
+        elif format == 'sql':
+            self.render_sql(req, db)
+        else:
+            return 'report.cs', None
+
+    # Internal methods
 
     def sql_sub_vars(self, req, sql, args):
         m = re.search(dynvars_re, sql)
@@ -83,7 +156,7 @@ class Report (Module):
         sql = m.string[:m.start()] + arg + m.string[m.end():]
         return self.sql_sub_vars(req, sql, args)
 
-    def get_info(self, id, args):
+    def get_info(self, db, id, args):
         if id == -1:
             # If no particular report was requested, display
             # a list of available reports instead
@@ -91,7 +164,7 @@ class Report (Module):
             sql = 'SELECT id AS report, title FROM report ORDER BY report'
             description = 'This is a list of reports available.'
         else:
-            cursor = self.db.cursor()
+            cursor = db.cursor()
             cursor.execute("SELECT title,sql,description from report "
                            "WHERE id=%s", (id,))
             row = cursor.fetchone()
@@ -104,66 +177,66 @@ class Report (Module):
 
         return [title, description, sql]
 
-    def create_report(self, req, title, description, sql):
-        self.perm.assert_permission(perm.REPORT_CREATE)
+    def create_report(self, req, db, title, description, sql):
+        req.perm.assert_permission(perm.REPORT_CREATE)
 
-        cursor = self.db.cursor()
+        cursor = db.cursor()
         cursor.execute("INSERT INTO report (title,sql,description) "
                        "VALUES (%s,%s,%s)", (title, sql, description))
-        id = self.db.get_last_id('report')
-        self.db.commit()
+        id = db.get_last_id('report')
+        db.commit()
         req.redirect(self.env.href.report(id))
 
-    def delete_report(self, req, id):
-        self.perm.assert_permission(perm.REPORT_DELETE)
+    def delete_report(self, req, db, id):
+        req.perm.assert_permission(perm.REPORT_DELETE)
 
         if not req.args.has_key('cancel'):
-            cursor = self.db.cursor ()
+            cursor = db.cursor ()
             cursor.execute("DELETE FROM report WHERE id=%s", (id,))
-            self.db.commit()
+            db.commit()
             req.redirect(self.env.href.report())
         else:
             req.redirect(self.env.href.report(id))
 
-    def execute_report(self, req, sql, args):
+    def execute_report(self, req, db, sql, args):
         sql = self.sql_sub_vars(req, sql, args)
         if not sql:
             raise util.TracError('Report %s has no SQL query.' % id)
         if sql.find('__group__') == -1:
             req.hdf['report.sorting.enabled'] = 1
 
-        cursor = self.db.cursor()
+        cursor = db.cursor()
         cursor.execute(sql)
 
         # FIXME: fetchall should probably not be used.
         info = cursor.fetchall()
         cols = cursor.description
 
-        self.db.rollback()
+        db.rollback()
 
         return [cols, info]
 
-    def commit_changes(self, req, id):
+    def commit_changes(self, req, db, id):
         """
         saves report changes to the database
         """
-        self.perm.assert_permission(perm.REPORT_MODIFY)
+        req.perm.assert_permission(perm.REPORT_MODIFY)
 
         if not req.args.has_key('cancel'):
-            cursor = self.db.cursor()
+            cursor = db.cursor()
             title = req.args.get('title', '')
             sql = req.args.get('sql', '')
             description = req.args.get('description', '')
 
             cursor.execute("UPDATE report SET title=%s,sql=%s,description=%s "
                            "WHERE id=%s", (title, sql, description, id))
-            self.db.commit()
+            db.commit()
         req.redirect(self.env.href.report(id))
 
-    def render_confirm_delete(self, req, id):
-        self.perm.assert_permission(perm.REPORT_DELETE)
+    def render_confirm_delete(self, req, db, id):
+        req.perm.assert_permission(perm.REPORT_DELETE)
 
-        cursor = self.db.cursor()
+        cursor = db.cursor()
         cursor.execute("SELECT title FROM report WHERE id = %s", (id,))
         row = cursor.fetchone()
         if not row:
@@ -173,14 +246,15 @@ class Report (Module):
         req.hdf['report.mode'] = 'delete'
         req.hdf['report.id'] = id
         req.hdf['report.title'] = row['title']
+        req.hdf['report.href'] = self.env.href.report(id)
 
-    def render_report_editor(self, req, id, action='commit', copy=0):
-        self.perm.assert_permission(perm.REPORT_MODIFY)
+    def render_report_editor(self, req, db, id, action='commit', copy=0):
+        req.perm.assert_permission(perm.REPORT_MODIFY)
 
         if id == -1:
             title = sql = description = ''
         else:
-            cursor = self.db.cursor()
+            cursor = db.cursor()
             cursor.execute("SELECT title,description,sql FROM report "
                            "WHERE id=%s", (id,))
             row = cursor.fetchone()
@@ -196,8 +270,10 @@ class Report (Module):
 
         if action == 'commit':
             req.hdf['title'] = 'Edit Report {%d} %s' % (id, row['title'])
+            req.hdf['report.href'] = self.env.href.report(id)
         else:
             req.hdf['title'] = 'Create New Report'
+            req.hdf['report.href'] = self.env.href.report()
         req.hdf['report.mode'] = 'editor'
         req.hdf['report.title'] = title
         req.hdf['report.id'] = id
@@ -220,24 +296,25 @@ class Report (Module):
                  'Comma-delimited Text', 'text/plain')
         add_link(req, 'alternate', '?format=tab' + href,
                  'Tab-delimited Text', 'text/plain')
-        if self.perm.has_permission(perm.REPORT_SQL_VIEW):
+        if req.perm.has_permission(perm.REPORT_SQL_VIEW):
             add_link(req, 'alternate', '?format=sql', 'SQL Query',
                      'text/plain')
 
-    def render_report_list(self, req, id):
+    def render_report_list(self, req, db, id):
         """
         uses a user specified sql query to extract some information
         from the database and presents it as a html table.
         """
-        if self.perm.has_permission(perm.REPORT_CREATE):
+        if req.perm.has_permission(perm.REPORT_CREATE):
             req.hdf['report.create_href'] = self.env.href.report(None, action='new')
+        req.hdf['report.href'] = self.env.href.report(id)
 
         if id != -1:
-            if self.perm.has_permission(perm.REPORT_MODIFY):
+            if req.perm.has_permission(perm.REPORT_MODIFY):
                 req.hdf['report.edit_href'] = self.env.href.report(id, action='edit')
-            if self.perm.has_permission(perm.REPORT_CREATE):
+            if req.perm.has_permission(perm.REPORT_CREATE):
                 req.hdf['report.copy_href'] = self.env.href.report(id, action='copy')
-            if self.perm.has_permission(perm.REPORT_DELETE):
+            if req.perm.has_permission(perm.REPORT_DELETE):
                 req.hdf['report.delete_href'] = self.env.href.report(id, action='delete')
 
         try:
@@ -250,7 +327,7 @@ class Report (Module):
             self.add_alternate_links(req, args)
 
         req.hdf['report.mode'] = 'list'
-        info = self.get_info(id, args)
+        info = self.get_info(db, id, args)
         if not info:
             return
         [title, description, sql] = info
@@ -261,14 +338,14 @@ class Report (Module):
         req.hdf['title'] = title
         req.hdf['report.title'] = title
         req.hdf['report.id'] = id
-        descr_html = wiki_to_html(description, req.hdf, self.env,self.db)
+        descr_html = wiki_to_html(description, req.hdf, self.env, db)
         req.hdf['report.description'] = descr_html
 
         if req.args.get('format') == 'sql':
             return
 
         try:
-            [self.cols, self.rows] = self.execute_report(req, sql, args)
+            [self.cols, self.rows] = self.execute_report(req, db, sql, args)
         except Exception, e:
             self.error = e
             req.hdf['report.message'] = 'Report failed: %s' % e
@@ -314,7 +391,6 @@ class Report (Module):
                     req.hdf[k] = 1
                 self.rows.sort(sorter.sort)
 
-
         # Convert the rows and cells to HDF-format
         row_idx = 0
         for row in self.rows:
@@ -341,7 +417,7 @@ class Report (Module):
                 if column in ['ticket', '#', 'summary']:
                     value['ticket_href'] = self.env.href.ticket(row['ticket'])
                 elif column == 'description':
-                    value['parsed'] = wiki_to_html(cell, req.hdf, self.env, self.db)
+                    value['parsed'] = wiki_to_html(cell, req.hdf, self.env, db)
                 elif column == 'reporter':
                     value['reporter'] = cell
                     value['reporter.rss'] = cell.find('@') and cell or ''
@@ -384,52 +460,7 @@ class Report (Module):
 
         return report_args
 
-    def render(self, req):
-        self.perm.assert_permission(perm.REPORT_VIEW)
-
-        # did the user ask for any special report?
-        id = int(req.args.get('id', -1))
-        action = req.args.get('action', 'list')
-
-        if action == 'create':
-            if req.args.has_key('cancel'):
-                action = 'list'
-            else:
-                self.create_report(req, req.args.get('title', ''),
-                                   req.args.get('description', ''),
-                                   req.args.get('sql', ''))
-
-        if id != -1 or action == 'new':
-            add_link(req, 'up', self.env.href.report(), 'Available Reports')
-
-        if action == 'delete':
-            self.render_confirm_delete(req, id)
-        elif action == 'commit':
-            self.commit_changes(req, id)
-        elif action == 'confirm_delete':
-            self.delete_report(req, id)
-        elif action == 'new':
-            self.render_report_editor(req, -1, 'create')
-        elif action == 'copy':
-            self.render_report_editor(req, id, 'create', 1)
-        elif action == 'edit':
-            self.render_report_editor(req, id, 'commit')
-        elif action == 'list':
-            self.render_report_list(req, id)
-
-        format = req.args.get('format')
-        if format == 'rss':
-            self.render_rss(req)
-        elif format == 'csv':
-            self.render_csv(req)
-        elif format == 'tab':
-            self.render_csv(req, '\t')
-        elif format == 'sql':
-            self.render_sql(req)
-        else:
-            req.display('report.cs')
-
-    def render_rss(self, req):
+    def render_rss(self, req, db):
         item = req.hdf.getObj('report.items')
         if item:
             item = item.child()
@@ -438,9 +469,8 @@ class Report (Module):
                 summary = req.hdf.get(nodename, '')
                 req.hdf[nodename] = util.escape(summary)
                 item = item.next()
-        req.display('report_rss.cs', 'application/rss+xml')
 
-    def render_csv(self, req, sep=','):
+    def render_csv(self, req, db, sep=','):
         req.send_response(200)
         req.send_header('Content-Type', 'text/plain;charset=utf-8')
         req.end_headers()
@@ -455,8 +485,8 @@ class Report (Module):
                                        .replace('\r',' ')
             req.write(sep.join(map(sanitize, row)) + '\r\n')
 
-    def render_sql(self, req):
-        self.perm.assert_permission(perm.REPORT_SQL_VIEW)
+    def render_sql(self, req, db):
+        req.perm.assert_permission(perm.REPORT_SQL_VIEW)
         req.send_response(200)
         req.send_header('Content-Type', 'text/plain;charset=utf-8')
         req.end_headers()
@@ -467,7 +497,7 @@ class Report (Module):
         title = req.hdf.get('report.title', '')
         if title:
             req.write('-- ## %s: %s ## --\n\n' % (rid, title))
-        cursor = self.db.cursor()
+        cursor = db.cursor()
         cursor.execute("SELECT sql,description FROM report WHERE id=%s", (rid,))
         row = cursor.fetchone()
         sql = row[0] or ''

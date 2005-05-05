@@ -45,7 +45,10 @@ dt.closedticket, dt.closedticket a { background-image: url(../closedticket.png) 
 dt.wiki, dt.wiki a { background-image: url(../wiki.png) !important }
 dt.milestone, dt.milestone a { background-image: url(../milestone.png) !important }
 
-.diff-unmod { color: #000 }
-.diff-rem { color: #e00 }
-.diff-add { color: #2e2 }
-.diff-mod { color: #e84 }
+/* Styles for the 'changeset_show_files' option */
+dd.changeset .changes .add { color: #2e2 }
+dd.changeset .changes .delete { color: #e00 }
+dd.changeset .changes .edit, dd.changeset .changes .copy,
+dd.changeset .changes .move {
+ color: #e84;
+}

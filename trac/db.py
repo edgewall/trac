@@ -25,7 +25,9 @@ from trac.util import TracError
 
 import os
 import os.path
+import time
 import urllib
+from threading import Condition, Lock
 
 
 class IterableCursor(object):
@@ -69,6 +71,76 @@ class ConnectionWrapper(object):
         return IterableCursor(cursor)
 
 
+class TimeoutError(Exception):
+    pass
+
+
+class PooledConnection(ConnectionWrapper):
+
+    def __init__(self, pool, cnx):
+        ConnectionWrapper.__init__(self, cnx)
+        self.__pool = pool
+
+    def close(self):
+        try:
+            self.cnx.rollback()
+        except:
+            pass
+        self.__pool._return_cnx(self)
+
+    def __del__(self):
+        try:
+            self.close()
+        except:
+            pass
+
+
+class ConnectionPool(object):
+
+    def __init__(self, maxsize, cnx_class, **args):
+        self.__cnxs = []
+        self.__lock = Lock()
+        self.__available = Condition(self.__lock)
+        self.__maxsize = maxsize
+        self.__cursize = 0
+        self.__cnx_class = cnx_class
+        self.__args = args
+
+    def get_cnx(self, timeout=None):
+        start = time.time()
+        self.__lock.acquire()
+        try:
+            while 1:
+                if self.__cnxs:
+                    cnx = self.__cnxs.pop(0)
+                    break
+                elif self.__maxsize and self.__cursize <= self.__maxsize:
+                    cnx = PooledConnection(self,
+                        self.__cnx_class(**self.__args))
+                    self.__cursize += 1
+                    break
+                else:
+                    if timeout:
+                        self.__available.wait(timeout)
+                        if (time.time() - start) >= timeout:
+                            raise TimeoutError, "Unable to get connection " \
+                                                "within %d seconds" % timeout
+                    else:
+                        self.__available.wait()
+            return cnx
+        finally:
+            self.__lock.release()
+
+    def _return_cnx(self, cnx):
+        self.__lock.acquire()
+        try:
+            self.__cnxs.append(cnx)
+            self.__cursize -= 1
+            self.__available.notify()
+        finally:
+            self.__lock.release()
+
+
 class SQLiteConnection(ConnectionWrapper):
     """Connection wrapper for SQLite."""
 
@@ -98,7 +170,7 @@ class SQLiteConnection(ConnectionWrapper):
 
 _cnx_map = {'sqlite': SQLiteConnection}
 
-def get_cnx(env):
+def get_cnx_pool(env):
     db_str = env.config.get('trac', 'database')
     scheme, args = _parse_db_str(db_str)
     if not scheme in _cnx_map:
@@ -110,7 +182,7 @@ def get_cnx(env):
         if args['path'] != ':memory:' and not args['path'].startswith('/'):
             args['path'] = os.path.join(env.path, args['path'].lstrip('/'))
 
-    return _cnx_map[scheme](**args)
+    return ConnectionPool(5, _cnx_map[scheme], **args)
 
 def _parse_db_str(db_str):
     scheme, rest = db_str.split(':', 1)

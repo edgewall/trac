@@ -20,98 +20,68 @@
 # Author: Jonas Borgström <jonas@edgewall.com>
 
 from trac import perm
+from trac.core import *
 from trac.util import enum, escape, shorten_line
-from trac.Module import Module
 from trac.versioncontrol.svn_authz import SubversionAuthorizer
-from trac.web.main import add_link
+from trac.web.chrome import add_link, INavigationContributor
+from trac.web.main import IRequestHandler
 from trac.WikiFormatter import wiki_to_oneliner, wiki_to_html
 
 import time
 
-AVAILABLE_FILTERS = ('ticket', 'changeset', 'wiki', 'milestone')
+
+class ITimelineEventProvider(Interface):
+    """
+    Extension point interface for adding sources for timed events to the
+    timeline.
+    """
+
+    def get_timeline_filters(self, req):
+        """
+        Return a list of filters that this event provider supports. Each
+        filter must be a (name, label) tuple, where `name` is the internal
+        name, and `label` is a human-readable name for display.
+        """
+
+    def get_timeline_events(self, req, start, stop, filters):
+        """
+        Return a list of events in the time range given by the `start` and
+        `stop` parameters. The `filters` parameters is a list of the enabled
+        filters, each item being the name of the tuples returned by
+        `get_timeline_events`.
+
+        The events returned by this function must be tuples of the form
+        (kind, href, title, date, author, message).
+        """
 
 
-class Timeline(Module):
+class TimelineModule(Component):
 
-    def get_info(self, req, start, stop, maxrows, filters=AVAILABLE_FILTERS):
-        perm_map = {'ticket': perm.TICKET_VIEW, 'changeset': perm.CHANGESET_VIEW,
-                    'wiki': perm.WIKI_VIEW, 'milestone': perm.MILESTONE_VIEW}
-        filters = list(filters) # copy list so we can make modifications
-        for k,v in perm_map.items():
-            if k in filters and not self.perm.has_permission(v):
-                filters.remove(k)
-        if not filters:
-            return []
+    implements(INavigationContributor, IRequestHandler)
 
-        sql, params = [], []
-        if 'changeset' in filters:
-            sql.append("SELECT time,rev,'','changeset',message,author"
-                       " FROM revision WHERE time>=%s AND time<=%s")
-            params += (start, stop)
-        if 'ticket' in filters:
-            sql.append("SELECT time,id,'','newticket',summary,reporter"
-                       " FROM ticket WHERE time>=%s AND time<=%s")
-            params += (start, stop)
-            sql.append("SELECT time,ticket,'','reopenedticket','',author "
-                       "FROM ticket_change WHERE field='status' "
-                       "AND newvalue='reopened' AND time>=%s AND time<=%s")
-            params += (start, stop)
-            sql.append("SELECT t1.time,t1.ticket,t2.newvalue,'closedticket',"
-                       "t3.newvalue,t1.author"
-                       " FROM ticket_change t1"
-                       "   INNER JOIN ticket_change t2 ON t1.ticket = t2.ticket"
-                       "     AND t1.time = t2.time"
-                       "   LEFT OUTER JOIN ticket_change t3 ON t1.time = t3.time"
-                       "     AND t1.ticket = t3.ticket AND t3.field = 'comment'"
-                       " WHERE t1.field = 'status' AND t1.newvalue = 'closed'"
-                       "   AND t2.field = 'resolution'"
-                       "   AND t1.time >= %s AND t1.time <= %s")
-            params += (start,stop)
-        if 'wiki' in filters:
-            sql.append("SELECT time,-1,name,'wiki',comment,author"
-                       " FROM wiki WHERE time>=%s AND time<=%s")
-            params += (start, stop)
-        if 'milestone' in filters:
-            sql.append("SELECT completed AS time,-1,name,'milestone','',''" 
-                       " FROM milestone WHERE completed>=%s AND completed<=%s")
-            params += (start, stop)
+    event_providers = ExtensionPoint(ITimelineEventProvider)
 
-        sql = ' UNION ALL '.join(sql) + ' ORDER BY time DESC'
-        if maxrows:
-            sql += ' LIMIT %d'
-            params += (maxrows,)
+    # INavigationContributor methods
 
-        cursor = self.db.cursor()
-        cursor.execute(sql, params)
+    def get_active_navigation_item(self, req):
+        return 'timeline'
 
-        # Make the data more HDF-friendly
-        info = []
-        for idx, row in enum(cursor):
-            if idx == 0:
-                req.check_modified(int(row[0]))
-            t = time.localtime(int(row[0]))
-            gmt = time.gmtime(int(row[0]))
-            item = {
-                'time': time.strftime('%H:%M', t),
-                'date': time.strftime('%x', t),
-                'datetime': time.strftime('%a, %d %b %Y %H:%M:%S GMT', gmt),
-                'idata': int(row[1]),
-                'tdata': escape(row[2]),
-                'type': row[3],
-                'message': row[4] or '',
-                'author': escape(row[5] or 'anonymous')
-            }
-            info.append(item)
-        return info
+    def get_navigation_items(self, req):
+        if not req.perm.has_permission(perm.TIMELINE_VIEW):
+            return
+        yield 'mainnav', 'timeline', '<a href="%s" accesskey="2">Timeline</a>' \
+                                     % self.env.href.timeline()
 
-    def render(self, req):
-        self.perm.assert_permission(perm.TIMELINE_VIEW)
+    # IRequestHandler methods
 
-        # Kludge: needed to force new check-ins to show up in the timeline
-        repos = self.env.get_repository()
-        repos.sync()
-        self.authzperm = repos.authz
-        repos.close()
+    def match_request(self, req):
+        return req.path_info == '/timeline'
+
+    def process_request(self, req):
+        req.perm.assert_permission(perm.TIMELINE_VIEW)
+
+        format = req.args.get('format')
+        maxrows = int(req.args.get('max', 0))
 
         # Parse the from date and adjust the timestamp to the last second of
         # the day
@@ -121,8 +91,8 @@ class Timeline(Module):
                 t = time.strptime(req.args.get('from'), '%x')
             except:
                 pass
-        fromdate = time.mktime((t[0], t[1], t[2], 23, 59, 59, t[6], t[7], t[8]))
 
+        fromdate = time.mktime((t[0], t[1], t[2], 23, 59, 59, t[6], t[7], t[8]))
         try:
             daysback = max(0, int(req.args.get('daysback', '')))
         except ValueError:
@@ -130,139 +100,50 @@ class Timeline(Module):
         req.hdf['timeline.from'] = time.strftime('%x', time.localtime(fromdate))
         req.hdf['timeline.daysback'] = daysback
 
+        available_filters = []
+        for event_provider in self.event_providers:
+            available_filters += event_provider.get_timeline_filters(req)
+        filters = [f[0] for f in available_filters if f[0] in req.args.keys()]
+        if not filters:
+            filters = [f[0] for f in available_filters]
+
         stop = fromdate
         start = stop - (daysback + 1) * 86400
-        maxrows = int(req.args.get('max', 0))
 
-        filters = [k for k in AVAILABLE_FILTERS if k in req.args.keys()]
-        if not filters:
-            filters = AVAILABLE_FILTERS[:]
+        events = []
+        for event_provider in self.event_providers:
+            events += event_provider.get_timeline_events(req, start, stop,
+                                                         filters)
+        events.sort(lambda x,y: cmp(y[3], x[3]))
+        if maxrows and len(events) > maxrows:
+            del events[maxrows:]
 
         req.hdf['title'] = 'Timeline'
-        format = req.args.get('format')
 
-        events = self.get_info(req, start, stop, maxrows, filters)
-        for idx, event in enum(events):
-            render_func = getattr(self, '_render_%s' % event['type'])
-            event = render_func(req, event)
-            if not event:
-                continue
+        idx = 0
+        for kind,href,title,date,author,message in events:
+            t = time.localtime(date)
+            event = {'kind': kind, 'title': title, 'author': author,
+                     'href': href, 'time': time.strftime('%H:%M', t),
+                     'date': time.strftime('%x', t), 'message': message}
 
             if format == 'rss':
                 # For RSS, author must be an email address
                 if event['author'].find('@') != -1:
                     event['author.email'] = event['author']
 
-            req.hdf['timeline.items.%d' % idx] = event
+            req.hdf['timeline.events.%s' % idx] = event
+            idx += 1
 
         if format == 'rss':
-            self.display_rss(req)
-        else:
-            self.display_html(req, filters)
+            return 'timeline_rss.cs', 'application/rss+xml'
 
-    def display_html(self, req, filters):
-        rss_href = self.env.href.timeline([(x,'on') for x in filters],
+        rss_href = self.env.href.timeline([(f, 'on') for f in filters],
                                           daysback=90, max=50, format='rss')
         add_link(req, 'alternate', rss_href, 'RSS Feed', 'application/rss+xml',
                  'rss')
+        for idx,fltr in enum(available_filters):
+            req.hdf['timeline.filters.%d' % idx] = {'name': fltr[0],
+                'label': fltr[1], 'enabled': int(fltr[0] in filters)}
 
-        filter_labels = {'wiki': 'Wiki changes', 'ticket': 'Ticket changes',
-                         'changeset': 'Repository check-ins',
-                         'milestone': 'Milestones'}
-        perm_map = {'ticket': perm.TICKET_VIEW, 'changeset': perm.CHANGESET_VIEW,
-                    'wiki': perm.WIKI_VIEW, 'milestone': perm.MILESTONE_VIEW}
-        for idx,fltr in enum([f for f in AVAILABLE_FILTERS
-                              if self.perm.has_permission(perm_map[f])]):
-            req.hdf['timeline.filters.%d' % idx] = {
-                'name': fltr, 'label': filter_labels[fltr],
-                'enabled': int(fltr in filters)
-            }
-
-        req.display('timeline.cs')
-
-    def display_rss(self, req):
-        req.display('timeline_rss.cs', 'application/rss+xml')
-
-    def _render_changeset(self, req, item):
-        absurls = req.args.get('format') == 'rss'
-        href = self.env.href
-        if absurls:
-            href = self.env.abs_href
-
-        if not self.authzperm.has_permission_for_changeset(item['idata']):
-            return None
-
-        item['href'] = escape(href.changeset(item['idata']))
-        if req.args.get('format') == 'rss':
-            item['message'] = escape(wiki_to_html(item['message'], req.hdf,
-                                                  self.env, self.db,
-                                                  absurls=absurls))
-        else:
-            item['message'] = wiki_to_oneliner(shorten_line(item['message']),
-                                               self.env, self.db, absurls=absurls)
-
-        try:
-            show_files = int(self.config.get('timeline', 'changeset_show_files'))
-        except ValueError, e:
-            self.log.warning("Invalid 'changeset_show_files' value, "
-                             "please fix trac.ini: %s" % e)
-            show_files = 0
-
-        if show_files:
-            cursor = self.db.cursor()
-            cursor.execute("SELECT path,change FROM node_change WHERE rev=%s",
-                           (item['idata']))
-            files = []
-            class_map = {'A': 'add', 'C': 'add', 'D': 'rem', 'M': 'mod'}
-            for path, change in cursor:
-                if show_files > 0 and len(files) >= show_files:
-                    files.append('...')
-                    break
-                if not self.authzperm.has_permission(path):
-                    continue
-                files.append('<span class="diff-%s">%s</span>'
-                             % (class_map.get(change, 'mod'), path))
-            item['node_list'] = ', '.join(files) + ': '
-
-        return item
-
-    def _render_ticket(self, req, item):
-        absurls = req.args.get('format') == 'rss'
-        href = self.env.href
-        if absurls:
-            href = self.env.abs_href
-
-        item['href'] = escape(href.ticket(item['idata']))
-        if req.args.get('format') == 'rss':
-            item['message'] = escape(wiki_to_html(item['message'],
-                                                  req.hdf, self.env,
-                                                  self.db, absurls=absurls))
-        else:
-            item['message'] = wiki_to_oneliner(shorten_line(item['message']),
-                                               self.env, self.db, absurls=absurls)
-        return item
-    _render_reopenedticket = _render_ticket
-    _render_newticket = _render_ticket
-    _render_closedticket = _render_ticket
-
-    def _render_milestone(self, req, item):
-        absurls = req.args.get('format') == 'rss'
-        href = self.env.href
-        if absurls:
-            href = self.env.abs_href
-
-        item['href'] = escape(href.milestone(item['tdata']))
-        return item
-
-    def _render_wiki(self, req, item):
-        absurls = req.args.get('format') == 'rss'
-        href = self.env.href
-        if absurls:
-            href = self.env.abs_href
-
-        item['href'] = escape(href.wiki(item['tdata']))
-        item['message'] = wiki_to_oneliner(shorten_line(item['message']),
-                                           self.env, self.db, absurls=absurls)
-        if req.args.get('format') == 'rss':
-            item['message'] = escape(item['message'])
-        return item
+        return 'timeline.cs', None

@@ -1,7 +1,7 @@
-from trac.web.href import Href
-from trac.Logging import logger_factory
+from trac.log import logger_factory
 from trac.test import Mock
 from trac.util import TracError
+from trac.web.href import Href
 from trac.web.session import Session, PURGE_AGE, UPDATE_INTERVAL
 
 from Cookie import SimpleCookie as Cookie

@@ -10,7 +10,8 @@ addEvent(window, 'load', function() { document.getElementById('summary').focus()
 <div id="content" class="ticket">
 
 <h3>Create New Ticket:</h3>
-<form id="newticket" action="<?cs var:cgi_location ?>#preview" method="post">
+<form id="newticket" method="post" action="<?cs
+  var:trac.href.newticket ?>#preview">
  <div class="field">
   <label for="reporter">Your email or username:</label><br />
   <input type="text" id="reporter" name="reporter" size="40" value="<?cs
@@ -36,7 +37,6 @@ addEvent(window, 'load', function() { document.getElementById('summary').focus()
 
  <fieldset id="properties">
   <legend>Ticket Properties</legend>
-  <input type="hidden" name="mode" value="newticket" />
   <input type="hidden" name="action" value="create" />
   <input type="hidden" name="status" value="new" />
   <div class="col1">

@@ -20,11 +20,14 @@
 # Author: Jonas Borgström <jonas@edgewall.com>
 
 from trac import perm, util
-from trac.Module import Module
+from trac.core import *
 from trac.Notify import TicketNotifyEmail
-from trac.web.main import add_link
-from trac.WikiFormatter import wiki_to_html
+from trac.Timeline import ITimelineEventProvider
+from trac.web.chrome import add_link, INavigationContributor
+from trac.web.main import IRequestHandler
+from trac.WikiFormatter import wiki_to_html, wiki_to_oneliner
 
+import re
 import time
 
 __all__ = ['Ticket', 'NewticketModule', 'TicketModule']
@@ -276,41 +279,33 @@ def insert_custom_fields(env, hdf, vals = {}):
         i += 1
 
 
-class NewticketModule(Module):
+class NewticketModule(Component):
 
-    def create_ticket(self, req):
-        if not req.args.get('summary'):
-            raise util.TracError('Tickets must contain a summary.')
+    implements(INavigationContributor, IRequestHandler)
 
-        ticket = Ticket()
-        ticket.populate(req.args)
-        ticket.setdefault('reporter', req.authname)
+    # INavigationContributor methods
 
-        # The owner field defaults to the component owner
-        cursor = self.db.cursor()
-        if ticket.get('component') and ticket.get('owner', '') == '':
-            cursor.execute('SELECT owner FROM component '
-                           'WHERE name=%s', ticket['component'])
-            owner = cursor.fetchone()[0]
-            ticket['owner'] = owner
+    def get_active_navigation_item(self, req):
+        return 'newticket'
 
-        tktid = ticket.insert(self.db)
+    def get_navigation_items(self, req):
+        if not req.perm.has_permission(perm.TICKET_CREATE):
+            return
+        yield 'mainnav', 'newticket', '<a href="%s">New Ticket</a>' \
+              % (self.env.href.newticket())
 
-        # Notify
-        try:
-            tn = TicketNotifyEmail(self.env)
-            tn.notify(ticket, newticket=1)
-        except Exception, e:
-            self.log.exception("Failure sending notification on creation of "
-                               "ticket #%d: %s" % (tktid, e))
+    # IRequestHandler methods
 
-        req.redirect(self.env.href.ticket(tktid))
+    def match_request(self, req):
+        return req.path_info == '/newticket'
 
-    def render(self, req):
-        self.perm.assert_permission(perm.TICKET_CREATE)
+    def process_request(self, req):
+        req.perm.assert_permission(perm.TICKET_CREATE)
+
+        db = self.env.get_db_cnx()
 
         if req.args.has_key('create'):
-            self.create_ticket(req)
+            self.create_ticket(req, db)
 
         ticket = Ticket()
         ticket.populate(req.args)
@@ -328,31 +323,30 @@ class NewticketModule(Module):
 
         if ticket.has_key('description'):
             req.hdf['newticket.description_preview'] = wiki_to_html(ticket['description'],
-                                                                    req.hdf, self.env,
-                                                                    self.db)
+                                                                    req.hdf, self.env, db)
 
         req.hdf['title'] = 'New Ticket'
         req.hdf['newticket'] = dict(zip(ticket.keys(),
                                     map(lambda x: util.escape(x), ticket.values())))
 
-        util.sql_to_hdf(self.db, "SELECT name FROM component ORDER BY name",
+        util.sql_to_hdf(db, "SELECT name FROM component ORDER BY name",
                         req.hdf, 'newticket.components')
-        util.sql_to_hdf(self.db, "SELECT name FROM milestone WHERE "
+        util.sql_to_hdf(db, "SELECT name FROM milestone WHERE "
                                  "COALESCE(completed,0)=0 ORDER BY name",
                         req.hdf, 'newticket.milestones')
-        util.sql_to_hdf(self.db, "SELECT name FROM version ORDER BY name",
+        util.sql_to_hdf(db, "SELECT name FROM version ORDER BY name",
                         req.hdf, 'newticket.versions')
-        util.sql_to_hdf(self.db, "SELECT name FROM enum WHERE type='priority' "
+        util.sql_to_hdf(db, "SELECT name FROM enum WHERE type='priority' "
                                  "ORDER BY value",
                         req.hdf, 'enums.priority')
-        util.sql_to_hdf(self.db, "SELECT name FROM enum WHERE type='severity' "
+        util.sql_to_hdf(db, "SELECT name FROM enum WHERE type='severity' "
                                  "ORDER BY value",
                         req.hdf, 'enums.severity')
 
         restrict_owner = self.config.get('ticket', 'restrict_owner')
         if restrict_owner.lower() in util.TRUE:
             users = []
-            for username,name,email in self.env.get_known_users(self.db):
+            for username,name,email in self.env.get_known_users(db):
                 label = username
                 if name:
                     label = '%s (%s)' % (util.escape(username),
@@ -362,7 +356,38 @@ class NewticketModule(Module):
 
         insert_custom_fields(self.env, req.hdf, ticket)
 
-        req.display('newticket.cs')
+        return 'newticket.cs', None
+
+    # Internal methods
+
+    def create_ticket(self, req, db):
+        if not req.args.get('summary'):
+            raise util.TracError('Tickets must contain a summary.')
+
+        ticket = Ticket()
+        ticket.populate(req.args)
+        ticket.setdefault('reporter', req.authname)
+
+        # The owner field defaults to the component owner
+        cursor = db.cursor()
+        if ticket.get('component') and ticket.get('owner', '') == '':
+            cursor.execute('SELECT owner FROM component '
+                           'WHERE name=%s', ticket['component'])
+            owner = cursor.fetchone()[0]
+            ticket['owner'] = owner
+
+        tktid = ticket.insert(db)
+
+        # Notify
+        try:
+            tn = TicketNotifyEmail(self.env)
+            tn.notify(ticket, newticket=1)
+        except Exception, e:
+            self.log.exception("Failure sending notification on creation of "
+                               "ticket #%d: %s" % (tktid, e))
+
+        req.redirect(self.env.href.ticket(tktid))
+
 
 def available_actions(ticket, perm_):
     """ Returns the actions that can be performed on the ticket"""
@@ -385,146 +410,28 @@ def available_actions(ticket, perm_):
     return filter(has_permission, actions.get(ticket['status'], ['leave']))
 
 
-class TicketModule(Module):
+class TicketModule(Component):
 
-    def save_changes(self, req, id):
-        if self.perm.has_permission(perm.TICKET_CHGPROP):
-            # TICKET_CHGPROP gives permission to edit the ticket
-            if not req.args.get('summary'):
-                raise util.TracError('Tickets must contain summary.')
+    implements(INavigationContributor, IRequestHandler, ITimelineEventProvider)
 
-            ticket = Ticket(self.db, id)
-            if 'description' in req.args.keys() or 'reporter' in req.args.keys():
-                self.perm.assert_permission(perm.TICKET_ADMIN)
+    # INavigationContributor methods
 
-            ticket.populate(req.args)
+    def get_active_navigation_item(self, req):
+        return 'tickets'
 
-        elif self.perm.has_permission(perm.TICKET_APPEND):
-            # Allow appending a comment to the ticket only
-            ticket = Ticket(self.db, id)
+    def get_navigation_items(self, req):
+        return []
 
-        else:
-            raise perm.PermissionError(perm.TICKET_CHGPROP)
+    # IRequestHandler methods
 
-        # Do any action on the ticket?
-        action = req.args.get('action')
-        if action not in available_actions(ticket, self.perm):
-            raise util.TracError('Invalid action')
+    def match_request(self, req):
+        match = re.match(r'/ticket/([0-9]+)?', req.path_info)
+        if match:
+            req.args['id'] = match.group(1)
+            return 1
 
-        # TODO: this should not be hard-coded like this
-        if action == 'accept':
-            ticket['status'] =  'assigned'
-            ticket['owner'] = req.authname
-        if action == 'resolve':
-            ticket['status'] = 'closed'
-            ticket['resolution'] = req.args.get('resolve_resolution')
-        elif action == 'reassign':
-            ticket['owner'] = req.args.get('reassign_owner')
-            ticket['status'] = 'new'
-        elif action == 'reopen':
-            ticket['status'] = 'reopened'
-            ticket['resolution'] = ''
-
-        now = int(time.time())
-        ticket.save_changes(self.db, req.args.get('author', req.authname),
-                            req.args.get('comment'), when=now)
-
-        try:
-            tn = TicketNotifyEmail(self.env)
-            tn.notify(ticket, newticket=0, modtime=now)
-        except Exception, e:
-            self.log.exception("Failure sending notification on change to "
-                               "ticket #%d: %s" % (id, e))
-
-        req.redirect(self.env.href.ticket(id))
-
-    def insert_ticket_data(self, req, id, ticket, reporter_id):
-        """Insert ticket data into the hdf"""
-        req.hdf['ticket'] = dict(zip(ticket.keys(),
-                                 map(lambda x: util.escape(x), ticket.values())))
-
-        util.sql_to_hdf(self.db, "SELECT name FROM component ORDER BY name",
-                        req.hdf, 'ticket.components')
-        util.sql_to_hdf(self.db, "SELECT name FROM milestone ORDER BY name",
-                        req.hdf, 'ticket.milestones')
-        util.sql_to_hdf(self.db, "SELECT name FROM version ORDER BY name",
-                        req.hdf, 'ticket.versions')
-        util.sql_to_hdf(self.db, "SELECT name FROM enum WHERE type='priority'"
-                                 " ORDER BY value",
-                        req.hdf, 'enums.priority')
-        util.sql_to_hdf(self.db, "SELECT name FROM enum WHERE type='severity'"
-                                 " ORDER BY value",
-                        req.hdf, 'enums.severity')
-        util.sql_to_hdf(self.db, "SELECT name FROM enum WHERE type='resolution'"
-                                 " ORDER BY value",
-                        req.hdf, 'enums.resolution')
-        util.hdf_add_if_missing(req.hdf, 'ticket.components', ticket['component'])
-        util.hdf_add_if_missing(req.hdf, 'ticket.milestones', ticket['milestone'])
-        util.hdf_add_if_missing(req.hdf, 'ticket.versions', ticket['version'])
-        util.hdf_add_if_missing(req.hdf, 'enums.priority', ticket['priority'])
-        util.hdf_add_if_missing(req.hdf, 'enums.severity', ticket['severity'])
-        util.hdf_add_if_missing(req.hdf, 'enums.resolution', 'fixed')
-
-        req.hdf['ticket.reporter_id'] = util.escape(reporter_id)
-        req.hdf['title'] = '#%d (%s)' % (id, util.escape(ticket['summary']))
-        req.hdf['ticket.description.formatted'] = wiki_to_html(ticket['description'],
-                                                               req.hdf, self.env,
-                                                               self.db)
-
-        opened = int(ticket['time'])
-        req.hdf['ticket.opened'] = time.strftime('%c', time.localtime(opened))
-        req.hdf['ticket.opened_delta'] = util.pretty_timedelta(opened)
-        lastmod = int(ticket['changetime'])
-        if lastmod != opened:
-            req.hdf['ticket.lastmod'] = time.strftime('%c', time.localtime(lastmod))
-            req.hdf['ticket.lastmod_delta'] = util.pretty_timedelta(lastmod)
-
-        restrict_owner = self.config.get('ticket', 'restrict_owner')
-        if restrict_owner.lower() in util.TRUE:
-            users = []
-            for username,name,email in self.env.get_known_users(self.db):
-                label = username
-                if name:
-                    label = '%s (%s)' % (util.escape(username),
-                                         util.escape(name))
-                users.append({'name': username,'label': label})
-            req.hdf['ticket.users'] = users
-
-        changelog = ticket.get_changelog(self.db)
-        curr_author = None
-        curr_date   = 0
-        changes = []
-        for date, author, field, old, new in changelog:
-            if date != curr_date or author != curr_author:
-                changes.append({
-                    'date': time.strftime('%c', time.localtime(date)),
-                    'author': util.escape(author),
-                    'fields': {}
-                })
-                curr_date = date
-                curr_author = author
-            if field == 'comment':
-                changes[-1]['comment'] = wiki_to_html(new, req.hdf, self.env,
-                                                      self.db)
-            elif field == 'description':
-                changes[-1]['fields'][field] = ''
-            else:
-                changes[-1]['fields'][field] = {'old': old, 'new': new}
-        req.hdf['ticket.changes'] = changes
-
-        insert_custom_fields(self.env, req.hdf, ticket)
-        # List attached files
-        self.env.get_attachments_hdf(self.db, 'ticket', str(id), req.hdf,
-                                     'ticket.attachments')
-        if self.perm.has_permission(perm.TICKET_APPEND):
-            req.hdf['ticket.attach_href'] = self.env.href.attachment('ticket', id)
-
-        # Add the possible actions to hdf
-        for action in available_actions(ticket, self.perm):
-            req.hdf['ticket.actions.' + action] = '1'
-
-    def render(self, req):
-        self.perm.assert_permission(perm.TICKET_VIEW)
+    def process_request(self, req):
+        req.perm.assert_permission(perm.TICKET_VIEW)
 
         action = req.args.get('action', 'view')
         preview = req.args.has_key('preview')
@@ -532,13 +439,14 @@ class TicketModule(Module):
         if not req.args.has_key('id'):
             req.redirect(self.env.href.wiki())
 
+        db = self.env.get_db_cnx()
         id = int(req.args.get('id'))
 
         if not preview \
            and action in ('leave', 'accept', 'reopen', 'resolve', 'reassign'):
-            self.save_changes(req, id)
+            self.save_changes(req, db, id)
 
-        ticket = Ticket(self.db, id)
+        ticket = Ticket(db, id)
         reporter_id = util.get_reporter_id(req)
 
         if preview:
@@ -555,12 +463,11 @@ class TicketModule(Module):
                 # Wiki format a preview of comment
                 req.hdf['ticket.comment_preview'] = wiki_to_html(comment,
                                                                  req.hdf,
-                                                                 self.env,
-                                                                 self.db)
+                                                                 self.env, db)
         else:
             req.hdf['ticket.reassign_owner'] = req.authname
 
-        self.insert_ticket_data(req, id, ticket, reporter_id)
+        self.insert_ticket_data(req, db, id, ticket, reporter_id)
 
         # If the ticket is being shown in the context of a query, add
         # links to help navigate in the query result set
@@ -580,4 +487,198 @@ class TicketModule(Module):
                              'Ticket #%s' % tickets[-1])
                 add_link(req, 'up', req.session['query_href'])
 
-        req.display('ticket.cs')
+        return 'ticket.cs', None
+
+    # ITimelineEventProvider methods
+
+    def get_timeline_filters(self, req):
+        if req.perm.has_permission(perm.TICKET_VIEW):
+            yield ('ticket', 'Ticket changes')
+
+    def get_timeline_events(self, req, start, stop, filters):
+        if 'ticket' in filters:
+            absurls = req.args.get('format') == 'rss' # Kludge
+            sql = []
+
+            # New tickets
+            sql.append("SELECT time,id,'','new',summary,reporter"
+                       " FROM ticket WHERE time>=%s AND time<=%s")
+
+            # Reopened tickets
+            sql.append("SELECT t1.time,t1.ticket,'','reopened',t2.newvalue,t1.author "
+                       " FROM ticket_change t1"
+                       "   LEFT OUTER JOIN ticket_change t2 ON (t1.time=t2.time"
+                       "     AND t1.ticket=t2.ticket AND t2.field='comment')"
+                       " WHERE t1.field='status' AND t1.newvalue='reopened'"
+                       "   AND t1.time>=%s AND t1.time<=%s")
+
+            # Closed tickets
+            sql.append("SELECT t1.time,t1.ticket,t2.newvalue,'closed',"
+                       "t3.newvalue,t1.author"
+                       " FROM ticket_change t1"
+                       "   INNER JOIN ticket_change t2 ON t1.ticket=t2.ticket"
+                       "     AND t1.time=t2.time"
+                       "   LEFT OUTER JOIN ticket_change t3 ON t1.time=t3.time"
+                       "     AND t1.ticket=t3.ticket AND t3.field='comment'"
+                       " WHERE t1.field='status' AND t1.newvalue='closed'"
+                       "   AND t2.field='resolution'"
+                       "   AND t1.time>=%s AND t1.time<=%s")
+
+            db = self.env.get_db_cnx()
+            cursor = db.cursor()
+            cursor.execute(" UNION ALL ".join(sql), start, stop, start, stop,
+                           start, stop)
+
+            kinds = {'new': 'newticket', 'reopened': 'newticket',
+                     'closed': 'closedticket'}
+            verbs = {'new': 'created', 'reopened': 'reopened',
+                     'closed': 'closed'}
+            for t,id,resolution,type,message,author in cursor:
+                if absurls:
+                    href = self.env.abs_href.ticket(id)
+                else:
+                    href = self.env.href.ticket(id)
+                title = 'Ticket <em>#%s</em> %s by %s' % (
+                        id, verbs[type], util.escape(author))
+                message = wiki_to_oneliner(util.shorten_line(message), self.env,
+                                           db, absurls=absurls)
+                yield kinds[type], href, title, t, author, message
+
+    # Internal methods
+
+    def save_changes(self, req, db, id):
+        if req.perm.has_permission(perm.TICKET_CHGPROP):
+            # TICKET_CHGPROP gives permission to edit the ticket
+            if not req.args.get('summary'):
+                raise util.TracError('Tickets must contain summary.')
+
+            ticket = Ticket(db, id)
+            if 'description' in req.args.keys() or 'reporter' in req.args.keys():
+                req.perm.assert_permission(perm.TICKET_ADMIN)
+
+            ticket.populate(req.args)
+
+        elif req.perm.has_permission(perm.TICKET_APPEND):
+            # Allow appending a comment to the ticket only
+            ticket = Ticket(db, id)
+
+        else:
+            raise perm.PermissionError(perm.TICKET_CHGPROP)
+
+        # Do any action on the ticket?
+        action = req.args.get('action')
+        if action not in available_actions(ticket, req.perm):
+            raise util.TracError('Invalid action')
+
+        # TODO: this should not be hard-coded like this
+        if action == 'accept':
+            ticket['status'] =  'assigned'
+            ticket['owner'] = req.authname
+        if action == 'resolve':
+            ticket['status'] = 'closed'
+            ticket['resolution'] = req.args.get('resolve_resolution')
+        elif action == 'reassign':
+            ticket['owner'] = req.args.get('reassign_owner')
+            ticket['status'] = 'new'
+        elif action == 'reopen':
+            ticket['status'] = 'reopened'
+            ticket['resolution'] = ''
+
+        now = int(time.time())
+        ticket.save_changes(db, req.args.get('author', req.authname),
+                            req.args.get('comment'), when=now)
+
+        try:
+            tn = TicketNotifyEmail(self.env)
+            tn.notify(ticket, newticket=0, modtime=now)
+        except Exception, e:
+            self.log.exception("Failure sending notification on change to "
+                               "ticket #%d: %s" % (id, e))
+
+        req.redirect(self.env.href.ticket(id))
+
+    def insert_ticket_data(self, req, db, id, ticket, reporter_id):
+        """Insert ticket data into the hdf"""
+        req.hdf['ticket'] = dict(zip(ticket.keys(),
+                                 map(lambda x: util.escape(x), ticket.values())))
+        req.hdf['ticket.href'] = self.env.href.ticket(id)
+
+        util.sql_to_hdf(db, "SELECT name FROM component ORDER BY name",
+                        req.hdf, 'ticket.components')
+        util.sql_to_hdf(db, "SELECT name FROM milestone ORDER BY name",
+                        req.hdf, 'ticket.milestones')
+        util.sql_to_hdf(db, "SELECT name FROM version ORDER BY name",
+                        req.hdf, 'ticket.versions')
+        util.sql_to_hdf(db, "SELECT name FROM enum WHERE type='priority'"
+                                 " ORDER BY value",
+                        req.hdf, 'enums.priority')
+        util.sql_to_hdf(db, "SELECT name FROM enum WHERE type='severity'"
+                                 " ORDER BY value",
+                        req.hdf, 'enums.severity')
+        util.sql_to_hdf(db, "SELECT name FROM enum WHERE type='resolution'"
+                                 " ORDER BY value",
+                        req.hdf, 'enums.resolution')
+        util.hdf_add_if_missing(req.hdf, 'ticket.components', ticket['component'])
+        util.hdf_add_if_missing(req.hdf, 'ticket.milestones', ticket['milestone'])
+        util.hdf_add_if_missing(req.hdf, 'ticket.versions', ticket['version'])
+        util.hdf_add_if_missing(req.hdf, 'enums.priority', ticket['priority'])
+        util.hdf_add_if_missing(req.hdf, 'enums.severity', ticket['severity'])
+        util.hdf_add_if_missing(req.hdf, 'enums.resolution', 'fixed')
+
+        req.hdf['ticket.reporter_id'] = util.escape(reporter_id)
+        req.hdf['title'] = '#%d (%s)' % (id, util.escape(ticket['summary']))
+        req.hdf['ticket.description.formatted'] = wiki_to_html(ticket['description'],
+                                                               req.hdf, self.env,
+                                                               db)
+
+        opened = int(ticket['time'])
+        req.hdf['ticket.opened'] = time.strftime('%c', time.localtime(opened))
+        req.hdf['ticket.opened_delta'] = util.pretty_timedelta(opened)
+        lastmod = int(ticket['changetime'])
+        if lastmod != opened:
+            req.hdf['ticket.lastmod'] = time.strftime('%c', time.localtime(lastmod))
+            req.hdf['ticket.lastmod_delta'] = util.pretty_timedelta(lastmod)
+
+        restrict_owner = self.config.get('ticket', 'restrict_owner')
+        if restrict_owner.lower() in util.TRUE:
+            users = []
+            for username,name,email in self.env.get_known_users(db):
+                label = username
+                if name:
+                    label = '%s (%s)' % (util.escape(username),
+                                         util.escape(name))
+                users.append({'name': username,'label': label})
+            req.hdf['ticket.users'] = users
+
+        changelog = ticket.get_changelog(db)
+        curr_author = None
+        curr_date   = 0
+        changes = []
+        for date, author, field, old, new in changelog:
+            if date != curr_date or author != curr_author:
+                changes.append({
+                    'date': time.strftime('%c', time.localtime(date)),
+                    'author': util.escape(author),
+                    'fields': {}
+                })
+                curr_date = date
+                curr_author = author
+            if field == 'comment':
+                changes[-1]['comment'] = wiki_to_html(new, req.hdf, self.env,
+                                                      db)
+            elif field == 'description':
+                changes[-1]['fields'][field] = ''
+            else:
+                changes[-1]['fields'][field] = {'old': old, 'new': new}
+        req.hdf['ticket.changes'] = changes
+
+        insert_custom_fields(self.env, req.hdf, ticket)
+        # List attached files
+        self.env.get_attachments_hdf('ticket', str(id), req.hdf,
+                                     'ticket.attachments')
+        if req.perm.has_permission(perm.TICKET_APPEND):
+            req.hdf['ticket.attach_href'] = self.env.href.attachment('ticket', id)
+
+        # Add the possible actions to hdf
+        for action in available_actions(ticket, req.perm):
+            req.hdf['ticket.actions.' + action] = '1'
