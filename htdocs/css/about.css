@@ -9,6 +9,9 @@
  text-align: right;
  vertical-align: top;
 }
+#content.about_config th.name, #content.about_config th.value {
+ text-align: left;
+}
 #content.about_config th, #content.about_config td {
  border: 1px solid #ddd;
  padding: 3px;

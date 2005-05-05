@@ -55,7 +55,8 @@ class AboutModule(Component):
 
  <?cs if:about.page == "config"?>
   <h1>Configuration</h1>
-  <table><thead><tr><th>Section</th><th>Name</th><th>Value</th></tr></thead><?cs
+  <table><thead><tr><th class="section">Section</th>
+   <th class="name">Name</th><th class="value">Value</th></tr></thead><?cs
   each:section = about.config ?>
    <tr><th rowspan="<?cs var:len(section.options) ?>"><?cs var:section.name ?></th><?cs
    each:option = section.options ?><?cs if:name(option) != 0 ?><tr><?cs /if ?>
@@ -183,6 +184,7 @@ It provides an interface to the Subversion revision control systems, integrated 
         # permissions, components...
 
     def _render_plugins(self, req):
+        req.perm.assert_permission(perm.CONFIG_VIEW)
         import sys
         req.hdf['about.page'] = 'plugins'
         from trac.core import ComponentMeta
