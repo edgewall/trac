@@ -43,14 +43,18 @@ def enum(iterable):
         yield idx, item
         idx += 1
 
-def escape(text):
-    """Escapes &, <, > and \""""
+def escape(text, quotes=True):
+    """
+    Escapes &, <, > and " (the latter only if the `quotes` parameter is True.
+    """
     if not text:
         return ''
-    return str(text).replace('&', '&amp;') \
+    text = str(text).replace('&', '&amp;') \
                     .replace('<', '&lt;') \
-                    .replace('>', '&gt;') \
-                    .replace('"', '&#34;')
+                    .replace('>', '&gt;')
+    if quotes:
+        text = text.replace('"', '&#34;')
+    return text
 
 def unescape(text):
     """Reverses Escapes &, <, > and \""""

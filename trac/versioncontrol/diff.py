@@ -190,25 +190,25 @@ def hdf_diff(fromlines, tolines, context=None, tabwidth=8,
             if tag == 'equal':
                 for line in fromlines[i1:i2]:
                     line = line.expandtabs(tabwidth)
-                    line = space_re.sub(htmlify, escape(line))
+                    line = space_re.sub(htmlify, escape(line, quotes=False))
                     blocks[-1]['base.lines'].append(line)
                 for line in tolines[j1:j2]:
                     line = line.expandtabs(tabwidth)
-                    line = space_re.sub(htmlify, escape(line))
+                    line = space_re.sub(htmlify, escape(line, quotes=False))
                     blocks[-1]['changed.lines'].append(line)
             else:
                 if tag in ('replace', 'delete'):
                     for line in fromlines[i1:i2]:
                         line = line.expandtabs(tabwidth)
-                        line = escape(line).replace('\0', '<del>') \
-                                           .replace('\1', '</del>')
+                        line = escape(line, quotes=False).replace('\0', '<del>') \
+                                                         .replace('\1', '</del>')
                         blocks[-1]['base.lines'].append(space_re.sub(htmlify,
                                                                      line))
                 if tag in ('replace', 'insert'):
                     for line in tolines[j1:j2]:
                         line = line.expandtabs(tabwidth)
-                        line = escape(line).replace('\0', '<ins>') \
-                                           .replace('\1', '</ins>')
+                        line = escape(line, quotes=False).replace('\0', '<ins>') \
+                                                         .replace('\1', '</ins>')
                         blocks[-1]['changed.lines'].append(space_re.sub(htmlify,
                                                                         line))
         changes.append(blocks)

@@ -139,83 +139,67 @@
    <dt class="mv"></dt><dd>Moved</dd>
   </dl>
  </div>
- <ul class="entries">
-  <?cs each:item = changeset.changes ?>
-   <?cs if:len(item.diff) || len(item.props) ?>
-    <li class="entry" id="file<?cs var:name(item) ?>">
-     <h2><a href="<?cs var:item.browser_href.new ?>" 
-            title="Show new revision <?cs var:item.rev.new ?> of this file in browser"><?cs
-       var:item.path.new ?></a></h2><?cs
-     if:len(item.props) ?>
-      <ul class="props"><?cs each:prop = item.props ?><li>
-       Property <strong><?cs var:name(prop) ?></strong> <?cs
-       if:prop.old && prop.new ?>changed from <?cs
-       elif:!prop.old ?>set<?cs
-       else ?>deleted<?cs
-       /if ?><?cs
-       if:prop.old && prop.new ?><em><tt><?cs var:prop.old ?></tt></em><?cs /if ?><?cs
-       if:prop.new ?> to <em><tt><?cs var:prop.new ?></tt></em><?cs /if ?>
-      </li><?cs /each ?></ul><?cs
+ <ul class="entries"><?cs
+ each:item = changeset.changes ?><?cs
+  if:len(item.diff) || len(item.props) ?><li class="entry" id="file<?cs
+   var:name(item) ?>"><h2><a href="<?cs
+   var:item.browser_href.new ?>" title="Show new revision <?cs
+   var:item.rev.new ?> of this file in browser"><?cs
+   var:item.path.new ?></a></h2><?cs
+   if:len(item.props) ?><ul class="props"><?cs
+    each:prop = item.props ?><li>Property <strong><?cs
+     var:name(prop) ?></strong> <?cs
+     if:prop.old && prop.new ?>changed from <?cs
+     elif:!prop.old ?>set<?cs
+     else ?>deleted<?cs
      /if ?><?cs
-     if:len(item.diff) ?>
-      <table class="<?cs var:diff.style ?>" summary="Differences" cellspacing="0"><?cs
-       if:diff.style == 'sidebyside' ?>
-        <colgroup class="base">
-         <col class="lineno" /><col class="content" />
-        <colgroup class="chg">
-         <col class="lineno" /><col class="content" />
-        </colgroup>
-        <thead><tr>
-         <th colspan="2">
-          <a href="<?cs var:item.browser_href.old ?>"
-             title="Show old rev. <?cs var:item.rev.old ?> of <?cs var:item.path.old ?>"> 
-           Revision <?cs var:item.rev.old ?></a></th>
-         <th colspan="2">
-          <a href="<?cs var:item.browser_href.new ?>"
-             title="Show new rev. <?cs var:item.rev.old ?> of <?cs var:item.path.new ?>">
-           Revision <?cs var:item.rev.new ?></a></th>
-        </tr></thead>
-        <?cs each:change = item.diff ?>
-         <tbody>
-          <?cs call:diff_display(change, diff.style) ?>
-         </tbody>
-         <?cs if:name(change) < len(item.diff) - 1 ?>
-          <tbody class="skippedlines">
-           <tr><th>&hellip;</th><td>&nbsp;</td>
-           <th>&hellip;</th><td>&nbsp;</td></tr>
-          </tbody>
-         <?cs /if ?>
-        <?cs /each ?><?cs
-       else ?>
-        <colgroup>
-         <col class="lineno" />
-         <col class="lineno" />
-         <col class="content" />
-        </colgroup>
-        <thead><tr>
-         <th title="Revision <?cs var:item.rev.old ?>">
-          <a href="<?cs var:item.browser_href.old ?>" title="Show old version of <?cs
-            var:item.path.old ?>">r<?cs var:item.rev.old ?></a></th>
-         <th title="Revision <?cs var:item.rev.new ?>">
-          <a href="<?cs var:item.browser_href.new ?>" title="Show new version of <?cs
-            var:item.path.new ?>">r<?cs var:item.rev.new ?></a></th>
-         <th>&nbsp;</th>
-        </tr></thead>
-        <?cs each:change = item.diff ?>
-         <?cs call:diff_display(change, diff.style) ?>
-         <?cs if:name(change) < len(item.diff) - 1 ?>
-          <tbody class="skippedlines">
-           <tr><th>&hellip;</th><th>&hellip;</th><td>&nbsp;</td></tr>
-          </tbody>
-         <?cs /if ?>
-        <?cs /each ?><?cs
-       /if ?>
-      </table><?cs
-     /if ?>
-    </li>
-   <?cs /if ?>
-  <?cs /each ?>
- </ul>
+     if:prop.old && prop.new ?><em><tt><?cs var:prop.old ?></tt></em><?cs /if ?><?cs
+     if:prop.new ?> to <em><tt><?cs var:prop.new ?></tt></em><?cs /if ?></li><?cs
+    /each ?></ul><?cs
+   /if ?><?cs
+   if:len(item.diff) ?><table class="<?cs
+    var:diff.style ?>" summary="Differences" cellspacing="0"><?cs
+    if:diff.style == 'sidebyside' ?>
+     <colgroup class="l"><col class="lineno" /><col class="content" /></colgroup>
+     <colgroup class="r"><col class="lineno" /><col class="content" /></colgroup>
+     <thead><tr>
+      <th colspan="2"><a href="<?cs
+       var:item.browser_href.old ?>" title="Show old rev. <?cs
+       var:item.rev.old ?> of <?cs var:item.path.old ?>">Revision <?cs
+       var:item.rev.old ?></a></th>
+      <th colspan="2"><a href="<?cs
+       var:item.browser_href.new ?>" title="Show new rev. <?cs
+       var:item.rev.old ?> of <?cs var:item.path.new ?>">Revision <?cs
+       var:item.rev.new ?></a></th>
+      </tr>
+     </thead><?cs
+     each:change = item.diff ?><tbody><?cs
+      call:diff_display(change, diff.style) ?></tbody><?cs
+      if:name(change) < len(item.diff) - 1 ?><tbody class="skipped"><tr>
+       <th>&hellip;</th><td>&nbsp;</td><th>&hellip;</th><td>&nbsp;</td>
+      </tr></tbody><?cs /if ?><?cs
+     /each ?><?cs
+    else ?>
+     <colgroup><col class="lineno" /><col class="lineno" /><col class="content" /></colgroup>
+     <thead><tr>
+      <th title="Revision <?cs var:item.rev.old ?>"><a href="<?cs
+       var:item.browser_href.old ?>" title="Show old version of <?cs
+       var:item.path.old ?>">r<?cs var:item.rev.old ?></a></th>
+      <th title="Revision <?cs var:item.rev.new ?>"><a href="<?cs
+       var:item.browser_href.new ?>" title="Show new version of <?cs
+       var:item.path.new ?>">r<?cs var:item.rev.new ?></a></th>
+      <th>&nbsp;</th></tr>
+     </thead><?cs
+     each:change = item.diff ?><?cs
+      call:diff_display(change, diff.style) ?><?cs
+      if:name(change) < len(item.diff) - 1 ?><tbody class="skipped"><tr>
+       <th>&hellip;</th><th>&hellip;</th><td>&nbsp;</td>
+      </tr></tbody><?cs /if ?><?cs
+     /each ?><?cs
+    /if ?></table><?cs
+   /if ?></li><?cs
+  /if ?><?cs
+ /each ?></ul>
 </div>
 
 </div>

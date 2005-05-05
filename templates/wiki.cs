@@ -87,36 +87,28 @@
      <h2><?cs var:wiki.page_name ?></h2><?cs
       if:diff.style == 'sidebyside' ?>
       <table class="sidebyside" summary="Differences">
-       <colgroup class="base">
-        <col class="lineno" /><col class="content" />
-       </colgroup>
-       <colgroup class="chg">
-        <col class="lineno" /><col class="content" />
-       </colgroup>
+       <colgroup class="l"><col class="lineno" /><col class="content" /></colgroup>
+       <colgroup class="r"><col class="lineno" /><col class="content" /></colgroup>
        <thead><tr>
         <th colspan="2">Version <?cs var:wiki.version - 1 ?></th>
         <th colspan="2">Version <?cs var:wiki.version ?></th>
        </tr></thead><?cs
-       each:change = wiki.diff ?>
-        <?cs call:diff_display(change, diff.style) ?><?cs
+       each:change = wiki.diff ?><?cs
+        call:diff_display(change, diff.style) ?><?cs
        /each ?>
       </table><?cs
      else ?>
       <table class="inline" summary="Differences">
-       <colgroup>
-        <col class="lineno" />
-        <col class="lineno" />
-        <col class="content" />
-       </colgroup>
+       <colgroup><col class="lineno" /><col class="lineno" /><col class="content" /></colgroup>
        <thead><tr>
         <th title="Version <?cs var:wiki.version - 1 ?>">v<?cs
           var:wiki.version - 1 ?></th>
         <th title="Version <?cs var:wiki.version ?>">v<?cs
           var:wiki.version ?></th>
-        <th></th>
+        <th>&nbsp;</th>
        </tr></thead><?cs
-       each:change = wiki.diff ?>
-        <?cs call:diff_display(change, diff.style) ?><?cs
+       each:change = wiki.diff ?><?cs
+        call:diff_display(change, diff.style) ?><?cs
        /each ?>
       </table><?cs
      /if ?>
