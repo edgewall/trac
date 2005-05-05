@@ -24,7 +24,7 @@ def:browser_path_links(path, file) ?><?cs
 
 def:diff_line_class(block, line) ?><?cs
  set:first = name(line) == 0 ?><?cs
- set:last = name(line) + 1 == len(block.lines) ?><tr<?cs
+ set:last = name(line) + 1 == len(block.lines) ?><?cs
  if:first || last ?> class="<?cs
   if:first ?>first<?cs /if ?><?cs
   if:first && last ?> <?cs /if ?><?cs
