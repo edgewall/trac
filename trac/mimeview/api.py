@@ -108,15 +108,26 @@ def is_binary(str):
 
 
 class IHTMLPreviewRenderer(Interface):
+    """
+    Extension point interface for components that add HTML renderers of specific
+    content types to the `Mimeview` component.
+    """
 
     def get_quality_ratio(mimetype):
         """
-        TODO
+        Return the level of support this renderer provides for the content of
+        the specified MIME type. The return value must be a number between 0
+        and 9, where 0 means no support and 9 means "perfect" support.
         """
 
     def render(mimetype, content, filename=None, rev=None):
         """
-        TODO
+        Render an XHTML preview of the given content of the specified MIME type,
+        and return the generated XHTML text as a string.
+
+        The `filename` and `rev` parameters are provided for renderers that
+        embed objects (using <object> or <img>) instead of included the content
+        inline.
         """
 
 

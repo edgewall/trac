@@ -218,5 +218,13 @@ It provides an interface to the Subversion revision control systems, integrated 
 
             plugins.append(plugin)
 
-        plugins.sort(lambda x,y: cmp(x['name'], y['name']))
+        def plugincmp(x, y):
+            c = cmp(len(x['module'].split('.')), len(y['module'].split('.')))
+            if c == 0:
+                c = cmp(x['module'].lower(), y['module'].lower())
+                if c == 0:
+                    c = cmp(x['name'].lower(), y['name'].lower())
+            return c
+        plugins.sort(plugincmp)
+
         req.hdf['about.plugins'] = plugins
