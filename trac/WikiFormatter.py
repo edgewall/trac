@@ -26,8 +26,8 @@ import string
 import StringIO
 import urllib
 
-import util
-import Mimeview
+from trac import util
+from trac.mimeview import *
 
 __all__ = ['Formatter', 'OneLinerFormatter', 'wiki_to_html', 'wiki_to_oneliner']
 
@@ -40,43 +40,59 @@ def system_message(msg, text):
 """ % (msg, util.escape(text))
 
 
-class WikiProcessor:
-
-    mime_type = ""
+class WikiProcessor(object):
 
     def __init__(self, env, name):
         self.env = env
         self.name = name
-        self.error = self.set_code_processor(name)
-    
-    def default_processor(hdf, text, env):
+        self.error = None
+        if self._builtin_processors.has_key(name):
+            self.processor = self._builtin_processors[name]
+        else:
+            try:
+                self.processor = self._load_macro()
+            except Exception, e:
+                from trac.mimeview.api import MIME_MAP
+                if self.name in MIME_MAP.keys():
+                    self.name = MIME_MAP[self.name]
+                    self.processor = self._mime_processor
+                elif self.name in MIME_MAP.values():
+                    self.processor = self._mime_processor
+                else:
+                    self.processor = self._default_processor
+                    self.error = e
+
+    def _comment_processor(hdf, text, env):
+        return ''
+
+    def _default_processor(hdf, text, env):
         return '<pre class="wiki">' + util.escape(text) + '</pre>\n'
-    
-    def html_processor(hdf, text, env):
+
+    def _html_processor(hdf, text, env):
         if Formatter._htmlproc_disallow_rule.search(text):
-            err = system_message('Error: HTML block contains disallowed tags.', text)
+            err = system_message('Error: HTML block contains disallowed tags.',
+                                 text)
             env.log.error(err)
             return err
         if Formatter._htmlproc_disallow_attribute.search(text):
-            err = system_message('Error: HTML block contains disallowed attributes.', text)
+            err = system_message('Error: HTML block contains disallowed attributes.',
+                                 text)
             env.log.error(err)
             return err
         return text
 
-    def comment_processor(hdf, text, env):
-        return ''
+    def _mime_processor(self, hdf, text, env):
+        return Mimeview(env).display(self.name, text)
 
-    def mime_processor(self, hdf, text, env):
-        return env.mimeview.display(text, self.mime_type)
-    
-    builtin_processors = { 'html': html_processor,
-                           'default': default_processor,
-                           'comment': comment_processor}
+    _builtin_processors = {'html': _html_processor,
+                           'default': _default_processor,
+                           'comment': _comment_processor}
 
     def process(self, hdf, text, inline=False):
         if self.error:
-            return system_message('Error: Failed to load processor <code>%s</code>' % self.name, self.error)
-        text = self.code_processor(hdf, text, self.env)
+            return system_message('Error: Failed to load processor <code>%s</code>'
+                                  % self.name, self.error)
+        text = self.processor(hdf, text, self.env)
         if inline:
             code_block_start = re.compile('^<div class="code-block">')
             code_block_end = re.compile('</div>$')
@@ -86,38 +102,20 @@ class WikiProcessor:
             return text
         else:
             return text
-    
 
-    def set_code_processor(self, name):
-        if  self.builtin_processors.has_key(name):
-            self.code_processor = self.builtin_processors[name]
-        else:
-            try:
-                self.code_processor = self.load_macro(name)
-            except Exception, e:
-                if Mimeview.MIME_MAP.has_key(name):
-                    name = Mimeview.MIME_MAP[name]
-                mimeviewer, exists = self.env.mimeview.get_viewer(name)
-                if exists != -1:
-                    self.mime_type = name
-                    self.code_processor = self.mime_processor
-                else:
-                    self.code_processor = self.builtin_processors['default']
-                    return e
-        return 0
-    
-    def load_macro(self, name):
+    def _load_macro(self):
         # Look in envdir/wiki-macros/ first
         try:
-            module = imp.load_source(name, os.path.join(self.env.path, 'wiki-macros', name+'.py'))
+            path = os.path.join(self.env.path, 'wiki-macros', self.name + '.py')
+            module = imp.load_source(self.name, path)
         except IOError:
             # fall back to site-wide macros
-            macros = util.safe__import__('wikimacros.' + name)
-            module = getattr(macros, name)
+            macros = util.safe__import__('wikimacros.' + self.name)
+            module = getattr(macros, self.name)
         return module.execute
 
 
-class CommonFormatter:
+class CommonFormatter(object):
     """This class contains the patterns common to both Formatter and
     OneLinerFormatter"""
 

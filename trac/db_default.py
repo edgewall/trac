@@ -437,6 +437,7 @@ default_config = \
   ('attachment', 'max_size', '262144'),
   ('diff', 'tab_width', '8'),
   ('mimeviewer', 'enscript_path', 'enscript'),
+  ('mimeviewer', 'php_path', 'php'),
   ('notification', 'smtp_enabled', 'false'),
   ('notification', 'smtp_server', 'localhost'),
   ('notification', 'smtp_port', '25'),
@@ -453,4 +454,6 @@ default_config = \
 default_components = ('trac.About', 'trac.attachment', 'trac.Browser',
                       'trac.Changeset', 'trac.Query', 'trac.Report',
                       'trac.Roadmap', 'trac.Search', 'trac.Settings',
-                      'trac.Ticket', 'trac.Timeline', 'trac.Wiki')
+                      'trac.Ticket', 'trac.Timeline', 'trac.Wiki',
+                      'trac.mimeview.enscript', 'trac.mimeview.php',
+                      'trac.mimeview.silvercity')

@@ -25,6 +25,7 @@ import urllib
 
 from trac import perm, util
 from trac.core import *
+from trac.mimeview import *
 from trac.web.chrome import add_link, INavigationContributor
 from trac.web.main import IRequestHandler
 
@@ -155,8 +156,7 @@ class AttachmentModule(Component):
         last_modified = stat[8]
         req.check_modified(last_modified)
         length = stat[6]
-        mime_type = self.env.mimeview.get_mimetype(filename) or \
-                    'application/octet-stream'
+        mime_type = get_mimetype(filename) or 'application/octet-stream'
         charset = self.config.get('trac', 'default_charset')
 
         if req.args.get('format') in ('raw', 'txt'):
@@ -191,7 +191,7 @@ class AttachmentModule(Component):
         self.log.debug("Rendering preview of file %s with mime-type %s"
                        % (filename, mime_type))
         data = fd.read(self.DISP_MAX_FILE_SIZE)
-        if not self.env.mimeview.is_binary(data):
+        if not is_binary(data):
             data = util.to_utf8(data, charset)
             add_link(req, 'alternate',
                      self.env.href.attachment(parent_type, parent_id, filename,
@@ -202,14 +202,14 @@ class AttachmentModule(Component):
             req.hdf['attachment.max_file_size'] = self.DISP_MAX_FILE_SIZE
             vdata = ''
         else:
-            vdata = self.env.mimeview.display(data, filename=filename,
-                                              mimetype=mime_type)
+            mimeview = Mimeview(self.env)
+            vdata = mimeview.display(mime_type, data, filename)
         req.hdf['attachment.preview'] = vdata
 
     def render_view_raw(self, req, fd, mime_type, charset, length,
                         last_modified):
         data = fd.read(self.CHUNK_SIZE)
-        if not self.env.mimeview.is_binary(data):
+        if not is_binary(data):
             if req.args.get('format') == 'txt':
                 mime_type = 'text/plain'
             mime_type = mime_type + ';charset=' + charset

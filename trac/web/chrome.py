@@ -19,6 +19,7 @@
 #
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
+from trac import mimeview
 from trac.core import *
 from trac.util import enum, escape
 
@@ -95,7 +96,7 @@ class Chrome(Component):
         if icon:
             if not icon[0] == '/' and icon.find('://') < 0:
                 icon = htdocs_location + icon
-            mimetype = self.env.mimeview.get_mimetype(icon)
+            mimetype = mimeview.get_mimetype(icon)
             add_link(req, 'icon', icon, type=mimetype)
             add_link(req, 'shortcut icon', icon, type=mimetype)
 

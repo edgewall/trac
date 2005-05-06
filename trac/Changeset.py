@@ -19,7 +19,7 @@
 #
 # Author: Jonas Borgström <jonas@edgewall.com>
 
-from trac import perm, util
+from trac import mimeview, perm, util
 from trac.core import *
 from trac.Timeline import ITimelineEventProvider
 from trac.versioncontrol import Changeset, Node
@@ -184,7 +184,7 @@ class ChangesetModule(Component):
 
             # Content changes
             old_content = old_node.get_content().read()
-            if self.env.mimeview.is_binary(old_content):
+            if mimeview.is_binary(old_content):
                 continue
             new_content = new_node.get_content().read()
             if old_content != new_content:
@@ -230,7 +230,7 @@ class ChangesetModule(Component):
             if old_node:
                 old_content = old_node.get_content().read()
                 old_node_info = (old_node.path, old_node.rev)
-            if self.env.mimeview.is_binary(old_content):
+            if mimeview.is_binary(old_content):
                 continue
             if new_node:
                 new_content = new_node.get_content().read()

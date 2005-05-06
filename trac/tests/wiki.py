@@ -14,25 +14,44 @@ class WikiTestCase(unittest.TestCase):
     
     def test(self):
         """Testing WikiFormatter"""
-        from trac import Mimeview
+
+        # Environment stub
+        from trac.core import ComponentManager
         from trac.config import Configuration
         from trac.log import logger_factory
         from trac.web.href import Href
-        class Environment:
+        class Environment(ComponentManager):
             def __init__(self):
+                ComponentManager.__init__(self)
                 self.log = logger_factory('null')
                 self.config = Configuration(None)
                 self.href = Href('/')
                 self.abs_href = Href('http://www.example.com/')
                 self._wiki_pages = {}
                 self.path = ''
-                self.mimeview = Mimeview.Mimeview(self)
+            def component_activated(self, component):
+                component.env = self
+                component.config = self.config
+                component.log = self.log
         class Cursor:
             def execute(self, *kwargs): pass
             def fetchone(self): return []
         class Connection:
             def cursor(self):
                 return Cursor()
+
+        # Provide a test mime viewer
+        from trac.core import Component, implements
+        from trac.mimeview.api import IHTMLPreviewRenderer
+        class TestRenderer(Component):
+            implements(IHTMLPreviewRenderer)
+            def get_quality_ratio(self, mimetype):
+                if mimetype == 'application/x-test':
+                    return 8
+                return 0
+            def render(self, mimetype, content, filename=None, rev=None):
+                return '<pre>' + '\nTESTING: '.join(content.splitlines()) + \
+                       '</pre>\n'
 
         out = StringIO.StringIO()
         Formatter(None, Environment(), Connection()).format(self.input, out)

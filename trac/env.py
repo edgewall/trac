@@ -18,10 +18,11 @@
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #
 # Author: Jonas Borgström <jonas@edgewall.com>
+# 
 
 from __future__ import generators
 
-from trac import db, db_default, Mimeview, util
+from trac import db, db_default, util
 from trac.config import Configuration
 from trac.core import ComponentManager
 
@@ -64,37 +65,9 @@ class Environment(ComponentManager):
             pass
 
         self.setup_log()
-        self.load_components()
-        self.setup_mimeviewer()
 
-    def load_components(self):
-        configured_modules = []
-        for section in self.config.sections():
-            for name,value in self.config.options(section):
-                if name == 'module':
-                    configured_modules.append(value)
-                    path = self.config.get(section, 'path')
-                    try:
-                        self.load_component(value, path)
-                    except ImportError, e:
-                        self.log.error('Component module %s not found (%s)'
-                                       % (value, e))
-        for module in db_default.default_components:
-            if not module in configured_modules:
-                self.load_component(module)
-
-    def load_component(self, name, path=None):
-        self.log.debug('Loading component module %s from %s'
-                       % (name, path or 'default path'))
-        try:
-            return sys.modules[name]
-        except KeyError:
-            import imp
-            parts = name.split('.')
-            for part in parts:
-                fd, path, desc = imp.find_module(part, path and [path] or None)
-                if part == parts[-1]:
-                    imp.load_module(name, fd, path, desc)
+        from trac.loader import load_components
+        load_components(self)
 
     def component_activated(self, component):
         component.env = self
@@ -229,9 +202,6 @@ class Environment(ComponentManager):
         logid = self.path # Env-path provides process-unique ID
         self.log = logger_factory(logtype, logfile, loglevel, logid)
 
-    def setup_mimeviewer(self):
-        self.mimeview = Mimeview.Mimeview(self)
-    
     def get_attachments_dir(self):
         return os.path.join(self.path, 'attachments')
 

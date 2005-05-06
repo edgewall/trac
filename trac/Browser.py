@@ -23,6 +23,7 @@ from __future__ import generators
 
 from trac import perm, util
 from trac.core import *
+from trac.mimeview import *
 from trac.web.chrome import add_link, INavigationContributor
 from trac.web.main import IRequestHandler
 from trac.WikiFormatter import wiki_to_html, wiki_to_oneliner
@@ -191,8 +192,7 @@ class BrowserModule(Component):
 
         mime_type = node.content_type
         if not mime_type or mime_type == 'application/octet-stream':
-            mime_type = self.env.mimeview.get_mimetype(node.name) \
-                        or mime_type or 'text/plain'
+            mime_type = get_mimetype(node.name) or mime_type or 'text/plain'
 
         # We don't have to guess if the charset is specified in the
         # svn:mime-type property
@@ -204,7 +204,7 @@ class BrowserModule(Component):
 
         if req.args.get('format') == 'raw':
             req.send_response(200)
-            req.send_header('Content-Type', node.content_type)
+            req.send_header('Content-Type', mime_type)
             req.send_header('Content-Length', node.content_length)
             req.send_header('Last-Modified', util.http_date(node.last_modified))
             req.end_headers()
@@ -225,9 +225,9 @@ class BrowserModule(Component):
                 req.hdf['file.max_file_size'] = DISP_MAX_FILE_SIZE
                 preview = ' '
             else:
-                preview = self.env.mimeview.display(content, filename=node.name,
-                                                    rev=node.rev,
-                                                    mimetype=mime_type)
+                mimeview = Mimeview(self.env)
+                preview = mimeview.display(mime_type, content, node.name,
+                                           rev=node.rev)
             req.hdf['file.preview'] = preview
 
             raw_href = self.env.href.browser(node.path, rev=rev and node.rev,
