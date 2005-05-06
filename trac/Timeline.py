@@ -150,7 +150,7 @@ class TimelineModule(Component):
             idx += 1
 
         if format == 'rss':
-            return 'timeline_rss.cs', 'text/xml'
+            return 'timeline_rss.cs', 'application/rss+xml'
 
         rss_href = self.env.href.timeline([(f, 'on') for f in filters],
                                           daysback=90, max=50, format='rss')
