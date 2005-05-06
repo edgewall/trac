@@ -41,6 +41,7 @@ dd {
 /* Apply icon background-image twice to avoid hover-flicker in IE/Win */
 dt.changeset, dt.changeset a { background-image: url(../changeset.png) !important }
 dt.newticket, dt.newticket a { background-image: url(../newticket.png) !important }
+dt.editedticket, dt.editedticket a { background-image: url(../editedticket.png) !important }
 dt.closedticket, dt.closedticket a { background-image: url(../closedticket.png) !important }
 dt.wiki, dt.wiki a { background-image: url(../wiki.png) !important }
 dt.milestone, dt.milestone a { background-image: url(../milestone.png) !important }

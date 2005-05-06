@@ -682,3 +682,63 @@ class TicketModule(Component):
         # Add the possible actions to hdf
         for action in available_actions(ticket, req.perm):
             req.hdf['ticket.actions.' + action] = '1'
+
+
+
+class UpdateDetailsForTimeline(Component):
+    """Provide all details about ticket changes in the Timeline"""
+
+    implements(ITimelineEventProvider)
+
+    # ITimelineEventProvider methods
+
+    def get_timeline_filters(self, req):
+        if req.perm.has_permission(perm.TICKET_VIEW):
+            yield ('ticket_details', 'Ticket details')
+
+    def get_timeline_events(self, req, start, stop, filters):
+        if 'ticket_details' in filters:
+            db = self.env.get_db_cnx()
+            cursor = db.cursor()
+            cursor.execute("SELECT tc.time, tc.ticket, "
+                           "       tc.field, tc.oldvalue, tc.newvalue, tc.author "
+                           "FROM ticket_change tc"
+                           "   LEFT JOIN ticket t ON t.id = tc.ticket "
+                           "AND tc.time>=%s AND tc.time<=%s ORDER BY tc.time" % (start, stop))
+            previous_update = None
+            updates = []
+            for time,id,field,oldvalue,newvalue,author in cursor:
+                if (time,id,author) != previous_update:
+                    if previous_update:
+                        updates.append((previous_update,field_changes,comment))
+                    field_changes = []
+                    comment = ''
+                    previous_update = (time,id,author)
+                if field == 'comment':
+                    comment = newvalue
+                elif field == 'attachment':
+                    field_changes.append('<em>%s</em> added' % newvalue)
+                elif oldvalue and newvalue:
+                    field_changes.append('<b>%s</b> changed from <em>%s</em> to <em>%s</em>' % (
+                        field, oldvalue, newvalue))
+                elif oldvalue:
+                    field_changes.append('<b>%s</b> deleted' % field)
+                else:
+                    field_changes.append('<b>%s</b> set to <em>%s</em>' % (
+                        field, newvalue))
+            if previous_update:
+                updates.append((previous_update,field_changes,comment))
+
+            absurls = req.args.get('format') == 'rss' # Kludge
+            for (t,id,author),field_changes,comment in updates:
+                if absurls:
+                    href = self.env.abs_href.ticket(id)
+                else:
+                    href = self.env.href.ticket(id) 
+                title = 'Ticket <em>#%s</em>: updated by %s' % (
+                    id, util.escape(author))
+                message = ', '.join(field_changes) + ' '
+                message += wiki_to_oneliner(util.shorten_line(comment), self.env,
+                                           db, absurls=absurls)
+                yield 'editedticket', href, title, t, author, message
+            
