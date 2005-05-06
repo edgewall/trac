@@ -68,11 +68,13 @@ def get_query_links(env, milestone, grouped_by='component', group=None):
                                              status=('new', 'assigned', 'reopened'))
         q['closed_tickets'] = env.href.query(milestone=milestone, status='closed')
     else:
-        q['all_tickets'] = env.href.query(milestone=milestone, grouped_by=group)
-        q['active_tickets'] = env.href.query(milestone=milestone,
-                                             grouped_by=group,
+        q['all_tickets'] = env.href.query({grouped_by: group},
+                                          milestone=milestone)
+        q['active_tickets'] = env.href.query({grouped_by: group},
+                                             milestone=milestone,
                                              status=('new', 'assigned', 'reopened'))
-        q['closed_tickets'] = env.href.query(milestone=milestone, grouped_by=group,
+        q['closed_tickets'] = env.href.query({grouped_by: group},
+                                             milestone=milestone,
                                              status='closed')
     return q
 
