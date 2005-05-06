@@ -716,16 +716,8 @@ class UpdateDetailsForTimeline(Component):
                     previous_update = (time,id,author)
                 if field == 'comment':
                     comment = newvalue
-                elif field == 'attachment':
-                    field_changes.append('<em>%s</em> added' % newvalue)
-                elif oldvalue and newvalue:
-                    field_changes.append('<b>%s</b> changed from <em>%s</em> to <em>%s</em>' % (
-                        field, oldvalue, newvalue))
-                elif oldvalue:
-                    field_changes.append('<b>%s</b> deleted' % field)
                 else:
-                    field_changes.append('<b>%s</b> set to <em>%s</em>' % (
-                        field, newvalue))
+                    field_changes.append(field)
             if previous_update:
                 updates.append((previous_update,field_changes,comment))
 
@@ -737,7 +729,9 @@ class UpdateDetailsForTimeline(Component):
                     href = self.env.href.ticket(id) 
                 title = 'Ticket <em>#%s</em>: updated by %s' % (
                     id, util.escape(author))
-                message = ', '.join(field_changes) + ' '
+                message = ''
+                if len(field_changes) > 0:
+                    message = ', '.join(field_changes) + ' changed.<br />'
                 message += wiki_to_oneliner(util.shorten_line(comment), self.env,
                                            db, absurls=absurls)
                 yield 'editedticket', href, title, t, author, message
