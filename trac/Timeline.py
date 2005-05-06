@@ -21,12 +21,13 @@
 
 from trac import perm
 from trac.core import *
-from trac.util import enum, escape, shorten_line
+from trac.util import enum, escape, http_date, shorten_line
 from trac.versioncontrol.svn_authz import SubversionAuthorizer
 from trac.web.chrome import add_link, INavigationContributor
 from trac.web.main import IRequestHandler
 from trac.WikiFormatter import wiki_to_oneliner, wiki_to_html
 
+import re
 import time
 
 
@@ -120,6 +121,12 @@ class TimelineModule(Component):
 
         req.hdf['title'] = 'Timeline'
 
+        # Get the email addresses of all known users
+        email_map = {}
+        for username,name,email in self.env.get_known_users():
+            if email:
+                email_map[username] = email
+
         idx = 0
         for kind,href,title,date,author,message in events:
             t = time.localtime(date)
@@ -128,15 +135,22 @@ class TimelineModule(Component):
                      'date': time.strftime('%x', t), 'message': message}
 
             if format == 'rss':
+                # Strip/escape HTML markup
+                event['title'] = re.sub(r'</?\w+(?: .*?)?>', '', title)
+                event['message'] = escape(message)
+
                 # For RSS, author must be an email address
-                if event['author'].find('@') != -1:
-                    event['author.email'] = event['author']
+                if author.find('@') != -1:
+                    event['author.email'] = author
+                elif author in email_map.keys():
+                    event['author.email'] = email_map[author]
+                event['date'] = http_date(time.mktime(t))
 
             req.hdf['timeline.events.%s' % idx] = event
             idx += 1
 
         if format == 'rss':
-            return 'timeline_rss.cs', 'application/rss+xml'
+            return 'timeline_rss.cs', 'text/xml'
 
         rss_href = self.env.href.timeline([(f, 'on') for f in filters],
                                           daysback=90, max=50, format='rss')

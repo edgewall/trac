@@ -727,12 +727,11 @@ class UpdateDetailsForTimeline(Component):
                     href = self.env.abs_href.ticket(id)
                 else:
                     href = self.env.href.ticket(id) 
-                title = 'Ticket <em>#%s</em>: updated by %s' % (
-                    id, util.escape(author))
+                title = 'Ticket <em>#%s</em> updated by %s' \
+                        % (id, util.escape(author))
                 message = ''
                 if len(field_changes) > 0:
                     message = ', '.join(field_changes) + ' changed.<br />'
-                message += wiki_to_oneliner(util.shorten_line(comment), self.env,
-                                           db, absurls=absurls)
+                message += wiki_to_oneliner(util.shorten_line(comment),
+                                            self.env, db, absurls=absurls)
                 yield 'editedticket', href, title, t, author, message
-            
