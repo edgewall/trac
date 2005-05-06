@@ -23,6 +23,26 @@ class EnvironmentTestCase(unittest.TestCase):
         """Testing env.get_version"""
         assert self.env.get_version() == db_default.db_version
 
+    def test_get_known_users(self):
+        """Testing env.get_known_users"""
+        cursor = self.db.cursor()
+        cursor.execute("INSERT INTO session (sid,username,var_name,var_value) "
+                       "VALUES ('123', 'anonymous', 'email', 'a@example.com')")
+        cursor.executemany("INSERT INTO session (username,var_name,var_value) "
+                           "VALUES (%s,%s,%s)",
+                           [('tom', 'name', 'Tom'),
+                            ('tom', 'email', 'tom@example.com'),
+                            ('joe', 'email', 'joe@example.com'),
+                            ('jane', 'name', 'Jane')])
+        users = {}
+        for username,name,email in self.env.get_known_users(self.db):
+            users[username] = (name, email)
+
+        assert not users.has_key('anonymous')
+        self.assertEqual(('Tom', 'tom@example.com'), users['tom'])
+        self.assertEqual((None, 'joe@example.com'), users['joe'])
+        self.assertEqual(('Jane', None), users['jane'])
+
     def test_attachment(self):
         """Testing env.get/add/delete_attachment"""
         class Attachment:
