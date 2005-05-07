@@ -130,20 +130,22 @@ class TimelineModule(Component):
         idx = 0
         for kind,href,title,date,author,message in events:
             t = time.localtime(date)
-            event = {'kind': kind, 'title': title, 'author': author,
-                     'href': href, 'time': time.strftime('%H:%M', t),
-                     'date': time.strftime('%x', t), 'message': message}
+            event = {'kind': kind, 'title': title,
+                     'author': author or 'anonymous', 'href': href,
+                     'date': time.strftime('%x', t),
+                     'time': time.strftime('%H:%M', t), 'message': message}
 
             if format == 'rss':
                 # Strip/escape HTML markup
                 event['title'] = re.sub(r'</?\w+(?: .*?)?>', '', title)
                 event['message'] = escape(message)
 
-                # For RSS, author must be an email address
-                if author.find('@') != -1:
-                    event['author.email'] = author
-                elif author in email_map.keys():
-                    event['author.email'] = email_map[author]
+                if author:
+                    # For RSS, author must be an email address
+                    if author.find('@') != -1:
+                        event['author.email'] = author
+                    elif author in email_map.keys():
+                        event['author.email'] = email_map[author]
                 event['date'] = http_date(time.mktime(t))
 
             req.hdf['timeline.events.%s' % idx] = event
