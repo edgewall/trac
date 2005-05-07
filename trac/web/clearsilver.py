@@ -163,10 +163,12 @@ class HDFWrapper:
 
     def __setitem__(self, name, value):
         def add_value(prefix, value):
-            if value == None or value == False:
+            if value is None:
                 return
-            elif value == True:
-                self.hdf.setValue(prefix, '1')
+            elif not value:
+                self.hdf.setValue(prefix, '0')
+            elif value in (True, False):
+                self.hdf.setValue(prefix, str(int(value)))
             elif isinstance(value, (str, unicode)):
                 self.hdf.setValue(prefix, value)
             elif isinstance(value, dict):
