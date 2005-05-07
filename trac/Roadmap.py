@@ -198,7 +198,7 @@ class RoadmapModule(Component):
                 write_prop('PRIORITY', priority_mapping[ticket['priority']])
                 write_prop('STATUS', get_status(ticket))
                 if ticket['status'] == 'closed':
-                    cursor = self.db.cursor()
+                    cursor = db.cursor()
                     cursor.execute("SELECT time FROM ticket_change "
                                    "WHERE ticket=%s AND field='status' "
                                    "ORDER BY time desc LIMIT 1", (ticket['id'],))
