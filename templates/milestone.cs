@@ -83,7 +83,6 @@
   </form>
  <?cs elif:milestone.mode == "delete" ?>
   <form action="<?cs var:milestone.href ?>" method="post">
-   <input type="hidden" name="mode" value="milestone" />
    <input type="hidden" name="id" value="<?cs var:milestone.name ?>" />
    <input type="hidden" name="action" value="confirm_delete" />
    <p><strong>Are you sure you want to delete this milestone?</strong></p>
@@ -158,6 +157,7 @@
         if:milestone.stats.grouped_by == group.name ?> selected="selected"<?cs
         /if ?>><?cs var:group.label ?></option><?cs
      /each ?></select>
+     <noscript><input type="submit" value="Update" /></noscript>
     </legend>
     <table summary="Shows the milestone completion status grouped by <?cs
       var:milestone.stats.grouped_by ?>"><?cs
