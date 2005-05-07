@@ -162,11 +162,44 @@ class HDFWrapper:
         return value
 
     def __setitem__(self, name, value):
+        """
+        Adds data to the HDF dataset. The `name` parameter is the path of the
+        node in dotted syntax. The `value` parameter can be a simple value such
+        as a string or number, but also data structures such as dicts and lists.
+
+        >>> hdf = HDFWrapper()
+
+        Adding a simple value results in that value being inserted into the HDF
+        after being converted to a string.
+
+        >>> hdf['test.num'] = 42
+        >>> hdf['test.num']
+        '42'
+        >>> hdf['test.str'] = 'foo'
+        >>> hdf['test.str']
+        'foo'
+
+        The boolean literals `True` and `False` are converted to there integer
+        representation before being added:
+
+        >>> hdf['test.true'] = True
+        >>> hdf['test.true']
+        '1'
+        >>> hdf['test.false'] = False
+        >>> hdf['test.false']
+        '0'
+
+        If value is `None`, nothing is added to the HDF:
+
+        >>> hdf['test.true'] = None
+        >>> hdf['test.none']
+        Traceback (most recent call last):
+            ...
+        KeyError: 'test.none'
+        """
         def add_value(prefix, value):
             if value is None:
                 return
-            elif not value:
-                self.hdf.setValue(prefix, '0')
             elif value in (True, False):
                 self.hdf.setValue(prefix, str(int(value)))
             elif isinstance(value, (str, unicode)):
