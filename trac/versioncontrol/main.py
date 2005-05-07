@@ -178,8 +178,8 @@ class Node(object):
         raise NotImplementedError
     last_modified = property(lambda x: x.get_last_modified())
 
-    isdir = property(lambda x: x.kind is Node.DIRECTORY)
-    isfile = property(lambda x: x.kind is Node.FILE)
+    isdir = property(lambda x: x.kind == Node.DIRECTORY)
+    isfile = property(lambda x: x.kind == Node.FILE)
 
 
 class Changeset(object):

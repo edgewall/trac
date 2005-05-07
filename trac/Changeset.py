@@ -211,11 +211,11 @@ class ChangesetModule(Component):
         req.end_headers()
 
         for path, kind, change, base_path, base_rev in chgset.get_changes():
-            if change is Changeset.ADD:
+            if change == Changeset.ADD:
                 old_node = None
             else:
                 old_node = repos.get_node(base_path or path, base_rev)
-            if change is Changeset.DELETE:
+            if change == Changeset.DELETE:
                 new_node = None
             else:
                 new_node = repos.get_node(path, chgset.rev)
@@ -223,7 +223,7 @@ class ChangesetModule(Component):
             # TODO: Property changes
 
             # Content changes
-            if kind is 'dir':
+            if kind == 'dir':
                 continue
             new_content = old_content = ''
             new_node_info = old_node_info = ('','')
@@ -271,7 +271,7 @@ class ChangesetModule(Component):
         buf = StringIO()
         zipfile = ZipFile(buf, 'w', ZIP_DEFLATED)
         for path, kind, change, base_path, base_rev in chgset.get_changes():
-            if kind is Node.FILE and change is not Changeset.DELETE:
+            if kind == Node.FILE and change != Changeset.DELETE:
                 node = repos.get_node(path, chgset.rev)
                 zipinfo = ZipInfo()
                 zipinfo.filename = node.path
