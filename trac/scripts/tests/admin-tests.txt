@@ -441,7 +441,7 @@ milestone3
 milestone4
 
 ===== test_milestone_rename_error_bad_milestone =====
-Command rename failed: No such milestone 'bad_milestone'
+Command rename failed: Milestone bad_milestone does not exist.
 ===== test_milestone_due_ok =====
 
 Name        Due                       Completed
@@ -453,7 +453,7 @@ milestone3
 milestone4
 
 ===== test_milestone_due_error_bad_milestone =====
-Command due failed: No such milestone 'bad_milestone'
+Command due failed: Milestone bad_milestone does not exist.
 ===== test_milestone_completed_ok =====
 
 Name        Due  Completed
@@ -465,7 +465,7 @@ milestone3
 milestone4
 
 ===== test_milestone_completed_error_bad_milestone =====
-Command completed failed: No such milestone 'bad_milestone'
+Command completed failed: Milestone bad_milestone does not exist.
 ===== test_milestone_remove_ok =====
 
 Name        Due  Completed
@@ -476,4 +476,4 @@ milestone2
 milestone4
 
 ===== test_milestone_remove_error_bad_milestone =====
-Command remove failed: No such milestone 'bad_milestone'
+Command remove failed: Milestone bad_milestone does not exist.

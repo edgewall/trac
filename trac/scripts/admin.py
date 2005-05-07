@@ -32,6 +32,7 @@ import urllib
 
 from trac import perm, util
 from trac.env import Environment
+from trac.Milestone import Milestone
 import trac.siteconfig
 
 def my_sum(list):
@@ -891,48 +892,33 @@ class TracAdmin(cmd.Cmd):
         self.print_listing(['Name', 'Due', 'Completed'], data)
 
     def _do_milestone_rename(self, name, newname):
-        d = {'name':name, 'newname':newname}
-        data = self.db_execsql("SELECT name FROM milestone" 
-                               " WHERE name='%(name)s'" % d)
-        if not data:
-            raise Exception, "No such milestone '%s'" % name
-        data = self.db_execsql("UPDATE milestone SET name='%(newname)s'" 
-                               " WHERE name='%(name)s'" % d)
+        self.db_open()
+        milestone = Milestone(self.__env, None, name)
+        milestone.name = newname
+        milestone.update()
 
     def _do_milestone_add(self, name):
-        self.db_execsql("INSERT INTO milestone (name, due) "
-                        "VALUES('%(name)s', 0)" % {'name':name})
+        self.db_open()
+        milestone = Milestone(self.__env, None)
+        milestone.name = name
+        milestone.insert()
 
     def _do_milestone_remove(self, name):
-        d = {'name':name}
-        data = self.db_execsql("SELECT name FROM milestone" 
-                               " WHERE name='%(name)s'" % d)
-        if not data:
-            raise Exception, "No such milestone '%s'" % name
-        data = self.db_execsql("DELETE FROM milestone" 
-                               " WHERE name='%(name)s'" % d)
+        self.db_open()
+        milestone = Milestone(self.__env, None, name)
+        milestone.delete()
 
     def _do_milestone_set_due(self, name, t):
-        d = {'name':name}
-        data = self.db_execsql("SELECT name FROM milestone" 
-                               " WHERE name='%(name)s'" % d)
-        if not data:
-            raise Exception, "No such milestone '%s'" % name
-        seconds = self._parse_datetime(t)
-        if seconds != None:
-            data = self.db_execsql("UPDATE milestone SET due=%s"
-                                   " WHERE name='%s'" % (seconds, name))
+        self.db_open()
+        milestone = Milestone(self.__env, None, name)
+        milestone.due = self._parse_datetime(t)
+        milestone.update()
 
     def _do_milestone_set_completed(self, name, t):
-        d = {'name':name}
-        data = self.db_execsql("SELECT name FROM milestone" 
-                               " WHERE name='%(name)s'" % d)
-        if not data:
-            raise Exception, "No such milestone '%s'" % name
-        seconds = self._parse_datetime(t)
-        if seconds != None:
-            data = self.db_execsql("UPDATE milestone SET completed=%s"
-                                   " WHERE name='%s'" % (seconds, name))
+        self.db_open()
+        milestone = Milestone(self.__env, None, name)
+        milestone.completed = self._parse_datetime(t)
+        milestone.update()
 
     ## Version
     _help_version = [('version list', 'Show versions'),
