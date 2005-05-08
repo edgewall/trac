@@ -201,3 +201,21 @@ class ImageRenderer(Component):
             src += 'rev=%d&' % rev
         src += 'format=raw'
         return '<div class="image-file"><img src="%s" alt="" /></div>' % src
+
+
+class TracWikiRenderer(Component):
+    """
+    Render a file containing Trac's own WikiFormatting markup.
+    """
+
+    implements(IHTMLPreviewRenderer)
+
+    def get_quality_ratio(self, mimetype):
+        if mimetype in ['text/trac-wiki', 'application/x-trac']:
+            return 8
+        return 0
+
+    def render(self, mimetype, content, filename=None, rev=None):
+        from trac.web.clearsilver import HDFWrapper
+        from trac.WikiFormatter import wiki_to_html
+        return wiki_to_html(content, HDFWrapper(), self.env, self.env.get_db_cnx())
