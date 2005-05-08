@@ -21,6 +21,8 @@
 
 import os
 import re
+import shutil
+import time
 import urllib
 
 from trac import perm, util
@@ -28,6 +30,163 @@ from trac.core import *
 from trac.mimeview import *
 from trac.web.chrome import add_link, INavigationContributor
 from trac.web.main import IRequestHandler
+
+
+class Attachment(object):
+
+    def __init__(self, env, parent_type, parent_id, filename=None, db=None):
+        self.env = env
+        self.parent_type = parent_type
+        self.parent_id = str(parent_id)
+        if filename:
+            self._fetch(filename, db)
+        else:
+            self.filename = None
+            self.description = None
+            self.size = None
+            self.time = None
+            self.author = None
+            self.ipnr = None
+
+    def _fetch(self, filename, db=None):
+        if not db:
+            db = self.env.get_db_cnx()
+        cursor = db.cursor()
+        cursor.execute("SELECT filename,description,size,time,author,ipnr "
+                       "FROM attachment WHERE type=%s AND id=%s "
+                       "AND filename=%s ORDER BY time",
+                       (self.parent_type, self.parent_id, filename))
+        row = cursor.fetchone()
+        cursor.close()
+        if not row:
+            raise TracError('Attachment %s/%s/%s does not exist.'
+                            % (self.parent_type, self.parent_id, filename),
+                            'Invalid Attachment')
+        self.filename = row[0]
+        self.description = row[1]
+        self.size = row[2] and int(row[2]) or 0
+        self.time = row[3] and int(row[3]) or 0
+        self.author = row[4]
+        self.ipnr = row[5]
+
+    def _get_path(self):
+        path = os.path.join(self.env.get_attachments_dir(), self.parent_type,
+                            urllib.quote(self.parent_id))
+        if self.filename:
+            path = os.path.join(path, urllib.quote(self.filename))
+        return path
+    path = property(fget=lambda self: self._get_path())
+
+    def delete(self, db=None):
+        assert self.filename, 'Cannot delete non-existent attachment'
+        if not db:
+            db = self.env.get_db_cnx()
+            handle_ta = True
+        else:
+            handle_ta = False
+
+        cursor = db.cursor()
+        cursor.execute("DELETE FROM attachment WHERE type=%s AND id=%s "
+                       "AND filename=%s", (self.parent_type, self.parent_id,
+                       self.filename))
+
+        path = os.path.join(self.env.get_attachments_dir(), self.parent_type,
+                            urllib.quote(self.parent_id),
+                            urllib.quote(self.filename))
+        try:
+            os.unlink(path)
+        except OSError:
+            raise TracError, 'Attachment not found'
+
+        self.env.log.info('Attachment removed: %s/%s/%s'
+                          % (self.parent_type, self.parent_id, self.filename))
+        if handle_ta:
+            db.commit()
+
+    def insert(self, filename, fileobj, size, time=time.time(), db=None):
+        if not db:
+            db = self.env.get_db_cnx()
+            handle_ta = True
+        else:
+            handle_ta = False
+
+        # Maximum attachment size (in bytes)
+        max_size = int(self.env.config.get('attachment', 'max_size'))
+        if max_size >= 0 and size > max_size:
+            raise TracError('Maximum attachment size: %d bytes' % max_size,
+                            'Upload failed')
+        self.size = size
+        self.time = time
+
+        if not os.access(self.path, os.F_OK):
+            os.makedirs(self.path)
+        filename = urllib.quote(filename)
+        try:
+            path, targetfile = util.create_unique_file(os.path.join(self.path,
+                                                                    filename))
+            filename = urllib.unquote(os.path.basename(path))
+
+            cursor = db.cursor()
+            cursor.execute("INSERT INTO attachment "
+                           "VALUES (%s,%s,%s,%s,%s,%s,%s,%s)",
+                           (self.parent_type, self.parent_id, filename,
+                            self.size, self.time, self.description, self.author,
+                            self.ipnr))
+            shutil.copyfileobj(fileobj, targetfile)
+            self.filename = filename
+
+            self.env.log.info('New attachment: %s/%s/%s by %s'
+                              % (self.parent_type, self.parent_id,
+                                 self.filename, self.author))
+            if handle_ta:
+                db.commit()
+        finally:
+            targetfile.close()
+
+    def select(cls, env, parent_type, parent_id, db=None):
+        if not db:
+            db = env.get_db_cnx()
+        cursor = db.cursor()
+        cursor.execute("SELECT filename,description,size,time,author,ipnr "
+                       "FROM attachment WHERE type=%s AND id=%s ORDER BY time",
+                       (parent_type, parent_id))
+        for filename,description,size,time,author,ipnr in cursor:
+            attachment = Attachment(env, parent_type, parent_id)
+            attachment.filename = filename
+            attachment.description = description
+            attachment.size = size
+            attachment.time = time
+            attachment.author = author
+            attachment.ipnr = ipnr
+            yield attachment
+
+    select = classmethod(select)
+
+    def open(self):
+        self.env.log.debug('Trying to open attachment at %s' % self.path)
+        try:
+            fd = open(self.path, 'rb')
+        except IOError:
+            raise TracError('Attachment %s not found' % self.filename)
+        return fd
+
+
+def attachment_to_hdf(env, db, req, attachment):
+    from Wiki import wiki_to_oneliner
+    if not db:
+        db = env.get_db_cnx()
+    hdf = {
+        'filename': attachment.filename,
+        'description': wiki_to_oneliner(attachment.description, env, db),
+        'author': util.escape(attachment.author),
+        'ipnr': attachment.ipnr,
+        'size': util.pretty_size(attachment.size),
+        'time': time.strftime('%c', time.localtime(attachment.time)),
+        'href': env.href.attachment(attachment.parent_type,
+                                    attachment.parent_id,
+                                    attachment.filename)
+    }
+    return hdf
 
 
 class AttachmentModule(Component):
@@ -58,168 +217,175 @@ class AttachmentModule(Component):
         parent_type = req.args.get('type')
         path = req.args.get('path')
         if not parent_type or not path:
-            raise util.TracError('Bad request')
+            raise TracError('Bad request')
         if not parent_type in ['ticket', 'wiki']:
-            raise util.TracError('Unknown attachment type')
+            raise TracError('Unknown attachment type')
 
         action = req.args.get('action', 'view')
         if action == 'new':
-            self.render_form(req, parent_type, path)
+            self._render_form(req, parent_type, path)
             return 'attachment.cs', None
         elif action == 'save':
-            self.save_attachment(req, parent_type, path)
+            self._do_save(req, parent_type, path)
         else:
             segments = path.split('/')
             parent_id = '/'.join(segments[:-1])
             filename = segments[-1]
+
+            attachment = Attachment(self.env, parent_type, parent_id, filename)
             if action == 'delete':
-                self.delete_attachment(req, parent_type, parent_id, filename)
-            else:
-                self.render_view(req, parent_type, parent_id, filename)
-                return 'attachment.cs', None
+                self._do_delete(req, attachment)
+                return
+            self._render_view(req, attachment)
+            return 'attachment.cs', None
 
     # Internal methods
 
-    def get_parent_link(self, parent_type, parent_id):
-        if parent_type == 'ticket':
-            return ('Ticket #' + parent_id, self.env.href.ticket(parent_id))
-        elif parent_type == 'wiki':
-            return (parent_id, self.env.href.wiki(parent_id))
-        else:
-            return (None, None)
-
-    def render_form(self, req, parent_type, parent_id):
-        perm_map = {'ticket': perm.TICKET_APPEND, 'wiki': perm.WIKI_MODIFY}
-        req.perm.assert_permission(perm_map[parent_type])
-
-        text, link = self.get_parent_link(parent_type, parent_id)
-        req.hdf['attachment'] = {
-            'mode': 'new',
-            'parent_type': parent_type,
-            'parent_id': parent_id,
-            'parent_name': text,
-            'parent_href': link,
-            'author': util.get_reporter_id(req)
-        }
-
-    def save_attachment(self, req, parent_type, parent_id):
+    def _do_save(self, req, parent_type, parent_id):
         perm_map = {'ticket': perm.TICKET_APPEND, 'wiki': perm.WIKI_MODIFY}
         req.perm.assert_permission(perm_map[parent_type])
 
         if req.args.has_key('cancel'):
-            req.redirect(self.get_parent_link(parent_type, parent_id)[1])
+            req.redirect(self.env.href(parent_type, parent_id))
 
-        attachment = req.args['attachment']
-        if not attachment.filename:
-            raise util.TracError, 'No file uploaded'
-        description = req.args.get('description')
-        author = req.args.get('author')
+        upload = req.args['attachment']
+        if not upload.filename:
+            raise TracError, 'No file uploaded'
+        if hasattr(upload.file, 'fileno'):
+            size = os.fstat(upload.file.fileno())[6]
+        else:
+            size = upload.file.len
 
-        filename = self.env.create_attachment(parent_type, parent_id,
-                                              attachment, description, author,
-                                              req.remote_addr)
+        filename = upload.filename.replace('\\', '/').replace(':', '/')
+        filename = os.path.basename(filename)
+        assert filename, 'No file uploaded'
+
+        # We try to normalize the filename to utf-8 NFC if we can.
+        # Files uploaded from OS X might be in NFD.
+        import sys, unicodedata
+        if sys.version_info[0] > 2 or \
+           (sys.version_info[0] == 2 and sys.version_info[1] >= 3):
+           filename = unicodedata.normalize('NFC', unicode(filename, 'utf-8')).encode('utf-8')
+
+        attachment = Attachment(self.env, parent_type, parent_id)
+        attachment.description = req.args.get('description', '')
+        attachment.author = req.args.get('author', '')
+        attachment.ipnr = req.remote_addr
+        attachment.insert(filename, upload.file, size)
 
         # Redirect the user to the newly created attachment
-        req.redirect(self.env.href.attachment(parent_type, parent_id,
-                                              filename))
+        req.redirect(self.env.href.attachment(attachment.parent_type,
+                                              attachment.parent_id,
+                                              attachment.filename))
 
-    def delete_attachment(self, req, parent_type, parent_id, filename):
+    def _do_delete(self, req, attachment):
         perm_map = {'ticket': perm.TICKET_ADMIN, 'wiki': perm.WIKI_DELETE}
-        req.perm.assert_permission(perm_map[parent_type])
+        req.perm.assert_permission(perm_map[attachment.parent_type])
 
-        self.env.delete_attachment(parent_type, parent_id, filename)
-        text, link = self.get_parent_link(parent_type, parent_id)
+        attachment.delete()
 
         # Redirect the user to the attachment parent page
-        req.redirect(link)
+        req.redirect(self.env.href(attachment.parent_type,
+                                   attachment.parent_id))
 
-    def render_view(self, req, parent_type, parent_id, filename):
-        perm_map = {'ticket': perm.TICKET_VIEW, 'wiki': perm.WIKI_VIEW}
+    def _get_parent_link(self, parent_type, parent_id):
+        if parent_type == 'ticket':
+            return ('Ticket #' + parent_id, self.env.href.ticket(parent_id))
+        elif parent_type == 'wiki':
+            return (parent_id, self.env.href.wiki(parent_id))
+        return (None, None)
+
+    def _render_form(self, req, parent_type, parent_id):
+        perm_map = {'ticket': perm.TICKET_APPEND, 'wiki': perm.WIKI_MODIFY}
         req.perm.assert_permission(perm_map[parent_type])
 
-        filename = os.path.basename(filename)
-        path = os.path.join(self.env.get_attachments_dir(), parent_type,
-                            urllib.quote(parent_id), urllib.quote(filename))
-        self.log.debug('Trying to open attachment at %s' % path)
-        try:
-            fd = open(path, 'rb')
-        except IOError:
-            # Older versions of Trac saved attachments with unquoted filenames,
-            # so try that. See #1112.
-            path = os.path.join(self.env.get_attachments_dir(), parent_type,
-                                urllib.quote(parent_id), filename)
-            try:
-                fd = open(path, 'rb')
-            except IOError:
-                raise util.TracError('Attachment not found')
-        stat = os.fstat(fd.fileno())
-        last_modified = stat[8]
-        req.check_modified(last_modified)
-        length = stat[6]
-        mime_type = get_mimetype(filename) or 'application/octet-stream'
+        text, link = self._get_parent_link(parent_type, parent_id)
+        req.hdf['attachment'] = {
+            'mode': 'new',
+            'author': util.get_reporter_id(req),
+            'parent': {'type': parent_type, 'id': parent_id, 'name': text,
+                       'href': link}
+        }
+
+    def _render_view(self, req, attachment):
+        perm_map = {'ticket': perm.TICKET_VIEW, 'wiki': perm.WIKI_VIEW}
+        req.perm.assert_permission(perm_map[attachment.parent_type])
+
+        req.check_modified(attachment.time)
+        mime_type = get_mimetype(attachment.filename) or 'application/octet-stream'
         charset = self.config.get('trac', 'default_charset')
 
         if req.args.get('format') in ('raw', 'txt'):
-            self.render_view_raw(req, fd, mime_type, charset, length,
-                                 last_modified)
+            # Render raw file
+            self._render_raw(req, attachment, mime_type, charset)
             return
 
         # Render HTML view
-        text, link = self.get_parent_link(parent_type, parent_id)
+        text, link = self._get_parent_link(attachment.parent_type,
+                                           attachment.parent_id)
         add_link(req, 'up', link, text)
 
-        raw_href = self.env.href.attachment(parent_type, parent_id, filename,
-                                            format='raw')
-        add_link(req, 'alternate', raw_href, 'Original Format', mime_type)
-
-        req.hdf['trac.active_module'] = parent_type # Kludge
-        req.hdf['title'] = '%s%s: %s' % (parent_type == 'ticket' and '#' or '',
-                                         parent_id, filename)
-        req.hdf['attachment'] = {
-            'parent_type': parent_type,
-            'parent_id': parent_id,
-            'parent_name': text,
-            'parent_href': link,
-            'filename': urllib.unquote(filename),
-            'raw_href': raw_href
+        req.hdf['title'] = '%s%s: %s' % (attachment.parent_type == 'ticket' and '#' or '',
+                                         attachment.parent_id,
+                                         attachment.filename)
+        req.hdf['attachment'] = attachment_to_hdf(self.env, None, req, attachment)
+        req.hdf['attachment.parent'] = {
+            'type': attachment.parent_type, 'id': attachment.parent_id,
+            'name': text, 'href': link,
         }
 
+        raw_href = self.env.href.attachment(attachment.parent_type,
+                                            attachment.parent_id,
+                                            attachment.filename,
+                                            format='raw')
+        add_link(req, 'alternate', raw_href, 'Original Format', mime_type)
+        req.hdf['attachment.raw_href'] = raw_href
+
         perm_map = {'ticket': perm.TICKET_ADMIN, 'wiki': perm.WIKI_DELETE}
-        if req.perm.has_permission(perm_map[parent_type]):
+        if req.perm.has_permission(perm_map[attachment.parent_type]):
             req.hdf['attachment.can_delete'] = 1
 
         self.log.debug("Rendering preview of file %s with mime-type %s"
-                       % (filename, mime_type))
-        data = fd.read(self.DISP_MAX_FILE_SIZE)
-        if not is_binary(data):
-            data = util.to_utf8(data, charset)
-            add_link(req, 'alternate',
-                     self.env.href.attachment(parent_type, parent_id, filename,
-                                              format='txt'),
-                     'Plain Text', mime_type)
-        if len(data) >= self.DISP_MAX_FILE_SIZE:
-            req.hdf['attachment.max_file_size_reached'] = 1
-            req.hdf['attachment.max_file_size'] = self.DISP_MAX_FILE_SIZE
-            vdata = ''
-        else:
-            mimeview = Mimeview(self.env)
-            vdata = mimeview.display(mime_type, data, filename)
-        req.hdf['attachment.preview'] = vdata
+                       % (attachment.filename, mime_type))
+        fd = attachment.open()
+        try:
+            data = fd.read(self.DISP_MAX_FILE_SIZE)
+            if not is_binary(data):
+                data = util.to_utf8(data, charset)
+                add_link(req, 'alternate',
+                         self.env.href.attachment(attachment.parent_type,
+                                                  attachment.parent_id,
+                                                  attachment.filename,
+                                                  format='txt'),
+                         'Plain Text', mime_type)
+            if len(data) >= self.DISP_MAX_FILE_SIZE:
+                req.hdf['attachment.max_file_size_reached'] = 1
+                req.hdf['attachment.max_file_size'] = self.DISP_MAX_FILE_SIZE
+                vdata = ''
+            else:
+                mimeview = Mimeview(self.env)
+                vdata = mimeview.display(mime_type, data, attachment.filename)
+            req.hdf['attachment.preview'] = vdata
+        finally:
+            fd.close()
 
-    def render_view_raw(self, req, fd, mime_type, charset, length,
-                        last_modified):
-        data = fd.read(self.CHUNK_SIZE)
-        if not is_binary(data):
-            if req.args.get('format') == 'txt':
-                mime_type = 'text/plain'
-            mime_type = mime_type + ';charset=' + charset
-
-        req.send_response(200)
-        req.send_header('Content-Type', mime_type)
-        req.send_header('Content-Length', str(length))
-        req.send_header('Last-Modified', util.http_date(last_modified))
-        req.end_headers()
-
-        while data:
-            req.write(data)
+    def _render_raw(self, req, attachment, mime_type, charset):
+        fd = attachment.open()
+        try:
             data = fd.read(self.CHUNK_SIZE)
+            if not is_binary(data):
+                if req.args.get('format') == 'txt':
+                    mime_type = 'text/plain'
+                mime_type = mime_type + ';charset=' + charset
+
+            req.send_response(200)
+            req.send_header('Content-Type', mime_type)
+            req.send_header('Content-Length', str(attachment.size))
+            req.send_header('Last-Modified', util.http_date(attachment.time))
+            req.end_headers()
+
+            while data:
+                req.write(data)
+                data = fd.read(self.CHUNK_SIZE)
+        finally:
+            fd.close()

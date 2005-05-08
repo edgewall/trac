@@ -1,7 +1,7 @@
 from trac import db_default
 from trac.env import Environment
 
-import os
+import os.path
 import unittest
 import tempfile
 import shutil
@@ -42,27 +42,6 @@ class EnvironmentTestCase(unittest.TestCase):
         self.assertEqual(('Tom', 'tom@example.com'), users['tom'])
         self.assertEqual((None, 'joe@example.com'), users['joe'])
         self.assertEqual(('Jane', None), users['jane'])
-
-    def test_attachment(self):
-        """Testing env.get/add/delete_attachment"""
-        class Attachment:
-            def __init__(self):
-                self.filename = 'foo.txt'
-                self.file = tempfile.TemporaryFile()
-
-        assert self.env.get_attachments('wiki', 'SomePage') == []
-        self.env.create_attachment('wiki', 'SomePage', Attachment(),
-                                   'descr', 'author', '127.0.0.1')
-        self.env.create_attachment('wiki', 'SomePage', Attachment(),
-                                   'descr2', 'author2', '127.0.0.2')
-        result = self.env.get_attachments('wiki', 'SomePage')
-        assert result[0][:4] == ('foo.txt', 'descr', 'wiki', 0)
-        assert result[1][:4] == ('foo.2.txt', 'descr2', 'wiki', 0)
-        self.env.delete_attachment('wiki', 'SomePage', 'foo.txt')
-        result = self.env.get_attachments('wiki', 'SomePage')
-        assert result[0][:4] == ('foo.2.txt', 'descr2', 'wiki', 0)
-        self.env.delete_attachment('wiki', 'SomePage', 'foo.2.txt')
-        assert self.env.get_attachments('wiki', 'SomePage') == []
 
 
 def suite():

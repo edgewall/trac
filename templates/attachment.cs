@@ -7,8 +7,8 @@
 <div id="content" class="attachment">
 
 <?cs if:attachment.mode == 'new' ?>
- <h1>Add Attachment to <a href="<?cs var:attachment.parent_href?>"><?cs
-   var:attachment.parent_name ?></a></h1>
+ <h1>Add Attachment to <a href="<?cs var:attachment.parent.href?>"><?cs
+   var:attachment.parent.name ?></a></h1>
  <form id="attachment" method="post" enctype="multipart/form-data" action="">
   <div class="field">
    <label>File:<br /><input type="file" name="attachment" /></label>
@@ -24,18 +24,19 @@
     <label>Description of the file (optional):<br />
     <input type="text" name="description" size="60" /></label
    </div>
+   <br />
   </fieldset>
   <div class="buttons">
    <input type="hidden" name="action" value="save" />
-   <input type="hidden" name="type" value="<?cs var:attachment.parent_type ?>" />
-   <input type="hidden" name="id" value="<?cs var:attachment.parent_id ?>" />
+   <input type="hidden" name="type" value="<?cs var:attachment.parent.type ?>" />
+   <input type="hidden" name="id" value="<?cs var:attachment.parent.id ?>" />
    <input type="submit" value="Add Attachment" />
    <input type="submit" name="cancel" value="Cancel" />
   </div>
  </form>
 <?cs else ?>
- <h1><a href="<?cs var:attachment.parent_href ?>"><?cs
-   var:attachment.parent_name ?></a>: <?cs var:attachment.filename ?></h1>
+ <h1><a href="<?cs var:attachment.parent.href ?>"><?cs
+   var:attachment.parent.name ?></a>: <?cs var:attachment.filename ?></h1>
  <div id="preview"><?cs
   if:attachment.preview ?>
    <?cs var:attachment.preview ?><?cs

@@ -87,13 +87,13 @@
 <?cs if:ticket.attach_href || len(ticket.attachments) ?>
 <h2>Attachments</h2><?cs
  if:len(ticket.attachments) ?><div id="attachments">
-  <ul class="attachments"><?cs each:a = ticket.attachments ?>
-   <li><a href="<?cs var:a.href ?>" title="View attachment"><?cs
-   var:a.name ?></a> (<?cs var:a.size ?>) - <?cs
-   if:a.descr ?><q><?cs var:a.descr ?></q>,<?cs
+  <ul class="attachments"><?cs each:attachment = ticket.attachments ?>
+   <li><a href="<?cs var:attachment.href ?>" title="View attachment"><?cs
+   var:attachment.filename ?></a> (<?cs var:attachment.size ?>) - <?cs
+   if:attachment.description ?><q><?cs var:attachment.description ?></q>,<?cs
    /if ?> added by <em><?cs
-   var:a.author ?></em> on <em><?cs
-   var:a.time ?></em>.</li><?cs
+   var:attachment.author ?></em> on <em><?cs
+   var:attachment.time ?></em>.</li><?cs
   /each ?></ul><?cs
  /if ?><?cs
  if:ticket.attach_href ?>

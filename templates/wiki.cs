@@ -219,16 +219,17 @@
    <div class="wikipage">
     <div id="searchable"><?cs var:wiki.page_html ?></div>
    </div>
-   <?cs if $wiki.attachments.0.name ?>
+   <?cs if:len(wiki.attachments) ?>
     <h3 id="tkt-changes-hdr">Attachments</h3>
-    <ul class="tkt-chg-list">
-    <?cs each:a = wiki.attachments ?>
-      <li class="tkt-chg-change"><a href="<?cs var:a.href ?>">
-      <?cs var:a.name ?></a> (<?cs var:a.size ?>) -
-      <?cs var:a.descr ?>,
-      added by <?cs var:a.author ?> on <?cs var:a.time ?>.</li>
-    <?cs /each ?>
-  </ul>
+    <ul class="tkt-chg-list"><?cs
+     each:attachment = wiki.attachments ?><li class="tkt-chg-change"><a href="<?cs
+      var:attachment.href ?>"><?cs
+      var:attachment.filename ?></a> (<?cs var:attachment.size ?>) -<?cs
+      if:attachment.description ?><q><?cs var:attachment.description ?></q>,<?cs
+      /if ?> added by <?cs var:attachment.author ?> on <?cs
+      var:attachment.time ?>.</li><?cs
+     /each ?>
+    </ul>
   <?cs /if ?>
   <?cs if wiki.action == "view" && (trac.acl.WIKI_MODIFY || trac.acl.WIKI_DELETE)
       && (wiki.readonly == "0" || trac.acl.WIKI_ADMIN) ?>

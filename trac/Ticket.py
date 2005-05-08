@@ -20,6 +20,7 @@
 # Author: Jonas Borgström <jonas@edgewall.com>
 
 from trac import perm, util
+from trac.attachment import attachment_to_hdf, Attachment
 from trac.core import *
 from trac.Notify import TicketNotifyEmail
 from trac.Timeline import ITimelineEventProvider
@@ -673,9 +674,11 @@ class TicketModule(Component):
         req.hdf['ticket.changes'] = changes
 
         insert_custom_fields(self.env, req.hdf, ticket)
+
         # List attached files
-        self.env.get_attachments_hdf('ticket', str(id), req.hdf,
-                                     'ticket.attachments')
+        for idx,attachment in util.enum(Attachment.select(self.env, 'ticket', id)):
+            hdf = attachment_to_hdf(self.env, db, req, attachment)
+            req.hdf['ticket.attachments.%s' % idx] = hdf
         if req.perm.has_permission(perm.TICKET_APPEND):
             req.hdf['ticket.attach_href'] = self.env.href.attachment('ticket', id)
 

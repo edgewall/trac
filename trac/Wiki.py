@@ -20,6 +20,7 @@
 # Author: Jonas Borgström <jonas@edgewall.com>
 
 from trac import perm
+from trac.attachment import attachment_to_hdf, Attachment
 from trac.core import *
 from trac.Timeline import ITimelineEventProvider
 from trac.util import enum, escape, get_reporter_id, shorten_line, TracError
@@ -237,8 +238,8 @@ class WikiModule(Component):
 
         if page_deleted:
             # Delete orphaned attachments
-            for attachment in self.env.get_attachments('wiki', pagename):
-                self.env.delete_attachment('wiki', pagename, attachment[0])
+            for attachment in Attachment.select(self.env, 'wiki', pagename, db):
+                attachment.delete()
             req.redirect(self.env.href.wiki())
         else:
             req.redirect(self.env.href.wiki(pagename))
@@ -382,9 +383,12 @@ class WikiModule(Component):
         }
         req.hdf['wiki'] = info
 
-        self.env.get_attachments_hdf('wiki', pagename, req.hdf,
-                                     'wiki.attachments')
-        req.hdf['wiki.attach_href'] = self.env.href.attachment('wiki', pagename)
+        for idx,attachment in enum(Attachment.select(self.env, 'wiki', pagename, db)):
+            hdf = attachment_to_hdf(self.env, db, req, attachment)
+            req.hdf['wiki.attachments.%s' % idx] = hdf
+        if req.perm.has_permission(perm.WIKI_MODIFY):
+            req.hdf['wiki.attach_href'] = self.env.href.attachment('wiki',
+                                                                   pagename)
 
     def _save_page(self, req, db, pagename):
         req.perm.assert_permission(perm.WIKI_MODIFY)
