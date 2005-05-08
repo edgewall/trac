@@ -134,6 +134,27 @@ class Milestone(object):
         if handle_ta:
             db.commit()
 
+    def select(cls, env, include_completed=False, db=None):
+        if not db:
+            db = env.get_db_cnx()
+        sql = "SELECT name,due,completed,description FROM milestone " \
+               "WHERE COALESCE(name,'')!='' "
+        if not include_completed:
+            sql += "AND COALESCE(completed,0)=0 "
+        sql += "ORDER BY COALESCE(due,0)=0,due,name"
+
+        cursor = db.cursor()
+        cursor.execute(sql)
+        for name,due,completed,description in cursor:
+            milestone = Milestone(env)
+            milestone.name = name
+            milestone.due = due and int(due) or 0
+            milestone.completed = completed and int(completed) or 0
+            milestone.description = description or ''
+            yield milestone
+
+    select = classmethod(select)
+
 
 def get_tickets_for_milestone(env, db, milestone, field='component'):
     custom = field not in Ticket.std_fields
@@ -202,6 +223,25 @@ def calc_ticket_stats(tickets):
         'percent_closed': percent_closed
     }
 
+def milestone_to_hdf(env, db, req, milestone):
+    hdf = {'name': milestone.name,
+           'href': env.href.milestone(milestone.name)}
+    if milestone.description:
+        hdf['description_source'] = milestone.description
+        hdf['description'] = wiki_to_html(milestone.description, req.hdf, env,
+                                          db)
+    if milestone.due:
+        hdf['due'] = milestone.due
+        hdf['due_date'] = time.strftime('%x', time.localtime(milestone.due))
+        hdf['due_delta'] = pretty_timedelta(milestone.due)
+        hdf['late'] = milestone.is_late
+    if milestone.completed:
+        hdf['completed'] = milestone.completed
+        hdf['completed_date'] = time.strftime('%x %X',
+                                              time.localtime(milestone.completed))
+        hdf['completed_delta'] = pretty_timedelta(milestone.completed)
+    return hdf
+
 def _get_groups(env, db, by='component'):
     cursor = db.cursor()
     groups = []
@@ -226,23 +266,6 @@ def _get_groups(env, db, by='component'):
             break
         groups.append(row['name'] or '')
     return groups
-
-def _milestone_to_hdf(req, db, m):
-    hdf = {'name': m.name}
-    if m.description:
-        hdf['description_source'] = m.description
-        hdf['description'] = wiki_to_html(m.description, req.hdf, m.env, db)
-    if m.due:
-        hdf['due'] = m.due
-        hdf['due_date'] = time.strftime('%x', time.localtime(m.due))
-        hdf['due_delta'] = pretty_timedelta(m.due)
-        hdf['late'] = m.is_late
-    if m.completed:
-        hdf['completed'] = m.completed
-        hdf['completed_date'] = time.strftime('%x %X', time.localtime(m.completed))
-        hdf['completed_delta'] = pretty_timedelta(m.completed)
-
-    return hdf
 
 def _parse_date(datestr):
     seconds = None
@@ -349,18 +372,14 @@ class MilestoneModule(Component):
             milestone.name = req.args.get('name')
 
             due = req.args.get('duedate', '')
-            if due:
-                milestone.due = _parse_date(due)
-
+            milestone.due = due and _parse_date(due) or 0
             if 'completed' in req.args.keys():
                 completed = req.args.get('completeddate', '')
-                if completed:
-                    milestone.completed = _parse_date(completed)
+                milestone.completed = completed and _parse_date(completed) or 0
             else:
                 milestone.completed = 0
 
-            if 'description' in req.args.keys():
-                milestone.description = req.args.get('description')
+            milestone.description = req.args.get('description', '')
 
             if milestone.exists:
                 milestone.update()
@@ -373,19 +392,17 @@ class MilestoneModule(Component):
         else:
             req.redirect(self.env.href.roadmap())
 
-    def _render_confirm(self, req, db, m):
+    def _render_confirm(self, req, db, milestone):
         req.perm.assert_permission(perm.MILESTONE_DELETE)
 
-        req.hdf['title'] = 'Milestone %s' % m.name
-        req.hdf['milestone'] = _milestone_to_hdf(req, db, m)
+        req.hdf['title'] = 'Milestone %s' % milestone.name
+        req.hdf['milestone'] = milestone_to_hdf(self.env, db, req, milestone)
         req.hdf['milestone.mode'] = 'delete'
-        req.hdf['milestone.href'] = self.env.href.milestone(m.name)
 
-        cursor = db.cursor()
-        cursor.execute("SELECT name FROM milestone "
-                       "WHERE name!='' ORDER BY name")
-        for idx, (name,) in enum(cursor):
-            req.hdf['milestones.%d' % idx] = name
+        for idx,other in enum(Milestone.select(self.env)):
+            if other.name == milestone.name:
+                continue
+            req.hdf['milestones.%d' % idx] = other.name
 
     def _render_editor(self, req, db, milestone):
 
@@ -398,8 +415,7 @@ class MilestoneModule(Component):
             req.hdf['title'] = 'New Milestone'
             req.hdf['milestone.mode'] = 'new'
 
-        req.hdf['milestone'] = _milestone_to_hdf(req, db, milestone)
-        req.hdf['milestone.href'] = self.env.href.milestone(milestone.name)
+        req.hdf['milestone'] = milestone_to_hdf(self.env, db, req, milestone)
         req.hdf['milestone.date_hint'] = get_date_format_hint()
         req.hdf['milestone.datetime_hint'] = get_datetime_format_hint()
         req.hdf['milestone.datetime_now'] = time.strftime('%x %X',
@@ -414,7 +430,7 @@ class MilestoneModule(Component):
         if milestone.name.find('/') >= 0:
             req.hdf['milestone.id_param'] = 1
 
-        req.hdf['milestone'] = _milestone_to_hdf(req, db, milestone)
+        req.hdf['milestone'] = milestone_to_hdf(self.env, db, req, milestone)
 
         available_groups = map(lambda x: {'name': x, 'label': x.capitalize()},
                                ['component', 'version', 'severity', 'priority',

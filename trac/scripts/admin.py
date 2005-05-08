@@ -885,10 +885,11 @@ class TracAdmin(cmd.Cmd):
             print 'Command %s failed:' % arg[0], e
 
     def _do_milestone_list(self):
-        data = self.db_execsql("SELECT name,due,completed FROM milestone "
-                               "ORDER BY COALESCE(due,0)!=0 DESC,due,name")
-        data = map(lambda x: (x[0], x[1] and time.strftime('%c', time.localtime(x[1])),
-                              x[2] and time.strftime('%c', time.localtime(x[2]))), data)
+        data = []
+        self.db_open()
+        for m in Milestone.select(self.__env, include_completed=True):
+            data.append((m.name, m.due and time.strftime('%c', time.localtime(m.due)),
+                         m.completed and time.strftime('%c', time.localtime(m.completed))))
         self.print_listing(['Name', 'Due', 'Completed'], data)
 
     def _do_milestone_rename(self, name, newname):

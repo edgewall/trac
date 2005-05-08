@@ -21,7 +21,7 @@
 
 from trac import Milestone, perm, __version__
 from trac.core import *
-from trac.util import escape, pretty_timedelta, CRLF
+from trac.util import enum, escape, pretty_timedelta, CRLF
 from trac.Ticket import Ticket
 from trac.web.chrome import add_link, INavigationContributor
 from trac.web.main import IRequestHandler
@@ -55,73 +55,37 @@ class RoadmapModule(Component):
         req.perm.assert_permission(perm.ROADMAP_VIEW)
         req.hdf['title'] = 'Roadmap'
 
-        show = req.args.get('show')
-        if show == 'all':
-            query = "SELECT name,due,completed,description FROM milestone " \
-                    "WHERE COALESCE(name,'')!='' " \
-                    "ORDER BY COALESCE(due,0)=0,due,name"
-        else:
-            req.hdf['roadmap.showall'] = 1
-            query = "SELECT name,due,completed,description FROM milestone " \
-                    "WHERE COALESCE(name,'')!='' " \
-                    "AND COALESCE(completed,0)=0 " \
-                    "ORDER BY COALESCE(due,0)=0,due,name"
+        showall = req.args.get('show') == 'all'
+        req.hdf['roadmap.showall'] = showall
+
+        db = self.env.get_db_cnx()
+        milestones = []
+        for idx,milestone in enum(Milestone.Milestone.select(self.env, showall)):
+            hdf = Milestone.milestone_to_hdf(self.env, db, req, milestone)
+            milestones.append(hdf)
+        req.hdf['roadmap.milestones'] = milestones
+
+        for idx,milestone in enum(milestones):
+            tickets = Milestone.get_tickets_for_milestone(self.env, db,
+                                                          milestone['name'],
+                                                          'owner')
+            stats = Milestone.calc_ticket_stats(tickets)
+            req.hdf['roadmap.milestones.%s.stats' % idx] = stats
+            queries = Milestone.get_query_links(self.env, milestone['name'])
+            req.hdf['roadmap.milestones.%s.queries' % idx] = queries
+            milestone['tickets'] = tickets # for the iCalendar view
+
+        if req.args.get('format') == 'ics':
+            self.render_ics(req, db, milestones)
+            return
 
         # FIXME should use the 'webcal:' scheme, probably
         username = None
         if req.authname and req.authname != 'anonymous':
             username = req.authname
-        icshref = self.env.href.roadmap(show=show, username=username,
-                                        format='ics')
+        icshref = self.env.href.roadmap(show=req.args.get('show'),
+                                        user=username, format='ics')
         add_link(req, 'alternate', icshref, 'iCalendar', 'text/calendar', 'ics')
-
-        db = self.env.get_db_cnx()
-        cursor = db.cursor()
-        cursor.execute(query)
-        milestones = []
-        while 1:
-            row = cursor.fetchone()
-            if not row:
-                break
-            milestone = {
-                'name': row['name'],
-                'href': self.env.href.milestone(row['name']),
-                'due': row['due'] and int(row['due']),
-                'completed': row['completed'] and int(row['completed'])
-            }
-            description = row['description']
-            if description:
-                milestone['description'] = wiki_to_html(description,
-                                                        req.hdf,
-                                                        self.env, db)
-                milestone['description_text'] = description
-            if milestone['due'] > 0:
-                milestone['due_date'] = strftime('%x', localtime(milestone['due']))
-                milestone['due_delta'] = pretty_timedelta(milestone['due'])
-                if milestone['due'] < time():
-                    milestone['late'] = 1
-            if milestone['completed'] > 0:
-                milestone['completed_date'] = strftime('%x', localtime(milestone['completed']))
-                milestone['completed_delta'] = pretty_timedelta(milestone['completed'])
-            milestones.append(milestone)
-        cursor.close()
-        req.hdf['roadmap.milestones'] = milestones
-
-        milestone_no = 0
-        for milestone in milestones:
-            tickets = Milestone.get_tickets_for_milestone(self.env, db,
-                                                          milestone['name'],
-                                                          'owner')
-            stats = Milestone.calc_ticket_stats(tickets)
-            req.hdf['roadmap.milestones.%s.stats' % milestone_no] = stats
-            queries = Milestone.get_query_links(self.env, milestone['name'])
-            req.hdf['roadmap.milestones.%s.queries' % milestone_no] = queries
-            milestone['tickets'] = tickets # for the iCalendar view
-            milestone_no += 1
-
-        if req.args.get('format') == 'ics':
-            self.render_ics(req, db, milestones)
-            return
 
         return 'roadmap.cs', None
 

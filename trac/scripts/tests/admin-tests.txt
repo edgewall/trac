@@ -411,7 +411,6 @@ Command remove failed: No such version 'bad_version'
 
 Name        Due  Completed
 --------------------------
-
 milestone1
 milestone2
 milestone3
@@ -422,7 +421,6 @@ milestone4
 Name           Due                       Completed
 --------------------------------------------------
 new_milestone  Thu Jan  1 00:00:00 2004
-
 milestone1
 milestone2
 milestone3
@@ -434,7 +432,6 @@ Command add failed: column name is not unique
 
 Name               Due  Completed
 ---------------------------------
-
 changed_milestone
 milestone2
 milestone3
@@ -447,7 +444,6 @@ Command rename failed: Milestone bad_milestone does not exist.
 Name        Due                       Completed
 -----------------------------------------------
 milestone2  Thu Jan  1 00:00:00 2004
-
 milestone1
 milestone3
 milestone4
@@ -458,7 +454,6 @@ Command due failed: Milestone bad_milestone does not exist.
 
 Name        Due  Completed
 -----------------------------------------
-
 milestone1
 milestone2       Thu Jan  1 00:00:00 2004
 milestone3
@@ -470,7 +465,6 @@ Command completed failed: Milestone bad_milestone does not exist.
 
 Name        Due  Completed
 --------------------------
-
 milestone1
 milestone2
 milestone4

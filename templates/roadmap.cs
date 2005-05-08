@@ -10,7 +10,7 @@
  <form id="prefs" method="get" action="">
   <div>
    <input type="checkbox" id="showall" name="show" value="all"<?cs
-    if:!roadmap.showall ?> checked="checked"<?cs /if ?> />
+    if:roadmap.showall ?> checked="checked"<?cs /if ?> />
    <label for="showall">Show already completed milestones</label>
   </div>
   <div class="buttons">
