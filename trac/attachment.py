@@ -127,7 +127,7 @@ class AttachmentModule(Component):
         perm_map = {'ticket': perm.TICKET_ADMIN, 'wiki': perm.WIKI_DELETE}
         req.perm.assert_permission(perm_map[parent_type])
 
-        self.env.delete_attachment(self.db, parent_type, parent_id, filename)
+        self.env.delete_attachment(parent_type, parent_id, filename)
         text, link = self.get_parent_link(parent_type, parent_id)
 
         # Redirect the user to the attachment parent page
