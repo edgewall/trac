@@ -205,17 +205,21 @@ class ImageRenderer(Component):
 
 class TracWikiRenderer(Component):
     """
-    Render a file containing Trac's own WikiFormatting markup.
+    Render files containing Trac's own Wiki formatting markup.
     """
 
     implements(IHTMLPreviewRenderer)
 
     def get_quality_ratio(self, mimetype):
-        if mimetype in ['text/trac-wiki', 'application/x-trac']:
+        if mimetype in ('text/x-trac-wiki', 'application/x-trac-wiki'):
             return 8
         return 0
 
     def render(self, mimetype, content, filename=None, rev=None):
+        # FIXME: providing an isolated HDFWrapper doesn't give wiki macros or
+        #        processors a ways to access to original HDF, which is what
+        #        they'd expect
         from trac.web.clearsilver import HDFWrapper
         from trac.WikiFormatter import wiki_to_html
-        return wiki_to_html(content, HDFWrapper(), self.env, self.env.get_db_cnx())
+        return wiki_to_html(content, HDFWrapper(), self.env,
+                            self.env.get_db_cnx())
