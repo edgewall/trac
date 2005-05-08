@@ -162,8 +162,8 @@ class Ticket(dict):
                                    (id, fname, self[name]))
             else:
                 fname = name
-                cursor.execute("UPDATE ticket SET %s=%s WHERE id=%s",
-                               (fname, self[name], id))
+                cursor.execute("UPDATE ticket SET %s=%%s WHERE id=%%s" % fname,
+                               (self[name], id))
             cursor.execute("INSERT INTO ticket_change "
                            "(ticket,time,author,field,oldvalue,newvalue) "
                            "VALUES (%s, %s, %s, %s, %s, %s)",
