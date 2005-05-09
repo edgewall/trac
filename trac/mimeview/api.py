@@ -203,7 +203,7 @@ class ImageRenderer(Component):
         return '<div class="image-file"><img src="%s" alt="" /></div>' % src
 
 
-class TracWikiRenderer(Component):
+class WikiTextRenderer(Component):
     """
     Render files containing Trac's own Wiki formatting markup.
     """
