@@ -22,6 +22,7 @@
 from trac import mimeview
 from trac.core import *
 from trac.util import enum, escape
+from trac.web.href import Href
 
 def add_link(req, rel, href, title=None, type=None, class_name=None):
     link = {'href': escape(href)}
@@ -32,6 +33,10 @@ def add_link(req, rel, href, title=None, type=None, class_name=None):
     while req.hdf.get('links.%s.%d.href' % (rel, idx)):
         idx += 1
     req.hdf['links.%s.%d' % (rel, idx)] = link
+
+def add_stylesheet(req, filename, type='text/css'):
+    href = Href(req.hdf['htdocs_location'])
+    add_link(req, 'stylesheet', href.css(filename), type)
 
 
 class INavigationContributor(Interface):
@@ -92,6 +97,7 @@ class Chrome(Component):
         add_link(req, 'start', self.env.href.wiki())
         add_link(req, 'search', self.env.href.search())
         add_link(req, 'help', self.env.href.wiki('TracGuide'))
+        add_stylesheet(req, 'trac.css')
         icon = self.config.get('project', 'icon')
         if icon:
             if not icon[0] == '/' and icon.find('://') < 0:

@@ -1,7 +1,5 @@
-<?cs set:html.stylesheet = 'css/changeset.css' ?>
 <?cs include "header.cs"?>
 <?cs include "macros.cs"?>
-
 
 <div id="ctxtnav" class="nav">
  <h2>Changeset Navigation</h2>

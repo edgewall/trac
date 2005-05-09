@@ -23,7 +23,7 @@ from trac import Milestone, perm, __version__
 from trac.core import *
 from trac.util import enum, escape, pretty_timedelta, CRLF
 from trac.Ticket import Ticket
-from trac.web.chrome import add_link, INavigationContributor
+from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
 from trac.web.main import IRequestHandler
 from trac.WikiFormatter import wiki_to_html
 
@@ -78,6 +78,8 @@ class RoadmapModule(Component):
         if req.args.get('format') == 'ics':
             self.render_ics(req, db, milestones)
             return
+
+        add_stylesheet(req, 'roadmap.css')
 
         # FIXME should use the 'webcal:' scheme, probably
         username = None

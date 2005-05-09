@@ -23,7 +23,7 @@ from trac import perm
 from trac.core import *
 from trac.util import TracError, escape, shorten_line
 from trac.versioncontrol.svn_authz import SubversionAuthorizer
-from trac.web.chrome import add_link, INavigationContributor
+from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
 from trac.web.main import IRequestHandler
 
 import re
@@ -99,6 +99,7 @@ class SearchModule(Component):
             if more:
                 add_link(req, 'next', self.env.href.search(params, page=page + 1))
 
+        add_stylesheet(req, 'search.css')
         return 'search.cs', None
 
     # Internal methods

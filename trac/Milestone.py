@@ -23,7 +23,7 @@ from trac import perm
 from trac.core import *
 from trac.Ticket import get_custom_fields, Ticket
 from trac.Timeline import ITimelineEventProvider
-from trac.web.chrome import add_link, INavigationContributor
+from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
 from trac.web.main import IRequestHandler
 from trac.WikiFormatter import wiki_to_html, wiki_to_oneliner
 from trac.util import *
@@ -349,6 +349,7 @@ class MilestoneModule(Component):
         else:
             self._render_view(req, db, m)
 
+        add_stylesheet(req, 'roadmap.css')
         return 'milestone.cs', None
 
     # Internal methods

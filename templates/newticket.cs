@@ -1,4 +1,3 @@
-<?cs set:html.stylesheet = 'css/ticket.css' ?>
 <?cs include "header.cs" ?>
 <?cs include "macros.cs" ?>
 <script type="text/javascript">

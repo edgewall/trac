@@ -24,7 +24,7 @@ from trac.core import *
 from trac.Timeline import ITimelineEventProvider
 from trac.versioncontrol import Changeset, Node
 from trac.versioncontrol.diff import get_diff_options, hdf_diff, unified_diff
-from trac.web.chrome import add_link
+from trac.web.chrome import add_link, add_stylesheet
 from trac.web.main import IRequestHandler
 from trac.WikiFormatter import wiki_to_html, wiki_to_oneliner
 
@@ -47,11 +47,6 @@ class ChangesetModule(Component):
     def process_request(self, req):
         req.perm.assert_permission(perm.CHANGESET_VIEW)
 
-        add_link(req, 'alternate', '?format=diff', 'Unified Diff',
-                 'text/plain', 'diff')
-        add_link(req, 'alternate', '?format=zip', 'Zip Archive',
-                 'application/zip', 'zip')
-
         rev = req.args.get('rev')
         repos = self.env.get_repository(req.authname)
 
@@ -65,11 +60,19 @@ class ChangesetModule(Component):
         format = req.args.get('format')
         if format == 'diff':
             self.render_diff(req, repos, chgset, diff_options)
+            return
         elif format == 'zip':
             self.render_zip(req, repos, chgset)
-        else:
-            self.render_html(req, repos, chgset, diff_options)
-            return 'changeset.cs', None
+            return
+
+        self.render_html(req, repos, chgset, diff_options)
+        add_link(req, 'alternate', '?format=diff', 'Unified Diff',
+                 'text/plain', 'diff')
+        add_link(req, 'alternate', '?format=zip', 'Zip Archive',
+                 'application/zip', 'zip')
+        add_stylesheet(req, 'changeset.css')
+        add_stylesheet(req, 'diff.css')
+        return 'changeset.cs', None
 
     # ITimelineEventProvider methods
 

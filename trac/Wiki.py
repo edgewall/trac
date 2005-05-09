@@ -25,7 +25,7 @@ from trac.core import *
 from trac.Timeline import ITimelineEventProvider
 from trac.util import enum, escape, get_reporter_id, shorten_line, TracError
 from trac.versioncontrol.diff import get_diff_options, hdf_diff
-from trac.web.chrome import add_link, INavigationContributor
+from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
 from trac.web.main import IRequestHandler
 from trac.WikiFormatter import *
 
@@ -152,9 +152,11 @@ class WikiModule(Component):
         pagename = req.args.get('page', 'WikiStart')
 
         db = self.env.get_db_cnx()
+        add_stylesheet(req, 'wiki.css')
 
         if action == 'diff':
             version = int(req.args.get('version', 0))
+            add_stylesheet(req, 'diff.css')
             self._render_diff(req, db, pagename, version)
         elif action == 'history':
             self._render_history(req, db, pagename)
@@ -245,10 +247,10 @@ class WikiModule(Component):
             req.redirect(self.env.href.wiki(pagename))
 
     def _render_diff(self, req, db, pagename, version):
-        # Stores the diff-style in the session if it has been changed, and adds
-        # diff-style related item to the HDF
         req.perm.assert_permission(perm.WIKI_VIEW)
 
+        # Stores the diff-style in the session if it has been changed, and adds
+        # diff-style related item to the HDF
         diff_style, diff_options = get_diff_options(req)
         if req.args.has_key('update'):
            req.redirect(self.env.href.wiki(pagename, version=version,

@@ -1,5 +1,4 @@
 @import url(code.css);
-@import url(diff.css);
 
 /* Styles for the page editing form */
 #edit #rows { float: right; font-size: 80% }

@@ -24,7 +24,7 @@ from __future__ import generators
 from trac import perm, util
 from trac.core import *
 from trac.mimeview import *
-from trac.web.chrome import add_link, INavigationContributor
+from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
 from trac.web.main import IRequestHandler
 from trac.WikiFormatter import wiki_to_html, wiki_to_oneliner
 from trac.versioncontrol import Changeset
@@ -122,6 +122,7 @@ class BrowserModule(Component):
 
         repos = self.env.get_repository(req.authname)
         req.hdf['browser.revision'] = rev or repos.youngest_rev
+        add_stylesheet(req, 'browser.css')
 
         node = repos.get_node(path, rev)
         if node.isdir:
@@ -234,6 +235,7 @@ class BrowserModule(Component):
                                              format='raw')
             req.hdf['file.raw_href'] = raw_href
             add_link(req, 'alternate', raw_href, 'Original Format', mime_type)
+            add_stylesheet(req, 'code.css')
 
 
 class LogModule(Component):
@@ -405,6 +407,8 @@ class LogModule(Component):
             return 'log_changelog.cs', 'application/rss+xml'
         elif req.args.get('format') == 'rss':
             return 'log_rss.cs', 'application/rss+xml'
+
+        add_stylesheet(req, 'browser.css')
 
         rss_href = make_log_href(format='rss', stop_rev=stop_rev)
         add_link(req, 'alternate', rss_href, 'RSS Feed', 'application/rss+xml',

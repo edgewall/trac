@@ -2,38 +2,33 @@
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
- <head><?cs
-  if:project.name ?>
-  <title><?cs if:title ?><?cs var:title ?> - <?cs /if ?><?cs
-    var:project.name?> - Trac</title><?cs
-  else ?>
-  <title>Trac: <?cs var:title ?></title><?cs
-  /if ?><?cs
-  if:html.norobots ?>
-  <meta name="ROBOTS" content="NOINDEX, NOFOLLOW" /><?cs
-  /if ?><?cs
-  each:rel = links ?><?cs each:link = rel ?>
-  <link rel="<?cs var:name(rel) ?>" href="<?cs var:link.href ?>"<?cs
+<head><?cs
+ if:project.name ?>
+ <title><?cs if:title ?><?cs var:title ?> - <?cs /if ?><?cs
+   var:project.name?> - Trac</title><?cs
+ else ?>
+ <title>Trac: <?cs var:title ?></title><?cs
+ /if ?><?cs
+ if:html.norobots ?>
+ <meta name="ROBOTS" content="NOINDEX, NOFOLLOW" /><?cs
+ /if ?><?cs
+ each:rel = links ?><?cs
+  each:link = rel ?><link rel="<?cs
+   var:name(rel) ?>" href="<?cs var:link.href ?>"<?cs
    if:link.title ?> title="<?cs var:link.title ?>"<?cs /if ?><?cs
    if:link.type ?> type="<?cs var:link.type ?>"<?cs /if ?> /><?cs
-  /each ?><?cs /each ?>
-  <style type="text/css">
-   @import url(<?cs var:htdocs_location ?>css/trac.css);
-   <?cs if:html.stylesheet ?>@import url(<?cs var:htdocs_location ?><?cs
-     var:html.stylesheet ?>);<?cs /if ?>
-   <?cs include "site_css.cs" ?>
-  </style>
-  <script src="<?cs var:htdocs_location ?>js/trac.js" type="text/javascript"></script>
- </head>
+  /each ?><?cs
+ /each ?><style type="text/css"><?cs include:"site_css.cs" ?></style>
+ <script src="<?cs var:htdocs_location ?>js/trac.js" type="text/javascript"></script>
+</head>
 <body>
 <?cs include "site_header.cs" ?>
 <div id="banner">
 
-<div id="header">
-  <a id="logo" href="<?cs var:header_logo.link ?>"><img src="<?cs var:header_logo.src ?>"
-      width="<?cs var:header_logo.width ?>" height="<?cs var:header_logo.height ?>"
-      alt="<?cs var:header_logo.alt ?>" /></a>
-  <hr />
+<div id="header"><a id="logo" href="<?cs
+ var:header_logo.link ?>"><img src="<?cs var:header_logo.src ?>" width="<?cs
+ var:header_logo.width ?>" height="<?cs var:header_logo.height ?>" alt="<?cs
+ var:header_logo.alt ?>" /></a><hr />
 </div>
 
 <form id="search" action="<?cs var:trac.href.search ?>" method="get">

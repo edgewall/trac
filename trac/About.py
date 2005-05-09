@@ -24,7 +24,7 @@ import re
 
 from trac import perm
 from trac.core import *
-from trac.web.chrome import INavigationContributor
+from trac.web.chrome import add_stylesheet, INavigationContributor
 from trac.web.main import IRequestHandler
 
 
@@ -36,7 +36,6 @@ class AboutModule(Component):
     implements(INavigationContributor, IRequestHandler)
 
     about_cs = """
-<?cs set:html.stylesheet = 'css/about.css' ?>
 <?cs include "header.cs"?>
 <div id="ctxtnav" class="nav">
  <h2>About Navigation</h2>
@@ -161,6 +160,7 @@ It provides an interface to the Subversion revision control systems, integrated 
         elif page == 'plugins':
             self._render_plugins(req)
 
+        add_stylesheet(req, 'about.css')
         template = req.hdf.parse(self.about_cs)
         return template, None
 

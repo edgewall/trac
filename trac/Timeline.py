@@ -23,7 +23,7 @@ from trac import perm
 from trac.core import *
 from trac.util import enum, escape, http_date, shorten_line
 from trac.versioncontrol.svn_authz import SubversionAuthorizer
-from trac.web.chrome import add_link, INavigationContributor
+from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
 from trac.web.main import IRequestHandler
 from trac.WikiFormatter import wiki_to_oneliner, wiki_to_html
 
@@ -154,6 +154,7 @@ class TimelineModule(Component):
         if format == 'rss':
             return 'timeline_rss.cs', 'application/rss+xml'
 
+        add_stylesheet(req, 'timeline.css')
         rss_href = self.env.href.timeline([(f, 'on') for f in filters],
                                           daysback=90, max=50, format='rss')
         add_link(req, 'alternate', rss_href, 'RSS Feed', 'application/rss+xml',

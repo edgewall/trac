@@ -24,7 +24,7 @@ from trac.attachment import attachment_to_hdf, Attachment
 from trac.core import *
 from trac.Notify import TicketNotifyEmail
 from trac.Timeline import ITimelineEventProvider
-from trac.web.chrome import add_link, INavigationContributor
+from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
 from trac.web.main import IRequestHandler
 from trac.WikiFormatter import wiki_to_html, wiki_to_oneliner
 
@@ -357,6 +357,7 @@ class NewticketModule(Component):
 
         insert_custom_fields(self.env, req.hdf, ticket)
 
+        add_stylesheet(req, 'ticket.css')
         return 'newticket.cs', None
 
     # Internal methods
@@ -488,6 +489,7 @@ class TicketModule(Component):
                              'Ticket #%s' % tickets[-1])
                 add_link(req, 'up', req.session['query_href'])
 
+        add_stylesheet(req, 'ticket.css')
         return 'ticket.cs', None
 
     # ITimelineEventProvider methods

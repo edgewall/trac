@@ -28,7 +28,7 @@ import urllib
 from trac import perm, util
 from trac.core import *
 from trac.mimeview import *
-from trac.web.chrome import add_link, INavigationContributor
+from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
 from trac.web.main import IRequestHandler
 
 
@@ -220,6 +220,8 @@ class AttachmentModule(Component):
             raise TracError('Bad request')
         if not parent_type in ['ticket', 'wiki']:
             raise TracError('Unknown attachment type')
+
+        add_stylesheet(req, 'code.css')
 
         action = req.args.get('action', 'view')
         if action == 'new':

@@ -1,4 +1,3 @@
-<?cs set:html.stylesheet = 'css/roadmap.css' ?>
 <?cs include:"header.cs"?>
 <?cs include:"macros.cs"?>
 

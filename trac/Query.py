@@ -22,7 +22,7 @@
 from trac import perm
 from trac.core import *
 from trac.Ticket import get_custom_fields, insert_custom_fields, Ticket
-from trac.web.chrome import add_link, INavigationContributor
+from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
 from trac.web.main import IRequestHandler
 from trac.WikiFormatter import wiki_to_html, wiki_to_oneliner
 from trac.util import escape, sql_escape, CRLF
@@ -498,6 +498,7 @@ class QueryModule(Component):
 
     def display_html(self, req, query):
         req.hdf['title'] = 'Custom Query'
+        add_stylesheet(req, 'report.css')
 
         db = self.env.get_db_cnx()
 
