@@ -59,7 +59,7 @@ class PHPRenderer(Component):
             return 4
         return 0
 
-    def render(self, mimetype, content, filename=None, rev=None):
+    def render(self, req, mimetype, content, filename=None, rev=None):
         cmdline = self.config.get('mimeviewer', 'php_path')
         cmdline += ' -s'
         self.env.log.debug("PHP command line: %s" % cmdline)

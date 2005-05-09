@@ -120,7 +120,7 @@ class IHTMLPreviewRenderer(Interface):
         and 9, where 0 means no support and 9 means "perfect" support.
         """
 
-    def render(mimetype, content, filename=None, rev=None):
+    def render(req, mimetype, content, filename=None, rev=None):
         """
         Render an XHTML preview of the given content of the specified MIME type,
         and return the generated XHTML text as a string.
@@ -136,7 +136,7 @@ class Mimeview(Component):
 
     renderers = ExtensionPoint(IHTMLPreviewRenderer)
 
-    def display(self, mimetype, content, filename=None, rev=None):
+    def render(self, req, mimetype, content, filename=None, rev=None):
         if not content:
             return ''
 
@@ -154,7 +154,7 @@ class Mimeview(Component):
             try:
                 self.log.debug('Trying to render HTML preview using %s'
                                % renderer.__class__.__name__)
-                return renderer.render(mimetype, content, filename, rev)
+                return renderer.render(req, mimetype, content, filename, rev)
             except Exception, e:
                 self.log.warning('HTML preview using %s failed (%s)'
                                  % (renderer, e))
@@ -173,7 +173,7 @@ class PlainTextRenderer(Component):
     def get_quality_ratio(self, mimetype):
         return 1
 
-    def render(self, mimetype, content, filename=None, rev=None):
+    def render(self, req, mimetype, content, filename=None, rev=None):
         if is_binary(content):
             self.env.log.debug("Binary data; no preview available")
             return ''
@@ -195,7 +195,7 @@ class ImageRenderer(Component):
             return 8
         return 0
 
-    def render(self, mimetype, content, filename=None, rev=None):
+    def render(self, req, mimetype, content, filename=None, rev=None):
         src = '?'
         if rev:
             src += 'rev=%d&' % rev
@@ -215,11 +215,6 @@ class WikiTextRenderer(Component):
             return 8
         return 0
 
-    def render(self, mimetype, content, filename=None, rev=None):
-        # FIXME: providing an isolated HDFWrapper doesn't give wiki macros or
-        #        processors a ways to access to original HDF, which is what
-        #        they'd expect
-        from trac.web.clearsilver import HDFWrapper
+    def render(self, req, mimetype, content, filename=None, rev=None):
         from trac.WikiFormatter import wiki_to_html
-        return wiki_to_html(content, HDFWrapper(), self.env,
-                            self.env.get_db_cnx())
+        return wiki_to_html(content, req.hdf, self.env, self.env.get_db_cnx())

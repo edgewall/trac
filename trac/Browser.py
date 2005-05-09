@@ -227,8 +227,8 @@ class BrowserModule(Component):
                 preview = ' '
             else:
                 mimeview = Mimeview(self.env)
-                preview = mimeview.display(mime_type, content, node.name,
-                                           rev=node.rev)
+                preview = mimeview.render(req, mime_type, content, node.name,
+                                          node.rev)
             req.hdf['file.preview'] = preview
 
             raw_href = self.env.href.browser(node.path, rev=rev and node.rev,

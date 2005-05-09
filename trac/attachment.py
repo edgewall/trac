@@ -366,7 +366,8 @@ class AttachmentModule(Component):
                 vdata = ''
             else:
                 mimeview = Mimeview(self.env)
-                vdata = mimeview.display(mime_type, data, attachment.filename)
+                vdata = mimeview.render(req, mime_type, data,
+                                        attachment.filename)
             req.hdf['attachment.preview'] = vdata
         finally:
             fd.close()

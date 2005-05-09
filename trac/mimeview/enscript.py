@@ -107,7 +107,7 @@ class EnscriptRenderer(Component):
             return 2
         return 0
 
-    def render(self, mimetype, content, filename=None, rev=None):
+    def render(self, req, mimetype, content, filename=None, rev=None):
         cmdline = self.config.get('mimeviewer', 'enscript_path')
         cmdline += ' --color -h -q --language=html -p - -E' + types[mimetype]
         self.env.log.debug("Enscript command line: %s" % cmdline)
