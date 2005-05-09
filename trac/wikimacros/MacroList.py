@@ -4,13 +4,12 @@ Displays a list of all installed Wiki macros, including documentation if
 available.
 """
 
-from trac.util import escape
-from trac.WikiFormatter import wiki_to_html
-
 import os
 import inspect
 import imp
 import StringIO
+
+from trac.util import escape
 
 def execute(hdf, args, env):
 

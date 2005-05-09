@@ -46,9 +46,12 @@ class WikiProcessor(object):
         self.env = env
         self.name = name
         self.error = None
-        if self._builtin_processors.has_key(name):
-            self.processor = self._builtin_processors[name]
-        else:
+
+        builtin_processors = {'html': self._html_processor,
+                              'default': self._default_processor,
+                              'comment': self._comment_processor}
+        self.processor = builtin_processors.get(name)
+        if not self.processor:
             try:
                 self.processor = self._load_macro()
             except Exception, e:
@@ -62,13 +65,13 @@ class WikiProcessor(object):
                     self.processor = self._default_processor
                     self.error = e
 
-    def _comment_processor(hdf, text, env):
+    def _comment_processor(self, req, text, env):
         return ''
 
-    def _default_processor(hdf, text, env):
+    def _default_processor(self, req, text, env):
         return '<pre class="wiki">' + util.escape(text) + '</pre>\n'
 
-    def _html_processor(hdf, text, env):
+    def _html_processor(self, req, text, env):
         if Formatter._htmlproc_disallow_rule.search(text):
             err = system_message('Error: HTML block contains disallowed tags.',
                                  text)
@@ -81,18 +84,14 @@ class WikiProcessor(object):
             return err
         return text
 
-    def _mime_processor(self, hdf, text, env):
+    def _mime_processor(self, req, text, env):
         return Mimeview(env).render(req, self.name, text)
 
-    _builtin_processors = {'html': _html_processor,
-                           'default': _default_processor,
-                           'comment': _comment_processor}
-
-    def process(self, hdf, text, inline=False):
+    def process(self, req, text, inline=False):
         if self.error:
             return system_message('Error: Failed to load processor <code>%s</code>'
                                   % self.name, self.error)
-        text = self.processor(hdf, text, self.env)
+        text = self.processor(req, text, self.env)
         if inline:
             code_block_start = re.compile('^<div class="code-block">')
             code_block_end = re.compile('</div>$')
@@ -112,7 +111,7 @@ class WikiProcessor(object):
             # fall back to site-wide macros
             macros = util.safe__import__('wikimacros.' + self.name)
             module = getattr(macros, self.name)
-        return module.execute
+        return lambda req,text,env: module.execute(req and req.hdf, text, env)
 
 
 class CommonFormatter(object):
@@ -134,15 +133,18 @@ class CommonFormatter(object):
               r"(?P<wikihref>!?(^|(?<=[^A-Za-z]))[A-Z][a-z]+(?:[A-Z][a-z]*[a-z/])+(?:#[A-Za-z0-9]+)?(?=\Z|\s|[.,;:!?\)}\]]))",
               r"(?P<fancylink>!?\[(?P<fancyurl>([a-z]+:[^ ]+)) (?P<linkname>.*?)\])"]
 
-    _open_tags = []
-    env = None
-    absurls = 0
-
-    def __init__(self, env, db, absurls=0):
+    def __init__(self, env, absurls=0, db=None):
         self.env = env
-        self.db = db
+        self._db = db
+        self._open_tags = []
         self._href = absurls and env.abs_href or env.href
         self._local = env.config.get('project', 'url', '') or env.abs_href.base
+
+    def _get_db(self):
+        if not self._db:
+            self._db = self.env.get_db_cnx()
+        return self._db
+    db = property(fget=_get_db)
 
     def replace(self, fullmatch):
         for itype, match in fullmatch.groupdict().items():
@@ -377,9 +379,6 @@ class Formatter(CommonFormatter):
     _compiled_rules = re.compile('(?:' + string.join(_rules, '|') + ')')
     _processor_re = re.compile('#\!([\w+-][\w+-/]*)')
     _anchor_re = re.compile('[^\w\d\.-:]+', re.UNICODE)
-    anchors = None
-
-    hdf = None
 
     # RE patterns used by other patterna
     _helper_patterns = ('idepth', 'ldepth', 'hdepth', 'fancyurl',
@@ -392,10 +391,10 @@ class Formatter(CommonFormatter):
                                          'meta|param|doctype)')
     _htmlproc_disallow_attribute = re.compile('(?i)<[^>]*\s+(on\w+)=')
 
-    def __init__(self, hdf, env, db, absurls=0):
-        CommonFormatter.__init__(self, env, db, absurls)
-        self.hdf = hdf
-        self.anchors = []
+    def __init__(self, env, req=None, absurls=0, db=None):
+        CommonFormatter.__init__(self, env, absurls, db)
+        self.req = req
+        self._anchors = []
 
     def _macro_formatter(self, match, fullmatch):
         name = fullmatch.group('macroname')
@@ -405,7 +404,7 @@ class Formatter(CommonFormatter):
         args = util.unescape(args)
         try:
             macro = WikiProcessor(self.env, name)
-            return macro.process(self.hdf, args, 1)
+            return macro.process(self.req, args, 1)
         except Exception, e:
             return system_message('Error: Macro %s(%s) failed' % (name, args), e)
 
@@ -423,10 +422,10 @@ class Formatter(CommonFormatter):
             # an ID must start with a letter in HTML
             anchor = 'a' + anchor
         i = 1
-        while anchor in self.anchors:
+        while anchor in self._anchors:
             anchor = anchor_base + str(i)
             i += 1
-        self.anchors.append(anchor)
+        self._anchors.append(anchor)
         self.out.write('<h%d id="%s">%s</h%d>' % (depth, anchor.encode('utf-8'),
                                                   heading, depth))
 
@@ -567,7 +566,7 @@ class Formatter(CommonFormatter):
             if self.in_code_block == 0 and self.code_processor:
                 self.close_paragraph()
                 self.close_table()
-                self.out.write(self.code_processor.process(self.hdf, self.code_text))
+                self.out.write(self.code_processor.process(self.req, self.code_text))
             else:
                 self.code_text += line + os.linesep
         elif not self.code_processor:
@@ -641,13 +640,23 @@ class Formatter(CommonFormatter):
         self.close_list()
 
 
-def wiki_to_html(wikitext, hdf, env, db, absurls=0, escape_newlines=False):
+def wiki_to_html(wikitext, env, req, db=None, absurls=0, escape_newlines=False):
+    from trac.env import Environment
+    if not isinstance(env, Environment):
+        # Backwards compatibility mode for pre-0.9 macros, where the parameter
+        # list was (wikitext, hdf, env, db, ...)
+        class PseudoRequest(object):
+            hdf = None
+        pr = PseudoRequest()
+        pr.hdf = env
+        env = req
+        req = pr
+
     out = StringIO.StringIO()
-    Formatter(hdf, env, db, absurls).format(wikitext, out, escape_newlines)
+    Formatter(env, req, absurls, db).format(wikitext, out, escape_newlines)
     return out.getvalue()
 
-
-def wiki_to_oneliner(wikitext, env, db, absurls=0):
+def wiki_to_oneliner(wikitext, env, db=None, absurls=0):
     out = StringIO.StringIO()
-    OneLinerFormatter(env, db, absurls).format(wikitext, out)
+    OneLinerFormatter(env, absurls, db).format(wikitext, out)
     return out.getvalue()

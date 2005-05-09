@@ -327,7 +327,7 @@ class WikiModule(Component):
             'scroll_bar_pos': req.args.get('scroll_bar_pos', '')
         }
         if preview:
-            info['page_html'] = wiki_to_html(page.text, req.hdf, self.env, db)
+            info['page_html'] = wiki_to_html(page.text, self.env, req, db)
             info['readonly'] = int(req.args.has_key('readonly'))
         req.hdf['wiki'] = info
 
@@ -379,7 +379,7 @@ class WikiModule(Component):
         info = {
             'version': page.version,
             'readonly': page.readonly,
-            'page_html': wiki_to_html(page.text, req.hdf, self.env, db),
+            'page_html': wiki_to_html(page.text, self.env, req, db),
             'page_source': page.text, # for plain text view
             'history_href': escape(self.env.href.wiki(page.name, action='history'))
         }

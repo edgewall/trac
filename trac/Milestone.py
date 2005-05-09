@@ -228,8 +228,7 @@ def milestone_to_hdf(env, db, req, milestone):
            'href': env.href.milestone(milestone.name)}
     if milestone.description:
         hdf['description_source'] = milestone.description
-        hdf['description'] = wiki_to_html(milestone.description, req.hdf, env,
-                                          db)
+        hdf['description'] = wiki_to_html(milestone.description, env, req, db)
     if milestone.due:
         hdf['due'] = milestone.due
         hdf['due_date'] = time.strftime('%x', time.localtime(milestone.due))

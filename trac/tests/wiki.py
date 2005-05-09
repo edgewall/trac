@@ -19,8 +19,12 @@ class WikiTestCase(unittest.TestCase):
         from trac.core import ComponentManager
         from trac.config import Configuration
         from trac.log import logger_factory
+        from trac.test import InMemoryDatabase
         from trac.web.href import Href
-        class Environment(ComponentManager):
+
+        db = InMemoryDatabase()
+
+        class DummyEnvironment(ComponentManager):
             def __init__(self):
                 ComponentManager.__init__(self)
                 self.log = logger_factory('null')
@@ -33,12 +37,8 @@ class WikiTestCase(unittest.TestCase):
                 component.env = self
                 component.config = self.config
                 component.log = self.log
-        class Cursor:
-            def execute(self, *kwargs): pass
-            def fetchone(self): return []
-        class Connection:
-            def cursor(self):
-                return Cursor()
+            def get_db_cnx(self):
+                return db
 
         # Provide a test mime viewer
         from trac.core import Component, implements
@@ -49,12 +49,13 @@ class WikiTestCase(unittest.TestCase):
                 if mimetype == 'application/x-test':
                     return 8
                 return 0
-            def render(self, mimetype, content, filename=None, rev=None):
+            def render(self, req, mimetype, content, filename=None, rev=None):
                 return '<pre>' + '\nTESTING: '.join(content.splitlines()) + \
                        '</pre>\n'
 
+        env = DummyEnvironment()
         out = StringIO.StringIO()
-        Formatter(None, Environment(), Connection()).format(self.input, out)
+        Formatter(env).format(self.input, out)
         v = out.getvalue().replace('\r','')
         self.assertEquals(self.correct, v)
 

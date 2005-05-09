@@ -324,7 +324,8 @@ class NewticketModule(Component):
 
         if ticket.has_key('description'):
             req.hdf['newticket.description_preview'] = wiki_to_html(ticket['description'],
-                                                                    req.hdf, self.env, db)
+                                                                    self.env,
+                                                                    req, db)
 
         req.hdf['title'] = 'New Ticket'
         req.hdf['newticket'] = dict(zip(ticket.keys(),
@@ -464,8 +465,8 @@ class TicketModule(Component):
                 req.hdf['ticket.comment'] = util.escape(comment)
                 # Wiki format a preview of comment
                 req.hdf['ticket.comment_preview'] = wiki_to_html(comment,
-                                                                 req.hdf,
-                                                                 self.env, db)
+                                                                 self.env, req,
+                                                                 db)
         else:
             req.hdf['ticket.reassign_owner'] = req.authname
 
@@ -631,7 +632,7 @@ class TicketModule(Component):
         req.hdf['ticket.reporter_id'] = util.escape(reporter_id)
         req.hdf['title'] = '#%d (%s)' % (id, util.escape(ticket['summary']))
         req.hdf['ticket.description.formatted'] = wiki_to_html(ticket['description'],
-                                                               req.hdf, self.env,
+                                                               self.env, req,
                                                                db)
 
         opened = int(ticket['time'])
@@ -667,8 +668,7 @@ class TicketModule(Component):
                 curr_date = date
                 curr_author = author
             if field == 'comment':
-                changes[-1]['comment'] = wiki_to_html(new, req.hdf, self.env,
-                                                      db)
+                changes[-1]['comment'] = wiki_to_html(new, self.env, req, db)
             elif field == 'description':
                 changes[-1]['fields'][field] = ''
             else:

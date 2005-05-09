@@ -217,4 +217,4 @@ class WikiTextRenderer(Component):
 
     def render(self, req, mimetype, content, filename=None, rev=None):
         from trac.WikiFormatter import wiki_to_html
-        return wiki_to_html(content, req.hdf, self.env, self.env.get_db_cnx())
+        return wiki_to_html(content, self.env, req)

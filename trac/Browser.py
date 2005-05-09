@@ -50,7 +50,7 @@ def _get_changes(env, repos, revs, full=None, req=None, format=None):
                 message = util.shorten_line(message)
                 message = wiki_to_oneliner(message, env, db)
             else:
-                message = wiki_to_html(message, req.hdf, env, db,
+                message = wiki_to_html(message, env, req, db,
                                        absurls=(format == 'rss'),
                                        escape_newlines=True)
         if not message:
@@ -179,7 +179,6 @@ class BrowserModule(Component):
     def _render_file(self, req, repos, node, rev=None):
         req.perm.assert_permission(perm.FILE_VIEW)
 
-        db = self.env.get_db_cnx()
         changeset = repos.get_changeset(node.rev)
         req.hdf['file'] = {
             'rev': node.rev,
@@ -187,8 +186,8 @@ class BrowserModule(Component):
             'date': time.strftime('%x %X', time.localtime(changeset.date)),
             'age': util.pretty_timedelta(changeset.date),
             'author': changeset.author or 'anonymous',
-            'message': wiki_to_html(changeset.message or '--', req.hdf,
-                                    self.env, db, escape_newlines=True)
+            'message': wiki_to_html(changeset.message or '--', self.env, req,
+                                    escape_newlines=True)
         }
 
         mime_type = node.content_type

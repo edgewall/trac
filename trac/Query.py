@@ -615,7 +615,8 @@ class QueryModule(Component):
                 result['reporter'] = ''
             if result['description']:
                 result['description'] = escape(wiki_to_html(result['description'] or '',
-                                                            req.hdf, self.env, db, 1))
+                                                            self.env, req, db,
+                                                            absurls=1))
             if result['time']:
                 result['time'] = strftime('%a, %d %b %Y %H:%M:%S GMT',
                                           gmtime(result['time']))
