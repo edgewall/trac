@@ -609,11 +609,12 @@ class QueryModule(Component):
         db = self.env.get_db_cnx()
         results = query.execute(db)
         for result in results:
+            result['href'] = self.env.abs_href.ticket(result['id'])
             if result['reporter'].find('@') == -1:
                 result['reporter'] = ''
             if result['description']:
                 result['description'] = escape(wiki_to_html(result['description'] or '',
-                                                            None, self.env, db, 1))
+                                                            req.hdf, self.env, db, 1))
             if result['time']:
                 result['time'] = strftime('%a, %d %b %Y %H:%M:%S GMT',
                                           gmtime(result['time']))

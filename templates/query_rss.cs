@@ -6,7 +6,7 @@
   else ?>
    <title>Ticket Query</title><?cs
   /if ?>
-  <link><?cs var:base_url ?><?cs var:trac.href.query ?></link><?cs
+  <link><?cs var:base_host ?><?cs var:trac.href.query ?></link><?cs
   if:project.descr ?>
    <description><?cs var:project.descr ?></description><?cs
   /if ?>
@@ -14,10 +14,10 @@
   <image>
    <title><?cs var:project.name.encoded ?></title>
    <url><?cs
-    if:!header_logo.src_abs ?><?cs var:base_url ?><?cs
+    if:!header_logo.src_abs ?><?cs var:base_host ?><?cs
     /if ?><?cs
     var:header_logo.src ?></url>
-   <link><?cs var:base_url ?><?cs var:$trac.href.timeline ?></link><?cs
+   <link><?cs var:base_host ?><?cs var:trac.href.timeline ?></link><?cs
    if:header_logo.width ?>
     <width><?cs var:header_logo.width ?></width><?cs
    /if ?><?cs
@@ -28,8 +28,8 @@
   <generator>Trac v<?cs var:trac.version ?></generator><?cs
   each:result = query.results ?>
    <item>
-    <link><?cs var:base_url + result.href ?></link>
-    <guid isPermaLink="true"><?cs var:base_url + result.href ?></guid>
+    <link><?cs var:result.href ?></link>
+    <guid isPermaLink="true"><?cs var:result.href ?></guid>
     <title><?cs var:'#' + result.id + ': ' + result.summary ?></title><?cs
     if:result.created ?>
      <pubDate><?cs var:result.created ?></pubDate><?cs
@@ -39,7 +39,7 @@
     /if ?>
     <description><?cs var:result.description ?></description>
     <category>Tickets</category>
-    <comments><?cs var:base_url + result.href ?>#changelog</comments>
+    <comments><?cs var:result.href ?>#changelog</comments>
    </item><?cs
   /each ?>
  </channel>
