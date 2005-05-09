@@ -82,7 +82,7 @@ class WikiProcessor(object):
         return text
 
     def _mime_processor(self, hdf, text, env):
-        return Mimeview(env).display(self.name, text)
+        return Mimeview(env).render(req, self.name, text)
 
     _builtin_processors = {'html': _html_processor,
                            'default': _default_processor,
