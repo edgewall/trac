@@ -1,7 +1,10 @@
+#prefs { margin-top: -1.6em }
 * html #prefs { width: 34em } /* Set width only for IE */
 #prefs fieldset label { display: block }
 #prefs .buttons { margin-top: -1.6em }
 #prefs .choice { margin-top: -0.6em }
+
+#legend { clear: right; }
 
 /* Browser */
 h1 { margin: 0; padding: 0 0 .5em }
@@ -59,6 +62,9 @@ h1 .sep { color: #666; padding: 0 .1em }
 #chglist td.rev, #chglist td.chgset { text-align: center }
 #chglist td.rev a, #chglist td.chgset a { border-bottom: none }
 #chglist td.summary { width: 100% }
+#chglist td.summary * { margin-top: 0; margin-bottom: 0 }
+
+#paging { margin: 1em 0 }
 
 /* Styles for the revision info in the file module */
 #info {

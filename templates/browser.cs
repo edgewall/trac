@@ -3,7 +3,6 @@
 
 <div id="ctxtnav" class="nav">
  <ul>
-  <li class="last"><a href="<?cs var:browser.graph_href ?>">Revision Graph</a></li>
   <li class="last"><a href="<?cs var:browser.log_href ?>">Revision Log</a></li>
  </ul>
 </div>

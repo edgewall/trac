@@ -261,49 +261,47 @@ class LogModule(Component):
     def process_request(self, req):
         req.perm.assert_permission(perm.LOG_VIEW)
 
+        mode = req.args.get('mode', 'stop_on_copy')
         path = req.args.get('path', '/')
         rev = req.args.get('rev')
         format = req.args.get('format')
         stop_rev = req.args.get('stop_rev')
-        log_mode = req.args.get('log_mode', 'stop_on_copy')
-        full_messages = req.args.get('full_messages', '')
-        limit = int(req.args.get('limit') or self.config.get('log', 'limit', '100'))
-        # (Note: 100 has often been suggested as a reasonable default)
-            
-        repos = self.env.get_repository(req.authname)
-        normpath = repos.normalize_path(path)
-        rev = str(repos.normalize_rev(rev))
-
-#       self.authzperm.assert_permission(self.path)
+        verbose = req.args.get('verbose')
+        limit = int(req.args.get('limit') or 100)
 
         req.hdf['title'] = path + ' (log)'
-        req.hdf['log.path'] = path
-        req.hdf['log.rev'] = rev
-        req.hdf['log.limit'] = limit
-        req.hdf['log.mode'] = log_mode
-        req.hdf['log.full_messages'] = full_messages
-        if stop_rev:
-            req.hdf['log.stop_rev'] = stop_rev
-        req.hdf['log.browser_href'] = self.env.href.browser(path, rev=rev)
-        req.hdf['log.log_href'] = self.env.href.log(path, rev=rev)
+        req.hdf['log'] = {
+            'path': path,
+            'rev': rev,
+            'mode': mode,
+            'verbose': verbose,
+            'stop_rev': stop_rev,
+            'browser_href': self.env.href.browser(path, rev=rev),
+            'log_href': self.env.href.log(path, rev=rev)
+        }
 
         path_links = _get_path_links(self.env.href, path, rev)
         req.hdf['log.path'] = path_links
         if path_links:
             add_link(req, 'up', path_links[-1]['href'], 'Parent directory')
 
+        repos = self.env.get_repository(req.authname)
+        normpath = repos.normalize_path(path)
+        rev = str(repos.normalize_rev(rev))
+
         # 'node' or 'path' history: use get_node()/get_history() or get_path_history()
-        if log_mode != 'path_history':
+        if mode != 'path_history':
             try:
                 node = repos.get_node(path, rev)
-            except util.TracError:
+            except TracError:
                 node = None
             if not node:
-                log_mode = 'path_history' # show 'path' history instead of 'node' history
+                # show 'path' history instead of 'node' history
+                mode = 'path_history'
             else:
                 history = node.get_history
 
-        if log_mode == 'path_history':
+        if mode == 'path_history':
             def history(limit):
                 for h in repos.get_path_history(path, rev, limit):
                     yield h
@@ -323,45 +321,42 @@ class LogModule(Component):
                 'changeset_href': self.env.href.changeset(old_rev),
                 'change': old_chg
             }
-            if not (log_mode == 'path_history' and old_chg == Changeset.EDIT):
+            if not (mode == 'path_history' and old_chg == Changeset.EDIT):
                 info.append(item)
             if old_path and old_path != previous_path \
-               and not (log_mode == 'path_history' and old_path == normpath):
+               and not (mode == 'path_history' and old_path == normpath):
                 item['copyfrom_path'] = old_path
-                if log_mode == 'stop_on_copy':
+                if mode == 'stop_on_copy':
                     break
             if len(info) > limit: # we want limit+1 entries
                 break
             previous_path = old_path
         if info == []:
             # FIXME: we should send a 404 error here
-            raise util.TracError("The file or directory '%s' doesn't exist "
-                                 "at revision %s or at any previous revision." % (path, rev),
-                                 'Nonexistent path')
+            raise TracError("The file or directory '%s' doesn't exist "
+                            "at revision %s or at any previous revision."
+                            % (path, rev), 'Nonexistent path')
 
         def make_log_href(path, **args):
-            params = {
-                'rev': rev,
-                'log_mode': log_mode,
-                'limit': limit,
-                }
+            params = {'rev': rev, 'mode': mode, 'limit': limit}
             params.update(args)
-            if full_messages:
-                params['full_messages'] = full_messages
+            if verbose:
+                params['verbose'] = verbose
             return self.env.href.log(path, **params)
 
         if len(info) == limit+1: # limit+1 reached, there _might_ be some more
             next_rev = info[-1]['rev']
             next_path = info[-1]['path']
             add_link(req, 'next', make_log_href(next_path, rev=next_rev),
-                     'Revision Log (restarting at %s, rev. %s)' % (next_path, next_rev))
+                     'Revision Log (restarting at %s, rev. %s)'
+                     % (next_path, next_rev))
             # now, only show 'limit' results
             del info[-1]
         
         req.hdf['log.items'] = info
 
         changes = _get_changes(self.env, repos, [i['rev'] for i in info],
-                               full_messages, req, format)
+                               verbose, req, format)
         if format == 'rss':
             for cs in changes.values():
                 cs['message'] = util.escape(cs['message'])
@@ -372,7 +367,7 @@ class LogModule(Component):
         req.hdf['log.changes'] = changes
 
         if req.args.get('format') == 'changelog':
-            return 'log_changelog.cs', 'application/rss+xml'
+            return 'log_changelog.cs', 'text/plain'
         elif req.args.get('format') == 'rss':
             return 'log_rss.cs', 'application/rss+xml'
 
@@ -382,7 +377,8 @@ class LogModule(Component):
         rss_href = make_log_href(path, format='rss', stop_rev=stop_rev)
         add_link(req, 'alternate', rss_href, 'RSS Feed', 'application/rss+xml',
                  'rss')
-        changelog_href = make_log_href(path, format='changelog', stop_rev=stop_rev)
+        changelog_href = make_log_href(path, format='changelog',
+                                       stop_rev=stop_rev)
         add_link(req, 'alternate', changelog_href, 'ChangeLog', 'text/plain')
 
         return 'log.cs', None

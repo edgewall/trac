@@ -23,17 +23,44 @@
 
 <div id="content" class="log">
  <?cs call:browser_path_links(log.path, log) ?>
- <h3>Revision Log showing <?cs
-  if:log.mode == "path_history" ?>
-   Path History, up to Revision <?cs var:log.rev ?><?cs
-  else ?>
-   Node History, starting at Revision <?cs var:log.rev ?><?cs
-  /if ?><?cs 
-  if:len(links.prev) + len(links.next) > #0 ?>
-   (Page <?cs var:log.page ?>)<?cs
-  /if ?>
- </h3>
-
+ <form id="prefs" action="<?cs var:browser_current_href ?>" method="get">
+  <div>
+   <input type="hidden" name="action" value="<?cs var:log.mode ?>" />
+   <label>View log starting at <input type="text" id="rev" name="rev" value="<?cs
+    var:log.items.0.rev ?>" size="5" /></label>
+   <label>and back to <input type="text" id="stop_rev" name="stop_rev" value="<?cs
+    var:log.stop_rev ?>" size="5" /></label>
+   <br />
+   <div class="choice" ?>
+    <fieldset>
+     <legend>Mode:</legend>
+     <label for="stop_on_copy">
+      <input type="radio" id="stop_on_copy" name="mode" value="stop_on_copy" <?cs
+       if:log.mode != "follow_copy" || log.mode != "path_history" ?> checked="checked" <?cs
+       /if ?> />
+      Stop on copy 
+     </label>
+     <label for="follow_copy">
+      <input type="radio" id="follow_copy" name="mode" value="follow_copy" <?cs
+       if:log.mode == "follow_copy" ?> checked="checked" <?cs /if ?> />
+      Follow copies
+     </label>
+     <label for="path_history">
+      <input type="radio" id="path_history" name="mode" value="path_history" <?cs
+       if:log.mode == "path_history" ?> checked="checked" <?cs /if ?> />
+      Show only adds, moves and deletes
+     </label>
+    </fieldset>
+   </div>
+   <label><input type="checkbox" name="verbose" <?cs
+    if:log.verbose ?> checked="checked" <?cs
+    /if ?> /> Show full log messages</label>
+  </div>
+  <div class="buttons">
+   <input type="submit" value="Update" 
+          title="Warning: by updating, you will clear the page history" />
+  </div>
+ </form>
  <div class="diff">
   <div id="legend">
    <h3>Legend:</h3>
@@ -43,58 +70,10 @@
      <dt class="rem"></dt><dd>Removed</dd><?cs
     /if ?>
     <dt class="mod"></dt><dd>Modified</dd>
-    <dt class="cp"></dt><dd>Copied or Renamed</dd>
+    <dt class="cp"></dt><dd>Copied or renamed</dd>
    </dl>
   </div>
  </div>
-
- <form id="prefs" action="<?cs var:browser_current_href ?>" method="get">
-  <div>
-   <input type="hidden" name="action" value="<?cs var:log.mode ?>" />
-   <label for="rev">View log starting from revision:</label>
-   <input type="text" id="rev" name="rev" value="<?cs 
-    var:log.items.0.rev ?>" size="4" />
-   <label for="stop_rev">to:</label>
-   <input type="text" id="stop_rev" name="stop_rev" value="<?cs
-    var:log.stop_rev ?>" size="4" />
-   <br />
-   <label for="limit">
-    Show at most <input type="text" id="limit" name="limit" 
-                        size="2" value="<?cs var:log.limit ?>" /> entries
-   </label>
-   <div class="choice" ?>
-    <fieldset>
-     <legend>Mode:</legend>
-     <label for="stop_on_copy">
-      <input type="radio" id="stop_on_copy" name="log_mode" value="stop_on_copy" <?cs
-       if:log.mode != "follow_copy" || log.mode != "path_history" ?> checked="checked" <?cs
-       /if ?> />
-      Stop on copy 
-     </label>
-     <label for="follow_copy">
-      <input type="radio" id="follow_copy" name="log_mode" value="follow_copy" <?cs
-       if:log.mode == "follow_copy" ?> checked="checked" <?cs /if ?> />
-      Follow copy operations
-     </label>
-     <label for="path_history">
-      <input type="radio" id="path_history" name="log_mode" value="path_history" <?cs
-       if:log.mode == "path_history" ?> checked="checked" <?cs /if ?> />
-      Show only add, move and delete operations
-     </label>
-    </fieldset>
-   </div>
-   <label for="full_messages">
-    <input type="checkbox" id="full_messages" name="full_messages" <?cs
-     if:log.full_messages ?> checked="checked" <?cs /if ?> />
-    Show full log messages
-   </label>
-  </div>
-  <div class="buttons">
-   <input type="submit" value="Update" 
-          title="Warning: by updating, you will clear the page history" />
-  </div>
- </form>
-
  <table id="chglist" class="listing">
   <thead>
    <tr>
@@ -121,7 +100,7 @@
     /if ?>
     <tr class="<?cs if:name(item) % #2 ?>even<?cs else ?>odd<?cs /if ?>">
      <td class="change" style="padding-left:<?cs var:indent ?>em">
-      <a title="Examine node history starting from here" href="<?cs var:item.log_href ?>">
+      <a title="View log starting at this revision" href="<?cs var:item.log_href ?>">
        <div class="<?cs var:item.change ?>"></div>
        <span class="comment">(<?cs var:item.change ?>)</span>
       </a>
@@ -138,7 +117,19 @@
     </tr><?cs
    /each ?>
   </tbody>
- </table>
+ </table><?cs
+ if:len(links.prev) || len(links.next) ?><div id="paging" class="nav"><ul><?cs
+  if:len(links.prev) ?><li class="first<?cs
+   if:!len(links.next) ?> last<?cs /if ?>">&larr; <a href="<?cs
+   var:links.prev.0.href ?>" title="<?cs
+   var:links.prev.0.title ?>">Younger Revisions</a></li><?cs
+  /if ?><?cs
+  if:len(links.next) ?><li class="<?cs
+   if:len(links.prev) ?>first <?cs /if ?>last"><a href="<?cs
+   var:links.next.0.href ?>" title="<?cs
+   var:links.next.0.title ?>">Older Revisions</a> &rarr;</li><?cs
+  /if ?></ul></div><?cs
+ /if ?>
 
 </div>
 <?cs include "footer.cs"?>
