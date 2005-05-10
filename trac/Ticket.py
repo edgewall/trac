@@ -26,7 +26,7 @@ from trac.Notify import TicketNotifyEmail
 from trac.Timeline import ITimelineEventProvider
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
 from trac.web.main import IRequestHandler
-from trac.WikiFormatter import wiki_to_html, wiki_to_oneliner
+from trac.wiki import wiki_to_html, wiki_to_oneliner
 
 import re
 import time

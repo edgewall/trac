@@ -172,7 +172,7 @@ class Attachment(object):
 
 
 def attachment_to_hdf(env, db, req, attachment):
-    from Wiki import wiki_to_oneliner
+    from trac.wiki import wiki_to_oneliner
     if not db:
         db = env.get_db_cnx()
     hdf = {

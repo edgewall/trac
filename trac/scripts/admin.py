@@ -27,6 +27,7 @@ import sys
 import time
 import cmd
 import shlex
+import shutil
 import StringIO
 import urllib
 
@@ -553,10 +554,20 @@ class TracAdmin(cmd.Cmd):
             config.set('project', 'name', project_name)
             config.save()
 
+            # Add the default wiki macros
+            print ' Installing default wiki macros'
+            for f in os.listdir(trac.siteconfig.__default_macro_dir__):
+                if not f.endswith('.py'):
+                    continue
+                src = os.path.join(trac.siteconfig.__default_macro_dir__, f)
+                dst = os.path.join(self.__env.path, 'wiki-macros', f)
+                print " %s => %s" % (src, f)
+                shutil.copy2(src, dst)
+
             # Add a few default wiki pages
-            print ' Installing wiki pages'
+            print ' Installing default wiki pages'
             cursor = cnx.cursor()
-            self._do_wiki_load(trac.siteconfig.__default_wiki_dir__,cursor)
+            self._do_wiki_load(trac.siteconfig.__default_wiki_dir__, cursor)
             cnx.commit()
 
             print ' Indexing repository'

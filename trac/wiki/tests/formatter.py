@@ -1,4 +1,4 @@
-from trac.WikiFormatter import Formatter
+from trac.wiki.formatter import Formatter
 
 import os
 import StringIO

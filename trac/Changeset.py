@@ -26,7 +26,7 @@ from trac.versioncontrol import Changeset, Node
 from trac.versioncontrol.diff import get_diff_options, hdf_diff, unified_diff
 from trac.web.chrome import add_link, add_stylesheet
 from trac.web.main import IRequestHandler
-from trac.WikiFormatter import wiki_to_html, wiki_to_oneliner
+from trac.wiki import wiki_to_html, wiki_to_oneliner
 
 import time
 import re

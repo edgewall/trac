@@ -22,10 +22,23 @@
 # Trac support for Textile
 # See also: http://dealmeida.net/projects/textile/ for
 #
-
-from textile import textile
-
 __docformat__ = 'reStructuredText'
 
-def execute(hdf, text, env):
-    return textile(text)
+from trac.core import *
+from trac.mimeview.api import IHTMLPreviewRenderer
+
+
+class TextileRenderer(Component):
+    """
+    Renders plain text in Textile format as HTML.
+    """
+    implements(IHTMLPreviewRenderer)
+
+    def get_quality_ratio(self, mimetype):
+        if mimetype == 'text/x-textile':
+            return 8
+        return 0
+
+    def render(self, req, mimetype, content, filename=None, rev=None):
+        import textile
+        return textile.textile(content)

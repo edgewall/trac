@@ -176,7 +176,7 @@
    call:hdf_select(ticket.components, "component", ticket.component, 0) ?>
    <br />
    <label for="version">Version:</label><?cs
-   call:hdf_select(ticket.versions, "version", ticket.version, 0) ?>
+   call:hdf_select(ticket.versions, "version", ticket.version, 1) ?>
    <br />
    <label for="severity">Severity:</label><?cs
    call:hdf_select(enums.severity, "severity", ticket.severity, 0) ?>

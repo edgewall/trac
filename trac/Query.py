@@ -24,8 +24,9 @@ from trac.core import *
 from trac.Ticket import get_custom_fields, insert_custom_fields, Ticket
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
 from trac.web.main import IRequestHandler
-from trac.WikiFormatter import wiki_to_html, wiki_to_oneliner
-from trac.util import escape, sql_escape, CRLF
+from trac.wiki import wiki_to_html, wiki_to_oneliner
+from trac.wiki.api import IWikiMacroProvider
+from trac.util import escape, shorten_line, sql_escape, CRLF
 
 from time import gmtime, localtime, strftime, time
 import re
@@ -124,13 +125,15 @@ class Query(object):
 
         return self.cols
 
-    def execute(self, db):
+    def execute(self, db=None):
         if not self.cols:
             self.get_columns()
 
         sql = self.get_sql()
         self.env.log.debug("Query SQL: %s" % sql)
 
+        if not db:
+            db = self.env.get_db_cnx()
         cursor = db.cursor()
         cursor.execute(sql)
         columns = cursor.description
@@ -621,3 +624,68 @@ class QueryModule(Component):
                 result['time'] = strftime('%a, %d %b %Y %H:%M:%S GMT',
                                           gmtime(result['time']))
         req.hdf['query.results'] = results
+
+
+class QueryWikiMacro(Component):
+    """
+    Lists tickets that match certain criteria. This macro accepts two
+    parameters, the second of which is optional.
+
+    The first parameter is the query itself, and uses the same syntax as for
+    "query:" wiki links. The second parameter determines how the list of tickets
+    is presented: the default presentation is to list the ticket ID next to the
+    summary, with each ticket on a separate line. If the second parameter is
+    given and set to 'compact' then the tickets are presented as a
+    comma-separated list of ticket IDs.
+    """
+    implements(IWikiMacroProvider)
+
+    def get_macros(self):
+        yield 'TicketQuery'
+
+    def get_macro_description(self, name):
+        import inspect
+        return inspect.getdoc(QueryWikiMacro)
+
+    def render_macro(self, req, name, content):
+        query_string = ''
+        compact = 0
+        argv = content.split(',')
+        if len(argv) > 0:
+            query_string = argv[0]
+            if len(argv) > 1:
+                if argv[1].strip().lower() == 'compact':
+                    compact = 1
+        
+        try:
+            from cStringIO import StringIO
+        except NameError:
+            from StringIO import StringIO
+        buf = StringIO()
+
+        query = Query.from_string(self.env, query_string)
+        query.order = 'id'
+        tickets = query.execute()
+        if tickets:
+            if compact:
+                links = []
+                for ticket in tickets:
+                    href = self.env.href.ticket(int(ticket['id']))
+                    summary = escape(shorten_line(ticket['summary']))
+                    class_name = 'ticket'
+                    if ticket['status'] in ('closed', 'new'):
+                        class_name = '%s ticket' % ticket['status']
+                        summary += ' (%s)' % ticket['status']
+                    links.append('<a class="%s" href="%s" title="%s">#%s</a>' \
+                                 % (class_name, href, summary, ticket['id']))
+                buf.write(', '.join(links))
+            else:
+                buf.write('<dl class="wiki compact">')
+                for ticket in tickets:
+                    href = self.env.href.ticket(int(ticket['id']))
+                    buf.write('<dt><a href="%s">#%s</a></dt>' % (href,
+                                                                 ticket['id']))
+                    buf.write('<dd>%s</dd>' % (escape(ticket['summary'])))
+                buf.write('</dl>')
+
+        return buf.getvalue()

@@ -1,7 +1,8 @@
- # -*- coding: iso8859-1 -*-
+# -*- coding: iso8859-1 -*-
 #
 # Copyright (C) 2003, 2004, 2005 Edgewall Software
 # Copyright (C) 2003, 2004, 2005 Jonas Borgström <jonas@edgewall.com>
+# Copyright (C) 2004, 2005 Christopher Lenz <cmlenz@gmx.de>
 #
 # Trac is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License as
@@ -18,6 +19,7 @@
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #
 # Author: Jonas Borgström <jonas@edgewall.com>
+#         Christopher Lenz <cmlenz@gmx.de>
 
 import re
 import os
@@ -28,8 +30,9 @@ import urllib
 
 from trac import util
 from trac.mimeview import *
+from trac.wiki.api import WikiSystem
 
-__all__ = ['Formatter', 'OneLinerFormatter', 'wiki_to_html', 'wiki_to_oneliner']
+__all__ = ['wiki_to_html', 'wiki_to_oneliner', 'wiki_to_outline']
 
 
 def system_message(msg, text):
@@ -52,18 +55,24 @@ class WikiProcessor(object):
                               'comment': self._comment_processor}
         self.processor = builtin_processors.get(name)
         if not self.processor:
-            try:
-                self.processor = self._load_macro()
-            except Exception, e:
-                from trac.mimeview.api import MIME_MAP
-                if self.name in MIME_MAP.keys():
-                    self.name = MIME_MAP[self.name]
-                    self.processor = self._mime_processor
-                elif self.name in MIME_MAP.values():
-                    self.processor = self._mime_processor
-                else:
-                    self.processor = self._default_processor
-                    self.error = e
+            # Find a matching wiki macro
+            from trac.wiki import WikiSystem
+            wiki = WikiSystem(env)
+            for macro_provider in wiki.macro_providers:
+                if self.name in list(macro_provider.get_macros()):
+                    self.processor = self._macro_processor
+                    break
+        if not self.processor:
+            # Find a matching mimeview renderer
+            from trac.mimeview.api import MIME_MAP
+            if self.name in MIME_MAP.keys():
+                self.name = MIME_MAP[self.name]
+                self.processor = self._mimeview_processor
+            elif self.name in MIME_MAP.values():
+                self.processor = self._mimeview_processor
+            else:
+                self.processor = self._default_processor
+                self.error = 'No macro named [[%s]] found' % name
 
     def _comment_processor(self, req, text, env):
         return ''
@@ -84,7 +93,16 @@ class WikiProcessor(object):
             return err
         return text
 
-    def _mime_processor(self, req, text, env):
+    def _macro_processor(self, req, text, env):
+        from trac.wiki import WikiSystem
+        wiki = WikiSystem(env)
+        for macro_provider in wiki.macro_providers:
+            if self.name in list(macro_provider.get_macros()):
+                env.log.debug('Executing Wiki macro %s by provider %s'
+                              % (self.name, macro_provider))
+                return macro_provider.render_macro(req, self.name, text)
+
+    def _mimeview_processor(self, req, text, env):
         return Mimeview(env).render(req, self.name, text)
 
     def process(self, req, text, inline=False):
@@ -101,17 +119,6 @@ class WikiProcessor(object):
             return text
         else:
             return text
-
-    def _load_macro(self):
-        # Look in envdir/wiki-macros/ first
-        try:
-            path = os.path.join(self.env.path, 'wiki-macros', self.name + '.py')
-            module = imp.load_source(self.name, path)
-        except IOError:
-            # fall back to site-wide macros
-            macros = util.safe__import__('wikimacros.' + self.name)
-            module = getattr(macros, self.name)
-        return lambda req,text,env: module.execute(req and req.hdf, text, env)
 
 
 class CommonFormatter(object):
@@ -256,7 +263,8 @@ class CommonFormatter(object):
             page = page[:page.find('#')]
         page = urllib.unquote(page)
         text = urllib.unquote(text)
-        if not self.env._wiki_pages.has_key(page):
+
+        if not WikiSystem(self.env).has_page(page):
             return '<a class="missing wiki" href="%s" rel="nofollow">%s?</a>' \
                    % (self._href.wiki(page) + anchor, text)
         else:
@@ -640,6 +648,47 @@ class Formatter(CommonFormatter):
         self.close_list()
 
 
+class OutlineFormatter(Formatter):
+    """
+    A simple Wiki formatter
+    """
+    def __init__(self, env, absurls=0, db=None):
+        Formatter.__init__(self, env, None, absurls, db)
+
+    def format(self, text, out, max_depth=None):
+        self.outline = []
+        class NullOut(object):
+            def write(self, data): pass
+        Formatter.format(self, text, NullOut())
+
+        curr_depth = 0
+        for depth,link in self.outline:
+            if max_depth is not None and depth > max_depth:
+                continue
+            if depth < curr_depth:
+                out.write('</li></ol><li>' * (curr_depth - depth))
+            elif depth > curr_depth:
+                out.write('<ol><li>' * (depth - curr_depth))
+            else:
+                out.write("</li><li>\n")
+            curr_depth = depth
+            out.write(link)
+        out.write('</li></ol>' * curr_depth)
+
+    def _heading_formatter(self, match, fullmatch):
+        Formatter._heading_formatter(self, match, fullmatch)
+        depth = min(len(fullmatch.group('hdepth')), 5)
+        heading = match[depth + 1:len(match) - depth - 1]
+        anchor = self._anchors[-1]
+        self.outline.append((depth, '<a href="#%s">%s</a>' % (anchor, heading)))
+
+    def handle_code_block(self, line):
+        if line.strip() == '{{{':
+            self.in_code_block += 1
+        elif line.strip() == '}}}':
+            self.in_code_block -= 1
+
+
 def wiki_to_html(wikitext, env, req, db=None, absurls=0, escape_newlines=False):
     from trac.env import Environment
     if not isinstance(env, Environment):
@@ -659,4 +708,9 @@ def wiki_to_html(wikitext, env, req, db=None, absurls=0, escape_newlines=False):
 def wiki_to_oneliner(wikitext, env, db=None, absurls=0):
     out = StringIO.StringIO()
     OneLinerFormatter(env, absurls, db).format(wikitext, out)
+    return out.getvalue()
+
+def wiki_to_outline(wikitext, env, db=None, absurls=0, max_depth=None):
+    out = StringIO.StringIO()
+    OutlineFormatter(env, absurls ,db).format(wikitext, out, max_depth)
     return out.getvalue()

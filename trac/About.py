@@ -93,7 +93,7 @@ class AboutModule(Component):
           each:extension = extension_point.extensions ?>
            <li><a href="#<?cs var:extension.module ?>.<?cs
              var:extension.name ?>"><?cs var:extension.name ?></a></li><?cs
-          /each ?><?cs
+          /each ?></ul><?cs
          /if ?>
        </li><?cs
       /each ?></ul></td></tr><?cs

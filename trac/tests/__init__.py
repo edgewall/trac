@@ -1,7 +1,7 @@
 import unittest
 
 from trac.tests import attachment, config, core, db, env, milestone, perm, \
-                       query, ticket, wiki
+                       query, ticket
 
 def suite():
 
@@ -15,7 +15,6 @@ def suite():
     suite.addTest(perm.suite())
     suite.addTest(query.suite())
     suite.addTest(ticket.suite())
-    suite.addTest(wiki.suite())
     return suite
 
 if __name__ == '__main__':

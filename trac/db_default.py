@@ -21,7 +21,7 @@
 
 
 # Database version identifier. Used for automatic upgrades.
-db_version = 10
+db_version = 11
 
 def __mkreports(reports):
     """Utility function used to create report data in same syntax as the
@@ -100,7 +100,7 @@ CREATE TABLE ticket_change (
         UNIQUE(ticket, time, field)
 );
 CREATE TABLE ticket_custom (
-       ticket               integer,
+       ticket           integer,
        name             text,
        value            text,
        UNIQUE(ticket,name)
@@ -119,7 +119,8 @@ CREATE TABLE permission (
 );
 CREATE TABLE component (
          name            text PRIMARY KEY,
-         owner           text
+         owner           text,
+         description     text
 );
 CREATE TABLE milestone (
          name            text PRIMARY KEY,
@@ -129,7 +130,8 @@ CREATE TABLE milestone (
 );
 CREATE TABLE version (
          name            text PRIMARY KEY,
-         time            integer
+         time            integer,
+         description     text
 );
 CREATE TABLE wiki (
          name            text,
@@ -153,7 +155,6 @@ CREATE TABLE attachment (
          ipnr            text,
          UNIQUE(type,id,filename)
 );
-
 CREATE TABLE session (
          sid             text,
          username        text,
@@ -345,15 +346,13 @@ data = (('component',
                 ('component2', 'somebody'))),
            ('milestone',
              ('name', 'due', 'completed'),
-               (('', 0, 0), 
-                ('milestone1', 0, 0),
+               (('milestone1', 0, 0),
                 ('milestone2', 0, 0),
                 ('milestone3', 0, 0),
                 ('milestone4', 0, 0))),
            ('version',
              ('name', 'time'),
-               (('', 0),
-                ('1.0', 0),
+               (('1.0', 0),
                 ('2.0', 0))),
            ('enum',
              ('type', 'name', 'value'),
@@ -454,6 +453,8 @@ default_config = \
 default_components = ('trac.About', 'trac.attachment', 'trac.Browser',
                       'trac.Changeset', 'trac.Query', 'trac.Report',
                       'trac.Roadmap', 'trac.Search', 'trac.Settings',
-                      'trac.Ticket', 'trac.Timeline', 'trac.Wiki',
-                      'trac.mimeview.enscript', 'trac.mimeview.patch',
-                      'trac.mimeview.php', 'trac.mimeview.silvercity')
+                      'trac.Ticket', 'trac.Timeline', 'trac.wiki.web_ui',
+                      'trac.wiki.macros', 'trac.mimeview.enscript',
+                      'trac.mimeview.patch', 'trac.mimeview.php',
+                      'trac.mimeview.rst', 'trac.mimeview.silvercity',
+                      'trac.mimeview.txtl')

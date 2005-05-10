@@ -274,10 +274,6 @@ def dispatch_request(path_info, req, env):
 
     db = env.get_db_cnx()
 
-    # Let the wiki module build a dictionary of all page names
-    from trac.Wiki import populate_page_dict
-    populate_page_dict(db, env)
-
     try:
         try:
             check_ip = env.config.get('trac', 'check_auth_ip')
