@@ -232,7 +232,8 @@ def get_custom_fields(env):
             'value': items.get(name + '.value', '')
         }
         if field['type'] == 'select' or field['type'] == 'radio':
-            field['options'] = items.get(name + '.options', '').split('|')
+            field['options'] = map(lambda x: x.strip(),
+                                   items.get(name + '.options', '').split('|'))
         elif field['type'] == 'textarea':
             field['width'] = items.get(name + '.cols', '')
             field['height'] = items.get(name + '.rows', '')
@@ -259,7 +260,7 @@ def insert_custom_fields(env, hdf, vals = {}):
     for f in fields:
         name = f['name']
         val = vals.get('custom_' + name, f['value'])
-        pfx = 'ticket.custom.%i' % i
+        pfx = 'ticket.custom.%d' % i
         hdf['%s.name' % pfx] = f['name']
         hdf['%s.type' % pfx] = f['type']
         hdf['%s.label' % pfx] = f['label'] or f['name']
@@ -269,7 +270,7 @@ def insert_custom_fields(env, hdf, vals = {}):
             for option in f['options']:
                 hdf['%s.option.%d' % (pfx, j)] = option
                 if val and (option == val or str(j) == val):
-                    hdf['%s.option.%i.selected' % (pfx, j)] = 1
+                    hdf['%s.option.%d.selected' % (pfx, j)] = 1
                 j += 1
         elif f['type'] == 'checkbox':
             if val in util.TRUE:
