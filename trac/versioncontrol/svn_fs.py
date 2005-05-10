@@ -33,11 +33,13 @@ from svn import fs, repos, core, delta
 _kindmap = {core.svn_node_dir: Node.DIRECTORY,
             core.svn_node_file: Node.FILE}
 
-def _get_history(path, authz, fs_ptr, pool, start, end):
+def _get_history(path, authz, fs_ptr, pool, start, end, limit=None):
     history = []
     if hasattr(repos, 'svn_repos_history2'):
         # For Subversion >= 1.1
         def authz_cb(root, path, pool):
+            if limit and len(history) >= limit:
+                return 0
             return authz.has_permission(path) and 1 or 0
         def history2_cb(path, rev, pool):
             history.append((path, rev))
@@ -260,7 +262,7 @@ class SubversionRepository(Repository):
         row = cursor.fetchone()
         return row and row[0] or None
 
-    def get_path_history(self, path, rev=None):
+    def get_path_history(self, path, rev=None, limit=None):
         path = self.normalize_path(path)
         rev = self.normalize_rev(rev)
         expect_deletion = False
@@ -273,7 +275,8 @@ class SubversionRepository(Repository):
                     yield path, rev+1, Changeset.DELETE
                 newer = None # 'newer' is the previously seen history tuple
                 older = None # 'older' is the currently examined history tuple
-                for p, r in _get_history(path, self.authz, self.fs_ptr, self.pool, 0, rev):
+                for p, r in _get_history(path, self.authz, self.fs_ptr,
+                                         self.pool, 0, rev, limit):
                     older = (self.normalize_path(p), r, Changeset.ADD)
                     rev = self.previous_rev(r)
                     if newer:
@@ -337,11 +340,11 @@ class SubversionNode(Node):
             yield SubversionNode(path, self._requested_rev, self.authz,
                                  self.scope, self.fs_ptr, self._pool)
 
-    def get_history(self):
+    def get_history(self,limit=None):
         newer = None # 'newer' is the previously seen history tuple
         older = None # 'older' is the currently examined history tuple
         for path, rev in _get_history(self.scoped_path, self.authz, self.fs_ptr,
-                                      self.pool, 0, self._requested_rev):
+                                      self.pool, 0, self._requested_rev, limit):
             if rev > 0 and path.startswith(self.scope):
                 older = (path[len(self.scope):], rev, Changeset.ADD)
                 if newer:

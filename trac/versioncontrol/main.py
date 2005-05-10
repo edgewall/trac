@@ -95,7 +95,7 @@ class Repository(object):
         row = cursor.fetchone()
         return row and row[0] or None
 
-    def get_path_history(self, path, rev=None):
+    def get_path_history(self, path, rev=None, limit=None):
         """
         Retrieve all the revisions containing this path (no newer than 'rev').
         The result format should be the same as the one of Node.get_history()
@@ -145,7 +145,7 @@ class Node(object):
         """
         raise NotImplementedError
 
-    def get_history(self):
+    def get_history(self, limit=None):
         """
         Generator that yields (path, rev, chg) tuples, one for each revision in which
         the node was changed. This generator will follow copies and moves of a

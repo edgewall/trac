@@ -319,14 +319,14 @@ class LogModule(Component):
                 history = node.get_history
 
         if log_mode == 'path_history':
-            def history():
-                for h in repos.get_path_history(path, page_rev):
+            def history(limit):
+                for h in repos.get_path_history(path, page_rev, limit):
                     yield h
 
         # -- retrieve history, asking for limit+1 results
         info = []
         previous_path = repos.normalize_path(path)
-        for old_path, old_rev, old_chg in history():
+        for old_path, old_rev, old_chg in history(limit+1):
             if stop_rev and repos.rev_older_than(old_rev, stop_rev):
                 break
             old_path = repos.normalize_path(old_path)
@@ -408,6 +408,7 @@ class LogModule(Component):
             return 'log_rss.cs', 'application/rss+xml'
 
         add_stylesheet(req, 'browser.css')
+        add_stylesheet(req, 'diff.css')
 
         rss_href = make_log_href(format='rss', stop_rev=stop_rev)
         add_link(req, 'alternate', rss_href, 'RSS Feed', 'application/rss+xml',
