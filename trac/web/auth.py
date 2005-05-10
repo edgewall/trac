@@ -19,6 +19,8 @@
 #
 # Author: Jonas Borgström <jonas@edgewall.com>
 
+from __future__ import generators
+
 import time
 
 from trac import util
