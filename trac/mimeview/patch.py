@@ -133,7 +133,7 @@ class PatchRenderer(Component):
                                'newrev' : 'new', 'diff' : groups})
                 continue
             # Lines to ignore
-            if line.startswith('Index: ') or line.startswith('======'):
+            if line.startswith('Index: ') or line.startswith('======') or line == '':
                 continue
             if groups == None:
                 return None
