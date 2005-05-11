@@ -21,11 +21,11 @@ __license__ = """
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA."""
 
 
-import trac
 from trac.db_default import data as default_data
 from trac.config import Configuration
 from trac.env import Environment
 from trac.scripts import admin
+from trac.test import InMemoryDatabase
 from trac.util import get_date_format_hint, NaivePopen
 
 import os
@@ -73,7 +73,7 @@ class InMemoryEnvironment(Environment):
 
     def get_db_cnx(self):
         if not hasattr(self, '_db'):
-            self._db = trac.test.InMemoryDatabase()
+            self._db = InMemoryDatabase()
         return self._db
 
     def create(self):
@@ -138,12 +138,14 @@ class TracadminTestCase(unittest.TestCase):
         a result, there is only this one test.
         """
 
+        from trac import __version__, __license_long__, __credits__
+
         expected_results = """
 Trac Admin Console %s
 =================================================================
 %s
 %s
-""" % (trac.__version__, trac.__license_long__, trac.__credits__)
+""" % (__version__, __license_long__, __credits__)
         test_results = self._execute('about')
         self.assertEquals(expected_results, test_results)
 
@@ -155,9 +157,10 @@ Trac Admin Console %s
         has no command arguments, it is hard to call it incorrectly.  As
         a result, there is only this one test.
         """
+        from trac import __version__
 
         test_name = sys._getframe().f_code.co_name
-        d = {'version': trac.__version__,
+        d = {'version': __version__,
              'date_format_hint': get_date_format_hint()}
         expected_results = self.expected_results[test_name] % d
         test_results = self._execute('help')

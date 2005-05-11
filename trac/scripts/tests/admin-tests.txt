@@ -363,7 +363,6 @@ Command remove failed: No such value 'bad_severity'
 
 Name  Time
 ----------
-          
 1.0       
 2.0       
 
@@ -371,7 +370,6 @@ Name  Time
 
 Name  Time                    
 ------------------------------
-                              
 1.0                           
 2.0                           
 9.9   Thu Jan  1 00:00:00 2004
@@ -382,7 +380,6 @@ Command add failed: column name is not unique
 
 Name  Time
 ----------
-          
 2.0       
 9.9       
 
@@ -392,7 +389,6 @@ Command rename failed: No such version 'bad_version'
 
 Name  Time                    
 ------------------------------
-                              
 1.0                           
 2.0   Thu Jan  1 00:00:00 2004
 
@@ -402,7 +398,6 @@ Command time failed: No such version 'bad_version'
 
 Name  Time
 ----------
-          
 2.0       
 
 ===== test_version_remove_error_bad_version =====

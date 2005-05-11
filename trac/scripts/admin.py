@@ -361,7 +361,7 @@ class TracAdmin(cmd.Cmd):
         self.print_listing(['Name', 'Owner'], data)
 
     def _do_component_add(self, name, owner):
-        self.db_execsql("INSERT INTO component VALUES('%s', '%s')"
+        self.db_execsql("INSERT INTO component (name,owner) VALUES('%s','%s')"
                         % (name, owner))
 
     def _do_component_rename(self, name, newname):
