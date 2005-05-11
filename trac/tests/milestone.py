@@ -24,6 +24,18 @@ class MilestoneTestCase(unittest.TestCase):
         self.assertEqual(0, milestone.completed)
         self.assertEqual('', milestone.description)
 
+    def test_new_milestone_empty_name(self):
+        """
+        Verifies that specifying an empty milestone name results in the
+        milestone being correctly detected as non-existent.
+        """
+        milestone = Milestone(self.env, self.perm, '')
+        self.assertEqual(False, milestone.exists)
+        self.assertEqual(None, milestone.name)
+        self.assertEqual(0, milestone.due)
+        self.assertEqual(0, milestone.completed)
+        self.assertEqual('', milestone.description)
+
     def test_existing_milestone(self):
         cursor = self.db.cursor()
         cursor.execute("INSERT INTO milestone (name) VALUES ('Test')")
