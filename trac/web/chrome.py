@@ -36,7 +36,7 @@ def add_link(req, rel, href, title=None, type=None, class_name=None):
 
 def add_stylesheet(req, filename, type='text/css'):
     href = Href(req.hdf['htdocs_location'])
-    add_link(req, 'stylesheet', href.css(filename), type)
+    add_link(req, 'stylesheet', href.css(filename), type=type)
 
 
 class INavigationContributor(Interface):
