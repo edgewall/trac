@@ -556,10 +556,10 @@ class TracAdmin(cmd.Cmd):
 
             # Add the default wiki macros
             print ' Installing default wiki macros'
-            for f in os.listdir(trac.siteconfig.__default_macro_dir__):
+            for f in os.listdir(trac.siteconfig.__default_macros_dir__):
                 if not f.endswith('.py'):
                     continue
-                src = os.path.join(trac.siteconfig.__default_macro_dir__, f)
+                src = os.path.join(trac.siteconfig.__default_macros_dir__, f)
                 dst = os.path.join(self.__env.path, 'wiki-macros', f)
                 print " %s => %s" % (src, f)
                 shutil.copy2(src, dst)
