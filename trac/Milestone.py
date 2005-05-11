@@ -36,14 +36,13 @@ class Milestone(object):
 
     def __init__(self, env, perm_=None, name=None, db=None):
         self.env = env
-        self.old_name = name
         self.perm = perm_
         if name:
             self._fetch(name, db)
+            self.old_name = name
         else:
-            self.name = None
-            self.due = 0
-            self.completed = 0
+            self.name = self.old_name = None
+            self.due = self.completed = 0
             self.description = ''
 
     def _fetch(self, name, db=None):
@@ -388,10 +387,7 @@ class MilestoneModule(Component):
                 milestone.insert()
             db.commit()
 
-        if milestone.exists:
-            req.redirect(self.env.href.milestone(milestone.name))
-        else:
-            req.redirect(self.env.href.roadmap())
+        req.redirect(self.env.href.milestone(milestone.name))
 
     def _render_confirm(self, req, db, milestone):
         req.perm.assert_permission(perm.MILESTONE_DELETE)
