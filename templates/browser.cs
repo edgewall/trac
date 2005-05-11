@@ -53,7 +53,7 @@
            var:item.name ?></span><?cs
         /if ?><?cs
        else ?><?cs
-        if:item.permission != '' ?>    
+        if:item.permission != '' ?>
          <a class="file" title="View File" href="<?cs
            var:item.browser_href ?>"><?cs var:item.name ?></a><?cs
         else ?>
@@ -65,7 +65,7 @@
       <td class="size"><?cs var:item.size ?></td>
       <td class="rev"><?cs if:item.permission != '' ?><a title="View Revision Log" href="<?cs
         var:item.log_href ?>"><?cs var:item.rev ?></a><?cs else ?><?cs var:item.rev ?><?cs /if ?></td>
-      <td class="age"><span title="<?cs var:item.date ?>"><?cs
+      <td class="age"><span title="<?cs var:browser.changes[item.rev].date ?>"><?cs
         var:browser.changes[item.rev].age ?></span></td>
       <td class="change">
        <span class="author"><?cs var:browser.changes[item.rev].author ?>:</span>
