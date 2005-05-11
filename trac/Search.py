@@ -19,16 +19,17 @@
 #
 # Author: Jonas Borgström <jonas@edgewall.com>
 
+from __future__ import generators
+import re
+import time
+import string
+
 from trac import perm
 from trac.core import *
 from trac.util import TracError, escape, shorten_line
 from trac.versioncontrol.svn_authz import SubversionAuthorizer
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
 from trac.web.main import IRequestHandler
-
-import re
-import time
-import string
 
 
 class SearchModule(Component):

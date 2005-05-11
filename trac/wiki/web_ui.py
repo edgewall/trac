@@ -21,6 +21,12 @@
 # Author: Jonas Borgström <jonas@edgewall.com>
 #         Christopher Lenz <cmlenz@gmx.de>
 
+from __future__ import generators
+import os
+import re
+import time
+import StringIO
+
 from trac import perm
 from trac.attachment import attachment_to_hdf, Attachment
 from trac.core import *
@@ -31,11 +37,6 @@ from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
 from trac.web.main import IRequestHandler
 from trac.wiki.model import WikiPage
 from trac.wiki.formatter import wiki_to_html, wiki_to_oneliner
-
-import os
-import re
-import time
-import StringIO
 
 
 class WikiModule(Component):

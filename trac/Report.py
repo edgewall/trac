@@ -19,16 +19,17 @@
 #
 # Author: Jonas Borgström <jonas@edgewall.com>
 
+from __future__ import generators
+import re
+import time
+import types
+import urllib
+
 from trac import perm, util
 from trac.core import *
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
 from trac.web.main import IRequestHandler
 from trac.wiki import wiki_to_html
-
-import re
-import time
-import types
-import urllib
 
 
 dynvars_re = re.compile('\$([A-Z]+)')

@@ -21,11 +21,12 @@
 # Author: Jonas Borgström <jonas@edgewall.com>
 #         Christopher Lenz <cmlenz@gmx.de>
 
+from __future__ import generators
+import time
+
 from trac.attachment import Attachment
 from trac.core import *
 from trac.wiki.api import WikiSystem
-
-import time
 
 
 class WikiPage(object):

@@ -22,6 +22,8 @@
 #         Christopher Lenz <cmlenz@gmx.de>
 #
 
+from __future__ import generators
+
 from trac.core import *
 from trac.util import to_utf8
 

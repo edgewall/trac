@@ -19,6 +19,9 @@
 #
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
+from __future__ import generators
+import time
+
 from trac import perm
 from trac.core import *
 from trac.Ticket import get_custom_fields, Ticket
@@ -27,8 +30,6 @@ from trac.util import *
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
 from trac.web.main import IRequestHandler
 from trac.wiki import wiki_to_html, wiki_to_oneliner
-
-import time
 
 
 class Milestone(object):

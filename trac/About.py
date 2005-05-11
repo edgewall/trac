@@ -3,6 +3,7 @@
 # Copyright (C) 2004, 2005 Edgewall Software
 # Copyright (C) 2004, 2005 Jonas Borgström <jonas@edgewall.com>
 # Copyright (C) 2004, 2005 Daniel Lundin <daniel@edgewall.com>
+# Copyright (C) 2005 Christopher Lenz <cmlenz@gmx.de>
 #
 # Trac is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License as
@@ -19,7 +20,9 @@
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #
 # Author: Jonas Borgström <jonas@edgewall.com>
+#         Christopher Lenz <cmlenz@gmx.de>
 
+from __future__ import generators
 import re
 
 from trac import perm

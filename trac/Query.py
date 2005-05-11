@@ -19,6 +19,10 @@
 #
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
+from __future__ import generators
+from time import gmtime, localtime, strftime, time
+import re
+
 from trac import perm
 from trac.core import *
 from trac.Ticket import get_custom_fields, insert_custom_fields, Ticket
@@ -27,9 +31,6 @@ from trac.web.main import IRequestHandler
 from trac.wiki import wiki_to_html, wiki_to_oneliner
 from trac.wiki.api import IWikiMacroProvider
 from trac.util import escape, shorten_line, sql_escape, CRLF
-
-from time import gmtime, localtime, strftime, time
-import re
 
 
 class QuerySyntaxError(Exception):

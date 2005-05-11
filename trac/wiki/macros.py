@@ -1,7 +1,7 @@
 # -*- coding: iso8859-1 -*-
 #
-# Copyright (C) 2003, 2004, 2005 Edgewall Software
-# Copyright (C) 2003, 2004, 2005 Jonas Borgström <jonas@edgewall.com>
+# Copyright (C) 2005 Edgewall Software
+# Copyright (C) 2005 Christopher Lenz <cmlenz@gmx.de>
 #
 # Trac is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License as
@@ -17,12 +17,9 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #
-# Author: Jonas Borgström <jonas@edgewall.com>
+# Author: Christopher Lenz <cmlenz@gmx.de>
 
-from trac.core import *
-from trac.util import escape
-from trac.wiki.api import IWikiMacroProvider
-
+from __future__ import generators
 import imp
 import inspect
 import os.path
@@ -31,6 +28,10 @@ try:
     from cStringIO import StringIO
 except ImportError:
     from StringIO import StringIO
+
+from trac.core import *
+from trac.util import escape
+from trac.wiki.api import IWikiMacroProvider
 
 
 class TitleIndexMacro(Component):

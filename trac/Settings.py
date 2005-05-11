@@ -19,6 +19,8 @@
 #
 # Author: Daniel Lundin <daniel@edgewall.com>
 
+from __future__ import generators
+
 from trac.core import *
 from trac.util import escape, TracError
 from trac.web.chrome import INavigationContributor
