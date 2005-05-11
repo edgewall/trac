@@ -12,7 +12,7 @@
  if:html.norobots ?>
  <meta name="ROBOTS" content="NOINDEX, NOFOLLOW" /><?cs
  /if ?><?cs
- each:rel = links ?><?cs
+ each:rel = chrome.links ?><?cs
   each:link = rel ?><link rel="<?cs
    var:name(rel) ?>" href="<?cs var:link.href ?>"<?cs
    if:link.title ?> title="<?cs var:link.title ?>"<?cs /if ?><?cs
@@ -26,9 +26,9 @@
 <div id="banner">
 
 <div id="header"><a id="logo" href="<?cs
- var:header_logo.link ?>"><img src="<?cs var:header_logo.src ?>" width="<?cs
- var:header_logo.width ?>" height="<?cs var:header_logo.height ?>" alt="<?cs
- var:header_logo.alt ?>" /></a><hr />
+ var:chrome.logo.link ?>"><img src="<?cs var:chrome.logo.src ?>" width="<?cs
+ var:chrome.logo.width ?>" height="<?cs var:chrome.logo.height ?>" alt="<?cs
+ var:chrome.logo.alt ?>" /></a><hr />
 </div>
 
 <form id="search" action="<?cs var:trac.href.search ?>" method="get">
@@ -61,8 +61,8 @@
  /if ?><?cs
 /def ?>
 
-<div id="metanav" class="nav"><?cs call:nav(chrome.metanav) ?></div>
+<div id="metanav" class="nav"><?cs call:nav(chrome.nav.metanav) ?></div>
 </div>
 
-<div id="mainnav" class="nav"><?cs call:nav(chrome.mainnav) ?></div>
+<div id="mainnav" class="nav"><?cs call:nav(chrome.nav.mainnav) ?></div>
 <div id="main">

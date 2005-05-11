@@ -1,9 +1,9 @@
 <script type="text/javascript">searchHighlight()</script><?cs
-if:len(links.alternate) ?>
+if:len(chrome.links.alternate) ?>
 <div id="altlinks"><h3>Download in other formats:</h3><ul><?cs
- each:link = links.alternate ?><?cs
+ each:link = chrome.links.alternate ?><?cs
   set:isfirst = name(link) == 0 ?><?cs
-  set:islast = name(link) == len(links.alternate) - 1?><li<?cs
+  set:islast = name(link) == len(chrome.links.alternate) - 1?><li<?cs
     if:isfirst || islast ?> class="<?cs
      if:isfirst ?>first<?cs /if ?><?cs
      if:isfirst && islast ?> <?cs /if ?><?cs

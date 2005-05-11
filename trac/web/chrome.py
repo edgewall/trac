@@ -30,9 +30,9 @@ def add_link(req, rel, href, title=None, type=None, class_name=None):
     if type: link['type'] = type
     if class_name: link['class'] = class_name
     idx = 0
-    while req.hdf.get('links.%s.%d.href' % (rel, idx)):
+    while req.hdf.get('chrome.links.%s.%d.href' % (rel, idx)):
         idx += 1
-    req.hdf['links.%s.%d' % (rel, idx)] = link
+    req.hdf['chrome.links.%s.%d' % (rel, idx)] = link
 
 def add_stylesheet(req, filename, type='text/css'):
     href = Href(req.hdf['htdocs_location'])
@@ -82,9 +82,9 @@ class Chrome(Component):
         logo_src = self.config.get('header_logo', 'src')
         logo_src_abs = logo_src.startswith('http://') or \
                        logo_src.startswith('https://')
-        if not logo_src[0] == '/' and not logo_src_abs:
+        if not logo_src.startswith('/') and not logo_src_abs:
             logo_src = htdocs_location + logo_src
-        req.hdf['header_logo'] = {
+        req.hdf['chrome.logo'] = {
             'link': self.config.get('header_logo', 'link'),
             'alt': escape(self.config.get('header_logo', 'alt')),
             'src': logo_src,
@@ -119,6 +119,6 @@ class Chrome(Component):
             order = self.config.get('trac', category).split(',')
             items.sort(lambda x,y: cmp(order.index(x[0]), order.index(y[0])))
             for name, text in items:
-                req.hdf['chrome.%s.%s' % (category, name)] = text
+                req.hdf['chrome.nav.%s.%s' % (category, name)] = text
                 if name == active:
-                    req.hdf['chrome.%s.%s.active' % (category, name)] = 1
+                    req.hdf['chrome.nav.%s.%s.active' % (category, name)] = 1
