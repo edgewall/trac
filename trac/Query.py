@@ -585,8 +585,8 @@ class QueryModule(Component):
                     ticket['changed'] = 1
             ticket['time'] = strftime('%c', localtime(ticket['time']))
             if ticket.has_key('description'):
-                ticket['description'] = wiki_to_oneliner(ticket['description'] or '',
-                                                         self.env, db)
+                ticket['description'] = wiki_to_html(ticket['description'] or '',
+                                                     self.env, req, db)
 
         req.session['query_tickets'] = ' '.join([str(t['id']) for t in tickets])
 
