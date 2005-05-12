@@ -294,7 +294,7 @@ class WikiModule(Component):
         txt_href = self.env.href.wiki(page.name, version=version, format='txt')
         add_link(req, 'alternate', txt_href, 'Plain Text', 'text/plain')
 
-        info = {
+        req.hdf['wiki'] = {
             'page_name': page.name,
             'version': page.version,
             'readonly': page.readonly,
@@ -302,13 +302,13 @@ class WikiModule(Component):
                                                       action='history'))
         }
         if page.exists:
-            info['page_html'] = wiki_to_html(page.text, self.env, req, db)
+            req.hdf['wiki.page_html'] = wiki_to_html(page.text, self.env, req)
         else:
             if req.perm.has_permission(perm.WIKI_CREATE):
-                info['page_html'] = '<p>Describe "%s" here</p>' % page.name
+                req.hdf['wiki.page_html'] = '<p>Describe "%s" here</p>' \
+                                            % page.name
             else:
                 raise TracError('Page %s not found' % page.name)
-        req.hdf['wiki'] = info
 
         # Show attachments
         attachments = []
