@@ -58,17 +58,18 @@ class ChangesetModule(Component):
             req.redirect(self.env.href.changeset(rev))
 
         chgset = repos.get_changeset(rev)
-        req.check_modified(chgset.date, diff_options[0] + ''.join(diff_options[1]))
+        req.check_modified(chgset.date,
+                           diff_options[0] + ''.join(diff_options[1]))
 
         format = req.args.get('format')
         if format == 'diff':
-            self.render_diff(req, repos, chgset, diff_options)
+            self._render_diff(req, repos, chgset, diff_options)
             return
         elif format == 'zip':
-            self.render_zip(req, repos, chgset)
+            self._render_zip(req, repos, chgset)
             return
 
-        self.render_html(req, repos, chgset, diff_options)
+        self._render_html(req, repos, chgset, diff_options)
         add_link(req, 'alternate', '?format=diff', 'Unified Diff',
                  'text/plain', 'diff')
         add_link(req, 'alternate', '?format=zip', 'Zip Archive',
@@ -120,7 +121,7 @@ class ChangesetModule(Component):
 
     # Internal methods
 
-    def render_html(self, req, repos, chgset, diff_options):
+    def _render_html(self, req, repos, chgset, diff_options):
         """HTML version"""
         req.hdf['title'] = '[%s]' % chgset.rev
         req.hdf['changeset'] = {
@@ -194,20 +195,20 @@ class ChangesetModule(Component):
             new_content = new_node.get_content().read()
             if old_content != new_content:
                 context = 3
-                for option in diff_options:
+                for option in diff_options[1]:
                     if option[:2] == '-U':
                         context = int(option[2:])
                         break
                 tabwidth = int(self.config.get('diff', 'tab_width'))
-                changes = hdf_diff(old_content.splitlines(),
-                                   new_content.splitlines(),
+                changes = hdf_diff(util.to_utf8(old_content).splitlines(),
+                                   util.to_utf8(new_content).splitlines(),
                                    context, tabwidth,
-                                   ignore_blank_lines='-B' in diff_options,
-                                   ignore_case='-i' in diff_options,
-                                   ignore_space_changes='-b' in diff_options)
+                                   ignore_blank_lines='-B' in diff_options[1],
+                                   ignore_case='-i' in diff_options[1],
+                                   ignore_space_changes='-b' in diff_options[1])
                 req.hdf['changeset.changes.%d.diff' % idx] = changes
 
-    def render_diff(self, req, repos, chgset, diff_options):
+    def _render_diff(self, req, repos, chgset, diff_options):
         """Raw Unified Diff version"""
         req.send_response(200)
         req.send_header('Content-Type', 'text/plain;charset=utf-8')
@@ -233,16 +234,16 @@ class ChangesetModule(Component):
             new_content = old_content = ''
             new_node_info = old_node_info = ('','')
             if old_node:
-                old_content = old_node.get_content().read()
+                old_content = util.to_utf8(old_node.get_content().read())
                 old_node_info = (old_node.path, old_node.rev)
             if mimeview.is_binary(old_content):
                 continue
             if new_node:
-                new_content = new_node.get_content().read()
+                new_content = util.to_utf8(new_node.get_content().read())
                 new_node_info = (new_node.path, new_node.rev)
             if old_content != new_content:
                 context = 3
-                for option in diff_options:
+                for option in diff_options[1]:
                     if option[:2] == '-U':
                         context = int(option[2:])
                         break
@@ -254,12 +255,12 @@ class ChangesetModule(Component):
                           util.CRLF)
                 for line in unified_diff(old_content.splitlines(),
                                          new_content.splitlines(), context,
-                                         ignore_blank_lines='-B' in diff_options,
-                                         ignore_case='-i' in diff_options,
-                                         ignore_space_changes='-b' in diff_options):
+                                         ignore_blank_lines='-B' in diff_options[1],
+                                         ignore_case='-i' in diff_options[1],
+                                         ignore_space_changes='-b' in diff_options[1]):
                     req.write(line + util.CRLF)
 
-    def render_zip(self, req, repos, chgset):
+    def _render_zip(self, req, repos, chgset):
         """ZIP archive with all the added and/or modified files."""
         req.send_response(200)
         req.send_header('Content-Type', 'application/zip')
