@@ -295,13 +295,15 @@ class WikiModule(Component):
         add_link(req, 'alternate', txt_href, 'Plain Text', 'text/plain')
 
         info = {
+            'page_name': page.name,
             'version': page.version,
             'readonly': page.readonly,
-            'page_html': wiki_to_html(page.text, self.env, req, db),
             'history_href': escape(self.env.href.wiki(page.name,
                                                       action='history'))
         }
-        if not page.exists:
+        if page.exists:
+            info['page_html'] = wiki_to_html(page.text, self.env, req, db)
+        else:
             if req.perm.has_permission(perm.WIKI_CREATE):
                 info['page_html'] = '<p>Describe "%s" here</p>' % page.name
             else:
