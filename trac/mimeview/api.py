@@ -218,5 +218,5 @@ class WikiTextRenderer(Component):
         return 0
 
     def render(self, req, mimetype, content, filename=None, rev=None):
-        from trac.WikiFormatter import wiki_to_html
+        from trac.wiki import wiki_to_html
         return wiki_to_html(content, self.env, req)
