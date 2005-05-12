@@ -183,16 +183,16 @@ class Query(object):
             add_cols('reporter', 'description')
         add_cols('priority', 'time', 'changetime', self.order)
         cols.extend([c for c in self.constraints.keys() if not c in cols])
-        add_cols('priority.value AS priority_value') # for row coloring
 
         custom_fields = [f['name'] for f in get_custom_fields(self.env)]
 
         sql = []
-        sql.append("SELECT " + ",".join([c for c in cols
+        sql.append("SELECT " + ",".join(['t.%s AS %s' % (c, c) for c in cols
                                          if c not in custom_fields]))
+        sql.append(",priority.value AS priority_value")
         for k in [k for k in cols if k in custom_fields]:
-            sql.append(", %s.value AS %s" % (k, k))
-        sql.append("\nFROM ticket")
+            sql.append(",%s.value AS %s" % (k, k))
+        sql.append("\nFROM ticket AS t")
         for k in [k for k in cols if k in custom_fields]:
            sql.append("\n  LEFT OUTER JOIN ticket_custom AS %s ON " \
                       "(id=%s.ticket AND %s.name='%s')" % (k, k, k, k))
