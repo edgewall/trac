@@ -27,7 +27,7 @@
     /if ?><?cs
    /each ?><?cs
   /def ?>
-  <table><?cs each:property = ticket.properties ?><?cs
+  <table summary="Query filters"><?cs each:property = ticket.properties ?><?cs
    each:constraint = query.constraints ?><?cs
     if:property.name == name(constraint) ?>
      <tbody><tr class="<?cs var:property.name ?>">
@@ -91,7 +91,7 @@
      </tr></tbody><?cs /if ?><?cs
     /each ?><?cs
    /each ?>
-   <tr>
+   <tbody><tr class="actions">
     <td class="actions" colspan="4" style="text-align: right">
      <label for="add_filter">Add filter</label>&nbsp;
      <select name="add_filter" id="add_filter">
@@ -106,7 +106,7 @@
      </select>
      <input type="submit" name="add" value="+" />
     </td>
-   </tr>
+   </tr></tbody>
   </table>
  </fieldset>
  <p class="option">

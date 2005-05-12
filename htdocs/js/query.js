@@ -56,9 +56,12 @@ function initializeFilters() {
     var selects = tr.getElementsByTagName("select");
     for (var j = 0; j < selects.length; j++) selects[j].name = "";
 
-    var table = getAncestorByTagName(tr, "table");
-    table.deleteRow(tr.rowIndex);
-
+    var tBody = tr.parentNode;
+    tBody.deleteRow(tr.sectionRowIndex);
+    if (!tBody.rows.length) {
+        tBody.parentNode.removeChild(tBody);
+    }
+    
     if (propertyName) {
       var select = document.forms["query"].elements["add_filter"];
       for (var i = 0; i < select.options.length; i++) {
@@ -239,7 +242,7 @@ function initializeFilters() {
       var insertionPoint = getAncestorByTagName(select, "tbody");
       outer: for (var i = select.selectedIndex + 1; i < select.options.length; i++) {
         for (var j = 0; j < table.tBodies.length; j++) {
-          if (table.rows[j].className == select.options[i].value) {
+          if (table.tBodies[j].rows[0].className == select.options[i].value) {
             insertionPoint = table.tBodies[j];
             break outer;
           }
