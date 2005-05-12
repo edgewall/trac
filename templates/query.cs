@@ -148,8 +148,22 @@
 </form>
 <script type="text/javascript" src="<?cs
   var:htdocs_location ?>js/query.js"></script>
-<script type="text/javascript">
-  initializeFilters();
+<script type="text/javascript"><?cs set:idx = 0 ?>
+ var properties={<?cs each:property = ticket.properties ?><?cs
+  var:property.name ?>:{type:"<?cs var:property.type ?>",label:"<?cs
+  var:property.label ?>",options:[<?cs
+   each:option = property.options ?>"<?cs var:option ?>"<?cs
+    if:name(option) < len(property.options) -1 ?>,<?cs /if ?><?cs
+   /each ?>]}<?cs
+  set:idx = idx + 1 ?><?cs if:idx < len(ticket.properties) ?>,<?cs /if ?><?cs
+ /each ?>};<?cs set:idx = 0 ?>
+ var modes = {<?cs each:type = query.modes ?><?cs var:name(type) ?>:[<?cs
+  each:mode = type ?>{text:"<?cs var:mode.name ?>",value:"<?cs var:mode.value ?>"}<?cs
+   if:name(mode) < len(type) -1 ?>,<?cs /if ?><?cs
+  /each ?>]<?cs
+  set:idx = idx + 1 ?><?cs if:idx < len(query.modes) ?>,<?cs /if ?><?cs
+ /each ?>};
+ initializeFilters();
 </script>
 
 <?cs def:thead() ?>
@@ -227,23 +241,6 @@
  <strong>Note:</strong> See <a href="<?cs var:$trac.href.wiki ?>/TracQuery">TracQuery</a> 
  for help on using queries.
 </div>
-
-<script type="text/javascript" defer="defer"><?cs set:idx = 0 ?>
- var properties={<?cs each:property = ticket.properties ?><?cs
-  var:property.name ?>:{type:"<?cs var:property.type ?>",label:"<?cs
-  var:property.label ?>",options:[<?cs
-   each:option = property.options ?>"<?cs var:option ?>"<?cs
-    if:name(option) < len(property.options) -1 ?>,<?cs /if ?><?cs
-   /each ?>]}<?cs
-  set:idx = idx + 1 ?><?cs if:idx < len(ticket.properties) ?>,<?cs /if ?><?cs
- /each ?>};<?cs set:idx = 0 ?>
- var modes = {<?cs each:type = query.modes ?><?cs var:name(type) ?>:[<?cs
-  each:mode = type ?>{text:"<?cs var:mode.name ?>",value:"<?cs var:mode.value ?>"}<?cs
-   if:name(mode) < len(type) -1 ?>,<?cs /if ?><?cs
-  /each ?>]<?cs
-  set:idx = idx + 1 ?><?cs if:idx < len(query.modes) ?>,<?cs /if ?><?cs
- /each ?>};
-</script>
 
 </div>
 <?cs include:"footer.cs" ?>
