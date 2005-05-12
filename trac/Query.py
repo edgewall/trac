@@ -30,7 +30,7 @@ from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
 from trac.web.main import IRequestHandler
 from trac.wiki import wiki_to_html, wiki_to_oneliner
 from trac.wiki.api import IWikiMacroProvider
-from trac.util import escape, shorten_line, sql_escape, CRLF
+from trac.util import escape, shorten_line, sql_escape, CRLF, TRUE
 
 
 class QuerySyntaxError(Exception):
@@ -466,7 +466,16 @@ class QueryModule(Component):
                                     "WHERE type='severity' ORDER BY value")})
         properties.append({'name': 'keywords', 'type': 'text',
                            'label': 'Keywords'})
-        properties.append({'name': 'owner', 'type': 'text', 'label': 'Owner'})
+
+        restrict_owner = self.config.get('ticket', 'restrict_owner', '')
+        if restrict_owner.lower() in TRUE:
+            usernames = [escape(u[0]) for u in self.env.get_known_users()]
+            properties.append({'name': 'owner', 'type': 'select',
+                               'label': 'Owner', 'options': usernames})
+        else:
+            properties.append({'name': 'owner', 'type': 'text',
+                               'label': 'Owner'})
+
         properties.append({'name': 'reporter', 'type': 'text',
                            'label': 'Reporter'})
         properties.append({'name': 'cc', 'type': 'text', 'label': 'CC list'})
