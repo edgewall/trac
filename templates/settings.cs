@@ -39,10 +39,9 @@
     in a different web browser.</p>
    </div><?cs
   /if ?>
-
   <div>
    <br />
-   <input type="submit" value="Save Changes" />
+   <input type="submit" value="Submit changes" />
   </div >
  </div>
 </form><?cs

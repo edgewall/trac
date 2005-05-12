@@ -71,9 +71,9 @@
    </div>
    <div class="buttons">
     <?cs if:milestone.mode == "new"
-     ?><input type="submit" name="save" value="Add Milestone" /><?cs
+     ?><input type="submit" name="save" value="Add milestone" /><?cs
     else
-     ?><input type="submit" name="save" value="Save Changes" /><?cs
+     ?><input type="submit" name="save" value="Submit changes" /><?cs
     /if ?>
     <input type="submit" name="cancel" value="Cancel" />
    </div>
@@ -96,7 +96,7 @@
    </select>
    <div class="buttons">
     <input type="submit" name="cancel" value="Cancel" />
-    <input type="submit" name="delete" value="Delete Milestone" />
+    <input type="submit" name="delete" value="Delete milestone" />
    </div>
   </form>
  <?cs else ?>
@@ -197,7 +197,7 @@
       if:milestone.id_param ?>
        <input type="hidden" name="id" value="<?cs var:milestone.name ?>" /><?cs
       /if ?>
-      <input type="submit" value="Edit Milestone Info" />
+      <input type="submit" value="Edit milestone info" />
      </div></form><?cs
     /if ?><?cs
     if:trac.acl.MILESTONE_DELETE ?>
@@ -206,7 +206,7 @@
       if:milestone.id_param ?>
        <input type="hidden" name="id" value="<?cs var:milestone.name ?>" /><?cs
       /if ?>
-      <input type="submit" value="Delete Milestone" />
+      <input type="submit" value="Delete milestone" />
      </div></form><?cs
     /if ?>
    </div><?cs

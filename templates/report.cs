@@ -182,7 +182,7 @@
    <p><strong>Are you sure you want to delete this report?</strong></p>
    <div class="buttons">
     <input type="submit" name="cancel" value="Cancel" />
-    <input type="submit" value="Delete Report" />
+    <input type="submit" value="Delete report" />
    </div>
   </form>
  

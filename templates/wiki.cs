@@ -206,8 +206,8 @@
      <?cs /if ?>
     </fieldset>
     <div class="buttons">
-     <input type="submit" name="save" value="Save changes" />&nbsp;
      <input type="submit" name="preview" value="Preview" />&nbsp;
+     <input type="submit" name="save" value="Submit changes" />&nbsp;
      <input type="submit" name="cancel" value="Cancel" />
     </div>
     <script type="text/javascript" src="<?cs
@@ -236,19 +236,19 @@
     <?cs if:trac.acl.WIKI_MODIFY ?>
      <form method="get" action="<?cs var:wiki.current_href ?>"><div>
       <input type="hidden" name="action" value="edit" />
-      <input type="submit" value="Edit This Page" />
+      <input type="submit" value="Edit this page" />
      </div></form>
      <form method="get" action="<?cs var:wiki.attach_href ?>"><div>
       <input type="hidden" name="action" value="new" />
-      <input type="submit" value="Attach File" />
+      <input type="submit" value="Attach file" />
      </div></form>
     <?cs /if ?>
     <?cs if:trac.acl.WIKI_DELETE ?>
      <form method="post" action="<?cs var:wiki.current_href ?>"><div id="delete">
       <input type="hidden" name="action" value="delete" />
       <input type="hidden" name="version" value="<?cs var:wiki.version ?>" />
-      <input type="submit" name="delete_version" value="Delete This Version" onclick="return confirm('Do you really want to delete version <?cs var:wiki.version?> of this page?\nThis is an irreversible operation.')" />
-      <input type="submit" value="Delete Page" onclick="return confirm('Do you really want to delete all versions of this page?\nThis is an irreversible operation.')" />
+      <input type="submit" name="delete_version" value="Delete this version" onclick="return confirm('Do you really want to delete version <?cs var:wiki.version?> of this page?\nThis is an irreversible operation.')" />
+      <input type="submit" value="Delete page" onclick="return confirm('Do you really want to delete all versions of this page?\nThis is an irreversible operation.')" />
      </div></form>
     <?cs /if ?>
    </div>

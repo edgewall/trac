@@ -264,7 +264,6 @@
    var:htdocs_location ?>js/wikitoolbar.js"></script>
 
  <div class="buttons">
-  <input type="reset" value="Reset" />&nbsp;
   <input type="submit" name="preview" value="Preview" />&nbsp;
   <input type="submit" value="Submit changes" />
  </div>

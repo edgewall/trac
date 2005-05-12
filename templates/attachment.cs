@@ -29,7 +29,7 @@
    <input type="hidden" name="action" value="save" />
    <input type="hidden" name="type" value="<?cs var:attachment.parent.type ?>" />
    <input type="hidden" name="id" value="<?cs var:attachment.parent.id ?>" />
-   <input type="submit" value="Add Attachment" />
+   <input type="submit" value="Add attachment" />
    <input type="submit" name="cancel" value="Cancel" />
   </div>
  </form>
@@ -51,7 +51,7 @@
  <?cs if:attachment.can_delete ?><div class="buttons">
   <form method="get" action=""><div id="delete">
    <input type="hidden" name="action" value="delete" />
-   <input type="submit" value="Delete Attachment" onclick="return confirm('Do you really want to delete this attachment?\nThis is an irreversible operation.')" />
+   <input type="submit" value="Delete attachment" onclick="return confirm('Do you really want to delete this attachment?\nThis is an irreversible operation.')" />
   </div></form>
  </div><?cs /if ?>
 <?cs /if ?>
