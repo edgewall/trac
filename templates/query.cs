@@ -3,8 +3,9 @@
 
 <div id="ctxtnav" class="nav">
  <ul><?cs if:trac.acl.REPORT_VIEW ?>
-  <li class="last"><a href="<?cs
+  <li class="first"><a href="<?cs
     var:trac.href.report ?>">Available Reports</a></li>
+  <li class="last">Custom Query</li>
  <?cs /if ?></ul>
 </div>
 

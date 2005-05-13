@@ -4,29 +4,17 @@
 <div id="ctxtnav" class="nav">
  <h2>Report Navigation</h2>
  <ul>
-  <?cs if report.edit_href || report.copy_href || report.delete_href ?>
-  <li><b>This report:</b>
-   <ul>
-    <?cs if report.edit_href
-      ?><li <?cs if !report.delete_href && !report.copy_href ?>class="last"<?cs /if
-        ?>><a href="<?cs var:report.edit_href ?>">Edit</a></li><?cs
-     /if ?><?cs
-     if report.copy_href ?><li <?cs if !report.delete_href ?>class="last"<?cs /if
-        ?>><a href="<?cs var:report.copy_href ?>">Copy</a></li><?cs /if ?><?cs
-    if report.delete_href ?><li class="last"><a href="<?cs var:report.delete_href ?>">Delete</a></li><?cs /if ?></ul></li>
-  <?cs /if ?>
-  <?cs if:report.create_href ?>
-   <li><a href="<?cs var:report.create_href ?>">New Report</a></li>
-  <?cs /if ?>
-  <li class="last"><a href="<?cs var:$trac.href.query ?>">Custom Query</a></li>
+  <li class="first"><?cs
+   if:report.overview_href ?><a href="<?cs
+    var:report.overview_href?>">Available Reports</a><?cs
+   else ?>Available Reports<?cs
+   /if ?></li>
+  <li class="last"><a href="<?cs var:trac.href.query ?>">Custom Query</a></li>
  </ul>
 </div>
 
 <div id="content" class="report">
 
-<?cs if report.message ?>
- <div class="error"><?cs var report.message ?></div>
-<?cs else ?>
  <?cs def:report_hdr(header) ?>
    <?cs if $header ?>
      <?cs if idx > 0 ?>
@@ -97,9 +85,27 @@
   <h1><?cs var:title ?><?cs
    if:report.numrows && report.id != -1 ?><span class="numrows"> (<?cs
     var:report.numrows ?> matches)</span><?cs
-   /if ?></h1>
-  <?cs if:report.description ?><div id="description"><?cs
+   /if ?></h1><?cs
+   if:report.description ?><div id="description"><?cs
     var:report.description ?></div><?cs
+   /if ?><?cs
+   if:report.id != -1 ?><?cs
+    if:report.can_create || report.can_modify || report.can_delete ?>
+     <div class="buttons"><?cs
+      if:report.can_modify ?><form action="" method="get"><div>
+       <input type="hidden" name="action" value="edit" />
+       <input type="submit" value="Edit report" />
+      </div></form><?cs /if ?><?cs
+      if:report.can_create ?><form action="" method="get"><div>
+       <input type="hidden" name="action" value="copy" />
+       <input type="submit" value="Copy report" />
+      </div></form><?cs /if ?><?cs
+      if:report.can_delete ?><form action="" method="get"><div>
+       <input type="hidden" name="action" value="delete" />
+       <input type="submit" value="Delete report" />
+      </div></form><?cs /if ?>
+     </div><?cs
+    /if ?><?cs
    /if ?>
 
      <?cs each row = report.items ?>
@@ -167,11 +173,18 @@
        </tr>
      <?cs /each ?>
     </tbody>
-   </table>
-
-   <?cs if $idx == #0 ?>
-    <div id="report-notfound">No matches found.</div>
-   <?cs /if ?>
+   </table><?cs
+   if:report.id == -1 && report.can_create?><div class="buttons">
+    <form action="" method="get"><div>
+     <input type="hidden" name="action" value="new" />
+     <input type="submit" value="Create new report" />
+    </div></form></div><?cs
+   /if ?><?cs
+   if report.message ?>
+    <div class="system-message"><?cs var report.message ?></div><?cs
+   elif:idx == #0 ?>
+    <div id="report-notfound">No matches found.</div><?cs
+   /if ?>
 
  <?cs elif report.mode == "delete" ?>
 
@@ -227,7 +240,5 @@
   creating reports.
  </div>
  
-<?cs /if ?><?cs #report.message ?>
-
 </div>
 <?cs include "footer.cs" ?>
