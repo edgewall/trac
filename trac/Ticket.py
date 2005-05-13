@@ -51,8 +51,10 @@ class Ticket(dict):
         """Log ticket modifications so the table ticket_change can be updated"""
         if self.has_key(name) and self[name] == value:
             return
-        if not self._old.has_key(name):
+        if not self._old.has_key(name): # Changed field
             self._old[name] = self.get(name, None)
+        elif self._old[name] == value: # Change of field reverted
+            del self._old[name]
         dict.__setitem__(self, name, value)
 
     def _forget_changes(self):

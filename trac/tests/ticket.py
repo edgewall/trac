@@ -10,6 +10,13 @@ class TicketTestCase(unittest.TestCase):
         from trac.test import InMemoryDatabase
         self.db = InMemoryDatabase()
 
+    def _insert_ticket(self, summary, **kw):
+        """Helper for inserting a ticket into the database"""
+        ticket = Ticket()
+        for k,v in kw.items():
+            ticket[k] = v
+        return ticket.insert(self.db)
+
     def test_create_ticket(self):
         """Testing Ticket.insert()"""
         # Multiple test in one method, this sucks
@@ -49,6 +56,39 @@ class TicketTestCase(unittest.TestCase):
         self.failUnless(log[0][2] in ok_vals)
         self.failUnless(log[1][2] in ok_vals)
         self.failUnless(log[2][2] in ok_vals)
+
+    def test_changelog(self):
+        tkt_id = self._insert_ticket('Test', reporter='joe', component='foo',
+                                     milestone='bar')
+        ticket = Ticket(self.db, tkt_id)
+        ticket['component'] = 'bar'
+        ticket['milestone'] = 'foo'
+        ticket.save_changes(self.db, 'jane', 'Testing', when=42)
+        for t, author, field, old, new in ticket.get_changelog(self.db):
+            self.assertEqual((42, 'jane'), (t, author))
+            if field == 'component':
+                self.assertEqual(('foo', 'bar'), (old, new))
+            elif field == 'milestone':
+                self.assertEqual(('bar', 'foo'), (old, new))
+            elif field == 'comment':
+                self.assertEqual(('', 'Testing'), (old, new))
+            else:
+                self.fail('Unexpected change (%s)'
+                          % ((t, author, field, old, new),))
+
+    def test_changelog_with_reverted_change(self):
+        tkt_id = self._insert_ticket('Test', reporter='joe', component='foo')
+        ticket = Ticket(self.db, tkt_id)
+        ticket['component'] = 'bar'
+        ticket['component'] = 'foo'
+        ticket.save_changes(self.db, 'jane', 'Testing', when=42)
+        for t, author, field, old, new in ticket.get_changelog(self.db):
+            self.assertEqual((42, 'jane'), (t, author))
+            if field == 'comment':
+                self.assertEqual(('', 'Testing'), (old, new))
+            else:
+                self.fail('Unexpected change (%s)'
+                          % ((t, author, field, old, new),))
 
     def test_available_actions_full_perms(self):
         perm = Mock(has_permission=lambda x: 1)
