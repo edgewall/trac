@@ -55,7 +55,7 @@ def load_component(name, path=None, globals=None, locals=None):
 
     module = _load_module(head, head, None, path)
     if not module:
-        raise ImportError, 'No module named ' + module_name
+        raise ImportError, 'No module named ' + head
 
     while tail:
         i = tail.find('.')
