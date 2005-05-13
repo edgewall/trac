@@ -105,14 +105,16 @@ class SearchModule(Component):
 
     # Internal methods
 
-    def query_to_sql(self, q, name):
+    def query_to_sql(self, db, q, name):
         self.log.debug("Query: %s" % q)
         if q[0] == q[-1] == "'" or q[0] == q[-1] == '"':
-            sql_q = "%s LIKE '%%%s%%'" % (name, q[1:-1].replace("'''", "''"))
+            sql_q = "%s %s '%%%s%%'" % (name, db.like(),
+                                        q[1:-1].replace("'''", "''"))
         else:
             q = q.replace('\'', '\'\'')
             keywords = q.split(' ')
-            x = map(lambda x, name=name: name + ' LIKE \'%' + x + '%\'', keywords)
+            x = map(lambda x, name=name: name + ' ' + db.like() +
+                                        '\'%' + x + '%\'', keywords)
             sql_q = string.join(x, ' AND ')
         self.log.debug("SQL Condition: %s" % sql_q)
         return sql_q
@@ -214,21 +216,23 @@ class SearchModule(Component):
             q.append("SELECT 1 as type, message AS title, message, author, "
                      "'' AS keywords, rev AS data, time,0 AS ver "
                      "FROM revision WHERE %s OR %s" %
-                     (self.query_to_sql(query, 'message'),
-                      self.query_to_sql(query, 'author')))
+                     (self.query_to_sql(db, query, 'message'),
+                      self.query_to_sql(db, query, 'author')))
         if tickets:
             q.append("SELECT DISTINCT 2 as type, a.summary AS title, "
                      "a.description AS message, a.reporter AS author, "
-                     "a.keywords as keywords, a.id AS data, a.time as time, 0 AS ver "
-                     "FROM ticket a LEFT JOIN ticket_change b ON a.id = b.ticket "
+                     "a.keywords as keywords, %s AS data, a.time as time, "
+                     "0 AS ver FROM ticket a "
+                     "LEFT JOIN ticket_change b ON a.id = b.ticket "
                      "WHERE (b.field='comment' AND %s ) OR "
                      "%s OR %s OR %s OR %s OR %s" %
-                     (self.query_to_sql(query, 'b.newvalue'),
-                      self.query_to_sql(query, 'summary'),
-                      self.query_to_sql(query, 'keywords'),
-                      self.query_to_sql(query, 'description'),
-                      self.query_to_sql(query, 'reporter'),
-                      self.query_to_sql(query, 'cc')))
+                     (db.cast('a.id', 'text'),
+                      self.query_to_sql(db, query, 'b.newvalue'),
+                      self.query_to_sql(db, query, 'summary'),
+                      self.query_to_sql(db, query, 'keywords'),
+                      self.query_to_sql(db, query, 'description'),
+                      self.query_to_sql(db, query, 'reporter'),
+                      self.query_to_sql(db, query, 'cc')))
         if wiki:
             q.append("SELECT 3 as type, text AS title, text AS message,"
                      "author, '' AS keywords, w1.name AS data, time,"
@@ -238,9 +242,9 @@ class SearchModule(Component):
                      "FROM wiki GROUP BY name) w2 "
                      "WHERE w1.version = w2.ver AND w1.name = w2.name  AND "
                      "(%s OR %s OR %s)" %
-                     (self.query_to_sql(query, 'w1.name'),
-                      self.query_to_sql(query, 'w1.author'),
-                      self.query_to_sql(query, 'w1.text')))
+                     (self.query_to_sql(db, query, 'w1.name'),
+                      self.query_to_sql(db, query, 'w1.author'),
+                      self.query_to_sql(db, query, 'w1.text')))
 
         if not q:
             return [], 0

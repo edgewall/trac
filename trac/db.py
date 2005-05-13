@@ -166,6 +166,12 @@ class SQLiteConnection(ConnectionWrapper):
         cnx = sqlite.connect(path, timeout=int(params.get('timeout', 10000)))
         ConnectionWrapper.__init__(self, cnx)
 
+    def cast(self, column, type):
+        return column
+
+    def like(self):
+        return 'LIKE'
+
     def get_last_id(self, table, column='id'):
         return self.cnx.db.sqlite_last_insert_rowid()
 
@@ -219,6 +225,15 @@ class PostgreSQLConnection(ConnectionWrapper):
             path = path[1:]
         cnx = PgSQL.connect('', user, password, host, path, port)
         ConnectionWrapper.__init__(self, cnx)
+
+    def cast(self, column, type):
+        # Temporary hack needed for the union of selects in the search module
+        return 'CAST(%s AS %s)' % (column, type)
+
+    def like(self):
+        # Temporary hack needed for the case-insensitive string matching in the
+        # search module
+        return 'ILIKE'
 
     def get_last_id(self, table, column='id'):
         cursor = self.cursor()
