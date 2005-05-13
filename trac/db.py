@@ -29,6 +29,8 @@ import time
 import urllib
 from threading import Condition, Lock
 
+__all__ = ['get_cnx_pool', 'init_db']
+
 
 class IterableCursor(object):
     """
@@ -167,11 +169,104 @@ class SQLiteConnection(ConnectionWrapper):
     def get_last_id(self, table, column='id'):
         return self.cnx.db.sqlite_last_insert_rowid()
 
+    def init_db(cls, path, params={}):
+        if path != ':memory:':
+            # make the directory to hold the database
+            if os.path.exists(path):
+                raise TracError, 'Database already exists at %s' % path
+            os.makedirs(os.path.split(path)[0])
+        import sqlite
+        cnx = sqlite.connect(path, timeout=int(params.get('timeout', 10000)))
+        cursor = cnx.cursor()
+        cursor.execute(cls._get_init_sql())
+        cnx.commit()
+    init_db = classmethod(init_db)
 
-_cnx_map = {'sqlite': SQLiteConnection}
+    def _get_init_sql(cls):
+        sql = []
+        from trac.db_default import schema, Table, Index
+        for table in [t for t in schema if isinstance(t, Table)]:
+            sql.append("CREATE TABLE %s (" % table.name)
+            coldefs = []
+            for column in table.columns:
+                ctype = column.type.upper()
+                if column.auto_increment:
+                    ctype = "INTEGER PRIMARY KEY"
+                elif len(table.key) == 1 and column.name in table.key:
+                    ctype += " PRIMARY KEY"
+                elif ctype == "INT":
+                    ctype = "INTEGER"
+                coldefs.append("    %s %s" % (column.name, ctype))
+            if len(table.key) > 1:
+                coldefs.append("    UNIQUE (%s)" % ','.join(table.key))
+            sql.append(',\n'.join(coldefs) + '\n);')
+        for index in [i for i in schema if isinstance(i, Index)]:
+            sql.append("CREATE INDEX %s ON %s (%s);"
+                       % (index.name, index.table, ','.join(index.columns)))
+        return '\n'.join(sql)
+    _get_init_sql = classmethod(_get_init_sql)
+
+
+class PostgreSQLConnection(ConnectionWrapper):
+    """Connection wrapper for PostgreSQL."""
+
+    __slots__ = ['cnx']
+
+    def __init__(self, path, user=None, password=None, host=None, port=None,
+                 params={}):
+        from pyPgSQL import libpq, PgSQL
+        if path.startswith('/'):
+            path = path[1:]
+        cnx = PgSQL.connect('', user, password, host, path, port)
+        ConnectionWrapper.__init__(self, cnx)
+
+    def get_last_id(self, table, column='id'):
+        cursor = self.cursor()
+        cursor.execute("SELECT %s FROM %s WHERE %s=CURRVAL('%s_%s_seq')"
+                       % (column, table, column, table, column))
+        return cursor.fetchone()[0]
+
+    def init_db(cls, **args):
+        from pyPgSQL import libpq, PgSQL
+
+        sql = []
+        from trac.db_default import schema, Table, Index
+        for table in [t for t in schema if isinstance(t, Table)]:
+            sql.append("CREATE TABLE %s (" % table.name)
+            coldefs = []
+            for column in table.columns:
+                ctype = column.type
+                if column.auto_increment:
+                    ctype = "SERIAL"
+                coldefs.append("    %s %s" % (column.name, ctype))
+            if len(table.key) > 1:
+                coldefs.append("    CONSTRAINT %s_pk PRIMARY KEY (%s)"
+                               % (table.name, ','.join(table.key)))
+            sql.append(',\n'.join(coldefs) + '\n);')
+        for index in [i for i in schema if isinstance(i, Index)]:
+            sql.append("CREATE INDEX %s ON %s (%s);"
+                       % (index.name, index.table, ','.join(index.columns)))
+
+        self = cls(**args)
+        cursor = self.cursor()
+        cursor.execute('\n'.join(sql))
+        self.commit()
+        return self
+
+    init_db = classmethod(init_db)
+
+
+_cnx_map = {'postgres': PostgreSQLConnection, 'sqlite': SQLiteConnection}
+
+def init_db(env_path, db_str):
+    cls, args = _get_cnx_class(env_path, db_str)
+    cls.init_db(**args)
 
 def get_cnx_pool(env):
-    db_str = env.config.get('trac', 'database')
+    cls, args = _get_cnx_class(env.path, env.config.get('trac', 'database'))
+    return ConnectionPool(5, cls, **args)
+
+def _get_cnx_class(env_path, db_str):
     scheme, args = _parse_db_str(db_str)
     if not scheme in _cnx_map:
         raise TracError, 'Unsupported database type "%s"' % scheme
@@ -180,9 +275,9 @@ def get_cnx_pool(env):
         # Special case for SQLite to support a path relative to the
         # environment directory
         if args['path'] != ':memory:' and not args['path'].startswith('/'):
-            args['path'] = os.path.join(env.path, args['path'].lstrip('/'))
+            args['path'] = os.path.join(env_path, args['path'].lstrip('/'))
 
-    return ConnectionPool(5, _cnx_map[scheme], **args)
+    return _cnx_map[scheme], args
 
 def _parse_db_str(db_str):
     scheme, rest = db_str.split(':', 1)
@@ -244,6 +339,3 @@ def _parse_db_str(db_str):
     args = zip(('user', 'password', 'host', 'port', 'path', 'params'),
                (user, password, host, port, path, params))
     return scheme, dict(filter(lambda x: x[1], args))
-
-
-__all__ = ['get_cnx']

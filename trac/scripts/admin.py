@@ -97,13 +97,15 @@ class TracAdmin(cmd.Cmd):
         except:
             return 0
         return 1
-        
-    def env_create(self):
+
+    def env_create(self, db_str):
         try:
-            self.__env = Environment(self.envname, create=1)
+            self.__env = Environment(self.envname, create=True, db_str=db_str)
             return self.__env
         except Exception, e:
             print 'Failed to create environment.', e
+            import traceback
+            traceback.print_exc()
             sys.exit(1)
 
     def db_open(self):
@@ -496,6 +498,16 @@ class TracAdmin(cmd.Cmd):
         dp = 'My Project'
         returnvals.append(raw_input('Project Name [%s]> ' % dp) or dp)
         print
+        print ' Please specify the connection string for the database to use.'
+        print ' By default, a local SQLite database is created in the environment '
+        print ' directory. It is also possible to use an already existing '
+        print ' PostgreSQL database (check the Trac documentation for the exact '
+        print ' connection string syntax).'
+        print
+        ddb = 'sqlite:db/trac.db'
+        prompt = 'Database connection string [%s]> ' % ddb
+        returnvals.append(raw_input(prompt) or ddb)
+        print
         print ' Please specify the absolute path to the project Subversion repository.'
         print ' Repository must be local, and trac-admin requires read+write'
         print ' permission to initialize the Trac database.'
@@ -511,43 +523,38 @@ class TracAdmin(cmd.Cmd):
         prompt = 'Templates directory [%s]> ' % dt
         returnvals.append(raw_input(prompt) or dt)
         return returnvals
-         
+
     def do_initenv(self, line):
         if self.env_check():
             print "Initenv for '%s' failed.\nDoes an environment already exist?" % self.envname
             return
         arg = self.arg_tokenize(line)
         project_name = None
+        db_str = None
         repository_dir = None
         templates_dir = None
         if len(arg) == 1:
             returnvals = self.get_initenv_args()
-            project_name = returnvals[0]
-            repository_dir = returnvals[1]
-            templates_dir = returnvals[2]
+            project_name, db_str, repository_dir, templates_dir = returnvals
         elif len(arg)!= 3:
             print 'Wrong number of arguments to initenv %d' % len(arg)
             return
         else:
-            project_name = arg[0]
-            repository_dir = arg[1]
-            templates_dir = arg[2]
+            project_name, db_str, repository_dir, templates_dir = arg[0:3]
 
-        if not os.access(os.path.join(templates_dir, 'browser.cs'), os.F_OK) \
-           or not os.access(os.path.join(templates_dir, 'ticket.cs'), os.F_OK):
+        if not os.access(os.path.join(templates_dir, 'header.cs'), os.F_OK):
             print templates_dir, "doesn't look like a Trac templates directory"
             return
         try:
             print 'Creating and Initializing Project'
-            self.env_create()
-            cnx = self.__env.get_db_cnx()
-            print ' Inserting default data'
-            self.__env.insert_default_data()
+            self.env_create(db_str)
 
             print ' Configuring Project'
             config = self.__env.config
             print '  trac.repository_dir'
             config.set('trac', 'repository_dir', repository_dir)
+            print '  trac.database'
+            config.set('trac', 'database', db_str)
             print '  trac.templates_dir'
             config.set('trac', 'templates_dir', templates_dir)
             print '  project.name'
@@ -566,6 +573,7 @@ class TracAdmin(cmd.Cmd):
 
             # Add a few default wiki pages
             print ' Installing default wiki pages'
+            cnx = self.__env.get_db_cnx()
             cursor = cnx.cursor()
             self._do_wiki_load(trac.siteconfig.__default_wiki_dir__, cursor)
             cnx.commit()
@@ -575,7 +583,9 @@ class TracAdmin(cmd.Cmd):
             repos.sync()
 
         except Exception, e:
-            print 'Failed to initialize database.', e
+            print 'Failed to initialize environment.', e
+            import traceback
+            traceback.print_exc()
             sys.exit(2)
 
 
@@ -824,8 +834,8 @@ class TracAdmin(cmd.Cmd):
             print 'Command %s failed:' % arg[0], e
 
     def _do_enum_list(self, type):
-        data = self.db_execsql("SELECT name FROM enum WHERE type='%s'"
-                               % type)
+        data = self.db_execsql("SELECT name FROM enum WHERE type='%s' "
+                               "ORDER BY value" % type)
         self.print_listing(['Possible Values'], data)
 
     def _do_enum_add(self, type, name):

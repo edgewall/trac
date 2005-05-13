@@ -49,11 +49,11 @@ class Environment(ComponentManager):
     """
     __cnx_pool = None
 
-    def __init__(self, path, create=0):
+    def __init__(self, path, create=False, db_str=None):
         ComponentManager.__init__(self)
         self.path = path
         if create:
-            self.create()
+            self.create(db_str)
         self.verify()
         self.load_config()
 
@@ -105,7 +105,7 @@ class Environment(ComponentManager):
         repos = SubversionRepository(repos_dir, authz, self.log)
         return CachedRepository(self.get_db_cnx(), repos, authz, self.log)
 
-    def create(self):
+    def create(self, db_str=None):
         def _create_file(fname, data=None):
             fd = open(fname, 'w')
             if data: fd.write(data)
@@ -144,36 +144,27 @@ class Environment(ComponentManager):
 # Site CSS - Place custom CSS, including overriding styles here.
 ?>
 """)
-        # Create default database
-        import sqlite
-        os.mkdir(os.path.join(self.path, 'db'))
-        cnx = sqlite.connect(os.path.join(self.path, 'db', 'trac.db'))
-        cursor = cnx.cursor()
-        cursor.execute(db_default.schema)
-        cnx.commit()
 
-    def insert_default_data(self):
-        def prep_value(v):
-            if v == None:
-                return 'NULL'
-            else:
-                return '"%s"' % v
-        cnx = self.get_db_cnx()
-        cursor = cnx.cursor()
-
-        for t in xrange(0, len(db_default.data)):
-            table = db_default.data[t][0]
-            cols = ','.join(db_default.data[t][1])
-            for row in db_default.data[t][2]:
-                values = ','.join(map(prep_value, row))
-                sql = "INSERT INTO %s (%s) VALUES(%s);" % (table, cols, values)
-                cursor.execute(sql)
-
+        # Setup the default configuration
+        self.load_config()
         for section,name,value in db_default.default_config:
             self.config.set(section, name, value)
+        self.config.set('trac', 'database', db_str)
         self.config.save()
 
-        cnx.commit()
+        # Create the database
+        cnx = db.init_db(self.path, db_str)
+        self._insert_default_data(cnx)
+
+    def _insert_default_data(self, db=None):
+        if not db:
+            db = self.get_db_cnx()
+        cursor = db.cursor()
+        for table, cols, vals in db_default.data:
+            cursor.executemany("INSERT INTO %s (%s) VALUES (%s)" % (table,
+                               ','.join(cols), ','.join(['%s' for c in cols])),
+                               vals)
+        db.commit()
 
     def get_version(self):
         cnx = self.get_db_cnx()

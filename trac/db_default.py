@@ -34,140 +34,153 @@ def __mkreports(reports):
 
 
 ##
-## Default data
+## Database schema
 ##
 
-schema = """
-CREATE TABLE revision (
-        rev             text PRIMARY KEY,
-        time            integer,
-        author          text,
-        message         text
-);
-CREATE TABLE node_change (
-        rev             text,
-        path            text,
-        kind            char(1), -- 'D' for directory, 'F' for file
-        change          char(1),
-        base_path       text,
-        base_rev        text,
-        UNIQUE(rev, path, change)
-);
-CREATE TABLE auth_cookie (
-        cookie          text,
-        name            text,
-        ipnr            text,
-        time            integer,
-        UNIQUE(cookie, name, ipnr)
-);
-CREATE TABLE enum (
-        type            text,
-        name            text,
-        value           text,
-        UNIQUE(name,type)
-);
-CREATE TABLE system (
-        name            text PRIMARY KEY,
-        value           text,
-        UNIQUE(name)
-);
-CREATE TABLE ticket (
-        id              integer PRIMARY KEY,
-        time            integer,        -- the time it was created
-        changetime      integer,
-        component       text,
-        severity        text,
-        priority        text,
-        owner           text,           -- who is this ticket assigned to
-        reporter        text,
-        cc              text,           -- email addresses to notify
-        url             text,           -- url related to this ticket
-        version         text,           -- 
-        milestone       text,           -- 
-        status          text,
-        resolution      text,
-        summary         text,           -- one-line summary
-        description     text,           -- problem description (long)
-        keywords        text
-);
-CREATE TABLE ticket_change (
-        ticket          integer,
-        time            integer,
-        author          text,
-        field           text,
-        oldvalue        text,
-        newvalue        text,
-        UNIQUE(ticket, time, field)
-);
-CREATE TABLE ticket_custom (
-       ticket           integer,
-       name             text,
-       value            text,
-       UNIQUE(ticket,name)
-);
-CREATE TABLE report (
-        id              integer PRIMARY KEY,
-        author          text,
-        title           text,
-        sql             text,
-        description     text
-);
-CREATE TABLE permission (
-        username        text,           -- 
-        action          text,           -- allowable activity
-        UNIQUE(username,action)
-);
-CREATE TABLE component (
-         name            text PRIMARY KEY,
-         owner           text,
-         description     text
-);
-CREATE TABLE milestone (
-         name            text PRIMARY KEY,
-         due             integer,
-         completed       integer,
-         description     text
-);
-CREATE TABLE version (
-         name            text PRIMARY KEY,
-         time            integer,
-         description     text
-);
-CREATE TABLE wiki (
-         name            text,
-         version         integer,
-         time            integer,
-         author          text,
-         ipnr            text,
-         text            text,
-         comment         text,
-         readonly        integer,
-         UNIQUE(name,version)
-);
-CREATE TABLE attachment (
-         type            text,
-         id              text,
-         filename        text,
-         size            integer,
-         time            integer,
-         description     text,
-         author          text,
-         ipnr            text,
-         UNIQUE(type,id,filename)
-);
-CREATE TABLE session (
-         sid             text,
-         username        text,
-         var_name        text,
-         var_value       text,
-         UNIQUE(sid,var_name)
-);
+class Table(object):
+    def __init__(self, name, key=[]):
+        self.name = name
+        self.columns = []
+        self.key = key
+        if isinstance(key, (str, unicode)):
+            self.key = [key]
+    def __getitem__(self, columns):
+        self.columns = columns
+        return self
 
-CREATE INDEX node_change_idx    ON node_change(rev);
-CREATE INDEX ticket_change_idx  ON ticket_change(ticket, time);
-CREATE INDEX wiki_idx           ON wiki(name,version);
-CREATE INDEX session_idx        ON session(sid,var_name);
-"""
+class Column(object):
+    def __init__(self, name, type='text', size=None, unique=False,
+                 auto_increment=False):
+        self.name = name
+        self.type = type
+        self.size = size
+        self.auto_increment = auto_increment
+
+class Index(object):
+    def __init__(self, name, table):
+        self.name = name
+        self.table = table
+        self.columns = []
+    def __getitem__(self, columns):
+        self.columns = columns
+        return self
+
+schema = [
+    # Common
+    Table('system', key='name')[
+        Column('name'),
+        Column('value')],
+    Table('permission', key=('username', 'action'))[
+        Column('username'),
+        Column('action')],
+    Table('auth_cookie', key=('cookie', 'ipnr', 'name'))[
+        Column('cookie'),
+        Column('name'),
+        Column('ipnr'),
+        Column('time', type='int')],
+    Table('session', key=('sid', 'var_name'))[
+        Column('sid'),
+        Column('username'),
+        Column('var_name'),
+        Column('var_value')],
+    Index('session_idx', 'session')['sid', 'var_name'],
+
+    # Attachments
+    Table('attachment', key=('type', 'id', 'filename'))[
+        Column('type'),
+        Column('id'),
+        Column('filename'),
+        Column('size', type='int'),
+        Column('time', type='int'),
+        Column('description'),
+        Column('author'),
+        Column('ipnr')],
+
+    # Wiki system
+    Table('wiki', key=('name', 'version'))[
+        Column('name'),
+        Column('version', type='int'),
+        Column('time', type='int'),
+        Column('author'),
+        Column('ipnr'),
+        Column('text'),
+        Column('comment'),
+        Column('readonly', type='int')],
+    Index('wiki_idx', 'wiki')['name', 'version'],
+
+    # Version control cache
+    Table('revision', key=('rev'))[
+        Column('rev'),
+        Column('time', type='int'),
+        Column('author'),
+        Column('message')],
+    Table('node_change', key=('rev', 'path'))[
+        Column('rev'),
+        Column('path'),
+        Column('kind', size=1),
+        Column('change', size=1),
+        Column('base_path'),
+        Column('base_rev')],
+    Index('node_change_idx', 'node_change')['rev',],
+
+    # Ticket system
+    Table('ticket', key='id')[
+        Column('id', auto_increment=True),
+        Column('time', type='int'),
+        Column('changetime', type='int'),
+        Column('component'),
+        Column('severity'),
+        Column('priority'),
+        Column('owner'),
+        Column('reporter'),
+        Column('cc'),
+        Column('url'),
+        Column('version'),
+        Column('milestone'),
+        Column('status'),
+        Column('resolution'),
+        Column('summary'),
+        Column('description'),
+        Column('keywords')],
+    Table('ticket_change', key=('ticket', 'time', 'field'))[
+        Column('ticket', type='int'),
+        Column('time', type='int'),
+        Column('author'),
+        Column('field'),
+        Column('oldvalue'),
+        Column('newvalue')],
+    Table('ticket_custom', key=('ticket', 'name'))[
+        Column('ticket', type='int'),
+        Column('name'),
+        Column('value')],
+    Table('enum', key=('type', 'name'))[
+        Column('type'),
+        Column('name'),
+        Column('value')],
+    Table('component', key='name')[
+        Column('name'),
+        Column('owner'),
+        Column('description')],
+    Table('milestone', key='name')[
+        Column('name'),
+        Column('due', type='int'),
+        Column('completed', type='int'),
+        Column('description')],
+    Table('version', key='name')[
+        Column('name'),
+        Column('time', type='int'),
+        Column('description')],
+    Index('ticket_change_idx', 'ticket_change')['ticket', 'time'],
+
+    # Report system
+    Table('report')[
+        Column('id', auto_increment=True),
+        Column('author'),
+        Column('title'),
+        Column('sql'),
+        Column('description')],
+]
+
 
 ##
 ## Default Reports

@@ -11,8 +11,7 @@ class EnvironmentTestCase(unittest.TestCase):
 
     def setUp(self):
         env_path = os.path.join(tempfile.gettempdir(), 'trac-tempenv')
-        self.env = Environment(env_path, create=1)
-        self.env.insert_default_data()
+        self.env = Environment(env_path, create=True, db_str='sqlite:db/trac.db')
         self.db = self.env.get_db_cnx()
 
     def tearDown(self):

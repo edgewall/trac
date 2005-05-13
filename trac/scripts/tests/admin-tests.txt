@@ -277,7 +277,7 @@ lowest
 new_priority   
 
 ===== test_priority_add_error_already_exists =====
-Command add failed: columns name, type are not unique
+Command add failed: columns type, name are not unique
 ===== test_priority_change_ok =====
 
 Possible Values
@@ -291,7 +291,7 @@ lowest
 ===== test_priority_change_error_bad_priority =====
 Command change failed: No such value 'bad_priority'
 ===== test_priority_change_error_bad_new_name =====
-Command change failed: columns name, type are not unique
+Command change failed: columns type, name are not unique
 ===== test_priority_remove_ok =====
 
 Possible Values
@@ -329,7 +329,7 @@ enhancement
 new_severity   
 
 ===== test_severity_add_error_already_exists =====
-Command add failed: columns name, type are not unique
+Command add failed: columns type, name are not unique
 ===== test_severity_change_ok =====
 
 Possible Values 
@@ -345,7 +345,7 @@ enhancement
 ===== test_severity_change_error_bad_severity =====
 Command change failed: No such value 'bad_severity'
 ===== test_severity_change_error_bad_new_name =====
-Command change failed: columns name, type are not unique
+Command change failed: columns type, name are not unique
 ===== test_severity_remove_ok =====
 
 Possible Values

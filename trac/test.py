@@ -110,8 +110,7 @@ class InMemoryDatabase(SQLiteConnection):
         SQLiteConnection.__init__(self, ':memory:')
 
         cursor = self.cnx.cursor()
-        from trac.db_default import schema
-        cursor.execute(schema)
+        cursor.execute(SQLiteConnection._get_init_sql())
         self.cnx.commit()
 
 

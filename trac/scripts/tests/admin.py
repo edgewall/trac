@@ -76,7 +76,7 @@ class InMemoryEnvironment(Environment):
             self._db = InMemoryDatabase()
         return self._db
 
-    def create(self):
+    def create(self, db_str=None):
         pass
 
     def verify(self):
@@ -105,9 +105,9 @@ class TracadminTestCase(unittest.TestCase):
                                             '===== (test_[^ ]+) =====')
 
     def setUp(self):
-        self.env = InMemoryEnvironment('', create=1)
-        self.env.insert_default_data()
+        self.env = InMemoryEnvironment('', create=True)
         self.db = self.env.get_db_cnx()
+        self.env._insert_default_data(self.db)
 
         self._admin = admin.TracAdmin()
         self._admin.env_set('', self.env)
