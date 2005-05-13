@@ -57,7 +57,7 @@ class SessionTestCase(unittest.TestCase):
         req = Mock(authname='john', cgi_location='/', incookie=incookie,
                    outcookie=outcookie)
         session = Session(self.env, self.db, req)
-        self.assertEqual(None, session.sid)
+        self.assertEqual('john', session.sid)
         session['foo'] = 'bar'
         session.save()
         self.assertEquals(0, outcookie['trac_session']['expires'])
@@ -68,8 +68,7 @@ class SessionTestCase(unittest.TestCase):
         authenticated session when the user logs in.
         """
         cursor = self.db.cursor()
-        cursor.execute("INSERT INTO session (sid,username,var_name,var_value) "
-                       "VALUES ('123456', 'anonymous', 'foo', 'bar')")
+        cursor.execute("INSERT INTO session VALUES ('123456', 0, 'foo', 'bar')")
 
         incookie = Cookie()
         incookie['trac_session'] = '123456'
@@ -77,12 +76,12 @@ class SessionTestCase(unittest.TestCase):
         req = Mock(authname='john', cgi_location='/', incookie=incookie,
                    outcookie=outcookie)
         session = Session(self.env, self.db, req)
-        self.assertEqual(None, session.sid)
+        self.assertEqual('john', session.sid)
         session.save()
 
-        cursor.execute("SELECT sid,username FROM session")
+        cursor.execute("SELECT sid,authenticated FROM session")
         row = cursor.fetchone()
-        self.assertEqual((None, 'john'), row)
+        self.assertEqual(('john', 1), row)
         self.assertEqual(None, cursor.fetchone())
 
     def test_add_anonymous_session_var(self):
@@ -99,7 +98,7 @@ class SessionTestCase(unittest.TestCase):
         session.save()
         cursor = self.db.cursor()
         cursor.execute("SELECT var_value FROM session WHERE sid='123456' AND "
-                       "username='anonymous' AND var_name='foo'") 
+                       "authenticated=0 AND var_name='foo'") 
         self.assertEqual('bar', cursor.fetchone()[0])
 
     def test_modify_anonymous_session_var(self):
@@ -108,8 +107,7 @@ class SessionTestCase(unittest.TestCase):
         accordingly for an anonymous session.
         """
         cursor = self.db.cursor()
-        cursor.execute("INSERT INTO session (sid,username,var_name,var_value) "
-                       "VALUES ('123456', 'anonymous', 'foo', 'bar')")
+        cursor.execute("INSERT INTO session VALUES ('123456', 0, 'foo', 'bar')")
 
         incookie = Cookie()
         incookie['trac_session'] = '123456'
@@ -120,7 +118,7 @@ class SessionTestCase(unittest.TestCase):
         session['foo'] = 'baz'
         session.save()
         cursor.execute("SELECT var_value FROM session WHERE sid='123456' AND "
-                       "username='anonymous' AND var_name='foo'") 
+                       "authenticated=0 AND var_name='foo'") 
         self.assertEqual('baz', cursor.fetchone()[0])
 
     def test_delete_anonymous_session_var(self):
@@ -129,8 +127,7 @@ class SessionTestCase(unittest.TestCase):
         for an anonymous session.
         """
         cursor = self.db.cursor()
-        cursor.execute("INSERT INTO session (sid,username,var_name,var_value) "
-                       "VALUES ('123456', 'anonymous', 'foo', 'bar')")
+        cursor.execute("INSERT INTO session VALUES ('123456', 0, 'foo', 'bar')")
 
         incookie = Cookie()
         incookie['trac_session'] = '123456'
@@ -141,7 +138,7 @@ class SessionTestCase(unittest.TestCase):
         del session['foo']
         session.save()
         cursor.execute("SELECT COUNT(*) FROM session WHERE sid='123456' AND "
-                       "username='anonymous' AND var_name='foo'") 
+                       "authenticated=0 AND var_name='foo'") 
         self.assertEqual(0, cursor.fetchone()[0])
 
     def test_purge_anonymous_session(self):
@@ -149,8 +146,8 @@ class SessionTestCase(unittest.TestCase):
         Verify that old sessions get purged.
         """
         cursor = self.db.cursor()
-        cursor.execute("INSERT INTO session (sid,username,var_name,var_value) "
-                       "VALUES ('987654', 'anonymous', 'last_visit', %s)",
+        cursor.execute("INSERT INTO session "
+                       "VALUES ('987654', 0, 'last_visit', %s)",
                        (time.time() - PURGE_AGE - 3600))
         
         # We need to modify a different session to trigger the purging
@@ -163,7 +160,7 @@ class SessionTestCase(unittest.TestCase):
         session.save()
 
         cursor.execute("SELECT COUNT(*) FROM session WHERE sid='987654' AND "
-                       "username='anonymous'")
+                       "authenticated=0")
         self.assertEqual(0, cursor.fetchone()[0])
 
     def test_delete_empty_session(self):
@@ -175,8 +172,8 @@ class SessionTestCase(unittest.TestCase):
 
         # Make sure the session has data so that it doesn't get dropped
         cursor = self.db.cursor()
-        cursor.execute("INSERT INTO session (sid,username,var_name,var_value) "
-                       "VALUES ('123456', 'anonymous', 'last_visit', %s)",
+        cursor.execute("INSERT INTO session "
+                       "VALUES ('123456', 0, 'last_visit', %s)",
                        (int(now - UPDATE_INTERVAL - 3600)))
 
         incookie = Cookie()
@@ -187,7 +184,7 @@ class SessionTestCase(unittest.TestCase):
         session.save()
 
         cursor.execute("SELECT COUNT(*) FROM session WHERE sid='123456' AND "
-                       "username='anonymous'")
+                       "authenticated=0")
         self.assertEqual(0, cursor.fetchone()[0])
 
     def test_add_authenticated_session_var(self):
@@ -200,8 +197,8 @@ class SessionTestCase(unittest.TestCase):
         session['foo'] = 'bar'
         session.save()
         cursor = self.db.cursor()
-        cursor.execute("SELECT var_value FROM session WHERE sid IS NULL AND "
-                       "username='john' AND var_name='foo'") 
+        cursor.execute("SELECT var_value FROM session WHERE sid='john' AND "
+                       "authenticated=1 AND var_name='foo'") 
         self.assertEqual('bar', cursor.fetchone()[0])
 
     def test_modify_authenticated_session_var(self):
@@ -210,16 +207,15 @@ class SessionTestCase(unittest.TestCase):
         accordingly for an authenticated session.
         """
         cursor = self.db.cursor()
-        cursor.execute("INSERT INTO session (username,var_name,var_value) "
-                       "VALUES ('john', 'foo', 'bar')")
+        cursor.execute("INSERT INTO session VALUES ('john', 1, 'foo', 'bar')")
 
         req = Mock(authname='john', cgi_location='/', incookie=Cookie())
         session = Session(self.env, self.db, req)
         self.assertEqual('bar', session['foo'])
         session['foo'] = 'baz'
         session.save()
-        cursor.execute("SELECT var_value FROM session WHERE sid IS NULL AND "
-                       "username='john' AND var_name='foo'") 
+        cursor.execute("SELECT var_value FROM session WHERE sid='john' AND "
+                       "authenticated=1 AND var_name='foo'") 
         self.assertEqual('baz', cursor.fetchone()[0])
 
     def test_delete_authenticated_session_var(self):
@@ -228,16 +224,15 @@ class SessionTestCase(unittest.TestCase):
         for an authenticated session.
         """
         cursor = self.db.cursor()
-        cursor.execute("INSERT INTO session (username,var_name,var_value) "
-                       "VALUES ('john', 'foo', 'bar')")
+        cursor.execute("INSERT INTO session VALUES ('john', 1, 'foo', 'bar')")
 
         req = Mock(authname='john', cgi_location='/', incookie=Cookie())
         session = Session(self.env, self.db, req)
         self.assertEqual('bar', session['foo'])
         del session['foo']
         session.save()
-        cursor.execute("SELECT COUNT(*) FROM session WHERE sid IS NULL AND "
-                       "username='joe' AND var_name='foo'") 
+        cursor.execute("SELECT COUNT(*) FROM session WHERE sid='john' AND "
+                       "authenticated=1 AND var_name='foo'") 
         self.assertEqual(0, cursor.fetchone()[0])
 
     def test_update_session(self):
@@ -249,8 +244,7 @@ class SessionTestCase(unittest.TestCase):
 
         # Make sure the session has data so that it doesn't get dropped
         cursor = self.db.cursor()
-        cursor.executemany("INSERT INTO session (sid,username,var_name,"
-                           "var_value) VALUES ('123456', 'anonymous', %s, %s)",
+        cursor.executemany("INSERT INTO session VALUES ('123456', 0, %s, %s)",
                            [('last_visit', int(now - UPDATE_INTERVAL - 3600)),
                             ('foo', 'bar')])
 
@@ -265,7 +259,7 @@ class SessionTestCase(unittest.TestCase):
         self.assertEqual(PURGE_AGE, outcookie['trac_session']['expires'])
 
         cursor.execute("SELECT var_value FROM session WHERE sid='123456' AND "
-                       "username='anonymous' AND var_name='last_visit'")
+                       "authenticated=0 AND var_name='last_visit'")
         self.assertAlmostEqual(now, int(cursor.fetchone()[0]), -1)
 
 

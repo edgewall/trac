@@ -25,10 +25,9 @@ class EnvironmentTestCase(unittest.TestCase):
     def test_get_known_users(self):
         """Testing env.get_known_users"""
         cursor = self.db.cursor()
-        cursor.execute("INSERT INTO session (sid,username,var_name,var_value) "
-                       "VALUES ('123', 'anonymous', 'email', 'a@example.com')")
-        cursor.executemany("INSERT INTO session (username,var_name,var_value) "
-                           "VALUES (%s,%s,%s)",
+        cursor.execute("INSERT INTO session "
+                       "VALUES ('123',0,'email','a@example.com')")
+        cursor.executemany("INSERT INTO session VALUES (%s,1,%s,%s)",
                            [('tom', 'name', 'Tom'),
                             ('tom', 'email', 'tom@example.com'),
                             ('joe', 'email', 'joe@example.com'),

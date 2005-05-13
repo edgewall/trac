@@ -59,7 +59,7 @@ class SettingsModule(Component):
 
         req.hdf['title'] = 'Settings'
         req.hdf['settings'] = req.session
-        if req.session.sid:
+        if req.authname == 'anonymous':
             req.hdf['settings.session_id'] = req.session.sid
 
         return 'settings.cs', None

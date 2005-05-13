@@ -58,46 +58,44 @@ class Session(dict):
             if req.incookie.has_key(COOKIE_KEY):
                 sid = req.incookie[COOKIE_KEY].value
                 self.promote_session(sid)
-            self.get_session()
+            self.get_session(req.authname, authenticated=True)
 
     def bake_cookie(self, expires=PURGE_AGE):
         self.req.outcookie[COOKIE_KEY] = self.sid
         self.req.outcookie[COOKIE_KEY]['path'] = self.req.cgi_location
         self.req.outcookie[COOKIE_KEY]['expires'] = expires
 
-    def get_session(self, sid=None):
+    def get_session(self, sid, authenticated=False):
         cursor = self.db.cursor()
-        if sid:
-            self.sid = sid
-            cursor.execute("SELECT var_name,var_value FROM session "
-                           "WHERE sid=%s AND username='anonymous'", (sid,))
-        else:
-            cursor.execute("SELECT var_name,var_value FROM session "
-                           "WHERE sid IS NULL AND username=%s",
-                           (self.req.authname))
+        self.sid = sid
+        cursor.execute("SELECT var_name,var_value FROM session "
+                       "WHERE sid=%s AND authenticated=%s",
+                       (sid, int(authenticated)))
         for name, value in cursor:
             self[name] = value
         self._old.update(self)
 
         # Refresh the session cookie if this is the first visit since over a day
-        if sid and self.has_key('last_visit'):
+        if not authenticated and self.has_key('last_visit'):
             if time.time() - int(self['last_visit']) > UPDATE_INTERVAL:
                 self.bake_cookie()
 
     def change_sid(self, new_sid):
-        assert self.sid, "Cannot change ID of authenticated session"
-        assert new_sid, "Session ID cannot be empty"
+        assert self.req.authname == 'anonymous', \
+               'Cannot change ID of authenticated session'
+        assert new_sid, 'Session ID cannot be empty'
         if new_sid == self.sid:
             return
         cursor = self.db.cursor()
-        cursor.execute("SELECT sid FROM session WHERE sid=%s", (new_sid,))
+        cursor.execute("SELECT sid FROM session WHERE sid=%s "
+                       "AND authenticated=0", (new_sid,))
         if cursor.fetchone():
             raise TracError("Session '%s' already exists.<br />"
                             "Please choose a different session id." % new_sid,
                             "Error renaming session")
         self.env.log.debug('Changing session ID %s to %s' % (self.sid, new_sid))
-        cursor.execute("UPDATE session SET sid=%s WHERE sid=%s",
-                       (new_sid, self.sid))
+        cursor.execute("UPDATE session SET sid=%s WHERE sid=%s "
+                       "AND authenticated=0", (new_sid, self.sid))
         self.db.commit()
         self.sid = new_sid
         self.bake_cookie()
@@ -113,14 +111,14 @@ class Session(dict):
         self.env.log.debug('Promoting anonymous session %s to authenticated '
                            'session for user %s' % (sid, self.req.authname))
         cursor = self.db.cursor()
-        cursor.execute("SELECT COUNT(*) FROM session WHERE username=%s",
-                       (self.req.authname,))
+        cursor.execute("SELECT COUNT(*) FROM session WHERE sid=%s "
+                       "AND authenticated=1", (self.req.authname,))
         if cursor.fetchone()[0]:
             cursor.execute("DELETE FROM session WHERE sid=%s "
-                           "AND username='anonymous'", (sid,))
+                           "AND authenticated=0", (sid,))
         else:
-            cursor.execute("UPDATE session SET sid=NULL,username=%s "
-                           "WHERE sid=%s AND username='anonymous'",
+            cursor.execute("UPDATE session SET sid=%s,authenticated=1 "
+                           "WHERE sid=%s AND authenticated=0",
                            (self.req.authname, sid))
         self.db.commit()
         self.bake_cookie(0) # expire the cookie
@@ -134,7 +132,7 @@ class Session(dict):
         changed = 0
         now = int(time.time())
 
-        if self.sid:
+        if self.req.authname == 'anonymous':
             # Update the session last visit time if it is over an hour old,
             # so that session doesn't get purged
             last_visit = int(self.get('last_visit', 0))
@@ -148,6 +146,7 @@ class Session(dict):
                 del self['last_visit']
 
         cursor = self.db.cursor()
+        authenticated = int(self.req.authname != 'anonymous')
 
         # Find all new or modified session variables and persist their values to
         # the database
@@ -156,22 +155,17 @@ class Session(dict):
                 self.env.log.debug('Adding variable %s with value "%s" to '
                                    'session %s' % (k, v,
                                    self.sid or self.req.authname))
-                cursor.execute("INSERT INTO session (sid,username,var_name,"
-                               "var_value) VALUES(%s,%s,%s,%s)",
-                               (self.sid, self.req.authname, k, v))
+                cursor.execute("INSERT INTO session VALUES(%s,%s,%s,%s)",
+                               (self.sid, authenticated, k, v))
                 changed = 1
             elif v != self._old[k]:
                 self.env.log.debug('Changing variable %s from "%s" to "%s" in '
                                    'session %s' % (k, self._old[k], v,
-                                   self.sid or self.req.authname))
-                if self.sid:
-                    cursor.execute("UPDATE session SET var_value=%s "
-                                   "WHERE sid=%s AND username='anonymous' "
-                                   "AND var_name=%s", (v, self.sid, k))
-                else:
-                    cursor.execute("UPDATE session SET var_value=%s "
-                                   "WHERE sid IS NULL AND username=%s "
-                                   "AND var_name=%s", (v, self.req.authname, k))
+                                   self.sid))
+                cursor.execute("UPDATE session SET var_value=%s "
+                               "WHERE sid=%s AND authenticated=%s "
+                               "AND var_name=%s", (v, self.sid, authenticated,
+                               k))
                 changed = 1
 
         # Find all variables that have been deleted and also remove them from
@@ -179,8 +173,9 @@ class Session(dict):
         for k in [k for k in self._old.keys() if not self.has_key(k)]:
             self.env.log.debug('Deleting variable %s from session %s'
                                % (k, self.sid or self.req.authname))
-            cursor.execute("DELETE FROM session WHERE sid=%s AND username=%s "
-                           "AND var_name=%s", (self.sid, self.req.authname, k))
+            cursor.execute("DELETE FROM session WHERE sid=%s AND "
+                           "authenticated=%s AND var_name=%s",
+                           (self.sid, authenticated, k))
             changed = 1
 
         if changed:
@@ -188,7 +183,7 @@ class Session(dict):
             # changed as to minimize the purging.
             mintime = now - PURGE_AGE
             self.env.log.debug('Purging old, expired, sessions.')
-            cursor.execute("DELETE FROM session WHERE username='anonymous' AND "
+            cursor.execute("DELETE FROM session WHERE authenticated=0 AND "
                            "sid IN (SELECT sid FROM session WHERE "
                            "var_name='last_visit' AND var_value < %s)",
                            (mintime,))

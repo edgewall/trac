@@ -21,7 +21,7 @@
 
 
 # Database version identifier. Used for automatic upgrades.
-db_version = 11
+db_version = 12
 
 def __mkreports(reports):
     """Utility function used to create report data in same syntax as the
@@ -80,7 +80,7 @@ schema = [
         Column('time', type='int')],
     Table('session', key=('sid', 'var_name'))[
         Column('sid'),
-        Column('username'),
+        Column('authenticated', type='int'),
         Column('var_name'),
         Column('var_value')],
     Index('session_idx', 'session')['sid', 'var_name'],
