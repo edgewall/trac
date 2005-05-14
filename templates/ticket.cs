@@ -29,7 +29,7 @@
 <div id="content" class="ticket">
 
  <h1>Ticket #<?cs var:ticket.id ?> <?cs
- if:ticket.status == 'closed' ?>(Closed: <?cs var:ticket.resolution ?>)<?cs
+ if:ticket.resolution ?>(<?cs var:ticket.status ?>: <?cs var:ticket.resolution ?>)<?cs
  elif:ticket.status != 'new' ?>(<?cs var:ticket.status ?>)<?cs
  /if ?></h1>
 
