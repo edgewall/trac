@@ -509,25 +509,28 @@ class TicketModule(Component):
             sql = []
 
             # New tickets
-            sql.append("SELECT time,id,'','new',summary,reporter"
+            sql.append("SELECT time,id,'','new',summary,reporter,summary"
                        " FROM ticket WHERE time>=%s AND time<=%s")
 
             # Reopened tickets
-            sql.append("SELECT t1.time,t1.ticket,'','reopened',t2.newvalue,t1.author "
+            sql.append("SELECT t1.time,t1.ticket,'','reopened',t2.newvalue, "
+                       "       t1.author,t.summary "
                        " FROM ticket_change t1"
                        "   LEFT OUTER JOIN ticket_change t2 ON (t1.time=t2.time"
                        "     AND t1.ticket=t2.ticket AND t2.field='comment')"
+                       "   LEFT JOIN ticket t on t.id = t1.ticket "
                        " WHERE t1.field='status' AND t1.newvalue='reopened'"
                        "   AND t1.time>=%s AND t1.time<=%s")
 
             # Closed tickets
             sql.append("SELECT t1.time,t1.ticket,t2.newvalue,'closed',"
-                       "t3.newvalue,t1.author"
+                       "       t3.newvalue,t1.author,t.summary"
                        " FROM ticket_change t1"
                        "   INNER JOIN ticket_change t2 ON t1.ticket=t2.ticket"
                        "     AND t1.time=t2.time"
                        "   LEFT OUTER JOIN ticket_change t3 ON t1.time=t3.time"
                        "     AND t1.ticket=t3.ticket AND t3.field='comment'"
+                       "   LEFT JOIN ticket t on t.id = t1.ticket "
                        " WHERE t1.field='status' AND t1.newvalue='closed'"
                        "   AND t2.field='resolution'"
                        "   AND t1.time>=%s AND t1.time<=%s")
@@ -541,13 +544,13 @@ class TicketModule(Component):
                      'closed': 'closedticket'}
             verbs = {'new': 'created', 'reopened': 'reopened',
                      'closed': 'closed'}
-            for t,id,resolution,type,message,author in cursor:
+            for t,id,resolution,type,message,author,summary in cursor:
                 if absurls:
                     href = self.env.abs_href.ticket(id)
                 else:
                     href = self.env.href.ticket(id)
-                title = 'Ticket <em>#%s</em> %s by %s' % (
-                        id, verbs[type], util.escape(author))
+                title = 'Ticket <em title="%s">#%s</em> %s by %s' % (
+                        util.escape(summary), id, verbs[type], util.escape(author))
                 message = wiki_to_oneliner(util.shorten_line(message), self.env,
                                            db, absurls=absurls)
                 yield kinds[type], href, title, t, author, message
@@ -709,17 +712,18 @@ class UpdateDetailsForTimeline(Component):
         if 'ticket_details' in filters:
             db = self.env.get_db_cnx()
             cursor = db.cursor()
-            cursor.execute("SELECT tc.time, tc.ticket, "
-                           "       tc.field, tc.oldvalue, tc.newvalue, tc.author "
+            cursor.execute("SELECT tc.time,tc.ticket,tc.field, "
+                           "       tc.oldvalue,tc.newvalue,tc.author,t.summary "
                            "FROM ticket_change tc"
                            "   LEFT JOIN ticket t ON t.id = tc.ticket "
                            "AND tc.time>=%s AND tc.time<=%s ORDER BY tc.time" % (start, stop))
             previous_update = None
             updates = []
-            for time,id,field,oldvalue,newvalue,author in cursor:
+            for time,id,field,oldvalue,newvalue,author,summary in cursor:
+                this_summary = summary
                 if (time,id,author) != previous_update:
                     if previous_update:
-                        updates.append((previous_update,field_changes,comment))
+                        updates.append((previous_update,field_changes,comment, this_summary))
                     field_changes = []
                     comment = ''
                     previous_update = (time,id,author)
@@ -728,16 +732,16 @@ class UpdateDetailsForTimeline(Component):
                 else:
                     field_changes.append(field)
             if previous_update:
-                updates.append((previous_update,field_changes,comment))
+                updates.append((previous_update,field_changes,comment, this_summary))
 
             absurls = req.args.get('format') == 'rss' # Kludge
-            for (t,id,author),field_changes,comment in updates:
+            for (t,id,author),field_changes,comment,summary in updates:
                 if absurls:
                     href = self.env.abs_href.ticket(id)
                 else:
                     href = self.env.href.ticket(id) 
-                title = 'Ticket <em>#%s</em> updated by %s' \
-                        % (id, util.escape(author))
+                title = 'Ticket <em title="%s">#%s</em> updated by %s' \
+                        % (util.escape(summary), id, util.escape(author))
                 message = ''
                 if len(field_changes) > 0:
                     message = ', '.join(field_changes) + ' changed.<br />'
