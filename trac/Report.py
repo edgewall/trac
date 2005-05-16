@@ -427,9 +427,8 @@ class ReportModule(Component):
 
         format = req.args.get('format')
         if format == 'rss':
-            self._render_rss(req, db)
+            self._render_rss(req)
             return 'report_rss.cs', 'application/rss+xml'
-            return None
         elif format == 'csv':
             self._render_csv(req, cols, rows)
             return None
