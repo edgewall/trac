@@ -19,10 +19,14 @@
 #
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
+import os.path
+import re
+
 from trac import mimeview
 from trac.core import *
-from trac.util import enum, escape
+from trac.util import enum, escape, href_join, http_date
 from trac.web.href import Href
+from trac.web.main import IRequestHandler
 
 def add_link(req, rel, href, title=None, type=None, class_name=None):
     link = {'href': escape(href)}
@@ -64,19 +68,41 @@ class Chrome(Component):
     Responsible for assembling the web site chrome, i.e. everything that
     is not actual page content.
     """
+    implements(IRequestHandler)
 
     navigation_contributors = ExtensionPoint(INavigationContributor)
+
+    # IRequestHandler methods
+
+    def match_request(self, req):
+        m = re.match(r'/chrome/([/\w\-\.]+)', req.path_info)
+        if m:
+            req.args['path'] = m.group(1)
+            return True
+
+    def process_request(self, req):
+        from trac.siteconfig import __default_htdocs_dir__
+        path = os.path.join(__default_htdocs_dir__, req.args.get('path'))
+        if not os.path.isfile(path):
+            raise TracError, 'File not found'
+        req.send_file(path)
+
+    # Public API methods
 
     def populate_hdf(self, req, handler):
         """
         Add chrome-related data to the HDF.
         """
 
-        htdocs_location = self.config.get('trac', 'htdocs_location')
-        if htdocs_location[-1] != '/':
+        # Provided for template customization
+        req.hdf['HTTP.PathInfo'] = req.path_info
+
+        htdocs_location = self.config.get('trac', 'htdocs_location', '')
+        if not htdocs_location:
+            htdocs_location = href_join(req.cgi_location, 'chrome/')
+        elif htdocs_location[-1] != '/':
             htdocs_location += '/'
         req.hdf['htdocs_location'] = htdocs_location
-        req.hdf['HTTP.PathInfo'] = req.path_info
 
         # Logo image
         logo_src = self.config.get('header_logo', 'src')

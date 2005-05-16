@@ -270,7 +270,9 @@ class AttachmentModule(Component):
         import sys, unicodedata
         if sys.version_info[0] > 2 or \
            (sys.version_info[0] == 2 and sys.version_info[1] >= 3):
-           filename = unicodedata.normalize('NFC', unicode(filename, 'utf-8')).encode('utf-8')
+           filename = unicodedata.normalize('NFC',
+                                            unicode(filename,
+                                                    'utf-8')).encode('utf-8')
 
         attachment = Attachment(self.env, parent_type, parent_id)
         attachment.description = req.args.get('description', '')
@@ -316,14 +318,15 @@ class AttachmentModule(Component):
         perm_map = {'ticket': perm.TICKET_VIEW, 'wiki': perm.WIKI_VIEW}
         req.perm.assert_permission(perm_map[attachment.parent_type])
 
-        req.check_modified(attachment.time)
-        mime_type = get_mimetype(attachment.filename) or 'application/octet-stream'
+        mimetype = get_mimetype(attachment.filename) or 'application/octet-stream'
         charset = self.config.get('trac', 'default_charset')
 
         if req.args.get('format') in ('raw', 'txt'):
             # Render raw file
-            self._render_raw(req, attachment, mime_type, charset)
+            req.send_file(attachment.path, mimetype + ';charset=' + charset)
             return
+
+        req.check_modified(attachment.time)
 
         # Render HTML view
         text, link = self._get_parent_link(attachment.parent_type,
@@ -343,7 +346,7 @@ class AttachmentModule(Component):
                                             attachment.parent_id,
                                             attachment.filename,
                                             format='raw')
-        add_link(req, 'alternate', raw_href, 'Original Format', mime_type)
+        add_link(req, 'alternate', raw_href, 'Original Format', mimetype)
         req.hdf['attachment.raw_href'] = raw_href
 
         perm_map = {'ticket': perm.TICKET_ADMIN, 'wiki': perm.WIKI_DELETE}
@@ -351,7 +354,7 @@ class AttachmentModule(Component):
             req.hdf['attachment.can_delete'] = 1
 
         self.log.debug("Rendering preview of file %s with mime-type %s"
-                       % (attachment.filename, mime_type))
+                       % (attachment.filename, mimetype))
         fd = attachment.open()
         try:
             data = fd.read(self.DISP_MAX_FILE_SIZE)
@@ -362,36 +365,15 @@ class AttachmentModule(Component):
                                                   attachment.parent_id,
                                                   attachment.filename,
                                                   format='txt'),
-                         'Plain Text', mime_type)
+                         'Plain Text', mimetype)
             if len(data) >= self.DISP_MAX_FILE_SIZE:
                 req.hdf['attachment.max_file_size_reached'] = 1
                 req.hdf['attachment.max_file_size'] = self.DISP_MAX_FILE_SIZE
                 vdata = ''
             else:
                 mimeview = Mimeview(self.env)
-                vdata = mimeview.render(req, mime_type, data,
+                vdata = mimeview.render(req, mimetype, data,
                                         attachment.filename)
             req.hdf['attachment.preview'] = vdata
-        finally:
-            fd.close()
-
-    def _render_raw(self, req, attachment, mime_type, charset):
-        fd = attachment.open()
-        try:
-            data = fd.read(self.CHUNK_SIZE)
-            if not is_binary(data):
-                if req.args.get('format') == 'txt':
-                    mime_type = 'text/plain'
-                mime_type = mime_type + ';charset=' + charset
-
-            req.send_response(200)
-            req.send_header('Content-Type', mime_type)
-            req.send_header('Content-Length', str(attachment.size))
-            req.send_header('Last-Modified', util.http_date(attachment.time))
-            req.end_headers()
-
-            while data:
-                req.write(data)
-                data = fd.read(self.CHUNK_SIZE)
         finally:
             fd.close()

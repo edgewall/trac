@@ -20,6 +20,7 @@
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
 import locale
+import mimetypes
 import os
 import re
 import threading
@@ -32,7 +33,7 @@ except ImportError:
 from mod_python import apache, util
 
 from trac.env import open_environment
-from trac.util import TracError, enum, href_join, rstrip
+from trac.util import TracError, enum, href_join, http_date, rstrip
 from trac.web.main import Request, RequestDone, dispatch_request, send_pretty_error
 
 
@@ -99,11 +100,30 @@ class ModPythonRequest(Request):
     def send_header(self, name, value):
         if name.lower() == 'content-type':
             self.req.content_type = value
+        elif name.lower() == 'content-length':
+            self.req.set_content_length(int(value))
         else:
             self.req.headers_out.add(name, str(value))
 
     def end_headers(self):
         pass
+
+    def send_file(self, path, mimetype=None):
+        stat = os.stat(path)
+        last_modified = http_date(stat.st_mtime)
+        if last_modified == self.req.headers_in.get('If-Modified-Since'):
+            self.req.status = 304
+            return
+
+        self.req.status = 200
+        if not mimetype:
+            mimetype = mimetypes.guess_type(path)[0]
+        self.req.content_type = mimetype
+        self.req.set_content_length(stat.st_size)
+        self.req.headers_out.add('Last-Modified', http_date(stat.st_mtime))
+
+        self.req.sendfile(path)
+        raise RequestDone
 
 
 class FieldStorageWrapper(util.FieldStorage):

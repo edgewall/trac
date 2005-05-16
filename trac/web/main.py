@@ -19,14 +19,15 @@
 #
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
+import mimetypes
+import os
+import os.path
+
 from trac.core import *
 from trac.perm import PermissionCache, PermissionError
-from trac.util import escape, href_join, TracError, TRUE
-from trac.web.auth import Authenticator
+from trac.util import escape, http_date, TRUE
 from trac.web.href import Href
 from trac.web.session import Session
-
-import re
 
 
 class RequestDone(Exception):
@@ -65,18 +66,43 @@ class Request(object):
         self._headers = []
 
     def get_header(self, name):
+        """
+        Return the value of the specified HTTP header, or `None` if there's no
+        such header in the request.
+        """
         raise NotImplementedError
 
     def send_response(self, code):
+        """
+        Set the status code of the response.
+        """
         raise NotImplementedError
 
     def send_header(self, name, value):
+        """
+        Send the response header with the specified name and value.
+        """
         raise NotImplementedError
 
     def end_headers(self):
+        """
+        Must be called after all headers have been sent and before the actual
+        content is written.
+        """
         raise NotImplementedError
 
     def check_modified(self, timesecs, extra=''):
+        """
+        Check the request "If-None-Match" header against an entity tag generated
+        from the specified last modified time in seconds (`timesecs`),
+        optionally appending an `extra` string to indicate variants of the
+        requested resource.
+
+        If the generated tag matches the "If-None-Match" header of the request,
+        this method sends a "304 Not Modified" response to the client.
+        Otherwise, it adds the entity tag as as "ETag" header to the response so
+        that consequetive requests can be cached.
+        """
         etag = 'W"%s/%d/%s"' % (self.authname, timesecs, extra)
         inm = self.get_header('If-None-Match')
         if (not inm or inm != etag):
@@ -87,6 +113,11 @@ class Request(object):
             raise RequestDone()
 
     def redirect(self, url):
+        """
+        Send a redirect to the client, forwarding to the specified URL. The
+        `url` may be relative or absolute, relative URLs will be translated
+        appropriately.
+        """
         self.send_response(302)
         if not url.startswith('http://') and not url.startswith('https://'):
             # Make sure the URL is absolute
@@ -103,7 +134,12 @@ class Request(object):
         self.write('Redirecting...')
         raise RequestDone()
 
-    def display(self, cs, content_type='text/html', response=200):
+    def display(self, template, content_type='text/html', response=200):
+        """
+        Render the response using the ClearSilver template given by the
+        `template` parameter, which can be either the name of the template file,
+        or an already parsed `neo_cs.CS` object.
+        """
         assert self.hdf, 'HDF dataset not available'
         if self.args.has_key('hdfdump'):
             # FIXME: the administrator should probably be able to disable HDF
@@ -111,7 +147,7 @@ class Request(object):
             content_type = 'text/plain'
             data = str(self.hdf)
         else:
-            data = self.hdf.render(cs)
+            data = self.hdf.render(template)
 
         self.send_response(response)
         self.send_header('Cache-control', 'must-revalidate')
@@ -128,16 +164,64 @@ class Request(object):
         if self.method != 'HEAD':
             self.write(data)
 
-        raise RequestDone()
+        raise RequestDone
 
-    def read(self, len):
+    def send_file(self, path, mimetype=None):
+        """
+        Send a local file to the browser. This method includes the
+        "Last-Modified", "Content-Type" and "Content-Length" headers in the
+        response, corresponding to the file attributes. It also checks the last
+        modification time of the local file against the "If-Modified-Since"
+        provided by the user agent, and sends a "304 Not Modified" response if
+        it matches.
+        """
+        if not os.path.isfile(path):
+            raise TracError, "File %s not found" % path
+
+        stat = os.stat(path)
+        last_modified = http_date(stat.st_mtime)
+
+        if last_modified == self.get_header('If-Modified-Since'):
+            self.send_response(304)
+            return
+
+        self.send_response(200)
+        if not mimetype:
+            mimetype = mimetypes.guess_type(path)[0]
+        self.send_header('Content-Type', mimetype)
+        self.send_header('Content-Length', stat.st_size)
+        self.send_header('Last-Modified', last_modified)
+        self.end_headers()
+
+        try:
+            fd = open(path, 'rb')
+            if self.method != 'HEAD':
+                while True:
+                    data = fd.read(4096)
+                    if not data:
+                        break
+                    self.write(data)
+        finally:
+            fd.close()
+        raise RequestDone
+
+    def read(self, size):
+        """
+        Read the specified number of bytes from the request body.
+        """
         raise NotImplementedError
 
     def write(self, data):
+        """
+        Write the given data to the response body.
+        """
         raise NotImplementedError
 
 
 class IRequestHandler(Interface):
+    """
+    Extension point interface for request handlers.
+    """
 
     def match_request(req):
         """
@@ -158,13 +242,22 @@ class IRequestHandler(Interface):
 
 
 class RequestDispatcher(Component):
+    """
+    Component responsible for dispatching requests to registered handlers.
+    """
 
     handlers = ExtensionPoint(IRequestHandler)
 
     def dispatch(self, req):
+        """
+        Find a registered handler that matches the request and let it process
+        it. In addition, this method initializes the HDF data set and adds the
+        web site chrome.
+        """
         from trac.web.clearsilver import HDFWrapper
         req.hdf = HDFWrapper(loadpaths=[self.env.get_templates_dir(),
-                                        self.config.get('trac', 'templates_dir')])
+                                        self.config.get('trac',
+                                                        'templates_dir')])
         populate_hdf(req.hdf, self.env, req)
 
         # Select the component that should handle the request
@@ -197,6 +290,10 @@ class RequestDispatcher(Component):
 
 
 def populate_hdf(hdf, env, req=None):
+    """
+    Populate the HDF data set with various information, such as common URLs,
+    project information and request-related information.
+    """
     from trac import __version__
     from time import gmtime, localtime, strftime
     hdf['trac'] = {
@@ -242,6 +339,11 @@ def populate_hdf(hdf, env, req=None):
             req.hdf['trac.acl.' + action] = 1
 
 def absolute_url(req, path=None):
+    """
+    Reconstruct the absolute URL of the given request. If the `path` parameter
+    is specified, the path is appended to the URL. Otherwise, only a URL with
+    the components scheme, host and port is returned.
+    """
     host = req.get_header('Host')
     if req.get_header('X-Forwarded-Host'):
         host = req.get_header('X-Forwarded-Host')
@@ -259,6 +361,10 @@ def absolute_url(req, path=None):
     return urlunparse((req.scheme, host, path, None, None, None))
 
 def dispatch_request(path_info, req, env):
+    """
+    Main entry point for the Trac web interface.
+    """
+
     # Re-parse the configuration file if it changed since the last the time it
     # was parsed
     env.config.parse_if_needed()
@@ -276,6 +382,7 @@ def dispatch_request(path_info, req, env):
 
     try:
         try:
+            from trac.web.auth import Authenticator
             check_ip = env.config.get('trac', 'check_auth_ip')
             check_ip = check_ip.strip().lower() in TRUE
             authenticator = Authenticator(db, req, check_ip)
@@ -316,6 +423,9 @@ def dispatch_request(path_info, req, env):
         db.close()
 
 def send_pretty_error(e, env, req=None):
+    """
+    Send a "pretty" HTML error page to the client.
+    """
     import traceback
     import StringIO
     tb = StringIO.StringIO()
