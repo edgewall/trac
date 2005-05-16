@@ -176,20 +176,23 @@ def send_project_index(req, mpr, dir, options):
 </html>""")
 
     try:
+        projects = []
         for idx, project in enum(os.listdir(dir)):
             env_path = os.path.join(dir, project)
             if not os.path.isdir(env_path):
                 continue
             try:
                 env = open_environment(env_path)
-                mpr.hdf['projects.%d' % idx] = {
+                projects.append({
                     'name': env.config.get('project', 'name'),
                     'description': env.config.get('project', 'descr'),
                     'href': href_join(mpr.idx_location, project)
-                }
+                })
             except EnvironmentError, e:
                 req.log_error('Error opening environment at %s: %s'
                               % (env_path, e))
+        projects.sort(lambda x, y: cmp(x['name'], y['name']))
+        mpr.hdf['projects'] = projects
         mpr.display(template, response=200)
     except RequestDone:
         pass
