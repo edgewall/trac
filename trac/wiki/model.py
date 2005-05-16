@@ -103,12 +103,15 @@ class WikiPage(object):
             db.commit()
         self.version = 0
 
-    def save(self, author, comment, remote_addr, t=time.time(), db=None):
+    def save(self, author, comment, remote_addr, t=None, db=None):
         if not db:
             db = self.env.get_db_cnx()
             handle_ta = True
         else:
             handle_ta = False
+
+        if t is None:
+            t = time.time()
 
         if self.text != self.old_text:
             cursor = db.cursor()
