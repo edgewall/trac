@@ -321,6 +321,85 @@ Trac Admin Console %s
         test_results = self._execute('component remove bad_component')
         self.assertEquals(self.expected_results[test_name], test_results)
 
+    # Ticket-type tests
+
+    def test_ticket_type_list_ok(self):
+        """
+        Tests the 'ticket_type list' command in trac-admin.  Since this command
+        has no command arguments, it is hard to call it incorrectly.  As
+        a result, there is only this one test.
+        """
+        test_name = sys._getframe().f_code.co_name
+        test_results = self._execute('ticket_type list')
+        self.assertEquals(self.expected_results[test_name], test_results)
+
+    def test_ticket_type_add_ok(self):
+        """
+        Tests the 'ticket_type add' command in trac-admin.  This particular
+        test passes a valid argument and checks for success.
+        """
+        test_name = sys._getframe().f_code.co_name
+        self._execute('ticket_type add new_type')
+        test_results = self._execute('ticket_type list')
+        self.assertEquals(self.expected_results[test_name], test_results)
+
+    def test_ticket_type_add_error_already_exists(self):
+        """
+        Tests the 'ticket_type add' command in trac-admin.  This particular
+        test passes a ticket type that already exists and checks for an error
+        message.
+        """
+        test_name = sys._getframe().f_code.co_name
+        test_results = self._execute('ticket_type add defect')
+        self.assertEquals(self.expected_results[test_name], test_results)
+
+    def test_ticket_type_change_ok(self):
+        """
+        Tests the 'ticket_type change' command in trac-admin.  This particular
+        test passes valid arguments and checks for success.
+        """
+        test_name = sys._getframe().f_code.co_name
+        self._execute('ticket_type change defect bug')
+        test_results = self._execute('ticket_type list')
+        self.assertEquals(self.expected_results[test_name], test_results)
+
+    def test_ticket_type_change_error_bad_priority(self):
+        """
+        Tests the 'ticket_type change' command in trac-admin.  This particular
+        test tries to change a priority that does not exist.
+        """
+        test_name = sys._getframe().f_code.co_name
+        test_results = self._execute('ticket_type change bad_type changed_type')
+        self.assertEquals(self.expected_results[test_name], test_results)
+
+    def test_ticket_type_change_error_bad_new_name(self):
+        """
+        Tests the 'ticket_type change' command in trac-admin.  This particular
+        test tries to change a ticket type to another type that already exists.
+        """
+        test_name = sys._getframe().f_code.co_name
+        test_results = self._execute('ticket_type change defect task')
+        self.assertEquals(self.expected_results[test_name], test_results)
+
+    def test_ticket_type_remove_ok(self):
+        """
+        Tests the 'ticket_type remove' command in trac-admin.  This particular
+        test passes a valid argument and checks for success.
+        """
+        test_name = sys._getframe().f_code.co_name
+        self._execute('ticket_type remove task')
+        test_results = self._execute('ticket_type list')
+        self.assertEquals(self.expected_results[test_name], test_results)
+
+    def test_ticket_type_remove_error_bad_priority(self):
+        """
+        Tests the 'ticket_type remove' command in trac-admin.  This particular
+        test tries to remove a ticket type that does not exist.
+        """
+        test_name = sys._getframe().f_code.co_name
+        test_results = self._execute('ticket_type remove bad_type')
+        self.assertEquals(self.expected_results[test_name], test_results)
+
     # Priority tests
 
     def test_priority_list_ok(self):

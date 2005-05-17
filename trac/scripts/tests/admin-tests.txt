@@ -27,10 +27,10 @@ component add <name> <owner>                      -- Add a new component
 component rename <name> <newname>                 -- Rename a component
 component remove <name>                           -- Remove/uninstall component
 component chown <name> <owner>                    -- Change component ownership
-ticket_type list                                  -- Show possible ticket categories
-ticket_type add <value>                           -- Add a ticket_type value option
-ticket_type change <value> <newvalue>             -- Change a ticket_type value
-ticket_type remove <value>                        -- Remove ticket_type value
+ticket_type list                                  -- Show possible ticket types
+ticket_type add <value>                           -- Add a ticket type
+ticket_type change <value> <newvalue>             -- Change a ticket type
+ticket_type remove <value>                        -- Remove a ticket type
 priority list                                     -- Show possible ticket priorities
 priority add <value>                              -- Add a priority value option
 priority change <value> <newvalue>                -- Change a priority value
@@ -259,6 +259,46 @@ component2  somebody
 
 ===== test_component_remove_error_bad_component =====
 Component remove failed: No such component 'bad_component'
+===== test_ticket_type_list_ok =====
+
+Possible Values
+---------------
+defect
+enhancement
+task
+
+===== test_ticket_type_add_ok =====
+
+Possible Values
+---------------
+defect
+enhancement
+task
+new_type
+
+===== test_ticket_type_add_error_already_exists =====
+Command add failed: columns type, name are not unique
+===== test_ticket_type_change_ok =====
+
+Possible Values
+---------------
+bug
+enhancement
+task
+
+===== test_ticket_type_change_error_bad_priority =====
+Command change failed: No such value 'bad_type'
+===== test_ticket_type_change_error_bad_new_name =====
+Command change failed: columns type, name are not unique
+===== test_ticket_type_remove_ok =====
+
+Possible Values
+---------------
+defect
+enhancement
+
+===== test_ticket_type_remove_error_bad_priority =====
+Command remove failed: No such value 'bad_type'
 ===== test_priority_list_ok =====
 
 Possible Values

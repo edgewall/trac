@@ -282,8 +282,9 @@ class TracAdmin(cmd.Cmd):
                     self._help_wiki +
 #                    self._help_config + self._help_wiki +
                     self._help_permission + self._help_component +
-                    self._help_ticket_type + self._help_priority + self._help_severity + 
-                    self._help_version + self._help_milestone)
+                    self._help_ticket_type + self._help_priority +
+                    self._help_severity +  self._help_version +
+                    self._help_milestone)
             print 'trac-admin - The Trac Administration Console %s' % trac.__version__
             if not self.interactive:
                 print
@@ -778,11 +779,11 @@ class TracAdmin(cmd.Cmd):
 
 
     ## (Ticket) Type
-    _help_ticket_type = [('ticket_type list', 'Show possible ticket categories'),
-                      ('ticket_type add <value>', 'Add a ticket_type value option'),
-                      ('ticket_type change <value> <newvalue>',
-                       'Change a ticket_type value'),
-                      ('ticket_type remove <value>', 'Remove ticket_type value')]
+    _help_ticket_type = [('ticket_type list', 'Show possible ticket types'),
+                         ('ticket_type add <value>', 'Add a ticket type'),
+                         ('ticket_type change <value> <newvalue>',
+                          'Change a ticket type'),
+                         ('ticket_type remove <value>', 'Remove a ticket type')]
  
     def complete_ticket_type (self, text, line, begidx, endidx):
         if begidx == 16:
@@ -813,10 +814,10 @@ class TracAdmin(cmd.Cmd):
 
     ## (Ticket) Severity
     _help_severity = [('severity list', 'Show possible ticket severities'),
-                       ('severity add <value>', 'Add a severity value option'),
-                       ('severity change <value> <newvalue>',
-                        'Change a severity value'),
-                       ('severity remove <value>', 'Remove severity value')]
+                      ('severity add <value>', 'Add a severity value option'),
+                      ('severity change <value> <newvalue>',
+                       'Change a severity value'),
+                      ('severity remove <value>', 'Remove severity value')]
 
     def complete_severity (self, text, line, begidx, endidx):
         if begidx == 16:
