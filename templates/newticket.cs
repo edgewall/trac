@@ -51,8 +51,14 @@ addEvent(window, 'load', function() { document.getElementById('summary').focus()
   </div>
   <div class="col2"><?cs
    call:labelled_hdf_select("Priority:", enums.priority, "priority", newticket.priority, 0) ?><?cs
-   call:labelled_hdf_select("Milestone:", newticket.milestones, "milestone", newticket.milestone, 1) ?><?cs
-   call:labelled_hdf_select("Assign to:", newticket.users, "owner", newticket.owner, 1) ?>
+   call:labelled_hdf_select("Milestone:", newticket.milestones, "milestone", newticket.milestone, 1) ?>
+   <label for="owner">Assign to:</label><?cs
+   if:len(newticket.users) ?><?cs
+    call:hdf_select(newticket.users, "owner", newticket.owner, 1) ?><?cs
+   else ?>
+    <input type="text" id="owner" name="owner" size="20" value="<?cs
+      var:newticket.owner ?>" /><?cs
+   /if ?><br /> 
    <label for="cc">Cc:</label>
    <input type="text" id="cc" name="cc" size="30" value="<?cs
      var:newticket.cc ?>" />
