@@ -148,6 +148,7 @@ class TracHTTPServer(ThreadingMixIn, HTTPServer):
             env = open_environment(path)
             env.href = href.Href('/' + project)
             env.abs_href = href.Href('http://%s/%s' % (self.http_host, project))
+            env.config.set('trac', 'htdocs_location', '')
             self.projects[project] = env
             self.projects[project].auth = auth
 
