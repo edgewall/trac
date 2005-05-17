@@ -9,6 +9,15 @@
  </select><?cs
 /def?><?cs
 
+def:labelled_hdf_select(label, options, name, selected, optional) ?><?cs 
+ if:len(options) > #0 ?>
+  <label for="<?cs var:name ?>"><?cs var:label ?></label><?cs
+   call:hdf_select(options, name, selected, optional) ?>
+  </label>
+  <br /><?cs
+ /if ?><?cs
+/def ?><?cs
+
 def:browser_path_links(path, file) ?><?cs
  set:first = #1 ?>
  <h1><?cs
@@ -162,9 +171,9 @@ def:ticket_custom_props(ticket) ?><?cs
    /if ?>
   </div><?cs
  /each ?><?cs
-/def ?>
+/def ?><?cs 
 
-<?cs def:sortable_th(order, desc, class, title) ?>
+def:sortable_th(order, desc, class, title) ?>
  <th class="<?cs var:class ?><?cs if:order == class ?> <?cs if:desc ?>desc<?cs else ?>asc<?cs /if ?><?cs /if ?>">
   <a title="Sort by <?cs var:class ?><?cs if:order == class && !desc ?> (descending)<?cs /if ?>"
      href="?order=<?cs var:class ?><?cs if:order == class && !desc ?>&desc=1<?cs /if ?>"><?cs var:title ?></a>

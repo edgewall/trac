@@ -21,6 +21,9 @@ addEvent(window, 'load', function() { document.getElementById('summary').focus()
   <input id="summary" type="text" name="summary" size="80" value="<?cs
     var:newticket.summary ?>"/>
  </div>
+ <div class="field"><?cs
+  call:labelled_hdf_select("Type: ", enums.ticket_type, "type", newticket.type, 0) ?>
+ </div>
  <div class="field">
   <label for="description">Full description (you may use <a tabindex="42" href="<?cs
     var:$trac.href.wiki ?>/WikiFormatting">WikiFormatting</a> here):</label><br />
@@ -38,32 +41,18 @@ addEvent(window, 'load', function() { document.getElementById('summary').focus()
   <legend>Ticket Properties</legend>
   <input type="hidden" name="action" value="create" />
   <input type="hidden" name="status" value="new" />
-  <div class="col1">
-   <label for="component">Component:</label><?cs
-   call:hdf_select(newticket.components, "component", newticket.component, 0) ?>
-   <br />
-   <label for="version">Version:</label><?cs
-   call:hdf_select(newticket.versions, "version", newticket.version, 0) ?>
-   <br />
-   <label for="severity">Severity:</label><?cs
-   call:hdf_select(enums.severity, "severity", newticket.severity, 0) ?>
-   <br />
+  <div class="col1"><?cs
+   call:labelled_hdf_select("Component:", newticket.components, "component", newticket.component, 0) ?><?cs
+   call:labelled_hdf_select("Version:", newticket.versions, "version", newticket.version, 1) ?><?cs
+   call:labelled_hdf_select("Severity:", enums.severity, "severity", newticket.severity, 0) ?>
    <label for="keywords">Keywords:</label>
    <input type="text" id="keywords" name="keywords" size="20"
        value="<?cs var:newticket.keywords ?>" />
   </div>
-  <div class="col2">
-   <label for="priority">Priority:</label><?cs
-   call:hdf_select(enums.priority, "priority", newticket.priority, 0) ?><br />
-   <label for="milestone">Milestone:</label><?cs
-   call:hdf_select(newticket.milestones, "milestone", newticket.milestone, 1) ?><br />
-   <label for="owner">Assign to:</label><?cs
-   if:len(newticket.users) ?><?cs
-    call:hdf_select(newticket.users, "owner", newticket.owner, 1) ?><?cs
-   else ?>
-    <input type="text" id="owner" name="owner" size="20" value="<?cs
-      var:newticket.owner ?>" /><?cs
-   /if ?><br />
+  <div class="col2"><?cs
+   call:labelled_hdf_select("Priority:", enums.priority, "priority", newticket.priority, 0) ?><?cs
+   call:labelled_hdf_select("Milestone:", newticket.milestones, "milestone", newticket.milestone, 1) ?><?cs
+   call:labelled_hdf_select("Assign to:", newticket.users, "owner", newticket.owner, 1) ?>
    <label for="cc">Cc:</label>
    <input type="text" id="cc" name="cc" size="30" value="<?cs
      var:newticket.cc ?>" />

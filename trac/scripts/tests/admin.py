@@ -350,7 +350,7 @@ Trac Admin Console %s
         error message.
         """
         test_name = sys._getframe().f_code.co_name
-        test_results = self._execute('priority add highest')
+        test_results = self._execute('priority add blocker')
         self.assertEquals(self.expected_results[test_name], test_results)
 
     def test_priority_change_ok(self):
@@ -359,7 +359,7 @@ Trac Admin Console %s
         test passes valid arguments and checks for success.
         """
         test_name = sys._getframe().f_code.co_name
-        self._execute('priority change normal abby_normal')
+        self._execute('priority change major normal')
         test_results = self._execute('priority list')
         self.assertEquals(self.expected_results[test_name], test_results)
 
@@ -378,7 +378,7 @@ Trac Admin Console %s
         test tries to change a priority to a name that already exists.
         """
         test_name = sys._getframe().f_code.co_name
-        test_results = self._execute('priority change highest high')
+        test_results = self._execute('priority change major minor')
         self.assertEquals(self.expected_results[test_name], test_results)
 
     def test_priority_remove_ok(self):
@@ -387,7 +387,7 @@ Trac Admin Console %s
         test passes a valid argument and checks for success.
         """
         test_name = sys._getframe().f_code.co_name
-        self._execute('priority remove low')
+        self._execute('priority remove major')
         test_results = self._execute('priority list')
         self.assertEquals(self.expected_results[test_name], test_results)
 
@@ -429,6 +429,7 @@ Trac Admin Console %s
         error message.
         """
         test_name = sys._getframe().f_code.co_name
+        self._execute('severity add blocker')
         test_results = self._execute('severity add blocker')
         self.assertEquals(self.expected_results[test_name], test_results), test_results
 
@@ -438,6 +439,7 @@ Trac Admin Console %s
         test passes valid arguments and checks for success.
         """
         test_name = sys._getframe().f_code.co_name
+        self._execute('severity add critical')
         self._execute('severity change critical end-of-the-world')
         test_results = self._execute('severity list')
         self.assertEquals(self.expected_results[test_name], test_results)
@@ -457,6 +459,8 @@ Trac Admin Console %s
         test tries to change a severity to a name that already exists.
         """
         test_name = sys._getframe().f_code.co_name
+        test_results = self._execute('severity add major')
+        test_results = self._execute('severity add critical')
         test_results = self._execute('severity change critical major')
         self.assertEquals(self.expected_results[test_name], test_results)
 

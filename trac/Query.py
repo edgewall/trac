@@ -84,7 +84,7 @@ class Query(object):
 
         # FIXME: the user should be able to configure which columns should
         # be displayed
-        cols = ['id', 'summary', 'status', 'owner', 'priority', 'milestone',
+        cols = ['type', 'id', 'summary', 'status', 'owner', 'priority', 'milestone',
                 'component', 'version', 'severity', 'resolution', 'reporter']
         cols += [f['name'] for f in get_custom_fields(self.env)]
 
@@ -116,9 +116,9 @@ class Query(object):
             return 0
         cols.sort(sort_columns)
 
-        # Only display the first seven columns by default
+        # Only display the first eight columns by default
         # FIXME: Make this configurable on a per-user and/or per-query basis
-        self.cols = cols[:7]
+        self.cols = cols[:8]
         if not self.order in self.cols and not self.order == self.group:
             # Make sure the column we order by is visible, if it isn't also
             # the column we group by
@@ -207,6 +207,8 @@ class Query(object):
 
         def get_constraint_sql(name, value, mode, neg):
             value = sql_escape(value[len(mode and '!' or '' + mode):])
+            if name not in custom_fields:
+                name = 't.'+name
             if mode == '~' and value:
                 return "COALESCE(%s,'') %sLIKE '%%%s%%'" % (
                        name, neg and 'NOT ' or '', value)
@@ -233,8 +235,12 @@ class Query(object):
             if not mode and len(v) > 1:
                 inlist = ",".join(["'" + sql_escape(val[neg and 1 or 0:]) + "'"
                                    for val in v])
+                if k not in custom_fields:
+                    col = 't.'+k
+                else:
+                    col = k
                 clauses.append("COALESCE(%s,'') %sIN (%s)"
-                               % (k, neg and 'NOT ' or '', inlist))
+                               % (col, neg and 'NOT ' or '', inlist))
             elif len(v) > 1:
                 constraint_sql = [get_constraint_sql(k, val, mode, neg)
                                   for val in v]
@@ -253,8 +259,12 @@ class Query(object):
         order_cols = [(self.order, self.desc)]
         if self.group and self.group != self.order:
             order_cols.insert(0, (self.group, self.groupdesc))
-        for col, desc in order_cols:
-            if col == 'id':
+        for name, desc in order_cols:
+            if name not in custom_fields:
+                col = 't.'+name
+            else:
+                col = name
+            if name == 'id':
                 # FIXME: This is a somewhat ugly hack.  Can we also have the
                 #        column type for this?  If it's an integer, we do first
                 #        one, if text, we do 'else'
@@ -267,28 +277,28 @@ class Query(object):
                     sql.append("COALESCE(%s,'')='' DESC," % col)
                 else:
                     sql.append("COALESCE(%s,'')=''," % col)
-            if col in ['status', 'resolution', 'priority', 'severity']:
+            if name in ['status', 'resolution', 'priority', 'severity']:
                 if desc:
-                    sql.append("%s.value DESC" % col)
+                    sql.append("%s.value DESC" % name)
                 else:
-                    sql.append("%s.value" % col)
-            elif col in ['milestone', 'version']:
-                time_col = col == 'milestone' and 'due' or 'time'
+                    sql.append("%s.value" % name)
+            elif col in ['t.milestone', 't.version']:
+                time_col = name == 'milestone' and 'milestone.due' or 'version.time'
                 if desc:
-                    sql.append("COALESCE(%s.%s,0)=0 DESC,%s.%s DESC,%s DESC"
-                               % (col, time_col, col, time_col, col))
+                    sql.append("COALESCE(%s,0)=0 DESC,%s DESC,%s DESC"
+                               % (time_col, time_col, col))
                 else:
-                    sql.append("COALESCE(%s.%s,0)=0,%s.%s,%s"
-                               % (col, time_col, col, time_col, col))
+                    sql.append("COALESCE(%s,0)=0,%s,%s"
+                               % (time_col, time_col, col))
             else:
                 if desc:
                     sql.append("%s DESC" % col)
                 else:
                     sql.append("%s" % col)
-            if col == self.group and not col == self.order:
+            if name == self.group and not name == self.order:
                 sql.append(",")
         if self.order != 'id':
-            sql.append(",id")
+            sql.append(",t.id")
 
         return "".join(sql)
 
@@ -438,6 +448,10 @@ class QueryModule(Component):
         properties.append({'name': 'summary', 'type': 'text',
                            'label': 'Summary'})
         properties.append({
+            'name': 'type', 'type': 'select', 'label': 'Type',
+            'options': rows_to_list("SELECT name FROM enum "
+                                    "WHERE type='ticket_type' ORDER BY value")})
+        properties.append({
             'name': 'status', 'type': 'radio', 'label': 'Status',
             'options': rows_to_list("SELECT name FROM enum WHERE type='status' "
                                     "ORDER BY value")})
@@ -491,7 +505,7 @@ class QueryModule(Component):
                 property['options'].insert(0, '')
             properties.append(property)
 
-        return properties
+        return filter(lambda p: not p.has_key('options') or len(p['options']) > 0, properties)
 
     def _get_constraint_modes(self):
         modes = {}

@@ -141,6 +141,8 @@ def sql_to_hdf (db, sql, hdf, prefix):
 
 def hdf_add_if_missing(hdf, prefix, value):
     """Loop through the hdf values and add @value if id doesn't exist"""
+    if not value:
+        return
     node = hdf.getObj(prefix + '.0')
     i = 0
     while node:

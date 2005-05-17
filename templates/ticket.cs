@@ -31,17 +31,24 @@
 <div id="content" class="ticket">
 
  <h1>Ticket #<?cs var:ticket.id ?> <?cs
+ if:ticket.type ?> - <?cs var:ticket.type ?> <?cs /if ?><?cs
  if:ticket.resolution ?>(<?cs var:ticket.status ?>: <?cs var:ticket.resolution ?>)<?cs
  elif:ticket.status != 'new' ?>(<?cs var:ticket.status ?>)<?cs
  /if ?></h1>
 
  <div id="searchable">
- <?cs def:ticketprop(label, name, value, fullrow) ?>
-  <th id="h_<?cs var:name ?>"><?cs var:label ?>:</th>
-  <td headers="h_<?cs var:name ?>"<?cs if:fullrow ?> colspan="3"<?cs /if ?>><?cs
-   if:value ?><?cs var:value ?><?cs else ?>&nbsp;<?cs
-   /if ?></td><?cs if:numprops % #2 && !last_prop || fullrow ?>
- </tr><tr><?cs /if ?><?cs set numprops = numprops + #1 - fullrow ?><?cs
+ <?cs def:ticketprop(label, name, value, fullrow) ?><?cs
+  if:value ?>
+    <th id="h_<?cs var:name ?>"><?cs var:label ?>:</th>
+    <td headers="h_<?cs var:name ?>"<?cs if:fullrow ?> colspan="3"<?cs /if ?>><?cs 
+     var:value ?>
+    </td><?cs 
+   if:numprops % #2 && !last_prop || fullrow ?>
+   </tr>
+   <tr><?cs 
+   /if ?><?cs 
+   set numprops = numprops + #1 - fullrow ?><?cs
+  /if ?><?cs
  /def ?>
 
 <div id="ticket">
@@ -159,13 +166,14 @@
   <div class="main">
    <label for="summary">Summary:</label>
    <input id="summary" type="text" name="summary" size="70" value="<?cs
-     var:ticket.summary ?>" /><?cs
+     var:ticket.summary ?>" />
+   <br /><?cs
+   call:labelled_hdf_select('Type:', enums.ticket_type, "type", ticket.type, 0) ?><?cs
    if:trac.acl.TICKET_ADMIN ?>
-    <br />
     <label for="description">Description:</label>
     <div style="float: left">
      <textarea id="description" name="description" class="wikitext" rows="10" cols="68"><?cs
-       var:ticket.description ?></textarea>
+        var:ticket.description ?></textarea>
     </div>
     <br style="clear: left" />
     <label for="reporter">Reporter:</label>
@@ -173,25 +181,17 @@
            value="<?cs var:ticket.reporter ?>" /><?cs
    /if ?>
   </div>
-  <div class="col1">
-   <label for="component">Component:</label><?cs
-   call:hdf_select(ticket.components, "component", ticket.component, 0) ?>
-   <br />
-   <label for="version">Version:</label><?cs
-   call:hdf_select(ticket.versions, "version", ticket.version, 1) ?>
-   <br />
-   <label for="severity">Severity:</label><?cs
-   call:hdf_select(enums.severity, "severity", ticket.severity, 0) ?>
-   <br />
+  <div class="col1"><?cs
+   call:labelled_hdf_select("Component:", ticket.components, "component", ticket.component, 0) ?><?cs
+   call:labelled_hdf_select("Version:", ticket.versions, "version", ticket.version, 1) ?><?cs 
+   call:labelled_hdf_select("Severity:", enums.severity, "severity", ticket.severity, 0) ?>
    <label for="keywords">Keywords:</label>
    <input type="text" id="keywords" name="keywords" size="20"
        value="<?cs var:ticket.keywords ?>" />
   </div>
-  <div class="col2">
-   <label for="priority">Priority:</label><?cs
-   call:hdf_select(enums.priority, "priority", ticket.priority, 0) ?><br />
-   <label for="milestone">Milestone:</label><?cs
-   call:hdf_select(ticket.milestones, "milestone", ticket.milestone, 1) ?><br />
+  <div class="col2"><?cs
+   call:labelled_hdf_select("Priority:", enums.priority, "priority", ticket.priority, 0) ?><?cs
+   call:labelled_hdf_select("Milestone:", ticket.milestones, "milestone", ticket.milestone, 1) ?>
    <label for="owner">Assigned to:</label>
    <input type="text" id="owner" name="owner" size="20" value="<?cs
      var:ticket.owner ?>" disabled="disabled" /><br />

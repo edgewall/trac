@@ -282,7 +282,7 @@ class TracAdmin(cmd.Cmd):
                     self._help_wiki +
 #                    self._help_config + self._help_wiki +
                     self._help_permission + self._help_component +
-                    self._help_priority + self._help_severity + 
+                    self._help_ticket_type + self._help_priority + self._help_severity + 
                     self._help_version + self._help_milestone)
             print 'trac-admin - The Trac Administration Console %s' % trac.__version__
             if not self.interactive:
@@ -777,6 +777,23 @@ class TracAdmin(cmd.Cmd):
                 self._do_wiki_import(filename, page, cursor)
 
 
+    ## (Ticket) Type
+    _help_ticket_type = [('ticket_type list', 'Show possible ticket categories'),
+                      ('ticket_type add <value>', 'Add a ticket_type value option'),
+                      ('ticket_type change <value> <newvalue>',
+                       'Change a ticket_type value'),
+                      ('ticket_type remove <value>', 'Remove ticket_type value')]
+ 
+    def complete_ticket_type (self, text, line, begidx, endidx):
+        if begidx == 16:
+            comp = self.get_enum_list ('ticket_type')
+        elif begidx < 15:
+            comp = ['list','add','change','remove']
+        return self.word_complete(text, comp)
+ 
+    def do_ticket_type(self, line):
+        self._do_enum('ticket_type', line)
+ 
     ## (Ticket) Priority
     _help_priority = [('priority list', 'Show possible ticket priorities'),
                        ('priority add <value>', 'Add a priority value option'),

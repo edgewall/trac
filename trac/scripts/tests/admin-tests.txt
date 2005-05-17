@@ -27,6 +27,10 @@ component add <name> <owner>                      -- Add a new component
 component rename <name> <newname>                 -- Rename a component
 component remove <name>                           -- Remove/uninstall component
 component chown <name> <owner>                    -- Change component ownership
+ticket_type list                                  -- Show possible ticket categories
+ticket_type add <value>                           -- Add a ticket_type value option
+ticket_type change <value> <newvalue>             -- Change a ticket_type value
+ticket_type remove <value>                        -- Remove ticket_type value
 priority list                                     -- Show possible ticket priorities
 priority add <value>                              -- Add a priority value option
 priority change <value> <newvalue>                -- Change a priority value
@@ -259,21 +263,21 @@ Component remove failed: No such component 'bad_component'
 
 Possible Values
 ---------------
-highest        
-high           
-normal         
-low            
-lowest         
+blocker        
+critical       
+major          
+minor          
+trivial    
 
 ===== test_priority_add_ok =====
 
 Possible Values
 ---------------
-highest        
-high           
-normal         
-low            
-lowest         
+blocker        
+critical       
+major          
+minor          
+trivial    
 new_priority   
 
 ===== test_priority_add_error_already_exists =====
@@ -282,11 +286,11 @@ Command add failed: columns type, name are not unique
 
 Possible Values
 ---------------
-highest        
-high           
-abby_normal    
-low            
-lowest         
+blocker        
+critical       
+normal
+minor          
+trivial    
 
 ===== test_priority_change_error_bad_priority =====
 Command change failed: No such value 'bad_priority'
@@ -296,10 +300,10 @@ Command change failed: columns type, name are not unique
 
 Possible Values
 ---------------
-highest        
-high           
-normal         
-lowest         
+blocker        
+critical       
+minor          
+trivial    
 
 ===== test_priority_remove_error_bad_priority =====
 Command remove failed: No such value 'bad_priority'
@@ -307,25 +311,11 @@ Command remove failed: No such value 'bad_priority'
 
 Possible Values
 ---------------
-blocker        
-critical       
-major          
-normal         
-minor          
-trivial        
-enhancement    
 
 ===== test_severity_add_ok =====
 
 Possible Values
 ---------------
-blocker        
-critical       
-major          
-normal         
-minor          
-trivial        
-enhancement    
 new_severity   
 
 ===== test_severity_add_error_already_exists =====
@@ -334,13 +324,7 @@ Command add failed: columns type, name are not unique
 
 Possible Values 
 ----------------
-blocker         
 end-of-the-world
-major           
-normal          
-minor           
-trivial         
-enhancement     
 
 ===== test_severity_change_error_bad_severity =====
 Command change failed: No such value 'bad_severity'
@@ -350,12 +334,6 @@ Command change failed: columns type, name are not unique
 
 Possible Values
 ---------------
-blocker        
-critical       
-major          
-normal         
-minor          
-enhancement    
 
 ===== test_severity_remove_error_bad_severity =====
 Command remove failed: No such value 'bad_severity'
