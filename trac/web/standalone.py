@@ -22,7 +22,7 @@
 # Todo:
 # - External auth using mod_proxy / squid.
 
-from trac import siteconfig, util, __version__
+from trac import util, __version__
 from trac.env import open_environment
 from trac.web.main import Request, dispatch_request, send_pretty_error
 from trac.web.cgi_frontend import TracFieldStorage
@@ -34,10 +34,8 @@ import sys
 import md5
 import time
 import socket, errno
-import shutil
 import urllib
 import urllib2
-import mimetypes
 from SocketServer import ThreadingMixIn
 from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
 
@@ -150,7 +148,6 @@ class TracHTTPServer(ThreadingMixIn, HTTPServer):
             env = open_environment(path)
             env.href = href.Href('/' + project)
             env.abs_href = href.Href('http://%s/%s' % (self.http_host, project))
-            env.config.set('trac', 'htdocs_location', '/trac_common/')
             self.projects[project] = env
             self.projects[project].auth = auth
 
@@ -166,11 +163,19 @@ class TracHTTPRequestHandler(BaseHTTPRequestHandler):
     log = None
     project_name = None
 
-    def log_message(self, format, *args):
-        if self.log:
-            self.log.debug(format % args)
+    def do_POST(self):
+        self._do_trac_req()
 
-    def do_project_index(self):
+    def do_HEAD(self):
+        self.do_GET()
+
+    def do_GET(self):
+        if self.path[0:13] == '/':
+            self._do_project_index()
+        else:
+            self._do_trac_req()
+
+    def _do_project_index(self):
         self.send_response(200)
         self.send_header('Content-Type', 'text/html')
         self.end_headers()
@@ -180,52 +185,7 @@ class TracHTTPRequestHandler(BaseHTTPRequestHandler):
             self.wfile.write('<li><a href="%s">%s</a></li>' % (proj, proj))
         self.wfile.write('</ul></body><html>')
 
-    def do_htdocs_req(self, path):
-        """This function serves request for static img/css files"""
-        path = urllib.unquote(path)
-        # Make sure the path doesn't contain any dangerous ".."-parts.
-        path = '/'.join(filter(lambda x: x not in ['..', ''],
-                               path.split('/')))
-        filename = os.path.join(siteconfig.__default_htdocs_dir__,
-                                os.path.normcase(path))
-        try:
-            f = open(filename, 'rb')
-        except IOError:
-            self.send_error(404, path)
-            return
-        try:
-            self.send_response(200)
-            mtype, enc = mimetypes.guess_type(filename)
-            stat = os.fstat(f.fileno())
-            content_length = stat[6]
-            last_modified = time.strftime("%a, %d %b %Y %H:%M:%S GMT",
-                                          time.gmtime(stat[8]))
-            self.send_header('Content-Type', mtype)
-            self.send_header('Content-Length', str(content_length))
-            self.send_header('Last-Modified', last_modified)
-            self.end_headers()
-            shutil.copyfileobj(f, self.wfile)
-        except socket.error, (code, msg):
-            if code == errno.EPIPE or code == 10053: # Windows
-                self.log_message('Lost connection to client: %s', self.address_string())
-            else:
-                raise
- 
-    def do_POST(self):
-        self.do_trac_req()
-
-    def do_HEAD(self):
-        self.do_GET()
-
-    def do_GET(self):
-        if self.path[0:13] == '/':
-            self.do_project_index()
-        elif self.path[0:13] == '/trac_common/':
-            self.do_htdocs_req(self.path[13:])
-        else:
-            self.do_trac_req()
-
-    def do_trac_req(self):
+    def _do_trac_req(self):
         m = self.url_re.findall(self.path)
         if not m:
             self.send_error(400, 'Bad Request')
@@ -236,7 +196,6 @@ class TracHTTPRequestHandler(BaseHTTPRequestHandler):
             return
         path_info = urllib.unquote(path_info)
         env = self.server.projects[project_name]
-        self.log = env.log
 
         req = TracHTTPRequest(self, project_name, query_string)
         req.remote_user = None
@@ -251,10 +210,11 @@ class TracHTTPRequestHandler(BaseHTTPRequestHandler):
         try:
             start = time.time()
             dispatch_request(path_info, req, env)
-            self.log.debug('Total request time: %f s', time.time() - start)
+            env.log.debug('Total request time: %f s', time.time() - start)
         except socket.error, (code, msg):
             if code == errno.EPIPE or code == 10053: # Windows
-                self.log_message('Lost connection to client: %s', self.address_string())
+                env.log.info('Lost connection to client: %s'
+                             % self.address_string())
             else:
                 raise
         except Exception, e:
@@ -262,14 +222,13 @@ class TracHTTPRequestHandler(BaseHTTPRequestHandler):
                 send_pretty_error(e, env, req)
             except socket.error, (code, msg):
                 if code == errno.EPIPE or code == 10053: # Windows
-                    self.log_message('Lost connection to client: %s', self.address_string())
+                    env.log.info('Lost connection to client: %s'
+                                 % self.address_string())
                 else:
                     raise
 
 
 class TracHTTPRequest(Request):
-
-    __handler = None
 
     def __init__(self, handler, project_name, query_string):
         Request.__init__(self)
@@ -292,8 +251,8 @@ class TracHTTPRequest(Request):
         self.args = TracFieldStorage(self.__handler.rfile, environ=environ,
                                      headers=headers, keep_blank_values=1)
 
-    def read(self, len):
-        return self.__handler.rfile.read(len)
+    def read(self, size=None):
+        return self.__handler.rfile.read(size)
 
     def write(self, data):
         self.__handler.wfile.write(data)
