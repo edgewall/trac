@@ -337,6 +337,11 @@ def populate_hdf(hdf, env, req=None):
         hdf['trac.authname'] = escape(req.authname)
         for action in req.perm.permissions():
             req.hdf['trac.acl.' + action] = 1
+        for arg in [k for k in req.args.keys() if k]:
+            if isinstance(req.args[arg], (list, tuple)):
+                hdf['args.%s' % arg] = [v.value for v in req.args[arg]]
+            else:
+                hdf['args.%s' % arg] = req.args[arg].value
 
 def absolute_url(req, path=None):
     """
