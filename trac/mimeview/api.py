@@ -44,8 +44,10 @@ MIME_MAP = {
     'el':'text/x-elisp',
     'f':'text/x-fortran',
     'h':'text/x-chdr',
-    'cc':'text/x-c++src', 'cpp':'text/x-c++src', 'CC':'text/x-c++src',
-    'hh':'text/x-c++hdr', 'HH':'text/x-c++hdr',  'hpp':'text/x-c++hdr',
+    'cc':'text/x-c++src', 'CC':'text/x-c++src',
+    'cpp':'text/x-c++src', 'C':'text/x-c++src',
+    'hh':'text/x-c++hdr', 'HH':'text/x-c++hdr',
+    'hpp':'text/x-c++hdr', 'H':'text/x-c++hdr',
     'hs':'text/x-haskell',
     'ico':'image/x-icon',
     'idl':'text/x-idl',
@@ -90,8 +92,7 @@ MIME_MAP = {
 
 def get_mimetype(filename):
     try:
-        i = filename.rfind('.')
-        suffix = filename[i+1:]
+        suffix = filename.split('.')[-1]
         return MIME_MAP[suffix]
     except KeyError:
         import mimetypes
