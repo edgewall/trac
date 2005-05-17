@@ -28,14 +28,16 @@ def load_components(env):
 
     # Load configured modules
     for section in env.config.sections():
-        for name,value in env.config.options(section):
+        for name, value in env.config.options(section):
             if name == 'module':
                 configured_components.append(value)
-                path = env.config.get(section, 'path')
+                path = env.config.get(section, 'path') or None
                 env.log.debug('Loading component module %s from %s'
-                              % (name, path or 'default path'))
+                              % (value, path or 'default path'))
+                if path:
+                    path = [path]
                 try:
-                    load_component(name, path, globals(), locals())
+                    load_component(value, path)
                 except ImportError, e:
                     env.log.error('Component module %s not found (%s)'
                                   % (value, e))
@@ -46,7 +48,7 @@ def load_components(env):
         if not module in configured_components:
             load_component(module)
 
-def load_component(name, path=None, globals=None, locals=None):
+def load_component(name, path=None):
     if '.' in name:
         i = name.find('.')
         head, tail = name[:i], name[i + 1:]
@@ -71,14 +73,14 @@ def _load_module(part, name, parent, path=None):
     try:
         return sys.modules[name]
     except KeyError:
-        pass
-    try:
-        fp, path, desc = imp.find_module(part,
-                                         parent and parent.__path__ or path)
-    except ImportError:
-        return None
-    try:
-        module = imp.load_module(name, fp, path, desc)
-    finally:
-        if fp: fp.close()
-    return module
+        try:
+            fd, path, desc = imp.find_module(part,
+                                             parent and parent.__path__ or path)
+        except ImportError:
+            return None
+        try:
+            module = imp.load_module(name, fd, path, desc)
+        finally:
+            if fd:
+                fd.close()
+        return module
