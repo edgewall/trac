@@ -24,7 +24,7 @@
 
 from trac.core import *
 
-__all__ = ['get_mimetype', 'is_binary', 'Mimeview']
+__all__ = ['get_charset', 'get_mimetype', 'is_binary', 'Mimeview']
 
 MIME_MAP = {
     'css':'text/css',
@@ -89,6 +89,17 @@ MIME_MAP = {
     'zsh':'text/x-zsh',
     'barf':'application/x-test',
 }
+
+def get_charset(mimetype):
+    """
+    Returns the character encoding included in the given content type string,
+    or `None` if `mimetype` is `None` or empty or if no charset information is
+    available.
+    """
+    if mimetype:
+        ctpos = mimetype.find('charset=')
+        if ctpos >= 0:
+            return mime_type[ctpos + 8:]
 
 def get_mimetype(filename):
     try:

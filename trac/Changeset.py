@@ -189,10 +189,21 @@ class ChangesetModule(Component):
                 continue
 
             # Content changes
+            default_charset = self.config.get('trac', 'default_charset')
             old_content = old_node.get_content().read()
             if mimeview.is_binary(old_content):
                 continue
+            charset = mimeview.get_charset(old_node.content_type) or \
+                      default_charset
+            old_content = util.to_utf8(old_content, charset)
+
             new_content = new_node.get_content().read()
+            if mimeview.is_binary(new_content):
+                continue
+            charset = mimeview.get_charset(new_node.content_type) or \
+                      default_charset
+            new_content = util.to_utf8(new_content, charset)
+
             if old_content != new_content:
                 context = 3
                 for option in diff_options[1]:
@@ -200,8 +211,8 @@ class ChangesetModule(Component):
                         context = int(option[2:])
                         break
                 tabwidth = int(self.config.get('diff', 'tab_width'))
-                changes = hdf_diff(util.to_utf8(old_content).splitlines(),
-                                   util.to_utf8(new_content).splitlines(),
+                changes = hdf_diff(old_content.splitlines(),
+                                   new_content.splitlines(),
                                    context, tabwidth,
                                    ignore_blank_lines='-B' in diff_options[1],
                                    ignore_case='-i' in diff_options[1],
@@ -231,16 +242,29 @@ class ChangesetModule(Component):
             # Content changes
             if kind == 'dir':
                 continue
+
+            default_charset = self.config.get('trac', 'default_charset')
             new_content = old_content = ''
             new_node_info = old_node_info = ('','')
+
             if old_node:
-                old_content = util.to_utf8(old_node.get_content().read())
+                charset = mimeview.get_charset(old_node.content_type) or \
+                          default_charset
+                old_content = util.to_utf8(old_node.get_content().read(),
+                                           charset)
                 old_node_info = (old_node.path, old_node.rev)
             if mimeview.is_binary(old_content):
                 continue
+
             if new_node:
-                new_content = util.to_utf8(new_node.get_content().read())
+                charset = mimeview.get_charset(new_node.content_type) or \
+                          default_charset
+                new_content = util.to_utf8(new_node.get_content().read(),
+                                           charset)
                 new_node_info = (new_node.path, new_node.rev)
+            if mimeview.is_binary(new_content):
+                continue
+
             if old_content != new_content:
                 context = 3
                 for option in diff_options[1]:
