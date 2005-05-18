@@ -109,8 +109,6 @@ class HDFWrapper:
     False
     """
 
-    hdf = None
-
     def __init__(self, loadpaths=[]):
         """
         Creates a new HDF dataset.
@@ -223,7 +221,7 @@ class HDFWrapper:
                 name = node.name() or ''
                 buf.write('%s%s' % (prefix, name))
                 value = node.value()
-                if value:
+                if value or not node.child():
                     if value.find('\n') == -1:
                         buf.write(' = %s' % value)
                     else:

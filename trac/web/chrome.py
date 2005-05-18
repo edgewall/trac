@@ -22,25 +22,35 @@
 import os.path
 import re
 
-from trac import mimeview
+from trac import mimeview, util
 from trac.core import *
-from trac.util import enum, escape, href_join, http_date
 from trac.web.href import Href
 from trac.web.main import IRequestHandler
 
-def add_link(req, rel, href, title=None, type=None, class_name=None):
-    link = {'href': escape(href)}
-    if title: link['title'] = escape(title)
-    if type: link['type'] = type
-    if class_name: link['class'] = class_name
+def add_link(req, rel, href, title=None, mimetype=None, classname=None):
+    """
+    Add a link to the HDF data set that will be inserted as <link> element in
+    the <head> of the generated HTML
+    """
+    link = {'href': util.escape(href)}
+    if title:
+        link['title'] = util.escape(title)
+    if mimetype:
+        link['type'] = mimetype
+    if classname:
+        link['class'] = classname
     idx = 0
     while req.hdf.get('chrome.links.%s.%d.href' % (rel, idx)):
         idx += 1
     req.hdf['chrome.links.%s.%d' % (rel, idx)] = link
 
-def add_stylesheet(req, filename, type='text/css'):
+def add_stylesheet(req, filename, mimetype='text/css'):
+    """
+    Add a link to a style sheet to the HDF data set so that it gets included
+    in the generated HTML page.
+    """
     href = Href(req.hdf['htdocs_location'])
-    add_link(req, 'stylesheet', href.css(filename), type=type)
+    add_link(req, 'stylesheet', href.css(filename), mimetype=mimetype)
 
 
 class INavigationContributor(Interface):
@@ -49,7 +59,7 @@ class INavigationContributor(Interface):
     navigation.
     """
 
-    def get_active_navigation_item(self, req):
+    def get_active_navigation_item(req):
         """
         This method is only called for the `IRequestHandler` processing the
         request. It should return the name of the navigation item that should
@@ -99,25 +109,10 @@ class Chrome(Component):
 
         htdocs_location = self.config.get('trac', 'htdocs_location', '')
         if not htdocs_location:
-            htdocs_location = href_join(req.cgi_location, 'chrome/')
-        elif htdocs_location[-1] != '/':
+            htdocs_location = Href(req.cgi_location).chrome()
+        if htdocs_location[-1] != '/':
             htdocs_location += '/'
         req.hdf['htdocs_location'] = htdocs_location
-
-        # Logo image
-        logo_src = self.config.get('header_logo', 'src')
-        logo_src_abs = logo_src.startswith('http://') or \
-                       logo_src.startswith('https://')
-        if not logo_src.startswith('/') and not logo_src_abs:
-            logo_src = htdocs_location + logo_src
-        req.hdf['chrome.logo'] = {
-            'link': self.config.get('header_logo', 'link'),
-            'alt': escape(self.config.get('header_logo', 'alt')),
-            'src': logo_src,
-            'src_abs': logo_src_abs,
-            'width': self.config.get('header_logo', 'width'),
-            'height': self.config.get('header_logo', 'height')
-        }
 
         # HTML <head> links
         add_link(req, 'start', self.env.href.wiki())
@@ -126,11 +121,27 @@ class Chrome(Component):
         add_stylesheet(req, 'trac.css')
         icon = self.config.get('project', 'icon')
         if icon:
-            if not icon[0] == '/' and icon.find('://') < 0:
+            if icon[0] != '/' and icon.find('://') == -1:
                 icon = htdocs_location + icon
             mimetype = mimeview.get_mimetype(icon)
-            add_link(req, 'icon', icon, type=mimetype)
-            add_link(req, 'shortcut icon', icon, type=mimetype)
+            add_link(req, 'icon', icon, mimetype=mimetype)
+            add_link(req, 'shortcut icon', icon, mimetype=mimetype)
+
+        # Logo image
+        logo_src = self.config.get('header_logo', 'src')
+        if logo_src:
+            logo_src_abs = logo_src.startswith('http://') or \
+                           logo_src.startswith('https://')
+            if not logo_src.startswith('/') and not logo_src_abs:
+                logo_src = htdocs_location + logo_src
+            req.hdf['chrome.logo'] = {
+                'link': self.config.get('header_logo', 'link') or None,
+                'alt': util.escape(self.config.get('header_logo', 'alt')),
+                'src': logo_src,
+                'src_abs': logo_src_abs,
+                'width': self.config.get('header_logo', 'width') or None,
+                'height': self.config.get('header_logo', 'height') or None
+            }
 
         # Navigation links
         navigation = {}
@@ -140,10 +151,18 @@ class Chrome(Component):
                 navigation.setdefault(category, {})[name] = text
             if contributor is handler:
                 active = contributor.get_active_navigation_item(req)
-        for category, items in navigation.items():
-            items = items.items()
-            order = self.config.get('trac', category).split(',')
-            items.sort(lambda x,y: cmp(order.index(x[0]), order.index(y[0])))
+
+        for category, items in [(k, v.items()) for k, v in navigation.items()]:
+            order = [x.strip() for x
+                     in self.config.get('trac', category).split(',')]
+            def navcmp(x, y):
+                if x[0] not in order:
+                    return int(y[0] in order)
+                if y[0] not in order:
+                    return -int(x[0] in order)
+                return cmp(order.index(x[0]), order.index(y[0]))
+            items.sort(navcmp)
+
             for name, text in items:
                 req.hdf['chrome.nav.%s.%s' % (category, name)] = text
                 if name == active:
