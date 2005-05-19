@@ -191,21 +191,27 @@ class Ticket(dict):
         cursor = db.cursor()
         if when:
             cursor.execute("SELECT time,author,field,oldvalue,newvalue "
-                           "FROM ticket_change "
-                           "WHERE ticket=%s AND time=%s "
+                           "FROM ticket_change WHERE ticket=%s AND time=%s "
                            "UNION "
-                           "SELECT time, author, 'attachment', null, filename "
-                           "FROM attachment "
-                           "WHERE id=%s AND time=%s "
+                           "SELECT time,author,'attachment',null,filename "
+                           "FROM attachment WHERE id=%s AND time=%s "
+                           "UNION "
+                           "SELECT time,author,'comment',null,description "
+                           "FROM attachment WHERE id=%s AND time=%s "
                            "ORDER BY time",
-                           (self['id'], when, self['id'], when))
+                           (self['id'], when, self['id'], when,
+                            self['id'], when))
         else:
             cursor.execute("SELECT time,author,field,oldvalue,newvalue "
                            "FROM ticket_change WHERE ticket=%s "
                            "UNION "
-                           "SELECT time, author, 'attachment', null,filename "
-                           "FROM attachment WHERE id = %s "
-                           "ORDER BY time", (self['id'],  self['id']))
+                           "SELECT time,author,'attachment',null,filename "
+                           "FROM attachment WHERE id=%s "
+                           "UNION "
+                           "SELECT time,author,'comment',null,description "
+                           "FROM attachment WHERE id=%s "
+                           "ORDER BY time",
+                           (self['id'],  self['id'], self['id']))
         log = []
         while 1:
             row = cursor.fetchone()

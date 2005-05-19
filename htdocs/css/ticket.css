@@ -12,24 +12,35 @@
  padding: .5em 1em;
  position: relative;
 }
-#ticket h2 { margin: 0 0 1em }
+#ticket h2.summary { margin: 0 0 1em }
 #ticket .date { color: #996; float: right; font-size: 85%; position: relative }
 #ticket .date p { margin: 0 }
 
-#ticket table {
+#ticket table.properties {
  border-top: 1px solid #dd9;
  border-collapse: collapse;
  table-layout: fixed;
  width: 100%;
 }
-#ticket tr { border-bottom: 1px dotted #eed }
-#ticket td, #ticket th { font-size: 80%; padding: .5em 1em; vertical-align: top }
-#ticket th { color: #663; font-weight: normal; text-align: left; width: 20% }
-#ticket td { width: 30% }
-#ticket .description { border-top: 1px solid #dd9 }
+#ticket table.properties tr { border-bottom: 1px dotted #eed }
+#ticket table.properties td, #ticket table.properties th {
+ font-size: 80%;
+ padding: .5em 1em;
+ vertical-align: top;
+}
+#ticket table.properties th {
+ color: #663;
+ font-weight: normal;
+ text-align: left;
+ width: 20%;
+}
+#ticket table.properties td { width: 30% }
+#ticket table.properties .description { border-top: 1px solid #dd9 }
 
 #attachments { border: 1px outset #996; padding: 1em }
-#attachments .attachments { list-style: square; margin-left: 2em; padding: 0 }
+#attachments .attachments { margin-left: 2em; padding: 0 }
+#attachments dt { display: list-item; list-style: square; }
+#attachments dd { font-style: italic; margin-left: 0; padding-left: 0; }
 
 #changelog { border: 1px outset #996; padding: 1em }
 #changelog h3 {

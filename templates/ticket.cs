@@ -52,8 +52,8 @@
    <p title="<?cs var:ticket.lastmod ?>">Last modified <?cs var:ticket.lastmod_delta ?> ago</p>
   <?cs /if ?>
  </div>
- <h2><?cs var:ticket.summary ?></h2>
- <table><tr><?cs
+ <h2 class="summary"><?cs var:ticket.summary ?></h2>
+ <table class="properties"><tr><?cs
   if:len(ticket.priorities) ?><?cs
    call:ticketprop("Priority", "priority", ticket.priority, 0) ?><?cs
   /if ?><?cs
@@ -81,7 +81,7 @@
   call:ticketprop("Keywords", "keywords", ticket.keywords, 0) ?><?cs
   set:last_prop = #0 ?>
  </tr></table><?cs if:ticket.custom.0.name ?>
- <table><tr><?cs each:prop = ticket.custom ?><?cs
+ <table class="custom properties"><tr><?cs each:prop = ticket.custom ?><?cs
    if:name(prop) == len(ticket.custom) - 1 ?><?cs set:last_prop = #1 ?><?cs
    /if ?><?cs
    if:prop.type == "textarea" ?><?cs
@@ -99,14 +99,15 @@
 <?cs if:ticket.attach_href || len(ticket.attachments) ?>
 <h2>Attachments</h2><?cs
  if:len(ticket.attachments) ?><div id="attachments">
-  <ul class="attachments"><?cs each:attachment = ticket.attachments ?>
-   <li><a href="<?cs var:attachment.href ?>" title="View attachment"><?cs
-   var:attachment.filename ?></a> (<?cs var:attachment.size ?>) - <?cs
-   if:attachment.description ?><q><?cs var:attachment.description ?></q>,<?cs
-   /if ?> added by <em><?cs
-   var:attachment.author ?></em> on <em><?cs
-   var:attachment.time ?></em>.</li><?cs
-  /each ?></ul><?cs
+  <dl class="attachments"><?cs each:attachment = ticket.attachments ?>
+   <dt><a href="<?cs var:attachment.href ?>" title="View attachment"><?cs
+   var:attachment.filename ?></a> (<?cs var:attachment.size ?>) - added by <em><?cs
+   var:attachment.author ?></em> on <?cs
+   var:attachment.time ?>.</dt><?cs
+   if:attachment.description ?>
+    <dd><?cs var:attachment.description ?></dd><?cs
+   /if ?><?cs
+  /each ?></dl><?cs
  /if ?><?cs
  if:ticket.attach_href ?>
   <form method="get" action="<?cs var:ticket.attach_href ?>"><div>
@@ -116,7 +117,7 @@
  /if ?><?cs if:len(ticket.attachments) ?></div><?cs /if ?>
 <?cs /if ?>
 
-<?cs if:len(ticket.changes) ?><h2>Changelog</h2>
+<?cs if:len(ticket.changes) ?><h2>Change History</h2>
 <div id="changelog"><?cs
  each:change = ticket.changes ?>
   <h3 id="change_<?cs var:name(change) ?>" class="change"><?cs
