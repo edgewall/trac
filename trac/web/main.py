@@ -195,11 +195,11 @@ class Request(object):
         if self.method != 'HEAD':
             try:
                 fd = open(path, 'rb')
-                    while True:
-                        data = fd.read(4096)
-                        if not data:
-                            break
-                        self.write(data)
+                while True:
+                    data = fd.read(4096)
+                    if not data:
+                        break
+                    self.write(data)
             finally:
                 fd.close()
 
