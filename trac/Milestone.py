@@ -334,19 +334,25 @@ class MilestoneModule(Component):
         add_link(req, 'up', self.env.href.roadmap(), 'Roadmap')
 
         db = self.env.get_db_cnx()
-        m = Milestone(self.env, req.perm, req.args.get('id'), db)
-
+        milestone = Milestone(self.env, req.perm, req.args.get('id'), db)
         action = req.args.get('action', 'view')
-        if action in ('new', 'edit'):
-            self._render_editor(req, db, m)
+
+        if req.method == 'POST':
+            if 'cancel' in req.args.keys():
+                if milestone.exists:
+                    req.redirect(self.env.href.milestone(milestone.name))
+                else:
+                    req.redirect(self.env.href.roadmap())
+            elif action == 'edit':
+                self._do_save(req, db, milestone)
+            elif action == 'delete':
+                self._do_delete(req, db, milestone)
+        elif action in ('new', 'edit'):
+            self._render_editor(req, db, milestone)
         elif action == 'delete':
-            self._render_confirm(req, db, m)
-        elif action == 'commit_changes':
-            self._do_save(req, db, m)
-        elif action == 'confirm_delete':
-            self._do_delete(req, db, m)
+            self._render_confirm(req, db, milestone)
         else:
-            self._render_view(req, db, m)
+            self._render_view(req, db, milestone)
 
         add_stylesheet(req, 'roadmap.css')
         return 'milestone.cs', None
@@ -354,39 +360,34 @@ class MilestoneModule(Component):
     # Internal methods
 
     def _do_delete(self, req, db, milestone):
-        if req.args.has_key('delete'):
-            retarget_to = None
-            if req.args.has_key('retarget'):
-                retarget_to = req.args.get('target')
-            milestone.delete(retarget_to)
-            db.commit()
-            req.redirect(self.env.href.roadmap())
-        else:
-            req.redirect(self.env.href.milestone(milestone.name))
+        retarget_to = None
+        if req.args.has_key('retarget'):
+            retarget_to = req.args.get('target')
+        milestone.delete(retarget_to)
+        db.commit()
+        req.redirect(self.env.href.roadmap())
 
     def _do_save(self, req, db, milestone):
-        if req.args.has_key('save'):
-            if not 'name' in req.args.keys():
-                raise TracError('You must provide a name for the milestone.',
-                                'Required Field Missing')
-            milestone.name = req.args.get('name')
+        if not 'name' in req.args.keys():
+            raise TracError('You must provide a name for the milestone.',
+                            'Required Field Missing')
+        milestone.name = req.args.get('name')
 
-            due = req.args.get('duedate', '')
-            milestone.due = due and _parse_date(due) or 0
-            if 'completed' in req.args.keys():
-                completed = req.args.get('completeddate', '')
-                milestone.completed = completed and _parse_date(completed) or 0
-            else:
-                milestone.completed = 0
+        due = req.args.get('duedate', '')
+        milestone.due = due and _parse_date(due) or 0
+        if 'completed' in req.args.keys():
+            completed = req.args.get('completeddate', '')
+            milestone.completed = completed and _parse_date(completed) or 0
+        else:
+            milestone.completed = 0
 
-            milestone.description = req.args.get('description', '')
+        milestone.description = req.args.get('description', '')
 
-            if milestone.exists:
-                milestone.update()
-            else:
-                milestone.insert()
-            db.commit()
-
+        if milestone.exists:
+            milestone.update()
+        else:
+            milestone.insert()
+        db.commit()
         req.redirect(self.env.href.milestone(milestone.name))
 
     def _render_confirm(self, req, db, milestone):

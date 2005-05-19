@@ -74,22 +74,26 @@ class WikiModule(Component):
         page = WikiPage(self.env, pagename, version, db)
 
         add_stylesheet(req, 'wiki.css')
-        if action == 'diff':
+
+        if req.method == 'POST':
+            if action == 'edit':
+                if req.args.has_key('cancel'):
+                    req.redirect(self.env.href.wiki(page.name))
+                elif req.args.has_key('preview'):
+                    action = 'preview'
+                    self._render_editor(req, db, page, preview=True)
+                else:
+                    self._do_save(req, db, page)
+            elif action == 'delete':
+                self._do_delete(req, db, page)
+        elif action == 'delete':
+            self._render_confirm(req, db, page)
+        elif action == 'edit':
+            self._render_editor(req, db, page)
+        elif action == 'diff':
             self._render_diff(req, db, page)
         elif action == 'history':
             self._render_history(req, db, page)
-        elif action == 'edit':
-            self._render_editor(req, db, page)
-        elif action == 'delete':
-            self._do_delete(req, db, page)
-        elif action == 'save':
-            if req.args.has_key('cancel'):
-                req.redirect(self.env.href.wiki(page.name))
-            elif req.args.has_key('preview'):
-                action = 'preview'
-                self._render_editor(req, db, page, 1)
-            else:
-                self._do_save(req, db, page)
         else:
             if req.args.get('format') == 'txt':
                 req.send_response(200)
@@ -137,6 +141,9 @@ class WikiModule(Component):
         else:
             req.perm.assert_permission(perm.WIKI_DELETE)
 
+        if 'cancel' in req.args.keys():
+            req.redirect(self.env.href.wiki(page.name))
+
         version = None
         if req.args.has_key('delete_version'):
             version = int(req.args.get('version', 0))
@@ -174,6 +181,27 @@ class WikiModule(Component):
         page.save(req.args.get('author'), req.args.get('comment'),
                   req.remote_addr)
         req.redirect(self.env.href.wiki(page.name))
+
+    def _render_confirm(self, req, db, page):
+        if page.readonly:
+            req.perm.assert_permission(perm.WIKI_ADMIN)
+        else:
+            req.perm.assert_permission(perm.WIKI_DELETE)
+
+        version = None
+        if req.args.has_key('delete_version'):
+            version = int(req.args.get('version', 0))
+
+        req.hdf['title'] = escape(page.name) + ' (delete)'
+        req.hdf['wiki'] = {'page_name': escape(page.name), 'mode': 'delete'}
+        if version is not None:
+            req.hdf['wiki.version'] = version
+            num_versions = 0
+            for change in page.get_history():
+                num_versions += 1;
+                if num_versions > 1:
+                    break
+            req.hdf['wiki.only_version'] = num_versions == 1
 
     def _render_diff(self, req, db, page):
         req.perm.assert_permission(perm.WIKI_VIEW)
@@ -220,7 +248,7 @@ class WikiModule(Component):
                            ignore_space_changes='-b' in diff_options)
         req.hdf['wiki.diff'] = changes
 
-    def _render_editor(self, req, db, page, preview=0):
+    def _render_editor(self, req, db, page, preview=False):
         req.perm.assert_permission(perm.WIKI_MODIFY)
 
         if req.args.has_key('text'):
@@ -296,6 +324,7 @@ class WikiModule(Component):
 
         req.hdf['wiki'] = {
             'page_name': page.name,
+            'exists': page.exists,
             'version': page.version,
             'readonly': page.readonly,
             'history_href': escape(self.env.href.wiki(page.name,

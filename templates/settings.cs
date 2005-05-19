@@ -51,7 +51,7 @@ if:settings.session_id ?>
  <p>You may load a previously created session by entering the corresponding
  session key below and clicking 'Recover'. This lets you share settings between
  multiple computers and/or web browsers.</p>
- <form method="get" action="<?cs var:cgi_location?>/settings">
+ <form method="post" action="">
   <div>
    <input type="hidden" name="action" value="load" />
    <label for="loadsid">Existing Session Key:</label>

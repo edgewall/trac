@@ -22,7 +22,7 @@
   </script>
   <form id="edit" action="<?cs var:milestone.href ?>" method="post">
    <input type="hidden" name="id" value="<?cs var:milestone.name ?>" />
-   <input type="hidden" name="action" value="commit_changes" />
+   <input type="hidden" name="action" value="edit" />
    <div class="field">
     <label>Name of the milestone:<br />
     <input type="text" id="name" name="name" size="32" value="<?cs
@@ -71,9 +71,9 @@
    </div>
    <div class="buttons">
     <?cs if:milestone.mode == "new"
-     ?><input type="submit" name="save" value="Add milestone" /><?cs
+     ?><input type="submit" value="Add milestone" /><?cs
     else
-     ?><input type="submit" name="save" value="Submit changes" /><?cs
+     ?><input type="submit" value="Submit changes" /><?cs
     /if ?>
     <input type="submit" name="cancel" value="Cancel" />
    </div>
@@ -83,7 +83,7 @@
  <?cs elif:milestone.mode == "delete" ?>
   <form action="<?cs var:milestone.href ?>" method="post">
    <input type="hidden" name="id" value="<?cs var:milestone.name ?>" />
-   <input type="hidden" name="action" value="confirm_delete" />
+   <input type="hidden" name="action" value="delete" />
    <p><strong>Are you sure you want to delete this milestone?</strong></p>
    <input type="checkbox" id="retarget" name="retarget" checked="checked"
        onclick="enableControl('target', this.checked)"/>
@@ -96,7 +96,7 @@
    </select>
    <div class="buttons">
     <input type="submit" name="cancel" value="Cancel" />
-    <input type="submit" name="delete" value="Delete milestone" />
+    <input type="submit" value="Delete milestone" />
    </div>
   </form>
  <?cs else ?>

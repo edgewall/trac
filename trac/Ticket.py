@@ -67,8 +67,8 @@ class Ticket(dict):
                        % ','.join(Ticket.std_fields), (id,))
         row = cursor.fetchone()
         if not row:
-            raise util.TracError('Ticket %d does not exist.' % id,
-                                 'Invalid Ticket Number')
+            raise TracError('Ticket %d does not exist.' % id,
+                            'Invalid Ticket Number')
 
         self['id'] = id
         for i in range(len(Ticket.std_fields)):
@@ -315,8 +315,8 @@ class NewticketModule(Component):
 
         db = self.env.get_db_cnx()
 
-        if req.args.has_key('create'):
-            self.create_ticket(req, db)
+        if req.method == 'POST' and 'preview' not in req.args.keys():
+            self._do_create(req, db)
 
         ticket = Ticket()
         ticket.populate(req.args)
@@ -378,9 +378,9 @@ class NewticketModule(Component):
 
     # Internal methods
 
-    def create_ticket(self, req, db):
+    def _do_create(self, req, db):
         if not req.args.get('summary'):
-            raise util.TracError('Tickets must contain a summary.')
+            raise TracError('Tickets must contain a summary.')
 
         ticket = Ticket()
         ticket.populate(req.args)
@@ -404,6 +404,7 @@ class NewticketModule(Component):
             self.log.exception("Failure sending notification on creation of "
                                "ticket #%d: %s" % (tktid, e))
 
+        # Redirect the user to the newly created ticket
         req.redirect(self.env.href.ticket(tktid))
 
 
@@ -452,7 +453,6 @@ class TicketModule(Component):
         req.perm.assert_permission(perm.TICKET_VIEW)
 
         action = req.args.get('action', 'view')
-        preview = req.args.has_key('preview')
 
         if not req.args.has_key('id'):
             req.redirect(self.env.href.wiki())
@@ -460,39 +460,38 @@ class TicketModule(Component):
         db = self.env.get_db_cnx()
         id = int(req.args.get('id'))
 
-        if not preview \
-           and action in ('leave', 'accept', 'reopen', 'resolve', 'reassign'):
-            self.save_changes(req, db, id)
-
         ticket = Ticket(db, id)
         reporter_id = util.get_reporter_id(req)
 
-        if preview:
-            # Use user supplied values
-            ticket.populate(req.args)
-            req.hdf['ticket.action'] = action
-            req.hdf['ticket.reassign_owner'] = req.args.get('reassign_owner') \
-                                               or req.authname
-            req.hdf['ticket.resolve_resolution'] = req.args.get('resolve_resolution')
-            reporter_id = req.args.get('author')
-            comment = req.args.get('comment')
-            if comment:
-                req.hdf['ticket.comment'] = util.escape(comment)
-                # Wiki format a preview of comment
-                req.hdf['ticket.comment_preview'] = wiki_to_html(comment,
-                                                                 self.env, req,
-                                                                 db)
+        if req.method == 'POST':
+            if 'preview' not in req.args.keys():
+                self._do_save(req, db, ticket)
+            else:
+                # Use user supplied values
+                ticket.populate(req.args)
+                req.hdf['ticket.action'] = action
+                req.hdf['ticket.reassign_owner'] = req.args.get('reassign_owner') \
+                                                   or req.authname
+                req.hdf['ticket.resolve_resolution'] = req.args.get('resolve_resolution')
+                reporter_id = req.args.get('author')
+                comment = req.args.get('comment')
+                if comment:
+                    req.hdf['ticket.comment'] = util.escape(comment)
+                    # Wiki format a preview of comment
+                    req.hdf['ticket.comment_preview'] = wiki_to_html(comment,
+                                                                     self.env,
+                                                                     req, db)
         else:
             req.hdf['ticket.reassign_owner'] = req.authname
 
-        self.insert_ticket_data(req, db, id, ticket, reporter_id)
+        self._insert_ticket_data(req, db, ticket['id'], ticket, reporter_id)
 
         # If the ticket is being shown in the context of a query, add
         # links to help navigate in the query result set
         if 'query_tickets' in req.session:
             tickets = req.session['query_tickets'].split()
             if str(id) in tickets:
-                idx = int(tickets.index(str(id)))
+                idx = int(tickets.index(str(ticket['id'])))
                 if idx > 0:
                     add_link(req, 'first', self.env.href.ticket(tickets[0]),
                              'Ticket #%s' % tickets[0])
@@ -567,29 +566,23 @@ class TicketModule(Component):
 
     # Internal methods
 
-    def save_changes(self, req, db, id):
+    def _do_save(self, req, db, ticket):
         if req.perm.has_permission(perm.TICKET_CHGPROP):
             # TICKET_CHGPROP gives permission to edit the ticket
             if not req.args.get('summary'):
-                raise util.TracError('Tickets must contain summary.')
+                raise TracError('Tickets must contain summary.')
 
-            ticket = Ticket(db, id)
             if 'description' in req.args.keys() or 'reporter' in req.args.keys():
                 req.perm.assert_permission(perm.TICKET_ADMIN)
 
             ticket.populate(req.args)
-
-        elif req.perm.has_permission(perm.TICKET_APPEND):
-            # Allow appending a comment to the ticket only
-            ticket = Ticket(db, id)
-
         else:
-            raise perm.PermissionError(perm.TICKET_CHGPROP)
+            req.perm.assert_permission(perm.TICKET_APPEND)
 
         # Do any action on the ticket?
         action = req.args.get('action')
         if action not in available_actions(ticket, req.perm):
-            raise util.TracError('Invalid action')
+            raise TracError('Invalid action')
 
         # TODO: this should not be hard-coded like this
         if action == 'accept':
@@ -614,11 +607,11 @@ class TicketModule(Component):
             tn.notify(ticket, newticket=0, modtime=now)
         except Exception, e:
             self.log.exception("Failure sending notification on change to "
-                               "ticket #%d: %s" % (id, e))
+                               "ticket #%d: %s" % (ticket['id'], e))
 
-        req.redirect(self.env.href.ticket(id))
+        req.redirect(self.env.href.ticket(ticket['id']))
 
-    def insert_ticket_data(self, req, db, id, ticket, reporter_id):
+    def _insert_ticket_data(self, req, db, id, ticket, reporter_id):
         """Insert ticket data into the hdf"""
         req.hdf['ticket'] = dict(zip(ticket.keys(),
                                  map(lambda x: util.escape(x), ticket.values())))

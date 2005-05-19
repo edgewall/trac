@@ -5,8 +5,8 @@
  <h2>Report Navigation</h2>
  <ul>
   <li class="first"><?cs
-   if:report.overview_href ?><a href="<?cs
-    var:report.overview_href?>">Available Reports</a><?cs
+   if:chrome.links.up.0.href ?><a href="<?cs
+    var:chrome.links.up.0.href ?>">Available Reports</a><?cs
    else ?>Available Reports<?cs
    /if ?></li>
   <li class="last"><a href="<?cs var:trac.href.query ?>">Custom Query</a></li>
@@ -143,7 +143,7 @@
        <?cs set col = #0 ?>
        <?cs each cell = row ?>
          <?cs if cell.hidden || cell.hidehtml ?>
-         <?cs elif name(cell) == "ticket" ?>
+         <?cs elif name(cell) == "ticket" || name(cell) == "id" ?>
            <?cs call:report_cell('ticket',
                                  '<a title="View ticket" href="'+
                                  $cell.ticket_href+'">#'+$cell+'</a>') ?>
@@ -186,12 +186,12 @@
     <div id="report-notfound">No matches found.</div><?cs
    /if ?>
 
- <?cs elif report.mode == "delete" ?>
+ <?cs elif:report.mode == "delete" ?>
 
   <h1><?cs var:title ?></h1>
   <form action="<?cs var:report.href ?>" method="post">
    <input type="hidden" name="id" value="<?cs var:report.id ?>" />
-   <input type="hidden" name="action" value="confirm_delete" />
+   <input type="hidden" name="action" value="delete" />
    <p><strong>Are you sure you want to delete this report?</strong></p>
    <div class="buttons">
     <input type="submit" name="cancel" value="Cancel" />
@@ -199,7 +199,7 @@
    </div>
   </form>
  
- <?cs elif report.mode == "editor" ?>
+ <?cs elif:report.mode == "edit" ?>
  
    <h1><?cs var:title ?></h1>
    <form action="<?cs var:report.href ?>" method="post">
@@ -225,7 +225,7 @@
         var:report.sql ?></textarea>
      </div>
      <div class="buttons">
-      <input type="submit" value="Save" />
+      <input type="submit" value="Save report" />
       <input type="submit" name="cancel" value="Cancel" />
      </div>
     </div>

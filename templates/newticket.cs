@@ -8,7 +8,7 @@ addEvent(window, 'load', function() { document.getElementById('summary').focus()
 
 <div id="content" class="ticket">
 
-<h3>Create New Ticket:</h3>
+<h1>Create New Ticket</h1>
 <form id="newticket" method="post" action="<?cs
   var:trac.href.newticket ?>#preview">
  <div class="field">
@@ -72,8 +72,8 @@ addEvent(window, 'load', function() { document.getElementById('summary').focus()
    var:htdocs_location ?>js/wikitoolbar.js"></script>
 
  <div class="buttons">
-  <input type="submit" value="Preview" />&nbsp;
-  <input type="submit" name="create" value="Submit ticket" />
+  <input type="submit" name="preview" value="Preview" />&nbsp;
+  <input type="submit" value="Submit ticket" />
  </div>
 </form>
 

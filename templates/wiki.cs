@@ -18,7 +18,29 @@
 
 <div id="content" class="wiki">
 
- <?cs if:wiki.action == "diff" ?>
+ <?cs if wiki.action == "delete" ?>
+  <h1>Delete <?cs
+   if:?wiki.version ?>version <?cs var:wiki.version ?> of <?cs /if ?><a href="<?cs
+    var:wiki.current_href ?>"><?cs var:wiki.page_name ?></a></h1>
+  <form action="<?cs var:wiki.href ?>" method="post">
+   <input type="hidden" name="action" value="delete" />
+   <p><strong>Are you sure you want to <?cs
+    if:!?wiki.version ?>completely <?cs /if ?>delete <?cs
+    if:?wiki.version ?>version <?cs var:wiki.version ?> of <?cs
+    /if ?>this page?</strong><br /><?cs
+   if:wiki.only_version ?>
+    This is the only version the page, so the page will be removed
+    completely!<?cs
+   /if ?>
+   This is an irreversible operation.</p>
+   <div class="buttons">
+    <input type="submit" name="cancel" value="Cancel" />
+    <input type="submit" value="Delete <?cs
+      if:?wiki.version ?>this version<?cs else ?>page<?cs /if ?>" />
+   </div>
+  </form>
+ 
+ <?cs elif:wiki.action == "diff" ?>
   <h1>Changes in Version <?cs var:wiki.version?> of <a href="<?cs
     var:wiki.current_href ?>"><?cs var:wiki.page_name ?></a></h1>
   <form method="post" id="prefs" action="<?cs var:wiki.current_href ?>">
@@ -154,7 +176,7 @@
     /if ?>
    <form id="edit" action="<?cs var:wiki.current_href ?>" method="post">
     <fieldset class="iefix">
-     <input type="hidden" name="action" value="save" />
+     <input type="hidden" name="action" value="edit" />
      <input type="hidden" name="version" value="<?cs var:wiki.version ?>" />
      <input type="hidden" id="scroll_bar_pos" name="scroll_bar_pos" value="<?cs
        var:wiki.scroll_bar_pos ?>" />
@@ -232,23 +254,25 @@
   <?cs /if ?>
   <?cs if wiki.action == "view" && (trac.acl.WIKI_MODIFY || trac.acl.WIKI_DELETE)
       && (wiki.readonly == "0" || trac.acl.WIKI_ADMIN) ?>
-   <div class="buttons">
-    <?cs if:trac.acl.WIKI_MODIFY ?>
+   <div class="buttons"><?cs
+    if:trac.acl.WIKI_MODIFY ?>
      <form method="get" action="<?cs var:wiki.current_href ?>"><div>
       <input type="hidden" name="action" value="edit" />
-      <input type="submit" value="Edit this page" />
-     </div></form>
-     <form method="get" action="<?cs var:wiki.attach_href ?>"><div>
-      <input type="hidden" name="action" value="new" />
-      <input type="submit" value="Attach file" />
-     </div></form>
-    <?cs /if ?>
-    <?cs if:trac.acl.WIKI_DELETE ?>
-     <form method="post" action="<?cs var:wiki.current_href ?>"><div id="delete">
+      <input type="submit" value="<?cs if:wiki.exists ?>Edit<?cs else ?>Create<?cs /if ?> this page" />
+     </div></form><?cs
+     if:wiki.exists ?>
+      <form method="get" action="<?cs var:wiki.attach_href ?>"><div>
+       <input type="hidden" name="action" value="new" />
+       <input type="submit" value="Attach file" />
+      </div></form><?cs
+     /if ?><?cs
+    /if ?><?cs
+    if:wiki.exists && trac.acl.WIKI_DELETE ?>
+     <form method="get" action="<?cs var:wiki.current_href ?>"><div id="delete">
       <input type="hidden" name="action" value="delete" />
       <input type="hidden" name="version" value="<?cs var:wiki.version ?>" />
-      <input type="submit" name="delete_version" value="Delete this version" onclick="return confirm('Do you really want to delete version <?cs var:wiki.version?> of this page?\nThis is an irreversible operation.')" />
-      <input type="submit" value="Delete page" onclick="return confirm('Do you really want to delete all versions of this page?\nThis is an irreversible operation.')" />
+      <input type="submit" name="delete_version" value="Delete this version" />
+      <input type="submit" value="Delete page" />
      </div></form>
     <?cs /if ?>
    </div>

@@ -22,7 +22,7 @@
 from __future__ import generators
 
 from trac.core import *
-from trac.util import escape, TracError
+from trac.util import escape
 from trac.web.chrome import INavigationContributor
 from trac.web.main import IRequestHandler
 
@@ -48,14 +48,12 @@ class SettingsModule(Component):
 
     def process_request(self, req):
         action = req.args.get('action')
-        if action == 'save':
-            self.save_settings(req)
-        elif action == 'load':
-            self.load_session(req)
-        elif action == 'login':
-            req.redirect(self.env.href.login())
-        elif action == 'newsession':
-            raise TracError, 'new session'
+
+        if req.method == 'POST':
+            if action == 'save':
+                self._do_save(req)
+            elif action == 'load':
+                self._do_load(req)
 
         req.hdf['title'] = 'Settings'
         req.hdf['settings'] = req.session
@@ -66,7 +64,7 @@ class SettingsModule(Component):
 
     # Internal methods
 
-    def save_settings(self, req):
+    def _do_save(self, req):
         for field in self._form_fields:
             val = req.args.get(field)
             if val:
@@ -74,8 +72,10 @@ class SettingsModule(Component):
                     req.session.change_sid(val)
                 else:
                     req.session[field] = val
+        req.redirect(self.env.href.settings())
 
-    def load_session(self, req):
+    def _do_load(self, req):
         if req.authname == 'anonymous':
             oldsid = req.args.get('loadsid')
             req.session.get_session(oldsid)
+        req.redirect(self.env.href.settings())

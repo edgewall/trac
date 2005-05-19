@@ -70,7 +70,7 @@
   <div class="buttons">
    <form method="get" action="<?cs var:trac.href.milestone ?>"><div>
     <input type="hidden" name="action" value="new" />
-    <input type="submit" value="Add New Milestone" />
+    <input type="submit" value="Add new milestone" />
    </div></form>
   </div><?cs
  /if ?>

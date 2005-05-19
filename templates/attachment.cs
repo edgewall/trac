@@ -26,14 +26,25 @@
    <br />
   </fieldset>
   <div class="buttons">
-   <input type="hidden" name="action" value="save" />
+   <input type="hidden" name="action" value="new" />
    <input type="hidden" name="type" value="<?cs var:attachment.parent.type ?>" />
    <input type="hidden" name="id" value="<?cs var:attachment.parent.id ?>" />
    <input type="submit" value="Add attachment" />
    <input type="submit" name="cancel" value="Cancel" />
   </div>
  </form>
-<?cs else ?>
+<?cs elif:attachment.mode == 'delete' ?>
+ <h1><a href="<?cs var:attachment.parent.href ?>"><?cs
+   var:attachment.parent.name ?></a>: <?cs var:attachment.filename ?></h1>
+ <p><strong>Are you sure you want to delete this attachment?</strong><br />
+ This is an irreversible operation.</p>
+ <div class="buttons">
+  <form method="post" action=""><div id="delete">
+   <input type="hidden" name="action" value="delete" />
+   <input type="submit" name="cancel" value="Cancel" />
+   <input type="submit" value="Delete attachment" />
+  </div></form>
+ </div><?cs else ?>
  <h1><a href="<?cs var:attachment.parent.href ?>"><?cs
    var:attachment.parent.name ?></a>: <?cs var:attachment.filename ?></h1>
  <div id="preview"><?cs
@@ -51,7 +62,7 @@
  <?cs if:attachment.can_delete ?><div class="buttons">
   <form method="get" action=""><div id="delete">
    <input type="hidden" name="action" value="delete" />
-   <input type="submit" value="Delete attachment" onclick="return confirm('Do you really want to delete this attachment?\nThis is an irreversible operation.')" />
+   <input type="submit" value="Delete attachment" />
   </div></form>
  </div><?cs /if ?>
 <?cs /if ?>

@@ -224,34 +224,39 @@ class AttachmentModule(Component):
         if not parent_type in ['ticket', 'wiki']:
             raise TracError('Unknown attachment type')
 
-        add_stylesheet(req, 'code.css')
-
         action = req.args.get('action', 'view')
         if action == 'new':
-            self._render_form(req, parent_type, path)
-            return 'attachment.cs', None
-        elif action == 'save':
-            self._do_save(req, parent_type, path)
+            attachment = Attachment(self.env, parent_type, path)
         else:
             segments = path.split('/')
             parent_id = '/'.join(segments[:-1])
             filename = segments[-1]
-
             attachment = Attachment(self.env, parent_type, parent_id, filename)
-            if action == 'delete':
+
+        if req.method == 'POST':
+            if action == 'new':
+                self._do_save(req, attachment)
+            elif action == 'delete':
                 self._do_delete(req, attachment)
-                return
+        elif action == 'delete':
+            self._render_confirm(req, attachment)
+        elif action == 'new':
+            self._render_form(req, attachment)
+        else:
             self._render_view(req, attachment)
-            return 'attachment.cs', None
+
+        add_stylesheet(req, 'code.css')
+        return 'attachment.cs', None
 
     # Internal methods
 
-    def _do_save(self, req, parent_type, parent_id):
+    def _do_save(self, req, attachment):
         perm_map = {'ticket': perm.TICKET_APPEND, 'wiki': perm.WIKI_MODIFY}
-        req.perm.assert_permission(perm_map[parent_type])
+        req.perm.assert_permission(perm_map[attachment.parent_type])
 
-        if req.args.has_key('cancel'):
-            req.redirect(self.env.href(parent_type, parent_id))
+        if 'cancel' in req.args.keys():
+            req.redirect(self.env.href(attachment.parent_type,
+                                       attachment.parent_id))
 
         upload = req.args['attachment']
         if not upload.filename:
@@ -274,7 +279,6 @@ class AttachmentModule(Component):
                                             unicode(filename,
                                                     'utf-8')).encode('utf-8')
 
-        attachment = Attachment(self.env, parent_type, parent_id)
         attachment.description = req.args.get('description', '')
         attachment.author = req.args.get('author', '')
         attachment.ipnr = req.remote_addr
@@ -289,6 +293,11 @@ class AttachmentModule(Component):
         perm_map = {'ticket': perm.TICKET_ADMIN, 'wiki': perm.WIKI_DELETE}
         req.perm.assert_permission(perm_map[attachment.parent_type])
 
+        if 'cancel' in req.args.keys():
+            req.redirect(self.env.href.attachment(attachment.parent_type,
+                                                  attachment.parent_id,
+                                                  attachment.filename))
+
         attachment.delete()
 
         # Redirect the user to the attachment parent page
@@ -302,16 +311,33 @@ class AttachmentModule(Component):
             return (parent_id, self.env.href.wiki(parent_id))
         return (None, None)
 
-    def _render_form(self, req, parent_type, parent_id):
-        perm_map = {'ticket': perm.TICKET_APPEND, 'wiki': perm.WIKI_MODIFY}
-        req.perm.assert_permission(perm_map[parent_type])
+    def _render_confirm(self, req, attachment):
+        perm_map = {'ticket': perm.TICKET_ADMIN, 'wiki': perm.WIKI_DELETE}
+        req.perm.assert_permission(perm_map[attachment.parent_type])
 
-        text, link = self._get_parent_link(parent_type, parent_id)
+        req.hdf['title'] = '%s%s: %s (delete)' \
+                           % (attachment.parent_type == 'ticket' and '#' or '',
+                              attachment.parent_id, attachment.filename)
+        text, link = self._get_parent_link(attachment.parent_type,
+                                           attachment.parent_id)
+        req.hdf['attachment'] = {
+            'filename': attachment.filename,
+            'mode': 'delete',
+            'parent': {'type': attachment.parent_type,
+                       'id': attachment.parent_id, 'name': text, 'href': link}
+        }
+
+    def _render_form(self, req, attachment):
+        perm_map = {'ticket': perm.TICKET_APPEND, 'wiki': perm.WIKI_MODIFY}
+        req.perm.assert_permission(perm_map[attachment.parent_type])
+
+        text, link = self._get_parent_link(attachment.parent_type,
+                                           attachment.parent_id)
         req.hdf['attachment'] = {
             'mode': 'new',
             'author': util.get_reporter_id(req),
-            'parent': {'type': parent_type, 'id': parent_id, 'name': text,
-                       'href': link}
+            'parent': {'type': attachment.parent_type,
+                       'id': attachment.parent_id, 'name': text, 'href': link}
         }
 
     def _render_view(self, req, attachment):
