@@ -13,11 +13,9 @@ class MilestoneTestCase(unittest.TestCase):
         self.db = InMemoryDatabase()
         self.env = Mock(log=logger_factory('test'),
                         get_db_cnx=lambda: self.db)
-        self.perm = Mock(assert_permission=lambda x: None,
-                         has_permission=lambda x: True)
 
     def test_new_milestone(self):
-        milestone = Milestone(self.env, self.perm)
+        milestone = Milestone(self.env)
         self.assertEqual(False, milestone.exists)
         self.assertEqual(None, milestone.name)
         self.assertEqual(0, milestone.due)
@@ -29,7 +27,7 @@ class MilestoneTestCase(unittest.TestCase):
         Verifies that specifying an empty milestone name results in the
         milestone being correctly detected as non-existent.
         """
-        milestone = Milestone(self.env, self.perm, '')
+        milestone = Milestone(self.env, '')
         self.assertEqual(False, milestone.exists)
         self.assertEqual(None, milestone.name)
         self.assertEqual(0, milestone.due)
@@ -41,7 +39,7 @@ class MilestoneTestCase(unittest.TestCase):
         cursor.execute("INSERT INTO milestone (name) VALUES ('Test')")
         cursor.close()
 
-        milestone = Milestone(self.env, self.perm, 'Test')
+        milestone = Milestone(self.env, 'Test')
         self.assertEqual(True, milestone.exists)
         self.assertEqual('Test', milestone.name)
         self.assertEqual(0, milestone.due)
@@ -49,7 +47,7 @@ class MilestoneTestCase(unittest.TestCase):
         self.assertEqual('', milestone.description)
 
     def test_create_milestone(self):
-        milestone = Milestone(self.env, self.perm)
+        milestone = Milestone(self.env)
         milestone.name = 'Test'
         milestone.insert()
 
@@ -59,7 +57,7 @@ class MilestoneTestCase(unittest.TestCase):
         self.assertEqual(('Test', 0, 0, ''), cursor.fetchone())
 
     def test_create_milestone_without_name(self):
-        milestone = Milestone(self.env, self.perm)
+        milestone = Milestone(self.env)
         self.assertRaises(AssertionError, milestone.insert)
 
     def test_delete_milestone(self):
@@ -67,7 +65,7 @@ class MilestoneTestCase(unittest.TestCase):
         cursor.execute("INSERT INTO milestone (name) VALUES ('Test')")
         cursor.close()
 
-        milestone = Milestone(self.env, self.perm, 'Test')
+        milestone = Milestone(self.env, 'Test')
         milestone.delete()
 
         cursor = self.db.cursor()
@@ -86,7 +84,7 @@ class MilestoneTestCase(unittest.TestCase):
         tkt2.populate({'summary': 'Bar', 'milestone': 'Test'})
         tkt2.insert(self.db)
 
-        milestone = Milestone(self.env, self.perm, 'Test')
+        milestone = Milestone(self.env, 'Test')
         milestone.delete(retarget_to='Other')
 
         self.assertEqual('Other', Ticket(self.db, tkt1['id'])['milestone'])
@@ -97,7 +95,7 @@ class MilestoneTestCase(unittest.TestCase):
         cursor.execute("INSERT INTO milestone (name) VALUES ('Test')")
         cursor.close()
 
-        milestone = Milestone(self.env, self.perm, 'Test')
+        milestone = Milestone(self.env, 'Test')
         milestone.due = 42
         milestone.completed = 43
         milestone.description = 'Foo bar'
@@ -112,10 +110,9 @@ class MilestoneTestCase(unittest.TestCase):
         cursor.execute("INSERT INTO milestone (name) VALUES ('Test')")
         cursor.close()
 
-        milestone = Milestone(self.env, self.perm, 'Test')
+        milestone = Milestone(self.env, 'Test')
         milestone.name = None
         self.assertRaises(AssertionError, milestone.update)
-
 
     def test_update_milestone_update_tickets(self):
         cursor = self.db.cursor()
@@ -129,12 +126,24 @@ class MilestoneTestCase(unittest.TestCase):
         tkt2.populate({'summary': 'Bar', 'milestone': 'Test'})
         tkt2.insert(self.db)
 
-        milestone = Milestone(self.env, self.perm, 'Test')
+        milestone = Milestone(self.env, 'Test')
         milestone.name = 'Testing'
         milestone.update()
 
         self.assertEqual('Testing', Ticket(self.db, tkt1['id'])['milestone'])
         self.assertEqual('Testing', Ticket(self.db, tkt2['id'])['milestone'])
+
+    def test_select_milestones(self):
+        cursor = self.db.cursor()
+        cursor.executemany("INSERT INTO milestone (name) VALUES (%s)",
+                           [('1.0',), ('2.0',)])
+        cursor.close()
+
+        milestones = list(Milestone.select(self.env))
+        self.assertEqual('1.0', milestones[0].name)
+        assert milestones[0].exists
+        self.assertEqual('2.0', milestones[1].name)
+        assert milestones[1].exists
 
 
 def suite():

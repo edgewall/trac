@@ -933,30 +933,30 @@ class TracAdmin(cmd.Cmd):
 
     def _do_milestone_rename(self, name, newname):
         self.db_open()
-        milestone = Milestone(self.__env, None, name)
+        milestone = Milestone(self.__env, name)
         milestone.name = newname
         milestone.update()
 
     def _do_milestone_add(self, name):
         self.db_open()
-        milestone = Milestone(self.__env, None)
+        milestone = Milestone(self.__env)
         milestone.name = name
         milestone.insert()
 
     def _do_milestone_remove(self, name):
         self.db_open()
-        milestone = Milestone(self.__env, None, name)
+        milestone = Milestone(self.__env, name)
         milestone.delete()
 
     def _do_milestone_set_due(self, name, t):
         self.db_open()
-        milestone = Milestone(self.__env, None, name)
+        milestone = Milestone(self.__env, name)
         milestone.due = self._parse_datetime(t)
         milestone.update()
 
     def _do_milestone_set_completed(self, name, t):
         self.db_open()
-        milestone = Milestone(self.__env, None, name)
+        milestone = Milestone(self.__env, name)
         milestone.completed = self._parse_datetime(t)
         milestone.update()
 

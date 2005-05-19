@@ -34,9 +34,8 @@ from trac.wiki import wiki_to_html, wiki_to_oneliner
 
 class Milestone(object):
 
-    def __init__(self, env, perm_=None, name=None, db=None):
+    def __init__(self, env, name=None, db=None):
         self.env = env
-        self.perm = perm_
         if name:
             self._fetch(name, db)
             self.old_name = name
@@ -46,7 +45,6 @@ class Milestone(object):
             self.description = ''
 
     def _fetch(self, name, db=None):
-        if self.perm: self.perm.assert_permission(perm.MILESTONE_VIEW)
         if not db:
             db = self.env.get_db_cnx()
         cursor = db.cursor()
@@ -66,7 +64,6 @@ class Milestone(object):
     is_late = property(fget=lambda self: self.due and self.due < time.time())
 
     def delete(self, retarget_to=None, db=None):
-        if self.perm: self.perm.assert_permission(perm.MILESTONE_DELETE)
         if not db:
             db = self.env.get_db_cnx()
             handle_ta = True
@@ -93,7 +90,6 @@ class Milestone(object):
             db.commit()
 
     def insert(self, db=None):
-        if self.perm: self.perm.assert_permission(perm.MILESTONE_CREATE)
         assert self.name, 'Cannot create milestone with no name'
         if not db:
             db = self.env.get_db_cnx()
@@ -111,7 +107,6 @@ class Milestone(object):
             db.commit()
 
     def update(self, db=None):
-        if self.perm: self.perm.assert_permission(perm.MILESTONE_MODIFY)
         assert self.name, 'Cannot update milestone with no name'
         if not db:
             db = self.env.get_db_cnx()
@@ -147,7 +142,7 @@ class Milestone(object):
         cursor.execute(sql)
         for name,due,completed,description in cursor:
             milestone = Milestone(env)
-            milestone.name = name
+            milestone.name = milestone.old_name = name
             milestone.due = due and int(due) or 0
             milestone.completed = completed and int(completed) or 0
             milestone.description = description or ''
@@ -334,7 +329,7 @@ class MilestoneModule(Component):
         add_link(req, 'up', self.env.href.roadmap(), 'Roadmap')
 
         db = self.env.get_db_cnx()
-        milestone = Milestone(self.env, req.perm, req.args.get('id'), db)
+        milestone = Milestone(self.env, req.args.get('id'), db)
         action = req.args.get('action', 'view')
 
         if req.method == 'POST':
@@ -360,6 +355,8 @@ class MilestoneModule(Component):
     # Internal methods
 
     def _do_delete(self, req, db, milestone):
+        req.perm.assert_permission(perm.MILESTONE_DELETE)
+
         retarget_to = None
         if req.args.has_key('retarget'):
             retarget_to = req.args.get('target')
@@ -368,6 +365,11 @@ class MilestoneModule(Component):
         req.redirect(self.env.href.roadmap())
 
     def _do_save(self, req, db, milestone):
+        if milestone.exists:
+            req.perm.assert_permission(perm.MILESTONE_MODIFY)
+        else:
+            req.perm.assert_permission(perm.MILESTONE_CREATE)
+
         if not 'name' in req.args.keys():
             raise TracError('You must provide a name for the milestone.',
                             'Required Field Missing')
@@ -403,7 +405,6 @@ class MilestoneModule(Component):
             req.hdf['milestones.%d' % idx] = other.name
 
     def _render_editor(self, req, db, milestone):
-
         if milestone.exists:
             req.perm.assert_permission(perm.MILESTONE_MODIFY)
             req.hdf['title'] = 'Milestone %s' % milestone.name
