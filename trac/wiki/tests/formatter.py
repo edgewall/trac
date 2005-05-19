@@ -40,19 +40,6 @@ class WikiTestCase(unittest.TestCase):
             def get_db_cnx(self):
                 return db
 
-        # Provide a test mime viewer
-        from trac.core import Component, implements
-        from trac.mimeview.api import IHTMLPreviewRenderer
-        class TestRenderer(Component):
-            implements(IHTMLPreviewRenderer)
-            def get_quality_ratio(self, mimetype):
-                if mimetype == 'application/x-test':
-                    return 8
-                return 0
-            def render(self, req, mimetype, content, filename=None, rev=None):
-                return '<pre>' + '\nTESTING: '.join(content.splitlines()) + \
-                       '</pre>\n'
-
         env = DummyEnvironment()
         out = StringIO.StringIO()
         Formatter(env).format(self.input, out)

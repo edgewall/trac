@@ -250,15 +250,6 @@ echo &#34;foo&#34;
 </pre>
 ==============================
 {{{
-#!application/x-test
-Hello
-World
-}}}
-------------------------------
-<pre>Hello
-TESTING: World</pre>
-==============================
-{{{
 #!html
 <p>Hello World</p>
 }}}
