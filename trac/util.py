@@ -45,7 +45,10 @@ def enum(iterable):
 
 def escape(text, quotes=True):
     """
-    Escapes &, <, > and " (the latter only if the `quotes` parameter is True.
+    Escapes &, <, > and " so they are safe to include in HTML output. Quotes
+    are only escaped if the `quotes` parameter is `True`; this is only
+    necessary for text that is supposed to be inserted in attributes of HTML
+    tags.
     """
     if not text:
         return ''
@@ -57,7 +60,9 @@ def escape(text, quotes=True):
     return text
 
 def unescape(text):
-    """Reverses Escapes &, <, > and \""""
+    """
+    Reverse-escapes &, <, > and \".
+    """
     if not text:
         return ''
     return str(text).replace('&#34;', '"') \
@@ -102,7 +107,9 @@ def strip(text, skip):
     return lstrip(rstrip(text, skip), skip)
 
 def to_utf8(text, charset='iso-8859-15'):
-    """Convert a string to utf-8, assume the encoding is either utf-8 or latin1"""
+    """
+    Convert a string to utf-8, assume the encoding is either utf-8 or latin1
+    """
     try:
         # Do nothing if it's already utf-8
         u = unicode(text, 'utf-8')

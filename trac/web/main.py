@@ -180,7 +180,6 @@ class Request(object):
 
         stat = os.stat(path)
         last_modified = http_date(stat.st_mtime)
-
         if last_modified == self.get_header('If-Modified-Since'):
             self.send_response(304)
             return
@@ -193,16 +192,17 @@ class Request(object):
         self.send_header('Last-Modified', last_modified)
         self.end_headers()
 
-        try:
-            fd = open(path, 'rb')
-            if self.method != 'HEAD':
-                while True:
-                    data = fd.read(4096)
-                    if not data:
-                        break
-                    self.write(data)
-        finally:
-            fd.close()
+        if self.method != 'HEAD':
+            try:
+                fd = open(path, 'rb')
+                    while True:
+                        data = fd.read(4096)
+                        if not data:
+                            break
+                        self.write(data)
+            finally:
+                fd.close()
+
         raise RequestDone
 
     def read(self, size):

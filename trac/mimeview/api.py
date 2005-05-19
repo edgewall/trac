@@ -86,8 +86,7 @@ MIME_MAP = {
     'xml':'text/xml',
     'xs':'text/x-csrc',
     'xsl':'text/xsl',
-    'zsh':'text/x-zsh',
-    'barf':'application/x-test',
+    'zsh':'text/x-zsh'
 }
 
 def get_charset(mimetype):
