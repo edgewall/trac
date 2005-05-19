@@ -67,9 +67,9 @@ class HtmlDiffEditor (svn.delta.Editor):
         ctpos = mime_type and mime_type.find('charset=') or -1
         if ctpos >= 0:
             charset = mime_type[ctpos + 8:]
-            self.log.debug("Charset %s selected" % charset)
         else:
-            charset = self.env.get_config('trac', 'default_charset', 'iso-8859-15')
+            charset = self.env.get_config('trac', 'default_charset',
+                                          'iso-8859-15')
 
         # Start up the diff process
         differ = svn.fs.FileDiff(self.old_root, old_path, self.new_root,
