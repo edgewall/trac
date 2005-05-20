@@ -726,12 +726,12 @@ class UpdateDetailsForTimeline(Component):
             previous_update = None
             updates = []
             for time,id,type,field,oldvalue,newvalue,author,summary in cursor:
-                if (time,id,author,summary) != previous_update:
+                if not previous_update or (time,id,author) != previous_update[:3]:
                     if previous_update:
                         updates.append((previous_update,field_changes,comment))
                     field_changes = []
                     comment = ''
-                    previous_update = (time,id,type,author,summary)
+                    previous_update = (time,id,author,type,summary)
                 if field == 'comment':
                     comment = newvalue
                 else:
@@ -740,7 +740,7 @@ class UpdateDetailsForTimeline(Component):
                 updates.append((previous_update,field_changes,comment))
 
             absurls = req.args.get('format') == 'rss' # Kludge
-            for (t,id,type,author,summary),field_changes,comment in updates:
+            for (t,id,author,type,summary),field_changes,comment in updates:
                 if absurls:
                     href = self.env.abs_href.ticket(id)
                 else:
