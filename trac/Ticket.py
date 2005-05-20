@@ -37,9 +37,8 @@ __all__ = ['Ticket', 'NewticketModule', 'TicketModule']
 
 class Ticket(dict):
     std_fields = ['type', 'time', 'component', 'severity', 'priority', 'milestone',
-                  'reporter', 'owner', 'cc', 'url', 'version', 'status',
-                  'resolution', 'keywords', 'summary', 'description',
-                  'changetime']
+                  'reporter', 'owner', 'cc', 'version', 'status', 'resolution',
+                  'keywords', 'summary', 'description', 'changetime']
 
     def __init__(self, *args):
         dict.__init__(self)

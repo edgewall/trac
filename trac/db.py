@@ -190,8 +190,8 @@ class SQLiteConnection(ConnectionWrapper):
 
     def _get_init_sql(cls):
         sql = []
-        from trac.db_default import schema, Table, Index
-        for table in [t for t in schema if isinstance(t, Table)]:
+        from trac.db_default import schema
+        for table in schema:
             sql.append("CREATE TABLE %s (" % table.name)
             coldefs = []
             for column in table.columns:
@@ -206,9 +206,9 @@ class SQLiteConnection(ConnectionWrapper):
             if len(table.key) > 1:
                 coldefs.append("    UNIQUE (%s)" % ','.join(table.key))
             sql.append(',\n'.join(coldefs) + '\n);')
-        for index in [i for i in schema if isinstance(i, Index)]:
-            sql.append("CREATE INDEX %s ON %s (%s);"
-                       % (index.name, index.table, ','.join(index.columns)))
+            for index in table.indexes:
+                sql.append("CREATE INDEX %s_idx ON %s (%s);"
+                           % (table.name, table.name, ','.join(index.columns)))
         return '\n'.join(sql)
     _get_init_sql = classmethod(_get_init_sql)
 
@@ -245,8 +245,8 @@ class PostgreSQLConnection(ConnectionWrapper):
         from pyPgSQL import libpq, PgSQL
 
         sql = []
-        from trac.db_default import schema, Table, Index
-        for table in [t for t in schema if isinstance(t, Table)]:
+        from trac.db_default import schema
+        for table in schema:
             sql.append("CREATE TABLE %s (" % table.name)
             coldefs = []
             for column in table.columns:
@@ -258,9 +258,9 @@ class PostgreSQLConnection(ConnectionWrapper):
                 coldefs.append("    CONSTRAINT %s_pk PRIMARY KEY (%s)"
                                % (table.name, ','.join(table.key)))
             sql.append(',\n'.join(coldefs) + '\n);')
-        for index in [i for i in schema if isinstance(i, Index)]:
-            sql.append("CREATE INDEX %s ON %s (%s);"
-                       % (index.name, index.table, ','.join(index.columns)))
+            for index in table.indexes:
+                sql.append("CREATE INDEX %s_idx ON %s (%s);"
+                           % (table.name, table.name, ','.join(index.columns)))
 
         self = cls(**args)
         cursor = self.cursor()

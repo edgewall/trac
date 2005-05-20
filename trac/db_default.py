@@ -41,11 +41,13 @@ class Table(object):
     def __init__(self, name, key=[]):
         self.name = name
         self.columns = []
+        self.indexes = []
         self.key = key
         if isinstance(key, (str, unicode)):
             self.key = [key]
-    def __getitem__(self, columns):
-        self.columns = columns
+    def __getitem__(self, objs):
+        self.columns = [o for o in objs if isinstance(o, Column)]
+        self.indexes = [o for o in objs if isinstance(o, Index)]
         return self
 
 class Column(object):
@@ -57,13 +59,8 @@ class Column(object):
         self.auto_increment = auto_increment
 
 class Index(object):
-    def __init__(self, name, table):
-        self.name = name
-        self.table = table
-        self.columns = []
-    def __getitem__(self, columns):
+    def __init__(self, columns):
         self.columns = columns
-        return self
 
 schema = [
     # Common
@@ -82,8 +79,8 @@ schema = [
         Column('sid'),
         Column('authenticated', type='int'),
         Column('var_name'),
-        Column('var_value')],
-    Index('session_idx', 'session')['sid', 'var_name'],
+        Column('var_value'),
+        Index(['sid', 'var_name'])],
 
     # Attachments
     Table('attachment', key=('type', 'id', 'filename'))[
@@ -105,11 +102,11 @@ schema = [
         Column('ipnr'),
         Column('text'),
         Column('comment'),
-        Column('readonly', type='int')],
-    Index('wiki_idx', 'wiki')['name', 'version'],
+        Column('readonly', type='int'),
+        Index(['name', 'version'])],
 
     # Version control cache
-    Table('revision', key=('rev'))[
+    Table('revision', key='rev')[
         Column('rev'),
         Column('time', type='int'),
         Column('author'),
@@ -120,8 +117,8 @@ schema = [
         Column('kind', size=1),
         Column('change', size=1),
         Column('base_path'),
-        Column('base_rev')],
-    Index('node_change_idx', 'node_change')['rev',],
+        Column('base_rev'),
+        Index(['rev'])],
 
     # Ticket system
     Table('ticket', key='id')[
@@ -135,7 +132,6 @@ schema = [
         Column('owner'),
         Column('reporter'),
         Column('cc'),
-        Column('url'),
         Column('version'),
         Column('milestone'),
         Column('status'),
@@ -149,7 +145,8 @@ schema = [
         Column('author'),
         Column('field'),
         Column('oldvalue'),
-        Column('newvalue')],
+        Column('newvalue'),
+        Index(['ticket', 'time'])],
     Table('ticket_custom', key=('ticket', 'name'))[
         Column('ticket', type='int'),
         Column('name'),
@@ -171,7 +168,6 @@ schema = [
         Column('name'),
         Column('time', type='int'),
         Column('description')],
-    Index('ticket_change_idx', 'ticket_change')['ticket', 'time'],
 
     # Report system
     Table('report')[
@@ -413,8 +409,8 @@ data = (('component',
                __mkreports(reports)))
 
 default_config = \
- (('trac', 'htdocs_location', '/trac/'),
-  ('trac', 'repository_dir', '/var/svn/myrep'),
+ (('trac', 'htdocs_location', ''),
+  ('trac', 'repository_dir', ''),
   ('trac', 'templates_dir', '/usr/lib/trac/templates'),
   ('trac', 'database', 'sqlite:db/trac.db'),
   ('trac', 'default_charset', 'iso-8859-15'),

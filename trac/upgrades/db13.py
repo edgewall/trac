@@ -1,5 +1,5 @@
 sql = """
--- Add ticket_type to 'ticket'
+-- Add ticket_type to 'ticket', remove the unused 'url' column
 CREATE TEMP TABLE ticket_old AS SELECT * FROM ticket;
 DROP TABLE ticket;
 CREATE TABLE ticket (
@@ -13,7 +13,6 @@ CREATE TABLE ticket (
         owner           text,           -- who is this ticket assigned to
         reporter        text,
         cc              text,           -- email addresses to notify
-        url             text,           -- url related to this ticket
         version         text,           --
         milestone       text,           --
         status          text,
@@ -23,20 +22,20 @@ CREATE TABLE ticket (
         keywords        text
 );
 
-INSERT INTO ticket(id, type, time, changetime, component,
-                   severity, priority, owner, reporter, cc, url, version,
-                   milestone, status, resolution, summary, description, keywords)
-  SELECT id, 'defect', time, changetime, component,
-         severity, priority, owner, reporter, cc, url, version,
-         milestone, status, resolution, summary, description, keywords FROM ticket_old
+INSERT INTO ticket(id, type, time, changetime, component, severity, priority,
+                   owner, reporter, cc, version, milestone, status, resolution,
+                   summary, description, keywords)
+  SELECT id, 'defect', time, changetime, component, severity, priority, owner,
+         reporter, cc, version, milestone, status, resolution, summary,
+         description, keywords FROM ticket_old
   WHERE severity <> 'enhancement';
 
-INSERT INTO ticket(id, type, time, changetime, component,
-                   severity, priority, owner, reporter, cc, url, version,
-                   milestone, status, resolution, summary, description, keywords)
-  SELECT id, 'enhancement', time, changetime, component,
-         'major', priority, owner, reporter, cc, url, version,
-         milestone, status, resolution, summary, description, keywords FROM ticket_old
+INSERT INTO ticket(id, type, time, changetime, component, severity, priority,
+                   owner, reporter, cc, version, milestone, status, resolution,
+                   summary, description, keywords)
+  SELECT id, 'enhancement', time, changetime, component, 'normal', priority,
+         owner, reporter, cc, version, milestone, status, resolution, summary,
+         description, keywords FROM ticket_old
   WHERE severity = 'enhancement';
 
 INSERT INTO enum (type, name, value) VALUES ('ticket_type', 'defect', '1');
@@ -44,9 +43,10 @@ INSERT INTO enum (type, name, value) VALUES ('ticket_type', 'enhancement', '2');
 INSERT INTO enum (type, name, value) VALUES ('ticket_type', 'task', '3');
 DELETE FROM enum WHERE type = 'severity' AND name = 'enhancement';
 """
-                
+
 def do_upgrade(env, ver, cursor):
     cursor.execute(sql)
+
     # -- upgrade reports (involve a rename)
     cursor.execute("SELECT id,sql FROM report")
     reports = {}
