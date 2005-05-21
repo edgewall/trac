@@ -235,7 +235,7 @@ class WikiModule(Component):
                 break
         req.hdf['wiki'] = info
 
-        oldtext = old_page.text.splitlines()
+        oldtext = old_page and old_page.text.splitlines() or []
         newtext = page.text.splitlines()
         context = 3
         for option in diff_options:
