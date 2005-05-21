@@ -273,7 +273,6 @@ class LogModule(Component):
         req.hdf['log'] = {
             'path': path,
             'rev': rev,
-            'mode': mode,
             'verbose': verbose,
             'stop_rev': stop_rev,
             'browser_href': self.env.href.browser(path, rev=rev),
@@ -300,6 +299,8 @@ class LogModule(Component):
                 mode = 'path_history'
             else:
                 history = node.get_history
+
+        req.hdf['log.mode'] = mode # mode might have change (see 3 lines above)
 
         if mode == 'path_history':
             def history(limit):
