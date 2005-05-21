@@ -1,4 +1,5 @@
-from trac.Ticket import Ticket, available_actions
+from trac.config import Configuration
+from trac.Ticket import Ticket, get_custom_fields, available_actions
 from trac.test import Mock
 
 import unittest
@@ -57,6 +58,27 @@ class TicketTestCase(unittest.TestCase):
         self.failUnless(log[1][2] in ok_vals)
         self.failUnless(log[2][2] in ok_vals)
 
+    def test_populate_ticket(self):
+        data = {'summary': 'Hello world', 'reporter': 'john', 'foo': 'bar',
+                'custom_foo': 'bar', 'checkbox_cbon': '', 'custom_cbon': 'on',
+                'checkbox_cboff': ''}
+        ticket = Ticket()
+        ticket.populate(data)
+
+        # Standard fields
+        self.assertEqual('Hello world', ticket['summary'])
+        self.assertEqual('john', ticket['reporter'])
+
+        # An unknown field
+        self.assertRaises(KeyError, ticket.__getitem__, 'foo')
+
+        # Custom field
+        self.assertEqual('bar', ticket['custom_foo'])
+
+        # Custom field of type 'checkbox'
+        self.assertEqual('on', ticket['custom_cbon'])
+        self.assertEqual('0', ticket['custom_cboff'])
+
     def test_changelog(self):
         tkt_id = self._insert_ticket('Test', reporter='joe', component='foo',
                                      milestone='bar')
@@ -89,6 +111,51 @@ class TicketTestCase(unittest.TestCase):
             else:
                 self.fail('Unexpected change (%s)'
                           % ((t, author, field, old, new),))
+
+    def test_custom_field_text(self):
+        env = Mock(config=Configuration(None))
+        env.config.set('ticket-custom', 'test', 'text')
+        env.config.set('ticket-custom', 'test.label', 'Test')
+        env.config.set('ticket-custom', 'test.value', 'Foo bar')
+        fields = get_custom_fields(env)
+        self.assertEqual({'name': 'test', 'type': 'text', 'label': 'Test',
+                          'value': 'Foo bar', 'order': 0},
+                         fields[0])
+
+    def test_custom_field_select(self):
+        env = Mock(config=Configuration(None))
+        env.config.set('ticket-custom', 'test', 'select')
+        env.config.set('ticket-custom', 'test.label', 'Test')
+        env.config.set('ticket-custom', 'test.value', '1')
+        env.config.set('ticket-custom', 'test.options', 'option1|option2')
+        fields = get_custom_fields(env)
+        self.assertEqual({'name': 'test', 'type': 'select', 'label': 'Test',
+                          'value': '1', 'options': ['option1', 'option2'],
+                          'order': 0},
+                         fields[0])
+
+    def test_custom_field_textarea(self):
+        env = Mock(config=Configuration(None))
+        env.config.set('ticket-custom', 'test', 'textarea')
+        env.config.set('ticket-custom', 'test.label', 'Test')
+        env.config.set('ticket-custom', 'test.value', 'Foo bar')
+        env.config.set('ticket-custom', 'test.cols', '60')
+        env.config.set('ticket-custom', 'test.rows', '4')
+        fields = get_custom_fields(env)
+        self.assertEqual({'name': 'test', 'type': 'textarea', 'label': 'Test',
+                          'value': 'Foo bar', 'width': '60', 'height': '4',
+                          'order': 0},
+                         fields[0])
+
+    def test_custom_field_order(self):
+        env = Mock(config=Configuration(None))
+        env.config.set('ticket-custom', 'test1', 'text')
+        env.config.set('ticket-custom', 'test1.order', '2')
+        env.config.set('ticket-custom', 'test2', 'text')
+        env.config.set('ticket-custom', 'test2.order', '1')
+        fields = get_custom_fields(env)
+        self.assertEqual('test2', fields[0]['name'])
+        self.assertEqual('test1', fields[1]['name'])
 
     def test_available_actions_full_perms(self):
         perm = Mock(has_permission=lambda x: 1)

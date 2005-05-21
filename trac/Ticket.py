@@ -36,15 +36,16 @@ __all__ = ['Ticket', 'NewticketModule', 'TicketModule']
 
 
 class Ticket(dict):
-    std_fields = ['type', 'time', 'component', 'severity', 'priority', 'milestone',
-                  'reporter', 'owner', 'cc', 'version', 'status', 'resolution',
-                  'keywords', 'summary', 'description', 'changetime']
+    std_fields = ['type', 'time', 'component', 'severity', 'priority',
+                  'milestone', 'reporter', 'owner', 'cc', 'version', 'status',
+                  'resolution', 'keywords', 'summary', 'description',
+                  'changetime']
 
-    def __init__(self, *args):
+    def __init__(self, db=None, tkt_id=None):
         dict.__init__(self)
         self._old = {}
-        if len(args) == 2:
-            self._fetch_ticket(*args)
+        if db and tkt_id:
+            self._fetch_ticket(db, tkt_id)
 
     def __setitem__(self, name, value):
         """Log ticket modifications so the table ticket_change can be updated"""
@@ -59,79 +60,79 @@ class Ticket(dict):
     def _forget_changes(self):
         self._old = {}
 
-    def _fetch_ticket(self, db, id):
+    def _fetch_ticket(self, db, tkt_id):
         # Fetch the standard ticket fields
         cursor = db.cursor()
         cursor.execute("SELECT %s FROM ticket WHERE id=%%s"
-                       % ','.join(Ticket.std_fields), (id,))
+                       % ','.join(Ticket.std_fields), (tkt_id,))
         row = cursor.fetchone()
         if not row:
-            raise TracError('Ticket %d does not exist.' % id,
+            raise TracError('Ticket %d does not exist.' % tkt_id,
                             'Invalid Ticket Number')
 
-        self['id'] = id
+        self['id'] = tkt_id
         for i in range(len(Ticket.std_fields)):
             self[Ticket.std_fields[i]] = row[i] or ''
 
         # Fetch custom fields if available
         cursor.execute("SELECT name,value FROM ticket_custom WHERE ticket=%s",
-                       (id,))
-        rows = cursor.fetchall()
-        if rows:
-            for row in rows:
-                self['custom_' + row[0]] = row[1]
+                       (tkt_id,))
+        for name, value in cursor:
+            self['custom_' + name] = value
+
         self._forget_changes()
 
-    def populate(self, dict):
+    def populate(self, data):
         """Populate the ticket with 'suitable' values from a dictionary"""
-        def is_field(name):
-            return name in Ticket.std_fields or name[:7] == 'custom_'
-        for name in filter(is_field, dict.keys()):
-            self[name] = dict.get(name, '')
+        for name in [name for name in data.keys()
+                     if name in self.std_fields or name.startswith('custom_')]:
+            self[name] = data.get(name, '')
 
         # We have to do an extra trick to catch unchecked checkboxes
-        checkboxes = filter(lambda n: n[:9] == 'checkbox_', dict.keys())
-        for name in ['custom_' + n[9:] for n in checkboxes]:
-            if not dict.has_key(name):
+        for name in ['custom_' + name[9:] for name in data.keys()
+                     if name.startswith('checkbox_')]:
+            if not data.has_key(name):
                 self[name] = '0'
 
     def insert(self, db):
         """Add ticket to database"""
-        assert not self.has_key('id')
+        assert not self.has_key('id'), 'Cannot insert an existing ticket'
 
         # Add a timestamp
         now = int(time.time())
-        self['time'] = now
-        self['changetime'] = now
+        self['time'] = self['changetime'] = now
 
         cursor = db.cursor()
 
-        std_fields = filter(lambda n: n in Ticket.std_fields, self.keys())
+        std_fields = [name for name in self.keys() if name in self.std_fields]
         cursor.execute("INSERT INTO ticket (%s) VALUES (%s)"
                        % (','.join(std_fields),
                           ','.join(['%s'] * len(std_fields))),
-                       map(lambda n, self=self: self[n], std_fields))
-        id = db.get_last_id('ticket')
+                       [self[name] for name in std_fields])
+        tkt_id = db.get_last_id('ticket')
 
-        custom_fields = filter(lambda n: n[:7] == 'custom_', self.keys())
-        for name in custom_fields:
-            cursor.execute("INSERT INTO ticket_custom(ticket,name,value) "
-                           "VALUES(%s,%s,%s)", (id, name[7:], self[name]))
+        for name in [name for name in self.keys() if name.startswith('custom_')]:
+            cursor.execute("INSERT INTO ticket_custom (ticket,name,value) "
+                           "VALUES (%s,%s,%s)", (tkt_id, name[7:], self[name]))
+
         db.commit()
-        self['id'] = id
+        self['id'] = tkt_id
         self._forget_changes()
-        return id
+        return tkt_id
 
-    def save_changes(self, db, author, comment, when = 0):
-        """Store ticket changes in the database.
-        The ticket must already exist in the database."""
-        assert self.has_key('id')
+    def save_changes(self, db, author, comment, when=0):
+        """
+        Store ticket changes in the database. The ticket must already exist in
+        the database.
+        """
+        assert self.has_key('id'), 'Cannot update a new ticket'
         cursor = db.cursor()
         if not when:
             when = int(time.time())
-        id = self['id']
+        tkt_id = self['id']
 
-        if not self._old and not comment: return # Not modified
+        if not self._old and not comment:
+            return # Not modified
 
         # If the component is changed on a 'new' ticket then owner field
         # is updated accordingly. (#623).
@@ -153,32 +154,32 @@ class Ticket(dict):
             if name[:7] == 'custom_':
                 fname = name[7:]
                 cursor.execute("SELECT * FROM ticket_custom " 
-                               "WHERE ticket=%s and name=%s", (id, fname))
+                               "WHERE ticket=%s and name=%s", (tkt_id, fname))
                 if cursor.fetchone():
                     cursor.execute("UPDATE ticket_custom SET value=%s "
                                    "WHERE ticket=%s AND name=%s",
-                                   (self[name], id, fname))
+                                   (self[name], tkt_id, fname))
                 else:
                     cursor.execute("INSERT INTO ticket_custom (ticket,name,"
                                    "value) VALUES(%s,%s,%s)",
-                                   (id, fname, self[name]))
+                                   (tkt_id, fname, self[name]))
             else:
                 fname = name
                 cursor.execute("UPDATE ticket SET %s=%%s WHERE id=%%s" % fname,
-                               (self[name], id))
+                               (self[name], tkt_id))
             cursor.execute("INSERT INTO ticket_change "
                            "(ticket,time,author,field,oldvalue,newvalue) "
                            "VALUES (%s, %s, %s, %s, %s, %s)",
-                           (id, when, author, fname, self._old[name],
+                           (tkt_id, when, author, fname, self._old[name],
                             self[name]))
         if comment:
             cursor.execute("INSERT INTO ticket_change "
                            "(ticket,time,author,field,oldvalue,newvalue) "
                            "VALUES (%s,%s,%s,'comment','',%s)",
-                           (id, when, author, comment))
+                           (tkt_id, when, author, comment))
 
         cursor.execute("UPDATE ticket SET changetime=%s WHERE id=%s",
-                       (when, id))
+                       (when, tkt_id))
         db.commit()
         self._forget_changes()
 
@@ -212,81 +213,55 @@ class Ticket(dict):
                            "ORDER BY time",
                            (self['id'],  self['id'], self['id']))
         log = []
-        while 1:
-            row = cursor.fetchone()
-            if not row:
-                break
-            log.append((int(row[0]), row[1], row[2], row[3] or '', row[4] or ''))
+        for t, author, field, oldvalue, newvalue in cursor:
+            log.append((int(t), author, field, oldvalue or '', newvalue or ''))
         return log
 
 
 def get_custom_fields(env):
-    cfg = env.config.options('ticket-custom')
-    if not cfg:
-        return []
-    names = []
-    items = {}
-    for k, v in cfg:
-        items[k] = v
-        if '.' not in k:
-            names.append(k)
     fields = []
-    for name in names:
+    for name in [option for option, value in env.config.options('ticket-custom')
+                 if '.' not in option]:
         field = {
             'name': name,
-            'type': items[name],
-            'order': items.get(name + '.order', '0'),
-            'label': items.get(name + '.label', ''),
-            'value': items.get(name + '.value', '')
+            'type': env.config.get('ticket-custom', name),
+            'order': int(env.config.get('ticket-custom', name + '.order', '0')),
+            'label': env.config.get('ticket-custom', name + '.label', ''),
+            'value': env.config.get('ticket-custom', name + '.value', '')
         }
         if field['type'] == 'select' or field['type'] == 'radio':
-            field['options'] = map(lambda x: x.strip(),
-                                   items.get(name + '.options', '').split('|'))
+            options = env.config.get('ticket-custom', name + '.options')
+            field['options'] = [value.strip() for value in options.split('|')]
         elif field['type'] == 'textarea':
-            field['width'] = items.get(name + '.cols', '')
-            field['height'] = items.get(name + '.rows', '')
+            field['width'] = env.config.get('ticket-custom', name + '.cols')
+            field['height'] = env.config.get('ticket-custom', name + '.rows')
         fields.append(field)
 
-    def cmp_by_order(a, b):
-        try:
-            return int(a['order']) - int(b['order'])
-        except:
-            if a['order'] < b['order']:
-                return -1
-            elif a['order'] > b['order']:
-                return 1
-            else:
-                return 0
-
-    fields.sort(cmp_by_order)
+    fields.sort(lambda x, y: cmp(x['order'], y['order']))
     return fields
 
-
-def insert_custom_fields(env, hdf, vals = {}):
-    fields = get_custom_fields(env)
-    i = 0
-    for f in fields:
-        name = f['name']
-        val = vals.get('custom_' + name, f['value'])
-        pfx = 'ticket.custom.%d' % i
-        hdf['%s.name' % pfx] = f['name']
-        hdf['%s.type' % pfx] = f['type']
-        hdf['%s.label' % pfx] = f['label'] or f['name']
-        hdf['%s.value' % pfx] = val
-        if f['type'] == 'select' or f['type'] == 'radio':
-            j = 0
-            for option in f['options']:
-                hdf['%s.option.%d' % (pfx, j)] = option
-                if val and (option == val or str(j) == val):
-                    hdf['%s.option.%d.selected' % (pfx, j)] = 1
-                j += 1
-        elif f['type'] == 'checkbox':
-            if val in util.TRUE:
-                hdf['%s.selected' % pfx] = 1
-        elif f['type'] == 'textarea':
-            hdf['%s.width' % pfx] = f['width']
-            hdf['%s.height' % pfx] = f['height']
-        i += 1
+def insert_custom_fields(env, hdf, vals={}):
+    for idx, field in util.enum(get_custom_fields(env)):
+        name = field['name']
+        value = vals.get('custom_' + name, field['value'])
+        prefix = 'ticket.custom.%d' % idx
+        hdf[prefix] = {
+            'name': field['name'],
+            'type': field['type'],
+            'label': field['label'] or field['name'],
+            'value': field['value']
+        }
+        if field['type'] == 'select' or field['type'] == 'radio':
+            for optidx, option in util.enum(field['options']):
+                hdf['%s.option.%d' % (prefix, optidx)] = option
+                if value and (option == value or str(optidx) == value):
+                    hdf['%s.option.%d.selected' % (prefix, optidx)] = True
+        elif field['type'] == 'checkbox':
+            if value in util.TRUE:
+                hdf['%s.selected' % prefix] = True
+        elif field['type'] == 'textarea':
+            hdf['%s.width' % prefix] = field['width']
+            hdf['%s.height' % prefix] = field['height']
 
 
 class NewticketModule(Component):
@@ -339,8 +314,8 @@ class NewticketModule(Component):
                                                                     req, db)
 
         req.hdf['title'] = 'New Ticket'
-        req.hdf['newticket'] = dict(zip(ticket.keys(),
-                                    map(lambda x: util.escape(x), ticket.values())))
+        req.hdf['newticket'] = dict(zip(ticket.keys(), [util.escape(v) for v
+                                                        in ticket.values()]))
 
         util.sql_to_hdf(db, "SELECT name FROM component ORDER BY name",
                         req.hdf, 'newticket.components')
@@ -362,12 +337,12 @@ class NewticketModule(Component):
         restrict_owner = self.config.get('ticket', 'restrict_owner')
         if restrict_owner.lower() in util.TRUE:
             users = []
-            for username,name,email in self.env.get_known_users(db):
+            for username, name, email in self.env.get_known_users(db):
                 label = username
                 if name:
                     label = '%s (%s)' % (util.escape(username),
                                          util.escape(name))
-                users.append({'name': username,'label': label})
+                users.append({'name': username, 'label': label})
             req.hdf['newticket.users'] = users
 
         insert_custom_fields(self.env, req.hdf, ticket)
@@ -415,17 +390,10 @@ def available_actions(ticket, perm_):
         'reopened': ['leave', 'resolve', 'reassign'          ],
         'closed':   ['leave',                        'reopen']
     }
-    perm_map = {
-        'resolve': perm.TICKET_MODIFY,
-        'reassign': perm.TICKET_CHGPROP,
-        'accept': perm.TICKET_CHGPROP,
-        'reopen': perm.TICKET_CREATE
-    }
-    def has_permission(action):
-        if not action in perm_map:
-            return 1
-        return perm_.has_permission(perm_map[action])
-    return filter(has_permission, actions.get(ticket['status'], ['leave']))
+    perms = {'resolve': perm.TICKET_MODIFY, 'reassign': perm.TICKET_CHGPROP,
+             'accept': perm.TICKET_CHGPROP, 'reopen': perm.TICKET_CREATE}
+    return [action for action in actions.get(ticket['status'], ['leave'])
+            if action not in perms or perm_.has_permission(perms[action])]
 
 
 class TicketModule(Component):
@@ -645,7 +613,7 @@ class TicketModule(Component):
         req.hdf['ticket.reporter_id'] = util.escape(reporter_id)
         req.hdf['title'] = '#%d (%s)' % (id, util.escape(ticket['summary']))
         req.hdf['ticket.description.formatted'] = wiki_to_html(ticket['description'],
-                                                               self.env, req,
+                                                                 self.env, req,
                                                                db)
 
         opened = int(ticket['time'])
@@ -659,12 +627,12 @@ class TicketModule(Component):
         restrict_owner = self.config.get('ticket', 'restrict_owner')
         if restrict_owner.lower() in util.TRUE:
             users = []
-            for username,name,email in self.env.get_known_users(db):
+            for username, name, email in self.env.get_known_users(db):
                 label = username
                 if name:
                     label = '%s (%s)' % (util.escape(username),
                                          util.escape(name))
-                users.append({'name': username,'label': label})
+                users.append({'name': username, 'label': label})
             req.hdf['ticket.users'] = users
 
         changelog = ticket.get_changelog(db)
@@ -691,11 +659,13 @@ class TicketModule(Component):
         insert_custom_fields(self.env, req.hdf, ticket)
 
         # List attached files
-        for idx,attachment in util.enum(Attachment.select(self.env, 'ticket', id)):
+        for idx, attachment in util.enum(Attachment.select(self.env, 'ticket',
+                                                           id)):
             hdf = attachment_to_hdf(self.env, db, req, attachment)
             req.hdf['ticket.attachments.%s' % idx] = hdf
         if req.perm.has_permission(perm.TICKET_APPEND):
-            req.hdf['ticket.attach_href'] = self.env.href.attachment('ticket', id)
+            req.hdf['ticket.attach_href'] = self.env.href.attachment('ticket',
+                                                                     id)
 
         # Add the possible actions to hdf
         for action in available_actions(ticket, req.perm):

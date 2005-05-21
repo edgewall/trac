@@ -1,3 +1,4 @@
+from trac.config import Configuration
 from trac.log import logger_factory
 from trac.test import InMemoryDatabase, Mock
 from trac.Query import Query
@@ -9,7 +10,7 @@ class QueryTestCase(unittest.TestCase):
 
     def setUp(self):
         self.db = InMemoryDatabase()
-        self.env = Mock(config=Mock(options=lambda x: []),
+        self.env = Mock(config=Configuration(None),
                         log=logger_factory('test'),
                         get_db_cnx=lambda: self.db)
 
@@ -196,7 +197,7 @@ ORDER BY COALESCE(t.id,0)=0,t.id""")
         tickets = query.execute()
 
     def test_constrained_by_custom_field(self):
-        self.env.config.options = lambda x: [('foo', 'text')]
+        self.env.config.set('ticket-custom', 'foo', 'text')
         query = Query.from_string(self.env, 'foo=something', order='id')
         sql = query.get_sql()
         self.assertEqual(sql,
