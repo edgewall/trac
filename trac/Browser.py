@@ -253,7 +253,7 @@ class LogModule(Component):
 
     def match_request(self, req):
         import re
-        match = re.match(r'/log(?:(/.*))?', req.path_info)
+        match = re.match(r'/log(?:(/.*)|$)', req.path_info)
         if match:
             req.args['path'] = match.group(1)
             return 1
