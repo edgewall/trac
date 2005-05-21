@@ -206,6 +206,10 @@ class WikiModule(Component):
     def _render_diff(self, req, db, page):
         req.perm.assert_permission(perm.WIKI_VIEW)
 
+        if not page.exists:
+            raise TracError, "Version %s of page %s does not exist" \
+                             % (req.args.get('version'), page.name)
+
         add_stylesheet(req, 'diff.css')
 
         # Stores the diff-style in the session if it has been changed, and adds
@@ -274,10 +278,12 @@ class WikiModule(Component):
             'author': escape(author),
             'comment': escape(comment),
             'readonly': page.readonly,
-            'history_href': escape(self.env.href.wiki(page.name, action='history')),
             'edit_rows': editrows,
             'scroll_bar_pos': req.args.get('scroll_bar_pos', '')
         }
+        if page.exists:
+            info['history_href'] = escape(self.env.href.wiki(page.name,
+                                                             action='history'))
         if preview:
             info['page_html'] = wiki_to_html(page.text, self.env, req, db)
             info['readonly'] = int(req.args.has_key('readonly'))
@@ -290,6 +296,9 @@ class WikiModule(Component):
         page.
         """
         req.perm.assert_permission(perm.WIKI_VIEW)
+
+        if not page.exists:
+            raise TracError, "Page %s does not exist" % page.name
 
         history = []
         for version,t,author,comment,ipnr in page.get_history():
@@ -322,22 +331,16 @@ class WikiModule(Component):
         txt_href = self.env.href.wiki(page.name, version=version, format='txt')
         add_link(req, 'alternate', txt_href, 'Plain Text', 'text/plain')
 
-        req.hdf['wiki'] = {
-            'page_name': page.name,
-            'exists': page.exists,
-            'version': page.version,
-            'readonly': page.readonly,
-            'history_href': escape(self.env.href.wiki(page.name,
-                                                      action='history'))
-        }
+        req.hdf['wiki'] = {'page_name': page.name, 'exists': page.exists,
+                           'version': page.version, 'readonly': page.readonly}
         if page.exists:
             req.hdf['wiki.page_html'] = wiki_to_html(page.text, self.env, req)
+            history_href = self.env.href.wiki(page.name, action='history')
+            req.hdf['wiki.history_href'] = escape(history_href)
         else:
-            if req.perm.has_permission(perm.WIKI_CREATE):
-                req.hdf['wiki.page_html'] = '<p>Describe "%s" here</p>' \
-                                            % page.name
-            else:
+            if not req.perm.has_permission(perm.WIKI_CREATE):
                 raise TracError('Page %s not found' % page.name)
+            req.hdf['wiki.page_html'] = '<p>Describe "%s" here</p>' % page.name
 
         # Show attachments
         attachments = []
