@@ -734,8 +734,9 @@ class TracAdmin(cmd.Cmd):
         data = util.to_utf8(f.read())
 
         # Make sure we don't insert the exact same page twice
-        old = self.db_query("SELECT text FROM wiki WHERE name='%s' "
-                            "ORDER BY version DESC LIMIT 1" % title, cursor)
+        rows = self.db_query("SELECT text FROM wiki WHERE name='%s' "
+                             "ORDER BY version DESC LIMIT 1" % title, cursor)
+        old = list(rows)
         if old and data == old[0][0]:
             print '  %s already up to date.' % title
             return
