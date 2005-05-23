@@ -237,8 +237,7 @@ class PostgreSQLConnection(ConnectionWrapper):
 
     def get_last_id(self, table, column='id'):
         cursor = self.cursor()
-        cursor.execute("SELECT %s FROM %s WHERE %s=CURRVAL('%s_%s_seq')"
-                       % (column, table, column, table, column))
+        cursor.execute("SELECT CURRVAL('%s_%s_seq')" % (table, column))
         return cursor.fetchone()[0]
 
     def init_db(cls, **args):

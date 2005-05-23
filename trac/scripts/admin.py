@@ -21,6 +21,7 @@ __license__ = """
  along with this program; if not, write to the Free Software
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA."""
 
+from __future__ import generators
 import os
 import os.path
 import sys
@@ -54,8 +55,8 @@ class TracAdmin(cmd.Cmd):
     ruler = ''
     prompt = "Trac> "
     __env = None
-    
-    def __init__(self,envdir=None):
+
+    def __init__(self, envdir=None):
         cmd.Cmd.__init__(self)
         self.interactive = 0
         if envdir:
@@ -117,22 +118,22 @@ class TracAdmin(cmd.Cmd):
             print 'Failed to open environment.', e
             sys.exit(1)
 
-    def db_execsql (self, sql, cursor=None):
-        data = []
+    def db_query(self, sql, cursor=None):
         if not cursor:
-            cnx=self.db_open()
+            cursor = self.db_open().cursor()
+        cursor.execute(sql)
+        for row in cursor:
+            yield row
+
+    def db_update(self, sql, cursor=None):
+        if not cursor:
+            cnx = self.db_open()
             cursor = cnx.cursor()
         else:
             cnx = None
         cursor.execute(sql)
-        while 1:
-            row = cursor.fetchone()
-            if row == None:
-                break
-            data.append(row)
         if cnx:
             cnx.commit()
-        return data
 
     ##
     ## Utility methods
@@ -166,12 +167,12 @@ class TracAdmin(cmd.Cmd):
     def word_complete (self, text, words):
         return [a for a in words if a.startswith (text)]
 
-    def print_listing(self, headers, data, sep=' ',decor=1):
-        ldata = data
+    def print_listing(self, headers, data, sep=' ', decor=True):
+        ldata = list(data)
         if decor:
-            ldata.insert (0, headers)
+            ldata.insert(0, headers)
         print
-        colw=[]
+        colw = []
         ncols = len(ldata[0]) # assumes all rows are of equal length
         for cnum in xrange(0, ncols):
             mw = 0
@@ -179,36 +180,39 @@ class TracAdmin(cmd.Cmd):
                 if len(cell) > mw:
                     mw = len(cell)
             colw.append(mw)
-        for rnum in xrange(0, len(ldata)):
-            for cnum in xrange(0, ncols):
+        for rnum in xrange(len(ldata)):
+            for cnum in xrange(ncols):
                 if decor and rnum == 0:
                     sp = ('%%%ds' % len(sep)) % ' '  # No separator in header
                 else:
                     sp = sep
-                if cnum+1 == ncols: sp = '' # No separator after last column
-                print ("%%-%ds%s" % (colw[cnum], sp)) % (ldata[rnum][cnum] or ''),
+                if cnum + 1 == ncols:
+                    sp = '' # No separator after last column
+                print ('%%-%ds%s' % (colw[cnum], sp)) \
+                      % (ldata[rnum][cnum] or ''),
             print
             if rnum == 0 and decor:
-                print ''.join(['-' for x in xrange(0,(1+len(sep))*cnum+my_sum(colw))])
+                print ''.join(['-' for x in
+                               xrange(0, (1 + len(sep)) * cnum + my_sum(colw))])
         print
 
-    def print_doc(self,doc,decor=0):
+    def print_doc(self, doc, decor=False):
         if not doc: return
-        self.print_listing (['Command','Description'], doc, '  --', decor) 
+        self.print_listing(['Command', 'Description'], doc, '  --', decor) 
 
-    def get_component_list (self):
-        data = self.db_execsql ("SELECT name FROM component")
-        return [r[0] for r in data]
+    def get_component_list(self):
+        rows = self.db_query("SELECT name FROM component")
+        return [row[0] for row in rows]
 
-    def get_user_list (self):
-        data = self.db_execsql ("SELECT DISTINCT username FROM permission")
-        return [r[0] for r in data]
+    def get_user_list(self):
+        rows = self.db_query("SELECT DISTINCT username FROM permission")
+        return [row[0] for row in rows]
 
-    def get_wiki_list (self):
-        data = self.db_execsql('SELECT DISTINCT name FROM wiki') 
-        return [r[0] for r in data]
+    def get_wiki_list(self):
+        rows = self.db_query('SELECT DISTINCT name FROM wiki') 
+        return [row[0] for row in rows]
 
-    def get_dir_list (self, pathstr,justdirs=0):
+    def get_dir_list(self, pathstr, justdirs=False):
         dname = os.path.dirname(pathstr)
         d = os.path.join(os.getcwd(), dname)
         dlist = os.listdir(d)
@@ -224,17 +228,17 @@ class TracAdmin(cmd.Cmd):
             result = dlist
         return result
 
-    def get_enum_list (self, type):
-        data = self.db_execsql("SELECT name FROM enum WHERE type='%s'" % type) 
-        return [r[0] for r in data]
+    def get_enum_list(self, type):
+        rows = self.db_query("SELECT name FROM enum WHERE type='%s'" % type)
+        return [row[0] for row in rows]
 
-    def get_milestone_list (self):
-        data = self.db_execsql("SELECT name FROM milestone") 
-        return [r[0] for r in data]
+    def get_milestone_list(self):
+        rows = self.db_query("SELECT name FROM milestone")
+        return [row[0] for row in rows]
 
-    def get_version_list (self):
-        data = self.db_execsql("SELECT name FROM version") 
-        return [r[0] for r in data]
+    def get_version_list(self):
+        rows = self.db_query("SELECT name FROM version")
+        return [row[0] for row in rows]
 
     def _parse_datetime(self, t):
         seconds = None
@@ -311,27 +315,31 @@ class TracAdmin(cmd.Cmd):
     _help_exit = _help_quit
     _help_EOF = _help_quit
 
-    def do_quit(self,line):
+    def do_quit(self, line):
         print
         sys.exit()
 
     do_exit = do_quit # Alias
     do_EOF = do_quit # Alias
 
-#    ## Component
+
+    # Component
     _help_component = [('component list', 'Show available components'),
                        ('component add <name> <owner>', 'Add a new component'),
-                       ('component rename <name> <newname>', 'Rename a component'),
-                       ('component remove <name>', 'Remove/uninstall component'),
-                       ('component chown <name> <owner>', 'Change component ownership')]
+                       ('component rename <name> <newname>',
+                        'Rename a component'),
+                       ('component remove <name>',
+                        'Remove/uninstall component'),
+                       ('component chown <name> <owner>',
+                        'Change component ownership')]
 
-    def complete_component (self, text, line, begidx, endidx):
-        if begidx in [16,17]:
+    def complete_component(self, text, line, begidx, endidx):
+        if begidx in (16, 17):
             comp = self.get_component_list()
         elif begidx > 15 and line.startswith('component chown '):
             comp = self.get_user_list()
         else:
-            comp = ['list','add','rename','remove','chown']
+            comp = ['list', 'add', 'rename', 'remove', 'chown']
         return self.word_complete(text, comp)
 
     def do_component(self, line):
@@ -360,51 +368,50 @@ class TracAdmin(cmd.Cmd):
             print 'Component %s failed:' % arg[0], e
 
     def _do_component_list(self):
-        data = self.db_execsql('SELECT name, owner FROM component') 
-        self.print_listing(['Name', 'Owner'], data)
+        rows = self.db_query("SELECT name, owner FROM component")
+        self.print_listing(['Name', 'Owner'], rows)
 
     def _do_component_add(self, name, owner):
-        self.db_execsql("INSERT INTO component (name,owner) VALUES('%s','%s')"
+        self.db_update("INSERT INTO component (name,owner) VALUES('%s','%s')"
                         % (name, owner))
 
     def _do_component_rename(self, name, newname):
         cnx = self.db_open()
-        cursor = cnx.cursor ()
-        cursor.execute('SELECT name FROM component WHERE name=%s', name)
-        data = cursor.fetchone()
-        if not data:
+        cursor = cnx.cursor()
+        cursor.execute("SELECT name FROM component WHERE name=%s", (name,))
+        if not cursor.fetchone():
             raise Exception("No such component '%s'" % name)
-        self.db_execsql("UPDATE component SET name='%s' WHERE name='%s'"
-                        % (newname,name), cursor)
-        self.db_execsql("UPDATE ticket SET component='%s' WHERE component='%s'"
-                        % (newname,name), cursor)
+        cursor.execute("UPDATE component SET name=%s WHERE name=%s",
+                       (newname, name))
+        cursor.execute("UPDATE ticket SET component=%s WHERE component=%s"
+                       (newname, name))
         cnx.commit()
 
     def _do_component_remove(self, name):
         cnx = self.db_open()
-        cursor = cnx.cursor ()
-        cursor.execute('SELECT name FROM component WHERE name=%s', name)
-        data = cursor.fetchone()
-        if not data:
+        cursor = cnx.cursor()
+        cursor.execute("SELECT name FROM component WHERE name=%s", (name,))
+        if not cursor.fetchone():
             raise Exception("No such component '%s'" % name)
-        data = self.db_execsql("DELETE FROM component WHERE name='%s'"
-                               % (name))
+        cursor.execute("DELETE FROM component WHERE name=%s", (name,))
+        cnx.commit()
 
     def _do_component_set_owner(self, name, owner):
         cnx = self.db_open()
-        cursor = cnx.cursor ()
-        cursor.execute('SELECT name FROM component WHERE name=%s', name)
-        data = cursor.fetchone()
-        if not data:
+        cursor = cnx.cursor()
+        cursor.execute("SELECT name FROM component WHERE name=%s", (name,))
+        if not cursor.fetchone():
             raise Exception("No such component '%s'" % name)
-        data = self.db_execsql("UPDATE component SET owner='%s' WHERE name='%s'"
-                               % (owner,name))
+        cursor.execute("UPDATE component SET owner=%s WHERE name=%s",
+                       (owner, name))
 
 
     ## Permission
     _help_permission = [('permission list [user]', 'List permission rules'),
-                       ('permission add <user> <action> [action] [...]', 'Add a new permission rule'),
-                       ('permission remove <user> <action> [action] [...]', 'Remove permission rule')]
+                        ('permission add <user> <action> [action] [...]',
+                         'Add a new permission rule'),
+                        ('permission remove <user> <action> [action] [...]',
+                         'Remove permission rule')]
 
     def complete_permission(self, text, line, begidx, endidx):
         argv = self.arg_tokenize(line)
@@ -412,7 +419,7 @@ class TracAdmin(cmd.Cmd):
         if line[-1] == ' ': # Space starts new argument
             argc += 1
         if argc == 2:
-            comp = ['list','add','remove']
+            comp = ['list', 'add', 'remove']
         elif argc >= 4:
             comp = perm.permissions + perm.meta_permissions.keys()
             comp.sort()
@@ -441,12 +448,12 @@ class TracAdmin(cmd.Cmd):
 
     def _do_permission_list(self, user=None):
         if user:
-            data = self.db_execsql("SELECT username, action FROM permission "
-                                   "WHERE username='%s' ORDER BY action" % user)
+            rows = self.db_query("SELECT username, action FROM permission "
+                                 "WHERE username='%s' ORDER BY action" % user)
         else:
-            data = self.db_execsql("SELECT username, action FROM permission "
-                                   "ORDER BY username, action")
-        self.print_listing(['User', 'Action'], data)
+            rows = self.db_query("SELECT username, action FROM permission "
+                                 "ORDER BY username, action")
+        self.print_listing(['User', 'Action'], rows)
         print
         print 'Available actions:'
         actions = perm.permissions + perm.meta_permissions.keys()
@@ -465,7 +472,8 @@ class TracAdmin(cmd.Cmd):
             print '%s is not a valid action. Use the permission list command ' \
                   'to see the available actions.' % (action)
             return
-        self.db_execsql("INSERT INTO permission VALUES('%s', '%s')" % (user, action))
+        self.db_update("INSERT INTO permission VALUES('%s', '%s')"
+                       % (user, action))
 
     def _do_permission_remove(self, user, action):
         sql = "DELETE FROM permission"
@@ -476,10 +484,12 @@ class TracAdmin(cmd.Cmd):
             clauses.append("username='%s'" % user)
         if clauses:
             sql += " WHERE " + " AND ".join(clauses)
-        self.db_execsql(sql)
+        self.db_update(sql)
+
 
     ## Initenv
-    _help_initenv = [('initenv', 'Create and initialize a new environment interactively'),
+    _help_initenv = [('initenv',
+                      'Create and initialize a new environment interactively'),
                      ('initenv <projectname> <repospath> <templatepath>',
                       'Create and initialize a new environment from arguments')]
 
@@ -631,13 +641,14 @@ class TracAdmin(cmd.Cmd):
 
         print 'resyncing...'
         cnx = self.__env.get_db_cnx()
-        self.db_execsql("DELETE FROM revision")
-        self.db_execsql("DELETE FROM node_change")
+        self.db_update("DELETE FROM revision")
+        self.db_update("DELETE FROM node_change")
 
         repos = self.__env.get_repository()
         repos.sync()
             
         print 'done.'
+
 
     ## Wiki
     _help_wiki = [('wiki list', 'List wiki pages'),
@@ -659,14 +670,15 @@ class TracAdmin(cmd.Cmd):
         if line[-1] == ' ': # Space starts new argument
             argc += 1
         if argc == 2:
-            comp = ['list','remove','import','export','dump','load', 'upgrade']
+            comp = ['list', 'remove', 'import', 'export', 'dump', 'load',
+                    'upgrade']
         else:
-            if argv[1] in ['dump','load']:
+            if argv[1] in ('dump', 'load'):
                 comp = self.get_dir_list(argv[-1], 1)
-            elif argv[1] in ['export', 'import']:
-                if argc==3:
+            elif argv[1] in ('export', 'import'):
+                if argc == 3:
                     comp = self.get_wiki_list()
-                elif argc==4:
+                elif argc == 4:
                     comp = self.get_dir_list(argv[-1])
         return self.word_complete(text, comp)
 
@@ -701,20 +713,18 @@ class TracAdmin(cmd.Cmd):
             print 'Wiki %s failed:' % arg[0], e
 
     def _do_wiki_list(self):
-        data = self.db_execsql('SELECT name,max(version),time'
-                               ' FROM wiki GROUP BY name ORDER BY name')
-        ldata = [(d[0], d[1], time.ctime(d[2])) for d in data]
-        self.print_listing(['Title', 'Edits', 'Modified'], ldata)
+        rows = self.db_query("SELECT name,max(version),time "
+                             "FROM wiki GROUP BY name ORDER BY name")
+        self.print_listing(['Title', 'Edits', 'Modified'],
+                           [(r[0], r[1], time.ctime(r[2])) for r in rows])
 
     def _do_wiki_remove(self, name):
         cnx = self.db_open()
-        cursor = cnx.cursor ()
+        cursor = cnx.cursor()
         cursor.execute('SELECT name FROM wiki WHERE name=%s', name)
-        data = cursor.fetchone()
-        if not data:
+        if not cursor.fetchone():
             raise Exception("No such wiki page '%s'" % name)
-        data = self.db_execsql("DELETE FROM wiki WHERE name='%s'"
-                               % (name))
+        cursor.execute("DELETE FROM wiki WHERE name=%s", (name,))
 
     def _do_wiki_import(self, filename, title, cursor=None):
         if not os.path.isfile(filename):
@@ -724,16 +734,15 @@ class TracAdmin(cmd.Cmd):
         data = util.to_utf8(f.read())
 
         # Make sure we don't insert the exact same page twice
-        old = self.db_execsql("SELECT text FROM wiki "
-                              "WHERE name='%s' "
-                              "ORDER BY version DESC LIMIT 1" % title, cursor)
+        old = self.db_query("SELECT text FROM wiki WHERE name='%s' "
+                            "ORDER BY version DESC LIMIT 1" % title, cursor)
         if old and data == old[0][0]:
             print '  %s already up to date.' % title
             return
-        
+
         data = data.replace("'", "''") # Escape ' for safe SQL
         f.close()
-        
+
         sql = ("INSERT INTO wiki(version,name,time,author,ipnr,text) "
                " SELECT 1+COALESCE(max(version),0),'%(title)s','%(time)s',"
                " '%(author)s','%(ipnr)s','%(text)s' FROM wiki "
@@ -744,12 +753,11 @@ class TracAdmin(cmd.Cmd):
                   'ipnr':'127.0.0.1',
                   'locked':'0',
                   'text':data})
-        self.db_execsql(sql, cursor)
+        self.db_update(sql, cursor)
 
-    def _do_wiki_export(self, page,filename=''):
-        data=self.db_execsql("SELECT text FROM wiki "
-                             " WHERE name='%s'"
-                             " ORDER BY version DESC LIMIT 1" % page)
+    def _do_wiki_export(self, page, filename=''):
+        data = self.db_query("SELECT text FROM wiki WHERE name='%s' "
+                             "ORDER BY version DESC LIMIT 1" % page)
         text = data[0][0]
         if not filename:
             print text
@@ -767,7 +775,7 @@ class TracAdmin(cmd.Cmd):
             print " %s => %s" % (p, dst)
             self._do_wiki_export(p, dst)
 
-    def _do_wiki_load(self, dir,cursor=None, ignore=[]):
+    def _do_wiki_load(self, dir, cursor=None, ignore=[]):
         for page in os.listdir(dir):
             if page in ignore:
                 continue
@@ -789,7 +797,7 @@ class TracAdmin(cmd.Cmd):
         if begidx == 16:
             comp = self.get_enum_list ('ticket_type')
         elif begidx < 15:
-            comp = ['list','add','change','remove']
+            comp = ['list', 'add', 'change', 'remove']
         return self.word_complete(text, comp)
  
     def do_ticket_type(self, line):
@@ -806,7 +814,7 @@ class TracAdmin(cmd.Cmd):
         if begidx == 16:
             comp = self.get_enum_list ('priority')
         elif begidx < 15:
-            comp = ['list','add','change','remove']
+            comp = ['list', 'add', 'change', 'remove']
         return self.word_complete(text, comp)
 
     def do_priority(self, line):
@@ -823,7 +831,7 @@ class TracAdmin(cmd.Cmd):
         if begidx == 16:
             comp = self.get_enum_list ('severity')
         elif begidx < 15:
-            comp = ['list','add','change','remove']
+            comp = ['list', 'add', 'change', 'remove']
         return self.word_complete(text, comp)
 
     def do_severity(self, line):
@@ -852,33 +860,33 @@ class TracAdmin(cmd.Cmd):
             print 'Command %s failed:' % arg[0], e
 
     def _do_enum_list(self, type):
-        data = self.db_execsql("SELECT name FROM enum WHERE type='%s' "
-                               "ORDER BY value" % type)
-        self.print_listing(['Possible Values'], data)
+        rows = self.db_query("SELECT name FROM enum WHERE type='%s' "
+                             "ORDER BY value" % type)
+        self.print_listing(['Possible Values'], rows)
 
     def _do_enum_add(self, type, name):
         sql = ("INSERT INTO enum(value,type,name) "
                " SELECT 1+COALESCE(max(value),0),'%(type)s','%(name)s'"
                "   FROM enum WHERE type='%(type)s'" 
                % {'type':type, 'name':name})
-        self.db_execsql(sql)
+        self.db_update(sql)
 
     def _do_enum_change(self, type, name, newname):
         d = {'name':name, 'newname':newname, 'type':type}
-        data = self.db_execsql("SELECT name FROM enum" 
-                               " WHERE type='%(type)s' AND name='%(name)s'" % d)
-        if not data:
+        rows = self.db_query("SELECT name FROM enum "
+                             "WHERE type='%(type)s' AND name='%(name)s'" % d)
+        if not list(rows):
             raise Exception, "No such value '%s'" % name
-        data = self.db_execsql("UPDATE enum SET name='%(newname)s'" 
-                               " WHERE type='%(type)s' AND name='%(name)s'" % d)
+        self.db_update("UPDATE enum SET name='%(newname)s' "
+                       "WHERE type='%(type)s' AND name='%(name)s'" % d)
 
     def _do_enum_remove(self, type, name):
-        data = self.db_execsql("SELECT name FROM enum" 
-                               " WHERE type='%s' AND name='%s'" % (type, name))
-        if not data:
+        rows = self.db_query("SELECT name FROM enum "
+                             "WHERE type='%s' AND name='%s'" % (type, name))
+        if not list(rows):
             raise Exception, "No such value '%s'" % name
-        data = self.db_execsql("DELETE FROM enum WHERE type='%s' AND name='%s'"
-                               % (type, name))
+        self.db_update("DELETE FROM enum WHERE type='%s' AND name='%s'"
+                       % (type, name))
 
 
     ## Milestone
@@ -895,10 +903,10 @@ class TracAdmin(cmd.Cmd):
                        ('milestone remove <name>', 'Remove milestone')]
 
     def complete_milestone (self, text, line, begidx, endidx):
-        if begidx in [15,17]:
-            comp = self.get_milestone_list ()
+        if begidx in (15, 17):
+            comp = self.get_milestone_list()
         elif begidx < 15:
-            comp = ['list','add','rename','time','remove']
+            comp = ['list', 'add', 'rename', 'time', 'remove']
         return self.word_complete(text, comp)
 
     def do_milestone(self, line):
@@ -971,10 +979,10 @@ class TracAdmin(cmd.Cmd):
                        ('version remove <name>', 'Remove version')]
 
     def complete_version (self, text, line, begidx, endidx):
-        if begidx in [13, 15]:
+        if begidx in (13, 15):
             comp = self.get_version_list ()
         elif begidx < 13:
-            comp = ['list','add','rename','time','remove']
+            comp = ['list', 'add', 'rename', 'time', 'remove']
         return self.word_complete(text, comp)
 
     def do_version(self, line):
@@ -998,42 +1006,41 @@ class TracAdmin(cmd.Cmd):
             print 'Command %s failed:' % arg[0], e
 
     def _do_version_list(self):
-        data = self.db_execsql("SELECT name,time FROM version ORDER BY time,name")
-        data = map(lambda x: (x[0], x[1] and time.strftime('%c', time.localtime(x[1]))), data)
-        self.print_listing(['Name', 'Time'], data)
+        rows = self.db_query("SELECT name,time FROM version ORDER BY time,name")
+        self.print_listing(['Name', 'Time'],
+                           [(r[0], r[1] and time.ctime(r[1])) for r in rows])
 
     def _do_version_rename(self, name, newname):
         d = {'name':name, 'newname':newname}
-        data = self.db_execsql("SELECT name FROM version" 
-                               " WHERE name='%(name)s'" % d)
-        if not data:
+        rows = self.db_query("SELECT name FROM version "
+                             "WHERE name='%(name)s'" % d)
+        if not list(rows):
             raise Exception, "No such version '%s'" % name
-        data = self.db_execsql("UPDATE version SET name='%(newname)s'" 
-                               " WHERE name='%(name)s'" % d)
+        self.db_update("UPDATE version SET name='%(newname)s' "
+                       "WHERE name='%(name)s'" % d)
 
     def _do_version_add(self, name):
-        self.db_execsql("INSERT INTO version (name, time) "
-                        "VALUES('%(name)s', 0)" % {'name':name})
+        self.db_update("INSERT INTO version (name, time) "
+                       "VALUES('%(name)s', 0)" % {'name':name})
 
     def _do_version_remove(self, name):
         d = {'name':name}
-        data = self.db_execsql("SELECT name FROM version" 
-                               " WHERE name='%(name)s'" % d)
-        if not data:
+        rows = self.db_query("SELECT name FROM version "
+                             "WHERE name='%(name)s'" % d)
+        if not list(rows):
             raise Exception, "No such version '%s'" % name
-        data = self.db_execsql("DELETE FROM version" 
-                               " WHERE name='%(name)s'" % d)
+        self.db_update("DELETE FROM version WHERE name='%(name)s'" % d)
 
     def _do_version_time(self, name, t):
         d = {'name':name}
-        data = self.db_execsql("SELECT name FROM version" 
-                               " WHERE name='%(name)s'" % d)
-        if not data:
+        rows = self.db_query("SELECT name FROM version "
+                             "WHERE name='%(name)s'" % d)
+        if not list(rows):
             raise Exception, "No such version '%s'" % name
         seconds = self._parse_datetime(t)
         if seconds != None:
-            data = self.db_execsql("UPDATE version SET time='%s'" 
-                                   " WHERE name='%s'" % (seconds, name))
+            self.db_update("UPDATE version SET time='%s' WHERE name='%s'"
+                           % (seconds, name))
 
     _help_upgrade = [('upgrade', 'Upgrade database to current version')]
     def do_upgrade(self, line):
@@ -1046,19 +1053,22 @@ class TracAdmin(cmd.Cmd):
             curr = self.__env.get_version()
             latest = trac.db_default.db_version
             if  curr < latest:
-                print "Upgrade: Upgrading %s to db version %i" % (self.envname, latest)
+                print "Upgrade: Upgrading %s to db version %i" \
+                      % (self.envname, latest)
                 if do_backup:
                     print "Upgrade: Backup of old database saved in " \
                           "%s/db/trac.db.%i.bak" % (self.envname, curr)
                 else:
-                    print "Upgrade: Backup disabled. Non-existent warranty voided."
+                    print "Upgrade: Backup disabled. Non-existent warranty " \
+                          "voided."
                 self.__env.upgrade(do_backup)
             else:
                 print "Upgrade: Database is up to date, no upgrade necessary."
         except Exception, e:
-            print "Upgrade failed: ",e
+            print "Upgrade failed:", e
 
-    _help_hotcopy = [('hotcopy <backupdir>', 'Make a hot backup copy of an environment')]
+    _help_hotcopy = [('hotcopy <backupdir>',
+                      'Make a hot backup copy of an environment')]
     def do_hotcopy(self, line):
         arg = self.arg_tokenize(line)
         if arg[0]:
@@ -1066,10 +1076,9 @@ class TracAdmin(cmd.Cmd):
         else:
             self.do_help('hotcopy')
             return
-        cnx=self.db_open()
+        cnx = self.db_open()
         # Lock the database while copying files
         cnx.db.execute("BEGIN")
-        import shutil
         print 'Hotcopying %s to %s ...' % (self.__env.path, dest),
         try:
             shutil.copytree(self.__env.path, dest, symlinks=1)
@@ -1089,10 +1098,10 @@ def run(*args):
     args = list(args)
     tracadm = TracAdmin()
     if len (args) > 0:
-        if args[0] in ['-h','--help','help']:
-            tracadm.docmd ("help")
-        elif args[0] in ['-v','--version','about']:
-            tracadm.docmd ("about")
+        if args[0] in ('-h', '--help', 'help'):
+            tracadm.docmd("help")
+        elif args[0] in ('-v','--version','about'):
+            tracadm.docmd("about")
         else:
             tracadm.env_set(os.path.abspath(args[0]))
             if len (args) > 1:
