@@ -220,7 +220,7 @@ def unified_diff(fromlines, tolines, context=None, ignore_blank_lines=0,
                            ignore_space_changes)
     for group in _group_opcodes(opcodes, context):
         i1, i2, j1, j2 = group[0][1], group[-1][2], group[0][3], group[-1][4]
-        yield '@@ -%d,%d +%d,%d' % (i1 + 1, i2 - i1, j1 + 1, j2 - j1)
+        yield '@@ -%d,%d +%d,%d @@' % (i1 + 1, i2 - i1, j1 + 1, j2 - j1)
         for tag, i1, i2, j1, j2 in group:
             if tag == 'equal':
                 for line in fromlines[i1:i2]:
