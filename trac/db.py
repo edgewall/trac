@@ -37,8 +37,7 @@ class IterableCursor(object):
     Wrapper for DB-API cursor objects that makes the cursor iterable. Iteration
     will generate the rows of a SELECT query one by one.
     """
-
-    __slots__ = 'cursor'
+    __slots__ = ['cursor']
 
     def __init__(self, cursor):
         self.cursor = cursor
@@ -47,7 +46,7 @@ class IterableCursor(object):
         return getattr(self.cursor, name)
 
     def __iter__(self):
-        while 1:
+        while True:
             row = self.cursor.fetchone()
             if not row:
                 return
@@ -59,7 +58,6 @@ class ConnectionWrapper(object):
     Generic wrapper around connection objects. This wrapper makes cursor
     produced by the connection iterable using IterableCursor.
     """
-
     __slots__ = ['cnx']
 
     def __init__(self, cnx):
@@ -69,8 +67,7 @@ class ConnectionWrapper(object):
         return getattr(self.cnx, name)
 
     def cursor(self):
-        cursor = self.cnx.cursor()
-        return IterableCursor(cursor)
+        return IterableCursor(self.cnx.cursor())
 
 
 class TimeoutError(Exception):
@@ -78,7 +75,10 @@ class TimeoutError(Exception):
 
 
 class PooledConnection(ConnectionWrapper):
-
+    """
+    A database connection that can be pooled. When closed, it gets returned to
+    the pool.
+    """
     def __init__(self, pool, cnx):
         ConnectionWrapper.__init__(self, cnx)
         self.__pool = pool
@@ -98,7 +98,9 @@ class PooledConnection(ConnectionWrapper):
 
 
 class ConnectionPool(object):
-
+    """
+    A very simple connection pool implementation.
+    """
     def __init__(self, maxsize, cnx_class, **args):
         self.__cnxs = []
         self.__lock = Lock()
@@ -112,7 +114,7 @@ class ConnectionPool(object):
         start = time.time()
         self.__lock.acquire()
         try:
-            while 1:
+            while True:
                 if self.__cnxs:
                     cnx = self.__cnxs.pop(0)
                     break
@@ -184,33 +186,32 @@ class SQLiteConnection(ConnectionWrapper):
         import sqlite
         cnx = sqlite.connect(path, timeout=int(params.get('timeout', 10000)))
         cursor = cnx.cursor()
-        cursor.execute(cls._get_init_sql())
+        from trac.db_default import schema
+        for table in schema:
+            cursor.execute(cls.to_sql(table))
         cnx.commit()
     init_db = classmethod(init_db)
 
-    def _get_init_sql(cls):
-        sql = []
-        from trac.db_default import schema
-        for table in schema:
-            sql.append("CREATE TABLE %s (" % table.name)
-            coldefs = []
-            for column in table.columns:
-                ctype = column.type.upper()
-                if column.auto_increment:
-                    ctype = "INTEGER PRIMARY KEY"
-                elif len(table.key) == 1 and column.name in table.key:
-                    ctype += " PRIMARY KEY"
-                elif ctype == "INT":
-                    ctype = "INTEGER"
-                coldefs.append("    %s %s" % (column.name, ctype))
-            if len(table.key) > 1:
-                coldefs.append("    UNIQUE (%s)" % ','.join(table.key))
-            sql.append(',\n'.join(coldefs) + '\n);')
-            for index in table.indexes:
-                sql.append("CREATE INDEX %s_idx ON %s (%s);"
-                           % (table.name, table.name, ','.join(index.columns)))
+    def to_sql(cls, table):
+        sql = ["CREATE TABLE %s (" % table.name]
+        coldefs = []
+        for column in table.columns:
+            ctype = column.type.upper()
+            if column.auto_increment:
+                ctype = "INTEGER PRIMARY KEY"
+            elif len(table.key) == 1 and column.name in table.key:
+                ctype += " PRIMARY KEY"
+            elif ctype == "INT":
+                ctype = "INTEGER"
+            coldefs.append("    %s %s" % (column.name, ctype))
+        if len(table.key) > 1:
+            coldefs.append("    UNIQUE (%s)" % ','.join(table.key))
+        sql.append(',\n'.join(coldefs) + '\n);')
+        for index in table.indexes:
+            sql.append("CREATE INDEX %s_idx ON %s (%s);"
+                       % (table.name, table.name, ','.join(index.columns)))
         return '\n'.join(sql)
-    _get_init_sql = classmethod(_get_init_sql)
+    to_sql = classmethod(to_sql)
 
 
 class PostgreSQLConnection(ConnectionWrapper):
@@ -242,32 +243,32 @@ class PostgreSQLConnection(ConnectionWrapper):
 
     def init_db(cls, **args):
         from pyPgSQL import libpq, PgSQL
-
-        sql = []
-        from trac.db_default import schema
-        for table in schema:
-            sql.append("CREATE TABLE %s (" % table.name)
-            coldefs = []
-            for column in table.columns:
-                ctype = column.type
-                if column.auto_increment:
-                    ctype = "SERIAL"
-                coldefs.append("    %s %s" % (column.name, ctype))
-            if len(table.key) > 1:
-                coldefs.append("    CONSTRAINT %s_pk PRIMARY KEY (%s)"
-                               % (table.name, ','.join(table.key)))
-            sql.append(',\n'.join(coldefs) + '\n);')
-            for index in table.indexes:
-                sql.append("CREATE INDEX %s_idx ON %s (%s);"
-                           % (table.name, table.name, ','.join(index.columns)))
-
         self = cls(**args)
         cursor = self.cursor()
-        cursor.execute('\n'.join(sql))
+        from trac.db_default import schema
+        for table in schema:
+            cursor.execute(cls.to_sql(table))
         self.commit()
-        return self
-
     init_db = classmethod(init_db)
+
+    def to_sql(cls, table):
+        sql = []
+        sql.append("CREATE TABLE %s (" % table.name)
+        coldefs = []
+        for column in table.columns:
+            ctype = column.type
+            if column.auto_increment:
+                ctype = "SERIAL"
+            coldefs.append("    %s %s" % (column.name, ctype))
+        if len(table.key) > 1:
+            coldefs.append("    CONSTRAINT %s_pk PRIMARY KEY (%s)"
+                           % (table.name, ','.join(table.key)))
+        sql.append(',\n'.join(coldefs) + '\n);')
+        for index in table.indexes:
+            sql.append("CREATE INDEX %s_idx ON %s (%s);"
+                       % (table.name, table.name, ','.join(index.columns)))
+        return '\n'.join(sql)
+    to_sql = classmethod(to_sql)
 
 
 _cnx_map = {'postgres': PostgreSQLConnection, 'sqlite': SQLiteConnection}

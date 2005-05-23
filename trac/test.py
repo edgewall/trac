@@ -87,7 +87,6 @@ class TestSetup(unittest.TestSuite):
     Test suite decorator that allows a fixture to be setup for a complete
     suite of test cases.
     """
-
     def setUp(self):
         pass
 
@@ -110,7 +109,11 @@ class InMemoryDatabase(SQLiteConnection):
         SQLiteConnection.__init__(self, ':memory:')
 
         cursor = self.cnx.cursor()
-        cursor.execute(SQLiteConnection._get_init_sql())
+
+        from trac.db_default import schema
+        for table in schema:
+            cursor.execute(SQLiteConnection.to_sql(table))
+
         self.cnx.commit()
 
 
