@@ -383,7 +383,7 @@ class TracAdmin(cmd.Cmd):
             raise Exception("No such component '%s'" % name)
         cursor.execute("UPDATE component SET name=%s WHERE name=%s",
                        (newname, name))
-        cursor.execute("UPDATE ticket SET component=%s WHERE component=%s"
+        cursor.execute("UPDATE ticket SET component=%s WHERE component=%s",
                        (newname, name))
         cnx.commit()
 
