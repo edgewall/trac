@@ -235,6 +235,7 @@ class TracHTTPRequest(Request):
         Request.__init__(self)
         self.__handler = handler
 
+        self.scheme = 'http'
         self.method = self.__handler.command
         self.remote_addr = str(self.__handler.client_address[0])
         self.server_name = self.__handler.server.server_name
