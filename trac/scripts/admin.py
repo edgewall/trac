@@ -537,21 +537,22 @@ class TracAdmin(cmd.Cmd):
 
     def do_initenv(self, line):
         if self.env_check():
-            print "Initenv for '%s' failed.\nDoes an environment already exist?" % self.envname
+            print "Initenv for '%s' failed." % self.envname
+            print "Does an environment already exist?"
             return
         arg = self.arg_tokenize(line)
         project_name = None
         db_str = None
         repository_dir = None
         templates_dir = None
-        if len(arg) == 1:
+        if len(arg) == 1 and not arg[0]:
             returnvals = self.get_initenv_args()
             project_name, db_str, repository_dir, templates_dir = returnvals
-        elif len(arg)!= 3:
-            print 'Wrong number of arguments to initenv %d' % len(arg)
+        elif len(arg) != 4:
+            print 'Wrong number of arguments to initenv: %d' % len(arg)
             return
         else:
-            project_name, db_str, repository_dir, templates_dir = arg[0:3]
+            project_name, db_str, repository_dir, templates_dir = arg[:4]
 
         if not os.access(os.path.join(templates_dir, 'header.cs'), os.F_OK):
             print templates_dir, "doesn't look like a Trac templates directory"
