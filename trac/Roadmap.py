@@ -98,8 +98,15 @@ class RoadmapModule(Component):
         req.send_header('Content-Type', 'text/calendar;charset=utf-8')
         req.end_headers()
 
-        priority_mapping = {'highest': '1', 'high': '3', 'normal': '5',
-                            'low': '7', 'lowest': '9'}
+        cursor = db.cursor()
+        cursor.execute("SELECT name,value FROM enum WHERE type='priority'")
+        priorities = {}
+        for name, value in cursor:
+            priorities[name] = float(value)
+        def get_priority(ticket):
+            value = priorities.get(ticket['priority'])
+            if value:
+                return int(value * 9 / len(priorities))
 
         def get_status(ticket):
             status = ticket['status']
@@ -146,9 +153,10 @@ class RoadmapModule(Component):
                 write_prop('UID', uid)
                 write_date('DTSTART', localtime(milestone['due']))
                 write_prop('SUMMARY', 'Milestone %s' % milestone['name'])
-                write_prop('URL', req.base_url + '/milestone/' + milestone['name'])
-                if milestone.has_key('description'):
-                    write_prop('DESCRIPTION', milestone['description_text'])
+                write_prop('URL', req.base_url + '/milestone/' +
+                           milestone['name'])
+                if milestone.has_key('description_source'):
+                    write_prop('DESCRIPTION', milestone['description_source'])
                 write_prop('END', 'VEVENT')
             for ticket in [ticket for ticket in milestone['tickets']
                           if ticket['owner'] == user]:
@@ -161,7 +169,9 @@ class RoadmapModule(Component):
                                                           ticket['summary']))
                 write_prop('URL', req.base_url + '/ticket/' + str(ticket['id']))
                 write_prop('DESCRIPTION', ticket['description'])
-                write_prop('PRIORITY', priority_mapping[ticket['priority']])
+                priority = get_priority(ticket)
+                if priority:
+                    write_prop('PRIORITY', str(priority))
                 write_prop('STATUS', get_status(ticket))
                 if ticket['status'] == 'closed':
                     cursor = db.cursor()
