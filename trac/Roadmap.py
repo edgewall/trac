@@ -95,7 +95,7 @@ class RoadmapModule(Component):
 
     def render_ics(self, req, db, milestones):
         req.send_response(200)
-        req.send_header('Content-Type', 'text/plain;charset=utf-8')
+        req.send_header('Content-Type', 'text/calendar;charset=utf-8')
         req.end_headers()
 
         priority_mapping = {'highest': '1', 'high': '3', 'normal': '5',
