@@ -95,16 +95,19 @@ def default_dir(name):
         from trac import siteconfig
         return getattr(siteconfig, '__default_%s_dir__' % name)
     except ImportError:
+        # This is not a regular install with a generated siteconfig.py file,
+        # so try to figure out the directory based on common setups
         import os.path, sys
         special_dirs = {'wiki': 'wiki-default', 'macros': 'wiki-macros'}
+        dirname = special_dirs.get(name, name)
 
-        # First attempt to find the directories under the normal installation
-        # prefix
-        prefix = os.path.join(sys.prefix, 'share', 'trac')
-        if not os.path.isdir(prefix):
-            # This isn't an actual installation, so assume we're being run from
-            # the source tree
-            import trac
-            prefix = os.path.split(os.path.dirname(trac.__file__))[0]
+        # First assume we're being executing directly form the source directory
+        import trac
+        path = os.path.join(os.path.split(os.path.dirname(trac.__file__))[0],
+                            dirname)
+        if not os.path.isdir(path):
+            # Not being executed from the source directory, so assume the
+            # default installation prefix
+            path = os.path.join(sys.prefix, 'share', 'trac', dirname)
 
-        return os.path.join(prefix, special_dirs.get(name, name))
+        return path
