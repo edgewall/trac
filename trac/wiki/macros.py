@@ -31,7 +31,7 @@ except ImportError:
 
 from trac.core import *
 from trac.util import escape
-from trac.wiki.api import IWikiMacroProvider
+from trac.wiki.api import IWikiMacroProvider, WikiSystem
 
 
 class TitleIndexMacro(Component):
@@ -55,22 +55,15 @@ class TitleIndexMacro(Component):
         if content:
             prefix = content.replace('\'', '\'\'')
 
-        db = self.env.get_db_cnx()
-        cursor = db.cursor()
-
-        sql = 'SELECT DISTINCT name FROM wiki '
-        params = []
-        if prefix:
-            sql += 'WHERE name LIKE %s%% '
-            params.append(prefix)
-        sql += 'ORDER BY name'
-        cursor.execute(sql, params)
+        wiki = WikiSystem(self.env)
+        pages = list(wiki.get_pages(prefix))
+        pages.sort()
 
         buf = StringIO()
         buf.write('<ul>')
-        for (name,) in cursor:
-            buf.write('<li><a href="%s">' % escape(self.env.href.wiki(name)))
-            buf.write(escape(name))
+        for page in pages:
+            buf.write('<li><a href="%s">' % escape(self.env.href.wiki(page)))
+            buf.write(escape(page))
             buf.write('</a></li>\n')
         buf.write('</ul>')
 
