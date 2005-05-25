@@ -167,8 +167,10 @@ class RoadmapModule(Component):
                     cursor = db.cursor()
                     cursor.execute("SELECT time FROM ticket_change "
                                    "WHERE ticket=%s AND field='status' "
-                                   "ORDER BY time desc LIMIT 1", (ticket['id'],))
+                                   "ORDER BY time desc LIMIT 1",
+                                   (ticket['id'],))
                     row = cursor.fetchone()
-                    if row: write_utctime('COMPLETED', localtime(row['time']))
+                    if row:
+                        write_utctime('COMPLETED', localtime(row[0]))
                 write_prop('END', 'VTODO')
         write_prop('END', 'VCALENDAR')

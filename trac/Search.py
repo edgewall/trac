@@ -213,16 +213,13 @@ class SearchModule(Component):
 
         q = []
         if changeset:
-            q.append("SELECT 1 as type, message AS title, message, author, "
-                     "'' AS keywords, rev AS data, time,0 AS ver "
+            q.append("SELECT 1,message,message,author,'',rev,time,0"
                      "FROM revision WHERE %s OR %s" %
                      (self.query_to_sql(db, query, 'message'),
                       self.query_to_sql(db, query, 'author')))
         if tickets:
-            q.append("SELECT DISTINCT 2 as type, a.summary AS title, "
-                     "a.description AS message, a.reporter AS author, "
-                     "a.keywords as keywords, %s AS data, a.time as time, "
-                     "0 AS ver FROM ticket a "
+            q.append("SELECT DISTINCT 2,a.summary,a.description,a.reporter, "
+                     "a.keywords,%s,a.time,0 FROM ticket a "
                      "LEFT JOIN ticket_change b ON a.id = b.ticket "
                      "WHERE (b.field='comment' AND %s ) OR "
                      "%s OR %s OR %s OR %s OR %s" %
@@ -234,52 +231,46 @@ class SearchModule(Component):
                       self.query_to_sql(db, query, 'reporter'),
                       self.query_to_sql(db, query, 'cc')))
         if wiki:
-            q.append("SELECT 3 as type, text AS title, text AS message,"
-                     "author, '' AS keywords, w1.name AS data, time,"
-                     "w1.version as ver "
+            q.append("SELECT 3,text,text,author,'',w1.name,time,w1.version "
                      "FROM wiki w1,"
                      "(SELECT name,max(version) AS ver "
                      "FROM wiki GROUP BY name) w2 "
-                     "WHERE w1.version = w2.ver AND w1.name = w2.name  AND "
-                     "(%s OR %s OR %s)" %
+                     "WHERE w1.version = w2.ver AND w1.name = w2.name "
+                     "AND (%s OR %s OR %s)" %
                      (self.query_to_sql(db, query, 'w1.name'),
                       self.query_to_sql(db, query, 'w1.author'),
                       self.query_to_sql(db, query, 'w1.text')))
 
         if not q:
-            return [], 0
+            return [], False
 
-        q_str = ' UNION ALL '.join(q) + ' ORDER BY 7 DESC LIMIT %d OFFSET %d' \
-                % (self.RESULTS_PER_PAGE + 1, self.RESULTS_PER_PAGE * page)
-        self.log.debug('SQL Query: %s' % q_str)
-        cursor.execute(q_str)
+        sql = ' UNION ALL '.join(q) + ' ORDER BY 7 DESC LIMIT %d OFFSET %d' \
+               % (self.RESULTS_PER_PAGE + 1, self.RESULTS_PER_PAGE * page)
+        self.log.debug('SQL Query: %s' % sql)
+        cursor.execute(sql)
 
         # Make the data more HDF-friendly
         info = []
-        more = 0
-        while 1:
-            row = cursor.fetchone()
-            if not row:
-                break
+        more = False
+        for type, title, msg, author, keywords, data, t, version in cursor:
             if len(info) == self.RESULTS_PER_PAGE:
-                more = 1
+                more = True
                 break
-            msg = row['message']
-            t = time.localtime(int(row['time']))
-            item = {'type': int(row['type']),
-                    'keywords': row['keywords'] or '',
-                    'data': row['data'],
-                    'title': escape(row['title'] or ''),
+            t = time.localtime(int(t))
+            item = {'type': int(type),
+                    'keywords': keywords or '',
+                    'data': data,
+                    'title': escape(title or ''),
                     'datetime' : time.strftime('%c', t),
-                    'author': escape(row['author'])}
+                    'author': escape(author)}
             if item['type'] == 1:
-                item['changeset_href'] = self.env.href.changeset(int(row['data']))
-                if not self.authzperm.has_permission_for_changeset(int(row['data'])):
+                item['changeset_href'] = self.env.href.changeset(data)
+                if not self.authzperm.has_permission_for_changeset(data):
                     continue
             elif item['type'] == 2:
-                item['ticket_href'] = self.env.href.ticket(int(row['data']))
+                item['ticket_href'] = self.env.href.ticket(data)
             elif item['type'] == 3:
-                item['wiki_href'] = self.env.href.wiki(row['data'])
+                item['wiki_href'] = self.env.href.wiki(data)
 
             item['shortmsg'] = escape(shorten_line(msg))
             item['message'] = escape(self.shorten_result(msg, keywords))

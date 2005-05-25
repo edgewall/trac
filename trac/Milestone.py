@@ -152,31 +152,17 @@ class Milestone(object):
 
 
 def get_tickets_for_milestone(env, db, milestone, field='component'):
-    custom = field not in Ticket.std_fields
     cursor = db.cursor()
-    sql = "SELECT ticket.id AS id, ticket.status AS status, "
-    if custom:
-        sql += "ticket_custom.value AS %s " \
-               "FROM ticket LEFT OUTER JOIN ticket_custom ON id=ticket " \
-               "WHERE name='%s' AND milestone='%s'" % (
-               sql_escape(field), sql_escape(field), sql_escape(milestone))
+    if field in Ticket.std_fields:
+        cursor.execute("SELECT id,status,%s FROM ticket WHERE milestone=%%s "
+                       "ORDER BY %s" % (field, field), (milestone,))
     else:
-        sql += "ticket.%s AS %s FROM ticket WHERE milestone='%s'" % (
-               field, field, sql_escape(milestone))
-    sql += " ORDER BY %s" % field
-
-    cursor.execute(sql)
+        cursor.execute("SELECT id,status,value FROM ticket LEFT OUTER "
+                       "JOIN ticket_custom ON (id=ticket AND name=%s) "
+                       "WHERE milestone=%s ORDER BY value", (field, milestone))
     tickets = []
-    while 1:
-        row = cursor.fetchone()
-        if not row:
-            break
-        ticket = {
-            'id': int(row['id']),
-            'status': row['status'],
-            field: row[field]
-        }
-        tickets.append(ticket)
+    for tkt_id, status, fieldval in cursor:
+        tickets.append({'id': tkt_id, 'status': status, field: fieldval})
     return tickets
 
 def get_query_links(env, milestone, grouped_by='component', group=None):
