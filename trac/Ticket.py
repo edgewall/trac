@@ -695,18 +695,22 @@ class UpdateDetailsForTimeline(Component):
                            "AND tc.time>=%s AND tc.time<=%s ORDER BY tc.time" % (start, stop))
             previous_update = None
             updates = []
+            ticket_change = False
             for time,id,type,field,oldvalue,newvalue,author,summary in cursor:
                 if not previous_update or (time,id,author) != previous_update[:3]:
-                    if previous_update:
+                    if previous_update and not ticket_change:
                         updates.append((previous_update,field_changes,comment))
+                    ticket_change = False
                     field_changes = []
                     comment = ''
                     previous_update = (time,id,author,type,summary)
                 if field == 'comment':
                     comment = newvalue
+                elif field == 'status' and newvalue in ['reopened', 'closed']:
+                    ticket_change = True
                 else:
                     field_changes.append(field)
-            if previous_update:
+            if previous_update and not ticket_change:
                 updates.append((previous_update,field_changes,comment))
 
             absurls = req.args.get('format') == 'rss' # Kludge
