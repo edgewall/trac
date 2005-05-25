@@ -23,8 +23,8 @@ The following command will perform the update:
 If you're using mod_python, you will need to change the name of the mod_python 
 handler in the Apache HTTPD configuration:
 
-  - PythonHandler trac.ModPythonHandler
-  + PythonHandler trac.web.modpython_frontend
+   from: PythonHandler trac.ModPythonHandler
+   to:   PythonHandler trac.web.modpython_frontend
 
 
 From 0.7.x to 0.8
@@ -72,8 +72,11 @@ not be modified.
 
 You also need to update your apache configuration:
 change this line:
+
    SetEnv TRAC_DB "/path/to/old/project.db"
+
 to:
+
    SetEnv TRAC_ENV "/path/to/new/projectenv"
 
 
@@ -91,7 +94,7 @@ environment, you can import the pages manually using trac-admin:
 Please note that you have to repeat this step for each Trac environment
 you wish to upgrade.
 
---
+----
 
 If you have trouble upgrading Trac, please ask questions on the mailing list:
 
