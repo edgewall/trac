@@ -490,12 +490,12 @@ class TracAdmin(cmd.Cmd):
     ## Initenv
     _help_initenv = [('initenv',
                       'Create and initialize a new environment interactively'),
-                     ('initenv <projectname> <repospath> <templatepath>',
+                     ('initenv <projectname> <db> <repospath> <templatepath>',
                       'Create and initialize a new environment from arguments')]
 
     def do_initdb(self, line):
         self.do_initenv(line)
-        
+
     def get_initenv_args(self):
         returnvals = []
         print 'Creating a new Trac environment at %s' % self.envname
