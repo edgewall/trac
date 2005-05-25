@@ -33,7 +33,8 @@ def do_upgrade(env, ver, cursor):
 
     # Copy the new default wiki macros over to the environment
     from trac.config import default_dir
-    for f in os.listdir(default_dir('macros_dir')):
+    macros_dir = default_dir('macros')
+    for f in os.listdir(macros_dir):
         if not f.endswith('.py'):
             continue
         src = os.path.join(macros_dir, f)
