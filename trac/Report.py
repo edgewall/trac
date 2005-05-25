@@ -34,7 +34,7 @@ from trac.wiki import wiki_to_html
 
 dynvars_re = re.compile('\$([A-Z]+)')
 dynvars_disallowed_var_chars_re = re.compile('[^A-Z0-9_]')
-dynvars_disallowed_value_chars_re = re.compile('[^a-zA-Z0-9-_@.,]')
+dynvars_disallowed_value_chars_re = re.compile(r'[^a-zA-Z0-9-_@.,\\]')
 
 try:
     _StringTypes = [types.StringType, types.UnicodeType]
@@ -234,13 +234,9 @@ class ReportModule(Component):
         try:
             args = self.get_var_args(req)
         except ValueError,e:
-            req.hdf['report.message'] = 'Report failed: %s' % e
-            return
+            raise TracError, 'Report failed: %s' % e
 
-        info = self.get_info(db, id, args)
-        if not info:
-            return
-        title, description, sql = info
+        title, description, sql = self.get_info(db, id, args)
 
         if req.args.get('format') == 'sql':
             self._render_sql(req, id, title, description, sql)
@@ -447,17 +443,16 @@ class ReportModule(Component):
         return report_args
 
     def sql_sub_vars(self, req, sql, args):
-        m = re.search(dynvars_re, sql)
-        if not m:
-            return sql
-        aname=m.group()[1:]
-        try:
-            arg = args[aname]
-        except KeyError:
-            raise util.TracError("Dynamic variable '$%s' not defined." % aname)
-        req.hdf['report.var.' + aname] = arg
-        sql = m.string[:m.start()] + arg + m.string[m.end():]
-        return self.sql_sub_vars(req, sql, args)
+        def repl(match):
+            aname = match.group()[1:]
+            try:
+                arg = args[aname]
+            except KeyError:
+                raise util.TracError("Dynamic variable '$%s' not defined." % aname)
+            req.hdf['report.var.' + aname] = arg
+            return arg
+
+        return dynvars_re.sub(repl, sql)
 
     def _render_csv(self, req, cols, rows, sep=','):
         req.send_response(200)
