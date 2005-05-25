@@ -34,7 +34,8 @@ from mod_python import apache, util
 
 from trac.env import open_environment
 from trac.util import TracError, enum, href_join, http_date, rstrip
-from trac.web.main import Request, RequestDone, dispatch_request, send_pretty_error
+from trac.web.main import Request, RequestDone, dispatch_request, \
+                          send_pretty_error
 
 
 class ModPythonRequest(Request):
@@ -174,8 +175,8 @@ def send_project_index(req, mpr, dir, options):
         # Custom project listing template configured
         tmpl_path, template = os.path.split(options['TracEnvIndexTemplate'])
 
-        from trac.siteconfig import __default_templates_dir__ as def_path
-        mpr.hdf = HDFWrapper(loadpaths=[def_path, tmpl_path])
+        from trac.config import default_dir
+        mpr.hdf = HDFWrapper(loadpaths=[default_dir('templates'), tmpl_path])
 
         tmpl_vars = {}
         if 'TracTemplateVars' in options:

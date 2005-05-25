@@ -32,10 +32,11 @@ import shutil
 import StringIO
 import urllib
 
+import trac
 from trac import perm, util
+from trac.config import default_dir
 from trac.env import Environment
 from trac.Milestone import Milestone
-import trac.siteconfig
 
 def my_sum(list):
     """Python2.2 doesn't have sum()"""
@@ -530,7 +531,7 @@ class TracAdmin(cmd.Cmd):
         print ' Please enter location of Trac page templates.'
         print ' Default is the location of the site-wide templates installed with Trac.'
         print
-        dt = trac.siteconfig.__default_templates_dir__
+        dt = default_dir('templates')
         prompt = 'Templates directory [%s]> ' % dt
         returnvals.append(raw_input(prompt) or dt)
         return returnvals
@@ -575,10 +576,10 @@ class TracAdmin(cmd.Cmd):
 
             # Add the default wiki macros
             print ' Installing default wiki macros'
-            for f in os.listdir(trac.siteconfig.__default_macros_dir__):
+            for f in os.listdir(default_dir('macros')):
                 if not f.endswith('.py'):
                     continue
-                src = os.path.join(trac.siteconfig.__default_macros_dir__, f)
+                src = os.path.join(default_dir('macros'), f)
                 dst = os.path.join(self.__env.path, 'wiki-macros', f)
                 print " %s => %s" % (src, f)
                 shutil.copy2(src, dst)
@@ -587,7 +588,7 @@ class TracAdmin(cmd.Cmd):
             print ' Installing default wiki pages'
             cnx = self.__env.get_db_cnx()
             cursor = cnx.cursor()
-            self._do_wiki_load(trac.siteconfig.__default_wiki_dir__, cursor)
+            self._do_wiki_load(default_dir('wiki'), cursor)
             cnx.commit()
 
             print ' Indexing repository'
@@ -706,7 +707,7 @@ class TracAdmin(cmd.Cmd):
                 dir = (len(arg) == 2 and arg[1]) or ''
                 self._do_wiki_load(dir)
             elif arg[0] == 'upgrade' and len(arg) == 1:
-                self._do_wiki_load(trac.siteconfig.__default_wiki_dir__,
+                self._do_wiki_load(default_dir('wiki'),
                                    ignore=['WikiStart', 'checkwiki.py'])
             else:    
                 self.do_help ('wiki')

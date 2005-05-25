@@ -91,8 +91,8 @@ class Chrome(Component):
             return True
 
     def process_request(self, req):
-        from trac.siteconfig import __default_htdocs_dir__
-        path = os.path.join(__default_htdocs_dir__, req.args.get('path'))
+        from trac.config import default_dir
+        path = os.path.join(default_dir('htdocs'), req.args.get('path'))
         if not os.path.isfile(path):
             raise TracError, 'File not found'
         req.send_file(path)

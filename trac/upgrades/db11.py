@@ -32,8 +32,8 @@ def do_upgrade(env, ver, cursor):
     cursor.execute(sql)
 
     # Copy the new default wiki macros over to the environment
-    from trac.siteconfig import __default_macros_dir__ as macros_dir
-    for f in os.listdir(macros_dir):
+    from trac.config import default_dir
+    for f in os.listdir(default_dir('macros_dir')):
         if not f.endswith('.py'):
             continue
         src = os.path.join(macros_dir, f)

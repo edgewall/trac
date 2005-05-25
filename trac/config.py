@@ -88,3 +88,23 @@ class Configuration:
         if modtime > self.__lastmtime:
             self.parser.read(self.filename)
             self.__lastmtime = modtime
+
+
+def default_dir(name):
+    try:
+        from trac import siteconfig
+        return getattr(siteconfig, '__default_%s_dir__' % name)
+    except ImportError:
+        import os.path, sys
+        special_dirs = {'wiki': 'wiki-default', 'macros': 'wiki-macros'}
+
+        # First attempt to find the directories under the normal installation
+        # prefix
+        prefix = os.path.join(sys.prefix, 'share', 'trac')
+        if not os.path.isdir(prefix):
+            # This isn't an actual installation, so assume we're being run from
+            # the source tree
+            import trac
+            prefix = os.path.split(os.path.dirname(trac.__file__))[0]
+
+        return os.path.join(prefix, special_dirs.get(name, name))
