@@ -121,8 +121,7 @@ class BrowserModule(Component):
             add_link(req, 'up', path_links[-2]['href'], 'Parent directory')
 
         repos = self.env.get_repository(req.authname)
-        req.hdf['browser.revision'] = rev or repos.youngest_rev
-        add_stylesheet(req, 'browser.css')
+        rev = rev or repos.youngest_rev
 
         node = repos.get_node(path, rev)
         if node.isdir:
@@ -130,6 +129,22 @@ class BrowserModule(Component):
             self._render_directory(req, repos, node, rev)
         else:
             self._render_file(req, repos, node, rev)
+
+        changeset = repos.get_changeset(node.rev)
+        
+        req.hdf['browser'] = {
+            'revision': rev, 
+            'changeset_href': self.env.href.changeset(rev),
+            'node_rev': node.rev,
+            'node_changeset_href': self.env.href.changeset(node.rev),
+            'date': time.strftime('%x %X', time.localtime(changeset.date)),
+            'age': util.pretty_timedelta(changeset.date),
+            'author': changeset.author or 'anonymous',
+            'message': wiki_to_html(changeset.message or '--', self.env, req,
+                                    escape_newlines=True),
+            'props': node.get_properties(),
+            }
+        add_stylesheet(req, 'browser.css')
 
         return 'browser.cs', None
 
@@ -179,16 +194,7 @@ class BrowserModule(Component):
     def _render_file(self, req, repos, node, rev=None):
         req.perm.assert_permission(perm.FILE_VIEW)
 
-        changeset = repos.get_changeset(node.rev)
-        req.hdf['file'] = {
-            'rev': node.rev,
-            'changeset_href': self.env.href.changeset(node.rev),
-            'date': time.strftime('%x %X', time.localtime(changeset.date)),
-            'age': util.pretty_timedelta(changeset.date),
-            'author': changeset.author or 'anonymous',
-            'message': wiki_to_html(changeset.message or '--', self.env, req,
-                                    escape_newlines=True)
-        }
+        req.hdf['file.size'] = util.pretty_size(node.content_length)
 
         mime_type = node.content_type
         if not mime_type or mime_type == 'application/octet-stream':

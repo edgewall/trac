@@ -22,7 +22,7 @@
 
 
 <div id="content" class="log">
- <?cs call:browser_path_links(log.path, log) ?>
+ <h1><?cs call:browser_path_links(log.path, log) ?></h1>
  <form id="prefs" action="<?cs var:browser_current_href ?>" method="get">
   <div>
    <input type="hidden" name="action" value="<?cs var:log.mode ?>" />

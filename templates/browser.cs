@@ -8,7 +8,9 @@
 </div>
 
 <div id="content" class="browser">
- <?cs call:browser_path_links(browser.path, browser) ?>
+ <h1><?cs call:browser_path_links(browser.path, browser) ?> 
+   at Revision <a href="<?cs var:browser.changeset_href ?>"><?cs var:browser.revision ?></a>
+ </h1>
 
  <div id="jumprev">
   <form action="" method="get">
@@ -20,7 +22,18 @@
   </form>
  </div>
 
+ <table id="info" summary="Revision info">
+  <tr>
+   <th scope="row">
+    Revision <a href="<?cs var:browser.node_changeset_href ?>"><?cs var:browser.node_rev ?></a>
+    (checked in by <?cs var:browser.author ?>, <?cs var:browser.age ?> ago)
+   </th>
+   <td class="message"><?cs var:browser.message ?></td>
+  </tr>
+ </table>
+
  <?cs if:browser.is_dir ?>
+  <br />
   <table class="listing" id="dirlist">
    <thead>
     <tr><?cs 
@@ -75,16 +88,29 @@
     <?cs /each ?>
    </tbody>
   </table>
- <?cs else ?>
-  <table id="info" summary="Revision info">
+  <br /><?cs
+ /if ?>
+
+ <?cs if:len(browser.props) || !browser.is_dir ?>
+  <table id="props" summary="Metadata">
    <tr>
-    <th scope="row">
-     Revision <a href="<?cs var:file.changeset_href ?>"><?cs var:file.rev ?></a>
-     (checked in by <?cs var:file.author ?>, <?cs var:file.age ?> ago)
-    </th>
-    <td class="message"><?cs var:file.message ?></td>
+    <td>
+     <ul><?cs
+      if:file.size ?>
+       <li>File size is <em><tt><?cs var:file.size ?></tt></em></li><?cs 
+      /if ?><?cs
+      each:prop = browser.props ?>
+       <li>Property <strong><?cs var:name(prop) ?></strong> 
+        is <em><tt><?cs var:prop ?></tt></em>
+       </li><?cs
+      /each ?>
+     </ul>
+    </td>
    </tr>
-  </table>
+  </table><?cs
+ /if ?>
+
+ <?cs if:!browser.is_dir ?>
   <div id="preview">
    <?cs if:file.preview ?>
     <?cs var:file.preview ?>
@@ -96,8 +122,8 @@
     <strong>HTML preview not available</strong>. To view, <a href="<?cs
     var:file.raw_href ?>">download</a> the file.
    <?cs /if ?>
-  </div>
- <?cs /if ?>
+  </div><?cs
+ /if ?>
 
  <div id="help">
   <strong>Note:</strong> See <a href="<?cs var:trac.href.wiki

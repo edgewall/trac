@@ -19,8 +19,7 @@ def:labelled_hdf_select(label, options, name, selected, optional) ?><?cs
 /def ?><?cs
 
 def:browser_path_links(path, file) ?><?cs
- set:first = #1 ?>
- <h1><?cs
+ set:first = #1 ?><?cs
   each:part = path ?><?cs
    set:last = name(part) == len(path) - #1 ?><a<?cs 
    if:first ?> class="first" title="Go to root directory"<?cs 
@@ -28,7 +27,7 @@ def:browser_path_links(path, file) ?><?cs
    else ?> title="View <?cs var:part.name ?>"<?cs
    /if ?> href="<?cs var:part.href ?>"><?cs var:part.name ?></a><?cs
    if:!last ?><span class="sep">/</span><?cs /if ?><?cs 
- /each ?></h1><?cs
+ /each ?><?cs
 /def ?><?cs
 
 def:diff_line_class(block, line) ?><?cs
