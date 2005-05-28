@@ -1,56 +1,59 @@
-Brad Anderson           brad@dsource.org
-Christopher Armstrong   radix
-Jani Averbach           jaa@jaa.iki.fi
-Juanma Barranquero      lektu@terra.es
-Christian Boos          cboos@bct-technology.com
-Rocky Burt              rocky.burt@myrealbox.com
-Toni Brkic              toni.brkic@switchcore.com
-Wesley Crucius          wcrucius@sandc.com
-Daragh Fitzpatrick      Daragh@i2i-Tech.com
-dju'
-Felix Colins            felix@keyghost.com
-Eric Gillespie          epg@netbsd.org
-Matthew Good            trac@matt-good.net
-Shun-ichi Goto          gotoh@taiyo.co.jp
-Mikael Hallendal        micke@imendio.com
-Stephen Hansen          shansen@advpubtech.com
-Laurie Harper           zodiac@holoweb.net
-Francois Harvey         fharvey@securiweb.net
-Michael Hope            michael.hope@hamjet.co.nz
-Richard Hult            richard@imendio.com
-Nuutti Kotivuori        naked@iki.fi
-Ian Leader              ian.leader@line.co.uk
-Christopher Lenz        cmlenz@gmx.de
-Ivo Looser              ivo.looser@login.ch
-Angel Marin             anmar@gmx.net
-James Moger             jamesm@transonic.com
-Tim Moloney             moloney@mrsl.com
-Jennifer Murtell        jen@jmurtell.com
-Jacob Norda             jacobnorda@gmail.com
-Juracy Filho            juracy@gmail.com
-Cap Petschulat          cap@cdres.com
-Nicholas Riley          sabi
-Manuzhai                manuzhai@gmail.com
-Mark Rowe               mrowe@bluewire.net.nz
-Olliver Rutherfurd      ollie
-pkou                    pkou@ua.fm
-Michael Scherer         misc@mandrake.org
-Andreas Schrattenecker  vittorio
-Emmeran Seehuber        rototor@rototor.de
-Noah Slater             nslater@gmail.com
-Bill Soudan             bill@soudan.net
-Ludvig Strigeus
-Alec Thomas             alec@swapoff.org
-Zilvinas Valinskas      zilvinas@gemtek.lt
-Jason Vasquez           jason@mugfu.com
-Dmitry Yusupov          dmitry_yus@yahoo.com
+ * Brad Anderson           brad@dsource.org
+ * Christopher Armstrong   radix
+ * Jani Averbach           jaa@jaa.iki.fi
+ * Juanma Barranquero      lektu@terra.es
+ * Christian Boos          cboos@bct-technology.com
+ * Rocky Burt              rocky.burt@myrealbox.com
+ * Toni Brkic              toni.brkic@switchcore.com
+ * Wesley Crucius          wcrucius@sandc.com
+ * Daragh Fitzpatrick      Daragh@i2i-Tech.com
+ * dju'
+ * Felix Colins            felix@keyghost.com
+ * Eric Gillespie          epg@netbsd.org
+ * Matthew Good            trac@matt-good.net
+ * Shun-ichi Goto          gotoh@taiyo.co.jp
+ * Mikael Hallendal        micke@imendio.com
+ * Stephen Hansen          shansen@advpubtech.com
+ * Laurie Harper           zodiac@holoweb.net
+ * Francois Harvey         fharvey@securiweb.net
+ * Michael Hope            michael.hope@hamjet.co.nz
+ * Richard Hult            richard@imendio.com
+ * Nuutti Kotivuori        naked@iki.fi
+ * Ian Leader              ian.leader@line.co.uk
+ * Christopher Lenz        cmlenz@gmx.de
+ * Ivo Looser              ivo.looser@login.ch
+ * Angel Marin             anmar@gmx.net
+ * James Moger             jamesm@transonic.com
+ * Tim Moloney             moloney@mrsl.com
+ * Jennifer Murtell        jen@jmurtell.com
+ * Jacob Norda             jacobnorda@gmail.com
+ * Juracy Filho            juracy@gmail.com
+ * Cap Petschulat          cap@cdres.com
+ * Nicholas Riley          sabi
+ * Manuzhai                manuzhai@gmail.com
+ * Mark Rowe               mrowe@bluewire.net.nz
+ * Olliver Rutherfurd      ollie
+ * pkou                    pkou@ua.fm
+ * Michael Scherer         misc@mandrake.org
+ * Andreas Schrattenecker  vittorio
+ * Emmeran Seehuber        rototor@rototor.de
+ * Noah Slater             nslater@gmail.com
+ * Bill Soudan             bill@soudan.net
+ * Ludvig Strigeus
+ * Alec Thomas             alec@swapoff.org
+ * Zilvinas Valinskas      zilvinas@gemtek.lt
+ * Jason Vasquez           jason@mugfu.com
+ * Dmitry Yusupov          dmitry_yus@yahoo.com
 
 The ever so elusive Anonymous.
 
-Diggs and Lula (official pawprint contributors)
+`Diggs and Lula`_ (official pawprint contributors)
 
 And everyone who keeps sending feedback, helping us improve Trac.
 
--- 
+----
+
 Our apologies to everyone we forgot to mention, but without whose invaluable
 help, Trac would not continue to rapidly evolve.
+
+.. _Diggs and Lula: http://people.edgewall.com/~daniel/lula_diggs.jpg

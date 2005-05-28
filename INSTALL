@@ -9,22 +9,26 @@ Requirements
 ------------
 To install Trac, the following software packages must be installed:
 
-  * Python, version >= 2.1.
-      + Please keep in mind, that for RPM-based systems you will also need
-        python-devel and python-xml packages.
-  * Subversion, version >= 1.0. (>=1.0.5 recommended)
-  * Subversion Python bindings.
-  * PySQLite, version >= 0.5.
-  * Clearsilver, version >= 0.9.3
-  * A CGI-capable web server (we QA-test on Apache2 )
+ * Python, version >= 2.2.
+   + Please keep in mind, that for RPM-based systems you will also need
+   python-devel and python-xml packages.
+ * Subversion, version >= 1.0. (1.1.4 recommended)
+ * Subversion Python bindings.
+ * PySQLite, version >= 0.5 (1.1.6 recommended)
+ * Clearsilver, version >= 0.9.3 (0.9.14 recommended)
+ * A CGI-capable web server (we QA-test on Apache2)
+
+Note that trac can also use run in standalone mode (see README.tracd)
+
 
 Installing Trac
 ---------------
-    $ python ./setup.py install
+
+  $ python ./setup.py install
 
 This will byte-compile the python source code and install it in the
 site-packages directory of your python installation. The directories cgi-bin,
-templates, htdocs and wiki-default are all copied to $prefix/share/trac/ .
+templates, htdocs and wiki-default are all copied to ``$prefix/share/trac/``.
 
 The script will also install the trac-admin command-line tool, used to create
 and maintain project environments. Trac-admin is the command center of Trac.
@@ -36,7 +40,7 @@ Advanced Users
 To install Trac in a different location, and other advanced installation
 options, run:
 
-    $ python ./setup.py --help
+  $ python ./setup.py --help
 
 Installing Trac on Windows
 --------------------------
@@ -44,7 +48,7 @@ If you downloaded the Trac installer (the .exe file), installing is simply a
 matter of running the installer. 
 
  * NOTE: The windows installer also includes the Clearsilver DLL, so you do
-         _NOT_ have to install it manually when using the installer.
+   *NOT* have to install it manually when using the installer.
 
 After running the installer, configuration and installation is the same as
 for other platforms.
@@ -58,7 +62,7 @@ log-files and attachments.
 
 A new Trac environment is created with trac-admin:
 
-    $ trac-admin /path/to/projectenv initenv
+  $ trac-admin /path/to/projectenv initenv
 
 Note: The web server user need write permission to the environment directory
 and all the files inside.
@@ -68,38 +72,40 @@ it can find the trac templates directory (the default value should be fine).
 
 Configuring Apache
 ------------------
-Copy (or symlink) "trac/cgi-bin/trac.cgi" to you web servers /cgi-bin/
-directory. You can also configure apache to use the "trac/cgi-bin/" directory
+Copy (or symlink) ``trac/cgi-bin/trac.cgi`` to you web servers ``/cgi-bin/``
+directory. You can also configure apache to use the ``trac/cgi-bin/`` directory
 directly if you like, it's a matter of taste.
 
-Finally edit the apache config and add this config snippet, with filenams
+Finally edit the apache config and add this config snippet, with filenames
 edited to match your installation:
 
-Alias /trac/ "/usr/share/trac/htdocs/" #or where you installed the trac docs
-#You have to allow people to read the files in htdocs
-<Directory "/usr/share/trac/htdocs/">
-        Options Indexes MultiViews
-        AllowOverride None
-        Order allow,deny
-        Allow from all
-</Directory>
-
-
-# Trac need to know where the database is located
-<Location "/cgi-bin/trac.cgi">
-        SetEnv TRAC_ENV "/path/to/projectenv"
-</Location>
-
-# You need this to allow users to authenticate
-# trac.htpasswd can be created with 
-# cmd 'htpasswd -c trac.htpasswd' (UNIX)
-# do 'man htpasswd' to see all the options
-<Location "/cgi-bin/trac.cgi/login">
-        AuthType Basic
-        AuthName "trac"
-        AuthUserFile /somewhere/trac.htpasswd
-        Require valid-user
-</location>
+::
+  
+  Alias /trac/ "/usr/share/trac/htdocs/" #or where you installed the trac docs
+  #You have to allow people to read the files in htdocs
+  <Directory "/usr/share/trac/htdocs/">
+          Options Indexes MultiViews
+          AllowOverride None
+          Order allow,deny
+          Allow from all
+  </Directory>
+  
+  
+  # Trac need to know where the database is located
+  <Location "/cgi-bin/trac.cgi">
+          SetEnv TRAC_ENV "/path/to/projectenv"
+  </Location>
+  
+  # You need this to allow users to authenticate
+  # trac.htpasswd can be created with 
+  # cmd 'htpasswd -c trac.htpasswd' (UNIX)
+  # do 'man htpasswd' to see all the options
+  <Location "/cgi-bin/trac.cgi/login">
+          AuthType Basic
+          AuthName "trac"
+          AuthUserFile /somewhere/trac.htpasswd
+          Require valid-user
+  </location>
 
 Note: When creating a new environment, trac-admin will print a config snippet
 customized for your project.
@@ -108,7 +114,7 @@ Using Trac
 ----------
 You should now have a working Trac installation at:
 
-http://<yourhostname>/cgi-bin/trac.cgi
+  http://<yourhostname>/cgi-bin/trac.cgi
 
 There you should be able to browse your subversion repository, create tickets,
 view the timeline etc. Keep in mind that anonymous users (not logged in) can
