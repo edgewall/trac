@@ -54,11 +54,11 @@
  </div>
  <h2 class="summary"><?cs var:ticket.summary ?></h2>
  <table class="properties"><tr><?cs
-  if:len(ticket.priorities) ?><?cs
+  if:len(enums.priority) ?><?cs
    call:ticketprop("Priority", "priority", ticket.priority, 0) ?><?cs
   /if ?><?cs
   call:ticketprop("Reporter", "reporter", ticket.reporter, 0) ?><?cs
-  if:len(ticket.severities) ?><?cs
+  if:len(enums.severity) ?><?cs
    call:ticketprop("Severity", "severity", ticket.severity, 0) ?><?cs
   /if ?><?cs
   if ticket.status == "assigned"?><?cs
