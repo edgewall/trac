@@ -66,7 +66,7 @@ h1 .sep { color: #666; padding: 0 .1em }
 
 #paging { margin: 1em 0 }
 
-/* Styles for the revision info in the file module */
+/* Styles for the revision info in the file view */
 #info {
  background: #f7f7f0;
  border: 1px solid #d7d7d7;
@@ -75,34 +75,18 @@ h1 .sep { color: #666; padding: 0 .1em }
  clear: both;
  width: 100%;
 }
-#info th {
- font-size: 11px;
- font-weight: bold;
- padding: 2px .5em;
- white-space: nowrap;
- vertical-align: top;
-}
-#info td.message {
- font-size: 11px;
- padding: 2px .5em;
- vertical-align: top;
- width: 100%;
-}
+#info th, #info td { font-size: 85%; padding: 2px .5em; vertical-align: top }
+#info th { font-weight: bold; white-space: nowrap; }
+#info td.message { width: 100%; }
 #info .message ul { padding: 0; margin: 0 2em }
 #info .message p { margin: 0; padding: 0 }
-
-#props { 
- background: #f7f7f0;
- border: 1px solid #d7d7d7;
- border-collapse: collapse;
- border-spacing: 0;
- clear: both;
- width: 100%;
- margin-bottom: 1em;
+#info .props {
+ color: #666;
+ list-style: square;
+ margin: 0 0 .4em 1.6em;
+ padding: 0;
 }
-#props ul { font-size: 90%; list-style: disc; margin: 0 0 0; padding: 0 0 0 2em }
-#props ul li { margin: 0; padding: 0 }
-
+#info .props li { padding: 0 }
 
 /* Styles for the HTML preview */
 #preview { background: #fff; clear: both; margin: 0 }

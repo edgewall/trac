@@ -20,17 +20,15 @@
 # Author: Jonas Borgström <jonas@edgewall.com>
 
 from __future__ import generators
+import time
 
 from trac import perm, util
 from trac.core import *
-from trac.mimeview import *
+from trac.mimeview import get_mimetype, Mimeview
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
 from trac.web.main import IRequestHandler
 from trac.wiki import wiki_to_html, wiki_to_oneliner
 from trac.versioncontrol import Changeset
-
-import time
-import urllib
 
 CHUNK_SIZE = 4096
 DISP_MAX_FILE_SIZE = 256 * 1024
@@ -38,17 +36,15 @@ DISP_MAX_FILE_SIZE = 256 * 1024
 def _get_changes(env, repos, revs, full=None, req=None, format=None):
     db = env.get_db_cnx()
     changes = {}
-    files = None
-    for rev in filter(lambda x: x in revs, revs):
+    for rev in revs:
         changeset = repos.get_changeset(rev)
         message = changeset.message
+        files = None
         if format == 'changelog':
-            files = [c[0] for c in changeset.get_changes()]
+            files = [change[0] for change in changeset.get_changes()]
         elif message:
-            message = changeset.message
             if not full:
-                message = util.shorten_line(message)
-                message = wiki_to_oneliner(message, env, db)
+                message = wiki_to_oneliner(util.shorten_line(message), env, db)
             else:
                 message = wiki_to_html(message, env, req, db,
                                        absurls=(format == 'rss'),
@@ -61,7 +57,7 @@ def _get_changes(env, repos, revs, full=None, req=None, format=None):
             'age': util.pretty_timedelta(changeset.date),
             'author': changeset.author or 'anonymous',
             'message': message,
-            'files': files,
+            'files': files
         }
     return changes
 
@@ -71,7 +67,7 @@ def _get_path_links(href, path, rev):
     if not parts[-1]:
         parts.pop()
     path = '/'
-    for i,part in util.enum(parts):
+    for part in parts:
         path = path + part + '/'
         links.append({
             'name': part or 'root',
@@ -105,47 +101,37 @@ class BrowserModule(Component):
             if match.group(1) == 'file':
                 # FIXME: This should be a permanent redirect
                 req.redirect(self.env.href.browser(req.args.get('path'),
-                                                   rev=req.args.get('rev') or None))
-            return 1
+                                                   rev=req.args.get('rev')))
+            return True
 
     def process_request(self, req):
         path = req.args.get('path', '/')
         rev = req.args.get('rev')
 
+        repos = self.env.get_repository(req.authname)
+        node = repos.get_node(path, rev)
+
         req.hdf['title'] = path
-        req.hdf['browser'] = {'path': path, 'log_href': self.env.href.log(path)}
+        req.hdf['browser'] = {
+            'path': path,
+            'revision': rev or repos.youngest_rev,
+            'props': dict([(util.escape(name), util.escape(value))
+                           for name, value in node.get_properties().items()]),
+            'log_href': self.env.href.log(path)
+        }
 
         path_links = _get_path_links(self.env.href, path, rev)
-        req.hdf['browser.path'] = path_links
         if len(path_links) > 1:
             add_link(req, 'up', path_links[-2]['href'], 'Parent directory')
+        req.hdf['browser.path'] = path_links
 
-        repos = self.env.get_repository(req.authname)
-        rev = rev or repos.youngest_rev
-
-        node = repos.get_node(path, rev)
         if node.isdir:
-            req.hdf['browser.is_dir'] = 1
+            req.hdf['browser.is_dir'] = True
             self._render_directory(req, repos, node, rev)
         else:
             self._render_file(req, repos, node, rev)
 
-        changeset = repos.get_changeset(node.rev)
-        
-        req.hdf['browser'] = {
-            'revision': rev, 
-            'changeset_href': self.env.href.changeset(rev),
-            'node_rev': node.rev,
-            'node_changeset_href': self.env.href.changeset(node.rev),
-            'date': time.strftime('%x %X', time.localtime(changeset.date)),
-            'age': util.pretty_timedelta(changeset.date),
-            'author': changeset.author or 'anonymous',
-            'message': wiki_to_html(changeset.message or '--', self.env, req,
-                                    escape_newlines=True),
-            'props': node.get_properties(),
-            }
         add_stylesheet(req, 'browser.css')
-
         return 'browser.cs', None
 
     # Internal methods
@@ -194,8 +180,16 @@ class BrowserModule(Component):
     def _render_file(self, req, repos, node, rev=None):
         req.perm.assert_permission(perm.FILE_VIEW)
 
-        req.hdf['file.size'] = util.pretty_size(node.content_length)
-
+        changeset = repos.get_changeset(node.rev)  
+        req.hdf['file'] = {  
+            'rev': node.rev,  
+            'changeset_href': self.env.href.changeset(node.rev),  
+            'date': time.strftime('%x %X', time.localtime(changeset.date)),  
+            'age': util.pretty_timedelta(changeset.date),  
+            'author': changeset.author or 'anonymous',  
+            'message': wiki_to_html(changeset.message or '--', self.env, req,  
+                                    escape_newlines=True)  
+        } 
         mime_type = node.content_type
         if not mime_type or mime_type == 'application/octet-stream':
             mime_type = get_mimetype(node.name) or mime_type or 'text/plain'
@@ -231,9 +225,8 @@ class BrowserModule(Component):
                 req.hdf['file.max_file_size'] = DISP_MAX_FILE_SIZE
                 preview = ' '
             else:
-                mimeview = Mimeview(self.env)
-                preview = mimeview.render(req, mime_type, content, node.name,
-                                          node.rev)
+                preview = Mimeview(self.env).render(req, mime_type, content,
+                                                    node.name, node.rev)
             req.hdf['file.preview'] = preview
 
             raw_href = self.env.href.browser(node.path, rev=rev and node.rev,

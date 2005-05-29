@@ -8,32 +8,17 @@
 </div>
 
 <div id="content" class="browser">
- <h1><?cs call:browser_path_links(browser.path, browser) ?> 
-   at Revision <a href="<?cs var:browser.changeset_href ?>"><?cs var:browser.revision ?></a>
- </h1>
+ <h1><?cs call:browser_path_links(browser.path, browser) ?></h1>
 
  <div id="jumprev">
-  <form action="" method="get">
-   <div>
-    <label for="rev">View revision:</label>
-    <input type="text" id="rev" name="rev" value="<?cs
-      var:browser.revision?>" size="4" />
-   </div>
-  </form>
+  <form action="" method="get"><div>
+   <label for="rev">View revision:</label>
+   <input type="text" id="rev" name="rev" value="<?cs
+     var:browser.revision ?>" size="4" />
+  </div></form>
  </div>
 
- <table id="info" summary="Revision info">
-  <tr>
-   <th scope="row">
-    Revision <a href="<?cs var:browser.node_changeset_href ?>"><?cs var:browser.node_rev ?></a>
-    (checked in by <?cs var:browser.author ?>, <?cs var:browser.age ?> ago)
-   </th>
-   <td class="message"><?cs var:browser.message ?></td>
-  </tr>
- </table>
-
  <?cs if:browser.is_dir ?>
-  <br />
   <table class="listing" id="dirlist">
    <thead>
     <tr><?cs 
@@ -87,41 +72,40 @@
      </tr>
     <?cs /each ?>
    </tbody>
-  </table>
-  <br /><?cs
- /if ?>
-
- <?cs if:len(browser.props) || !browser.is_dir ?>
-  <table id="props" summary="Metadata">
-   <tr>
-    <td>
-     <ul><?cs
-      if:file.size ?>
-       <li>File size is <em><tt><?cs var:file.size ?></tt></em></li><?cs 
-      /if ?><?cs
-      each:prop = browser.props ?>
-       <li>Property <strong><?cs var:name(prop) ?></strong> 
-        is <em><tt><?cs var:prop ?></tt></em>
-       </li><?cs
-      /each ?>
-     </ul>
-    </td>
-   </tr>
   </table><?cs
- /if ?>
+ /if ?><?cs
 
- <?cs if:!browser.is_dir ?>
-  <div id="preview">
-   <?cs if:file.preview ?>
-    <?cs var:file.preview ?>
-   <?cs elif:file.max_file_size_reached ?>
-    <strong>HTML preview not available</strong>, since file-size exceeds
-    <?cs var:file.max_file_size  ?> bytes.
-    Try <a href="<?cs var:file.raw_href ?>">downloading</a> the file instead.
-   <?cs else ?>
-    <strong>HTML preview not available</strong>. To view, <a href="<?cs
-    var:file.raw_href ?>">download</a> the file.
-   <?cs /if ?>
+ if:len(browser.props) || !browser.is_dir ?>
+  <table id="info" summary="Revision info"><?cs
+   if:!browser.is_dir ?><tr>
+    <th scope="row">
+     Revision <a href="<?cs var:file.changeset_href ?>"><?cs var:file.rev ?></a>
+     (checked in by <?cs var:file.author ?>, <?cs var:file.age ?> ago)
+    </th>
+    <td class="message"><?cs var:file.message ?></td>
+   </tr><?cs /if ?><?cs
+   if:len(browser.props) ?><tr>
+    <td colspan="2"><ul class="props"><?cs
+     each:prop = browser.props ?>
+      <li>Property <strong><?cs var:name(prop) ?></strong> set to <em><code><?cs
+      var:prop ?></code></em></li><?cs
+     /each ?>
+    </ul></td><?cs
+   /if ?></tr>
+  </table><?cs
+ /if ?><?cs
+ 
+ if:!browser.is_dir ?>
+  <div id="preview"><?cs
+   if:file.preview ?><?cs
+    var:file.preview ?><?cs
+   elif:file.max_file_size_reached ?>
+    <strong>HTML preview not available</strong>, since file-size exceeds <?cs
+    var:file.max_file_size  ?> bytes. Try <a href="<?cs
+    var:file.raw_href ?>">downloading</a> the file instead.<?cs
+   else ?><strong>HTML preview not available</strong>. To view, <a href="<?cs
+    var:file.raw_href ?>">download</a> the file.<?cs
+   /if ?>
   </div><?cs
  /if ?>
 
