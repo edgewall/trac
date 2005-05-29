@@ -24,7 +24,7 @@ import time
 
 from trac import perm
 from trac.core import *
-from trac.Ticket import get_custom_fields, Ticket
+from trac.ticket import Ticket, TicketSystem
 from trac.Timeline import ITimelineEventProvider
 from trac.util import *
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
@@ -235,7 +235,7 @@ def _get_groups(env, db, by='component'):
         cursor.execute("SELECT DISTINCT owner AS name FROM ticket "
                        "ORDER BY owner")
     elif by not in Ticket.std_fields:
-        fields = get_custom_fields(env)
+        fields = TicketSystem(env).get_custom_fields()
         field = [f for f in fields if f['name'] == by]
         if not field:
             return []
@@ -420,7 +420,7 @@ class MilestoneModule(Component):
         available_groups = map(lambda x: {'name': x, 'label': x.capitalize()},
                                ['component', 'version', 'severity', 'priority',
                                 'owner'])
-        for f in [f for f in get_custom_fields(self.env)
+        for f in [f for f in TicketSystem(self.env).get_custom_fields()
                   if f['type'] in ('select', 'radio')]:
             available_groups.append({'name': f['name'],
                                      'label': f['label'] or f['name']})

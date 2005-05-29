@@ -1,7 +1,7 @@
 from trac.Milestone import Milestone
 from trac.log import logger_factory
 from trac.test import Mock
-from trac.Ticket import Ticket
+from trac.ticket import Ticket
 
 import unittest
 

@@ -72,7 +72,7 @@ import sys
 import time 
 
 from trac.env import open_environment
-from trac.Ticket import Ticket
+from trac.ticket import Ticket
 
 try:
     from optparse import OptionParser

@@ -35,7 +35,7 @@ import email
 import sys
 
 from trac.env import Environment
-from trac.Ticket import Ticket
+from trac.ticket import Ticket
 
 
 class TicketEmailParser(object):

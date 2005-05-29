@@ -457,9 +457,10 @@ default_config = \
 )
 
 default_components = ('trac.About', 'trac.attachment', 'trac.Browser',
-                      'trac.Changeset', 'trac.Query', 'trac.Report',
-                      'trac.Roadmap', 'trac.Search', 'trac.Settings',
-                      'trac.Ticket', 'trac.Timeline', 'trac.wiki.web_ui',
+                      'trac.Changeset', 'trac.Search', 'trac.Settings',
+                      'trac.ticket.query', 'trac.ticket.report',
+                      'trac.Roadmap',
+                      'trac.ticket.web_ui', 'trac.Timeline', 'trac.wiki.web_ui',
                       'trac.wiki.macros', 'trac.mimeview.enscript',
                       'trac.mimeview.patch', 'trac.mimeview.php',
                       'trac.mimeview.rst', 'trac.mimeview.silvercity',

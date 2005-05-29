@@ -26,7 +26,7 @@ from time import localtime, strftime, time
 from trac import Milestone, perm, __version__
 from trac.core import *
 from trac.util import enum, escape, pretty_timedelta, CRLF
-from trac.Ticket import Ticket
+from trac.ticket import Ticket
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
 from trac.web.main import IRequestHandler
 

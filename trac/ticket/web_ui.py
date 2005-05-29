@@ -27,221 +27,14 @@ from trac import perm, util
 from trac.attachment import attachment_to_hdf, Attachment
 from trac.core import *
 from trac.Notify import TicketNotifyEmail
+from trac.ticket import Ticket, TicketSystem
 from trac.Timeline import ITimelineEventProvider
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
 from trac.web.main import IRequestHandler
 from trac.wiki import wiki_to_html, wiki_to_oneliner
 
-__all__ = ['Ticket', 'NewticketModule', 'TicketModule']
-
-
-class Ticket(dict):
-    std_fields = ['type', 'time', 'component', 'severity', 'priority',
-                  'milestone', 'reporter', 'owner', 'cc', 'version', 'status',
-                  'resolution', 'keywords', 'summary', 'description',
-                  'changetime']
-
-    def __init__(self, db=None, tkt_id=None):
-        dict.__init__(self)
-        self._old = {}
-        if db and tkt_id:
-            self._fetch_ticket(db, tkt_id)
-
-    def __setitem__(self, name, value):
-        """Log ticket modifications so the table ticket_change can be updated"""
-        if self.has_key(name) and self[name] == value:
-            return
-        if not self._old.has_key(name): # Changed field
-            self._old[name] = self.get(name, None)
-        elif self._old[name] == value: # Change of field reverted
-            del self._old[name]
-        dict.__setitem__(self, name, value)
-
-    def _forget_changes(self):
-        self._old = {}
-
-    def _fetch_ticket(self, db, tkt_id):
-        # Fetch the standard ticket fields
-        cursor = db.cursor()
-        cursor.execute("SELECT %s FROM ticket WHERE id=%%s"
-                       % ','.join(Ticket.std_fields), (tkt_id,))
-        row = cursor.fetchone()
-        if not row:
-            raise TracError('Ticket %d does not exist.' % tkt_id,
-                            'Invalid Ticket Number')
-
-        self['id'] = tkt_id
-        for i in range(len(Ticket.std_fields)):
-            self[Ticket.std_fields[i]] = row[i] or ''
-
-        # Fetch custom fields if available
-        cursor.execute("SELECT name,value FROM ticket_custom WHERE ticket=%s",
-                       (tkt_id,))
-        for name, value in cursor:
-            self['custom_' + name] = value
-
-        self._forget_changes()
-
-    def populate(self, data):
-        """Populate the ticket with 'suitable' values from a dictionary"""
-        for name in [name for name in data.keys()
-                     if name in self.std_fields or name.startswith('custom_')]:
-            self[name] = data.get(name, '')
-
-        # We have to do an extra trick to catch unchecked checkboxes
-        for name in ['custom_' + name[9:] for name in data.keys()
-                     if name.startswith('checkbox_')]:
-            if not data.has_key(name):
-                self[name] = '0'
-
-    def insert(self, db):
-        """Add ticket to database"""
-        assert not self.has_key('id'), 'Cannot insert an existing ticket'
-
-        # Add a timestamp
-        now = int(time.time())
-        self['time'] = self['changetime'] = now
-
-        cursor = db.cursor()
-
-        std_fields = [name for name in self.keys() if name in self.std_fields]
-        cursor.execute("INSERT INTO ticket (%s) VALUES (%s)"
-                       % (','.join(std_fields),
-                          ','.join(['%s'] * len(std_fields))),
-                       [self[name] for name in std_fields])
-        tkt_id = db.get_last_id('ticket')
-
-        for name in [name for name in self.keys() if name.startswith('custom_')]:
-            cursor.execute("INSERT INTO ticket_custom (ticket,name,value) "
-                           "VALUES (%s,%s,%s)", (tkt_id, name[7:], self[name]))
-
-        db.commit()
-        self['id'] = tkt_id
-        self._forget_changes()
-        return tkt_id
-
-    def save_changes(self, db, author, comment, when=0):
-        """
-        Store ticket changes in the database. The ticket must already exist in
-        the database.
-        """
-        assert self.has_key('id'), 'Cannot update a new ticket'
-        cursor = db.cursor()
-        if not when:
-            when = int(time.time())
-        tkt_id = self['id']
-
-        if not self._old and not comment:
-            return # Not modified
-
-        # If the component is changed on a 'new' ticket then owner field
-        # is updated accordingly. (#623).
-        if self['status'] == 'new' and self._old.has_key('component') and \
-               not self._old.has_key('owner'):
-            cursor.execute("SELECT owner FROM component "
-                           "WHERE name=%s", (self._old['component'],))
-            row = cursor.fetchone()
-            # If the old component has been removed from the database
-            # then we just leave the owner as is.
-            if row:
-                old_owner = row[0]
-                if self['owner'] == old_owner:
-                    cursor.execute("SELECT owner FROM component "
-                                   "WHERE name=%s", (self['component'],))
-                    self['owner'] = cursor.fetchone()[0]
-
-        for name in self._old.keys():
-            if name[:7] == 'custom_':
-                fname = name[7:]
-                cursor.execute("SELECT * FROM ticket_custom " 
-                               "WHERE ticket=%s and name=%s", (tkt_id, fname))
-                if cursor.fetchone():
-                    cursor.execute("UPDATE ticket_custom SET value=%s "
-                                   "WHERE ticket=%s AND name=%s",
-                                   (self[name], tkt_id, fname))
-                else:
-                    cursor.execute("INSERT INTO ticket_custom (ticket,name,"
-                                   "value) VALUES(%s,%s,%s)",
-                                   (tkt_id, fname, self[name]))
-            else:
-                fname = name
-                cursor.execute("UPDATE ticket SET %s=%%s WHERE id=%%s" % fname,
-                               (self[name], tkt_id))
-            cursor.execute("INSERT INTO ticket_change "
-                           "(ticket,time,author,field,oldvalue,newvalue) "
-                           "VALUES (%s, %s, %s, %s, %s, %s)",
-                           (tkt_id, when, author, fname, self._old[name],
-                            self[name]))
-        if comment:
-            cursor.execute("INSERT INTO ticket_change "
-                           "(ticket,time,author,field,oldvalue,newvalue) "
-                           "VALUES (%s,%s,%s,'comment','',%s)",
-                           (tkt_id, when, author, comment))
-
-        cursor.execute("UPDATE ticket SET changetime=%s WHERE id=%s",
-                       (when, tkt_id))
-        db.commit()
-        self._forget_changes()
-
-    def get_changelog(self, db, when=0):
-        """
-        Returns the changelog as a list of tuples of the form
-        (time, author, field, oldvalue, newvalue).
-        """
-        cursor = db.cursor()
-        if when:
-            cursor.execute("SELECT time,author,field,oldvalue,newvalue "
-                           "FROM ticket_change WHERE ticket=%s AND time=%s "
-                           "UNION "
-                           "SELECT time,author,'attachment',null,filename "
-                           "FROM attachment WHERE id=%s AND time=%s "
-                           "UNION "
-                           "SELECT time,author,'comment',null,description "
-                           "FROM attachment WHERE id=%s AND time=%s "
-                           "ORDER BY time",
-                           (self['id'], when, self['id'], when,
-                            self['id'], when))
-        else:
-            cursor.execute("SELECT time,author,field,oldvalue,newvalue "
-                           "FROM ticket_change WHERE ticket=%s "
-                           "UNION "
-                           "SELECT time,author,'attachment',null,filename "
-                           "FROM attachment WHERE id=%s "
-                           "UNION "
-                           "SELECT time,author,'comment',null,description "
-                           "FROM attachment WHERE id=%s "
-                           "ORDER BY time",
-                           (self['id'],  self['id'], self['id']))
-        log = []
-        for t, author, field, oldvalue, newvalue in cursor:
-            log.append((int(t), author, field, oldvalue or '', newvalue or ''))
-        return log
-
-
-def get_custom_fields(env):
-    fields = []
-    for name in [option for option, value in env.config.options('ticket-custom')
-                 if '.' not in option]:
-        field = {
-            'name': name,
-            'type': env.config.get('ticket-custom', name),
-            'order': int(env.config.get('ticket-custom', name + '.order', '0')),
-            'label': env.config.get('ticket-custom', name + '.label', ''),
-            'value': env.config.get('ticket-custom', name + '.value', '')
-        }
-        if field['type'] == 'select' or field['type'] == 'radio':
-            options = env.config.get('ticket-custom', name + '.options')
-            field['options'] = [value.strip() for value in options.split('|')]
-        elif field['type'] == 'textarea':
-            field['width'] = env.config.get('ticket-custom', name + '.cols')
-            field['height'] = env.config.get('ticket-custom', name + '.rows')
-        fields.append(field)
-
-    fields.sort(lambda x, y: cmp(x['order'], y['order']))
-    return fields
-
 def insert_custom_fields(env, hdf, vals={}):
-    for idx, field in util.enum(get_custom_fields(env)):
+    for idx, field in util.enum(TicketSystem(env).get_custom_fields()):
         name = field['name']
         value = vals.get('custom_' + name, field['value'])
         prefix = 'ticket.custom.%d' % idx
@@ -294,18 +87,10 @@ class NewticketModule(Component):
 
         ticket = Ticket()
         ticket.populate(req.args)
-        ticket.setdefault('component',
-                          self.config.get('ticket', 'default_component'))
-        ticket.setdefault('milestone',
-                          self.config.get('ticket', 'default_milestone'))
-        ticket.setdefault('type',
-                          self.env.config.get('ticket', 'default_type'))
-        ticket.setdefault('priority',
-                          self.config.get('ticket', 'default_priority'))
-        ticket.setdefault('severity',
-                          self.config.get('ticket', 'default_severity'))
-        ticket.setdefault('version',
-                          self.config.get('ticket', 'default_version'))
+        for field in Ticket.std_fields:
+            default = self.config.get('ticket', 'default_' + field)
+            if default:
+                ticket.setdefault(field, default)
         ticket.setdefault('reporter', util.get_reporter_id(req))
 
         if ticket.has_key('description'):
@@ -320,18 +105,18 @@ class NewticketModule(Component):
         util.sql_to_hdf(db, "SELECT name FROM component ORDER BY name",
                         req.hdf, 'newticket.components')
         util.sql_to_hdf(db, "SELECT name FROM milestone WHERE "
-                                 "COALESCE(completed,0)=0 ORDER BY name",
+                            "COALESCE(completed,0)=0 ORDER BY name",
                         req.hdf, 'newticket.milestones')
         util.sql_to_hdf(db, "SELECT name FROM version ORDER BY name",
                         req.hdf, 'newticket.versions')
         util.sql_to_hdf(db, "SELECT name FROM enum WHERE type='ticket_type' "
-                                 "ORDER BY value",
+                            "ORDER BY value",
                         req.hdf, 'enums.ticket_type')
         util.sql_to_hdf(db, "SELECT name FROM enum WHERE type='priority' "
-                                 "ORDER BY value",
+                            "ORDER BY value",
                         req.hdf, 'enums.priority')
         util.sql_to_hdf(db, "SELECT name FROM enum WHERE type='severity' "
-                                 "ORDER BY value",
+                            "ORDER BY value",
                         req.hdf, 'enums.severity')
 
         restrict_owner = self.config.get('ticket', 'restrict_owner')
@@ -380,20 +165,6 @@ class NewticketModule(Component):
 
         # Redirect the user to the newly created ticket
         req.redirect(self.env.href.ticket(tktid))
-
-
-def available_actions(ticket, perm_):
-    """ Returns the actions that can be performed on the ticket"""
-    actions = {
-        'new':      ['leave', 'resolve', 'reassign', 'accept'],
-        'assigned': ['leave', 'resolve', 'reassign'          ],
-        'reopened': ['leave', 'resolve', 'reassign'          ],
-        'closed':   ['leave',                        'reopen']
-    }
-    perms = {'resolve': perm.TICKET_MODIFY, 'reassign': perm.TICKET_CHGPROP,
-             'accept': perm.TICKET_CHGPROP, 'reopen': perm.TICKET_CREATE}
-    return [action for action in actions.get(ticket['status'], ['leave'])
-            if action not in perms or perm_.has_permission(perms[action])]
 
 
 class TicketModule(Component):
@@ -458,7 +229,7 @@ class TicketModule(Component):
         if 'query_tickets' in req.session:
             tickets = req.session['query_tickets'].split()
             if str(id) in tickets:
-                idx = int(tickets.index(str(ticket['id'])))
+                idx = tickets.index(str(ticket['id']))
                 if idx > 0:
                     add_link(req, 'first', self.env.href.ticket(tickets[0]),
                              'Ticket #%s' % tickets[0])
@@ -526,7 +297,8 @@ class TicketModule(Component):
                 else:
                     href = self.env.href.ticket(id)
                 title = 'Ticket <em title="%s">#%s</em> (%s) %s by %s' % (
-                        util.escape(summary), id, type, verbs[state], util.escape(author))
+                        util.escape(summary), id, type, verbs[state],
+                        util.escape(author))
                 message = wiki_to_oneliner(util.shorten_line(message), self.env,
                                            db, absurls=absurls)
                 yield kinds[state], href, title, t, author, message
@@ -548,7 +320,8 @@ class TicketModule(Component):
 
         # Do any action on the ticket?
         action = req.args.get('action')
-        if action not in available_actions(ticket, req.perm):
+        actions = TicketSystem(self.env).get_available_actions(ticket, req.perm)
+        if action not in actions:
             raise TracError('Invalid action')
 
         # TODO: this should not be hard-coded like this
@@ -668,9 +441,9 @@ class TicketModule(Component):
                                                                      id)
 
         # Add the possible actions to hdf
-        for action in available_actions(ticket, req.perm):
+        actions = TicketSystem(self.env).get_available_actions(ticket, req.perm)
+        for action in actions:
             req.hdf['ticket.actions.' + action] = '1'
-
 
 
 class UpdateDetailsForTimeline(Component):
@@ -688,11 +461,12 @@ class UpdateDetailsForTimeline(Component):
         if 'ticket_details' in filters:
             db = self.env.get_db_cnx()
             cursor = db.cursor()
-            cursor.execute("SELECT tc.time, tc.ticket, t.type, tc.field, "
-                           "       tc.oldvalue, tc.newvalue, tc.author, t.summary "
+            cursor.execute("SELECT tc.time,tc.ticket,t.type,tc.field, "
+                           "       tc.oldvalue,tc.newvalue,tc.author,t.summary "
                            "FROM ticket_change tc"
                            "   INNER JOIN ticket t ON t.id = tc.ticket "
-                           "AND tc.time>=%s AND tc.time<=%s ORDER BY tc.time" % (start, stop))
+                           "AND tc.time>=%s AND tc.time<=%s ORDER BY tc.time"
+                           % (start, stop))
             previous_update = None
             updates = []
             ticket_change = False

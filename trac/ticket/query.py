@@ -25,7 +25,7 @@ import re
 
 from trac import perm
 from trac.core import *
-from trac.Ticket import get_custom_fields, insert_custom_fields, Ticket
+from trac.ticket import Ticket, TicketSystem
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
 from trac.web.main import IRequestHandler
 from trac.wiki import wiki_to_html, wiki_to_oneliner
@@ -86,7 +86,7 @@ class Query(object):
         # be displayed
         cols = ['type', 'id', 'summary', 'status', 'owner', 'priority', 'milestone',
                 'component', 'version', 'severity', 'resolution', 'reporter']
-        cols += [f['name'] for f in get_custom_fields(self.env)]
+        cols += [f['name'] for f in TicketSystem(self.env).get_custom_fields()]
 
         # Semi-intelligently remove columns that are restricted to a single
         # value by a query constraint.
@@ -184,7 +184,8 @@ class Query(object):
         add_cols('priority', 'time', 'changetime', self.order)
         cols.extend([c for c in self.constraints.keys() if not c in cols])
 
-        custom_fields = [f['name'] for f in get_custom_fields(self.env)]
+        custom_fields = [f['name'] for f in
+                         TicketSystem(self.env).get_custom_fields()]
 
         sql = []
         sql.append("SELECT " + ",".join(['t.%s AS %s' % (c, c) for c in cols
@@ -383,7 +384,8 @@ class QueryModule(Component):
 
     def _get_constraints(self, req):
         constraints = {}
-        custom_fields = [f['name'] for f in get_custom_fields(self.env)]
+        custom_fields = [f['name'] for f in
+                         TicketSystem(self.env).get_custom_fields()]
 
         # A special hack for Safari/WebKit, which will not submit dynamically
         # created check-boxes with their real value, but with the default value
@@ -494,7 +496,7 @@ class QueryModule(Component):
                            'label': 'Reporter'})
         properties.append({'name': 'cc', 'type': 'text', 'label': 'CC list'})
 
-        custom_fields = get_custom_fields(self.env)
+        custom_fields = TicketSystem(self.env).get_custom_fields()
         for field in [field for field in custom_fields
                       if field['type'] in ['text', 'radio', 'select']]:
             property = {'name': field['name'], 'type': field['type'],

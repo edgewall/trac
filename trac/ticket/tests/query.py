@@ -1,7 +1,7 @@
 from trac.config import Configuration
 from trac.log import logger_factory
-from trac.test import InMemoryDatabase, Mock
-from trac.Query import Query
+from trac.test import EnvironmentStub
+from trac.ticket.query import Query
 
 import unittest
 
@@ -9,10 +9,7 @@ import unittest
 class QueryTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.db = InMemoryDatabase()
-        self.env = Mock(config=Configuration(None),
-                        log=logger_factory('test'),
-                        get_db_cnx=lambda: self.db)
+        self.env = EnvironmentStub()
 
     def test_all_ordered_by_id(self):
         query = Query(self.env, order='id')

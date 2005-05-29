@@ -20,6 +20,7 @@
 #
 # Author: Jonas Borgström <jonas@edgewall.com>
 
+from trac.core import ComponentManager
 from trac.db import SQLiteConnection
 
 import unittest
@@ -117,9 +118,40 @@ class InMemoryDatabase(SQLiteConnection):
         self.cnx.commit()
 
 
+class EnvironmentStub(ComponentManager):
+    """A stub of the trac.env.Environment object for testing."""
+    def __init__(self, enable=None):
+        ComponentManager.__init__(self)
+        self.enabled_components = enable
+        self.db = InMemoryDatabase()
+
+        from trac.config import Configuration
+        self.config = Configuration(None)
+
+        from trac.log import logger_factory
+        self.log = logger_factory('test')
+
+        from trac.web.href import Href
+        self.href = Href('/trac.cgi')
+
+    def component_activated(self, component):
+        component.env = self
+        component.config = self.config
+        component.log = self.log
+
+    def is_component_enabled(self, cls):
+        if self.enabled_components is None:
+            return True
+        return cls in self.enabled_components
+
+    def get_db_cnx(self):
+        return self.db
+
+
 def suite():
     import trac.tests
     import trac.scripts.tests
+    import trac.ticket.tests
     import trac.versioncontrol.tests
     import trac.web.tests
     import trac.wiki.tests
@@ -127,6 +159,7 @@ def suite():
     suite = unittest.TestSuite()
     suite.addTest(trac.tests.suite())
     suite.addTest(trac.scripts.tests.suite())
+    suite.addTest(trac.ticket.tests.suite())
     suite.addTest(trac.versioncontrol.tests.suite())
     suite.addTest(trac.web.tests.suite())
     suite.addTest(trac.wiki.tests.suite())

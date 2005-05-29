@@ -309,7 +309,7 @@ class CommonFormatter(object):
             return '<a class="query" href="%s">%s</a>' \
                    % (self.env.href.query() + query, text)
         else:
-            from trac.Query import Query, QuerySyntaxError
+            from trac.ticket.query import Query, QuerySyntaxError
             try:
                 query = Query.from_string(self.env, query)
                 return '<a class="query" href="%s">%s</a>' \
