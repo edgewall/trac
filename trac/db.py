@@ -144,6 +144,14 @@ class ConnectionPool(object):
         finally:
             self.__lock.release()
 
+    def shutdown(self):
+        self.__lock.acquire()
+        try:
+            for con in self.__cnxs:
+                con.cnx.close()
+        finally:
+            self.__lock.release()
+        
 
 class SQLiteConnection(ConnectionWrapper):
     """Connection wrapper for SQLite."""

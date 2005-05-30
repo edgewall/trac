@@ -16,6 +16,7 @@ class EnvironmentTestCase(unittest.TestCase):
 
     def tearDown(self):
         self.db.close()
+        self.env.shutdown() # really closes the db connections
         shutil.rmtree(self.env.path)
 
     def test_get_version(self):

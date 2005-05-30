@@ -92,6 +92,10 @@ class Environment(ComponentManager):
             self.__cnx_pool = db.get_cnx_pool(self)
         return self.__cnx_pool.get_cnx()
 
+    def shutdown(self):
+        if self.__cnx_pool:
+            self.__cnx_pool.shutdown()
+
     def get_repository(self, authname=None):
         from trac.versioncontrol.cache import CachedRepository
         from trac.versioncontrol.svn_authz import SubversionAuthorizer
