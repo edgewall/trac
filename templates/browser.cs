@@ -22,10 +22,10 @@
   <table class="listing" id="dirlist">
    <thead>
     <tr><?cs 
-     call:sortable_th(browser.order, browser.desc, 'name', 'Name') ?><?cs 
-     call:sortable_th(browser.order, browser.desc, 'size', 'Size') ?>
+     call:sortable_th(browser.order, browser.desc, 'name', 'Name', browser.href) ?><?cs 
+     call:sortable_th(browser.order, browser.desc, 'size', 'Size', browser.href) ?>
      <th class="rev">Rev</th><?cs 
-     call:sortable_th(browser.order, browser.desc, 'date', 'Age') ?>
+     call:sortable_th(browser.order, browser.desc, 'date', 'Age', browser.href) ?>
      <th class="change">Last Change</th>
     </tr>
    </thead>

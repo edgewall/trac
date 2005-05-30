@@ -172,9 +172,9 @@ def:ticket_custom_props(ticket) ?><?cs
  /each ?><?cs
 /def ?><?cs 
 
-def:sortable_th(order, desc, class, title) ?>
+def:sortable_th(order, desc, class, title, href) ?>
  <th class="<?cs var:class ?><?cs if:order == class ?> <?cs if:desc ?>desc<?cs else ?>asc<?cs /if ?><?cs /if ?>">
   <a title="Sort by <?cs var:class ?><?cs if:order == class && !desc ?> (descending)<?cs /if ?>"
-     href="?order=<?cs var:class ?><?cs if:order == class && !desc ?>&desc=1<?cs /if ?>"><?cs var:title ?></a>
+     href="<?cs var:href ?>&order=<?cs var:class ?><?cs if:order == class && !desc ?>&desc=1<?cs /if ?>"><?cs var:title ?></a>
  </th><?cs
 /def ?>

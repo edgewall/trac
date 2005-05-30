@@ -169,23 +169,10 @@
 
 <?cs def:thead() ?>
  <thead><tr><?cs each:header = query.headers ?><?cs
-  if:name(header) == 0 ?><th class="ticket<?cs
-   if:header.order ?> <?cs var:header.order ?><?cs /if ?>">
-   <a href="<?cs var:header.href ?>" title="Sort by ID (<?cs
-     if:header.order == 'asc' ?>descending<?cs
-     else ?>ascending<?cs /if ?>)">Ticket</a>
-   </th><?cs
-  else ?>
-   <th<?cs if:header.order ?> class="<?cs var:header.order ?>"<?cs /if ?>>
-    <a href="<?cs var:header.href ?>" title="Sort by <?cs
-      var:header.name ?> (<?cs if:header.order == 'asc' ?>descending<?cs
-      else ?>ascending<?cs /if ?>)"><?cs
-       each:property = ticket.properties ?><?cs
-        if:property.name == header.name ?><?cs
-         var:property.label ?><?cs
-        /if ?><?cs
-       /each ?></a>
-   </th><?cs
+  if:name(header) == 0 ?><?cs
+   call:sortable_th(query.order, query.desc, 'id', 'ticket', query.href) ?><?cs
+  else ?><?cs
+   call:sortable_th(query.order, query.desc, header.name, header.name, query.href) ?><?cs
   /if ?>
  <?cs /each ?></tr></thead>
 <?cs /def ?>

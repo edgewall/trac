@@ -160,12 +160,13 @@ class Query(object):
         return results
 
     def get_href(self, format=None):
-        return self.env.href.query(self.constraints, order=self.order,
+        return self.env.href.query(order=self.order,
                                    desc=self.desc and 1 or None,
                                    group=self.group,
                                    groupdesc=self.groupdesc and 1 or None,
                                    verbose=self.verbose and 1 or None,
-                                   format=format)
+                                   format=format,
+                                   **self.constraints)
 
     def get_sql(self):
         if not self.cols:
@@ -547,23 +548,14 @@ class QueryModule(Component):
         cols = query.get_columns()
         for i in range(len(cols)):
             header = {'name': cols[i]}
-            if cols[i] == query.order:
-                href = self.env.href.query(query.constraints, order=query.order,
-                                           desc=query.desc and None or 1,
-                                           group=query.group,
-                                           groupdesc=query.groupdesc and 1 or None,
-                                           verbose=query.verbose and 1 or None)
-                header['href'] = escape(href)
-                header['order'] = query.desc and 'desc' or 'asc'
-            else:
-                href = self.env.href.query(query.constraints, order=cols[i],
-                                           group=query.group,
-                                           groupdesc=query.groupdesc and 1 or None,
-                                           verbose=query.verbose and 1 or None)
-                header['href'] = escape(href)
             req.hdf['query.headers.%d' % i] = header
 
+        href = self.env.href.query(group=query.group,
+                                   groupdesc=query.groupdesc and 1 or None,
+                                   verbose=query.verbose and 1 or None,
+                                   **query.constraints)
         req.hdf['query.order'] = query.order
+        req.hdf['query.href'] = escape(href)
         if query.desc:
             req.hdf['query.desc'] = 1
         if query.group:

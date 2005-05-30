@@ -117,6 +117,7 @@ class BrowserModule(Component):
             'revision': rev or repos.youngest_rev,
             'props': dict([(util.escape(name), util.escape(value))
                            for name, value in node.get_properties().items()]),
+            'href': self.env.href.browser(path,rev=rev or repos.youngest_rev),
             'log_href': self.env.href.log(path)
         }
 
