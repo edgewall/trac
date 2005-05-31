@@ -104,6 +104,13 @@ class my_install_scripts (install_scripts):
                 if not self.dry_run:
                     mode = ((os.stat(file)[ST_MODE]) | 0555) & 07777
                     os.chmod(file, mode)
+        elif os.name == 'nt':
+            # Install post-install script on windows
+            ofile, copied = self.copy_file(os.path.join(self.build_dir,
+                                                        'trac-postinstall.py'),
+                                            self.install_dir)
+            if copied:
+                self.outfiles.append(ofile)
 
 
 class my_install_data (install_data):
@@ -127,8 +134,9 @@ from distutils.command.bdist_wininst import bdist_wininst
 class my_bdist_wininst(bdist_wininst):
     def initialize_options(self):
         bdist_wininst.initialize_options(self)
-        self.title = "Trac %s" % VERSION
-        self.bitmap = "setup_wininst.bmp"
+        self.title = 'Trac %s' % VERSION
+        self.bitmap = 'setup_wininst.bmp'
+        self.install_script = 'trac-postinstall.py'
 distutils.command.bdist_wininst.bdist_wininst = my_bdist_wininst
 
 
@@ -212,6 +220,7 @@ facilities.
                   (_p('share/trac/wiki-default'), glob(_p('wiki-default/[A-Z]*'))),
                   (_p('share/trac/wiki-macros'), glob(_p('wiki-macros/*.py')))],
       scripts=[_p('scripts/trac-admin'),
+               _p('scripts/trac-postinstall.py'),
                _p('scripts/tracd'),
                _p('scripts/tracdb2env'),
                _p('cgi-bin/trac.cgi')],
