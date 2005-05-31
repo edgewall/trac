@@ -485,5 +485,5 @@ class ReportModule(Component):
 
         req.write('-- ## %s: %s ## --\n\n' % (id, title))
         if description:
-            req.write('-- %s\n\n' % '\n-- '.join(row[1].splitlines()))
+            req.write('-- %s\n\n' % '\n-- '.join(description.splitlines()))
         req.write(sql)
