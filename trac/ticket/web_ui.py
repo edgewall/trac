@@ -42,7 +42,7 @@ def insert_custom_fields(env, hdf, vals={}):
             'name': field['name'],
             'type': field['type'],
             'label': field['label'] or field['name'],
-            'value': field['value']
+            'value': value
         }
         if field['type'] == 'select' or field['type'] == 'radio':
             for optidx, option in util.enum(field['options']):
