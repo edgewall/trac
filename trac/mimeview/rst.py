@@ -29,6 +29,7 @@
 
 __docformat__ = 'reStructuredText'
 
+from distutils.version import StrictVersion
 import re
 
 from trac.core import *
@@ -83,10 +84,10 @@ class ReStructuredTextRenderer(Component):
             from docutils import nodes
             from docutils.core import publish_string
             from docutils.parsers import rst
-            from docutils.__init__ import __version__
+            from docutils import __version__
         except ImportError:
             raise TrarError, 'Docutils >= %s not found' % docutils_required
-        if __version__ < '0.3.3':
+        if StrictVersion(__version__) < StrictVersion('0.3.3'):
             raise TracError, 'Docutils version >= %s required, %s found' \
                              % ('0.3.3', __version__)
 
