@@ -28,6 +28,7 @@
 # Inserts `reference` nodes for TracLinks into the document tree.
 
 from __future__ import nested_scopes
+from distutils.version import StrictVersion
 import re
 
 docutils_required = '0.3.3'
@@ -40,7 +41,7 @@ try:
 except ImportError:
     raise EnvironmentError, 'Docutils >= %s not found' % docutils_required
 
-if __version__ < docutils_required:
+if StrictVersion(__version__) < StrictVersion(docutils_required):
     raise EnvironmentError, 'Docutils version >= %s required, %s found' % (docutils_required, __version__)
 
 from trac.Href import Href
