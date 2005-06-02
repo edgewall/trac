@@ -87,7 +87,7 @@ class WikiPage(object):
                               % (version, self.name))
             cursor.execute("SELECT COUNT(*) FROM wiki WHERE name=%s",
                            (self.name,))
-            if cursor.fetchone():
+            if cursor.fetchone()[0] == 0:
                 page_deleted = True
 
         if page_deleted:
