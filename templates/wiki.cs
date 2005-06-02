@@ -277,11 +277,11 @@
     <?cs /if ?>
    </div>
   <?cs /if ?>
+  <script type="text/javascript">
+   addHeadingLinks(document.getElementById("searchable"));
+  </script>
  <?cs /if ?>
  <?cs /if ?>
 </div>
-<script type="text/javascript">
-  addHeadingLinks(document.getElementById("searchable"));
-</script>
 
 <?cs include "footer.cs" ?>

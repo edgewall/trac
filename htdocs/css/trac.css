@@ -62,7 +62,7 @@ input[type=text], input.textwidget { padding: .25em .5em }
 input[type=text]:focus, textarea:focus { border: 1px solid #886 }
 option { border-bottom: 1px dotted #d7d7d7 }
 fieldset { border: 1px solid #d7d7d7; padding: .5em; margin: 0 }
-fieldset.iefix { border: none; padding: 0; margin: 0 }
+fieldset.iefix { background: transparent; border: none; padding: 0; margin: 0 }
 * html fieldset.iefix { width: 98% }
 fieldset.iefix p { margin: 0 }
 legend { color: #999; padding: 0 .25em; font-size: 90%; font-weight: bold }
@@ -223,7 +223,12 @@ label.disabled { color: #d7d7d7 }
 }
 * html #prefs { width: 26em } /* Set width only for IE */
 #prefs input, #prefs select { font-size: 9px; vertical-align: middle }
-#prefs fieldset { border: none; margin: .5em; padding: 0 }
+#prefs fieldset {
+ background: transparent;
+ border: none;
+ margin: .5em;
+ padding: 0;
+}
 #prefs fieldset legend {
  background: transparent;
  color: #000;
