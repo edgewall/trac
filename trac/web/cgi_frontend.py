@@ -96,8 +96,8 @@ class TracFieldStorage(cgi.FieldStorage):
 def run():
     locale.setlocale(locale.LC_ALL, '')
 
-    req = CGIRequest()
     env = open_environment()
+    req = CGIRequest()
 
     try:
         dispatch_request(os.getenv('PATH_INFO', ''), req, env)

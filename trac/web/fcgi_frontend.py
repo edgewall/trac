@@ -36,8 +36,8 @@ class FCGIRequest(CGIRequest):
 
 
 def _handler(_req, _env, _fieldStorage):
-      req = FCGIRequest(_env, _req.stdin, _req.out, _fieldStorage)
       env = open_environment()
+      req = FCGIRequest(_env, _req.stdin, _req.out, _fieldStorage)
 
       try:  
           dispatch_request(_env.get('PATH_INFO', ''), req, env)
