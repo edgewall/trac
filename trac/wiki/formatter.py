@@ -166,12 +166,14 @@ class CommonFormatter(object):
         return tag in self._open_tags
 
     def close_tag(self, tag):
-        tmp = s = ''
-        while self._open_tags != [] and tag != tmp:
-            tmp = self._open_tags.pop()
-            s += tmp
-        return s
-
+        tmp =  ''
+        for i in range(len(self._open_tags)-1, -1, -1):
+            if self._open_tags[i] == tag:
+                tmp += self._open_tags[i]
+                del self._open_tags[i]
+                break
+        return tmp
+        
     def open_tag(self, tag):
         self._open_tags.append(tag)
 
@@ -181,7 +183,7 @@ class CommonFormatter(object):
             return self.close_tag(close_tag)
         else:
             self.open_tag(close_tag)
-            return open_tag
+        return open_tag
 
     def _bold_formatter(self, match, fullmatch):
         return self.simple_tag_handler('<strong>', '</strong>')
@@ -527,6 +529,8 @@ class Formatter(CommonFormatter):
 
     def close_paragraph(self):
         if self.paragraph_open:
+            while self._open_tags != []:
+                self.out.write(self._open_tags.pop())
             self.out.write('</p>' + os.linesep)
             self.paragraph_open = 0
 

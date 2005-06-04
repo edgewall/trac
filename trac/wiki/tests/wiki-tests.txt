@@ -329,3 +329,49 @@ Inline [[comment(This should not be seen)]] comment
 <p>
 Inline  comment
 </p>
+==============================
+This should be '''''bold and italic'''''
+------------------------------
+<p>
+This should be <strong><i>bold and italic</strong></i>
+</p>
+==============================
+'''''one''''', '''''two''''', '''''three''''', '''''four'''''
+------------------------------
+<p>
+<strong><i>one</strong></i>, <strong><i>two</strong></i>, <strong><i>three</strong></i>, <strong><i>four</strong></i>
+</p>
+==============================
+__~~underlineoversrike__~~
+------------------------------
+<p>
+<span class="underline"><del>underlineoversrike</span></del>
+</p>
+==============================
+'''''bolditalic''' # Open italic should be closed before paragraph end
+------------------------------
+<p>
+<strong><i>bolditalic</strong> # Open italic should be closed before paragraph end
+</i></p>
+==============================
+'''''bold
+italic
+multiline'''''
+------------------------------
+<p>
+<strong><i>bold
+italic
+multiline</strong></i>
+</p>
+==============================
+'''''bold
+italic
+multiline
+without endtags
+------------------------------
+<p>
+<strong><i>bold
+italic
+multiline
+without endtags
+</i></strong></p>
