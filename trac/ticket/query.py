@@ -315,7 +315,11 @@ class QueryModule(Component):
         return 'tickets'
 
     def get_navigation_items(self, req):
-        return []
+        from trac.ticket.report import ReportModule
+        if req.perm.has_permission(perm.TICKET_VIEW) and \
+           not self.env.is_component_enabled(ReportModule):
+            yield 'mainnav', 'tickets', '<a href="%s">View Tickets</a>' \
+                  % escape(self.env.href.query())
 
     # IRequestHandler methods
 
@@ -608,8 +612,11 @@ class QueryModule(Component):
         req.session['query_tickets'] = ' '.join([str(t['id']) for t in tickets])
 
         req.hdf['query.results'] = tickets
-        req.hdf['session.constraints'] = req.session.get('query_constraints')
-        req.hdf['session.tickets'] = req.session.get('query_tickets')
+
+        from trac.ticket.report import ReportModule
+        if req.perm.has_permission(perm.REPORT_VIEW) and \
+           self.env.is_component_enabled(ReportModule):
+            req.hdf['query.report_href'] = self.env.href.report()
 
     def display_csv(self, req, query, sep=','):
         req.send_response(200)

@@ -115,10 +115,16 @@ class ReportModule(Component):
         elif action == 'delete':
             self._render_confirm_delete(req, db, id)
         else:
-            return self._render_view(req, db, id)
+            self._render_view(req, db, id)
 
         if id != -1 or action == 'new':
             add_link(req, 'up', self.env.href.report(), 'Available Reports')
+
+        from trac.ticket.query import QueryModule
+        if req.perm.has_permission(perm.TICKET_VIEW) and \
+           self.env.is_component_enabled(QueryModule):
+            req.hdf['report.query_href'] = self.env.href.report()
+
         add_stylesheet(req, 'report.css')
         return 'report.cs', None
 

@@ -1,12 +1,12 @@
 <?cs include:"header.cs" ?>
 <?cs include:"macros.cs" ?>
 
-<div id="ctxtnav" class="nav">
- <ul><?cs if:trac.acl.REPORT_VIEW ?>
+<div id="ctxtnav" class="nav"><?cs
+ if:query.report_href ?><ul>
   <li class="first"><a href="<?cs
-    var:trac.href.report ?>">Available Reports</a></li>
-  <li class="last">Custom Query</li>
- <?cs /if ?></ul>
+    var:query.report_href ?>">Available Reports</a></li>
+  <li class="last">Custom Query</li></ul><?cs
+ /if ?>
 </div>
 
 <div id="content" class="query">

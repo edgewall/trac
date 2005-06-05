@@ -5,11 +5,13 @@
  <h2>Report Navigation</h2>
  <ul>
   <li class="first"><?cs
-   if:chrome.links.up.0.href ?><a href="<?cs
+   if:chrome.links.up.0.href ?><li class="first"><a href="<?cs
     var:chrome.links.up.0.href ?>">Available Reports</a><?cs
    else ?>Available Reports<?cs
-   /if ?></li>
-  <li class="last"><a href="<?cs var:trac.href.query ?>">Custom Query</a></li>
+  /if ?></li><?cs
+  if:report.query_href ?><li class="last"><a href="<?cs
+   var:report.query_href ?>">Custom Query</a></li><?cs
+  /if ?>
  </ul>
 </div>
 
