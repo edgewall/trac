@@ -213,8 +213,9 @@ It provides an interface to the Subversion revision control systems, integrated 
                     xtnpts[-1]['description'] = xtnpt.interface.__doc__
                 extensions = []
                 for extension in ComponentMeta._registry.get(xtnpt.interface, []):
-                    extensions.append({'name': extension.__name__,
-                                       'module': extension.__module__})
+                    if self.env.is_component_enabled(extension):
+                        extensions.append({'name': extension.__name__,
+                                           'module': extension.__module__})
                 xtnpts[-1]['extensions'] = extensions
             xtnpts.sort(lambda x,y: cmp(x['name'], y['name']))
             plugin['extension_points'] = xtnpts
