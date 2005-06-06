@@ -47,8 +47,7 @@
    <div>
     <input type="hidden" name="action" value="diff" />
     <input type="hidden" name="version" value="<?cs var:wiki.version ?>" />
-    <label>View differences
-    <select name="style" onchange="this.form.submit()">
+    <label>View differences <select name="style">
      <option value="inline"<?cs
        if:diff.style == 'inline' ?> selected="selected"<?cs
        /if ?>>inline</option>
@@ -80,7 +79,7 @@
      </div>
     </fieldset>
     <div class="buttons">
-     <input type="submit" name="update" value="Update" />
+     <input type="submit" value="Update" />
     </div>
    </div>
   </form>

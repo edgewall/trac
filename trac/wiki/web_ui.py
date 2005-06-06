@@ -86,6 +86,10 @@ class WikiModule(Component):
                     self._do_save(req, db, page)
             elif action == 'delete':
                 self._do_delete(req, db, page)
+            elif action == 'diff':
+                get_diff_options(req)
+                req.redirect(self.env.href.wiki(page.name, version=page.version,
+                                                action='diff'))
         elif action == 'delete':
             self._render_confirm(req, db, page)
         elif action == 'edit':
@@ -212,13 +216,6 @@ class WikiModule(Component):
 
         add_stylesheet(req, 'diff.css')
 
-        # Stores the diff-style in the session if it has been changed, and adds
-        # diff-style related item to the HDF
-        diff_style, diff_options = get_diff_options(req)
-        if req.args.has_key('update'):
-           req.redirect(self.env.href.wiki(page.name, version=page.version,
-                                           action='diff'))
-
         # Ask web spiders to not index old versions
         req.hdf['html.norobots'] = 1
 
@@ -238,6 +235,8 @@ class WikiModule(Component):
                 old_page = WikiPage(self.env, page.name, version)
                 break
         req.hdf['wiki'] = info
+
+        diff_style, diff_options = get_diff_options(req)
 
         oldtext = old_page and old_page.text.splitlines() or []
         newtext = page.text.splitlines()
