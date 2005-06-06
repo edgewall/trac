@@ -203,9 +203,11 @@ class BrowserModule(Component):
         else:
             charset = self.config.get('trac', 'default_charset')
 
-        if req.args.get('format') == 'raw':
+        format = req.args.get('format')
+        if format in ['raw', 'plain']:
             req.send_response(200)
-            req.send_header('Content-Type', mime_type)
+            req.send_header('Content-Type',
+                            format == 'plain' and 'text/plain' or mime_type)
             req.send_header('Content-Length', node.content_length)
             req.send_header('Last-Modified', util.http_date(node.last_modified))
             req.end_headers()
@@ -234,6 +236,12 @@ class BrowserModule(Component):
                                              format='raw')
             req.hdf['file.raw_href'] = raw_href
             add_link(req, 'alternate', raw_href, 'Original Format', mime_type)
+            if mime_type.startswith('text/') and mime_type != 'text/plain':
+                plain_href = self.env.href.browser(node.path, rev=rev and node.rev,
+                                                   format='plain')
+                req.hdf['file.plain_href'] = plain_href
+                add_link(req, 'alternate', plain_href, 'Plain Text', mime_type)
+                
             add_stylesheet(req, 'code.css')
 
 
