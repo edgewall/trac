@@ -90,7 +90,7 @@ class EnscriptDeuglifier(Deuglifier):
             r'(?P<lang><FONT COLOR="#A020F0">)',
             r'(?P<var><FONT COLOR="#DA70D6">)',
             r'(?P<font><FONT.*?>)',
-            r'(?P<endfont></FONT>)',
+            r'(?P<endfont></FONT>)'
         ]
     rules = classmethod(rules)
 
@@ -114,15 +114,17 @@ class EnscriptRenderer(Component):
 
         np = NaivePopen(cmdline, content, capturestderr=1)
         if np.errorlevel or np.err:
-            err = 'Running (%s) failed: %s, %s.' % (cmdline, np.errorlevel, np.err)
+            err = 'Running (%s) failed: %s, %s.' % (cmdline, np.errorlevel,
+                                                    np.err)
             raise Exception, err
         odata = np.out
 
         # Strip header and footer
-        i = odata.find('</H1>')
-        beg = i > 0 and i + 7
+        i = odata.find('<PRE>')
+        beg = i > 0 and i + 6
         i = odata.rfind('</PRE>')
-        end = i > 0 and i + 6 or len(odata)
+        end = i > 0 and i or len(odata)
 
         odata = EnscriptDeuglifier().format(odata[beg:end])
-        return '<div class="code-block">' + odata + '</div>'
+        for line in odata.splitlines():
+            yield line

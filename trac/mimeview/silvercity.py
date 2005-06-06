@@ -23,6 +23,12 @@
 # Get it at: http://silvercity.sourceforge.net/
 #
 
+import re
+try:
+    from cStringIO import StringIO
+except ImportError:
+    from StringIO import StringIO
+
 from trac.core import *
 from trac.mimeview.api import IHTMLPreviewRenderer
 
@@ -82,11 +88,15 @@ class SilverCityRenderer(Component):
             err = "No SilverCity lexer found for mime-type '%s'." % mimetype
             raise Exception, err
 
-        try:
-            from cStringIO import StringIO
-        except ImportError:
-            from StringIO import StringIO
-
         buf = StringIO()
         generator().generate_html(buf, content)
-        return '<div class="code-block">%s</div>\n' % buf.getvalue()
+
+        br_re = re.compile(r'<br\s*/?>$', re.MULTILINE)
+        span_default_re = re.compile(r'<span class="p_default">(.*?)</span>',
+                                     re.DOTALL)
+        html = span_default_re.sub(r'\1', br_re.sub('', buf.getvalue()))
+
+        for line in html.splitlines():
+            # SilverCity generates _way_ too many non-breaking spaces...
+            # We don't need them anyway, so replace them by normal spaces
+            yield line.replace('&nbsp;', ' ')

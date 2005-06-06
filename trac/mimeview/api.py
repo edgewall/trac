@@ -22,7 +22,15 @@
 #         Christopher Lenz <cmlenz@gmx.de>
 #
 
+from __future__ import generators
+import re
+try:
+    from cStringIO import StringIO
+except ImportError:
+    from StringIO import StringIO
+
 from trac.core import *
+from trac.util import enum, escape
 
 __all__ = ['get_charset', 'get_mimetype', 'is_binary', 'Mimeview']
 
@@ -90,8 +98,7 @@ MIME_MAP = {
 }
 
 def get_charset(mimetype):
-    """
-    Returns the character encoding included in the given content type string,
+    """Return the character encoding included in the given content type string,
     or `None` if `mimetype` is `None` or empty or if no charset information is
     available.
     """
@@ -101,6 +108,7 @@ def get_charset(mimetype):
             return mime_type[ctpos + 8:]
 
 def get_mimetype(filename):
+    """Guess the most probable MIME type of a file with the given name."""
     try:
         suffix = filename.split('.')[-1]
         return MIME_MAP[suffix]
@@ -111,45 +119,74 @@ def get_mimetype(filename):
         return None
 
 def is_binary(str):
-    """
-    Try to detect content by checking the first thousand bytes for zeroes.
-    """
+    """Detect binary content by checking the first thousand bytes for zeroes."""
     for i in range(0, min(len(str), 1000)):
         if str[i] == '\0':
             return True
     return False
 
-
 class IHTMLPreviewRenderer(Interface):
-    """
-    Extension point interface for components that add HTML renderers of specific
-    content types to the `Mimeview` component.
+    """Extension point interface for components that add HTML renderers of
+    specific content types to the `Mimeview` component.
     """
 
     def get_quality_ratio(mimetype):
-        """
-        Return the level of support this renderer provides for the content of
+        """Return the level of support this renderer provides for the content of
         the specified MIME type. The return value must be a number between 0
         and 9, where 0 means no support and 9 means "perfect" support.
         """
 
     def render(req, mimetype, content, filename=None, rev=None):
-        """
-        Render an XHTML preview of the given content of the specified MIME type,
-        and return the generated XHTML text as a string.
+        """Render an XHTML preview of the given content of the specified MIME
+        type.
+        
+        Can return the generated XHTML text as a single string or as an iterable
+        that yields strings. In the latter case, the list will be considered to
+        correspond to lines of text in the original content.
 
         The `filename` and `rev` parameters are provided for renderers that
         embed objects (using <object> or <img>) instead of included the content
         inline.
         """
 
+class IHTMLPreviewAnnotator(Interface):
+    """Extension point interface for components that can annotate an XHTML
+    representation of file contents with additional information."""
+
+    def get_annotation_type():
+        """Return a (type, label, description) tuple that defines the type of
+        annotation and provides human readable names. The `type` element should
+        be unique to the annotator. The `label` element is used as column
+        heading for the table, while `description` is used as a display name to
+        let the user toggle the appearance of the annotation type.
+        """
+
+    def annotate_line(number, content):
+        """Return the XHTML markup for the table cell that contains the
+        annotation data."""
+
 
 class Mimeview(Component):
     """A generic class to prettify data, typically source code."""
 
     renderers = ExtensionPoint(IHTMLPreviewRenderer)
+    annotators = ExtensionPoint(IHTMLPreviewAnnotator)
 
-    def render(self, req, mimetype, content, filename=None, rev=None):
+    # Public API
+
+    def get_annotation_types(self):
+        """Generator that returns all available annotation types."""
+        for annotator in self.annotators:
+            yield annotator.get_annotation_type()
+
+    def render(self, req, mimetype, content, filename=None, rev=None,
+               annotations=None):
+        """Render an XHTML preview of the given content of the specified MIME
+        type, selecting the most appropriate `IHTMLPreviewRenderer`
+        implementation available for the given MIME type.
+
+        Return a string containing the XHTML text.
+        """
         if not content:
             return ''
 
@@ -167,20 +204,100 @@ class Mimeview(Component):
             try:
                 self.log.debug('Trying to render HTML preview using %s'
                                % renderer.__class__.__name__)
-                return renderer.render(req, mimetype, content, filename, rev)
+                result = renderer.render(req, mimetype, content, filename, rev)
+                break
             except Exception, e:
                 self.log.warning('HTML preview using %s failed (%s)'
                                  % (renderer, e))
 
-        return None
+        if result and not isinstance(result, (str, unicode)):
+            if annotations:
+                return self._annotate(result, annotations)
+            else:
+                buf = StringIO()
+                buf.write('<div class="code-block"><pre>')
+                for line in result:
+                    buf.write(line + '\n')
+                buf.write('<pre></div>')
+                return buf.getvalue()
+
+        return result
+
+    def _annotate(self, lines, annotations):
+        buf = StringIO()
+        buf.write('<table class="code-block listing"><thead><tr>')
+        annotators = []
+        for annotator in self.annotators:
+            atype, alabel, adesc = annotator.get_annotation_type()
+            if atype in annotations:
+                buf.write('<th class="%s">%s</th>' % (atype, alabel))
+                annotators.append(annotator)
+        buf.write('<th class="content">&nbsp;</th>')
+        buf.write('</tr></thead><tbody>')
+
+        space_re = re.compile(' ( +)|^ ')
+        def htmlify(match):
+            div, mod = divmod(len(match.group(0)), 2)
+            return div * '&nbsp; ' + mod * '&nbsp;'
+
+        for num, line in enum(_html_splitlines(lines)):
+            cells = []
+            for annotator in annotators:
+                cells.append(annotator.annotate_line(num + 1, line))
+            cells.append('<td>%s</td>\n' % space_re.sub(htmlify, line))
+            buf.write('<tr>' + '\n'.join(cells) + '</tr>')
+        buf.write('</tbody></table>')
+        return buf.getvalue()
+
+
+def _html_splitlines(lines):
+    """Tracks open and close tags in lines of HTML text and yields lines that
+    have no tags spanning more than one line."""
+    open_tag_re = re.compile(r'<(\w+)\s.*?[^/]?>')
+    close_tag_re = re.compile(r'</(\w+)>')
+    open_tags = []
+    for line in lines:
+        # Reopen tags still open from the previous line
+        for tag in open_tags:
+            line = tag.group(0) + line
+        open_tags = []
+
+        # Find all tags opened on this line
+        for tag in open_tag_re.finditer(line):
+            open_tags.append(tag)
+
+        # Find all tags closed on this line
+        for ctag in close_tag_re.finditer(line):
+            for otag in open_tags:
+                if otag.group(1) == ctag.group(1):
+                    open_tags.remove(otag)
+                    break
+
+        # Close all tags still open at the end of line, they'll get reopened at
+        # the beginning of the next line
+        for tag in open_tags:
+            line += '</%s>' % tag.group(1)
+
+        yield line
+
+
+class LineNumberAnnotator(Component):
+    """Text annotator that adds a column with line numbers."""
+    implements(IHTMLPreviewAnnotator)
+
+    # ITextAnnotator methods
+
+    def get_annotation_type(self):
+        return 'lineno', 'Line', 'Line numbers'
+
+    def annotate_line(self, number, content):
+        return '<th id="l%s">%s</th>' % (number, number)
 
 
 class PlainTextRenderer(Component):
+    """HTML preview renderer for plain text, and fallback for any kind of text
+    for which no more specific renderer is available.
     """
-    HTML preview renderer for plain text, and fallback for any kind of text for
-    which no more specific renderer is available.
-    """
-
     implements(IHTMLPreviewRenderer)
 
     def get_quality_ratio(self, mimetype):
@@ -189,18 +306,16 @@ class PlainTextRenderer(Component):
     def render(self, req, mimetype, content, filename=None, rev=None):
         if is_binary(content):
             self.env.log.debug("Binary data; no preview available")
-            return ''
+            return
 
         self.env.log.debug("Using default plain text mimeviewer")
         from trac.util import escape
-        return '<pre class="code-block">' + escape(content) + '</pre>'
+        for line in content.splitlines():
+            yield line
 
 
 class ImageRenderer(Component):
-    """
-    Inline image display.
-    """
-
+    """Inline image display."""
     implements(IHTMLPreviewRenderer)
 
     def get_quality_ratio(self, mimetype):
@@ -217,10 +332,7 @@ class ImageRenderer(Component):
 
 
 class WikiTextRenderer(Component):
-    """
-    Render files containing Trac's own Wiki formatting markup.
-    """
-
+    """Render files containing Trac's own Wiki formatting markup."""
     implements(IHTMLPreviewRenderer)
 
     def get_quality_ratio(self, mimetype):

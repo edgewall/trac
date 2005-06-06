@@ -1,4 +1,44 @@
-.code-block {
+table.code-block-block {
+ border: 1px solid #ddd;
+ border-spacing: 0;
+ border-top: 0;
+ empty-cells: show;
+ font-size: 12px;
+ line-height: 130%;
+ padding: 0;
+ margin: 0 auto;
+ width: 100%;
+}
+table.code-block th {
+ border-right: 1px solid #d7d7d7;
+ border-bottom: 1px solid #998;
+ font-size: 11px;
+}
+table.code-block thead th {
+ background: #eee;
+ border-top: 1px solid #d7d7d7;
+ color: #999;
+ padding: 0 .25em;
+ text-align: center;
+ white-space: nowrap;
+}
+table.code-block tbody th {
+ background: #eed;
+ color: #886;
+ font-weight: normal;
+ padding: 0 .5em;
+ text-align: right;
+ vertical-align: top;
+}
+table.code-block tbody td {
+ background: #fff;
+ font: normal 11px monospace;
+ overflow: hidden;
+ padding: 1px 2px;
+ vertical-align: top;
+}
+
+div.code-block {
  border: 1px dotted #d7d7d7;
  margin: 1em 0;
  padding: .3em;
