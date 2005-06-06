@@ -121,8 +121,12 @@ class CachedChangeset(Changeset):
         cursor = self.db.cursor()
         cursor.execute("SELECT time,author,message FROM revision "
                        "WHERE rev=%s", (rev,))
-        date, author, message = cursor.fetchone()
-        Changeset.__init__(self, rev, message, author, int(date))
+        row = cursor.fetchone()
+        if row:
+            date, author, message = row
+            Changeset.__init__(self, rev, message, author, int(date))
+        else:
+            raise TracError, "No changeset %s in the repository" % rev
 
     def get_changes(self):
         cursor = self.db.cursor()
