@@ -123,7 +123,7 @@ class ReportModule(Component):
         from trac.ticket.query import QueryModule
         if req.perm.has_permission(perm.TICKET_VIEW) and \
            self.env.is_component_enabled(QueryModule):
-            req.hdf['report.query_href'] = self.env.href.report()
+            req.hdf['report.query_href'] = self.env.href.query()
 
         add_stylesheet(req, 'report.css')
         return 'report.cs', None
