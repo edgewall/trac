@@ -23,6 +23,8 @@
 # Get it at: http://silvercity.sourceforge.net/
 #
 
+from __future__ import generators
+
 import re
 try:
     from cStringIO import StringIO
