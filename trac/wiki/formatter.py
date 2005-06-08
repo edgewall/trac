@@ -125,7 +125,8 @@ class CommonFormatter(object):
     """This class contains the patterns common to both Formatter and
     OneLinerFormatter"""
 
-    _rules = [r"(?P<bold>''')",
+    _rules = [r"(?P<bolditalic>''''')",
+              r"(?P<bold>''')",
               r"(?P<italic>'')",
               r"(?P<underline>__)",
               r"(?P<strike>~~)",
@@ -167,23 +168,38 @@ class CommonFormatter(object):
 
     def close_tag(self, tag):
         tmp =  ''
-        for i in range(len(self._open_tags)-1, -1, -1):
-            if self._open_tags[i] == tag:
-                tmp += self._open_tags[i]
+        for i in xrange(len(self._open_tags)-1, -1, -1):
+            tmp += self._open_tags[i][1]
+            if self._open_tags[i][1] == tag:
                 del self._open_tags[i]
+                for j in xrange(i, len(self._open_tags)):
+                    tmp += self._open_tags[j][0]
                 break
         return tmp
         
-    def open_tag(self, tag):
-        self._open_tags.append(tag)
+    def open_tag(self, open, close):
+        self._open_tags.append((open, close))
 
     def simple_tag_handler(self, open_tag, close_tag):
         """Generic handler for simple binary style tags"""
-        if self.tag_open_p(close_tag):
+        if self.tag_open_p((open_tag, close_tag)):
             return self.close_tag(close_tag)
         else:
-            self.open_tag(close_tag)
+            self.open_tag(open_tag, close_tag)
         return open_tag
+
+    def _bolditalic_formatter(self, match, fullmatch):
+        bold = ('<strong>', '</strong>')
+        bold_open = self.tag_open_p(bold)
+        tmp = ''
+        if not bold_open:
+            tmp += bold[0]
+            self.open_tag(*bold)
+        tmp += self._italic_formatter(match, fullmatch)
+        if bold_open:
+            tmp += bold[1]
+            self.close_tag(bold[1])
+        return tmp
 
     def _bold_formatter(self, match, fullmatch):
         return self.simple_tag_handler('<strong>', '</strong>')
@@ -530,7 +546,7 @@ class Formatter(CommonFormatter):
     def close_paragraph(self):
         if self.paragraph_open:
             while self._open_tags != []:
-                self.out.write(self._open_tags.pop())
+                self.out.write(self._open_tags.pop()[1])
             self.out.write('</p>' + os.linesep)
             self.paragraph_open = 0
 
@@ -632,8 +648,6 @@ class Formatter(CommonFormatter):
             self.in_list_item = 0
             # Throw a bunch of regexps on the problem
             result = re.sub(rules, self.replace, line)
-            # Close all open 'one line'-tags
-            result += self.close_tag(None)
 
             if not self.in_list_item:
                 self.close_list()

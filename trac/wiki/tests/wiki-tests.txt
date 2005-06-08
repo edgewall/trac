@@ -333,25 +333,37 @@ Inline  comment
 This should be '''''bold and italic'''''
 ------------------------------
 <p>
-This should be <strong><i>bold and italic</strong></i>
+This should be <strong><i>bold and italic</i></strong>
 </p>
 ==============================
 '''''one''''', '''''two''''', '''''three''''', '''''four'''''
 ------------------------------
 <p>
-<strong><i>one</strong></i>, <strong><i>two</strong></i>, <strong><i>three</strong></i>, <strong><i>four</strong></i>
+<strong><i>one</i></strong>, <strong><i>two</i></strong>, <strong><i>three</i></strong>, <strong><i>four</i></strong>
 </p>
 ==============================
-__~~underlineoversrike__~~
+__~~underlineoversrike~~__
 ------------------------------
 <p>
-<span class="underline"><del>underlineoversrike</span></del>
+<span class="underline"><del>underlineoversrike</del></span>
+</p>
+==============================
+__~~overlapping__tags~~
+------------------------------
+<p>
+<span class="underline"><del>overlapping</del></span><del>tags</del>
+</p>
+==============================
+__~~outoforderclosetags__~~
+------------------------------
+<p>
+<span class="underline"><del>outoforderclosetags</del></span><del></del>
 </p>
 ==============================
 '''''bolditalic''' # Open italic should be closed before paragraph end
 ------------------------------
 <p>
-<strong><i>bolditalic</strong> # Open italic should be closed before paragraph end
+<strong><i>bolditalic</i></strong><i> # Open italic should be closed before paragraph end
 </i></p>
 ==============================
 '''''bold
@@ -361,7 +373,7 @@ multiline'''''
 <p>
 <strong><i>bold
 italic
-multiline</strong></i>
+multiline</i></strong>
 </p>
 ==============================
 '''''bold
