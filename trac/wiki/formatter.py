@@ -189,16 +189,16 @@ class CommonFormatter(object):
         return open_tag
 
     def _bolditalic_formatter(self, match, fullmatch):
-        bold = ('<strong>', '</strong>')
-        bold_open = self.tag_open_p(bold)
+        italic = ('<i>', '</i>')
+        italic_open = self.tag_open_p(italic)
         tmp = ''
-        if not bold_open:
-            tmp += bold[0]
-            self.open_tag(*bold)
-        tmp += self._italic_formatter(match, fullmatch)
-        if bold_open:
-            tmp += bold[1]
-            self.close_tag(bold[1])
+        if italic_open:
+            tmp += italic[1]
+            self.close_tag(italic[1])
+        tmp += self._bold_formatter(match, fullmatch)
+        if not italic_open:
+            tmp += italic[0]
+            self.open_tag(*italic)
         return tmp
 
     def _bold_formatter(self, match, fullmatch):

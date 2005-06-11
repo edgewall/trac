@@ -366,6 +366,18 @@ __~~outoforderclosetags__~~
 <strong><i>bolditalic</i></strong><i> # Open italic should be closed before paragraph end
 </i></p>
 ==============================
+''italic'''''bold'''
+------------------------------
+<p>
+<i>italic</i><strong>bold</strong>
+</p>
+==============================
+'''bold'''''italic''
+------------------------------
+<p>
+<strong>bold</strong><i>italic</i>
+</p>
+==============================
 '''''bold
 italic
 multiline'''''
