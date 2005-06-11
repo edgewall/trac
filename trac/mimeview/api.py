@@ -311,7 +311,7 @@ class PlainTextRenderer(Component):
         self.env.log.debug("Using default plain text mimeviewer")
         from trac.util import escape
         for line in content.splitlines():
-            yield line
+            yield escape(line)
 
 
 class ImageRenderer(Component):
