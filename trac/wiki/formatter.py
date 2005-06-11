@@ -396,6 +396,7 @@ class Formatter(CommonFormatter):
              [r"""(?P<macro>!?\[\[(?P<macroname>[\w/+-]+)(\]\]|\((?P<macroargs>.*?)\)\]\]))""",
               r"""(?P<heading>^\s*(?P<hdepth>=+)\s.*\s(?P=hdepth)\s*$)""",
               r"""(?P<list>^(?P<ldepth>\s+)(?:\*|[0-9]+\.) )""",
+              r"""(?P<definition>^\s+(.+)::)\s*""",
               r"""(?P<indent>^(?P<idepth>\s+)(?=\S))""",
               r"""(?P<imgurl>!?([a-z]+://[^ ]+)\.(PNG|png|JPG|jpg|JPEG|jpeg|GIF|gif)(\?\S+)?)""",
               r"""(?P<url>!?([a-z]+://[^ ]+[^\.,' \)\]\}]))""",
@@ -440,6 +441,7 @@ class Formatter(CommonFormatter):
         self.close_paragraph()
         self.close_indentation()
         self.close_list()
+        self.close_def_list()
 
         depth = min(len(fullmatch.group('hdepth')), 5)
         heading = match[depth + 1:len(match) - depth - 1]
@@ -490,6 +492,8 @@ class Formatter(CommonFormatter):
         self.indent_level = 0
 
     def open_indentation(self, depth):
+        if self.in_def_list:
+            return
         diff = depth - self.indent_level
         if diff != 0:
             self.close_paragraph()
@@ -505,6 +509,18 @@ class Formatter(CommonFormatter):
         type_ = ['ol', 'ul'][match[ldepth] == '*']
         self._set_list_depth(depth, type_)
         return ''
+
+    def _definition_formatter(self, match, fullmatch):
+        tmp = self.in_def_list and '</dd>' or '<dl>'
+        tmp += '<dt>%s</dt><dd>' % wiki_to_oneliner(match[:-2], self.env,
+                                                    self.db)
+        self.in_def_list = True
+        return tmp
+
+    def close_def_list(self):
+        if self.in_def_list:
+            self.out.write('</dd></dl>\n')
+        self.in_def_list = False
 
     def _set_list_depth(self, depth, type_):
         current_depth = len(self._list_stack)
@@ -555,6 +571,7 @@ class Formatter(CommonFormatter):
             self.close_paragraph()
             self.close_indentation()
             self.close_list()
+            self.close_def_list()
             self.in_table = 1
             self.out.write('<table class="wiki">' + os.linesep)
 
@@ -615,6 +632,7 @@ class Formatter(CommonFormatter):
 
         self.in_code_block = 0
         self.in_table = 0
+        self.in_def_list = 0
         self.in_table_row = 0
         self.in_table_cell = 0
         self.indent_level = 0
@@ -632,6 +650,7 @@ class Formatter(CommonFormatter):
                 self.close_paragraph()
                 self.close_indentation()
                 self.close_list()
+                self.close_def_list()
                 self.close_table()
                 self.out.write('<hr />' + os.linesep)
                 continue
@@ -640,22 +659,27 @@ class Formatter(CommonFormatter):
                 self.close_paragraph()
                 self.close_indentation()
                 self.close_list()
+                self.close_def_list()
                 continue
 
             line = util.escape(line)
             if escape_newlines:
                 line += ' [[BR]]'
-            self.in_list_item = 0
+            self.in_list_item = False
             # Throw a bunch of regexps on the problem
             result = re.sub(rules, self.replace, line)
 
             if not self.in_list_item:
                 self.close_list()
 
+            if self.in_def_list and not line.startswith(' '):
+                self.close_def_list()
+
             if self.in_table and line[0:2] != '||':
                 self.close_table()
 
-            if len(result) and not self.in_list_item and not self.in_table:
+            if len(result) and not self.in_list_item and not self.in_def_list \
+                    and not self.in_table:
                 self.open_paragraph()
             out.write(result + os.linesep)
             self.close_table_row()
@@ -664,6 +688,7 @@ class Formatter(CommonFormatter):
         self.close_paragraph()
         self.close_indentation()
         self.close_list()
+        self.close_def_list()
 
 
 class OutlineFormatter(Formatter):

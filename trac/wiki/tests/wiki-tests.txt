@@ -399,3 +399,17 @@ italic
 multiline
 without endtags
 </i></strong></p>
+==============================
+ term:: definition
+------------------------------
+<dl><dt>term</dt><dd>definition
+</dd></dl>
+==============================
+ complex topic:: multiline
+                 ''formatted''
+                 definition
+------------------------------
+<dl><dt>complex topic</dt><dd>multiline
+<i>formatted</i>
+definition
+</dd></dl>
