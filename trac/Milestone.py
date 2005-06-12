@@ -284,19 +284,21 @@ class MilestoneModule(Component):
 
     def get_timeline_events(self, req, start, stop, filters):
         if 'milestone' in filters:
-            absurls = req.args.get('format') == 'rss' # Kludge
+            format = req.args.get('format')
             db = self.env.get_db_cnx()
             cursor = db.cursor()
             cursor.execute("SELECT completed,name,description FROM milestone "
                            "WHERE completed>=%s AND completed<=%s", start, stop)
             for completed,name,description in cursor:
-                if absurls:
+                title = 'Milestone <em>%s</em> completed' % escape(name)
+                if format == 'rss':
                     href = self.env.abs_href.milestone(name)
+                    message = wiki_to_html(description or '--', self.env, db,
+                                           absurls=True)
                 else:
                     href = self.env.href.milestone(name)
-                title = 'Milestone <em>%s</em> completed' % escape(name)
-                message = wiki_to_oneliner(shorten_line(description),
-                                           self.env, db, absurls=absurls)
+                    message = wiki_to_oneliner(shorten_line(description),
+                                               self.env, db)
                 yield 'milestone', href, title, completed, None, message
 
     # IRequestHandler methods

@@ -86,7 +86,7 @@ class ChangesetModule(Component):
 
     def get_timeline_events(self, req, start, stop, filters):
         if 'changeset' in filters:
-            absurls = req.args.get('format') == 'rss' # Kludge
+            format = req.args.get('format')
             show_files = int(self.config.get('timeline',
                                              'changeset_show_files'))
             db = self.env.get_db_cnx()
@@ -97,14 +97,16 @@ class ChangesetModule(Component):
                 if chgset.date < start:
                     return
                 if chgset.date < stop:
-                    if absurls:
-                        href = self.env.abs_href.changeset(chgset.rev)
-                    else:
-                        href = self.env.href.changeset(chgset.rev)
                     title = 'Changeset <em>[%s]</em> by %s' % (
                             util.escape(chgset.rev), util.escape(chgset.author))
-                    message = wiki_to_oneliner(util.shorten_line(chgset.message or '--'),
-                                               self.env, db, absurls=absurls)
+                    if format == 'rss':
+                        href = self.env.abs_href.changeset(chgset.rev)
+                        message = wiki_to_html(chgset.message or '--', self.env,
+                                               db, absurls=True)
+                    else:
+                        href = self.env.href.changeset(chgset.rev)
+                        excerpt = util.shorten_line(chgset.message or '--')
+                        message = wiki_to_oneliner(excerpt, self.env, db)
                     if show_files:
                         files = []
                         for chg in chgset.get_changes():

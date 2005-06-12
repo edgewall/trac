@@ -253,7 +253,7 @@ class TicketModule(Component):
 
     def get_timeline_events(self, req, start, stop, filters):
         if 'ticket' in filters:
-            absurls = req.args.get('format') == 'rss' # Kludge
+            format = req.args.get('format')
             sql = []
 
             # New tickets
@@ -292,15 +292,16 @@ class TicketModule(Component):
             verbs = {'new': 'created', 'reopened': 'reopened',
                      'closed': 'closed'}
             for t,id,resolution,state,type,message,author,summary in cursor:
-                if absurls:
-                    href = self.env.abs_href.ticket(id)
-                else:
-                    href = self.env.href.ticket(id)
                 title = 'Ticket <em title="%s">#%s</em> (%s) %s by %s' % (
                         util.escape(summary), id, type, verbs[state],
                         util.escape(author))
-                message = wiki_to_oneliner(util.shorten_line(message), self.env,
-                                           db, absurls=absurls)
+                if format == 'rss':
+                    href = self.env.abs_href.ticket(id)
+                    message = wiki_to_html(message or '--', self.env, db)
+                else:
+                    href = self.env.href.ticket(id)
+                    message = wiki_to_oneliner(util.shorten_line(message),
+                                               self.env, db)
                 yield kinds[state], href, title, t, author, message
 
     # Internal methods

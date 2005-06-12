@@ -120,21 +120,23 @@ class WikiModule(Component):
 
     def get_timeline_events(self, req, start, stop, filters):
         if 'wiki' in filters:
-            absurls = req.args.get('format') == 'rss' # Kludge
+            format = req.args.get('format')
             db = self.env.get_db_cnx()
             cursor = db.cursor()
             cursor.execute("SELECT time,name,comment,author "
                            "FROM wiki WHERE time>=%s AND time<=%s",
                            (start, stop))
             for t,name,comment,author in cursor:
-                if absurls:
-                    href = self.env.abs_href.wiki(name)
-                else:
-                    href = self.env.href.wiki(name)
                 title = '<em>%s</em> edited by %s' % (
                         escape(name), escape(author))
-                comment = wiki_to_oneliner(shorten_line(comment), self.env, db,
-                                           absurls=absurls)
+                if format == 'rss':
+                    href = self.env.abs_href.wiki(name)
+                    comment = wiki_to_html(comment or '--', self.env, db,
+                                           absurls=True)
+                else:
+                    href = self.env.href.wiki(name)
+                    comment = wiki_to_oneliner(shorten_line(comment), self.env,
+                                               db)
                 yield 'wiki', href, title, t, author, comment
 
     # Internal methods
