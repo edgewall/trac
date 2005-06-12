@@ -24,57 +24,87 @@ from __future__ import generators
 
 from trac import db, db_default, util
 from trac.config import Configuration
-from trac.core import ComponentManager
+from trac.core import Component, ComponentManager, Interface, ExtensionPoint, \
+                      TracError
 
 import os
-import shutil
-import sys
-import time
-import urllib
-import unicodedata
+import os.path
 
 db_version = db_default.db_version
 
 
-class Environment(ComponentManager):
-    """
-    Trac stores project information in a Trac environment.
+class IEnvironmentSetupParticipant(Interface):
+    """Extension point interface for components that need to participate in the
+    creation and upgrading of Trac environments, for example to create
+    additional database tables."""
 
-    A Trac environment consists of a directory structure containing
-    among other things:
+    def environment_created():
+        """Called when a new Trac environment is created."""
+
+
+class Environment(Component, ComponentManager):
+    """Trac stores project information in a Trac environment.
+
+    A Trac environment consists of a directory structure containing among other
+    things:
      * a configuration file.
-     * a sqlite database (stores tickets, wiki pages...)
+     * an SQLite database (stores tickets, wiki pages...)
      * Project specific templates and wiki macros.
      * wiki and ticket attachments.
-    """
-    __cnx_pool = None
+    """   
+    setup_participants = ExtensionPoint(IEnvironmentSetupParticipant)
 
     def __init__(self, path, create=False, db_str=None):
+        """Initialize the Trac environment.
+        
+        @param path:   the absolute path to the Trac environment
+        @param create: if `True`, the environment is created and populated with
+                       default data; otherwise, the environment is expected to
+                       already exist.
+        @param db_str: the database connection string
+        """
         ComponentManager.__init__(self)
-        self.path = path
-        if create:
-            self.create(db_str)
-        self.verify()
-        self.load_config()
 
         try: # Use binary I/O on Windows
-            import msvcrt
+            import msvcrt, sys
             msvcrt.setmode(sys.stdin.fileno(), os.O_BINARY)
             msvcrt.setmode(sys.stdout.fileno(), os.O_BINARY)
         except ImportError:
             pass
 
+        self.path = path
+        self.__cnx_pool = None
+        if create:
+            self.create(db_str)
+        else:
+            self.verify()
+            self.load_config()
         self.setup_log()
 
         from trac.loader import load_components
         load_components(self)
 
+        if create:
+            for setup_participant in self.setup_participants:
+                setup_participant.environment_created()
+
     def component_activated(self, component):
+        """Initialize additional member variables for components.
+        
+        Every component activated through the `Environment` object gets three
+        member variables: `env` (the environment object), `config` (the
+        environment configuration) and `log` (a logger object)."""
         component.env = self
         component.config = self.config
         component.log = self.log
 
     def is_component_enabled(self, cls):
+        """Implemented to only allow activation of components that are not
+        disabled in the configuration.
+        
+        This is called by the `ComponentManager` base class when a component is
+        about to be activated. If this method returns false, the component does
+        not get activated."""
         component_name = (cls.__module__ + '.' + cls.__name__).lower()
         for name,value in self.config.options('disabled_components'):
             if value in util.TRUE and component_name.startswith(name):
@@ -82,21 +112,31 @@ class Environment(ComponentManager):
         return True
 
     def verify(self):
-        """Verifies that self.path is a compatible trac environment"""
+        """Verify that the provided path points to a valid Trac environment
+        directory."""
         fd = open(os.path.join(self.path, 'VERSION'), 'r')
         assert fd.read(26) == 'Trac Environment Version 1'
         fd.close()
 
     def get_db_cnx(self):
+        """Return a database connection from the connection pool."""
         if not self.__cnx_pool:
             self.__cnx_pool = db.get_cnx_pool(self)
         return self.__cnx_pool.get_cnx()
-
+    
     def shutdown(self):
+        """Close the environment."""
         if self.__cnx_pool:
             self.__cnx_pool.shutdown()
 
     def get_repository(self, authname=None):
+        """Return the version control repository configured for this
+        environment.
+        
+        The repository is wrapped in a `CachedRepository`.
+        
+        @param authname: user name for authorization
+        """
         from trac.versioncontrol.cache import CachedRepository
         from trac.versioncontrol.svn_authz import SubversionAuthorizer
         from trac.versioncontrol.svn_fs import SubversionRepository
@@ -110,6 +150,8 @@ class Environment(ComponentManager):
         return CachedRepository(self.get_db_cnx(), repos, authz, self.log)
 
     def create(self, db_str=None):
+        """Create the basic directory structure of the environment, initialize
+        the database and populate the configuration file with default values."""
         def _create_file(fname, data=None):
             fd = open(fname, 'w')
             if data: fd.write(data)
@@ -121,7 +163,7 @@ class Environment(ComponentManager):
         os.mkdir(self.get_attachments_dir())
         os.mkdir(self.get_templates_dir())
         os.mkdir(os.path.join(self.path, 'wiki-macros'))
-        # Create a few static files
+        # Create a few files
         _create_file(os.path.join(self.path, 'VERSION'),
                      'Trac Environment Version 1\n')
         _create_file(os.path.join(self.path, 'README'),
@@ -161,6 +203,11 @@ class Environment(ComponentManager):
         self._insert_default_data(cnx)
 
     def _insert_default_data(self, db=None):
+        """Insert default data into the database.
+
+        @param db: the database connection; if ommitted, a new connection is
+                   retrieved.
+        """
         if not db:
             db = self.get_db_cnx()
         cursor = db.cursor()
@@ -171,6 +218,7 @@ class Environment(ComponentManager):
         db.commit()
 
     def get_version(self):
+        """Return the current version of the database."""
         cnx = self.get_db_cnx()
         cursor = cnx.cursor()
         cursor.execute("SELECT value FROM system WHERE name='database_version'")
@@ -178,17 +226,25 @@ class Environment(ComponentManager):
         return row and int(row[0])
 
     def load_config(self):
+        """Load the configuration file."""
         self.config = Configuration(os.path.join(self.path, 'conf', 'trac.ini'))
         for section,name,value in db_default.default_config:
             self.config.setdefault(section, name, value)
 
+    def get_attachments_dir(self):
+        """Return absolute path to the attachments directory."""
+        return os.path.join(self.path, 'attachments')
+
     def get_templates_dir(self):
+        """Return absolute path to the templates directory."""
         return os.path.join(self.path, 'templates')
 
     def get_log_dir(self):
+        """Return absolute path to the log directory."""
         return os.path.join(self.path, 'log')
 
     def setup_log(self):
+        """Initialize the logging sub-system."""
         from trac.log import logger_factory
         logtype = self.config.get('logging', 'log_type')
         loglevel = self.config.get('logging', 'log_level')
@@ -197,17 +253,16 @@ class Environment(ComponentManager):
         logid = self.path # Env-path provides process-unique ID
         self.log = logger_factory(logtype, logfile, loglevel, logid)
 
-    def get_attachments_dir(self):
-        return os.path.join(self.path, 'attachments')
-
     def get_known_users(self, cnx=None):
-        """
-        Generator that yields information about all known users, i.e. users that
-        have logged in to this Trac environment and possibly set their name and
-        email.
+        """Generator that yields information about all known users, i.e. users
+        that have logged in to this Trac environment and possibly set their name
+        and email.
 
         This function generates one tuple for every user, of the form
         (username, name, email) ordered alpha-numerically by username.
+
+        @param cnx: the database connection; if ommitted, a new connection is
+                    retrieved
         """
         if not cnx:
             cnx = self.get_db_cnx()
@@ -223,7 +278,13 @@ class Environment(ComponentManager):
             yield username, name, email
 
     def backup(self, dest=None):
-        """Simple SQLite-specific backup. Copy the database file."""
+        """Simple SQLite-specific backup of the database.
+
+        @param dest: Destination file; if not specified, the backup is stored in
+                     a file called db_name.trac_version.bak
+        """
+        import shutil
+
         db_str = self.config.get('trac', 'database')
         if db_str[:7] != 'sqlite:':
             raise EnvironmentError, 'Can only backup sqlite databases'
@@ -232,52 +293,64 @@ class Environment(ComponentManager):
             dest = '%s.%i.bak' % (db_name, self.get_version())
         shutil.copy (db_name, dest)
 
-    def upgrade(self, backup=None,backup_dest=None):
-        """Upgrade database. Each db version should have its own upgrade
-        module, names upgrades/dbN.py, where 'N' is the version number (int)."""
+    def upgrade(self, backup=None, backup_dest=None):
+        """Upgrade database.
+        
+        Each db version should have its own upgrade module, names
+        upgrades/dbN.py, where 'N' is the version number (int).
+
+        @param backup: whether or not to backup before upgrading
+        @param backup_dest: name of the backup file
+        @return: whether the upgrade was performed
+        """
         dbver = self.get_version()
         if dbver == db_default.db_version:
-            return 0
+            return upgrade_requestors
         elif dbver > db_default.db_version:
-            raise EnvironmentError, 'Database newer than Trac version'
+            raise TracError, 'Database newer than Trac version'
         else:
             if backup:
                 self.backup(backup_dest)
             cnx = self.get_db_cnx()
             cursor = cnx.cursor()
             import upgrades
-            for i in xrange(dbver + 1, db_default.db_version + 1):
+            for i in range(dbver + 1, db_default.db_version + 1):
                 try:
                     upg  = 'db%i' % i
                     __import__('upgrades', globals(), locals(),[upg])
                     d = getattr(upgrades, upg)
                 except AttributeError:
                     err = 'No upgrade module for version %i (%s.py)' % (i, upg)
-                    raise EnvironmentError, err
+                    raise TracError, err
                 d.do_upgrade(self, i, cursor)
             cursor.execute("UPDATE system SET value=%s WHERE "
                            "name='database_version'", (db_default.db_version))
             self.log.info('Upgraded db version from %d to %d',
                           dbver, db_default.db_version)
             cnx.commit()
-            return 1
+            return True
 
 
 def open_environment(env_path=None):
+    """Open an existing environment object, and verify that the database is up
+    to date.
+
+    @param: env_path absolute path to the environment directory; if ommitted,
+            the value of the `TRAC_ENV` environment variable is used
+    @return: the `Environment` object
+    """
     if not env_path:
         env_path = os.getenv('TRAC_ENV')
     if not env_path:
-        raise EnvironmentError, \
-              'Missing environment variable "TRAC_ENV". Trac requires this ' \
-              'variable to point to a valid Trac Environment.'
+        raise TracError, 'Missing environment variable "TRAC_ENV". Trac ' \
+                         'requires this variable to point to a valid Trac ' \
+                         'environment.'
 
     env = Environment(env_path)
     version = env.get_version()
     if version < db_version:
-        raise EnvironmentError, \
-              'The Trac Environment needs to be upgraded. Run "trac-admin %s ' \
-              'upgrade"' % env_path
+        raise TracError, 'The Trac Environment needs to be upgraded. Run ' \
+                         'trac-admin %s upgrade"' % env_path
     elif version > db_version:
-        raise EnvironmentError, \
-              'Unknown Trac Environment version (%d).' % version
+        raise TracError, 'Unknown Trac Environment version (%d).' % version
     return env

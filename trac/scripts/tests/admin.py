@@ -77,7 +77,7 @@ class InMemoryEnvironment(Environment):
         return self._db
 
     def create(self, db_str=None):
-        pass
+        self.load_config()
 
     def verify(self):
         return True

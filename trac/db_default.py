@@ -19,6 +19,7 @@
 #
 # Author: Daniel Lundin <daniel@edgewall.com>
 
+from trac.config import default_dir
 
 # Database version identifier. Used for automatic upgrades.
 db_version = 13
@@ -411,7 +412,7 @@ data = (('component',
 default_config = \
  (('trac', 'htdocs_location', ''),
   ('trac', 'repository_dir', ''),
-  ('trac', 'templates_dir', '/usr/lib/trac/templates'),
+  ('trac', 'templates_dir', default_dir('templates')),
   ('trac', 'database', 'sqlite:db/trac.db'),
   ('trac', 'default_charset', 'iso-8859-15'),
   ('trac', 'default_handler', 'WikiModule'),
