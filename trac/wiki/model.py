@@ -30,13 +30,17 @@ from trac.wiki.api import WikiSystem
 
 
 class WikiPage(object):
-    """
-    Represents a wiki page (new or existing).
-    """
+    """Represents a wiki page (new or existing)."""
+
     def __init__(self, env, name=None, version=None, db=None):
         self.env = env
         self.name = name
-        self._fetch(name, version, db)
+        if name:
+            self._fetch(name, version, db)
+        else:
+            self.version = -1
+            self.text = ''
+            self.readonly = 0
         self.old_text = self.text
         self.old_readonly = self.readonly
 
@@ -73,6 +77,7 @@ class WikiPage(object):
         else:
             handle_ta = False
 
+        page_deleted = False
         cursor = db.cursor()
         if version is None:
             # Delete a wiki page completely

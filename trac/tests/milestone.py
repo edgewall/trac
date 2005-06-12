@@ -1,6 +1,6 @@
 from trac.Milestone import Milestone
 from trac.log import logger_factory
-from trac.test import Mock
+from trac.test import EnvironmentStub
 from trac.ticket import Ticket
 
 import unittest
@@ -9,10 +9,8 @@ import unittest
 class MilestoneTestCase(unittest.TestCase):
 
     def setUp(self):
-        from trac.test import InMemoryDatabase
-        self.db = InMemoryDatabase()
-        self.env = Mock(log=logger_factory('test'),
-                        get_db_cnx=lambda: self.db)
+        self.env = EnvironmentStub()
+        self.db = self.env.get_db_cnx()
 
     def test_new_milestone(self):
         milestone = Milestone(self.env)
