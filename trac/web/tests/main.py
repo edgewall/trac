@@ -64,7 +64,8 @@ class WebMainTestCase(unittest.TestCase):
                    end_headers=lambda: None,
                    send_header=lambda x,y: headers.setdefault(x, y),
                    write=lambda x: body.write(x),
-                   send_response=lambda x: status.append(x))
+                   send_response=lambda x: status.append(x),
+                   session=Mock(save=lambda: None))
         self.assertRaises(RequestDone, req.redirect, '/trac/test')
         self.assertEqual(302, status[0])
         self.assertEqual('http://example.org/trac/test', headers['Location'])
@@ -79,7 +80,8 @@ class WebMainTestCase(unittest.TestCase):
                    end_headers=lambda: None,
                    send_header=lambda x,y: headers.setdefault(x, y),
                    write=lambda x: body.write(x),
-                   send_response=lambda x: status.append(x))
+                   send_response=lambda x: status.append(x),
+                   session=Mock(save=lambda: None))
         self.assertRaises(RequestDone, req.redirect,
                           'http://example.org/trac/test')
         self.assertEqual(302, status[0])

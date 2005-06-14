@@ -21,6 +21,8 @@
 
 import time
 
+__all__ = ['Ticket', 'Type', 'Status', 'Resolution', 'Priority', 'Severity']
+
 
 class Ticket(dict):
     std_fields = ['type', 'time', 'component', 'severity', 'priority',
@@ -203,3 +205,119 @@ class Ticket(dict):
         for t, author, field, oldvalue, newvalue in cursor:
             log.append((int(t), author, field, oldvalue or '', newvalue or ''))
         return log
+
+
+class EnumBase(object):
+
+    def __init__(self, env, type, name=None, db=None):
+        self.env = env
+        self.type = type
+        if name:
+            if not db:
+                db = self.env.get_db_cnx()
+            cursor = db.cursor()
+            cursor.execute("SELECT value FROM enum WHERE type=%s AND name=%s",
+                           (self.type, name))
+            row = cursor.fetchone()
+            cursor.close()
+            if not row:
+                raise TracError, '%s %s does not exist.' % (self.type, name)
+            self.name = self.old_name = name
+            self.value = row[0]
+        else:
+            self.name = self.old_name = None
+
+    exists = property(fget=lambda self: self.old_name is not None)
+
+    def delete(self, retarget_to=None, db=None):
+        if not db:
+            db = self.env.get_db_cnx()
+            handle_ta = True
+        else:
+            handle_ta = False
+
+        cursor = db.cursor()
+        self.env.log.info('Deleting %s %s' % (self.type, self.name))
+        cursor.execute("DELETE FROM enum WHERE type=%s AND name=%s",
+                       (self.type, self.name,))
+
+        if handle_ta:
+            db.commit()
+
+    def insert(self, db=None):
+        assert self.name, 'Cannot create %s with no name' % self.type
+        if not db:
+            db = self.env.get_db_cnx()
+            handle_ta = True
+        else:
+            handle_ta = False
+
+        cursor = db.cursor()
+        self.env.log.debug("Creating new %s '%s'" % (self.type, self.name))
+        cursor.execute("INSERT INTO enum (name) VALUES (%s)", (self.name,))
+
+        if handle_ta:
+            db.commit()
+
+    def update(self, db=None):
+        assert self.name, 'Cannot update %s with no name' % self.type
+        if not db:
+            db = self.env.get_db_cnx()
+            handle_ta = True
+        else:
+            handle_ta = False
+
+        cursor = db.cursor()
+        self.env.log.info('Updating %s "%s"' % (self.type, self.name))
+        cursor.execute("UPDATE enum SET name=%s WHERE value=%s",
+                       (self.name, self.value))
+        # FIXME: Update all tickets?
+        self.old_name = self.name
+
+        if handle_ta:
+            db.commit()
+
+    def select(cls, env, type, db=None):
+        if not db:
+            db = env.get_db_cnx()
+
+        cursor = db.cursor()
+        cursor.execute("SELECT name,value FROM enum WHERE type=%s "
+                       "ORDER BY value", (type,))
+        for name, value in cursor:
+            obj = cls(env, type)
+            obj.name = name
+            obj.value = value
+            yield obj
+
+    select = classmethod(select)
+
+
+class Type(EnumBase):
+
+    def __init__(self, env, name=None, db=None):
+        EnumBase.__init__(self, env, 'ticket_type', name, db)
+
+
+class Status(EnumBase):
+
+    def __init__(self, env, name=None, db=None):
+        EnumBase.__init__(self, env, 'status', name, db)
+
+
+class Resolution(EnumBase):
+
+    def __init__(self, env, name=None, db=None):
+        EnumBase.__init__(self, env, 'resolution', name, db)
+
+
+class Priority(EnumBase):
+
+    def __init__(self, env, name=None, db=None):
+        EnumBase.__init__(self, env, 'priority', name, db)
+
+
+class Severity(EnumBase):
+
+    def __init__(self, env, name=None, db=None):
+        EnumBase.__init__(self, env, 'severity', name, db)
