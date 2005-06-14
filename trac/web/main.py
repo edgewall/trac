@@ -118,6 +118,7 @@ class Request(object):
         `url` may be relative or absolute, relative URLs will be translated
         appropriately.
         """
+        self.session.save() # has to be done before the redirect is sent
         self.send_response(302)
         if not url.startswith('http://') and not url.startswith('https://'):
             # Make sure the URL is absolute
