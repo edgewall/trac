@@ -536,23 +536,23 @@ class TracAdmin(cmd.Cmd):
         print '   trac-admin %s' % self.envname
         print
         print ' Don\'t forget, you also need to copy (or symlink) "trac/cgi-bin/trac.cgi"'
-	print ' to you web server\'s /cgi-bin/ directory, and then configure the server.'
-	print
-	print ' If you\'re using Apache, this config example snippet might be helpful:'
-	print
-	print '    Alias /trac "/wherever/you/installed/trac/htdocs/"'
-	print '    <Location "/cgi-bin/trac.cgi">'
+        print ' to you web server\'s /cgi-bin/ directory, and then configure the server.'
+        print
+        print ' If you\'re using Apache, this config example snippet might be helpful:'
+        print
+        print '    Alias /trac "/wherever/you/installed/trac/htdocs/"'
+        print '    <Location "/cgi-bin/trac.cgi">'
         print '        SetEnv TRAC_ENV "%s"' % self.envname
-	print '    </Location>'
-	print
-	print '    # You need something like this to authenticate users'
-	print '    <Location "/cgi-bin/trac.cgi/login">'
+        print '    </Location>'
+        print
+        print '    # You need something like this to authenticate users'
+        print '    <Location "/cgi-bin/trac.cgi/login">'
         print '        AuthType Basic'
         print '        AuthName "%s"' % project_name
         print '        AuthUserFile /somewhere/trac.htpasswd'
         print '        Require valid-user'
-	print '    </Location>'
-	print
+        print '    </Location>'
+        print
 
         print ' The latest documentation can also always be found on the project website:'
         print ' http://projects.edgewall.com/trac/'
@@ -564,7 +564,7 @@ class TracAdmin(cmd.Cmd):
     
     ## Resync
     def do_resync(self, line):
-        from svn import util, repos, core
+        from svn import repos, core
         core.apr_initialize()
         pool = core.svn_pool_create(None)
 
