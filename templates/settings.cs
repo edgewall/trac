@@ -13,7 +13,7 @@
  settings are stored on the server and identified using  a 'Session Key'
  stored in a browser cookie. The cookie lets Trac restore your settings 
  </p>
- <form method="get" action="<?cs var:cgi_location?>/settings/">
+ <form method="get" action="<?cs var:trac.href.settings ?>">
  <div>
   <h3>Personal Information</h3>
   <div>
@@ -56,7 +56,7 @@ You may load a previously created session by entering the corresponding
 session key below and clicking 'Recover'. This lets you share settings between
 multiple computers and/or web browsers.
 </p>
- <form method="get" action="<?cs var:cgi_location?>/settings">
+ <form method="get" action="<?cs var:trac.href.settings ?>">
   <div>
    <input type="hidden" name="action" value="load" />
    <label for="loadsid">Existing Session Key:</label>
