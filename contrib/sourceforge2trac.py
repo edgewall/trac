@@ -127,16 +127,16 @@ class TracDatabase(object):
         c.execute('''SELECT count(*) FROM Ticket''')
         return int(c.fetchall()[0][0]) > 0
     
-    def setSeverityList(self, s):
-        """Remove all severities, set them to `s`"""
+    def setTypeList(self, s):
+        """Remove all types, set them to `s`"""
         if self.hasTickets():
             raise Exception("Will not modify database with existing tickets!")
         
         c = self.db().cursor()
-        c.execute("""DELETE FROM enum WHERE type='severity'""")
+        c.execute("""DELETE FROM enum WHERE kind='ticket_type'""")
         for i, value in enumerate(s):
-            c.execute("""INSERT INTO enum (type, name, value) VALUES (%s, %s, %s)""",
-                      "severity",
+            c.execute("""INSERT INTO enum (kind, name, value) VALUES (%s, %s, %s)""",
+                      "ticket_type",
                       value,
                       i)
         self.db().commit()
@@ -147,9 +147,9 @@ class TracDatabase(object):
             raise Exception("Will not modify database with existing tickets!")
         
         c = self.db().cursor()
-        c.execute("""DELETE FROM enum WHERE type='priority'""")
+        c.execute("""DELETE FROM enum WHERE kind='priority'""")
         for i, value in enumerate(s):
-            c.execute("""INSERT INTO enum (type, name, value) VALUES (%s, %s, %s)""",
+            c.execute("""INSERT INTO enum (kind, name, value) VALUES (%s, %s, %s)""",
                       "priority",
                       value,
                       i)
@@ -192,8 +192,8 @@ class TracDatabase(object):
                       value)
         self.db().commit()
     
-    def addTicket(self, time, changetime, component,
-                  severity, priority, owner, reporter, cc,
+    def addTicket(self, type, time, changetime, component,
+                  priority, owner, reporter, cc,
                   version, milestone, status, resolution,
                   summary, description, keywords):
         c = self.db().cursor()
@@ -203,16 +203,16 @@ class TracDatabase(object):
             else:
                 status = 'new'
 
-        c.execute("""INSERT INTO ticket (time, changetime, component,
-                                         severity, priority, owner, reporter, cc,
+        c.execute("""INSERT INTO ticket (type, time, changetime, component,
+                                         priority, owner, reporter, cc,
                                          version, milestone, status, resolution,
                                          summary, description, keywords)
                                  VALUES (%s, %s, %s,
                                          %s, %s, %s, %s, %s,
                                          %s, %s, %s, %s,
                                          %s, %s, %s)""",
-                  time, changetime, component,
-                  severity, priority, owner, reporter, cc,
+                  type, time, changetime, component,
+                  priority, owner, reporter, cc,
                   version, milestone, status.lower(), resolution,
                   summary, '{{{\n%s\n}}}' % (description, ), keywords)
         self.db().commit()
@@ -249,17 +249,17 @@ def importData(f, env):
     project = ExportedProjectData(f)
     
     db = TracDatabase(env)
-    db.setSeverityList(project.artifactTypes())
+    db.setTypeList(project.artifactTypes())
     db.setComponentList(project.categories())
     db.setPriorityList(range(1, 11))
     db.setVersionList(project.groups())
     db.setMilestoneList([])
     
     for a in project.artifacts():
-        i = db.addTicket(time=a.open_date,
+        i = db.addTicket(type=a.artifact_type,
+                         time=a.open_date,
                          changetime='',
                          component=a.category,
-                         severity=a.artifact_type,
                          priority=a.priority,
                          owner=a.assigned_to,
                          reporter=a.submitted_by,
