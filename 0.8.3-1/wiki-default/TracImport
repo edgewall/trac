@@ -1,0 +1,43 @@
+= Importing ticket data =
+
+== Bugzilla ==
+
+Ticket data can be imported from Bugzilla using the bugzilla2trac.py script, available in the contrib/ directory of the Trac distribution.
+
+{{{
+$ bugzilla2trac.py
+bugzilla2trac - Imports a bug database from Bugzilla into Trac.
+
+Usage: bugzilla2trac.py [options]
+
+Available Options:
+  --db <MySQL dbname>              - Bugzilla's database
+  --tracenv /path/to/trac/env      - full path to Trac db environment
+  -h | --host <MySQL hostname>     - Bugzilla's DNS host name
+  -u | --user <MySQL username>     - effective Bugzilla's database user
+  -p | --passwd <MySQL password>   - Bugzilla's user password
+  -c | --clean                     - remove current Trac tickets before importing
+  --help | help                    - this help info
+
+Additional configuration options can be defined directly in the script.
+}}}
+
+Currently, the following data is imported from Bugzilla:
+
+  * bugs
+  * bug activity (field changes)
+  * bug attachments
+
+The script provides a number of features to ease the conversion, such as:
+
+  * PRODUCT_KEYWORDS:  Trac doesn't have the concept of products, so the script provides the ability to attach a ticket keyword instead.
+
+  * IGNORE_COMMENTS:  Don't import Bugzilla comments that match a certain regexp.
+
+  * STATUS_KEYWORDS:  Attach ticket keywords for the Bugzilla statuses not available in Trac.  By default, the 'VERIFIED' and 'RELEASED' Bugzilla statuses are translated into Trac keywords.
+
+For more details on the available options, see the configuration section at the top of the script.
+
+== Sourceforge ==
+
+Ticket data can be imported from Sourceforge using the sourceforge2trac.py script, available in the contrib/ directory of the Trac distribution.

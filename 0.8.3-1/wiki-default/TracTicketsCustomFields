@@ -1,0 +1,76 @@
+= Custom Ticket Fields =
+Trac support adding custom, user-defined, fields to the ticket module. Using custom fields, you can add typed, site-specific, properties to tickets.
+
+'''Note: In Trac 0.8, this feature is still experimental.'''
+
+== Configuriation ==
+Configuring custom ticket fields is done in the TracIni config file.
+
+All field definitions should be under a section named [ticket-custom] in the ini-file.
+
+The syntax of each field definition is:
+{{{
+ FIELD_NAME = TYPE
+ (FIELD_NAME.OPTION = VALUE)
+ ...
+}}}
+Looking at the example below should help explain the syntax.
+
+=== Available Field Types and Options ===
+ * '''text''': A simple (one line) text field.
+   * label: Descriptive label.
+   * value: Default value.
+   * order: Sort order placement. (Determines relative placement in forms.)
+ * '''checkbox''': A boolean value check box.
+   * label: Descriptive label.
+   * value: Default value (0 or 1).
+   * order: Sort order placement.
+ * '''select''': Drop-down select box. Uses a list of values.
+   * options: List of values, separated by '''|''' (vertical pipe).
+   * value: Default value (Item #, starting at 0).
+   * order: Sort order placement.
+ * '''radio''': Radio buttons. Essentially the same as '''select'''.
+   * label: Descriptive label.
+   * options: List of values, separated by '''|''' (vertical pipe).
+   * value: Default value (Item #, starting at 0).
+   * order: Sort order placement.
+ * '''textarea''': Multi-line text area.
+   * label: Descriptive label.
+   * value: Default text.
+   * width: Width in columns.
+   * height: Height in lines.
+   * order: Sort order placement.
+
+=== Sample Config ===
+{{{
+[ticket-custom]
+test_one = text
+test_one.label = Just a text box
+
+test_two = text
+test_two.label = Another text-box
+test_two.value = Just a default value
+
+test_three = checkbox
+test_three.label = Some checkbox
+test_three.value = 1
+
+test_four = select
+test_four.label = My selectbox
+test_four.options = one|two|third option|four
+test_four.value = 2
+
+test_five = radio
+test_five.label = Radio buttons are fun
+test_five.options = uno|dos|tres|cuatro|cinco
+test_five.value = 1
+
+test_six = textarea
+test_six.label = This is a large textarea
+test_six.value = Default text
+test_six.width = 60
+test_six.height = 30
+}}}
+
+----
+See also: TracTickets, TracIni
