@@ -1,3 +1,0 @@
-= Recent Changes =
-
-[[RecentChanges]]
