@@ -64,7 +64,9 @@ class ConnectionWrapper(object):
         self.cnx = cnx
 
     def __getattr__(self, name):
-        return getattr(self.cnx, name)
+        if hasattr(self, 'cnx'):
+            return getattr(self.cnx, name)
+        return object.__getattr__(self, name)
 
     def cursor(self):
         return IterableCursor(self.cnx.cursor())
@@ -75,83 +77,74 @@ class TimeoutError(Exception):
 
 
 class PooledConnection(ConnectionWrapper):
+    """A database connection that can be pooled. When closed, it gets returned
+    to the pool.
     """
-    A database connection that can be pooled. When closed, it gets returned to
-    the pool.
-    """
+
     def __init__(self, pool, cnx):
         ConnectionWrapper.__init__(self, cnx)
         self.__pool = pool
 
     def close(self):
-        try:
-            self.cnx.rollback()
-        except:
-            pass
-        self.__pool._return_cnx(self)
+        self.cnx.rollback()
+        self.__pool._return_cnx(self.cnx)
 
     def __del__(self):
-        try:
-            self.close()
-        except:
-            pass
+        self.close()
 
 
 class ConnectionPool(object):
-    """
-    A very simple connection pool implementation.
-    """
+    """A very simple connection pool implementation."""
+
     def __init__(self, maxsize, cnx_class, **args):
-        self.__cnxs = []
-        self.__lock = Lock()
-        self.__available = Condition(self.__lock)
-        self.__maxsize = maxsize
-        self.__cursize = 0
-        self.__cnx_class = cnx_class
-        self.__args = args
+        self._cnxs = []
+        self._available = Condition(Lock())
+        self._maxsize = maxsize
+        self._cursize = 0
+        self._cnx_class = cnx_class
+        self._args = args
 
     def get_cnx(self, timeout=None):
         start = time.time()
-        self.__lock.acquire()
+        self._available.acquire()
         try:
             while True:
-                if self.__cnxs:
-                    cnx = self.__cnxs.pop(0)
+                if self._cnxs:
+                    cnx = self._cnxs.pop()
                     break
-                elif self.__maxsize and self.__cursize <= self.__maxsize:
-                    cnx = PooledConnection(self,
-                        self.__cnx_class(**self.__args))
-                    self.__cursize += 1
+                elif self._maxsize and self._cursize < self._maxsize:
+                    cnx = self._cnx_class(**self._args)
+                    self._cursize += 1
                     break
                 else:
                     if timeout:
-                        self.__available.wait(timeout)
+                        self._available.wait(timeout)
                         if (time.time() - start) >= timeout:
                             raise TimeoutError, "Unable to get connection " \
                                                 "within %d seconds" % timeout
                     else:
-                        self.__available.wait()
-            return cnx
+                        self._available.wait()
+            return PooledConnection(self, cnx)
         finally:
-            self.__lock.release()
+            self._available.release()
 
     def _return_cnx(self, cnx):
-        self.__lock.acquire()
+        self._available.acquire()
         try:
-            self.__cnxs.append(cnx)
-            self.__cursize -= 1
-            self.__available.notify()
+            if cnx not in self._cnxs:
+                self._cnxs.append(cnx)
+                self._available.notify()
         finally:
-            self.__lock.release()
+            self._available.release()
 
     def shutdown(self):
-        self.__lock.acquire()
+        self._available.acquire()
         try:
-            for con in self.__cnxs:
+            for con in self._cnxs:
                 con.cnx.close()
         finally:
-            self.__lock.release()
-        
+            self._available.release()
+
 
 class SQLiteConnection(ConnectionWrapper):
     """Connection wrapper for SQLite."""
