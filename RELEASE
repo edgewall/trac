@@ -1,8 +1,8 @@
-Trac 0.8.2 Release Notes
+Trac 0.8.3 Release Notes
 ========================
-May 31, 2005
+Jun 15, 2005
 
-We're proud to present our latest release - Trac 0.8.2.
+We're proud to present our latest release - Trac 0.8.3.
 
 Trac is an enhanced wiki and issue tracking system, integrated with
 Subversion, for software development projects. Trac uses a minimalistic
@@ -38,9 +38,10 @@ What's New
 ----------
 A brief summary of major changes for this release:
 
- * Compatibility with Subversion >= 1.2 fixed.
- * Compatibility with Docutils >= 1.3.7 fixed.
- * Various fixes for Trac at the root of a virtual host via mod_python.
+ * Fix compatibility of 'trac-admin resync' with Subversion >= 1.2.
+ * Settings page now works correctly when Trac is deployed at the
+   root of a host.
+ * Windows packaging issues resolved.
 
 For a more complete list of improvements, see the ChangeLog at:
 
