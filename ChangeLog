@@ -1,4 +1,4 @@
-Trac 0.8.2  (Jun 15, 2005)
+Trac 0.8.3  (Jun 15, 2005)
 http://svn.edgewall.com/repos/trac/tags/trac-0.8.3
 
  * Fix compatibility of 'trac-admin resync' with Subversion >= 1.2.
