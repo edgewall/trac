@@ -1,3 +1,13 @@
+Trac 0.8.2  (Jun 15, 2005)
+http://svn.edgewall.com/repos/trac/tags/trac-0.8.3
+
+ * Fix compatibility of 'trac-admin resync' with Subversion >= 1.2.
+ * Settings page now works correctly when Trac is deployed at the
+   root of a host.
+ * Windows packaging issues resolved.
+ * Fixed bugs: #1282, #1500, #1648
+
+
 Trac 0.8.2  (Jun 1, 2005)
 http://svn.edgewall.com/repos/trac/tags/trac-0.8.2
 
