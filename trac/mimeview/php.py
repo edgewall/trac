@@ -74,7 +74,10 @@ class PHPRenderer(Component):
         odata = np.out
 
         # Strip header
-        html = PhpDeuglifier().format(odata.splitlines()[1])
+        fst_nl = odata.find('\n')
+        snd_nl = odata.find('\n', fst_nl + 1)
+        odata = odata[snd_nl + 1:]
+        html = PhpDeuglifier().format(odata)
         for line in html.split('<br />'):
             # PHP generates _way_ too many non-breaking spaces...
             # We don't need them anyway, so replace them by normal spaces
