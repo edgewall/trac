@@ -56,6 +56,9 @@ class TracAdmin(cmd.Cmd):
     ruler = ''
     prompt = "Trac> "
     __env = None
+    _date_format = '%Y-%m-%d'
+    _datetime_format = '%Y-%m-%d %H:%M:%S'
+    _date_format_hint = 'YYYY-MM-DD'
 
     def __init__(self, envdir=None):
         cmd.Cmd.__init__(self)
@@ -241,13 +244,13 @@ class TracAdmin(cmd.Cmd):
         rows = self.db_query("SELECT name FROM version")
         return [row[0] for row in rows]
 
-    def _parse_datetime(self, t):
+    def _parse_date(self, t):
         seconds = None
         t = t.strip()
         if t == 'now':
             seconds = int(time.time())
         else:
-            for format in ['%x %X', '%x, %X', '%X %x', '%X, %x', '%x', '%c',
+            for format in [self._date_format, '%x %X', '%x, %X', '%X %x', '%X, %x', '%x', '%c',
                            '%b %d, %Y']:
                 try:
                     pt = time.strptime(t, format)
@@ -263,6 +266,12 @@ class TracAdmin(cmd.Cmd):
         if seconds == None:
             print >> sys.stderr, 'Unknown time format'
         return seconds
+
+    def _format_date(self, s):
+        return time.strftime(self._date_format, time.localtime(s))
+
+    def _format_datetime(self, s):
+        return time.strftime(self._datetime_format, time.localtime(s))
 
 
     ##
@@ -718,7 +727,7 @@ class TracAdmin(cmd.Cmd):
         rows = self.db_query("SELECT name,max(version),time "
                              "FROM wiki GROUP BY name ORDER BY name")
         self.print_listing(['Title', 'Edits', 'Modified'],
-                           [(r[0], r[1], time.ctime(r[2])) for r in rows])
+                           [(r[0], r[1], self._format_datetime(r[2])) for r in rows])
 
     def _do_wiki_remove(self, name):
         cnx = self.db_open()
@@ -899,10 +908,10 @@ class TracAdmin(cmd.Cmd):
                         'Rename milestone'),
                        ('milestone due <name> <due>',
                         'Set milestone due date (Format: "%s" or "now")'
-                        % util.get_date_format_hint()),
+                        % _date_format_hint),
                        ('milestone completed <name> <completed>',
                         'Set milestone completed date (Format: "%s" or "now")'
-                        % util.get_date_format_hint()),
+                        % _date_format_hint),
                        ('milestone remove <name>', 'Remove milestone')]
 
     def complete_milestone (self, text, line, begidx, endidx):
@@ -938,8 +947,9 @@ class TracAdmin(cmd.Cmd):
         data = []
         self.db_open()
         for m in Milestone.select(self.__env, include_completed=True):
-            data.append((m.name, m.due and time.strftime('%c', time.localtime(m.due)),
-                         m.completed and time.strftime('%c', time.localtime(m.completed))))
+            data.append((m.name, m.due and self._format_date(m.due),
+                         m.completed and self._format_datetime(m.completed)))
+
         self.print_listing(['Name', 'Due', 'Completed'], data)
 
     def _do_milestone_rename(self, name, newname):
@@ -962,13 +972,13 @@ class TracAdmin(cmd.Cmd):
     def _do_milestone_set_due(self, name, t):
         self.db_open()
         milestone = Milestone(self.__env, name)
-        milestone.due = self._parse_datetime(t)
+        milestone.due = self._parse_date(t)
         milestone.update()
 
     def _do_milestone_set_completed(self, name, t):
         self.db_open()
         milestone = Milestone(self.__env, name)
-        milestone.completed = self._parse_datetime(t)
+        milestone.completed = self._parse_date(t)
         milestone.update()
 
     ## Version
@@ -978,7 +988,7 @@ class TracAdmin(cmd.Cmd):
                         'Rename version'),
                        ('version time <name> <time>',
                         'Set version date (Format: "%s" or "now")'
-                        % util.get_date_format_hint()),
+                        % _date_format_hint),
                        ('version remove <name>', 'Remove version')]
 
     def complete_version (self, text, line, begidx, endidx):
@@ -1011,7 +1021,7 @@ class TracAdmin(cmd.Cmd):
     def _do_version_list(self):
         rows = self.db_query("SELECT name,time FROM version ORDER BY time,name")
         self.print_listing(['Name', 'Time'],
-                           [(r[0], r[1] and time.ctime(r[1])) for r in rows])
+                           [(r[0], r[1] and self._format_date(r[1])) for r in rows])
 
     def _do_version_rename(self, name, newname):
         d = {'name':name, 'newname':newname}
@@ -1040,7 +1050,7 @@ class TracAdmin(cmd.Cmd):
                              "WHERE name='%(name)s'" % d)
         if not list(rows):
             raise Exception, "No such version '%s'" % name
-        seconds = self._parse_datetime(t)
+        seconds = self._parse_date(t)
         if seconds != None:
             self.db_update("UPDATE version SET time='%s' WHERE name='%s'"
                            % (seconds, name))

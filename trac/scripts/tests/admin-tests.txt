@@ -42,13 +42,13 @@ severity remove <value>                                -- Remove severity value
 version list                                           -- Show versions
 version add <name> [time]                              -- Add version
 version rename <name> <newname>                        -- Rename version
-version time <name> <time>                             -- Set version date (Format: "%(date_format_hint)s" or "now")
+version time <name> <time>                             -- Set version date (Format: "YYYY-MM-DD" or "now")
 version remove <name>                                  -- Remove version
 milestone list                                         -- Show milestones
 milestone add <name> [due]                             -- Add milestone
 milestone rename <name> <newname>                      -- Rename milestone
-milestone due <name> <due>                             -- Set milestone due date (Format: "%(date_format_hint)s" or "now")
-milestone completed <name> <completed>                 -- Set milestone completed date (Format: "%(date_format_hint)s" or "now")
+milestone due <name> <due>                             -- Set milestone due date (Format: "YYYY-MM-DD" or "now")
+milestone completed <name> <completed>                 -- Set milestone completed date (Format: "YYYY-MM-DD" or "now")
 milestone remove <name>                                -- Remove milestone
 
 Visit the Trac Project at http://trac.edgewall.com/
@@ -387,10 +387,10 @@ Name  Time
 ===== test_version_add_ok =====
 
 Name  Time                    
-------------------------------
+----------------
 1.0                           
 2.0                           
-9.9   Thu Jan  1 00:00:00 2004
+9.9   2004-01-11
 
 ===== test_version_add_error_already_exists =====
 Command add failed: column name is not unique
@@ -406,9 +406,9 @@ Command rename failed: No such version 'bad_version'
 ===== test_version_time_ok =====
 
 Name  Time                    
-------------------------------
+----------------
 1.0                           
-2.0   Thu Jan  1 00:00:00 2004
+2.0   2004-01-11
 
 ===== test_version_time_error_bad_version =====
 Command time failed: No such version 'bad_version'
@@ -431,9 +431,9 @@ milestone4
 
 ===== test_milestone_add_ok =====
 
-Name           Due                       Completed
---------------------------------------------------
-new_milestone  Thu Jan  1 00:00:00 2004
+Name           Due         Completed
+------------------------------------
+new_milestone  2004-01-11
 milestone1
 milestone2
 milestone3
@@ -454,9 +454,9 @@ milestone4
 Command rename failed: Milestone bad_milestone does not exist.
 ===== test_milestone_due_ok =====
 
-Name        Due                       Completed
------------------------------------------------
-milestone2  Thu Jan  1 00:00:00 2004
+Name        Due         Completed
+---------------------------------
+milestone2  2004-01-11
 milestone1
 milestone3
 milestone4
@@ -466,9 +466,9 @@ Command due failed: Milestone bad_milestone does not exist.
 ===== test_milestone_completed_ok =====
 
 Name        Due  Completed
------------------------------------------
+------------------------------------
 milestone1
-milestone2       Thu Jan  1 00:00:00 2004
+milestone2       2004-01-11 00:00:00
 milestone3
 milestone4
 

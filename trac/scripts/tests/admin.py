@@ -111,6 +111,9 @@ class TracadminTestCase(unittest.TestCase):
 
         self._admin = admin.TracAdmin()
         self._admin.env_set('', self.env)
+
+        # Set test date to 11th Jan 2004
+        self._test_date = time.strftime('%Y-%m-%d', (2004, 1, 11, 0, 0, 0, 6, 1, -1))
     
     def tearDown(self):
         self.env = None
@@ -580,8 +583,7 @@ Trac Admin Console %s
         test passes valid arguments and checks for success.
         """
         test_name = sys._getframe().f_code.co_name
-        new_years = time.strftime('%b %d, %Y', (2004, 1, 1, 0, 0, 0, 3, 1, -1))
-        self._execute('version add 9.9 "%s"' % new_years)
+        self._execute('version add 9.9 "%s"' % self._test_date)
         test_results = self._execute('version list')
         self.assertEquals(self.expected_results[test_name], test_results)
 
@@ -592,8 +594,7 @@ Trac Admin Console %s
         error message.
         """
         test_name = sys._getframe().f_code.co_name
-        new_years = time.strftime('%b %d, %Y', (2004, 1, 1, 0, 0, 0, 3, 1, -1))
-        test_results = self._execute('version add 1.0 "%s"' % new_years)
+        test_results = self._execute('version add 1.0 "%s"' % self._test_date)
         self.assertEquals(self.expected_results[test_name], test_results)
 
     def test_version_rename_ok(self):
@@ -621,8 +622,7 @@ Trac Admin Console %s
         test passes valid arguments and checks for success.
         """
         test_name = sys._getframe().f_code.co_name
-        new_years = time.strftime('%b %d, %Y', (2004, 1, 1, 0, 0, 0, 3, 1, -1))
-        self._execute('version time 2.0 "%s"' % new_years)
+        self._execute('version time 2.0 "%s"' % self._test_date)
         test_results = self._execute('version list')
         self.assertEquals(self.expected_results[test_name], test_results)
 
@@ -632,8 +632,7 @@ Trac Admin Console %s
         test tries to change the time on a version that does not exist.
         """
         test_name = sys._getframe().f_code.co_name
-        new_years = time.strftime('%b %d, %Y', (2004, 1, 1, 0, 0, 0, 3, 1, -1))
-        test_results = self._execute('version time bad_version "%s"' % new_years)
+        test_results = self._execute('version time bad_version "%s"' % self._test_date)
         self.assertEquals(self.expected_results[test_name], test_results)
 
     def test_version_remove_ok(self):
@@ -673,8 +672,7 @@ Trac Admin Console %s
         test passes valid arguments and checks for success.
         """
         test_name = sys._getframe().f_code.co_name
-        new_years = time.strftime('%b %d, %Y', (2004, 1, 1, 0, 0, 0, 3, 1, -1))
-        self._execute('milestone add new_milestone "%s"' % new_years)
+        self._execute('milestone add new_milestone "%s"' % self._test_date)
         test_results = self._execute('milestone list')
         self.assertEquals(self.expected_results[test_name], test_results)
 
@@ -685,8 +683,7 @@ Trac Admin Console %s
         error message.
         """
         test_name = sys._getframe().f_code.co_name
-        new_years = time.strftime('%b %d, %Y', (2004, 1, 1, 0, 0, 0, 3, 1, -1))
-        test_results = self._execute('milestone add milestone1 "%s"' % new_years)
+        test_results = self._execute('milestone add milestone1 "%s"' % self._test_date)
         self.assertEquals(self.expected_results[test_name], test_results)
 
     def test_milestone_rename_ok(self):
@@ -714,8 +711,7 @@ Trac Admin Console %s
         test passes valid arguments and checks for success.
         """
         test_name = sys._getframe().f_code.co_name
-        new_years = time.strftime('%b %d, %Y', (2004, 1, 1, 0, 0, 0, 3, 1, -1))
-        self._execute('milestone due milestone2 "%s"' % new_years)
+        self._execute('milestone due milestone2 "%s"' % self._test_date)
         test_results = self._execute('milestone list')
         self.assertEquals(self.expected_results[test_name], test_results)
 
@@ -725,8 +721,7 @@ Trac Admin Console %s
         test tries to change the due date on a milestone that does not exist.
         """
         test_name = sys._getframe().f_code.co_name
-        new_years = time.strftime('%b %d, %Y', (2004, 1, 1, 0, 0, 0, 3, 1, -1))
-        test_results = self._execute('milestone due bad_milestone "%s"' % new_years)
+        test_results = self._execute('milestone due bad_milestone "%s"' % self._test_date)
         self.assertEquals(self.expected_results[test_name], test_results)
 
     def test_milestone_completed_ok(self):
@@ -735,8 +730,8 @@ Trac Admin Console %s
         test passes valid arguments and checks for success.
         """
         test_name = sys._getframe().f_code.co_name
-        new_years = time.strftime('%b %d, %Y', (2004, 1, 1, 0, 0, 0, 3, 1, -1))
-        self._execute('milestone completed milestone2 "%s"' % new_years)
+
+        self._execute('milestone completed milestone2 "%s"' % self._test_date)
         test_results = self._execute('milestone list')
         self.assertEquals(self.expected_results[test_name], test_results)
 
@@ -747,8 +742,8 @@ Trac Admin Console %s
         exist.
         """
         test_name = sys._getframe().f_code.co_name
-        new_years = time.strftime('%b %d, %Y', (2004, 1, 1, 0, 0, 0, 3, 1, -1))
-        test_results = self._execute('milestone completed bad_milestone "%s"' % new_years)
+
+        test_results = self._execute('milestone completed bad_milestone "%s"' % self._test_date)
         self.assertEquals(self.expected_results[test_name], test_results)
 
     def test_milestone_remove_ok(self):
