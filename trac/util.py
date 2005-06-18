@@ -189,7 +189,7 @@ def hex_entropy(bytes=32):
 
 def http_date(t):
     t = time.gmtime(t)
-    weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+    weekdays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
     months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep',
               'Oct', 'Nov', 'Dec']
     return '%s, %d %s %04d %02d:%02d:%02d GMT' % (
