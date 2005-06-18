@@ -37,17 +37,15 @@ php_types = ('text/x-php', 'application/x-httpd-php',
 class PhpDeuglifier(Deuglifier):
 
     def rules(cls):
-        return [
-            r'(?P<comment><font color="#FF8000">)',
-            r'(?P<keyword><font color="#5F9EA0">)',
-            r'(?P<string><font color="#DD0000">)',
-            r'(?P<func><font color="#007700">)',
-            r'(?P<lang><font color="#0000BB">)',
-            r'(?P<font><font.*?>)',
-            r'(?P<endfont></font>)',
-        ]
+        colors = dict(comment='FF8000', lang='0000BB', keyword='007700',
+                      string='DD0000')
+        # rules check for <font> for PHP 4 or <span> for PHP 5
+        color_rules = [
+                r'(?P<%s><(?:font color="|span style="color: )#%s">)' % c
+                for c in colors.items()
+                ]
+        return color_rules + [ r'(?P<font><font.*?>)', r'(?P<endfont></font>)' ]
     rules = classmethod(rules)
-
 
 class PHPRenderer(Component):
     """
@@ -63,7 +61,8 @@ class PHPRenderer(Component):
 
     def render(self, req, mimetype, content, filename=None, rev=None):
         cmdline = self.config.get('mimeviewer', 'php_path')
-        cmdline += ' -s'
+        # -n to ignore php.ini so we're using default colors
+        cmdline += ' -sn'
         self.env.log.debug("PHP command line: %s" % cmdline)
 
         np = NaivePopen(cmdline, content, capturestderr=1)
@@ -71,12 +70,12 @@ class PHPRenderer(Component):
             err = 'Running (%s) failed: %s, %s.' % (cmdline, np.errorlevel,
                                                     np.err)
             raise Exception, err
-        odata = np.out
+        odata = np.out.splitlines()[1]
+        if odata.startswith('X-Powered-By'):
+            raise TracError, 'You appear to be using the PHP CGI binary.  ' \
+                             'Trac requires the CLI version for syntax ' \
+                             'highlighting.'
 
-        # Strip header
-        fst_nl = odata.find('\n')
-        snd_nl = odata.find('\n', fst_nl + 1)
-        odata = odata[snd_nl + 1:]
         html = PhpDeuglifier().format(odata)
         for line in html.split('<br />'):
             # PHP generates _way_ too many non-breaking spaces...
