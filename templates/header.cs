@@ -5,7 +5,7 @@
 <head><?cs
  if:project.name ?>
  <title><?cs if:title ?><?cs var:title ?> - <?cs /if ?><?cs
-   var:project.name?> - Trac</title><?cs
+   var:project.name ?> - Trac</title><?cs
  else ?>
  <title>Trac: <?cs var:title ?></title><?cs
  /if ?><?cs
@@ -25,11 +25,14 @@
 <?cs include "site_header.cs" ?>
 <div id="banner">
 
-<div id="header"><a id="logo" href="<?cs
- var:chrome.logo.link ?>"><img src="<?cs var:chrome.logo.src ?>" width="<?cs
- var:chrome.logo.width ?>" height="<?cs var:chrome.logo.height ?>" alt="<?cs
- var:chrome.logo.alt ?>" /></a><hr />
-</div>
+<div id="header"><?cs
+ if:chrome.logo.src ?><a id="logo" href="<?cs
+  var:chrome.logo.link ?>"><img src="<?cs var:chrome.logo.src ?>" width="<?cs
+  var:chrome.logo.width ?>" height="<?cs var:chrome.logo.height ?>" alt="<?cs
+  var:chrome.logo.alt ?>" /></a><hr /><?cs
+ elif:project.name ?><h1><a href="<?cs var:chrome.logo.link ?>"><?cs
+  var:project.name ?></a></h1><?cs
+ /if ?></div>
 
 <form id="search" action="<?cs var:trac.href.search ?>" method="get">
  <?cs if:trac.acl.SEARCH_VIEW ?><div>
