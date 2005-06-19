@@ -27,25 +27,28 @@ class AttachmentTestCase(unittest.TestCase):
     def tearDown(self):
         shutil.rmtree(self.env_path)
 
-
     def test_get_path(self):
         attachment = Attachment(self.env, 'ticket', 42)
         attachment.filename = 'foo.txt'
-        self.assertEqual(os.path.join(self.attachments_dir, 'ticket', '42', 'foo.txt'),
+        self.assertEqual(os.path.join(self.attachments_dir, 'ticket', '42',
+                                      'foo.txt'),
                          attachment.path)
         attachment = Attachment(self.env, 'wiki', 'SomePage')
         attachment.filename = 'bar.jpg'
-        self.assertEqual(os.path.join(self.attachments_dir, 'wiki', 'SomePage', 'bar.jpg'),
+        self.assertEqual(os.path.join(self.attachments_dir, 'wiki', 'SomePage',
+                                      'bar.jpg'),
                          attachment.path)
 
     def test_get_path_encoded(self):
         attachment = Attachment(self.env, 'ticket', 42)
         attachment.filename = 'Teh foo.txt'
-        self.assertEqual(os.path.join(self.attachments_dir, 'ticket', '42', 'Teh%20foo.txt'),
+        self.assertEqual(os.path.join(self.attachments_dir, 'ticket', '42',
+                                      'Teh%20foo.txt'),
                          attachment.path)
         attachment = Attachment(self.env, 'wiki', '\xdcberSicht')
         attachment.filename = 'Teh bar.jpg'
-        self.assertEqual(os.path.join(self.attachments_dir, 'wiki', '%DCberSicht', 'Teh%20bar.jpg'),
+        self.assertEqual(os.path.join(self.attachments_dir, 'wiki',
+                                      '%DCberSicht', 'Teh%20bar.jpg'),
                          attachment.path)
 
     def test_select_empty(self):
@@ -72,6 +75,11 @@ class AttachmentTestCase(unittest.TestCase):
         attachment = Attachment(self.env, 'ticket', 42)
         attachment.insert('foo.txt', tempfile.TemporaryFile(), 0)
         self.assertEqual('foo.2.txt', attachment.filename)
+
+    def test_insert_outside_attachments_dir(self):
+        attachment = Attachment(self.env, '../../../../../sth/private', 42)
+        self.assertRaises(AssertionError, attachment.insert, 'foo.txt',
+                          tempfile.TemporaryFile(), 0)
 
     def test_delete(self):
         attachment1 = Attachment(self.env, 'wiki', 'SomePage')

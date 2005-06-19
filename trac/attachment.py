@@ -77,7 +77,7 @@ class Attachment(object):
                             urllib.quote(self.parent_id))
         if self.filename:
             path = os.path.join(path, urllib.quote(self.filename))
-        return path
+        return os.path.normpath(path)
     path = property(fget=lambda self: self._get_path())
 
     def delete(self, db=None):
@@ -120,6 +120,12 @@ class Attachment(object):
                             'Upload failed')
         self.size = size
         self.time = time
+
+        # Make sure the path to the attachment is inside the environment
+        # attachments directory
+        commonprefix = os.path.commonprefix([self.env.get_attachments_dir(),
+                                             self.path])
+        assert commonprefix == self.env.get_attachments_dir()
 
         if not os.access(self.path, os.F_OK):
             os.makedirs(self.path)
