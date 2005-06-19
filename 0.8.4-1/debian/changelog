@@ -1,0 +1,84 @@
+trac (0.8.4-1) unstable; urgency=critical
+
+  * New upstream release.
+    - Fixed file upload vulnerability. Trac could be tricked into uploading
+      files outside the environment directory.
+
+ -- Otavio Salvador <otavio@debian.org>  Sun, 19 Jun 2005 16:06:42 -0300
+
+trac (0.8.3-1) unstable; urgency=low
+
+  * New upstream release:
+    - 01_sync_from_0.8-branch.diff droped since all patches was included
+      on this release.
+    - Support Subversion 1.2 was add (Closes: #314200)
+
+ -- Otavio Salvador <otavio@debian.org>  Wed, 15 Jun 2005 19:57:06 -0300
+  
+trac (0.8.1-3) unstable; urgency=low
+
+  * debian/patches/01_sync_from_0.8-branch.diff: 
+    - Sync with r1520. This have all previous fixes and more.
+
+ -- Otavio Salvador <otavio@debian.org>  Sun, 17 Apr 2005 19:09:59 -0300
+
+trac (0.8.1-2) unstable; urgency=low
+
+  * debian/rules:
+    - Add support for patching in build process;
+    - Include contrib/ on doc directory. (Closes: #298969)
+  * debian/patches/01_sync_from_0.8-branch.diff: 
+    - Added in sync with r1461. This include the fix for AssertionError
+      raised when visiting WikiRestructuredTextLinks after clean install
+      bug. (Closes: #301151)
+
+ -- Otavio Salvador <otavio@debian.org>  Tue, 29 Mar 2005 20:44:07 -0300
+
+trac (0.8.1-1) unstable; urgency=low
+
+  * debian/control:
+    - Add suggestion of enscript and python-docutils (Closes: #284094)
+    - Change debhelper build-dependencie to build-depends-indep and set it
+      to be (>= 4.0.0)
+    - Recommends a http server instead of depends of it (Closes: #294674)
+  * New upstream release (Closes: #298011)
+
+ -- Otavio Salvador <otavio@debian.org>  Sat,  5 Mar 2005 17:29:21 -0300
+
+trac (0.8-1) unstable; urgency=low
+
+  * New upstream release (Closes: #282010)
+
+ -- Otavio Salvador <otavio@debian.org>  Mon, 20 Dec 2004 22:49:48 -0200
+
+trac (0.7.1-4) unstable; urgency=low
+
+  * debian/control
+    - changed the order httpd<>apache2
+    - added python as build-dependency (Closes: #270180)
+
+ -- Jesus Climent <jesus.climent@hispalinux.es>  Mon,  6 Sep 2004 09:06:28 +0000
+
+trac (0.7.1-3) unstable; urgency=low
+
+  * debian/control: Depends: changed to include virtual httpd (Closes: #267890)
+
+ -- Jesus Climent <jesus.climent@hispalinux.es>  Sat, 28 Aug 2004 17:48:55 +0300
+
+trac (0.7.1-2) unstable; urgency=low
+
+  * debian/control:
+    - Fixed typo (Closes: #266868)
+
+ -- Jesus Climent <jesus.climent@hispalinux.es>  Thu, 19 Aug 2004 17:03:39 +0000
+
+trac (0.7.1-1) unstable; urgency=low
+
+  * First package upload.
+  * Man pages taken from trunk.
+
+ -- Jesus Climent <jesus.climent@hispalinux.es>  Mon, 19 Jul 2004 12:01:17 +0000
+
+Local variables:
+mode: debian-changelog
+End:

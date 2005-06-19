@@ -1,0 +1,34 @@
+<chapter id="tg-intro">
+
+  <title>Introduction</title>
+
+  <simplesect>
+    <para>
+    </para>
+  </simplesect>
+
+
+  <sect1 id="tg-intro-sect-1">
+
+    <title>What is Trac?</title>
+
+    <para>
+    </para>
+
+  </sect1>
+
+  <sect1 id="tg-intro-sect-2">
+
+    <title>The History and Origins of Trac</title>
+    <para>Where Jonas and Daniel came from, CodeFactory through to
+      Edgewall. Keep it short.</para>
+
+    <para>CVSTrac heritage, differences in goals, python vs c, modularity
+      etc etc</para>
+
+  </sect1>
+
+
+
+
+</chapter>
