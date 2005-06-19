@@ -1,0 +1,136 @@
+Index: THANKS
+===================================================================
+--- THANKS	(revisão 1307)
++++ THANKS	(revisão 1520)
+@@ -16,6 +16,7 @@
+ Ian Leader              ian.leader@line.co.uk
+ Christopher Lenz        cmlenz@gmx.de
+ Ivo Looser              ivo.looser@login.ch
++Angel Marin             anmar@gmx.net
+ James Moger             jamesm@transonic.com
+ Tim Moloney             moloney@mrsl.com
+ Jennifer Murtell        jen@jmurtell.com
+Index: trac/File.py
+===================================================================
+--- trac/File.py	(revisão 1307)
++++ trac/File.py	(revisão 1520)
+@@ -74,8 +74,6 @@
+         self.req.send_header('Content-Type', self.mime_type)
+         self.req.send_header('Content-Length', str(self.length))
+         self.req.send_header('Last-Modified', self.last_modified)
+-        self.req.send_header('Pragma', 'no-cache')
+-        self.req.send_header('Expires', 'Mon, 26 Jul 1997 05:00:00 GMT')
+         self.req.end_headers()
+         i = 0
+         while 1:
+Index: trac/wikimacros/rst.py
+===================================================================
+--- trac/wikimacros/rst.py	(revisão 1307)
++++ trac/wikimacros/rst.py	(revisão 1520)
+@@ -123,7 +123,9 @@
+     text = arguments[int(len(arguments) == 2)]
+     reference = trac_get_reference(env, block_text, text)
+     if reference:
+-        return reference
++        p = nodes.paragraph()
++        p += reference
++        return p
+     # didn't find a match (invalid TracLink),
+     # report a warning
+     warning = state_machine.reporter.warning(
+Index: trac/Href.py
+===================================================================
+--- trac/Href.py	(revisão 1307)
++++ trac/Href.py	(revisão 1520)
+@@ -158,10 +158,10 @@
+ 
+     def attachment(self, module, id, filename, format=None):
+         id = urllib.quote(urllib.quote(id, ''))
+-        filename = urllib.quote(filename)
++        href = href_join(self.base, 'attachment', module, id)
++        if filename:
++            filename = urllib.quote(filename)
++            href = href_join(href, filename)
+         if format:
+-            return href_join(self.base, 'attachment', module, id, filename) + \
+-                   '?format='+format
+-        else:
+-            return href_join(self.base, 'attachment', module, id, filename)
+-
++            href += '?format=%s' % format
++        return href
+Index: trac/Wiki.py
+===================================================================
+--- trac/Wiki.py	(revisão 1307)
++++ trac/Wiki.py	(revisão 1520)
+@@ -299,6 +299,8 @@
+                 self.req.hdf.setValue('title', escape(name))
+             self.env.get_attachments_hdf(self.db, 'wiki', name, self.req.hdf,
+                                          'wiki.attachments')
++            self.req.hdf.setValue('wiki.attach_href',
++                                  self.env.href.attachment('wiki', name, None))
+ 
+         self.page = WikiPage(name, version, self.perm, self.db)
+         if self.args.has_key('text'):
+Index: trac/Notify.py
+===================================================================
+--- trac/Notify.py	(revisão 1307)
++++ trac/Notify.py	(revisão 1520)
+@@ -141,6 +141,7 @@
+     def send(self, rcpt, mime_headers={}):
+         from email.MIMEText import MIMEText
+         from email.Header import Header
++        from email.Utils import formatdate
+         body = self.cs.render()
+         msg = MIMEText(body, 'plain', 'utf-8')
+         msg['X-Mailer'] = 'Trac %s, by Edgewall Software' % __version__
+@@ -153,7 +154,7 @@
+         msg['Sender'] = self.from_email
+         msg['Reply-To'] = self.replyto_email
+         msg['To'] = rcpt
+-        msg['Date'] = time.strftime('%a, %d %b %Y %H:%M:%S +0000', time.gmtime());
++        msg['Date'] = formatdate()
+         for hdr in mime_headers.keys():
+             msg[hdr] = mime_headers[hdr]
+         self.server.sendmail(self.from_email, rcpt, msg.as_string())
+Index: trac/Ticket.py
+===================================================================
+--- trac/Ticket.py	(revisão 1307)
++++ trac/Ticket.py	(revisão 1520)
+@@ -430,6 +430,8 @@
+         # List attached files
+         self.env.get_attachments_hdf(self.db, 'ticket', str(id), self.req.hdf,
+                                      'ticket.attachments')
++        self.req.hdf.setValue('ticket.attach_href',
++                              self.env.href.attachment('ticket', str(id), None))
+ 
+     def render (self):
+         self.perm.assert_permission (perm.TICKET_VIEW)
+Index: templates/ticket.cs
+===================================================================
+--- templates/ticket.cs	(revisão 1307)
++++ templates/ticket.cs	(revisão 1520)
+@@ -86,8 +86,7 @@
+   /each ?></ul><?cs
+  /if ?><?cs
+  if trac.acl.TICKET_MODIFY ?>
+-  <form method="get" action="<?cs var:cgi_location?>/attachment/ticket/<?cs
+-    var:ticket.id ?>">
++  <form method="get" action="<?cs var:ticket.attach_href ?>">
+    <div><input type="submit" value="Attach File" /></div>
+   </form><?cs
+  /if ?><?cs if ticket.attachments.0.name ?></div><?cs /if ?>
+Index: templates/wiki.cs
+===================================================================
+--- templates/wiki.cs	(revisão 1307)
++++ templates/wiki.cs	(revisão 1520)
+@@ -226,8 +226,7 @@
+       <input type="hidden" name="edit" value="yes" />
+       <input type="submit" value="Edit This Page" />
+      </div></form>
+-     <form method="get" action="<?cs var:cgi_location?>/attachment/wiki/<?cs
+-       var:wiki.namedoublequoted ?>"><div>
++     <form method="get" action="<?cs var:wiki.attach_href ?>"><div>
+       <input type="submit" value="Attach File" />
+      </div></form>
+     <?cs /if ?>

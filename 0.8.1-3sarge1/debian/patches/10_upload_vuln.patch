@@ -1,0 +1,12 @@
+--- trac/File.py	(.../trac-0.8.3)	(revisão 1821)
++++ trac/File.py	(.../trac-0.8.4)	(revisão 1821)
+@@ -110,6 +110,9 @@
+         if not self.attachment_type or not self.attachment_id:
+             raise util.TracError('Unknown request')
+ 
++        if '..' in self.attachment_id.split('/'):
++            raise util.TracError('Unknown request')
++        
+         if self.filename and len(self.filename) > 0 and \
+                self.args.has_key('delete'):
+             perm_map = {'ticket': perm.TICKET_ADMIN, 'wiki': perm.WIKI_DELETE}
