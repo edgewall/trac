@@ -1,3 +1,11 @@
+Trac 0.8.4  (Jun 19, 2005)
+http://svn.edgewall.com/repos/trac/tags/trac-0.8.4
+
+ * Fixed file upload vulnerability. Trac could be tricked into uploading
+   files outside the environment directory. All users are recommended to
+   upgrade. Vulnerability found by the Hardened-PHP project.
+
+
 Trac 0.8.3  (Jun 15, 2005)
 http://svn.edgewall.com/repos/trac/tags/trac-0.8.3
 
