@@ -86,7 +86,6 @@ class PooledConnection(ConnectionWrapper):
         self.__pool = pool
 
     def close(self):
-        self.cnx.rollback()
         self.__pool._return_cnx(self.cnx)
 
     def __del__(self):
@@ -132,6 +131,7 @@ class ConnectionPool(object):
         self._available.acquire()
         try:
             if cnx not in self._cnxs:
+                cnx.rollback()
                 self._cnxs.append(cnx)
                 self._available.notify()
         finally:
