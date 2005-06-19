@@ -128,6 +128,7 @@ class Chrome(Component):
             add_link(req, 'shortcut icon', icon, mimetype=mimetype)
 
         # Logo image
+        logo_link = self.config.get('header_logo', 'link')
         logo_src = self.config.get('header_logo', 'src')
         if logo_src:
             logo_src_abs = logo_src.startswith('http://') or \
@@ -135,13 +136,13 @@ class Chrome(Component):
             if not logo_src.startswith('/') and not logo_src_abs:
                 logo_src = htdocs_location + logo_src
             req.hdf['chrome.logo'] = {
-                'link': self.config.get('header_logo', 'link') or None,
+                'link': logo_link, 'src': logo_src, 'src_abs': logo_src_abs,
                 'alt': util.escape(self.config.get('header_logo', 'alt')),
-                'src': logo_src,
-                'src_abs': logo_src_abs,
                 'width': self.config.get('header_logo', 'width') or None,
                 'height': self.config.get('header_logo', 'height') or None
             }
+        else:
+            req.hdf['chrome.logo.link'] = logo_link
 
         # Navigation links
         navigation = {}
