@@ -79,7 +79,7 @@ class ChromeTestCase(unittest.TestCase):
 
         # Verify that no logo data is put in the HDF if no logo is configured
         Chrome(env).populate_hdf(req, None)
-        assert 'chrome.logo' not in req.hdf
+        assert 'chrome.logo.src' not in req.hdf
 
         # Test with a relative path to the logo image
         req.hdf = HDFWrapper()
