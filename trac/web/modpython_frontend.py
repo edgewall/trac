@@ -209,7 +209,7 @@ def send_project_index(req, mpr, dir, options):
                     'description': env.config.get('project', 'descr'),
                     'href': href_join(mpr.idx_location, project)
                 })
-            except EnvironmentError, e:
+            except TracError, e:
                 req.log_error('Error opening environment at %s: %s'
                               % (env_path, e))
         projects.sort(lambda x, y: cmp(x['name'], y['name']))
