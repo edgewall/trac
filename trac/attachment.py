@@ -106,7 +106,7 @@ class Attachment(object):
         if handle_ta:
             db.commit()
 
-    def insert(self, filename, fileobj, size, time=time.time(), db=None):
+    def insert(self, filename, fileobj, size, t=None, db=None):
         if not db:
             db = self.env.get_db_cnx()
             handle_ta = True
@@ -119,7 +119,7 @@ class Attachment(object):
             raise TracError('Maximum attachment size: %d bytes' % max_size,
                             'Upload failed')
         self.size = size
-        self.time = time
+        self.time = t or time.time()
 
         # Make sure the path to the attachment is inside the environment
         # attachments directory
