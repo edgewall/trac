@@ -2,9 +2,8 @@
  <select size="1" id="<?cs var:name ?>" name="<?cs var:name ?>"><?cs
   if:optional ?><option></option><?cs /if ?><?cs
   each:option = options ?>
-   <option<?cs if:option.name == selected ?> selected="selected"<?cs /if ?><?cs
-     if:option.label ?> value="<?cs var:option.name ?>"<?cs /if ?>><?cs
-     alt:option.label ?><?cs var:option.name ?><?cs /alt ?></option><?cs
+   <option<?cs if:option == selected ?> selected="selected"<?cs /if ?>><?cs 
+     var:option ?></option><?cs
   /each ?>
  </select><?cs
 /def?><?cs

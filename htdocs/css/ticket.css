@@ -12,11 +12,13 @@
  padding: .5em 1em;
  position: relative;
 }
-#ticket h2.summary { margin: 0 0 1em }
+#ticket h2.summary { margin: 0 }
+#ticket h3.status { color: #996; font-size: 90%; font-weight: normal; margin-top: .5em; }
 #ticket .date { color: #996; float: right; font-size: 85%; position: relative }
 #ticket .date p { margin: 0 }
 
 #ticket table.properties {
+ border-bottom: 1px solid #dd9;
  border-top: 1px solid #dd9;
  border-collapse: collapse;
  table-layout: fixed;
@@ -56,7 +58,7 @@ form .field { margin-top: .75em; width: 100% }
 form #comment { width: 100% }
 
 #properties { white-space: nowrap; line-height: 160%; padding: .5em }
-#properties .main { margin-bottom: 1em }
+/*#properties .main { margin-bottom: 1em }
 #properties .col1 {
  border-right: 1px dotted #d7d7d7;
  float: left;
@@ -75,7 +77,18 @@ form #comment { width: 100% }
  border-top: 1px dotted #d7d7d7;
  padding-top: 1em
 }
-#properties .custom .field { margin: .25em 0 }
+#properties .custom .field { margin: .25em 0 }*/
+
+#properties table { border-spacing: 0; width: 100%; }
+#properties table th {
+ padding: .4em;
+ text-align: right;
+ width: 20%;
+ vertical-align: top;
+}
+#properties table th.col2 { border-left: 1px dotted #d7d7d7 }
+#properties table td { vertical-align: middle; width: 30% }
+#properties table td.fullrow { vertical-align: middle; width: 80% }
 
 #action { line-height: 2em }
 

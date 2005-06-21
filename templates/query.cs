@@ -28,15 +28,15 @@
     /if ?><?cs
    /each ?><?cs
   /def ?>
-  <table summary="Query filters"><?cs each:property = ticket.properties ?><?cs
+  <table summary="Query filters"><?cs each:field = query.fields ?><?cs
    each:constraint = query.constraints ?><?cs
-    if:property.name == name(constraint) ?>
-     <tbody><tr class="<?cs var:property.name ?>">
-      <th scope="row"><label><?cs var:property.label ?></label></th><?cs
-      if:property.type != "radio" ?>
+    if:name(field) == name(constraint) ?>
+     <tbody><tr class="<?cs var:name(field) ?>">
+      <th scope="row"><label><?cs var:field.label ?></label></th><?cs
+      if:field.type != "radio" ?>
        <td class="mode">
-        <select name="<?cs var:property.name ?>_mode"><?cs
-         each:mode = query.modes[property.type] ?>
+        <select name="<?cs var:name(field) ?>_mode"><?cs
+         each:mode = query.modes[field.type] ?>
           <option value="<?cs var:mode.value ?>"<?cs
            if:mode.value == constraint.mode ?> selected="selected"<?cs
            /if ?>><?cs var:mode.name ?></option><?cs
@@ -44,40 +44,40 @@
         </select>
        </td><?cs
       /if ?>
-      <td class="filter"<?cs if:property.type == "radio" ?> colspan="2"<?cs /if ?>><?cs
-       if:property.type == "select" ?><?cs
+      <td class="filter"<?cs if:field.type == "radio" ?> colspan="2"<?cs /if ?>><?cs
+       if:field.type == "select" ?><?cs
         each:value = constraint.values ?>
          <select name="<?cs var:name(constraint) ?>"><option></option><?cs
-         each:option = property.options ?>
+         each:option = field.options ?>
           <option<?cs if:option == value ?> selected="selected"<?cs /if ?>><?cs
             var:option ?></option><?cs
          /each ?></select><?cs
          if:name(value) != len(constraint.values) - 1 ?>
           </td>
           <td class="actions"><input type="submit" name="rm_filter_<?cs
-             var:property.name ?>_<?cs var:name(value) ?>" value="-" /></td>
-         </tr><tr class="<?cs var:property.name ?>">
+             var:name(field) ?>_<?cs var:name(value) ?>" value="-" /></td>
+         </tr><tr class="<?cs var:name(field) ?>">
           <th colspan="2"><label>or</label></th>
           <td class="filter"><?cs
          /if ?><?cs
         /each ?><?cs
-       elif:property.type == "radio" ?><?cs
-        each:option = property.options ?>
-         <input type="checkbox" id="<?cs var:property.name ?>_<?cs
-           var:option ?>" name="<?cs var:property.name ?>" value="<?cs
+       elif:field.type == "radio" ?><?cs
+        each:option = field.options ?>
+         <input type="checkbox" id="<?cs var:name(field) ?>_<?cs
+           var:option ?>" name="<?cs var:name(field) ?>" value="<?cs
            var:option ?>"<?cs call:checkbox_checked(constraint, option) ?> />
-         <label for="<?cs var:property.name ?>_<?cs var:option ?>"><?cs
+         <label for="<?cs var:name(field) ?>_<?cs var:option ?>"><?cs
            alt:option ?>none<?cs /alt ?></label><?cs
         /each ?><?cs
-       elif:property.type == "text" ?><?cs
+       elif:field.type == "text" ?><?cs
         each:value = constraint.values ?>
-        <input type="text" name="<?cs var:property.name ?>" value="<?cs
+        <input type="text" name="<?cs var:name(field) ?>" value="<?cs
           var:value ?>" size="42" /><?cs
          if:name(value) != len(constraint.values) - 1 ?>
           </td>
           <td class="actions"><input type="submit" name="rm_filter_<?cs
-             var:property.name ?>_<?cs var:name(value) ?>" value="-" /></td>
-         </tr><tr class="<?cs var:property.name ?>">
+             var:name(field) ?>_<?cs var:name(value) ?>" value="-" /></td>
+         </tr><tr class="<?cs var:name(field) ?>">
           <th colspan="2"><label>or</label></th>
           <td class="filter"><?cs
          /if ?><?cs
@@ -85,8 +85,8 @@
        /if ?>
       </td>
       <td class="actions"><input type="submit" name="rm_filter_<?cs
-         var:property.name ?><?cs
-         if:property.type != 'radio' ?>_<?cs
+         var:name(field) ?><?cs
+         if:field.type != 'radio' ?>_<?cs
           var:len(constraint.values) - 1 ?><?cs
          /if ?>" value="-" /></td>
      </tr></tbody><?cs /if ?><?cs
@@ -97,12 +97,12 @@
      <label for="add_filter">Add filter</label>&nbsp;
      <select name="add_filter" id="add_filter">
       <option></option><?cs
-      each:property = ticket.properties ?>
-       <option value="<?cs var:property.name ?>"<?cs
-         if:property.type == "radio" ?><?cs
-          if:len(query.constraints[property.name]) != 0 ?> disabled="disabled"<?cs
+      each:field = query.fields ?>
+       <option value="<?cs var:name(field) ?>"<?cs
+         if:field.type == "radio" ?><?cs
+          if:len(query.constraints[name(field)]) != 0 ?> disabled="disabled"<?cs
           /if ?><?cs
-         /if ?>><?cs var:property.label ?></option><?cs
+         /if ?>><?cs var:field.label ?></option><?cs
       /each ?>	
      </select>
      <input type="submit" name="add" value="+" />
@@ -114,12 +114,12 @@
   <label for="group">Group results by</label>
   <select name="group" id="group">
    <option></option><?cs
-   each:property = ticket.properties ?><?cs
-    if:property.type == 'select' || property.type == 'radio' ||
-       property.name == 'owner' ?>
-     <option value="<?cs var:property.name ?>"<?cs
-       if:property.name == query.group ?> selected="selected"<?cs /if ?>><?cs
-       var:property.label ?></option><?cs
+   each:field = query.fields ?><?cs
+    if:field.type == 'select' || field.type == 'radio' ||
+       name(field) == 'owner' ?>
+     <option value="<?cs var:name(field) ?>"<?cs
+       if:name(field) == query.group ?> selected="selected"<?cs /if ?>><?cs
+       var:field.label ?></option><?cs
     /if ?><?cs
    /each ?>
   </select>
@@ -150,13 +150,13 @@
 <script type="text/javascript" src="<?cs
   var:htdocs_location ?>js/query.js"></script>
 <script type="text/javascript"><?cs set:idx = 0 ?>
- var properties={<?cs each:property = ticket.properties ?><?cs
-  var:property.name ?>:{type:"<?cs var:property.type ?>",label:"<?cs
-  var:property.label ?>",options:[<?cs
-   each:option = property.options ?>"<?cs var:option ?>"<?cs
-    if:name(option) < len(property.options) -1 ?>,<?cs /if ?><?cs
+ var properties={<?cs each:field = ticket.fields ?><?cs
+  var:name(field) ?>:{type:"<?cs var:field.type ?>",label:"<?cs
+  var:field.label ?>",options:[<?cs
+   each:option = field.options ?>"<?cs var:option ?>"<?cs
+    if:name(option) < len(field.options) -1 ?>,<?cs /if ?><?cs
    /each ?>]}<?cs
-  set:idx = idx + 1 ?><?cs if:idx < len(ticket.properties) ?>,<?cs /if ?><?cs
+  set:idx = idx + 1 ?><?cs if:idx < len(query.fields) ?>,<?cs /if ?><?cs
  /each ?>};<?cs set:idx = 0 ?>
  var modes = {<?cs each:type = query.modes ?><?cs var:name(type) ?>:[<?cs
   each:mode = type ?>{text:"<?cs var:mode.name ?>",value:"<?cs var:mode.value ?>"}<?cs
@@ -186,9 +186,9 @@
   if:result[query.group] != prev_group ?>
    <?cs if:prev_group ?></tbody></table><?cs /if ?>
    <h2><?cs
-    each:property = ticket.properties ?><?cs
-     if:property.name == query.group ?><?cs
-      var:property.label ?><?cs
+    each:field = query.fields ?><?cs
+     if:name(field) == query.group ?><?cs
+      var:field.label ?><?cs
      /if ?><?cs
     /each ?>: <?cs var:result[query.group] ?></h2>
    <table class="listing tickets">

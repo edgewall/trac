@@ -31,20 +31,9 @@
 <div id="content" class="ticket">
 
  <h1>Ticket #<?cs var:ticket.id ?> <?cs
- if:ticket.type ?> - <?cs var:ticket.type ?> <?cs /if ?><?cs
- if:ticket.resolution ?>(<?cs var:ticket.status ?>: <?cs var:ticket.resolution ?>)<?cs
- elif:ticket.status != 'new' ?>(<?cs var:ticket.status ?>)<?cs
- /if ?></h1>
+ if:ticket.type ?>(<?cs var:ticket.type ?>)<?cs /if ?></h1>
 
- <div id="searchable">
- <?cs def:ticketprop(label, name, value, fullrow) ?>
-  <th id="h_<?cs var:name ?>"><?cs var:label ?>:</th>
-  <td headers="h_<?cs var:name ?>"<?cs if:fullrow ?> colspan="3"<?cs /if ?>><?cs
-   var:value ?></td><?cs 
-  if:numprops % #2 && !last_prop || fullrow ?></tr><tr><?cs /if ?><?cs
-  set numprops = numprops + #1 - fullrow ?><?cs
- /def ?>
-
+<div id="searchable">
 <div id="ticket">
  <div class="date">
   <p title="<?cs var:ticket.opened ?>">Opened <?cs var:ticket.opened_delta ?> ago</p><?cs
@@ -53,44 +42,35 @@
   <?cs /if ?>
  </div>
  <h2 class="summary"><?cs var:ticket.summary ?></h2>
- <table class="properties"><tr><?cs
-  if:len(enums.priority) ?><?cs
-   call:ticketprop("Priority", "priority", ticket.priority, 0) ?><?cs
-  /if ?><?cs
-  call:ticketprop("Reporter", "reporter", ticket.reporter, 0) ?><?cs
-  if:len(enums.severity) ?><?cs
-   call:ticketprop("Severity", "severity", ticket.severity, 0) ?><?cs
-  /if ?><?cs
-  if ticket.status == "assigned"?><?cs
-   call:ticketprop("Assigned to", "assignee", ticket.owner + " (accepted)", 0) ?><?cs
-  else ?><?cs
-   call:ticketprop("Assigned to", "assignee", ticket.owner, 0) ?><?cs
-  /if ?><?cs
-  if:len(ticket.components) ?><?cs
-   call:ticketprop("Component", "component", ticket.component, 0) ?><?cs
-  /if ?><?cs
-  call:ticketprop("Status", "status", ticket.status, 0) ?><?cs
-  if:len(ticket.versions) ?><?cs
-   call:ticketprop("Version", "version", ticket.version, 0) ?><?cs
-  /if ?><?cs
-  call:ticketprop("Resolution", "resolution", ticket.resolution, 0) ?><?cs
-  if:len(ticket.milestones) ?><?cs
-   call:ticketprop("Milestone", "milestone", ticket.milestone, 0) ?><?cs
-  /if ?><?cs
-  set:last_prop = #1 ?><?cs
-  call:ticketprop("Keywords", "keywords", ticket.keywords, 0) ?><?cs
-  set:last_prop = #0 ?>
- </tr></table><?cs if:ticket.custom.0.name ?>
- <table class="custom properties"><tr><?cs each:prop = ticket.custom ?><?cs
-   if:name(prop) == len(ticket.custom) - 1 ?><?cs set:last_prop = #1 ?><?cs
+ <h3 class="status">Status: <strong><?cs var:ticket.status ?><?cs
+  if:ticket.resolution ?> (<?cs var:ticket.resolution ?>)<?cs
+  /if ?></strong></h3>
+ <table class="properties">
+  <tr>
+   <th id="h_reporter">Reported by:</th>
+   <td headers="h_reporter"><?cs var:ticket.reporter ?></td>
+   <th id="h_owner">Assigned to:</th>
+   <td headers="h_owner"><?cs var:ticket.owner ?><?cs
+     if:ticket.status == 'assigned' ?> (accepted)<?cs /if ?></td>
+  </tr><tr><?cs
+  each:field = ticket.fields ?><?cs
+   if:!field.skip ?><?cs
+    set:num_fields = num_fields + 1 ?><?cs
    /if ?><?cs
-   if:prop.type == "textarea" ?><?cs
-    call:ticketprop(prop.label, prop.name, prop.value, 1) ?><?cs
-   else ?><?cs
-    call:ticketprop(prop.label, prop.name, prop.value, 0) ?><?cs
-   /if?><?cs
-  /each ?>
- </tr></table><?cs /if ?>
+  /each ?><?cs
+  set:idx = 0 ?><?cs
+  each:field = ticket.fields ?><?cs
+   if:!field.skip ?><?cs set:fullrow = field.type == 'textarea' ?><?cs
+    if:fullrow && idx % 2 ?><th></th><td></td></tr><tr><?cs /if ?>
+    <th id="h_<?cs var:name(field) ?>"><?cs var:field.label ?>:</th>
+    <td<?cs if:fullrow ?> colspan="3"<?cs /if ?> headers="h_<?cs
+      var:name(field) ?>"><?cs var:ticket[name(field)] ?></td><?cs 
+    if:idx % 2 ?></tr><tr><?cs 
+    elif:idx == num_fields - 1 ?><th></th><td></td><?cs
+    /if ?><?cs set:idx = idx + #fullrow + 1 ?><?cs
+   /if ?><?cs
+  /each ?></tr>
+ </table>
  <?cs if:ticket.description ?><div class="description">
   <?cs var:ticket.description.formatted ?>
  </div><?cs /if ?>
@@ -168,44 +148,61 @@
 
  <?cs if:trac.acl.TICKET_CHGPROP ?><fieldset id="properties">
   <legend>Change Properties</legend>
-  <div class="main">
-   <label for="summary">Summary:</label>
-   <input id="summary" type="text" name="summary" size="70" value="<?cs
-     var:ticket.summary ?>" />
-   <br /><?cs
-   call:labelled_hdf_select('Type:', enums.ticket_type, "type", ticket.type, 0) ?><?cs
-   if:trac.acl.TICKET_ADMIN ?>
-    <label for="description">Description:</label>
-    <div style="float: left">
+  <table><tr>
+   <th><label for="summary">Summary:</label></th>
+   <td class="fullrow" colspan="3"><input type="text" id="summary" name="summary" value="<?cs
+     var:ticket.summary ?>" size="70" />
+  </tr><?cs
+   if:trac.acl.TICKET_ADMIN ?><tr>
+    <th><label for="description">Description:</label></th>
+    <td class="fullrow" colspan="3">
      <textarea id="description" name="description" class="wikitext" rows="10" cols="68"><?cs
         var:ticket.description ?></textarea>
-    </div>
-    <br style="clear: left" />
-    <label for="reporter">Reporter:</label>
-    <input id="reporter" type="text" name="reporter" size="70"
-           value="<?cs var:ticket.reporter ?>" /><?cs
+    </td>
+   </tr><tr>
+    <th><label for="reporter">Reporter:</label></th>
+    <td class="fullrow" colspan="3"><input type="text" value="<?cs 
+      var:ticket.reporter ?>" id="reporter" name="reporter" size="70" /></td>
+   </tr><?cs
    /if ?>
-  </div>
-  <div class="col1"><?cs
-   call:labelled_hdf_select("Component:", ticket.components, "component", ticket.component, 0) ?><?cs
-   call:labelled_hdf_select("Version:", ticket.versions, "version", ticket.version, 1) ?><?cs 
-   call:labelled_hdf_select("Severity:", enums.severity, "severity", ticket.severity, 0) ?>
-   <label for="keywords">Keywords:</label>
-   <input type="text" id="keywords" name="keywords" size="20"
-       value="<?cs var:ticket.keywords ?>" />
-  </div>
-  <div class="col2"><?cs
-   call:labelled_hdf_select("Priority:", enums.priority, "priority", ticket.priority, 0) ?><?cs
-   call:labelled_hdf_select("Milestone:", ticket.milestones, "milestone", ticket.milestone, 1) ?>
-   <label for="owner">Assigned to:</label>
-   <input type="text" id="owner" name="owner" size="20" value="<?cs
-     var:ticket.owner ?>" disabled="disabled" /><br />
-   <label for="cc">Cc:</label>
-   <input type="text" id="cc" name="cc" size="30" value="<?cs var:ticket.cc ?>" />
-  </div>
-  <?cs if:len(ticket.custom) ?><div class="custom">
-   <?cs call:ticket_custom_props(ticket) ?>
-  </div><?cs /if ?>
+  <tr><?cs set:idx = 0 ?><?cs
+   each:field = ticket.fields ?><?cs
+    if:!field.skip ?><?cs set:fullrow = field.type == 'textarea' ?><?cs
+     if:fullrow && idx % 2 ?><th class="col2"></th><td></td></tr><tr><?cs /if ?>
+     <th class="col<?cs var:idx % 2 + 1 ?>"><?cs
+       if:field.type != 'radio' ?><label for="<?cs var:name(field) ?>"><?cs
+       /if ?><?cs alt:field.label ?><?cs var:field.name ?><?cs /alt ?>:<?cs
+       if:field.type != 'radio' ?></label><?cs /if ?></th>
+     <td<?cs if:fullrow ?> colspan="3"<?cs /if ?>><?cs
+      if:field.type == 'text' ?><input type="text" id="<?cs
+        var:name(field) ?>" name="<?cs
+        var:name(field) ?>" value="<?cs var:ticket[name(field)] ?>" /></td><?cs
+      elif:field.type == 'select' ?><select name="<?cs
+        var:name(field) ?>"><?cs
+        each:option = field.options ?><option<?cs
+         if:option == ticket[name(field)] ?> selected="selected"<?cs /if ?>><?cs
+         var:option ?></option><?cs
+        /each ?></select><?cs
+      elif:field.type == 'checkbox' ?><input type="hidden" name="checkbox_<?cs
+        var:name(field) ?>" /><input type="checkbox" name="<?cs
+        var:name(field) ?>" value="1"<?cs
+        if:ticket[name(field)] ?> checked="checked"<?cs /if ?> /><?cs
+      elif:field.type == 'textarea' ?><textarea name="<?cs
+        var:name(field) ?>"<?cs
+        if:field.height ?> rows="<?cs var:field.height ?>"<?cs /if ?><?cs
+        if:field.width ?> cols="<?cs var:field.width ?>"<?cs /if ?>><?cs
+        var:ticket[name(field)] ?></textarea><?cs
+      elif:field.type == 'radio' ?><?cs set:optidx = 0 ?><?cs
+       each:option = field.options ?><label><input type="radio" name="<?cs
+         var:option ?>" value="<?cs var:option ?>"<?cs
+         if:ticket[name(field)] == option ?> checked="checked"<?cs /if ?> /><?cs
+         var:option ?></label><?cs set:optidx = optidx + 1 ?><?cs
+        /each ?><?cs
+      /if ?></td><?cs
+    if:idx % 2 ?></tr><tr><?cs /if ?><?cs set:idx = idx + #fullrow + 1 ?><?cs
+    /if ?><?cs
+   /each ?>
+  </table>
  </fieldset><?cs /if ?>
 
  <?cs if:ticket.actions.accept || ticket.actions.reopen ||
@@ -231,17 +228,20 @@
   /if ?><?cs
   if:ticket.actions.resolve ?><?cs
    call:action_radio('resolve') ?>
-   <label for="resolve">resolve</label>
-   <label for="resolve_resolution">as:</label>
-   <?cs call:hdf_select(enums.resolution, "resolve_resolution",
-                        ticket.resolve_resolution, 0) ?><br /><?cs
+   <label for="resolve">resolve</label><?cs
+   if:len(ticket.fields.resolution.options) ?>
+    <label for="resolve_resolution">as:</label>
+    <?cs call:hdf_select(ticket.fields.resolution.options, "resolve_resolution",
+                         ticket.resolve_resolution, 0) ?><br /><?cs
+   /if ?><?cs
   /if ?><?cs
   if:ticket.actions.reassign ?><?cs
    call:action_radio('reassign') ?>
    <label for="reassign">reassign</label>
    <label>to:<?cs
-   if:len(ticket.users) ?><?cs
-    call:hdf_select(ticket.users, "reassign_owner", ticket.reassign_owner, 0) ?><?cs
+   if:len(ticket.fields.owner.options) ?><?cs
+    call:hdf_select(ticket.fields.owner.options, "reassign_owner",
+                    ticket.reassign_owner, 0) ?><?cs
    else ?>
     <input type="text" id="reassign_owner" name="reassign_owner" size="40" value="<?cs
       var:ticket.reassign_owner ?>" /><?cs

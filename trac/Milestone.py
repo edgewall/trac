@@ -38,9 +38,9 @@ class Milestone(object):
         self.env = env
         if name:
             self._fetch(name, db)
-            self.old_name = name
+            self._old_name = name
         else:
-            self.name = self.old_name = None
+            self.name = self._old_name = None
             self.due = self.completed = 0
             self.description = ''
 
@@ -51,7 +51,6 @@ class Milestone(object):
         cursor.execute("SELECT name,due,completed,description "
                        "FROM milestone WHERE name=%s", (name,))
         row = cursor.fetchone()
-        cursor.close()
         if not row:
             raise TracError('Milestone %s does not exist.' % name,
                             'Invalid Milestone Name')
@@ -60,7 +59,8 @@ class Milestone(object):
         self.completed = row[2] and int(row[2]) or 0
         self.description = row[3] or ''
 
-    exists = property(fget=lambda self: self.old_name is not None)
+    exists = property(fget=lambda self: self._old_name is not None)
+    is_completed = property(fget=lambda self: self.completed != 0)
     is_late = property(fget=lambda self: self.due and self.due < time.time())
 
     def delete(self, retarget_to=None, db=None):
@@ -119,12 +119,12 @@ class Milestone(object):
         cursor.execute("UPDATE milestone SET name=%s,due=%s,"
                        "completed=%s,description=%s WHERE name=%s",
                        (self.name, self.due, self.completed, self.description,
-                        self.old_name))
+                        self._old_name))
         self.env.log.info('Updating milestone field of all tickets '
                           'associated with milestone "%s"' % self.name)
         cursor.execute("UPDATE ticket SET milestone=%s WHERE milestone=%s",
-                       (self.name, self.old_name))
-        self.old_name = self.name
+                       (self.name, self._old_name))
+        self._old_name = self.name
 
         if handle_ta:
             db.commit()
@@ -137,23 +137,22 @@ class Milestone(object):
         if not include_completed:
             sql += "AND COALESCE(completed,0)=0 "
         sql += "ORDER BY COALESCE(due,0)=0,due,name"
-
         cursor = db.cursor()
         cursor.execute(sql)
         for name,due,completed,description in cursor:
             milestone = Milestone(env)
-            milestone.name = milestone.old_name = name
+            milestone.name = milestone._old_name = name
             milestone.due = due and int(due) or 0
             milestone.completed = completed and int(completed) or 0
             milestone.description = description or ''
             yield milestone
-
     select = classmethod(select)
 
 
 def get_tickets_for_milestone(env, db, milestone, field='component'):
     cursor = db.cursor()
-    if field in Ticket.std_fields:
+    fields = TicketSystem(env).get_ticket_fields()
+    if field in [f['name'] for f in fields if not f.get('custom')]:
         cursor.execute("SELECT id,status,%s FROM ticket WHERE milestone=%%s "
                        "ORDER BY %s" % (field, field), (milestone,))
     else:
@@ -223,29 +222,15 @@ def milestone_to_hdf(env, db, req, milestone):
     return hdf
 
 def _get_groups(env, db, by='component'):
-    cursor = db.cursor()
-    groups = []
-    if by in ['status', 'resolution', 'severity', 'priority']:
-        cursor.execute("SELECT name FROM enum WHERE type = %s "
-                       "AND COALESCE(name,'')!='' ORDER BY value", (by,))
-    elif by in ['component', 'milestone', 'version']:
-        cursor.execute("SELECT name FROM %s "
-                       "WHERE COALESCE(name,'')!='' ORDER BY name" % (by,))
-    elif by == 'owner':
-        cursor.execute("SELECT DISTINCT owner AS name FROM ticket "
-                       "ORDER BY owner")
-    elif by not in Ticket.std_fields:
-        fields = TicketSystem(env).get_custom_fields()
-        field = [f for f in fields if f['name'] == by]
-        if not field:
-            return []
-        return [o for o in field[0]['options'] if o]
-    while 1:
-        row = cursor.fetchone()
-        if not row:
-            break
-        groups.append(row['name'] or '')
-    return groups
+    for field in TicketSystem(env).get_ticket_fields():
+        if field['name'] == by:
+            if 'options' in field.keys():
+                return field['options']
+            else:
+                cursor = db.cursor()
+                cursor.execute("SELECT DISTINCT %s FROM ticket ORDER BY %s"
+                               % (by, by))
+                return [row[0] for row in cursor]
 
 def _parse_date(datestr):
     seconds = None
@@ -419,13 +404,11 @@ class MilestoneModule(Component):
 
         req.hdf['milestone'] = milestone_to_hdf(self.env, db, req, milestone)
 
-        available_groups = map(lambda x: {'name': x, 'label': x.capitalize()},
-                               ['component', 'version', 'severity', 'priority',
-                                'owner'])
-        for f in [f for f in TicketSystem(self.env).get_custom_fields()
-                  if f['type'] in ('select', 'radio')]:
-            available_groups.append({'name': f['name'],
-                                     'label': f['label'] or f['name']})
+        available_groups = []
+        for field in TicketSystem(self.env).get_ticket_fields():
+            if field['type'] == 'select' or field['name'] == 'owner':
+                available_groups.append({'name': field['name'],
+                                         'label': field['label']})
         req.hdf['milestone.stats.available_groups'] = available_groups
 
         by = req.args.get('by', 'component')

@@ -366,7 +366,7 @@ Trac Admin Console %s
         test_results = self._execute('ticket_type list')
         self.assertEquals(self.expected_results[test_name], test_results)
 
-    def test_ticket_type_change_error_bad_priority(self):
+    def test_ticket_type_change_error_bad_type(self):
         """
         Tests the 'ticket_type change' command in trac-admin.  This particular
         test tries to change a priority that does not exist.
@@ -394,7 +394,7 @@ Trac Admin Console %s
         test_results = self._execute('ticket_type list')
         self.assertEquals(self.expected_results[test_name], test_results)
 
-    def test_ticket_type_remove_error_bad_priority(self):
+    def test_ticket_type_remove_error_bad_type(self):
         """
         Tests the 'ticket_type remove' command in trac-admin.  This particular
         test tries to remove a ticket type that does not exist.

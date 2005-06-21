@@ -120,7 +120,7 @@ class InMemoryDatabase(SQLiteConnection):
 
 class EnvironmentStub(ComponentManager):
     """A stub of the trac.env.Environment object for testing."""
-    def __init__(self, enable=None):
+    def __init__(self, default_data=False, enable=None):
         ComponentManager.__init__(self)
         self.enabled_components = enable
         self.db = InMemoryDatabase()
@@ -133,6 +133,16 @@ class EnvironmentStub(ComponentManager):
 
         from trac.web.href import Href
         self.href = Href('/trac.cgi')
+
+        if default_data:
+            from trac import db_default
+            cursor = self.db.cursor()
+            for table, cols, vals in db_default.data:
+                cursor.executemany("INSERT INTO %s (%s) VALUES (%s)"
+                                   % (table, ','.join(cols),
+                                      ','.join(['%s' for c in cols])),
+                                   vals)
+            self.db.commit()
 
     def component_activated(self, component):
         component.env = self

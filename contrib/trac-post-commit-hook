@@ -124,7 +124,6 @@ class CommitHook:
         self.msg = "(In [%s]) %s" % (rev, msg)
         self.now = int(time.time()) 
         self.env = open_environment(project)
-        self.db = self.env.get_db_cnx()
 
         cmdGroups = commandPattern.findall(msg) 
         for cmd, tkts in cmdGroups:
@@ -135,10 +134,10 @@ class CommitHook:
     def _cmdClose(self, tickets):
         for tkt_id in tickets:
             try:
-                ticket = Ticket(self.db, tkt_id)
+                ticket = Ticket(self.env, tkt_id)
                 ticket['status'] = 'closed'
                 ticket['resolution'] = 'fixed'
-                ticket.save_changes(self.db, self.author, self.msg, self.now)
+                ticket.save_changes(self.author, self.msg, self.now)
             except Exception, e:
                 print>>sys.stderr, 'Unexpected error while processing ticket ' \
                                    'ID %s: %s' % (tkt_id, e)
@@ -146,8 +145,8 @@ class CommitHook:
     def _cmdRefs(self, tickets):
         for tkt_id in tickets: 
             try:
-                ticket = Ticket(self.db, tkt_id)
-                ticket.save_changes(self.db, self.author, self.msg, self.now)
+                ticket = Ticket(self.env, tkt_id)
+                ticket.save_changes(self.author, self.msg, self.now)
             except Exception, e:
                 print>>sys.stderr, 'Unexpected error while processing ticket ' \
                                    'ID %s: %s' % (tkt_id, e)

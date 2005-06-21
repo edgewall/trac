@@ -44,22 +44,11 @@ class TicketEmailParser(object):
 
     def __init__(self, env):
         self.env = env
-        self.config = env.config
 
     def parse(self, fp):
         msg = email.message_from_file(fp)
-        db = self.env.get_db_cnx()
-        tkt = Ticket()
+        tkt = Ticket(self.env)
         tkt['status'] = 'new'
-        tkt['component'] = self.config.get('ticket', 'default_component')
-        cursor = db.cursor()
-        cursor.execute('SELECT owner FROM component '
-                       'WHERE name=%s', tkt['component'])
-        tkt['owner'] = cursor.fetchone()[0]
-        tkt['milestone'] = self.config.get('ticket', 'default_milestone')
-        tkt['priority'] = self.config.get('ticket', 'default_priority')
-        tkt['severity'] = self.config.get('ticket', 'default_severity')
-        tkt['version'] = self.config.get('ticket', 'default_version')
         tkt['reporter'] = msg['from']
         tkt['summary'] = msg['subject']
         for part in msg.walk():
@@ -67,7 +56,7 @@ class TicketEmailParser(object):
                 tkt['description'] = part.get_payload(decode=1).strip()
 
         if tkt.get('description'):
-            tkt.insert(db)
+            tkt.insert()
 
 if __name__ == '__main__':
     env = Environment(TRAC_ENV_PATH, create=0)

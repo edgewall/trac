@@ -48,9 +48,11 @@ class Query(object):
         self.group = group
         self.groupdesc = groupdesc
         self.verbose = verbose
+        self.fields = TicketSystem(self.env).get_ticket_fields()
         self.cols = [] # lazily initialized
 
-        if self.order != 'id' and not self.order in Ticket.std_fields:
+        if self.order != 'id' \
+                and not self.order in [f['name'] for f in self.fields]:
             # order by priority by default
             self.order = 'priority'
 
@@ -84,9 +86,12 @@ class Query(object):
 
         # FIXME: the user should be able to configure which columns should
         # be displayed
-        cols = ['type', 'id', 'summary', 'status', 'owner', 'priority', 'milestone',
-                'component', 'version', 'severity', 'resolution', 'reporter']
-        cols += [f['name'] for f in TicketSystem(self.env).get_custom_fields()]
+        cols = ['id']
+        cols += [f['name'] for f in self.fields if f['type'] != 'textarea']
+        for col in ('reporter', 'keywords', 'cc'):
+            if col in cols:
+                cols.remove(col)
+                cols.append(col)
 
         # Semi-intelligently remove columns that are restricted to a single
         # value by a query constraint.
@@ -118,7 +123,7 @@ class Query(object):
 
         # Only display the first eight columns by default
         # FIXME: Make this configurable on a per-user and/or per-query basis
-        self.cols = cols[:8]
+        self.cols = cols[:7]
         if not self.order in self.cols and not self.order == self.group:
             # Make sure the column we order by is visible, if it isn't also
             # the column we group by
@@ -185,8 +190,7 @@ class Query(object):
         add_cols('priority', 'time', 'changetime', self.order)
         cols.extend([c for c in self.constraints.keys() if not c in cols])
 
-        custom_fields = [f['name'] for f in
-                         TicketSystem(self.env).get_custom_fields()]
+        custom_fields = [f['name'] for f in self.fields if f.has_key('custom')]
 
         sql = []
         sql.append("SELECT " + ",".join(['t.%s AS %s' % (c, c) for c in cols
@@ -210,7 +214,7 @@ class Query(object):
         def get_constraint_sql(name, value, mode, neg):
             value = sql_escape(value[len(mode and '!' or '' + mode):])
             if name not in custom_fields:
-                name = 't.'+name
+                name = 't.' + name
             if mode == '~' and value:
                 return "COALESCE(%s,'') %sLIKE '%%%s%%'" % (
                        name, neg and 'NOT ' or '', value)
@@ -389,8 +393,8 @@ class QueryModule(Component):
 
     def _get_constraints(self, req):
         constraints = {}
-        custom_fields = [f['name'] for f in
-                         TicketSystem(self.env).get_custom_fields()]
+        ticket_fields = [f['name'] for f in
+                         TicketSystem(self.env).get_ticket_fields()]
 
         # A special hack for Safari/WebKit, which will not submit dynamically
         # created check-boxes with their real value, but with the default value
@@ -414,9 +418,7 @@ class QueryModule(Component):
             else:
                 remove_constraints[to_remove[0]] = -1
 
-        constrained_fields = [k for k in req.args.keys()
-                              if k in Ticket.std_fields or k in custom_fields]
-        for field in constrained_fields:
+        for field in [k for k in req.args.keys() if k in ticket_fields]:
             vals = req.args[field]
             if not isinstance(vals, (list, tuple)):
                 vals = [vals]
@@ -436,83 +438,6 @@ class QueryModule(Component):
                 constraints[field] = vals
 
         return constraints
-
-    def _get_ticket_properties(self, db):
-        # FIXME: This should be in the ticket module
-        properties = []
-
-        cursor = db.cursor()
-        def rows_to_list(sql):
-            list = []
-            cursor.execute(sql)
-            while 1:
-                row = cursor.fetchone()
-                if not row:
-                    break
-                list.append(row[0])
-            return list
-
-        properties.append({'name': 'summary', 'type': 'text',
-                           'label': 'Summary'})
-        properties.append({
-            'name': 'type', 'type': 'select', 'label': 'Type',
-            'options': rows_to_list("SELECT name FROM enum "
-                                    "WHERE type='ticket_type' ORDER BY value")})
-        properties.append({
-            'name': 'status', 'type': 'radio', 'label': 'Status',
-            'options': rows_to_list("SELECT name FROM enum WHERE type='status' "
-                                    "ORDER BY value")})
-        properties.append({
-            'name': 'resolution', 'type': 'radio', 'label': 'Resolution',
-            'options': [''] + rows_to_list("SELECT name FROM enum "
-                                           "WHERE type='resolution' ORDER BY value")})
-        properties.append({
-            'name': 'component', 'type': 'select', 'label': 'Component',
-            'options': rows_to_list("SELECT name FROM component "
-                                    "ORDER BY name")})
-        properties.append({
-            'name': 'milestone', 'type': 'select', 'label': 'Milestone',
-            'options': rows_to_list("SELECT name FROM milestone "
-                                    "ORDER BY name")})
-        properties.append({
-            'name': 'version', 'type': 'select', 'label': 'Version',
-            'options': rows_to_list("SELECT name FROM version ORDER BY name")})
-        properties.append({
-            'name': 'priority', 'type': 'select', 'label': 'Priority',
-            'options': rows_to_list("SELECT name FROM enum "
-                                    "WHERE type='priority' ORDER BY value")})
-        properties.append({
-            'name': 'severity', 'type': 'select', 'label': 'Severity',
-            'options': rows_to_list("SELECT name FROM enum "
-                                    "WHERE type='severity' ORDER BY value")})
-        properties.append({'name': 'keywords', 'type': 'text',
-                           'label': 'Keywords'})
-
-        restrict_owner = self.config.get('ticket', 'restrict_owner', '')
-        if restrict_owner.lower() in TRUE:
-            usernames = [escape(u[0]) for u in self.env.get_known_users()]
-            properties.append({'name': 'owner', 'type': 'select',
-                               'label': 'Owner', 'options': usernames})
-        else:
-            properties.append({'name': 'owner', 'type': 'text',
-                               'label': 'Owner'})
-
-        properties.append({'name': 'reporter', 'type': 'text',
-                           'label': 'Reporter'})
-        properties.append({'name': 'cc', 'type': 'text', 'label': 'CC list'})
-
-        custom_fields = TicketSystem(self.env).get_custom_fields()
-        for field in [field for field in custom_fields
-                      if field['type'] in ['text', 'radio', 'select']]:
-            property = {'name': field['name'], 'type': field['type'],
-                        'label': field['label'] or field['name']}
-            if field.has_key('options'):
-                property['options'] = filter(None, field['options'])
-            if field['type'] == 'radio':
-                property['options'].insert(0, '')
-            properties.append(property)
-
-        return filter(lambda p: not p.has_key('options') or len(p['options']) > 0, properties)
 
     def _get_constraint_modes(self):
         modes = {}
@@ -536,7 +461,13 @@ class QueryModule(Component):
 
         db = self.env.get_db_cnx()
 
-        req.hdf['ticket.properties'] = self._get_ticket_properties(db)
+        for field in query.fields:
+            if field['type'] == 'textarea':
+                continue
+            hdf = {}
+            hdf.update(field)
+            del hdf['name']
+            req.hdf['query.fields.' + field['name']] = hdf
         req.hdf['query.modes'] = self._get_constraint_modes()
 
         # For clients without JavaScript, we add a new constraint here if
@@ -591,19 +522,23 @@ class QueryModule(Component):
             for tid in [t['id'] for t in tickets if t['id'] in rest_list]:
                 rest_list.remove(tid)
             for rest_id in rest_list:
-                ticket = {}
-                ticket.update(Ticket(db, int(rest_id)))
-                ticket['removed'] = 1
-                tickets.insert(orig_list.index(rest_id), ticket)
+                data = {}
+                ticket = Ticket(self.env, int(rest_id), db=db)
+                data.update(ticket.values)
+                data['id'] = ticket.id
+                data['time'] = ticket.time_created
+                data['changetime'] = ticket.time_changed
+                data['removed'] = True
+                tickets.insert(orig_list.index(rest_id), data)
 
         for ticket in tickets:
             if orig_list:
                 # Mark tickets added or changed since the query was first
                 # executed
                 if int(ticket['time']) > orig_time:
-                    ticket['added'] = 1
+                    ticket['added'] = True
                 elif int(ticket['changetime']) > orig_time:
-                    ticket['changed'] = 1
+                    ticket['changed'] = True
             ticket['time'] = strftime('%c', localtime(ticket['time']))
             if ticket.has_key('description'):
                 ticket['description'] = wiki_to_html(ticket['description'] or '',
@@ -697,12 +632,9 @@ class QueryWikiMacro(Component):
                 for ticket in tickets:
                     href = self.env.href.ticket(int(ticket['id']))
                     summary = escape(shorten_line(ticket['summary']))
-                    class_name = 'ticket'
-                    if ticket['status'] in ('closed', 'new'):
-                        class_name = '%s ticket' % ticket['status']
-                        summary += ' (%s)' % ticket['status']
-                    links.append('<a class="%s" href="%s" title="%s">#%s</a>' \
-                                 % (class_name, href, summary, ticket['id']))
+                    links.append('<a class="%s ticket" href="%s" '
+                                 'title="%s">#%s</a>' % (ticket['status'], href,
+                                 summary, ticket['id']))
                 buf.write(', '.join(links))
             else:
                 buf.write('<dl class="wiki compact">')

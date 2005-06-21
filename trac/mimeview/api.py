@@ -217,7 +217,7 @@ class Mimeview(Component):
                 buf = StringIO()
                 buf.write('<div class="code-block"><pre>')
                 for line in result:
-                    buf.write(line + '\n')
+                    buf.write(line.expandtabs(8) + '\n')
                 buf.write('<pre></div>')
                 return buf.getvalue()
 
@@ -244,7 +244,8 @@ class Mimeview(Component):
             cells = []
             for annotator in annotators:
                 cells.append(annotator.annotate_line(num + 1, line))
-            cells.append('<td>%s</td>\n' % space_re.sub(htmlify, line))
+            cells.append('<td>%s</td>\n' % space_re.sub(htmlify,
+                                                        line.expandtabs(8)))
             buf.write('<tr>' + '\n'.join(cells) + '</tr>')
         buf.write('</tbody></table>')
         return buf.getvalue()

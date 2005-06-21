@@ -20,10 +20,13 @@ addEvent(window, 'load', function() { document.getElementById('summary').focus()
   <label for="summary">Short summary:</label><br />
   <input id="summary" type="text" name="summary" size="80" value="<?cs
     var:newticket.summary ?>"/>
- </div>
- <div class="field"><?cs
-  call:labelled_hdf_select("Type: ", enums.ticket_type, "type", newticket.type, 0) ?>
- </div>
+ </div><?cs
+ if:len(newticket.fields.type.options) ?>
+  <div class="field"><label for="type">Type: <?cs
+   call:hdf_select(newticket.fields.type.options, 'type',
+                   newticket.type, 0) ?>
+  </div><?cs
+ /if ?>
  <div class="field">
   <label for="description">Full description (you may use <a tabindex="42" href="<?cs
     var:$trac.href.wiki ?>/WikiFormatting">WikiFormatting</a> here):</label><br />
@@ -41,31 +44,42 @@ addEvent(window, 'load', function() { document.getElementById('summary').focus()
   <legend>Ticket Properties</legend>
   <input type="hidden" name="action" value="create" />
   <input type="hidden" name="status" value="new" />
-  <div class="col1"><?cs
-   call:labelled_hdf_select("Component:", newticket.components, "component", newticket.component, 0) ?><?cs
-   call:labelled_hdf_select("Version:", newticket.versions, "version", newticket.version, 1) ?><?cs
-   call:labelled_hdf_select("Severity:", enums.severity, "severity", newticket.severity, 0) ?>
-   <label for="keywords">Keywords:</label>
-   <input type="text" id="keywords" name="keywords" size="20"
-       value="<?cs var:newticket.keywords ?>" />
-  </div>
-  <div class="col2"><?cs
-   call:labelled_hdf_select("Priority:", enums.priority, "priority", newticket.priority, 0) ?><?cs
-   call:labelled_hdf_select("Milestone:", newticket.milestones, "milestone", newticket.milestone, 1) ?>
-   <label for="owner">Assign to:</label><?cs
-   if:len(newticket.users) ?><?cs
-    call:hdf_select(newticket.users, "owner", newticket.owner, 1) ?><?cs
-   else ?>
-    <input type="text" id="owner" name="owner" size="20" value="<?cs
-      var:newticket.owner ?>" /><?cs
-   /if ?><br /> 
-   <label for="cc">Cc:</label>
-   <input type="text" id="cc" name="cc" size="30" value="<?cs
-     var:newticket.cc ?>" />
-  </div>
-  <?cs if:len(ticket.custom) ?><div class="custom">
-   <?cs call:ticket_custom_props(ticket) ?>
-  </div><?cs /if ?>
+  <table><tr><?cs set:idx = 0 ?><?cs
+   each:field = newticket.fields ?><?cs
+    if:!field.skip ?><?cs set:fullrow = field.type == 'textarea' ?><?cs
+     if:fullrow && idx % 2 ?><th class="col2"></th><td></td></tr><tr><?cs /if ?>
+     <th class="col<?cs var:idx % 2 + 1 ?>"><?cs
+       if:field.type != 'radio' ?><label for="<?cs var:name(field) ?>"><?cs
+       /if ?><?cs alt:field.label ?><?cs var:field.name ?><?cs /alt ?>:<?cs
+       if:field.type != 'radio' ?></label><?cs /if ?></th>
+     <td<?cs if:fullrow ?> colspan="3"<?cs /if ?>><?cs
+      if:field.type == 'text' ?><input type="text" id="<?cs
+        var:name(field) ?>" name="<?cs
+        var:name(field) ?>" value="<?cs var:newticket[name(field)] ?>" /></td><?cs
+      elif:field.type == 'select' ?><select name="<?cs
+        var:name(field) ?>"><?cs
+        each:option = field.options ?><option<?cs
+         if:option == newticket[name(field)] ?> selected="selected"<?cs /if ?>><?cs
+         var:option ?></option><?cs
+        /each ?></select><?cs
+      elif:field.type == 'checkbox' ?><input type="hidden" name="checkbox_<?cs
+        var:name(field) ?>" /><input type="checkbox" name="<?cs
+        var:name(field) ?>" value="1"<?cs
+        if:newticket[name(field)] ?> checked="checked"<?cs /if ?> /><?cs
+      elif:field.type == 'textarea' ?><textarea name="<?cs
+        var:name(field) ?>"<?cs
+        if:field.height ?> rows="<?cs var:field.height ?>"<?cs /if ?><?cs
+        if:field.width ?> cols="<?cs var:field.width ?>"<?cs /if ?>><?cs
+        var:newticket[name(field)] ?></textarea><?cs
+      elif:field.type == 'radio' ?><label><input type="radio" name="<?cs
+         var:name(field) ?>" value="<?cs var:field.value ?>"<?cs
+         if:newticket[name(field)] ?> checked="checked"<?cs /if ?> /> <?cs
+         var:field.label ?></label><?cs
+      /if ?></td><?cs
+    if:idx % 2 ?></tr><tr><?cs /if ?><?cs set:idx = idx + #fullrow + 1 ?><?cs
+    /if ?><?cs
+   /each ?>
+  </table>
  </fieldset>
 
  <script type="text/javascript" src="<?cs
@@ -77,10 +91,10 @@ addEvent(window, 'load', function() { document.getElementById('summary').focus()
  </div>
 </form>
 
- <div id="help">
-  <strong>Note:</strong> See <a href="<?cs var:$trac.href.wiki
-  ?>/TracTickets">TracTickets</a> for help on using tickets.
- </div>
+<div id="help">
+ <strong>Note:</strong> See <a href="<?cs
+   var:trac.href.wiki ?>/TracTickets">TracTickets</a> for help on using tickets.
+</div>
 </div>
 
 <?cs include "footer.cs" ?>

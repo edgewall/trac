@@ -9,7 +9,7 @@ import unittest
 class MilestoneTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.env = EnvironmentStub()
+        self.env = EnvironmentStub(default_data=True)
         self.db = self.env.get_db_cnx()
 
     def test_new_milestone(self):
@@ -75,18 +75,18 @@ class MilestoneTestCase(unittest.TestCase):
         cursor.execute("INSERT INTO milestone (name) VALUES ('Test')")
         cursor.close()
 
-        tkt1 = Ticket()
+        tkt1 = Ticket(self.env)
         tkt1.populate({'summary': 'Foo', 'milestone': 'Test'})
-        tkt1.insert(self.db)
-        tkt2 = Ticket()
+        tkt1.insert()
+        tkt2 = Ticket(self.env)
         tkt2.populate({'summary': 'Bar', 'milestone': 'Test'})
-        tkt2.insert(self.db)
+        tkt2.insert()
 
         milestone = Milestone(self.env, 'Test')
         milestone.delete(retarget_to='Other')
 
-        self.assertEqual('Other', Ticket(self.db, tkt1['id'])['milestone'])
-        self.assertEqual('Other', Ticket(self.db, tkt2['id'])['milestone'])
+        self.assertEqual('Other', Ticket(self.env, tkt1.id)['milestone'])
+        self.assertEqual('Other', Ticket(self.env, tkt2.id)['milestone'])
 
     def test_update_milestone(self):
         cursor = self.db.cursor()
@@ -117,19 +117,19 @@ class MilestoneTestCase(unittest.TestCase):
         cursor.execute("INSERT INTO milestone (name) VALUES ('Test')")
         cursor.close()
 
-        tkt1 = Ticket()
+        tkt1 = Ticket(self.env)
         tkt1.populate({'summary': 'Foo', 'milestone': 'Test'})
-        tkt1.insert(self.db)
-        tkt2 = Ticket()
+        tkt1.insert()
+        tkt2 = Ticket(self.env)
         tkt2.populate({'summary': 'Bar', 'milestone': 'Test'})
-        tkt2.insert(self.db)
+        tkt2.insert()
 
         milestone = Milestone(self.env, 'Test')
         milestone.name = 'Testing'
         milestone.update()
 
-        self.assertEqual('Testing', Ticket(self.db, tkt1['id'])['milestone'])
-        self.assertEqual('Testing', Ticket(self.db, tkt2['id'])['milestone'])
+        self.assertEqual('Testing', Ticket(self.env, tkt1.id)['milestone'])
+        self.assertEqual('Testing', Ticket(self.env, tkt2.id)['milestone'])
 
     def test_select_milestones(self):
         cursor = self.db.cursor()

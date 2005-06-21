@@ -239,7 +239,7 @@ changed_name  somebody
 component2    somebody
 
 ===== test_component_rename_error_bad_component =====
-Component rename failed: No such component 'bad_component'
+Component rename failed: Component bad_component does not exist.
 ===== test_component_rename_error_bad_new_name =====
 Component rename failed: column name is not unique
 ===== test_component_chown_ok =====
@@ -250,7 +250,7 @@ component1  somebody
 component2  changed_owner
 
 ===== test_component_chown_error_bad_component =====
-Component chown failed: No such component 'bad_component'
+Component chown failed: Component bad_component does not exist.
 ===== test_component_remove_ok =====
 
 Name        Owner   
@@ -258,7 +258,7 @@ Name        Owner
 component2  somebody
 
 ===== test_component_remove_error_bad_component =====
-Component remove failed: No such component 'bad_component'
+Component remove failed: Component bad_component does not exist.
 ===== test_ticket_type_list_ok =====
 
 Possible Values
@@ -286,8 +286,8 @@ bug
 enhancement
 task
 
-===== test_ticket_type_change_error_bad_priority =====
-Command change failed: No such value 'bad_type'
+===== test_ticket_type_change_error_bad_type =====
+Command change failed: ticket_type bad_type does not exist.
 ===== test_ticket_type_change_error_bad_new_name =====
 Command change failed: columns type, name are not unique
 ===== test_ticket_type_remove_ok =====
@@ -297,8 +297,8 @@ Possible Values
 defect
 enhancement
 
-===== test_ticket_type_remove_error_bad_priority =====
-Command remove failed: No such value 'bad_type'
+===== test_ticket_type_remove_error_bad_type =====
+Command remove failed: ticket_type bad_type does not exist.
 ===== test_priority_list_ok =====
 
 Possible Values
@@ -333,7 +333,7 @@ minor
 trivial    
 
 ===== test_priority_change_error_bad_priority =====
-Command change failed: No such value 'bad_priority'
+Command change failed: priority bad_priority does not exist.
 ===== test_priority_change_error_bad_new_name =====
 Command change failed: columns type, name are not unique
 ===== test_priority_remove_ok =====
@@ -346,7 +346,7 @@ minor
 trivial    
 
 ===== test_priority_remove_error_bad_priority =====
-Command remove failed: No such value 'bad_priority'
+Command remove failed: priority bad_priority does not exist.
 ===== test_severity_list_ok =====
 
 Possible Values
@@ -367,7 +367,7 @@ Possible Values
 end-of-the-world
 
 ===== test_severity_change_error_bad_severity =====
-Command change failed: No such value 'bad_severity'
+Command change failed: severity bad_severity does not exist.
 ===== test_severity_change_error_bad_new_name =====
 Command change failed: columns type, name are not unique
 ===== test_severity_remove_ok =====
@@ -376,7 +376,7 @@ Possible Values
 ---------------
 
 ===== test_severity_remove_error_bad_severity =====
-Command remove failed: No such value 'bad_severity'
+Command remove failed: severity bad_severity does not exist.
 ===== test_version_list_ok =====
 
 Name  Time
@@ -402,7 +402,7 @@ Name  Time
 9.9       
 
 ===== test_version_rename_error_bad_version =====
-Command rename failed: No such version 'bad_version'
+Command rename failed: Version bad_version does not exist.
 ===== test_version_time_ok =====
 
 Name  Time                    
@@ -411,7 +411,7 @@ Name  Time
 2.0   2004-01-11
 
 ===== test_version_time_error_bad_version =====
-Command time failed: No such version 'bad_version'
+Command time failed: Version bad_version does not exist.
 ===== test_version_remove_ok =====
 
 Name  Time
@@ -419,7 +419,7 @@ Name  Time
 2.0       
 
 ===== test_version_remove_error_bad_version =====
-Command remove failed: No such version 'bad_version'
+Command remove failed: Version bad_version does not exist.
 ===== test_milestone_list_ok =====
 
 Name        Due  Completed
