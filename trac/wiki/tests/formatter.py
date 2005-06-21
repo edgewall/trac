@@ -1,8 +1,30 @@
-from trac.wiki.formatter import Formatter
 
 import os
+import inspect
 import StringIO
 import unittest
+
+from trac.core import *
+from trac.wiki.formatter import Formatter
+from trac.wiki.api import IWikiMacroProvider
+
+
+class DummyHelloWorldMacro(Component):
+    """
+    A dummy macro used by the unit test. We need to supply our own macro
+    because the real HelloWorld-macro can not be loaded using our
+    'fake' environment.
+    """
+    implements(IWikiMacroProvider)
+
+    def get_macros(self):
+        yield 'HelloWorld'
+
+    def get_macro_description(self, name):
+        return inspect.getdoc(MacroListMacro)
+
+    def render_macro(self, req, name, content):
+        return 'Hello World, args = ' + content
 
 
 class WikiTestCase(unittest.TestCase):
