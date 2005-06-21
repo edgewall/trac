@@ -56,8 +56,8 @@ addEvent(window, 'load', function() { document.getElementById('summary').focus()
       if:field.type == 'text' ?><input type="text" id="<?cs
         var:name(field) ?>" name="<?cs
         var:name(field) ?>" value="<?cs var:newticket[name(field)] ?>" /></td><?cs
-      elif:field.type == 'select' ?><select name="<?cs
-        var:name(field) ?>"><?cs
+      elif:field.type == 'select' ?><select name="<?cs var:name(field) ?>"><?cs
+        if:field.optional ?><option></option><?cs /if ?><?cs
         each:option = field.options ?><option<?cs
          if:option == newticket[name(field)] ?> selected="selected"<?cs /if ?>><?cs
          var:option ?></option><?cs
