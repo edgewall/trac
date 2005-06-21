@@ -4,6 +4,7 @@
 #edit #rows { float: right; font-size: 80% }
 #edit #rows select { font-size: 90% }
 #edit #text { clear: both; width: 100% }
+#edit .wikitoolbar { float: left; }
 #changeinfo { padding: .5em }
 #changeinfo .field { float: left; margin: 0 1em .5em 0 }
 #changeinfo br { clear: left }
@@ -17,10 +18,7 @@
 }
 
 /* Diff view */
-#overview .ipnr {
- color: #999;
- font-size: 80%;
-}
+#overview .ipnr { color: #999; font-size: 80% }
 #overview .comment { padding: 1em 0 0 }
 
 /* Heading anchors */

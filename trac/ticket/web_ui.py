@@ -110,7 +110,7 @@ class NewticketModule(Component):
         # Notify
         try:
             tn = TicketNotifyEmail(self.env)
-            tn.notify(ticket, newticket=1)
+            tn.notify(ticket, newticket=True)
         except Exception, e:
             self.log.exception("Failure sending notification on creation of "
                                "ticket #%s: %s" % (ticket.id, e))
@@ -298,7 +298,7 @@ class TicketModule(Component):
 
         try:
             tn = TicketNotifyEmail(self.env)
-            tn.notify(ticket, newticket=0, modtime=now)
+            tn.notify(ticket, newticket=False, modtime=now)
         except Exception, e:
             self.log.exception("Failure sending notification on change to "
                                "ticket #%s: %s" % (ticket.id, e))

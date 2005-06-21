@@ -38,7 +38,7 @@ h2 {
 .tickets thead th { text-transform: capitalize }
 .tickets tbody td, .reports tbody td { padding: .1em .5em !important }
 .tickets tbody td a, .reports tbody td a { border-bottom: none }
-.tickets tbody td.ticket :link, .tickets tbody td.ticket :visited {
+.tickets tbody td.id :link, .tickets tbody td.id :visited {
  font-weight: bold;
 }
 .tickets tbody tr:hover { background: #eed; color: #000 }

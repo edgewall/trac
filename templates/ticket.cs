@@ -176,7 +176,7 @@
      <td<?cs if:fullrow ?> colspan="3"<?cs /if ?>><?cs
       if:field.type == 'text' ?><input type="text" id="<?cs
         var:name(field) ?>" name="<?cs
-        var:name(field) ?>" value="<?cs var:ticket[name(field)] ?>" /></td><?cs
+        var:name(field) ?>" value="<?cs var:ticket[name(field)] ?>" /><?cs
       elif:field.type == 'select' ?><select name="<?cs
         var:name(field) ?>"><?cs
         each:option = field.options ?><option<?cs

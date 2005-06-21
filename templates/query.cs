@@ -201,17 +201,14 @@
    if:result.changed ?> changed<?cs /if ?><?cs
    if:result.removed ?> removed<?cs /if ?>"><?cs
   each:header = query.headers ?><?cs
-   if:name(header) == 0 ?>
-    <td class="ticket"><a href="<?cs var:result.href ?>" title="View ticket"><?cs
-      var:result.id ?></a></td><?cs
-   else ?>
-    <td><?cs if:header.name == 'summary' ?>
-     <a href="<?cs var:result.href ?>" title="View ticket"><?cs
-       var:result[header.name] ?></a><?cs
-    else ?>
-     <span><?cs var:result[header.name] ?></span><?cs
-    /if ?>
-    </td><?cs
+   if:name(header) == 0 ?><td class="id"><a href="<?cs
+    var:result.href ?>" title="View ticket"><?cs var:result.id ?></a></td><?cs
+   else ?><td class="<?cs var:header.name ?>"><?cs
+     if:header.name == 'summary' ?><a href="<?cs
+      var:result.href ?>" title="View ticket"><?cs
+      var:result.summary ?></a><?cs
+     else ?><span><?cs var:result[header.name] ?></span><?cs
+     /if ?></td><?cs
    /if ?><?cs
   /each ?>
   <?cs if:query.verbose ?>

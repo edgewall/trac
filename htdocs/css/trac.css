@@ -73,7 +73,8 @@ label.disabled { color: #d7d7d7 }
 
 /* Header */
 #header hr { display: none }
-#header h1, #header img { border: none; margin: 0 0 -3em }
+#header h1 { margin: 1.5em 0 -1.5em; }
+#header img { border: none; margin: 0 0 -3em }
 #header :link, #header :visited, #header :link:hover, #header :visited:hover {
  background: transparent;
  color: #555;
@@ -270,8 +271,8 @@ table.wiki td { border: 1px solid #ccc;  padding: .1em .25em; }
 .wikitoolbar {
  border: solid #d7d7d7;
  border-width: 1px 1px 1px 0;
- float: left;
  height: 18px;
+ width: 156px;
 }
 .wikitoolbar :link, .wikitoolbar :visited {
  background: transparent url(../edit_toolbar.png) no-repeat;
