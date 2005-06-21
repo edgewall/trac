@@ -20,7 +20,8 @@
 # Author: Daniel Lundin <daniel@edgewall.com>
 
 from trac.__init__ import __version__
-from trac.util import CRLF, TRUE, FALSE, TracError, wrap
+from trac.core import TracError
+from trac.util import CRLF, TRUE, FALSE, enum, wrap
 from trac.web.clearsilver import HDFWrapper
 from trac.web.main import populate_hdf
 
@@ -171,10 +172,10 @@ class TicketNotifyEmail(NotifyEmail):
         self.ticket = ticket
         self.modtime = modtime
         self.newticket = newticket
-        self.ticket['description'] = wrap(self.ticket.get('description',''),
+        self.ticket['description'] = wrap(self.ticket.values.get('description', ''),
                                           self.COLS, initial_indent=' ',
                                           subsequent_indent=' ', linesep=CRLF)
-        self.ticket['link'] = self.env.abs_href.ticket(ticket['id'])
+        self.ticket['link'] = self.env.abs_href.ticket(ticket.id)
         self.hdf['email.ticket_props'] = self.format_props()
         self.hdf['email.ticket_body_hdr'] = self.format_hdr()
         self.hdf['ticket'] = self.ticket
@@ -185,7 +186,7 @@ class TicketNotifyEmail(NotifyEmail):
         self.hdf['email.subject'] = subject
         changes = ''
         if not self.newticket and modtime:  # Ticket change
-            changelog = ticket.get_changelog(self.db, modtime)
+            changelog = ticket.get_changelog(modtime)
             for date, author, field, old, new in changelog:
                 self.hdf['ticket.change.author'] = author
                 pfx = 'ticket.change.%s' % field
@@ -214,52 +215,39 @@ class TicketNotifyEmail(NotifyEmail):
                 self.hdf['%s.author' % pfx] = author
             if changes:
                 self.hdf['email.changes_body'] = changes
-        NotifyEmail.notify(self, ticket['id'], subject)
+        NotifyEmail.notify(self, ticket.id, subject)
 
     def format_props(self):
         tkt = self.ticket
-        tkt['id'] = '%s' % tkt['id']
-        t = self.modtime or tkt['time']
-        tkt['modified'] = time.strftime('%c', time.localtime(t))
-        fields = ['id',        'status',
-                  'component', 'modified',
-                  'severity',  'milestone',
-                  'priority',  'version',
-                  'owner',     'reporter']
-        fields.extend(filter(lambda f: f.startswith('custom_'),
-                             self.ticket.keys()))
-        i = 1
+        fields = [f for f in tkt.fields if f['type'] != 'textarea']
+        t = self.modtime or tkt.time_changed
         width = [0,0,0,0]
-        for f in fields:
-            if not tkt.has_key(f):
+        for i, f in enum([f['name'] for f in fields]):
+            if not f in tkt.values.keys():
                 continue
-            fval = str(tkt[f])
+            fval = tkt[f]
             if fval.find('\n') > -1:
                 continue
-            fname = f.startswith('custom_') and f[7:] or f
-            idx = 2*(i % 2)
-            if len(fname) > width[idx]:
-                width[idx] = len(fname)
-            if len(fval) > width[idx+1]:
-                width[idx+1] = len(fval)
-            i += 1
-        format = (' %%%is:  %%-%is%s' % (width[0], width[1], CRLF),
-                  '%%%is:  %%-%is  |  ' % (width[2], width[3]))
+            idx = 2 * (i % 2)
+            if len(f) > width[idx]:
+                width[idx] = len(f)
+            if len(fval) > width[idx + 1]:
+                width[idx + 1] = len(fval)
+        format = ('%%%is:  %%-%is  |  ' % (width[2], width[3]),
+                  ' %%%is:  %%-%is%s' % (width[0], width[1], CRLF))
         i = 1
         l = (width[2] + width[3] + 5)
         sep = l*'-' + '+' + (self.COLS-l)*'-'
         txt = sep + CRLF
-        big=[]
-        for f in fields:
-            if not tkt.has_key(f): continue
+        big = []
+        for i, f in enum([f['name'] for f in fields]):
+            if not tkt.values.has_key(f): continue
             fval = tkt[f]
-            fname = f.startswith('custom_') and f[7:] or f
             if '\n' in str(fval):
-                big.append((fname.capitalize(), fval))
+                big.append((f.capitalize(), fval))
             else:
-                txt += format[i%2] % (fname.capitalize(), fval)
-                i += 1
-        if i % 2 == 0:
+                txt += format[i % 2] % (f.capitalize(), fval)
+        if i % 2:
             txt += '\n'
         if big:
             txt += sep
@@ -272,20 +260,20 @@ class TicketNotifyEmail(NotifyEmail):
         return filter(lambda x: '@' in x, txt.replace(',', ' ').split())
 
     def format_hdr(self):
-        return '#%s: %s' % (self.ticket['id'], wrap(self.ticket['summary'],
-                                                    self.COLS, linesep=CRLF))
+        return '#%s: %s' % (self.ticket.id, wrap(self.ticket['summary'],
+                                                 self.COLS, linesep=CRLF))
 
     def format_subj(self):
         projname = self.config.get('project', 'name')
-        return '[%s] #%s: %s' % (projname, self.ticket['id'],
-                                     self.ticket['summary'])
+        return '[%s] #%s: %s' % (projname, self.ticket.id,
+                                 self.ticket['summary'])
 
     def get_recipients(self, tktid):
         val = self.config.get('notification', 'always_notify_reporter')
         notify_reporter = val.lower() in TRUE
         val = self.config.get('notification', 'always_notify_owner')
         notify_owner = val.lower() in TRUE
-        
+
         recipients = self.prev_cc
         cursor = self.db.cursor()
 
@@ -331,7 +319,7 @@ class TicketNotifyEmail(NotifyEmail):
     def get_message_id(self, rcpt, modtime=0):
         """Generate a predictable, but sufficiently unique message ID."""
         s = '%s.%08d.%d.%s' % (self.config.get('project', 'url'),
-                               int(self.ticket['id']), modtime, rcpt)
+                               int(self.ticket.id), modtime, rcpt)
         dig = md5.new(s).hexdigest()
         host = self.from_email[self.from_email.find('@') + 1:]
         msgid = '<%03d.%s@%s>' % (len(s), dig, host)
@@ -340,7 +328,7 @@ class TicketNotifyEmail(NotifyEmail):
     def send(self, rcpt):
         hdrs = {}
         hdrs['Message-ID'] = self.get_message_id(rcpt, self.modtime)
-        hdrs['X-Trac-Ticket-ID'] = self.ticket['id']
+        hdrs['X-Trac-Ticket-ID'] = self.ticket.id
         hdrs['X-Trac-Ticket-URL'] = self.ticket['link']
         if not self.newticket:
             hdrs['In-Reply-To'] = self.get_message_id(rcpt)
