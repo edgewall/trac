@@ -770,7 +770,7 @@ class TracAdmin(cmd.Cmd):
     def _do_wiki_export(self, page, filename=''):
         data = self.db_query("SELECT text FROM wiki WHERE name='%s' "
                              "ORDER BY version DESC LIMIT 1" % page)
-        text = data[0][0]
+        text = data.next()[0]
         if not filename:
             print text
         else:
