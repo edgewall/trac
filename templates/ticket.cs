@@ -179,6 +179,7 @@
         var:name(field) ?>" value="<?cs var:ticket[name(field)] ?>" /><?cs
       elif:field.type == 'select' ?><select name="<?cs
         var:name(field) ?>"><?cs
+        if:field.optional ?><option></option<?cs /if ?><?cs
         each:option = field.options ?><option<?cs
          if:option == ticket[name(field)] ?> selected="selected"<?cs /if ?>><?cs
          var:option ?></option><?cs
@@ -194,9 +195,9 @@
         var:ticket[name(field)] ?></textarea><?cs
       elif:field.type == 'radio' ?><?cs set:optidx = 0 ?><?cs
        each:option = field.options ?><label><input type="radio" name="<?cs
-         var:option ?>" value="<?cs var:option ?>"<?cs
-         if:ticket[name(field)] == option ?> checked="checked"<?cs /if ?> /><?cs
-         var:option ?></label><?cs set:optidx = optidx + 1 ?><?cs
+         var:name(field) ?>" value="<?cs var:option ?>"<?cs
+         if:ticket[name(field)] == option ?> checked="checked"<?cs /if ?> /> <?cs
+         var:option ?></label> <?cs set:optidx = optidx + 1 ?><?cs
         /each ?><?cs
       /if ?></td><?cs
     if:idx % 2 ?></tr><tr><?cs /if ?><?cs set:idx = idx + #fullrow + 1 ?><?cs

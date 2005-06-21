@@ -83,6 +83,8 @@ class TicketSystem(Component):
                      'options': options}
             if name in ('status', 'resolution'):
                 field['type'] = 'radio'
+            elif name in ('milestone', 'version'):
+                field['optional'] = True
             fields.append(field)
 
         # Advanced text fields

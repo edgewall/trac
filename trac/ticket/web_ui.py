@@ -315,7 +315,7 @@ class TicketModule(Component):
 
         for field in TicketSystem(self.env).get_ticket_fields():
             if field['type'] in ('radio', 'select'):
-                value = ticket[field['name']]
+                value = ticket.values.get(field['name'])
                 if value and not value in field['options']:
                     # Current ticket value must be visible even if its not in the
                     # possible values
