@@ -106,14 +106,13 @@ class TracadminTestCase(unittest.TestCase):
     def setUp(self):
         self.env = InMemoryEnvironment('', create=True)
         self.db = self.env.get_db_cnx()
-        #self.env._insert_default_data(self.db)
 
         self._admin = admin.TracAdmin()
         self._admin.env_set('', self.env)
 
         # Set test date to 11th Jan 2004
         self._test_date = time.strftime('%Y-%m-%d', (2004, 1, 11, 0, 0, 0, 6, 1, -1))
-    
+
     def tearDown(self):
         self.env = None
 

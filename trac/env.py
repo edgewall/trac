@@ -268,7 +268,7 @@ class Environment(Component, ComponentManager):
                 return True
         return False
 
-    def upgrade(self, backup=None, backup_dest=None):
+    def upgrade(self, backup=False, backup_dest=None):
         """Upgrade database.
         
         Each db version should have its own upgrade module, names
