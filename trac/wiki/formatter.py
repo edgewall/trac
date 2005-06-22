@@ -144,6 +144,7 @@ class CommonFormatter(object):
     def __init__(self, env, absurls=0, db=None):
         self.env = env
         self._db = db
+        self._absurls = absurls
         self._open_tags = []
         self._href = absurls and env.abs_href or env.href
         self._local = env.config.get('project', 'url', '') or env.abs_href.base
@@ -455,7 +456,10 @@ class Formatter(CommonFormatter):
             i += 1
         self._anchors.append(anchor)
         self.out.write('<h%d id="%s">%s</h%d>' % (depth, anchor.encode('utf-8'),
-                                                  heading, depth))
+                                                  wiki_to_oneliner(heading,
+                                                      self.env, self._db,
+                                                      self._absurls),
+                                                  depth))
 
     def _svnimg_formatter(self, match, fullmatch):
         prefix_len = match.find(':') + 1

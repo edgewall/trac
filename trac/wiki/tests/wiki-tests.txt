@@ -143,6 +143,10 @@ foo (<a class="missing wiki" href="/wiki/FooBar" rel="nofollow">FooBar?</a> )
 ------------------------------
 <h2 id="Headingwithtrailingwhitespace">Heading with trailing white-space</h2>
 ==============================
+== ''Formatted'' ~~Heading~~ ==
+------------------------------
+<h2 id="FormattedHeading"><i>Formatted</i> <del>Heading</del></h2>
+==============================
 A0B1, ST62T53C6, IR32V1H000
 ------------------------------
 <p>
