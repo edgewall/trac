@@ -24,6 +24,7 @@ import re
 
 from trac import mimeview, util
 from trac.core import *
+from trac.env import IEnvironmentSetupParticipant
 from trac.web.href import Href
 from trac.web.main import IRequestHandler
 
@@ -74,13 +75,55 @@ class INavigationContributor(Interface):
 
 
 class Chrome(Component):
-    """
-    Responsible for assembling the web site chrome, i.e. everything that
+    """Responsible for assembling the web site chrome, i.e. everything that
     is not actual page content.
     """
-    implements(IRequestHandler)
+    implements(IEnvironmentSetupParticipant, IRequestHandler)
 
     navigation_contributors = ExtensionPoint(INavigationContributor)
+
+    # IEnvironmentSetupParticipant methods
+
+    def environment_created(self):
+        """Create the templates directory and some templates for
+        customization.
+        """
+        def _create_file(filename, data=None):
+            fd = open(filename, 'w')
+            if data:
+                fd.write(data)
+            fd.close()
+
+        if self.env.path:
+            templates_dir = os.path.join(self.env.path, 'templates')
+            os.mkdir(templates_dir)
+            _create_file(os.path.join(templates_dir, 'README'),
+                        'This directory contains project-specific custom '
+                        'templates and style sheet.\n')
+            _create_file(os.path.join(templates_dir, 'site_header.cs'),
+                         """<?cs
+####################################################################
+# Site header - Contents are automatically inserted above Trac HTML
+?>
+""")
+            _create_file(os.path.join(templates_dir, 'site_footer.cs'),
+                         """<?cs
+#########################################################################
+# Site footer - Contents are automatically inserted after main Trac HTML
+?>
+""")
+            _create_file(os.path.join(templates_dir, 'site_css.cs'),
+                         """<?cs
+##################################################################
+# Site CSS - Place custom CSS, including overriding styles here.
+?>
+""")
+
+    def environment_needs_upgrade(self, db):
+        return False
+
+    def upgrade_environment(self, db):
+        pass
 
     # IRequestHandler methods
 

@@ -1,7 +1,7 @@
 from trac.attachment import Attachment
 from trac.config import Configuration
 from trac.log import logger_factory
-from trac.test import InMemoryDatabase, Mock
+from trac.test import EnvironmentStub, Mock
 
 import os
 import shutil
@@ -12,20 +12,17 @@ import unittest
 class AttachmentTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.env_path = os.path.join(tempfile.gettempdir(), 'trac-tempenv')
-        os.mkdir(self.env_path)
-        self.db = InMemoryDatabase()
-        self.attachments_dir = os.path.join(self.env_path, 'attachments')
-        config = Configuration(None)
-        config.setdefault('attachment', 'max_size', 512)
-        self.env = Mock(config=config, log=logger_factory('test'),
-                        get_attachments_dir=lambda: self.attachments_dir,
-                        get_db_cnx=lambda: self.db)
+        self.env = EnvironmentStub()
+        self.env.path = os.path.join(tempfile.gettempdir(), 'trac-tempenv')
+        os.mkdir(self.env.path)
+        self.attachments_dir = os.path.join(self.env.path, 'attachments')
+        self.env.config.setdefault('attachment', 'max_size', 512)
+
         self.perm = Mock(assert_permission=lambda x: None,
                          has_permission=lambda x: True)
 
     def tearDown(self):
-        shutil.rmtree(self.env_path)
+        shutil.rmtree(self.env.path)
 
     def test_get_path(self):
         attachment = Attachment(self.env, 'ticket', 42)

@@ -30,6 +30,7 @@ import urllib
 
 from trac import perm, util
 from trac.core import *
+from trac.env import IEnvironmentSetupParticipant
 from trac.mimeview import *
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
 from trac.web.main import IRequestHandler
@@ -73,7 +74,7 @@ class Attachment(object):
         self.ipnr = row[5]
 
     def _get_path(self):
-        path = os.path.join(self.env.get_attachments_dir(), self.parent_type,
+        path = os.path.join(self.env.path, 'attachments', self.parent_type,
                             urllib.quote(self.parent_id))
         if self.filename:
             path = os.path.join(path, urllib.quote(self.filename))
@@ -92,12 +93,8 @@ class Attachment(object):
         cursor.execute("DELETE FROM attachment WHERE type=%s AND id=%s "
                        "AND filename=%s", (self.parent_type, self.parent_id,
                        self.filename))
-
-        path = os.path.join(self.env.get_attachments_dir(), self.parent_type,
-                            urllib.quote(self.parent_id),
-                            urllib.quote(self.filename))
         try:
-            os.unlink(path)
+            os.unlink(self.path)
         except OSError:
             raise TracError, 'Attachment not found'
 
@@ -123,9 +120,9 @@ class Attachment(object):
 
         # Make sure the path to the attachment is inside the environment
         # attachments directory
-        commonprefix = os.path.commonprefix([self.env.get_attachments_dir(),
-                                             self.path])
-        assert commonprefix == self.env.get_attachments_dir()
+        attachments_dir = os.path.join(self.env.path, 'attachments')
+        commonprefix = os.path.commonprefix([attachments_dir, self.path])
+        assert commonprefix == attachments_dir
 
         if not os.access(self.path, os.F_OK):
             os.makedirs(self.path)
@@ -200,10 +197,24 @@ def attachment_to_hdf(env, db, req, attachment):
 
 class AttachmentModule(Component):
 
-    implements(IRequestHandler, INavigationContributor)
+    implements(IEnvironmentSetupParticipant, IRequestHandler,
+               INavigationContributor)
 
     CHUNK_SIZE = 4096
     DISP_MAX_FILE_SIZE = 256 * 1024
+
+    # IEnvironmentSetupParticipant methods
+
+    def environment_created(self):
+        """Create the attachments directory."""
+        if self.env.path:
+            os.mkdir(os.path.join(self.env.path, 'attachments'))
+
+    def environment_needs_upgrade(self, db):
+        return False
+
+    def upgrade_environment(self, db):
+        pass
 
     # INavigationContributor methods
 

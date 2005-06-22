@@ -24,13 +24,13 @@ from __future__ import generators
 
 from trac import db, db_default, util
 from trac.config import Configuration
-from trac.core import Component, ComponentManager, Interface, ExtensionPoint, \
-                      TracError
+from trac.core import Component, ComponentManager, implements, Interface, \
+                      ExtensionPoint, TracError
 
 import os
 import os.path
 
-db_version = db_default.db_version
+__all__ = ['Environment', 'IEnvironmentSetupParticipant', 'open_environment']
 
 
 class IEnvironmentSetupParticipant(Interface):
@@ -40,6 +40,12 @@ class IEnvironmentSetupParticipant(Interface):
 
     def environment_created():
         """Called when a new Trac environment is created."""
+
+    def environment_needs_upgrade(db):
+        """FIXME"""
+
+    def upgrade_environment(db):
+        """FIXME"""
 
 
 class Environment(Component, ComponentManager):
@@ -123,11 +129,12 @@ class Environment(Component, ComponentManager):
         if not self.__cnx_pool:
             self.__cnx_pool = db.get_cnx_pool(self)
         return self.__cnx_pool.get_cnx()
-    
+
     def shutdown(self):
         """Close the environment."""
         if self.__cnx_pool:
             self.__cnx_pool.shutdown()
+            self.__cnx_pool = None
 
     def get_repository(self, authname=None):
         """Return the version control repository configured for this
@@ -156,42 +163,22 @@ class Environment(Component, ComponentManager):
             fd = open(fname, 'w')
             if data: fd.write(data)
             fd.close()
+
         # Create the directory structure
         os.mkdir(self.path)
-        os.mkdir(os.path.join(self.path, 'conf'))
         os.mkdir(self.get_log_dir())
-        os.mkdir(self.get_attachments_dir())
-        os.mkdir(self.get_templates_dir())
         os.mkdir(os.path.join(self.path, 'wiki-macros'))
+
         # Create a few files
         _create_file(os.path.join(self.path, 'VERSION'),
                      'Trac Environment Version 1\n')
         _create_file(os.path.join(self.path, 'README'),
-                    'This directory contains a Trac project.\n'
-                    'Visit http://trac.edgewall.com/ for more information.\n')
-        _create_file(os.path.join(self.path, 'conf', 'trac.ini'))
-        _create_file(os.path.join(self.get_templates_dir(), 'README'),
-                     'This directory contains project-specific custom templates and style sheet.\n')
-        _create_file(os.path.join(self.get_templates_dir(), 'site_header.cs'),
-                     """<?cs
-####################################################################
-# Site header - Contents are automatically inserted above Trac HTML
-?>
-""")
-        _create_file(os.path.join(self.get_templates_dir(), 'site_footer.cs'),
-                     """<?cs
-#########################################################################
-# Site footer - Contents are automatically inserted after main Trac HTML
-?>
-""")
-        _create_file(os.path.join(self.get_templates_dir(), 'site_css.cs'),
-                     """<?cs
-##################################################################
-# Site CSS - Place custom CSS, including overriding styles here.
-?>
-""")
+                     'This directory contains a Trac environment.\n'
+                     'Visit http://trac.edgewall.com/ for more information.\n')
 
         # Setup the default configuration
+        os.mkdir(os.path.join(self.path, 'conf'))
+        _create_file(os.path.join(self.path, 'conf', 'trac.ini'))
         self.load_config()
         for section,name,value in db_default.default_config:
             self.config.set(section, name, value)
@@ -199,23 +186,7 @@ class Environment(Component, ComponentManager):
         self.config.save()
 
         # Create the database
-        cnx = db.init_db(self.path, db_str)
-        self._insert_default_data(cnx)
-
-    def _insert_default_data(self, db=None):
-        """Insert default data into the database.
-
-        @param db: the database connection; if ommitted, a new connection is
-                   retrieved.
-        """
-        if not db:
-            db = self.get_db_cnx()
-        cursor = db.cursor()
-        for table, cols, vals in db_default.data:
-            cursor.executemany("INSERT INTO %s (%s) VALUES (%s)" % (table,
-                               ','.join(cols), ','.join(['%s' for c in cols])),
-                               vals)
-        db.commit()
+        db.init_db(self.path, db_str)
 
     def get_version(self):
         """Return the current version of the database."""
@@ -230,10 +201,6 @@ class Environment(Component, ComponentManager):
         self.config = Configuration(os.path.join(self.path, 'conf', 'trac.ini'))
         for section,name,value in db_default.default_config:
             self.config.setdefault(section, name, value)
-
-    def get_attachments_dir(self):
-        """Return absolute path to the attachments directory."""
-        return os.path.join(self.path, 'attachments')
 
     def get_templates_dir(self):
         """Return absolute path to the templates directory."""
@@ -293,6 +260,14 @@ class Environment(Component, ComponentManager):
             dest = '%s.%i.bak' % (db_name, self.get_version())
         shutil.copy (db_name, dest)
 
+    def needs_upgrade(self):
+        """Return whether the environment needs to be upgraded."""
+        db = self.get_db_cnx()
+        for participant in self.setup_participants:
+            if participant.environment_needs_upgrade(db):
+                return True
+        return False
+
     def upgrade(self, backup=None, backup_dest=None):
         """Upgrade database.
         
@@ -303,32 +278,66 @@ class Environment(Component, ComponentManager):
         @param backup_dest: name of the backup file
         @return: whether the upgrade was performed
         """
-        dbver = self.get_version()
+        db = self.get_db_cnx()
+
+        upgraders = []
+        for participant in self.setup_participants:
+            if participant.environment_needs_upgrade(db):
+                upgraders.append(participant)
+        if not upgraders:
+            return False
+
+        if backup:
+            self.backup(backup_dest)
+        for participant in upgraders:
+            participant.upgrade_environment(db)
+        db.commit()
+
+        # Database schema may have changed, so close all connections
+        self.shutdown()
+
+        return True
+
+
+class EnvironmentSetup(Component):
+    implements(IEnvironmentSetupParticipant)
+
+    # IEnvironmentSetupParticipant methods
+
+    def environment_created(self):
+        """Insert default data into the database."""
+        db = self.env.get_db_cnx()
+        cursor = db.cursor()
+        for table, cols, vals in db_default.data:
+            cursor.executemany("INSERT INTO %s (%s) VALUES (%s)" % (table,
+                               ','.join(cols), ','.join(['%s' for c in cols])),
+                               vals)
+        db.commit()
+
+    def environment_needs_upgrade(self, db):
+        dbver = self.env.get_version()
         if dbver == db_default.db_version:
-            return upgrade_requestors
+            return False
         elif dbver > db_default.db_version:
             raise TracError, 'Database newer than Trac version'
-        else:
-            if backup:
-                self.backup(backup_dest)
-            cnx = self.get_db_cnx()
-            cursor = cnx.cursor()
-            import upgrades
-            for i in range(dbver + 1, db_default.db_version + 1):
-                try:
-                    upg  = 'db%i' % i
-                    __import__('upgrades', globals(), locals(),[upg])
-                    d = getattr(upgrades, upg)
-                except AttributeError:
-                    err = 'No upgrade module for version %i (%s.py)' % (i, upg)
-                    raise TracError, err
-                d.do_upgrade(self, i, cursor)
-            cursor.execute("UPDATE system SET value=%s WHERE "
-                           "name='database_version'", (db_default.db_version))
-            self.log.info('Upgraded db version from %d to %d',
-                          dbver, db_default.db_version)
-            cnx.commit()
-            return True
+        return True
+
+    def upgrade_environment(self, db):
+        cursor = db.cursor()
+        dbver = self.env.get_version()
+        for i in range(dbver + 1, db_default.db_version + 1):
+            name  = 'db%i' % i
+            try:
+                upgrades = __import__('upgrades', globals(), locals(), [name])
+                script = getattr(upgrades, name)
+            except AttributeError:
+                err = 'No upgrade module for version %i (%s.py)' % (i, name)
+                raise TracError, err
+            script.do_upgrade(self.env, i, cursor)
+        cursor.execute("UPDATE system SET value=%s WHERE "
+                       "name='database_version'", (db_default.db_version))
+        self.log.info('Upgraded database version from %d to %d',
+                      dbver, db_default.db_version)
 
 
 def open_environment(env_path=None):
@@ -347,10 +356,7 @@ def open_environment(env_path=None):
                          'environment.'
 
     env = Environment(env_path)
-    version = env.get_version()
-    if version < db_version:
+    if env.needs_upgrade():
         raise TracError, 'The Trac Environment needs to be upgraded. Run ' \
                          'trac-admin %s upgrade"' % env_path
-    elif version > db_version:
-        raise TracError, 'Unknown Trac Environment version (%d).' % version
     return env

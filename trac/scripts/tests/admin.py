@@ -94,7 +94,6 @@ class InMemoryEnvironment(Environment):
 
 
 class TracadminTestCase(unittest.TestCase):
-
     """
     Tests the output of trac-admin and is meant to be used with
     .../trac/tests.py.
@@ -107,7 +106,7 @@ class TracadminTestCase(unittest.TestCase):
     def setUp(self):
         self.env = InMemoryEnvironment('', create=True)
         self.db = self.env.get_db_cnx()
-        self.env._insert_default_data(self.db)
+        #self.env._insert_default_data(self.db)
 
         self._admin = admin.TracAdmin()
         self._admin.env_set('', self.env)
