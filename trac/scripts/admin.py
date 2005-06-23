@@ -39,12 +39,15 @@ from trac.env import Environment
 from trac.Milestone import Milestone
 from trac.ticket.model import *
 
-def my_sum(list):
-    """Python2.2 doesn't have sum()"""
-    tot = 0
-    for item in list:
-        tot += item
-    return tot
+try:
+    sum
+except NameError:
+    def sum(list):
+        """Python2.2 doesn't have sum()"""
+        tot = 0
+        for item in list:
+            tot += item
+        return tot
 
 
 class TracAdmin(cmd.Cmd):
@@ -109,11 +112,18 @@ class TracAdmin(cmd.Cmd):
             traceback.print_exc()
             sys.exit(1)
 
-    def db_open(self):
+    def env_open(self):
         try:
             if not self.__env:
                 self.__env = Environment(self.envname)
-            return self.__env.get_db_cnx()
+            return self.__env
+        except Exception, e:
+            print 'Failed to open environment.', e
+            sys.exit(1)
+
+    def db_open(self):
+        try:
+            return self.env_open().get_db_cnx()
         except Exception, e:
             print 'Failed to open environment.', e
             sys.exit(1)
@@ -193,7 +203,7 @@ class TracAdmin(cmd.Cmd):
             print
             if rnum == 0 and decor:
                 print ''.join(['-' for x in
-                               xrange(0, (1 + len(sep)) * cnum + my_sum(colw))])
+                               xrange(0, (1 + len(sep)) * cnum + sum(colw))])
         print
 
     def print_doc(self, doc, decor=False):
@@ -375,27 +385,27 @@ class TracAdmin(cmd.Cmd):
 
     def _do_component_list(self):
         data = []
-        for c in Component.select(self.__env):
+        for c in Component.select(self.env_open()):
             data.append((c.name, c.owner))
         self.print_listing(['Name', 'Owner'], data)
 
     def _do_component_add(self, name, owner):
-        component = Component(self.__env)
+        component = Component(self.env_open())
         component.name = name
         component.owner = owner
         component.insert()
 
     def _do_component_rename(self, name, newname):
-        component = Component(self.__env, name)
+        component = Component(self.env_open(), name)
         component.name = newname
         component.update()
 
     def _do_component_remove(self, name):
-        component = Component(self.__env, name)
+        component = Component(self.env_open(), name)
         component.delete()
 
     def _do_component_set_owner(self, name, owner):
-        component = Component(self.__env, name)
+        component = Component(self.env_open(), name)
         component.owner = owner
         component.update()
 
@@ -632,10 +642,8 @@ class TracAdmin(cmd.Cmd):
 
     ## Resync
     def do_resync(self, line):
-        self.db_open() # We need to call this function to open the env, really stupid
-
         print 'resyncing...'
-        cnx = self.__env.get_db_cnx()
+        cnx = self.db_open() # We need to call this function to open the env, really stupid
         self.db_update("DELETE FROM revision")
         self.db_update("DELETE FROM node_change")
 
@@ -861,7 +869,7 @@ class TracAdmin(cmd.Cmd):
     def _do_enum_list(self, type):
         enum_cls = self._enum_map[type]
         self.print_listing(['Possible Values'],
-                           [(e.name,) for e in enum_cls.select(self.__env)])
+                           [(e.name,) for e in enum_cls.select(self.env_open())])
 
     def _do_enum_add(self, type, name):
         sql = ("INSERT INTO enum(value,type,name) "
@@ -872,13 +880,13 @@ class TracAdmin(cmd.Cmd):
 
     def _do_enum_change(self, type, name, newname):
         enum_cls = self._enum_map[type]
-        enum = enum_cls(self.__env, name)
+        enum = enum_cls(self.env_open(), name)
         enum.name = newname
         enum.update()
 
     def _do_enum_remove(self, type, name):
         enum_cls = self._enum_map[type]
-        enum = enum_cls(self.__env, name)
+        enum = enum_cls(self.env_open(), name)
         enum.delete()
 
 
@@ -926,33 +934,33 @@ class TracAdmin(cmd.Cmd):
 
     def _do_milestone_list(self):
         data = []
-        for m in Milestone.select(self.__env, include_completed=True):
+        for m in Milestone.select(self.env_open(), include_completed=True):
             data.append((m.name, m.due and self._format_date(m.due),
                          m.completed and self._format_datetime(m.completed)))
 
         self.print_listing(['Name', 'Due', 'Completed'], data)
 
     def _do_milestone_rename(self, name, newname):
-        milestone = Milestone(self.__env, name)
+        milestone = Milestone(self.env_open(), name)
         milestone.name = newname
         milestone.update()
 
     def _do_milestone_add(self, name):
-        milestone = Milestone(self.__env)
+        milestone = Milestone(self.env_open())
         milestone.name = name
         milestone.insert()
 
     def _do_milestone_remove(self, name):
-        milestone = Milestone(self.__env, name)
+        milestone = Milestone(self.env_open(), name)
         milestone.delete()
 
     def _do_milestone_set_due(self, name, t):
-        milestone = Milestone(self.__env, name)
+        milestone = Milestone(self.env_open(), name)
         milestone.due = self._parse_date(t)
         milestone.update()
 
     def _do_milestone_set_completed(self, name, t):
-        milestone = Milestone(self.__env, name)
+        milestone = Milestone(self.env_open(), name)
         milestone.completed = self._parse_date(t)
         milestone.update()
 
@@ -995,26 +1003,26 @@ class TracAdmin(cmd.Cmd):
 
     def _do_version_list(self):
         data = []
-        for v in Version.select(self.__env):
+        for v in Version.select(self.env_open()):
             data.append((v.name, v.time and self._format_date(v.time)))
         self.print_listing(['Name', 'Time'], data)
 
     def _do_version_rename(self, name, newname):
-        version = Version(self.__env, name)
+        version = Version(self.env_open(), name)
         version.name = newname
         version.update()
 
     def _do_version_add(self, name):
-        version = Version(self.__env)
+        version = Version(self.env_open())
         version.name = name
         version.insert()
 
     def _do_version_remove(self, name):
-        version = Version(self.__env, name)
+        version = Version(self.env_open(), name)
         version.delete()
 
     def _do_version_time(self, name, t):
-        version = Version(self.__env, name)
+        version = Version(self.env_open(), name)
         version.time = self._parse_date(t)
         version.update()
 
