@@ -177,6 +177,6 @@ def suite():
     return suite
 
 if __name__ == '__main__':
-    import doctest
-    doctest.testmod()
+    import doctest, sys
+    doctest.testmod(sys.modules[__name__])
     unittest.main(defaultTest='suite')

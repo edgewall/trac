@@ -155,9 +155,6 @@ class Href(object):
         return self._derived[name]
 
 
-def _test():
-    import doctest
-    doctest.testmod()
-
 if __name__ == '__main__':
-    _test()
+    import doctest, sys
+    doctest.testmod(sys.modules[__name__])
