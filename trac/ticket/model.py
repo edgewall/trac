@@ -54,8 +54,8 @@ class Ticket(object):
                                               'default_' + field['name'])
             else:
                 default = field.get('value')
-                options = field.get('options', [])
-                if default and default not in field.get('options', []):
+                options = field.get('options')
+                if default and options and default not in options:
                     try:
                         default_idx = int(default)
                         if default_idx > len(options):
