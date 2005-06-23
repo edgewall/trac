@@ -165,7 +165,12 @@
       var:ticket.reporter ?>" id="reporter" name="reporter" size="70" /></td>
    </tr><?cs
    /if ?>
-  <tr><?cs set:idx = 0 ?><?cs
+  <tr><?cs set:num_fields = 0 ?><?cs
+  each:field = ticket.fields ?><?cs
+   if:!field.skip ?><?cs
+    set:num_fields = num_fields + 1 ?><?cs
+   /if ?><?cs
+  /each ?><?cs set:idx = 0 ?><?cs
    each:field = ticket.fields ?><?cs
     if:!field.skip ?><?cs set:fullrow = field.type == 'textarea' ?><?cs
      if:fullrow && idx % 2 ?><th class="col2"></th><td></td></tr><tr><?cs /if ?>
@@ -200,9 +205,11 @@
          var:option ?></label> <?cs set:optidx = optidx + 1 ?><?cs
         /each ?><?cs
       /if ?></td><?cs
-    if:idx % 2 ?></tr><tr><?cs /if ?><?cs set:idx = idx + #fullrow + 1 ?><?cs
+     if:idx % 2 ?></tr><tr><?cs 
+     elif:idx == num_fields - 1 ?><th class="col2"></th><td></td><?cs
+     /if ?><?cs set:idx = idx + #fullrow + 1 ?><?cs
     /if ?><?cs
-   /each ?>
+   /each ?></tr>
   </table>
  </fieldset><?cs /if ?>
 

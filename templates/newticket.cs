@@ -44,7 +44,12 @@ addEvent(window, 'load', function() { document.getElementById('summary').focus()
   <legend>Ticket Properties</legend>
   <input type="hidden" name="action" value="create" />
   <input type="hidden" name="status" value="new" />
-  <table><tr><?cs set:idx = 0 ?><?cs
+  <table><tr><?cs set:num_fields = 0 ?><?cs
+  each:field = newticket.fields ?><?cs
+   if:!field.skip ?><?cs
+    set:num_fields = num_fields + 1 ?><?cs
+   /if ?><?cs
+  /each ?><?cs set:idx = 0 ?><?cs
    each:field = newticket.fields ?><?cs
     if:!field.skip ?><?cs set:fullrow = field.type == 'textarea' ?><?cs
      if:fullrow && idx % 2 ?><th class="col2"></th><td></td></tr><tr><?cs /if ?>
@@ -55,7 +60,7 @@ addEvent(window, 'load', function() { document.getElementById('summary').focus()
      <td<?cs if:fullrow ?> colspan="3"<?cs /if ?>><?cs
       if:field.type == 'text' ?><input type="text" id="<?cs
         var:name(field) ?>" name="<?cs
-        var:name(field) ?>" value="<?cs var:newticket[name(field)] ?>" /></td><?cs
+        var:name(field) ?>" value="<?cs var:newticket[name(field)] ?>" /><?cs
       elif:field.type == 'select' ?><select name="<?cs var:name(field) ?>"><?cs
         if:field.optional ?><option></option><?cs /if ?><?cs
         each:option = field.options ?><option<?cs
@@ -78,9 +83,11 @@ addEvent(window, 'load', function() { document.getElementById('summary').focus()
          var:option ?></label> <?cs set:optidx = optidx + 1 ?><?cs
        /each ?><?cs
       /if ?></td><?cs
-    if:idx % 2 ?></tr><tr><?cs /if ?><?cs set:idx = idx + #fullrow + 1 ?><?cs
+     if:idx % 2 ?></tr><tr><?cs 
+     elif:idx == num_fields - 1 ?><th class="col2"></th><td></td><?cs
+     /if ?><?cs set:idx = idx + #fullrow + 1 ?><?cs
     /if ?><?cs
-   /each ?>
+   /each ?></tr>
   </table>
  </fieldset>
 
