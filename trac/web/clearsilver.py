@@ -110,8 +110,7 @@ class HDFWrapper:
     """
 
     def __init__(self, loadpaths=[]):
-        """
-        Creates a new HDF dataset.
+        """Create a new HDF dataset.
         
         The loadpaths parameter can be used to specify a sequence of paths under
         which ClearSilver will search for template files:
@@ -160,10 +159,11 @@ class HDFWrapper:
         return value
 
     def __setitem__(self, name, value):
-        """
-        Adds data to the HDF dataset. The `name` parameter is the path of the
-        node in dotted syntax. The `value` parameter can be a simple value such
-        as a string or number, but also data structures such as dicts and lists.
+        """Add data to the HDF dataset.
+        
+        The `name` parameter is the path of the node in dotted syntax. The
+        `value` parameter can be a simple value such as a string or number, but
+        also data structures such as dicts and lists.
 
         >>> hdf = HDFWrapper()
 
@@ -206,7 +206,8 @@ class HDFWrapper:
                 for k in value.keys():
                     add_value('%s.%s' % (prefix, k), value[k])
             else:
-                if hasattr(value, '__iter__'):
+                if hasattr(value, '__iter__') or \
+                        isinstance(value, (list, tuple)):
                     for idx, item in enum(value):
                         add_value('%s.%d' % (prefix, idx), item)
                 else:
@@ -237,8 +238,8 @@ class HDFWrapper:
         return buf.getvalue().strip()
 
     def parse(self, string):
-        """
-        Parses the given string as template text, and returns a neo_cs.CS object.
+        """Parse the given string as template text, and returns a neo_cs.CS
+        object.
         """
         import neo_cs
         cs = neo_cs.CS(self.hdf)
@@ -246,9 +247,8 @@ class HDFWrapper:
         return cs
 
     def render(self, template):
-        """
-        Renders the HDF using the given template.
-        
+        """Render the HDF using the given template.
+
         The template parameter can be either an already parse neo_cs.CS
         object, or a string. In the latter case it is interpreted as name of the
         template file.
