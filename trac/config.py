@@ -86,7 +86,7 @@ class Configuration:
             return
         modtime = os.path.getmtime(self.filename)
         if modtime > self.__lastmtime:
-            self.parser.read(self.filename)
+            self.parser.readfp(open(self.filename))
             self.__lastmtime = modtime
 
 
