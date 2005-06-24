@@ -328,7 +328,7 @@ class TicketNotifyEmail(NotifyEmail):
     def send(self, rcpt):
         hdrs = {}
         hdrs['Message-ID'] = self.get_message_id(rcpt, self.modtime)
-        hdrs['X-Trac-Ticket-ID'] = self.ticket.id
+        hdrs['X-Trac-Ticket-ID'] = str(self.ticket.id)
         hdrs['X-Trac-Ticket-URL'] = self.ticket['link']
         if not self.newticket:
             hdrs['In-Reply-To'] = self.get_message_id(rcpt)
