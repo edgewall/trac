@@ -455,6 +455,7 @@ default_config = \
   ('notification', 'smtp_from', 'trac@localhost'),
   ('notification', 'smtp_replyto', 'trac@localhost'),
   ('timeline', 'changeset_show_files', '0'),
+  ('timeline', 'daysback', '30'),
 )
 
 default_components = ('trac.About', 'trac.attachment', 'trac.Browser',
