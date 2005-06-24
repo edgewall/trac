@@ -39,12 +39,13 @@ def _get_changes(env, repos, revs, full=None, req=None, format=None):
     for rev in revs:
         changeset = repos.get_changeset(rev)
         message = changeset.message
+        shortlog = util.shorten_line(message)        
         files = None
         if format == 'changelog':
             files = [change[0] for change in changeset.get_changes()]
         elif message:
             if not full:
-                message = wiki_to_oneliner(util.shorten_line(message), env, db)
+                message = wiki_to_oneliner(shortlog, env, db)
             else:
                 message = wiki_to_html(message, env, req, db,
                                        absurls=(format == 'rss'),
@@ -56,6 +57,7 @@ def _get_changes(env, repos, revs, full=None, req=None, format=None):
             'date': time.strftime('%x %X', time.localtime(changeset.date)),
             'age': util.pretty_timedelta(changeset.date),
             'author': changeset.author or 'anonymous',
+            'shortlog': shortlog,
             'message': message,
             'files': files
         }
@@ -372,6 +374,7 @@ class LogModule(Component):
         if format == 'rss':
             for cs in changes.values():
                 cs['message'] = util.escape(cs['message'])
+                cs['shortlog'] = util.escape(cs['shortlog'])
         elif format == 'changelog':
             for cs in changes.values():
                 cs['message'] = '\n'.join(['\t' + m for m in
