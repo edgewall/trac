@@ -23,6 +23,7 @@
 #
 
 from __future__ import generators
+import urllib
 
 from trac.core import *
 from trac.util import to_utf8
@@ -71,14 +72,28 @@ class IWikiMacroProvider(Interface):
         """
 
 
+class IWikiSyntaxProvider(Interface):
+ 
+    def get_wiki_syntax():
+        """
+        Return an iterable that provides additional wiki syntax.
+        """
+ 
+    def get_link_resolvers():
+        """
+        Return an iterable over (namespace, formatter) tuples.
+        """
+ 
+
 class WikiSystem(Component):
     """
     Represents the wiki system.
     """
-    implements(IWikiChangeListener)
+    implements(IWikiChangeListener, IWikiSyntaxProvider)
 
     change_listeners = ExtensionPoint(IWikiChangeListener)
     macro_providers = ExtensionPoint(IWikiMacroProvider)
+    syntax_providers = ExtensionPoint(IWikiSyntaxProvider)
 
     def __init__(self):
         self._pages = None
@@ -119,3 +134,27 @@ class WikiSystem(Component):
         if self.has_page(page.name):
             self.log.debug('Removing page %s from index' % page.name)
             del self._pages[page.name]
+            
+    # IWikiSyntaxProvider methods
+    
+    def get_wiki_syntax(self):
+        yield (r"!?(^|(?<=[^A-Za-z]))[A-Z][a-z]+(?:[A-Z][a-z]*[a-z/])+(?:#[A-Za-z0-9]+)?(?=\Z|\s|[.,;:!?\)}\]])", lambda x, y, z: self._format_link(x, 'wiki', y, y))
+
+    def get_link_resolvers(self):
+        yield ('wiki', self._format_link)
+
+    def _format_link(self, formatter, ns, page, label):
+        anchor = ''
+        if page.find('#') != -1:
+            anchor = page[page.find('#'):]
+            page = page[:page.find('#')]
+        page = urllib.unquote(page)
+        label = urllib.unquote(label)
+
+        if not self.has_page(page):
+            return '<a class="missing wiki" href="%s" rel="nofollow">%s?</a>' \
+                   % (formatter.href.wiki(page) + anchor, label)
+        else:
+            return '<a class="wiki" href="%s">%s</a>' \
+                   % (formatter.href.wiki(page) + anchor, label)
+

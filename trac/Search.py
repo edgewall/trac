@@ -29,12 +29,13 @@ from trac.core import *
 from trac.util import TracError, escape, shorten_line
 from trac.versioncontrol.svn_authz import SubversionAuthorizer
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
+from trac.wiki import IWikiSyntaxProvider
 from trac.web.main import IRequestHandler
 
 
 class SearchModule(Component):
 
-    implements(INavigationContributor, IRequestHandler)
+    implements(INavigationContributor, IRequestHandler, IWikiSyntaxProvider)
 
     RESULTS_PER_PAGE = 10
 
@@ -276,3 +277,16 @@ class SearchModule(Component):
             item['message'] = escape(self.shorten_result(msg, keywords))
             info.append(item)
         return info, more
+
+    # IWikiSyntaxProvider methods
+    
+    def get_wiki_syntax(self):
+        return []
+    
+    def get_link_resolvers(self):
+        yield ('search', self._format_link)
+
+    def _format_link(self, formatter, ns, query, label):
+        return '<a class="search" href="%s">%s</a>' \
+               % (formatter.href.search(query), label)
+

@@ -28,8 +28,7 @@ from trac.core import *
 from trac.ticket import Ticket, TicketSystem
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
 from trac.web.main import IRequestHandler
-from trac.wiki import wiki_to_html, wiki_to_oneliner
-from trac.wiki.api import IWikiMacroProvider
+from trac.wiki import wiki_to_html, wiki_to_oneliner, IWikiMacroProvider, IWikiSyntaxProvider
 from trac.util import escape, shorten_line, sql_escape, CRLF, TRUE
 
 
@@ -311,7 +310,7 @@ class Query(object):
 
 class QueryModule(Component):
 
-    implements(IRequestHandler, INavigationContributor)
+    implements(IRequestHandler, INavigationContributor, IWikiSyntaxProvider)
 
     # INavigationContributor methods
 
@@ -584,6 +583,27 @@ class QueryModule(Component):
                 result['time'] = strftime('%a, %d %b %Y %H:%M:%S GMT',
                                           gmtime(result['time']))
         req.hdf['query.results'] = results
+
+    # IWikiSyntaxProvider methods
+    
+    def get_wiki_syntax(self):
+        return []
+    
+    def get_link_resolvers(self):
+        yield ('query', self._format_link)
+
+    def _format_link(self, formatter, ns, query, label):
+        if query[0] == '?':
+            return '<a class="query" href="%s">%s</a>' \
+                   % (formatter.href.query() + query, label)
+        else:
+            from trac.ticket.query import Query, QuerySyntaxError
+            try:
+                query = Query.from_string(formatter.env, query)
+                return '<a class="query" href="%s">%s</a>' \
+                       % (query.get_href(), label)
+            except QuerySyntaxError, e:
+                return '<em class="error">[Error: %s]</em>' % util.escape(e)
 
 
 class QueryWikiMacro(Component):

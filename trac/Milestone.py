@@ -29,7 +29,7 @@ from trac.Timeline import ITimelineEventProvider
 from trac.util import *
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
 from trac.web.main import IRequestHandler
-from trac.wiki import wiki_to_html, wiki_to_oneliner
+from trac.wiki import wiki_to_html, wiki_to_oneliner, IWikiSyntaxProvider
 
 
 class Milestone(object):
@@ -251,7 +251,7 @@ def _parse_date(datestr):
 
 class MilestoneModule(Component):
 
-    implements(INavigationContributor, IRequestHandler, ITimelineEventProvider)
+    implements(INavigationContributor, IRequestHandler, ITimelineEventProvider, IWikiSyntaxProvider)
 
     # INavigationContributor methods
 
@@ -441,3 +441,15 @@ class MilestoneModule(Component):
             req.hdf['%s.queries' % prefix] = queries
             group_no += 1
         req.hdf['milestone.stats.max_percent_total'] = max_percent_total * 100
+
+    # IWikiSyntaxProvider methods
+    
+    def get_wiki_syntax(self):
+        return []
+    
+    def get_link_resolvers(self):
+        yield ('milestone', self._format_link)
+
+    def _format_link(self, formatter, ns, name, label):
+        return '<a class="milestone" href="%s">%s</a>' \
+               % (formatter.href.milestone(name), label)

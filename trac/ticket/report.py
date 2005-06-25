@@ -29,7 +29,7 @@ from trac import perm, util
 from trac.core import *
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
 from trac.web.main import IRequestHandler
-from trac.wiki import wiki_to_html
+from trac.wiki import wiki_to_html, IWikiSyntaxProvider
 
 
 dynvars_re = re.compile('\$([A-Z]+)')
@@ -72,7 +72,7 @@ class ColumnSorter:
 
 class ReportModule(Component):
 
-    implements(INavigationContributor, IRequestHandler)
+    implements(INavigationContributor, IRequestHandler, IWikiSyntaxProvider)
 
     # INavigationContributor methods
 
@@ -498,3 +498,15 @@ class ReportModule(Component):
         if description:
             req.write('-- %s\n\n' % '\n-- '.join(description.splitlines()))
         req.write(sql)
+        
+    # IWikiSyntaxProvider methods
+    
+    def get_link_resolvers(self):
+        yield ('report', self._format_link)
+
+    def get_wiki_syntax(self):
+        yield (r"!?\{\d+\}", lambda x, y, z: self._format_link(x, 'report', y[1:-1], y))
+
+    def _format_link(self, formatter, ns, target, label):
+        return '<a class="report" href="%s">%s</a>' % (formatter.href.report(target), label)
+

@@ -1,3 +1,4 @@
+
 # -*- coding: iso8859-1 -*-
 #
 # Copyright (C) 2003, 2004, 2005 Edgewall Software
@@ -20,18 +21,24 @@
 # Author: Jonas Borgström <jonas@edgewall.com>
 
 from __future__ import generators
+import re
 import time
+import urllib
 
 from trac import perm, util
 from trac.core import *
 from trac.mimeview import get_mimetype, is_binary, Mimeview
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
 from trac.web.main import IRequestHandler
-from trac.wiki import wiki_to_html, wiki_to_oneliner
+from trac.wiki import wiki_to_html, wiki_to_oneliner, IWikiSyntaxProvider
 from trac.versioncontrol import Changeset
 
 CHUNK_SIZE = 4096
 DISP_MAX_FILE_SIZE = 256 * 1024
+
+rev_re = re.compile(r"([^#]+)#(.+)")
+img_re = re.compile(r"\.(gif|jpg|jpeg|png)(\?.*)?$", re.IGNORECASE)
+
 
 def _get_changes(env, repos, revs, full=None, req=None, format=None):
     db = env.get_db_cnx()
@@ -80,7 +87,7 @@ def _get_path_links(href, path, rev):
 
 class BrowserModule(Component):
 
-    implements(INavigationContributor, IRequestHandler)
+    implements(INavigationContributor, IRequestHandler, IWikiSyntaxProvider)
 
     # INavigationContributor methods
 
@@ -248,6 +255,35 @@ class BrowserModule(Component):
             add_link(req, 'alternate', raw_href, 'Original Format', mime_type)
 
             add_stylesheet(req, 'code.css')
+
+    # IWikiSyntaxProvider methods
+    
+    def get_wiki_syntax(self):
+        return []
+
+    def get_link_resolvers(self):
+        return [('repos', self._format_link),
+                ('source', self._format_link),
+                ('browser', self._format_link)]
+
+    def _format_link(self, formatter, ns, path, label):
+        rev = None
+        match = img_re.search(path)
+        if formatter.flavor != 'oneliner' and match:
+            return '<img src="%s" alt="%s" />' % \
+                   (formatter.href.file(path, format='raw'), label)
+        match = rev_re.search(path)
+        if match:
+            path = match.group(1)
+            rev = match.group(2)
+        label = urllib.unquote(label)
+        path = urllib.unquote(path)
+        if rev:
+            return '<a class="source" href="%s">%s</a>' \
+                   % (formatter.href.browser(path, rev=rev), label)
+        else:
+            return '<a class="source" href="%s">%s</a>' \
+                   % (formatter.href.browser(path), label)
 
 
 class LogModule(Component):

@@ -122,32 +122,51 @@ class WikiProcessor(object):
             return text
 
 
-class CommonFormatter(object):
-    """This class contains the patterns common to both Formatter and
-    OneLinerFormatter"""
+class Formatter(object):
+    flavor = 'default'
 
-    _rules = [r"(?P<bolditalic>''''')",
-              r"(?P<bold>''')",
-              r"(?P<italic>'')",
-              r"(?P<underline>__)",
-              r"(?P<strike>~~)",
-              r"(?P<subscript>,,)",
-              r"(?P<superscript>\^)",
-              r"(?P<inlinecode>!?\{\{\{(?P<inline>.*?)\}\}\})",
-              r"(?P<htmlescapeentity>!?&#\d+;)",
-              r"(?P<tickethref>!?#\d+)",
-              r"(?P<changesethref>!?(\[\d+\]|\br\d+\b))",
-              r"(?P<reporthref>!?\{\d+\})",
-              r"(?P<modulehref>!?((?P<modulename>bug|ticket|browser|source|repos|report|query|changeset|wiki|milestone|search):(?P<moduleargs>(&#34;(.*?)&#34;|'(.*?)')|([^ ]*[^'~_\., \)]))))",
-              r"(?P<wikihref>!?(^|(?<=[^A-Za-z]))[A-Z][a-z]+(?:[A-Z][a-z]*[a-z/])+(?:#[A-Za-z0-9]+)?(?=\Z|\s|[.,;:!?\)}\]]))",
-              r"(?P<fancylink>!?\[(?P<fancyurl>([a-z]+:[^ ]+)) (?P<linkname>.*?)\])"]
+    _link_resolvers = None
+    # Rules provided by IWikiSyntaxProviders are inserted between pre_rules and post_rules
+    _pre_rules = [r"(?P<bolditalic>''''')",
+                  r"(?P<bold>''')",
+                  r"(?P<italic>'')",
+                  r"(?P<underline>__)",
+                  r"(?P<strike>~~)",
+                  r"(?P<subscript>,,)",
+                  r"(?P<superscript>\^)",
+                  r"(?P<inlinecode>!?\{\{\{(?P<inline>.*?)\}\}\})",
+                  r"(?P<htmlescapeentity>!?&#\d+;)"]
+    _post_rules = [r"(?P<shref>!?((?P<sns>\w+):(?P<stgt>(&#34;(.*?)&#34;|'(.*?)')|(([^ ][^ |]+)*[^|'~_\., \)]))))",
+                   r"(?P<lhref>!?\[(?P<lns>\w+):(?P<ltgt>[^ ]+) (?P<label>.*?)\])",
+                   r"(?P<macro>!?\[\[(?P<macroname>[\w/+-]+)(\]\]|\((?P<macroargs>.*?)\)\]\]))",
+                   r"(?P<heading>^\s*(?P<hdepth>=+)\s.*\s(?P=hdepth)\s*$)",
+                   r"(?P<list>^(?P<ldepth>\s+)(?:\*|\d+\.) )",
+                   r"(?P<definition>^\s+(.+)::)\s*",
+                   r"(?P<indent>^(?P<idepth>\s+)(?=\S))",
+                   r"(?P<last_table_cell>\|\|$)",
+                   r"(?P<table_cell>\|\|)"]
 
-    def __init__(self, env, absurls=0, db=None):
+    _compiled_rules = None
+    _helper_patterns = None
+    _external_handlers = None
+    _processor_re = re.compile('#\!([\w+-][\w+-/]*)')
+    _anchor_re = re.compile('[^\w\d\.-:]+', re.UNICODE)
+    
+    img_re = re.compile(r"\.(gif|jpg|jpeg|png)(\?.*)?$", re.IGNORECASE)
+    _htmlproc_disallow_rule = re.compile('(?i)<(script|noscript|embed|object|'
+                                         'iframe|frame|frameset|link|style|'
+                                         'meta|param|doctype)')
+    _htmlproc_disallow_attribute = re.compile('(?i)<[^>]*\s+(on\w+)=')
+
+
+    def __init__(self, env, req=None, absurls=0, db=None):
         self.env = env
+        self.req = req
         self._db = db
         self._absurls = absurls
+        self._anchors = []
         self._open_tags = []
-        self._href = absurls and env.abs_href or env.href
+        self.href = absurls and env.abs_href or env.href
         self._local = env.config.get('project', 'url', '') or env.abs_href.base
 
     def _get_db(self):
@@ -156,13 +175,50 @@ class CommonFormatter(object):
         return self._db
     db = property(fget=_get_db)
 
+    def _get_rules(self):
+        if not Formatter._compiled_rules:
+            helpers = []
+            handlers = {}
+            syntax = Formatter._pre_rules[:]
+            wiki = WikiSystem(self.env)
+            i = 0
+            for resolver in wiki.syntax_providers:
+                for regexp, handler in resolver.get_wiki_syntax():
+                    handlers['i'+str(i)] = handler
+                    syntax.append('(?P<i%d>%s)' % (i, regexp))
+                    i += 1
+            syntax += Formatter._post_rules[:]
+            helper_re = re.compile(r'\?P<([a-z]+)>')
+            for rule in syntax:
+                helpers += helper_re.findall(rule)[1:]
+            rules = re.compile('(?:' + string.join(syntax, '|') + ')')
+            Formatter._external_handlers = handlers
+            Formatter._helper_patterns = helpers
+            Formatter._compiled_rules = rules
+        return Formatter._compiled_rules
+    rules = property(_get_rules)
+
+    def _get_link_resolvers(self):
+        if not Formatter._link_resolvers:
+            resolvers = {}
+            wiki = WikiSystem(self.env)
+            for resolver in wiki.syntax_providers:
+                for namespace, handler in resolver.get_link_resolvers():
+                    resolvers[namespace] = handler
+            Formatter._link_resolvers = resolvers
+        return Formatter._link_resolvers
+    link_resolvers = property(_get_link_resolvers)
+
     def replace(self, fullmatch):
         for itype, match in fullmatch.groupdict().items():
             if match and not itype in Formatter._helper_patterns:
                 # Check for preceding escape character '!'
                 if match[0] == '!':
                     return match[1:]
-                return getattr(self, '_' + itype + '_formatter')(match, fullmatch)
+                if itype in self._external_handlers:
+                    return self._external_handlers[itype](self, match, fullmatch)
+                else:
+                    return getattr(self, '_' + itype + '_formatter')(match, fullmatch)
 
     def tag_open_p(self, tag):
         """Do we currently have any open tag with @tag as end-tag"""
@@ -203,6 +259,36 @@ class CommonFormatter(object):
             self.open_tag(*italic)
         return tmp
 
+    def _shref_formatter(self, match, fullmatch):
+        ns = fullmatch.group('sns')
+        target = fullmatch.group('stgt')
+        
+        if ns in self.link_resolvers:
+            return self._link_resolvers[ns](self, ns, target, match)
+        elif target[:2] == '//':
+            return self._make_ext_link(match, match)
+        else:
+            return match
+
+    def _lhref_formatter(self, match, fullmatch):
+        ns = fullmatch.group('lns')
+        target = fullmatch.group('ltgt') 
+        label = fullmatch.group('label')
+        if ns in self.link_resolvers:
+            return self._link_resolvers[ns](self, ns, target, label)
+        elif target[:2] == '//':
+            return self._make_ext_link(ns+':'+target, label)
+        else:
+            return match
+
+    def _make_ext_link(self, url, text):
+        if Formatter.img_re.search(url) and self.flavor != 'oneliner':
+            return '<img src="%s" alt="%s" />' % (url, text)
+        if not url.startswith(self._local):
+            return '<a class="ext-link" href="%s">%s</a>' % (url, text)
+        else:
+            return '<a href="%s">%s</a>' % (url, text)
+
     def _bold_formatter(self, match, fullmatch):
         return self.simple_tag_handler('<strong>', '</strong>')
 
@@ -230,200 +316,6 @@ class CommonFormatter(object):
         # This function is used to avoid these being matched by
         # the tickethref regexp
         return match
-
-    def _tickethref_formatter(self, match, fullmatch):
-        return self._make_ticket_link(match[1:], match)
-
-    def _changesethref_formatter(self, match, fullmatch):
-        if match[0] == 'r':
-            rev = match[1:]
-        else:
-            rev = match[1:-1]
-        return self._make_changeset_link(rev, match)
-
-    def _reporthref_formatter(self, match, fullmatch):
-        return self._make_report_link(match[1:-1], match)
-
-    def _modulehref_formatter(self, match, fullmatch):
-        return self._make_module_link(match, match)
-
-    def _wikihref_formatter(self, match, fullmatch):
-        return self._make_wiki_link(match, match)
-
-    def _url_formatter(self, match, fullmatch):
-        return self._make_ext_link(match, match)
-
-    def _fancylink_formatter(self, match, fullmatch):
-        link = fullmatch.group('fancyurl')
-        text = fullmatch.group('linkname')
-        return self._make_module_link(link, text)
-
-    def _make_module_link(self, link, text):
-        sep = link.find(':')
-        if sep == -1:
-            return None, None
-        module = link[:sep]
-        args = link[sep + 1:]
-        make_link = getattr(self, '_make_' + module + '_link', None)
-        if make_link:
-            return make_link(args, text)
-        else:
-            return self._make_ext_link(link, text)
-
-    def _make_ext_link(self, url, text):
-        if not url.startswith(self._local):
-            return '<a class="ext-link" href="%s">%s</a>' % (url, text)
-        else:
-            return '<a href="%s">%s</a>' % (url, text)
-
-    def _make_wiki_link(self, page, text):
-        anchor = ''
-        if page.find('#') != -1:
-            anchor = page[page.find('#'):]
-            page = page[:page.find('#')]
-        page = urllib.unquote(page)
-        text = urllib.unquote(text)
-
-        if not WikiSystem(self.env).has_page(page):
-            return '<a class="missing wiki" href="%s" rel="nofollow">%s?</a>' \
-                   % (self._href.wiki(page) + anchor, text)
-        else:
-            return '<a class="wiki" href="%s">%s</a>' \
-                   % (self._href.wiki(page) + anchor, text)
-
-    def _make_changeset_link(self, rev, text):
-        cursor = self.db.cursor()
-        cursor.execute('SELECT message FROM revision WHERE rev=%s', (rev,))
-        row = cursor.fetchone()
-        if row:
-            return '<a class="changeset" title="%s" href="%s">%s</a>' \
-                   % (util.escape(util.shorten_line(row[0])),
-                      self._href.changeset(rev), text)
-        else:
-            return '<a class="missing changeset" href="%s" rel="nofollow">%s</a>' \
-                   % (self._href.changeset(rev), text)
-
-    def _make_ticket_link(self, id, text):
-        cursor = self.db.cursor()
-        cursor.execute("SELECT summary,status FROM ticket WHERE id=%s", (id,))
-        row = cursor.fetchone()
-        if row:
-            summary = util.escape(util.shorten_line(row[0]))
-            if row[1] in ('new', 'closed'):
-                return '<a class="%s ticket" href="%s" title="%s (%s)">%s</a>' \
-                       % (row[1], self._href.ticket(id), summary, row[1], text)
-            else:
-                return '<a class="ticket" href="%s" title="%s">%s</a>' \
-                       % (self._href.ticket(id), summary, text)
-        else:
-            return '<a class="missing ticket" href="%s" rel="nofollow">%s</a>' \
-                   % (self._href.ticket(id), text)
-    _make_bug_link = _make_ticket_link # alias
-
-    def _make_milestone_link(self, name, text):
-        return '<a class="milestone" href="%s">%s</a>' \
-               % (self._href.milestone(name), text)
-
-    def _make_query_link(self, query, text):
-        if query[0] == '?':
-            return '<a class="query" href="%s">%s</a>' \
-                   % (self.env.href.query() + query, text)
-        else:
-            from trac.ticket.query import Query, QuerySyntaxError
-            try:
-                query = Query.from_string(self.env, query)
-                return '<a class="query" href="%s">%s</a>' \
-                       % (query.get_href(), text)
-            except QuerySyntaxError, e:
-                return '<em class="error">[Error: %s]</em>' % util.escape(e)
-
-    def _make_report_link(self, id, text):
-        return '<a class="report" href="%s">%s</a>' \
-               % (self._href.report(id), text)
-
-    def _make_search_link(self, query, text):
-        return '<a class="search" href="%s">%s</a>' \
-               % (self._href.search(query), text)
-
-    def _make_source_link(self, path, text):
-        rev = None
-        match = re.search('([^#]+)#(.+)', path)
-        if match:
-            path = match.group(1)
-            rev = match.group(2)
-        text = urllib.unquote(text)
-        path = urllib.unquote(path)
-        if rev:
-            return '<a class="source" href="%s">%s</a>' \
-                   % (self._href.browser(path, rev=rev), text)
-        else:
-            return '<a class="source" href="%s">%s</a>' \
-                   % (self._href.browser(path), text)
-    _make_browser_link = _make_source_link # alias
-    _make_repos_link = _make_source_link # alias
-
-
-class OneLinerFormatter(CommonFormatter):
-    """
-    A special version of the wiki formatter that only implement a
-    subset of the wiki formatting functions. This version is useful
-    for rendering short wiki-formatted messages on a single line
-    """
-
-    _rules = CommonFormatter._rules + \
-             [r"""(?P<url>([a-z]+://[^ ]+[^\., ]))"""]
-
-    _compiled_rules = re.compile('(?:' + string.join(_rules, '|') + ')')
-
-    def format(self, text, out):
-        if not text:
-            return
-        self.out = out
-        self._open_tags = []
-
-        rules = self._compiled_rules
-
-        result = re.sub(rules, self.replace, util.escape(text.strip()))
-        # Close all open 'one line'-tags
-        result += self.close_tag(None)
-        out.write(result)
-
-
-class Formatter(CommonFormatter):
-    """
-    A simple Wiki formatter
-    """
-    _rules = [r"""(?P<svnimg>(source|repos):([^ ]+)\.(PNG|png|JPG|jpg|JPEG|jpeg|GIF|gif))"""] + \
-             CommonFormatter._rules + \
-             [r"""(?P<macro>!?\[\[(?P<macroname>[\w/+-]+)(\]\]|\((?P<macroargs>.*?)\)\]\]))""",
-              r"""(?P<heading>^\s*(?P<hdepth>=+)\s.*\s(?P=hdepth)\s*$)""",
-              r"""(?P<list>^(?P<ldepth>\s+)(?:\*|[0-9]+\.) )""",
-              r"""(?P<definition>^\s+(.+)::)\s*""",
-              r"""(?P<indent>^(?P<idepth>\s+)(?=\S))""",
-              r"""(?P<imgurl>!?([a-z]+://[^ ]+)\.(PNG|png|JPG|jpg|JPEG|jpeg|GIF|gif)(\?\S+)?)""",
-              r"""(?P<url>!?([a-z]+://[^ ]+[^\.,' \)\]\}]))""",
-              r"""(?P<last_table_cell>\|\|$)""",
-              r"""(?P<table_cell>\|\|)"""]
-
-    _compiled_rules = re.compile('(?:' + string.join(_rules, '|') + ')')
-    _processor_re = re.compile('#\!([\w+-][\w+-/]*)')
-    _anchor_re = re.compile('[^\w\d\.-:]+', re.UNICODE)
-
-    # RE patterns used by other patterna
-    _helper_patterns = ('idepth', 'ldepth', 'hdepth', 'fancyurl',
-                        'linkname', 'macroname', 'macroargs', 'inline',
-                        'modulename', 'moduleargs')
-
-    # Forbid "dangerous" HTML tags and attributes
-    _htmlproc_disallow_rule = re.compile('(?i)<(script|noscript|embed|object|'
-                                         'iframe|frame|frameset|link|style|'
-                                         'meta|param|doctype)')
-    _htmlproc_disallow_attribute = re.compile('(?i)<[^>]*\s+(on\w+)=')
-
-    def __init__(self, env, req=None, absurls=0, db=None):
-        CommonFormatter.__init__(self, env, absurls, db)
-        self.req = req
-        self._anchors = []
 
     def _macro_formatter(self, match, fullmatch):
         name = fullmatch.group('macroname')
@@ -461,15 +353,6 @@ class Formatter(CommonFormatter):
                                                       self.env, self._db,
                                                       self._absurls),
                                                   depth))
-
-    def _svnimg_formatter(self, match, fullmatch):
-        prefix_len = match.find(':') + 1
-        return '<img src="%s" alt="%s" />' % \
-               (self._href.file(match[prefix_len:], format='raw'),
-                match[prefix_len:])
-
-    def _imgurl_formatter(self, match, fullmatch):
-        return '<img src="%s" alt="%s" />' % (match, match)
 
     def _indent_formatter(self, match, fullmatch):
         depth = int((len(fullmatch.group('idepth')) + 1) / 2)
@@ -643,8 +526,6 @@ class Formatter(CommonFormatter):
         self.indent_level = 0
         self.paragraph_open = 0
 
-        rules = self._compiled_rules
-
         for line in text.splitlines():
             # Handle code block
             if self.in_code_block or line.strip() == '{{{':
@@ -672,7 +553,7 @@ class Formatter(CommonFormatter):
                 line += ' [[BR]]'
             self.in_list_item = False
             # Throw a bunch of regexps on the problem
-            result = re.sub(rules, self.replace, line)
+            result = re.sub(self.rules, self.replace, line)
 
             if not self.in_list_item:
                 self.close_list()
@@ -696,10 +577,41 @@ class Formatter(CommonFormatter):
         self.close_def_list()
 
 
+class OneLinerFormatter(Formatter):
+    """
+    A special version of the wiki formatter that only implement a
+    subset of the wiki formatting functions. This version is useful
+    for rendering short wiki-formatted messages on a single line
+    """
+    flavor = 'oneliner'
+
+    # Override a few formatters to disable some wiki syntax in "oneliner"-mode
+    def _list_formatter(self, match, fullmatch): return match
+    def _macro_formatter(self, match, fullmatch): return match
+    def _indent_formatter(self, match, fullmatch): return match
+    def _heading_formatter(self, match, fullmatch): return match
+    def _definition_formatter(self, match, fullmatch): return match
+    def _table_cell_formatter(self, match, fullmatch): return match
+    def _last_table_cell_formatter(self, match, fullmatch): return match
+
+    def format(self, text, out):
+        if not text:
+            return
+        self.out = out
+        self._open_tags = []
+
+        result = re.sub(self.rules, self.replace, util.escape(text.strip()))
+        # Close all open 'one line'-tags
+        result += self.close_tag(None)
+        out.write(result)
+
+
 class OutlineFormatter(Formatter):
     """
     A simple Wiki formatter
     """
+    flavor = 'outline'
+    
     def __init__(self, env, absurls=0, db=None):
         Formatter.__init__(self, env, None, absurls, db)
 

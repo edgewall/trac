@@ -417,3 +417,19 @@ without endtags
 <i>formatted</i>
 definition
 </dd></dl>
+==============================
+milestone:foo
+[milestone:boo Milestone Boo]
+------------------------------
+<p>
+<a class="milestone" href="/milestone/foo">milestone:foo</a>
+<a class="milestone" href="/milestone/boo">Milestone Boo</a>
+</p>
+==============================
+search:foo
+[search:bar Bar]
+------------------------------
+<p>
+<a class="search" href="/search/foo">search:foo</a>
+<a class="search" href="/search/bar">Bar</a>
+</p>
