@@ -650,17 +650,6 @@ class OutlineFormatter(Formatter):
 
 
 def wiki_to_html(wikitext, env, req, db=None, absurls=0, escape_newlines=False):
-    from trac.env import Environment
-    if not isinstance(env, Environment):
-        # Backwards compatibility mode for pre-0.9 macros, where the parameter
-        # list was (wikitext, hdf, env, db, ...)
-        class PseudoRequest(object):
-            hdf = None
-        pr = PseudoRequest()
-        pr.hdf = env
-        env = req
-        req = pr
-
     out = StringIO.StringIO()
     Formatter(env, req, absurls, db).format(wikitext, out, escape_newlines)
     return out.getvalue()
