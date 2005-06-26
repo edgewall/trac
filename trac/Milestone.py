@@ -129,13 +129,12 @@ class Milestone(object):
         if handle_ta:
             db.commit()
 
-    def select(cls, env, include_completed=False, db=None):
+    def select(cls, env, include_completed=True, db=None):
         if not db:
             db = env.get_db_cnx()
-        sql = "SELECT name,due,completed,description FROM milestone " \
-               "WHERE COALESCE(name,'')!='' "
+        sql = "SELECT name,due,completed,description FROM milestone "
         if not include_completed:
-            sql += "AND COALESCE(completed,0)=0 "
+            sql += "WHERE COALESCE(completed,0)=0 "
         sql += "ORDER BY COALESCE(due,0)=0,due,name"
         cursor = db.cursor()
         cursor.execute(sql)
@@ -380,7 +379,7 @@ class MilestoneModule(Component):
         req.hdf['milestone'] = milestone_to_hdf(self.env, db, req, milestone)
         req.hdf['milestone.mode'] = 'delete'
 
-        for idx,other in enum(Milestone.select(self.env)):
+        for idx,other in enum(Milestone.select(self.env, False, db)):
             if other.name == milestone.name:
                 continue
             req.hdf['milestones.%d' % idx] = other.name

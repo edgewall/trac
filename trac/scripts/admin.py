@@ -461,7 +461,7 @@ class TracAdmin(cmd.Cmd):
         self.print_listing(['User', 'Action'], rows)
         print
         print 'Available actions:'
-        actions = PermissionSystem(self.__env).get_actions()
+        actions = PermissionSystem(self.env_open()).get_actions()
         actions.sort()
         text = ', '.join(actions)
         print util.wrap(text, initial_indent=' ', subsequent_indent=' ',
@@ -930,7 +930,7 @@ class TracAdmin(cmd.Cmd):
 
     def _do_milestone_list(self):
         data = []
-        for m in Milestone.select(self.env_open(), include_completed=True):
+        for m in Milestone.select(self.env_open()):
             data.append((m.name, m.due and self._format_date(m.due),
                          m.completed and self._format_datetime(m.completed)))
 

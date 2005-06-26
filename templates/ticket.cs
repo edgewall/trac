@@ -184,7 +184,7 @@
         var:name(field) ?>" value="<?cs var:ticket[name(field)] ?>" /><?cs
       elif:field.type == 'select' ?><select name="<?cs
         var:name(field) ?>"><?cs
-        if:field.optional ?><option></option<?cs /if ?><?cs
+        if:field.optional ?><option></option><?cs /if ?><?cs
         each:option = field.options ?><option<?cs
          if:option == ticket[name(field)] ?> selected="selected"<?cs /if ?>><?cs
          var:option ?></option><?cs
