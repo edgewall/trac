@@ -268,7 +268,7 @@ class AttachmentModule(Component):
     # Internal methods
 
     def _do_save(self, req, attachment):
-        perm_map = {'ticket': perm.TICKET_APPEND, 'wiki': perm.WIKI_MODIFY}
+        perm_map = {'ticket': 'TICKET_APPEND', 'wiki': 'WIKI_MODIFY'}
         req.perm.assert_permission(perm_map[attachment.parent_type])
 
         if 'cancel' in req.args.keys():
@@ -307,7 +307,7 @@ class AttachmentModule(Component):
                                               attachment.filename))
 
     def _do_delete(self, req, attachment):
-        perm_map = {'ticket': perm.TICKET_ADMIN, 'wiki': perm.WIKI_DELETE}
+        perm_map = {'ticket': 'TICKET_ADMIN', 'wiki': 'WIKI_DELETE'}
         req.perm.assert_permission(perm_map[attachment.parent_type])
 
         if 'cancel' in req.args.keys():
@@ -329,7 +329,7 @@ class AttachmentModule(Component):
         return (None, None)
 
     def _render_confirm(self, req, attachment):
-        perm_map = {'ticket': perm.TICKET_ADMIN, 'wiki': perm.WIKI_DELETE}
+        perm_map = {'ticket': 'TICKET_ADMIN', 'wiki': 'WIKI_DELETE'}
         req.perm.assert_permission(perm_map[attachment.parent_type])
 
         req.hdf['title'] = '%s%s: %s (delete)' \
@@ -345,7 +345,7 @@ class AttachmentModule(Component):
         }
 
     def _render_form(self, req, attachment):
-        perm_map = {'ticket': perm.TICKET_APPEND, 'wiki': perm.WIKI_MODIFY}
+        perm_map = {'ticket': 'TICKET_APPEND', 'wiki': 'WIKI_MODIFY'}
         req.perm.assert_permission(perm_map[attachment.parent_type])
 
         text, link = self._get_parent_link(attachment.parent_type,
@@ -358,7 +358,7 @@ class AttachmentModule(Component):
         }
 
     def _render_view(self, req, attachment):
-        perm_map = {'ticket': perm.TICKET_VIEW, 'wiki': perm.WIKI_VIEW}
+        perm_map = {'ticket': 'TICKET_VIEW', 'wiki': 'WIKI_VIEW'}
         req.perm.assert_permission(perm_map[attachment.parent_type])
 
         mimetype = get_mimetype(attachment.filename) or 'application/octet-stream'
@@ -392,7 +392,7 @@ class AttachmentModule(Component):
         add_link(req, 'alternate', raw_href, 'Original Format', mimetype)
         req.hdf['attachment.raw_href'] = raw_href
 
-        perm_map = {'ticket': perm.TICKET_ADMIN, 'wiki': perm.WIKI_DELETE}
+        perm_map = {'ticket': 'TICKET_ADMIN', 'wiki': 'WIKI_DELETE'}
         if req.perm.has_permission(perm_map[attachment.parent_type]):
             req.hdf['attachment.can_delete'] = 1
 

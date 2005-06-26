@@ -244,8 +244,8 @@ class ReportModule(Component):
         uses a user specified sql query to extract some information
         from the database and presents it as a html table.
         """
-        actions = {'create': perm.REPORT_CREATE, 'delete': perm.REPORT_DELETE,
-                   'modify': perm.REPORT_MODIFY}
+        actions = {'create': 'REPORT_CREATE', 'delete': 'REPORT_DELETE',
+                   'modify': 'REPORT_MODIFY'}
         for action in [k for k,v in actions.items()
                        if req.perm.has_permission(v)]:
             req.hdf['report.can_' + action] = True
