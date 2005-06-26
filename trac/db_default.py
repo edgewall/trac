@@ -419,6 +419,7 @@ default_config = \
   ('trac', 'check_auth_ip', 'true'),
   ('trac', 'metanav', 'login,logout,settings,help,about'),
   ('trac', 'mainnav', 'wiki,timeline,roadmap,browser,tickets,newticket,search'),
+  ('trac', 'permission_store', 'DefaultPermissionStore'),
   ('logging', 'log_type', 'none'),
   ('logging', 'log_file', 'trac.log'),
   ('logging', 'log_level', 'DEBUG'),

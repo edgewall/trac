@@ -25,8 +25,8 @@ from __future__ import generators
 import re
 import time
 
-from trac import perm
 from trac.core import *
+from trac.perm import IPermissionRequestor
 from trac.util import enum, escape, http_date, shorten_line
 from trac.versioncontrol.svn_authz import SubversionAuthorizer
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
@@ -60,7 +60,7 @@ class ITimelineEventProvider(Interface):
 
 class TimelineModule(Component):
 
-    implements(INavigationContributor, IRequestHandler)
+    implements(INavigationContributor, IPermissionRequestor, IRequestHandler)
 
     event_providers = ExtensionPoint(ITimelineEventProvider)
 
@@ -70,10 +70,15 @@ class TimelineModule(Component):
         return 'timeline'
 
     def get_navigation_items(self, req):
-        if not req.perm.has_permission(perm.TIMELINE_VIEW):
+        if not req.perm.has_permission('TIMELINE_VIEW'):
             return
         yield 'mainnav', 'timeline', '<a href="%s" accesskey="2">Timeline</a>' \
                                      % self.env.href.timeline()
+
+    # IPermissionRequestor methods
+
+    def get_permission_actions(self):
+        return ['TIMELINE_VIEW']
 
     # IRequestHandler methods
 
@@ -81,7 +86,7 @@ class TimelineModule(Component):
         return req.path_info == '/timeline'
 
     def process_request(self, req):
-        req.perm.assert_permission(perm.TIMELINE_VIEW)
+        req.perm.assert_permission('TIMELINE_VIEW')
 
         format = req.args.get('format')
         maxrows = int(req.args.get('max', 0))

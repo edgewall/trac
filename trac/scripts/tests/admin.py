@@ -86,6 +86,9 @@ class InMemoryEnvironment(Environment):
         from trac.log import logger_factory
         self.log = logger_factory('null')
 
+    def is_component_enabled(self, cls):
+        return cls.__module__.find('.tests.') == -1
+
     def load_config(self):
         self.config = Configuration(None)
 

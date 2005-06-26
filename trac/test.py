@@ -3,6 +3,7 @@
 #
 # Copyright (C) 2003, 2004, 2005 Edgewall Software
 # Copyright (C) 2003, 2004, 2005 Jonas Borgström <jonas@edgewall.com>
+# Copyright (C) 2005 Christopher Lenz <cmlenz@gmx.de>
 #
 # Trac is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License as
@@ -19,6 +20,7 @@
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #
 # Author: Jonas Borgström <jonas@edgewall.com>
+#         Christopher Lenz <cmlenz@gmx.de>
 
 from trac.core import ComponentManager
 from trac.db import SQLiteConnection
@@ -120,6 +122,7 @@ class InMemoryDatabase(SQLiteConnection):
 
 class EnvironmentStub(ComponentManager):
     """A stub of the trac.env.Environment object for testing."""
+
     def __init__(self, default_data=False, enable=None):
         ComponentManager.__init__(self)
         self.enabled_components = enable

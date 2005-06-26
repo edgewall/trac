@@ -23,8 +23,8 @@ from __future__ import generators
 from time import gmtime, localtime, strftime, time
 import re
 
-from trac import perm
 from trac.core import *
+from trac.perm import IPermissionRequestor
 from trac.ticket import Ticket, TicketSystem
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
 from trac.web.main import IRequestHandler
@@ -319,7 +319,7 @@ class QueryModule(Component):
 
     def get_navigation_items(self, req):
         from trac.ticket.report import ReportModule
-        if req.perm.has_permission(perm.TICKET_VIEW) and \
+        if req.perm.has_permission('TICKET_VIEW') and \
            not self.env.is_component_enabled(ReportModule):
             yield 'mainnav', 'tickets', '<a href="%s">View Tickets</a>' \
                   % escape(self.env.href.query())
@@ -330,7 +330,7 @@ class QueryModule(Component):
         return req.path_info == '/query'
 
     def process_request(self, req):
-        req.perm.assert_permission(perm.TICKET_VIEW)
+        req.perm.assert_permission('TICKET_VIEW')
 
         constraints = self._get_constraints(req)
         if not constraints and not req.args.has_key('order'):
@@ -548,7 +548,7 @@ class QueryModule(Component):
         req.hdf['query.results'] = tickets
 
         from trac.ticket.report import ReportModule
-        if req.perm.has_permission(perm.REPORT_VIEW) and \
+        if req.perm.has_permission('REPORT_VIEW') and \
            self.env.is_component_enabled(ReportModule):
             req.hdf['query.report_href'] = self.env.href.report()
 

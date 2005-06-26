@@ -23,8 +23,9 @@ from __future__ import generators
 import re
 from time import localtime, strftime, time
 
-from trac import Milestone, perm, __version__
+from trac import Milestone, __version__
 from trac.core import *
+from trac.perm import IPermissionRequestor
 from trac.util import enum, escape, pretty_timedelta, CRLF
 from trac.ticket import Ticket
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
@@ -33,7 +34,7 @@ from trac.web.main import IRequestHandler
 
 class RoadmapModule(Component):
 
-    implements(INavigationContributor, IRequestHandler)
+    implements(INavigationContributor, IPermissionRequestor, IRequestHandler)
 
     # INavigationContributor methods
 
@@ -41,10 +42,15 @@ class RoadmapModule(Component):
         return 'roadmap'
 
     def get_navigation_items(self, req):
-        if not req.perm.has_permission(perm.ROADMAP_VIEW):
+        if not req.perm.has_permission('ROADMAP_VIEW'):
             return
         yield 'mainnav', 'roadmap', '<a href="%s" accesskey="3">Roadmap</a>' \
                                     % self.env.href.roadmap()
+
+    # IPermissionRequestor methods
+
+    def get_permission_actions(self):
+        return ['ROADMAP_VIEW']
 
     # IRequestHandler methods
 
@@ -52,7 +58,7 @@ class RoadmapModule(Component):
         return req.path_info == '/roadmap'
 
     def process_request(self, req):
-        req.perm.assert_permission(perm.ROADMAP_VIEW)
+        req.perm.assert_permission('ROADMAP_VIEW')
         req.hdf['title'] = 'Roadmap'
 
         showall = req.args.get('show') == 'all'

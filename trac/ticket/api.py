@@ -21,8 +21,9 @@
 
 from __future__ import generators
 
-from trac import perm, util
+from trac import util
 from trac.core import *
+from trac.perm import IPermissionRequestor
 from trac.wiki import IWikiSyntaxProvider
 
 class MyLinkResolver(Component):
@@ -34,7 +35,9 @@ class MyLinkResolver(Component):
 
 
 class TicketSystem(Component):
-    implements(IWikiSyntaxProvider)
+    implements(IPermissionRequestor, IWikiSyntaxProvider)
+
+    # Public API
 
     def get_available_actions(self, ticket, perm_):
         """Returns the actions that can be performed on the ticket."""
@@ -44,8 +47,8 @@ class TicketSystem(Component):
             'reopened': ['leave', 'resolve', 'reassign'          ],
             'closed':   ['leave',                        'reopen']
         }
-        perms = {'resolve': perm.TICKET_MODIFY, 'reassign': perm.TICKET_CHGPROP,
-                 'accept': perm.TICKET_CHGPROP, 'reopen': perm.TICKET_CREATE}
+        perms = {'resolve': 'TICKET_MODIFY', 'reassign': 'TICKET_CHGPROP',
+                 'accept': 'TICKET_CHGPROP', 'reopen': 'TICKET_CREATE'}
         return [action for action in actions.get(ticket['status'], ['leave'])
                 if action not in perms or perm_.has_permission(perms[action])]
 
@@ -132,8 +135,17 @@ class TicketSystem(Component):
         fields.sort(lambda x, y: cmp(x['order'], y['order']))
         return fields
 
-    # IWikiSyntaxProvider method
-    
+    # IPermissionRequestor methods
+
+    def get_permission_actions(self):
+        return ['TICKET_APPEND', 'TICKET_CREATE', 'TICKET_CHGPROP',
+                'TICKET_VIEW',  
+                ('TICKET_MODIFY', ['TICKET_APPEND', 'TICKET_CHGPROP']),  
+                ('TICKET_ADMIN', ['TICKET_CREATE', 'TICKET_MODIFY',  
+                                  'TICKET_VIEW'])]
+
+    # IWikiSyntaxProvider methods
+
     def get_link_resolvers(self):
         return [('bug', self._format_link),
                 ('ticket', self._format_link)]

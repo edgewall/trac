@@ -25,8 +25,9 @@ from __future__ import generators
 import time
 import re
 
-from trac import mimeview, perm, util
+from trac import mimeview, util
 from trac.core import *
+from trac.perm import IPermissionRequestor
 from trac.Timeline import ITimelineEventProvider
 from trac.versioncontrol import Changeset, Node
 from trac.versioncontrol.diff import get_diff_options, hdf_diff, unified_diff
@@ -37,7 +38,13 @@ from trac.wiki import wiki_to_html, wiki_to_oneliner, IWikiSyntaxProvider
 
 class ChangesetModule(Component):
 
-    implements(IRequestHandler, ITimelineEventProvider, IWikiSyntaxProvider)
+    implements(IPermissionRequestor, IRequestHandler, ITimelineEventProvider,
+               IWikiSyntaxProvider)
+
+    # IPermissionRequestor methods
+
+    def get_permission_actions(self):
+        return ['CHANGESET_VIEW']
 
     # IRequestHandler methods
 
@@ -48,7 +55,7 @@ class ChangesetModule(Component):
             return 1
 
     def process_request(self, req):
-        req.perm.assert_permission(perm.CHANGESET_VIEW)
+        req.perm.assert_permission('CHANGESET_VIEW')
 
         rev = req.args.get('rev')
         repos = self.env.get_repository(req.authname)
@@ -81,7 +88,7 @@ class ChangesetModule(Component):
     # ITimelineEventProvider methods
 
     def get_timeline_filters(self, req):
-        if req.perm.has_permission(perm.CHANGESET_VIEW):
+        if req.perm.has_permission('CHANGESET_VIEW'):
             yield ('changeset', 'Repository checkins')
 
     def get_timeline_events(self, req, start, stop, filters):

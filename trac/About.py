@@ -25,8 +25,8 @@
 from __future__ import generators
 import re
 
-from trac import perm
 from trac.core import *
+from trac.perm import IPermissionRequestor
 from trac.web.chrome import add_stylesheet, INavigationContributor
 from trac.web.main import IRequestHandler
 
@@ -36,7 +36,7 @@ class AboutModule(Component):
     Provides various about pages.
     """
 
-    implements(INavigationContributor, IRequestHandler)
+    implements(INavigationContributor, IPermissionRequestor, IRequestHandler)
 
     about_cs = """
 <?cs include "header.cs"?>
@@ -117,7 +117,7 @@ tracking system emphasizing ease of use and low ceremony.
 It provides an interface to the Subversion revision control systems, integrated Wiki and convenient report facilities. 
 </p>
   <p>Trac is distributed under the GNU General Public License (GPL).<br />
-  The entire text of the license should be found in the COPYING file,
+  The entire text of the license can be found in the COPYING file,
   included in the package.</p>
   <p>Please visit the Trac open source project: 
   <a href="http://projects.edgewall.com/trac/">http://projects.edgewall.com/trac/</a></p>
@@ -143,6 +143,11 @@ It provides an interface to the Subversion revision control systems, integrated 
         yield 'metanav', 'about', '<a href="%s" accesskey="9">About Trac</a>' \
               % self.env.href.about()
 
+    # IPermissionRequestor methods
+
+    def get_permission_actions(self):
+        return ['CONFIG_VIEW']
+
     # IRequestHandler methods
 
     def match_request(self, req):
@@ -155,7 +160,7 @@ It provides an interface to the Subversion revision control systems, integrated 
     def process_request(self, req):
         page = req.args.get('page', 'default')
         req.hdf['title'] = 'About Trac'
-        if req.perm.has_permission(perm.CONFIG_VIEW):
+        if req.perm.has_permission('CONFIG_VIEW'):
             req.hdf['about.config_href'] = self.env.href.about('config')
             req.hdf['about.plugins_href'] = self.env.href.about('plugins')
         if page == 'config':
@@ -170,7 +175,7 @@ It provides an interface to the Subversion revision control systems, integrated 
     # Internal methods
 
     def _render_config(self, req):
-        req.perm.assert_permission(perm.CONFIG_VIEW)
+        req.perm.assert_permission('CONFIG_VIEW')
         req.hdf['about.page'] = 'config'
         # Export the config table to hdf
         sections = []
@@ -187,7 +192,7 @@ It provides an interface to the Subversion revision control systems, integrated 
         # permissions, components...
 
     def _render_plugins(self, req):
-        req.perm.assert_permission(perm.CONFIG_VIEW)
+        req.perm.assert_permission('CONFIG_VIEW')
         import sys
         req.hdf['about.page'] = 'plugins'
         from trac.core import ComponentMeta

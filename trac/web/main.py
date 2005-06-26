@@ -337,8 +337,10 @@ def populate_hdf(hdf, env, req=None):
         hdf['base_host'] = req.base_url[:req.base_url.rfind(req.cgi_location)]
         hdf['cgi_location'] = req.cgi_location
         hdf['trac.authname'] = escape(req.authname)
+
         for action in req.perm.permissions():
-            req.hdf['trac.acl.' + action] = 1
+            req.hdf['trac.acl.' + action] = True
+
         for arg in [k for k in req.args.keys() if k]:
             if isinstance(req.args[arg], (list, tuple)):
                 hdf['args.%s' % arg] = [v.value for v in req.args[arg]]
@@ -411,7 +413,7 @@ def dispatch_request(path_info, req, env):
                         referer = None
                     req.redirect(referer or env.href.wiki())
             req.authname = authenticator.authname
-            req.perm = PermissionCache(db, req.authname)
+            req.perm = PermissionCache(env, req.authname)
 
             newsession = req.args.has_key('newsession')
             req.session = Session(env, db, req, newsession)

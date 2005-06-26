@@ -37,6 +37,7 @@ from trac import perm, util
 from trac.config import default_dir
 from trac.env import Environment
 from trac.Milestone import Milestone
+from trac.perm import PermissionSystem
 from trac.ticket.model import *
 
 try:
@@ -460,7 +461,7 @@ class TracAdmin(cmd.Cmd):
         self.print_listing(['User', 'Action'], rows)
         print
         print 'Available actions:'
-        actions = perm.permissions + perm.meta_permissions.keys()
+        actions = PermissionSystem(self.__env).get_actions()
         actions.sort()
         text = ', '.join(actions)
         print util.wrap(text, initial_indent=' ', subsequent_indent=' ',
@@ -470,11 +471,6 @@ class TracAdmin(cmd.Cmd):
     def _do_permission_add(self, user, action):
         if not action.islower() and not action.isupper():
             print 'Group names must be in lower case and actions in upper case'
-            return
-        if action.isupper() and not \
-           action in perm.permissions + perm.meta_permissions.keys():
-            print '%s is not a valid action. Use the permission list command ' \
-                  'to see the available actions.' % (action)
             return
         self.db_update("INSERT INTO permission VALUES('%s', '%s')"
                        % (user, action))
