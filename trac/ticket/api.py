@@ -19,6 +19,8 @@
 #
 # Author: Jonas Borgström <jonas@edgewall.com>
 
+from __future__ import generators
+
 from trac import perm, util
 from trac.core import *
 from trac.wiki import IWikiSyntaxProvider
