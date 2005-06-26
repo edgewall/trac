@@ -560,7 +560,7 @@ Trac Admin Console %s
         """
         test_name = sys._getframe().f_code.co_name
         self._execute('severity add critical')
-        self._execute('severity change critical end-of-the-world')
+        self._execute('severity change critical "end-of-the-world"')
         test_results = self._execute('severity list')
         self.assertEquals(self.expected_results[test_name], test_results)
 
