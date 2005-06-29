@@ -361,10 +361,12 @@ class AttachmentModule(Component):
         perm_map = {'ticket': 'TICKET_VIEW', 'wiki': 'WIKI_VIEW'}
         req.perm.assert_permission(perm_map[attachment.parent_type])
 
-        mimetype = get_mimetype(attachment.filename) or 'application/octet-stream'
+        fmt = req.args.get('format')
+        mimetype = fmt == 'txt' and 'text/plain' or \
+                   get_mimetype(attachment.filename) or 'application/octet-stream'
         charset = self.config.get('trac', 'default_charset')
 
-        if req.args.get('format') in ('raw', 'txt'):
+        if fmt in ('raw', 'txt'):
             # Render raw file
             req.send_file(attachment.path, mimetype + ';charset=' + charset)
             return
