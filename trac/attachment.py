@@ -120,7 +120,7 @@ class Attachment(object):
 
         # Make sure the path to the attachment is inside the environment
         # attachments directory
-        attachments_dir = os.path.join(self.env.path, 'attachments')
+        attachments_dir = os.path.join(os.path.normpath(self.env.path), 'attachments')
         commonprefix = os.path.commonprefix([attachments_dir, self.path])
         assert commonprefix == attachments_dir
 
