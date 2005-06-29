@@ -24,7 +24,6 @@
 from __future__ import generators
 import time
 
-from trac.attachment import Attachment
 from trac.core import *
 from trac.wiki.api import WikiSystem
 
@@ -96,6 +95,7 @@ class WikiPage(object):
                 page_deleted = True
 
         if page_deleted:
+            from trac.attachment import Attachment
             # Delete orphaned attachments
             for attachment in Attachment.select(self.env, 'wiki', self.name, db):
                 attachment.delete(db)

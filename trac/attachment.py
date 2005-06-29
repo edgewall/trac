@@ -34,6 +34,7 @@ from trac.env import IEnvironmentSetupParticipant
 from trac.mimeview import *
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
 from trac.web.main import IRequestHandler
+from trac.wiki.api import IWikiSyntaxProvider
 
 
 class Attachment(object):
@@ -63,8 +64,8 @@ class Attachment(object):
         row = cursor.fetchone()
         cursor.close()
         if not row:
-            raise TracError('Attachment %s/%s/%s does not exist.'
-                            % (self.parent_type, self.parent_id, filename),
+            self.filename = filename
+            raise TracError('Attachment %s does not exist.' % (self.title),
                             'Invalid Attachment')
         self.filename = row[0]
         self.description = row[1]
@@ -209,7 +210,7 @@ def attachment_to_hdf(env, db, req, attachment):
 class AttachmentModule(Component):
 
     implements(IEnvironmentSetupParticipant, IRequestHandler,
-               INavigationContributor)
+               INavigationContributor, IWikiSyntaxProvider)
 
     CHUNK_SIZE = 4096
     DISP_MAX_FILE_SIZE = 256 * 1024
@@ -275,6 +276,14 @@ class AttachmentModule(Component):
 
         add_stylesheet(req, 'code.css')
         return 'attachment.cs', None
+
+    # IWikiSyntaxProvider methods
+    
+    def get_wiki_syntax(self):
+        return []
+
+    def get_link_resolvers(self):
+        yield ('attachment', self._format_link)
 
     # Internal methods
 
@@ -413,3 +422,23 @@ class AttachmentModule(Component):
             req.hdf['attachment.preview'] = vdata
         finally:
             fd.close()
+
+    def _format_link(self, formatter, ns, link, label):
+        ids = link.split(':', 2)
+        if len(ids) == 3:
+            parent_type, parent_id, filename = ids
+        else:
+            # FIXME: the formatter should know to which object belongs
+            #        the text being formatted
+            #        (this info will also be required for TracCrossReferences)
+            path_info = formatter.req.path_info.split('/',2)
+            parent_type, parent_id = path_info[1], path_info[2] # Kludge for now
+            filename = link
+        try:
+            attachment = Attachment(self.env, parent_type, parent_id, filename)
+            return '<a class="attachment" title="%s" href="%s">%s</a>' \
+                   % ('Attachment ' + attachment.title,
+                      attachment.href(), label)
+        except TracError:
+            return '<a class="missing attachment" href="%s" rel="nofollow">%s</a>' \
+                   % (self.env.href.wiki(), label)
