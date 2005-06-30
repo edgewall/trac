@@ -233,7 +233,7 @@ class UserMacroProvider(Component):
                 module = self._load_macro(file[:-3])
                 yield module.__name__
             except Exception, e:
-                self.log.error("Failed to load wiki macro %s (%s)" % (f, e), e)
+                self.log.error('Failed to load wiki macro %s (%s)' % (f, e))
 
     def get_macro_description(self, name):
         return inspect.getdoc(self._load_macro(name))
