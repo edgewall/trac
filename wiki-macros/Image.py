@@ -83,8 +83,6 @@ def execute(hdf, txt, env):
                 attr[key] = val;
             elif sep == ':':
                 style[key] = val
-        print 'attributes', attr
-        print 'style', style
 
     # parse filespec argument to get module and id if contained.
     parts = filespec.split(':')
@@ -118,7 +116,6 @@ def execute(hdf, txt, env):
         # ...and the formatter should be provided to the macro
         file = filespec
         module, id = hdf['HTTP.PathInfo'].split('/', 3)[1:]
-        print module, id
         if module not in ['wiki', 'ticket']:
             raise Exception('Cannot reference local attachment from here')
     else:
@@ -134,6 +131,5 @@ def execute(hdf, txt, env):
     a_style = 'padding:0; border:none' # style of anchor
     img_attr = ' '.join(['%s="%s"' % x for x in attr.iteritems()])
     img_style = '; '.join(['%s:%s' % x for x in style.iteritems()])
-    print img_attr, img_style
     return '<a href="%s" style="%s"><img src="%s" %s style="%s" /></a>' \
            % (url, a_style, raw_url, img_attr, img_style)
