@@ -24,6 +24,7 @@ import imp
 import inspect
 import os.path
 import time
+import shutil
 try:
     from cStringIO import StringIO
 except ImportError:
@@ -31,6 +32,7 @@ except ImportError:
 
 from trac.core import *
 from trac.util import escape
+from trac.env import IEnvironmentSetupParticipant
 from trac.wiki.api import IWikiMacroProvider, WikiSystem
 
 
@@ -221,7 +223,35 @@ class UserMacroProvider(Component):
     Adds macros that are provided as Python source files in the environments
     `wiki-macros` directory.
     """
-    implements(IWikiMacroProvider)
+    implements(IEnvironmentSetupParticipant, IWikiMacroProvider)
+
+    # IEnvironmentSetupParticipant methods
+
+    def environment_created(self):
+        pass
+
+    def environment_needs_upgrade(self, db):
+        for _ in self._new_macros():
+            return True
+        return False
+    
+    def upgrade_environment(self, db):
+        # Copy the new default wiki macros over to the environment
+        for src, dst in self._new_macros():
+            shutil.copy2(src, dst)
+            
+    def _new_macros(self):
+        from trac.config import default_dir
+        macros_dir = default_dir('macros')
+        for f in os.listdir(macros_dir):
+            if not f.endswith('.py'):
+                continue
+            src = os.path.join(macros_dir, f)
+            dst = os.path.join(self.env.path, 'wiki-macros', f)
+            if not os.path.isfile(dst):
+                yield src, dst
+
+    # IWikiMacroProvider methods
 
     def get_macros(self):
         path = os.path.join(self.env.path, 'wiki-macros')
