@@ -243,7 +243,7 @@ class UserMacroProvider(Component):
         try:
             return module.execute(req and req.hdf, content, self.env)
         except Exception, e:
-            self.log.error('Wiki macro failed', e)
+            self.log.error('Wiki macro %s failed (%s)' % (name, e))
             raise e
 
     def _load_macro(self, name):
