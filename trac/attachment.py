@@ -110,10 +110,11 @@ class Attachment(object):
         try:
             os.unlink(self.path)
         except OSError:
+            if handle_ta:
+                db.rollback()
             raise TracError, 'Attachment not found'
 
-        self.env.log.info('Attachment removed: %s/%s/%s'
-                          % (self.parent_type, self.parent_id, self.filename))
+        self.env.log.info('Attachment removed: %s' % self.title)
         if handle_ta:
             db.commit()
 
@@ -155,9 +156,7 @@ class Attachment(object):
             shutil.copyfileobj(fileobj, targetfile)
             self.filename = filename
 
-            self.env.log.info('New attachment: %s/%s/%s by %s'
-                              % (self.parent_type, self.parent_id,
-                                 self.filename, self.author))
+            self.env.log.info('New attachment: %s by %s' % (self.title, self.author))
             if handle_ta:
                 db.commit()
         finally:
@@ -301,6 +300,8 @@ class AttachmentModule(Component):
             size = os.fstat(upload.file.fileno())[6]
         else:
             size = upload.file.len
+        if size == 0:
+            raise TracError, 'No file uploaded'
 
         filename = upload.filename.replace('\\', '/').replace(':', '/')
         filename = os.path.basename(filename)
@@ -318,6 +319,19 @@ class AttachmentModule(Component):
         attachment.description = req.args.get('description', '')
         attachment.author = req.args.get('author', '')
         attachment.ipnr = req.remote_addr
+        if req.args.get('replace'):
+            try:
+                old_attachment = Attachment(self.env, attachment.parent_type,
+                                            attachment.parent_id, filename)
+                if not (old_attachment.author and req.authname \
+                        and old_attachment.author == req.authname):
+                    perm_map = {'ticket': perm.TICKET_ADMIN, 'wiki': perm.WIKI_DELETE}
+                    self.perm.assert_permission(perm_map[self.attachment_type])
+                    req.perm.assert_permission(perm_map[old_attachment.parent_type])
+                old_attachment.delete()
+            except TracError:
+                pass # don't worry if there's nothing to replace
+            attachment.filename = None
         attachment.insert(filename, upload.file, size)
 
         # Redirect the user to the newly created attachment

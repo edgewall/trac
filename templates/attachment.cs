@@ -25,6 +25,10 @@
    </div>
    <br />
   </fieldset>
+  <div class="field">
+   <label for="replace">Replace if already existing:</label>
+   <input type="checkbox" id="replace" name="replace" checked="checked" />
+  </div>
   <div class="buttons">
    <input type="hidden" name="action" value="new" />
    <input type="hidden" name="type" value="<?cs var:attachment.parent.type ?>" />
