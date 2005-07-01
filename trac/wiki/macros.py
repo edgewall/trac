@@ -106,14 +106,12 @@ class RecentChangesMacro(Component):
         cursor = db.cursor()
 
         sql = 'SELECT name, max(time) FROM wiki '
-        params = []
         if prefix:
-            sql += 'WHERE name LIKE %s%% '
-            params.append(prefix)
+            sql += "WHERE name LIKE '%s%%' " % prefix
         sql += 'GROUP BY name ORDER BY max(time) DESC'
         if limit:
             sql += ' LIMIT %d' % limit
-        cursor.execute(sql, params)
+        cursor.execute(sql)
 
         buf = StringIO()
         prevtime = None
