@@ -603,7 +603,7 @@ class QueryModule(Component):
                 return '<a class="query" href="%s">%s</a>' \
                        % (query.get_href(), label)
             except QuerySyntaxError, e:
-                return '<em class="error">[Error: %s]</em>' % util.escape(e)
+                return '<em class="error">[Error: %s]</em>' % escape(e)
 
 
 class QueryWikiMacro(Component):
@@ -612,10 +612,10 @@ class QueryWikiMacro(Component):
     parameters, the second of which is optional.
 
     The first parameter is the query itself, and uses the same syntax as for
-    "query:" wiki links. The second parameter determines how the list of tickets
+    {{{query:}}} wiki links. The second parameter determines how the list of tickets
     is presented: the default presentation is to list the ticket ID next to the
     summary, with each ticket on a separate line. If the second parameter is
-    given and set to 'compact' then the tickets are presented as a
+    given and set to '''compact''' then the tickets are presented as a
     comma-separated list of ticket IDs.
     """
     implements(IWikiMacroProvider)

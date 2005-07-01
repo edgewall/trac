@@ -25,13 +25,8 @@ import inspect
 import os.path
 import time
 import shutil
-import os
 import re
-import string
 
-from trac.util import escape
-from trac.Browser import BrowserModule
-from trac.attachment import Attachment
 try:
     from cStringIO import StringIO
 except ImportError:
@@ -147,10 +142,10 @@ class PageOutlineMacro(Component):
     between 1 and 6 that specifies the maximum depth of the outline (the default
     is 6). The second can be used to specify a custom title (the default is no
     title). The third parameter selects the style of the outline. This can be
-    either 'inline' or 'pullout' (default is 'pullout'). The 'inline' style
-    renders the outline as normal part of the content, while 'pullout' causes
-    the outline to be rendered in a box that is by default floated to the right
-    side of the other content.
+    either '''inline''' or '''pullout''' (default is '''pullout''').
+    The '''inline''' style renders the outline as normal part of the content,
+    while '''pullout''' causes the outline to be rendered in a box
+    that is by default floated to the right side of the other content.
     """
     implements(IWikiMacroProvider)
 
@@ -194,43 +189,50 @@ class PageOutlineMacro(Component):
 
 class ImageMacro(Component):
     """
-    Display image in attachment or repository into the wiki page.
+    Display an image into the wiki page.
 
-    First argument is filename (file spec).
+    The first argument is the file specification.
 
     The file specification may refer attachments:
-        * 'module:id:file', with module being either 'wiki' or 'ticket',
-            to refer to the attachment named 'file' in the module:id object
-        * 'id:file' same as above, module defaulted to 'wiki' (id can be dir/dir/node)
-        * 'file' to refer to a local attachment named 'file'
-            (but then, this works only from within a wiki page or a ticket).
+     * {{{module:id:file}}}, with module being either '''wiki''' or '''ticket''',
+       to refer to the attachment named ''file'' in the module:id object
+     * {{{id:file}}} same as above, but id is either a ticket shorthand or
+       a Wiki page name.
+     * {{{file}}} to refer to a local attachment named 'file'
+       (but then, this works only from within a wiki page or a ticket).
 
     Also, the file specification may refer to repository files,
-    using the 'source:file' syntax (or the usual aliases for 'source').
-
+    using the {{{source:file}}} syntax (or the usual aliases for '''source''',
+    like '''repos''' or '''browser''').
 
     Rest of optional arguments are attribute/style string of IMG element.
-    If it is digits and unit, treat as size (ex. 120, 25%) of IMG.
-    If it is 'right', 'left', 'top' or 'bottom', treat as align of IMG.
-    if it is key=value style, treat as attribute of IMG.
-    if it is key:value style, treat as style of IMG.
+     * digits and unit are interpreted as the size (ex. 120, 25%)
+       for the image
+     * '''right''', '''left''', '''top''' or '''bottom'''
+       are interpreted as the alignment for the image
+     * {{{key=value}}} style are interpreted as HTML attributes for the image
+     * {{{key:value}}} style are interpreted as CSS style indications for the image
 
-    Ex.
+    Examples:
+    {{{
         [[Image(photo.jpg)]]                           # simplest
         [[Image(photo.jpg, 120px)]]                    # with size
         [[Image(photo.jpg, right)]]                    # aligned by keyword
         [[Image(photo.jpg, align=right)]]              # aligned by attribute
         [[Image(photo.jpg, float:right)]]              # aligned by style
-        [[Image(photo.jpg, float:right, border:solid 5px green)]]   # with any style
+        [[Image(photo.jpg, float:right, border:solid 5px green)]] # 2 style specs
+    }}}
 
     You can use image from other page, other ticket or other module.
+    {{{
         [[Image(OtherPage:foo.bmp)]]    # if current module is wiki
         [[Image(base/sub:bar.bmp)]]     # from hierarchical wiki page
         [[Image(#3:baz.bmp)]]           # if in a ticket, point to #3
         [[Image(ticket:36:boo.jpg)]]
         [[Image(source:/images/bee.jpg)]] # straight from the repository!
+    }}}
 
-    (Adapted from the Image.py macro created by Shun-ichi Goto <gotoh@taiyo.co.jp>)
+    ''Adapted from the Image.py macro created by Shun-ichi Goto <gotoh@taiyo.co.jp>''
     """
     implements(IWikiMacroProvider)
 
@@ -288,6 +290,7 @@ class ImageMacro(Component):
             else:
                 raise Exception("%s module can't have attachments" % parts[0])
         elif len(parts) == 2:
+            from trac.Browser import BrowserModule
             try:
                 browser_links = [link for link,_ in 
                                  BrowserModule(self.env).get_link_resolvers()]
@@ -317,6 +320,7 @@ class ImageMacro(Component):
         else:
             raise Exception('No filespec given')
         if not url: # this is an attachment
+            from trac.attachment import Attachment
             attachment = Attachment(self.env, module, id, file)
             url = attachment.href()
             raw_url = attachment.href(format='raw')
@@ -345,6 +349,7 @@ class MacroListMacro(Component):
         return inspect.getdoc(MacroListMacro)
 
     def render_macro(self, req, name, content):
+        from trac.wiki.formatter import wiki_to_html
         from trac.wiki import WikiSystem
         buf = StringIO()
         buf.write("<dl>")
@@ -355,8 +360,11 @@ class MacroListMacro(Component):
                 buf.write("<dt><code>[[%s]]</code></dt>" % escape(macro_name))
                 description = macro_provider.get_macro_description(macro_name)
                 if description:
-                    buf.write("<dd><p style='white-space: pre'>%s</p></dd>"
-                              % escape(description))
+                    try:
+                        buf.write("<dd>%s</dd>" % wiki_to_html(description, self.env, req))
+                    except Exception, e:
+                        import traceback
+                        print traceback.print_exc()
 
         buf.write("</dl>")
         return buf.getvalue()
