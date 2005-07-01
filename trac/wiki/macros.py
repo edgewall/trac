@@ -360,11 +360,7 @@ class MacroListMacro(Component):
                 buf.write("<dt><code>[[%s]]</code></dt>" % escape(macro_name))
                 description = macro_provider.get_macro_description(macro_name)
                 if description:
-                    try:
-                        buf.write("<dd>%s</dd>" % wiki_to_html(description, self.env, req))
-                    except Exception, e:
-                        import traceback
-                        print traceback.print_exc()
+                    buf.write("<dd>%s</dd>" % wiki_to_html(description, self.env, req))
 
         buf.write("</dl>")
         return buf.getvalue()
