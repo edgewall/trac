@@ -183,7 +183,7 @@ class TracHTTPRequestHandler(BaseHTTPRequestHandler):
         self.wfile.write('<html><head><title>Available Projects</title></head>')
         self.wfile.write('<body><h1>Available Projects</h1><ul>')
         for proj in self.server.projects.keys():
-            self.wfile.write('<li><a href="%s">%s</a></li>' % (proj, proj))
+            self.wfile.write('<li><a href="%s">%s</a></li>' % (urllib.quote(proj), proj))
         self.wfile.write('</ul></body><html>')
 
     def _do_trac_req(self):
@@ -192,6 +192,7 @@ class TracHTTPRequestHandler(BaseHTTPRequestHandler):
             self.send_error(400, 'Bad Request')
             return
         project_name, path_info, query_string = m[0]
+        project_name = urllib.unquote(project_name)
         if not self.server.projects.has_key(project_name):
             self.send_error(404, 'Not Found')
             return

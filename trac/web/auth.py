@@ -81,7 +81,7 @@ class Authenticator:
         self.db.commit()
         self.authname = req.remote_user
         req.outcookie['trac_auth'] = cookie
-        req.outcookie['trac_auth']['path'] = req.cgi_location
+        req.outcookie['trac_auth']['path'] = util.quote_cookie_value(req.cgi_location)
 
     def logout(self):
         """
