@@ -104,11 +104,10 @@ class RoadmapModule(Component):
         req.send_header('Content-Type', 'text/calendar;charset=utf-8')
         req.end_headers()
 
-        cursor = db.cursor()
-        cursor.execute("SELECT name,value FROM enum WHERE type='priority'")
+        from trac.ticket import Priority
         priorities = {}
-        for name, value in cursor:
-            priorities[name] = float(value)
+        for priority in Priority.select(self.env):
+            priorities[priority.name] = float(priority.value)
         def get_priority(ticket):
             value = priorities.get(ticket['priority'])
             if value:
@@ -164,16 +163,16 @@ class RoadmapModule(Component):
                 if milestone.has_key('description_source'):
                     write_prop('DESCRIPTION', milestone['description_source'])
                 write_prop('END', 'VEVENT')
-            for ticket in [ticket for ticket in milestone['tickets']
-                          if ticket['owner'] == user]:
-                ticket = Ticket(db, ticket['id'])
+            for tkt_id in [ticket['id'] for ticket in milestone['tickets']
+                           if ticket['owner'] == user]:
+                ticket = Ticket(self.env, tkt_id)
                 write_prop('BEGIN', 'VTODO')
                 if milestone.has_key('date'):
                     write_prop('RELATED-TO', uid)
                     write_date('DUE', localtime(milestone['due']))
-                write_prop('SUMMARY', 'Ticket #%i: %s' % (ticket['id'],
+                write_prop('SUMMARY', 'Ticket #%i: %s' % (ticket.id,
                                                           ticket['summary']))
-                write_prop('URL', req.base_url + '/ticket/' + str(ticket['id']))
+                write_prop('URL', self.env.abs_href.ticket(ticket.id))
                 write_prop('DESCRIPTION', ticket['description'])
                 priority = get_priority(ticket)
                 if priority:
@@ -184,7 +183,7 @@ class RoadmapModule(Component):
                     cursor.execute("SELECT time FROM ticket_change "
                                    "WHERE ticket=%s AND field='status' "
                                    "ORDER BY time desc LIMIT 1",
-                                   (ticket['id'],))
+                                   (ticket.id,))
                     row = cursor.fetchone()
                     if row:
                         write_utctime('COMPLETED', localtime(row[0]))
