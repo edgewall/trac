@@ -152,7 +152,15 @@
    <th><label for="summary">Summary:</label></th>
    <td class="fullrow" colspan="3"><input type="text" id="summary" name="summary" value="<?cs
      var:ticket.summary ?>" size="70" />
-  </tr><?cs
+   </tr><?cs
+   if:len(ticket.fields.type.options) ?>
+   <tr>
+     <th><label for="type">Type:</label></th>
+     <td><?cs 
+      call:hdf_select(ticket.fields.type.options, 'type', ticket.type, 0) ?>
+     </td>
+    </tr><?cs
+   /if ?><?cs
    if:trac.acl.TICKET_ADMIN ?><tr>
     <th><label for="description">Description:</label></th>
     <td class="fullrow" colspan="3">
