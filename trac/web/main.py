@@ -256,10 +256,11 @@ class RequestDispatcher(Component):
         it. In addition, this method initializes the HDF data set and adds the
         web site chrome.
         """
+        from trac.web.chrome import Chrome
         from trac.web.clearsilver import HDFWrapper
-        req.hdf = HDFWrapper(loadpaths=[self.env.get_templates_dir(),
-                                        self.config.get('trac',
-                                                        'templates_dir')])
+
+        chrome = Chrome(self.env)
+        req.hdf = HDFWrapper(loadpaths=chrome.get_templates_dirs())
         populate_hdf(req.hdf, self.env, req)
 
         # Select the component that should handle the request
@@ -273,14 +274,11 @@ class RequestDispatcher(Component):
                 chosen_handler = handler
                 break
 
-        from trac.web.chrome import Chrome
-        chrome = Chrome(self.env)
         chrome.populate_hdf(req, chosen_handler)
 
         if not chosen_handler:
             # FIXME: Should return '404 Not Found' to the client
             raise TracError, 'No handler matched request to %s' % req.path_info
-
 
         resp = chosen_handler.process_request(req)
         if resp:

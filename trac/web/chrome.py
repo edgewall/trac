@@ -29,8 +29,7 @@ from trac.web.href import Href
 from trac.web.main import IRequestHandler
 
 def add_link(req, rel, href, title=None, mimetype=None, classname=None):
-    """
-    Add a link to the HDF data set that will be inserted as <link> element in
+    """Add a link to the HDF data set that will be inserted as <link> element in
     the <head> of the generated HTML
     """
     link = {'href': util.escape(href)}
@@ -46,8 +45,7 @@ def add_link(req, rel, href, title=None, mimetype=None, classname=None):
     req.hdf['chrome.links.%s.%d' % (rel, idx)] = link
 
 def add_stylesheet(req, filename, mimetype='text/css'):
-    """
-    Add a link to a style sheet to the HDF data set so that it gets included
+    """Add a link to a style sheet to the HDF data set so that it gets included
     in the generated HTML page.
     """
     href = Href(req.hdf['htdocs_location'])
@@ -55,22 +53,32 @@ def add_stylesheet(req, filename, mimetype='text/css'):
 
 
 class INavigationContributor(Interface):
-    """
-    Extension point interface for components that contribute items to the
+    """Extension point interface for components that contribute items to the
     navigation.
     """
 
     def get_active_navigation_item(req):
-        """
-        This method is only called for the `IRequestHandler` processing the
-        request. It should return the name of the navigation item that should
-        be highlighted as active/current.
+        """This method is only called for the `IRequestHandler` processing the
+        request.
+        
+        It should return the name of the navigation item that should be
+        highlighted as active/current.
         """
 
     def get_navigation_items(req):
-        """
-        Should return an iterable object over the list of navigation items to
+        """Should return an iterable object over the list of navigation items to
         add, each being a tuple in the form (category, name, text).
+        """
+
+
+class ITemplatesProvider(Interface):
+    """Extension point interface for components that provide their own
+    ClearSilver templates.
+    """
+
+    def get_templates_dir():
+        """Return the absolute path of the directory containing the provided
+        ClearSilver templates.
         """
 
 
@@ -81,6 +89,7 @@ class Chrome(Component):
     implements(IEnvironmentSetupParticipant, IRequestHandler)
 
     navigation_contributors = ExtensionPoint(INavigationContributor)
+    templates_providers = ExtensionPoint(ITemplatesProvider)
 
     # IEnvironmentSetupParticipant methods
 
@@ -130,22 +139,34 @@ class Chrome(Component):
     def match_request(self, req):
         m = re.match(r'/chrome/([/\w\-\.]+)', req.path_info)
         if m:
-            req.args['path'] = m.group(1)
+            req.args['filename'] = m.group(1)
             return True
 
     def process_request(self, req):
         from trac.config import default_dir
-        path = os.path.join(default_dir('htdocs'), req.args.get('path'))
-        if not os.path.isfile(path):
+
+        basedir = os.path.normpath(default_dir('htdocs'))
+        filename = os.path.normpath(req.args.get('filename'))
+        abspath = os.path.join(basedir, filename)
+        assert os.path.commonprefix([basedir, abspath]) == basedir
+
+        if not os.path.isfile(abspath):
+            # FIXME: Should return a 404 error
             raise TracError, 'File not found'
-        req.send_file(path)
+        req.send_file(abspath)
 
     # Public API methods
 
+    def get_templates_dirs(self):
+        """Return a list of the names of all known templates directories."""
+        dirs = [self.env.get_templates_dir(),
+                self.config.get('trac', 'templates_dir')]
+        for provider in self.templates_providers:
+            dirs.append(provider.get_templates_dir())
+        return dirs
+
     def populate_hdf(self, req, handler):
-        """
-        Add chrome-related data to the HDF.
-        """
+        """Add chrome-related data to the HDF."""
 
         # Provided for template customization
         req.hdf['HTTP.PathInfo'] = req.path_info
