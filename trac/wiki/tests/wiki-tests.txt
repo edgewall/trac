@@ -433,3 +433,31 @@ search:foo
 <a class="search" href="/search/foo">search:foo</a>
 <a class="search" href="/search/bar">Bar</a>
 </p>
+==============================
+'''Note:'''
+------------------------------
+<p>
+<strong>Note:</strong>
+</p>
+==============================
+ticket:1
+ticket:12
+ticket:123
+ticket:'1'
+ticket:'12'
+ticket:'123'
+ticket:"1"
+ticket:"12"
+ticket:"123"
+------------------------------
+<p>
+<a class="missing ticket" href="/ticket/1" rel="nofollow">ticket:1</a>
+<a class="missing ticket" href="/ticket/12" rel="nofollow">ticket:12</a>
+<a class="missing ticket" href="/ticket/123" rel="nofollow">ticket:123</a>
+<a class="missing ticket" href="/ticket/1" rel="nofollow">ticket:'1'</a>
+<a class="missing ticket" href="/ticket/12" rel="nofollow">ticket:'12'</a>
+<a class="missing ticket" href="/ticket/123" rel="nofollow">ticket:'123'</a>
+<a class="missing ticket" href="/ticket/1" rel="nofollow">ticket:&#34;1&#34;</a>
+<a class="missing ticket" href="/ticket/12" rel="nofollow">ticket:&#34;12&#34;</a>
+<a class="missing ticket" href="/ticket/123" rel="nofollow">ticket:&#34;123&#34;</a>
+</p>

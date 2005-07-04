@@ -136,7 +136,7 @@ class Formatter(object):
                   r"(?P<superscript>\^)",
                   r"(?P<inlinecode>!?\{\{\{(?P<inline>.*?)\}\}\})",
                   r"(?P<htmlescapeentity>!?&#\d+;)"]
-    _post_rules = [r"(?P<shref>!?((?P<sns>\w+):(?P<stgt>(&#34;(.*?)&#34;|'(.*?)')|(([^ ][^ |]+)*[^|'~_\., \)]))))",
+    _post_rules = [r"(?P<shref>!?((?P<sns>\w+):(?P<stgt>'[^']+'|((\|(?=[^| ])|[^| ])*[^|'~_\., \)]))))",
                    r"(?P<lhref>!?\[(?P<lns>\w+):(?P<ltgt>[^ ]+) (?P<label>.*?)\])",
                    r"(?P<macro>!?\[\[(?P<macroname>[\w/+-]+)(\]\]|\((?P<macroargs>.*?)\)\]\]))",
                    r"(?P<heading>^\s*(?P<hdepth>=+)\s.*\s(?P=hdepth)\s*$)",
@@ -262,6 +262,10 @@ class Formatter(object):
     def _shref_formatter(self, match, fullmatch):
         ns = fullmatch.group('sns')
         target = fullmatch.group('stgt')
+        if target[0] == "'":
+            target = target[1:-1]
+        elif target[:5] == "&#34;":
+            target = target[5:-5]
         
         if ns in self.link_resolvers:
             return self._link_resolvers[ns](self, ns, target, match)
