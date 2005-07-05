@@ -59,12 +59,15 @@ class AboutModule(Component):
   <h1>Configuration</h1>
   <table><thead><tr><th class="section">Section</th>
    <th class="name">Name</th><th class="value">Value</th></tr></thead><?cs
-  each:section = about.config ?>
-   <tr><th rowspan="<?cs var:len(section.options) ?>"><?cs var:section.name ?></th><?cs
-   each:option = section.options ?><?cs if:name(option) != 0 ?><tr><?cs /if ?>
-    <td><?cs var:option.name ?></td>
-    <td><?cs var:option.value ?></td>
-   </tr><?cs /each ?><?cs
+  each:section = about.config ?><?cs
+   if:len(section.options) ?>
+    <tr><th rowspan="<?cs var:len(section.options) ?>"><?cs var:section.name ?></th><?cs
+    each:option = section.options ?><?cs if:name(option) != 0 ?><tr><?cs /if ?>
+     <td><?cs var:option.name ?></td>
+     <td><?cs var:option.value ?></td>
+    </tr><?cs
+    /each ?><?cs
+   /if ?><?cs
   /each ?></table>
   <div id="help">
    See <a href="<?cs var:trac.href.wiki ?>/TracIni">TracIni</a> for information about
@@ -192,6 +195,14 @@ It provides an interface to the Subversion revision control systems, integrated 
         # permissions, components...
 
     def _render_plugins(self, req):
+        try:
+            from trac.wiki.formatter import wiki_to_html
+            import inspect
+            def getdoc(obj):
+                return wiki_to_html(inspect.getdoc(obj), self.env, req)
+        except:
+            def getdoc(obj):
+                return obj.__doc__
         req.perm.assert_permission('CONFIG_VIEW')
         import sys
         req.hdf['about.page'] = 'plugins'
@@ -202,7 +213,7 @@ It provides an interface to the Subversion revision control systems, integrated 
                 continue
             plugin = {'name': component.__name__}
             if component.__doc__:
-                plugin['description'] = component.__doc__
+                plugin['description'] = getdoc(component)
 
             module = sys.modules[component.__module__]
             plugin['module'] = module.__name__
@@ -215,7 +226,7 @@ It provides an interface to the Subversion revision control systems, integrated 
                                'interface': xtnpt.interface.__name__,
                                'module': xtnpt.interface.__module__})
                 if xtnpt.interface.__doc__:
-                    xtnpts[-1]['description'] = xtnpt.interface.__doc__
+                    xtnpts[-1]['description'] = getdoc(xtnpt.interface)
                 extensions = []
                 for extension in ComponentMeta._registry.get(xtnpt.interface, []):
                     if self.env.is_component_enabled(extension):
