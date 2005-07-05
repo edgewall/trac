@@ -161,6 +161,7 @@ class Chrome(Component):
                 req.send_file(abspath)
 
         # FIXME: Should return a 404 error
+        self.log.warning('File %s not found in any of %s', filename, dirs)
         raise TracError, 'File not found'
 
     # Public API methods

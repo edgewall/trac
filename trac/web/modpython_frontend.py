@@ -113,8 +113,8 @@ class ModPythonRequest(Request):
         stat = os.stat(path)
         last_modified = http_date(stat.st_mtime)
         if last_modified == self.req.headers_in.get('If-Modified-Since'):
-            self.req.status = 304
-            return
+            self.send_response(304)
+            raise RequestDone
 
         self.req.status = 200
         if not mimetype:
