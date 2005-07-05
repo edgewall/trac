@@ -160,6 +160,7 @@ class TicketModule(Component):
                 # Use user supplied values
                 ticket.populate(req.args)
                 req.hdf['ticket.action'] = action
+                req.hdf['ticket.ts'] = req.args.get('ts')
                 req.hdf['ticket.reassign_owner'] = req.args.get('reassign_owner') \
                                                    or req.authname
                 req.hdf['ticket.resolve_resolution'] = req.args.get('resolve_resolution')
@@ -173,6 +174,8 @@ class TicketModule(Component):
                                                                      req, db)
         else:
             req.hdf['ticket.reassign_owner'] = req.authname
+            # Store a timestamp in order to detect "mid air collisions"
+            req.hdf['ticket.ts'] = ticket.time_changed
 
         self._insert_ticket_data(req, db, ticket, reporter_id)
 
@@ -270,6 +273,12 @@ class TicketModule(Component):
             ticket.populate(req.args)
         else:
             req.perm.assert_permission('TICKET_APPEND')
+
+        # Mid air collision?
+        if int(req.args.get('ts')) != ticket.time_changed:
+            raise TracError("Sorry, can not save your changes. "
+                            "This ticket has been modified by someone else "
+                            "since you started", 'Mid Air Collision')
 
         # Do any action on the ticket?
         action = req.args.get('action')

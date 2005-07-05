@@ -123,6 +123,7 @@
 
 <?cs if:trac.acl.TICKET_CHGPROP || trac.acl.TICKET_APPEND ?>
 <form action="<?cs var:ticket.href ?>#preview" method="post">
+ <input type="hidden" name="ts" value="<?cs var:ticket.ts ?>"/>
  <hr />
  <h3><a name="edit" onfocus="document.getElementById('comment').focus()">Add/Change #<?cs
    var:ticket.id ?> (<?cs var:ticket.summary ?>)</a></h3>
