@@ -20,7 +20,7 @@
   /each ?>
  </fieldset>
  <div class="buttons">
-  <input type="submit" value="Update" />
+  <input type="submit" name="update" value="Update" />
  </div>
 </form><?cs
 

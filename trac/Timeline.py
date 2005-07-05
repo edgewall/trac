@@ -102,7 +102,8 @@ class TimelineModule(Component):
 
         fromdate = time.mktime((t[0], t[1], t[2], 23, 59, 59, t[6], t[7], t[8]))
         try:
-            daysback = max(0, int(req.args.get('daysback', '')))
+            daysback = max(0, int(req.args.get('daysback', '') \
+                                  or req.session.get('timeline.daysback', '')))
         except ValueError:
             daysback = int(self.config.get('timeline', 'default_daysback'))
         req.hdf['timeline.from'] = time.strftime('%x', time.localtime(fromdate))
@@ -111,9 +112,26 @@ class TimelineModule(Component):
         available_filters = []
         for event_provider in self.event_providers:
             available_filters += event_provider.get_timeline_filters(req)
-        filters = [f[0] for f in available_filters if f[0] in req.args.keys()]
-        if not filters:
-            filters = [f[0] for f in available_filters]
+
+        filters = []
+        if req.args.has_key('update'):  # setup filters from the update request
+          for f in available_filters:
+              if f[0] in req.args.keys():
+                  filters.append(f[0])
+                  req.session['timeline.filter.%s' % f[0]] = '1'
+              else:
+                  req.session['timeline.filter.%s' % f[0]] = '0'
+              req.session['timeline.daysback'] = daysback
+        else:                           # setup filters from the session
+            no_session = True
+            for f in available_filters:
+                enabled = req.session.get('timeline.filter.%s' % f[0], None)
+                if enabled == '1':
+                    filters.append(f[0])
+                elif enabled == '0':
+                    no_session = False
+            if no_session and not filters:
+                filters = [f[0] for f in available_filters]
 
         stop = fromdate
         start = stop - (daysback + 1) * 86400
