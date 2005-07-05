@@ -69,6 +69,7 @@ class SubversionRepositoryTestSetup(TestSetup):
     def tearDown(self):
         # The Windows version of 'shutil.rmtree' doesn't override the 
         # permissions of read-only files, so we have to do it ourselves:
+        os.chmod(os.path.join(REPOS_PATH, 'db', 'format'), stat.S_IRWXU )
         os.chmod(os.path.join(REPOS_PATH, 'format'), stat.S_IRWXU )
         shutil.rmtree(REPOS_PATH)
 
