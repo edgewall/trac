@@ -135,6 +135,7 @@ class Formatter(object):
                   r"(?P<subscript>,,)",
                   r"(?P<superscript>\^)",
                   r"(?P<inlinecode>!?\{\{\{(?P<inline>.*?)\}\}\})",
+                  r"(?P<inlinecode2>!?`(?P<inline2>.*?)`)",
                   r"(?P<htmlescapeentity>!?&#\d+;)"]
     _post_rules = [r"(?P<shref>!?((?P<sns>\w+):(?P<stgt>'[^']+'|((\|(?=[^| ])|[^| ])*[^|'~_\., \)]))))",
                    r"(?P<lhref>!?\[(?P<lns>\w+):(?P<ltgt>[^ ]+) (?P<label>.*?)\])",
@@ -188,7 +189,7 @@ class Formatter(object):
                     syntax.append('(?P<i%d>%s)' % (i, regexp))
                     i += 1
             syntax += Formatter._post_rules[:]
-            helper_re = re.compile(r'\?P<([a-z]+)>')
+            helper_re = re.compile(r'\?P<([a-z\d]+)>')
             for rule in syntax:
                 helpers += helper_re.findall(rule)[1:]
             rules = re.compile('(?:' + string.join(syntax, '|') + ')')
@@ -313,6 +314,9 @@ class Formatter(object):
 
     def _inlinecode_formatter(self, match, fullmatch):
         return '<tt>%s</tt>' % fullmatch.group('inline')
+
+    def _inlinecode2_formatter(self, match, fullmatch):
+        return '<tt>%s</tt>' % fullmatch.group('inline2')
 
     def _htmlescapeentity_formatter(self, match, fullmatch):
         #dummy function that match html escape entities in the format:
