@@ -90,19 +90,22 @@ class AboutModule(Component):
       <td class="description"><?cs var:plugin.description ?></td>
      </tr><?cs /if ?><?cs
      if:len(plugin.extension_points) ?><tr>
-      <th class="xtnpts">Extension points:</th>
-      <td class="xtnpts"><ul><?cs each:extension_point = plugin.extension_points ?>
-       <li>
-        <code><?cs var:extension_point.module ?>.<?cs var:extension_point.interface ?></code><?cs
-         if:len(extension_point.extensions) ?> (<?cs
-          var:len(extension_point.extensions) ?> extensions)<ul><?cs
-          each:extension = extension_point.extensions ?>
-           <li><a href="#<?cs var:extension.module ?>.<?cs
-             var:extension.name ?>"><?cs var:extension.name ?></a></li><?cs
-          /each ?></ul><?cs
-         /if ?>
-       </li><?cs
-      /each ?></ul></td></tr><?cs
+      <th class="xtnpts" rowspan="<?cs var:len(plugin.extension_points) ?>">
+       Extension points:</th><?cs
+       each:extension_point = plugin.extension_points ?><?cs
+        if:name(extension_point) != 0 ?><tr><?cs /if ?>
+        <td class="xtnpts">        
+         <code><?cs var:extension_point.module ?>.<?cs var:extension_point.interface ?></code><?cs
+          if:len(extension_point.extensions) ?> (<?cs
+           var:len(extension_point.extensions) ?> extensions)<ul><?cs
+           each:extension = extension_point.extensions ?>
+            <li><a href="#<?cs var:extension.module ?>.<?cs
+              var:extension.name ?>"><?cs var:extension.name ?></a></li><?cs
+           /each ?></ul><?cs
+          /if ?>
+          <div class="description"><?cs var:extension_point.description ?></div>
+        </td></tr><?cs
+       /each ?><?cs
      /if ?>
     </table><?cs
    /each ?>
