@@ -80,7 +80,7 @@ class WikiModule(Component):
         db = self.env.get_db_cnx()
         page = WikiPage(self.env, pagename, version, db)
 
-        add_stylesheet(req, 'wiki.css')
+        add_stylesheet(req, 'css/wiki.css')
 
         if req.method == 'POST':
             if action == 'edit':
@@ -223,7 +223,7 @@ class WikiModule(Component):
             raise TracError, "Version %s of page %s does not exist" \
                              % (req.args.get('version'), page.name)
 
-        add_stylesheet(req, 'diff.css')
+        add_stylesheet(req, 'css/diff.css')
 
         # Ask web spiders to not index old versions
         req.hdf['html.norobots'] = 1

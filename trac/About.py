@@ -174,7 +174,7 @@ It provides an interface to the Subversion revision control systems, integrated 
         elif page == 'plugins':
             self._render_plugins(req)
 
-        add_stylesheet(req, 'about.css')
+        add_stylesheet(req, 'css/about.css')
         template = req.hdf.parse(self.about_cs)
         return template, None
 

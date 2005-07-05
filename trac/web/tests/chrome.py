@@ -50,7 +50,7 @@ class ChromeTestCase(unittest.TestCase):
     def test_add_stylesheet(self):
         req = Mock(hdf=HDFWrapper())
         req.hdf['htdocs_location'] = '/trac'
-        add_stylesheet(req, 'trac.css')
+        add_stylesheet(req, 'css/trac.css')
         self.assertEqual('text/css', req.hdf['chrome.links.stylesheet.0.type'])
         self.assertEqual('/trac/css/trac.css',
                          req.hdf['chrome.links.stylesheet.0.href'])

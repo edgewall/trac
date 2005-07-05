@@ -107,7 +107,7 @@ class SearchModule(Component):
             if more:
                 add_link(req, 'next', self.env.href.search(params, page=page + 1))
 
-        add_stylesheet(req, 'search.css')
+        add_stylesheet(req, 'css/search.css')
         return 'search.cs', None
 
     # Internal methods

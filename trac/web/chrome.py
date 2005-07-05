@@ -49,7 +49,7 @@ def add_stylesheet(req, filename, mimetype='text/css'):
     in the generated HTML page.
     """
     href = Href(req.hdf['htdocs_location'])
-    add_link(req, 'stylesheet', href.css(filename), mimetype=mimetype)
+    add_link(req, 'stylesheet', href(filename), mimetype=mimetype)
 
 
 class INavigationContributor(Interface):
@@ -71,10 +71,15 @@ class INavigationContributor(Interface):
         """
 
 
-class ITemplatesProvider(Interface):
+class ITemplateProvider(Interface):
     """Extension point interface for components that provide their own
-    ClearSilver templates.
+    ClearSilver templates and accompanying static resources.
     """
+
+    def get_htdocs_dir():
+        """Return the absolute path of a directory containing additional
+        static resources (such as images, style sheets, etc).
+        """
 
     def get_templates_dir():
         """Return the absolute path of the directory containing the provided
@@ -89,7 +94,7 @@ class Chrome(Component):
     implements(IEnvironmentSetupParticipant, IRequestHandler)
 
     navigation_contributors = ExtensionPoint(INavigationContributor)
-    templates_providers = ExtensionPoint(ITemplatesProvider)
+    template_providers = ExtensionPoint(ITemplateProvider)
 
     # IEnvironmentSetupParticipant methods
 
@@ -145,15 +150,18 @@ class Chrome(Component):
     def process_request(self, req):
         from trac.config import default_dir
 
-        basedir = os.path.normpath(default_dir('htdocs'))
-        filename = os.path.normpath(req.args.get('filename'))
-        abspath = os.path.join(basedir, filename)
-        assert os.path.commonprefix([basedir, abspath]) == basedir
+        filename = req.args.get('filename')
+        dirs = [default_dir('htdocs')] + [provider.get_htdocs_dir() for provider
+                                          in self.template_providers]
+        for dir in [os.path.normpath(dir) for dir in dirs if dir is not None]:
+            abspath = os.path.normpath(os.path.join(dir, filename))
+            assert os.path.commonprefix([dir, abspath]) == dir
 
-        if not os.path.isfile(abspath):
-            # FIXME: Should return a 404 error
-            raise TracError, 'File not found'
-        req.send_file(abspath)
+            if os.path.isfile(abspath):
+                req.send_file(abspath)
+
+        # FIXME: Should return a 404 error
+        raise TracError, 'File not found'
 
     # Public API methods
 
@@ -161,7 +169,7 @@ class Chrome(Component):
         """Return a list of the names of all known templates directories."""
         dirs = [self.env.get_templates_dir(),
                 self.config.get('trac', 'templates_dir')]
-        for provider in self.templates_providers:
+        for provider in self.template_providers:
             dirs.append(provider.get_templates_dir())
         return dirs
 
@@ -182,7 +190,7 @@ class Chrome(Component):
         add_link(req, 'start', self.env.href.wiki())
         add_link(req, 'search', self.env.href.search())
         add_link(req, 'help', self.env.href.wiki('TracGuide'))
-        add_stylesheet(req, 'trac.css')
+        add_stylesheet(req, 'css/trac.css')
         icon = self.config.get('project', 'icon')
         if icon:
             if icon[0] != '/' and icon.find('://') == -1:

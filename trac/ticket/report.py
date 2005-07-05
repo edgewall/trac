@@ -139,7 +139,7 @@ class ReportModule(Component):
            self.env.is_component_enabled(QueryModule):
             req.hdf['report.query_href'] = self.env.href.query()
 
-        add_stylesheet(req, 'report.css')
+        add_stylesheet(req, 'css/report.css')
         return 'report.cs', None
 
     # Internal methods
@@ -380,7 +380,6 @@ class ReportModule(Component):
             self._render_csv(req, cols, rows, '\t')
             return None
 
-        add_stylesheet(req, 'report.css')
         return 'report.cs', None
 
     def add_alternate_links(self, req, args):

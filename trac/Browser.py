@@ -148,7 +148,7 @@ class BrowserModule(Component):
         else:
             self._render_file(req, repos, node, rev)
 
-        add_stylesheet(req, 'browser.css')
+        add_stylesheet(req, 'css/browser.css')
         return 'browser.cs', None
 
     # Internal methods
@@ -261,7 +261,7 @@ class BrowserModule(Component):
             req.hdf['file.raw_href'] = raw_href
             add_link(req, 'alternate', raw_href, 'Original Format', mime_type)
 
-            add_stylesheet(req, 'code.css')
+            add_stylesheet(req, 'css/code.css')
 
     # IWikiSyntaxProvider methods
     
@@ -434,8 +434,8 @@ class LogModule(Component):
         elif req.args.get('format') == 'rss':
             return 'log_rss.cs', 'application/rss+xml'
 
-        add_stylesheet(req, 'browser.css')
-        add_stylesheet(req, 'diff.css')
+        add_stylesheet(req, 'css/browser.css')
+        add_stylesheet(req, 'css/diff.css')
 
         rss_href = make_log_href(path, format='rss', stop_rev=stop_rev)
         add_link(req, 'alternate', rss_href, 'RSS Feed', 'application/rss+xml',

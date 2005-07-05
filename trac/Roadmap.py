@@ -85,7 +85,7 @@ class RoadmapModule(Component):
             self.render_ics(req, db, milestones)
             return
 
-        add_stylesheet(req, 'roadmap.css')
+        add_stylesheet(req, 'css/roadmap.css')
 
         # FIXME should use the 'webcal:' scheme, probably
         username = None

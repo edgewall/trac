@@ -330,7 +330,7 @@ class MilestoneModule(Component):
         else:
             self._render_view(req, db, milestone)
 
-        add_stylesheet(req, 'roadmap.css')
+        add_stylesheet(req, 'css/roadmap.css')
         return 'milestone.cs', None
 
     # Internal methods

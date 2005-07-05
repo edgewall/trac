@@ -179,7 +179,7 @@ class TimelineModule(Component):
         if format == 'rss':
             return 'timeline_rss.cs', 'application/rss+xml'
 
-        add_stylesheet(req, 'timeline.css')
+        add_stylesheet(req, 'css/timeline.css')
         rss_href = self.env.href.timeline([(f, 'on') for f in filters],
                                           daysback=90, max=50, format='rss')
         add_link(req, 'alternate', rss_href, 'RSS Feed', 'application/rss+xml',
