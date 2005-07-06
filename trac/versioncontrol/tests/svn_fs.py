@@ -44,7 +44,8 @@ REPOS_PATH = os.path.join(tempfile.gettempdir(), 'trac-svnrepos')
 class SubversionRepositoryTestSetup(TestSetup):
 
     def setUp(self):
-        dumpfile = open(os.path.join(os.path.split(__file__)[0], 'svnrepos.dump'))
+        dumpfile = open(os.path.join(os.path.split(__file__)[0],
+                                     'svnrepos.dump'))
 
         core.apr_initialize()
         pool = core.svn_pool_create(None)
@@ -58,8 +59,8 @@ class SubversionRepositoryTestSetup(TestSetup):
             else:
                 dumpstream = core.svn_stream_from_aprfile(dumpfile, pool)
                 repos.svn_repos_load_fs(r, dumpstream, None,
-                                        repos.svn_repos_load_uuid_default, '', None,
-                                        None, pool)
+                                        repos.svn_repos_load_uuid_default, '',
+                                        None, None, pool)
         finally:
             if dumpstream:
                 core.svn_stream_close(dumpstream)
@@ -67,10 +68,13 @@ class SubversionRepositoryTestSetup(TestSetup):
             core.apr_terminate()
 
     def tearDown(self):
-        # The Windows version of 'shutil.rmtree' doesn't override the 
-        # permissions of read-only files, so we have to do it ourselves:
-        os.chmod(os.path.join(REPOS_PATH, 'db', 'format'), stat.S_IRWXU )
-        os.chmod(os.path.join(REPOS_PATH, 'format'), stat.S_IRWXU )
+        if os.name == 'nt':
+            # The Windows version of 'shutil.rmtree' doesn't override the
+            # permissions of read-only files, so we have to do it ourselves:
+            format_file = os.path.join(REPOS_PATH, 'db', 'format')
+            if os.path.isfile(format_file):
+                os.chmod(format_file, stat.S_IRWXU)
+            os.chmod(os.path.join(REPOS_PATH, 'format'), stat.S_IRWXU)
         shutil.rmtree(REPOS_PATH)
 
 
