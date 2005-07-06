@@ -151,6 +151,8 @@ class TracAdmin(cmd.Cmd):
     ##
 
     def arg_tokenize (self, argstr):
+        if hasattr(sys.stdin, 'encoding'): # Since version 2.3
+            argstr = util.to_utf8(argstr, sys.stdin.encoding)
         if hasattr(shlex, 'split'):
             toks = shlex.split(argstr)
         else:
