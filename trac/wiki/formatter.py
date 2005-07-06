@@ -138,7 +138,7 @@ class Formatter(object):
                   r"(?P<inlinecode2>!?`(?P<inline2>.*?)`)",
                   r"(?P<htmlescapeentity>!?&#\d+;)"]
     _post_rules = [r"(?P<shref>!?((?P<sns>\w+):(?P<stgt>'[^']+'|((\|(?=[^| ])|[^| ])*[^|'~_\., \)]))))",
-                   r"(?P<lhref>!?\[(?P<lns>\w+):(?P<ltgt>[^ ]+) (?P<label>.*?)\])",
+                   r"(?P<lhref>!?\[(?P<lns>\w+):(?P<ltgt>[^\] ]+)(?: (?P<label>.*?))?\])",
                    r"(?P<macro>!?\[\[(?P<macroname>[\w/+-]+)(\]\]|\((?P<macroargs>.*?)\)\]\]))",
                    r"(?P<heading>^\s*(?P<hdepth>=+)\s.*\s(?P=hdepth)\s*$)",
                    r"(?P<list>^(?P<ldepth>\s+)(?:\*|\d+\.) )",
@@ -278,7 +278,7 @@ class Formatter(object):
     def _lhref_formatter(self, match, fullmatch):
         ns = fullmatch.group('lns')
         target = fullmatch.group('ltgt') 
-        label = fullmatch.group('label')
+        label = fullmatch.group('label') or target
         if ns in self.link_resolvers:
             return self._link_resolvers[ns](self, ns, target, label)
         elif target[:2] == '//':
