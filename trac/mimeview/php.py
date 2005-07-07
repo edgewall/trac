@@ -70,7 +70,7 @@ class PHPRenderer(Component):
             err = 'Running (%s) failed: %s, %s.' % (cmdline, np.errorlevel,
                                                     np.err)
             raise Exception, err
-        odata = np.out.splitlines()[1]
+        odata = ''.join(np.out.splitlines()[1:-1])
         if odata.startswith('X-Powered-By'):
             raise TracError, 'You appear to be using the PHP CGI binary.  ' \
                              'Trac requires the CLI version for syntax ' \
