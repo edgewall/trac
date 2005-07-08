@@ -171,7 +171,7 @@ class PageOutlineMacro(Component):
 
         db = self.env.get_db_cnx()
         cursor = db.cursor()
-        page = req.args.get('page')
+        page = req.args.get('page') or 'WikiStart'
         cursor.execute("SELECT text FROM wiki WHERE name=%s "
                        "ORDER BY version DESC LIMIT 1", (page,))
         (text,) = cursor.fetchone()
