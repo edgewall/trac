@@ -352,11 +352,12 @@ class Formatter(object):
             # an ID must start with a letter in HTML
             anchor = 'a' + anchor
         i = 1
+        anchor = anchor.encode('utf-8')
         while anchor in self._anchors:
             anchor = anchor_base + str(i)
             i += 1
         self._anchors.append(anchor)
-        self.out.write('<h%d id="%s">%s</h%d>' % (depth, anchor.encode('utf-8'),
+        self.out.write('<h%d id="%s">%s</h%d>' % (depth, anchor,
                                                   wiki_to_oneliner(heading,
                                                       self.env, self._db,
                                                       self._absurls),
