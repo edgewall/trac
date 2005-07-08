@@ -114,24 +114,24 @@ class TimelineModule(Component):
             available_filters += event_provider.get_timeline_filters(req)
 
         filters = []
-        if req.args.has_key('update'):  # setup filters from the update request
-          for f in available_filters:
-              if f[0] in req.args.keys():
-                  filters.append(f[0])
-                  req.session['timeline.filter.%s' % f[0]] = '1'
-              else:
-                  req.session['timeline.filter.%s' % f[0]] = '0'
-              req.session['timeline.daysback'] = daysback
-        else:                           # setup filters from the session
-            no_session = True
+        # check the request or session for enabled filters, or enable all
+        for test in (lambda f: req.args.has_key(f),
+                     lambda f: req.session.get('timeline.filter.%s' % f, '') \
+                                   == '1',
+                     lambda f: True):
+            if filters:
+                break
+            filters = [f[0] for f in available_filters if test(f[0])]
+
+        # save the results of submitting the timeline form to the session
+        if req.args.has_key('update'):
             for f in available_filters:
-                enabled = req.session.get('timeline.filter.%s' % f[0], None)
-                if enabled == '1':
-                    filters.append(f[0])
-                elif enabled == '0':
-                    no_session = False
-            if no_session and not filters:
-                filters = [f[0] for f in available_filters]
+                key = 'timeline.filter.%s' % f[0]
+                if req.args.has_key(f[0]):
+                    req.session[key] = '1'
+                elif req.session.has_key(key):
+                    del req.session[key]
+            req.session['timeline.daysback'] = daysback
 
         stop = fromdate
         start = stop - (daysback + 1) * 86400
