@@ -509,7 +509,7 @@ class TracAdmin(cmd.Cmd):
         print " This name will be used in page titles and descriptions."
         print
         dp = 'My Project'
-        returnvals.append(raw_input('Project Name [%s]> ' % dp) or dp)
+        returnvals.append(raw_input('Project Name [%s]> ' % dp).strip() or dp)
         print
         print ' Please specify the connection string for the database to use.'
         print ' By default, a local SQLite database is created in the environment '
@@ -519,7 +519,7 @@ class TracAdmin(cmd.Cmd):
         print
         ddb = 'sqlite:db/trac.db'
         prompt = 'Database connection string [%s]> ' % ddb
-        returnvals.append(raw_input(prompt) or ddb)
+        returnvals.append(raw_input(prompt).strip()  or ddb)
         print
         print ' Please specify the absolute path to the project Subversion repository.'
         print ' Repository must be local, and trac-admin requires read+write'
@@ -527,14 +527,14 @@ class TracAdmin(cmd.Cmd):
         print
         drp = '/var/svn/test'
         prompt = 'Path to repository [%s]> ' % drp
-        returnvals.append(raw_input(prompt) or drp)
+        returnvals.append(raw_input(prompt).strip()  or drp)
         print
         print ' Please enter location of Trac page templates.'
         print ' Default is the location of the site-wide templates installed with Trac.'
         print
         dt = default_dir('templates')
         prompt = 'Templates directory [%s]> ' % dt
-        returnvals.append(raw_input(prompt) or dt)
+        returnvals.append(raw_input(prompt).strip()  or dt)
         return returnvals
 
     def do_initenv(self, line):
