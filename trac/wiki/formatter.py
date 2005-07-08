@@ -137,7 +137,7 @@ class Formatter(object):
                   r"(?P<inlinecode>!?\{\{\{(?P<inline>.*?)\}\}\})",
                   r"(?P<inlinecode2>!?`(?P<inline2>.*?)`)",
                   r"(?P<htmlescapeentity>!?&#\d+;)"]
-    _post_rules = [r"(?P<shref>!?((?P<sns>\w+):(?P<stgt>'[^']+'|((\|(?=[^| ])|[^| ])*[^|'~_\., \)]))))",
+    _post_rules = [r"(?P<shref>!?((?P<sns>\w+):(?P<stgt>'[^']+'|\"[^\"]+\"|((\|(?=[^| ])|[^| ])*[^|'~_\., \)]))))",
                    r"(?P<lhref>!?\[(?P<lns>\w+):(?P<ltgt>[^\] ]+)(?: (?P<label>.*?))?\])",
                    r"(?P<macro>!?\[\[(?P<macroname>[\w/+-]+)(\]\]|\((?P<macroargs>.*?)\)\]\]))",
                    r"(?P<heading>^\s*(?P<hdepth>=+)\s.*\s(?P=hdepth)\s*$)",
@@ -263,10 +263,8 @@ class Formatter(object):
     def _shref_formatter(self, match, fullmatch):
         ns = fullmatch.group('sns')
         target = fullmatch.group('stgt')
-        if target[0] == "'":
+        if target[0] in "'\"":
             target = target[1:-1]
-        elif target[:5] == "&#34;":
-            target = target[5:-5]
         
         if ns in self.link_resolvers:
             return self._link_resolvers[ns](self, ns, target, match)
@@ -557,7 +555,7 @@ class Formatter(object):
                 self.close_def_list()
                 continue
 
-            line = util.escape(line)
+            line = util.escape(line, False)
             if escape_newlines:
                 line += ' [[BR]]'
             self.in_list_item = False
@@ -609,7 +607,7 @@ class OneLinerFormatter(Formatter):
         self.out = out
         self._open_tags = []
 
-        result = re.sub(self.rules, self.replace, util.escape(text.strip()))
+        result = re.sub(self.rules, self.replace, util.escape(text.strip(), False))
         # Close all open 'one line'-tags
         result += self.close_tag(None)
         out.write(result)

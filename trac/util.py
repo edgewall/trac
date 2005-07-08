@@ -45,7 +45,7 @@ def enum(iterable):
 
 def escape(text, quotes=True):
     """
-    Escapes &, <, > and " so they are safe to include in HTML output. Quotes
+    Escapes &, <, > and \" so they are safe to include in HTML output. Quotes
     are only escaped if the `quotes` parameter is `True`; this is only
     necessary for text that is supposed to be inserted in attributes of HTML
     tags.
