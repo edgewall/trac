@@ -394,7 +394,7 @@ def dispatch_request(path_info, req, env):
             check_ip = check_ip.strip().lower() in TRUE
             authenticator = Authenticator(db, req, check_ip)
             if path_info == '/logout':
-                authenticator.logout()
+                authenticator.logout(req)
                 referer = req.get_header('Referer')
                 if referer and not referer.startswith(req.base_url):
                     # only redirect to referer if the latter is from the same

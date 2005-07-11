@@ -57,6 +57,10 @@ class Authenticator:
             row = cursor.fetchone()
             if row:
                 self.authname = row[0]
+            else:
+                # Tell the user to drop any auth_cookie for which no corresponding
+                # entry in our cookie table exists.
+                self.expire_auth_cookie(req)
 
     def login(self, req):
         """
@@ -83,7 +87,7 @@ class Authenticator:
         req.outcookie['trac_auth'] = cookie
         req.outcookie['trac_auth']['path'] = util.quote_cookie_value(req.cgi_location)
 
-    def logout(self):
+    def logout(self, req):
         """
         Logs the user out. Simply deletes the corresponding record from the
         auth_cookie table.
@@ -95,6 +99,16 @@ class Authenticator:
         cursor = self.db.cursor()
         cursor.execute("DELETE FROM auth_cookie WHERE name=%s", self.authname)
         self.db.commit()
+        self.expire_auth_cookie(req)
+
+    def expire_auth_cookie(self, req):
+        """
+        Instructs the user agent to drop the auth cookie by setting the "expires" property
+        to a date in the past.
+        """
+        req.outcookie['trac_auth'] = ''
+        req.outcookie['trac_auth']['path'] = util.quote_cookie_value(req.cgi_location)
+        req.outcookie['trac_auth']['expires'] = -10000
 
 
 class LoginModule(Component):
