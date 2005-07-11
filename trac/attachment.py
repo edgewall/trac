@@ -387,12 +387,6 @@ class AttachmentModule(Component):
         fmt = req.args.get('format')
         mimetype = fmt == 'txt' and 'text/plain' or \
                    get_mimetype(attachment.filename) or 'application/octet-stream'
-        charset = self.config.get('trac', 'default_charset')
-
-        if fmt in ('raw', 'txt'):
-            # Render raw file
-            req.send_file(attachment.path, mimetype + ';charset=' + charset)
-            return
 
         req.check_modified(attachment.time)
 
@@ -420,6 +414,13 @@ class AttachmentModule(Component):
         fd = attachment.open()
         try:
             data = fd.read(self.DISP_MAX_FILE_SIZE)
+            charset = detect_unicode(data) or self.config.get('trac', 'default_charset')
+            
+            if fmt in ('raw', 'txt'):
+                # Send raw file
+                req.send_file(attachment.path, mimetype + ';charset=' + charset)
+                return
+            
             if not is_binary(data):
                 data = util.to_utf8(data, charset)
                 add_link(req, 'alternate', attachment.href(format='txt'),

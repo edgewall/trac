@@ -32,7 +32,7 @@ except ImportError:
 from trac.core import *
 from trac.util import enum, escape
 
-__all__ = ['get_charset', 'get_mimetype', 'is_binary', 'Mimeview']
+__all__ = ['get_charset', 'get_mimetype', 'is_binary', 'detect_unicode', 'Mimeview']
 
 MIME_MAP = {
     'css':'text/css',
@@ -120,10 +120,24 @@ def get_mimetype(filename):
 
 def is_binary(str):
     """Detect binary content by checking the first thousand bytes for zeroes."""
+    if detect_unicode(str):
+        return False
     for i in range(0, min(len(str), 1000)):
         if str[i] == '\0':
             return True
     return False
+
+def detect_unicode(data):
+    """Detect different unicode charsets by looking for BOM's (Byte Order Marks)"""
+    if data[:2] == '\xff\xfe':
+        return 'utf-16-le'
+    elif data[:2] == '\xfe\xff':
+        return 'utf-16-be'
+    elif data[:3] == '\xef\xbb\xbf':
+        return 'utf-8'
+    else:
+        return None
+
 
 class IHTMLPreviewRenderer(Interface):
     """Extension point interface for components that add HTML renderers of
