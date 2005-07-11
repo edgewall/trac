@@ -124,7 +124,7 @@ class CacheTestCase(unittest.TestCase):
         repos = Mock(Repository, None, self.log,
                      get_changeset=lambda x: None,
                      get_youngest_rev=lambda: 1,
-                     next_rev=lambda x: None)
+                     next_rev=lambda x: None, normalize_rev=lambda rev: rev)
         cache = CachedRepository(self.db, repos, None, self.log)
         self.assertEqual(1, cache.youngest_rev)
         changeset = cache.get_changeset(1)
