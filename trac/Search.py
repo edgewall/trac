@@ -174,7 +174,6 @@ class SearchModule(Component):
             if kwd[0] == '!':
                 keywords[0] = kwd[1:]
                 query = query[1:]
-                req.hdf['search.q'] = query
             # Ticket quickjump
             elif kwd[0] == '#' and kwd[1:].isdigit():
                 redir = self.env.href.ticket(kwd[1:])
@@ -259,13 +258,13 @@ class SearchModule(Component):
         # Make the data more HDF-friendly
         info = []
         more = False
-        for type, title, msg, author, keywords, data, t, version in cursor:
+        for type, title, msg, author, kw, data, t, version in cursor:
             if len(info) == self.RESULTS_PER_PAGE:
                 more = True
                 break
             t = time.localtime(int(t))
             item = {'type': int(type),
-                    'keywords': keywords or '',
+                    'keywords': kw or '',
                     'data': data,
                     'title': escape(title or ''),
                     'datetime' : time.strftime('%c', t),
