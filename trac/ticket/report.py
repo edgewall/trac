@@ -457,7 +457,8 @@ class ReportModule(Component):
             report_args[arg] = val
 
         # Set some default dynamic variables
-        report_args['USER'] = req.authname
+        if not report_args.has_key('USER'):
+            report_args['USER'] = req.authname
 
         return report_args
 
