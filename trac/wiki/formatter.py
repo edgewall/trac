@@ -265,21 +265,18 @@ class Formatter(object):
         target = fullmatch.group('stgt')
         if target[0] in "'\"":
             target = target[1:-1]
-        
-        if ns in self.link_resolvers:
-            return self._link_resolvers[ns](self, ns, target, match)
-        elif target[:2] == '//':
-            return self._make_ext_link(match, match)
-        else:
-            return match
+        return self._make_link(ns, target, match, match)
 
     def _lhref_formatter(self, match, fullmatch):
         ns = fullmatch.group('lns')
         target = fullmatch.group('ltgt') 
         label = fullmatch.group('label') or target
+        return self._make_link(ns, target, match, label)
+
+    def _make_link(self, ns, target, match, label):
         if ns in self.link_resolvers:
             return self._link_resolvers[ns](self, ns, target, label)
-        elif target[:2] == '//':
+        elif target[:2] == '//' or ns == "mailto":
             return self._make_ext_link(ns+':'+target, label)
         else:
             return match
