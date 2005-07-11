@@ -265,6 +265,8 @@ class Environment(Component, ComponentManager):
         db = self.get_db_cnx()
         for participant in self.setup_participants:
             if participant.environment_needs_upgrade(db):
+                self.log.warning('Component %s requires environment upgrade',
+                                 participant)
                 return True
         return False
 

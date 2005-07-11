@@ -31,15 +31,23 @@ from trac.perm import IPermissionRequestor
 from trac.Timeline import ITimelineEventProvider
 from trac.versioncontrol import Changeset, Node
 from trac.versioncontrol.diff import get_diff_options, hdf_diff, unified_diff
-from trac.web.chrome import add_link, add_stylesheet
+from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
 from trac.web.main import IRequestHandler
 from trac.wiki import wiki_to_html, wiki_to_oneliner, IWikiSyntaxProvider
 
 
 class ChangesetModule(Component):
 
-    implements(IPermissionRequestor, IRequestHandler, ITimelineEventProvider,
-               IWikiSyntaxProvider)
+    implements(INavigationContributor, IPermissionRequestor, IRequestHandler,
+               ITimelineEventProvider, IWikiSyntaxProvider)
+
+    # INavigationContributor methods
+
+    def get_active_navigation_item(self, req):
+        return 'browser'
+
+    def get_navigation_items(self, req):
+        return []
 
     # IPermissionRequestor methods
 

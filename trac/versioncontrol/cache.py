@@ -46,7 +46,8 @@ class CachedRepository(Repository):
         if not self.synced:
             self.sync()
             self.synced = 1
-        return CachedChangeset(rev, self.db, self.authz)
+        return CachedChangeset(self.repos.normalize_rev(rev), self.db,
+                               self.authz)
 
     def sync(self):
         self.log.debug("Checking whether sync with repository is needed")
