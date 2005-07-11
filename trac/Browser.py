@@ -215,8 +215,10 @@ class BrowserModule(Component):
         # svn:mime-type property
         ctpos = mime_type.find('charset=')
         if ctpos >= 0:
+            charset_specified = True
             charset = mime_type[ctpos + 8:]
         else:
+            charset_specified = False
             charset = self.config.get('trac', 'default_charset')
 
         format = req.args.get('format')
@@ -238,7 +240,7 @@ class BrowserModule(Component):
         else:
             # Generate HTML preview
             content = node.get_content().read(DISP_MAX_FILE_SIZE)
-            if not is_binary(content):
+            if charset_specified or not is_binary(content):
                 content = util.to_utf8(content, charset)
                 if mime_type != 'text/plain':
                     plain_href = self.env.href.browser(node.path,
