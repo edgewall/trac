@@ -19,7 +19,8 @@ class AuthTestCase(unittest.TestCase):
     def test_unknown_cookie_access(self):
         incookie = Cookie()
         incookie['trac_auth'] = '123'
-        req = Mock(incookie=incookie, remote_addr='127.0.0.1')
+        req = Mock(incookie=incookie, outcookie=Cookie(),
+                   remote_addr='127.0.0.1', cgi_location='/trac')
         auth = Authenticator(self.db, req)
         self.assertEqual('anonymous', auth.authname)
 
@@ -29,9 +30,12 @@ class AuthTestCase(unittest.TestCase):
                        "VALUES ('123', 'john', '127.0.0.1')")
         incookie = Cookie()
         incookie['trac_auth'] = '123'
-        req = Mock(incookie=incookie, remote_addr='127.0.0.1')
+        outcookie = Cookie()
+        req = Mock(incookie=incookie, outcookie=outcookie,
+                   remote_addr='127.0.0.1')
         auth = Authenticator(self.db, req)
         self.assertEqual('john', auth.authname)
+        self.failIf('auth_cookie' in req.outcookie)
 
     def test_known_cookie_different_ipnr_access(self):
         cursor = self.db.cursor()
@@ -39,9 +43,12 @@ class AuthTestCase(unittest.TestCase):
                        "VALUES ('123', 'john', '127.0.0.1')")
         incookie = Cookie()
         incookie['trac_auth'] = '123'
-        req = Mock(incookie=incookie, remote_addr='192.168.0.100')
+        outcookie = Cookie()
+        req = Mock(incookie=incookie, outcookie=outcookie,
+                   remote_addr='192.168.0.100', cgi_location='/trac')
         auth = Authenticator(self.db, req)
         self.assertEqual('anonymous', auth.authname)
+        self.failIf('trac_auth' not in req.outcookie)
 
     def test_known_cookie_ip_check_disabled(self):
         cursor = self.db.cursor()
@@ -49,9 +56,12 @@ class AuthTestCase(unittest.TestCase):
                        "VALUES ('123', 'john', '127.0.0.1')")
         incookie = Cookie()
         incookie['trac_auth'] = '123'
-        req = Mock(incookie=incookie, remote_addr='192.168.0.100')
+        outcookie = Cookie()
+        req = Mock(incookie=incookie, outcookie=outcookie,
+                   remote_addr='192.168.0.100')
         auth = Authenticator(self.db, req, check_ip=0)
         self.assertEqual('john', auth.authname)
+        self.failIf('auth_cookie' in req.outcookie)
 
     def test_login(self):
         outcookie = Cookie()
@@ -100,16 +110,21 @@ class AuthTestCase(unittest.TestCase):
                        "VALUES ('123', 'john', '127.0.0.1')")
         incookie = Cookie()
         incookie['trac_auth'] = '123'
-        req = Mock(incookie=incookie, remote_addr='127.0.0.1')
+        outcookie = Cookie()
+        req = Mock(incookie=incookie, outcookie=outcookie,
+                   remote_addr='127.0.0.1', cgi_location='/trac')
         auth = Authenticator(self.db, req)
-        auth.logout()
+        auth.logout(req)
+        self.failIf('trac_auth' not in outcookie)
         cursor.execute("SELECT name,ipnr FROM auth_cookie WHERE name='john'")
         self.failIf(cursor.fetchone())
 
     def test_logout_not_logged_in(self):
-        req = Mock(incookie=Cookie(), remote_addr='127.0.0.1', remote_user=None)
+        req = Mock(incookie=Cookie(), outcookie=Cookie(),
+                   remote_addr='127.0.0.1', remote_user=None,
+                   cgi_location='/trac')
         auth = Authenticator(self.db, req)
-        auth.logout() # this shouldn't raise an error
+        auth.logout(req) # this shouldn't raise an error
 
 
 def suite():

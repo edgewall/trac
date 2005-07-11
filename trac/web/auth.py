@@ -97,7 +97,10 @@ class Authenticator:
             return
 
         cursor = self.db.cursor()
-        cursor.execute("DELETE FROM auth_cookie WHERE name=%s", self.authname)
+        # While deleting this cookie we also take the opportunity to delete
+        # cookies older than 10 days
+        cursor.execute("DELETE FROM auth_cookie WHERE name=%s OR time < %s",
+                       (self.authname, int(time.time()) - 86400 * 10))
         self.db.commit()
         self.expire_auth_cookie(req)
 
