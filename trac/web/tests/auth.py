@@ -65,9 +65,31 @@ class AuthTestCase(unittest.TestCase):
 
     def test_login(self):
         outcookie = Cookie()
+        # remote_user must be upper case to test that by default, case is
+        # preserved.
         req = Mock(cgi_location='/trac', incookie=Cookie(), outcookie=outcookie,
-                   remote_addr='127.0.0.1', remote_user='john')
+                   remote_addr='127.0.0.1', remote_user='John')
         auth = Authenticator(self.db, req)
+        auth.login(req)
+
+        assert outcookie.has_key('trac_auth'), '"trac_auth" Cookie not set'
+        auth_cookie = outcookie['trac_auth'].value
+        cursor = self.db.cursor()
+        cursor.execute("SELECT name,ipnr FROM auth_cookie WHERE cookie=%s",
+                       (auth_cookie))
+        row = cursor.fetchone()
+        self.assertEquals('John', row[0])
+        self.assertEquals('127.0.0.1', row[1])
+    
+    def test_login_ignore_case(self):
+        """
+        Test that login is succesful when the usernames differ in case, but case
+        is ignored.
+        """
+        outcookie = Cookie()
+        req = Mock(cgi_location='/trac', incookie=Cookie(), outcookie=outcookie,
+                   remote_addr='127.0.0.1', remote_user='John')
+        auth = Authenticator(self.db, req, ignore_case=1)
         auth.login(req)
 
         assert outcookie.has_key('trac_auth'), '"trac_auth" Cookie not set'

@@ -417,6 +417,7 @@ default_config = \
   ('trac', 'default_charset', 'iso-8859-15'),
   ('trac', 'default_handler', 'WikiModule'),
   ('trac', 'check_auth_ip', 'true'),
+  ('trac', 'ignore_auth_case', 'false'),
   ('trac', 'metanav', 'login,logout,settings,help,about'),
   ('trac', 'mainnav', 'wiki,timeline,roadmap,browser,tickets,newticket,search'),
   ('trac', 'permission_store', 'DefaultPermissionStore'),
