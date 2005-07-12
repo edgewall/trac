@@ -227,7 +227,9 @@ class ChangesetModule(Component):
                     if option[:2] == '-U':
                         context = int(option[2:])
                         break
-                tabwidth = int(self.config.get('diff', 'tab_width'))
+                tabwidth = int(self.config.get('diff', 'tab_width',
+                                               self.config.get('mimeviewer',
+                                                               'tab_width')))
                 changes = hdf_diff(old_content.splitlines(),
                                    new_content.splitlines(),
                                    context, tabwidth,

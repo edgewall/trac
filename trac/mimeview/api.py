@@ -228,13 +228,14 @@ class Mimeview(Component):
                 else:
                     buf = StringIO()
                     buf.write('<div class="code-block"><pre>')
+                    tab_width = int(self.config.get('mimeviewer', 'tab_width'))
                     for line in result:
-                        buf.write(line.expandtabs(8) + '\n')
+                        buf.write(line.expandtabs(tab_width) + '\n')
                     buf.write('</pre></div>')
                     return buf.getvalue()
             except Exception, e:
                 self.log.warning('HTML preview using %s failed (%s)'
-                                 % (renderer, e))
+                                 % (renderer, e), exc_info=True)
 
     def _annotate(self, lines, annotations):
         buf = StringIO()
@@ -252,13 +253,14 @@ class Mimeview(Component):
         def htmlify(match):
             div, mod = divmod(len(match.group(0)), 2)
             return div * '&nbsp; ' + mod * '&nbsp;'
+        tab_width = int(self.config.get('mimeviewer', 'tab_width'))
 
         for num, line in enum(_html_splitlines(lines)):
             cells = []
             for annotator in annotators:
                 cells.append(annotator.annotate_line(num + 1, line))
-            cells.append('<td>%s</td>\n' % space_re.sub(htmlify,
-                                                        line.expandtabs(8)))
+            cells.append('<td>%s</td>\n'
+                         % space_re.sub(htmlify, line.expandtabs(tab_width)))
             buf.write('<tr>' + '\n'.join(cells) + '</tr>')
         buf.write('</tbody></table>')
         return buf.getvalue()
