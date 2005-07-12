@@ -353,9 +353,9 @@ class Formatter(object):
             i += 1
         self._anchors.append(anchor)
         self.out.write('<h%d id="%s">%s</h%d>' % (depth, anchor,
-                                                  wiki_to_oneliner(heading,
-                                                      self.env, self._db,
-                                                      self._absurls),
+                                                  wiki_to_oneliner(util.unescape(heading),
+                                                  self.env, self._db,
+                                                  self._absurls),
                                                   depth))
 
     def _indent_formatter(self, match, fullmatch):
