@@ -124,6 +124,7 @@ class Milestone(object):
                           'associated with milestone "%s"' % self.name)
         cursor.execute("UPDATE ticket SET milestone=%s WHERE milestone=%s",
                        (self.name, self._old_name))
+        # FIXME: Insert change into the change history of the tickets
         self._old_name = self.name
 
         if handle_ta:
@@ -361,6 +362,9 @@ class MilestoneModule(Component):
         if 'completed' in req.args.keys():
             completed = req.args.get('completeddate', '')
             milestone.completed = completed and _parse_date(completed) or 0
+            if milestone.completed > time.time():
+                raise TracError('Completion date may not be in the future',
+                                'Invalid Completion Date')
         else:
             milestone.completed = 0
 
