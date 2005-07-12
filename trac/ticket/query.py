@@ -522,13 +522,11 @@ class QueryModule(Component):
             for tid in [t['id'] for t in tickets if t['id'] in rest_list]:
                 rest_list.remove(tid)
             for rest_id in rest_list:
-                data = {}
                 ticket = Ticket(self.env, int(rest_id), db=db)
+                data = {'id': ticket.id, 'time': ticket.time_created,
+                        'changetime': ticket.time_changed, 'removed': True,
+                        'href': self.env.href.ticket(ticket.id)}
                 data.update(ticket.values)
-                data['id'] = ticket.id
-                data['time'] = ticket.time_created
-                data['changetime'] = ticket.time_changed
-                data['removed'] = True
                 tickets.insert(orig_list.index(rest_id), data)
 
         for ticket in tickets:
