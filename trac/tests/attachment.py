@@ -4,6 +4,7 @@ from trac.log import logger_factory
 from trac.test import EnvironmentStub, Mock
 
 import os
+import os.path
 import shutil
 import tempfile
 import unittest
@@ -90,8 +91,22 @@ class AttachmentTestCase(unittest.TestCase):
         attachment1.delete()
         attachment2.delete()
 
+        assert not os.path.exists(attachment1.path)
+        assert not os.path.exists(attachment2.path)
+
         attachments = Attachment.select(self.env, 'wiki', 'SomePage')
         self.assertEqual(0, len(list(attachments)))
+
+    def test_delete_file_gone(self):
+        """
+        Verify that deleting an attachment works even if the referenced file
+        doesn't exist for some reason.
+        """
+        attachment = Attachment(self.env, 'wiki', 'SomePage')
+        attachment.insert('foo.txt', tempfile.TemporaryFile(), 0)
+        os.unlink(attachment.path)
+
+        attachment.delete()
 
 
 def suite():

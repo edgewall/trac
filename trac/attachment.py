@@ -23,6 +23,7 @@
 
 from __future__ import generators
 import os
+import os.path
 import re
 import shutil
 import time
@@ -107,12 +108,15 @@ class Attachment(object):
         cursor.execute("DELETE FROM attachment WHERE type=%s AND id=%s "
                        "AND filename=%s", (self.parent_type, self.parent_id,
                        self.filename))
-        try:
-            os.unlink(self.path)
-        except OSError:
-            if handle_ta:
-                db.rollback()
-            raise TracError, 'Attachment not found'
+        if os.path.isfile(self.path):
+            try:
+                os.unlink(self.path)
+            except OSError:
+                self.env.log.error('Failed to delete attachment file %s',
+                                   self.path, exc_info=True)
+                if handle_ta:
+                    db.rollback()
+                raise TracError, 'Could not delete attachment'
 
         self.env.log.info('Attachment removed: %s' % self.title)
         if handle_ta:
@@ -135,7 +139,8 @@ class Attachment(object):
 
         # Make sure the path to the attachment is inside the environment
         # attachments directory
-        attachments_dir = os.path.join(os.path.normpath(self.env.path), 'attachments')
+        attachments_dir = os.path.join(os.path.normpath(self.env.path),
+                                       'attachments')
         commonprefix = os.path.commonprefix([attachments_dir, self.path])
         assert commonprefix == attachments_dir
 
@@ -156,7 +161,8 @@ class Attachment(object):
             shutil.copyfileobj(fileobj, targetfile)
             self.filename = filename
 
-            self.env.log.info('New attachment: %s by %s' % (self.title, self.author))
+            self.env.log.info('New attachment: %s by %s', self.title,
+                              self.author)
             if handle_ta:
                 db.commit()
         finally:
@@ -182,11 +188,11 @@ class Attachment(object):
     select = classmethod(select)
 
     def open(self):
-        self.env.log.debug('Trying to open attachment at %s' % self.path)
+        self.env.log.debug('Trying to open attachment at %s', self.path)
         try:
             fd = open(self.path, 'rb')
         except IOError:
-            raise TracError('Attachment %s not found' % self.filename)
+            raise TracError('Attachment %s not found', self.filename)
         return fd
 
 
@@ -325,7 +331,8 @@ class AttachmentModule(Component):
                                             attachment.parent_id, filename)
                 if not (old_attachment.author and req.authname \
                         and old_attachment.author == req.authname):
-                    perm_map = {'ticket': perm.TICKET_ADMIN, 'wiki': perm.WIKI_DELETE}
+                    perm_map = {'ticket': perm.TICKET_ADMIN,
+                                'wiki': perm.WIKI_DELETE}
                     req.perm.assert_permission(perm_map[old_attachment.parent_type])
                 old_attachment.delete()
             except TracError:
