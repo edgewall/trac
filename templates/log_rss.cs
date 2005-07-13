@@ -23,7 +23,5 @@
     </item><?cs 
    /with ?><?cs 
   /each ?>
-  <!--  XXX: author element requires email address in rss 2.0.
-             maybe we should use the DC rdf stuff for metadata instead? -->
  </channel>
 </rss>

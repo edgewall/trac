@@ -430,6 +430,18 @@ class LogModule(Component):
             for cs in changes.values():
                 cs['message'] = util.escape(cs['message'])
                 cs['shortlog'] = util.escape(cs['shortlog'].replace('\n', ' '))
+                # For RSS, author must be an email address
+                author = cs['author']
+                if '@' in author:
+                    author_email = author
+                else:
+                    author_email = ''
+                    # Get the email addresses of all known users
+                    for username,name,email in self.env.get_known_users():
+                        if email and username == author:
+                            author_email = email
+                cs['author'] = author_email
+                cs['date'] = util.http_date(cs['date_seconds'])
         elif format == 'changelog':
             for cs in changes.values():
                 cs['message'] = '\n'.join(['\t' + m for m in
