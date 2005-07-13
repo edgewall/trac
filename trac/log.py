@@ -65,7 +65,7 @@ def logger_factory(logtype='syslog', logfile=None, level='WARNING',
     except (ImportError, ValueError):
         class DummyLogger:
             """The world's most fake logger."""
-            def __noop(self, *args):
+            def __noop(self, *args, **kwargs):
                 pass
             debug = info = warning = error = critical = log = exception = __noop
             warn = fatal = __noop
