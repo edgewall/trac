@@ -85,6 +85,15 @@ def _get_path_links(href, path, rev):
         })
     return links
 
+def _get_path_rev(path):
+    rev = None
+    match = rev_re.search(path)
+    if match:
+        path = match.group(1)
+        rev = match.group(2)
+    path = urllib.unquote(path)
+    return (path, rev)
+
 
 class BrowserModule(Component):
 
@@ -277,28 +286,20 @@ class BrowserModule(Component):
                 ('browser', self._format_link)]
 
     def _format_link(self, formatter, ns, path, label):
-        rev = None
         match = img_re.search(path)
         if formatter.flavor != 'oneliner' and match:
             return '<img src="%s" alt="%s" />' % \
                    (formatter.href.file(path, format='raw'), label)
-        match = rev_re.search(path)
-        if match:
-            path = match.group(1)
-            rev = match.group(2)
+        path, rev = _get_path_rev(path)
         label = urllib.unquote(label)
-        path = urllib.unquote(path)
-        if rev:
-            return '<a class="source" href="%s">%s</a>' \
-                   % (formatter.href.browser(path, rev=rev), label)
-        else:
-            return '<a class="source" href="%s">%s</a>' \
-                   % (formatter.href.browser(path), label)
+        return '<a class="source" href="%s">%s</a>' \
+               % (formatter.href.browser(path, rev=rev), label)
 
 
 class LogModule(Component):
 
-    implements(INavigationContributor, IPermissionRequestor, IRequestHandler)
+    implements(INavigationContributor, IPermissionRequestor, IRequestHandler,
+               IWikiSyntaxProvider)
 
     # INavigationContributor methods
 
@@ -403,7 +404,10 @@ class LogModule(Component):
                             % (path, rev), 'Nonexistent path')
 
         def make_log_href(path, **args):
-            params = {'rev': rev, 'mode': mode, 'limit': limit}
+            link_rev = rev
+            if rev == str(repos.youngest_rev):
+                link_rev = None
+            params = {'rev': link_rev, 'mode': mode, 'limit': limit}
             params.update(args)
             if verbose:
                 params['verbose'] = verbose
@@ -425,7 +429,7 @@ class LogModule(Component):
         if format == 'rss':
             for cs in changes.values():
                 cs['message'] = util.escape(cs['message'])
-                cs['shortlog'] = util.escape(cs['shortlog'])
+                cs['shortlog'] = util.escape(cs['shortlog'].replace('\n', ' '))
         elif format == 'changelog':
             for cs in changes.values():
                 cs['message'] = '\n'.join(['\t' + m for m in
@@ -448,3 +452,20 @@ class LogModule(Component):
         add_link(req, 'alternate', changelog_href, 'ChangeLog', 'text/plain')
 
         return 'log.cs', None
+
+    # IWikiSyntaxProvider methods
+    
+    def get_wiki_syntax(self):
+        return []
+
+    def get_link_resolvers(self):
+        yield ('log', self._format_link)
+
+    def _format_link(self, formatter, ns, path, label):
+        path, rev = _get_path_rev(path)
+        stop_rev = None
+        if rev and ':' in rev:
+            stop_rev, rev = rev.split(':',1)
+        label = urllib.unquote(label)
+        return '<a class="source" href="%s">%s</a>' \
+               % (formatter.href.log(path, rev=rev, stop_rev=stop_rev), label)

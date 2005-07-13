@@ -15,8 +15,8 @@
                 maybe we should use the DC rdf stuff for metadata instead? -->
       <?cs each:item = log.items ?>
        <item>
-         <author><?cs var: var:log.changes[item.rev].author ?></author> 
-         <pubDate><?cs var:$item.date ?></pubDate>
+         <author><?cs var:log.changes[item.rev].author ?></author> 
+         <pubDate><?cs var:log.changes[item.rev].date ?></pubDate>
          <title>Revision <?cs var:item.rev ?>: <?cs var:log.changes[item.rev].shortlog ?></title>
          <link><?cs var:base_host ?><?cs var:item.changeset_href ?></link>
          <description><?cs var:log.changes[item.rev].message ?></description>
