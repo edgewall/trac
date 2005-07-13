@@ -427,19 +427,21 @@ class LogModule(Component):
         changes = _get_changes(self.env, repos, [i['rev'] for i in info],
                                verbose, req, format)
         if format == 'rss':
+            # Get the email addresses of all known users
+            email_map = {}
+            for username,name,email in self.env.get_known_users():
+                if email:
+                    email_map[username] = email
             for cs in changes.values():
                 cs['message'] = util.escape(cs['message'])
                 cs['shortlog'] = util.escape(cs['shortlog'].replace('\n', ' '))
                 # For RSS, author must be an email address
                 author = cs['author']
+                author_email = ''
                 if '@' in author:
                     author_email = author
-                else:
-                    author_email = ''
-                    # Get the email addresses of all known users
-                    for username,name,email in self.env.get_known_users():
-                        if email and username == author:
-                            author_email = email
+                elif author in email_map.keys():
+                    author_email = email_map[author]
                 cs['author'] = author_email
                 cs['date'] = util.http_date(cs['date_seconds'])
         elif format == 'changelog':
