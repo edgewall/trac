@@ -354,8 +354,9 @@ class QueryModule(Component):
 
         if req.args.has_key('update'):
             # Reset session vars
-            for var in ('constraints', 'time', 'tickets'):
-                del req.session['query_' + var]
+            for var in ('query_constraints', 'query_time', 'query_tickets'):
+                if var in req.session.keys():
+                    del req.session[var]
             req.redirect(query.get_href())
 
         add_link(req, 'alternate', query.get_href('rss'), 'RSS Feed',
