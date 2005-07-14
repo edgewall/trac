@@ -353,6 +353,9 @@ class QueryModule(Component):
                       req.args.has_key('verbose'))
 
         if req.args.has_key('update'):
+            # Reset session vars
+            for var in ('constraints', 'time', 'tickets'):
+                del req.session['query_' + var]
             req.redirect(query.get_href())
 
         add_link(req, 'alternate', query.get_href('rss'), 'RSS Feed',
@@ -606,15 +609,15 @@ class QueryModule(Component):
 
 
 class QueryWikiMacro(Component):
-    """
-    Lists tickets that match certain criteria. This macro accepts two
-    parameters, the second of which is optional.
+    """Macro that lists tickets that match certain criteria.
+    
+    This macro accepts two parameters, the second of which is optional.
 
     The first parameter is the query itself, and uses the same syntax as for
-    {{{query:}}} wiki links. The second parameter determines how the list of tickets
-    is presented: the default presentation is to list the ticket ID next to the
-    summary, with each ticket on a separate line. If the second parameter is
-    given and set to '''compact''' then the tickets are presented as a
+    {{{query:}}} wiki links. The second parameter determines how the list of
+    tickets is presented: the default presentation is to list the ticket ID next
+    to the summary, with each ticket on a separate line. If the second parameter
+    is given and set to '''compact''' then the tickets are presented as a
     comma-separated list of ticket IDs.
     """
     implements(IWikiMacroProvider)
