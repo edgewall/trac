@@ -133,12 +133,12 @@
      </div>
      <p class="percent"><?cs var:#stats.percent_closed ?>%</p>
      <dl>
-      <dt>Active tickets:</dt>
-      <dd><a href="<?cs var:milestone.queries.active_tickets ?>"><?cs
-        var:stats.active_tickets ?></a></dd>
       <dt>Closed tickets:</dt>
       <dd><a href="<?cs var:milestone.queries.closed_tickets ?>"><?cs
         var:stats.closed_tickets ?></a></dd>
+      <dt>Active tickets:</dt>
+      <dd><a href="<?cs var:milestone.queries.active_tickets ?>"><?cs
+        var:stats.active_tickets ?></a></dd>
      </dl><?cs
     /if ?><?cs
    /with ?>
