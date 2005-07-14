@@ -21,8 +21,8 @@ class DefaultPermissionStoreTestCase(unittest.TestCase):
                            ('john', 'WIKI_MODIFY'), ('john', 'REPORT_ADMIN'),
                            ('kate', 'TICKET_CREATE')])
         self.assertEquals(['WIKI_MODIFY', 'REPORT_ADMIN'],
-                          self.store.get_permissions('john'))
-        self.assertEquals(['TICKET_CREATE'], self.store.get_permissions('kate'))
+                          self.store.get_user_permissions('john'))
+        self.assertEquals(['TICKET_CREATE'], self.store.get_user_permissions('kate'))
 
     def test_simple_group(self):
         db = self.env.get_db_cnx()
@@ -31,7 +31,7 @@ class DefaultPermissionStoreTestCase(unittest.TestCase):
                            ('dev', 'WIKI_MODIFY'), ('dev', 'REPORT_ADMIN'),
                            ('john', 'dev')])
         self.assertEquals(['WIKI_MODIFY', 'REPORT_ADMIN'],
-                          self.store.get_permissions('john'))
+                          self.store.get_user_permissions('john'))
 
     def test_nested_groups(self):
         db = self.env.get_db_cnx()
@@ -40,7 +40,7 @@ class DefaultPermissionStoreTestCase(unittest.TestCase):
                            ('dev', 'WIKI_MODIFY'), ('dev', 'REPORT_ADMIN'),
                            ('admin', 'dev'), ('john', 'admin')])
         self.assertEquals(['WIKI_MODIFY', 'REPORT_ADMIN'],
-                          self.store.get_permissions('john'))
+                          self.store.get_user_permissions('john'))
 
     def test_builtin_groups(self):
         db = self.env.get_db_cnx()
@@ -50,9 +50,21 @@ class DefaultPermissionStoreTestCase(unittest.TestCase):
                            ('authenticated', 'REPORT_ADMIN'),
                            ('anonymous', 'TICKET_CREATE')])
         self.assertEquals(['WIKI_MODIFY', 'REPORT_ADMIN', 'TICKET_CREATE'],
-                          self.store.get_permissions('john'))
+                          self.store.get_user_permissions('john'))
         self.assertEquals(['TICKET_CREATE'],
-                          self.store.get_permissions('anonymous'))
+                          self.store.get_user_permissions('anonymous'))
+
+    def test_get_all_permissions(self):
+        db = self.env.get_db_cnx()
+        cursor = db.cursor()
+        cursor.executemany("INSERT INTO permission VALUES (%s,%s)", [
+                           ('dev', 'WIKI_MODIFY'), ('dev', 'REPORT_ADMIN'),
+                           ('john', 'dev')])
+        expected = [('dev', 'WIKI_MODIFY'),
+                    ('dev', 'REPORT_ADMIN'),
+                    ('john', 'dev')]
+        for res in self.store.get_all_permissions():
+            self.failIf(res not in expected)
 
 
 class TestPermissionRequestor(Component):
@@ -79,25 +91,33 @@ class PermissionSystemTestCase(unittest.TestCase):
         self.assertEqual({'TEST_CREATE': True, 'TEST_DELETE': True,
                           'TEST_MODIFY': True,  'TEST_ADMIN': True,
                           'TRAC_ADMIN': True},
-                         self.perm.get_permissions())
+                         self.perm.get_user_permissions())
 
     def test_simple_permissions(self):
         self.perm.grant_permission('bob', 'TEST_CREATE')
         self.perm.grant_permission('jane', 'TEST_DELETE')
         self.perm.grant_permission('jane', 'TEST_MODIFY')
         self.assertEqual({'TEST_CREATE': True},
-                         self.perm.get_permissions('bob'))
+                         self.perm.get_user_permissions('bob'))
         self.assertEqual({'TEST_DELETE': True, 'TEST_MODIFY': True},
-                         self.perm.get_permissions('jane'))
+                         self.perm.get_user_permissions('jane'))
 
     def test_meta_permissions(self):
         self.perm.grant_permission('bob', 'TEST_CREATE')
         self.perm.grant_permission('jane', 'TEST_ADMIN')
         self.assertEqual({'TEST_CREATE': True},
-                         self.perm.get_permissions('bob'))
+                         self.perm.get_user_permissions('bob'))
         self.assertEqual({'TEST_CREATE': True, 'TEST_DELETE': True,
                           'TEST_MODIFY': True,  'TEST_ADMIN': True},
-                         self.perm.get_permissions('jane'))
+                         self.perm.get_user_permissions('jane'))
+
+    def test_get_all_permissions(self):
+        self.perm.grant_permission('bob', 'TEST_CREATE')
+        self.perm.grant_permission('jane', 'TEST_ADMIN')
+        expected = [('bob', 'TEST_CREATE'),
+                    ('jane', 'TEST_ADMIN')]
+        for res in self.perm.get_all_permissions():
+            self.failIf(res not in expected)
 
 
 class PermTestCase(unittest.TestCase):

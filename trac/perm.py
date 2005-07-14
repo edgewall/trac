@@ -57,12 +57,18 @@ class IPermissionStore(Interface):
     """Extension point interface for components that provide storage and
     management of permissions."""
 
-    def get_permissions(username):
+    def get_user_permissions(username):
         """Return all permissions for the user with the specified name.
         
         The permissions are returned as a dictionary where the key is the name
         of the permission, and the value is either `True` for granted
         permissions or `False` for explicitly denied permissions."""
+
+    def get_all_permissions():
+        """Return all permissions for all users.
+
+        The permissions are returned as a list of (subject, action)
+        formatted tuples."""
 
     def grant_permission(username, action):
         """Grant a user permission to perform an action."""
@@ -107,7 +113,7 @@ class PermissionSystem(Component):
                     actions.append(action)
         return actions
 
-    def get_permissions(self, username=None):
+    def get_user_permissions(self, username=None):
         """Return the permissions of the specified user.
         
         The return value is a dictionary containing all the actions as keys, and
@@ -128,7 +134,7 @@ class PermissionSystem(Component):
                 permissions[action] = True
                 if action in meta.keys():
                     [_expand_meta(perm) for perm in meta[action]]
-            for perm in self.store.get_permissions(username):
+            for perm in self.store.get_user_permissions(username):
                 _expand_meta(perm)
         else:
             # Return all permissions available in the system
@@ -138,6 +144,13 @@ class PermissionSystem(Component):
                 else:
                     permissions[action] = True
         return permissions
+
+    def get_all_permissions(self):
+        """Return all permissions for all users.
+
+        The permissions are returned as a list of (subject, action)
+        formatted tuples."""
+        return self.store.get_all_permissions()
 
     # IPermissionRequestor methods
 
@@ -186,7 +199,7 @@ class DefaultPermissionStore(Component):
 
     group_providers = ExtensionPoint(IPermissionGroupProvider)
 
-    def get_permissions(self, username):
+    def get_user_permissions(self, username):
         """Retrieve the permissions for the given user and return them in a
         dictionary.
         
@@ -218,6 +231,16 @@ class DefaultPermissionStore(Component):
             if num_users == len(subjects) and num_actions == len(actions):
                 break
         return [action for action in actions if not action.islower()]
+
+    def get_all_permissions(self):
+        """Return all permissions for all users.
+
+        The permissions are returned as a list of (subject, action)
+        formatted tuples."""
+        db = self.env.get_db_cnx()
+        cursor = db.cursor()
+        cursor.execute("SELECT username,action FROM permission")
+        return [(row[0], row[1]) for row in cursor]
 
     def grant_permission(self, username, action):
         """Grants a user the permission to perform the specified action."""
@@ -255,7 +278,7 @@ class PermissionCache:
     """Cache that maintains the permissions of a single user."""
 
     def __init__(self, env, username):
-        self.perms = PermissionSystem(env).get_permissions(username)
+        self.perms = PermissionSystem(env).get_user_permissions(username)
 
     def has_permission(self, action):
         return self.perms.has_key(action)
