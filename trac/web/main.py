@@ -184,6 +184,7 @@ class Request(object):
         last_modified = http_date(stat.st_mtime)
         if last_modified == self.get_header('If-Modified-Since'):
             self.send_response(304)
+            self.end_headers()
             raise RequestDone
 
         self.send_response(200)
