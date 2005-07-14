@@ -76,13 +76,27 @@ class NewticketModule(Component):
                                         [util.escape(value) for value
                                          in ticket.values.values()]))
 
+        field_names = [field['name'] for field in ticket.fields
+                       if not field.get('custom')]
+        if 'owner' in field_names:
+            curr_idx = field_names.index('owner')
+            if 'cc' in field_names:
+                insert_idx = field_names.index('cc')
+            else:
+                insert_idx = len(field_names)
+            if curr_idx < insert_idx:
+                ticket.fields.insert(insert_idx, ticket.fields[curr_idx])
+                del ticket.fields[curr_idx]
+
         for field in ticket.fields:
             name = field['name']
             del field['name']
-            if name in ('summary', 'reporter', 'owner', 'description', 'type',
-                        'status', 'resolution'):
+            if name in ('summary', 'reporter', 'description', 'type', 'status',
+                        'resolution'):
                 field['skip'] = True
-            if name == 'milestone':
+            elif name == 'owner':
+                field['label'] = 'Assign to'
+            elif name == 'milestone':
                 # Don't make completed milestones available for selection
                 options = field['options']
                 for option in field['options']:
