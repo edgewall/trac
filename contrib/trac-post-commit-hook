@@ -116,14 +116,18 @@ else:
 commandPattern = re.compile(leftEnv + r'(?P<action>[A-Za-z]*).?(?P<ticket>#[0-9]+(?:(?:[, &]*|[ ]?and[ ]?)#[0-9]+)*)' + rghtEnv)
 ticketPattern = re.compile(r'#([0-9]*)')
 
-
 class CommitHook:
-    _supported_cmds = {'closes':     '_cmdClose',
+    _supported_cmds = {'close':      '_cmdClose',
+                       'closed':     '_cmdClose',
+                       'closes':     '_cmdClose',
+                       'fix':        '_cmdClose',
+                       'fixed':      '_cmdClose',
                        'fixes':      '_cmdClose',
                        'addresses':  '_cmdRefs',
+                       're':         '_cmdRefs',
                        'references': '_cmdRefs',
                        'refs':       '_cmdRefs',
-                       're':         '_cmdRefs'}
+                       'see':        '_cmdRefs'}
 
     def __init__(self, project=options.project, author=options.user,
                  rev=options.rev, msg=options.msg, url=options.url):
