@@ -32,7 +32,8 @@ except ImportError:
 from trac.core import *
 from trac.util import enum, escape
 
-__all__ = ['get_charset', 'get_mimetype', 'is_binary', 'detect_unicode', 'Mimeview']
+__all__ = ['get_charset', 'get_mimetype', 'is_binary', 'detect_unicode',
+           'Mimeview']
 
 MIME_MAP = {
     'css':'text/css',
@@ -128,7 +129,8 @@ def is_binary(str):
     return False
 
 def detect_unicode(data):
-    """Detect different unicode charsets by looking for BOM's (Byte Order Marks)"""
+    """Detect different unicode charsets by looking for BOMs (Byte Order
+    Marks)."""
     if data[:2] == '\xff\xfe':
         return 'utf-16-le'
     elif data[:2] == '\xfe\xff':
@@ -249,10 +251,14 @@ class Mimeview(Component):
         buf.write('<th class="content">&nbsp;</th>')
         buf.write('</tr></thead><tbody>')
 
-        space_re = re.compile(' ( +)|^ ')
+        space_re = re.compile('(?P<spaces> (?: +))|'
+                              '^(?P<tag><\w+.*?>)?( )')
         def htmlify(match):
-            div, mod = divmod(len(match.group(0)), 2)
-            return div * '&nbsp; ' + mod * '&nbsp;'
+            m = match.group('spaces')
+            if m:
+                div, mod = divmod(len(m), 2)
+                return div * '&nbsp; ' + mod * '&nbsp;'
+            return (match.group('tag') or '') + '&nbsp;'
         tab_width = int(self.config.get('mimeviewer', 'tab_width'))
 
         for num, line in enum(_html_splitlines(lines)):
@@ -307,7 +313,8 @@ class LineNumberAnnotator(Component):
         return 'lineno', 'Line', 'Line numbers'
 
     def annotate_line(self, number, content):
-        return '<th id="l%s">%s</th>' % (number, number)
+        return '<th id="l%s"><a href="#l%s">%s</a></th>' % (number, number,
+                                                            number)
 
 
 class PlainTextRenderer(Component):

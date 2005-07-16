@@ -30,6 +30,14 @@ table.code-block tbody th {
  text-align: right;
  vertical-align: top;
 }
+table.code-block tbody th :link, table.code-block tbody th :visited {
+ border: none;
+ color: #886;
+ text-decoration: none;
+}
+table.code-block tbody th :link:hover, table.code-block tbody th :visited:hover {
+ color: #000;
+}
 table.code-block tbody td {
  background: #fff;
  font: normal 11px monospace;
