@@ -18,6 +18,7 @@
 }
 
 /* Diff view */
+#overview .multi { color: #999 }
 #overview .ipnr { color: #999; font-size: 80% }
 #overview .comment { padding: 1em 0 0 }
 
@@ -37,7 +38,8 @@ h4:hover .anchor, h5:hover .anchor, h6:hover .anchor {
 /* Styles for the page history table
    (extends the styles for "table.listing") */
 #wikihist td { padding: 0 .5em }
-#wikihist td.date, #wikihist td.version, #wikihist td.author {
+#wikihist td.date, #wikihist td.diff, #wikihist td.version,
+#wikihist td.author {
  white-space: nowrap;
 }
 #wikihist td.version { text-align: center }

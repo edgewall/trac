@@ -41,8 +41,9 @@
   </form>
  
  <?cs elif:wiki.action == "diff" ?>
-  <h1>Changes in Version <?cs var:wiki.version?> of <a href="<?cs
-    var:wiki.current_href ?>"><?cs var:wiki.page_name ?></a></h1>
+  <h1>Changes between Version <?cs var:wiki.old_version?> and <?cs
+    var:wiki.version?> of <a href="<?cs var:wiki.current_href ?>"><?cs 
+    var:wiki.page_name ?></a></h1>
   <form method="post" id="prefs" action="<?cs var:wiki.current_href ?>">
    <div>
     <input type="hidden" name="action" value="diff" />
@@ -85,12 +86,21 @@
   </form>
   <dl id="overview">
    <dt class="author">Author:</dt>
-   <dd class="author"><?cs var:wiki.author ?>
-   <span class="ipnr">(IP: <?cs var:wiki.ipnr ?>)</span></dd>
+   <dd class="author"><?cs
+    if:wiki.num_changes > 1 ?><em class="multi">(multiple changes)</em><?cs
+    else ?><?cs var:wiki.author ?> <span class="ipnr">(IP: <?cs
+     var:wiki.ipnr ?>)</span><?cs
+    /if ?></dd>
    <dt class="time">Timestamp:</dt>
-   <dd class="time"><?cs var:wiki.time ?></dd>
+   <dd class="time"><?cs
+    if:wiki.num_changes > 1 ?><em class="multi">(multiple changes)</em><?cs
+    elif:wiki.time ?><?cs var:wiki.time ?> (<?cs var:wiki.time_delta ?> ago)<?cs
+    else ?>--<?cs
+    /if ?></dd>
    <dt class="comment">Comment:</dt>
-   <dd class="comment"><?cs var:wiki.comment ?></dd>
+   <dd class="comment"><?cs
+    if:wiki.num_changes > 1 ?><em class="multi">(multiple changes)</em><?cs
+    else ?><?cs var:wiki.comment ?><?cs /if ?></dd>
   </dl>
   <div class="diff">
    <div id="legend">
@@ -110,7 +120,7 @@
        <colgroup class="l"><col class="lineno" /><col class="content" /></colgroup>
        <colgroup class="r"><col class="lineno" /><col class="content" /></colgroup>
        <thead><tr>
-        <th colspan="2">Version <?cs var:wiki.version - 1 ?></th>
+        <th colspan="2">Version <?cs var:wiki.old_version ?></th>
         <th colspan="2">Version <?cs var:wiki.version ?></th>
        </tr></thead><?cs
        each:change = wiki.diff ?><?cs
@@ -121,8 +131,8 @@
       <table class="inline" summary="Differences">
        <colgroup><col class="lineno" /><col class="lineno" /><col class="content" /></colgroup>
        <thead><tr>
-        <th title="Version <?cs var:wiki.version - 1 ?>">v<?cs
-          var:wiki.version - 1 ?></th>
+        <th title="Version <?cs var:wiki.old_version ?>">v<?cs
+          var:wiki.old_version ?></th>
         <th title="Version <?cs var:wiki.version ?>">v<?cs
           var:wiki.version ?></th>
         <th>&nbsp;</th>
@@ -139,30 +149,39 @@
  <?cs elif wiki.action == "history" ?>
   <h1>Change History of <a href="<?cs var:wiki.current_href ?>"><?cs
     var:wiki.page_name ?></a></h1>
-  <?cs if:len(wiki.history) ?>
+  <?cs if:len(wiki.history) ?><form method="get" action="">
+   <input type="hidden" name="action" value="diff" />
    <table id="wikihist" class="listing" summary="Change history">
     <thead><tr>
-     <th class="date">Date</th>
+     <th class="diff"></th>
      <th class="version">Version</th>
+     <th class="date">Date</th>
      <th class="author">Author</th>
      <th class="comment">Comment</th>
     </tr></thead>
     <tbody><?cs each:item = wiki.history ?>
      <tr class="<?cs if:name(item) % #2 ?>even<?cs else ?>odd<?cs /if ?>">
+      <td class="diff"><input type="radio" name="old_version" value="<?cs
+        var:item.version ?>"<?cs
+        if:name(item) == 1 ?> checked="checked"<?cs
+        /if ?> /> <input type="radio" name="version" value="<?cs
+        var:item.version ?>"<?cs
+        if:name(item) == 0 ?> checked="checked"<?cs
+        /if ?> /></td>
+      <td class="version"><a href="<?cs
+        var:item.url ?>" title="View this version"><?cs
+        var:item.version ?></a></td>
       <td class="date"><?cs var:item.time ?></td>
-      <td class="version">
-       <a href="<?cs var:item.url ?>" title="View version"><?cs
-         var:item.version ?></a>
-       (<a href="<?cs var:item.diff_url ?>" title="Compare to previous version">diff</a>)
-      </td>
-      <td class="author" title="IP-Address: <?cs var:item.ipaddr ?>">
-       <?cs var:item.author ?>
-      </td>
+      <td class="author" title="IP-Address: <?cs var:item.ipaddr ?>"><?cs 
+        var:item.author ?></td>
       <td class="comment"><?cs var:item.comment ?></td>
      </tr>
     <?cs /each ?></tbody>
    </table>
-  <?cs /if ?>
+   <div class="buttons">
+    <input type="submit" value="View changes" />
+   </div>
+  </form><?cs /if ?>
  
  <?cs else ?>
   <?cs if wiki.action == "edit" || wiki.action == "preview" ?>
