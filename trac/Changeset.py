@@ -335,7 +335,9 @@ class ChangesetModule(Component):
     # IWikiSyntaxProvider methods
     
     def get_wiki_syntax(self):
-        yield (r"!?\[\d+\]|\br\d+\b", (lambda x, y, z: self._format_link(x, 'changeset', y[0] == 'r' and y[1:] or y[1:-1], y)))
+        yield (r"!?\[\d+\]|(?:\b|!)r\d+\b", (lambda x, y, z:
+               self._format_link(x, 'changeset',
+                                 y[0] == 'r' and y[1:] or y[1:-1], y)))
 
     def get_link_resolvers(self):
         yield ('changeset', self._format_link)
@@ -351,4 +353,3 @@ class ChangesetModule(Component):
         else:
             return '<a class="missing changeset" href="%s" rel="nofollow">%s</a>' \
                    % (formatter.href.changeset(rev), label)
-

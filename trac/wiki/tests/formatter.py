@@ -62,6 +62,16 @@ class WikiTestCase(unittest.TestCase):
             def get_db_cnx(self):
                 return db
 
+        # Load all the components that provide IWikiSyntaxProvider
+        # implementations that are tested. Ideally those should be tested
+        # in separate unit tests.
+        import trac.Browser
+        import trac.Changeset
+        import trac.Milestone
+        import trac.ticket.query
+        import trac.ticket.report
+        import trac.Search
+
         env = DummyEnvironment()
         out = StringIO.StringIO()
         Formatter(env).format(self.input, out)
