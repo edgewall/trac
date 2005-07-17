@@ -300,6 +300,7 @@ table.wiki td { border: 1px solid #ccc;  padding: .1em .25em; }
 #attachment label { padding-left: .2em }
 #attachment fieldset { margin-top: 2em }
 #attachment fieldset .field { float: left; margin: 0 1em .5em 0 }
+#attachment .options { float: left; padding: 0 0 1em 1em }
 #attachment br { clear: left }
 .attachment #preview { margin-top: 1em }
 
