@@ -239,8 +239,8 @@ def get_environment(req, mpr, options):
               'requires one of these options to locate the Trac environment(s).'
 
     env = None
+    env_cache_lock.acquire()
     try:
-        env_cache_lock.acquire()
         if not env_path in env_cache:
             env_cache[env_path] = open_environment(env_path)
         env = env_cache[env_path]
