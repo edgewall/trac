@@ -200,14 +200,14 @@ class Formatter(object):
     rules = property(_get_rules)
 
     def _get_link_resolvers(self):
-        if not Formatter._link_resolvers:
+        if not self._link_resolvers:
             resolvers = {}
             wiki = WikiSystem(self.env)
             for resolver in wiki.syntax_providers:
                 for namespace, handler in resolver.get_link_resolvers():
                     resolvers[namespace] = handler
-            Formatter._link_resolvers = resolvers
-        return Formatter._link_resolvers
+            self._link_resolvers = resolvers
+        return self._link_resolvers
     link_resolvers = property(_get_link_resolvers)
 
     def replace(self, fullmatch):
