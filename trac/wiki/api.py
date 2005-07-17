@@ -23,6 +23,7 @@
 #
 
 from __future__ import generators
+import time
 import urllib
 
 from trac.core import *
@@ -30,95 +31,87 @@ from trac.util import to_utf8
 
 
 class IWikiChangeListener(Interface):
-    """
-    Extension point interface for components that should get notified about the
-    creation, deletion and modification of wiki pages.
+    """Extension point interface for components that should get notified about
+    the creation, deletion and modification of wiki pages.
     """
 
     def wiki_page_added(page):
-        """
-        Called whenever a new Wiki page is added.
-        """
+        """Called whenever a new Wiki page is added."""
 
     def wiki_page_changed(page, version, t, comment, author, ipnr):
-        """
-        Called when a page has been modified.
-        """
+        """Called when a page has been modified."""
 
     def wiki_page_deleted(page):
-        """
-        Called when a page has been deleted.
-        """
+        """Called when a page has been deleted."""
 
 
 class IWikiMacroProvider(Interface):
-    """
-    Extension point interface for components that provide Wiki macros.
-    """
+    """Extension point interface for components that provide Wiki macros."""
 
     def get_macros():
-        """
-        Return an iterable that provides the names of the provided macros.
-        """
+        """Return an iterable that provides the names of the provided macros."""
 
     def get_macro_description(name):
-        """
-        Return a plain text description of the macro with the specified name.
+        """Return a plain text description of the macro with the specified name.
         """
 
     def render_macro(req, name, content):
-        """
-        Return the HTML output of the macro.
-        """
+        """Return the HTML output of the macro."""
 
 
 class IWikiSyntaxProvider(Interface):
  
     def get_wiki_syntax():
-        """
-        Return an iterable that provides additional wiki syntax.
-        """
+        """Return an iterable that provides additional wiki syntax."""
  
     def get_link_resolvers():
-        """
-        Return an iterable over (namespace, formatter) tuples.
-        """
+        """Return an iterable over (namespace, formatter) tuples."""
  
 
 class WikiSystem(Component):
-    """
-    Represents the wiki system.
-    """
+    """Represents the wiki system."""
+
     implements(IWikiChangeListener, IWikiSyntaxProvider)
 
     change_listeners = ExtensionPoint(IWikiChangeListener)
     macro_providers = ExtensionPoint(IWikiMacroProvider)
     syntax_providers = ExtensionPoint(IWikiSyntaxProvider)
 
-    def __init__(self):
-        self._pages = None
+    INDEX_UPDATE_INTERVAL = 5 # seconds
 
-    def _load_pages(self):
-        self._pages = {}
-        db = self.env.get_db_cnx()
-        cursor = db.cursor()
-        cursor.execute("SELECT DISTINCT name FROM wiki")
-        for (name,) in cursor:
-            self._pages[name] = True
+    def __init__(self):
+        self._index = None
+        self._last_index_update = 0
+
+    def _update_index(self):
+        now = time.time()
+        if now > self._last_index_update + WikiSystem.INDEX_UPDATE_INTERVAL:
+            self.log.debug('Updating wiki page index')
+            db = self.env.get_db_cnx()
+            cursor = db.cursor()
+            cursor.execute("SELECT DISTINCT name FROM wiki")
+            self._index = {}
+            for (name,) in cursor:
+                self._index[name] = True
+            self._last_index_update = now
 
     # Public API
 
     def get_pages(self, prefix=None):
-        if self._pages is None:
-            self._load_pages()
-        for page in self._pages.keys():
+        """Iterate over the names of existing Wiki pages.
+
+        If the `prefix` parameter is given, only names that start with that
+        prefix are included.
+        """
+        self._update_index()
+        for page in self._index.keys():
             if not prefix or page.startswith(prefix):
                 yield page
 
     def has_page(self, pagename):
-        if self._pages is None:
-            self._load_pages()
-        return pagename in self._pages.keys()
+        """Whether a page with the specified name exists."""
+        self._update_index()
+        return pagename in self._index.keys()
 
     # IWikiChangeListener methods
 
@@ -134,11 +127,12 @@ class WikiSystem(Component):
         if self.has_page(page.name):
             self.log.debug('Removing page %s from index' % page.name)
             del self._pages[page.name]
-            
+
     # IWikiSyntaxProvider methods
     
     def get_wiki_syntax(self):
-        yield (r"!?(^|(?<=[^A-Za-z]))[A-Z][a-z]+(?:[A-Z][a-z]*[a-z/])+(?:#[A-Za-z0-9]+)?(?=\Z|\s|[.,;:!?\)}\]])", lambda x, y, z: self._format_link(x, 'wiki', y, y))
+        yield (r"!?(^|(?<=[^A-Za-z]))[A-Z][a-z]+(?:[A-Z][a-z]*[a-z/])+(?:#[A-Za-z0-9]+)?(?=\Z|\s|[.,;:!?\)}\]])",
+               lambda x, y, z: self._format_link(x, 'wiki', y, y))
 
     def get_link_resolvers(self):
         yield ('wiki', self._format_link)
@@ -157,4 +151,3 @@ class WikiSystem(Component):
         else:
             return '<a class="wiki" href="%s">%s</a>' \
                    % (formatter.href.wiki(page) + anchor, label)
-
