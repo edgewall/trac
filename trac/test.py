@@ -115,7 +115,8 @@ class InMemoryDatabase(SQLiteConnection):
 
         from trac.db_default import schema
         for table in schema:
-            cursor.execute(SQLiteConnection.to_sql(table))
+            for stmt in SQLiteConnection.to_sql(table):
+                cursor.execute(stmt)
 
         self.cnx.commit()
 

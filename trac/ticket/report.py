@@ -156,7 +156,7 @@ class ReportModule(Component):
         cursor = db.cursor()
         cursor.execute("INSERT INTO report (title,sql,description) "
                        "VALUES (%s,%s,%s)", (title, sql, description))
-        id = db.get_last_id('report')
+        id = db.get_last_id(cursor, 'report')
         db.commit()
         req.redirect(self.env.href.report(id))
 

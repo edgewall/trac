@@ -76,7 +76,7 @@ class AuthTestCase(unittest.TestCase):
         auth_cookie = outcookie['trac_auth'].value
         cursor = self.db.cursor()
         cursor.execute("SELECT name,ipnr FROM auth_cookie WHERE cookie=%s",
-                       (auth_cookie))
+                       (auth_cookie,))
         row = cursor.fetchone()
         self.assertEquals('John', row[0])
         self.assertEquals('127.0.0.1', row[1])
@@ -96,7 +96,7 @@ class AuthTestCase(unittest.TestCase):
         auth_cookie = outcookie['trac_auth'].value
         cursor = self.db.cursor()
         cursor.execute("SELECT name,ipnr FROM auth_cookie WHERE cookie=%s",
-                       (auth_cookie))
+                       (auth_cookie,))
         row = cursor.fetchone()
         self.assertEquals('john', row[0])
         self.assertEquals('127.0.0.1', row[1])
@@ -112,7 +112,8 @@ class AuthTestCase(unittest.TestCase):
                        "VALUES ('123', 'john', '127.0.0.1')")
         incookie = Cookie()
         incookie['trac_auth'] = '123'
-        req = Mock(incookie=incookie, remote_addr='127.0.0.1', remote_user='john')
+        req = Mock(incookie=incookie, remote_addr='127.0.0.1',
+                   remote_user='john')
         auth = Authenticator(self.db, req)
         auth.login(req) # this shouldn't raise an error
 
@@ -122,7 +123,8 @@ class AuthTestCase(unittest.TestCase):
                        "VALUES ('123', 'john', '127.0.0.1')")
         incookie = Cookie()
         incookie['trac_auth'] = '123'
-        req = Mock(incookie=incookie, remote_addr='127.0.0.1', remote_user='tom')
+        req = Mock(incookie=incookie, remote_addr='127.0.0.1',
+                   remote_user='tom')
         auth = Authenticator(self.db, req)
         self.assertRaises(AssertionError, auth.login, req)
 

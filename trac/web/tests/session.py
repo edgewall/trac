@@ -148,7 +148,7 @@ class SessionTestCase(unittest.TestCase):
         cursor = self.db.cursor()
         cursor.execute("INSERT INTO session "
                        "VALUES ('987654', 0, 'last_visit', %s)",
-                       (time.time() - PURGE_AGE - 3600))
+                       (time.time() - PURGE_AGE - 3600,))
         
         # We need to modify a different session to trigger the purging
         incookie = Cookie()
@@ -174,7 +174,7 @@ class SessionTestCase(unittest.TestCase):
         cursor = self.db.cursor()
         cursor.execute("INSERT INTO session "
                        "VALUES ('123456', 0, 'last_visit', %s)",
-                       (int(now - UPDATE_INTERVAL - 3600)))
+                       (int(now - UPDATE_INTERVAL - 3600),))
 
         incookie = Cookie()
         incookie['trac_session'] = '123456'

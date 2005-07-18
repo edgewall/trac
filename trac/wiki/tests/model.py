@@ -60,7 +60,7 @@ class WikiPageTestCase(unittest.TestCase):
 
         cursor = self.db.cursor()
         cursor.execute("SELECT version,time,author,ipnr,text,comment,"
-                       "readonly FROM wiki WHERE name=%s", ('TestPage'))
+                       "readonly FROM wiki WHERE name=%s", ('TestPage',))
         self.assertEqual((0, 42, 'joe', '::1', 'Bla bla', 'Testing', 0),
                          cursor.fetchone())
 
@@ -78,7 +78,7 @@ class WikiPageTestCase(unittest.TestCase):
         page.save('kate', 'Changing', '192.168.0.101', 43)
 
         cursor.execute("SELECT version,time,author,ipnr,text,comment,"
-                       "readonly FROM wiki WHERE name=%s", ('TestPage'))
+                       "readonly FROM wiki WHERE name=%s", ('TestPage',))
         self.assertEqual((0, 42, 'joe', '::1', 'Bla bla', 'Testing', 0),
                          cursor.fetchone())
         self.assertEqual((1, 43, 'kate', '192.168.0.101', 'Bla',
@@ -105,7 +105,7 @@ class WikiPageTestCase(unittest.TestCase):
         page.delete()
 
         cursor.execute("SELECT version,time,author,ipnr,text,comment,"
-                       "readonly FROM wiki WHERE name=%s", ('TestPage'))
+                       "readonly FROM wiki WHERE name=%s", ('TestPage',))
         self.assertEqual(None, cursor.fetchone())
 
         listener = TestWikiChangeListener(self.env)
@@ -123,7 +123,7 @@ class WikiPageTestCase(unittest.TestCase):
         page.delete(version=1)
 
         cursor.execute("SELECT version,time,author,ipnr,text,comment,"
-                       "readonly FROM wiki WHERE name=%s", ('TestPage'))
+                       "readonly FROM wiki WHERE name=%s", ('TestPage',))
         self.assertEqual((0, 42, 'joe', '::1', 'Bla bla', 'Testing', 0),
                          cursor.fetchone())
         self.assertEqual(None, cursor.fetchone())
@@ -141,7 +141,7 @@ class WikiPageTestCase(unittest.TestCase):
         page.delete(version=0)
 
         cursor.execute("SELECT version,time,author,ipnr,text,comment,"
-                       "readonly FROM wiki WHERE name=%s", ('TestPage'))
+                       "readonly FROM wiki WHERE name=%s", ('TestPage',))
         self.assertEqual(None, cursor.fetchone())
 
         listener = TestWikiChangeListener(self.env)

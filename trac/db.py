@@ -208,8 +208,12 @@ class SQLiteConnection(ConnectionWrapper):
     def like(self):
         return 'LIKE'
 
-    def get_last_id(self, table, column='id'):
-        return self.cnx.db.sqlite_last_insert_rowid()
+    def get_last_id(self, cursor, table, column='id'):
+        global using_pysqlite2
+        if using_pysqlite2:
+            return cursor.lastrowid
+        else:
+            return self.cnx.db.sqlite_last_insert_rowid()
 
     def init_db(cls, path, params={}):
         if path != ':memory:':
@@ -222,7 +226,8 @@ class SQLiteConnection(ConnectionWrapper):
         cursor = cnx.cursor()
         from trac.db_default import schema
         for table in schema:
-            cursor.execute(cls.to_sql(table))
+            for stmt in cls.to_sql(table):
+                cursor.execute(stmt)
         cnx.commit()
     init_db = classmethod(init_db)
 
@@ -241,10 +246,10 @@ class SQLiteConnection(ConnectionWrapper):
         if len(table.key) > 1:
             coldefs.append("    UNIQUE (%s)" % ','.join(table.key))
         sql.append(',\n'.join(coldefs) + '\n);')
+        yield '\n'.join(sql)
         for index in table.indexes:
-            sql.append("CREATE INDEX %s_idx ON %s (%s);"
-                       % (table.name, table.name, ','.join(index.columns)))
-        return '\n'.join(sql)
+            yield "CREATE INDEX %s_idx ON %s (%s);" % (table.name,
+                  table.name, ','.join(index.columns))
     to_sql = classmethod(to_sql)
 
 
@@ -270,8 +275,7 @@ class PostgreSQLConnection(ConnectionWrapper):
         # search module
         return 'ILIKE'
 
-    def get_last_id(self, table, column='id'):
-        cursor = self.cursor()
+    def get_last_id(self, cursor, table, column='id'):
         cursor.execute("SELECT CURRVAL('%s_%s_seq')" % (table, column))
         return cursor.fetchone()[0]
 
@@ -281,13 +285,13 @@ class PostgreSQLConnection(ConnectionWrapper):
         cursor = self.cursor()
         from trac.db_default import schema
         for table in schema:
-            cursor.execute(cls.to_sql(table))
+            for stmt in cls.to_sql(table):
+                cursor.execute(stmt)
         self.commit()
     init_db = classmethod(init_db)
 
     def to_sql(cls, table):
-        sql = []
-        sql.append("CREATE TABLE %s (" % table.name)
+        sql = ["CREATE TABLE %s (" % table.name]
         coldefs = []
         for column in table.columns:
             ctype = column.type
@@ -298,10 +302,10 @@ class PostgreSQLConnection(ConnectionWrapper):
             coldefs.append("    CONSTRAINT %s_pk PRIMARY KEY (%s)"
                            % (table.name, ','.join(table.key)))
         sql.append(',\n'.join(coldefs) + '\n);')
+        yield '\n'.join(sql)
         for index in table.indexes:
-            sql.append("CREATE INDEX %s_idx ON %s (%s);"
-                       % (table.name, table.name, ','.join(index.columns)))
-        return '\n'.join(sql)
+            yield "CREATE INDEX %s_idx ON %s (%s);" % (table.name, table.name,
+                  ','.join(index.columns))
     to_sql = classmethod(to_sql)
 
 
