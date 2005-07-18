@@ -20,6 +20,7 @@
 # Author: Christopher Lenz <cmlenz@gmx.de>
 #
 
+import os
 import imp
 import sys
 
@@ -49,6 +50,14 @@ def load_components(env):
             load_component(module)
 
 def load_component(name, path=None):
+    if path and os.path.isfile(path[0]):
+        try:
+            from zipimport import zipimporter
+            zip = zipimporter(path[0])
+            return zip.load_module(name)
+        except ImportError:
+            pass
+
     if '.' in name:
         i = name.find('.')
         head, tail = name[:i], name[i + 1:]
