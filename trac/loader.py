@@ -25,9 +25,9 @@ import imp
 import sys
 
 try:
-    from pkg_resources import AvailableDistributions
+    import pkg_resources
 except ImportError:
-    AvailableDistributions = None
+    pkg_resources = None
 
 TRAC_META = 'trac_plugin.txt'
 
@@ -53,20 +53,21 @@ def load_components(env):
                                   exc_info=True)
 
     # Load components from the environment plugins directory
-    if AvailableDistributions is not None:
-        distributions = AvailableDistributions()
+    if pkg_resources is not None: # But only if setuptools is installed!
+        distributions = pkg_resources.AvailableDistributions()
         distributions.scan([os.path.join(env.path, 'plugins')])
         for name in distributions:
             egg = distributions[name][0]
             if egg.metadata.has_metadata(TRAC_META):
+                egg.install_on() # Put the egg on sys.path
                 for module in egg.metadata.get_metadata_lines(TRAC_META):
                     if module not in loaded_components:
-                        loaded_components.append(module)
                         try:
-                            load_component(module, [egg.path])
+                            __import__(module)
+                            loaded_components.append(module)
                         except ImportError, e:
                             env.log.error('Component module %s not found',
-                                          value, exc_info=True)
+                                          module, exc_info=True)
 
     # Load default components
     from trac.db_default import default_components

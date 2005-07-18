@@ -481,7 +481,8 @@ def send_pretty_error(e, env, req=None):
         pass
     except Exception, e2:
         if env and env.log:
-            env.log.error('Failed to render pretty error page: %s' % e2)
+            env.log.error('Failed to render pretty error page: %s', e2,
+                          exc_info=True)
         req.send_response(500)
         req.send_header('Content-Type', 'text/plain')
         req.end_headers()
