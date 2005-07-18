@@ -159,7 +159,6 @@ class Formatter(object):
                                          'meta|param|doctype)')
     _htmlproc_disallow_attribute = re.compile('(?i)<[^>]*\s+(on\w+)=')
 
-
     def __init__(self, env, req=None, absurls=0, db=None):
         self.env = env
         self.req = req
@@ -342,7 +341,12 @@ class Formatter(object):
 
         depth = min(len(fullmatch.group('hdepth')), 5)
         heading = match[depth + 1:len(match) - depth - 1]
-        anchor = self._anchor_re.sub('', heading.decode('utf-8'))
+
+        text = wiki_to_oneliner(util.unescape(heading), self.env, self.db,
+                                self._absurls)
+        sans_markup = re.sub(r'</?\w+(?: .*?)?>', '', text)
+
+        anchor = self._anchor_re.sub('', sans_markup.decode('utf-8'))
         if not anchor or not anchor[0].isalpha():
             # an ID must start with a letter in HTML
             anchor = 'a' + anchor
@@ -352,11 +356,7 @@ class Formatter(object):
             anchor = anchor_base + str(i)
             i += 1
         self._anchors.append(anchor)
-        self.out.write('<h%d id="%s">%s</h%d>' % (depth, anchor,
-                                                  wiki_to_oneliner(util.unescape(heading),
-                                                  self.env, self._db,
-                                                  self._absurls),
-                                                  depth))
+        self.out.write('<h%d id="%s">%s</h%d>' % (depth, anchor, text, depth))
 
     def _indent_formatter(self, match, fullmatch):
         depth = int((len(fullmatch.group('idepth')) + 1) / 2)
@@ -589,6 +589,9 @@ class OneLinerFormatter(Formatter):
     """
     flavor = 'oneliner'
 
+    def __init__(self, env, absurls=0, db=None):
+        Formatter.__init__(self, env, None, absurls, db)
+
     # Override a few formatters to disable some wiki syntax in "oneliner"-mode
     def _list_formatter(self, match, fullmatch): return match
     def _macro_formatter(self, match, fullmatch): return match
@@ -611,9 +614,8 @@ class OneLinerFormatter(Formatter):
 
 
 class OutlineFormatter(Formatter):
-    """
-    A simple Wiki formatter
-    """
+    """Special formatter that generates an outline of all the headings in wiki
+    text."""
     flavor = 'outline'
     
     def __init__(self, env, absurls=0, db=None):
@@ -644,7 +646,10 @@ class OutlineFormatter(Formatter):
         depth = min(len(fullmatch.group('hdepth')), 5)
         heading = match[depth + 1:len(match) - depth - 1]
         anchor = self._anchors[-1]
-        self.outline.append((depth, '<a href="#%s">%s</a>' % (anchor, heading)))
+        text = wiki_to_oneliner(util.unescape(heading), self.env, self.db,
+                                self._absurls)
+        text = re.sub(r'</?a(?: .*?)?>', '', text) # Strip out link tags
+        self.outline.append((depth, '<a href="#%s">%s</a>' % (anchor, text)))
 
     def handle_code_block(self, line):
         if line.strip() == '{{{':
@@ -665,5 +670,5 @@ def wiki_to_oneliner(wikitext, env, db=None, absurls=0):
 
 def wiki_to_outline(wikitext, env, db=None, absurls=0, max_depth=None):
     out = StringIO.StringIO()
-    OutlineFormatter(env, absurls ,db).format(wikitext, out, max_depth)
+    OutlineFormatter(env, absurls, db).format(wikitext, out, max_depth)
     return out.getvalue()

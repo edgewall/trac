@@ -36,6 +36,7 @@ from trac.core import *
 from trac.util import escape
 from trac.env import IEnvironmentSetupParticipant
 from trac.wiki.api import IWikiMacroProvider, WikiSystem
+from trac.wiki.model import WikiPage
 
 
 class TitleIndexMacro(Component):
@@ -171,17 +172,16 @@ class PageOutlineMacro(Component):
 
         db = self.env.get_db_cnx()
         cursor = db.cursor()
-        page = req.args.get('page') or 'WikiStart'
-        cursor.execute("SELECT text FROM wiki WHERE name=%s "
-                       "ORDER BY version DESC LIMIT 1", (page,))
-        (text,) = cursor.fetchone()
+        pagename = req.args.get('page') or 'WikiStart'
+        page = WikiPage(self.env, pagename)
 
         buf = StringIO()
         if not inline:
             buf.write('<div class="wiki-toc">')
         if title:
             buf.write('<h4>%s</h4>' % escape(title))
-        buf.write(wiki_to_outline(text, self.env, db=db, max_depth=max_depth))
+        buf.write(wiki_to_outline(page.text, self.env, db=db,
+                                  max_depth=max_depth))
         if not inline:
             buf.write('</div>')
         return buf.getvalue()
