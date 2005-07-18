@@ -163,7 +163,7 @@ class FieldStorageWrapper(util.FieldStorage):
         return util.FieldStorage.get(self, key, default)
 
     def __setitem__(self, key, value):
-        if not key in self:
+        if value is not None and key not in self:
             self.list.append(util.Field(key, StringIO(value), 'text/plain',
                              {}, None, {}))
 
