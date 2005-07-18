@@ -148,6 +148,7 @@ class ConnectionPool(object):
 
 try:
     import pysqlite2.dbapi2 as sqlite
+    using_pysqlite2 = True
 
     class PyFormatCursor(sqlite.Cursor):
         def execute(self, sql, args=None):
@@ -160,7 +161,7 @@ try:
             sqlite.Cursor.executemany(self, sql, args or [])
 
 except ImportError:
-    sqlite = None
+    using_pysqlite2 = False
 
 
 class SQLiteConnection(ConnectionWrapper):
@@ -169,7 +170,7 @@ class SQLiteConnection(ConnectionWrapper):
     __slots__ = ['cnx']
 
     def __init__(self, path, params={}):
-        global sqlite
+        global using_pysqlite2
         self.cnx = None
         if path != ':memory:':
             if not os.access(path, os.F_OK):
@@ -184,7 +185,8 @@ class SQLiteConnection(ConnectionWrapper):
                                  % path
 
         timeout = int(params.get('timeout', 10000))
-        if sqlite is not None: # Using PySQLite 2.x
+        if using_pysqlite2:
+            global sqlite
             sqlite.register_converter('text', str)
             cnx = sqlite.connect(path, detect_types=sqlite.PARSE_DECLTYPES,
                                  timeout=timeout)
@@ -197,8 +199,8 @@ class SQLiteConnection(ConnectionWrapper):
         return column
 
     def cursor(self):
-        global sqlite
-        if sqlite is not None: # Using PySQLite 2.x
+        global using_pysqlite2
+        if using_pysqlite2:
             return self.cnx.cursor(PyFormatCursor)
         else:
             return self.cnx.cursor()
