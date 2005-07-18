@@ -167,6 +167,7 @@ class Environment(Component, ComponentManager):
         # Create the directory structure
         os.mkdir(self.path)
         os.mkdir(self.get_log_dir())
+        os.mkdir(os.path.join(self.path, 'plugins'))
         os.mkdir(os.path.join(self.path, 'wiki-macros'))
 
         # Create a few files

@@ -24,14 +24,23 @@ import os
 import imp
 import sys
 
+try:
+    from pkg_resources import AvailableDistributions
+except ImportError:
+    AvailableDistributions = None
+
+TRAC_META = 'trac_plugin.txt'
+
+__all__ = ['load_components']
+
 def load_components(env):
-    configured_components = []
+    loaded_components = []
 
     # Load configured modules
     for section in env.config.sections():
         for name, value in env.config.options(section):
             if name == 'module':
-                configured_components.append(value)
+                loaded_components.append(value)
                 path = env.config.get(section, 'path') or None
                 env.log.debug('Loading component module %s from %s'
                               % (value, path or 'default path'))
@@ -40,13 +49,29 @@ def load_components(env):
                 try:
                     load_component(value, path)
                 except ImportError, e:
-                    env.log.error('Component module %s not found (%s)'
-                                  % (value, e))
+                    env.log.error('Component module %s not found', value,
+                                  exc_info=True)
+
+    # Load components from the environment plugins directory
+    if AvailableDistributions is not None:
+        distributions = AvailableDistributions()
+        distributions.scan([os.path.join(env.path, 'plugins')])
+        for name in distributions:
+            egg = distributions[name][0]
+            if egg.metadata.has_metadata(TRAC_META):
+                for module in egg.metadata.get_metadata_lines(TRAC_META):
+                    if module not in loaded_components:
+                        loaded_components.append(module)
+                        try:
+                            load_component(module, [egg.path])
+                        except ImportError, e:
+                            env.log.error('Component module %s not found',
+                                          value, exc_info=True)
 
     # Load default components
     from trac.db_default import default_components
     for module in default_components:
-        if not module in configured_components:
+        if not module in loaded_components:
             load_component(module)
 
 def load_component(name, path=None):
