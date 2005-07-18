@@ -229,7 +229,7 @@ class ReportModule(Component):
             req.hdf['report.href'] = self.env.href.report()
             req.hdf['report.action'] = 'new'
         else:
-            req.hdf['title'] = 'Edit Report {%d} %s' % (id, row['title'])
+            req.hdf['title'] = 'Edit Report {%d} %s' % (id, title)
             req.hdf['report.href'] = self.env.href.report(id)
             req.hdf['report.action'] = 'edit'
 
@@ -342,10 +342,11 @@ class ReportModule(Component):
                     value['hidehtml'] = 1
                     column = column[1:]
                 if column in ['id', 'ticket', '#', 'summary']:
-                    if row.has_key('ticket'):
-                        value['ticket_href'] = self.env.href.ticket(row['ticket'])
-                    elif row.has_key('id'):
-                        value['ticket_href'] = self.env.href.ticket(row['id'])
+                    id_cols = [idx for idx, col in util.enum(cols)
+                               if col[0] in ('ticket', 'id')]
+                    if id_cols:
+                        id_val = row[id_cols[0]]
+                        value['ticket_href'] = self.env.href.ticket(id_val)
                 elif column == 'description':
                     value['parsed'] = wiki_to_html(cell, self.env, req, db)
                 elif column == 'reporter':

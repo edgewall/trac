@@ -254,8 +254,8 @@ class TicketModule(Component):
 
             db = self.env.get_db_cnx()
             cursor = db.cursor()
-            cursor.execute(" UNION ALL ".join(sql), start, stop, start, stop,
-                           start, stop)
+            cursor.execute(" UNION ALL ".join(sql), (start, stop, start, stop,
+                           start, stop))
             kinds = {'new': 'newticket', 'reopened': 'newticket',
                      'closed': 'closedticket'}
             verbs = {'new': 'created', 'reopened': 'reopened',

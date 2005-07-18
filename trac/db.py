@@ -146,12 +146,30 @@ class ConnectionPool(object):
             self._available.release()
 
 
+try:
+    import pysqlite2.dbapi2 as sqlite
+
+    class PyFormatCursor(sqlite.Cursor):
+        def execute(self, sql, args=None):
+            if args:
+                sql = sql % tuple(['?'] * len(args))
+            sqlite.Cursor.execute(self, sql, args or [])
+        def executemany(self, sql, args=None):
+            if args:
+                sql = sql % tuple(['?'] * len(args[0]))
+            sqlite.Cursor.executemany(self, sql, args or [])
+
+except ImportError:
+    sqlite = None
+
+
 class SQLiteConnection(ConnectionWrapper):
     """Connection wrapper for SQLite."""
 
     __slots__ = ['cnx']
 
     def __init__(self, path, params={}):
+        global sqlite
         self.cnx = None
         if path != ':memory:':
             if not os.access(path, os.F_OK):
@@ -165,12 +183,25 @@ class SQLiteConnection(ConnectionWrapper):
                                  'the directory this file is located in.' \
                                  % path
 
-        import sqlite
-        cnx = sqlite.connect(path, timeout=int(params.get('timeout', 10000)))
+        timeout = int(params.get('timeout', 10000))
+        if sqlite is not None: # Using PySQLite 2.x
+            sqlite.register_converter('text', str)
+            cnx = sqlite.connect(path, detect_types=sqlite.PARSE_DECLTYPES,
+                                 timeout=timeout)
+        else:
+            import sqlite
+            cnx = sqlite.connect(path, timeout=timeout)
         ConnectionWrapper.__init__(self, cnx)
 
     def cast(self, column, type):
         return column
+
+    def cursor(self):
+        global sqlite
+        if sqlite is not None: # Using PySQLite 2.x
+            return self.cnx.cursor(PyFormatCursor)
+        else:
+            return self.cnx.cursor()
 
     def like(self):
         return 'LIKE'
@@ -197,13 +228,13 @@ class SQLiteConnection(ConnectionWrapper):
         sql = ["CREATE TABLE %s (" % table.name]
         coldefs = []
         for column in table.columns:
-            ctype = column.type.upper()
+            ctype = column.type.lower()
             if column.auto_increment:
-                ctype = "INTEGER PRIMARY KEY"
+                ctype = "integer PRIMARY KEY"
             elif len(table.key) == 1 and column.name in table.key:
                 ctype += " PRIMARY KEY"
-            elif ctype == "INT":
-                ctype = "INTEGER"
+            elif ctype == "int":
+                ctype = "integer"
             coldefs.append("    %s %s" % (column.name, ctype))
         if len(table.key) > 1:
             coldefs.append("    UNIQUE (%s)" % ','.join(table.key))
