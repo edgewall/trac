@@ -329,6 +329,8 @@ class Formatter(object):
             macro = WikiProcessor(self.env, name)
             return macro.process(self.req, args, 1)
         except Exception, e:
+            self.env.log.error('Macro %s(%s) failed' % (name, args),
+                               exc_info=True)
             return system_message('Error: Macro %s(%s) failed' % (name, args), e)
 
     def _heading_formatter(self, match, fullmatch):
@@ -620,6 +622,9 @@ class OutlineFormatter(Formatter):
     
     def __init__(self, env, absurls=0, db=None):
         Formatter.__init__(self, env, None, absurls, db)
+
+    # Override a few formatters to disable some wiki syntax in "outline"-mode
+    def _macro_formatter(self, match, fullmatch): return match
 
     def format(self, text, out, max_depth=None):
         self.outline = []
