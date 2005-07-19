@@ -65,7 +65,7 @@
     <th id="h_<?cs var:name(field) ?>"><?cs var:field.label ?>:</th>
     <td<?cs if:fullrow ?> colspan="3"<?cs /if ?> headers="h_<?cs
       var:name(field) ?>"><?cs var:ticket[name(field)] ?></td><?cs 
-    if:idx % 2 ?></tr><tr><?cs 
+    if:idx % 2 || fullrow ?></tr><tr><?cs 
     elif:idx == num_fields - 1 ?><th></th><td></td><?cs
     /if ?><?cs set:idx = idx + #fullrow + 1 ?><?cs
    /if ?><?cs
@@ -156,11 +156,11 @@
    </tr><?cs
    if:len(ticket.fields.type.options) ?>
    <tr>
-     <th><label for="type">Type:</label></th>
-     <td><?cs 
-      call:hdf_select(ticket.fields.type.options, 'type', ticket.type, 0) ?>
-     </td>
-    </tr><?cs
+    <th><label for="type">Type:</label></th>
+    <td><?cs 
+     call:hdf_select(ticket.fields.type.options, 'type', ticket.type, 0) ?>
+    </td>
+   </tr><?cs
    /if ?><?cs
    if:trac.acl.TICKET_ADMIN ?><tr>
     <th><label for="description">Description:</label></th>
@@ -182,7 +182,7 @@
   /each ?><?cs set:idx = 0 ?><?cs
    each:field = ticket.fields ?><?cs
     if:!field.skip ?><?cs set:fullrow = field.type == 'textarea' ?><?cs
-     if:fullrow && idx % 2 ?><th class="col2"></th><td></td></tr><tr><?cs /if ?>
+     if:fullrow && idx % 2 ?><?cs set:idx = idx + 1 ?><th class="col2"></th><td></td></tr><tr><?cs /if ?>
      <th class="col<?cs var:idx % 2 + 1 ?>"><?cs
        if:field.type != 'radio' ?><label for="<?cs var:name(field) ?>"><?cs
        /if ?><?cs alt:field.label ?><?cs var:field.name ?><?cs /alt ?>:<?cs
@@ -214,7 +214,7 @@
          var:option ?></label> <?cs set:optidx = optidx + 1 ?><?cs
         /each ?><?cs
       /if ?></td><?cs
-     if:idx % 2 ?></tr><tr><?cs 
+     if:idx % 2 || fullrow ?></tr><tr><?cs 
      elif:idx == num_fields - 1 ?><th class="col2"></th><td></td><?cs
      /if ?><?cs set:idx = idx + #fullrow + 1 ?><?cs
     /if ?><?cs
