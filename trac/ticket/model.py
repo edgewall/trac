@@ -325,11 +325,11 @@ class AbstractEnum(object):
         self.env.log.debug("Creating new %s '%s'" % (self.type, self.name))
         value = self.value
         if not value:
-            cursor.execute("SELECT COALESCE(MAX(value)) FROM enum "
+            cursor.execute("SELECT COALESCE(MAX(value),0) FROM enum "
                            "WHERE type=%s", (self.type,))
-            value = int(cursor.fetchone()[0])
-        cursor.execute("INSERT INTO enum (name,value) VALUES (%s,%s)",
-                       (self.name, self.value))
+            value = int(cursor.fetchone()[0]) + 1
+        cursor.execute("INSERT INTO enum (type,name,value) VALUES (%s,%s,%s)",
+                       (self.type, self.name, value))
 
         if handle_ta:
             db.commit()

@@ -1,5 +1,5 @@
 from trac.config import Configuration
-from trac.ticket.model import Ticket, Component
+from trac.ticket.model import Ticket, Component, Priority
 from trac.test import EnvironmentStub
 
 import unittest
@@ -189,6 +189,27 @@ class TicketModelTestCase(unittest.TestCase):
                 self.fail('Unexpected change (%s)'
                           % ((t, author, field, old, new),))
 
+    def test_abstractenum(self):
+        """
+        Verify basic AbstractEnum functionality.
+        """
+        p = Priority(self.env, 'major')
+        self.assertEqual(p.name, 'major')
+        self.assertEqual(p.value, '3')
+        p = Priority(self.env)
+        p.name = 'foo'
+        p.insert()
+        p = Priority(self.env)
+        p.name = 'bar'
+        p.value = 100
+        p.insert()
+        p = Priority(self.env, 'foo')
+        p.name = 'foo2'
+        p.update()
+        p = Priority(self.env, 'foo2')
+        p.delete()        
+        p = Priority(self.env, 'bar')
+        p.delete()        
 
 def suite():
     return unittest.makeSuite(TicketModelTestCase, 'test')
