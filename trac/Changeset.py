@@ -91,6 +91,7 @@ class ChangesetModule(Component):
                  'application/zip', 'zip')
         add_stylesheet(req, 'css/changeset.css')
         add_stylesheet(req, 'css/diff.css')
+        add_stylesheet(req, 'css/code.css')
         return 'changeset.cs', None
 
     # ITimelineEventProvider methods
