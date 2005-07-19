@@ -187,12 +187,18 @@ class SQLiteConnection(ConnectionWrapper):
         timeout = int(params.get('timeout', 10000))
         if using_pysqlite2:
             global sqlite
+
+            # Convert unicode to UTF-8 bytestrings. This is case-sensitive, so
+            # we need two converters
             sqlite.register_converter('text', str)
+            sqlite.register_converter('TEXT', str)
+
             cnx = sqlite.connect(path, detect_types=sqlite.PARSE_DECLTYPES,
                                  timeout=timeout)
         else:
             import sqlite
             cnx = sqlite.connect(path, timeout=timeout)
+
         ConnectionWrapper.__init__(self, cnx)
 
     def cast(self, column, type):

@@ -57,6 +57,12 @@ input[type=button], input[type=submit], input[type=reset] {
 input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover {
  background: #ccb;
 }
+input[type=button][disabled], input[type=submit][disabled],
+input[type=reset][disabled] {
+ background: #f6f6f6;
+ border-style: solid;
+ color: #999;
+}
 input[type=text], input.textwidget, textarea { border: 1px solid #d7d7d7 }
 input[type=text], input.textwidget { padding: .25em .5em }
 input[type=text]:focus, textarea:focus { border: 1px solid #886 }

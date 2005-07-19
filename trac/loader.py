@@ -68,6 +68,8 @@ def load_components(env):
                         except ImportError, e:
                             env.log.error('Component module %s not found',
                                           module, exc_info=True)
+    elif os.listdir(os.path.join(env.path, 'plugins')):
+        self.env.warning('setuptools is required for plugin deployment')
 
     # Load default components
     from trac.db_default import default_components

@@ -73,6 +73,10 @@ class Configuration:
     def __contains__(self, name):
         return self.parser.has_section(name)
 
+    def remove(self, section, name):
+        if self.parser.has_section(section):
+            self.parser.remove_option(section, name)
+
     def sections(self):
         return self.parser.sections()
 
