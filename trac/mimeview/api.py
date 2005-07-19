@@ -106,7 +106,7 @@ def get_charset(mimetype):
     if mimetype:
         ctpos = mimetype.find('charset=')
         if ctpos >= 0:
-            return mime_type[ctpos + 8:]
+            return mimetype[ctpos + 8:]
 
 def get_mimetype(filename):
     """Guess the most probable MIME type of a file with the given name."""
