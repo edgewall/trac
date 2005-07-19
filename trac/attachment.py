@@ -452,8 +452,12 @@ class AttachmentModule(Component):
             # FIXME: the formatter should know to which object belongs
             #        the text being formatted
             #        (this info will also be required for TracCrossReferences)
+            # Kludge for now: assume the object can be retrieved from the
+            #                 request's path_info
             path_info = formatter.req.path_info.split('/',2)
-            parent_type, parent_id = path_info[1], path_info[2] # Kludge for now
+            path_info = formatter.req.path_info.split('/',2) + [None, None]
+            parent_type = path_info[1] or 'wiki'
+            parent_id = path_info[2] or 'WikiStart'
             filename = link
         try:
             attachment = Attachment(self.env, parent_type, parent_id, filename)
