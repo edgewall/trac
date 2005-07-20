@@ -119,7 +119,8 @@ class ModPythonRequest(Request):
         self.req.status = 200
         if not mimetype:
             mimetype = mimetypes.guess_type(path)[0]
-        self.req.content_type = mimetype
+        if mimetype:
+            self.req.content_type = mimetype
         self.req.set_content_length(stat.st_size)
         self.req.headers_out.add('Last-Modified', http_date(stat.st_mtime))
 
@@ -254,6 +255,10 @@ def handler(req):
         locale.setlocale(locale.LC_ALL, options['TracLocale'])
     else:
         locale.setlocale(locale.LC_ALL, '')
+
+    # Allow specifying the python eggs cache directory using SetEnv
+    if req.subprocess_env.has_key('PYTHON_EGG_CACHE'):
+        os.environ['PYTHON_EGG_CACHE'] = req.subprocess_env['PYTHON_EGG_CACHE']
 
     mpr = ModPythonRequest(req, options)
     env = get_environment(req, mpr, options)
