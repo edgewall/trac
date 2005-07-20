@@ -53,9 +53,10 @@ def load_components(env):
                                   exc_info=True)
 
     # Load components from the environment plugins directory
+    plugins_dir = os.path.join(env.path, 'plugins')
     if pkg_resources is not None: # But only if setuptools is installed!
         distributions = pkg_resources.AvailableDistributions()
-        distributions.scan([os.path.join(env.path, 'plugins')])
+        distributions.scan([plugins_dir])
         for name in distributions:
             egg = distributions[name][0]
             if egg.metadata.has_metadata(TRAC_META):
@@ -68,8 +69,8 @@ def load_components(env):
                         except ImportError, e:
                             env.log.error('Component module %s not found',
                                           module, exc_info=True)
-    elif os.listdir(os.path.join(env.path, 'plugins')):
-        self.env.warning('setuptools is required for plugin deployment')
+    elif os.path.exists(plugins_dir) and os.listdir(plugins_dir):
+        env.log.warning('setuptools is required for plugin deployment')
 
     # Load default components
     from trac.db_default import default_components
