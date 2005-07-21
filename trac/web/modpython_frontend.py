@@ -23,7 +23,10 @@ import locale
 import mimetypes
 import os
 import re
-import threading
+try:
+    import threading
+except ImportError:
+    import dummy_threading as threading
 
 try:
     from cStringIO import StringIO

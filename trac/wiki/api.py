@@ -23,6 +23,10 @@
 #
 
 from __future__ import generators
+try:
+    import threading
+except ImportError:
+    import dummy_threading as threading
 import time
 import urllib
 
@@ -82,18 +86,23 @@ class WikiSystem(Component):
     def __init__(self):
         self._index = None
         self._last_index_update = 0
+        self._index_lock = threading.RLock()
 
     def _update_index(self):
-        now = time.time()
-        if now > self._last_index_update + WikiSystem.INDEX_UPDATE_INTERVAL:
-            self.log.debug('Updating wiki page index')
-            db = self.env.get_db_cnx()
-            cursor = db.cursor()
-            cursor.execute("SELECT DISTINCT name FROM wiki")
-            self._index = {}
-            for (name,) in cursor:
-                self._index[name] = True
-            self._last_index_update = now
+        self._index_lock.acquire()
+        try:
+            now = time.time()
+            if now > self._last_index_update + WikiSystem.INDEX_UPDATE_INTERVAL:
+                self.log.debug('Updating wiki page index (%s)' % id(self))
+                db = self.env.get_db_cnx()
+                cursor = db.cursor()
+                cursor.execute("SELECT DISTINCT name FROM wiki")
+                self._index = {}
+                for (name,) in cursor:
+                    self._index[name] = True
+                self._last_index_update = now
+        finally:
+            self._index_lock.release()
 
     # Public API
 
@@ -131,7 +140,8 @@ class WikiSystem(Component):
     # IWikiSyntaxProvider methods
     
     def get_wiki_syntax(self):
-        yield (r"!?(^|(?<=[^A-Za-z]))[A-Z][a-z]+(?:[A-Z][a-z]*[a-z/])+(?:#[A-Za-z0-9]+)?(?=\Z|\s|[.,;:!?\)}\]])",
+        yield (r"!?(^|(?<=[^A-Za-z]))[A-Z][a-z]+(?:[A-Z][a-z]*[a-z/])+"
+                "(?:#[A-Za-z0-9]+)?(?=\Z|\s|[.,;:!?\)}\]])",
                lambda x, y, z: self._format_link(x, 'wiki', y, y))
 
     def get_link_resolvers(self):
