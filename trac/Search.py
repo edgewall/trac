@@ -27,17 +27,82 @@ import string
 from trac.core import *
 from trac.perm import IPermissionRequestor
 from trac.util import TracError, escape, shorten_line
-from trac.versioncontrol.svn_authz import SubversionAuthorizer
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
 from trac.wiki import IWikiSyntaxProvider
 from trac.web.main import IRequestHandler
 
+
+class ISearchSource(Interface):
+    """
+    Extension point interface for adding search sources to the Trac
+    Search system.
+    """
+
+    def get_search_filters(self, req):
+        """
+        Return a list of filters that this search source supports. Each
+        filter must be a (name, label) tuple, where `name` is the internal
+        name, and `label` is a human-readable name for display.
+        """
+
+    def get_search_results(self, req, query, filters):
+        """
+        Return a list of search results matching `query`. The `filters`
+        parameters is a list of the enabled
+        filters, each item being the name of the tuples returned by
+        `get_search_events`.
+
+        The events returned by this function must be tuples of the form
+        (href, title, date, author, excerpt).
+        """
+
+
+def query_to_sql(db, q, name):
+    if q[0] == q[-1] == "'" or q[0] == q[-1] == '"':
+        sql_q = "%s %s '%%%s%%'" % (name, db.like(),
+                                        q[1:-1].replace("'''", "''"))
+    else:
+        q = q.replace('\'', '\'\'')
+        keywords = q.split(' ')
+        x = map(lambda x, name=name: name + ' ' + db.like() +
+                '\'%' + x + '%\'', keywords)
+        sql_q = string.join(x, ' AND ')
+    return sql_q
+
+def shorten_result(text='', keywords=[], maxlen=240, fuzz=60):
+    if not text: text = ''
+    text_low = text.lower()
+    beg = -1
+    for k in keywords:
+        i = text_low.find(k.lower())
+        if (i > -1 and i < beg) or beg == -1:
+            beg = i
+    excerpt_beg = 0
+    if beg > fuzz:
+        for sep in ('.', ':', ';', '='):
+            eb = text.find(sep, beg - fuzz, beg - 1)
+            if eb > -1:
+                eb += 1
+                break
+        else:
+            eb = beg - fuzz
+        excerpt_beg = eb
+    if excerpt_beg < 0: excerpt_beg = 0
+    msg = text[excerpt_beg:beg+maxlen]
+    if beg > fuzz:
+        msg = '... ' + msg
+    if beg < len(text)-maxlen:
+        msg = msg + ' ...'
+    return msg
+    
 
 class SearchModule(Component):
 
     implements(INavigationContributor, IPermissionRequestor, IRequestHandler,
                IWikiSyntaxProvider)
 
+    search_sources = ExtensionPoint(ISearchSource)
+    
     RESULTS_PER_PAGE = 10
 
     # INavigationContributor methods
@@ -63,110 +128,76 @@ class SearchModule(Component):
 
     def process_request(self, req):
         req.perm.assert_permission('SEARCH_VIEW')
-        self.authzperm = SubversionAuthorizer(self.env, req.authname)
 
+        available_filters = []
+        for source in self.search_sources:
+            available_filters += source.get_search_filters(req)
+            
+        filters = [f[0] for f in available_filters if req.args.has_key(f[0])]
+        if not filters:
+            filters = [f[0] for f in available_filters]
+                
+        req.hdf['search.filters'] = [
+            { 'name': filter[0],
+              'label': filter[1],
+              'active': filter[0] in filters
+            } for filter in available_filters]
+                
         req.hdf['title'] = 'Search'
-        req.hdf['search'] = {
-            'ticket': 'checked',
-            'changeset': 'checked',
-            'wiki': 'checked',
-            'results_per_page': self.RESULTS_PER_PAGE
-        }
 
-        if req.args.has_key('q'):
+        if 'q' in req.args:
             query = req.args.get('q')
+            page = int(req.args.get('page', '1'))
+            # Refuse queries that obviously would result in a huge result set
+            if len(query) < 3 and len(query.split()) == 1:
+                raise TracError('Search query too short. '
+                                'Query must be at least 3 characters long.',
+                                'Search Error')
+            results = []
+            for source in self.search_sources:
+                results += list(source.get_search_results(req, query, filters))
+            results.sort(lambda x,y: cmp(y[2], x[2]))
+            page_size = self.RESULTS_PER_PAGE
+            n = len(results)
+            n_pages = n / page_size + 1
+            results = results[(page-1) * page_size: page * page_size]
+
             req.hdf['title'] = 'Search Results'
             req.hdf['search.q'] = query.replace('"', "&#34;")
-            tickets = req.args.has_key('ticket')
-            changesets = req.args.has_key('changeset')
-            wiki = req.args.has_key('wiki')
-
-            # If no search options chosen, choose all
-            if not (tickets or changesets or wiki):
-                tickets = changesets = wiki = 1
-            if not tickets:
-                req.hdf['search.ticket'] = ''
-            if not changesets:
-                req.hdf['search.changeset'] = ''
-            if not wiki:
-                req.hdf['search.wiki'] = ''
-
-            page = int(req.args.get('page', '0'))
-            req.hdf['search.result_page'] = page
-            info, more = self.perform_query(req, query, changesets, tickets,
-                                            wiki, page)
-            req.hdf['search.result'] = info
-
-            params = [('q', query)]
-            if tickets: params.append(('ticket', 'on'))
-            if changesets: params.append(('changeset', 'on'))
-            if wiki: params.append(('wiki', 'on'))
-            if page:
-                add_link(req, 'first', self.env.href.search(params, page=0))
-                add_link(req, 'prev', self.env.href.search(params, page=page - 1))
-            if more:
-                add_link(req, 'next', self.env.href.search(params, page=page + 1))
+            req.hdf['search.page'] = page
+            req.hdf['search.n_hits'] = n
+            req.hdf['search.n_pages'] = n_pages
+            req.hdf['search.page_size'] = page_size
+            if page < n_pages:
+                req.hdf['chrome.links.next'] = [
+                    {'title': 'Next Page',
+                     'href': self.env.href.search(zip(filters,
+                                                      ['on'] * len(filters)),
+                                                  q=query, page=page+1)
+                    }]
+            if page > 1:
+                req.hdf['chrome.links.prev'] = [
+                    {'title': 'Previous Page',
+                     'href': self.env.href.search(zip(filters,
+                                                      ['on'] * len(filters)),
+                                                  q=query, page=page-1)
+                    }]
+            req.hdf['search.page_href'] = \
+                 self.env.href.search(zip(filters,
+                                          ['on'] * len(filters)), q=query)
+            req.hdf['search.result'] = [
+                { 'href': result[0],
+                  'title': result[1],
+                  'date': time.strftime('%c', time.localtime(result[2])),
+                  'author': result[3],
+                  'excerpt': result[4]
+                } for result in results]
 
         add_stylesheet(req, 'css/search.css')
         return 'search.cs', None
 
-    # Internal methods
-
-    def query_to_sql(self, db, q, name):
-        self.log.debug("Query: %s" % q)
-        if q[0] == q[-1] == "'" or q[0] == q[-1] == '"':
-            sql_q = "%s %s '%%%s%%'" % (name, db.like(),
-                                        q[1:-1].replace("'''", "''"))
-        else:
-            q = q.replace('\'', '\'\'')
-            keywords = q.split(' ')
-            x = map(lambda x, name=name: name + ' ' + db.like() +
-                                        '\'%' + x + '%\'', keywords)
-            sql_q = string.join(x, ' AND ')
-        self.log.debug("SQL Condition: %s" % sql_q)
-        return sql_q
-
-    def shorten_result(self, text='', keywords=[], maxlen=240, fuzz=60):
-        if not text: text = ''
-        text_low = text.lower()
-        beg = -1
-        for k in keywords:
-            i = text_low.find(k.lower())
-            if (i > -1 and i < beg) or beg == -1:
-                beg = i
-        excerpt_beg = 0
-        if beg > fuzz:
-            for sep in ('.', ':', ';', '='):
-                eb = text.find(sep, beg - fuzz, beg - 1)
-                if eb > -1:
-                    eb += 1
-                    break
-            else:
-                eb = beg - fuzz
-            excerpt_beg = eb
-        if excerpt_beg < 0: excerpt_beg = 0
-        msg = text[excerpt_beg:beg+maxlen]
-        if beg > fuzz:
-            msg = '... ' + msg
-        if beg < len(text)-maxlen:
-            msg = msg + ' ...'
-        return msg
-    
-    def perform_query(self, req, query, changeset, tickets, wiki, page=0):
-        if not query:
-            return ([], 0)
+    def quickjump(self, query):
         keywords = query.split(' ')
-
-        if changeset:
-            changeset = req.perm.has_permission('CHANGESET_VIEW')
-        if tickets:
-            tickets = req.perm.has_permission('TICKET_VIEW')
-        if wiki:
-            wiki = req.perm.has_permission('WIKI_VIEW')
-
-        if changeset == tickets == wiki == 0:
-            return ([], 0)
-
         if len(keywords) == 1:
             kwd = keywords[0]
             redir = None
@@ -206,82 +237,8 @@ class SearchModule(Component):
                 r = "((^|(?<=[^A-Za-z]))[!]?[A-Z][a-z/]+(?:[A-Z][a-z/]+)+)"
                 if re.match (r, kwd):
                     redir = self.env.href.wiki(kwd)
-            if redir:
-                req.hdf['search.q'] = ''
-                req.redirect(redir)
-            elif len(query) < 3:
-                raise TracError('Search query too short. '
-                                'Query must be at least 3 characters long.',
-                                'Search Error')
-
-        db = self.env.get_db_cnx()
-        cursor = db.cursor()
-
-        q = []
-        if changeset:
-            q.append("SELECT 1,message,message,author,'',rev,time,0"
-                     "FROM revision WHERE %s OR %s" %
-                     (self.query_to_sql(db, query, 'message'),
-                      self.query_to_sql(db, query, 'author')))
-        if tickets:
-            q.append("SELECT DISTINCT 2,a.summary,a.description,a.reporter, "
-                     "a.keywords,%s,a.time,0 FROM ticket a "
-                     "LEFT JOIN ticket_change b ON a.id = b.ticket "
-                     "WHERE (b.field='comment' AND %s ) OR "
-                     "%s OR %s OR %s OR %s OR %s" %
-                     (db.cast('a.id', 'text'),
-                      self.query_to_sql(db, query, 'b.newvalue'),
-                      self.query_to_sql(db, query, 'summary'),
-                      self.query_to_sql(db, query, 'keywords'),
-                      self.query_to_sql(db, query, 'description'),
-                      self.query_to_sql(db, query, 'reporter'),
-                      self.query_to_sql(db, query, 'cc')))
-        if wiki:
-            q.append("SELECT 3,text,text,author,'',w1.name,time,w1.version "
-                     "FROM wiki w1,"
-                     "(SELECT name,max(version) AS ver "
-                     "FROM wiki GROUP BY name) w2 "
-                     "WHERE w1.version = w2.ver AND w1.name = w2.name "
-                     "AND (%s OR %s OR %s)" %
-                     (self.query_to_sql(db, query, 'w1.name'),
-                      self.query_to_sql(db, query, 'w1.author'),
-                      self.query_to_sql(db, query, 'w1.text')))
-
-        if not q:
-            return [], False
-
-        sql = ' UNION ALL '.join(q) + ' ORDER BY 7 DESC LIMIT %d OFFSET %d' \
-               % (self.RESULTS_PER_PAGE + 1, self.RESULTS_PER_PAGE * page)
-        self.log.debug('SQL Query: %s' % sql)
-        cursor.execute(sql)
-
-        # Make the data more HDF-friendly
-        info = []
-        more = False
-        for type, title, msg, author, kw, data, t, version in cursor:
-            if len(info) == self.RESULTS_PER_PAGE:
-                more = True
-                break
-            t = time.localtime(int(t))
-            item = {'type': int(type),
-                    'keywords': kw or '',
-                    'data': data,
-                    'title': escape(title or ''),
-                    'datetime' : time.strftime('%c', t),
-                    'author': escape(author)}
-            if item['type'] == 1:
-                item['changeset_href'] = self.env.href.changeset(data)
-                if not self.authzperm.has_permission_for_changeset(data):
-                    continue
-            elif item['type'] == 2:
-                item['ticket_href'] = self.env.href.ticket(data)
-            elif item['type'] == 3:
-                item['wiki_href'] = self.env.href.wiki(data)
-
-            item['shortmsg'] = escape(shorten_line(msg))
-            item['message'] = escape(self.shorten_result(msg, keywords))
-            info.append(item)
-        return info, more
+            return redir
+        return None
 
     # IWikiSyntaxProvider methods
     

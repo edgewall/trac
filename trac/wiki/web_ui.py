@@ -37,13 +37,14 @@ from trac.versioncontrol.diff import get_diff_options, hdf_diff
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
 from trac.web.main import IRequestHandler
 from trac.wiki.model import WikiPage
+from trac.Search import ISearchSource, query_to_sql, shorten_result
 from trac.wiki.formatter import wiki_to_html, wiki_to_oneliner
 
 
 class WikiModule(Component):
 
     implements(INavigationContributor, IPermissionRequestor, IRequestHandler,
-               ITimelineEventProvider)
+               ITimelineEventProvider, ISearchSource)
 
     # INavigationContributor methods
 
@@ -385,3 +386,31 @@ class WikiModule(Component):
         if req.perm.has_permission('WIKI_MODIFY'):
             attach_href = self.env.href.attachment('wiki', page.name)
             req.hdf['wiki.attach_href'] = attach_href
+
+    # ISearchPrivider methods
+
+    def get_search_filters(self, req):
+        if req.perm.has_permission('WIKI_VIEW'):
+            yield ('wiki', 'Wiki')
+
+    def get_search_results(self, req, query, filters):
+        if not 'wiki' in filters:
+            return
+        db = self.env.get_db_cnx()
+        sql = "SELECT w1.name,w1.time,w1.author,w1.text " \
+              "FROM wiki w1," \
+              "(SELECT name,max(version) AS ver " \
+              "FROM wiki GROUP BY name) w2 " \
+              "WHERE w1.version = w2.ver AND w1.name = w2.name " \
+              "AND (%s OR %s OR %s)" % \
+              (query_to_sql(db, query, 'w1.name'),
+               query_to_sql(db, query, 'w1.author'),
+               query_to_sql(db, query, 'w1.text'))
+        
+        cursor = db.cursor()
+        cursor.execute(sql)
+        for name, date, author, text in cursor:
+            yield (self.env.href.wiki(name),
+                   '%s: %s' % (name, escape(shorten_line(text))),
+                   date, author,
+                   escape(shorten_result(text, query.split())))

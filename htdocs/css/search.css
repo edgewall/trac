@@ -9,5 +9,4 @@
 #results dd { font-size: 80%; margin: 0; padding: 0 }
 #results .author, #results .date, #results .keywords { color: #090 }
 
-#paging { margin: 0 0 2em }
-#paging ul { text-align: left }
+#paging { margin: 0 0 2em; text-align: center }

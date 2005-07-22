@@ -25,6 +25,8 @@ from trac import util
 from trac.core import *
 from trac.perm import IPermissionRequestor
 from trac.wiki import IWikiSyntaxProvider
+from trac.Search import ISearchSource, query_to_sql, shorten_result
+
 
 class MyLinkResolver(Component):
     """
@@ -35,7 +37,7 @@ class MyLinkResolver(Component):
 
 
 class TicketSystem(Component):
-    implements(IPermissionRequestor, IWikiSyntaxProvider)
+    implements(IPermissionRequestor, IWikiSyntaxProvider, ISearchSource)
 
     # Public API
 
@@ -169,3 +171,32 @@ class TicketSystem(Component):
                    % (formatter.href.ticket(target), label)
 
     
+    # ISearchPrivider methods
+
+    def get_search_filters(self, req):
+        if req.perm.has_permission('TICKET_VIEW'):
+            yield ('ticket', 'Tickets')
+
+    def get_search_results(self, req, query, filters):
+        if not 'ticket' in filters:
+            return
+        db = self.env.get_db_cnx()
+        sql = "SELECT DISTINCT a.summary,a.description,a.reporter, " \
+              "a.keywords,a.id,a.time FROM ticket a " \
+              "LEFT JOIN ticket_change b ON a.id = b.ticket " \
+              "WHERE (b.field='comment' AND %s ) OR " \
+              "%s OR %s OR %s OR %s OR %s" % \
+              (query_to_sql(db, query, 'b.newvalue'),
+               query_to_sql(db, query, 'summary'),
+               query_to_sql(db, query, 'keywords'),
+               query_to_sql(db, query, 'description'),
+               query_to_sql(db, query, 'reporter'),
+               query_to_sql(db, query, 'cc'))
+        cursor = db.cursor()
+        cursor.execute(sql)
+        for summary,desc,author,keywords,tid,date in cursor:
+            yield (self.env.href.ticket(tid),
+                   '#%d: %s' % (tid, util.escape(util.shorten_line(summary))),
+                   date, author,
+                   util.escape(shorten_result(desc, query.split())))
+            
