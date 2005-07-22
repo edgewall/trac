@@ -433,26 +433,25 @@ def dispatch_request(path_info, req, env):
         db.close()
 
 def send_pretty_error(e, env, req=None):
-    """
-    Send a "pretty" HTML error page to the client.
-    """
+    """Send a "pretty" HTML error page to the client."""
     import traceback
     import StringIO
     tb = StringIO.StringIO()
     traceback.print_exc(file=tb)
     if not req:
         from trac.web.cgi_frontend import CGIRequest
+        from trac.web.clearsilver import HDFWrapper
         req = CGIRequest()
         req.authname = ''
+        req.hdf = HDFWrapper()
     try:
         if not env:
             from trac.env import open_environment
             env = open_environment()
             env.href = Href(req.cgi_location)
-        populate_hdf(req.hdf, env, req)
         if env and env.log:
-            env.log.error(str(e))
-            env.log.error(tb.getvalue())
+            env.log.exception(e)
+        populate_hdf(req.hdf, env, req)
 
         if isinstance(e, TracError):
             req.hdf['title'] = e.title or 'Error'

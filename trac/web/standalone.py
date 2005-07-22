@@ -124,7 +124,7 @@ class DigestAuth:
         return auth['username']
 
 
-class TracHTTPServer(HTTPServer):
+class TracHTTPServer(ThreadingMixIn, HTTPServer):
 
     projects = None
 

@@ -189,10 +189,11 @@ class Environment(Component, ComponentManager):
         # Create the database
         db.init_db(self.path, db_str)
 
-    def get_version(self):
+    def get_version(self, db=None):
         """Return the current version of the database."""
-        cnx = self.get_db_cnx()
-        cursor = cnx.cursor()
+        if not db:
+            db = self.get_db_cnx()
+        cursor = db.cursor()
         cursor.execute("SELECT value FROM system WHERE name='database_version'")
         row = cursor.fetchone()
         return row and int(row[0])
@@ -318,7 +319,7 @@ class EnvironmentSetup(Component):
         db.commit()
 
     def environment_needs_upgrade(self, db):
-        dbver = self.env.get_version()
+        dbver = self.env.get_version(db)
         if dbver == db_default.db_version:
             return False
         elif dbver > db_default.db_version:
