@@ -2,6 +2,7 @@
 #
 # Copyright (C) 2004, 2005 Edgewall Software
 # Copyright (C) 2004, 2005 Christopher Lenz <cmlenz@gmx.de>
+# Copyright (C) 2005 Matthew Good <trac@matt-good.net>
 #
 # Trac is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License as
@@ -18,15 +19,12 @@
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #
 # Author: Christopher Lenz <cmlenz@gmx.de>
+# Author: Matthew Good <trac@matt-good.net>
 
 import locale
 import mimetypes
 import os
 import re
-try:
-    import threading
-except ImportError:
-    import dummy_threading as threading
 
 try:
     from cStringIO import StringIO
@@ -35,10 +33,9 @@ except ImportError:
 
 from mod_python import apache, util
 
-from trac.env import open_environment
-from trac.util import TracError, enum, href_join, http_date, rstrip
+from trac.util import http_date, rstrip
 from trac.web.main import Request, RequestDone, dispatch_request, \
-                          send_pretty_error
+                          send_pretty_error, get_environment
 
 
 class ModPythonRequest(Request):
@@ -171,86 +168,12 @@ class FieldStorageWrapper(util.FieldStorage):
             self.list.append(util.Field(key, StringIO(value), 'text/plain',
                              {}, None, {}))
 
-
-def send_project_index(req, mpr, dir, options):
-    from trac.web.clearsilver import HDFWrapper
-
-    if 'TracEnvIndexTemplate' in options:
-        # Custom project listing template configured
-        tmpl_path, template = os.path.split(options['TracEnvIndexTemplate'])
-
-        from trac.config import default_dir
-        mpr.hdf = HDFWrapper(loadpaths=[default_dir('templates'), tmpl_path])
-
-        tmpl_vars = {}
-        if 'TracTemplateVars' in options:
-            pairs = options['TracTemplateVars'].split(',')
-            for pair in pairs:
-                key,val = pair.split('=')
-                mpr.hdf[key] = val
-
-    else:
-        # Use the default project listing template
-        mpr.hdf = HDFWrapper()
-        template = mpr.hdf.parse("""<html>
-<head><title>Available Projects</title></head>
-<body><h1>Available Projects</h1><ul><?cs
- each:project = projects ?><li><a href="<?cs
-  var:project.href ?>"><?cs var:project.name ?></a></li><?cs
- /each ?></ul></body>
-</html>""")
-
-    try:
-        projects = []
-        for idx, project in enum(os.listdir(dir)):
-            env_path = os.path.join(dir, project)
-            if not os.path.isdir(env_path):
-                continue
-            try:
-                env = open_environment(env_path)
-                projects.append({
-                    'name': env.config.get('project', 'name'),
-                    'description': env.config.get('project', 'descr'),
-                    'href': href_join(mpr.idx_location, project)
-                })
-            except TracError, e:
-                req.log_error('Error opening environment at %s: %s'
-                              % (env_path, e))
-        projects.sort(lambda x, y: cmp(x['name'], y['name']))
-        mpr.hdf['projects'] = projects
-        mpr.display(template, response=200)
-    except RequestDone:
-        pass
-
-env_cache = {}
-env_cache_lock = threading.Lock()
-
-def get_environment(req, mpr, options):
-    global env_cache, env_cache_lock
-
-    if options.has_key('TracEnv'):
-        env_path = options['TracEnv']
-    elif options.has_key('TracEnvParentDir'):
-        env_parent_dir = options['TracEnvParentDir']
-        env_name = mpr.cgi_location.split('/')[-1]
-        env_path = os.path.join(env_parent_dir, env_name)
-        if len(env_name) == 0 or not os.path.exists(env_path):
-            send_project_index(req, mpr, env_parent_dir, options)
-            return None
-    else:
-        raise TracError, \
-              'Missing PythonOption "TracEnv" or "TracEnvParentDir". Trac ' \
-              'requires one of these options to locate the Trac environment(s).'
-
-    env = None
-    env_cache_lock.acquire()
-    try:
-        if not env_path in env_cache:
-            env_cache[env_path] = open_environment(env_path)
-        env = env_cache[env_path]
-    finally:
-        env_cache_lock.release()
-    return env
+def dict_translate(orig, *mappings):
+    result = {}
+    for src, dest in mappings:
+        if src in orig:
+            result[dest] = orig[src]
+    return result
 
 def handler(req):
     options = req.get_options()
@@ -264,7 +187,11 @@ def handler(req):
         os.environ['PYTHON_EGG_CACHE'] = req.subprocess_env['PYTHON_EGG_CACHE']
 
     mpr = ModPythonRequest(req, options)
-    env = get_environment(req, mpr, options)
+    env = get_environment(mpr, dict_translate(options,
+                ('TracEnv', 'TRAC_ENV'),
+                ('TracEnvParentDir', 'TRAC_ENV_PARENT_DIR'),
+                ('TracEnvIndexTemplate', 'TRAC_ENV_INDEX_TEMPLATE'),
+                ('TracTemplateVars', 'TRAC_TEMPLATE_VARS')))
     if not env:
         return apache.OK
 

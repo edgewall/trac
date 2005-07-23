@@ -2,6 +2,7 @@
 #
 # Copyright (C) 2005 Edgewall Software
 # Copyright (C) 2005 Christopher Lenz <cmlenz@gmx.de>
+# Copyright (C) 2005 Matthew Good <trac@matt-good.net>
 #
 # Trac is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License as
@@ -18,9 +19,10 @@
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #
 # Author: Christopher Lenz <cmlenz@gmx.de>
+# Author: Matthew Good <trac@matt-good.net>
 
-from trac.env import open_environment
-from trac.web.main import Request, dispatch_request, send_pretty_error
+from trac.web.main import Request, dispatch_request, send_pretty_error, \
+                          get_environment
 
 import cgi
 import locale
@@ -51,6 +53,15 @@ class CGIRequest(Request):
         self.args = self._getFieldStorage()
 
         self.cgi_location = self.__environ.get('SCRIPT_NAME')
+        self.idx_location = self.cgi_location
+
+        self.path_info = self.__environ.get('PATH_INFO', '')
+
+        if 'TRAC_ENV_PARENT_DIR' in os.environ and self.path_info:
+            env_path = '/' + self.path_info.split('/', 2)[1]
+            self.path_info = self.path_info[len(env_path):]
+            self.cgi_location += env_path
+
 
 
     def _getFieldStorage(self):
@@ -96,10 +107,13 @@ class TracFieldStorage(cgi.FieldStorage):
 def run():
     locale.setlocale(locale.LC_ALL, '')
 
-    env = open_environment()
     req = CGIRequest()
+    env = get_environment(req, os.environ, threaded=False)
+
+    if not env:
+        return
 
     try:
-        dispatch_request(os.getenv('PATH_INFO', ''), req, env)
+        dispatch_request(req.path_info, req, env)
     except Exception, e:
         send_pretty_error(e, env, req)

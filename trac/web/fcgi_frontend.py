@@ -2,6 +2,7 @@
 #
 # Copyright (C) 2005 Edgewall Software
 # Copyright (C) 2005 Christopher Lenz <cmlenz@gmx.de>
+# Copyright (C) 2005 Matthew Good <trac@matt-good.net>
 #
 # Trac is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License as
@@ -18,8 +19,12 @@
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #
 # Author: Christopher Lenz <cmlenz@gmx.de>
+# Author: Matthew Good <trac@matt-good.net>
 
 from trac.web.cgi_frontend import *
+from trac.web.main import RequestDone, get_environment
+from trac.util import TracError, enum, href_join
+
 import _thfcgi, locale, sys
 
 def run():
@@ -36,11 +41,14 @@ class FCGIRequest(CGIRequest):
 
 
 def _handler(_req, _env, _fieldStorage):
-      env = open_environment()
       req = FCGIRequest(_env, _req.stdin, _req.out, _fieldStorage)
+      env = get_environment(req, os.environ)
+
+      if not env:
+          return
 
       try:  
-          dispatch_request(_env.get('PATH_INFO', ''), req, env)
+          dispatch_request(req.path_info, req, env)
       except Exception, e:
           send_pretty_error(e, env, req)
 

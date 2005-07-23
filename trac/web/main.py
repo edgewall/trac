@@ -2,6 +2,7 @@
 #
 # Copyright (C) 2005 Edgewall Software
 # Copyright (C) 2005 Christopher Lenz <cmlenz@gmx.de>
+# Copyright (C) 2005 Matthew Good <trac@matt-good.net>
 #
 # Trac is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License as
@@ -18,16 +19,23 @@
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #
 # Author: Christopher Lenz <cmlenz@gmx.de>
+# Author: Matthew Good <trac@matt-good.net>
 
 import mimetypes
 import os
 import os.path
 
 from trac.core import *
+from trac.env import open_environment
 from trac.perm import PermissionCache, PermissionError
-from trac.util import escape, http_date, TRUE
+from trac.util import escape, http_date, TRUE, enum, href_join
 from trac.web.href import Href
 from trac.web.session import Session
+
+try:
+    import threading
+except ImportError:
+    import dummy_threading as threading
 
 
 class RequestDone(Exception):
@@ -489,3 +497,89 @@ def send_pretty_error(e, env, req=None):
         req.write(str(e))
         req.write('\n')
         req.write(tb.getvalue())
+
+def send_project_index(req, dir, options):
+    from trac.web.clearsilver import HDFWrapper
+
+    if 'TRAC_ENV_INDEX_TEMPLATE' in options:
+        tmpl_path, template = os.path.split(options['TRAC_ENV_INDEX_TEMPLATE'])
+
+        from trac.config import default_dir
+        req.hdf = HDFWrapper(loadpaths=[default_dir('templates'), tmpl_path])
+
+        tmpl_vars = {}
+        if 'TRAC_TEMPLATE_VARS' in options:
+            for pair in options['TRAC_TEMPLATE_VARS'].split(','):
+                key, val = pair.split('=')
+                req.hdf[key] = val
+    else:
+        req.hdf = HDFWrapper()
+        template = req.hdf.parse('''<html>
+<head><title>Available Projects</title></head>
+<body><h1>Available Projects</h1><ul><?cs
+ each:project = projects ?><li><a href="<?cs
+  var:project.href ?>"><?cs var:project.name ?></a></li><?cs
+ /each ?></ul></body>
+</html>''')
+
+    try:
+        projects = []
+        for ids, project in enum(os.listdir(dir)):
+            env_path = os.path.join(dir, project)
+            if not os.path.isdir(env_path):
+                continue
+            try:
+                env = open_environment(env_path)
+                projects.append({
+                    'name': env.config.get('project', 'name'),
+                    'description': env.config.get('project', 'descr'),
+                    'href': href_join(req.idx_location, project)
+                })
+            except TracError, e:
+                raise
+# FIXME how should this be done in a cross-frontend way?
+                #req.log_error('Error opening environment at %s: %s'
+                              #% (env_path, e))
+        projects.sort(lambda x, y: cmp(x['name'], y['name']))
+        req.hdf['projects'] = projects
+
+        req.display(template, response=200)
+    except RequestDone:
+        pass
+
+
+env_cache = {}
+env_cache_lock = threading.Lock()
+
+def get_environment(req, options, threaded=True):
+    global env_cache, env_cache_lock
+
+    if 'TRAC_ENV' in options:
+        env_path = options['TRAC_ENV']
+    elif 'TRAC_ENV_PARENT_DIR' in options:
+        env_parent_dir = options['TRAC_ENV_PARENT_DIR']
+        env_name = req.cgi_location.split('/')[-1]
+        env_path = os.path.join(env_parent_dir, env_name)
+        if not len(env_name) or not os.path.exists(env_path):
+            send_project_index(req, env_parent_dir, options)
+            return None
+    else:
+        raise TracError, \
+              'Missing PythonOption "TracEnv" or "TracEnvParentDir". Trac ' \
+              'requires one of these options to locate the Trac environment(s).' \
+              + str(options)
+
+    if not threaded:
+        return open_environment(env_path)
+
+    env = None
+    env_cache_lock.acquire()
+    try:
+        if not env_path in env_cache:
+            env_cache[env_path] = open_environment(env_path)
+        env = env_cache[env_path]
+    finally:
+        env_cache_lock.release()
+    return env
+
+
