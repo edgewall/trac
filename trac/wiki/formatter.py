@@ -130,10 +130,10 @@ class Formatter(object):
     _pre_rules = [r"(?P<bolditalic>''''')",
                   r"(?P<bold>''')",
                   r"(?P<italic>'')",
-                  r"(?P<underline>__)",
-                  r"(?P<strike>~~)",
-                  r"(?P<subscript>,,)",
-                  r"(?P<superscript>\^)",
+                  r"(?P<underline>!?__)",
+                  r"(?P<strike>!?~~)",
+                  r"(?P<subscript>!?,,)",
+                  r"(?P<superscript>!?\^)",
                   r"(?P<inlinecode>!?\{\{\{(?P<inline>.*?)\}\}\})",
                   r"(?P<inlinecode2>!?`(?P<inline2>.*?)`)",
                   r"(?P<htmlescapeentity>!?&#\d+;)"]
@@ -295,16 +295,28 @@ class Formatter(object):
         return self.simple_tag_handler('<i>', '</i>')
 
     def _underline_formatter(self, match, fullmatch):
-        return self.simple_tag_handler('<span class="underline">', '</span>')
+        if match[0] == '!':
+            return match[1:]
+        else:
+            return self.simple_tag_handler('<span class="underline">', '</span>')
 
     def _strike_formatter(self, match, fullmatch):
-        return self.simple_tag_handler('<del>', '</del>')
+        if match[0] == '!':
+            return match[1:]
+        else:
+            return self.simple_tag_handler('<del>', '</del>')
 
     def _subscript_formatter(self, match, fullmatch):
-        return self.simple_tag_handler('<sub>', '</sub>')
+        if match[0] == '!':
+            return match[1:]
+        else:
+            return self.simple_tag_handler('<sub>', '</sub>')
 
     def _superscript_formatter(self, match, fullmatch):
-        return self.simple_tag_handler('<sup>', '</sup>')
+        if match[0] == '!':
+            return match[1:]
+        else:
+            return self.simple_tag_handler('<sup>', '</sup>')
 
     def _inlinecode_formatter(self, match, fullmatch):
         return '<tt>%s</tt>' % fullmatch.group('inline')

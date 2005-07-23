@@ -2,6 +2,8 @@
 <script type="text/javascript">
 addEvent(window, 'load', function() { document.getElementById('q').focus()}); 
 </script>
+<div id="ctxtnav" class="nav">
+</div>
 
 <div id="content" class="search">
 
