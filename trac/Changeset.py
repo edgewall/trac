@@ -30,6 +30,7 @@ from trac.core import *
 from trac.perm import IPermissionRequestor
 from trac.Timeline import ITimelineEventProvider
 from trac.versioncontrol import Changeset, Node
+from trac.versioncontrol.svn_authz import SubversionAuthorizer
 from trac.versioncontrol.diff import get_diff_options, hdf_diff, unified_diff
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
 from trac.Search import ISearchSource, query_to_sql, shorten_result
@@ -365,6 +366,7 @@ class ChangesetModule(Component):
     def get_search_results(self, req, query, filters):
         if not 'changeset' in filters:
             return
+        authzperm = SubversionAuthorizer(self.env, req.authname)
         db = self.env.get_db_cnx()
         sql = "SELECT rev,time,author,message " \
               "FROM revision WHERE %s OR %s" % \
@@ -373,6 +375,8 @@ class ChangesetModule(Component):
         cursor = db.cursor()
         cursor.execute(sql)
         for rev, date, author, log in cursor:
+            if not authzperm.has_permission_for_changeset(rev):
+                continue
             yield (self.env.href.changeset(rev),
                    '[%s]: %s' % (rev, util.escape(util.shorten_line(log))),
                    date, author,
