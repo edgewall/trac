@@ -1,17 +1,18 @@
-sql = """
--- Add unique id, descr to 'milestone'
-CREATE TEMP TABLE milestone_old AS SELECT * FROM milestone;
-DROP TABLE milestone;
-CREATE TABLE milestone (
+sql = [
+#-- Add unique id, descr to 'milestone'
+"""CREATE TEMP TABLE milestone_old AS SELECT * FROM milestone;""",
+"""DROP TABLE milestone;""",
+"""CREATE TABLE milestone (
          id              integer PRIMARY KEY,
          name            text,
          time            integer,
          descr           text,
          UNIQUE(name)
-);
-INSERT INTO milestone(name,time, descr) SELECT name,time,'' FROM milestone_old;
-
+);""",
 """
-
+INSERT INTO milestone(name,time, descr) SELECT name,time,'' FROM milestone_old;""",
+"""DROP TABLE milestone_old;""",
+]
 def do_upgrade(env, ver, cursor):
-    cursor.execute(sql)
+    for s in sql:
+        cursor.execute(s)

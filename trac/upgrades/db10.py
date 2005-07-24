@@ -1,14 +1,14 @@
-sql = """
--- Make the node_change table contain more information, and force a resync
-DROP TABLE revision;
-DROP TABLE node_change;
-CREATE TABLE revision (
+sql = [
+#-- Make the node_change table contain more information, and force a resync
+"""DROP TABLE revision;""",
+"""DROP TABLE node_change;""",
+"""CREATE TABLE revision (
     rev             text PRIMARY KEY,
     time            integer,
     author          text,
     message         text
-);
-CREATE TABLE node_change (
+);""",
+"""CREATE TABLE node_change (
     rev             text,
     path            text,
     kind            char(1), -- 'D' for directory, 'F' for file
@@ -16,9 +16,10 @@ CREATE TABLE node_change (
     base_path       text,
     base_rev        text,
     UNIQUE(rev, path, change)
-);
-"""
+);"""
+]
 
 def do_upgrade(env, ver, cursor):
-    cursor.execute(sql)
+    for s in sql:
+        cursor.execute(s)
     print 'Please perform a "resync" after this upgrade.'

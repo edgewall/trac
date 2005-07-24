@@ -1,8 +1,8 @@
-sql = """
--- Add ticket_type to 'ticket', remove the unused 'url' column
-CREATE TEMP TABLE ticket_old AS SELECT * FROM ticket;
-DROP TABLE ticket;
-CREATE TABLE ticket (
+sql = [
+#-- Add ticket_type to 'ticket', remove the unused 'url' column
+"""CREATE TEMP TABLE ticket_old AS SELECT * FROM ticket;""",
+"""DROP TABLE ticket;""",
+"""CREATE TABLE ticket (
         id              integer PRIMARY KEY,
         type            text,           -- the nature of the ticket
         time            integer,        -- the time it was created
@@ -20,32 +20,31 @@ CREATE TABLE ticket (
         summary         text,           -- one-line summary
         description     text,           -- problem description (long)
         keywords        text
-);
-
-INSERT INTO ticket(id, type, time, changetime, component, severity, priority,
+);""",
+"""INSERT INTO ticket(id, type, time, changetime, component, severity, priority,
                    owner, reporter, cc, version, milestone, status, resolution,
                    summary, description, keywords)
   SELECT id, 'defect', time, changetime, component, severity, priority, owner,
          reporter, cc, version, milestone, status, resolution, summary,
          description, keywords FROM ticket_old
-  WHERE severity <> 'enhancement';
-
-INSERT INTO ticket(id, type, time, changetime, component, severity, priority,
+  WHERE severity <> 'enhancement';""",
+"""INSERT INTO ticket(id, type, time, changetime, component, severity, priority,
                    owner, reporter, cc, version, milestone, status, resolution,
                    summary, description, keywords)
   SELECT id, 'enhancement', time, changetime, component, 'normal', priority,
          owner, reporter, cc, version, milestone, status, resolution, summary,
          description, keywords FROM ticket_old
-  WHERE severity = 'enhancement';
-
-INSERT INTO enum (type, name, value) VALUES ('ticket_type', 'defect', '1');
-INSERT INTO enum (type, name, value) VALUES ('ticket_type', 'enhancement', '2');
-INSERT INTO enum (type, name, value) VALUES ('ticket_type', 'task', '3');
-DELETE FROM enum WHERE type = 'severity' AND name = 'enhancement';
-"""
+  WHERE severity = 'enhancement';""",
+"""INSERT INTO enum (type, name, value) VALUES ('ticket_type', 'defect', '1');""",
+"""INSERT INTO enum (type, name, value) VALUES ('ticket_type', 'enhancement', '2');""",
+"""INSERT INTO enum (type, name, value) VALUES ('ticket_type', 'task', '3');""",
+"""DELETE FROM enum WHERE type = 'severity' AND name = 'enhancement';""",
+"""DROP TABLE ticket_old;""",
+]
 
 def do_upgrade(env, ver, cursor):
-    cursor.execute(sql)
+    for s in sql:
+        cursor.execute(s)
 
     # -- upgrade reports (involve a rename)
     cursor.execute("SELECT id,sql FROM report")
@@ -59,4 +58,3 @@ def do_upgrade(env, ver, cursor):
                        (parts[0].replace('severity,',
                                          't.type AS type, severity,') + ending,
                         id))
-

@@ -339,7 +339,7 @@ class EnvironmentSetup(Component):
                 raise TracError, err
             script.do_upgrade(self.env, i, cursor)
         cursor.execute("UPDATE system SET value=%s WHERE "
-                       "name='database_version'", (db_default.db_version))
+                       "name='database_version'", (db_default.db_version,))
         self.log.info('Upgraded database version from %d to %d',
                       dbver, db_default.db_version)
 
