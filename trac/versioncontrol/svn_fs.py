@@ -233,7 +233,7 @@ class SubversionRepository(Repository):
         if self.scope == '/':
             return rev - 1
         idx = self.history.index(rev)
-        if idx > 0:
+        if idx + 1 < len(self.history):
             return self.history[idx + 1]
         return None
 
