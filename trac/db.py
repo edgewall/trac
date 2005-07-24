@@ -181,6 +181,21 @@ try:
             if args:
                 sql = sql % tuple(['?'] * len(args[0]))
             sqlite.Cursor.executemany(self, sql, args or [])
+        def _convert_row(self, row):
+            return tuple([isinstance(v, unicode) and v.encode('utf-8') or v
+                         for v in row])
+        def fetchone(self):
+            row = sqlite.Cursor.fetchone(self)
+            return row and self._convert_row(row) or None
+        def fetchmany(self, num):
+            rows = sqlite.Cursor.fetchmany(self, num)
+            return rows != None and [self._convert_row(row)
+                                     for row in rows] or None
+        def fetchall(self):
+            rows = sqlite.Cursor.fetchall(self)
+            return rows != None and [self._convert_row(row)
+                                     for row in rows] or None
+                
 
 except ImportError:
     using_pysqlite2 = False
