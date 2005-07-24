@@ -182,7 +182,7 @@ try:
                 sql = sql % tuple(['?'] * len(args[0]))
             sqlite.Cursor.executemany(self, sql, args or [])
         def _convert_row(self, row):
-            return tuple([not isinstance(v, unicode) and v or v.encode('utf-8')
+            return tuple([(isinstance(v, unicode) and [v.encode('utf-8')] or [v])[0]
                           for v in row])
         def fetchone(self):
             row = sqlite.Cursor.fetchone(self)
