@@ -294,6 +294,9 @@ class SQLiteConnection(ConnectionWrapper):
     to_sql = classmethod(to_sql)
 
 
+psycopg = None
+PgSQL = None
+
 class PostgreSQLConnection(ConnectionWrapper):
     """Connection wrapper for PostgreSQL."""
 
@@ -301,10 +304,29 @@ class PostgreSQLConnection(ConnectionWrapper):
 
     def __init__(self, path, user=None, password=None, host=None, port=None,
                  params={}):
-        from pyPgSQL import libpq, PgSQL
         if path.startswith('/'):
             path = path[1:]
-        cnx = PgSQL.connect('', user, password, host, path, port)
+        # We support both psycopg and PgSQL but prefer psycopg
+        global psycopg
+        global PgSQL
+        if not psycopg and not PgSQL:
+            try:
+                import psycopg
+            except ImportError:
+                from pyPgSQL import PgSQL
+        if psycopg:
+            dsn = []
+            if path:
+                dsn.append('dbname=' + path)
+            if user:
+                dsn.append('user=' + user)
+            if password:
+                dsn.append('password=' + password)
+            if host:
+                dsn.append('host=' + host)
+            cnx = psycopg.connect(' '.join(dsn))
+        else:
+            cnx = PgSQL.connect('', user, password, host, path, port)
         ConnectionWrapper.__init__(self, cnx)
 
     def cast(self, column, type):
@@ -321,7 +343,6 @@ class PostgreSQLConnection(ConnectionWrapper):
         return cursor.fetchone()[0]
 
     def init_db(cls, **args):
-        from pyPgSQL import libpq, PgSQL
         self = cls(**args)
         cursor = self.cursor()
         from trac.db_default import schema
