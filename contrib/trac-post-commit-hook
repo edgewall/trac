@@ -42,7 +42,7 @@
 #  -r "$REV"       \
 #  -u "$AUTHOR"    \
 #  -m "$LOG"       \
-#  -s "$TRACURL"
+#  -s "$TRAC_URL"
 #
 # It searches commit messages for text in the form of:
 #   command #1
