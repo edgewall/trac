@@ -86,7 +86,7 @@ class ReStructuredTextRenderer(Component):
             from docutils.parsers import rst
             from docutils import __version__
         except ImportError:
-            raise TrarError, 'Docutils >= %s not found' % docutils_required
+            raise TracError, 'Docutils not found'
         if StrictVersion(__version__) < StrictVersion('0.3.3'):
             raise TracError, 'Docutils version >= %s required, %s found' \
                              % ('0.3.3', __version__)
