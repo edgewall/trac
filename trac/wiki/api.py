@@ -140,7 +140,7 @@ class WikiSystem(Component):
     # IWikiSyntaxProvider methods
     
     def get_wiki_syntax(self):
-        yield (r"!?(^|(?<=[^A-Za-z]))[A-Z][a-z]+(?:[A-Z][a-z]*[a-z/])+"
+        yield (r"!?(^|(?<=[^A-Za-z/]))[A-Z][a-z]+(?:[A-Z][a-z]*[a-z/])+"
                 "(?:#[A-Za-z0-9]+)?(?=\Z|\s|[.,;:!?\)}\]])",
                lambda x, y, z: self._format_link(x, 'wiki', y, y))
 

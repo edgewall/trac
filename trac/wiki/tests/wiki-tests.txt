@@ -495,3 +495,11 @@ __foo__
 ,,boo,,
 ^baz^
 </p>
+==============================
+/absolute/path/is/NotWiki and relative/path/is/NotWiki
+/ThisIsNotWikiEither and /ThisIs/NotWikiEither but ThisIs/SubWiki
+------------------------------
+<p>
+/absolute/path/is/NotWiki and relative/path/is/NotWiki
+/ThisIsNotWikiEither and /ThisIs/NotWikiEither but <a class="missing wiki" href="/wiki/ThisIs/SubWiki" rel="nofollow">ThisIs/SubWiki?</a>
+</p>
