@@ -32,10 +32,30 @@ from trac.util import escape, http_date, TRUE, enum, href_join
 from trac.web.href import Href
 from trac.web.session import Session
 
+# Environment cache for multithreaded front-ends:
 try:
     import threading
 except ImportError:
-    import dummy_threading as threading
+    has_threads = False
+else:
+    has_threads = True
+    env_cache = {}
+    env_cache_lock = threading.Lock()
+
+def _open_environment(env_path, threaded=True):
+    if not has_threads or not threaded:
+        return open_environment(env_path)
+
+    global env_cache, env_cache_lock
+    env = None
+    env_cache_lock.acquire()
+    try:
+        if not env_path in env_cache:
+            env_cache[env_path] = open_environment(env_path)
+        env = env_cache[env_path]
+    finally:
+        env_cache_lock.release()
+    return env
 
 
 class RequestDone(Exception):
@@ -498,7 +518,7 @@ def send_pretty_error(e, env, req=None):
         req.write('\n')
         req.write(tb.getvalue())
 
-def send_project_index(req, dir, options):
+def send_project_index(req, options, env_paths=None):
     from trac.web.clearsilver import HDFWrapper
 
     if 'TRAC_ENV_INDEX_TEMPLATE' in options:
@@ -517,43 +537,51 @@ def send_project_index(req, dir, options):
         template = req.hdf.parse('''<html>
 <head><title>Available Projects</title></head>
 <body><h1>Available Projects</h1><ul><?cs
- each:project = projects ?><li><a href="<?cs
-  var:project.href ?>"><?cs var:project.name ?></a></li><?cs
+ each:project = projects ?><li><?cs
+  if:project.href ?>
+   <a href="<?cs var:project.href ?>" title="<?cs var:project.description ?>">
+    <?cs var:project.name ?></a><?cs
+  else ?>
+   <small><?cs var:project.name ?>: <em>Error</em> <br />
+   (<?cs var:project.description ?>)</small><?cs
+  /if ?>
+  </li><?cs
  /each ?></ul></body>
 </html>''')
 
+    if not env_paths and 'TRAC_ENV_PARENT_DIR' in options:
+        dir = options['TRAC_ENV_PARENT_DIR']
+        env_paths = [os.path.join(dir, f) for f in os.listdir(dir)]
+
     try:
         projects = []
-        for ids, project in enum(os.listdir(dir)):
-            env_path = os.path.join(dir, project)
+        for env_path in env_paths:
             if not os.path.isdir(env_path):
                 continue
+            env_dir, project = os.path.split(env_path)
             try:
-                env = open_environment(env_path)
-                projects.append({
+                env = _open_environment(env_path)
+                proj = {
                     'name': env.config.get('project', 'name'),
                     'description': env.config.get('project', 'descr'),
                     'href': href_join(req.idx_location, project)
-                })
-            except TracError, e:
-                raise
-# FIXME how should this be done in a cross-frontend way?
-                #req.log_error('Error opening environment at %s: %s'
-                              #% (env_path, e))
+                    }
+            except Exception, e:
+                proj = {
+                    'name': project,
+                    'description': str(e)
+                    }
+            projects.append(proj)
         projects.sort(lambda x, y: cmp(x['name'], y['name']))
         req.hdf['projects'] = projects
 
+        # TODO maybe this should be 404 if index wasn't specifically requested
         req.display(template, response=200)
     except RequestDone:
         pass
 
 
-env_cache = {}
-env_cache_lock = threading.Lock()
-
 def get_environment(req, options, threaded=True):
-    global env_cache, env_cache_lock
-
     if 'TRAC_ENV' in options:
         env_path = options['TRAC_ENV']
     elif 'TRAC_ENV_PARENT_DIR' in options:
@@ -561,25 +589,12 @@ def get_environment(req, options, threaded=True):
         env_name = req.cgi_location.split('/')[-1]
         env_path = os.path.join(env_parent_dir, env_name)
         if not len(env_name) or not os.path.exists(env_path):
-            send_project_index(req, env_parent_dir, options)
             return None
     else:
         raise TracError, \
-              'Missing PythonOption "TracEnv" or "TracEnvParentDir". Trac ' \
-              'requires one of these options to locate the Trac environment(s).' \
-              + str(options)
+              'The environment options "TRAC_ENV" or "TRAC_ENV_PARENT_DIR" ' \
+              'or the mod_python options "TracEnv" or "TracEnvParentDir" ' \
+              'are missing.  Trac requires one of these options to locate ' \
+              'the Trac environment(s).'
 
-    if not threaded:
-        return open_environment(env_path)
-
-    env = None
-    env_cache_lock.acquire()
-    try:
-        if not env_path in env_cache:
-            env_cache[env_path] = open_environment(env_path)
-        env = env_cache[env_path]
-    finally:
-        env_cache_lock.release()
-    return env
-
-
+    return _open_environment(env_path, threaded)

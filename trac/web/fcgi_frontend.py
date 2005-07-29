@@ -22,7 +22,7 @@
 # Author: Matthew Good <trac@matt-good.net>
 
 from trac.web.cgi_frontend import *
-from trac.web.main import RequestDone, get_environment
+from trac.web.main import RequestDone, get_environment, send_project_index
 from trac.util import TracError, enum, href_join
 
 import _thfcgi, locale, sys
@@ -45,6 +45,7 @@ def _handler(_req, _env, _fieldStorage):
       env = get_environment(req, os.environ)
 
       if not env:
+          send_project_index(req, os.environ)
           return
 
       try:  

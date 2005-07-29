@@ -22,7 +22,7 @@
 # Author: Matthew Good <trac@matt-good.net>
 
 from trac.web.main import Request, dispatch_request, send_pretty_error, \
-                          get_environment
+                          get_environment, send_project_index
 
 import cgi
 import locale
@@ -111,6 +111,7 @@ def run():
     env = get_environment(req, os.environ, threaded=False)
 
     if not env:
+        send_project_index(req, os.environ)
         return
 
     try:

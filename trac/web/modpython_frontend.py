@@ -35,7 +35,8 @@ from mod_python import apache, util
 
 from trac.util import http_date, rstrip
 from trac.web.main import Request, RequestDone, dispatch_request, \
-                          send_pretty_error, get_environment
+                          send_pretty_error, get_environment, \
+                          send_project_index
 
 
 class ModPythonRequest(Request):
@@ -187,12 +188,14 @@ def handler(req):
         os.environ['PYTHON_EGG_CACHE'] = req.subprocess_env['PYTHON_EGG_CACHE']
 
     mpr = ModPythonRequest(req, options)
-    env = get_environment(mpr, dict_translate(options,
-                ('TracEnv', 'TRAC_ENV'),
-                ('TracEnvParentDir', 'TRAC_ENV_PARENT_DIR'),
-                ('TracEnvIndexTemplate', 'TRAC_ENV_INDEX_TEMPLATE'),
-                ('TracTemplateVars', 'TRAC_TEMPLATE_VARS')))
+    project_opts = dict_translate(options,
+            ('TracEnv', 'TRAC_ENV'),
+            ('TracEnvParentDir', 'TRAC_ENV_PARENT_DIR'),
+            ('TracEnvIndexTemplate', 'TRAC_ENV_INDEX_TEMPLATE'),
+            ('TracTemplateVars', 'TRAC_TEMPLATE_VARS'))
+    env = get_environment(mpr, project_opts)
     if not env:
+        send_project_index(mpr, project_opts)
         return apache.OK
 
     req.content_type = 'text/html'

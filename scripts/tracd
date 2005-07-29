@@ -25,14 +25,16 @@ from trac.web.standalone import DigestAuth, TracHTTPServer
 import getopt
 import locale
 import sys
-
+import os
 
 def usage():
     print 'usage: %s [options] <projenv> [projenv] ...' % sys.argv[0]
+    print 'usage: %s [options] --env-parent-dir=[path]' % sys.argv[0]
     print '\nOptions:\n'
     print '-a --auth [project],[htdigest_file],[realm]'
     print '-p --port [port]\t\tPort number to use (default: 80)'
     print '-b --hostname [hostname]\tIP to bind to (default: \'\')'
+    print '-e --env-parent-dir <path>\tParent directory of the project environments'
     print
     sys.exit(1)
 
@@ -41,13 +43,16 @@ def main():
     port = 80
     hostname = ''
     auths = {}
-    projects = {}
     daemonize = 0
+    env_parent_dir = None
     try:
-        opts, args = getopt.getopt(sys.argv[1:], "a:p:b:d",
-                                   ["auth=", "port=", "hostname=","daemonize"])
-    except getopt.GetoptError:
+        opts, args = getopt.getopt(sys.argv[1:], "a:p:b:d:e:",
+                                   ["auth=", "port=", "hostname=","daemonize",
+                                    "env-parent-dir="])
+    except getopt.GetoptError, e:
+        print e
         usage()
+
     for o, a in opts:
         if o in ("-a", "--auth"):
             info = a.split(',', 3)
@@ -61,12 +66,14 @@ def main():
             hostname = a
         if o in ("-d","--daemonize"):
             daemonize = 1
+        if o in ("-e", "--env-parent-dir"):
+            env_parent_dir = a
 
-    if not args:
+    if not env_parent_dir and not args:
         usage()
 
     server_address = (hostname, port)
-    httpd = TracHTTPServer(server_address, args, auths)
+    httpd = TracHTTPServer(server_address, env_parent_dir, args, auths)
 
     try:
         if daemonize:
