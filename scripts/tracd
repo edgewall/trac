@@ -34,6 +34,7 @@ def usage():
     print '-a --auth [project],[htdigest_file],[realm]'
     print '-p --port [port]\t\tPort number to use (default: 80)'
     print '-b --hostname [hostname]\tIP to bind to (default: \'\')'
+    print '-d --daemonize\tRun tracd in the background as a daemon'
     print '-e --env-parent-dir <path>\tParent directory of the project environments'
     print
     sys.exit(1)
@@ -46,7 +47,7 @@ def main():
     daemonize = 0
     env_parent_dir = None
     try:
-        opts, args = getopt.getopt(sys.argv[1:], "a:p:b:d:e:",
+        opts, args = getopt.getopt(sys.argv[1:], "a:p:b:de:",
                                    ["auth=", "port=", "hostname=","daemonize",
                                     "env-parent-dir="])
     except getopt.GetoptError, e:
