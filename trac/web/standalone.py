@@ -94,7 +94,7 @@ class DigestAuth:
 
     def do_auth(self, req):
         if not 'Authorization' in req.headers or \
-               req.headers['Authorization'][:6] != 'Digest':
+               not req.headers['Authorization'].startswith('Digest'):
             self.send_auth_request(req)
             return None
         auth = self.parse_auth_header(req.headers['Authorization'][7:])

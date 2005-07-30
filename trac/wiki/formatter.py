@@ -275,7 +275,7 @@ class Formatter(object):
     def _make_link(self, ns, target, match, label):
         if ns in self.link_resolvers:
             return self._link_resolvers[ns](self, ns, target, label)
-        elif target[:2] == '//' or ns == "mailto":
+        elif target.startswith('//') or ns == "mailto":
             return self._make_ext_link(ns+':'+target, label)
         else:
             return match

@@ -275,7 +275,7 @@ class WikiModule(Component):
         newtext = page.text.splitlines()
         context = 3
         for option in diff_options:
-            if option[:2] == '-U':
+            if option.startswith('-U'):
                 context = int(option[2:])
                 break
         changes = hdf_diff(oldtext, newtext, context=context,

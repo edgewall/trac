@@ -370,7 +370,7 @@ class QueryModule(Component):
         for k, v in query.constraints.items():
             constraint = {'values': [], 'mode': ''}
             for val in v:
-                neg = val[:1] == '!'
+                neg = val.startswith('!')
                 if neg:
                     val = val[1:]
                 mode = ''

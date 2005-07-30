@@ -131,11 +131,11 @@ def is_binary(str):
 def detect_unicode(data):
     """Detect different unicode charsets by looking for BOMs (Byte Order
     Marks)."""
-    if data[:2] == '\xff\xfe':
+    if data.startswith('\xff\xfe'):
         return 'utf-16-le'
-    elif data[:2] == '\xfe\xff':
+    elif data.startswith('\xfe\xff'):
         return 'utf-16-be'
-    elif data[:3] == '\xef\xbb\xbf':
+    elif data.startswith('\xef\xbb\xbf'):
         return 'utf-8'
     else:
         return None

@@ -284,7 +284,7 @@ class ReportModule(Component):
             title=col[0].capitalize()
             prefix = 'report.headers.%d' % idx
             req.hdf['%s.real' % prefix] = col[0]
-            if title[:2] == '__' and title[-2:] == '__':
+            if title.startswith('__') and title.endswith('__'):
                 continue
             elif title[0] == '_' and title[-1] == '_':
                 title = title[1:-1].capitalize()
@@ -305,7 +305,7 @@ class ReportModule(Component):
                 colName = cols[x][0]
                 if colName == sortCol:
                     colIndex = x
-                if colName[:2] == '__' and colName[-2:] == '__':
+                if colName.startswith('__') and colName.endswith('__'):
                     hiddenCols += 1
             if colIndex != None:
                 k = 'report.headers.%d.asc' % (colIndex - hiddenCols)
@@ -328,7 +328,7 @@ class ReportModule(Component):
                 column = cols[col_idx][0]
                 value = {}
                 # Special columns begin and end with '__'
-                if column[:2] == '__' and column[-2:] == '__':
+                if column.startswith('__') and column.endswith('__'):
                     value['hidden'] = 1
                 elif (column[0] == '_' and column[-1] == '_'):
                     value['fullrow'] = 1

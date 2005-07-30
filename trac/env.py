@@ -255,7 +255,7 @@ class Environment(Component, ComponentManager):
         import shutil
 
         db_str = self.config.get('trac', 'database')
-        if db_str[:7] != 'sqlite:':
+        if not db_str.startswith('sqlite:'):
             raise EnvironmentError, 'Can only backup sqlite databases'
         db_name = os.path.join(self.path, db_str[7:])
         if not dest:
