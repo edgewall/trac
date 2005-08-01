@@ -146,8 +146,13 @@ class SearchModule(Component):
         req.hdf['title'] = 'Search'
 
         if 'q' in req.args:
-            query = req.args.get('q')
+            query = orig_query = req.args.get('q')
             page = int(req.args.get('page', '1'))
+            redir = self.quickjump(query)
+            if redir:
+                req.redirect(redir)
+            elif query.startswith('!'):
+                query = query[1:]
             # Refuse queries that obviously would result in a huge result set
             if len(query) < 3 and len(query.split()) == 1:
                 raise TracError('Search query too short. '
@@ -163,7 +168,7 @@ class SearchModule(Component):
             results = results[(page-1) * page_size: page * page_size]
 
             req.hdf['title'] = 'Search Results'
-            req.hdf['search.q'] = query.replace('"', "&#34;")
+            req.hdf['search.q'] = orig_query.replace('"', "&#34;")
             req.hdf['search.page'] = page
             req.hdf['search.n_hits'] = n
             req.hdf['search.n_pages'] = n_pages
@@ -196,49 +201,41 @@ class SearchModule(Component):
         add_stylesheet(req, 'css/search.css')
         return 'search.cs', None
 
-    def quickjump(self, query):
-        keywords = query.split(' ')
-        if len(keywords) == 1:
-            kwd = keywords[0]
-            redir = None
-            # Prepending a '!' disables quickjump feature
-            if kwd[0] == '!':
-                keywords[0] = kwd[1:]
-                query = query[1:]
-            # Ticket quickjump
-            elif kwd[0] == '#' and kwd[1:].isdigit():
-                redir = self.env.href.ticket(kwd[1:])
-            elif kwd[0:len('ticket:')] == 'ticket:' and kwd[len('ticket:'):].isdigit():
-                redir = self.env.href.ticket(kwd[len('ticket:'):])
-            elif kwd[0:len('bug:')] == 'bug:' and kwd[len('bug:'):].isdigit():
-                redir = self.env.href.ticket(kwd[len('bug:'):])
-            # Changeset quickjump
-            elif kwd[0] == '[' and kwd[-1] == ']' and kwd[1:-1].isdigit():
-                redir = self.env.href.changeset(kwd[1:-1])
-            elif kwd[0:len('changeset:')] == 'changeset:' and kwd[len('changeset:'):].isdigit():
-                redir = self.env.href.changeset(kwd[len('changeset:'):])
-            # Report quickjump
-            elif kwd[0] == '{' and kwd[-1] == '}' and kwd[1:-1].isdigit():
-                redir = self.env.href.report(kwd[1:-1])
-            elif kwd[0:len('report:')] == 'report:' and kwd[len('report:'):].isdigit():
-                redir = self.env.href.report(kwd[len('report:'):])
-            # Milestone quickjump
-            elif kwd[0:len('milestone:')] == 'milestone:':
-                redir = self.env.href.milestone(kwd[len('milestone:'):])
-            # Source quickjump
-            elif kwd[0:len('source:')] == 'source:':
-                redir = self.env.href.browser(kwd[len('source:'):])
-            # Wiki quickjump
-            elif kwd[0:len('wiki:')] == 'wiki:':
-                r = "((^|(?<=[^A-Za-z]))[!]?[A-Z][a-z/]+(?:[A-Z][a-z/]+)+)"
-                if re.match (r, kwd[len('wiki:'):]):
-                    redir = self.env.href.wiki(kwd[len('wiki:'):])
-            elif kwd[0].isupper() and kwd[1].islower():
-                r = "((^|(?<=[^A-Za-z]))[!]?[A-Z][a-z/]+(?:[A-Z][a-z/]+)+)"
-                if re.match (r, kwd):
-                    redir = self.env.href.wiki(kwd)
-            return redir
-        return None
+    def quickjump(self, kwd):
+        if len(kwd.split()) != 1:
+            return None
+        # Ticket quickjump
+        if kwd[0] == '#' and kwd[1:].isdigit():
+            return self.env.href.ticket(kwd[1:])
+        elif kwd[0:len('ticket:')] == 'ticket:' and kwd[len('ticket:'):].isdigit():
+            return self.env.href.ticket(kwd[len('ticket:'):])
+        elif kwd[0:len('bug:')] == 'bug:' and kwd[len('bug:'):].isdigit():
+            return self.env.href.ticket(kwd[len('bug:'):])
+        # Changeset quickjump
+        elif kwd[0] == '[' and kwd[-1] == ']' and kwd[1:-1].isdigit():
+            return self.env.href.changeset(kwd[1:-1])
+        elif kwd[0:len('changeset:')] == 'changeset:' and kwd[len('changeset:'):].isdigit():
+            return self.env.href.changeset(kwd[len('changeset:'):])
+        # Report quickjump
+        elif kwd[0] == '{' and kwd[-1] == '}' and kwd[1:-1].isdigit():
+            return self.env.href.report(kwd[1:-1])
+        elif kwd[0:len('report:')] == 'report:' and kwd[len('report:'):].isdigit():
+            return self.env.href.report(kwd[len('report:'):])
+        # Milestone quickjump
+        elif kwd[0:len('milestone:')] == 'milestone:':
+            return self.env.href.milestone(kwd[len('milestone:'):])
+        # Source quickjump
+        elif kwd[0:len('source:')] == 'source:':
+            return self.env.href.browser(kwd[len('source:'):])
+        # Wiki quickjump
+        elif kwd[0:len('wiki:')] == 'wiki:':
+            r = "((^|(?<=[^A-Za-z]))[!]?[A-Z][a-z/]+(?:[A-Z][a-z/]+)+)"
+            if re.match (r, kwd[len('wiki:'):]):
+                return self.env.href.wiki(kwd[len('wiki:'):])
+        elif kwd[0].isupper() and kwd[1].islower():
+            r = "((^|(?<=[^A-Za-z]))[!]?[A-Z][a-z/]+(?:[A-Z][a-z/]+)+)"
+            if re.match (r, kwd):
+                return self.env.href.wiki(kwd)
 
     # IWikiSyntaxProvider methods
     
