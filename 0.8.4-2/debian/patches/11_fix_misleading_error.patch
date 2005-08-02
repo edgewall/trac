@@ -1,0 +1,15 @@
+Index: trac/Environment.py
+===================================================================
+--- trac/Environment.py	(revisão 2041)
++++ trac/Environment.py	(cópia de trabalho)
+@@ -82,8 +82,8 @@
+         if not os.access(db_name, os.R_OK + os.W_OK) or \
+                not os.access(directory, os.R_OK + os.W_OK):
+             raise EnvironmentError, \
+-                  'The web server user requires read _and_ write permission\n' \
+-                  'to the database %s and the directory this file is located in.' % db_name
++                  'The user requires read _and_ write permission to the database\n' \
++                  '%s and the directory this file is located in.' % db_name
+         return sqlite.connect(os.path.join(self.path, db_str[7:]),
+                               timeout=10000)
+ 

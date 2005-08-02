@@ -1,0 +1,23 @@
+= Trac Backup =
+Since Trac uses a database backend, it requires some extra care to safely create a backup of a TracEnvironment. Luckily, TracAdmin has a command to make backups easier - '''hotcopy'''.
+
+'''Note:''' Trac uses the ''hotcopy'' nomenclature to match that of [http://subversion.tigris.org/ Subversion], to make it easier to remember when managing both Trac and Subversion servers.
+
+== Creating a Backup ==
+To create a backup of a live TracEnvironment, simply run:
+{{{
+  $ trac-admin /some/where/mytracenv hotcopy /my/vault/mytracenv-backup
+}}}
+
+'''Note:''' TracAdmin will lock the database while copying.
+
+The resulting backup copy is safe to handle using standard file-based backup tools like tar or dump/restore.
+
+
+=== Restoring a Backup ===
+Backups are simply a copied snapshot of the entire TracEnvironment directory structure, including the SQLite database. 
+
+To restore an environment from a backup, simply shut down your Trac service (Web server or tracd), restore the directory structure from backup and restart the service.
+
+----
+See also: TracAdmin, TracGuide

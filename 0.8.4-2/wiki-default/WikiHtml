@@ -1,0 +1,31 @@
+= Using HTML in Wiki Text =
+
+Trac supports inserting HTML into any wiki context, accomplished using the HTML [wiki:WikiProcessors WikiProcessor].
+
+HTML support is built-in, and does not require installing any additional packages.
+
+== How to Use HTML ==
+To inform the wiki engine that a block of text should be treated as HTML, use the ''html'' processor. 
+
+This example should explain:
+{{{
+#!html
+<pre class="wiki">{{{
+#!html
+&lt;h1 style="text-align: right; color: blue"&gt;HTML Test&lt;/h1&gt;
+}}}</pre>
+}}}
+
+Results in:
+{{{
+#!html
+<h1 style="text-align: right; color: blue">HTML Test</h1>
+}}}
+
+== More Information ==
+
+ * http://www.w3.org/ -- World Wide Web Consortium
+ * http://www.w3.org/MarkUp/ -- HTML Markup Home Page
+
+----
+See also:  WikiProcessors, WikiFormatting, WikiRestructuredText

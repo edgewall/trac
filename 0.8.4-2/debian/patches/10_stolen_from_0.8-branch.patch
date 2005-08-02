@@ -1,0 +1,119 @@
+Index: scripts/tracd
+===================================================================
+--- scripts/tracd	(revisão 1817)
++++ scripts/tracd	(revisão 2041)
+@@ -165,6 +165,7 @@
+         if not m:
+             raise trac.util.TracError('Unknown URI')
+         self.project_name, self.path_info, self.query_string = m[0]
++        self.project_name = urllib.unquote(self.project_name)
+         if not self.server.projects.has_key(self.project_name):
+             raise trac.util.TracError('Unknown Project')
+         self.path_info = urllib.unquote(self.path_info)
+@@ -184,7 +185,7 @@
+         self.write('<html><head><title>Available Projects</title></head>')
+         self.write('<body><h1>Available Projects</h1><ul>')
+         for project in self.server.projects.keys():
+-            self.write('<li><a href="%s">%s</a></li>' % (project, project))
++            self.write('<li><a href="%s">%s</a></li>' % (urllib.quote(project), project))
+         self.write('</ul></body><html>')
+ 
+     def do_htdocs_req(self, path):
+Index: trac/core.py
+===================================================================
+--- trac/core.py	(revisão 1817)
++++ trac/core.py	(revisão 2041)
+@@ -407,7 +407,7 @@
+ 
+     authenticator = auth.Authenticator(database, req)
+     if path_info == '/logout':
+-        authenticator.logout()
++        authenticator.logout(req)
+         referer = req.get_header('Referer')
+         if referer and referer[0:len(req.base_url)] != req.base_url:
+             # only redirect to referer if the latter is from the same instance
+Index: trac/util.py
+===================================================================
+--- trac/util.py	(revisão 1817)
++++ trac/util.py	(revisão 2041)
+@@ -317,6 +317,13 @@
+     return d
+ 
+ 
++def quote_cookie_value(path):
++    """
++    Cookie values can not contain " ,;" characters.
++    """
++    return path.replace(' ', '%20').replace(';', '%3B').replace(',', '%3C')
++
++
+ if __name__ == '__main__ ':
+     pass
+     #print pre
+Index: trac/auth.py
+===================================================================
+--- trac/auth.py	(revisão 1817)
++++ trac/auth.py	(revisão 2041)
+@@ -24,6 +24,18 @@
+ 
+ 
+ class Authenticator:
++    """
++    Provides user authentication based on HTTP authentication provided by the
++    web-server, combined with cookies for communicating the login information
++    across the whole site.
++
++    Expects that the web-server is setup so that a request to the path '/login'
++    requires authentication (such as Basic or Digest). The login name is then
++    stored in the database and associated with a unique key that gets passed
++    back to the user agent using the 'trac_auth' cookie. This cookie is used
++    to identify the user in subsequent requests to non-protected resources.
++    """
++    
+     def __init__(self, db, req):
+         self.db = db
+         self.authname = 'anonymous'
+@@ -35,8 +47,16 @@
+                             ,cookie, req.remote_addr)
+             if cursor.rowcount >= 1:
+                 self.authname = cursor.fetchone()[0]
++            else:
++                self.expire_auth_cookie(req)
+ 
+     def login(self, req):
++        """
++        Logs the remote user in. This function expects to be called when the
++        remote user name is available. The user name is inserted into the
++        auth_cookie table and a cookie identifying the user on subsequent
++        requests is sent back to the client.
++        """
+         cursor = self.db.cursor ()
+         cookie = util.hex_entropy()
+         cursor.execute ("INSERT INTO auth_cookie (cookie, name, ipnr, time)" +
+@@ -46,10 +66,24 @@
+         self.db.commit ()
+         self.authname = req.remote_user
+         req.outcookie['trac_auth'] = cookie
+-        req.outcookie['trac_auth']['path'] = req.cgi_location
++        req.outcookie['trac_auth']['path'] = util.quote_cookie_value(req.cgi_location)
+ 
+-    def logout(self):
++    def logout(self, req):
++        """
++        Logs the user out. Simply deletes the corresponding record from the
++        auth_cookie table and instructs the user agent to drop the cookie.
++        """
+         cursor = self.db.cursor ()
+         cursor.execute ("DELETE FROM auth_cookie WHERE name=%s",
+                         self.authname)
+         self.db.commit ()
++        self.expire_auth_cookie(req)
++
++    def expire_auth_cookie(self, req):
++        """
++        Instructs the user agent to drop the auth cookie by setting the "expires" property
++        to a date in the past.
++        """
++        req.outcookie['trac_auth'] = ''
++        req.outcookie['trac_auth']['path'] = util.quote_cookie_value(req.cgi_location)
++        req.outcookie['trac_auth']['expires'] = -10000

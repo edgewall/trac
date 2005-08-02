@@ -1,0 +1,153 @@
+/* Diff preferences */
+#prefs fieldset { margin: 1em .5em .5em; padding: .5em 1em 0 }
+
+/* Diff/change overview */
+#overview {
+ line-height: 130%;
+ margin-top: 1em;
+ padding: .5em;
+}
+#overview dt {
+ font-weight: bold;
+ padding-right: .25em;
+ position: absolute;
+ left: 0;
+ text-align: right;
+ width: 7.75em;
+}
+#overview dd { margin-left: 8em }
+
+/* Colors for change types */
+#overview .mod, .diff #legend .mod { background: #fd8 }
+#overview .rem, .diff #legend .rem { background: #f88 }
+#overview .add, .diff #legend .add { background: #dfd }
+
+/* Legend for diff colors */
+.diff #legend {
+ float: left;
+ font-size: 9px;
+ line-height: 1em;
+ margin: 1em 0;
+ padding: .5em;
+}
+.diff #legend h3 { display: none; }
+.diff #legend dt {
+ background: #fff;
+ border: 1px solid #999;
+ float: left;
+ margin: .1em .5em .1em 2em;
+ overflow: hidden;
+ width: .8em; height: .8em;
+}
+.diff #legend dl, .diff #legend dd {
+ display: inline;
+ float: left;
+ padding: 0;
+ margin: 0;
+ margin-right: .5em;
+}
+
+/* Styles for the list of diffs */
+.diff ul { clear: both; margin: 0; padding: 0 }
+.diff li {
+ background: #f7f7f7;
+ border: 1px solid #d7d7d7;
+ list-style-type: none;
+ margin: 0 0 2em;
+ padding: 2px;
+ position: relative;
+}
+.diff h2 {
+ color: #333;
+ font-size: 14px;
+ letter-spacing: normal;
+ margin: 0 auto;
+ padding: .1em 0 .25em;
+ text-align: center;
+}
+
+/* Styles for the actual diff tables (side-by-side and inline) */
+.diff table {
+ border: 1px solid #ddd;
+ border-spacing: 0;
+ border-top: 0;
+ empty-cells: show;
+ font-size: 12px;
+ line-height: 130%;
+ padding: 0;
+ margin: 0 auto;
+ table-layout: fixed;
+ width: 100%;
+}
+.diff table col.lineno { width: 4em }
+.diff table th {
+ border-right: 1px solid #d7d7d7;
+ border-bottom: 1px solid #998;
+ font-size: 11px;
+}
+.diff table thead th {
+ background: #eee;
+ border-top: 1px solid #d7d7d7;
+ color: #999;
+ padding: 0 .25em;
+ text-align: center;
+ white-space: nowrap;
+}
+.diff table tbody th {
+ background: #eed;
+ color: #886;
+ font-weight: normal;
+ padding: 0 .5em;
+ text-align: right;
+ vertical-align: top;
+}
+.diff table tbody td {
+ background: #fff;
+ font: normal 11px monospace;
+ overflow: hidden;
+ padding: 1px 2px;
+ vertical-align: top;
+}
+.diff table tbody.skippedlines td {
+ background: #f7f7f7;
+ border: 1px solid #d7d7d7;
+}
+.diff table td del, .diff table td ins { text-decoration: none }
+.diff table td del { color: #600 }
+.diff table td ins { color: #060 }
+
+/* Styles for the inline diff */
+.diff table.inline tbody.mod td.base, .diff table.inline tbody.rem td.base {
+ background: #fdd;
+ border-color: #c00;
+ border-style: solid;
+ border-width: 0 1px 0 1px;
+}
+.diff table.inline tbody.mod td.chg, .diff table.inline tbody.add td.chg {
+ background: #dfd;
+ border-color: #0a0;
+ border-style: solid;
+ border-width: 0 1px 0 1px;
+}
+.diff table.inline tbody.mod tr.first td.base,
+.diff table.inline tbody.rem tr.first td.base { border-top-width: 1px }
+.diff table.inline tbody.mod tr.last td.base,
+.diff table.inline tbody.rem tr.last td.base { border-bottom-width: 1px }
+.diff table.inline tbody.mod tr.first td.chg,
+.diff table.inline tbody.add tr.first td.chg { border-top-width: 1px }
+.diff table.inline tbody.mod tr.last td.chg,
+.diff table.inline tbody.add tr.last td.chg { border-bottom-width: 1px }
+.diff table.inline tbody.mod td del { background: #e99; color: #000 }
+.diff table.inline tbody.mod td ins { background: #9e9; color: #000 }
+
+/* Styles for the side-by-side diff */
+.diff table.sidebyside colgroup.content { width: 50% }
+.diff table.sidebyside tbody.mod td.base { background: #fe9 }
+.diff table.sidebyside tbody.mod td.chg { background: #fd8 }
+.diff table.sidebyside tbody.add td.base { background: #dfd }
+.diff table.sidebyside tbody.add td.chg { background: #cfc }
+.diff table.sidebyside tbody.rem td.base { background: #f88 }
+.diff table.sidebyside tbody.rem td.chg { background: #faa }
+.diff table.sidebyside tbody.mod del, .diff table.sidebyside tbody.mod ins {
+ background: #fc0;
+}
