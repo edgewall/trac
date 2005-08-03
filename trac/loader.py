@@ -42,8 +42,8 @@ def load_components(env):
             if name == 'module':
                 loaded_components.append(value)
                 path = env.config.get(section, 'path') or None
-                env.log.debug('Loading component module %s from %s'
-                              % (value, path or 'default path'))
+                env.log.debug('Loading component module %s from %s', value,
+                              path or 'default path')
                 if path:
                     path = [path]
                 try:
@@ -60,6 +60,8 @@ def load_components(env):
         for name in distributions:
             egg = distributions[name][0]
             if egg.metadata.has_metadata(TRAC_META):
+                env.log.debug('Loading component egg %s from %s', egg.name,
+                              egg.path)
                 egg.install_on() # Put the egg on sys.path
                 for module in egg.metadata.get_metadata_lines(TRAC_META):
                     if module not in loaded_components:

@@ -93,7 +93,7 @@ class WikiSystem(Component):
         try:
             now = time.time()
             if now > self._last_index_update + WikiSystem.INDEX_UPDATE_INTERVAL:
-                self.log.debug('Updating wiki page index (%s)' % id(self))
+                self.log.debug('Updating wiki page index')
                 db = self.env.get_db_cnx()
                 cursor = db.cursor()
                 cursor.execute("SELECT DISTINCT name FROM wiki")
