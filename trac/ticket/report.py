@@ -413,12 +413,12 @@ class ReportModule(Component):
         cursor.execute(sql)
 
         # FIXME: fetchall should probably not be used.
-        info = cursor.fetchall()
-        cols = cursor.description
+        info = cursor.fetchall() or []
+        cols = cursor.description or []
 
         db.rollback()
 
-        return [cols, info]
+        return cols, info
 
     def get_info(self, db, id, args):
         if id == -1:
