@@ -96,6 +96,23 @@ class ComponentTestCase(unittest.TestCase):
         ComponentA(self.compmgr).data = 'newtest'
         self.assertEqual('newtest', ComponentA(self.compmgr).data)
 
+    def test_inherited_component_initializer(self):
+        """
+        Makes sure that a the `__init__` method of a components' super-class
+        gets called if the component doesn't override it.
+        """
+        class ComponentA(Component):
+            def __init__(self):
+                self.data = 'foo'
+        class ComponentB(ComponentA):
+            def __init__(self):
+                self.data = 'bar'
+        class ComponentC(ComponentB):
+            pass
+        self.assertEqual('bar', ComponentC(self.compmgr).data)
+        ComponentC(self.compmgr).data = 'baz'
+        self.assertEqual('baz', ComponentC(self.compmgr).data)
+
     def test_implements_called_outside_classdef(self):
         """
         Verify that calling implements() outside a class definition raises an
