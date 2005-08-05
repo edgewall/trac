@@ -208,6 +208,7 @@ class Mimeview(Component):
 
         if filename and not mimetype:
             mimetype = get_mimetype(filename)
+        mimetype = mimetype.split(';')[0].strip() # split off charset
 
         candidates = []
         for renderer in self.renderers:
