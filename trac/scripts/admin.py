@@ -1039,6 +1039,8 @@ class TracAdmin(cmd.Cmd):
             print 'Upgrade done.'
         except Exception, e:
             print "Upgrade failed:", e
+            import traceback
+            traceback.print_exc()
 
     _help_hotcopy = [('hotcopy <backupdir>',
                       'Make a hot backup copy of an environment')]
