@@ -196,11 +196,11 @@ class ReportModule(Component):
         if not row:
             raise util.TracError('Report %s does not exist.' % id,
                                  'Invalid Report Number')
-        req.hdf['title'] = 'Delete Report {%s} %s' % (id, row['title'])
+        req.hdf['title'] = 'Delete Report {%s} %s' % (id, row[0])
         req.hdf['report'] = {
             'id': id,
             'mode': 'delete',
-            'title': util.escape(row['title']),
+            'title': util.escape(row[0]),
             'href': self.env.href.report(id)
         }
 
