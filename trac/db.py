@@ -312,7 +312,10 @@ class PostgreSQLConnection(ConnectionWrapper):
         global PgSQL
         if not psycopg and not PgSQL:
             try:
-                import psycopg
+                try:
+                    import psycopg2 as psycopg
+                except ImportError:
+                    import psycopg
             except ImportError:
                 from pyPgSQL import PgSQL
         if psycopg:
