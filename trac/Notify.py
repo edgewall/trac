@@ -148,7 +148,7 @@ class NotifyEmail(Notify):
             msg[hdr] = mime_headers[hdr]
         self.env.log.debug("Sending SMTP notification to %s on port %d"
                            % (self.smtp_server, self.smtp_port))
-        self.server.sendmail(self.from_email, rcpt, msg.as_string())
+        self.server.sendmail(self.from_email, [rcpt], msg.as_string())
 
     def finish_send(self):
         self.server.quit()
