@@ -55,7 +55,7 @@ class RoadmapModule(Component):
     # IRequestHandler methods
 
     def match_request(self, req):
-        return req.path_info == '/roadmap'
+        return re.match(r'/roadmap/?', req.path_info) is not None
 
     def process_request(self, req):
         req.perm.assert_permission('ROADMAP_VIEW')

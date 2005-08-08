@@ -83,7 +83,7 @@ class TimelineModule(Component):
     # IRequestHandler methods
 
     def match_request(self, req):
-        return req.path_info == '/timeline'
+        return re.match(r'/timeline/?', req.path_info) is not None
 
     def process_request(self, req):
         req.perm.assert_permission('TIMELINE_VIEW')

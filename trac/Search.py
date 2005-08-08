@@ -124,7 +124,7 @@ class SearchModule(Component):
     # IRequestHandler methods
 
     def match_request(self, req):
-        return req.path_info == '/search'
+        return re.match(r'/search/?', req.path_info) is not None
 
     def process_request(self, req):
         req.perm.assert_permission('SEARCH_VIEW')

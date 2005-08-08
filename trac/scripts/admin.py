@@ -722,6 +722,7 @@ class TracAdmin(cmd.Cmd):
         if not cursor.fetchone():
             raise Exception("No such wiki page '%s'" % name)
         cursor.execute("DELETE FROM wiki WHERE name=%s", (name,))
+        cnx.commit()
 
     def _do_wiki_import(self, filename, title, cursor=None):
         if not os.path.isfile(filename):
