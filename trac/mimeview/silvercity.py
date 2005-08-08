@@ -90,6 +90,12 @@ class SilverCityRenderer(Component):
             err = "No SilverCity lexer found for mime-type '%s'." % mimetype
             raise Exception, err
 
+        # SilverCity generates extra empty line against some types of
+        # the line such as comment or #include with CRLF. So we
+        # standardize to LF end-of-line style before call.
+        cr_re = re.compile('\r$', re.MULTILINE)
+        content = crlf_re.sub('', content)
+
         buf = StringIO()
         generator().generate_html(buf, content)
 
