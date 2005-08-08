@@ -118,7 +118,7 @@ class NewticketModule(Component):
         ticket = Ticket(self.env, db=db)
         ticket.values.setdefault('reporter', util.get_reporter_id(req))
         ticket.populate(req.args)
-        ticket.insert(db)
+        ticket.insert(db=db)
         db.commit()
 
         # Notify
