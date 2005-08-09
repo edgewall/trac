@@ -234,7 +234,7 @@ class TicketNotifyEmail(NotifyEmail):
                 width[idx] = len(f)
             if len(fval) > width[idx + 1]:
                 width[idx + 1] = len(fval)
-        format = ('%%%is:  %%-%is  |  ' % (width[1], width[1]),
+        format = ('%%%is:  %%-%is  |  ' % (width[0], width[1]),
                   ' %%%is:  %%-%is%s' % (width[2], width[3], CRLF))
         i = 1
         l = (width[0] + width[1] + 5)
