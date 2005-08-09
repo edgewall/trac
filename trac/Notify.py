@@ -90,8 +90,9 @@ class NotifyEmail(Notify):
 
         # Get the email addresses of all known users
         self.email_map = {}
-        for username,name,email in self.env.get_known_users(self.db):
-            self.email_map[username] = email
+        for username, name, email in self.env.get_known_users(self.db):
+            if email:
+                self.email_map[username] = email
 
     def notify(self, resid, subject):
         self.subject = subject
@@ -306,9 +307,8 @@ class TicketNotifyEmail(NotifyEmail):
         for recipient in recipients:
             if recipient.find('@') >= 0:
                 emails.append(recipient)
-            else:
-                if self.email_map.has_key(recipient):
-                    emails.append(self.email_map[recipient])
+            elif self.email_map.has_key(recipient):
+                emails.append(self.email_map[recipient])
 
         # Remove duplicates
         result = []
