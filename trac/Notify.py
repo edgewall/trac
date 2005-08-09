@@ -168,7 +168,7 @@ class TicketNotifyEmail(NotifyEmail):
         NotifyEmail.__init__(self, env)
         self.prev_cc = []
 
-    def notify(self, ticket, newticket=1, modtime=0):
+    def notify(self, ticket, newticket=True, modtime=0):
         self.ticket = ticket
         self.modtime = modtime
         self.newticket = newticket
@@ -178,8 +178,8 @@ class TicketNotifyEmail(NotifyEmail):
         self.ticket['link'] = self.env.abs_href.ticket(ticket.id)
         self.hdf['email.ticket_props'] = self.format_props()
         self.hdf['email.ticket_body_hdr'] = self.format_hdr()
-        self.hdf['ticket'] = self.ticket
-        self.hdf['ticket.new'] = self.newticket and '1' or '0'
+        self.hdf['ticket'] = self.ticket.values
+        self.hdf['ticket.new'] = self.newticket
         subject = self.format_subj()
         if not self.newticket:
             subject = 'Re: ' + subject
@@ -219,9 +219,10 @@ class TicketNotifyEmail(NotifyEmail):
 
     def format_props(self):
         tkt = self.ticket
-        fields = [f for f in tkt.fields if f['type'] != 'textarea']
+        fields = [f for f in tkt.fields if f['type'] != 'textarea'
+                                       and f['name'] != 'summary']
         t = self.modtime or tkt.time_changed
-        width = [0,0,0,0]
+        width = [0, 0, 0, 0]
         for i, f in enum([f['name'] for f in fields]):
             if not f in tkt.values.keys():
                 continue
@@ -233,10 +234,10 @@ class TicketNotifyEmail(NotifyEmail):
                 width[idx] = len(f)
             if len(fval) > width[idx + 1]:
                 width[idx + 1] = len(fval)
-        format = ('%%%is:  %%-%is  |  ' % (width[2], width[3]),
-                  ' %%%is:  %%-%is%s' % (width[0], width[1], CRLF))
+        format = ('%%%is:  %%-%is  |  ' % (width[1], width[1]),
+                  ' %%%is:  %%-%is%s' % (width[2], width[3], CRLF))
         i = 1
-        l = (width[2] + width[3] + 5)
+        l = (width[0] + width[1] + 5)
         sep = l*'-' + '+' + (self.COLS-l)*'-'
         txt = sep + CRLF
         big = []
@@ -247,7 +248,7 @@ class TicketNotifyEmail(NotifyEmail):
                 big.append((f.capitalize(), fval))
             else:
                 txt += format[i % 2] % (f.capitalize(), fval)
-        if i % 2:
+        if not i % 2:
             txt += '\n'
         if big:
             txt += sep
