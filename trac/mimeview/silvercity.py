@@ -59,6 +59,8 @@ types = {
     'image/svg+xml':['XML']
 }
 
+crlf_re = re.compile('\r$', re.MULTILINE)
+
 
 class SilverCityRenderer(Component):
     """
@@ -93,7 +95,6 @@ class SilverCityRenderer(Component):
         # SilverCity generates extra empty line against some types of
         # the line such as comment or #include with CRLF. So we
         # standardize to LF end-of-line style before call.
-        cr_re = re.compile('\r$', re.MULTILINE)
         content = crlf_re.sub('', content)
 
         buf = StringIO()
