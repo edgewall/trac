@@ -32,6 +32,7 @@ from trac.util import escape, NaivePopen, Deuglifier
 __all__ = ['EnscriptRenderer']
 
 types = {
+    'application/xhtml+xml':    'html',
     'application/postscript':   'postscript',
     'application/x-csh':        'csh',
     'application/x-troff':      'nroff',
@@ -98,9 +99,7 @@ class EnscriptDeuglifier(Deuglifier):
 
 
 class EnscriptRenderer(Component):
-    """
-    Syntax highlighting using GNU Enscript.
-    """
+    """Syntax highlighting using GNU Enscript."""
 
     implements(IHTMLPreviewRenderer)
 

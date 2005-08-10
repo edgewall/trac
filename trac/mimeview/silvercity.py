@@ -39,6 +39,8 @@ __all__ = ['SilverCityRenderer']
 types = {
     'text/css':['CSS'],
     'text/html':['HyperText', {'asp.default.language':1}],
+    'application/xml':['XML'],
+    'application/xhtml+xml':['HyperText', {'asp.default.language':1}],
     'application/x-javascript':['CPP'], # Kludgy.
     'text/x-asp':['HyperText', {'asp.default.language':2}],
     'text/x-c++hdr':['CPP'],
@@ -59,13 +61,11 @@ types = {
     'image/svg+xml':['XML']
 }
 
-crlf_re = re.compile('\r$', re.MULTILINE)
+CRLF_RE = re.compile('\r$', re.MULTILINE)
 
 
 class SilverCityRenderer(Component):
-    """
-    Syntax highlighting based on SilverCity.
-    """
+    """Syntax highlighting based on SilverCity."""
 
     implements(IHTMLPreviewRenderer)
 
@@ -95,7 +95,7 @@ class SilverCityRenderer(Component):
         # SilverCity generates extra empty line against some types of
         # the line such as comment or #include with CRLF. So we
         # standardize to LF end-of-line style before call.
-        content = crlf_re.sub('', content)
+        content = CRLF_RE.sub('', content)
 
         buf = StringIO()
         generator().generate_html(buf, content)
