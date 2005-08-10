@@ -61,23 +61,27 @@ addEvent(window, 'load', function() { document.getElementById('summary').focus()
       if:field.type == 'text' ?><input type="text" id="<?cs
         var:name(field) ?>" name="<?cs
         var:name(field) ?>" value="<?cs var:newticket[name(field)] ?>" /><?cs
-      elif:field.type == 'select' ?><select name="<?cs var:name(field) ?>"><?cs
+      elif:field.type == 'select' ?><select id="<?cs
+        var:name(field) ?>" name="<?cs var:name(field) ?>"><?cs
         if:field.optional ?><option></option><?cs /if ?><?cs
         each:option = field.options ?><option<?cs
          if:option == newticket[name(field)] ?> selected="selected"<?cs /if ?>><?cs
          var:option ?></option><?cs
         /each ?></select><?cs
       elif:field.type == 'checkbox' ?><input type="hidden" name="checkbox_<?cs
-        var:name(field) ?>" /><input type="checkbox" name="<?cs
+        var:name(field) ?>" /><input type="checkbox" id="<?cs
+        var:name(field) ?>" name="<?cs
         var:name(field) ?>" value="1"<?cs
         if:newticket[name(field)] ?> checked="checked"<?cs /if ?> /><?cs
-      elif:field.type == 'textarea' ?><textarea name="<?cs
+      elif:field.type == 'textarea' ?><textarea id="<?cs
+        var:name(field) ?>" name="<?cs
         var:name(field) ?>"<?cs
         if:field.height ?> rows="<?cs var:field.height ?>"<?cs /if ?><?cs
         if:field.width ?> cols="<?cs var:field.width ?>"<?cs /if ?>><?cs
         var:newticket[name(field)] ?></textarea><?cs
       elif:field.type == 'radio' ?><?cs set:optidx = 0 ?><?cs
-       each:option = field.options ?><label><input type="radio" name="<?cs
+       each:option = field.options ?><label><input type="radio" id="<?cs
+         var:name(field) ?>" name="<?cs
          var:name(field) ?>" value="<?cs var:option ?>"<?cs
          if:ticket[name(field)] == option ?> checked="checked"<?cs /if ?> /> <?cs
          var:option ?></label> <?cs set:optidx = optidx + 1 ?><?cs
