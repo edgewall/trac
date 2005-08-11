@@ -168,6 +168,7 @@ class generic_bdist_rpm(bdist_rpm):
         self.packager = "Edgewall Software <info@edgewall.com>"
         for x in rpm_distros[self.distro].keys():
             setattr(self, x, rpm_distros[self.distro][x])
+        self.install_script = "scripts/rpm-install.sh"
 
     def run(self):
         bdist_rpm.run(self)
