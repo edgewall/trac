@@ -28,7 +28,7 @@ import os.path
 from trac.core import *
 from trac.env import open_environment
 from trac.perm import PermissionCache, PermissionError
-from trac.util import escape, http_date, TRUE, enum, href_join
+from trac.util import escape, http_date, TRUE, enum
 from trac.web.href import Href
 from trac.web.session import Session
 
@@ -553,6 +553,7 @@ def send_project_index(req, options, env_paths=None):
         dir = options['TRAC_ENV_PARENT_DIR']
         env_paths = [os.path.join(dir, f) for f in os.listdir(dir)]
 
+    href = Href(req.idx_location)
     try:
         projects = []
         for env_path in env_paths:
@@ -564,13 +565,10 @@ def send_project_index(req, options, env_paths=None):
                 proj = {
                     'name': env.config.get('project', 'name'),
                     'description': env.config.get('project', 'descr'),
-                    'href': href_join(req.idx_location, project)
-                    }
+                    'href': href(project)
+                }
             except Exception, e:
-                proj = {
-                    'name': project,
-                    'description': str(e)
-                    }
+                proj = {'name': project, 'description': str(e)}
             projects.append(proj)
         projects.sort(lambda x, y: cmp(x['name'], y['name']))
         req.hdf['projects'] = projects
