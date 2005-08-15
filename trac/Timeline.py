@@ -148,15 +148,15 @@ class TimelineModule(Component):
 
         # Get the email addresses of all known users
         email_map = {}
-        for username,name,email in self.env.get_known_users():
+        for username, name, email in self.env.get_known_users():
             if email:
                 email_map[username] = email
 
         idx = 0
-        for kind,href,title,date,author,message in events:
+        for kind, href, title, date, author, message in events:
             t = time.localtime(date)
-            event = {'kind': kind, 'title': title,
-                     'author': author or 'anonymous', 'href': href,
+            event = {'kind': kind, 'title': title, 'href': escape(href),
+                     'author': escape(author or 'anonymous'),
                      'date': time.strftime('%x', t),
                      'time': time.strftime('%H:%M', t), 'message': message}
 
@@ -168,9 +168,9 @@ class TimelineModule(Component):
                 if author:
                     # For RSS, author must be an email address
                     if author.find('@') != -1:
-                        event['author.email'] = author
-                    elif author in email_map.keys():
-                        event['author.email'] = email_map[author]
+                        event['author.email'] = escape(author)
+                    elif email_map.has_key(author):
+                        event['author.email'] = escape(email_map[author])
                 event['date'] = http_date(time.mktime(t))
 
             req.hdf['timeline.events.%s' % idx] = event

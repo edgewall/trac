@@ -22,7 +22,7 @@ addEvent(window, 'load', function() { document.getElementById('summary').focus()
     var:newticket.summary ?>"/>
  </div><?cs
  if:len(newticket.fields.type.options) ?>
-  <div class="field"><label for="type">Type: <?cs
+  <div class="field"><label for="type">Type:</label> <?cs
    call:hdf_select(newticket.fields.type.options, 'type',
                    newticket.type, 0) ?>
   </div><?cs

@@ -39,7 +39,7 @@ each:event = timeline.events ?><?cs
    var:event.message ?></dd><?cs
   /if ?><?cs
 /each ?><?cs
-if:len(timeline.items) ?></dl><?cs /if ?>
+if:len(timeline.events) ?></dl><?cs /if ?>
 
 <div id="help">
  <hr />
