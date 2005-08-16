@@ -37,7 +37,7 @@ class WikiPage(object):
         if name:
             self._fetch(name, version, db)
         else:
-            self.version = -1
+            self.version = 0
             self.text = ''
             self.readonly = 0
         self.old_text = self.text
@@ -62,11 +62,11 @@ class WikiPage(object):
             self.text = text
             self.readonly = readonly and int(readonly) or 0
         else:
-            self.version = -1
+            self.version = 0
             self.text = ''
             self.readonly = 0
 
-    exists = property(fget=lambda self: self.version >= 0)
+    exists = property(fget=lambda self: self.version > 0)
 
     def delete(self, version=None, db=None):
         assert self.exists, 'Cannot delete non-existent page'
@@ -136,7 +136,7 @@ class WikiPage(object):
             db.commit()
 
         for listener in WikiSystem(self.env).change_listeners:
-            if self.version == 0:
+            if self.version == 1:
                 listener.wiki_page_added(self)
             else:
                 listener.wiki_page_changed(self, self.version, t, author,

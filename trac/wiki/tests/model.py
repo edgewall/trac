@@ -33,7 +33,7 @@ class WikiPageTestCase(unittest.TestCase):
         page = WikiPage(self.env)
         self.assertEqual(False, page.exists)
         self.assertEqual(None, page.name)
-        self.assertEqual(-1, page.version)
+        self.assertEqual(0, page.version)
         self.assertEqual('', page.text)
         self.assertEqual(0, page.readonly)
 
@@ -61,7 +61,7 @@ class WikiPageTestCase(unittest.TestCase):
         cursor = self.db.cursor()
         cursor.execute("SELECT version,time,author,ipnr,text,comment,"
                        "readonly FROM wiki WHERE name=%s", ('TestPage',))
-        self.assertEqual((0, 42, 'joe', '::1', 'Bla bla', 'Testing', 0),
+        self.assertEqual((1, 42, 'joe', '::1', 'Bla bla', 'Testing', 0),
                          cursor.fetchone())
 
         listener = TestWikiChangeListener(self.env)
@@ -70,7 +70,7 @@ class WikiPageTestCase(unittest.TestCase):
     def test_update_page(self):
         cursor = self.db.cursor()
         cursor.execute("INSERT INTO wiki VALUES(%s,%s,%s,%s,%s,%s,%s,%s)",
-                       ('TestPage', 0, 42, 'joe', '::1', 'Bla bla', 'Testing',
+                       ('TestPage', 1, 42, 'joe', '::1', 'Bla bla', 'Testing',
                         0))
 
         page = WikiPage(self.env, 'TestPage')
@@ -79,26 +79,26 @@ class WikiPageTestCase(unittest.TestCase):
 
         cursor.execute("SELECT version,time,author,ipnr,text,comment,"
                        "readonly FROM wiki WHERE name=%s", ('TestPage',))
-        self.assertEqual((0, 42, 'joe', '::1', 'Bla bla', 'Testing', 0),
+        self.assertEqual((1, 42, 'joe', '::1', 'Bla bla', 'Testing', 0),
                          cursor.fetchone())
-        self.assertEqual((1, 43, 'kate', '192.168.0.101', 'Bla',
+        self.assertEqual((2, 43, 'kate', '192.168.0.101', 'Bla',
                           'Changing', 0), cursor.fetchone())
 
         listener = TestWikiChangeListener(self.env)
-        self.assertEqual((page, 1, 43, 'kate', 'Changing', '192.168.0.101'),
+        self.assertEqual((page, 2, 43, 'kate', 'Changing', '192.168.0.101'),
                          listener.changed[0])
 
         page = WikiPage(self.env, 'TestPage')
         history = list(page.get_history())
         self.assertEqual(2, len(history))
-        self.assertEqual((1, 43, 'kate', 'Changing', '192.168.0.101'),
+        self.assertEqual((2, 43, 'kate', 'Changing', '192.168.0.101'),
                          history[0])
-        self.assertEqual((0, 42, 'joe', 'Testing', '::1'), history[1])
+        self.assertEqual((1, 42, 'joe', 'Testing', '::1'), history[1])
 
     def test_delete_page(self):
         cursor = self.db.cursor()
         cursor.execute("INSERT INTO wiki VALUES(%s,%s,%s,%s,%s,%s,%s,%s)",
-                       ('TestPage', 0, 42, 'joe', '::1', 'Bla bla', 'Testing',
+                       ('TestPage', 1, 42, 'joe', '::1', 'Bla bla', 'Testing',
                         0))
 
         page = WikiPage(self.env, 'TestPage')
@@ -114,17 +114,17 @@ class WikiPageTestCase(unittest.TestCase):
     def test_delete_page_version(self):
         cursor = self.db.cursor()
         cursor.executemany("INSERT INTO wiki VALUES(%s,%s,%s,%s,%s,%s,%s,%s)",
-                           [('TestPage', 0, 42, 'joe', '::1', 'Bla bla',
+                           [('TestPage', 1, 42, 'joe', '::1', 'Bla bla',
                             'Testing', 0),
-                            ('TestPage', 1, 43, 'kate', '192.168.0.101', 'Bla',
+                            ('TestPage', 2, 43, 'kate', '192.168.0.101', 'Bla',
                             'Changing', 0)])
 
         page = WikiPage(self.env, 'TestPage')
-        page.delete(version=1)
+        page.delete(version=2)
 
         cursor.execute("SELECT version,time,author,ipnr,text,comment,"
                        "readonly FROM wiki WHERE name=%s", ('TestPage',))
-        self.assertEqual((0, 42, 'joe', '::1', 'Bla bla', 'Testing', 0),
+        self.assertEqual((1, 42, 'joe', '::1', 'Bla bla', 'Testing', 0),
                          cursor.fetchone())
         self.assertEqual(None, cursor.fetchone())
 
@@ -134,11 +134,11 @@ class WikiPageTestCase(unittest.TestCase):
     def test_delete_page_last_version(self):
         cursor = self.db.cursor()
         cursor.execute("INSERT INTO wiki VALUES(%s,%s,%s,%s,%s,%s,%s,%s)",
-                       ('TestPage', 0, 42, 'joe', '::1', 'Bla bla', 'Testing',
+                       ('TestPage', 1, 42, 'joe', '::1', 'Bla bla', 'Testing',
                         0))
 
         page = WikiPage(self.env, 'TestPage')
-        page.delete(version=0)
+        page.delete(version=1)
 
         cursor.execute("SELECT version,time,author,ipnr,text,comment,"
                        "readonly FROM wiki WHERE name=%s", ('TestPage',))
