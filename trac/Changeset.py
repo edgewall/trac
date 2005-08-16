@@ -34,6 +34,7 @@ from trac.versioncontrol.svn_authz import SubversionAuthorizer
 from trac.versioncontrol.diff import get_diff_options, hdf_diff, unified_diff
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
 from trac.Search import ISearchSource, query_to_sql, shorten_result
+from trac.Browser import HIDDEN_PROPERTIES
 from trac.web.main import IRequestHandler
 from trac.wiki import wiki_to_html, wiki_to_oneliner, IWikiSyntaxProvider
 
@@ -205,6 +206,9 @@ class ChangesetModule(Component):
                 for k,v in new_props.items():
                     if not k in old_props:
                         changed_props[k] = {'new': v}
+                for k in HIDDEN_PROPERTIES:
+                    if k in changed_props:
+                        del changed_props[k]
                 req.hdf['changeset.changes.%d.props' % idx] = changed_props
 
             if kind == Node.DIRECTORY:
