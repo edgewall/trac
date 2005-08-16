@@ -503,3 +503,11 @@ __foo__
 /absolute/path/is/NotWiki and relative/path/is/NotWiki
 /ThisIsNotWikiEither and /ThisIs/NotWikiEither but <a class="missing wiki" href="/wiki/ThisIs/SubWiki" rel="nofollow">ThisIs/SubWiki?</a>
 </p>
+==============================
+|| a || 
+|| b ||
+------------------------------
+<table class="wiki">
+<tr><td> a 
+</td></tr><tr><td> b 
+</td></tr></table>

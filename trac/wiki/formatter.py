@@ -144,7 +144,7 @@ class Formatter(object):
                    r"(?P<list>^(?P<ldepth>\s+)(?:\*|\d+\.) )",
                    r"(?P<definition>^\s+(.+)::)\s*",
                    r"(?P<indent>^(?P<idepth>\s+)(?=\S))",
-                   r"(?P<last_table_cell>\|\|$)",
+                   r"(?P<last_table_cell>\|\|\s*$)",
                    r"(?P<table_cell>\|\|)"]
 
     _compiled_rules = None
