@@ -137,9 +137,12 @@ class EnvironmentStub(ComponentManager):
 
         from trac.web.href import Href
         self.href = Href('/trac.cgi')
+        self.abs_href = Href('http://example.org/trac.cgi')
 
+        from trac import db_default
+        for section, name, value in db_default.default_config:
+            self.config.set(section, name, value)
         if default_data:
-            from trac import db_default
             cursor = self.db.cursor()
             for table, cols, vals in db_default.data:
                 cursor.executemany("INSERT INTO %s (%s) VALUES (%s)"

@@ -1,7 +1,8 @@
-from trac.attachment import Attachment
+from trac.attachment import Attachment, AttachmentModule
 from trac.config import Configuration
 from trac.log import logger_factory
 from trac.test import EnvironmentStub, Mock
+from trac.wiki.formatter import Formatter
 
 import os
 import os.path
@@ -107,6 +108,83 @@ class AttachmentTestCase(unittest.TestCase):
         os.unlink(attachment.path)
 
         attachment.delete()
+
+
+class AttachmentModuleTestCase(unittest.TestCase):
+
+    def setUp(self):
+        self.env = EnvironmentStub()
+        self.env.path = os.path.join(tempfile.gettempdir(), 'trac-tempenv')
+        os.mkdir(self.env.path)
+        self.attachments_dir = os.path.join(self.env.path, 'attachments')
+
+    def tearDown(self):
+        shutil.rmtree(self.env.path)
+
+    def test_wiki_link_wikipage(self):
+        attachment = Attachment(self.env, 'wiki', 'SomePage')
+        attachment.insert('foo.txt', tempfile.TemporaryFile(), 0)
+
+        ns, func = AttachmentModule(self.env).get_link_resolvers().next()
+        self.assertEqual('attachment', ns)
+
+        req = Mock(path_info='/wiki/SomePage')
+        formatter = Formatter(self.env, req)
+        self.assertEqual('<a class="attachment" title="Attachment SomePage: '
+                         'foo.txt" href="/trac.cgi/attachment/wiki/SomePage/'
+                         'foo.txt">Foo</a>',
+                         func(formatter, ns, 'foo.txt', 'Foo'))
+        self.assertEqual('<a class="attachment" title="Attachment SomePage: '
+                         'foo.txt" href="/trac.cgi/attachment/wiki/SomePage/'
+                         'foo.txt?format=raw">Foo</a>',
+                         func(formatter, ns, 'foo.txt?format=raw', 'Foo'))
+
+    def test_wiki_link_subpage(self):
+        attachment = Attachment(self.env, 'wiki', 'SomePage/SubPage')
+        attachment.insert('foo.txt', tempfile.TemporaryFile(), 0)
+
+        ns, func = AttachmentModule(self.env).get_link_resolvers().next()
+        self.assertEqual('attachment', ns)
+
+        req = Mock(path_info='/wiki/SomePage/SubPage')
+        formatter = Formatter(self.env, req)
+        self.assertEqual('<a class="attachment" '
+                         'title="Attachment SomePage/SubPage: foo.txt" '
+                         'href="/trac.cgi/attachment/wiki/SomePage/SubPage/'
+                         'foo.txt">Foo</a>',
+                         func(formatter, ns, 'foo.txt', 'Foo'))
+
+    def test_wiki_link_ticket(self):
+        attachment = Attachment(self.env, 'ticket', 123)
+        attachment.insert('foo.txt', tempfile.TemporaryFile(), 0)
+
+        ns, func = AttachmentModule(self.env).get_link_resolvers().next()
+        self.assertEqual('attachment', ns)
+
+        req = Mock(path_info='/ticket/123')
+        formatter = Formatter(self.env, req)
+        self.assertEqual('<a class="attachment" title="Attachment #123: '
+                         'foo.txt" href="/trac.cgi/attachment/ticket/123/'
+                         'foo.txt">Foo</a>',
+                         func(formatter, ns, 'foo.txt', 'Foo'))
+        self.assertEqual('<a class="attachment" title="Attachment #123: '
+                         'foo.txt" href="/trac.cgi/attachment/ticket/123/'
+                         'foo.txt?format=raw">Foo</a>',
+                         func(formatter, ns, 'foo.txt?format=raw', 'Foo'))
+
+    def test_wiki_link_foreign(self):
+        attachment = Attachment(self.env, 'ticket', 123)
+        attachment.insert('foo.txt', tempfile.TemporaryFile(), 0)
+
+        ns, func = AttachmentModule(self.env).get_link_resolvers().next()
+        self.assertEqual('attachment', ns)
+
+        req = Mock(path_info='/wiki')
+        formatter = Formatter(self.env, req)
+        self.assertEqual('<a class="attachment" title="Attachment #123: '
+                         'foo.txt" href="/trac.cgi/attachment/ticket/123/'
+                         'foo.txt">Foo</a>',
+                         func(formatter, ns, 'ticket:123:foo.txt', 'Foo'))
 
 
 def suite():

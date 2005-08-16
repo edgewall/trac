@@ -446,27 +446,31 @@ class AttachmentModule(Component):
 
     def _format_link(self, formatter, ns, link, label):
         ids = link.split(':', 2)
+        params = ''
         if len(ids) == 3:
             parent_type, parent_id, filename = ids
         else:
-            # FIXME: the formatter should know to which object belongs
-            #        the text being formatted
-            #        (this info will also be required for TracCrossReferences)
-            # Kludge for now: try to get the source object from the 
-            #                 request's path_info, or revert to sane defaults
+            # FIXME: the formatter should know which object the text being
+            #        formatter belongs to
             parent_type, parent_id = 'wiki', 'WikiStart'
             if formatter.req:
-                path_info = formatter.req.path_info.split('/',2)
+                path_info = formatter.req.path_info.split('/', 2)
                 if len(path_info) > 1:
                     parent_type = path_info[1]
                 if len(path_info) > 2:
                     parent_id = path_info[2]
-            filename = link
+            idx = link.find('?')
+            if idx < 0:
+                filename = link
+            else:
+                filename = link[:idx]
+                params = link[idx:]
         try:
             attachment = Attachment(self.env, parent_type, parent_id, filename)
-            return '<a class="attachment" title="%s" href="%s">%s</a>' \
-                   % ('Attachment ' + attachment.title,
-                      attachment.href(), label)
+            return '<a class="attachment" title="Attachment %s" href="%s">%s</a>' \
+                   % (util.escape(attachment.title),
+                      util.escape(attachment.href() + params),
+                      util.escape(label))
         except TracError:
             return '<a class="missing attachment" href="%s" rel="nofollow">%s</a>' \
                    % (self.env.href.wiki(), label)
