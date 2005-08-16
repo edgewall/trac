@@ -209,13 +209,14 @@ class Chrome(Component):
             if not logo_src.startswith('/') and not logo_src_abs:
                 logo_src = htdocs_location + logo_src
             req.hdf['chrome.logo'] = {
-                'link': logo_link, 'src': logo_src, 'src_abs': logo_src_abs,
+                'link': util.escape(logo_link), util.escape('src'): logo_src,
+                'src_abs': util.escape(logo_src_abs),
                 'alt': util.escape(self.config.get('header_logo', 'alt')),
                 'width': self.config.get('header_logo', 'width') or None,
                 'height': self.config.get('header_logo', 'height') or None
             }
         else:
-            req.hdf['chrome.logo.link'] = logo_link
+            req.hdf['chrome.logo.link'] = util.escape(logo_link)
 
         # Navigation links
         navigation = {}

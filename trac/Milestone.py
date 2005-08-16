@@ -204,10 +204,10 @@ def calc_ticket_stats(tickets):
     }
 
 def milestone_to_hdf(env, db, req, milestone):
-    hdf = {'name': milestone.name,
-           'href': env.href.milestone(milestone.name)}
+    hdf = {'name': escape(milestone.name),
+           'href': escape(env.href.milestone(milestone.name))}
     if milestone.description:
-        hdf['description_source'] = milestone.description
+        hdf['description_source'] = escape(milestone.description)
         hdf['description'] = wiki_to_html(milestone.description, env, req, db)
     if milestone.due:
         hdf['due'] = milestone.due

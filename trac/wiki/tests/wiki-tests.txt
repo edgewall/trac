@@ -233,10 +233,10 @@ query:milestone!=
 <a class="query" href="/query?order=priority">query:?order=priority</a>
 </p>
 <p>
-<a class="query" href="/query?status=new&status=reopened&order=priority">query:status=new|reopened</a>
+<a class="query" href="/query?status=new&amp;status=reopened&amp;order=priority">query:status=new|reopened</a>
 </p>
 <p>
-<a class="query" href="/query?milestone=%21&order=priority">query:milestone!=</a>
+<a class="query" href="/query?milestone=%21&amp;order=priority">query:milestone!=</a>
 </p>
 ==============================
 {{{
