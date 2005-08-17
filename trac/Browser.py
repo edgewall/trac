@@ -36,10 +36,6 @@ from trac.versioncontrol import Changeset
 
 CHUNK_SIZE = 4096
 DISP_MAX_FILE_SIZE = 256 * 1024
-# The following list of (subversion) properties are human-unreadable and
-# confusing for the average user, and are thus hidden in the browser
-# and Changeset views.
-HIDDEN_PROPERTIES = ['svk:merge']
 
 rev_re = re.compile(r"([^#]+)#(.+)")
 img_re = re.compile(r"\.(gif|jpg|jpeg|png)(\?.*)?$", re.IGNORECASE)
@@ -156,13 +152,16 @@ class BrowserModule(Component):
         repos = self.env.get_repository(req.authname)
         node = repos.get_node(path, rev)
 
+        hidden_properties = [p.strip() for p
+                             in self.config.get('browser', 'hide_properties',
+                                                'svk:merge').split(',')]
         req.hdf['title'] = path
         req.hdf['browser'] = {
             'path': path,
             'revision': rev or repos.youngest_rev,
             'props': dict([(util.escape(name), util.escape(value))
                            for name, value in node.get_properties().items()
-                           if not name in HIDDEN_PROPERTIES]),
+                           if not name in hidden_properties]),
             'href': self.env.href.browser(path,rev=rev or repos.youngest_rev),
             'log_href': self.env.href.log(path)
         }

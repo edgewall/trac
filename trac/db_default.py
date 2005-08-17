@@ -459,6 +459,7 @@ default_config = \
   ('notification', 'smtp_replyto', 'trac@localhost'),
   ('timeline', 'changeset_show_files', '0'),
   ('timeline', 'default_daysback', '30'),
+  ('browser', 'hide_properties', 'svk:merge'),
 )
 
 default_components = ('trac.About', 'trac.attachment', 'trac.Browser',
