@@ -348,8 +348,8 @@ class AbstractEnum(object):
         cursor = db.cursor()
         self.env.log.info('Updating %s "%s"' % (self.type, self.name))
         cursor.execute("UPDATE enum SET name=%s,value=%s "
-                       "WHERE type=%s AND value=%s",
-                       (self.name, self.value, self.type, self._old_value))
+                       "WHERE type=%s AND name=%s",
+                       (self.name, self.value, self.type, self._old_name))
         if self.name != self._old_name:
             # Update tickets
             cursor.execute("UPDATE ticket SET %s=%%s WHERE %s=%%s" %
@@ -368,8 +368,8 @@ class AbstractEnum(object):
                        "ORDER BY value", (cls.type,))
         for name, value in cursor:
             obj = cls(env)
-            obj.name = name
-            obj.value = value
+            obj.name = obj._old_name = name
+            obj.value = obj._old_value = value
             yield obj
     select = classmethod(select)
 
