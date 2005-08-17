@@ -152,12 +152,6 @@ def shorten_line(text, maxlen = 75):
             shortline = text[:i]+' ...'
     return shortline
 
-def quote_cookie_value(path):
-    """
-    Cookie values can not contain " ,;" characters.
-    """
-    return path.replace(' ', '%20').replace(';', '%3B').replace(',', '%3C')
-
 def hex_entropy(bytes=32):
     import md5
     import random

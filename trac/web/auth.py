@@ -20,57 +20,84 @@
 # Author: Jonas Borgström <jonas@edgewall.com>
 
 from __future__ import generators
-
+import re
 import time
 
-from trac import util
 from trac.core import *
+from trac.web.api import IAuthenticator, IRequestHandler
 from trac.web.chrome import INavigationContributor
+from trac.util import escape, hex_entropy, TRUE
 
 
-class Authenticator:
+class LoginModule(Component):
     """Implements user authentication based on HTTP authentication provided by
     the web-server, combined with cookies for communicating the login
     information across the whole site.
-    
-    Expects that the web-server is setup so that a request to the path '/login'
-    requires authentication (such as Basic or Digest). The login name is then
-    stored in the database and associated with a unique key that gets passed
-    back to the user agent using the 'trac_auth' cookie. This cookie is used
-    to identify the user in subsequent requests to non-protected resources.
+
+    This mechanism expects that the web-server is setup so that a request to the
+    path '/login' requires authentication (such as Basic or Digest). The login
+    name is then stored in the database and associated with a unique key that
+    gets passed back to the user agent using the 'trac_auth' cookie. This cookie
+    is used to identify the user in subsequent requests to non-protected
+    resources.
     """
 
-    def __init__(self, db, req, check_ip=True, ignore_case=False):
-        self.db = db
-        self.authname = 'anonymous'
-        self.ignore_case = ignore_case
+    implements(IAuthenticator, INavigationContributor, IRequestHandler)
 
-        if req.incookie.has_key('trac_auth'):
-            cookie = req.incookie['trac_auth'].value
-            cursor = db.cursor()
-            if check_ip:
-                cursor.execute("SELECT name FROM auth_cookie "
-                               "WHERE cookie=%s AND ipnr=%s",
-                               (cookie, req.remote_addr))
-            else:
-                cursor.execute("SELECT name FROM auth_cookie WHERE cookie=%s",
-                               (cookie,))
-            row = cursor.fetchone()
-            if row:
-                self.authname = row[0]
-            else:
-                # Tell the user to drop any auth_cookie for which no
-                # corresponding entry in our cookie table exists.
-                self.expire_auth_cookie(req)
+    # IAuthenticator methods
 
-    def login(self, req):
+    def authenticate(self, req):
+        authname = None
+        if req.remote_user:
+            authname = req.remote_user
+        elif req.incookie.has_key('trac_auth'):
+            authname = self._get_name_for_cookie(req, req.incookie['trac_auth'])
+
+        if not authname:
+            return None
+
+        ignore_case = self.env.config.get('trac', 'ignore_auth_case')
+        ignore_case = ignore_case.strip().lower() in TRUE
+        if ignore_case:
+            authname = authname.lower()
+        return authname
+
+    # INavigationContributor methods
+
+    def get_active_navigation_item(self, req):
+        return 'login'
+
+    def get_navigation_items(self, req):
+        if req.authname and req.authname != 'anonymous':
+            yield 'metanav', 'login', 'logged in as %s' % escape(req.authname)
+            yield 'metanav', 'logout', '<a href="%s">Logout</a>' \
+                  % escape(self.env.href.logout())
+        else:
+            yield 'metanav', 'login', '<a href="%s">Login</a>' \
+                  % escape(self.env.href.login())
+
+    # IRequestHandler methods
+
+    def match_request(self, req):
+        return re.match('/(login|logout)/?', req.path_info)
+
+    def process_request(self, req):
+        if req.path_info.startswith('/login'):
+            self._do_login(req)
+        elif req.path_info.startswith('/logout'):
+            self._do_logout(req)
+        self._redirect_back(req)
+
+    # Internal methods
+
+    def _do_login(self, req):
         """Log the remote user in.
-        
+
         This function expects to be called when the remote user name is
         available. The user name is inserted into the `auth_cookie` table and a
         cookie identifying the user on subsequent requests is sent back to the
         client.
-        
+
         If the Authenticator was created with `ignore_case` set to true, then 
         the authentication name passed from the web server in req.remote_user
         will be converted to lower case before being used. This is to avoid
@@ -78,65 +105,81 @@ class Authenticator:
         case sensitive regarding user names and domain names
         """
         assert req.remote_user, 'Authentication information not available.'
-        
+
         remote_user = req.remote_user
-        if self.ignore_case:
+        ignore_case = self.env.config.get('trac', 'ignore_auth_case')
+        ignore_case = ignore_case.strip().lower() in TRUE
+        if ignore_case:
             remote_user = remote_user.lower()
 
-        if self.authname == remote_user:
-            # Already logged in with the same user name
-            return
-        assert self.authname == 'anonymous', \
-               'Already logged in as %s.' % self.authname
+        assert req.authname in ('anonymous', remote_user), \
+               'Already logged in as %s.' % req.authname
 
-        cookie = util.hex_entropy()
-        cursor = self.db.cursor()
+        cookie = hex_entropy()
+        db = self.env.get_db_cnx()
+        cursor = db.cursor()
         cursor.execute("INSERT INTO auth_cookie (cookie,name,ipnr,time) "
-                       "VALUES (%s, %s, %s, %s)",
-                       (cookie, remote_user, req.remote_addr, int(time.time())))
-        self.db.commit()
-        self.authname = remote_user
-        req.outcookie['trac_auth'] = cookie
-        req.outcookie['trac_auth']['path'] = util.quote_cookie_value(req.cgi_location)
+                       "VALUES (%s, %s, %s, %s)", (cookie, remote_user,
+                       req.remote_addr, int(time.time())))
+        db.commit()
 
-    def logout(self, req):
+        req.authname = remote_user
+        req.outcookie['trac_auth'] = cookie
+        req.outcookie['trac_auth']['path'] = self.env.href()
+
+    def _do_logout(self, req):
         """Log the user out.
-        
+
         Simply deletes the corresponding record from the auth_cookie table.
         """
-        if self.authname == 'anonymous':
+        if req.authname == 'anonymous':
             # Not logged in
             return
 
-        cursor = self.db.cursor()
         # While deleting this cookie we also take the opportunity to delete
         # cookies older than 10 days
+        db = self.env.get_db_cnx()
+        cursor = db.cursor()
         cursor.execute("DELETE FROM auth_cookie WHERE name=%s OR time < %s",
-                       (self.authname, int(time.time()) - 86400 * 10))
-        self.db.commit()
-        self.expire_auth_cookie(req)
+                       (req.authname, int(time.time()) - 86400 * 10))
+        db.commit()
+        self._expire_cookie(req)
 
-    def expire_auth_cookie(self, req):
+    def _expire_cookie(self, req):
         """Instruct the user agent to drop the auth cookie by setting the
         "expires" property to a date in the past.
         """
         req.outcookie['trac_auth'] = ''
-        req.outcookie['trac_auth']['path'] = util.quote_cookie_value(req.cgi_location)
+        req.outcookie['trac_auth']['path'] = self.env.href()
         req.outcookie['trac_auth']['expires'] = -10000
 
+    def _get_name_for_cookie(self, req, cookie):
+        check_ip = self.env.config.get('trac', 'check_auth_ip')
+        check_ip = check_ip.strip().lower() in TRUE
 
-class LoginModule(Component):
-
-    implements(INavigationContributor)
-
-    # INavigationContributor methods
-
-    def get_navigation_items(self, req):
-        if req.authname and req.authname != 'anonymous':
-            yield 'metanav', 'login', 'logged in as %s' \
-                  % util.escape(req.authname)
-            yield 'metanav', 'logout', '<a href="%s">Logout</a>' \
-                  % util.escape(self.env.href.logout())
+        db = self.env.get_db_cnx()
+        cursor = db.cursor()
+        if check_ip:
+            cursor.execute("SELECT name FROM auth_cookie "
+                           "WHERE cookie=%s AND ipnr=%s",
+                           (cookie.value, req.remote_addr))
         else:
-            yield 'metanav', 'login', '<a href="%s">Login</a>' \
-                  % util.escape(self.env.href.login())
+            cursor.execute("SELECT name FROM auth_cookie WHERE cookie=%s",
+                           (cookie.value,))
+        row = cursor.fetchone()
+        if not row:
+            # The cookie is invalid (or has been purged from the database), so
+            # tell the user agent to drop it as it is invalid
+            self._expire_cookie(req)
+            return None
+
+        return row[0]
+
+    def _redirect_back(self, req):
+        """Redirect the user back to the URL she came from."""
+        referer = req.get_header('Referer')
+        if referer and not referer.startswith(req.base_url):
+            # only redirect to referer if the latter is from the same
+            # instance
+            referer = None
+        req.redirect(referer or self.env.abs_href())

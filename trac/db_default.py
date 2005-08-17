@@ -470,4 +470,4 @@ default_components = ('trac.About', 'trac.attachment', 'trac.Browser',
                       'trac.wiki.macros', 'trac.mimeview.enscript',
                       'trac.mimeview.patch', 'trac.mimeview.php',
                       'trac.mimeview.rst', 'trac.mimeview.silvercity',
-                      'trac.mimeview.txtl')
+                      'trac.mimeview.txtl', 'trac.web.auth')

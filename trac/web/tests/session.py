@@ -1,5 +1,5 @@
 from trac.log import logger_factory
-from trac.test import Mock
+from trac.test import EnvironmentStub, Mock
 from trac.util import TracError
 from trac.web.href import Href
 from trac.web.session import Session, PURGE_AGE, UPDATE_INTERVAL
@@ -15,9 +15,8 @@ class SessionTestCase(unittest.TestCase):
     """
 
     def setUp(self):
-        from trac.test import InMemoryDatabase
-        self.db = InMemoryDatabase()
-        self.env = Mock(href=Href('/'), log=logger_factory('test'))
+        self.env = EnvironmentStub()
+        self.db = self.env.get_db_cnx()
 
     def test_newsession(self):
         """
@@ -27,7 +26,7 @@ class SessionTestCase(unittest.TestCase):
         cookie = Cookie()
         req = Mock(incookie=Cookie(), outcookie=cookie, authname='anonymous',
                    cgi_location='/')
-        session = Session(self.env, self.db, req, newsession=1)
+        session = Session(self.env, req, newsession=True)
         self.assertEqual(session.sid, cookie['trac_session'].value)
         cursor = self.db.cursor()
         cursor.execute("SELECT COUNT(*) FROM session")
@@ -42,7 +41,7 @@ class SessionTestCase(unittest.TestCase):
         outcookie = Cookie()
         req = Mock(authname='anonymous', cgi_location='/', incookie=incookie,
                    outcookie=outcookie)
-        session = Session(self.env, self.db, req)
+        session = Session(self.env, req)
         self.assertEquals('123456', session.sid)
         self.failIf(outcookie.has_key('trac_session'))
 
@@ -56,7 +55,7 @@ class SessionTestCase(unittest.TestCase):
         outcookie = Cookie()
         req = Mock(authname='john', cgi_location='/', incookie=incookie,
                    outcookie=outcookie)
-        session = Session(self.env, self.db, req)
+        session = Session(self.env, req)
         self.assertEqual('john', session.sid)
         session['foo'] = 'bar'
         session.save()
@@ -75,7 +74,7 @@ class SessionTestCase(unittest.TestCase):
         outcookie = Cookie()
         req = Mock(authname='john', cgi_location='/', incookie=incookie,
                    outcookie=outcookie)
-        session = Session(self.env, self.db, req)
+        session = Session(self.env, req)
         self.assertEqual('john', session.sid)
         session.save()
 
@@ -93,7 +92,7 @@ class SessionTestCase(unittest.TestCase):
         incookie['trac_session'] = '123456'
         req = Mock(authname='anonymous', cgi_location='/', incookie=incookie,
                    outcookie=Cookie())
-        session = Session(self.env, self.db, req)
+        session = Session(self.env, req)
         session['foo'] = 'bar'
         session.save()
         cursor = self.db.cursor()
@@ -113,7 +112,7 @@ class SessionTestCase(unittest.TestCase):
         incookie['trac_session'] = '123456'
         req = Mock(authname='anonymous', cgi_location='/', incookie=incookie,
                    outcookie=Cookie())
-        session = Session(self.env, self.db, req)
+        session = Session(self.env, req)
         self.assertEqual('bar', session['foo'])
         session['foo'] = 'baz'
         session.save()
@@ -133,7 +132,7 @@ class SessionTestCase(unittest.TestCase):
         incookie['trac_session'] = '123456'
         req = Mock(authname='anonymous', cgi_location='/', incookie=incookie,
                    outcookie=Cookie())
-        session = Session(self.env, self.db, req)
+        session = Session(self.env, req)
         self.assertEqual('bar', session['foo'])
         del session['foo']
         session.save()
@@ -155,7 +154,7 @@ class SessionTestCase(unittest.TestCase):
         incookie['trac_session'] = '123456'
         req = Mock(authname='anonymous', cgi_location='/', incookie=incookie,
                    outcookie=Cookie())
-        session = Session(self.env, self.db, req)
+        session = Session(self.env, req)
         session['foo'] = 'bar'
         session.save()
 
@@ -180,7 +179,7 @@ class SessionTestCase(unittest.TestCase):
         incookie['trac_session'] = '123456'
         req = Mock(authname='anonymous', cgi_location='/', incookie=incookie,
                    outcookie=Cookie())
-        session = Session(self.env, self.db, req)
+        session = Session(self.env, req)
         session.save()
 
         cursor.execute("SELECT COUNT(*) FROM session WHERE sid='123456' AND "
@@ -193,7 +192,7 @@ class SessionTestCase(unittest.TestCase):
         database for an authenticted session.
         """
         req = Mock(authname='john', cgi_location='/', incookie=Cookie())
-        session = Session(self.env, self.db, req)
+        session = Session(self.env, req)
         session['foo'] = 'bar'
         session.save()
         cursor = self.db.cursor()
@@ -210,7 +209,7 @@ class SessionTestCase(unittest.TestCase):
         cursor.execute("INSERT INTO session VALUES ('john', 1, 'foo', 'bar')")
 
         req = Mock(authname='john', cgi_location='/', incookie=Cookie())
-        session = Session(self.env, self.db, req)
+        session = Session(self.env, req)
         self.assertEqual('bar', session['foo'])
         session['foo'] = 'baz'
         session.save()
@@ -227,7 +226,7 @@ class SessionTestCase(unittest.TestCase):
         cursor.execute("INSERT INTO session VALUES ('john', 1, 'foo', 'bar')")
 
         req = Mock(authname='john', cgi_location='/', incookie=Cookie())
-        session = Session(self.env, self.db, req)
+        session = Session(self.env, req)
         self.assertEqual('bar', session['foo'])
         del session['foo']
         session.save()
@@ -253,7 +252,7 @@ class SessionTestCase(unittest.TestCase):
         outcookie = Cookie()
         req = Mock(authname='anonymous', cgi_location='/', incookie=incookie,
                    outcookie=outcookie)
-        session = Session(self.env, self.db, req)
+        session = Session(self.env, req)
         session.save() # updating should not require modifications
 
         self.assertEqual(PURGE_AGE, outcookie['trac_session']['expires'])

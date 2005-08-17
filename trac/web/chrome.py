@@ -25,8 +25,8 @@ import re
 from trac import mimeview, util
 from trac.core import *
 from trac.env import IEnvironmentSetupParticipant
+from trac.web.api import IRequestHandler
 from trac.web.href import Href
-from trac.web.main import IRequestHandler
 
 def add_link(req, rel, href, title=None, mimetype=None, classname=None):
     """Add a link to the HDF data set that will be inserted as <link> element in

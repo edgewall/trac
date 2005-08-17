@@ -1,13 +1,13 @@
 from trac.test import Mock
+from trac.web.api import absolute_url, Request, RequestDone
 from trac.web.clearsilver import HDFWrapper
-from trac.web.main import absolute_url, Request, RequestDone
 
 from Cookie import SimpleCookie as Cookie
 from StringIO import StringIO
 import unittest
 
 
-class WebMainTestCase(unittest.TestCase):
+class AbsoluteURLTestCase(unittest.TestCase):
 
     def test_absolute_url(self):
         req = Mock(scheme='http', server_name='example.org', server_port=None,
@@ -54,6 +54,9 @@ class WebMainTestCase(unittest.TestCase):
         url = absolute_url(req, '/trac')
         self.assertEqual('http://example.org/trac', url)
 
+
+class RequestTestCase(unittest.TestCase):
+
     def test_redirect(self):
         status = []
         headers = {}
@@ -89,7 +92,10 @@ class WebMainTestCase(unittest.TestCase):
 
 
 def suite():
-    return unittest.makeSuite(WebMainTestCase, 'test')
+    suite = unittest.TestSuite()
+    suite.addTest(unittest.makeSuite(RequestTestCase, 'test'))
+    suite.addTest(unittest.makeSuite(AbsoluteURLTestCase, 'test'))
+    return suite
 
 if __name__ == '__main__':
     unittest.main()

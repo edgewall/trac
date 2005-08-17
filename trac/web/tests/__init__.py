@@ -1,17 +1,17 @@
 import unittest
 
-from trac.web.tests import auth, cgi_frontend, chrome, clearsilver, href, \
-                           main, session
+from trac.web.tests import api, auth, cgi_frontend, chrome, clearsilver, href, \
+                           session
 
 def suite():
 
     suite = unittest.TestSuite()
+    suite.addTest(api.suite())
     suite.addTest(auth.suite())
     suite.addTest(cgi_frontend.suite())
     suite.addTest(chrome.suite())
     suite.addTest(clearsilver.suite())
     suite.addTest(href.suite())
-    suite.addTest(main.suite())
     suite.addTest(session.suite())
     return suite
 
