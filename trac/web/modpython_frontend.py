@@ -36,7 +36,7 @@ from mod_python import apache, util
 from trac.util import http_date, rstrip
 from trac.web.api import Request, RequestDone
 from trac.web.main import dispatch_request, get_environment, \
-                          send_pretty_error, send_project_index, \
+                          send_pretty_error, send_project_index
 
 
 class ModPythonRequest(Request):
