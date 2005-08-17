@@ -54,6 +54,18 @@ class ComponentTestCase(unittest.TestCase):
         assert Component not in ComponentMeta._components
         self.assertRaises(TracError, self.compmgr.__getitem__, Component)
 
+    def test_abstract_component_not_registered(self):
+        """
+        Make sure that a Component class marked as abstract does not appear in
+        the component registry.
+        """
+        from trac.core import ComponentMeta
+        class AbstractComponent(Component):
+            abstract = True
+        assert AbstractComponent not in ComponentMeta._components
+        self.assertRaises(TracError, self.compmgr.__getitem__,
+                          AbstractComponent)
+
     def test_unregistered_component(self):
         """
         Make sure the component manager refuses to manage classes not derived
@@ -225,6 +237,19 @@ class ComponentTestCase(unittest.TestCase):
         tests = iter(ConcreteComponent(self.compmgr).tests)
         self.assertEquals('x', tests.next().test())
         self.assertRaises(StopIteration, tests.next)
+
+    def test_inherited_implements(self):
+        """
+        Verify that a component with a super-class implementing an extension
+        point interface is also registered as implementing that interface.
+        """
+        class BaseComponent(Component):
+            implements(ITest)
+            abstract = True
+        class ConcreteComponent(BaseComponent):
+            pass
+        from trac.core import ComponentMeta
+        assert ConcreteComponent in ComponentMeta._registry[ITest]
 
     def test_component_manager_component(self):
         """

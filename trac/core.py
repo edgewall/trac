@@ -96,11 +96,16 @@ class ComponentMeta(type):
             maybe_init._original = init
             setattr(new_class, '__init__', maybe_init)
 
+        if d.get('abstract'):
+            # Don't put abstract component classes in the registry
+            return new_class
+
         ComponentMeta._components.append(new_class)
         for interface in d.get('_implements', []):
-            if not interface in ComponentMeta._registry:
-                ComponentMeta._registry[interface] = []
-            ComponentMeta._registry[interface].append(new_class)
+            ComponentMeta._registry.setdefault(interface, []).append(new_class)
+        for base in [base for base in bases if hasattr(base, '_implements')]:
+            for interface in base._implements:
+                ComponentMeta._registry.setdefault(interface, []).append(new_class)
 
         return new_class
 
@@ -126,7 +131,7 @@ def implements(*interfaces):
 
 class Component(object):
     """Base class for components.
-    
+
     Every component can declare what extension points it provides, as well as
     what extension points of other components it extends.
     """
