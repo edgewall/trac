@@ -54,6 +54,11 @@ class Href(object):
     >>> href.changeset(42, format='diff')
     '/trac/changeset/42?format=diff'
 
+    Simply calling the Href object with no arguments will return the base URL:
+
+    >>> href()
+    '/trac'
+
     Keyword arguments are added to the query string, unless the value is None:
 
     >>> href = Href('/trac')
@@ -124,15 +129,16 @@ class Href(object):
             elif v != None:
                 params.append((name, value))
 
-        lastp = args[-1]
-        if lastp and type(lastp) is dict:
-            for k,v in lastp.items():
-                add_param(k, v)
-            args = args[:-1]
-        elif lastp and type(lastp) in (list, tuple):
-            for k,v in lastp:
-                add_param(k, v)
-            args = args[:-1]
+        if args:
+            lastp = args[-1]
+            if lastp and type(lastp) is dict:
+                for k,v in lastp.items():
+                    add_param(k, v)
+                args = args[:-1]
+            elif lastp and type(lastp) in (list, tuple):
+                for k,v in lastp:
+                    add_param(k, v)
+                args = args[:-1]
 
         # build the path
         path = '/'.join([quote(str(arg).strip('/')) for arg in args
