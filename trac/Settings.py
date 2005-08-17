@@ -23,8 +23,8 @@ from __future__ import generators
 
 from trac.core import *
 from trac.util import escape
+from trac.web import IRequestHandler
 from trac.web.chrome import INavigationContributor
-from trac.web.main import IRequestHandler
 
 class SettingsModule(Component):
 

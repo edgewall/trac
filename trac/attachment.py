@@ -23,7 +23,6 @@
 
 from __future__ import generators
 import os
-import os.path
 import re
 import shutil
 import time
@@ -33,9 +32,9 @@ from trac import perm, util
 from trac.core import *
 from trac.env import IEnvironmentSetupParticipant
 from trac.mimeview import *
+from trac.web import IRequestHandler
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
-from trac.web.main import IRequestHandler
-from trac.wiki.api import IWikiSyntaxProvider
+from trac.wiki import IWikiSyntaxProvider
 
 
 class Attachment(object):

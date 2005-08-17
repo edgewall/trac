@@ -26,10 +26,10 @@
 
 from trac import util, __version__
 from trac.env import open_environment
-from trac.web.main import Request, dispatch_request, \
-     send_pretty_error, send_project_index, get_environment
+from trac.web.api import Request
 from trac.web.cgi_frontend import TracFieldStorage
-from trac.web import href
+from trac.web.main import dispatch_request, get_environment, \
+                          send_pretty_error, send_project_index
 
 import os
 import re

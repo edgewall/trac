@@ -22,7 +22,6 @@
 #         Christopher Lenz <cmlenz@gmx.de>
 
 from __future__ import generators
-import os
 import re
 import time
 import StringIO
@@ -30,14 +29,14 @@ import StringIO
 from trac.attachment import attachment_to_hdf, Attachment
 from trac.core import *
 from trac.perm import IPermissionRequestor
+from trac.Search import ISearchSource, query_to_sql, shorten_result
 from trac.Timeline import ITimelineEventProvider
 from trac.util import enum, escape, get_reporter_id, pretty_timedelta, \
                       shorten_line
 from trac.versioncontrol.diff import get_diff_options, hdf_diff
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
-from trac.web.main import IRequestHandler
+from trac.web import IRequestHandler
 from trac.wiki.model import WikiPage
-from trac.Search import ISearchSource, query_to_sql, shorten_result
 from trac.wiki.formatter import wiki_to_html, wiki_to_oneliner
 
 

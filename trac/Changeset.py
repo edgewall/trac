@@ -28,13 +28,13 @@ import re
 from trac import mimeview, util
 from trac.core import *
 from trac.perm import IPermissionRequestor
+from trac.Search import ISearchSource, query_to_sql, shorten_result
 from trac.Timeline import ITimelineEventProvider
 from trac.versioncontrol import Changeset, Node
 from trac.versioncontrol.svn_authz import SubversionAuthorizer
 from trac.versioncontrol.diff import get_diff_options, hdf_diff, unified_diff
+from trac.web import IRequestHandler
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
-from trac.Search import ISearchSource, query_to_sql, shorten_result
-from trac.web.main import IRequestHandler
 from trac.wiki import wiki_to_html, wiki_to_oneliner, IWikiSyntaxProvider
 
 

@@ -27,14 +27,12 @@ import re
 
 from trac.core import *
 from trac.perm import IPermissionRequestor
+from trac.web import IRequestHandler
 from trac.web.chrome import add_stylesheet, INavigationContributor
-from trac.web.main import IRequestHandler
 
 
 class AboutModule(Component):
-    """
-    Provides various about pages.
-    """
+    """Provides various about pages."""
 
     implements(INavigationContributor, IPermissionRequestor, IRequestHandler)
 

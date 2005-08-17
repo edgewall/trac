@@ -28,8 +28,8 @@ import urllib
 from trac import util
 from trac.core import *
 from trac.perm import IPermissionRequestor
+from trac.web import IRequestHandler
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
-from trac.web.main import IRequestHandler
 from trac.wiki import wiki_to_html, IWikiSyntaxProvider
 
 

@@ -22,14 +22,13 @@
 from __future__ import generators
 import re
 import time
-import string
 
 from trac.core import *
 from trac.perm import IPermissionRequestor
 from trac.util import TracError, escape, shorten_line
+from trac.web import IRequestHandler
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
 from trac.wiki import IWikiSyntaxProvider
-from trac.web.main import IRequestHandler
 
 
 class ISearchSource(Interface):
@@ -66,7 +65,7 @@ def query_to_sql(db, q, name):
         keywords = q.split(' ')
         x = map(lambda x, name=name: name + ' ' + db.like() +
                 '\'%' + x + '%\'', keywords)
-        sql_q = string.join(x, ' AND ')
+        sql_q = ' AND '.join(x)
     return sql_q
 
 def shorten_result(text='', keywords=[], maxlen=240, fuzz=60):

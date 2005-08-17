@@ -21,19 +21,20 @@
 # Author: Christopher Lenz <cmlenz@gmx.de>
 # Author: Matthew Good <trac@matt-good.net>
 
-from trac.web.main import Request, dispatch_request, send_pretty_error, \
-                          get_environment, send_project_index
-
 import cgi
 import locale
 import os
 import re
 import sys
 
+from trac.web.api import Request
+from trac.web.main import dispatch_request, get_environment, \
+                          send_pretty_error, send_project_index
+
+
 class CGIRequest(Request):
-    """
-    Request implementation for CGI.
-    """
+    """Request implementation for CGI."""
+
     def __init__(self, environ=os.environ, input=sys.stdin, output=sys.stdout):
         Request.__init__(self)
         self.__environ = environ
@@ -103,6 +104,7 @@ class TracFieldStorage(cgi.FieldStorage):
         if not self.has_key(name):
             raise KeyError(name)
         self.list = filter(lambda x, name=name: x.name != name, self.list)
+
 
 def run():
     locale.setlocale(locale.LC_ALL, '')

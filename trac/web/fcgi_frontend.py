@@ -21,16 +21,20 @@
 # Author: Christopher Lenz <cmlenz@gmx.de>
 # Author: Matthew Good <trac@matt-good.net>
 
-from trac.web.cgi_frontend import *
-from trac.web.main import RequestDone, get_environment, send_project_index
+from trac.web.api import RequestDone
+from trac.web.cgi_frontend import CGIRequest
+from trac.web.main import get_environment, send_project_index
 
-import _thfcgi, locale, sys
+import _thfcgi
+import locale
 
 def run():
     locale.setlocale(locale.LC_ALL, '')
     _thfcgi.THFCGI(_handler).run()
 
+
 class FCGIRequest(CGIRequest):
+
     def __init__(self, environ, input, output, fieldStorage):
         self._fieldStorage = fieldStorage
         CGIRequest.__init__(self, environ, input, output)

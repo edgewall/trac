@@ -28,8 +28,8 @@ from trac.core import *
 from trac.perm import IPermissionRequestor
 from trac.util import enum, escape, pretty_timedelta, CRLF
 from trac.ticket import Ticket
+from trac.web import IRequestHandler
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
-from trac.web.main import IRequestHandler
 
 
 class RoadmapModule(Component):
