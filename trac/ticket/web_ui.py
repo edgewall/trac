@@ -380,7 +380,8 @@ class TicketModule(Component):
             elif field == 'description':
                 changes[-1]['fields'][field] = ''
             else:
-                changes[-1]['fields'][field] = {'old': old, 'new': new}
+                changes[-1]['fields'][field] = {'old': util.escape(old),
+                                                'new': util.escape(new)}
         req.hdf['ticket.changes'] = changes
 
         # List attached files
