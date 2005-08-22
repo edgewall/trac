@@ -32,11 +32,3 @@ __license_long__ = """
  You should have received a copy of the GNU General Public License
  along with this program; if not, write to the Free Software
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA."""
-__credits__ = """Visit the Trac Project at %s
-
-Trac is brought to you by:
------------------------------------------------------------------
-                E d g e w a l l   S o f t w a r e
-        Professional Linux and software development services
-              Read more at http://www.edgewall.com/
------------------------------------------------------------------""" % __url__

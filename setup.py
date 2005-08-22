@@ -50,10 +50,9 @@ __default_macros_dir__ = %(macros)r
 
          # Run actual install
          install.run(self)
-
          print
          print "Thank you for choosing Trac %s. Enjoy your stay!" % VERSION
-         print trac.__credits__
+         print
 
 class my_install_scripts (install_scripts):
     def initialize_options (self):

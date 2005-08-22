@@ -1,6 +1,6 @@
 #! /bin/sh
 #
-# this file is *inserted* into the %install section of the generated
+# this file is *inserted* into the install section of the generated
 # spec file
 #
 
