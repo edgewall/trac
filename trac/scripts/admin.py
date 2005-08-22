@@ -40,6 +40,7 @@ from trac.env import Environment
 from trac.Milestone import Milestone
 from trac.perm import PermissionSystem
 from trac.ticket.model import *
+from trac.wiki import WikiPage
 
 try:
     sum
@@ -669,6 +670,8 @@ class TracAdmin(cmd.Cmd):
         else:
             if argv[1] in ('dump', 'load'):
                 comp = self.get_dir_list(argv[-1], 1)
+            elif argv[1] == 'remove':
+                comp = self.get_wiki_list()
             elif argv[1] in ('export', 'import'):
                 if argc == 3:
                     comp = self.get_wiki_list()
@@ -713,13 +716,8 @@ class TracAdmin(cmd.Cmd):
                            [(r[0], r[1], self._format_datetime(r[2])) for r in rows])
 
     def _do_wiki_remove(self, name):
-        cnx = self.db_open()
-        cursor = cnx.cursor()
-        cursor.execute('SELECT name FROM wiki WHERE name=%s', name)
-        if not cursor.fetchone():
-            raise Exception("No such wiki page '%s'" % name)
-        cursor.execute("DELETE FROM wiki WHERE name=%s", (name,))
-        cnx.commit()
+        page = WikiPage(self.env_open(), name)
+        page.delete()
 
     def _do_wiki_import(self, filename, title, cursor=None):
         if not os.path.isfile(filename):
