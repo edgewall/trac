@@ -246,5 +246,5 @@ class SearchModule(Component):
 
     def _format_link(self, formatter, ns, query, label):
         return '<a class="search" href="%s">%s</a>' \
-               % (formatter.href.search(query), label)
+               % (formatter.href.search(q=query), label)
 

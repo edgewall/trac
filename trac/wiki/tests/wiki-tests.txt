@@ -440,8 +440,8 @@ search:foo
 [search:bar Bar]
 ------------------------------
 <p>
-<a class="search" href="/search/foo">search:foo</a>
-<a class="search" href="/search/bar">Bar</a>
+<a class="search" href="/search?q=foo">search:foo</a>
+<a class="search" href="/search?q=bar">Bar</a>
 </p>
 ==============================
 '''Note:'''
