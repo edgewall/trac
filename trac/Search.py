@@ -245,6 +245,10 @@ class SearchModule(Component):
         yield ('search', self._format_link)
 
     def _format_link(self, formatter, ns, query, label):
-        return '<a class="search" href="%s">%s</a>' \
-               % (formatter.href.search(q=query), label)
+        if query and query[0] == '?':
+            href = formatter.href.search() + \
+                   query.replace('&amp;', '&').replace(' ', '+')
+        else:
+            href = formatter.href.search(q=query)
+        return '<a class="search" href="%s">%s</a>' % (href, label)
 

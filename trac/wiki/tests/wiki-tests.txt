@@ -437,11 +437,23 @@ milestone:foo
 </p>
 ==============================
 search:foo
+search:"foo bar"
 [search:bar Bar]
 ------------------------------
 <p>
 <a class="search" href="/search?q=foo">search:foo</a>
+<a class="search" href="/search?q=foo+bar">search:"foo bar"</a>
 <a class="search" href="/search?q=bar">Bar</a>
+</p>
+==============================
+search:?q=foo&wiki=on
+search:"?q=foo bar&wiki=on"
+[search:?q=bar&ticket=on Bar in Tickets]
+------------------------------
+<p>
+<a class="search" href="/search?q=foo&wiki=on">search:?q=foo&amp;wiki=on</a>
+<a class="search" href="/search?q=foo+bar&wiki=on">search:"?q=foo bar&amp;wiki=on"</a>
+<a class="search" href="/search?q=bar&ticket=on">Bar in Tickets</a>
 </p>
 ==============================
 '''Note:'''

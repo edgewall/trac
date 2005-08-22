@@ -66,6 +66,8 @@ class Href(object):
     '/trac/timeline?format=rss'
     >>> href('timeline', format=None)
     '/trac/timeline'
+    >>> href('search', q='foo bar')
+    '/trac/search?q=foo+bar'
 
     Multiple values for one parameter are specified using a sequence (a list or
     tuple) for the parameter:
