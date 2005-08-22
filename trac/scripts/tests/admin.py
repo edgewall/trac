@@ -152,14 +152,13 @@ class TracadminTestCase(unittest.TestCase):
         a result, there is only this one test.
         """
 
-        from trac import __version__, __license_long__, __credits__
+        from trac import __version__, __license_long__
 
         expected_results = """
 Trac Admin Console %s
 =================================================================
 %s
-%s
-""" % (__version__, __license_long__, __credits__)
+""" % (__version__, __license_long__)
         test_results = self._execute('about')
         self.assertEquals(expected_results, test_results)
 

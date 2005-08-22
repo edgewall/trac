@@ -51,14 +51,6 @@ milestone due <name> <due>                             -- Set milestone due date
 milestone completed <name> <completed>                 -- Set milestone completed date (Format: "YYYY-MM-DD" or "now")
 milestone remove <name>                                -- Remove milestone
 
-Visit the Trac Project at http://trac.edgewall.com/
-
-Trac is brought to you by:
------------------------------------------------------------------
-                E d g e w a l l   S o f t w a r e
-        Professional Linux and software development services
-              Read more at http://www.edgewall.com/
------------------------------------------------------------------
 ===== test_permission_list_ok =====
 
 User       Action         

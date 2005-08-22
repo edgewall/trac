@@ -55,7 +55,6 @@ except NameError:
 class TracAdmin(cmd.Cmd):
     intro = ''
     license = trac.__license_long__
-    credits = trac.__credits__
     doc_header = 'Trac Admin Console %(ver)s\n' \
                  'Available Commands:\n' \
                  % {'ver':trac.__version__ }
@@ -312,7 +311,6 @@ class TracAdmin(cmd.Cmd):
                 print "Invoking trac-admin without command starts "\
                        "interactive mode."
             self.print_doc (docs)
-            print self.credits
 
     
     ## About / Version
@@ -323,7 +321,6 @@ class TracAdmin(cmd.Cmd):
         print 'Trac Admin Console %s' % trac.__version__
         print '================================================================='
         print self.license
-        print self.credits
 
 
     ## Quit / EOF
