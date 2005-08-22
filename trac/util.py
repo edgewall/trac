@@ -158,6 +158,7 @@ def hex_entropy(bytes=32):
     return md5.md5(str(random.random() + time.time())).hexdigest()[:bytes]
 
 def http_date(t):
+    """Format t as a rfc822 timestamp"""
     t = time.gmtime(t)
     weekdays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
     months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep',

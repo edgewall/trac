@@ -359,8 +359,7 @@ class ReportModule(Component):
                     value['date'] = time.strftime('%x', t)
                     value['time'] = time.strftime('%X', t)
                     value['datetime'] = time.strftime('%c', t)
-                    value['gmt'] = time.strftime('%a, %d %b %Y %H:%M:%S GMT',
-                                                 time.gmtime(int(cell)))
+                    value['gmt'] = util.http_date(int(cell))
                 prefix = 'report.items.%d.%s' % (row_idx, str(column))
                 req.hdf[prefix] = util.escape(str(cell))
                 for key in value.keys():

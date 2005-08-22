@@ -171,7 +171,7 @@ class TimelineModule(Component):
                         event['author.email'] = escape(author)
                     elif email_map.has_key(author):
                         event['author.email'] = escape(email_map[author])
-                event['date'] = http_date(time.mktime(t))
+                event['date'] = http_date(date)
 
             req.hdf['timeline.events.%s' % idx] = event
             idx += 1
