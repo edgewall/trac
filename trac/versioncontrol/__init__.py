@@ -1,1 +1,1 @@
-from trac.versioncontrol.main import *
+from trac.versioncontrol.api import *
