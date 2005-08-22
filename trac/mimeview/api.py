@@ -69,6 +69,7 @@ MIME_MAP = {
     'make':'text/x-makefile', 'mk':'text/x-makefile', 'Makefile':'text/x-makefile',
     'mail':'text/x-mail',
     'pas':'text/x-pascal',
+    'pdf':'application/pdf',
     'pl':'text/x-perl', 'pm':'text/x-perl', 'PL':'text/x-perl', 'perl':'text/x-perl',
     'php':'text/x-php', 'php4':'text/x-php', 'php3':'text/x-php',
     'ps':'application/postscript',
@@ -79,6 +80,7 @@ MIME_MAP = {
     'rb':'text/x-ruby', 'ruby':'text/x-ruby',
     'rfc':'text/x-rfc',
     'rst': 'text/x-rst',
+    'rtf':'application/rtf',
     'scm':'text/x-scheme',
     'sh':'application/x-sh',
     'sql':'text/x-sql',
@@ -97,6 +99,12 @@ MIME_MAP = {
     'xsl':'text/xsl',
     'zsh':'text/x-zsh'
 }
+
+TREAT_AS_BINARY = [
+    'application/pdf',
+    'application/postscript',
+    'application/rtf'
+]
 
 def get_charset(mimetype):
     """Return the character encoding included in the given content type string,
@@ -328,7 +336,7 @@ class PlainTextRenderer(Component):
         return 1
 
     def render(self, req, mimetype, content, filename=None, rev=None):
-        if is_binary(content):
+        if is_binary(content) or mimetype in TREAT_AS_BINARY:
             self.env.log.debug("Binary data; no preview available")
             return
 
