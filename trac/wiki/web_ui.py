@@ -85,8 +85,13 @@ class WikiModule(Component):
 
         if req.method == 'POST':
             if action == 'edit':
+                latest_version = WikiPage(self.env, pagename, None, db).version
                 if req.args.has_key('cancel'):
                     req.redirect(self.env.href.wiki(page.name))
+                elif int(version) != latest_version:
+                    print version, latest_version
+                    action = 'collision'
+                    self._render_editor(req, db, page)
                 elif req.args.has_key('preview'):
                     action = 'preview'
                     self._render_editor(req, db, page, preview=True)
@@ -183,14 +188,6 @@ class WikiModule(Component):
             # Modify the read-only flag if it has been changed and the user is
             # WIKI_ADMIN
             page.readonly = int(req.args.has_key('readonly'))
-
-        # We store the page version when we start editing a page.
-        # This way we can stop users from saving changes if they are
-        # not based on the latest version any more
-        version = int(req.args.get('version'))
-        if version != page.version:
-            raise TracError('Sorry, cannot create new version. This page has '
-                            'already been modified by someone else.')
 
         page.save(req.args.get('author'), req.args.get('comment'),
                   req.remote_addr)
@@ -292,7 +289,6 @@ class WikiModule(Component):
             page.readonly = req.args.has_key('readonly')
 
         author = req.args.get('author', get_reporter_id(req))
-        version = req.args.get('edit_version', None)
         comment = req.args.get('comment', '')
         editrows = req.args.get('editrows')
         if editrows:
