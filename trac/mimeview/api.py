@@ -100,12 +100,6 @@ MIME_MAP = {
     'zsh':'text/x-zsh'
 }
 
-TREAT_AS_BINARY = [
-    'application/pdf',
-    'application/postscript',
-    'application/rtf'
-]
-
 def get_charset(mimetype):
     """Return the character encoding included in the given content type string,
     or `None` if `mimetype` is `None` or empty or if no charset information is
@@ -333,10 +327,12 @@ class PlainTextRenderer(Component):
     implements(IHTMLPreviewRenderer)
 
     def get_quality_ratio(self, mimetype):
-        return 1
+        if mimetype.startswith('text/'):
+            return 1
+        return 0
 
     def render(self, req, mimetype, content, filename=None, rev=None):
-        if is_binary(content) or mimetype in TREAT_AS_BINARY:
+        if is_binary(content):
             self.env.log.debug("Binary data; no preview available")
             return
 
