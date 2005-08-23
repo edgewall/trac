@@ -462,12 +462,15 @@ default_config = \
   ('browser', 'hide_properties', 'svk:merge'),
 )
 
-default_components = ('trac.About', 'trac.attachment', 'trac.Browser',
-                      'trac.Changeset', 'trac.Search', 'trac.Settings',
-                      'trac.ticket.query', 'trac.ticket.report',
+default_components = ('trac.About', 'trac.attachment', 
+                      'trac.mimeview.enscript', 'trac.mimeview.patch',
+                      'trac.mimeview.php', 'trac.mimeview.rst',
+                      'trac.mimeview.silvercity', 'trac.mimeview.txtl',
                       'trac.Roadmap',
-                      'trac.ticket.web_ui', 'trac.Timeline', 'trac.wiki.web_ui',
-                      'trac.wiki.macros', 'trac.mimeview.enscript',
-                      'trac.mimeview.patch', 'trac.mimeview.php',
-                      'trac.mimeview.rst', 'trac.mimeview.silvercity',
-                      'trac.mimeview.txtl', 'trac.web.auth')
+                      'trac.Search', 'trac.Settings',
+                      'trac.ticket.query', 'trac.ticket.report',
+                      'trac.ticket.web_ui',
+                      'trac.Timeline',
+                      'trac.versioncontrol.web_ui',
+                      'trac.wiki.macros', 'trac.wiki.web_ui',
+                      'trac.web.auth')
