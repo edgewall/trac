@@ -447,6 +447,7 @@ default_config = \
   ('mimeviewer', 'enscript_path', 'enscript'),
   ('mimeviewer', 'php_path', 'php'),
   ('mimeviewer', 'tab_width', '8'),
+  ('mimeviewer', 'max_preview_size', '262144'),
   ('notification', 'smtp_enabled', 'false'),
   ('notification', 'smtp_server', 'localhost'),
   ('notification', 'smtp_port', '25'),

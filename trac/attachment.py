@@ -217,7 +217,6 @@ class AttachmentModule(Component):
                INavigationContributor, IWikiSyntaxProvider)
 
     CHUNK_SIZE = 4096
-    DISP_MAX_FILE_SIZE = 256 * 1024
 
     # IEnvironmentSetupParticipant methods
 
@@ -419,8 +418,11 @@ class AttachmentModule(Component):
                        % (attachment.filename, mimetype))
         fd = attachment.open()
         try:
-            data = fd.read(self.DISP_MAX_FILE_SIZE)
-            max_size_reached = len(data) == self.DISP_MAX_FILE_SIZE
+            max_preview_size = int(self.config.get('mimeviewer',
+                                                   'max_preview_size',
+                                                   '262144'))
+            data = fd.read(max_preview_size)
+            max_size_reached = len(data) == max_preview_size
             charset = detect_unicode(data) or self.config.get('trac', 'default_charset')
             
             if fmt in ('raw', 'txt'):
@@ -434,7 +436,7 @@ class AttachmentModule(Component):
                          'Plain Text', mimetype)
             if max_size_reached:
                 req.hdf['attachment.max_file_size_reached'] = 1
-                req.hdf['attachment.max_file_size'] = self.DISP_MAX_FILE_SIZE
+                req.hdf['attachment.max_file_size'] = max_preview_size
                 vdata = ''
             else:
                 mimeview = Mimeview(self.env)
