@@ -420,6 +420,7 @@ class AttachmentModule(Component):
         fd = attachment.open()
         try:
             data = fd.read(self.DISP_MAX_FILE_SIZE)
+            max_size_reached = len(data) == self.DISP_MAX_FILE_SIZE
             charset = detect_unicode(data) or self.config.get('trac', 'default_charset')
             
             if fmt in ('raw', 'txt'):
@@ -431,7 +432,7 @@ class AttachmentModule(Component):
                 data = util.to_utf8(data, charset)
                 add_link(req, 'alternate', attachment.href(format='txt'),
                          'Plain Text', mimetype)
-            if len(data) >= self.DISP_MAX_FILE_SIZE:
+            if max_size_reached:
                 req.hdf['attachment.max_file_size_reached'] = 1
                 req.hdf['attachment.max_file_size'] = self.DISP_MAX_FILE_SIZE
                 vdata = ''
