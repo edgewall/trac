@@ -82,10 +82,12 @@ def main():
             if pid == 0:
                 os.chdir(os.sep)
                 os.setpgrp()
-                sys.stdin.close()
-                sys.stdout.close()
-                sys.stderr.close()
+                # Redirect standard file descriptors
+                sys.stdin = open('/dev/null', 'r')
+                sys.stdout = open('/dev/null', 'w')
+                sys.stderr = open('/dev/null', 'w')
             else:
+                print 'tracd daemon running with pid: %d' % pid
                 sys.exit(0)
         httpd.serve_forever()
     except OSError:
