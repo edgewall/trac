@@ -65,8 +65,8 @@ class WikiTestCase(unittest.TestCase):
         # Load all the components that provide IWikiSyntaxProvider
         # implementations that are tested. Ideally those should be tested
         # in separate unit tests.
-        import trac.Browser
-        import trac.Changeset
+        import trac.versioncontrol.web_ui.browser
+        import trac.versioncontrol.web_ui.changeset
         import trac.Milestone
         import trac.ticket.query
         import trac.ticket.report
