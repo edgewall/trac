@@ -144,8 +144,8 @@ class SearchModule(Component):
                 
         req.hdf['title'] = 'Search'
 
-        if 'q' in req.args:
-            query = orig_query = req.args.get('q')
+        query = req.args.get('q')
+        if query:
             page = int(req.args.get('page', '1'))
             redir = self.quickjump(query)
             if redir:
@@ -167,7 +167,7 @@ class SearchModule(Component):
             results = results[(page-1) * page_size: page * page_size]
 
             req.hdf['title'] = 'Search Results'
-            req.hdf['search.q'] = orig_query.replace('"', "&#34;")
+            req.hdf['search.q'] = req.args.get('q').replace('"', "&#34;")
             req.hdf['search.page'] = page
             req.hdf['search.n_hits'] = n
             req.hdf['search.n_pages'] = n_pages
