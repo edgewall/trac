@@ -118,7 +118,7 @@ class TracadminTestCase(unittest.TestCase):
     def tearDown(self):
         self.env = None
 
-    def _execute(self, cmd):
+    def _execute(self, cmd, strip_trailing_space=True):
         try:
             _err = sys.stderr
             _out = sys.stdout
@@ -127,7 +127,10 @@ class TracadminTestCase(unittest.TestCase):
                 self._admin.docmd(cmd)
             except SystemExit, e:
                 pass
-            return STRIP_TRAILING_SPACE.sub('', out.getvalue())
+            if strip_trailing_space:
+                return STRIP_TRAILING_SPACE.sub('', out.getvalue())
+            else:
+                return out.getvalue()
         finally:
             sys.stderr = _err
             sys.stdout = _out
@@ -152,7 +155,7 @@ Trac Admin Console %s
 =================================================================
 %s
 """ % (__version__, __license_long__)
-        test_results = self._execute('about')
+        test_results = self._execute('about', strip_trailing_space=False)
         self.assertEquals(expected_results, test_results)
 
     # Help test
