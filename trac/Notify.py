@@ -221,7 +221,7 @@ class TicketNotifyEmail(NotifyEmail):
     def format_props(self):
         tkt = self.ticket
         fields = [f for f in tkt.fields if f['type'] != 'textarea'
-                                       and f['name'] != 'summary']
+                                       and f['name'] not in ('summary', 'cc')]
         t = self.modtime or tkt.time_changed
         width = [0, 0, 0, 0]
         for i, f in enum([f['name'] for f in fields]):
@@ -249,7 +249,7 @@ class TicketNotifyEmail(NotifyEmail):
                 big.append((f.capitalize(), fval))
             else:
                 txt += format[i % 2] % (f.capitalize(), fval)
-        if not i % 2:
+        if i % 2:
             txt += '\n'
         if big:
             txt += sep
