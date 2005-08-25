@@ -19,33 +19,24 @@ from trac.web.cgi_frontend import CGIRequest
 from trac.web.main import dispatch_request, get_environment, \
                           send_pretty_error, send_project_index
 
+import _fcgi
 import os
 import locale
 
 def run():
     locale.setlocale(locale.LC_ALL, '')
-    raise NotImplementedError, 'FastCGI support currently defunct, sorry'
+    _fcgi.Server(_handler).run()
 
 
-class FCGIRequest(CGIRequest):
+def _handler(_req):
+    req = CGIRequest(_req.params, _req.stdin, _req.stdout)
+    env = get_environment(req, os.environ)
 
-    def __init__(self, environ, input, output, fieldStorage):
-        self._fieldStorage = fieldStorage
-        CGIRequest.__init__(self, environ, input, output)
+    if not env:
+        send_project_index(req, os.environ)
+        return
 
-    def _getFieldStorage(self):
-        return self._fieldStorage
-
-
-def _handler(_req, _env, _fieldStorage):
-      req = FCGIRequest(_env, _req.stdin, _req.out, _fieldStorage)
-      env = get_environment(req, os.environ)
-
-      if not env:
-          send_project_index(req, os.environ)
-          return
-
-      try:  
-          dispatch_request(req.path_info, req, env)
-      except Exception, e:
-          send_pretty_error(e, env, req)
+    try:  
+        dispatch_request(req.path_info, req, env)
+    except Exception, e:
+        send_pretty_error(e, env, req)
