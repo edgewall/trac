@@ -75,6 +75,7 @@ class TicketSystem(Component):
             for username, name, email in self.env.get_known_users(db):
                 users.append(username)
             field['options'] = users
+            field['optional'] = True
         else:
             field['type'] = 'text'
         fields.append(field)
