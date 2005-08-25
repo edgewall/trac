@@ -27,9 +27,10 @@
 
 <div id="header"><?cs
  if:chrome.logo.src ?><a id="logo" href="<?cs
-  var:chrome.logo.link ?>"><img src="<?cs var:chrome.logo.src ?>" width="<?cs
-  var:chrome.logo.width ?>" height="<?cs var:chrome.logo.height ?>" alt="<?cs
-  var:chrome.logo.alt ?>" /></a><hr /><?cs
+  var:chrome.logo.link ?>"><img src="<?cs var:chrome.logo.src ?>"<?cs
+  if:chrome.logo.width ?> width="<?cs var:chrome.logo.width ?>"<?cs /if ?><?cs
+  if:chrome.logo.height ?> height="<?cs var:chrome.logo.height ?>"<?cs
+  /if ?> alt="<?cs var:chrome.logo.alt ?>" /></a><hr /><?cs
  elif:project.name ?><h1><a href="<?cs var:chrome.logo.link ?>"><?cs
   var:project.name ?></a></h1><?cs
  /if ?></div>
