@@ -23,9 +23,11 @@
 
 from trac.web.api import RequestDone
 from trac.web.cgi_frontend import CGIRequest
-from trac.web.main import get_environment, send_project_index
+from trac.web.main import dispatch_request, get_environment, \
+                          send_pretty_error, send_project_index
 
 import _thfcgi
+import os
 import locale
 
 def run():
