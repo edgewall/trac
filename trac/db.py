@@ -35,6 +35,40 @@ from trac.core import TracError
 __all__ = ['get_cnx_pool', 'init_db']
 
 
+class Table(object):
+    """Declare a table in a database schema."""
+
+    def __init__(self, name, key=[]):
+        self.name = name
+        self.columns = []
+        self.indexes = []
+        self.key = key
+        if isinstance(key, (str, unicode)):
+            self.key = [key]
+
+    def __getitem__(self, objs):
+        self.columns = [o for o in objs if isinstance(o, Column)]
+        self.indexes = [o for o in objs if isinstance(o, Index)]
+        return self
+
+class Column(object):
+    """Declare a table column in a database schema."""
+
+    def __init__(self, name, type='text', size=None, unique=False,
+                 auto_increment=False):
+
+        self.name = name
+        self.type = type
+        self.size = size
+        self.auto_increment = auto_increment
+
+class Index(object):
+    """Declare an index for a database schema."""
+
+    def __init__(self, columns):
+        self.columns = columns
+
+
 class IterableCursor(object):
     """Wrapper for DB-API cursor objects that makes the cursor iterable.
     

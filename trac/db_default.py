@@ -20,6 +20,7 @@
 # Author: Daniel Lundin <daniel@edgewall.com>
 
 from trac.config import default_dir
+from trac.db import Table, Column, Index
 
 # Database version identifier. Used for automatic upgrades.
 db_version = 13
@@ -37,31 +38,6 @@ def __mkreports(reports):
 ##
 ## Database schema
 ##
-
-class Table(object):
-    def __init__(self, name, key=[]):
-        self.name = name
-        self.columns = []
-        self.indexes = []
-        self.key = key
-        if isinstance(key, (str, unicode)):
-            self.key = [key]
-    def __getitem__(self, objs):
-        self.columns = [o for o in objs if isinstance(o, Column)]
-        self.indexes = [o for o in objs if isinstance(o, Index)]
-        return self
-
-class Column(object):
-    def __init__(self, name, type='text', size=None, unique=False,
-                 auto_increment=False):
-        self.name = name
-        self.type = type
-        self.size = size
-        self.auto_increment = auto_increment
-
-class Index(object):
-    def __init__(self, columns):
-        self.columns = columns
 
 schema = [
     # Common
