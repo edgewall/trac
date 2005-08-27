@@ -264,8 +264,11 @@ class TicketModule(Component):
                     message = wiki_to_html(message or '--', self.env, db)
                 else:
                     href = self.env.href.ticket(id)
-                    message = wiki_to_oneliner(util.shorten_line(message),
-                                               self.env, db)
+                    message = ': '.join(filter(None, [
+                        resolution,
+                        wiki_to_oneliner(util.shorten_line(message), self.env,
+                                         db)
+                    ]))
                 yield kinds[state], href, title, t, author, message
 
     # Internal methods
