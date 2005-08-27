@@ -30,6 +30,19 @@ from trac.wiki.api import WikiSystem
 
 __all__ = ['wiki_to_html', 'wiki_to_oneliner', 'wiki_to_outline']
 
+#
+# Customization of the Wiki syntax  ***use with care***
+#
+BOLDITALIC_TOKEN = "'''''"
+BOLD_TOKEN = "'''"
+ITALIC_TOKEN = "''"
+UNDERLINE_TOKEN = "__"
+STRIKE_TOKEN = "~~"
+SUBSCRIPT_TOKEN = ",,"
+SUPERSCRIPT_TOKEN = r"\^"
+INLINE_TOKEN = "`"
+
+LINK_SCHEME = r"[\w.+-]+" # as per RFC 2396
 
 def system_message(msg, text):
     return """<div class="system-message">
@@ -122,19 +135,25 @@ class Formatter(object):
 
     _link_resolvers = None
     # Rules provided by IWikiSyntaxProviders are inserted between pre_rules and post_rules
-    _pre_rules = [r"(?P<bolditalic>''''')",
-                  r"(?P<bold>''')",
-                  r"(?P<italic>'')",
-                  r"(?P<underline>!?__)",
-                  r"(?P<strike>!?~~)",
-                  r"(?P<subscript>!?,,)",
-                  r"(?P<superscript>!?\^)",
+    _pre_rules = [r"(?P<bolditalic>%s)" % BOLDITALIC_TOKEN,
+                  r"(?P<bold>%s)" % BOLD_TOKEN,
+                  r"(?P<italic>%s)" % ITALIC_TOKEN,
+                  r"(?P<underline>!?%s)" % UNDERLINE_TOKEN,
+                  r"(?P<strike>!?%s)" % STRIKE_TOKEN,
+                  r"(?P<subscript>!?%s)" % SUBSCRIPT_TOKEN,
+                  r"(?P<superscript>!?%s)" % SUPERSCRIPT_TOKEN,
                   r"(?P<inlinecode>!?\{\{\{(?P<inline>.*?)\}\}\})",
-                  r"(?P<inlinecode2>!?`(?P<inline2>.*?)`)",
+                  r"(?P<inlinecode2>!?%s(?P<inline2>.*?)%s)" % (INLINE_TOKEN,
+                                                                INLINE_TOKEN),
                   r"(?P<htmlescapeentity>!?&#\d+;)"]
-    _post_rules = [r"(?P<shref>!?((?P<sns>\w+):(?P<stgt>'[^']+'|\"[^\"]+\"|((\|(?=[^| ])|[^| ])*[^|'~_\., \)]))))",
-                   r"(?P<lhref>!?\[(?P<lns>\w+):(?P<ltgt>[^\] ]+)(?: (?P<label>.*?))?\])",
-                   r"(?P<macro>!?\[\[(?P<macroname>[\w/+-]+)(\]\]|\((?P<macroargs>.*?)\)\]\]))",
+    _post_rules = [(r"(?P<shref>!?((?P<sns>%s):" % LINK_SCHEME +
+                    r"(?P<stgt>'[^']+'|\"[^\"]+\"|"
+                    r"((\|(?=[^| ])|[^| ])*[^|'~_\., \)]))))"),
+                   (r"(?P<lhref>!?\[(?P<lns>%s):" % LINK_SCHEME +
+                    r"(?P<ltgt>'[^']+'|\"[^\"]+\"|[^\] ]+)"
+                    r"(?: (?P<label>.*?))?\])"),
+                   (r"(?P<macro>!?\[\[(?P<macroname>[\w/+-]+)"
+                    r"(\]\]|\((?P<macroargs>.*?)\)\]\]))"),
                    r"(?P<heading>^\s*(?P<hdepth>=+)\s.*\s(?P=hdepth)\s*$)",
                    r"(?P<list>^(?P<ldepth>\s+)(?:\*|\d+\.) )",
                    r"(?P<definition>^\s+(.+)::)\s*",
@@ -264,6 +283,8 @@ class Formatter(object):
     def _lhref_formatter(self, match, fullmatch):
         ns = fullmatch.group('lns')
         target = fullmatch.group('ltgt') 
+        if target[0] in "'\"":
+            target = target[1:-1]
         label = fullmatch.group('label') or target
         return self._make_link(ns, target, match, label)
 

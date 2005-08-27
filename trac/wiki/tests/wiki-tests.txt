@@ -71,7 +71,7 @@ CamelCase AlabamA ABc AlaBamA FooBar
 CamelCase,CamelCase.CamelCase:CamelCase
 ------------------------------
 <p>
-<a class="missing wiki" href="/wiki/CamelCase" rel="nofollow">CamelCase?</a>,<a class="missing wiki" href="/wiki/CamelCase" rel="nofollow">CamelCase?</a>.<a class="missing wiki" href="/wiki/CamelCase" rel="nofollow">CamelCase?</a>:<a class="missing wiki" href="/wiki/CamelCase" rel="nofollow">CamelCase?</a>
+<a class="missing wiki" href="/wiki/CamelCase" rel="nofollow">CamelCase?</a>,<a class="missing wiki" href="/wiki/CamelCase" rel="nofollow">CamelCase?</a>.CamelCase:CamelCase
 </p>
 ==============================
 !CamelCase
@@ -484,6 +484,30 @@ ticket:"123"
 <a class="missing ticket" href="/ticket/123" rel="nofollow">ticket:"123"</a>
 </p>
 ==============================
+source:'even with whitespaces'
+source:"even with whitespaces"
+[source:'even with whitespaces' Path with spaces]
+[source:"even with whitespaces" Path with spaces]
+------------------------------
+<p>
+<a class="source" href="/browser/even%20with%20whitespaces">source:'even with whitespaces'</a>
+<a class="source" href="/browser/even%20with%20whitespaces">source:"even with whitespaces"</a>
+<a class="source" href="/browser/even%20with%20whitespaces">Path with spaces</a>
+<a class="source" href="/browser/even%20with%20whitespaces">Path with spaces</a>
+</p>
+==============================
+svn+ssh://secureserver.org
+[svn+ssh://secureserver.org SVN link]
+rfc-2396.compatible://link
+[rfc-2396.compatible://link RFC 2396]
+------------------------------
+<p>
+<a class="ext-link" href="svn+ssh://secureserver.org">svn+ssh://secureserver.org</a>
+<a class="ext-link" href="svn+ssh://secureserver.org">SVN link</a>
+<a class="ext-link" href="rfc-2396.compatible://link">rfc-2396.compatible://link</a>
+<a class="ext-link" href="rfc-2396.compatible://link">RFC 2396</a>
+</p>
+==============================
 = ça marche! =
 ------------------------------
 <h1 id="çamarche">ça marche!</h1>
@@ -514,6 +538,14 @@ __foo__
 <p>
 /absolute/path/is/NotWiki and relative/path/is/NotWiki
 /ThisIsNotWikiEither and /ThisIs/NotWikiEither but <a class="missing wiki" href="/wiki/ThisIs/SubWiki" rel="nofollow">ThisIs/SubWiki?</a>
+</p>
+==============================
+8FjBpOmy
+anotherWikiPageName
+------------------------------
+<p>
+8FjBpOmy
+anotherWikiPageName
 </p>
 ==============================
 || a || 
