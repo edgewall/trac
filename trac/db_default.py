@@ -431,6 +431,7 @@ default_config = \
   ('timeline', 'changeset_show_files', '0'),
   ('timeline', 'default_daysback', '30'),
   ('browser', 'hide_properties', 'svk:merge'),
+  ('wiki', 'ignore_missing_pages', 'false'),
 )
 
 default_components = ('trac.About', 'trac.attachment', 

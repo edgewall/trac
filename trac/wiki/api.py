@@ -25,7 +25,7 @@ import time
 import urllib
 
 from trac.core import *
-from trac.util import to_utf8
+from trac.util import to_utf8, TRUE
 
 
 class IWikiChangeListener(Interface):
@@ -134,14 +134,20 @@ class WikiSystem(Component):
     # IWikiSyntaxProvider methods
     
     def get_wiki_syntax(self):
+        ignore_missing = self.config.get('wiki', 'ignore_missing_pages')
+        ignore_missing = ignore_missing in TRUE
         yield (r"!?(?<!/)\b[A-Z][a-z]+(?:[A-Z][a-z]*[a-z/])+"
                 "(?:#[A-Za-z0-9]+)?(?=\Z|\s|[.,;:!?\)}\]])",
-               lambda x, y, z: self._format_link(x, 'wiki', y, y))
+               lambda x, y, z: self._format_link(x, 'wiki', y, y,
+                                                 ignore_missing))
 
     def get_link_resolvers(self):
-        yield ('wiki', self._format_link)
+        yield ('wiki', self._format_fancy_link)
 
-    def _format_link(self, formatter, ns, page, label):
+    def _format_fancy_link(self, f, n, p, l):
+        return self._format_link(f, n, p, l, False)
+
+    def _format_link(self, formatter, ns, page, label, ignore_missing):
         anchor = ''
         if page.find('#') != -1:
             anchor = page[page.find('#'):]
@@ -150,6 +156,8 @@ class WikiSystem(Component):
         label = urllib.unquote(label)
 
         if not self.has_page(page):
+            if ignore_missing:
+                return label
             return '<a class="missing wiki" href="%s" rel="nofollow">%s?</a>' \
                    % (formatter.href.wiki(page) + anchor, label)
         else:
