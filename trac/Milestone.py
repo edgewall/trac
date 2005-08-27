@@ -412,13 +412,20 @@ class MilestoneModule(Component):
         req.hdf['milestone'] = milestone_to_hdf(self.env, db, req, milestone)
 
         available_groups = []
+        component_group_available = False
         for field in TicketSystem(self.env).get_ticket_fields():
-            if field['type'] == 'select' or field['name'] == 'owner':
+            if field['type'] == 'select' and field['name'] != 'milestone' \
+                    or field['name'] == 'owner':
                 available_groups.append({'name': field['name'],
                                          'label': field['label']})
+                if field['name'] == 'component':
+                    component_group_available = True
         req.hdf['milestone.stats.available_groups'] = available_groups
 
-        by = req.args.get('by', 'component')
+        if component_group_available:
+            by = req.args.get('by', 'component')
+        else:
+            by = req.args.get('by', available_groups[0]['name'])
         req.hdf['milestone.stats.grouped_by'] = by
 
         tickets = get_tickets_for_milestone(self.env, db, milestone.name, by)
