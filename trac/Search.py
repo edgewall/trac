@@ -192,7 +192,7 @@ class SearchModule(Component):
                   'excerpt': result[4]
                 } for result in results]
 
-        add_stylesheet(req, 'css/search.css')
+        add_stylesheet(req, 'common/css/search.css')
         return 'search.cs', None
 
     def quickjump(self, kwd):

@@ -14,6 +14,7 @@
 #
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
+from __future__ import generators
 import os.path
 import re
 
@@ -43,8 +44,8 @@ def add_stylesheet(req, filename, mimetype='text/css'):
     """Add a link to a style sheet to the HDF data set so that it gets included
     in the generated HTML page.
     """
-    href = Href(req.hdf['htdocs_location'])
-    add_link(req, 'stylesheet', href(filename), mimetype=mimetype)
+    href = Href(req.cgi_location)
+    add_link(req, 'stylesheet', href.chrome(filename), mimetype=mimetype)
 
 
 class INavigationContributor(Interface):
@@ -71,14 +72,21 @@ class ITemplateProvider(Interface):
     ClearSilver templates and accompanying static resources.
     """
 
-    def get_htdocs_dir():
-        """Return the absolute path of a directory containing additional
-        static resources (such as images, style sheets, etc).
+    def get_htdocs_dirs():
+        """Return a list of directories with static resources (such as style
+        sheets, images, etc.)
+
+        Each item in the list must be a `(prefix, abspath)` tuple. The
+        `prefix` part defines the path in the URL that requests to these
+        resources are prefixed with.
+        
+        The `abspath` is the absolute path to the directory containing the
+        resources on the local file system.
         """
 
-    def get_templates_dir():
-        """Return the absolute path of the directory containing the provided
-        ClearSilver templates.
+    def get_templates_dirs():
+        """Return a list of directories containing the provided ClearSilver
+        templates.
         """
 
 
@@ -86,7 +94,7 @@ class Chrome(Component):
     """Responsible for assembling the web site chrome, i.e. everything that
     is not actual page content.
     """
-    implements(IEnvironmentSetupParticipant, IRequestHandler)
+    implements(IEnvironmentSetupParticipant, IRequestHandler, ITemplateProvider)
 
     navigation_contributors = ExtensionPoint(INavigationContributor)
     template_providers = ExtensionPoint(ITemplateProvider)
@@ -137,36 +145,47 @@ class Chrome(Component):
     # IRequestHandler methods
 
     def match_request(self, req):
-        m = re.match(r'/chrome/([/\w\-\.]+)', req.path_info)
-        if m:
-            req.args['filename'] = m.group(1)
+        match = re.match(r'/chrome/(?P<prefix>[^/]+)/(?P<filename>[/\w\-\.]+)',
+                         req.path_info)
+        if match:
+            req.args['prefix'] = match.group('prefix')
+            req.args['filename'] = match.group('filename')
             return True
 
     def process_request(self, req):
-        from trac.config import default_dir
-
+        prefix = req.args.get('prefix')
         filename = req.args.get('filename')
-        dirs = [default_dir('htdocs')] + [provider.get_htdocs_dir() for provider
-                                          in self.template_providers]
-        for dir in [os.path.normpath(dir) for dir in dirs if dir is not None]:
-            abspath = os.path.normpath(os.path.join(dir, filename))
-            assert os.path.commonprefix([dir, abspath]) == dir
 
-            if os.path.isfile(abspath):
-                req.send_file(abspath)
+        dirs = {}
+        for provider in self.template_providers:
+            for dir in [os.path.normpath(dir[1]) for dir
+                        in provider.get_htdocs_dirs() if dir[0] == prefix]:
+                path = os.path.normpath(os.path.join(dir, filename))
+                assert os.path.commonprefix([dir, path]) == dir
+                if os.path.isfile(path):
+                    req.send_file(path)
 
         # FIXME: Should return a 404 error
         self.log.warning('File %s not found in any of %s', filename, dirs)
         raise TracError, 'File not found'
 
-    # Public API methods
+    # ITemplateProvider methods
+
+    def get_htdocs_dirs(self):
+        from trac.config import default_dir
+        yield ['common', default_dir('htdocs')]
 
     def get_templates_dirs(self):
-        """Return a list of the names of all known templates directories."""
-        dirs = [self.env.get_templates_dir(),
+        return [self.env.get_templates_dir(),
                 self.config.get('trac', 'templates_dir')]
+
+    # Public API methods
+
+    def get_all_templates_dirs(self):
+        """Return a list of the names of all known templates directories."""
+        dirs = []
         for provider in self.template_providers:
-            dirs.append(provider.get_templates_dir())
+            dirs += provider.get_templates_dirs()
         return dirs
 
     def populate_hdf(self, req, handler):
@@ -175,22 +194,19 @@ class Chrome(Component):
         # Provided for template customization
         req.hdf['HTTP.PathInfo'] = req.path_info
 
-        htdocs_location = self.config.get('trac', 'htdocs_location', '')
-        if not htdocs_location:
-            htdocs_location = Href(req.cgi_location).chrome()
-        if htdocs_location[-1] != '/':
-            htdocs_location += '/'
-        req.hdf['htdocs_location'] = htdocs_location
+        href = Href(req.cgi_location)
+        req.hdf['chrome.href'] = href.chrome()
+        req.hdf['htdocs_location'] = href.chrome('common', '/')
 
         # HTML <head> links
         add_link(req, 'start', self.env.href.wiki())
         add_link(req, 'search', self.env.href.search())
         add_link(req, 'help', self.env.href.wiki('TracGuide'))
-        add_stylesheet(req, 'css/trac.css')
+        add_stylesheet(req, 'common/css/trac.css')
         icon = self.config.get('project', 'icon')
         if icon:
             if icon[0] != '/' and icon.find('://') == -1:
-                icon = htdocs_location + icon
+                icon = href.chrome('common', icon)
             mimetype = mimeview.get_mimetype(icon)
             add_link(req, 'icon', icon, mimetype=mimetype)
             add_link(req, 'shortcut icon', icon, mimetype=mimetype)
@@ -202,7 +218,7 @@ class Chrome(Component):
             logo_src_abs = logo_src.startswith('http://') or \
                            logo_src.startswith('https://')
             if not logo_src.startswith('/') and not logo_src_abs:
-                logo_src = htdocs_location + logo_src
+                logo_src = href.chrome('common', logo_src)
             req.hdf['chrome.logo'] = {
                 'link': util.escape(logo_link), 'src': util.escape(logo_src),
                 'src_abs': util.escape(logo_src_abs),

@@ -148,7 +148,7 @@
  <hr />
 </form>
 <script type="text/javascript" src="<?cs
-  var:htdocs_location ?>js/query.js"></script>
+  var:chrome.href ?>/common/js/query.js"></script>
 <script type="text/javascript"><?cs set:idx = 0 ?>
  var properties={<?cs each:field = query.fields ?><?cs
   var:name(field) ?>:{type:"<?cs var:field.type ?>",label:"<?cs

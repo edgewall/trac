@@ -272,7 +272,7 @@ class AttachmentModule(Component):
         else:
             self._render_view(req, attachment)
 
-        add_stylesheet(req, 'css/code.css')
+        add_stylesheet(req, 'common/css/code.css')
         return 'attachment.cs', None
 
     # IWikiSyntaxProvider methods

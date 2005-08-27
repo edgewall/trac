@@ -80,7 +80,7 @@ class RequestDispatcher(Component):
         req.perm = PermissionCache(self.env, req.authname)
 
         chrome = Chrome(self.env)
-        req.hdf = HDFWrapper(loadpaths=chrome.get_templates_dirs())
+        req.hdf = HDFWrapper(loadpaths=chrome.get_all_templates_dirs())
         populate_hdf(req.hdf, self.env, req)
 
         newsession = req.args.has_key('newsession')

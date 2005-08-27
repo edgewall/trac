@@ -76,7 +76,7 @@ class WikiModule(Component):
         db = self.env.get_db_cnx()
         page = WikiPage(self.env, pagename, version, db)
 
-        add_stylesheet(req, 'css/wiki.css')
+        add_stylesheet(req, 'common/css/wiki.css')
 
         if req.method == 'POST':
             if action == 'edit':
@@ -216,7 +216,7 @@ class WikiModule(Component):
             raise TracError, "Version %s of page %s does not exist" \
                              % (req.args.get('version'), page.name)
 
-        add_stylesheet(req, 'css/diff.css')
+        add_stylesheet(req, 'common/css/diff.css')
 
         req.hdf['title'] = escape(page.name) + ' (diff)'
 

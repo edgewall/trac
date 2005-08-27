@@ -381,8 +381,7 @@ data = (('component',
                __mkreports(reports)))
 
 default_config = \
- (('trac', 'htdocs_location', ''),
-  ('trac', 'repository_dir', ''),
+ (('trac', 'repository_dir', ''),
   ('trac', 'templates_dir', default_dir('templates')),
   ('trac', 'database', 'sqlite:db/trac.db'),
   ('trac', 'default_charset', 'iso-8859-15'),

@@ -232,7 +232,7 @@
      </div>
     </div>
     <script type="text/javascript" src="<?cs
-      var:htdocs_location ?>js/wikitoolbar.js"></script>
+      var:chrome.href ?>/common/js/wikitoolbar.js"></script>
    </form>
  <?cs /if?>
  

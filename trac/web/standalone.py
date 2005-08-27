@@ -209,8 +209,6 @@ class TracHTTPRequestHandler(BaseHTTPRequestHandler):
             self.server.send_project_index(req)
             return
 
-        env.config.set('trac', 'htdocs_location', '')
-
         req.remote_user = None
         if path_info == '/login':
             auth = self.server.auths.get(project_name)

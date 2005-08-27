@@ -19,7 +19,8 @@
    if:link.type ?> type="<?cs var:link.type ?>"<?cs /if ?> /><?cs
   /each ?><?cs
  /each ?><style type="text/css"><?cs include:"site_css.cs" ?></style>
- <script src="<?cs var:htdocs_location ?>js/trac.js" type="text/javascript"></script>
+ <script type="text/javascript" src="<?cs
+   var:chrome.href ?>/common/js/trac.js"></script>
 </head>
 <body>
 <?cs include "site_header.cs" ?>

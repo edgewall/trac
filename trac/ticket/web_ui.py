@@ -101,7 +101,7 @@ class NewticketModule(Component):
                 field['options'] = options
             req.hdf['newticket.fields.' + name] = field
 
-        add_stylesheet(req, 'css/ticket.css')
+        add_stylesheet(req, 'common/css/ticket.css')
         return 'newticket.cs', None
 
     # Internal methods
@@ -206,7 +206,7 @@ class TicketModule(Component):
                              'Ticket #%s' % tickets[-1])
                 add_link(req, 'up', req.session['query_href'])
 
-        add_stylesheet(req, 'css/ticket.css')
+        add_stylesheet(req, 'common/css/ticket.css')
         return 'ticket.cs', None
 
     # ITimelineEventProvider methods

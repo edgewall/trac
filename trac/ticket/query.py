@@ -456,7 +456,7 @@ class QueryModule(Component):
 
     def display_html(self, req, query):
         req.hdf['title'] = 'Custom Query'
-        add_stylesheet(req, 'css/report.css')
+        add_stylesheet(req, 'common/css/report.css')
 
         db = self.env.get_db_cnx()
 

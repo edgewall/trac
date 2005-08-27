@@ -115,7 +115,7 @@ class BrowserModule(Component):
         else:
             self._render_file(req, repos, node, rev)
 
-        add_stylesheet(req, 'css/browser.css')
+        add_stylesheet(req, 'common/css/browser.css')
         return 'browser.cs', None
 
     # Internal methods
@@ -236,7 +236,7 @@ class BrowserModule(Component):
             req.hdf['file.raw_href'] = raw_href
             add_link(req, 'alternate', raw_href, 'Original Format', mime_type)
 
-            add_stylesheet(req, 'css/code.css')
+            add_stylesheet(req, 'common/css/code.css')
 
     # IWikiSyntaxProvider methods
     

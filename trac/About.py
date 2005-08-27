@@ -106,7 +106,7 @@ class AboutModule(Component):
 
  <?cs else ?>
   <a href="http://trac.edgewall.com" style="border: none; float: right; margin-left: 2em">
-   <img style="display: block" src="<?cs var:htdocs_location ?>trac_banner.png"
+   <img style="display: block" src="<?cs var:chrome.href ?>/common/trac_banner.png"
      alt="Trac: Integrated SCM &amp; Project Management"/>
   </a>
 <h1>About Trac <?cs var:trac.version ?></h1>
@@ -126,7 +126,7 @@ It provides an interface to the Subversion revision control systems, integrated 
   <p>Copyright &copy; 2003-2005 <a href="http://www.edgewall.com/">Edgewall
   Software</a></p>
   <a href="http://www.edgewall.com/">
-   <img style="display: block; margin: 30px" src="<?cs var:htdocs_location ?>edgewall.png"
+   <img style="display: block; margin: 30px" src="<?cs var:chrome.href ?>/common/edgewall.png"
      alt="Edgewall Software"/></a>
  <?cs /if ?>
 </div>
@@ -167,7 +167,7 @@ It provides an interface to the Subversion revision control systems, integrated 
         elif page == 'plugins':
             self._render_plugins(req)
 
-        add_stylesheet(req, 'css/about.css')
+        add_stylesheet(req, 'common/css/about.css')
         template = req.hdf.parse(self.about_cs)
         return template, None
 

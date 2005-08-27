@@ -134,7 +134,7 @@ class ReportModule(Component):
            self.env.is_component_enabled(QueryModule):
             req.hdf['report.query_href'] = self.env.href.query()
 
-        add_stylesheet(req, 'css/report.css')
+        add_stylesheet(req, 'common/css/report.css')
         return 'report.cs', None
 
     # Internal methods

@@ -48,31 +48,17 @@ class ChromeTestCase(unittest.TestCase):
         self.assertEqual('home', req.hdf['chrome.links.start.0.class'])
 
     def test_add_stylesheet(self):
-        req = Mock(hdf=HDFWrapper())
-        req.hdf['htdocs_location'] = '/trac'
-        add_stylesheet(req, 'css/trac.css')
+        req = Mock(cgi_location='/trac.cgi', hdf=HDFWrapper())
+        add_stylesheet(req, 'common/css/trac.css')
         self.assertEqual('text/css', req.hdf['chrome.links.stylesheet.0.type'])
-        self.assertEqual('/trac/css/trac.css',
+        self.assertEqual('/trac.cgi/chrome/common/css/trac.css',
                          req.hdf['chrome.links.stylesheet.0.href'])
 
-    def test_htdocs_location_default(self):
+    def test_htdocs_location(self):
         env = EnvironmentStub()
         req = Mock(hdf=HDFWrapper(), cgi_location='/trac.cgi', path_info='')
         Chrome(env).populate_hdf(req, None)
-        self.assertEqual('/trac.cgi/chrome/', req.hdf['htdocs_location'])
-
-    def test_htdocs_location_custom(self):
-        env = EnvironmentStub()
-        req = Mock(hdf=HDFWrapper(), cgi_location='/trac.cgi', path_info='')
-
-        env.config.set('trac', 'htdocs_location', '/trac-common/')
-        Chrome(env).populate_hdf(req, None)
-        self.assertEqual('/trac-common/', req.hdf['htdocs_location'])
-
-        # Verify that a trailing slash is appended
-        env.config.set('trac', 'htdocs_location', '/trac-common')
-        Chrome(env).populate_hdf(req, None)
-        self.assertEqual('/trac-common/', req.hdf['htdocs_location'])
+        self.assertEqual('/trac.cgi/chrome/common/', req.hdf['htdocs_location'])
 
     def test_logo(self):
         env = EnvironmentStub()
@@ -87,7 +73,8 @@ class ChromeTestCase(unittest.TestCase):
         req.hdf = HDFWrapper()
         env.config.set('header_logo', 'src', 'foo.png')
         Chrome(env).populate_hdf(req, None)
-        self.assertEqual('/trac.cgi/chrome/foo.png', req.hdf['chrome.logo.src'])
+        self.assertEqual('/trac.cgi/chrome/common/foo.png',
+                         req.hdf['chrome.logo.src'])
 
         # Test with a server-relative path to the logo image
         req.hdf = HDFWrapper()
@@ -112,7 +99,7 @@ class ChromeTestCase(unittest.TestCase):
                          req.hdf['chrome.links.search.0.href'])
         self.assertEqual('/trac.cgi/wiki/TracGuide',
                          req.hdf['chrome.links.help.0.href'])
-        self.assertEqual('/trac.cgi/chrome/css/trac.css',
+        self.assertEqual('/trac.cgi/chrome/common/css/trac.css',
                          req.hdf['chrome.links.stylesheet.0.href'])
 
     def test_icon_links(self):
@@ -128,9 +115,9 @@ class ChromeTestCase(unittest.TestCase):
         # Relative URL for icon config option
         env.config.set('project', 'icon', 'trac.ico')
         Chrome(env).populate_hdf(req, None)
-        self.assertEqual('/trac.cgi/chrome/trac.ico',
+        self.assertEqual('/trac.cgi/chrome/common/trac.ico',
                          req.hdf['chrome.links.icon.0.href'])
-        self.assertEqual('/trac.cgi/chrome/trac.ico',
+        self.assertEqual('/trac.cgi/chrome/common/trac.ico',
                          req.hdf['chrome.links.shortcut icon.0.href'])
 
         # URL relative to the server root for icon config option

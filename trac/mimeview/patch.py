@@ -74,7 +74,7 @@ class PatchRenderer(Component):
                                     self.config.get('trac', 'templates_dir')])
         hdf['diff.files'] = d
 
-        add_stylesheet(req, 'css/diff.css')
+        add_stylesheet(req, 'common/css/diff.css')
         return hdf.render(hdf.parse(self.diff_cs))
 
     # Internal methods
