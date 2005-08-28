@@ -244,7 +244,7 @@ class TicketNotifyEmail(NotifyEmail):
                 big.append((f.capitalize(), fval))
             else:
                 txt += format[i % 2] % (f.capitalize(), fval)
-        if i % 2:
+        if not i % 2:
             txt += '\n'
         if big:
             txt += sep
