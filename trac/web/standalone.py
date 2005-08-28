@@ -171,6 +171,12 @@ class TracHTTPRequestHandler(BaseHTTPRequestHandler):
     log = None
     project_name = None
 
+    def finish(self):
+        """We need to help the garbage collector a little."""
+        BaseHTTPRequestHandler.finish(self)
+        self.wfile = None
+        self.rfile = None
+
     def do_POST(self):
         self._do_trac_req()
 
