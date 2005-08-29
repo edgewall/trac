@@ -281,9 +281,13 @@ class SubversionRepository(Repository):
         path = self.normalize_path(path)
         rev = self.normalize_rev(rev)
         expect_deletion = False
+        class Helper:
+            """Something for subpool to weakref"""
         while rev:
-            rev_root = fs.revision_root(self.fs_ptr, rev, self.pool)
-            node_type = fs.check_path(rev_root, path, self.pool)
+            subpool_owner = Helper()
+            subpool = Pool(subpool_owner, self._pool)
+            rev_root = fs.revision_root(self.fs_ptr, rev, subpool())
+            node_type = fs.check_path(rev_root, path, subpool())
             if node_type in _kindmap: # then path exists at that rev
                 if expect_deletion:
                     # it was missing, now it's there again: rev+1 must be a delete
@@ -291,7 +295,7 @@ class SubversionRepository(Repository):
                 newer = None # 'newer' is the previously seen history tuple
                 older = None # 'older' is the currently examined history tuple
                 for p, r in _get_history(path, self.authz, self.fs_ptr,
-                                         self.pool, 0, rev, limit):
+                                         subpool(), 0, rev, limit):
                     older = (self.normalize_path(p), r, Changeset.ADD)
                     rev = self.previous_rev(r)
                     if newer:
