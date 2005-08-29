@@ -255,21 +255,24 @@ class TicketModule(Component):
                      'closed': 'closedticket'}
             verbs = {'new': 'created', 'reopened': 'reopened',
                      'closed': 'closed'}
-            for t,id,resolution,state,type,message,author,summary in cursor:
+            for t, id, resolution, status, type, message, author, summary \
+                    in cursor:
                 title = 'Ticket <em title="%s">#%s</em> (%s) %s by %s' % (
-                        util.escape(summary), id, type, verbs[state],
+                        util.escape(summary), id, type, verbs[status],
                         util.escape(author))
                 if format == 'rss':
                     href = self.env.abs_href.ticket(id)
-                    message = wiki_to_html(message or '--', self.env, db)
+                    if status != 'new':
+                        message = wiki_to_html(message or '--', self.env, db)
                 else:
                     href = self.env.href.ticket(id)
-                    message = ': '.join(filter(None, [
-                        resolution,
-                        wiki_to_oneliner(util.shorten_line(message), self.env,
-                                         db)
-                    ]))
-                yield kinds[state], href, title, t, author, message
+                    message = util.shorten_line(message)
+                    if status != 'new':
+                        message = ': '.join(filter(None, [
+                            resolution,
+                            wiki_to_oneliner(message, self.env, db)
+                        ]))
+                yield kinds[status], href, title, t, author, message
 
     # Internal methods
 
