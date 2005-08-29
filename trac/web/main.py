@@ -112,11 +112,11 @@ class RequestDispatcher(Component):
 
                 req.display(template, content_type or 'text/html')
         finally:
-            # Give the session a chance to persist changes
-            req.session.save()
-
             # Help the garbage collector a bit
             req.hdf = None
+
+            # Give the session a chance to persist changes
+            req.session.save()
 
 
 def dispatch_request(path_info, req, env):
