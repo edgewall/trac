@@ -115,6 +115,9 @@ class RequestDispatcher(Component):
             # Give the session a chance to persist changes
             req.session.save()
 
+            # Help the garbage collector a bit
+            req.hdf = None
+
 
 def dispatch_request(path_info, req, env):
     """Main entry point for the Trac web interface."""
