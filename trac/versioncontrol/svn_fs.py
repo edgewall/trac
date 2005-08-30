@@ -65,7 +65,7 @@ class Pool(object):
         """Create a new memory pool"""
 
         global application_pool
-        self._parent_pool = parent_pool
+        self._parent_pool = parent_pool or application_pool
         # Create pool
         if self._parent_pool:
             self._pool = core.svn_pool_create(self._parent_pool())
