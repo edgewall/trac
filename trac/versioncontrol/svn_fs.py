@@ -48,108 +48,125 @@ def _get_history(path, authz, fs_ptr, pool, start, end, limit=None):
         def history2_cb(path, rev, pool):
             history.append((path, rev))
         repos.svn_repos_history2(fs_ptr, path, history2_cb, authz_cb,
-                                 start, end, 1, pool)
+                                 start, end, 1, pool())
     else:
         # For Subversion 1.0.x
         def history_cb(path, rev, pool):
             if authz.has_permission(path):
                 history.append((path, rev))
-        repos.svn_repos_history(fs_ptr, path, history_cb, start, end, 1, pool)
+        repos.svn_repos_history(fs_ptr, path, history_cb, start, end, 1, pool())
     for item in history:
         yield item
 
+application_pool = None
+
+def _mark_weakpool_invalid(weakpool):
+  if weakpool():
+    weakpool()._mark_invalid()
+
 
 class Pool(object):
-    """
-    A wrapper for a new Subversion `pool` object that ties the lifetime of the
-    pool to that of a  given object.
-    
-    Instances of this type return their associated `pool when called.
-    """
-    
-    def __init__(self, parent, parent_pool=None):
-        """
-        Create a new pool that is a sub-pool of `parent_pool`, and arrange for
-        `self._close` to be called up when the `parent` object is destroyed.
-        
-        The `parent` object must be weak-referenceable.  The returned `Pool`
-        instance will have the value of the newly created pool. 
-        """
+    """A Pythonic memory pool object"""
+
+    def __init__(self, parent_pool=None):
+        """Create a new memory pool"""
+
+        global application_pool
         self._parent_pool = parent_pool
-        self._children = []
-        self._waiting_to_close = False
-        # Make sure apr_init is called before the first pool is created
-        global apr_refcount
-        apr_lock.acquire()
-        try:
-            assert apr_refcount >= 0
-            apr_refcount += 1
-            if apr_refcount == 1:
-                core.apr_initialize()
-        finally:
-            apr_lock.release()
-            
+        # Create pool
         if self._parent_pool:
-            self._pool = core.svn_pool_create(self._parent_pool())        
-            self._parent_pool._children.append(self)
+            self._pool = core.svn_pool_create(self._parent_pool())
         else:
             self._pool = core.svn_pool_create(None)
-        
-        try:
-            parent._pool_closer = weakref.ref(parent, self._close)
-        except TypeError:
-            self._close(None)
-            raise
-    
+        self._mark_valid()
+
+        # Protect _core from GC
+        self._core = core
+
+        # If we have a parent, write down its current status
+        if not self._parent_pool:
+            # If we are an application-level pool,
+            # then initialize APR and set this pool
+            # to be the application-level pool
+            core.apr_initialize()
+            application_pool = self
+
     def __call__(self):
         return self._pool
-    
-    def _child_closed(self, child):
-        self._children.remove(child)
-        if self._waiting_to_close:
-            self._close(None)
-    
-    def _close(self, x):
-        """
-        The parent object has been destroyed so it is time for us to go.
-        
-        If we still have children that are alive, we do not clean up just
-        yet.  This would lead to their memory being freed from under them.
-        Instead, we wait for our child to notify us that they have been
-        closed and clean up then. 
-        
-        -- So long, and thanks for all the fish!
-        """
-        assert self._pool
-        
-        if self._children:
-            self._waiting_to_close = True
-            return
-        core.svn_pool_destroy(self._pool)
-        self._pool = None
-        # Make sure apr_terminate is called after the last pool is destroyed
-        global apr_refcount
-        apr_lock.acquire()
-        try:
-            apr_refcount -= 1
-            assert apr_refcount >= 0
-            if apr_refcount == 0:
-                core.apr_terminate()
-        finally:
-            apr_lock.release()
-            
+
+    def valid(self):
+        """Check whether this memory pool and its parents
+        are still valid"""
+        return hasattr(self,"_is_valid")
+
+    def assert_valid(self):
+        """Assert that this memory_pool is still valid."""
+        assert self.valid();
+
+    def clear(self):
+        """Clear embedded memory pool. Invalidate all subpools."""
+        self._core.apr_pool_clear(self._pool)
+        self._mark_valid()
+
+    def destroy(self):
+        """Destroy embedded memory pool. If you do not destroy
+        the memory pool manually, Python will destroy it
+        automatically."""
+
+        global application_pool
+
+        self.assert_valid()
+
+        # Destroy pool
+        self._core.apr_pool_destroy(self._pool)
+
+        # Clear application pool and terminate APR if necessary
+        if not self._parent_pool:
+            application_pool = None
+            self._core.apr_terminate()
+
+        self._mark_invalid()
+
+    def __del__(self):
+        """Automatically destroy memory pools, if necessary"""
+        if self.valid():
+            self.destroy()
+
+    def _mark_valid(self):
+        """Mark pool as valid"""
         if self._parent_pool:
-            self._parent_pool._child_closed(self)
-            self._parent_pool = None
+            # Refer to self using a weakreference so that we don't
+            # create a reference cycle
+            weakself = weakref.ref(self)
+      
+            # Set up callbacks to mark pool as invalid when parents
+            # are destroyed
+            self._weakref = weakref.ref(self._parent_pool._is_valid,
+                                        lambda x: _mark_weakpool_invalid(weakself));
+
+        # mark pool as valid
+        self._is_valid = lambda: 1
+
+    def _mark_invalid(self):
+        """Mark pool as invalid"""
+        if self.valid():
+            # Mark invalid
+            del self._is_valid
+
+            # Free up memory
+            del self._parent_pool
+            del self._core
+            if hasattr(self, "_weakref"):
+                del self._weakref
+
+# Initialize application-level pool
+Pool()
 
 
 class SubversionRepository(Repository):
     """
     Repository implementation based on the svn.fs API.
     """
-
-    pool = property(fget=lambda self: self._pool(),
-                    fset=lambda self, pool: setattr(self, '_pool', pool))
 
     def __init__(self, path, authz, log):
         Repository.__init__(self, authz, log)
@@ -163,12 +180,12 @@ class SubversionRepository(Repository):
         self.repos = None
         self.fs_ptr = None
         self.path = path
-        self.pool = Pool(self)
+        self.pool = Pool()
 
         # Remove any trailing slash or else subversion might abort
         if not os.path.split(path)[1]:
             path = os.path.split(path)[0]
-        self.path = repos.svn_repos_find_root_path(path, self.pool)
+        self.path = repos.svn_repos_find_root_path(path, self.pool())
         if self.path is None:
             raise TracError, "%s does not appear to be a Subversion repository." % (path, )
         if self.path != path:
@@ -179,9 +196,9 @@ class SubversionRepository(Repository):
             self.scope = '/'
         self.log.debug("Opening subversion file-system at %s with scope %s" % (self.path, self.scope))
 
-        self.repos = repos.svn_repos_open(self.path, self.pool)
+        self.repos = repos.svn_repos_open(self.path, self.pool())
         self.fs_ptr = repos.svn_repos_fs(self.repos)
-        self.rev = fs.youngest_rev(self.fs_ptr, self.pool)
+        self.rev = fs.youngest_rev(self.fs_ptr, self.pool())
 
         self.history = None
         if self.scope != '/':
@@ -208,16 +225,15 @@ class SubversionRepository(Repository):
         return rev
 
     def close(self):
-        if self._pool:
-            self.log.debug("Closing subversion file-system at %s" % self.path)
-            self.pool = None
-            self.repos = None
-            self.fs_ptr = None
-            self.rev = None
+        self.log.debug("Closing subversion file-system at %s" % self.path)
+        self.repos = None
+        self.fs_ptr = None
+        self.rev = None
+        self.pool = None
 
     def get_changeset(self, rev):
         return SubversionChangeset(int(rev), self.authz, self.scope,
-                                   self.fs_ptr, self._pool)
+                                   self.fs_ptr, self.pool)
 
     def get_node(self, path, rev=None):
         self.authz.assert_permission(self.scope + path)
@@ -227,7 +243,7 @@ class SubversionRepository(Repository):
         rev = self.normalize_rev(rev)
 
         return SubversionNode(path, rev, self.authz, self.scope, self.fs_ptr,
-                              self._pool)
+                              self.pool)
 
     def get_oldest_rev(self):
         rev = 0
@@ -281,11 +297,9 @@ class SubversionRepository(Repository):
         path = self.normalize_path(path)
         rev = self.normalize_rev(rev)
         expect_deletion = False
-        class Helper:
-            """Something for subpool to weakref"""
+        subpool = Pool(self.pool)
         while rev:
-            subpool_owner = Helper()
-            subpool = Pool(subpool_owner, self._pool)
+            subpool.clear()
             rev_root = fs.revision_root(self.fs_ptr, rev, subpool())
             node_type = fs.check_path(rev_root, path, subpool())
             if node_type in _kindmap: # then path exists at that rev
@@ -295,7 +309,7 @@ class SubversionRepository(Repository):
                 newer = None # 'newer' is the previously seen history tuple
                 older = None # 'older' is the currently examined history tuple
                 for p, r in _get_history(path, self.authz, self.fs_ptr,
-                                         subpool(), 0, rev, limit):
+                                         subpool, 0, rev, limit):
                     older = (self.normalize_path(p), r, Changeset.ADD)
                     rev = self.previous_rev(r)
                     if newer:
@@ -316,10 +330,7 @@ class SubversionRepository(Repository):
 
 class SubversionNode(Node):
 
-    pool = property(fget=lambda self: self._pool(),
-                    fset=lambda self, pool: setattr(self, '_pool', pool))
-
-    def __init__(self, path, rev, authz, scope, fs_ptr, pool):
+    def __init__(self, path, rev, authz, scope, fs_ptr, pool=None):
         self.authz = authz
         self.scope = scope
         if scope != '/':
@@ -327,15 +338,15 @@ class SubversionNode(Node):
         else:
             self.scoped_path = path
         self.fs_ptr = fs_ptr
-        self.pool = Pool(self, pool)
+        self.pool = Pool(pool)
         self._requested_rev = rev
 
-        self.root = fs.revision_root(fs_ptr, rev, self.pool)
-        node_type = fs.check_path(self.root, self.scoped_path, self.pool)
+        self.root = fs.revision_root(fs_ptr, rev, self.pool())
+        node_type = fs.check_path(self.root, self.scoped_path, self.pool())
         if not node_type in _kindmap:
             raise TracError, "No node at %s in revision %s" % (path, rev)
-        self.created_rev = fs.node_created_rev(self.root, self.scoped_path, self.pool)
-        self.created_path = fs.node_created_path(self.root, self.scoped_path, self.pool)
+        self.created_rev = fs.node_created_rev(self.root, self.scoped_path, self.pool())
+        self.created_path = fs.node_created_path(self.root, self.scoped_path, self.pool())
         # 'created_path' differs from 'path' if the last operation is a copy,
         # and furthermore, 'path' might not exist at 'create_rev'
         self.rev = self.created_rev
@@ -346,24 +357,26 @@ class SubversionNode(Node):
         if self.isdir:
             return None
         return core.Stream(fs.file_contents(self.root, self.scoped_path,
-                                            self.pool))
+                                            self.pool()))
 
     def get_entries(self):
         if self.isfile:
             return
-        entries = fs.dir_entries(self.root, self.scoped_path, self.pool)
+        pool = Pool(self.pool)
+        entries = fs.dir_entries(self.root, self.scoped_path, pool())
         for item in entries.keys():
             path = '/'.join((self.path, item))
             if not self.authz.has_permission(path):
                 continue
             yield SubversionNode(path, self._requested_rev, self.authz,
-                                 self.scope, self.fs_ptr, self._pool)
+                                 self.scope, self.fs_ptr, self.pool)
 
     def get_history(self,limit=None):
         newer = None # 'newer' is the previously seen history tuple
         older = None # 'older' is the currently examined history tuple
+        pool = Pool(self.pool)
         for path, rev in _get_history(self.scoped_path, self.authz, self.fs_ptr,
-                                      self.pool, 0, self._requested_rev, limit):
+                                      pool, 0, self._requested_rev, limit):
             if rev > 0 and path.startswith(self.scope):
                 older = (path[len(self.scope):], rev, Changeset.ADD)
                 if newer:
@@ -375,7 +388,7 @@ class SubversionNode(Node):
             yield newer
 
     def get_properties(self):
-        props = fs.node_proplist(self.root, self.scoped_path, self.pool)
+        props = fs.node_proplist(self.root, self.scoped_path, self.pool())
         for name,value in props.items():
             props[name] = str(value) # Make sure the value is a proper string
         return props
@@ -383,7 +396,7 @@ class SubversionNode(Node):
     def get_content_length(self):
         if self.isdir:
             return None
-        return fs.file_length(self.root, self.scoped_path, self.pool)
+        return fs.file_length(self.root, self.scoped_path, self.pool())
 
     def get_content_type(self):
         if self.isdir:
@@ -392,35 +405,33 @@ class SubversionNode(Node):
 
     def get_last_modified(self):
         date = fs.revision_prop(self.fs_ptr, self.created_rev,
-                                core.SVN_PROP_REVISION_DATE, self.pool)
-        return core.svn_time_from_cstring(date, self.pool) / 1000000
+                                core.SVN_PROP_REVISION_DATE, self.pool())
+        return core.svn_time_from_cstring(date, self.pool()) / 1000000
 
     def _get_prop(self, name):
-        return fs.node_prop(self.root, self.scoped_path, name, self.pool)
+        return fs.node_prop(self.root, self.scoped_path, name, self.pool())
 
 
 class SubversionChangeset(Changeset):
 
-    pool = property(fget=lambda self: self._pool(),
-                    fset=lambda self, pool: setattr(self, '_pool', pool))
-
-    def __init__(self, rev, authz, scope, fs_ptr, pool):
+    def __init__(self, rev, authz, scope, fs_ptr, pool=None):
         self.rev = rev
         self.authz = authz
         self.scope = scope
         self.fs_ptr = fs_ptr
-        self.pool = Pool(self, pool)
+        self.pool = Pool(pool)
         message = self._get_prop(core.SVN_PROP_REVISION_LOG)
         author = self._get_prop(core.SVN_PROP_REVISION_AUTHOR)
         date = self._get_prop(core.SVN_PROP_REVISION_DATE)
-        date = core.svn_time_from_cstring(date, self.pool) / 1000000
+        date = core.svn_time_from_cstring(date, self.pool()) / 1000000
         Changeset.__init__(self, rev, message, author, date)
 
     def get_changes(self):
-        root = fs.revision_root(self.fs_ptr, self.rev, self.pool)
-        editor = repos.RevisionChangeCollector(self.fs_ptr, self.rev, self.pool)
-        e_ptr, e_baton = delta.make_editor(editor, self.pool)
-        repos.svn_repos_replay(root, e_ptr, e_baton, self.pool)
+        pool = Pool(self.pool)
+        root = fs.revision_root(self.fs_ptr, self.rev, pool())
+        editor = repos.RevisionChangeCollector(self.fs_ptr, self.rev, pool())
+        e_ptr, e_baton = delta.make_editor(editor, pool())
+        repos.svn_repos_replay(root, e_ptr, e_baton, pool())
 
         idx = 0
         copies, deletions = {}, {}
@@ -469,4 +480,4 @@ class SubversionChangeset(Changeset):
             yield tuple(change)
 
     def _get_prop(self, name):
-        return fs.revision_prop(self.fs_ptr, self.rev, name, self.pool)
+        return fs.revision_prop(self.fs_ptr, self.rev, name, self.pool())

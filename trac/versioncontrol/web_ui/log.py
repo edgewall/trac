@@ -28,6 +28,7 @@ from trac.wiki import IWikiSyntaxProvider
 from trac.versioncontrol import Changeset
 from trac.versioncontrol.web_ui.util import *
 
+LOG_LIMIT = 100
 
 class LogModule(Component):
 
@@ -65,7 +66,7 @@ class LogModule(Component):
         format = req.args.get('format')
         stop_rev = req.args.get('stop_rev')
         verbose = req.args.get('verbose')
-        limit = int(req.args.get('limit') or 100)
+        limit = LOG_LIMIT
 
         req.hdf['title'] = path + ' (log)'
         req.hdf['log'] = {
