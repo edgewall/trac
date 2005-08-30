@@ -214,11 +214,11 @@ class SubversionRepositoryTestCase(unittest.TestCase):
         self.assertEqual(1112349652, chgset.date)
 
         changes = chgset.get_changes()
-        self.assertEqual(('trunk', Node.DIRECTORY, Changeset.ADD, None, -1),
-                         changes.next())
         self.assertEqual(('branches', Node.DIRECTORY, Changeset.ADD, None, -1),
                          changes.next())
         self.assertEqual(('tags', Node.DIRECTORY, Changeset.ADD, None, -1),
+                         changes.next())
+        self.assertEqual(('trunk', Node.DIRECTORY, Changeset.ADD, None, -1),
                          changes.next())
         self.assertRaises(StopIteration, changes.next)
 

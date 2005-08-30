@@ -464,6 +464,7 @@ class SubversionChangeset(Changeset):
             del changes[i - offset]
             offset += 1
 
+        changes.sort()
         for change in changes:
             yield tuple(change)
 

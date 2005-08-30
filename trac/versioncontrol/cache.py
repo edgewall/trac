@@ -127,7 +127,8 @@ class CachedChangeset(Changeset):
     def get_changes(self):
         cursor = self.db.cursor()
         cursor.execute("SELECT path,kind,change,base_path,base_rev "
-                       "FROM node_change WHERE rev=%s", (self.rev,))
+                       "FROM node_change WHERE rev=%s "
+                       "ORDER BY path", (self.rev,))
         for path, kind, change, base_path, base_rev in cursor:
             if not self.authz.has_permission(path):
                 # FIXME: what about the base_path?
