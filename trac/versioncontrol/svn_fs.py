@@ -28,13 +28,7 @@ from svn import fs, repos, core, delta
 _kindmap = {core.svn_node_dir: Node.DIRECTORY,
             core.svn_node_file: Node.FILE}
 
-try:
-    import threading
-except ImportError:
-    import dummy_threading as threading
-
-apr_lock = threading.Lock()
-apr_refcount = 0
+application_pool = None
 
     
 def _get_history(path, authz, fs_ptr, pool, start, end, limit=None):
@@ -58,11 +52,10 @@ def _get_history(path, authz, fs_ptr, pool, start, end, limit=None):
     for item in history:
         yield item
 
-application_pool = None
 
 def _mark_weakpool_invalid(weakpool):
-  if weakpool():
-    weakpool()._mark_invalid()
+    if weakpool():
+        weakpool()._mark_invalid()
 
 
 class Pool(object):
