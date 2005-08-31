@@ -19,10 +19,13 @@
 from __future__ import generators
 import re
 import os
-import imp
 import string
-import StringIO
 import urllib
+
+try:
+    from cStringIO import StringIO
+except ImportError:
+    from StringIO import StringIO
 
 from trac import util
 from trac.mimeview import *
@@ -149,8 +152,9 @@ class Formatter(object):
     _post_rules = [(r"(?P<shref>!?((?P<sns>%s):" % LINK_SCHEME +
                     r"(?P<stgt>'[^']+'|\"[^\"]+\"|"
                     r"((\|(?=[^| ])|[^| ])*[^|'~_\., \)]))))"),
-                   (r"(?P<lhref>!?\[(?P<lns>%s):" % LINK_SCHEME +
+                   (r"(?P<lhref>!?\[(?:(?P<lns>%s):" % LINK_SCHEME +
                     r"(?P<ltgt>'[^']+'|\"[^\"]+\"|[^\] ]+)"
+                    r"|(?P<rel>[/.][^ [\]]*))"
                     r"(?: (?P<label>.*?))?\])"),
                    (r"(?P<macro>!?\[\[(?P<macroname>[\w/+-]+)"
                     r"(\]\]|\((?P<macroargs>.*?)\)\]\]))"),
@@ -283,10 +287,14 @@ class Formatter(object):
     def _lhref_formatter(self, match, fullmatch):
         ns = fullmatch.group('lns')
         target = fullmatch.group('ltgt') 
-        if target[0] in "'\"":
+        if target and target[0] in "'\"":
             target = target[1:-1]
         label = fullmatch.group('label') or target
-        return self._make_link(ns, target, match, label)
+        rel = fullmatch.group('rel')
+        if rel:
+            return self._make_relative_link(rel, label or rel)
+        else:
+            return self._make_link(ns, target, match, label)
 
     def _make_link(self, ns, target, match, label):
         if ns in self.link_resolvers:
@@ -296,10 +304,20 @@ class Formatter(object):
         else:
             return match
 
-    def _make_ext_link(self, url, text):
+    def _make_ext_link(self, url, text, title=''):
+        title_attr = title and ' title="%s"' % title or ''
+        if Formatter.img_re.search(url) and self.flavor != 'oneliner':
+            return '<img src="%s" alt="%s" />' % (url, title or text)
+        if not url.startswith(self._local):
+            return '<a class="ext-link" href="%s"%s>%s</a>' \
+                   % (url, title_attr, text)
+        else:
+            return '<a href="%s"%s>%s</a>' % (url, title_attr, text)
+
+    def _make_relative_link(self, url, text):
         if Formatter.img_re.search(url) and self.flavor != 'oneliner':
             return '<img src="%s" alt="%s" />' % (url, text)
-        if not url.startswith(self._local):
+        if url.startswith('//'): # only the protocol will be kept
             return '<a class="ext-link" href="%s">%s</a>' % (url, text)
         else:
             return '<a href="%s">%s</a>' % (url, text)
@@ -692,16 +710,16 @@ class OutlineFormatter(Formatter):
 
 
 def wiki_to_html(wikitext, env, req, db=None, absurls=0, escape_newlines=False):
-    out = StringIO.StringIO()
+    out = StringIO()
     Formatter(env, req, absurls, db).format(wikitext, out, escape_newlines)
     return out.getvalue()
 
 def wiki_to_oneliner(wikitext, env, db=None, absurls=0):
-    out = StringIO.StringIO()
+    out = StringIO()
     OneLinerFormatter(env, absurls, db).format(wikitext, out)
     return out.getvalue()
 
 def wiki_to_outline(wikitext, env, db=None, absurls=0, max_depth=None):
-    out = StringIO.StringIO()
+    out = StringIO()
     OutlineFormatter(env, absurls, db).format(wikitext, out, max_depth)
     return out.getvalue()

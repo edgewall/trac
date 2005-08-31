@@ -489,6 +489,20 @@ ticket:"123"
 <a class="missing ticket" href="/ticket/123" rel="nofollow">ticket:"123"</a>
 </p>
 ==============================
+Relative links are supported:
+[../parent See above]
+[/docs See documentation]
+[/images/logo.png Our logo]
+[/]
+------------------------------
+<p>
+Relative links are supported:
+<a href="../parent">See above</a>
+<a href="/docs">See documentation</a>
+<img src="/images/logo.png" alt="Our logo" />
+<a href="/">/</a>
+</p>
+==============================
 source:'even with whitespaces'
 source:"even with whitespaces"
 [source:'even with whitespaces' Path with spaces]
