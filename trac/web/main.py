@@ -112,9 +112,6 @@ class RequestDispatcher(Component):
 
                 req.display(template, content_type or 'text/html')
         finally:
-            # Help the garbage collector a bit
-            req.hdf = None
-
             # Give the session a chance to persist changes
             req.session.save()
 
