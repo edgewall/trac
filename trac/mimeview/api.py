@@ -143,6 +143,10 @@ class IHTMLPreviewRenderer(Interface):
     specific content types to the `Mimeview` component.
     """
 
+    # implementing classes should set this property to True if they
+    # support text content where Trac should expand tabs into spaces
+    expand_tabs = False
+
     def get_quality_ratio(mimetype):
         """Return the level of support this renderer provides for the content of
         the specified MIME type. The return value must be a number between 0
@@ -207,18 +211,30 @@ class Mimeview(Component):
             mimetype = get_mimetype(filename)
         mimetype = mimetype.split(';')[0].strip() # split off charset
 
+        expanded_content = None
+
         candidates = []
         for renderer in self.renderers:
             qr = renderer.get_quality_ratio(mimetype)
             if qr > 0:
-                candidates.append((qr, renderer))
+                expand_tabs = getattr(renderer, 'expand_tabs', False)
+                self.log.debug('Renderer %s expand_tabs = %s' % (renderer.__class__.__name__, expand_tabs))
+                if expand_tabs and expanded_content is None:
+                    tab_width = int(self.config.get('mimeviewer', 'tab_width'))
+                    expanded_content = content.expandtabs(tab_width)
+
+                if expand_tabs:
+                    candidates.append((qr, renderer, expanded_content))
+                else:
+                    candidates.append((qr, renderer, content))
         candidates.sort(lambda x,y: cmp(y[0], x[0]))
 
-        for qr, renderer in candidates:
+        for qr, renderer, content in candidates:
             try:
                 self.log.debug('Trying to render HTML preview using %s'
                                % renderer.__class__.__name__)
                 result = renderer.render(req, mimetype, content, filename, rev)
+
                 if not result:
                     continue
                 elif isinstance(result, (str, unicode)):
@@ -228,9 +244,8 @@ class Mimeview(Component):
                 else:
                     buf = StringIO()
                     buf.write('<div class="code-block"><pre>')
-                    tab_width = int(self.config.get('mimeviewer', 'tab_width'))
                     for line in result:
-                        buf.write(line.expandtabs(tab_width) + '\n')
+                        buf.write(line + '\n')
                     buf.write('</pre></div>')
                     return buf.getvalue()
             except Exception, e:
@@ -257,14 +272,12 @@ class Mimeview(Component):
                 div, mod = divmod(len(m), 2)
                 return div * '&nbsp; ' + mod * '&nbsp;'
             return (match.group('tag') or '') + '&nbsp;'
-        tab_width = int(self.config.get('mimeviewer', 'tab_width'))
 
         for num, line in enum(_html_splitlines(lines)):
             cells = []
             for annotator in annotators:
                 cells.append(annotator.annotate_line(num + 1, line))
-            cells.append('<td>%s</td>\n'
-                         % space_re.sub(htmlify, line.expandtabs(tab_width)))
+            cells.append('<td>%s</td>\n' % space_re.sub(htmlify, line))
             buf.write('<tr>' + '\n'.join(cells) + '</tr>')
         buf.write('</tbody></table>')
         return buf.getvalue()
@@ -320,6 +333,8 @@ class PlainTextRenderer(Component):
     for which no more specific renderer is available.
     """
     implements(IHTMLPreviewRenderer)
+
+    expand_tabs = True
 
     def get_quality_ratio(self, mimetype):
         if mimetype.startswith('text/'):

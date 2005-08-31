@@ -64,8 +64,10 @@ class SilverCityRenderer(Component):
 
     implements(IHTMLPreviewRenderer)
 
+    expand_tabs = True
+
     def get_quality_ratio(self, mimetype):
-        if mimetype in types.keys():
+        if mimetype in types:
             return 3
         return 0
 
@@ -100,7 +102,6 @@ class SilverCityRenderer(Component):
                                      re.DOTALL)
         html = span_default_re.sub(r'\1', br_re.sub('', buf.getvalue()))
 
-        for line in html.splitlines():
-            # SilverCity generates _way_ too many non-breaking spaces...
-            # We don't need them anyway, so replace them by normal spaces
-            yield line.replace('&nbsp;', ' ')
+        # SilverCity generates _way_ too many non-breaking spaces...
+        # We don't need them anyway, so replace them by normal spaces
+        return html.replace('&nbsp;', ' ').splitlines()
