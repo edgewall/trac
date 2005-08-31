@@ -272,6 +272,8 @@ class TicketModule(Component):
                             resolution,
                             wiki_to_oneliner(message, self.env, db)
                         ]))
+                    else:
+                        message = util.escape(message)
                 yield kinds[status], href, title, t, author, message
 
     # Internal methods
