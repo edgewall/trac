@@ -264,6 +264,8 @@ class TicketModule(Component):
                     href = self.env.abs_href.ticket(id)
                     if status != 'new':
                         message = wiki_to_html(message or '--', self.env, db)
+                    else:
+                        message = util.escape(message)
                 else:
                     href = self.env.href.ticket(id)
                     message = util.shorten_line(message)
