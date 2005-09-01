@@ -340,9 +340,10 @@ class ChangesetModule(Component):
     # IWikiSyntaxProvider methods
     
     def get_wiki_syntax(self):
-        yield (r"!?\[\d+\]|(?:\b|!)r\d+\b", (lambda x, y, z:
-               self._format_link(x, 'changeset',
-                                 y[0] == 'r' and y[1:] or y[1:-1], y)))
+        yield (r"!?\[\d+\]|(?:\b|!)r\d+\b(?!:\d)",
+               lambda x, y, z: self._format_link(x, 'changeset',
+                                                 y[0] == 'r' and y[1:]
+                                                 or y[1:-1], y))
 
     def get_link_resolvers(self):
         yield ('changeset', self._format_link)

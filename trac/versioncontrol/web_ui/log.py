@@ -205,7 +205,10 @@ class LogModule(Component):
     # IWikiSyntaxProvider methods
     
     def get_wiki_syntax(self):
-        return []
+        yield (r"!?\[\d+:\d+\]|(?:\b|!)r\d+:\d+\b",
+               lambda x, y, z: self._format_link(x, 'log',
+                                                 '#'+(y[0] == 'r' and y[1:]
+                                                      or y[1:-1]), y))
 
     def get_link_resolvers(self):
         yield ('log', self._format_link)
