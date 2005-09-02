@@ -47,6 +47,7 @@ types = {
     'text/x-java':              'java',
     'text/x-javascript':        'javascript',
     'text/x-ksh':               'ksh',
+    'text/x-lua':               'lua',
     'text/x-m4':                'm4',
     'text/x-makefile':          'makefile',
     'text/x-mail':              'mail',
