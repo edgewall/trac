@@ -366,7 +366,7 @@ class ReportModule(Component):
         format = req.args.get('format')
         if format == 'rss':
             self._render_rss(req)
-            return 'report_rss.cs', 'application/xml;charset=utf-8'
+            return 'report_rss.cs', 'application/rss+xml'
         elif format == 'csv':
             self._render_csv(req, cols, rows)
             return None
