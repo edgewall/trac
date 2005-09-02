@@ -3,9 +3,9 @@
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head><?cs
- if:project.name ?>
+ if:project.name_encoded ?>
  <title><?cs if:title ?><?cs var:title ?> - <?cs /if ?><?cs
-   var:project.name ?> - Trac</title><?cs
+   var:project.name_encoded ?> - Trac</title><?cs
  else ?>
  <title>Trac: <?cs var:title ?></title><?cs
  /if ?><?cs
@@ -32,8 +32,8 @@
   if:chrome.logo.width ?> width="<?cs var:chrome.logo.width ?>"<?cs /if ?><?cs
   if:chrome.logo.height ?> height="<?cs var:chrome.logo.height ?>"<?cs
   /if ?> alt="<?cs var:chrome.logo.alt ?>" /></a><hr /><?cs
- elif:project.name ?><h1><a href="<?cs var:chrome.logo.link ?>"><?cs
-  var:project.name ?></a></h1><?cs
+ elif:project.name_encoded ?><h1><a href="<?cs var:chrome.logo.link ?>"><?cs
+  var:project.name_encoded ?></a></h1><?cs
  /if ?></div>
 
 <form id="search" action="<?cs var:trac.href.search ?>" method="get">

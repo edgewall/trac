@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <rss version="2.0">
  <channel><?cs
-  if:project.name.encoded ?>
-   <title><?cs var:project.name.encoded ?>: Ticket Query</title><?cs
+  if:project.name_encoded ?>
+   <title><?cs var:project.name_encoded ?>: Ticket Query</title><?cs
   else ?>
    <title>Ticket Query</title><?cs
   /if ?>
@@ -12,7 +12,7 @@
   /if ?>
   <language>en-us</language>
   <image>
-   <title><?cs var:project.name.encoded ?></title>
+   <title><?cs var:project.name_encoded ?></title>
    <url><?cs
     if:!header_logo.src_abs ?><?cs var:base_host ?><?cs
     /if ?><?cs

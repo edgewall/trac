@@ -173,7 +173,7 @@ def populate_hdf(hdf, env, req=None):
 
     hdf['project'] = {
         'name': env.config.get('project', 'name'),
-        'name.encoded': escape(env.config.get('project', 'name')),
+        'name_encoded': escape(env.config.get('project', 'name')),
         'descr': env.config.get('project', 'descr'),
         'footer': env.config.get('project', 'footer',
                  'Visit the Trac open source project at<br />'

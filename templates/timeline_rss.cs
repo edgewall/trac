@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <rss version="2.0">
  <channel><?cs
-  if:project.name.encoded ?>
-   <title><?cs var:project.name.encoded ?>: <?cs var:title ?></title><?cs
+  if:project.name_encoded ?>
+   <title><?cs var:project.name_encoded ?>: <?cs var:title ?></title><?cs
   else ?>
    <title><?cs var:title ?></title><?cs
   /if ?>
@@ -11,7 +11,7 @@
   <language>en-us</language>
   <generator>Trac v<?cs var:trac.version ?></generator>
   <image>
-   <title><?cs var:project.name.encoded ?></title>
+   <title><?cs var:project.name_encoded ?></title>
    <url><?cs if:!header_logo.src_abs ?><?cs var:base_host ?><?cs /if ?><?cs
     var:header_logo.src ?></url>
    <link><?cs var:base_host ?><?cs var:trac.href.timeline ?></link>
