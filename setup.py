@@ -18,8 +18,9 @@ VERSION = str(trac.__version__)
 URL = trac.__url__
 LICENSE = trac.__license__
 
-if sys.version_info<(2,1):
-    print >>sys.stderr, "You need at least Python 2.1 for %s %s" % (PACKAGE, VERSION)
+if sys.version_info < (2, 3):
+    print >>sys.stderr, 'You need at least Python 2.3 for %s %s' \
+                        % (PACKAGE, VERSION)
     sys.exit(3)
 
 def _p(unix_path):
