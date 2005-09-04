@@ -1,0 +1,80 @@
+= Installing Trac as CGI =
+
+To install Trac as a CGI script, you need to make the `trac.cgi` executable as a CGI by your web server. If you're using [http://httpd.apache.org/ Apache HTTPD], there are a couple ways to do that:
+
+ 1. Use a `ScriptAlias` to map an URL to the `trac.cgi` script
+ 2. Copy the `trac.cgi` file into the directory for CGI executables used by your web server (commonly named `cgi-bin`). You can also create a symbolic link, but in that case make sure that the `FollowSymLinks` option is enabled for the `cgi-bin` directory.
+
+The first option is recommended as it also allows you to map the CGI to a friendly URL.
+
+Now, edit the Apache configuration file and add this snippet, file names and locations changed to match your installation:
+{{{
+ScriptAlias /trac /usr/share/trac/cgi-bin/trac.cgi
+
+# Trac need to know where the database is located
+<Location "/trac">
+  SetEnv TRAC_ENV "/path/to/projectenv"
+</Location>
+}}}
+
+This will make Trac available at `http://yourhost.example.org/trac`.
+
+ ''Note: Make sure that the modules mod_alias and mod_env modules are available and enabled in your Apache configuration, otherwise Apache will complain about the above snippet.''
+
+ ''Note: If you are using the [http://httpd.apache.org/docs/suexec.html Apache suEXEC] feature see [http://projects.edgewall.com/trac/wiki/ApacheSuexec ApacheSuexec] (on the main Trac site).''
+
+== Mapping Static Resources ==
+
+Out of the box, Trac will serve static resources such as style sheets or images itself. For a CGI setup, though, this is highly undesirable, because it results in the CGI script being invoked for documents that could be more efficiently served by the web server.
+
+Web servers such as [http://httpd.apache.org/ Apache HTTPD] allow you to create “Aliases” to resources, thereby giving them a virtual URL that doesn't necessarily bear any resemblance to the layout of the servers file system. We already used this capability above when defining a `ScriptAlias` for the CGI script, and we'll use it now to map requests to the static resources to the directory on the file system that contains them, thereby bypassing the processing of such requests by the CGI script.
+
+Edit the Apache configuration file again and add the following snippet '''before''' the `ScriptAlias` for the CGI script , file names and locations changed to match your installation:
+{{{
+Alias /trac/chrome/common /usr/share/trac/htdocs
+<Directory "/usr/share/trac/htdocs">
+  Order allow,deny
+  Allow from all
+</Directory>
+}}}
+
+Note that whatever URL path you mapped the `trac.cgi` script to, the path `/chrome/common` is the path you have to append to that location to intercept requests to the static resources.
+
+For example, if Trac is mapped to `/cgi-bin/trac.cgi` on your server, the URL of the Alias should be `/cgi-bin/trac.cgi/chrome/common`.
+
+== Adding Authentication ==
+
+The simplest way to enable authentication with Apache is to create a password file. Use the `htpasswd` program to create the password file:
+{{{
+$ htpasswd -c /somewhere/trac.htpasswd admin
+New password: <type password>
+Re-type new password: <type password again>
+Adding password for user admin
+}}}
+
+After the first user, you dont need the "-c" option anymore:
+{{{
+$ htpasswd /somewhere/trac.htpasswd john
+New password: <type password>
+Re-type new password: <type password again>
+Adding password for user john
+}}}
+
+  ''See the man page for `htpasswd` for full documentation.''
+
+After you've created the users, you can set their permissions using TracPermissions.
+
+Now, you'll need to enable authentication against the password file in the Apache configuration:
+{{{
+<Location "/cgi-bin/trac.cgi/login">
+  AuthType Basic
+  AuthName "Trac"
+  AuthUserFile /somewhere/trac.htpasswd
+  Require valid-user
+</Location>
+}}}
+
+For better security, it is recommended that you either enable SSL or at least use the “Digest” authentication scheme instead of “Basic”. Please read the [http://httpd.apache.org/docs/2.0/ Apache HTTPD documentation] to find out more.
+
+----
+See also:  TracGuide, TracInstall, TracFastCgi, TracModPython

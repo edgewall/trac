@@ -80,7 +80,7 @@ int main(int argc, char *argv[])
 The following processors are included in the Trac distribution:
  * '''html''' -- Insert custom HTML in a wiki page. See WikiHtml.
  * '''rst''' -- Trac support for Restructured Text. See WikiRestructuredText.
- * '''textile''' -- Initial support as of aug 2, 2004.  See [http://projects.edgewall.com/trac/ticket/593 ticket 593] and [http://dealmeida.net/projects/textile/ Textile].
+ * '''textile''' -- Supported if  [http://dealmeida.net/projects/textile/ Textile] is installed.
 
 === Source Code Support ===
 Trac includes processors to provide inline [wiki:TracSyntaxColoring syntax highlighting] for these languages:
@@ -95,7 +95,7 @@ Trac includes processors to provide inline [wiki:TracSyntaxColoring syntax highl
  * '''xml''' -- XML
 '''Note:''' ''Trac relies on external software packages for syntax coloring. See TracSyntaxColoring for more info.''
 
-By using the mime-type as processor, it is posible to syntax-highlight the same languages that are supported when browsing source code.  (The list of mime-types can be found in [source:trunk/trac/Mimeview.py Mimeview.py]).
+By using the mime-type as processor, it is posible to syntax-highlight the same languages that are supported when browsing source code.
 
 For example, you can write:
 

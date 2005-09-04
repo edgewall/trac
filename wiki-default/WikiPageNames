@@ -1,18 +1,23 @@
+= Wiki Page Names =
+
 Wiki page names are written using CamelCase. Within a wiki text, any word in CamelCase automatically becomes a hyperlink to the wiki page with that same name.
 
 Page names must follow these rules:
 
- 1. The name must consist of alphabetic characters only. No digits, spaces, punctuation, or underscores are allowed.
+ 1. The name must consist of '''alphabetic characters only'''. No digits, spaces, punctuation, or underscores are allowed.
  1. A name must have at least two capital letters.
  1. The first character must be capitalized.
  1. Every capital letter must be followed by one or more lower-case letters. 
- 1. The use of slash ( / ) is permitted to create a hierarchy inside the wiki.
+ 1. The use of slash ( / ) is permitted to create a hierarchy inside the wiki.  (See !SubWiki and !ParentWiki macros in the [http://projects.edgewall.com/trac/wiki/MacroBazaar MacroBazaar] which provide a way to list all sub-entries and a link up the hierarchy respectively.)
 
-If you want a to create a wiki page that doesnt follow CamelCase rules you could use the following syntax see #614:
+If you want to create a wiki page that doesn't follow CamelCase rules you could use the following syntax:
 {{{
-[wiki:NOTCamelCase NOTCamelCase]
+[wiki:Wiki_page Wiki page]
 }}}
 
+This will be rendered as:
+
+ [wiki:Wiki_page Wiki page]
 
 ----
 See also: WikiNewPage, WikiFormatting, TracWiki

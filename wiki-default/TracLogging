@@ -1,32 +1,29 @@
 = Trac Logging =
 [[TracGuideToc]]
 
-Trac supports logging of system messages using the standard ''logging'' module part of Python 2.3 and newer.
-
-'''Note:''' If you are using a Python version older than 2.3, the Trac logging mechanism will be silently disabled.
+Trac supports logging of system messages using the standard [http://docs.python.org/lib/module-logging.html logging module] that comes with Python.
 
 Logging is configured in the {{{[logging]}}} section in [wiki:TracIni trac.ini].
 
-== Python 2.2 Workaround ==
-If you are using Python 2.2, however, note that the logging package from Python 2.3 works perfectly under 2.2 as well; you can just copy the entire {{{logging}}} directory from the Python 2.3 library into the Python 2.2 lib directory. Perhaps not the most elegant solution, but it works.
-
-
 == Supported Logging Methods ==
- * '''none''' -- Suppress all log messages.
- * '''file''' -- Log messages to a file, specified with the ''log_file'' directive in [wiki:TracIni trac.ini]. 
- * '''stderr''' -- Output all log entries to console ([wiki:TracStandalone tracd] only).
- * '''syslog''' -- (UNIX) Send messages to local syslogd via named pipe '/dev/log'.
- * '''winlog''' -- (Windows) Use the system's NT eventlog for Trac logging.
+
+The log method is set using the `log_type` configuration option, which takes any of the following values:
+ '''none'':: Suppress all log messages.
+ '''file''':: Log messages to a file, specified with the `log_file` option in [wiki:TracIni trac.ini]. 
+ '''stderr''':: Output all log entries to console ([wiki:TracStandalone tracd] only).
+ '''syslog''':: (UNIX) Send messages to local syslogd via named pipe `/dev/log`.
+ '''eventlog''':: (Windows) Use the system's NT eventlog for Trac logging.
 
 == Log Levels ==
-The level of verbosity of logged messages can be set using the ''log_level'' directive in [wiki:TracIni trac.ini]. The log level defines the minimum level of urgency required for a message to be logged.
+
+The verbosity level of logged messages can be set using the ''log_level'' directive in [wiki:TracIni trac.ini]. The log level defines the minimum level of urgency required for a message to be logged.
 
 The levels are:
- * ''CRITICAL'' -- Log only the most critical, typically fatal, messages.
- * ''ERROR'' -- Request failures, bugs and errors. 
- * ''WARN'' -- Warnings, non-interrupting events.
- * ''INFO'' -- Diagnostic information, log information about all requests.
- * ''DEBUG'' -- Development messages, profiling, etc. Not fit for human consumption.
+ '''CRITICAL''':: Log only the most critical (typically fatal) errors.
+ '''ERROR''':: Log failures, bugs and errors. 
+ '''WARN''':: Log warnings, non-interrupting events.
+ '''INFO''':: Diagnostic information, log information about all processing.
+ '''DEBUG''':: Trace messages, profiling, etc.
 
 ----
 See also: TracIni, TracGuide, TracEnvironment

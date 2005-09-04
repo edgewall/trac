@@ -2,7 +2,7 @@
 
 == Bugzilla ==
 
-Ticket data can be imported from Bugzilla using the bugzilla2trac.py script, available in the contrib/ directory of the Trac distribution.
+Ticket data can be imported from Bugzilla using the [source:trunk/contrib/bugzilla2trac.py bugzilla2trac.py] script, available in the contrib/ directory of the Trac distribution.
 
 {{{
 $ bugzilla2trac.py
@@ -40,4 +40,32 @@ For more details on the available options, see the configuration section at the 
 
 == Sourceforge ==
 
-Ticket data can be imported from Sourceforge using the sourceforge2trac.py script, available in the contrib/ directory of the Trac distribution.
+Ticket data can be imported from Sourceforge using the [source:http://projects.edgewall.com/trac/file/trunk/contrib/sourceforge2trac.py sourceforge2trac.py] script, available in the contrib/ directory of the Trac distribution.
+
+== Mantis ==
+
+Mantis bugs can be imported using the attached script.  
+Currently, the following data is imported from Mantis:
+  * bugs
+  * bug comments
+  * bug activity (field changes)
+
+Attachments are NOT imported.  If you use the script, please read the NOTES section (at the top of the file) and make sure you adjust the config parameters for your environment.
+
+mantis2trac.py has the same parameters as the bugzilla2trac.py script:
+{{{
+mantis2trac - Imports a bug database from Mantis into Trac.
+
+Usage: mantis2trac.py [options]
+
+Available Options:
+  --db <MySQL dbname>              - Mantis database
+  --tracenv /path/to/trac/env      - Full path to Trac db environment
+  -h | --host <MySQL hostname>     - Mantis DNS host name
+  -u | --user <MySQL username>     - Effective Mantis database user
+  -p | --passwd <MySQL password>   - Mantis database user password
+  -c | --clean                     - Remove current Trac tickets before importing
+  --help | help                    - This help info
+
+Additional configuration options can be defined directly in the script.
+}}} 

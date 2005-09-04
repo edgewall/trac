@@ -1,9 +1,37 @@
 = Upgrade Instructions =
 [[TracGuideToc]]
 
-Trac environments sometimes need to be upgraded before they can be used 
-in a new version of Trac. This document describes the steps necessary
-to upgrade an environment.
+A Trac environment sometimes needs to be upgraded before it can be used with a new version of Trac. This document describes the steps necessary to upgrade an environment.
+
+ '''Note''': ''Environment upgrades are not necessary for minor version releases unless otherwise noted. For example, there's no need to upgrade a Trac environment created with (or upgraded) 0.8.0 when installing 0.8.4 (or any other 0.8.x release).''
+
+== Upgrade Synopsis ==
+
+A typical upgrade looks like the following: 
+
+ 1. You upgrade the Trac source code - from an offical release or from a source checkout.
+ 2. You run the `trac-admin upgrade` command to bring the database up-to-date with the new Trac code. The table structure changes over time, but it is versioned. The upgrade command find the current version of the DB and the version required by the code, and performs an upgrade if required.
+ 3. Optionally, you can run the `wiki upgrade` command to bring the default Wiki pages up-to-date. Your `WikiStart` page will be left intact, of course.
+
+== From 0.8.x to 0.9 ==
+
+The database schema was changed between 0.8.x and 0.9. Existing environments must be upgraded before they can be used with Trac 0.9.
+
+The following command will automatically perform the upgrade:
+{{{
+ $ trac-admin /path/to/projectenv upgrade
+}}}
+
+Trac environments are created with a default set of wiki pages. It's recommended to update these pages on existing environments whenever Trac is upgraded to get up-to-date documentation and additional functionality. The following command will perform the update:
+{{{
+ $ trac-admin /path/to/projectenv wiki upgrade
+}}}
+
+If you're using [wiki:TracModPython mod_python], you will need to change the name of the mod_python handler in the Apache HTTPD configuration:
+{{{
+   from: PythonHandler trac.ModPythonHandler
+   to:   PythonHandler trac.web.modpython_frontend
+}}}
 
 == From 0.7.x to 0.8 ==
 
@@ -31,6 +59,20 @@ upgrading:
  $ trac-admin /path/to/projectenv permission add anonymous MILESTONE_VIEW
  $ trac-admin /path/to/projectenv permission add anonymous ROADMAP_VIEW
 }}}
+
+== Upgrading SQLite from 2.x to 3.x ==
+
+The database formats used by SQLite 2.x and sqlite 3.x are incompatible. If you upgrade your SQLite version (this can  also happen implicitly if you upgrade from PySQLite 1.0.x to 1.1.x or 2.x), then you must convert your database. 
+
+To do this, install both SQLite 2.8 and SQLite 3.x  (they have different filenames so can coexist in the same directory). Then use the following commands (Windows):
+{{{
+ $ mv trac.db trac2.db
+ $ sqlite trac2.db .dump | sqlite3 trac.db
+}}}
+
+Then when you're happy with the conversion and tested everything  you can delete the trac2.db file.
+
+For more information see http://www.sqlite.org/version3.html
 
 -----
 See also: TracGuide, TracInstall

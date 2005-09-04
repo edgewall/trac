@@ -4,7 +4,7 @@ Trac macros are plugins to extend the Trac engine with custom 'functions' writte
 Another kind of macros are WikiProcessors. They typically deal with alternate markup formats and representation of larger blocks of information (like source code highlighting). See also: WikiProcessors.
 
 == Using Macros ==
-Macro calls are enclosed in two ''square brackets''. Like python functions, macros can also have arguments, a comma separated list within parenthesis. 
+Macro calls are enclosed in two ''square brackets''. Like python functions, macros can also have arguments, a comma separated list within parentheses. 
 
 === Examples ===
 
@@ -20,19 +20,15 @@ Display:
 Display:
  [[HelloWorld(Testing)]]
 
-
 == Available Macros ==
-Macros are still a new feature, and the list of available (and distributed) macros is 
+
+Macros are still a relatively new feature, and the list of available (and distributed) macros is 
 admittedly not very impressive. In future Trac releases, we hope to build a library of useful macros, and will of course happily include contributed macros (see below). 
 
 [[MacroList]]
 
-
-----
-
-
 == Macros from around the world ==
-The [http://projects.edgewall.com/trac/ Trac Project] has a section dedicated to user-contributed macros, [http://projects.edgewall.com/trac/wiki/MacroBazaar MacroBazaar]. If you're looking for new macros, or have written new ones to share with the world, don't hesitate adding it to the [http://projects.edgewall.com/trac/wiki/MacroBazaar MacroBazaar] wiki page.
+The [http://projects.edgewall.com/trac/ Trac Project] has a section dedicated to user-contributed macros, [wiki:MacroBazaar MacroBazaar]. If you're looking for new macros, or have written new ones to share with the world, don't hesitate adding it to the [wiki:MacroBazaar MacroBazaar] wiki page.
 
   http://projects.edgewall.com/trac/wiki/MacroBazaar
 
@@ -45,6 +41,7 @@ Macros, like Trac itself, are written in the [http://www.python.org/ Python prog
 
 It's easiest to learn from an example:
 {{{
+#!python
 # MyMacro.py -- The world's simplest macro
 
 def execute(hdf, args, env):
@@ -58,13 +55,14 @@ Macros gain direct access to the main HDF tree, and are free to manipulate it.
 
 Example:
 {{{
+#!python
 def execute(hdf, args, env):
     # Currently hdf is set only when the macro is called
-    # From a wiki page
+    # from a wiki page.
     if hdf:
         hdf.setValue('wiki.macro.greeting', 'Hello World')
         
-    # args will be null if the macro is called without parentesis.
+    # args will be null if the macro is called without parentheses.
     args = args or 'No arguments'
     return 'Hello World, args = ' + args
 }}}
@@ -73,8 +71,12 @@ You can also use the environment (env) object to access configuration data.
 
 Example.
 {{{
+#!python
 def execute(hdf, txt, env):
-    return env.config.get('trac', 'repository_dir')
+    return env.get_config('trac', 'repository_dir')
 }}}
+
+Here is information on the different WikiMacroObjects.
+
 ----
-See also:  WikiProcessors, WikiFormatting, TracGuide
+See also:  WikiProcessors, WikiFormatting, TracGuide, WikiMacroObjects

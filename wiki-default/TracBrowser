@@ -5,24 +5,26 @@ The Trac browser can be used to browse directories, change logs
 and specific revisions of files stored in a subversion repository.
 
 Directory entries are displayed in a list with sortable columns. The list 
-entries can be sorted by '''name''', '''size''' or '''date''' by clicking on the column headers.
-The sort order can be reversed by clicking on a given column header again.
+entries can be sorted by ''name'', ''size'' or ''age'' by clicking on the column
+headers. The sort order can be reversed by clicking on a given column
+header again.
 
 The browser can be used to navigate through the directory structure 
-by clicking on the directory names. Clicking on filenames on the other 
-hand will display the files change log.
+by clicking on the directory names. Clicking on a file name will show
+the contents of the file. Clicking on the revision number of a file or
+directory will take you to the revision history for that file.
 
-It's also possible to browse directories as they were in history, at any given repository revision.
-
-The default behavior is to display the latest revision but
-another revision number can easily be selected using the form at the top of the
-page.
-
-'''Note:''' The browser does not use the Subversion access configuration so if you restrict read access to part of the repository in Subversion that same restriction will not be in place in the Trac browser. (Support for this functionality '''is''' being worked on for future Trac versions)
+It's also possible to browse directories or files as they were in history,
+at any given repository revision. The default behavior is to display the
+latest revision but another revision number can easily be selected using
+the ''View revision'' input field at the top of the page.
 
 == RSS Support ==
 
-The browser module supports RSS syndication to monitor changes to a file. To subscribe to an RSS feed of the revision log for a file, open its revision log in the browser and click the orange 'XML' icon at the bottom of the page. For more information on RSS support in Trac, see TracRss.
+The browser module provided RSS feeds to monitor changes to a file or
+directory. To subscribe to an RSS feed for a file or directory, open its
+revision log in the browser and click the orange 'XML' icon at the bottom
+of the page. For more information on RSS support in Trac, see TracRss.
 
 ----
-See also: TracGuide, TracChangeset
+See also: TracGuide, TracChangeset, FineGrainedPermissions

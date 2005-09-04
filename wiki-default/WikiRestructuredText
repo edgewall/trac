@@ -83,8 +83,31 @@ Will result in the below.
 
 }}}
 
+=== WikiMacros in reStructuredText ===
 
-=== Example ===
+For doing WikiMacros in ReST you use the same directive as for syntax highlightning i.e
+code-block. To work you must use a version of trac that has #801 applied. 
+
+=== WikiMacro Example ===
+
+{{{
+{{{
+#!rst
+
+.. code-block:: HelloWorld
+ 
+   Something I wanted to say
+
+
+}}}
+}}}
+
+Will result in the below.
+
+[[HelloWorld(Something I wanted to say)]]
+
+
+=== Bigger ReST Example ===
 The example below should be mostly self-explanatory:
 {{{
 #!html
@@ -110,9 +133,7 @@ True   True   True
 RST TracLinks
 -------------
 
-See also ticket |#42|.
-
-.. |#42| trac:: #42
+See also ticket `#42`:trac:.
 
 .. _webpage: http://docutils.sourceforge.net/rst.html
 }}}</pre>
@@ -142,9 +163,7 @@ True   True   True
 RST TracLinks
 -------------
 
-See also ticket |#42|.
-
-.. |#42| trac:: #42
+See also ticket `#42`:trac:.
 
 .. _webpage: http://docutils.sourceforge.net/rst.html
 }}}

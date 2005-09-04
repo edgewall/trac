@@ -8,11 +8,11 @@ Currently available documentation:
  * TracGuide (This page)  -- Documentation starting point.
    * TracInstall -- How to install and run Trac.
    * TracUpgrade -- How to upgrade existing installations.
-   * TracMultipleProjects -- Multiple projects on a single host.
    * TracAdmin -- Administrating a Trac project.
    * TracImport -- Importing tickets from other bug databases.
    * TracIni -- Trac configuration file reference. 
    * TracPermissions -- Access control and permissions.
+   * TracPlugins -- Installing and managing Trac extensions.
    * TracWiki -- How to use the built-in Wiki.
    * TracBrowser -- Browsing source code with Trac.
    * TracChangeset -- Viewing changes to source code.
@@ -31,5 +31,3 @@ Currently available documentation:
 If you are looking for a good place to ask a question about Trac, look no further than the [http://projects.edgewall.com/trac/wiki/MailingList MailingList]. It provides a friendly environment to discuss openly among Trac users and developers.
 
 See also the TracSupport page for more information resources.
-
-If you are interested in commercial support, please [http://www.edgewall.com/contact/ contact Edgewall Software].

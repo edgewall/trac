@@ -1,10 +1,94 @@
 = Configure Apache for multiple projects =
+By following these instructions, you will set up Apache to automatically serve multiple Trac projects for you. There are two different ways of setting this up: with and without global authentication. And with Apache 2 there are even two ways to do both.
 
-By following these instructions, you will set up Apache to automatically serve multiple Trac projects for you. 
+== Easiest method for hosting multiple projects in one domain with Apache 2 ==
+The first way to support multiple projects is to add the following to the Apache 2 config file, per project (myproj in this case):
 
-Start out by creating a project directory in your documentroot (/var/www in this example). Projects will be accessed as http://hostname/projects/projectname. Copy (or symlink) trac.cgi to this directory together with a file named index.html. This will be shown when users try to access nonexistent projects.
+{{{
+ScriptAlias /myproj /path/to/trac.cgi
 
-Then create your trac projects with trac-admin. It's important that they are all placed in the same directory. In this example we'll use /var/lib/trac. Add to your Apache configuration:
+<Location "/myproj">
+    SetEnv TRAC_ENV "/var/trac/myproj"
+</Location>
+
+<Location "/myproj/login">
+    AuthType basic
+    AuthName "myproj - trac"
+    AuthUserFile "/var/svn/svn-auth-file"
+    Require valid-user
+</Location>
+}}}
+
+This is in addition to the global line:
+
+{{{
+Alias /trac "/usr/share/trac/htdocs"
+}}}
+
+If you want different users per project, just edit the !AuthUserFile line for each one.
+
+== Harder method: URL Rewriting ==
+In this case both ways use Apache's URL rewriting module : {{{mod_rewrite}}}. You have to make sure you have it loaded or compiled in Apache.
+
+=== Apache 1.x ===
+In 1.x versions of the Apache web server, you must uncomment the following line in the main Apache configuration file, generally found at {{{/etc/apache/apache.conf}}} or {{{/etc/httpd/httpd.conf}}} :
+
+{{{
+LoadModule rewrite_module modules/mod_rewrite.so
+}}}
+
+=== Apache 2.x ===
+Newer versions of Apache (> 2.x) uses a cleaner configuration system. In the directory {{{/etc/apache2/mods-available/}}} are all modules loading and configuration snippets available. In {{{/etc/apache2/mods-enabled/}}} are all enabled modules. You just need to check that a symlink to the rewrite module loading file is present. If not, create it :
+
+{{{
+cd /etc/apache2/mods-enabled/
+ln -s ../mods-available/rewrite.load .
+}}}
+
+Don't forget to check that the {{{LoadModule}}} line in this file ({{{rewrite.load}}}) is uncommented :
+
+{{{
+LoadModule rewrite_module /usr/lib/apache2/modules/mod_rewrite.so
+}}}
+
+This is Debian and Gentoo(?) specific. On SuSE you edit /etc/sysconfig/apache2 and add rewrite to APACHE_MODULES. Depending on your SuSE version you have to run "SuSEconfig --module apache2" or just "rcapache2 restart"
+
+== The wimp way for multiple projects ==
+For those of using simply the cgi solution, the trac.cgi can be copied/symlinked to other directories
+
+{{{
+<Location "/cgi-bin/project1/trac.cgi">
+        SetEnv TRAC_ENV "/home/trac/project1"
+</Location>
+
+<Location "/cgi-bin/project2/trac.cgi">
+        SetEnv TRAC_ENV "/home/trac/project2"
+</Location>
+}}}
+
+The same works also for the authentication:
+{{{
+<Location "/cgi-bin/project1/trac.cgi/login">
+AuthType Basic
+AuthName "Project1"
+AuthUserFile /home/web/.access-files/trac.project1.htpasswd
+Require valid-user
+</Location>
+
+<Location "/cgi-bin/project2/trac.cgi/login">
+AuthType Basic
+AuthName "Project2"
+AuthUserFile /home/web/.access-files/trac.project2.htpasswd
+Require valid-user
+</Location>
+}}}
+
+== Global authentication ==
+This is the simplest case. With this procedure, you will be able to serve multiple Trac projects, using the same user accounts for every projects (permissions are still per project, but authentication is not). This is the original procedure provided by the Trac team.
+
+Start out by creating a {{{projects}}} directory in your !DocumentRoot (/var/www in this example). Projects will be accessed as http://hostname/projects/projectname. Copy (or symlink) trac.cgi to this {{{projects/}}} directory together with a file named index.html. This will be shown when users try to access nonexistent projects.
+
+Then create your Trac projects with trac-admin. It's important that they are all placed in the same directory. In this example we'll use /var/lib/trac. Add to your Apache configuration:
 
 {{{
 RewriteEngine on
@@ -12,6 +96,17 @@ RewriteRule ^/projects/+$			/projects/index.html [L]
 RewriteCond /var/lib/trac/$1			-d
 RewriteRule ^/projects/([[:alnum:]]+)(/?.*)	/projects/trac.cgi$2 [S=1,E=TRAC_ENV:/var/lib/trac/$1]
 RewriteRule ^/projects/(.*)			/projects/index.html
+
+Alias /trac/ /usr/share/trac/htdocs/
+#or where you installed the trac htdocs
+
+#You have to allow people to read the files in htdocs
+<Directory "/usr/share/trac/htdocs">
+        Options Indexes MultiViews
+        AllowOverride None
+        Order allow,deny
+        Allow from all
+</Directory>
 
 <Directory "/var/www/projects">
 	AllowOverride None
@@ -29,14 +124,139 @@ RewriteRule ^/projects/(.*)			/projects/index.html
 </LocationMatch>
 }}}
 
-Make sure you have the rewrite module loaded or compiled in Apache.
-
-{{{LoadModule rewrite_module modules/mod_rewrite.so}}}
-
 Now, when you add another project, you don't need to edit any apache config. The only file you may want to edit is index.html to make it list the new project. If you think this is too much work, replace it with a python cgi script that does it for you.
 
 [wiki:TracStandalone tracd] and TracModPython can also serve multiple projects.
 
+'''Suggestion:''' In the second ''RewriteRule'' directive and in the ''LocationMatch'' directive, change {{{[[:alnum:]]}}} to {{{[^/.]}}} because while {{{[[:alnum:]]}}} only matches an alpha-numeric character, {{{[^/.]}}} matches any character that is not a slash or a dot.  This change allows for, among other things, hyphens in project/directory names. It doesn't allow dots, because we don't want to match ".." for security reasons.  Another possibility is to replace {{{[[:alnum:]]}}} with {{{[[:alnum:]\-]}}}, which matches only an alphanumeric character or a hyphen (the backslash "escapes" the hyphen, which would otherwise have special meaning).  The [http://httpd.apache.org/docs-2.0/mod/mod_rewrite.html Apache 2.0 mod_rewrite documentation] suggests referencing the Perl regular expression manual page (run {{{perldoc perlre}}} on a system where Perl is installed) for details on regular expressions.  Note that it may be preferable to use a pattern that matches only characters suitable for directory names (and, thus, project names) that are valid for your particular installation.
 
-----
-See also: TracGuide, TracInstall
+== Per-project authentication ==
+As you problably noticed, the global procedure described above uses the same {{{AuthUserFile}}}, so every user you create in this file can log in every Trac project you host. Of course, in a non-configured Trac env, this user will be considered as ''anonymous'', but you might not want this too. Using a per-project authentification also allows you to use a different authentification greater for each project.
+
+The procedure we are going to explain here is a bit more complicated than the previous one as it imply Perl scripting, and that you'll need to reload the Apache configuration when you add a new project. But it's also much more ''tweakable''.
+
+=== Preparation ===
+As for the first procedure, you'll need a {{{projects}}} directory into your !DocumentRoot. Copy or symlink {{{trac.cgi}}} to this project :
+
+{{{
+mkdir projects
+ln -s /usr/share/trac/cgi-bin/trac.cgi projects/trac.cgi
+}}}
+
+We will also use an {{{index.cgi}}} file (a Perl script) to list available projects. We will discuss its creation later. We will also take for granted that your Trac environments live in {{{/var/lib/trac/}}}.
+
+=== Apache configuration ===
+The begining is exactly the same than for the global authentification installation :
+
+{{{
+RewriteEngine On
+
+RewriteRule ^/projects/+$                       /projects/index.cgi [L]
+RewriteCond /var/lib/trac/$1                    -d
+
+RewriteRule ^/projects/([[:alnum:]]+)(/?.*)     /projects/trac.cgi$2 [S=1,E=TRAC_ENV:/var/lib/trac/$1]
+RewriteRule ^/projects/(.*)                     /projects/index.cgi
+
+Alias /trac "/usr/share/trac/htdocs"
+<Directory "/var/www/projects">
+  AddHandler cgi-script .cgi
+  Options Indexes MultiViews SymLinksIfOwnerMatch +ExecCGI
+  AllowOverride None
+  Order allow,deny
+  Allow from all
+</Directory>
+}}}
+
+But here comes the magic. For each directory found in {{{/var/lib/trac/}}}, we create the appropriate {{{<Location>}}} section in the Apache configuration, using an automated Perl loop(mod_perl is required). Paste in the following right after the {{{<Directory>}}} section in your Apache config file:
+
+{{{
+#!perl
+<Perl>
+#!/usr/bin/perl
+
+# trac environments location
+my $trac_path = "/var/lib/trac";
+
+# trac base url
+my $trac_location = "/projects";
+
+opendir(TRAC_ROOT, $trac_path) or die "Unable to open Trac root directory ($trac_path)";
+
+while (my $name = readdir(TRAC_ROOT))
+{
+  if ($name =~ /^[[:alnum:]]+$/)
+  {
+    $Location{"$trac_location/$name/login"} = {
+      AuthType => "Basic",
+      AuthName => "\"Trac authentification for $name\"",
+      AuthUserFile => "$trac_path/access.user",
+      AuthGroupFile => "$trac_path/access.group",
+      Require => "group $name",
+    };
+  }
+}
+
+closedir(TRAC_ROOT);
+
+__END__
+</Perl>
+}}}
+
+=== Auth files and project listing ===
+In order to complete this setup, you will need two authentification files :
+
+ * {{{/var/lib/trac/access.user}}}, an htpasswd file listing all user logins and passwords. You can of course use one file per project (use {{{$trac_path/$name.htpasswd}}} as AuthUserFile for example).
+ * {{{/var/lib/trac/access.group}}}, a group file, listing all authorized user per project, following this syntax :
+   {{{
+proj1: user1 user2
+proj2: user1 user3
+proj3: user4
+   }}}
+
+For the project listing, we create another Perl script which will basically do the same as in the static Apache configuration above. Cut and paste the following into /projects/index.cgi:
+
+{{{
+#!perl
+#!/usr/bin/perl
+
+use strict;
+
+my $trac_path = "/var/lib/trac";
+my $trac_location = "/projects";
+
+# Send header
+print "Content-Type: text/html\n\n";
+
+# Send content
+print "<html>\n";
+print " <head>\n";
+print "  <title>Project listing</title>\n";
+print " </head>\n\n";
+print " <body>\n";
+print "   <h1>Project listing</h1>\n";
+print "   <ul id=\"trac\">\n";
+
+opendir(ROOT, $trac_path)
+        or die "Unable to open root directory ($trac_path)";
+
+while (my $name = readdir(ROOT))
+{
+  if ($name =~ /^[[:alnum:]]+$/)
+  {
+    print "   <li><a href=\"$trac_location/$name\">" . ucfirst($name) . "</a></li>\n";
+  }
+}
+
+closedir(ROOT);
+
+print "   </ul>\n";
+print " </body>\n";
+print "</html>\n";
+
+__END__
+}}}
+
+Here you are ! Don't forget to ''chown'' these files to {{{www-data}}}, and it should work !
+
+-------
+See also: TracGuide, TracInstall, TracMultipleProjectsWindows

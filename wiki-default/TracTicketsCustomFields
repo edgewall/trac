@@ -1,12 +1,12 @@
 = Custom Ticket Fields =
-Trac support adding custom, user-defined, fields to the ticket module. Using custom fields, you can add typed, site-specific, properties to tickets.
+Trac supports adding custom, user-defined fields to the ticket module. Using custom fields, you can add typed, site-specific properties to tickets.
 
 '''Note: In Trac 0.8, this feature is still experimental.'''
 
-== Configuriation ==
+== Configuration ==
 Configuring custom ticket fields is done in the TracIni config file.
 
-All field definitions should be under a section named [ticket-custom] in the ini-file.
+All field definitions should be under a section named '''{{{[ticket-custom]}}}''' in the ini-file.
 
 The syntax of each field definition is:
 {{{
@@ -14,7 +14,7 @@ The syntax of each field definition is:
  (FIELD_NAME.OPTION = VALUE)
  ...
 }}}
-Looking at the example below should help explain the syntax.
+The example below should help to explain the syntax.
 
 === Available Field Types and Options ===
  * '''text''': A simple (one line) text field.
@@ -37,13 +37,14 @@ Looking at the example below should help explain the syntax.
  * '''textarea''': Multi-line text area.
    * label: Descriptive label.
    * value: Default text.
-   * width: Width in columns.
-   * height: Height in lines.
+   * cols: Width in columns.
+   * rows: Height in lines.
    * order: Sort order placement.
 
 === Sample Config ===
 {{{
 [ticket-custom]
+
 test_one = text
 test_one.label = Just a text box
 
@@ -68,9 +69,14 @@ test_five.value = 1
 test_six = textarea
 test_six.label = This is a large textarea
 test_six.value = Default text
-test_six.width = 60
-test_six.height = 30
+test_six.cols = 60
+test_six.rows = 30
 }}}
 
+=== Notes ===
+Do not insert space characters between '{{{|}}}'-separated option values for ''radio'' and ''select'' fields.
+ * ok: {{{FIELD_NAME.options = un|deux|trois}}}
+ * invalid: {{{FIELD_NAME.options = un | deux | trois}}}
+
 ----
-See also: TracTickets, TracIni
+See also: TracTickets, TracIni, TracIniReportCustomFieldSample

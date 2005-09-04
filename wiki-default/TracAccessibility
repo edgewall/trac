@@ -1,18 +1,20 @@
 = Accessibility Support in Trac =
+
 Not every user has a graphic environment with a mouse or other pointing device. Some users rely on keyboard, alternative keyboard or voice input to navigate links, activate form controls, etc. In Trac, we work to assure users may interact with devices other than a pointing device.
 
-Trac supports accessibility keys for the most common operations.
+Trac supports accessibility keys for the most common operations. On Windows and Linux platforms, press any of the keys listed below in combination with the `<Ctrl>` key; on a Mac, use the `<alt>` key instead.
 
-== Accessibility Keys ==
- * 1 - WikiStart
- * 2 - Timeline
- * 3 - Roadmap
- * 4 - Search
- * 5 - TracFaq
- * 6 - TracGuide / Documentation
- * 7 - New Ticket
- * 9 - About Trac
- * 0 - TracAccessibility 
+== Global Access Keys ==
+
+ * `1` - WikiStart
+ * `2` - [wiki:TracTimeline Timeline]
+ * `3` - [wiki:TracRoadmap Roadmap]
+ * `4` - [wiki:TracSearch Search]
+ * `5` - TracFaq
+ * `6` - TracGuide / Documentation
+ * `7` - [wiki:TracTickets New Ticket]
+ * `9` - About Trac
+ * `0` - TracAccessibility 
 
 ----
 See also: TracGuide

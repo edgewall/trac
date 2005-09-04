@@ -4,9 +4,9 @@ As you might have guessed, TracLinks are a very fundamental feature of Trac.
 They allow hyperlinking between Trac entities (tickets, reports, changesets, Wiki
 pages, milestones and source files) from anywhere WikiFormatting is used.
 
-TracLinks are generally of the form '''item:id''' (where ''id'' represents the
+TracLinks are generally of the form '''type:id''' (where ''id'' represents the
 number, name or path of the item) though some frequently used kinds of items
-also have short-hand, alternative, notations. 
+also have short-hand notations.
 
 Some examples:
 
@@ -36,14 +36,17 @@ link title like this:
 [ticket:1 This is a link to ticket number one].
 }}}
 
-Display:
+Display: [ticket:1 This is a link to ticket number one].
 
-[ticket:1 This is a link to ticket number one].
+If the title is be omitted, only the id (the part after the colon) is displayed:
 
-It might seem a simple enough concept at a glance, but actually allows quite a complex network of information.
+{{{
+[ticket:1]
+}}}
 
-In practice though, it's very intuitive and simple to use, and we've found the "link trail" extremely helpful to better understand what's
-happening in a project or why a particular change was made.
+Display: [ticket:1]
+
+It might seem a simple enough concept at a glance, but actually allows quite a complex network of information. In practice, it's very intuitive and simple to use, and we've found the "link trail" extremely helpful to better understand what's happening in a project or why a particular change was made.
 
 == source: links ==
 The default behavior for a source:/some/path link is to open the directory browser if the path points
@@ -60,9 +63,9 @@ You can use TracLinks in:
 
 and any other text fields explicitly marked as supporting WikiFormatting.
 
-== Escaping TracLinks ==
-To prevent parsing of a !TracLink, you can escape it by preceding it with a '!' (exclamation mark).
+== Escaping Links ==
 
+To prevent parsing of a !TracLink, you can escape it by preceding it with a '!' (exclamation mark).
 {{{
  !NoLinkHere.
  ![42] is not a link either.

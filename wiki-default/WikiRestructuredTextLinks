@@ -15,8 +15,6 @@ Examples
 
 
 This is a list of example uses of the ''trac'' directive, providing use of TracLinks in WikiRestructuredText.
-Note that not all that functionality has been merged yet. The patch attached to #801 provides all of these.
-
 
 {{{
 #!rst

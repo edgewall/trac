@@ -20,7 +20,7 @@ in the case svn commit log messages, displays the commit message itself.
 It's important to note that WikiFormatting can be used in commit log messages,
 including TracLinks.
 
-This allows developers hyperlink and refer to issue tickets, wikipages and files
+This allows developers to hyperlink and refer to issue tickets, wikipages and files
 directly when committing a patch to the repository.
 
 Example:

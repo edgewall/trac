@@ -21,5 +21,7 @@ Anywhere in Trac where RSS is available, you should find a small orange 'XML' ic
  * http://sage.mozdev.org -- Sage RSS and Atom feed aggregator for Mozilla Firefox
  * http://www.rssreader.com/ -- Free and powerful RSS Reader for Windows
  * http://liferea.sourceforge.net/ -- Open source GTK2 RSS Reader for Linux
+ * http://akregator.sourceforge.net/ -- Open source KDE RSS Reader (will be part of KDE-PIM 3.4)
+ * http://www.sharpreader.net/ -- A free RSS Reader written in .NET for Windows
 ----
 See also: TracGuide, TracTimeline, TracReports, TracBrowser

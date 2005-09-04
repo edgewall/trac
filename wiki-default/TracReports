@@ -28,13 +28,13 @@ download the alternate report format.
 
 === Comma-delimited - CSV (Comma Separated Values) ===
 Export the report as plain text, each row on its own line, columns separated by a single comma (',').
-'''Note:''' Column data is stripped from carriage returns, line feeds and commas to preserve structure.
+'''Note:''' Carriage returns, line feeds, and commas are stripped from column data to preserve the CSV structure.
 
 === Tab-delimited ===
 Like above, but uses tabs (\t) instead of comma.
 
 === RSS - XML Content Syndication ===
-All reports support syndication using XML/RSS 2.0. To subscribe to a , click the the orange 'XML' icon at the bottom of the page. See TracRss for general information on RSS support in Trac.
+All reports support syndication using XML/RSS 2.0. To subscribe to an RSS feed, click the orange 'XML' icon at the bottom of the page. See TracRss for general information on RSS support in Trac.
 
 ----
 == Creating Custom Reports ==
@@ -100,6 +100,13 @@ To assign a value to $PRIORITY when viewing the report, you must define it as an
 Example:
 {{{
  http://projects.edgewall.com/trac/reports/14?PRIORITY=high
+}}}
+
+To use multiple variables, separate them with an '&'.
+
+Example:
+{{{
+ http://projects.edgewall.com/trac/reports/14?PRIORITY=high&SEVERITY=critical
 }}}
 
 
@@ -191,6 +198,11 @@ SELECT p.value AS __color__,
   ORDER BY t.milestone, p.value, t.severity, t.time
 }}}
 
+=== Reporting on custom fields ===
+
+If you have added custom fields to your tickets (experimental feature in v0.8, see TracTicketsCustomFields), you can write a SQL query to cover them. You'll need to make a join on the ticket_custom table, but this isn't especially easy.
+
+If you have tickets in the database ''before'' you declare the extra fields in trac.ini, there will be no associated data in the ticket_custom table. To get around this, use SQL's "LEFT OUTER JOIN" clauses. See TracIniReportCustomFieldSample for some examples.
 
 ----
 See also: TracTickets, TracQuery, TracGuide

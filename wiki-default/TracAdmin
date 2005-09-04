@@ -6,61 +6,33 @@ to configure and customize your Trac-installation to better fit your needs.
 
 == Usage ==
 
+You can get a comprehensive list of the available options, commands and sub-commands by invoking `trac-admin` with the `help` command:
 {{{
-Usage: trac-admin </path/to/projenv> [command [subcommand] [option ...]]
+trac-admin help
+}}}
 
-Invoking trac-admin without command starts interactive mode.
-
-about                                             -- Shows information about trac-admin                    
-help                                              -- Show documentation                                    
-initenv                                           -- Create and initialize a new environment interactively 
-initenv <projectname> <repospath> <templatepath>  -- Create and initialize a new environment from arguments
-hotcopy <backupdir>                               -- Make a hot backup copy of an environment.             
-resync                                            -- Re-synchronize trac with the repository               
-upgrade                                           -- Upgrade database to current version.                  
-wiki list                                         -- List wiki pages                                       
-wiki export <page> [file]                         -- Export wiki page to file or stdout                    
-wiki import <page> [file]                         -- Import wiki page from file or stdin                   
-wiki dump <directory>                             -- Export all wiki pages to files named by title         
-wiki load <directory>                             -- Import all wiki pages from directory                  
-wiki upgrade                                      -- Upgrade default wiki pages to current version         
-permission list                                   -- List permission rules                                 
-permission add <user> <action> [action] [...]     -- Add a new permission rule                             
-permission remove <user> <action> [action] [...]  -- Remove permission rule                                
-component list                                    -- Show available components                             
-component add <name> <owner>                      -- Add a new component                                   
-component rename <name> <newname>                 -- Rename a component                                    
-component remove <name>                           -- Remove/uninstall component                            
-component chown <name> <owner>                    -- Change component ownership                            
-priority list                                     -- Show possible ticket priorities                       
-priority add <value>                              -- Add a priority value option                           
-priority change <value> <newvalue>                -- Change a priority value                               
-priority remove <value>                           -- Remove priority value                                 
-severity list                                     -- Show possible ticket priorities                       
-severity add <value>                              -- Add a severity value option                           
-severity change <value> <newvalue>                -- Change a severity value                               
-severity remove <value>                           -- Remove severity value                                 
-version list                                      -- Show versions                                         
-version add <name> [time]                         -- Add version                                           
-version rename <name> <newname>                   -- Rename version                                        
-version time <name> <time>                        -- Set version date (Format: "Jun 3, 2003")              
-version remove <name>                             -- Remove version                                        
-milestone list                                    -- Show milestones                                       
-milestone add <name> [time]                       -- Add milestone                                         
-milestone rename <name> <newname>                 -- Rename milestone                                      
-milestone time <name> <time>                      -- Set milestone date (Format: "Jun 3, 2003")            
-milestone remove <name>                           -- Remove milestone                                      
+Unless you're executing the `help`, `about` or `version` sub-commands, you'll need to specify the path to the TracEnvironment that you want to administer as the first argument, for example:
+{{{
+trac-admin /path/to/projenv wiki list
 }}}
 
 == Interactive Mode ==
 
-When passed the database filename as only argument, '''trac-admin''' starts in interactive mode.
-Commands can then be executed on the selected database using the prompt, which offers tab-completion
-(on non-Windows environments) and automatic repetition of the last command issued.
+When pass the environment path as only argument, `trac-admin` starts in interactive mode.
+Commands can then be executed on the selected environment using the prompt, which offers tab-completion
+(on non-Windows environments, and when the Python `readline` module is available) and automatic repetition of the last command issued.
 
-== A Note on Configuration ==
-For configuration of the Trac environment, Trac 0.7 introduced a new storage format, including a separate config file used for settings. See TracIni for details.
+Once you're in interactive mode, you can also get help on specific commands or subsets of commands:
 
+For example, to get an explanation of the `resync` command, run:
+{{{
+> help resync
+}}}
+
+To get help on a all the Wiki-related commands, run:
+{{{
+> help wiki
+}}}
 
 ----
 See Also: TracGuide, TracBackup, TracPermissions. TracEnvironment, TracIni

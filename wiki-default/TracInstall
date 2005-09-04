@@ -1,132 +1,115 @@
-= Trac Installation Guide =
+= Trac Installation Guide = 
 [[TracGuideToc]]
 
-The Trac web-based project management tool is implemented as a CGI- or standalone program. Trac is written in the [http://www.python.org/ Python] programming language
-and uses the [http://www.sqlite.org/ SQLite] embedded database for persistant storage. For HTML rendering, Trac uses the [http://www.clearsilver.net/ Clearsilver] template system.
+Trac is a lightweight project management tool that is implemented as a web-based application. Trac is written in the Python programming language and can use [http://sqlite.org/ SQLite] or [http://www.postgresql.org/ PostgreSQL] as  database. For HTML rendering, Trac uses the [http://www.clearsilver.net/ Clearsilver] templating system.
 
+What follows are generic instructions for installing and setting up Trac and its requirements. While you can find instructions for installing Trac on specific systems at [http://projects.edgewall.com/trac/wiki/TracInstallPlatforms TracInstallPlatforms] on the main Trac site, please be sure to first read through these general instructions to get a good understanding of the tasks involved.
 
 == Requirements ==
 
 To install Trac, the following software packages must be installed:
 
- * [http://www.python.org/ Python], version >= 2.1 (>=2.3 recommended).
-   * Please keep in mind, that for RPM-based systems you will also need python-devel and python-xml packages.
- * [http://subversion.tigris.org/ Subversion], version >= 1.0. (>=1.1 recommended)
- * [http://svnbook.red-bean.com/svnbook-1.1/ch08s02.html#svn-ch-8-sect-2.3 Subversion Python bindings] (Caveat: Trac uses the [http://www.swig.org/ SWIG] bindings included in the Subversion distribution,  '''not''' the  [http://pysvn.tigris.org/ PySVN] package!)
- * [http://www.sqlite.org/ SQLite], version 2.8.x or 3.0.x
- * [http://pysqlite.sf.net/ PySQLite], version >= 0.5 but < 1.1.0 (for SQLite 2.8.x), version >= 1.1.1 (for SQLite 3.0.x) 
- * [http://clearsilver.net/ Clearsilver], version >= 0.9.3
- * [http://docutils.sourceforge.net/ docutils], version >= 0.3.3 (??)
- * A CGI-capable web server (tested on [http://httpd.apache.org/ Apache] )
+ * [http://www.python.org/ Python], version >= 2.3.
+   * Python 2.4 is not supported on Windows since there are no Subversion bindings available for it.
+   * For RPM-based systems you might also need the `python-devel` and `python-xml` packages.
+ * [http://subversion.tigris.org/ Subversion], version >= 1.0. (>= 1.1 recommended) and corresponding [http://svnbook.red-bean.com/svnbook-1.1/ch08s02.html#svn-ch-8-sect-2.3 Python bindings]
+   * Trac uses the [http://www.swig.org/ SWIG] bindings included in the Subversion distribution, '''not''' [http://pysvn.tigris.org/ PySVN] (which is sometimes confused with the standard SWIG bindings).
+   * If Subversion was already installed without the SWIG bindings, you'll need to re-`configure` Subversion and `make swig-py`, `make install-swig-py`.
+ * [http://www.clearsilver.net/ ClearSilver], version >= 0.9.3
 
-=== Optional Packages ===
+=== For SQLite ===
 
- * [http://www.modpython.org/ mod_python] (see TracModPython)
+ * [http://www.sqlite.org/ SQLite], version 2.8.x or 3.x
+ * [http://pysqlite.org/ PySQLite]
+   * version 1.0.x (for SQLite 2.8.x)
+   * version 1.1.x or 2.x (for SQLite 3.x)
+
+''Note: Versions of Trac prior to [milestone:0.9] do '''not''' work with PySQLite 2.x.''
+
+=== For PostgreSQL ===
+
+ * [http://www.postgresql.org/ PostgreSQL]
+ * [http://initd.org/projects/psycopg1 psycopg1], [http://initd.org/projects/psycopg2 psycopg2], or [http://pypgsql.sourceforge.net/ pyPgSQL]
+
+=== Optional Requirements ===
+
+ * A CGI-capable web server (see TracCgi), or
+ * a [http://www.fastcgi.com/ FastCGI]-capable web server (see TracFastCgi), or
+ * [http://httpd.apache.org/ Apache] with [http://www.modpython.org/ mod_python 3.1.3+] (see TracModPython)
+ * [http://docutils.sourceforge.net/ docutils], version >= 0.3.3 for WikiRestructuredText.
+ * [http://peak.telecommunity.com/DevCenter/setuptools setuptools], version >= 0.5a13 for using plugins (see TracPlugins)
+
+'''Attention''': The various available versions of these dependencies are not necessarily interchangable, so please pay attention to the version numbers above. If you are having trouble getting Trac to work please double-check all the dependencies before asking for help on the MailingList or IrcChannel.
+
+Please refer to the documentation of these packages to find out how they are best installed. In addition, most of the [http://projects.edgewall.com/trac/wiki/TracInstallPlatforms platform-specific instructions] also describe the installation of the dependencies.
 
 == Installing Trac ==
-Like most Python programs, install the Trac python modules by running the following command at the top of the source directory:
+
+Like most Python programs, install the Trac Python package by running the following command at the top of the source directory:
 {{{
 $ python ./setup.py install
 }}}
 
-This will byte-compile the python source code and install it in the {{{site-packages}}} directory
-of your python installation. The directories {{{cgi-bin}}}, {{{templates}}}, {{{htdocs}}} and {{{wiki-default}}} are all copied to $prefix/share/trac/ . 
+''Note: you'll need root permissions or equivalent for this step.''
 
-The script will also install the [wiki:TracAdmin trac-admin] command-line tool, used to create and maintain [wiki:TracEnvironment project environments]. 
+This will byte-compile the python source code and install it in the `site-packages` directory
+of your Python installation. The directories `cgi-bin`, `templates`, `htdocs` and `wiki-default` are all copied to `$prefix/share/trac/.`
 
-The [wiki:TracAdmin trac-admin] program is the ''control center'' for Trac.
-
-'''Note:''' you'll need root permissions or equivalent for this step.
-
-For more information on installing Trac on specific platforms, see the [http://projects.edgewall.com/trac/wiki/TracInstallPlatforms TracInstallPlatforms] page (on the main project web site).
+The script will also install the [wiki:TracAdmin trac-admin] command-line tool, used to create and maintain [wiki:TracEnvironment project environments], as well as the [wiki:TracStandalone tracd] standalone server.
 
 === Advanced Users ===
-To install Trac in a custom location, and view other advanced install options, run:
+
+To install Trac to a custom location, or find out about other advanced installation options, run:
 {{{
 $ python ./setup.py --help
 }}}
 
+Specifically, you might be interested in:
+{{{
+$ python ./setup.py install --prefix=/path/you/want
+}}}
+
+
 == Creating a Project Environment ==
 
-TracEnvironment is the backend storage format where Trac stores
-information like wiki pages, tickets, reports, settings, etc.
-An environment consist of a directory containing an SQLite database, 
-human-readable configuration file, log-files and attachments.
+A [wiki:TracEnvironment Trac environment] is the backend storage where Trac stores information like wiki pages, tickets, reports, settings, etc. An environment is basically a directory that contains a human-readable configuration file and various other files and directories.
 
-A new Trac environment is created using [wiki:TracAdmin trac-admin], like:
-
+A new environment is created using [wiki:TracAdmin trac-admin]:
 {{{
-$ trac-admin /path/to/projectenv initenv
+$ svnadmin create --fs-type=fsfs /path/to/svn_project_env
+$ trac-admin /path/to/trac_project_env initenv
 }}}
 
-[wiki:TracAdmin trac-admin] will ask you where your subversion repository is located and
-where it can find the trac templates directory (the default value should work for a typical install).
+[wiki:TracAdmin trac-admin] will prompt you for the information it needs to create the environment, such as the name of the project, the database connection string, and so on.
 
-'''Note:''' The web server user will require file system write permission to the environment
-directory and all the files inside. '''Remember to set the appropriate permissions.''
+''Note: The user account under which the web server runs will require write permissions to the environment
+directory and all the files inside.''
 
-The same applies for the subversion repository files (unless using the [http://svn.collab.net/repos/svn/trunk/notes/fsfs FSFS Subversion backend], something we highly recommend. 
 
-== Configuring Apache ==
+== Running the Standalone Server ==
 
-Make "{{{trac/cgi-bin/trac.cgi}}}" accessible to your web server at {{{/cgi-bin/}}}, either by copying/symlinking or use the "{{{trac/cgi-bin/}}}" directory directly.
-
-Edit the apache config and add this snippet, filenames edited to match your installation:
- 
+After having created a Trac environment, you can easily try the web interface by running the standalone server [wiki:TracStandalone tracd]:
 {{{
-Alias /trac/ "/usr/share/trac/htdocs/" #or where you installed the trac htdocs
-#You have to allow people to read the files in htdocs
-<Directory "/usr/share/trac/htdocs">
-	Options Indexes MultiViews
-	AllowOverride None
-	Order allow,deny
-	Allow from all
-</Directory>
-
-
-# Trac need to know where the database is located
-<Location "/cgi-bin/trac.cgi">
-	SetEnv TRAC_ENV "/path/to/projectenv"
-</Location>
-
-# You need this to allow users to authenticate
-# trac.htpasswd can be created with 
-# cmd 'htpasswd -c trac.htpasswd' (UNIX)
-# do 'man htpasswd' to see all the options
-<Location "/cgi-bin/trac.cgi/login">
-	AuthType Basic
-	AuthName "trac"
-	AuthUserFile /somewhere/trac.htpasswd
-	Require valid-user
-</Location>
+$ tracd --port 8000 /path/to/projectenv
 }}}
 
-'''Note:''' If Apache complains about the Set''''''Env line make sure you have the Load''''''Module for mod_env uncommented (Apache 1.3).
+Then, fire up a browser and visit `http://localhost:8000/`. You should get a simple listing of all environments that tracd knows about. Follow the link to the environment you just created, and you should see Trac in action.
 
-'''Note:''' When creating a new environment, {{{trac-admin}}} will print a config snippet customized for your project.
 
-'''Note:''' If you are using [http://httpd.apache.org/docs/suexec.html Apache suEXEC] feature see [http://projects.edgewall.com/trac/wiki/ApacheSuexec ApacheSuexec] (on the project web site).
+== Running Trac on a Web Server ==
+
+Trac provides three options for connecting to a “real” web server: [wiki:TracCgi CGI], [wiki:TracFastCgi FastCGI] and [wiki:TracModPython mod_python]. For decent performance, it is recommended that you use either FastCGI or mod_python.
+
 
 == Using Trac ==
 
-'''Congratulations!''' You should now have a running Trac installation at:
+Once you have your Trac site up and running, you should be able to browse your subversion repository, create tickets, view the timeline, etc.
 
-http://<yourhostname>/cgi-bin/trac.cgi
-
-You should be able to browse your subversion repository, create tickets,
-view the timeline and use all the features of Trac.
-
-Keep in mind that anonymous users (not logged in) can only access a restricted subset of all Trac features by default. 
-
-'''Note:''' If you don't want long, and relatively ugly, URLs, you can prettify them by changing your Apache config. See [http://projects.edgewall.com/trac/wiki/TracPrettyUrls TracPrettyUrls] (on the project website).
-
-Please continue to TracPermissions to learn how to grant additional privileges to authenticated users.
-
-For user documentation, see TracGuide.
+Keep in mind that anonymous (not logged in) users can by default access most but not all of the features. You will need to configure authentication and grant additional [wiki:TracPermissions permissions] to authenticated users to see the full set of features.
 
 ''Enjoy!''
 
 [http://projects.edgewall.com/trac/wiki/TracTeam The Trac Team]
 
 ----
-See also:  TracGuide, TracUpgrade, TracPermissions, TracInstallPlatforms, TracModPython
+See also:  TracGuide, TracCgi, TracFastCgi, TracModPython, TracUpgrade, TracPermissions

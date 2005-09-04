@@ -7,7 +7,7 @@ Tracd is a lightweight stand-alone Trac server. In most cases it's easier to set
 == Pros ==
 
  * Fewer dependencies: You don't need to install apache or any other web-server.
- * Fast: Should be as fast as the ModPython version (much faster than the cgi).
+ * Fast: Should be as fast as the TracModPython version (much faster than the cgi).
 
 == Cons ==
 
@@ -29,7 +29,67 @@ With htdigest authentication. The file /tmp/users.htdigest contain user accounts
 {{{
  $ tracd -p 8080 --auth project1,/tmp/users.htdigest,mycompany.com /path/to/project1
 }}}
+htdigest authentication can also be used for more than one project.
+The digest file can be shared:
+{{{
+ $ tracd -p 8080 \
+   --auth project1,/tmp/users.htdigest,mycompany.com \
+   --auth project2,/tmp/users.htdigest,mycompany.com \
+   /path/to/project1 /path/to/project2
+}}}
 
+== Tracd on Windows ==
+
+tracd also works on Windows. But on that platform, 
+the sensitivity on multithread issues is high.
+tracd is not (yet!) very robust in multithread mode,
+see for example #1401 and #1721 for some of the issues...
+
+I recently found out that all the occasional problems 
+(i.e. crashes) I had can be avoided by telling tracd 
+to operate in single-threaded mode:
+{{{
+#!text/x-diff
+Index: trac/web/standalone.py
+===================================================================
+--- trac/web/standalone.py      (revision 1862)
++++ trac/web/standalone.py      (working copy)
+@@ -124,7 +124,7 @@
+         return auth['username']
+
+
+-class TracHTTPServer(ThreadingMixIn, HTTPServer):
++class TracHTTPServer(HTTPServer):
+
+     projects = None
+}}}
+
+== Generating passwords on Windows ==
+
+If you don't have Apache available, you can use this Python script to generate your passwords (code borrowed heavily from #845):
+
+{{{
+from optparse import OptionParser
+import md5
+
+# build the options
+usage = "usage: %prog [options]"
+parser = OptionParser(usage=usage)
+parser.add_option("-u", "--username",action="store", dest="username", type = "string",
+                  help="the username for whom to generate a password")
+parser.add_option("-p", "--password",action="store", dest="password", type = "string",
+                  help="the password to use")
+(options, args) = parser.parse_args()
+
+# check options
+if (options.username is None) or (options.password is None):
+   parser.error("You must supply both the username and password")
+   
+# Generate the string to enter into the htdigest file
+realm = 'trac'
+kd = lambda x: md5.md5(':'.join(x)).hexdigest()
+print ':'.join((options.username, realm, kd([options.username, realm, options.password])))
+}}}
 
 ----
-See also: TracGuide, TracInstall, TracModPython
+See also: [source:trunk/README.tracd#latest README.tracd], TracGuide, TracInstall, TracModPython

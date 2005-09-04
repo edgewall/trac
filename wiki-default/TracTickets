@@ -3,7 +3,7 @@
 
 The Trac issue database provides simple but effective tracking of issues and bugs within a project.
 
-As the central project management element of Trac, tickets are used for '''bug reports''',  '''feature requests''', '''software support issues''' and '''project tasks'''. 
+As the central project management element of Trac, tickets are used for '''project tasks''', '''feature requests''', '''bug reports''' and '''software support issues'''. 
 
 As with the TracWiki, this subsystem has been designed with the goal of making user contribution and participation as simple as possible. It should be as easy as possible to report bugs, ask questions and suggest improvements.
 
@@ -17,16 +17,19 @@ All tickets can be edited, annotated, assigned, prioritized and discussed at any
 A  ticket contains the following information attributes:
  
  * '''Reporter''' - The author of the ticket.
+
  * '''Component''' - The project module or subsystem this ticket concerns.
  * '''Version''' - Version of the project that this ticket pertains to.
  * '''Severity''' - What are the effects the issue described? Ranges from an ''enhancement'' request to ''blocker'' (must be fixed before next milestone).
+ * '''Keywords''' - Keywords that a ticket is marked with.  Useful for searching and report generation.
+
  * '''Priority''' - The importance of is the issue relative to other tasks.
  * '''Milestone''' - When this issue should be resolved at the latest.
- * '''Resolution''' - Reason for why a ticket was closed, such as fixed, invalid, duplicate, etc.
- * '''Keywords''' - Keywords that a ticket is marked with.  Useful for searching and report generation.
  * '''Assigned to''' - Principal person responsible for handling the issue.
- * '''Cc''' - A list of other associated people. ''Note: this does '''not''' imply responsibility or any other policy. 
- * '''Status''' - What is the current status?
+ * '''Cc''' - A list of other associated people. ''note: this does '''not''' imply responsiblity or any other policy. 
+ 
+ * '''Resolution''' - Reason for why a ticket was closed, such as {{{fixed}}}, {{{invalid}}}, {{{duplicate}}}, etc.
+ * '''Status''' - What is the current status? (One of {{{new}}}, {{{assigned}}}, {{{closed}}}, {{{reopened}}}.)
  * '''Summary''' - A brief description summarizing the problem or issue.
  * '''Description''' - The body of the ticket. A good description should be '''specific, descriptive and to the point'''.
 
@@ -53,7 +56,7 @@ http://projects.edgewall.com/trac/attachment/wiki/TracTickets/Trac%20Ticket%20St
 
 == Advanced: Preset values for New Tickets from URL ==
 
-To create a link to the new-icket form filled with preset values, you need to call the /newticket? URL with variable=value separated by &. 
+To create a link to the new-ticket form filled with preset values, you need to call the /newticket? URL with variable=value separated by &. 
 
 Possible variables are :
 
@@ -66,8 +69,8 @@ Possible variables are :
  * '''keywords''' - The keywords 
  * '''priority''' - The priority droplist
  * '''milestone''' - The milestone droplist
- * '''owner''' - The responsable of the ticket
- * '''cc''' - The list of email for notify the ticket change
+ * '''owner''' - The person responsible for the ticket
+ * '''cc''' - The list of emails for notifying about the ticket change
 
 '''Example:''' ''/trac/newticket?summary=Compile%20Error&version=1.0&component=gui''
 

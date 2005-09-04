@@ -5,48 +5,22 @@ Trac configuration is done by editing the ''trac.ini'' config file, located in {
 
 This is a brief reference of available configuration options.
 
+== [trac] ==
+|| database        || Database connection string for this project ||
+|| default_charset || Charset used in text files in the subversion repository (default is `iso-8859-15`) ||
+|| default_handler || Name of the component that handles requests to the base URL (default is `WikiHandler`) ||
+|| repository_dir  || Path to local Subversion repository ||
+|| authz_file      || Path to Subversion [http://svnbook.red-bean.com/en/1.1/ch06s04.html#svn-ch-6-sect-4.4.2 authorization (authz) file]. ||
+|| check_auth_ip || Whether the IP address of the user should be checked for authentication (true, false) ||
+|| ignore_auth_case || Whether case should be ignored for login names (true, false) ||
+|| templates_dir   || Path to the !ClearSilver templates ||
+
 == [project] ==
 || name   || Project name ||
 || descr  || Short project description ||
 || url    || URL to the main project website ||
 || icon   || URL to icon file to use as shortcut icon (favicon) ||
 || footer || Page footer text (right-aligned) ||
-
-== [trac] ==
-|| repository_dir  || Path to local Subversion repository ||
-|| htdocs_location || Base URL for static Trac graphics and CSS files ||
-|| database        || Database to use for this project ||
-|| templates_dir   || Path of Clearsilver templates ||
-|| default_charset || Source files uses this charset ||
-
-== [logging] ==
-|| log_type  || Logging facility to use. (none, file, stderr, syslog, winlog) ||
-|| log_file  || If ''log_type'' is ''file'', this should be a path to the log-file ||
-|| log_level || Level of verbosity in log (CRITICAL, ERROR, WARN, INFO, DEBUG) ||
-
-See also: TracLogging
-
-== [ticket] ==
-|| default_version   || Default version for newly created tickets ||
-|| default_severity  || Default severity for newly created tickets ||
-|| default_priority  || Default priority for newly created tickets ||
-|| default_milestone || Default milestone for newly created tickets ||
-|| default_component || Default component for newly created tickets ||
-
-See also: TracTicketsCustomFields
-
-== [attachment] ==
-|| max_size || Maximum allowed file size for ticket and wiki attachments ||
-
-== [notification] ==
-|| smtp_enabled   || Enable SMTP (email) notification (true, false) ||
-|| smtp_server    || SMTP server to use for email notifications ||
-|| smtp_from      || Sender address to use in notification emails ||
-|| smtp_replyto   || Reply-To address to use in notification emails ||
-|| smtp_always_cc || Email address(es) to always send notifications to ||
-|| always_notify_reporter || Always send notifications to any address in the ''reporter'' field ||
-
-See also: TracNotification
 
 == [header_logo] ==
 || src    || URL to image to use as header logo ||
@@ -55,15 +29,57 @@ See also: TracNotification
 || width  || Header logo width in pixels ||
 || height || Header logo height in pixels ||
 
+== [logging] ==
+|| log_type  || Logging facility to use. (none, file, stderr, syslog, winlog) ||
+|| log_file  || If ''log_type'' is ''file'', this should be a path to the log-file ||
+|| log_level || Level of verbosity in log (CRITICAL, ERROR, WARN, INFO, DEBUG) ||
+See also: TracLogging
+
+== [attachment] ==
+|| max_size || Maximum allowed file size for ticket and wiki attachments ||
+
+== [notification] ==
+|| smtp_enabled   || Enable SMTP (email) notification (true, false) ||
+|| smtp_server    || SMTP server to use for email notifications ||
+|| smtp_user      || (''requires [milestone:0.9 0.9]'') Username for SMTP server ||
+|| smtp_password  || (''requires [milestone:0.9 0.9]'') Password for SMTP server ||
+|| smtp_from      || Sender address to use in notification emails ||
+|| smtp_replyto   || Reply-To address to use in notification emails ||
+|| smtp_always_cc || Email address(es) to always send notifications to ||
+|| always_notify_reporter || Always send notifications to any address in the ''reporter'' field ||
+|| always_notify_owner || (''requires [milestone:0.9 0.9]'') Always send notifications to the ticketowner  ||
+See also: TracNotification
+
 == [mimeviewer] ==
-|| enscript_path || Path to Enscript program ||
+|| enscript_path || Path to the Enscript program ||
+|| php_path || Path to the PHP program ||
+|| max_preview_size || Maximum file size for HTML preview ||
+|| tab_width || Displayed tab width in file preview ||
+
+== [ticket] ==
+|| default_version   || Default version for newly created tickets ||
+|| default_severity  || Default severity for newly created tickets ||
+|| default_priority  || Default priority for newly created tickets ||
+|| default_milestone || Default milestone for newly created tickets ||
+|| default_component || Default component for newly created tickets ||
+|| restrict_owner    || Optionally allow the owner field of tickets to use a drop-down menu (<select>) ||
+
+== [ticket-custom] ==
+Creates user-defined ticket fields.
+See TracTicketsCustomFields.
 
 == [timeline] ==
 || changeset_show_files || Number of files to show (-1 for unlimited, 0 to disable) ||
+|| default_daysback || (''requires [milestone:0.9 0.9]'') Default "depth" of the Timeline, in days ||
 
-== [diff] ==
-|| tab_width || Displayed tab width in changeset diffs ||
+== [browser] ==
+|| hide_properties || List of Subversion properties to hide from the repository browser and changesets ||
 
-[[BR]]
+== [wiki] ==
+|| ignore_missing_pages || enable/disable highlighting CamelCase links to missing pages ||
+
+== [disabled_components] ==
+You can disable any Trac component by listing its name in this section and assigning a truth value (e.g. ''yes''). See the ''Plugins'' page on ''About Trac'' to get the list of active components.
+
 ----
-See also: TracGuide, TracAdmin
+See also: TracGuide, TracAdmin, TracEnvironment

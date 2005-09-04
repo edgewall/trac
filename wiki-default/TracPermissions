@@ -3,11 +3,11 @@
 
 Trac uses a simple but flexible permission system to control what users can and can't access.
 
-Permission privilegies are managed using the [wiki:TracAdmin trac-admin] tool.
+Permission privileges are managed using the [wiki:TracAdmin trac-admin] tool.
 
 Regular visitors, non-authenticated users, accessing the system are assigned the default 
 role (''user'') named {{{anonymous}}}. 
-Assign permissions to the {{{anonymous}}} user to set privilegies for non-authenticated/guest users.
+Assign permissions to the {{{anonymous}}} user to set privileges for non-authenticated/guest users.
 
 In addition to these privileges users can be granted additional individual 
 rights in effect when authenticated and logged into the system.

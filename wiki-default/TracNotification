@@ -8,7 +8,7 @@ Email notification is useful to keep users up-to-date on tickets/issues of inter
 Disabled by default, notification can be activated and configured in [wiki:TracIni trac.ini].
 
 == Receiving Notification ==
-When reporting a new ticket or adding a comment, enter a validing email address in the ''reporter'', ''editor'' or ''cc'' field. Trac will automatically send you an email when changes are made to the ticket.
+When reporting a new ticket or adding a comment, enter a valid email address in the ''reporter'', ''editor'' or ''cc'' field. Trac will automatically send you an email when changes are made to the ticket.
 
 This is useful to keep up-to-date on an issue or enhancement request that interests you.
 
@@ -18,10 +18,13 @@ This is useful to keep up-to-date on an issue or enhancement request that intere
 These are the available options for the ''[notification]'' section in trac.ini.
  * '''smtp_enabled''': Enable notification.
  * '''smtp_server''': SMTP server used for notification messages.
+ * '''smtp_user''': (''requires [milestone:0.9 0.9]'') user name for authentication SMTP account.
+ * '''smtp_password''': (''requires [milestone:0.9 0.9]'') password for authentication SMTP account.
  * '''smtp_from''': Email address to use for ''Sender''-headers in notification emails.
  * '''smtp_replyto''': Email address to use for ''Reply-To''-headers in notification emails.
  * '''smtp_always_cc''': List of email addresses to always send notifications to. ''Typically used to post ticket changes to a dedicated mailing list.''
  * '''always_notify_reporter''':  Always send notifications to any address in the reporter field.
+ * '''always_notify_owner''': (''requires [milestone:0.9 0.9]'') Always send notifications to the address in the owner field.
 
 Either '''smtp_from''' or '''smtp_replyto''' (or both) ''must'' be set, otherwise Trac refuses to send notification mails.
 

@@ -8,7 +8,7 @@ Currently Trac supports syntax coloring using one or more of the following packa
  * [http://people.ssh.fi/mtr/genscript/ GNU Enscript]
  * [http://silvercity.sourceforge.net/ SilverCity]
 
-To activate syntax coloring, simply install either one (or more) of these packages. No additional configuration is needed.
+To activate syntax coloring, simply install either one (or more) of these packages. No additional configuration is required, however to modify the colors, have a look at trac/htdocs/css/code.css.
 
 When in use, Trac will automatically prioritize !SilverCity highlighting over Enscript if possible, (see note below). 
 
@@ -39,6 +39,7 @@ If neither package is available, Trac will display the data as plain text.
 || HTML     || X || X ||
 || IDL      ||   || X ||
 || Javascript || X || X ||
+
 || m4       ||   || X ||
 || Makefile ||   || X ||
 || Matlab   ||   || X ||
@@ -49,7 +50,7 @@ If neither package is available, Trac will display the data as plain text.
 || PSP      || X ||   ||
 || Pyrex    ||   || X ||
 || * Python || X || X ||
-|| * Ruby   || X || X ||
+|| * Ruby   || X || X (1) ||
 || Scheme   ||   || X ||
 || Shell    ||   || X ||
 || SQL      || X || X ||
@@ -63,6 +64,8 @@ If neither package is available, Trac will display the data as plain text.
 || XML      || X || X ||
 
 ''(*) Supported as inline code blocks in [wiki:WikiFormatting Wiki text] using WikiProcessors.''
+
+''(1) Ruby highlighting is not included in the Enscript distribution.  Highlighting rules for Ruby can be obtained from: http://neugierig.org/software/ruby/
 
 == Extra Software ==
  * GNU Enscript -- http://people.ssh.fi/mtr/genscript/

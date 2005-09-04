@@ -5,44 +5,60 @@ As such, it supports most (all?) commonly used character encodings.
 
 
 == Examples ==
+Please keep sorted order when you add an entry.
 
-=== Swedish ===
+=== Arabic ===
+تراك يقوم بحفظ كل الكلمات باستخدام صيغة UTF-8، بما في ذلك الكلمات المستخدمة في صفحات  التيكت والويكي.
 
-''Räven raskar över isen med luva på.''
+=== Bulgarian ===
+Българският език работи ли?
+
+=== Chinese ===
+Traditional: ''繁體中文, 許功蓋會育''; Simplified: ''简体中文，许功盖会育''
+
+=== English ===
+Yes indeed, Trac supports English. Fully.
 
 === Français ===
-
 ''Il est possible d'écrire en Français : à, ç, û, ...''
+Voir aussi TracTermsFr
+
+=== Greek ===
+Τα Ελληνικά υποστηρίζονται επαρκώς επίσης.
+
+=== Hebrew ===
+אני יכול לאכול זכוכית וזה לא מזיק לי
 
 === Icelandic ===
-
 ''Ævar sagði við ömmu sína: Sjáðu hvað ég er stór!''
 
 === Japanese ===
-
 ''漢字 ひらがな カタカナ ﾊﾝｶｸｶﾅ''
 
-=== Chinese ===
-
-Traditional: ''繁體中文, 許功蓋會育''; Simplified: ''简体中文，许功盖会育''
-
 === Korean ===
+''이번에는 한글로 써보겠습니다. 잘 보이나요?'' [wiki:한글링크 한글링크]
 
-''이번에는 한글로 써보겠습니다. 잘 보이나요?''
+=== Persian (Farsi) ===
+این یک متن فارسی است ولی از چپ به راست
+
+=== Polish ===
+Pchnąć w tę łódź jeża lub ośm skrzyń fig
+
+=== Portuguese ===
+É possível guardar caracteres especias da língua portuguesa, incluindo o símbolo da moeda européia '€', trema 'ü', crase 'à', agudos 'áéíóú', circunflexos 'âêô', til 'ãõ', cedilha 'ç', ordinais 'ªº', grau '°¹²³'.
 
 === Russian ===
-
-Проверка Русского языка: кажется работает...
-
-=== Bulgarian ===
-
-Българският език работи ли?
-
-=== Greek ===
-Μακάρι να έτρεχε στο και Debian box μου... Bug #495
+Проверка русского языка: кажется работает...
+See also TracTermsRu
 
 === Spanish ===
 Esto es un pequeño texto en Español, ahora una con acentó
 
-=== Hebrew ===
-אני יכול לאכול זכוכית וזה לא מזיק לי
+=== Swedish ===
+''Räven raskar över isen med luva på.''
+
+=== Thai ===
+Trac แสดงภาษาไทยได้อย่างถูกต้อง!
+
+=== Ukrainian ===
+Перевірка української мови...

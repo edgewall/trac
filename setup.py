@@ -143,7 +143,7 @@ distutils.command.bdist_wininst.bdist_wininst = my_bdist_wininst
 # parameters for various rpm distributions
 rpm_distros = {
     'suse_options': { 'version_suffix': 'SuSE',
-                      'requires': """python >= 2.1
+                      'requires': """python >= 2.3
                         subversion >= 1.0.0
                         pysqlite >= 0.4.3
                         clearsilver >= 0.9.3
