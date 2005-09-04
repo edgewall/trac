@@ -42,7 +42,8 @@ class NewticketModule(Component):
     def get_navigation_items(self, req):
         if not req.perm.has_permission('TICKET_CREATE'):
             return
-        yield 'mainnav', 'newticket', '<a href="%s">New Ticket</a>' \
+        yield 'mainnav', 'newticket', \
+              '<a href="%s" accesskey="7">New Ticket</a>' \
               % (self.env.href.newticket())
 
     # IRequestHandler methods
