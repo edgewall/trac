@@ -6,7 +6,7 @@ tracking system. It provides an interface to the Subversion revision control
 systems, an integrated wiki, flexible issue tracking and convenient report
 facilities.
 
-Trac is distributed using the GNU General Public License.
+Trac is distributed using the modified BSD License.
 
  * For installation instructions, please see the INSTALL. *
  * If you are upgrading from a previous Trac version, please read UPGRADE. *
