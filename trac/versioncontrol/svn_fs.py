@@ -61,28 +61,29 @@ def _mark_weakpool_invalid(weakpool):
 class Pool(object):
     """A Pythonic memory pool object"""
 
+    # Protect svn.core methods from GC
+    apr_pool_destroy = staticmethod(core.apr_pool_destroy)
+    apr_terminate = staticmethod(core.apr_terminate)
+    apr_pool_clear = staticmethod(core.apr_pool_clear)
+    
     def __init__(self, parent_pool=None):
         """Create a new memory pool"""
 
         global application_pool
         self._parent_pool = parent_pool or application_pool
+
         # Create pool
         if self._parent_pool:
             self._pool = core.svn_pool_create(self._parent_pool())
         else:
-            self._pool = core.svn_pool_create(None)
-        self._mark_valid()
-
-        # Protect _core from GC
-        self._core = core
-
-        # If we have a parent, write down its current status
-        if not self._parent_pool:
             # If we are an application-level pool,
             # then initialize APR and set this pool
             # to be the application-level pool
             core.apr_initialize()
             application_pool = self
+
+            self._pool = core.svn_pool_create(None)
+        self._mark_valid()
 
     def __call__(self):
         return self._pool
@@ -98,7 +99,7 @@ class Pool(object):
 
     def clear(self):
         """Clear embedded memory pool. Invalidate all subpools."""
-        self._core.apr_pool_clear(self._pool)
+        self.apr_pool_clear(self._pool)
         self._mark_valid()
 
     def destroy(self):
@@ -111,12 +112,12 @@ class Pool(object):
         self.assert_valid()
 
         # Destroy pool
-        self._core.apr_pool_destroy(self._pool)
+        self.apr_pool_destroy(self._pool)
 
         # Clear application pool and terminate APR if necessary
         if not self._parent_pool:
             application_pool = None
-            self._core.apr_terminate()
+            self.apr_terminate()
 
         self._mark_invalid()
 
@@ -131,7 +132,7 @@ class Pool(object):
             # Refer to self using a weakreference so that we don't
             # create a reference cycle
             weakself = weakref.ref(self)
-      
+
             # Set up callbacks to mark pool as invalid when parents
             # are destroyed
             self._weakref = weakref.ref(self._parent_pool._is_valid,
@@ -148,7 +149,6 @@ class Pool(object):
 
             # Free up memory
             del self._parent_pool
-            del self._core
             if hasattr(self, "_weakref"):
                 del self._weakref
 
