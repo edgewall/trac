@@ -115,9 +115,9 @@ Trac is a web-based software project management and bug/issue
 tracking system emphasizing ease of use and low ceremony. 
 It provides an interface to the Subversion revision control systems, integrated Wiki and convenient report facilities. 
 </p>
-  <p>Trac is distributed under the GNU General Public License (GPL).<br />
-  The entire text of the license can be found in the COPYING file,
-  included in the package.</p>
+  <p>Trac is distributed under the modified BSD License.<br />
+  The complete text of the license can be found in the COPYING file
+  included in the distribution.</p>
   <p>Please visit the Trac open source project: 
   <a href="http://projects.edgewall.com/trac/">http://projects.edgewall.com/trac/</a></p>
   <p>Trac is a product of <a href="http://www.edgewall.com/">Edgewall
