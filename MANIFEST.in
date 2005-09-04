@@ -6,6 +6,7 @@ include scripts/trac-postinstall.py
 include scripts/*.1
 include scripts/rpm-install.sh
 include cgi-bin/trac.cgi
+include cgi-bin/trac.fcgi
 include trac/tests/*.py
 include trac/tests/wiki-tests.txt
 recursive-include htdocs *.png *.gif *.ico *.js *README
