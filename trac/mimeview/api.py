@@ -95,6 +95,12 @@ MIME_MAP = {
     'zsh':'text/x-zsh'
 }
 
+TREAT_AS_BINARY = [
+    'application/pdf',
+    'application/postscript',
+    'application/rtf'
+]
+
 def get_charset(mimetype):
     """Return the character encoding included in the given content type string,
     or `None` if `mimetype` is `None` or empty or if no charset information is
@@ -120,10 +126,7 @@ def is_binary(str):
     """Detect binary content by checking the first thousand bytes for zeroes."""
     if detect_unicode(str):
         return False
-    for i in range(0, min(len(str), 1000)):
-        if str[i] == '\0':
-            return True
-    return False
+    return '\0' in str[:1000]
 
 def detect_unicode(data):
     """Detect different unicode charsets by looking for BOMs (Byte Order
@@ -337,9 +340,9 @@ class PlainTextRenderer(Component):
     expand_tabs = True
 
     def get_quality_ratio(self, mimetype):
-        if mimetype.startswith('text/'):
-            return 1
-        return 0
+        if mimetype in TREAT_AS_BINARY:
+            return 0
+        return 1
 
     def render(self, req, mimetype, content, filename=None, rev=None):
         if is_binary(content):
