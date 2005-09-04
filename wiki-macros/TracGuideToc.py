@@ -23,6 +23,7 @@ TOC = [('TracGuide',        'Index'),
        ('TracTimeline',     'Timeline'),
        ('TracRss',          'RSS Support'),
        ('TracNotification', 'Notification'),
+       ('TracPlugins',      'Plugins'),
        ]
 
 def execute(hdf, args, env):

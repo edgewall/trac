@@ -1,0 +1,36 @@
+= Trac Plugins =
+
+Since version 0.9, Trac supports plugins that extend the built-in functionality. The plugin functionality is based on the [http://projects.edgewall.com/trac/wiki/TracDev/ComponentArchitecture component architecture].
+
+== Requirements ==
+
+To use plugins in Trac, you need to have [http://peak.telecommunity.com/DevCenter/setuptools setuptools], version 0.5a13 installed.
+
+To install `setuptools`, download the bootstrap module [http://peak.telecommunity.com/dist/ez_setup.py ez_setup.py] and execute it as follows:
+{{{
+$ python ez_setup.py setuptools==0.5a13
+}}}
+
+== Installing a Trac Plugin ==
+
+Plugins are packaged as [http://peak.telecommunity.com/DevCenter/PythonEggs Python eggs]. That means they are ZIP archives with the file extension `.egg`. If you have downloaded a source distribution of a plugin, you can run:
+{{{
+$ setup.py bdist_egg
+}}}
+to build the `.egg` file.
+
+Once you have the plugin archive, you need to copy it into the `plugins` directory of the [wiki:TracEnvironment project environment]. Also, make sure that the web server has sufficient permissions to read the plugin egg.
+
+== Setting up the Plugin Cache ==
+
+Some plugins will need to be extracted by the Python eggs runtime (`pkg_resources`), so that their contents are actual files on the file system. The directory in which they are extracted defaults to the home directory of the current user, which may or may not be a problem. You can however override the default location using the `PYTHON_EGG_CACHE` environment variable.
+
+To do this from the Apache configuration, use the `SetEnv` directive as follows:
+{{{
+SetEnv PYTHON_EGG_CACHE /path/to/dir
+}}}
+
+This works whether your using the [wiki:TracCgi CGI] or the [wiki:TracModPython mod_python] front-end. For [wiki:TracFastCgi FastCGI], you'll need to `-initial-env` option, or whatever is provided by your web server for setting environment variables.
+
+----
+See also TracGuide, [wiki:TracDev/ComponentArchitecture component architecture]

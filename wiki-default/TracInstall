@@ -39,7 +39,7 @@ To install Trac, the following software packages must be installed:
  * [http://docutils.sourceforge.net/ docutils], version >= 0.3.3 for WikiRestructuredText.
  * [http://peak.telecommunity.com/DevCenter/setuptools setuptools], version >= 0.5a13 for using plugins (see TracPlugins)
 
-'''Attention''': The various available versions of these dependencies are not necessarily interchangable, so please pay attention to the version numbers above. If you are having trouble getting Trac to work please double-check all the dependencies before asking for help on the MailingList or IrcChannel.
+'''Attention''': The various available versions of these dependencies are not necessarily interchangable, so please pay attention to the version numbers above. If you are having trouble getting Trac to work please double-check all the dependencies before asking for help on the [http://projects.edgewall.com/trac/wiki/MailingList MailingList] or [http://projects.edgewall.com/trac/wiki/IrcChannel IrcChannel].
 
 Please refer to the documentation of these packages to find out how they are best installed. In addition, most of the [http://projects.edgewall.com/trac/wiki/TracInstallPlatforms platform-specific instructions] also describe the installation of the dependencies.
 

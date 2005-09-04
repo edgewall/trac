@@ -35,6 +35,7 @@ wiki_pages = [
  "TracMultipleProjects",
  "TracNotification",
  "TracPermissions",
+ "TracPlugins",
  "TracQuery",
  "TracReports",
  "TracRoadmap",
