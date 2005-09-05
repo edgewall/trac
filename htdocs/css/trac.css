@@ -43,11 +43,11 @@ h4 :link, h4 :visited, h5 :link, h5 :visited, h6 :link, h6 :visited {
 }
 
 @media screen {
- a.ext-link {
-  background: url(../extlink.gif) no-repeat 0 58%;
+ a.ext-link .icon {
+  background: url(../extlink.gif) left center no-repeat;
   padding-left: 16px;
  }
- * html a.ext-link { background-position: 0 .35em } /* IE hack, see #937 */
+ * html a.ext-link .icon { display: inline-block; }
 }
 
 /* Forms */

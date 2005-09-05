@@ -309,8 +309,8 @@ class Formatter(object):
         if Formatter.img_re.search(url) and self.flavor != 'oneliner':
             return '<img src="%s" alt="%s" />' % (url, title or text)
         if not url.startswith(self._local):
-            return '<a class="ext-link" href="%s"%s>%s</a>' \
-                   % (url, title_attr, text)
+            return '<a class="ext-link" href="%s"%s><span class="icon">' \
+                   '</span>%s</a>' % (url, title_attr, text)
         else:
             return '<a href="%s"%s>%s</a>' % (url, title_attr, text)
 
