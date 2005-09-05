@@ -33,7 +33,7 @@ Paragraph
 </td></tr><tr><td>Foo</td><td>Bar</td><td>Baz
 </td></tr></table>
 <p>
-<a class="ext-link" href="http://www.edgewall.com/">http://www.edgewall.com/</a>
+<a class="ext-link" href="http://www.edgewall.com/"><span class="icon"></span>http://www.edgewall.com/</a>
 </p>
 ==============================
 #1, [1], r1, {1}
@@ -71,7 +71,7 @@ ticket:1, changeset:1, report:1, source:foo/bar
 ------------------------------
 <p>
 <a class="missing ticket" href="/ticket/1" rel="nofollow">ticket 1</a>, <a class="missing changeset" href="/changeset/1" rel="nofollow">changeset 1</a>, <a class="report" href="/report/1">report 1</a>, 
-<a class="source" href="/browser/foo/bar">source foo/bar</a>, <a class="ext-link" href="http://www.edgewall.com/">edgewall</a>
+<a class="source" href="/browser/foo/bar">source foo/bar</a>, <a class="ext-link" href="http://www.edgewall.com/"><span class="icon"></span>edgewall</a>
 </p>
 ==============================
 CamelCase AlabamA ABc AlaBamA FooBar
@@ -127,7 +127,7 @@ out:
 ''RFCs von ftp://ftp.rfc-editor.org/in-notes/rfcXXXX.txt''
 ------------------------------
 <p>
-<i>RFCs von <a class="ext-link" href="ftp://ftp.rfc-editor.org/in-notes/rfcXXXX.txt">ftp://ftp.rfc-editor.org/in-notes/rfcXXXX.txt</a></i>
+<i>RFCs von <a class="ext-link" href="ftp://ftp.rfc-editor.org/in-notes/rfcXXXX.txt"><span class="icon"></span>ftp://ftp.rfc-editor.org/in-notes/rfcXXXX.txt</a></i>
 </p>
 ==============================
 [wiki:WikiStart Foo] [http://www.edgewall.com/ Edgewall]
@@ -137,7 +137,7 @@ wiki:Foo%20Bar wiki:Foo%20Bar#baz
 [wiki:Foo%20Bar Foo Bar] [wiki:Foo%20Bar#baz Foo Bar]
 ------------------------------
 <p>
-<a class="missing wiki" href="/wiki/WikiStart" rel="nofollow">Foo?</a> <a class="ext-link" href="http://www.edgewall.com/">Edgewall</a>
+<a class="missing wiki" href="/wiki/WikiStart" rel="nofollow">Foo?</a> <a class="ext-link" href="http://www.edgewall.com/"><span class="icon"></span>Edgewall</a>
 </p>
 <p>
 <a class="missing wiki" href="/wiki/Foo%20Bar" rel="nofollow">wiki:Foo Bar?</a> <a class="missing wiki" href="/wiki/Foo%20Bar#baz" rel="nofollow">wiki:Foo Bar#baz?</a>
@@ -533,10 +533,10 @@ rfc-2396.compatible://link
 [rfc-2396.compatible://link RFC 2396]
 ------------------------------
 <p>
-<a class="ext-link" href="svn+ssh://secureserver.org">svn+ssh://secureserver.org</a>
-<a class="ext-link" href="svn+ssh://secureserver.org">SVN link</a>
-<a class="ext-link" href="rfc-2396.compatible://link">rfc-2396.compatible://link</a>
-<a class="ext-link" href="rfc-2396.compatible://link">RFC 2396</a>
+<a class="ext-link" href="svn+ssh://secureserver.org"><span class="icon"></span>svn+ssh://secureserver.org</a>
+<a class="ext-link" href="svn+ssh://secureserver.org"><span class="icon"></span>SVN link</a>
+<a class="ext-link" href="rfc-2396.compatible://link"><span class="icon"></span>rfc-2396.compatible://link</a>
+<a class="ext-link" href="rfc-2396.compatible://link"><span class="icon"></span>RFC 2396</a>
 </p>
 ==============================
 = ça marche! =
