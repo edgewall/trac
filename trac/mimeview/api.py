@@ -95,12 +95,6 @@ MIME_MAP = {
     'zsh':'text/x-zsh'
 }
 
-TREAT_AS_BINARY = [
-    'application/pdf',
-    'application/postscript',
-    'application/rtf'
-]
-
 def get_charset(mimetype):
     """Return the character encoding included in the given content type string,
     or `None` if `mimetype` is `None` or empty or if no charset information is
@@ -339,8 +333,14 @@ class PlainTextRenderer(Component):
 
     expand_tabs = True
 
+    TREAT_AS_BINARY = [
+        'application/pdf',
+        'application/postscript',
+        'application/rtf'
+    ]
+
     def get_quality_ratio(self, mimetype):
-        if mimetype in TREAT_AS_BINARY:
+        if mimetype in self.TREAT_AS_BINARY:
             return 0
         return 1
 
