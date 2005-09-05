@@ -1,77 +1,128 @@
 Upgrade Instructions
 ====================
-Trac environments sometimes need to be upgraded before they can be used 
-in a new version of Trac. This document describes the steps necessary
-to upgrade an environment.
+
+A Trac environment sometimes needs to be upgraded before it can be used with
+a new version of Trac. This document describes the steps necessary to upgrade
+an environment.
+
+Note that Environment upgrades are not necessary for minor version releases
+unless otherwise noted. For example, there's no need to upgrade a Trac
+environment created with (or upgraded) 0.8.0 when installing 0.8.4 (or any
+other 0.8.x release).
+
+General Instructions
+--------------------
+Typically, there are three steps involved in upgrading to a newer version of
+Trac:
+
+1. Update the Trac Code
+
+Get the new version of Trac, either by downloading an offical release package
+or by checking it out from the Subversion repository.
+
+If you have a source distribution, you need to run
+
+   python setup.py install
+
+to install the new version. If you've downloaded the Windows installer, you
+execute it, and so on.
+
+In any case, if you're doing a major version upgrade (such as from 0.8 to
+0.9), it is highly recommended that you first remove the existing Trac code.
+To do this, you need to delete the `trac` directory from the Python
+`lib/site-packages` directory. You may also want to remove the Trac `cgi-bin`,
+`htdocs` and `templates` directories that are commonly found in a directory
+called `share/trac` (the exact location depends on your platform).
+
+2. Upgrade the Trac Environment
+
+Unless noted otherwise, upgrading between major versions (such as 0.8 and
+0.9) involves changes to the database schema, and possibly the layout of the
+environment. Fortunately, Trac provides automated upgrade scripts to ease the
+pain. These scripts are run via `trac-admin`:
+
+   trac-admin /path/to/projenv upgrade
+
+This command will do nothing if the environment is already up-to-date.
+
+=== Update the Trac Documentation ===
+
+Every Trac environment includes a copy of the Trac documentation for the
+installed version. As you probably want to keep the included documentation in
+sync with the installed version of Trac, `trac-admin` provides a command to
+upgrade the documentation:
+
+   trac-admin /path/to/projenv wiki upgrade
+
+Note that this procedure will of course leave your `WikiStart` page intact.
+
+
+The following sections discuss any extra actions that may need to be taken
+to upgrade to specific versions of Trac.
+
 
 From 0.8.x to 0.9
 -----------------
 
-The database schema was changed between 0.8.x and 0.9. Existing environments
-must be upgraded before they can be used with Trac 0.9.
-The following command will perform the upgrade:
-
-  trac-admin /path/to/projectenv upgrade
-
-Trac environments are created with a default set of wiki pages. It's 
-recommended to update these pages on existing environments whenever
-Trac is upgraded to get up-to-date documentation and additional functionality.
-The following command will perform the update:
-
-  trac-admin /path/to/projectenv wiki upgrade
-
-If you're using mod_python, you will need to change the name of the mod_python 
-handler in the Apache HTTPD configuration:
+If you're using mod_python, you will need to change the name of the
+mod_python handler in the Apache HTTPD configuration:
 
    from: PythonHandler trac.ModPythonHandler
    to:   PythonHandler trac.web.modpython_frontend
 
 
+If you have PySQLite 2.x installed, Trac will now try to open your SQLite
+database using the SQLite 3.x file format. The database formats used by
+SQLite 2.8.x and SQLite 3.x are incompatible. If you get an error like "file
+is encrypted or is not a database" after upgrading, then you must convert
+your database file.
+
+To do this, you need to have both SQLite 2.8.x and SQLite 3.x installed (they
+have different filenames so can coexist on the same system). Then use the
+following commands:
+
+   mv trac.db trac2.db
+   sqlite trac2.db .dump | sqlite3 trac.db
+
+After testing that the conversion was successful, the `trac2.db` file can be
+deleted. For more information on the SQLite upgrade see
+http://www.sqlite.org/version3.html.
+
+
 From 0.7.x to 0.8
 -----------------
-The database schema was changed between 0.7.x and 0.8. Existing environments
-must be upgraded before they can be used with Trac 0.8.
-The following command will perform the upgrade:
-
-  trac-admin /path/to/projectenv upgrade
-
-Trac environments are created with a default set of wiki pages. It's 
-recommended to update these pages on existing environments whenever
-Trac is upgraded to get up-to-date documentation and additional functionality.
-The following command will perform the update:
-
-  trac-admin /path/to/projectenv wiki upgrade
 
 0.8 adds a new roadmap feature which requires additional permissions. While a
-fresh installation will by default grant ROADMAP_VIEW and MILESTONE_VIEW
+fresh installation will by default grant `ROADMAP_VIEW` and `MILESTONE_VIEW`
 permissions to anonymous, these permissions have to be granted manually when
 upgrading:
 
-  trac-admin /path/to/projectenv permission add anonymous MILESTONE_VIEW
-  trac-admin /path/to/projectenv permission add anonymous ROADMAP_VIEW
+   trac-admin /path/to/projectenv permission add anonymous MILESTONE_VIEW
+   trac-admin /path/to/projectenv permission add anonymous ROADMAP_VIEW
 
 
-from 0.6.x to 0.7
+From 0.6.x to 0.7
 -----------------
-Trac 0.7 has a new database format, requiring manual upgrade.
+Trac 0.7 introduced a new database format, requiring manual upgrade.
 
-Previous versions of Trac stored wiki pages, ticket, reports,
-settings, etc. in a single SQLite database file. Trac 0.7 replaces this file
+Previous versions of Trac stored wiki pages, ticket, reports, settings,
+etc. in a single SQLite database file. Trac 0.7 replaces this file
 with a new backend storage format; the 'Trac Environment', which is a
 directory containing an SQLite database, a human-readable configuration file,
 log-files and attachments.
 
 Fear not though, old-style Trac databases can easily be converted to
-Environments using the included "tracdb2env" program as follows:
+Environments using the included `tracdb2env` program as follows:
 
-  tracdb2env /path/to/old/project.db /path/to/new/projectenv
+   tracdb2env /path/to/old/project.db /path/to/new/projectenv
 
-tracdb2env will create a new environment and copy the information from
-the old database to the new environment. The existing database will
-not be modified.
+`tracdb2env` will create a new environment and copy the information from the
+old database to the new environment. The existing database will not be
+modified.
 
 You also need to update your apache configuration:
-change this line:
+
+Change the line:
 
    SetEnv TRAC_DB "/path/to/old/project.db"
 
@@ -79,20 +130,6 @@ to:
 
    SetEnv TRAC_ENV "/path/to/new/projectenv"
 
-
-Updating wiki pages
--------------------
-There are a set of default wiki pages included in the install,
-automatically imported upon creating a new environment with the 
-'trac-admin initenv' command.
-
-If you wish to update these pages on an already existing [older] Trac 
-environment, you can import the pages manually using trac-admin:
-   
- trac-admin /path/to/myprojectenv wiki upgrade
-
-Please note that you have to repeat this step for each Trac environment
-you wish to upgrade.
 
 ----
 
