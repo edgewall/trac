@@ -3,16 +3,14 @@
 
 <div id="ctxtnav" class="nav">
  <h2>Report Navigation</h2>
- <ul>
-  <li class="first"><?cs
+ <ul><?cs
    if:chrome.links.up.0.href ?><li class="first"><a href="<?cs
     var:chrome.links.up.0.href ?>">Available Reports</a><?cs
    else ?>Available Reports<?cs
   /if ?></li><?cs
   if:report.query_href ?><li class="last"><a href="<?cs
    var:report.query_href ?>">Custom Query</a></li><?cs
-  /if ?>
- </ul>
+  /if ?></ul>
 </div>
 
 <div id="content" class="report">

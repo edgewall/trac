@@ -1,8 +1,24 @@
-<?cs include "header.cs"?>
+<?cs include:"header.cs"?>
 <script type="text/javascript">
 addEvent(window, 'load', function() { document.getElementById('q').focus()}); 
 </script>
-<div id="ctxtnav" class="nav">
+<div id="ctxtnav" class="nav"><?cs
+ with:links = chrome.links ?><?cs
+  if:len(links.prev) || len(links.next) ?><ul><?cs
+   if:len(links.prev) ?>
+    <li class="first<?cs if:!len(links.up) && !len(links.next) ?> last<?cs /if ?>">
+     &larr; <a href="<?cs var:links.prev.0.href ?>"><?cs
+       var:links.prev.0.title ?></a>
+    </li><?cs
+   /if ?><?cs
+   if:len(links.next) ?>
+    <li class="<?cs if:!len(links.prev) && !len(links.up) ?>first <?cs /if ?>last">
+     <a href="<?cs var:links.next.0.href ?>"><?cs
+       var:links.next.0.title ?></a> &rarr;
+    </li><?cs
+   /if ?></ul><?cs
+  /if ?><?cs
+ /with ?>
 </div>
 
 <div id="content" class="search">
@@ -46,33 +62,33 @@ addEvent(window, 'load', function() { document.getElementById('q').focus()});
   </dl>
   <hr />
  </div><?cs 
-if search.n_pages > 1 ?>
- <div id="paging">
- Pages: <?cs
- if len(chrome.links.prev) ?>
-   <a href="<?cs var:chrome.links.prev.0.href ?>" title="<?cs
-      var:chrome.links.prev.0.title ?>">prev</a> <?cs
+ if search.n_pages > 1 ?>
+  <div id="paging"><?cs
+  if len(chrome.links.prev) ?>
+    <a href="<?cs var:chrome.links.prev.0.href ?>" title="<?cs
+       var:chrome.links.prev.0.title ?>">&larr;</a> <?cs
+  /if ?><?cs
+  loop:p = 1, search.n_pages ?><?cs
+    if p == search.page ?><?cs var:p ?><?cs
+    else ?><a href="<?cs var:search.page_href + "&amp;page=" + p?>"><?cs
+     var:p ?></a><?cs
+    /if ?> <?cs
+  /loop ?><?cs
+  if len(chrome.links.next) ?>
+    <a href="<?cs var:chrome.links.next.0.href ?>" title="<?cs
+       var:chrome.links.next.0.title ?>">&rarr;</a><?cs
+  /if ?>
+  </div><?cs
  /if ?><?cs
- loop:p = 1, search.n_pages ?><?cs
-   if p == search.page ?><?cs var:p ?><?cs
-   else ?><a href="<?cs var:search.page_href + "&page=" + p?>"><?cs var:p ?></a><?cs
-   /if ?> <?cs
- /loop ?><?cs
- if len(chrome.links.next) ?>
-   <a href="<?cs var:chrome.links.next.0.href ?>" title="<?cs
-      var:chrome.links.next.0.title ?>">next</a><?cs
- /if ?>
- </div>
-<?cs
+
+elif:search.q ?>
+ <div id="notfound">No matches found.</div><?cs
 /if ?>
 
-<?cs elif $search.q ?>
- <div id="notfound">No matches found.</div>
-<?cs /if ?>
-
- <div id="help">
-  <strong>Note:</strong> See <a href="<?cs var:$trac.href.wiki ?>/TracSearch">TracSearch</a>  for help on searching.
- </div>
+<div id="help">
+ <strong>Note:</strong> See <a href="<?cs
+   var:trac.href.wiki ?>/TracSearch">TracSearch</a>  for help on searching.
+</div>
 
 </div>
-<?cs include "footer.cs"?>
+<?cs include:"footer.cs"?>

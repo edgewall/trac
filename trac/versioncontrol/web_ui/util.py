@@ -19,6 +19,7 @@ import time
 import urllib
 
 from trac import util
+from trac.util import escape, pretty_timedelta, shorten_line
 from trac.wiki import wiki_to_html, wiki_to_oneliner
 
 __all__ = [ 'get_changes', 'get_path_links', 'get_path_rev' ]
@@ -31,7 +32,7 @@ def get_changes(env, repos, revs, full=None, req=None, format=None):
     for rev in revs:
         changeset = repos.get_changeset(rev)
         message = changeset.message
-        shortlog = util.shorten_line(message)        
+        shortlog = shorten_line(message)        
         files = None
         if format == 'changelog':
             files = [change[0] for change in changeset.get_changes()]
@@ -47,7 +48,7 @@ def get_changes(env, repos, revs, full=None, req=None, format=None):
         changes[rev] = {
             'date_seconds': changeset.date,
             'date': time.strftime('%x %X', time.localtime(changeset.date)),
-            'age': util.pretty_timedelta(changeset.date),
+            'age': pretty_timedelta(changeset.date),
             'author': changeset.author or 'anonymous',
             'shortlog': shortlog,
             'message': message,
@@ -65,7 +66,7 @@ def get_path_links(href, path, rev):
         path = path + part + '/'
         links.append({
             'name': part or 'root',
-            'href': href.browser(path, rev=rev)
+            'href': escape(href.browser(path, rev=rev))
         })
     return links
 

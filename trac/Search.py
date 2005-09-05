@@ -168,27 +168,23 @@ class SearchModule(Component):
             req.hdf['search.n_pages'] = n_pages
             req.hdf['search.page_size'] = page_size
             if page < n_pages:
-                req.hdf['chrome.links.next'] = [
-                    {'title': 'Next Page',
-                     'href': self.env.href.search(zip(filters,
-                                                      ['on'] * len(filters)),
-                                                  q=query, page=page+1)
-                    }]
+                next_href = self.env.href.search(zip(filters,
+                                                     ['on'] * len(filters)),
+                                                 q=query, page=page + 1)
+                add_link(req, 'next', next_href, 'Next Page')
             if page > 1:
-                req.hdf['chrome.links.prev'] = [
-                    {'title': 'Previous Page',
-                     'href': self.env.href.search(zip(filters,
-                                                      ['on'] * len(filters)),
-                                                  q=query, page=page-1)
-                    }]
-            req.hdf['search.page_href'] = \
-                 self.env.href.search(zip(filters,
-                                          ['on'] * len(filters)), q=query)
+                prev_href = self.env.href.search(zip(filters,
+                                                     ['on'] * len(filters)),
+                                                 q=query, page=page - 1)
+                add_link(req, 'prev', prev_href, 'Previous Page')
+            req.hdf['search.page_href'] = escape(
+                self.env.href.search(zip(filters, ['on'] * len(filters)),
+                                     q=query))
             req.hdf['search.result'] = [
-                { 'href': result[0],
+                { 'href': escape(result[0]),
                   'title': result[1],
                   'date': time.strftime('%c', time.localtime(result[2])),
-                  'author': result[3],
+                  'author': escape(result[3]),
                   'excerpt': result[4]
                 } for result in results]
 

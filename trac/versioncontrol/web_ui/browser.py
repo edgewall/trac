@@ -100,8 +100,9 @@ class BrowserModule(Component):
             'props': dict([(util.escape(name), util.escape(value))
                            for name, value in node.get_properties().items()
                            if not name in hidden_properties]),
-            'href': self.env.href.browser(path,rev=rev or repos.youngest_rev),
-            'log_href': self.env.href.log(path)
+            'href': util.escape(self.env.href.browser(path, rev=rev or
+                                                      repos.youngest_rev)),
+            'log_href': util.escape(self.env.href.log(path))
         }
 
         path_links = get_path_links(self.env.href, path, rev)
@@ -139,8 +140,9 @@ class BrowserModule(Component):
                 'size': util.pretty_size(entry.content_length),
                 'rev': entry.rev,
                 'permission': 1, # FIXME
-                'log_href': self.env.href.log(entry.path, rev=rev),
-                'browser_href': self.env.href.browser(entry.path, rev=rev)
+                'log_href': util.escape(self.env.href.log(entry.path, rev=rev)),
+                'browser_href': util.escape(self.env.href.browser(entry.path,
+                                                                  rev=rev))
             })
         changes = get_changes(self.env, repos, [i['rev'] for i in info])
 
@@ -168,12 +170,12 @@ class BrowserModule(Component):
         changeset = repos.get_changeset(node.rev)  
         req.hdf['file'] = {  
             'rev': node.rev,  
-            'changeset_href': self.env.href.changeset(node.rev),  
-            'date': time.strftime('%x %X', time.localtime(changeset.date)),  
-            'age': util.pretty_timedelta(changeset.date),  
-            'author': changeset.author or 'anonymous',  
-            'message': wiki_to_html(changeset.message or '--', self.env, req,  
-                                    escape_newlines=True)  
+            'changeset_href': util.escape(self.env.href.changeset(node.rev)),
+            'date': time.strftime('%x %X', time.localtime(changeset.date)),
+            'age': util.pretty_timedelta(changeset.date),
+            'author': changeset.author or 'anonymous',
+            'message': wiki_to_html(changeset.message or '--', self.env, req,
+                                    escape_newlines=True)
         } 
         mime_type = node.content_type
         if not mime_type or mime_type == 'application/octet-stream':
@@ -233,7 +235,7 @@ class BrowserModule(Component):
 
             raw_href = self.env.href.browser(node.path, rev=rev and node.rev,
                                              format='raw')
-            req.hdf['file.raw_href'] = raw_href
+            req.hdf['file.raw_href'] = util.escape(raw_href)
             add_link(req, 'alternate', raw_href, 'Original Format', mime_type)
 
             add_stylesheet(req, 'common/css/code.css')
@@ -256,5 +258,5 @@ class BrowserModule(Component):
         path, rev = get_path_rev(path)
         label = urllib.unquote(label)
         return '<a class="source" href="%s">%s</a>' \
-               % (formatter.href.browser(path, rev=rev), label)
+               % (util.escape(formatter.href.browser(path, rev=rev)), label)
 

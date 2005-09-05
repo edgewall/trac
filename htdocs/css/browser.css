@@ -51,8 +51,9 @@ h1 .sep { color: #666; padding: 0 .1em }
 #chglist td.change { 
  white-space: nowrap; 
 }
-#chglist td.change div { 
+#chglist td.change span { 
  border: 1px solid #999;
+ display: block;
  margin: .2em .5em 0 0;
  width: .8em; height: .8em;
 }

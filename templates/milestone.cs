@@ -143,7 +143,7 @@
     /if ?><?cs
    /with ?>
   </div>
-  <form id="stats" method="get">
+  <form id="stats" action="" method="get">
    <fieldset><?cs
     if:milestone.id_param ?>
      <input type="hidden" name="id" value="<?cs var:milestone.name ?>" /><?cs
@@ -164,7 +164,7 @@
       <tr>
        <th scope="row"><a href="<?cs
          var:group.queries.all_tickets ?>"><?cs var:group.name ?></a></th>
-       <td nowrap=nowrap><?cs if:#group.total_tickets ?>
+       <td style="white-space: nowrap"><?cs if:#group.total_tickets ?>
         <div class="progress" style="width: <?cs
           var:#group.percent_total * #80 / #milestone.stats.max_percent_total ?>%">
          <a class="closed" href="<?cs

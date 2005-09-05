@@ -18,8 +18,10 @@ from __future__ import generators
 import re
 from time import localtime, strftime, time
 
-from trac import Milestone, __version__
+from trac import __version__
 from trac.core import *
+from trac.Milestone import Milestone, calc_ticket_stats, get_query_links, \
+                           get_tickets_for_milestone, milestone_to_hdf
 from trac.perm import IPermissionRequestor
 from trac.util import enum, escape, pretty_timedelta, CRLF
 from trac.ticket import Ticket
@@ -61,19 +63,18 @@ class RoadmapModule(Component):
 
         db = self.env.get_db_cnx()
         milestones = []
-        for idx,milestone in enum(Milestone.Milestone.select(self.env, showall)):
-            hdf = Milestone.milestone_to_hdf(self.env, db, req, milestone)
+        for idx, milestone in enum(Milestone.select(self.env, showall)):
+            hdf = milestone_to_hdf(self.env, db, req, milestone)
             milestones.append(hdf)
         req.hdf['roadmap.milestones'] = milestones
 
         for idx,milestone in enum(milestones):
-            tickets = Milestone.get_tickets_for_milestone(self.env, db,
-                                                          milestone['name'],
-                                                          'owner')
-            stats = Milestone.calc_ticket_stats(tickets)
-            req.hdf['roadmap.milestones.%s.stats' % idx] = stats
-            queries = Milestone.get_query_links(self.env, milestone['name'])
-            req.hdf['roadmap.milestones.%s.queries' % idx] = queries
+            prefix = 'roadmap.milestones.%d.' % idx
+            tickets = get_tickets_for_milestone(self.env, db, milestone['name'],
+                                                'owner')
+            req.hdf[prefix + 'stats'] = calc_ticket_stats(tickets)
+            for k, v in get_query_links(self.env, milestone['name']).items():
+                req.hdf[prefix + 'queries.' + k] = escape(v)
             milestone['tickets'] = tickets # for the iCalendar view
 
         if req.args.get('format') == 'ics':

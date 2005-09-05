@@ -87,7 +87,9 @@ addEvent(window, 'load', function() { document.getElementById('summary').focus()
          var:option ?></label> <?cs set:optidx = optidx + 1 ?><?cs
        /each ?><?cs
       /if ?></td><?cs
-     if:idx % 2 || fullrow ?></tr><tr><?cs 
+     if:idx % 2 || fullrow ?><?cs
+      if:idx < num_fields - 1 ?></tr><tr><?cs
+      /if ?><?cs 
      elif:idx == num_fields - 1 ?><th class="col2"></th><td></td><?cs
      /if ?><?cs set:idx = idx + #fullrow + 1 ?><?cs
     /if ?><?cs

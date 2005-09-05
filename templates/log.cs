@@ -31,7 +31,7 @@
    <label>and back to <input type="text" id="stop_rev" name="stop_rev" value="<?cs
     var:log.stop_rev ?>" size="5" /></label>
    <br />
-   <div class="choice" ?>
+   <div class="choice">
     <fieldset>
      <legend>Mode:</legend>
      <label for="stop_on_copy">
@@ -101,7 +101,7 @@
     <tr class="<?cs if:name(item) % #2 ?>even<?cs else ?>odd<?cs /if ?>">
      <td class="change" style="padding-left:<?cs var:indent ?>em">
       <a title="View log starting at this revision" href="<?cs var:item.log_href ?>">
-       <div class="<?cs var:item.change ?>"></div>
+       <span class="<?cs var:item.change ?>"></span>
        <span class="comment">(<?cs var:item.change ?>)</span>
       </a>
      </td>

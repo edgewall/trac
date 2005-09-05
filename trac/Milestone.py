@@ -431,8 +431,8 @@ class MilestoneModule(Component):
         tickets = get_tickets_for_milestone(self.env, db, milestone.name, by)
         stats = calc_ticket_stats(tickets)
         req.hdf['milestone.stats'] = stats
-        queries = get_query_links(self.env, milestone.name)
-        req.hdf['milestone.queries'] = queries
+        for key, value in get_query_links(self.env, milestone.name).items():
+            req.hdf['milestone.queries.' + key] = escape(value)
 
         groups = _get_groups(self.env, db, by)
         group_no = 0
@@ -451,8 +451,9 @@ class MilestoneModule(Component):
             req.hdf['%s.percent_total' % prefix] = percent_total * 100
             stats = calc_ticket_stats(group_tickets)
             req.hdf[prefix] = stats
-            queries = get_query_links(self.env, milestone.name, by, group)
-            req.hdf['%s.queries' % prefix] = queries
+            for key, value in get_query_links(self.env, milestone.name,
+                                              by, group).items():
+                req.hdf['%s.queries.%s' % (prefix, key)] = escape(value)
             group_no += 1
         req.hdf['milestone.stats.max_percent_total'] = max_percent_total * 100
 
