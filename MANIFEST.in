@@ -8,7 +8,14 @@ include scripts/rpm-install.sh
 include cgi-bin/trac.cgi
 include cgi-bin/trac.fcgi
 include trac/tests/*.py
-include trac/tests/wiki-tests.txt
+include trac/web/tests/*.py
+include trac/wiki/tests/*.py
+include trac/wiki/tests/wiki-tests.txt
+include trac/ticket/tests/*.py
+include trac/scripts/tests/*.py
+include trac/scripts/tests/admin-tests.txt
+include trac/versioncontrol/tests/*.py
+include trac/versioncontrol/tests/svnrepos.dump
 recursive-include htdocs *.png *.gif *.ico *.js *README
 recursive-include htdocs/css *.css
 recursive-include htdocs/js *.js
