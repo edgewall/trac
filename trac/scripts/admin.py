@@ -1029,17 +1029,13 @@ class TracAdmin(cmd.Cmd):
             traceback.print_exc()
 
     def _update_sample_config(self):
-        sample = 'sample_for_%s-trac.ini' % trac.__version__
-        sample_filename = os.path.join(self.__env.path, 'conf', sample)
+        filename = os.path.join(self.__env.path, 'conf', 'trac.ini.sample')
         try:
-            fd = open(sample_filename, 'w')
-            fd.close()            
-            default_config = Configuration(sample_filename)
-            for section,name,value in db_default.default_config:
-                default_config.set(section, name, value)
-            default_config.save()
-            print "Sample configuration file '%s' written for reference " \
-                  "(don't edit)" % sample
+            file(filename, 'w').close() # Create the config file
+            config = Configuration(filename)
+            for section, name, value in db_default.default_config:
+                config.set(section, name, value)
+            config.save()
         except IOError, e:
             print "Warning: couldn't write sample configuration file (%s)" % e
 
