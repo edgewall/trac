@@ -197,7 +197,7 @@
       if:milestone.id_param ?>
        <input type="hidden" name="id" value="<?cs var:milestone.name ?>" /><?cs
       /if ?>
-      <input type="submit" value="Edit milestone info" />
+      <input type="submit" value="Edit milestone info" accesskey="e" />
      </div></form><?cs
     /if ?><?cs
     if:trac.acl.MILESTONE_DELETE ?>

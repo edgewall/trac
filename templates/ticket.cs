@@ -294,7 +294,7 @@
 
  <div class="buttons">
   <input type="hidden" name="ts" value="<?cs var:ticket.ts ?>" />
-  <input type="submit" name="preview" value="Preview" />&nbsp;
+  <input type="submit" name="preview" value="Preview" accesskey="r" />&nbsp;
   <input type="submit" value="Submit changes" />
  </div>
 </form>

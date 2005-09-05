@@ -94,7 +94,7 @@
      <div class="buttons"><?cs
       if:report.can_modify ?><form action="" method="get"><div>
        <input type="hidden" name="action" value="edit" />
-       <input type="submit" value="Edit report" />
+       <input type="submit" value="Edit report" accesskey="e" />
       </div></form><?cs /if ?><?cs
       if:report.can_create ?><form action="" method="get"><div>
        <input type="hidden" name="action" value="copy" />

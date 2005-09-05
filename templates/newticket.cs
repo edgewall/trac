@@ -101,7 +101,7 @@ addEvent(window, 'load', function() { document.getElementById('summary').focus()
    var:chrome.href ?>/common/js/wikitoolbar.js"></script>
 
  <div class="buttons">
-  <input type="submit" name="preview" value="Preview" />&nbsp;
+  <input type="submit" name="preview" value="Preview" accesskey="r" />&nbsp;
   <input type="submit" value="Submit ticket" />
  </div>
 </form>
