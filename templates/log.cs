@@ -107,10 +107,12 @@
      </td>
      <td class="date"><?cs var:log.changes[item.rev].date ?></td>
      <td class="rev">
-      <a href="<?cs var:item.browser_href ?>"><?cs var:item.rev ?></a>
+      <a href="<?cs var:item.browser_href ?>" 
+         title="Browse at revision <?cs var:item.rev ?>"><?cs var:item.rev ?></a>
      </td>
      <td class="chgset">
-      <a href="<?cs var:item.changeset_href ?>"><?cs var:item.rev ?></a>
+      <a href="<?cs var:item.changeset_href ?>"
+         title="View changeset [<?cs var:item.rev ?>]">[<?cs var:item.rev ?>]</a>
      </td>
      <td class="author"><?cs var:log.changes[item.rev].author ?></td>
      <td class="summary"><?cs var:log.changes[item.rev].message ?></td>
