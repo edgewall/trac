@@ -45,7 +45,7 @@ pain. These scripts are run via `trac-admin`:
 
 This command will do nothing if the environment is already up-to-date.
 
-=== Update the Trac Documentation ===
+3. Update the Trac Documentation
 
 Every Trac environment includes a copy of the Trac documentation for the
 installed version. As you probably want to keep the included documentation in
