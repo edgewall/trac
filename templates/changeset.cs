@@ -169,7 +169,7 @@
        var:item.rev.old ?></a></th>
       <th colspan="2"><a href="<?cs
        var:item.browser_href.new ?>" title="Show new rev. <?cs
-       var:item.rev.old ?> of <?cs var:item.path.new ?>">Revision <?cs
+       var:item.rev.new ?> of <?cs var:item.path.new ?>">Revision <?cs
        var:item.rev.new ?></a></th>
       </tr>
      </thead><?cs
