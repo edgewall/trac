@@ -539,12 +539,6 @@ rfc-2396.compatible://link
 <a class="ext-link" href="rfc-2396.compatible://link"><span class="icon"></span>RFC 2396</a>
 </p>
 ==============================
-mailto:me@example.org
-------------------------------
-<p>
-<a class="ext-link" href="" onmouseover="this.href='m'+'a'+'i'+'l'+'t'+'o'+':'+'m'+'e'+'@'+'e'+'x'+'a'+'m'+'p'+'l'+'e'+'.'+'o'+'r'+'g'">mailto:me@...</a>
-</p>
-==============================
 = ça marche! =
 ------------------------------
 <h1 id="çamarche">ça marche!</h1>
