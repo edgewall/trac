@@ -60,7 +60,7 @@ MIME_MAP = {
     'js':'text/x-javascript',
     'ksh':'text/x-ksh',
     'lua':'text/x-lua',
-    'm':'text/x-objc',
+    'm':'text/x-objc', 'mm':'text/x-objc',
     'm4':'text/x-m4',
     'make':'text/x-makefile', 'mk':'text/x-makefile', 'Makefile':'text/x-makefile',
     'mail':'text/x-mail',
