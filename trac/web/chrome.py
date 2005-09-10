@@ -173,7 +173,8 @@ class Chrome(Component):
 
     def get_htdocs_dirs(self):
         from trac.config import default_dir
-        yield ['common', default_dir('htdocs')]
+        return [('common', default_dir('htdocs')),
+                ('project', self.env.get_htdocs_dir())]
 
     def get_templates_dirs(self):
         return [self.env.get_templates_dir(),
