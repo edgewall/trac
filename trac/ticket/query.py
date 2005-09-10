@@ -500,6 +500,7 @@ class QueryModule(Component):
             req.hdf['query.verbose'] = 1
 
         tickets = query.execute(db)
+        req.hdf['query.num_matches'] = len(tickets)
 
         # The most recent query is stored in the user session
         orig_list = rest_list = None
@@ -545,6 +546,8 @@ class QueryModule(Component):
 
         req.hdf['query.results'] = tickets
 
+        # Kludge: only show link to available reports if the report module is
+        # actually enabled
         from trac.ticket.report import ReportModule
         if req.perm.has_permission('REPORT_VIEW') and \
            self.env.is_component_enabled(ReportModule):

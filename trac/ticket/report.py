@@ -129,6 +129,14 @@ class ReportModule(Component):
         if id != -1 or action == 'new':
             add_link(req, 'up', self.env.href.report(), 'Available Reports')
 
+            # Kludge: Reset session vars created by query module so that the
+            # query navigation links on the ticket page don't confuse the user
+            for var in ('query_constraints', 'query_time', 'query_tickets'):
+                if req.session.has_key(var):
+                    del req.session[var]
+
+        # Kludge: only show link to custom query if the query module is actually
+        # enabled
         from trac.ticket.query import QueryModule
         if req.perm.has_permission('TICKET_VIEW') and \
            self.env.is_component_enabled(QueryModule):

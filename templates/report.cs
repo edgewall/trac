@@ -3,8 +3,8 @@
 
 <div id="ctxtnav" class="nav">
  <h2>Report Navigation</h2>
- <ul><?cs
-   if:chrome.links.up.0.href ?><li class="first"><a href="<?cs
+ <ul><li class="first"><?cs
+   if:chrome.links.up.0.href ?><a href="<?cs
     var:chrome.links.up.0.href ?>">Available Reports</a><?cs
    else ?>Available Reports<?cs
   /if ?></li><?cs

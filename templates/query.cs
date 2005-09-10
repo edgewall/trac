@@ -10,8 +10,8 @@
 </div>
 
 <div id="content" class="query">
- <h1><?cs var:title ?> <span class="numrows">(<?cs alt:len(query.results) ?>No<?cs /alt ?> match<?cs
- if:len(query.results) != 1 ?>es<?cs /if ?>)</span></h1>
+ <h1><?cs var:title ?> <span class="numrows">(<?cs alt:query.num_matches ?>No<?cs /alt ?> match<?cs
+ if:query.num_matches != 1 ?>es<?cs /if ?>)</span></h1>
 
 <form id="query" method="post" action="<?cs var:trac.href.query ?>">
  <fieldset id="filters">
