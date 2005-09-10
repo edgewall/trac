@@ -23,7 +23,7 @@ from trac import util
 from trac.core import *
 from trac.mimeview import get_mimetype, is_binary, detect_unicode, Mimeview
 from trac.perm import IPermissionRequestor
-from trac.web import IRequestHandler
+from trac.web import IRequestHandler, RequestDone
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
 from trac.wiki import wiki_to_html, wiki_to_oneliner, IWikiSyntaxProvider
 from trac.versioncontrol.web_ui.util import *
@@ -202,7 +202,7 @@ class BrowserModule(Component):
             while 1:
                 chunk = content.read(CHUNK_SIZE)
                 if not chunk:
-                    break
+                    raise RequestDone
                 req.write(chunk)
 
         else:
