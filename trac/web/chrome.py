@@ -206,8 +206,11 @@ class Chrome(Component):
         add_stylesheet(req, 'common/css/trac.css')
         icon = self.config.get('project', 'icon')
         if icon:
-            if icon[0] != '/' and icon.find('://') == -1:
-                icon = href.chrome('common', icon)
+            if not icon.startswith('/') and icon.find('://') == -1:
+                if '/' in icon:
+                    icon = href.chrome(icon)
+                else:
+                    icon = href.chrome('common', icon)
             mimetype = mimeview.get_mimetype(icon)
             add_link(req, 'icon', icon, mimetype=mimetype)
             add_link(req, 'shortcut icon', icon, mimetype=mimetype)
@@ -219,7 +222,10 @@ class Chrome(Component):
             logo_src_abs = logo_src.startswith('http://') or \
                            logo_src.startswith('https://')
             if not logo_src.startswith('/') and not logo_src_abs:
-                logo_src = href.chrome('common', logo_src)
+                if '/' in logo_src:
+                    logo_src = href.chrome(logo_src)
+                else:
+                    logo_src = href.chrome('common', logo_src)
             req.hdf['chrome.logo'] = {
                 'link': util.escape(logo_link), 'src': util.escape(logo_src),
                 'src_abs': util.escape(logo_src_abs),
