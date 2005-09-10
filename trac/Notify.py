@@ -21,7 +21,6 @@ from trac.web.clearsilver import HDFWrapper
 from trac.web.main import populate_hdf
 
 import md5
-import sys
 import time
 import smtplib
 
@@ -42,10 +41,6 @@ class Notify:
         populate_hdf(self.hdf, env)
 
     def notify(self, resid):
-        if sys.version_info[0] == 2 and (sys.version_info[1] < 2 or
-                                         sys.version_info[1] == 2 and
-                                         sys.version_info[2] < 2):
-            raise TracError, "Email notifications require Python >= 2.2.2"
         rcpts = self.get_recipients(resid)
         self.begin_send()
         for to in rcpts:
