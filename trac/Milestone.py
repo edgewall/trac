@@ -219,13 +219,14 @@ def milestone_to_hdf(env, db, req, milestone):
 def _get_groups(env, db, by='component'):
     for field in TicketSystem(env).get_ticket_fields():
         if field['name'] == by:
-            if 'options' in field.keys():
+            if field.has_key('options'):
                 return field['options']
             else:
                 cursor = db.cursor()
                 cursor.execute("SELECT DISTINCT %s FROM ticket ORDER BY %s"
                                % (by, by))
                 return [row[0] for row in cursor]
+    return []
 
 def _parse_date(datestr):
     seconds = None
@@ -310,7 +311,7 @@ class MilestoneModule(Component):
         action = req.args.get('action', 'view')
 
         if req.method == 'POST':
-            if 'cancel' in req.args.keys():
+            if req.args.has_key('cancel'):
                 if milestone.exists:
                     req.redirect(self.env.href.milestone(milestone.name))
                 else:
@@ -347,14 +348,14 @@ class MilestoneModule(Component):
         else:
             req.perm.assert_permission('MILESTONE_CREATE')
 
-        if not 'name' in req.args.keys():
+        if not req.args.has_key('name'):
             raise TracError('You must provide a name for the milestone.',
                             'Required Field Missing')
         milestone.name = req.args.get('name')
 
         due = req.args.get('duedate', '')
         milestone.due = due and _parse_date(due) or 0
-        if 'completed' in req.args.keys():
+        if req.args.has_key('completed'):
             completed = req.args.get('completeddate', '')
             milestone.completed = completed and _parse_date(completed) or 0
             if milestone.completed > time.time():

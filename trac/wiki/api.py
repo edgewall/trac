@@ -114,7 +114,7 @@ class WikiSystem(Component):
     def has_page(self, pagename):
         """Whether a page with the specified name exists."""
         self._update_index()
-        return pagename in self._index.keys()
+        return self._index.has_key(pagename)
 
     # IWikiChangeListener methods
 

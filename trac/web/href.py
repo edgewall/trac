@@ -153,7 +153,7 @@ class Href(object):
         return href
 
     def __getattr__(self, name):
-        if not name in self._derived.keys():
+        if not self._derived.has_key(name):
             self._derived[name] = lambda *args, **kw: self(name, *args, **kw)
         return self._derived[name]
 

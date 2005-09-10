@@ -77,7 +77,7 @@ class WikiProcessor(object):
         if not self.processor:
             # Find a matching mimeview renderer
             from trac.mimeview.api import MIME_MAP
-            if self.name in MIME_MAP.keys():
+            if MIME_MAP.has_key(self.name):
                 self.name = MIME_MAP[self.name]
                 self.processor = self._mimeview_processor
             elif self.name in MIME_MAP.values():

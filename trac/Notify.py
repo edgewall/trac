@@ -215,7 +215,7 @@ class TicketNotifyEmail(NotifyEmail):
         t = self.modtime or tkt.time_changed
         width = [0, 0, 0, 0]
         for i, f in enum([f['name'] for f in fields]):
-            if not f in tkt.values.keys():
+            if not tkt.values.has_key(f):
                 continue
             fval = tkt[f]
             if fval.find('\n') > -1:

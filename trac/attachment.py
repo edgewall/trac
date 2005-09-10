@@ -289,7 +289,7 @@ class AttachmentModule(Component):
         perm_map = {'ticket': 'TICKET_APPEND', 'wiki': 'WIKI_MODIFY'}
         req.perm.assert_permission(perm_map[attachment.parent_type])
 
-        if 'cancel' in req.args.keys():
+        if req.args.has_key('cancel'):
             req.redirect(attachment.parent_href)
 
         upload = req.args['attachment']
@@ -340,7 +340,7 @@ class AttachmentModule(Component):
         perm_map = {'ticket': 'TICKET_ADMIN', 'wiki': 'WIKI_DELETE'}
         req.perm.assert_permission(perm_map[attachment.parent_type])
 
-        if 'cancel' in req.args.keys():
+        if req.args.has_key('cancel'):
             req.redirect(attachment.href())
 
         attachment.delete()

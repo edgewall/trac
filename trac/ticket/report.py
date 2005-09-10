@@ -150,7 +150,7 @@ class ReportModule(Component):
     def _do_create(self, req, db):
         req.perm.assert_permission('REPORT_CREATE')
 
-        if 'cancel' in req.args.keys():
+        if req.args.has_key('cancel'):
             req.redirect(self.env.href.report())
 
         title = req.args.get('title', '')
@@ -166,7 +166,7 @@ class ReportModule(Component):
     def _do_delete(self, req, db, id):
         req.perm.assert_permission('REPORT_DELETE')
 
-        if 'cancel' in req.args.keys():
+        if req.args.has_key('cancel'):
             req.redirect(self.env.href.report(id))
 
         cursor = db.cursor()
@@ -180,7 +180,7 @@ class ReportModule(Component):
         """
         req.perm.assert_permission('REPORT_MODIFY')
 
-        if 'cancel' not in req.args.keys():
+        if not req.args.has_key('cancel'):
             title = req.args.get('title', '')
             sql = req.args.get('sql', '')
             description = req.args.get('description', '')

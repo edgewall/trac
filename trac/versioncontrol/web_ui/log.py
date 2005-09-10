@@ -175,7 +175,7 @@ class LogModule(Component):
                 author_email = ''
                 if '@' in author:
                     author_email = author
-                elif author in email_map.keys():
+                elif email_map.has_key(author):
                     author_email = email_map[author]
                 cs['author'] = author_email
                 cs['date'] = util.http_date(cs['date_seconds'])

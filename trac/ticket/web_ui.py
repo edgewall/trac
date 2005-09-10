@@ -56,14 +56,14 @@ class NewticketModule(Component):
 
         db = self.env.get_db_cnx()
 
-        if req.method == 'POST' and 'preview' not in req.args.keys():
+        if req.method == 'POST' and not req.args.has_key('preview'):
             self._do_create(req, db)
 
         ticket = Ticket(self.env, db=db)
         ticket.populate(req.args)
         ticket.values.setdefault('reporter', util.get_reporter_id(req))
 
-        if 'description' in ticket.values.keys():
+        if ticket.values.has_key('description'):
             description = wiki_to_html(ticket['description'], self.env, req, db)
             req.hdf['newticket.description_preview'] = description
 
@@ -164,7 +164,7 @@ class TicketModule(Component):
         reporter_id = util.get_reporter_id(req)
 
         if req.method == 'POST':
-            if 'preview' not in req.args.keys():
+            if not req.args.has_key('preview'):
                 self._do_save(req, db, ticket)
             else:
                 # Use user supplied values
@@ -287,7 +287,7 @@ class TicketModule(Component):
             if not req.args.get('summary'):
                 raise TracError('Tickets must contain summary.')
 
-            if 'description' in req.args.keys() or 'reporter' in req.args.keys():
+            if req.args.has_key('description') or req.args.has_key('reporter'):
                 req.perm.assert_permission('TICKET_ADMIN')
 
             ticket.populate(req.args)

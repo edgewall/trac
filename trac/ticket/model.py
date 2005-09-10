@@ -96,9 +96,9 @@ class Ticket(object):
 
     def __setitem__(self, name, value):
         """Log ticket modifications so the table ticket_change can be updated"""
-        if name in self.values.keys() and self.values[name] == value:
+        if self.values.has_key(name) and self.values[name] == value:
             return
-        if name not in self._old.keys(): # Changed field
+        if not self._old.has_key(name): # Changed field
             self._old[name] = self.values.get(name)
         elif self._old[name] == value: # Change of field reverted
             del self._old[name]
@@ -113,7 +113,7 @@ class Ticket(object):
         # We have to do an extra trick to catch unchecked checkboxes
         for name in [name for name in values.keys() if name[9:] in field_names
                      and name.startswith('checkbox_')]:
-            if name[9:] not in values.keys():
+            if not values.has_key(name[9:]):
                 self[name[9:]] = '0'
 
     def insert(self, when=0, db=None):
@@ -144,7 +144,7 @@ class Ticket(object):
 
         # Insert ticket record
         std_fields = [f['name'] for f in self.fields if not f.get('custom')
-                      and f['name'] in self.values.keys()]
+                      and self.values.has_key(f['name'])]
         cursor.execute("INSERT INTO ticket (%s,time,changetime) VALUES (%s)"
                        % (','.join(std_fields),
                           ','.join(['%s'] * (len(std_fields) + 2))),
@@ -154,7 +154,7 @@ class Ticket(object):
 
         # Insert custom fields
         custom_fields = [f['name'] for f in self.fields if f.get('custom')
-                         and f['name'] in self.values.keys()]
+                         and self.values.has_key(f['name'])]
         if custom_fields:
             cursor.executemany("INSERT INTO ticket_custom (ticket,name,value) "
                                "VALUES (%s,%s,%s)", [(tkt_id, name, self[name])
@@ -185,12 +185,12 @@ class Ticket(object):
         if not when:
             when = int(time.time())
 
-        if 'component' in self.values.keys():
+        if self.values.has_key('component'):
             # If the component is changed on a 'new' ticket then owner field
             # is updated accordingly. (#623).
             if self.values.get('status') == 'new' \
-                    and 'component' in self._old.keys() \
-                    and 'owner' not in self._old.keys():
+                    and self._old.has_key('component') \
+                    and not self._old.has_key('owner'):
                 try:
                     old_comp = Component(self.env, self._old['component'], db)
                     if old_comp.owner == self.values.get('owner'):

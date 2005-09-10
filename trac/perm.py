@@ -127,7 +127,7 @@ class PermissionSystem(Component):
                     meta[name] = value
             def _expand_meta(action):
                 permissions[action] = True
-                if action in meta.keys():
+                if meta.has_key(action):
                     [_expand_meta(perm) for perm in meta[action]]
             for perm in self.store.get_user_permissions(username):
                 _expand_meta(perm)
@@ -279,7 +279,7 @@ class PermissionCache:
         return self.perms.has_key(action)
 
     def assert_permission(self, action):
-        if action not in self.perms.keys():
+        if not self.perms.has_key(action):
             raise PermissionError(action)
 
     def permissions(self):

@@ -350,7 +350,7 @@ class QueryModule(Component):
         if req.args.has_key('update'):
             # Reset session vars
             for var in ('query_constraints', 'query_time', 'query_tickets'):
-                if var in req.session.keys():
+                if req.session.has_key(var):
                     del req.session[var]
             req.redirect(query.get_href())
 
@@ -426,7 +426,7 @@ class QueryModule(Component):
                 mode = req.args.get(field + '_mode')
                 if mode:
                     vals = map(lambda x: mode + x, vals)
-                if field in remove_constraints.keys():
+                if remove_contraints.has_key(field):
                     idx = remove_constraints[field]
                     if idx >= 0:
                         del vals[idx]

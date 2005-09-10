@@ -155,7 +155,7 @@ class WikiModule(Component):
         else:
             req.perm.assert_permission('WIKI_DELETE')
 
-        if 'cancel' in req.args.keys():
+        if req.args.has_key('cancel'):
             req.redirect(self.env.href.wiki(page.name))
 
         version = None
