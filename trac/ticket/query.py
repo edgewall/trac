@@ -426,7 +426,7 @@ class QueryModule(Component):
                 mode = req.args.get(field + '_mode')
                 if mode:
                     vals = map(lambda x: mode + x, vals)
-                if remove_contraints.has_key(field):
+                if remove_constraints.has_key(field):
                     idx = remove_constraints[field]
                     if idx >= 0:
                         del vals[idx]
