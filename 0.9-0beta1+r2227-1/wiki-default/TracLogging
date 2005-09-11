@@ -1,0 +1,29 @@
+= Trac Logging =
+[[TracGuideToc]]
+
+Trac supports logging of system messages using the standard [http://docs.python.org/lib/module-logging.html logging module] that comes with Python.
+
+Logging is configured in the {{{[logging]}}} section in [wiki:TracIni trac.ini].
+
+== Supported Logging Methods ==
+
+The log method is set using the `log_type` configuration option, which takes any of the following values:
+ '''none'':: Suppress all log messages.
+ '''file''':: Log messages to a file, specified with the `log_file` option in [wiki:TracIni trac.ini]. 
+ '''stderr''':: Output all log entries to console ([wiki:TracStandalone tracd] only).
+ '''syslog''':: (UNIX) Send messages to local syslogd via named pipe `/dev/log`.
+ '''eventlog''':: (Windows) Use the system's NT eventlog for Trac logging.
+
+== Log Levels ==
+
+The verbosity level of logged messages can be set using the ''log_level'' directive in [wiki:TracIni trac.ini]. The log level defines the minimum level of urgency required for a message to be logged.
+
+The levels are:
+ '''CRITICAL''':: Log only the most critical (typically fatal) errors.
+ '''ERROR''':: Log failures, bugs and errors. 
+ '''WARN''':: Log warnings, non-interrupting events.
+ '''INFO''':: Diagnostic information, log information about all processing.
+ '''DEBUG''':: Trace messages, profiling, etc.
+
+----
+See also: TracIni, TracGuide, TracEnvironment

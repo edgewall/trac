@@ -1,0 +1,10 @@
+= Delete an existing Wiki Page =
+
+Users with {{{WIKI_DELETE}}} permissions can delete wiki pages using the {{{"delete page"}}} or the {{{"delete this version"}}} buttons
+at the bottom of the wiki page. These buttons are only visible for users with {{{WIKI_DELETE}}} permissions.
+
+'''Note:''' This is an irreversible operation.
+
+
+
+See also: TracWiki, TracPermissions

@@ -1,0 +1,10 @@
+= Steps to Add a New Wiki Page =
+
+ 1. Choose a name for your new page. See WikiPageNames for naming conventions.
+ 1. Edit an existing page and add a hyperlink to your new page. Save your changes.
+ 1. Follow the link you created to take you to the new page. Trac will display a "describe !PageName here" message.
+ 1. Click the "Edit this page" button to edit and add content to your new page. Save your changes.
+ 1. All done. Your new page is published.
+
+
+See also: TracWiki, WikiFormatting, TracLinks, WikiDeletePage 

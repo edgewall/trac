@@ -1,0 +1,50 @@
+Trac in stand-alone mode
+========================
+
+Trac 0.7 introduced among many other important features, the capability to run
+Trac as a stand-alone server (daemon), without a web server.
+
+Tracd supports all features of the CGI version (trac.cgi), 
+and can serve multiple projects from a single server instance.
+
+Running tracd
+-------------
+
+  tracd [options] <database> [database] ...
+
+  Options:
+
+-a, --auth <project,htdigest_file,realm>    Per-project authentication information
+-p, --port <port>                           Port number to use (default: 80)
+-b, --hostname <hostname>                   IP to bind to (default: '')
+
+
+Example 1: Single Project (non-authenticated)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  $ tracd -p 9090 /var/trac/myproject
+
+Example 2: Multiple Projects (authenticated)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  $ tracd -p 9090 \
+     -a projectA,/var/trac/htdigest.ALPHA,ALPHA  \
+     -a projectB,/var/trac/htdigest.ALPHA,ALPHA  \
+     /var/trac/projectA \
+     /var/trac/projectB
+
+The file ``htdigest.ALPHA`` can be generated using the Apache2 tool ``htdigest``
+(be carefull *NOT* to use ``htpasswd`` here).
+
+Feedback and bug reports
+------------------------
+
+Please provide feedback on tracd using the issue tracker or the mailing list.
+
+ Submit a bug report:  http://projects.edgewall.com/trac/newticket?component=tracd
+   Mailing list info:  http://projects.edgewall.com/trac/wiki/MailingList
+
+
+Thanks,
+
+/The Trac Team (http://trac.edgewall.com/)

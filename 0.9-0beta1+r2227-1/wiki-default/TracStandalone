@@ -1,0 +1,95 @@
+= Tracd =
+
+Tracd is a lightweight stand-alone Trac server. In most cases it's easier to setup and runs faster than trac.cgi.
+
+'''Note: tracd is still experimental.'''
+
+== Pros ==
+
+ * Fewer dependencies: You don't need to install apache or any other web-server.
+ * Fast: Should be as fast as the TracModPython version (much faster than the cgi).
+
+== Cons ==
+
+ * Less features: Tracd implements a very simple web-server and is not as configurable as apache.
+ * Only htdigest authentication: Tracd can currently only authenticate users against apache-htdigest files.
+ * No native https support: [http://www.rickk.com/sslwrap/ sslwrap] can be used instead.
+
+== Usage examples ==
+
+A single project on port 8080. (http://localhost:8080/)
+{{{
+ $ tracd -p 8080 /path/to/project
+}}}
+With more than one project. (http://localhost:8080/project1/ and http://localhost:8080/project2/)
+{{{
+ $ tracd -p 8080 /path/to/project1 /path/to/project2
+}}}
+With htdigest authentication. The file /tmp/users.htdigest contain user accounts for project1 with the realm "mycompany.com".
+{{{
+ $ tracd -p 8080 --auth project1,/tmp/users.htdigest,mycompany.com /path/to/project1
+}}}
+htdigest authentication can also be used for more than one project.
+The digest file can be shared:
+{{{
+ $ tracd -p 8080 \
+   --auth project1,/tmp/users.htdigest,mycompany.com \
+   --auth project2,/tmp/users.htdigest,mycompany.com \
+   /path/to/project1 /path/to/project2
+}}}
+
+== Tracd on Windows ==
+
+tracd also works on Windows. But on that platform, 
+the sensitivity on multithread issues is high.
+tracd is not (yet!) very robust in multithread mode,
+see for example #1401 and #1721 for some of the issues...
+
+I recently found out that all the occasional problems 
+(i.e. crashes) I had can be avoided by telling tracd 
+to operate in single-threaded mode:
+{{{
+#!text/x-diff
+Index: trac/web/standalone.py
+===================================================================
+--- trac/web/standalone.py      (revision 1862)
++++ trac/web/standalone.py      (working copy)
+@@ -124,7 +124,7 @@
+         return auth['username']
+
+
+-class TracHTTPServer(ThreadingMixIn, HTTPServer):
++class TracHTTPServer(HTTPServer):
+
+     projects = None
+}}}
+
+== Generating passwords on Windows ==
+
+If you don't have Apache available, you can use this Python script to generate your passwords (code borrowed heavily from #845):
+
+{{{
+from optparse import OptionParser
+import md5
+
+# build the options
+usage = "usage: %prog [options]"
+parser = OptionParser(usage=usage)
+parser.add_option("-u", "--username",action="store", dest="username", type = "string",
+                  help="the username for whom to generate a password")
+parser.add_option("-p", "--password",action="store", dest="password", type = "string",
+                  help="the password to use")
+(options, args) = parser.parse_args()
+
+# check options
+if (options.username is None) or (options.password is None):
+   parser.error("You must supply both the username and password")
+   
+# Generate the string to enter into the htdigest file
+realm = 'trac'
+kd = lambda x: md5.md5(':'.join(x)).hexdigest()
+print ':'.join((options.username, realm, kd([options.username, realm, options.password])))
+}}}
+
+----
+See also: [source:trunk/README.tracd#latest README.tracd], TracGuide, TracInstall, TracModPython

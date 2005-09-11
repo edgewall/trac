@@ -1,0 +1,46 @@
+= Trac Changeset Module =
+[[TracGuideToc]]
+
+Trac has a built-in functionality for visualizing “diffs” - changes to files.
+
+When viewing a repository check-in, such as when following a
+changeset [wiki:TracLinks link] or a changeset event in the 
+[wiki:TracTimeline timeline], Trac will display the exact changes
+made by the check-in.
+
+The changeset view consists of two parts, the ''header'' and the ''diff views''.
+
+== Changeset Header ==
+
+The header shows an overview of the whole changeset.
+Here you will find information such as:
+
+ * Timestamp -- When the changeset was commited
+ * Author -- Who commited the changeset
+ * Message -- A brief description from the author (the commit log message)
+ * Files -- A list of files affected by this changeset
+
+In front of each listed file, you'll find  a colored rectangle. The color
+indicates how the file is affected by the changeset.
+ 
+ * Green: Added
+ * Red: Removed
+ * Yellow: Modified
+ * Blue: Copied
+ * Gray: Moved
+
+The color legend is located below the header as a reminder.
+
+== Diff Views ==
+
+Below the header is the main part of the changeset, the diff view. Each file is shown in a separate section, each of which will contain only the regions of the file that are affected by the changeset. There are two different styles of displaying the diffs: ''inline'' or ''side-by-side'' (you can switch between those styles using the preferences form):
+
+ * The ''inline'' style shows the changed regions of a file underneath each other. A region removed from the file will be colored red, an added region will be colored green. If a region was modified, the old version is displayed above the new version. Line numbers on the left side indicate the exact position of the change in both the old and the new version of the file.
+ * The ''side-by-side'' style shows the old version on the left and the new version on the right (this will typically require more screen width than the inline style.) Added and removed regions will be colored in the same way as with the inline style (green and red, respectively), but modified regions will have a yellow background.
+
+In addition, various advanced options are available in the preferences form for adjusting the display of the diffs:
+ * You can set how many lines are displayed before and after every change
+ * You can toggle whether blank lines, case changes and white space changes are ignored, thereby letting you find the functional changes more quickly
+
+----
+See also: TracGuide, TracBrowser
