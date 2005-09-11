@@ -15,14 +15,14 @@
 __copyright__ = 'Copyright (c) 2003-2005 Edgewall Software'
 
 from __future__ import generators
-import os
-import os.path
-import sys
-import time
 import cmd
+import getpass
+import os
 import shlex
 import shutil
 import StringIO
+import sys
+import time
 import traceback
 import urllib
 
@@ -936,7 +936,7 @@ class TracAdmin(cmd.Cmd):
 
     def _do_milestone_remove(self, name):
         milestone = Milestone(self.env_open(), name)
-        milestone.delete()
+        milestone.delete(author=getpass.getuser())
 
     def _do_milestone_set_due(self, name, t):
         milestone = Milestone(self.env_open(), name)

@@ -58,7 +58,7 @@ class Milestone(object):
     is_completed = property(fget=lambda self: self.completed != 0)
     is_late = property(fget=lambda self: self.due and self.due < time.time())
 
-    def delete(self, retarget_to=None, db=None):
+    def delete(self, retarget_to=None, author=None, db=None):
         if not db:
             db = self.env.get_db_cnx()
             handle_ta = True
@@ -69,17 +69,14 @@ class Milestone(object):
         self.env.log.info('Deleting milestone %s' % self.name)
         cursor.execute("DELETE FROM milestone WHERE name=%s", (self.name,))
 
-        if retarget_to:
-            self.env.log.info('Retargeting milestone field of all tickets '
-                              'associated with milestone "%s" to milestone "%s"'
-                              % (self.name, retarget_to))
-            cursor.execute("UPDATE ticket SET milestone=%s WHERE milestone=%s",
-                           (retarget_to, self.name))
-        else:
-            self.env.log.info('Resetting milestone field of all tickets '
-                              'associated with milestone %s' % self.name)
-            cursor.execute("UPDATE ticket SET milestone=NULL "
-                           "WHERE milestone=%s", (self.name,))
+        # Retarget/reset tickets associated with this milestone
+        now = time.time()
+        cursor.execute("SELECT id FROM ticket WHERE milestone=%s", (self.name))
+        for (tkt_id,) in cursor:
+            ticket = Ticket(self.env, tkt_id, db)
+            ticket['milestone'] = retarget_to
+            ticket.save_changes(author, 'Milestone %s deleted' % self.name,
+                                now, db=db)
 
         if handle_ta:
             db.commit()
@@ -338,7 +335,7 @@ class MilestoneModule(Component):
         retarget_to = None
         if req.args.has_key('retarget'):
             retarget_to = req.args.get('target')
-        milestone.delete(retarget_to)
+        milestone.delete(retarget_to, req.authname)
         db.commit()
         req.redirect(self.env.href.roadmap())
 
@@ -459,10 +456,10 @@ class MilestoneModule(Component):
         req.hdf['milestone.stats.max_percent_total'] = max_percent_total * 100
 
     # IWikiSyntaxProvider methods
-    
+
     def get_wiki_syntax(self):
         return []
-    
+
     def get_link_resolvers(self):
         yield ('milestone', self._format_link)
 
