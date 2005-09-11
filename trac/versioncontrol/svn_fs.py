@@ -204,7 +204,7 @@ class SubversionRepository(Repository):
         self.close()
 
     def normalize_path(self, path):
-        return path == '/' and path or path.strip('/')
+        return (not path or path == '/') and '/' or path.strip('/')
 
     def normalize_rev(self, rev):
         try:

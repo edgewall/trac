@@ -82,6 +82,23 @@ class SubversionRepositoryTestCase(unittest.TestCase):
     def tearDown(self):
         self.repos = None
 
+    def test_repos_normalize_path(self):
+        self.assertEqual('/', self.repos.normalize_path('/'))
+        self.assertEqual('/', self.repos.normalize_path(''))
+        self.assertEqual('/', self.repos.normalize_path(None))
+        self.assertEqual('trunk', self.repos.normalize_path('trunk'))
+        self.assertEqual('trunk', self.repos.normalize_path('/trunk'))
+        self.assertEqual('trunk', self.repos.normalize_path('trunk/'))
+        self.assertEqual('trunk', self.repos.normalize_path('/trunk/'))
+
+    def test_repos_normalize_rev(self):
+        self.assertEqual(12, self.repos.normalize_rev('latest'))
+        self.assertEqual(12, self.repos.normalize_rev('head'))
+        self.assertEqual(12, self.repos.normalize_rev(''))
+        self.assertEqual(12, self.repos.normalize_rev(None))
+        self.assertEqual(11, self.repos.normalize_rev('11'))
+        self.assertEqual(11, self.repos.normalize_rev(11))
+
     def test_rev_navigation(self):
         self.assertEqual(0, self.repos.oldest_rev)
         self.assertEqual(None, self.repos.previous_rev(0))
