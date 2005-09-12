@@ -64,6 +64,8 @@ class ChangesetModule(Component):
 
         rev = req.args.get('rev')
         repos = self.env.get_repository(req.authname)
+        authzperm = SubversionAuthorizer(self.env, req.authname)
+        authzperm.assert_permission_for_changeset(rev)
 
         diff_options = get_diff_options(req)
         if req.args.has_key('update'):
@@ -104,8 +106,13 @@ class ChangesetModule(Component):
                                              'changeset_show_files'))
             db = self.env.get_db_cnx()
             repos = self.env.get_repository()
+            authzperm = SubversionAuthorizer(self.env, req.authname)
             rev = repos.youngest_rev
             while rev:
+                if not authzperm.has_permission_for_changeset(rev):
+                    rev = repos.previous_rev(rev)
+                    continue
+
                 chgset = repos.get_changeset(rev)
                 if chgset.date < start:
                     return

@@ -32,7 +32,7 @@ class PermissionError(StandardError):
         self.action = action
 
     def __str__ (self):
-        return '%s privileges required to perform this operation' % self.action
+        return '%s privileges are required to perform this operation' % self.action
 
 
 class IPermissionRequestor(Interface):

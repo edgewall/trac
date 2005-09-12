@@ -229,7 +229,7 @@ class SubversionRepository(Repository):
                                    self.fs_ptr, self.pool)
 
     def get_node(self, path, rev=None):
-        self.authz.assert_permission(self.scope + path)
+        self.authz.assert_permission(os.path.join(self.scope, path))
         if path and path[-1] == '/':
             path = path[:-1]
 

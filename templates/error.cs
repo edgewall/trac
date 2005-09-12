@@ -30,7 +30,7 @@
  <?cs elif error.type == "permission" ?>
   <h3>Permission Denied</h3>
   <p class="message">
-  This action requires <tt><?cs var:error.action ?></tt> permission.
+  <?cs var:error.message ?>
   </p>
   <div id="help">
    <strong>Note</strong>: See
