@@ -22,6 +22,7 @@ from trac.versioncontrol import Changeset, Node, Repository
 import os.path
 import time
 import weakref
+import posixpath
 
 from svn import fs, repos, core, delta
 
@@ -229,7 +230,7 @@ class SubversionRepository(Repository):
                                    self.fs_ptr, self.pool)
 
     def get_node(self, path, rev=None):
-        self.authz.assert_permission(os.path.join(self.scope, path))
+        self.authz.assert_permission(posixpath.join(self.scope, path))
         if path and path[-1] == '/':
             path = path[:-1]
 
