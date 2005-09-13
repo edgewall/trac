@@ -84,7 +84,6 @@ class WikiModule(Component):
                 if req.args.has_key('cancel'):
                     req.redirect(self.env.href.wiki(page.name))
                 elif int(version) != latest_version:
-                    print version, latest_version
                     action = 'collision'
                     self._render_editor(req, db, page)
                 elif req.args.has_key('preview'):
