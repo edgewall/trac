@@ -96,7 +96,12 @@ class my_install_scripts (install_scripts):
                                                     'trac.cgi'), cgi_dir)
         if copied:
             self.outfiles.append(ofile)
-        
+
+        ofile, copied = self.copy_file(os.path.join(self.build_dir,
+                                                    'trac.fcgi'), cgi_dir)
+        if copied:
+            self.outfiles.append(ofile)
+         
         if os.name == 'posix':
             # Set the executable bits (owner, group, and world) on
             # all the scripts we just installed.
@@ -225,7 +230,8 @@ facilities.
                _p('scripts/trac-postinstall.py'),
                _p('scripts/tracd'),
                _p('scripts/tracdb2env'),
-               _p('cgi-bin/trac.cgi')],
+               _p('cgi-bin/trac.cgi'),
+               _p('cgi-bin/trac.fcgi')],
       cmdclass = {'install': my_install,
                   'install_scripts': my_install_scripts,
                   'install_data': my_install_data})
