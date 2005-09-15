@@ -324,8 +324,7 @@ class AttachmentModule(Component):
                                             attachment.parent_id, filename)
                 if not (old_attachment.author and req.authname \
                         and old_attachment.author == req.authname):
-                    perm_map = {'ticket': perm.TICKET_ADMIN,
-                                'wiki': perm.WIKI_DELETE}
+                    perm_map = {'ticket': 'TICKET_ADMIN', 'wiki': 'WIKI_DELETE'}
                     req.perm.assert_permission(perm_map[old_attachment.parent_type])
                 old_attachment.delete()
             except TracError:
