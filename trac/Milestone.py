@@ -72,7 +72,8 @@ class Milestone(object):
         # Retarget/reset tickets associated with this milestone
         now = time.time()
         cursor.execute("SELECT id FROM ticket WHERE milestone=%s", (self.name,))
-        for (tkt_id,) in cursor:
+        tkt_ids = [int(row[0]) for row in cursor]
+        for tkt_id in tkt_ids:
             ticket = Ticket(self.env, tkt_id, db)
             ticket['milestone'] = retarget_to
             ticket.save_changes(author, 'Milestone %s deleted' % self.name,
