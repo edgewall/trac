@@ -26,27 +26,52 @@ TRAC_META = 'trac_plugin.txt'
 __all__ = ['load_components']
 
 def load_components(env):
+
     loaded_components = []
+    def load_module(module):
+         if module not in loaded_components:
+             try:
+                 __import__(module)
+                 loaded_components.append(module)
+             except ImportError, e:
+                 env.log.error('Component module %s not found',
+                               module, exc_info=True)
 
     # Load components from the environment plugins directory
     plugins_dir = os.path.join(env.path, 'plugins')
     if pkg_resources is not None: # But only if setuptools is installed!
-        distributions = pkg_resources.AvailableDistributions()
-        distributions.scan([plugins_dir])
-        for name in distributions:
-            egg = distributions[name][0]
-            if egg.metadata.has_metadata(TRAC_META):
-                env.log.debug('Loading component egg %s from %s', egg.name,
-                              egg.path)
-                egg.install_on() # Put the egg on sys.path
-                for module in egg.metadata.get_metadata_lines(TRAC_META):
-                    if module not in loaded_components:
-                        try:
-                            __import__(module)
-                            loaded_components.append(module)
-                        except ImportError, e:
-                            env.log.error('Component module %s not found',
-                                          module, exc_info=True)
+        if hasattr(pkg_resources, 'Environment'):
+            # setuptools >= 0.6
+            pkg_env = pkg_resources.Environment()
+            pkg_env.scan([plugins_dir])
+            for name in pkg_env:
+                egg = pkg_env[name][0]
+                for name in egg.get_entry_map('trac.plugins'):
+                    env.log.debug('Loading plugin %s from %s', name,
+                                  egg.location)
+                    egg.activate()
+                    try:
+                        egg.load_entry_point('trac.plugins', name)
+                    except ImportError, e:
+                        env.log.error('Failied to load plugin %s from %s', name,
+                                      egg.location, exc_info=True)
+                else:
+                    if egg.has_metadata('trac_plugin.txt'):
+                        # Support for pre-entry-point plugins
+                        egg.activate()
+                        for module in egg.get_metadata_lines('trac_plugin.txt'):
+                            load_module(module)
+        else:
+            # setuptools < 0.6
+            distributions = pkg_resources.AvailableDistributions()
+            distributions.scan([plugins_dir])
+            for name in distributions:
+                egg = distributions[name][0]
+                if egg.metadata.has_metadata(TRAC_META):
+                    egg.install_on()
+                    for module in egg.metadata.get_metadata_lines(TRAC_META):
+                        load_module(module)
+
     elif os.path.exists(plugins_dir) and os.listdir(plugins_dir):
         env.log.warning('setuptools is required for plugin deployment')
 
