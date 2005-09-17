@@ -335,10 +335,16 @@ class MilestoneModule(Component):
         milestone.name = req.args.get('name')
 
         due = req.args.get('duedate', '')
-        milestone.due = due and parse_date(due) or 0
+        try:
+            milestone.due = due and parse_date(due) or 0
+        except ValueError, e:
+            raise TracError(e, 'Invalid Date Format')
         if req.args.has_key('completed'):
             completed = req.args.get('completeddate', '')
-            milestone.completed = completed and parse_date(completed) or 0
+            try:
+                milestone.completed = completed and parse_date(completed) or 0
+            except ValueError, e:
+                raise TracError(e, 'Invalid Date Format')
             if milestone.completed > time.time():
                 raise TracError('Completion date may not be in the future',
                                 'Invalid Completion Date')

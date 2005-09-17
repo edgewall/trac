@@ -280,8 +280,7 @@ def parse_date(text):
         except ValueError:
             continue
     if seconds == None:
-        raise ValueError('%s is not a known date format.' % datestr,
-                         'Invalid Date Format')
+        raise ValueError, '%s is not a known date format.' % text
     return seconds
 
 
