@@ -15,11 +15,10 @@
 # Author: Jonas Borgström <jonas@edgewall.com>
 
 import re
-import time
 import urllib
 
 from trac import util
-from trac.util import escape, pretty_timedelta, shorten_line
+from trac.util import escape, format_datetime, pretty_timedelta, shorten_line
 from trac.wiki import wiki_to_html, wiki_to_oneliner
 
 __all__ = [ 'get_changes', 'get_path_links', 'get_path_rev' ]
@@ -47,7 +46,7 @@ def get_changes(env, repos, revs, full=None, req=None, format=None):
             message = '--'
         changes[rev] = {
             'date_seconds': changeset.date,
-            'date': time.strftime('%x %X', time.localtime(changeset.date)),
+            'date': format_datetime(changeset.date),
             'age': pretty_timedelta(changeset.date),
             'author': changeset.author or 'anonymous',
             'shortlog': shortlog,

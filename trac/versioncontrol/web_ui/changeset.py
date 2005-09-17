@@ -150,7 +150,7 @@ class ChangesetModule(Component):
         req.hdf['title'] = '[%s]' % chgset.rev
         req.hdf['changeset'] = {
             'revision': chgset.rev,
-            'time': time.strftime('%c', time.localtime(chgset.date)),
+            'time': util.format_datetime(chgset.date),
             'author': util.escape(chgset.author or 'anonymous'),
             'message': wiki_to_html(chgset.message or '--', self.env, req,
                                     escape_newlines=True)

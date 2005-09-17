@@ -204,13 +204,12 @@ def milestone_to_hdf(env, db, req, milestone):
         hdf['description'] = wiki_to_html(milestone.description, env, req, db)
     if milestone.due:
         hdf['due'] = milestone.due
-        hdf['due_date'] = time.strftime('%x', time.localtime(milestone.due))
+        hdf['due_date'] = format_date(milestone.due)
         hdf['due_delta'] = pretty_timedelta(milestone.due)
         hdf['late'] = milestone.is_late
     if milestone.completed:
         hdf['completed'] = milestone.completed
-        hdf['completed_date'] = time.strftime('%x %X',
-                                              time.localtime(milestone.completed))
+        hdf['completed_date'] = format_datetime(milestone.completed)
         hdf['completed_delta'] = pretty_timedelta(milestone.completed)
     return hdf
 
@@ -225,22 +224,6 @@ def _get_groups(env, db, by='component'):
                                % (by, by))
                 return [row[0] for row in cursor]
     return []
-
-def _parse_date(datestr):
-    seconds = None
-    datestr = datestr.strip()
-    for format in ['%x %X', '%x, %X', '%X %x', '%X, %x', '%x', '%c',
-                   '%b %d, %Y']:
-        try:
-            date = time.strptime(datestr, format)
-            seconds = time.mktime(date)
-            break
-        except ValueError:
-            continue
-    if seconds == None:
-        raise TracError('%s is not a known date format.' % datestr,
-                        'Invalid Date Format')
-    return seconds
 
 
 class MilestoneModule(Component):
@@ -352,10 +335,10 @@ class MilestoneModule(Component):
         milestone.name = req.args.get('name')
 
         due = req.args.get('duedate', '')
-        milestone.due = due and _parse_date(due) or 0
+        milestone.due = due and parse_date(due) or 0
         if req.args.has_key('completed'):
             completed = req.args.get('completeddate', '')
-            milestone.completed = completed and _parse_date(completed) or 0
+            milestone.completed = completed and parse_date(completed) or 0
             if milestone.completed > time.time():
                 raise TracError('Completion date may not be in the future',
                                 'Invalid Completion Date')
@@ -396,8 +379,7 @@ class MilestoneModule(Component):
         req.hdf['milestone'] = milestone_to_hdf(self.env, db, req, milestone)
         req.hdf['milestone.date_hint'] = get_date_format_hint()
         req.hdf['milestone.datetime_hint'] = get_datetime_format_hint()
-        req.hdf['milestone.datetime_now'] = time.strftime('%x %X',
-                                                          time.localtime(time.time()))
+        req.hdf['milestone.datetime_now'] = format_datetime()
 
     def _render_view(self, req, db, milestone):
         req.hdf['title'] = 'Milestone %s' % milestone.name

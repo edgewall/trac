@@ -152,9 +152,12 @@ def hex_entropy(bytes=32):
     import random
     return md5.md5(str(random.random() + time.time())).hexdigest()[:bytes]
 
-def http_date(t):
+def http_date(t=None):
     """Format t as a rfc822 timestamp"""
-    t = time.gmtime(t)
+    if t is None:
+        t = time.time()
+    if not isinstance(t, (list, tuple, time.struct_time)):
+        t = time.gmtime(int(t))
     weekdays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
     months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep',
               'Oct', 'Nov', 'Dec']
@@ -231,6 +234,24 @@ def get_reporter_id(req):
     else:
         return req.authname
 
+def format_datetime(t=None, format='%x %X', gmt=False):
+    if t is None:
+        t = time.time()
+    if not isinstance(t, (list, tuple, time.struct_time)):
+        if gmt:
+            t = time.gmtime(int(t))
+        else:
+            t = time.localtime(int(t))
+
+    text = time.strftime(format, t)
+    return unicode(text, sys.getdefaultencoding()).encode('utf-8')
+
+def format_date(t=None, format='%x', gmt=False):
+    return format_datetime(t, format, gmt)
+
+def format_time(t=None, format='%X', gmt=False):
+    return format_datetime(t, format, gmt)
+
 def get_date_format_hint():
     t = time.localtime(0)
     t = (1999, 10, 29, t[3], t[4], t[5], t[6], t[7], t[8])
@@ -246,6 +267,22 @@ def get_datetime_format_hint():
                .replace('10', 'MM', 1).replace('29', 'DD', 1) \
                .replace('23', 'hh', 1).replace('59', 'mm', 1) \
                .replace('58', 'ss', 1)
+
+def parse_date(text):
+    seconds = None
+    text = text.strip()
+    for format in ['%x %X', '%x, %X', '%X %x', '%X, %x', '%x', '%c',
+                   '%b %d, %Y']:
+        try:
+            date = time.strptime(text, format)
+            seconds = time.mktime(date)
+            break
+        except ValueError:
+            continue
+    if seconds == None:
+        raise ValueError('%s is not a known date format.' % datestr,
+                         'Invalid Date Format')
+    return seconds
 
 
 class TracError(Exception):

@@ -200,7 +200,7 @@ def attachment_to_hdf(env, db, req, attachment):
         'author': util.escape(attachment.author),
         'ipnr': attachment.ipnr,
         'size': util.pretty_size(attachment.size),
-        'time': time.strftime('%c', time.localtime(attachment.time)),
+        'time': util.format_datetime(attachment.time),
         'href': attachment.href()
     }
     return hdf

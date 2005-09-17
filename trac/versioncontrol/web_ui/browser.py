@@ -16,7 +16,6 @@
 
 from __future__ import generators
 import re
-import time
 import urllib
 
 from trac import util
@@ -171,7 +170,7 @@ class BrowserModule(Component):
         req.hdf['file'] = {  
             'rev': node.rev,  
             'changeset_href': util.escape(self.env.href.changeset(node.rev)),
-            'date': time.strftime('%x %X', time.localtime(changeset.date)),
+            'date': util.format_datetime(changeset.date),
             'age': util.pretty_timedelta(changeset.date),
             'author': changeset.author or 'anonymous',
             'message': wiki_to_html(changeset.message or '--', self.env, req,

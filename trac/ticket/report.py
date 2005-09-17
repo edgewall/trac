@@ -16,7 +16,6 @@
 
 from __future__ import generators
 import re
-import time
 import types
 import urllib
 
@@ -32,11 +31,6 @@ dynvars_re = re.compile('\$([A-Z]+)')
 dynvars_disallowed_var_chars_re = re.compile('[^A-Z0-9_]')
 dynvars_disallowed_value_chars_re = re.compile(r'[^a-zA-Z0-9-_@.,\\]')
 
-try:
-    _StringTypes = [types.StringType, types.UnicodeType]
-except AttributeError:
-    _StringTypes = [types.StringType]
-
 
 class ColumnSorter:
 
@@ -51,10 +45,10 @@ class ColumnSorter:
 
         # make sure to ignore case in comparisons
         realX = x[self.columnIndex]
-        if type(realX) in _StringTypes:
+        if isinstance(realX, (str, unicode)):
             realX = realX.lower()
         realY = y[self.columnIndex]
-        if type(realY) in _StringTypes:
+        if isinstance(realY, (str, unicode)):
             realY = realY.lower()
 
         result = 0
@@ -357,11 +351,10 @@ class ReportModule(Component):
                 elif column == 'report':
                     value['report_href'] = self.env.href.report(cell)
                 elif column in ['time', 'date','changetime', 'created', 'modified']:
-                    t = time.localtime(int(cell))
-                    value['date'] = time.strftime('%x', t)
-                    value['time'] = time.strftime('%X', t)
-                    value['datetime'] = time.strftime('%c', t)
-                    value['gmt'] = util.http_date(int(cell))
+                    value['date'] = util.format_date(cell)
+                    value['time'] = util.format_time(cell)
+                    value['datetime'] = util.format_datetime(cell)
+                    value['gmt'] = util.http_date(cell)
                 prefix = 'report.items.%d.%s' % (row_idx, str(column))
                 req.hdf[prefix] = util.escape(str(cell))
                 for key in value.keys():

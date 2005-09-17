@@ -21,7 +21,7 @@ import os
 from trac.core import *
 from trac.env import open_environment
 from trac.perm import PermissionCache, PermissionError
-from trac.util import escape, enum
+from trac.util import escape, enum, format_datetime, http_date
 from trac.web.api import absolute_url, Request, RequestDone, IAuthenticator, \
                          IRequestHandler
 from trac.web.chrome import Chrome
@@ -147,11 +147,10 @@ def populate_hdf(hdf, env, req=None):
     project information and request-related information.
     """
     from trac import __version__
-    from time import gmtime, localtime, strftime
     hdf['trac'] = {
         'version': __version__,
-        'time': strftime('%c', localtime()),
-        'time.gmt': strftime('%a, %d %b %Y %H:%M:%S GMT', gmtime())
+        'time': format_datetime(),
+        'time.gmt': http_date()
     }
     hdf['trac.href'] = {
         'wiki': env.href.wiki(),

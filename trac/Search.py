@@ -20,7 +20,7 @@ import time
 
 from trac.core import *
 from trac.perm import IPermissionRequestor
-from trac.util import TracError, escape, shorten_line
+from trac.util import TracError, escape, format_datetime, shorten_line
 from trac.web import IRequestHandler
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
 from trac.wiki import IWikiSyntaxProvider
@@ -183,7 +183,7 @@ class SearchModule(Component):
             req.hdf['search.result'] = [
                 { 'href': escape(result[0]),
                   'title': result[1],
-                  'date': time.strftime('%c', time.localtime(result[2])),
+                  'date': format_datetime(result[2]),
                   'author': escape(result[3]),
                   'excerpt': result[4]
                 } for result in results]

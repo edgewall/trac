@@ -18,7 +18,6 @@
 
 from __future__ import generators
 import re
-import time
 import StringIO
 
 from trac.attachment import attachment_to_hdf, Attachment
@@ -26,8 +25,8 @@ from trac.core import *
 from trac.perm import IPermissionRequestor
 from trac.Search import ISearchSource, query_to_sql, shorten_result
 from trac.Timeline import ITimelineEventProvider
-from trac.util import enum, escape, get_reporter_id, pretty_timedelta, \
-                      shorten_line
+from trac.util import enum, escape, format_datetime, get_reporter_id, \
+                      pretty_timedelta, shorten_line
 from trac.versioncontrol.diff import get_diff_options, hdf_diff
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
 from trac.web import IRequestHandler
@@ -242,7 +241,7 @@ class WikiModule(Component):
         for version,t,author,comment,ipnr in page.get_history():
             if version == page.version:
                 if t:
-                    info['time'] = time.strftime('%c', time.localtime(int(t)))
+                    info['time'] = format_datetime(t)
                     info['time_delta'] = pretty_timedelta(t)
                 info['author'] = escape(author or 'anonymous')
                 info['comment'] = escape(comment or '--')
@@ -332,7 +331,7 @@ class WikiModule(Component):
                                                       version=version,
                                                       action='diff')),
                 'version': version,
-                'time': time.strftime('%x %X', time.localtime(int(t))),
+                'time': format_datetime(t),
                 'time_delta': pretty_timedelta(t),
                 'author': escape(author),
                 'comment': wiki_to_oneliner(comment or '', self.env, db),

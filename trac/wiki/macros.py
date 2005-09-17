@@ -18,7 +18,6 @@ from __future__ import generators
 import imp
 import inspect
 import os.path
-import time
 import shutil
 import re
 
@@ -28,7 +27,7 @@ except ImportError:
     from StringIO import StringIO
 
 from trac.core import *
-from trac.util import escape
+from trac.util import escape, format_date
 from trac.env import IEnvironmentSetupParticipant
 from trac.wiki.api import IWikiMacroProvider, WikiSystem
 from trac.wiki.model import WikiPage
@@ -112,18 +111,18 @@ class RecentChangesMacro(Component):
         cursor.execute(sql)
 
         buf = StringIO()
-        prevtime = None
+        prevdate = None
 
-        for name,t in cursor:
-            t = time.strftime('%x', time.localtime(t))
-            if t != prevtime:
-                if prevtime:
+        for name, time in cursor:
+            date = format_date(time)
+            if date != prevdate:
+                if prevdate:
                     buf.write('</ul>')
-                buf.write('<h3>%s</h3><ul>' % t)
-                prevtime = t
+                buf.write('<h3>%s</h3><ul>' % date)
+                prevdate = date
             buf.write('<li><a href="%s">%s</a></li>\n'
                       % (escape(self.env.href.wiki(name)), escape(name)))
-        if prevtime:
+        if prevdate:
             buf.write('</ul>')
 
         return buf.getvalue()

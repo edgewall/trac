@@ -362,10 +362,10 @@ class TicketModule(Component):
         req.hdf['ticket.description.formatted'] = wiki_to_html(ticket['description'],
                                                                self.env, req, db)
 
-        req.hdf['ticket.opened'] = time.strftime('%c', time.localtime(ticket.time_created))
+        req.hdf['ticket.opened'] = util.format_datetime(ticket.time_created)
         req.hdf['ticket.opened_delta'] = util.pretty_timedelta(ticket.time_created)
         if ticket.time_changed != ticket.time_created:
-            req.hdf['ticket.lastmod'] = time.strftime('%c', time.localtime(ticket.time_changed))
+            req.hdf['ticket.lastmod'] = util.format_datetime(ticket.time_changed)
             req.hdf['ticket.lastmod_delta'] = util.pretty_timedelta(ticket.time_changed)
 
         changelog = ticket.get_changelog(db=db)
@@ -375,7 +375,7 @@ class TicketModule(Component):
         for date, author, field, old, new in changelog:
             if date != curr_date or author != curr_author:
                 changes.append({
-                    'date': time.strftime('%c', time.localtime(date)),
+                    'date': util.format_datetime(date),
                     'author': util.escape(author),
                     'fields': {}
                 })

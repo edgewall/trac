@@ -15,13 +15,14 @@
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
 from __future__ import generators
-from time import gmtime, localtime, strftime, time
 import re
+import time
 
 from trac.core import *
 from trac.perm import IPermissionRequestor
 from trac.ticket import Ticket, TicketSystem
-from trac.util import escape, shorten_line, sql_escape, CRLF, TRUE
+from trac.util import escape, format_datetime, http_date, shorten_line, \
+                      sql_escape, CRLF, TRUE
 from trac.web import IRequestHandler
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
 from trac.wiki import wiki_to_html, wiki_to_oneliner, IWikiMacroProvider, \
@@ -504,11 +505,11 @@ class QueryModule(Component):
 
         # The most recent query is stored in the user session
         orig_list = rest_list = None
-        orig_time = int(time())
+        orig_time = int(time.time())
         if str(query.constraints) != req.session.get('query_constraints'):
             # New query, initialize session vars
             req.session['query_constraints'] = str(query.constraints)
-            req.session['query_time'] = int(time())
+            req.session['query_time'] = int(time.time())
             req.session['query_tickets'] = ' '.join([str(t['id']) for t in tickets])
         else:
             orig_list = [int(id) for id in req.session.get('query_tickets', '').split()]
@@ -537,7 +538,7 @@ class QueryModule(Component):
                     ticket['added'] = True
                 elif int(ticket['changetime']) > orig_time:
                     ticket['changed'] = True
-            ticket['time'] = strftime('%c', localtime(ticket['time']))
+            ticket['time'] = format_datetime(ticket['time'])
             if ticket.has_key('description'):
                 ticket['description'] = wiki_to_html(ticket['description'] or '',
                                                      self.env, req, db)
@@ -569,7 +570,7 @@ class QueryModule(Component):
                                 for col in cols]) + CRLF)
 
     def display_rss(self, req, query):
-        query.verbose = 1
+        query.verbose = True
         db = self.env.get_db_cnx()
         results = query.execute(db)
         for result in results:
@@ -581,8 +582,7 @@ class QueryModule(Component):
                                                             self.env, req, db,
                                                             absurls=1))
             if result['time']:
-                result['time'] = strftime('%a, %d %b %Y %H:%M:%S GMT',
-                                          gmtime(result['time']))
+                result['time'] = http_date(result['time'])
         req.hdf['query.results'] = results
 
     # IWikiSyntaxProvider methods
