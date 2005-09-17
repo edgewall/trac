@@ -31,6 +31,9 @@
    if:wiki.only_version ?>
     This is the only version the page, so the page will be removed
     completely!<?cs
+   /if ?><?cs
+   if:?wiki.version ?>
+    <input type="hidden" name="version" value="<?cs var:wiki.version ?>" /><?cs
    /if ?>
    This is an irreversible operation.</p>
    <div class="buttons">

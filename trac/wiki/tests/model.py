@@ -104,6 +104,8 @@ class WikiPageTestCase(unittest.TestCase):
         page = WikiPage(self.env, 'TestPage')
         page.delete()
 
+        self.assertFalse(page.exists)
+
         cursor.execute("SELECT version,time,author,ipnr,text,comment,"
                        "readonly FROM wiki WHERE name=%s", ('TestPage',))
         self.assertEqual(None, cursor.fetchone())
@@ -122,6 +124,8 @@ class WikiPageTestCase(unittest.TestCase):
         page = WikiPage(self.env, 'TestPage')
         page.delete(version=2)
 
+        self.assertTrue(page.exists)
+
         cursor.execute("SELECT version,time,author,ipnr,text,comment,"
                        "readonly FROM wiki WHERE name=%s", ('TestPage',))
         self.assertEqual((1, 42, 'joe', '::1', 'Bla bla', 'Testing', 0),
@@ -139,6 +143,8 @@ class WikiPageTestCase(unittest.TestCase):
 
         page = WikiPage(self.env, 'TestPage')
         page.delete(version=1)
+
+        self.assertFalse(page.exists)
 
         cursor.execute("SELECT version,time,author,ipnr,text,comment,"
                        "readonly FROM wiki WHERE name=%s", ('TestPage',))

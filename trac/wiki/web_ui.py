@@ -158,7 +158,7 @@ class WikiModule(Component):
             req.redirect(self.env.href.wiki(page.name))
 
         version = None
-        if req.args.has_key('delete_version'):
+        if req.args.has_key('version'):
             version = int(req.args.get('version', 0))
 
         page.delete(version, db)
