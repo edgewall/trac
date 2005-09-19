@@ -133,14 +133,21 @@ class PageOutlineMacro(Component):
     Displays a structural outline of the current wiki page, each item in the
     outline being a link to the corresponding heading.
 
-    This macro accepts three optional parameters: The first must be a number
-    between 1 and 6 that specifies the maximum depth of the outline (the default
-    is 6). The second can be used to specify a custom title (the default is no
-    title). The third parameter selects the style of the outline. This can be
-    either '''inline''' or '''pullout''' (default is '''pullout''').
-    The '''inline''' style renders the outline as normal part of the content,
-    while '''pullout''' causes the outline to be rendered in a box
-    that is by default floated to the right side of the other content.
+    This macro accepts three optional parameters:
+    
+     * The first is a number or range that allows configuring the minimum and
+       maximum level of headings that should be included in the outline. For
+       example, specifying "1" here will result in only the top-level headings
+       being included in the outline. Specifying "2-3" will make the outline
+       include all headings of level 2 and 3, as a nested list. The default is
+       to include all heading levels.
+     * The second parameter can be used to specify a custom title (the default
+       is no title).
+     * The third parameter selects the style of the outline. This can be
+       either `inline` or `pullout` (the latter being the default). The `inline`
+       style renders the outline as normal part of the content, while `pullout`
+       causes the outline to be rendered in a box that is by default floated to
+       the right side of the other content.
     """
     implements(IWikiMacroProvider)
 
@@ -152,13 +159,17 @@ class PageOutlineMacro(Component):
 
     def render_macro(self, req, name, content):
         from trac.wiki.formatter import wiki_to_outline
-        max_depth = 6
+        min_depth, max_depth = 1, 6
         title = None
         inline = 0
         if content:
             argv = [arg.strip() for arg in content.split(',')]
             if len(argv) > 0:
-                max_depth = int(argv[0])
+                depth = argv[0]
+                if depth.find('-') >= 0:
+                    min_depth, max_depth = [int(d) for d in depth.split('-', 1)]
+                else:
+                    min_depth, max_depth = int(depth), int(depth)
                 if len(argv) > 1:
                     title = argv[1].strip()
                     if len(argv) > 2:
@@ -175,7 +186,7 @@ class PageOutlineMacro(Component):
         if title:
             buf.write('<h4>%s</h4>' % escape(title))
         buf.write(wiki_to_outline(page.text, self.env, db=db,
-                                  max_depth=max_depth))
+                                  max_depth=max_depth, min_depth=min_depth))
         if not inline:
             buf.write('</div>')
         return buf.getvalue()
@@ -183,30 +194,30 @@ class PageOutlineMacro(Component):
 
 class ImageMacro(Component):
     """
-    Display an image into the wiki page.
-
-    The first argument is the file specification.
-
-    The file specification may refer attachments:
-     * {{{module:id:file}}}, with module being either '''wiki''' or '''ticket''',
-       to refer to the attachment named ''file'' in the module:id object
-     * {{{id:file}}} same as above, but id is either a ticket shorthand or
-       a Wiki page name.
-     * {{{file}}} to refer to a local attachment named 'file'
-       (but then, this works only from within a wiki page or a ticket).
-
-    Also, the file specification may refer to repository files,
-    using the {{{source:file}}} syntax (or the usual aliases for '''source''',
-    like '''repos''' or '''browser''').
-
-    Rest of optional arguments are attribute/style string of IMG element.
+    Embed an image in wiki-formatted text.
+    
+    The first argument is the file specification. The file specification may
+    reference attachments or files in three ways:
+     * `module:id:file`, where module can be either '''wiki''' or '''ticket''',
+       to refer to the attachment named ''file'' of the specified wiki page or
+       ticket.
+     * `id:file`: same as above, but id is either a ticket shorthand or a Wiki
+       page name.
+     * `file` to refer to a local attachment named 'file'. This only works from
+       within that wiki page or a ticket.
+    
+    Also, the file specification may refer to repository files, using the
+    `source:file` syntax.
+    
+    The remaining arguments are optional and allow configuring the attributes
+    and style of the rendered `<img>` element:
      * digits and unit are interpreted as the size (ex. 120, 25%)
        for the image
-     * '''right''', '''left''', '''top''' or '''bottom'''
-       are interpreted as the alignment for the image
-     * {{{key=value}}} style are interpreted as HTML attributes for the image
-     * {{{key:value}}} style are interpreted as CSS style indications for the image
-
+     * `right`, `left`, `top` or `bottom` are interpreted as the alignment for
+       the image
+     * `key=value` style are interpreted as HTML attributes for the image
+     * `key:value` style are interpreted as CSS style indications for the image
+    
     Examples:
     {{{
         [[Image(photo.jpg)]]                           # simplest
@@ -216,7 +227,7 @@ class ImageMacro(Component):
         [[Image(photo.jpg, float:right)]]              # aligned by style
         [[Image(photo.jpg, float:right, border:solid 5px green)]] # 2 style specs
     }}}
-
+    
     You can use image from other page, other ticket or other module.
     {{{
         [[Image(OtherPage:foo.bmp)]]    # if current module is wiki
@@ -225,8 +236,9 @@ class ImageMacro(Component):
         [[Image(ticket:36:boo.jpg)]]
         [[Image(source:/images/bee.jpg)]] # straight from the repository!
     }}}
-
-    ''Adapted from the Image.py macro created by Shun-ichi Goto <gotoh@taiyo.co.jp>''
+    
+    ''Adapted from the Image.py macro created by Shun-ichi Goto
+    <gotoh@taiyo.co.jp>''
     """
     implements(IWikiMacroProvider)
 
