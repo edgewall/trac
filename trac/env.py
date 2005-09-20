@@ -65,13 +65,6 @@ class Environment(Component, ComponentManager):
         """
         ComponentManager.__init__(self)
 
-        try: # Use binary I/O on Windows
-            import msvcrt, sys
-            msvcrt.setmode(sys.stdin.fileno(), os.O_BINARY)
-            msvcrt.setmode(sys.stdout.fileno(), os.O_BINARY)
-        except ImportError:
-            pass
-
         self.path = path
         self.__cnx_pool = None
         if create:

@@ -102,6 +102,22 @@ class TracFieldStorage(cgi.FieldStorage):
 
 
 def run():
+    try: # Make FreeBSD use blocking I/O like other platforms
+        import fcntl
+        for stream in [sys.stdin, sys.stdout]:
+            fd = stream.fileno()
+            flags = fcntl.fcntl(fd, fcntl.F_GETFL)
+            fcntl.fcntl(fd, fcntl.F_SETFL, flags & ~os.O_NONBLOCK)
+    except ImportError:
+        pass
+
+    try: # Use binary I/O on Windows
+        import msvcrt
+        msvcrt.setmode(sys.stdin.fileno(), os.O_BINARY)
+        msvcrt.setmode(sys.stdout.fileno(), os.O_BINARY)
+    except ImportError:
+        pass
+
     locale.setlocale(locale.LC_ALL, '')
 
     req = CGIRequest()
