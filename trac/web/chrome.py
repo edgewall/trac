@@ -113,7 +113,8 @@ class Chrome(Component):
 
         if self.env.path:
             templates_dir = os.path.join(self.env.path, 'templates')
-            os.mkdir(templates_dir)
+            if not os.path.exists(templates_dir):
+                os.mkdir(templates_dir)
             _create_file(os.path.join(templates_dir, 'README'),
                         'This directory contains project-specific custom '
                         'templates and style sheet.\n')

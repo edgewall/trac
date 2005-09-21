@@ -15,12 +15,14 @@
 # Author: Jonas Borgström <jonas@edgewall.com>
 
 from __future__ import generators
+import os
 import re
 import time
 
 from trac import util
 from trac.attachment import attachment_to_hdf, Attachment
 from trac.core import *
+from trac.env import IEnvironmentSetupParticipant
 from trac.Milestone import Milestone
 from trac.Notify import TicketNotifyEmail
 from trac.ticket import Ticket, TicketSystem
@@ -32,7 +34,30 @@ from trac.wiki import wiki_to_html, wiki_to_oneliner
 
 class NewticketModule(Component):
 
-    implements(INavigationContributor, IRequestHandler)
+    implements(IEnvironmentSetupParticipant, INavigationContributor,
+               IRequestHandler)
+
+    # IEnvironmentSetupParticipant methods
+
+    def environment_created(self):
+        """Create the `site_newticket.cs` template file in the environment."""
+        if self.env.path:
+            templates_dir = os.path.join(self.env.path, 'templates')
+            if not os.path.exists(templates_dir):
+                os.mkdir(templates_dir)
+            template_name = os.path.join(templates_dir, 'site_newticket.cs')
+            template_file = file(template_name, 'w')
+            template_file.write("""<?cs
+####################################################################
+# New ticket prelude - Included directly above the new ticket form
+?>
+""")
+
+    def environment_needs_upgrade(self, db):
+        return False
+
+    def upgrade_environment(self, db):
+        pass
 
     # INavigationContributor methods
 
