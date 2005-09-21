@@ -19,7 +19,7 @@
      <title>Revision <?cs var:item.rev ?>: <?cs var:change.shortlog ?></title>
      <link><?cs var:base_host ?><?cs var:item.changeset_href ?></link>
      <description><?cs var:change.message ?></description>
-     <category>Report</category>
+     <category>Log</category>
     </item><?cs 
    /with ?><?cs 
   /each ?>
