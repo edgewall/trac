@@ -62,8 +62,8 @@ class ModPythonRequest(Request):
             root_uri = options['TracUriRoot'].rstrip('/')
             if self.req.uri[:len(root_uri)] != root_uri:
                 raise ValueError, \
-                     'TracRootUri set to "%s" but request URL starts with "%s"'
-                     % (root_uri, self.req.uri[:len(root_uri)]))
+                     'TracRootUri set to %s but request URL starts with %s' \
+                     % (root_uri, self.req.uri[:len(root_uri)])
             self.path_info = self.req.uri[len(root_uri):]
         else:
             self.path_info = self.req.path_info

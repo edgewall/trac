@@ -288,7 +288,7 @@ class NaivePopen:
         finally:
             if os.path.isfile(outfile):
                 os.remove(outfile)
-            if input and os.path.isfile(infile)
+            if input and os.path.isfile(infile):
                 os.remove(infile)
             if capturestderr and os.path.isfile(errfile):
                 os.remove(errfile)
