@@ -27,8 +27,7 @@ def SubversionAuthorizer(env, authname):
     return RealSubversionAuthorizer(db, authname, module_name, authz_file)
 
 def parent_iter(path):
-    from trac.util import strip
-    path = strip(path, '/')
+    path = path.strip('/')
     if path:
         path = '/' + path + '/'
     else:

@@ -27,7 +27,6 @@ FALSE = ['no',  '0', 0, 'false', 'off', 'nay']
 
 CRLF = '\r\n'
 
-
 def enum(iterable):
     """
     Python 2.2 doesn't have the enumerate() function, so we provide a simple
@@ -65,46 +64,9 @@ def unescape(text):
                     .replace('&lt;', '<') \
                     .replace('&amp;', '&') 
 
-def get_first_line(text, maxlen):
-    """
-    returns the first line of text. If the line is longer then
-    maxlen characters it is truncated. The line is also html escaped.
-    """
-    lines = text.splitlines()
-    line  = lines[0]
-    if len(lines) > 1:
-        return escape(line[:maxlen] + '...')
-    elif len(line) > maxlen-3:
-        return escape(line[:maxlen] + '...')
-    else:
-        return escape(line)
-
-def lstrip(text, skip):
-    """Python2.1 doesn't support custom skip characters"""
-    while text:
-        if text[0] in skip:
-            text = text[1:]
-        else:
-            break
-    return text
-
-def rstrip(text, skip):
-    """Python2.1 doesn't support custom skip characters"""
-    while text:
-        if text[-1] in skip:
-            text = text[:-1]
-        else:
-            break
-    return text
-
-def strip(text, skip):
-    """Python < 2.2.2 doesn't support custom skip characters"""
-    return lstrip(rstrip(text, skip), skip)
-
 def to_utf8(text, charset='iso-8859-15'):
-    """
-    Convert a string to utf-8, assume the encoding is either utf-8 or latin1
-    """
+    """Convert a string to UTF-8, assuming the encoding is either UTF-8, ISO
+    Latin-1, or as specified by the optional `charset` parameter."""
     try:
         # Do nothing if it's already utf-8
         u = unicode(text, 'utf-8')
@@ -151,19 +113,6 @@ def hex_entropy(bytes=32):
     import md5
     import random
     return md5.md5(str(random.random() + time.time())).hexdigest()[:bytes]
-
-def http_date(t=None):
-    """Format t as a rfc822 timestamp"""
-    if t is None:
-        t = time.time()
-    if not isinstance(t, (list, tuple, time.struct_time)):
-        t = time.gmtime(int(t))
-    weekdays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-    months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep',
-              'Oct', 'Nov', 'Dec']
-    return '%s, %d %s %04d %02d:%02d:%02d GMT' % (
-           weekdays[t.tm_wday], t.tm_mday, months[t.tm_mon - 1], t.tm_year,
-           t.tm_hour, t.tm_min, t.tm_sec)
 
 def pretty_size(size):
     if size is None:
@@ -234,6 +183,8 @@ def get_reporter_id(req):
     else:
         return req.authname
 
+# Date/time utilities
+
 def format_datetime(t=None, format='%x %X', gmt=False):
     if t is None:
         t = time.time()
@@ -244,7 +195,7 @@ def format_datetime(t=None, format='%x %X', gmt=False):
             t = time.localtime(int(t))
 
     text = time.strftime(format, t)
-    return unicode(text, sys.getdefaultencoding()).encode('utf-8')
+    return to_utf8(text)
 
 def format_date(t=None, format='%x', gmt=False):
     return format_datetime(t, format, gmt)
@@ -267,6 +218,19 @@ def get_datetime_format_hint():
                .replace('10', 'MM', 1).replace('29', 'DD', 1) \
                .replace('23', 'hh', 1).replace('59', 'mm', 1) \
                .replace('58', 'ss', 1)
+
+def http_date(t=None):
+    """Format t as a rfc822 timestamp"""
+    if t is None:
+        t = time.time()
+    if not isinstance(t, (list, tuple, time.struct_time)):
+        t = time.gmtime(int(t))
+    weekdays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+    months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep',
+              'Oct', 'Nov', 'Dec']
+    return '%s, %d %s %04d %02d:%02d:%02d GMT' % (
+           weekdays[t.tm_wday], t.tm_mday, months[t.tm_mon - 1], t.tm_year,
+           t.tm_hour, t.tm_min, t.tm_sec)
 
 def parse_date(text):
     seconds = None
@@ -293,31 +257,41 @@ class TracError(Exception):
 
 
 class NaivePopen:
-   """
-   This is a deadlock-safe version of popen that returns
-   an object with errorlevel, out (a string) and err (a string).
-   (capturestderr may not work under windows.)
-   Example: print Popen3('grep spam','\n\nhere spam\n\n').out
-   """
-   def __init__(self,command,input=None,capturestderr=None):
-       outfile=tempfile.mktemp()
-       command="( %s ) > %s" % (command,outfile)
-       if input:
-           infile=tempfile.mktemp()
-           open(infile,"w").write(input)
-           command=command+" <"+infile
-       if capturestderr:
-           errfile=tempfile.mktemp()
-           command=command+" 2>"+errfile
-       self.errorlevel=os.system(command) >> 8
-       self.out=open(outfile,"r").read()
-       os.remove(outfile)
-       if input:
-           os.remove(infile)
-       self.err = None
-       if capturestderr:
-           self.err=open(errfile,"r").read()
-           os.remove(errfile)
+    """This is a deadlock-safe version of popen that returns an object with
+    errorlevel, out (a string) and err (a string).
+    
+    (capturestderr may not work under Windows 9x.)
+
+    Example: print Popen3('grep spam','\n\nhere spam\n\n').out
+    """
+    def __init__(self, command, input=None, capturestderr=None):
+        outfile = tempfile.mktemp()
+        command = '( %s ) > %s' % (command, outfile)
+        if input:
+            infile = tempfile.mktemp()
+            open(infile, 'w').write(input)
+            infile.close()
+            command = command + ' <' + infile
+        if capturestderr:
+            errfile = tempfile.mktemp()
+            command = command + ' 2>' + errfile
+        try:
+            self.err = None
+            self.errorlevel = os.system(command) >> 8
+            outfd = file(outfile, 'r')
+            self.out = outfd.read()
+            outfd.close()
+            if capturestderr:
+                errfd = file(errfile,'r')
+                self.err = errfd.read()
+                errfd.close()
+        finally:
+            if os.path.isfile(outfile):
+                os.remove(outfile)
+            if input and os.path.isfile(infile)
+                os.remove(infile)
+            if capturestderr and os.path.isfile(errfile):
+                os.remove(errfile)
 
 
 def wrap(t, cols=75, initial_indent='', subsequent_indent='',
@@ -376,4 +350,3 @@ class Deuglifier(object):
                 elif mtype == 'endfont':
                     return '</span>'
                 return '<span class="code-%s">' % mtype
-

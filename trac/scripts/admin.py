@@ -147,22 +147,11 @@ class TracAdmin(cmd.Cmd):
         if hasattr(shlex, 'split'):
             toks = shlex.split(argstr)
         else:
-            def my_strip(s, c):
-                """string::strip in python2.1 doesn't support arguments"""
-                i = j = 0
-                for i in range(len(s)):
-                    if not s[i] in c:
-                        break
-                for j in range(len(s), 0, -1):
-                    if not s[j-1] in c:
-                        break
-                return s[i:j]
-        
             lexer = shlex.shlex(StringIO.StringIO(argstr))
             lexer.wordchars = lexer.wordchars + ".,_/"
             toks = []
-            while 1:
-                token = my_strip(lexer.get_token(), '"\'')
+            while True:
+                token = lexer.get_token().strip('"\'')
                 if not token:
                     break
                 toks.append(token)

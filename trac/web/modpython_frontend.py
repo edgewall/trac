@@ -28,7 +28,7 @@ except ImportError:
 
 from mod_python import apache, util
 
-from trac.util import http_date, rstrip
+from trac.util import http_date
 from trac.web.api import Request, RequestDone
 from trac.web.main import dispatch_request, get_environment, \
                           send_pretty_error, send_project_index
@@ -59,10 +59,11 @@ class ModPythonRequest(Request):
         # sometimes get req.path_info wrong if many <alias> and <location> directives
         # are used.
         if options.has_key('TracUriRoot'):
-            root_uri = rstrip(options['TracUriRoot'], '/')
+            root_uri = options['TracUriRoot'].rstrip('/')
             if self.req.uri[:len(root_uri)] != root_uri:
-                raise ValueError('TracRootUri set to "%s" but req.uri starts with "%s"' %
-                                 (root_uri, self.req.uri[:len(root_uri)]))
+                raise ValueError, \
+                     'TracRootUri set to "%s" but request URL starts with "%s"'
+                     % (root_uri, self.req.uri[:len(root_uri)]))
             self.path_info = self.req.uri[len(root_uri):]
         else:
             self.path_info = self.req.path_info
