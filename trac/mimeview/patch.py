@@ -39,13 +39,13 @@ class PatchRenderer(Component):
   <table class="inline" summary="Differences" cellspacing="0">
    <colgroup><col class="lineno" /><col class="lineno" /><col class="content" /></colgroup>
    <thead><tr>
-    <th title="<?cs var:file.oldrev ?>"><?cs var:file.oldrev ?></th>
-    <th title="<?cs var:file.newrev ?>"><?cs var:item.newrev ?></th>
+    <th><?cs var:file.oldrev ?></th>
+    <th><?cs var:file.newrev ?></th>
     <th>&nbsp;</th>
    </tr></thead><?cs
    each:change = file.diff ?><?cs
     call:diff_display(change, diff.style) ?><?cs
-    if:name(change) < len(item.diff) - 1 ?>
+    if:name(change) < len(file.diff) - 1 ?>
      <tbody class="skipped">
       <tr><th>&hellip;</th><th>&hellip;</th><td>&nbsp;</td></tr>
      </tbody><?cs
@@ -151,8 +151,10 @@ class PatchRenderer(Component):
             if (command == ' ') != last_type:
                 last_type = command == ' '
                 blocks.append({'type': last_type and 'unmod' or 'mod',
-                               'base.offset': fromline, 'base.lines': [],
-                               'changed.offset': toline,'changed.lines': []})
+                               'base.offset': fromline - 1,
+                               'base.lines': [],
+                               'changed.offset': toline - 1,
+                               'changed.lines': []})
             if command == ' ':
                 blocks[-1]['changed.lines'].append(line)
                 blocks[-1]['base.lines'].append(line)

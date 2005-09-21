@@ -16,7 +16,7 @@
 
 from __future__ import generators
 
-from trac.util import escape
+from trac.util import enum, escape
 
 from difflib import SequenceMatcher
 import re
@@ -41,8 +41,8 @@ def _get_change_extent(str1, str2):
         end -= 1
     return (start, end + 1)
 
-def _get_opcodes(fromlines, tolines, ignore_blank_lines=0, ignore_case=0,
-                 ignore_space_changes=0):
+def _get_opcodes(fromlines, tolines, ignore_blank_lines=False,
+                 ignore_case=False, ignore_space_changes=False):
     """
     Generator built on top of SequenceMatcher.get_opcodes().
     
@@ -54,13 +54,13 @@ def _get_opcodes(fromlines, tolines, ignore_blank_lines=0, ignore_case=0,
     def is_ignorable(tag, fromlines, tolines):
         if tag == 'delete' and ignore_blank_lines:
             if ''.join(fromlines) == '':
-                return 1
+                return True
         elif tag == 'insert' and ignore_blank_lines:
             if ''.join(tolines) == '':
-                return 1
+                return True
         elif tag == 'replace' and (ignore_case or ignore_space_changes):
             if len(fromlines) != len(tolines):
-                return 0
+                return False
             def f(str):
                 if ignore_case:
                     str = str.lower()
@@ -69,8 +69,8 @@ def _get_opcodes(fromlines, tolines, ignore_blank_lines=0, ignore_case=0,
                 return str
             for i in range(len(fromlines)):
                 if f(fromlines[i]) != f(tolines[i]):
-                    return 0
-            return 1
+                    return False
+            return True
 
     matcher = SequenceMatcher(None, fromlines, tolines)
     previous = None
@@ -114,10 +114,10 @@ def _group_opcodes(opcodes, n=3):
     # every change
     nn = n + n
     group = []
-    for tag, i1, i2, j1, j2 in opcodes:
-        if tag == 'equal' and i1 == 0:
+    for idx, (tag, i1, i2, j1, j2) in enum(opcodes):
+        if idx == 0 and tag == 'equal': # Fixup leading unchanged block
             i1, j1 = max(i1, i2 - n), max(j1, j2 - n)
-        if tag == 'equal' and i2 - i1 > nn:
+        elif tag == 'equal' and i2 - i1 > nn:
             group.append((tag, i1, min(i2, i1 + n), j1, min(j2, j1 + n)))
             yield group
             group = []
@@ -125,6 +125,9 @@ def _group_opcodes(opcodes, n=3):
         group.append((tag, i1, i2, j1 ,j2))
 
     if group and not (len(group) == 1 and group[0][0] == 'equal'):
+        if group[-1][0] == 'equal': # Fixup trailing unchanged block
+            tag, i1, i2, j1, j2 = group[-1]
+            group[-1] = tag, i1, min(i2, i1 + n), j1, min(j2, j1 + n)
         yield group
 
 def hdf_diff(fromlines, tolines, context=None, tabwidth=8,
