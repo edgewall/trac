@@ -310,7 +310,7 @@ def send_project_index(req, options, env_paths=None):
             except Exception, e:
                 proj = {'name': project, 'description': str(e)}
             projects.append(proj)
-        projects.sort(lambda x, y: cmp(x['name'], y['name']))
+        projects.sort(lambda x, y: cmp(x['name'].lower(), y['name'].lower()))
         req.hdf['projects'] = projects
 
         # TODO maybe this should be 404 if index wasn't specifically requested
