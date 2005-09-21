@@ -252,18 +252,28 @@ source:#42
 ==============================
 query:?order=priority
 
+query:?order=priority&owner=me
+
 query:status=new|reopened
 
 query:milestone!=
+
+query:milestone=1.0|2.0&owner=me
 ------------------------------
 <p>
 <a class="query" href="/query?order=priority">query:?order=priority</a>
+</p>
+<p>
+<a class="query" href="/query?order=priority&amp;owner=me">query:?order=priority&amp;owner=me</a>
 </p>
 <p>
 <a class="query" href="/query?status=new&amp;status=reopened&amp;order=priority">query:status=new|reopened</a>
 </p>
 <p>
 <a class="query" href="/query?milestone=%21&amp;order=priority">query:milestone!=</a>
+</p>
+<p>
+<a class="query" href="/query?milestone=1.0&amp;milestone=2.0&amp;owner=me&amp;order=priority">query:milestone=1.0|2.0&amp;owner=me</a>
 </p>
 ==============================
 {{{
@@ -482,9 +492,9 @@ search:"?q=foo bar&wiki=on"
 [search:?q=bar&ticket=on Bar in Tickets]
 ------------------------------
 <p>
-<a class="search" href="/search?q=foo&wiki=on">search:?q=foo&amp;wiki=on</a>
-<a class="search" href="/search?q=foo+bar&wiki=on">search:"?q=foo bar&amp;wiki=on"</a>
-<a class="search" href="/search?q=bar&ticket=on">Bar in Tickets</a>
+<a class="search" href="/search?q=foo&amp;wiki=on">search:?q=foo&amp;wiki=on</a>
+<a class="search" href="/search?q=foo+bar&amp;wiki=on">search:"?q=foo bar&amp;wiki=on"</a>
+<a class="search" href="/search?q=bar&amp;ticket=on">Bar in Tickets</a>
 </p>
 ==============================
 '''Note:'''

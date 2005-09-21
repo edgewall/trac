@@ -241,5 +241,5 @@ class SearchModule(Component):
                    query.replace('&amp;', '&').replace(' ', '+')
         else:
             href = formatter.href.search(q=query)
-        return '<a class="search" href="%s">%s</a>' % (href, label)
+        return '<a class="search" href="%s">%s</a>' % (escape(href), label)
 
