@@ -456,11 +456,15 @@ milestone:foo
 search:foo
 search:"foo bar"
 [search:bar Bar]
+[search:bar]
+[search:]
 ------------------------------
 <p>
 <a class="search" href="/search?q=foo">search:foo</a>
 <a class="search" href="/search?q=foo+bar">search:"foo bar"</a>
 <a class="search" href="/search?q=bar">Bar</a>
+<a class="search" href="/search?q=bar">bar</a>
+<a class="search" href="/search?q=">search</a>
 </p>
 ==============================
 search:?q=foo&wiki=on

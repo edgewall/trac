@@ -153,9 +153,9 @@ class Formatter(object):
                     r"(?P<stgt>'[^']+'|\"[^\"]+\"|"
                     r"((\|(?=[^| ])|[^| ])*[^|'~_\., \)]))))"),
                    (r"(?P<lhref>!?\[(?:(?P<lns>%s):" % LINK_SCHEME +
-                    r"(?P<ltgt>'[^']+'|\"[^\"]+\"|[^\] ]+)"
+                    r"(?P<ltgt>'[^']+'|\"[^\"]+\"|[^\] ]*)"
                     r"|(?P<rel>[/.][^ [\]]*))"
-                    r"(?: (?P<label>.*?))?\])"),
+                    r"(?: (?P<label>'[^']+'|\"[^\"]+\"|[^\]]+))?\])"),
                    (r"(?P<macro>!?\[\[(?P<macroname>[\w/+-]+)"
                     r"(\]\]|\((?P<macroargs>.*?)\)\]\]))"),
                    r"(?P<heading>^\s*(?P<hdepth>=+)\s.*\s(?P=hdepth)\s*$)",
@@ -287,9 +287,19 @@ class Formatter(object):
     def _lhref_formatter(self, match, fullmatch):
         ns = fullmatch.group('lns')
         target = fullmatch.group('ltgt') 
-        if target and target[0] in "'\"":
+        if target and target[0] in ("'",'"'):
             target = target[1:-1]
-        label = fullmatch.group('label') or target
+        label = fullmatch.group('label')
+        if not label: # e.g. `[http://target]` or `[wiki:target]`
+            if target:
+                if target.startswith('//'): # for `[http://target]`
+                    label = ns+':'+target   # use `http://target`
+                else:                       # for `wiki:target`
+                    label = target          # use only `target`
+            else: # e.g. `[search:]` 
+                label = ns
+        if label and label[0] in ("'",'"'):
+            label = label[1:-1]
         rel = fullmatch.group('rel')
         if rel:
             return self._make_relative_link(rel, label or rel)
