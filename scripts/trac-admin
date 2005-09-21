@@ -22,5 +22,6 @@ __license__ = """
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA."""
 
 import sys
+
 from trac.scripts.admin import run
-run(*sys.argv[1:])
+sys.exit(run(sys.argv[1:]))

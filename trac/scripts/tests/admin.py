@@ -118,19 +118,20 @@ class TracadminTestCase(unittest.TestCase):
     def tearDown(self):
         self.env = None
 
-    def _execute(self, cmd, strip_trailing_space=True):
+    def _execute(self, cmd, strip_trailing_space=True, fail_on_error=False):
         try:
             _err = sys.stderr
             _out = sys.stdout
             sys.stderr = sys.stdout = out = StringIO()
+            retval = None
             try:
-                self._admin.docmd(cmd)
+                retval = self._admin.onecmd(cmd)
             except SystemExit, e:
                 pass
             if strip_trailing_space:
-                return STRIP_TRAILING_SPACE.sub('', out.getvalue())
+                return retval, STRIP_TRAILING_SPACE.sub('', out.getvalue())
             else:
-                return out.getvalue()
+                return retval, out.getvalue()
         finally:
             sys.stderr = _err
             sys.stdout = _out
@@ -155,8 +156,9 @@ Trac Admin Console %s
 =================================================================
 %s
 """ % (__version__, __license_long__)
-        test_results = self._execute('about', strip_trailing_space=False)
-        self.assertEquals(expected_results, test_results)
+        rv, output = self._execute('about', strip_trailing_space=False)
+        self.assertEqual(0, rv)
+        self.assertEqual(expected_results, output)
 
     # Help test
 
@@ -172,8 +174,9 @@ Trac Admin Console %s
         d = {'version': __version__,
              'date_format_hint': get_date_format_hint()}
         expected_results = self.expected_results[test_name] % d
-        test_results = self._execute('help')
-        self.assertEquals(expected_results, test_results)
+        rv, output = self._execute('help')
+        self.assertEqual(0, rv)
+        self.assertEqual(expected_results, output)
 
     # Permission tests
 
@@ -188,8 +191,9 @@ Trac Admin Console %s
             # textwrap not available in python < 2.3
             self._require_python((2, 3, 0))
 
-            test_results = self._execute('permission list')
-            self.assertEquals(self.expected_results[test_name], test_results)
+            rv, output = self._execute('permission list')
+            self.assertEqual(0, rv)
+            self.assertEqual(self.expected_results[test_name], output)
         except SkipTest, e:
             print>>sys.stderr, 'Skipping test %s: %s' % (test_name, e)
 
@@ -205,8 +209,9 @@ Trac Admin Console %s
             self._require_python((2, 3, 0))
 
             self._execute('permission add test_user WIKI_VIEW')
-            test_results = self._execute('permission list')
-            self.assertEquals(self.expected_results[test_name], test_results)
+            rv, output = self._execute('permission list')
+            self.assertEqual(0, rv)
+            self.assertEqual(self.expected_results[test_name], output)
         except SkipTest, e:
             print>>sys.stderr, 'Skipping test %s: %s' % (test_name, e)
 
@@ -222,8 +227,9 @@ Trac Admin Console %s
             self._require_python((2, 3, 0))
 
             self._execute('permission add test_user LOG_VIEW FILE_VIEW')
-            test_results = self._execute('permission list')
-            self.assertEquals(self.expected_results[test_name], test_results)
+            rv, output = self._execute('permission list')
+            self.assertEqual(0, rv)
+            self.assertEqual(self.expected_results[test_name], output)
         except SkipTest, e:
             print>>sys.stderr, 'Skipping test %s: %s' % (test_name, e)
 
@@ -239,8 +245,9 @@ Trac Admin Console %s
             self._require_python((2, 3, 0))
 
             self._execute('permission remove anonymous TICKET_MODIFY')
-            test_results = self._execute('permission list')
-            self.assertEquals(self.expected_results[test_name], test_results)
+            rv, output = self._execute('permission list')
+            self.assertEqual(0, rv)
+            self.assertEqual(self.expected_results[test_name], output)
         except SkipTest, e:
             print>>sys.stderr, 'Skipping test %s: %s' % (test_name, e)
 
@@ -257,8 +264,9 @@ Trac Admin Console %s
 
             test_name = sys._getframe().f_code.co_name
             self._execute('permission remove anonymous WIKI_CREATE WIKI_MODIFY')
-            test_results = self._execute('permission list')
-            self.assertEquals(self.expected_results[test_name], test_results)
+            rv, output = self._execute('permission list')
+            self.assertEqual(0, rv)
+            self.assertEqual(self.expected_results[test_name], output)
         except SkipTest, e:
             print>>sys.stderr, 'Skipping test %s: %s' % (test_name, e)
 
@@ -271,8 +279,9 @@ Trac Admin Console %s
         a result, there is only this one test.
         """
         test_name = sys._getframe().f_code.co_name
-        test_results = self._execute('component list')
-        self.assertEquals(self.expected_results[test_name], test_results)
+        rv, output = self._execute('component list')
+        self.assertEqual(0, rv)
+        self.assertEqual(self.expected_results[test_name], output)
 
     def test_component_add_ok(self):
         """
@@ -281,8 +290,9 @@ Trac Admin Console %s
         """
         test_name = sys._getframe().f_code.co_name
         self._execute('component add new_component new_user')
-        test_results = self._execute('component list')
-        self.assertEquals(self.expected_results[test_name], test_results)
+        rv, output = self._execute('component list')
+        self.assertEqual(0, rv)
+        self.assertEqual(self.expected_results[test_name], output)
 
     def test_component_add_error_already_exists(self):
         """
@@ -291,8 +301,9 @@ Trac Admin Console %s
         error message.
         """
         test_name = sys._getframe().f_code.co_name
-        test_results = self._execute('component add component1 new_user')
-        self.assertEquals(self.expected_results[test_name], test_results)
+        rv, output = self._execute('component add component1 new_user')
+        self.assertEqual(2, rv)
+        self.assertEqual(self.expected_results[test_name], output)
 
     def test_component_rename_ok(self):
         """
@@ -301,8 +312,9 @@ Trac Admin Console %s
         """
         test_name = sys._getframe().f_code.co_name
         self._execute('component rename component1 changed_name')
-        test_results = self._execute('component list')
-        self.assertEquals(self.expected_results[test_name], test_results)
+        rv, output = self._execute('component list')
+        self.assertEqual(0, rv)
+        self.assertEqual(self.expected_results[test_name], output)
 
     def test_component_rename_error_bad_component(self):
         """
@@ -310,8 +322,9 @@ Trac Admin Console %s
         test tries to rename a component that does not exist.
         """
         test_name = sys._getframe().f_code.co_name
-        test_results = self._execute('component rename bad_component changed_name')
-        self.assertEquals(self.expected_results[test_name], test_results)
+        rv, output = self._execute('component rename bad_component changed_name')
+        self.assertEqual(2, rv)
+        self.assertEqual(self.expected_results[test_name], output)
 
     def test_component_rename_error_bad_new_name(self):
         """
@@ -319,8 +332,9 @@ Trac Admin Console %s
         test tries to rename a component to a name that already exists.
         """
         test_name = sys._getframe().f_code.co_name
-        test_results = self._execute('component rename component1 component2')
-        self.assertEquals(self.expected_results[test_name], test_results)
+        rv, output = self._execute('component rename component1 component2')
+        self.assertEqual(2, rv)
+        self.assertEqual(self.expected_results[test_name], output)
 
     def test_component_chown_ok(self):
         """
@@ -329,8 +343,9 @@ Trac Admin Console %s
         """
         test_name = sys._getframe().f_code.co_name
         self._execute('component chown component2 changed_owner')
-        test_results = self._execute('component list')
-        self.assertEquals(self.expected_results[test_name], test_results)
+        rv, output = self._execute('component list')
+        self.assertEqual(0, rv)
+        self.assertEqual(self.expected_results[test_name], output)
 
     def test_component_chown_error_bad_component(self):
         """
@@ -339,8 +354,9 @@ Trac Admin Console %s
         exist.
         """
         test_name = sys._getframe().f_code.co_name
-        test_results = self._execute('component chown bad_component changed_owner')
-        self.assertEquals(self.expected_results[test_name], test_results)
+        rv, output = self._execute('component chown bad_component changed_owner')
+        self.assertEqual(2, rv)
+        self.assertEqual(self.expected_results[test_name], output)
 
     def test_component_remove_ok(self):
         """
@@ -349,8 +365,9 @@ Trac Admin Console %s
         """
         test_name = sys._getframe().f_code.co_name
         self._execute('component remove component1')
-        test_results = self._execute('component list')
-        self.assertEquals(self.expected_results[test_name], test_results)
+        rv, output = self._execute('component list')
+        self.assertEqual(0, rv)
+        self.assertEqual(self.expected_results[test_name], output)
 
     def test_component_remove_error_bad_component(self):
         """
@@ -358,8 +375,9 @@ Trac Admin Console %s
         test tries to remove a component that does not exist.
         """
         test_name = sys._getframe().f_code.co_name
-        test_results = self._execute('component remove bad_component')
-        self.assertEquals(self.expected_results[test_name], test_results)
+        rv, output = self._execute('component remove bad_component')
+        self.assertEqual(2, rv)
+        self.assertEqual(self.expected_results[test_name], output)
 
     # Ticket-type tests
 
@@ -370,8 +388,9 @@ Trac Admin Console %s
         a result, there is only this one test.
         """
         test_name = sys._getframe().f_code.co_name
-        test_results = self._execute('ticket_type list')
-        self.assertEquals(self.expected_results[test_name], test_results)
+        rv, output = self._execute('ticket_type list')
+        self.assertEqual(0, rv)
+        self.assertEqual(self.expected_results[test_name], output)
 
     def test_ticket_type_add_ok(self):
         """
@@ -380,8 +399,9 @@ Trac Admin Console %s
         """
         test_name = sys._getframe().f_code.co_name
         self._execute('ticket_type add new_type')
-        test_results = self._execute('ticket_type list')
-        self.assertEquals(self.expected_results[test_name], test_results)
+        rv, output = self._execute('ticket_type list')
+        self.assertEqual(0, rv)
+        self.assertEqual(self.expected_results[test_name], output)
 
     def test_ticket_type_add_error_already_exists(self):
         """
@@ -390,8 +410,9 @@ Trac Admin Console %s
         message.
         """
         test_name = sys._getframe().f_code.co_name
-        test_results = self._execute('ticket_type add defect')
-        self.assertEquals(self.expected_results[test_name], test_results)
+        rv, output = self._execute('ticket_type add defect')
+        self.assertEqual(2, rv)
+        self.assertEqual(self.expected_results[test_name], output)
 
     def test_ticket_type_change_ok(self):
         """
@@ -400,8 +421,9 @@ Trac Admin Console %s
         """
         test_name = sys._getframe().f_code.co_name
         self._execute('ticket_type change defect bug')
-        test_results = self._execute('ticket_type list')
-        self.assertEquals(self.expected_results[test_name], test_results)
+        rv, output = self._execute('ticket_type list')
+        self.assertEqual(0, rv)
+        self.assertEqual(self.expected_results[test_name], output)
 
     def test_ticket_type_change_error_bad_type(self):
         """
@@ -409,8 +431,9 @@ Trac Admin Console %s
         test tries to change a priority that does not exist.
         """
         test_name = sys._getframe().f_code.co_name
-        test_results = self._execute('ticket_type change bad_type changed_type')
-        self.assertEquals(self.expected_results[test_name], test_results)
+        rv, output = self._execute('ticket_type change bad_type changed_type')
+        self.assertEqual(2, rv)
+        self.assertEqual(self.expected_results[test_name], output)
 
     def test_ticket_type_change_error_bad_new_name(self):
         """
@@ -418,8 +441,9 @@ Trac Admin Console %s
         test tries to change a ticket type to another type that already exists.
         """
         test_name = sys._getframe().f_code.co_name
-        test_results = self._execute('ticket_type change defect task')
-        self.assertEquals(self.expected_results[test_name], test_results)
+        rv, output = self._execute('ticket_type change defect task')
+        self.assertEqual(2, rv)
+        self.assertEqual(self.expected_results[test_name], output)
 
     def test_ticket_type_remove_ok(self):
         """
@@ -428,8 +452,9 @@ Trac Admin Console %s
         """
         test_name = sys._getframe().f_code.co_name
         self._execute('ticket_type remove task')
-        test_results = self._execute('ticket_type list')
-        self.assertEquals(self.expected_results[test_name], test_results)
+        rv, output = self._execute('ticket_type list')
+        self.assertEqual(0, rv)
+        self.assertEqual(self.expected_results[test_name], output)
 
     def test_ticket_type_remove_error_bad_type(self):
         """
@@ -437,8 +462,9 @@ Trac Admin Console %s
         test tries to remove a ticket type that does not exist.
         """
         test_name = sys._getframe().f_code.co_name
-        test_results = self._execute('ticket_type remove bad_type')
-        self.assertEquals(self.expected_results[test_name], test_results)
+        rv, output = self._execute('ticket_type remove bad_type')
+        self.assertEqual(2, rv)
+        self.assertEqual(self.expected_results[test_name], output)
 
     # Priority tests
 
@@ -449,8 +475,9 @@ Trac Admin Console %s
         a result, there is only this one test.
         """
         test_name = sys._getframe().f_code.co_name
-        test_results = self._execute('priority list')
-        self.assertEquals(self.expected_results[test_name], test_results)
+        rv, output = self._execute('priority list')
+        self.assertEqual(0, rv)
+        self.assertEqual(self.expected_results[test_name], output)
 
     def test_priority_add_ok(self):
         """
@@ -459,8 +486,9 @@ Trac Admin Console %s
         """
         test_name = sys._getframe().f_code.co_name
         self._execute('priority add new_priority')
-        test_results = self._execute('priority list')
-        self.assertEquals(self.expected_results[test_name], test_results)
+        rv, output = self._execute('priority list')
+        self.assertEqual(0, rv)
+        self.assertEqual(self.expected_results[test_name], output)
 
     def test_priority_add_error_already_exists(self):
         """
@@ -469,8 +497,9 @@ Trac Admin Console %s
         error message.
         """
         test_name = sys._getframe().f_code.co_name
-        test_results = self._execute('priority add blocker')
-        self.assertEquals(self.expected_results[test_name], test_results)
+        rv, output = self._execute('priority add blocker')
+        self.assertEqual(2, rv)
+        self.assertEqual(self.expected_results[test_name], output)
 
     def test_priority_change_ok(self):
         """
@@ -479,8 +508,9 @@ Trac Admin Console %s
         """
         test_name = sys._getframe().f_code.co_name
         self._execute('priority change major normal')
-        test_results = self._execute('priority list')
-        self.assertEquals(self.expected_results[test_name], test_results)
+        rv, output = self._execute('priority list')
+        self.assertEqual(0, rv)
+        self.assertEqual(self.expected_results[test_name], output)
 
     def test_priority_change_error_bad_priority(self):
         """
@@ -488,8 +518,9 @@ Trac Admin Console %s
         test tries to change a priority that does not exist.
         """
         test_name = sys._getframe().f_code.co_name
-        test_results = self._execute('priority change bad_priority changed_name')
-        self.assertEquals(self.expected_results[test_name], test_results)
+        rv, output = self._execute('priority change bad_priority changed_name')
+        self.assertEqual(2, rv)
+        self.assertEqual(self.expected_results[test_name], output)
 
     def test_priority_change_error_bad_new_name(self):
         """
@@ -497,8 +528,9 @@ Trac Admin Console %s
         test tries to change a priority to a name that already exists.
         """
         test_name = sys._getframe().f_code.co_name
-        test_results = self._execute('priority change major minor')
-        self.assertEquals(self.expected_results[test_name], test_results)
+        rv, output = self._execute('priority change major minor')
+        self.assertEqual(2, rv)
+        self.assertEqual(self.expected_results[test_name], output)
 
     def test_priority_remove_ok(self):
         """
@@ -507,8 +539,9 @@ Trac Admin Console %s
         """
         test_name = sys._getframe().f_code.co_name
         self._execute('priority remove major')
-        test_results = self._execute('priority list')
-        self.assertEquals(self.expected_results[test_name], test_results)
+        rv, output = self._execute('priority list')
+        self.assertEqual(0, rv)
+        self.assertEqual(self.expected_results[test_name], output)
 
     def test_priority_remove_error_bad_priority(self):
         """
@@ -516,8 +549,9 @@ Trac Admin Console %s
         test tries to remove a priority that does not exist.
         """
         test_name = sys._getframe().f_code.co_name
-        test_results = self._execute('priority remove bad_priority')
-        self.assertEquals(self.expected_results[test_name], test_results)
+        rv, output = self._execute('priority remove bad_priority')
+        self.assertEqual(2, rv)
+        self.assertEqual(self.expected_results[test_name], output)
 
     # Severity tests
 
@@ -528,8 +562,9 @@ Trac Admin Console %s
         a result, there is only this one test.
         """
         test_name = sys._getframe().f_code.co_name
-        test_results = self._execute('severity list')
-        self.assertEquals(self.expected_results[test_name], test_results)
+        rv, output = self._execute('severity list')
+        self.assertEqual(0, rv)
+        self.assertEqual(self.expected_results[test_name], output)
 
     def test_severity_add_ok(self):
         """
@@ -538,8 +573,9 @@ Trac Admin Console %s
         """
         test_name = sys._getframe().f_code.co_name
         self._execute('severity add new_severity')
-        test_results = self._execute('severity list')
-        self.assertEquals(self.expected_results[test_name], test_results)
+        rv, output = self._execute('severity list')
+        self.assertEqual(0, rv)
+        self.assertEqual(self.expected_results[test_name], output)
 
     def test_severity_add_error_already_exists(self):
         """
@@ -549,8 +585,9 @@ Trac Admin Console %s
         """
         test_name = sys._getframe().f_code.co_name
         self._execute('severity add blocker')
-        test_results = self._execute('severity add blocker')
-        self.assertEquals(self.expected_results[test_name], test_results), test_results
+        rv, output = self._execute('severity add blocker')
+        self.assertEqual(2, rv)
+        self.assertEqual(self.expected_results[test_name], output)
 
     def test_severity_change_ok(self):
         """
@@ -560,8 +597,9 @@ Trac Admin Console %s
         test_name = sys._getframe().f_code.co_name
         self._execute('severity add critical')
         self._execute('severity change critical "end-of-the-world"')
-        test_results = self._execute('severity list')
-        self.assertEquals(self.expected_results[test_name], test_results)
+        rv, output = self._execute('severity list')
+        self.assertEqual(0, rv)
+        self.assertEqual(self.expected_results[test_name], output)
 
     def test_severity_change_error_bad_severity(self):
         """
@@ -569,8 +607,9 @@ Trac Admin Console %s
         test tries to change a severity that does not exist.
         """
         test_name = sys._getframe().f_code.co_name
-        test_results = self._execute('severity change bad_severity changed_name')
-        self.assertEquals(self.expected_results[test_name], test_results)
+        rv, output = self._execute('severity change bad_severity changed_name')
+        self.assertEqual(2, rv)
+        self.assertEqual(self.expected_results[test_name], output)
 
     def test_severity_change_error_bad_new_name(self):
         """
@@ -578,10 +617,11 @@ Trac Admin Console %s
         test tries to change a severity to a name that already exists.
         """
         test_name = sys._getframe().f_code.co_name
-        test_results = self._execute('severity add major')
-        test_results = self._execute('severity add critical')
-        test_results = self._execute('severity change critical major')
-        self.assertEquals(self.expected_results[test_name], test_results)
+        self._execute('severity add major')
+        self._execute('severity add critical')
+        rv, output = self._execute('severity change critical major')
+        self.assertEqual(2, rv)
+        self.assertEqual(self.expected_results[test_name], output)
 
     def test_severity_remove_ok(self):
         """
@@ -590,8 +630,9 @@ Trac Admin Console %s
         """
         test_name = sys._getframe().f_code.co_name
         self._execute('severity remove trivial')
-        test_results = self._execute('severity list')
-        self.assertEquals(self.expected_results[test_name], test_results)
+        rv, output = self._execute('severity list')
+        self.assertEqual(0, rv)
+        self.assertEqual(self.expected_results[test_name], output)
 
     def test_severity_remove_error_bad_severity(self):
         """
@@ -599,8 +640,9 @@ Trac Admin Console %s
         test tries to remove a severity that does not exist.
         """
         test_name = sys._getframe().f_code.co_name
-        test_results = self._execute('severity remove bad_severity')
-        self.assertEquals(self.expected_results[test_name], test_results)
+        rv, output = self._execute('severity remove bad_severity')
+        self.assertEqual(2, rv)
+        self.assertEqual(self.expected_results[test_name], output)
 
     # Version tests
 
@@ -611,8 +653,9 @@ Trac Admin Console %s
         a result, there is only this one test.
         """
         test_name = sys._getframe().f_code.co_name
-        test_results = self._execute('version list')
-        self.assertEquals(self.expected_results[test_name], test_results)
+        rv, output = self._execute('version list')
+        self.assertEqual(0, rv)
+        self.assertEqual(self.expected_results[test_name], output)
 
     def test_version_add_ok(self):
         """
@@ -621,8 +664,9 @@ Trac Admin Console %s
         """
         test_name = sys._getframe().f_code.co_name
         self._execute('version add 9.9 "%s"' % self._test_date)
-        test_results = self._execute('version list')
-        self.assertEquals(self.expected_results[test_name], test_results)
+        rv, output = self._execute('version list')
+        self.assertEqual(0, rv)
+        self.assertEqual(self.expected_results[test_name], output)
 
     def test_version_add_error_already_exists(self):
         """
@@ -631,8 +675,9 @@ Trac Admin Console %s
         error message.
         """
         test_name = sys._getframe().f_code.co_name
-        test_results = self._execute('version add 1.0 "%s"' % self._test_date)
-        self.assertEquals(self.expected_results[test_name], test_results)
+        rv, output = self._execute('version add 1.0 "%s"' % self._test_date)
+        self.assertEqual(2, rv)
+        self.assertEqual(self.expected_results[test_name], output)
 
     def test_version_rename_ok(self):
         """
@@ -641,8 +686,9 @@ Trac Admin Console %s
         """
         test_name = sys._getframe().f_code.co_name
         self._execute('version rename 1.0 9.9')
-        test_results = self._execute('version list')
-        self.assertEquals(self.expected_results[test_name], test_results)
+        rv, output = self._execute('version list')
+        self.assertEqual(0, rv)
+        self.assertEqual(self.expected_results[test_name], output)
 
     def test_version_rename_error_bad_version(self):
         """
@@ -650,8 +696,9 @@ Trac Admin Console %s
         test tries to rename a version that does not exist.
         """
         test_name = sys._getframe().f_code.co_name
-        test_results = self._execute('version rename bad_version changed_name')
-        self.assertEquals(self.expected_results[test_name], test_results)
+        rv, output = self._execute('version rename bad_version changed_name')
+        self.assertEqual(2, rv)
+        self.assertEqual(self.expected_results[test_name], output)
 
     def test_version_time_ok(self):
         """
@@ -660,8 +707,9 @@ Trac Admin Console %s
         """
         test_name = sys._getframe().f_code.co_name
         self._execute('version time 2.0 "%s"' % self._test_date)
-        test_results = self._execute('version list')
-        self.assertEquals(self.expected_results[test_name], test_results)
+        rv, output = self._execute('version list')
+        self.assertEqual(0, rv)
+        self.assertEqual(self.expected_results[test_name], output)
 
     def test_version_time_error_bad_version(self):
         """
@@ -669,8 +717,10 @@ Trac Admin Console %s
         test tries to change the time on a version that does not exist.
         """
         test_name = sys._getframe().f_code.co_name
-        test_results = self._execute('version time bad_version "%s"' % self._test_date)
-        self.assertEquals(self.expected_results[test_name], test_results)
+        rv, output = self._execute('version time bad_version "%s"'
+                                   % self._test_date)
+        self.assertEqual(2, rv)
+        self.assertEqual(self.expected_results[test_name], output)
 
     def test_version_remove_ok(self):
         """
@@ -679,8 +729,9 @@ Trac Admin Console %s
         """
         test_name = sys._getframe().f_code.co_name
         self._execute('version remove 1.0')
-        test_results = self._execute('version list')
-        self.assertEquals(self.expected_results[test_name], test_results)
+        rv, output = self._execute('version list')
+        self.assertEqual(0, rv)
+        self.assertEqual(self.expected_results[test_name], output)
 
     def test_version_remove_error_bad_version(self):
         """
@@ -688,8 +739,9 @@ Trac Admin Console %s
         test tries to remove a version that does not exist.
         """
         test_name = sys._getframe().f_code.co_name
-        test_results = self._execute('version remove bad_version')
-        self.assertEquals(self.expected_results[test_name], test_results)
+        rv, output = self._execute('version remove bad_version')
+        self.assertEqual(2, rv)
+        self.assertEqual(self.expected_results[test_name], output)
 
     # Milestone tests
 
@@ -700,8 +752,9 @@ Trac Admin Console %s
         a result, there is only this one test.
         """
         test_name = sys._getframe().f_code.co_name
-        test_results = self._execute('milestone list')
-        self.assertEquals(self.expected_results[test_name], test_results)
+        rv, output = self._execute('milestone list')
+        self.assertEqual(0, rv)
+        self.assertEqual(self.expected_results[test_name], output)
 
     def test_milestone_add_ok(self):
         """
@@ -710,8 +763,9 @@ Trac Admin Console %s
         """
         test_name = sys._getframe().f_code.co_name
         self._execute('milestone add new_milestone "%s"' % self._test_date)
-        test_results = self._execute('milestone list')
-        self.assertEquals(self.expected_results[test_name], test_results)
+        rv, output = self._execute('milestone list')
+        self.assertEqual(0, rv)
+        self.assertEqual(self.expected_results[test_name], output)
 
     def test_milestone_add_error_already_exists(self):
         """
@@ -720,8 +774,10 @@ Trac Admin Console %s
         error message.
         """
         test_name = sys._getframe().f_code.co_name
-        test_results = self._execute('milestone add milestone1 "%s"' % self._test_date)
-        self.assertEquals(self.expected_results[test_name], test_results)
+        rv, output = self._execute('milestone add milestone1 "%s"'
+                                   % self._test_date)
+        self.assertEqual(2, rv)
+        self.assertEqual(self.expected_results[test_name], output)
 
     def test_milestone_rename_ok(self):
         """
@@ -730,8 +786,9 @@ Trac Admin Console %s
         """
         test_name = sys._getframe().f_code.co_name
         self._execute('milestone rename milestone1 changed_milestone')
-        test_results = self._execute('milestone list')
-        self.assertEquals(self.expected_results[test_name], test_results)
+        rv, output = self._execute('milestone list')
+        self.assertEqual(0, rv)
+        self.assertEqual(self.expected_results[test_name], output)
 
     def test_milestone_rename_error_bad_milestone(self):
         """
@@ -739,8 +796,9 @@ Trac Admin Console %s
         test tries to rename a milestone that does not exist.
         """
         test_name = sys._getframe().f_code.co_name
-        test_results = self._execute('milestone rename bad_milestone changed_name')
-        self.assertEquals(self.expected_results[test_name], test_results)
+        rv, output = self._execute('milestone rename bad_milestone changed_name')
+        self.assertEqual(2, rv)
+        self.assertEqual(self.expected_results[test_name], output)
 
     def test_milestone_due_ok(self):
         """
@@ -749,8 +807,9 @@ Trac Admin Console %s
         """
         test_name = sys._getframe().f_code.co_name
         self._execute('milestone due milestone2 "%s"' % self._test_date)
-        test_results = self._execute('milestone list')
-        self.assertEquals(self.expected_results[test_name], test_results)
+        rv, output = self._execute('milestone list')
+        self.assertEqual(0, rv)
+        self.assertEqual(self.expected_results[test_name], output)
 
     def test_milestone_due_error_bad_milestone(self):
         """
@@ -758,8 +817,10 @@ Trac Admin Console %s
         test tries to change the due date on a milestone that does not exist.
         """
         test_name = sys._getframe().f_code.co_name
-        test_results = self._execute('milestone due bad_milestone "%s"' % self._test_date)
-        self.assertEquals(self.expected_results[test_name], test_results)
+        rv, output = self._execute('milestone due bad_milestone "%s"'
+                                   % self._test_date)
+        self.assertEqual(2, rv)
+        self.assertEqual(self.expected_results[test_name], output)
 
     def test_milestone_completed_ok(self):
         """
@@ -769,8 +830,9 @@ Trac Admin Console %s
         test_name = sys._getframe().f_code.co_name
 
         self._execute('milestone completed milestone2 "%s"' % self._test_date)
-        test_results = self._execute('milestone list')
-        self.assertEquals(self.expected_results[test_name], test_results)
+        rv, output = self._execute('milestone list')
+        self.assertEqual(0, rv)
+        self.assertEqual(self.expected_results[test_name], output)
 
     def test_milestone_completed_error_bad_milestone(self):
         """
@@ -779,9 +841,10 @@ Trac Admin Console %s
         exist.
         """
         test_name = sys._getframe().f_code.co_name
-
-        test_results = self._execute('milestone completed bad_milestone "%s"' % self._test_date)
-        self.assertEquals(self.expected_results[test_name], test_results)
+        rv, output = self._execute('milestone completed bad_milestone "%s"'
+                                   % self._test_date)
+        self.assertEqual(2, rv)
+        self.assertEqual(self.expected_results[test_name], output)
 
     def test_milestone_remove_ok(self):
         """
@@ -790,8 +853,9 @@ Trac Admin Console %s
         """
         test_name = sys._getframe().f_code.co_name
         self._execute('milestone remove milestone3')
-        test_results = self._execute('milestone list')
-        self.assertEquals(self.expected_results[test_name], test_results)
+        rv, output = self._execute('milestone list')
+        self.assertEqual(0, rv)
+        self.assertEqual(self.expected_results[test_name], output)
 
     def test_milestone_remove_error_bad_milestone(self):
         """
@@ -799,8 +863,9 @@ Trac Admin Console %s
         test tries to remove a milestone that does not exist.
         """
         test_name = sys._getframe().f_code.co_name
-        test_results = self._execute('milestone remove bad_milestone')
-        self.assertEquals(self.expected_results[test_name], test_results)
+        rv, output = self._execute('milestone remove bad_milestone')
+        self.assertEqual(2, rv)
+        self.assertEqual(self.expected_results[test_name], output)
 
 
 def suite():
