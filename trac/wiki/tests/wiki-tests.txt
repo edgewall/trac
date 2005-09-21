@@ -61,9 +61,14 @@ Paragraph
 </p>
 ==============================
 ticket:1, changeset:1, report:1, source:foo/bar
+
+Issue [ticket:1], CS[changeset:1], Listing [report:1], File [source:foo/bar]
 ------------------------------
 <p>
 <a class="missing ticket" href="/ticket/1" rel="nofollow">ticket:1</a>, <a class="missing changeset" href="/changeset/1" rel="nofollow">changeset:1</a>, <a class="report" href="/report/1">report:1</a>, <a class="source" href="/browser/foo/bar">source:foo/bar</a>
+</p>
+<p>
+Issue <a class="missing ticket" href="/ticket/1" rel="nofollow">1</a>, CS<a class="missing changeset" href="/changeset/1" rel="nofollow">1</a>, Listing <a class="report" href="/report/1">1</a>, File <a class="source" href="/browser/foo/bar">foo/bar</a>
 </p>
 ==============================
 [ticket:1 ticket 1], [changeset:1 changeset 1], [report:1 report 1], 
@@ -135,6 +140,8 @@ out:
 wiki:Foo%20Bar wiki:Foo%20Bar#baz
 
 [wiki:Foo%20Bar Foo Bar] [wiki:Foo%20Bar#baz Foo Bar]
+
+[wiki:Argv "*argv[] versus **argv"]
 ------------------------------
 <p>
 <a class="missing wiki" href="/wiki/WikiStart" rel="nofollow">Foo?</a> <a class="ext-link" href="http://www.edgewall.com/"><span class="icon"></span>Edgewall</a>
@@ -144,6 +151,9 @@ wiki:Foo%20Bar wiki:Foo%20Bar#baz
 </p>
 <p>
 <a class="missing wiki" href="/wiki/Foo%20Bar" rel="nofollow">Foo Bar?</a> <a class="missing wiki" href="/wiki/Foo%20Bar#baz" rel="nofollow">Foo Bar?</a>
+</p>
+<p>
+<a class="missing wiki" href="/wiki/Argv" rel="nofollow">*argv[] versus **argv?</a>
 </p>
 ==============================
 foo (FooBar)
