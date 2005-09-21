@@ -246,13 +246,17 @@ def send_pretty_error(e, env, req=None):
         if env and env.log:
             env.log.error('Failed to render pretty error page: %s', e2,
                           exc_info=True)
-        req.send_response(500)
-        req.send_header('Content-Type', 'text/plain')
-        req.end_headers()
-        req.write('Oops...\n\nTrac detected an internal error:\n\n')
-        req.write(str(e))
-        req.write('\n')
-        req.write(tb.getvalue())
+        try:
+            req.send_response(500)
+            req.send_header('Content-Type', 'text/plain')
+            req.end_headers()
+            req.write('Oops...\n\nTrac detected an internal error:\n\n')
+            req.write(str(e))
+            req.write('\n')
+            req.write(tb.getvalue())
+        except IOError:
+            # Cannot send response, but the error has hopefully been logged
+            pass
 
 def send_project_index(req, options, env_paths=None):
     from trac.web.clearsilver import HDFWrapper
