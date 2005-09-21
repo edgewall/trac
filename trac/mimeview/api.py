@@ -25,7 +25,7 @@ except ImportError:
     from StringIO import StringIO
 
 from trac.core import *
-from trac.util import enum, escape
+from trac.util import enum, escape, to_utf8
 
 __all__ = ['get_charset', 'get_mimetype', 'is_binary', 'detect_unicode',
            'Mimeview']
@@ -278,6 +278,26 @@ class Mimeview(Component):
             buf.write('<tr>' + '\n'.join(cells) + '</tr>')
         buf.write('</tbody></table>')
         return buf.getvalue()
+
+    def max_preview_size(self):
+        return int(self.config.get('mimeviewer', 'max_preview_size', '262144'))
+
+    def preview_charset(self, content):
+        return detect_unicode(content) or self.config.get('trac',
+                                                          'default_charset')
+
+    def preview_to_hdf(self, req, mimetype, charset, content, filename,
+                       detail=None, annotations=None):
+        if not is_binary(content):
+            content = to_utf8(content, charset or self.preview_charset(content))
+        max_preview_size = self.max_preview_size()            
+        if len(content) >= max_preview_size:
+            return { 'max_file_size_reached': 1,
+                     'max_file_size': max_preview_size,
+                     'preview': ' ' }
+        else:
+            return { 'preview': self.render(req, mimetype, content,
+                                            filename, detail, annotations) }
 
 
 def _html_splitlines(lines):

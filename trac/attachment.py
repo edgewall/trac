@@ -412,31 +412,25 @@ class AttachmentModule(Component):
                        % (attachment.filename, mimetype))
         fd = attachment.open()
         try:
-            max_preview_size = int(self.config.get('mimeviewer',
-                                                   'max_preview_size',
-                                                   '262144'))
+            mimeview = Mimeview(self.env)
+
+            max_preview_size = mimeview.max_preview_size()
             data = fd.read(max_preview_size)
-            max_size_reached = len(data) == max_preview_size
-            charset = detect_unicode(data) or self.config.get('trac', 'default_charset')
             
             if fmt in ('raw', 'txt'):
                 # Send raw file
+                charset = mimeview.preview_charset(data)
                 req.send_file(attachment.path, mimetype + ';charset=' + charset)
                 return
             
             if not is_binary(data):
-                data = util.to_utf8(data, charset)
                 add_link(req, 'alternate', attachment.href(format='txt'),
                          'Plain Text', mimetype)
-            if max_size_reached:
-                req.hdf['attachment.max_file_size_reached'] = 1
-                req.hdf['attachment.max_file_size'] = max_preview_size
-                vdata = ''
-            else:
-                mimeview = Mimeview(self.env)
-                vdata = mimeview.render(req, mimetype, data,
-                                        attachment.filename)
-            req.hdf['attachment.preview'] = vdata
+
+            hdf = mimeview.preview_to_hdf(req, mimetype, None, data,
+                                          attachment.filename, None,
+                                          annotations=['lineno'])
+            req.hdf['attachment'] = hdf
         finally:
             fd.close()
 

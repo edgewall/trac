@@ -203,34 +203,21 @@ class BrowserModule(Component):
                 if not chunk:
                     raise RequestDone
                 req.write(chunk)
-
         else:
             # Generate HTML preview
-            max_preview_size = int(self.config.get('mimeviewer',
-                                                   'max_preview_size',
-                                                   '262144'))
-            content = node.get_content().read(max_preview_size)
-            max_size_reached = len(content) == max_preview_size
-            if not charset:
-                charset = detect_unicode(content) or \
-                          self.config.get('trac', 'default_charset')
+            mimeview = Mimeview(self.env)
+            content = node.get_content().read(mimeview.max_preview_size())
             if not is_binary(content):
-                content = util.to_utf8(content, charset)
                 if mime_type != 'text/plain':
                     plain_href = self.env.href.browser(node.path,
                                                        rev=rev and node.rev,
                                                        format='txt')
                     add_link(req, 'alternate', plain_href, 'Plain Text',
                              'text/plain')
-            if max_size_reached:
-                req.hdf['file.max_file_size_reached'] = 1
-                req.hdf['file.max_file_size'] = max_preview_size
-                preview = ' '
-            else:
-                preview = Mimeview(self.env).render(req, mime_type, content,
-                                                    node.name, node.rev,
-                                                    annotations=['lineno'])
-            req.hdf['file.preview'] = preview
+            req.hdf['file'] = mimeview.preview_to_hdf(req, mime_type, charset,
+                                                      content,
+                                                      node.name, node.rev,
+                                                      annotations=['lineno'])
 
             raw_href = self.env.href.browser(node.path, rev=rev and node.rev,
                                              format='raw')
