@@ -204,11 +204,11 @@ try:
     class PyFormatCursor(sqlite.Cursor):
         def execute(self, sql, args=None):
             if args:
-                sql = sql % tuple(['?'] * len(args))
+                sql = sql % (('?',) * len(args))
             sqlite.Cursor.execute(self, sql, args or [])
         def executemany(self, sql, args=None):
             if args:
-                sql = sql % tuple(['?'] * len(args[0]))
+                sql = sql % (('?',) * len(args[0]))
             sqlite.Cursor.executemany(self, sql, args or [])
         def _convert_row(self, row):
             return tuple([(isinstance(v, unicode) and [v.encode('utf-8')] or [v])[0]
