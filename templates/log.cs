@@ -108,7 +108,7 @@
      <td class="date"><?cs var:log.changes[item.rev].date ?></td>
      <td class="rev">
       <a href="<?cs var:item.browser_href ?>" 
-         title="Browse at revision <?cs var:item.rev ?>"><?cs var:item.rev ?></a>
+         title="Browse at revision <?cs var:item.rev ?>">@<?cs var:item.rev ?></a>
      </td>
      <td class="chgset">
       <a href="<?cs var:item.changeset_href ?>"

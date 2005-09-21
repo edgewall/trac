@@ -23,7 +23,7 @@ from trac.wiki import wiki_to_html, wiki_to_oneliner
 
 __all__ = [ 'get_changes', 'get_path_links', 'get_path_rev' ]
 
-rev_re = re.compile(r"([^#]*)#(.+)")
+rev_re = re.compile(r"([^@#]*)[@#](.+)") # also support SVN's peg revision
 
 def get_changes(env, repos, revs, full=None, req=None, format=None):
     db = env.get_db_cnx()
