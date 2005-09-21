@@ -1048,17 +1048,21 @@ class TracAdmin(cmd.Cmd):
         else:
             self.do_help('hotcopy')
             return
+
+        # Bogus statement to lock the database while copying files
         cnx = self.db_open()
-        # Lock the database while copying files
-        cnx.db.execute("BEGIN")
+        cursor = cnx.cursor()
+        cursor.execute("UPDATE system SET name=NULL WHERE name IS NULL")
+
         print 'Hotcopying %s to %s ...' % (self.__env.path, dest),
         try:
             shutil.copytree(self.__env.path, dest, symlinks=1)
             print 'OK'
         except Exception, err:
             print err
+
         # Unlock database
-        cnx.db.execute("ROLLBACK")
+        cnx.rollback()
 
 ## ---------------------------------------------------------------------------
 
