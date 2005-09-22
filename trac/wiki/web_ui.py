@@ -375,7 +375,7 @@ class WikiModule(Component):
             attach_href = self.env.href.attachment('wiki', page.name)
             req.hdf['wiki.attach_href'] = attach_href
 
-    # ISearchPrivider methods
+    # ISearchProvider methods
 
     def get_search_filters(self, req):
         if req.perm.has_permission('WIKI_VIEW'):

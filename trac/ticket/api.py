@@ -167,7 +167,7 @@ class TicketSystem(Component):
                    % (formatter.href.ticket(target), label)
 
     
-    # ISearchPrivider methods
+    # ISearchProvider methods
 
     def get_search_filters(self, req):
         if req.perm.has_permission('TICKET_VIEW'):

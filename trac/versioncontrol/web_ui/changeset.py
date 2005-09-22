@@ -367,7 +367,7 @@ class ChangesetModule(Component):
             return '<a class="missing changeset" href="%s" rel="nofollow">%s</a>' \
                    % (formatter.href.changeset(rev), label)
 
-    # ISearchPrivider methods
+    # ISearchProvider methods
 
     def get_search_filters(self, req):
         if req.perm.has_permission('CHANGESET_VIEW'):
