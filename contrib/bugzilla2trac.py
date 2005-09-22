@@ -303,7 +303,7 @@ class TracDatabase(object):
             milestone = ms[key]
             print "  inserting milestone '%s'" % (milestone)
             c.execute("INSERT INTO milestone (name) VALUES (%s)",
-                      (milestone.encode('utf-8')))
+                      (milestone.encode('utf-8'),))
         self.db().commit()
     
     def addTicket(self, id, time, changetime, component, severity, priority,
