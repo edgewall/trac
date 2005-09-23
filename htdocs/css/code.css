@@ -1,4 +1,12 @@
-table.code-block {
+div.code {
+ background: #f7f7f7;
+ border: 1px solid #d7d7d7;
+ margin: 1em 1.75em;
+ padding: .25em;
+ overflow: auto
+}
+
+table.code {
  border: 1px solid #ddd;
  border-spacing: 0;
  border-top: 0;
@@ -7,14 +15,16 @@ table.code-block {
  line-height: 130%;
  padding: 0;
  margin: 0 auto;
+ table-layout: fixed;
  width: 100%;
 }
-table.code-block th {
+table.code th {
  border-right: 1px solid #d7d7d7;
  border-bottom: 1px solid #998;
  font-size: 11px;
 }
-table.code-block thead th {
+table.code th.lineno { width: 4em }
+table.code thead th {
  background: #eee;
  border-top: 1px solid #d7d7d7;
  color: #999;
@@ -22,7 +32,7 @@ table.code-block thead th {
  text-align: center;
  white-space: nowrap;
 }
-table.code-block tbody th {
+table.code tbody th {
  background: #eed;
  color: #886;
  font-weight: normal;
@@ -30,15 +40,15 @@ table.code-block tbody th {
  text-align: right;
  vertical-align: top;
 }
-table.code-block tbody th :link, table.code-block tbody th :visited {
+table.code tbody th :link, table.code tbody th :visited {
  border: none;
  color: #886;
  text-decoration: none;
 }
-table.code-block tbody th :link:hover, table.code-block tbody th :visited:hover {
+table.code tbody th :link:hover, table.code tbody th :visited:hover {
  color: #000;
 }
-table.code-block tbody td {
+table.code tbody td {
  background: #fff;
  font: normal 11px monospace;
  overflow: hidden;
@@ -46,12 +56,6 @@ table.code-block tbody td {
  vertical-align: top;
 }
 
-div.code-block {
- border: 1px dotted #d7d7d7;
- margin: 1em 0;
- padding: .3em;
- overflow: auto
-}
 .image-file { background: #eee; padding: .3em }
 .image-file img { background: url(../imggrid.png) }
 

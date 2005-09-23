@@ -215,7 +215,6 @@ class Mimeview(Component):
             qr = renderer.get_quality_ratio(mimetype)
             if qr > 0:
                 expand_tabs = getattr(renderer, 'expand_tabs', False)
-                self.log.debug('Renderer %s expand_tabs = %s' % (renderer.__class__.__name__, expand_tabs))
                 if expand_tabs and expanded_content is None:
                     tab_width = int(self.config.get('mimeviewer', 'tab_width'))
                     expanded_content = content.expandtabs(tab_width)
@@ -240,7 +239,7 @@ class Mimeview(Component):
                     return self._annotate(result, annotations)
                 else:
                     buf = StringIO()
-                    buf.write('<div class="code-block"><pre>')
+                    buf.write('<div class="code"><pre>')
                     for line in result:
                         buf.write(line + '\n')
                     buf.write('</pre></div>')
@@ -251,7 +250,7 @@ class Mimeview(Component):
 
     def _annotate(self, lines, annotations):
         buf = StringIO()
-        buf.write('<table class="code-block listing"><thead><tr>')
+        buf.write('<table class="code"><thead><tr>')
         annotators = []
         for annotator in self.annotators:
             atype, alabel, adesc = annotator.get_annotation_type()

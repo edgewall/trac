@@ -289,7 +289,8 @@ class TicketModule(Component):
                 if format == 'rss':
                     href = self.env.abs_href.ticket(id)
                     if status != 'new':
-                        message = wiki_to_html(message or '--', self.env, req, db)
+                        message = wiki_to_html(message or '--', self.env, req,
+                                               db)
                     else:
                         message = util.escape(message)
                 else:
