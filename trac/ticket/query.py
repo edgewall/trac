@@ -244,14 +244,18 @@ class Query(object):
                 clauses.append("COALESCE(%s,'') %sIN (%s)"
                                % (col, neg and 'NOT ' or '', inlist))
             elif len(v) > 1:
-                constraint_sql = [get_constraint_sql(k, val, mode, neg)
-                                  for val in v]
+                constraint_sql = filter(lambda x: x is not None,
+                                        [get_constraint_sql(k, val, mode, neg)
+                                         for val in v])
+                if not constraint_sql:
+                    continue
                 if neg:
                     clauses.append("(" + " AND ".join(constraint_sql) + ")")
                 else:
                     clauses.append("(" + " OR ".join(constraint_sql) + ")")
             elif len(v) == 1:
-                clauses.append(get_constraint_sql(k, v[0][neg and 1 or 0:], mode, neg))
+                clauses.append(get_constraint_sql(k, v[0][neg and 1 or 0:],
+                                                  mode, neg))
 
         clauses = filter(None, clauses)
         if clauses:

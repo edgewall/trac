@@ -243,6 +243,36 @@ WHERE (COALESCE(t.owner,'') LIKE '%someone%' OR COALESCE(t.owner,'') LIKE '%some
 ORDER BY COALESCE(t.id,0)=0,t.id""")
         tickets = query.execute()
 
+    def test_constrained_by_empty_value_contains(self):
+        query = Query.from_string(self.env, 'owner~=|', order='id')
+        sql = query.get_sql()
+        self.assertEqual(sql,
+"""SELECT t.id AS id,t.summary AS summary,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.milestone AS milestone,t.time AS time,t.changetime AS changetime,priority.value AS priority_value
+FROM ticket AS t
+  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
+ORDER BY COALESCE(t.id,0)=0,t.id""")
+        tickets = query.execute()
+
+    def test_constrained_by_empty_value_startswith(self):
+        query = Query.from_string(self.env, 'owner^=|', order='id')
+        sql = query.get_sql()
+        self.assertEqual(sql,
+"""SELECT t.id AS id,t.summary AS summary,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.milestone AS milestone,t.time AS time,t.changetime AS changetime,priority.value AS priority_value
+FROM ticket AS t
+  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
+ORDER BY COALESCE(t.id,0)=0,t.id""")
+        tickets = query.execute()
+
+    def test_constrained_by_empty_value_endswith(self):
+        query = Query.from_string(self.env, 'owner$=|', order='id')
+        sql = query.get_sql()
+        self.assertEqual(sql,
+"""SELECT t.id AS id,t.summary AS summary,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.milestone AS milestone,t.time AS time,t.changetime AS changetime,priority.value AS priority_value
+FROM ticket AS t
+  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
+ORDER BY COALESCE(t.id,0)=0,t.id""")
+        tickets = query.execute()
+
 
 def suite():
     return unittest.makeSuite(QueryTestCase, 'test')
