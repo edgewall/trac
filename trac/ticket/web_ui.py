@@ -119,7 +119,7 @@ class NewticketModule(Component):
                 field['label'] = 'Assign to'
             elif name == 'milestone':
                 # Don't make completed milestones available for selection
-                options = field['options']
+                options = field['options'][:]
                 for option in field['options']:
                     milestone = Milestone(self.env, option, db=db)
                     if milestone.is_completed:
