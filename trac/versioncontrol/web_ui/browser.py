@@ -241,8 +241,12 @@ class BrowserModule(Component):
         if formatter.flavor != 'oneliner' and match:
             return '<img src="%s" alt="%s" />' % \
                    (formatter.href.file(path, format='raw'), label)
-        path, rev = get_path_rev(path)
+        path, rev, line = get_path_rev_line(path)
+        if line is not None:
+            anchor = '#L%d' % line
+        else:
+            anchor = ''
         label = urllib.unquote(label)
-        return '<a class="source" href="%s">%s</a>' \
-               % (util.escape(formatter.href.browser(path, rev=rev)), label)
-
+        return '<a class="source" href="%s%s">%s</a>' \
+               % (util.escape(formatter.href.browser(path, rev=rev)), anchor,
+                  label)

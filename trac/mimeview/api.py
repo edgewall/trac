@@ -340,7 +340,7 @@ class LineNumberAnnotator(Component):
         return 'lineno', 'Line', 'Line numbers'
 
     def annotate_line(self, number, content):
-        return '<th id="l%s"><a href="#l%s">%s</a></th>' % (number, number,
+        return '<th id="L%s"><a href="#l%s">%s</a></th>' % (number, number,
                                                             number)
 
 

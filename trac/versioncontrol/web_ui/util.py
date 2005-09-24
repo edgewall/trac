@@ -21,9 +21,7 @@ from trac import util
 from trac.util import escape, format_datetime, pretty_timedelta, shorten_line
 from trac.wiki import wiki_to_html, wiki_to_oneliner
 
-__all__ = [ 'get_changes', 'get_path_links', 'get_path_rev' ]
-
-rev_re = re.compile(r"([^@#]*)[@#](.+)") # also support SVN's peg revision
+__all__ = ['get_changes', 'get_path_links', 'get_path_rev_line']
 
 def get_changes(env, repos, revs, full=None, req=None, format=None):
     db = env.get_db_cnx()
@@ -69,12 +67,16 @@ def get_path_links(href, path, rev):
         })
     return links
 
-def get_path_rev(path):
+rev_re = re.compile(r"([^@#]*)[@#]([^#]+)(?:#(\d+))?")
+
+def get_path_rev_line(path):
     rev = None
+    line = None
     match = rev_re.search(path)
     if match:
         path = match.group(1)
         rev = match.group(2)
+        if match.group(3):
+            line = int(match.group(3))
     path = urllib.unquote(path)
-    return (path, rev)
-
+    return path, rev, line

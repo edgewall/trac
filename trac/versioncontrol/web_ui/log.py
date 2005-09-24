@@ -214,10 +214,10 @@ class LogModule(Component):
         yield ('log', self._format_link)
 
     def _format_link(self, formatter, ns, path, label):
-        path, rev = get_path_rev(path)
+        path, rev, line = get_path_rev_line(path)
         stop_rev = None
         if rev and ':' in rev:
-            stop_rev, rev = rev.split(':',1)
+            stop_rev, rev = rev.split(':', 1)
         label = urllib.unquote(label)
         return '<a class="source" href="%s">%s</a>' \
                % (formatter.href.log(path, rev=rev, stop_rev=stop_rev), label)
