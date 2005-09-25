@@ -228,8 +228,8 @@ source:/foo%20bar/baz%2Bquux
 source:/foo%2520bar/baz%252Bquux#42
 source:#42
 source:@42
-source:/foo/bar@42#20
-source:/foo/bar@head#20
+source:/foo/bar@42#L20
+source:/foo/bar@head#L20
 ------------------------------
 <p>
 <a class="source" href="/browser/foo/bar">source:/foo/bar</a>
@@ -241,8 +241,8 @@ source:/foo/bar@head#20
 <a class="source" href="/browser/foo%2520bar/baz%252Bquux?rev=42">source:/foo%20bar/baz%2Bquux#42</a>
 <a class="source" href="/browser/?rev=42">source:#42</a>
 <a class="source" href="/browser/?rev=42">source:@42</a>
-<a class="source" href="/browser/foo/bar?rev=42#L20">source:/foo/bar@42#20</a>
-<a class="source" href="/browser/foo/bar?rev=head#L20">source:/foo/bar@head#20</a>
+<a class="source" href="/browser/foo/bar?rev=42#L20">source:/foo/bar@42#L20</a>
+<a class="source" href="/browser/foo/bar?rev=head#L20">source:/foo/bar@head#L20</a>
 </p>
 ==============================
 query:?order=priority
