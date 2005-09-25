@@ -836,11 +836,14 @@ Congratulations!
                            [(e.name,) for e in enum_cls.select(self.env_open())])
 
     def _do_enum_add(self, type, name):
+        cnx = self.db_open()
         sql = ("INSERT INTO enum(value,type,name) "
-               " SELECT 1+COALESCE(max(value),0),'%(type)s','%(name)s'"
+               " SELECT 1+COALESCE(max(%(cast)s),0),'%(type)s','%(name)s'"
                "   FROM enum WHERE type='%(type)s'" 
-               % {'type':type, 'name':name})
-        self.db_update(sql)
+               % {'type':type, 'name':name, 'cast': cnx.cast('value', 'int')})
+        cursor = cnx.cursor()
+        self.db_update(sql, cursor)
+        cnx.commit()
 
     def _do_enum_change(self, type, name, newname):
         enum_cls = self._enum_map[type]
