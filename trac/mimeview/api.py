@@ -291,12 +291,12 @@ class Mimeview(Component):
             content = to_utf8(content, charset or self.preview_charset(content))
         max_preview_size = self.max_preview_size()            
         if len(content) >= max_preview_size:
-            return { 'max_file_size_reached': 1,
-                     'max_file_size': max_preview_size,
-                     'preview': ' ' }
+            return {'max_file_size_reached': True,
+                    'max_file_size': max_preview_size,
+                    'preview': ' '}
         else:
-            return { 'preview': self.render(req, mimetype, content,
-                                            filename, detail, annotations) }
+            return {'preview': self.render(req, mimetype, content,
+                                           filename, detail, annotations)}
 
 
 def _html_splitlines(lines):
@@ -340,7 +340,7 @@ class LineNumberAnnotator(Component):
         return 'lineno', 'Line', 'Line numbers'
 
     def annotate_line(self, number, content):
-        return '<th id="L%s"><a href="#l%s">%s</a></th>' % (number, number,
+        return '<th id="L%s"><a href="#L%s">%s</a></th>' % (number, number,
                                                             number)
 
 
