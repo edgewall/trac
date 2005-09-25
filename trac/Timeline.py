@@ -98,8 +98,7 @@ class TimelineModule(Component):
 
         fromdate = time.mktime((t[0], t[1], t[2], 23, 59, 59, t[6], t[7], t[8]))
         try:
-            daysback = max(0, int(req.args.get('daysback', '') \
-                                  or req.session.get('timeline.daysback', '')))
+            daysback = max(0, int(req.args.get('daysback', '')))
         except ValueError:
             daysback = int(self.config.get('timeline', 'default_daysback'))
         req.hdf['timeline.from'] = format_date(fromdate)
@@ -121,13 +120,12 @@ class TimelineModule(Component):
 
         # save the results of submitting the timeline form to the session
         if req.args.has_key('update'):
-            for f in available_filters:
-                key = 'timeline.filter.%s' % f[0]
-                if req.args.has_key(f[0]):
+            for filter in available_filters:
+                key = 'timeline.filter.%s' % filter[0]
+                if req.args.has_key(filter[0]):
                     req.session[key] = '1'
                 elif req.session.has_key(key):
                     del req.session[key]
-            req.session['timeline.daysback'] = daysback
 
         stop = fromdate
         start = stop - (daysback + 1) * 86400
