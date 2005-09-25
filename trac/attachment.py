@@ -55,7 +55,7 @@ class Attachment(object):
         cursor.execute("SELECT filename,description,size,time,author,ipnr "
                        "FROM attachment WHERE type=%s AND id=%s "
                        "AND filename=%s ORDER BY time",
-                       (self.parent_type, self.parent_id, filename))
+                       (self.parent_type, str(self.parent_id), filename))
         row = cursor.fetchone()
         cursor.close()
         if not row:
@@ -168,7 +168,7 @@ class Attachment(object):
         cursor = db.cursor()
         cursor.execute("SELECT filename,description,size,time,author,ipnr "
                        "FROM attachment WHERE type=%s AND id=%s ORDER BY time",
-                       (parent_type, parent_id))
+                       (parent_type, str(parent_id)))
         for filename,description,size,time,author,ipnr in cursor:
             attachment = Attachment(env, parent_type, parent_id)
             attachment.filename = filename
