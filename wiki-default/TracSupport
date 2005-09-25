@@ -4,5 +4,11 @@ Like in most [http://www.opensource.org/ open source projects], "free" Trac supp
 
 There is also an [http://projects.edgewall.com/trac/wiki/IrcChannel IRC channel], where people might be able to help out. Much of the 'live' development discussions also happen there.
 
+Before you start a new support query, make sure you've done the appropriate searching:
+ * in the project's [http://projects.edgewall.com/trac/wiki/TracFaq FAQ]
+ * in past messages to the Trac [http://blog.gmane.org/gmane.comp.version-control.subversion.trac.general?set_user_css=http%3A%2F%2Fwww.edgewall.com%2Fcss%2Fgmane.css&do_set_user_css=t Mailing List]
+ * in Trac tickets, using either the [search:?q=&ticket=on&wiki=on Search] or the [query:"?summary=~&keywords=~somekeyword" Query] modules
+
+
 ----
-See also: [http://projects.edgewall.com/trac/wiki/MailingList MailingList], 
+See also: [http://projects.edgewall.com/trac/wiki/MailingList MailingList]

@@ -1,8 +1,7 @@
 = TracAdmin =
 [[TracGuideToc]]
 
-Trac is distributed with a powerful configuration tool. This tool can be used 
-to configure and customize your Trac-installation to better fit your needs.
+Trac is distributed with a powerful command-line configuration tool. This tool can be used  to configure and customize your Trac-installation to better fit your needs.
 
 == Usage ==
 
@@ -18,7 +17,7 @@ trac-admin /path/to/projenv wiki list
 
 == Interactive Mode ==
 
-When pass the environment path as only argument, `trac-admin` starts in interactive mode.
+When passing the environment path as the only argument, `trac-admin` starts in interactive mode.
 Commands can then be executed on the selected environment using the prompt, which offers tab-completion
 (on non-Windows environments, and when the Python `readline` module is available) and automatic repetition of the last command issued.
 
@@ -35,4 +34,4 @@ To get help on a all the Wiki-related commands, run:
 }}}
 
 ----
-See Also: TracGuide, TracBackup, TracPermissions. TracEnvironment, TracIni
+See also: TracGuide, TracBackup, TracPermissions, TracEnvironment, TracIni

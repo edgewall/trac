@@ -2,7 +2,6 @@
 
 Tracd is a lightweight stand-alone Trac server. In most cases it's easier to setup and runs faster than trac.cgi.
 
-'''Note: tracd is still experimental.'''
 
 == Pros ==
 
@@ -13,7 +12,8 @@ Tracd is a lightweight stand-alone Trac server. In most cases it's easier to set
 
  * Less features: Tracd implements a very simple web-server and is not as configurable as apache.
  * Only htdigest authentication: Tracd can currently only authenticate users against apache-htdigest files.
- * No native https support: [http://www.rickk.com/sslwrap/ sslwrap] can be used instead.
+ * No native https support: [http://www.rickk.com/sslwrap/ sslwrap] can be used instead,
+   or [http://lists.edgewall.com/archive/trac/2005-August/004381.html STUNNEL].
 
 == Usage examples ==
 
@@ -40,14 +40,10 @@ The digest file can be shared:
 
 == Tracd on Windows ==
 
-tracd also works on Windows. But on that platform, 
-the sensitivity on multithread issues is high.
-tracd is not (yet!) very robust in multithread mode,
-see for example #1401 and #1721 for some of the issues...
-
-I recently found out that all the occasional problems 
-(i.e. crashes) I had can be avoided by telling tracd 
-to operate in single-threaded mode:
+tracd also works on Windows. 
+But on that platform, the sensitivity on multithreading issues is high,
+and you ''might'' have problems (i.e. crashes of the Python interpreter).
+If this happens, you can force tracd to operate in single-threaded mode:
 {{{
 #!text/x-diff
 Index: trac/web/standalone.py
@@ -63,6 +59,9 @@ Index: trac/web/standalone.py
 
      projects = None
 }}}
+
+Please also report any such issue, as they are believed to be fixed by now.
+
 
 == Generating passwords on Windows ==
 

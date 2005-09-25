@@ -13,6 +13,9 @@ Please keep sorted order when you add an entry.
 === Bulgarian ===
 Българският език работи ли?
 
+=== Česky ===
+Čeština v kódování UTF-8, žádný problém.
+
 === Chinese ===
 Traditional: ''繁體中文, 許功蓋會育''; Simplified: ''简体中文，许功盖会育''
 
@@ -22,6 +25,9 @@ Yes indeed, Trac supports English. Fully.
 === Français ===
 ''Il est possible d'écrire en Français : à, ç, û, ...''
 Voir aussi TracTermsFr
+
+=== German ===
+Trac-Wiki muß auch deutsche Umlaute richtig anzeigen: ö, ä, ü, ...
 
 === Greek ===
 Τα Ελληνικά υποστηρίζονται επαρκώς επίσης.
@@ -50,6 +56,12 @@ Pchnąć w tę łódź jeża lub ośm skrzyń fig
 === Russian ===
 Проверка русского языка: кажется работает...
 See also TracTermsRu
+
+=== Serbian ===
+Podržan, uprkos činjenici da se za njegovo pisanje koriste чак два алфабета.
+
+=== Slovenian ===
+Ta suhi škafec pušča vodo že od nekdaj!
 
 === Spanish ===
 Esto es un pequeño texto en Español, ahora una con acentó

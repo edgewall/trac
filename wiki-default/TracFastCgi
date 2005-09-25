@@ -39,6 +39,7 @@ fastcgi.server = ("/trac" =>
                    ("trac" =>
                      ("socket" => "/tmp/trac-fastcgi.sock",
                       "bin-path" => "/path/to/cgi-bin/trac.fcgi",
+                      "check-local" => "disable",
                       "bin-environment" =>
                         ("TRAC_ENV" => "/path/to/projenv")
                      )
@@ -47,6 +48,8 @@ fastcgi.server = ("/trac" =>
 }}}
 
 Note that you will need to add a new entry to `fastcgi.server` for each separate Trac instance that you wish to run. Alternatively, you may use the `TRAC_ENV_PARENT_DIR` variable instead of `TRAC_ENV` as described  above.
+
+Other important information like [http://trac.lighttpd.net/trac/wiki/TracInstall this updated TracInstall page], [wiki:TracCgi#MappingStaticResources and this] are useful for non-fastcgi specific installation aspects.
 
 Relaunch lighttpd, and browse to `http://yourhost.example.org/trac` to access Trac.
 

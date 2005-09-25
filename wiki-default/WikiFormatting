@@ -1,36 +1,58 @@
 = WikiFormatting =
 [[TracGuideToc]]
 
-Wiki markup is a core feature in Trac, tightly integrating all the other parts of Trac into flexible and powerful whole.
+Wiki markup is a core feature in Trac, tightly integrating all the other parts of Trac into a flexible and powerful whole.
 
-Trac has a built in small and powerful wiki rendering engine. This wiki engine implements an ever growing subset of the commands from other popular Wikis especially [http://moinmoin.wikiwikiweb.de/ MoinMoin]. 
+Trac has a built in small and powerful wiki rendering engine. This wiki engine implements an ever growing subset of the commands from other popular Wikis,
+especially [http://moinmoin.wikiwikiweb.de/ MoinMoin]. 
+
 
 This page demonstrates the formatting syntax available anywhere WikiFormatting is allowed.
 
+
 == Font styles ==
 
-The Trac wiki supports the following font styles: '''bold''', ''italic'', '''''bold italic''''',
-__underline__, {{{monospace}}}, ~~strike-through~~, ^superscript^ and ,,subscript,,.
-
+The Trac wiki supports the following font styles:
 {{{
-The Trac wiki supports the following font styles: '''bold''', ''italic'', '''''bold italic''''',
-__underline__, {{{monospace}}}, ~~strike-through~~, ^superscript^ and ,,subscript,,.
+ * '''bold'''
+ * ''italic''
+ * '''''bold italic'''''
+ * __underline__
+ * {{{monospace}}} or `monospace`
+ * ~~strike-through~~
+ * ^superscript^ 
+ * ,,subscript,,.
 }}}
+
+Display:
+ * '''bold'''
+ * ''italic''
+ * '''''bold italic'''''
+ * __underline__
+ * {{{monospace}}} or `monospace`
+ * ~~strike-through~~
+ * ^superscript^ 
+ * ,,subscript,,.
+
 
 
 == Heading ==
 
-You can create heading by starting a line with one up to five ''equal'' '=' characters
+You can create heading by starting a line with one up to five ''equal'' "=" characters
 followed by a single space and the headline text. The line should end with a space 
 followed by the same number of ''equal'' characters. 
 
-''Note: As of writing, headings cannot contain TracLinks.''
-
-=== Example: ===
+Example:
 {{{
 = Heading =
 == Subheading ==
+=== About ''this'' ===
 }}}
+
+Display:
+= Heading =
+== Subheading ==
+=== About ''this'' ===
 
 
 == Paragraphs ==
@@ -48,9 +70,11 @@ Line 1[[BR]]Line 2
 
   Text paragraphs can be indented by starting the lines with two or more spaces.
 
+
 == Lists ==
+
 The wiki supports both ordered/numbered and unordered lists.
-(Note: there must be a space preceding the star (*) or number (1.), or nothing will happen.)
+There must be a space preceding the star "*" or number "1.", or nothing will happen.
 
 Example:
 {{{
@@ -72,8 +96,33 @@ Display:
    1. Item 1.1
  1. Item 2
 
+
+== Definition lists ==
+
+The wiki also supports definition lists.
+
+Example:
+{{{
+ llama::
+   some kind of mammal, with hair
+ ppython::
+   some kind of reptile, without hair
+   (can you spot the typo?)
+}}}
+
+Display:
+ llama::
+   some kind of mammal, with hair
+ ppython::
+   some kind of reptile, without hair
+   (can you spot the typo?)
+
+Note that you need a space in front of the defined term.
+
+
 == Preformatted text ==
-Block quotes, preformatted text, are suitable for source code snippets, notes and examples. Use three ''curly braces'' wrapped around the text to define a block quote:
+
+Block quotes, preformatted text, are suitable for source code snippets, notes and examples. Use three ''curly braces'' wrapped around the text to define a block quote.
   
 Example:
 {{{
@@ -89,6 +138,7 @@ Display:
      print "Hello World"
 }}}
 
+
 == Tables ==
 
 Simple tables can be created like this:
@@ -96,55 +146,81 @@ Simple tables can be created like this:
 ||Cell 1||Cell 2||Cell 3||
 ||Cell 4||Cell 5||Cell 6||
 }}}
+
 Display:
 ||Cell 1||Cell 2||Cell 3||
 ||Cell 4||Cell 5||Cell 6||
 
+Note that more complex tables can be created using
+[wiki:WikiRestructuredText#BiggerReSTExample reStructuredText].
+
 == Links ==
 
-!Hyperlinks are automatically created for WikiPageNames and urls. !WikiPageLinks can be disabled by
-prepending an exclamation mark (!) character, such as {{{!WikiPageLink}}}.
+Hyperlinks are automatically created for WikiPageNames and urls. 
+!WikiPageLinks can be disabled by
+prepending an exclamation mark "!" character, such as {{{!WikiPageLink}}}.
 
-Examples:
+Example:
+{{{
+ TitleIndex, http://www.edgewall.com/, !NotAlink
+}}}
 
- TitleIndex, http://www.edgewall.com/.
+Display:
+ TitleIndex, http://www.edgewall.com/, !NotAlink
 
 Links can be given a more descriptive title by writing the link followed by
-a space and a title and all this inside square brackets. Like this:
+a space and a title and all this inside square brackets. 
+If the descriptive title is omitted, then the explicit prefix is disguarded,
+unless the link is an external link. This can be useful for wiki pages
+not adhering to the WikiPageNames convention.
+
+Like this:
 {{{
  * [http://www.edgewall.com/ Edgewall Software]
  * [wiki:TitleIndex Title Index]
+ * [wiki:ISO9000]
 }}}
-Display:
 
+Display:
  * [http://www.edgewall.com/ Edgewall Software]
  * [wiki:TitleIndex Title Index]
+ * [wiki:ISO9000]
+
 
 === Trac Links ===
 
 Wiki pages can link directly to other parts of the Trac system.
 Pages can refer to tickets, reports, changesets, milestones, source files and
 other Wiki pages using the following notation:
- * Tickets: '''!#1''' or '''!ticket:1'''
- * Reports: '''!{1}''' or '''!report:1'''
- * Changesets: '''![1]''' or '''!changeset:1'''
- * Wiki pages: '''CamelCase''' or '''!wiki:CamelCase'''
- * Milestones: '''!milestone:1.0'''
- * Files: '''!source:trunk/COPYING'''
- * A specific file revision: '''!source:/trunk/COPYING#200'''
+{{{
+ * Tickets: #1 or ticket:1
+ * Reports: {1} or report:1
+ * Changesets: r1, [1] or changeset:1
+ * Revision Logs: r1:3, [1:3] or log:branches/0.9-stable#1:3
+ * Wiki pages: CamelCase or wiki:CamelCase
+ * Milestones: milestone:1.0 or milestone:"End-of-days Release"
+ * Files: source:trunk/COPYING
+ * A specific file revision: source:/trunk/COPYING#200
+ * A filename with embedded space: source:"/trunk/README FIRST"
+}}}
+
 Display:
  * Tickets: #1 or ticket:1
  * Reports: {1} or report:1
- * Changesets: [1] or changeset:1
+ * Changesets: r1, [1] or changeset:1
+ * Revision Logs: r1:3, [1:3] or log:branches/0.8-stable#1000:2000
  * Wiki pages: CamelCase or wiki:CamelCase
- * Milestones: milestone:1.0
+ * Milestones: milestone:1.0 or milestone:"End-of-days Release"
  * Files: source:trunk/COPYING
  * A specific file revision: source:/trunk/COPYING#200
+ * A filename with embedded space: source:"/trunk/README FIRST"
 
 See TracLinks for more in-depth information.
 
-== Escaping Links and WikiNames ==
-You may avoid making hyperlinks out of TracLinks by preceding an expression with a single '!' (exclamation mark).
+
+== Escaping Links and WikiPageNames ==
+
+You may avoid making hyperlinks out of TracLinks by preceding an expression with a single "!" (exclamation mark).
 
 {{{
  !NoHyperLink
@@ -154,31 +230,41 @@ You may avoid making hyperlinks out of TracLinks by preceding an expression with
 Display:
  !NoHyperLink
  !#42 is not a link
+
 
 == Images ==
 
-Urls ending with .png, .gif or .jpg are automatically interpreted as image links, and converted to IMG tags.
+Urls ending with `.png`, `.gif` or `.jpg` are automatically interpreted as image links, and converted to `<img>` tags.
 
 Example:
 {{{
 http://www.edgewall.com/gfx/trac_example_image.png
 }}}
+
 Display:
 
 http://www.edgewall.com/gfx/trac_example_image.png
+
 
 == Macros ==
-Macros are ''custom functions'' to insert dynamic content in a page. See WikiMacros for usage.
+
+Macros are ''custom functions'' to insert dynamic content in a page. 
+See WikiMacros for usage.
 
 Example:
 {{{
  [[Timestamp]]
 }}}
+
 Display:
  [[Timestamp]]
 
+
 == Processors ==
-Trac supports alternative markup formats using WikiProcessors. For example, processors are used to write pages in [wiki:WikiRestructuredText reStructuredText] or [wiki:WikiHtml HTML]. 
+
+Trac supports alternative markup formats using WikiProcessors. 
+For example, processors are used to write pages in 
+[wiki:WikiRestructuredText reStructuredText] or [wiki:WikiHtml HTML]. 
 
 See WikiProcessors for more information.
 
@@ -190,6 +276,7 @@ See WikiProcessors for more information.
 &lt;h1 style="text-align: right; color: blue"&gt;HTML Test&lt;/h1&gt;
 }}}</pre>
 }}}
+
 Display:
 {{{
 #!html
@@ -208,6 +295,7 @@ if __name__ == '__main__':
    Test()
 }}}</pre>
 }}}
+
 Display:
 {{{
 #!python
@@ -218,10 +306,12 @@ if __name__ == '__main__':
    Test()
 }}}
 
+
 == Miscellaneous ==
 
 Four or more dashes will be replaced by a horizontal line (<HR>)
 
+Example:
 {{{
  ----
 }}}
@@ -229,9 +319,9 @@ Four or more dashes will be replaced by a horizontal line (<HR>)
 Display:
 ----
 
----
+
 ----
--
+
 See also: TracLinks, TracGuide, WikiHtml, WikiMacros, WikiProcessors, TracSyntaxColoring.
 
 ----

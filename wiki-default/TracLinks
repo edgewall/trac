@@ -9,21 +9,23 @@ number, name or path of the item) though some frequently used kinds of items
 also have short-hand notations.
 
 Some examples:
-
  * Tickets: '''!#1''' or '''!ticket:1'''
  * Reports: '''!{1}''' or '''!report:1'''
- * Changesets: '''![1]''' or '''!changeset:1'''
+ * Changesets: '''!r1''', '''![1]''' or '''!changeset:1'''
+ * Revision log: '''!r1:3''', '''![1:3]''' or '''!log:#1:3'''
  * Wiki pages: '''CamelCase''' or '''!wiki:CamelCase'''
  * Milestones: '''!milestone:1.0'''
  * Files: '''!source:trunk/COPYING'''
-
+ * A specific file revision: '''!source:/trunk/COPYING#200'''
 Display:
  * Tickets: #1 or ticket:1
  * Reports: {1} or report:1
- * Changesets: [1] or changeset:1
+ * Changesets: r1, [1] or changeset:1
+ * Differences: r1:3, [1:3] or log:#1:3
  * Wiki pages: CamelCase or wiki:CamelCase
  * Milestones: milestone:1.0
  * Files: source:trunk/COPYING
+ * A specific file revision: source:/trunk/COPYING#200
 
 '''Note:''' The wiki:CamelCase form is rarely used, but it can be convenient to refer to
 pages whose names do not follow WikiPageNames rules, i.e., single words,

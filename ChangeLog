@@ -1,5 +1,22 @@
+Trac 0.9-beta2  (Sept 25, 2005)
+http://svn.edgewall.com/repos/trac/tags/trac-0.9b2
+
+ * Support for setuptools 0.6.
+ * Allow insertion of a custom HTML snippet above the new ticket form
+   to explain site-specific policies and/or guidelines.
+ * Much improved Bugzilla import script.
+ * Fixed a bug where deleting a wiki page version would sometimes delete
+   the entire page.
+ * Fixes for the rendering of diffs and patches.
+ * Fixes for the Subversion authz support.
+ * Fixed bugs: #2008, #2032, #2034, #1801, #1893, #1040, #2040,
+   #1036, #1944, #1081, #1863, #2052, #2066, #2016, #2090, #1985,
+   #2012, #2089, #2079, #1999, #2029, #2079, #1960, #2080, #2021,
+   #2042, #2088, #1345, #2011, #2100, #2103, #2113, #2116
+
+
 Trac 0.9-beta1  (Sept 5, 2005)
-http://svn.edgewall.com/repos/trac/tags/trac-0.9-beta
+http://svn.edgewall.com/repos/trac/tags/trac-0.9b1
 
  Trac 0.9 contains a great number of new features, improvements and
  bug fixes. The following list contains only a few highlights:
@@ -18,7 +35,7 @@ http://svn.edgewall.com/repos/trac/tags/trac-0.9-beta
  The complete list of closed tickets can be found here:
    http://projects.edgewall.com/trac/query?status=closed&milestone=0.9
 
-	
+
 Trac 0.8.3  (Jun 15, 2005)
 http://svn.edgewall.com/repos/trac/tags/trac-0.8.3
 

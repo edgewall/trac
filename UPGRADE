@@ -12,7 +12,7 @@ other 0.8.x release).
 
 General Instructions
 --------------------
-Typically, there are three steps involved in upgrading to a newer version of
+Typically, there are four steps involved in upgrading to a newer version of
 Trac:
 
 1. Update the Trac Code
@@ -56,6 +56,12 @@ upgrade the documentation:
 
 Note that this procedure will of course leave your `WikiStart` page intact.
 
+4. Restart the Web Server
+
+In order to reload the new Trac code you will need to restart your web
+server (note this is not necessary for plain old CGI, although CGI is
+discouraged for performance reasons).
+
 
 The following sections discuss any extra actions that may need to be taken
 to upgrade to specific versions of Trac.
@@ -64,12 +70,18 @@ to upgrade to specific versions of Trac.
 From 0.8.x to 0.9
 -----------------
 
-If you're using mod_python, you will need to change the name of the
-mod_python handler in the Apache HTTPD configuration:
+If you're using CGI, you will want to update your `Alias` to the Trac htdocs
+static resources.  See the documentation on the TracCgi wiki page for an
+example on how to configure this. 
+
+FastCGI and mod_python users can safely remove any `Alias`es to the Trac
+htdocs folder since this is no longer used by default. 
+
+mod_python users will also need to change the name of the mod_python handler
+in the Apache HTTPD configuration:
 
    from: PythonHandler trac.ModPythonHandler
    to:   PythonHandler trac.web.modpython_frontend
-
 
 If you have PySQLite 2.x installed, Trac will now try to open your SQLite
 database using the SQLite 3.x file format. The database formats used by

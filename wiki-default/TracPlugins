@@ -4,22 +4,35 @@ Since version 0.9, Trac supports plugins that extend the built-in functionality.
 
 == Requirements ==
 
-To use plugins in Trac, you need to have [http://peak.telecommunity.com/DevCenter/setuptools setuptools], version 0.5a13 installed.
+To use plugins in Trac, you need to have [http://peak.telecommunity.com/DevCenter/setuptools setuptools] (version 0.5 or 0.6) installed.
 
 To install `setuptools`, download the bootstrap module [http://peak.telecommunity.com/dist/ez_setup.py ez_setup.py] and execute it as follows:
 {{{
-$ python ez_setup.py setuptools==0.5a13
+$ python ez_setup.py
 }}}
+
+If the `ez_setup.py` script fails to install the setuptools release, you can download it from [http://www.python.org/pypi/setuptools PyPI] and install it manually.
 
 == Installing a Trac Plugin ==
 
+=== For a Single Project ===
+
 Plugins are packaged as [http://peak.telecommunity.com/DevCenter/PythonEggs Python eggs]. That means they are ZIP archives with the file extension `.egg`. If you have downloaded a source distribution of a plugin, you can run:
 {{{
-$ setup.py bdist_egg
+$ python setup.py bdist_egg
 }}}
 to build the `.egg` file.
 
 Once you have the plugin archive, you need to copy it into the `plugins` directory of the [wiki:TracEnvironment project environment]. Also, make sure that the web server has sufficient permissions to read the plugin egg.
+
+=== For All Projects ===
+
+Plugins that you want to use in all your projects (such as [http://projects.edgewall.com/trac/wiki/WebAdmin WebAdmin]) can be installed globally by running:
+{{{
+$ python setup.py install
+}}}
+
+Alternatively, you can just drop the `.egg` file in the Python `site-packages` directory.
 
 == Setting up the Plugin Cache ==
 
@@ -30,7 +43,26 @@ To do this from the Apache configuration, use the `SetEnv` directive as follows:
 SetEnv PYTHON_EGG_CACHE /path/to/dir
 }}}
 
-This works whether your using the [wiki:TracCgi CGI] or the [wiki:TracModPython mod_python] front-end. For [wiki:TracFastCgi FastCGI], you'll need to `-initial-env` option, or whatever is provided by your web server for setting environment variables.
+This works whether your using the [wiki:TracCgi CGI] or the [wiki:TracModPython mod_python] front-end. Put this directive next to where you set the path to the [wiki:TracEnvironment Trac environment], i.e. in the same `<Location>` block.
+
+For example (for CGI):
+{{{
+ <Location /trac>
+   SetEnv TRAC_ENV /path/to/projenv
+   SetEnv PYTHON_EGG_CACHE /path/to/dir
+ </Location>
+}}}
+
+or (for mod_python):
+{{{
+ <Location /trac>
+   SetHandler mod_python
+   ...
+   SetEnv PYTHON_EGG_CACHE /path/to/dir
+ </Location>
+}}}
+
+For [wiki:TracFastCgi FastCGI], you'll need to `-initial-env` option, or whatever is provided by your web server for setting environment variables.
 
 ----
 See also TracGuide, [wiki:TracDev/ComponentArchitecture component architecture]
