@@ -215,6 +215,7 @@ class ImageMacro(Component):
        for the image
      * `right`, `left`, `top` or `bottom` are interpreted as the alignment for
        the image
+     * `nolink` means without link to image source.
      * `key=value` style are interpreted as HTML attributes for the image
      * `key:value` style are interpreted as CSS style indications for the image
     
@@ -223,6 +224,7 @@ class ImageMacro(Component):
         [[Image(photo.jpg)]]                           # simplest
         [[Image(photo.jpg, 120px)]]                    # with size
         [[Image(photo.jpg, right)]]                    # aligned by keyword
+        [[Image(photo.jpg, nolink)]]                   # without link to source
         [[Image(photo.jpg, align=right)]]              # aligned by attribute
         [[Image(photo.jpg, float:right)]]              # aligned by style
         [[Image(photo.jpg, float:right, border:solid 5px green)]] # 2 style specs
@@ -235,6 +237,7 @@ class ImageMacro(Component):
         [[Image(#3:baz.bmp)]]           # if in a ticket, point to #3
         [[Image(ticket:36:boo.jpg)]]
         [[Image(source:/images/bee.jpg)]] # straight from the repository!
+        [[Image(htdocs:foo/bar.png)]]   # image file in project htdocs dir.
     }}}
     
     ''Adapted from the Image.py macro created by Shun-ichi Goto
@@ -264,6 +267,7 @@ class ImageMacro(Component):
         quoted_re = re.compile("^(?:&#34;|')(.*)(?:&#34;|')$")
         attr = {}
         style = {}
+        nolink = False
         for arg in args[1:]:
             arg = arg.strip()
             if size_re.search(arg):
@@ -273,6 +277,9 @@ class ImageMacro(Component):
             if align_re.search(arg):
                 # 'align' keyword
                 attr['align'] = arg
+                continue
+            if arg == 'nolink':
+                nolink = True
                 continue
             match = keyval_re.search(arg)
             if match:
@@ -296,7 +303,7 @@ class ImageMacro(Component):
             else:
                 raise Exception("%s module can't have attachments" % parts[0])
         elif len(parts) == 2:
-            from trac.Browser import BrowserModule
+            from trac.versioncontrol.web_ui import BrowserModule
             try:
                 browser_links = [link for link,_ in 
                                  BrowserModule(self.env).get_link_resolvers()]
@@ -307,12 +314,15 @@ class ImageMacro(Component):
                 url = self.env.href.browser(file)
                 raw_url = self.env.href.browser(file, format='raw')
                 desc = filespec
-            else:                           # #ticket:attachment or WikiPage:attachment
+            else: # #ticket:attachment or WikiPage:attachment
                 # FIXME: do something generic about shorthand forms...
                 id, file = parts
                 if id and id[0] == '#':
                     module = 'ticket'
                     id = id[1:]
+                elif id == 'htdocs':
+                    raw_url = url = self.env.href.chrome('site', file)
+                    desc = os.path.basename(file)
                 else:
                     module = 'wiki'
         elif len(parts) == 1:               # attachment
@@ -342,8 +352,11 @@ class ImageMacro(Component):
         a_style = 'padding:0; border:none' # style of anchor
         img_attr = ' '.join(['%s="%s"' % x for x in attr.iteritems()])
         img_style = '; '.join(['%s:%s' % x for x in style.iteritems()])
-        return '<a href="%s" style="%s"><img src="%s" %s style="%s" /></a>' \
-               % (url, a_style, raw_url, img_attr, img_style)
+        result = '<img src="%s" %s style="%s" />' \
+                 % (raw_url, img_attr, img_style)
+        if not nolink:
+            result = '<a href="%s" style="%s">%s</a>' % (url, a_style, result)
+        return result
 
 
 class MacroListMacro(Component):
