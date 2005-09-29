@@ -29,7 +29,7 @@ _actionmap = {'A': Changeset.ADD, 'C': Changeset.COPY,
 class CachedRepository(Repository):
 
     def __init__(self, db, repos, authz, log):
-        Repository.__init__(self, authz, log)
+        Repository.__init__(self, repos.name, authz, log)
         self.db = db
         self.repos = repos
         self.synced = 0
@@ -46,7 +46,22 @@ class CachedRepository(Repository):
 
     def sync(self):
         self.log.debug("Checking whether sync with repository is needed")
+        cursor = self.db.cursor()
+
+        # -- repository used for populating the cache
+        cursor.execute("SELECT value FROM system WHERE name='repository_dir'")
+        row = cursor.fetchone()
+        if row:
+            previous_repository_dir = row[0]
+        else: # no 'repository_dir' stored yet, assume everything's OK
+            previous_repository_dir = self.name
+
+        if self.name != previous_repository_dir:
+            raise TracError, ("The 'repository_dir' has changed, "
+                              "a 'trac-admin resync' operation is needed.")
+
         youngest_stored = self.repos.get_youngest_rev_in_cache(self.db)
+
         if youngest_stored != str(self.repos.youngest_rev):
             authz = self.repos.authz
             self.repos.authz = Authorizer() # remove permission checking
@@ -55,7 +70,6 @@ class CachedRepository(Repository):
             actionmap = dict(zip(_actionmap.values(), _actionmap.keys()))
             self.log.info("Syncing with repository (%s to %s)"
                           % (youngest_stored, self.repos.youngest_rev))
-            cursor = self.db.cursor()
             if youngest_stored:
                 current_rev = self.repos.next_rev(youngest_stored)
             else:

@@ -618,11 +618,13 @@ Congratulations!
     def do_resync(self, line):
         print 'Resyncing repository history...'
         cnx = self.db_open()
-        self.db_update("DELETE FROM revision")
-        self.db_update("DELETE FROM node_change")
-
+        cursor = cnx.cursor()
+        cursor.execute("DELETE FROM revision")
+        cursor.execute("DELETE FROM node_change")
         repos = self.__env.get_repository()
-        repos.sync()            
+        cursor.execute("INSERT OR REPLACE INTO system (name,value) "
+                       "VALUES ('repository_dir',%s)", (repos.name,))
+        repos.sync()
         print 'Done.'
 
     ## Wiki

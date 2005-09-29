@@ -32,7 +32,7 @@ class CacheTestCase(unittest.TestCase):
     def test_initial_sync_with_empty_repos(self):
         changeset = Mock(Changeset, 0, '', '', 42000,
                          get_changes=lambda: [])
-        repos = Mock(Repository, None, self.log,
+        repos = Mock(Repository, 'test-repos', None, self.log,
                      get_changeset=lambda x: changeset,
                      get_oldest_rev=lambda: 0,
                      get_youngest_rev=lambda: 0,
@@ -53,7 +53,7 @@ class CacheTestCase(unittest.TestCase):
                            get_changes=lambda: []),
                       Mock(Changeset, 1, 'Import', 'joe', 42000,
                            get_changes=lambda: iter(changes))]
-        repos = Mock(Repository, None, self.log,
+        repos = Mock(Repository, 'test-repos', None, self.log,
                      get_changeset=lambda x: changesets[int(x)],
                      get_oldest_rev=lambda: 0,
                      get_youngest_rev=lambda: 1,
@@ -88,7 +88,7 @@ class CacheTestCase(unittest.TestCase):
         changes = [('trunk/README', Node.FILE, Changeset.EDIT, 'trunk/README', 1)]
         changeset = Mock(Changeset, 2, 'Update', 'joe', 42042,
                          get_changes=lambda: iter(changes))
-        repos = Mock(Repository, None, self.log,
+        repos = Mock(Repository, 'test-repos', None, self.log,
                      get_changeset=lambda x: changeset,
                      get_youngest_rev=lambda: 2,
                      next_rev=lambda x: int(x) == 1 and 2 or None)
@@ -116,7 +116,7 @@ class CacheTestCase(unittest.TestCase):
                            [('trunk', 'D', 'A', None, None),
                             ('trunk/README', 'F', 'A', None, None)])
 
-        repos = Mock(Repository, None, self.log,
+        repos = Mock(Repository, 'test-repos', None, self.log,
                      get_changeset=lambda x: None,
                      get_youngest_rev=lambda: 1,
                      next_rev=lambda x: None, normalize_rev=lambda rev: rev)

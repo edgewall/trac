@@ -177,26 +177,29 @@ class SubversionRepository(Repository):
     """
 
     def __init__(self, path, authz, log):
-        Repository.__init__(self, authz, log)
-
         if core.SVN_VER_MAJOR < 1:
             raise TracError, \
                   "Subversion >= 1.0 required: Found %d.%d.%d" % \
                   (core.SVN_VER_MAJOR, core.SVN_VER_MINOR, core.SVN_VER_MICRO)
 
-        self.pool = None
-        self.repos = None
-        self.fs_ptr = None
-        self.path = path
         self.pool = Pool()
-
+        
         # Remove any trailing slash or else subversion might abort
         if not os.path.split(path)[1]:
             path = os.path.split(path)[0]
         self.path = repos.svn_repos_find_root_path(path, self.pool())
         if self.path is None:
             raise TracError, \
-                  "%s does not appear to be a Subversion repository." % (path, )
+                  "%s does not appear to be a Subversion repository." % path
+
+        self.repos = repos.svn_repos_open(self.path, self.pool())
+        self.fs_ptr = repos.svn_repos_fs(self.repos)
+        
+        uuid = fs.get_uuid(self.fs_ptr, self.pool())
+        name = 'svn:%s:%s' % (uuid, path)
+
+        Repository.__init__(self, name, authz, log)
+
         if self.path != path:
             self.scope = path[len(self.path):]
             if not self.scope[-1] == '/':
@@ -206,8 +209,6 @@ class SubversionRepository(Repository):
         self.log.debug("Opening subversion file-system at %s with scope %s" \
                        % (self.path, self.scope))
 
-        self.repos = repos.svn_repos_open(self.path, self.pool())
-        self.fs_ptr = repos.svn_repos_fs(self.repos)
         self.rev = fs.youngest_rev(self.fs_ptr, self.pool())
 
         self.history = None

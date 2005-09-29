@@ -22,7 +22,8 @@ class Repository(object):
     Base class for a repository provided by a version control system.
     """
 
-    def __init__(self, authz, log):
+    def __init__(self, name, authz, log):
+        self.name = name
         self.authz = authz or Authorizer()
         self.log = log
 
