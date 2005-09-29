@@ -23,6 +23,7 @@ except ImportError:
     import dummy_threading as threading
 import time
 import urllib
+import re
 
 from trac.core import *
 from trac.util import to_utf8, TRUE
@@ -81,6 +82,10 @@ class WikiSystem(Component):
         self._index = None
         self._last_index_update = 0
         self._index_lock = threading.RLock()
+        self._compiled_rules = None
+        self._link_resolvers = None
+        self._helper_patterns = None
+        self._external_handlers = None
 
     def _update_index(self):
         self._index_lock.acquire()
@@ -115,6 +120,52 @@ class WikiSystem(Component):
         """Whether a page with the specified name exists."""
         self._update_index()
         return self._index.has_key(pagename)
+
+    def _get_rules(self):
+        self._prepare_rules()
+        return self._compiled_rules
+    rules = property(_get_rules)
+
+    def _get_helper_patterns(self):
+        self._prepare_rules()
+        return self._helper_patterns
+    helper_patterns = property(_get_helper_patterns)
+
+    def _get_external_handlers(self):
+        self._prepare_rules()
+        return self._external_handlers
+    external_handlers = property(_get_external_handlers)
+    
+    def _prepare_rules(self):
+        from trac.wiki.formatter import Formatter
+        if not self._compiled_rules:
+            helpers = []
+            handlers = {}
+            syntax = Formatter._pre_rules[:]
+            i = 0
+            for resolver in self.syntax_providers:
+                for regexp, handler in resolver.get_wiki_syntax():
+                    handlers['i'+str(i)] = handler
+                    syntax.append('(?P<i%d>%s)' % (i, regexp))
+                    i += 1
+            syntax += Formatter._post_rules[:]
+            helper_re = re.compile(r'\?P<([a-z\d_]+)>')
+            for rule in syntax:
+                helpers += helper_re.findall(rule)[1:]
+            rules = re.compile('(?:' + '|'.join(syntax) + ')')
+            self._external_handlers = handlers
+            self._helper_patterns = helpers
+            self._compiled_rules = rules
+
+    def _get_link_resolvers(self):
+        if not self._link_resolvers:
+            resolvers = {}
+            for resolver in self.syntax_providers:
+                for namespace, handler in resolver.get_link_resolvers():
+                    resolvers[namespace] = handler
+            self._link_resolvers = resolvers
+        return self._link_resolvers
+    link_resolvers = property(_get_link_resolvers)
 
     # IWikiChangeListener methods
 
