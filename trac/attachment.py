@@ -186,7 +186,7 @@ class Attachment(object):
         try:
             fd = open(self.path, 'rb')
         except IOError:
-            raise TracError('Attachment %s not found', self.filename)
+            raise TracError('Attachment %s not found' % self.filename)
         return fd
 
 
