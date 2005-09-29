@@ -54,7 +54,7 @@ class LogModule(Component):
         import re
         match = re.match(r'/log(?:(/.*)|$)', req.path_info)
         if match:
-            req.args['path'] = match.group(1)
+            req.args['path'] = match.group(1) or '/'
             return 1
 
     def process_request(self, req):

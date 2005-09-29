@@ -39,6 +39,12 @@ class Repository(object):
         """
         raise NotImplementedError
 
+    def has_node(self, path, rev):
+        """
+        Tell if there's a node at the specified (path,rev) combination.
+        """
+        raise NotImplementedError
+    
     def get_node(self, path, rev=None):
         """
         Retrieve a Node (directory or file) from the repository at the
@@ -149,6 +155,7 @@ class Node(object):
         node (if the underlying version control system supports that), which
         will be indicated by the first element of the tuple (i.e. the path)
         changing.
+        Starts with an entry for the current revision.
         """
         raise NotImplementedError
 

@@ -54,6 +54,19 @@ def _get_history(path, authz, fs_ptr, pool, start, end, limit=None):
         yield item
 
 
+def _normalize_path(path):
+    """Remove leading "/", except for the root"""
+    return path and path.strip('/') or '/'
+
+def _scoped_path(scope, fullpath):
+    """Remove the leading scope from repository paths"""
+    if fullpath:
+        if scope == '/':
+            return _normalize_path(fullpath)
+        elif fullpath.startswith(scope.rstrip('/')):
+            return fullpath[len(scope):] or '/'
+
+
 def _mark_weakpool_invalid(weakpool):
     if weakpool():
         weakpool()._mark_invalid()
@@ -207,8 +220,15 @@ class SubversionRepository(Repository):
     def __del__(self):
         self.close()
 
+    def has_node(self, path, rev, pool=None):
+        if not pool:
+            pool = self.pool
+        rev_root = fs.revision_root(self.fs_ptr, rev, pool())
+        node_type = fs.check_path(rev_root, self.scope + path, pool())
+        return node_type in _kindmap
+
     def normalize_path(self, path):
-        return (not path or path == '/') and '/' or path.strip('/')
+        return _normalize_path(path)
 
     def normalize_rev(self, rev):
         try:
@@ -298,18 +318,16 @@ class SubversionRepository(Repository):
         subpool = Pool(self.pool)
         while rev:
             subpool.clear()
-            rev_root = fs.revision_root(self.fs_ptr, rev, subpool())
-            node_type = fs.check_path(rev_root, path, subpool())
-            if node_type in _kindmap: # then path exists at that rev
+            if self.has_node(path, rev, subpool):
                 if expect_deletion:
                     # it was missing, now it's there again:
                     #  rev+1 must be a delete
                     yield path, rev+1, Changeset.DELETE
                 newer = None # 'newer' is the previously seen history tuple
                 older = None # 'older' is the currently examined history tuple
-                for p, r in _get_history(path, self.authz, self.fs_ptr,
-                                         subpool, 0, rev, limit):
-                    older = (self.normalize_path(p), r, Changeset.ADD)
+                for p, r in _get_history(self.scope + path, self.authz,
+                                         self.fs_ptr, subpool, 0, rev, limit):
+                    older = (_scoped_path(self.scope, p), r, Changeset.ADD)
                     rev = self.previous_rev(r)
                     if newer:
                         if older[0] == path:
@@ -382,8 +400,9 @@ class SubversionNode(Node):
         pool = Pool(self.pool)
         for path, rev in _get_history(self.scoped_path, self.authz, self.fs_ptr,
                                       pool, 0, self._requested_rev, limit):
-            if rev > 0 and path.startswith(self.scope):
-                older = (path[len(self.scope):], rev, Changeset.ADD)
+            scoped_path = _scoped_path(self.scope, path)
+            if rev > 0 and scoped_path:
+                older = (scoped_path, rev, Changeset.ADD)
                 if newer:
                     change = newer[0] == older[0] and Changeset.EDIT or \
                              Changeset.COPY
@@ -448,12 +467,7 @@ class SubversionChangeset(Changeset):
                 continue
             if not path.startswith(self.scope[1:]):
                 continue
-            base_path = None
-            if change.base_path:
-                if change.base_path.startswith(self.scope):
-                    base_path = change.base_path[len(self.scope):]
-                else:
-                    base_path = None
+            base_path = _scoped_path(self.scope, change.base_path)
             action = ''
             if not change.path:
                 action = Changeset.DELETE
