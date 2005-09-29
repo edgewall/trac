@@ -381,6 +381,8 @@ class MacroListMacro(Component):
         wiki = WikiSystem(self.env)
         for macro_provider in wiki.macro_providers:
             for macro_name in macro_provider.get_macros():
+                if content and macro_name != content:
+                    continue
                 buf.write("<dt><code>[[%s]]</code></dt>" % escape(macro_name))
                 description = macro_provider.get_macro_description(macro_name)
                 if description:
