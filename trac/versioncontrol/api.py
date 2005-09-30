@@ -44,7 +44,11 @@ class Repository(object):
         """
         Tell if there's a node at the specified (path,rev) combination.
         """
-        raise NotImplementedError
+        try:
+            self.get_node()
+            return True
+        except TracError:
+            return False        
     
     def get_node(self, path, rev=None):
         """
