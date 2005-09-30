@@ -660,6 +660,11 @@ class OutlineFormatter(Formatter):
             def write(self, data): pass
         Formatter.format(self, text, NullOut())
 
+        if min_depth > max_depth:
+            min_depth, max_depth = max_depth, min_depth
+        max_depth = min(6, max_depth)
+        min_depth = max(1, min_depth)
+
         curr_depth = min_depth - 1
         for depth, link in self.outline:
             if depth < min_depth or depth > max_depth:
