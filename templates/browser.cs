@@ -30,11 +30,11 @@
     </tr>
    </thead>
    <tbody>
-    <?cs if:len(links.up) != "/" ?>
+    <?cs if:len(chrome.links.up) ?>
      <tr class="even">
-      <td class="name" colspan="4">
+      <td class="name" colspan="5">
        <a class="parent" title="Parent Directory" href="<?cs
-         var:links.up.0.href ?>">../</a>
+         var:chrome.links.up.0.href ?>">../</a>
       </td>
      </tr>
     <?cs /if ?>
