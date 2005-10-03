@@ -513,5 +513,10 @@ class ReportModule(Component):
         yield (r"!?\{\d+\}", lambda x, y, z: self._format_link(x, 'report', y[1:-1], y))
 
     def _format_link(self, formatter, ns, target, label):
-        return '<a class="report" href="%s">%s</a>' % (formatter.href.report(target), label)
+        report, args = target, ''
+        if '?' in target:
+            report, args = target.split('?')
+            args = '?' + args
+        return '<a class="report" href="%s">%s</a>' % (
+               formatter.href.report(report) + args, label)
 
