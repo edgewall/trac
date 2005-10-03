@@ -145,7 +145,7 @@ def pretty_timedelta(time1, time2=None):
              (60,              'minute', 'minutes'))
     age_s = int(time2 - time1)
     if age_s < 60:
-        return '%i second%s' % (age_s, age_s > 1 and 's' or '')
+        return '%i second%s' % (age_s, age_s != 1 and 's' or '')
     for u, unit, unit_plural in units:
         r = float(age_s) / float(u)
         if r >= 0.9:
