@@ -233,7 +233,7 @@ class TicketNotifyEmail(NotifyEmail):
         txt = sep + CRLF
         big = []
         i = 0
-        for f in fields:
+        for f in [f for f in fields if f['name'] != 'description']:
             fname = f['name']
             if not tkt.values.has_key(fname):
                 continue
