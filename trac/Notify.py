@@ -244,7 +244,7 @@ class TicketNotifyEmail(NotifyEmail):
         if big:
             txt += sep
             for name, value in big:
-                txt += CRLF.join(['', name + ':', value, '', '')]
+                txt += CRLF.join(['', name + ':', value, '', ''])
         txt += sep
         return txt
 
