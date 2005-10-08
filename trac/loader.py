@@ -15,6 +15,7 @@
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
 import os
+import sys
 
 try:
     import pkg_resources
@@ -42,8 +43,7 @@ def load_components(env):
     if pkg_resources is not None: # But only if setuptools is installed!
         if hasattr(pkg_resources, 'Environment'):
             # setuptools >= 0.6
-            pkg_env = pkg_resources.Environment()
-            pkg_env.scan([plugins_dir])
+            pkg_env = pkg_resources.Environment([plugins_dir] + sys.path)
             for name in pkg_env:
                 egg = pkg_env[name][0]
                 for name in egg.get_entry_map('trac.plugins'):
@@ -57,14 +57,16 @@ def load_components(env):
                                       egg.location, exc_info=True)
                 else:
                     if egg.has_metadata('trac_plugin.txt'):
+                        env.log.debug('Loading plugin %s from %s', name,
+                                      egg.location)
                         # Support for pre-entry-point plugins
                         egg.activate()
                         for module in egg.get_metadata_lines('trac_plugin.txt'):
                             load_module(module)
         else:
             # setuptools < 0.6
-            distributions = pkg_resources.AvailableDistributions()
-            distributions.scan([plugins_dir])
+            distributions = pkg_resources.AvailableDistributions([plugins_dir] \
+                                                                 + sys.path)
             for name in distributions:
                 egg = distributions[name][0]
                 if egg.metadata.has_metadata(TRAC_META):
