@@ -16,13 +16,12 @@
 
 from __future__ import generators
 
+import os
+
 from trac import db, db_default, util
 from trac.config import Configuration
 from trac.core import Component, ComponentManager, implements, Interface, \
                       ExtensionPoint, TracError
-
-import os
-import os.path
 
 __all__ = ['Environment', 'IEnvironmentSetupParticipant', 'open_environment']
 
@@ -36,10 +35,19 @@ class IEnvironmentSetupParticipant(Interface):
         """Called when a new Trac environment is created."""
 
     def environment_needs_upgrade(db):
-        """FIXME"""
+        """Called when Trac checks whether the environment needs to be upgraded.
+        
+        Should return `True` if this participant needs an upgrade to be
+        performed, `False` otherwise.
+        """
 
     def upgrade_environment(db):
-        """FIXME"""
+        """Actually perform an environment upgrade.
+        
+        Implementations of this method should not commit any database
+        transactions. This is done implicitly after all participants have
+        performed the upgrades they need without an error being raised.
+        """
 
 
 class Environment(Component, ComponentManager):
@@ -98,11 +106,22 @@ class Environment(Component, ComponentManager):
         This is called by the `ComponentManager` base class when a component is
         about to be activated. If this method returns false, the component does
         not get activated."""
-        component_name = (cls.__module__ + '.' + cls.__name__).lower()
-        for name,value in self.config.options('disabled_components'):
-            if value in util.TRUE and component_name.startswith(name):
-                return False
-        return True
+        if not isinstance(cls, (str, unicode)):
+            component_name = (cls.__module__ + '.' + cls.__name__).lower()
+        else:
+            component_name = cls
+
+        rules = [(name.lower(), value.lower() in ('enabled', 'on'))
+                 for name, value in self.config.options('components')]
+        rules.sort(lambda a, b: -cmp(len(a[0]), len(b[0])))
+
+        for pattern, enabled in rules:
+            if component_name == pattern or pattern.endswith('*') \
+                    and component_name.startswith(pattern[:-1]):
+                return enabled
+
+        # By default, all components in the trac package are enabled
+        return component_name.startswith('trac.')
 
     def verify(self):
         """Verify that the provided path points to a valid Trac environment
@@ -169,7 +188,7 @@ class Environment(Component, ComponentManager):
         os.mkdir(os.path.join(self.path, 'conf'))
         _create_file(os.path.join(self.path, 'conf', 'trac.ini'))
         self.load_config()
-        for section,name,value in db_default.default_config:
+        for section, name, value in db_default.default_config:
             self.config.set(section, name, value)
         self.config.set('trac', 'database', db_str)
         self.config.save()
@@ -189,7 +208,7 @@ class Environment(Component, ComponentManager):
     def load_config(self):
         """Load the configuration file."""
         self.config = Configuration(os.path.join(self.path, 'conf', 'trac.ini'))
-        for section,name,value in db_default.default_config:
+        for section, name, value in db_default.default_config:
             self.config.setdefault(section, name, value)
 
     def get_templates_dir(self):

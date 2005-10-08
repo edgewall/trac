@@ -17,53 +17,58 @@
 from __future__ import generators
 
 from ConfigParser import ConfigParser
-import os.path
+import os
+import sys
 
 
 class Configuration:
-    """
-    Thin layer over ConfigParser from the Python standard library.
+    """Thin layer over `ConfigParser` from the Python standard library.
+
     In addition to providing some convenience methods, the class remembers
     the last modification time of the configuration file, and reparses it
     when the file has changed.
     """
 
     def __init__(self, filename):
+        self._defaults = {}
         self.filename = filename
         self.parser = ConfigParser()
-        self.__defaults = {}
-        self.__lastmtime = 0
+        self._lastmtime = 0
+        self.site_filename = os.path.join(default_dir('conf'), 'trac.ini')
+        self.site_parser = ConfigParser()
+        self._lastsitemtime = 0
         self.parse_if_needed()
 
     def get(self, section, name, default=None):
         if not self.parser.has_option(section, name):
             if default is None:
-                return self.__defaults.get((section, name), '')
+                return self._defaults.get((section, name), '')
             return default
         return self.parser.get(section, name)
 
     def setdefault(self, section, name, value):
-        self.__defaults[(section, name)] = value
+        if (section, name) not in self._defaults:
+            self._defaults[(section, name)] = value
 
     def set(self, section, name, value):
-        """
-        Changes a config value, these changes are _not_ persistent unless saved
-        with `save()`.
+        """Change a configuration value.
+        
+        These changes are not persistent unless saved with `save()`.
         """
         if not self.parser.has_section(section):
             self.parser.add_section(section)
         return self.parser.set(section, name, value)
 
     def options(self, section):
-        if not self.parser.has_section(section):
-            return []
-        try:
-            return self.parser.items(section)
-        except AttributeError:
-            options = []
+        options = []
+        if self.parser.has_section(section):
             for option in self.parser.options(section):
                 options.append((option, self.parser.get(section, option)))
-            return options
+        for option, value in self._defaults.iteritems():
+            if option[0] == section:
+                if not [exists for exists in options if exists[0] == option[1]]:
+                    options.append((option[1], value))
+        return options
 
     def __contains__(self, name):
         return self.parser.has_section(name)
@@ -78,15 +83,30 @@ class Configuration:
     def save(self):
         if not self.filename:
             return
-        self.parser.write(open(self.filename, 'w'))
+        fileobj = file(self.filename, 'w')
+        try:
+            self.parser.write(fileobj)
+        finally:
+            fileobj.close()
 
     def parse_if_needed(self):
+        # Merge global configuration option into _defaults
+        if os.path.isfile(self.site_filename):
+            modtime = os.path.getmtime(self.site_filename)
+            if modtime > self._lastsitemtime:
+                self.site_parser.read(self.site_filename)
+                for section in self.site_parser.sections():
+                    for option in self.site_parser.options(section):
+                        value = self.site_parser.get(section, option)
+                        self._defaults[(section, option)] = value
+                self._lastsitemtime = modtime
+
         if not self.filename:
             return
         modtime = os.path.getmtime(self.filename)
-        if modtime > self.__lastmtime:
-            self.parser.readfp(open(self.filename))
-            self.__lastmtime = modtime
+        if modtime > self._lastmtime:
+            self.parser.read(self.filename)
+            self._lastmtime = modtime
 
 
 def default_dir(name):
@@ -96,7 +116,6 @@ def default_dir(name):
     except ImportError:
         # This is not a regular install with a generated siteconfig.py file,
         # so try to figure out the directory based on common setups
-        import os.path, sys
         special_dirs = {'wiki': 'wiki-default', 'macros': 'wiki-macros'}
         dirname = special_dirs.get(name, name)
 
