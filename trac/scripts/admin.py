@@ -558,16 +558,6 @@ class TracAdmin(cmd.Cmd):
             config.set('project', 'name', project_name)
             config.save()
 
-            # Add the default wiki macros
-            print ' Installing default wiki macros'
-            for f in os.listdir(default_dir('macros')):
-                if not f.endswith('.py'):
-                    continue
-                src = os.path.join(default_dir('macros'), f)
-                dst = os.path.join(self.__env.path, 'wiki-macros', f)
-                print "  %s => %s" % (src, f)
-                shutil.copy2(src, dst)
-
             # Add a few default wiki pages
             print ' Installing default wiki pages'
             cnx = self.__env.get_db_cnx()

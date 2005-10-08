@@ -17,8 +17,7 @@
 from __future__ import generators
 import imp
 import inspect
-import os.path
-import shutil
+import os
 import re
 
 try:
@@ -26,9 +25,9 @@ try:
 except ImportError:
     from StringIO import StringIO
 
+from trac.config import default_dir
 from trac.core import *
 from trac.util import escape, format_date
-from trac.env import IEnvironmentSetupParticipant
 from trac.wiki.api import IWikiMacroProvider, WikiSystem
 from trac.wiki.model import WikiPage
 
@@ -360,9 +359,11 @@ class ImageMacro(Component):
 
 
 class MacroListMacro(Component):
-    """
-    Displays a list of all installed Wiki macros, including documentation if
+    """Displays a list of all installed Wiki macros, including documentation if
     available.
+    
+    Optionally, the name of a specific macro can be provided as an argument. In
+    that case, only the documentation for that macro will be rendered.
     """
     implements(IWikiMacroProvider)
 
@@ -386,58 +387,44 @@ class MacroListMacro(Component):
                 buf.write("<dt><code>[[%s]]</code></dt>" % escape(macro_name))
                 description = macro_provider.get_macro_description(macro_name)
                 if description:
-                    buf.write("<dd>%s</dd>" % wiki_to_html(description, self.env, req))
+                    buf.write("<dd>%s</dd>" % wiki_to_html(description,
+                                                           self.env, req))
 
         buf.write("</dl>")
         return buf.getvalue()
 
 
 class UserMacroProvider(Component):
+    """Adds macros that are provided as Python source files in the
+    `wiki-macros` directory of the environment, or the global macros
+    directory.
     """
-    Adds macros that are provided as Python source files in the environments
-    `wiki-macros` directory.
-    """
-    implements(IEnvironmentSetupParticipant, IWikiMacroProvider)
+    implements(IWikiMacroProvider)
 
-    # IEnvironmentSetupParticipant methods
-
-    def environment_created(self):
-        pass
-
-    def environment_needs_upgrade(self, db):
-        for _ in self._new_macros():
-            return True
-        return False
-    
-    def upgrade_environment(self, db):
-        # Copy the new default wiki macros over to the environment
-        for src, dst in self._new_macros():
-            shutil.copy2(src, dst)
-            
-    def _new_macros(self):
-        from trac.config import default_dir
-        macros_dir = default_dir('macros')
-        for f in os.listdir(macros_dir):
-            if not f.endswith('.py'):
-                continue
-            src = os.path.join(macros_dir, f)
-            dst = os.path.join(self.env.path, 'wiki-macros', f)
-            if not os.path.isfile(dst):
-                yield src, dst
+    def __init__(self):
+        self.env_macros = os.path.join(self.env.path, 'wiki-macros')
+        self.site_macros = default_dir('macros')
 
     # IWikiMacroProvider methods
 
     def get_macros(self):
-        path = os.path.join(self.env.path, 'wiki-macros')
-        if not os.path.exists(path):
-            return
-        for file in [f for f in os.listdir(path)
-                     if f.lower().endswith('.py') and not f.startswith('__')]:
-            try:
-                module = self._load_macro(file[:-3])
-                yield module.__name__
-            except Exception, e:
-                self.log.error('Failed to load wiki macro %s (%s)' % (f, e))
+        found = []
+        for path in (self.env_macros, self.site_macros):
+            if not os.path.exists(path):
+                continue
+            for filename in [filename for filename in os.listdir(path)
+                             if filename.lower().endswith('.py')
+                             and not filename.startswith('__')]:
+                try:
+                    module = self._load_macro(filename[:-3])
+                    name = module.__name__
+                    if name in found:
+                        continue
+                    found.append(name)
+                    yield name
+                except Exception, e:
+                    self.log.error('Failed to load wiki macro %s (%s)',
+                                   filename, e)
 
     def get_macro_description(self, name):
         return inspect.getdoc(self._load_macro(name))
@@ -451,5 +438,8 @@ class UserMacroProvider(Component):
             raise e
 
     def _load_macro(self, name):
-        path = os.path.join(self.env.path, 'wiki-macros', name + '.py')
-        return imp.load_source(name, path)
+        for path in (self.env_macros, self.site_macros):
+            macro_file = os.path.join(path, name + '.py')
+            if os.path.isfile(macro_file):
+                return imp.load_source(name, macro_file)
+        raise TracError, 'Macro %s not found' % name
