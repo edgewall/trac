@@ -367,6 +367,12 @@ class TracDatabase(object):
     def addTicketChange(self, ticket, time, author, field, oldvalue, newvalue):
         c = self.db().cursor()
 
+        if field == "owner":
+            if LOGIN_MAP.has_key(oldvalue):
+                oldvalue = LOGIN_MAP[oldvalue]
+            if LOGIN_MAP.has_key(newvalue):
+                newvalue = LOGIN_MAP[newvalue]
+
         if field == "priority":
             if PRIORITIES_MAP.has_key(oldvalue.lower()):
                 oldvalue = PRIORITIES_MAP[oldvalue.lower()]
