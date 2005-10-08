@@ -364,6 +364,9 @@ class MacroListMacro(Component):
     
     Optionally, the name of a specific macro can be provided as an argument. In
     that case, only the documentation for that macro will be rendered.
+    
+    Note that this macro will not be able to display the documentation of
+    macros if the `PythonOptimize` option is enabled for mod_python!
     """
     implements(IWikiMacroProvider)
 
