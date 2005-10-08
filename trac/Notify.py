@@ -195,8 +195,8 @@ class TicketNotifyEmail(NotifyEmail):
                 else:
                     newv = new
                     l = 7 + len(field)
-                    chg = wrap('%s => %s' % (old, new), self.COLS-l,'', l*' ',
-                               CRLF)
+                    chg = wrap('%s => %s' % (old, new), self.COLS - l, '',
+                               l * ' ', CRLF)
                     changes += '  * %s:  %s%s' % (field, chg, CRLF)
                 if newv:
                     self.hdf['%s.oldvalue' % pfx] = old
@@ -227,18 +227,21 @@ class TicketNotifyEmail(NotifyEmail):
                 width[idx + 1] = len(fval)
         format = ('%%%is:  %%-%is  |  ' % (width[0], width[1]),
                   ' %%%is:  %%-%is%s' % (width[2], width[3], CRLF))
-        i = 1
         l = (width[0] + width[1] + 5)
-        sep = l*'-' + '+' + (self.COLS-l)*'-'
+        sep = l * '-' + '+' + (self.COLS - l) * '-'
         txt = sep + CRLF
-        big = []
-        for i, f in enum([f['name'] for f in fields]):
-            if not tkt.values.has_key(f): continue
+        big = [f for f in tkt.fields if f['type'] == 'textarea'
+                                    and f['name'] != 'description']
+        i = 0
+        for f in [f['name'] for f in fields]:
+            if not tkt.values.has_key(f):
+                continue
             fval = tkt[f]
             if '\n' in str(fval):
-                big.append((f.capitalize(), fval))
+                big.append((f.capitalize(), CRLF.join(fval.splitlines())))
             else:
                 txt += format[i % 2] % (f.capitalize(), fval)
+                i += 1
         if not i % 2:
             txt += CRLF
         if big:
