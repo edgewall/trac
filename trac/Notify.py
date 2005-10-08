@@ -240,11 +240,11 @@ class TicketNotifyEmail(NotifyEmail):
             else:
                 txt += format[i % 2] % (f.capitalize(), fval)
         if not i % 2:
-            txt += '\n'
+            txt += CRLF
         if big:
             txt += sep
-            for k,v in big:
-                txt += '\n%s:\n%s\n\n' % (k,v)
+            for name, value in big:
+                txt += CRLF.join(['', name + ':', value, '', '')]
         txt += sep
         return txt
 
