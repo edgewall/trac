@@ -149,7 +149,7 @@ class Formatter(object):
                   r"(?P<htmlescapeentity>!?&#\d+;)"]
     _post_rules = [(r"(?P<shref>!?((?P<sns>%s):" % LINK_SCHEME +
                     r"(?P<stgt>'[^']+'|\"[^\"]+\"|"
-                    r"((\|(?=[^| ])|[^| ])*[^|'~_\., \)]))))"),
+                    r"(?:\|(?=[^| ])|&(?!lt;)|[^|& ])*[^|'~_\.,& \)])))"),
                    (r"(?P<lhref>!?\[(?:(?P<lns>%s):" % LINK_SCHEME +
                     r"(?P<ltgt>'[^']+'|\"[^\"]+\"|[^\] ]*)"
                     r"|(?P<rel>[/.][^ [\]]*))"

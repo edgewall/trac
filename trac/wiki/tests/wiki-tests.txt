@@ -97,6 +97,12 @@ CamelCase,CamelCase.CamelCase:CamelCase
 CamelCase
 </p>
 ==============================
+<bug>http://localhost/bugzilla/show_bug.cgi?id=1284</bug> 804
+------------------------------
+<p>
+&lt;bug&gt;<a class="ext-link" href="http://localhost/bugzilla/show_bug.cgi?id=1284"><span class="icon"></span>http://localhost/bugzilla/show_bug.cgi?id=1284</a>&lt;/bug&gt; 804
+</p>
+==============================
 ||http://example.com/img.png||text||
 ------------------------------
 <table class="wiki">
