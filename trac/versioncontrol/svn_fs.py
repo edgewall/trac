@@ -380,8 +380,12 @@ class SubversionNode(Node):
     def get_content(self):
         if self.isdir:
             return None
-        return core.Stream(fs.file_contents(self.root, self.scoped_path,
-                                            self.pool()))
+        s = core.Stream(fs.file_contents(self.root, self.scoped_path,
+                                         self.pool()))
+        # Make sure the stream object references the pool to make sure the pool
+        # is not destroyed before the stream object.
+        s._pool = self.pool
+        return s
 
     def get_entries(self):
         if self.isfile:
