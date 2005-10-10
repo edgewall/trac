@@ -1,5 +1,5 @@
 from trac.config import Configuration
-from trac.ticket.model import Ticket, Component, Priority
+from trac.ticket.model import Ticket, Component, Priority, Type
 from trac.test import EnvironmentStub
 
 import unittest
@@ -210,6 +210,17 @@ class TicketModelTestCase(unittest.TestCase):
         p.delete()        
         p = Priority(self.env, 'bar')
         p.delete()        
+
+    def test_ticket_type_enum(self):
+        """
+        The Type (ticket type) enum class behaves a little different than
+        the rest, so it gets some additional testing.
+        """
+        t = Type(self.env, 'task')
+        self.assertEqual(t.name, 'task')
+        self.assertEqual(t.value, '3')
+        t.name = 'foo'
+        t.update()
 
 def suite():
     return unittest.makeSuite(TicketModelTestCase, 'test')
