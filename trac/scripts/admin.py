@@ -679,7 +679,7 @@ Congratulations!
             self.do_help ('wiki')
 
     def _do_wiki_list(self):
-        rows = self.db_query("SELECT name,max(version),time "
+        rows = self.db_query("SELECT name, max(version), max(time) "
                              "FROM wiki GROUP BY name ORDER BY name")
         self.print_listing(['Title', 'Edits', 'Modified'],
                            [(r[0], r[1], self._format_datetime(r[2])) for r in rows])
