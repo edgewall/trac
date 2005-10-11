@@ -275,6 +275,9 @@ class Mimeview(Component):
                 cells.append(annotator.annotate_line(num + 1, line))
             cells.append('<td>%s</td>\n' % space_re.sub(htmlify, line))
             buf.write('<tr>' + '\n'.join(cells) + '</tr>')
+        else:
+            if num == 0:
+                return ''
         buf.write('</tbody></table>')
         return buf.getvalue()
 
@@ -369,7 +372,6 @@ class PlainTextRenderer(Component):
             return
 
         self.env.log.debug("Using default plain text mimeviewer")
-        from trac.util import escape
         for line in content.splitlines():
             yield escape(line)
 
