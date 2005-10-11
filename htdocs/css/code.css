@@ -60,8 +60,7 @@ table.code tbody td {
 .image-file img { background: url(../imggrid.png) }
 
 /* Default */
-.css_default, .c_default, .code_default, .pl_default, .p_default, 
-.hphp_default, .yaml_default, .code-block span {
+.code-block span {
  font-family: monospace;
 }
 

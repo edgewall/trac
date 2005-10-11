@@ -98,7 +98,7 @@ class SilverCityRenderer(Component):
         generator().generate_html(buf, content)
 
         br_re = re.compile(r'<br\s*/?>$', re.MULTILINE)
-        span_default_re = re.compile(r'<span class="p_default">(.*?)</span>',
+        span_default_re = re.compile(r'<span class="\w+_default">(.*?)</span>',
                                      re.DOTALL)
         html = span_default_re.sub(r'\1', br_re.sub('', buf.getvalue()))
 
