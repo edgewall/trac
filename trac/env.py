@@ -109,7 +109,7 @@ class Environment(Component, ComponentManager):
         if not isinstance(cls, (str, unicode)):
             component_name = (cls.__module__ + '.' + cls.__name__).lower()
         else:
-            component_name = cls
+            component_name = cls.lower()
 
         rules = [(name.lower(), value.lower() in ('enabled', 'on'))
                  for name, value in self.config.options('components')]
