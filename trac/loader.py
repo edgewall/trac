@@ -45,14 +45,9 @@ def load_components(env):
     def enable_modules(egg_path, modules):
         """Automatically enable any components provided by plugins loaded from
         the environment plugins directory."""
-        try:
-            if os.path.samefile(os.path.dirname(egg_path), plugins_dir):
-                for module in modules:
-                    env.config.setdefault('components', module + '.*',
-                                          'enabled')
-        except OSError:
-            # If there was an error stat-ing a directory, just ignore it
-            pass
+        if os.path.dirname(egg_path) == os.path.realpath(plugins_dir):
+            for module in modules:
+                env.config.setdefault('components', module + '.*', 'enabled')
 
     # Load components from the environment plugins directory
     if pkg_resources is not None: # But only if setuptools is installed!
