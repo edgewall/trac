@@ -229,7 +229,8 @@ class Environment(Component, ComponentManager):
         logtype = self.config.get('logging', 'log_type')
         loglevel = self.config.get('logging', 'log_level')
         logfile = self.config.get('logging', 'log_file')
-        logfile = os.path.join(self.get_log_dir(), logfile)
+        if not os.path.isabs(logfile):
+            logfile = os.path.join(self.get_log_dir(), logfile)
         logid = self.path # Env-path provides process-unique ID
         self.log = logger_factory(logtype, logfile, loglevel, logid)
 
