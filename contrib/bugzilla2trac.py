@@ -290,7 +290,8 @@ class TracDatabase(object):
         c.execute("DELETE FROM version")
         for vers in v:
             print "  inserting version '%s'" % (vers[key])
-            c.execute("INSERT INTO version (name) VALUES (%s)", (vers[key],))
+            c.execute("INSERT INTO version (name) VALUES (%s)",
+                      (vers[key].encode('utf-8'),))
         self.db().commit()
         
     def setMilestoneList(self, m, key):
