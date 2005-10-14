@@ -24,6 +24,7 @@ try:
 except ImportError:
     import dummy_threading as threading
     threading._get_ident = lambda: 0
+import weakref
 
 from trac.core import TracError
 
@@ -183,7 +184,10 @@ class ConnectionPool(object):
                     del self._active[tid]
                     if cnx not in self._dormant:
                         cnx.rollback()
-                        self._dormant.append(cnx)
+                        if cnx.poolable:
+                            self._dormant.append(cnx)
+                        else:
+                            self._cursize -= 1
                         self._available.notify()
         finally:
             self._available.release()
@@ -202,14 +206,22 @@ try:
     have_pysqlite = 2
 
     class PyFormatCursor(sqlite.Cursor):
+        def _rollback_on_error(self, function, *args, **kwargs):
+            try:
+                return function(self, *args, **kwargs)
+            except sqlite.OperationalError, e:
+                self.cnx.rollback()
+                raise
         def execute(self, sql, args=None):
             if args:
                 sql = sql % (('?',) * len(args))
-            sqlite.Cursor.execute(self, sql, args or [])
+            return self._rollback_on_error(sqlite.Cursor.execute, sql,
+                                           args or [])
         def executemany(self, sql, args=None):
             if args:
                 sql = sql % (('?',) * len(args[0]))
-            sqlite.Cursor.executemany(self, sql, args or [])
+            return self._rollback_on_error(sqlite.Cursor.executemany, sql,
+                                           args or [])
         def _convert_row(self, row):
             return tuple([(isinstance(v, unicode) and [v.encode('utf-8')] or [v])[0]
                           for v in row])
@@ -224,7 +236,7 @@ try:
             rows = sqlite.Cursor.fetchall(self)
             return rows != None and [self._convert_row(row)
                                      for row in rows] or None
-                
+
 except ImportError:
     try:
         import sqlite
@@ -236,7 +248,9 @@ except ImportError:
 class SQLiteConnection(ConnectionWrapper):
     """Connection wrapper for SQLite."""
 
-    __slots__ = ['cnx']
+    __slots__ = ['cnx', '_active_cursors']
+
+    poolable = False
 
     def __init__(self, path, params={}):
         assert have_pysqlite > 0
@@ -254,22 +268,33 @@ class SQLiteConnection(ConnectionWrapper):
                                  'directory it is located in.' \
                                  % (getuser(), path)
 
-        timeout = int(params.get('timeout', 10000))
         if have_pysqlite == 2:
+            self._active_cursors = weakref.WeakKeyDictionary()
+            timeout = int(params.get('timeout', 10.0))
             # Convert unicode to UTF-8 bytestrings. This is case-sensitive, so
             # we need two converters
             sqlite.register_converter('text', str)
             sqlite.register_converter('TEXT', str)
 
             cnx = sqlite.connect(path, detect_types=sqlite.PARSE_DECLTYPES,
-                                 check_same_thread=False, timeout=timeout)
+                                 timeout=timeout)
         else:
+            timeout = int(params.get('timeout', 10000))
             cnx = sqlite.connect(path, timeout=timeout)
         ConnectionWrapper.__init__(self, cnx)
 
     if have_pysqlite == 2:
         def cursor(self):
-            return self.cnx.cursor(PyFormatCursor)
+            cursor = self.cnx.cursor(PyFormatCursor)
+            self._active_cursors[cursor] = True
+            cursor.cnx = self
+            return cursor
+
+        def rollback(self):
+            for cursor in self._active_cursors.keys():
+                cursor.close()
+            self.cnx.rollback()
+
     else:
         def cursor(self):
             return self.cnx.cursor()
@@ -331,6 +356,8 @@ class PostgreSQLConnection(ConnectionWrapper):
     """Connection wrapper for PostgreSQL."""
 
     __slots__ = ['cnx']
+
+    poolable = True
 
     def __init__(self, path, user=None, password=None, host=None, port=None,
                  params={}):
