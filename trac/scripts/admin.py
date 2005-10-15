@@ -130,7 +130,8 @@ class TracAdmin(cmd.Cmd):
 
     def db_query(self, sql, cursor=None):
         if not cursor:
-            cursor = self.db_open().cursor()
+            cnx = self.db_open()
+            cursor = cnx.cursor()
         cursor.execute(sql)
         for row in cursor:
             yield row
