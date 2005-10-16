@@ -159,7 +159,10 @@ class Component(object):
             extensions = ComponentMeta._registry.get(xtnpt.interface, [])
             return [self.compmgr[cls] for cls in extensions
                     if self.compmgr[cls]]
-        raise AttributeError, name
+        cls = self.__class__.__name__
+        if hasattr(self, '__module__'):
+            cls = '.'.join((self.__module__, cls))
+        raise AttributeError, "'%s' object has no attribute '%s'" % (cls, name)
 
 
 class ComponentManager(object):
