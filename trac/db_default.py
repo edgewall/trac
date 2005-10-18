@@ -430,6 +430,7 @@ default_config = \
   ('notification', 'smtp_replyto', 'trac@localhost'),
   ('timeline', 'changeset_show_files', '0'),
   ('timeline', 'default_daysback', '30'),
+  ('timeline', 'ticket_details', 'no'),
   ('browser', 'hide_properties', 'svk:merge'),
   ('wiki', 'ignore_missing_pages', 'false'),
 )

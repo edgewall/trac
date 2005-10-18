@@ -39,6 +39,10 @@ class ITimelineEventProvider(Interface):
         
         Each filter must be a (name, label) tuple, where `name` is the internal
         name, and `label` is a human-readable name for display.
+
+        Optionally, the tuple can contain a third element, `checked`.
+        If `checked` is omitted or True, the filter is active by default,
+        otherwise it will be inactive.
         """
 
     def get_timeline_events(self, req, start, stop, filters):
@@ -108,14 +112,14 @@ class TimelineModule(Component):
             available_filters += event_provider.get_timeline_filters(req)
 
         filters = []
-        # check the request or session for enabled filters, or enable all
-        for test in (lambda f: req.args.has_key(f),
-                     lambda f: req.session.get('timeline.filter.%s' % f, '') \
-                                   == '1',
-                     lambda f: True):
+        # check the request or session for enabled filters, or use default
+        for test in (lambda f: req.args.has_key(f[0]),
+                     lambda f: req.session.get('timeline.filter.%s' % f[0], '')\
+                               == '1',
+                     lambda f: len(f) == 2 or f[2]):
             if filters:
                 break
-            filters = [f[0] for f in available_filters if test(f[0])]
+            filters = [f[0] for f in available_filters if test(f)]
 
         # save the results of submitting the timeline form to the session
         if req.args.has_key('update'):

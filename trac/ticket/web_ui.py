@@ -439,8 +439,10 @@ class UpdateDetailsForTimeline(Component):
     # ITimelineEventProvider methods
 
     def get_timeline_filters(self, req):
+        if self.config.get('timeline', 'ticket_details') in util.FALSE:
+            return
         if req.perm.has_permission('TICKET_VIEW'):
-            yield ('ticket_details', 'Ticket details')
+            yield ('ticket_details', 'Ticket details', False)
 
     def get_timeline_events(self, req, start, stop, filters):
         if 'ticket_details' in filters:
