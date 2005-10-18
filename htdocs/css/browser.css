@@ -29,7 +29,7 @@ h1 .sep { color: #666; padding: 0 .1em }
  white-space: nowrap;
  text-align: right;
  vertical-align: middle;
- font-size: 9px;
+ font-size: 70%;
 }
 #dirlist td.name { width: 100% }
 #dirlist td.name a, #dirlist td.name span {
@@ -43,14 +43,12 @@ h1 .sep { color: #666; padding: 0 .1em }
 #dirlist td.name a.file { background-image: url(../file.png) }
 #dirlist td.name span.file { background-image: url(../filedeny.png) }
 #dirlist td.name a, #dirlist td.rev a { border-bottom: none; display: block }
-#dirlist td.change * { font-size: 9px }
+#dirlist td.rev { text-align: right }
+#dirlist td.change { font-size: 85%; vertical-align: middle; white-space: nowrap }
 
 /* Styles for the revision log table
    (extends the styles for "table.listing") */
 #chglist { margin-top: 0 }
-#chglist td.change { 
- white-space: nowrap; 
-}
 #chglist td.change span { 
  border: 1px solid #999;
  display: block;
@@ -59,10 +57,11 @@ h1 .sep { color: #666; padding: 0 .1em }
 }
 #chglist td.change .comment { display: none }
 #chglist td.old_path { font-style: italic }
-#chglist td.date { white-space: nowrap }
-#chglist td.rev, #chglist td.chgset { text-align: center }
+#chglist td.date { font-size: 85%; vertical-align: top; padding-top: 0.55em; white-space: nowrap }
+#chglist td.author { font-size: 85%; vertical-align: top; padding-top: 0.55em }
+#chglist td.rev, #chglist td.chgset { text-align: right }
 #chglist td.rev a, #chglist td.chgset a { border-bottom: none }
-#chglist td.summary { width: 100% }
+#chglist td.summary { width: 100%; font-size: 85%; vertical-align: middle; white-space: nowrap }
 #chglist td.summary * { margin-top: 0; margin-bottom: 0 }
 
 #paging { margin: 1em 0 }
