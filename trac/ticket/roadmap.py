@@ -84,8 +84,9 @@ def calc_ticket_stats(tickets):
     }
 
 def milestone_to_hdf(env, db, req, milestone):
+    safe_name = milestone.name.replace('/', '%2F')
     hdf = {'name': escape(milestone.name),
-           'href': escape(env.href.milestone(milestone.name))}
+           'href': escape(env.href.milestone(safe_name))}
     if milestone.description:
         hdf['description_source'] = escape(milestone.description)
         hdf['description'] = wiki_to_html(milestone.description, env, req, db)
@@ -323,11 +324,11 @@ class MilestoneModule(Component):
 
     def match_request(self, req):
         import re, urllib
-        match = re.match(r'/milestone(?:/([^\?]+))?(?:/(.*)/?)?', req.path_info)
+        match = re.match(r'/milestone(?:/(.+))?', req.path_info)
         if match:
             if match.group(1):
                 req.args['id'] = urllib.unquote(match.group(1))
-            return 1
+            return True
 
     def process_request(self, req):
         req.perm.assert_permission('MILESTONE_VIEW')
@@ -341,7 +342,8 @@ class MilestoneModule(Component):
         if req.method == 'POST':
             if req.args.has_key('cancel'):
                 if milestone.exists:
-                    req.redirect(self.env.href.milestone(milestone.name))
+                    safe_name = milestone.name.replace('/', '%2F')
+                    req.redirect(self.env.href.milestone(safe_name))
                 else:
                     req.redirect(self.env.href.roadmap())
             elif action == 'edit':
@@ -405,7 +407,9 @@ class MilestoneModule(Component):
         else:
             milestone.insert()
         db.commit()
-        req.redirect(self.env.href.milestone(milestone.name))
+
+        safe_name = milestone.name.replace('/', '%2F')
+        req.redirect(self.env.href.milestone(safe_name))
 
     def _render_confirm(self, req, db, milestone):
         req.perm.assert_permission('MILESTONE_DELETE')
@@ -438,11 +442,6 @@ class MilestoneModule(Component):
     def _render_view(self, req, db, milestone):
         req.hdf['title'] = 'Milestone %s' % milestone.name
         req.hdf['milestone.mode'] = 'view'
-
-        # If the milestone name contains slashes, we'll need to include the 'id'
-        # parameter in the forms for editing/deleting the milestone. See #806.
-        if milestone.name.find('/') >= 0:
-            req.hdf['milestone.id_param'] = 1
 
         req.hdf['milestone'] = milestone_to_hdf(self.env, db, req, milestone)
 
