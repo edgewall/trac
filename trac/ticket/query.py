@@ -30,7 +30,7 @@ from trac.wiki import wiki_to_html, wiki_to_oneliner, IWikiMacroProvider, \
 
 
 class QuerySyntaxError(Exception):
-    pass
+    """Exception raised when a ticket query cannot be parsed from a string."""
 
 
 class Query(object):
@@ -163,7 +163,7 @@ class Query(object):
     def get_href(self, format=None):
         return self.env.href.query(order=self.order,
                                    desc=self.desc and 1 or None,
-                                   group=self.group,
+                                   group=self.group or None,
                                    groupdesc=self.groupdesc and 1 or None,
                                    verbose=self.verbose and 1 or None,
                                    format=format,
@@ -199,7 +199,7 @@ class Query(object):
            sql.append("\n  LEFT OUTER JOIN ticket_custom AS %s ON " \
                       "(id=%s.ticket AND %s.name='%s')" % (k, k, k, k))
 
-        for col in [c for c in ['status', 'resolution', 'priority', 'severity']
+        for col in [c for c in ('status', 'resolution', 'priority', 'severity')
                     if c == self.order or c == self.group or c == 'priority']:
             sql.append("\n  LEFT OUTER JOIN enum AS %s ON (%s.type='%s' AND %s.name=%s)"
                        % (col, col, col, col, col))
@@ -238,7 +238,7 @@ class Query(object):
                 inlist = ",".join(["'" + sql_escape(val[neg and 1 or 0:]) + "'"
                                    for val in v])
                 if k not in custom_fields:
-                    col = 't.'+k
+                    col = 't.' + k
                 else:
                     col = k
                 clauses.append("COALESCE(%s,'') %sIN (%s)"
@@ -267,7 +267,7 @@ class Query(object):
             order_cols.insert(0, (self.group, self.groupdesc))
         for name, desc in order_cols:
             if name not in custom_fields:
-                col = 't.'+name
+                col = 't.' + name
             else:
                 col = name
             if name == 'id':
@@ -400,16 +400,6 @@ class QueryModule(Component):
         ticket_fields = [f['name'] for f in
                          TicketSystem(self.env).get_ticket_fields()]
 
-        # A special hack for Safari/WebKit, which will not submit dynamically
-        # created check-boxes with their real value, but with the default value
-        # 'on'. See also htdocs/query.js#addFilter()
-        checkboxes = [k for k in req.args.keys() if k.startswith('__')]
-        if checkboxes:
-            import cgi
-            for checkbox in checkboxes:
-                (real_k, real_v) = checkbox[2:].split(':', 2)
-                req.args.list.append(cgi.MiniFieldStorage(real_k, real_v))
-
         # For clients without JavaScript, we remove constraints here if
         # requested
         remove_constraints = {}
@@ -496,13 +486,13 @@ class QueryModule(Component):
         req.hdf['query.order'] = query.order
         req.hdf['query.href'] = escape(href)
         if query.desc:
-            req.hdf['query.desc'] = 1
+            req.hdf['query.desc'] = True
         if query.group:
             req.hdf['query.group'] = query.group
             if query.groupdesc:
-                req.hdf['query.groupdesc'] = 1
+                req.hdf['query.groupdesc'] = True
         if query.verbose:
-            req.hdf['query.verbose'] = 1
+            req.hdf['query.verbose'] = True
 
         tickets = query.execute(db)
         req.hdf['query.num_matches'] = len(tickets)

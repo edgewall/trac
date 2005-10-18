@@ -48,14 +48,6 @@ function initializeFilters() {
       }
     }
 
-    // Ugly hack: Safari < 1.2 removes the DOM nodes, but not the form elements,
-    // so they'll get submitted twice. Setting the name of the original elements
-    // to an empty string before removing them seems to solve the problem
-    var inputs = tr.getElementsByTagName("input");
-    for (var j = 0; j < inputs.length; j++) inputs[j].name = "";
-    var selects = tr.getElementsByTagName("select");
-    for (var j = 0; j < selects.length; j++) selects[j].name = "";
-
     var tBody = tr.parentNode;
     tBody.deleteRow(tr.sectionRowIndex);
     if (!tBody.rows.length) {
@@ -136,6 +128,16 @@ function initializeFilters() {
       return input;
     }
 
+    // Convenience function for creating an <input type="radio">
+    function createRadio(name, value, id) {
+      var input = document.createElement("input");
+      input.type = "radio";
+      if (name) input.name = name;
+      if (value) input.value = value;
+      if (id) input.id = id;
+      return input;
+    }
+
     // Convenience function for creating a <select>
     function createSelect(name, options, optional) {
       var e = document.createElement("select");
@@ -182,19 +184,25 @@ function initializeFilters() {
     tr.appendChild(th);
 
     var td = document.createElement("td");
-    if (property.type == "radio") {
+    if (property.type == "radio" || property.type == "checkbox") {
       td.colSpan = 2;
       td.className = "filter";
-      for (var i = 0; i < property.options.length; i++) {
-        var option = property.options[i];
-        // Another hack for Safari/WebCore, which will not submit dynamically
-        // created checkboxes with the vale set for them, but rather with the
-        // default value 'on'
-        td.appendChild(createCheckbox("__" + propertyName + ":" + option,
-          option, propertyName + "_" + option));
+      if (property.type == "radio") {
+        for (var i = 0; i < property.options.length; i++) {
+          var option = property.options[i];
+          td.appendChild(createCheckbox(propertyName, option,
+            propertyName + "_" + option));
+          td.appendChild(document.createTextNode(" "));
+          td.appendChild(createLabel(option ? option : "none",
+            propertyName + "_" + option));
+        }
+      } else {
+        td.appendChild(createRadio(propertyName, "1", propertyName + "_on"));
         td.appendChild(document.createTextNode(" "));
-        td.appendChild(createLabel(option ? option : "none",
-          propertyName + "_" + option));
+        td.appendChild(createLabel("yes", propertyName + "_on"));
+        td.appendChild(createRadio(propertyName, "!1", propertyName + "_off"));
+        td.appendChild(document.createTextNode(" "));
+        td.appendChild(createLabel("no", propertyName + "_off"));
       }
       tr.appendChild(td);
     } else {
@@ -255,7 +263,7 @@ function initializeFilters() {
     }
 
     // Disable the add filter in the drop-down list
-    if (property.type == "radio") {
+    if (property.type == "radio" || property.type == "checkbox") {
       select.options[select.selectedIndex].disabled = true;
     }
     select.selectedIndex = 0;

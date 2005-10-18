@@ -21,19 +21,13 @@
     if:value == option ?> checked="checked"<?cs
     /if ?><?cs
    /each ?><?cs
-  /def ?><?cs
-  def:option_selected(constraint, option) ?><?cs
-   each:value = constraint.values ?><?cs
-    if:value == option ?> selected="selected"<?cs
-    /if ?><?cs
-   /each ?><?cs
   /def ?>
   <table summary="Query filters"><?cs each:field = query.fields ?><?cs
    each:constraint = query.constraints ?><?cs
     if:name(field) == name(constraint) ?>
      <tbody><tr class="<?cs var:name(field) ?>">
       <th scope="row"><label><?cs var:field.label ?></label></th><?cs
-      if:field.type != "radio" ?>
+      if:field.type != "radio" && field.type != "checkbox" ?>
        <td class="mode">
         <select name="<?cs var:name(field) ?>_mode"><?cs
          each:mode = query.modes[field.type] ?>
@@ -44,7 +38,9 @@
         </select>
        </td><?cs
       /if ?>
-      <td class="filter"<?cs if:field.type == "radio" ?> colspan="2"<?cs /if ?>><?cs
+      <td class="filter"<?cs
+        if:field.type == "radio" || field.type == "checkbox" ?> colspan="2"<?cs
+        /if ?>><?cs
        if:field.type == "select" ?><?cs
         each:value = constraint.values ?>
          <select name="<?cs var:name(constraint) ?>"><option></option><?cs
@@ -69,6 +65,15 @@
          <label for="<?cs var:name(field) ?>_<?cs var:option ?>"><?cs
            alt:option ?>none<?cs /alt ?></label><?cs
         /each ?><?cs
+       elif:field.type == "checkbox" ?>
+        <input type="radio" id="<?cs var:name(field) ?>_on" name="<?cs
+          var:name(field) ?>" value="1"<?cs
+          if:constraint.mode != '!' ?> checked="checked"<?cs /if ?> />
+        <label for="<?cs var:name(field) ?>_on">yes</label>
+        <input type="radio" id="<?cs var:name(field) ?>_off" name="<?cs
+          var:name(field) ?>" value="!1"<?cs
+          if:constraint.mode == '!' ?> checked="checked"<?cs /if ?> />
+        <label for="<?cs var:name(field) ?>_off">no</label><?cs
        elif:field.type == "text" ?><?cs
         each:value = constraint.values ?>
         <input type="text" name="<?cs var:name(field) ?>" value="<?cs
