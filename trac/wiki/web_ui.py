@@ -267,6 +267,8 @@ class WikiModule(Component):
             if option.startswith('-U'):
                 context = int(option[2:])
                 break
+        if context < 0:
+            context = None
         changes = hdf_diff(oldtext, newtext, context=context,
                            ignore_blank_lines='-B' in diff_options,
                            ignore_case='-i' in diff_options,

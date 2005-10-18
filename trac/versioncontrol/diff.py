@@ -105,9 +105,8 @@ def _group_opcodes(opcodes, n=3):
     None for the parameter n.
     """
     # Full context produces all the opcodes
-    if n == None:
-        for opcode in opcodes:
-            yield opcode
+    if n is None:
+        yield opcodes
         return
 
     # Otherwise we leave at most n lines with the tag 'equal' before and after
@@ -249,11 +248,17 @@ def get_diff_options(req):
     req.hdf['diff.style'] = style
 
     pref = int(req.session.get('diff_contextlines', 2))
-    arg = int(req.args.get('contextlines', pref))
+    try:
+        arg = int(req.args.get('contextlines', pref))
+    except ValueError:
+        arg = -1
     if req.args.has_key('update') and arg != pref:
         req.session['diff_contextlines'] = arg
     options = ['-U%d' % arg]
-    req.hdf['diff.options.contextlines'] = arg
+    if arg >= 0:
+        req.hdf['diff.options.contextlines'] = arg
+    else:
+        req.hdf['diff.options.contextlines'] = 'all'
 
     arg = get_bool_option('ignoreblanklines')
     if arg:

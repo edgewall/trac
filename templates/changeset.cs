@@ -7,14 +7,14 @@
   <ul><?cs
    if:len(links.prev) ?>
     <li class="first<?cs if:!len(links.next) ?> last<?cs /if ?>">
-     <a class="prev" href="<?cs var:links.prev.0.href ?>" title="<?cs
+     &larr; <a class="prev" href="<?cs var:links.prev.0.href ?>" title="<?cs
        var:links.prev.0.title ?>">Previous Changeset</a>
     </li><?cs
    /if ?><?cs
    if:len(links.next) ?>
     <li class="<?cs if:len(links.prev) ?>first <?cs /if ?>last">
      <a class="next" href="<?cs var:links.next.0.href ?>" title="<?cs
-       var:links.next.0.title ?>">Next Changeset</a>
+       var:links.next.0.title ?>">Next Changeset</a> &rarr;
     </li><?cs
    /if ?>
   </ul><?cs
@@ -43,7 +43,7 @@
   </select>
   <div class="field">
    Show <input type="text" name="contextlines" id="contextlines" size="2"
-     maxlength="2" value="<?cs var:diff.options.contextlines ?>" />
+     maxlength="3" value="<?cs var:diff.options.contextlines ?>" />
    <label for="contextlines">lines around each change</label>
   </div>
   <fieldset id="ignore">

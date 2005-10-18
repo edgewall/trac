@@ -243,6 +243,8 @@ class ChangesetModule(Component):
                     if option.startswith('-U'):
                         context = int(option[2:])
                         break
+                if context < 0:
+                    context = None
                 tabwidth = int(self.config.get('diff', 'tab_width',
                                                self.config.get('mimeviewer',
                                                                'tab_width')))

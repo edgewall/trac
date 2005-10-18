@@ -61,7 +61,7 @@
     </select></label>
     <div class="field">
      Show <input type="text" name="contextlines" id="contextlines" size="2"
-       maxlength="2" value="<?cs var:diff.options.contextlines ?>" />
+       maxlength="3" value="<?cs var:diff.options.contextlines ?>" />
      <label for="contextlines">lines around each change</label>
     </div>
     <fieldset id="ignore">
