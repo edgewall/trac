@@ -224,16 +224,18 @@ class ChangesetModule(Component):
             old_content = old_node.get_content().read()
             if mimeview.is_binary(old_content):
                 continue
-            charset = mimeview.get_charset(old_node.content_type) or \
-                      default_charset
-            old_content = util.to_utf8(old_content, charset)
+            charset = mimeview.get_charset(old_node.content_type)
+            if not charset:
+                charset = mimeview.detect_unicode(old_content)
+            old_content = util.to_utf8(old_content, charset or default_charset)
 
             new_content = new_node.get_content().read()
             if mimeview.is_binary(new_content):
                 continue
-            charset = mimeview.get_charset(new_node.content_type) or \
-                      default_charset
-            new_content = util.to_utf8(new_content, charset)
+            charset = mimeview.get_charset(new_node.content_type)
+            if not charset:
+                charset = mimeview.detect_unicode(new_content)
+            new_content = util.to_utf8(new_content, charset or default_charset)
 
             if old_content != new_content:
                 context = 3
