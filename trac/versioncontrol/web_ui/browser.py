@@ -101,7 +101,7 @@ class BrowserModule(Component):
                            if not name in hidden_properties]),
             'href': util.escape(self.env.href.browser(path, rev=rev or
                                                       repos.youngest_rev)),
-            'log_href': util.escape(self.env.href.log(path))
+            'log_href': util.escape(self.env.href.log(path, rev=rev or None))
         }
 
         path_links = get_path_links(self.env.href, path, rev)

@@ -75,7 +75,7 @@ class LogModule(Component):
             'rev': rev,
             'verbose': verbose,
             'stop_rev': stop_rev,
-            'browser_href': self.env.href.browser(path, rev=rev),
+            'browser_href': self.env.href.browser(path),
             'log_href': self.env.href.log(path, rev=rev)
         }
 
