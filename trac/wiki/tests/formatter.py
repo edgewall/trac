@@ -67,9 +67,9 @@ class WikiTestCase(unittest.TestCase):
         # in separate unit tests.
         import trac.versioncontrol.web_ui.browser
         import trac.versioncontrol.web_ui.changeset
-        import trac.Milestone
         import trac.ticket.query
         import trac.ticket.report
+        import trac.ticket.roadmap
         import trac.Search
 
         env = DummyEnvironment()

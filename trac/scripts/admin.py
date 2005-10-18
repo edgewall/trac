@@ -31,7 +31,6 @@ from trac import perm, util, db_default
 from trac.config import default_dir
 from trac.env import Environment
 from trac.config import Configuration
-from trac.Milestone import Milestone
 from trac.perm import PermissionSystem
 from trac.ticket.model import *
 from trac.wiki import WikiPage

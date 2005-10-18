@@ -44,7 +44,6 @@ class TicketSystem(Component):
     def get_ticket_fields(self):
         """Returns the list of fields available for tickets."""
         from trac.ticket import model
-        from trac.Milestone import Milestone
 
         db = self.env.get_db_cnx()
         fields = []
@@ -73,7 +72,7 @@ class TicketSystem(Component):
 
         # Default select and radio fields
         selects = [('type', model.Type), ('status', model.Status),
-                   ('priority', model.Priority), ('milestone', Milestone),
+                   ('priority', model.Priority), ('milestone', model.Milestone),
                    ('component', model.Component), ('version', model.Version),
                    ('severity', model.Severity), ('resolution', model.Resolution)]
         for name, cls in selects:

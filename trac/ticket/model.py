@@ -23,7 +23,7 @@ from trac.core import TracError
 from trac.ticket import TicketSystem
 
 __all__ = ['Ticket', 'Type', 'Status', 'Resolution', 'Priority', 'Severity',
-           'Component', 'Version']
+           'Component', 'Milestone', 'Version']
 
 
 class Ticket(object):
@@ -493,6 +493,122 @@ class Component(object):
             component.owner = owner or None
             component.description = description or ''
             yield component
+    select = classmethod(select)
+
+
+class Milestone(object):
+
+    def __init__(self, env, name=None, db=None):
+        self.env = env
+        if name:
+            self._fetch(name, db)
+            self._old_name = name
+        else:
+            self.name = self._old_name = None
+            self.due = self.completed = 0
+            self.description = ''
+
+    def _fetch(self, name, db=None):
+        if not db:
+            db = self.env.get_db_cnx()
+        cursor = db.cursor()
+        cursor.execute("SELECT name,due,completed,description "
+                       "FROM milestone WHERE name=%s", (name,))
+        row = cursor.fetchone()
+        if not row:
+            raise TracError('Milestone %s does not exist.' % name,
+                            'Invalid Milestone Name')
+        self.name = row[0]
+        self.due = row[1] and int(row[1]) or 0
+        self.completed = row[2] and int(row[2]) or 0
+        self.description = row[3] or ''
+
+    exists = property(fget=lambda self: self._old_name is not None)
+    is_completed = property(fget=lambda self: self.completed != 0)
+    is_late = property(fget=lambda self: self.due and self.due < time.time())
+
+    def delete(self, retarget_to=None, author=None, db=None):
+        if not db:
+            db = self.env.get_db_cnx()
+            handle_ta = True
+        else:
+            handle_ta = False
+
+        cursor = db.cursor()
+        self.env.log.info('Deleting milestone %s' % self.name)
+        cursor.execute("DELETE FROM milestone WHERE name=%s", (self.name,))
+
+        # Retarget/reset tickets associated with this milestone
+        now = time.time()
+        cursor.execute("SELECT id FROM ticket WHERE milestone=%s", (self.name,))
+        tkt_ids = [int(row[0]) for row in cursor]
+        for tkt_id in tkt_ids:
+            ticket = Ticket(self.env, tkt_id, db)
+            ticket['milestone'] = retarget_to
+            ticket.save_changes(author, 'Milestone %s deleted' % self.name,
+                                now, db=db)
+
+        if handle_ta:
+            db.commit()
+
+    def insert(self, db=None):
+        assert self.name, 'Cannot create milestone with no name'
+        self.name = self.name.strip()
+        if not db:
+            db = self.env.get_db_cnx()
+            handle_ta = True
+        else:
+            handle_ta = False
+
+        cursor = db.cursor()
+        self.env.log.debug("Creating new milestone '%s'" % self.name)
+        cursor.execute("INSERT INTO milestone (name,due,completed,description) "
+                       "VALUES (%s,%s,%s,%s)",
+                       (self.name, self.due, self.completed, self.description))
+
+        if handle_ta:
+            db.commit()
+
+    def update(self, db=None):
+        assert self.name, 'Cannot update milestone with no name'
+        self.name = self.name.strip()
+        if not db:
+            db = self.env.get_db_cnx()
+            handle_ta = True
+        else:
+            handle_ta = False
+
+        cursor = db.cursor()
+        self.env.log.info('Updating milestone "%s"' % self.name)
+        cursor.execute("UPDATE milestone SET name=%s,due=%s,"
+                       "completed=%s,description=%s WHERE name=%s",
+                       (self.name, self.due, self.completed, self.description,
+                        self._old_name))
+        self.env.log.info('Updating milestone field of all tickets '
+                          'associated with milestone "%s"' % self.name)
+        cursor.execute("UPDATE ticket SET milestone=%s WHERE milestone=%s",
+                       (self.name, self._old_name))
+        self._old_name = self.name
+
+        if handle_ta:
+            db.commit()
+
+    def select(cls, env, include_completed=True, db=None):
+        if not db:
+            db = env.get_db_cnx()
+        sql = "SELECT name,due,completed,description FROM milestone "
+        if not include_completed:
+            sql += "WHERE COALESCE(completed,0)=0 "
+        sql += "ORDER BY COALESCE(due,0)=0,due,name"
+        cursor = db.cursor()
+        cursor.execute(sql)
+        for name,due,completed,description in cursor:
+            milestone = Milestone(env)
+            milestone.name = milestone._old_name = name
+            milestone.due = due and int(due) or 0
+            milestone.completed = completed and int(completed) or 0
+            milestone.description = description or ''
+            yield milestone
     select = classmethod(select)
 
 
