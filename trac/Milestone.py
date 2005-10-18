@@ -84,6 +84,7 @@ class Milestone(object):
 
     def insert(self, db=None):
         assert self.name, 'Cannot create milestone with no name'
+        self.name = self.name.strip()
         if not db:
             db = self.env.get_db_cnx()
             handle_ta = True
@@ -101,6 +102,7 @@ class Milestone(object):
 
     def update(self, db=None):
         assert self.name, 'Cannot update milestone with no name'
+        self.name = self.name.strip()
         if not db:
             db = self.env.get_db_cnx()
             handle_ta = True
@@ -117,7 +119,6 @@ class Milestone(object):
                           'associated with milestone "%s"' % self.name)
         cursor.execute("UPDATE ticket SET milestone=%s WHERE milestone=%s",
                        (self.name, self._old_name))
-        # FIXME: Insert change into the change history of the tickets
         self._old_name = self.name
 
         if handle_ta:

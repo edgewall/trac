@@ -102,13 +102,13 @@ class Ticket(object):
             self._old[name] = self.values.get(name)
         elif self._old[name] == value: # Change of field reverted
             del self._old[name]
-        self.values[name] = value
+        self.values[name] = value.strip()
 
     def populate(self, values):
         """Populate the ticket with 'suitable' values from a dictionary"""
         field_names = [f['name'] for f in self.fields]
         for name in [name for name in values.keys() if name in field_names]:
-            self[name] = values.get(name, '')
+            self[name] = values.get(name, '').strip()
 
         # We have to do an extra trick to catch unchecked checkboxes
         for name in [name for name in values.keys() if name[9:] in field_names
@@ -314,7 +314,9 @@ class AbstractEnum(object):
             db.commit()
 
     def insert(self, db=None):
+        assert not self.exists, 'Cannot insert existing %s' % self.type
         assert self.name, 'Cannot create %s with no name' % self.type
+        self.name = self.name.strip()
         if not db:
             db = self.env.get_db_cnx()
             handle_ta = True
@@ -326,7 +328,8 @@ class AbstractEnum(object):
         value = self.value
         if not value:
             cursor.execute(("SELECT COALESCE(MAX(%s),0) FROM enum "
-                            "WHERE type=%%s") % db.cast('value', 'int'), (self.type,))
+                            "WHERE type=%%s") % db.cast('value', 'int'),
+                           (self.type,))
             value = str(int(cursor.fetchone()[0]) + 1)
         cursor.execute("INSERT INTO enum (type,name,value) VALUES (%s,%s,%s)",
                        (self.type, self.name, value))
@@ -337,6 +340,7 @@ class AbstractEnum(object):
     def update(self, db=None):
         assert self.exists, 'Cannot update non-existent %s' % self.type
         assert self.name, 'Cannot update %s with no name' % self.type
+        self.name = self.name.strip()
         if not db:
             db = self.env.get_db_cnx()
             handle_ta = True
@@ -434,7 +438,9 @@ class Component(object):
             db.commit()
 
     def insert(self, db=None):
+        assert not self.exists, 'Cannot insert existing component'
         assert self.name, 'Cannot create component with no name'
+        self.name = self.name.strip()
         if not db:
             db = self.env.get_db_cnx()
             handle_ta = True
@@ -453,6 +459,7 @@ class Component(object):
     def update(self, db=None):
         assert self.exists, 'Cannot update non-existent component'
         assert self.name, 'Cannot update component with no name'
+        self.name = self.name.strip()
         if not db:
             db = self.env.get_db_cnx()
             handle_ta = True
@@ -530,7 +537,9 @@ class Version(object):
             db.commit()
 
     def insert(self, db=None):
+        assert not self.exists, 'Cannot insert existing version'
         assert self.name, 'Cannot create version with no name'
+        self.name = self.name.strip()
         if not db:
             db = self.env.get_db_cnx()
             handle_ta = True
@@ -549,6 +558,7 @@ class Version(object):
     def update(self, db=None):
         assert self.exists, 'Cannot update non-existent version'
         assert self.name, 'Cannot update version with no name'
+        self.name = self.name.strip()
         if not db:
             db = self.env.get_db_cnx()
             handle_ta = True
