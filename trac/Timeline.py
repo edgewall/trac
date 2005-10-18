@@ -24,7 +24,6 @@ from trac.core import *
 from trac.perm import IPermissionRequestor
 from trac.util import enum, escape, format_date, format_time, http_date, \
                       shorten_line
-from trac.versioncontrol.svn_authz import SubversionAuthorizer
 from trac.web import IRequestHandler
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
 
@@ -36,18 +35,18 @@ class ITimelineEventProvider(Interface):
     """
 
     def get_timeline_filters(self, req):
-        """
-        Return a list of filters that this event provider supports. Each
-        filter must be a (name, label) tuple, where `name` is the internal
+        """Return a list of filters that this event provider supports.
+        
+        Each filter must be a (name, label) tuple, where `name` is the internal
         name, and `label` is a human-readable name for display.
         """
 
     def get_timeline_events(self, req, start, stop, filters):
-        """
-        Return a list of events in the time range given by the `start` and
-        `stop` parameters. The `filters` parameters is a list of the enabled
-        filters, each item being the name of the tuples returned by
-        `get_timeline_events`.
+        """Return a list of events in the time range given by the `start` and
+        `stop` parameters.
+        
+        The `filters` parameters is a list of the enabled filters, each item
+        being the name of the tuples returned by `get_timeline_filters`.
 
         The events returned by this function must be tuples of the form
         (kind, href, title, date, author, message).
