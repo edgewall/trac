@@ -144,6 +144,7 @@ class RoadmapModule(Component):
         write_prop('VERSION', '2.0')
         write_prop('PRODID', '-//Edgewall Software//NONSGML Trac %s//EN'
                    % __version__)
+        write_prop('METHOD', 'PUBLISH')
         write_prop('X-WR-CALNAME',
                    self.config.get('project', 'name') + ' - Roadmap')
         for milestone in milestones:
@@ -152,6 +153,7 @@ class RoadmapModule(Component):
             if milestone.has_key('due'):
                 write_prop('BEGIN', 'VEVENT')
                 write_prop('UID', uid)
+                write_date('DTSTAMP', localtime(milestone['due']))
                 write_date('DTSTART', localtime(milestone['due']))
                 write_prop('SUMMARY', 'Milestone %s' % milestone['name'])
                 write_prop('URL', req.base_url + '/milestone/' +
