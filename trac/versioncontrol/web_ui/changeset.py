@@ -1,4 +1,4 @@
-# -*- coding: iso8859-1 -*-
+# -*- coding: iso-8859-1 -*-
 #
 # Copyright (C) 2003-2005 Edgewall Software
 # Copyright (C) 2003-2005 Jonas Borgström <jonas@edgewall.com>
@@ -383,9 +383,8 @@ class ChangesetModule(Component):
         authzperm = SubversionAuthorizer(self.env, req.authname)
         db = self.env.get_db_cnx()
         sql = "SELECT rev,time,author,message " \
-              "FROM revision WHERE %s OR %s" % \
-              (query_to_sql(db, query, 'message'),
-               query_to_sql(db, query, 'author'))
+              "FROM revision WHERE %s" % \
+              (query_to_sql(db, query, 'message||author'),)
         cursor = db.cursor()
         cursor.execute(sql)
         for rev, date, author, log in cursor:

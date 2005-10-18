@@ -1,4 +1,4 @@
-# -*- coding: iso8859-1 -*-
+# -*- coding: iso-8859-1 -*-
 #
 # Copyright (C) 2003-2005 Edgewall Software
 # Copyright (C) 2003-2005 Jonas Borgström <jonas@edgewall.com>
@@ -392,10 +392,8 @@ class WikiModule(Component):
               "(SELECT name,max(version) AS ver " \
               "FROM wiki GROUP BY name) w2 " \
               "WHERE w1.version = w2.ver AND w1.name = w2.name " \
-              "AND (%s OR %s OR %s)" % \
-              (query_to_sql(db, query, 'w1.name'),
-               query_to_sql(db, query, 'w1.author'),
-               query_to_sql(db, query, 'w1.text'))
+              "AND %s" % \
+              (query_to_sql(db, query, 'w1.name||w1.author||w1.text'),)
         
         cursor = db.cursor()
         cursor.execute(sql)

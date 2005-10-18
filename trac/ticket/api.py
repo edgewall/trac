@@ -1,4 +1,4 @@
-# -*- coding: iso8859-1 -*-
+# -*- coding: iso-8859-1 -*-
 #
 # Copyright (C) 2003-2005 Edgewall Software
 # Copyright (C) 2003-2005 Jonas Borgström <jonas@edgewall.com>
@@ -171,14 +171,9 @@ class TicketSystem(Component):
         sql = "SELECT DISTINCT a.summary,a.description,a.reporter, " \
               "a.keywords,a.id,a.time FROM ticket a " \
               "LEFT JOIN ticket_change b ON a.id = b.ticket " \
-              "WHERE (b.field='comment' AND %s ) OR " \
-              "%s OR %s OR %s OR %s OR %s" % \
+              "WHERE (b.field='comment' AND %s ) OR %s" % \
               (query_to_sql(db, query, 'b.newvalue'),
-               query_to_sql(db, query, 'summary'),
-               query_to_sql(db, query, 'keywords'),
-               query_to_sql(db, query, 'description'),
-               query_to_sql(db, query, 'reporter'),
-               query_to_sql(db, query, 'cc'))
+               query_to_sql(db, query, 'summary||keywords||description||reporter||cc'))
         cursor = db.cursor()
         cursor.execute(sql)
         for summary,desc,author,keywords,tid,date in cursor:
