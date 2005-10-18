@@ -23,14 +23,6 @@ from trac.wiki import IWikiSyntaxProvider
 from trac.Search import ISearchSource, query_to_sql, shorten_result
 
 
-class MyLinkResolver(Component):
-    """
-    A dummy macro used by the unit test. We need to supply our own macro
-    because the real HelloWorld-macro can not be loaded using our
-    'fake' environment.
-    """
-
-
 class TicketSystem(Component):
     implements(IPermissionRequestor, IWikiSyntaxProvider, ISearchSource)
 
