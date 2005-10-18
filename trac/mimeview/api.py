@@ -296,7 +296,7 @@ class Mimeview(Component):
         if len(content) >= max_preview_size:
             return {'max_file_size_reached': True,
                     'max_file_size': max_preview_size,
-                    'preview': ' '}
+                    'preview': ''}
         else:
             return {'preview': self.render(req, mimetype, content,
                                            filename, detail, annotations)}

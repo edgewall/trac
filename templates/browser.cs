@@ -100,8 +100,8 @@
    if:file.preview ?><?cs
     var:file.preview ?><?cs
    elif:file.max_file_size_reached ?>
-    <strong>HTML preview not available</strong>, since file-size exceeds <?cs
-    var:file.max_file_size  ?> bytes. Try <a href="<?cs
+    <strong>HTML preview not available</strong>, since the file size exceeds
+    <?cs var:file.max_file_size ?> bytes. Try <a href="<?cs
     var:file.raw_href ?>">downloading</a> the file instead.<?cs
    else ?><strong>HTML preview not available</strong>. To view, <a href="<?cs
     var:file.raw_href ?>">download</a> the file.<?cs

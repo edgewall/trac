@@ -56,7 +56,7 @@
   if:attachment.preview ?>
    <?cs var:attachment.preview ?><?cs
   elif:attachment.max_file_size_reached ?>
-   <strong>HTML preview not available</strong>, since file-size exceeds
+   <strong>HTML preview not available</strong>, since the file size exceeds
    <?cs var:attachment.max_file_size  ?> bytes. You may <a href="<?cs
      var:attachment.raw_href ?>">download the file</a> instead.<?cs
   else ?>
