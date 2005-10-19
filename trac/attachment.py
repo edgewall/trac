@@ -141,9 +141,9 @@ class Attachment(object):
         if not os.access(self.path, os.F_OK):
             os.makedirs(self.path)
         filename = urllib.quote(filename)
+        path, targetfile = util.create_unique_file(os.path.join(self.path,
+                                                                filename))
         try:
-            path, targetfile = util.create_unique_file(os.path.join(self.path,
-                                                                    filename))
             filename = urllib.unquote(os.path.basename(path))
 
             cursor = db.cursor()
