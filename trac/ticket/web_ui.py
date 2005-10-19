@@ -123,7 +123,7 @@ class NewticketModule(Component):
                     milestone = Milestone(self.env, option, db=db)
                     if milestone.is_completed:
                         options.remove(option)
-                field['options'] = options
+                field['options'] = [util.escape(option) for option in options]
             req.hdf['newticket.fields.' + name] = field
 
         add_stylesheet(req, 'common/css/ticket.css')
@@ -370,10 +370,12 @@ class TicketModule(Component):
         for field in TicketSystem(self.env).get_ticket_fields():
             if field['type'] in ('radio', 'select'):
                 value = ticket.values.get(field['name'])
-                if value and not value in field['options']:
+                options = field['options']
+                if value and not value in options:
                     # Current ticket value must be visible even if its not in the
                     # possible values
-                    field['options'].append(value)
+                    options.append(value)
+                field['options'] = [util.escape(option) for option in options]
             name = field['name']
             del field['name']
             if name in ('summary', 'reporter', 'description', 'type', 'status',
