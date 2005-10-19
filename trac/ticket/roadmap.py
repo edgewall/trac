@@ -84,7 +84,9 @@ def calc_ticket_stats(tickets):
     }
 
 def milestone_to_hdf(env, db, req, milestone):
-    safe_name = milestone.name.replace('/', '%2F')
+    safe_name = None
+    if milestone.exists:
+        safe_name = milestone.name.replace('/', '%2F')
     hdf = {'name': escape(milestone.name),
            'href': escape(env.href.milestone(safe_name))}
     if milestone.description:
