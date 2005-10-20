@@ -39,9 +39,9 @@ from SocketServer import ThreadingMixIn
 from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
 
 try:
-    from base64 import b64decode # 2.4.1
+    from base64 import b64decode
 except ImportError:
-    pass
+    from base64 import decodestring as b64decode
 
 
 class BasicAuth:
