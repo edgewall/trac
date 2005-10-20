@@ -5,7 +5,7 @@ import StringIO
 import unittest
 
 from trac.core import *
-from trac.wiki.formatter import Formatter
+from trac.wiki.formatter import Formatter, OneLinerFormatter
 from trac.wiki.api import IWikiMacroProvider
 
 
@@ -73,10 +73,20 @@ class WikiTestCase(unittest.TestCase):
         import trac.Search
 
         env = DummyEnvironment()
+
         out = StringIO.StringIO()
-        Formatter(env).format(self.input, out)
+        self.format(env, out)
         v = out.getvalue().replace('\r','')
         self.assertEquals(self.correct, v)
+
+    def format(self, env, out):
+        Formatter(env).format(self.input, out)
+
+
+class OneLinerTestCase(WikiTestCase):
+    def format(self, env, out):
+        OneLinerFormatter(env).format(self.input, out)
+
 
 def suite():
     suite = unittest.TestSuite()
@@ -84,8 +94,10 @@ def suite():
                              'wiki-tests.txt'), 'r').read()
     tests = data.split('=' * 30 + '\n')
     for test in tests:
-        input, correct = test.split('-' * 30 + '\n')
-        suite.addTest(WikiTestCase(input, correct))
+        input, page, oneliner = test.split('-' * 30 + '\n')
+        suite.addTest(WikiTestCase(input, page))
+        if oneliner:
+            suite.addTest(OneLinerTestCase(input, oneliner[:-1]))
     return suite
 
 if __name__ == '__main__':

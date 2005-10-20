@@ -13,6 +13,12 @@ Paragraph
 </li></ul></li></ul><p>
 Another paragraph
 </p>
+------------------------------
+= Heading 1 =
+Paragraph
+ * Item 1
+   * Item 2
+Another paragraph
 ==============================
 Paragraph
 ----
@@ -35,30 +41,44 @@ Paragraph
 <p>
 <a class="ext-link" href="http://www.edgewall.com/"><span class="icon"></span>http://www.edgewall.com/</a>
 </p>
+------------------------------
+Paragraph
+----
+ 1. Item 1
+   2. Item 2
+||Table||cell||
+||Foo||Bar||Baz||
+<a class="ext-link" href="http://www.edgewall.com/"><span class="icon"></span>http://www.edgewall.com/</a>
 ==============================
 #1, [1], r1, {1}
 ------------------------------
 <p>
 <a class="missing ticket" href="/ticket/1" rel="nofollow">#1</a>, <a class="missing changeset" href="/changeset/1" rel="nofollow">[1]</a>, <a class="missing changeset" href="/changeset/1" rel="nofollow">r1</a>, <a class="report" href="/report/1">{1}</a>
 </p>
+------------------------------
 ==============================
 !#1, ![1], !r1, !{1}
 ------------------------------
 <p>
 #1, [1], r1, {1}
 </p>
+------------------------------
+#1, [1], r1, {1}
 ==============================
 [1:2], r1:2, [12:23], r12:23
 ------------------------------
 <p>
 <a class="source" href="/log/?rev=2&stop_rev=1">[1:2]</a>, <a class="source" href="/log/?rev=2&stop_rev=1">r1:2</a>, <a class="source" href="/log/?rev=23&stop_rev=12">[12:23]</a>, <a class="source" href="/log/?rev=23&stop_rev=12">r12:23</a>
 </p>
+------------------------------
 ==============================
 ![1:2], !r1:2, ![12:23], !r12:23
 ------------------------------
 <p>
 [1:2], r1:2, [12:23], r12:23
 </p>
+------------------------------
+[1:2], r1:2, [12:23], r12:23
 ==============================
 ticket:1, changeset:1, report:1, source:foo/bar
 
@@ -70,6 +90,7 @@ Issue [ticket:1], CS[changeset:1], Listing [report:1], File [source:foo/bar]
 <p>
 Issue <a class="missing ticket" href="/ticket/1" rel="nofollow">1</a>, CS<a class="missing changeset" href="/changeset/1" rel="nofollow">1</a>, Listing <a class="report" href="/report/1">1</a>, File <a class="source" href="/browser/foo/bar">foo/bar</a>
 </p>
+------------------------------
 ==============================
 [ticket:1 ticket 1], [changeset:1 changeset 1], [report:1 report 1], 
 [source:foo/bar source foo/bar], [http://www.edgewall.com/ edgewall]
@@ -78,42 +99,51 @@ Issue <a class="missing ticket" href="/ticket/1" rel="nofollow">1</a>, CS<a clas
 <a class="missing ticket" href="/ticket/1" rel="nofollow">ticket 1</a>, <a class="missing changeset" href="/changeset/1" rel="nofollow">changeset 1</a>, <a class="report" href="/report/1">report 1</a>, 
 <a class="source" href="/browser/foo/bar">source foo/bar</a>, <a class="ext-link" href="http://www.edgewall.com/"><span class="icon"></span>edgewall</a>
 </p>
+------------------------------
 ==============================
 CamelCase AlabamA ABc AlaBamA FooBar
 ------------------------------
 <p>
 <a class="missing wiki" href="/wiki/CamelCase" rel="nofollow">CamelCase?</a> AlabamA ABc AlaBamA <a class="missing wiki" href="/wiki/FooBar" rel="nofollow">FooBar?</a>
 </p>
+------------------------------
 ==============================
 CamelCase,CamelCase.CamelCase:CamelCase
 ------------------------------
 <p>
 <a class="missing wiki" href="/wiki/CamelCase" rel="nofollow">CamelCase?</a>,<a class="missing wiki" href="/wiki/CamelCase" rel="nofollow">CamelCase?</a>.CamelCase:CamelCase
 </p>
+------------------------------
 ==============================
 !CamelCase
 ------------------------------
 <p>
 CamelCase
 </p>
+------------------------------
 ==============================
 <bug>http://localhost/bugzilla/show_bug.cgi?id=1284</bug> 804
 ------------------------------
 <p>
 &lt;bug&gt;<a class="ext-link" href="http://localhost/bugzilla/show_bug.cgi?id=1284"><span class="icon"></span>http://localhost/bugzilla/show_bug.cgi?id=1284</a>&lt;/bug&gt; 804
 </p>
+------------------------------
 ==============================
 ||http://example.com/img.png||text||
 ------------------------------
 <table class="wiki">
 <tr><td><img src="http://example.com/img.png" alt="http://example.com/img.png" /></td><td>text
 </td></tr></table>
+------------------------------
+||<a class="ext-link" href="http://example.com/img.png"><span class="icon"></span>http://example.com/img.png</a>||text||
 ==============================
 http://example.com/img.png?foo=bar
 ------------------------------
 <p>
 <img src="http://example.com/img.png?foo=bar" alt="http://example.com/img.png?foo=bar" />
 </p>
+------------------------------
+<a class="ext-link" href="http://example.com/img.png?foo=bar"><span class="icon"></span>http://example.com/img.png?foo=bar</a>
 ==============================
 in:
 || RPC# || parameter len || ..... parameter ..... ||
@@ -134,12 +164,19 @@ out:
 <tr><td> RPC# </td><td> parameter len </td><td> ..... parameter ..... 
 </td></tr></table>
 <hr />
+------------------------------
+in:
+|| RPC# || parameter len || ..... parameter ..... ||
+out:
+|| RPC# || parameter len || ..... parameter ..... ||
+----
 ==============================
 ''RFCs von ftp://ftp.rfc-editor.org/in-notes/rfcXXXX.txt''
 ------------------------------
 <p>
 <i>RFCs von <a class="ext-link" href="ftp://ftp.rfc-editor.org/in-notes/rfcXXXX.txt"><span class="icon"></span>ftp://ftp.rfc-editor.org/in-notes/rfcXXXX.txt</a></i>
 </p>
+------------------------------
 ==============================
 [wiki:WikiStart Foo] [http://www.edgewall.com/ Edgewall]
 
@@ -161,6 +198,7 @@ wiki:Foo%20Bar wiki:Foo%20Bar#baz
 <p>
 <a class="missing wiki" href="/wiki/Argv" rel="nofollow">*argv[] versus **argv?</a>
 </p>
+------------------------------
 ==============================
 foo (FooBar)
 
@@ -172,24 +210,32 @@ foo (<a class="missing wiki" href="/wiki/FooBar" rel="nofollow">FooBar?</a>)
 <p>
 foo (<a class="missing wiki" href="/wiki/FooBar" rel="nofollow">FooBar?</a> )
 </p>
+------------------------------
 ==============================
 == Heading with trailing white-space == 
 ------------------------------
 <h2 id="Headingwithtrailingwhitespace">Heading with trailing white-space</h2>
+------------------------------
+== Heading with trailing white-space ==
 ==============================
 == ''Formatted'' ~~Heading~~ ==
 ------------------------------
 <h2 id="FormattedHeading"><i>Formatted</i> <del>Heading</del></h2>
+------------------------------
+== ''Formatted'' ~~Heading~~ ==
 ==============================
 == [wiki:SandBox Linked Heading] ==
 ------------------------------
 <h2 id="LinkedHeading"><a class="missing wiki" href="/wiki/SandBox" rel="nofollow">Linked Heading?</a></h2>
+------------------------------
+== [wiki:SandBox Linked Heading] ==
 ==============================
 A0B1, ST62T53C6, IR32V1H000
 ------------------------------
 <p>
 A0B1, ST62T53C6, IR32V1H000
 </p>
+------------------------------
 ==============================
 Paragraph
  * foo bar
@@ -212,18 +258,29 @@ item 2 line 2
 </li></ul><p>
 Paragraph
 </p>
+------------------------------
+Paragraph
+ * foo bar
+   boo baz
+   * Subitem
+     Subitem line 2
+ * item 2
+   item 2 line 2
+Paragraph
 ==============================
 '''ticket:1''', ''ticket:1'', ~~ticket:1~~, __ticket:1__
 ------------------------------
 <p>
 <strong><a class="missing ticket" href="/ticket/1" rel="nofollow">ticket:1</a></strong>, <i><a class="missing ticket" href="/ticket/1" rel="nofollow">ticket:1</a></i>, <del><a class="missing ticket" href="/ticket/1" rel="nofollow">ticket:1</a></del>, <span class="underline"><a class="missing ticket" href="/ticket/1" rel="nofollow">ticket:1</a></span>
 </p>
+------------------------------
 ==============================
 SandBox SandBox, SandBox; SandBox: SandBox. SandBox? SandBox! (SandBox) {SandBox} [SandBox]
 ------------------------------
 <p>
 <a class="missing wiki" href="/wiki/SandBox" rel="nofollow">SandBox?</a> <a class="missing wiki" href="/wiki/SandBox" rel="nofollow">SandBox?</a>, <a class="missing wiki" href="/wiki/SandBox" rel="nofollow">SandBox?</a>; <a class="missing wiki" href="/wiki/SandBox" rel="nofollow">SandBox?</a>: <a class="missing wiki" href="/wiki/SandBox" rel="nofollow">SandBox?</a>. <a class="missing wiki" href="/wiki/SandBox" rel="nofollow">SandBox?</a>? <a class="missing wiki" href="/wiki/SandBox" rel="nofollow">SandBox?</a>! (<a class="missing wiki" href="/wiki/SandBox" rel="nofollow">SandBox?</a>) {<a class="missing wiki" href="/wiki/SandBox" rel="nofollow">SandBox?</a>} [<a class="missing wiki" href="/wiki/SandBox" rel="nofollow">SandBox?</a>]
 </p>
+------------------------------
 ==============================
 source:/foo/bar
 source:/foo/bar#42
@@ -250,6 +307,7 @@ source:/foo/bar@head#L20
 <a class="source" href="/browser/foo/bar?rev=42#L20">source:/foo/bar@42#L20</a>
 <a class="source" href="/browser/foo/bar?rev=head#L20">source:/foo/bar@head#L20</a>
 </p>
+------------------------------
 ==============================
 query:?order=priority
 
@@ -276,6 +334,7 @@ query:milestone=1.0|2.0&owner=me
 <p>
 <a class="query" href="/query?milestone=1.0&amp;milestone=2.0&amp;owner=me&amp;order=priority">query:milestone=1.0|2.0&amp;owner=me</a>
 </p>
+------------------------------
 ==============================
 {{{
 Preformatted text.
@@ -283,6 +342,10 @@ Preformatted text.
 ------------------------------
 <pre class="wiki">Preformatted text.
 </pre>
+------------------------------
+{{{
+Preformatted text.
+}}}
 ==============================
 {{{
 #!default
@@ -291,6 +354,11 @@ Preformatted text.
 ------------------------------
 <pre class="wiki">Preformatted text.
 </pre>
+------------------------------
+{{{
+#!default
+Preformatted text.
+}}}
 ==============================
 {{{
 #!/bin/sh
@@ -300,6 +368,11 @@ echo "foo"
 <pre class="wiki">#!/bin/sh
 echo &#34;foo&#34;
 </pre>
+------------------------------
+{{{
+#!/bin/sh
+echo "foo"
+}}}
 ==============================
 {{{
 #!html
@@ -307,6 +380,11 @@ echo &#34;foo&#34;
 }}}
 ------------------------------
 <p>Hello World</p>
+------------------------------
+{{{
+#!html
+&lt;p&gt;Hello World&lt;/p&gt;
+}}}
 ==============================
 {{{
 #!html
@@ -318,6 +396,11 @@ echo &#34;foo&#34;
  <pre>&lt;script&gt;alert(&#34;&#34;);&lt;/script&gt;
 </pre>
 </div>
+------------------------------
+{{{
+#!html
+&lt;script&gt;alert("");&lt;/script&gt;
+}}}
 ==============================
 {{{
 #!html
@@ -329,42 +412,59 @@ echo &#34;foo&#34;
  <pre>&lt;div onclick=&#34;alert('')&#34;&gt;Click me&lt;/div&gt;
 </pre>
 </div>
+------------------------------
+{{{
+#!html
+&lt;div onclick="alert(<i>)"&gt;Click me&lt;/div&gt;
+}}}</i>
 ==============================
 ^superscript^, ,,subscript,,, normal.
 ------------------------------
 <p>
 <sup>superscript</sup>, <sub>subscript</sub>, normal.
 </p>
+------------------------------
+<sup>superscript</sup>, <sub>subscript</sub>, normal.
 ==============================
 [[HelloWorld(hej hopp)]]
 ------------------------------
 <p>
 Hello World, args = hej hopp
 </p>
+------------------------------
+[[HelloWorld(hej hopp)]]
 ==============================
 [[HelloWorld(hej hopp) ]] # This shouldnt executed as macro since it contain whitespace between ) and ]
 ------------------------------
 <p>
 [[HelloWorld(hej hopp) ]] # This shouldnt executed as macro since it contain whitespace between ) and ]
 </p>
+------------------------------
+[[HelloWorld(hej hopp) ]] # This shouldnt executed as macro since it contain whitespace between ) and ]
 ==============================
 [[HelloWorld(hej hopp))]] # Extra right brace and still executed
 ------------------------------
 <p>
 Hello World, args = hej hopp) # Extra right brace and still executed
 </p>
+------------------------------
+[[HelloWorld(hej hopp))]] # Extra right brace and still executed
 ==============================
 [[HelloWorld(hej hopp)]] [[HelloWorld(hej hopp2)]] # Test non greedy match
 ------------------------------
 <p>
 Hello World, args = hej hopp Hello World, args = hej hopp2 # Test non greedy match
 </p>
+------------------------------
+[[HelloWorld(hej hopp)]] [[HelloWorld(hej hopp2)]] # Test non greedy match
 ==============================
 Inline [[html(<B> Test </B>)]] text
 ------------------------------
 <p>
 Inline <B> Test </B> text
 </p>
+------------------------------
+Inline [[html(&lt;B&gt; Test &lt;/B&gt;)]] text
 ==============================
 Test comment blocks
 {{{
@@ -375,60 +475,76 @@ This is simply removed from the output
 <p>
 Test comment blocks
 </p>
+------------------------------
+Test comment blocks
+{{{
+#!comment
+This is simply removed from the output
+}}}
 ==============================
 Inline [[comment(This should not be seen)]] comment
 ------------------------------
 <p>
 Inline  comment
 </p>
+------------------------------
+Inline [[comment(This should not be seen)]] comment
 ==============================
 This should be '''''bold and italic'''''
 ------------------------------
 <p>
 This should be <strong><i>bold and italic</i></strong>
 </p>
+------------------------------
 ==============================
 '''''one''''', '''''two''''', '''''three''''', '''''four'''''
 ------------------------------
 <p>
 <strong><i>one</i></strong>, <strong><i>two</i></strong>, <strong><i>three</i></strong>, <strong><i>four</i></strong>
 </p>
+------------------------------
 ==============================
 __~~underlineoversrike~~__
 ------------------------------
 <p>
 <span class="underline"><del>underlineoversrike</del></span>
 </p>
+------------------------------
 ==============================
 __~~overlapping__tags~~
 ------------------------------
 <p>
 <span class="underline"><del>overlapping</del></span><del>tags</del>
 </p>
+------------------------------
 ==============================
 __~~outoforderclosetags__~~
 ------------------------------
 <p>
 <span class="underline"><del>outoforderclosetags</del></span><del></del>
 </p>
+------------------------------
 ==============================
 '''''bolditalic''' # Open italic should be closed before paragraph end
 ------------------------------
 <p>
 <strong><i>bolditalic</i></strong><i> # Open italic should be closed before paragraph end
 </i></p>
+------------------------------
 ==============================
 ''italic'''''bold'''
 ------------------------------
 <p>
 <i>italic</i><strong>bold</strong>
 </p>
+------------------------------
 ==============================
 '''bold'''''italic''
 ------------------------------
 <p>
 <strong>bold</strong><i>italic</i>
 </p>
+------------------------------
 ==============================
 '''''bold
 italic
@@ -439,6 +555,7 @@ multiline'''''
 italic
 multiline</i></strong>
 </p>
+------------------------------
 ==============================
 '''''bold
 italic
@@ -451,11 +568,14 @@ italic
 multiline
 without endtags
 </i></strong></p>
+------------------------------
 ==============================
  term:: definition
 ------------------------------
 <dl><dt>term</dt><dd>definition
 </dd></dl>
+------------------------------
+term:: definition
 ==============================
  complex topic:: multiline
                  ''formatted''
@@ -465,6 +585,10 @@ without endtags
 <i>formatted</i>
 definition
 </dd></dl>
+------------------------------
+complex topic:: multiline
+                 <i>formatted</i>
+                 definition
 ==============================
 milestone:foo
 [milestone:boo Milestone Boo]
@@ -473,6 +597,7 @@ milestone:foo
 <a class="milestone" href="/milestone/foo">milestone:foo</a>
 <a class="milestone" href="/milestone/boo">Milestone Boo</a>
 </p>
+------------------------------
 ==============================
 search:foo
 search:"foo bar"
@@ -487,6 +612,7 @@ search:"foo bar"
 <a class="search" href="/search?q=bar">bar</a>
 <a class="search" href="/search?q=">search</a>
 </p>
+------------------------------
 ==============================
 search:?q=foo&wiki=on
 search:"?q=foo bar&wiki=on"
@@ -497,12 +623,15 @@ search:"?q=foo bar&wiki=on"
 <a class="search" href="/search?q=foo+bar&amp;wiki=on">search:"?q=foo bar&amp;wiki=on"</a>
 <a class="search" href="/search?q=bar&amp;ticket=on">Bar in Tickets</a>
 </p>
+------------------------------
 ==============================
 '''Note:'''
 ------------------------------
 <p>
 <strong>Note:</strong>
 </p>
+------------------------------
+<strong>Note:</strong>
 ==============================
 ticket:1
 ticket:12
@@ -525,6 +654,7 @@ ticket:"123"
 <a class="missing ticket" href="/ticket/12" rel="nofollow">ticket:"12"</a>
 <a class="missing ticket" href="/ticket/123" rel="nofollow">ticket:"123"</a>
 </p>
+------------------------------
 ==============================
 Relative links are supported:
 [../parent See above]
@@ -539,6 +669,7 @@ Relative links are supported:
 <img src="/images/logo.png" alt="Our logo" />
 <a href="/">/</a>
 </p>
+------------------------------
 ==============================
 source:'even with whitespaces'
 source:"even with whitespaces"
@@ -551,6 +682,7 @@ source:"even with whitespaces"
 <a class="source" href="/browser/even%20with%20whitespaces">Path with spaces</a>
 <a class="source" href="/browser/even%20with%20whitespaces">Path with spaces</a>
 </p>
+------------------------------
 ==============================
 svn+ssh://secureserver.org
 [svn+ssh://secureserver.org SVN link]
@@ -563,18 +695,25 @@ rfc-2396.compatible://link
 <a class="ext-link" href="rfc-2396.compatible://link"><span class="icon"></span>rfc-2396.compatible://link</a>
 <a class="ext-link" href="rfc-2396.compatible://link"><span class="icon"></span>RFC 2396</a>
 </p>
+------------------------------
 ==============================
 = ça marche! =
 ------------------------------
 <h1 id="çamarche">ça marche!</h1>
+------------------------------
+= ça marche! =
 ==============================
 = "Test" =
 ------------------------------
 <h1 id="Test">"Test"</h1>
+------------------------------
+= "Test" =
 ==============================
 = Foo <Bar> Baz =
 ------------------------------
 <h1 id="FooltBargtBaz">Foo &lt;Bar&gt; Baz</h1>
+------------------------------
+= Foo &lt;Bar&gt; Baz =
 ==============================
 !__foo!__
 !~~bar!~~
@@ -587,6 +726,7 @@ __foo__
 ,,boo,,
 ^baz^
 </p>
+------------------------------
 ==============================
 /absolute/path/is/NotWiki and relative/path/is/NotWiki
 /ThisIsNotWikiEither and /ThisIs/NotWikiEither but ThisIs/SubWiki
@@ -595,6 +735,7 @@ __foo__
 /absolute/path/is/NotWiki and relative/path/is/NotWiki
 /ThisIsNotWikiEither and /ThisIs/NotWikiEither but <a class="missing wiki" href="/wiki/ThisIs/SubWiki" rel="nofollow">ThisIs/SubWiki?</a>
 </p>
+------------------------------
 ==============================
 8FjBpOmy
 anotherWikiPageName
@@ -603,6 +744,9 @@ anotherWikiPageName
 8FjBpOmy
 anotherWikiPageName
 </p>
+------------------------------
+8FjBpOmy
+anotherWikiPageName
 ==============================
 || a || 
 || b ||
@@ -611,3 +755,6 @@ anotherWikiPageName
 <tr><td> a 
 </td></tr><tr><td> b 
 </td></tr></table>
+------------------------------
+|| a || 
+|| b ||
