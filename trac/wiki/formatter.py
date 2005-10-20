@@ -138,7 +138,7 @@ class Formatter(object):
     QUOTED_STRING = r"'[^']+'|\"[^\"]+\""
 
     SHREF_TARGET_MIDDLE = r"(?:\|(?=[^|\s])|&(?!lt;)|[^|&\s])"
-    SHREF_TARGET_LAST_CHAR = r"[a-z\wA-Z0-9/=]"
+    SHREF_TARGET_LAST_CHAR = r"[^|'~_\.,&\s\)\]:?!]"
 
     LHREF_RELATIVE_TARGET = r"[/.][^\s[\]]*"
 
