@@ -92,6 +92,15 @@ Issue <a class="missing ticket" href="/ticket/1" rel="nofollow">1</a>, CS<a clas
 </p>
 ------------------------------
 ==============================
+!ticket:1, !changeset:1, !report:1, !source:foo/bar
+Issue ![ticket:1 number 1], CS![changeset:1], ![foo:bar]
+------------------------------
+<p>
+ticket:1, changeset:1, report:1, source:foo/bar
+Issue [ticket:1 number 1], CS[changeset:1], [foo:bar]
+</p>
+------------------------------
+==============================
 [ticket:1 ticket 1], [changeset:1 changeset 1], [report:1 report 1], 
 [source:foo/bar source foo/bar], [http://www.edgewall.com/ edgewall]
 ------------------------------
