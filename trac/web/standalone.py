@@ -35,9 +35,13 @@ import time
 import socket, errno
 import urllib
 import urllib2
-from base64 import b64decode
 from SocketServer import ThreadingMixIn
 from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
+
+try:
+    from base64 import b64decode # 2.4.1
+except ImportError:
+    pass
 
 
 class BasicAuth:
