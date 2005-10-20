@@ -32,19 +32,6 @@ from trac.wiki.api import WikiSystem
 
 __all__ = ['wiki_to_html', 'wiki_to_oneliner', 'wiki_to_outline']
 
-#
-# Customization of the Wiki syntax  ***use with care***
-#
-BOLDITALIC_TOKEN = "'''''"
-BOLD_TOKEN = "'''"
-ITALIC_TOKEN = "''"
-UNDERLINE_TOKEN = "__"
-STRIKE_TOKEN = "~~"
-SUBSCRIPT_TOKEN = ",,"
-SUPERSCRIPT_TOKEN = r"\^"
-INLINE_TOKEN = "`"
-
-LINK_SCHEME = r"[\w.+-]+" # as per RFC 2396
 
 def system_message(msg, text):
     return """<div class="system-message">
@@ -135,33 +122,64 @@ class WikiProcessor(object):
 class Formatter(object):
     flavor = 'default'
 
-    # Rules provided by IWikiSyntaxProviders are inserted between pre_rules and post_rules
-    _pre_rules = [r"(?P<bolditalic>%s)" % BOLDITALIC_TOKEN,
-                  r"(?P<bold>%s)" % BOLD_TOKEN,
-                  r"(?P<italic>%s)" % ITALIC_TOKEN,
-                  r"(?P<underline>!?%s)" % UNDERLINE_TOKEN,
-                  r"(?P<strike>!?%s)" % STRIKE_TOKEN,
-                  r"(?P<subscript>!?%s)" % SUBSCRIPT_TOKEN,
-                  r"(?P<superscript>!?%s)" % SUPERSCRIPT_TOKEN,
-                  r"(?P<inlinecode>!?\{\{\{(?P<inline>.*?)\}\}\})",
-                  r"(?P<inlinecode2>!?%s(?P<inline2>.*?)%s)" % (INLINE_TOKEN,
-                                                                INLINE_TOKEN),
-                  r"(?P<htmlescapeentity>!?&#\d+;)"]
-    _post_rules = [(r"(?P<shref>!?((?P<sns>%s):" % LINK_SCHEME +
-                    r"(?P<stgt>'[^']+'|\"[^\"]+\"|"
-                    r"(?:\|(?=[^| ])|&(?!lt;)|[^|& ])*[^|'~_\.,& \)])))"),
-                   (r"(?P<lhref>!?\[(?:(?P<lns>%s):" % LINK_SCHEME +
-                    r"(?P<ltgt>'[^']+'|\"[^\"]+\"|[^\] ]*)"
-                    r"|(?P<rel>[/.][^ [\]]*))"
-                    r"(?: (?P<label>'[^']+'|\"[^\"]+\"|[^\]]+))?\])"),
-                   (r"(?P<macro>!?\[\[(?P<macroname>[\w/+-]+)"
-                    r"(\]\]|\((?P<macroargs>.*?)\)\]\]))"),
-                   r"(?P<heading>^\s*(?P<hdepth>=+)\s.*\s(?P=hdepth)\s*$)",
-                   r"(?P<list>^(?P<ldepth>\s+)(?:\*|\d+\.) )",
-                   r"(?P<definition>^\s+(.+)::)\s*",
-                   r"(?P<indent>^(?P<idepth>\s+)(?=\S))",
-                   r"(?P<last_table_cell>\|\|\s*$)",
-                   r"(?P<table_cell>\|\|)"]
+    # Some constants used for clarifying the Wiki regexps:
+
+    BOLDITALIC_TOKEN = "'''''"
+    BOLD_TOKEN = "'''"
+    ITALIC_TOKEN = "''"
+    UNDERLINE_TOKEN = "__"
+    STRIKE_TOKEN = "~~"
+    SUBSCRIPT_TOKEN = ",,"
+    SUPERSCRIPT_TOKEN = r"\^"
+    INLINE_TOKEN = "`"
+
+    LINK_SCHEME = r"[\w.+-]+" # as per RFC 2396
+
+    QUOTED_STRING = r"'[^']+'|\"[^\"]+\""
+
+    SHREF_TARGET_MIDDLE = r"(?:\|(?=[^| ])|&(?!lt;)|[^|& ])"
+    SHREF_TARGET_LAST_CHAR = r"[^|'~_\.,& \)]"
+
+    LHREF_RELATIVE_TARGET = r"[/.][^\s[\]]*"
+
+
+    # Rules provided by IWikiSyntaxProviders will be inserted,
+    # between _pre_rules and _post_rules
+
+    _pre_rules = [
+        # Font styles
+        r"(?P<bolditalic>%s)" % BOLDITALIC_TOKEN,
+        r"(?P<bold>%s)" % BOLD_TOKEN,
+        r"(?P<italic>%s)" % ITALIC_TOKEN,
+        r"(?P<underline>!?%s)" % UNDERLINE_TOKEN,
+        r"(?P<strike>!?%s)" % STRIKE_TOKEN,
+        r"(?P<subscript>!?%s)" % SUBSCRIPT_TOKEN,
+        r"(?P<superscript>!?%s)" % SUPERSCRIPT_TOKEN,
+        r"(?P<inlinecode>!?\{\{\{(?P<inline>.*?)\}\}\})",
+        r"(?P<inlinecode2>!?%s(?P<inline2>.*?)%s)" \
+        % (INLINE_TOKEN, INLINE_TOKEN),
+        # Prevent HTML entities to be recognized as ticket shorthand links
+        r"(?P<htmlescapeentity>!?&#\d+;)"]
+
+    _post_rules = [
+        # shref corresponds to short TracLinks, i.e. sns:stgt
+        r"(?P<shref>((?P<sns>%s):(?P<stgt>%s|%s*%s)))" \
+        % (LINK_SCHEME, QUOTED_STRING,
+           SHREF_TARGET_MIDDLE, SHREF_TARGET_LAST_CHAR),
+        # lhref corresponds to long TracLinks, i.e. [lns:ltgt label?]
+        r"(?P<lhref>\[(?:(?P<lns>%s):(?P<ltgt>%s|[^\]\s]*)|(?P<rel>%s))"
+        r"(?:\s+(?P<label>%s|[^\]]+))?\])" \
+        % (LINK_SCHEME, QUOTED_STRING, LHREF_RELATIVE_TARGET, QUOTED_STRING),
+        # macro call
+        (r"(?P<macro>!?\[\[(?P<macroname>[\w/+-]+)"
+         r"(\]\]|\((?P<macroargs>.*?)\)\]\]))"),
+        # heading, list, definition, indent, table...
+        r"(?P<heading>^\s*(?P<hdepth>=+)\s.*\s(?P=hdepth)\s*$)",
+        r"(?P<list>^(?P<ldepth>\s+)(?:\*|\d+\.) )",
+        r"(?P<definition>^\s+(.+)::)\s*",
+        r"(?P<indent>^(?P<idepth>\s+)(?=\S))",
+        r"(?P<last_table_cell>\|\|\s*$)",
+        r"(?P<table_cell>\|\|)"]
 
     _processor_re = re.compile('#\!([\w+-][\w+-/]*)')
     _anchor_re = re.compile('[^\w\d\.-:]+', re.UNICODE)
