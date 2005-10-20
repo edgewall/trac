@@ -453,7 +453,7 @@ echo "foo"
 Hello World, args = hej hopp
 </p>
 ------------------------------
-[[HelloWorld(hej hopp)]]
+[[HelloWorld(...)]]
 ==============================
 [[HelloWorld(hej hopp) ]] # This shouldnt executed as macro since it contain whitespace between ) and ]
 ------------------------------
@@ -469,7 +469,7 @@ Hello World, args = hej hopp
 Hello World, args = hej hopp) # Extra right brace and still executed
 </p>
 ------------------------------
-[[HelloWorld(hej hopp))]] # Extra right brace and still executed
+[[HelloWorld(...)]] # Extra right brace and still executed
 ==============================
 [[HelloWorld(hej hopp)]] [[HelloWorld(hej hopp2)]] # Test non greedy match
 ------------------------------
@@ -477,7 +477,7 @@ Hello World, args = hej hopp) # Extra right brace and still executed
 Hello World, args = hej hopp Hello World, args = hej hopp2 # Test non greedy match
 </p>
 ------------------------------
-[[HelloWorld(hej hopp)]] [[HelloWorld(hej hopp2)]] # Test non greedy match
+[[HelloWorld(...)]] [[HelloWorld(...)]] # Test non greedy match
 ==============================
 Inline [[html(<B> Test </B>)]] text
 ------------------------------
@@ -485,7 +485,15 @@ Inline [[html(<B> Test </B>)]] text
 Inline <B> Test </B> text
 </p>
 ------------------------------
-Inline [[html(&lt;B&gt; Test &lt;/B&gt;)]] text
+Inline [[html(...)]] text
+==============================
+Line break [[BR]] another line[[br]]last line
+------------------------------
+<p>
+Line break <br /> another line<br />last line
+</p>
+------------------------------
+Line break   another line last line
 ==============================
 Test comment blocks
 {{{
@@ -509,7 +517,7 @@ Inline [[comment(This should not be seen)]] comment
 Inline  comment
 </p>
 ------------------------------
-Inline [[comment(This should not be seen)]] comment
+Inline  comment
 ==============================
 This should be '''''bold and italic'''''
 ------------------------------

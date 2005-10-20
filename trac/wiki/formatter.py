@@ -641,12 +641,21 @@ class OneLinerFormatter(Formatter):
 
     # Override a few formatters to disable some wiki syntax in "oneliner"-mode
     def _list_formatter(self, match, fullmatch): return match
-    def _macro_formatter(self, match, fullmatch): return match
     def _indent_formatter(self, match, fullmatch): return match
     def _heading_formatter(self, match, fullmatch): return match
     def _definition_formatter(self, match, fullmatch): return match
     def _table_cell_formatter(self, match, fullmatch): return match
     def _last_table_cell_formatter(self, match, fullmatch): return match
+
+    def _macro_formatter(self, match, fullmatch):
+        name = fullmatch.group('macroname')
+        if name.lower() == 'br':
+            return ' '
+        elif name == 'comment':
+            return ''
+        else:
+            args = fullmatch.group('macroargs')
+            return '[[%s%s]]' % (name,  args and '(...)' or '')
 
     def format(self, text, out):
         if not text:
