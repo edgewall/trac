@@ -163,14 +163,12 @@ class Formatter(object):
         r"(?P<htmlescapeentity>!?&#\d+;)"]
 
     _post_rules = [
-        # escape shref and lhref using ! prefix
-        r"(?P<escapehref>!\[?%s:)" % LINK_SCHEME,
         # shref corresponds to short TracLinks, i.e. sns:stgt
-        r"(?P<shref>((?P<sns>%s):(?P<stgt>%s|%s(?:%s*%s)?)))" \
+        r"(?P<shref>!?((?P<sns>%s):(?P<stgt>%s|%s(?:%s*%s)?)))" \
         % (LINK_SCHEME, QUOTED_STRING,
            SHREF_TARGET_FIRST, SHREF_TARGET_MIDDLE, SHREF_TARGET_LAST),
         # lhref corresponds to long TracLinks, i.e. [lns:ltgt label?]
-        r"(?P<lhref>\[(?:(?P<lns>%s):(?P<ltgt>%s|[^\]\s]*)|(?P<rel>%s))"
+        r"(?P<lhref>!?\[(?:(?P<lns>%s):(?P<ltgt>%s|[^\]\s]*)|(?P<rel>%s))"
         r"(?:\s+(?P<label>%s|[^\]]+))?\])" \
         % (LINK_SCHEME, QUOTED_STRING, LHREF_RELATIVE_TARGET, QUOTED_STRING),
         # macro call
@@ -268,9 +266,6 @@ class Formatter(object):
             self.open_tag(*italic)
         return tmp
 
-    def _escapehref_formatter(self, match, fullmatch):
-        return match[1:]
-    
     def _shref_formatter(self, match, fullmatch):
         ns = fullmatch.group('sns')
         target = fullmatch.group('stgt')
