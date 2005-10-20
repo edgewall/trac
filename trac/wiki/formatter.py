@@ -137,8 +137,9 @@ class Formatter(object):
 
     QUOTED_STRING = r"'[^']+'|\"[^\"]+\""
 
-    SHREF_TARGET_MIDDLE = r"(?:\|(?=[^|\s])|&(?!lt;)|[^|&\s])"
-    SHREF_TARGET_LAST_CHAR = r"[^|'~_\.,&\s\)\]:?!]"
+    SHREF_TARGET_FIRST = r"[\w/?!#@]"
+    SHREF_TARGET_MIDDLE = r"(?:\|(?=[^|\s])|&(?!lt;|gt;)|[^|&\s])"
+    SHREF_TARGET_LAST = r"[a-zA-Z0-9/=]" # we don't want "_"
 
     LHREF_RELATIVE_TARGET = r"[/.][^\s[\]]*"
 
@@ -163,9 +164,9 @@ class Formatter(object):
 
     _post_rules = [
         # shref corresponds to short TracLinks, i.e. sns:stgt
-        r"(?P<shref>((?P<sns>%s):(?P<stgt>%s|%s*%s)))" \
+        r"(?P<shref>((?P<sns>%s):(?P<stgt>%s|%s(?:%s*%s)?)))" \
         % (LINK_SCHEME, QUOTED_STRING,
-           SHREF_TARGET_MIDDLE, SHREF_TARGET_LAST_CHAR),
+           SHREF_TARGET_FIRST, SHREF_TARGET_MIDDLE, SHREF_TARGET_LAST),
         # lhref corresponds to long TracLinks, i.e. [lns:ltgt label?]
         r"(?P<lhref>\[(?:(?P<lns>%s):(?P<ltgt>%s|[^\]\s]*)|(?P<rel>%s))"
         r"(?:\s+(?P<label>%s|[^\]]+))?\])" \

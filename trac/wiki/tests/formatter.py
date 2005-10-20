@@ -83,7 +83,7 @@ class WikiTestCase(unittest.TestCase):
         try:
             self.assertEquals(self.correct, v)
         except AssertionError, e:
-            raise AssertionError('%s\n\%s:%s: for the input '
+            raise AssertionError('%s\n%s:%s: for the input '
                                  '(formatter flavor was "%s")' \
                                  % (str(e), self.file, self.line,
                                     formatter.flavor))

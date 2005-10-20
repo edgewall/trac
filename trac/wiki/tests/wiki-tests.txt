@@ -103,24 +103,23 @@ Issue <a class="missing ticket" href="/ticket/1" rel="nofollow">1</a>, CS<a clas
 ==============================
 Add-on to changeset:123:
 Some change.
-
 ticket:1
 This ticket is the first one
+changeset:123>
 ------------------------------
 <p>
 Add-on to <a class="missing changeset" href="/changeset/123" rel="nofollow">changeset:123</a>:
 Some change.
-</p>
-<p>
 <a class="missing ticket" href="/ticket/1" rel="nofollow">ticket:1</a>
 This ticket is the first one
+<a class="missing changeset" href="/changeset/123" rel="nofollow">changeset:123</a>&gt;
 </p>
 ------------------------------
 Add-on to <a class="missing changeset" href="/changeset/123" rel="nofollow">changeset:123</a>:
 Some change.
-
 <a class="missing ticket" href="/ticket/1" rel="nofollow">ticket:1</a>
 This ticket is the first one
+<a class="missing changeset" href="/changeset/123" rel="nofollow">changeset:123</a>&gt;
 ==============================
 CamelCase AlabamA ABc AlaBamA FooBar
 ------------------------------
@@ -356,6 +355,28 @@ query:milestone=1.0|2.0&owner=me
 <a class="query" href="/query?milestone=1.0&amp;milestone=2.0&amp;owner=me&amp;order=priority">query:milestone=1.0|2.0&amp;owner=me</a>
 </p>
 ------------------------------
+==============================
+Test:[[BR]] There should be a line break
+
+Change:[10] There should be a link to changeset [10]
+
+Other test:'''bold text''' is not bold
+------------------------------
+<p>
+Test:<br /> There should be a line break
+</p>
+<p>
+Change:<a class="missing changeset" href="/changeset/10" rel="nofollow">[10]</a> There should be a link to changeset <a class="missing changeset" href="/changeset/10" rel="nofollow">[10]</a>
+</p>
+<p>
+Other test:<strong>bold text</strong> is not bold
+</p>
+------------------------------
+Test:  There should be a line break
+
+Change:<a class="missing changeset" href="/changeset/10" rel="nofollow">[10]</a> There should be a link to changeset <a class="missing changeset" href="/changeset/10" rel="nofollow">[10]</a>
+
+Other test:<strong>bold text</strong> is not bold
 ==============================
 {{{
 Preformatted text.
