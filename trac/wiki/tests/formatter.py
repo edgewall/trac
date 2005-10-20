@@ -29,10 +29,12 @@ class DummyHelloWorldMacro(Component):
 
 class WikiTestCase(unittest.TestCase):
 
-    def __init__(self, input, correct):
+    def __init__(self, input, correct, file, line):
         unittest.TestCase.__init__(self, 'test')
         self.input = input
         self.correct = correct
+        self.file = file
+        self.line = line
     
     def test(self):
         """Testing WikiFormatter"""
@@ -75,29 +77,38 @@ class WikiTestCase(unittest.TestCase):
         env = DummyEnvironment()
 
         out = StringIO.StringIO()
-        self.format(env, out)
+        formatter = self.formatter(env)
+        formatter.format(self.input, out)
         v = out.getvalue().replace('\r','')
-        self.assertEquals(self.correct, v)
-
-    def format(self, env, out):
-        Formatter(env).format(self.input, out)
+        try:
+            self.assertEquals(self.correct, v)
+        except AssertionError, e:
+            raise AssertionError('%s\n\%s:%s: for the input '
+                                 '(formatter flavor was "%s")' \
+                                 % (str(e), self.file, self.line,
+                                    formatter.flavor))
+        
+    def formatter(self, env):
+        return Formatter(env)
 
 
 class OneLinerTestCase(WikiTestCase):
-    def format(self, env, out):
-        OneLinerFormatter(env).format(self.input, out)
+    def formatter(self, env):
+        return OneLinerFormatter(env)
 
 
 def suite():
     suite = unittest.TestSuite()
-    data = open(os.path.join(os.path.split(__file__)[0],
-                             'wiki-tests.txt'), 'r').read()
+    file = os.path.join(os.path.split(__file__)[0], 'wiki-tests.txt')
+    data = open(file, 'r').read()
     tests = data.split('=' * 30 + '\n')
+    line = 1
     for test in tests:
         input, page, oneliner = test.split('-' * 30 + '\n')
-        suite.addTest(WikiTestCase(input, page))
+        suite.addTest(WikiTestCase(input, page, file, line))
         if oneliner:
-            suite.addTest(OneLinerTestCase(input, oneliner[:-1]))
+            suite.addTest(OneLinerTestCase(input, oneliner[:-1], file, line))
+        line += len(test.split('\n'))
     return suite
 
 if __name__ == '__main__':
