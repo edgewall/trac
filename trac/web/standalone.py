@@ -25,6 +25,7 @@ from trac.web.api import Request
 from trac.web.cgi_frontend import TracFieldStorage
 from trac.web.main import dispatch_request, get_environment, \
                           send_pretty_error, send_project_index
+from trac.util import md5crypt
 
 import os
 import re
@@ -34,8 +35,70 @@ import time
 import socket, errno
 import urllib
 import urllib2
+from base64 import b64decode
 from SocketServer import ThreadingMixIn
 from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
+
+
+class BasicAuth:
+    def __init__(self, htpasswd, realm):
+        self.hash = {}
+        self.realm = realm
+        try:
+            import crypt
+            self.crypt = crypt.crypt
+        except ImportError:
+            self.crypt = None
+        self.load(htpasswd)
+
+    def load(self, filename):
+        fd = open(filename, 'r')
+        for line in fd:
+            u, h = line.strip().split(':')
+            if '$' in h or self.crypt:
+                self.hash[u] = h
+            else:
+                print >>sys.stderr, 'Warning: cannot parse password for ' \
+                                    'user "%s" without the "crypt" module' % u
+
+        if self.hash == {}:
+            print >> sys.stderr, "Warning: found no users in file:", filename
+
+    def test(self, user, password):
+        the_hash = self.hash.get(user)
+        if the_hash is None:
+            return False
+
+        if not '$' in the_hash:
+            return self.crypt(password, the_hash[:2]) == the_hash
+
+        magic, salt = the_hash[1:].split('$')[:2]
+        magic = '$' + magic + '$'
+        return md5crypt(password, salt, magic) == the_hash
+
+    def send_auth_request(self, req):
+        req.send_response(401)
+        req.send_header('WWW-Authenticate', 'Basic realm="%s"' % self.realm)
+        req.end_headers()
+
+    def do_auth(self, req):
+        if not 'Authorization' in req.headers or \
+               not req.headers['Authorization'].startswith('Basic'):
+            self.send_auth_request(req)
+            return None
+
+        auth = req.headers['Authorization'][len('Basic')+1:]
+        auth = b64decode(auth).split(':')
+        if len(auth) != 2:
+            self.send_auth_request(req)
+            return None
+
+        user, password = auth
+        if not self.test(user, password):
+            self.send_auth_request(req)
+            return None
+
+        return user
 
 
 class DigestAuth:
