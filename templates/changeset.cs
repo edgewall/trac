@@ -106,7 +106,8 @@
  <dt class="author">Author:</dt>
  <dd class="author"><?cs var:changeset.author ?></dd>
  <dt class="message">Message:</dt>
- <dd class="message" id="searchable"><?cs var:changeset.message ?></dd>
+ <dd class="message" id="searchable"><?cs
+  alt:changeset.message ?>&nbsp;<?cs /alt ?></dd>
  <dt class="files">Files:</dt>
  <dd class="files">
   <ul><?cs each:item = changeset.changes ?>
