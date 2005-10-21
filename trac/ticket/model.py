@@ -182,8 +182,7 @@ class Ticket(object):
         else:
             handle_ta = False
         cursor = db.cursor()
-        if not when:
-            when = int(time.time())
+        when = int(when or time.time())
 
         if self.values.has_key('component'):
             # If the component is changed on a 'new' ticket then owner field
