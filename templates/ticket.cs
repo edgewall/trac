@@ -290,7 +290,7 @@
  /if ?>
 
  <script type="text/javascript" src="<?cs
-   var:chrome.href ?>/common/js/wikitoolbar.js"></script>
+   var:htdocs_location ?>js/wikitoolbar.js"></script>
 
  <div class="buttons">
   <input type="hidden" name="ts" value="<?cs var:ticket.ts ?>" />

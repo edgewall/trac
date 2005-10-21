@@ -20,7 +20,7 @@
   /each ?><?cs
  /each ?><style type="text/css"><?cs include:"site_css.cs" ?></style>
  <script type="text/javascript" src="<?cs
-   var:chrome.href ?>/common/js/trac.js"></script>
+   var:htdocs_location ?>js/trac.js"></script>
 </head>
 <body>
 <?cs include "site_header.cs" ?>

@@ -230,7 +230,7 @@
      </div>
     </div>
     <script type="text/javascript" src="<?cs
-      var:chrome.href ?>/common/js/wikitoolbar.js"></script>
+      var:htdocs_location ?>js/wikitoolbar.js"></script>
    </form>
  <?cs /if?>
  
