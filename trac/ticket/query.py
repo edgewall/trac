@@ -61,7 +61,7 @@ class Query(object):
                 raise QuerySyntaxError, 'Query filter requires field and ' \
                                         'constraints separated by a "="'
             field,values = filter
-            if not field:#
+            if not field:
                 raise QuerySyntaxError, 'Query filter requires field name'
             values = values.split('|')
             mode, neg = '', ''
@@ -211,6 +211,8 @@ class Query(object):
             value = sql_escape(value[len(mode and '!' or '' + mode):])
             if name not in custom_fields:
                 name = 't.' + name
+            else:
+                name = name + '.value'
             if mode == '~' and value:
                 return "COALESCE(%s,'') %sLIKE '%%%s%%'" % (
                        name, neg and 'NOT ' or '', value)
@@ -240,7 +242,7 @@ class Query(object):
                 if k not in custom_fields:
                     col = 't.' + k
                 else:
-                    col = k
+                    col = k + '.value'
                 clauses.append("COALESCE(%s,'') %sIN (%s)"
                                % (col, neg and 'NOT ' or '', inlist))
             elif len(v) > 1:
@@ -269,7 +271,7 @@ class Query(object):
             if name not in custom_fields:
                 col = 't.' + name
             else:
-                col = name
+                col = name + '.value'
             if name == 'id':
                 # FIXME: This is a somewhat ugly hack.  Can we also have the
                 #        column type for this?  If it's an integer, we do first

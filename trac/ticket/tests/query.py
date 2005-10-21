@@ -203,8 +203,20 @@ ORDER BY COALESCE(t.id,0)=0,t.id""")
 FROM ticket AS t
   LEFT OUTER JOIN ticket_custom AS foo ON (id=foo.ticket AND foo.name='foo')
   LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
-WHERE COALESCE(foo,'')='something'
+WHERE COALESCE(foo.value,'')='something'
 ORDER BY COALESCE(t.id,0)=0,t.id""")
+        tickets = query.execute()
+
+    def test_grouped_by_custom_field(self):
+        self.env.config.set('ticket-custom', 'foo', 'text')
+        query = Query(self.env, group='foo', order='id')
+        sql = query.get_sql()
+        self.assertEqual(sql,
+"""SELECT t.id AS id,t.summary AS summary,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.milestone AS milestone,t.time AS time,t.changetime AS changetime,priority.value AS priority_value,foo.value AS foo
+FROM ticket AS t
+  LEFT OUTER JOIN ticket_custom AS foo ON (id=foo.ticket AND foo.name='foo')
+  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
+ORDER BY COALESCE(foo.value,'')='',foo.value,COALESCE(t.id,0)=0,t.id""")
         tickets = query.execute()
 
     def test_constrained_by_multiple_owners(self):
