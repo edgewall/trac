@@ -146,15 +146,13 @@ class Query(object):
             for i in range(1, len(columns)):
                 name, val = columns[i][0], row[i]
                 if name == self.group:
-                    val = escape(val or 'None')
+                    val = val or 'None'
                 elif name == 'reporter':
-                    val = escape(val or 'anonymous')
+                    val = val or 'anonymous'
                 elif name in ['changetime', 'time']:
                     val = int(val)
                 elif val is None:
                     val = '--'
-                elif name != 'description':
-                    val = escape(val)
                 result[name] = val
             results.append(result)
         cursor.close()
@@ -534,14 +532,16 @@ class QueryModule(Component):
                     ticket['added'] = True
                 elif int(ticket['changetime']) > orig_time:
                     ticket['changed'] = True
-            ticket['time'] = format_datetime(ticket['time'])
-            if ticket.has_key('description'):
-                ticket['description'] = wiki_to_html(ticket['description'] or '',
-                                                     self.env, req, db)
-
-        req.session['query_tickets'] = ' '.join([str(t['id']) for t in tickets])
+            for field, value in ticket.items():
+                if field == 'time':
+                    ticket[field] = escape(format_datetime(value))
+                elif field == 'description':
+                    ticket[field] = wiki_to_html(value or '', self.env, req, db)
+                else:
+                    ticket[field] = escape(value)
 
         req.hdf['query.results'] = tickets
+        req.session['query_tickets'] = ' '.join([str(t['id']) for t in tickets])
 
         # Kludge: only show link to available reports if the report module is
         # actually enabled
