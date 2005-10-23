@@ -45,6 +45,34 @@ except NameError:
             tot += item
         return tot
 
+def copytree(src, dst, symlinks=False, skip=[]):
+    """Recursively copy a directory tree using copy2() (from shutil.copytree.)
+
+    Added an `skip` parameter consisting of absolute paths
+    which we don't want to copy.
+    """
+    names = os.listdir(src)
+    os.mkdir(dst)
+    errors = []
+    for name in names:
+        srcname = os.path.join(src, name)
+        if srcname in skip:
+            continue
+        dstname = os.path.join(dst, name)
+        try:
+            if symlinks and os.path.islink(srcname):
+                linkto = os.readlink(srcname)
+                os.symlink(linkto, dstname)
+            elif os.path.isdir(srcname):
+                copytree(srcname, dstname, symlinks, skip)
+            else:
+                shutil.copy2(srcname, dstname)
+            # XXX What about devices, sockets etc.?
+        except (IOError, os.error), why:
+            errors.append((srcname, dstname, why))
+    if errors:
+        raise shutil.Error, errors
+
 
 class TracAdmin(cmd.Cmd):
     intro = ''
@@ -1035,7 +1063,15 @@ Congratulations!
 
         try:
             print 'Hotcopying %s to %s ...' % (self.__env.path, dest),
-            shutil.copytree(self.__env.path, dest, symlinks=1)
+            db_str = self.__env.config.get('trac', 'database')
+            prefix, db_path = db_str.split(':', 1)
+            if prefix == 'sqlite':
+                # don't copy the journal (also, this would fail on Windows)
+                db_path = os.path.normpath(db_path)
+                skip = ['%s-journal' % os.path.join(self.__env.path, db_path)]
+            else:
+                skip = []
+            copytree(self.__env.path, dest, symlinks=1, skip=skip)
         finally:
             # Unlock database
             cnx.rollback()
