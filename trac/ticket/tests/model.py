@@ -1,4 +1,5 @@
 from trac.config import Configuration
+from trac.core import TracError
 from trac.ticket.model import Ticket, Component, Milestone, Priority, Type
 from trac.test import EnvironmentStub
 
@@ -189,38 +190,50 @@ class TicketTestCase(unittest.TestCase):
                 self.fail('Unexpected change (%s)'
                           % ((t, author, field, old, new),))
 
-    def test_abstractenum(self):
-        """
-        Verify basic AbstractEnum functionality.
-        """
-        p = Priority(self.env, 'major')
-        self.assertEqual(p.name, 'major')
-        self.assertEqual(p.value, '3')
-        p = Priority(self.env)
-        p.name = 'foo'
-        p.insert()
-        p = Priority(self.env)
-        p.name = 'bar'
-        p.value = 100
-        p.insert()
-        p = Priority(self.env, 'foo')
-        p.name = 'foo2'
-        p.update()
-        p = Priority(self.env, 'foo2')
-        p.delete()        
-        p = Priority(self.env, 'bar')
-        p.delete()        
 
-    def test_ticket_type_enum(self):
-        """
-        The Type (ticket type) enum class behaves a little different than
-        the rest, so it gets some additional testing.
-        """
-        t = Type(self.env, 'task')
-        self.assertEqual(t.name, 'task')
-        self.assertEqual(t.value, '3')
-        t.name = 'foo'
-        t.update()
+class EnumTestCase(unittest.TestCase):
+
+    def setUp(self):
+        self.env = EnvironmentStub(default_data=True)
+
+    def test_priority_fetch(self):
+        prio = Priority(self.env, 'major')
+        self.assertEqual(prio.name, 'major')
+        self.assertEqual(prio.value, '3')
+
+    def test_priority_insert(self):
+        prio = Priority(self.env)
+        prio.name = 'foo'
+        prio.insert()
+        self.assertEqual(True, prio.exists)
+
+    def test_priority_insert_with_value(self):
+        prio = Priority(self.env)
+        prio.name = 'bar'
+        prio.value = 100
+        prio.insert()
+        self.assertEqual(True, prio.exists)
+
+    def test_priority_update(self):
+        prio = Priority(self.env, 'major')
+        prio.name = 'foo'
+        prio.update()
+        Priority(self.env, 'foo')
+        self.assertRaises(TracError, Priority, self.env, 'major')
+
+    def test_priority_delete(self):
+        prio = Priority(self.env, 'major')
+        prio.delete()
+        self.assertEqual(False, prio.exists)
+        self.assertRaises(TracError, Priority, self.env, 'major')
+
+    def test_ticket_type_update(self):
+        tkttype = Type(self.env, 'task')
+        self.assertEqual(tkttype.name, 'task')
+        self.assertEqual(tkttype.value, '3')
+        tkttype.name = 'foo'
+        tkttype.update()
+        Type(self.env, 'foo')
 
 
 class MilestoneTestCase(unittest.TestCase):
@@ -364,6 +377,7 @@ class MilestoneTestCase(unittest.TestCase):
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(TicketTestCase, 'test'))
+    suite.addTest(unittest.makeSuite(EnumTestCase, 'test'))
     suite.addTest(unittest.makeSuite(MilestoneTestCase, 'test'))
     return suite
 

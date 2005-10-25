@@ -905,10 +905,10 @@ Congratulations!
         env = self.env_open()
         enum_cls = self._enum_map[type]
         enum1 = enum_cls(env, name)
-        enum1.value = int(enum1.value) + direction
+        enum1.value = int(float(enum1.value) + direction)
         for enum2 in enum_cls.select(env):
-            if int(enum2.value) == int(enum1.value):
-                enum2.value = int(enum2.value) - direction
+            if int(float(enum2.value)) == enum1.value:
+                enum2.value = int(float(enum2.value) - direction)
                 break
         else:
             return

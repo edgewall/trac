@@ -306,11 +306,11 @@ class AbstractEnum(object):
         self.env.log.info('Deleting %s %s' % (self.type, self.name))
         cursor.execute("DELETE FROM enum WHERE type=%s AND value=%s",
                        (self.type, self._old_value))
-        self.value = self._old_value = None
-        self.name = None
 
         if handle_ta:
             db.commit()
+        self.value = self._old_value = None
+        self.name = self._old_name = None
 
     def insert(self, db=None):
         assert not self.exists, 'Cannot insert existing %s' % self.type
@@ -324,17 +324,18 @@ class AbstractEnum(object):
 
         cursor = db.cursor()
         self.env.log.debug("Creating new %s '%s'" % (self.type, self.name))
-        value = self.value
-        if not value:
+        if not self.value:
             cursor.execute(("SELECT COALESCE(MAX(%s),0) FROM enum "
                             "WHERE type=%%s") % db.cast('value', 'int'),
                            (self.type,))
-            value = str(int(cursor.fetchone()[0]) + 1)
+            self.value = int(float(cursor.fetchone()[0])) + 1
         cursor.execute("INSERT INTO enum (type,name,value) VALUES (%s,%s,%s)",
-                       (self.type, self.name, value))
+                       (self.type, self.name, self.value))
 
         if handle_ta:
             db.commit()
+        self._old_name = self.name
+        self._old_value = self.value
 
     def update(self, db=None):
         assert self.exists, 'Cannot update non-existent %s' % self.type
@@ -354,12 +355,13 @@ class AbstractEnum(object):
         if self.name != self._old_name:
             # Update tickets
             cursor.execute("UPDATE ticket SET %s=%%s WHERE %s=%%s" %
-                           (self.ticket_col, self.ticket_col), (self.name, self._old_name))
-            self._old_name = self.name
-            self._old_value = self.value
+                           (self.ticket_col, self.ticket_col),
+                           (self.name, self._old_name))
 
         if handle_ta:
             db.commit()
+        self._old_name = self.name
+        self._old_value = self.value
 
     def select(cls, env, db=None):
         if not db:
