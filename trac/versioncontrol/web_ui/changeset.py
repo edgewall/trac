@@ -117,18 +117,21 @@ class ChangesetModule(Component):
                 if chgset.date < start:
                     return
                 if chgset.date < stop:
-                    excerpt = util.shorten_line(chgset.message or '--')
+                    message = chgset.message or '--'
                     if format == 'rss':
-                        title = 'Changeset <em>[%s]</em>: %s' % (
-                            util.escape(chgset.rev), util.escape(excerpt))
+                        title = 'Changeset <em>[%s]</em>: %s' \
+                                % (util.escape(chgset.rev),
+                                   util.escape(util.shorten_line(message)))
                         href = self.env.abs_href.changeset(chgset.rev)
-                        message = wiki_to_html(chgset.message or '--', self.env,
-                                               db, absurls=True)
+                        message = wiki_to_html(message, self.env, db,
+                                               absurls=True)
                     else:
-                        title = 'Changeset <em>[%s]</em> by %s' % (
-                            util.escape(chgset.rev), util.escape(chgset.author))
+                        title = 'Changeset <em>[%s]</em> by %s' \
+                                % (util.escape(chgset.rev),
+                                   util.escape(chgset.author))
                         href = self.env.href.changeset(chgset.rev)
-                        message = wiki_to_oneliner(excerpt, self.env, db)
+                        message = wiki_to_oneliner(message, self.env, db,
+                                                   shorten=True)
                     if show_files:
                         files = []
                         for chg in chgset.get_changes():

@@ -141,8 +141,8 @@ class WikiModule(Component):
                                            absurls=True)
                 else:
                     href = self.env.href.wiki(name)
-                    comment = wiki_to_oneliner(shorten_line(comment), self.env,
-                                               db)
+                    comment = wiki_to_oneliner(comment, self.env, db,
+                                               shorten=True)
                 yield 'wiki', href, title, t, author, comment
 
     # Internal methods

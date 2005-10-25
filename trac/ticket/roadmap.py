@@ -318,8 +318,8 @@ class MilestoneModule(Component):
                                            absurls=True)
                 else:
                     href = self.env.href.milestone(name)
-                    message = wiki_to_oneliner(shorten_line(description),
-                                               self.env, db)
+                    message = wiki_to_oneliner(description, self.env, db,
+                                               shorten=True)
                 yield 'milestone', href, title, completed, None, message
 
     # IRequestHandler methods

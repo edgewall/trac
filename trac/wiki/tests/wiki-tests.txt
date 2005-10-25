@@ -394,9 +394,45 @@ Preformatted text.
 <pre class="wiki">Preformatted text.
 </pre>
 ------------------------------
+ [&hellip;]
+==============================
 {{{
-Preformatted text.
+Outer block.
+{{{
+Inner block.
 }}}
+}}}
+------------------------------
+<pre class="wiki">Outer block.
+{{{
+Inner block.
+}}}
+</pre>
+------------------------------
+ [&hellip;]
+==============================
+Block 
+{{{
+number one
+}}}
+and block
+{{{
+number two
+}}}
+------------------------------
+<p>
+Block 
+</p>
+<pre class="wiki">number one
+</pre>
+<p>
+and block
+</p>
+<pre class="wiki">number two
+</pre>
+------------------------------
+Block  [&hellip;]
+and block [&hellip;]
 ==============================
 {{{
 #!default
@@ -406,10 +442,7 @@ Preformatted text.
 <pre class="wiki">Preformatted text.
 </pre>
 ------------------------------
-{{{
-#!default
-Preformatted text.
-}}}
+ [&hellip;]
 ==============================
 {{{
 #!/bin/sh
@@ -420,10 +453,7 @@ echo "foo"
 echo &#34;foo&#34;
 </pre>
 ------------------------------
-{{{
-#!/bin/sh
-echo "foo"
-}}}
+ [&hellip;]
 ==============================
 {{{
 #!html
@@ -432,10 +462,7 @@ echo "foo"
 ------------------------------
 <p>Hello World</p>
 ------------------------------
-{{{
-#!html
-&lt;p&gt;Hello World&lt;/p&gt;
-}}}
+ [&hellip;]
 ==============================
 {{{
 #!html
@@ -448,10 +475,7 @@ echo "foo"
 </pre>
 </div>
 ------------------------------
-{{{
-#!html
-&lt;script&gt;alert("");&lt;/script&gt;
-}}}
+ [&hellip;]
 ==============================
 {{{
 #!html
@@ -464,10 +488,7 @@ echo "foo"
 </pre>
 </div>
 ------------------------------
-{{{
-#!html
-&lt;div onclick="alert(<i>)"&gt;Click me&lt;/div&gt;
-}}}</i>
+ [&hellip;]
 ==============================
 ^superscript^, ,,subscript,,, normal.
 ------------------------------
@@ -536,10 +557,6 @@ Test comment blocks
 </p>
 ------------------------------
 Test comment blocks
-{{{
-#!comment
-This is simply removed from the output
-}}}
 ==============================
 Inline [[comment(This should not be seen)]] comment
 ------------------------------
@@ -628,6 +645,27 @@ multiline
 without endtags
 </i></strong></p>
 ------------------------------
+==============================
+{{{verbatim}}}
+{{{
+{{{in `block`
+}}}
+`{{{this is verbatim}}}` and {{{`that` should also `be` verbatim}}}
+------------------------------
+<p>
+<tt>verbatim</tt>
+</p>
+<pre class="wiki">{{{in `block`
+</pre>
+<p>
+<tt>{{{this is verbatim}}}</tt> and <tt>`that` should also `be` verbatim</tt>
+</p>
+------------------------------
+<tt>verbatim</tt>
+{{{
+{{{in <tt>block</tt>
+}}}
+<tt>{{{this is verbatim}}}</tt> and <tt>`that` should also `be` verbatim</tt>
 ==============================
  term:: definition
 ------------------------------

@@ -637,6 +637,10 @@ class OneLinerFormatter(Formatter):
     """
     flavor = 'oneliner'
 
+    _non_nested_block_re = re.compile(r"(?:^|\n)\{\{\{(?:\n(#![\w+-/]+))?"
+                                      r"(?:\n([^{}]|\{(?!\{\{)|\}(?!\}\}))+)+"
+                                      r"\}\}\}")
+    
     def __init__(self, env, absurls=0, db=None):
         Formatter.__init__(self, env, None, absurls, db)
 
@@ -658,13 +662,37 @@ class OneLinerFormatter(Formatter):
             args = fullmatch.group('macroargs')
             return '[[%s%s]]' % (name,  args and '(...)' or '')
 
-    def format(self, text, out):
+    def format(self, text, out, shorten=False):
         if not text:
             return
         self.out = out
         self._open_tags = []
 
-        result = re.sub(self.rules, self.replace, util.escape(text.strip(), False))
+        result = text.strip()
+
+        # Simplify code blocks
+        def simplify(fullmatch):
+            processor = fullmatch.group(1)
+            if processor == '#!comment':
+                return ''
+            elif '\n' in fullmatch.group():
+                return ' ![...]'
+            else:
+                return '`%s`' % match[3:-3]
+
+        old = ''
+        while old != result:
+            old = result
+            result = re.sub(self._non_nested_block_re, simplify, old)
+
+        if shorten:
+            result = util.shorten_line(result)
+
+        result = re.sub(self.rules, self.replace, util.escape(result, False))
+        result = result.replace('[...]', '[&hellip;]')
+        if result.endswith('...'):
+            result = result[:-3] + '&hellip;'
+
         # Close all open 'one line'-tags
         result += self.close_tag(None)
         out.write(result)
@@ -723,9 +751,9 @@ def wiki_to_html(wikitext, env, req, db=None, absurls=0, escape_newlines=False):
     Formatter(env, req, absurls, db).format(wikitext, out, escape_newlines)
     return out.getvalue()
 
-def wiki_to_oneliner(wikitext, env, db=None, absurls=0):
+def wiki_to_oneliner(wikitext, env, db=None, shorten=False, absurls=0):
     out = StringIO()
-    OneLinerFormatter(env, absurls, db).format(wikitext, out)
+    OneLinerFormatter(env, absurls, db).format(wikitext, out, shorten)
     return out.getvalue()
 
 def wiki_to_outline(wikitext, env, db=None, absurls=0, max_depth=None,

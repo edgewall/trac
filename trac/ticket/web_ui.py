@@ -294,14 +294,14 @@ class TicketModule(Component):
                         message = util.escape(message)
                 else:
                     href = self.env.href.ticket(id)
-                    message = util.shorten_line(message)
                     if status != 'new':
                         message = ': '.join(filter(None, [
                             resolution,
-                            wiki_to_oneliner(message, self.env, db)
+                            wiki_to_oneliner(message, self.env, db,
+                                             shorten=True)
                         ]))
                     else:
-                        message = util.escape(message)
+                        message = util.escape(util.shorten_line(message))
                 yield kinds[status], href, title, t, author, message
 
     # Internal methods
@@ -486,6 +486,6 @@ class UpdateDetailsForTimeline(Component):
                 message = ''
                 if len(field_changes) > 0:
                     message = ', '.join(field_changes) + ' changed.<br />'
-                message += wiki_to_oneliner(util.shorten_line(comment),
-                                            self.env, db, absurls=absurls)
+                message += wiki_to_oneliner(comment, self.env, db,
+                                            shorten=True, absurls=absurls)
                 yield 'editedticket', href, title, t, author, message

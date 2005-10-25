@@ -17,7 +17,7 @@
 import re
 import urllib
 
-from trac.util import escape, format_datetime, pretty_timedelta, shorten_line,\
+from trac.util import escape, format_datetime, pretty_timedelta, shorten_line, \
                       TracError
 from trac.wiki import wiki_to_html, wiki_to_oneliner
 
@@ -29,14 +29,14 @@ def get_changes(env, repos, revs, full=None, req=None, format=None):
     changes = {}
     for rev in revs:
         changeset = repos.get_changeset(rev)
-        message = changeset.message
-        shortlog = shorten_line(message)        
+        message = changeset.message or '--'
         files = None
         if format == 'changelog':
             files = [change[0] for change in changeset.get_changes()]
         elif message:
             if not full:
-                message = wiki_to_oneliner(shortlog, env, db)
+                message = wiki_to_oneliner(message, env, db,
+                                           shorten=True)
             else:
                 message = wiki_to_html(message, env, req, db,
                                        absurls=(format == 'rss'),
@@ -48,8 +48,8 @@ def get_changes(env, repos, revs, full=None, req=None, format=None):
             'date': format_datetime(changeset.date),
             'age': pretty_timedelta(changeset.date),
             'author': changeset.author or 'anonymous',
-            'shortlog': shortlog,
             'message': message,
+            'shortlog': shorten_line(message),
             'files': files
         }
     return changes
