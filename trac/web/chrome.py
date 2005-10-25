@@ -161,10 +161,11 @@ class Chrome(Component):
         prefix = req.args.get('prefix')
         filename = req.args.get('filename')
 
-        dirs = {}
+        dirs = []
         for provider in self.template_providers:
             for dir in [os.path.normpath(dir[1]) for dir
                         in provider.get_htdocs_dirs() if dir[0] == prefix]:
+                dirs.append(dir)
                 path = os.path.normpath(os.path.join(dir, filename))
                 assert os.path.commonprefix([dir, path]) == dir
                 if os.path.isfile(path):
