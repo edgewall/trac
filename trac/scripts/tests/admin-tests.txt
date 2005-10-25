@@ -31,14 +31,17 @@ ticket_type list                                       -- Show possible ticket t
 ticket_type add <value>                                -- Add a ticket type
 ticket_type change <value> <newvalue>                  -- Change a ticket type
 ticket_type remove <value>                             -- Remove a ticket type
+ticket_type order <value> up|down                      -- Move a ticket type up or down in the list
 priority list                                          -- Show possible ticket priorities
 priority add <value>                                   -- Add a priority value option
 priority change <value> <newvalue>                     -- Change a priority value
 priority remove <value>                                -- Remove priority value
+priority order <value> up|down                         -- Move a priority value up or down in the list
 severity list                                          -- Show possible ticket severities
 severity add <value>                                   -- Add a severity value option
 severity change <value> <newvalue>                     -- Change a severity value
 severity remove <value>                                -- Remove severity value
+severity order <value> up|down                         -- Move a severity value up or down in the list
 version list                                           -- Show versions
 version add <name> [time]                              -- Add version
 version rename <name> <newname>                        -- Rename version
@@ -291,6 +294,24 @@ enhancement
 
 ===== test_ticket_type_remove_error_bad_type =====
 Command failed: ticket_type bad_type does not exist.
+===== test_ticket_type_order_down_ok =====
+
+Possible Values
+---------------
+enhancement
+defect
+task
+
+===== test_ticket_type_order_up_ok =====
+
+Possible Values
+---------------
+enhancement
+defect
+task
+
+===== test_ticket_type_order_error_bad_type =====
+Command failed: ticket_type bad_type does not exist.
 ===== test_priority_list_ok =====
 
 Possible Values
@@ -339,6 +360,28 @@ trivial
 
 ===== test_priority_remove_error_bad_priority =====
 Command failed: priority bad_priority does not exist.
+===== test_priority_order_down_ok =====
+
+Possible Values
+---------------
+critical
+blocker
+major
+minor
+trivial
+
+===== test_priority_order_up_ok =====
+
+Possible Values
+---------------
+critical
+blocker
+major
+minor
+trivial
+
+===== test_priority_order_error_bad_priority =====
+Command failed: priority bad_priority does not exist.
 ===== test_severity_list_ok =====
 
 Possible Values
@@ -368,6 +411,22 @@ Possible Values
 ---------------
 
 ===== test_severity_remove_error_bad_severity =====
+Command failed: severity bad_severity does not exist.
+===== test_severity_order_down_ok =====
+
+Possible Values
+---------------
+bar
+foo
+
+===== test_severity_order_up_ok =====
+
+Possible Values
+---------------
+bar
+foo
+
+===== test_severity_order_error_bad_severity =====
 Command failed: severity bad_severity does not exist.
 ===== test_version_list_ok =====
 
