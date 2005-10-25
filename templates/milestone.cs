@@ -126,7 +126,7 @@
         if:#stats.total_tickets != #1 ?>s<?cs /if ?> closed"></a>
       <a class="open" href="<?cs
         var:milestone.queries.active_tickets ?>" style="width: <?cs
-        var:#stats.percent_active ?>%" title="<?cs
+        var:#stats.percent_active - 1 ?>%" title="<?cs
         var:#stats.active_tickets ?> of <?cs
         var:#stats.total_tickets ?> ticket<?cs
         if:#stats.total_tickets != #1 ?>s<?cs /if ?> active"></a>
