@@ -119,11 +119,14 @@ class NotifyEmail(Notify):
             self.server.login(self.user_name, self.password)
 
     def send(self, rcpt, mime_headers={}):
+        from email.MIMEMultipart import MIMEMultipart
         from email.MIMEText import MIMEText
         from email.Header import Header
         from email.Utils import formatdate
         body = self.hdf.render(self.template_name)
-        msg = MIMEText(body, 'plain', 'utf-8')
+        msg = MIMEMultipart()
+        msg.attach(MIMEText(body, 'plain', 'utf-8'))
+        msg.epilogue = ''
         msg['X-Mailer'] = 'Trac %s, by Edgewall Software' % __version__
         msg['X-Trac-Version'] =  __version__
         projname = self.config.get('project','name')
