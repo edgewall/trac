@@ -18,7 +18,7 @@ from trac.config import default_dir
 from trac.db import Table, Column, Index
 
 # Database version identifier. Used for automatic upgrades.
-db_version = 14
+db_version = 15
 
 def __mkreports(reports):
     """Utility function used to create report data in same syntax as the
@@ -47,12 +47,11 @@ schema = [
         Column('name'),
         Column('ipnr'),
         Column('time', type='int')],
-    Table('session', key=('sid', 'var_name'))[
+    Table('session', key=('sid', 'authenticated', 'var_name'))[
         Column('sid'),
         Column('authenticated', type='int'),
         Column('var_name'),
-        Column('var_value'),
-        Index(['sid', 'var_name'])],
+        Column('var_value')],
 
     # Attachments
     Table('attachment', key=('type', 'id', 'filename'))[
@@ -74,8 +73,7 @@ schema = [
         Column('ipnr'),
         Column('text'),
         Column('comment'),
-        Column('readonly', type='int'),
-        Index(['name', 'version'])],
+        Column('readonly', type='int')],
 
     # Version control cache
     Table('revision', key='rev')[
