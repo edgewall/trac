@@ -21,7 +21,7 @@ import os
 from trac.core import *
 from trac.env import open_environment
 from trac.perm import PermissionCache, PermissionError
-from trac.util import escape, enum, format_datetime, http_date
+from trac.util import escape, enum, format_datetime, http_date, to_utf8
 from trac.web.api import absolute_url, Request, RequestDone, IAuthenticator, \
                          IRequestHandler
 from trac.web.chrome import Chrome
@@ -127,7 +127,7 @@ def dispatch_request(path_info, req, env):
     if not base_url:
         base_url = absolute_url(req)
     req.base_url = base_url
-    req.path_info = path_info
+    req.path_info = to_utf8(path_info)
 
     env.href = Href(req.cgi_location)
     env.abs_href = Href(req.base_url)
