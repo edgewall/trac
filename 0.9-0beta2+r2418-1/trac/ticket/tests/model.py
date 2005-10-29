@@ -1,0 +1,385 @@
+from trac.config import Configuration
+from trac.core import TracError
+from trac.ticket.model import Ticket, Component, Milestone, Priority, Type
+from trac.test import EnvironmentStub
+
+import unittest
+
+
+class TicketTestCase(unittest.TestCase):
+
+    def setUp(self):
+        self.env = EnvironmentStub(default_data=True)
+        self.env.config.set('ticket-custom', 'foo', 'text')
+        self.env.config.set('ticket-custom', 'cbon', 'checkbox')
+        self.env.config.set('ticket-custom', 'cboff', 'checkbox')
+
+    def _insert_ticket(self, summary, **kw):
+        """Helper for inserting a ticket into the database"""
+        ticket = Ticket(self.env)
+        for k,v in kw.items():
+            ticket[k] = v
+        return ticket.insert()
+
+    def test_create_ticket(self):
+        # Multiple test in one method, this sucks
+        # 1. Creating ticket
+        ticket = Ticket(self.env)
+        ticket['reporter'] = 'santa'
+        ticket['summary'] = 'Foo'
+        ticket['foo'] = 'This is a custom field'
+        self.assertEqual('santa', ticket['reporter'])
+        self.assertEqual('Foo', ticket['summary'])
+        self.assertEqual('This is a custom field', ticket['foo'])
+        ticket.insert()
+
+        # Retrieving ticket
+        ticket2 = Ticket(self.env, 1)
+        self.assertEqual(1, ticket2.id)
+        self.assertEqual('santa', ticket2['reporter'])
+        self.assertEqual('Foo', ticket2['summary'])
+        self.assertEqual('This is a custom field', ticket2['foo'])
+
+        # Modifying ticket
+        ticket2['summary'] = 'Bar'
+        ticket2['foo'] = 'New value'
+        ticket2.save_changes('santa', 'this is my comment')
+
+        # Retrieving ticket
+        ticket3 = Ticket(self.env, 1)
+        self.assertEqual(1, ticket3.id)
+        self.assertEqual(ticket3['reporter'], 'santa')
+        self.assertEqual(ticket3['summary'], 'Bar')
+        self.assertEqual(ticket3['foo'], 'New value')
+
+        # Testing get_changelog()
+        log = ticket3.get_changelog()
+        self.assertEqual(len(log), 3)
+        ok_vals = ['foo', 'summary', 'comment']
+        self.failUnless(log[0][2] in ok_vals)
+        self.failUnless(log[1][2] in ok_vals)
+        self.failUnless(log[2][2] in ok_vals)
+
+    def test_ticket_default_values(self):
+        """
+        Verify that a ticket uses default values specified in the configuration
+        when created.
+        """
+        # Set defaults for some standard fields
+        self.env.config.set('ticket', 'default_type', 'defect')
+        self.env.config.set('ticket', 'default_component', 'component1')
+
+        # Add a custom field of type 'text' with a default value
+        self.env.config.set('ticket-custom', 'foo', 'text')
+        self.env.config.set('ticket-custom', 'foo.value', 'Something')
+
+        # Add a custom field of type 'select' with a default value specified as
+        # the value itself
+        self.env.config.set('ticket-custom', 'bar', 'select')
+        self.env.config.set('ticket-custom', 'bar.options', 'one|two|three')
+        self.env.config.set('ticket-custom', 'bar.value', 'two')
+
+        # Add a custom field of type 'select' with a default value specified as
+        # index into the options list
+        self.env.config.set('ticket-custom', 'baz', 'select')
+        self.env.config.set('ticket-custom', 'baz.options', 'one|two|three')
+        self.env.config.set('ticket-custom', 'baz.value', '2')
+
+        ticket = Ticket(self.env)
+        self.assertEqual('defect', ticket['type'])
+        self.assertEqual('component1', ticket['component'])
+        self.assertEqual('Something', ticket['foo'])
+        self.assertEqual('two', ticket['bar'])
+        self.assertEqual('three', ticket['baz'])
+
+    def test_owner_from_component(self):
+        """
+        Verify that the owner of a new ticket is set to the owner of the
+        component.
+        """
+        component = Component(self.env)
+        component.name = 'test'
+        component.owner = 'joe'
+        component.insert()
+
+        ticket = Ticket(self.env)
+        ticket['reporter'] = 'santa'
+        ticket['summary'] = 'Foo'
+        ticket['component'] = 'test'
+        ticket.insert()
+        self.assertEqual('joe', ticket['owner'])
+
+    def test_owner_from_changed_component(self):
+        """
+        Verify that the owner of a new ticket is updated when the component is
+        changed.
+        """
+        component1 = Component(self.env)
+        component1.name = 'test1'
+        component1.owner = 'joe'
+        component1.insert()
+
+        component2 = Component(self.env)
+        component2.name = 'test2'
+        component2.owner = 'kate'
+        component2.insert()
+
+        ticket = Ticket(self.env)
+        ticket['reporter'] = 'santa'
+        ticket['summary'] = 'Foo'
+        ticket['component'] = 'test1'
+        ticket['status'] = 'new'
+        tktid = ticket.insert()
+
+        ticket = Ticket(self.env, tktid)
+        ticket['component'] = 'test2'
+        ticket.save_changes('jane', 'Testing')
+        self.assertEqual('kate', ticket['owner'])
+
+    def test_populate_ticket(self):
+        data = {'summary': 'Hello world', 'reporter': 'john', 'foo': 'bar',
+                'foo': 'bar', 'checkbox_cbon': '', 'cbon': 'on',
+                'checkbox_cboff': ''}
+        ticket = Ticket(self.env)
+        ticket.populate(data)
+
+        # Standard fields
+        self.assertEqual('Hello world', ticket['summary'])
+        self.assertEqual('john', ticket['reporter'])
+
+        # An unknown field
+        self.assertRaises(KeyError, ticket.__getitem__, 'bar')
+
+        # Custom field
+        self.assertEqual('bar', ticket['foo'])
+
+        # Custom field of type 'checkbox'
+        self.assertEqual('on', ticket['cbon'])
+        self.assertEqual('0', ticket['cboff'])
+
+    def test_changelog(self):
+        tkt_id = self._insert_ticket('Test', reporter='joe', component='foo',
+                                     milestone='bar')
+        ticket = Ticket(self.env, tkt_id)
+        ticket['component'] = 'bar'
+        ticket['milestone'] = 'foo'
+        ticket.save_changes('jane', 'Testing', when=42)
+        for t, author, field, old, new in ticket.get_changelog():
+            self.assertEqual((42, 'jane'), (t, author))
+            if field == 'component':
+                self.assertEqual(('foo', 'bar'), (old, new))
+            elif field == 'milestone':
+                self.assertEqual(('bar', 'foo'), (old, new))
+            elif field == 'comment':
+                self.assertEqual(('', 'Testing'), (old, new))
+            else:
+                self.fail('Unexpected change (%s)'
+                          % ((t, author, field, old, new),))
+
+    def test_changelog_with_reverted_change(self):
+        tkt_id = self._insert_ticket('Test', reporter='joe', component='foo')
+        ticket = Ticket(self.env, tkt_id)
+        ticket['component'] = 'bar'
+        ticket['component'] = 'foo'
+        ticket.save_changes('jane', 'Testing', when=42)
+        for t, author, field, old, new in ticket.get_changelog():
+            self.assertEqual((42, 'jane'), (t, author))
+            if field == 'comment':
+                self.assertEqual(('', 'Testing'), (old, new))
+            else:
+                self.fail('Unexpected change (%s)'
+                          % ((t, author, field, old, new),))
+
+
+class EnumTestCase(unittest.TestCase):
+
+    def setUp(self):
+        self.env = EnvironmentStub(default_data=True)
+
+    def test_priority_fetch(self):
+        prio = Priority(self.env, 'major')
+        self.assertEqual(prio.name, 'major')
+        self.assertEqual(prio.value, '3')
+
+    def test_priority_insert(self):
+        prio = Priority(self.env)
+        prio.name = 'foo'
+        prio.insert()
+        self.assertEqual(True, prio.exists)
+
+    def test_priority_insert_with_value(self):
+        prio = Priority(self.env)
+        prio.name = 'bar'
+        prio.value = 100
+        prio.insert()
+        self.assertEqual(True, prio.exists)
+
+    def test_priority_update(self):
+        prio = Priority(self.env, 'major')
+        prio.name = 'foo'
+        prio.update()
+        Priority(self.env, 'foo')
+        self.assertRaises(TracError, Priority, self.env, 'major')
+
+    def test_priority_delete(self):
+        prio = Priority(self.env, 'major')
+        prio.delete()
+        self.assertEqual(False, prio.exists)
+        self.assertRaises(TracError, Priority, self.env, 'major')
+
+    def test_ticket_type_update(self):
+        tkttype = Type(self.env, 'task')
+        self.assertEqual(tkttype.name, 'task')
+        self.assertEqual(tkttype.value, '3')
+        tkttype.name = 'foo'
+        tkttype.update()
+        Type(self.env, 'foo')
+
+
+class MilestoneTestCase(unittest.TestCase):
+
+    def setUp(self):
+        self.env = EnvironmentStub(default_data=True)
+        self.db = self.env.get_db_cnx()
+
+    def test_new_milestone(self):
+        milestone = Milestone(self.env)
+        self.assertEqual(False, milestone.exists)
+        self.assertEqual(None, milestone.name)
+        self.assertEqual(0, milestone.due)
+        self.assertEqual(0, milestone.completed)
+        self.assertEqual('', milestone.description)
+
+    def test_new_milestone_empty_name(self):
+        """
+        Verifies that specifying an empty milestone name results in the
+        milestone being correctly detected as non-existent.
+        """
+        milestone = Milestone(self.env, '')
+        self.assertEqual(False, milestone.exists)
+        self.assertEqual(None, milestone.name)
+        self.assertEqual(0, milestone.due)
+        self.assertEqual(0, milestone.completed)
+        self.assertEqual('', milestone.description)
+
+    def test_existing_milestone(self):
+        cursor = self.db.cursor()
+        cursor.execute("INSERT INTO milestone (name) VALUES ('Test')")
+        cursor.close()
+
+        milestone = Milestone(self.env, 'Test')
+        self.assertEqual(True, milestone.exists)
+        self.assertEqual('Test', milestone.name)
+        self.assertEqual(0, milestone.due)
+        self.assertEqual(0, milestone.completed)
+        self.assertEqual('', milestone.description)
+
+    def test_create_milestone(self):
+        milestone = Milestone(self.env)
+        milestone.name = 'Test'
+        milestone.insert()
+
+        cursor = self.db.cursor()
+        cursor.execute("SELECT name,due,completed,description FROM milestone "
+                       "WHERE name='Test'")
+        self.assertEqual(('Test', 0, 0, ''), cursor.fetchone())
+
+    def test_create_milestone_without_name(self):
+        milestone = Milestone(self.env)
+        self.assertRaises(AssertionError, milestone.insert)
+
+    def test_delete_milestone(self):
+        cursor = self.db.cursor()
+        cursor.execute("INSERT INTO milestone (name) VALUES ('Test')")
+        cursor.close()
+
+        milestone = Milestone(self.env, 'Test')
+        milestone.delete()
+
+        cursor = self.db.cursor()
+        cursor.execute("SELECT * FROM milestone WHERE name='Test'")
+        self.assertEqual(None, cursor.fetchone())
+
+    def test_delete_milestone_retarget_tickets(self):
+        cursor = self.db.cursor()
+        cursor.execute("INSERT INTO milestone (name) VALUES ('Test')")
+        cursor.close()
+
+        tkt1 = Ticket(self.env)
+        tkt1.populate({'summary': 'Foo', 'milestone': 'Test'})
+        tkt1.insert()
+        tkt2 = Ticket(self.env)
+        tkt2.populate({'summary': 'Bar', 'milestone': 'Test'})
+        tkt2.insert()
+
+        milestone = Milestone(self.env, 'Test')
+        milestone.delete(retarget_to='Other')
+
+        self.assertEqual('Other', Ticket(self.env, tkt1.id)['milestone'])
+        self.assertEqual('Other', Ticket(self.env, tkt2.id)['milestone'])
+
+    def test_update_milestone(self):
+        cursor = self.db.cursor()
+        cursor.execute("INSERT INTO milestone (name) VALUES ('Test')")
+        cursor.close()
+
+        milestone = Milestone(self.env, 'Test')
+        milestone.due = 42
+        milestone.completed = 43
+        milestone.description = 'Foo bar'
+        milestone.update()
+
+        cursor = self.db.cursor()
+        cursor.execute("SELECT * FROM milestone WHERE name='Test'")
+        self.assertEqual(('Test', 42, 43, 'Foo bar'), cursor.fetchone())
+
+    def test_update_milestone_without_name(self):
+        cursor = self.db.cursor()
+        cursor.execute("INSERT INTO milestone (name) VALUES ('Test')")
+        cursor.close()
+
+        milestone = Milestone(self.env, 'Test')
+        milestone.name = None
+        self.assertRaises(AssertionError, milestone.update)
+
+    def test_update_milestone_update_tickets(self):
+        cursor = self.db.cursor()
+        cursor.execute("INSERT INTO milestone (name) VALUES ('Test')")
+        cursor.close()
+
+        tkt1 = Ticket(self.env)
+        tkt1.populate({'summary': 'Foo', 'milestone': 'Test'})
+        tkt1.insert()
+        tkt2 = Ticket(self.env)
+        tkt2.populate({'summary': 'Bar', 'milestone': 'Test'})
+        tkt2.insert()
+
+        milestone = Milestone(self.env, 'Test')
+        milestone.name = 'Testing'
+        milestone.update()
+
+        self.assertEqual('Testing', Ticket(self.env, tkt1.id)['milestone'])
+        self.assertEqual('Testing', Ticket(self.env, tkt2.id)['milestone'])
+
+    def test_select_milestones(self):
+        cursor = self.db.cursor()
+        cursor.executemany("INSERT INTO milestone (name) VALUES (%s)",
+                           [('1.0',), ('2.0',)])
+        cursor.close()
+
+        milestones = list(Milestone.select(self.env))
+        self.assertEqual('1.0', milestones[0].name)
+        assert milestones[0].exists
+        self.assertEqual('2.0', milestones[1].name)
+        assert milestones[1].exists
+
+
+def suite():
+    suite = unittest.TestSuite()
+    suite.addTest(unittest.makeSuite(TicketTestCase, 'test'))
+    suite.addTest(unittest.makeSuite(EnumTestCase, 'test'))
+    suite.addTest(unittest.makeSuite(MilestoneTestCase, 'test'))
+    return suite
+
+if __name__ == '__main__':
+    unittest.main(defaultTest='suite')

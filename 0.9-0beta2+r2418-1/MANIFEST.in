@@ -1,0 +1,35 @@
+include AUTHORS ChangeLog COPYING INSTALL MANIFEST.in README README.tracd RELEASE setup.cfg THANKS UPGRADE
+include scripts/trac-admin
+include scripts/tracd
+include scripts/tracdb2env
+include scripts/trac-postinstall.py
+include scripts/*.1
+include scripts/rpm-install.sh
+include cgi-bin/trac.cgi
+include cgi-bin/trac.fcgi
+include trac/tests/*.py
+include trac/web/tests/*.py
+include trac/wiki/tests/*.py
+include trac/wiki/tests/wiki-tests.txt
+include trac/ticket/tests/*.py
+include trac/scripts/tests/*.py
+include trac/scripts/tests/admin-tests.txt
+include trac/versioncontrol/tests/*.py
+include trac/versioncontrol/tests/svnrepos.dump
+recursive-include htdocs *.png *.gif *.ico *.js *README
+recursive-include htdocs/css *.css
+recursive-include htdocs/js *.js
+recursive-include doc *trac_logo.* *README
+recursive-include wiki-default *
+recursive-include wiki-macros *.py
+recursive-include templates *.cs *README
+recursive-include contrib *
+global-exclude *~
+global-exclude *.tmp
+global-exclude *.bak
+global-exclude *.old
+global-exclude .svn
+global-exclude .svn/*
+global-exclude .svn/*/*
+global-exclude .svn/*/*/*
+exclude wiki-default/checkwiki.py*
