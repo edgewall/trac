@@ -1,4 +1,4 @@
-# -*- coding: iso8859-1 -*-
+# -*- coding: utf-8 -*-
 #
 # Copyright (C) 2005 Edgewall Software
 # Copyright (C) 2005 Matthew Good <trac@matt-good.net>
@@ -34,9 +34,10 @@ def _handler(_req):
 
     if not env:
         send_project_index(req, os.environ)
-        return
+        return _fcgi.CGI_REQUEST_COMPLETE, 0
 
     try:  
         dispatch_request(req.path_info, req, env)
     except Exception, e:
         send_pretty_error(e, env, req)
+    return _fcgi.FCGI_REQUEST_COMPLETE, 0
