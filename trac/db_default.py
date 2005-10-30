@@ -1,4 +1,4 @@
-# -*- coding: iso8859-1 -*-
+# -*- coding: utf-8 -*-
 #
 # Copyright (C) 2003-2005 Edgewall Software
 # Copyright (C) 2003-2005 Daniel Lundin <daniel@edgewall.com>
@@ -18,7 +18,7 @@ from trac.config import default_dir
 from trac.db import Table, Column, Index
 
 # Database version identifier. Used for automatic upgrades.
-db_version = 15
+db_version = 16
 
 def __mkreports(reports):
     """Utility function used to create report data in same syntax as the
@@ -73,14 +73,16 @@ schema = [
         Column('ipnr'),
         Column('text'),
         Column('comment'),
-        Column('readonly', type='int')],
+        Column('readonly', type='int'),
+        Index(['time'])],
 
     # Version control cache
     Table('revision', key='rev')[
         Column('rev'),
         Column('time', type='int'),
         Column('author'),
-        Column('message')],
+        Column('message'),
+        Index(['time'])],
     Table('node_change', key=('rev', 'path', 'change'))[
         Column('rev'),
         Column('path'),
@@ -108,7 +110,9 @@ schema = [
         Column('resolution'),
         Column('summary'),
         Column('description'),
-        Column('keywords')],
+        Column('keywords'),
+        Index(['time']),
+        Index(['status'])],    
     Table('ticket_change', key=('ticket', 'time', 'field'))[
         Column('ticket', type='int'),
         Column('time', type='int'),
@@ -140,7 +144,7 @@ schema = [
         Column('description')],
 
     # Report system
-    Table('report')[
+    Table('report', key='id')[
         Column('id', auto_increment=True),
         Column('author'),
         Column('title'),

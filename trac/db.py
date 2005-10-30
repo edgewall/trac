@@ -1,4 +1,4 @@
-# -*- coding: iso8859-1 -*-
+# -*- coding: utf-8 -*-
 #
 # Copyright (C) 2005 Edgewall Software
 # Copyright (C) 2005 Christopher Lenz <cmlenz@gmx.de>
@@ -344,8 +344,8 @@ class SQLiteConnection(ConnectionWrapper):
         sql.append(',\n'.join(coldefs) + '\n);')
         yield '\n'.join(sql)
         for index in table.indexes:
-            yield "CREATE INDEX %s_idx ON %s (%s);" % (table.name,
-                  table.name, ','.join(index.columns))
+            yield "CREATE INDEX %s_%s_idx ON %s (%s);" % (table.name,
+                  '_'.join(index.columns), table.name, ','.join(index.columns))
     to_sql = classmethod(to_sql)
 
 
@@ -419,6 +419,8 @@ class PostgreSQLConnection(ConnectionWrapper):
             ctype = column.type
             if column.auto_increment:
                 ctype = "SERIAL"
+            if len(table.key) == 1 and column.name in table.key:
+                ctype += " PRIMARY KEY"
             coldefs.append("    %s %s" % (column.name, ctype))
         if len(table.key) > 1:
             coldefs.append("    CONSTRAINT %s_pk PRIMARY KEY (%s)"
@@ -426,8 +428,8 @@ class PostgreSQLConnection(ConnectionWrapper):
         sql.append(',\n'.join(coldefs) + '\n);')
         yield '\n'.join(sql)
         for index in table.indexes:
-            yield "CREATE INDEX %s_idx ON %s (%s);" % (table.name, table.name,
-                  ','.join(index.columns))
+            yield "CREATE INDEX %s_%s_idx ON %s (%s);" % (table.name, 
+                   '_'.join(index.columns), table.name, ','.join(index.columns))
     to_sql = classmethod(to_sql)
 
 
