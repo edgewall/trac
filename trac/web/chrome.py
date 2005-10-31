@@ -203,8 +203,8 @@ class Chrome(Component):
 
         href = Href(req.cgi_location)
         req.hdf['chrome.href'] = href.chrome()
-        htdocs_location = self.config.get('trac', 'htdocs_location',
-                                          href.chrome('common'))
+        htdocs_location = self.config.get('trac', 'htdocs_location') or \
+                          href.chrome('common')
         req.hdf['htdocs_location'] = htdocs_location.rstrip('/') + '/'
 
         # HTML <head> links
