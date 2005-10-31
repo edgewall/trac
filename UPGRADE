@@ -59,26 +59,40 @@ Note that this procedure will of course leave your `WikiStart` page intact.
 4. Restart the Web Server
 
 In order to reload the new Trac code you will need to restart your web
-server (note this is not necessary for plain old CGI, although CGI is
-discouraged for performance reasons).
+server (note this is not necessary for CGI).
 
 
 The following sections discuss any extra actions that may need to be taken
 to upgrade to specific versions of Trac.
 
 
+From 0.9-beta to 0.9
+--------------------
+
+If inclusion of the static resources (style sheets, javascript, images) is not
+working, check the value of the `htdocs_location` in trac.ini. For mod_python,
+Tracd and FastCGI, you can simply remove the option altogether. For CGI, you
+should fix it to point to the URL you mapped the Trac `htdocs` directory to.
+
+If you've been using plugins with a beta release of Trac 0.9, or have 
+disabled some of the built-in components, you might have to update the rules
+for disabling/enabling components in trac.ini. In particular, globally 
+installed plugins now need to be enabled explicitly. See the TracPlugins and 
+TracIni wiki pages for more information.
+
+If you want to enable the display of all ticket changes in the timeline (the
+Ticket Details option), you now have to explicitly enable that in trac.ini,
+too:
+
+   [timeline]
+   ticket_show_details = true
+
+
 From 0.8.x to 0.9
 -----------------
 
-If you're using CGI, you will want to update your `Alias` to the Trac htdocs
-static resources.  See the documentation on the TracCgi wiki page for an
-example on how to configure this. 
-
-FastCGI and mod_python users can safely remove any `Alias`es to the Trac
-htdocs folder since this is no longer used by default. 
-
-mod_python users will also need to change the name of the mod_python handler
-in the Apache HTTPD configuration:
+mod_python users will need to change the name of the mod_python handler in
+the Apache HTTPD configuration:
 
    from: PythonHandler trac.ModPythonHandler
    to:   PythonHandler trac.web.modpython_frontend

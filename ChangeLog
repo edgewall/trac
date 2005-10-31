@@ -1,3 +1,23 @@
+Trac 0.9  (Oct 31, 2005)
+http://svn.edgewall.com/repos/trac/tags/trac-0.9
+
+ * Support for a global trac.ini configuration file.
+ * Changed logic for enabling plugins/components.
+ * Improved support for handling repository subsets.
+ * Fixes problems with Trac links when using multiple environments in the
+   same Python interpreter.
+ * Improvements to email notification layout and encoding.
+ * Fixes for database locking with SQLite, in particular in a multi-threaded
+   environment.
+ * PostgreSQL compatibility fixes.
+ * Fixed bugs: #804, #861, #927, #1044, #1051, #1123, #1153, #1169,
+   #1239, #1344, #1463, #1562, #1881, #1886, #1895, #1909, #1921, #1930,
+   #1983, #1988, #2019, #2051, #2061, #2229, #2106, #2107, #2116, #2120,
+   #2124, #2129, #2135, #2136, #2138, #2140, #2144, #2164, #2166, #2170,
+   #2172, #2191, #2192, #2196, #2201, #2202, #2203, #2208, #2215, #2218,
+   #2223, #2230, #2232, #2239, #2240, #2241, #2243, #2251, 
+
+
 Trac 0.9-beta2  (Sept 25, 2005)
 http://svn.edgewall.com/repos/trac/tags/trac-0.9b2
 
