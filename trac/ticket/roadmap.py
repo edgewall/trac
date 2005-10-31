@@ -294,7 +294,8 @@ class MilestoneModule(Component):
     def get_permission_actions(self):
         actions = ['MILESTONE_CREATE', 'MILESTONE_DELETE', 'MILESTONE_MODIFY',
                    'MILESTONE_VIEW']
-        return actions + [('ROADMAP_ADMIN', actions)]
+        return actions + [('MILESTONE_ADMIN', actions),
+                          ('ROADMAP_ADMIN', actions)]
 
     # ITimelineEventProvider methods
 
