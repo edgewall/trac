@@ -429,9 +429,9 @@ default_config = \
   ('notification', 'always_notify_reporter', 'false'),
   ('notification', 'smtp_from', 'trac@localhost'),
   ('notification', 'smtp_replyto', 'trac@localhost'),
-  ('timeline', 'changeset_show_files', '0'),
   ('timeline', 'default_daysback', '30'),
-  ('timeline', 'ticket_details', 'no'),
+  ('timeline', 'changeset_show_files', '0'),
+  ('timeline', 'ticket_show_details', 'false'),
   ('browser', 'hide_properties', 'svk:merge'),
   ('wiki', 'ignore_missing_pages', 'false'),
 )
