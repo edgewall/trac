@@ -14,9 +14,9 @@ This is useful to keep up-to-date on an issue or enhancement request that intere
 
 == Configuring SMTP Notification ==
 
-=== Config Options ===
+=== Configuration Options ===
 These are the available options for the ''[notification]'' section in trac.ini.
- * '''smtp_enabled''': Enable notification.
+ * '''smtp_enabled''': Enable email notification.
  * '''smtp_server''': SMTP server used for notification messages.
  * '''smtp_user''': (''requires [milestone:0.9 0.9]'') user name for authentication SMTP account.
  * '''smtp_password''': (''requires [milestone:0.9 0.9]'') password for authentication SMTP account.

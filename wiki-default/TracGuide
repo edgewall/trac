@@ -12,6 +12,7 @@ Currently available documentation:
    * TracImport -- Importing tickets from other bug databases.
    * TracIni -- Trac configuration file reference. 
    * TracPermissions -- Access control and permissions.
+   * TracInterfaceCustomization -- Customizing the Trac interface.
    * TracPlugins -- Installing and managing Trac extensions.
    * TracWiki -- How to use the built-in Wiki.
    * TracBrowser -- Browsing source code with Trac.

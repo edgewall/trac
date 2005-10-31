@@ -1,7 +1,15 @@
-= trac.ini Reference =
+= The Trac Configuration File =
 [[TracGuideToc]]
 
-Trac configuration is done by editing the ''trac.ini'' config file, located in {{{<projectenv>/conf/trac.ini}}}.
+Trac configuration is done by editing the '''`trac.ini`''' config file, located in `<projectenv>/conf/trac.ini`.
+
+== Global Configuration ==
+
+Since version 0.9, Trac can also read the configuration from a global `trac.ini` file. These global options will then be merged with the environment-specific options, where local options override global options.
+
+The global configuration is by default localted in `$prefix/share/trac/conf/trac.ini`. It can be moved to a different location (for example, `/etc/trac.ini`), but that requires changing the file `trac/siteconfig.py` which gets created when Trac is installed. 
+
+== Reference ==
 
 This is a brief reference of available configuration options.
 
@@ -11,6 +19,7 @@ This is a brief reference of available configuration options.
 || `default_handler` || Name of the component that handles requests to the base URL (default is `WikiHandler`) (''since 0.9'') ||
 || `repository_dir`  || Path to local Subversion repository ||
 || `authz_file`      || Path to Subversion [http://svnbook.red-bean.com/en/1.1/ch06s04.html#svn-ch-6-sect-4.4.2 authorization (authz) file]. ||
+|| `authz_module_name` || The module prefix used in the `authz_file` (See FineGrainedPermissions)||
 || `check_auth_ip` || Whether the IP address of the user should be checked for authentication (true, false) (''since 0.9'') ||
 || `ignore_auth_case` || Whether case should be ignored for login names (true, false) (''since 0.9'') ||
 || `templates_dir`   || Path to the !ClearSilver templates ||
@@ -28,6 +37,7 @@ This is a brief reference of available configuration options.
 || `alt`    || ''alt'' text for header logo ||
 || `width`  || Header logo width in pixels ||
 || `height` || Header logo height in pixels ||
+See also: TracInterfaceCustomization.
 
 == [logging] ==
 || `log_type`  || Logging facility to use. (none, file, stderr, syslog, winlog) ||
@@ -65,12 +75,12 @@ See also: TracNotification
 || `restrict_owner`    || Make the owner field of tickets use a drop-down menu (''since 0.9'') ||
 
 == [ticket-custom] ==
-Creates user-defined ticket fields.
-See TracTicketsCustomFields.
+Creates [wiki:TracTicketsCustomFields user-defined ticket fields].
 
 == [timeline] ==
-|| `changeset_show_files` || Number of files to show (-1 for unlimited, 0 to disable) ||
 || `default_daysback` || Default "depth" of the Timeline, in days (''since 0.9'') ||
+|| `changeset_show_files` || Number of files to show (-1 for unlimited, 0 to disable) ||
+|| `ticket_show_details` || Enable the display of all ticket changes in the timeline ||
 
 == [browser] ==
 || `hide_properties` || List of subversion properties to hide from the repository browser (''since 0.9'') ||
@@ -78,9 +88,27 @@ See TracTicketsCustomFields.
 == [wiki] ==
 || `ignore_missing_pages` || enable/disable highlighting CamelCase links to missing pages (''since 0.9'') ||
 
-== [disabled_components] ==
-You can disable any Trac component by listing its name in this section and assigning a truth value (e.g. ''yes''). See the ''Plugins'' page on ''About Trac'' to get the list of active components.
+== [components] ==
 (''since 0.9'')
+
+This section is used to enable or disable components provided by plugins, as well as by Trac itself. The component to enable/disable is specified via the name of the option. Whether its enabled is determined by the option value; setting the value to `enabled` or `on` will enable the component, any other value (typically `disabled` or `off`) will disable the component.
+
+The option name is either the fully qualified name of the components or the module/package prefix of the component. The former enables/disables a specific component, while the latter enables/disables any component in the specified package/module.
+
+Consider the following configuration snippet:
+{{{
+[components]
+trac.ticket.report.ReportModule = disabled
+webadmin.* = enabled
+}}}
+
+The first option tells Trac to disable the [wiki:TracReports report module]. The second option instructs Trac to enable all components in the `webadmin` package. Note that the trailing wildcard is required for module/package matching.
+
+See the ''Plugins'' page on ''About Trac'' to get the list of active components (requires `CONFIG_VIEW` [wiki:TracPermissions permissions].)
+
+See also: TracPlugins
+
+  ''Note that prior to Trac r2335 (that applies to 0.9b1 and 0.9b2), you would use a `[disabled_components]` section instead. See a [http://projects.edgewall.com/trac/wiki/TracIni?version=42 previous version] of this page for the details.''
 
 ----
 See also: TracGuide, TracAdmin, TracEnvironment

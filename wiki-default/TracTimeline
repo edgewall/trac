@@ -9,31 +9,16 @@ the change.
 
 The timeline lists these kinds of events:
  * '''Wiki page events''' -- Creation and changes
- * '''Ticket events''' -- Creation and resolution/closing
- * '''Source code changes ''' -- Subversion commits 
- * '''Milestone ''' -- Milestone reached
+ * '''Ticket events''' -- Creation and resolution/closing (and optionally other changes)
+ * '''Source code changes ''' -- Repository check-ins
+ * '''Milestone ''' -- Milestone completed
 
-Each event entry provides a hyperlink to the specific event in question, and 
-in the case svn commit log messages, displays the commit message itself. 
-
-== Subversion Commit Messages == 
-It's important to note that WikiFormatting can be used in commit log messages,
-including TracLinks.
-
-This allows developers to hyperlink and refer to issue tickets, wikipages and files
-directly when committing a patch to the repository.
-
-Example:
-
-{{{
- $ svn commit -m "Updated foo to bar. See FooBar. This fixes bug #42." 
-}}}
-
-This is a subtle but quite useful feature.
+Each event entry provides a hyperlink to the specific event in question, as well as
+a brief excerpt of the actual comment or text, if available.
 
 == RSS Support ==
-The Timeline module supports subscribtion using RSS 2.0 syndication. To subscribe to project events, click the '''RSS Feed''' link in the navigation bar, or the orange XML icon at the bottom of the page. See TracRss for more information on RSS support in Trac.
 
+The Timeline module supports subscription using RSS 2.0 syndication. To subscribe to project events, click orange '''XML''' icon at the bottom of the page. See TracRss for more information on RSS support in Trac.
 
 ----
 See also: TracGuide, TracWiki, WikiFormatting, TracRss, TracNotification

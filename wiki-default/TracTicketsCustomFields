@@ -1,12 +1,8 @@
 = Custom Ticket Fields =
 Trac supports adding custom, user-defined fields to the ticket module. Using custom fields, you can add typed, site-specific properties to tickets.
 
-'''Note: In Trac 0.8, this feature is still experimental.'''
-
 == Configuration ==
-Configuring custom ticket fields is done in the TracIni config file.
-
-All field definitions should be under a section named '''{{{[ticket-custom]}}}''' in the ini-file.
+Configuring custom ticket fields is done in the [wiki:TracIni trac.ini] file. All field definitions should be under a section named `[ticket-custom]`.
 
 The syntax of each field definition is:
 {{{
@@ -73,10 +69,30 @@ test_six.cols = 60
 test_six.rows = 30
 }}}
 
-=== Notes ===
-Do not insert space characters between '{{{|}}}'-separated option values for ''radio'' and ''select'' fields.
- * ok: {{{FIELD_NAME.options = un|deux|trois}}}
- * invalid: {{{FIELD_NAME.options = un | deux | trois}}}
+''Note: To make an entering an option for a `select` type field optional, specify a leading `|` in the `fieldname.options` option.''
+
+=== Reports Involving Custom Fields ===
+
+The SQL required for TracReports to include custom ticket fields is relatively hard to get right. You need a `JOIN` with the `ticket_custom` field for every custom field that should be involved.
+
+The following example includes a custom ticket field named `progress` in the report:
+{{{
+#!sql
+SELECT p.value AS __color__,
+   id AS ticket, summary, component, version, milestone, severity,
+   (CASE status WHEN 'assigned' THEN owner||' *' ELSE owner END) AS owner,
+   time AS created,
+   changetime AS _changetime, description AS _description,
+   reporter AS _reporter,
+  (CASE WHEN c.value = '0' THEN 'None' ELSE c.value END) AS progress
+  FROM ticket t
+     LEFT OUTER JOIN ticket_custom c ON (t.id = c.ticket AND c.name = 'progress')
+     JOIN enum p ON p.name = t.priority AND p.type='priority'
+  WHERE status IN ('new', 'assigned', 'reopened')
+  ORDER BY p.value, milestone, severity, time
+}}}
+
+Note in particular the `LEFT OUTER JOIN` statement here.
 
 ----
-See also: TracTickets, TracIni, TracIniReportCustomFieldSample
+See also: TracTickets, TracIni

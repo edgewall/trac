@@ -17,21 +17,24 @@ All tickets can be edited, annotated, assigned, prioritized and discussed at any
 A  ticket contains the following information attributes:
  
  * '''Reporter''' - The author of the ticket.
+ * '''Type''' - The nature of the ticket (for example, defect or enhancement request)
 
  * '''Component''' - The project module or subsystem this ticket concerns.
  * '''Version''' - Version of the project that this ticket pertains to.
- * '''Severity''' - What are the effects the issue described? Ranges from an ''enhancement'' request to ''blocker'' (must be fixed before next milestone).
  * '''Keywords''' - Keywords that a ticket is marked with.  Useful for searching and report generation.
 
- * '''Priority''' - The importance of is the issue relative to other tasks.
+ * '''Priority''' - The importance of this issue, ranging from ''trivial'' to ''blocker''.
  * '''Milestone''' - When this issue should be resolved at the latest.
- * '''Assigned to''' - Principal person responsible for handling the issue.
- * '''Cc''' - A list of other associated people. ''note: this does '''not''' imply responsiblity or any other policy. 
+ * '''Assigned to/Owner''' - Principal person responsible for handling the issue.
+ * '''Cc''' - A list of other associated people. ''Note that this does not imply responsiblity or any other policy.''
  
- * '''Resolution''' - Reason for why a ticket was closed, such as {{{fixed}}}, {{{invalid}}}, {{{duplicate}}}, etc.
- * '''Status''' - What is the current status? (One of {{{new}}}, {{{assigned}}}, {{{closed}}}, {{{reopened}}}.)
+ * '''Resolution''' - Reason for why a ticket was closed. One of {{{fixed}}}, {{{invalid}}}, {{{wontfix}}}, {{{duplicate}}}, {{{worksforme}}}.
+ * '''Status''' - What is the current status? One of {{{new}}}, {{{assigned}}}, {{{closed}}}, {{{reopened}}}.
  * '''Summary''' - A brief description summarizing the problem or issue.
- * '''Description''' - The body of the ticket. A good description should be '''specific, descriptive and to the point'''.
+ * '''Description''' - The body of the ticket. A good description should be specific, descriptive and to the point.
+
+'''Note:''' Versions of Trac prior to 0.9 did not have the ''type'' field, but instead provided a ''severity'' field and different default values for the ''priority'' field. This change was done to simplify the ticket model by removing the somewhat blurry distinction between ''priority'' and ''severity''. However, the old model is still available if you prefer it: just add/modify the default values of the ''priority'' and ''severity'', and optionally hide the ''type'' field by removing all the possible values through [wiki:TracAdmin trac-admin].
+
 
 == Changing and Commenting Tickets ==
 
@@ -39,10 +42,11 @@ Once a ticket has been entered into Trac, you can at any time change the
 information by '''annotating''' the bug. This means changes and comments to
 the ticket are logged as a part of the ticket itself.
 
-When viewing a ticket, this log of changes will appear below the main ticket area.
+When viewing a ticket, the history of changes will appear below the main ticket area.
 
-''In the Trac project, we use ticket comments to discuss issues and
-tasks. This makes understanding the motivation behind a design- or implementation choice easier, when returning to it later.''
+''In the Trac project, we use ticket comments to discuss issues and tasks. This makes
+understanding the motivation behind a design- or implementation choice easier,
+when returning to it later.''
 
 '''Note:''' An important feature is being able to use TracLinks and
 WikiFormatting in ticket descriptions and comments. Use TracLinks to refer to
@@ -54,9 +58,38 @@ to understand.
 === State Diagram ===
 http://projects.edgewall.com/trac/attachment/wiki/TracTickets/Trac%20Ticket%20State%20Chart%2020040607DF.png?format=raw
 
-== Advanced: Preset values for New Tickets from URL ==
 
-To create a link to the new-ticket form filled with preset values, you need to call the /newticket? URL with variable=value separated by &. 
+== Default Values for Drop-Down Fields ==
+
+The option selected by default for the various drop-down fields can be set in [wiki:TracIni trac.ini], in the `[ticket]` section:
+
+ * `default_type`: Default ticket type
+ * `default_component`: Name of the component selected by default
+ * `default_version`: Name of the default version
+ * `default_milestone`: Name of the default milestone
+ * `default_priority`: Default priority value
+ * `default_severity`: Default severity value
+
+If any of these options are omitted, the default value will either be the first in the list, or an empty value, depending on whether the field in question is required to be set.
+
+
+== Hiding Fields and Adding Custom Fields ==
+
+Many of the default ticket fields can be hidden from the ticket web interface simply by removing all the possible values through [wiki:TracAdmin trac-admin]. This of course only applies to drop-down fields, such as ''type'', ''priority'', ''severity'', ''component'', ''version'' and ''milestone''.
+
+Trac also lets you add your own custom ticket fields. See TracTicketsCustomFields for more information.
+
+
+== Assign-to as Drop-Down List ==
+
+If the list of possible ticket owners is finite, you can change the ''assign-to'' ticket field from a text input to a drop-down list. This is done by setting the `restrict_owner` option of the `[ticket]` section in [wiki:TracIni trac.ini] to “true”. In that case, Trac will use the list of all users who have logged in and set their email address to populate the drop-down field.
+
+''Note that this feature is '''still experimental as of version 0.9'''. There is no way to only display a subset of all known users as possible ticket owners. Nor is there a convenient way to remove emeritus users short of directly modifying the database.''
+
+
+== Preset Values for New Tickets ==
+
+To create a link to the new-ticket form filled with preset values, you need to call the `/newticket?` URL with variable=value separated by &. 
 
 Possible variables are :
 

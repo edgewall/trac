@@ -12,12 +12,11 @@ Page names must follow these rules:
 
 If you want to create a wiki page that doesn't follow CamelCase rules you could use the following syntax:
 {{{
-[wiki:Wiki_page Wiki page]
+[wiki:Wiki_page]
 }}}
 
 This will be rendered as:
-
- [wiki:Wiki_page Wiki page]
+ [wiki:Wiki_page]
 
 ----
 See also: WikiNewPage, WikiFormatting, TracWiki

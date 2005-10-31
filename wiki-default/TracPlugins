@@ -1,10 +1,11 @@
 = Trac Plugins =
+[[TracGuideToc]]
 
 Since version 0.9, Trac supports plugins that extend the built-in functionality. The plugin functionality is based on the [http://projects.edgewall.com/trac/wiki/TracDev/ComponentArchitecture component architecture].
 
 == Requirements ==
 
-To use plugins in Trac, you need to have [http://peak.telecommunity.com/DevCenter/setuptools setuptools] (version 0.5 or 0.6) installed.
+To use plugins in Trac, you need to have [http://peak.telecommunity.com/DevCenter/setuptools setuptools] (version 0.6) installed.
 
 To install `setuptools`, download the bootstrap module [http://peak.telecommunity.com/dist/ez_setup.py ez_setup.py] and execute it as follows:
 {{{
@@ -33,6 +34,14 @@ $ python setup.py install
 }}}
 
 Alternatively, you can just drop the `.egg` file in the Python `site-packages` directory.
+
+Unlike plugins installed per-environment, you'll have to explicitly enable globally installed plugins via [wiki:TracIni trac.ini]. This is done in the `[components]` section of the configuration file, for example:
+{{{
+[components]
+webadmin.* = enabled
+}}}
+
+The name of the option is the Python package of the plugin. This should be specified in the documentation of the Plugin, but can also be easily find out by looking at the source (look for a top-level directory that contains a file named `__init__.py`.)
 
 == Setting up the Plugin Cache ==
 
@@ -65,4 +74,4 @@ or (for mod_python):
 For [wiki:TracFastCgi FastCGI], you'll need to `-initial-env` option, or whatever is provided by your web server for setting environment variables.
 
 ----
-See also TracGuide, [wiki:TracDev/ComponentArchitecture component architecture]
+See also TracGuide, [http://projects.edgewall.com/trac/wiki/PluginList plugin list], [http://projects.edgewall.com/trac/wiki/TracDev/ComponentArchitecture component architecture]

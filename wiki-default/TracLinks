@@ -15,6 +15,7 @@ Some examples:
  * Revision log: '''!r1:3''', '''![1:3]''' or '''!log:#1:3'''
  * Wiki pages: '''CamelCase''' or '''!wiki:CamelCase'''
  * Milestones: '''!milestone:1.0'''
+ * Attachment: '''!attachment:ticket:944:attachment.1073.diff'''
  * Files: '''!source:trunk/COPYING'''
  * A specific file revision: '''!source:/trunk/COPYING#200'''
 Display:
@@ -25,6 +26,7 @@ Display:
  * Wiki pages: CamelCase or wiki:CamelCase
  * Milestones: milestone:1.0
  * Files: source:trunk/COPYING
+ * Attachment: attachment:ticket:944:attachment.1073.diff
  * A specific file revision: source:/trunk/COPYING#200
 
 '''Note:''' The wiki:CamelCase form is rarely used, but it can be convenient to refer to
@@ -50,11 +52,28 @@ Display: [ticket:1]
 
 It might seem a simple enough concept at a glance, but actually allows quite a complex network of information. In practice, it's very intuitive and simple to use, and we've found the "link trail" extremely helpful to better understand what's happening in a project or why a particular change was made.
 
+== attachement: links ==
+
+The link syntax for attachments is as follows:
+ * !attachment:the_file.txt creates a link to the attachment the_file.txt of the current object
+ * !attachment:wiki:MyPage:the_file.txt creates a link to the attachment the_file.txt of the !MyPage wiki page
+ * !attachment:ticket:753:the_file.txt creates a link to the attachment the_file.txt of the ticket 753 !attachment:wiki:MyPage:the_file.txt
+
 == source: links ==
-The default behavior for a source:/some/path link is to open the directory browser if the path points
-to a directory and otherwise open the log view. It's also possible to link directly to a specific
-revision of a file like this: source:/some/file#123 or like this to link to the latest revision:
-source:/some/file#latest.
+
+The default behavior for a source:/some/path link is to open the directory browser 
+if the path points to a directory and otherwise open the log view. 
+It's also possible to link directly to a specific revision of a file like this: source:/some/file@123 
+or like this to link to the latest revision: source:/some/file@latest.
+If the revision is specified, one can even link to a specific line number: !source:/some/file@123#L10 
+[[comment(TODO: remove the ! when Edgewall Trac is upgraded with the support for the line syntax)]]
+
+== Quoting space in TracLinks ==
+
+The usual syntax for quoting space is:
+
+ * !attachment:'the file.txt' or
+ * !attachment:"the file.txt" 
 
 == Where to use TracLinks ==
 You can use TracLinks in:

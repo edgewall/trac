@@ -1,18 +1,16 @@
 = Tracd =
 
-Tracd is a lightweight stand-alone Trac server. In most cases it's easier to setup and runs faster than trac.cgi.
-
+Tracd is a lightweight standalone Trac web server. In most cases it's easier to setup and runs faster than the [wiki:TracCgi CGI script].
 
 == Pros ==
 
  * Fewer dependencies: You don't need to install apache or any other web-server.
- * Fast: Should be as fast as the TracModPython version (much faster than the cgi).
+ * Fast: Should be as fast as the [wiki:TracModPython mod_python] version (and much faster than the [wiki:TracCgi CGI]).
 
 == Cons ==
 
- * Less features: Tracd implements a very simple web-server and is not as configurable as apache.
- * Only htdigest authentication: Tracd can currently only authenticate users against apache-htdigest files.
- * No native https support: [http://www.rickk.com/sslwrap/ sslwrap] can be used instead,
+ * Less features: Tracd implements a very simple web-server and is not as configurable as Apache HTTPD.
+ * No native HTTPS support: [http://www.rickk.com/sslwrap/ sslwrap] can be used instead,
    or [http://lists.edgewall.com/archive/trac/2005-August/004381.html STUNNEL].
 
 == Usage examples ==
@@ -25,47 +23,31 @@ With more than one project. (http://localhost:8080/project1/ and http://localhos
 {{{
  $ tracd -p 8080 /path/to/project1 /path/to/project2
 }}}
-With htdigest authentication. The file /tmp/users.htdigest contain user accounts for project1 with the realm "mycompany.com".
+
+You can't have the last portion of the path identical between the projects since that's how trac keeps the URLs of the
+different projects unique. So if you use /project1/path/to and /project2/path/to, you will only see the second project.
+
+== Using Authentication ==
+
+Tracd provides support for both Basic and Digest authentication. The default is to use Digest; to use Basic authentication, replace `--auth` with `--basic-auth` in the examples below, and omit the realm.
+
+If the file `/path/to/users.htdigest` contain user accounts for project1 with the realm "mycompany.com", you'd use the following command-line to start tracd:
 {{{
- $ tracd -p 8080 --auth project1,/tmp/users.htdigest,mycompany.com /path/to/project1
+ $ tracd -p 8080 --auth project1,/path/to/users.htdigest,mycompany.com /path/to/project1
 }}}
-htdigest authentication can also be used for more than one project.
-The digest file can be shared:
+''Note that the project “name” passed to the `--auth` option is actually the base name of the project environment directory.""
+
+Of course, the digest file can be be shared so that it is used for more than one project:
 {{{
  $ tracd -p 8080 \
-   --auth project1,/tmp/users.htdigest,mycompany.com \
-   --auth project2,/tmp/users.htdigest,mycompany.com \
+   --auth project1,/path/to/users.htdigest,mycompany.com \
+   --auth project2,/path/to/users.htdigest,mycompany.com \
    /path/to/project1 /path/to/project2
 }}}
 
-== Tracd on Windows ==
+== Generating Passwords Without Apache ==
 
-tracd also works on Windows. 
-But on that platform, the sensitivity on multithreading issues is high,
-and you ''might'' have problems (i.e. crashes of the Python interpreter).
-If this happens, you can force tracd to operate in single-threaded mode:
-{{{
-#!text/x-diff
-Index: trac/web/standalone.py
-===================================================================
---- trac/web/standalone.py      (revision 1862)
-+++ trac/web/standalone.py      (working copy)
-@@ -124,7 +124,7 @@
-         return auth['username']
-
-
--class TracHTTPServer(ThreadingMixIn, HTTPServer):
-+class TracHTTPServer(HTTPServer):
-
-     projects = None
-}}}
-
-Please also report any such issue, as they are believed to be fixed by now.
-
-
-== Generating passwords on Windows ==
-
-If you don't have Apache available, you can use this Python script to generate your passwords (code borrowed heavily from #845):
+If you don't have Apache available, you can use this simple Python script to generate your passwords:
 
 {{{
 from optparse import OptionParser
@@ -91,4 +73,4 @@ print ':'.join((options.username, realm, kd([options.username, realm, options.pa
 }}}
 
 ----
-See also: [source:trunk/README.tracd#latest README.tracd], TracGuide, TracInstall, TracModPython
+See also: TracInstall, TracCgi, TracModPython, TracGuide

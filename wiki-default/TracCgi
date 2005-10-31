@@ -2,7 +2,7 @@
 
 To install Trac as a CGI script, you need to make the `trac.cgi` executable as a CGI by your web server. If you're using [http://httpd.apache.org/ Apache HTTPD], there are a couple ways to do that:
 
- 1. Use a `ScriptAlias` to map an URL to the `trac.cgi` script
+ 1. Use a `ScriptAlias` to map a URL to the `trac.cgi` script
  2. Copy the `trac.cgi` file into the directory for CGI executables used by your web server (commonly named `cgi-bin`). You can also create a symbolic link, but in that case make sure that the `FollowSymLinks` option is enabled for the `cgi-bin` directory.
 
 The first option is recommended as it also allows you to map the CGI to a friendly URL.
@@ -11,7 +11,7 @@ Now, edit the Apache configuration file and add this snippet, file names and loc
 {{{
 ScriptAlias /trac /usr/share/trac/cgi-bin/trac.cgi
 
-# Trac need to know where the database is located
+# Trac needs to know where the database is located
 <Location "/trac">
   SetEnv TRAC_ENV "/path/to/projectenv"
 </Location>
@@ -38,9 +38,17 @@ Alias /trac/chrome/common /usr/share/trac/htdocs
 </Directory>
 }}}
 
-Note that whatever URL path you mapped the `trac.cgi` script to, the path `/chrome/common` is the path you have to append to that location to intercept requests to the static resources.
+Note that whatever URL path you mapped the `trac.cgi` script to, the path `/chrome/common` is the path you have to append to that location to intercept requests to the static resources. 
 
 For example, if Trac is mapped to `/cgi-bin/trac.cgi` on your server, the URL of the Alias should be `/cgi-bin/trac.cgi/chrome/common`.
+
+Alternatively, you can set the `htdocs_location` configuration option in [wiki:TracIni trac.ini]:
+{{{
+[trac]
+htdocs_location = /trac-htdocs
+}}}
+
+Trac will then use this URL when embedding static resources into HTML pages. Of course, you still need to make the Trac `htdocs` directory available through the web server at the specified URL, for example by copying (or linking) the directory into the document root of the web server.
 
 == Adding Authentication ==
 

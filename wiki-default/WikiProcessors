@@ -4,7 +4,7 @@ Processors are WikiMacros designed to provide alternative markup formats for the
 The wiki engine uses processors to allow using [wiki:WikiRestructuredText Restructured Text] and [wiki:WikiHtml raw HTML] in any wiki text throughout Trac.
 
 == Using Processors ==
-To use a processor on a block of text, use a wiki blockquote, selecting a processor by name using 'hashbang notation' (#!), familiar to most UNIX users from scripts.
+To use a processor on a block of text, use a wiki blockquote, selecting a processor by name using ''shebang notation'' (#!), familiar to most UNIX users from scripts.
 
 '''Example 1''' (''inserting raw HTML in a wiki text''):
 
@@ -74,16 +74,14 @@ int main(int argc, char *argv[])
 
 ----
 
-
-
 == Available Processors ==
 The following processors are included in the Trac distribution:
  * '''html''' -- Insert custom HTML in a wiki page. See WikiHtml.
  * '''rst''' -- Trac support for Restructured Text. See WikiRestructuredText.
  * '''textile''' -- Supported if  [http://dealmeida.net/projects/textile/ Textile] is installed.
 
-=== Source Code Support ===
-Trac includes processors to provide inline [wiki:TracSyntaxColoring syntax highlighting] for these languages:
+=== Code Highlighting Support ===
+Trac includes processors to provide inline [wiki:TracSyntaxColoring syntax highlighting] for the following languages:
  * '''c''' -- C
  * '''cpp''' -- C++
  * '''python''' -- Python
@@ -95,10 +93,7 @@ Trac includes processors to provide inline [wiki:TracSyntaxColoring syntax highl
  * '''xml''' -- XML
 '''Note:''' ''Trac relies on external software packages for syntax coloring. See TracSyntaxColoring for more info.''
 
-By using the mime-type as processor, it is posible to syntax-highlight the same languages that are supported when browsing source code.
-
-For example, you can write:
-
+By using the MIME type as processor, it is possible to syntax-highlight the same languages that are supported when browsing source code. For example, you can write:
 {{{
 {{{
 #!text/html
@@ -106,14 +101,14 @@ For example, you can write:
 }}}
 }}}
 
-The result will be syntax highlighted html code. The same is valid for all other mime types supported.
+The result will be syntax highlighted HTML code. The same is valid for all other mime types supported.
 
 
+For more processor macros developed and/or contributed by users, visit: 
+ * [http://projects.edgewall.com/trac/wiki/ProcessorBazaar ProcessorBazaar]
+ * [http://projects.edgewall.com/trac/wiki/MacroBazaar MacroBazaar]
 
-For more processor macros developed and/or contributed by users, visit the macro bazaar: 
- http://projects.edgewall.com/trac/wiki/MacroBazaar
 
-----
 == Advanced Topics: Developing Processor Macros ==
 Developing processors is no different than WikiMacros. In fact they work the same way, only the usage syntax differs. See WikiMacros for more information.
 
@@ -127,4 +122,4 @@ def execute(hdf, text, env):
 }}}
 
 ----
-See also : WikiMacros, WikiHtml, WikiRestructuredText, TracSyntaxColoring, WikiFormatting, TracGuide
+See also: WikiMacros, WikiHtml, WikiRestructuredText, TracSyntaxColoring, WikiFormatting, TracGuide

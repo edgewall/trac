@@ -15,15 +15,16 @@ It is possible to drill down into this simple statistic by viewing the individua
 
 It is possible to add, modify and remove milestones using either TracAdmin or the web interface. 
 
-'''Note:''' Milestone descriptions can currently only be edited from the web interface. With appropriate permissions, you'll see links below the main navigation bar to manage milestones.
+'''Note:''' Milestone descriptions can currently only be edited from the web interface. With appropriate permissions, you'll see buttons for milestone management on the roadmap and milestone pages.
 
 == iCalendar Support ==
 
-The Roadmap supports the [http://www.ietf.org/rfc/rfc2445.txt iCalendar] format to keep track of planned milestones and related tickets from your favorite calendar software. Calendar applications supporting the iCalendar specification include [http://www.apple.com/ical/ Apple iCal] for Mac OS X and the cross-platform [http://www.mozilla.org/projects/calendar/ Mozilla Calendar]. 
+The Roadmap supports the [http://www.ietf.org/rfc/rfc2445.txt iCalendar] format to keep track of planned milestones and related tickets from your favorite calendar software. Calendar applications supporting the iCalendar specification include [http://www.apple.com/ical/ Apple iCal] for Mac OS X and the cross-platform [http://www.mozilla.org/projects/calendar/ Mozilla Calendar]. [http://kdepim.kde.org/components/korganizer.php Korganiser] (the calendar application of the [http://www.kde.org/ KDE] project) and [http://www.novell.com/de-de/products/desktop/features/evolution.html Evolution] also support iCalendar.
 
-To subscribe to the roadmap, copy the iCalendar link from the roadmap (found at the bottom of the page) and choose the "Subscribe to remote calendar" action (or similar), and insert the URL just copied.
+To subscribe to the roadmap, copy the iCalendar link from the roadmap (found at the bottom of the page) and choose the "Subscribe to remote calendar" action (or similar) of your calendar application, and insert the URL just copied.
 
-'''Note:''' For tickets to be included in the calendar (as TO-DO items), you need to be authenticated when copying the link. You will only see tickets assigned to yourself, and associated with a milestone.
+'''Note:''' For tickets to be included in the calendar as tasks, you need to be logged in when copying the link. You will only see tickets assigned to yourself, and associated with a milestone.
 
+More information about iCalendar can be found at [http://en.wikipedia.org/wiki/ICalendar Wikipedia].
 ----
 See also: TracTickets, TracReports, TracQuery, TracGuide

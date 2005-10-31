@@ -1,4 +1,4 @@
-== Trac Permissions ==
+= Trac Permissions =
 [[TracGuideToc]]
 
 Trac uses a simple but flexible permission system to control what users can and can't access.
@@ -12,46 +12,76 @@ Assign permissions to the {{{anonymous}}} user to set privileges for non-authent
 In addition to these privileges users can be granted additional individual 
 rights in effect when authenticated and logged into the system.
 
-=== Available privileges ===
+== Available Privileges ==
 
- * {{{TRAC_ADMIN}}}
- * {{{LOG_VIEW}}}
- * {{{FILE_VIEW}}}
- * {{{CHANGESET_VIEW}}}
- * {{{BROWSER_VIEW}}}
- * {{{TICKET_VIEW, TICKET_CREATE, TICKET_APPEND, TICKET_CHGPROP, TICKET_MODIFY, TICKET_ADMIN}}}
- * {{{REPORT_VIEW, REPORT_CREATE, REPORT_MODIFY, REPORT_DELETE, REPORT_ADMIN, REPORT_SQL_VIEW}}}
- * {{{WIKI_VIEW, WIKI_CREATE, WIKI_MODIFY, WIKI_DELETE, WIKI_ADMIN}}}
- * {{{MILESTONE_VIEW, MILESTONE_CREATE, MILESTONE_MODIFY, MILESTONE_DELETE}}}
- * {{{ROADMAP_VIEW, ROADMAP_ADMIN}}}
- * {{{TIMELINE_VIEW}}}
- * {{{SEARCH_VIEW}}}
- * {{{CONFIG_VIEW}}}
+To enable all privileges for a user, use the `TRAC_ADMIN` permission. Having `TRAC_ADMIN` is like being `root` on a *NIX system, it will let you do anything you want.
 
-The {{{something_ADMIN}}} privileges are just shortcuts that can be used to grant a user all the ''something'' privileges in one go. Having {{{TRAC_ADMIN}}}
-is like being {{{root}}} on a *NIX system, it will let you do anything you want.
+Otherwise, individual privileges can be assigned to users for the various different functional areas of Trac:
 
-=== Granting privileges ===
+=== Repository Browser ===
 
-Currently the only way to grant privileges to users is by using the
-{{{trac-admin}}} script. The current set of privileges can be listed
-with the following command:
+|| `BROWSER_VIEW` || View directory listings in the [wiki:TracBrowser repository browser] ||
+|| `LOG_VIEW` || View revision logs of files and directories in the [wiki:TracBrowser repository browser] ||
+|| `FILE_VIEW` || View files in the [wiki:TracBrowser repository browser] ||
+|| `CHANGESET_VIEW` || View [wiki:TracChangeset repository check-ins] ||
 
+=== Ticket System ===
+
+|| `TICKET_VIEW` || View existing [wiki:TracTickets tickets] and perform [wiki:TracQuery ticket queries] ||
+|| `TICKET_CREATE` || Create new [wiki:TracTickets tickets] ||
+|| `TICKET_APPEND` || Add comments or attachments to [wiki:TracTickets tickets] ||
+|| `TICKET_CHGPROP` || Modify [wiki:TracTickets ticket] properties ||
+|| `TICKET_MODIFY` || Includes both `TICKET_APPEND` and `TICKET_CHGPROP`, and in addition allows resolving [wiki:TracTickets tickets] ||
+|| `TICKET_ADMIN` || All `TICKET_*` permissions, plus the deletion of ticket attachments. ||
+
+=== Roadmap ===
+
+|| `MILESTONE_VIEW` || View a milestone ||
+|| `MILESTONE_CREATE` || Create a new milestone ||
+|| `MILESTONE_MODIFY` || Modify existing milestones ||
+|| `MILESTONE_DELETE` || Delete milestones ||
+|| `MILESTONE_ADMIN` || All `MILESTONE_*` permissions ||
+|| `ROADMAP_VIEW` || View the [wiki:TracRoadmap roadmap] page ||
+|| `ROADMAP_ADMIN` || Alias for `MILESTONE_ADMIN` (deprecated) ||
+
+=== Reports ===
+
+|| `REPORT_VIEW` || View [wiki:TracReports reports] ||
+|| `REPORT_SQL_VIEW` || View the underlying SQL query of a [wiki:TracReports report] ||
+|| `REPORT_CREATE` || Create new [wiki:TracReports reports] ||
+|| `REPORT_MODIFY` || Modify existing [wiki:TracReports reports] ||
+|| `REPORT_DELETE` || Delete [wiki:TracReports reports] ||
+|| `REPORT_ADMIN` || All `REPORT_*` permissions ||
+
+=== Wiki System ===
+
+|| `WIKI_VIEW` || View existing [wiki:TracWiki wiki] pages ||
+|| `WIKI_CREATE` || Create new [wiki:TracWiki wiki] pages ||
+|| `WIKI_MODIFY` || Change [wiki:TracWiki wiki] pages ||
+|| `WIKI_DELETE` || Delete [wiki:TracWiki wiki] pages and attachments ||
+|| `WIKI_ADMIN` || All `WIKI_*` permissions, plus the management of ''readonly'' pages. ||
+
+=== Others ===
+
+|| `TIMELINE_VIEW` || View the [wiki:TracTimeline timeline] page ||
+|| `SEARCH_VIEW` || View and execute [wiki:TracSearch search] queries ||
+|| `CONFIG_VIEW` || Enables additional pages on ''About Trac'' that show the current configuration or the list of installed plugins ||
+
+== Granting Privileges ==
+
+Currently the only way to grant privileges to users is by using the `trac-admin` script. The current set of privileges can be listed with the following command:
 {{{
   $ trac-admin /path/to/projenv permission list
 }}}
 
-This command will let the user ''bob'' delete reports:
-
+This command will allow the user ''bob'' to delete reports:
 {{{
   $ trac-admin /path/to/projenv permission add bob REPORT_DELETE
 }}}
 
-=== Permission groups ===
+== Permission Groups ==
 
-Permissions can be grouped together to form roles such as
-''developer'', ''admin'', etc.
-
+Permissions can be grouped together to form roles such as ''developer'', ''admin'', etc.
 {{{
   $ trac-admin /path/to/projenv permission add developer WIKI_ADMIN
   $ trac-admin /path/to/projenv permission add developer REPORT_ADMIN
@@ -60,10 +90,9 @@ Permissions can be grouped together to form roles such as
   $ trac-admin /path/to/projenv permission add john developer
 }}}
 
-=== Default permissions ===
+== Default Permissions ==
 
-Granting privileges to the special user ''anonymous'' can be used to control
-what an anonymous user can do before they have logged in.
+Granting privileges to the special user ''anonymous'' can be used to control what an anonymous user can do before they have logged in.
 
 In the same way, privileges granted to the special user ''authenticated'' will apply to any authenticated (logged in) user.
 

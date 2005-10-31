@@ -2,8 +2,6 @@
 
 Trac supports [http://www.modpython.org/ mod_python], which speeds up Trac's response times considerably and permits use of many Apache features not possible with [wiki:TracStandalone tracd]/mod_proxy.
 
-Be sure to grab mod_python 3.1.3 and later for ''SetHandler'' ''mod_python'' directive to work.  Also, older versions may generate an internal error (see [http://projects.edgewall.com/trac/ticket/1090 #1090])
-
 == Simple configuration ==
 
 If you just installed mod_python, you may have to add a line to load the module in the Apache configuration:
@@ -15,7 +13,7 @@ A simple setup of Trac on mod_python looks like this:
 {{{
 <Location /projects/myproject>
    SetHandler mod_python
-   PythonHandler trac.ModPythonHandler
+   PythonHandler trac.web.modpython_frontend 
    PythonOption TracEnv /var/trac/myproject
    PythonOption TracUriRoot /projects/myproject
 </Location>
@@ -42,13 +40,14 @@ If the Trac installation isn't installed in your Python path, you'll have to tel
 </Location>
 }}}
 
+
 == Setting up multiple projects ==
 
 The Trac mod_python handler handler supports a configuration option similar to Subversion's `SvnParentPath`, called `TracEnvParentDir`:
 {{{
 <Location /projects>
   SetHandler mod_python
-  PythonHandler trac.ModPythonHandler
+  PythonHandler trac.web.modpython_frontend 
   PythonOption TracEnvParentDir /var/trac
   PythonOption TracUriRoot /projects
 </Location>
@@ -73,6 +72,30 @@ You can also use the same authentication realm for all of the projects using a `
 </LocationMatch>
 }}}
 
+== Virtual Host Configuration ==
+
+Below is the sample configuration required to set up your trac as a virtual server (i.e. when you access it at the URLs like
+!http://trac.mycompany.com):
+
+{{{
+<VirtualHost * >
+    DocumentRoot /var/trac/myproject
+    ServerName trac.mycompany.com
+    <Directory />
+        SetHandler mod_python
+        PythonHandler trac.web.modpython_frontend
+        PythonOption TracEnv /var/trac/myproject
+        PythonOption TracUriRoot /
+    </Directory>
+    <Location /login>
+        AuthType Basic
+        AuthName "MyCompany Trac Server"
+        AuthUserFile /var/trac/myproject/.htusers
+        Require valid-user
+    </Location>
+</VirtualHost>
+}}}
+
 == Troubleshooting ==
 
 === Form submission problems ===
@@ -87,10 +110,16 @@ It may be possible to work around this with mod_rewrite, but I failed to get thi
 
 === Win32 Issues ===
 
-If you run trac with mod_python on Windows, attachments will not work.
+If you run trac with mod_python (3.1.3 or 3.1.4) on Windows, 
+uploading attachments will '''not''' work.
+This is a known problem which we can't solve cleanly at the Trac level.
 
-There is a (simple) workaround for this which is to apply the patch attached to 
-ticket [http://projects.edgewall.com/trac/ticket/554 #554].
+However, there is a workaround for this at the mod_python level, 
+which is to apply the following patch [http://projects.edgewall.com/trac/attachment/ticket/554/util_py.patch attachment:ticket:554:util_py.patch] 
+to the (Lib/site-packages)/modpython/util.py file.
+
+If you don't have the `patch` command, that file can be replaced with the [http://svn.apache.org/viewcvs.cgi/httpd/mod_python/trunk/lib/python/mod_python/util.py?rev=103562&view=markup  fixed util.py] (fix which, although done prior to the 3.1.4 release, is ''not'' 
+present in 3.1.4).
 
 === OS X issues ===
 

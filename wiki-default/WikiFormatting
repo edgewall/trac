@@ -10,7 +10,7 @@ especially [http://moinmoin.wikiwikiweb.de/ MoinMoin].
 This page demonstrates the formatting syntax available anywhere WikiFormatting is allowed.
 
 
-== Font styles ==
+== Font Styles ==
 
 The Trac wiki supports the following font styles:
 {{{
@@ -21,7 +21,7 @@ The Trac wiki supports the following font styles:
  * {{{monospace}}} or `monospace`
  * ~~strike-through~~
  * ^superscript^ 
- * ,,subscript,,.
+ * ,,subscript,,
 }}}
 
 Display:
@@ -32,15 +32,15 @@ Display:
  * {{{monospace}}} or `monospace`
  * ~~strike-through~~
  * ^superscript^ 
- * ,,subscript,,.
+ * ,,subscript,,
 
+Note that the `{{{...}}}` and {{{`...`}}} commands not only select a monospace font, but also treat their content as verbatim text, meaning that no further wiki processing is done on this text.
 
+== Headings ==
 
-== Heading ==
-
-You can create heading by starting a line with one up to five ''equal'' "=" characters
+You can create heading by starting a line with one up to five ''equal'' characters ("=")
 followed by a single space and the headline text. The line should end with a space 
-followed by the same number of ''equal'' characters. 
+followed by the same number of ''='' characters.
 
 Example:
 {{{
@@ -57,8 +57,7 @@ Display:
 
 == Paragraphs ==
 
-A new text paragraph is created whenever two blocks of text are separated
-by one or more empty lines.
+A new text paragraph is created whenever two blocks of text are separated by one or more empty lines.
 
 A forced line break can also be inserted, using:
 {{{
@@ -68,13 +67,10 @@ Display:
 
 Line 1[[BR]]Line 2
 
-  Text paragraphs can be indented by starting the lines with two or more spaces.
-
 
 == Lists ==
 
 The wiki supports both ordered/numbered and unordered lists.
-There must be a space preceding the star "*" or number "1.", or nothing will happen.
 
 Example:
 {{{
@@ -96,8 +92,10 @@ Display:
    1. Item 1.1
  1. Item 2
 
+Note that there must be one or more spaces preceding the list item markers, otherwise the list will be treated as a normal paragraph.
 
-== Definition lists ==
+
+== Definition Lists ==
 
 The wiki also supports definition lists.
 
@@ -120,24 +118,36 @@ Display:
 Note that you need a space in front of the defined term.
 
 
-== Preformatted text ==
+== Preformatted Text ==
 
-Block quotes, preformatted text, are suitable for source code snippets, notes and examples. Use three ''curly braces'' wrapped around the text to define a block quote.
+Block containing preformatted text are suitable for source code snippets, notes and examples. Use three ''curly braces'' wrapped around the text to define a block quote. The curly braces need to be on a separate line.
   
 Example:
 {{{
  {{{
-  def HelloWorld()
+  def HelloWorld():
       print "Hello World"
  }}}
 }}}
 
 Display:
 {{{
- def HelloWorld()
+ def HelloWorld():
      print "Hello World"
 }}}
 
+
+== Blockquotes ==
+
+In order to mark a paragraph as blockquote, indent that paragraph with two spaces.
+
+Example:
+{{{
+  This text is a quote from someone else.
+}}}
+
+Display:
+  This text is a quote from someone else.
 
 == Tables ==
 
@@ -154,11 +164,10 @@ Display:
 Note that more complex tables can be created using
 [wiki:WikiRestructuredText#BiggerReSTExample reStructuredText].
 
+
 == Links ==
 
-Hyperlinks are automatically created for WikiPageNames and urls. 
-!WikiPageLinks can be disabled by
-prepending an exclamation mark "!" character, such as {{{!WikiPageLink}}}.
+Hyperlinks are automatically created for WikiPageNames and URLs. !WikiPageLinks can be disabled by prepending an exclamation mark "!" character, such as {{{!WikiPageLink}}}.
 
 Example:
 {{{
@@ -168,13 +177,9 @@ Example:
 Display:
  TitleIndex, http://www.edgewall.com/, !NotAlink
 
-Links can be given a more descriptive title by writing the link followed by
-a space and a title and all this inside square brackets. 
-If the descriptive title is omitted, then the explicit prefix is disguarded,
-unless the link is an external link. This can be useful for wiki pages
-not adhering to the WikiPageNames convention.
+Links can be given a more descriptive title by writing the link followed by a space and a title and all this inside square brackets.  If the descriptive title is omitted, then the explicit prefix is disguarded, unless the link is an external link. This can be useful for wiki pages not adhering to the WikiPageNames convention.
 
-Like this:
+Example:
 {{{
  * [http://www.edgewall.com/ Edgewall Software]
  * [wiki:TitleIndex Title Index]
@@ -189,17 +194,16 @@ Display:
 
 === Trac Links ===
 
-Wiki pages can link directly to other parts of the Trac system.
-Pages can refer to tickets, reports, changesets, milestones, source files and
-other Wiki pages using the following notation:
+Wiki pages can link directly to other parts of the Trac system. Pages can refer to tickets, reports, changesets, milestones, source files and other Wiki pages using the following notations:
 {{{
  * Tickets: #1 or ticket:1
  * Reports: {1} or report:1
  * Changesets: r1, [1] or changeset:1
- * Revision Logs: r1:3, [1:3] or log:branches/0.9-stable#1:3
+ * Revision Logs: r1:3, [1:3] or log:branches/0.8-stable#1:3
  * Wiki pages: CamelCase or wiki:CamelCase
  * Milestones: milestone:1.0 or milestone:"End-of-days Release"
  * Files: source:trunk/COPYING
+ * Attachments: attachment:"file name.doc"
  * A specific file revision: source:/trunk/COPYING#200
  * A filename with embedded space: source:"/trunk/README FIRST"
 }}}
@@ -208,10 +212,11 @@ Display:
  * Tickets: #1 or ticket:1
  * Reports: {1} or report:1
  * Changesets: r1, [1] or changeset:1
- * Revision Logs: r1:3, [1:3] or log:branches/0.8-stable#1000:2000
+ * Revision Logs: r1:3, [1:3] or log:branches/0.8-stable#1:3
  * Wiki pages: CamelCase or wiki:CamelCase
  * Milestones: milestone:1.0 or milestone:"End-of-days Release"
  * Files: source:trunk/COPYING
+ * Attachments: attachment:"file name.doc"
  * A specific file revision: source:/trunk/COPYING#200
  * A filename with embedded space: source:"/trunk/README FIRST"
 
@@ -222,6 +227,7 @@ See TracLinks for more in-depth information.
 
 You may avoid making hyperlinks out of TracLinks by preceding an expression with a single "!" (exclamation mark).
 
+Example:
 {{{
  !NoHyperLink
  !#42 is not a link
@@ -245,11 +251,12 @@ Display:
 
 http://www.edgewall.com/gfx/trac_example_image.png
 
+However, this doesn't give much control over the display mode. This way of inserting images is deprecated in favor of the more powerful `Image` macro (see WikiMacros).
+
 
 == Macros ==
 
-Macros are ''custom functions'' to insert dynamic content in a page. 
-See WikiMacros for usage.
+Macros are ''custom functions'' to insert dynamic content in a page.
 
 Example:
 {{{
@@ -259,16 +266,15 @@ Example:
 Display:
  [[Timestamp]]
 
+See WikiMacros for more information, and a list of installed macros.
+
 
 == Processors ==
 
-Trac supports alternative markup formats using WikiProcessors. 
-For example, processors are used to write pages in 
+Trac supports alternative markup formats using WikiProcessors. For example, processors are used to write pages in 
 [wiki:WikiRestructuredText reStructuredText] or [wiki:WikiHtml HTML]. 
 
-See WikiProcessors for more information.
-
-'''Example 1:'''
+Example 1:
 {{{
 #!html
 <pre class="wiki">{{{
@@ -283,7 +289,7 @@ Display:
 <h1 style="text-align: right; color: blue">HTML Test</h1>
 }}}
 
-'''Example 2:'''
+Example:
 {{{
 #!html
 <pre class="wiki">{{{
@@ -305,6 +311,17 @@ class Test:
 if __name__ == '__main__':
    Test()
 }}}
+
+Perl:
+{{{
+#!perl
+my ($test) = 0;
+if ($test > 0) {
+echo "hello";
+}
+}}}
+
+See WikiProcessors for more information.
 
 
 == Miscellaneous ==
@@ -321,7 +338,4 @@ Display:
 
 
 ----
-
 See also: TracLinks, TracGuide, WikiHtml, WikiMacros, WikiProcessors, TracSyntaxColoring.
-
-----

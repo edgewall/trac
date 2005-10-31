@@ -30,7 +30,7 @@ Configure `ScriptAlias` or similar options as described in TracCgi, but calling 
 
 The FastCGI front-end was developed primarily for use with alternative webservers, such as [http://www.lighttpd.net/ lighttpd].
 
-lighttpd a secure, fast, compliant and very flexible web-server which has been optimized for high-performance
+lighttpd is a secure, fast, compliant and very flexible web-server that has been optimized for high-performance
 environments.  It has a very low memory footprint compared to other web servers and takes care of CPU load.
 
 For using `trac.fcgi` with lighttpd add the following to your lighttpd.conf:

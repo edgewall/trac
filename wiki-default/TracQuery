@@ -5,45 +5,81 @@ In addition to [wiki:TracReports reports], Trac provides support for ''custom ti
 
 To configure and execute a custom query, switch to the ''View Tickets'' module from the navigation bar, and select the ''Custom Query'' link.
 
-== New Interface For 0.9 ==
-
-The query interface has been totally revamped for Trac [milestone:0.9] to be simpler and easier to use.  Users of Trac 0.8 should skip down to the sections below covering the previous interface.
-
-=== Filters ===
+== Filters ==
 When you first go to the query page the default filters will display all open tickets, or if you're logged in it will display open tickets assigned to you.  Current filters can be removed by clicking the button to the right with the minus sign on the label.  New filters are added from the pulldown list in the bottom-right corner of the filters box.  Filters with either a text box or a pulldown menu of options can be added multiple times to perform an ''or'' of the criteria.
 
 You can use the fields just below the filters box to group the results based on a field, or display the full description for each ticket.
 
 Once you've edited your filters click the ''Update'' button to refresh your results.
 
-=== Navigating Tickets ===
+== Navigating Tickets ==
 Clicking on one of the query results will take you to that ticket.  You can navigate through the results by clicking the ''Next Ticket'' or ''Previous Ticket'' links just below the main menu bar, or click the ''Back to Query'' link to return to the query page.  
 
 You can safely edit any of the tickets and continue to navigate through the results using the ''Next/Previous/Back to Query'' links after saving your results.  When you return to the query any tickets you edited will be displayed with italicized text.  If one of the tickets was edited such that it no longer matches the query criteria the text will also be greyed.  The query results can be refreshed and cleared of these status indicators by clicking the ''Update'' button again.
 
-=== Saving Queries ===
-You may want to save some queries so that you can come back to them later.  You can do this by making a link to the query from any Wiki page.  First, select the criteria from the URL line in your web browser, starting at the "?" to the end of the line.  This can be pasted into a Wiki link in the following format:
+== Saving Queries ==
 
+While Trac does not yet allow saving a named query and somehow making it available in a navigable list, you can save references to queries in Wiki content, as described below.
+
+=== Using TracLinks ===
+
+You may want to save some queries so that you can come back to them later.  You can do this by making a link to the query from any Wiki page.
 {{{
-[query:?status=assigned&group=owner&order=priority Assigned Tickets by Owner]
+[query:status!=closed&version=0.8 Active tickets against 0.8]
 }}}
 
 Which is displayed as:
+  [query:status!=closed&version=0.8 Active tickets against 0.8]
 
-[query:?status=assigned&group=owner&order=priority Assigned Tickets by Owner]
+This uses a very simple query language to specify the criteria (see [wiki:TracQuery#QueryLanguage Query Language]).
 
+Alternatively, you can copy the query string of a query and paste that into the Wiki link, including the leading `?` character:
+{{{
+[query:?status=assigned&group=owner Assigned tickets by owner]
+}}}
 
-== Previous Interface for 0.8 ==
+Whis is displayed as:
+  [query:?status=assigned&group=owner Assigned tickets by owner]
 
-=== Query Form ===
+The advantage of this approach is that you can also specify the grouping and ordering, which is not possible using the first syntax.
 
-A form will be presented, letting you select or enter values for any of the ticket properties (both built-in and custom). Any value selected/entered in this form will be used to constrain the set of tickets displayed. Only tickets where properties match the criteria will be displayed.
+=== Using the `[[TicketQuery]]` Macro ===
 
-=== Results Display ===
+The `[[TicketQuery]]` macro lets you display lists of tickets matching certain criteria anywhere you can use WikiFormatting.
 
-After executing the search, a list of tickets meeting the selected criteria will show. By default, the list is sorted by priority. You can change the sorting to any other visible column by clicking on the corresponding column header. Clicking the same header again will reverse the sort order.
+Example:
+{{{
+[[TicketQuery(version=0.9b1|0.9b2&resolution=duplicate)]]
+}}}
 
-You can edit the query by clicking ''Refine Query''.
+This is displayed as:
+  [[TicketQuery(version=0.9b1|0.9b2&resolution=duplicate)]]
+
+Just like the [wiki:TracQuery#UsingTracLinks query: wiki links], the parameter of this macro expects a query string formatted according to the rules of the simple [wiki:TracQuery#QueryLanguage ticket query language].
+
+A more compact representation without the ticket summaries is also available:
+{{{
+[[TicketQuery(version=0.9b1|0.9b2&resolution=duplicate, compact)]]
+}}}
+
+This is displayed as:
+  [[TicketQuery(version=0.9b1|0.9b2&resolution=duplicate, compact)]]
+
+=== Query Language ===
+
+`query:` TracLinks and the `[[TicketQuery]]` macro both use a mini “query language” for specifying query filters. Basically, the filters are separate by ampersands (`&`). Each filter then consists of the ticket field name, an operator, and one or more values. More than one value are separated by a pipe (`|`), meaning that the filter matches any of the values.
+
+The available operators are:
+|| '''=''' || the field content exactly matches the one of the values ||
+|| '''~=''' || the field content contains one or more of the values ||
+|| '''!^=''' || the field content starts with one of the values ||
+|| '''$=''' || the field content ends with one of the values ||
+
+All of these operators can also be negated:
+|| '''!=''' || the field content matches none of the values ||
+|| '''!~=''' || the field content does not contain any of the values ||
+|| '''!!^=''' || the field content does not start with any of the values ||
+|| '''!$=''' || the field content does not end with any of the values ||
 
 ----
 See also: TracTickets, TracReports, TracGuide

@@ -40,7 +40,7 @@ the password `letmein`, use:
 postgres://johndoe:letmein@localhost/trac
 }}}
 
-If PostgreSQL is running on a non-standard port (for example 9431), use:
+If PostgreSQL is running on a non-standard port (for example 9342), use:
 {{{
 postgres://johndoe:letmein@localhost:9342/trac
 }}}

@@ -29,7 +29,12 @@ Unless noted otherwise, upgrading between major versions (such as 0.8 and 0.9) i
 trac-admin /path/to/projenv upgrade
 }}}
 
-This command will do nothing if the environment is already up-to-date. [[BR]]
+This command will do nothing if the environment is already up-to-date.
+
+Note that if you are using a PostgreSQL database, this command will fail with the message that the environment can only be backed up when you use an SQLite database. This means that you will have to backup the repository and the database manually. Then, to perform the actual upgrade, run:
+{{{
+trac-admin /path/to/projenv upgrade --no-backup
+}}}
 
 === Update the Trac Documentation ===
 
@@ -42,17 +47,26 @@ Note that this procedure will of course leave your `WikiStart` page intact.
 
 === Restart the Web Server ===
 
-In order to reload the new Trac code you will need to restart your web server (note this is not necessary for plain old CGI, although CGI is discouraged for performance reasons).
+In order to reload the new Trac code you will need to restart your web server (note this is not necessary for [wiki:TracCgi CGI]).
 
 == Specific Versions ==
 
 The following sections discuss any extra actions that may need to be taken to upgrade to specific versions of Trac.
 
+== From 0.9-beta to 0.9 ==
+
+If inclusion of the static resources (style sheets, javascript, images) is not working, check the value of the `htdocs_location` in trac.ini. For [wiki:TracModPython mod_python], [wiki:TracStandalone Tracd] and [wiki:TracFastCgi FastCGI], you can simply remove the option altogether. For [wiki:TracCgi CGI], you should fix it to point to the URL you mapped the Trac `htdocs` directory to (although you can also remove it and then [wiki:TracCgi#MappingStaticResources map the static resources]). If you're still having problems after removing the option, check the paths in the `trac/siteconfig.py` file and fix them if they're incorrect.
+
+If you've been using plugins with a beta release of Trac 0.9, or have disabled some of the built-in components, you might have to update the rules for disabling/enabling components in [wiki:TracIni trac.ini]. In particular, globally installed plugins now need to be enabled explicitly. See TracPlugins and TracIni for more information.
+
+If you want to enable the display of all ticket changes in the timeline (the “Ticket Details” option), you now have to explicitly enable that in [wiki:TracIni trac.ini], too:
+
+{{{
+[timeline]
+ticket_show_details = true
+}}}
+
 == From 0.8.x to 0.9 ==
-
-If you're using [wiki:TracCgi CGI] you will want to update your `Alias` to the Trac htdocs static resources.  See the documentation on [wiki:TracCgi#MappingStaticResources mapping static resources] for an example on how to configure this.
-
-[wiki:TracFastCgi FastCGI] and [wiki:TracModPython mod_python] users can safely remove any `Alias`es to the Trac htdocs folder since this is no longer used by default.
 
 [wiki:TracModPython mod_python] users will also need to change the name of the mod_python handler in the Apache HTTPD configuration:
 {{{

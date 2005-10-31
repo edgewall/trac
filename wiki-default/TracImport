@@ -27,6 +27,7 @@ Currently, the following data is imported from Bugzilla:
   * bugs
   * bug activity (field changes)
   * bug attachments
+  * user names and passwords (put into a htpasswd file)
 
 The script provides a number of features to ease the conversion, such as:
 
@@ -57,7 +58,7 @@ mantis2trac.py has the same parameters as the bugzilla2trac.py script:
 {{{
 mantis2trac - Imports a bug database from Mantis into Trac.
 
-Usage: mantis2trac.py [options]
+Usage: mantis2trac.py [options] 
 
 Available Options:
   --db <MySQL dbname>              - Mantis database
@@ -70,7 +71,6 @@ Available Options:
 
 Additional configuration options can be defined directly in the script.
 }}} 
-
 
 == Other ==
 

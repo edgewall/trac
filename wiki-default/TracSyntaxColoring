@@ -1,5 +1,5 @@
 = Syntax Coloring of Source Code =
-Trac supports language-specific colorization (syntax highlighting) of source code in [wiki:WikiFormatting WikiFormatted] text and the [wiki:TracBrowser Source Browser].
+Trac supports language-specific syntax highlighting of source code in [wiki:WikiFormatting wiki formatted] text and the [wiki:TracBrowser repository browser].
 
 To do this, Trac uses external libraries with support for a great number of programming languages.
 
@@ -8,7 +8,7 @@ Currently Trac supports syntax coloring using one or more of the following packa
  * [http://people.ssh.fi/mtr/genscript/ GNU Enscript]
  * [http://silvercity.sourceforge.net/ SilverCity]
 
-To activate syntax coloring, simply install either one (or more) of these packages. No additional configuration is required, however to modify the colors, have a look at trac/htdocs/css/code.css.
+To activate syntax coloring, simply install either one (or more) of these packages. No additional configuration is required, however to modify the colors, have a look at `trac/htdocs/css/code.css`.
 
 When in use, Trac will automatically prioritize !SilverCity highlighting over Enscript if possible, (see note below). 
 

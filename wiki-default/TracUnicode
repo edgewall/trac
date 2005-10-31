@@ -24,7 +24,6 @@ Yes indeed, Trac supports English. Fully.
 
 === Français ===
 ''Il est possible d'écrire en Français : à, ç, û, ...''
-Voir aussi TracTermsFr
 
 === German ===
 Trac-Wiki muß auch deutsche Umlaute richtig anzeigen: ö, ä, ü, ...
@@ -42,7 +41,7 @@ Trac-Wiki muß auch deutsche Umlaute richtig anzeigen: ö, ä, ü, ...
 ''漢字 ひらがな カタカナ ﾊﾝｶｸｶﾅ''
 
 === Korean ===
-''이번에는 한글로 써보겠습니다. 잘 보이나요?'' [wiki:한글링크 한글링크]
+''이번에는 한글로 써보겠습니다. 잘 보이나요?''
 
 === Persian (Farsi) ===
 این یک متن فارسی است ولی از چپ به راست
@@ -55,7 +54,6 @@ Pchnąć w tę łódź jeża lub ośm skrzyń fig
 
 === Russian ===
 Проверка русского языка: кажется работает...
-See also TracTermsRu
 
 === Serbian ===
 Podržan, uprkos činjenici da se za njegovo pisanje koriste чак два алфабета.

@@ -1,16 +1,13 @@
 = The Trac Wiki Engine =
 [[TracGuideToc]]
 
-Trac has a built-in wiki engine, used for text and documentation throughout the system. WikiFormatting is used for [wiki:TitleIndex wiki pages], '''tickets''' and '''commit log messages'''. 
+Trac has a built-in wiki engine, used for text and documentation throughout the system. WikiFormatting is used in [wiki:TitleIndex wiki pages], [wiki:TracTickets tickets] and [wiki:TracChangeset check-in log messages].  This allows for formatted text and hyperlinks in and between all Trac modules.
 
-This allows for formatted text and hyperlinks in and between all Trac modules.
+Editing wiki text is easy, using any web browser and a simple formatting system (see WikiFormatting), rather than more complex markup languages like HTML.  The reasoning behind its design is that HTML, with its large collection of nestable tags, is too complicated to allow fast-paced editing, and distracts from the actual content of the pages. Note though that Trac also supports [wiki:WikiHtml HTML] and [wiki:WikiRestructuredText reStructuredText] as alternative markup formats.
 
-Editing wiki text is easy, using any web browser and a simple formatting system (see WikiFormatting), rather than more complex markups like HTML. 
-The reasoning behind its design is that HTML, with its large library of nested tags, is too complicated to allow fast-paced editing, and distracts from the actual content of the pages. Note though, Trac also supports [wiki:WikiHtml HTML] and [wiki:WikiRestructuredText reStructuredText] as alternative markup formats.
+The main goal of the wiki is making editing text easier and ''encourage'' people to contribute and annotate text content for a project. 
 
-The main goal of the wiki  is making editing text easier and '''encourage''' people to contribute and annotate text content for a project. 
-
-Wiki itself does not enforce any structure, but rather resembles a stack of empty paper sheets, where you can organize information and documentation as you see fit, and later reorganize if necessary. 
+The wiki itself does not enforce any structure, but rather resembles a stack of empty paper sheets, where you can organize information and documentation as you see fit, and later reorganize if necessary. 
 
 For more help on editing wiki text, see:
  * WikiFormatting

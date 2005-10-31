@@ -1,4 +1,4 @@
-= Welcome to Trac 0.9b2 =
+= Welcome to Trac 0.9 =
 
 Trac is a '''minimalistic''' approach to '''web-based''' management of
 '''software projects'''. Its goal is to simplify effective tracking and handling of software issues, enhancements and overall progress.
@@ -41,4 +41,3 @@ For a complete list of local wiki pages, see TitleIndex.
 Trac is brought to you by [http://www.edgewall.com/ Edgewall Software],
 providing professional Linux and software development services to clients
 worldwide. Visit http://www.edgewall.com/ for more information.
-
