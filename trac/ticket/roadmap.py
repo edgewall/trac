@@ -94,7 +94,7 @@ def milestone_to_hdf(env, db, req, milestone):
     if milestone.due:
         hdf['due'] = milestone.due
         hdf['due_date'] = format_date(milestone.due)
-        hdf['due_delta'] = pretty_timedelta(milestone.due)
+        hdf['due_delta'] = pretty_timedelta(milestone.due + 86400)
         hdf['late'] = milestone.is_late
     if milestone.completed:
         hdf['completed'] = milestone.completed

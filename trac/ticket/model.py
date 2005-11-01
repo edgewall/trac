@@ -525,7 +525,8 @@ class Milestone(object):
 
     exists = property(fget=lambda self: self._old_name is not None)
     is_completed = property(fget=lambda self: self.completed != 0)
-    is_late = property(fget=lambda self: self.due and self.due < time.time())
+    is_late = property(fget=lambda self: self.due and \
+                                         self.due < time.time() - 86400)
 
     def delete(self, retarget_to=None, author=None, db=None):
         if not db:
