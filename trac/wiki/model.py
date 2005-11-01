@@ -131,8 +131,8 @@ class WikiPage(object):
             if self.version == 1:
                 listener.wiki_page_added(self)
             else:
-                listener.wiki_page_changed(self, self.version, t, author,
-                                           comment, remote_addr)
+                listener.wiki_page_changed(self, self.version, t, comment,
+                                           author, remote_addr)
 
         self.old_readonly = self.readonly
         self.old_text = self.text
