@@ -85,7 +85,7 @@ class WikiPageTestCase(unittest.TestCase):
                           'Changing', 0), cursor.fetchone())
 
         listener = TestWikiChangeListener(self.env)
-        self.assertEqual((page, 2, 43, 'kate', 'Changing', '192.168.0.101'),
+        self.assertEqual((page, 2, 43, 'Changing', 'kate', '192.168.0.101'),
                          listener.changed[0])
 
         page = WikiPage(self.env, 'TestPage')
