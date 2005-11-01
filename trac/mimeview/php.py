@@ -16,8 +16,6 @@
 # Author: Christian Boos <cboos@bct-technology.com>
 #         Christopher Lenz <cmlenz@gmx.de>
 
-from __future__ import generators
-
 from trac.core import *
 from trac.mimeview.api import IHTMLPreviewRenderer
 from trac.util import Deuglifier, NaivePopen

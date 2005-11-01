@@ -14,8 +14,6 @@
 #
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
-from __future__ import generators
-
 from trac.util import TracError
 from trac.versioncontrol import Changeset, Node, Repository, Authorizer
 

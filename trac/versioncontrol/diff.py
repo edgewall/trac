@@ -14,9 +14,7 @@
 #
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
-from __future__ import generators
-
-from trac.util import enum, escape
+from trac.util import escape
 
 from difflib import SequenceMatcher
 import re
@@ -113,7 +111,7 @@ def _group_opcodes(opcodes, n=3):
     # every change
     nn = n + n
     group = []
-    for idx, (tag, i1, i2, j1, j2) in enum(opcodes):
+    for idx, (tag, i1, i2, j1, j2) in enumerate(opcodes):
         if idx == 0 and tag == 'equal': # Fixup leading unchanged block
             i1, j1 = max(i1, i2 - n), max(j1, j2 - n)
         elif tag == 'equal' and i2 - i1 > nn:

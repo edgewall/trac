@@ -14,7 +14,6 @@
 #
 # Author: Jonas Borgström <jonas@edgewall.com>
 
-from __future__ import generators
 import re
 import time
 

@@ -21,7 +21,7 @@ import os
 from trac.core import *
 from trac.env import open_environment
 from trac.perm import PermissionCache, PermissionError
-from trac.util import escape, enum, format_datetime, http_date, to_utf8
+from trac.util import escape, format_datetime, http_date, to_utf8
 from trac.web.api import absolute_url, Request, RequestDone, IAuthenticator, \
                          IRequestHandler
 from trac.web.chrome import Chrome

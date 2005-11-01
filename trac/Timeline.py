@@ -16,13 +16,12 @@
 # Author: Jonas Borgström <jonas@edgewall.com>
 #         Christopher Lenz <cmlenz@gmx.de>
 
-from __future__ import generators
 import re
 import time
 
 from trac.core import *
 from trac.perm import IPermissionRequestor
-from trac.util import enum, escape, format_date, format_time, http_date
+from trac.util import escape, format_date, format_time, http_date
 from trac.web import IRequestHandler
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
 
@@ -180,7 +179,7 @@ class TimelineModule(Component):
                                           daysback=90, max=50, format='rss')
         add_link(req, 'alternate', rss_href, 'RSS Feed', 'application/rss+xml',
                  'rss')
-        for idx,fltr in enum(available_filters):
+        for idx,fltr in enumerate(available_filters):
             req.hdf['timeline.filters.%d' % idx] = {'name': fltr[0],
                 'label': fltr[1], 'enabled': int(fltr[0] in filters)}
 

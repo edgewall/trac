@@ -1,5 +1,3 @@
-from __future__ import generators
-
 from trac.config import Configuration
 from trac.core import Component, ComponentManager, implements
 from trac.perm import PermissionCache

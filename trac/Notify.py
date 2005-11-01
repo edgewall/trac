@@ -16,7 +16,7 @@
 
 from trac.__init__ import __version__
 from trac.core import TracError
-from trac.util import CRLF, TRUE, FALSE, enum, wrap
+from trac.util import CRLF, TRUE, FALSE, wrap
 from trac.web.clearsilver import HDFWrapper
 from trac.web.main import populate_hdf
 

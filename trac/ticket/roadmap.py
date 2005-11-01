@@ -14,15 +14,14 @@
 #
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
-from __future__ import generators
 import re
 from time import localtime, strftime, time
 
 from trac import __version__
 from trac.core import *
 from trac.perm import IPermissionRequestor
-from trac.util import enum, escape, format_date, format_datetime, \
-                      parse_date, pretty_timedelta, shorten_line, CRLF
+from trac.util import escape, format_date, format_datetime, parse_date, \
+                      pretty_timedelta, shorten_line, CRLF
 from trac.ticket import Milestone, Ticket, TicketSystem
 from trac.Timeline import ITimelineEventProvider
 from trac.web import IRequestHandler
@@ -150,12 +149,12 @@ class RoadmapModule(Component):
 
         db = self.env.get_db_cnx()
         milestones = []
-        for idx, milestone in enum(Milestone.select(self.env, showall)):
+        for idx, milestone in enumerate(Milestone.select(self.env, showall)):
             hdf = milestone_to_hdf(self.env, db, req, milestone)
             milestones.append(hdf)
         req.hdf['roadmap.milestones'] = milestones
 
-        for idx,milestone in enum(milestones):
+        for idx,milestone in enumerate(milestones):
             prefix = 'roadmap.milestones.%d.' % idx
             tickets = get_tickets_for_milestone(self.env, db, milestone['name'],
                                                 'owner')
@@ -421,7 +420,7 @@ class MilestoneModule(Component):
         req.hdf['milestone'] = milestone_to_hdf(self.env, db, req, milestone)
         req.hdf['milestone.mode'] = 'delete'
 
-        for idx,other in enum(Milestone.select(self.env, False, db)):
+        for idx,other in enumerate(Milestone.select(self.env, False, db)):
             if other.name == milestone.name:
                 continue
             req.hdf['milestones.%d' % idx] = other.name

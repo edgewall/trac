@@ -14,8 +14,6 @@
 #
 # Author: Jonas Borgström <jonas@edgewall.com>
 
-from __future__ import generators
-
 from trac import util
 from trac.core import *
 from trac.perm import IPermissionRequestor

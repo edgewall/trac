@@ -14,8 +14,8 @@
 #
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
-from __future__ import generators
 from trac.perm import PermissionError
+
 
 class Repository(object):
     """

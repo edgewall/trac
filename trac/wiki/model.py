@@ -16,7 +16,6 @@
 # Author: Jonas Borgström <jonas@edgewall.com>
 #         Christopher Lenz <cmlenz@gmx.de>
 
-from __future__ import generators
 import time
 
 from trac.core import *

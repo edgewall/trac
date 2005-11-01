@@ -14,8 +14,7 @@
 #
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
-from __future__ import generators
-import os.path
+import os
 import re
 
 from trac import mimeview, util

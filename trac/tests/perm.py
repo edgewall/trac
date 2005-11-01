@@ -2,7 +2,6 @@ from trac import perm
 from trac.config import Configuration
 from trac.core import *
 from trac.test import EnvironmentStub
-from trac.util import enum
 
 import unittest
 

@@ -14,8 +14,6 @@
 #
 # Author: Jonas Borgström <jonas@edgewall.com>
 
-from __future__ import generators
-
 import os
 
 from trac import db, db_default, util

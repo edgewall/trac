@@ -14,7 +14,6 @@
 
 __copyright__ = 'Copyright (c) 2003-2005 Edgewall Software'
 
-from __future__ import generators
 import cmd
 import getpass
 import os
@@ -34,16 +33,6 @@ from trac.config import Configuration
 from trac.perm import PermissionSystem
 from trac.ticket.model import *
 from trac.wiki import WikiPage
-
-try:
-    sum
-except NameError:
-    def sum(list):
-        """Python2.2 doesn't have sum()"""
-        tot = 0
-        for item in list:
-            tot += item
-        return tot
 
 def copytree(src, dst, symlinks=False, skip=[]):
     """Recursively copy a directory tree using copy2() (from shutil.copytree.)
@@ -179,20 +168,8 @@ class TracAdmin(cmd.Cmd):
     ##
 
     def arg_tokenize (self, argstr):
-        if hasattr(sys.stdin, 'encoding'): # Since version 2.3
-            argstr = util.to_utf8(argstr, sys.stdin.encoding)
-        if hasattr(shlex, 'split'):
-            toks = shlex.split(argstr)
-        else:
-            lexer = shlex.shlex(StringIO.StringIO(argstr))
-            lexer.wordchars = lexer.wordchars + ".,_/"
-            toks = []
-            while True:
-                token = lexer.get_token().strip('"\'')
-                if not token:
-                    break
-                toks.append(token)
-        return toks or ['']
+        argstr = util.to_utf8(argstr, sys.stdin.encoding)
+        return shlex.split(argstr) or ['']
 
     def word_complete (self, text, words):
         return [a for a in words if a.startswith (text)]

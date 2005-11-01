@@ -14,7 +14,6 @@
 #
 # Author: Jonas Borgström <jonas@edgewall.com>
 
-from __future__ import generators
 import os
 import re
 import time
@@ -418,7 +417,7 @@ class TicketModule(Component):
         req.hdf['ticket.changes'] = changes
 
         # List attached files
-        for idx, attachment in util.enum(Attachment.select(self.env, 'ticket',
+        for idx, attachment in enumerate(Attachment.select(self.env, 'ticket',
                                                            ticket.id)):
             hdf = attachment_to_hdf(self.env, db, req, attachment)
             req.hdf['ticket.attachments.%s' % idx] = hdf

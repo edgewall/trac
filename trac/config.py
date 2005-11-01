@@ -14,8 +14,6 @@
 #
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
-from __future__ import generators
-
 from ConfigParser import ConfigParser
 import os
 import sys

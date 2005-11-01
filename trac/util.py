@@ -14,8 +14,6 @@
 #
 # Author: Jonas Borgström <jonas@edgewall.com>
 
-from __future__ import generators
-
 import os
 import sys
 import time
@@ -27,16 +25,6 @@ TRUE =  ['yes', '1', 1, 'true',  'on',  'aye']
 FALSE = ['no',  '0', 0, 'false', 'off', 'nay']
 
 CRLF = '\r\n'
-
-def enum(iterable):
-    """
-    Python 2.2 doesn't have the enumerate() function, so we provide a simple
-    implementation here.
-    """
-    idx = 0
-    for item in iter(iterable):
-        yield idx, item
-        idx += 1
 
 def escape(text, quotes=True):
     """

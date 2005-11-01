@@ -14,9 +14,7 @@
 #
 # Author: Jonas Borgström <jonas@edgewall.com>
 
-from __future__ import generators
 import re
-import types
 import urllib
 
 from trac import util
@@ -339,7 +337,7 @@ class ReportModule(Component):
                     value['hidehtml'] = 1
                     column = column[1:]
                 if column in ['id', 'ticket', '#', 'summary']:
-                    id_cols = [idx for idx, col in util.enum(cols)
+                    id_cols = [idx for idx, col in enumerate(cols)
                                if col[0] in ('ticket', 'id')]
                     if id_cols:
                         id_val = row[id_cols[0]]
