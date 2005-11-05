@@ -34,7 +34,7 @@ def _handler(_req):
 
     if not env:
         send_project_index(req, os.environ)
-        return _fcgi.CGI_REQUEST_COMPLETE, 0
+        return _fcgi.FCGI_REQUEST_COMPLETE, 0
 
     try:  
         dispatch_request(req.path_info, req, env)
