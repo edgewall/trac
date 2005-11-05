@@ -262,7 +262,7 @@ class ImageMacro(Component):
         size_re = re.compile('^[0-9]+%?$')
         align_re = re.compile('^(?:left|right|top|bottom)$')
         keyval_re = re.compile('^([-a-z0-9]+)([=:])(.*)')
-        quoted_re = re.compile("^(?:&#34;|')(.*)(?:&#34;|')$")
+        quoted_re = re.compile("^(?:\";|')(.*)(?:\";|')$")
         attr = {}
         style = {}
         nolink = False
@@ -284,7 +284,7 @@ class ImageMacro(Component):
                 key = match.group(1)
                 sep = match.group(2)
                 val = match.group(3)
-                m = quoted_re.search(val) # unquote &#34; character "
+                m = quoted_re.search(val) # unquote "..." and '...'
                 if m:
                     val = m.group(1)
                 if sep == '=':
