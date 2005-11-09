@@ -26,6 +26,12 @@ TRAC_META = 'trac_plugin.txt'
 
 __all__ = ['load_components']
 
+def normalize_path(s):
+  return os.path.normcase(os.path.abspath(s))
+
+def paths_equal(path1, path2):
+  return normalize_path(path1) == normalize_path(path2)
+
 def load_components(env):
 
     loaded_components = []
@@ -45,7 +51,7 @@ def load_components(env):
     def enable_modules(egg_path, modules):
         """Automatically enable any components provided by plugins loaded from
         the environment plugins directory."""
-        if os.path.dirname(egg_path) == os.path.realpath(plugins_dir):
+        if paths_equal(os.path.dirname(egg_path), os.path.realpath(plugins_dir)):
             for module in modules:
                 env.config.setdefault('components', module + '.*', 'enabled')
 
