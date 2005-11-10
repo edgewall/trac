@@ -629,7 +629,8 @@ Congratulations!
         cursor.execute("DELETE FROM revision")
         cursor.execute("DELETE FROM node_change")
         repos = self.__env.get_repository()
-        cursor.execute("INSERT OR REPLACE INTO system (name,value) "
+        cursor.execute("DELETE FROM system WHERE name='repository_dir'")
+        cursor.execute("INSERT INTO system (name,value) "
                        "VALUES ('repository_dir',%s)", (repos.name,))
         repos.sync()
         print 'Done.'
