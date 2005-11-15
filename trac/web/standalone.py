@@ -289,7 +289,8 @@ class TracHTTPRequestHandler(BaseHTTPRequestHandler):
 
         req.remote_user = None
         if path_info == '/login':
-            auth = self.server.auths.get(project_name)
+            auth = self.server.auths.get(project_name) or \
+                   self.server.auths.get('*')
             if not auth:
                 raise util.TracError('Authentication not enabled. '
                                      'Please use the tracd --auth option.\n')
