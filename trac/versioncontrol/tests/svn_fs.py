@@ -92,10 +92,10 @@ class SubversionRepositoryTestCase(unittest.TestCase):
         self.assertEqual('trunk', self.repos.normalize_path('/trunk/'))
 
     def test_repos_normalize_rev(self):
-        self.assertEqual(12, self.repos.normalize_rev('latest'))
-        self.assertEqual(12, self.repos.normalize_rev('head'))
-        self.assertEqual(12, self.repos.normalize_rev(''))
-        self.assertEqual(12, self.repos.normalize_rev(None))
+        self.assertEqual(13, self.repos.normalize_rev('latest'))
+        self.assertEqual(13, self.repos.normalize_rev('head'))
+        self.assertEqual(13, self.repos.normalize_rev(''))
+        self.assertEqual(13, self.repos.normalize_rev(None))
         self.assertEqual(11, self.repos.normalize_rev('11'))
         self.assertEqual(11, self.repos.normalize_rev(11))
 
@@ -103,11 +103,11 @@ class SubversionRepositoryTestCase(unittest.TestCase):
         self.assertEqual(0, self.repos.oldest_rev)
         self.assertEqual(None, self.repos.previous_rev(0))
         self.assertEqual(0, self.repos.previous_rev(1))
-        self.assertEqual(12, self.repos.youngest_rev)
+        self.assertEqual(13, self.repos.youngest_rev)
         self.assertEqual(6, self.repos.next_rev(5))
         self.assertEqual(7, self.repos.next_rev(6))
         # ...
-        self.assertEqual(None, self.repos.next_rev(12))
+        self.assertEqual(None, self.repos.next_rev(13))
 
     def test_has_node(self):
         self.assertEqual(False, self.repos.has_node('/trunk/dir1', 3))
@@ -118,8 +118,8 @@ class SubversionRepositoryTestCase(unittest.TestCase):
         self.assertEqual('trunk', node.name)
         self.assertEqual('/trunk', node.path)
         self.assertEqual(Node.DIRECTORY, node.kind)
-        self.assertEqual(6, node.rev)
-        self.assertEqual(1112381806, node.last_modified)
+        self.assertEqual(13, node.rev)
+        self.assertEqual(1132240396L, node.last_modified)
         node = self.repos.get_node('/trunk/README.txt')
         self.assertEqual('README.txt', node.name)
         self.assertEqual('/trunk/README.txt', node.path)
@@ -169,7 +169,7 @@ class SubversionRepositoryTestCase(unittest.TestCase):
     def test_get_dir_properties(self):
         f = self.repos.get_node('/trunk')
         props = f.get_properties()
-        self.assertEqual(0, len(props))
+        self.assertEqual(1, len(props))
 
     def test_get_file_properties(self):
         f = self.repos.get_node('/trunk/README.txt')
@@ -301,10 +301,10 @@ class ScopedSubversionRepositoryTestCase(unittest.TestCase):
         self.assertEqual('dir1', self.repos.normalize_path('/dir1/'))
 
     def test_repos_normalize_rev(self):
-        self.assertEqual(6, self.repos.normalize_rev('latest'))
-        self.assertEqual(6, self.repos.normalize_rev('head'))
-        self.assertEqual(6, self.repos.normalize_rev(''))
-        self.assertEqual(6, self.repos.normalize_rev(None))
+        self.assertEqual(13, self.repos.normalize_rev('latest'))
+        self.assertEqual(13, self.repos.normalize_rev('head'))
+        self.assertEqual(13, self.repos.normalize_rev(''))
+        self.assertEqual(13, self.repos.normalize_rev(None))
         self.assertEqual(5, self.repos.normalize_rev('5'))
         self.assertEqual(5, self.repos.normalize_rev(5))
 
@@ -312,11 +312,11 @@ class ScopedSubversionRepositoryTestCase(unittest.TestCase):
         self.assertEqual(1, self.repos.oldest_rev)
         self.assertEqual(None, self.repos.previous_rev(0))
         self.assertEqual(1, self.repos.previous_rev(2))
-        self.assertEqual(6, self.repos.youngest_rev)
+        self.assertEqual(13, self.repos.youngest_rev)
         self.assertEqual(2, self.repos.next_rev(1))
         self.assertEqual(3, self.repos.next_rev(2))
         # ...
-        self.assertEqual(None, self.repos.next_rev(6))
+        self.assertEqual(None, self.repos.next_rev(13))
 
     def test_has_node(self):
         self.assertEqual(False, self.repos.has_node('/dir1', 3))
