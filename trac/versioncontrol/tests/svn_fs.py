@@ -281,6 +281,18 @@ class SubversionRepositoryTestCase(unittest.TestCase):
                           'trunk/README.txt', 3), changes.next())
         self.assertRaises(StopIteration, changes.next)
 
+    def test_changeset_root_propset(self):
+        chgset = self.repos.get_changeset(13)
+        self.assertEqual(13, chgset.rev)
+        self.assertEqual('Setting property on the repository_dir root',
+                         chgset.message)
+        changes = chgset.get_changes()
+        self.assertEqual(('', Node.DIRECTORY, Changeset.EDIT, None, 12),
+                         changes.next())
+        self.assertEqual(('trunk', Node.DIRECTORY, Changeset.EDIT, 'trunk', 12),
+                         changes.next())
+        self.assertRaises(StopIteration, changes.next)
+        
 
 class ScopedSubversionRepositoryTestCase(unittest.TestCase):
 
@@ -485,6 +497,15 @@ class ScopedSubversionRepositoryTestCase(unittest.TestCase):
                           'README.txt', 3), changes.next())
         self.assertRaises(StopIteration, changes.next)
 
+    def test_changeset_root_propset(self):
+        chgset = self.repos.get_changeset(13)
+        self.assertEqual(13, chgset.rev)
+        self.assertEqual('Setting property on the repository_dir root',
+                         chgset.message)
+        changes = chgset.get_changes()
+        self.assertEqual(('', Node.DIRECTORY, Changeset.EDIT, '/', 12),
+                         changes.next())
+        self.assertRaises(StopIteration, changes.next)
 
 def suite():
     suite = unittest.TestSuite()
