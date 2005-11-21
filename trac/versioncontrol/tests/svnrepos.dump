@@ -386,3 +386,49 @@ Node-copyfrom-rev: 11
 Node-copyfrom-path: tags/v1.1
 
 
+Revision-number: 13
+Prop-content-length: 143
+Content-length: 143
+
+K 7
+svn:log
+V 43
+Setting property on the repository_dir root
+K 10
+svn:author
+V 5
+cboos
+K 8
+svn:date
+V 27
+2005-11-17T15:13:16.197772Z
+PROPS-END
+
+Node-path: 
+Node-kind: dir
+Node-action: change
+Prop-content-length: 37
+Content-length: 37
+
+K 10
+svn:ignore
+V 6
+*.pyc
+
+PROPS-END
+
+
+Node-path: trunk
+Node-kind: dir
+Node-action: change
+Prop-content-length: 37
+Content-length: 37
+
+K 10
+svn:ignore
+V 6
+*.pyc
+
+PROPS-END
+
+

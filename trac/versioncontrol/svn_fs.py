@@ -14,8 +14,6 @@
 #
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
-from __future__ import generators
-
 from trac.util import TracError
 from trac.versioncontrol import Changeset, Node, Repository
 
@@ -470,11 +468,11 @@ class SubversionChangeset(Changeset):
             if not self.authz.has_permission(path):
                 # FIXME: what about base_path?
                 continue
-            if not path.startswith(self.scope[1:]):
+            if not (path+'/').startswith(self.scope[1:]):
                 continue
             base_path = _scoped_path(self.scope, change.base_path)
             action = ''
-            if not change.path:
+            if not change.path and base_path:
                 action = Changeset.DELETE
                 deletions[change.base_path] = idx
             elif change.added:
