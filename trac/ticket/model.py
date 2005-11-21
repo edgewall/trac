@@ -101,7 +101,7 @@ class Ticket(object):
             self._old[name] = self.values.get(name)
         elif self._old[name] == value: # Change of field reverted
             del self._old[name]
-        self.values[name] = value.strip()
+        self.values[name] = value and value.strip()
 
     def populate(self, values):
         """Populate the ticket with 'suitable' values from a dictionary"""
@@ -191,9 +191,10 @@ class Ticket(object):
                     and not self._old.has_key('owner'):
                 try:
                     old_comp = Component(self.env, self._old['component'], db)
-                    if old_comp.owner == self.values.get('owner'):
-                        new_comp = Component(self.env, self['component'],
-                                             db)
+                    old_owner = old_comp.owner or ''
+                    current_owner = self.values.get('owner') or ''
+                    if old_owner == current_owner:
+                        new_comp = Component(self.env, self['component'], db)
                         self['owner'] = new_comp.owner
                 except TracError, e:
                     # If the old component has been removed from the database we
