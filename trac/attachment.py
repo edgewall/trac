@@ -448,12 +448,10 @@ class AttachmentModule(Component):
                     parent_type = path_info[1]
                 if len(path_info) > 2:
                     parent_id = path_info[2]
-            idx = link.find('?')
-            if idx < 0:
-                filename = link
-            else:
-                filename = link[:idx]
-                params = link[idx:]
+            filename = link
+        idx = filename.find('?')
+        if idx >= 0:
+            filename, params = filename[:idx], filename[idx:]
         try:
             attachment = Attachment(self.env, parent_type, parent_id, filename)
             return '<a class="attachment" title="Attachment %s" href="%s">%s</a>' \
