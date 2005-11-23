@@ -2,6 +2,7 @@
 #
 # Copyright (C) 2004-2005 Edgewall Software
 # Copyright (C) 2004 Francois Harvey <fharvey@securiweb.net>
+# Copyright (C) 2005 Matthew Good <trac@matt-good.net>
 # All rights reserved.
 #
 # This software is licensed as described in the file COPYING, which
@@ -13,6 +14,7 @@
 # history and logs, available at http://projects.edgewall.com/trac/.
 #
 # Author: Francois Harvey <fharvey@securiweb.net>
+#         Matthew Good <trac@matt-good.net>
 
 from trac.versioncontrol import Authorizer
 
@@ -60,20 +62,7 @@ class RealSubversionAuthorizer(Authorizer):
         elif cfg_file:
             self.conf_authz.read(cfg_file)
 
-        self.groups = self.get_groups()
-
-    def get_groups(self):
-        if not self.conf_authz.has_section('groups'):
-            return []
-        else:
-            return [group for group in self.conf_authz.options('groups') \
-                          if self.in_group(group)]
-
-    def in_group(self, group):
-        for user in self.conf_authz.get('groups', group).split(','):
-            if self.auth_name == user.strip():
-                return 1
-        return 0
+        self.groups = self._groups()
 
     def has_permission(self, path):
         if path is None:
@@ -81,38 +70,14 @@ class RealSubversionAuthorizer(Authorizer):
 
         for p in parent_iter(path):
             if self.module_name:
-                for perm in self.get_section(self.module_name + ':' + p):
+                for perm in self._get_section(self.module_name + ':' + p):
                     if perm is not None:
                         return perm
-            for perm in self.get_section(p):
+            for perm in self._get_section(p):
                 if perm is not None:
                     return perm
 
         return 0
-
-    def get_section(self, section):
-        if not self.conf_authz.has_section(section):
-            return
-
-        yield self.get_permission(section, self.auth_name)
-
-        group_perm = None
-        for g in self.groups:
-            p = self.get_permission(section, '@' + g)
-            if p is not None:
-                group_perm = p
-
-            if group_perm:
-                yield 1
-
-        yield group_perm
-
-        yield self.get_permission(section, '*')
-
-    def get_permission(self, section, subject):
-        if self.conf_authz.has_option(section, subject):
-            return 'r' in self.conf_authz.get(section, subject)
-        return None
 
     def has_permission_for_changeset(self, rev):
         cursor = self.db.cursor()
@@ -121,3 +86,60 @@ class RealSubversionAuthorizer(Authorizer):
             if self.has_permission(row[0]):
                 return 1
         return 0
+
+    # Internal API
+
+    def _groups(self):
+        if not self.conf_authz.has_section('groups'):
+            return []
+
+        grp_parents = {}
+        usr_grps = []
+
+        for group in self.conf_authz.options('groups'):
+            for member in self.conf_authz.get('groups', group).split(','):
+                member = member.strip()
+                if member == self.auth_name:
+                    usr_grps.append(group)
+                elif member.startswith('@'):
+                    grp_parents.setdefault(member[1:], []).append(group)
+
+        expanded = {}
+
+        def expand_group(group):
+            if group in expanded:
+                return
+            expanded[group] = True
+            for parent in grp_parents.get(group, []):
+                expand_group(parent)
+
+        for g in usr_grps:
+            expand_group(g)
+
+        # expand groups
+        return expanded.keys()
+
+    def _get_section(self, section):
+        if not self.conf_authz.has_section(section):
+            return
+
+        yield self._get_permission(section, self.auth_name)
+
+        group_perm = None
+        for g in self.groups:
+            p = self._get_permission(section, '@' + g)
+            if p is not None:
+                group_perm = p
+
+            if group_perm:
+                yield 1
+
+        yield group_perm
+
+        yield self._get_permission(section, '*')
+
+    def _get_permission(self, section, subject):
+        if self.conf_authz.has_option(section, subject):
+            return 'r' in self.conf_authz.get(section, subject)
+        return None
+
