@@ -127,6 +127,28 @@ def tests():
       ... @grp = r
       ... ''').has_permission('/a'))
       1
+
+  Groups can also be members of other groups:
+      >>> int(make_auth('', '''
+      ... [groups]
+      ... grp1 = user
+      ... grp2 = @grp1
+      ... [/a]
+      ... @grp2 = r
+      ... ''').has_permission('/a'))
+      1
+
+  Groups should not be defined cyclically, but they are handled appropriately
+  to avoid infinite loops:
+      >>> int(make_auth('', '''
+      ... [groups]
+      ... grp1 = @grp2
+      ... grp2 = @grp3
+      ... grp3 = @grp1, user
+      ... [/a]
+      ... @grp1 = r
+      ... ''').has_permission('/a'))
+      1
   
   If more than one group matches at the specific path, access is granted
   if any of the group rules allow access.
