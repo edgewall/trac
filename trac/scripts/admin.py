@@ -27,9 +27,8 @@ import urllib
 
 import trac
 from trac import perm, util, db_default
-from trac.config import default_dir
+from trac.config import default_dir, Configuration
 from trac.env import Environment
-from trac.config import Configuration
 from trac.perm import PermissionSystem
 from trac.ticket.model import *
 from trac.wiki import WikiPage
@@ -122,15 +121,6 @@ class TracAdmin(cmd.Cmd):
         except:
             return 0
         return 1
-
-    def env_create(self, db_str):
-        try:
-            self.__env = Environment(self.envname, create=True, db_str=db_str)
-            return self.__env
-        except Exception, e:
-            print 'Failed to create environment.', e
-            traceback.print_exc()
-            sys.exit(1)
 
     def env_open(self):
         try:
@@ -516,7 +506,7 @@ class TracAdmin(cmd.Cmd):
         print
         ddb = 'sqlite:db/trac.db'
         prompt = 'Database connection string [%s]> ' % ddb
-        returnvals.append(raw_input(prompt).strip()  or ddb)
+        returnvals.append(raw_input(prompt).strip() or ddb)
         print
         print ' Please specify the absolute path to the project Subversion repository.'
         print ' Repository must be local, and trac-admin requires read+write'
@@ -524,14 +514,14 @@ class TracAdmin(cmd.Cmd):
         print
         drp = '/var/svn/test'
         prompt = 'Path to repository [%s]> ' % drp
-        returnvals.append(raw_input(prompt).strip()  or drp)
+        returnvals.append(raw_input(prompt).strip() or drp)
         print
         print ' Please enter location of Trac page templates.'
         print ' Default is the location of the site-wide templates installed with Trac.'
         print
         dt = default_dir('templates')
         prompt = 'Templates directory [%s]> ' % dt
-        returnvals.append(raw_input(prompt).strip()  or dt)
+        returnvals.append(raw_input(prompt).strip() or dt)
         print
         return returnvals
 
@@ -561,19 +551,19 @@ class TracAdmin(cmd.Cmd):
 
         try:
             print 'Creating and Initializing Project'
-            self.env_create(db_str)
-
-            print ' Configuring Project'
-            config = self.__env.config
-            print '  trac.repository_dir'
-            config.set('trac', 'repository_dir', repository_dir)
-            print '  trac.database'
-            config.set('trac', 'database', db_str)
-            print '  trac.templates_dir'
-            config.set('trac', 'templates_dir', templates_dir)
-            print '  project.name'
-            config.set('project', 'name', project_name)
-            config.save()
+            options = [
+                ('trac', 'database', db_str),
+                ('trac', 'repository_dir', repository_dir),
+                ('trac', 'templates_dir', templates_dir),
+                ('project', 'name', project_name)
+            ]
+            try:
+                self.__env = Environment(self.envname, create=True,
+                                         options=options)
+            except Exception, e:
+                print 'Failed to create environment.', e
+                traceback.print_exc()
+                sys.exit(1)
 
             # Add a few default wiki pages
             print ' Installing default wiki pages'

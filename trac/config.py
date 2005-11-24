@@ -99,7 +99,7 @@ class Configuration:
                         self._defaults[(section, option)] = value
                 self._lastsitemtime = modtime
 
-        if not self.filename:
+        if not self.filename or not os.path.isfile(self.filename):
             return
         modtime = os.path.getmtime(self.filename)
         if modtime > self._lastmtime:

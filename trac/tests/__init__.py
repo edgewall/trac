@@ -1,13 +1,12 @@
 import unittest
 
-from trac.tests import attachment, config, core, db, env, perm
+from trac.tests import attachment, config, core, env, perm
 
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(attachment.suite())
     suite.addTest(config.suite())
     suite.addTest(core.suite())
-    suite.addTest(db.suite())
     suite.addTest(env.suite())
     suite.addTest(perm.suite())
     return suite

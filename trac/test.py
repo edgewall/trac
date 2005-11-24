@@ -17,10 +17,10 @@
 # Author: Jonas Borgström <jonas@edgewall.com>
 #         Christopher Lenz <cmlenz@gmx.de>
 
-from trac.core import ComponentManager
-from trac.db import SQLiteConnection
-
 import unittest
+
+from trac.core import ComponentManager
+from trac.db.sqlitedb import SQLiteConnection
 
 
 def Mock(bases=(), *initargs, **kw):
@@ -105,12 +105,12 @@ class InMemoryDatabase(SQLiteConnection):
     """
     def __init__(self):
         SQLiteConnection.__init__(self, ':memory:')
-
         cursor = self.cnx.cursor()
 
         from trac.db_default import schema
+        from trac.db.sqlitedb import _to_sql
         for table in schema:
-            for stmt in SQLiteConnection.to_sql(table):
+            for stmt in _to_sql(table):
                 cursor.execute(stmt)
 
         self.cnx.commit()
@@ -162,6 +162,7 @@ class EnvironmentStub(ComponentManager):
 
 def suite():
     import trac.tests
+    import trac.db.tests
     import trac.scripts.tests
     import trac.ticket.tests
     import trac.versioncontrol.tests
@@ -170,6 +171,7 @@ def suite():
 
     suite = unittest.TestSuite()
     suite.addTest(trac.tests.suite())
+    suite.addTest(trac.db.tests.suite())
     suite.addTest(trac.scripts.tests.suite())
     suite.addTest(trac.ticket.tests.suite())
     suite.addTest(trac.versioncontrol.tests.suite())
