@@ -20,7 +20,7 @@
 import unittest
 
 from trac.core import ComponentManager
-from trac.db.sqlitedb import SQLiteConnection
+from trac.db.sqlite_backend import SQLiteConnection
 
 
 def Mock(bases=(), *initargs, **kw):
@@ -108,7 +108,7 @@ class InMemoryDatabase(SQLiteConnection):
         cursor = self.cnx.cursor()
 
         from trac.db_default import schema
-        from trac.db.sqlitedb import _to_sql
+        from trac.db.sqlite_backend import _to_sql
         for table in schema:
             for stmt in _to_sql(table):
                 cursor.execute(stmt)

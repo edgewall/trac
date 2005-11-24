@@ -437,7 +437,7 @@ default_config = \
 )
 
 default_components = ('trac.About', 'trac.attachment',
-                      'trac.db.postgres', 'trac.db.sqlitedb',
+                      'trac.db.postgres_backend', 'trac.db.sqlite_backend',
                       'trac.mimeview.enscript', 'trac.mimeview.patch',
                       'trac.mimeview.php', 'trac.mimeview.rst',
                       'trac.mimeview.silvercity', 'trac.mimeview.txtl',
