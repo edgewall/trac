@@ -192,6 +192,11 @@ class AttachmentModuleTestCase(unittest.TestCase):
                          'foo.txt" href="/trac.cgi/attachment/ticket/123/'
                          'foo.txt">Foo</a>',
                          func(formatter, ns, 'ticket:123:foo.txt', 'Foo'))
+        self.assertEqual('<a class="attachment" title="Attachment #123: '
+                         'foo.txt" href="/trac.cgi/attachment/ticket/123/'
+                         'foo.txt?format=raw">Foo</a>',
+                         func(formatter, ns, 'ticket:123:foo.txt?format=raw',
+                              'Foo'))
 
 
 def suite():
