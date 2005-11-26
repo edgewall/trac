@@ -287,9 +287,18 @@ class SubversionRepositoryTestCase(unittest.TestCase):
         self.assertEqual('Setting property on the repository_dir root',
                          chgset.message)
         changes = chgset.get_changes()
-        self.assertEqual(('', Node.DIRECTORY, Changeset.EDIT, None, 12),
+        self.assertEqual(('', Node.DIRECTORY, Changeset.EDIT, '/', 12),
                          changes.next())
-        self.assertEqual(('trunk', Node.DIRECTORY, Changeset.EDIT, 'trunk', 12),
+        self.assertEqual(('trunk', Node.DIRECTORY, Changeset.EDIT, 'trunk', 6),
+                         changes.next())
+        self.assertRaises(StopIteration, changes.next)
+
+    def test_changeset_base_path_rev(self):
+        chgset = self.repos.get_changeset(9)
+        self.assertEqual(9, chgset.rev)
+        changes = chgset.get_changes()
+        self.assertEqual(('branches/v1x/README.txt', Node.FILE,
+                          Changeset.EDIT, 'trunk/README.txt', 3),
                          changes.next())
         self.assertRaises(StopIteration, changes.next)
         
@@ -503,7 +512,7 @@ class ScopedSubversionRepositoryTestCase(unittest.TestCase):
         self.assertEqual('Setting property on the repository_dir root',
                          chgset.message)
         changes = chgset.get_changes()
-        self.assertEqual(('', Node.DIRECTORY, Changeset.EDIT, '/', 12),
+        self.assertEqual(('', Node.DIRECTORY, Changeset.EDIT, '/', 6),
                          changes.next())
         self.assertRaises(StopIteration, changes.next)
 

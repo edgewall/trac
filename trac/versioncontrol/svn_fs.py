@@ -457,6 +457,8 @@ class SubversionChangeset(Changeset):
     def get_changes(self):
         pool = Pool(self.pool)
         root = fs.revision_root(self.fs_ptr, self.rev, pool())
+        if self.rev > 0:
+            prev_root = fs.revision_root(self.fs_ptr, self.rev - 1, pool())
         editor = repos.RevisionChangeCollector(self.fs_ptr, self.rev, pool())
         e_ptr, e_baton = delta.make_editor(editor, pool())
         repos.svn_repos_replay(root, e_ptr, e_baton, pool())
@@ -470,9 +472,8 @@ class SubversionChangeset(Changeset):
                 continue
             if not (path+'/').startswith(self.scope[1:]):
                 continue
-            base_path = _scoped_path(self.scope, change.base_path)
             action = ''
-            if not change.path and base_path:
+            if not change.path and change.base_path:
                 action = Changeset.DELETE
                 deletions[change.base_path] = idx
             elif change.added:
@@ -483,8 +484,11 @@ class SubversionChangeset(Changeset):
                     action = Changeset.ADD
             else:
                 action = Changeset.EDIT
+                change.base_path = fs.node_created_path(prev_root, path, pool())
+                change.base_rev = fs.node_created_rev(prev_root, path, pool())
             kind = _kindmap[change.item_kind]
             path = path[len(self.scope) - 1:]
+            base_path = _scoped_path(self.scope, change.base_path)
             changes.append([path, kind, action, base_path, change.base_rev])
             idx += 1
 
