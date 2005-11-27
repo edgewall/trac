@@ -63,7 +63,7 @@ class DatabaseManager(Component):
             self._cnx_pool.shutdown()
             self._cnx_pool = None
 
-    def _get_connector(self):
+    def _get_connector(self): ### FIXME: Make it public?
         scheme, args = _parse_db_str(self.env.config.get('trac', 'database'))
         candidates = {}
         for connector in self.connectors:
