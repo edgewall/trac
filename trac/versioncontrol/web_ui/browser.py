@@ -78,7 +78,8 @@ class BrowserModule(Component):
             if match.group(1) == 'file':
                 # FIXME: This should be a permanent redirect
                 req.redirect(self.env.href.browser(req.args.get('path'),
-                                                   rev=req.args.get('rev')))
+                                                   rev=req.args.get('rev'),
+                                                   format=req.args.get('format')))
             return True
 
     def process_request(self, req):
