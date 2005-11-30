@@ -432,3 +432,37 @@ V 6
 PROPS-END
 
 
+Revision-number: 14
+Prop-content-length: 119
+Content-length: 119
+
+K 7
+svn:log
+V 19
+Testing rename+edit
+K 10
+svn:author
+V 5
+cboos
+K 8
+svn:date
+V 27
+2005-11-30T08:47:03.467814Z
+PROPS-END
+
+Node-path: trunk/README3.txt
+Node-kind: file
+Node-action: add
+Node-copyfrom-rev: 13
+Node-copyfrom-path: trunk/README2.txt
+Text-content-length: 42
+Text-content-md5: 211b820b566541dd49a1283d6476d89f
+Content-length: 42
+
+A test of svn move, followed by a change.
+
+
+Node-path: trunk/README2.txt
+Node-action: delete
+
+
