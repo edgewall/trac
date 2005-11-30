@@ -303,6 +303,15 @@ class SubversionRepositoryTestCase(unittest.TestCase):
                           Changeset.EDIT, 'trunk/README.txt', 3),
                          changes.next())
         self.assertRaises(StopIteration, changes.next)
+
+    def test_changeset_rename_and_edit(self):
+        chgset = self.repos.get_changeset(14)
+        self.assertEqual(14, chgset.rev)
+        changes = chgset.get_changes()
+        self.assertEqual(('trunk/README3.txt', Node.FILE,
+                          Changeset.MOVE, 'trunk/README2.txt', 13),
+                         changes.next())
+        self.assertRaises(StopIteration, changes.next)
         
 
 class ScopedSubversionRepositoryTestCase(unittest.TestCase):
