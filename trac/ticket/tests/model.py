@@ -92,6 +92,17 @@ class TicketTestCase(unittest.TestCase):
         self.assertEqual('two', ticket['bar'])
         self.assertEqual('three', ticket['baz'])
 
+    def test_set_field_stripped(self):
+        """
+        Verify that whitespace around ticket fields is stripped, except for
+        textarea fields.
+        """
+        ticket = Ticket(self.env)
+        ticket['component'] = '  foo  '
+        ticket['description'] = '  bar  '
+        self.assertEqual('foo', ticket['component'])
+        self.assertEqual('  bar  ', ticket['description'])
+
     def test_owner_from_component(self):
         """
         Verify that the owner of a new ticket is set to the owner of the
