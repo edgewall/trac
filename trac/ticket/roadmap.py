@@ -21,7 +21,7 @@ from trac import __version__
 from trac.core import *
 from trac.perm import IPermissionRequestor
 from trac.util import escape, format_date, format_datetime, parse_date, \
-                      pretty_timedelta, shorten_line, CRLF
+                      pretty_timedelta, shorten_line, unescape, CRLF
 from trac.ticket import Milestone, Ticket, TicketSystem
 from trac.Timeline import ITimelineEventProvider
 from trac.web import IRequestHandler
@@ -155,11 +155,12 @@ class RoadmapModule(Component):
         req.hdf['roadmap.milestones'] = milestones
 
         for idx,milestone in enumerate(milestones):
+            milestone_name = unescape(milestone['name']) # Kludge
             prefix = 'roadmap.milestones.%d.' % idx
-            tickets = get_tickets_for_milestone(self.env, db, milestone['name'],
+            tickets = get_tickets_for_milestone(self.env, db, milestone_name,
                                                 'owner')
             req.hdf[prefix + 'stats'] = calc_ticket_stats(tickets)
-            for k, v in get_query_links(self.env, milestone['name']).items():
+            for k, v in get_query_links(self.env, milestone_name).items():
                 req.hdf[prefix + 'queries.' + k] = escape(v)
             milestone['tickets'] = tickets # for the iCalendar view
 
