@@ -294,6 +294,7 @@ class WikiModule(Component):
 
         req.hdf['title'] = escape(page.name) + ' (edit)'
         info = {
+            'page_name': page.name,
             'page_source': escape(page.text),
             'version': page.version,
             'author': escape(author),
