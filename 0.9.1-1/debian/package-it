@@ -1,0 +1,16 @@
+#!/bin/sh
+
+VERSION=$(dpkg-parsechangelog | grep Version | sed 's,^Version: \(.*\)\-.*$,\1,g')
+
+if [ ! -f ../trac_${VERSION}.orig.tar.gz ]; then
+    (cd .. ; svn export http://svn.edgewall.com/repos/trac/tags/trac-${VERSION} && \
+	tar -czf trac_${VERSION}.orig.tar.gz trac-${VERSION} && \
+	echo "Created trac_${VERSION}.orig.tar.gz")
+fi
+
+[ ! -f ../trac-${VERSION} ] && (cd .. ; svn export http://svn.edgewall.com/repos/trac/tags/trac-${VERSION})
+[ -f ../trac-${VERSION}/debian ] && rm -rf ../trac-${VERSION}/debian
+svn export --force . ../
+mv ../debian ../trac-${VERSION}/
+
+
