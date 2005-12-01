@@ -47,9 +47,12 @@ class Query(object):
         self.cols = [] # lazily initialized
 
         if self.order != 'id' \
-                and not self.order in [f['name'] for f in self.fields]:
+                and self.order not in [f['name'] for f in self.fields]:
             # order by priority by default
             self.order = 'priority'
+
+        if self.group not in [f['name'] for f in self.fields]:
+            self.group = None
 
     def from_string(cls, env, string, **kw):
         filters = string.split('&')
