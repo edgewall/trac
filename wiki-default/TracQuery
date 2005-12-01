@@ -25,21 +25,21 @@ While Trac does not yet allow saving a named query and somehow making it availab
 
 You may want to save some queries so that you can come back to them later.  You can do this by making a link to the query from any Wiki page.
 {{{
-[query:status!=closed&version=0.8 Active tickets against 0.8]
+[query:status=new|assigned|reopened&version=0.8 Active tickets against 0.8]
 }}}
 
 Which is displayed as:
-  [query:status!=closed&version=0.8 Active tickets against 0.8]
+  [query:status=new|assigned|reopened&version=0.8 Active tickets against 0.8]
 
 This uses a very simple query language to specify the criteria (see [wiki:TracQuery#QueryLanguage Query Language]).
 
 Alternatively, you can copy the query string of a query and paste that into the Wiki link, including the leading `?` character:
 {{{
-[query:?status=assigned&group=owner Assigned tickets by owner]
+[query:?status=new&status=assigned&status=reopened&group=owner Assigned tickets by owner]
 }}}
 
 Whis is displayed as:
-  [query:?status=assigned&group=owner Assigned tickets by owner]
+  [query:?status=new&status=assigned&status=reopened&group=owner Assigned tickets by owner]
 
 The advantage of this approach is that you can also specify the grouping and ordering, which is not possible using the first syntax.
 

@@ -1,3 +1,11 @@
+Trac 0.9.1  (Dec 1, 2005)
+http://svn.edgewall.com/repos/trac/tags/trac-0.9.1
+
+ * Fixed SQL injection vulnerability in ticket query module.
+ * Fixed bugs: #1633, #2167, #2283, #2284, #2285, #2291, #2292, #2300,
+   #2318, #2329, #2366, #2369, #2373, #2383, #2416, #2457
+
+
 Trac 0.9  (Oct 31, 2005)
 http://svn.edgewall.com/repos/trac/tags/trac-0.9
 
