@@ -384,6 +384,8 @@ class PostgreSQLConnection(ConnectionWrapper):
                 dsn.append('password=' + password)
             if host:
                 dsn.append('host=' + host)
+            if port:
+                dsn.append('port=' + str(port))
             cnx = psycopg.connect(' '.join(dsn))
         else:
             cnx = PgSQL.connect('', user, password, host, path, port)
