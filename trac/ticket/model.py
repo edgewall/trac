@@ -97,17 +97,23 @@ class Ticket(object):
         """Log ticket modifications so the table ticket_change can be updated"""
         if self.values.has_key(name) and self.values[name] == value:
             return
+        field = [field for field in self.fields if field['name'] == name]
+        if not field:
+            return
+        field = field[0]
         if not self._old.has_key(name): # Changed field
             self._old[name] = self.values.get(name)
         elif self._old[name] == value: # Change of field reverted
             del self._old[name]
-        self.values[name] = value and value.strip()
+        if value and field['type'] != 'textarea':
+            value = value.strip()
+        self.values[name] = value
 
     def populate(self, values):
         """Populate the ticket with 'suitable' values from a dictionary"""
         field_names = [f['name'] for f in self.fields]
         for name in [name for name in values.keys() if name in field_names]:
-            self[name] = values.get(name, '').strip()
+            self[name] = values.get(name, '')
 
         # We have to do an extra trick to catch unchecked checkboxes
         for name in [name for name in values.keys() if name[9:] in field_names
