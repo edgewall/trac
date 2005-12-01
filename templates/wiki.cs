@@ -22,7 +22,7 @@
   <h1>Delete <?cs
    if:?wiki.version ?>version <?cs var:wiki.version ?> of <?cs /if ?><a href="<?cs
     var:wiki.current_href ?>"><?cs var:wiki.page_name ?></a></h1>
-  <form action="<?cs var:wiki.href ?>" method="post">
+  <form action="<?cs var:wiki.current_href ?>" method="post">
    <input type="hidden" name="action" value="delete" />
    <p><strong>Are you sure you want to <?cs
     if:!?wiki.version ?>completely <?cs /if ?>delete <?cs
