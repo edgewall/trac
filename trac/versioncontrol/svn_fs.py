@@ -484,9 +484,9 @@ class SubversionChangeset(Changeset):
                     action = Changeset.ADD
             else:
                 action = Changeset.EDIT
-                change.base_path = fs.node_created_path(prev_root,
-                                                      change.base_path, pool())
                 change.base_rev = fs.node_created_rev(prev_root,
+                                                      change.base_path, pool())
+                change.base_path = fs.node_created_path(prev_root,
                                                       change.base_path, pool())
             kind = _kindmap[change.item_kind]
             path = path[len(self.scope) - 1:]
