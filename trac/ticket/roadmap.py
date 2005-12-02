@@ -315,8 +315,8 @@ class MilestoneModule(Component):
                 title = 'Milestone <em>%s</em> completed' % escape(name)
                 if format == 'rss':
                     href = self.env.abs_href.milestone(name)
-                    message = wiki_to_html(description or '--', self.env, db,
-                                           absurls=True)
+                    message = wiki_to_html(description or '--', self.env,
+                                           req, db, absurls=True)
                 else:
                     href = self.env.href.milestone(name)
                     message = wiki_to_oneliner(description, self.env, db,
