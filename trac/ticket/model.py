@@ -97,16 +97,14 @@ class Ticket(object):
         """Log ticket modifications so the table ticket_change can be updated"""
         if self.values.has_key(name) and self.values[name] == value:
             return
-        field = [field for field in self.fields if field['name'] == name]
-        if not field:
-            return
-        field = field[0]
         if not self._old.has_key(name): # Changed field
             self._old[name] = self.values.get(name)
         elif self._old[name] == value: # Change of field reverted
             del self._old[name]
-        if value and field['type'] != 'textarea':
-            value = value.strip()
+        if value:
+            field = [field for field in self.fields if field['name'] == name]
+            if field and field[0].get('type') != 'textarea':
+                value = value.strip()
         self.values[name] = value
 
     def populate(self, values):
