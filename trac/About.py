@@ -216,7 +216,10 @@ It provides an interface to the Subversion revision control systems, integrated 
                 plugin['path'] = module.__file__
 
             xtnpts = []
-            for name, xtnpt in component._extension_points.items():
+            for name, xtnpt in [(attr, getattr(component, attr)) for attr
+                                in dir(component)]:
+                if not isinstance(xtnpt, ExtensionPoint):
+                    continue
                 xtnpts.append({'name': name,
                                'interface': xtnpt.interface.__name__,
                                'module': xtnpt.interface.__module__})
