@@ -136,7 +136,7 @@ class WikiModule(Component):
                         escape(name), escape(author))
                 if format == 'rss':
                     href = self.env.abs_href.wiki(name)
-                    comment = wiki_to_html(comment or '--', self.env, db,
+                    comment = wiki_to_html(comment or '--', self.env, req, db,
                                            absurls=True)
                 else:
                     href = self.env.href.wiki(name)

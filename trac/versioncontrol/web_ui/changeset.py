@@ -122,7 +122,7 @@ class ChangesetModule(Component):
                                 % (util.escape(chgset.rev),
                                    util.escape(util.shorten_line(message)))
                         href = self.env.abs_href.changeset(chgset.rev)
-                        message = wiki_to_html(message, self.env, db,
+                        message = wiki_to_html(message, self.env, req, db,
                                                absurls=True)
                     else:
                         title = 'Changeset <em>[%s]</em> by %s' \
