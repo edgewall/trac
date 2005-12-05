@@ -275,7 +275,6 @@ class Query(object):
                     args.append(constraint_sql[1])
 
         clauses = filter(None, clauses)
-        args = filter(None, args)
         if clauses:
             sql.append("\nWHERE " + " AND ".join(clauses))
 
