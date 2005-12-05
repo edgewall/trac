@@ -166,14 +166,14 @@ class TicketSystem(Component):
         if not 'ticket' in filters:
             return
         db = self.env.get_db_cnx()
-        sql = "SELECT DISTINCT a.summary,a.description,a.reporter, " \
-              "a.keywords,a.id,a.time FROM ticket a " \
-              "LEFT JOIN ticket_change b ON a.id = b.ticket " \
-              "WHERE (b.field='comment' AND %s ) OR %s" % \
-              (query_to_sql(db, query, 'b.newvalue'),
-               query_to_sql(db, query, 'summary||keywords||description||reporter||cc'))
+        sql, args = query_to_sql(db, query, 'b.newvalue')
+        sql2, args2 = query_to_sql(db, query, 'summary||keywords||description||reporter||cc')
         cursor = db.cursor()
-        cursor.execute(sql)
+        cursor.execute("SELECT DISTINCT a.summary,a.description,a.reporter, "
+                       "a.keywords,a.id,a.time FROM ticket a "
+                       "LEFT JOIN ticket_change b ON a.id = b.ticket "
+                       "WHERE (b.field='comment' AND %s ) OR %s" % (sql, sql2),
+                       args + args2)
         for summary,desc,author,keywords,tid,date in cursor:
             yield (self.env.href.ticket(tid),
                    '#%d: %s' % (tid, util.escape(util.shorten_line(summary))),

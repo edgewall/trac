@@ -21,7 +21,7 @@ from trac.core import *
 from trac.perm import IPermissionRequestor
 from trac.ticket import Ticket, TicketSystem
 from trac.util import escape, unescape, format_datetime, http_date, \
-                      shorten_line, sql_escape, CRLF, TRUE
+                      shorten_line, CRLF, TRUE
 from trac.web import IRequestHandler
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
 from trac.wiki import wiki_to_html, wiki_to_oneliner, IWikiMacroProvider, \
@@ -133,13 +133,13 @@ class Query(object):
         if not self.cols:
             self.get_columns()
 
-        sql = self.get_sql()
-        self.env.log.debug("Query SQL: %s" % sql)
+        sql, args = self.get_sql()
+        self.env.log.debug("Query SQL: " + sql % tuple([repr(a) for a in args]))
 
         if not db:
             db = self.env.get_db_cnx()
         cursor = db.cursor()
-        cursor.execute(sql)
+        cursor.execute(sql, args)
         columns = cursor.description
         results = []
         for row in cursor:
@@ -170,6 +170,7 @@ class Query(object):
                                    **self.constraints)
 
     def get_sql(self):
+        """Return a (sql, params) tuple for the query."""
         if not self.cols:
             self.get_columns()
 
@@ -195,71 +196,86 @@ class Query(object):
         for k in [k for k in cols if k in custom_fields]:
             sql.append(",%s.value AS %s" % (k, k))
         sql.append("\nFROM ticket AS t")
+
+        # Join with ticket_custom table as necessary
         for k in [k for k in cols if k in custom_fields]:
            sql.append("\n  LEFT OUTER JOIN ticket_custom AS %s ON " \
                       "(id=%s.ticket AND %s.name='%s')" % (k, k, k, k))
 
+        # Join with the enum table for proper sorting
         for col in [c for c in ('status', 'resolution', 'priority', 'severity')
                     if c == self.order or c == self.group or c == 'priority']:
-            sql.append("\n  LEFT OUTER JOIN enum AS %s ON (%s.type='%s' AND %s.name=%s)"
+            sql.append("\n  LEFT OUTER JOIN enum AS %s ON "
+                       "(%s.type='%s' AND %s.name=%s)"
                        % (col, col, col, col, col))
+
+        # Join with the version/milestone tables for proper sorting
         for col in [c for c in ['milestone', 'version']
                     if c == self.order or c == self.group]:
-            sql.append("\n  LEFT OUTER JOIN %s ON (%s.name=%s)" % (col, col, col))
+            sql.append("\n  LEFT OUTER JOIN %s ON (%s.name=%s)"
+                       % (col, col, col))
 
         def get_constraint_sql(name, value, mode, neg):
-            value = sql_escape(value[len(mode and '!' or '' + mode):])
             if name not in custom_fields:
                 name = 't.' + name
             else:
                 name = name + '.value'
-            if mode == '~' and value:
-                return "COALESCE(%s,'') %sLIKE '%%%s%%'" % (
-                       name, neg and 'NOT ' or '', value)
-            elif mode == '^' and value:
-                return "COALESCE(%s,'') %sLIKE '%s%%'" % (
-                       name, neg and 'NOT ' or '', value)
-            elif mode == '$' and value:
-                return "COALESCE(%s,'') %sLIKE '%%%s'" % (
-                       name, neg and 'NOT ' or '', value)
-            elif mode == '':
-                return "COALESCE(%s,'')%s='%s'" % (
-                       name, neg and '!' or '', value)
+            value = value[len(mode) + neg:]
+
+            if mode == '':
+                return ("COALESCE(%s,'')%s=%%s" % (name, neg and '!' or ''),
+                        value)
+            if not value:
+                return None
+
+            if mode == '~':
+                value = '%' + value + '%'
+            elif mode == '^':
+                value = value + '%'
+            elif mode == '$':
+                value = '%' + value
+            return ("COALESCE(%s,'') %sLIKE %%s" % (name, neg and 'NOT ' or ''),
+                    value)
 
         clauses = []
+        args = []
         for k, v in self.constraints.items():
             # Determine the match mode of the constraint (contains, starts-with,
             # negation, etc)
-            neg = len(v[0]) and v[0][0] == '!'
+            neg = v[0].startswith('!')
             mode = ''
             if len(v[0]) > neg and v[0][neg] in ('~', '^', '$'):
                 mode = v[0][neg]
 
             # Special case for exact matches on multiple values
             if not mode and len(v) > 1:
-                inlist = ",".join(["'" + sql_escape(val[neg and 1 or 0:]) + "'"
-                                   for val in v])
                 if k not in custom_fields:
                     col = 't.' + k
                 else:
                     col = k + '.value'
                 clauses.append("COALESCE(%s,'') %sIN (%s)"
-                               % (col, neg and 'NOT ' or '', inlist))
+                               % (col, neg and 'NOT ' or '',
+                                  ','.join(['%s' for val in v])))
+                args += [val[neg:] for val in v]
             elif len(v) > 1:
-                constraint_sql = filter(lambda x: x is not None,
+                constraint_sql = filter(None,
                                         [get_constraint_sql(k, val, mode, neg)
                                          for val in v])
                 if not constraint_sql:
                     continue
                 if neg:
-                    clauses.append("(" + " AND ".join(constraint_sql) + ")")
+                    clauses.append("(" + " AND ".join([item[0] for item in constraint_sql]) + ")")
                 else:
-                    clauses.append("(" + " OR ".join(constraint_sql) + ")")
+                    clauses.append("(" + " OR ".join([item[0] for item in constraint_sql]) + ")")
+                args += [item[1] for item in constraint_sql]
             elif len(v) == 1:
-                clauses.append(get_constraint_sql(k, v[0][neg and 1 or 0:],
-                                                  mode, neg))
+                constraint_sql = get_constraint_sql(k, v[0], mode, neg)
+                if constraint_sql:
+                    clauses.append(constraint_sql[0])
+                    args.append(constraint_sql[1])
 
         clauses = filter(None, clauses)
+        args = filter(None, args)
         if clauses:
             sql.append("\nWHERE " + " AND ".join(clauses))
 
@@ -308,7 +324,7 @@ class Query(object):
         if self.order != 'id':
             sql.append(",t.id")
 
-        return "".join(sql)
+        return "".join(sql), args
 
 
 class QueryModule(Component):

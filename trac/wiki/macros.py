@@ -48,9 +48,7 @@ class TitleIndexMacro(Component):
         return inspect.getdoc(TitleIndexMacro)
 
     def render_macro(self, req, name, content):
-        prefix = None
-        if content:
-            prefix = content.replace('\'', '\'\'')
+        prefix = content or None
 
         wiki = WikiSystem(self.env)
         pages = list(wiki.get_pages(prefix))
@@ -93,20 +91,23 @@ class RecentChangesMacro(Component):
         if content:
             argv = [arg.strip() for arg in content.split(',')]
             if len(argv) > 0:
-                prefix = argv[0].replace('\'', '\'\'')
+                prefix = argv[0]
                 if len(argv) > 1:
                     limit = int(argv[1])
 
         db = self.env.get_db_cnx()
         cursor = db.cursor()
 
-        sql = 'SELECT name, max(time) FROM wiki '
+        sql = 'SELECT name, max(time) FROM wiki'
+        args = []
         if prefix:
-            sql += "WHERE name LIKE '%s%%' " % prefix
-        sql += 'GROUP BY name ORDER BY max(time) DESC'
+            sql += ' WHERE name LIKE %s'
+            args.append(prefix + '%')
+        sql += ' GROUP BY name ORDER BY max(time) DESC'
         if limit:
-            sql += ' LIMIT %d' % limit
-        cursor.execute(sql)
+            sql += ' LIMIT %s'
+            args.append(limit)
+        cursor.execute(sql, args)
 
         buf = StringIO()
         prevdate = None

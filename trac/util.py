@@ -69,13 +69,6 @@ def to_utf8(text, charset='iso-8859-15'):
             u = unicode(text, 'iso-8859-15')
         return u.encode('utf-8')
 
-def sql_escape(text):
-    """
-    Escapes the given string so that it can be safely used in an SQL
-    statement
-    """
-    return text.replace("'", "''").replace("\\", "\\\\")
-
 def shorten_line(text, maxlen = 75):
     if not text:
         return ''

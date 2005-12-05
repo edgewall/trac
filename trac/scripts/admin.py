@@ -135,21 +135,27 @@ class TracAdmin(cmd.Cmd):
     def db_open(self):
         return self.env_open().get_db_cnx()
 
-    def db_query(self, sql, cursor=None):
+    def db_query(self, sql, cursor=None, params=None):
         if not cursor:
             cnx = self.db_open()
             cursor = cnx.cursor()
-        cursor.execute(sql)
+        if params:
+            cursor.execute(sql, params)
+        else:
+            cursor.execute(sql)
         for row in cursor:
             yield row
 
-    def db_update(self, sql, cursor=None):
+    def db_update(self, sql, cursor=None, params=None):
         if not cursor:
             cnx = self.db_open()
             cursor = cnx.cursor()
         else:
             cnx = None
-        cursor.execute(sql)
+        if params:
+            cursor.execute(sql, params)
+        else:
+            cursor.execute(sql)
         if cnx:
             cnx.commit()
 
@@ -226,7 +232,8 @@ class TracAdmin(cmd.Cmd):
         return result
 
     def get_enum_list(self, type):
-        rows = self.db_query("SELECT name FROM enum WHERE type='%s'" % type)
+        rows = self.db_query("SELECT name FROM enum WHERE type=%s",
+                             params=[type])
         return [row[0] for row in rows]
 
     def get_milestone_list(self):
@@ -704,31 +711,24 @@ Congratulations!
         data = util.to_utf8(f.read())
 
         # Make sure we don't insert the exact same page twice
-        rows = self.db_query("SELECT text FROM wiki WHERE name='%s' "
-                             "ORDER BY version DESC LIMIT 1" % title, cursor)
+        rows = self.db_query("SELECT text FROM wiki WHERE name=%s "
+                             "ORDER BY version DESC LIMIT 1",
+                             params=(title, cursor))
         old = list(rows)
         if old and data == old[0][0]:
             print '  %s already up to date.' % title
             return
-
-        data = data.replace("'", "''") # Escape ' for safe SQL
         f.close()
 
-        sql = ("INSERT INTO wiki(version,name,time,author,ipnr,text) "
-               " SELECT 1+COALESCE(max(version),0),'%(title)s','%(time)s',"
-               " '%(author)s','%(ipnr)s','%(text)s' FROM wiki "
-               " WHERE name='%(title)s'" 
-               % {'title':title,
-                  'time':int(time.time()),
-                  'author':'trac',
-                  'ipnr':'127.0.0.1',
-                  'locked':'0',
-                  'text':data})
-        self.db_update(sql, cursor)
+        self.db_update("INSERT INTO wiki(version,name,time,author,ipnr,text) "
+                       " SELECT 1+COALESCE(max(version),0),%s,%s,"
+                       " 'trac','127.0.0.1',%s FROM wiki "
+                       " WHERE name=%s",
+                       cursor, (title, int(time.time()), data, title))
 
     def _do_wiki_export(self, page, filename=''):
-        data = self.db_query("SELECT text FROM wiki WHERE name='%s' "
-                             "ORDER BY version DESC LIMIT 1" % page)
+        data = self.db_query("SELECT text FROM wiki WHERE name=%s "
+                             "ORDER BY version DESC LIMIT 1", params=[page])
         text = data.next()[0]
         if not filename:
             print text

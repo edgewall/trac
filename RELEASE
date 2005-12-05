@@ -1,8 +1,8 @@
-Trac 0.9.1 Release Notes
+Trac 0.9.2 Release Notes
 ============================
-Dec 1, 2005
+Dec 5, 2005
 
-We're proud to present our latest release - Trac 0.9.1.
+We're proud to present our latest release - Trac 0.9.2.
 
 Trac is an enhanced wiki and issue tracking system, integrated with
 Subversion, for software development projects. Trac uses a minimalistic
@@ -37,9 +37,10 @@ For questions, comments and user discussions, please use the Trac mailing list
 
 What's New
 ----------
-A brief summary of major changes for version 0.9.1:
+A brief summary of major changes for version 0.9.2:
 
- * Fix for an SQL injection vulnerability in the ticket query module.
+ * Fix for an SQL injection vulnerability in the search module.
+ * Fix for broken email ticket notifications.
 
 For a more complete list of improvements, see the ChangeLog at:
 

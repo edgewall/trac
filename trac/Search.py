@@ -51,16 +51,16 @@ class ISearchSource(Interface):
 
 
 def query_to_sql(db, q, name):
+    """
+    Convert a search query into a SQL condition string and corresponding
+    parameters. The result is returned as a (string, params) tuple.
+    """
     if q[0] == q[-1] == "'" or q[0] == q[-1] == '"':
-        sql_q = "%s %s '%%%s%%'" % (name, db.like(),
-                                        q[1:-1].replace("'''", "''"))
+        keywords = [q[1:-1]]
     else:
-        q = q.replace('\'', '\'\'')
         keywords = q.split(' ')
-        x = map(lambda x, name=name: name + ' ' + db.like() +
-                '\'%' + x + '%\'', keywords)
-        sql_q = ' AND '.join(x)
-    return sql_q
+    c = ["%s %s %%s" % (name, db.like())] * len(keywords)
+    return ' AND '.join(c), ['%'+k+'%' for k in keywords]
 
 def shorten_result(text='', keywords=[], maxlen=240, fuzz=60):
     if not text: text = ''

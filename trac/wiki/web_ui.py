@@ -387,16 +387,15 @@ class WikiModule(Component):
         if not 'wiki' in filters:
             return
         db = self.env.get_db_cnx()
-        sql = "SELECT w1.name,w1.time,w1.author,w1.text " \
-              "FROM wiki w1," \
-              "(SELECT name,max(version) AS ver " \
-              "FROM wiki GROUP BY name) w2 " \
-              "WHERE w1.version = w2.ver AND w1.name = w2.name " \
-              "AND %s" % \
-              (query_to_sql(db, query, 'w1.name||w1.author||w1.text'),)
-        
+        sql_query, args = query_to_sql(db, query, 'w1.name||w1.author||w1.text')
         cursor = db.cursor()
-        cursor.execute(sql)
+        cursor.execute("SELECT w1.name,w1.time,w1.author,w1.text "
+                       "FROM wiki w1,"
+                       "(SELECT name,max(version) AS ver "
+                       "FROM wiki GROUP BY name) w2 "
+                       "WHERE w1.version = w2.ver AND w1.name = w2.name "
+                       "AND " + sql_query, args)
+
         for name, date, author, text in cursor:
             yield (self.env.href.wiki(name),
                    '%s: %s' % (name, escape(shorten_line(text))),
