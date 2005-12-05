@@ -712,8 +712,8 @@ Congratulations!
 
         # Make sure we don't insert the exact same page twice
         rows = self.db_query("SELECT text FROM wiki WHERE name=%s "
-                             "ORDER BY version DESC LIMIT 1",
-                             params=(title, cursor))
+                             "ORDER BY version DESC LIMIT 1", cursor,
+                             params=(title,))
         old = list(rows)
         if old and data == old[0][0]:
             print '  %s already up to date.' % title
