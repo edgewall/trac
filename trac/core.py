@@ -23,29 +23,28 @@ __all__ = ['Component', 'ExtensionPoint', 'implements', 'Interface',
 
 
 class Interface(object):
-    """Dummy base class for interfaces.
-    
-    (Might use PyProtocols in the future.)
-    """
+    """Marker base class for extension point interfaces."""
 
-class ExtensionPoint(object):
+
+class ExtensionPoint(property):
     """Marker class for extension points in components."""
 
     def __init__(self, interface):
         """Create the extension point.
         
-        @param interface: the `Interface` class that defines the protocol for
-                          the extension point
+        @param interface: the `Interface` subclass that defines the protocol
+            for the extension point
         """
+        property.__init__(self, self.extensions)
         self.interface = interface
+        self.__doc__ = 'List of components that implement `%s`' % \
+                       self.interface.__name__
 
-    def __get__(self, instance, owner):
+    def extensions(self, component):
         """Return a list of components that declare to implement the extension
         point interface."""
-        if instance:
-            extensions = ComponentMeta._registry.get(self.interface, [])
-            return filter(None, [instance.compmgr[cls] for cls in extensions])
-        return self
+        extensions = ComponentMeta._registry.get(self.interface, [])
+        return filter(None, [component.compmgr[cls] for cls in extensions])
 
     def __repr__(self):
         """Return a textual representation of the extension point."""
