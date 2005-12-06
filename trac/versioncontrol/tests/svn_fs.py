@@ -312,7 +312,19 @@ class SubversionRepositoryTestCase(unittest.TestCase):
                           Changeset.MOVE, 'trunk/README2.txt', 13),
                          changes.next())
         self.assertRaises(StopIteration, changes.next)
-        
+
+    def test_changeset_edit_after_wc2wc_copy__original_deleted(self):
+        chgset = self.repos.get_changeset(16)
+        self.assertEqual(16, chgset.rev)
+        changes = chgset.get_changes()
+        self.assertEqual(('branches/v2', Node.DIRECTORY, Changeset.COPY,
+                          'tags/v1.1', 14),
+                         changes.next())
+        self.assertEqual(('branches/v2/README2.txt', Node.FILE,
+                          Changeset.EDIT, 'trunk/README2.txt', 6),
+                         changes.next())
+        self.assertRaises(StopIteration, changes.next)
+
 
 class ScopedSubversionRepositoryTestCase(unittest.TestCase):
 

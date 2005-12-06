@@ -457,8 +457,6 @@ class SubversionChangeset(Changeset):
     def get_changes(self):
         pool = Pool(self.pool)
         root = fs.revision_root(self.fs_ptr, self.rev, pool())
-        if self.rev > 0:
-            prev_root = fs.revision_root(self.fs_ptr, self.rev - 1, pool())
         editor = repos.RevisionChangeCollector(self.fs_ptr, self.rev, pool())
         e_ptr, e_baton = delta.make_editor(editor, pool())
         repos.svn_repos_replay(root, e_ptr, e_baton, pool())
@@ -484,10 +482,10 @@ class SubversionChangeset(Changeset):
                     action = Changeset.ADD
             else:
                 action = Changeset.EDIT
-                change.base_rev = fs.node_created_rev(prev_root,
-                                                      change.base_path, pool())
-                change.base_path = fs.node_created_path(prev_root,
-                                                      change.base_path, pool())
+                b_path, b_rev = change.base_path, change.base_rev
+                b_root = fs.revision_root(self.fs_ptr, b_rev, pool())
+                change.base_path = fs.node_created_path(b_root, b_path, pool())
+                change.base_rev = fs.node_created_rev(b_root, b_path, pool())
             kind = _kindmap[change.item_kind]
             path = path[len(self.scope) - 1:]
             base_path = _scoped_path(self.scope, change.base_path)
