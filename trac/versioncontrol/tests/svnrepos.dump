@@ -466,3 +466,60 @@ Node-path: trunk/README2.txt
 Node-action: delete
 
 
+Revision-number: 15
+Prop-content-length: 162
+Content-length: 162
+
+K 7
+svn:log
+V 62
+Removing original file, just before committing the wc->wc copy
+K 10
+svn:author
+V 5
+cboos
+K 8
+svn:date
+V 27
+2005-12-06T12:47:36.271020Z
+PROPS-END
+
+Node-path: tags/v1.1/README2.txt
+Node-action: delete
+
+
+Revision-number: 16
+Prop-content-length: 138
+Content-length: 138
+
+K 7
+svn:log
+V 38
+Committing wc->wc copy + local changes
+K 10
+svn:author
+V 5
+cboos
+K 8
+svn:date
+V 27
+2005-12-06T12:47:51.122376Z
+PROPS-END
+
+Node-path: branches/v2
+Node-kind: dir
+Node-action: add
+Node-copyfrom-rev: 14
+Node-copyfrom-path: tags/v1.1
+
+
+Node-path: branches/v2/README2.txt
+Node-kind: file
+Node-action: change
+Text-content-length: 47
+Text-content-md5: 9b7bad978c6ad159f939c3db2038cbb1
+Content-length: 47
+
+A test + local modifications after wc->wc copy
+
+
