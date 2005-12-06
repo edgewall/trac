@@ -464,6 +464,7 @@ class SubversionChangeset(Changeset):
         idx = 0
         copies, deletions = {}, {}
         changes = []
+        revroots = {}
         for path, change in editor.changes.items():
             if not self.authz.has_permission(path):
                 # FIXME: what about base_path?
@@ -483,7 +484,11 @@ class SubversionChangeset(Changeset):
             else:
                 action = Changeset.EDIT
                 b_path, b_rev = change.base_path, change.base_rev
-                b_root = fs.revision_root(self.fs_ptr, b_rev, pool())
+                if revroots.has_key(b_rev):
+                    b_root = revroots[b_rev]
+                else:
+                    b_root = fs.revision_root(self.fs_ptr, b_rev, pool())
+                    revroots[b_rev] = b_root
                 change.base_path = fs.node_created_path(b_root, b_path, pool())
                 change.base_rev = fs.node_created_rev(b_root, b_path, pool())
             kind = _kindmap[change.item_kind]
