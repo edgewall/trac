@@ -9,6 +9,7 @@
 # 
 # Make sure to make a backup of the Trac environment before running this!
 
+import os
 import sys
 
 from trac.env import open_environment
