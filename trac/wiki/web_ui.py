@@ -71,6 +71,9 @@ class WikiModule(Component):
         pagename = req.args.get('page', 'WikiStart')
         version = req.args.get('version')
 
+        if pagename.endswith('/'):
+            req.redirect(self.env.href.wiki(pagename.strip('/')))
+
         db = self.env.get_db_cnx()
         page = WikiPage(self.env, pagename, version, db)
 
