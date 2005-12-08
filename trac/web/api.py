@@ -93,13 +93,20 @@ class Request(object):
         """Check the request "If-None-Match" header against an entity tag
         generated from the specified last modified time in seconds (`timesecs`),
         optionally appending an `extra` string to indicate variants of the
-        requested resource.
+        requested resource. That `extra` parameter can also be a list,
+        in which case the MD5 sum of the list content will be used.
 
         If the generated tag matches the "If-None-Match" header of the request,
         this method sends a "304 Not Modified" response to the client.
         Otherwise, it adds the entity tag as as "ETag" header to the response so
         that consequetive requests can be cached.
         """
+        if isinstance(extra, list):
+            import md5
+            m = md5.new()
+            for elt in extra:
+                m.update(str(elt))
+            extra = m.hexdigest()
         etag = 'W"%s/%d/%s"' % (self.authname, timesecs, extra)
         inm = self.get_header('If-None-Match')
         if (not inm or inm != etag):

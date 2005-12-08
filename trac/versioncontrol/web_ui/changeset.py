@@ -71,8 +71,13 @@ class ChangesetModule(Component):
             req.redirect(self.env.href.changeset(rev))
 
         chgset = repos.get_changeset(rev)
-        req.check_modified(chgset.date,
-                           diff_options[0] + ''.join(diff_options[1]))
+        req.check_modified(chgset.date, [
+            diff_options[0],
+            ''.join(diff_options[1]),
+            repos.name,
+            repos.rev_older_than(rev, repos.youngest_rev),
+            chgset.message,
+            util.pretty_timedelta(chgset.date, None, 3600)])
 
         format = req.args.get('format')
         if format == 'diff':
@@ -153,6 +158,7 @@ class ChangesetModule(Component):
         req.hdf['changeset'] = {
             'revision': chgset.rev,
             'time': util.format_datetime(chgset.date),
+            'age': util.pretty_timedelta(chgset.date, None, 3600),
             'author': util.escape(chgset.author or 'anonymous'),
             'message': wiki_to_html(chgset.message or '--', self.env, req,
                                     escape_newlines=True)

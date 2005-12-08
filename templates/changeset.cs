@@ -102,7 +102,8 @@
 
 <dl id="overview">
  <dt class="time">Timestamp:</dt>
- <dd class="time"><?cs var:changeset.time ?></dd>
+ <dd class="time"><?cs var:changeset.time ?> 
+  (<?cs alt:changeset.age ?>less than one hour<?cs /alt ?> ago)</dd>
  <dt class="author">Author:</dt>
  <dd class="author"><?cs var:changeset.author ?></dd>
  <dt class="message">Message:</dt>
