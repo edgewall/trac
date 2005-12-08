@@ -21,9 +21,6 @@ import tempfile
 import re
 import md5
 
-TRUE =  ['yes', '1', 1, 'true',  'on',  'aye']
-FALSE = ['no',  '0', 0, 'false', 'off', 'nay']
-
 CRLF = '\r\n'
 
 def escape(text, quotes=True):

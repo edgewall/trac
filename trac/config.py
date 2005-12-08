@@ -18,6 +18,8 @@ from ConfigParser import ConfigParser
 import os
 import sys
 
+_TRUE_VALUES = ('yes', 'true',  'on', 'aye', '1', 1, True)
+
 
 class Configuration:
     """Thin layer over `ConfigParser` from the Python standard library.
@@ -43,6 +45,11 @@ class Configuration:
                 return self._defaults.get((section, name), '')
             return default
         return self.parser.get(section, name)
+
+    def getbool(self, section, name, default=None):
+        if isinstance(default, basestring):
+            default = default.lower()
+        return self.get(section, name, default) in _TRUE_VALUES
 
     def setdefault(self, section, name, value):
         if (section, name) not in self._defaults:

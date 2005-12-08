@@ -20,7 +20,7 @@ import time
 from trac.core import *
 from trac.web.api import IAuthenticator, IRequestHandler
 from trac.web.chrome import INavigationContributor
-from trac.util import escape, hex_entropy, TRUE
+from trac.util import escape, hex_entropy
 
 
 class LoginModule(Component):
@@ -50,10 +50,9 @@ class LoginModule(Component):
         if not authname:
             return None
 
-        ignore_case = self.env.config.get('trac', 'ignore_auth_case')
-        ignore_case = ignore_case.strip().lower() in TRUE
-        if ignore_case:
+        if self.config.getbool('trac', 'ignore_auth_case'):
             authname = authname.lower()
+
         return authname
 
     # INavigationContributor methods
@@ -101,9 +100,7 @@ class LoginModule(Component):
         assert req.remote_user, 'Authentication information not available.'
 
         remote_user = req.remote_user
-        ignore_case = self.env.config.get('trac', 'ignore_auth_case')
-        ignore_case = ignore_case.strip().lower() in TRUE
-        if ignore_case:
+        if self.config.getbool('trac', 'ignore_auth_case'):
             remote_user = remote_user.lower()
 
         assert req.authname in ('anonymous', remote_user), \
@@ -148,12 +145,9 @@ class LoginModule(Component):
         req.outcookie['trac_auth']['expires'] = -10000
 
     def _get_name_for_cookie(self, req, cookie):
-        check_ip = self.env.config.get('trac', 'check_auth_ip')
-        check_ip = check_ip.strip().lower() in TRUE
-
         db = self.env.get_db_cnx()
         cursor = db.cursor()
-        if check_ip:
+        if self.config.getbool('trac', 'check_auth_ip'):
             cursor.execute("SELECT name FROM auth_cookie "
                            "WHERE cookie=%s AND ipnr=%s",
                            (cookie.value, req.remote_addr))

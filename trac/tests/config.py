@@ -40,6 +40,15 @@ class ConfigurationTestCase(unittest.TestCase):
         config.setdefault('a', 'option', 'value')
         self.assertEquals('value', config.get('a', 'option'))
 
+    def test_default_bool(self):
+        config = Configuration(self.filename)
+        self.assertEquals(False, config.getbool('a', 'option'))
+        self.assertEquals(True, config.getbool('a', 'option', 'yes'))
+        self.assertEquals(True, config.getbool('a', 'option', 1))
+
+        config.setdefault('a', 'option', 'true')
+        self.assertEquals(True, config.getbool('a', 'option'))
+
     def test_read_and_get(self):
         configfile = open(self.filename, 'w')
         configfile.writelines(['[a]\n', 'option = x\n', '\n'])

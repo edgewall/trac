@@ -53,7 +53,7 @@ class TicketSystem(Component):
 
         # Owner field, can be text or drop-down depending on configuration
         field = {'name': 'owner', 'label': 'Owner'}
-        if self.config.get('ticket', 'restrict_owner').lower() in util.TRUE:
+        if self.config.getbool('ticket', 'restrict_owner'):
             field['type'] = 'select'
             users = []
             for username, name, email in self.env.get_known_users(db):

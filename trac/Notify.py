@@ -16,7 +16,7 @@
 
 from trac.__init__ import __version__
 from trac.core import TracError
-from trac.util import CRLF, TRUE, FALSE, wrap
+from trac.util import CRLF, wrap
 from trac.web.clearsilver import HDFWrapper
 from trac.web.main import populate_hdf
 
@@ -87,8 +87,7 @@ class NotifyEmail(Notify):
     def notify(self, resid, subject):
         self.subject = subject
 
-        enabled = self.config.get('notification', 'smtp_enabled')
-        if not enabled.lower() in TRUE:
+        if not self.config.getbool('notification', 'smtp_enabled'):
             return
         self.smtp_server = self.config.get('notification', 'smtp_server')
         self.smtp_port = int(self.config.get('notification', 'smtp_port'))
@@ -267,10 +266,10 @@ class TicketNotifyEmail(NotifyEmail):
                                  self.ticket['summary'])
 
     def get_recipients(self, tktid):
-        val = self.config.get('notification', 'always_notify_reporter')
-        notify_reporter = val.lower() in TRUE
-        val = self.config.get('notification', 'always_notify_owner')
-        notify_owner = val.lower() in TRUE
+        notify_reporter = self.config.getbool('notification',
+                                              'always_notify_reporter')
+        notify_owner = self.config.getbool('notification',
+                                           'always_notify_owner')
 
         recipients = self.prev_cc
         cursor = self.db.cursor()

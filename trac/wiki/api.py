@@ -25,7 +25,7 @@ import urllib
 import re
 
 from trac.core import *
-from trac.util import to_utf8, TRUE
+from trac.util import to_utf8
 
 
 class IWikiChangeListener(Interface):
@@ -184,8 +184,7 @@ class WikiSystem(Component):
     # IWikiSyntaxProvider methods
     
     def get_wiki_syntax(self):
-        ignore_missing = self.config.get('wiki', 'ignore_missing_pages')
-        ignore_missing = ignore_missing in TRUE
+        ignore_missing = self.config.getbool('wiki', 'ignore_missing_pages')
         yield (r"!?(?<!/)\b[A-Z][a-z]+(?:[A-Z][a-z]*[a-z/])+"
                 "(?:#[A-Za-z0-9]+)?(?=\Z|\s|[.,;:!?\)}\]])",
                lambda x, y, z: self._format_link(x, 'wiki', y, y,
