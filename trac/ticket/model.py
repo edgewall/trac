@@ -38,6 +38,15 @@ class Ticket(object):
             self.id = self.time_created = self.time_changed = None
         self._old = {}
 
+    def _get_db(self, db):
+        return db or self.env.get_db_cnx()
+
+    def _get_db_for_write(self, db):
+        if db:
+            return (db, False)
+        else:
+            return (self.env.get_db_cnx(), True)
+
     exists = property(fget=lambda self: self.id is not None)
 
     def _init_defaults(self, db=None):
@@ -63,8 +72,7 @@ class Ticket(object):
                 self.values.setdefault(field['name'], default)
 
     def _fetch_ticket(self, tkt_id, db=None):
-        if not db:
-            db = self.env.get_db_cnx()
+        db = self._get_db(db)
 
         # Fetch the standard ticket fields
         std_fields = [f['name'] for f in self.fields if not f.get('custom')]
@@ -122,11 +130,7 @@ class Ticket(object):
     def insert(self, when=0, db=None):
         """Add ticket to database"""
         assert not self.exists, 'Cannot insert an existing ticket'
-        if not db:
-            db = self.env.get_db_cnx()
-            handle_ta = True
-        else:
-            handle_ta = False
+        db, handle_ta = self._get_db_for_write(db)
 
         # Add a timestamp
         if not when:
@@ -179,11 +183,7 @@ class Ticket(object):
         if not self._old and not comment:
             return # Not modified
 
-        if not db:
-            db = self.env.get_db_cnx()
-            handle_ta = True
-        else:
-            handle_ta = False
+        db, handle_ta = self._get_db_for_write(db)
         cursor = db.cursor()
         when = int(when or time.time())
 
@@ -243,8 +243,7 @@ class Ticket(object):
         """Return the changelog as a list of tuples of the form
         (time, author, field, oldvalue, newvalue).
         """
-        if not db:
-            db = self.env.get_db_cnx()
+        db = self._get_db(db)
         cursor = db.cursor()
         if when:
             cursor.execute("SELECT time,author,field,oldvalue,newvalue "
@@ -271,6 +270,17 @@ class Ticket(object):
         for t, author, field, oldvalue, newvalue in cursor:
             log.append((int(t), author, field, oldvalue or '', newvalue or ''))
         return log
+
+    def delete(self, db=None):
+        db, handle_ta = self._get_db_for_write(db)
+        cursor = db.cursor()
+        cursor.execute("DELETE FROM ticket WHERE id=%s", (self.id,))
+        cursor.execute("DELETE FROM ticket_change WHERE ticket=%s", (self.id,))
+        cursor.execute("DELETE FROM attachment "
+                       " WHERE type='ticket' and id=%s", (self.id,))
+        cursor.execute("DELETE FROM ticket_custom WHERE ticket=%s", (self.id,))
+        if handle_ta:
+            db.commit()
 
 
 class AbstractEnum(object):

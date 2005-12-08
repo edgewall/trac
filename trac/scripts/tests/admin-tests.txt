@@ -27,6 +27,7 @@ component add <name> <owner>                           -- Add a new component
 component rename <name> <newname>                      -- Rename a component
 component remove <name>                                -- Remove/uninstall component
 component chown <name> <owner>                         -- Change component ownership
+ticket remove <number>                                 -- Remove ticket
 ticket_type list                                       -- Show possible ticket types
 ticket_type add <value>                                -- Add a ticket type
 ticket_type change <value> <newvalue>                  -- Change a ticket type

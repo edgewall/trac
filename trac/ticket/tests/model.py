@@ -21,18 +21,24 @@ class TicketTestCase(unittest.TestCase):
             ticket[k] = v
         return ticket.insert()
 
-    def test_create_ticket(self):
-        # Multiple test in one method, this sucks
+    def _create_a_ticket(self):
         # 1. Creating ticket
         ticket = Ticket(self.env)
         ticket['reporter'] = 'santa'
         ticket['summary'] = 'Foo'
         ticket['foo'] = 'This is a custom field'
+        return ticket
+
+    def test_create_ticket_1(self):
+        ticket = self._create_a_ticket()
         self.assertEqual('santa', ticket['reporter'])
         self.assertEqual('Foo', ticket['summary'])
         self.assertEqual('This is a custom field', ticket['foo'])
         ticket.insert()
 
+    def test_create_ticket_2(self):
+        ticket = self._create_a_ticket()
+        ticket.insert()
         # Retrieving ticket
         ticket2 = Ticket(self.env, 1)
         self.assertEqual(1, ticket2.id)
@@ -40,11 +46,16 @@ class TicketTestCase(unittest.TestCase):
         self.assertEqual('Foo', ticket2['summary'])
         self.assertEqual('This is a custom field', ticket2['foo'])
 
-        # Modifying ticket
+    def _modify_a_ticket(self):
+        ticket2 = self._create_a_ticket()
+        ticket2.insert()
         ticket2['summary'] = 'Bar'
         ticket2['foo'] = 'New value'
         ticket2.save_changes('santa', 'this is my comment')
+        return ticket2
 
+    def test_create_ticket_3(self):
+        self._modify_a_ticket()
         # Retrieving ticket
         ticket3 = Ticket(self.env, 1)
         self.assertEqual(1, ticket3.id)
@@ -52,6 +63,8 @@ class TicketTestCase(unittest.TestCase):
         self.assertEqual(ticket3['summary'], 'Bar')
         self.assertEqual(ticket3['foo'], 'New value')
 
+    def test_create_ticket_4(self):
+        ticket3 = self._modify_a_ticket()
         # Testing get_changelog()
         log = ticket3.get_changelog()
         self.assertEqual(len(log), 3)
@@ -59,6 +72,14 @@ class TicketTestCase(unittest.TestCase):
         self.failUnless(log[0][2] in ok_vals)
         self.failUnless(log[1][2] in ok_vals)
         self.failUnless(log[2][2] in ok_vals)
+
+    def test_create_ticket_5(self):
+        ticket3 = self._modify_a_ticket()
+        # Testing delete()
+        ticket3.delete()
+        log = ticket3.get_changelog()
+        self.assertEqual(len(log), 0)
+        self.assertRaises(TracError, Ticket, self.env, 1)
 
     def test_ticket_default_values(self):
         """

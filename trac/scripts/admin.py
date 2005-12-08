@@ -296,6 +296,7 @@ class TracAdmin(cmd.Cmd):
                     self._help_wiki +
 #                    self._help_config + self._help_wiki +
                     self._help_permission + self._help_component +
+                    self._help_ticket +
                     self._help_ticket_type + self._help_priority +
                     self._help_severity +  self._help_version +
                     self._help_milestone)
@@ -755,6 +756,36 @@ Congratulations!
             if os.path.isfile(filename):
                 print " %s => %s" % (filename, page)
                 self._do_wiki_import(filename, page, cursor)
+
+    ## Ticket
+    _help_ticket = [('ticket remove <number>', 'Remove ticket')]
+
+    def complete_ticket(self, text, line, begidx, endidx):
+        argv = self.arg_tokenize(line)
+        argc = len(argv)
+        if line[-1] == ' ': # Space starts new argument
+            argc += 1
+        comp = []
+        if argc == 2:
+            comp = ['remove']
+        return self.word_complete(text, comp)
+
+    def do_ticket(self, line):
+        arg = self.arg_tokenize(line)
+        if arg[0] == 'remove'  and len(arg)==2:
+            try:
+                number = int(arg[1])
+            except ValueError:
+                print>>sys.stderr, "<number> must be a number"
+                return
+            self._do_ticket_remove(number)
+        else:    
+            self.do_help ('ticket')
+
+    def _do_ticket_remove(self, number):
+        ticket = Ticket(self.env_open(), number)
+        ticket.delete()
+        print "Ticket %d and all associated data removed." % number
 
 
     ## (Ticket) Type
