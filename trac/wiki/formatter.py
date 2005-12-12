@@ -265,18 +265,20 @@ class Formatter(object):
             self.open_tag(*italic)
         return tmp
 
+    def _unquote(self, str):
+        if str and str[0] in "'\"" and str[0] == str[-1]:
+            return str[1:-1]
+        else:
+            return str
+
     def _shref_formatter(self, match, fullmatch):
         ns = fullmatch.group('sns')
-        target = fullmatch.group('stgt')
-        if target[0] in "'\"":
-            target = target[1:-1]
+        target = self._unquote(fullmatch.group('stgt'))
         return self._make_link(ns, target, match, match)
 
     def _lhref_formatter(self, match, fullmatch):
         ns = fullmatch.group('lns')
-        target = fullmatch.group('ltgt') 
-        if target and target[0] in ("'",'"'):
-            target = target[1:-1]
+        target = self._unquote(fullmatch.group('ltgt'))
         label = fullmatch.group('label')
         if not label: # e.g. `[http://target]` or `[wiki:target]`
             if target:
@@ -286,8 +288,7 @@ class Formatter(object):
                     label = target          # use only `target`
             else: # e.g. `[search:]` 
                 label = ns
-        if label and label[0] in ("'",'"'):
-            label = label[1:-1]
+        label = self._unquote(label)
         rel = fullmatch.group('rel')
         if rel:
             return self._make_relative_link(rel, label or rel)
