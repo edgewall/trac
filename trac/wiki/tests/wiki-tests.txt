@@ -214,6 +214,8 @@ wiki:Foo%20Bar wiki:Foo%20Bar#baz
 [wiki:Foo%20Bar Foo Bar] [wiki:Foo%20Bar#baz Foo Bar]
 
 [wiki:Argv "*argv[] versus **argv"]
+
+[wiki:test "test.txt", line 123]
 ------------------------------
 <p>
 <a class="missing wiki" href="/wiki/WikiStart" rel="nofollow">Foo?</a> <a class="ext-link" href="http://www.edgewall.com/"><span class="icon"></span>Edgewall</a>
@@ -226,6 +228,9 @@ wiki:Foo%20Bar wiki:Foo%20Bar#baz
 </p>
 <p>
 <a class="missing wiki" href="/wiki/Argv" rel="nofollow">*argv[] versus **argv?</a>
+</p>
+<p>
+<a class="missing wiki" href="/wiki/test" rel="nofollow">"test.txt", line 123?</a>
 </p>
 ------------------------------
 ==============================
