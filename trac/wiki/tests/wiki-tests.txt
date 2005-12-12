@@ -115,6 +115,7 @@ Some change.
 ticket:1
 This ticket is the first one
 changeset:123>
+changeset:123&
 ------------------------------
 <p>
 Add-on to <a class="missing changeset" href="/changeset/123" rel="nofollow">changeset:123</a>:
@@ -122,6 +123,7 @@ Some change.
 <a class="missing ticket" href="/ticket/1" rel="nofollow">ticket:1</a>
 This ticket is the first one
 <a class="missing changeset" href="/changeset/123" rel="nofollow">changeset:123</a>&gt;
+<a class="missing changeset" href="/changeset/123" rel="nofollow">changeset:123</a>&amp;
 </p>
 ------------------------------
 Add-on to <a class="missing changeset" href="/changeset/123" rel="nofollow">changeset:123</a>:
@@ -129,6 +131,7 @@ Some change.
 <a class="missing ticket" href="/ticket/1" rel="nofollow">ticket:1</a>
 This ticket is the first one
 <a class="missing changeset" href="/changeset/123" rel="nofollow">changeset:123</a>&gt;
+<a class="missing changeset" href="/changeset/123" rel="nofollow">changeset:123</a>&amp;
 ==============================
 CamelCase AlabamA ABc AlaBamA FooBar
 ------------------------------

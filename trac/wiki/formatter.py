@@ -137,7 +137,7 @@ class Formatter(object):
     QUOTED_STRING = r"'[^']+'|\"[^\"]+\""
 
     SHREF_TARGET_FIRST = r"[\w/?!#@]"
-    SHREF_TARGET_MIDDLE = r"(?:\|(?=[^|\s])|&(?!lt;|gt;)|[^|&\s])"
+    SHREF_TARGET_MIDDLE = r"(?:\|(?=[^|\s])|[^|<>\s])"
     SHREF_TARGET_LAST = r"[a-zA-Z0-9/=]" # we don't want "_"
 
     LHREF_RELATIVE_TARGET = r"[/.][^\s[\]]*"
@@ -147,6 +147,7 @@ class Formatter(object):
     # between _pre_rules and _post_rules
 
     _pre_rules = [
+        r"(?P<htmlescape>[&<>])",
         # Font styles
         r"(?P<bolditalic>%s)" % BOLDITALIC_TOKEN,
         r"(?P<bold>%s)" % BOLD_TOKEN,
@@ -297,13 +298,16 @@ class Formatter(object):
 
     def _make_link(self, ns, target, match, label):
         if ns in self.link_resolvers:
-            return self.link_resolvers[ns](self, ns, target, label)
+            return self.link_resolvers[ns](self, ns, target,
+                                           util.escape(label, False))
         elif target.startswith('//') or ns == "mailto":
             return self._make_ext_link(ns+':'+target, label)
         else:
-            return match
+            return util.escape(match)
 
     def _make_ext_link(self, url, text, title=''):
+        url = util.escape(url)
+        text, title = util.escape(text), util.escape(title)
         title_attr = title and ' title="%s"' % title or ''
         if Formatter.img_re.search(url) and self.flavor != 'oneliner':
             return '<img src="%s" alt="%s" />' % (url, title or text)
@@ -314,6 +318,7 @@ class Formatter(object):
             return '<a href="%s"%s>%s</a>' % (url, title_attr, text)
 
     def _make_relative_link(self, url, text):
+        url, text = util.escape(url), util.escape(text)
         if Formatter.img_re.search(url) and self.flavor != 'oneliner':
             return '<img src="%s" alt="%s" />' % (url, text)
         if url.startswith('//'): # only the protocol will be kept
@@ -365,12 +370,14 @@ class Formatter(object):
         # the tickethref regexp
         return match
 
+    def _htmlescape_formatter(self, match, fullmatch):
+        return match == "&" and "&amp;" or match == "<" and "&lt;" or "&gt;"
+
     def _macro_formatter(self, match, fullmatch):
         name = fullmatch.group('macroname')
         if name in ['br', 'BR']:
             return '<br />'
         args = fullmatch.group('macroargs')
-        args = util.unescape(args)
         try:
             macro = WikiProcessor(self.env, name)
             return macro.process(self.req, args, 1)
@@ -390,8 +397,7 @@ class Formatter(object):
         depth = min(len(fullmatch.group('hdepth')), 5)
         heading = match[depth + 1:len(match) - depth - 1]
 
-        text = wiki_to_oneliner(util.unescape(heading), self.env, self.db,
-                                self._absurls)
+        text = wiki_to_oneliner(heading, self.env, self.db, self._absurls)
         sans_markup = re.sub(r'</?\w+(?: .*?)?>', '', text)
 
         anchor = self._anchor_re.sub('', sans_markup.decode('utf-8'))
@@ -600,7 +606,6 @@ class Formatter(object):
                 self.close_def_list()
                 continue
 
-            line = util.escape(line, False)
             if escape_newlines:
                 line += ' [[BR]]'
             self.in_list_item = False
@@ -643,8 +648,10 @@ class OneLinerFormatter(Formatter):
     # Override a few formatters to disable some wiki syntax in "oneliner"-mode
     def _list_formatter(self, match, fullmatch): return match
     def _indent_formatter(self, match, fullmatch): return match
-    def _heading_formatter(self, match, fullmatch): return match
-    def _definition_formatter(self, match, fullmatch): return match
+    def _heading_formatter(self, match, fullmatch):
+        return util.escape(match, False)
+    def _definition_formatter(self, match, fullmatch):
+        return util.escape(match, False)
     def _table_cell_formatter(self, match, fullmatch): return match
     def _last_table_cell_formatter(self, match, fullmatch): return match
 
@@ -689,7 +696,7 @@ class OneLinerFormatter(Formatter):
         if shorten:
             result = util.shorten_line(result)
 
-        result = re.sub(self.rules, self.replace, util.escape(result, False))
+        result = re.sub(self.rules, self.replace, result)
         result = result.replace('[...]', '[&hellip;]')
         if result.endswith('...'):
             result = result[:-3] + '&hellip;'
@@ -741,8 +748,7 @@ class OutlineFormatter(Formatter):
         depth = min(len(fullmatch.group('hdepth')), 5)
         heading = match[depth + 1:len(match) - depth - 1]
         anchor = self._anchors[-1]
-        text = wiki_to_oneliner(util.unescape(heading), self.env, self.db,
-                                self._absurls)
+        text = wiki_to_oneliner(heading, self.env, self.db, self._absurls)
         text = re.sub(r'</?a(?: .*?)?>', '', text) # Strip out link tags
         self.outline.append((depth, '<a href="#%s">%s</a>' % (anchor, text)))
 

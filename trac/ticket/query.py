@@ -609,12 +609,12 @@ class QueryModule(Component):
     def _format_link(self, formatter, ns, query, label):
         if query[0] == '?':
             return '<a class="query" href="%s">%s</a>' \
-                   % (escape(formatter.href.query()) + query.replace(' ', '+'),
+                   % (escape(formatter.href.query() + query.replace(' ', '+')),
                       label)
         else:
             from trac.ticket.query import Query, QuerySyntaxError
             try:
-                query = Query.from_string(formatter.env, unescape(query))
+                query = Query.from_string(formatter.env, query)
                 return '<a class="query" href="%s">%s</a>' \
                        % (escape(query.get_href()), label)
             except QuerySyntaxError, e:
