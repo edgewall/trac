@@ -637,10 +637,6 @@ class OneLinerFormatter(Formatter):
     """
     flavor = 'oneliner'
 
-    _non_nested_block_re = re.compile(r"(?:^|\n)\{\{\{(?:\n(#![\w+-/]+))?"
-                                      r"(?:\n([^{}]|\{(?!\{\{)|\}(?!\}\}))+)+"
-                                      r"\}\}\}")
-    
     def __init__(self, env, absurls=0, db=None):
         Formatter.__init__(self, env, None, absurls, db)
 
@@ -668,22 +664,27 @@ class OneLinerFormatter(Formatter):
         self.out = out
         self._open_tags = []
 
-        result = text.strip()
-
         # Simplify code blocks
-        def simplify(fullmatch):
-            processor = fullmatch.group(1)
-            if processor == '#!comment':
-                return ''
-            elif '\n' in fullmatch.group():
-                return ' ![...]'
+        in_code_block = 0
+        processor = None
+        buf = StringIO()
+        for line in text.strip().splitlines():
+            if line.strip() == '{{{':
+                in_code_block += 1
+            elif line.strip() == '}}}':
+                if in_code_block:
+                    in_code_block -= 1
+                    if in_code_block == 0:
+                        if processor != 'comment':
+                            print>>buf, ' ![...]'
+                        processor = None
+            elif in_code_block:
+                if not processor:
+                    if line.startswith('#!'):
+                        processor = line[2:].strip()
             else:
-                return '`%s`' % match[3:-3]
-
-        old = ''
-        while old != result:
-            old = result
-            result = re.sub(self._non_nested_block_re, simplify, old)
+                print>>buf, line
+        result = buf.getvalue()[:-1]
 
         if shorten:
             result = util.shorten_line(result)

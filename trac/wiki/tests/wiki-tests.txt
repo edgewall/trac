@@ -436,8 +436,10 @@ and block
 <pre class="wiki">number two
 </pre>
 ------------------------------
-Block  [&hellip;]
-and block [&hellip;]
+Block 
+ [&hellip;]
+and block
+ [&hellip;]
 ==============================
 {{{
 #!default
@@ -667,9 +669,7 @@ without endtags
 </p>
 ------------------------------
 <tt>verbatim</tt>
-{{{
-{{{in <tt>block</tt>
-}}}
+ [&hellip;]
 <tt>{{{this is verbatim}}}</tt> and <tt>`that` should also `be` verbatim</tt>
 ==============================
  term:: definition
