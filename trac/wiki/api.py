@@ -60,10 +60,22 @@ class IWikiMacroProvider(Interface):
 class IWikiSyntaxProvider(Interface):
  
     def get_wiki_syntax():
-        """Return an iterable that provides additional wiki syntax."""
+        """Return an iterable that provides additional wiki syntax.
+
+        Additional wiki syntax correspond to a pair of (regexp, cb),
+        the `regexp` for the additional syntax and the callback `cb`
+        which will be called if there's a match.
+        That function is of the form cb(formatter, ns, match).
+        """
  
     def get_link_resolvers():
-        """Return an iterable over (namespace, formatter) tuples."""
+        """Return an iterable over (namespace, formatter) tuples.
+
+        Each formatter should be a function of the form
+        fmt(formatter, ns, target, label), and should
+        return some HTML fragment.
+        The `label` is already HTML escaped, whereas the `target` is not.
+        """
  
 
 class WikiSystem(Component):
