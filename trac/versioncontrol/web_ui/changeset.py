@@ -19,8 +19,9 @@
 import time
 import re
 
-from trac import mimeview, util
+from trac import util
 from trac.core import *
+from trac.mimeview import Mimeview, is_binary
 from trac.perm import IPermissionRequestor
 from trac.Search import ISearchSource, query_to_sql, shorten_result
 from trac.Timeline import ITimelineEventProvider
@@ -202,6 +203,8 @@ class ChangesetModule(Component):
                              in self.config.get('browser', 'hide_properties',
                                                 'svk:merge').split(',')]
 
+        mimeview = Mimeview(self.env)
+            
         for idx, path, kind, base_path, base_rev in edits:
             old_node = repos.get_node(base_path or path, base_rev)
             new_node = repos.get_node(path, chgset.rev)
@@ -228,22 +231,15 @@ class ChangesetModule(Component):
                 continue
 
             # Content changes
-            default_charset = self.config.get('trac', 'default_charset')
-            old_content = old_node.get_content().read()
-            if mimeview.is_binary(old_content):
+            data = old_node.get_content().read()
+            if is_binary(data):
                 continue
-            charset = mimeview.get_charset(old_node.content_type)
-            if not charset:
-                charset = mimeview.detect_unicode(old_content)
-            old_content = util.to_utf8(old_content, charset or default_charset)
+            old_content = mimeview.to_utf8(data, old_node.content_type)
 
-            new_content = new_node.get_content().read()
-            if mimeview.is_binary(new_content):
+            data = new_node.get_content().read()
+            if is_binary(data):
                 continue
-            charset = mimeview.get_charset(new_node.content_type)
-            if not charset:
-                charset = mimeview.detect_unicode(new_content)
-            new_content = util.to_utf8(new_content, charset or default_charset)
+            new_content = mimeview.to_utf8(data, new_node.content_type)
 
             if old_content != new_content:
                 context = 3
@@ -272,6 +268,8 @@ class ChangesetModule(Component):
                         'filename=Changeset%s.diff' % req.args.get('rev'))
         req.end_headers()
 
+        mimeview = Mimeview(self.env)
+
         for path, kind, change, base_path, base_rev in chgset.get_changes():
             if change == Changeset.ADD:
                 old_node = None
@@ -288,27 +286,22 @@ class ChangesetModule(Component):
             if kind == 'dir':
                 continue
 
-            default_charset = self.config.get('trac', 'default_charset')
             new_content = old_content = ''
             new_node_info = old_node_info = ('','')
 
             if old_node:
-                charset = mimeview.get_charset(old_node.content_type) or \
-                          default_charset
-                old_content = util.to_utf8(old_node.get_content().read(),
-                                           charset)
+                data = old_node.get_content().read()
+                if is_binary(data):
+                    continue
+                old_content = mimeview.to_utf8(data, old_node.content_type)
                 old_node_info = (old_node.path, old_node.rev)
-            if mimeview.is_binary(old_content):
-                continue
 
             if new_node:
-                charset = mimeview.get_charset(new_node.content_type) or \
-                          default_charset
-                new_content = util.to_utf8(new_node.get_content().read(),
-                                           charset)
+                data = new_node.get_content().read()
+                if is_binary(data):
+                    continue
+                new_content = mimeview.to_utf8(data, new_node.content_type) 
                 new_node_info = (new_node.path, new_node.rev)
-            if mimeview.is_binary(new_content):
-                continue
 
             if old_content != new_content:
                 context = 3

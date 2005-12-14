@@ -26,8 +26,7 @@ except ImportError:
 from trac.core import *
 from trac.util import escape, to_utf8
 
-__all__ = ['get_charset', 'get_mimetype', 'is_binary', 'detect_unicode',
-           'Mimeview']
+__all__ = ['get_mimetype', 'is_binary', 'detect_unicode', 'Mimeview']
 
 MIME_MAP = {
     'css':'text/css',
@@ -61,17 +60,20 @@ MIME_MAP = {
     'lua':'text/x-lua',
     'm':'text/x-objc', 'mm':'text/x-objc',
     'm4':'text/x-m4',
-    'make':'text/x-makefile', 'mk':'text/x-makefile', 'Makefile':'text/x-makefile',
+    'make':'text/x-makefile', 'mk':'text/x-makefile',
+    'Makefile':'text/x-makefile',
     'mail':'text/x-mail',
     'pas':'text/x-pascal',
     'pdf':'application/pdf',
-    'pl':'text/x-perl', 'pm':'text/x-perl', 'PL':'text/x-perl', 'perl':'text/x-perl',
+    'pl':'text/x-perl', 'pm':'text/x-perl', 'PL':'text/x-perl',
+    'perl':'text/x-perl',
     'php':'text/x-php', 'php4':'text/x-php', 'php3':'text/x-php',
     'ps':'application/postscript',
     'psp':'text/x-psp',
     'py':'text/x-python', 'python':'text/x-python',
     'pyx':'text/x-pyrex',
-    'nroff':'application/x-troff', 'roff':'application/x-troff', 'troff':'application/x-troff',
+    'nroff':'application/x-troff', 'roff':'application/x-troff',
+    'troff':'application/x-troff',
     'rb':'text/x-ruby', 'ruby':'text/x-ruby',
     'rfc':'text/x-rfc',
     'rst': 'text/x-rst',
@@ -94,26 +96,31 @@ MIME_MAP = {
     'zsh':'text/x-zsh'
 }
 
-def get_charset(mimetype):
-    """Return the character encoding included in the given content type string,
-    or `None` if `mimetype` is `None` or empty or if no charset information is
-    available.
-    """
-    if mimetype:
-        ctpos = mimetype.find('charset=')
-        if ctpos >= 0:
-            return mimetype[ctpos + 8:]
 
-def get_mimetype(filename):
+MODE_RE = re.compile(
+    r"#!(?:[/\w.-_]+/)?(\w+)|"               # look for shebang
+    r"-\*-\s*(?:mode:\s*)?([\w+-]+)\s*-\*-"  # look for Emacs' -*- mode -*-
+    )
+
+def get_mimetype(filename, content=None):
     """Guess the most probable MIME type of a file with the given name."""
-    try:
-        suffix = filename.split('.')[-1]
+    suffix = filename.split('.')[-1]
+    if MIME_MAP.has_key(suffix):
         return MIME_MAP[suffix]
-    except KeyError:
+    elif content:
+        match = re.search(MODE_RE, content[:1000])
+        if match:
+            mode = match.group(1) or match.group(2).lower()
+            if MIME_MAP.has_key(mode):
+                return MIME_MAP[mode]
+    try:
         import mimetypes
         return mimetypes.guess_type(filename)[0]
     except:
-        return None
+        if content and is_binary(content):
+            return 'application/octet-stream'
+        else:
+            return None
 
 def is_binary(str):
     """Detect binary content by checking the first thousand bytes for zeroes."""
@@ -204,7 +211,7 @@ class Mimeview(Component):
             return ''
 
         if filename and not mimetype:
-            mimetype = get_mimetype(filename)
+            mimetype = get_mimetype(filename, content)
         mimetype = mimetype.split(';')[0].strip() # split off charset
 
         expanded_content = None
@@ -283,11 +290,29 @@ class Mimeview(Component):
     def max_preview_size(self):
         return int(self.config.get('mimeviewer', 'max_preview_size', '262144'))
 
-    def preview_charset(self, content):
-        return detect_unicode(content) or self.config.get('trac',
-                                                          'default_charset')
+    def get_charset(self, content='', mimetype=None):
+        """Infer the character encoding from the `content` or the `mimetype`.
 
-    def preview_to_hdf(self, req, mimetype, charset, content, filename,
+        The charset information in the `mimetype`, if given,
+        takes precedence over auto-detection.
+        Return the configured `default_charset` if no other information
+        is available.
+        """
+        if mimetype:
+            ctpos = mimetype.find('charset=')
+            if ctpos >= 0:
+                return mimetype[ctpos + 8:].strip()
+        return detect_unicode(content) or \
+               self.config.get('trac', 'default_charset')
+
+    def to_utf8(self, content, mimetype=None):
+        """Convert an encoded `content` to utf-8.
+
+        Tries to auto-detect the encoding using `Mimeview.get_charset()`.
+        """
+        return to_utf8(content, self.get_charset(content, mimetype))
+
+    def preview_to_hdf(self, req, content, mimetype, filename,
                        detail=None, annotations=None):
         max_preview_size = self.max_preview_size()
         if len(content) >= max_preview_size:
@@ -295,7 +320,7 @@ class Mimeview(Component):
                     'max_file_size': max_preview_size}
 
         if not is_binary(content):
-            content = to_utf8(content, charset or self.preview_charset(content))
+            content = self.to_utf8(content, mimetype)
         return {'preview': self.render(req, mimetype, content,
                                        filename, detail, annotations)}
 
