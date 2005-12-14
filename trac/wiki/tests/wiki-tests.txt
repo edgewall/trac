@@ -237,6 +237,18 @@ wiki:Foo%20Bar wiki:Foo%20Bar#baz
 </p>
 ------------------------------
 ==============================
+htdocs:release-1.0.tar.gz
+
+[htdocs:release-1.0.tar.gz Release 1.0]
+------------------------------
+<p>
+<a href="/chrome/site/release-1.0.tar.gz">htdocs:release-1.0.tar.gz</a>
+</p>
+<p>
+<a href="/chrome/site/release-1.0.tar.gz">Release 1.0</a>
+</p>
+------------------------------
+==============================
 foo (FooBar)
 
 foo (FooBar )

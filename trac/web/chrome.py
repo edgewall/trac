@@ -22,6 +22,7 @@ from trac.core import *
 from trac.env import IEnvironmentSetupParticipant
 from trac.web.api import IRequestHandler
 from trac.web.href import Href
+from trac.wiki import IWikiSyntaxProvider
 
 def add_link(req, rel, href, title=None, mimetype=None, classname=None):
     """Add a link to the HDF data set that will be inserted as <link> element in
@@ -97,7 +98,8 @@ class Chrome(Component):
     """Responsible for assembling the web site chrome, i.e. everything that
     is not actual page content.
     """
-    implements(IEnvironmentSetupParticipant, IRequestHandler, ITemplateProvider)
+    implements(IEnvironmentSetupParticipant, IRequestHandler, ITemplateProvider,
+               IWikiSyntaxProvider)
 
     navigation_contributors = ExtensionPoint(INavigationContributor)
     template_providers = ExtensionPoint(ITemplateProvider)
@@ -184,6 +186,18 @@ class Chrome(Component):
     def get_templates_dirs(self):
         return [self.env.get_templates_dir(),
                 self.config.get('trac', 'templates_dir')]
+
+    # IWikiSyntaxProvider methods
+    
+    def get_wiki_syntax(self):
+        return []
+    
+    def get_link_resolvers(self):
+        yield ('htdocs', self._format_link)
+
+    def _format_link(self, formatter, ns, file, label):
+        href = self.env.href.chrome('site', file)
+        return '<a href="%s">%s</a>' % (util.escape(href), label)
 
     # Public API methods
 
