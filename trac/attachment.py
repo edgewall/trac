@@ -257,6 +257,8 @@ class AttachmentModule(Component):
             segments = path.split('/')
             parent_id = '/'.join(segments[:-1])
             filename = segments[-1]
+            if len(segments) == 1 or not filename:
+                raise TracError('Bad request')            
             attachment = Attachment(self.env, parent_type, parent_id, filename)
 
         if req.method == 'POST':
