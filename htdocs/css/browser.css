@@ -23,6 +23,13 @@ h1 .sep { color: #666; padding: 0 .1em }
 #dirlist td.rev, #dirlist td.age, #dirlist td.change {
  color: #888;
  white-space: nowrap;
+ vertical-align: baseline;
+}
+#dirlist td.rev {
+ font-family: monospace;
+ letter-spacing: -0.02em;
+ font-size: 90%;
+ text-align: right;
 }
 #dirlist td.size {  
  color: #888;
@@ -59,7 +66,12 @@ h1 .sep { color: #666; padding: 0 .1em }
 #chglist td.old_path { font-style: italic }
 #chglist td.date { font-size: 85%; vertical-align: top; padding-top: 0.55em; white-space: nowrap }
 #chglist td.author { font-size: 85%; vertical-align: top; padding-top: 0.55em }
-#chglist td.rev, #chglist td.chgset { text-align: right }
+#chglist td.rev, #chglist td.chgset { 
+ font-family: monospace;  
+ letter-spacing: -0.02em;
+ font-size: 90%;
+ text-align: right; 
+}
 #chglist td.rev a, #chglist td.chgset a { border-bottom: none }
 #chglist td.summary { width: 100%; font-size: 85%; vertical-align: middle; white-space: nowrap }
 #chglist td.summary * { margin-top: 0; margin-bottom: 0 }
@@ -76,8 +88,8 @@ h1 .sep { color: #666; padding: 0 .1em }
  width: 100%;
 }
 #info th, #info td { font-size: 85%; padding: 2px .5em; vertical-align: top }
-#info th { font-weight: bold; white-space: nowrap; }
-#info td.message { width: 100%; }
+#info th { font-weight: bold; text-align: left; white-space: nowrap }
+#info td.message { width: 100% }
 #info .message ul { padding: 0; margin: 0 2em }
 #info .message p { margin: 0; padding: 0 }
 #info .props {

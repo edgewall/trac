@@ -111,45 +111,34 @@ class ChangesetModule(Component):
                                              'changeset_show_files'))
             db = self.env.get_db_cnx()
             repos = self.env.get_repository()
-            authzperm = SubversionAuthorizer(self.env, req.authname)
-            rev = repos.youngest_rev
-            while rev:
-                if not authzperm.has_permission_for_changeset(rev):
-                    rev = repos.previous_rev(rev)
-                    continue
-
-                chgset = repos.get_changeset(rev)
-                if chgset.date < start:
-                    return
-                if chgset.date < stop:
-                    message = chgset.message or '--'
-                    if format == 'rss':
-                        title = 'Changeset <em>[%s]</em>: %s' \
-                                % (util.escape(chgset.rev),
-                                   util.escape(util.shorten_line(message)))
-                        href = self.env.abs_href.changeset(chgset.rev)
-                        message = wiki_to_html(message, self.env, req, db,
-                                               absurls=True)
-                    else:
-                        title = 'Changeset <em>[%s]</em> by %s' \
-                                % (util.escape(chgset.rev),
-                                   util.escape(chgset.author))
-                        href = self.env.href.changeset(chgset.rev)
-                        message = wiki_to_oneliner(message, self.env, db,
-                                                   shorten=True)
-                    if show_files:
-                        files = []
-                        for chg in chgset.get_changes():
-                            if show_files > 0 and len(files) >= show_files:
-                                files.append('...')
-                                break
-                            files.append('<span class="%s">%s</span>'
-                                         % (chg[2], util.escape(chg[0])))
-                        message = '<span class="changes">' + ', '.join(files) +\
-                                  '</span>: ' + message
-                    yield 'changeset', href, title, chgset.date, chgset.author,\
-                          message
-                rev = repos.previous_rev(rev)
+            for chgset in repos.get_changesets(start, stop):
+                message = chgset.message or '--'
+                if format == 'rss':
+                    title = 'Changeset <em>[%s]</em>: %s' \
+                            % (util.escape(chgset.rev),
+                               util.escape(util.shorten_line(message)))
+                    href = self.env.abs_href.changeset(chgset.rev)
+                    message = wiki_to_html(message, self.env, req, db,
+                                           absurls=True)
+                else:
+                    title = 'Changeset <em>[%s]</em> by %s' \
+                            % (util.escape(chgset.rev),
+                               util.escape(chgset.author))
+                    href = self.env.href.changeset(chgset.rev)
+                    message = wiki_to_oneliner(message, self.env, db,
+                                               shorten=True)
+                if show_files:
+                    files = []
+                    for chg in chgset.get_changes():
+                        if show_files > 0 and len(files) >= show_files:
+                            files.append('...')
+                            break
+                        files.append('<span class="%s">%s</span>'
+                                     % (chg[2], util.escape(chg[0])))
+                    message = '<span class="changes">' + ', '.join(files) +\
+                              '</span>: ' + message
+                yield 'changeset', href, title, chgset.date, chgset.author,\
+                      message
 
     # Internal methods
 
@@ -175,8 +164,9 @@ class ChangesetModule(Component):
         youngest_rev = repos.youngest_rev
         if str(chgset.rev) != str(youngest_rev):
             next_rev = repos.next_rev(chgset.rev)
-            add_link(req, 'next', self.env.href.changeset(next_rev),
-                     'Changeset %s' % next_rev)
+            if next_rev:
+                add_link(req, 'next', self.env.href.changeset(next_rev),
+                         'Changeset %s' % next_rev)
             add_link(req, 'last', self.env.href.changeset(youngest_rev),
                      'Changeset %s' % youngest_rev)
 
@@ -186,12 +176,12 @@ class ChangesetModule(Component):
             info = {'change': change}
             if base_path:
                 info['path.old'] = base_path
-                info['rev.old'] = base_rev
+                info['rev.old'] = repos.short_rev(base_rev)
                 info['browser_href.old'] = self.env.href.browser(base_path,
                                                                  rev=base_rev)
             if path:
                 info['path.new'] = path
-                info['rev.new'] = chgset.rev
+                info['rev.new'] = repos.short_rev(chgset.rev)
                 info['browser_href.new'] = self.env.href.browser(path,
                                                                  rev=chgset.rev)
             if change in (Changeset.COPY, Changeset.EDIT, Changeset.MOVE):

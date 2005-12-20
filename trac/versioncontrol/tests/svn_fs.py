@@ -100,9 +100,9 @@ class SubversionRepositoryTestCase(unittest.TestCase):
         self.assertEqual(11, self.repos.normalize_rev(11))
 
     def test_rev_navigation(self):
-        self.assertEqual(0, self.repos.oldest_rev)
+        self.assertEqual(1, self.repos.oldest_rev)
         self.assertEqual(None, self.repos.previous_rev(0))
-        self.assertEqual(0, self.repos.previous_rev(1))
+        self.assertEqual(None, self.repos.previous_rev(1))
         self.assertEqual(16, self.repos.youngest_rev)
         self.assertEqual(6, self.repos.next_rev(5))
         self.assertEqual(7, self.repos.next_rev(6))

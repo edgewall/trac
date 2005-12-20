@@ -383,7 +383,8 @@ data = (('component',
                __mkreports(reports)))
 
 default_config = \
- (('trac', 'repository_dir', ''),
+ (('trac', 'repository_type', 'svn'),
+  ('trac', 'repository_dir', ''),
   ('trac', 'templates_dir', default_dir('templates')),
   ('trac', 'database', 'sqlite:db/trac.db'),
   ('trac', 'default_charset', 'iso-8859-15'),
@@ -446,5 +447,6 @@ default_components = ('trac.About', 'trac.attachment',
                       'trac.ticket.roadmap', 'trac.ticket.web_ui',
                       'trac.Timeline',
                       'trac.versioncontrol.web_ui',
+                      'trac.versioncontrol.svn_fs',
                       'trac.wiki.macros', 'trac.wiki.web_ui',
                       'trac.web.auth')

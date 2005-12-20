@@ -47,7 +47,7 @@ def get_changes(env, repos, revs, full=None, req=None, format=None):
             'date_seconds': changeset.date,
             'date': format_datetime(changeset.date),
             'age': pretty_timedelta(changeset.date),
-            'author': changeset.author or 'anonymous',
+            'author': escape(changeset.author) or 'anonymous',
             'message': message,
             'shortlog': shorten_line(message),
             'files': files

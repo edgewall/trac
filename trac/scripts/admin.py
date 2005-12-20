@@ -36,7 +36,7 @@ from trac.wiki import WikiPage
 def copytree(src, dst, symlinks=False, skip=[]):
     """Recursively copy a directory tree using copy2() (from shutil.copytree.)
 
-    Added an `skip` parameter consisting of absolute paths
+    Added a `skip` parameter consisting of absolute paths
     which we don't want to copy.
     """
     names = os.listdir(src)
@@ -250,8 +250,8 @@ class TracAdmin(cmd.Cmd):
         if t == 'now':
             seconds = int(time.time())
         else:
-            for format in [self._date_format, '%x %X', '%x, %X', '%X %x', '%X, %x', '%x', '%c',
-                           '%b %d, %Y']:
+            for format in [self._date_format, '%x %X', '%x, %X', '%X %x',
+                           '%X, %x', '%x', '%c', '%b %d, %Y']:
                 try:
                     pt = time.strptime(t, format)
                     seconds = int(time.mktime(pt))
@@ -300,7 +300,8 @@ class TracAdmin(cmd.Cmd):
                     self._help_ticket_type + self._help_priority +
                     self._help_severity +  self._help_version +
                     self._help_milestone)
-            print 'trac-admin - The Trac Administration Console %s' % trac.__version__
+            print 'trac-admin - The Trac Administration Console %s' \
+                  % trac.__version__
             if not self.interactive:
                 print
                 print "Usage: trac-admin </path/to/projenv> [command [subcommand] [option ...]]\n"
@@ -487,7 +488,7 @@ class TracAdmin(cmd.Cmd):
     ## Initenv
     _help_initenv = [('initenv',
                       'Create and initialize a new environment interactively'),
-                     ('initenv <projectname> <db> <repospath> <templatepath>',
+                     ('initenv <projectname> <db> <repostype> <repospath> <templatepath>',
                       'Create and initialize a new environment from arguments')]
 
     def do_initdb(self, line):
@@ -516,13 +517,23 @@ class TracAdmin(cmd.Cmd):
         prompt = 'Database connection string [%s]> ' % ddb
         returnvals.append(raw_input(prompt).strip() or ddb)
         print
-        print ' Please specify the absolute path to the project Subversion repository.'
-        print ' Repository must be local, and trac-admin requires read+write'
-        print ' permission to initialize the Trac database.'
+        print ' Please specify the type of version control system,'
+        print ' By default, it will be svn.'
         print
-        drp = '/var/svn/test'
-        prompt = 'Path to repository [%s]> ' % drp
-        returnvals.append(raw_input(prompt).strip() or drp)
+        print ' If you don\'t want to use Trac with version control integration, '
+        print ' choose the default here and don\'t specify a repository directory. '
+        print ' in the next question.'
+        print 
+        drpt = 'svn'
+        prompt = 'Repository type [%s]> ' % drpt
+        returnvals.append(raw_input(prompt).strip() or drpt)
+        print
+        print ' Please specify the absolute path to the version control '
+        print ' repository, or leave it blank to use Trac without a repository.'
+        print ' You can also set the repository location later.'
+        print 
+        prompt = 'Path to repository [/path/to/repos]> '
+        returnvals.append(raw_input(prompt).strip())
         print
         print ' Please enter location of Trac page templates.'
         print ' Default is the location of the site-wide templates installed with Trac.'
@@ -546,12 +557,14 @@ class TracAdmin(cmd.Cmd):
         templates_dir = None
         if len(arg) == 1 and not arg[0]:
             returnvals = self.get_initenv_args()
-            project_name, db_str, repository_dir, templates_dir = returnvals
-        elif len(arg) != 4:
+            project_name, db_str, repository_type, repository_dir, \
+                          templates_dir = returnvals
+        elif len(arg) != 5:
             print 'Wrong number of arguments to initenv: %d' % len(arg)
             return 2
         else:
-            project_name, db_str, repository_dir, templates_dir = arg[:4]
+            project_name, db_str, repository_type, repository_dir, \
+                          templates_dir = arg[:4]
 
         if not os.access(os.path.join(templates_dir, 'header.cs'), os.F_OK):
             print templates_dir, "doesn't look like a Trac templates directory"
@@ -561,6 +574,7 @@ class TracAdmin(cmd.Cmd):
             print 'Creating and Initializing Project'
             options = [
                 ('trac', 'database', db_str),
+                ('trac', 'repository_type', repository_type),
                 ('trac', 'repository_dir', repository_dir),
                 ('trac', 'templates_dir', templates_dir),
                 ('project', 'name', project_name)
@@ -580,10 +594,22 @@ class TracAdmin(cmd.Cmd):
             self._do_wiki_load(default_dir('wiki'), cursor)
             cnx.commit()
 
-            print ' Indexing repository'
-            repos = self.__env.get_repository()
-            repos.sync()
-
+            if repository_dir:
+                try:
+                    repos = self.__env.get_repository()
+                    if repos:
+                        print ' Indexing repository'
+                        repos.sync()
+                except util.TracError, e:
+                    print>>sys.stderr, "\nWarning:\n"
+                    if repository_type == "svn":
+                        print>>sys.stderr, "You should install the SVN bindings"
+                    else:
+                        print>>sys.stderr, ("You should install the plugin for"
+                                            " %s in the %s folder." \
+                                            % (repository_type,
+                                               os.path.join(self.envname,
+                                                            'plugins')))
         except Exception, e:
             print 'Failed to initialize environment.', e
             traceback.print_exc()

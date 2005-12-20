@@ -4,19 +4,19 @@
 <div id="ctxtnav" class="nav">
  <h2>Changeset Navigation</h2><?cs
  with:links = chrome.links ?>
-  <ul><?cs
-   if:len(links.prev) ?>
-    <li class="first<?cs if:!len(links.next) ?> last<?cs /if ?>">
-     &larr; <a class="prev" href="<?cs var:links.prev.0.href ?>" title="<?cs
-       var:links.prev.0.title ?>">Previous Changeset</a>
-    </li><?cs
-   /if ?><?cs
-   if:len(links.next) ?>
-    <li class="<?cs if:len(links.prev) ?>first <?cs /if ?>last">
+  <ul>
+   <li class="first">
+    <?cs if:len(links.prev) ?> &larr; 
+     <a class="prev" href="<?cs var:links.prev.0.href ?>" title="<?cs
+      var:links.prev.0.title ?>">Previous Changeset</a>
+     <?cs else ?><span class="missing">&larr; Previous Changeset</span><?cs /if ?>
+   </li>
+   <li class="last">
+    <?cs if:len(links.next) ?>
      <a class="next" href="<?cs var:links.next.0.href ?>" title="<?cs
-       var:links.next.0.title ?>">Next Changeset</a> &rarr;
-    </li><?cs
-   /if ?>
+      var:links.next.0.title ?>">Next Changeset</a> &rarr;
+    <?cs else ?><span class="missing">Next Changeset &rarr;</span><?cs /if ?>
+   </li>
   </ul><?cs
  /with ?>
 </div>

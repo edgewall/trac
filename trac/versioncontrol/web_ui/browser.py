@@ -171,7 +171,7 @@ class BrowserModule(Component):
             'changeset_href': util.escape(self.env.href.changeset(node.rev)),
             'date': util.format_datetime(changeset.date),
             'age': util.pretty_timedelta(changeset.date),
-            'author': changeset.author or 'anonymous',
+            'author': util.escape(changeset.author) or 'anonymous',
             'message': wiki_to_html(changeset.message or '--', self.env, req,
                                     escape_newlines=True)
         }
