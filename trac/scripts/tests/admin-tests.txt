@@ -1,5 +1,5 @@
 ===== test_help_ok =====
-trac-admin - The Trac Administration Console 1.0dev-vc-refactoring
+trac-admin - The Trac Administration Console 1.0dev
 
 Usage: trac-admin </path/to/projenv> [command [subcommand] [option ...]]
 
