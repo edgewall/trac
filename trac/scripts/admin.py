@@ -564,7 +564,7 @@ class TracAdmin(cmd.Cmd):
             return 2
         else:
             project_name, db_str, repository_type, repository_dir, \
-                          templates_dir = arg[:4]
+                          templates_dir = arg[:5]
 
         if not os.access(os.path.join(templates_dir, 'header.cs'), os.F_OK):
             print templates_dir, "doesn't look like a Trac templates directory"
