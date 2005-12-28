@@ -56,7 +56,7 @@ class RepositoryManager(Component):
                     heappush(candidates, (-prio, connector))
             if not candidates:
                 raise TracError, 'Unsupported version control system "%s"' \
-                                 % type
+                                 % repos_type
             self._connector = heappop(candidates)[1]
         return self._connector.get_repository(repos_type, repos_dir, authname)
 
