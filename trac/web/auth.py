@@ -1,4 +1,4 @@
-# -*- coding: iso8859-1 -*-
+# -*- coding: iso-8859-1 -*-
 #
 # Copyright (C) 2003-2005 Edgewall Software
 # Copyright (C) 2003-2005 Jonas Borgström <jonas@edgewall.com>
@@ -20,7 +20,7 @@ import time
 from trac.core import *
 from trac.web.api import IAuthenticator, IRequestHandler
 from trac.web.chrome import INavigationContributor
-from trac.util import escape, hex_entropy
+from trac.util import escape, hex_entropy, Markup
 
 
 class LoginModule(Component):
@@ -62,12 +62,14 @@ class LoginModule(Component):
 
     def get_navigation_items(self, req):
         if req.authname and req.authname != 'anonymous':
-            yield 'metanav', 'login', 'logged in as %s' % escape(req.authname)
-            yield 'metanav', 'logout', '<a href="%s">Logout</a>' \
-                  % escape(self.env.href.logout())
+            yield ('metanav', 'login', 'logged in as %s' % req.authname)
+            yield ('metanav', 'logout',
+                   Markup('<a href="%s">Logout</a>' 
+                          % escape(self.env.href.logout())))
         else:
-            yield 'metanav', 'login', '<a href="%s">Login</a>' \
-                  % escape(self.env.href.login())
+            yield ('metanav', 'login',
+                   Markup('<a href="%s">Login</a>' 
+                          % escape(self.env.href.login())))
 
     # IRequestHandler methods
 

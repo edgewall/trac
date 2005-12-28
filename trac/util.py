@@ -1,4 +1,4 @@
-# -*- coding: iso8859-1 -*-
+# -*- coding: iso-8859-1 -*-
 #
 # Copyright (C) 2003-2004 Edgewall Software
 # Copyright (C) 2003-2004 Jonas Borgström <jonas@edgewall.com>
@@ -23,6 +23,12 @@ import md5
 
 CRLF = '\r\n'
 
+class Markup(str):
+    """
+    Strings are normally automatically escaped when added to the HDF.
+    `Markup`-strings are however an exception. Use with care.
+    """
+
 def escape(text, quotes=True):
     """
     Escapes &, <, > and \" so they are safe to include in HTML output. Quotes
@@ -30,6 +36,8 @@ def escape(text, quotes=True):
     necessary for text that is supposed to be inserted in attributes of HTML
     tags.
     """
+    if isinstance(text, Markup):
+        return text
     if not text:
         return ''
     text = str(text).replace('&', '&amp;') \
@@ -37,7 +45,7 @@ def escape(text, quotes=True):
                     .replace('>', '&gt;')
     if quotes:
         text = text.replace('"', '&#34;')
-    return text
+    return Markup(text)
 
 def unescape(text):
     """

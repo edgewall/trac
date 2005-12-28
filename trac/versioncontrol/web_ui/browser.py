@@ -1,4 +1,4 @@
-# -*- coding: iso8859-1 -*-
+# -*- coding: iso-8859-1 -*-
 #
 # Copyright (C) 2003-2005 Edgewall Software
 # Copyright (C) 2003-2005 Jonas Borgström <jonas@edgewall.com>
@@ -25,6 +25,7 @@ from trac.web import IRequestHandler, RequestDone
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
 from trac.wiki import wiki_to_html, wiki_to_oneliner, IWikiSyntaxProvider
 from trac.versioncontrol.web_ui.util import *
+
 
 IMG_RE = re.compile(r"\.(gif|jpg|jpeg|png)(\?.*)?$", re.IGNORECASE)
 
@@ -60,8 +61,9 @@ class BrowserModule(Component):
     def get_navigation_items(self, req):
         if not req.perm.has_permission('BROWSER_VIEW'):
             return
-        yield 'mainnav', 'browser', '<a href="%s">Browse Source</a>' \
-              % util.escape(self.env.href.browser())
+        yield ('mainnav', 'browser',
+               util.Markup('<a href="%s">Browse Source</a>' 
+                           % util.escape(self.env.href.browser())))
 
     # IPermissionRequestor methods
 
@@ -96,12 +98,12 @@ class BrowserModule(Component):
         req.hdf['browser'] = {
             'path': path,
             'revision': rev or repos.youngest_rev,
-            'props': dict([(util.escape(name), util.escape(value))
+            'props': dict([(name, value)
                            for name, value in node.get_properties().items()
                            if not name in hidden_properties]),
-            'href': util.escape(self.env.href.browser(path, rev=rev or
-                                                      repos.youngest_rev)),
-            'log_href': util.escape(self.env.href.log(path, rev=rev or None))
+            'href': self.env.href.browser(path, rev=rev or
+                                          repos.youngest_rev),
+            'log_href': self.env.href.log(path, rev=rev or None)
         }
 
         path_links = get_path_links(self.env.href, path, rev)
@@ -138,9 +140,9 @@ class BrowserModule(Component):
                 'size': util.pretty_size(entry.content_length),
                 'rev': entry.rev,
                 'permission': 1, # FIXME
-                'log_href': util.escape(self.env.href.log(entry.path, rev=rev)),
-                'browser_href': util.escape(self.env.href.browser(entry.path,
-                                                                  rev=rev))
+                'log_href': self.env.href.log(entry.path, rev=rev),
+                'browser_href': self.env.href.browser(entry.path,
+                                                      rev=rev)
             })
         changes = get_changes(self.env, repos, [i['rev'] for i in info])
 
@@ -168,10 +170,10 @@ class BrowserModule(Component):
         changeset = repos.get_changeset(node.rev)  
         req.hdf['file'] = {  
             'rev': node.rev,  
-            'changeset_href': util.escape(self.env.href.changeset(node.rev)),
+            'changeset_href': self.env.href.changeset(node.rev),
             'date': util.format_datetime(changeset.date),
             'age': util.pretty_timedelta(changeset.date),
-            'author': util.escape(changeset.author) or 'anonymous',
+            'author': changeset.author or 'anonymous',
             'message': wiki_to_html(changeset.message or '--', self.env, req,
                                     escape_newlines=True)
         }
@@ -226,7 +228,7 @@ class BrowserModule(Component):
             raw_href = self.env.href.browser(node.path, rev=use_rev,
                                              format='raw')
             add_link(req, 'alternate', raw_href, 'Original Format', mime_type)
-            req.hdf['file.raw_href'] = util.escape(raw_href)
+            req.hdf['file.raw_href'] = raw_href
 
             add_stylesheet(req, 'common/css/code.css')
 

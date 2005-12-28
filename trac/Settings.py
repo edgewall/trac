@@ -1,4 +1,4 @@
-# -*- coding: iso8859-1 -*-
+# -*- coding: iso-8859-1 -*-
 #
 # Copyright (C) 2004-2005 Edgewall Software
 # Copyright (C) 2004-2005 Daniel Lundin <daniel@edgewall.com>
@@ -15,9 +15,10 @@
 # Author: Daniel Lundin <daniel@edgewall.com>
 
 from trac.core import *
-from trac.util import escape
+from trac.util import escape, Markup
 from trac.web import IRequestHandler
 from trac.web.chrome import INavigationContributor
+
 
 class SettingsModule(Component):
 
@@ -31,8 +32,9 @@ class SettingsModule(Component):
         return 'settings'
 
     def get_navigation_items(self, req):
-        yield 'metanav', 'settings', '<a href="%s">Settings</a>' \
-              % escape(self.env.href.settings())
+        yield ('metanav', 'settings',
+               Markup('<a href="%s">Settings</a>'
+                      % escape(self.env.href.settings())))
 
     # IRequestHandler methods
 

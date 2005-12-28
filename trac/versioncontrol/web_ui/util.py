@@ -1,4 +1,4 @@
-# -*- coding: iso8859-1 -*-
+# -*- coding: iso-8859-1 -*-
 #
 # Copyright (C) 2003-2005 Edgewall Software
 # Copyright (C) 2003-2005 Jonas Borgström <jonas@edgewall.com>
@@ -47,7 +47,7 @@ def get_changes(env, repos, revs, full=None, req=None, format=None):
             'date_seconds': changeset.date,
             'date': format_datetime(changeset.date),
             'age': pretty_timedelta(changeset.date),
-            'author': escape(changeset.author) or 'anonymous',
+            'author': changeset.author or 'anonymous',
             'message': message,
             'shortlog': shorten_line(message),
             'files': files
@@ -64,7 +64,7 @@ def get_path_links(href, path, rev):
         path = path + part + '/'
         links.append({
             'name': part or 'root',
-            'href': escape(href.browser(path, rev=rev))
+            'href': href.browser(path, rev=rev)
         })
     return links
 
@@ -89,5 +89,5 @@ def get_existing_node(env, repos, path, rev):
         raise TracError(e.message + '<br><p>You can <a href="%s">search</a> ' 
                         'in the repository history to see if that path '
                         'existed but was later removed.</p>'
-                        % escape(env.href.log(path, rev=rev,
-                                              mode='path_history')))
+                        % env.href.log(path, rev=rev,
+                                       mode='path_history'))

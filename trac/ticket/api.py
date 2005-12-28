@@ -176,7 +176,7 @@ class TicketSystem(Component):
                        args + args2)
         for summary,desc,author,keywords,tid,date in cursor:
             yield (self.env.href.ticket(tid),
-                   '#%d: %s' % (tid, util.escape(util.shorten_line(summary))),
+                   '#%d: %s' % (tid, util.shorten_line(summary)),
                    date, author,
-                   util.escape(shorten_result(desc, query.split())))
+                   shorten_result(desc, query.split()))
             

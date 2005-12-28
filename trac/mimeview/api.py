@@ -1,4 +1,4 @@
-# -*- coding: iso8859-1 -*-
+# -*- coding: iso-8859-1 -*-
 #
 # Copyright (C) 2004-2005 Edgewall Software
 # Copyright (C) 2004 Daniel Lundin <daniel@edgewall.com>
@@ -24,7 +24,8 @@ except ImportError:
     from StringIO import StringIO
 
 from trac.core import *
-from trac.util import escape, to_utf8
+from trac.util import escape, to_utf8, Markup
+
 
 __all__ = ['get_mimetype', 'is_binary', 'detect_unicode', 'Mimeview']
 
@@ -240,16 +241,16 @@ class Mimeview(Component):
                 if not result:
                     continue
                 elif isinstance(result, (str, unicode)):
-                    return result
+                    return Markup(result)
                 elif annotations:
-                    return self._annotate(result, annotations)
+                    return Markup(self._annotate(result, annotations))
                 else:
                     buf = StringIO()
                     buf.write('<div class="code"><pre>')
                     for line in result:
                         buf.write(line + '\n')
                     buf.write('</pre></div>')
-                    return buf.getvalue()
+                    return Markup(buf.getvalue())
             except Exception, e:
                 self.log.warning('HTML preview using %s failed (%s)'
                                  % (renderer, e), exc_info=True)

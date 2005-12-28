@@ -1,4 +1,4 @@
-# -*- coding: iso8859-1 -*-
+# -*- coding: iso-8859-1 -*-
 #
 # Copyright (C) 2003-2005 Edgewall Software
 # Copyright (C) 2003-2005 Jonas Borgström <jonas@edgewall.com>
@@ -28,7 +28,6 @@ from trac.Timeline import ITimelineEventProvider
 from trac.web import IRequestHandler
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
 from trac.wiki import wiki_to_html, wiki_to_oneliner
-
 
 class NewticketModule(Component):
 
@@ -65,9 +64,9 @@ class NewticketModule(Component):
     def get_navigation_items(self, req):
         if not req.perm.has_permission('TICKET_CREATE'):
             return
-        yield 'mainnav', 'newticket', \
-              '<a href="%s" accesskey="7">New Ticket</a>' \
-              % (self.env.href.newticket())
+        yield ('mainnav', 'newticket', 
+               util.Markup('<a href="%s" accesskey="7">New Ticket</a>'
+                           % util.escape(self.env.href.newticket())))
 
     # IRequestHandler methods
 
@@ -91,9 +90,7 @@ class NewticketModule(Component):
             req.hdf['newticket.description_preview'] = description
 
         req.hdf['title'] = 'New Ticket'
-        req.hdf['newticket'] = dict(zip(ticket.values.keys(),
-                                        [util.escape(value) for value
-                                         in ticket.values.values()]))
+        req.hdf['newticket'] = ticket.values
 
         field_names = [field['name'] for field in ticket.fields
                        if not field.get('custom')]
@@ -122,7 +119,7 @@ class NewticketModule(Component):
                     milestone = Milestone(self.env, option, db=db)
                     if milestone.is_completed:
                         options.remove(option)
-                field['options'] = [util.escape(option) for option in options]
+                field['options'] = options
             req.hdf['newticket.fields.' + name] = field
 
         add_stylesheet(req, 'common/css/ticket.css')
@@ -200,7 +197,7 @@ class TicketModule(Component):
                 reporter_id = req.args.get('author')
                 comment = req.args.get('comment')
                 if comment:
-                    req.hdf['ticket.comment'] = util.escape(comment)
+                    req.hdf['ticket.comment'] = comment
                     # Wiki format a preview of comment
                     req.hdf['ticket.comment_preview'] = wiki_to_html(comment,
                                                                      self.env,
@@ -268,14 +265,14 @@ class TicketModule(Component):
             else:
                 return None
             kind, verb = status_map[status]
-            title = 'Ticket <em title="%s">#%s</em> (%s) %s by %s' \
-                    % (util.escape(summary), id, type, verb,
-                       util.escape(author))
+            title = util.Markup('Ticket <em title="%s">#%s</em> (%s) %s by %s'
+                                % (util.escape(summary), id, type, verb,
+                                   util.escape(author)))
             href = rss and self.env.abs_href.ticket(id) \
                    or self.env.href.ticket(id)
 
             if status == 'new':
-                message = util.escape(summary)
+                message = summary
             else:
                 message = info
                 if comment:
@@ -385,9 +382,7 @@ class TicketModule(Component):
 
     def _insert_ticket_data(self, req, db, ticket, reporter_id):
         """Insert ticket data into the hdf"""
-        req.hdf['ticket'] = dict(zip(ticket.values.keys(),
-                                 map(lambda x: util.escape(x),
-                                     ticket.values.values())))
+        req.hdf['ticket'] = ticket.values
         req.hdf['ticket.id'] = ticket.id
         req.hdf['ticket.href'] = self.env.href.ticket(ticket.id)
 
@@ -399,7 +394,7 @@ class TicketModule(Component):
                     # Current ticket value must be visible even if its not in the
                     # possible values
                     options.append(value)
-                field['options'] = [util.escape(option) for option in options]
+                field['options'] = options
             name = field['name']
             del field['name']
             if name in ('summary', 'reporter', 'description', 'type', 'status',
@@ -407,9 +402,8 @@ class TicketModule(Component):
                 field['skip'] = True
             req.hdf['ticket.fields.' + name] = field
 
-        req.hdf['ticket.reporter_id'] = util.escape(reporter_id)
-        req.hdf['title'] = '#%d (%s)' % (ticket.id,
-                                         util.escape(ticket['summary']))
+        req.hdf['ticket.reporter_id'] = reporter_id
+        req.hdf['title'] = '#%d (%s)' % (ticket.id, ticket['summary'])
         req.hdf['ticket.description.formatted'] = wiki_to_html(ticket['description'],
                                                                self.env, req, db)
 
@@ -427,7 +421,7 @@ class TicketModule(Component):
             if date != curr_date or author != curr_author:
                 changes.append({
                     'date': util.format_datetime(date),
-                    'author': util.escape(author),
+                    'author': author,
                     'fields': {}
                 })
                 curr_date = date
@@ -437,8 +431,8 @@ class TicketModule(Component):
             elif field == 'description':
                 changes[-1]['fields'][field] = ''
             else:
-                changes[-1]['fields'][field] = {'old': util.escape(old),
-                                                'new': util.escape(new)}
+                changes[-1]['fields'][field] = {'old': old,
+                                                'new': new}
         req.hdf['ticket.changes'] = changes
 
         # List attached files

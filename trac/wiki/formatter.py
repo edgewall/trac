@@ -1,4 +1,4 @@
-# -*- coding: iso8859-1 -*-
+# -*- coding: iso-8859-1 -*-
 #
 # Copyright (C) 2003-2005 Edgewall Software
 # Copyright (C) 2003-2005 Jonas Borgström <jonas@edgewall.com>
@@ -756,16 +756,16 @@ class OutlineFormatter(Formatter):
 def wiki_to_html(wikitext, env, req, db=None, absurls=0, escape_newlines=False):
     out = StringIO()
     Formatter(env, req, absurls, db).format(wikitext, out, escape_newlines)
-    return out.getvalue()
+    return util.Markup(out.getvalue())
 
 def wiki_to_oneliner(wikitext, env, db=None, shorten=False, absurls=0):
     out = StringIO()
     OneLinerFormatter(env, absurls, db).format(wikitext, out, shorten)
-    return out.getvalue()
+    return util.Markup(out.getvalue())
 
 def wiki_to_outline(wikitext, env, db=None, absurls=0, max_depth=None,
                     min_depth=None):
     out = StringIO()
     OutlineFormatter(env, absurls, db).format(wikitext, out, max_depth,
                                               min_depth)
-    return out.getvalue()
+    return util.Markup(out.getvalue())

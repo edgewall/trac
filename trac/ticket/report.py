@@ -1,4 +1,4 @@
-# -*- coding: iso8859-1 -*-
+# -*- coding: iso-8859-1 -*-
 #
 # Copyright (C) 2003-2005 Edgewall Software
 # Copyright (C) 2003-2004 Jonas Borgström <jonas@edgewall.com>
@@ -71,8 +71,9 @@ class ReportModule(Component):
     def get_navigation_items(self, req):
         if not req.perm.has_permission('REPORT_VIEW'):
             return
-        yield 'mainnav', 'tickets', '<a href="%s">View Tickets</a>' \
-              % util.escape(self.env.href.report())
+        yield ('mainnav', 'tickets',
+               util.Markup('<a href="%s">View Tickets</a>'
+                           % util.escape(self.env.href.report())))
 
     # IPermissionRequestor methods  
 
@@ -195,7 +196,7 @@ class ReportModule(Component):
         req.hdf['report'] = {
             'id': id,
             'mode': 'delete',
-            'title': util.escape(row[0]),
+            'title': util.row[0],
             'href': self.env.href.report(id)
         }
 
@@ -230,9 +231,9 @@ class ReportModule(Component):
 
         req.hdf['report.id'] = id
         req.hdf['report.mode'] = 'edit'
-        req.hdf['report.title'] = util.escape(title)
-        req.hdf['report.sql'] = util.escape(sql)
-        req.hdf['report.description'] = util.escape(description)
+        req.hdf['report.title'] = title
+        req.hdf['report.sql'] = sql
+        req.hdf['report.description'] = description
 
     def _render_view(self, req, db, id):
         """
@@ -345,7 +346,7 @@ class ReportModule(Component):
                 elif column == 'description':
                     value['parsed'] = wiki_to_html(cell, self.env, req, db)
                 elif column == 'reporter' and cell.find('@') != -1:
-                    value['rss'] = util.escape(cell)
+                    value['rss'] = cell
                 elif column == 'report':
                     value['report_href'] = self.env.href.report(cell)
                 elif column in ['time', 'date','changetime', 'created', 'modified']:
@@ -354,7 +355,7 @@ class ReportModule(Component):
                     value['datetime'] = util.format_datetime(cell)
                     value['gmt'] = util.http_date(cell)
                 prefix = 'report.items.%d.%s' % (row_idx, str(column))
-                req.hdf[prefix] = util.escape(str(cell))
+                req.hdf[prefix] = str(cell)
                 for key in value.keys():
                     req.hdf[prefix + '.' + key] = value[key]
 
@@ -488,7 +489,7 @@ class ReportModule(Component):
                 for col in ('summary', 'description.parsed'):
                     nodename = 'report.items.%s.%s' % (item.name(), col)
                     value = req.hdf.get(nodename, '')
-                    req.hdf[nodename] = util.escape(value)
+                    req.hdf[nodename] = value
                 item = item.next()
 
     def _render_sql(self, req, id, title, description, sql):

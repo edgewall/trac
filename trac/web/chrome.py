@@ -1,4 +1,4 @@
-# -*- coding: iso8859-1 -*-
+# -*- coding: iso-8859-1 -*-
 #
 # Copyright (C) 2005 Edgewall Software
 # Copyright (C) 2005 Christopher Lenz <cmlenz@gmx.de>
@@ -28,9 +28,9 @@ def add_link(req, rel, href, title=None, mimetype=None, classname=None):
     """Add a link to the HDF data set that will be inserted as <link> element in
     the <head> of the generated HTML
     """
-    link = {'href': util.escape(href)}
+    link = {'href': href}
     if title:
-        link['title'] = util.escape(title)
+        link['title'] = title
     if mimetype:
         link['type'] = mimetype
     if classname:
@@ -248,14 +248,14 @@ class Chrome(Component):
                 else:
                     logo_src = href.chrome('common', logo_src)
             req.hdf['chrome.logo'] = {
-                'link': util.escape(logo_link), 'src': util.escape(logo_src),
-                'src_abs': util.escape(logo_src_abs),
-                'alt': util.escape(self.config.get('header_logo', 'alt')),
+                'link': logo_link, 'src': logo_src,
+                'src_abs': logo_src_abs,
+                'alt': self.config.get('header_logo', 'alt'),
                 'width': self.config.get('header_logo', 'width', ''),
                 'height': self.config.get('header_logo', 'height', '')
             }
         else:
-            req.hdf['chrome.logo.link'] = util.escape(logo_link)
+            req.hdf['chrome.logo.link'] = logo_link
 
         # Navigation links
         navigation = {}

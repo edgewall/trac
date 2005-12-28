@@ -1,4 +1,4 @@
-# -*- coding: iso8859-1 -*-
+# -*- coding: iso-8859-1 -*-
 #
 # Copyright (C) 2003-2005 Edgewall Software
 # Copyright (C) 2003-2005 Jonas Borgström <jonas@edgewall.com>
@@ -21,7 +21,7 @@ import time
 
 from trac.core import *
 from trac.perm import IPermissionRequestor
-from trac.util import escape, format_date, format_time, http_date
+from trac.util import escape, format_date, format_time, http_date, Markup
 from trac.web import IRequestHandler
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
 
@@ -69,8 +69,9 @@ class TimelineModule(Component):
     def get_navigation_items(self, req):
         if not req.perm.has_permission('TIMELINE_VIEW'):
             return
-        yield 'mainnav', 'timeline', '<a href="%s" accesskey="2">Timeline</a>' \
-                                     % self.env.href.timeline()
+        yield ('mainnav', 'timeline',
+               Markup('<a href="%s" accesskey="2">Timeline</a>'
+                      % escape(self.env.href.timeline())))
 
     # IPermissionRequestor methods
 
@@ -149,8 +150,8 @@ class TimelineModule(Component):
 
         idx = 0
         for kind, href, title, date, author, message in events:
-            event = {'kind': kind, 'title': title, 'href': escape(href),
-                     'author': escape(author or 'anonymous'),
+            event = {'kind': kind, 'title': title, 'href': href,
+                     'author': author or 'anonymous',
                      'date': format_date(date),
                      'time': format_time(date, '%H:%M'),
                      'message': message}
@@ -158,14 +159,13 @@ class TimelineModule(Component):
             if format == 'rss':
                 # Strip/escape HTML markup
                 event['title'] = re.sub(r'</?\w+(?: .*?)?>', '', title)
-                event['message'] = escape(message)
 
                 if author:
                     # For RSS, author must be an email address
                     if author.find('@') != -1:
-                        event['author.email'] = escape(author)
+                        event['author.email'] = author
                     elif email_map.has_key(author):
-                        event['author.email'] = escape(email_map[author])
+                        event['author.email'] = email_map[author]
                 event['date'] = http_date(date)
 
             req.hdf['timeline.events.%s' % idx] = event

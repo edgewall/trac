@@ -25,7 +25,7 @@ from trac.perm import IPermissionRequestor
 from trac.Search import ISearchSource, query_to_sql, shorten_result
 from trac.Timeline import ITimelineEventProvider
 from trac.util import escape, format_datetime, get_reporter_id, \
-                      pretty_timedelta, shorten_line
+                      pretty_timedelta, shorten_line, Markup
 from trac.versioncontrol.diff import get_diff_options, hdf_diff
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
 from trac.web import IRequestHandler
@@ -46,10 +46,12 @@ class WikiModule(Component):
     def get_navigation_items(self, req):
         if not req.perm.has_permission('WIKI_VIEW'):
             return
-        yield 'metanav', 'help', '<a href="%s" accesskey="6">Help/Guide</a>' \
-              % escape(self.env.href.wiki('TracGuide'))
-        yield 'mainnav', 'wiki', '<a href="%s" accesskey="1">Wiki</a>' \
-              % escape(self.env.href.wiki())
+        yield ('metanav', 'help',
+               Markup('<a href="%s" accesskey="6">Help/Guide</a>' 
+                      % escape(self.env.href.wiki('TracGuide'))))
+        yield ('mainnav', 'wiki',
+               Markup('<a href="%s" accesskey="1">Wiki</a>'
+                      % escape(self.env.href.wiki())))
 
     # IPermissionRequestor methods
 
@@ -116,8 +118,8 @@ class WikiModule(Component):
             self._render_view(req, db, page)
 
         req.hdf['wiki.action'] = action
-        req.hdf['wiki.page_name'] = escape(page.name)
-        req.hdf['wiki.current_href'] = escape(self.env.href.wiki(page.name))
+        req.hdf['wiki.page_name'] = page.name
+        req.hdf['wiki.current_href'] = self.env.href.wiki(page.name)
         return 'wiki.cs', None
 
     # ITimelineEventProvider methods
@@ -135,8 +137,8 @@ class WikiModule(Component):
                            "FROM wiki WHERE time>=%s AND time<=%s",
                            (start, stop))
             for t,name,comment,author in cursor:
-                title = '<em>%s</em> edited by %s' % (
-                        escape(name), escape(author))
+                title = Markup('<em>%s</em> edited by %s'
+                               % (escape(name), escape(author)))
                 if format == 'rss':
                     href = self.env.abs_href.wiki(name)
                     comment = wiki_to_html(comment or '--', self.env, req, db,
@@ -198,8 +200,8 @@ class WikiModule(Component):
         if req.args.has_key('delete_version'):
             version = int(req.args.get('version', 0))
 
-        req.hdf['title'] = escape(page.name) + ' (delete)'
-        req.hdf['wiki'] = {'page_name': escape(page.name), 'mode': 'delete'}
+        req.hdf['title'] = page.name + ' (delete)'
+        req.hdf['wiki'] = {'page_name': page.name, 'mode': 'delete'}
         if version is not None:
             req.hdf['wiki.version'] = version
             num_versions = 0
@@ -218,7 +220,7 @@ class WikiModule(Component):
 
         add_stylesheet(req, 'common/css/diff.css')
 
-        req.hdf['title'] = escape(page.name) + ' (diff)'
+        req.hdf['title'] = page.name + ' (diff)'
 
         # Ask web spiders to not index old versions
         req.hdf['html.norobots'] = 1
@@ -234,8 +236,7 @@ class WikiModule(Component):
 
         info = {
             'version': page.version,
-            'history_href': escape(self.env.href.wiki(page.name,
-                                                      action='history'))
+            'history_href': self.env.href.wiki(page.name, action='history')
         }
 
         num_changes = 0
@@ -245,9 +246,9 @@ class WikiModule(Component):
                 if t:
                     info['time'] = format_datetime(t)
                     info['time_delta'] = pretty_timedelta(t)
-                info['author'] = escape(author or 'anonymous')
-                info['comment'] = escape(comment or '--')
-                info['ipnr'] = escape(ipnr or '')
+                info['author'] = author or 'anonymous'
+                info['comment'] = comment or '--'
+                info['ipnr'] = ipnr or ''
             else:
                 num_changes += 1
                 if version < page.version:
@@ -295,20 +296,20 @@ class WikiModule(Component):
         else:
             editrows = req.session.get('wiki_editrows', '20')
 
-        req.hdf['title'] = escape(page.name) + ' (edit)'
+        req.hdf['title'] = page.name + ' (edit)'
         info = {
             'page_name': page.name,
-            'page_source': escape(page.text),
+            'page_source': page.text,
             'version': page.version,
-            'author': escape(author),
-            'comment': escape(comment),
+            'author': author,
+            'comment': comment,
             'readonly': page.readonly,
             'edit_rows': editrows,
             'scroll_bar_pos': req.args.get('scroll_bar_pos', '')
         }
         if page.exists:
-            info['history_href'] = escape(self.env.href.wiki(page.name,
-                                                             action='history'))
+            info['history_href'] = self.env.href.wiki(page.name,
+                                                      action='history')
         if preview:
             info['page_html'] = wiki_to_html(page.text, self.env, req, db)
             info['readonly'] = int(req.args.has_key('readonly'))
@@ -326,19 +327,19 @@ class WikiModule(Component):
         if not page.exists:
             raise TracError, "Page %s does not exist" % page.name
 
-        req.hdf['title'] = escape(page.name) + ' (history)'
+        req.hdf['title'] = page.name + ' (history)'
 
         history = []
         for version, t, author, comment, ipnr in page.get_history():
             history.append({
-                'url': escape(self.env.href.wiki(page.name, version=version)),
-                'diff_url': escape(self.env.href.wiki(page.name,
-                                                      version=version,
-                                                      action='diff')),
+                'url': self.env.href.wiki(page.name, version=version),
+                'diff_url': self.env.href.wiki(page.name,
+                                               version=version,
+                                               action='diff'),
                 'version': version,
                 'time': format_datetime(t),
                 'time_delta': pretty_timedelta(t),
-                'author': escape(author),
+                'author': author,
                 'comment': wiki_to_oneliner(comment or '', self.env, db),
                 'ipaddr': ipnr
             })
@@ -350,7 +351,7 @@ class WikiModule(Component):
         if page.name == 'WikiStart':
             req.hdf['title'] = ''
         else:
-            req.hdf['title'] = escape(page.name)
+            req.hdf['title'] = page.name
 
         version = req.args.get('version')
         if version:
@@ -365,7 +366,7 @@ class WikiModule(Component):
         if page.exists:
             req.hdf['wiki.page_html'] = wiki_to_html(page.text, self.env, req)
             history_href = self.env.href.wiki(page.name, action='history')
-            req.hdf['wiki.history_href'] = escape(history_href)
+            req.hdf['wiki.history_href'] = history_href
         else:
             if not req.perm.has_permission('WIKI_CREATE'):
                 raise TracError('Page %s not found' % page.name)
@@ -401,6 +402,6 @@ class WikiModule(Component):
 
         for name, date, author, text in cursor:
             yield (self.env.href.wiki(name),
-                   '%s: %s' % (name, escape(shorten_line(text))),
+                   '%s: %s' % (name, shorten_line(text)),
                    date, author,
-                   escape(shorten_result(text, query.split())))
+                   shorten_result(text, query.split()))

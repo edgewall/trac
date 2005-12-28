@@ -1,4 +1,4 @@
-# -*- coding: iso8859-1 -*-
+# -*- coding: iso-8859-1 -*-
 #
 # Copyright (C) 2005 Edgewall Software
 # Copyright (C) 2005 Christopher Lenz <cmlenz@gmx.de>
@@ -172,7 +172,7 @@ def populate_hdf(hdf, env, req=None):
 
     hdf['project'] = {
         'name': env.config.get('project', 'name'),
-        'name_encoded': escape(env.config.get('project', 'name')),
+        'name_encoded': env.config.get('project', 'name'),
         'descr': env.config.get('project', 'descr'),
         'footer': env.config.get('project', 'footer',
                  'Visit the Trac open source project at<br />'
@@ -185,7 +185,7 @@ def populate_hdf(hdf, env, req=None):
         hdf['base_url'] = req.base_url
         hdf['base_host'] = req.base_url[:req.base_url.rfind(req.cgi_location)]
         hdf['cgi_location'] = req.cgi_location
-        hdf['trac.authname'] = escape(req.authname)
+        hdf['trac.authname'] = req.authname
 
         for action in req.perm.permissions():
             req.hdf['trac.acl.' + action] = True
@@ -223,7 +223,7 @@ def send_pretty_error(e, env, req=None):
             req.hdf['error.type'] = 'TracError'
             req.hdf['error.message'] = e.message
             if e.show_traceback:
-                req.hdf['error.traceback'] = escape(tb.getvalue())
+                req.hdf['error.traceback'] = tb.getvalue()
             req.display('error.cs', response=500)
 
         elif isinstance(e, PermissionError):
@@ -236,8 +236,8 @@ def send_pretty_error(e, env, req=None):
         else:
             req.hdf['title'] = 'Oops'
             req.hdf['error.type'] = 'internal'
-            req.hdf['error.message'] = escape(str(e))
-            req.hdf['error.traceback'] = escape(tb.getvalue())
+            req.hdf['error.message'] = str(e)
+            req.hdf['error.traceback'] = tb.getvalue()
             req.display('error.cs', response=500)
 
     except RequestDone:

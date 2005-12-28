@@ -1,4 +1,4 @@
-# -*- coding: iso8859-1 -*-
+# -*- coding: iso-8859-1 -*-
 #
 # Copyright (C) 2003-2005 Edgewall Software
 # Copyright (C) 2003-2005 Jonas Borgström <jonas@edgewall.com>
@@ -196,7 +196,7 @@ def attachment_to_hdf(env, db, req, attachment):
     hdf = {
         'filename': attachment.filename,
         'description': wiki_to_oneliner(attachment.description, env, db),
-        'author': util.escape(attachment.author),
+        'author': attachment.author,
         'ipnr': attachment.ipnr,
         'size': util.pretty_size(attachment.size),
         'time': util.format_datetime(attachment.time),
@@ -419,7 +419,7 @@ class AttachmentModule(Component):
             
             raw_href = attachment.href(format='raw')
             add_link(req, 'alternate', raw_href, 'Original Format', mime_type)
-            req.hdf['attachment.raw_href'] = util.escape(raw_href)
+            req.hdf['attachment.raw_href'] = raw_href
             
             if fmt in ('raw', 'txt'):
                 # Send raw file

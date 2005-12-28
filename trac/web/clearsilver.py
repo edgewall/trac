@@ -1,4 +1,4 @@
-# -*- coding: iso8859-1 -*-
+# -*- coding: utf-8 -*-
 #
 # Copyright (C) 2005 Edgewall Software
 # Copyright (C) 2005 Christopher Lenz <cmlenz@gmx.de>
@@ -15,6 +15,7 @@
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
 from trac.core import TracError
+from trac import util
 
 
 class HDFWrapper:
@@ -190,13 +191,33 @@ class HDFWrapper:
             ...
         KeyError: 'test.none'
         """
+        self.set_value(name, value, True)
+        
+    def set_unescaped(self, name, value):
+        """
+        Add data to the HDF dataset.
+        
+        This method works the same way as `__setitem__` except that `value`
+        is not escaped if it is a string.
+        """
+        self.set_value(name, value, False)
+        
+    def set_value(self, name, value, escape=True):
+        """
+        Add data to the HDF dataset.
+        """
         def add_value(prefix, value):
             if value is None:
                 return
             elif value in (True, False):
                 self.hdf.setValue(prefix, str(int(value)))
-            elif isinstance(value, (str, unicode)):
+            elif isinstance(value, util.Markup):
                 self.hdf.setValue(prefix, value)
+            elif isinstance(value, (str, unicode)):
+                if escape:
+                    self.hdf.setValue(prefix, util.escape(value))
+                else:
+                    self.hdf.setValue(prefix, value)
             elif isinstance(value, dict):
                 for k in value.keys():
                     add_value('%s.%s' % (prefix, k), value[k])
