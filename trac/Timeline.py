@@ -159,7 +159,7 @@ class TimelineModule(Component):
             if format == 'rss':
                 # Strip/escape HTML markup
                 if isinstance(title, Markup):
-                    event['title'] = title.strip_tags()
+                    event['title'] = title.striptags()
                 else:
                     event['title'] = title
 
