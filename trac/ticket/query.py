@@ -591,9 +591,10 @@ class QueryModule(Component):
             if result['reporter'].find('@') == -1:
                 result['reporter'] = ''
             if result['description']:
-                result['description'] = wiki_to_html(result['description'] or '',
-                                                     self.env, req, db,
-                                                     absurls=1)
+                # str() cancels out the Markup() returned by wiki_to_html
+                result['description'] = str(wiki_to_html(result['description'] or '',
+                                                         self.env, req, db,
+                                                         absurls=1))
             if result['time']:
                 result['time'] = http_date(result['time'])
         req.hdf['query.results'] = results
