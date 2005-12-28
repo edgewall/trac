@@ -158,7 +158,10 @@ class TimelineModule(Component):
 
             if format == 'rss':
                 # Strip/escape HTML markup
-                event['title'] = re.sub(r'</?\w+(?: .*?)?>', '', title)
+                if isinstance(title, Markup):
+                    event['title'] = title.strip_tags()
+                else:
+                    event['title'] = title
 
                 if author:
                     # For RSS, author must be an email address

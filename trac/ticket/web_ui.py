@@ -272,9 +272,9 @@ class TicketModule(Component):
                    or self.env.href.ticket(id)
 
             if status == 'new':
-                message = summary
+                message = util.escape(summary)
             else:
-                message = info
+                message = util.escape(info)
                 if comment:
                     if rss:
                         message += wiki_to_html(comment, self.env, req, db,

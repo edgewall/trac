@@ -14,49 +14,73 @@
 #
 # Author: Jonas Borgström <jonas@edgewall.com>
 
+import cgi
+import md5
 import os
+import re
 import sys
 import time
 import tempfile
-import re
-import md5
 
 CRLF = '\r\n'
 
+
 class Markup(str):
-    """
+    """Marks a string as being safe for inclusion in XML output without needing
+    to be escaped.
+    
     Strings are normally automatically escaped when added to the HDF.
     `Markup`-strings are however an exception. Use with care.
     """
+    def __add__(self, other):
+        return Markup(str(self) + Markup.escape(other))
 
-def escape(text, quotes=True):
-    """
-    Escapes &, <, > and \" so they are safe to include in HTML output. Quotes
-    are only escaped if the `quotes` parameter is `True`; this is only
-    necessary for text that is supposed to be inserted in attributes of HTML
-    tags.
-    """
-    if isinstance(text, Markup):
-        return text
-    if not text:
-        return ''
-    text = str(text).replace('&', '&amp;') \
-                    .replace('<', '&lt;') \
-                    .replace('>', '&gt;')
-    if quotes:
-        text = text.replace('"', '&#34;')
-    return Markup(text)
+    def __mul__(self, num):
+        return Markup(str(self) * num)
+
+    def join(self, seq):
+        return Markup(str(self).join([Markup.escape(item) for item in seq]))
+
+    def striptags(self):
+        """Return a copy of the text with all XML/HTML tags removed."""
+        return Markup(re.sub(r'<[^>]*?>', '', self))
+
+    def escape(cls, text, quotes=True):
+        """Create a Markup instance from a string and escape special characters
+        it may contain (<, >, & and ").
+        
+        If the `quotes` parameter is set to `False`, the " character is left as
+        is. Escaping quotes is generally only required for strings that are to
+        be used in attribute values.
+        """
+        if isinstance(text, cls):
+            return text
+        if not text:
+            return cls()
+        text = str(text).replace('&', '&amp;') \
+                        .replace('<', '&lt;') \
+                        .replace('>', '&gt;')
+        if quotes:
+            text = text.replace('"', '&#34;')
+        return cls(text)
+    escape = classmethod(escape)
+
+    def unescape(self, text):
+        """Reverse-escapes &, <, > and " and returns a `str`."""
+        if not self:
+            return ''
+        return str(self).replace('&#34;', '"') \
+                        .replace('&gt;', '>') \
+                        .replace('&lt;', '<') \
+                        .replace('&amp;', '&')
+
+escape = Markup.escape
 
 def unescape(text):
-    """
-    Reverse-escapes &, <, > and \".
-    """
-    if not text:
-        return ''
-    return str(text).replace('&#34;', '"') \
-                    .replace('&gt;', '>') \
-                    .replace('&lt;', '<') \
-                    .replace('&amp;', '&') 
+    """Reverse-escapes &, <, > and \"."""
+    if not instance(text, Markup):
+        return text
+    return text.unescape()
 
 def to_utf8(text, charset='iso-8859-15'):
     """Convert a string to UTF-8, assuming the encoding is either UTF-8, ISO
