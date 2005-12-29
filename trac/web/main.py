@@ -21,7 +21,7 @@ import os
 from trac.core import *
 from trac.env import open_environment
 from trac.perm import PermissionCache, PermissionError
-from trac.util import escape, format_datetime, http_date, to_utf8
+from trac.util import escape, format_datetime, http_date, to_utf8, Markup
 from trac.web.api import absolute_url, Request, RequestDone, IAuthenticator, \
                          IRequestHandler
 from trac.web.chrome import Chrome
@@ -171,13 +171,10 @@ def populate_hdf(hdf, env, req=None):
     }
 
     hdf['project'] = {
-        'name': env.config.get('project', 'name'),
+        'name': Markup(env.config.get('project', 'name')),
         'name_encoded': env.config.get('project', 'name'),
         'descr': env.config.get('project', 'descr'),
-        'footer': env.config.get('project', 'footer',
-                 'Visit the Trac open source project at<br />'
-                 '<a href="http://trac.edgewall.com/">'
-                 'http://trac.edgewall.com/</a>'),
+        'footer': Markup(env.config.get('project', 'footer')),
         'url': env.config.get('project', 'url')
     }
 
