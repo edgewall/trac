@@ -277,6 +277,7 @@ class Mimeview(Component):
                 return div * '&nbsp; ' + mod * '&nbsp;'
             return (match.group('tag') or '') + '&nbsp;'
 
+        num = -1
         for num, line in enumerate(_html_splitlines(lines)):
             cells = []
             for annotator in annotators:
@@ -284,7 +285,7 @@ class Mimeview(Component):
             cells.append('<td>%s</td>\n' % space_re.sub(htmlify, line))
             buf.write('<tr>' + '\n'.join(cells) + '</tr>')
         else:
-            if num == 0:
+            if num < 0:
                 return ''
         buf.write('</tbody></table>')
         return buf.getvalue()
