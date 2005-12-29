@@ -254,8 +254,8 @@ class ChangesetModule(Component):
         """Raw Unified Diff version"""
         req.send_response(200)
         req.send_header('Content-Type', 'text/plain;charset=utf-8')
-        req.send_header('Content-Disposition',
-                        'filename=Changeset%s.diff' % req.args.get('rev'))
+        req.send_header('Content-Disposition', 'inline;'
+                        'filename=Changeset%s.diff' % chgset.rev)
         req.end_headers()
 
         mimeview = Mimeview(self.env)
@@ -316,7 +316,7 @@ class ChangesetModule(Component):
         """ZIP archive with all the added and/or modified files."""
         req.send_response(200)
         req.send_header('Content-Type', 'application/zip')
-        req.send_header('Content-Disposition',
+        req.send_header('Content-Disposition', 'attachment;'
                         'filename=Changeset%s.zip' % chgset.rev)
         req.end_headers()
 
