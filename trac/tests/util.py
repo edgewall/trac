@@ -1,4 +1,4 @@
-from trac.util import Markup
+from trac.util import Markup, unescape
 
 import unittest
 
@@ -14,6 +14,12 @@ class MarkupTestCase(unittest.TestCase):
         markup = Markup.escape('<b>"&"</b>', quotes=False)
         assert isinstance(markup, Markup)
         self.assertEquals('&lt;b&gt;"&amp;"&lt;/b&gt;', markup)
+
+    def test_unescape_markup(self):
+        string = '<b>"&"</b>'
+        markup = Markup.escape(string)
+        assert isinstance(markup, Markup)
+        self.assertEquals(string, unescape(markup))
 
     def test_add_str(self):
         markup = Markup('<b>foo</b>') + '<br/>'

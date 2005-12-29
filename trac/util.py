@@ -65,7 +65,7 @@ class Markup(str):
         return cls(text)
     escape = classmethod(escape)
 
-    def unescape(self, text):
+    def unescape(self):
         """Reverse-escapes &, <, > and " and returns a `str`."""
         if not self:
             return ''
@@ -78,7 +78,7 @@ escape = Markup.escape
 
 def unescape(text):
     """Reverse-escapes &, <, > and \"."""
-    if not instance(text, Markup):
+    if not isinstance(text, Markup):
         return text
     return text.unescape()
 
