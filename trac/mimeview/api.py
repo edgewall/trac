@@ -63,6 +63,7 @@ MIME_MAP = {
     'm4':'text/x-m4',
     'make':'text/x-makefile', 'mk':'text/x-makefile',
     'Makefile':'text/x-makefile',
+    'makefile':'text/x-makefile', 'GNUMakefile':'text/x-makefile',
     'mail':'text/x-mail',
     'pas':'text/x-pascal',
     'pdf':'application/pdf',
