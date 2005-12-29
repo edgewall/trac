@@ -1,4 +1,4 @@
-# -*- coding: iso8859-1 -*-
+# -*- coding: iso-8859-1 -*-
 """
 This macro shows a quick and dirty way to make a table-of-contents for a set
 of wiki pages.

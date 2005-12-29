@@ -1,4 +1,4 @@
-# -*- coding: iso8859-1 -*-
+# -*- coding: iso-8859-1 -*-
 #
 # Copyright (c) 2002, 2003, 2005 Allan Saddi <allan@saddi.com>
 # All rights reserved.
