@@ -416,6 +416,7 @@ default_config = \
   ('header_logo', 'width', '236'),
   ('header_logo', 'height', '73'),
   ('attachment', 'max_size', '262144'),
+  ('attachment', 'render_unsafe_content', 'false'),
   ('mimeviewer', 'enscript_path', 'enscript'),
   ('mimeviewer', 'php_path', 'php'),
   ('mimeviewer', 'tab_width', '8'),

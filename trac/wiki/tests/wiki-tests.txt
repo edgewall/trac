@@ -491,11 +491,7 @@ echo &#34;foo&#34;
 <script>alert("");</script>
 }}}
 ------------------------------
-<div class="system-message">
- <strong>Error: HTML block contains disallowed tags.</strong>
- <pre>&lt;script&gt;alert(&#34;&#34;);&lt;/script&gt;
-</pre>
-</div>
+
 ------------------------------
  [&hellip;]
 ==============================
@@ -504,11 +500,7 @@ echo &#34;foo&#34;
 <div onclick="alert('')">Click me</div>
 }}}
 ------------------------------
-<div class="system-message">
- <strong>Error: HTML block contains disallowed attributes.</strong>
- <pre>&lt;div onclick=&#34;alert('')&#34;&gt;Click me&lt;/div&gt;
-</pre>
-</div>
+<div>Click me</div>
 ------------------------------
  [&hellip;]
 ==============================
@@ -555,7 +547,7 @@ Hello World, args = hej hopp Hello World, args = hej hopp2 # Test non greedy mat
 Inline [[html(<B> Test </B>)]] text
 ------------------------------
 <p>
-Inline <B> Test </B> text
+Inline <b> Test </b> text
 </p>
 ------------------------------
 Inline [[html(...)]] text

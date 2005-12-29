@@ -37,7 +37,7 @@ def system_message(msg, text):
  <strong>%s</strong>
  <pre>%s</pre>
 </div>
-""" % (msg, util.escape(text))
+""" % (util.escape(msg), util.escape(text))
 
 
 class WikiProcessor(object):
@@ -78,17 +78,13 @@ class WikiProcessor(object):
         return '<pre class="wiki">' + util.escape(text) + '</pre>\n'
 
     def _html_processor(self, req, text):
-        if Formatter._htmlproc_disallow_rule.search(text):
-            err = system_message('Error: HTML block contains disallowed tags.',
-                                 text)
-            self.env.log.error(err)
-            return err
-        if Formatter._htmlproc_disallow_attribute.search(text):
-            err = system_message('Error: HTML block contains disallowed attributes.',
-                                 text)
-            self.env.log.error(err)
-            return err
-        return text
+        from HTMLParser import HTMLParseError
+        try:
+            return util.Markup(text).sanitize()
+        except HTMLParseError, e:
+            self.env.log.warn(e)
+            return system_message('HTML parsing error: %s' % util.escape(e.msg),
+                                  text.splitlines()[e.lineno - 1].strip())
 
     def _macro_processor(self, req, text):
         from trac.wiki import WikiSystem
@@ -104,8 +100,10 @@ class WikiProcessor(object):
 
     def process(self, req, text, inline=False):
         if self.error:
-            return system_message('Error: Failed to load processor <code>%s</code>'
-                                  % self.name, self.error)
+            return system_message(util.Markup('Error: Failed to load processor '
+                                              '<code>%s</code>'
+                                              % util.escape(self.name)),
+                                  self.error)
         text = self.processor(req, text)
         if inline:
             code_block_start = re.compile('^<div class="code-block">')
@@ -186,10 +184,6 @@ class Formatter(object):
     _anchor_re = re.compile('[^\w\d\.-:]+', re.UNICODE)
     
     img_re = re.compile(r"\.(gif|jpg|jpeg|png)(\?.*)?$", re.IGNORECASE)
-    _htmlproc_disallow_rule = re.compile('(?i)<(script|noscript|embed|object|'
-                                         'iframe|frame|frameset|link|style|'
-                                         'meta|param|doctype)')
-    _htmlproc_disallow_attribute = re.compile('(?i)<[^>]*\s+(on\w+)=')
 
     def __init__(self, env, req=None, absurls=0, db=None):
         self.env = env

@@ -1,6 +1,7 @@
-from trac.util import Markup, unescape
-
+from HTMLParser import HTMLParseError
 import unittest
+
+from trac.util import Markup, unescape
 
 
 class MarkupTestCase(unittest.TestCase):
@@ -55,6 +56,90 @@ class MarkupTestCase(unittest.TestCase):
         markup = Markup('<a href="#">fo<br />o</a>').striptags()
         assert isinstance(markup, Markup)
         self.assertEquals('foo', markup)
+
+    def test_sanitize_unchanged(self):
+        markup = Markup('<a href="#">fo<br />o</a>')
+        self.assertEquals('<a href="#">fo<br />o</a>', markup.sanitize())
+
+    def test_sanitize_escape_text(self):
+        markup = Markup('<a href="#">fo&amp;</a>')
+        self.assertEquals('<a href="#">fo&amp;</a>', markup.sanitize())
+        markup = Markup('<a href="#">&lt;foo&gt;</a>')
+        self.assertEquals('<a href="#">&lt;foo&gt;</a>', markup.sanitize())
+
+    def test_sanitize_entityref_text(self):
+        markup = Markup('<a href="#">fo&ouml;</a>')
+        self.assertEquals('<a href="#">fo\xc3\xb6</a>', markup.sanitize())
+
+    def test_sanitize_escape_attr(self):
+        markup = Markup('<div title="&lt;foo&gt;"></div>')
+        self.assertEquals('<div title="&lt;foo&gt;"></div>', markup.sanitize())
+
+    def test_sanitize_close_empty_tag(self):
+        markup = Markup('<a href="#">fo<br>o</a>')
+        self.assertEquals('<a href="#">fo<br />o</a>', markup.sanitize())
+
+    def test_sanitize_remove_script_elem(self):
+        markup = Markup('<script>alert("Foo")</script>')
+        self.assertEquals('', markup.sanitize())
+        markup = Markup('<SCRIPT SRC="http://example.com/"></SCRIPT>')
+        self.assertEquals('', markup.sanitize())
+        markup = Markup('<SCR\0IPT>alert("foo")</SCR\0IPT>')
+        self.assertRaises(HTMLParseError, markup.sanitize)
+        markup = Markup('<SCRIPT&XYZ SRC="http://example.com/"></SCRIPT>')
+        self.assertRaises(HTMLParseError, markup.sanitize)
+
+    def test_sanitize_remove_onclick_attr(self):
+        markup = Markup('<div onclick=\'alert("foo")\' />')
+        self.assertEquals('<div></div>', markup.sanitize())
+
+    def test_sanitize_remove_style_scripts(self):
+        # Inline style with url() using javascript: scheme
+        markup = Markup('<DIV STYLE=\'background: url(javascript:alert("foo"))\'>')
+        self.assertEquals('<div>', markup.sanitize())
+        # Inline style with url() using javascript: scheme, using control char
+        markup = Markup('<DIV STYLE=\'background: url(&#1;javascript:alert("foo"))\'>')
+        self.assertEquals('<div>', markup.sanitize())
+        # Inline style with url() using javascript: scheme, in quotes
+        markup = Markup('<DIV STYLE=\'background: url("javascript:alert(foo)")\'>')
+        self.assertEquals('<div>', markup.sanitize())
+        # IE expressions in CSS not allowed
+        markup = Markup('<DIV STYLE=\'width: expression(alert("foo"));\'>')
+        self.assertEquals('<div>', markup.sanitize())
+        markup = Markup('<DIV STYLE=\'background: url(javascript:alert("foo"));'
+                                     'color: #fff\'>')
+        self.assertEquals('<div style="color: #fff">', markup.sanitize())
+
+    def test_sanitize_remove_src_javascript(self):
+        markup = Markup('<img src=\'javascript:alert("foo")\'>')
+        self.assertEquals('<img />', markup.sanitize())
+        # Case-insensitive protocol matching
+        markup = Markup('<IMG SRC=\'JaVaScRiPt:alert("foo")\'>')
+        self.assertEquals('<img />', markup.sanitize())
+        # Grave accents (not parsed)
+        markup = Markup('<IMG SRC=`javascript:alert("RSnake says, \'foo\'")`>')
+        self.assertRaises(HTMLParseError, markup.sanitize)
+        # Protocol encoded using UTF-8 numeric entities
+        markup = Markup('<IMG SRC=\'&#106;&#97;&#118;&#97;&#115;&#99;&#114;&#105;'
+                        '&#112;&#116;&#58;alert("foo")\'>')
+        self.assertEquals('<img />', markup.sanitize())
+        # Protocol encoded using UTF-8 numeric entities without a semicolon
+        # (which is allowed because the max number of digits is used)
+        markup = Markup('<IMG SRC=\'&#0000106&#0000097&#0000118&#0000097'
+                        '&#0000115&#0000099&#0000114&#0000105&#0000112&#0000116'
+                        '&#0000058alert("foo")\'>')
+        self.assertEquals('<img />', markup.sanitize())
+        # Protocol encoded using UTF-8 numeric hex entities without a semicolon
+        # (which is allowed because the max number of digits is used)
+        markup = Markup('<IMG SRC=\'&#x6A&#x61&#x76&#x61&#x73&#x63&#x72&#x69'
+                        '&#x70&#x74&#x3A;alert("foo")\'>')
+        self.assertEquals('<img />', markup.sanitize())
+        # Embedded tab character in protocol
+        markup = Markup('<IMG SRC=\'jav\tascript:alert("foo");\'>')
+        self.assertEquals('<img />', markup.sanitize())
+        # Embedded tab character in protocol, but encoded this time
+        markup = Markup('<IMG SRC=\'jav&#x09;ascript:alert("foo");\'>')
+        self.assertEquals('<img />', markup.sanitize())
 
 
 def suite():

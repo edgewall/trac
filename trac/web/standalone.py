@@ -324,6 +324,7 @@ class TracHTTPRequest(Request):
     def __init__(self, handler, project_name, query_string):
         Request.__init__(self)
         self.__handler = handler
+        self.__status_sent = False
 
         self.scheme = 'http'
         self.method = self.__handler.command
@@ -355,9 +356,13 @@ class TracHTTPRequest(Request):
 
     def send_response(self, code):
         self.__handler.send_response(code)
+        self.__status_sent = True
 
     def send_header(self, name, value):
-        self.__handler.send_header(name, value)
+        if not self.__status_sent:
+            self._headers.append((name, value))
+        else:
+            self.__handler.send_header(name, value)
 
     def end_headers(self):
         self.__handler.end_headers()
