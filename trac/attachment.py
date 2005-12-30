@@ -417,24 +417,23 @@ class AttachmentModule(Component):
             req.hdf['attachment.raw_href'] = raw_href
 
             format = req.args.get('format')
-            safe = self.config.getbool('attachment', 'render_unsafe_content')
-            if not safe:
-                safe = mime_type != 'text/html' and \
-                       not mime_type.endswith('+xml')
+            render_unsafe = self.config.getbool('attachment',
+                                                'render_unsafe_content')
+            binary = not detect_unicode(data) and is_binary(data)
 
             if format in ('raw', 'txt'): # Send raw file
-                if not safe:
+                if not render_unsafe and not binary:
                     # Force browser to download HTML/SVG/etc pages that may
                     # contain malicious code enabling XSS attacks
                     req.send_header('Content-Disposition', 'attachment;' +
                                     'filename=' + attachment.filename)
                 charset = mimeview.get_charset(data, mime_type)
-                if safe and format == 'txt':
+                if render_unsafe and not binary and format == 'txt':
                     mime_type = 'text/plain'
                 req.send_file(attachment.path,
                               mime_type + ';charset=' + charset)
 
-            if safe and not is_binary(data):
+            if render_unsafe and not binary:
                 plaintext_href = attachment.href(format='txt')
                 add_link(req, 'alternate', plaintext_href, 'Plain Text',
                          mime_type)
