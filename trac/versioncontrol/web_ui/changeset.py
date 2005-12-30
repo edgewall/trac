@@ -114,16 +114,14 @@ class ChangesetModule(Component):
             for chgset in repos.get_changesets(start, stop):
                 message = chgset.message or '--'
                 if format == 'rss':
-                    title = util.Markup('Changeset <em>[%s]</em>: %s' 
-                                        % (util.escape(chgset.rev),
-                                           util.escape(util.shorten_line(message))))
+                    title = util.Markup('Changeset <em>[%s]</em>: %s',
+                                        chgset.rev, util.shorten_line(message))
                     href = self.env.abs_href.changeset(chgset.rev)
                     message = wiki_to_html(message, self.env, req, db,
                                            absurls=True)
                 else:
-                    title = util.Markup('Changeset <em>[%s]</em> by %s' 
-                                        % (util.escape(chgset.rev),
-                                           util.escape(chgset.author)))
+                    title = util.Markup('Changeset <em>[%s]</em> by %s',
+                                        chgset.rev, chgset.author)
                     href = self.env.href.changeset(chgset.rev)
                     message = wiki_to_oneliner(message, self.env, db,
                                                shorten=True)

@@ -101,8 +101,7 @@ class WikiProcessor(object):
     def process(self, req, text, inline=False):
         if self.error:
             return system_message(util.Markup('Error: Failed to load processor '
-                                              '<code>%s</code>'
-                                              % util.escape(self.name)),
+                                              '<code>%s</code>', self.name),
                                   self.error)
         text = self.processor(req, text)
         if inline:

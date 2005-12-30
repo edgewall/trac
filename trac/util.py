@@ -36,6 +36,11 @@ class Markup(str):
     Strings are normally automatically escaped when added to the HDF.
     `Markup`-strings are however an exception. Use with care.
     """
+    def __new__(self, text='', *args):
+        if args:
+            text %= tuple([escape(arg) for arg in args])
+        return str.__new__(self, text)
+
     def __add__(self, other):
         return Markup(str(self) + Markup.escape(other))
 

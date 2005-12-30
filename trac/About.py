@@ -22,7 +22,7 @@ import re
 from trac.core import *
 from trac.perm import IPermissionRequestor
 from trac.web import IRequestHandler
-from trac.util import escape, Markup
+from trac.util import Markup
 from trac.web.chrome import add_stylesheet, INavigationContributor
 
 
@@ -140,8 +140,8 @@ It provides an interface to the Subversion revision control systems, integrated 
 
     def get_navigation_items(self, req):
         yield ('metanav', 'about',
-               Markup('<a href="%s" accesskey="9">About Trac</a>'
-                      % escape(self.env.href.about())))
+               Markup('<a href="%s" accesskey="2">Timeline</a>',
+                      self.env.href.timeline()))
 
     # IPermissionRequestor methods
 

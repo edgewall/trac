@@ -24,8 +24,8 @@ from trac.core import *
 from trac.perm import IPermissionRequestor
 from trac.Search import ISearchSource, query_to_sql, shorten_result
 from trac.Timeline import ITimelineEventProvider
-from trac.util import escape, format_datetime, get_reporter_id, \
-                      pretty_timedelta, shorten_line, Markup
+from trac.util import format_datetime, get_reporter_id, pretty_timedelta, \
+                      shorten_line, Markup
 from trac.versioncontrol.diff import get_diff_options, hdf_diff
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
 from trac.web import IRequestHandler
@@ -47,11 +47,11 @@ class WikiModule(Component):
         if not req.perm.has_permission('WIKI_VIEW'):
             return
         yield ('metanav', 'help',
-               Markup('<a href="%s" accesskey="6">Help/Guide</a>' 
-                      % escape(self.env.href.wiki('TracGuide'))))
+               Markup('<a href="%s" accesskey="6">Help/Guide</a>',
+                      self.env.href.wiki('TracGuide')))
         yield ('mainnav', 'wiki',
-               Markup('<a href="%s" accesskey="1">Wiki</a>'
-                      % escape(self.env.href.wiki())))
+               Markup('<a href="%s" accesskey="1">Wiki</a>',
+                      self.env.href.wiki()))
 
     # IPermissionRequestor methods
 
@@ -137,8 +137,7 @@ class WikiModule(Component):
                            "FROM wiki WHERE time>=%s AND time<=%s",
                            (start, stop))
             for t,name,comment,author in cursor:
-                title = Markup('<em>%s</em> edited by %s'
-                               % (escape(name), escape(author)))
+                title = Markup('<em>%s</em> edited by %s', name, author)
                 if format == 'rss':
                     href = self.env.abs_href.wiki(name)
                     comment = wiki_to_html(comment or '--', self.env, req, db,

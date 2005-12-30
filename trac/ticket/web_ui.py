@@ -65,8 +65,8 @@ class NewticketModule(Component):
         if not req.perm.has_permission('TICKET_CREATE'):
             return
         yield ('mainnav', 'newticket', 
-               util.Markup('<a href="%s" accesskey="7">New Ticket</a>'
-                           % util.escape(self.env.href.newticket())))
+               util.Markup('<a href="%s" accesskey="7">New Ticket</a>',
+                           self.env.href.newticket()))
 
     # IRequestHandler methods
 
@@ -265,9 +265,8 @@ class TicketModule(Component):
             else:
                 return None
             kind, verb = status_map[status]
-            title = util.Markup('Ticket <em title="%s">#%s</em> (%s) %s by %s'
-                                % (util.escape(summary), id, type, verb,
-                                   util.escape(author)))
+            title = util.Markup('Ticket <em title="%s">#%s</em> (%s) %s by %s',
+                                summary, id, type, verb, author)
             href = rss and self.env.abs_href.ticket(id) \
                    or self.env.href.ticket(id)
 

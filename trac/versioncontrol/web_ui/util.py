@@ -88,7 +88,6 @@ def get_existing_node(env, repos, path, rev):
     except TracError, e: 
         raise TracError(Markup('%s<br><p>You can <a href="%s">search</a> ' 
                                'in the repository history to see if that path '
-                               'existed but was later removed.</p>'
-                               % (escape(e.message),
-                                  escape(env.href.log(path, rev=rev,
-                                                      mode='path_history')))))
+                               'existed but was later removed.</p>', e.message,
+                               env.href.log(path, rev=rev,
+                                            mode='path_history')))

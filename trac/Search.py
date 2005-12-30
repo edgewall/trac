@@ -107,8 +107,8 @@ class SearchModule(Component):
         if not req.perm.has_permission('SEARCH_VIEW'):
             return
         yield ('mainnav', 'search',
-               Markup('<a href="%s" accesskey="4">Search</a>' 
-                      % escape(self.env.href.search())))
+               Markup('<a href="%s" accesskey="4">Search</a>',
+                      self.env.href.search()))
 
     # IPermissionRequestor methods
 

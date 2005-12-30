@@ -72,8 +72,8 @@ class ReportModule(Component):
         if not req.perm.has_permission('REPORT_VIEW'):
             return
         yield ('mainnav', 'tickets',
-               util.Markup('<a href="%s">View Tickets</a>'
-                           % util.escape(self.env.href.report())))
+               util.Markup('<a href="%s">View Tickets</a>',
+                           self.env.href.report()))
 
     # IPermissionRequestor methods  
 

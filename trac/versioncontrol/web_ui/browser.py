@@ -62,8 +62,8 @@ class BrowserModule(Component):
         if not req.perm.has_permission('BROWSER_VIEW'):
             return
         yield ('mainnav', 'browser',
-               util.Markup('<a href="%s">Browse Source</a>' 
-                           % util.escape(self.env.href.browser())))
+               util.Markup('<a href="%s">Browse Source</a>',
+                           self.env.href.browser()))
 
     # IPermissionRequestor methods
 

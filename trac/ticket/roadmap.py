@@ -129,8 +129,8 @@ class RoadmapModule(Component):
         if not req.perm.has_permission('ROADMAP_VIEW'):
             return
         yield ('mainnav', 'roadmap',
-               Markup('<a href="%s" accesskey="3">Roadmap</a>' 
-                      % escape(self.env.href.roadmap())))
+               Markup('<a href="%s" accesskey="3">Roadmap</a>',
+                      self.env.href.roadmap()))
 
     # IPermissionRequestor methods
 
@@ -313,8 +313,8 @@ class MilestoneModule(Component):
             cursor.execute("SELECT completed,name,description FROM milestone "
                            "WHERE completed>=%s AND completed<=%s",
                            (start, stop,))
-            for completed,name,description in cursor:
-                title = 'Milestone <em>%s</em> completed' % escape(name)
+            for completed, name, description in cursor:
+                title = Markup('Milestone <em>%s</em> completed', name)
                 if format == 'rss':
                     href = self.env.abs_href.milestone(name)
                     message = wiki_to_html(description or '--', self.env,

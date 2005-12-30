@@ -339,8 +339,8 @@ class QueryModule(Component):
         from trac.ticket.report import ReportModule
         if req.perm.has_permission('TICKET_VIEW') and \
            not self.env.is_component_enabled(ReportModule):
-            yield 'mainnav', 'tickets', '<a href="%s">View Tickets</a>' \
-                  % escape(self.env.href.query())
+            yield 'mainnav', 'tickets', Markup('<a href="%s">View Tickets</a>',
+                                               self.env.href.query())
 
     # IRequestHandler methods
 
