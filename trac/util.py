@@ -35,6 +35,8 @@ class Markup(str):
     
     Strings are normally automatically escaped when added to the HDF.
     `Markup`-strings are however an exception. Use with care.
+    
+    (since Trac 0.9.3)
     """
     def __new__(self, text='', *args):
         if args:

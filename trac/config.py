@@ -47,6 +47,13 @@ class Configuration:
         return self.parser.get(section, name)
 
     def getbool(self, section, name, default=None):
+        """Return the specified option as boolean value.
+        
+        If the value of the option is one of "yes", "true",  "on", or "1", this
+        method wll return `True`, otherwise `False`.
+        
+        (since Trac 0.9.3)
+        """
         if isinstance(default, basestring):
             default = default.lower()
         return self.get(section, name, default) in _TRUE_VALUES
