@@ -29,6 +29,7 @@ from trac.web import IRequestHandler
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
 from trac.wiki import wiki_to_html, wiki_to_oneliner
 
+
 class NewticketModule(Component):
 
     implements(IEnvironmentSetupParticipant, INavigationContributor,
@@ -273,7 +274,7 @@ class TicketModule(Component):
             if status == 'new':
                 message = util.escape(summary)
             else:
-                message = util.escape(info)
+                message = util.Markup(info)
                 if comment:
                     if rss:
                         message += wiki_to_html(comment, self.env, req, db,
