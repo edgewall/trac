@@ -140,8 +140,7 @@ It provides an interface to the Subversion revision control systems, integrated 
 
     def get_navigation_items(self, req):
         yield ('metanav', 'about',
-               Markup('<a href="%s" accesskey="2">Timeline</a>',
-                      self.env.href.timeline()))
+               Markup('<a href="%s">About Trac</a>', self.env.href.about()))
 
     # IPermissionRequestor methods
 
