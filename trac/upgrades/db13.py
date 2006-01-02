@@ -27,7 +27,7 @@ sql = [
   SELECT id, 'defect', time, changetime, component, severity, priority, owner,
          reporter, cc, version, milestone, status, resolution, summary,
          description, keywords FROM ticket_old
-  WHERE severity <> 'enhancement';""",
+  WHERE COALESCE(severity,'') <> 'enhancement';""",
 """INSERT INTO ticket(id, type, time, changetime, component, severity, priority,
                    owner, reporter, cc, version, milestone, status, resolution,
                    summary, description, keywords)
