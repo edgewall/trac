@@ -12,10 +12,10 @@ __docformat__ = 'epytext en'
 
 __version__ = '1.0dev'
 __url__ = 'http://trac.edgewall.com/'
-__copyright__ = '(C) 2003-2005 Edgewall Software'
+__copyright__ = '(C) 2003-2006 Edgewall Software'
 __license__ = 'BSD'
 __license_long__ = """
- Copyright (C) 2003-2005 Edgewall Software
+ Copyright (C) 2003-2006 Edgewall Software
  All rights reserved.
  
  Redistribution and use in source and binary forms, with or without

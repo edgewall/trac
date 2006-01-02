@@ -1,9 +1,9 @@
 # -*- coding: iso-8859-1 -*-
 #
-# Copyright (C) 2004-2005 Edgewall Software
+# Copyright (C) 2004-2006 Edgewall Software
 # Copyright (C) 2004-2005 Jonas Borgström <jonas@edgewall.com>
 # Copyright (C) 2004-2005 Daniel Lundin <daniel@edgewall.com>
-# Copyright (C) 2005 Christopher Lenz <cmlenz@gmx.de>
+# Copyright (C) 2005-2006 Christopher Lenz <cmlenz@gmx.de>
 # All rights reserved.
 #
 # This software is licensed as described in the file COPYING, which
@@ -123,7 +123,7 @@ It provides an interface to the Subversion revision control systems, integrated 
   <p>Trac is a product of <a href="http://www.edgewall.com/">Edgewall
   Software</a>, provider of professional Linux and software development
   services.</p>
-  <p>Copyright &copy; 2003-2005 <a href="http://www.edgewall.com/">Edgewall
+  <p>Copyright &copy; 2003-2006 <a href="http://www.edgewall.com/">Edgewall
   Software</a></p>
   <a href="http://www.edgewall.com/">
    <img style="display: block; margin: 30px" src="<?cs var:chrome.href ?>/common/edgewall.png"

@@ -1,6 +1,6 @@
 # -*- coding: iso-8859-1 -*-
 #
-# Copyright (C) 2003-2005 Edgewall Software
+# Copyright (C) 2003-2006 Edgewall Software
 # Copyright (C) 2003-2005 Jonas Borgström <jonas@edgewall.com>
 # All rights reserved.
 #
