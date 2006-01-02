@@ -183,8 +183,7 @@ class SubversionRepository(Repository):
         self.pool = Pool()
         
         # Remove any trailing slash or else subversion might abort
-        if not os.path.split(path)[1]:
-            path = os.path.split(path)[0]
+        path = os.path.normpath(path).replace('\\', '/')
         self.path = repos.svn_repos_find_root_path(path, self.pool())
         if self.path is None:
             raise TracError, \
