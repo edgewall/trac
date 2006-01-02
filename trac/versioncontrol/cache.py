@@ -71,7 +71,11 @@ class CachedRepository(Repository):
             if youngest_stored:
                 current_rev = self.repos.next_rev(youngest_stored)
             else:
-                current_rev = self.repos.oldest_rev
+                try:
+                    current_rev = self.repos.oldest_rev
+                    current_rev = self.repos.normalize_rev(current_rev)
+                except TracError:
+                    current_rev = None
             while current_rev is not None:
                 changeset = self.repos.get_changeset(current_rev)
                 cursor.execute("INSERT INTO revision (rev,time,author,message) "

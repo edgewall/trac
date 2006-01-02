@@ -36,6 +36,7 @@ class CacheTestCase(unittest.TestCase):
                      get_changeset=lambda x: changeset,
                      get_oldest_rev=lambda: 0,
                      get_youngest_rev=lambda: 0,
+                     normalize_rev=lambda x: x,
                      next_rev=lambda x: None)
         cache = CachedRepository(self.db, repos, None, self.log)
         cache.sync()
@@ -57,6 +58,7 @@ class CacheTestCase(unittest.TestCase):
                      get_changeset=lambda x: changesets[int(x)],
                      get_oldest_rev=lambda: 0,
                      get_youngest_rev=lambda: 1,
+                     normalize_rev=lambda x: x,
                      next_rev=lambda x: int(x) == 0 and 1 or None)
         cache = CachedRepository(self.db, repos, None, self.log)
         cache.sync()
