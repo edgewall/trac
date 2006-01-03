@@ -1,6 +1,6 @@
 # -*- coding: iso-8859-1 -*-
 #
-# Copyright (C) 2004 Edgewall Software
+# Copyright (C) 2004-2006 Edgewall Software
 # Copyright (C) 2004 Daniel Lundin
 # All rights reserved.
 #
@@ -23,9 +23,7 @@ from trac.mimeview.api import IHTMLPreviewRenderer
 
 
 class TextileRenderer(Component):
-    """
-    Renders plain text in Textile format as HTML.
-    """
+    """Renders plain text in Textile format as HTML."""
     implements(IHTMLPreviewRenderer)
 
     def get_quality_ratio(self, mimetype):
@@ -35,4 +33,4 @@ class TextileRenderer(Component):
 
     def render(self, req, mimetype, content, filename=None, rev=None):
         import textile
-        return textile.textile(content)
+        return textile.textile(content, encoding='utf-8')
