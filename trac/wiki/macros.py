@@ -427,7 +427,7 @@ class UserMacroProvider(Component):
                     yield name
                 except Exception, e:
                     self.log.error('Failed to load wiki macro %s (%s)',
-                                   filename, e)
+                                   filename, e, exc_info=True)
 
     def get_macro_description(self, name):
         return inspect.getdoc(self._load_macro(name))
@@ -437,8 +437,8 @@ class UserMacroProvider(Component):
         try:
             return module.execute(req and req.hdf, content, self.env)
         except Exception, e:
-            self.log.error('Wiki macro %s failed (%s)' % (name, e))
-            raise e
+            self.log.error('Wiki macro %s failed (%s)', name, e, exc_info=True)
+            raise
 
     def _load_macro(self, name):
         for path in (self.env_macros, self.site_macros):
