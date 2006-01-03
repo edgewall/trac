@@ -14,7 +14,7 @@
 #
 # Author: Daniel Lundin <daniel@edgewall.com>
 
-from trac.__init__ import __version__
+from trac import __version__
 from trac.core import TracError
 from trac.util import CRLF, wrap
 from trac.web.clearsilver import HDFWrapper
@@ -169,19 +169,19 @@ class TicketNotifyEmail(NotifyEmail):
                                           self.COLS, initial_indent=' ',
                                           subsequent_indent=' ', linesep=CRLF)
         self.ticket['link'] = self.env.abs_href.ticket(ticket.id)
-        self.hdf['email.ticket_props'] = self.format_props()
-        self.hdf['email.ticket_body_hdr'] = self.format_hdr()
-        self.hdf['ticket'] = self.ticket.values
+        self.hdf.set_unescaped('email.ticket_props', self.format_props())
+        self.hdf.set_unescaped('email.ticket_body_hdr', self.format_hdr())
+        self.hdf.set_unescaped('ticket', self.ticket.values)
         self.hdf['ticket.new'] = self.newticket
         subject = self.format_subj()
         if not self.newticket:
             subject = 'Re: ' + subject
-        self.hdf['email.subject'] = subject
+        self.hdf.set_unescaped('email.subject', subject)
         changes = ''
         if not self.newticket and modtime:  # Ticket change
             changelog = ticket.get_changelog(modtime)
             for date, author, field, old, new in changelog:
-                self.hdf['ticket.change.author'] = author
+                self.hdf.set_unescaped('ticket.change.author', author)
                 pfx = 'ticket.change.%s' % field
                 newv = ''
                 if field == 'comment':
@@ -193,7 +193,7 @@ class TicketNotifyEmail(NotifyEmail):
                     cdescr = CRLF
                     cdescr += 'Old description:' + 2*CRLF + old_descr + 2*CRLF
                     cdescr += 'New description:' + 2*CRLF + new_descr + CRLF
-                    self.hdf['email.changes_descr'] = cdescr
+                    self.hdf.set_unescaped('email.changes_descr', cdescr)
                 else:
                     newv = new
                     l = 7 + len(field)
@@ -201,13 +201,13 @@ class TicketNotifyEmail(NotifyEmail):
                                l * ' ', CRLF)
                     changes += '  * %s:  %s%s' % (field, chg, CRLF)
                 if newv:
-                    self.hdf['%s.oldvalue' % pfx] = old
-                    self.hdf['%s.newvalue' % pfx] = newv
+                    self.hdf.set_unescaped('%s.oldvalue' % pfx, old)
+                    self.hdf.set_unescaped('%s.newvalue' % pfx, newv)
                 if field == 'cc':
                     self.prev_cc += old and self.parse_cc(old) or []
-                self.hdf['%s.author' % pfx] = author
+                self.hdf.set_unescaped('%s.author' % pfx, author)
             if changes:
-                self.hdf['email.changes_body'] = changes
+                self.hdf.set_unescaped('email.changes_body', changes)
         NotifyEmail.notify(self, ticket.id, subject)
 
     def format_props(self):
