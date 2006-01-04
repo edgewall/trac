@@ -21,7 +21,7 @@ from trac.core import *
 from trac.perm import IPermissionRequestor
 from trac.ticket import Ticket, TicketSystem
 from trac.util import escape, unescape, format_datetime, http_date, \
-                      shorten_line, CRLF
+                      shorten_line, CRLF, Markup
 from trac.web import IRequestHandler
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
 from trac.wiki import wiki_to_html, wiki_to_oneliner, IWikiMacroProvider, \
