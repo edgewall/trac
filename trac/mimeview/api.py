@@ -311,7 +311,7 @@ class Mimeview(Component):
                     'max_file_size': max_preview_size}
 
         if not is_binary(content):
-            content = to_utf8(content, charset or self.preview_charset(content))
+            content = to_utf8(content, charset or self.get_charset(content))
         return {'preview': self.render(req, mimetype, content,
                                        filename, detail, annotations)}
 
