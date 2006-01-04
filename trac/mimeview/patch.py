@@ -17,7 +17,7 @@
 
 from trac.core import *
 from trac.mimeview.api import IHTMLPreviewRenderer
-from trac.util import escape
+from trac.util import escape, Markup
 from trac.web.chrome import add_stylesheet
 
 __all__ = ['PatchRenderer']
@@ -145,7 +145,7 @@ class PatchRenderer(Component):
                 return None
 
             # First character is the command
-            command,line = line[0],line[1:]
+            command, line = line[0], line[1:]
 
             # Make a new block?
             if (command == ' ') != last_type:
@@ -186,10 +186,10 @@ class PatchRenderer(Component):
                         line = f[i].expandtabs(tabwidth)
                         line = escape(line).replace('\0', '<del>') \
                                            .replace('\1', '</del>')
-                        f[i] = space_re.sub(htmlify, line)
+                        f[i] = Markup(space_re.sub(htmlify, line))
                     for i in xrange(len(t)):
                         line = t[i].expandtabs(tabwidth)
                         line = escape(line).replace('\0', '<ins>') \
                                            .replace('\1', '</ins>')
-                        t[i] = space_re.sub(htmlify, line)
+                        t[i] = Markup(space_re.sub(htmlify, line))
         return output
