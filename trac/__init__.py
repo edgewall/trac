@@ -10,7 +10,7 @@ U{http://trac.edgewall.com/}
 """
 __docformat__ = 'epytext en'
 
-__version__ = '0.9.2'
+__version__ = '0.9.3dev'
 __url__ = 'http://trac.edgewall.com/'
 __copyright__ = '(C) 2003-2006 Edgewall Software'
 __license__ = 'BSD'
