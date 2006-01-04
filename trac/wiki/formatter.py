@@ -1,8 +1,9 @@
 # -*- coding: iso-8859-1 -*-
 #
-# Copyright (C) 2003-2005 Edgewall Software
+# Copyright (C) 2003-2006 Edgewall Software
 # Copyright (C) 2003-2005 Jonas Borgström <jonas@edgewall.com>
 # Copyright (C) 2004-2005 Christopher Lenz <cmlenz@gmx.de>
+# Copyright (C) 2005-2006 Christian Boos <cboos@neuf.fr>
 # All rights reserved.
 #
 # This software is licensed as described in the file COPYING, which
@@ -144,7 +145,6 @@ class Formatter(object):
     # between _pre_rules and _post_rules
 
     _pre_rules = [
-        r"(?P<htmlescape>[&<>])",
         # Font styles
         r"(?P<bolditalic>%s)" % BOLDITALIC_TOKEN,
         r"(?P<bold>%s)" % BOLD_TOKEN,
@@ -155,11 +155,10 @@ class Formatter(object):
         r"(?P<superscript>!?%s)" % SUPERSCRIPT_TOKEN,
         r"(?P<inlinecode>!?\{\{\{(?P<inline>.*?)\}\}\})",
         r"(?P<inlinecode2>!?%s(?P<inline2>.*?)%s)" \
-        % (INLINE_TOKEN, INLINE_TOKEN),
-        # Prevent HTML entities to be recognized as ticket shorthand links
-        r"(?P<htmlescapeentity>!?&#\d+;)"]
+        % (INLINE_TOKEN, INLINE_TOKEN)]
 
     _post_rules = [
+        r"(?P<htmlescape>[&<>])",
         # shref corresponds to short TracLinks, i.e. sns:stgt
         r"(?P<shref>!?((?P<sns>%s):(?P<stgt>%s|%s(?:%s*%s)?)))" \
         % (LINK_SCHEME, QUOTED_STRING,
@@ -355,13 +354,6 @@ class Formatter(object):
 
     def _inlinecode2_formatter(self, match, fullmatch):
         return '<tt>%s</tt>' % fullmatch.group('inline2')
-
-    def _htmlescapeentity_formatter(self, match, fullmatch):
-        #dummy function that match html escape entities in the format:
-        # &#[0-9]+;
-        # This function is used to avoid these being matched by
-        # the tickethref regexp
-        return match
 
     def _htmlescape_formatter(self, match, fullmatch):
         return match == "&" and "&amp;" or match == "<" and "&lt;" or "&gt;"
