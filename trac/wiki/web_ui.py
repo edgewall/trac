@@ -369,7 +369,8 @@ class WikiModule(Component):
         else:
             if not req.perm.has_permission('WIKI_CREATE'):
                 raise TracError('Page %s not found' % page.name)
-            req.hdf['wiki.page_html'] = '<p>Describe "%s" here</p>' % page.name
+            req.hdf['wiki.page_html'] = Markup('<p>Describe "%s" here</p>',
+                                               page.name)
 
         # Show attachments
         attachments = []
