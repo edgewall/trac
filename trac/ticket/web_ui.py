@@ -299,7 +299,7 @@ class TicketModule(Component):
                         ]))
                     else:
                         message = util.escape(util.shorten_line(message))
-                yield kinds[status], href, title, t, author
+                yield kinds[status], href, title, t, author, message
 
     # Internal methods
 
