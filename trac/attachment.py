@@ -1,4 +1,4 @@
-# -*- coding: iso8859-1 -*-
+# -*- coding: iso-8859-1 -*-
 #
 # Copyright (C) 2003-2005 Edgewall Software
 # Copyright (C) 2003-2005 Jonas Borgström <jonas@edgewall.com>
@@ -197,7 +197,7 @@ def attachment_to_hdf(env, db, req, attachment):
     hdf = {
         'filename': attachment.filename,
         'description': wiki_to_oneliner(attachment.description, env, db),
-        'author': util.escape(attachment.author),
+        'author': attachment.author,
         'ipnr': attachment.ipnr,
         'size': util.pretty_size(attachment.size),
         'time': util.format_datetime(attachment.time),
@@ -385,10 +385,6 @@ class AttachmentModule(Component):
         perm_map = {'ticket': 'TICKET_VIEW', 'wiki': 'WIKI_VIEW'}
         req.perm.assert_permission(perm_map[attachment.parent_type])
 
-        fmt = req.args.get('format')
-        mimetype = fmt == 'txt' and 'text/plain' or \
-                   get_mimetype(attachment.filename) or 'application/octet-stream'
-
         req.check_modified(attachment.time)
 
         # Render HTML view
@@ -402,34 +398,47 @@ class AttachmentModule(Component):
             'name': text, 'href': link,
         }
 
-        raw_href = attachment.href(format='raw')
-        add_link(req, 'alternate', raw_href, 'Original Format', mimetype)
-        req.hdf['attachment.raw_href'] = raw_href
-
         perm_map = {'ticket': 'TICKET_ADMIN', 'wiki': 'WIKI_DELETE'}
         if req.perm.has_permission(perm_map[attachment.parent_type]):
             req.hdf['attachment.can_delete'] = 1
 
-        self.log.debug("Rendering preview of file %s with mime-type %s"
-                       % (attachment.filename, mimetype))
         fd = attachment.open()
         try:
             mimeview = Mimeview(self.env)
-
             max_preview_size = mimeview.max_preview_size()
             data = fd.read(max_preview_size)
-            
-            if fmt in ('raw', 'txt'):
-                # Send raw file
-                charset = mimeview.preview_charset(data)
-                req.send_file(attachment.path, mimetype + ';charset=' + charset)
-                return
-            
-            if not is_binary(data):
-                add_link(req, 'alternate', attachment.href(format='txt'),
-                         'Plain Text', mimetype)
 
-            hdf = mimeview.preview_to_hdf(req, mimetype, None, data,
+            mime_type = get_mimetype(attachment.filename) or \
+                        'application/octet-stream'
+            self.log.debug("Rendering preview of file %s with mime-type %s"
+                           % (attachment.filename, mime_type))
+
+            raw_href = attachment.href(format='raw')
+            add_link(req, 'alternate', raw_href, 'Original Format', mime_type)
+            req.hdf['attachment.raw_href'] = raw_href
+
+            format = req.args.get('format')
+            render_unsafe = self.config.getbool('attachment',
+                                                'render_unsafe_content')
+            binary = not detect_unicode(data) and is_binary(data)
+
+            if format in ('raw', 'txt'): # Send raw file
+                if not render_unsafe and not binary:
+                    # Force browser to download HTML/SVG/etc pages that may
+                    # contain malicious code enabling XSS attacks
+                    req.send_header('Content-Disposition', 'attachment;' +
+                                    'filename=' + attachment.filename)
+                charset = mimeview.get_charset(data, mime_type)
+                if render_unsafe and not binary and format == 'txt':
+                    mime_type = 'text/plain'
+                req.send_file(attachment.path,
+                              mime_type + ';charset=' + charset)
+
+            if render_unsafe and not binary:
+                add_link(req, 'alternate', attachment.href(format='txt'),
+                         'Plain Text', mime_type)
+
+            hdf = mimeview.preview_to_hdf(req, mime_type, None, data,
                                           attachment.filename, None,
                                           annotations=['lineno'])
             req.hdf['attachment'] = hdf

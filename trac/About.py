@@ -1,4 +1,4 @@
-# -*- coding: iso8859-1 -*-
+# -*- coding: iso-8859-1 -*-
 #
 # Copyright (C) 2004-2006 Edgewall Software
 # Copyright (C) 2004-2005 Jonas Borgström <jonas@edgewall.com>
@@ -23,6 +23,7 @@ import re
 from trac.core import *
 from trac.perm import IPermissionRequestor
 from trac.web import IRequestHandler
+from trac.util import Markup
 from trac.web.chrome import add_stylesheet, INavigationContributor
 
 
@@ -139,8 +140,8 @@ It provides an interface to the Subversion revision control systems, integrated 
         return 'about'
 
     def get_navigation_items(self, req):
-        yield 'metanav', 'about', '<a href="%s" accesskey="9">About Trac</a>' \
-              % self.env.href.about()
+        yield ('metanav', 'about',
+               Markup('<a href="%s">About Trac</a>', self.env.href.about()))
 
     # IPermissionRequestor methods
 

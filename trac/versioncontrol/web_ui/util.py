@@ -1,4 +1,4 @@
-# -*- coding: iso8859-1 -*-
+# -*- coding: iso-8859-1 -*-
 #
 # Copyright (C) 2003-2005 Edgewall Software
 # Copyright (C) 2003-2005 Jonas Borgström <jonas@edgewall.com>
@@ -18,7 +18,7 @@ import re
 import urllib
 
 from trac.util import escape, format_datetime, pretty_timedelta, shorten_line, \
-                      TracError
+                      TracError, Markup
 from trac.wiki import wiki_to_html, wiki_to_oneliner
 
 __all__ = ['get_changes', 'get_path_links', 'get_path_rev_line',
@@ -64,7 +64,7 @@ def get_path_links(href, path, rev):
         path = path + part + '/'
         links.append({
             'name': part or 'root',
-            'href': escape(href.browser(path, rev=rev))
+            'href': href.browser(path, rev=rev)
         })
     return links
 
@@ -86,8 +86,8 @@ def get_existing_node(env, repos, path, rev):
     try: 
         return repos.get_node(path, rev) 
     except TracError, e: 
-        raise TracError(e.message + '<br><p>You can <a href="%s">search</a> ' 
-                        'in the repository history to see if that path '
-                        'existed but was later removed.</p>'
-                        % escape(env.href.log(path, rev=rev,
-                                              mode='path_history')))
+        raise TracError(Markup('%s<br><p>You can <a href="%s">search</a> ' 
+                               'in the repository history to see if that path '
+                               'existed but was later removed.</p>', e.message,
+                               env.href.log(path, rev=rev,
+                                            mode='path_history')))

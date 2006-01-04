@@ -1,4 +1,4 @@
-# -*- coding: iso8859-1 -*-
+# -*- coding: iso-8859-1 -*-
 #
 # Copyright (C) 2005 Edgewall Software
 # Copyright (C) 2005 Christopher Lenz <cmlenz@gmx.de>
@@ -187,6 +187,8 @@ class Request(object):
         self.send_header('Content-Type', mimetype)
         self.send_header('Content-Length', stat.st_size)
         self.send_header('Last-Modified', last_modified)
+        for name, value in self._headers:
+            self.send_header(name, value)
         self._send_cookie_headers()
         self.end_headers()
 

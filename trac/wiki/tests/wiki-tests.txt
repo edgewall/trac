@@ -65,6 +65,14 @@ Paragraph
 ------------------------------
 #1, [1], r1, {1}
 ==============================
+&#1; &#23;
+------------------------------
+<p>
+&amp;#1; &amp;#23;
+</p>
+------------------------------
+&amp;#1; &amp;#23;
+==============================
 [1:2], r1:2, [12:23], r12:23
 ------------------------------
 <p>
@@ -115,6 +123,7 @@ Some change.
 ticket:1
 This ticket is the first one
 changeset:123>
+changeset:123&
 ------------------------------
 <p>
 Add-on to <a class="missing changeset" href="/changeset/123" rel="nofollow">changeset:123</a>:
@@ -122,6 +131,7 @@ Some change.
 <a class="missing ticket" href="/ticket/1" rel="nofollow">ticket:1</a>
 This ticket is the first one
 <a class="missing changeset" href="/changeset/123" rel="nofollow">changeset:123</a>&gt;
+<a class="missing changeset" href="/changeset/123" rel="nofollow">changeset:123</a>&amp;
 </p>
 ------------------------------
 Add-on to <a class="missing changeset" href="/changeset/123" rel="nofollow">changeset:123</a>:
@@ -129,6 +139,7 @@ Some change.
 <a class="missing ticket" href="/ticket/1" rel="nofollow">ticket:1</a>
 This ticket is the first one
 <a class="missing changeset" href="/changeset/123" rel="nofollow">changeset:123</a>&gt;
+<a class="missing changeset" href="/changeset/123" rel="nofollow">changeset:123</a>&amp;
 ==============================
 CamelCase AlabamA ABc AlaBamA FooBar
 ------------------------------
@@ -476,11 +487,7 @@ echo &#34;foo&#34;
 <script>alert("");</script>
 }}}
 ------------------------------
-<div class="system-message">
- <strong>Error: HTML block contains disallowed tags.</strong>
- <pre>&lt;script&gt;alert(&#34;&#34;);&lt;/script&gt;
-</pre>
-</div>
+
 ------------------------------
  [&hellip;]
 ==============================
@@ -489,11 +496,7 @@ echo &#34;foo&#34;
 <div onclick="alert('')">Click me</div>
 }}}
 ------------------------------
-<div class="system-message">
- <strong>Error: HTML block contains disallowed attributes.</strong>
- <pre>&lt;div onclick=&#34;alert('')&#34;&gt;Click me&lt;/div&gt;
-</pre>
-</div>
+<div>Click me</div>
 ------------------------------
  [&hellip;]
 ==============================
@@ -540,7 +543,7 @@ Hello World, args = hej hopp Hello World, args = hej hopp2 # Test non greedy mat
 Inline [[html(<B> Test </B>)]] text
 ------------------------------
 <p>
-Inline <B> Test </B> text
+Inline <b> Test </b> text
 </p>
 ------------------------------
 Inline [[html(...)]] text

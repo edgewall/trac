@@ -1,8 +1,9 @@
-# -*- coding: iso8859-1 -*-
+# -*- coding: iso-8859-1 -*-
 #
-# Copyright (C) 2003-2005 Edgewall Software
+# Copyright (C) 2003-2006 Edgewall Software
 # Copyright (C) 2003-2005 Jonas Borgström <jonas@edgewall.com>
 # Copyright (C) 2004-2005 Christopher Lenz <cmlenz@gmx.de>
+# Copyright (C) 2005-2006 Christian Boos <cboos@neuf.fr>
 # All rights reserved.
 #
 # This software is licensed as described in the file COPYING, which
@@ -38,7 +39,7 @@ def system_message(msg, text):
  <strong>%s</strong>
  <pre>%s</pre>
 </div>
-""" % (msg, util.escape(text))
+""" % (util.escape(msg), util.escape(text))
 
 
 class WikiProcessor(object):
@@ -79,17 +80,13 @@ class WikiProcessor(object):
         return '<pre class="wiki">' + util.escape(text) + '</pre>\n'
 
     def _html_processor(self, req, text):
-        if Formatter._htmlproc_disallow_rule.search(text):
-            err = system_message('Error: HTML block contains disallowed tags.',
-                                 text)
-            self.env.log.error(err)
-            return err
-        if Formatter._htmlproc_disallow_attribute.search(text):
-            err = system_message('Error: HTML block contains disallowed attributes.',
-                                 text)
-            self.env.log.error(err)
-            return err
-        return text
+        from HTMLParser import HTMLParseError
+        try:
+            return util.Markup(text).sanitize()
+        except HTMLParseError, e:
+            self.env.log.warn(e)
+            return system_message('HTML parsing error: %s' % util.escape(e.msg),
+                                  text.splitlines()[e.lineno - 1].strip())
 
     def _macro_processor(self, req, text):
         from trac.wiki import WikiSystem
@@ -105,8 +102,9 @@ class WikiProcessor(object):
 
     def process(self, req, text, inline=False):
         if self.error:
-            return system_message('Error: Failed to load processor <code>%s</code>'
-                                  % self.name, self.error)
+            return system_message(util.Markup('Error: Failed to load processor '
+                                              '<code>%s</code>', self.name),
+                                  self.error)
         text = self.processor(req, text)
         if inline:
             code_block_start = re.compile('^<div class="code-block">')
@@ -138,7 +136,7 @@ class Formatter(object):
     QUOTED_STRING = r"'[^']+'|\"[^\"]+\""
 
     SHREF_TARGET_FIRST = r"[\w/?!#@]"
-    SHREF_TARGET_MIDDLE = r"(?:\|(?=[^|\s])|&(?!lt;|gt;)|[^|&\s])"
+    SHREF_TARGET_MIDDLE = r"(?:\|(?=[^|\s])|[^|<>\s])"
     SHREF_TARGET_LAST = r"[a-zA-Z0-9/=]" # we don't want "_"
 
     LHREF_RELATIVE_TARGET = r"[/.][^\s[\]]*"
@@ -158,11 +156,10 @@ class Formatter(object):
         r"(?P<superscript>!?%s)" % SUPERSCRIPT_TOKEN,
         r"(?P<inlinecode>!?\{\{\{(?P<inline>.*?)\}\}\})",
         r"(?P<inlinecode2>!?%s(?P<inline2>.*?)%s)" \
-        % (INLINE_TOKEN, INLINE_TOKEN),
-        # Prevent HTML entities to be recognized as ticket shorthand links
-        r"(?P<htmlescapeentity>!?&#\d+;)"]
+        % (INLINE_TOKEN, INLINE_TOKEN)]
 
     _post_rules = [
+        r"(?P<htmlescape>[&<>])",
         # shref corresponds to short TracLinks, i.e. sns:stgt
         r"(?P<shref>!?((?P<sns>%s):(?P<stgt>%s|%s(?:%s*%s)?)))" \
         % (LINK_SCHEME, QUOTED_STRING,
@@ -186,10 +183,6 @@ class Formatter(object):
     _anchor_re = re.compile('[^\w\d\.-:]+', re.UNICODE)
     
     img_re = re.compile(r"\.(gif|jpg|jpeg|png)(\?.*)?$", re.IGNORECASE)
-    _htmlproc_disallow_rule = re.compile('(?i)<(script|noscript|embed|object|'
-                                         'iframe|frame|frameset|link|style|'
-                                         'meta|param|doctype)')
-    _htmlproc_disallow_attribute = re.compile('(?i)<[^>]*\s+(on\w+)=')
 
     def __init__(self, env, req=None, absurls=0, db=None):
         self.env = env
@@ -298,13 +291,16 @@ class Formatter(object):
 
     def _make_link(self, ns, target, match, label):
         if ns in self.link_resolvers:
-            return self.link_resolvers[ns](self, ns, target, label)
+            return self.link_resolvers[ns](self, ns, target,
+                                           util.escape(label, False))
         elif target.startswith('//') or ns == "mailto":
             return self._make_ext_link(ns+':'+target, label)
         else:
-            return match
+            return util.escape(match)
 
     def _make_ext_link(self, url, text, title=''):
+        url = util.escape(url)
+        text, title = util.escape(text), util.escape(title)
         title_attr = title and ' title="%s"' % title or ''
         if Formatter.img_re.search(url) and self.flavor != 'oneliner':
             return '<img src="%s" alt="%s" />' % (url, title or text)
@@ -315,6 +311,7 @@ class Formatter(object):
             return '<a href="%s"%s>%s</a>' % (url, title_attr, text)
 
     def _make_relative_link(self, url, text):
+        url, text = util.escape(url), util.escape(text)
         if Formatter.img_re.search(url) and self.flavor != 'oneliner':
             return '<img src="%s" alt="%s" />' % (url, text)
         if url.startswith('//'): # only the protocol will be kept
@@ -359,19 +356,14 @@ class Formatter(object):
     def _inlinecode2_formatter(self, match, fullmatch):
         return '<tt>%s</tt>' % fullmatch.group('inline2')
 
-    def _htmlescapeentity_formatter(self, match, fullmatch):
-        #dummy function that match html escape entities in the format:
-        # &#[0-9]+;
-        # This function is used to avoid these being matched by
-        # the tickethref regexp
-        return match
+    def _htmlescape_formatter(self, match, fullmatch):
+        return match == "&" and "&amp;" or match == "<" and "&lt;" or "&gt;"
 
     def _macro_formatter(self, match, fullmatch):
         name = fullmatch.group('macroname')
         if name in ['br', 'BR']:
             return '<br />'
         args = fullmatch.group('macroargs')
-        args = util.unescape(args)
         try:
             macro = WikiProcessor(self.env, name)
             return macro.process(self.req, args, 1)
@@ -391,8 +383,7 @@ class Formatter(object):
         depth = min(len(fullmatch.group('hdepth')), 5)
         heading = match[depth + 1:len(match) - depth - 1]
 
-        text = wiki_to_oneliner(util.unescape(heading), self.env, self.db,
-                                self._absurls)
+        text = wiki_to_oneliner(heading, self.env, self.db, self._absurls)
         sans_markup = re.sub(r'</?\w+(?: .*?)?>', '', text)
 
         anchor = self._anchor_re.sub('', sans_markup.decode('utf-8'))
@@ -601,7 +592,6 @@ class Formatter(object):
                 self.close_def_list()
                 continue
 
-            line = util.escape(line, False)
             if escape_newlines:
                 line += ' [[BR]]'
             self.in_list_item = False
@@ -644,8 +634,10 @@ class OneLinerFormatter(Formatter):
     # Override a few formatters to disable some wiki syntax in "oneliner"-mode
     def _list_formatter(self, match, fullmatch): return match
     def _indent_formatter(self, match, fullmatch): return match
-    def _heading_formatter(self, match, fullmatch): return match
-    def _definition_formatter(self, match, fullmatch): return match
+    def _heading_formatter(self, match, fullmatch):
+        return util.escape(match, False)
+    def _definition_formatter(self, match, fullmatch):
+        return util.escape(match, False)
     def _table_cell_formatter(self, match, fullmatch): return match
     def _last_table_cell_formatter(self, match, fullmatch): return match
 
@@ -690,7 +682,7 @@ class OneLinerFormatter(Formatter):
         if shorten:
             result = util.shorten_line(result)
 
-        result = re.sub(self.rules, self.replace, util.escape(result, False))
+        result = re.sub(self.rules, self.replace, result)
         result = result.replace('[...]', '[&hellip;]')
         if result.endswith('...'):
             result = result[:-3] + '&hellip;'
@@ -742,8 +734,7 @@ class OutlineFormatter(Formatter):
         depth = min(len(fullmatch.group('hdepth')), 5)
         heading = match[depth + 1:len(match) - depth - 1]
         anchor = self._anchors[-1]
-        text = wiki_to_oneliner(util.unescape(heading), self.env, self.db,
-                                self._absurls)
+        text = wiki_to_oneliner(heading, self.env, self.db, self._absurls)
         text = re.sub(r'</?a(?: .*?)?>', '', text) # Strip out link tags
         self.outline.append((depth, '<a href="#%s">%s</a>' % (anchor, text)))
 
@@ -751,16 +742,16 @@ class OutlineFormatter(Formatter):
 def wiki_to_html(wikitext, env, req, db=None, absurls=0, escape_newlines=False):
     out = StringIO()
     Formatter(env, req, absurls, db).format(wikitext, out, escape_newlines)
-    return out.getvalue()
+    return util.Markup(out.getvalue())
 
 def wiki_to_oneliner(wikitext, env, db=None, shorten=False, absurls=0):
     out = StringIO()
     OneLinerFormatter(env, absurls, db).format(wikitext, out, shorten)
-    return out.getvalue()
+    return util.Markup(out.getvalue())
 
 def wiki_to_outline(wikitext, env, db=None, absurls=0, max_depth=None,
                     min_depth=None):
     out = StringIO()
     OutlineFormatter(env, absurls, db).format(wikitext, out, max_depth,
                                               min_depth)
-    return out.getvalue()
+    return util.Markup(out.getvalue())

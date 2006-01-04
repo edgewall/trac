@@ -1,4 +1,4 @@
-# -*- coding: iso8859-1 -*-
+# -*- coding: iso-8859-1 -*-
 #
 # Copyright (C) 2004-2005 Edgewall Software
 # Copyright (C) 2004-2005 Christopher Lenz <cmlenz@gmx.de>
@@ -21,13 +21,14 @@ from time import localtime, strftime, time
 from trac import __version__
 from trac.core import *
 from trac.perm import IPermissionRequestor
-from trac.util import enum, escape, format_date, format_datetime, \
-                      parse_date, pretty_timedelta, shorten_line, unescape, CRLF
+from trac.util import enum, escape, format_date, format_datetime, parse_date, \
+                      pretty_timedelta, shorten_line, unescape, CRLF, Markup
 from trac.ticket import Milestone, Ticket, TicketSystem
 from trac.Timeline import ITimelineEventProvider
 from trac.web import IRequestHandler
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
 from trac.wiki import wiki_to_html, wiki_to_oneliner, IWikiSyntaxProvider
+
 
 def get_tickets_for_milestone(env, db, milestone, field='component'):
     cursor = db.cursor()
@@ -87,10 +88,10 @@ def milestone_to_hdf(env, db, req, milestone):
     safe_name = None
     if milestone.exists:
         safe_name = milestone.name.replace('/', '%2F')
-    hdf = {'name': escape(milestone.name),
-           'href': escape(env.href.milestone(safe_name))}
+    hdf = {'name': milestone.name,
+           'href': env.href.milestone(safe_name)}
     if milestone.description:
-        hdf['description_source'] = escape(milestone.description)
+        hdf['description_source'] = milestone.description
         hdf['description'] = wiki_to_html(milestone.description, env, req, db)
     if milestone.due:
         hdf['due'] = milestone.due
@@ -128,8 +129,9 @@ class RoadmapModule(Component):
     def get_navigation_items(self, req):
         if not req.perm.has_permission('ROADMAP_VIEW'):
             return
-        yield 'mainnav', 'roadmap', '<a href="%s" accesskey="3">Roadmap</a>' \
-                                    % self.env.href.roadmap()
+        yield ('mainnav', 'roadmap',
+               Markup('<a href="%s" accesskey="3">Roadmap</a>',
+                      self.env.href.roadmap()))
 
     # IPermissionRequestor methods
 
@@ -162,7 +164,7 @@ class RoadmapModule(Component):
                                                 'owner')
             req.hdf[prefix + 'stats'] = calc_ticket_stats(tickets)
             for k, v in get_query_links(self.env, milestone_name).items():
-                req.hdf[prefix + 'queries.' + k] = escape(v)
+                req.hdf[prefix + 'queries.' + k] = v
             milestone['tickets'] = tickets # for the iCalendar view
 
         if req.args.get('format') == 'ics':
@@ -312,8 +314,8 @@ class MilestoneModule(Component):
             cursor.execute("SELECT completed,name,description FROM milestone "
                            "WHERE completed>=%s AND completed<=%s",
                            (start, stop,))
-            for completed,name,description in cursor:
-                title = 'Milestone <em>%s</em> completed' % escape(name)
+            for completed, name, description in cursor:
+                title = Markup('Milestone <em>%s</em> completed', name)
                 if format == 'rss':
                     href = self.env.abs_href.milestone(name)
                     message = wiki_to_html(description or '--', self.env,
@@ -470,7 +472,7 @@ class MilestoneModule(Component):
         stats = calc_ticket_stats(tickets)
         req.hdf['milestone.stats'] = stats
         for key, value in get_query_links(self.env, milestone.name).items():
-            req.hdf['milestone.queries.' + key] = escape(value)
+            req.hdf['milestone.queries.' + key] = value
 
         groups = _get_groups(self.env, db, by)
         group_no = 0
@@ -491,7 +493,7 @@ class MilestoneModule(Component):
             req.hdf[prefix] = stats
             for key, value in get_query_links(self.env, milestone.name,
                                               by, group).items():
-                req.hdf['%s.queries.%s' % (prefix, key)] = escape(value)
+                req.hdf['%s.queries.%s' % (prefix, key)] = value
             group_no += 1
         req.hdf['milestone.stats.max_percent_total'] = max_percent_total * 100
 

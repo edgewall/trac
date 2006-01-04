@@ -1,4 +1,4 @@
-# -*- coding: iso8859-1 -*-
+# -*- coding: iso-8859-1 -*-
 #
 # Copyright (C) 2004-2005 Edgewall Software
 # Copyright (C) 2004-2005 Christopher Lenz <cmlenz@gmx.de>
@@ -340,8 +340,8 @@ class QueryModule(Component):
         from trac.ticket.report import ReportModule
         if req.perm.has_permission('TICKET_VIEW') and \
            not self.env.is_component_enabled(ReportModule):
-            yield 'mainnav', 'tickets', '<a href="%s">View Tickets</a>' \
-                  % escape(self.env.href.query())
+            yield 'mainnav', 'tickets', Markup('<a href="%s">View Tickets</a>',
+                                               self.env.href.query())
 
     # IRequestHandler methods
 
@@ -502,7 +502,7 @@ class QueryModule(Component):
                                    verbose=query.verbose and 1 or None,
                                    **query.constraints)
         req.hdf['query.order'] = query.order
-        req.hdf['query.href'] = escape(href)
+        req.hdf['query.href'] = href
         if query.desc:
             req.hdf['query.desc'] = True
         if query.group:
@@ -552,11 +552,11 @@ class QueryModule(Component):
                     ticket['changed'] = True
             for field, value in ticket.items():
                 if field == 'time':
-                    ticket[field] = escape(format_datetime(value))
+                    ticket[field] = format_datetime(value)
                 elif field == 'description':
                     ticket[field] = wiki_to_html(value or '', self.env, req, db)
                 else:
-                    ticket[field] = escape(value)
+                    ticket[field] = value
 
         req.hdf['query.results'] = tickets
         req.session['query_tickets'] = ' '.join([str(t['id']) for t in tickets])
@@ -592,9 +592,10 @@ class QueryModule(Component):
             if result['reporter'].find('@') == -1:
                 result['reporter'] = ''
             if result['description']:
-                result['description'] = escape(wiki_to_html(result['description'] or '',
-                                                            self.env, req, db,
-                                                            absurls=1))
+                # str() cancels out the Markup() returned by wiki_to_html
+                result['description'] = str(wiki_to_html(result['description'] or '',
+                                                         self.env, req, db,
+                                                         absurls=1))
             if result['time']:
                 result['time'] = http_date(result['time'])
         req.hdf['query.results'] = results
@@ -610,12 +611,12 @@ class QueryModule(Component):
     def _format_link(self, formatter, ns, query, label):
         if query[0] == '?':
             return '<a class="query" href="%s">%s</a>' \
-                   % (escape(formatter.href.query()) + query.replace(' ', '+'),
+                   % (escape(formatter.href.query() + query.replace(' ', '+')),
                       label)
         else:
             from trac.ticket.query import Query, QuerySyntaxError
             try:
-                query = Query.from_string(formatter.env, unescape(query))
+                query = Query.from_string(formatter.env, query)
                 return '<a class="query" href="%s">%s</a>' \
                        % (escape(query.get_href()), label)
             except QuerySyntaxError, e:

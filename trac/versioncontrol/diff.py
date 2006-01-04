@@ -1,7 +1,7 @@
-# -*- coding: iso8859-1 -*-
+# -*- coding: iso-8859-1 -*-
 #
-# Copyright (C) 2004-2005 Edgewall Software
-# Copyright (C) 2004-2005 Christopher Lenz <cmlenz@gmx.de>
+# Copyright (C) 2004-2006 Edgewall Software
+# Copyright (C) 2004-2006 Christopher Lenz <cmlenz@gmx.de>
 # All rights reserved.
 #
 # This software is licensed as described in the file COPYING, which
@@ -16,7 +16,7 @@
 
 from __future__ import generators
 
-from trac.util import enum, escape
+from trac.util import enum, escape, Markup
 
 from difflib import SequenceMatcher
 import re
@@ -188,26 +188,26 @@ def hdf_diff(fromlines, tolines, context=None, tabwidth=8,
                 for line in fromlines[i1:i2]:
                     line = line.expandtabs(tabwidth)
                     line = space_re.sub(htmlify, escape(line, quotes=False))
-                    blocks[-1]['base.lines'].append(line)
+                    blocks[-1]['base.lines'].append(Markup(line))
                 for line in tolines[j1:j2]:
                     line = line.expandtabs(tabwidth)
                     line = space_re.sub(htmlify, escape(line, quotes=False))
-                    blocks[-1]['changed.lines'].append(line)
+                    blocks[-1]['changed.lines'].append(Markup(line))
             else:
                 if tag in ('replace', 'delete'):
                     for line in fromlines[i1:i2]:
                         line = line.expandtabs(tabwidth)
                         line = escape(line, quotes=False).replace('\0', '<del>') \
                                                          .replace('\1', '</del>')
-                        blocks[-1]['base.lines'].append(space_re.sub(htmlify,
-                                                                     line))
+                        blocks[-1]['base.lines'].append(Markup(space_re.sub(htmlify,
+                                                                            line)))
                 if tag in ('replace', 'insert'):
                     for line in tolines[j1:j2]:
                         line = line.expandtabs(tabwidth)
                         line = escape(line, quotes=False).replace('\0', '<ins>') \
                                                          .replace('\1', '</ins>')
-                        blocks[-1]['changed.lines'].append(space_re.sub(htmlify,
-                                                                        line))
+                        blocks[-1]['changed.lines'].append(Markup(space_re.sub(htmlify,
+                                                                               line)))
         changes.append(blocks)
     return changes
 

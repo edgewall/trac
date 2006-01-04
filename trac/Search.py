@@ -1,4 +1,4 @@
-# -*- coding: iso8859-1 -*-
+# -*- coding: iso-8859-1 -*-
 #
 # Copyright (C) 2003-2004 Edgewall Software
 # Copyright (C) 2003-2004 Jonas Borgström <jonas@edgewall.com>
@@ -20,7 +20,7 @@ import time
 
 from trac.core import *
 from trac.perm import IPermissionRequestor
-from trac.util import TracError, escape, format_datetime
+from trac.util import TracError, escape, format_datetime, Markup
 from trac.web import IRequestHandler
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
 from trac.wiki import IWikiSyntaxProvider
@@ -107,8 +107,9 @@ class SearchModule(Component):
     def get_navigation_items(self, req):
         if not req.perm.has_permission('SEARCH_VIEW'):
             return
-        yield 'mainnav', 'search', '<a href="%s" accesskey="4">Search</a>' \
-              % (self.env.href.search())
+        yield ('mainnav', 'search',
+               Markup('<a href="%s" accesskey="4">Search</a>',
+                      self.env.href.search()))
 
     # IPermissionRequestor methods
 
@@ -177,14 +178,12 @@ class SearchModule(Component):
                                                      ['on'] * len(filters)),
                                                  q=query, page=page - 1)
                 add_link(req, 'prev', prev_href, 'Previous Page')
-            req.hdf['search.page_href'] = escape(
-                self.env.href.search(zip(filters, ['on'] * len(filters)),
-                                     q=query))
+            req.hdf['search.page_href'] = self.env.href.search(zip(filters, ['on'] * len(filters)), q=query)
             req.hdf['search.result'] = [
-                { 'href': escape(result[0]),
+                { 'href': result[0],
                   'title': result[1],
                   'date': format_datetime(result[2]),
-                  'author': escape(result[3]),
+                  'author': result[3],
                   'excerpt': result[4]
                 } for result in results]
 
@@ -237,8 +236,7 @@ class SearchModule(Component):
 
     def _format_link(self, formatter, ns, query, label):
         if query and query[0] == '?':
-            href = formatter.href.search() + \
-                   query.replace('&amp;', '&').replace(' ', '+')
+            href = formatter.href.search() + query.replace(' ', '+')
         else:
             href = formatter.href.search(q=query)
         return '<a class="search" href="%s">%s</a>' % (escape(href), label)

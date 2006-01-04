@@ -1,6 +1,6 @@
 # -*- coding: iso-8859-1 -*-
 #
-# Copyright (C) 2003-2005 Edgewall Software
+# Copyright (C) 2003-2006 Edgewall Software
 # Copyright (C) 2003-2005 Jonas Borgström <jonas@edgewall.com>
 # All rights reserved.
 #
@@ -140,7 +140,7 @@ class TicketSystem(Component):
                 ('ticket', self._format_link)]
 
     def get_wiki_syntax(self):
-        yield (r"!?#\d+",
+        yield (r"(?:\A|[^&])#\d+", # #123 but not &#123; (HTML entity)
                lambda x, y, z: self._format_link(x, 'ticket', y[1:], y))
 
     def _format_link(self, formatter, ns, target, label):
@@ -178,7 +178,7 @@ class TicketSystem(Component):
                        args + args2)
         for summary,desc,author,keywords,tid,date in cursor:
             yield (self.env.href.ticket(tid),
-                   '#%d: %s' % (tid, util.escape(util.shorten_line(summary))),
+                   '#%d: %s' % (tid, util.shorten_line(summary)),
                    date, author,
-                   util.escape(shorten_result(desc, query.split())))
+                   shorten_result(desc, query.split()))
             
