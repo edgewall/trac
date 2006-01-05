@@ -233,7 +233,7 @@ class Formatter(object):
                     tmp += self._open_tags[j][0]
                 break
         return tmp
-        
+
     def open_tag(self, open, close):
         self._open_tags.append((open, close))
 
@@ -258,11 +258,11 @@ class Formatter(object):
             self.open_tag(*italic)
         return tmp
 
-    def _unquote(self, str):
-        if str and str[0] in "'\"" and str[0] == str[-1]:
-            return str[1:-1]
+    def _unquote(self, text):
+        if text and text[0] in "'\"" and text[0] == text[-1]:
+            return text[1:-1]
         else:
-            return str
+            return text
 
     def _shref_formatter(self, match, fullmatch):
         ns = fullmatch.group('sns')
@@ -350,10 +350,10 @@ class Formatter(object):
             return self.simple_tag_handler('<sup>', '</sup>')
 
     def _inlinecode_formatter(self, match, fullmatch):
-        return '<tt>%s</tt>' % fullmatch.group('inline')
+        return '<tt>%s</tt>' % util.escape(fullmatch.group('inline'))
 
     def _inlinecode2_formatter(self, match, fullmatch):
-        return '<tt>%s</tt>' % fullmatch.group('inline2')
+        return '<tt>%s</tt>' % util.escape(fullmatch.group('inline2'))
 
     def _htmlescape_formatter(self, match, fullmatch):
         return match == "&" and "&amp;" or match == "<" and "&lt;" or "&gt;"

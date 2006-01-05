@@ -425,6 +425,15 @@ Preformatted text.
  [&hellip;]
 ==============================
 {{{
+<b>Preformatted text</b>.
+}}}
+------------------------------
+<pre class="wiki">&lt;b&gt;Preformatted text&lt;/b&gt;.
+</pre>
+------------------------------
+ [&hellip;]
+==============================
+{{{
 Outer block.
 {{{
 Inner block.
