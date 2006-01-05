@@ -138,7 +138,7 @@ class TicketSystem(Component):
                 ('ticket', self._format_link)]
 
     def get_wiki_syntax(self):
-        yield (r"(?:\A|[^&])#\d+", # #123 but not &#123; (HTML entity)
+        yield (r"!?(?<!&)#\d+", # #123 but not &#123; (HTML entity)
                lambda x, y, z: self._format_link(x, 'ticket', y[1:], y))
 
     def _format_link(self, formatter, ns, target, label):
