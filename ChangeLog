@@ -1,3 +1,13 @@
+Trac 0.9.3  (Jan 8, 2006)
+http://svn.edgewall.com/repos/trac/tags/trac-0.9.3
+
+ * Fixed XSS vulnerabilities.
+ * Timeline RSS feed validity issue resolved.
+ * "trac-admin initenv" now handles empty repositories.
+ * Textile unicode support.
+ * Fixed bugs: #1158, #2290, #2337, #2416, #2440, #2468, #2473, #2484,
+   #2490, #2493, #2512, #2517, #2519, #2527, #2548, #2558, #2558
+
 Trac 0.9.2  (Dec 5, 2005)
 http://svn.edgewall.com/repos/trac/tags/trac-0.9.2
 
