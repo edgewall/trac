@@ -544,6 +544,24 @@ class ScopedSubversionRepositoryTestCase(unittest.TestCase):
                          changes.next())
         self.assertRaises(StopIteration, changes.next)
 
+
+class RecentPathScopedRepositoryTestCase(unittest.TestCase):
+
+    def setUp(self):
+        self.repos = SubversionRepository(REPOS_PATH + '/trunk/dir1', None,
+                                          logger_factory('test'))
+
+    def tearDown(self):
+        self.repos = None
+
+    def test_rev_navigation(self):
+        self.assertEqual(False, self.repos.has_node('/', 1))
+        self.assertEqual(False, self.repos.has_node('/', 2))
+        self.assertEqual(False, self.repos.has_node('/', 3))
+        self.assertEqual(True, self.repos.has_node('/', 4))
+        self.assertEqual(4, self.repos.oldest_rev)
+
+
 def suite():
     global has_svn
     suite = unittest.TestSuite()
@@ -551,6 +569,8 @@ def suite():
         suite.addTest(unittest.makeSuite(SubversionRepositoryTestCase,
             'test', suiteClass=SubversionRepositoryTestSetup))
         suite.addTest(unittest.makeSuite(ScopedSubversionRepositoryTestCase,
+            'test', suiteClass=SubversionRepositoryTestSetup))
+        suite.addTest(unittest.makeSuite(RecentPathScopedRepositoryTestCase,
             'test', suiteClass=SubversionRepositoryTestSetup))
     return suite
 

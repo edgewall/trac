@@ -298,7 +298,7 @@ class SubversionRepository(Repository):
         if self.oldest is None:
             self.oldest = 1
             if self.scope != '/':
-                self.oldest = self.next_rev(0)
+                self.oldest = self.next_rev(0, find_initial_rev=True)
         return self.oldest
 
     def get_youngest_rev(self):
@@ -319,7 +319,7 @@ class SubversionRepository(Repository):
                 pass
         return None
 
-    def next_rev(self, rev):
+    def next_rev(self, rev, find_initial_rev=False):
         rev = self.normalize_rev(rev)
         next = rev + 1
         youngest = self.youngest_rev
@@ -327,9 +327,11 @@ class SubversionRepository(Repository):
             try:
                 for path, next in self._history('', rev+1, next, limit=1):
                     return next
-                next += 1
-            except SystemError: # i.e. "null arg to internal routine"
-                return next # a 'delete' event is also interesting... 
+            except (SystemError, # "null arg to internal routine" in 1.2.x
+                    core.SubversionException): # in 1.3.x
+                if not find_initial_rev:
+                    return next # a 'delete' event is also interesting...
+            next += 1
         return None
 
     def rev_older_than(self, rev1, rev2):
