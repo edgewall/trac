@@ -109,65 +109,68 @@ class PatchRenderer(Component):
 
         output = []
         filename, groups = None, None
-        for line in difflines:
-            if line.startswith('--- '):
-                # Base filename/version
-                words = line.split(None, 2)
-                filename, fromrev = words[1], 'old'
-                groups, blocks = None, None
+        lines = iter(difflines)
+        for line in lines:
+            if not line.startswith('--- '):
                 continue
-            if line.startswith('+++ '):
-                # Changed filename/version
-                words = line.split(None, 2)
-                if len(words[1]) < len(filename):
-                    # Always use the shortest filename for display
-                    filename = words[1]
-                groups = []
-                output.append({'filename' : filename, 'oldrev' : fromrev,
-                               'newrev' : 'new', 'diff' : groups})
-                continue
-            # Lines to ignore
-            if line.startswith('Index: ') or line.startswith('======') or line == '':
-                continue
-            if groups == None:
+
+            # Base filename/version
+            words = line.split(None, 2)
+            filename, fromrev = words[1], 'old'
+            groups, blocks = None, None
+
+            # Changed filename/version
+            line = lines.next()
+            if not line.startswith('+++ '):
                 return None
-            # @@ -333,10 +329,8 @@
-            if line.startswith('@@ '):
-                r = re.match(r'@@ -(\d+),\d+ \+(\d+),\d+ @@', line)
+
+            words = line.split(None, 2)
+            if len(words[1]) < len(filename):
+                # Always use the shortest filename for display
+                filename = words[1]
+            groups = []
+            output.append({'filename' : filename, 'oldrev' : fromrev,
+                           'newrev' : 'new', 'diff' : groups})
+
+            for line in lines:
+                # @@ -333,10 +329,8 @@
+                r = re.match(r'@@ -(\d+),(\d+) \+(\d+),(\d+) @@', line)
                 if not r:
-                    return None
+                    break
                 blocks = []
                 groups.append(blocks)
-                fromline,toline = map(int, r.groups())
+                fromline,fromend,toline,toend = map(int, r.groups())
                 last_type = None
-                continue
-            if blocks == None:
-                return None
 
-            # First character is the command
-            command, line = line[0], line[1:]
+                fromend += fromline
+                toend += toline
 
-            # Make a new block?
-            if (command == ' ') != last_type:
-                last_type = command == ' '
-                blocks.append({'type': last_type and 'unmod' or 'mod',
-                               'base.offset': fromline - 1,
-                               'base.lines': [],
-                               'changed.offset': toline - 1,
-                               'changed.lines': []})
-            if command == ' ':
-                blocks[-1]['changed.lines'].append(line)
-                blocks[-1]['base.lines'].append(line)
-                fromline += 1
-                toline += 1
-            elif command == '+':
-                blocks[-1]['changed.lines'].append(line)
-                toline += 1
-            elif command == '-':
-                blocks[-1]['base.lines'].append(line)
-                fromline += 1
-            else:
-                return None
+                while fromline < fromend or toline < toend:
+                    line = lines.next()
+
+                    # First character is the command
+                    command, line = line[0], line[1:]
+                    # Make a new block?
+                    if (command == ' ') != last_type:
+                        last_type = command == ' '
+                        blocks.append({'type': last_type and 'unmod' or 'mod',
+                                       'base.offset': fromline - 1,
+                                       'base.lines': [],
+                                       'changed.offset': toline - 1,
+                                       'changed.lines': []})
+                    if command == ' ':
+                        blocks[-1]['changed.lines'].append(line)
+                        blocks[-1]['base.lines'].append(line)
+                        fromline += 1
+                        toline += 1
+                    elif command == '+':
+                        blocks[-1]['changed.lines'].append(line)
+                        toline += 1
+                    elif command == '-':
+                        blocks[-1]['base.lines'].append(line)
+                        fromline += 1
+                    else:
+                        return None
 
         # Go through all groups/blocks and mark up intraline changes, and
         # convert to html
