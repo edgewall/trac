@@ -479,8 +479,8 @@ class UpdateDetailsForTimeline(Component):
                                     'updated by %s', summary, id, type, author)
                 message = util.Markup()
                 if len(field_changes) > 0:
-                    message = util.Markup(', ').join(field_changes) + \
-                              ' changed.<br />'
+                    message = util.Markup(', '.join(field_changes) + \
+                                          ' changed.<br />')
                 message += wiki_to_oneliner(comment, self.env, db,
                                             shorten=True, absurls=absurls)
                 yield 'editedticket', href, title, t, author, message
