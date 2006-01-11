@@ -494,6 +494,7 @@ class SubversionChangeset(Changeset):
 
     def get_changes(self):
         pool = Pool(self.pool)
+        tmp = Pool(pool)
         root = fs.revision_root(self.fs_ptr, self.rev, pool())
         editor = repos.RevisionChangeCollector(self.fs_ptr, self.rev, pool())
         e_ptr, e_baton = delta.make_editor(editor, pool())
@@ -504,6 +505,7 @@ class SubversionChangeset(Changeset):
         changes = []
         revroots = {}
         for path, change in editor.changes.items():
+            tmp.clear()
             if not self.authz.has_permission(path):
                 # FIXME: what about base_path?
                 continue
@@ -527,8 +529,8 @@ class SubversionChangeset(Changeset):
                 else:
                     b_root = fs.revision_root(self.fs_ptr, b_rev, pool())
                     revroots[b_rev] = b_root
-                change.base_path = fs.node_created_path(b_root, b_path, pool())
-                change.base_rev = fs.node_created_rev(b_root, b_path, pool())
+                change.base_path = fs.node_created_path(b_root, b_path, tmp())
+                change.base_rev = fs.node_created_rev(b_root, b_path, tmp())
             kind = _kindmap[change.item_kind]
             path = path[len(self.scope) - 1:]
             base_path = _path_within_scope(self.scope, change.base_path)
