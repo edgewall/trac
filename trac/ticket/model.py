@@ -1,8 +1,9 @@
 # -*- coding: iso-8859-1 -*-
 #
-# Copyright (C) 2003, 2004, 2005 Edgewall Software
-# Copyright (C) 2003, 2004, 2005 Jonas Borgström <jonas@edgewall.com>
+# Copyright (C) 2003-2006 Edgewall Software
+# Copyright (C) 2003-2006 Jonas Borgström <jonas@edgewall.com>
 # Copyright (C) 2005 Christopher Lenz <cmlenz@gmx.de>
+# Copyright (C) 2006 Christian Boos <cboos@neuf.fr>
 # All rights reserved.
 #
 # This software is licensed as described in the file COPYING, which
@@ -17,9 +18,11 @@
 #         Christopher Lenz <cmlenz@gmx.de>
 
 import time
+import sys
 
 from trac.core import TracError
 from trac.ticket import TicketSystem
+from trac.util import natural_order
 
 __all__ = ['Ticket', 'Type', 'Status', 'Resolution', 'Priority', 'Severity',
            'Component', 'Milestone', 'Version']
@@ -615,16 +618,23 @@ class Milestone(object):
         sql = "SELECT name,due,completed,description FROM milestone "
         if not include_completed:
             sql += "WHERE COALESCE(completed,0)=0 "
-        sql += "ORDER BY COALESCE(due,0)=0,due,name"
         cursor = db.cursor()
         cursor.execute(sql)
+        milestones = []
         for name,due,completed,description in cursor:
             milestone = Milestone(env)
             milestone.name = milestone._old_name = name
             milestone.due = due and int(due) or 0
             milestone.completed = completed and int(completed) or 0
             milestone.description = description or ''
-            yield milestone
+            milestones.append(milestone)
+        milestones.sort(lambda a, b:
+                        cmp(a.completed or sys.maxint,
+                            b.completed or sys.maxint) or \
+                        cmp(a.due or sys.maxint,
+                            b.due or sys.maxint) or \
+                        natural_order(a.name, b.name))
+        return milestones
     select = classmethod(select)
 
 

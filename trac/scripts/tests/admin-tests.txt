@@ -519,8 +519,8 @@ Command failed: Milestone bad_milestone does not exist.
 
 Name        Due  Completed
 ------------------------------------
-milestone1
 milestone2       2004-01-11 00:00:00
+milestone1
 milestone3
 milestone4
 

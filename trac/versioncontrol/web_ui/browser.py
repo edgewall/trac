@@ -1,7 +1,8 @@
 # -*- coding: iso-8859-1 -*-
 #
-# Copyright (C) 2003-2005 Edgewall Software
+# Copyright (C) 2003-2006 Edgewall Software
 # Copyright (C) 2003-2005 Jonas Borgström <jonas@edgewall.com>
+# Copyright (C) 2005-2006 Christian Boos <cboos@neuf.fr>
 # All rights reserved.
 #
 # This software is licensed as described in the file COPYING, which
@@ -30,22 +31,6 @@ from trac.versioncontrol.web_ui.util import *
 IMG_RE = re.compile(r"\.(gif|jpg|jpeg|png)(\?.*)?$", re.IGNORECASE)
 
 CHUNK_SIZE = 4096
-
-DIGITS = re.compile(r'[0-9]+')
-def _natural_order(x, y):
-    """Comparison function for natural order sorting based on
-    http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/214202."""
-    nx = ny = 0
-    while True:
-        a = DIGITS.search(x, nx)
-        b = DIGITS.search(y, ny)
-        if None in (a, b):
-            return cmp(x[nx:], y[ny:])
-        r = (cmp(x[nx:a.start()], y[ny:b.start()]) or
-             cmp(int(x[a.start():a.end()]), int(y[b.start():b.end()])))
-        if r:
-            return r
-        nx, ny = a.end(), b.end()
 
 
 class BrowserModule(Component):
@@ -157,8 +142,8 @@ class BrowserModule(Component):
             elif order == 'size':
                 return neg * cmp(a['content_length'], b['content_length'])
             else:
-                return neg * _natural_order(a['name'].lower(),
-                                            b['name'].lower())
+                return neg * util.natural_order(a['name'].lower(),
+                                                b['name'].lower())
         info.sort(cmp_func)
 
         req.hdf['browser.items'] = info

@@ -1,7 +1,8 @@
 # -*- coding: iso-8859-1 -*-
 #
-# Copyright (C) 2003-2004 Edgewall Software
+# Copyright (C) 2003-2006 Edgewall Software
 # Copyright (C) 2003-2004 Jonas Borgström <jonas@edgewall.com>
+# Copyright (C) 2005-2006 Christian Boos <cboos@neuf.fr>
 # All rights reserved.
 #
 # This software is licensed as described in the file COPYING, which
@@ -259,6 +260,22 @@ def shorten_line(text, maxlen = 75):
                 i = maxlen
             shortline = text[:i]+' ...'
     return shortline
+
+DIGITS = re.compile(r'[0-9]+')
+def natural_order(x, y):
+    """Comparison function for natural order sorting based on
+    http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/214202."""
+    nx = ny = 0
+    while True:
+        a = DIGITS.search(x, nx)
+        b = DIGITS.search(y, ny)
+        if None in (a, b):
+            return cmp(x[nx:], y[ny:])
+        r = (cmp(x[nx:a.start()], y[ny:b.start()]) or
+             cmp(int(x[a.start():a.end()]), int(y[b.start():b.end()])))
+        if r:
+            return r
+        nx, ny = a.end(), b.end()
 
 def hex_entropy(bytes=32):
     import md5

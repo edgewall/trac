@@ -1,7 +1,8 @@
 # -*- coding: iso-8859-1 -*-
 #
-# Copyright (C) 2004-2005 Edgewall Software
+# Copyright (C) 2004-2006 Edgewall Software
 # Copyright (C) 2004-2005 Christopher Lenz <cmlenz@gmx.de>
+# Copyright (C) 2006 Christian Boos <cboos@neuf.fr>
 # All rights reserved.
 #
 # This software is licensed as described in the file COPYING, which
@@ -150,11 +151,9 @@ class RoadmapModule(Component):
         req.hdf['roadmap.showall'] = showall
 
         db = self.env.get_db_cnx()
-        milestones = []
-        for idx, milestone in enumerate(Milestone.select(self.env, showall)):
-            hdf = milestone_to_hdf(self.env, db, req, milestone)
-            milestones.append(hdf)
-        req.hdf['roadmap.milestones'] = milestones
+        milestones = [milestone_to_hdf(self.env, db, req, m)
+                      for m in Milestone.select(self.env, showall, db)]
+        req.hdf['roadmap.milestones'] = milestones        
 
         for idx,milestone in enumerate(milestones):
             milestone_name = unescape(milestone['name']) # Kludge
