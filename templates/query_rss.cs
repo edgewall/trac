@@ -6,7 +6,7 @@
   else ?>
    <title>Ticket Query</title><?cs
   /if ?>
-  <link><?cs var:base_host ?><?cs var:trac.href.query ?></link><?cs
+  <link><?cs var:query.href ?></link><?cs
   if:project.descr ?>
    <description><?cs var:project.descr ?></description><?cs
   /if ?>
