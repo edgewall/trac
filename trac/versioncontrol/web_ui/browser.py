@@ -19,6 +19,7 @@ import re
 import urllib
 
 from trac import util
+from trac.util import sorted
 from trac.core import *
 from trac.mimeview import Mimeview, is_binary, get_mimetype
 from trac.perm import IPermissionRequestor
@@ -131,20 +132,22 @@ class BrowserModule(Component):
             })
         changes = get_changes(self.env, repos, [i['rev'] for i in info])
 
-        def cmp_func(a, b):
-            dir_cmp = (a['is_dir'] and -1 or 0) + (b['is_dir'] and 1 or 0)
-            if dir_cmp:
-                return dir_cmp
-            neg = desc and -1 or 1
-            if order == 'date':
-                return neg * cmp(changes[b['rev']]['date_seconds'],
-                                 changes[a['rev']]['date_seconds'])
-            elif order == 'size':
-                return neg * cmp(a['content_length'], b['content_length'])
-            else:
-                return neg * util.natural_order(a['name'].lower(),
-                                                b['name'].lower())
-        info.sort(cmp_func)
+        if order == 'date':
+            def file_order(a):
+                return changes[a['rev']]['date_seconds']
+        elif order == 'size':
+            def file_order(a):
+                return (a['content_length'],
+                        util.embedded_numbers(a['name'].lower()))
+        else:
+            def file_order(a):
+                return util.embedded_numbers(a['name'].lower())
+
+        dir_order = desc and 1 or -1
+
+        def browse_order(a):
+            return a['is_dir'] and dir_order or 0, file_order(a)
+        info = sorted(info, key=browse_order, reverse=desc)
 
         req.hdf['browser.items'] = info
         req.hdf['browser.changes'] = changes

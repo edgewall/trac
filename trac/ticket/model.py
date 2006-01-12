@@ -22,7 +22,7 @@ import sys
 
 from trac.core import TracError
 from trac.ticket import TicketSystem
-from trac.util import natural_order
+from trac.util import sorted, embedded_numbers
 
 __all__ = ['Ticket', 'Type', 'Status', 'Resolution', 'Priority', 'Severity',
            'Component', 'Milestone', 'Version']
@@ -628,13 +628,11 @@ class Milestone(object):
             milestone.completed = completed and int(completed) or 0
             milestone.description = description or ''
             milestones.append(milestone)
-        milestones.sort(lambda a, b:
-                        cmp(a.completed or sys.maxint,
-                            b.completed or sys.maxint) or \
-                        cmp(a.due or sys.maxint,
-                            b.due or sys.maxint) or \
-                        natural_order(a.name, b.name))
-        return milestones
+        def milestone_order(m):
+            return (m.completed or sys.maxint,
+                    m.due or sys.maxint,
+                    embedded_numbers(m.name))
+        return sorted(milestones, key=milestone_order)
     select = classmethod(select)
 
 

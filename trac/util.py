@@ -2,6 +2,7 @@
 #
 # Copyright (C) 2003-2006 Edgewall Software
 # Copyright (C) 2003-2004 Jonas Borgström <jonas@edgewall.com>
+# Copyright (C) 2006 Matthew Good <trac@matt-good.net>
 # Copyright (C) 2005-2006 Christian Boos <cboos@neuf.fr>
 # All rights reserved.
 #
@@ -14,6 +15,7 @@
 # history and logs, available at http://projects.edgewall.com/trac/.
 #
 # Author: Jonas Borgström <jonas@edgewall.com>
+#         Matthew Good <trac@matt-good.net>
 
 import cgi
 import md5
@@ -29,6 +31,27 @@ import tempfile
 
 CRLF = '\r\n'
 
+try:
+    reversed = reversed
+except NameError:
+    def reversed(x):
+        if hasattr(x, 'keys'):
+            raise ValueError('mappings do not support reverse iteration')
+        i = len(x)
+        while i > 0:
+            i -= 1
+            yield x[i]
+
+try:
+    sorted = sorted
+except NameError:
+    def sorted(iterable, cmp=None, key=None, reverse=False):
+        """Partial implementation of the "sorted" function from Python 2.4"""
+        lst = [(key(i), i) for i in iterable]
+        lst.sort()
+        if reverse:
+            lst = reversed(lst)
+        return [i for __, i in lst]
 
 class Markup(str):
     """Marks a string as being safe for inclusion in XML output without needing
@@ -261,21 +284,13 @@ def shorten_line(text, maxlen = 75):
             shortline = text[:i]+' ...'
     return shortline
 
-DIGITS = re.compile(r'[0-9]+')
-def natural_order(x, y):
+DIGITS = re.compile(r'(\d+)')
+def embedded_numbers(s):
     """Comparison function for natural order sorting based on
     http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/214202."""
-    nx = ny = 0
-    while True:
-        a = DIGITS.search(x, nx)
-        b = DIGITS.search(y, ny)
-        if None in (a, b):
-            return cmp(x[nx:], y[ny:])
-        r = (cmp(x[nx:a.start()], y[ny:b.start()]) or
-             cmp(int(x[a.start():a.end()]), int(y[b.start():b.end()])))
-        if r:
-            return r
-        nx, ny = a.end(), b.end()
+    pieces = DIGITS.split(s)
+    pieces[1::2] = map(int, pieces[1::2])
+    return pieces
 
 def hex_entropy(bytes=32):
     import md5
