@@ -598,6 +598,10 @@ class QueryModule(Component):
             if result['time']:
                 result['time'] = http_date(result['time'])
         req.hdf['query.results'] = results
+        req.hdf['query.href'] = self.env.abs_href.query(group=query.group,
+                groupdesc=query.groupdesc and 1 or None,
+                verbose=query.verbose and 1 or None,
+                **query.constraints)
 
     # IWikiSyntaxProvider methods
     
