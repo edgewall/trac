@@ -433,15 +433,15 @@ Command failed: severity bad_severity does not exist.
 
 Name  Time
 ----------
-1.0       
 2.0       
+1.0       
 
 ===== test_version_add_ok =====
 
 Name  Time                    
 ----------------
-1.0                           
 2.0                           
+1.0                           
 9.9   2004-01-11
 
 ===== test_version_add_error_already_exists =====
@@ -450,8 +450,8 @@ Command failed: column name is not unique
 
 Name  Time
 ----------
-2.0       
 9.9       
+2.0       
 
 ===== test_version_rename_error_bad_version =====
 Command failed: Version bad_version does not exist.

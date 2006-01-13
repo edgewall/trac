@@ -724,12 +724,15 @@ class Version(object):
         if not db:
             db = env.get_db_cnx()
         cursor = db.cursor()
-        cursor.execute("SELECT name,time,description FROM version "
-                       "ORDER BY COALESCE(time,0),name")
+        cursor.execute("SELECT name,time,description FROM version")
+        versions = []
         for name, time, description in cursor:
-            component = cls(env)
-            component.name = name
-            component.time = time and int(time) or None
-            component.description = description or ''
-            yield component
+            version = cls(env)
+            version.name = name
+            version.time = time and int(time) or None
+            version.description = description or ''
+            versions.append(version)
+        def version_order(v):
+            return (v.time or sys.maxint, embedded_numbers(v.name))
+        return sorted(versions, key=version_order, reverse=True)
     select = classmethod(select)
