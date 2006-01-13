@@ -1,7 +1,8 @@
 # -*- coding: iso-8859-1 -*-
 #
-# Copyright (C) 2005 Edgewall Software
+# Copyright (C) 2005-2006 Edgewall Software
 # Copyright (C) 2005 Christopher Lenz <cmlenz@gmx.de>
+# Copyright (C) 2005-2006 Christian Boos <cboos@neuf.fr>
 # All rights reserved.
 #
 # This software is licensed as described in the file COPYING, which
@@ -13,6 +14,7 @@
 # history and logs, available at http://projects.edgewall.com/trac/.
 #
 # Author: Christopher Lenz <cmlenz@gmx.de>
+#         Christian Boos <cboos@neuf.fr>
 
 import os.path
 import time
@@ -315,7 +317,8 @@ class SubversionRepository(Repository):
             try:
                 for path, prev in self._history('', 0, rev-1, limit=1):
                     return prev
-            except SystemError:
+            except (SystemError, # "null arg to internal routine" in 1.2.x
+                    core.SubversionException): # in 1.3.x
                 pass
         return None
 

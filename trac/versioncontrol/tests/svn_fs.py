@@ -560,6 +560,7 @@ class RecentPathScopedRepositoryTestCase(unittest.TestCase):
         self.assertEqual(False, self.repos.has_node('/', 3))
         self.assertEqual(True, self.repos.has_node('/', 4))
         self.assertEqual(4, self.repos.oldest_rev)
+        self.assertEqual(None, self.repos.previous_rev(4))
 
 
 def suite():
