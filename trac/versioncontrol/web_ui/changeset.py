@@ -110,7 +110,7 @@ class ChangesetModule(Component):
             show_files = int(self.config.get('timeline',
                                              'changeset_show_files'))
             db = self.env.get_db_cnx()
-            repos = self.env.get_repository()
+            repos = self.env.get_repository(req.authname)
             for chgset in repos.get_changesets(start, stop):
                 message = chgset.message or '--'
                 if format == 'rss':
