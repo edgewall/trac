@@ -331,7 +331,7 @@ class Mimeview(Component):
 def _html_splitlines(lines):
     """Tracks open and close tags in lines of HTML text and yields lines that
     have no tags spanning more than one line."""
-    open_tag_re = re.compile(r'<(\w+)\s.*?[^/]?>')
+    open_tag_re = re.compile(r'<(\w+)(\s.*)?[^/]?>')
     close_tag_re = re.compile(r'</(\w+)>')
     open_tags = []
     for line in lines:
@@ -343,6 +343,8 @@ def _html_splitlines(lines):
         # Find all tags opened on this line
         for tag in open_tag_re.finditer(line):
             open_tags.append(tag)
+
+        open_tags.reverse()
 
         # Find all tags closed on this line
         for ctag in close_tag_re.finditer(line):
