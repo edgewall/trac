@@ -196,7 +196,7 @@ class ReportModule(Component):
         req.hdf['report'] = {
             'id': id,
             'mode': 'delete',
-            'title': util.row[0],
+            'title': row[0],
             'href': self.env.href.report(id)
         }
 
