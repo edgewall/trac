@@ -159,6 +159,12 @@ class EnvironmentStub(ComponentManager):
     def get_db_cnx(self):
         return self.db
 
+    def get_templates_dir(self):
+        return None
+
+    def get_known_users(self, db):
+        return []
+
 
 def suite():
     import trac.tests

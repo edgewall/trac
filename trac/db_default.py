@@ -431,6 +431,8 @@ default_config = \
   ('notification', 'always_notify_reporter', 'false'),
   ('notification', 'smtp_from', 'trac@localhost'),
   ('notification', 'smtp_replyto', 'trac@localhost'),
+  ('notification', 'mime_encoding', 'base64'),
+  ('notification', 'allow_public_cc', 'false'),
   ('timeline', 'default_daysback', '30'),
   ('timeline', 'changeset_show_files', '0'),
   ('timeline', 'ticket_show_details', 'false'),

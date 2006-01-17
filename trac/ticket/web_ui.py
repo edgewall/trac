@@ -22,8 +22,8 @@ from trac import util
 from trac.attachment import attachment_to_hdf, Attachment
 from trac.core import *
 from trac.env import IEnvironmentSetupParticipant
-from trac.Notify import TicketNotifyEmail
 from trac.ticket import Milestone, Ticket, TicketSystem
+from trac.ticket.notification import TicketNotifyEmail
 from trac.Timeline import ITimelineEventProvider
 from trac.web import IRequestHandler
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
