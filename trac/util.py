@@ -307,7 +307,7 @@ def pretty_size(size):
 
     units = ['kB', 'MB', 'GB', 'TB']
     i = 0
-    while size > jump and i < len(units):
+    while size >= jump and i < len(units):
         i += 1
         size /= 1024.
 
