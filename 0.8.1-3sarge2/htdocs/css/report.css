@@ -1,0 +1,65 @@
+h1 .numrows { font-size: 65%; color: #999; font-weight: normal }
+h2 {
+ background: #f7f7f7;
+ border-bottom: 1px solid #d7d7d7;
+ margin: 2em 0 0;
+ padding: 0 .33em;
+}
+#report-descr { margin: 0 2em; font-size: 90% }
+#report-notfound { margin: 2em; font-size: 110% }
+
+/* Styles for the report list and the report results table
+   (extends the styles for "table.listing") */
+#reportlist td.title { width: 100% }
+#reportlist tbody td :link, #reportlist tbody td :visited,
+#tktlist tbody td :link, #tktlist tbody td :visited { display: block }
+#tktlist { border-bottom: none }
+#tktlist thead th { text-transform: capitalize }
+#tktlist tbody td, #reportlist tbody td { padding: .1em .5em }
+#tktlist tbody td a, #reportlist tbody td a { border-bottom: none }
+#tktlist tbody td.ticket :link, #tktlist tbody td.ticket :visited {
+ font-weight: bold;
+}
+#tktlist tbody tr:hover { background: #eed; color: #000 }
+#tktlist tr.color1-odd  { background: #fdc; border-color: #e88; color: #a22 }
+#tktlist tr.color1-even { background: #fed; border-color: #e99; color: #a22 }
+#tktlist tr.color2-odd  { background: #ffb; border-color: #eea; color: #880 }
+#tktlist tr.color2-even { background: #ffd; border-color: #dd8; color: #880 }
+#tktlist tr.color3-odd  { background: #fbfbfb; border-color: #ddd; color: #444 }
+#tktlist tr.color3-even { background: #f6f6f6; border-color: #ccc; color: #333 }
+#tktlist tr.color4-odd { background: #e7ffff; border-color: #cee; color: #099 }
+#tktlist tr.color4-even { background: #dff; border-color: #bee; color: #099 }
+#tktlist tr.color5-odd { background: #e7eeff; border-color: #cde; color: #469 }
+#tktlist tr.color5-even { background: #dde7ff; border-color: #cde; color: #469 }
+#tktlist tr.color6-odd  { background: #f0f0f0; border-color: #ddd; color: #888 }
+#tktlist tr.color6-even { background: #f7f7f7; border-color: #ddd; color: #888 }
+#tktlist tr.color6-odd a, .color6-even a { color: #b66 }
+#tktlist tbody td.fullrow {
+ border: none;
+ color: #333;
+ background: #fff;
+ padding-bottom: 2.5em !important;
+ font-size: 90%;
+}
+#tktlist td.fullrow :link, #tktlist td.fullrow :visited { display: inline }
+#tktlist td.fullrow p { margin: 0; padding: .25em 1em }
+#tktlist td.fullrow hr { display: none }
+
+#tktlist tr.odd.highest { background: #fdc; border-color: #e88; color: #a22 }
+#tktlist tr.even.highest { background: #fed; border-color: #e99; color: #a22 }
+#tktlist tr.odd.high { background: #ffb; border-color: #eea; color: #880 }
+#tktlist tr.even.high { background: #ffd; border-color: #dd8; color: #880 }
+#tktlist tr.odd.normal  { background: #fbfbfb; border-color: #ddd; color: #444 }
+#tktlist tr.even.normal { background: #f6f6f6; border-color: #ccc; color: #333 }
+#tktlist tr.odd.low { background: #e7ffff; border-color: #cee; color: #099 }
+#tktlist tr.even.low { background: #dff; border-color: #bee; color: #099 }
+#tktlist tr.odd.lowest { background: #e7eeff; border-color: #cde; color: #469 }
+#tktlist tr.even.lowest { background: #dde7ff; border-color: #cde; color: #469 }
+
+.field { margin-top: 1.3em }
+
+#query fieldset { margin: 1em 0 }
+#query fieldset div { float: left; margin: .5em 2em .5em 0 }
+#query fieldset label { display: block }
+#query fieldset select { width: 10em }
+#query br, #query .buttons { clear: left }
