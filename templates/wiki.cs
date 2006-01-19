@@ -183,10 +183,12 @@
       <td class="comment"><?cs var:item.comment ?></td>
      </tr>
     <?cs /each ?></tbody>
-   </table>
-   <div class="buttons">
-    <input type="submit" value="View changes" />
-   </div>
+   </table><?cs
+   if:len(wiki.history) > #10 ?>
+    <div class="buttons">
+     <input type="submit" value="View changes" />
+    </div><?cs
+   /if ?>
   </form><?cs /if ?>
  
  <?cs else ?>

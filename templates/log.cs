@@ -136,10 +136,12 @@
     set:idx = idx + 1 ?><?cs
    /each ?>
   </tbody>
- </table>
- <div class="buttons"><input type="submit" value="View changes" 
-      title="Diff from Old Revision to New Revision (select them above)" />
- </div>
+ </table><?cs
+ if:len(log.items) > #10 ?>
+  <div class="buttons"><input type="submit" value="View changes" 
+       title="Diff from Old Revision to New Revision (select them above)" />
+  </div><?cs
+ /if ?>
  </form><?cs
  if:len(links.prev) || len(links.next) ?><div id="paging" class="nav"><ul><?cs
   if:len(links.prev) ?><li class="first<?cs
