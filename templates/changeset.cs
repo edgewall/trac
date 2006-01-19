@@ -50,10 +50,8 @@
     if:changeset.restricted ?>
     <h1>Changes in <a title="Show entry in browser" href="<?cs var:changeset.href.new_path ?>">
       <?cs var:changeset.new_path ?></a>
-     from revision <a title="Show full changeset" href="<?cs var:changeset.href.old_rev ?>">
-      <?cs var:changeset.old_rev ?></a>
-     to <a title="Show full changeset" href="<?cs var:changeset.href.new_rev ?>">
-      <?cs var:changeset.new_rev ?></a>
+      <a title="Show revision log" href="<?cs var:changeset.href.log ?>">
+      [<?cs var:changeset.old_rev ?>:<?cs var:changeset.new_rev ?>]</a>
     </h1><?cs
    else ?>
     <h1>Changes from <a title="Show entry in browser" href="<?cs var:changeset.href.old_path ?>">

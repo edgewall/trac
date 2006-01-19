@@ -66,14 +66,19 @@ class LogModule(Component):
         stop_rev = req.args.get('stop_rev')
         verbose = req.args.get('verbose')
         limit = LOG_LIMIT
-        old = req.args.get('old')
+        old = req.args.get('old') # FIXME
         new = req.args.get('new')
 
         repos = self.env.get_repository(req.authname)
         normpath = repos.normalize_path(path)
         rev = str(repos.normalize_rev(rev))
+        if stop_rev:
+            stop_rev = str(repos.normalize_rev(stop_rev))
+            if repos.rev_older_than(rev, stop_rev):
+                rev, stop_rev = stop_rev, rev
+            
 
-        if old and new:
+        if old and new: # FIXME
             osep = util.unescape(old).rindex('#')
             nsep = util.unescape(new).rindex('#')
             old_path, old_rev = old[:osep], old[osep+1:]

@@ -236,7 +236,7 @@ class ChangesetModule(Component):
                       'new_path': self.env.href.browser(diff.new_path,
                                                         rev=diff.new_rev),
                       'old_path': self.env.href.browser(diff.old_path,
-                                                        rev=diff.old_rev)
+                                                        rev=diff.old_rev),
                       }
             }
         
@@ -317,6 +317,8 @@ class ChangesetModule(Component):
                                                    old=diff.new_rev,
                                                    old_path=diff.new_path)
             req.hdf['changeset.reverse_href'] = reverse_href
+            req.hdf['changeset.href.log'] = self.env.href.log(
+                diff.new_path, rev=diff.new_rev, stop_rev=diff.old_rev)
             title = self.title_for_diff(diff)
         req.hdf['title'] = title
 
