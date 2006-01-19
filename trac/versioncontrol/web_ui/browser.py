@@ -76,20 +76,24 @@ class BrowserModule(Component):
 
         repos = self.env.get_repository(req.authname)
         node = get_existing_node(self.env, repos, path, rev)
+        rev = repos.normalize_rev(rev)
 
         hidden_properties = [p.strip() for p
                              in self.config.get('browser', 'hide_properties',
                                                 'svk:merge').split(',')]
+
         req.hdf['title'] = path
         req.hdf['browser'] = {
             'path': path,
-            'revision': rev or repos.youngest_rev,
+            'revision': rev,
             'props': dict([(name, value)
                            for name, value in node.get_properties().items()
                            if not name in hidden_properties]),
             'href': self.env.href.browser(path, rev=rev or
                                           repos.youngest_rev),
-            'log_href': self.env.href.log(path, rev=rev or None)
+            'log_href': self.env.href.log(path, rev=rev or None),
+            'restr_changeset_href': self.env.href.changeset(node.rev, path),
+            'anydiff_href': self.env.href.anydiff(),
         }
 
         path_links = get_path_links(self.env.href, path, rev)
@@ -151,7 +155,14 @@ class BrowserModule(Component):
 
         req.hdf['browser.items'] = info
         req.hdf['browser.changes'] = changes
-
+        if node.path != '':
+            zip_href = self.env.href.changeset(rev, node.path, old=rev,
+                                               old_path='/', # special case #238
+                                               format='zip')
+            add_link(req, 'alternate', zip_href, 'Zip Archive',
+                     'application/zip', 'zip')
+        
+        
     def _render_file(self, req, repos, node, rev=None):
         req.perm.assert_permission('FILE_VIEW')
 

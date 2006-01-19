@@ -112,8 +112,8 @@ class CachedRepository(Repository):
     def previous_rev(self, rev):
         return self.repos.previous_rev(rev)
 
-    def next_rev(self, rev):
-        return self.repos.next_rev(rev)
+    def next_rev(self, rev, path=''):
+        return self.repos.next_rev(rev, path)
 
     def rev_older_than(self, rev1, rev2):
         return self.repos.rev_older_than(rev1, rev2)
@@ -126,6 +126,9 @@ class CachedRepository(Repository):
 
     def normalize_rev(self, rev):
         return self.repos.normalize_rev(rev)
+
+    def get_changes(self, old_path, old_rev, new_path, new_rev, ignore_ancestry=1):
+        return self.repos.get_changes(old_path, old_rev, new_path, new_rev, ignore_ancestry)
 
 
 class CachedChangeset(Changeset):

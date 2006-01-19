@@ -154,6 +154,9 @@
     var:wiki.page_name ?></a></h1>
   <?cs if:len(wiki.history) ?><form method="get" action="">
    <input type="hidden" name="action" value="diff" />
+   <div class="buttons">
+    <input type="submit" value="View changes" />
+   </div>
    <table id="wikihist" class="listing" summary="Change history">
     <thead><tr>
      <th class="diff"></th>

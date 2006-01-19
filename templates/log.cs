@@ -3,8 +3,9 @@
 
 <div id="ctxtnav" class="nav">
  <ul>
-  <li class="last"><a href="<?cs
-    var:log.browser_href ?>">View Latest Revision</a></li><?cs
+  <li class="last">
+   <a href="<?cs var:log.browser_href ?>">View Latest Revision</a>
+  </li><?cs
   if:len(chrome.links.prev) ?>
    <li class="first<?cs if:!len(chrome.links.next) ?> last<?cs /if ?>">
     &larr; <a href="<?cs var:chrome.links.prev.0.href ?>" title="<?cs
@@ -61,6 +62,7 @@
           title="Warning: by updating, you will clear the page history" />
   </div>
  </form>
+
  <div class="diff">
   <div id="legend">
    <h3>Legend:</h3>
@@ -74,9 +76,15 @@
    </dl>
   </div>
  </div>
+
+ <form action="<?cs var:log.href ?>" method="post">
+  <div class="buttons"><input type="submit" value="View changes" 
+       title="Diff from Old Revision to New Revision (select them below)" />
+ </div>
  <table id="chglist" class="listing">
   <thead>
    <tr>
+    <th class="diff"></th>
     <th class="change"></th>
     <th class="data">Date</th>
     <th class="rev">Rev</th>
@@ -87,10 +95,11 @@
   </thead>
   <tbody><?cs
    set:indent = #1 ?><?cs
+   set:idx = #0 ?><?cs
    each:item = log.items ?><?cs
     if:item.copyfrom_path ?>
      <tr class="<?cs if:name(item) % #2 ?>even<?cs else ?>odd<?cs /if ?>">
-      <td class="copyfrom_path" colspan="6" style="padding-left: <?cs var:indent ?>em">
+      <td class="copyfrom_path" colspan="8" style="padding-left: <?cs var:indent ?>em">
        copied from <a href="<?cs var:item.browser_href ?>"?><?cs var:item.copyfrom_path ?></a>:
       </td>
      </tr><?cs
@@ -99,6 +108,13 @@
       set:indent = #1 ?><?cs
     /if ?>
     <tr class="<?cs if:name(item) % #2 ?>even<?cs else ?>odd<?cs /if ?>">
+     <td class="diff">
+      <input type="radio" name="old" 
+             value="<?cs var:item.path ?>#<?cs var:item.rev ?>" <?cs
+          if:idx == #1 ?> checked="checked" <?cs /if ?> />
+      <input type="radio" name="new" 
+             value="<?cs var:item.path ?>#<?cs var:item.rev ?>" <?cs
+          if:idx == #0 ?> checked="checked" <?cs /if ?> /></td>
      <td class="change" style="padding-left:<?cs var:indent ?>em">
       <a title="View log starting at this revision" href="<?cs var:item.log_href ?>">
        <span class="<?cs var:item.change ?>"></span>
@@ -117,9 +133,14 @@
      <td class="author"><?cs var:log.changes[item.rev].author ?></td>
      <td class="summary"><?cs var:log.changes[item.rev].message ?></td>
     </tr><?cs
+    set:idx = idx + 1 ?><?cs
    /each ?>
   </tbody>
- </table><?cs
+ </table>
+ <div class="buttons"><input type="submit" value="View changes" 
+      title="Diff from Old Revision to New Revision (select them above)" />
+ </div>
+ </form><?cs
  if:len(links.prev) || len(links.next) ?><div id="paging" class="nav"><ul><?cs
   if:len(links.prev) ?><li class="first<?cs
    if:!len(links.next) ?> last<?cs /if ?>">&larr; <a href="<?cs

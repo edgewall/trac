@@ -50,10 +50,14 @@ Paragraph
 ||Foo||Bar||Baz||
 <a class="ext-link" href="http://www.edgewall.com/"><span class="icon"></span>http://www.edgewall.com/</a>
 ==============================
-#1, [1], r1, {1}, #2
+#1, {1}, #2
+[1], r1
+[1/README.txt]
 ------------------------------
 <p>
-<a class="missing ticket" href="/ticket/1" rel="nofollow">#1</a>, <a class="missing changeset" href="/changeset/1" rel="nofollow">[1]</a>, <a class="missing changeset" href="/changeset/1" rel="nofollow">r1</a>, <a class="report" href="/report/1">{1}</a>, <a class="missing ticket" href="/ticket/2" rel="nofollow">#2</a>
+<a class="missing ticket" href="/ticket/1" rel="nofollow">#1</a>, <a class="report" href="/report/1">{1}</a>, <a class="missing ticket" href="/ticket/2" rel="nofollow">#2</a>
+<a class="missing changeset" href="/changeset/1" rel="nofollow">[1]</a>, <a class="missing changeset" href="/changeset/1" rel="nofollow">r1</a>
+<a class="missing changeset" href="/changeset/1/README.txt" rel="nofollow">[1/README.txt]</a>
 </p>
 ------------------------------
 ==============================
@@ -88,12 +92,14 @@ Paragraph
 ------------------------------
 [1:2], r1:2, [12:23], r12:23
 ==============================
-ticket:1, changeset:1, report:1, source:foo/bar
+ticket:1, report:1, source:foo/bar
+changeset:1, changeset:1/README.txt
 
 Issue [ticket:1], CS[changeset:1], Listing [report:1], File [source:foo/bar]
 ------------------------------
 <p>
-<a class="missing ticket" href="/ticket/1" rel="nofollow">ticket:1</a>, <a class="missing changeset" href="/changeset/1" rel="nofollow">changeset:1</a>, <a class="report" href="/report/1">report:1</a>, <a class="source" href="/browser/foo/bar">source:foo/bar</a>
+<a class="missing ticket" href="/ticket/1" rel="nofollow">ticket:1</a>, <a class="report" href="/report/1">report:1</a>, <a class="source" href="/browser/foo/bar">source:foo/bar</a>
+<a class="missing changeset" href="/changeset/1" rel="nofollow">changeset:1</a>, <a class="missing changeset" href="/changeset/1/README.txt" rel="nofollow">changeset:1/README.txt</a>
 </p>
 <p>
 Issue <a class="missing ticket" href="/ticket/1" rel="nofollow">1</a>, CS<a class="missing changeset" href="/changeset/1" rel="nofollow">1</a>, Listing <a class="report" href="/report/1">1</a>, File <a class="source" href="/browser/foo/bar">foo/bar</a>
@@ -115,6 +121,19 @@ Issue [ticket:1 number 1], CS[changeset:1], [foo:bar]
 <p>
 <a class="missing ticket" href="/ticket/1" rel="nofollow">ticket 1</a>, <a class="missing changeset" href="/changeset/1" rel="nofollow">changeset 1</a>, <a class="report" href="/report/1">report 1</a>, 
 <a class="source" href="/browser/foo/bar">source foo/bar</a>, <a class="ext-link" href="http://www.edgewall.com/"><span class="icon"></span>edgewall</a>
+</p>
+------------------------------
+==============================
+diff:trunk//branch
+diff:trunk@12//branch@23
+diff:trunk@12:23
+diff:@12:23
+------------------------------
+<p>
+<a class="changeset" title="Diff from trunk@latest to branch@latest" href="/changeset?new_path=branch&old_path=trunk">diff:trunk//branch</a>
+<a class="changeset" title="Diff from trunk@12 to branch@23" href="/changeset?new=23&new_path=branch&old=12&old_path=trunk">diff:trunk@12//branch@23</a>
+<a class="changeset" title="Diff r12:23 for trunk" href="/changeset?new=23&new_path=trunk&old=12&old_path=trunk">diff:trunk@12:23</a>
+<a class="changeset" title="Diff r12:23 for /" href="/changeset?new=23&old=12">diff:@12:23</a>
 </p>
 ------------------------------
 ==============================

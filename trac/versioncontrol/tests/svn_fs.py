@@ -225,6 +225,72 @@ class SubversionRepositoryTestCase(unittest.TestCase):
         self.assertEqual(('tags/v1', 7, 'unknown'), history.next())
         self.assertRaises(StopIteration, history.next)
 
+    # Diffs
+
+    def _cmp_diff(self, expected, got):
+        if expected[0]:
+            old = self.repos.get_node(*expected[0])
+            self.assertEqual((old.path, old.rev), (got[0].path, got[0].rev))
+        if expected[1]:
+            new = self.repos.get_node(*expected[1])
+            self.assertEqual((new.path, new.rev), (got[1].path, got[1].rev))
+        self.assertEqual(expected[2], (got[2], got[3]))
+        
+    def test_diff_file_different_revs(self):
+        diffs = self.repos.get_changes('trunk/README.txt', 2, 'trunk/README.txt', 3)
+        self._cmp_diff((('trunk/README.txt', 2),
+                        ('trunk/README.txt', 3),
+                        (Node.FILE, Changeset.EDIT)), diffs.next())
+        self.assertRaises(StopIteration, diffs.next)
+
+    def test_diff_file_different_files(self):
+        diffs = self.repos.get_changes('branches/v1x/README.txt', 12,
+                                      'branches/v1x/README2.txt', 12)
+        self._cmp_diff((('branches/v1x/README.txt', 12),
+                        ('branches/v1x/README2.txt', 12),
+                        (Node.FILE, Changeset.EDIT)), diffs.next())
+        self.assertRaises(StopIteration, diffs.next)
+
+    def test_diff_file_no_change(self):
+        diffs = self.repos.get_changes('trunk/README.txt', 7,
+                                      'tags/v1/README.txt', 7)
+        self.assertRaises(StopIteration, diffs.next)
+ 
+    def test_diff_dir_different_revs(self):
+        diffs = self.repos.get_changes('trunk', 4, 'trunk', 8)
+        self._cmp_diff((None, ('trunk/dir1/dir2', 8),
+                        (Node.DIRECTORY, Changeset.ADD)), diffs.next())
+        self._cmp_diff((None, ('trunk/dir1/dir3', 8),
+                        (Node.DIRECTORY, Changeset.ADD)), diffs.next())
+        self._cmp_diff((None, ('trunk/README2.txt', 6),
+                        (Node.FILE, Changeset.ADD)), diffs.next())
+        self._cmp_diff((('trunk/dir2', 4), None,
+                        (Node.DIRECTORY, Changeset.DELETE)), diffs.next())
+        self._cmp_diff((('trunk/dir3', 4), None,
+                        (Node.DIRECTORY, Changeset.DELETE)), diffs.next())
+        self.assertRaises(StopIteration, diffs.next)
+
+    def test_diff_dir_different_dirs(self):
+        diffs = self.repos.get_changes('trunk', 1, 'branches/v1x', 12)
+        self._cmp_diff((None, ('branches/v1x/dir1', 12),
+                        (Node.DIRECTORY, Changeset.ADD)), diffs.next())
+        self._cmp_diff((None, ('branches/v1x/dir1/dir2', 12),
+                        (Node.DIRECTORY, Changeset.ADD)), diffs.next())
+        self._cmp_diff((None, ('branches/v1x/dir1/dir3', 12),
+                        (Node.DIRECTORY, Changeset.ADD)), diffs.next())
+        self._cmp_diff((None, ('branches/v1x/README.txt', 12),
+                        (Node.FILE, Changeset.ADD)), diffs.next())
+        self._cmp_diff((None, ('branches/v1x/README2.txt', 12),
+                        (Node.FILE, Changeset.ADD)), diffs.next())
+        self.assertRaises(StopIteration, diffs.next)
+
+    def test_diff_dir_no_change(self):
+        diffs = self.repos.get_changes('trunk', 7,
+                                      'tags/v1', 7)
+        self.assertRaises(StopIteration, diffs.next)
+        
+    # Changesets
+
     def test_changeset_repos_creation(self):
         chgset = self.repos.get_changeset(0)
         self.assertEqual(0, chgset.rev)
