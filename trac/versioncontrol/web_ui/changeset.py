@@ -113,6 +113,11 @@ class ChangesetModule(Component):
         old_path = req.args.get('old_path')
         old = req.args.get('old')
 
+        if old and '@' in old:
+            old_path, old = util.unescape(old).split('@')
+        if new and '@' in new:
+            new_path, new = util.unescape(new).split('@')
+
         # -- normalize and check for special case
         repos = self.env.get_repository(req.authname)
         new_path = repos.normalize_path(new_path)

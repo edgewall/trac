@@ -66,8 +66,6 @@ class LogModule(Component):
         stop_rev = req.args.get('stop_rev')
         verbose = req.args.get('verbose')
         limit = LOG_LIMIT
-        old = req.args.get('old') # FIXME
-        new = req.args.get('new')
 
         repos = self.env.get_repository(req.authname)
         normpath = repos.normalize_path(path)
@@ -77,15 +75,6 @@ class LogModule(Component):
             if repos.rev_older_than(rev, stop_rev):
                 rev, stop_rev = stop_rev, rev
             
-
-        if old and new: # FIXME
-            osep = util.unescape(old).rindex('#')
-            nsep = util.unescape(new).rindex('#')
-            old_path, old_rev = old[:osep], old[osep+1:]
-            new_path, new_rev = new[:nsep], new[nsep+1:]
-            req.redirect(self.env.href.changeset(new_rev, new_path, old=old_rev,
-                                                 old_path=old_path))
-
         req.hdf['title'] = path + ' (log)'
         req.hdf['log'] = {
             'mode': mode,
@@ -94,6 +83,7 @@ class LogModule(Component):
             'verbose': verbose,
             'stop_rev': stop_rev,
             'browser_href': self.env.href.browser(path),
+            'changeset_href': self.env.href.changeset(),
             'log_href': self.env.href.log(path, rev=rev)
         }
 
