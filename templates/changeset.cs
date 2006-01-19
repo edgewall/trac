@@ -56,12 +56,12 @@
    else ?>
     <h1>Changes from <a title="Show entry in browser" href="<?cs var:changeset.href.old_path ?>">
       <?cs var:changeset.old_path ?></a> 
-     (rev. <a title="Show full changeset" href="<?cs var:changeset.href.old_rev ?>">
-      <?cs var:changeset.old_rev ?></a>)
+     at <a title="Show full changeset" href="<?cs var:changeset.href.old_rev ?>">
+      r<?cs var:changeset.old_rev ?></a>
      to <a title="Show entry in browser" href="<?cs var:changeset.href.new_path ?>">
      <?cs var:changeset.new_path ?></a> 
-     (rev. <a title="Show full changeset" href="<?cs var:changeset.href.new_rev ?>">
-     <?cs var:changeset.new_rev ?></a>)
+     at <a title="Show full changeset" href="<?cs var:changeset.href.new_rev ?>">
+     r<?cs var:changeset.new_rev ?></a>
     </h1><?cs
    /if ?><?cs
   /if ?>
