@@ -254,17 +254,21 @@ def absolute_url(req, path=None):
     If the `path` parameter is specified, the path is appended to the URL.
     Otherwise, only a URL with the components scheme, host and port is returned.
     """
-    host = req.get_header('Host')
-    if req.get_header('X-Forwarded-Host'):
-        host = req.get_header('X-Forwarded-Host')
-    if not host:
-        # Missing host header, so reconstruct the host from the
-        # server name and port
-        default_port = {'http': 80, 'https': 443}
-        if req.server_port and req.server_port != default_port[req.scheme]:
-            host = '%s:%d' % (req.server_name, req.server_port)
-        else:
-            host = req.server_name
-    if not path:
-        path = req.cgi_location
-    return urlparse.urlunparse((req.scheme, host, path, None, None, None))
+    if hasattr(req, 'base_url'):
+        scheme, host, _, _, _, _ = urlparse.urlparse(req.base_url)
+    else:
+        scheme = req.scheme
+        host = req.get_header('Host')
+        if req.get_header('X-Forwarded-Host'):
+            host = req.get_header('X-Forwarded-Host')
+        if not host:
+            # Missing host header, so reconstruct the host from the
+            # server name and port
+            default_port = {'http': 80, 'https': 443}
+            if req.server_port and req.server_port != default_port[scheme]:
+                host = '%s:%d' % (req.server_name, req.server_port)
+            else:
+                host = req.server_name
+        if not path:
+            path = req.cgi_location
+    return urlparse.urlunparse((scheme, host, path, None, None, None))
