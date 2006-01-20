@@ -550,9 +550,10 @@ class ChangesetModule(Component):
             repos = self.env.get_repository(req.authname)
             for chgset in repos.get_changesets(start, stop):
                 message = chgset.message or '--'
+                shortlog = wiki_to_oneliner(message, self.env, db, shorten=True)
                 if format == 'rss':
-                    title = util.Markup('Changeset <em>[%s]</em>: %s',
-                                        chgset.rev, util.shorten_line(message))
+                    title = util.Markup('Changeset [%s]: %s',
+                                        chgset.rev, shortlog)
                     href = self.env.abs_href.changeset(chgset.rev)
                     message = wiki_to_html(message, self.env, req, db,
                                            absurls=True)
@@ -566,14 +567,15 @@ class ChangesetModule(Component):
                     files = []
                     for chg in chgset.get_changes():
                         if show_files > 0 and len(files) >= show_files:
-                            files.append('...')
+                            files.append('&hellip; <br />')
                             break
-                        files.append('<span class="%s">%s</span>'
-                                     % (chg[2], util.escape(chg[0])))
-                    message = '<span class="changes">' + ', '.join(files) +\
-                              '</span>: ' + message
+                        files.append(util.Markup('<span class="%s">%s</span>'
+                                                 '<br />',
+                                                 chg[2], chg[0] or '/'))
+                    message = util.Markup('<span class="changes">%s</span> %s',
+                                          util.Markup(''.join(files)), message)
                 yield 'changeset', href, title, chgset.date, chgset.author,\
-                      util.Markup(message)
+                      message
 
     # IWikiSyntaxProvider methods
 
