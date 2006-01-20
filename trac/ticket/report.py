@@ -1,7 +1,8 @@
 # -*- coding: iso-8859-1 -*-
 #
-# Copyright (C) 2003-2005 Edgewall Software
+# Copyright (C) 2003-2006 Edgewall Software
 # Copyright (C) 2003-2004 Jonas Borgström <jonas@edgewall.com>
+# Copyright (C) 2006 Christian Boos <cboos@neuf.fr>
 # All rights reserved.
 #
 # This software is licensed as described in the file COPYING, which
@@ -254,7 +255,8 @@ class ReportModule(Component):
 
         title, description, sql = self.get_info(db, id, args)
 
-        if req.args.get('format') == 'sql':
+        format = req.args.get('format')
+        if format == 'sql':
             self._render_sql(req, id, title, description, sql)
             return
 
@@ -344,7 +346,9 @@ class ReportModule(Component):
                         id_val = row[id_cols[0]]
                         value['ticket_href'] = self.env.href.ticket(id_val)
                 elif column == 'description':
-                    value['parsed'] = wiki_to_html(cell, self.env, req, db)
+                    descr = wiki_to_html(cell, self.env, req, db,
+                                         absurls=(format == 'rss'))
+                    value['parsed'] = format == 'rss' and str(descr) or descr
                 elif column == 'reporter' and cell.find('@') != -1:
                     value['rss'] = cell
                 elif column == 'report':
@@ -363,9 +367,7 @@ class ReportModule(Component):
             row_idx += 1
         req.hdf['report.numrows'] = row_idx
 
-        format = req.args.get('format')
         if format == 'rss':
-            self._render_rss(req)
             return 'report_rss.cs', 'application/rss+xml'
         elif format == 'csv':
             self._render_csv(req, cols, rows)
@@ -479,18 +481,6 @@ class ReportModule(Component):
                                        .replace('\n',' ') \
                                        .replace('\r',' ')
             req.write(sep.join(map(sanitize, row)) + '\r\n')
-
-    def _render_rss(self, req):
-        # Escape HTML in the ticket summaries
-        item = req.hdf.getObj('report.items')
-        if item:
-            item = item.child()
-            while item:
-                for col in ('summary', 'description.parsed'):
-                    nodename = 'report.items.%s.%s' % (item.name(), col)
-                    value = req.hdf.get(nodename, '')
-                    req.hdf[nodename] = value
-                item = item.next()
 
     def _render_sql(self, req, id, title, description, sql):
         req.perm.assert_permission('REPORT_SQL_VIEW')

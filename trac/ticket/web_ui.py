@@ -240,7 +240,7 @@ class TicketModule(Component):
                 yield ('ticket_details', 'Ticket details', False)
 
     def get_timeline_events(self, req, start, stop, filters):
-        rss = req.args.get('format') == 'rss' # Kludge
+        format = req.args.get('format')
 
         status_map = {'new': ('newticket', 'created'),
                       'reopened': ('newticket', 'reopened'),
@@ -268,15 +268,15 @@ class TicketModule(Component):
             kind, verb = status_map[status]
             title = util.Markup('Ticket <em title="%s">#%s</em> (%s) %s by %s',
                                 summary, id, type, verb, author)
-            href = rss and self.env.abs_href.ticket(id) \
-                   or self.env.href.ticket(id)
+            href = format == 'rss' and self.env.abs_href.ticket(id) or \
+                   self.env.href.ticket(id)
 
             if status == 'new':
-                message = util.escape(summary)
+                message = summary
             else:
                 message = util.Markup(info)
                 if comment:
-                    if rss:
+                    if format == 'rss':
                         message += wiki_to_html(comment, self.env, req, db,
                                                 absurls=True)
                     else:

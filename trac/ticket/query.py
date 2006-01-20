@@ -1,7 +1,8 @@
 # -*- coding: iso-8859-1 -*-
 #
-# Copyright (C) 2004-2005 Edgewall Software
+# Copyright (C) 2004-2006 Edgewall Software
 # Copyright (C) 2004-2005 Christopher Lenz <cmlenz@gmx.de>
+# Copyright (C) 2005-2006 Christian Boos <cboos@neuf.fr>
 # All rights reserved.
 #
 # This software is licensed as described in the file COPYING, which
@@ -592,9 +593,9 @@ class QueryModule(Component):
                 result['reporter'] = ''
             if result['description']:
                 # str() cancels out the Markup() returned by wiki_to_html
-                result['description'] = str(wiki_to_html(result['description'] or '',
-                                                         self.env, req, db,
-                                                         absurls=1))
+                descr = wiki_to_html(result['description'], self.env, req, db,
+                                     absurls=True)
+                result['description'] = str(descr)
             if result['time']:
                 result['time'] = http_date(result['time'])
         req.hdf['query.results'] = results

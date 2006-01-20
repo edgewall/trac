@@ -1,8 +1,9 @@
 # -*- coding: iso-8859-1 -*-
 #
-# Copyright (C) 2003-2005 Edgewall Software
+# Copyright (C) 2003-2006 Edgewall Software
 # Copyright (C) 2003-2005 Jonas Borgström <jonas@edgewall.com>
 # Copyright (C) 2004-2005 Christopher Lenz <cmlenz@gmx.de>
+# Copyright (C) 2005-2006 Christian Boos <cboos@neuf.fr>
 # All rights reserved.
 #
 # This software is licensed as described in the file COPYING, which
@@ -21,7 +22,7 @@ import time
 
 from trac.core import *
 from trac.perm import IPermissionRequestor
-from trac.util import format_date, format_time, http_date, Markup
+from trac.util import format_date, format_time, http_date, Markup, rss_title
 from trac.web import IRequestHandler
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
 
@@ -158,10 +159,8 @@ class TimelineModule(Component):
 
             if format == 'rss':
                 # Strip/escape HTML markup
-                if isinstance(title, Markup):
-                    event['title'] = title.striptags()
-                else:
-                    event['title'] = title
+                event['title'] = rss_title(title)
+                event['message'] = str(message)
 
                 if author:
                     # For RSS, author must be an email address

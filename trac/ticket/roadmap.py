@@ -316,13 +316,13 @@ class MilestoneModule(Component):
                 title = Markup('Milestone <em>%s</em> completed', name)
                 if format == 'rss':
                     href = self.env.abs_href.milestone(name)
-                    message = wiki_to_html(description or '--', self.env,
-                                           req, db, absurls=True)
+                    message = wiki_to_html(description, self.env, db,
+                                           absurls=True)
                 else:
                     href = self.env.href.milestone(name)
                     message = wiki_to_oneliner(description, self.env, db,
                                                shorten=True)
-                yield 'milestone', href, title, completed, None, message
+                yield 'milestone', href, title, completed, None, message or '--'
 
     # IRequestHandler methods
 

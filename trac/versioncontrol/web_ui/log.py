@@ -1,7 +1,8 @@
 # -*- coding: iso-8859-1 -*-
 #
-# Copyright (C) 2003-2005 Edgewall Software
+# Copyright (C) 2003-2006 Edgewall Software
 # Copyright (C) 2003-2005 Jonas Borgström <jonas@edgewall.com>
+# Copyright (C) 2005-2006 Christian Boos <cboos@neuf.fr>
 # All rights reserved.
 #
 # This software is licensed as described in the file COPYING, which
@@ -163,7 +164,6 @@ class LogModule(Component):
                 if email:
                     email_map[username] = email
             for cs in changes.values():
-                cs['shortlog'] = cs['shortlog'].replace('\n', ' ')
                 # For RSS, author must be an email address
                 author = cs['author']
                 author_email = ''

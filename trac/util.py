@@ -246,6 +246,18 @@ def unescape(text):
         return text
     return text.unescape()
 
+ENTITIES = re.compile(r"&(?:(\w+));")
+def rss_title(text):
+    if isinstance(text, Markup):
+        def replace_entity(match):
+            e = match.group(0)
+            return e in ('amp', 'lt', 'gt', 'apos', 'quot') and e or ''
+        return re.sub(ENTITIES, replace_entity,
+                      text.striptags().replace('\n', ' '))
+    return text
+
+
+
 def to_utf8(text, charset='iso-8859-15'):
     """Convert a string to UTF-8, assuming the encoding is either UTF-8, ISO
     Latin-1, or as specified by the optional `charset` parameter."""
