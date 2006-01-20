@@ -246,14 +246,14 @@ def unescape(text):
         return text
     return text.unescape()
 
-ENTITIES = re.compile(r"&(?:(\w+));")
+ENTITIES = re.compile(r"&(\w+);")
 def rss_title(text):
     if isinstance(text, Markup):
         def replace_entity(match):
-            e = match.group(0)
-            return e in ('amp', 'lt', 'gt', 'apos', 'quot') and e or ''
-        return re.sub(ENTITIES, replace_entity,
-                      text.striptags().replace('\n', ' '))
+            return match.group(1) in ('amp', 'lt', 'gt', 'apos', 'quot') \
+                   and match.group(0) or ''
+        return Markup(re.sub(ENTITIES, replace_entity,
+                             text.striptags().replace('\n', ' ')))
     return text
 
 
