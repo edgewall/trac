@@ -63,8 +63,8 @@ class LogModule(Component):
         mode = req.args.get('mode', 'stop_on_copy')
         path = req.args.get('path', '/')
         rev = req.args.get('rev')
-        format = req.args.get('format')
         stop_rev = req.args.get('stop_rev')
+        format = req.args.get('format')
         verbose = req.args.get('verbose')
         limit = LOG_LIMIT
 
@@ -93,9 +93,9 @@ class LogModule(Component):
         if path_links:
             add_link(req, 'up', path_links[-1]['href'], 'Parent directory')
 
-
-        # ''Node history'' uses `Node.history()`,
-        # ''Path history'' uses `Repository.get_path_history()`
+        # The `history()` method depends on the mode:
+        #  * for ''stop on copy'' and ''follow copies'', it's `Node.history()` 
+        #  * for ''show only add, delete'' it's`Repository.get_path_history()` 
         if mode == 'path_history':
             def history(limit):
                 for h in repos.get_path_history(path, rev, limit):
@@ -116,6 +116,8 @@ class LogModule(Component):
                 'log_href': self.env.href.log(old_path, rev=old_rev),
                 'browser_href': self.env.href.browser(old_path, rev=old_rev),
                 'changeset_href': self.env.href.changeset(old_rev),
+                'restricted_href': self.env.href.changeset(old_rev,
+                                                           new_path=old_path),
                 'change': old_chg
             }
             if not (mode == 'path_history' and old_chg == Changeset.EDIT):

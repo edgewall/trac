@@ -18,7 +18,7 @@
      /if ?>
      <pubDate><?cs var:change.date ?></pubDate>
      <title>Revision <?cs var:item.rev ?>: <?cs var:change.shortlog ?></title>
-     <link><?cs var:base_host ?><?cs var:item.changeset_href ?></link>
+     <link><?cs var:base_host ?><?cs var:item.restricted_href ?></link>
      <description><?cs var:change.message ?></description>
      <category>Log</category>
     </item><?cs 
