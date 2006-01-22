@@ -290,7 +290,7 @@ class TicketNotifyEmail(NotifyEmail):
             cursor.execute("SELECT DISTINCT author,ticket FROM ticket_change "
                            "WHERE ticket=%s", (tktid,))
             for author,ticket in cursor:
-                recipients.append(row[0])
+                recipients.append(author)
 
         # Add smtp_always_cc address
         acc = self.config.get('notification', 'smtp_always_cc')
