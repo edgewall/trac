@@ -214,6 +214,8 @@ class SubversionRepository(Repository):
     """
 
     def __init__(self, path, authz, log):
+        self.path = path
+        self.log = log
         if core.SVN_VER_MAJOR < 1:
             raise TracError, \
                   "Subversion >= 1.0 required: Found %d.%d.%d" % \
