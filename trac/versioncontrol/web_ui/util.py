@@ -1,7 +1,8 @@
 # -*- coding: iso-8859-1 -*-
 #
-# Copyright (C) 2003-2005 Edgewall Software
+# Copyright (C) 2003-2006 Edgewall Software
 # Copyright (C) 2003-2005 Jonas Borgström <jonas@edgewall.com>
+# Copyright (C) 2005-2006 Christian Boos <cboos@neuf.fr>
 # All rights reserved.
 #
 # This software is licensed as described in the file COPYING, which
@@ -13,12 +14,13 @@
 # history and logs, available at http://projects.edgewall.com/trac/.
 #
 # Author: Jonas Borgström <jonas@edgewall.com>
+#         Christian Boos <cboos@neuf.fr>
 
 import re
 import urllib
 
 from trac.util import escape, format_datetime, pretty_timedelta, shorten_line, \
-                      TracError, Markup
+                      TracError, Markup, rss_title
 from trac.wiki import wiki_to_html, wiki_to_oneliner
 
 __all__ = ['get_changes', 'get_path_links', 'get_path_rev_line',
@@ -30,26 +32,27 @@ def get_changes(env, repos, revs, full=None, req=None, format=None):
     for rev in revs:
         changeset = repos.get_changeset(rev)
         message = changeset.message or '--'
-        files = None
+        shortlog = wiki_to_oneliner(message, env, db, shorten=True)
         if format == 'changelog':
             files = [change[0] for change in changeset.get_changes()]
-        elif message:
-            if not full:
-                message = wiki_to_oneliner(message, env, db,
-                                           shorten=True)
-            else:
+        else:
+            files = None
+            if full:
                 message = wiki_to_html(message, env, req, db,
                                        absurls=(format == 'rss'),
                                        escape_newlines=True)
-        if not message:
-            message = '--'
+            else:
+                message = shortlog
+            if format == 'rss':
+                shortlog = rss_title(shortlog)
+                message = str(message)
         changes[rev] = {
             'date_seconds': changeset.date,
             'date': format_datetime(changeset.date),
             'age': pretty_timedelta(changeset.date),
             'author': changeset.author or 'anonymous',
             'message': message,
-            'shortlog': shorten_line(message),
+            'shortlog': shortlog,
             'files': files
         }
     return changes

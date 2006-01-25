@@ -13,8 +13,9 @@
   <generator>Trac v<?cs var:trac.version ?></generator><?cs 
   each:item = log.items ?><?cs 
    with:change = log.changes[item.rev] ?>
-    <item>
-     <author><?cs var:change.author ?></author> 
+    <item><?cs
+     if:change.author ?><author><?cs var:change.author ?></author><?cs
+     /if ?>
      <pubDate><?cs var:change.date ?></pubDate>
      <title>Revision <?cs var:item.rev ?>: <?cs var:change.shortlog ?></title>
      <link><?cs var:base_host ?><?cs var:item.changeset_href ?></link>
