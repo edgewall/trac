@@ -169,6 +169,7 @@ class EnvironmentStub(ComponentManager):
 def suite():
     import trac.tests
     import trac.db.tests
+    import trac.mimeview.tests
     import trac.scripts.tests
     import trac.ticket.tests
     import trac.versioncontrol.tests
@@ -178,6 +179,7 @@ def suite():
     suite = unittest.TestSuite()
     suite.addTest(trac.tests.suite())
     suite.addTest(trac.db.tests.suite())
+    suite.addTest(trac.mimeview.tests.suite())
     suite.addTest(trac.scripts.tests.suite())
     suite.addTest(trac.ticket.tests.suite())
     suite.addTest(trac.versioncontrol.tests.suite())
