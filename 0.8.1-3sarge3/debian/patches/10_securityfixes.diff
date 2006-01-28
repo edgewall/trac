@@ -1,0 +1,570 @@
+Index: trac/db_default.py
+===================================================================
+--- trac/db_default.py	(revision 2804)
++++ trac/db_default.py	(working copy)
+@@ -437,6 +437,7 @@
+   ('header_logo', 'width', '236'),
+   ('header_logo', 'height', '73'),
+   ('attachment', 'max_size', '262144'),
++  ('attachment', 'render_unsafe_content', 'false'),
+   ('diff', 'tab_width', '8'),
+   ('mimeviewer', 'enscript_path', 'enscript'),
+   ('notification', 'smtp_enabled', 'false'),
+Index: trac/Milestone.py
+===================================================================
+--- trac/Milestone.py	(revision 2804)
++++ trac/Milestone.py	(working copy)
+@@ -22,7 +22,7 @@
+ import time
+ 
+ from Module import Module
+-from util import add_to_hdf, get_date_format_hint, sql_escape, TracError
++from util import add_to_hdf, get_date_format_hint, sql_escape, TracError, escape
+ from Ticket import get_custom_fields, Ticket
+ from WikiFormatter import wiki_to_html
+ import perm
+@@ -35,13 +35,12 @@
+     if custom:
+         sql += 'ticket_custom.value AS %s ' \
+                'FROM ticket LEFT OUTER JOIN ticket_custom ON id = ticket ' \
+-               'WHERE name = \'%s\' AND milestone = \'%s\'' % (
+-               sql_escape(field), sql_escape(field), sql_escape(milestone))
++               'WHERE name = \'%s\' AND milestone = %%s' % (field, field)
+     else:
+-        sql += 'ticket.%s AS %s FROM ticket WHERE milestone = \'%s\'' % (
+-               sql_escape(field), sql_escape(field), sql_escape(milestone))
++        sql += 'ticket.%s AS %s FROM ticket WHERE milestone = %%s' % (
++               field, field)
+     
+-    cursor.execute(sql)
++    cursor.execute(sql, (milestone,))
+     tickets = []
+     while 1:
+         row = cursor.fetchone()
+@@ -137,7 +136,7 @@
+             except ValueError:
+                 continue
+         if seconds == None:
+-            raise TracError('%s is not a known date format.' % datestr,
++            raise TracError('%s is not a known date format.' % escape(datestr),
+                             'Invalid Date Format')
+         return seconds
+ 
+@@ -227,7 +226,7 @@
+         row = cursor.fetchone()
+         cursor.close()
+         if not row:
+-            raise TracError('Milestone %s does not exist.' % name,
++            raise TracError('Milestone %s does not exist.' % escape(name),
+                             'Invalid Milestone Number')
+         milestone = { 'name': row['name'] }
+         descr = row['descr']
+@@ -315,6 +314,8 @@
+                    'milestone.stats.available_groups')
+ 
+         by = self.args.get('by', 'component')
++        if by not in available_groups:
++            by = 'component'
+         self.req.hdf.setValue('milestone.stats.grouped_by', by)
+ 
+         tickets = get_tickets_for_milestone(self.env, self.db, id, by)
+Index: trac/Search.py
+===================================================================
+--- trac/Search.py	(revision 2804)
++++ trac/Search.py	(working copy)
+@@ -32,16 +32,16 @@
+ 
+     RESULTS_PER_PAGE = 10
+ 
+-    def query_to_sql(self, q, name):
++    def query_to_sql(self, q, name, params):
+         self.log.debug("Query: %s" % q)
+         if q[0] == q[-1] == "'" or q[0] == q[-1] == '"':
+-            sql_q = "%s like '%%%s%%'" % (name, q[1:-1].replace('\'',
+-                                                                '\'\''))
++            sql_q = "%s LIKE %%s" % name
++            params.append(q[1:-1])
+         else:
+-            q = q.replace('\'', '\'\'')
+             keywords = q.split(' ')
+-            x = map(lambda x, name=name: name + ' LIKE \'%' + x + '%\'', keywords)
++            x = map(lambda x, name=name: name + ' LIKE %s', keywords)
+             sql_q = string.join(x, ' AND ')
++            params += keywords
+         self.log.debug("SQL Condition: %s" % sql_q)
+         return sql_q
+     
+@@ -118,12 +118,13 @@
+         cursor = self.db.cursor ()
+ 
+         q = []
++        params = []
+         if changeset:
+             q.append('SELECT 1 as type, message AS title, message, author, '
+                      ' \'\' AS keywords, rev AS data, time,0 AS ver'
+                      ' FROM revision WHERE %s OR %s' % 
+-                     (self.query_to_sql(query, 'message'),
+-                      self.query_to_sql(query, 'author')))
++                     (self.query_to_sql(query, 'message', params),
++                      self.query_to_sql(query, 'author', params)))
+         if tickets:
+             q.append('SELECT DISTINCT 2 as type, a.summary AS title, '
+                      ' a.description AS message, a.reporter AS author, '
+@@ -131,12 +132,12 @@
+                      ' FROM ticket a LEFT JOIN ticket_change b ON a.id = b.ticket'
+                      ' WHERE (b.field=\'comment\' AND %s ) OR'
+                      ' %s OR %s OR %s OR %s OR %s' %
+-                      (self.query_to_sql(query, 'b.newvalue'),
+-                       self.query_to_sql(query, 'summary'),
+-                       self.query_to_sql(query, 'keywords'),
+-                       self.query_to_sql(query, 'description'),
+-                       self.query_to_sql(query, 'reporter'),
+-                       self.query_to_sql(query, 'cc')))
++                      (self.query_to_sql(query, 'b.newvalue', params),
++                       self.query_to_sql(query, 'summary', params),
++                       self.query_to_sql(query, 'keywords', params),
++                       self.query_to_sql(query, 'description', params),
++                       self.query_to_sql(query, 'reporter', params),
++                       self.query_to_sql(query, 'cc', params)))
+         if wiki:
+             q.append('SELECT 3 as type, text AS title, text AS message,'
+                      ' author, \'\' AS keywords, w1.name AS data, time,'
+@@ -146,9 +147,9 @@
+                      '    FROM wiki GROUP BY name) w2'
+                      ' WHERE w1.version = w2.ver AND w1.name = w2.name  AND'
+                      ' (%s OR %s OR %s) ' %
+-                     (self.query_to_sql(query, 'w1.name'),
+-                      self.query_to_sql(query, 'w1.author'),
+-                      self.query_to_sql(query, 'w1.text')))
++                     (self.query_to_sql(query, 'w1.name', params),
++                      self.query_to_sql(query, 'w1.author', params),
++                      self.query_to_sql(query, 'w1.text', params)))
+ 
+         if not q: return []
+ 
+@@ -157,7 +158,7 @@
+                  (self.RESULTS_PER_PAGE + 1, self.RESULTS_PER_PAGE * page)
+ 
+         self.log.debug("SQL Query: %s" % q_str)
+-        cursor.execute(q_str)
++        cursor.execute(q_str, params)
+ 
+         # Make the data more HDF-friendly
+         info = []
+Index: trac/Query.py
+===================================================================
+--- trac/Query.py	(revision 2804)
++++ trac/Query.py	(working copy)
+@@ -47,9 +47,9 @@
+             constraints[field] = vals
+         return constraints
+ 
+-    def get_results(self, sql):
++    def get_results(self, sql, params):
+         cursor = self.db.cursor()
+-        cursor.execute(sql)
++        cursor.execute(sql, params)
+         results = []
+         while 1:
+             row = cursor.fetchone()
+@@ -166,6 +166,7 @@
+                     self.env.href.query(constraints, headers[i]))
+ 
+         sql = []
++        params = []
+         sql.append("SELECT " + ", ".join(headers))
+         custom_fields = [f['name'] for f in get_custom_fields(self.env)]
+         for k in [k for k in constraints.keys() if k in custom_fields]:
+@@ -185,12 +186,14 @@
+         clauses = []
+         for k, v in constraints.items():
+             if len(v) > 1:
+-                inlist = ["'" + util.sql_escape(item) + "'" for item in v]
+-                clauses.append("%s IN (%s)" % (k, ",".join(inlist)))
++                clauses.append("%s IN (%s)" % (k, ",".join(['%s'] * len(v))))
++                params += v
+             elif k in ['keywords', 'cc']:
+-                clauses.append("%s LIKE '%%%s%%'" % (k, util.sql_escape(v[0])))
++                clauses.append("%s LIKE %%s" % k)
++                params.append('%' + v[0] + '%')
+             else:
+-                clauses.append("%s='%s'" % (k, util.sql_escape(v[0])))
++                clauses.append("%s=%%s" % k)
++                params.append(v[0])
+         if clauses:
+             sql.append(" WHERE " + " AND ".join(clauses))
+ 
+@@ -202,6 +205,6 @@
+             sql.append(" DESC")
+ 
+         sql = "".join(sql)
+-        self.log.debug("SQL Query: %s" % sql)
+-        results = self.get_results(sql)
++        self.log.debug("SQL Query: %s, %s" % (sql, params))
++        results = self.get_results(sql, params)
+         util.add_to_hdf(results, self.req.hdf, 'query.results')
+Index: trac/tests/wiki-tests.txt
+===================================================================
+--- trac/tests/wiki-tests.txt	(revision 2804)
++++ trac/tests/wiki-tests.txt	(working copy)
+@@ -194,19 +194,11 @@
+ <script>alert("");</script>
+ }}}
+ ------------------------------
+-<div class="system-message">
+- <strong>Error: HTML block contains disallowed tags.</strong>
+- <pre>&lt;script&gt;alert(&#34;&#34;);&lt;/script&gt;
+-</pre>
+-</div>
++
+ ==============================
+ {{{
+ #!html
+ <div onclick="alert('')">Click me</div>
+ }}}
+ ------------------------------
+-<div class="system-message">
+- <strong>Error: HTML block contains disallowed attributes.</strong>
+- <pre>&lt;div onclick=&#34;alert('')&#34;&gt;Click me&lt;/div&gt;
+-</pre>
+-</div>
++<div>Click me</div>
+Index: trac/Report.py
+===================================================================
+--- trac/Report.py	(revision 2804)
++++ trac/Report.py	(working copy)
+@@ -80,7 +80,7 @@
+         try:
+             arg = args[aname]
+         except KeyError:
+-            raise util.TracError("Dynamic variable '$%s' not defined." % aname)
++            raise util.TracError("Dynamic variable '$%s' not defined." % util.escape(aname))
+         self.req.hdf.setValue('report.var.'+aname , arg)
+         sql = m.string[:m.start()] + arg + m.string[m.end():]
+         return self.sql_sub_vars(sql, args)
+@@ -132,7 +132,7 @@
+         cursor = self.db.cursor()
+         sql = self.sql_sub_vars(sql, args)
+         if not sql:
+-            raise util.TracError('Report %s has no SQL query.' % id)
++            raise util.TracError('Report has no SQL query.')
+         cursor.execute(sql)
+ 
+         if sql.find('__group__') == -1:
+@@ -171,7 +171,7 @@
+         cursor.execute('SELECT title FROM report WHERE id = %s', id)
+         row = cursor.fetchone()
+         if not row:
+-            raise util.TracError('Report %s does not exist.' % id,
++            raise util.TracError('Report %s does not exist.' % util.escape(id),
+                                  'Invalid Report Number')
+         self.req.hdf.setValue('title',
+                               'Delete Report {%s} %s' % (id, row['title']))
+@@ -190,7 +190,7 @@
+                            ' WHERE id=%s', id)
+             row = cursor.fetchone()
+             if not row:
+-                raise util.TracError('Report %s does not exist.' % id,
++                raise util.TracError('Report %s does not exist.' % util.escape(id),
+                                      'Invalid Report Number')
+             sql = row[2] or ''
+             description = row[1] or ''
+Index: trac/util.py
+===================================================================
+--- trac/util.py	(revision 2804)
++++ trac/util.py	(working copy)
+@@ -19,7 +19,10 @@
+ #
+ # Author: Jonas Borgström <jonas@edgewall.com>
+ 
++from __future__ import nested_scopes
++
+ import os
++import re
+ import sys
+ import time
+ import tempfile
+@@ -323,7 +326,132 @@
+     """
+     return path.replace(' ', '%20').replace(';', '%3B').replace(',', '%3C')
+ 
++def html_sanitize(self):
++    """Parse the text as HTML and return a cleaned up XHTML representation.
++    
++    This will remove any javascript code or other potentially dangerous
++    elements.
++    
++    If the HTML cannot be parsed, an `HTMLParseError` will be raised by the
++    underlying `HTMLParser` module, which should be handled by the caller of
++    this function.
++    """
++    import htmlentitydefs
++    from HTMLParser import HTMLParser, HTMLParseError
+ 
++    buf = StringIO.StringIO()
++
++    class HTMLSanitizer(HTMLParser):
++        # FIXME: move this out into a top-level class
++        safe_tags = ('a', 'abbr', 'acronym', 'address', 'area',
++            'b', 'big', 'blockquote', 'br', 'button', 'caption', 'center',
++            'cite', 'code', 'col', 'colgroup', 'dd', 'del', 'dfn', 'dir',
++            'div', 'dl', 'dt', 'em', 'fieldset', 'font', 'form', 'h1', 'h2',
++            'h3', 'h4', 'h5', 'h6', 'hr', 'i', 'img', 'input', 'ins', 'kbd',
++            'label', 'legend', 'li', 'map', 'menu', 'ol', 'optgroup',
++            'option', 'p', 'pre', 'q', 's', 'samp', 'select', 'small',
++            'span', 'strike', 'strong', 'sub', 'sup', 'table', 'tbody',
++            'td', 'textarea', 'tfoot', 'th', 'thead', 'tr', 'tt', 'u', 'ul',
++            'var')
++        safe_attrs = ('abbr', 'accept', 'accept-charset',
++            'accesskey', 'action', 'align', 'alt', 'axis', 'border',
++            'cellpadding', 'cellspacing', 'char', 'charoff', 'charset',
++            'checked', 'cite', 'class', 'clear', 'cols', 'colspan', 'color',
++            'compact', 'coords', 'datetime', 'dir', 'disabled', 'enctype',
++            'for', 'frame', 'headers', 'height', 'href', 'hreflang',
++            'hspace', 'id', 'ismap', 'label', 'lang', 'longdesc',
++            'maxlength', 'media', 'method', 'multiple', 'name', 'nohref',
++            'noshade', 'nowrap', 'prompt', 'readonly', 'rel', 'rev', 'rows',
++            'rowspan', 'rules', 'scope', 'selected', 'shape', 'size',
++            'span', 'src', 'start', 'style', 'summary', 'tabindex',
++            'target', 'title', 'type', 'usemap', 'valign', 'value',
++            'vspace', 'width')
++        uri_attrs = ('action', 'background', 'dynsrc', 'href', 'lowsrc', 'src')
++        safe_schemes = ('file', 'ftp', 'http', 'https', 'mailto', None)
++        empty_tags = ('br', 'hr', 'img', 'input')
++        waiting_for = None
++
++        def handle_starttag(self, tag, attrs):
++            if self.waiting_for:
++                return
++            if tag not in self.safe_tags:
++                self.waiting_for = tag
++                return
++            buf.write('<' + tag)
++
++            def _get_scheme(text):
++                if ':' not in text:
++                    return None
++                chars = [char for char in text.split(':', 1)[0]
++                         if char.isalnum()]
++                return ''.join(chars).lower()
++
++            for attrname, attrval in attrs:
++                if attrname not in self.safe_attrs:
++                    continue
++                elif attrname in self.uri_attrs:
++                    # Don't allow URI schemes such as "javascript:"
++                    if _get_scheme(attrval) not in self.safe_schemes:
++                        continue
++                elif attrname == 'style':
++                    # Remove dangerous CSS declarations from inline styles
++                    decls = []
++                    for decl in filter(None, attrval.split(';')):
++                        is_evil = 0
++                        if 'expression' in decl:
++                            is_evil = 1
++                        for m in re.finditer(r'url\s*\(([^)]+)', decl):
++                            if _get_scheme(m.group(1)) not in self.safe_schemes:
++                                is_evil = 1
++                                break
++                        if not is_evil:
++                            decls.append(decl.strip())
++                    if not decls:
++                        continue
++                    attrval = '; '.join(decls)
++                buf.write(' ' + attrname + '="' + escape(attrval) + '"')
++
++            if tag in self.empty_tags:
++                buf.write(' />')
++            else:
++                buf.write('>')
++
++        def handle_entityref(self, name):
++            if not self.waiting_for:
++                if name not in ('amp', 'lt', 'gt', 'quot'):
++                    latinchar = htmlentitydefs.entitydefs.get(name, '?')
++                    buf.write(latinchar.decode('iso-8859-1').encode('utf-8'))
++                else:
++                    buf.write('&%s;' % name)
++
++        def handle_data(self, data):
++            if not self.waiting_for:
++                buf.write(escape(data))
++
++        def handle_endtag(self, tag):
++            if self.waiting_for:
++                if self.waiting_for == tag:
++                    self.waiting_for = None
++                return
++            if tag not in self.empty_tags:
++                buf.write('</' + tag + '>')
++
++    # Translate any character or entity references to the corresponding
++    # UTF-8 characters
++    def _ref2utf8(match):
++        ref = match.group(1)
++        if ref.startswith('x'):
++            ref = int(ref[1:], 16)
++        else:
++            ref = int(ref, 10)
++        return unichr(int(ref)).encode('utf-8')
++    text = re.sub(r'&#((?:\d+)|(?:[xX][0-9a-fA-F]+));?', _ref2utf8, self)
++
++    sanitizer = HTMLSanitizer()
++    sanitizer.feed(text)
++    return buf.getvalue()
++
++
+ if __name__ == '__main__ ':
+     pass
+     #print pre
+Index: trac/File.py
+===================================================================
+--- trac/File.py	(revision 2804)
++++ trac/File.py	(working copy)
+@@ -72,6 +72,8 @@
+     def display_raw(self):
+         self.req.send_response(200)
+         self.req.send_header('Content-Type', self.mime_type)
++        self.req.send_header('Content-Disposition', 'attachment;filename=' +
++                             self.filename)
+         self.req.send_header('Content-Length', str(self.length))
+         self.req.send_header('Last-Modified', self.last_modified)
+         self.req.end_headers()
+@@ -146,14 +148,19 @@
+             self.mime_type = self.env.mimeview.get_mimetype(self.filename) \
+                              or 'application/octet-stream'
+ 
++            render_unsafe = self.env.get_config('attachment',
++                                                'render_unsafe_content',
++                                                'false')
++            if render_unsafe in util.TRUE:
++                self.add_link('alternate',
++                              self.env.href.attachment(self.attachment_type,
++                                                       self.attachment_id,
++                                                       self.filename, 'txt'),
++                    'Plain Text', 'text/plain')
++
+             self.add_link('alternate',
+                           self.env.href.attachment(self.attachment_type,
+                                                    self.attachment_id,
+-                                                   self.filename, 'txt'),
+-                'Plain Text', 'text/plain')
+-            self.add_link('alternate',
+-                          self.env.href.attachment(self.attachment_type,
+-                                                   self.attachment_id,
+                                                    self.filename, 'raw'),
+                 'Original Format', self.mime_type)
+ 
+@@ -211,7 +218,14 @@
+         self.req.hdf.setValue('trac.active_module', self.attachment_type) # Kludge
+         FileCommon.display(self)
+ 
++    def display_txt(self):
++        render_unsafe = self.env.get_config('attachment',
++                                            'render_unsafe_content', 'false')
++        if render_unsafe not in util.TRUE:
++            raise util.TracError('Bad Request')
++        FileCommon.display_txt(self)
+ 
++
+ class File(FileCommon):
+ 
+     def generate_path_links(self, rev, rev_specified):
+Index: trac/Log.py
+===================================================================
+--- trac/Log.py	(revision 2804)
++++ trac/Log.py	(working copy)
+@@ -126,7 +126,7 @@
+         if not svn.fs.check_path(root, self.path, self.pool) in \
+                [svn.core.svn_node_file, svn.core.svn_node_dir]:
+             raise util.TracError('The file or directory "%s" doesn\'t exist in the '
+-                                 'repository at revision %d.' % (self.path, rev),
++                                 'repository at revision %d.' % (util.escape(self.path), rev),
+                                  'Nonexistent path')
+         else:
+             info = self.get_info (self.path, rev)
+Index: trac/Wiki.py
+===================================================================
+--- trac/Wiki.py	(revision 2804)
++++ trac/Wiki.py	(working copy)
+@@ -143,7 +143,7 @@
+                                   escape(self.env.href.wiki(pagename, str(row[0]), 1)))
+             self.req.hdf.setValue(n+'.version', str(row[0]))
+             self.req.hdf.setValue(n+'.time', time_str)
+-            self.req.hdf.setValue(n+'.author', str(row[2]))
++            self.req.hdf.setValue(n+'.author', escape(str(row[2])))
+             self.req.hdf.setValue(n+'.comment', wiki_to_oneliner(row[3] or '', self.req.hdf, self.env, self.db))
+             self.req.hdf.setValue(n+'.ipaddr', str(row[4]))
+             i = i + 1
+@@ -161,7 +161,7 @@
+         res = cursor.fetchall()
+         if not res:
+             raise TracError('Version %d of page "%s" not found.'
+-                            % (version, pagename),
++                            % (version, escape(pagename)),
+                             'Page Not Found')
+ 
+         if len(res) == 1:
+Index: trac/Browser.py
+===================================================================
+--- trac/Browser.py	(revision 2804)
++++ trac/Browser.py	(working copy)
+@@ -50,7 +50,7 @@
+         node_type = svn.fs.check_path(root, path, self.pool)
+         if not node_type in [svn.core.svn_node_dir, svn.core.svn_node_file]:
+             raise util.TracError('"%s": no such file or directory in revision %d' \
+-                            % (path, revision), 'No such file or directory')
++                            % (util.escape(path), revision), 'No such file or directory')
+ 
+         # Redirect to the file module if the requested path happens
+         # to point to a regular file
+@@ -97,7 +97,7 @@
+                 'date_seconds' : date_seconds,
+                 'age'          : util.pretty_age(date_seconds),
+                 'is_dir'       : is_dir,
+-                'author'       : author,
++                'author'       : util.escape(author),
+                 'change'       : wiki_to_oneliner(util.shorten_line(util.wiki_escape_newline(change)),
+                                                   self.req.hdf, self.env,self.db),
+ 		'permission'   : self.authzperm.has_permission(fullpath)
+Index: trac/WikiFormatter.py
+===================================================================
+--- trac/WikiFormatter.py	(revision 2804)
++++ trac/WikiFormatter.py	(working copy)
+@@ -277,12 +277,6 @@
+                         'linkname', 'macroname', 'macroargs', 'inline',
+                         'modulename', 'moduleargs')
+ 
+-    # Forbid "dangerous" HTML tags and attributes
+-    _htmlproc_disallow_rule = re.compile('(?i)<(script|noscript|embed|object|'
+-                                         'iframe|frame|frameset|link|style|'
+-                                         'meta|param|doctype)')
+-    _htmlproc_disallow_attribute = re.compile('(?i)<[^>]*\s+(on\w+)=')
+-
+     def default_processor(hdf, text, env):
+         return '<pre class="wiki">' + util.escape(text) + '</pre>'
+     def asp_processor(hdf, text, env):
+@@ -310,22 +304,6 @@
+     def verilog_processor(hdf, text, env):
+         return env.mimeview.display(text, 'text/x-verilog')
+     def html_processor(hdf, text, env):
+-        if Formatter._htmlproc_disallow_rule.search(text):
+-            err = """\
+-<div class="system-message">
+- <strong>Error: HTML block contains disallowed tags.</strong>
+- <pre>%s</pre>
+-</div>\n""" % util.escape(text)
+-            env.log.error(err)
+-            return err
+-        if Formatter._htmlproc_disallow_attribute.search(text):
+-            err = """\
+-<div class="system-message">
+- <strong>Error: HTML block contains disallowed attributes.</strong>
+- <pre>%s</pre>
+-</div>\n""" % util.escape(text)
+-            env.log.error(err)
+-            return err
+-        return text
++        return util.html_sanitize(text)
+     def mime_processor(self, hdf, text, env):
+         return env.mimeview.display(text, self.mime_type)

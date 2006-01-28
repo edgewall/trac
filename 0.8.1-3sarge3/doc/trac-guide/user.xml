@@ -1,0 +1,41 @@
+<chapter id="tg-user">
+  <title>User Guide</title>
+
+  <simplesect>
+    <para>
+    </para>
+  </simplesect>
+
+
+  <sect1 id="tg-user-sect-1">
+    <title>Basic Concepts</title>
+    <para>
+    </para>
+  </sect1>
+
+  <sect1>
+    <title>Modules</title>
+    <para></para>
+
+    <sect2 id="tg-user-sect-1-2">
+      <title>Bug/Issue Tracking Database</title>
+      <para> </para>
+    </sect2>
+
+    <sect2 id="tg-user-sect-1-3">
+      <title>Wiki</title>
+      <para> </para>
+    </sect2>
+
+    <sect2 id="tg-user-sect-1-4">
+      <title>Timeline</title>
+      <para> </para>
+    </sect2>
+
+    <sect2 id="tg-user-sect-1-4">
+      <title>Reports</title>
+      <para> </para>
+    </sect2>
+  </sect1>
+
+</chapter>
