@@ -1,5 +1,7 @@
 = InterTrac Extension for TracLinks =
 
+''(since [milestone:0.10])''
+
 == Definitions ==
 
 An InterTrac link is used for referring to a Trac object 

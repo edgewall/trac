@@ -347,7 +347,7 @@ class Formatter(object):
         interwiki = InterWikiMap(self.env)
         if interwiki.has_key(ns):
             url, title = interwiki.url(ns, target)
-            return self._make_ext_link(url, label, '%s in %s' % (target, title))
+            return self._make_ext_link(url, label, title)
         else:
             return None
 
@@ -837,11 +837,13 @@ class InterWikiMap(Component):
         def setarg(match):
             num = int(match.group()[1:])
             return 0 < num <= len(args) and args[num-1] or ''
-        url_with_args = re.sub(InterWikiMap._argspec_re, setarg, url)
-        if url_with_args == url: 
-            return url + target, title
-        else:
-            return url_with_args, title
+        expanded_url = re.sub(InterWikiMap._argspec_re, setarg, url)
+        expanded_title = re.sub(InterWikiMap._argspec_re, setarg, title)
+        if expanded_title == title:
+            expanded_title = target+' in '+title
+        if expanded_url == url:
+            expanded_url = url + target
+        return expanded_url, expanded_title
 
     # IWikiChangeListener methods
 
