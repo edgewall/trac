@@ -15,6 +15,9 @@ import getopt
 # Pages to include in distribution
 wiki_pages = [
  "CamelCase",
+ "InterMapTxt",
+ "InterTrac",
+ "InterWiki",
  "RecentChanges",
  "TitleIndex",
  "TracAccessibility",

@@ -24,6 +24,7 @@ from trac.env import open_environment
 from trac.web.api import Request
 from trac.web.cgi_frontend import TracFieldStorage
 from trac.web.main import dispatch_request, get_environment, \
+                          setup_sibling_environments, \
                           send_pretty_error, send_project_index
 from trac.util import md5crypt
 
@@ -201,35 +202,15 @@ class TracHTTPServer(ThreadingMixIn, HTTPServer):
         else:
             self.http_host = '%s:%d' % (self.server_name, self.server_port)
 
-        self.env_parent_dir = env_parent_dir and {'TRAC_ENV_PARENT_DIR':
-                                                  env_parent_dir}
+        self.env_paths = env_paths
         self.auths = auths
-
-        self.projects = {}
-        for env_path in env_paths:
-            # Remove trailing slashes
-            while env_path and not os.path.split(env_path)[1]:
-                env_path = os.path.split(env_path)[0]
-            project = os.path.split(env_path)[1]
-            if self.projects.has_key(project):
-                print >>sys.stderr, 'Warning: Ignoring project "%s" since ' \
-                                    'it conflicts with project "%s"' \
-                                    % (env_path, self.projects[project])
-            else:
-                self.projects[project] = env_path
-
-    def get_env_opts(self, project=None):
-        if self.env_parent_dir:
-            opts = self.env_parent_dir.items()
-        else:
-            opts = [('TRAC_ENV', self.projects[project])]
-        return dict(opts + os.environ.items())
+        self.options = os.environ.copy()
+        if env_parent_dir:
+            self.options['TRAC_ENV_PARENT_DIR'] = env_parent_dir
+        self.projects = setup_sibling_environments(self.options, self.env_paths)
 
     def send_project_index(self, req):
-        if self.env_parent_dir:
-            return send_project_index(req, self.get_env_opts())
-        else:
-            return send_project_index(req, os.environ, self.projects.values())
+        return send_project_index(req, self.options, self.env_paths)
 
 
 class TracHTTPRequestHandler(BaseHTTPRequestHandler):
@@ -275,14 +256,12 @@ class TracHTTPRequestHandler(BaseHTTPRequestHandler):
         path_info = urllib.unquote(path_info)
         req = TracHTTPRequest(self, project_name, query_string)
 
-        try:
-            opts = self.server.get_env_opts(project_name)
-        except KeyError:
-            # unrecognized project
-            self.server.send_project_index(req)
-            return
+        env = None
+        if project_name in self.server.projects:
+            options = self.server.options.copy()
+            options['TRAC_ENV'] = self.server.projects[project_name]
+            env = get_environment(req, options)
 
-        env = get_environment(req, opts)
         if not env:
             self.server.send_project_index(req)
             return

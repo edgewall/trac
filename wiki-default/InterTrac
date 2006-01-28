@@ -1,0 +1,84 @@
+= InterTrac Extension for TracLinks =
+
+== Definitions ==
+
+An InterTrac link is used for referring to a Trac object 
+(Wiki page, changeset, ticket, ...) located in another
+Trac environment.
+
+== Link Syntax ==
+
+{{{
+<target_environment>:<TracLinks>
+}}}
+
+The link is composed by the target environment name, 
+followed by a colon (e.g. `trac:`),
+followed by a regular TracLinks, of any flavor.
+
+That target environment name is either the real name of the 
+environment, or an alias for it. 
+The aliases are defined in `trac.ini` (see below).
+The prefix is case insensitive.
+
+For convenience, there's also an alternative short-hand form, 
+where one can use an alias as an immediate prefix 
+for the identifier of a ticket, changeset or report:
+(e.g. `#T234`, `[T1508]`, `[trac 1508]`, ...)
+
+== Examples ==
+
+Besides the other environments run by the same server process
+(called ''sibling'' environments), which are automatically detected,
+(''Note: currently only in `tracd`''),
+it is necessary to setup a configuration for the InterTrac facility:
+ * in order to refer to a remote Trac
+ * for defining environment aliases
+
+This is done quite simply in an `[intertrac]` section
+within the `trac.ini` file.
+
+Example configuration:
+{{{
+...
+[intertrac]
+## -- Example of setting up an alias:
+t = trac
+
+## -- Link to an external Trac:
+trac.title = Edgewall's Trac for Trac
+trac.url = http://projects.edgewall.com/trac
+
+#trac.svn = http://repos.edgewall.com/projects/trac 
+# Hint: .svn information could be used in the future to support svn:externals...
+}}}
+
+Now, given this configuration, one could create the following links:
+ * to the current InterTrac page:
+   * `trac:wiki:InterTrac` ->
+     [http://projects.edgewall.com/trac/wiki/InterTrac trac:wiki:InterTrac]
+   * `t:wiki:InterTrac` ->
+     [http://projects.edgewall.com/trac/wiki/InterTrac t:wiki:InterTrac]
+   * Keys are case insensitive: `T:wiki:InterTrac` -> 
+     [http://projects.edgewall.com/trac/wiki/InterTrac T:wiki:InterTrac]
+ * to the ticket #234:
+   * `trac:ticket:234` ->
+     [http://projects.edgewall.com/trac/ticket/234 trac:ticket:234]
+   * `trac:#234` ->
+     [http://projects.edgewall.com/trac/ticket/234 trac:#234]
+   * `#T234` ->
+     [http://projects.edgewall.com/trac/search?q=#234 #T234]
+ * to the changeset [1912]:
+   * `trac:changeset:1912` ->
+     [http://projects.edgewall.com/trac/changeset/1912 trac:changeset:1912]
+   * `trac:[1912]` ->
+     [http:"//projects.edgewall.com/trac/search?q=[1912]" "trac:[1912]"]
+   * `[T1912]` ->
+     [http://projects.edgewall.com/trac/changeset/1912 "[T1912]"]
+
+Anything not given as explicit links (intertrac_prefix:module:id)
+is interpreted by the remote Trac, relying on its quickjump
+facility.
+
+----
+See also: TracLinks, InterWiki

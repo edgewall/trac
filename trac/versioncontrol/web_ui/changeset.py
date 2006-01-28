@@ -34,7 +34,8 @@ from trac.versioncontrol.diff import get_diff_options, hdf_diff, unified_diff
 from trac.versioncontrol.svn_authz import SubversionAuthorizer
 from trac.web import IRequestHandler
 from trac.web.chrome import INavigationContributor, add_link, add_stylesheet
-from trac.wiki import wiki_to_html, wiki_to_oneliner, IWikiSyntaxProvider
+from trac.wiki import wiki_to_html, wiki_to_oneliner, IWikiSyntaxProvider, \
+                      Formatter
 
 
 class DiffArgs(dict):
@@ -580,11 +581,17 @@ class ChangesetModule(Component):
     # IWikiSyntaxProvider methods
 
     def get_wiki_syntax(self):
-        yield (r"!?\[\d+(?:/[^\]]*)?\]|(?:\b|!)r\d+\b(?!:\d)",
-               lambda x, y, z:
-               self._format_changeset_link(x, 'changeset',
-                                           y[0] == 'r' and y[1:] or y[1:-1],
-                                           y, z))
+        yield (
+            # [...] form: start with optional intertrac: [T... or [trac ... 
+            r"!?\[(?P<it_changeset>%s\s*)?" % Formatter.INTERTRAC_SCHEME +
+            #  digits + optional path for the restricted changeset
+            r"\d+(?:/[^\]]*)?\]|"   
+            # r... form: allow r1 but not r1:2 (handled by the log syntax)
+            r"(?:\b|!)r\d+\b(?!:\d)",
+            lambda x, y, z:
+            self._format_changeset_link(x, 'changeset',
+                                        y[0] == 'r' and y[1:] or y[1:-1],
+                                        y, z))
 
     def get_link_resolvers(self):
         yield ('changeset', self._format_changeset_link)
@@ -592,6 +599,10 @@ class ChangesetModule(Component):
 
     def _format_changeset_link(self, formatter, ns, chgset, label,
                                fullmatch=None):
+        intertrac = formatter.shorthand_intertrac_helper(ns, chgset, label,
+                                                         fullmatch)
+        if intertrac:
+            return intertrac
         sep = chgset.find('/')
         if sep > 0:
             rev, path = chgset[:sep], chgset[sep:]

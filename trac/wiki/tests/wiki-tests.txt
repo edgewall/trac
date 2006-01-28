@@ -53,11 +53,13 @@ Paragraph
 #1, {1}, #2
 [1], r1
 [1/README.txt]
+#12, [12], r12, {12}
 ------------------------------
 <p>
 <a class="missing ticket" href="/ticket/1" rel="nofollow">#1</a>, <a class="report" href="/report/1">{1}</a>, <a class="missing ticket" href="/ticket/2" rel="nofollow">#2</a>
 <a class="missing changeset" href="/changeset/1" rel="nofollow">[1]</a>, <a class="missing changeset" href="/changeset/1" rel="nofollow">r1</a>
 <a class="missing changeset" href="/changeset/1/README.txt" rel="nofollow">[1/README.txt]</a>
+<a class="missing ticket" href="/ticket/12" rel="nofollow">#12</a>, <a class="missing changeset" href="/changeset/12" rel="nofollow">[12]</a>, <a class="missing changeset" href="/changeset/12" rel="nofollow">r12</a>, <a class="report" href="/report/12">{12}</a>
 </p>
 ------------------------------
 ==============================
@@ -167,10 +169,10 @@ CamelCase AlabamA ABc AlaBamA FooBar
 </p>
 ------------------------------
 ==============================
-CamelCase,CamelCase.CamelCase:CamelCase
+CamelCase,CamelCase.CamelCase: CamelCase
 ------------------------------
 <p>
-<a class="missing wiki" href="/wiki/CamelCase" rel="nofollow">CamelCase?</a>,<a class="missing wiki" href="/wiki/CamelCase" rel="nofollow">CamelCase?</a>.CamelCase:CamelCase
+<a class="missing wiki" href="/wiki/CamelCase" rel="nofollow">CamelCase?</a>,<a class="missing wiki" href="/wiki/CamelCase" rel="nofollow">CamelCase?</a>.<a class="missing wiki" href="/wiki/CamelCase" rel="nofollow">CamelCase?</a>: <a class="missing wiki" href="/wiki/CamelCase" rel="nofollow">CamelCase?</a>
 </p>
 ------------------------------
 ==============================
@@ -903,3 +905,78 @@ anotherWikiPageName
 ------------------------------
 || a || 
 || b ||
+==============================
+t:wiki:InterTrac
+trac:wiki:InterTrac
+[t:wiki:InterTrac intertrac]
+[trac:wiki:InterTrac intertrac]
+------------------------------
+<p>
+<a class="ext-link" href="http://projects.edgewall.com/trac/wiki/InterTrac" title="wiki:InterTrac in Trac's Trac"><span class="icon"></span>t:wiki:InterTrac</a>
+<a class="ext-link" href="http://projects.edgewall.com/trac/wiki/InterTrac" title="wiki:InterTrac in Trac's Trac"><span class="icon"></span>trac:wiki:InterTrac</a>
+<a class="ext-link" href="http://projects.edgewall.com/trac/wiki/InterTrac" title="wiki:InterTrac in Trac's Trac"><span class="icon"></span>intertrac</a>
+<a class="ext-link" href="http://projects.edgewall.com/trac/wiki/InterTrac" title="wiki:InterTrac in Trac's Trac"><span class="icon"></span>intertrac</a>
+</p>
+------------------------------
+==============================
+trac:ticket:2041
+[trac:ticket:2041 Trac #2041]
+#T2041
+#trac2041
+------------------------------
+<p>
+<a class="ext-link" href="http://projects.edgewall.com/trac/ticket/2041" title="ticket:2041 in Trac's Trac"><span class="icon"></span>trac:ticket:2041</a>
+<a class="ext-link" href="http://projects.edgewall.com/trac/ticket/2041" title="ticket:2041 in Trac's Trac"><span class="icon"></span>Trac #2041</a>
+<a class="ext-link" href="http://projects.edgewall.com/trac/ticket/2041" title="ticket:2041 in Trac's Trac"><span class="icon"></span>#T2041</a>
+<a class="ext-link" href="http://projects.edgewall.com/trac/ticket/2041" title="ticket:2041 in Trac's Trac"><span class="icon"></span>#trac2041</a>
+</p>
+------------------------------
+==============================
+trac:changeset:2081
+[trac:changeset:2081 Trac r2081]
+[T2081]
+[trac2081]
+[trac 2081]
+------------------------------
+<p>
+<a class="ext-link" href="http://projects.edgewall.com/trac/changeset/2081" title="changeset:2081 in Trac's Trac"><span class="icon"></span>trac:changeset:2081</a>
+<a class="ext-link" href="http://projects.edgewall.com/trac/changeset/2081" title="changeset:2081 in Trac's Trac"><span class="icon"></span>Trac r2081</a>
+<a class="ext-link" href="http://projects.edgewall.com/trac/changeset/2081" title="changeset:2081 in Trac's Trac"><span class="icon"></span>[T2081]</a>
+<a class="ext-link" href="http://projects.edgewall.com/trac/changeset/2081" title="changeset:2081 in Trac's Trac"><span class="icon"></span>[trac2081]</a>
+<a class="ext-link" href="http://projects.edgewall.com/trac/changeset/2081" title="changeset:2081 in Trac's Trac"><span class="icon"></span>[trac 2081]</a>
+</p>
+------------------------------
+==============================
+trac:report:1
+[trac:report:1 Trac r1]
+{T1}
+{trac1}
+{trac 1}
+------------------------------
+<p>
+<a class="ext-link" href="http://projects.edgewall.com/trac/report/1" title="report:1 in Trac's Trac"><span class="icon"></span>trac:report:1</a>
+<a class="ext-link" href="http://projects.edgewall.com/trac/report/1" title="report:1 in Trac's Trac"><span class="icon"></span>Trac r1</a>
+<a class="ext-link" href="http://projects.edgewall.com/trac/report/1" title="report:1 in Trac's Trac"><span class="icon"></span>{T1}</a>
+<a class="ext-link" href="http://projects.edgewall.com/trac/report/1" title="report:1 in Trac's Trac"><span class="icon"></span>{trac1}</a>
+<a class="ext-link" href="http://projects.edgewall.com/trac/report/1" title="report:1 in Trac's Trac"><span class="icon"></span>{trac 1}</a>
+</p>
+------------------------------
+==============================
+t:InterTrac
+trac:InterTrac
+[t:InterTrac intertrac]
+[trac:InterTrac intertrac]
+T:r2081
+T:#2041
+trac:#2041
+------------------------------
+<p>
+<a class="ext-link" href="http://projects.edgewall.com/trac/search?q=InterTrac" title="InterTrac in Trac's Trac"><span class="icon"></span>t:InterTrac</a>
+<a class="ext-link" href="http://projects.edgewall.com/trac/search?q=InterTrac" title="InterTrac in Trac's Trac"><span class="icon"></span>trac:InterTrac</a>
+<a class="ext-link" href="http://projects.edgewall.com/trac/search?q=InterTrac" title="InterTrac in Trac's Trac"><span class="icon"></span>intertrac</a>
+<a class="ext-link" href="http://projects.edgewall.com/trac/search?q=InterTrac" title="InterTrac in Trac's Trac"><span class="icon"></span>intertrac</a>
+<a class="ext-link" href="http://projects.edgewall.com/trac/search?q=r2081" title="r2081 in Trac's Trac"><span class="icon"></span>T:r2081</a>
+<a class="ext-link" href="http://projects.edgewall.com/trac/search?q=%232041" title="#2041 in Trac's Trac"><span class="icon"></span>T:#2041</a>
+<a class="ext-link" href="http://projects.edgewall.com/trac/search?q=%232041" title="#2041 in Trac's Trac"><span class="icon"></span>trac:#2041</a>
+</p>
+------------------------------

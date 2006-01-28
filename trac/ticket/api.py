@@ -17,7 +17,7 @@
 from trac import util
 from trac.core import *
 from trac.perm import IPermissionRequestor
-from trac.wiki import IWikiSyntaxProvider
+from trac.wiki import IWikiSyntaxProvider, Formatter
 from trac.Search import ISearchSource, query_to_sql, shorten_result
 
 
@@ -138,10 +138,18 @@ class TicketSystem(Component):
                 ('ticket', self._format_link)]
 
     def get_wiki_syntax(self):
-        yield (r"!?(?<!&)#\d+", # #123 but not &#123; (HTML entity)
-               lambda x, y, z: self._format_link(x, 'ticket', y[1:], y))
+        yield (
+            # matches #... but not &#... (HTML entity)
+            r"!?(?<!&)#"
+            # optional intertrac shorthand #T... + digits
+            r"(?P<it_ticket>%s)?\d+" % Formatter.INTERTRAC_SCHEME,
+            lambda x, y, z: self._format_link(x, 'ticket', y[1:], y, z))
 
-    def _format_link(self, formatter, ns, target, label):
+    def _format_link(self, formatter, ns, target, label, fullmatch=None):
+        intertrac = formatter.shorthand_intertrac_helper(ns, target, label,
+                                                         fullmatch)
+        if intertrac:
+            return intertrac
         cursor = formatter.db.cursor()
         cursor.execute("SELECT summary,status FROM ticket WHERE id=%s",
                        (target,))
