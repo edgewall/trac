@@ -3,12 +3,13 @@
 
 Trac has a built-in functionality for visualizing “diffs” - changes to files.
 
-When viewing a repository check-in, such as when following a
-changeset [wiki:TracLinks link] or a changeset event in the 
-[wiki:TracTimeline timeline], Trac will display the exact changes
-made by the check-in.
+There are different kinds of ''change sets''. 
+Some can correspond to revisions made in the repositories,
+others can aggregate changes made in several revisions, 
+but in the end, any kind of differences could be shown.
 
-The changeset view consists of two parts, the ''header'' and the ''diff views''.
+The changeset view consists of two parts, the ''header'' 
+and the ''diff views''.
 
 == Changeset Header ==
 
@@ -19,6 +20,10 @@ Here you will find information such as:
  * Author -- Who commited the changeset
  * Message -- A brief description from the author (the commit log message)
  * Files -- A list of files affected by this changeset
+
+If more than one revision is involved in the set of changes being
+displayed, the ''Timestamp'', ''Author'' and ''Message'' fields 
+won't be shown.
 
 In front of each listed file, you'll find  a colored rectangle. The color
 indicates how the file is affected by the changeset.
@@ -40,7 +45,74 @@ Below the header is the main part of the changeset, the diff view. Each file is 
 
 In addition, various advanced options are available in the preferences form for adjusting the display of the diffs:
  * You can set how many lines are displayed before and after every change
+   (if the value ''all'' is used, then the full file will be shown)
  * You can toggle whether blank lines, case changes and white space changes are ignored, thereby letting you find the functional changes more quickly
+
+
+== The Different Ways to Get a Diff ==
+
+=== Examining a Changeset ===
+
+When viewing a repository check-in, such as when following a
+changeset [wiki:TracLinks link] or a changeset event in the 
+[wiki:TracTimeline timeline], Trac will display the exact changes
+made by the check-in.
+
+There will be also navigation links to the ''Previous Changeset''
+to and ''Next Changeset''.
+
+
+'''Note: all of the following will only be available in Trac [milestone:0.10]'''
+
+=== Examining Differences Between Revisions ===
+
+A very frequent need is to look at changes made on a file 
+or on a directory spanning multiple revisions. 
+The easiest way to get there is from the TracRevisionLog, 
+where one can select the '''old''' and the '''new''' revisions
+of the path being examined, and then click the ''View changes''
+button.
+
+=== Examining Arbitrary Differences ===
+
+One of the main feature of source configuration management
+systems is the possibility to work simultaneously on alternate
+''Lines of Developments'', or ''branches''. 
+The evolution of branches are often made in parallel, making it
+sometimes difficult to understand the exact set of differences 
+between alternative versions.
+
+This is where Trac comes to the rescue: 
+the '''View changes ...''' button in the TracBrowser
+leads to a form permitting the selection of arbitrary
+''From:'' and ''To:'' path/revision pairs.
+
+The resulting set of differences consist in the changes 
+that should be applied to the ''From:'' content in order
+to make it look like the ''To:'' content.
+
+For convenience, it is possible to invert the roles
+of the '''old''' and the '''new''' path/revision pairs
+by clicking the ''Reverse Diff'' link on the changeset page.
+
+=== Checking the Last Change ===
+
+The last possibility for looking at changes is 
+to have a quick look on the ''Last Change'' while
+browsing a file or a directory. 
+
+This shows the last change that happened on that path.
+The links ''Previous Changeset'' and ''Next Changeset''
+are replace by links to ''Previous Change'' and ''Next Change'',
+which makes it really convenient to traverse the change history
+of a specific file or directory.
+This view of a changeset, restricted to a specific path,
+is called ''restricted changeset''.
+
+Of course, if one is doing that on the root of the
+repository, there will be no path restriction
+and the full changeset will be shown.
+
 
 ----
 See also: TracGuide, TracBrowser

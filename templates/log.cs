@@ -156,5 +156,10 @@
   /if ?></ul></div><?cs
  /if ?>
 
+ <div id="help">
+  <strong>Note:</strong> See <a href="<?cs var:trac.href.wiki
+  ?>/TracRevisionLog">TracRevisionLog</a> for help on using the revision log.
+ </div>
+
 </div>
 <?cs include "footer.cs"?>
