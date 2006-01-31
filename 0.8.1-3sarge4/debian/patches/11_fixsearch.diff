@@ -1,0 +1,24 @@
+Index: branches/0.8-stable/trac/Search.py
+===================================================================
+--- branches/0.8-stable/trac/Search.py (revision 2835)
++++ branches/0.8-stable/trac/Search.py (revision 2836)
+@@ -37,10 +37,10 @@
+         if q[0] == q[-1] == "'" or q[0] == q[-1] == '"':
+             sql_q = "%s LIKE %%s" % name
+-            params.append(q[1:-1])
++            params.append('%' + q[1:-1] + '%')
+         else:
+             keywords = q.split(' ')
+             x = map(lambda x, name=name: name + ' LIKE %s', keywords)
+             sql_q = string.join(x, ' AND ')
+-            params += keywords
++            params += [('%' + kw + '%') for kw in keywords]
+         self.log.debug("SQL Condition: %s" % sql_q)
+         return sql_q
+@@ -158,5 +158,5 @@
+                  (self.RESULTS_PER_PAGE + 1, self.RESULTS_PER_PAGE * page)
+ 
+-        self.log.debug("SQL Query: %s" % q_str)
++        self.log.debug("SQL Query: %s, %s" % (q_str, repr(params)))
+         cursor.execute(q_str, params)
+ 
