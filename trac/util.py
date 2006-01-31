@@ -275,25 +275,11 @@ def to_utf8(text, charset='iso-8859-15'):
         return u.encode('utf-8')
 
 def shorten_line(text, maxlen = 75):
-    if not text:
-        return ''
-    elif len(text) < maxlen:
-        shortline = text
-    else:
-        last_cut = i = j = -1
-        cut = 0
-        while cut < maxlen and cut > last_cut:
-            last_cut = cut
-            i = text.find('[[BR]]', i+1)
-            j = text.find('\n', j+1)
-            cut = max(i,j)
-        if last_cut > 0:
-            shortline = text[:last_cut]+' ...'
-        else:
-            i = text[:maxlen].rfind(' ')
-            if i == -1:
-                i = maxlen
-            shortline = text[:i]+' ...'
+    if len(text) < maxlen:
+        return text
+    shortline = text[:maxlen]
+    cut = shortline.rfind(' ') + 1 or shortline.rfind('\n') + 1 or maxlen
+    shortline = text[:cut]+' ...'
     return shortline
 
 DIGITS = re.compile(r'(\d+)')
