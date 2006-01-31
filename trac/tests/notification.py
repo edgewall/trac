@@ -472,6 +472,7 @@ class NotificationTestCase(unittest.TestCase):
                    r"(:(?P<sec>[0-5][0-9]))*\s" \
                    r"((?P<tz>\w{2,3})|(?P<offset>[+\-]\d{4}))$"
         date_re = re.compile(date_str)
+        # python time module does not detect incorrect time values
         days = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun']
         months = ['Jan','Feb','Mar','Apr','May','Jun', \
                   'Jul','Aug','Sep','Oct','Nov','Dec']
@@ -489,7 +490,7 @@ class NotificationTestCase(unittest.TestCase):
         self.failIf(not mo)
         if mo.group('day'):
             self.failIf(mo.group('day') not in days)
-        self.failIf(int(mo.group('dm')) not in range(1,31))
+        self.failIf(int(mo.group('dm')) not in range(1,32))
         self.failIf(mo.group('month') not in months)
         self.failIf(int(mo.group('hour')) not in range(0,24))
         if mo.group('tz'):
