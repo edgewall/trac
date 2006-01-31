@@ -677,16 +677,17 @@ class QueryWikiMacro(Component):
                 for ticket in tickets:
                     href = self.env.href.ticket(int(ticket['id']))
                     summary = escape(shorten_line(ticket['summary']))
-                    links.append('<a class="%s ticket" href="%s" '
-                                 'title="%s">#%s</a>' % (ticket['status'], href,
-                                 summary, ticket['id']))
+                    a = '<a class="%s ticket" href="%s" title="%s">#%s</a>' % \
+                        (ticket['status'], href, summary, ticket['id'])
+                    links.append(a)
                 buf.write(', '.join(links))
             else:
                 buf.write('<dl class="wiki compact">')
                 for ticket in tickets:
                     href = self.env.href.ticket(int(ticket['id']))
-                    buf.write('<dt><a href="%s">#%s</a></dt>' % (href,
-                                                                 ticket['id']))
+                    dt = '<dt><a class="%s ticket" href="%s">#%s</a></dt>' % \
+                         (ticket['status'], href, ticket['id'])
+                    buf.write(dt)
                     buf.write('<dd>%s</dd>' % (escape(ticket['summary'])))
                 buf.write('</dl>')
 
