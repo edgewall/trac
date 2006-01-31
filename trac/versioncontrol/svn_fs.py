@@ -38,7 +38,9 @@ except ImportError:
         def apr_pool_destroy(): pass
         def apr_terminate(): pass
         def apr_pool_clear(): pass
-    core = dummy_svn()
+        Editor = object
+    delta = core = dummy_svn()
+    
 
 _kindmap = {core.svn_node_dir: Node.DIRECTORY,
             core.svn_node_file: Node.FILE}
