@@ -817,14 +817,26 @@ class InterWikiMap(Component):
     implements(IWikiChangeListener, IWikiMacroProvider)
 
     _page_name = 'InterMapTxt'
-    _interwiki_re = re.compile(r"(\w+)[ \t]+([^ \t]+)(?:[ \t]+#(.*))?",
-                               re.UNICODE)
+    _interwiki_re = re.compile(r"(%s)[ \t]+([^ \t]+)(?:[ \t]+#(.*))?" %
+                               Formatter.LINK_SCHEME, re.UNICODE)
     _argspec_re = re.compile(r"\$\d")
 
     def __init__(self):
         self._interwiki_map = None
         # This dictionary maps upper-cased namespaces
         # to (namespace, prefix, title) values
+
+    def _expand(self, txt, args):
+        def setarg(match):
+            num = int(match.group()[1:])
+            return 0 < num <= len(args) and args[num-1] or ''
+        return re.sub(InterWikiMap._argspec_re, setarg, txt)
+
+    def _expand_or_append(self, txt, args):
+        if not args:
+            return txt
+        expanded = self._expand(txt, args)
+        return expanded == txt and txt + args[0] or expanded
 
     def has_key(self, ns):
         if not self._interwiki_map:
@@ -834,15 +846,10 @@ class InterWikiMap(Component):
     def url(self, ns, target):
         ns, url, title = self._interwiki_map[ns.upper()]
         args = target.split(':')
-        def setarg(match):
-            num = int(match.group()[1:])
-            return 0 < num <= len(args) and args[num-1] or ''
-        expanded_url = re.sub(InterWikiMap._argspec_re, setarg, url)
-        expanded_title = re.sub(InterWikiMap._argspec_re, setarg, title)
+        expanded_url = self._expand_or_append(url, args)
+        expanded_title = self._expand(title, args)
         if expanded_title == title:
             expanded_title = target+' in '+title
-        if expanded_url == url:
-            expanded_url = url + target
         return expanded_url, expanded_title
 
     # IWikiChangeListener methods
@@ -896,12 +903,11 @@ class InterWikiMap(Component):
         buf.write('<table><tr><th>Prefix</th><td>Site</td></tr>\n')
         for k in keys:
             prefix, url, title = self._interwiki_map[k]
-            shortened_url = url and url[:-1]
-            description = title == prefix and shortened_url or title
+            rc_url = self._expand_or_append(url, ['RecentChanges'])
+            description = title == prefix and url or title
             buf.write('<tr>\n' +
-                      ('<td><a href="%sRecentChanges">%s</a></td>'
-                       '<td><a href="%s">%s</a></td>\n') \
-                      % (url, prefix, shortened_url, description) +
+                      '<td><a href="%s">%s</a></td>' % (rc_url, prefix) +
+                      '<td><a href="%s">%s</a></td>\n' % (url, description) +
                       '</tr>\n')
         buf.write('</table>\n')
         return buf.getvalue()
