@@ -78,7 +78,8 @@ class PermissionSystem(Component):
     implements(IPermissionRequestor)
 
     requestors = ExtensionPoint(IPermissionRequestor)
-    stores = ExtensionPoint(IPermissionStore)
+    store = SingletonExtensionPoint(IPermissionStore,
+                                    'trac', 'permission_store')
 
     # Public API
 
@@ -159,18 +160,6 @@ class PermissionSystem(Component):
                 else:
                     actions.append(action)
         return [('TRAC_ADMIN', actions)]
-
-    # Internal methods
-
-    def _get_store(self):
-        """Return the `IPermissionStore` implementation selected in the
-        configuration."""
-        selected_store = self.config.get('trac', 'permission_store')
-        for store in self.stores:
-            if store.__class__.__name__ == selected_store:
-                return store
-        raise TracError, 'Invalid permission store "%s"' % selected_store
-    store = property(fget=lambda self: self._get_store())
 
 
 class IPermissionGroupProvider(Interface):

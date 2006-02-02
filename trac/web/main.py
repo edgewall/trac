@@ -62,6 +62,8 @@ class RequestDispatcher(Component):
 
     authenticators = ExtensionPoint(IAuthenticator)
     handlers = ExtensionPoint(IRequestHandler)
+    default_handler = SingletonExtensionPoint(IRequestHandler,
+                                              'trac', 'default_handler')
 
     def authenticate(self, req):
         for authenticator in self.authenticators:
@@ -90,14 +92,13 @@ class RequestDispatcher(Component):
 
         # Select the component that should handle the request
         chosen_handler = None
-        default_handler = None
         if not req.path_info or req.path_info == '/':
-            default_handler = self.config.get('trac', 'default_handler')
-        for handler in self.handlers:
-            if handler.match_request(req) or \
-               handler.__class__.__name__ == default_handler:
-                chosen_handler = handler
-                break
+            chosen_handler = self.default_handler
+        else:
+            for handler in self.handlers:
+                if handler.match_request(req):
+                    chosen_handler = handler
+                    break
 
         chrome.populate_hdf(req, chosen_handler)
 
