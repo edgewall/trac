@@ -34,6 +34,7 @@ except:
 
 from trac.log import logger_factory
 from trac.test import TestSetup
+from trac.util import TracError
 from trac.versioncontrol import Changeset, Node
 from trac.versioncontrol.svn_fs import SubversionRepository
 
@@ -629,6 +630,24 @@ class RecentPathScopedRepositoryTestCase(unittest.TestCase):
         self.assertEqual(None, self.repos.previous_rev(4))
 
 
+class NonSelfContainedScopedTestCase(unittest.TestCase):
+
+    def setUp(self):
+        self.repos = SubversionRepository(REPOS_PATH + '/tags/v1', None,
+                                          logger_factory('test'))
+
+    def tearDown(self):
+        self.repos = None
+
+    def test_mixed_changeset(self):
+        chgset = self.repos.get_changeset(7)
+        self.assertEqual(7, chgset.rev)
+        changes = chgset.get_changes()
+        self.assertEqual(('', Node.DIRECTORY, Changeset.COPY, None, 6),
+                         changes.next())
+        self.assertRaises(TracError, lambda: self.repos.get_node(None, 6))
+
+
 def suite():
     global has_svn
     suite = unittest.TestSuite()
@@ -638,6 +657,8 @@ def suite():
         suite.addTest(unittest.makeSuite(ScopedSubversionRepositoryTestCase,
             'test', suiteClass=SubversionRepositoryTestSetup))
         suite.addTest(unittest.makeSuite(RecentPathScopedRepositoryTestCase,
+            'test', suiteClass=SubversionRepositoryTestSetup))
+        suite.addTest(unittest.makeSuite(NonSelfContainedScopedTestCase,
             'test', suiteClass=SubversionRepositoryTestSetup))
     return suite
 
