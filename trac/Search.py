@@ -222,7 +222,7 @@ class SearchModule(Component):
             r = "((^|(?<=[^A-Za-z]))[!]?[A-Z][a-z/]+(?:[A-Z][a-z/]+)+)"
             if re.match (r, kwd[len('wiki:'):]):
                 return self.env.href.wiki(kwd[len('wiki:'):])
-        elif kwd[0].isupper() and kwd[1].islower():
+        elif len(kwd) > 1 and kwd[0].isupper() and kwd[1].islower():
             r = "((^|(?<=[^A-Za-z]))[!]?[A-Z][a-z/]+(?:[A-Z][a-z/]+)+)"
             if re.match (r, kwd):
                 return self.env.href.wiki(kwd)
