@@ -139,8 +139,8 @@ class TimelineModule(Component):
                 events += event_provider.get_timeline_events(req, start, stop,
                                                              filters)
             except Exception, e: # cope with a failure of that provider
-                self._provider_failure(e, req, event_provider,
-                                       filters, available_filters)
+                self._provider_failure(e, req, event_provider, filters,
+                                       [f[0] for f in available_filters])
 
         events.sort(lambda x,y: cmp(y[3], x[3]))
         if maxrows and len(events) > maxrows:
