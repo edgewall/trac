@@ -265,7 +265,7 @@ def send_project_index(req, options, env_paths=None):
         tmpl_path, template = os.path.split(options['TRAC_ENV_INDEX_TEMPLATE'])
 
         from trac.config import default_dir
-        req.hdf = HDFWrapper(loadpaths=[default_dir('templates'), tmpl_path])
+        req.hdf = HDFWrapper(loadpaths=[tmpl_path, default_dir('templates')])
 
         tmpl_vars = {}
         if 'TRAC_TEMPLATE_VARS' in options:
