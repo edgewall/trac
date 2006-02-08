@@ -26,11 +26,6 @@ from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
 from trac.wiki import wiki_to_html, IWikiSyntaxProvider, Formatter
 
 
-dynvars_re = re.compile('\$([A-Z]+)')
-dynvars_disallowed_var_chars_re = re.compile('[^A-Z0-9_]')
-dynvars_disallowed_value_chars_re = re.compile(r'[^a-zA-Z0-9-_@.,\\]')
-
-
 class ColumnSorter:
 
     def __init__(self, columnIndex, asc=1):
@@ -398,14 +393,16 @@ class ReportModule(Component):
                      'text/plain')
 
     def execute_report(self, req, db, id, sql, args):
-        sql = self.sql_sub_vars(req, sql, args)
+        sql, args = self.sql_sub_vars(req, sql, args)
         if not sql:
             raise util.TracError('Report %s has no SQL query.' % id)
         if sql.find('__group__') == -1:
             req.hdf['report.sorting.enabled'] = 1
 
+        self.log.debug('Executing report with SQL "%s" (%s)', sql, args)
+
         cursor = db.cursor()
-        cursor.execute(sql)
+        cursor.execute(sql, args)
 
         # FIXME: fetchall should probably not be used.
         info = cursor.fetchall() or []
@@ -441,16 +438,7 @@ class ReportModule(Component):
         for arg in req.args.keys():
             if not arg == arg.upper():
                 continue
-            m = re.search(dynvars_disallowed_var_chars_re, arg)
-            if m:
-                raise ValueError("The character '%s' is not allowed "
-                                 " in variable names." % m.group())
-            val = req.args.get(arg)
-            m = re.search(dynvars_disallowed_value_chars_re, val)
-            if m:
-                raise ValueError("The character '%s' is not allowed "
-                                 " in variable data." % m.group())
-            report_args[arg] = val
+            report_args[arg] = req.args.get(arg)
 
         # Set some default dynamic variables
         if not report_args.has_key('USER'):
@@ -459,16 +447,18 @@ class ReportModule(Component):
         return report_args
 
     def sql_sub_vars(self, req, sql, args):
+        values = []
         def repl(match):
-            aname = match.group()[1:]
+            aname = match.group(1)
             try:
                 arg = args[aname]
             except KeyError:
                 raise util.TracError("Dynamic variable '$%s' not defined." % aname)
             req.hdf['report.var.' + aname] = arg
-            return arg
+            values.append(arg)
+            return '%s'
 
-        return dynvars_re.sub(repl, sql)
+        return re.sub("'?\$([A-Z]+)'?", repl, sql), values
 
     def _render_csv(self, req, cols, rows, sep=','):
         req.send_response(200)

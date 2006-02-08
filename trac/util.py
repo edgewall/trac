@@ -275,7 +275,7 @@ def to_utf8(text, charset='iso-8859-15'):
         return u.encode('utf-8')
 
 def shorten_line(text, maxlen = 75):
-    if len(text) < maxlen:
+    if len(text or '') < maxlen:
         return text
     shortline = text[:maxlen]
     cut = shortline.rfind(' ') + 1 or shortline.rfind('\n') + 1 or maxlen
