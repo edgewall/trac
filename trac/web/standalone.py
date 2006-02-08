@@ -24,7 +24,7 @@ from trac.env import open_environment
 from trac.web.api import Request
 from trac.web.cgi_frontend import TracFieldStorage
 from trac.web.main import dispatch_request, get_environment, \
-                          setup_sibling_environments, \
+                          get_projects, \
                           send_pretty_error, send_project_index
 from trac.util import md5crypt
 
@@ -207,8 +207,8 @@ class TracHTTPServer(ThreadingMixIn, HTTPServer):
         self.options = os.environ.copy()
         if env_parent_dir:
             self.options['TRAC_ENV_PARENT_DIR'] = env_parent_dir
-        self.projects = setup_sibling_environments(self.options, self.env_paths)
-
+        self.projects = get_projects(self.options, self.env_paths, warn=True)
+        
     def send_project_index(self, req):
         return send_project_index(req, self.options, self.env_paths)
 

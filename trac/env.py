@@ -75,7 +75,6 @@ class Environment(Component, ComponentManager):
         ComponentManager.__init__(self)
 
         self.path = path
-        self.siblings = {}
         self.load_config()
         self.setup_log() 
 

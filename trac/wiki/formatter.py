@@ -304,20 +304,6 @@ class Formatter(object):
                    match
 
     def _make_intertrac_link(self, ns, target, label):
-        if self.env.siblings.has_key(ns):
-            sibling = self.env.siblings[ns]
-            # The following is currently needed because env.href is set
-            # in trac.web.main.dispatch_request: for an environment which
-            # has not yet been queried by a client, .href is not defined.
-            if not hasattr(sibling, 'href'):
-                from trac.web.href import Href
-                def xchg_base(base):
-                    return '/'.join(base.split('/')[:-1] + [ns])
-                sibling.href = Href(xchg_base(self.env.href.base))
-                sibling.abs_href = Href(xchg_base(self.env.abs_href.base))
-            # EOKludge
-            ref = wiki_to_oneliner(target, sibling)
-            return ref.replace('>%s' % target, '>%s' % label)
         url = self.env.config.get('intertrac', ns.upper()+'.url')
         if url:
             name = self.env.config.get('intertrac', ns.upper()+'.title',

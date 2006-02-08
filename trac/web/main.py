@@ -360,22 +360,3 @@ def get_projects(options, env_paths, warn=False):
             projects[project] = env_path
     return projects
 
-def setup_sibling_environments(options, env_paths=None):
-    """Make each of the given environment know all the others.
-
-    The environments can be specified by a list of `env_paths`
-    and also from the `TRAC_ENV_PARENT_DIR` options.
-    Return a mapping of project names to environment paths.
-    """
-    siblings = {}
-    projects = get_projects(options, env_paths, warn=True)
-    options = options.copy()
-    for project, env_path in projects.items():
-        options['TRAC_ENV'] = env_path
-        try:
-            siblings[project] = get_environment(None, options)
-        except (TracError, IOError):
-            pass
-    for env in siblings.values():
-        env.siblings = siblings
-    return projects

@@ -31,7 +31,6 @@ from mod_python import apache, util
 from trac.util import http_date
 from trac.web.api import Request, RequestDone
 from trac.web.main import dispatch_request, get_environment, \
-                          setup_sibling_environments, \
                           send_pretty_error, send_project_index
 
 
@@ -197,7 +196,6 @@ def handler(req):
             ('TracEnvParentDir', 'TRAC_ENV_PARENT_DIR'),
             ('TracEnvIndexTemplate', 'TRAC_ENV_INDEX_TEMPLATE'),
             ('TracTemplateVars', 'TRAC_TEMPLATE_VARS'))
-    setup_sibling_environments(project_opts)
     env = get_environment(mpr, project_opts)
     if not env:
         send_project_index(mpr, project_opts)
