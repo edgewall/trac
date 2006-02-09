@@ -98,12 +98,14 @@ class Repository(object):
                     yield chgset
             rev = self.previous_rev(rev)
 
-    def has_node(self, path, rev):
+    def has_node(self, path, rev=None):
         """
         Tell if there's a node at the specified (path,rev) combination.
+
+        When `rev` is `None`, the latest revision is implied.
         """
         try:
-            self.get_node()
+            self.get_node(path, rev)
             return True
         except TracError:
             return False        
