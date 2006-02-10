@@ -499,7 +499,8 @@ class QueryModule(Component):
         for idx, col in enumerate(cols):
             req.hdf['query.headers.%d' % idx] = {
                 'name': col, 'label': labels.get(col, 'Ticket'),
-                'href': query.get_href(order=col, desc=(col == query.order))
+                'href': query.get_href(order=col, desc=(col == query.order and
+                                                        not query.desc))
             }
 
         href = self.env.href.query(group=query.group,
