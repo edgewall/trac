@@ -253,7 +253,7 @@ class RoadmapModule(Component):
                            if ticket['owner'] == user]:
                 ticket = Ticket(self.env, tkt_id)
                 write_prop('BEGIN', 'VTODO')
-                if milestone.has_key('date'):
+                if milestone.has_key('due'):
                     write_prop('RELATED-TO', uid)
                     write_date('DUE', localtime(milestone['due']))
                 write_prop('SUMMARY', 'Ticket #%i: %s' % (ticket.id,
