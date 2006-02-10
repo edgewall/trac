@@ -22,7 +22,9 @@
     /if ?><?cs
    /each ?><?cs
   /def ?>
-  <table summary="Query filters"><?cs each:field = query.fields ?><?cs
+  <table summary="Query filters">
+   <tbody><tr style="height: 1px"><td colspan="4"></td></tr></tbody><?cs
+   each:field = query.fields ?><?cs
    each:constraint = query.constraints ?><?cs
     if:name(field) == name(constraint) ?>
      <tbody><tr class="<?cs var:name(field) ?>">
@@ -173,13 +175,14 @@
 </script>
 
 <?cs def:thead() ?>
- <thead><tr><?cs each:header = query.headers ?><?cs
-  if:name(header) == 0 ?><?cs
-   call:sortable_th(query.order, query.desc, 'id', 'ticket', query.href) ?><?cs
-  else ?><?cs
-   call:sortable_th(query.order, query.desc, header.name, header.name, query.href) ?><?cs
-  /if ?>
- <?cs /each ?></tr></thead>
+ <thead><tr><?cs each:header = query.headers ?>
+  <th class="<?cs var:header.name ?><?cs if:query.order == header.name ?> <?cs
+    if:query.desc ?>desc<?cs else ?>asc<?cs /if ?><?cs /if ?>">
+   <a title="Sort by <?cs var:header.label ?><?cs
+     if:query.order == header.name && !query.desc ?> (descending)<?cs
+     /if ?>" href="<?cs var:header.href ?>"><?cs var:header.label ?></a>
+  </th><?cs
+ /each ?></tr></thead>
 <?cs /def ?>
 
 <?cs if:len(query.results) ?><?cs

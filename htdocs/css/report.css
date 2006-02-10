@@ -35,7 +35,7 @@ h2 {
 .reports tbody td :link, .reports tbody td :visited,
 .tickets tbody td :link, .tickets tbody td :visited { display: block }
 .tickets { border-bottom: none }
-.tickets thead th { text-transform: capitalize }
+.tickets thead th { text-transform: capitalize; white-space: nowrap; }
 .tickets tbody td, .reports tbody td { padding: .1em .5em !important }
 .tickets tbody td a, .reports tbody td a { border-bottom: none }
 .tickets tbody td.id :link, .tickets tbody td.id :visited {

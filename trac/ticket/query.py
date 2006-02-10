@@ -161,14 +161,16 @@ class Query(object):
         cursor.close()
         return results
 
-    def get_href(self, format=None):
-        return self.env.href.query(order=self.order,
-                                   desc=self.desc and 1 or None,
+    def get_href(self, order=None, desc=None, format=None):
+        if desc is None:
+            desc = self.desc
+        if order is None:
+            order = self.order
+        return self.env.href.query(order=order, desc=desc and 1 or None,
                                    group=self.group or None,
                                    groupdesc=self.groupdesc and 1 or None,
                                    verbose=self.verbose and 1 or None,
-                                   format=format,
-                                   **self.constraints)
+                                   format=format, **self.constraints)
 
     def get_sql(self):
         """Return a (sql, params) tuple for the query."""
@@ -377,12 +379,12 @@ class QueryModule(Component):
                     del req.session[var]
             req.redirect(query.get_href())
 
-        add_link(req, 'alternate', query.get_href('rss'), 'RSS Feed',
+        add_link(req, 'alternate', query.get_href(format='rss'), 'RSS Feed',
                  'application/rss+xml', 'rss')
-        add_link(req, 'alternate', query.get_href('csv'),
+        add_link(req, 'alternate', query.get_href(format='csv'),
                  'Comma-delimited Text', 'text/plain')
-        add_link(req, 'alternate', query.get_href('tab'), 'Tab-delimited Text',
-                 'text/plain')
+        add_link(req, 'alternate', query.get_href(format='tab'),
+                 'Tab-delimited Text', 'text/plain')
 
         constraints = {}
         for k, v in query.constraints.items():
@@ -493,9 +495,12 @@ class QueryModule(Component):
                 req.hdf['query.constraints.%s.values.%d' % (field, idx)] = ''
 
         cols = query.get_columns()
-        for i in range(len(cols)):
-            header = {'name': cols[i]}
-            req.hdf['query.headers.%d' % i] = header
+        labels = dict([(f['name'], f['label']) for f in query.fields])
+        for idx, col in enumerate(cols):
+            req.hdf['query.headers.%d' % idx] = {
+                'name': col, 'label': labels.get(col, 'Ticket'),
+                'href': query.get_href(order=col, desc=(col == query.order))
+            }
 
         href = self.env.href.query(group=query.group,
                                    groupdesc=query.groupdesc and 1 or None,
