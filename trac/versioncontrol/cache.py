@@ -88,8 +88,8 @@ class CachedRepository(Repository):
                                       base_path, base_rev)))
                     kind = kindmap[kind]
                     action = actionmap[action]
-                    cursor.execute("INSERT INTO node_change (rev,path,kind,"
-                                   "change,base_path,base_rev) "
+                    cursor.execute("INSERT INTO node_change (rev,path,"
+                                   "node_type,change_type,base_path,base_rev) "
                                    "VALUES (%s,%s,%s,%s,%s,%s)",
                                    (str(current_rev), path, kind, action,
                                    base_path, base_rev))
@@ -148,7 +148,7 @@ class CachedChangeset(Changeset):
 
     def get_changes(self):
         cursor = self.db.cursor()
-        cursor.execute("SELECT path,kind,change,base_path,base_rev "
+        cursor.execute("SELECT path,node_type,change_type,base_path,base_rev "
                        "FROM node_change WHERE rev=%s "
                        "ORDER BY path", (self.rev,))
         for path, kind, change, base_path, base_rev in cursor:

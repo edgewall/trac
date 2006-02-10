@@ -68,8 +68,8 @@ class CacheTestCase(unittest.TestCase):
         self.assertEquals(('0', 41000, '', ''), cursor.fetchone())
         self.assertEquals(('1', 42000, 'joe', 'Import'), cursor.fetchone())
         self.assertEquals(None, cursor.fetchone())
-        cursor.execute("SELECT rev,path,kind,change,base_path,base_rev "
-                       "FROM node_change")
+        cursor.execute("SELECT rev,path,node_type,change_type,base_path,"
+                       "base_rev FROM node_change")
         self.assertEquals(('1', 'trunk', 'D', 'A', None, None),
                           cursor.fetchone())
         self.assertEquals(('1', 'trunk/README', 'F', 'A', None, None),
@@ -82,8 +82,9 @@ class CacheTestCase(unittest.TestCase):
                        "VALUES (0,41000,'','')")
         cursor.execute("INSERT INTO revision (rev,time,author,message) "
                        "VALUES (1,42000,'joe','Import')")
-        cursor.executemany("INSERT INTO node_change (rev,path,kind,change,"
-                           "base_path,base_rev) VALUES ('1',%s,%s,%s,%s,%s)",
+        cursor.executemany("INSERT INTO node_change (rev,path,node_type,"
+                           "change_type,base_path,base_rev) "
+                           "VALUES ('1',%s,%s,%s,%s,%s)",
                            [('trunk', 'D', 'A', None, None),
                             ('trunk/README', 'F', 'A', None, None)])
 
@@ -101,7 +102,7 @@ class CacheTestCase(unittest.TestCase):
         cursor.execute("SELECT time,author,message FROM revision WHERE rev='2'")
         self.assertEquals((42042, 'joe', 'Update'), cursor.fetchone())
         self.assertEquals(None, cursor.fetchone())
-        cursor.execute("SELECT path,kind,change,base_path,base_rev "
+        cursor.execute("SELECT path,node_type,change_type,base_path,base_rev "
                        "FROM node_change WHERE rev='2'")
         self.assertEquals(('trunk/README', 'F', 'E', 'trunk/README', '1'),
                           cursor.fetchone())
@@ -113,8 +114,9 @@ class CacheTestCase(unittest.TestCase):
                        "VALUES (0,41000,'','')")
         cursor.execute("INSERT INTO revision (rev,time,author,message) "
                        "VALUES (1,42000,'joe','Import')")
-        cursor.executemany("INSERT INTO node_change (rev,path,kind,change,"
-                           "base_path,base_rev) VALUES ('1',%s,%s,%s,%s,%s)",
+        cursor.executemany("INSERT INTO node_change (rev,path,node_type,"
+                           "change_type,base_path,base_rev) "
+                           "VALUES ('1',%s,%s,%s,%s,%s)",
                            [('trunk', 'D', 'A', None, None),
                             ('trunk/README', 'F', 'A', None, None)])
 
