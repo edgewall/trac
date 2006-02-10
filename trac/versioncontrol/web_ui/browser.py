@@ -79,8 +79,7 @@ class BrowserModule(Component):
         rev = repos.normalize_rev(rev)
 
         hidden_properties = [p.strip() for p
-                             in self.config.get('browser', 'hide_properties',
-                                                'svk:merge').split(',')]
+                             in self.config.get('browser', 'hide_properties').split(',')]
 
         req.hdf['title'] = path
         req.hdf['browser'] = {

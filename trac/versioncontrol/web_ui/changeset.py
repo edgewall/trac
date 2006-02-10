@@ -350,8 +350,7 @@ class ChangesetModule(Component):
             return info
 
         hidden_properties = [p.strip() for p
-                             in self.config.get('browser', 'hide_properties',
-                                                'svk:merge').split(',')]
+                             in self.config.get('browser', 'hide_properties').split(',')]
 
         def _prop_changes(old_node, new_node):
             old_props = old_node.get_properties()

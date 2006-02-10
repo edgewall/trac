@@ -93,8 +93,7 @@ class NotifyEmail(Notify):
         self._charset = Charset()
         self._charset.input_charset = 'utf-8'
         self._charset.input_codec = 'utf-8'
-        pref = self.env.config.get('notification','mime_encoding',
-                                   'base64').lower()
+        pref = self.env.config.get('notification', 'mime_encoding').lower()
         if pref == 'base64':
             self._charset.header_encoding = BASE64
             self._charset.body_encoding = BASE64
@@ -189,13 +188,13 @@ class NotifyEmail(Notify):
         from email.MIMEText import MIMEText
         from email.Utils import formatdate, formataddr
         body = self.hdf.render(self.template_name)
-        projname = self.config.get('project','name')
+        projname = self.config.get('project', 'name')
         public_cc = self.config.getbool('notification', 'allow_public_cc')
         headers = {}
         headers['X-Mailer'] = 'Trac %s, by Edgewall Software' % __version__
         headers['X-Trac-Version'] =  __version__
         headers['X-Trac-Project'] =  projname
-        headers['X-URL'] = self.config.get('project','url')
+        headers['X-URL'] = self.config.get('project', 'url')
         headers['Subject'] = self.subject
         headers['From'] = (projname, self.from_email)
         headers['Sender'] = self.from_email

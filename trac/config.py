@@ -41,9 +41,7 @@ class Configuration:
 
     def get(self, section, name, default=None):
         if not self.parser.has_option(section, name):
-            if default is None:
-                return self._defaults.get((section, name), '')
-            return default
+            return self._defaults.get((section, name)) or default or ''
         return self.parser.get(section, name)
 
     def getbool(self, section, name, default=None):

@@ -193,7 +193,7 @@ class Formatter(object):
         self._anchors = []
         self._open_tags = []
         self.href = absurls and env.abs_href or env.href
-        self._local = env.config.get('project', 'url', '') or env.abs_href.base
+        self._local = env.config.get('project', 'url') or env.abs_href.base
 
     def _get_db(self):
         if not self._db:
@@ -292,7 +292,7 @@ class Formatter(object):
 
     def _make_link(self, ns, target, match, label):
         # check first for an alias defined in trac.ini
-        ns = self.env.config.get('intertrac', ns.upper(), ns)
+        ns = self.env.config.get('intertrac', ns.upper()) or ns
         if ns in self.link_resolvers:
             return self.link_resolvers[ns](self, ns, target,
                                            util.escape(label, False))
@@ -304,13 +304,13 @@ class Formatter(object):
                    match
 
     def _make_intertrac_link(self, ns, target, label):
-        url = self.env.config.get('intertrac', ns.upper()+'.url')
+        url = self.env.config.get('intertrac', ns.upper() + '.url')
         if url:
-            name = self.env.config.get('intertrac', ns.upper()+'.title',
+            name = self.env.config.get('intertrac', ns.upper() + '.title',
                                        'Trac project %s' % ns)
             sep = target.find(':')
             if sep != -1:
-                url = '%s/%s/%s' % (url, target[:sep], target[sep+1:])
+                url = '%s/%s/%s' % (url, target[:sep], target[sep + 1:])
             else: 
                 url = '%s/search?q=%s' % (url, urllib.quote_plus(target))
             return self._make_ext_link(url, label, '%s in %s' % (target, name))
@@ -322,8 +322,8 @@ class Formatter(object):
             it_group = fullmatch.group('it_%s' % ns)
             if it_group:
                 alias = it_group.strip()
-                intertrac = self.env.config.get('intertrac', alias.upper(),
-                                                alias)
+                intertrac = self.env.config.get('intertrac', alias.upper()) or \
+                            alias
                 target = '%s:%s' % (ns, target[len(it_group):])
                 return self._make_intertrac_link(intertrac, target, label) or \
                        label

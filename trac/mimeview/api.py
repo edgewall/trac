@@ -291,7 +291,7 @@ class Mimeview(Component):
         return buf.getvalue()
 
     def max_preview_size(self):
-        return int(self.config.get('mimeviewer', 'max_preview_size', '262144'))
+        return int(self.config.get('mimeviewer', 'max_preview_size'))
 
     def get_charset(self, content='', mimetype=None):
         """Infer the character encoding from the `content` or the `mimetype`.
