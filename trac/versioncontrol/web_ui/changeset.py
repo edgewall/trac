@@ -193,8 +193,7 @@ class ChangesetModule(Component):
             idx += 1
 
         hidden_properties = [p.strip() for p
-                             in self.config.get('browser', 'hide_properties',
-                                                'svk:merge').split(',')]
+                             in self.config.get('browser', 'hide_properties').split(',')]
 
         for idx, path, kind, base_path, base_rev in edits:
             old_node = repos.get_node(base_path or path, base_rev)

@@ -192,7 +192,7 @@ class Formatter(object):
         self._anchors = []
         self._open_tags = []
         self.href = absurls and env.abs_href or env.href
-        self._local = env.config.get('project', 'url', '') or env.abs_href.base
+        self._local = env.config.get('project', 'url') or env.abs_href.base
 
     def _get_db(self):
         if not self._db:
