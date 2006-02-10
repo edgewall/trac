@@ -14,6 +14,8 @@
 #
 # Author: Jonas Borgström <jonas@edgewall.com>
 
+import re
+
 from trac import util
 from trac.core import *
 from trac.perm import IPermissionRequestor
@@ -93,11 +95,19 @@ class TicketSystem(Component):
             field = {'name': name, 'type': 'text', 'label': name.title()}
             fields.append(field)
 
-        custom_fields = self.get_custom_fields()
-        for field in custom_fields:
+        for field in self.get_custom_fields():
+            if field['name'] in [f['name'] for f in fields]:
+                self.log.warning('Duplicate field name "%s" (ignoring)',
+                                 field['name'])
+                continue
+            if not re.match('^[a-zA-Z][a-zA-Z0-9_]+$', field['name']):
+                self.log.warning('Invalid name for custom field: "%s" '
+                                 '(ignoring)', field['name'])
+                continue
             field['custom'] = True
+            fields.append(field)
 
-        return fields + custom_fields
+        return fields
 
     def get_custom_fields(self):
         fields = []
