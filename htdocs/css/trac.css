@@ -70,7 +70,9 @@ input[type=reset][disabled] {
 }
 input[type=text], input.textwidget, textarea { border: 1px solid #d7d7d7 }
 input[type=text], input.textwidget { padding: .25em .5em }
-input[type=text]:focus, textarea:focus { border: 1px solid #886 }
+input[type=text]:focus, input.textwidget:focus, textarea:focus {
+ border: 1px solid #886;
+}
 option { border-bottom: 1px dotted #d7d7d7 }
 fieldset { border: 1px solid #d7d7d7; padding: .5em; margin: 0 }
 fieldset.iefix { background: transparent; border: none; padding: 0; margin: 0 }
