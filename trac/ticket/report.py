@@ -334,9 +334,9 @@ class ReportModule(Component):
                 elif column[0] == '_':
                     value['hidehtml'] = 1
                     column = column[1:]
-                if column in ['id', 'ticket', '#', 'summary']:
+                if column in ('ticket', 'id', '_id', '#', 'summary'):
                     id_cols = [idx for idx, col in enumerate(cols)
-                               if col[0] in ('ticket', 'id')]
+                               if col[0] in ('ticket', 'id', '_id')]
                     if id_cols:
                         id_val = row[id_cols[0]]
                         value['ticket_href'] = self.env.href.ticket(id_val)
@@ -348,7 +348,7 @@ class ReportModule(Component):
                     value['rss'] = cell
                 elif column == 'report':
                     value['report_href'] = self.env.href.report(cell)
-                elif column in ['time', 'date','changetime', 'created', 'modified']:
+                elif column in ('time', 'date','changetime', 'created', 'modified'):
                     value['date'] = util.format_date(cell)
                     value['time'] = util.format_time(cell)
                     value['datetime'] = util.format_datetime(cell)

@@ -147,7 +147,7 @@
            <?cs call:report_cell('ticket',
                                  '<a title="View ticket" href="'+
                                  $cell.ticket_href+'">#'+$cell+'</a>') ?>
-         <?cs elif name(cell) == "summary" ?>
+         <?cs elif name(cell) == "summary" && cell.ticket_href ?>
            <?cs call:report_cell('summary', '<a title="View ticket" href="'+
                                  $cell.ticket_href+'">'+$cell+'</a>') ?>
          <?cs elif name(cell) == "report" ?>
