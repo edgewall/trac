@@ -58,11 +58,9 @@ class CGIRequest(Request):
             self.path_info = self.path_info[len(env_path):]
             self.cgi_location += env_path
 
-
-
     def _getFieldStorage(self):
         return TracFieldStorage(self.__input, environ=self.__environ,
-                                keep_blank_values=1)
+                                keep_blank_values=True)
 
     def read(self, len):
         return self.__input.read(len)
@@ -81,6 +79,7 @@ class CGIRequest(Request):
 
     def end_headers(self):
         self.write('\r\n')
+        self.__output.flush()
 
 
 class TracFieldStorage(cgi.FieldStorage):
