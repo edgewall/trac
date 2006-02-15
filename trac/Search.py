@@ -162,7 +162,7 @@ class SearchModule(Component):
             results = results[(page-1) * page_size: page * page_size]
 
             req.hdf['title'] = 'Search Results'
-            req.hdf['search.q'] = req.args.get('q').replace('"', "&#34;")
+            req.hdf['search.q'] = req.args.get('q')
             req.hdf['search.page'] = page
             req.hdf['search.n_hits'] = n
             req.hdf['search.n_pages'] = n_pages
@@ -170,14 +170,18 @@ class SearchModule(Component):
             if page < n_pages:
                 next_href = self.env.href.search(zip(filters,
                                                      ['on'] * len(filters)),
-                                                 q=query, page=page + 1)
+                                                 q=req.args.get('q'),
+                                                 page=page + 1)
                 add_link(req, 'next', next_href, 'Next Page')
             if page > 1:
                 prev_href = self.env.href.search(zip(filters,
                                                      ['on'] * len(filters)),
-                                                 q=query, page=page - 1)
+                                                 q=req.args.get('q'),
+                                                 page=page - 1)
                 add_link(req, 'prev', prev_href, 'Previous Page')
-            req.hdf['search.page_href'] = self.env.href.search(zip(filters, ['on'] * len(filters)), q=query)
+            req.hdf['search.page_href'] = self.env.href.search(zip(filters,
+                                                                   ['on'] * len(filters)),
+                                                               q=req.args.get('q'))
             req.hdf['search.result'] = [
                 { 'href': result[0],
                   'title': result[1],
