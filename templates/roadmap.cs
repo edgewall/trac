@@ -37,20 +37,22 @@
     </p><?cs
     with:stats = milestone.stats ?><?cs
      if:#stats.total_tickets > #0 ?>
-      <div class="progress">
-       <a class="closed" href="<?cs
-         var:milestone.queries.closed_tickets ?>" style="width: <?cs
-         var:#stats.percent_closed ?>%" title="<?cs
-         var:#stats.closed_tickets ?> of <?cs
-         var:#stats.total_tickets ?> ticket<?cs
-         if:#stats.total_tickets != #1 ?>s<?cs /if ?> closed"></a>
-       <a class="open" href="<?cs
-         var:milestone.queries.active_tickets ?>" style="width: <?cs
-         var:#stats.percent_active - 1 ?>%" title="<?cs
-         var:#stats.active_tickets ?> of <?cs
-         var:#stats.total_tickets ?> ticket<?cs
-         if:#stats.total_tickets != #1 ?>s<?cs /if ?> active"></a>
-      </div>
+      <table class="progress">
+       <tr>
+        <td class="closed" style="width: <?cs
+          var:#stats.percent_closed ?>%"><a href="<?cs
+          var:milestone.queries.closed_tickets ?>" title="<?cs
+          var:#stats.closed_tickets ?> of <?cs
+          var:#stats.total_tickets ?> ticket<?cs
+          if:#stats.total_tickets != #1 ?>s<?cs /if ?> closed"></a></td>
+        <td class="open" style="width: <?cs
+          var:#stats.percent_active ?>%"><a href="<?cs
+          var:milestone.queries.active_tickets ?>" title="<?cs
+          var:#stats.active_tickets ?> of <?cs
+          var:#stats.total_tickets ?> ticket<?cs
+          if:#stats.total_tickets != #1 ?>s<?cs /if ?> active"></a></td>
+       </tr>
+      </table>
       <p class="percent"><?cs var:#stats.percent_closed ?>%</p>
       <dl>
        <dt>Closed tickets:</dt>

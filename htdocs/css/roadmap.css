@@ -1,14 +1,26 @@
 /* General styles for the progress bars */
-div.progress { border: 1px solid #d7d7d7; float: left }
-div.progress :link, div.progress :visited {
- background: #fff;
+table.progress {
+ border: 1px solid #d7d7d7;
+ border-collapse: collapse;
+ border-spacing: 0;
+ float: left;
+ margin: 0;
+ padding: 0;
+ empty-cells: show;
+}
+table.progress a, table.progress :link, table.progress :visited,
+table.progress :link:hover, table.progress :visited:hover {
  border: none;
  display: block;
- float: left;
+ width: 100%;
  height: 1.2em;
+ padding: 0;
+ margin: 0;
+ text-decoration: none
 }
-div.progress :link:hover, div.progress :visited:hover { background: #fff }
-div.progress .closed:link, div.progress .closed:visited { background: #bae0ba }
+table.progress td { background: #fff; padding: 0 }
+table.progress td.closed { background: #bae0ba }
+table.progress td :hover { background: none }
 p.percent { font-size: 10px; line-height: 2.4em; margin: 0.9em 0 0 }
 
 /* Styles for the roadmap view */
@@ -58,8 +70,9 @@ li.milestone { list-style: none; margin-bottom: 4em }
 #stats th { text-align: right; text-transform: capitalize }
 #stats th :link, #stats th :visited { border: none }
 #stats td { padding-left: 0.5em; width: 100% }
-#stats td div.progress { margin: 3px 4px 3px 0 }
-#stats td p.percent { line-height: 1.2em; margin-top: .4em }
+#stats td table.progress { margin: 3px 4px 3px 0 }
+#stats td table.progress td { padding: 0 }
+#stats td p.percent { line-height: 1.2em; margin-top: 3px }
 
 /* Styles for the milestone edit form */
 #edit fieldset { margin: 1em 0 }
