@@ -248,8 +248,7 @@ class Chrome(Component):
                 else:
                     logo_src = href.chrome('common', logo_src)
             req.hdf['chrome.logo'] = {
-                'link': logo_link, 'src': logo_src,
-                'src_abs': logo_src_abs,
+                'link': logo_link, 'src': logo_src, 'src_abs': logo_src_abs,
                 'alt': self.config.get('header_logo', 'alt'),
                 'width': self.config.get('header_logo', 'width', ''),
                 'height': self.config.get('header_logo', 'height', '')
