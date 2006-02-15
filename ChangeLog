@@ -1,3 +1,15 @@
+Trac 0.9.4  (Feb 15, 2006)
+http://svn.edgewall.com/repos/trac/tags/trac-0.9.4
+
+ * Deletion of reports has been fixed.
+ * Various encoding issues with the timeline RSS feed have been fixed.
+ * Fixed a memory leak when syncing with the repository.
+ * Milestones in the roadmap are now ordered more intelligently.
+ * Fixed bugs: #1064, #1150, #2006, #2253, #2324, #2330, #2408, #2430,
+   #2431, #2459, #2544, #2459, #2481, #2485, #2536, #2544, #2553,
+   #2580, #2583, #2606, #2613, #2621, #2664, #2666, #2680, #2706,
+   #2707, #2735
+
 Trac 0.9.3  (Jan 8, 2006)
 http://svn.edgewall.com/repos/trac/tags/trac-0.9.3
 
