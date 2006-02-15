@@ -9,13 +9,15 @@
   <link><?cs var:base_host ?><?cs var:trac.href.timeline ?></link>
   <description>Trac Timeline</description>
   <language>en-us</language>
-  <generator>Trac v<?cs var:trac.version ?></generator>
-  <image>
-   <title><?cs var:project.name_encoded ?></title>
-   <url><?cs if:!header_logo.src_abs ?><?cs var:base_host ?><?cs /if ?><?cs
-    var:header_logo.src ?></url>
-   <link><?cs var:base_host ?><?cs var:trac.href.timeline ?></link>
-  </image><?cs
+  <generator>Trac v<?cs var:trac.version ?></generator><?cs
+  if:chrome.logo.src ?>
+   <image>
+    <title><?cs var:project.name_encoded ?></title>
+    <url><?cs if:!chrome.logo.src_abs ?><?cs var:base_host ?><?cs /if ?><?cs
+     var:chrome.logo.src ?></url>
+    <link><?cs var:base_host ?><?cs var:trac.href.timeline ?></link>
+   </image><?cs
+  /if ?><?cs
   each:event = timeline.events ?>
    <item>
     <title><?cs var:event.title ?></title><?cs
