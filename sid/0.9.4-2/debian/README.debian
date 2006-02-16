@@ -1,0 +1,102 @@
+Trac for Debian
+---------------
+
+This package, which was created initially by Jonas Borgstrom, has been updated
+for Debian unstable by Jesus Climent <jesus.climent@hispalinux.es> on July the
+22nd.
+
+Trac Installation Guide
+=======================
+The Trac web-based project management tool is implemented as a server side
+cgi-program. Trac is written in the Python programming language and uses SQLite
+as an embedded database. For HTML rendering, Trac uses the Clearsilver template
+system.
+
+Creating a Project Environment
+------------------------------
+Trac Environment is the backend storage format where Trac stores information
+like wiki pages, tickets, reports, settings, etc. A Trac environment consist of
+a directory containing an SQLite database, human-readable configuration file,
+log-files and attachments.
+
+Before create a Trac environment, you need to have a Subversion
+repository. This can be made with:
+
+    $ mkdir /path/to/repos
+    $ svnadmin create /path/to/repos
+
+A new Trac environment is created with trac-admin:
+
+    $ trac-admin /path/to/projectenv initenv
+
+NOTE: The web server user need write permission to the environment directory
+and all the files inside. After creating the environment you would need to 
+execute "chown -R www-data /path/to/projectenv" if trac-admin was executed as
+another user.
+
+trac-admin will ask you where your subversion repository is located and where
+it can find the trac templates directory (the default value should be fine).
+
+Configuring Apache
+------------------
+Copy (or symlink) "trac/cgi-bin/trac.cgi" to you web servers /cgi-bin/
+directory. You can also configure apache to use the "trac/cgi-bin/" directory
+directly if you like, it's a matter of taste.
+
+Finally edit the apache config and add this config snippet, with filenams
+edited to match your installation:
+
+Alias /trac/ "/usr/share/trac/htdocs/" #or where you installed the trac docs
+#You have to allow people to read the files in htdocs
+<Directory "/usr/share/trac/htdocs/">
+        Options Indexes MultiViews
+        AllowOverride None
+        Order allow,deny
+        Allow from all
+</Directory>
+
+
+# Trac need to know where the database is located
+<Location "/cgi-bin/trac.cgi">
+        SetEnv TRAC_ENV "/path/to/projectenv"
+</Location>
+
+# You need this to allow users to authenticate
+# trac.htpasswd can be created with 
+# cmd 'htpasswd -c trac.htpasswd' (UNIX)
+# do 'man htpasswd' to see all the options
+<Location "/cgi-bin/trac.cgi/login">
+        AuthType Basic
+        AuthName "trac"
+        AuthUserFile /somewhere/trac.htpasswd
+        Require valid-user
+</location>
+
+Note: When creating a new environment, trac-admin will print a config snippet
+customized for your project.
+
+Using Trac
+----------
+You should now have a working Trac installation at:
+
+http://<yourhostname>/cgi-bin/trac.cgi
+
+There you should be able to browse your subversion repository, create tickets,
+view the timeline etc. Keep in mind that anonymous users (not logged in) can
+only access a restricted subset of all Trac features.
+
+Please continue to TracPermissions to learn how to grant additional privileges
+to authenticated users.
+
+For further user-documentation, see TracGuide.
+
+Enjoy!
+
+/The Trac Team
+
+Please also consider joining the mailing list at
+<http://lists.edgewall.com/mailman/listinfo/trac/>.
+
+Visit the Trac open source project at <http://trac.edgewall.com/>
+
+Jonas Borgstrom <jonas@edgewall.com>, Sat, 22 May 2004 20:49:22 +0200
