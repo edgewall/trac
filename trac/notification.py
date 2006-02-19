@@ -75,8 +75,10 @@ class NotifyEmail(Notify):
     server = None
     email_map = None
     template_name = None
-    shortaddr_re = re.compile(r"([\w\d_\.\-])+\@(([\w\d\-])+\.)+([\w\d]{2,4})+")
-    longaddr_re = re.compile(r"^\s*(.*)\s+<([\w\d_\-\.]+\@(([\w\d\-])+\.)+([\w\d]{2,4})+)>\s*$");
+    addrfmt = r"[\w\d_\.\-]+\@(([\w\d\-])+\.)+([\w\d]{2,4})+"
+    shortaddr_re = re.compile(addrfmt)
+    longaddr_re = re.compile(r"^\s*(.*)\s+<(" + addrfmt + ")>\s*$");
+    nodomaddr_re = re.compile(r"[\w\d_\.\-]+")
 
     def __init__(self, env):
         Notify.__init__(self, env)
@@ -138,11 +140,6 @@ class NotifyEmail(Notify):
 
         Notify.notify(self, resid)
 
-    def get_email_addresses(self, txt):
-        import email.Utils
-        emails = [x[1] for x in  email.Utils.getaddresses([str(txt)])]
-        return filter(lambda x: x.find('@') > -1, emails)
-
     def format_header(self, name, email=None):
         from email.Header import Header
         try:
@@ -158,13 +155,29 @@ class NotifyEmail(Notify):
         for h in headers:
             msg[h] = self.encode_header(headers[h])
 
-    def get_smtp_address(self, fulladdr):
-        mo = NotifyEmail.shortaddr_re.search(fulladdr)
+    def get_smtp_address(self, address):
+        if not address:
+            return None
+        if address.find('@') == -1:
+            if self.email_map.has_key(address):
+                address = self.email_map[address]
+            elif NotifyEmail.nodomaddr_re.match(address):
+                if self.config.getbool('notification', 'allow_short_addr'):
+                    return address
+                domain = self.config.get('notification', 'smtp_default_domain')
+                if domain:
+                    address = "%s@%s" % (address, domain)
+                else:
+                    self.env.log.info("Email address w/o domain: %s" % address)
+                    return None
+        mo = NotifyEmail.shortaddr_re.search(address)
         if mo:
             return mo.group(0)
-        if start >= 0:
-            return fulladdr[start+1:-1]
-        return fulladdr
+        mo = NotifyEmail.longaddr_re.search(address)
+        if mo:
+            return mo.group(2)
+        self.env.log.info("Invalid email address: %s" % address)
+        return None
 
     def encode_header(self, value):
         if isinstance(value, tuple):
@@ -199,9 +212,25 @@ class NotifyEmail(Notify):
         headers['From'] = (projname, self.from_email)
         headers['Sender'] = self.from_email
         headers['Reply-To'] = self.replyto_email
-        headers['To'] = torcpts
+        # Format and remove invalid addresses
+        toaddrs = filter(lambda x: x, \
+                         [self.get_smtp_address(addr) for addr in torcpts])
+        ccaddrs = filter(lambda x: x, \
+                         [self.get_smtp_address(addr) for addr in ccrcpts])
+        # Remove duplicates
+        totmp = []
+        cctmp = []
+        for addr in toaddrs:
+            if addr not in totmp:
+                totmp.append(addr)
+        for addr in [c for c in ccaddrs if c not in totmp]:
+            if addr not in cctmp:
+                cctmp.append(addr)
+        (toaddrs, ccaddrs) = (totmp, cctmp)
+        if toaddrs:
+            headers['To'] = ', '.join(toaddrs)
         if public_cc:
-            headers['Cc'] = ccrcpts
+            headers['Cc'] = ', '.join(ccaddrs)
         headers['Date'] = formatdate()
         charset = 'utf-8'
         if not self._pref_encoding:
@@ -220,9 +249,7 @@ class NotifyEmail(Notify):
         msg.set_charset(self._charset)
         self.add_headers(msg, headers);
         self.add_headers(msg, mime_headers);
-        recipients = []
-        for r in torcpts + ccrcpts:
-            recipients.append(self.get_smtp_address(r))
+        recipients = toaddrs + ccaddrs
         self.env.log.debug("Sending SMTP notification to %s on port %d to %s"
                            % (self.smtp_server, self.smtp_port, recipients))
         msgtext = msg.as_string()

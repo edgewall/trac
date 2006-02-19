@@ -145,6 +145,8 @@ class EnvironmentStub(ComponentManager):
                                       ','.join(['%s' for c in cols])),
                                    vals)
             self.db.commit()
+            
+        self.known_users = []
 
     def component_activated(self, component):
         component.env = self
@@ -163,7 +165,7 @@ class EnvironmentStub(ComponentManager):
         return None
 
     def get_known_users(self, db):
-        return []
+        return self.known_users
 
 
 def suite():

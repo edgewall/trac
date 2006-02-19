@@ -524,6 +524,101 @@ class NotificationTestCase(unittest.TestCase):
             self.failIf(rcpt in to)
             # Check the message has actually been sent to the recipients
             self.failIf(rcpt not in rcptlist)
+            
+    def test_short_login(self):
+        """ Validate no qualified addresses """        
+        def _test_short_login(enabled):
+            ticket = Ticket(self.env)
+            ticket['reporter'] = 'joeuser'
+            ticket['summary'] = 'This is a summary'
+            ticket.insert()
+            # Be sure that at least one email address is valid, so that we 
+            # send a notification even if other addresses are not valid
+            self.env.config.set('notification', 'smtp_always_cc', \
+                                'joe.bar@example.net')
+            if enabled:
+                self.env.config.set('notification', 'allow_short_addr', 'true')
+            tn = TicketNotifyEmail(self.env)
+            tn.notify(ticket, newticket=True)
+            message = notifysuite.smtpd.get_message()
+            (headers, body) = self.parse_message(message)
+            # Msg should not have a 'To' header
+            if not enabled:
+                self.failIf('To' in headers)
+            else:
+                tolist = [addr.strip() for addr in headers['To'].split(',')]
+            # Msg should have a 'Cc' field
+            self.failIf('Cc' not in headers)
+            cclist = [addr.strip() for addr in headers['Cc'].split(',')]
+            if enabled:
+                # Msg should be delivered to the reporter
+                self.failIf(ticket['reporter'] not in tolist)
+            else:
+                # Msg should not be delivered to joeuser
+                self.failIf(ticket['reporter'] in cclist)
+            # Msg should still be delivered to the always_cc list
+            self.failIf(self.env.config.get('notification', 'smtp_always_cc') \
+                        not in cclist)
+        # Validate with and without the short addr option enabled
+        for enable in [False, True]:
+            _test_short_login(enable)
+
+    def test_default_domain(self):
+        """ Validate support for default domain """
+        def _test_default_domain(enabled):
+            self.env.config.set('notification', 'always_notify_owner', 'false')
+            self.env.config.set('notification', 'always_notify_reporter', 'false')
+            self.env.config.set('notification', 'smtp_always_cc', '')
+            ticket = Ticket(self.env)
+            ticket['cc'] = 'joenodom, joewithdom@example.com'
+            ticket['summary'] = 'This is a summary'
+            ticket.insert()
+            # Be sure that at least one email address is valid, so that we 
+            # send a notification even if other addresses are not valid
+            self.env.config.set('notification', 'smtp_always_cc', \
+                                'joe.bar@example.net')
+            if enabled:
+                self.env.config.set('notification', 'smtp_default_domain', 'example.org')
+            tn = TicketNotifyEmail(self.env)
+            tn.notify(ticket, newticket=True)
+            message = notifysuite.smtpd.get_message()
+            (headers, body) = self.parse_message(message)
+            # Msg should always have a 'Cc' field
+            self.failIf('Cc' not in headers)
+            cclist = [addr.strip() for addr in headers['Cc'].split(',')]
+            self.failIf('joewithdom@example.com' not in cclist)
+            self.failIf('joe.bar@example.net' not in cclist)
+            if not enabled:
+                self.failIf(len(cclist) != 2)
+                self.failIf('joenodom' in cclist)
+            else:
+                self.failIf(len(cclist) != 3)
+                self.failIf('joenodom@example.org' not in cclist)
+
+        # Validate with and without a default domain
+        for enable in [False, True]:
+            _test_default_domain(enable)
+
+    def test_email_map(self):
+        """ Validate login-to-email map """
+        self.env.config.set('notification', 'always_notify_owner', 'false')
+        self.env.config.set('notification', 'always_notify_reporter', 'true')
+        self.env.config.set('notification', 'smtp_always_cc', 'joe@example.com')
+        self.env.known_users = [('joeuser', 'Joe User', 'user-joe@example.com')]
+        ticket = Ticket(self.env)
+        ticket['reporter'] = 'joeuser'
+        ticket['summary'] = 'This is a summary'
+        ticket.insert()
+        tn = TicketNotifyEmail(self.env)
+        tn.notify(ticket, newticket=True)
+        message = notifysuite.smtpd.get_message()
+        (headers, body) = self.parse_message(message)
+        # Msg should always have a 'To' field
+        self.failIf('To' not in headers)
+        tolist = [addr.strip() for addr in headers['To'].split(',')]
+        # 'To' list should have been resolved to the real email address
+        self.failIf('user-joe@example.com' not in tolist)
+        self.failIf('joeuser' in tolist)
 
     def test_mimebody_b64(self):
         """ Validate MIME Base64/utf-8 encoding """

@@ -173,31 +173,8 @@ class TicketNotifyEmail(NotifyEmail):
         acc = self.config.get('notification', 'smtp_always_cc')
         if acc:
             ccrecipients += acc.replace(',', ' ').split()
-
-        # now convert recipients into email addresses where necessary
-        toemails = []
-        ccemails = []
-        for recipient in torecipients:
-            if recipient.find('@') >= 0:
-                toemails.append(recipient)
-            elif self.email_map.has_key(recipient):
-                toemails.append(self.email_map[recipient])
-        for recipient in ccrecipients:
-            if recipient.find('@') >= 0:
-                ccemails.append(recipient)
-            elif self.email_map.has_key(recipient):
-                ccemails.append(self.email_map[recipient])
-
-        # Remove duplicates
-        toresult = []
-        ccresult = []
-        for e in toemails:
-            if e not in toresult:
-                toresult.append(e)
-        for e in [c for c in ccemails if c not in toresult]:
-            if e not in ccresult:
-                ccresult.append(e)
-        return (toresult, ccresult)
+            
+        return (torecipients, ccrecipients)
 
     def get_message_id(self, rcpt, modtime=0):
         """Generate a predictable, but sufficiently unique message ID."""
