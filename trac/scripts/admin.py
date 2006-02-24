@@ -99,7 +99,7 @@ class TracAdmin(cmd.Cmd):
     def run(self):
         self.interactive = True
         print 'Welcome to trac-admin %(ver)s\n'                \
-              'Interactive Trac adminstration console.\n'       \
+              'Interactive Trac administration console.\n'       \
               '%(copy)s\n\n'                                    \
               "Type:  '?' or 'help' for help on commands.\n" %  \
               {'ver':trac.__version__,'copy':__copyright__}
