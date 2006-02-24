@@ -179,12 +179,14 @@ class ReStructuredTextRenderer(Component):
         
         def code_role(name, rawtext, text, lineno, inliner, options={},
                       content=[]):
-            args  = text.split(":",1)
-            language = args[0]
-            if len(args)==2:
-                text = args[1]
-            else:
-                text = ""
+            language = options.get('language')
+            if not language:
+                args  = text.split(':', 1)
+                language = args[0]
+                if len(args) == 2:
+                    text = args[1]
+                else:
+                    text = ''
             reference = code_formatter(language, text)
             return [reference], []
         
@@ -210,7 +212,7 @@ class ReStructuredTextRenderer(Component):
             0) # True if final argument may contain whitespace.
     
         # A mapping from option name to conversion function.
-        code_block.options = {
+        code_role.options = code_block.options = {
             'language' :
             rst.directives.unchanged # Return the text argument, unchanged
         }
