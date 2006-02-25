@@ -65,7 +65,7 @@ class SingletonExtensionPoint(property):
             if impl.__class__.__name__ == cfgvalue:
                 return impl
         if self.default is not None:
-            return self.default
+            return self.default(component.env)
         raise AttributeError('Cannot find an implementation of the "%s" '
                              'interface named "%s".  Please update your '
                              'trac.ini setting "%s.%s"'
