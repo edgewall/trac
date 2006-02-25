@@ -27,7 +27,7 @@ from trac import util
 from trac.core import *
 from trac.mimeview import Mimeview, is_binary
 from trac.perm import IPermissionRequestor
-from trac.Search import ISearchSource, query_to_sql, shorten_result
+from trac.Search import ISearchSource, search_to_sql, shorten_result
 from trac.Timeline import ITimelineEventProvider
 from trac.versioncontrol import Changeset, Node
 from trac.versioncontrol.diff import get_diff_options, hdf_diff, unified_diff
@@ -651,12 +651,12 @@ class ChangesetModule(Component):
         if req.perm.has_permission('CHANGESET_VIEW'):
             yield ('changeset', 'Changesets')
 
-    def get_search_results(self, req, query, filters):
+    def get_search_results(self, req, terms, filters):
         if not 'changeset' in filters:
             return
         authzperm = SubversionAuthorizer(self.env, req.authname)
         db = self.env.get_db_cnx()
-        sql, args = query_to_sql(db, query, 'message||author')
+        sql, args = search_to_sql(db, ['message', 'author'], terms)
         cursor = db.cursor()
         cursor.execute("SELECT rev,time,author,message "
                        "FROM revision WHERE " + sql, args)
@@ -665,7 +665,7 @@ class ChangesetModule(Component):
                 continue
             yield (self.env.href.changeset(rev),
                    '[%s]: %s' % (rev, util.shorten_line(log)),
-                   date, author, shorten_result(log, query.split()))
+                   date, author, shorten_result(log, terms))
 
 
 class AnyDiffModule(Component):

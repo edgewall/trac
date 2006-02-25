@@ -22,7 +22,7 @@ import StringIO
 from trac.attachment import attachment_to_hdf, Attachment
 from trac.core import *
 from trac.perm import IPermissionRequestor
-from trac.Search import ISearchSource, query_to_sql, shorten_result
+from trac.Search import ISearchSource, search_to_sql, shorten_result
 from trac.Timeline import ITimelineEventProvider
 from trac.util import format_datetime, get_reporter_id, pretty_timedelta, \
                       shorten_line, Markup
@@ -387,11 +387,11 @@ class WikiModule(Component):
         if req.perm.has_permission('WIKI_VIEW'):
             yield ('wiki', 'Wiki')
 
-    def get_search_results(self, req, query, filters):
+    def get_search_results(self, req, terms, filters):
         if not 'wiki' in filters:
             return
         db = self.env.get_db_cnx()
-        sql_query, args = query_to_sql(db, query, 'w1.name||w1.author||w1.text')
+        sql_query, args = search_to_sql(db, ['w1.name', 'w1.author', 'w1.text'], terms)
         cursor = db.cursor()
         cursor.execute("SELECT w1.name,w1.time,w1.author,w1.text "
                        "FROM wiki w1,"
@@ -404,4 +404,4 @@ class WikiModule(Component):
             yield (self.env.href.wiki(name),
                    '%s: %s' % (name, shorten_line(text)),
                    date, author,
-                   shorten_result(text, query.split()))
+                   shorten_result(text, terms))

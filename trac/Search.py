@@ -38,10 +38,10 @@ class ISearchSource(Interface):
         name, and `label` is a human-readable name for display.
         """
 
-    def get_search_results(self, req, query, filters):
+    def get_search_results(self, req, terms, filters):
         """
-        Return a list of search results matching `query`. The `filters`
-        parameters is a list of the enabled
+        Return a list of search results matching each search term in `terms`.
+        The `filters` parameters is a list of the enabled
         filters, each item being the name of the tuples returned by
         `get_search_events`.
 
@@ -50,17 +50,37 @@ class ISearchSource(Interface):
         """
 
 
-def query_to_sql(db, q, name):
+def search_terms(q):
+    """
+    Break apart a search query into its various search terms.  Terms are
+    grouped implicitly by word boundary, or explicitly by (single or double)
+    quotes.
+    """
+    results = []
+    for term in re.split('(".*?")|(\'.*?\')|(\s+)', q):
+        if term != None and term.strip() != '':
+            if term[0] == term[-1] == "'" or term[0] == term[-1] == '"':
+                term = term[1:-1]
+            results.append(term)
+    return results
+
+def search_to_sql(db, columns, terms):
     """
     Convert a search query into a SQL condition string and corresponding
     parameters. The result is returned as a (string, params) tuple.
     """
-    if q[0] == q[-1] == "'" or q[0] == q[-1] == '"':
-        keywords = [q[1:-1]]
-    else:
-        keywords = q.split(' ')
-    c = ["%s %s %%s" % (name, db.like())] * len(keywords)
-    return ' AND '.join(c), ['%'+k+'%' for k in keywords]
+    if len(columns) < 1 or len(terms) < 1:
+        raise TracError('Empty search attempt, this should really not happen.')
+
+    likes = [r"%s %s %%s ESCAPE '_'" % (i, db.like()) for i in columns]
+    c = ' OR '.join(likes)
+    sql = '(' + ') AND ('.join([c] * len(terms)) + ')'
+    args = []
+    escape_re = re.compile(r'([_%])')
+    for t in terms:
+        t = escape_re.sub(r'_\1', t) # escape LIKE syntax
+        args.extend(['%'+t+'%'] * len(columns)) 
+    return sql, tuple(args)
 
 def shorten_result(text='', keywords=[], maxlen=240, fuzz=60):
     if not text: text = ''
@@ -147,14 +167,15 @@ class SearchModule(Component):
                 req.redirect(redir)
             elif query.startswith('!'):
                 query = query[1:]
+            terms = search_terms(query)
             # Refuse queries that obviously would result in a huge result set
-            if len(query) < 3 and len(query.split()) == 1:
+            if len(terms) == 1 and len(terms[0]) < 3:
                 raise TracError('Search query too short. '
                                 'Query must be at least 3 characters long.',
                                 'Search Error')
             results = []
             for source in self.search_sources:
-                results += list(source.get_search_results(req, query, filters))
+                results += list(source.get_search_results(req, terms, filters))
             results.sort(lambda x,y: cmp(y[2], x[2]))
             page_size = self.RESULTS_PER_PAGE
             n = len(results)

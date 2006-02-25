@@ -20,7 +20,7 @@ from trac import util
 from trac.core import *
 from trac.perm import IPermissionRequestor
 from trac.wiki import IWikiSyntaxProvider, Formatter
-from trac.Search import ISearchSource, query_to_sql, shorten_result
+from trac.Search import ISearchSource, search_to_sql, shorten_result
 
 
 class TicketSystem(Component):
@@ -181,12 +181,13 @@ class TicketSystem(Component):
         if req.perm.has_permission('TICKET_VIEW'):
             yield ('ticket', 'Tickets')
 
-    def get_search_results(self, req, query, filters):
+    def get_search_results(self, req, terms, filters):
         if not 'ticket' in filters:
             return
         db = self.env.get_db_cnx()
-        sql, args = query_to_sql(db, query, 'b.newvalue')
-        sql2, args2 = query_to_sql(db, query, 'summary||keywords||description||reporter||cc')
+        sql, args = search_to_sql(db, ['b.newvalue'], terms)
+        sql2, args2 = search_to_sql(db, ['summary', 'keywords', 'description',
+                                         'reporter', 'cc'], terms)
         cursor = db.cursor()
         cursor.execute("SELECT DISTINCT a.summary,a.description,a.reporter, "
                        "a.keywords,a.id,a.time FROM ticket a "
@@ -197,5 +198,5 @@ class TicketSystem(Component):
             yield (self.env.href.ticket(tid),
                    '#%d: %s' % (tid, util.shorten_line(summary)),
                    date, author,
-                   shorten_result(desc, query.split()))
+                   shorten_result(desc, terms))
             
