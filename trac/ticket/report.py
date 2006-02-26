@@ -3,6 +3,7 @@
 # Copyright (C) 2003-2006 Edgewall Software
 # Copyright (C) 2003-2004 Jonas Borgström <jonas@edgewall.com>
 # Copyright (C) 2006 Christian Boos <cboos@neuf.fr>
+# Copyright (C) 2006 Matthew Good <trac@matt-good.net>
 # All rights reserved.
 #
 # This software is licensed as described in the file COPYING, which
@@ -25,6 +26,10 @@ from trac.web import IRequestHandler
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
 from trac.wiki import wiki_to_html, IWikiSyntaxProvider, Formatter
 
+try:
+    from cStringIO import StringIO
+except ImportError:
+    from StringIO import StringIO
 
 class ColumnSorter:
 
@@ -448,17 +453,35 @@ class ReportModule(Component):
 
     def sql_sub_vars(self, req, sql, args):
         values = []
-        def repl(match):
-            aname = match.group(1)
+        def add_value(aname):
             try:
                 arg = args[aname]
             except KeyError:
                 raise util.TracError("Dynamic variable '$%s' not defined." % aname)
             req.hdf['report.var.' + aname] = arg
             values.append(arg)
+
+        # simple parameter substitution outside literal
+        def repl(match):
+            add_value(match.group(1))
             return '%s'
 
-        return re.sub("'?\$([A-Z]+)'?", repl, sql), values
+        # inside a literal break it and concatenate with the parameter
+        def repl_literal(match):
+            add_value(match.group(1))
+            return "' || %s || '"
+
+        var_re = re.compile("[$]([A-Z]+)")
+        sql_io = StringIO()
+
+        # break SQL into literals and non-literals to handle replacing
+        # variables within them with query parameters
+        for expr in re.split("('(?:[^']|(?:''))*')", sql):
+            if expr.startswith("'"):
+                sql_io.write(var_re.sub(repl_literal, expr))
+            else:
+                sql_io.write(var_re.sub(repl, expr))
+        return sql_io.getvalue(), values
 
     def _render_csv(self, req, cols, rows, sep=','):
         req.send_response(200)
