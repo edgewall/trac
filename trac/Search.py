@@ -72,13 +72,13 @@ def search_to_sql(db, columns, terms):
     if len(columns) < 1 or len(terms) < 1:
         raise TracError('Empty search attempt, this should really not happen.')
 
-    likes = [r"%s %s %%s ESCAPE '_'" % (i, db.like()) for i in columns]
+    likes = [r"%s %s %%s ESCAPE '/'" % (i, db.like()) for i in columns]
     c = ' OR '.join(likes)
     sql = '(' + ') AND ('.join([c] * len(terms)) + ')'
     args = []
-    escape_re = re.compile(r'([_%])')
+    escape_re = re.compile(r'([/_%])')
     for t in terms:
-        t = escape_re.sub(r'_\1', t) # escape LIKE syntax
+        t = escape_re.sub(r'/\1', t) # escape LIKE syntax
         args.extend(['%'+t+'%'] * len(columns)) 
     return sql, tuple(args)
 
