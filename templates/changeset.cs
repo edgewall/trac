@@ -77,7 +77,7 @@
  <div><?cs 
   if:!changeset.chgset ?>
    <input type="hidden" name="old_path" value="<?cs var:changeset.old_path ?>" />
-   <input type="hidden" name="path" value="<?cs var:changeset.new_path ?>" />
+   <input type="hidden" name="new_path" value="<?cs var:changeset.new_path ?>" />
    <input type="hidden" name="old" value="<?cs var:changeset.old_rev ?>" />
    <input type="hidden" name="new" value="<?cs var:changeset.new_rev ?>" /><?cs
   /if ?>
