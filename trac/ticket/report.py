@@ -22,6 +22,7 @@ import urllib
 from trac import util
 from trac.core import *
 from trac.perm import IPermissionRequestor
+from trac.util import sorted
 from trac.web import IRequestHandler
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
 from trac.wiki import wiki_to_html, IWikiSyntaxProvider, Formatter
@@ -30,33 +31,6 @@ try:
     from cStringIO import StringIO
 except ImportError:
     from StringIO import StringIO
-
-class ColumnSorter:
-
-    def __init__(self, columnIndex, asc=1):
-        self.columnIndex = columnIndex
-        self.asc = asc
-
-    def sort(self, x, y):
-        const = -1
-        if not self.asc:
-            const = 1
-
-        # make sure to ignore case in comparisons
-        realX = x[self.columnIndex]
-        if isinstance(realX, (str, unicode)):
-            realX = realX.lower()
-        realY = y[self.columnIndex]
-        if isinstance(realY, (str, unicode)):
-            realY = realY.lower()
-
-        result = 0
-        if realX < realY:
-            result = const * 1
-        elif realX > realY:
-            result = const * -1
-
-        return result
 
 
 class ReportModule(Component):
@@ -309,12 +283,16 @@ class ReportModule(Component):
                 k = 'report.headers.%d.asc' % (colIndex - hiddenCols)
                 asc = req.args.get('asc', None)
                 if asc:
-                    sorter = ColumnSorter(colIndex, int(asc))
-                    req.hdf[k] = asc
+                    asc = int(asc) # string '0' or '1' to int/boolean
                 else:
-                    sorter = ColumnSorter(colIndex)
-                    req.hdf[k] = 1
-                rows.sort(sorter.sort)
+                    asc = 1
+                req.hdf[k] = asc
+                def sortkey(row):
+                    val = row[colIndex]
+                    if isinstance(val, basestring):
+                        val = val.lower()
+                    return val
+                rows = sorted(rows, key=sortkey, reverse=(not asc))
 
         # Convert the rows and cells to HDF-format
         row_idx = 0
