@@ -124,12 +124,14 @@ class NotifyEmail(Notify):
             return
         self.smtp_server = self.config.get('notification', 'smtp_server')
         self.smtp_port = int(self.config.get('notification', 'smtp_port'))
+        self.maxheaderlen = int(self.config.get('notification', \
+                                                'maxheaderlen', '78'))
         self.from_email = self.config.get('notification', 'smtp_from')
         self.replyto_email = self.config.get('notification', 'smtp_replyto')
         self.from_email = self.from_email or self.replyto_email
         if not self.from_email and not self.replyto_email:
-            raise TracError('Unable to send email due to identity crisis.<br />'
-                            'Both <b>notification.from</b> and'
+            raise TracError('Unable to send email due to identity crisis.'
+                            '<br />Both <b>notification.from</b> and'
                             ' <b>notification.reply_to</b> are unspecified'
                             ' in configuration.',
                             'SMTP Notification Error')
@@ -143,9 +145,10 @@ class NotifyEmail(Notify):
     def format_header(self, name, email=None):
         from email.Header import Header
         try:
-            name = unicode(name, 'ascii')
+            tmp = unicode(name, 'ascii')
+            name = Header(tmp, 'ascii', maxlinelen=self.maxheaderlen)
         except UnicodeDecodeError:
-            name = Header(name, self._charset)
+            name = Header(name, self._charset, maxlinelen=self.maxheaderlen)
         if not email:
             return name
         else:
@@ -159,6 +162,8 @@ class NotifyEmail(Notify):
         if not address:
             return None
         if address.find('@') == -1:
+            if address == 'anonymous':
+                return None
             if self.email_map.has_key(address):
                 address = self.email_map[address]
             elif NotifyEmail.nodomaddr_re.match(address):

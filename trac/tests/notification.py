@@ -1,4 +1,4 @@
-# -*- coding: iso8859-1 -*-
+# -*- coding: utf-8 -*-
 #
 # Copyright (C) 2005-2006 Edgewall Software
 # Copyright (C) 2005-2006 Emmanuel Blot <emmanuel.blot@free.fr>
@@ -327,6 +327,8 @@ def smtp_address(fulladdr):
 
 class NotificationTestCase(unittest.TestCase):
 
+    header_re = re.compile(r'^=\?(?P<charset>[\w\d\-]+)\?(?P<code>[qb])\?(?P<value>.*)\?=$')
+
     def setUp(self):
         self.env = EnvironmentStub(default_data=True)
         self.env.config.set('project',      'name', 'TracTest')
@@ -341,77 +343,6 @@ class NotificationTestCase(unittest.TestCase):
 
     def tearDown(self):
         notifysuite.tear_down()
-
-    def parse_message(self, msg):
-        """ Split a SMTP message into its headers and body.
-            Returns a (headers, body) tuple 
-            We do not use the email/MIME Python facilities here
-            as they may accept invalid RFC822 data, or data we do not
-            want to support nor generate """
-        headers = {}
-        lh = None
-        body = None
-        for line in msg.splitlines(True):
-            if body != None:
-                # append current line to the body
-                if line[-2] == CR:
-                    body += "%s\n" % line[0:-2]
-                else:
-                    body += line
-            else:
-                if line[-2] != CR:
-                    # RFC822 requires CRLF at end of field line
-                    raise AssertionError, "header field misses CRLF: %s (%d)" \
-                                          % (line, int(line[-2]))
-                # discards CR
-                line = line[0:-2]
-                if line.strip() == '':
-                    # end of headers, body starts
-                    body = '' 
-                else:
-                    val = None
-                    if line[0] in ' \t':
-                        # continution of the previous line
-                        if not lh:
-                            # previous line was not multiline
-                            raise AssertionError, \
-                                 "unexpected folded line: %s" % line
-                        val = line.strip(' \t')
-                        # appends the current line to the previous one
-                        if not isinstance(headers[lh], tuple):
-                            headers[lh] += val
-                        else:
-                            headers[lh][-1] = headers[lh][-1] + val
-                        if val[-1] != ',':
-                            # end of folding
-                            lh = None
-                    else:
-                        if lh:
-                            # a continuation line was expected
-                            raise AssertionError, \
-                                  "missing folded line: %s" % line
-                        # splits header name from value
-                        (h,v) = line.split(':',1)
-                        val = v.strip()
-                        if headers.has_key(h):
-                            if isinstance(headers[h], tuple):
-                                headers[h] += val
-                            else:
-                                headers[h] = (headers[h], val)
-                        else:
-                            headers[h] = val
-                        # although RFC822 does not require a comma at the end of
-                        # folded line, we want to check that only address lines
-                        # are folded - in such a case, it is recommended that
-                        # the line break appears right after the comma char.
-                        if val[-1] == ',':
-                            # line will be continued on the next line
-                            lh = h
-                        else:
-                            # single line
-                            lh = None
-        # returns the headers and the message body
-        return (headers, body)
 
     def test_recipients(self):
         """ Validate To/Cc recipients """
@@ -450,7 +381,7 @@ class NotificationTestCase(unittest.TestCase):
         tn = TicketNotifyEmail(self.env)
         tn.notify(ticket, newticket=True)
         message = notifysuite.smtpd.get_message()
-        (headers, body) = self.parse_message(message)
+        (headers, body) = self._parse_message(message)
         # checks for header existence
         self.failIf(not headers)
         # checks for body existance
@@ -484,7 +415,7 @@ class NotificationTestCase(unittest.TestCase):
         tn = TicketNotifyEmail(self.env)
         tn.notify(ticket, newticket=True)
         message = notifysuite.smtpd.get_message()
-        (headers, body) = self.parse_message(message)
+        (headers, body) = self._parse_message(message)
         self.failIf('Date' not in headers)
         mo = date_re.match(headers['Date'])
         self.failIf(not mo)
@@ -507,7 +438,7 @@ class NotificationTestCase(unittest.TestCase):
         tn = TicketNotifyEmail(self.env)
         tn.notify(ticket, newticket=True)
         message = notifysuite.smtpd.get_message()
-        (headers, body) = self.parse_message(message)
+        (headers, body) = self._parse_message(message)
         # Msg should not contain a CC list
         self.failIf('Cc' in headers)
         # Msg should nevertheless have a To list
@@ -541,7 +472,7 @@ class NotificationTestCase(unittest.TestCase):
             tn = TicketNotifyEmail(self.env)
             tn.notify(ticket, newticket=True)
             message = notifysuite.smtpd.get_message()
-            (headers, body) = self.parse_message(message)
+            (headers, body) = self._parse_message(message)
             # Msg should not have a 'To' header
             if not enabled:
                 self.failIf('To' in headers)
@@ -582,7 +513,7 @@ class NotificationTestCase(unittest.TestCase):
             tn = TicketNotifyEmail(self.env)
             tn.notify(ticket, newticket=True)
             message = notifysuite.smtpd.get_message()
-            (headers, body) = self.parse_message(message)
+            (headers, body) = self._parse_message(message)
             # Msg should always have a 'Cc' field
             self.failIf('Cc' not in headers)
             cclist = [addr.strip() for addr in headers['Cc'].split(',')]
@@ -612,13 +543,34 @@ class NotificationTestCase(unittest.TestCase):
         tn = TicketNotifyEmail(self.env)
         tn.notify(ticket, newticket=True)
         message = notifysuite.smtpd.get_message()
-        (headers, body) = self.parse_message(message)
+        (headers, body) = self._parse_message(message)
         # Msg should always have a 'To' field
         self.failIf('To' not in headers)
         tolist = [addr.strip() for addr in headers['To'].split(',')]
         # 'To' list should have been resolved to the real email address
         self.failIf('user-joe@example.com' not in tolist)
         self.failIf('joeuser' in tolist)
+
+    def test_multiline_header(self):
+        """ Validate encoded headers split into multiple lines """
+        self.env.config.set('notification','mime_encoding', 'qp')
+        ticket = Ticket(self.env)
+        ticket['reporter'] = 'joe.user@example.org'
+        # Forces non-ascii characters
+        summary = u'A very %s súmmäry' % u' '.join(['long'] * 20)
+        ticket['summary'] = summary.encode('utf-8')
+        try:
+            ticket.insert()
+            tn = TicketNotifyEmail(self.env)
+            tn.notify(ticket, newticket=True)
+        except Exception, e:
+            raise Exception, e
+        message = notifysuite.smtpd.get_message()
+        (headers, body) = self._parse_message(message)
+        # Discards the project name & ticket number
+        subject = headers['Subject']
+        summary = subject[subject.find(':')+2:]
+        self.failIf(summary != unicode(ticket['summary'], 'utf-8'))
 
     def test_mimebody_b64(self):
         """ Validate MIME Base64/utf-8 encoding """
@@ -627,8 +579,8 @@ class NotificationTestCase(unittest.TestCase):
         ticket['reporter'] = 'joe.user@example.org'
         ticket['summary'] = 'This is a summary'
         ticket.insert()
-        self.validate_mimebody((base64, 'base64', 'utf-8'), \
-                               ticket, True)
+        self._validate_mimebody((base64, 'base64', 'utf-8'), \
+                                ticket, True)
 
     def test_mimebody_qp(self):
         """ Validate MIME QP/utf-8 encoding """
@@ -637,8 +589,8 @@ class NotificationTestCase(unittest.TestCase):
         ticket['reporter'] = 'joe.user@example.org'
         ticket['summary'] = 'This is a summary'
         ticket.insert()
-        self.validate_mimebody((quopri, 'quoted-printable', 'utf-8'), \
-                               ticket, True)
+        self._validate_mimebody((quopri, 'quoted-printable', 'utf-8'), \
+                                ticket, True)
 
     def test_mimebody_none(self):
         """ Validate MIME None/ascii encoding """
@@ -647,15 +599,16 @@ class NotificationTestCase(unittest.TestCase):
         ticket['reporter'] = 'joe.user@example.org'
         ticket['summary'] = 'This is a summary'
         ticket.insert()
-        self.validate_mimebody((None, '7bit', 'ascii'), \
-                               ticket, True)
+        self._validate_mimebody((None, '7bit', 'ascii'), \
+                                ticket, True)
 
-    def validate_mimebody(self, mime, ticket, newtk):
+    def _validate_mimebody(self, mime, ticket, newtk):
+        """ Validate the body of a ticket notification message """
         (mime_decoder, mime_name, mime_charset) = mime
         tn = TicketNotifyEmail(self.env)
         tn.notify(ticket, newticket=newtk)
         message = notifysuite.smtpd.get_message()
-        (headers, body) = self.parse_message(message)
+        (headers, body) = self._parse_message(message)
         self.failIf('MIME-Version' not in headers)
         self.failIf('Content-Type' not in headers)
         self.failIf('Content-Transfer-Encoding' not in headers)
@@ -733,6 +686,78 @@ class NotificationTestCase(unittest.TestCase):
             self.failIf(not props.has_key(p))
             self.failIf(props[p] != ticket[p])
 
+    def _decode_header(self, header):
+        """ Decode a MIME-encoded header value """
+        mo = NotificationTestCase.header_re.match(header)
+        # header does not seem to be MIME-encoded
+        if not mo:
+            return header
+        # attempts to decode the hedear, 
+        # following the specified MIME endoding and charset
+        decoders = { 'q' : quopri, 'b' : base64 }
+        try:
+            decoder = decoders[mo.group('code').lower()]
+            val = decoder.decodestring(mo.group('value'), True)
+            header = unicode(val, mo.group('charset'))
+        except Exception, e:
+            raise AssertionError, e
+        return header
+
+    def _parse_message(self, msg):
+        """ Split a SMTP message into its headers and body.
+            Returns a (headers, body) tuple 
+            We do not use the email/MIME Python facilities here
+            as they may accept invalid RFC822 data, or data we do not
+            want to support nor generate """
+        headers = {}
+        lh = None
+        body = None
+        for line in msg.splitlines(True):
+            if body != None:
+                # append current line to the body
+                if line[-2] == CR:
+                    body += "%s\n" % line[0:-2]
+                else:
+                    body += line
+            else:
+                if line[-2] != CR:
+                    # RFC822 requires CRLF at end of field line
+                    raise AssertionError, "header field misses CRLF: %s (%d)" \
+                                          % (line, int(line[-2]))
+                # discards CR
+                line = line[0:-2]
+                if line.strip() == '':
+                    # end of headers, body starts
+                    body = '' 
+                else:
+                    val = None
+                    if line[0] in ' \t':
+                        # continution of the previous line
+                        if not lh:
+                            # unexpected multiline
+                            raise AssertionError, \
+                                 "unexpected folded line: %s" % line
+                        val = self._decode_header(line.strip(' \t'))
+                        # appends the current line to the previous one
+                        if not isinstance(headers[lh], tuple):
+                            headers[lh] += val
+                        else:
+                            headers[lh][-1] = headers[lh][-1] + val
+                    else:
+                        # splits header name from value
+                        (h,v) = line.split(':',1)
+                        val = self._decode_header(v.strip())
+                        if headers.has_key(h):
+                            if isinstance(headers[h], tuple):
+                                headers[h] += val
+                            else:
+                                headers[h] = (headers[h], val)
+                        else:
+                            headers[h] = val
+                        # stores the last header (for multilines headers)
+                        lh = h
+        # returns the headers and the message body
+        return (headers, body)
 
 class NotificationTestSuite(unittest.TestSuite):
     """ Thin test suite wrapper to start and stop the SMTP test server"""
