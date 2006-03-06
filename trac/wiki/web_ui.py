@@ -28,7 +28,7 @@ from trac.util import format_datetime, get_reporter_id, pretty_timedelta, \
                       shorten_line, Markup
 from trac.versioncontrol.diff import get_diff_options, hdf_diff
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
-from trac.web import IRequestHandler
+from trac.web import HTTPNotFound, IRequestHandler
 from trac.wiki.model import WikiPage
 from trac.wiki.formatter import wiki_to_html, wiki_to_oneliner
 
@@ -368,7 +368,7 @@ class WikiModule(Component):
             req.hdf['wiki.history_href'] = history_href
         else:
             if not req.perm.has_permission('WIKI_CREATE'):
-                raise TracError('Page %s not found' % page.name)
+                raise HTTPNotFound('Page %s not found', page.name)
             req.hdf['wiki.page_html'] = Markup('<p>Describe "%s" here</p>',
                                                page.name)
 

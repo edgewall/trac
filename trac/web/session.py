@@ -56,7 +56,7 @@ class Session(dict):
 
     def bake_cookie(self, expires=PURGE_AGE):
         self.req.outcookie[COOKIE_KEY] = self.sid
-        self.req.outcookie[COOKIE_KEY]['path'] = self.req.cgi_location
+        self.req.outcookie[COOKIE_KEY]['path'] = self.req.base_path
         self.req.outcookie[COOKIE_KEY]['expires'] = expires
 
     def get_session(self, sid, authenticated=False):

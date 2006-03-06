@@ -436,7 +436,6 @@ class QueryModule(Component):
             vals = req.args[field]
             if not isinstance(vals, (list, tuple)):
                 vals = [vals]
-            vals = map(lambda x: x.value, vals)
             if vals:
                 mode = req.args.get(field + '_mode')
                 if mode:

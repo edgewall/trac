@@ -97,6 +97,8 @@ def main():
         httpd.serve_forever()
     except OSError:
         sys.exit(1)
+    except KeyboardInterrupt:
+        pass
 
 if __name__ == '__main__':
     main()

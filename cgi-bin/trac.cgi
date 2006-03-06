@@ -18,16 +18,19 @@
 try:
     from trac.web import cgi_frontend
     cgi_frontend.run()
+
 except Exception, e:
-    print 'Content-Type: text/plain\r\n\r\n',
+    import sys
+    import traceback
+
+    print>>sys.stderr, e
+    traceback.print_exc(file=sys.stderr)
+
+    print 'Status: 500 Internal Server Error'
+    print 'Content-Type: text/plain'
+    print
     print 'Oops...'
     print
-    print 'Trac detected an internal error:'
+    print 'Trac detected an internal error:', e
     print
-    print e
-    print
-    import traceback
-    import StringIO
-    tb = StringIO.StringIO()
-    traceback.print_exc(file=tb)
-    print tb.getvalue()
+    traceback.print_exc(file=sys.stdout)

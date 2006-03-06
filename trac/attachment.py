@@ -20,13 +20,14 @@ import os
 import re
 import shutil
 import time
+import unicodedata
 import urllib
 
 from trac import perm, util
 from trac.core import *
 from trac.env import IEnvironmentSetupParticipant
 from trac.mimeview import *
-from trac.web import IRequestHandler
+from trac.web import HTTPBadRequest, IRequestHandler
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
 from trac.wiki import IWikiSyntaxProvider
 
@@ -246,9 +247,9 @@ class AttachmentModule(Component):
         parent_type = req.args.get('type')
         path = req.args.get('path')
         if not parent_type or not path:
-            raise TracError('Bad request')
+            raise HTTPBadRequest('Bad request')
         if not parent_type in ['ticket', 'wiki']:
-            raise TracError('Unknown attachment type')
+            raise HTTPBadRequest('Unknown attachment type')
 
         action = req.args.get('action', 'view')
         if action == 'new':
@@ -258,7 +259,7 @@ class AttachmentModule(Component):
             parent_id = '/'.join(segments[:-1])
             filename = segments[-1]
             if len(segments) == 1 or not filename:
-                raise TracError('Bad request')            
+                raise HTTPBadRequest('Bad request')
             attachment = Attachment(self.env, parent_type, parent_id, filename)
 
         if req.method == 'POST':
@@ -294,27 +295,24 @@ class AttachmentModule(Component):
             req.redirect(attachment.parent_href)
 
         upload = req.args['attachment']
-        if not upload.filename:
-            raise TracError, 'No file uploaded'
+        if not hasattr(upload, 'filename') or not upload.filename:
+            raise TracError('No file uploaded')
         if hasattr(upload.file, 'fileno'):
             size = os.fstat(upload.file.fileno())[6]
         else:
             size = upload.file.len
         if size == 0:
-            raise TracError, 'No file uploaded'
+            raise TracError('No file uploaded')
 
         filename = upload.filename.replace('\\', '/').replace(':', '/')
         filename = os.path.basename(filename)
-        assert filename, 'No file uploaded'
+        if not filename:
+            raise TracError('No file uploaded')
 
         # We try to normalize the filename to utf-8 NFC if we can.
         # Files uploaded from OS X might be in NFD.
-        import sys, unicodedata
-        if sys.version_info[0] > 2 or \
-           (sys.version_info[0] == 2 and sys.version_info[1] >= 3):
-           filename = unicodedata.normalize('NFC',
-                                            unicode(filename,
-                                                    'utf-8')).encode('utf-8')
+        filename = unicodedata.normalize('NFC',
+                                         unicode(filename, 'utf-8')).encode('utf-8')
 
         attachment.description = req.args.get('description', '')
         attachment.author = req.args.get('author', '')

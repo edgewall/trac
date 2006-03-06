@@ -14,30 +14,9 @@
 #
 # Author: Matthew Good <trac@matt-good.net>
 
-from trac.web.api import RequestDone
-from trac.web.cgi_frontend import CGIRequest
-from trac.web.main import dispatch_request, get_environment, \
-                          send_pretty_error, send_project_index
+from trac.web.main import dispatch_request
 
 import _fcgi
-import os
-import locale
 
 def run():
-    locale.setlocale(locale.LC_ALL, '')
-    _fcgi.Server(_handler).run()
-
-
-def _handler(_req):
-    req = CGIRequest(_req.params, _req.stdin, _req.stdout)
-    env = get_environment(req, os.environ)
-
-    if not env:
-        send_project_index(req, os.environ)
-        return _fcgi.FCGI_REQUEST_COMPLETE, 0
-
-    try:  
-        dispatch_request(req.path_info, req, env)
-    except Exception, e:
-        send_pretty_error(e, env, req)
-    return _fcgi.FCGI_REQUEST_COMPLETE, 0
+    _fcgi.WSGIServer(dispatch_request).run()
