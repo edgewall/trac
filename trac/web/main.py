@@ -200,7 +200,7 @@ def dispatch_request(environ, start_response):
                            options.get('TracEnvIndexTemplate'))
         environ.setdefault('trac.template_vars',
                            options.get('TracTemplateVars'))
-        environ.setdefault('trac.lo,le', options.get('TracLocale'))
+        environ.setdefault('trac.locale', options.get('TracLocale'))
     else:
         environ.setdefault('trac.env_path', os.getenv('TRAC_ENV'))
         environ.setdefault('trac.env_parent_dir',
