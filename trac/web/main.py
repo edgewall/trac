@@ -201,6 +201,18 @@ def dispatch_request(environ, start_response):
         environ.setdefault('trac.template_vars',
                            options.get('TracTemplateVars'))
         environ.setdefault('trac.locale', options.get('TracLocale'))
+
+        if 'TracUriRoot' in options:
+            # Special handling of SCRIPT_NAME/PATH_INFO for mod_python, which
+            # tends to get confused for whatever reason
+            root_uri = options['TracUriRoot'].rstrip('/')
+            request_uri = environ['REQUEST_URI'].split('?', 1)[0]
+            if not request_uri.startswith(root_uri):
+                raise ValueError('TracUriRoot set to %s but request URL '
+                                 'is %s' % (root_uri, request_uri))
+            environ['SCRIPT_NAME'] = root_uri
+            environ['PATH_INFO'] = request_uri[len(root_uri):]
+
     else:
         environ.setdefault('trac.env_path', os.getenv('TRAC_ENV'))
         environ.setdefault('trac.env_parent_dir',
