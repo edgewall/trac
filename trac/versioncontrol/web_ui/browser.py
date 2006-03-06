@@ -85,9 +85,9 @@ class BrowserModule(Component):
         req.hdf['browser'] = {
             'path': path,
             'revision': rev,
-            'props': dict([(name, value)
-                           for name, value in node.get_properties().items()
-                           if not name in hidden_properties]),
+            'props': [{'name': name, 'value': value}
+                      for name, value in node.get_properties().items()
+                      if not name in hidden_properties],
             'href': self.env.href.browser(path, rev=rev or
                                           repos.youngest_rev),
             'log_href': self.env.href.log(path, rev=rev or None),

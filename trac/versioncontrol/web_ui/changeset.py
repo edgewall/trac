@@ -368,7 +368,11 @@ class ChangesetModule(Component):
                 for k in hidden_properties:
                     if k in changed_props:
                         del changed_props[k]
-            return changed_props
+            changed_properties = []
+            for name, props in changed_props.iteritems():
+                props.update(name=name)
+                changed_properties.append(props)
+            return changed_properties
 
         mimeview = Mimeview(self.env)
 

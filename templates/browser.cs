@@ -93,8 +93,8 @@
    if:len(browser.props) ?><tr>
     <td colspan="2"><ul class="props"><?cs
      each:prop = browser.props ?>
-      <li>Property <strong><?cs var:name(prop) ?></strong> set to <em><code><?cs
-      var:prop ?></code></em></li><?cs
+      <li>Property <strong><?cs var:prop.name ?></strong> set to <em><code><?cs
+      var:prop.value ?></code></em></li><?cs
      /each ?>
     </ul></td><?cs
    /if ?></tr>

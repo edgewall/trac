@@ -207,7 +207,7 @@
    var:item.path.new ?></a></h2><?cs
    if:len(item.props) ?><ul class="props"><?cs
     each:prop = item.props ?><li>Property <strong><?cs
-     var:name(prop) ?></strong> <?cs
+     var:prop.name ?></strong> <?cs
      if:prop.old && prop.new ?>changed from <?cs
      elif:!prop.old ?>set<?cs
      else ?>deleted<?cs
