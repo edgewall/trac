@@ -1,24 +1,22 @@
+from Cookie import SimpleCookie as Cookie
+import time
+import unittest
+
 from trac.log import logger_factory
 from trac.test import EnvironmentStub, Mock
 from trac.util import TracError
 from trac.web.href import Href
 from trac.web.session import Session, PURGE_AGE, UPDATE_INTERVAL
 
-from Cookie import SimpleCookie as Cookie
-import time
-import unittest
-
 
 class SessionTestCase(unittest.TestCase):
-    """
-    Unit tests for the persistent session support.
-    """
+    """Unit tests for the persistent session support."""
 
     def setUp(self):
         self.env = EnvironmentStub()
         self.db = self.env.get_db_cnx()
 
-    def test_newsession(self):
+    def test_new_session(self):
         """
         Verify that a session cookie gets sent back to the client for a new
         session.
@@ -26,7 +24,7 @@ class SessionTestCase(unittest.TestCase):
         cookie = Cookie()
         req = Mock(incookie=Cookie(), outcookie=cookie, authname='anonymous',
                    base_path='/')
-        session = Session(self.env, req, newsession=True)
+        session = Session(self.env, req)
         self.assertEqual(session.sid, cookie['trac_session'].value)
         cursor = self.db.cursor()
         cursor.execute("SELECT COUNT(*) FROM session")
@@ -79,8 +77,7 @@ class SessionTestCase(unittest.TestCase):
         session.save()
 
         cursor.execute("SELECT sid,authenticated FROM session")
-        row = cursor.fetchone()
-        self.assertEqual(('john', 1), row)
+        self.assertEqual(('john', 1), cursor.fetchone())
         self.assertEqual(None, cursor.fetchone())
 
     def test_add_anonymous_session_var(self):

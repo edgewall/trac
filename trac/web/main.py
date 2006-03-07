@@ -35,14 +35,13 @@ from trac.web.session import Session
 try:
     import threading
 except ImportError:
-    has_threads = False
-else:
-    has_threads = True
-    env_cache = {}
-    env_cache_lock = threading.Lock()
+    import dummy_threading as threading
 
-def _open_environment(env_path, threaded=True):
-    if not has_threads or not threaded:
+env_cache = {}
+env_cache_lock = threading.Lock()
+
+def _open_environment(env_path, run_once=False):
+    if run_once:
         return open_environment(env_path)
 
     global env_cache, env_cache_lock
@@ -148,8 +147,7 @@ class RequestDispatcher(Component):
         req.hdf = HDFWrapper(loadpaths=chrome.get_all_templates_dirs())
         populate_hdf(req.hdf, self.env, req)
 
-        newsession = req.args.has_key('newsession')
-        req.session = Session(self.env, req, newsession)
+        req.session = Session(self.env, req)
 
         # Select the component that should handle the request
         chosen_handler = None
@@ -270,7 +268,7 @@ def dispatch_request(environ, start_response):
                                'options "TracEnv" or "TracEnvParentDir" are '
                                'missing. Trac requires one of these options '
                                'to locate the Trac environment(s).')
-    env = _open_environment(env_path, threaded=environ['wsgi.multithread'])
+    env = _open_environment(env_path, run_once=environ['wsgi.run_once'])
 
     base_url = env.config.get('trac', 'base_url')
     if base_url:
@@ -345,15 +343,16 @@ def send_project_index(environ, start_response, parent_dir=None,
             req.hdf[key] = val
 
     if parent_dir and not env_paths:
-        env_paths = dict([(filename, os.path.join(parent_dir, filename)) for filename
-                     in os.listdir(parent_dir)])
+        env_paths = dict([(filename, os.path.join(parent_dir, filename))
+                          for filename in os.listdir(parent_dir)])
 
     try:
         href = Href(req.base_path)
         projects = []
         for env_name, env_path in get_environments(environ).items():
             try:
-                env = _open_environment(env_path)
+                env = _open_environment(env_path,
+                                        run_once=environ['wsgi.run_once'])
                 proj = {
                     'name': env.config.get('project', 'name'),
                     'description': env.config.get('project', 'descr'),

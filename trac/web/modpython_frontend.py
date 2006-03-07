@@ -66,7 +66,7 @@ class ModPythonGateway(WSGIGateway):
                 elif name.lower() == 'content-type':
                     self.req.content_type = value
                 else:
-                    self.req.headers_out[name] = value
+                    self.req.headers_out.add(name, value)
 
     def _sendfile(self, fileobj):
         self._send_headers()
