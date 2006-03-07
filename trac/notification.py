@@ -124,8 +124,7 @@ class NotifyEmail(Notify):
             return
         self.smtp_server = self.config.get('notification', 'smtp_server')
         self.smtp_port = int(self.config.get('notification', 'smtp_port'))
-        self.maxheaderlen = int(self.config.get('notification', \
-                                                'maxheaderlen', '78'))
+        self.maxheaderlen = int(self.config.get('notification', 'maxheaderlen'))
         self.from_email = self.config.get('notification', 'smtp_from')
         self.replyto_email = self.config.get('notification', 'smtp_replyto')
         self.from_email = self.from_email or self.replyto_email
