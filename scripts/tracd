@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: iso8859-1 -*-
 #
-# Copyright (C) 2003, 2004, 2005 Edgewall Software
-# Copyright (C) 2003, 2004, 2005 Jonas Borgström <jonas@edgewall.com>
+# Copyright (C) 2003-2006 Edgewall Software
+# Copyright (C) 2003-2005 Jonas Borgström <jonas@edgewall.com>
 # All rights reserved.
 #
 # This software is licensed as described in the file COPYING, which
@@ -15,90 +15,6 @@
 #
 # Author: Jonas Borgström <jonas@edgewall.com>
 
-from trac.web.standalone import BasicAuth, DigestAuth, TracHTTPServer
-
-import getopt
-import locale
-import sys
-import os
-
-def usage():
-    print 'usage: %s [options] <projenv> [projenv] ...' % sys.argv[0]
-    print 'usage: %s [options] --env-parent-dir=[path]' % sys.argv[0]
-    print '\nOptions:\n'
-    print '-a --auth [project],[htdigest_file],[realm]'
-    print '--basic-auth [project],[htpasswd_file],[realm]'
-    print '-p --port [port]\t\tPort number to use (default: 80)'
-    print '-b --hostname [hostname]\tIP to bind to (default: \'\')'
-    print '-d --daemonize\tRun tracd in the background as a daemon'
-    print '-e --env-parent-dir <path>\tParent directory of the project environments'
-    print
-    sys.exit(1)
-
-def add_auth(auths, vals, cls):
-    info = vals.split(',', 3)
-    if len(info) != 3:
-        usage()
-    p, h, r = info
-    if auths.has_key(p):
-        print >>sys.stderr, 'Ignoring duplicate authentication option for ' \
-                            'project: %s' % p
-    else:
-        auths[p] = cls(h, r)
-
-def main():
-    locale.setlocale(locale.LC_ALL, '')
-    port = 80
-    hostname = ''
-    auths = {}
-    daemonize = 0
-    env_parent_dir = None
-    try:
-        opts, args = getopt.getopt(sys.argv[1:], "a:p:b:de:",
-                                   ["auth=", "port=", "hostname=","daemonize",
-                                    "env-parent-dir=", "basic-auth="])
-    except getopt.GetoptError, e:
-        print e
-        usage()
-
-    for o, a in opts:
-        if o in ("-a", "--auth"):
-            add_auth(auths, a, DigestAuth)
-        if o == '--basic-auth':
-            add_auth(auths, a, BasicAuth)
-        if o in ("-p", "--port"):
-            port = int(a)
-        elif o in ("-b", "--hostname"):
-            hostname = a
-        if o in ("-d","--daemonize"):
-            daemonize = 1
-        if o in ("-e", "--env-parent-dir"):
-            env_parent_dir = a
-
-    if not env_parent_dir and not args:
-        usage()
-
-    server_address = (hostname, port)
-    httpd = TracHTTPServer(server_address, env_parent_dir, args, auths)
-
-    try:
-        if daemonize:
-            pid=os.fork()
-            if pid == 0:
-                os.chdir(os.sep)
-                os.setpgrp()
-                # Redirect standard file descriptors
-                sys.stdin = open('/dev/null', 'r')
-                sys.stdout = open('/dev/null', 'w')
-                sys.stderr = open('/dev/null', 'w')
-            else:
-                print 'tracd daemon running with pid: %d' % pid
-                sys.exit(0)
-        httpd.serve_forever()
-    except OSError:
-        sys.exit(1)
-    except KeyboardInterrupt:
-        pass
-
 if __name__ == '__main__':
+    from trac.web.standalone import main
     main()

@@ -24,11 +24,7 @@ except ImportError:
     from base64 import decodestring as b64decode
 import md5
 import os
-import re
 import sys
-import time
-import socket, errno
-import urllib
 import urllib2
 from SocketServer import ThreadingMixIn
 
@@ -220,3 +216,94 @@ class TracHTTPRequestHandler(WSGIRequestHandler):
 
         gateway = self.server.gateway(self, environ)
         gateway.run(self.server.application)
+
+
+def daemonize(stdin='/dev/null', stdout='/dev/null', stderr='/dev/null'):
+    """Fork a daemon process (taken from the Python Cookbook)."""
+    # perform first fork
+    pid = os.fork()
+    if pid > 0:
+        sys.exit(0) # edit first parent
+
+    # decouple from parent environment
+    os.chdir('/')
+    os.umask(0)
+    os.setsid()
+
+    # perform second fork
+    pid = os.fork()
+    if pid > 0:
+        sys.exit(0) # edit first parent
+
+    # the projess is now daemonized, redirect standard file descriptors
+    for fileobj in sys.stdout, sys.stderr:
+        fileobj.flush()
+    stdin = file(stdin, 'r')
+    stdout = file(stdout, 'a+')
+    stderr = file(stderr, 'a+', 0)
+    os.dup2(stdin.fileno(), sys.stdin.fileno())
+    os.dup2(stdout.fileno(), sys.stdout.fileno())
+    os.dup2(stderr.fileno(), sys.stderr.fileno())
+
+def main():
+    from optparse import OptionParser
+    parser = OptionParser(usage='usage: %prog [options] [projenv] ...',
+                          version='%%prog %s' % __version__)
+
+    auths = {}
+    def _auth_callback(option, opt_str, value, parser, auths, cls):
+        info = value.split(',', 3)
+        if len(info) != 3:
+            usage()
+        env_name, filename, realm = info
+        if env_name in auths:
+            print >>sys.stderr, 'Ignoring duplicate authentication option for ' \
+                                'project: %s' % env_name
+        else:
+            auths[env_name] = cls(filename, realm)
+
+    parser.add_option('-a', '--auth', action='callback', type='string',
+                      metavar='DIGESTAUTH',
+                      callback=_auth_callback, callback_args=(auths, DigestAuth),
+                      help='[project],[htdigest_file],[realm]')
+    parser.add_option('--basic-auth', action='callback', type='string',
+                      metavar='BASICAUTH',
+                      callback=_auth_callback, callback_args=(auths, BasicAuth),
+                      help='[project],[htpasswd_file],[realm]')
+
+    parser.add_option('-p', '--port', action='store', type='int', dest='port',
+                      help='the port number to bind to')
+    parser.add_option('-b', '--hostname', action='store', dest='hostname',
+                      help='the host name or IP address to bind to')
+    parser.add_option('-e', '--env-parent-dir', action='store',
+                      dest='env_parent_dir', metavar='PARENTDIR',
+                      help='parent directory of the project environments')
+
+    if os.name == 'posix':
+        parser.add_option('-d', '--daemonize', action='store_true',
+                          dest='daemonize',
+                          help='run in the background as a daemon')
+
+    parser.set_defaults(port=80, hostname='', daemonize=False)
+    options, args = parser.parse_args()
+
+    if not args and not options.env_parent_dir:
+        parser.error('either the --env_parent_dir option or at least one '
+                     'environment must be specified')
+
+    server_address = (options.hostname, options.port)
+    httpd = TracHTTPServer(server_address, options.env_parent_dir, args, auths)
+
+    try:
+        if options.daemonize:
+            daemonize()
+
+        httpd.serve_forever()
+
+    except OSError:
+        sys.exit(1)
+    except KeyboardInterrupt:
+        pass
+
+if __name__ == '__main__':
+    main()
