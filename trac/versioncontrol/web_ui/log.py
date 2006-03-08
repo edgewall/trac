@@ -157,8 +157,8 @@ class LogModule(Component):
         
         req.hdf['log.items'] = info
 
-        changes = get_changes(self.env, repos, [i['rev'] for i in info],
-                              verbose, req, format)
+        revs = [i['rev'] for i in info]
+        changes = get_changes(self.env, repos, revs, verbose, req, format)
         if format == 'rss':
             # Get the email addresses of all known users
             email_map = {}
@@ -176,9 +176,15 @@ class LogModule(Component):
                 cs['author'] = author_email
                 cs['date'] = util.http_date(cs['date_seconds'])
         elif format == 'changelog':
-            for cs in changes.values():
+            for rev in revs:
+                changeset = repos.get_changeset(rev)
+                cs = changes[rev]
                 cs['message'] = '\n'.join(['\t' + m for m in
-                                           cs['message'].split('\n')])
+                                           changeset.message.split('\n')])
+                files = []
+                for path, kind, chg, bpath, brev in changeset.get_changes():
+                    files.append(chg == Changeset.DELETE and bpath or path)
+                cs['files'] = files
         req.hdf['log.changes'] = changes
 
         if req.args.get('format') == 'changelog':
