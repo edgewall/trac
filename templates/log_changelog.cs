@@ -5,10 +5,12 @@
 # <?cs var:trac.time ?>
 #
 <?cs each:item = $log.items ?>
-<?cs var:log.changes[item.rev].date ?> <?cs
-     var:log.changes[item.rev].author ?> [<?cs var:item.rev ?>]
-<?cs each:file = $log.changes[item.rev].files ?>
+<?cs with:changeset = log.changes[item.rev] ?>
+<?cs var:changeset.date ?> <?cs
+     var:changeset.author ?> [<?cs var:item.rev ?>]
+<?cs each:file = $changeset.files ?>
 	* <?cs var:file ?>:<?cs 
 /each ?>
-<?cs var:log.changes[item.rev].message ?>
+<?cs var:changeset.message ?>
+<?cs /with ?>
 <?cs /each ?>
