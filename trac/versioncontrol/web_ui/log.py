@@ -182,9 +182,12 @@ class LogModule(Component):
                 cs['message'] = '\n'.join(['\t' + m for m in
                                            changeset.message.split('\n')])
                 files = []
+                actions = []
                 for path, kind, chg, bpath, brev in changeset.get_changes():
                     files.append(chg == Changeset.DELETE and bpath or path)
+                    actions.append(chg)
                 cs['files'] = files
+                cs['actions'] = actions
         req.hdf['log.changes'] = changes
 
         if req.args.get('format') == 'changelog':
