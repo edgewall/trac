@@ -29,6 +29,9 @@ import sys
 import time
 import tempfile
 
+# Imports for backward compatibility
+from trac.core import TracError
+
 CRLF = '\r\n'
 
 try:
@@ -429,14 +432,6 @@ def parse_date(text):
     if seconds == None:
         raise ValueError, '%s is not a known date format.' % text
     return seconds
-
-
-class TracError(Exception):
-    def __init__(self, message, title=None, show_traceback=0):
-        Exception.__init__(self, message)
-        self.message = message
-        self.title = title
-        self.show_traceback = show_traceback
 
 
 class NaivePopen:

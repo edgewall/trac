@@ -16,10 +16,18 @@
 # Author: Jonas Borgström <jonas@edgewall.com>
 #         Christopher Lenz <cmlenz@gmx.de>
 
-from trac.util import TracError
-
 __all__ = ['Component', 'ExtensionPoint', 'SingletonExtensionPoint',
            'implements', 'Interface', 'TracError']
+
+
+class TracError(Exception):
+    """Exception base class for errors in Trac."""
+
+    def __init__(self, message, title=None, show_traceback=False):
+        Exception.__init__(self, message)
+        self.message = message
+        self.title = title
+        self.show_traceback = show_traceback
 
 
 class Interface(object):
