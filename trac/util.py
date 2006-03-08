@@ -207,9 +207,12 @@ class Markup(str):
 
             def handle_entityref(self, name):
                 if not self.waiting_for:
-                    if name not in ('amp', 'lt', 'gt', 'quot'):
-                        codepoint = htmlentitydefs.name2codepoint[name]
-                        buf.write(unichr(codepoint).encode('utf-8'))
+                    if name not in ('amp', 'apos', 'lt', 'gt', 'quot'):
+                        try:
+                            codepoint = htmlentitydefs.name2codepoint[name]
+                            buf.write(unichr(codepoint).encode('utf-8'))
+                        except KeyError:
+                            buf.write('&amp;%s;' % name)
                     else:
                         buf.write('&%s;' % name)
 

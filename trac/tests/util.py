@@ -79,6 +79,10 @@ class MarkupTestCase(unittest.TestCase):
         markup = Markup('<a href="#">fo<br>o</a>')
         self.assertEquals('<a href="#">fo<br />o</a>', markup.sanitize())
 
+    def test_sanitize_invalid_entity(self):
+        markup = Markup('&junk;')
+        self.assertEquals('&amp;junk;', markup.sanitize())
+
     def test_sanitize_remove_script_elem(self):
         markup = Markup('<script>alert("Foo")</script>')
         self.assertEquals('', markup.sanitize())
