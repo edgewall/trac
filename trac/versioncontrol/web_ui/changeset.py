@@ -375,6 +375,11 @@ class ChangesetModule(Component):
                 changed_properties.append(props)
             return changed_properties
 
+        def _estimate_changes(old_node, new_node):
+            old_size = old_node.get_content_length()
+            new_size = new_node.get_content_length()
+            return old_size + new_size
+
         mimeview = Mimeview(self.env)
 
         def _content_changes(old_node, new_node):
@@ -414,6 +419,18 @@ class ChangesetModule(Component):
             else:
                 return []
 
+        max_diff_bytes = int(self.config.get('changeset', 'max_diff_bytes'))
+        max_diff_files = int(self.config.get('changeset', 'max_diff_files'))
+        diff_bytes = diff_files = 0
+        if max_diff_bytes or max_diff_files:
+            for old_node, new_node, kind, change in get_changes():
+                if change == Changeset.EDIT and kind == Node.FILE:
+                    diff_files += 1
+                    diff_bytes += _estimate_changes(old_node, new_node)
+        show_diffs = (not max_diff_files or diff_files <= max_diff_files) and \
+                     (not max_diff_bytes or diff_bytes <= max_diff_bytes or \
+                      diff_files == 1)                      
+                
         idx = 0
         for old_node, new_node, kind, change in get_changes():
             if change != Changeset.EDIT:
@@ -425,15 +442,25 @@ class ChangesetModule(Component):
                 if props:
                     req.hdf['changeset.changes.%d.props' % idx] = props
                     show_entry = True
-                if kind == Node.FILE:
+                if kind == Node.FILE and show_diffs:
                     diffs = _content_changes(old_node, new_node)
                     if diffs != []:
                         if diffs:
                             req.hdf['changeset.changes.%d.diff' % idx] = diffs
                         # elif None (means: manually compare to (previous))
                         show_entry = True
-            if show_entry:
+            if show_entry or not show_diffs:
                 info = _change_info(old_node, new_node, change)
+                if change == Changeset.EDIT and not show_diffs:
+                    if chgset:
+                        diff_href = self.env.href.changeset(new_node.rev,
+                                                            new_node.path)
+                    else:
+                        diff_href = self.env.href.changeset(
+                            new_node.created_rev, new_node.created_path,
+                            old=old_node.created_rev,
+                            old_path=old_node.created_path)
+                    info['diff_href'] = diff_href                        
                 req.hdf['changeset.changes.%d' % idx] = info
             idx += 1 # the sequence should be immutable
 

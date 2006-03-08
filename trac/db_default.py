@@ -437,6 +437,8 @@ default_config = \
   ('timeline', 'default_daysback', '30'),
   ('timeline', 'changeset_show_files', '0'),
   ('timeline', 'ticket_show_details', 'false'),
+  ('changeset', 'max_diff_files', '1000'),
+  ('changeset', 'max_diff_bytes', '10000000'),
   ('browser', 'hide_properties', 'svk:merge'),
   ('wiki', 'ignore_missing_pages', 'false'),
 )

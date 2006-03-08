@@ -136,7 +136,9 @@
     var:item.browser_href.old ?>" title="Show original file (rev. <?cs
     var:item.rev.old ?>)"><?cs var:item.path.old ?></a>)</em></small><?cs
   /if ?><?cs
-  if:$ndiffs + $nprops > #0 ?>
+  if:item.diff_href ?>
+    (<a href="<?cs var:item.diff_href ?>" title="Show differences">view diffs</a>)<?cs
+  elif:$ndiffs + $nprops > #0 ?>
     (<a href="#file<?cs var:name(item) ?>" title="Show differences"><?cs
       if:$ndiffs > #0 ?><?cs var:ndiffs ?>&nbsp;diff<?cs if:$ndiffs > #1 ?>s<?cs /if ?><?cs 
       /if ?><?cs
