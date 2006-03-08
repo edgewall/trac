@@ -253,9 +253,10 @@ class ChangesetModule(Component):
             def get_changes():
                 old_node = new_node = None
                 for npath, kind, change, opath, orev in chgset.get_changes():
-                    if restricted and \
-                           not (npath.startswith(path)      # npath is below
-                                or path.startswith(npath)): # npath is above
+                    if (restricted and 
+                        not (npath == path or                # same path
+                             npath.startswith(path + '/') or # npath is below
+                             path.startswith(npath + '/'))): # npath is above
                         continue
                     if change != Changeset.ADD:
                         old_node = repos.get_node(opath, orev)
