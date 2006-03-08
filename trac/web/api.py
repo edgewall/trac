@@ -19,7 +19,6 @@ from Cookie import SimpleCookie as Cookie
 import cgi
 import mimetypes
 import os
-import re
 from StringIO import StringIO
 import sys
 import urlparse
@@ -57,6 +56,33 @@ for code in [code for code in HTTP_STATUS if code >= 400]:
         exc_name = exc_name[4:]
     setattr(sys.modules[__name__], 'HTTP' + exc_name, HTTPException(code))
 del code, exc_name
+
+
+class _RequestArgs(dict):
+    """Dictionary subclass that provides convenient access to request
+    parameters that may contain multiple values."""
+
+    def getfirst(self, name, default=None):
+        """Return the first value for the specified parameter, or `default` if
+        the parameter was not provided.
+        """
+        if name not in self:
+            return default
+        val = self[name]
+        if isinstance(val, list):
+            val = val[0]
+        return val
+
+    def getlist(self, name):
+        """Return a list of values for the specified parameter, even if only
+        one value was provided.
+        """
+        if name not in self:
+            return []
+        val = self[name]
+        if not isinstance(val, list):
+            val = [val]
+        return val
 
 
 class RequestDone(Exception):
@@ -114,7 +140,7 @@ class Request(object):
 
     def _parse_args(self):
         """Parse the supplied request parameters into a dictionary."""
-        args = {}
+        args = _RequestArgs()
 
         fp = self.environ['wsgi.input']
         ctype = self.get_header('Content-Type')
