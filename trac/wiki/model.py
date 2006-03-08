@@ -111,7 +111,7 @@ class WikiPage(object):
 
         if self.text != self.old_text:
             cursor = db.cursor()
-            cursor.execute("INSERT INTO WIKI (name,version,time,author,ipnr,"
+            cursor.execute("INSERT INTO wiki (name,version,time,author,ipnr,"
                            "text,comment,readonly) VALUES (%s,%s,%s,%s,%s,%s,"
                            "%s,%s)", (self.name, self.version + 1, t, author,
                            remote_addr, self.text, comment, self.readonly))

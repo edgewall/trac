@@ -677,7 +677,7 @@ class ChangesetModule(Component):
         return '<a class="changeset" title="%s" href="%s">%s</a>' \
                % (title, href, label)
     
-    # ISearchProvider methods
+    # ISearchSource methods
 
     def get_search_filters(self, req):
         if req.perm.has_permission('CHANGESET_VIEW'):
