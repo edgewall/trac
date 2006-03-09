@@ -256,7 +256,7 @@ def main():
         if len(info) != 3:
             raise OptionValueError("Incorrect number of parameters for %s"
                                    % option)
-        usage()
+
         env_name, filename, realm = info
         if env_name in auths:
             print >>sys.stderr, 'Ignoring duplicate authentication option for ' \
