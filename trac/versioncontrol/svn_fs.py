@@ -296,10 +296,22 @@ class SubversionRepository(Repository):
         return SubversionNode(path, rev, self.authz, self.scope, self.fs_ptr,
                               self.pool)
 
-    def _history(self, path, start, end, limit=None):
+    def _history(self, path, start, end, limit=None, pool=None):
         scoped_path = posixpath.join(self.scope[1:], path)
-        return _get_history(scoped_path, self.authz, self.fs_ptr, self.pool,
-                            start, end, limit)
+        return _get_history(scoped_path, self.authz, self.fs_ptr,
+                            pool or self.pool, start, end, limit)
+
+    def _previous_rev(self, rev, path='', pool=None):
+        if rev > 1: # don't use oldest here, as it's too expensive
+            try:
+                for _, prev in self._history(path, 0, rev-1, limit=1,
+                                             pool=pool):
+                    return prev
+            except (SystemError, # "null arg to internal routine" in 1.2.x
+                    core.SubversionException): # in 1.3.x
+                pass
+        return None
+    
 
     def get_oldest_rev(self):
         if self.oldest is None:
@@ -318,14 +330,7 @@ class SubversionRepository(Repository):
 
     def previous_rev(self, rev, path=''):
         rev = self.normalize_rev(rev)
-        if rev > 1: # don't use oldest here, as it's too expensive
-            try:
-                for _, prev in self._history(path, 0, rev-1, limit=1):
-                    return prev
-            except (SystemError, # "null arg to internal routine" in 1.2.x
-                    core.SubversionException): # in 1.3.x
-                pass
-        return None
+        return self._previous_rev(rev, path)
 
     def next_rev(self, rev, path='', find_initial_rev=False):
         rev = self.normalize_rev(rev)
@@ -373,14 +378,14 @@ class SubversionRepository(Repository):
                                          self.fs_ptr, subpool, 0, rev, limit):
                     older = (_path_within_scope(self.scope, p), r,
                              Changeset.ADD)
-                    rev = self.previous_rev(r)
+                    rev = self._previous_rev(r, pool=subpool)
                     if newer:
                         if older[0] == path:
                             # still on the path: 'newer' was an edit
                             yield newer[0], newer[1], Changeset.EDIT
                         else:
                             # the path changed: 'newer' was a copy
-                            rev = self.previous_rev(newer[1])
+                            rev = self._previous_rev(newer[1], pool=subpool)
                             # restart before the copy op
                             yield newer[0], newer[1], Changeset.COPY
                             older = (older[0], older[1], 'unknown')
@@ -391,7 +396,7 @@ class SubversionRepository(Repository):
                     yield older
             else:
                 expect_deletion = True
-                rev = self.previous_rev(rev)
+                rev = self._previous_rev(rev, pool=subpool)
 
     def get_changes(self, old_path, old_rev, new_path, new_rev,
                    ignore_ancestry=0):
