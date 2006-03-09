@@ -47,6 +47,16 @@ class MarkupTestCase(unittest.TestCase):
         assert isinstance(markup, Markup)
         self.assertEquals('foo<br />&lt;bar /&gt;<br /><baz />', markup)
 
+    def test_stripentities_all(self):
+        markup = Markup('&amp; &#106;').stripentities()
+        assert isinstance(markup, Markup)
+        self.assertEquals('& j', markup)
+
+    def test_stripentities_keepxml(self):
+        markup = Markup('<a href="#">fo<br />o</a>').striptags()
+        assert isinstance(markup, Markup)
+        self.assertEquals('foo', markup)
+
     def test_striptags_empty(self):
         markup = Markup('<br />').striptags()
         assert isinstance(markup, Markup)

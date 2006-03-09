@@ -79,6 +79,39 @@ class Markup(str):
     def join(self, seq):
         return Markup(str(self).join([Markup.escape(item) for item in seq]))
 
+    def stripentities(self, keepxmlentities=False):
+        """Return a copy of the text with any character or numeric entities
+        replaced by the equivalent UTF-8 characters.
+        
+        If the `keepxmlentities` parameter is provided and evaluates to `True`,
+        the core XML entities (&amp;, &apos;, &gt;, &lt; and &quot;).
+        
+        (Since Trac 0.10)
+        """
+        import htmlentitydefs
+        def _replace_entity(match):
+            if match.group(1): # numeric entity
+                ref = match.group(1)
+                if ref.startswith('x'):
+                    ref = int(ref[1:], 16)
+                else:
+                    ref = int(ref, 10)
+                return unichr(ref).encode('utf-8')
+            else: # character entity
+                ref = match.group(2)
+                if keepxmlentities and ref in ('amp', 'apos', 'gt', 'lt', 'quot'):
+                    return '&%s;' % ref
+                try:
+                    codepoint = htmlentitydefs.name2codepoint[ref]
+                    return unichr(codepoint).encode('utf-8')
+                except KeyError:
+                    if keepxmlentities:
+                        return '&amp;%s;' % ref
+                    else:
+                        return ref
+        return Markup(re.sub(r'&(?:#((?:\d+)|(?:[xX][0-9a-fA-F]+));?|(\w+);)',
+                             _replace_entity, self))
+
     def striptags(self):
         """Return a copy of the text with all XML/HTML tags removed."""
         return Markup(re.sub(r'<[^>]*?>', '', self))
@@ -112,6 +145,13 @@ class Markup(str):
                         .replace('&lt;', '<') \
                         .replace('&amp;', '&')
 
+    def plaintext(self, keeplinebreaks=True):
+        """Returns the text as a `str`with all entities and tags removed."""
+        text = self.striptags().stripentities()
+        if not keeplinebreaks:
+            text = text.replace('\n', ' ')
+        return text
+
     def sanitize(self):
         """Parse the text as HTML and return a cleaned up XHTML representation.
         
@@ -122,7 +162,6 @@ class Markup(str):
         underlying `HTMLParser` module, which should be handled by the caller of
         this function.
         """
-        import htmlentitydefs
         from HTMLParser import HTMLParser, HTMLParseError
         from StringIO import StringIO
 
@@ -207,14 +246,7 @@ class Markup(str):
 
             def handle_entityref(self, name):
                 if not self.waiting_for:
-                    if name not in ('amp', 'apos', 'lt', 'gt', 'quot'):
-                        try:
-                            codepoint = htmlentitydefs.name2codepoint[name]
-                            buf.write(unichr(codepoint).encode('utf-8'))
-                        except KeyError:
-                            buf.write('&amp;%s;' % name)
-                    else:
-                        buf.write('&%s;' % name)
+                    buf.write('&%s;' % name)
 
             def handle_data(self, data):
                 if not self.waiting_for:
@@ -228,19 +260,8 @@ class Markup(str):
                 if tag not in self.empty_tags:
                     buf.write('</' + tag + '>')
 
-        # Translate any character or entity references to the corresponding
-        # UTF-8 characters
-        def _ref2utf8(match):
-            ref = match.group(1)
-            if ref.startswith('x'):
-                ref = int(ref[1:], 16)
-            else:
-                ref = int(ref, 10)
-            return unichr(int(ref)).encode('utf-8')
-        text = re.sub(r'&#((?:\d+)|(?:[xX][0-9a-fA-F]+));?', _ref2utf8, self)
-
         sanitizer = HTMLSanitizer()
-        sanitizer.feed(text)
+        sanitizer.feed(self.stripentities(keepxmlentities=True))
         return Markup(buf.getvalue())
 
 
@@ -251,18 +272,6 @@ def unescape(text):
     if not isinstance(text, Markup):
         return text
     return text.unescape()
-
-ENTITIES = re.compile(r"&(\w+);")
-def rss_title(text):
-    if isinstance(text, Markup):
-        def replace_entity(match):
-            return match.group(1) in ('amp', 'lt', 'gt', 'apos', 'quot') \
-                   and match.group(0) or ''
-        return Markup(re.sub(ENTITIES, replace_entity,
-                             text.striptags().replace('\n', ' ')))
-    return text
-
-
 
 def to_utf8(text, charset='iso-8859-15'):
     """Convert a string to UTF-8, assuming the encoding is either UTF-8, ISO

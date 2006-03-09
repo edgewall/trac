@@ -20,7 +20,7 @@ import re
 import urllib
 
 from trac.util import escape, format_datetime, pretty_timedelta, shorten_line, \
-                      TracError, Markup, rss_title
+                      TracError, Markup
 from trac.wiki import wiki_to_html, wiki_to_oneliner
 
 __all__ = ['get_changes', 'get_path_links', 'get_path_rev_line',
@@ -40,7 +40,8 @@ def get_changes(env, repos, revs, full=None, req=None, format=None):
         else:
             message = shortlog
         if format == 'rss':
-            shortlog = rss_title(shortlog)
+            if isinstance(shortlog, Markup):
+                shortlog = shortlog.plaintext(keeplinebreaks=False)
             message = str(message)
         changes[rev] = {
             'date_seconds': changeset.date,
