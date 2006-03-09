@@ -246,7 +246,7 @@ def daemonize(stdin='/dev/null', stdout='/dev/null', stderr='/dev/null'):
     os.dup2(stderr.fileno(), sys.stderr.fileno())
 
 def main():
-    from optparse import OptionParser
+    from optparse import OptionParser, OptionValueError
     parser = OptionParser(usage='usage: %prog [options] [projenv] ...',
                           version='%%prog %s' % __version__)
 
@@ -254,7 +254,9 @@ def main():
     def _auth_callback(option, opt_str, value, parser, auths, cls):
         info = value.split(',', 3)
         if len(info) != 3:
-            usage()
+            raise OptionValueError("Incorrect number of parameters for %s"
+                                   % option)
+        usage()
         env_name, filename, realm = info
         if env_name in auths:
             print >>sys.stderr, 'Ignoring duplicate authentication option for ' \
