@@ -1,6 +1,6 @@
 import unittest
 
-from trac.tests import attachment, config, core, env, perm, util, notification
+from trac.tests import attachment, config, core, env, perm, notification
 
 def suite():
     suite = unittest.TestSuite()
@@ -9,7 +9,6 @@ def suite():
     suite.addTest(core.suite())
     suite.addTest(env.suite())
     suite.addTest(perm.suite())
-    suite.addTest(util.suite())
     suite.addTest(notification.suite())
     return suite
 
