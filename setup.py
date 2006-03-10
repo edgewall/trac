@@ -218,7 +218,7 @@ facilities.
       license=LICENSE,
       url=URL,
       packages=['trac', 'trac.db', 'trac.mimeview', 'trac.scripts',
-                'trac.ticket', 'trac.upgrades', 'trac.web',
+                'trac.ticket', 'trac.upgrades', 'trac.util', 'trac.web',
                 'trac.versioncontrol', 'trac.versioncontrol.web_ui', 
                 'trac.wiki'],
       data_files=[(_p('share/trac/templates'), glob('templates/*')),

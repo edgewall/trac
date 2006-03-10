@@ -158,3 +158,6 @@ class CachedChangeset(Changeset):
             kind = _kindmap[kind]
             change = _actionmap[change]
             yield path, kind, change, base_path, base_rev
+
+    def get_properties(self):
+        return []

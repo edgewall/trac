@@ -577,7 +577,8 @@ class TracAdmin(cmd.Cmd):
                 ('trac', 'repository_type', repository_type),
                 ('trac', 'repository_dir', repository_dir),
                 ('trac', 'templates_dir', templates_dir),
-                ('project', 'name', project_name)
+                ('project', 'name', project_name),
+                ('components', 'tracvc.%s' % repository_type, 'enabled')
             ]
             try:
                 self.__env = Environment(self.envname, create=True,

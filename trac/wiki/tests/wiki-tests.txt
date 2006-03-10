@@ -57,9 +57,9 @@ Paragraph
 ------------------------------
 <p>
 <a class="missing ticket" href="/ticket/1" rel="nofollow">#1</a>, <a class="report" href="/report/1">{1}</a>, <a class="missing ticket" href="/ticket/2" rel="nofollow">#2</a>
-<a class="missing changeset" href="/changeset/1" rel="nofollow">[1]</a>, <a class="missing changeset" href="/changeset/1" rel="nofollow">r1</a>
-<a class="missing changeset" href="/changeset/1/README.txt" rel="nofollow">[1/README.txt]</a>
-<a class="missing ticket" href="/ticket/12" rel="nofollow">#12</a>, <a class="missing changeset" href="/changeset/12" rel="nofollow">[12]</a>, <a class="missing changeset" href="/changeset/12" rel="nofollow">r12</a>, <a class="report" href="/report/12">{12}</a>
+<a class="missing changeset" title="No changeset" href="/changeset/1" rel="nofollow">[1]</a>, <a class="missing changeset" title="No changeset" href="/changeset/1" rel="nofollow">r1</a>
+<a class="missing changeset" title="No changeset" href="/changeset/1/README.txt" rel="nofollow">[1/README.txt]</a>
+<a class="missing ticket" href="/ticket/12" rel="nofollow">#12</a>, <a class="missing changeset" title="No changeset" href="/changeset/12" rel="nofollow">[12]</a>, <a class="missing changeset" title="No changeset" href="/changeset/12" rel="nofollow">r12</a>, <a class="report" href="/report/12">{12}</a>
 </p>
 ------------------------------
 ==============================
@@ -101,10 +101,10 @@ Issue [ticket:1], CS[changeset:1], Listing [report:1], File [source:foo/bar]
 ------------------------------
 <p>
 <a class="missing ticket" href="/ticket/1" rel="nofollow">ticket:1</a>, <a class="report" href="/report/1">report:1</a>, <a class="source" href="/browser/foo/bar">source:foo/bar</a>
-<a class="missing changeset" href="/changeset/1" rel="nofollow">changeset:1</a>, <a class="missing changeset" href="/changeset/1/README.txt" rel="nofollow">changeset:1/README.txt</a>
+<a class="missing changeset" title="No changeset" href="/changeset/1" rel="nofollow">changeset:1</a>, <a class="missing changeset" title="No changeset" href="/changeset/1/README.txt" rel="nofollow">changeset:1/README.txt</a>
 </p>
 <p>
-Issue <a class="missing ticket" href="/ticket/1" rel="nofollow">1</a>, CS<a class="missing changeset" href="/changeset/1" rel="nofollow">1</a>, Listing <a class="report" href="/report/1">1</a>, File <a class="source" href="/browser/foo/bar">foo/bar</a>
+Issue <a class="missing ticket" href="/ticket/1" rel="nofollow">1</a>, CS<a class="missing changeset" title="No changeset" href="/changeset/1" rel="nofollow">1</a>, Listing <a class="report" href="/report/1">1</a>, File <a class="source" href="/browser/foo/bar">foo/bar</a>
 </p>
 ------------------------------
 ==============================
@@ -121,7 +121,7 @@ Issue [ticket:1 number 1], CS[changeset:1], [foo:bar]
 [source:foo/bar source foo/bar], [http://www.edgewall.com/ edgewall]
 ------------------------------
 <p>
-<a class="missing ticket" href="/ticket/1" rel="nofollow">ticket 1</a>, <a class="missing changeset" href="/changeset/1" rel="nofollow">changeset 1</a>, <a class="report" href="/report/1">report 1</a>, 
+<a class="missing ticket" href="/ticket/1" rel="nofollow">ticket 1</a>, <a class="missing changeset" title="No changeset" href="/changeset/1" rel="nofollow">changeset 1</a>, <a class="report" href="/report/1">report 1</a>, 
 <a class="source" href="/browser/foo/bar">source foo/bar</a>, <a class="ext-link" href="http://www.edgewall.com/"><span class="icon"></span>edgewall</a>
 </p>
 ------------------------------
@@ -147,20 +147,20 @@ changeset:123>
 changeset:123&
 ------------------------------
 <p>
-Add-on to <a class="missing changeset" href="/changeset/123" rel="nofollow">changeset:123</a>:
+Add-on to <a class="missing changeset" title="No changeset" href="/changeset/123" rel="nofollow">changeset:123</a>:
 Some change.
 <a class="missing ticket" href="/ticket/1" rel="nofollow">ticket:1</a>
 This ticket is the first one
-<a class="missing changeset" href="/changeset/123" rel="nofollow">changeset:123</a>&gt;
-<a class="missing changeset" href="/changeset/123" rel="nofollow">changeset:123</a>&amp;
+<a class="missing changeset" title="No changeset" href="/changeset/123" rel="nofollow">changeset:123</a>&gt;
+<a class="missing changeset" title="No changeset" href="/changeset/123" rel="nofollow">changeset:123</a>&amp;
 </p>
 ------------------------------
-Add-on to <a class="missing changeset" href="/changeset/123" rel="nofollow">changeset:123</a>:
+Add-on to <a class="missing changeset" title="No changeset" href="/changeset/123" rel="nofollow">changeset:123</a>:
 Some change.
 <a class="missing ticket" href="/ticket/1" rel="nofollow">ticket:1</a>
 This ticket is the first one
-<a class="missing changeset" href="/changeset/123" rel="nofollow">changeset:123</a>&gt;
-<a class="missing changeset" href="/changeset/123" rel="nofollow">changeset:123</a>&amp;
+<a class="missing changeset" title="No changeset" href="/changeset/123" rel="nofollow">changeset:123</a>&gt;
+<a class="missing changeset" title="No changeset" href="/changeset/123" rel="nofollow">changeset:123</a>&amp;
 ==============================
 CamelCase AlabamA ABc AlaBamA FooBar
 ------------------------------
@@ -424,7 +424,7 @@ Other test:'''bold text''' is not bold
 Test:<br /> There should be a line break
 </p>
 <p>
-Change:<a class="missing changeset" href="/changeset/10" rel="nofollow">[10]</a> There should be a link to changeset <a class="missing changeset" href="/changeset/10" rel="nofollow">[10]</a>
+Change:<a class="missing changeset" title="No changeset" href="/changeset/10" rel="nofollow">[10]</a> There should be a link to changeset <a class="missing changeset" title="No changeset" href="/changeset/10" rel="nofollow">[10]</a>
 </p>
 <p>
 Other test:<strong>bold text</strong> is not bold
@@ -432,7 +432,7 @@ Other test:<strong>bold text</strong> is not bold
 ------------------------------
 Test:  There should be a line break
 
-Change:<a class="missing changeset" href="/changeset/10" rel="nofollow">[10]</a> There should be a link to changeset <a class="missing changeset" href="/changeset/10" rel="nofollow">[10]</a>
+Change:<a class="missing changeset" title="No changeset" href="/changeset/10" rel="nofollow">[10]</a> There should be a link to changeset <a class="missing changeset" title="No changeset" href="/changeset/10" rel="nofollow">[10]</a>
 
 Other test:<strong>bold text</strong> is not bold
 ==============================
@@ -935,14 +935,12 @@ trac:ticket:2041
 trac:changeset:2081
 [trac:changeset:2081 Trac r2081]
 [T2081]
-[trac2081]
 [trac 2081]
 ------------------------------
 <p>
 <a class="ext-link" href="http://projects.edgewall.com/trac/changeset/2081" title="changeset:2081 in Trac's Trac"><span class="icon"></span>trac:changeset:2081</a>
 <a class="ext-link" href="http://projects.edgewall.com/trac/changeset/2081" title="changeset:2081 in Trac's Trac"><span class="icon"></span>Trac r2081</a>
 <a class="ext-link" href="http://projects.edgewall.com/trac/changeset/2081" title="changeset:2081 in Trac's Trac"><span class="icon"></span>[T2081]</a>
-<a class="ext-link" href="http://projects.edgewall.com/trac/changeset/2081" title="changeset:2081 in Trac's Trac"><span class="icon"></span>[trac2081]</a>
 <a class="ext-link" href="http://projects.edgewall.com/trac/changeset/2081" title="changeset:2081 in Trac's Trac"><span class="icon"></span>[trac 2081]</a>
 </p>
 ------------------------------

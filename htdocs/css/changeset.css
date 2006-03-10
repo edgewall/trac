@@ -17,6 +17,11 @@
  width: .35em; 
 }
 
+#overview .changeset { padding: 0 0 1px }
+#overview dd.changeset p {
+ margin-bottom: 0;
+ margin-top: 0;
+}
 #overview .message { padding: 1em 0 1px }
 #overview dd.message p, #overview dd.message ul, #overview dd.message ol {
  margin-bottom: 1em;

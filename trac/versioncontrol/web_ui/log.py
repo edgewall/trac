@@ -26,6 +26,7 @@ from trac.web import IRequestHandler
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
 from trac.wiki import IWikiSyntaxProvider
 from trac.versioncontrol import Changeset
+from trac.versioncontrol.web_ui.changeset import ChangesetModule
 from trac.versioncontrol.web_ui.util import *
 
 LOG_LIMIT = 100
@@ -210,7 +211,8 @@ class LogModule(Component):
     # IWikiSyntaxProvider methods
     
     def get_wiki_syntax(self):
-        yield (r"!?\[\d+:\d+\]|(?:\b|!)r\d+:\d+\b",
+        yield (r"!?\[%s:%s\]|(?:\b|!)r%s:%s\b"
+               % ((ChangesetModule.CHANGESET_ID,) * 4),
                lambda x, y, z: self._format_link(x, 'log',
                                                  '#'+(y[0] == 'r' and y[1:]
                                                       or y[1:-1]), y))

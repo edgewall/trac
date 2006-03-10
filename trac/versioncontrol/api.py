@@ -297,6 +297,18 @@ class Changeset(object):
         self.author = author
         self.date = date
 
+    def get_properties(self):
+        """Generator that provide additional metadata for this changeset.
+
+        Each additional property is a 4 element tuple:
+         * `name` is the name of the property,
+         * `text` its value
+         * `wikiflag` indicates whether the `text` should be interpreted as
+            wiki text or not
+         * `htmlclass` enables to attach special formatting to the displayed
+            property, e.g. `'author'`, `'time'`, `'message'` or `'changeset'`.
+        """
+        
     def get_changes(self):
         """
         Generator that produces a (path, kind, change, base_rev, base_path)

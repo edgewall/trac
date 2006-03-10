@@ -158,6 +158,10 @@
   (<?cs alt:changeset.age ?>less than one hour<?cs /alt ?> ago)</dd>
  <dt class="author">Author:</dt>
  <dd class="author"><?cs var:changeset.author ?></dd>
+ <?cs each:prop = changeset.properties ?>
+ <dt class="<?cs var:prop.htmlclass ?>"><?cs var:prop.name ?>:</dt>
+ <dd class="<?cs var:prop.htmlclass ?>"><?cs var:prop.value ?></dd>
+ <?cs /each ?>
  <dt class="message">Message:</dt>
  <dd class="message" id="searchable"><?cs
   alt:changeset.message ?>&nbsp;<?cs /alt ?></dd><?cs
@@ -245,10 +249,10 @@
      <thead><tr>
       <th title="Revision <?cs var:item.rev.old ?>"><a href="<?cs
        var:item.browser_href.old ?>" title="Show old version of <?cs
-       var:item.path.old ?>">r<?cs var:item.rev.old ?></a></th>
+       var:item.path.old ?>">r<?cs var:item.shortrev.old ?></a></th>
       <th title="Revision <?cs var:item.rev.new ?>"><a href="<?cs
        var:item.browser_href.new ?>" title="Show new version of <?cs
-       var:item.path.new ?>">r<?cs var:item.rev.new ?></a></th>
+       var:item.path.new ?>">r<?cs var:item.shortrev.new ?></a></th>
       <th>&nbsp;</th></tr>
      </thead><?cs
      each:change = item.diff ?><?cs

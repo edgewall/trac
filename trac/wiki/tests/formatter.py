@@ -4,6 +4,7 @@ import StringIO
 import unittest
 
 from trac.core import *
+from trac.test import Mock
 from trac.wiki.formatter import Formatter, OneLinerFormatter
 from trac.wiki.api import IWikiMacroProvider
 
@@ -67,6 +68,10 @@ class WikiTestCase(unittest.TestCase):
                 component.log = self.log
             def get_db_cnx(self):
                 return db
+            def get_repository(self):
+                return Mock(get_changeset=lambda x: self._get_changeset(x))
+            def _get_changeset(self, x):
+                raise TracError("No changeset")
 
         # Load all the components that provide IWikiSyntaxProvider
         # implementations that are tested. Ideally those should be tested

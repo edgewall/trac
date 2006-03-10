@@ -271,13 +271,21 @@ class ChangesetModule(Component):
                     return 'Changeset %s' % rev
 
             title = _changeset_title(rev)
+            properties = []
+            for name, value, wikiflag, htmlclass in chgset.get_properties():
+                if wikiflag:
+                    value = wiki_to_html(value or '', self.env, req)
+                properties.append({'name': name, 'value': value,
+                                   'htmlclass': htmlclass})
+
             req.hdf['changeset'] = {
                 'revision': chgset.rev,
                 'time': util.format_datetime(chgset.date),
                 'age': util.pretty_timedelta(chgset.date, None, 3600),
                 'author': chgset.author or 'anonymous',
                 'message': wiki_to_html(chgset.message or '--', self.env, req,
-                                        escape_newlines=True)
+                                        escape_newlines=True),
+                'properties': properties
                 }
             oldest_rev = repos.oldest_rev
             if chgset.rev != oldest_rev:
@@ -334,6 +342,7 @@ class ChangesetModule(Component):
             if old_node:
                 info['path.old'] = old_node.path
                 info['rev.old'] = old_node.rev
+                info['shortrev.old'] = repos.short_rev(old_node.rev)
                 old_href = self.env.href.browser(old_node.created_path,
                                                  rev=old_node.created_rev)
                 # Reminder: old_node.path may not exist at old_node.rev
@@ -344,6 +353,7 @@ class ChangesetModule(Component):
             if new_node:
                 info['path.new'] = new_node.path
                 info['rev.new'] = new_node.rev # created rev.
+                info['shortrev.new'] = repos.short_rev(new_node.rev)
                 new_href = self.env.href.browser(new_node.created_path,
                                                  rev=new_node.created_rev)
                 # (same remark as above)
@@ -611,14 +621,16 @@ class ChangesetModule(Component):
 
     # IWikiSyntaxProvider methods
 
+    CHANGESET_ID = r"[a-fA-F\d]+"
+    
     def get_wiki_syntax(self):
         yield (
             # [...] form: start with optional intertrac: [T... or [trac ... 
-            r"!?\[(?P<it_changeset>%s\s*)?" % Formatter.INTERTRAC_SCHEME +
-            #  digits + optional path for the restricted changeset
-            r"\d+(?:/[^\]]*)?\]|"   
+            r"!?\[(?P<it_changeset>%s\s*)" % Formatter.INTERTRAC_SCHEME +
+            # hex digits + optional /path for the restricted changeset
+            r"%s(?:/[^\]]*)?\]|" % self.CHANGESET_ID +
             # r... form: allow r1 but not r1:2 (handled by the log syntax)
-            r"(?:\b|!)r\d+\b(?!:\d)",
+            r"(?:\b|!)r\d+\b(?!:\d+)", # no r[hexa] because of rfc:...
             lambda x, y, z:
             self._format_changeset_link(x, 'changeset',
                                         y[0] == 'r' and y[1:] or y[1:-1],
@@ -639,17 +651,16 @@ class ChangesetModule(Component):
             rev, path = chgset[:sep], chgset[sep:]
         else:
             rev, path = chgset, None
-        cursor = formatter.db.cursor()
-        cursor.execute('SELECT message FROM revision WHERE rev=%s', (rev,))
-        row = cursor.fetchone()
-        if row:
+        repos = self.env.get_repository()
+        try:
+            chgset = repos.get_changeset(rev)
             return '<a class="changeset" title="%s" href="%s">%s</a>' \
-                   % (util.escape(util.shorten_line(row[0])),
+                   % (util.escape(util.shorten_line(chgset.message)),
                       formatter.href.changeset(rev, path), label)
-        else:
-            return '<a class="missing changeset" href="%s"' \
+        except TracError, e:
+            return '<a class="missing changeset" title="%s" href="%s"' \
                    ' rel="nofollow">%s</a>' \
-                   % (formatter.href.changeset(rev, path), label)
+                   % (str(e), formatter.href.changeset(rev, path), label)
 
     def _format_diff_link(self, formatter, ns, params, label):
         def pathrev(path):

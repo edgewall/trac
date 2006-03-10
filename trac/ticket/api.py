@@ -153,7 +153,7 @@ class TicketSystem(Component):
             # matches #... but not &#... (HTML entity)
             r"!?(?<!&)#"
             # optional intertrac shorthand #T... + digits
-            r"(?P<it_ticket>%s)?\d+" % Formatter.INTERTRAC_SCHEME,
+            r"(?P<it_ticket>%s)\d+" % Formatter.INTERTRAC_SCHEME,
             lambda x, y, z: self._format_link(x, 'ticket', y[1:], y, z))
 
     def _format_link(self, formatter, ns, target, label, fullmatch=None):

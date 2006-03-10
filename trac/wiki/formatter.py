@@ -132,7 +132,7 @@ class Formatter(object):
     INLINE_TOKEN = "`"
 
     LINK_SCHEME = r"[\w.+-]+" # as per RFC 2396
-    INTERTRAC_SCHEME = r"[a-zA-Z.+-]+?" # no digits (support for shorthand links)
+    INTERTRAC_SCHEME = r"[a-zA-Z.+-]*?" # no digits (support for shorthand links)
 
     QUOTED_STRING = r"'[^']+'|\"[^\"]+\""
 

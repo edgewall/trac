@@ -225,7 +225,7 @@ class SearchModule(Component):
         elif kwd[0:len('bug:')] == 'bug:' and kwd[len('bug:'):].isdigit():
             return self.env.href.ticket(kwd[len('bug:'):])
         # Changeset quickjump
-        elif kwd[0] == '[' and kwd[-1] == ']' and kwd[1:-1].isdigit():
+        elif kwd[0] == '[' and kwd[-1] == ']' and kwd[1:-1].isalnum():
             return self.env.href.changeset(kwd[1:-1])
         elif kwd[0:len('changeset:')] == 'changeset:' and kwd[len('changeset:'):].isdigit():
             return self.env.href.changeset(kwd[len('changeset:'):])

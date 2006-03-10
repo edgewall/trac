@@ -490,7 +490,7 @@ class ReportModule(Component):
         yield ('report', self._format_link)
 
     def get_wiki_syntax(self):
-        yield (r"!?\{(?P<it_report>%s\s*)?\d+\}" % Formatter.INTERTRAC_SCHEME,
+        yield (r"!?\{(?P<it_report>%s\s*)\d+\}" % Formatter.INTERTRAC_SCHEME,
                lambda x, y, z: self._format_link(x, 'report', y[1:-1], y, z))
 
     def _format_link(self, formatter, ns, target, label, fullmatch=None):
