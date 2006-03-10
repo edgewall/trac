@@ -578,7 +578,6 @@ class TracAdmin(cmd.Cmd):
                 ('trac', 'repository_dir', repository_dir),
                 ('trac', 'templates_dir', templates_dir),
                 ('project', 'name', project_name),
-                ('components', 'tracvc.%s' % repository_type, 'enabled')
             ]
             try:
                 self.__env = Environment(self.envname, create=True,
@@ -606,11 +605,8 @@ class TracAdmin(cmd.Cmd):
                     if repository_type == "svn":
                         print>>sys.stderr, "You should install the SVN bindings"
                     else:
-                        print>>sys.stderr, ("You should install the plugin for"
-                                            " %s in the %s folder." \
-                                            % (repository_type,
-                                               os.path.join(self.envname,
-                                                            'plugins')))
+                        print>>sys.stderr, "Repository type %s not supported" \
+                                           % repository_type
         except Exception, e:
             print 'Failed to initialize environment.', e
             traceback.print_exc()
