@@ -171,7 +171,7 @@ class Formatter(object):
         # heading, list, definition, indent, table...
         r"(?P<heading>^\s*(?P<hdepth>=+)\s.*\s(?P=hdepth)\s*$)",
         r"(?P<list>^(?P<ldepth>\s+)(?:\*|\d+\.) )",
-        r"(?P<definition>^\s+(.+)::)\s*",
+        r"(?P<definition>^\s+((?:`.*?`|\{\{\{.*?\}\}\}|[^`{])+?::)(?:\s+|$))",
         r"(?P<indent>^(?P<idepth>\s+)(?=\S))",
         r"(?P<last_table_cell>\|\|\s*$)",
         r"(?P<table_cell>\|\|)"]
@@ -440,7 +440,8 @@ class Formatter(object):
 
     def _definition_formatter(self, match, fullmatch):
         tmp = self.in_def_list and '</dd>' or '<dl>'
-        tmp += '<dt>%s</dt><dd>' % wiki_to_oneliner(match[:-2], self.env,
+        definition = match[:match.find('::')]
+        tmp += '<dt>%s</dt><dd>' % wiki_to_oneliner(definition, self.env,
                                                     self.db)
         self.in_def_list = True
         return tmp

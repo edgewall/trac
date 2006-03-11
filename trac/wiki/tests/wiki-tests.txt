@@ -724,6 +724,27 @@ without endtags
 ------------------------------
 term:: definition
 ==============================
+ term:: definition:: text
+------------------------------
+<dl><dt>term</dt><dd>definition:: text
+</dd></dl>
+------------------------------
+term:: definition:: text
+==============================
+ `term`:: definition
+------------------------------
+<dl><dt><tt>term</tt></dt><dd>definition
+</dd></dl>
+------------------------------
+<tt>term</tt>:: definition
+==============================
+ {{{term}}}:: definition
+------------------------------
+<dl><dt><tt>term</tt></dt><dd>definition
+</dd></dl>
+------------------------------
+<tt>term</tt>:: definition
+==============================
  complex topic:: multiline
                  ''formatted''
                  definition
@@ -736,6 +757,36 @@ definition
 complex topic:: multiline
                  <i>formatted</i>
                  definition
+==============================
+ term::definition
+------------------------------
+<blockquote>
+<p>
+term::definition
+</p>
+</blockquote>
+------------------------------
+term::definition
+==============================
+ complex topic:: multiline
+                 `not:: a dl`
+------------------------------
+<dl><dt>complex topic</dt><dd>multiline
+<tt>not:: a dl</tt>
+</dd></dl>
+------------------------------
+complex topic:: multiline
+                 <tt>not:: a dl</tt>
+==============================
+ complex topic:: multiline
+                 {{{not:: a dl}}}
+------------------------------
+<dl><dt>complex topic</dt><dd>multiline
+<tt>not:: a dl</tt>
+</dd></dl>
+------------------------------
+complex topic:: multiline
+                 <tt>not:: a dl</tt>
 ==============================
 milestone:foo
 [milestone:boo Milestone Boo]
