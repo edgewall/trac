@@ -126,7 +126,11 @@ class Formatter(object):
     SUBSCRIPT_TOKEN = ",,"
     SUPERSCRIPT_TOKEN = r"\^"
     INLINE_TOKEN = "`"
-
+    STARTBLOCK_TOKEN = r"\{\{\{"
+    STARTBLOCK = "{{{"
+    ENDBLOCK_TOKEN = r"\}\}\}"
+    ENDBLOCK = "}}}"
+    
     LINK_SCHEME = r"[\w.+-]+" # as per RFC 2396
     INTERTRAC_SCHEME = r"[a-zA-Z.+-]*?" # no digits (support for shorthand links)
 
@@ -151,7 +155,8 @@ class Formatter(object):
         r"(?P<strike>!?%s)" % STRIKE_TOKEN,
         r"(?P<subscript>!?%s)" % SUBSCRIPT_TOKEN,
         r"(?P<superscript>!?%s)" % SUPERSCRIPT_TOKEN,
-        r"(?P<inlinecode>!?\{\{\{(?P<inline>.*?)\}\}\})",
+        r"(?P<inlinecode>!?%s(?P<inline>.*?)%s)" \
+        % (STARTBLOCK_TOKEN, ENDBLOCK_TOKEN),
         r"(?P<inlinecode2>!?%s(?P<inline2>.*?)%s)" \
         % (INLINE_TOKEN, INLINE_TOKEN)]
 
@@ -171,7 +176,9 @@ class Formatter(object):
         # heading, list, definition, indent, table...
         r"(?P<heading>^\s*(?P<hdepth>=+)\s.*\s(?P=hdepth)\s*$)",
         r"(?P<list>^(?P<ldepth>\s+)(?:\*|\d+\.) )",
-        r"(?P<definition>^\s+((?:`.*?`|\{\{\{.*?\}\}\}|[^`{])+?::)(?:\s+|$))",
+        r"(?P<definition>^\s+((?:%s.*?%s|%s.*?%s|[^%s%s])+?::)(?:\s+|$))"
+        % (INLINE_TOKEN, INLINE_TOKEN, STARTBLOCK_TOKEN, ENDBLOCK_TOKEN,
+           INLINE_TOKEN, STARTBLOCK[0]),
         r"(?P<indent>^(?P<idepth>\s+)(?=\S))",
         r"(?P<last_table_cell>\|\|\s*$)",
         r"(?P<table_cell>\|\|)"]
@@ -578,7 +585,7 @@ class Formatter(object):
                 else:
                     return getattr(self, '_' + itype + '_formatter')(match, fullmatch)
     def handle_code_block(self, line):
-        if line.strip() == '{{{':
+        if line.strip() == Formatter.STARTBLOCK:
             self.in_code_block += 1
             if self.in_code_block == 1:
                 self.code_processor = None
@@ -587,7 +594,7 @@ class Formatter(object):
                 self.code_text += line + os.linesep
                 if not self.code_processor:
                     self.code_processor = WikiProcessor(self.env, 'default')
-        elif line.strip() == '}}}':
+        elif line.strip() == Formatter.ENDBLOCK:
             self.in_code_block -= 1
             if self.in_code_block == 0 and self.code_processor:
                 self.close_paragraph()
@@ -621,7 +628,7 @@ class Formatter(object):
 
         for line in text.splitlines():
             # Handle code block
-            if self.in_code_block or line.strip() == '{{{':
+            if self.in_code_block or line.strip() == Formatter.STARTBLOCK:
                 self.handle_code_block(line)
                 continue
             # Handle Horizontal ruler
@@ -711,9 +718,9 @@ class OneLinerFormatter(Formatter):
         processor = None
         buf = StringIO()
         for line in text.strip().splitlines():
-            if line.strip() == '{{{':
+            if line.strip() == Formatter.STARTBLOCK:
                 in_code_block += 1
-            elif line.strip() == '}}}':
+            elif line.strip() == Formatter.ENDBLOCK:
                 if in_code_block:
                     in_code_block -= 1
                     if in_code_block == 0:
