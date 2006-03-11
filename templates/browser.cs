@@ -11,6 +11,7 @@
 </div>
 
 
+<div id="searchable">
 <div id="content" class="browser">
  <h1><?cs call:browser_path_links(browser.path, browser) ?></h1>
 
@@ -132,5 +133,6 @@
    </form>
   </div>
 
+</div>
 </div>
 <?cs include:"footer.cs"?>
