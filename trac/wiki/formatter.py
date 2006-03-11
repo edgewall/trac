@@ -190,25 +190,16 @@ class Formatter(object):
         self._open_tags = []
         self.href = absurls and env.abs_href or env.href
         self._local = env.config.get('project', 'url') or env.abs_href.base
-        self.wiki = WikiSystem(self.env)        
-        
+        self.wiki = WikiSystem(self.env)
+
     def _get_db(self):
         if not self._db:
             self._db = self.env.get_db_cnx()
         return self._db
     db = property(fget=_get_db)
 
-    def replace(self, fullmatch):
-        for itype, match in fullmatch.groupdict().items():
-            if match and not itype in self.wiki.helper_patterns:
-                # Check for preceding escape character '!'
-                if match[0] == '!':
-                    return match[1:]
-                if itype in self.wiki.external_handlers:
-                    return self.wiki.external_handlers[itype](self, match, fullmatch)
-                else:
-                    return getattr(self, '_' + itype + '_formatter')(match, fullmatch)
-
+    # -- Rules preceeding IWikiSyntaxProvider rules: Font styles
+    
     def tag_open_p(self, tag):
         """Do we currently have any open tag with @tag as end-tag"""
         return tag in self._open_tags
@@ -247,6 +238,52 @@ class Formatter(object):
             tmp += italic[0]
             self.open_tag(*italic)
         return tmp
+
+    def _bold_formatter(self, match, fullmatch):
+        return self.simple_tag_handler('<strong>', '</strong>')
+
+    def _italic_formatter(self, match, fullmatch):
+        return self.simple_tag_handler('<i>', '</i>')
+
+    def _underline_formatter(self, match, fullmatch):
+        if match[0] == '!':
+            return match[1:]
+        else:
+            return self.simple_tag_handler('<span class="underline">',
+                                           '</span>')
+
+    def _strike_formatter(self, match, fullmatch):
+        if match[0] == '!':
+            return match[1:]
+        else:
+            return self.simple_tag_handler('<del>', '</del>')
+
+    def _subscript_formatter(self, match, fullmatch):
+        if match[0] == '!':
+            return match[1:]
+        else:
+            return self.simple_tag_handler('<sub>', '</sub>')
+
+    def _superscript_formatter(self, match, fullmatch):
+        if match[0] == '!':
+            return match[1:]
+        else:
+            return self.simple_tag_handler('<sup>', '</sup>')
+
+    def _inlinecode_formatter(self, match, fullmatch):
+        return '<tt>%s</tt>' % util.escape(fullmatch.group('inline'))
+
+    def _inlinecode2_formatter(self, match, fullmatch):
+        return '<tt>%s</tt>' % util.escape(fullmatch.group('inline2'))
+
+    # -- Rules following IWikiSyntaxProvider rules
+
+    # HTML escape of &, < and >
+
+    def _htmlescape_formatter(self, match, fullmatch):
+        return match == "&" and "&amp;" or match == "<" and "&lt;" or "&gt;"
+
+    # Short form (shref) and long form (lhref) of TracLinks
 
     def _unquote(self, text):
         if text and text[0] in "'\"" and text[0] == text[-1]:
@@ -346,46 +383,8 @@ class Formatter(object):
         else:
             return '<a href="%s">%s</a>' % (url, text)
 
-    def _bold_formatter(self, match, fullmatch):
-        return self.simple_tag_handler('<strong>', '</strong>')
-
-    def _italic_formatter(self, match, fullmatch):
-        return self.simple_tag_handler('<i>', '</i>')
-
-    def _underline_formatter(self, match, fullmatch):
-        if match[0] == '!':
-            return match[1:]
-        else:
-            return self.simple_tag_handler('<span class="underline">',
-                                           '</span>')
-
-    def _strike_formatter(self, match, fullmatch):
-        if match[0] == '!':
-            return match[1:]
-        else:
-            return self.simple_tag_handler('<del>', '</del>')
-
-    def _subscript_formatter(self, match, fullmatch):
-        if match[0] == '!':
-            return match[1:]
-        else:
-            return self.simple_tag_handler('<sub>', '</sub>')
-
-    def _superscript_formatter(self, match, fullmatch):
-        if match[0] == '!':
-            return match[1:]
-        else:
-            return self.simple_tag_handler('<sup>', '</sup>')
-
-    def _inlinecode_formatter(self, match, fullmatch):
-        return '<tt>%s</tt>' % util.escape(fullmatch.group('inline'))
-
-    def _inlinecode2_formatter(self, match, fullmatch):
-        return '<tt>%s</tt>' % util.escape(fullmatch.group('inline2'))
-
-    def _htmlescape_formatter(self, match, fullmatch):
-        return match == "&" and "&amp;" or match == "<" and "&lt;" or "&gt;"
-
+    # WikiMacros
+    
     def _macro_formatter(self, match, fullmatch):
         name = fullmatch.group('macroname')
         if name in ['br', 'BR']:
@@ -398,6 +397,8 @@ class Formatter(object):
             self.env.log.error('Macro %s(%s) failed' % (name, args),
                                exc_info=True)
             return system_message('Error: Macro %s(%s) failed' % (name, args), e)
+
+    # Headings
 
     def _heading_formatter(self, match, fullmatch):
         match = match.strip()
@@ -425,42 +426,8 @@ class Formatter(object):
         self._anchors.append(anchor)
         self.out.write('<h%d id="%s">%s</h%d>' % (depth, anchor, text, depth))
 
-    def _indent_formatter(self, match, fullmatch):
-        depth = int((len(fullmatch.group('idepth')) + 1) / 2)
-        list_depth = len(self._list_stack)
-        if list_depth > 0 and depth == list_depth + 1:
-            self.in_list_item = 1
-        else:
-            self.open_indentation(depth)
-        return ''
-
-    def _last_table_cell_formatter(self, match, fullmatch):
-        return ''
-
-    def _table_cell_formatter(self, match, fullmatch):
-        self.open_table()
-        self.open_table_row()
-        if self.in_table_cell:
-            return '</td><td>'
-        else:
-            self.in_table_cell = 1
-            return '<td>'
-
-    def close_indentation(self):
-        self.out.write(('</blockquote>' + os.linesep) * self.indent_level)
-        self.indent_level = 0
-
-    def open_indentation(self, depth):
-        if self.in_def_list:
-            return
-        diff = depth - self.indent_level
-        if diff != 0:
-            self.close_paragraph()
-            self.close_indentation()
-            self.close_list()
-            self.indent_level = depth
-            self.out.write(('<blockquote>' + os.linesep) * depth)
-
+    # Lists
+    
     def _list_formatter(self, match, fullmatch):
         ldepth = len(fullmatch.group('ldepth'))
         depth = int((len(fullmatch.group('ldepth')) + 1) / 2)
@@ -468,6 +435,8 @@ class Formatter(object):
         type_ = ['ol', 'ul'][match[ldepth] == '*']
         self._set_list_depth(depth, type_)
         return ''
+
+    # Definition Lists
 
     def _definition_formatter(self, match, fullmatch):
         tmp = self.in_def_list and '</dd>' or '<dl>'
@@ -513,17 +482,45 @@ class Formatter(object):
         if self._list_stack != []:
             self._set_list_depth(0, None)
 
-    def open_paragraph(self):
-        if not self.paragraph_open:
-            self.out.write('<p>' + os.linesep)
-            self.paragraph_open = 1
+    # Blockquote
 
-    def close_paragraph(self):
-        if self.paragraph_open:
-            while self._open_tags != []:
-                self.out.write(self._open_tags.pop()[1])
-            self.out.write('</p>' + os.linesep)
-            self.paragraph_open = 0
+    def close_indentation(self):
+        self.out.write(('</blockquote>' + os.linesep) * self.indent_level)
+        self.indent_level = 0
+
+    def open_indentation(self, depth):
+        if self.in_def_list:
+            return
+        diff = depth - self.indent_level
+        if diff != 0:
+            self.close_paragraph()
+            self.close_indentation()
+            self.close_list()
+            self.indent_level = depth
+            self.out.write(('<blockquote>' + os.linesep) * depth)
+
+    def _indent_formatter(self, match, fullmatch):
+        depth = int((len(fullmatch.group('idepth')) + 1) / 2)
+        list_depth = len(self._list_stack)
+        if list_depth > 0 and depth == list_depth + 1:
+            self.in_list_item = 1
+        else:
+            self.open_indentation(depth)
+        return ''
+
+    # Table
+    
+    def _last_table_cell_formatter(self, match, fullmatch):
+        return ''
+
+    def _table_cell_formatter(self, match, fullmatch):
+        self.open_table()
+        self.open_table_row()
+        if self.in_table_cell:
+            return '</td><td>'
+        else:
+            self.in_table_cell = 1
+            return '<td>'
 
     def open_table(self):
         if not self.in_table:
@@ -555,6 +552,30 @@ class Formatter(object):
             self.out.write('</table>' + os.linesep)
             self.in_table = 0
 
+    # -- Wiki engine
+
+    def open_paragraph(self):
+        if not self.paragraph_open:
+            self.out.write('<p>' + os.linesep)
+            self.paragraph_open = 1
+
+    def close_paragraph(self):
+        if self.paragraph_open:
+            while self._open_tags != []:
+                self.out.write(self._open_tags.pop()[1])
+            self.out.write('</p>' + os.linesep)
+            self.paragraph_open = 0
+
+    def replace(self, fullmatch):
+        for itype, match in fullmatch.groupdict().items():
+            if match and not itype in self.wiki.helper_patterns:
+                # Check for preceding escape character '!'
+                if match[0] == '!':
+                    return match[1:]
+                if itype in self.wiki.external_handlers:
+                    return self.wiki.external_handlers[itype](self, match, fullmatch)
+                else:
+                    return getattr(self, '_' + itype + '_formatter')(match, fullmatch)
     def handle_code_block(self, line):
         if line.strip() == '{{{':
             self.in_code_block += 1
