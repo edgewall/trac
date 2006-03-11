@@ -55,9 +55,7 @@ class WikiProcessor(object):
         self.processor = builtin_processors.get(name)
         if not self.processor:
             # Find a matching wiki macro
-            from trac.wiki import WikiSystem
-            wiki = WikiSystem(self.env)
-            for macro_provider in wiki.macro_providers:
+            for macro_provider in WikiSystem(self.env).macro_providers:
                 if self.name in list(macro_provider.get_macros()):
                     self.processor = self._macro_processor
                     break
@@ -89,9 +87,7 @@ class WikiProcessor(object):
                                   text.splitlines()[e.lineno - 1].strip())
 
     def _macro_processor(self, req, text):
-        from trac.wiki import WikiSystem
-        wiki = WikiSystem(self.env)
-        for macro_provider in wiki.macro_providers:
+        for macro_provider in WikiSystem(self.env).macro_providers:
             if self.name in list(macro_provider.get_macros()):
                 self.env.log.debug('Executing Wiki macro %s by provider %s'
                                    % (self.name, macro_provider))
@@ -194,30 +190,22 @@ class Formatter(object):
         self._open_tags = []
         self.href = absurls and env.abs_href or env.href
         self._local = env.config.get('project', 'url') or env.abs_href.base
-
+        self.wiki = WikiSystem(self.env)        
+        
     def _get_db(self):
         if not self._db:
             self._db = self.env.get_db_cnx()
         return self._db
     db = property(fget=_get_db)
 
-    def _get_rules(self):
-        return WikiSystem(self.env).rules
-    rules = property(_get_rules)
-
-    def _get_link_resolvers(self):
-        return WikiSystem(self.env).link_resolvers
-    link_resolvers = property(_get_link_resolvers)
-
     def replace(self, fullmatch):
-        wiki = WikiSystem(self.env)        
         for itype, match in fullmatch.groupdict().items():
-            if match and not itype in wiki.helper_patterns:
+            if match and not itype in self.wiki.helper_patterns:
                 # Check for preceding escape character '!'
                 if match[0] == '!':
                     return match[1:]
-                if itype in wiki.external_handlers:
-                    return wiki.external_handlers[itype](self, match, fullmatch)
+                if itype in self.wiki.external_handlers:
+                    return self.wiki.external_handlers[itype](self, match, fullmatch)
                 else:
                     return getattr(self, '_' + itype + '_formatter')(match, fullmatch)
 
@@ -293,8 +281,8 @@ class Formatter(object):
     def _make_link(self, ns, target, match, label):
         # check first for an alias defined in trac.ini
         ns = self.env.config.get('intertrac', ns.upper()) or ns
-        if ns in self.link_resolvers:
-            return self.link_resolvers[ns](self, ns, target,
+        if ns in self.wiki.link_resolvers:
+            return self.wiki.link_resolvers[ns](self, ns, target,
                                            util.escape(label, False))
         elif target.startswith('//') or ns == "mailto":
             return self._make_ext_link(ns+':'+target, label)
@@ -635,7 +623,7 @@ class Formatter(object):
                 line += ' [[BR]]'
             self.in_list_item = False
             # Throw a bunch of regexps on the problem
-            result = re.sub(self.rules, self.replace, line)
+            result = re.sub(self.wiki.rules, self.replace, line)
 
             if not self.in_list_item:
                 self.close_list()
@@ -721,7 +709,7 @@ class OneLinerFormatter(Formatter):
         if shorten:
             result = util.shorten_line(result)
 
-        result = re.sub(self.rules, self.replace, result)
+        result = re.sub(self.wiki.rules, self.replace, result)
         result = result.replace('[...]', '[&hellip;]')
         if result.endswith('...'):
             result = result[:-3] + '&hellip;'
