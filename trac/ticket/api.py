@@ -190,13 +190,17 @@ class TicketSystem(Component):
                                          'reporter', 'cc'], terms)
         cursor = db.cursor()
         cursor.execute("SELECT DISTINCT a.summary,a.description,a.reporter, "
-                       "a.keywords,a.id,a.time FROM ticket a "
+                       "a.keywords,a.id,a.time,a.status FROM ticket a "
                        "LEFT JOIN ticket_change b ON a.id = b.ticket "
                        "WHERE (b.field='comment' AND %s ) OR %s" % (sql, sql2),
                        args + args2)
-        for summary,desc,author,keywords,tid,date in cursor:
+        for summary,desc,author,keywords,tid,date,status in cursor:
+            ticket = '#%d: ' % tid
+            if status == 'closed':
+                ticket = util.Markup('<span style="text-decoration: '
+                                     'line-through">#%s</span>: ', tid)
             yield (self.env.href.ticket(tid),
-                   '#%d: %s' % (tid, util.shorten_line(summary)),
+                   ticket + util.shorten_line(summary),
                    date, author,
                    shorten_result(desc, terms))
             
