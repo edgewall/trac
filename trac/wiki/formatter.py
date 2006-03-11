@@ -103,11 +103,16 @@ class WikiProcessor(object):
                                   self.error)
         text = self.processor(req, text)
         if inline:
-            code_block_start = re.compile('^<div class="code-block">')
+            code_block_start = re.compile('^<div(?:\s+class="([^"]+)")?>')
             code_block_end = re.compile('</div>$')
-            text, nr = code_block_start.subn('<span class="code-block">', text, 1 )
-            if nr:
-                text, nr = code_block_end.subn('</span>', text, 1 )
+            match = re.match(code_block_start, text)
+            if match:
+                if match.group(1) and 'code' in match.group(1):
+                    text, nr = code_block_start.subn('<span class="code-block">', text, 1 )
+                    if nr:
+                        text, nr = code_block_end.subn('</span>', text, 1 )
+                else:
+                    text = "</p>%s<p>" % text
             return text
         else:
             return text
@@ -399,7 +404,7 @@ class Formatter(object):
         args = fullmatch.group('macroargs')
         try:
             macro = WikiProcessor(self.env, name)
-            return macro.process(self.req, args, 1)
+            return macro.process(self.req, args, True)
         except Exception, e:
             self.env.log.error('Macro %s(%s) failed' % (name, args),
                                exc_info=True)
