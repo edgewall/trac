@@ -179,7 +179,7 @@ class SearchModule(Component):
             results.sort(lambda x,y: cmp(y[2], x[2]))
             page_size = self.RESULTS_PER_PAGE
             n = len(results)
-            n_pages = n / page_size + 1
+            n_pages = (n-1) / page_size + 1
             results = results[(page-1) * page_size: page * page_size]
 
             req.hdf['title'] = 'Search Results'
