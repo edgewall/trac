@@ -123,6 +123,10 @@ class NewticketModule(Component):
                 field['options'] = options
             req.hdf['newticket.fields.' + name] = field
 
+        if req.perm.has_permission('TICKET_APPEND'):
+            req.hdf['newticket.can_attach'] = True
+            req.hdf['newticket.attachment'] = req.args.get('attachment')
+
         add_stylesheet(req, 'common/css/ticket.css')
         return 'newticket.cs', None
 
@@ -147,7 +151,11 @@ class NewticketModule(Component):
                                "ticket #%s: %s" % (ticket.id, e))
 
         # Redirect the user to the newly created ticket
-        req.redirect(self.env.href.ticket(ticket.id))
+        if req.args.get('attachment'):
+            req.redirect(self.env.href.attachment('ticket', ticket.id,
+                                                  action='new'))
+        else:
+            req.redirect(self.env.href.ticket(ticket.id))
 
 
 class TicketModule(Component):
