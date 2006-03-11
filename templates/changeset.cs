@@ -153,20 +153,20 @@
 
 <dl id="overview"><?cs
  if:changeset.chgset ?>
- <dt class="time">Timestamp:</dt>
+ <dt class="property time">Timestamp:</dt>
  <dd class="time"><?cs var:changeset.time ?> 
   (<?cs alt:changeset.age ?>less than one hour<?cs /alt ?> ago)</dd>
- <dt class="author">Author:</dt>
+ <dt class="property author">Author:</dt>
  <dd class="author"><?cs var:changeset.author ?></dd>
  <?cs each:prop = changeset.properties ?>
- <dt class="<?cs var:prop.htmlclass ?>"><?cs var:prop.name ?>:</dt>
+ <dt class="property <?cs var:prop.htmlclass ?>"><?cs var:prop.name ?>:</dt>
  <dd class="<?cs var:prop.htmlclass ?>"><?cs var:prop.value ?></dd>
  <?cs /each ?>
- <dt class="message">Message:</dt>
+ <dt class="property message">Message:</dt>
  <dd class="message" id="searchable"><?cs
   alt:changeset.message ?>&nbsp;<?cs /alt ?></dd><?cs
  /if ?>
- <dt class="files"><?cs 
+ <dt class="property files"><?cs 
   if:len(changeset.changes) > #0 ?>
    Files:<?cs
   else ?>
