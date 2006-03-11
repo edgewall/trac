@@ -34,8 +34,10 @@ class ISearchSource(Interface):
     def get_search_filters(self, req):
         """
         Return a list of filters that this search source supports. Each
-        filter must be a (name, label) tuple, where `name` is the internal
-        name, and `label` is a human-readable name for display.
+        filter must be a (name, label[, default]) tuple, where `name` is the
+        internal name, `label` is a human-readable name for display and
+        `default` is an optional boolean for determining whether this filter
+        is searchable by default.
         """
 
     def get_search_results(self, req, terms, filters):
@@ -149,7 +151,8 @@ class SearchModule(Component):
             
         filters = [f[0] for f in available_filters if req.args.has_key(f[0])]
         if not filters:
-            filters = [f[0] for f in available_filters]
+            filters = [f[0] for f in available_filters
+                       if len(f) < 3 or len(f) > 2 and f[2]]
                 
         req.hdf['search.filters'] = [
             { 'name': filter[0],
