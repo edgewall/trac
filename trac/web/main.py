@@ -177,7 +177,7 @@ class RequestDispatcher(Component):
             except PermissionError, e:
                 raise HTTPForbidden(str(e))
             except TracError, e:
-                raise HTTPInternalError(str(e))
+                raise HTTPInternalError(e.message)
         finally:
             # Give the session a chance to persist changes
             req.session.save()
