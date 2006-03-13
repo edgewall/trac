@@ -482,6 +482,7 @@ class SubversionNode(Node):
                                                self.pool())
         self.created_path = fs.node_created_path(self.root, self.scoped_path,
                                                  self.pool())
+        self.created_path = _path_within_scope(self.scope, self.created_path)
         # Note: 'created_path' differs from 'path' if the last change was a copy,
         #        and furthermore, 'path' might not exist at 'create_rev'.
         #        The only guarantees are:
