@@ -336,9 +336,12 @@ class SubversionRepository(Repository):
         rev = self.normalize_rev(rev)
         next = rev + 1
         youngest = self.youngest_rev
+        subpool = Pool(self.pool)
         while next <= youngest:
+            subpool.clear()            
             try:
-                for _, next in self._history(path, rev+1, next, limit=1):
+                for _, next in self._history(path, rev+1, next, limit=1,
+                                             pool=subpool):
                     return next
             except (SystemError, # "null arg to internal routine" in 1.2.x
                     core.SubversionException): # in 1.3.x
