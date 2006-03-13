@@ -1092,6 +1092,8 @@ Congratulations!
             for section, name, value in db_default.default_config:
                 config.set(section, name, value)
             config.save()
+            print ('Wrote sample configuration file, with the new settings '
+                   'and their default values: \n\n  %s\n\n' % filename)
         except IOError, e:
             print "Warning: couldn't write sample configuration file (%s)" % e
 
