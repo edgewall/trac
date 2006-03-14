@@ -381,7 +381,7 @@ class ChangesetModule(Component):
                         del changed_props[k]
             changed_properties = []
             for name, props in changed_props.iteritems():
-                props.update(name=name)
+                props.update({'name': name})
                 changed_properties.append(props)
             return changed_properties
 
