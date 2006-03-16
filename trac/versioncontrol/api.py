@@ -61,6 +61,15 @@ class RepositoryManager(Component):
         return self._connector.get_repository(repos_type, repos_dir, authname)
 
 
+class NoSuchChangeset(TracError):
+    def __init__(self, rev):
+        TracError.__init__(self, "No changeset %s in the repository" % rev)
+
+class NoSuchNode(TracError):
+    def __init__(self, path, rev, msg=None):
+        TracError.__init__(self, "%sNo node %s at revision %s" \
+                           % (msg and '%s: ' % msg or '', path, rev))
+
 class Repository(object):
     """
     Base class for a repository provided by a version control system.

@@ -15,7 +15,8 @@
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
 from trac.util import TracError
-from trac.versioncontrol import Changeset, Node, Repository, Authorizer
+from trac.versioncontrol import Changeset, Node, Repository, Authorizer, \
+                                NoSuchChangeset
 
 
 _kindmap = {'D': Node.DIRECTORY, 'F': Node.FILE}
@@ -144,7 +145,7 @@ class CachedChangeset(Changeset):
             date, author, message = row
             Changeset.__init__(self, rev, message, author, int(date))
         else:
-            raise TracError, "No changeset %s in the repository" % rev
+            raise NoSuchChangeset(rev)
 
     def get_changes(self):
         cursor = self.db.cursor()

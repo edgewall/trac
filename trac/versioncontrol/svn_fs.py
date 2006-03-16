@@ -23,7 +23,8 @@ import posixpath
 
 from trac.core import *
 from trac.versioncontrol import Changeset, Node, Repository, \
-                                IRepositoryConnector
+                                IRepositoryConnector, \
+                                NoSuchChangeset, NoSuchNode
 from trac.versioncontrol.cache import CachedRepository
 from trac.versioncontrol.svn_authz import SubversionAuthorizer
 
@@ -219,18 +220,18 @@ class SubversionRepository(Repository):
         self.path = path
         self.log = log
         if core.SVN_VER_MAJOR < 1:
-            raise TracError, \
-                  "Subversion >= 1.0 required: Found %d.%d.%d" % \
-                  (core.SVN_VER_MAJOR, core.SVN_VER_MINOR, core.SVN_VER_MICRO)
-
+            raise TracError("Subversion >= 1.0 required: Found %d.%d.%d" % \
+                            (core.SVN_VER_MAJOR,
+                             core.SVN_VER_MINOR,
+                             core.SVN_VER_MICRO))
         self.pool = Pool()
         
         # Remove any trailing slash or else subversion might abort
         path = os.path.normpath(path).replace('\\', '/')
         self.path = repos.svn_repos_find_root_path(path, self.pool())
         if self.path is None:
-            raise TracError, \
-                  "%s does not appear to be a Subversion repository." % path
+            raise TracError("%s does not appear to be a Subversion repository." \
+                            % path)
 
         self.repos = repos.svn_repos_open(self.path, self.pool())
         self.fs_ptr = repos.svn_repos_fs(self.repos)
@@ -272,7 +273,7 @@ class SubversionRepository(Repository):
         if rev is None:
             rev = self.youngest_rev
         elif rev > self.youngest_rev:
-            raise TracError, "Revision %s doesn't exist yet" % rev
+            raise NoSuchChangeset(rev)
         return rev
 
     def close(self):
@@ -409,20 +410,16 @@ class SubversionRepository(Repository):
         if self.has_node(old_path, old_rev):
             old_node = self.get_node(old_path, old_rev)
         else:
-            raise TracError, ('The Base for Diff is invalid: path %s'
-                              ' doesn\'t exist in revision %s' \
-                              % (old_path, old_rev))
+            raise NoSuchNode(old_path, old_rev, 'The Base for Diff is invalid')
         if self.has_node(new_path, new_rev):
             new_node = self.get_node(new_path, new_rev)
         else:
-            raise TracError, ('The Target for Diff is invalid: path %s'
-                              ' doesn\'t exist in revision %s' \
-                              % (new_path, new_rev))
+            raise NoSuchNode(new_path, new_rev, 'The Target for Diff is invalid')
         if new_node.kind != old_node.kind:
-            raise TracError, ('Diff mismatch: Base is a %s (%s in revision %s) '
-                              'and Target is a %s (%s in revision %s).' \
-                              % (old_node.kind, old_path, old_rev,
-                                 new_node.kind, new_path, new_rev))
+            raise TracError('Diff mismatch: Base is a %s (%s in revision %s) '
+                            'and Target is a %s (%s in revision %s).' \
+                            % (old_node.kind, old_path, old_rev,
+                               new_node.kind, new_path, new_rev))
         subpool = Pool(self.pool)
         if new_node.isdir:
             editor = DiffChangeEditor()
@@ -480,7 +477,7 @@ class SubversionNode(Node):
         self.root = fs.revision_root(fs_ptr, rev, self.pool())
         node_type = fs.check_path(self.root, self.scoped_path, self.pool())
         if not node_type in _kindmap:
-            raise TracError, "No node at %s in revision %s" % (path, rev)
+            raise NoSuchNode(path, rev)
         self.created_rev = fs.node_created_rev(self.root, self.scoped_path,
                                                self.pool())
         self.created_path = fs.node_created_path(self.root, self.scoped_path,
@@ -602,7 +599,12 @@ class SubversionChangeset(Changeset):
                 action = Changeset.DELETE
                 deletions[change.base_path] = idx
             elif change.added:
-                if change.base_path and change.base_rev:
+                if change.base_path and \
+                      not (change.base_path+'/').startswith(self.scope):
+                    action = Changeset.ADD
+                    change.base_path = None
+                    change.base_rev = -1
+                elif change.base_path and change.base_rev:
                     action = Changeset.COPY
                     copies[change.base_path] = idx
                 else:

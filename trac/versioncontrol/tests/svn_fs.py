@@ -643,7 +643,7 @@ class NonSelfContainedScopedTestCase(unittest.TestCase):
         chgset = self.repos.get_changeset(7)
         self.assertEqual(7, chgset.rev)
         changes = chgset.get_changes()
-        self.assertEqual(('', Node.DIRECTORY, Changeset.COPY, None, 6),
+        self.assertEqual(('', Node.DIRECTORY, Changeset.ADD, None, -1),
                          changes.next())
         self.assertRaises(TracError, lambda: self.repos.get_node(None, 6))
 

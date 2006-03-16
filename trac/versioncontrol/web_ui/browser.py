@@ -26,6 +26,7 @@ from trac.perm import IPermissionRequestor
 from trac.web import IRequestHandler, RequestDone
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
 from trac.wiki import wiki_to_html, wiki_to_oneliner, IWikiSyntaxProvider
+from trac.versioncontrol.api import NoSuchChangeset
 from trac.versioncontrol.web_ui.util import *
 
 
@@ -164,8 +165,10 @@ class BrowserModule(Component):
         
     def _render_file(self, req, repos, node, rev=None):
         req.perm.assert_permission('FILE_VIEW')
-
-        changeset = repos.get_changeset(node.rev)  
+        try:
+            changeset = repos.get_changeset(node.rev) # created rev
+        except NoSuchChangeset:
+            changeset = repos.get_changeset(rev) # requested rev
         req.hdf['file'] = {  
             'rev': node.rev,  
             'changeset_href': self.env.href.changeset(node.rev),

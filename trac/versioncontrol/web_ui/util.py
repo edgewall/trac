@@ -21,6 +21,7 @@ import urllib
 
 from trac.util import escape, format_datetime, pretty_timedelta, shorten_line, \
                       TracError, Markup
+from trac.versioncontrol.api import NoSuchNode, NoSuchChangeset
 from trac.wiki import wiki_to_html, wiki_to_oneliner
 
 __all__ = ['get_changes', 'get_path_links', 'get_path_rev_line',
@@ -30,7 +31,11 @@ def get_changes(env, repos, revs, full=None, req=None, format=None):
     db = env.get_db_cnx()
     changes = {}
     for rev in revs:
-        changeset = repos.get_changeset(rev)
+        try:
+            changeset = repos.get_changeset(rev)
+        except NoSuchChangeset:
+            changes[rev] = {}
+            continue
         message = changeset.message or '--'
         shortlog = wiki_to_oneliner(message, env, db, shorten=True)
         if full:
@@ -84,7 +89,7 @@ def get_path_rev_line(path):
 def get_existing_node(env, repos, path, rev):
     try: 
         return repos.get_node(path, rev) 
-    except TracError, e: 
+    except NoSuchNode, e:
         raise TracError(Markup('%s<br><p>You can <a href="%s">search</a> ' 
                                'in the repository history to see if that path '
                                'existed but was later removed.</p>', e.message,

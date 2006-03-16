@@ -251,8 +251,8 @@ class ChangesetModule(Component):
 
             # -- getting the change summary from the Changeset.get_changes 
             def get_changes():
-                old_node = new_node = None
                 for npath, kind, change, opath, orev in chgset.get_changes():
+                    old_node = new_node = None
                     if (restricted and 
                         not (npath == path or                # same path
                              npath.startswith(path + '/') or # npath is below
@@ -393,8 +393,8 @@ class ChangesetModule(Component):
         mimeview = Mimeview(self.env)
 
         def _content_changes(old_node, new_node):
-            """
-            Returns the list of differences.
+            """Returns the list of differences.
+            
             The list is empty when no differences between comparable files
             are detected, but the return value is None for non-comparable files.
             """
