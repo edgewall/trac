@@ -238,9 +238,10 @@ class AttachmentModule(Component):
 
     def match_request(self, req):
         match = re.match(r'^/attachment/(ticket|wiki)(?:/(.*))?$', req.path_info)
+        match = re.match(r'^/attachment/(ticket|wiki)(?:[/:](.*))?$', req.path_info)
         if match:
             req.args['type'] = match.group(1)
-            req.args['path'] = match.group(2)
+            req.args['path'] = match.group(2).replace(':', '/')
             return 1
 
     def process_request(self, req):
