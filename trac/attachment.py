@@ -237,7 +237,6 @@ class AttachmentModule(Component):
     # IReqestHandler methods
 
     def match_request(self, req):
-        match = re.match(r'^/attachment/(ticket|wiki)(?:/(.*))?$', req.path_info)
         match = re.match(r'^/attachment/(ticket|wiki)(?:[/:](.*))?$', req.path_info)
         if match:
             req.args['type'] = match.group(1)
