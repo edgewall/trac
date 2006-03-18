@@ -151,7 +151,7 @@ class NotifyEmail(Notify):
         if not email:
             return name
         else:
-            return "%s <%s>" % (name, email)
+            return "\"%s\" <%s>" % (name, email)
 
     def add_headers(self, msg, headers):
         for h in headers:
