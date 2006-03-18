@@ -28,17 +28,9 @@ where one can use an alias as an immediate prefix
 for the identifier of a ticket, changeset or report:
 (e.g. `#T234`, `[T1508]`, `[trac 1508]`, ...)
 
-== Examples ==
+== Configuration ==
 
-Besides the other environments run by the same server process
-(called ''sibling'' environments), which are automatically detected,
-(''Note: currently only in `tracd`''),
-it is necessary to setup a configuration for the InterTrac facility:
- * in order to refer to a remote Trac
- * for defining environment aliases
-
-This is done quite simply in an `[intertrac]` section
-within the `trac.ini` file.
+It is necessary to setup a specific `[intertrac]` section in the TracIni for the InterTrac facility, in order to associate a prefix to other Trac sites, and for defining environment aliases.
 
 Example configuration:
 {{{
@@ -81,6 +73,10 @@ Now, given this configuration, one could create the following links:
 Anything not given as explicit links (intertrac_prefix:module:id)
 is interpreted by the remote Trac, relying on its quickjump
 facility.
+
+== List of Active InterTrac Prefixes ==
+
+[[InterTrac]]
 
 ----
 See also: TracLinks, InterWiki

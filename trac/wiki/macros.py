@@ -26,7 +26,7 @@ except ImportError:
 
 from trac.config import default_dir
 from trac.core import *
-from trac.util import escape, format_date
+from trac.util import escape, format_date, sorted
 from trac.wiki.api import IWikiMacroProvider, WikiSystem
 from trac.wiki.model import WikiPage
 
@@ -449,3 +449,44 @@ class UserMacroProvider(Component):
             if os.path.isfile(macro_file):
                 return imp.load_source(name, macro_file)
         raise TracError, 'Macro %s not found' % name
+
+
+class InterTracMacro(Component):
+
+    implements(IWikiMacroProvider)
+
+    # IWikiMacroProvider methods
+
+    def get_macros(self):
+        yield 'InterTrac'
+
+    def get_macro_description(self, name): 
+        return "Provide a list of the known InterTrac prefixes."
+
+    def render_macro(self, req, name, content):
+        intertracs = {}
+        buf = StringIO()
+        buf.write('<table class="wiki intertrac"><tr>'
+                  '<th><em>Prefix</em></th><th><em>Trac Site</em></th></tr>\n')
+        for key, value in self.config.options('intertrac'):
+            if '.' in key:
+                prefix, attribute = key.split('.', 1)
+                it = intertracs.setdefault(prefix, {})
+                it[attribute] = value
+            else:
+                intertracs[key] = value # alias
+        for prefix in sorted(intertracs.keys()):
+            it = intertracs[prefix]
+            if isinstance(it, str):
+                buf.write('<tr><td><b>%s</b></td>'
+                          '<td>Alias for <b>%s</b></td></tr>' % (prefix, it))
+            else:
+                url = it.get('url', '')
+                title = it.get('title', url)
+                rc_url = url and url + '/timeline' or ''
+                buf.write('<tr>\n' +
+                          '<td><a href="%s"><b>%s</b></a></td>' % (rc_url, prefix) +
+                          '<td><a href="%s">%s</a></td>\n' % (url, title) +
+                          '</tr>\n')
+        buf.write('</table>\n')
+        return buf.getvalue()

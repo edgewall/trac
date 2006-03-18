@@ -908,7 +908,8 @@ class InterWikiMap(Component):
         keys = self._interwiki_map.keys()
         keys.sort()
         buf = StringIO()
-        buf.write('<table><tr><th>Prefix</th><td>Site</td></tr>\n')
+        buf.write('<table class="wiki interwiki"><tr>'
+                  '<th><em>Prefix</em></th><th><em>Site</em></th></tr>\n')
         for k in keys:
             prefix, url, title = self._interwiki_map[k]
             rc_url = self._expand_or_append(url, ['RecentChanges'])
