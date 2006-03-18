@@ -1,7 +1,7 @@
-# -*- coding: iso-8859-1 -*-
+# -*- coding: utf-8 -*-
 #
 # Copyright (C) 2003-2004 Edgewall Software
-# Copyright (C) 2003-2004 Jonas Borgström <jonas@edgewall.com>
+# Copyright (C) 2003-2004 Jonas BorgstrÃ¶m <jonas@edgewall.com>
 # All rights reserved.
 #
 # This software is licensed as described in the file COPYING, which
@@ -12,7 +12,7 @@
 # individuals. For exact contribution history, see the revision
 # history and logs, available at http://projects.edgewall.com/trac/.
 #
-# Author: Jonas Borgström <jonas@edgewall.com>
+# Author: Jonas BorgstrÃ¶m <jonas@edgewall.com>
 
 import re
 import time

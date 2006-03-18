@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# -*- coding: utf-8 -*-
 #
 # Copyright (C) 2004-2006 Edgewall Software
 # Copyright (C) 2004-2006 Christopher Lenz <cmlenz@gmx.de>

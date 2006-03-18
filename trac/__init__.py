@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# -*- coding: utf-8 -*-
 
 """
 Trac
@@ -6,7 +6,7 @@ Edgewall Software
 
 U{http://trac.edgewall.com/}
 
-@author: Jonas Borgström <jonas@edgewall.com>
+@author: Jonas BorgstrÃ¶m <jonas@edgewall.com>
 @author: Daniel Lundin <daniel@edgewall.com>
 """
 __docformat__ = 'epytext en'

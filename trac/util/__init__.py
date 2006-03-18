@@ -1,7 +1,7 @@
-# -*- coding: iso-8859-1 -*-
+# -*- coding: utf-8 -*-
 #
 # Copyright (C) 2003-2006 Edgewall Software
-# Copyright (C) 2003-2004 Jonas Borgström <jonas@edgewall.com>
+# Copyright (C) 2003-2004 Jonas BorgstrÃ¶m <jonas@edgewall.com>
 # Copyright (C) 2006 Matthew Good <trac@matt-good.net>
 # Copyright (C) 2005-2006 Christian Boos <cboos@neuf.fr>
 # All rights reserved.
@@ -14,7 +14,7 @@
 # individuals. For exact contribution history, see the revision
 # history and logs, available at http://projects.edgewall.com/trac/.
 #
-# Author: Jonas Borgström <jonas@edgewall.com>
+# Author: Jonas BorgstrÃ¶m <jonas@edgewall.com>
 #         Matthew Good <trac@matt-good.net>
 
 import md5

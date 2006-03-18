@@ -1,8 +1,8 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-1 -*-
+# -*- coding: utf-8 -*-
 #
 # Copyright (C) 2003-2005 Edgewall Software
-# Copyright (C) 2003-2005 Jonas Borgström <jonas@edgewall.com>
+# Copyright (C) 2003-2005 Jonas BorgstrÃ¶m <jonas@edgewall.com>
 # Copyright (C) 2005 Christopher Lenz <cmlenz@gmx.de>
 # All rights reserved.
 #
@@ -14,7 +14,7 @@
 # individuals. For exact contribution history, see the revision
 # history and logs, available at http://projects.edgewall.com/trac/.
 #
-# Author: Jonas Borgström <jonas@edgewall.com>
+# Author: Jonas BorgstrÃ¶m <jonas@edgewall.com>
 #         Christopher Lenz <cmlenz@gmx.de>
 
 import unittest
