@@ -558,19 +558,16 @@ class NotificationTestCase(unittest.TestCase):
         ticket['reporter'] = 'joe.user@example.org'
         # Forces non-ascii characters
         summary = u'A very %s súmmäry' % u' '.join(['long'] * 20)
-        ticket['summary'] = summary.encode('utf-8')
-        try:
-            ticket.insert()
-            tn = TicketNotifyEmail(self.env)
-            tn.notify(ticket, newticket=True)
-        except Exception, e:
-            raise Exception, e
+        ticket['summary'] = summary
+        ticket.insert()
+        tn = TicketNotifyEmail(self.env)
+        tn.notify(ticket, newticket=True)
         message = notifysuite.smtpd.get_message()
         (headers, body) = self._parse_message(message)
         # Discards the project name & ticket number
         subject = headers['Subject']
         summary = subject[subject.find(':')+2:]
-        self.failIf(summary != unicode(ticket['summary'], 'utf-8'))
+        self.failIf(summary != ticket['summary'])
 
     def test_mimebody_b64(self):
         """ Validate MIME Base64/utf-8 encoding """
@@ -633,7 +630,7 @@ class NotificationTestCase(unittest.TestCase):
         for line in bodylines:
             self.failIf(len(line) > 76)
         # body starts with a summary line, prefixed with the ticket number
-        # #<n>: summary 
+        # #<n>: summary
         (tknum, summary) = bodylines[0].split(' ', 1)
         self.assertEqual(tknum[0], '#')
         try:

@@ -109,7 +109,7 @@ class OneLinerTestCase(WikiTestCase):
 def suite():
     suite = unittest.TestSuite()
     file = os.path.join(os.path.split(__file__)[0], 'wiki-tests.txt')
-    data = open(file, 'r').read()
+    data = open(file, 'r').read().decode('utf-8')
     tests = data.split('=' * 30 + '\n')
     line = 1
     for test in tests:

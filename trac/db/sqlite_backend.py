@@ -42,25 +42,27 @@ try:
                 sql = sql % (('?',) * len(args[0]))
             return self._rollback_on_error(sqlite.Cursor.executemany, sql,
                                            args or [])
-        def _convert_row(self, row):
-            return tuple([(isinstance(v, unicode) and [v.encode('utf-8')] or [v])[0]
-                          for v in row])
-        def fetchone(self):
-            row = sqlite.Cursor.fetchone(self)
-            return row and self._convert_row(row) or None
-        def fetchmany(self, num):
-            rows = sqlite.Cursor.fetchmany(self, num)
-            return rows != None and [self._convert_row(row)
-                                     for row in rows] or None
-        def fetchall(self):
-            rows = sqlite.Cursor.fetchall(self)
-            return rows != None and [self._convert_row(row)
-                                     for row in rows] or None
 
 except ImportError:
     try:
         import sqlite
         have_pysqlite = 1
+
+        class SQLiteUnicodeCursor(sqlite.Cursor):
+            def _convert_row(self, row):
+                return tuple([(isinstance(v, str) and [v.decode('utf-8')] or [v])[0]
+                              for v in row])
+            def fetchone(self):
+                row = sqlite.Cursor.fetchone(self)
+                return row and self._convert_row(row) or None
+            def fetchmany(self, num):
+                rows = sqlite.Cursor.fetchmany(self, num)
+                return rows != None and [self._convert_row(row)
+                                         for row in rows] or None
+            def fetchall(self):
+                rows = sqlite.Cursor.fetchall(self)
+                return rows != None and [self._convert_row(row)
+                                         for row in rows] or None
     except ImportError:
         have_pysqlite = 0
 
@@ -83,6 +85,8 @@ def _to_sql(table):
     for index in table.indices:
         yield "CREATE INDEX %s_%s_idx ON %s (%s);" % (table.name,
               '_'.join(index.columns), table.name, ','.join(index.columns))
+
+
 
 
 class SQLiteConnector(Component):
@@ -138,16 +142,12 @@ class SQLiteConnection(ConnectionWrapper):
         if have_pysqlite == 2:
             self._active_cursors = weakref.WeakKeyDictionary()
             timeout = int(params.get('timeout', 10.0))
-            # Convert unicode to UTF-8 bytestrings. This is case-sensitive, so
-            # we need two converters
-            sqlite.register_converter('text', str)
-            sqlite.register_converter('TEXT', str)
-
             cnx = sqlite.connect(path, detect_types=sqlite.PARSE_DECLTYPES,
                                  timeout=timeout)
         else:
             timeout = int(params.get('timeout', 10000))
-            cnx = sqlite.connect(path, timeout=timeout)
+            cnx = sqlite.connect(path, timeout=timeout, encoding='utf-8')
+            
         ConnectionWrapper.__init__(self, cnx)
 
     if have_pysqlite == 2:
@@ -164,7 +164,8 @@ class SQLiteConnection(ConnectionWrapper):
 
     else:
         def cursor(self):
-            return self.cnx.cursor()
+            self.cnx._checkNotClosed("cursor")
+            return SQLiteUnicodeCursor(self.cnx, self.cnx.rowclass)
 
     def cast(self, column, type):
         return column

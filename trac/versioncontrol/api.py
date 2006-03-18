@@ -220,7 +220,7 @@ class Node(object):
 
     def __init__(self, path, rev, kind):
         assert kind in (Node.DIRECTORY, Node.FILE), "Unknown node kind %s" % kind
-        self.path = str(path)
+        self.path = unicode(path)
         self.rev = rev
         self.kind = kind
 

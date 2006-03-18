@@ -144,9 +144,9 @@ class NotifyEmail(Notify):
     def format_header(self, name, email=None):
         from email.Header import Header
         try:
-            tmp = unicode(name, 'ascii')
+            tmp = name.encode('ascii')
             name = Header(tmp, 'ascii', maxlinelen=self.maxheaderlen)
-        except UnicodeDecodeError:
+        except UnicodeEncodeError:
             name = Header(name, self._charset, maxlinelen=self.maxheaderlen)
         if not email:
             return name
@@ -239,7 +239,7 @@ class NotifyEmail(Notify):
         charset = 'utf-8'
         if not self._pref_encoding:
             try:
-                dummy = unicode(body, 'ascii')
+                dummy = body.encode('ascii')
             except UnicodeDecodeError:
                 raise TracError, "Ticket contains non-Ascii chars. " \
                                  "Please change encoding setting"

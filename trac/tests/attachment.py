@@ -1,3 +1,4 @@
+# -*- encoding: utf-8 -*-
 from trac.attachment import Attachment, AttachmentModule
 from trac.config import Configuration
 from trac.log import logger_factory
@@ -50,10 +51,10 @@ class AttachmentTestCase(unittest.TestCase):
         self.assertEqual(os.path.join(self.attachments_dir, 'ticket', '42',
                                       'Teh%20foo.txt'),
                          attachment.path)
-        attachment = Attachment(self.env, 'wiki', '\xdcberSicht')
+        attachment = Attachment(self.env, 'wiki', u'ÜberSicht')
         attachment.filename = 'Teh bar.jpg'
         self.assertEqual(os.path.join(self.attachments_dir, 'wiki',
-                                      '%DCberSicht', 'Teh%20bar.jpg'),
+                                      '%C3%9CberSicht', 'Teh%20bar.jpg'),
                          attachment.path)
 
     def test_select_empty(self):

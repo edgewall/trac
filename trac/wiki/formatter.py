@@ -21,10 +21,7 @@ import re
 import os
 import urllib
 
-try:
-    from cStringIO import StringIO
-except ImportError:
-    from StringIO import StringIO
+from StringIO import StringIO
 
 from trac import util
 from trac.core import *
@@ -426,12 +423,12 @@ class Formatter(object):
         text = wiki_to_oneliner(heading, self.env, self.db, self._absurls)
         sans_markup = re.sub(r'</?\w+(?: .*?)?>', '', text)
 
-        anchor = self._anchor_re.sub('', sans_markup.decode('utf-8'))
+        anchor = self._anchor_re.sub('', sans_markup)
         if not anchor or not anchor[0].isalpha():
             # an ID must start with a letter in HTML
             anchor = 'a' + anchor
         i = 1
-        anchor = anchor_base = anchor.encode('utf-8')
+        anchor = anchor_base = anchor
         while anchor in self._anchors:
             anchor = anchor_base + str(i)
             i += 1

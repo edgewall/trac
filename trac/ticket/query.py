@@ -75,7 +75,7 @@ class Query(object):
                 neg = '!'
                 field = field[:-1]
             values = map(lambda x: neg + mode + x, values)
-            constraints[field] = values
+            constraints[str(field)] = values
         return cls(env, constraints, **kw)
     from_string = classmethod(from_string)
 

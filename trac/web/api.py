@@ -160,7 +160,7 @@ class Request(object):
                     values = [values]
                 for value in values:
                     if not value.filename:
-                        value = value.value
+                        value = unicode(value.value, 'utf-8')
                     if name in args:
                         if isinstance(args[name], list):
                             args[name].append(value)
@@ -189,7 +189,7 @@ class Request(object):
 
     method = property(fget=lambda self: self.environ['REQUEST_METHOD'],
                       doc='The HTTP method of the request')
-    path_info = property(fget=lambda self: self.environ.get('PATH_INFO', ''),
+    path_info = property(fget=lambda self: self.environ.get('PATH_INFO', '').decode('utf-8'),
                          doc='Path inside the application')
     remote_addr = property(fget=lambda self: self.environ.get('REMOTE_ADDR'),
                            doc='IP address of the remote user')

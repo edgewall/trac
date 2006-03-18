@@ -37,7 +37,7 @@ class Attachment(object):
     def __init__(self, env, parent_type, parent_id, filename=None, db=None):
         self.env = env
         self.parent_type = parent_type
-        self.parent_id = str(parent_id)
+        self.parent_id = unicode(parent_id)
         if filename:
             self._fetch(filename, db)
         else:
@@ -55,7 +55,7 @@ class Attachment(object):
         cursor.execute("SELECT filename,description,size,time,author,ipnr "
                        "FROM attachment WHERE type=%s AND id=%s "
                        "AND filename=%s ORDER BY time",
-                       (self.parent_type, str(self.parent_id), filename))
+                       (self.parent_type, unicode(self.parent_id), filename))
         row = cursor.fetchone()
         cursor.close()
         if not row:
@@ -71,9 +71,9 @@ class Attachment(object):
 
     def _get_path(self):
         path = os.path.join(self.env.path, 'attachments', self.parent_type,
-                            urllib.quote(self.parent_id))
+                            util.unicode_quote(self.parent_id))
         if self.filename:
-            path = os.path.join(path, urllib.quote(self.filename))
+            path = os.path.join(path, util.unicode_quote(self.filename))
         return os.path.normpath(path)
     path = property(_get_path)
 
@@ -168,7 +168,7 @@ class Attachment(object):
         cursor = db.cursor()
         cursor.execute("SELECT filename,description,size,time,author,ipnr "
                        "FROM attachment WHERE type=%s AND id=%s ORDER BY time",
-                       (parent_type, str(parent_id)))
+                       (parent_type, unicode(parent_id)))
         for filename,description,size,time,author,ipnr in cursor:
             attachment = Attachment(env, parent_type, parent_id)
             attachment.filename = filename

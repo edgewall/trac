@@ -17,6 +17,7 @@
 #         Christopher Lenz <cmlenz@gmx.de>
 
 from urllib import quote, urlencode
+from trac.util import unicode_quote, unicode_urlencode
 
 
 class Href(object):
@@ -138,7 +139,7 @@ class Href(object):
                 args = args[:-1]
 
         # build the path
-        path = '/'.join([quote(str(arg).strip('/')) for arg in args
+        path = '/'.join([unicode_quote(unicode(arg).strip('/')) for arg in args
                          if arg != None])
         if path:
             href += '/' + path
@@ -148,7 +149,7 @@ class Href(object):
             add_param(k, v)
 
         if params:
-            href += '?' + urlencode(params)
+            href += '?' + unicode_urlencode(params)
 
         return href
 

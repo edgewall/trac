@@ -21,7 +21,7 @@ except NameError:
 from StringIO import StringIO
 
 
-class Markup(str):
+class Markup(unicode):
     """Marks a string as being safe for inclusion in XML output without needing
     to be escaped.
     
@@ -33,16 +33,16 @@ class Markup(str):
     def __new__(self, text='', *args):
         if args:
             text %= tuple([escape(arg) for arg in args])
-        return str.__new__(self, text)
+        return unicode.__new__(self, text)
 
     def __add__(self, other):
-        return Markup(str(self) + Markup.escape(other))
+        return Markup(unicode(self) + Markup.escape(other))
 
     def __mul__(self, num):
-        return Markup(str(self) * num)
+        return Markup(unicode(self) * num)
 
     def join(self, seq):
-        return Markup(str(self).join([Markup.escape(item) for item in seq]))
+        return Markup(unicode(self).join([Markup.escape(item) for item in seq]))
 
     def stripentities(self, keepxmlentities=False):
         """Return a copy of the text with any character or numeric entities
@@ -60,14 +60,14 @@ class Markup(str):
                     ref = int(ref[1:], 16)
                 else:
                     ref = int(ref, 10)
-                return unichr(ref).encode('utf-8')
+                return unichr(ref)
             else: # character entity
                 ref = match.group(2)
                 if keepxmlentities and ref in ('amp', 'apos', 'gt', 'lt', 'quot'):
                     return '&%s;' % ref
                 try:
                     codepoint = htmlentitydefs.name2codepoint[ref]
-                    return unichr(codepoint).encode('utf-8')
+                    return unichr(codepoint)
                 except KeyError:
                     if keepxmlentities:
                         return '&amp;%s;' % ref
@@ -92,9 +92,9 @@ class Markup(str):
             return text
         if not text:
             return cls()
-        text = str(text).replace('&', '&amp;') \
-                        .replace('<', '&lt;') \
-                        .replace('>', '&gt;')
+        text = unicode(text).replace('&', '&amp;') \
+                            .replace('<', '&lt;') \
+                            .replace('>', '&gt;')
         if quotes:
             text = text.replace('"', '&#34;')
         return cls(text)
@@ -104,10 +104,10 @@ class Markup(str):
         """Reverse-escapes &, <, > and " and returns a `str`."""
         if not self:
             return ''
-        return str(self).replace('&#34;', '"') \
-                        .replace('&gt;', '>') \
-                        .replace('&lt;', '<') \
-                        .replace('&amp;', '&')
+        return unicode(self).replace('&#34;', '"') \
+                            .replace('&gt;', '>') \
+                            .replace('&lt;', '<') \
+                            .replace('&amp;', '&')
 
     def plaintext(self, keeplinebreaks=True):
         """Returns the text as a `str`with all entities and tags removed."""

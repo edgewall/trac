@@ -24,6 +24,7 @@ import sys
 import time
 import traceback
 import urllib
+import locale
 
 import trac
 from trac import perm, util, db_default
@@ -171,6 +172,7 @@ class TracAdmin(cmd.Cmd):
         return [a for a in words if a.startswith (text)]
 
     def print_listing(self, headers, data, sep=' ', decor=True):
+        (cons_locale, cons_charset) = locale.getdefaultlocale() 
         ldata = list(data)
         if decor:
             ldata.insert(0, headers)
@@ -179,7 +181,7 @@ class TracAdmin(cmd.Cmd):
         ncols = len(ldata[0]) # assumes all rows are of equal length
         for cnum in xrange(0, ncols):
             mw = 0
-            for cell in [str(d[cnum]) or '' for d in ldata]:
+            for cell in [unicode(d[cnum]) or '' for d in ldata]:
                 if len(cell) > mw:
                     mw = len(cell)
             colw.append(mw)
@@ -191,8 +193,11 @@ class TracAdmin(cmd.Cmd):
                     sp = sep
                 if cnum + 1 == ncols:
                     sp = '' # No separator after last column
-                print ('%%-%ds%s' % (colw[cnum], sp)) \
-                      % (ldata[rnum][cnum] or ''),
+                pdata = ((u'%%-%ds%s' % (colw[cnum], sp)) 
+                         % (ldata[rnum][cnum] or ''))
+                if cons_charset and isinstance(pdata, unicode):
+                    pdata = pdata.encode(cons_charset)
+                print pdata,
             print
             if rnum == 0 and decor:
                 print ''.join(['-' for x in

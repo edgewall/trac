@@ -76,11 +76,17 @@ class PostgreSQLConnection(ConnectionWrapper):
         # We support both psycopg and PgSQL but prefer psycopg
         global psycopg
         global PgSQL
+        global have_psycopg2
+        
         if not psycopg and not PgSQL:
             try:
                 try:
                     import psycopg2 as psycopg
+                    import psycopg2.extensions
+                    psycopg2.extensions.register_type(psycopg2.extensions.UNICODE)
+                    have_psycopg2 = True
                 except ImportError:
+                    have_psycopg2 = False
                     import psycopg
             except ImportError:
                 from pyPgSQL import PgSQL
@@ -97,6 +103,8 @@ class PostgreSQLConnection(ConnectionWrapper):
             if port:
                 dsn.append('port=' + str(port))
             cnx = psycopg.connect(' '.join(dsn))
+            if have_psycopg2:
+                cnx.set_client_encoding('UNICODE')
         else:
             cnx = PgSQL.connect('', user, password, host, path, port)
         ConnectionWrapper.__init__(self, cnx)

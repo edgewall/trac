@@ -1,3 +1,4 @@
+# -*- encoding: utf-8 -*-
 from HTMLParser import HTMLParseError
 import unittest
 
@@ -34,7 +35,7 @@ class MarkupTestCase(unittest.TestCase):
 
     def test_add_reverse(self):
         markup = 'foo' + Markup('<b>bar</b>')
-        assert isinstance(markup, str)
+        assert isinstance(markup, unicode)
         self.assertEquals('foo<b>bar</b>', markup)
 
     def test_mul(self):
@@ -79,7 +80,7 @@ class MarkupTestCase(unittest.TestCase):
 
     def test_sanitize_entityref_text(self):
         markup = Markup('<a href="#">fo&ouml;</a>')
-        self.assertEquals('<a href="#">fo\xc3\xb6</a>', markup.sanitize())
+        self.assertEquals(u'<a href="#">foö</a>', markup.sanitize())
 
     def test_sanitize_escape_attr(self):
         markup = Markup('<div title="&lt;foo&gt;"></div>')
