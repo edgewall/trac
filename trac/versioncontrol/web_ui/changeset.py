@@ -651,16 +651,17 @@ class ChangesetModule(Component):
             rev, path = chgset[:sep], chgset[sep:]
         else:
             rev, path = chgset, None
-        repos = self.env.get_repository()
-        try:
-            chgset = repos.get_changeset(rev)
+        cursor = formatter.db.cursor()
+        cursor.execute('SELECT message FROM revision WHERE rev=%s', (rev,))
+        row = cursor.fetchone()
+        if row:
             return '<a class="changeset" title="%s" href="%s">%s</a>' \
-                   % (util.escape(util.shorten_line(chgset.message)),
+                   % (util.escape(util.shorten_line(row[0])),
                       formatter.href.changeset(rev, path), label)
-        except TracError, e:
-            return '<a class="missing changeset" title="%s" href="%s"' \
+        else:
+            return '<a class="missing changeset" href="%s"' \
                    ' rel="nofollow">%s</a>' \
-                   % (str(e), formatter.href.changeset(rev, path), label)
+                   % (formatter.href.changeset(rev, path), label)
 
     def _format_diff_link(self, formatter, ns, params, label):
         def pathrev(path):
