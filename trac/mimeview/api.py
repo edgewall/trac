@@ -124,20 +124,20 @@ def get_mimetype(filename, content=None):
         else:
             return None
 
-def is_binary(str):
+def is_binary(data):
     """Detect binary content by checking the first thousand bytes for zeroes."""
-    if detect_unicode(str):
+    if detect_unicode(data):
         return False
-    return '\0' in str[:1000]
+    return '\0' in data[:1000]
 
 def detect_unicode(data):
     """Detect different unicode charsets by looking for BOMs (Byte Order
     Marks)."""
-    if data.startswith('\xff\xfe'):
+    if data.startswith(u'\xff\xfe'):
         return 'utf-16-le'
-    elif data.startswith('\xfe\xff'):
+    elif data.startswith(u'\xfe\xff'):
         return 'utf-16-be'
-    elif data.startswith('\xef\xbb\xbf'):
+    elif data.startswith(u'\xef\xbb\xbf'):
         return 'utf-8'
     else:
         return None
