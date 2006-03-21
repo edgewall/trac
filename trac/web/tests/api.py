@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from trac.test import Mock
 from trac.web.api import Request, RequestDone
 from trac.web.clearsilver import HDFWrapper
@@ -81,6 +83,18 @@ class RequestTestCase(unittest.TestCase):
         self.assertEqual('302 Found', status_sent[0])
         self.assertEqual('http://example.com/trac/test',
                          headers_sent['Location'])
+
+    def test_write_unicode(self):
+        buf = StringIO()
+        def write(data):
+            buf.write(data)
+        def start_response(status, headers):
+            return write
+        environ = self._make_environ(method='HEAD')
+        req = Request(environ, start_response)
+        req.send_header('Content-Type', 'text/plain;charset=utf-8')
+        req.write(u'Föö')
+        self.assertEqual('Föö', buf.getvalue())
 
 
 def suite():

@@ -123,6 +123,7 @@ class Request(object):
         if 'CONTENT_TYPE' in environ:
             self._inheaders.append(('content-type', environ['CONTENT_TYPE']))
         self._outheaders = []
+        self._outcharset = None
 
         self.incookie = Cookie()
         cookie = self.get_header('Cookie')
@@ -221,6 +222,10 @@ class Request(object):
 
     def send_header(self, name, value):
         """Send the response header with the specified name and value."""
+        if name.lower() == 'content-type':
+            ctpos = value.find('charset=')
+            if ctpos >= 0:
+                self._outcharset = value[ctpos + 8:].strip()
         self._outheaders.append((name, str(value)))
 
     def _send_cookie_headers(self):
@@ -402,6 +407,8 @@ class Request(object):
         """Write the given data to the response body."""
         if not self._write:
             self.end_headers()
+        if isinstance(data, unicode):
+            data = data.encode(self._outcharset or 'ascii')
         self._write(data)
 
 
