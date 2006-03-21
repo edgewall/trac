@@ -172,7 +172,7 @@ class TracAdmin(cmd.Cmd):
         return [a for a in words if a.startswith (text)]
 
     def print_listing(self, headers, data, sep=' ', decor=True):
-        (cons_locale, cons_charset) = locale.getdefaultlocale() 
+        cons_charset = locale.getpreferredencoding()
         ldata = list(data)
         if decor:
             ldata.insert(0, headers)
