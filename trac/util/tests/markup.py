@@ -1,19 +1,21 @@
 # -*- encoding: utf-8 -*-
+
+import doctest
 from HTMLParser import HTMLParseError
 import unittest
 
-from trac.util import Markup, unescape
+from trac.util.markup import escape, html, unescape, Element, Markup
 
 
 class MarkupTestCase(unittest.TestCase):
 
     def test_escape(self):
-        markup = Markup.escape('<b>"&"</b>')
+        markup = escape('<b>"&"</b>')
         assert isinstance(markup, Markup)
         self.assertEquals('&lt;b&gt;&#34;&amp;&#34;&lt;/b&gt;', markup)
 
     def test_escape_noquotes(self):
-        markup = Markup.escape('<b>"&"</b>', quotes=False)
+        markup = escape('<b>"&"</b>', quotes=False)
         assert isinstance(markup, Markup)
         self.assertEquals('&lt;b&gt;"&amp;"&lt;/b&gt;', markup)
 
@@ -37,6 +39,16 @@ class MarkupTestCase(unittest.TestCase):
         markup = 'foo' + Markup('<b>bar</b>')
         assert isinstance(markup, unicode)
         self.assertEquals('foo<b>bar</b>', markup)
+
+    def test_mod(self):
+        markup = Markup('<b>%s</b>') % '&'
+        assert isinstance(markup, Markup)
+        self.assertEquals('<b>&amp;</b>', markup)
+
+    def test_mod_multi(self):
+        markup = Markup('<b>%s</b> %s') % ('&', 'boo')
+        assert isinstance(markup, Markup)
+        self.assertEquals('<b>&amp;</b> boo', markup)
 
     def test_mul(self):
         markup = Markup('<b>foo</b>') * 2
@@ -157,9 +169,21 @@ class MarkupTestCase(unittest.TestCase):
         self.assertEquals('<img />', markup.sanitize())
 
 
+class TagsTestCase(unittest.TestCase):
+
+    def test_link(self):
+        link = html.A(href='#', title='Foo', accesskey=None)['Bar']
+        bits = link.serialize()
+        self.assertEqual(u'<a href="#" title="Foo">', bits.next())
+        self.assertEqual(u'Bar', bits.next())
+        self.assertEqual(u'</a>', bits.next())
+
+
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(MarkupTestCase, 'test'))
+    suite.addTest(doctest.DocTestSuite(Element.__module__))
+    suite.addTest(unittest.makeSuite(TagsTestCase, 'test'))
     return suite
 
 if __name__ == '__main__':

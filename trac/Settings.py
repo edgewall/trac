@@ -15,7 +15,7 @@
 # Author: Daniel Lundin <daniel@edgewall.com>
 
 from trac.core import *
-from trac.util import Markup
+from trac.util.markup import html
 from trac.web import IRequestHandler
 from trac.web.chrome import INavigationContributor
 
@@ -33,7 +33,7 @@ class SettingsModule(Component):
 
     def get_navigation_items(self, req):
         yield ('metanav', 'settings',
-               Markup('<a href="%s">Settings</a>', self.env.href.settings()))
+               html.A(href=req.href.settings())['Settings'])
 
     # IRequestHandler methods
 

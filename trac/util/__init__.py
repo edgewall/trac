@@ -27,7 +27,7 @@ from urllib import quote, urlencode
 
 # Imports for backward compatibility
 from trac.core import TracError
-from trac.util.html import escape, unescape, Markup, Deuglifier
+from trac.util.markup import escape, unescape, Markup, Deuglifier
 
 CRLF = '\r\n'
 

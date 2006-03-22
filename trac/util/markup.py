@@ -19,6 +19,14 @@ try:
 except NameError:
     from sets import ImmutableSet as frozenset
 from StringIO import StringIO
+import sys
+
+__all__ = ['escape', 'unescape', 'html']
+
+_EMPTY_TAGS = frozenset(['br', 'hr', 'img', 'input'])
+_BOOLEAN_ATTRS = frozenset(['selected', 'checked', 'compact', 'declare',
+                            'defer', 'disabled', 'ismap', 'multiple', 'nohref',
+                            'noresize', 'noshade', 'nowrap'])
 
 
 class Markup(unicode):
@@ -37,6 +45,12 @@ class Markup(unicode):
 
     def __add__(self, other):
         return Markup(unicode(self) + Markup.escape(other))
+
+    def __mod__(self, args):
+        if not isinstance(args, (list, tuple)):
+            args = [args]
+        return Markup(unicode.__mod__(self,
+                                      tuple([escape(arg) for arg in args])))
 
     def __mul__(self, num):
         return Markup(unicode(self) * num)
@@ -90,18 +104,19 @@ class Markup(unicode):
         """
         if isinstance(text, cls):
             return text
+        text = unicode(text)
         if not text:
             return cls()
-        text = unicode(text).replace('&', '&amp;') \
-                            .replace('<', '&lt;') \
-                            .replace('>', '&gt;')
+        text = text.replace('&', '&amp;') \
+                   .replace('<', '&lt;') \
+                   .replace('>', '&gt;')
         if quotes:
             text = text.replace('"', '&#34;')
         return cls(text)
     escape = classmethod(escape)
 
     def unescape(self):
-        """Reverse-escapes &, <, > and " and returns a `str`."""
+        """Reverse-escapes &, <, > and " and returns a `unicode` object."""
         if not self:
             return ''
         return unicode(self).replace('&#34;', '"') \
@@ -110,8 +125,8 @@ class Markup(unicode):
                             .replace('&amp;', '&')
 
     def plaintext(self, keeplinebreaks=True):
-        """Returns the text as a `str`with all entities and tags removed."""
-        text = self.striptags().stripentities()
+        """Returns the text as a `unicode`with all entities and tags removed."""
+        text = unicode(self.striptags().stripentities())
         if not keeplinebreaks:
             text = text.replace('\n', ' ')
         return text
@@ -127,7 +142,7 @@ class Markup(unicode):
         this function.
         """
         buf = StringIO()
-        sanitizer = Sanitizer(buf)
+        sanitizer = HTMLSanitizer(buf)
         sanitizer.feed(self.stripentities(keepxmlentities=True))
         return Markup(buf.getvalue())
 
@@ -135,7 +150,7 @@ class Markup(unicode):
 escape = Markup.escape
 
 def unescape(text):
-    """Reverse-escapes &, <, > and \"."""
+    """Reverse-escapes &, <, > and " and returns a `unicode` object."""
     if not isinstance(text, Markup):
         return text
     return text.unescape()
@@ -163,7 +178,7 @@ class Deuglifier(object):
                 return '<span class="code-%s">' % mtype
 
 
-class Sanitizer(HTMLParser):
+class HTMLSanitizer(HTMLParser):
 
     safe_tags = frozenset(['a', 'abbr', 'acronym', 'address', 'area',
         'b', 'big', 'blockquote', 'br', 'button', 'caption', 'center',
@@ -189,15 +204,14 @@ class Sanitizer(HTMLParser):
         'target', 'title', 'type', 'usemap', 'valign', 'value',
         'vspace', 'width'])
     uri_attrs = frozenset(['action', 'background', 'dynsrc', 'href',
-                          'lowsrc', 'src'])
+                           'lowsrc', 'src'])
     safe_schemes = frozenset(['file', 'ftp', 'http', 'https', 'mailto',
                               None])
-    empty_tags = frozenset(['br', 'hr', 'img', 'input'])
-    waiting_for = None
 
     def __init__(self, out):
         HTMLParser.__init__(self)
         self.out = out
+        self.waiting_for = None
 
     def handle_starttag(self, tag, attrs):
         if self.waiting_for:
@@ -239,7 +253,7 @@ class Sanitizer(HTMLParser):
                 attrval = '; '.join(decls)
             self.out.write(' ' + attrname + '="' + escape(attrval) + '"')
 
-        if tag in self.empty_tags:
+        if tag in _EMPTY_TAGS:
             self.out.write(' />')
         else:
             self.out.write('>')
@@ -257,5 +271,196 @@ class Sanitizer(HTMLParser):
             if self.waiting_for == tag:
                 self.waiting_for = None
             return
-        if tag not in self.empty_tags:
+        if tag not in _EMPTY_TAGS:
             self.out.write('</' + tag + '>')
+
+
+class Fragment(object):
+    __slots__ = ['children']
+
+    def __init__(self):
+        self.children = []
+
+    def append(self, node):
+        """Append an element or string as child node."""
+        if isinstance(node, (Element, Markup, basestring, int, float, long)):
+            # For objects of a known/primitive type, we avoid the check for
+            # whether it is iterable for better performance
+            self.children.append(node)
+        elif isinstance(node, Fragment):
+            self.children += node.children
+        elif node is not None:
+            try:
+                for child in node:
+                    self.append(child)
+            except TypeError:
+                self.children.append(node)
+
+    def __getitem__(self, nodes):
+        """Add child nodes to the element."""
+        if not isinstance(nodes, (basestring, Fragment)):
+            try:
+                nodes = iter(nodes)
+            except TypeError:
+                nodes = [str(nodes)]
+        else:
+            nodes = [nodes]
+        self.append(nodes)
+        return self
+
+    def serialize(self):
+        """Generator that yield tags and text nodes as strings."""
+        for child in self.children:
+            if isinstance(child, Fragment):
+                yield unicode(child)
+            else:
+                yield escape(child, quotes=False)
+
+    def __str__(self):
+        return Markup(''.join(self.serialize()))
+
+    def __add__(self, other):
+        return Fragment()[self, other]
+
+
+class Element(Fragment):
+    """Simple XHTML output generator based on the builder pattern.
+
+    Construct XHTML elements by passing the tag name to the constructor:
+
+    >>> print Element('strong')
+    <strong></strong>
+
+    Attributes can be specified using keyword arguments. The values of the
+    arguments will be converted to strings and any special XML characters
+    escaped:
+
+    >>> print Element('textarea', rows=10, cols=60)
+    <textarea rows="10" cols="60"></textarea>
+    >>> print Element('span', title='1 < 2')
+    <span title="1 &lt; 2"></span>
+    >>> print Element('span', title='"baz"')
+    <span title="&#34;baz&#34;"></span>
+
+    The order in which attributes are rendered is undefined.
+
+    If an attribute value evaluates to `None`, that attribute is not included
+    in the output:
+
+    >>> print Element('a', name=None)
+    <a></a>
+
+    Attribute names that conflict with Python keywords can be specified by
+    appending an underscore:
+
+    >>> print Element('div', class_='warning')
+    <div class="warning"></div>
+
+    While the tag names and attributes are not restricted to the XHTML language,
+    some HTML characteristics such as boolean (minimized) attributes and empty
+    elements get special treatment.
+
+    For compatibility with HTML user agents, some XHTML elements need to be
+    closed using a separate closing tag even if they are empty. For this, the
+    close tag is only ommitted for a small set of elements which are known be
+    be safe for use as empty elements:
+
+    >>> print Element('br')
+    <br />
+
+    Trying to add nested elements to such an element will cause an
+    `AssertionError`:
+    
+    >>> Element('br')['Oops']
+    Traceback (most recent call last):
+        ...
+    AssertionError: 'br' elements must not have content
+
+    Furthermore, boolean attributes such as "selected" or "checked" are omitted
+    if the value evaluates to `False`. Otherwise, the name of the attribute is
+    used for the value:
+
+    >>> print Element('option', value=0, selected=False)
+    <option value="0"></option>
+    >>> print Element('option', selected='yeah')
+    <option selected="selected"></option>
+
+    Nested elements can be added to an element using item access notation:
+
+    >>> print Element('ul')[Element('li'), Element('li')]
+    <ul><li></li><li></li></ul>
+
+    Text nodes can be nested in an element by adding strings instead of
+    elements. Any special characters in the strings are escaped automatically:
+
+    >>> print Element('em')['Hello world']
+    <em>Hello world</em>
+    >>> print Element('em')[42]
+    <em>42</em>
+    >>> print Element('em')['1 < 2']
+    <em>1 &lt; 2</em>
+
+    This technique also allows mixed content:
+
+    >>> print Element('p')['Hello ', Element('b')['world']]
+    <p>Hello <b>world</b></p>
+
+    Elements can also be combined with other elements or strings using the
+    addition operator, which results in a `Fragment` object that contains the
+    operands:
+    
+    >>> print Element('br') + 'some text' + Element('br')
+    <br />some text<br />
+    """
+    __slots__ = ['tagname', 'attr']
+
+    def __init__(self, tagname_=None, **attr):
+        Fragment.__init__(self)
+        if tagname_:
+            self.tagname = tagname_
+        self.attr = {}
+        self(**attr)
+
+    def __call__(self, **attr):
+        self.attr.update(attr)
+        return self
+
+    def append(self, node):
+        """Append an element or string as child node."""
+        assert self.tagname not in _EMPTY_TAGS, \
+            "'%s' elements must not have content" % self.tagname
+        Fragment.append(self, node)
+
+    def serialize(self):
+        """Generator that yield tags and text nodes as strings."""
+        starttag = ['<', self.tagname]
+        for name, value in self.attr.items():
+            if value is None:
+                continue
+            if name in _BOOLEAN_ATTRS:
+                if not value:
+                    continue
+                value = name
+            else:
+                name = name.rstrip('_').replace('_', '-')
+            starttag.append(' %s="%s"' % (name.lower(), escape(value)))
+
+        if self.children or self.tagname not in _EMPTY_TAGS:
+            starttag.append('>')
+            yield Markup(''.join(starttag))
+            for part in Fragment.serialize(self):
+                yield part
+            yield '</%s>' % self.tagname
+
+        else:
+            starttag.append(' />')
+            yield Markup(''.join(starttag))
+
+
+class Tags(object):
+
+    def __getattribute__(self, name):
+        return Element(name.lower())
+
+
+html = Tags()

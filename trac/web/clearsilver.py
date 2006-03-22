@@ -15,7 +15,7 @@
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
 from trac.core import TracError
-from trac import util
+from trac.util import markup
 
 
 class HDFWrapper:
@@ -211,16 +211,16 @@ class HDFWrapper:
                 return
             elif value in (True, False):
                 self.hdf.setValue(prefix, str(int(value)))
-            elif isinstance(value, util.Markup):
+            elif isinstance(value, markup.Markup):
                 self.hdf.setValue(prefix, value.encode('utf-8'))
             elif isinstance(value, str):
                 if escape:
-                    self.hdf.setValue(prefix, util.escape(value))
+                    self.hdf.setValue(prefix, markup.escape(value))
                 else:
                     self.hdf.setValue(prefix, value)
             elif isinstance(value, unicode):
                 if escape:
-                    self.hdf.setValue(prefix, util.escape(value).encode('utf-8'))
+                    self.hdf.setValue(prefix, markup.escape(value).encode('utf-8'))
                 else:
                     self.hdf.setValue(prefix, value.encode('utf-8'))
             elif isinstance(value, dict):
