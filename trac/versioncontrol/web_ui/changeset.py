@@ -29,6 +29,7 @@ from trac.mimeview import Mimeview, is_binary
 from trac.perm import IPermissionRequestor
 from trac.Search import ISearchSource, search_to_sql, shorten_result
 from trac.Timeline import ITimelineEventProvider
+from trac.util.markup import escape, unescape, Markup
 from trac.versioncontrol import Changeset, Node
 from trac.versioncontrol.diff import get_diff_options, hdf_diff, unified_diff
 from trac.versioncontrol.svn_authz import SubversionAuthorizer
@@ -115,9 +116,9 @@ class ChangesetModule(Component):
         old = req.args.get('old')
 
         if old and '@' in old:
-            old_path, old = util.unescape(old).split('@')
+            old_path, old = unescape(old).split('@')
         if new and '@' in new:
-            new_path, new = util.unescape(new).split('@')
+            new_path, new = unescape(new).split('@')
 
         # -- normalize and check for special case
         repos = self.env.get_repository(req.authname)
@@ -145,12 +146,12 @@ class ChangesetModule(Component):
         if req.args.has_key('update'):
             if chgset:
                 if restricted:
-                    req.redirect(self.env.href.changeset(new, new_path))
+                    req.redirect(req.href.changeset(new, new_path))
                 else:
-                    req.redirect(self.env.href.changeset(new))
+                    req.redirect(req.href.changeset(new))
             else:
-                req.redirect(self.env.href.changeset(new, new_path, old=old,
-                                                     old_path=old_path))
+                req.redirect(req.href.changeset(new, new_path, old=old,
+                                                old_path=old_path))
 
         # -- preparing the diff arguments
         if chgset:
@@ -237,12 +238,12 @@ class ChangesetModule(Component):
         req.hdf['changeset'] = {
             'chgset': chgset and True,
             'restricted': restricted,
-            'href': { 'new_rev': self.env.href.changeset(diff.new_rev),
-                      'old_rev': self.env.href.changeset(diff.old_rev),
-                      'new_path': self.env.href.browser(diff.new_path,
-                                                        rev=diff.new_rev),
-                      'old_path': self.env.href.browser(diff.old_path,
-                                                        rev=diff.old_rev),
+            'href': { 'new_rev': req.href.changeset(diff.new_rev),
+                      'old_rev': req.href.changeset(diff.old_rev),
+                      'new_path': req.href.browser(diff.new_path,
+                                                   rev=diff.new_rev),
+                      'old_path': req.href.browser(diff.old_path,
+                                                   rev=diff.old_rev),
                       }
             }
         
@@ -294,17 +295,16 @@ class ChangesetModule(Component):
                     if prev:
                         prev_path, prev_rev = prev[:2]
                         if prev_rev:
-                            prev_href = self.env.href.changeset(prev_rev,
-                                                                prev_path)
+                            prev_href = req.href.changeset(prev_rev, prev_path)
                     else:
                         prev_path = prev_rev = None
                 else:
-                    add_link(req, 'first', self.env.href.changeset(oldest_rev),
+                    add_link(req, 'first', req.href.changeset(oldest_rev),
                              'Changeset %s' % oldest_rev)
                     prev_path = diff.old_path
                     prev_rev = repos.previous_rev(chgset.rev)
                     if prev_rev:
-                        prev_href = self.env.href.changeset(prev_rev)
+                        prev_href = req.href.changeset(prev_rev)
                 if prev_rev:
                     add_link(req, 'prev', prev_href, _changeset_title(prev_rev))
             youngest_rev = repos.youngest_rev
@@ -312,13 +312,13 @@ class ChangesetModule(Component):
                 if restricted:
                     next_rev = repos.next_rev(chgset.rev, path)
                     if next_rev:
-                        next_href = self.env.href.changeset(next_rev, path)
+                        next_href = req.href.changeset(next_rev, path)
                 else:
-                    add_link(req, 'last', self.env.href.changeset(youngest_rev),
+                    add_link(req, 'last', req.href.changeset(youngest_rev),
                              'Changeset %s' % youngest_rev)
                     next_rev = repos.next_rev(chgset.rev)
                     if next_rev:
-                        next_href = self.env.href.changeset(next_rev)
+                        next_href = req.href.changeset(next_rev)
                 if next_rev:
                     add_link(req, 'next', next_href, _changeset_title(next_rev))
 
@@ -328,11 +328,11 @@ class ChangesetModule(Component):
                 for d in repos.get_changes(**diff):
                     yield d
                     
-            reverse_href = self.env.href.changeset(diff.old_rev, diff.old_path,
+            reverse_href = req.href.changeset(diff.old_rev, diff.old_path,
                                                    old=diff.new_rev,
                                                    old_path=diff.new_path)
             req.hdf['changeset.reverse_href'] = reverse_href
-            req.hdf['changeset.href.log'] = self.env.href.log(
+            req.hdf['changeset.href.log'] = req.href.log(
                 diff.new_path, rev=diff.new_rev, stop_rev=diff.old_rev)
             title = self.title_for_diff(diff)
         req.hdf['title'] = title
@@ -343,8 +343,8 @@ class ChangesetModule(Component):
                 info['path.old'] = old_node.path
                 info['rev.old'] = old_node.rev
                 info['shortrev.old'] = repos.short_rev(old_node.rev)
-                old_href = self.env.href.browser(old_node.created_path,
-                                                 rev=old_node.created_rev)
+                old_href = req.href.browser(old_node.created_path,
+                                            rev=old_node.created_rev)
                 # Reminder: old_node.path may not exist at old_node.rev
                 #           as long as old_node.rev==old_node.created_rev
                 #           ... and diff.old_rev may have nothing to do
@@ -354,8 +354,8 @@ class ChangesetModule(Component):
                 info['path.new'] = new_node.path
                 info['rev.new'] = new_node.rev # created rev.
                 info['shortrev.new'] = repos.short_rev(new_node.rev)
-                new_href = self.env.href.browser(new_node.created_path,
-                                                 rev=new_node.created_rev)
+                new_href = req.href.browser(new_node.created_path,
+                                            rev=new_node.created_rev)
                 # (same remark as above)
                 info['browser_href.new'] = new_href
             return info
@@ -463,10 +463,10 @@ class ChangesetModule(Component):
                 info = _change_info(old_node, new_node, change)
                 if change == Changeset.EDIT and not show_diffs:
                     if chgset:
-                        diff_href = self.env.href.changeset(new_node.rev,
-                                                            new_node.path)
+                        diff_href = req.href.changeset(new_node.rev,
+                                                       new_node.path)
                     else:
-                        diff_href = self.env.href.changeset(
+                        diff_href = req.href.changeset(
                             new_node.created_rev, new_node.created_path,
                             old=old_node.created_rev,
                             old_path=old_node.created_path)
@@ -524,10 +524,8 @@ class ChangesetModule(Component):
                     old_node_info = new_node_info # support for 'A'dd changes
                 req.write('Index: ' + new_path + util.CRLF)
                 req.write('=' * 67 + util.CRLF)
-                req.write('--- %s (revision %s)' % old_node_info +
-                          util.CRLF)
-                req.write('+++ %s (revision %s)' % new_node_info +
-                          util.CRLF)
+                req.write('--- %s (revision %s)' % old_node_info + util.CRLF)
+                req.write('+++ %s (revision %s)' % new_node_info + util.CRLF)
                 for line in unified_diff(old_content.splitlines(),
                                          new_content.splitlines(), context,
                                          ignore_blank_lines='-B' in options,
@@ -594,15 +592,14 @@ class ChangesetModule(Component):
                 message = chgset.message or '--'
                 shortlog = wiki_to_oneliner(message, self.env, db, shorten=True)
                 if format == 'rss':
-                    title = util.Markup('Changeset [%s]: %s',
-                                        chgset.rev, shortlog)
+                    title = Markup('Changeset [%s]: %s', chgset.rev, shortlog)
                     href = self.env.abs_href.changeset(chgset.rev)
                     message = wiki_to_html(message, self.env, req, db,
                                            absurls=True)
                 else:
-                    title = util.Markup('Changeset <em>[%s]</em> by %s',
-                                        chgset.rev, chgset.author)
-                    href = self.env.href.changeset(chgset.rev)
+                    title = Markup('Changeset <em>[%s]</em> by %s', chgset.rev,
+                                   chgset.author)
+                    href = req.href.changeset(chgset.rev)
                     message = wiki_to_oneliner(message, self.env, db,
                                                shorten=True)
                 if show_files:
@@ -611,11 +608,10 @@ class ChangesetModule(Component):
                         if show_files > 0 and len(files) >= show_files:
                             files.append('&hellip; <br />')
                             break
-                        files.append(util.Markup('<span class="%s">%s</span>'
-                                                 '<br />',
-                                                 chg[2], chg[0] or '/'))
-                    message = util.Markup('<span class="changes">%s</span> %s',
-                                          util.Markup(''.join(files)), message)
+                        files.append(Markup('<span class="%s">%s</span><br />',
+                                            chg[2], chg[0] or '/'))
+                    message = Markup('<span class="changes">%s</span> %s',
+                                     Markup(''.join(files)), message)
                 yield 'changeset', href, title, chgset.date, chgset.author,\
                       message
 
@@ -656,7 +652,7 @@ class ChangesetModule(Component):
         row = cursor.fetchone()
         if row:
             return '<a class="changeset" title="%s" href="%s">%s</a>' \
-                   % (util.escape(util.shorten_line(row[0])),
+                   % (escape(util.shorten_line(row[0])),
                       formatter.href.changeset(rev, path), label)
         else:
             return '<a class="missing changeset" href="%s"' \
@@ -707,7 +703,7 @@ class ChangesetModule(Component):
         for rev, date, author, log in cursor:
             if not authzperm.has_permission_for_changeset(rev):
                 continue
-            yield (self.env.href.changeset(rev),
+            yield (req.href.changeset(rev),
                    '[%s]: %s' % (rev, util.shorten_line(log)),
                    date, author, shorten_result(log, terms))
 
@@ -745,7 +741,7 @@ class AnyDiffModule(Component):
             'new_rev': new_rev,
             'old_path': old_path,
             'old_rev': old_rev,
-            'changeset_href': self.env.href.changeset(),
+            'changeset_href': req.href.changeset(),
             }
 
         return 'anydiff.cs', None

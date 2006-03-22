@@ -165,7 +165,7 @@ class SearchModule(Component):
         query = req.args.get('q')
         if query:
             page = int(req.args.get('page', '1'))
-            redir = self.quickjump(query)
+            redir = self.quickjump(req, query)
             if redir:
                 req.redirect(redir)
             elif query.startswith('!'):
@@ -192,20 +192,15 @@ class SearchModule(Component):
             req.hdf['search.n_pages'] = n_pages
             req.hdf['search.page_size'] = page_size
             if page < n_pages:
-                next_href = self.env.href.search(zip(filters,
-                                                     ['on'] * len(filters)),
-                                                 q=req.args.get('q'),
-                                                 page=page + 1)
+                next_href = req.href.search(zip(filters, ['on'] * len(filters)),
+                                            q=req.args.get('q'), page=page + 1)
                 add_link(req, 'next', next_href, 'Next Page')
             if page > 1:
-                prev_href = self.env.href.search(zip(filters,
-                                                     ['on'] * len(filters)),
-                                                 q=req.args.get('q'),
-                                                 page=page - 1)
+                prev_href = req.href.search(zip(filters, ['on'] * len(filters)),
+                                            q=req.args.get('q'), page=page - 1)
                 add_link(req, 'prev', prev_href, 'Previous Page')
-            req.hdf['search.page_href'] = self.env.href.search(zip(filters,
-                                                                   ['on'] * len(filters)),
-                                                               q=req.args.get('q'))
+            req.hdf['search.page_href'] = req.href.search(zip(filters, ['on'] * len(filters)),
+                                                          q=req.args.get('q'))
             req.hdf['search.result'] = [
                 { 'href': result[0],
                   'title': result[1],
@@ -217,43 +212,43 @@ class SearchModule(Component):
         add_stylesheet(req, 'common/css/search.css')
         return 'search.cs', None
 
-    def quickjump(self, kwd):
+    def quickjump(self, req, kwd):
         if len(kwd.split()) != 1:
             return None
         # Ticket quickjump
         if kwd[0] == '#' and kwd[1:].isdigit():
-            return self.env.href.ticket(kwd[1:])
+            return req.href.ticket(kwd[1:])
         elif kwd[0:len('ticket:')] == 'ticket:' and kwd[len('ticket:'):].isdigit():
-            return self.env.href.ticket(kwd[len('ticket:'):])
+            return req.href.ticket(kwd[len('ticket:'):])
         elif kwd[0:len('bug:')] == 'bug:' and kwd[len('bug:'):].isdigit():
-            return self.env.href.ticket(kwd[len('bug:'):])
+            return req.href.ticket(kwd[len('bug:'):])
         # Changeset quickjump
         elif kwd[0] == '[' and kwd[-1] == ']' and kwd[1:-1].isalnum():
-            return self.env.href.changeset(kwd[1:-1])
+            return req.href.changeset(kwd[1:-1])
         elif kwd[0:len('changeset:')] == 'changeset:' and kwd[len('changeset:'):].isdigit():
-            return self.env.href.changeset(kwd[len('changeset:'):])
+            return req.href.changeset(kwd[len('changeset:'):])
         # Report quickjump
         elif kwd[0] == '{' and kwd[-1] == '}' and kwd[1:-1].isdigit():
-            return self.env.href.report(kwd[1:-1])
+            return req.href.report(kwd[1:-1])
         elif kwd[0:len('report:')] == 'report:' and kwd[len('report:'):].isdigit():
-            return self.env.href.report(kwd[len('report:'):])
+            return req.href.report(kwd[len('report:'):])
         # Milestone quickjump
         elif kwd[0:len('milestone:')] == 'milestone:':
-            return self.env.href.milestone(kwd[len('milestone:'):])
+            return req.href.milestone(kwd[len('milestone:'):])
         # Source quickjump
         elif kwd[0] == '/':
-            return self.env.href.browser(kwd)
+            return req.href.browser(kwd)
         elif kwd[0:len('source:')] == 'source:':
-            return self.env.href.browser(kwd[len('source:'):])
+            return req.href.browser(kwd[len('source:'):])
         # Wiki quickjump
         elif kwd[0:len('wiki:')] == 'wiki:':
             r = "((^|(?<=[^A-Za-z]))[!]?[A-Z][a-z/]+(?:[A-Z][a-z/]+)+)"
             if re.match (r, kwd[len('wiki:'):]):
-                return self.env.href.wiki(kwd[len('wiki:'):])
+                return req.href.wiki(kwd[len('wiki:'):])
         elif len(kwd) > 1 and kwd[0].isupper() and kwd[1].islower():
             r = "((^|(?<=[^A-Za-z]))[!]?[A-Z][a-z/]+(?:[A-Z][a-z/]+)+)"
             if re.match (r, kwd):
-                return self.env.href.wiki(kwd)
+                return req.href.wiki(kwd)
 
     # IWikiSyntaxProvider methods
     

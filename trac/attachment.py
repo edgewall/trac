@@ -77,7 +77,7 @@ class Attachment(object):
         return os.path.normpath(path)
     path = property(_get_path)
 
-    def href(self,*args,**dict):
+    def href(self, *args, **dict):
         return self.env.href.attachment(self.parent_type, self.parent_id,
                                         self.filename, *args, **dict)
 
@@ -470,4 +470,4 @@ class AttachmentModule(Component):
                       util.escape(label))
         except TracError:
             return '<a class="missing attachment" href="%s" rel="nofollow">%s</a>' \
-                   % (self.env.href.wiki(), label)
+                   % (formatter.href.wiki(), label)

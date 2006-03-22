@@ -21,8 +21,9 @@ from time import localtime, strftime, time
 from trac import __version__
 from trac.core import *
 from trac.perm import IPermissionRequestor
-from trac.util import escape, format_date, format_datetime, parse_date, \
-                      pretty_timedelta, shorten_line, unescape, CRLF, Markup
+from trac.util import format_date, format_datetime, parse_date, \
+                      pretty_timedelta, shorten_line, CRLF
+from trac.util.markup import html, unescape, Markup
 from trac.ticket import Milestone, Ticket, TicketSystem
 from trac.Timeline import ITimelineEventProvider
 from trac.web import IRequestHandler
@@ -130,8 +131,7 @@ class RoadmapModule(Component):
         if not req.perm.has_permission('ROADMAP_VIEW'):
             return
         yield ('mainnav', 'roadmap',
-               Markup('<a href="%s" accesskey="3">Roadmap</a>',
-                      self.env.href.roadmap()))
+               html.a(href=req.href.roadmap(), accesskey=3)['Roadmap'])
 
     # IPermissionRequestor methods
 
@@ -155,7 +155,7 @@ class RoadmapModule(Component):
                       for m in Milestone.select(self.env, showall, db)]
         req.hdf['roadmap.milestones'] = milestones        
 
-        for idx,milestone in enumerate(milestones):
+        for idx, milestone in enumerate(milestones):
             milestone_name = unescape(milestone['name']) # Kludge
             prefix = 'roadmap.milestones.%d.' % idx
             tickets = get_tickets_for_milestone(self.env, db, milestone_name,

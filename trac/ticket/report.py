@@ -17,20 +17,17 @@
 # Author: Jonas Borgström <jonas@edgewall.com>
 
 import re
+from StringIO import StringIO
 import urllib
 
 from trac import util
 from trac.core import *
 from trac.perm import IPermissionRequestor
 from trac.util import sorted
+from trac.util.markup import html
 from trac.web import IRequestHandler
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
 from trac.wiki import wiki_to_html, IWikiSyntaxProvider, Formatter
-
-try:
-    from cStringIO import StringIO
-except ImportError:
-    from StringIO import StringIO
 
 
 class ReportModule(Component):
@@ -47,8 +44,7 @@ class ReportModule(Component):
         if not req.perm.has_permission('REPORT_VIEW'):
             return
         yield ('mainnav', 'tickets',
-               util.Markup('<a href="%s">View Tickets</a>',
-                           self.env.href.report()))
+               html.A(href=req.href.report())['View Tickets'])
 
     # IPermissionRequestor methods  
 
@@ -64,7 +60,7 @@ class ReportModule(Component):
         if match:
             if match.group(1):
                 req.args['id'] = match.group(1)
-            return 1
+            return True
 
     def process_request(self, req):
         req.perm.assert_permission('REPORT_VIEW')
@@ -95,7 +91,7 @@ class ReportModule(Component):
                return resp
 
         if id != -1 or action == 'new':
-            add_link(req, 'up', self.env.href.report(), 'Available Reports')
+            add_link(req, 'up', req.href.report(), 'Available Reports')
 
             # Kludge: Reset session vars created by query module so that the
             # query navigation links on the ticket page don't confuse the user
@@ -108,7 +104,7 @@ class ReportModule(Component):
         from trac.ticket.query import QueryModule
         if req.perm.has_permission('TICKET_VIEW') and \
            self.env.is_component_enabled(QueryModule):
-            req.hdf['report.query_href'] = self.env.href.query()
+            req.hdf['report.query_href'] = req.href.query()
 
         add_stylesheet(req, 'common/css/report.css')
         return 'report.cs', None
@@ -119,7 +115,7 @@ class ReportModule(Component):
         req.perm.assert_permission('REPORT_CREATE')
 
         if req.args.has_key('cancel'):
-            req.redirect(self.env.href.report())
+            req.redirect(req.href.report())
 
         title = req.args.get('title', '')
         sql = req.args.get('sql', '')
@@ -129,18 +125,18 @@ class ReportModule(Component):
                        "VALUES (%s,%s,%s)", (title, sql, description))
         id = db.get_last_id(cursor, 'report')
         db.commit()
-        req.redirect(self.env.href.report(id))
+        req.redirect(req.href.report(id))
 
     def _do_delete(self, req, db, id):
         req.perm.assert_permission('REPORT_DELETE')
 
         if req.args.has_key('cancel'):
-            req.redirect(self.env.href.report(id))
+            req.redirect(req.href.report(id))
 
         cursor = db.cursor()
         cursor.execute("DELETE FROM report WHERE id=%s", (id,))
         db.commit()
-        req.redirect(self.env.href.report())
+        req.redirect(req.href.report())
 
     def _do_save(self, req, db, id):
         """
@@ -156,7 +152,7 @@ class ReportModule(Component):
             cursor.execute("UPDATE report SET title=%s,sql=%s,description=%s "
                            "WHERE id=%s", (title, sql, description, id))
             db.commit()
-        req.redirect(self.env.href.report(id))
+        req.redirect(req.href.report(id))
 
     def _render_confirm_delete(self, req, db, id):
         req.perm.assert_permission('REPORT_DELETE')
@@ -172,7 +168,7 @@ class ReportModule(Component):
             'id': id,
             'mode': 'delete',
             'title': row[0],
-            'href': self.env.href.report(id)
+            'href': req.href.report(id)
         }
 
     def _render_editor(self, req, db, id, copy=False):
@@ -197,11 +193,11 @@ class ReportModule(Component):
 
         if copy or id == -1:
             req.hdf['title'] = 'Create New Report'
-            req.hdf['report.href'] = self.env.href.report()
+            req.hdf['report.href'] = req.href.report()
             req.hdf['report.action'] = 'new'
         else:
             req.hdf['title'] = 'Edit Report {%d} %s' % (id, title)
-            req.hdf['report.href'] = self.env.href.report(id)
+            req.hdf['report.href'] = req.href.report(id)
             req.hdf['report.action'] = 'edit'
 
         req.hdf['report.id'] = id
@@ -220,7 +216,7 @@ class ReportModule(Component):
         for action in [k for k,v in actions.items()
                        if req.perm.has_permission(v)]:
             req.hdf['report.can_' + action] = True
-        req.hdf['report.href'] = self.env.href.report(id)
+        req.hdf['report.href'] = req.href.report(id)
 
         try:
             args = self.get_var_args(req)
@@ -300,7 +296,7 @@ class ReportModule(Component):
             col_idx = 0
             numrows = len(row)
             for cell in row:
-                cell = str(cell)
+                cell = unicode(cell)
                 column = cols[col_idx][0]
                 value = {}
                 # Special columns begin and end with '__'
@@ -322,7 +318,7 @@ class ReportModule(Component):
                                if col[0] in ('ticket', 'id', '_id')]
                     if id_cols:
                         id_val = row[id_cols[0]]
-                        value['ticket_href'] = self.env.href.ticket(id_val)
+                        value['ticket_href'] = req.href.ticket(id_val)
                 elif column == 'description':
                     descr = wiki_to_html(cell, self.env, req, db,
                                          absurls=(format == 'rss'))
@@ -330,14 +326,14 @@ class ReportModule(Component):
                 elif column == 'reporter' and cell.find('@') != -1:
                     value['rss'] = cell
                 elif column == 'report':
-                    value['report_href'] = self.env.href.report(cell)
+                    value['report_href'] = req.href.report(cell)
                 elif column in ('time', 'date','changetime', 'created', 'modified'):
                     value['date'] = util.format_date(cell)
                     value['time'] = util.format_time(cell)
                     value['datetime'] = util.format_datetime(cell)
                     value['gmt'] = util.http_date(cell)
                 prefix = 'report.items.%d.%s' % (row_idx, str(column))
-                req.hdf[prefix] = str(cell)
+                req.hdf[prefix] = unicode(cell)
                 for key in value.keys():
                     req.hdf[prefix + '.' + key] = value[key]
 

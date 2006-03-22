@@ -25,7 +25,6 @@ import urllib
 import re
 
 from trac.core import *
-from trac.util import to_utf8
 
 
 class IWikiChangeListener(Interface):

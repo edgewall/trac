@@ -18,13 +18,14 @@ import os
 import re
 import time
 
-from trac import util
 from trac.attachment import attachment_to_hdf, Attachment
 from trac.core import *
 from trac.env import IEnvironmentSetupParticipant
 from trac.ticket import Milestone, Ticket, TicketSystem
 from trac.ticket.notification import TicketNotifyEmail
 from trac.Timeline import ITimelineEventProvider
+from trac.util import format_datetime, get_reporter_id, pretty_timedelta
+from trac.util.markup import html, Markup
 from trac.web import IRequestHandler
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
 from trac.wiki import wiki_to_html, wiki_to_oneliner
@@ -66,8 +67,7 @@ class NewticketModule(Component):
         if not req.perm.has_permission('TICKET_CREATE'):
             return
         yield ('mainnav', 'newticket', 
-               util.Markup('<a href="%s" accesskey="7">New Ticket</a>',
-                           self.env.href.newticket()))
+               html.A(href=req.href.newticket(), accesskey=7)['New Ticket'])
 
     # IRequestHandler methods
 
@@ -84,7 +84,7 @@ class NewticketModule(Component):
 
         ticket = Ticket(self.env, db=db)
         ticket.populate(req.args)
-        ticket.values.setdefault('reporter', util.get_reporter_id(req))
+        ticket.values.setdefault('reporter', get_reporter_id(req))
 
         if ticket.values.has_key('description'):
             description = wiki_to_html(ticket['description'], self.env, req, db)
@@ -137,7 +137,7 @@ class NewticketModule(Component):
             raise TracError('Tickets must contain a summary.')
 
         ticket = Ticket(self.env, db=db)
-        ticket.values.setdefault('reporter', util.get_reporter_id(req))
+        ticket.values.setdefault('reporter', get_reporter_id(req))
         ticket.populate(req.args)
         ticket.insert(db=db)
         db.commit()
@@ -152,10 +152,9 @@ class NewticketModule(Component):
 
         # Redirect the user to the newly created ticket
         if req.args.get('attachment'):
-            req.redirect(self.env.href.attachment('ticket', ticket.id,
-                                                  action='new'))
+            req.redirect(req.href.attachment('ticket', ticket.id, action='new'))
         else:
-            req.redirect(self.env.href.ticket(ticket.id))
+            req.redirect(req.href.ticket(ticket.id))
 
 
 class TicketModule(Component):
@@ -183,14 +182,11 @@ class TicketModule(Component):
 
         action = req.args.get('action', 'view')
 
-        if not req.args.has_key('id'):
-            req.redirect(self.env.href.wiki())
-
         db = self.env.get_db_cnx()
         id = int(req.args.get('id'))
 
         ticket = Ticket(self.env, id, db=db)
-        reporter_id = util.get_reporter_id(req)
+        reporter_id = get_reporter_id(req)
 
         if req.method == 'POST':
             if not req.args.has_key('preview'):
@@ -225,14 +221,14 @@ class TicketModule(Component):
             if str(id) in tickets:
                 idx = tickets.index(str(ticket.id))
                 if idx > 0:
-                    add_link(req, 'first', self.env.href.ticket(tickets[0]),
+                    add_link(req, 'first', req.href.ticket(tickets[0]),
                              'Ticket #%s' % tickets[0])
-                    add_link(req, 'prev', self.env.href.ticket(tickets[idx - 1]),
+                    add_link(req, 'prev', req.href.ticket(tickets[idx - 1]),
                              'Ticket #%s' % tickets[idx - 1])
                 if idx < len(tickets) - 1:
-                    add_link(req, 'next', self.env.href.ticket(tickets[idx + 1]),
+                    add_link(req, 'next', req.href.ticket(tickets[idx + 1]),
                              'Ticket #%s' % tickets[idx + 1])
-                    add_link(req, 'last', self.env.href.ticket(tickets[-1]),
+                    add_link(req, 'last', req.href.ticket(tickets[-1]),
                              'Ticket #%s' % tickets[-1])
                 add_link(req, 'up', req.session['query_href'])
 
@@ -274,15 +270,15 @@ class TicketModule(Component):
             else:
                 return None
             kind, verb = status_map[status]
-            title = util.Markup('Ticket <em title="%s">#%s</em> (%s) %s by %s',
-                                summary, id, type, verb, author)
-            href = format == 'rss' and self.env.abs_href.ticket(id) or \
-                   self.env.href.ticket(id)
+            title = Markup('Ticket <em title="%s">#%s</em> (%s) %s by %s',
+                           summary, id, type, verb, author)
+            href = format == 'rss' and req.abs_href.ticket(id) or \
+                                       req.href.ticket(id)
 
             if status == 'new':
                 message = summary
             else:
-                message = util.Markup(info)
+                message = Markup(info)
                 if comment:
                     if format == 'rss':
                         message += wiki_to_html(comment, self.env, req, db,
@@ -386,13 +382,13 @@ class TicketModule(Component):
             self.log.exception("Failure sending notification on change to "
                                "ticket #%s: %s" % (ticket.id, e))
 
-        req.redirect(self.env.href.ticket(ticket.id))
+        req.redirect(req.href.ticket(ticket.id))
 
     def _insert_ticket_data(self, req, db, ticket, reporter_id):
         """Insert ticket data into the hdf"""
         req.hdf['ticket'] = ticket.values
         req.hdf['ticket.id'] = ticket.id
-        req.hdf['ticket.href'] = self.env.href.ticket(ticket.id)
+        req.hdf['ticket.href'] = req.href.ticket(ticket.id)
 
         for field in TicketSystem(self.env).get_ticket_fields():
             if field['type'] in ('radio', 'select'):
@@ -415,11 +411,11 @@ class TicketModule(Component):
         req.hdf['ticket.description.formatted'] = wiki_to_html(ticket['description'],
                                                                self.env, req, db)
 
-        req.hdf['ticket.opened'] = util.format_datetime(ticket.time_created)
-        req.hdf['ticket.opened_delta'] = util.pretty_timedelta(ticket.time_created)
+        req.hdf['ticket.opened'] = format_datetime(ticket.time_created)
+        req.hdf['ticket.opened_delta'] = pretty_timedelta(ticket.time_created)
         if ticket.time_changed != ticket.time_created:
-            req.hdf['ticket.lastmod'] = util.format_datetime(ticket.time_changed)
-            req.hdf['ticket.lastmod_delta'] = util.pretty_timedelta(ticket.time_changed)
+            req.hdf['ticket.lastmod'] = format_datetime(ticket.time_changed)
+            req.hdf['ticket.lastmod_delta'] = pretty_timedelta(ticket.time_changed)
 
         changelog = ticket.get_changelog(db=db)
         curr_author = None
@@ -428,7 +424,7 @@ class TicketModule(Component):
         for date, author, field, old, new in changelog:
             if date != curr_date or author != curr_author:
                 changes.append({
-                    'date': util.format_datetime(date),
+                    'date': format_datetime(date),
                     'author': author,
                     'fields': {}
                 })
@@ -449,8 +445,8 @@ class TicketModule(Component):
             hdf = attachment_to_hdf(self.env, db, req, attachment)
             req.hdf['ticket.attachments.%s' % idx] = hdf
         if req.perm.has_permission('TICKET_APPEND'):
-            req.hdf['ticket.attach_href'] = self.env.href.attachment('ticket',
-                                                                     ticket.id)
+            req.hdf['ticket.attach_href'] = req.href.attachment('ticket',
+                                                                ticket.id)
 
         # Add the possible actions to hdf
         actions = TicketSystem(self.env).get_available_actions(ticket, req.perm)

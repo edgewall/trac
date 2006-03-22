@@ -19,9 +19,9 @@
 import re
 import urllib
 
-from trac import util
 from trac.core import *
 from trac.perm import IPermissionRequestor
+from trac.util import http_date
 from trac.web import IRequestHandler
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
 from trac.wiki import IWikiSyntaxProvider
@@ -56,7 +56,7 @@ class LogModule(Component):
         match = re.match(r'/log(?:(/.*)|$)', req.path_info)
         if match:
             req.args['path'] = match.group(1) or '/'
-            return 1
+            return True
 
     def process_request(self, req):
         req.perm.assert_permission('LOG_VIEW')
@@ -84,12 +84,12 @@ class LogModule(Component):
             'rev': rev,
             'verbose': verbose,
             'stop_rev': stop_rev,
-            'browser_href': self.env.href.browser(path),
-            'changeset_href': self.env.href.changeset(),
-            'log_href': self.env.href.log(path, rev=rev)
+            'browser_href': req.href.browser(path),
+            'changeset_href': req.href.changeset(),
+            'log_href': req.href.log(path, rev=rev)
         }
 
-        path_links = get_path_links(self.env.href, path, rev)
+        path_links = get_path_links(req.href, path, rev)
         req.hdf['log.path'] = path_links
         if path_links:
             add_link(req, 'up', path_links[-1]['href'], 'Parent directory')
@@ -114,11 +114,10 @@ class LogModule(Component):
             item = {
                 'rev': str(old_rev),
                 'path': str(old_path),
-                'log_href': self.env.href.log(old_path, rev=old_rev),
-                'browser_href': self.env.href.browser(old_path, rev=old_rev),
-                'changeset_href': self.env.href.changeset(old_rev),
-                'restricted_href': self.env.href.changeset(old_rev,
-                                                           new_path=old_path),
+                'log_href': req.href.log(old_path, rev=old_rev),
+                'browser_href': req.href.browser(old_path, rev=old_rev),
+                'changeset_href': req.href.changeset(old_rev),
+                'restricted_href': req.href.changeset(old_rev, new_path=old_path),
                 'change': old_chg
             }
             if not (mode == 'path_history' and old_chg == Changeset.EDIT):
@@ -145,7 +144,7 @@ class LogModule(Component):
             params.update(args)
             if verbose:
                 params['verbose'] = verbose
-            return self.env.href.log(path, **params)
+            return req.href.log(path, **params)
 
         if len(info) == limit+1: # limit+1 reached, there _might_ be some more
             next_rev = info[-1]['rev']
@@ -175,7 +174,7 @@ class LogModule(Component):
                 elif email_map.has_key(author):
                     author_email = email_map[author]
                 cs['author'] = author_email
-                cs['date'] = util.http_date(cs['date_seconds'])
+                cs['date'] = http_date(cs['date_seconds'])
         elif format == 'changelog':
             for rev in revs:
                 changeset = repos.get_changeset(rev)

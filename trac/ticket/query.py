@@ -22,7 +22,8 @@ from trac.core import *
 from trac.perm import IPermissionRequestor
 from trac.ticket import Ticket, TicketSystem
 from trac.util import escape, unescape, format_datetime, http_date, \
-                      shorten_line, CRLF, Markup
+                      shorten_line, CRLF
+from trac.util.markup import html
 from trac.web import IRequestHandler
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
 from trac.wiki import wiki_to_html, wiki_to_oneliner, IWikiMacroProvider, \
@@ -341,9 +342,9 @@ class QueryModule(Component):
     def get_navigation_items(self, req):
         from trac.ticket.report import ReportModule
         if req.perm.has_permission('TICKET_VIEW') and \
-           not self.env.is_component_enabled(ReportModule):
-            yield 'mainnav', 'tickets', Markup('<a href="%s">View Tickets</a>',
-                                               self.env.href.query())
+                not self.env.is_component_enabled(ReportModule):
+            yield ('mainnav', 'tickets',
+                   html.A(href=req.href.query())['View Tickets'])
 
     # IRequestHandler methods
 
@@ -502,10 +503,10 @@ class QueryModule(Component):
                                                         not query.desc))
             }
 
-        href = self.env.href.query(group=query.group,
-                                   groupdesc=query.groupdesc and 1 or None,
-                                   verbose=query.verbose and 1 or None,
-                                   **query.constraints)
+        href = req.href.query(group=query.group,
+                              groupdesc=query.groupdesc and 1 or None,
+                              verbose=query.verbose and 1 or None,
+                              **query.constraints)
         req.hdf['query.order'] = query.order
         req.hdf['query.href'] = href
         if query.desc:
@@ -544,11 +545,11 @@ class QueryModule(Component):
                     ticket = Ticket(self.env, int(rest_id), db=db)
                     data = {'id': ticket.id, 'time': ticket.time_created,
                             'changetime': ticket.time_changed, 'removed': True,
-                            'href': self.env.href.ticket(ticket.id)}
+                            'href': req.href.ticket(ticket.id)}
                     data.update(ticket.values)
                 except TracError, e:
                     data = {'id': rest_id, 'time': 0, 'changetime': 0,
-                            'summary': Markup("<em>%s</em>", str(e))}
+                            'summary': html.EM[e]}
                 tickets.insert(orig_list.index(rest_id), data)
 
         for ticket in tickets:
@@ -575,7 +576,7 @@ class QueryModule(Component):
         from trac.ticket.report import ReportModule
         if req.perm.has_permission('REPORT_VIEW') and \
            self.env.is_component_enabled(ReportModule):
-            req.hdf['query.report_href'] = self.env.href.report()
+            req.hdf['query.report_href'] = req.href.report()
 
     def display_csv(self, req, query, sep=','):
         req.send_response(200)
@@ -680,7 +681,7 @@ class QueryWikiMacro(Component):
             if compact:
                 links = []
                 for ticket in tickets:
-                    href = self.env.href.ticket(int(ticket['id']))
+                    href = req.href.ticket(int(ticket['id']))
                     summary = escape(shorten_line(ticket['summary']))
                     a = '<a class="%s ticket" href="%s" title="%s">#%s</a>' % \
                         (ticket['status'], href, summary, ticket['id'])
@@ -689,7 +690,7 @@ class QueryWikiMacro(Component):
             else:
                 buf.write('<dl class="wiki compact">')
                 for ticket in tickets:
-                    href = self.env.href.ticket(int(ticket['id']))
+                    href = req.href.ticket(int(ticket['id']))
                     dt = '<dt><a class="%s ticket" href="%s">#%s</a></dt>' % \
                          (ticket['status'], href, ticket['id'])
                     buf.write(dt)

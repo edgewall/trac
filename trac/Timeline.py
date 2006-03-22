@@ -22,14 +22,14 @@ import time
 
 from trac.core import *
 from trac.perm import IPermissionRequestor
-from trac.util import format_date, format_time, http_date, Markup
+from trac.util import format_date, format_time, http_date
+from trac.util.markup import html, Markup
 from trac.web import IRequestHandler
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
 
 
 class ITimelineEventProvider(Interface):
-    """
-    Extension point interface for adding sources for timed events to the
+    """Extension point interface for adding sources for timed events to the
     timeline.
     """
 
@@ -71,8 +71,7 @@ class TimelineModule(Component):
         if not req.perm.has_permission('TIMELINE_VIEW'):
             return
         yield ('mainnav', 'timeline',
-               Markup('<a href="%s" accesskey="2">Timeline</a>',
-                      self.env.href.timeline()))
+               html.A(href=req.href.timeline(), accesskey=2)['Timeline'])
 
     # IPermissionRequestor methods
 
@@ -184,8 +183,8 @@ class TimelineModule(Component):
             return 'timeline_rss.cs', 'application/rss+xml'
 
         add_stylesheet(req, 'common/css/timeline.css')
-        rss_href = self.env.href.timeline([(f, 'on') for f in filters],
-                                          daysback=90, max=50, format='rss')
+        rss_href = req.href.timeline([(f, 'on') for f in filters],
+                                     daysback=90, max=50, format='rss')
         add_link(req, 'alternate', rss_href, 'RSS Feed', 'application/rss+xml',
                  'rss')
         for idx,fltr in enumerate(available_filters):
@@ -207,7 +206,7 @@ class TimelineModule(Component):
             other_filters = [f for f in all_filters if not f in guilty_filters]
         args = [(a, req.args.get(a)) for a in ('from', 'format', 'max',
                                                'daysback')]
-        href = self.env.href.timeline(args+[(f, 'on') for f in other_filters])
+        href = req.href.timeline(args+[(f, 'on') for f in other_filters])
         raise TracError(Markup('%s event provider failed:<br /><br />'
                                '%s: %s'
                                '<p>You may want to see the other kind '

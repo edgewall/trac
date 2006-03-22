@@ -19,10 +19,11 @@ import re
 import urllib
 
 from trac import util
-from trac.util import sorted
 from trac.core import *
 from trac.mimeview import Mimeview, is_binary, get_mimetype
 from trac.perm import IPermissionRequestor
+from trac.util import sorted
+from trac.util.markup import escape, html
 from trac.web import IRequestHandler, RequestDone
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
 from trac.wiki import wiki_to_html, wiki_to_oneliner, IWikiSyntaxProvider
@@ -49,8 +50,7 @@ class BrowserModule(Component):
         if not req.perm.has_permission('BROWSER_VIEW'):
             return
         yield ('mainnav', 'browser',
-               util.Markup('<a href="%s">Browse Source</a>',
-                           self.env.href.browser()))
+               html.A(href=req.href.browser())['Browse Source'])
 
     # IPermissionRequestor methods
 
@@ -65,10 +65,10 @@ class BrowserModule(Component):
         if match:
             req.args['path'] = match.group(2) or '/'
             if match.group(1) == 'file':
-                # FIXME: This should be a permanent redirect
-                req.redirect(self.env.href.browser(req.args.get('path'),
-                                                   rev=req.args.get('rev'),
-                                                   format=req.args.get('format')))
+                req.redirect(req.href.browser(req.args.get('path'),
+                                              rev=req.args.get('rev'),
+                                              format=req.args.get('format')),
+                             permanent=True)
             return True
 
     def process_request(self, req):
@@ -89,14 +89,13 @@ class BrowserModule(Component):
             'props': [{'name': name, 'value': value}
                       for name, value in node.get_properties().items()
                       if not name in hidden_properties],
-            'href': self.env.href.browser(path, rev=rev or
-                                          repos.youngest_rev),
-            'log_href': self.env.href.log(path, rev=rev or None),
-            'restr_changeset_href': self.env.href.changeset(node.rev, path),
-            'anydiff_href': self.env.href.anydiff(),
+            'href': req.href.browser(path, rev=rev or repos.youngest_rev),
+            'log_href': req.href.log(path, rev=rev or None),
+            'restr_changeset_href': req.href.changeset(node.rev, path),
+            'anydiff_href': req.href.anydiff(),
         }
 
-        path_links = get_path_links(self.env.href, path, rev)
+        path_links = get_path_links(req.href, path, rev)
         if len(path_links) > 1:
             add_link(req, 'up', path_links[-2]['href'], 'Parent directory')
         req.hdf['browser.path'] = path_links
@@ -130,9 +129,8 @@ class BrowserModule(Component):
                 'size': util.pretty_size(entry.content_length),
                 'rev': entry.rev,
                 'permission': 1, # FIXME
-                'log_href': self.env.href.log(entry.path, rev=rev),
-                'browser_href': self.env.href.browser(entry.path,
-                                                      rev=rev)
+                'log_href': req.href.log(entry.path, rev=rev),
+                'browser_href': req.href.browser(entry.path, rev=rev)
             })
         changes = get_changes(self.env, repos, [i['rev'] for i in info])
 
@@ -156,9 +154,9 @@ class BrowserModule(Component):
         req.hdf['browser.items'] = info
         req.hdf['browser.changes'] = changes
         if node.path != '':
-            zip_href = self.env.href.changeset(rev, node.path, old=rev,
-                                               old_path='/', # special case #238
-                                               format='zip')
+            zip_href = req.href.changeset(rev, node.path, old=rev,
+                                          old_path='/', # special case #238
+                                          format='zip')
             add_link(req, 'alternate', zip_href, 'Zip Archive',
                      'application/zip', 'zip')
         
@@ -171,7 +169,7 @@ class BrowserModule(Component):
             changeset = repos.get_changeset(rev) # requested rev
         req.hdf['file'] = {  
             'rev': node.rev,  
-            'changeset_href': self.env.href.changeset(node.rev),
+            'changeset_href': req.href.changeset(node.rev),
             'date': util.format_datetime(changeset.date),
             'age': util.pretty_timedelta(changeset.date),
             'author': changeset.author or 'anonymous',
@@ -214,8 +212,8 @@ class BrowserModule(Component):
             
             if not is_binary(content):
                 if mime_type != 'text/plain':
-                    plain_href = self.env.href.browser(node.path, rev=use_rev,
-                                                       format='txt')
+                    plain_href = req.href.browser(node.path, rev=use_rev,
+                                                  format='txt')
                     add_link(req, 'alternate', plain_href, 'Plain Text',
                              'text/plain')
                     
@@ -226,8 +224,7 @@ class BrowserModule(Component):
                                                       node.name, node.rev,
                                                       annotations=['lineno'])
 
-            raw_href = self.env.href.browser(node.path, rev=use_rev,
-                                             format='raw')
+            raw_href = req.href.browser(node.path, rev=use_rev, format='raw')
             add_link(req, 'alternate', raw_href, 'Original Format', mime_type)
             req.hdf['file.raw_href'] = raw_href
 
@@ -255,5 +252,4 @@ class BrowserModule(Component):
             anchor = ''
         label = urllib.unquote(label)
         return '<a class="source" href="%s%s">%s</a>' \
-               % (util.escape(formatter.href.browser(path, rev=rev)), anchor,
-                  label)
+               % (escape(formatter.href.browser(path, rev=rev)), anchor, label)
