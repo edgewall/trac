@@ -380,7 +380,8 @@ class Request(object):
             raise RequestDone
 
         if not mimetype:
-            mimetype = mimetypes.guess_type(path)[0]
+            mimetype = mimetypes.guess_type(path)[0] or \
+                       'application/octet-stream'
 
         self.send_response(200)
         self.send_header('Content-Type', mimetype)
