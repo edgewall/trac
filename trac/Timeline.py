@@ -102,7 +102,7 @@ class TimelineModule(Component):
         try:
             daysback = max(0, int(req.args.get('daysback', '')))
         except ValueError:
-            daysback = int(self.config.get('timeline', 'default_daysback'))
+            daysback = self.config['timeline'].getint('default_daysback')
         req.hdf['timeline.from'] = format_date(fromdate)
         req.hdf['timeline.daysback'] = daysback
 

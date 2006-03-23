@@ -39,7 +39,7 @@ class TicketSystemTestCase(unittest.TestCase):
         self.env.config.set('ticket-custom', 'test.rows', '4')
         fields = TicketSystem(self.env).get_custom_fields()
         self.assertEqual({'name': 'test', 'type': 'textarea', 'label': 'Test',
-                          'value': 'Foo bar', 'width': '60', 'height': '4',
+                          'value': 'Foo bar', 'width': 60, 'height': 4,
                           'order': 0},
                          fields[0])
 

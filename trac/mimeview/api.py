@@ -224,7 +224,7 @@ class Mimeview(Component):
             if qr > 0:
                 expand_tabs = getattr(renderer, 'expand_tabs', False)
                 if expand_tabs and expanded_content is None:
-                    tab_width = int(self.config.get('mimeviewer', 'tab_width'))
+                    tab_width = self.config['mimeviewer'].getint('tab_width')
                     expanded_content = content.expandtabs(tab_width)
 
                 if expand_tabs:
@@ -291,7 +291,7 @@ class Mimeview(Component):
         return buf.getvalue()
 
     def max_preview_size(self):
-        return int(self.config.get('mimeviewer', 'max_preview_size'))
+        return self.config['mimeviewer'].getint('max_preview_size')
 
     def get_charset(self, content='', mimetype=None):
         """Infer the character encoding from the `content` or the `mimetype`.

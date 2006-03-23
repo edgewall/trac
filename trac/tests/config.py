@@ -14,9 +14,10 @@
 #
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
-from trac.config import Configuration
+from trac.config import *
 
 import os
+from StringIO import StringIO
 import tempfile
 import time
 import unittest
@@ -26,11 +27,17 @@ class ConfigurationTestCase(unittest.TestCase):
 
     def setUp(self):
         self.filename = os.path.join(tempfile.gettempdir(), 'trac-test.ini')
-        configfile = open(self.filename, 'w')
-        configfile.close()
+        self._write([])
 
     def tearDown(self):
         os.remove(self.filename)
+
+    def _write(self, lines):
+        fileobj = open(self.filename, 'w')
+        try:
+            fileobj.write('\n'.join(lines + ['']))
+        finally:
+            fileobj.close()
 
     def test_default(self):
         config = Configuration(self.filename)
@@ -49,19 +56,53 @@ class ConfigurationTestCase(unittest.TestCase):
         config.setdefault('a', 'option', 'true')
         self.assertEquals(True, config.getbool('a', 'option'))
 
-    def test_read_and_get(self):
-        configfile = open(self.filename, 'w')
-        configfile.writelines(['[a]\n', 'option = x\n', '\n'])
-        configfile.close()
+    def test_default_int(self):
+        config = Configuration(self.filename)
+        self.assertRaises(ConfigurationError, config.getint, 'a', 'option')
+        self.assertEquals(1, config.getbool('a', 'option', '1'))
+        self.assertEquals(1, config.getbool('a', 'option', 1))
 
+        config.setdefault('a', 'option', '2')
+        self.assertEquals(2, config.getint('a', 'option'))
+
+    def test_read_and_get(self):
+        self._write(['[a]', 'option = x'])
         config = Configuration(self.filename)
         self.assertEquals('x', config.get('a', 'option'))
         self.assertEquals('x', config.get('a', 'option', 'y'))
 
-    def test_set_and_save(self):
-        configfile = open(self.filename, 'w')
-        configfile.close()
+    def test_read_and_getbool(self):
+        self._write(['[a]', 'option = yes'])
+        config = Configuration(self.filename)
+        self.assertEquals(True, config.getbool('a', 'option'))
+        self.assertEquals(True, config.getbool('a', 'option', False))
 
+    def test_read_and_getint(self):
+        self._write(['[a]', 'option = 42'])
+        config = Configuration(self.filename)
+        self.assertEquals(42, config.getint('a', 'option'))
+        self.assertEquals(42, config.getint('a', 'option', 25))
+
+    def test_read_and_getlist(self):
+        self._write(['[a]', 'option = foo, bar, baz'])
+        config = Configuration(self.filename)
+        self.assertEquals(['foo', 'bar', 'baz'],
+                          config.getlist('a', 'option'))
+
+    def test_read_and_getlist_sep(self):
+        self._write(['[a]', 'option = foo | bar | baz'])
+        config = Configuration(self.filename)
+        self.assertEquals(['foo', 'bar', 'baz'],
+                          config.getlist('a', 'option', sep='|'))
+
+    def test_read_and_getlist_keep_empty(self):
+        self._write(['[a]', 'option = ,bar,baz'])
+        config = Configuration(self.filename)
+        self.assertEquals(['', 'bar', 'baz'], config.getlist('a', 'option'))
+        self.assertEquals(['bar', 'baz'],
+                          config.getlist('a', 'option', keep_empty=False))
+
+    def test_set_and_save(self):
         config = Configuration(self.filename)
         config.set('a', 'option', 'x')
         self.assertEquals('x', config.get('a', 'option'))
@@ -73,37 +114,24 @@ class ConfigurationTestCase(unittest.TestCase):
         configfile.close()
 
     def test_sections(self):
-        configfile = open(self.filename, 'w')
-        configfile.writelines(['[a]\n', 'option = x\n',
-                               '[b]\n', 'option = y\n'])
-        configfile.close()
-
+        self._write(['[a]', 'option = x', '[b]', 'option = y'])
         config = Configuration(self.filename)
         self.assertEquals(['a', 'b'], config.sections())
 
     def test_options(self):
-        configfile = open(self.filename, 'w')
-        configfile.writelines(['[a]\n', 'option = x\n',
-                               '[b]\n', 'option = y\n'])
-        configfile.close()
-
+        self._write(['[a]', 'option = x', '[b]', 'option = y'])
         config = Configuration(self.filename)
         self.assertEquals(('option', 'x'), iter(config.options('a')).next())
         self.assertEquals(('option', 'y'), iter(config.options('b')).next())
         self.assertRaises(StopIteration, iter(config.options('c')).next)
 
     def test_reparse(self):
-        configfile = open(self.filename, 'w')
-        configfile.writelines(['[a]\n', 'option = x\n', '\n'])
-        configfile.close()
-
+        self._write(['[a]', 'option = x'])
         config = Configuration(self.filename)
         self.assertEquals('x', config.get('a', 'option'))
         time.sleep(1) # needed because of low mtime granularity
 
-        configfile = open(self.filename, 'w')
-        configfile.write('[a]\noption = y')
-        configfile.close()
+        self._write(['[a]', 'option = y'])
         config.parse_if_needed()
         self.assertEquals('y', config.get('a', 'option'))
 

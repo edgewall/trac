@@ -111,23 +111,21 @@ class TicketSystem(Component):
 
     def get_custom_fields(self):
         fields = []
-        for name in [option for option, value
-                     in self.config.options('ticket-custom')
+        config = self.config['ticket-custom']
+        for name in [option for option, value in config.options()
                      if '.' not in option]:
             field = {
                 'name': name,
-                'type': self.config.get('ticket-custom', name),
-                'order': int(self.config.get('ticket-custom', name + '.order', '0')),
-                'label': self.config.get('ticket-custom', name + '.label') \
-                         or name.capitalize(),
-                'value': self.config.get('ticket-custom', name + '.value', '')
+                'type': config.get(name),
+                'order': config.getint(name + '.order', 0),
+                'label': config.get(name + '.label') or name.capitalize(),
+                'value': config.get(name + '.value', '')
             }
             if field['type'] == 'select' or field['type'] == 'radio':
-                options = self.config.get('ticket-custom', name + '.options')
-                field['options'] = [value.strip() for value in options.split('|')]
+                field['options'] = config.getlist(name + '.options', sep='|')
             elif field['type'] == 'textarea':
-                field['width'] = self.config.get('ticket-custom', name + '.cols')
-                field['height'] = self.config.get('ticket-custom', name + '.rows')
+                field['width'] = config.getint(name + '.cols')
+                field['height'] = config.getint(name + '.rows')
             fields.append(field)
 
         fields.sort(lambda x, y: cmp(x['order'], y['order']))

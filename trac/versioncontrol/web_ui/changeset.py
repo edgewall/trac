@@ -417,9 +417,8 @@ class ChangesetModule(Component):
                         break
                 if context < 0:
                     context = None
-                tabwidth = int(self.config.get('diff', 'tab_width',
-                                               self.config.get('mimeviewer',
-                                                               'tab_width')))
+                tabwidth = self.config['diff'].getint('tab_width',
+                                self.config['mimeviewer'].getint('tab_width'))
                 return hdf_diff(old_content.splitlines(),
                                 new_content.splitlines(),
                                 context, tabwidth,
@@ -429,8 +428,8 @@ class ChangesetModule(Component):
             else:
                 return []
 
-        max_diff_bytes = int(self.config.get('changeset', 'max_diff_bytes'))
-        max_diff_files = int(self.config.get('changeset', 'max_diff_files'))
+        max_diff_bytes = self.config['changeset'].getint('max_diff_bytes')
+        max_diff_files = self.config['changeset'].getint('max_diff_files')
         diff_bytes = diff_files = 0
         if max_diff_bytes or max_diff_files:
             for old_node, new_node, kind, change in get_changes():
@@ -584,8 +583,7 @@ class ChangesetModule(Component):
     def get_timeline_events(self, req, start, stop, filters):
         if 'changeset' in filters:
             format = req.args.get('format')
-            show_files = int(self.config.get('timeline',
-                                             'changeset_show_files'))
+            show_files = self.config['timeline'].getint('changeset_show_files')
             db = self.env.get_db_cnx()
             repos = self.env.get_repository(req.authname)
             for chgset in repos.get_changesets(start, stop):

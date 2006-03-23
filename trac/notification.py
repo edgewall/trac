@@ -122,22 +122,22 @@ class NotifyEmail(Notify):
 
         if not self.config.getbool('notification', 'smtp_enabled'):
             return
-        self.smtp_server = self.config.get('notification', 'smtp_server')
-        self.smtp_port = int(self.config.get('notification', 'smtp_port'))
-        self.maxheaderlen = int(self.config.get('notification', 'maxheaderlen'))
-        self.from_email = self.config.get('notification', 'smtp_from')
-        self.replyto_email = self.config.get('notification', 'smtp_replyto')
+        self.smtp_server = self.config['notification'].get('smtp_server')
+        self.smtp_port = self.config['notification'].getint('smtp_port')
+        self.maxheaderlen = self.config['notification'].getint('maxheaderlen')
+        self.from_email = self.config['notification'].get('smtp_from')
+        self.replyto_email = self.config['notification'].get('smtp_replyto')
         self.from_email = self.from_email or self.replyto_email
         if not self.from_email and not self.replyto_email:
-            raise TracError('Unable to send email due to identity crisis.'
-                            '<br />Both <b>notification.from</b> and'
-                            ' <b>notification.reply_to</b> are unspecified'
-                            ' in configuration.',
+            raise TracError(Markup('Unable to send email due to identity '
+                                   'crisis.<p>Neither <b>notification.from</b> '
+                                   'nor <b>notification.reply_to</b> are '
+                                   'specified in the configuration.</p>'),
                             'SMTP Notification Error')
 
         # Authentication info (optional)
-        self.user_name = self.config.get('notification', 'smtp_user')
-        self.password = self.config.get('notification', 'smtp_password')
+        self.user_name = self.config['notification'].get('smtp_user')
+        self.password = self.config['notification'].get('smtp_password')
 
         Notify.notify(self, resid)
 

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2005 Edgewall Software
-# Copyright (C) 2005 Christopher Lenz <cmlenz@gmx.de>
+# Copyright (C) 2005-2006 Edgewall Software
+# Copyright (C) 2005-2006 Christopher Lenz <cmlenz@gmx.de>
 # All rights reserved.
 #
 # This software is licensed as described in the file COPYING, which
@@ -18,18 +18,26 @@ from ConfigParser import ConfigParser
 import os
 import sys
 
-_TRUE_VALUES = ('yes', 'true',  'on', 'aye', '1', 1, True)
+from trac.core import TracError
+
+__all__ = ['Configuration', 'ConfigurationError', 'default_dir']
+
+_TRUE_VALUES = ('yes', 'true', 'on', 'aye', '1', 1, True)
 
 
-class Configuration:
+class ConfigurationError(TracError):
+    """Exception raised when a value in the configuration file is not valid."""
+
+
+class Configuration(object):
     """Thin layer over `ConfigParser` from the Python standard library.
 
     In addition to providing some convenience methods, the class remembers
     the last modification time of the configuration file, and reparses it
     when the file has changed.
     """
-
     def __init__(self, filename):
+        self._sections = {}
         self._defaults = {}
         self.filename = filename
         self.parser = ConfigParser()
@@ -39,10 +47,21 @@ class Configuration:
         self._lastsitemtime = 0
         self.parse_if_needed()
 
+    def __contains__(self, name):
+        """Return whether the configuration contains a section of the given
+        name.
+        """
+        return self.parser.has_section(name)
+
+    def __getitem__(self, name):
+        """Return the configuration section with the specified name."""
+        if name not in self._sections:
+            self._sections[name] = Section(self, name)
+        return self._sections[name]
+
     def get(self, section, name, default=None):
-        if not self.parser.has_option(section, name):
-            return self._defaults.get((section, name)) or default or ''
-        return self.parser.get(section, name)
+        """Return the value of the specified option."""
+        return self[section].get(name, default)
 
     def getbool(self, section, name, default=None):
         """Return the specified option as boolean value.
@@ -52,45 +71,61 @@ class Configuration:
         
         (since Trac 0.9.3)
         """
-        if isinstance(default, basestring):
-            default = default.lower()
-        return self.get(section, name, default) in _TRUE_VALUES
+        return self[section].getbool(name, default)
+
+    def getint(self, section, name, default=None):
+        """Return the value of the specified option as integer.
+        
+        If the specified option can not be converted to an integer, a
+        `ConfigurationError` exception is raised.
+        
+        (since Trac 0.10)
+        """
+        return self[section].getint(name, default)
+
+    def getlist(self, section, name, default=None, sep=',', keep_empty=True):
+        """Return a list of values that have been specified as a single
+        comma-separated option.
+        
+        A different separator can be specified using the `sep` parameter. If
+        the `keep_empty` parameter is set to `False`, empty elements are
+        omitted from the list.
+        
+        (since Trac 0.10)
+        """
+        return self[section].getlist(name, default, sep, keep_empty)
 
     def setdefault(self, section, name, value):
-        if (section, name) not in self._defaults:
-            self._defaults[(section, name)] = value
+        """Set the default value of a specific option."""
+        return self[section].setdefault(name, value)
 
     def set(self, section, name, value):
         """Change a configuration value.
         
         These changes are not persistent unless saved with `save()`.
         """
-        if not self.parser.has_section(section):
-            self.parser.add_section(section)
-        return self.parser.set(section, name, value)
+        self[section].set(name, value)
 
     def options(self, section):
-        options = []
-        if self.parser.has_section(section):
-            for option in self.parser.options(section):
-                options.append((option, self.parser.get(section, option)))
-        for option, value in self._defaults.iteritems():
-            if option[0] == section:
-                if not [exists for exists in options if exists[0] == option[1]]:
-                    options.append((option[1], value))
-        return options
-
-    def __contains__(self, name):
-        return self.parser.has_section(name)
+        """Return a list of `(name, value)` tuples for every option in the
+        specified section.
+        
+        This includes options that have default values that haven't been
+        overridden.
+        """
+        return self[section].options()
 
     def remove(self, section, name):
+        """Remove the specified option."""
         if self.parser.has_section(section):
             self.parser.remove_option(section, name)
 
     def sections(self):
+        """Return a list of section names."""
         return self.parser.sections()
 
     def save(self):
+        """Write the configuration options to the primary file."""
         if not self.filename:
             return
         fileobj = file(self.filename, 'w')
@@ -117,6 +152,97 @@ class Configuration:
         if modtime > self._lastmtime:
             self.parser.read(self.filename)
             self._lastmtime = modtime
+
+
+class Section(object):
+    """Proxy for a specific configuration section.
+    
+    Objects of this class should not be instantiated directly.
+    """
+    __slots__ = ['config', 'name']
+
+    def __init__(self, config, name):
+        self.config = config
+        self.name = name
+
+    def __contains__(self, name):
+        return self.config.parser.has_option(self.name, name)
+
+    def __iter__(self):
+        options = []
+        if self.config.parser.has_section(self.name):
+            for option in self.config.parser.options(self.name):
+                options.append(option)
+                yield option
+        for option in self.config._defaults:
+            if option[0] == self.name:
+                if not [exists for exists in options if exists[0] == option[1]]:
+                    yield option[1]
+
+    def get(self, name, default=None):
+        """Return the value of the specified option."""
+        if not name in self:
+            if default is None:
+                return self.config._defaults.get((self.name, name), '')
+            return default
+        return self.config.parser.get(self.name, name)
+
+    def getbool(self, name, default=None):
+        """Return the value of the specified option as boolean.
+        
+        This method returns `True` if the option value is one of "yes", "true",
+        "on", or "1", ignoring case. Otherwise `False` is returned.
+        """
+        if isinstance(default, basestring):
+            default = default.lower()
+        return self.get(name, default) in _TRUE_VALUES
+
+    def getint(self, name, default=None):
+        """Return the value of the specified option as integer.
+        
+        If the specified option can not be converted to an integer, a
+        `ConfigurationError` exception is raised.
+        """
+        value = self.get(name, default)
+        try:
+            return int(value)
+        except ValueError:
+            raise ConfigurationError('expected integer, got %s' % repr(value))
+
+    def getlist(self, name, default=None, sep=',', keep_empty=True):
+        """Return a list of values that have been specified as a single
+        comma-separated option.
+        
+        A different separator can be specified using the `sep` parameter. If
+        the `skip_empty` parameter is set to `True`, empty elements are omitted
+        from the list.
+        """
+        value = self.get(name, default)
+        if value is None:
+            return []
+        items = [item.strip() for item in value.split(sep)]
+        if not keep_empty:
+            items = filter(None, items)
+        return items
+
+    def options(self):
+        """Return `(name, value)` tuples for every option in the section."""
+        for name in self:
+            yield name, self.get(name)
+
+    def setdefault(self, name, value):
+        """Set the default value of a specific option."""
+        if (self.name, name) not in self.config._defaults:
+            self.config._defaults[(self.name, name)] = value
+
+    def set(self, name, value):
+        """Change a configuration value.
+        
+        These changes are not persistent unless saved with `save()`.
+        """
+        if not self.config.parser.has_section(self.name):
+            self.config.parser.add_section(self.name)
+        return self.config.parser.set(self.name, name, value)
 
 
 def default_dir(name):

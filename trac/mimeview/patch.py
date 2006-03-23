@@ -65,8 +65,7 @@ class PatchRenderer(Component):
     def render(self, req, mimetype, content, filename=None, rev=None):
         from trac.web.clearsilver import HDFWrapper
 
-        tabwidth = int(self.config.get('diff', 'tab_width',
-                       self.config.get('mimeviewer', 'tab_width')))
+        tabwidth = self.config['mimeviewer'].getint('tab_width')
         d = self._diff_to_hdf(content.splitlines(), tabwidth)
         if not d:
             raise TracError, 'Invalid unified diff content'
