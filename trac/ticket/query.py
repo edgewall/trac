@@ -588,9 +588,9 @@ class QueryModule(Component):
 
         results = query.execute(self.env.get_db_cnx())
         for result in results:
-            req.write(sep.join([str(result[col]).replace(sep, '_')
-                                                .replace('\n', ' ')
-                                                .replace('\r', ' ')
+            req.write(sep.join([unicode(result[col]).replace(sep, '_')
+                                                    .replace('\n', ' ')
+                                                    .replace('\r', ' ')
                                 for col in cols]) + CRLF)
 
     def display_rss(self, req, query):
