@@ -27,8 +27,8 @@ from trac.util import escape, unescape, format_datetime, http_date, \
 from trac.util.markup import html
 from trac.web import IRequestHandler
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
-from trac.wiki import wiki_to_html, wiki_to_oneliner, IWikiMacroProvider, \
-                      IWikiSyntaxProvider
+from trac.wiki import wiki_to_html, wiki_to_oneliner, IWikiSyntaxProvider
+from trac.wiki.macros import WikiMacroBase
 
 
 class QuerySyntaxError(Exception):
@@ -638,7 +638,7 @@ class QueryModule(Component):
                 return '<em class="error">[Error: %s]</em>' % escape(e)
 
 
-class QueryWikiMacro(Component):
+class QueryWikiMacro(WikiMacroBase):
     """Macro that lists tickets that match certain criteria.
     
     This macro accepts two parameters, the second of which is optional.
@@ -650,14 +650,6 @@ class QueryWikiMacro(Component):
     is given and set to '''compact''' then the tickets are presented as a
     comma-separated list of ticket IDs.
     """
-    implements(IWikiMacroProvider)
-
-    def get_macros(self):
-        yield 'TicketQuery'
-
-    def get_macro_description(self, name):
-        import inspect
-        return inspect.getdoc(QueryWikiMacro)
 
     def render_macro(self, req, name, content):
         query_string = ''

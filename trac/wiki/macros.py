@@ -27,21 +27,34 @@ from trac.wiki.api import IWikiMacroProvider, WikiSystem
 from trac.wiki.model import WikiPage
 
 
-class TitleIndexMacro(Component):
-    """
-    Inserts an alphabetic list of all wiki pages into the output.
+class WikiMacroBase(Component):
+    """Abstract base class for wiki macros."""
+
+    implements(IWikiMacroProvider)
+    abstract = True
+
+    def get_macros(self):
+        """Yield the name of the macro based on the class name."""
+        name = self.__class__.__name__
+        if name.endswith('Macro'):
+            name = name[:-5]
+        yield name
+
+    def get_macro_description(self, name):
+        """Return the subclass's docstring."""
+        return inspect.getdoc(self.__class__)
+
+    def render_macro(self, req, name, content):
+        raise NotImplementedError
+
+
+class TitleIndexMacro(WikiMacroBase):
+    """Inserts an alphabetic list of all wiki pages into the output.
 
     Accepts a prefix string as parameter: if provided, only pages with names
     that start with the prefix are included in the resulting list. If this
     parameter is omitted, all pages are listed.
     """
-    implements(IWikiMacroProvider)
-
-    def get_macros(self):
-        yield 'TitleIndex'
-
-    def get_macro_description(self, name):
-        return inspect.getdoc(TitleIndexMacro)
 
     def render_macro(self, req, name, content):
         prefix = content or None
@@ -61,10 +74,9 @@ class TitleIndexMacro(Component):
         return buf.getvalue()
 
 
-class RecentChangesMacro(Component):
-    """
-    Lists all pages that have recently been modified, grouping them by the day
-    they were last modified.
+class RecentChangesMacro(WikiMacroBase):
+    """Lists all pages that have recently been modified, grouping them by the
+    day they were last modified.
 
     This macro accepts two parameters. The first is a prefix string: if
     provided, only pages with names that start with the prefix are included in
@@ -74,13 +86,6 @@ class RecentChangesMacro(Component):
     For example, specifying a limit of 5 will result in only the five most
     recently changed pages to be included in the list.
     """
-    implements(IWikiMacroProvider)
-
-    def get_macros(self):
-        yield 'RecentChanges'
-
-    def get_macro_description(self, name):
-        return inspect.getdoc(RecentChangesMacro)
 
     def render_macro(self, req, name, content):
         prefix = limit = None
@@ -123,9 +128,8 @@ class RecentChangesMacro(Component):
         return buf.getvalue()
 
 
-class PageOutlineMacro(Component):
-    """
-    Displays a structural outline of the current wiki page, each item in the
+class PageOutlineMacro(WikiMacroBase):
+    """Displays a structural outline of the current wiki page, each item in the
     outline being a link to the corresponding heading.
 
     This macro accepts three optional parameters:
@@ -144,13 +148,6 @@ class PageOutlineMacro(Component):
        causes the outline to be rendered in a box that is by default floated to
        the right side of the other content.
     """
-    implements(IWikiMacroProvider)
-
-    def get_macros(self):
-        yield 'PageOutline'
-
-    def get_macro_description(self, name):
-        return inspect.getdoc(PageOutlineMacro)
 
     def render_macro(self, req, name, content):
         from trac.wiki.formatter import wiki_to_outline
@@ -187,9 +184,8 @@ class PageOutlineMacro(Component):
         return buf.getvalue()
 
 
-class ImageMacro(Component):
-    """
-    Embed an image in wiki-formatted text.
+class ImageMacro(WikiMacroBase):
+    """Embed an image in wiki-formatted text.
     
     The first argument is the file specification. The file specification may
     reference attachments or files in three ways:
@@ -238,13 +234,6 @@ class ImageMacro(Component):
     ''Adapted from the Image.py macro created by Shun-ichi Goto
     <gotoh@taiyo.co.jp>''
     """
-    implements(IWikiMacroProvider)
-
-    def get_macros(self):
-        yield 'Image'
-
-    def get_macro_description(self, name):
-        return inspect.getdoc(ImageMacro)
 
     def render_macro(self, req, name, content):
         # args will be null if the macro is called without parenthesis.
@@ -357,7 +346,7 @@ class ImageMacro(Component):
         return result
 
 
-class MacroListMacro(Component):
+class MacroListMacro(WikiMacroBase):
     """Displays a list of all installed Wiki macros, including documentation if
     available.
     
@@ -367,13 +356,6 @@ class MacroListMacro(Component):
     Note that this macro will not be able to display the documentation of
     macros if the `PythonOptimize` option is enabled for mod_python!
     """
-    implements(IWikiMacroProvider)
-
-    def get_macros(self):
-        yield 'MacroList'
-
-    def get_macro_description(self, name):
-        return inspect.getdoc(MacroListMacro)
 
     def render_macro(self, req, name, content):
         from trac.wiki.formatter import wiki_to_html
@@ -393,6 +375,38 @@ class MacroListMacro(Component):
                                                            self.env, req))
 
         buf.write("</dl>")
+        return buf.getvalue()
+
+
+class InterTracMacro(WikiMacroBase):
+    """Provide a list of known InterTrac prefixes."""
+
+    def render_macro(self, req, name, content):
+        intertracs = {}
+        buf = StringIO()
+        buf.write('<table class="wiki intertrac"><tr>'
+                  '<th><em>Prefix</em></th><th><em>Trac Site</em></th></tr>\n')
+        for key, value in self.config.options('intertrac'):
+            if '.' in key:
+                prefix, attribute = key.split('.', 1)
+                it = intertracs.setdefault(prefix, {})
+                it[attribute] = value
+            else:
+                intertracs[key] = value # alias
+        for prefix in sorted(intertracs.keys()):
+            it = intertracs[prefix]
+            if isinstance(it, str):
+                buf.write('<tr><td><b>%s</b></td>'
+                          '<td>Alias for <b>%s</b></td></tr>' % (prefix, it))
+            else:
+                url = it.get('url', '')
+                title = it.get('title', url)
+                rc_url = url and url + '/timeline' or ''
+                buf.write('<tr>\n' +
+                          '<td><a href="%s"><b>%s</b></a></td>' % (rc_url, prefix) +
+                          '<td><a href="%s">%s</a></td>\n' % (url, title) +
+                          '</tr>\n')
+        buf.write('</table>\n')
         return buf.getvalue()
 
 
@@ -445,44 +459,3 @@ class UserMacroProvider(Component):
             if os.path.isfile(macro_file):
                 return imp.load_source(name, macro_file)
         raise TracError, 'Macro %s not found' % name
-
-
-class InterTracMacro(Component):
-
-    implements(IWikiMacroProvider)
-
-    # IWikiMacroProvider methods
-
-    def get_macros(self):
-        yield 'InterTrac'
-
-    def get_macro_description(self, name): 
-        return "Provide a list of the known InterTrac prefixes."
-
-    def render_macro(self, req, name, content):
-        intertracs = {}
-        buf = StringIO()
-        buf.write('<table class="wiki intertrac"><tr>'
-                  '<th><em>Prefix</em></th><th><em>Trac Site</em></th></tr>\n')
-        for key, value in self.config.options('intertrac'):
-            if '.' in key:
-                prefix, attribute = key.split('.', 1)
-                it = intertracs.setdefault(prefix, {})
-                it[attribute] = value
-            else:
-                intertracs[key] = value # alias
-        for prefix in sorted(intertracs.keys()):
-            it = intertracs[prefix]
-            if isinstance(it, str):
-                buf.write('<tr><td><b>%s</b></td>'
-                          '<td>Alias for <b>%s</b></td></tr>' % (prefix, it))
-            else:
-                url = it.get('url', '')
-                title = it.get('title', url)
-                rc_url = url and url + '/timeline' or ''
-                buf.write('<tr>\n' +
-                          '<td><a href="%s"><b>%s</b></a></td>' % (rc_url, prefix) +
-                          '<td><a href="%s">%s</a></td>\n' % (url, title) +
-                          '</tr>\n')
-        buf.write('</table>\n')
-        return buf.getvalue()

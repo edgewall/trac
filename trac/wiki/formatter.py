@@ -815,9 +815,8 @@ def wiki_to_outline(wikitext, env, db=None, absurls=0, max_depth=None,
     return util.Markup(out.getvalue())
 
 
-# -- InterWiki support
-
 class InterWikiMap(Component):
+    """Implements support for InterWiki maps."""
 
     implements(IWikiChangeListener, IWikiMacroProvider)
 
@@ -891,7 +890,7 @@ class InterWikiMap(Component):
             elif line.startswith('----'):
                 in_map = True
 
-    # IWikiMacroProvider
+    # IWikiMacroProvider methods
 
     def get_macros(self):
         yield 'InterWiki'
