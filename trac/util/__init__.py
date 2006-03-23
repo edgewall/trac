@@ -17,6 +17,7 @@
 # Author: Jonas Borgström <jonas@edgewall.com>
 #         Matthew Good <trac@matt-good.net>
 
+import locale
 import md5
 import os
 import re
@@ -173,7 +174,9 @@ def format_datetime(t=None, format='%x %X', gmt=False):
             t = time.localtime(int(t))
 
     text = time.strftime(format, t)
-    return to_utf8(text)
+    encoding = locale.getlocale(locale.LC_TIME)[1] or \
+               locale.getpreferredencoding()
+    return unicode(text, encoding, 'replace')
 
 def format_date(t=None, format='%x', gmt=False):
     return format_datetime(t, format, gmt)
@@ -184,14 +187,14 @@ def format_time(t=None, format='%X', gmt=False):
 def get_date_format_hint():
     t = time.localtime(0)
     t = (1999, 10, 29, t[3], t[4], t[5], t[6], t[7], t[8])
-    tmpl = time.strftime('%x', t)
+    tmpl = format_date(t)
     return tmpl.replace('1999', 'YYYY', 1).replace('99', 'YY', 1) \
                .replace('10', 'MM', 1).replace('29', 'DD', 1)
 
 def get_datetime_format_hint():
     t = time.localtime(0)
     t = (1999, 10, 29, 23, 59, 58, t[6], t[7], t[8])
-    tmpl = time.strftime('%x %X', t)
+    tmpl = format_datetime(t)
     return tmpl.replace('1999', 'YYYY', 1).replace('99', 'YY', 1) \
                .replace('10', 'MM', 1).replace('29', 'DD', 1) \
                .replace('23', 'hh', 1).replace('59', 'mm', 1) \
