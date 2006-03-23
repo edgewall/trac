@@ -16,6 +16,7 @@
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
 import re
+from StringIO import StringIO
 import time
 
 from trac.core import *
@@ -667,11 +668,7 @@ class QueryWikiMacro(Component):
             if len(argv) > 1:
                 if argv[1].strip().lower() == 'compact':
                     compact = 1
-        
-        try:
-            from cStringIO import StringIO
-        except NameError:
-            from StringIO import StringIO
+
         buf = StringIO()
 
         query = Query.from_string(self.env, query_string)

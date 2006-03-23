@@ -2,7 +2,7 @@
 #
 # Copyright (C) 2003-2006 Edgewall Software
 # Copyright (C) 2003-2005 Jonas Borgström <jonas@edgewall.com>
-# Copyright (C) 2004-2005 Christopher Lenz <cmlenz@gmx.de>
+# Copyright (C) 2004-2006 Christopher Lenz <cmlenz@gmx.de>
 # Copyright (C) 2005-2006 Christian Boos <cboos@neuf.fr>
 # All rights reserved.
 #
@@ -18,9 +18,10 @@
 #         Christopher Lenz <cmlenz@gmx.de>
 #         Christian Boos <cboos@neuf.fr>
 
-import time
-import re
 import posixpath
+import re
+from StringIO import StringIO
+import time
 from urllib import urlencode
 
 from trac import util
@@ -540,10 +541,6 @@ class ChangesetModule(Component):
         req.send_header('Content-Disposition', 'attachment;'
                         'filename=%s.zip' % filename)
 
-        try:
-            from cStringIO import StringIO
-        except ImportError:
-            from StringIO import StringIO
         from zipfile import ZipFile, ZipInfo, ZIP_DEFLATED
 
         buf = StringIO()

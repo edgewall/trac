@@ -18,11 +18,7 @@ import imp
 import inspect
 import os
 import re
-
-try:
-    from cStringIO import StringIO
-except ImportError:
-    from StringIO import StringIO
+from StringIO import StringIO
 
 from trac.config import default_dir
 from trac.core import *

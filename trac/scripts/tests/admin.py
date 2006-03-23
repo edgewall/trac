@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # 
-# Copyright (C) 2004-2005 Edgewall Software
+# Copyright (C) 2004-2006 Edgewall Software
 # All rights reserved.
 #
 # This software is licensed as described in the file COPYING, which
@@ -13,6 +13,14 @@
 #
 # Author: Tim Moloney <t.moloney@verizon.net>
 
+import ConfigParser
+import os
+import re
+import shlex
+import sys
+import time
+import unittest
+from StringIO import StringIO
 
 from trac.db_default import data as default_data, default_config
 from trac.config import Configuration
@@ -20,19 +28,6 @@ from trac.env import Environment
 from trac.scripts import admin
 from trac.test import InMemoryDatabase
 from trac.util import get_date_format_hint, NaivePopen
-
-import os
-import re
-import sys
-import time
-import unittest
-import shlex
-import ConfigParser
-
-try:
-    from cStringIO import StringIO
-except ImportError:
-    from StringIO import StringIO
 
 STRIP_TRAILING_SPACE = re.compile(r'( +)$', re.MULTILINE)
 

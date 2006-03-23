@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2004 Edgewall Software
+# Copyright (C) 2004-2006 Edgewall Software
 # Copyright (C) 2004 Daniel Lundin <daniel@edgewall.com>
 # All rights reserved.
 #
@@ -20,10 +20,7 @@ Get it at: http://silvercity.sourceforge.net/
 """
 
 import re
-try:
-    from cStringIO import StringIO
-except ImportError:
-    from StringIO import StringIO
+from StringIO import StringIO
 
 from trac.core import *
 from trac.mimeview.api import IHTMLPreviewRenderer
