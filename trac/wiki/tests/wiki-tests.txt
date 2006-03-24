@@ -82,7 +82,7 @@ Paragraph
 [1:2], r1:2, [12:23], r12:23
 ------------------------------
 <p>
-<a class="source" href="/log/?rev=2&stop_rev=1">[1:2]</a>, <a class="source" href="/log/?rev=2&stop_rev=1">r1:2</a>, <a class="source" href="/log/?rev=23&stop_rev=12">[12:23]</a>, <a class="source" href="/log/?rev=23&stop_rev=12">r12:23</a>
+<a class="source" href="/log/?rev=2&amp;stop_rev=1">[1:2]</a>, <a class="source" href="/log/?rev=2&amp;stop_rev=1">r1:2</a>, <a class="source" href="/log/?rev=23&amp;stop_rev=12">[12:23]</a>, <a class="source" href="/log/?rev=23&amp;stop_rev=12">r12:23</a>
 </p>
 ------------------------------
 ==============================
