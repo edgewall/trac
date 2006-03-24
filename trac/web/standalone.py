@@ -25,11 +25,11 @@ except ImportError:
 import md5
 import os
 import sys
-import urllib2
 from SocketServer import ThreadingMixIn
+import urllib2
 
-from trac import util, __version__
-from trac.util import autoreload, daemon, md5crypt
+from trac import __version__ as VERSION
+from trac.util import autoreload, daemon, md5crypt, hex_entropy
 from trac.web.main import dispatch_request
 from trac.web.wsgi import WSGIServer, WSGIRequestHandler
 
@@ -133,7 +133,7 @@ class DigestAuth(object):
         """Send a digest challange to the browser. Record used nonces
         to avoid replay attacks.
         """
-        nonce = util.hex_entropy()
+        nonce = hex_entropy()
         self.active_nonces.append(nonce)
         if len(self.active_nonces) > DigestAuth.MAX_NONCES:
             self.active_nonces = self.active_nonces[-DigestAuth.MAX_NONCES:]
@@ -193,7 +193,7 @@ class TracHTTPServer(ThreadingMixIn, WSGIServer):
 
 class TracHTTPRequestHandler(WSGIRequestHandler):
 
-    server_version = 'tracd/' + __version__
+    server_version = 'tracd/' + VERSION
 
     def handle_one_request(self):
         environ = self.setup_environ()
@@ -221,7 +221,7 @@ class TracHTTPRequestHandler(WSGIRequestHandler):
 def main():
     from optparse import OptionParser, OptionValueError
     parser = OptionParser(usage='usage: %prog [options] [projenv] ...',
-                          version='%%prog %s' % __version__)
+                          version='%%prog %s' % VERSION)
 
     auths = {}
     def _auth_callback(option, opt_str, value, parser, auths, cls):
