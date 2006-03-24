@@ -207,7 +207,7 @@ class WSGIServer(HTTPServer):
 
         self.application = application
 
-        gateway.wsgi_multiprocess = isinstance(self, ThreadingMixIn)
+        gateway.wsgi_multithread = isinstance(self, ThreadingMixIn)
         gateway.wsgi_multiprocess = isinstance(self, ForkingMixIn)
         self.gateway = gateway
 
