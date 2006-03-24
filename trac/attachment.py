@@ -27,6 +27,7 @@ from trac import perm, util
 from trac.core import *
 from trac.env import IEnvironmentSetupParticipant
 from trac.mimeview import *
+from trac.util.markup import html
 from trac.web import HTTPBadRequest, IRequestHandler
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
 from trac.wiki import IWikiSyntaxProvider
@@ -464,10 +465,8 @@ class AttachmentModule(Component):
             filename, params = filename[:idx], filename[idx:]
         try:
             attachment = Attachment(self.env, parent_type, parent_id, filename)
-            return '<a class="attachment" title="Attachment %s" href="%s">%s</a>' \
-                   % (util.escape(attachment.title),
-                      util.escape(attachment.href() + params),
-                      util.escape(label))
+            return html.A(class_='attachment', href=attachment.href() + params,
+                          title='Attachment %s' % attachment.title)[label]
         except TracError:
-            return '<a class="missing attachment" href="%s" rel="nofollow">%s</a>' \
-                   % (formatter.href.wiki(), label)
+            return html.A(class_='missing attachment', rel='nofollow',
+                          href=formatter.href())[label]

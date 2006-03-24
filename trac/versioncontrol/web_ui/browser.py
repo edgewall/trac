@@ -159,16 +159,16 @@ class BrowserModule(Component):
                                           format='zip')
             add_link(req, 'alternate', zip_href, 'Zip Archive',
                      'application/zip', 'zip')
-        
-        
+
+
     def _render_file(self, req, repos, node, rev=None):
         req.perm.assert_permission('FILE_VIEW')
         try:
             changeset = repos.get_changeset(node.rev) # created rev
         except NoSuchChangeset:
             changeset = repos.get_changeset(rev) # requested rev
-        req.hdf['file'] = {  
-            'rev': node.rev,  
+        req.hdf['file'] = {
+            'rev': node.rev,
             'changeset_href': req.href.changeset(node.rev),
             'date': util.format_datetime(changeset.date),
             'age': util.pretty_timedelta(changeset.date),
@@ -178,7 +178,7 @@ class BrowserModule(Component):
         }
 
         mimeview = Mimeview(self.env)
-        
+
         def get_mime_type(content=None):
             mime_type = node.content_type
             if not mime_type or mime_type == 'application/octet-stream':
@@ -209,14 +209,14 @@ class BrowserModule(Component):
             content = node.get_content().read(mimeview.max_preview_size())
             mime_type = get_mime_type(content)
             use_rev = rev and node.rev
-            
+
             if not is_binary(content):
                 if mime_type != 'text/plain':
                     plain_href = req.href.browser(node.path, rev=use_rev,
                                                   format='txt')
                     add_link(req, 'alternate', plain_href, 'Plain Text',
                              'text/plain')
-                    
+
             self.log.debug("Rendering preview of file %s with mime-type %s"
                            % (node.name, mime_type))
 
@@ -231,7 +231,7 @@ class BrowserModule(Component):
             add_stylesheet(req, 'common/css/code.css')
 
     # IWikiSyntaxProvider methods
-    
+
     def get_wiki_syntax(self):
         return []
 
@@ -251,5 +251,5 @@ class BrowserModule(Component):
         else:
             anchor = ''
         label = urllib.unquote(label)
-        return '<a class="source" href="%s%s">%s</a>' \
-               % (escape(formatter.href.browser(path, rev=rev)), anchor, label)
+        return html.A(href=formatter.href.browser(path, rev=rev) + anchor,
+                      class_='source')[label]

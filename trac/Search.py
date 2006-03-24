@@ -263,4 +263,4 @@ class SearchModule(Component):
             href = formatter.href.search() + query.replace(' ', '+')
         else:
             href = formatter.href.search(q=query)
-        return '<a class="search" href="%s">%s</a>' % (escape(href), label)
+        return html.A(class_='search', href=href)[label]

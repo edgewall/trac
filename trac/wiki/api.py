@@ -25,6 +25,7 @@ import urllib
 import re
 
 from trac.core import *
+from trac.util.markup import html
 
 
 class IWikiChangeListener(Interface):
@@ -145,7 +146,7 @@ class WikiSystem(Component):
         self._prepare_rules()
         return self._external_handlers
     external_handlers = property(_get_external_handlers)
-    
+
     def _prepare_rules(self):
         from trac.wiki.formatter import Formatter
         if not self._compiled_rules:
@@ -155,7 +156,7 @@ class WikiSystem(Component):
             i = 0
             for resolver in self.syntax_providers:
                 for regexp, handler in resolver.get_wiki_syntax():
-                    handlers['i'+str(i)] = handler
+                    handlers['i' + str(i)] = handler
                     syntax.append('(?P<i%d>%s)' % (i, regexp))
                     i += 1
             syntax += Formatter._post_rules[:]
@@ -218,8 +219,8 @@ class WikiSystem(Component):
         if not self.has_page(page):
             if ignore_missing:
                 return label
-            return '<a class="missing wiki" href="%s" rel="nofollow">%s?</a>' \
-                   % (formatter.href.wiki(page) + anchor, label)
+            return html.A(class_='missing wiki', rel='nofollow',
+                          href=formatter.href.wiki(page) + anchor)[label + '?']
         else:
-            return '<a class="wiki" href="%s">%s</a>' \
-                   % (formatter.href.wiki(page) + anchor, label)
+            return html.A(href=formatter.href.wiki(page) + anchor,
+                          class_='wiki')[label]

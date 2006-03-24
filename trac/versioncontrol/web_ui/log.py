@@ -22,12 +22,13 @@ import urllib
 from trac.core import *
 from trac.perm import IPermissionRequestor
 from trac.util import http_date
-from trac.web import IRequestHandler
-from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
-from trac.wiki import IWikiSyntaxProvider
+from trac.util.html import html
 from trac.versioncontrol import Changeset
 from trac.versioncontrol.web_ui.changeset import ChangesetModule
 from trac.versioncontrol.web_ui.util import *
+from trac.web import IRequestHandler
+from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
+from trac.wiki import IWikiSyntaxProvider
 
 LOG_LIMIT = 100
 
@@ -225,5 +226,5 @@ class LogModule(Component):
         if rev and ':' in rev:
             stop_rev, rev = rev.split(':', 1)
         label = urllib.unquote(label)
-        return '<a class="source" href="%s">%s</a>' \
-               % (formatter.href.log(path, rev=rev, stop_rev=stop_rev), label)
+        return html.A(href=formatter.href.log(path, rev=rev, stop_rev=stop_rev),
+                      class_='source')[label]

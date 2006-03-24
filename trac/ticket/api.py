@@ -16,11 +16,12 @@
 
 import re
 
-from trac import util
 from trac.core import *
 from trac.perm import IPermissionRequestor
-from trac.wiki import IWikiSyntaxProvider, Formatter
 from trac.Search import ISearchSource, search_to_sql, shorten_result
+from trac.util import shorten_line
+from trac.util.markup import html, Markup
+from trac.wiki import IWikiSyntaxProvider, Formatter
 
 
 class TicketSystem(Component):
@@ -164,15 +165,13 @@ class TicketSystem(Component):
                        (target,))
         row = cursor.fetchone()
         if row:
-            summary = util.escape(util.shorten_line(row[0]))
-            return '<a class="%s ticket" href="%s" title="%s (%s)">%s</a>' \
-                   % (row[1], formatter.href.ticket(target), summary, row[1],
-                      label)
+            return html.A(class_='%s ticket' % row[0],
+                          title=shorten_line(row[1]) + ' (%s)' % row[0],
+                          href=formatter.href.ticket(target))[label]
         else:
-            return '<a class="missing ticket" href="%s" rel="nofollow">%s</a>' \
-                   % (formatter.href.ticket(target), label)
+            return html.A(class_='missing ticket', rel='nofollow',
+                          href=formatter.href.ticket(target))[label]
 
-    
     # ISearchSource methods
 
     def get_search_filters(self, req):
@@ -192,13 +191,11 @@ class TicketSystem(Component):
                        "LEFT JOIN ticket_change b ON a.id = b.ticket "
                        "WHERE (b.field='comment' AND %s ) OR %s" % (sql, sql2),
                        args + args2)
-        for summary,desc,author,keywords,tid,date,status in cursor:
+        for summary, desc, author, keywords, tid, date, status in cursor:
             ticket = '#%d: ' % tid
             if status == 'closed':
-                ticket = util.Markup('<span style="text-decoration: '
-                                     'line-through">#%s</span>: ', tid)
+                ticket = Markup('<span style="text-decoration: line-through">'
+                                '#%s</span>: ', tid)
             yield (self.env.href.ticket(tid),
-                   ticket + util.shorten_line(summary),
-                   date, author,
-                   shorten_result(desc, terms))
-            
+                   ticket + shorten_line(summary),
+                   date, author, shorten_result(desc, terms))

@@ -504,5 +504,5 @@ class MilestoneModule(Component):
         yield ('milestone', self._format_link)
 
     def _format_link(self, formatter, ns, name, label):
-        return '<a class="milestone" href="%s">%s</a>' \
-               % (formatter.href.milestone(name), label)
+        return html.A(href=formatter.href.milestone(name),
+                      class_='milestone')[label]

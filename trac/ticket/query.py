@@ -22,9 +22,8 @@ import time
 from trac.core import *
 from trac.perm import IPermissionRequestor
 from trac.ticket import Ticket, TicketSystem
-from trac.util import escape, unescape, format_datetime, http_date, \
-                      shorten_line, CRLF
-from trac.util.markup import html
+from trac.util import format_datetime, http_date, shorten_line, CRLF
+from trac.util.markup import escape, html, unescape
 from trac.web import IRequestHandler
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
 from trac.wiki import wiki_to_html, wiki_to_oneliner, IWikiSyntaxProvider
@@ -625,24 +624,22 @@ class QueryModule(Component):
 
     def _format_link(self, formatter, ns, query, label):
         if query[0] == '?':
-            return '<a class="query" href="%s">%s</a>' \
-                   % (escape(formatter.href.query() + query.replace(' ', '+')),
-                      label)
+            return html.A(href=formatter.href.query() + query.replace(' ', '+'),
+                          class_='query')[label]
         else:
             from trac.ticket.query import Query, QuerySyntaxError
             try:
                 query = Query.from_string(formatter.env, query)
-                return '<a class="query" href="%s">%s</a>' \
-                       % (escape(query.get_href()), label)
+                return html.A(href=query.get_href(), class_='query')[label]
             except QuerySyntaxError, e:
-                return '<em class="error">[Error: %s]</em>' % escape(e)
+                return html.EM(class_='error')['[Error: %s]' % e]
 
 
-class QueryWikiMacro(WikiMacroBase):
+class TicketQueryMacro(WikiMacroBase):
     """Macro that lists tickets that match certain criteria.
     
     This macro accepts two parameters, the second of which is optional.
-
+    
     The first parameter is the query itself, and uses the same syntax as for
     {{{query:}}} wiki links. The second parameter determines how the list of
     tickets is presented: the default presentation is to list the ticket ID next

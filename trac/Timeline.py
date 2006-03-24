@@ -166,7 +166,7 @@ class TimelineModule(Component):
                 if isinstance(title, Markup):
                     title = title.plaintext(keeplinebreaks=False)
                 event['title'] = title
-                event['message'] = str(message)
+                event['message'] = unicode(message)
 
                 if author:
                     # For RSS, author must be an email address

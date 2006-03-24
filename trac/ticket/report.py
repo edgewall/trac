@@ -498,6 +498,5 @@ class ReportModule(Component):
         if '?' in target:
             report, args = target.split('?')
             args = '?' + args
-        return '<a class="report" href="%s">%s</a>' % (
-               formatter.href.report(report) + args, label)
-
+        return html.A(href=formatter.href.report(report) + args,
+                      class_='report')[label]

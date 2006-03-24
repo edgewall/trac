@@ -30,6 +30,7 @@ from trac.web.href import Href
 HTTP_STATUS = dict([(code, reason.title()) for code, (reason, description)
                     in BaseHTTPRequestHandler.responses.items()])
 
+
 class HTTPException(Exception):
     """Exception representing a HTTP status code."""
 

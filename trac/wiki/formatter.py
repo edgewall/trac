@@ -328,8 +328,8 @@ class Formatter(object):
         # check first for an alias defined in trac.ini
         ns = self.env.config.get('intertrac', ns.upper()) or ns
         if ns in self.wiki.link_resolvers:
-            return self.wiki.link_resolvers[ns](self, ns, target,
-                                           util.escape(label, False))
+            return unicode(self.wiki.link_resolvers[ns](self, ns, target,
+                                                        util.escape(label, False)))
         elif target.startswith('//') or ns == "mailto":
             return self._make_ext_link(ns+':'+target, label)
         else:
@@ -583,7 +583,8 @@ class Formatter(object):
                 if match[0] == '!':
                     return match[1:]
                 if itype in self.wiki.external_handlers:
-                    return self.wiki.external_handlers[itype](self, match, fullmatch)
+                    return unicode(self.wiki.external_handlers[itype](self, match,
+                                                                      fullmatch))
                 else:
                     return getattr(self, '_' + itype + '_formatter')(match, fullmatch)
     def handle_code_block(self, line):

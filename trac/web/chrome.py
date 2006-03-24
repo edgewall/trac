@@ -17,9 +17,10 @@
 import os
 import re
 
-from trac import mimeview, util
+from trac import mimeview
 from trac.core import *
 from trac.env import IEnvironmentSetupParticipant
+from trac.util.markup import html
 from trac.web.api import IRequestHandler, HTTPNotFound
 from trac.web.href import Href
 from trac.wiki import IWikiSyntaxProvider
@@ -196,7 +197,7 @@ class Chrome(Component):
 
     def _format_link(self, formatter, ns, file, label):
         href = self.env.href.chrome('site', file)
-        return '<a href="%s">%s</a>' % (util.escape(href), label)
+        return html.A(href=formatter.href.chrome('site', file))[label]
 
     # Public API methods
 
