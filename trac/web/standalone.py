@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2003-2005 Edgewall Software
+# Copyright (C) 2003-2006 Edgewall Software
 # Copyright (C) 2003-2005 Jonas Borgström <jonas@edgewall.com>
 # Copyright (C) 2005 Matthew Good <trac@matt-good.net>
-# Copyright (C) 2005 Christopher Lenz <cmlenz@gmx.de>
+# Copyright (C) 2005-2006 Christopher Lenz <cmlenz@gmx.de>
 # All rights reserved.
 #
 # This software is licensed as described in the file COPYING, which
@@ -29,7 +29,7 @@ import urllib2
 from SocketServer import ThreadingMixIn
 
 from trac import util, __version__
-from trac.util import md5crypt
+from trac.util import autoreload, daemon, md5crypt
 from trac.web.main import dispatch_request
 from trac.web.wsgi import WSGIServer, WSGIRequestHandler
 
@@ -218,33 +218,6 @@ class TracHTTPRequestHandler(WSGIRequestHandler):
         gateway.run(self.server.application)
 
 
-def daemonize(stdin='/dev/null', stdout='/dev/null', stderr='/dev/null'):
-    """Fork a daemon process (taken from the Python Cookbook)."""
-    # perform first fork
-    pid = os.fork()
-    if pid > 0:
-        sys.exit(0) # edit first parent
-
-    # decouple from parent environment
-    os.chdir('/')
-    os.umask(0)
-    os.setsid()
-
-    # perform second fork
-    pid = os.fork()
-    if pid > 0:
-        sys.exit(0) # edit first parent
-
-    # the projess is now daemonized, redirect standard file descriptors
-    for fileobj in sys.stdout, sys.stderr:
-        fileobj.flush()
-    stdin = file(stdin, 'r')
-    stdout = file(stdout, 'a+')
-    stderr = file(stderr, 'a+', 0)
-    os.dup2(stdin.fileno(), sys.stdin.fileno())
-    os.dup2(stdout.fileno(), sys.stdout.fileno())
-    os.dup2(stderr.fileno(), sys.stderr.fileno())
-
 def main():
     from optparse import OptionParser, OptionValueError
     parser = OptionParser(usage='usage: %prog [options] [projenv] ...',
@@ -281,6 +254,10 @@ def main():
                       dest='env_parent_dir', metavar='PARENTDIR',
                       help='parent directory of the project environments')
 
+    parser.add_option('-r', '--auto-reload', action='store_true',
+                      dest='autoreload',
+                      help='restart automatically when sources are modified')
+
     if os.name == 'posix':
         parser.add_option('-d', '--daemonize', action='store_true',
                           dest='daemonize',
@@ -294,13 +271,24 @@ def main():
                      'environment must be specified')
 
     server_address = (options.hostname, options.port)
-    httpd = TracHTTPServer(server_address, options.env_parent_dir, args, auths)
+    
+
+    def serve():
+        httpd = TracHTTPServer(server_address, options.env_parent_dir, args,
+                               auths)
+        httpd.serve_forever()
 
     try:
-        if options.daemonize:
-            daemonize()
+        if os.name == 'posix' and options.daemonize:
+            daemon.daemonize()
 
-        httpd.serve_forever()
+        if options.autoreload:
+            def modification_callback(file):
+                print>>sys.stderr, 'Detected modification of %s, restarting.' \
+                                   % file
+            autoreload.main(serve, modification_callback)
+        else:
+            serve()
 
     except OSError:
         sys.exit(1)
