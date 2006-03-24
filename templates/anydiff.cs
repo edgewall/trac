@@ -1,12 +1,6 @@
 <?cs include "header.cs"?>
 
-<div id="ctxtnav" class="nav">
- <h2>Navigation</h2><?cs
- with:links = chrome.links ?>
-  <ul>
-  </ul><?cs
- /with ?>
-</div>
+<div id="ctxtnav" class="nav"></div>
 
 <div id="content" class="changeset">
  <div id="title">
