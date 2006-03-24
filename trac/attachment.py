@@ -417,7 +417,7 @@ class AttachmentModule(Component):
             format = req.args.get('format')
             render_unsafe = self.config.getbool('attachment',
                                                 'render_unsafe_content')
-            binary = not detect_unicode(data) and is_binary(data)
+            binary = is_binary(data)
 
             if format in ('raw', 'txt'): # Send raw file
                 if not render_unsafe and not binary:
