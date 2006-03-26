@@ -220,6 +220,7 @@ def dispatch_request(environ, start_response):
         environ.setdefault('trac.template_vars',
                            os.getenv('TRAC_TEMPLATE_VARS'))
         environ.setdefault('trac.locale', '')
+        environ.setdefault('trac.base_path', [])
 
     locale.setlocale(locale.LC_ALL, environ['trac.locale'])
 
@@ -235,9 +236,15 @@ def dispatch_request(environ, start_response):
         env_parent_dir = environ.get('trac.env_parent_dir')
         env_paths = environ.get('trac.env_paths')
         if env_parent_dir or env_paths:
-            # The first component of the path is the base name of the
-            # environment
+            # The first component of the path (after the base_path prefix) is
+            # the base name of the environment
             path_info = environ.get('PATH_INFO', '').lstrip('/').split('/')
+            base_path = environ.get('trac.base_path', [])
+            if path_info[0:len(base_path)] == base_path:
+                path_info = path_info[len(base_path):] or [None]
+            else:
+                # TODO raise error when the base path does not match with the request base path?
+                path_info = [None]
             env_name = path_info.pop(0)
 
             if not env_name:
@@ -250,7 +257,7 @@ def dispatch_request(environ, start_response):
             # To make the matching patterns of request handlers work, we append
             # the environment name to the `SCRIPT_NAME` variable, and keep only
             # the remaining path in the `PATH_INFO` variable.
-            environ['SCRIPT_NAME'] = Href(environ['SCRIPT_NAME'])(env_name)
+            environ['SCRIPT_NAME'] = Href(environ['SCRIPT_NAME'])(*(base_path+[env_name]))
             environ['PATH_INFO'] = '/'.join([''] + path_info)
 
             if env_parent_dir:
@@ -347,6 +354,7 @@ def send_project_index(environ, start_response, parent_dir=None,
                           for filename in os.listdir(parent_dir)])
 
     try:
+        base_path = environ.get('trac.base_path', [])
         href = Href(req.base_path)
         projects = []
         for env_name, env_path in get_environments(environ).items():
@@ -356,7 +364,7 @@ def send_project_index(environ, start_response, parent_dir=None,
                 proj = {
                     'name': env.config.get('project', 'name'),
                     'description': env.config.get('project', 'descr'),
-                    'href': href(env_name)
+                    'href': href(*(base_path + [env_name]))
                 }
             except Exception, e:
                 proj = {'name': env_name, 'description': str(e)}

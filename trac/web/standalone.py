@@ -180,10 +180,12 @@ class DigestAuth(object):
 
 class TracHTTPServer(ThreadingMixIn, WSGIServer):
 
-    def __init__(self, server_address, env_parent_dir, env_paths, auths):
+    def __init__(self, server_address, env_parent_dir, base_path, env_paths, auths):
         WSGIServer.__init__(self, server_address, dispatch_request,
                             request_handler=TracHTTPRequestHandler)
         self.environ['trac.env_path'] = None
+        base_path = base_path.strip('/')
+        self.environ['trac.base_path'] = base_path and base_path.split('/') or []
         if env_parent_dir:
             self.environ['trac.env_parent_dir'] = env_parent_dir
         else:
@@ -253,6 +255,9 @@ def main():
     parser.add_option('-e', '--env-parent-dir', action='store',
                       dest='env_parent_dir', metavar='PARENTDIR',
                       help='parent directory of the project environments')
+    parser.add_option('--base-path', action='store', type='string', # XXX call this url_base_path?
+                      dest='base_path',
+                      help='base path')
 
     parser.add_option('-r', '--auto-reload', action='store_true',
                       dest='autoreload',
@@ -263,7 +268,7 @@ def main():
                           dest='daemonize',
                           help='run in the background as a daemon')
 
-    parser.set_defaults(port=80, hostname='', daemonize=False)
+    parser.set_defaults(port=80, hostname='', base_path='', daemonize=False)
     options, args = parser.parse_args()
 
     if not args and not options.env_parent_dir:
@@ -274,8 +279,8 @@ def main():
     
 
     def serve():
-        httpd = TracHTTPServer(server_address, options.env_parent_dir, args,
-                               auths)
+        httpd = TracHTTPServer(server_address, options.env_parent_dir,
+			       options.base_path, args, auths)
         httpd.serve_forever()
 
     try:
