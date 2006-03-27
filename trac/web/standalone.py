@@ -201,8 +201,9 @@ class TracHTTPRequestHandler(WSGIRequestHandler):
         environ = self.setup_environ()
         path_info = environ.get('PATH_INFO', '')
         path_parts = filter(None, path_info.split('/'))
-        if len(path_parts) > 1 and path_parts[1] == 'login':
-            env_name = path_parts[0]
+        base_path = environ['trac.base_path']
+        if len(path_parts) > len(base_path)+1 and path_parts[len(base_path)+1] == 'login':
+            env_name = path_parts[len(base_path)]
             if env_name:
                 auth = self.server.auths.get(env_name,
                                              self.server.auths.get('*'))
