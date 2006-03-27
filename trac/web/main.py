@@ -21,6 +21,7 @@ import os
 import sys
 import dircache
 
+from trac.config import IConfigurable, ConfigOption
 from trac.core import *
 from trac.env import open_environment
 from trac.perm import PermissionCache, PermissionError
@@ -121,6 +122,10 @@ class RequestDispatcher(Component):
     default_handler = SingletonExtensionPoint(IRequestHandler,
                                               'trac', 'default_handler')
 
+    implements(IConfigurable)
+
+    # Public API
+
     def authenticate(self, req):
         for authenticator in self.authenticators:
             authname = authenticator.authenticate(req)
@@ -181,6 +186,17 @@ class RequestDispatcher(Component):
         finally:
             # Give the session a chance to persist changes
             req.session.save()
+
+    # IConfigurable methods
+
+    def get_config_options(self):
+        yield ('trac', [
+            ConfigOption('default_handler', 'WikiModule',
+                         """Name of the component that handles requests to the
+                         base URL. Some options are `TimeLineModule`,
+                         `RoadmapModule`, `BrowserModule`, `QueryModule`,
+                         `ReportModule` and `NewticketModule` (''since 0.9'')
+                         """)])
 
 
 def dispatch_request(environ, start_response):

@@ -24,6 +24,7 @@ import unicodedata
 import urllib
 
 from trac import perm, util
+from trac.config import IConfigurable, ConfigOption
 from trac.core import *
 from trac.env import IEnvironmentSetupParticipant
 from trac.mimeview import *
@@ -209,10 +210,31 @@ def attachment_to_hdf(env, db, req, attachment):
 
 class AttachmentModule(Component):
 
-    implements(IEnvironmentSetupParticipant, IRequestHandler,
+    implements(IConfigurable, IEnvironmentSetupParticipant, IRequestHandler,
                INavigationContributor, IWikiSyntaxProvider)
 
     CHUNK_SIZE = 4096
+
+    # IConfigurable methods
+
+    def get_config_options(self):
+        yield ('attachment', [
+            ConfigOption('max_size', '262144',
+                         """Maximum allowed file size for ticket and wiki
+                         attachments
+                         """),
+            ConfigOption('render_unsafe_content', 'false',
+                         """Whether non-binary attachments should be rendered in
+                         the browser, or only made downloadable.
+
+                         Pretty much any text file may be interpreted as HTML
+                         by the browser, which allows a malicious user to
+                         attach a file containing cross-site scripting attacks.
+
+                         For public sites where anonymous users can create
+                         attachments, it is recommended to leave this option off
+                         (which is the default).
+                         """)])
 
     # IEnvironmentSetupParticipant methods
 

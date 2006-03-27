@@ -19,6 +19,7 @@
 """Management of permissions."""
 
 from trac.core import *
+from trac.config import IConfigurable, ConfigOption
 
 
 __all__ = ['IPermissionRequestor', 'IPermissionStore',
@@ -75,7 +76,7 @@ class IPermissionStore(Interface):
 class PermissionSystem(Component):
     """Sub-system that manages user permissions."""
 
-    implements(IPermissionRequestor)
+    implements(IConfigurable, IPermissionRequestor)
 
     requestors = ExtensionPoint(IPermissionRequestor)
     store = SingletonExtensionPoint(IPermissionStore,
@@ -147,6 +148,16 @@ class PermissionSystem(Component):
         The permissions are returned as a list of (subject, action)
         formatted tuples."""
         return self.store.get_all_permissions()
+
+    # IConfigurable methods
+
+    def get_config_options(self):
+        yield ('trac', [
+            ConfigOption('permission_store', 'DefaultPermissionStore',
+                         """Name of the component implementing
+                         `IPermissionStore`, which is used for managing user
+                         and group permissions.
+                         """)])
 
     # IPermissionRequestor methods
 

@@ -22,7 +22,7 @@ import time
 import unittest
 from StringIO import StringIO
 
-from trac.db_default import data as default_data, default_config
+from trac.db_default import data as default_data
 from trac.config import Configuration
 from trac.env import Environment
 from trac.scripts import admin
@@ -54,10 +54,10 @@ def load_expected_results(file, pattern):
     return expected
 
 
-"""
-A subclass of Environment that keeps its' DB in memory.
-"""
 class InMemoryEnvironment(Environment):
+    """
+    A subclass of Environment that keeps its' DB in memory.
+    """
 
     def get_db_cnx(self):
         if not hasattr(self, '_db'):
@@ -65,7 +65,9 @@ class InMemoryEnvironment(Environment):
         return self._db
 
     def create(self, db_str=None):
-        self.load_config()
+        for section, options in self.get_default_config().iteritems():
+            for opt in options:
+                self.config.setdefault(section, opt.name, opt.default)
 
     def verify(self):
         return True
@@ -78,10 +80,8 @@ class InMemoryEnvironment(Environment):
         return cls.__module__.startswith('trac.') and \
                cls.__module__.find('.tests.') == -1
 
-    def load_config(self):
+    def setup_config(self):
         self.config = Configuration(None)
-        for section, name, value in default_config:
-            self.config.setdefault(section, name, value)
             
     def save_config(self):
         pass

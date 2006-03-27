@@ -18,6 +18,7 @@ import os
 import re
 
 from trac import mimeview
+from trac.config import IConfigurable, ConfigOption
 from trac.core import *
 from trac.env import IEnvironmentSetupParticipant
 from trac.util.markup import html
@@ -99,8 +100,8 @@ class Chrome(Component):
     """Responsible for assembling the web site chrome, i.e. everything that
     is not actual page content.
     """
-    implements(IEnvironmentSetupParticipant, IRequestHandler, ITemplateProvider,
-               IWikiSyntaxProvider)
+    implements(IEnvironmentSetupParticipant, IConfigurable,
+               IRequestHandler, ITemplateProvider, IWikiSyntaxProvider)
 
     navigation_contributors = ExtensionPoint(INavigationContributor)
     template_providers = ExtensionPoint(ITemplateProvider)
@@ -148,6 +149,33 @@ class Chrome(Component):
 
     def upgrade_environment(self, db):
         pass
+
+    # IConfigurable methods
+
+    def get_config_options(self):
+        yield ('trac', [
+            ConfigOption('metanav', 'login,logout,settings,help,about',
+                         """List of sections to display in the navigation bar
+                         `metanav` 
+                         """),
+            ConfigOption('mainnav', 'wiki,timeline,roadmap,browser,tickets,newticket,search',
+                         """List of sections to display in the navigation bar
+                         `mainnav`
+                         """)])
+        yield ('header_logo', [
+            ConfigOption('link', 'http://trac.edgewall.com/',
+                         "Destination URL to link to from header logo"),
+            ConfigOption('src', 'common/trac_banner.png',
+                         """URL to image to use as header logo.
+                         See also: TracInterfaceCustomization
+                         """),
+            ConfigOption('alt', 'Trac',
+                         "''alt'' text for header logo"),
+            ConfigOption('width', '236',
+                         "Header logo width in pixels"),
+            ConfigOption('height', '73', 
+                         "Header logo height in pixels"),
+            ])
 
     # IRequestHandler methods
 

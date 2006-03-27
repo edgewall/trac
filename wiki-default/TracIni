@@ -13,80 +13,11 @@ The global configuration is by default localted in `$prefix/share/trac/conf/trac
 
 This is a brief reference of available configuration options.
 
-== [trac] ==
-|| `database`        || [wiki:TracEnvironment#DatabaseConnectionStrings Database connection string] for this project ||
-|| `default_charset` || Charset used in text files in the subversion repository (default is `iso-8859-15`) ||
-|| `default_handler` || Name of the component that handles requests to the base URL (default is `WikiHandler`) (''since 0.9'') ||
-|| `repository_dir`  || Path to local Subversion repository ||
-|| `authz_file`      || Path to Subversion [http://svnbook.red-bean.com/en/1.1/ch06s04.html#svn-ch-6-sect-4.4.2 authorization (authz) file]. ||
-|| `authz_module_name` || The module prefix used in the `authz_file` (See FineGrainedPermissions)||
-|| `check_auth_ip` || Whether the IP address of the user should be checked for authentication (true, false) (''since 0.9'') ||
-|| `ignore_auth_case` || Whether case should be ignored for login names (true, false) (''since 0.9'') ||
-|| `templates_dir`   || Path to the !ClearSilver templates ||
-
-== [project] ==
-|| `name`   || Project name ||
-|| `descr`  || Short project description ||
-|| `url`    || URL to the main project website ||
-|| `icon`   || URL to icon file to use as shortcut icon (favicon) ||
-|| `footer` || Page footer text (right-aligned) ||
-
-== [header_logo] ==
-|| `src`    || URL to image to use as header logo ||
-|| `link`   || Destination URL to link to from header logo ||
-|| `alt`    || ''alt'' text for header logo ||
-|| `width`  || Header logo width in pixels ||
-|| `height` || Header logo height in pixels ||
-See also: TracInterfaceCustomization.
-
-== [logging] ==
-|| `log_type`  || Logging facility to use. (none, file, stderr, syslog, winlog) ||
-|| `log_file`  || If ''log_type'' is ''file'', this should be a path to the log-file ||
-|| `log_level` || Level of verbosity in log (CRITICAL, ERROR, WARN, INFO, DEBUG) ||
-See also: TracLogging
-
-== [attachment] ==
-|| `max_size` || Maximum allowed file size for ticket and wiki attachments ||
-
-== [notification] ==
-|| `smtp_enabled`   || Enable SMTP (email) notification (true, false) ||
-|| `smtp_server`    || SMTP server to use for email notifications ||
-|| `smtp_user`      || Username for SMTP server (''since 0.9'') ||
-|| `smtp_password`  || Password for SMTP server (''since 0.9'') ||
-|| `smtp_from`      || Sender address to use in notification emails ||
-|| `smtp_replyto`   || Reply-To address to use in notification emails ||
-|| `smtp_always_cc` || Email address(es) to always send notifications to ||
-|| `always_notify_reporter` || Always send notifications to any address in the ''reporter'' field ||
-|| `always_notify_owner` || Always send notifications to the ticket owner (''since 0.9'') ||
-See also: TracNotification
-
-== [mimeviewer] ==
-|| `enscript_path` || Path to the Enscript program ||
-|| `php_path` || Path to the PHP program ||
-|| `max_preview_size` || Maximum file size for HTML preview (''since 0.9'') ||
-|| `tab_width` || Displayed tab width in file preview (''since 0.9'') ||
-
-== [ticket] ==
-|| `default_version`   || Default version for newly created tickets ||
-|| `default_severity`  || Default severity for newly created tickets ||
-|| `default_priority`  || Default priority for newly created tickets ||
-|| `default_milestone` || Default milestone for newly created tickets ||
-|| `default_component` || Default component for newly created tickets ||
-|| `restrict_owner`    || Make the owner field of tickets use a drop-down menu (''since 0.9'') ||
+[[TracIni]]
 
 == [ticket-custom] ==
 Creates [wiki:TracTicketsCustomFields user-defined ticket fields].
 
-== [timeline] ==
-|| `default_daysback` || Default "depth" of the Timeline, in days (''since 0.9'') ||
-|| `changeset_show_files` || Number of files to show (-1 for unlimited, 0 to disable) ||
-|| `ticket_show_details` || Enable the display of all ticket changes in the timeline ||
-
-== [browser] ==
-|| `hide_properties` || List of subversion properties to hide from the repository browser (''since 0.9'') ||
-
-== [wiki] ==
-|| `ignore_missing_pages` || enable/disable highlighting CamelCase links to missing pages (''since 0.9'') ||
 
 == [components] ==
 (''since 0.9'')
@@ -112,3 +43,4 @@ See also: TracPlugins
 
 ----
 See also: TracGuide, TracAdmin, TracEnvironment
+

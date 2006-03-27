@@ -18,11 +18,29 @@ from ConfigParser import ConfigParser
 import os
 import sys
 
-from trac.core import TracError
+from trac.core import *
+from trac.util import doctrim
 
-__all__ = ['Configuration', 'ConfigurationError', 'default_dir']
+__all__ = ['IConfigurable', 'ConfigOption', 'Configuration',
+           'ConfigurationError', 'default_dir']
 
 _TRUE_VALUES = ('yes', 'true', 'on', 'aye', '1', 1, True)
+
+
+class IConfigurable(Interface):
+    def get_config_options():
+        """Generate pairs of `(section, options)`.
+
+        `section` is the section name.
+        `options` is an iterable of `ConfigOption` objects.
+        """
+         
+
+class ConfigOption(object):
+    def __init__(self, name, default, doc):
+        self.name = name
+        self.default = default or ''
+        self.doc = doc and doctrim(doc) or ''
 
 
 class ConfigurationError(TracError):

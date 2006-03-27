@@ -19,6 +19,7 @@ import re
 import time
 
 from trac.attachment import attachment_to_hdf, Attachment
+from trac.config import IConfigurable, ConfigOption
 from trac.core import *
 from trac.env import IEnvironmentSetupParticipant
 from trac.ticket import Milestone, Ticket, TicketSystem
@@ -159,7 +160,36 @@ class NewticketModule(Component):
 
 class TicketModule(Component):
 
-    implements(INavigationContributor, IRequestHandler, ITimelineEventProvider)
+    implements(IConfigurable, INavigationContributor, IRequestHandler,
+               ITimelineEventProvider)
+
+    # IConfigurable methods
+
+    def get_config_options(self):
+        yield ('timeline', [
+            ConfigOption('ticket_show_details', 'false',
+                         """Enable the display of all ticket changes in the
+                         timeline (''since 0.9'')
+                         """)])
+        yield ('ticket', [
+            ConfigOption('default_version', '',
+                         "Default version for newly created tickets"),
+            ConfigOption('default_type', 'defect',
+                         """Default type for newly created tickets
+                         (''since 0.9'')
+                         """),
+            ConfigOption('default_priority', 'major',
+                         "Default priority for newly created tickets"),
+            ConfigOption('default_milestone', '',
+                         "Default milestone for newly created tickets"),
+            ConfigOption('default_component', 'component1',
+                         "Default component for newly created tickets"),
+            ConfigOption('restrict_owner', 'false',
+                         """Make the owner field of tickets use a drop-down
+                         menu. See
+                         [wiki:TracTickets#AssigntoasDropDownList AssignToAsDropDownList]
+                         (''since 0.9'')
+                         """)])
 
     # INavigationContributor methods
 

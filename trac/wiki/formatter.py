@@ -108,8 +108,8 @@ class WikiProcessor(object):
                     text, nr = code_block_start.subn('<span class="code-block">', text, 1 )
                     if nr:
                         text, nr = code_block_end.subn('</span>', text, 1 )
-                else:
-                    text = "</p>%s<p>" % text
+                    else:
+                        text = "</p>%s<p>" % text
             return text
         else:
             return text

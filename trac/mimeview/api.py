@@ -21,6 +21,7 @@ import re
 from StringIO import StringIO
 
 from trac.core import *
+from trac.config import IConfigurable, ConfigOption
 from trac.util import escape, to_utf8, Markup
 
 
@@ -191,6 +192,8 @@ class Mimeview(Component):
     renderers = ExtensionPoint(IHTMLPreviewRenderer)
     annotators = ExtensionPoint(IHTMLPreviewAnnotator)
 
+    implements(IConfigurable)
+
     # Public API
 
     def get_annotation_types(self):
@@ -323,6 +326,20 @@ class Mimeview(Component):
             content = self.to_utf8(content, mimetype)
         return {'preview': self.render(req, mimetype, content,
                                        filename, detail, annotations)}
+
+    # IConfigurable
+
+    def get_config_options(self):
+        yield ('trac', [
+            ConfigOption('default_charset', 'iso-8859-15',
+                         "Charset to be used in last resort.")])
+        yield ('mimeviewer', [
+            ConfigOption('tab_width', '8',
+                         """Displayed tab width in file preview (''since 0.9'')
+                         """),
+            ConfigOption('max_preview_size', '262144',
+                         """Maximum file size for HTML preview. (''since 0.9'')
+                         """)])
 
 
 def _html_splitlines(lines):

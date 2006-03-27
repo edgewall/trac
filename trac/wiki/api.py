@@ -24,6 +24,7 @@ import time
 import urllib
 import re
 
+from trac.config import IConfigurable, ConfigOption
 from trac.core import *
 from trac.util.markup import html
 
@@ -81,7 +82,7 @@ class IWikiSyntaxProvider(Interface):
 class WikiSystem(Component):
     """Represents the wiki system."""
 
-    implements(IWikiChangeListener, IWikiSyntaxProvider)
+    implements(IConfigurable, IWikiChangeListener, IWikiSyntaxProvider)
 
     change_listeners = ExtensionPoint(IWikiChangeListener)
     macro_providers = ExtensionPoint(IWikiMacroProvider)
@@ -177,6 +178,15 @@ class WikiSystem(Component):
             self._link_resolvers = resolvers
         return self._link_resolvers
     link_resolvers = property(_get_link_resolvers)
+
+    # IConfigurable methods
+
+    def get_config_options(self):
+        yield ('wiki', [
+            ConfigOption('ignore_missing_pages', 'false',
+                         """Enable/disable highlighting CamelCase links to
+                         missing pages (''since 0.9'')
+                         """)])
 
     # IWikiChangeListener methods
 

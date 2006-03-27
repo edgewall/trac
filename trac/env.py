@@ -17,7 +17,7 @@
 import os
 
 from trac import db_default, util
-from trac.config import Configuration
+from trac.config import Configuration, IConfigurable, ConfigOption, default_dir
 from trac.core import Component, ComponentManager, implements, Interface, \
                       ExtensionPoint, TracError
 from trac.db import DatabaseManager
@@ -61,6 +61,7 @@ class Environment(Component, ComponentManager):
      * wiki and ticket attachments.
     """   
     setup_participants = ExtensionPoint(IEnvironmentSetupParticipant)
+    config_providers = ExtensionPoint(IConfigurable)
 
     def __init__(self, path, create=False, options=[]):
         """Initialize the Trac environment.
@@ -75,7 +76,7 @@ class Environment(Component, ComponentManager):
         ComponentManager.__init__(self)
 
         self.path = path
-        self.load_config()
+        self.setup_config() 
         self.setup_log() 
 
         from trac.loader import load_components
@@ -84,6 +85,9 @@ class Environment(Component, ComponentManager):
         if create:
             self.create(options)
         else:
+            for section, options in self.get_default_config().iteritems():
+                for opt in options:
+                    self.config.setdefault(section, opt.name, opt.default)
             self.verify()
 
         if create:
@@ -181,9 +185,10 @@ class Environment(Component, ComponentManager):
         # Setup the default configuration
         os.mkdir(os.path.join(self.path, 'conf'))
         _create_file(os.path.join(self.path, 'conf', 'trac.ini'))
-        self.load_config()
-        for section, name, value in db_default.default_config:
-            self.config.set(section, name, value)
+        self.setup_config()
+        for section, opts in self.get_default_config().iteritems():
+            for opt in opts:
+                self.config.set(section, opt.name, opt.default)
         for section, name, value in options:
             self.config.set(section, name, value)
         self.config.save()
@@ -200,12 +205,22 @@ class Environment(Component, ComponentManager):
         row = cursor.fetchone()
         return row and int(row[0])
 
-    def load_config(self):
+    def setup_config(self):
         """Load the configuration file."""
         self.config = Configuration(os.path.join(self.path, 'conf', 'trac.ini'))
-        for section, name, value in db_default.default_config:
-            self.config.setdefault(section, name, value)
 
+    def get_default_config(self):
+        """Return a dictionary of (`section`, `options`) pairs.
+
+        `options` is a list of `ConfigOption` objects.
+        """
+        default_config = {}
+        for provider in self.config_providers:
+            for section, options in provider.get_config_options():
+                other_options = default_config.get(section, [])
+                default_config[section] = other_options + options
+        return default_config
+        
     def get_templates_dir(self):
         """Return absolute path to the templates directory."""
         return os.path.join(self.path, 'templates')
@@ -221,9 +236,9 @@ class Environment(Component, ComponentManager):
     def setup_log(self):
         """Initialize the logging sub-system."""
         from trac.log import logger_factory
-        logtype = self.config.get('logging', 'log_type')
-        loglevel = self.config.get('logging', 'log_level')
-        logfile = self.config.get('logging', 'log_file')
+        logtype = self.config.get('logging', 'log_type', 'none')
+        loglevel = self.config.get('logging', 'log_level', 'DEBUG')
+        logfile = self.config.get('logging', 'log_file', 'trac.log')
         if not os.path.isabs(logfile):
             logfile = os.path.join(self.get_log_dir(), logfile)
         logid = self.path # Env-path provides process-unique ID
@@ -311,7 +326,7 @@ class Environment(Component, ComponentManager):
 
 
 class EnvironmentSetup(Component):
-    implements(IEnvironmentSetupParticipant)
+    implements(IEnvironmentSetupParticipant, IConfigurable)
 
     # IEnvironmentSetupParticipant methods
 
@@ -349,6 +364,50 @@ class EnvironmentSetup(Component):
                        "name='database_version'", (db_default.db_version,))
         self.log.info('Upgraded database version from %d to %d',
                       dbver, db_default.db_version)
+
+    # IConfigurable methods
+
+    def get_config_options(self):
+        yield ('trac', [
+            ConfigOption('database', 'sqlite:db/trac.db',
+                         """Database connection
+                         [wiki:TracEnvironment#DatabaseConnectionStrings string]
+                         for this project
+                         """),
+            ConfigOption('repository_type', 'svn',
+                         "Repository connector type. (''since 0.10'')"),
+            ConfigOption('repository_dir', '',
+                         "Path to local repository"),
+            ConfigOption('templates_dir', default_dir('templates'),
+                         "Path to the !ClearSilver templates")])
+        yield ('project', [
+            ConfigOption('name', 'My Project',
+                         "Project name"),
+            ConfigOption('descr', 'My example project',
+                         "Short project description"),
+            ConfigOption('url', 'http://example.com/', 
+                         "URL to the main project website"),
+            ConfigOption('footer', 
+                         'Visit the Trac open source project at<br />'
+                         '<a href="http://trac.edgewall.com/">'
+                         'http://trac.edgewall.com/</a>',
+                         "Page footer text (right-aligned)")
+            ])
+        yield ('logging', [
+            ConfigOption('log_type', 'none',
+                         """Logging facility to use.
+                         Should be one of (`none`, `file`, `stderr`, `syslog`,
+                         `winlog`). See also: TracLogging
+                         """),
+            ConfigOption('log_file', 'trac.log',
+                         """If `log_type` is `file`, this should be a path to
+                         the log-file
+                         """),
+            ConfigOption('log_level', 'DEBUG',
+                         """Level of verbosity in log.
+                         Should be one of (`CRITICAL`, `ERROR`, `WARN`, `INFO`,
+                         `DEBUG`).
+                         """)])
 
 
 def open_environment(env_path=None):

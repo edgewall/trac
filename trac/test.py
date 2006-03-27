@@ -19,7 +19,8 @@
 
 import unittest
 
-from trac.core import ComponentManager
+from trac.config import IConfigurable
+from trac.core import ComponentManager, Component, ExtensionPoint
 from trac.db.sqlite_backend import SQLiteConnection
 
 
@@ -116,8 +117,10 @@ class InMemoryDatabase(SQLiteConnection):
         self.cnx.commit()
 
 
-class EnvironmentStub(ComponentManager):
+class EnvironmentStub(Component, ComponentManager):
     """A stub of the trac.env.Environment object for testing."""
+
+    config_providers = ExtensionPoint(IConfigurable)
 
     def __init__(self, default_data=False, enable=None):
         ComponentManager.__init__(self)
@@ -134,9 +137,12 @@ class EnvironmentStub(ComponentManager):
         self.href = Href('/trac.cgi')
         self.abs_href = Href('http://example.org/trac.cgi')
 
+        for provider in self.config_providers:
+            for section, options in provider.get_config_options():
+                for opt in options:
+                    self.config.setdefault(section, opt.name, opt.default)
+
         from trac import db_default
-        for section, name, value in db_default.default_config:
-            self.config.set(section, name, value)
         if default_data:
             cursor = self.db.cursor()
             for table, cols, vals in db_default.data:

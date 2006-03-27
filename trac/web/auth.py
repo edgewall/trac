@@ -18,6 +18,7 @@ import re
 import time
 
 from trac.core import *
+from trac.config import IConfigurable, ConfigOption
 from trac.web.api import IAuthenticator, IRequestHandler
 from trac.web.chrome import INavigationContributor
 from trac.util import escape, hex_entropy, Markup
@@ -36,8 +37,23 @@ class LoginModule(Component):
     resources.
     """
 
-    implements(IAuthenticator, INavigationContributor, IRequestHandler)
+    implements(IConfigurable, IAuthenticator, INavigationContributor,
+               IRequestHandler)
 
+    # IConfigurable
+
+    def get_config_options(self):
+        yield ('trac', [
+            ConfigOption('check_auth_ip', 'true',
+                         """Whether the IP address of the user should be
+                         checked for authentication (true, false)
+                         (''since 0.9'')
+                         """),
+            ConfigOption('ignore_auth_case', 'false',
+                         """Whether case should be ignored for login names
+                         (true, false) (''since 0.9'')
+                         """)])
+        
     # IAuthenticator methods
 
     def authenticate(self, req):

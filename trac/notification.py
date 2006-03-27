@@ -14,15 +14,51 @@
 # history and logs, available at http://projects.edgewall.com/trac/.
 #
 
+import time
+import smtplib
+import re
+
 from trac import __version__
-from trac.core import TracError
+from trac.config import IConfigurable, ConfigOption
+from trac.core import *
 from trac.util import CRLF, wrap
 from trac.web.clearsilver import HDFWrapper
 from trac.web.main import populate_hdf
 
-import time
-import smtplib
-import re
+
+class NotificationSystem(Component):
+
+    implements(IConfigurable)
+
+    # IConfigurable methods
+
+    def get_config_options(self):
+        yield ('notification', [
+            ConfigOption('smtp_enabled', 'false',
+                         """Enable SMTP (email) notification (true, false).
+                         See also: TracNotification.
+                         """),
+            ConfigOption('smtp_server', 'localhost',
+                         "SMTP server hostname to use for email notifications"),
+            ConfigOption('smtp_port', '25',
+                         "SMTP server port to use for email notifications"),
+            ConfigOption('smtp_user', '',
+                         "Username for SMTP server. (''since 0.9'')"),
+            ConfigOption('smtp_password', '',
+                         "Password for SMTP server. (''since 0.9'')"),
+            ConfigOption('smtp_from', 'trac@localhost',
+                         "Sender address to use in notification emails"),
+            ConfigOption('smtp_replyto', 'trac@localhost',
+                         "Reply-To address to use in notification emails"),
+            ConfigOption('mime_encoding', 'base64',
+                         """Specify the MIME encoding scheme for emails
+                         (''since 0.10'')"""),
+            ConfigOption('allow_public_cc', 'false',
+                         """Recipients can see email addresses of other CC'ed
+                         recipients (''since 0.10'')"""),
+            ConfigOption('maxheaderlen', '78',
+                         "FIXME"),
+            ])
 
 
 class Notify:

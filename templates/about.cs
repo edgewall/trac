@@ -20,10 +20,10 @@
    <th class="name">Name</th><th class="value">Value</th></tr></thead><?cs
   each:section = about.config ?><?cs
    if:len(section.options) ?>
-    <tr><th rowspan="<?cs var:len(section.options) ?>"><?cs var:section.name ?></th><?cs
+    <tr><th class="section" rowspan="<?cs var:len(section.options) ?>"><?cs var:section.name ?></th><?cs
     each:option = section.options ?><?cs if:name(option) != 0 ?><tr><?cs /if ?>
-     <td><?cs var:option.name ?></td>
-     <td><?cs var:option.value ?></td>
+     <td class="name"><?cs var:option.name ?></td>
+     <td class="<?cs var:option.valueclass ?>"><?cs var:option.value ?></td>
     </tr><?cs
     /each ?><?cs
    /if ?><?cs

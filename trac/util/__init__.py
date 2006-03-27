@@ -48,11 +48,11 @@ try:
 except NameError:
     def sorted(iterable, cmp=None, key=None, reverse=False):
         """Partial implementation of the "sorted" function from Python 2.4"""
-        lst = [(key(i), i) for i in iterable]
+        lst = key and [(key(i), i) for i in iterable] or list(iterable)
         lst.sort()
         if reverse:
             lst = reversed(lst)
-        return [i for __, i in lst]
+        return key and [i for __, i in lst] or lst
 
 def to_utf8(text, charset='iso-8859-15'):
     """Convert a string to UTF-8, assuming the encoding is either UTF-8, ISO
@@ -284,6 +284,36 @@ def wrap(t, cols=75, initial_indent='', subsequent_indent='',
 
     except ImportError:
         return t
+
+def doctrim(docstring):
+    """Handling Docstring Indentation.
+
+    Picked from PEP 257.
+    """
+    if not docstring:
+        return ''
+    # Convert tabs to spaces (following the normal Python rules)
+    # and split into a list of lines:
+    lines = docstring.expandtabs().splitlines()
+    # Determine minimum indentation (first line doesn't count):
+    indent = sys.maxint
+    for line in lines[1:]:
+        stripped = line.lstrip()
+        if stripped:
+            indent = min(indent, len(line) - len(stripped))
+    # Remove indentation (first line is special):
+    trimmed = [lines[0].strip()]
+    if indent < sys.maxint:
+        for line in lines[1:]:
+            trimmed.append(line[indent:].rstrip())
+    # Strip off trailing and leading blank lines:
+    while trimmed and not trimmed[-1]:
+        trimmed.pop()
+    while trimmed and not trimmed[0]:
+        trimmed.pop(0)
+    # Return a single string:
+    return '\n'.join(trimmed)
+
 
 def safe__import__(module_name):
     """

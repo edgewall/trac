@@ -16,12 +16,35 @@
 # Author: Daniel Lundin <daniel@edgewall.com>
 #
 
+import md5
+
 from trac import __version__
-from trac.core import TracError
+from trac.core import *
+from trac.config import IConfigurable, ConfigOption
 from trac.util import CRLF, wrap
 from trac.notification import NotifyEmail
 
-import md5
+
+class TicketNotificationSystem(Component):
+
+    implements(IConfigurable)
+
+    # IConfigurable methods
+
+    def get_config_options(self):
+        yield ('notification', [
+            ConfigOption('always_notify_owner', 'false',
+                         """Always send notifications to the ticket owner
+                         (''since 0.9'')
+                         """),
+            ConfigOption('always_notify_reporter', 'false',
+                         """Always send notifications to any address in the
+                         ''reporter'' field
+                         """),
+            ConfigOption('smtp_always_cc', '',
+                         "Email address(es) to always send notifications to"),
+            ])
+
 
 class TicketNotifyEmail(NotifyEmail):
     """Notification of ticket changes."""

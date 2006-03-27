@@ -16,6 +16,7 @@
 # Author: Daniel Lundin <daniel@edgewall.com>
 
 from trac.core import *
+from trac.config import IConfigurable, ConfigOption
 from trac.mimeview.api import IHTMLPreviewRenderer
 from trac.util import escape, NaivePopen, Deuglifier
 
@@ -92,9 +93,18 @@ class EnscriptDeuglifier(Deuglifier):
 class EnscriptRenderer(Component):
     """Syntax highlighting using GNU Enscript."""
 
-    implements(IHTMLPreviewRenderer)
+    implements(IConfigurable, IHTMLPreviewRenderer)
 
     expand_tabs = True
+
+    # IConfigurable methods
+
+    def get_config_options(self):
+        yield ('mimeviewer', [
+                ConfigOption('enscript_path', 'enscript',
+                             "Path to the Enscript program")])
+
+    # IHTMLPreviewRenderer methods
 
     def get_quality_ratio(self, mimetype):
         if mimetype in types:

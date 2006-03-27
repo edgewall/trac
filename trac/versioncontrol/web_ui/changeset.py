@@ -25,6 +25,7 @@ import time
 from urllib import urlencode
 
 from trac import util
+from trac.config import IConfigurable, ConfigOption
 from trac.core import *
 from trac.mimeview import Mimeview, is_binary
 from trac.perm import IPermissionRequestor
@@ -60,8 +61,30 @@ class ChangesetModule(Component):
     In that case, there's no changeset information displayed.
     """
 
-    implements(INavigationContributor, IPermissionRequestor, IRequestHandler,
-               ITimelineEventProvider, IWikiSyntaxProvider, ISearchSource)
+    implements(IConfigurable, INavigationContributor, IPermissionRequestor,
+               IRequestHandler, ITimelineEventProvider, IWikiSyntaxProvider,
+               ISearchSource)
+
+    # IConfigurable methods
+
+    def get_config_options(self):
+        yield ('timeline', [
+            ConfigOption('changeset_show_files', '0',
+                         """Number of files to show (`-1` for unlimited,
+                         `0` to disable)                           
+                         """)])
+        yield ('changeset', [
+            ConfigOption('max_diff_files', '1000',
+                         """Maximum number of modified files for which the
+                         changeset view will attempt to show the diffs inlined.
+                         (''since 0.10'')
+                         """),
+            ConfigOption('max_diff_bytes', '10000000',
+                         """Maximum total size in bytes of the modified files
+                         (their old size plus their new size) for which the
+                         changeset view will attempt to show the diffs inlined.
+                         (''since 0.10'')
+                         """)])
 
     # INavigationContributor methods
 

@@ -1094,8 +1094,9 @@ Congratulations!
         try:
             file(filename, 'w').close() # Create the config file
             config = Configuration(filename)
-            for section, name, value in db_default.default_config:
-                config.set(section, name, value)
+            for section, options in self.__env.get_default_config().iteritems():
+                for opt in options:
+                    config.set(section, opt.name, opt.default)
             config.save()
             print ('Wrote sample configuration file, with the new settings '
                    'and their default values: \n\n  %s\n\n' % filename)

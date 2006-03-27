@@ -17,6 +17,7 @@
 #         Christopher Lenz <cmlenz@gmx.de>
 
 from trac.core import *
+from trac.config import IConfigurable, ConfigOption
 from trac.mimeview.api import IHTMLPreviewRenderer
 from trac.util import Deuglifier, NaivePopen
 
@@ -44,7 +45,16 @@ class PHPRenderer(Component):
     Syntax highlighting using the PHP executable if available.
     """
 
-    implements(IHTMLPreviewRenderer)
+    implements(IConfigurable, IHTMLPreviewRenderer)
+
+    # IConfigurable methods
+
+    def get_config_options(self):
+        yield ('mimeviewer', [
+            ConfigOption('php_path', 'php', 
+                         """Path to the PHP program (''since 0.9'')""")])
+
+    # IHTMLPreviewRenderer methods
 
     def get_quality_ratio(self, mimetype):
         if mimetype in php_types:

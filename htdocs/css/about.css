@@ -6,16 +6,20 @@
 #content.about_config th {
  background: #f7f7f0;
  font-weight: bold;
- text-align: right;
+ text-align: left;
  vertical-align: top;
 }
-#content.about_config th.name, #content.about_config th.value {
- text-align: left;
+#content.about_config th.section {
+ text-align: right;
 }
 #content.about_config th, #content.about_config td {
  border: 1px solid #ddd;
  padding: 3px;
 }
+#content.about_config td.name { background:#f9f9f0; }
+#content.about_config td.value { background:#f9f9f0; font-weight: bold; }
+#content.about_config td.defaultvalue { font-family: monospace; background:#f9f9f0; }
+#content.about_config td.doc { padding: 3px 1em 3px 1em; }
 
 /* About plugins */
 #content.about_plugins h2 {

@@ -25,6 +25,7 @@ from trac.core import *
 from trac.util import escape, format_date, sorted
 from trac.wiki.api import IWikiMacroProvider, WikiSystem
 from trac.wiki.model import WikiPage
+from trac.web.chrome import add_stylesheet
 
 
 class WikiMacroBase(Component):
@@ -408,6 +409,37 @@ class InterTracMacro(WikiMacroBase):
                           '</tr>\n')
         buf.write('</table>\n')
         return buf.getvalue()
+
+
+class TracIniMacro(WikiMacroBase):
+    """Produce documentation for Trac configuration file.
+
+    Typically, this will be used in the TracIni page.
+    Optional arguments are a configuration section filter,
+    and a configuration option name filter: only the configuration
+    options whose section and name start with the filters are output.
+    """
+
+    def render_macro(self, req, name, filter):
+        from trac.wiki.formatter import wiki_to_oneliner
+        from trac.util.markup import html
+        filter = filter or ''
+       
+        sections = [(section, options) for section, options in
+                    self.env.get_default_config().iteritems()
+                    if options and not filter or section.startswith(filter)]
+
+        def generate_section(section, options):
+            return (html.H2(id="%s" % section)["[%s]" % section] +
+                    html.TABLE(class_="wiki")\
+                    [html.TBODY[[generate_option(o) for o in options]]])
+
+        def generate_option(opt):
+            return html.TR[html.TD[html.TT[opt.name]],
+                           html.TD[wiki_to_oneliner(opt.doc, self.env)]]
+
+        return unicode(html.DIV(class_="tracini")
+                       [[generate_section(*s) for s in sorted(sections)]])
 
 
 class UserMacroProvider(Component):

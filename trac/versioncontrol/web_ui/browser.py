@@ -19,6 +19,7 @@ import re
 import urllib
 
 from trac import util
+from trac.config import IConfigurable, ConfigOption
 from trac.core import *
 from trac.mimeview import Mimeview, is_binary, get_mimetype
 from trac.perm import IPermissionRequestor
@@ -38,8 +39,16 @@ CHUNK_SIZE = 4096
 
 class BrowserModule(Component):
 
-    implements(INavigationContributor, IPermissionRequestor, IRequestHandler,
-               IWikiSyntaxProvider)
+    implements(IConfigurable, INavigationContributor, IPermissionRequestor,
+               IRequestHandler, IWikiSyntaxProvider)
+
+    # IConfigurable methods
+
+    def get_config_options(self):
+        yield ('browser', [
+            ConfigOption('hide_properties', 'svk:merge',
+                         """List of subversion properties to hide from the
+                         repository browser (''since 0.9'')""")])
 
     # INavigationContributor methods
 

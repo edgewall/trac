@@ -20,6 +20,7 @@
 import re
 import time
 
+from trac.config import IConfigurable, ConfigOption
 from trac.core import *
 from trac.perm import IPermissionRequestor
 from trac.util import format_date, format_time, http_date
@@ -58,9 +59,19 @@ class ITimelineEventProvider(Interface):
 
 class TimelineModule(Component):
 
-    implements(INavigationContributor, IPermissionRequestor, IRequestHandler)
+    implements(IConfigurable, INavigationContributor, IPermissionRequestor,
+               IRequestHandler)
 
     event_providers = ExtensionPoint(ITimelineEventProvider)
+
+    # IConfigurable methods
+
+    def get_config_options(self):
+        yield ('timeline', [
+            ConfigOption('default_daysback', '30',
+                         """Default "depth" of the Timeline, in days.
+                         (''since 0.9.'')
+                         """)])
 
     # INavigationContributor methods
 
