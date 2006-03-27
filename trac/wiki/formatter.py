@@ -106,12 +106,15 @@ class WikiProcessor(object):
             content_for_span = None
             interrupt_paragraph = False
             if isinstance(text, Element):
-                if text.tagname.lower() == 'div':
+                tagname = text.tagname.lower()
+                if tagname == 'div':
                     class_ = text.attr.get('class_', '')
                     if class_ and 'code' in class_:
                         content_for_span = text.children
                     else:
                         interrupt_paragraph = True
+                elif tagname == 'table':
+                    interrupt_paragraph = True
             else:
                 match = re.match(self._code_block_re, text)
                 if match:
@@ -119,6 +122,8 @@ class WikiProcessor(object):
                         content_for_span = match.group(2)
                     else:
                         interrupt_paragraph = True
+                elif text.startswith('<table'):
+                    interrupt_paragraph = True
             if content_for_span:
                 text = html.SPAN(class_='code-block')[content_for_span]
             elif interrupt_paragraph:

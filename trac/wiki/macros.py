@@ -22,7 +22,8 @@ from StringIO import StringIO
 
 from trac.config import default_dir
 from trac.core import *
-from trac.util import escape, format_date, sorted
+from trac.util import format_date, sorted
+from trac.util.markup import escape, html
 from trac.wiki.api import IWikiMacroProvider, WikiSystem
 from trac.wiki.model import WikiPage
 from trac.web.chrome import add_stylesheet
@@ -384,31 +385,31 @@ class InterTracMacro(WikiMacroBase):
 
     def render_macro(self, req, name, content):
         intertracs = {}
-        buf = StringIO()
-        buf.write('<table class="wiki intertrac"><tr>'
-                  '<th><em>Prefix</em></th><th><em>Trac Site</em></th></tr>\n')
         for key, value in self.config.options('intertrac'):
             if '.' in key:
                 prefix, attribute = key.split('.', 1)
-                it = intertracs.setdefault(prefix, {})
-                it[attribute] = value
+                intertrac = intertracs.setdefault(prefix, {})
+                intertrac[attribute] = value
             else:
                 intertracs[key] = value # alias
-        for prefix in sorted(intertracs.keys()):
-            it = intertracs[prefix]
-            if isinstance(it, str):
-                buf.write('<tr><td><b>%s</b></td>'
-                          '<td>Alias for <b>%s</b></td></tr>' % (prefix, it))
+
+        def generate_prefix(prefix):
+            intertrac = intertracs[prefix]
+            if isinstance(intertrac, basestring):
+                yield html.TR[html.TD[html.B[prefix]],
+                              html.TD['Alias for ', html.B[intertrac]]]
             else:
-                url = it.get('url', '')
-                title = it.get('title', url)
-                rc_url = url and url + '/timeline' or ''
-                buf.write('<tr>\n' +
-                          '<td><a href="%s"><b>%s</b></a></td>' % (rc_url, prefix) +
-                          '<td><a href="%s">%s</a></td>\n' % (url, title) +
-                          '</tr>\n')
-        buf.write('</table>\n')
-        return buf.getvalue()
+                url = intertrac.get('url', '')
+                if url:
+                    title = intertrac.get('title', url)
+                    print title
+                    yield html.TR[html.TD[html.A(href=url+'/timeline')
+                                          [html.B[prefix]]],
+                                  html.TD[html.A(href=url)[title]]]
+
+        return html.TABLE(class_="wiki intertrac")[
+            html.TR[html.TH[html.EM['Prefix']], html.TH[html.EM['Trac Site']]],
+            [generate_prefix(p) for p in sorted(intertracs.keys())]]
 
 
 class TracIniMacro(WikiMacroBase):
@@ -422,7 +423,6 @@ class TracIniMacro(WikiMacroBase):
 
     def render_macro(self, req, name, filter):
         from trac.wiki.formatter import wiki_to_oneliner
-        from trac.util.markup import html
         filter = filter or ''
        
         sections = [(section, options) for section, options in

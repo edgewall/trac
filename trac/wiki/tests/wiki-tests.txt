@@ -558,6 +558,14 @@ Hello World, args = hej hopp
 ------------------------------
 [[HelloWorld(...)]]
 ==============================
+Hello, [[HelloWorld(hej hopp)]]
+------------------------------
+<p>
+Hello, Hello World, args = hej hopp
+</p>
+------------------------------
+Hello, [[HelloWorld(...)]]
+==============================
 [[HelloWorld(hej hopp) ]] # This shouldnt executed as macro since it contain whitespace between ) and ]
 ------------------------------
 <p>
