@@ -26,7 +26,8 @@ from StringIO import StringIO
 from trac.core import *
 from trac.mimeview import *
 from trac.wiki.api import WikiSystem, IWikiChangeListener, IWikiMacroProvider
-from trac.util import escape, Markup, shorten_line
+from trac.util import shorten_line
+from trac.util.markup import escape, Markup, Element, html
 
 __all__ = ['wiki_to_html', 'wiki_to_oneliner', 'wiki_to_outline', 'Formatter' ]
 
@@ -40,6 +41,8 @@ def system_message(msg, text):
 
 
 class WikiProcessor(object):
+
+    _code_block_re = re.compile('^<div(?:\s+class="([^"]+)")?>(.*)</div>$')
 
     def __init__(self, env, name):
         self.env = env
@@ -93,26 +96,34 @@ class WikiProcessor(object):
     def _mimeview_processor(self, req, text):
         return Mimeview(self.env).render(req, self.name, text)
 
-    def process(self, req, text, inline=False):
+    def process(self, req, text, in_paragraph=False):
         if self.error:
             return system_message(Markup('Error: Failed to load processor '
                                          '<code>%s</code>', self.name),
                                   self.error)
         text = self.processor(req, text)
-        if inline:
-            code_block_start = re.compile('^<div(?:\s+class="([^"]+)")?>')
-            code_block_end = re.compile('</div>$')
-            match = re.match(code_block_start, text)
-            if match:
-                if match.group(1) and 'code' in match.group(1):
-                    text, nr = code_block_start.subn('<span class="code-block">', text, 1 )
-                    if nr:
-                        text, nr = code_block_end.subn('</span>', text, 1 )
-                else:
-                    text = "</p>%s<p>" % text
-            return text
-        else:
-            return text
+        if in_paragraph:
+            content_for_span = None
+            interrupt_paragraph = False
+            if isinstance(text, Element):
+                if text.tagname.lower() == 'div':
+                    class_ = text.attr.get('class_', '')
+                    if class_ and 'code' in class_:
+                        content_for_span = text.children
+                    else:
+                        interrupt_paragraph = True
+            else:
+                match = re.match(self._code_block_re, text)
+                if match:
+                    if match.group(1) and 'code' in match.group(1):
+                        content_for_span = match.group(2)
+                    else:
+                        interrupt_paragraph = True
+            if content_for_span:
+                text = html.SPAN(class_='code-block')[content_for_span]
+            elif interrupt_paragraph:
+                text = "</p>%s<p>" % text
+        return unicode(text)
 
 
 class Formatter(object):

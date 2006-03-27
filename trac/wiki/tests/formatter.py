@@ -7,27 +7,34 @@ from trac.core import *
 from trac.test import Mock
 from trac.wiki.formatter import Formatter, OneLinerFormatter
 from trac.wiki.macros import WikiMacroBase
+from trac.util.markup import html
 
+# We need to supply our own macro because the real macros
+# can not be loaded using our 'fake' environment.
 
 class HelloWorldMacro(WikiMacroBase):
-    """
-    A dummy macro used by the unit test. We need to supply our own macro
-    because the real HelloWorld-macro can not be loaded using our
-    'fake' environment.
-    """
+    """A dummy macro used by the unit test."""
 
     def render_macro(self, req, name, content):
         return 'Hello World, args = ' + content
 
 class DivHelloWorldMacro(WikiMacroBase):
-    """
-    A dummy macro returning a div block, used by the unit test.
-    We need to supply our own macro because the real HelloWorld-macro
-    can not be loaded using our 'fake' environment.
-    """
+    """A dummy macro returning a div block, used by the unit test."""
 
     def render_macro(self, req, name, content):
         return '<div>Hello World, args = %s</div>' % content
+
+class DivCodeMacro(WikiMacroBase):
+    """A dummy macro returning a div block, used by the unit test."""
+
+    def render_macro(self, req, name, content):
+        return '<div class="code">Hello World, args = %s</div>' % content
+
+class DivCodeElementMacro(WikiMacroBase):
+    """A dummy macro returning a div block, used by the unit test."""
+
+    def render_macro(self, req, name, content):
+        return html.DIV(class_="code")['Hello World, args = ', content]
 
 
 class WikiTestCase(unittest.TestCase):

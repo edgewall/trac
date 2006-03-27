@@ -438,8 +438,8 @@ class TracIniMacro(WikiMacroBase):
             return html.TR[html.TD[html.TT[opt.name]],
                            html.TD[wiki_to_oneliner(opt.doc, self.env)]]
 
-        return unicode(html.DIV(class_="tracini")
-                       [[generate_section(*s) for s in sorted(sections)]])
+        return html.DIV(class_="tracini")[
+            [generate_section(*s) for s in sorted(sections)]]
 
 
 class UserMacroProvider(Component):

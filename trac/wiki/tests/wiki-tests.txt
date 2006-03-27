@@ -590,6 +590,22 @@ Hello World, args = hej hopp Hello World, args = hej hopp2 # Test non greedy mat
 ------------------------------
 [[DivHelloWorld(...)]]
 ==============================
+[[DivCode(hej hopp)]]
+------------------------------
+<p>
+<span class="code-block">Hello World, args = hej hopp</span>
+</p>
+------------------------------
+[[DivCode(...)]]
+==============================
+[[DivCodeElement(hej hopp)]]
+------------------------------
+<p>
+<span class="code-block">Hello World, args = hej hopp</span>
+</p>
+------------------------------
+[[DivCodeElement(...)]]
+==============================
 Inline [[html(<B> Test </B>)]] text
 ------------------------------
 <p>
