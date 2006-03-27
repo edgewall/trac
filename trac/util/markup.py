@@ -450,7 +450,7 @@ class Element(Fragment):
             yield Markup(''.join(starttag))
             for part in Fragment.serialize(self):
                 yield part
-            yield '</%s>' % self.tagname
+            yield Markup('</%s>', self.tagname)
 
         else:
             starttag.append(' />')
