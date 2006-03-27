@@ -362,22 +362,19 @@ class MacroListMacro(WikiMacroBase):
     def render_macro(self, req, name, content):
         from trac.wiki.formatter import wiki_to_html
         from trac.wiki import WikiSystem
-        buf = StringIO()
-        buf.write("<dl>")
-
         wiki = WikiSystem(self.env)
-        for macro_provider in wiki.macro_providers:
-            for macro_name in macro_provider.get_macros():
-                if content and macro_name != content:
-                    continue
-                buf.write("<dt><code>[[%s]]</code></dt>" % escape(macro_name))
-                description = macro_provider.get_macro_description(macro_name)
-                if description:
-                    buf.write("<dd>%s</dd>" % wiki_to_html(description,
-                                                           self.env, req))
 
-        buf.write("</dl>")
-        return buf.getvalue()
+        def get_macro_descr():
+            for macro_provider in wiki.macro_providers:
+                for macro_name in macro_provider.get_macros():
+                    if content and macro_name != content:
+                        continue
+                    descr = macro_provider.get_macro_description(macro_name)
+                    yield (macro_name, descr or '')
+
+        return html.DL[[(html.DT[html.CODE['[[',macro_name,']]']],
+                         html.DD[wiki_to_html(description, self.env, req)])
+                        for macro_name, description in get_macro_descr()]]
 
 
 class InterTracMacro(WikiMacroBase):
