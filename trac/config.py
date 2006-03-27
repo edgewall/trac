@@ -174,10 +174,9 @@ class Section(object):
             for option in self.config.parser.options(self.name):
                 options.append(option)
                 yield option
-        for option in self.config._defaults:
-            if option[0] == self.name:
-                if not [exists for exists in options if exists[0] == option[1]]:
-                    yield option[1]
+        for section, option in self.config._defaults:
+            if section == self.name and option not in options:
+                yield option
 
     def get(self, name, default=None):
         """Return the value of the specified option."""
