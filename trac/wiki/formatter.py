@@ -23,10 +23,10 @@ import urllib
 
 from StringIO import StringIO
 
-from trac import util
 from trac.core import *
 from trac.mimeview import *
 from trac.wiki.api import WikiSystem, IWikiChangeListener, IWikiMacroProvider
+from trac.util import escape, Markup, shorten_line
 
 __all__ = ['wiki_to_html', 'wiki_to_oneliner', 'wiki_to_outline', 'Formatter' ]
 
@@ -36,7 +36,7 @@ def system_message(msg, text):
  <strong>%s</strong>
  <pre>%s</pre>
 </div>
-""" % (util.escape(msg), util.escape(text))
+""" % (escape(msg), escape(text))
 
 
 class WikiProcessor(object):
@@ -72,15 +72,15 @@ class WikiProcessor(object):
         return ''
 
     def _default_processor(self, req, text):
-        return '<pre class="wiki">' + util.escape(text) + '</pre>\n'
+        return '<pre class="wiki">' + escape(text) + '</pre>\n'
 
     def _html_processor(self, req, text):
         from HTMLParser import HTMLParseError
         try:
-            return util.Markup(text).sanitize()
+            return Markup(text).sanitize()
         except HTMLParseError, e:
             self.env.log.warn(e)
-            return system_message('HTML parsing error: %s' % util.escape(e.msg),
+            return system_message('HTML parsing error: %s' % escape(e.msg),
                                   text.splitlines()[e.lineno - 1].strip())
 
     def _macro_processor(self, req, text):
@@ -95,8 +95,8 @@ class WikiProcessor(object):
 
     def process(self, req, text, inline=False):
         if self.error:
-            return system_message(util.Markup('Error: Failed to load processor '
-                                              '<code>%s</code>', self.name),
+            return system_message(Markup('Error: Failed to load processor '
+                                         '<code>%s</code>', self.name),
                                   self.error)
         text = self.processor(req, text)
         if inline:
@@ -280,10 +280,10 @@ class Formatter(object):
             return self.simple_tag_handler('<sup>', '</sup>')
 
     def _inlinecode_formatter(self, match, fullmatch):
-        return '<tt>%s</tt>' % util.escape(fullmatch.group('inline'))
+        return '<tt>%s</tt>' % escape(fullmatch.group('inline'))
 
     def _inlinecode2_formatter(self, match, fullmatch):
-        return '<tt>%s</tt>' % util.escape(fullmatch.group('inline2'))
+        return '<tt>%s</tt>' % escape(fullmatch.group('inline2'))
 
     # -- Rules following IWikiSyntaxProvider rules
 
@@ -329,7 +329,7 @@ class Formatter(object):
         ns = self.env.config.get('intertrac', ns.upper()) or ns
         if ns in self.wiki.link_resolvers:
             return unicode(self.wiki.link_resolvers[ns](self, ns, target,
-                                                        util.escape(label, False)))
+                                                        escape(label, False)))
         elif target.startswith('//') or ns == "mailto":
             return self._make_ext_link(ns+':'+target, label)
         else:
@@ -372,8 +372,8 @@ class Formatter(object):
             return None
 
     def _make_ext_link(self, url, text, title=''):
-        url = util.escape(url)
-        text, title = util.escape(text), util.escape(title)
+        url = escape(url)
+        text, title = escape(text), escape(title)
         title_attr = title and ' title="%s"' % title or ''
         if Formatter.img_re.search(url) and self.flavor != 'oneliner':
             return '<img src="%s" alt="%s" />' % (url, title or text)
@@ -384,7 +384,7 @@ class Formatter(object):
             return '<a href="%s"%s>%s</a>' % (url, title_attr, text)
 
     def _make_relative_link(self, url, text):
-        url, text = util.escape(url), util.escape(text)
+        url, text = escape(url), escape(text)
         if Formatter.img_re.search(url) and self.flavor != 'oneliner':
             return '<img src="%s" alt="%s" />' % (url, text)
         if url.startswith('//'): # only the protocol will be kept
@@ -694,9 +694,9 @@ class OneLinerFormatter(Formatter):
     def _list_formatter(self, match, fullmatch): return match
     def _indent_formatter(self, match, fullmatch): return match
     def _heading_formatter(self, match, fullmatch):
-        return util.escape(match, False)
+        return escape(match, False)
     def _definition_formatter(self, match, fullmatch):
-        return util.escape(match, False)
+        return escape(match, False)
     def _table_cell_formatter(self, match, fullmatch): return match
     def _last_table_cell_formatter(self, match, fullmatch): return match
 
@@ -739,7 +739,7 @@ class OneLinerFormatter(Formatter):
         result = buf.getvalue()[:-1]
 
         if shorten:
-            result = util.shorten_line(result)
+            result = shorten_line(result)
 
         result = re.sub(self.wiki.rules, self.replace, result)
         result = result.replace('[...]', '[&hellip;]')
@@ -801,19 +801,19 @@ class OutlineFormatter(Formatter):
 def wiki_to_html(wikitext, env, req, db=None, absurls=0, escape_newlines=False):
     out = StringIO()
     Formatter(env, req, absurls, db).format(wikitext, out, escape_newlines)
-    return util.Markup(out.getvalue())
+    return Markup(out.getvalue())
 
 def wiki_to_oneliner(wikitext, env, db=None, shorten=False, absurls=0):
     out = StringIO()
     OneLinerFormatter(env, absurls, db).format(wikitext, out, shorten)
-    return util.Markup(out.getvalue())
+    return Markup(out.getvalue())
 
 def wiki_to_outline(wikitext, env, db=None, absurls=0, max_depth=None,
                     min_depth=None):
     out = StringIO()
     OutlineFormatter(env, absurls, db).format(wikitext, out, max_depth,
                                               min_depth)
-    return util.Markup(out.getvalue())
+    return Markup(out.getvalue())
 
 
 class InterWikiMap(Component):
