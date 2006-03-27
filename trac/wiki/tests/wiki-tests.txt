@@ -582,6 +582,14 @@ Hello World, args = hej hopp Hello World, args = hej hopp2 # Test non greedy mat
 ------------------------------
 [[HelloWorld(...)]] [[HelloWorld(...)]] # Test non greedy match
 ==============================
+[[DivHelloWorld(hej hopp)]]
+------------------------------
+<p>
+</p><div>Hello World, args = hej hopp</div><p>
+</p>
+------------------------------
+[[DivHelloWorld(...)]]
+==============================
 Inline [[html(<B> Test </B>)]] text
 ------------------------------
 <p>

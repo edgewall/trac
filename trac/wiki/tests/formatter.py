@@ -6,25 +6,28 @@ import unittest
 from trac.core import *
 from trac.test import Mock
 from trac.wiki.formatter import Formatter, OneLinerFormatter
-from trac.wiki.api import IWikiMacroProvider
+from trac.wiki.macros import WikiMacroBase
 
 
-class DummyHelloWorldMacro(Component):
+class HelloWorldMacro(WikiMacroBase):
     """
     A dummy macro used by the unit test. We need to supply our own macro
     because the real HelloWorld-macro can not be loaded using our
     'fake' environment.
     """
-    implements(IWikiMacroProvider)
-
-    def get_macros(self):
-        yield 'HelloWorld'
-
-    def get_macro_description(self, name):
-        return inspect.getdoc(MacroListMacro)
 
     def render_macro(self, req, name, content):
         return 'Hello World, args = ' + content
+
+class DivHelloWorldMacro(WikiMacroBase):
+    """
+    A dummy macro returning a div block, used by the unit test.
+    We need to supply our own macro because the real HelloWorld-macro
+    can not be loaded using our 'fake' environment.
+    """
+
+    def render_macro(self, req, name, content):
+        return '<div>Hello World, args = %s</div>' % content
 
 
 class WikiTestCase(unittest.TestCase):
