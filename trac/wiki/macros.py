@@ -23,7 +23,7 @@ from StringIO import StringIO
 from trac.config import default_dir
 from trac.core import *
 from trac.util import format_date, sorted
-from trac.util.markup import escape, html
+from trac.util.markup import escape, html, Markup
 from trac.wiki.api import IWikiMacroProvider, WikiSystem
 from trac.wiki.model import WikiPage
 from trac.web.chrome import add_stylesheet
@@ -360,7 +360,7 @@ class MacroListMacro(WikiMacroBase):
     """
 
     def render_macro(self, req, name, content):
-        from trac.wiki.formatter import wiki_to_html
+        from trac.wiki.formatter import wiki_to_html, system_message
         from trac.wiki import WikiSystem
         wiki = WikiSystem(self.env)
 
@@ -369,11 +369,17 @@ class MacroListMacro(WikiMacroBase):
                 for macro_name in macro_provider.get_macros():
                     if content and macro_name != content:
                         continue
-                    descr = macro_provider.get_macro_description(macro_name)
-                    yield (macro_name, descr or '')
+                    try:
+                        descr = macro_provider.get_macro_description(macro_name)
+                        descr = wiki_to_html(descr or '', self.env, req)
+                    except Exception, e:
+                        descr = Markup(system_message(
+                            "Error: Can't get description for macro %s" \
+                            % macro_name, e))
+                    yield (macro_name, descr)
 
         return html.DL[[(html.DT[html.CODE['[[',macro_name,']]']],
-                         html.DD[wiki_to_html(description, self.env, req)])
+                         html.DD[description])
                         for macro_name, description in get_macro_descr()]]
 
 
