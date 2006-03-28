@@ -779,6 +779,12 @@ class OutlineFormatter(Formatter):
     def _macro_formatter(self, match, fullmatch):
         return match
 
+    def handle_code_block(self, line):
+        if line.strip() == Formatter.STARTBLOCK:
+            self.in_code_block += 1
+        elif line.strip() == Formatter.ENDBLOCK:
+            self.in_code_block -= 1
+
     def format(self, text, out, max_depth=6, min_depth=1):
         self.outline = []
         class NullOut(object):
