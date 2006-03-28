@@ -24,7 +24,7 @@ import time
 import urllib
 import re
 
-from trac.config import IConfigurable, ConfigOption
+from trac.config import *
 from trac.core import *
 from trac.util.markup import html
 
@@ -181,8 +181,8 @@ class WikiSystem(Component):
 
     # IConfigurable methods
 
-    def get_config_options(self):
-        yield ('wiki', [
+    def get_config_sections(self):
+        yield ConfigSection('wiki', [
             ConfigOption('ignore_missing_pages', 'false',
                          """Enable/disable highlighting CamelCase links to
                          missing pages (''since 0.9'')

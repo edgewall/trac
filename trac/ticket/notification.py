@@ -20,7 +20,7 @@ import md5
 
 from trac import __version__
 from trac.core import *
-from trac.config import IConfigurable, ConfigOption
+from trac.config import *
 from trac.util import CRLF, wrap
 from trac.notification import NotifyEmail
 
@@ -31,8 +31,8 @@ class TicketNotificationSystem(Component):
 
     # IConfigurable methods
 
-    def get_config_options(self):
-        yield ('notification', [
+    def get_config_sections(self):
+        yield ConfigSection('notification', [
             ConfigOption('always_notify_owner', 'false',
                          """Always send notifications to the ticket owner
                          (''since 0.9'')

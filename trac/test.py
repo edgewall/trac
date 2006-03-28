@@ -138,9 +138,9 @@ class EnvironmentStub(Component, ComponentManager):
         self.abs_href = Href('http://example.org/trac.cgi')
 
         for provider in self.config_providers:
-            for section, options in provider.get_config_options():
-                for opt in options:
-                    self.config.setdefault(section, opt.name, opt.default)
+            for section in provider.get_config_sections():
+                for opt in section.options:
+                    self.config.setdefault(section.name, opt.name, opt.default)
 
         from trac import db_default
         if default_data:

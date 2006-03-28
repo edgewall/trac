@@ -15,10 +15,6 @@ This is a brief reference of available configuration options.
 
 [[TracIni]]
 
-== [ticket-custom] ==
-Creates [wiki:TracTicketsCustomFields user-defined ticket fields].
-
-
 == [components] ==
 (''since 0.9'')
 

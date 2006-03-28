@@ -25,7 +25,7 @@ import time
 from urllib import urlencode
 
 from trac import util
-from trac.config import IConfigurable, ConfigOption
+from trac.config import *
 from trac.core import *
 from trac.mimeview import Mimeview, is_binary
 from trac.perm import IPermissionRequestor
@@ -67,13 +67,13 @@ class ChangesetModule(Component):
 
     # IConfigurable methods
 
-    def get_config_options(self):
-        yield ('timeline', [
+    def get_config_sections(self):
+        yield ConfigSection('timeline', [
             ConfigOption('changeset_show_files', '0',
                          """Number of files to show (`-1` for unlimited,
                          `0` to disable)                           
                          """)])
-        yield ('changeset', [
+        yield ConfigSection('changeset', [
             ConfigOption('max_diff_files', '1000',
                          """Maximum number of modified files for which the
                          changeset view will attempt to show the diffs inlined.

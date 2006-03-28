@@ -17,7 +17,7 @@
 #         Matthew Good <trac@matt-good.net>
 
 from trac.core import *
-from trac.config import IConfigurable, ConfigOption
+from trac.config import *
 from trac.versioncontrol import Authorizer
 
 
@@ -27,17 +27,18 @@ class SvnAuthzOptions(Component):
 
     # IConfigurable methods
 
-    def get_config_options(self):
-        yield ('trac', [
+    def get_config_sections(self):
+        yield ConfigSection('trac', [
             ConfigOption('authz_file', '',
                          """Path to Subversion
                          [http://svnbook.red-bean.com/en/1.1/ch06s04.html#svn-ch-6-sect-4.4.2 authorization (authz) file]
                          """),
             ConfigOption('authz_module_name', '',
-                         """The module prefix used in the authz_file.
-                         See [http://projects.edgewall.com/trac/wiki/FineGrainedPermissions FineGrainedPermissions]
-                         """)])
-        
+                         "The module prefix used in the authz_file.")
+            ], footer="""
+            See also: [http://projects.edgewall.com/trac/wiki/FineGrainedPermissions FineGrainedPermissions]
+            """)
+
 
 def SubversionAuthorizer(env, authname):
     authz_file = env.config.get('trac','authz_file')    

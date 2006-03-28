@@ -19,7 +19,7 @@ import smtplib
 import re
 
 from trac import __version__
-from trac.config import IConfigurable, ConfigOption
+from trac.config import *
 from trac.core import *
 from trac.util import CRLF, wrap
 from trac.web.clearsilver import HDFWrapper
@@ -32,12 +32,10 @@ class NotificationSystem(Component):
 
     # IConfigurable methods
 
-    def get_config_options(self):
-        yield ('notification', [
+    def get_config_sections(self):
+        yield ConfigSection('notification', [
             ConfigOption('smtp_enabled', 'false',
-                         """Enable SMTP (email) notification (true, false).
-                         See also: TracNotification.
-                         """),
+                         "Enable SMTP (email) notification (true, false)."),
             ConfigOption('smtp_server', 'localhost',
                          "SMTP server hostname to use for email notifications"),
             ConfigOption('smtp_port', '25',
@@ -58,7 +56,9 @@ class NotificationSystem(Component):
                          recipients (''since 0.10'')"""),
             ConfigOption('maxheaderlen', '78',
                          "FIXME"),
-            ])
+            ], footer="""
+            See also: TracNotification.
+            """)
 
 
 class Notify:

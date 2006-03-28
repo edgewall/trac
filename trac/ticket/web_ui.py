@@ -19,7 +19,7 @@ import re
 import time
 
 from trac.attachment import attachment_to_hdf, Attachment
-from trac.config import IConfigurable, ConfigOption
+from trac.config import *
 from trac.core import *
 from trac.env import IEnvironmentSetupParticipant
 from trac.ticket import Milestone, Ticket, TicketSystem
@@ -165,13 +165,13 @@ class TicketModule(Component):
 
     # IConfigurable methods
 
-    def get_config_options(self):
-        yield ('timeline', [
+    def get_config_sections(self):
+        yield ConfigSection('timeline', [
             ConfigOption('ticket_show_details', 'false',
                          """Enable the display of all ticket changes in the
                          timeline (''since 0.9'')
                          """)])
-        yield ('ticket', [
+        yield ConfigSection('ticket', [
             ConfigOption('default_version', '',
                          "Default version for newly created tickets"),
             ConfigOption('default_type', 'defect',
@@ -190,6 +190,10 @@ class TicketModule(Component):
                          [wiki:TracTickets#AssigntoasDropDownList AssignToAsDropDownList]
                          (''since 0.9'')
                          """)])
+        yield ConfigSection('ticket-custom', [], header="""
+        Creates [wiki:TracTicketsCustomFields user-defined ticket fields].
+        """)
+
 
     # INavigationContributor methods
 

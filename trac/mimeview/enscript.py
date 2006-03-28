@@ -16,7 +16,7 @@
 # Author: Daniel Lundin <daniel@edgewall.com>
 
 from trac.core import *
-from trac.config import IConfigurable, ConfigOption
+from trac.config import *
 from trac.mimeview.api import IHTMLPreviewRenderer
 from trac.util import escape, NaivePopen, Deuglifier
 
@@ -99,8 +99,8 @@ class EnscriptRenderer(Component):
 
     # IConfigurable methods
 
-    def get_config_options(self):
-        yield ('mimeviewer', [
+    def get_config_sections(self):
+        yield ConfigSection('mimeviewer', [
                 ConfigOption('enscript_path', 'enscript',
                              "Path to the Enscript program")])
 

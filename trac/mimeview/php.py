@@ -17,7 +17,7 @@
 #         Christopher Lenz <cmlenz@gmx.de>
 
 from trac.core import *
-from trac.config import IConfigurable, ConfigOption
+from trac.config import *
 from trac.mimeview.api import IHTMLPreviewRenderer
 from trac.util import Deuglifier, NaivePopen
 
@@ -49,10 +49,10 @@ class PHPRenderer(Component):
 
     # IConfigurable methods
 
-    def get_config_options(self):
-        yield ('mimeviewer', [
+    def get_config_sections(self):
+        yield ConfigSection('mimeviewer', [
             ConfigOption('php_path', 'php', 
-                         """Path to the PHP program (''since 0.9'')""")])
+                         "Path to the PHP program (''since 0.9'')")])
 
     # IHTMLPreviewRenderer methods
 

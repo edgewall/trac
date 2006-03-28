@@ -24,7 +24,7 @@ import unicodedata
 import urllib
 
 from trac import perm, util
-from trac.config import IConfigurable, ConfigOption
+from trac.config import *
 from trac.core import *
 from trac.env import IEnvironmentSetupParticipant
 from trac.mimeview import *
@@ -217,8 +217,8 @@ class AttachmentModule(Component):
 
     # IConfigurable methods
 
-    def get_config_options(self):
-        yield ('attachment', [
+    def get_config_sections(self):
+        yield ConfigSection('attachment', [
             ConfigOption('max_size', '262144',
                          """Maximum allowed file size for ticket and wiki
                          attachments

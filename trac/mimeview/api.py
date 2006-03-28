@@ -21,7 +21,7 @@ import re
 from StringIO import StringIO
 
 from trac.core import *
-from trac.config import IConfigurable, ConfigOption
+from trac.config import *
 from trac.util import escape, to_utf8, Markup
 
 
@@ -329,11 +329,11 @@ class Mimeview(Component):
 
     # IConfigurable
 
-    def get_config_options(self):
-        yield ('trac', [
+    def get_config_sections(self):
+        yield ConfigSection('trac', [
             ConfigOption('default_charset', 'iso-8859-15',
                          "Charset to be used in last resort.")])
-        yield ('mimeviewer', [
+        yield ConfigSection('mimeviewer', [
             ConfigOption('tab_width', '8',
                          """Displayed tab width in file preview (''since 0.9'')
                          """),

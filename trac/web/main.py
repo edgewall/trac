@@ -21,7 +21,7 @@ import os
 import sys
 import dircache
 
-from trac.config import IConfigurable, ConfigOption
+from trac.config import *
 from trac.core import *
 from trac.env import open_environment
 from trac.perm import PermissionCache, PermissionError
@@ -189,8 +189,8 @@ class RequestDispatcher(Component):
 
     # IConfigurable methods
 
-    def get_config_options(self):
-        yield ('trac', [
+    def get_config_sections(self):
+        yield ConfigSection('trac', [
             ConfigOption('default_handler', 'WikiModule',
                          """Name of the component that handles requests to the
                          base URL. Some options are `TimeLineModule`,

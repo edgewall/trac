@@ -18,7 +18,7 @@ import os
 import re
 
 from trac import mimeview
-from trac.config import IConfigurable, ConfigOption
+from trac.config import *
 from trac.core import *
 from trac.env import IEnvironmentSetupParticipant
 from trac.util.markup import html
@@ -152,8 +152,8 @@ class Chrome(Component):
 
     # IConfigurable methods
 
-    def get_config_options(self):
-        yield ('trac', [
+    def get_config_sections(self):
+        yield ConfigSection('trac', [
             ConfigOption('metanav', 'login,logout,settings,help,about',
                          """List of sections to display in the navigation bar
                          `metanav` 
@@ -162,20 +162,20 @@ class Chrome(Component):
                          """List of sections to display in the navigation bar
                          `mainnav`
                          """)])
-        yield ('header_logo', [
+        yield ConfigSection('header_logo', [
             ConfigOption('link', 'http://trac.edgewall.com/',
                          "Destination URL to link to from header logo"),
             ConfigOption('src', 'common/trac_banner.png',
-                         """URL to image to use as header logo.
-                         See also: TracInterfaceCustomization
-                         """),
+                         "URL to image to use as header logo."),
             ConfigOption('alt', 'Trac',
                          "''alt'' text for header logo"),
             ConfigOption('width', '236',
                          "Header logo width in pixels"),
             ConfigOption('height', '73', 
                          "Header logo height in pixels"),
-            ])
+            ], footer="""
+            See also: TracInterfaceCustomization
+            """)
 
     # IRequestHandler methods
 

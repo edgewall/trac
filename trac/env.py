@@ -17,7 +17,7 @@
 import os
 
 from trac import db_default, util
-from trac.config import Configuration, IConfigurable, ConfigOption, default_dir
+from trac.config import *
 from trac.core import Component, ComponentManager, implements, Interface, \
                       ExtensionPoint, TracError
 from trac.db import DatabaseManager
@@ -210,16 +210,25 @@ class Environment(Component, ComponentManager):
         self.config = Configuration(os.path.join(self.path, 'conf', 'trac.ini'))
 
     def get_default_config(self):
-        """Return a dictionary of (`section`, `options`) pairs.
+        """Return a dictionary of `options` indexed by section names.
 
         `options` is a list of `ConfigOption` objects.
         """
         default_config = {}
         for provider in self.config_providers:
-            for section, options in provider.get_config_options():
-                other_options = default_config.get(section, [])
-                default_config[section] = other_options + options
+            for section in provider.get_config_sections():
+                other_options = default_config.get(section.name, [])
+                default_config[section.name] = other_options + section.options
         return default_config
+
+    def get_section_documentation(self):
+        """Return a pair of `documentation` dictionaries indexed by section
+        name.
+        The first contains the list of wiki text that compose the ''header''
+        for that section, the second contains the list of wiki texts that
+        compose the ''footer''.
+        """
+        return (section_headers, section_footers)
         
     def get_templates_dir(self):
         """Return absolute path to the templates directory."""
@@ -367,8 +376,8 @@ class EnvironmentSetup(Component):
 
     # IConfigurable methods
 
-    def get_config_options(self):
-        yield ('trac', [
+    def get_config_sections(self):
+        yield ConfigSection('trac', [
             ConfigOption('database', 'sqlite:db/trac.db',
                          """Database connection
                          [wiki:TracEnvironment#DatabaseConnectionStrings string]
@@ -380,7 +389,7 @@ class EnvironmentSetup(Component):
                          "Path to local repository"),
             ConfigOption('templates_dir', default_dir('templates'),
                          "Path to the !ClearSilver templates")])
-        yield ('project', [
+        yield ConfigSection('project', [
             ConfigOption('name', 'My Project',
                          "Project name"),
             ConfigOption('descr', 'My example project',
@@ -393,11 +402,11 @@ class EnvironmentSetup(Component):
                          'http://trac.edgewall.com/</a>',
                          "Page footer text (right-aligned)")
             ])
-        yield ('logging', [
+        yield ConfigSection('logging', [
             ConfigOption('log_type', 'none',
                          """Logging facility to use.
                          Should be one of (`none`, `file`, `stderr`, `syslog`,
-                         `winlog`). See also: TracLogging
+                         `winlog`).
                          """),
             ConfigOption('log_file', 'trac.log',
                          """If `log_type` is `file`, this should be a path to
@@ -407,7 +416,10 @@ class EnvironmentSetup(Component):
                          """Level of verbosity in log.
                          Should be one of (`CRITICAL`, `ERROR`, `WARN`, `INFO`,
                          `DEBUG`).
-                         """)])
+                         """)
+            ], footer="""
+            See also: TracLogging
+            """)
 
 
 def open_environment(env_path=None):

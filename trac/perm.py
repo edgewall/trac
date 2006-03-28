@@ -19,7 +19,7 @@
 """Management of permissions."""
 
 from trac.core import *
-from trac.config import IConfigurable, ConfigOption
+from trac.config import *
 
 
 __all__ = ['IPermissionRequestor', 'IPermissionStore',
@@ -151,8 +151,8 @@ class PermissionSystem(Component):
 
     # IConfigurable methods
 
-    def get_config_options(self):
-        yield ('trac', [
+    def get_config_sections(self):
+        yield ConfigSection('trac', [
             ConfigOption('permission_store', 'DefaultPermissionStore',
                          """Name of the component implementing
                          `IPermissionStore`, which is used for managing user

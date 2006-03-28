@@ -19,7 +19,7 @@ import re
 import urllib
 
 from trac import util
-from trac.config import IConfigurable, ConfigOption
+from trac.config import *
 from trac.core import *
 from trac.mimeview import Mimeview, is_binary, get_mimetype
 from trac.perm import IPermissionRequestor
@@ -44,8 +44,8 @@ class BrowserModule(Component):
 
     # IConfigurable methods
 
-    def get_config_options(self):
-        yield ('browser', [
+    def get_config_sections(self):
+        yield ConfigSection('browser', [
             ConfigOption('hide_properties', 'svk:merge',
                          """List of subversion properties to hide from the
                          repository browser (''since 0.9'')""")])

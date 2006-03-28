@@ -21,21 +21,30 @@ import sys
 from trac.core import *
 from trac.util import doctrim
 
-__all__ = ['IConfigurable', 'ConfigOption', 'Configuration',
+__all__ = ['IConfigurable', 'ConfigSection', 'ConfigOption', 'Configuration',
            'ConfigurationError', 'default_dir']
 
 _TRUE_VALUES = ('yes', 'true', 'on', 'aye', '1', 1, True)
 
 
 class IConfigurable(Interface):
-    def get_config_options():
-        """Generate pairs of `(section, options)`.
-
-        `section` is the section name.
-        `options` is an iterable of `ConfigOption` objects.
-        """
+    def get_config_sections():
+        """Generate `ConfigSection` objects"""
          
 
+class ConfigSection(object):
+    def __init__(self, name, options, header=None, footer=None):
+        """
+        `name` is the section name.
+        `options` is a list of `ConfigOption` objects.
+        `header` is some documentation for the section that should appear
+        before the list of options, as opposed to the `footer` documentation.
+        """
+        self.name = name
+        self.options = options
+        self.header = header and doctrim(header) or ''
+        self.footer = footer and doctrim(footer) or ''
+        
 class ConfigOption(object):
     def __init__(self, name, default, doc):
         self.name = name
