@@ -221,15 +221,6 @@ class Environment(Component, ComponentManager):
                 default_config[section.name] = other_options + section.options
         return default_config
 
-    def get_section_documentation(self):
-        """Return a pair of `documentation` dictionaries indexed by section
-        name.
-        The first contains the list of wiki text that compose the ''header''
-        for that section, the second contains the list of wiki texts that
-        compose the ''footer''.
-        """
-        return (section_headers, section_footers)
-        
     def get_templates_dir(self):
         """Return absolute path to the templates directory."""
         return os.path.join(self.path, 'templates')
