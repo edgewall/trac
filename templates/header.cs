@@ -18,9 +18,10 @@
    if:link.title ?> title="<?cs var:link.title ?>"<?cs /if ?><?cs
    if:link.type ?> type="<?cs var:link.type ?>"<?cs /if ?> /><?cs
   /each ?><?cs
- /each ?><style type="text/css"><?cs include:"site_css.cs" ?></style>
- <script type="text/javascript" src="<?cs
-   var:htdocs_location ?>js/trac.js"></script>
+ /each ?><style type="text/css"><?cs include:"site_css.cs" ?></style><?cs
+ each:href = chrome.js ?>
+ <script type="text/javascript" src="<?cs var:href ?>"></script><?cs
+ /each ?>
 </head>
 <body>
 <?cs include "site_header.cs" ?>

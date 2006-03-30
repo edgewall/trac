@@ -53,6 +53,21 @@ def add_stylesheet(req, filename, mimetype='text/css'):
         href = Href(req.base_path).chrome
     add_link(req, 'stylesheet', href(filename), mimetype=mimetype)
 
+def add_javascript(req, filename):
+    """ Include Javascript in the current template. """
+    if filename.startswith('common/') and 'htdocs_location' in req.hdf:
+        href = Href(req.hdf['htdocs_location'])
+        filename = filename[7:]
+    else:
+        href = Href(req.base_path).chrome
+    href = href(filename)
+    idx = 0
+    while True:
+        js = req.hdf.get('chrome.js.%i' % idx)
+        if not js: break
+        if js == href: return
+        idx += 1
+    req.hdf['chrome.js.%i' % idx] = href
 
 class INavigationContributor(Interface):
     """Extension point interface for components that contribute items to the
@@ -253,6 +268,7 @@ class Chrome(Component):
         add_link(req, 'search', self.env.href.search())
         add_link(req, 'help', self.env.href.wiki('TracGuide'))
         add_stylesheet(req, 'common/css/trac.css')
+        add_javascript(req, 'common/js/trac.js')
         icon = self.config.get('project', 'icon')
         if icon:
             if not icon.startswith('/') and icon.find('://') == -1:
