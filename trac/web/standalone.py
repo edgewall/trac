@@ -2,7 +2,7 @@
 #
 # Copyright (C) 2003-2006 Edgewall Software
 # Copyright (C) 2003-2005 Jonas Borgström <jonas@edgewall.com>
-# Copyright (C) 2005 Matthew Good <trac@matt-good.net>
+# Copyright (C) 2005-2006 Matthew Good <trac@matt-good.net>
 # Copyright (C) 2005-2006 Christopher Lenz <cmlenz@gmx.de>
 # All rights reserved.
 #
@@ -178,18 +178,48 @@ class DigestAuth(object):
         return auth['username']
 
 
-class TracHTTPServer(ThreadingMixIn, WSGIServer):
+class BasePathMiddleware(object):
+    def __init__(self, application, base_path):
+        self.base_path = '/' + base_path.strip('/')
+        self.application = application
 
-    def __init__(self, server_address, env_parent_dir, base_path, env_paths, auths):
-        WSGIServer.__init__(self, server_address, dispatch_request,
-                            request_handler=TracHTTPRequestHandler)
+    def __call__(self, environ, start_response):
+        from sys import stderr
+        path = environ['SCRIPT_NAME'] + environ.get('PATH_INFO', '')
+        environ['PATH_INFO'] = path[len(self.base_path):]
+        environ['SCRIPT_NAME'] = self.base_path
+        print >>stderr, path, self.base_path
+        return self.application(environ, start_response)
+
+
+class TracEnvironMiddleware(object):
+    def __init__(self, application, env_parent_dir, env_paths):
+        self.application = application
+        self.environ = {}
         self.environ['trac.env_path'] = None
-        base_path = base_path.strip('/')
-        self.environ['trac.base_path'] = base_path and base_path.split('/') or []
         if env_parent_dir:
             self.environ['trac.env_parent_dir'] = env_parent_dir
         else:
             self.environ['trac.env_paths'] = env_paths
+
+    def __call__(self, environ, start_response):
+        for k,v in self.environ.iteritems():
+            environ.setdefault(k, v)
+        return self.application(environ, start_response)
+
+
+class TracHTTPServer(ThreadingMixIn, WSGIServer):
+
+    def __init__(self, server_address, application, env_parent_dir, env_paths,
+                 auths):
+        WSGIServer.__init__(self, server_address, application,
+                            request_handler=TracHTTPRequestHandler)
+        self.environ['trac.env_path'] = None
+        if env_parent_dir:
+            self.environ['trac.env_parent_dir'] = env_parent_dir
+        else:
+            self.environ['trac.env_paths'] = env_paths
+
         self.auths = auths
 
 
@@ -201,9 +231,8 @@ class TracHTTPRequestHandler(WSGIRequestHandler):
         environ = self.setup_environ()
         path_info = environ.get('PATH_INFO', '')
         path_parts = filter(None, path_info.split('/'))
-        base_path = environ['trac.base_path']
-        if len(path_parts) > len(base_path)+1 and path_parts[len(base_path)+1] == 'login':
-            env_name = path_parts[len(base_path)]
+        if len(path_parts) > 1 and path_parts[1] == 'login':
+            env_name = path_parts[0]
             if env_name:
                 auth = self.server.auths.get(env_name,
                                              self.server.auths.get('*'))
@@ -240,6 +269,12 @@ def main():
         else:
             auths[env_name] = cls(filename, realm)
 
+    def _validate_callback(option, opt_str, value, parser, valid_values):
+        if value not in valid_values:
+            raise OptionValueError('%s must be one of: %s, not %s'
+                                   % (opt_str, '|'.join(valid_values), value))
+        setattr(parser.values, option.dest, value)
+
     parser.add_option('-a', '--auth', action='callback', type='string',
                       metavar='DIGESTAUTH',
                       callback=_auth_callback, callback_args=(auths, DigestAuth),
@@ -253,6 +288,10 @@ def main():
                       help='the port number to bind to')
     parser.add_option('-b', '--hostname', action='store', dest='hostname',
                       help='the host name or IP address to bind to')
+    parser.add_option('--protocol', action='callback', type="string",
+                      dest='protocol', callback=_validate_callback,
+                      callback_args=(('http', 'scgi', 'ajp'),),
+                      help='http|scgi|ajp')
     parser.add_option('-e', '--env-parent-dir', action='store',
                       dest='env_parent_dir', metavar='PARENTDIR',
                       help='parent directory of the project environments')
@@ -269,20 +308,40 @@ def main():
                           dest='daemonize',
                           help='run in the background as a daemon')
 
-    parser.set_defaults(port=80, hostname='', base_path='', daemonize=False)
+    parser.set_defaults(port=None, hostname='', base_path='', daemonize=False,
+                        protocol='http')
     options, args = parser.parse_args()
 
     if not args and not options.env_parent_dir:
         parser.error('either the --env_parent_dir option or at least one '
                      'environment must be specified')
 
-    server_address = (options.hostname, options.port)
-    
 
-    def serve():
-        httpd = TracHTTPServer(server_address, options.env_parent_dir,
-			       options.base_path, args, auths)
-        httpd.serve_forever()
+    if options.port is None:
+        options.port = {
+            'http': 80,
+            'scgi': 4000,
+            'ajp': 8009,
+        }[options.protocol]
+    server_address = (options.hostname, options.port)
+
+    wsgi_app = dispatch_request
+    base_path = options.base_path.strip('/')
+    if base_path:
+        wsgi_app = BasePathMiddleware(wsgi_app, base_path)
+    
+    if options.protocol == 'http':
+        def serve():
+            httpd = TracHTTPServer(server_address, wsgi_app,
+                                   options.env_parent_dir, args, auths)
+            httpd.serve_forever()
+    elif options.protocol in ('scgi', 'ajp'):
+        def serve():
+            server_cls = __import__('flup.server.%s' % options.protocol,
+                                    None, None, ['']).WSGIServer
+            app = TracEnvironMiddleware(wsgi_app, options.env_parent_dir, args)
+            ret = server_cls(app, bindAddress=server_address).run()
+            sys.exit(ret and 42 or 0) # if SIGHUP exit with status 42
 
     try:
         if os.name == 'posix' and options.daemonize:
