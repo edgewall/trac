@@ -41,6 +41,10 @@ class Markup(unicode):
     def __new__(self, text='', *args):
         if args:
             text %= tuple([escape(arg) for arg in args])
+        if not isinstance(text, basestring):
+            text = unicode(text)
+        elif not isinstance(text, unicode):
+            text = text.decode('utf-8')
         return unicode.__new__(self, text)
 
     def __add__(self, other):
@@ -104,7 +108,10 @@ class Markup(unicode):
         """
         if isinstance(text, cls):
             return text
-        text = unicode(text)
+        if not isinstance(text, basestring):
+            text = unicode(text)
+        elif not isinstance(text, unicode):
+            text = text.decode('utf-8')
         if not text:
             return cls()
         text = text.replace('&', '&amp;') \
