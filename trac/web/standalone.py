@@ -184,11 +184,9 @@ class BasePathMiddleware(object):
         self.application = application
 
     def __call__(self, environ, start_response):
-        from sys import stderr
         path = environ['SCRIPT_NAME'] + environ.get('PATH_INFO', '')
         environ['PATH_INFO'] = path[len(self.base_path):]
         environ['SCRIPT_NAME'] = self.base_path
-        print >>stderr, path, self.base_path
         return self.application(environ, start_response)
 
 
