@@ -342,6 +342,7 @@ class Element(Fragment):
     >>> print Element('span', title='"baz"')
     <span title="&#34;baz&#34;"></span>
 
+    The " character is escaped using a numerical entity.
     The order in which attributes are rendered is undefined.
 
     If an attribute value evaluates to `None`, that attribute is not included
