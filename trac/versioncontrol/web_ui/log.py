@@ -114,7 +114,7 @@ class LogModule(Component):
             old_path = repos.normalize_path(old_path)
             item = {
                 'rev': str(old_rev),
-                'path': str(old_path),
+                'path': old_path,
                 'log_href': req.href.log(old_path, rev=old_rev),
                 'browser_href': req.href.browser(old_path, rev=old_rev),
                 'changeset_href': req.href.changeset(old_rev),

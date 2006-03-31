@@ -22,7 +22,6 @@ import posixpath
 import re
 from StringIO import StringIO
 import time
-from urllib import urlencode
 
 from trac import util
 from trac.config import *
@@ -31,6 +30,7 @@ from trac.mimeview import Mimeview, is_binary
 from trac.perm import IPermissionRequestor
 from trac.Search import ISearchSource, search_to_sql, shorten_result
 from trac.Timeline import ITimelineEventProvider
+from trac.util import unicode_urlencode
 from trac.util.markup import escape, unescape, Markup
 from trac.versioncontrol import Changeset, Node
 from trac.versioncontrol.diff import get_diff_options, hdf_diff, unified_diff
@@ -242,10 +242,8 @@ class ChangesetModule(Component):
         if chgset:
             diff_params = 'new=%s' % new
         else:
-            diff_params = urlencode({'new_path': new_path,
-                                     'new': new,
-                                     'old_path': old_path,
-                                     'old': old})
+            diff_params = unicode_urlencode({'new_path': new_path, 'new': new,
+                                             'old_path': old_path, 'old': old})
         add_link(req, 'alternate', '?format=diff&'+diff_params, 'Unified Diff',
                  'text/plain', 'diff')
         add_link(req, 'alternate', '?format=zip&'+diff_params, 'Zip Archive',

@@ -118,6 +118,11 @@ class SubversionRepositoryTestCase(unittest.TestCase):
         self.assertEqual(17, self.repos.youngest_rev)
         self.assertEqual(6, self.repos.next_rev(5, 'trunk'))
         self.assertEqual(13, self.repos.next_rev(6, 'trunk'))
+        # ...
+        self.assertEqual(None, self.repos.next_rev(17, 'trunk'))
+        # test accentuated characters
+        self.assertEqual(None, self.repos.previous_rev(17, u'trunk/R\xe9sum\xe9.txt'))
+        self.assertEqual(17, self.repos.next_rev(16, u'trunk/R\xe9sum\xe9.txt'))
 
     def test_has_node(self):
         self.assertEqual(False, self.repos.has_node('/trunk/dir1', 3))
