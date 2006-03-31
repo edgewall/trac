@@ -523,3 +523,32 @@ Content-length: 47
 A test + local modifications after wc->wc copy
 
 
+Revision-number: 17
+Prop-content-length: 139
+Content-length: 139
+
+K 7
+svn:log
+V 39
+Test des caractères accentués (cp437)
+K 10
+svn:author
+V 5
+cboos
+K 8
+svn:date
+V 27
+2006-03-31T12:30:25.421875Z
+PROPS-END
+
+Node-path: trunk/Résumé.txt
+Node-kind: file
+Node-action: add
+Prop-content-length: 10
+Text-content-length: 13
+Text-content-md5: 858e52306ecdfcb6f6eadb50d6f9086b
+Content-length: 23
+
+PROPS-END
+En r�sum� ...
+
