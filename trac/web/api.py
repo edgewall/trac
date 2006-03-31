@@ -265,7 +265,7 @@ class Request(object):
             import md5
             m = md5.new()
             for elt in extra:
-                m.update(str(elt))
+                m.update(repr(elt))
             extra = m.hexdigest()
         etag = 'W"%s/%d/%s"' % (self.authname, timesecs, extra)
         inm = self.get_header('If-None-Match')
