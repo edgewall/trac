@@ -111,6 +111,14 @@ class SubversionRepositoryTestCase(unittest.TestCase):
         # ...
         self.assertEqual(None, self.repos.next_rev(17))
 
+    def test_rev_path_navigation(self):
+        self.assertEqual(1, self.repos.oldest_rev)
+        self.assertEqual(None, self.repos.previous_rev(0, 'trunk'))
+        self.assertEqual(None, self.repos.previous_rev(1, 'trunk'))
+        self.assertEqual(17, self.repos.youngest_rev)
+        self.assertEqual(6, self.repos.next_rev(5, 'trunk'))
+        self.assertEqual(13, self.repos.next_rev(6, 'trunk'))
+
     def test_has_node(self):
         self.assertEqual(False, self.repos.has_node('/trunk/dir1', 3))
         self.assertEqual(True, self.repos.has_node('/trunk/dir1', 4))
