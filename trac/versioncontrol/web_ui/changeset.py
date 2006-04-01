@@ -554,9 +554,7 @@ class ChangesetModule(Component):
                                          ignore_blank_lines='-B' in options,
                                          ignore_case='-i' in options,
                                          ignore_space_changes='-b' in options):
-                    req.write(line.encode('utf-8') + util.CRLF)
-                    # Note: we could rely on the `send_header`/charset detection
-                    #       done in trac.web.api.py, but better be explicit...
+                    req.write(line + util.CRLF)
 
     def _render_zip(self, req, filename, repos, diff):
         """ZIP archive with all the added and/or modified files."""
@@ -573,8 +571,12 @@ class ChangesetModule(Component):
         for old_node, new_node, kind, change in repos.get_changes(**diff):
             if kind == Node.FILE and change != Changeset.DELETE:
                 assert new_node
+                path = new_node.path
+                if isinstance(path, unicode): # unicode filenames not supported
+                    path = path.encode('utf-8')
+                    # Hm. UTF-8 is not supported by all Zip tools either...
                 zipinfo = ZipInfo()
-                zipinfo.filename = new_node.path
+                zipinfo.filename = path
                 zipinfo.date_time = time.gmtime(new_node.last_modified)[:6]
                 zipinfo.compress_type = ZIP_DEFLATED
                 zipfile.writestr(zipinfo, new_node.get_content().read())

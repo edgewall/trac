@@ -222,12 +222,16 @@ class Request(object):
         self._status = '%s %s' % (code, HTTP_STATUS.get(code, 'Unknown'))
 
     def send_header(self, name, value):
-        """Send the response header with the specified name and value."""
+        """Send the response header with the specified name and value.
+
+        `value` must either be an `unicode` string or can be converted to one
+        (e.g. numbers, ...)
+        """
         if name.lower() == 'content-type':
             ctpos = value.find('charset=')
             if ctpos >= 0:
                 self._outcharset = value[ctpos + 8:].strip()
-        self._outheaders.append((name, str(value)))
+        self._outheaders.append((name, unicode(value).encode('utf-8')))
 
     def _send_cookie_headers(self):
         for name in self.outcookie.keys():
@@ -406,7 +410,13 @@ class Request(object):
         return data
 
     def write(self, data):
-        """Write the given data to the response body."""
+        """Write the given data to the response body.
+
+        `data` can be either a `str` or an `unicode` string.
+        If it's the latter, the unicode string will be encoded
+        using the charset specified in the ''Content-Type'' header
+        or 'ascii' otherwise.
+        """
         if not self._write:
             self.end_headers()
         if isinstance(data, unicode):
