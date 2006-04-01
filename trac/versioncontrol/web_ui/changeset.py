@@ -412,23 +412,23 @@ class ChangesetModule(Component):
             new_size = new_node.get_content_length()
             return old_size + new_size
 
-        mimeview = Mimeview(self.env)
-
         def _content_changes(old_node, new_node):
             """Returns the list of differences.
             
             The list is empty when no differences between comparable files
             are detected, but the return value is None for non-comparable files.
             """
-            data = old_node.get_content().read()
-            if is_binary(data):
+            old_content = old_node.get_content().read()
+            if is_binary(old_content):
                 return None
-            old_content = mimeview.to_utf8(data, old_node.content_type)
 
-            data = new_node.get_content().read()
-            if is_binary(data):
+            new_content = new_node.get_content().read()
+            if is_binary(new_content):
                 return None
-            new_content = mimeview.to_utf8(data, new_node.content_type)
+
+            mview = Mimeview(self.env)
+            old_content = mview.to_unicode(old_content, old_node.content_type)
+            new_content = mview.to_unicode(new_content, new_node.content_type)
 
             if old_content != new_content:
                 context = 3
@@ -515,17 +515,15 @@ class ChangesetModule(Component):
             new_node_info = old_node_info = ('','')
 
             if old_node:
-                data = old_node.get_content().read()
-                if is_binary(data):
+                old_content = old_node.get_content().read()
+                if is_binary(old_content):
                     continue
-                old_content = mimeview.to_utf8(data, old_node.content_type)
                 old_node_info = (old_node.path, old_node.rev)
 
             if new_node:
-                data = new_node.get_content().read()
-                if is_binary(data):
+                new_content = new_node.get_content().read()
+                if is_binary(new_content):
                     continue
-                new_content = mimeview.to_utf8(data, new_node.content_type) 
                 new_node_info = (new_node.path, new_node.rev)
                 new_path = new_node.path
             else:
@@ -533,6 +531,10 @@ class ChangesetModule(Component):
                 diff_old_path = repos.normalize_path(diff.old_path)
                 new_path = posixpath.join(diff.new_path,
                                           old_node_path[len(diff_old_path)+1:])
+
+            mview = Mimeview(self.env)
+            old_content = mview.to_unicode(old_content, old_node.content_type)
+            new_content = mview.to_unicode(new_content, new_node.content_type)
 
             if old_content != new_content:
                 context = 3
@@ -552,7 +554,9 @@ class ChangesetModule(Component):
                                          ignore_blank_lines='-B' in options,
                                          ignore_case='-i' in options,
                                          ignore_space_changes='-b' in options):
-                    req.write(line + util.CRLF)
+                    req.write(line.encode('utf-8') + util.CRLF)
+                    # Note: we could rely on the `send_header`/charset detection
+                    #       done in trac.web.api.py, but better be explicit...
 
     def _render_zip(self, req, filename, repos, diff):
         """ZIP archive with all the added and/or modified files."""

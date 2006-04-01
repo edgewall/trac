@@ -67,7 +67,7 @@ class PHPRenderer(Component):
         cmdline += ' -sn'
         self.env.log.debug("PHP command line: %s" % cmdline)
 
-        np = NaivePopen(cmdline, content, capturestderr=1)
+        np = NaivePopen(cmdline, content.encode('utf-8'), capturestderr=1)
         if np.errorlevel or np.err:
             err = 'Running (%s) failed: %s, %s.' % (cmdline, np.errorlevel,
                                                     np.err)
@@ -78,7 +78,7 @@ class PHPRenderer(Component):
                              'Trac requires the CLI version for syntax ' \
                              'highlighting.'
 
-        html = PhpDeuglifier().format(odata)
+        html = PhpDeuglifier().format(odata.decode('utf-8'))
         for line in html.split('<br />'):
             # PHP generates _way_ too many non-breaking spaces...
             # We don't need them anyway, so replace them by normal spaces

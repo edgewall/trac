@@ -70,6 +70,23 @@ def to_utf8(text, charset='iso-8859-15'):
             u = unicode(text, 'iso-8859-15')
         return u.encode('utf-8')
 
+def to_unicode(text, charset=None):
+    """Convert a string to `unicode` using the specified `charset`.
+
+    If no charset is specified or if the decoding fails, then fallback
+    to 'iso-8859-15', which will always work as there will be one Unicode
+    character for each byte of the input.
+
+    If that unicode string is later displayed, this might result in some
+    garbled characters, but at least there will be something to show...
+    """
+    if isinstance(text, unicode):
+        return text
+    try:
+        return unicode(text, charset or 'iso-8859-15')
+    except UnicodeError:
+        return unicode(text, 'iso-8859-15')
+
 def shorten_line(text, maxlen = 75):
     if len(text or '') < maxlen:
         return text
@@ -232,8 +249,11 @@ def parse_date(text):
 class NaivePopen:
     """This is a deadlock-safe version of popen that returns an object with
     errorlevel, out (a string) and err (a string).
+
+    The optional `input`, which must be a `str` object, is first written
+    to a temporary file from which the process will read.
     
-    (capturestderr may not work under Windows 9x.)
+    (`capturestderr` may not work under Windows 9x.)
 
     Example: print Popen3('grep spam','\n\nhere spam\n\n').out
     """

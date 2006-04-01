@@ -229,6 +229,7 @@ class BrowserModule(Component):
             self.log.debug("Rendering preview of file %s with mime-type %s"
                            % (node.name, mime_type))
 
+            content = mimeview.to_unicode(content, mime_type)
             req.hdf['file'] = mimeview.preview_to_hdf(req, content, mime_type,
                                                       node.name, node.rev,
                                                       annotations=['lineno'])

@@ -116,7 +116,7 @@ class EnscriptRenderer(Component):
         cmdline += ' --color -h -q --language=html -p - -E' + types[mimetype]
         self.env.log.debug("Enscript command line: %s" % cmdline)
 
-        np = NaivePopen(cmdline, content, capturestderr=1)
+        np = NaivePopen(cmdline, content.encode('utf-8'), capturestderr=1)
         if np.errorlevel or np.err:
             err = 'Running (%s) failed: %s, %s.' % (cmdline, np.errorlevel,
                                                     np.err)
@@ -129,5 +129,5 @@ class EnscriptRenderer(Component):
         i = odata.rfind('</PRE>')
         end = i > 0 and i or len(odata)
 
-        odata = EnscriptDeuglifier().format(odata[beg:end])
+        odata = EnscriptDeuglifier().format(odata[beg:end].decode('utf-8'))
         return odata.splitlines()

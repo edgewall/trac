@@ -22,7 +22,7 @@ from StringIO import StringIO
 
 from trac.core import *
 from trac.config import *
-from trac.util import escape, to_utf8, Markup
+from trac.util import escape, to_utf8, to_unicode, Markup
 
 
 __all__ = ['get_mimetype', 'is_binary', 'detect_unicode', 'Mimeview']
@@ -103,7 +103,10 @@ MODE_RE = re.compile(
     )
 
 def get_mimetype(filename, content=None):
-    """Guess the most probable MIME type of a file with the given name."""
+    """Guess the most probable MIME type of a file with the given name.
+
+    `content` is either a `str` or an `unicode` string.
+    """
     suffix = filename.split('.')[-1]
     if MIME_MAP.has_key(suffix):
         return MIME_MAP[suffix]
@@ -123,14 +126,19 @@ def get_mimetype(filename, content=None):
             return None
 
 def is_binary(data):
-    """Detect binary content by checking the first thousand bytes for zeroes."""
-    if detect_unicode(data):
+    """Detect binary content by checking the first thousand bytes for zeroes.
+
+    Operate on either `str` or `unicode` strings.
+    """
+    if isinstance(data, str) and detect_unicode(data):
         return False
     return '\0' in data[:1000]
 
 def detect_unicode(data):
-    """Detect different unicode charsets by looking for BOMs (Byte Order
-    Marks)."""
+    """Detect different unicode charsets by looking for BOMs (Byte Order Marks).
+
+    Operate obviously only on `str` objects.
+    """
     if data.startswith('\xff\xfe'):
         return 'utf-16-le'
     elif data.startswith('\xfe\xff'):
@@ -296,6 +304,7 @@ class Mimeview(Component):
     def get_charset(self, content='', mimetype=None):
         """Infer the character encoding from the `content` or the `mimetype`.
 
+        `content` is either a `str` or an `unicode` object.
         The charset information in the `mimetype`, if given,
         takes precedence over auto-detection.
         Return the configured `default_charset` if no other information
@@ -305,7 +314,7 @@ class Mimeview(Component):
             ctpos = mimetype.find('charset=')
             if ctpos >= 0:
                 return mimetype[ctpos + 8:].strip()
-        return detect_unicode(content) or \
+        return isinstance(content, str) and detect_unicode(content) or \
                self.config.get('trac', 'default_charset')
 
     def to_utf8(self, content, mimetype=None):
@@ -315,6 +324,13 @@ class Mimeview(Component):
         """
         return to_utf8(content, self.get_charset(content, mimetype))
 
+    def to_unicode(self, content, mimetype=None):
+        """Convert an encoded `content` to `unicode` strings.
+
+        Tries to auto-detect the encoding using `Mimeview.get_charset()`.
+        """
+        return to_unicode(content, self.get_charset(content, mimetype))
+
     def preview_to_hdf(self, req, content, mimetype, filename,
                        detail=None, annotations=None):
         max_preview_size = self.max_preview_size()
@@ -323,7 +339,7 @@ class Mimeview(Component):
                     'max_file_size': max_preview_size}
 
         if not is_binary(content):
-            content = self.to_utf8(content, mimetype)
+            content = self.to_unicode(content, mimetype)
         return {'preview': self.render(req, mimetype, content,
                                        filename, detail, annotations)}
 
