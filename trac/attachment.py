@@ -459,6 +459,7 @@ class AttachmentModule(Component):
                 add_link(req, 'alternate', plaintext_href, 'Plain Text',
                          mime_type)
 
+            data = mimeview.to_unicode(data, mime_type)
             hdf = mimeview.preview_to_hdf(req, data, mime_type,
                                           attachment.filename, None,
                                           annotations=['lineno'])

@@ -333,15 +333,17 @@ class Mimeview(Component):
 
     def preview_to_hdf(self, req, content, mimetype, filename,
                        detail=None, annotations=None):
+        """Prepares a rendered preview of the given `content`.
+
+        Content must be an `unicode` object.
+        """        
         max_preview_size = self.max_preview_size()
         if len(content) >= max_preview_size:
             return {'max_file_size_reached': True,
                     'max_file_size': max_preview_size}
-
-        if not is_binary(content):
-            content = self.to_unicode(content, mimetype)
-        return {'preview': self.render(req, mimetype, content,
-                                       filename, detail, annotations)}
+        else:
+            return {'preview': self.render(req, mimetype, content,
+                                           filename, detail, annotations)}
 
     # IConfigurable
 
