@@ -16,6 +16,10 @@
 
 import os
 import sys
+try:
+    set
+except NameError:
+    from sets import Set as set
 
 try:
     import pkg_resources
@@ -25,16 +29,28 @@ except ImportError:
 __all__ = ['load_components']
 
 def load_components(env):
-    loaded_components = []
-
     plugins_dir = os.path.normcase(os.path.realpath(os.path.join(env.path,
                                                                  'plugins')))
 
     # Load components from the environment plugins directory
+    loaded_components = []
     if pkg_resources is not None: # But only if setuptools is installed!
+        ws = pkg_resources.working_set
         pkg_env = pkg_resources.Environment([plugins_dir] + sys.path)
-        for name in pkg_env:
-            egg = pkg_env[name][0]
+        ws.add_entry(plugins_dir)
+
+        memo = set()
+        def flatten(dists):
+             for dist in dists:
+                 if dist in memo:
+                     continue
+                 memo.add(dist)
+                 predecessors = ws.resolve([dist.as_requirement()])
+                 for predecessor in flatten(predecessors):
+                     yield predecessor
+                 yield dist
+
+        for egg in flatten([pkg_env[name][0] for name in pkg_env]):
             modules = []
 
             for name in egg.get_entry_map('trac.plugins'):
