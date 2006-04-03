@@ -85,11 +85,14 @@ class BrowserModule(Component):
         rev = req.args.get('rev')
 
         repos = self.env.get_repository(req.authname)
-        node = get_existing_node(self.env, repos, path, rev)
-        rev = repos.normalize_rev(rev)
+        if rev:
+            rev = repos.normalize_rev(rev)
+        # If `rev` is `None`, we'll try to reuse `None` consistently,
+        # as a special shortcut to the latest revision.
+        rev_or_latest = rev or repos.youngest_rev
+        node = get_existing_node(self.env, repos, path, rev_or_latest)
 
-        hidden_properties = [p.strip() for p
-                             in self.config.get('browser', 'hide_properties').split(',')]
+        hidden_properties = self.config.getlist('browser', 'hide_properties')
 
         req.hdf['title'] = path
         req.hdf['browser'] = {
@@ -98,9 +101,10 @@ class BrowserModule(Component):
             'props': [{'name': name, 'value': value}
                       for name, value in node.get_properties().items()
                       if not name in hidden_properties],
-            'href': req.href.browser(path, rev=rev or repos.youngest_rev),
-            'log_href': req.href.log(path, rev=rev or None),
-            'restr_changeset_href': req.href.changeset(node.rev, path),
+            'href': req.href.browser(path, rev=rev),
+            'log_href': req.href.log(path, rev=rev),
+            'restr_changeset_href': req.href.changeset(node.rev,
+                                                       node.created_path),
             'anydiff_href': req.href.anydiff(),
         }
 
@@ -133,7 +137,7 @@ class BrowserModule(Component):
             info.append({
                 'name': entry.name,
                 'fullpath': entry.path,
-                'is_dir': int(entry.isdir),
+                'is_dir': entry.isdir,
                 'content_length': entry.content_length,
                 'size': util.pretty_size(entry.content_length),
                 'rev': entry.rev,
@@ -172,21 +176,6 @@ class BrowserModule(Component):
 
     def _render_file(self, req, repos, node, rev=None):
         req.perm.assert_permission('FILE_VIEW')
-        try:
-            changeset = repos.get_changeset(node.rev) # created rev
-        except NoSuchChangeset:
-            changeset = repos.get_changeset(rev) # requested rev
-        req.hdf['file'] = {
-            'rev': node.rev,
-            'changeset_href': req.href.changeset(node.rev),
-            'date': util.format_datetime(changeset.date),
-            'age': util.pretty_timedelta(changeset.date),
-            'author': changeset.author or 'anonymous',
-            'message': wiki_to_html(changeset.message or '--', self.env, req,
-                                    escape_newlines=True)
-        }
-
-        mimeview = Mimeview(self.env)
 
         def get_mime_type(content=None):
             mime_type = node.content_type
@@ -214,14 +203,27 @@ class BrowserModule(Component):
                 req.write(chunk)
                 chunk = content.read(CHUNK_SIZE)
         else:
+            # The changeset corresponding to the last change on `node` 
+            # is more interesting than the `rev`changeset.
+            changeset = repos.get_changeset(node.rev)
+            req.hdf['file'] = {
+                'rev': node.rev,
+                'changeset_href': req.href.changeset(node.rev),
+                'date': util.format_datetime(changeset.date),
+                'age': util.pretty_timedelta(changeset.date),
+                'author': changeset.author or 'anonymous',
+                'message': wiki_to_html(changeset.message or '--', self.env,
+                                        req, escape_newlines=True)
+            } 
+
             # Generate HTML preview
+            mimeview = Mimeview(self.env)
             content = node.get_content().read(mimeview.max_preview_size())
             mime_type = get_mime_type(content)
-            use_rev = rev and node.rev
 
             if not is_binary(content):
                 if mime_type != 'text/plain':
-                    plain_href = req.href.browser(node.path, rev=use_rev,
+                    plain_href = req.href.browser(node.path, rev=rev,
                                                   format='txt')
                     add_link(req, 'alternate', plain_href, 'Plain Text',
                              'text/plain')
@@ -230,11 +232,11 @@ class BrowserModule(Component):
                            % (node.name, mime_type))
 
             content = mimeview.to_unicode(content, mime_type)
-            req.hdf['file'] = mimeview.preview_to_hdf(req, content, mime_type,
-                                                      node.name, node.rev,
-                                                      annotations=['lineno'])
+            req.hdf['file'] = mimeview.preview_to_hdf(
+                req, content, mime_type, node.created_path, node.rev,
+                annotations=['lineno'])
 
-            raw_href = req.href.browser(node.path, rev=use_rev, format='raw')
+            raw_href = req.href.browser(node.path, rev=rev, format='raw')
             add_link(req, 'alternate', raw_href, 'Original Format', mime_type)
             req.hdf['file.raw_href'] = raw_href
 
