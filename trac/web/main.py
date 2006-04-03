@@ -20,6 +20,7 @@ import locale
 import os
 import sys
 import dircache
+import urllib
 
 from trac.config import *
 from trac.core import *
@@ -225,7 +226,7 @@ def dispatch_request(environ, start_response):
                 raise ValueError('TracUriRoot set to %s but request URL '
                                  'is %s' % (root_uri, request_uri))
             environ['SCRIPT_NAME'] = root_uri
-            environ['PATH_INFO'] = request_uri[len(root_uri):]
+            environ['PATH_INFO'] = urllib.unquote(request_uri[len(root_uri):])
 
     else:
         environ.setdefault('trac.env_path', os.getenv('TRAC_ENV'))
