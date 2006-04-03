@@ -513,28 +513,28 @@ class ChangesetModule(Component):
 
             new_content = old_content = ''
             new_node_info = old_node_info = ('','')
+            mimeview = Mimeview(self.env)
 
             if old_node:
                 old_content = old_node.get_content().read()
                 if is_binary(old_content):
                     continue
                 old_node_info = (old_node.path, old_node.rev)
-
+                old_content = mimeview.to_unicode(old_content,
+                                                  old_node.content_type)
             if new_node:
                 new_content = new_node.get_content().read()
                 if is_binary(new_content):
                     continue
                 new_node_info = (new_node.path, new_node.rev)
                 new_path = new_node.path
+                new_content = mimeview.to_unicode(new_content,
+                                                  new_node.content_type)
             else:
                 old_node_path = repos.normalize_path(old_node.path)
                 diff_old_path = repos.normalize_path(diff.old_path)
                 new_path = posixpath.join(diff.new_path,
                                           old_node_path[len(diff_old_path)+1:])
-
-            mview = Mimeview(self.env)
-            old_content = mview.to_unicode(old_content, old_node.content_type)
-            new_content = mview.to_unicode(new_content, new_node.content_type)
 
             if old_content != new_content:
                 context = 3
@@ -571,12 +571,11 @@ class ChangesetModule(Component):
         for old_node, new_node, kind, change in repos.get_changes(**diff):
             if kind == Node.FILE and change != Changeset.DELETE:
                 assert new_node
-                path = new_node.path
-                if isinstance(path, unicode): # unicode filenames not supported
-                    path = path.encode('utf-8')
-                    # Hm. UTF-8 is not supported by all Zip tools either...
                 zipinfo = ZipInfo()
-                zipinfo.filename = path
+                zipinfo.filename = new_node.path.encode('utf-8')
+                # Note: unicode filenames are not supported by zipfile.
+                # UTF-8 is not supported by all Zip tools either,
+                # but as some does, I think UTF-8 is the best option here.
                 zipinfo.date_time = time.gmtime(new_node.last_modified)[:6]
                 zipinfo.compress_type = ZIP_DEFLATED
                 zipfile.writestr(zipinfo, new_node.get_content().read())
