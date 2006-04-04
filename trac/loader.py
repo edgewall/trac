@@ -45,10 +45,14 @@ def load_components(env):
                  if dist in memo:
                      continue
                  memo.add(dist)
-                 predecessors = ws.resolve([dist.as_requirement()])
-                 for predecessor in flatten(predecessors):
-                     yield predecessor
-                 yield dist
+                 try:
+                     predecessors = ws.resolve([dist.as_requirement()])
+                     for predecessor in flatten(predecessors):
+                         yield predecessor
+                     yield dist
+                 except pkg_resources.DistributionNotFound, e:
+                     print>>sys.stderr, "Skipping '%s' ('%s' not found)" \
+                                        % (dist, str(e))
 
         for egg in flatten([pkg_env[name][0] for name in pkg_env]):
             modules = []
