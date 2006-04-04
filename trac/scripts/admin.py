@@ -737,7 +737,7 @@ Congratulations!
             raise Exception, '%s is not a file' % filename
 
         f = open(filename,'r')
-        data = util.to_utf8(f.read())
+        data = util.to_unicode(f.read())
 
         # Make sure we don't insert the exact same page twice
         rows = self.db_query("SELECT text FROM wiki WHERE name=%s "
@@ -765,7 +765,7 @@ Congratulations!
             if os.path.isfile(filename):
                 raise Exception("File '%s' exists" % filename)
             f = open(filename,'w')
-            f.write(text)
+            f.write(text.encode('utf-8'))
             f.close()
 
     def _do_wiki_dump(self, dir):
