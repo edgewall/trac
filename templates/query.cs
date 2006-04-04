@@ -9,9 +9,12 @@
  /if ?>
 </div>
 
+<?cs def:num_matches(v) ?><span class="numrows">(<?cs 
+ alt:v ?>No<?cs /alt ?> match<?cs if:v != 1 ?>es<?cs /if ?>)</span><?cs
+/def ?>
+
 <div id="content" class="query">
- <h1><?cs var:title ?> <span class="numrows">(<?cs alt:query.num_matches ?>No<?cs /alt ?> match<?cs
- if:query.num_matches != 1 ?>es<?cs /if ?>)</span></h1>
+ <h1><?cs var:title ?> <?cs call:num_matches(query.num_matches) ?></h1>
 
 <form id="query" method="post" action="<?cs var:trac.href.query ?>">
  <fieldset id="filters">
@@ -198,7 +201,7 @@
      if:name(field) == query.group ?><?cs
       var:field.label ?><?cs
      /if ?><?cs
-    /each ?>: <?cs var:result[query.group] ?></h2>
+    /each ?>: <?cs var:result[query.group] ?> <?cs call:num_matches(query.num_matches_group[result[query.group]]) ?></h2>
    <table class="listing tickets">
    <?cs call:thead() ?><tbody><?cs
   /if ?>

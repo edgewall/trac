@@ -552,6 +552,7 @@ class QueryModule(Component):
                             'summary': html.EM[e]}
                 tickets.insert(orig_list.index(rest_id), data)
 
+        num_matches_group = {}
         for ticket in tickets:
             if orig_list:
                 # Mark tickets added or changed since the query was first
@@ -561,6 +562,8 @@ class QueryModule(Component):
                 elif int(ticket['changetime']) > orig_time:
                     ticket['changed'] = True
             for field, value in ticket.items():
+                if field == query.group:
+                    num_matches_group[value] = num_matches_group.get(value, 0)+1
                 if field == 'time':
                     ticket[field] = format_datetime(value)
                 elif field == 'description':
@@ -569,6 +572,7 @@ class QueryModule(Component):
                     ticket[field] = value
 
         req.hdf['query.results'] = tickets
+        req.hdf['query.num_matches_group'] = num_matches_group
         req.session['query_tickets'] = ' '.join([str(t['id']) for t in tickets])
 
         # Kludge: only show link to available reports if the report module is

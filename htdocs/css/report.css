@@ -1,6 +1,11 @@
 @import url(code.css);
 
-h1 .numrows { color: #999; font-size: 65%; font-weight: normal }
+h1 .numrows, h2 .numrows {
+ margin-left: 1em;
+ color: #999; 
+ font-size: 65%; 
+ font-weight: normal; 
+}
 h2 {
  background: #f7f7f7;
  border-bottom: 1px solid #d7d7d7;
