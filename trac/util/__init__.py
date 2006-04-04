@@ -24,7 +24,7 @@ import re
 import sys
 import time
 import tempfile
-from urllib import quote, urlencode
+from urllib import quote, unquote, urlencode
 
 # Imports for backward compatibility
 from trac.core import TracError
@@ -424,6 +424,13 @@ def md5crypt(password, salt, magic='$1$'):
 def unicode_quote(value):
     """A unicode aware version of urllib.quote"""
     return quote(value.encode('utf-8'))
+
+def unicode_unquote(value):
+    """A unicode aware version of urllib.unquote.
+    
+    Take `str` value previously obtained by `unicode_quote`.
+    """
+    return unquote(value).decode('utf-8')
 
 def unicode_urlencode(params):
     """A unicode aware version of urllib.urlencode"""

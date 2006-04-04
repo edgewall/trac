@@ -21,7 +21,6 @@ import re
 import shutil
 import time
 import unicodedata
-import urllib
 
 from trac import perm, util
 from trac.config import *
@@ -142,11 +141,14 @@ class Attachment(object):
 
         if not os.access(self.path, os.F_OK):
             os.makedirs(self.path)
-        filename = urllib.quote(filename)
+        filename = util.unicode_quote(filename)
         path, targetfile = util.create_unique_file(os.path.join(self.path,
                                                                 filename))
         try:
-            filename = urllib.unquote(os.path.basename(path))
+            # Note: `path` is an unicode string because `self.path` was one.
+            # As it contains only quoted chars and numbers, we can use `ascii`
+            basename = os.path.basename(path).encode('ascii')
+            filename = util.unicode_unquote(basename)
 
             cursor = db.cursor()
             cursor.execute("INSERT INTO attachment "
@@ -327,15 +329,14 @@ class AttachmentModule(Component):
         if size == 0:
             raise TracError('No file uploaded')
 
-        filename = upload.filename.replace('\\', '/').replace(':', '/')
+        # We try to normalize the filename to unicode NFC if we can.
+        # Files uploaded from OS X might be in NFD.
+        filename = unicodedata.normalize('NFC', unicode(upload.filename,
+                                                        'utf-8'))
+        filename = filename.replace('\\', '/').replace(':', '/')
         filename = os.path.basename(filename)
         if not filename:
             raise TracError('No file uploaded')
-
-        # We try to normalize the filename to utf-8 NFC if we can.
-        # Files uploaded from OS X might be in NFD.
-        filename = unicodedata.normalize('NFC',
-                                         unicode(filename, 'utf-8')).encode('utf-8')
 
         attachment.description = req.args.get('description', '')
         attachment.author = req.args.get('author', '')
