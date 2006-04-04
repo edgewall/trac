@@ -737,7 +737,7 @@ Congratulations!
             raise Exception, '%s is not a file' % filename
 
         f = open(filename,'r')
-        data = util.to_unicode(f.read())
+        data = util.to_unicode(f.read(), 'utf-8')
 
         # Make sure we don't insert the exact same page twice
         rows = self.db_query("SELECT text FROM wiki WHERE name=%s "
