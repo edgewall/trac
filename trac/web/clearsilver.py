@@ -217,7 +217,7 @@ class HDFWrapper:
                 self.hdf.setValue(prefix, unicode(value).encode('utf-8'))
             elif isinstance(value, str):
                 if escape:
-                    self.hdf.setValue(prefix, markup.escape(value))
+                    self.hdf.setValue(prefix, markup.escape(value).encode('utf-8'))
                 else:
                     self.hdf.setValue(prefix, value)
             elif isinstance(value, unicode):
