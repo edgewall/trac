@@ -165,8 +165,8 @@ class TicketSystem(Component):
                        (target,))
         row = cursor.fetchone()
         if row:
-            return html.A(class_='%s ticket' % row[0],
-                          title=shorten_line(row[1]) + ' (%s)' % row[0],
+            return html.A(class_='%s ticket' % row[1],
+                          title=shorten_line(row[0]) + ' (%s)' % row[1],
                           href=formatter.href.ticket(target))[label]
         else:
             return html.A(class_='missing ticket', rel='nofollow',
