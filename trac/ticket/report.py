@@ -386,6 +386,9 @@ class ReportModule(Component):
         # FIXME: fetchall should probably not be used.
         info = cursor.fetchall() or []
         cols = cursor.description or []
+        # NOTE: At least pysqlite will return an UTF-8 string here...
+        if cols and isinstance(cols[0][0], str):
+            cols = [(unicode(d[0], 'utf-8'),) + (None,)*6 for d in cols]
 
         db.rollback()
 

@@ -207,9 +207,9 @@ class HDFWrapper:
         Add data to the HDF dataset.
         """
         def set_unicode(prefix, value):
-            self.hdf.setValue(prefix, value.encode('utf-8'))
+            self.hdf.setValue(prefix.encode('utf-8'), value.encode('utf-8'))
         def set_str(prefix, value):
-            self.hdf.setValue(prefix, str(value))
+            self.hdf.setValue(prefix.encode('utf-8'), str(value))
             
         def add_value(prefix, value):
             if value is None:
@@ -220,7 +220,9 @@ class HDFWrapper:
                 set_unicode(prefix, unicode(value))
             elif isinstance(value, str):
                 if escape:
-                    set_unicode(prefix, markup.escape(value))
+                    # Assume UTF-8 here, for backward compatibility reasons
+                    set_unicode(prefix, markup.escape(unicode(value, 'utf-8',
+                                                              'replace')))
                 else:
                     set_str(prefix, value)
             elif isinstance(value, unicode):
