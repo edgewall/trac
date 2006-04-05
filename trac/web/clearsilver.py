@@ -206,25 +206,28 @@ class HDFWrapper:
         """
         Add data to the HDF dataset.
         """
+        def set_unicode(prefix, value):
+            self.hdf.setValue(prefix, value.encode('utf-8'))
+        def set_str(prefix, value):
+            self.hdf.setValue(prefix, str(value))
+            
         def add_value(prefix, value):
             if value is None:
                 return
-            elif value in (True, False):
-                self.hdf.setValue(prefix, str(int(value)))
-            elif isinstance(value, markup.Markup):
-                self.hdf.setValue(prefix, value.encode('utf-8'))
-            elif isinstance(value, markup.Fragment):
-                self.hdf.setValue(prefix, unicode(value).encode('utf-8'))
+            if value in (True, False):
+                set_str(prefix, int(value))
+            elif isinstance(value, (markup.Markup, markup.Fragment)):
+                set_unicode(prefix, unicode(value))
             elif isinstance(value, str):
                 if escape:
-                    self.hdf.setValue(prefix, markup.escape(value).encode('utf-8'))
+                    set_unicode(prefix, markup.escape(value))
                 else:
-                    self.hdf.setValue(prefix, value)
+                    set_str(prefix, value)
             elif isinstance(value, unicode):
                 if escape:
-                    self.hdf.setValue(prefix, markup.escape(value).encode('utf-8'))
+                    set_unicode(prefix, markup.escape(value))
                 else:
-                    self.hdf.setValue(prefix, value.encode('utf-8'))
+                    set_unicode(prefix, value)
             elif isinstance(value, dict):
                 for k in value.keys():
                     add_value('%s.%s' % (prefix, k), value[k])
@@ -234,7 +237,7 @@ class HDFWrapper:
                     for idx, item in enumerate(value):
                         add_value('%s.%d' % (prefix, idx), item)
                 else:
-                    self.hdf.setValue(prefix, str(value))
+                    set_str(prefix, value)
         add_value(name, value)
 
     def __str__(self):
