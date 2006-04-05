@@ -49,6 +49,7 @@ from trac.versioncontrol import Changeset, Node, Repository, \
                                 NoSuchChangeset, NoSuchNode
 from trac.versioncontrol.cache import CachedRepository
 from trac.versioncontrol.svn_authz import SubversionAuthorizer
+from trac.util import to_unicode
 
 try:
     from svn import fs, repos, core, delta
@@ -577,7 +578,9 @@ class SubversionNode(Node):
     def get_properties(self):
         props = fs.node_proplist(self.root, self.scoped_svn_path, self.pool())
         for name, value in props.items():
-            props[name] = str(value) # Make sure the value is a proper string
+            # Note that property values can be arbitrary binary values
+            # so we can't assume they are UTF-8 strings...
+            props[_from_svn(name)] = to_unicode(value)
         return props
 
     def get_content_length(self):

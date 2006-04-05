@@ -181,7 +181,7 @@ class RequestDispatcher(Component):
 
                     req.display(template, content_type or 'text/html')
             except PermissionError, e:
-                raise HTTPForbidden(str(e))
+                raise HTTPForbidden(unicode(e))
             except TracError, e:
                 raise HTTPInternalError(e.message)
         finally:
@@ -327,9 +327,9 @@ def dispatch_request(environ, start_response):
         traceback.print_exc(file=tb)
 
         if req.hdf:
-            req.hdf['title'] = str(e) or 'Error'
+            req.hdf['title'] = unicode(e) or 'Error'
             req.hdf['error'] = {
-                'title': str(e) or 'Error',
+                'title': unicode(e) or 'Error',
                 'type': 'internal',
                 'traceback': tb.getvalue()
             }
@@ -376,7 +376,7 @@ def send_project_index(environ, start_response, parent_dir=None,
                     'href': href(env_name)
                 }
             except Exception, e:
-                proj = {'name': env_name, 'description': str(e)}
+                proj = {'name': env_name, 'description': unicode(e)}
             projects.append(proj)
         projects.sort(lambda x, y: cmp(x['name'].lower(), y['name'].lower()))
 

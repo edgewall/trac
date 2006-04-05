@@ -320,9 +320,9 @@ class ReportModule(Component):
                         id_val = row[id_cols[0]]
                         value['ticket_href'] = req.href.ticket(id_val)
                 elif column == 'description':
-                    descr = wiki_to_html(cell, self.env, req, db,
-                                         absurls=(format == 'rss'))
-                    value['parsed'] = format == 'rss' and str(descr) or descr
+                    desc = wiki_to_html(cell, self.env, req, db,
+                                        absurls=(format == 'rss'))
+                    value['parsed'] = format == 'rss' and unicode(desc) or desc
                 elif column == 'reporter' and cell.find('@') != -1:
                     value['rss'] = cell
                 elif column == 'report':
@@ -332,7 +332,7 @@ class ReportModule(Component):
                     value['time'] = util.format_time(cell)
                     value['datetime'] = util.format_datetime(cell)
                     value['gmt'] = util.http_date(cell)
-                prefix = 'report.items.%d.%s' % (row_idx, str(column))
+                prefix = 'report.items.%d.%s' % (row_idx, unicode(column))
                 req.hdf[prefix] = unicode(cell)
                 for key in value.keys():
                     req.hdf[prefix + '.' + key] = value[key]
@@ -464,10 +464,9 @@ class ReportModule(Component):
 
         req.write(sep.join([c[0] for c in cols]) + '\r\n')
         for row in rows:
-            sanitize = lambda x: str(x).replace(sep,"_") \
-                                       .replace('\n',' ') \
-                                       .replace('\r',' ')
-            req.write(sep.join(map(sanitize, row)) + '\r\n')
+            req.write(sep.join(
+                [unicode(c).replace(sep,"_")
+                 .replace('\n',' ').replace('\r',' ') for c in row]) + '\r\n')
 
     def _render_sql(self, req, id, title, description, sql):
         req.perm.assert_permission('REPORT_SQL_VIEW')

@@ -104,7 +104,7 @@ class WikiTestCase(unittest.TestCase):
         except AssertionError, e:
             raise AssertionError('%s\n\n%s:%s: for the input '
                                  '(formatter flavor was "%s")' \
-                                 % (str(e), self.file, self.line,
+                                 % (unicode(e), self.file, self.line,
                                     formatter.flavor))
         
     def formatter(self, env):

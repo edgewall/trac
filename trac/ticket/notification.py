@@ -138,7 +138,7 @@ class TicketNotifyEmail(NotifyEmail):
             if not tkt.values.has_key(fname):
                 continue
             fval = tkt[fname]
-            if f['type'] == 'textarea' or '\n' in str(fval):
+            if f['type'] == 'textarea' or '\n' in unicode(fval):
                 big.append((fname.capitalize(), CRLF.join(fval.splitlines())))
             else:
                 txt += format[i % 2] % (fname.capitalize(), fval)

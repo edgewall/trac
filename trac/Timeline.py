@@ -224,4 +224,4 @@ class TimelineModule(Component):
                                'of events from the <a href="%s">'
                                'Timeline</a></p>',
                                ", ".join(guilty_kinds),
-                               exc.__class__.__name__, str(exc), href))
+                               exc.__class__.__name__, unicode(exc), href))

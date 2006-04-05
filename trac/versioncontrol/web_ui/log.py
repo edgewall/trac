@@ -72,9 +72,9 @@ class LogModule(Component):
 
         repos = self.env.get_repository(req.authname)
         normpath = repos.normalize_path(path)
-        rev = str(repos.normalize_rev(rev))
+        rev = unicode(repos.normalize_rev(rev))
         if stop_rev:
-            stop_rev = str(repos.normalize_rev(stop_rev))
+            stop_rev = unicode(repos.normalize_rev(stop_rev))
             if repos.rev_older_than(rev, stop_rev):
                 rev, stop_rev = stop_rev, rev
             

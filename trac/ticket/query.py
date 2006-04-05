@@ -76,7 +76,10 @@ class Query(object):
                 neg = '!'
                 field = field[:-1]
             values = map(lambda x: neg + mode + x, values)
-            constraints[str(field)] = values
+            try:
+                constraints[str(field)] = values
+            except UnicodeError:
+                pass # field must be a str, see `get_href()`
         return cls(env, constraints, **kw)
     from_string = classmethod(from_string)
 
@@ -524,9 +527,9 @@ class QueryModule(Component):
         # The most recent query is stored in the user session
         orig_list = rest_list = None
         orig_time = int(time.time())
-        if str(query.constraints) != req.session.get('query_constraints'):
+        if unicode(query.constraints) != req.session.get('query_constraints'):
             # New query, initialize session vars
-            req.session['query_constraints'] = str(query.constraints)
+            req.session['query_constraints'] = unicode(query.constraints)
             req.session['query_time'] = int(time.time())
             req.session['query_tickets'] = ' '.join([str(t['id']) for t in tickets])
         else:
@@ -606,10 +609,10 @@ class QueryModule(Component):
             if result['reporter'].find('@') == -1:
                 result['reporter'] = ''
             if result['description']:
-                # str() cancels out the Markup() returned by wiki_to_html
+                # unicode() cancels out the Markup() returned by wiki_to_html
                 descr = wiki_to_html(result['description'], self.env, req, db,
                                      absurls=True)
-                result['description'] = str(descr)
+                result['description'] = unicode(descr)
             if result['time']:
                 result['time'] = http_date(result['time'])
         req.hdf['query.results'] = results

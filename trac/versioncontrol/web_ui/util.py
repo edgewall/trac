@@ -47,7 +47,7 @@ def get_changes(env, repos, revs, full=None, req=None, format=None):
         if format == 'rss':
             if isinstance(shortlog, Markup):
                 shortlog = shortlog.plaintext(keeplinebreaks=False)
-            message = str(message)
+            message = unicode(message)
         changes[rev] = {
             'date_seconds': changeset.date,
             'date': format_datetime(changeset.date),
