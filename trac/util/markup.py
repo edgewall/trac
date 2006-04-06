@@ -98,9 +98,9 @@ class Markup(unicode):
         """Create a Markup instance from a string and escape special characters
         it may contain (<, >, & and ").
         
-        If the `quotes` parameter is set to `False`, the " character is left as
-        is. Escaping quotes is generally only required for strings that are to
-        be used in attribute values.
+        If the `quotes` parameter is set to `False`, the \" character is left
+        as is. Escaping quotes is generally only required for strings that are
+        to be used in attribute values.
         """
         if isinstance(text, cls):
             return text
@@ -116,7 +116,7 @@ class Markup(unicode):
     escape = classmethod(escape)
 
     def unescape(self):
-        """Reverse-escapes &, <, > and " and returns a `unicode` object."""
+        """Reverse-escapes &, <, > and \" and returns a `unicode` object."""
         if not self:
             return ''
         return unicode(self).replace('&#34;', '"') \
@@ -150,7 +150,7 @@ class Markup(unicode):
 escape = Markup.escape
 
 def unescape(text):
-    """Reverse-escapes &, <, > and " and returns a `unicode` object."""
+    """Reverse-escapes &, <, > and \" and returns a `unicode` object."""
     if not isinstance(text, Markup):
         return text
     return text.unescape()
@@ -303,8 +303,6 @@ class Fragment(object):
                 nodes = iter(nodes)
             except TypeError:
                 nodes = [str(nodes)]
-        else:
-            nodes = [nodes]
         self.append(nodes)
         return self
 
@@ -386,10 +384,16 @@ class Element(Fragment):
     >>> print Element('option', selected='yeah')
     <option selected="selected"></option>
 
-    Nested elements can be added to an element using item access notation:
+    Nested elements can be added to an element using item access notation.
+    The call notation can also be used for this and for adding attributes
+    using keyword arguments, as one would do in the constructor.
 
     >>> print Element('ul')[Element('li'), Element('li')]
     <ul><li></li><li></li></ul>
+    >>> print Element('a')('Label')
+    <a>Label</a>
+    >>> print Element('a')('Label', href="target")
+    <a href="target">Label</a>
 
     Text nodes can be nested in an element by adding strings instead of
     elements. Any special characters in the strings are escaped automatically:
@@ -422,7 +426,9 @@ class Element(Fragment):
         self.attr = {}
         self(**attr)
 
-    def __call__(self, **attr):
+    def __call__(self, *args, **attr):
+        for arg in args:
+            self.append(arg)
         self.attr.update(attr)
         return self
 

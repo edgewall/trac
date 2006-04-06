@@ -922,20 +922,21 @@ class InterWikiMap(Component):
         return "Provide a description list for the known InterWiki prefixes."
 
     def render_macro(self, req, name, content):
+        from trac.util import sorted
+        from trac.util.markup import html as _
         if not self._interwiki_map:
             self._update()
-        keys = self._interwiki_map.keys()
-        keys.sort()
-        buf = StringIO()
-        buf.write('<table class="wiki interwiki"><tr>'
-                  '<th><em>Prefix</em></th><th><em>Site</em></th></tr>\n')
-        for k in keys:
+            
+        interwikis = []
+        for k in sorted(self._interwiki_map.keys()):
             prefix, url, title = self._interwiki_map[k]
-            rc_url = self._expand_or_append(url, ['RecentChanges'])
-            description = title == prefix and url or title
-            buf.write('<tr>\n' +
-                      '<td><a href="%s">%s</a></td>' % (rc_url, prefix) +
-                      '<td><a href="%s">%s</a></td>\n' % (url, description) +
-                      '</tr>\n')
-        buf.write('</table>\n')
-        return buf.getvalue()
+            interwikis.append({
+                'prefix': prefix, 'url': url, 'title': title,
+                'rc_url': self._expand_or_append(url, ['RecentChanges']),
+                'description': title == prefix and url or title})
+
+        return _.TABLE(_.TR(_.TH(_.EM("Prefix")), _.TH(_.EM("Site"))),
+                       [ _.TR(_.TD(_.A(w['prefix'], href=w['rc_url'])),
+                              _.TD(_.A(w['description'], href=w['url'])))
+                         for w in interwikis ],
+                       class_="wiki interwiki")
