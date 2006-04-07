@@ -223,8 +223,9 @@ class LogModule(Component):
     def _format_link(self, formatter, ns, path, label):
         path, rev, line = get_path_rev_line(path)
         stop_rev = None
-        if rev and ':' in rev:
-            stop_rev, rev = rev.split(':', 1)
+        for sep in ":-":
+            if not stop_rev and rev and sep in rev:
+                stop_rev, rev = rev.split(sep, 1)
         label = urllib.unquote(label)
         return html.A(href=formatter.href.log(path, rev=rev, stop_rev=stop_rev),
                       class_='source')[label]

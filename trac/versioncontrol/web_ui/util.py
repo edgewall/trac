@@ -72,7 +72,7 @@ def get_path_links(href, path, rev):
         })
     return links
 
-rev_re = re.compile(r"([^@#]*)[@#]([^#]+)(?:#L(\d+))?")
+rev_re = re.compile(r"([^@#:]*)[@#:]([^#]+)(?:#L(\d+))?")
 
 def get_path_rev_line(path):
     rev = None

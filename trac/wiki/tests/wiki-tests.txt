@@ -139,6 +139,25 @@ diff:@12:23
 </p>
 ------------------------------
 ==============================
+log:@12
+log:trunk
+log:trunk@12
+log:trunk@12:23
+log:trunk@12-23
+log:trunk:12:23
+log:trunk:12-23
+------------------------------
+<p>
+<a class="source" href="/log/?rev=12">log:@12</a>
+<a class="source" href="/log/trunk">log:trunk</a>
+<a class="source" href="/log/trunk?rev=12">log:trunk@12</a>
+<a class="source" href="/log/trunk?rev=23&amp;stop_rev=12">log:trunk@12:23</a>
+<a class="source" href="/log/trunk?rev=23&amp;stop_rev=12">log:trunk@12-23</a>
+<a class="source" href="/log/trunk?rev=23&amp;stop_rev=12">log:trunk:12:23</a>
+<a class="source" href="/log/trunk?rev=23&amp;stop_rev=12">log:trunk:12-23</a>
+</p>
+------------------------------
+==============================
 Add-on to changeset:123:
 Some change.
 ticket:1
