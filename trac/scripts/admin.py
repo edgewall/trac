@@ -87,7 +87,10 @@ class TracAdmin(cmd.Cmd):
         pass
 
     def onecmd(self, line):
+        """`line` may be a `str` or an `unicode` object"""
         try:
+            if isinstance(line, str):
+                line = unicode(line, sys.stdin.encoding)
             rv = cmd.Cmd.onecmd(self, line) or 0
         except SystemExit:
             raise
@@ -165,14 +168,18 @@ class TracAdmin(cmd.Cmd):
     ##
 
     def arg_tokenize (self, argstr):
-        argstr = util.to_utf8(argstr, sys.stdin.encoding)
-        return shlex.split(argstr) or ['']
+        """`argstr` is an `unicode` string
+
+        ... but shlex is not unicode friendly.
+        """
+        return [unicode(token, 'utf-8')
+                for token in shlex.split(argstr.encode('utf-8'))] or ['']
 
     def word_complete (self, text, words):
         return [a for a in words if a.startswith (text)]
 
     def print_listing(self, headers, data, sep=' ', decor=True):
-        cons_charset = locale.getpreferredencoding()
+        cons_charset = sys.stdout.encoding
         ldata = list(data)
         if decor:
             ldata.insert(0, headers)
@@ -196,7 +203,7 @@ class TracAdmin(cmd.Cmd):
                 pdata = ((u'%%-%ds%s' % (colw[cnum], sp)) 
                          % (ldata[rnum][cnum] or ''))
                 if cons_charset and isinstance(pdata, unicode):
-                    pdata = pdata.encode(cons_charset)
+                    pdata = pdata.encode(cons_charset, 'replace')
                 print pdata,
             print
             if rnum == 0 and decor:

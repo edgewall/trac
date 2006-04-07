@@ -43,7 +43,7 @@ def load_expected_results(file, pattern):
     compiled_pattern = re.compile(pattern)
     f = open(file, 'r')
     for line in f:
-        line = line.rstrip()
+        line = line.rstrip().decode('utf-8')
         match = compiled_pattern.search(line)
         if match:
             test = match.groups()[0]
@@ -120,15 +120,19 @@ class TracadminTestCase(unittest.TestCase):
             _err = sys.stderr
             _out = sys.stdout
             sys.stderr = sys.stdout = out = StringIO()
+            setattr(out, 'encoding', _out.encoding) # fake output encoding
             retval = None
             try:
                 retval = self._admin.onecmd(cmd)
             except SystemExit, e:
                 pass
+            value = out.getvalue()
+            if isinstance(value, str): # reverse what print_listing did
+                value = value.decode(_out.encoding)
             if strip_trailing_space:
-                return retval, STRIP_TRAILING_SPACE.sub('', out.getvalue())
+                return retval, STRIP_TRAILING_SPACE.sub('', value)
             else:
-                return retval, out.getvalue()
+                return retval, value
         finally:
             sys.stderr = _err
             sys.stdout = _out
@@ -841,6 +845,18 @@ Trac Admin Console %s
         """
         test_name = sys._getframe().f_code.co_name
         self._execute('milestone add new_milestone "%s"' % self._test_date)
+        rv, output = self._execute('milestone list')
+        self.assertEqual(0, rv)
+        self.assertEqual(self.expected_results[test_name], output)
+
+    def test_milestone_add_utf8_ok(self):
+        """
+        Tests the 'milestone add' command in trac-admin.  This particular
+        test passes valid arguments and checks for success.
+        """
+        test_name = sys._getframe().f_code.co_name
+        self._execute(u'milestone add \xe9tat_final "%s"'  #\xc3\xa9
+                              % self._test_date)
         rv, output = self._execute('milestone list')
         self.assertEqual(0, rv)
         self.assertEqual(self.expected_results[test_name], output)

@@ -491,6 +491,16 @@ milestone2
 milestone3
 milestone4
 
+===== test_milestone_add_utf8_ok =====
+
+Name        Due         Completed
+---------------------------------
+état_final  2004-01-11
+milestone1
+milestone2
+milestone3
+milestone4
+
 ===== test_milestone_add_error_already_exists =====
 Command failed: column name is not unique
 ===== test_milestone_rename_ok =====
