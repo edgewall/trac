@@ -11,7 +11,7 @@
  <p>
  This page lets you customize and personalize your Trac settings. Session
  settings are stored on the server and identified using  a 'Session Key'
- stored in a browser cookie. The cookie lets Trac restore your settings 
+ stored in a browser cookie. The cookie lets Trac restore your settings.
  </p>
  <form method="post" action="">
  <div>
