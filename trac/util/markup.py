@@ -96,7 +96,7 @@ class Markup(unicode):
 
     def escape(cls, text, quotes=True):
         """Create a Markup instance from a string and escape special characters
-        it may contain (<, >, & and ").
+        it may contain (<, >, & and \").
         
         If the `quotes` parameter is set to `False`, the \" character is left
         as is. Escaping quotes is generally only required for strings that are

@@ -415,12 +415,12 @@ class Request(object):
         `data` can be either a `str` or an `unicode` string.
         If it's the latter, the unicode string will be encoded
         using the charset specified in the ''Content-Type'' header
-        or 'ascii' otherwise.
+        or 'utf-8' otherwise.
         """
         if not self._write:
             self.end_headers()
         if isinstance(data, unicode):
-            data = data.encode(self._outcharset or 'ascii')
+            data = data.encode(self._outcharset or 'utf-8')
         self._write(data)
 
 

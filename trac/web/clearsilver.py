@@ -15,7 +15,7 @@
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
 from trac.core import TracError
-from trac.util import markup
+from trac.util import markup, to_unicode
 
 
 class HDFWrapper:
@@ -221,8 +221,7 @@ class HDFWrapper:
             elif isinstance(value, str):
                 if escape:
                     # Assume UTF-8 here, for backward compatibility reasons
-                    set_unicode(prefix, markup.escape(unicode(value, 'utf-8',
-                                                              'replace')))
+                    set_unicode(prefix, markup.escape(to_unicode(value)))
                 else:
                     set_str(prefix, value)
             elif isinstance(value, unicode):

@@ -19,7 +19,7 @@ import os
 import sys
 
 from trac.core import *
-from trac.util import doctrim
+from trac.util import doctrim, to_unicode
 
 __all__ = ['IConfigurable', 'ConfigSection', 'ConfigOption', 'Configuration',
            'ConfigurationError', 'default_dir']
@@ -211,7 +211,7 @@ class Section(object):
             if default is None:
                 return self.config._defaults.get((self.name, name), '')
             return default
-        return self.config.parser.get(self.name, name)
+        return to_unicode(self.config.parser.get(self.name, name))
 
     def getbool(self, name, default=None):
         """Return the value of the specified option as boolean.
@@ -268,7 +268,7 @@ class Section(object):
         """
         if not self.config.parser.has_section(self.name):
             self.config.parser.add_section(self.name)
-        return self.config.parser.set(self.name, name, value)
+        return self.config.parser.set(self.name, name, value.encode('utf-8'))
 
 
 def default_dir(name):

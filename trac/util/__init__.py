@@ -56,7 +56,10 @@ except NameError:
 
 def to_utf8(text, charset='iso-8859-15'):
     """Convert a string to UTF-8, assuming the encoding is either UTF-8, ISO
-    Latin-1, or as specified by the optional `charset` parameter."""
+    Latin-1, or as specified by the optional `charset` parameter.
+
+    ''Deprecated in 0.10. You should use `unicode` strings only.''
+    """
     try:
         # Do nothing if it's already utf-8
         u = unicode(text, 'utf-8')
@@ -70,20 +73,34 @@ def to_utf8(text, charset='iso-8859-15'):
             u = unicode(text, 'iso-8859-15')
         return u.encode('utf-8')
 
-def to_unicode(text, charset=None):
-    """Convert a string to `unicode` using the specified `charset`.
+def to_unicode(text, charset=None, lossy=True):
+    """Convert a `str` object to an `unicode` object.
 
-    If no charset is specified or if the decoding fails, then fallback
-    to 'iso-8859-15', which will always work as there will be one Unicode
-    character for each byte of the input.
+    If `charset` is not specified, we'll make some guesses,
+    first trying the UTF-8 encoding then trying the locale
+    preferred encoding (this differs from the `unicode` function
+    which only tries with the locale preferred encoding, in 'strict'
+    mode).
 
-    If that unicode string is later displayed, this might result in some
-    garbled characters, but at least there will be something to show...
+    If the `lossy` argument is `True`, which is the default, then
+    we use the 'replace' mode:
+
+    If the `lossy` argument is `False`, we fallback to the 'iso-8859-15'
+    charset in case of an error (encoding a `str` using 'iso-8859-15'
+    will always work, as there's one Unicode character for each byte of
+    the input).
     """
     if isinstance(text, unicode):
         return text
+    errors = lossy and 'replace' or 'strict'
     try:
-        return unicode(text, charset or 'iso-8859-15')
+        if charset:
+            return unicode(text, charset, errors)
+        else:
+            try:
+                return unicode(text, 'utf-8')
+            except UnicodeError:
+                return unicode(text, locale.getpreferredencoding(), errors)
     except UnicodeError:
         return unicode(text, 'iso-8859-15')
 
