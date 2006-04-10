@@ -252,8 +252,6 @@ def absolute_url(req, path=None):
     else:
         scheme = req.scheme
         host = req.get_header('Host')
-        if req.get_header('X-Forwarded-Host'):
-            host = req.get_header('X-Forwarded-Host')
         if not host:
             # Missing host header, so reconstruct the host from the
             # server name and port
