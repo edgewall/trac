@@ -254,7 +254,7 @@ class SubversionRepository(Repository):
     """
 
     def __init__(self, path, authz, log):
-        self.path = path
+        self.path = path # might be needed by __del__()/close()
         self.log = log
         if core.SVN_VER_MAJOR < 1:
             raise TracError("Subversion >= 1.0 required: Found %d.%d.%d" % \
@@ -264,6 +264,8 @@ class SubversionRepository(Repository):
         self.pool = Pool()
         
         # Remove any trailing slash or else subversion might abort
+        if isinstance(path, unicode):
+            path = path.encode('utf-8')
         path = os.path.normpath(path).replace('\\', '/')
         self.path = repos.svn_repos_find_root_path(path, self.pool())
         if self.path is None:
