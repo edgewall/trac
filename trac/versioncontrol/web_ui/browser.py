@@ -188,19 +188,19 @@ class BrowserModule(Component):
     def _render_file(self, req, repos, node, rev=None):
         req.perm.assert_permission('FILE_VIEW')
 
-        def get_mime_type(content=None):
-            mime_type = node.content_type
-            if not mime_type or mime_type == 'application/octet-stream':
-                mime_type = get_mimetype(node.name, content) or \
-                            mime_type or 'text/plain'
-            return mime_type
+        mimeview = Mimeview(self.env)
 
+        # MIME type detection
+        content = node.get_content()
+        chunk = content.read(CHUNK_SIZE)
+        mime_type = node.content_type
+        if not mime_type or mime_type == 'application/octet-stream':
+            mime_type = mimeview.get_mimetype(node.name, chunk) or \
+                        mime_type or 'text/plain'
+
+        # Eventually send the file directly
         format = req.args.get('format')
         if format in ['raw', 'txt']:
-            content = node.get_content()
-            chunk = content.read(CHUNK_SIZE)
-            mime_type = get_mime_type(chunk)
-
             req.send_response(200)
             req.send_header('Content-Type',
                             format == 'txt' and 'text/plain' or mime_type)
@@ -215,7 +215,7 @@ class BrowserModule(Component):
                 chunk = content.read(CHUNK_SIZE)
         else:
             # The changeset corresponding to the last change on `node` 
-            # is more interesting than the `rev`changeset.
+            # is more interesting than the `rev` changeset.
             changeset = repos.get_changeset(node.rev)
             req.hdf['file'] = {
                 'rev': node.rev,
@@ -227,29 +227,24 @@ class BrowserModule(Component):
                                         req, escape_newlines=True)
             } 
 
-            # Generate HTML preview
-            mimeview = Mimeview(self.env)
-            content = node.get_content().read(mimeview.max_preview_size())
-            mime_type = get_mime_type(content)
+            # add ''Plain Text'' alternate link if needed
+            if not is_binary(chunk) and mime_type != 'text/plain':
+                plain_href = req.href.browser(node.path, rev=rev, format='txt')
+                add_link(req, 'alternate', plain_href, 'Plain Text',
+                         'text/plain')
 
-            if not is_binary(content):
-                if mime_type != 'text/plain':
-                    plain_href = req.href.browser(node.path, rev=rev,
-                                                  format='txt')
-                    add_link(req, 'alternate', plain_href, 'Plain Text',
-                             'text/plain')
-
-            self.log.debug("Rendering preview of file %s with mime-type %s"
-                           % (node.name, mime_type))
-
-            content = mimeview.to_unicode(content, mime_type)
-            req.hdf['file'] = mimeview.preview_to_hdf(
-                req, content, mime_type, node.created_path, node.rev,
-                annotations=['lineno'])
-
+            # add ''Original Format'' alternate link (always)
             raw_href = req.href.browser(node.path, rev=rev, format='raw')
             add_link(req, 'alternate', raw_href, 'Original Format', mime_type)
-            req.hdf['file.raw_href'] = raw_href
+
+            self.log.debug("Rendering preview of node %s@%s with mime-type %s"
+                           % (node.name, str(rev), mime_type))
+
+            del content # the remainder of that content is not needed
+            
+            req.hdf['file'] = mimeview.preview_to_hdf(
+                req, node.get_content(), node.get_content_length(), mime_type,
+                node.created_path, raw_href, annotations=['lineno'])
 
             add_stylesheet(req, 'common/css/code.css')
 

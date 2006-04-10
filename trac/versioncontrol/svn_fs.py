@@ -29,7 +29,8 @@ Note about Unicode:
    * before being handed out to Trac, a SVN path has to be decoded from UTF-8,
      using `_from_svn()`
 
-  Warning: SubversionNode.get_content returns a stream of bytes
+  Warning: `SubversionNode.get_content` returns an object from which one
+           can read a stream of bytes.
            NO guarantees can be given about what that stream of bytes
            represents.
            It might be some text, encoded in some way or another.

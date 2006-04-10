@@ -427,44 +427,49 @@ class AttachmentModule(Component):
         fd = attachment.open()
         try:
             mimeview = Mimeview(self.env)
-            data = fd.read(mimeview.max_preview_size())
 
-            mime_type = get_mimetype(attachment.filename, data) or \
-                        'application/octet-stream'
-            self.log.debug("Rendering preview of file %s with mime-type %s"
-                           % (attachment.filename, mime_type))
+            # MIME type detection
+            str_data = fd.read(1000)
+            fd.seek(0)
+            
+            binary = is_binary(str_data)
+            mime_type = mimeview.get_mimetype(attachment.filename, str_data)
 
-            raw_href = attachment.href(format='raw')
-            add_link(req, 'alternate', raw_href, 'Original Format', mime_type)
-            req.hdf['attachment.raw_href'] = raw_href
-
-            format = req.args.get('format')
+            # Previewing arbitrary attachments can potentially be harmful
             render_unsafe = self.config.getbool('attachment',
                                                 'render_unsafe_content')
-            binary = is_binary(data)
-
-            if format in ('raw', 'txt'): # Send raw file
+            # Eventually send the file directly
+            format = req.args.get('format')
+            if format in ('raw', 'txt'):
                 if not render_unsafe and not binary:
                     # Force browser to download HTML/SVG/etc pages that may
                     # contain malicious code enabling XSS attacks
                     req.send_header('Content-Disposition', 'attachment;' +
                                     'filename=' + attachment.filename)
-                charset = mimeview.get_charset(data, mime_type)
                 if render_unsafe and not binary and format == 'txt':
                     mime_type = 'text/plain'
-                req.send_file(attachment.path,
-                              mime_type + ';charset=' + charset)
+                if 'charset=' not in mime_type:
+                    charset = mimeview.get_charset(str_data, mime_type)
+                    mime_type = mime_type + '; charset=' + charset
+                req.send_file(attachment.path, mime_type)
 
-            if render_unsafe and not binary:
+            # add ''Plain Text'' alternate link if needed
+            if render_unsafe and not binary and \
+               not mime_type.startswith('text/plain'):
                 plaintext_href = attachment.href(format='txt')
                 add_link(req, 'alternate', plaintext_href, 'Plain Text',
                          mime_type)
 
-            data = mimeview.to_unicode(data, mime_type)
-            hdf = mimeview.preview_to_hdf(req, data, mime_type,
-                                          attachment.filename, None,
-                                          annotations=['lineno'])
-            req.hdf['attachment'] = hdf
+            # add ''Original Format'' alternate link (always)
+            raw_href = attachment.href(format='raw')
+            add_link(req, 'alternate', raw_href, 'Original Format', mime_type)
+
+            self.log.debug("Rendering preview of file %s with mime-type %s"
+                           % (attachment.filename, mime_type))
+
+            req.hdf['attachment'] = mimeview.preview_to_hdf(
+                req, fd, os.fstat(fd.fileno()).st_size, mime_type,
+                attachment.filename, raw_href, annotations=['lineno'])
         finally:
             fd.close()
 
