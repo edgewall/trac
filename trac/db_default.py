@@ -279,7 +279,7 @@ SELECT p.value AS __color__,
 ('My Tickets',
 """
 This report demonstrates the use of the automatically set 
-$USER dynamic variable, replaced with the username of the
+USER dynamic variable, replaced with the username of the
 logged in user when executed.
 """,
 """
