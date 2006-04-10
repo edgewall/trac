@@ -176,8 +176,6 @@ class Request(object):
     def _reconstruct_url(self):
         """Reconstruct the absolute base URL of the application."""
         host = self.get_header('Host')
-        if self.get_header('X-Forwarded-Host'):
-            host = self.get_header('X-Forwarded-Host')
         if not host:
             # Missing host header, so reconstruct the host from the
             # server name and port
