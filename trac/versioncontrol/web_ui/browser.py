@@ -17,6 +17,8 @@
 
 import re
 import urllib
+import os.path
+from fnmatch import fnmatchcase
 
 from trac import util
 from trac.config import *
@@ -48,7 +50,15 @@ class BrowserModule(Component):
         yield ConfigSection('browser', [
             ConfigOption('hide_properties', 'svk:merge',
                          """List of subversion properties to hide from the
-                         repository browser (''since 0.9'')""")])
+                         repository browser (''since 0.9'')"""),
+            ConfigOption('downloadable_paths', '/trunk, /branches/*, /tags/*',
+                         """List of repository paths that can be downloaded.
+                         Leave the option empty if you want to disable all
+                         downloads, otherwise set it to a comma-separated list
+                         of authorized paths (those paths are glob
+                         patterns, i.e. "*" can be used as a wild card) 
+                         (''since 0.10'')""")
+            ])
 
     # INavigationContributor methods
 
@@ -166,10 +176,11 @@ class BrowserModule(Component):
 
         req.hdf['browser.items'] = info
         req.hdf['browser.changes'] = changes
-        if node.path != '':
-            zip_href = req.href.changeset(rev, node.path, old=rev,
-                                          old_path='/', # special case #238
-                                          format='zip')
+        patterns = self.config.getlist('browser', 'downloadable_paths')
+        if node.path and patterns and \
+               filter(None, [fnmatchcase(node.path, p) for p in patterns]):
+            zip_href = req.href.changeset(rev or repos.youngest_rev, node.path,
+                                          old=rev, old_path='/', format='zip')
             add_link(req, 'alternate', zip_href, 'Zip Archive',
                      'application/zip', 'zip')
 
