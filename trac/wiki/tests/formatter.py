@@ -45,9 +45,6 @@ class WikiTestCase(unittest.TestCase):
         self.correct = correct
         self.file = file
         self.line = line
-    
-    def test(self):
-        """Testing WikiFormatter"""
 
         # Environment stub
         from trac.core import ComponentManager
@@ -67,7 +64,6 @@ class WikiTestCase(unittest.TestCase):
                 self.abs_href = Href('http://www.example.com/')
                 self.path = ''
                 # -- intertrac support
-                self.siblings = {}
                 self.config.set('intertrac', 'trac.title', "Trac's Trac")
                 self.config.set('intertrac', 'trac.url',
                                 "http://projects.edgewall.com/trac")
@@ -83,6 +79,7 @@ class WikiTestCase(unittest.TestCase):
             def _get_changeset(self, x):
                 raise TracError("No changeset")
 
+        # *** THIS IS CURRENTLY BEING FIXED *** 
         # Load all the components that provide IWikiSyntaxProvider
         # implementations that are tested. Ideally those should be tested
         # in separate unit tests.
@@ -93,10 +90,13 @@ class WikiTestCase(unittest.TestCase):
         import trac.ticket.roadmap
         import trac.Search
 
-        env = DummyEnvironment()
+        self.env = DummyEnvironment()
+
+    def test(self):
+        """Testing WikiFormatter"""
 
         out = StringIO.StringIO()
-        formatter = self.formatter(env)
+        formatter = self.formatter()
         formatter.format(self.input, out)
         v = out.getvalue().replace('\r','')
         try:
@@ -107,26 +107,33 @@ class WikiTestCase(unittest.TestCase):
                                  % (unicode(e), self.file, self.line,
                                     formatter.flavor))
         
-    def formatter(self, env):
-        return Formatter(env)
+    def formatter(self):
+        return Formatter(self.env)
 
 
 class OneLinerTestCase(WikiTestCase):
-    def formatter(self, env):
-        return OneLinerFormatter(env)
+    def formatter(self):
+        return OneLinerFormatter(self.env)
 
 
-def suite():
+def suite(data=None, setup=None, file=__file__):
     suite = unittest.TestSuite()
-    file = os.path.join(os.path.split(__file__)[0], 'wiki-tests.txt')
-    data = open(file, 'r').read().decode('utf-8')
+    if not data:
+        file = os.path.join(os.path.split(file)[0], 'wiki-tests.txt')
+        data = open(file, 'r').read().decode('utf-8')
     tests = data.split('=' * 30 + '\n')
     line = 1
     for test in tests:
         input, page, oneliner = test.split('-' * 30 + '\n')
-        suite.addTest(WikiTestCase(input, page, file, line))
+        tc = WikiTestCase(input, page, file, line)
+        if setup:
+            setup(tc)
+        suite.addTest(tc)
         if oneliner:
-            suite.addTest(OneLinerTestCase(input, oneliner[:-1], file, line))
+            tc = OneLinerTestCase(input, oneliner[:-1], file, line)
+            if setup:
+                setup(tc)
+            suite.addTest(tc)
         line += len(test.split('\n'))
     return suite
 

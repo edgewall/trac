@@ -160,17 +160,19 @@ class TicketSystem(Component):
                                                          fullmatch)
         if intertrac:
             return intertrac
-        cursor = formatter.db.cursor()
-        cursor.execute("SELECT summary,status FROM ticket WHERE id=%s",
-                       (target,))
-        row = cursor.fetchone()
-        if row:
-            return html.A(class_='%s ticket' % row[1],
-                          title=shorten_line(row[0]) + ' (%s)' % row[1],
-                          href=formatter.href.ticket(target))[label]
-        else:
-            return html.A(class_='missing ticket', rel='nofollow',
-                          href=formatter.href.ticket(target))[label]
+        try:
+            cursor = formatter.db.cursor()
+            cursor.execute("SELECT summary,status FROM ticket WHERE id=%s",
+                           (str(int(target)),))
+            row = cursor.fetchone()
+            if row:
+                return html.A(class_='%s ticket' % row[1],
+                              title=shorten_line(row[0]) + ' (%s)' % row[1],
+                              href=formatter.href.ticket(target))[label]
+        except ValueError:
+            pass
+        return html.A(class_='missing ticket', rel='nofollow',
+                      href=formatter.href.ticket(target))[label]
 
     # ISearchSource methods
 
