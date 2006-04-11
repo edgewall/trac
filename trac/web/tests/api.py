@@ -55,7 +55,7 @@ class RequestTestCase(unittest.TestCase):
         environ = self._make_environ(HTTP_HOST='localhost',
                                      HTTP_X_FORWARDED_HOST='example.com')
         req = Request(environ, None)
-        self.assertEqual('http://example.com/trac', req.base_url)
+        self.assertEqual('http://localhost/trac', req.base_url)
 
     def test_redirect(self):
         status_sent = []
