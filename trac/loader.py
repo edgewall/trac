@@ -14,6 +14,8 @@
 #
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
+from glob import glob
+import imp
 import os
 import sys
 try:
@@ -29,15 +31,34 @@ except ImportError:
 __all__ = ['load_components']
 
 def load_components(env):
+    loaded_components = []
     plugins_dir = os.path.normcase(os.path.realpath(os.path.join(env.path,
                                                                  'plugins')))
 
-    # Load components from the environment plugins directory
-    loaded_components = []
-    if pkg_resources is not None: # But only if setuptools is installed!
+    # First look for Python source files in the plugins directory, which simply
+    # get imported, thereby registering them with the component manager if they
+    # define any components
+    plugin_files = glob(os.path.join(plugins_dir, '*.py'))
+    for plugin_file in plugin_files:
+        try:
+            plugin_name = os.path.basename(plugin_file[:-3])
+            if plugin_name not in loaded_components:
+                env.log.debug('Loading plugin %s from %s' % (plugin_name,
+                                                             plugin_file))
+                module = imp.load_source(plugin_name, plugin_file)
+                loaded_components.append(plugin_name)
+                env.config.setdefault('components', plugin_name + '.*',
+                                      'enabled')
+        except Exception, e:
+            env.log.error('Failed to load plugin from %s', plugin_file,
+                          exc_info=True)
+
+    # If setuptools is installed try to load any eggs from the plugins
+    # directory, and also plugins available on sys.path
+    if pkg_resources is not None:
         ws = pkg_resources.working_set
-        pkg_env = pkg_resources.Environment([plugins_dir] + sys.path)
         ws.add_entry(plugins_dir)
+        pkg_env = pkg_resources.Environment([plugins_dir] + sys.path)
 
         memo = set()
         def flatten(dists):
@@ -51,8 +72,7 @@ def load_components(env):
                          yield predecessor
                      yield dist
                  except pkg_resources.DistributionNotFound, e:
-                     print>>sys.stderr, "Skipping '%s' ('%s' not found)" \
-                                        % (dist, str(e))
+                     env.log.error('Skipping "%s" ("%s" not found)', dist, e)
 
         for egg in flatten([pkg_env[name][0] for name in pkg_env]):
             modules = []
@@ -98,9 +118,6 @@ def load_components(env):
                     for module in modules:
                         env.config.setdefault('components', module + '.*',
                                               'enabled')
-
-    elif os.path.exists(plugins_dir) and os.listdir(plugins_dir):
-        env.log.warning('setuptools is required for plugin deployment')
 
     # Load default components
     from trac.db_default import default_components
