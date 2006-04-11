@@ -52,7 +52,7 @@ class AbsoluteURLTestCase(unittest.TestCase):
         req = Mock(scheme='http', server_name='some.proxy', server_port=None,
                    get_header=lambda x: headers.get(x))
         url = absolute_url(req, '/trac')
-        self.assertEqual('http://example.org/trac', url)
+        self.assertEqual('http://some.proxy/trac', url)
 
 
 class RequestTestCase(unittest.TestCase):
