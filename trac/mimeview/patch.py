@@ -16,7 +16,7 @@
 #         Ludvig Strigeus
 
 from trac.core import *
-from trac.mimeview.api import IHTMLPreviewRenderer
+from trac.mimeview.api import content_to_unicode, IHTMLPreviewRenderer
 from trac.util import escape, Markup
 from trac.web.chrome import add_stylesheet
 
@@ -65,7 +65,9 @@ class PatchRenderer(Component):
     def render(self, req, mimetype, content, filename=None, rev=None):
         from trac.web.clearsilver import HDFWrapper
 
+        content = content_to_unicode(self.env, content, mimetype)
         tabwidth = self.config['mimeviewer'].getint('tab_width')
+
         d = self._diff_to_hdf(content.splitlines(), tabwidth)
         if not d:
             raise TracError, 'Invalid unified diff content'

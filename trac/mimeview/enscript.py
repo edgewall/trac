@@ -113,6 +113,7 @@ class EnscriptRenderer(Component):
 
     def render(self, req, mimetype, content, filename=None, rev=None):
         cmdline = self.config.get('mimeviewer', 'enscript_path')
+        mimetype = mimetype.split(';', 1)[0] # strip off charset
         cmdline += ' --color -h -q --language=html -p - -E' + types[mimetype]
         self.env.log.debug("Enscript command line: %s" % cmdline)
 

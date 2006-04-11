@@ -70,6 +70,7 @@ class SilverCityRenderer(Component):
     def render(self, req, mimetype, content, filename=None, rev=None):
         import SilverCity
         try:
+            mimetype = mimetype.split(';', 1)[0]
             typelang = types[mimetype]
             lang = typelang[0]
             module = getattr(SilverCity, lang)
