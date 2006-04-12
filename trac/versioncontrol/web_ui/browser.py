@@ -26,7 +26,7 @@ from trac.core import *
 from trac.mimeview import Mimeview, is_binary, get_mimetype
 from trac.perm import IPermissionRequestor
 from trac.util import sorted
-from trac.util.markup import escape, html
+from trac.util.markup import escape, html, Markup
 from trac.web import IRequestHandler, RequestDone
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
 from trac.wiki import wiki_to_html, wiki_to_oneliner, IWikiSyntaxProvider
@@ -103,14 +103,19 @@ class BrowserModule(Component):
         node = get_existing_node(self.env, repos, path, rev_or_latest)
 
         hidden_properties = self.config.getlist('browser', 'hide_properties')
+        properties = []
+        for name, value in node.get_properties().items():
+            if not name in hidden_properties:
+                if value and '\n' in value:
+                    value = Markup(''.join(['<br />%s' % escape(v)
+                                            for v in value.split('\n')]))
+                properties.append({'name': name, 'value': value})
 
         req.hdf['title'] = path
         req.hdf['browser'] = {
             'path': path,
             'revision': rev,
-            'props': [{'name': name, 'value': value}
-                      for name, value in node.get_properties().items()
-                      if not name in hidden_properties],
+            'props': properties,
             'href': req.href.browser(path, rev=rev),
             'log_href': req.href.log(path, rev=rev),
             'restr_changeset_href': req.href.changeset(node.rev,
