@@ -199,8 +199,7 @@ class BrowserModule(Component):
             content = node.get_content().read(mimeview.max_preview_size())
             if not is_binary(content):
                 if mime_type != 'text/plain':
-                    plain_href = self.env.href.browser(node.path,
-                                                       rev=rev and node.rev,
+                    plain_href = self.env.href.browser(node.path, rev=rev,
                                                        format='txt')
                     add_link(req, 'alternate', plain_href, 'Plain Text',
                              'text/plain')
@@ -209,8 +208,7 @@ class BrowserModule(Component):
                                                       node.name, node.rev,
                                                       annotations=['lineno'])
 
-            raw_href = self.env.href.browser(node.path, rev=rev and node.rev,
-                                             format='raw')
+            raw_href = self.env.href.browser(node.path, rev=rev, format='raw')
             req.hdf['file.raw_href'] = raw_href
             add_link(req, 'alternate', raw_href, 'Original Format', mime_type)
 
