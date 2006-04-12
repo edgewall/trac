@@ -208,8 +208,8 @@ def format_datetime(t=None, format='%x %X', gmt=False):
             t = time.localtime(int(t))
 
     text = time.strftime(format, t)
-    encoding = locale.getlocale(locale.LC_TIME)[1] or \
-               locale.getpreferredencoding()
+    lc_time_encoding = sys.platform != 'win32' and getlocale(locale.LC_TIME)[1]
+    encoding = lc_time_encoding or locale.getpreferredencoding()
     return unicode(text, encoding, 'replace')
 
 def format_date(t=None, format='%x', gmt=False):
