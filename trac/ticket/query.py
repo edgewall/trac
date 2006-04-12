@@ -20,6 +20,7 @@ from StringIO import StringIO
 import time
 
 from trac.core import *
+from trac.db import get_column_names
 from trac.perm import IPermissionRequestor
 from trac.ticket import Ticket, TicketSystem
 from trac.util import format_datetime, http_date, shorten_line, CRLF
@@ -145,13 +146,13 @@ class Query(object):
             db = self.env.get_db_cnx()
         cursor = db.cursor()
         cursor.execute(sql, args)
-        columns = cursor.description
+        columns = get_column_names(cursor)
         results = []
         for row in cursor:
             id = int(row[0])
             result = {'id': id, 'href': self.env.href.ticket(id)}
             for i in range(1, len(columns)):
-                name, val = columns[i][0], row[i]
+                name, val = columns[i], row[i]
                 if name == self.group:
                     val = val or 'None'
                 elif name == 'reporter':

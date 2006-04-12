@@ -22,6 +22,7 @@ import urllib
 
 from trac import util
 from trac.core import *
+from trac.db import get_column_names
 from trac.perm import IPermissionRequestor
 from trac.util import sorted
 from trac.util.markup import html
@@ -249,7 +250,7 @@ class ReportModule(Component):
         # Convert the header info to HDF-format
         idx = 0
         for col in cols:
-            title=col[0].capitalize()
+            title=col.capitalize()
             prefix = 'report.headers.%d' % idx
             req.hdf['%s.real' % prefix] = col[0]
             if title.startswith('__') and title.endswith('__'):
@@ -270,7 +271,7 @@ class ReportModule(Component):
             colIndex = None
             hiddenCols = 0
             for x in range(len(cols)):
-                colName = cols[x][0]
+                colName = cols[x]
                 if colName == sortCol:
                     colIndex = x
                 if colName.startswith('__') and colName.endswith('__'):
@@ -297,7 +298,7 @@ class ReportModule(Component):
             numrows = len(row)
             for cell in row:
                 cell = unicode(cell)
-                column = cols[col_idx][0]
+                column = cols[col_idx]
                 value = {}
                 # Special columns begin and end with '__'
                 if column.startswith('__') and column.endswith('__'):
@@ -315,7 +316,7 @@ class ReportModule(Component):
                     column = column[1:]
                 if column in ('ticket', 'id', '_id', '#', 'summary'):
                     id_cols = [idx for idx, col in enumerate(cols)
-                               if col[0] in ('ticket', 'id', '_id')]
+                               if col in ('ticket', 'id', '_id')]
                     if id_cols:
                         id_val = row[id_cols[0]]
                         value['ticket_href'] = req.href.ticket(id_val)
@@ -385,10 +386,7 @@ class ReportModule(Component):
 
         # FIXME: fetchall should probably not be used.
         info = cursor.fetchall() or []
-        cols = cursor.description or []
-        # NOTE: At least pysqlite will return an UTF-8 string here...
-        if cols and isinstance(cols[0][0], str):
-            cols = [(unicode(d[0], 'utf-8'),) + (None,)*6 for d in cols]
+        cols = get_column_names(cursor)
 
         db.rollback()
 
@@ -465,7 +463,7 @@ class ReportModule(Component):
         req.send_header('Content-Type', 'text/plain;charset=utf-8')
         req.end_headers()
 
-        req.write(sep.join([c[0] for c in cols]) + '\r\n')
+        req.write(sep.join(cols) + '\r\n')
         for row in rows:
             req.write(sep.join(
                 [unicode(c).replace(sep,"_")

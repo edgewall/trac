@@ -21,6 +21,12 @@ from trac.core import *
 from trac.db.pool import ConnectionPool
 
 
+def get_column_names(cursor):
+    return cursor.description and \
+           [(isinstance(d[0], str) and [unicode(d[0], 'utf-8')] or [d[0]])[0]
+            for d in cursor.description] or []
+
+
 class IDatabaseConnector(Interface):
     """Extension point interface for components that support the connection to
     relational databases."""
