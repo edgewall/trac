@@ -1,12 +1,9 @@
 import unittest
 
-from trac.wiki.tests import formatter, model, wikisyntax
+from trac.versioncontrol.web_ui.tests import wikisyntax
 
 def suite():
-
     suite = unittest.TestSuite()
-    suite.addTest(formatter.suite())
-    suite.addTest(model.suite())
     suite.addTest(wikisyntax.suite())
     return suite
 

@@ -4,7 +4,7 @@ import StringIO
 import unittest
 
 from trac.core import *
-from trac.test import Mock
+from trac.wiki.api import IWikiSyntaxProvider
 from trac.wiki.formatter import Formatter, OneLinerFormatter
 from trac.wiki.macros import WikiMacroBase
 from trac.util import to_unicode
@@ -37,12 +37,35 @@ class DivCodeElementMacro(WikiMacroBase):
     def render_macro(self, req, name, content):
         return html.DIV(class_="code")['Hello World, args = ', content]
 
+class SampleResolver(Component):
+    """A dummy macro returning a div block, used by the unit test."""
+
+    implements(IWikiSyntaxProvider)
+
+    def get_wiki_syntax(self):
+        return []
+
+    def get_link_resolvers(self):
+        yield ('link', self._format_link)
+
+    def _format_link(self, formatter, ns, target, label):
+        kind, module = 'text', 'stuff'
+        try:
+            kind = int(target) % 2 and 'odd' or 'even'
+            module = 'thing'
+        except ValueError:
+            pass
+        return html.A(class_='%s resolver' % kind,
+                      href=formatter.href(module, target))[label]
+
 
 class WikiTestCase(unittest.TestCase):
 
     def __init__(self, input, correct, file, line):
         unittest.TestCase.__init__(self, 'test')
         self.title, self.input = input.split('\n', 1)
+        if self.title:
+            self.title = self.title.strip()
         self.correct = correct
         self.file = file
         self.line = line
@@ -75,27 +98,11 @@ class WikiTestCase(unittest.TestCase):
                 component.log = self.log
             def get_db_cnx(self):
                 return db
-            def get_repository(self):
-                return Mock(get_changeset=lambda x: self._get_changeset(x))
-            def _get_changeset(self, x):
-                raise TracError("No changeset")
-
-        # *** THIS IS CURRENTLY BEING FIXED *** 
-        # Load all the components that provide IWikiSyntaxProvider
-        # implementations that are tested. Ideally those should be tested
-        # in separate unit tests.
-        import trac.versioncontrol.web_ui.browser
-        import trac.versioncontrol.web_ui.changeset
-        import trac.ticket.query
-        import trac.ticket.report
-        import trac.ticket.roadmap
-        import trac.Search
 
         self.env = DummyEnvironment()
 
     def test(self):
         """Testing WikiFormatter"""
-
         out = StringIO.StringIO()
         formatter = self.formatter()
         formatter.format(self.input, out)
@@ -103,15 +110,24 @@ class WikiTestCase(unittest.TestCase):
         try:
             self.assertEquals(self.correct, v)
         except AssertionError, e:
-            raise AssertionError('%s\n\n%s:%s: %s (flavor was "%s")' \
-                                 % (to_unicode(e), self.file, self.line,
-                                    self.title, formatter.flavor))
+            msg = to_unicode(e)
+            import re
+            match = re.match(r"u?'(.*)' != u?'(.*)'", msg)
+            if match:
+                sep = '-' * 15
+                msg = '\n%s expected:\n%s\n%s actual:\n%s\n%s\n' \
+                      % (sep, match.group(1).strip(r'\n'),
+                         sep, match.group(2).strip(r'\n'), sep)
+                msg = msg.replace(r'\n', '\n')
+            raise AssertionError( # See below for details
+                '%s\n\n%s:%s: "%s" (%s flavor)' \
+                % (msg, self.file, self.line, self.title, formatter.flavor))
 
     def formatter(self):
         return Formatter(self.env)
 
     def shortDescription(self):
-        return 'Test' + self.title
+        return 'Test ' + self.title
 
 
 class OneLinerTestCase(WikiTestCase):
@@ -127,7 +143,7 @@ def suite(data=None, setup=None, file=__file__):
     tests = data.split('=' * 30)
     line = 1
     for test in tests:
-        if not test:
+        if not test or test == '\n':
             continue
         input, page, oneliner = test.split('-' * 30 + '\n')
         tc = WikiTestCase(input, page, file, line)

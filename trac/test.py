@@ -182,6 +182,7 @@ def suite():
     import trac.ticket.tests
     import trac.util.tests
     import trac.versioncontrol.tests
+    import trac.versioncontrol.web_ui.tests
     import trac.web.tests
     import trac.wiki.tests
 
@@ -193,6 +194,7 @@ def suite():
     suite.addTest(trac.ticket.tests.suite())
     suite.addTest(trac.util.tests.suite())
     suite.addTest(trac.versioncontrol.tests.suite())
+    suite.addTest(trac.versioncontrol.web_ui.tests.suite())
     suite.addTest(trac.web.tests.suite())
     suite.addTest(trac.wiki.tests.suite())
 
