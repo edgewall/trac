@@ -30,6 +30,7 @@ from trac.util.markup import html, Markup
 from trac.versioncontrol.diff import get_diff_options, hdf_diff
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
 from trac.web import HTTPNotFound, IRequestHandler
+from trac.wiki.api import IWikiPageManipulator
 from trac.wiki.model import WikiPage
 from trac.wiki.formatter import wiki_to_html, wiki_to_oneliner
 
@@ -38,6 +39,8 @@ class WikiModule(Component):
 
     implements(INavigationContributor, IPermissionRequestor, IRequestHandler,
                ITimelineEventProvider, ISearchSource)
+
+    page_manipulators = ExtensionPoint(IWikiPageManipulator)
 
     # INavigationContributor methods
 
@@ -183,6 +186,10 @@ class WikiModule(Component):
             # Modify the read-only flag if it has been changed and the user is
             # WIKI_ADMIN
             page.readonly = int(req.args.has_key('readonly'))
+
+        # Give the manipulators a pass at post-processing the page
+        for manipulator in self.page_manipulators:
+            manipulator.validate_wiki_page(req, page)
 
         page.save(req.args.get('author'), req.args.get('comment'),
                   req.remote_addr)

@@ -44,6 +44,26 @@ class IWikiChangeListener(Interface):
         """Called when a page has been deleted."""
 
 
+class IWikiPageManipulator(Interface):
+    """Extension point interface for components that need to to specific
+    pre and post processing of wiki page changes.
+    
+    Unlike change listeners, a manipulator can reject changes being committed
+    to the database.
+    """
+
+    def prepare_wiki_page(req, page, fields):
+        """Not currently called, but should be provided for future
+        compatibility."""
+
+    def validate_wiki_page(req, page):
+        """Validate a wiki page after it's been populated from user input.
+        
+        Must return a list of `(field, message)` tuples, one for each problem
+        detected. `field` can be `None` to indicate an overall problem with the
+        page. Therefore, a return value of `[]` means everything is OK."""
+
+
 class IWikiMacroProvider(Interface):
     """Extension point interface for components that provide Wiki macros."""
 
