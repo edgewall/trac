@@ -223,9 +223,6 @@ class WikiSystem(Component):
         if page.find('#') != -1:
             anchor = page[page.find('#'):]
             page = page[:page.find('#')]
-        page = urllib.unquote(page)
-        label = urllib.unquote(label)
-
         if not self.has_page(page):
             if ignore_missing:
                 return label

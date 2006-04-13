@@ -260,9 +260,9 @@ out:
 ==============================
 [wiki:WikiStart Foo] [http://www.edgewall.com/ Edgewall]
 
-wiki:Foo%20Bar wiki:Foo%20Bar#baz
+wiki:"Foo Bar" wiki:"Foo Bar#baz"
 
-[wiki:Foo%20Bar Foo Bar] [wiki:Foo%20Bar#baz Foo Bar]
+[wiki:"Foo Bar" Foo Bar] [wiki:"Foo Bar#baz" Foo Bar]
 
 [wiki:Argv "*argv[] versus **argv"]
 
@@ -272,7 +272,7 @@ wiki:Foo%20Bar wiki:Foo%20Bar#baz
 <a class="missing wiki" href="/wiki/WikiStart" rel="nofollow">Foo?</a> <a class="ext-link" href="http://www.edgewall.com/"><span class="icon"></span>Edgewall</a>
 </p>
 <p>
-<a class="missing wiki" href="/wiki/Foo%20Bar" rel="nofollow">wiki:Foo Bar?</a> <a class="missing wiki" href="/wiki/Foo%20Bar#baz" rel="nofollow">wiki:Foo Bar#baz?</a>
+<a class="missing wiki" href="/wiki/Foo%20Bar" rel="nofollow">wiki:"Foo Bar"?</a> <a class="missing wiki" href="/wiki/Foo%20Bar#baz" rel="nofollow">wiki:"Foo Bar#baz"?</a>
 </p>
 <p>
 <a class="missing wiki" href="/wiki/Foo%20Bar" rel="nofollow">Foo Bar?</a> <a class="missing wiki" href="/wiki/Foo%20Bar#baz" rel="nofollow">Foo Bar?</a>
