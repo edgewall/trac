@@ -1,3 +1,4 @@
+============================== General Wiki syntax, heading and lists
 = Heading 1 =
 Paragraph
  * Item 1
@@ -19,7 +20,7 @@ Paragraph
  * Item 1
    * Item 2
 Another paragraph
-==============================
+============================== General Wiki syntax, heading, lists and table
 Paragraph
 ----
  1. Item 1
@@ -49,7 +50,7 @@ Paragraph
 ||Table||cell||
 ||Foo||Bar||Baz||
 <a class="ext-link" href="http://www.edgewall.com/"><span class="icon"></span>http://www.edgewall.com/</a>
-==============================
+============================== TracLinks shortcuts (MOVE)
 #1, {1}, #2
 [1], r1
 [1/README.txt]
@@ -62,7 +63,7 @@ Paragraph
 <a class="missing ticket" href="/ticket/12" rel="nofollow">#12</a>, <a class="missing changeset" href="/changeset/12" rel="nofollow">[12]</a>, <a class="missing changeset" href="/changeset/12" rel="nofollow">r12</a>, <a class="report" href="/report/12">{12}</a>
 </p>
 ------------------------------
-==============================
+============================== Escaping TracLinks shortcuts (MOVE)
 !#1, ![1], !r1, !{1}
 ------------------------------
 <p>
@@ -70,7 +71,7 @@ Paragraph
 </p>
 ------------------------------
 #1, [1], r1, {1}
-==============================
+============================== Ticket TracLinks, not numerical HTML entities (MOVE)
 &#1; &#23;
 ------------------------------
 <p>
@@ -78,14 +79,14 @@ Paragraph
 </p>
 ------------------------------
 &amp;#1; &amp;#23;
-==============================
+============================== Log range TracLinks (MOVE)
 [1:2], r1:2, [12:23], r12:23
 ------------------------------
 <p>
 <a class="source" href="/log/?rev=2&amp;stop_rev=1">[1:2]</a>, <a class="source" href="/log/?rev=2&amp;stop_rev=1">r1:2</a>, <a class="source" href="/log/?rev=23&amp;stop_rev=12">[12:23]</a>, <a class="source" href="/log/?rev=23&amp;stop_rev=12">r12:23</a>
 </p>
 ------------------------------
-==============================
+============================== Escaping Log range TracLinks (MOVE)
 ![1:2], !r1:2, ![12:23], !r12:23
 ------------------------------
 <p>
@@ -93,7 +94,7 @@ Paragraph
 </p>
 ------------------------------
 [1:2], r1:2, [12:23], r12:23
-==============================
+============================== Link resolvers, short form (FIXME)
 ticket:1, report:1, source:foo/bar
 changeset:1, changeset:1/README.txt
 
@@ -107,7 +108,7 @@ Issue [ticket:1], CS[changeset:1], Listing [report:1], File [source:foo/bar]
 Issue <a class="missing ticket" href="/ticket/1" rel="nofollow">1</a>, CS<a class="missing changeset" href="/changeset/1" rel="nofollow">1</a>, Listing <a class="report" href="/report/1">1</a>, File <a class="source" href="/browser/foo/bar">foo/bar</a>
 </p>
 ------------------------------
-==============================
+============================== Escaping Links resolvers, short form (FIXME)
 !ticket:1, !changeset:1, !report:1, !source:foo/bar
 Issue ![ticket:1 number 1], CS![changeset:1], ![foo:bar]
 ------------------------------
@@ -116,7 +117,7 @@ ticket:1, changeset:1, report:1, source:foo/bar
 Issue [ticket:1 number 1], CS[changeset:1], [foo:bar]
 </p>
 ------------------------------
-==============================
+============================== Link resolvers, long form with label (FIXME)
 [ticket:1 ticket 1], [changeset:1 changeset 1], [report:1 report 1], 
 [source:foo/bar source foo/bar], [http://www.edgewall.com/ edgewall]
 ------------------------------
@@ -125,7 +126,7 @@ Issue [ticket:1 number 1], CS[changeset:1], [foo:bar]
 <a class="source" href="/browser/foo/bar">source foo/bar</a>, <a class="ext-link" href="http://www.edgewall.com/"><span class="icon"></span>edgewall</a>
 </p>
 ------------------------------
-==============================
+============================== diff: link resolver (MOVE)
 diff:trunk//branch
 diff:trunk@12//branch@23
 diff:trunk@12:23
@@ -138,7 +139,7 @@ diff:@12:23
 <a class="changeset" title="Diff r12:23 for /" href="/changeset?new=23&old=12">diff:@12:23</a>
 </p>
 ------------------------------
-==============================
+============================== log: link resolver (MOVE)
 log:@12
 log:trunk
 log:trunk@12
@@ -157,7 +158,7 @@ log:trunk:12-23
 <a class="source" href="/log/trunk?rev=23&amp;stop_rev=12">log:trunk:12-23</a>
 </p>
 ------------------------------
-==============================
+============================== Link resolver SHREF_TARGET_LAST (FIXME)
 Add-on to changeset:123:
 Some change.
 ticket:1
@@ -180,35 +181,35 @@ Some change.
 This ticket is the first one
 <a class="missing changeset" href="/changeset/123" rel="nofollow">changeset:123</a>&gt;
 <a class="missing changeset" href="/changeset/123" rel="nofollow">changeset:123</a>&amp;
-==============================
+============================== WikiPageNames conformance (MOVE)
 CamelCase AlabamA ABc AlaBamA FooBar
 ------------------------------
 <p>
 <a class="missing wiki" href="/wiki/CamelCase" rel="nofollow">CamelCase?</a> AlabamA ABc AlaBamA <a class="missing wiki" href="/wiki/FooBar" rel="nofollow">FooBar?</a>
 </p>
 ------------------------------
-==============================
+============================== More WikiPageNames conformance (MOVE)
 CamelCase,CamelCase.CamelCase: CamelCase
 ------------------------------
 <p>
 <a class="missing wiki" href="/wiki/CamelCase" rel="nofollow">CamelCase?</a>,<a class="missing wiki" href="/wiki/CamelCase" rel="nofollow">CamelCase?</a>.<a class="missing wiki" href="/wiki/CamelCase" rel="nofollow">CamelCase?</a>: <a class="missing wiki" href="/wiki/CamelCase" rel="nofollow">CamelCase?</a>
 </p>
 ------------------------------
-==============================
+============================== Escaping WikiPageNames (MOVE)
 !CamelCase
 ------------------------------
 <p>
 CamelCase
 </p>
 ------------------------------
-==============================
+============================== Link resolver SHREF_TARGET_FIRST
 <bug>http://localhost/bugzilla/show_bug.cgi?id=1284</bug> 804
 ------------------------------
 <p>
 &lt;bug&gt;<a class="ext-link" href="http://localhost/bugzilla/show_bug.cgi?id=1284"><span class="icon"></span>http://localhost/bugzilla/show_bug.cgi?id=1284</a>&lt;/bug&gt; 804
 </p>
 ------------------------------
-==============================
+============================== Link resolver SHREF_TARGET_MIDDLE
 ||http://example.com/img.png||text||
 ------------------------------
 <table class="wiki">
@@ -216,7 +217,7 @@ CamelCase
 </td></tr></table>
 ------------------------------
 ||<a class="ext-link" href="http://example.com/img.png"><span class="icon"></span>http://example.com/img.png</a>||text||
-==============================
+==============================  Image TracLink (DEPRECATED)
 http://example.com/img.png?foo=bar
 ------------------------------
 <p>
@@ -224,7 +225,7 @@ http://example.com/img.png?foo=bar
 </p>
 ------------------------------
 <a class="ext-link" href="http://example.com/img.png?foo=bar"><span class="icon"></span>http://example.com/img.png?foo=bar</a>
-==============================
+============================== Simple Table
 in:
 || RPC# || parameter len || ..... parameter ..... ||
 out:
@@ -250,14 +251,14 @@ in:
 out:
 || RPC# || parameter len || ..... parameter ..... ||
 ----
-==============================
+============================== Arbitrary protocol Link test
 ''RFCs von ftp://ftp.rfc-editor.org/in-notes/rfcXXXX.txt''
 ------------------------------
 <p>
 <i>RFCs von <a class="ext-link" href="ftp://ftp.rfc-editor.org/in-notes/rfcXXXX.txt"><span class="icon"></span>ftp://ftp.rfc-editor.org/in-notes/rfcXXXX.txt</a></i>
 </p>
 ------------------------------
-==============================
+============================== Link resolver, long form with quoting (FIXME)
 [wiki:WikiStart Foo] [http://www.edgewall.com/ Edgewall]
 
 wiki:"Foo Bar" wiki:"Foo Bar#baz"
@@ -289,7 +290,7 @@ wiki:"Foo Bar" wiki:"Foo Bar#baz"
 <a class="missing wiki" href="/wiki/pl/de" rel="nofollow">%de?</a>
 </p>
 ------------------------------
-==============================
+============================== htdocs: links resolver (MOVE)
 htdocs:release-1.0.tar.gz
 
 [htdocs:release-1.0.tar.gz Release 1.0]
@@ -301,7 +302,7 @@ htdocs:release-1.0.tar.gz
 <a href="/chrome/site/release-1.0.tar.gz">Release 1.0</a>
 </p>
 ------------------------------
-==============================
+============================== WikiPageNames endings (MOVE)
 foo (FooBar)
 
 foo (FooBar )
@@ -313,32 +314,32 @@ foo (<a class="missing wiki" href="/wiki/FooBar" rel="nofollow">FooBar?</a>)
 foo (<a class="missing wiki" href="/wiki/FooBar" rel="nofollow">FooBar?</a> )
 </p>
 ------------------------------
-==============================
+============================== General wiki syntax, normal heading
 == Heading with trailing white-space == 
 ------------------------------
 <h2 id="Headingwithtrailingwhitespace">Heading with trailing white-space</h2>
 ------------------------------
 == Heading with trailing white-space ==
-==============================
+============================== General wiki syntax, formatted heading
 == ''Formatted'' ~~Heading~~ ==
 ------------------------------
 <h2 id="FormattedHeading"><i>Formatted</i> <del>Heading</del></h2>
 ------------------------------
 == ''Formatted'' ~~Heading~~ ==
-==============================
+============================== General wiki syntax, heading with link
 == [wiki:SandBox Linked Heading] ==
 ------------------------------
 <h2 id="LinkedHeading"><a class="missing wiki" href="/wiki/SandBox" rel="nofollow">Linked Heading?</a></h2>
 ------------------------------
 == [wiki:SandBox Linked Heading] ==
-==============================
+============================== WikiPageNames counter examples (MOVE)
 A0B1, ST62T53C6, IR32V1H000
 ------------------------------
 <p>
 A0B1, ST62T53C6, IR32V1H000
 </p>
 ------------------------------
-==============================
+============================== General wiki syntax, lists
 Paragraph
  * foo bar
    boo baz
@@ -369,21 +370,21 @@ Paragraph
  * item 2
    item 2 line 2
 Paragraph
-==============================
+============================== Link resolver in markup (FIXME)
 '''ticket:1''', ''ticket:1'', ~~ticket:1~~, __ticket:1__
 ------------------------------
 <p>
 <strong><a class="missing ticket" href="/ticket/1" rel="nofollow">ticket:1</a></strong>, <i><a class="missing ticket" href="/ticket/1" rel="nofollow">ticket:1</a></i>, <del><a class="missing ticket" href="/ticket/1" rel="nofollow">ticket:1</a></del>, <span class="underline"><a class="missing ticket" href="/ticket/1" rel="nofollow">ticket:1</a></span>
 </p>
 ------------------------------
-==============================
+============================== WikiPageNames trailing characters (MOVE)
 SandBox SandBox, SandBox; SandBox: SandBox. SandBox? SandBox! (SandBox) {SandBox} [SandBox]
 ------------------------------
 <p>
 <a class="missing wiki" href="/wiki/SandBox" rel="nofollow">SandBox?</a> <a class="missing wiki" href="/wiki/SandBox" rel="nofollow">SandBox?</a>, <a class="missing wiki" href="/wiki/SandBox" rel="nofollow">SandBox?</a>; <a class="missing wiki" href="/wiki/SandBox" rel="nofollow">SandBox?</a>: <a class="missing wiki" href="/wiki/SandBox" rel="nofollow">SandBox?</a>. <a class="missing wiki" href="/wiki/SandBox" rel="nofollow">SandBox?</a>? <a class="missing wiki" href="/wiki/SandBox" rel="nofollow">SandBox?</a>! (<a class="missing wiki" href="/wiki/SandBox" rel="nofollow">SandBox?</a>) {<a class="missing wiki" href="/wiki/SandBox" rel="nofollow">SandBox?</a>} [<a class="missing wiki" href="/wiki/SandBox" rel="nofollow">SandBox?</a>]
 </p>
 ------------------------------
-==============================
+============================== source: link resolver
 source:/foo/bar
 source:/foo/bar#42
 source:/foo/bar#head
@@ -410,7 +411,7 @@ source:/foo/bar@head#L20
 <a class="source" href="/browser/foo/bar?rev=head#L20">source:/foo/bar@head#L20</a>
 </p>
 ------------------------------
-==============================
+============================== query: link resolver
 query:?order=priority
 
 query:?order=priority&owner=me
@@ -437,7 +438,7 @@ query:milestone=1.0|2.0&owner=me
 <a class="query" href="/query?milestone=1.0&amp;milestone=2.0&amp;owner=me&amp;order=priority">query:milestone=1.0|2.0&amp;owner=me</a>
 </p>
 ------------------------------
-==============================
+============================== Link resolver counter examples (FIXME) (MOVE) 
 Test:[[BR]] There should be a line break
 
 Change:[10] There should be a link to changeset [10]
@@ -459,7 +460,7 @@ Test:  There should be a line break
 Change:<a class="missing changeset" href="/changeset/10" rel="nofollow">[10]</a> There should be a link to changeset <a class="missing changeset" href="/changeset/10" rel="nofollow">[10]</a>
 
 Other test:<strong>bold text</strong> is not bold
-==============================
+============================== Code Block 1
 {{{
 Preformatted text.
 }}}
@@ -468,7 +469,7 @@ Preformatted text.
 </pre>
 ------------------------------
  [&hellip;]
-==============================
+============================== Code Block 2
 {{{
 <b>Preformatted text</b>.
 }}}
@@ -477,7 +478,7 @@ Preformatted text.
 </pre>
 ------------------------------
  [&hellip;]
-==============================
+============================== Embedded code blocks
 {{{
 Outer block.
 {{{
@@ -492,7 +493,7 @@ Inner block.
 </pre>
 ------------------------------
  [&hellip;]
-==============================
+============================== Consecutive code blocks
 Block 
 {{{
 number one
@@ -517,7 +518,7 @@ Block
  [&hellip;]
 and block
  [&hellip;]
-==============================
+============================== Wiki processor
 {{{
 #!default
 Preformatted text.
@@ -527,7 +528,7 @@ Preformatted text.
 </pre>
 ------------------------------
  [&hellip;]
-==============================
+============================== Wiki processor counter example
 {{{
 #!/bin/sh
 echo "foo"
@@ -538,7 +539,7 @@ echo &#34;foo&#34;
 </pre>
 ------------------------------
  [&hellip;]
-==============================
+============================== HTML wiki processor
 {{{
 #!html
 <p>Hello World</p>
@@ -547,7 +548,7 @@ echo &#34;foo&#34;
 <p>Hello World</p>
 ------------------------------
  [&hellip;]
-==============================
+============================== HTML wiki processor, XSS check 1
 {{{
 #!html
 <script>alert("");</script>
@@ -556,7 +557,7 @@ echo &#34;foo&#34;
 
 ------------------------------
  [&hellip;]
-==============================
+============================== HTML wiki processor, XSS check 2
 {{{
 #!html
 <div onclick="alert('')">Click me</div>
@@ -565,7 +566,7 @@ echo &#34;foo&#34;
 <div>Click me</div>
 ------------------------------
  [&hellip;]
-==============================
+============================== Super and subscript markup
 ^superscript^, ,,subscript,,, normal.
 ------------------------------
 <p>
@@ -573,7 +574,7 @@ echo &#34;foo&#34;
 </p>
 ------------------------------
 <sup>superscript</sup>, <sub>subscript</sub>, normal.
-==============================
+============================== Macro with arguments (leading)
 [[HelloWorld(hej hopp)]]
 ------------------------------
 <p>
@@ -581,7 +582,7 @@ Hello World, args = hej hopp
 </p>
 ------------------------------
 [[HelloWorld(...)]]
-==============================
+============================== Macro with arguments (in flow)
 Hello, [[HelloWorld(hej hopp)]]
 ------------------------------
 <p>
@@ -589,7 +590,7 @@ Hello, Hello World, args = hej hopp
 </p>
 ------------------------------
 Hello, [[HelloWorld(...)]]
-==============================
+============================== Bad macro call
 [[HelloWorld(hej hopp) ]] # This shouldnt executed as macro since it contain whitespace between ) and ]
 ------------------------------
 <p>
@@ -597,7 +598,7 @@ Hello, [[HelloWorld(...)]]
 </p>
 ------------------------------
 [[HelloWorld(hej hopp) ]] # This shouldnt executed as macro since it contain whitespace between ) and ]
-==============================
+============================== Another bad macro call
 [[HelloWorld(hej hopp))]] # Extra right brace and still executed
 ------------------------------
 <p>
@@ -605,7 +606,7 @@ Hello World, args = hej hopp) # Extra right brace and still executed
 </p>
 ------------------------------
 [[HelloWorld(...)]] # Extra right brace and still executed
-==============================
+============================== Two consecutive macros on a line
 [[HelloWorld(hej hopp)]] [[HelloWorld(hej hopp2)]] # Test non greedy match
 ------------------------------
 <p>
@@ -613,7 +614,7 @@ Hello World, args = hej hopp Hello World, args = hej hopp2 # Test non greedy mat
 </p>
 ------------------------------
 [[HelloWorld(...)]] [[HelloWorld(...)]] # Test non greedy match
-==============================
+============================== Macro returning a <div>
 [[DivHelloWorld(hej hopp)]]
 ------------------------------
 <p>
@@ -621,7 +622,7 @@ Hello World, args = hej hopp Hello World, args = hej hopp2 # Test non greedy mat
 </p>
 ------------------------------
 [[DivHelloWorld(...)]]
-==============================
+============================== Macro returning a <div class="...code...">
 [[DivCode(hej hopp)]]
 ------------------------------
 <p>
@@ -629,7 +630,7 @@ Hello World, args = hej hopp Hello World, args = hej hopp2 # Test non greedy mat
 </p>
 ------------------------------
 [[DivCode(...)]]
-==============================
+============================== Macro returning an html.DIV(class="...code...">)
 [[DivCodeElement(hej hopp)]]
 ------------------------------
 <p>
@@ -637,7 +638,7 @@ Hello World, args = hej hopp Hello World, args = hej hopp2 # Test non greedy mat
 </p>
 ------------------------------
 [[DivCodeElement(...)]]
-==============================
+============================== Inlined HTML wiki processor
 Inline [[html(<B> Test </B>)]] text
 ------------------------------
 <p>
@@ -645,7 +646,7 @@ Inline <b> Test </b> text
 </p>
 ------------------------------
 Inline [[html(...)]] text
-==============================
+============================== BR macro
 Line break [[BR]] another line[[br]]last line
 ------------------------------
 <p>
@@ -653,7 +654,7 @@ Line break <br /> another line<br />last line
 </p>
 ------------------------------
 Line break   another line last line
-==============================
+============================== comment wiki processor
 Test comment blocks
 {{{
 #!comment
@@ -665,7 +666,7 @@ Test comment blocks
 </p>
 ------------------------------
 Test comment blocks
-==============================
+============================== comment wiki processor called as a macro
 Inline [[comment(This should not be seen)]] comment
 ------------------------------
 <p>
@@ -673,63 +674,63 @@ Inline  comment
 </p>
 ------------------------------
 Inline  comment
-==============================
+============================== bold + italic markup
 This should be '''''bold and italic'''''
 ------------------------------
 <p>
 This should be <strong><i>bold and italic</i></strong>
 </p>
 ------------------------------
-==============================
+============================== consecutive bold + italic markup
 '''''one''''', '''''two''''', '''''three''''', '''''four'''''
 ------------------------------
 <p>
 <strong><i>one</i></strong>, <strong><i>two</i></strong>, <strong><i>three</i></strong>, <strong><i>four</i></strong>
 </p>
 ------------------------------
-==============================
+============================== underline + overstrike markup
 __~~underlineoversrike~~__
 ------------------------------
 <p>
 <span class="underline"><del>underlineoversrike</del></span>
 </p>
 ------------------------------
-==============================
+============================== problematic markup: overlapping tags
 __~~overlapping__tags~~
 ------------------------------
 <p>
 <span class="underline"><del>overlapping</del></span><del>tags</del>
 </p>
 ------------------------------
-==============================
+============================== problematic markup: out of order close tags
 __~~outoforderclosetags__~~
 ------------------------------
 <p>
 <span class="underline"><del>outoforderclosetags</del></span><del></del>
 </p>
 ------------------------------
-==============================
+============================== problematic markup: bold + missing close italic
 '''''bolditalic''' # Open italic should be closed before paragraph end
 ------------------------------
 <p>
 <strong><i>bolditalic</i></strong><i> # Open italic should be closed before paragraph end
 </i></p>
 ------------------------------
-==============================
+============================== italic immediately followed by bold markup
 ''italic'''''bold'''
 ------------------------------
 <p>
 <i>italic</i><strong>bold</strong>
 </p>
 ------------------------------
-==============================
+============================== bold immediately followed by italic markup
 '''bold'''''italic''
 ------------------------------
 <p>
 <strong>bold</strong><i>italic</i>
 </p>
 ------------------------------
-==============================
+============================== multiline bold italic markup
 '''''bold
 italic
 multiline'''''
@@ -740,7 +741,7 @@ italic
 multiline</i></strong>
 </p>
 ------------------------------
-==============================
+============================== problematic multiline bold italic markup
 '''''bold
 italic
 multiline
@@ -753,7 +754,7 @@ multiline
 without endtags
 </i></strong></p>
 ------------------------------
-==============================
+============================== complex mixed verbatim markup
 {{{verbatim}}}
 {{{
 {{{in `block`
@@ -772,35 +773,35 @@ without endtags
 <tt>verbatim</tt>
  [&hellip;]
 <tt>{{{this is verbatim}}}</tt> and <tt>`that` should also `be` verbatim</tt>
-==============================
+============================== simple definition list
  term:: definition
 ------------------------------
 <dl><dt>term</dt><dd>definition
 </dd></dl>
 ------------------------------
 term:: definition
-==============================
+============================== tricky definition list
  term:: definition:: text
 ------------------------------
 <dl><dt>term</dt><dd>definition:: text
 </dd></dl>
 ------------------------------
 term:: definition:: text
-==============================
+============================== verbatim term in definition list
  `term`:: definition
 ------------------------------
 <dl><dt><tt>term</tt></dt><dd>definition
 </dd></dl>
 ------------------------------
 <tt>term</tt>:: definition
-==============================
+============================== another verbatim term in definition list
  {{{term}}}:: definition
 ------------------------------
 <dl><dt><tt>term</tt></dt><dd>definition
 </dd></dl>
 ------------------------------
 <tt>term</tt>:: definition
-==============================
+============================== complex definition list
  complex topic:: multiline
                  ''formatted''
                  definition
@@ -813,7 +814,7 @@ definition
 complex topic:: multiline
                  <i>formatted</i>
                  definition
-==============================
+============================== definition list counter example
  term::definition
 ------------------------------
 <blockquote>
@@ -823,7 +824,7 @@ term::definition
 </blockquote>
 ------------------------------
 term::definition
-==============================
+============================== definition list + escaped definition list
  complex topic:: multiline
                  `not:: a dl`
 ------------------------------
@@ -833,7 +834,7 @@ term::definition
 ------------------------------
 complex topic:: multiline
                  <tt>not:: a dl</tt>
-==============================
+============================== definition list + another escaped definition list
  complex topic:: multiline
                  {{{not:: a dl}}}
 ------------------------------
@@ -843,7 +844,7 @@ complex topic:: multiline
 ------------------------------
 complex topic:: multiline
                  <tt>not:: a dl</tt>
-==============================
+============================== milestone: link resolver (MOVE)
 milestone:foo
 [milestone:boo Milestone Boo]
 ------------------------------
@@ -852,7 +853,7 @@ milestone:foo
 <a class="milestone" href="/milestone/boo">Milestone Boo</a>
 </p>
 ------------------------------
-==============================
+============================== search: link resolver (MOVE)
 search:foo
 search:"foo bar"
 [search:bar Bar]
@@ -867,7 +868,7 @@ search:"foo bar"
 <a class="search" href="/search?q=">search</a>
 </p>
 ------------------------------
-==============================
+============================== search: link resolver with query arguments (MOVE)
 search:?q=foo&wiki=on
 search:"?q=foo bar&wiki=on"
 [search:?q=bar&ticket=on Bar in Tickets]
@@ -878,7 +879,7 @@ search:"?q=foo bar&wiki=on"
 <a class="search" href="/search?q=bar&amp;ticket=on">Bar in Tickets</a>
 </p>
 ------------------------------
-==============================
+============================== link resolver counter example
 '''Note:'''
 ------------------------------
 <p>
@@ -886,7 +887,7 @@ search:"?q=foo bar&wiki=on"
 </p>
 ------------------------------
 <strong>Note:</strong>
-==============================
+============================== link resolver, quoting of target (FIXME)
 ticket:1
 ticket:12
 ticket:123
@@ -909,7 +910,7 @@ ticket:"123"
 <a class="missing ticket" href="/ticket/123" rel="nofollow">ticket:"123"</a>
 </p>
 ------------------------------
-==============================
+============================== relative links
 Relative links are supported:
 [../parent See above]
 [/docs See documentation]
@@ -924,7 +925,7 @@ Relative links are supported:
 <a href="/">/</a>
 </p>
 ------------------------------
-==============================
+============================== source: provider, with quoting
 source:'even with whitespaces'
 source:"even with whitespaces"
 [source:'even with whitespaces' Path with spaces]
@@ -937,7 +938,7 @@ source:"even with whitespaces"
 <a class="source" href="/browser/even%20with%20whitespaces">Path with spaces</a>
 </p>
 ------------------------------
-==============================
+============================== Link resolver with arbitrary protocol
 svn+ssh://secureserver.org
 [svn+ssh://secureserver.org SVN link]
 rfc-2396.compatible://link
@@ -950,25 +951,25 @@ rfc-2396.compatible://link
 <a class="ext-link" href="rfc-2396.compatible://link"><span class="icon"></span>RFC 2396</a>
 </p>
 ------------------------------
-==============================
+============================== General wiki syntax, i18n heading
 = ça marche! =
 ------------------------------
 <h1 id="çamarche">ça marche!</h1>
 ------------------------------
 = ça marche! =
-==============================
+============================== General wiki syntax, quoted heading
 = "Test" =
 ------------------------------
 <h1 id="Test">"Test"</h1>
 ------------------------------
 = "Test" =
-==============================
+============================== General wiki syntax, heading with < and >
 = Foo <Bar> Baz =
 ------------------------------
 <h1 id="FooltBargtBaz">Foo &lt;Bar&gt; Baz</h1>
 ------------------------------
 = Foo &lt;Bar&gt; Baz =
-==============================
+============================== Escaping markup
 !__foo!__
 !~~bar!~~
 !,,boo!,,
@@ -981,7 +982,7 @@ __foo__
 ^baz^
 </p>
 ------------------------------
-==============================
+============================== WikiPageNames counter examples (paths) (MOVE)
 /absolute/path/is/NotWiki and relative/path/is/NotWiki
 /ThisIsNotWikiEither and /ThisIs/NotWikiEither but ThisIs/SubWiki
 ------------------------------
@@ -990,7 +991,7 @@ __foo__
 /ThisIsNotWikiEither and /ThisIs/NotWikiEither but <a class="missing wiki" href="/wiki/ThisIs/SubWiki" rel="nofollow">ThisIs/SubWiki?</a>
 </p>
 ------------------------------
-==============================
+============================== WikiPageNames counter examples (numbers) (MOVE)
 8FjBpOmy
 anotherWikiPageName
 ------------------------------
@@ -1001,7 +1002,7 @@ anotherWikiPageName
 ------------------------------
 8FjBpOmy
 anotherWikiPageName
-==============================
+============================== Simple Table
 || a || 
 || b ||
 ------------------------------
@@ -1012,7 +1013,7 @@ anotherWikiPageName
 ------------------------------
 || a || 
 || b ||
-==============================
+============================== InterTrac for wiki (MOVE) (FIXME)
 t:wiki:InterTrac
 trac:wiki:InterTrac
 [t:wiki:InterTrac intertrac]
@@ -1025,7 +1026,7 @@ trac:wiki:InterTrac
 <a class="ext-link" href="http://projects.edgewall.com/trac/wiki/InterTrac" title="wiki:InterTrac in Trac's Trac"><span class="icon"></span>intertrac</a>
 </p>
 ------------------------------
-==============================
+============================== InterTrac for tickets (MOVE)
 trac:ticket:2041
 [trac:ticket:2041 Trac #2041]
 #T2041
@@ -1038,7 +1039,7 @@ trac:ticket:2041
 <a class="ext-link" href="http://projects.edgewall.com/trac/ticket/2041" title="ticket:2041 in Trac's Trac"><span class="icon"></span>#trac2041</a>
 </p>
 ------------------------------
-==============================
+============================== InterTrac for changesets (MOVE)
 trac:changeset:2081
 [trac:changeset:2081 Trac r2081]
 [T2081]
@@ -1051,7 +1052,7 @@ trac:changeset:2081
 <a class="ext-link" href="http://projects.edgewall.com/trac/changeset/2081" title="changeset:2081 in Trac's Trac"><span class="icon"></span>[trac 2081]</a>
 </p>
 ------------------------------
-==============================
+============================== InterTrac for reports (MOVE)
 trac:report:1
 [trac:report:1 Trac r1]
 {T1}
@@ -1066,7 +1067,7 @@ trac:report:1
 <a class="ext-link" href="http://projects.edgewall.com/trac/report/1" title="report:1 in Trac's Trac"><span class="icon"></span>{trac 1}</a>
 </p>
 ------------------------------
-==============================
+============================== InterTrac shorthands (MOVE) (MOVE) (MOVE)
 t:InterTrac
 trac:InterTrac
 [t:InterTrac intertrac]

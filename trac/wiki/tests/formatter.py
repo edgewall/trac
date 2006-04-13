@@ -42,7 +42,7 @@ class WikiTestCase(unittest.TestCase):
 
     def __init__(self, input, correct, file, line):
         unittest.TestCase.__init__(self, 'test')
-        self.input = input
+        self.title, self.input = input.split('\n', 1)
         self.correct = correct
         self.file = file
         self.line = line
@@ -103,10 +103,9 @@ class WikiTestCase(unittest.TestCase):
         try:
             self.assertEquals(self.correct, v)
         except AssertionError, e:
-            raise AssertionError('%s\n\n%s:%s: for the input '
-                                 '(formatter flavor was "%s")' \
+            raise AssertionError('%s\n\n%s:%s: %s (flavor was "%s")' \
                                  % (to_unicode(e), self.file, self.line,
-                                    formatter.flavor))
+                                    self.title, formatter.flavor))
         
     def formatter(self):
         return Formatter(self.env)
@@ -122,9 +121,11 @@ def suite(data=None, setup=None, file=__file__):
     if not data:
         file = os.path.join(os.path.split(file)[0], 'wiki-tests.txt')
         data = open(file, 'r').read().decode('utf-8')
-    tests = data.split('=' * 30 + '\n')
+    tests = data.split('=' * 30)
     line = 1
     for test in tests:
+        if not test:
+            continue
         input, page, oneliner = test.split('-' * 30 + '\n')
         tc = WikiTestCase(input, page, file, line)
         if setup:
