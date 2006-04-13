@@ -39,7 +39,7 @@ class TicketModuleBase(Component):
 
     ticket_manipulators = ExtensionPoint(ITicketManipulator)
 
-    def validate_ticket(req, ticket):
+    def _validate_ticket(self, req, ticket):
         for manipulator in self.ticket_manipulators:
             for field, message in manipulator.validate_ticket(req, ticket):
                 if field:
@@ -103,7 +103,6 @@ class NewticketModule(TicketModuleBase):
         ticket = Ticket(self.env, db=db)
         ticket.populate(req.args)
         ticket.values.setdefault('reporter', get_reporter_id(req))
-        self.validate_ticket(req, ticket)
 
         if ticket.values.has_key('description'):
             description = wiki_to_html(ticket['description'], self.env, req, db)
@@ -158,7 +157,7 @@ class NewticketModule(TicketModuleBase):
         ticket = Ticket(self.env, db=db)
         ticket.values.setdefault('reporter', get_reporter_id(req))
         ticket.populate(req.args)
-        self.validate_ticket(req, ticket)
+        self._validate_ticket(req, ticket)
 
         ticket.insert(db=db)
         db.commit()
@@ -248,7 +247,7 @@ class TicketModule(TicketModuleBase):
             else:
                 # Use user supplied values
                 ticket.populate(req.args)
-                self.validate_ticket(req, ticket)
+                self._validate_ticket(req, ticket)
 
                 req.hdf['ticket.action'] = action
                 req.hdf['ticket.ts'] = req.args.get('ts')
@@ -405,7 +404,7 @@ class TicketModule(TicketModuleBase):
                             "This ticket has been modified by someone else "
                             "since you started", 'Mid Air Collision')
 
-        self.validate_ticket(req, ticket)
+        self._validate_ticket(req, ticket)
 
         # Do any action on the ticket?
         action = req.args.get('action')
