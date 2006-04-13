@@ -170,6 +170,9 @@ class Ticket(object):
                                "VALUES (%s,%s,%s)", [(tkt_id, name, self[name])
                                                      for name in custom_fields])
 
+        for listener in TicketSystem(self.env).change_listeners:
+            listener.ticket_created(self)
+
         if handle_ta:
             db.commit()
         self.id = tkt_id
@@ -237,6 +240,10 @@ class Ticket(object):
 
         cursor.execute("UPDATE ticket SET changetime=%s WHERE id=%s",
                        (when, self.id))
+
+        for listener in TicketSystem(self.env).change_listeners:
+            listener.ticket_changed(self, comment, self._old)
+
         if handle_ta:
             db.commit()
         self._old = {}
@@ -282,6 +289,10 @@ class Ticket(object):
         cursor.execute("DELETE FROM attachment "
                        " WHERE type='ticket' and id=%s", (self.id,))
         cursor.execute("DELETE FROM ticket_custom WHERE ticket=%s", (self.id,))
+
+        for listener in TicketSystem(self.env).change_listeners:
+            listener.ticket_deleted(self)
+
         if handle_ta:
             db.commit()
 

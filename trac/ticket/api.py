@@ -24,8 +24,43 @@ from trac.util.markup import html, Markup
 from trac.wiki import IWikiSyntaxProvider, Formatter
 
 
+class ITicketChangeListener(Interface):
+    """Extension point interface for components that require notification when
+    tickets are created, modified, or deleted."""
+
+    def ticket_created(ticket):
+        """Called when a ticket is created."""
+
+    def ticket_changed(ticket, comment, old_values):
+        """Called when a ticket is modified.
+        
+        `old_values` is a dictionary containing the previous values of the
+        fields that have changed.
+        """
+
+    def ticket_deleted(ticket):
+        """Called when a ticket is deleted."""
+
+
+class ITicketManipulator(Interface):
+    """Miscellaneous manipulation of ticket workflow features."""
+
+    def prepare_ticket(req, ticket, fields, actions):
+        """Not currently called, but should be provided for future
+        compatibility."""
+
+    def validate_ticket(req, ticket):
+        """Validate a ticket after it's been populated from user input.
+        
+        Must return a list of `(field, message)` tuples, one for each problem
+        detected. `field` can be `None` to indicate an overall problem with the
+        ticket. Therefore, a return value of `[]` means everything is OK."""
+
+
 class TicketSystem(Component):
     implements(IPermissionRequestor, IWikiSyntaxProvider, ISearchSource)
+
+    change_listeners = ExtensionPoint(ITicketChangeListener)
 
     # Public API
 

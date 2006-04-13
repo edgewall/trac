@@ -22,7 +22,7 @@ from trac.attachment import attachment_to_hdf, Attachment
 from trac.config import *
 from trac.core import *
 from trac.env import IEnvironmentSetupParticipant
-from trac.ticket import Milestone, Ticket, TicketSystem
+from trac.ticket import Milestone, Ticket, TicketSystem, ITicketManipulator
 from trac.ticket.notification import TicketNotifyEmail
 from trac.Timeline import ITimelineEventProvider
 from trac.util import format_datetime, get_reporter_id, pretty_timedelta
@@ -32,7 +32,24 @@ from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
 from trac.wiki import wiki_to_html, wiki_to_oneliner
 
 
-class NewticketModule(Component):
+class TicketModuleBase(Component):
+    # FIXME: temporary place-holder for unified ticket validation until
+    #        ticket controller unification is merged
+    abstract = True
+
+    ticket_manipulators = ExtensionPoint(ITicketManipulator)
+
+    def validate_ticket(req, ticket):
+        for manipulator in self.ticket_manipulators:
+            for field, message in manipulator.validate_ticket(req, ticket):
+                if field:
+                    raise TracError("The ticket %s field is invalid: %s" %
+                                    (field, message))
+                else:
+                    raise TracError("Invalid ticket: %s" % message)
+
+
+class NewticketModule(TicketModuleBase):
 
     implements(IEnvironmentSetupParticipant, INavigationContributor,
                IRequestHandler)
@@ -86,6 +103,7 @@ class NewticketModule(Component):
         ticket = Ticket(self.env, db=db)
         ticket.populate(req.args)
         ticket.values.setdefault('reporter', get_reporter_id(req))
+        self.validate_ticket(req, ticket)
 
         if ticket.values.has_key('description'):
             description = wiki_to_html(ticket['description'], self.env, req, db)
@@ -140,6 +158,8 @@ class NewticketModule(Component):
         ticket = Ticket(self.env, db=db)
         ticket.values.setdefault('reporter', get_reporter_id(req))
         ticket.populate(req.args)
+        self.validate_ticket(req, ticket)
+
         ticket.insert(db=db)
         db.commit()
 
@@ -158,7 +178,7 @@ class NewticketModule(Component):
             req.redirect(req.href.ticket(ticket.id))
 
 
-class TicketModule(Component):
+class TicketModule(TicketModuleBase):
 
     implements(IConfigurable, INavigationContributor, IRequestHandler,
                ITimelineEventProvider)
@@ -228,6 +248,8 @@ class TicketModule(Component):
             else:
                 # Use user supplied values
                 ticket.populate(req.args)
+                self.validate_ticket(req, ticket)
+
                 req.hdf['ticket.action'] = action
                 req.hdf['ticket.ts'] = req.args.get('ts')
                 req.hdf['ticket.reassign_owner'] = req.args.get('reassign_owner') \
@@ -361,7 +383,6 @@ class TicketModule(Component):
                                (start, stop))
                 for row in cursor:
                     yield produce(row, 'new', {}, None)
- 
 
     # Internal methods
 
@@ -383,6 +404,8 @@ class TicketModule(Component):
             raise TracError("Sorry, can not save your changes. "
                             "This ticket has been modified by someone else "
                             "since you started", 'Mid Air Collision')
+
+        self.validate_ticket(req, ticket)
 
         # Do any action on the ticket?
         action = req.args.get('action')
