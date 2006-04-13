@@ -106,9 +106,12 @@ class WikiTestCase(unittest.TestCase):
             raise AssertionError('%s\n\n%s:%s: %s (flavor was "%s")' \
                                  % (to_unicode(e), self.file, self.line,
                                     self.title, formatter.flavor))
-        
+
     def formatter(self):
         return Formatter(self.env)
+
+    def shortDescription(self):
+        return 'Test' + self.title
 
 
 class OneLinerTestCase(WikiTestCase):
@@ -140,5 +143,4 @@ def suite(data=None, setup=None, file=__file__):
     return suite
 
 if __name__ == '__main__':
-    runner = unittest.TextTestRunner()
-    runner.run(suite())
+    unittest.main(defaultTest='suite')
