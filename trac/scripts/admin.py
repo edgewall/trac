@@ -90,7 +90,7 @@ class TracAdmin(cmd.Cmd):
         """`line` may be a `str` or an `unicode` object"""
         try:
             if isinstance(line, str):
-                line = unicode(line, sys.stdin.encoding)
+                line = util.to_unicode(line, sys.stdin.encoding)
             rv = cmd.Cmd.onecmd(self, line) or 0
         except SystemExit:
             raise
