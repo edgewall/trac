@@ -26,7 +26,8 @@ from trac.config import *
 from trac.core import *
 from trac.env import open_environment
 from trac.perm import PermissionCache, PermissionError
-from trac.util import format_datetime, http_date, Markup
+from trac.util import format_datetime, http_date, to_unicode
+from trac.util.markup import Markup
 from trac.web.api import *
 from trac.web.chrome import Chrome
 from trac.web.clearsilver import HDFWrapper
@@ -181,7 +182,7 @@ class RequestDispatcher(Component):
 
                     req.display(template, content_type or 'text/html')
             except PermissionError, e:
-                raise HTTPForbidden(unicode(e))
+                raise HTTPForbidden(to_unicode(e))
             except TracError, e:
                 raise HTTPInternalError(e.message)
         finally:
@@ -327,9 +328,9 @@ def dispatch_request(environ, start_response):
         traceback.print_exc(file=tb)
 
         if req.hdf:
-            req.hdf['title'] = unicode(e) or 'Error'
+            req.hdf['title'] = to_unicode(e) or 'Error'
             req.hdf['error'] = {
-                'title': unicode(e) or 'Error',
+                'title': to_unicode(e) or 'Error',
                 'type': 'internal',
                 'traceback': tb.getvalue()
             }
@@ -376,7 +377,7 @@ def send_project_index(environ, start_response, parent_dir=None,
                     'href': href(env_name)
                 }
             except Exception, e:
-                proj = {'name': env_name, 'description': unicode(e)}
+                proj = {'name': env_name, 'description': to_unicode(e)}
             projects.append(proj)
         projects.sort(lambda x, y: cmp(x['name'].lower(), y['name'].lower()))
 

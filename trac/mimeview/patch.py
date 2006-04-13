@@ -17,7 +17,7 @@
 
 from trac.core import *
 from trac.mimeview.api import content_to_unicode, IHTMLPreviewRenderer
-from trac.util import escape, Markup
+from trac.util.markup import escape, Markup
 from trac.web.chrome import add_stylesheet
 
 __all__ = ['PatchRenderer']

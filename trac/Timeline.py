@@ -177,7 +177,7 @@ class TimelineModule(Component):
                 if isinstance(title, Markup):
                     title = title.plaintext(keeplinebreaks=False)
                 event['title'] = title
-                event['message'] = unicode(message)
+                event['message'] = to_unicode(message)
 
                 if author:
                     # For RSS, author must be an email address
@@ -224,4 +224,4 @@ class TimelineModule(Component):
                                'of events from the <a href="%s">'
                                'Timeline</a></p>',
                                ", ".join(guilty_kinds),
-                               exc.__class__.__name__, unicode(exc), href))
+                               exc.__class__.__name__, to_unicode(exc), href))

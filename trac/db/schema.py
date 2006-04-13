@@ -23,7 +23,7 @@ class Table(object):
         self.columns = []
         self.indices = []
         self.key = key
-        if isinstance(key, (str, unicode)):
+        if isinstance(key, basestring):
             self.key = [key]
 
     def __getitem__(self, objs):

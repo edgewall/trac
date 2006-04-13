@@ -111,7 +111,7 @@ class Environment(Component, ComponentManager):
         This is called by the `ComponentManager` base class when a component is
         about to be activated. If this method returns false, the component does
         not get activated."""
-        if not isinstance(cls, (str, unicode)):
+        if not isinstance(cls, basestring):
             component_name = (cls.__module__ + '.' + cls.__name__).lower()
         else:
             component_name = cls.lower()

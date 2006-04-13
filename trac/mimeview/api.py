@@ -22,8 +22,8 @@ from StringIO import StringIO
 
 from trac.core import *
 from trac.config import *
-from trac.util import escape, to_utf8, to_unicode
-from trac.util.markup import Markup, Fragment, html
+from trac.util import to_utf8, to_unicode
+from trac.util.markup import escape, Markup, Fragment, html
 
 
 __all__ = ['get_mimetype', 'is_binary', 'detect_unicode', 'Mimeview',

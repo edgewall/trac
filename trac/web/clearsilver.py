@@ -280,7 +280,7 @@ class HDFWrapper:
         object, or a string. In the latter case it is interpreted as name of the
         template file.
         """
-        if isinstance(template, (str, unicode)):
+        if isinstance(template, basestring):
             filename = template
             import neo_cs
             template = neo_cs.CS(self.hdf)

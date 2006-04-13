@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # Copyright (C) 2003-2006 Edgewall Software
-# Copyright (C) 2003-2004 Jonas Borgström <jonas@edgewall.com>
+# Copyright (C) 2003-2004 Jonas BorgstrÃ¶m <jonas@edgewall.com>
 # Copyright (C) 2006 Matthew Good <trac@matt-good.net>
 # Copyright (C) 2005-2006 Christian Boos <cboos@neuf.fr>
 # All rights reserved.
@@ -14,7 +14,7 @@
 # individuals. For exact contribution history, see the revision
 # history and logs, available at http://projects.edgewall.com/trac/.
 #
-# Author: Jonas Borgström <jonas@edgewall.com>
+# Author: Jonas BorgstrÃ¶m <jonas@edgewall.com>
 #         Matthew Good <trac@matt-good.net>
 
 import locale
@@ -90,8 +90,8 @@ def to_unicode(text, charset=None, lossy=True):
     will always work, as there's one Unicode character for each byte of
     the input).
     """
-    if isinstance(text, unicode):
-        return text
+    if not isinstance(text, str):
+        return unicode(text)
     errors = lossy and 'replace' or 'strict'
     try:
         if charset:
@@ -208,8 +208,10 @@ def format_datetime(t=None, format='%x %X', gmt=False):
             t = time.localtime(int(t))
 
     text = time.strftime(format, t)
-    lc_time_encoding = sys.platform != 'win32' and getlocale(locale.LC_TIME)[1]
-    encoding = lc_time_encoding or locale.getpreferredencoding()
+    encoding = locale.getpreferredencoding()
+    if sys.platform != 'win32':
+        encoding = locale.getlocale(locale.LC_TIME)[1] or encoding
+        # the above is broken on win32, e.g. we'd get '437' instead of 'cp437'
     return unicode(text, encoding, 'replace')
 
 def format_date(t=None, format='%x', gmt=False):

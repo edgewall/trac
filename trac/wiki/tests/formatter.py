@@ -7,6 +7,7 @@ from trac.core import *
 from trac.test import Mock
 from trac.wiki.formatter import Formatter, OneLinerFormatter
 from trac.wiki.macros import WikiMacroBase
+from trac.util import to_unicode
 from trac.util.markup import html
 
 # We need to supply our own macro because the real macros
@@ -104,7 +105,7 @@ class WikiTestCase(unittest.TestCase):
         except AssertionError, e:
             raise AssertionError('%s\n\n%s:%s: for the input '
                                  '(formatter flavor was "%s")' \
-                                 % (unicode(e), self.file, self.line,
+                                 % (to_unicode(e), self.file, self.line,
                                     formatter.flavor))
         
     def formatter(self):

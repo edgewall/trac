@@ -26,7 +26,7 @@ from StringIO import StringIO
 from trac.core import *
 from trac.mimeview import *
 from trac.wiki.api import WikiSystem, IWikiChangeListener, IWikiMacroProvider
-from trac.util import shorten_line
+from trac.util import shorten_line, to_unicode
 from trac.util.markup import escape, Markup, Element, html
 
 __all__ = ['wiki_to_html', 'wiki_to_oneliner', 'wiki_to_outline', 'Formatter' ]
@@ -128,7 +128,7 @@ class WikiProcessor(object):
                 text = html.SPAN(class_='code-block')[content_for_span]
             elif interrupt_paragraph:
                 text = "</p>%s<p>" % text
-        return unicode(text)
+        return to_unicode(text)
 
 
 class Formatter(object):
@@ -344,8 +344,8 @@ class Formatter(object):
         # check first for an alias defined in trac.ini
         ns = self.env.config.get('intertrac', ns.upper()) or ns
         if ns in self.wiki.link_resolvers:
-            return unicode(self.wiki.link_resolvers[ns](self, ns, target,
-                                                        escape(label, False)))
+            return to_unicode(self.wiki.link_resolvers[ns](
+                self, ns, target, escape(label, False)))
         elif target.startswith('//') or ns == "mailto":
             return self._make_ext_link(ns+':'+target, label)
         else:
@@ -599,10 +599,11 @@ class Formatter(object):
                 if match[0] == '!':
                     return match[1:]
                 if itype in self.wiki.external_handlers:
-                    return unicode(self.wiki.external_handlers[itype](self, match,
-                                                                      fullmatch))
+                    return to_unicode(self.wiki.external_handlers[itype](
+                        self, match, fullmatch))
                 else:
-                    return getattr(self, '_' + itype + '_formatter')(match, fullmatch)
+                    return getattr(self, '_' + itype + '_formatter')(match,
+                                                                     fullmatch)
     def handle_code_block(self, line):
         if line.strip() == Formatter.STARTBLOCK:
             self.in_code_block += 1

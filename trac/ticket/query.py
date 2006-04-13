@@ -528,9 +528,10 @@ class QueryModule(Component):
         # The most recent query is stored in the user session
         orig_list = rest_list = None
         orig_time = int(time.time())
-        if unicode(query.constraints) != req.session.get('query_constraints'):
+        query_constraints = unicode(query.constraints)
+        if query_constraints != req.session.get('query_constraints'):
             # New query, initialize session vars
-            req.session['query_constraints'] = unicode(query.constraints)
+            req.session['query_constraints'] = query_constraints
             req.session['query_time'] = int(time.time())
             req.session['query_tickets'] = ' '.join([str(t['id']) for t in tickets])
         else:
