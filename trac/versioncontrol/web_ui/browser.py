@@ -92,8 +92,9 @@ class BrowserModule(Component):
 
     def process_request(self, req):
         path = req.args.get('path', '/')
-        rev = req.args.get('rev')
+        rev = req.args.get('rev') or None
 
+        # Find node for the requested path/rev
         repos = self.env.get_repository(req.authname)
         if rev:
             rev = repos.normalize_rev(rev)
@@ -102,6 +103,7 @@ class BrowserModule(Component):
         rev_or_latest = rev or repos.youngest_rev
         node = get_existing_node(self.env, repos, path, rev_or_latest)
 
+        # Rendered list of node properties
         hidden_properties = self.config.getlist('browser', 'hide_properties')
         properties = []
         for name, value in node.get_properties().items():
@@ -142,11 +144,7 @@ class BrowserModule(Component):
     def _render_directory(self, req, repos, node, rev=None):
         req.perm.assert_permission('BROWSER_VIEW')
 
-        order = req.args.get('order', 'name').lower()
-        req.hdf['browser.order'] = order
-        desc = req.args.has_key('desc')
-        req.hdf['browser.desc'] = desc and 1 or 0
-
+        # Entries metadata
         info = []
         for entry in node.get_entries():
             info.append({
@@ -162,6 +160,10 @@ class BrowserModule(Component):
             })
         changes = get_changes(self.env, repos, [i['rev'] for i in info])
 
+        # Ordering of entries
+        order = req.args.get('order', 'name').lower()
+        desc = req.args.has_key('desc')
+        
         if order == 'date':
             def file_order(a):
                 return changes[a['rev']]['date_seconds']
@@ -179,8 +181,13 @@ class BrowserModule(Component):
             return a['is_dir'] and dir_order or 0, file_order(a)
         info = sorted(info, key=browse_order, reverse=desc)
 
-        req.hdf['browser.items'] = info
-        req.hdf['browser.changes'] = changes
+        switch_ordering_hrefs = {}
+        for col in ('name', 'size', 'date'):
+            switch_ordering_hrefs[col] = req.href.browser(
+                node.path, rev=rev, order=col,
+                desc=(col == order and not desc and 1 or None))
+
+        # ''Zip Archive'' alternate link
         patterns = self.config.getlist('browser', 'downloadable_paths')
         if node.path and patterns and \
                filter(None, [fnmatchcase(node.path, p) for p in patterns]):
@@ -189,6 +196,9 @@ class BrowserModule(Component):
             add_link(req, 'alternate', zip_href, 'Zip Archive',
                      'application/zip', 'zip')
 
+        req.hdf['browser'] = {'order': order, 'desc': desc and 1 or 0,
+                              'items': info, 'changes': changes,
+                              'order_href': switch_ordering_hrefs}
 
     def _render_file(self, req, repos, node, rev=None):
         req.perm.assert_permission('FILE_VIEW')

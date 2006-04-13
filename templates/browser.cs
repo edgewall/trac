@@ -25,14 +25,23 @@
   </form>
  </div>
 
+ <?cs def:sortable_th(order, desc, class, title, href) ?>
+ <th class="<?cs var:class ?><?cs if:order == class ?> <?cs
+   if:desc ?>desc<?cs else ?>asc<?cs /if ?><?cs /if ?>">
+  <a title="Sort by <?cs var:class ?><?cs
+    if:order == class && !desc ?> (descending)<?cs /if ?>" 
+     href="<?cs var:href[class] ?>"><?cs var:title ?></a>
+ </th>
+ <?cs /def ?>
+
  <?cs if:browser.is_dir ?>
   <table class="listing" id="dirlist">
    <thead>
     <tr><?cs 
-     call:sortable_th(browser.order, browser.desc, 'name', 'Name', browser.href) ?><?cs 
-     call:sortable_th(browser.order, browser.desc, 'size', 'Size', browser.href) ?>
+     call:sortable_th(browser.order, browser.desc, 'name', 'Name', browser.order_href) ?><?cs 
+     call:sortable_th(browser.order, browser.desc, 'size', 'Size', browser.order_href) ?>
      <th class="rev">Rev</th><?cs 
-     call:sortable_th(browser.order, browser.desc, 'date', 'Age', browser.href) ?>
+     call:sortable_th(browser.order, browser.desc, 'date', 'Age', browser.order_href) ?>
      <th class="change">Last Change</th>
     </tr>
    </thead>
