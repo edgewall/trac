@@ -108,10 +108,9 @@ class BrowserModule(Component):
         properties = []
         for name, value in node.get_properties().items():
             if not name in hidden_properties:
-                if value and '\n' in value:
-                    value = Markup(''.join(['<br />%s' % escape(v)
-                                            for v in value.split('\n')]))
-                properties.append({'name': name, 'value': value})
+                properties.append({
+                    'name': name,
+                    'value': render_node_property(self.env, name, value)})
 
         req.hdf['title'] = path
         req.hdf['browser'] = {

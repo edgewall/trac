@@ -35,6 +35,7 @@ from trac.util.markup import escape, unescape, Markup
 from trac.versioncontrol import Changeset, Node
 from trac.versioncontrol.diff import get_diff_options, hdf_diff, unified_diff
 from trac.versioncontrol.svn_authz import SubversionAuthorizer
+from trac.versioncontrol.web_ui.util import render_node_property
 from trac.web import IRequestHandler
 from trac.web.chrome import INavigationContributor, add_link, add_stylesheet
 from trac.wiki import wiki_to_html, wiki_to_oneliner, IWikiSyntaxProvider, \
@@ -382,8 +383,7 @@ class ChangesetModule(Component):
                 info['browser_href.new'] = new_href
             return info
 
-        hidden_properties = [p.strip() for p
-                             in self.config.get('browser', 'hide_properties').split(',')]
+        hidden_properties = self.config.getlist('browser', 'hide_properties')
 
         def _prop_changes(old_node, new_node):
             old_props = old_node.get_properties()
@@ -392,12 +392,17 @@ class ChangesetModule(Component):
             if old_props != new_props:
                 for k,v in old_props.items():
                     if not k in new_props:
-                        changed_props[k] = {'old': v}
+                        changed_props[k] = {
+                            'old': render_node_property(self.env, k, v)}
                     elif v != new_props[k]:
-                        changed_props[k] = {'old': v, 'new': new_props[k]}
+                        changed_props[k] = {
+                            'old': render_node_property(self.env, k, v),
+                            'new': render_node_property(self.env, k,
+                                                        new_props[k])}
                 for k,v in new_props.items():
                     if not k in old_props:
-                        changed_props[k] = {'new': v}
+                        changed_props[k] = {
+                            'new': render_node_property(self.env, k, v)}
                 for k in hidden_properties:
                     if k in changed_props:
                         del changed_props[k]

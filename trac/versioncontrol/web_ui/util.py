@@ -25,7 +25,7 @@ from trac.versioncontrol.api import NoSuchNode, NoSuchChangeset
 from trac.wiki import wiki_to_html, wiki_to_oneliner
 
 __all__ = ['get_changes', 'get_path_links', 'get_path_rev_line',
-           'get_existing_node']
+           'get_existing_node', 'render_node_property']
 
 def get_changes(env, repos, revs, full=None, req=None, format=None):
     db = env.get_db_cnx()
@@ -95,3 +95,14 @@ def get_existing_node(env, repos, path, rev):
                                'existed but was later removed.</p>', e.message,
                                env.href.log(path, rev=rev,
                                             mode='path_history')))
+
+def render_node_property(env, name, value):
+    """Renders a node property value to HTML.
+
+    Currently only handle multi-line properties. See also #1601.
+    """
+    if value and '\n' in value:
+        value = Markup(''.join(['<br />%s' % escape(v)
+                                for v in value.split('\n')]))
+    return value
+
