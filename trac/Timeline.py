@@ -23,7 +23,7 @@ import time
 from trac.config import *
 from trac.core import *
 from trac.perm import IPermissionRequestor
-from trac.util import format_date, format_time, http_date
+from trac.util import format_date, format_time, http_date, to_unicode
 from trac.util.markup import html, Markup
 from trac.web import IRequestHandler
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
@@ -210,6 +210,7 @@ class TimelineModule(Component):
         At the same time, the message will contain a link to the timeline
         without the filters corresponding to the guilty event provider `ep`.
         """
+        ep_name, exc_name = [i.__class__.__name__ for i in (ep, exc)]
         guilty_filters = [f[0] for f in ep.get_timeline_filters(req)]
         guilty_kinds = [f[1] for f in ep.get_timeline_filters(req)]
         other_filters = [f for f in current_filters if not f in guilty_filters]
@@ -218,10 +219,9 @@ class TimelineModule(Component):
         args = [(a, req.args.get(a)) for a in ('from', 'format', 'max',
                                                'daysback')]
         href = req.href.timeline(args+[(f, 'on') for f in other_filters])
-        raise TracError(Markup('%s event provider failed:<br /><br />'
-                               '%s: %s'
-                               '<p>You may want to see the other kind '
-                               'of events from the <a href="%s">'
-                               'Timeline</a></p>',
-                               ", ".join(guilty_kinds),
-                               exc.__class__.__name__, to_unicode(exc), href))
+        raise TracError(Markup(
+            '%s  event provider (<tt>%s</tt>) failed:<br /><br />'
+            '%s: %s'
+            '<p>You may want to see the other kind of events from the '
+            '<a href="%s">Timeline</a></p>', 
+            ", ".join(guilty_kinds), ep_name, exc_name, to_unicode(exc), href))
