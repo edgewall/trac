@@ -106,7 +106,8 @@ class PostgreSQLConnection(ConnectionWrapper):
             if have_psycopg2:
                 cnx.set_client_encoding('UNICODE')
         else:
-            cnx = PgSQL.connect('', user, password, host, path, port)
+            cnx = PgSQL.connect('', user, password, host, path, port, 
+                                client_encoding='utf-8', unicode_results=True)
         ConnectionWrapper.__init__(self, cnx)
 
     def cast(self, column, type):
