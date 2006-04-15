@@ -587,6 +587,41 @@ Paragraph
  * item 2
    item 2 line 2
 Paragraph
+============================== Numbered lists
+ 1. item 1
+   a. item 1.a
+   a. item 1.b
+
+Some paragraph
+
+ 2. continue with item 2
+   i. roman 1
+   ii. roman 2
+Paragraph
+------------------------------
+<ol><li>item 1
+<ol class="loweralpha"><li>item 1.a
+</li><li>item 1.b
+</li></ol></li></ol><p>
+Some paragraph
+</p>
+<ol start="2"><li>continue with item 2
+<ol class="lowerroman"><li>roman 1
+</li><li>roman 2
+</li></ol></li></ol><p>
+Paragraph
+</p>
+------------------------------
+1. item 1
+   a. item 1.a
+   a. item 1.b
+
+Some paragraph
+
+ 2. continue with item 2
+   i. roman 1
+   ii. roman 2
+Paragraph
 ============================== Simple definition list
  term:: definition
 ------------------------------
@@ -732,7 +767,7 @@ Paragraph
 </p>
 <hr />
 <ol><li>Item 1
-<ol><li>Item 2
+<ol start="2"><li>Item 2
 </li></ol></li></ol><table class="wiki">
 <tr><td>Table</td><td>cell
 </td></tr><tr><td>Foo</td><td>Bar</td><td>Baz

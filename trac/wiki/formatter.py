@@ -193,7 +193,7 @@ class Formatter(object):
          r"(\]\]|\((?P<macroargs>.*?)\)\]\]))"),
         # heading, list, definition, indent, table...
         r"(?P<heading>^\s*(?P<hdepth>=+)\s.*\s(?P=hdepth)\s*$)",
-        r"(?P<list>^(?P<ldepth>\s+)(?:\*|\d+\.) )",
+        r"(?P<list>^(?P<ldepth>\s+)(?:\*|\d+\.|[a-zA-Z]+\.) )",
         r"(?P<definition>^\s+((?:%s.*?%s|%s.*?%s|[^%s%s])+?::)(?:\s+|$))"
         % (INLINE_TOKEN, INLINE_TOKEN, STARTBLOCK_TOKEN, ENDBLOCK_TOKEN,
            INLINE_TOKEN, STARTBLOCK[0]),
@@ -421,7 +421,8 @@ class Formatter(object):
         except Exception, e:
             self.env.log.error('Macro %s(%s) failed' % (name, args),
                                exc_info=True)
-            return system_message('Error: Macro %s(%s) failed' % (name, args), e)
+            return system_message('Error: Macro %s(%s) failed' \
+                                  % (name, args), e)
 
     # Headings
 
@@ -456,10 +457,61 @@ class Formatter(object):
     def _list_formatter(self, match, fullmatch):
         ldepth = len(fullmatch.group('ldepth'))
         depth = int((len(fullmatch.group('ldepth')) + 1) / 2)
+        listid = match[ldepth]
         self.in_list_item = depth > 0
-        type_ = ['ol', 'ul'][match[ldepth] == '*']
-        self._set_list_depth(depth, type_)
+        class_ = start = None
+        if listid == '*':
+            type_ = 'ul'
+        else:
+            type_ = 'ol'
+            idx = '01iI'.find(listid)
+            if idx >= 0:
+                class_ = ('arabiczero', None, 'lowerroman', 'upperroman')[idx]
+            elif listid.isdigit():
+                start = match[ldepth:match.find('.')]
+            elif listid.islower():
+                class_ = 'loweralpha'
+            elif listid.isupper():
+                class_ = 'upperalpha'
+        self._set_list_depth(depth, type_, class_, start)
         return ''
+
+    def _set_list_depth(self, depth, type_, class_, start):
+        current_depth = len(self._list_stack)
+        diff = depth - current_depth
+        self.close_table()
+        self.close_paragraph()
+        self.close_indentation()
+        begin_list = type_
+        if class_:
+            begin_list += ' class="%s"' % class_
+        if start:
+            begin_list += start and ' start="%s"' % start
+        if diff > 0:
+            for i in range(diff):
+                self._list_stack.append(type_)
+                self.out.write('<%s><li>' % begin_list)
+        elif diff < 0:
+            for i in range(-diff):
+                tmp = self._list_stack.pop()
+                self.out.write('</li></%s>' % tmp)
+            if self._list_stack != [] and type_ != self._list_stack[-1]:
+                tmp = self._list_stack.pop()
+                self._list_stack.append(type_)
+                self.out.write('</li></%s><%s><li>' % (tmp, begin_list))
+            if depth > 0:
+                self.out.write('</li><li>')
+        # diff == 0
+        elif self._list_stack != [] and type_ != self._list_stack[-1]:
+            tmp = self._list_stack.pop()
+            self._list_stack.append(type_)
+            self.out.write('</li></%s><%s><li>' % (tmp, begin_list))
+        elif depth > 0:
+            self.out.write('</li><li>')
+
+    def close_list(self):
+        if self._list_stack != []:
+            self._set_list_depth(0, None, None, None)
 
     # Definition Lists
 
@@ -475,38 +527,6 @@ class Formatter(object):
         if self.in_def_list:
             self.out.write('</dd></dl>\n')
         self.in_def_list = False
-
-    def _set_list_depth(self, depth, type_):
-        current_depth = len(self._list_stack)
-        diff = depth - current_depth
-        self.close_table()
-        self.close_paragraph()
-        self.close_indentation()
-        if diff > 0:
-            for i in range(diff):
-                self._list_stack.append(type_)
-                self.out.write('<%s><li>' % type_)
-        elif diff < 0:
-            for i in range(-diff):
-                tmp = self._list_stack.pop()
-                self.out.write('</li></%s>' % tmp)
-            if self._list_stack != [] and type_ != self._list_stack[-1]:
-                tmp = self._list_stack.pop()
-                self._list_stack.append(type_)
-                self.out.write('</li></%s><%s><li>' % (tmp, type_))
-            if depth > 0:
-                self.out.write('</li><li>')
-        # diff == 0
-        elif self._list_stack != [] and type_ != self._list_stack[-1]:
-            tmp = self._list_stack.pop()
-            self._list_stack.append(type_)
-            self.out.write('</li></%s><%s><li>' % (tmp, type_))
-        elif depth > 0:
-            self.out.write('</li><li>')
-
-    def close_list(self):
-        if self._list_stack != []:
-            self._set_list_depth(0, None)
 
     # Blockquote
 
