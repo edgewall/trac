@@ -368,12 +368,6 @@ class EnvironmentSetup(Component):
     # IConfigurable methods
 
     def get_config_sections(self):
-        yield ConfigSection('trac', [
-            ConfigOption('database', 'sqlite:db/trac.db',
-                         """Database connection
-                         [wiki:TracEnvironment#DatabaseConnectionStrings string]
-                         for this project
-                         """)])
         yield ConfigSection('logging', [
             ConfigOption('log_type', 'none',
                          """Logging facility to use.
