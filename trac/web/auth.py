@@ -14,14 +14,20 @@
 #
 # Author: Jonas Borgström <jonas@edgewall.com>
 
+try:
+    from base64 import b64decode
+except ImportError:
+    from base64 import decodestring as b64decode
+import md5
 import re
 import time
+import urllib2
 
 from trac.core import *
 from trac.config import *
 from trac.web.api import IAuthenticator, IRequestHandler
 from trac.web.chrome import INavigationContributor
-from trac.util import escape, hex_entropy, Markup
+from trac.util import escape, hex_entropy, md5crypt, Markup
 
 
 class LoginModule(Component):
@@ -53,7 +59,7 @@ class LoginModule(Component):
                          """Whether case should be ignored for login names
                          (true, false) (''since 0.9'')
                          """)])
-        
+
     # IAuthenticator methods
 
     def authenticate(self, req):
@@ -188,3 +194,142 @@ class LoginModule(Component):
             # only redirect to referer if it is from the same site
             referer = None
         req.redirect(referer or self.env.abs_href())
+
+
+class HTTPAuthentication(object):
+
+    def do_auth(self, environ, start_response):
+        raise NotImplementedError
+
+
+class BasicAuthentication(HTTPAuthentication):
+
+    def __init__(self, htpasswd, realm):
+        self.hash = {}
+        self.realm = realm
+        try:
+            import crypt
+            self.crypt = crypt.crypt
+        except ImportError:
+            self.crypt = None
+        self.load(htpasswd)
+
+    def load(self, filename):
+        fd = open(filename, 'r')
+        for line in fd:
+            u, h = line.strip().split(':')
+            if '$' in h or self.crypt:
+                self.hash[u] = h
+            else:
+                print >>sys.stderr, 'Warning: cannot parse password for ' \
+                                    'user "%s" without the "crypt" module' % u
+
+        if self.hash == {}:
+            print >> sys.stderr, "Warning: found no users in file:", filename
+
+    def test(self, user, password):
+        the_hash = self.hash.get(user)
+        if the_hash is None:
+            return False
+
+        if not '$' in the_hash:
+            return self.crypt(password, the_hash[:2]) == the_hash
+
+        magic, salt = the_hash[1:].split('$')[:2]
+        magic = '$' + magic + '$'
+        return md5crypt(password, salt, magic) == the_hash
+
+    def do_auth(self, environ, start_response):
+        header = environ.get('HTTP_AUTHORIZATION')
+        if header and header.startswith('Basic'):
+            auth = b64decode(header[6:]).split(':')
+            if len(auth) == 2:
+                user, password = auth
+                if self.test(user, password):
+                    return user
+
+        start_response('401 Unauthorized',
+                       [('WWW-Authenticate', 'Basic realm="%s"'
+                         % self.realm)])('')
+
+
+class DigestAuthentication(HTTPAuthentication):
+    """A simple HTTP digest authentication implementation (RFC 2617)."""
+
+    MAX_NONCES = 100
+
+    def __init__(self, htdigest, realm):
+        self.active_nonces = []
+        self.hash = {}
+        self.realm = realm
+        self.load_htdigest(htdigest, realm)
+
+    def load_htdigest(self, filename, realm):
+        """Load account information from apache style htdigest files, only
+        users from the specified realm are used
+        """
+        fd = open(filename, 'r')
+        for line in fd.readlines():
+            u, r, a1 = line.strip().split(':')
+            if r == realm:
+                self.hash[u] = a1
+        if self.hash == {}:
+            print >> sys.stderr, "Warning: found no users in realm:", realm
+        
+    def parse_auth_header(self, authorization):
+        values = {}
+        for value in urllib2.parse_http_list(authorization):
+            n, v = value.split('=', 1)
+            if v[0] == '"' and v[-1] == '"':
+                values[n] = v[1:-1]
+            else:
+                values[n] = v
+        return values
+
+    def send_auth_request(self, environ, start_response, stale='false'):
+        """Send a digest challange to the browser. Record used nonces
+        to avoid replay attacks.
+        """
+        nonce = hex_entropy()
+        self.active_nonces.append(nonce)
+        if len(self.active_nonces) > self.MAX_NONCES:
+            self.active_nonces = self.active_nonces[-self.MAX_NONCES:]
+        start_response('401 Unauthorized',
+                       [('WWW-Authenticate',
+                        'Digest realm="%s", nonce="%s", qop="auth", stale="%s"'
+                        % (self.realm, nonce, stale))])('')
+
+    def do_auth(self, environ, start_response):
+        header = environ.get('HTTP_AUTHORIZATION')
+        if not header or not header.startswith('Digest'):
+            self.send_auth_request(environ, start_response)
+            return None
+
+        auth = self.parse_auth_header(header[7:])
+        required_keys = ['username', 'realm', 'nonce', 'uri', 'response',
+                         'nc', 'cnonce']
+        # Invalid response?
+        for key in required_keys:
+            if not auth.has_key(key):
+                self.send_auth_request(environ, start_response)
+                return None
+        # Unknown user?
+        if not self.hash.has_key(auth['username']):
+            self.send_auth_request(environ, start_response)
+            return None
+
+        kd = lambda x: md5.md5(':'.join(x)).hexdigest()
+        a1 = self.hash[auth['username']]
+        a2 = kd([environ['REQUEST_METHOD'], auth['uri']])
+        # Is the response correct?
+        correct = kd([a1, auth['nonce'], auth['nc'],
+                      auth['cnonce'], auth['qop'], a2])
+        if auth['response'] != correct:
+            self.send_auth_request(environ, start_response)
+            return None
+        # Is the nonce active, if not ask the client to use a new one
+        if not auth['nonce'] in self.active_nonces:
+            self.send_auth_request(environ, start_response, stale='true')
+            return None
+        self.active_nonces.remove(auth['nonce'])
+        return auth['username']

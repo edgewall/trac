@@ -18,194 +18,19 @@
 #         Matthew Good <trac@matt-good.net>
 #         Christopher Lenz <cmlenz@gmx.de>
 
-try:
-    from base64 import b64decode
-except ImportError:
-    from base64 import decodestring as b64decode
-import md5
 import os
 import sys
 from SocketServer import ThreadingMixIn
-import urllib2
 
 from trac import __version__ as VERSION
-from trac.util import autoreload, daemon, md5crypt, hex_entropy
+from trac.util import autoreload, daemon
+from trac.web.auth import BasicAuthentication, DigestAuthentication
 from trac.web.main import dispatch_request
 from trac.web.wsgi import WSGIServer, WSGIRequestHandler
 
 
-class BasicAuth(object):
+class AuthenticationMiddleware(object):
 
-    def __init__(self, htpasswd, realm):
-        self.hash = {}
-        self.realm = realm
-        try:
-            import crypt
-            self.crypt = crypt.crypt
-        except ImportError:
-            self.crypt = None
-        self.load(htpasswd)
-
-    def load(self, filename):
-        fd = open(filename, 'r')
-        for line in fd:
-            u, h = line.strip().split(':')
-            if '$' in h or self.crypt:
-                self.hash[u] = h
-            else:
-                print >>sys.stderr, 'Warning: cannot parse password for ' \
-                                    'user "%s" without the "crypt" module' % u
-
-        if self.hash == {}:
-            print >> sys.stderr, "Warning: found no users in file:", filename
-
-    def test(self, user, password):
-        the_hash = self.hash.get(user)
-        if the_hash is None:
-            return False
-
-        if not '$' in the_hash:
-            return self.crypt(password, the_hash[:2]) == the_hash
-
-        magic, salt = the_hash[1:].split('$')[:2]
-        magic = '$' + magic + '$'
-        return md5crypt(password, salt, magic) == the_hash
-
-    def send_auth_request(self, environ, start_response):
-        start_response('401 Authentication Required',
-                       [('WWW-Authenticate', 'Basic realm="%s"' % self.realm)])('')
-
-    def do_auth(self, environ, start_response):
-        auth = environ.get('HTTP_AUTHORIZATION')
-        if not auth or not auth.startswith('Basic'):
-            self.send_auth_request(environ, start_response)
-            return None
-
-        auth = auth[len('Basic') + 1:]
-        auth = b64decode(auth).split(':')
-        if len(auth) != 2:
-            self.send_auth_request(environ, start_response)
-            return None
-
-        user, password = auth
-        if not self.test(user, password):
-            self.send_auth_request(environ, start_response)
-            return None
-
-        return user
-
-
-class DigestAuth(object):
-    """A simple HTTP DigestAuth implementation (rfc2617)"""
-
-    MAX_NONCES = 100
-
-    def __init__(self, htdigest, realm):
-        self.active_nonces = []
-        self.hash = {}
-        self.realm = realm
-        self.load_htdigest(htdigest, realm)
-
-    def load_htdigest(self, filename, realm):
-        """Load account information from apache style htdigest files, only
-        users from the specified realm are used
-        """
-        fd = open(filename, 'r')
-        for line in fd.readlines():
-            u, r, a1 = line.strip().split(':')
-            if r == realm:
-                self.hash[u] = a1
-        if self.hash == {}:
-            print >> sys.stderr, "Warning: found no users in realm:", realm
-        
-    def parse_auth_header(self, authorization):
-        values = {}
-        for value in urllib2.parse_http_list(authorization):
-            n, v = value.split('=', 1)
-            if v[0] == '"' and v[-1] == '"':
-                values[n] = v[1:-1]
-            else:
-                values[n] = v
-        return values
-
-    def send_auth_request(self, environ, start_response, stale='false'):
-        """Send a digest challange to the browser. Record used nonces
-        to avoid replay attacks.
-        """
-        nonce = hex_entropy()
-        self.active_nonces.append(nonce)
-        if len(self.active_nonces) > DigestAuth.MAX_NONCES:
-            self.active_nonces = self.active_nonces[-DigestAuth.MAX_NONCES:]
-        start_response('401 Authentication Required',
-                       [('WWW-Authenticate',
-                        'Digest realm="%s", nonce="%s", qop="auth", stale="%s"'
-                        % (self.realm, nonce, stale))])('')
-
-    def do_auth(self, environ, start_response):
-        header = environ.get('HTTP_AUTHORIZATION')
-        if not header or not header.startswith('Digest'):
-            self.send_auth_request(environ, start_response)
-            return None
-
-        auth = self.parse_auth_header(header[7:])
-        required_keys = ['username', 'realm', 'nonce', 'uri', 'response',
-                         'nc', 'cnonce']
-        # Invalid response?
-        for key in required_keys:
-            if not auth.has_key(key):
-                self.send_auth_request(environ, start_response)
-                return None
-        # Unknown user?
-        if not self.hash.has_key(auth['username']):
-            self.send_auth_request(environ, start_response)
-            return None
-
-        kd = lambda x: md5.md5(':'.join(x)).hexdigest()
-        a1 = self.hash[auth['username']]
-        a2 = kd([environ['REQUEST_METHOD'], auth['uri']])
-        # Is the response correct?
-        correct = kd([a1, auth['nonce'], auth['nc'],
-                      auth['cnonce'], auth['qop'], a2])
-        if auth['response'] != correct:
-            self.send_auth_request(environ, start_response)
-            return None
-        # Is the nonce active, if not ask the client to use a new one
-        if not auth['nonce'] in self.active_nonces:
-            self.send_auth_request(environ, start_response, stale='true')
-            return None
-        self.active_nonces.remove(auth['nonce'])
-        return auth['username']
-
-
-class BasePathMiddleware(object):
-    def __init__(self, application, base_path):
-        self.base_path = '/' + base_path.strip('/')
-        self.application = application
-
-    def __call__(self, environ, start_response):
-        path = environ['SCRIPT_NAME'] + environ.get('PATH_INFO', '')
-        environ['PATH_INFO'] = path[len(self.base_path):]
-        environ['SCRIPT_NAME'] = self.base_path
-        return self.application(environ, start_response)
-
-
-class TracEnvironMiddleware(object):
-    def __init__(self, application, env_parent_dir, env_paths):
-        self.application = application
-        self.environ = {}
-        self.environ['trac.env_path'] = None
-        if env_parent_dir:
-            self.environ['trac.env_parent_dir'] = env_parent_dir
-        else:
-            self.environ['trac.env_paths'] = env_paths
-
-    def __call__(self, environ, start_response):
-        for k,v in self.environ.iteritems():
-            environ.setdefault(k, v)
-        return self.application(environ, start_response)
-
-
-class HTTPAuthMiddleware(object):
     def __init__(self, application, auths):
         self.application = application
         self.auths = auths
@@ -220,8 +45,38 @@ class HTTPAuthMiddleware(object):
                 if auth:
                     remote_user = auth.do_auth(environ, start_response)
                     if not remote_user:
-                        return
+                        return []
                     environ['REMOTE_USER'] = remote_user
+        return self.application(environ, start_response)
+
+
+class BasePathMiddleware(object):
+
+    def __init__(self, application, base_path):
+        self.base_path = '/' + base_path.strip('/')
+        self.application = application
+
+    def __call__(self, environ, start_response):
+        path = environ['SCRIPT_NAME'] + environ.get('PATH_INFO', '')
+        environ['PATH_INFO'] = path[len(self.base_path):]
+        environ['SCRIPT_NAME'] = self.base_path
+        return self.application(environ, start_response)
+
+
+class TracEnvironMiddleware(object):
+
+    def __init__(self, application, env_parent_dir, env_paths):
+        self.application = application
+        self.environ = {}
+        self.environ['trac.env_path'] = None
+        if env_parent_dir:
+            self.environ['trac.env_parent_dir'] = env_parent_dir
+        else:
+            self.environ['trac.env_paths'] = env_paths
+
+    def __call__(self, environ, start_response):
+        for k,v in self.environ.iteritems():
+            environ.setdefault(k, v)
         return self.application(environ, start_response)
 
 
@@ -248,7 +103,7 @@ def main():
                           version='%%prog %s' % VERSION)
 
     auths = {}
-    def _auth_callback(option, opt_str, value, parser, auths, cls):
+    def _auth_callback(option, opt_str, value, parser, cls):
         info = value.split(',', 3)
         if len(info) != 3:
             raise OptionValueError("Incorrect number of parameters for %s"
@@ -268,12 +123,12 @@ def main():
         setattr(parser.values, option.dest, value)
 
     parser.add_option('-a', '--auth', action='callback', type='string',
-                      metavar='DIGESTAUTH',
-                      callback=_auth_callback, callback_args=(auths, DigestAuth),
+                      metavar='DIGESTAUTH', callback=_auth_callback,
+                      callback_args=(DigestAuthentication,),
                       help='[project],[htdigest_file],[realm]')
     parser.add_option('--basic-auth', action='callback', type='string',
-                      metavar='BASICAUTH',
-                      callback=_auth_callback, callback_args=(auths, BasicAuth),
+                      metavar='BASICAUTH', callback=_auth_callback,
+                      callback_args=(BasicAuthentication,),
                       help='[project],[htpasswd_file],[realm]')
 
     parser.add_option('-p', '--port', action='store', type='int', dest='port',
@@ -317,12 +172,11 @@ def main():
     server_address = (options.hostname, options.port)
 
     wsgi_app = dispatch_request
+    if auths:
+        wsgi_app = AuthenticationMiddleware(wsgi_app, auths)
     base_path = options.base_path.strip('/')
     if base_path:
         wsgi_app = BasePathMiddleware(wsgi_app, base_path)
-
-    if auths:
-        wsgi_app = HTTPAuthMiddleware(wsgi_app, auths)
 
     if options.protocol == 'http':
         def serve():
