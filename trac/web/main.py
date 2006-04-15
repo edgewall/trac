@@ -25,7 +25,7 @@ import urllib
 from trac.config import *
 from trac.core import *
 from trac.env import open_environment
-from trac.perm import PermissionCache, PermissionError
+from trac.perm import PermissionCache, NoPermissionCache, PermissionError
 from trac.util import format_datetime, http_date, to_unicode
 from trac.util.markup import Markup
 from trac.web.api import *
@@ -105,8 +105,9 @@ def populate_hdf(hdf, env, req=None):
         hdf['cgi_location'] = req.base_path
         hdf['trac.authname'] = req.authname
 
-        for action in req.perm.permissions():
-            req.hdf['trac.acl.' + action] = True
+        if req.perm:
+            for action in req.perm.permissions():
+                req.hdf['trac.acl.' + action] = True
 
         for arg in [k for k in req.args.keys() if k]:
             if isinstance(req.args[arg], (list, tuple)):
@@ -146,16 +147,7 @@ class RequestDispatcher(Component):
         # For backwards compatibility, should be removed in the future
         self.env.href = req.href
         self.env.abs_href = req.abs_href
-
-        req.authname = self.authenticate(req)
-        req.perm = PermissionCache(self.env, req.authname)
-
-        chrome = Chrome(self.env)
-        req.hdf = HDFWrapper(loadpaths=chrome.get_all_templates_dirs())
-        populate_hdf(req.hdf, self.env, req)
-
-        req.session = Session(self.env, req)
-
+        
         # Select the component that should handle the request
         chosen_handler = None
         if not req.path_info or req.path_info == '/':
@@ -166,20 +158,34 @@ class RequestDispatcher(Component):
                     chosen_handler = handler
                     break
 
-        chrome.populate_hdf(req, chosen_handler)
-
         if not chosen_handler:
             raise HTTPNotFound('No handler matched request to %s',
                                req.path_info)
+        
+        # Attach user information to the request
+        anonymous_request = getattr(chosen_handler, 'anonymous_request', False)
+        if anonymous_request:
+            req.authname = 'anonymous'
+            req.perm = NoPermissionCache()
+        else:
+            req.authname = self.authenticate(req)
+            req.perm = PermissionCache(self.env, req.authname)
+            req.session = Session(self.env, req)
 
+        # Prepare HDF for the clearsilver template
+        use_template = getattr(chosen_handler, 'use_template', True)
+        if use_template:
+            chrome = Chrome(self.env)
+            req.hdf = HDFWrapper(loadpaths=chrome.get_all_templates_dirs())
+            populate_hdf(req.hdf, self.env, req)
+            chrome.populate_hdf(req, chosen_handler)
+
+        # Process the request and render the template
         try:
             try:
                 resp = chosen_handler.process_request(req)
                 if resp:
                     template, content_type = resp
-                    if not content_type:
-                        content_type = 'text/html'
-
                     req.display(template, content_type or 'text/html')
             except PermissionError, e:
                 raise HTTPForbidden(to_unicode(e))
@@ -187,7 +193,8 @@ class RequestDispatcher(Component):
                 raise HTTPInternalError(e.message)
         finally:
             # Give the session a chance to persist changes
-            req.session.save()
+            if req.session:
+                req.session.save()
 
     # IConfigurable methods
 
@@ -342,7 +349,6 @@ def dispatch_request(environ, start_response):
 def send_project_index(environ, start_response, parent_dir=None,
                        env_paths=None):
     from trac.config import default_dir
-    from trac.web.clearsilver import HDFWrapper
 
     req = Request(environ, start_response)
 

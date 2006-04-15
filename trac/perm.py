@@ -269,7 +269,7 @@ class DefaultPermissionGroupProvider(Component):
         return groups
 
 
-class PermissionCache:
+class PermissionCache(object):
     """Cache that maintains the permissions of a single user."""
 
     def __init__(self, env, username):
@@ -284,3 +284,16 @@ class PermissionCache:
 
     def permissions(self):
         return self.perms.keys()
+
+
+class NoPermissionCache(object):
+    """Permission cache for ''anonymous requests''."""
+
+    def has_permission(self, action):
+        return False
+
+    def assert_permission(self, action):
+        raise PermissionError(action)
+
+    def permissions(self):
+        return []

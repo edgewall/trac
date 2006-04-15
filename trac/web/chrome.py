@@ -194,6 +194,9 @@ class Chrome(Component):
 
     # IRequestHandler methods
 
+    anonymous_request = True
+    use_template = False
+
     def match_request(self, req):
         match = re.match(r'/chrome/(?P<prefix>[^/]+)/(?P<filename>[/\w\-\.]+)',
                          req.path_info)
@@ -310,8 +313,7 @@ class Chrome(Component):
                 active = contributor.get_active_navigation_item(req)
 
         for category, items in [(k, v.items()) for k, v in navigation.items()]:
-            order = [x.strip() for x
-                     in self.config.get('trac', category).split(',')]
+            order = self.config.getlist('trac', category)
             def navcmp(x, y):
                 if x[0] not in order:
                     return int(y[0] in order)

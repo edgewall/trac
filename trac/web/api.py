@@ -434,6 +434,14 @@ class IAuthenticator(Interface):
 class IRequestHandler(Interface):
     """Extension point interface for request handlers."""
 
+    # implementing classes should set this property to `True` if they
+    # don't need session and authentication related information
+    anonymous_request = False
+    
+    # implementing classes should set this property to `False` if they
+    # don't need the HDF data and don't produce content using a template
+    use_template = True
+    
     def match_request(req):
         """Return whether the handler wants to process the given request."""
 
