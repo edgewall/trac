@@ -128,7 +128,7 @@
      var:item.browser_href.old ?>"><?cs var:item.path.old ?></a><?cs
   else ?>
    <a title="Show entry in browser" href="<?cs
-     var:item.browser_href.new ?>"><?cs var:item.path.new ?></a><?cs
+     var:item.browser_href.new ?>"><?cs alt:item.path.new ?>(root)<?cs /alt?></a><?cs
   /if ?>
   <span class="comment">(<?cs var:kind ?>)</span><?cs
   if:item.path.old && item.change == 'copy' || item.change == 'move' ?>
