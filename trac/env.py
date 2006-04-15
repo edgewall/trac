@@ -373,26 +373,7 @@ class EnvironmentSetup(Component):
                          """Database connection
                          [wiki:TracEnvironment#DatabaseConnectionStrings string]
                          for this project
-                         """),
-            ConfigOption('repository_type', 'svn',
-                         "Repository connector type. (''since 0.10'')"),
-            ConfigOption('repository_dir', '',
-                         "Path to local repository"),
-            ConfigOption('templates_dir', default_dir('templates'),
-                         "Path to the !ClearSilver templates")])
-        yield ConfigSection('project', [
-            ConfigOption('name', 'My Project',
-                         "Project name"),
-            ConfigOption('descr', 'My example project',
-                         "Short project description"),
-            ConfigOption('url', 'http://example.com/', 
-                         "URL to the main project website"),
-            ConfigOption('footer', 
-                         'Visit the Trac open source project at<br />'
-                         '<a href="http://trac.edgewall.com/">'
-                         'http://trac.edgewall.com/</a>',
-                         "Page footer text (right-aligned)")
-            ])
+                         """)])
         yield ConfigSection('logging', [
             ConfigOption('log_type', 'none',
                          """Logging facility to use.

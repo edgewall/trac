@@ -169,6 +169,8 @@ class Chrome(Component):
 
     def get_config_sections(self):
         yield ConfigSection('trac', [
+            ConfigOption('templates_dir', default_dir('templates'),
+                         "Path to the !ClearSilver templates"),
             ConfigOption('metanav', 'login,logout,settings,help,about',
                          """List of sections to display in the navigation bar
                          `metanav` 
@@ -177,6 +179,19 @@ class Chrome(Component):
                          """List of sections to display in the navigation bar
                          `mainnav`
                          """)])
+        yield ConfigSection('project', [
+            ConfigOption('name', 'My Project',
+                         "Project name"),
+            ConfigOption('descr', 'My example project',
+                         "Short project description"),
+            ConfigOption('url', 'http://example.com/', 
+                         "URL to the main project website"),
+            ConfigOption('footer', 
+                         'Visit the Trac open source project at<br />'
+                         '<a href="http://trac.edgewall.com/">'
+                         'http://trac.edgewall.com/</a>',
+                         "Page footer text (right-aligned)")
+            ])
         yield ConfigSection('header_logo', [
             ConfigOption('link', 'http://trac.edgewall.com/',
                          "Destination URL to link to from header logo"),

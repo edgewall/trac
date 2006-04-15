@@ -17,6 +17,7 @@
 import os
 import urllib
 
+from trac.config import IConfigurable, ConfigSection, ConfigOption
 from trac.core import *
 from trac.db.pool import ConnectionPool
 
@@ -48,6 +49,7 @@ class IDatabaseConnector(Interface):
 
 
 class DatabaseManager(Component):
+    implements(IConfigurable)
 
     connectors = ExtensionPoint(IDatabaseConnector)
 
@@ -92,6 +94,16 @@ class DatabaseManager(Component):
                                             args['path'].lstrip('/'))
 
         return connector, args
+
+    # IConfigurable methods
+
+    def get_config_sections(self):
+        yield ConfigSection('trac', [
+            ConfigOption('database', 'sqlite:db/trac.db',
+                         """Database connection
+                         [wiki:TracEnvironment#DatabaseConnectionStrings string]
+                         for this project
+                         """)])
 
 
 def _parse_db_str(db_str):

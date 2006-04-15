@@ -16,6 +16,7 @@
 
 from heapq import heappop, heappush
 
+from trac.config import IConfigurable, ConfigSection, ConfigOption
 from trac.core import *
 from trac.perm import PermissionError
 
@@ -40,11 +41,14 @@ class IRepositoryConnector(Interface):
 class RepositoryManager(Component):
     """Component that keeps track of the supported version control systems, and
     provides easy access to the configured implementation."""
+    implements(IConfigurable)
 
     connectors = ExtensionPoint(IRepositoryConnector)
 
     def __init__(self):
         self._connector = None
+
+    # Public API methods
 
     def get_repository(self, repos_type, repos_dir, authname):
         if not self._connector:
@@ -59,6 +63,15 @@ class RepositoryManager(Component):
                                  % repos_type
             self._connector = heappop(candidates)[1]
         return self._connector.get_repository(repos_type, repos_dir, authname)
+
+    # IConfigurable methods
+
+    def get_config_sections(self):
+        yield ConfigSection('trac', [
+            ConfigOption('repository_type', 'svn',
+                         "Repository connector type. (''since 0.10'')"),
+            ConfigOption('repository_dir', '',
+                         "Path to local repository")])
 
 
 class NoSuchChangeset(TracError):
