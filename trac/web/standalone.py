@@ -71,26 +71,25 @@ class BasicAuth(object):
         magic = '$' + magic + '$'
         return md5crypt(password, salt, magic) == the_hash
 
-    def send_auth_request(self, req):
-        req.send_response(401)
-        req.send_header('WWW-Authenticate', 'Basic realm="%s"' % self.realm)
-        req.end_headers()
+    def send_auth_request(self, environ, start_response):
+        start_response('401 Authentication Required',
+                       [('WWW-Authenticate', 'Basic realm="%s"' % self.realm)])('')
 
-    def do_auth(self, req):
-        if not 'Authorization' in req.headers or \
-               not req.headers['Authorization'].startswith('Basic'):
-            self.send_auth_request(req)
+    def do_auth(self, environ, start_response):
+        auth = environ.get('HTTP_AUTHORIZATION')
+        if not auth or not auth.startswith('Basic'):
+            self.send_auth_request(environ, start_response)
             return None
 
-        auth = req.headers['Authorization'][len('Basic')+1:]
+        auth = auth[len('Basic') + 1:]
         auth = b64decode(auth).split(':')
         if len(auth) != 2:
-            self.send_auth_request(req)
+            self.send_auth_request(environ, start_response)
             return None
 
         user, password = auth
         if not self.test(user, password):
-            self.send_auth_request(req)
+            self.send_auth_request(environ, start_response)
             return None
 
         return user
@@ -129,7 +128,7 @@ class DigestAuth(object):
                 values[n] = v
         return values
 
-    def send_auth_request(self, req, stale='false'):
+    def send_auth_request(self, environ, start_response, stale='false'):
         """Send a digest challange to the browser. Record used nonces
         to avoid replay attacks.
         """
@@ -137,42 +136,42 @@ class DigestAuth(object):
         self.active_nonces.append(nonce)
         if len(self.active_nonces) > DigestAuth.MAX_NONCES:
             self.active_nonces = self.active_nonces[-DigestAuth.MAX_NONCES:]
-        req.send_response(401)
-        req.send_header('WWW-Authenticate',
+        start_response('401 Authentication Required',
+                       [('WWW-Authenticate',
                         'Digest realm="%s", nonce="%s", qop="auth", stale="%s"'
-                        % (self.realm, nonce, stale))
-        req.end_headers()
+                        % (self.realm, nonce, stale))])('')
 
-    def do_auth(self, req):
-        if not 'Authorization' in req.headers or \
-               not req.headers['Authorization'].startswith('Digest'):
-            self.send_auth_request(req)
+    def do_auth(self, environ, start_response):
+        header = environ.get('HTTP_AUTHORIZATION')
+        if not header or not header.startswith('Digest'):
+            self.send_auth_request(environ, start_response)
             return None
-        auth = self.parse_auth_header(req.headers['Authorization'][7:])
+
+        auth = self.parse_auth_header(header[7:])
         required_keys = ['username', 'realm', 'nonce', 'uri', 'response',
-                           'nc', 'cnonce']
+                         'nc', 'cnonce']
         # Invalid response?
         for key in required_keys:
             if not auth.has_key(key):
-                self.send_auth_request(req)
+                self.send_auth_request(environ, start_response)
                 return None
         # Unknown user?
         if not self.hash.has_key(auth['username']):
-            self.send_auth_request(req)
+            self.send_auth_request(environ, start_response)
             return None
 
         kd = lambda x: md5.md5(':'.join(x)).hexdigest()
         a1 = self.hash[auth['username']]
-        a2 = kd([req.command, auth['uri']])
+        a2 = kd([environ['REQUEST_METHOD'], auth['uri']])
         # Is the response correct?
         correct = kd([a1, auth['nonce'], auth['nc'],
                       auth['cnonce'], auth['qop'], a2])
         if auth['response'] != correct:
-            self.send_auth_request(req)
+            self.send_auth_request(environ, start_response)
             return None
         # Is the nonce active, if not ask the client to use a new one
         if not auth['nonce'] in self.active_nonces:
-            self.send_auth_request(req, stale='true')
+            self.send_auth_request(environ, start_response, stale='true')
             return None
         self.active_nonces.remove(auth['nonce'])
         return auth['username']
@@ -206,10 +205,29 @@ class TracEnvironMiddleware(object):
         return self.application(environ, start_response)
 
 
+class HTTPAuthMiddleware(object):
+    def __init__(self, application, auths):
+        self.application = application
+        self.auths = auths
+
+    def __call__(self, environ, start_response):
+        path_info = environ.get('PATH_INFO', '')
+        path_parts = filter(None, path_info.split('/'))
+        if len(path_parts) > 1 and path_parts[1] == 'login':
+            env_name = path_parts[0]
+            if env_name:
+                auth = self.auths.get(env_name, self.auths.get('*'))
+                if auth:
+                    remote_user = auth.do_auth(environ, start_response)
+                    if not remote_user:
+                        return
+                    environ['REMOTE_USER'] = remote_user
+        return self.application(environ, start_response)
+
+
 class TracHTTPServer(ThreadingMixIn, WSGIServer):
 
-    def __init__(self, server_address, application, env_parent_dir, env_paths,
-                 auths):
+    def __init__(self, server_address, application, env_parent_dir, env_paths):
         WSGIServer.__init__(self, server_address, application,
                             request_handler=TracHTTPRequestHandler)
         self.environ['trac.env_path'] = None
@@ -218,34 +236,10 @@ class TracHTTPServer(ThreadingMixIn, WSGIServer):
         else:
             self.environ['trac.env_paths'] = env_paths
 
-        self.auths = auths
-
 
 class TracHTTPRequestHandler(WSGIRequestHandler):
 
     server_version = 'tracd/' + VERSION
-
-    def handle_one_request(self):
-        environ = self.setup_environ()
-        path_info = environ.get('PATH_INFO', '')
-        path_parts = filter(None, path_info.split('/'))
-        if len(path_parts) > 1 and path_parts[1] == 'login':
-            env_name = path_parts[0]
-            if env_name:
-                auth = self.server.auths.get(env_name,
-                                             self.server.auths.get('*'))
-                if not auth:
-                    self.send_error(500, 'Authentication not enabled for %s. '
-                                         'Please use the tracd --auth option.'
-                                         % env_name)
-                    return
-                remote_user = auth.do_auth(self)
-                if not remote_user:
-                    return
-                environ['REMOTE_USER'] = remote_user
-
-        gateway = self.server.gateway(self, environ)
-        gateway.run(self.server.application)
 
 
 def main():
@@ -314,7 +308,6 @@ def main():
         parser.error('either the --env_parent_dir option or at least one '
                      'environment must be specified')
 
-
     if options.port is None:
         options.port = {
             'http': 80,
@@ -327,11 +320,14 @@ def main():
     base_path = options.base_path.strip('/')
     if base_path:
         wsgi_app = BasePathMiddleware(wsgi_app, base_path)
-    
+
+    if auths:
+        wsgi_app = HTTPAuthMiddleware(wsgi_app, auths)
+
     if options.protocol == 'http':
         def serve():
             httpd = TracHTTPServer(server_address, wsgi_app,
-                                   options.env_parent_dir, args, auths)
+                                   options.env_parent_dir, args)
             httpd.serve_forever()
     elif options.protocol in ('scgi', 'ajp'):
         def serve():
