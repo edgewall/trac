@@ -371,7 +371,7 @@ class SubversionRepositoryTestCase(unittest.TestCase):
         self.assertEqual('Setting property on the repository_dir root',
                          chgset.message)
         changes = chgset.get_changes()
-        self.assertEqual(('', Node.DIRECTORY, Changeset.EDIT, '/', 12),
+        self.assertEqual(('/', Node.DIRECTORY, Changeset.EDIT, '/', 12),
                          changes.next())
         self.assertEqual(('trunk', Node.DIRECTORY, Changeset.EDIT, 'trunk', 6),
                          changes.next())
@@ -619,7 +619,7 @@ class ScopedSubversionRepositoryTestCase(unittest.TestCase):
         self.assertEqual('Setting property on the repository_dir root',
                          chgset.message)
         changes = chgset.get_changes()
-        self.assertEqual(('', Node.DIRECTORY, Changeset.EDIT, '/', 6),
+        self.assertEqual(('/', Node.DIRECTORY, Changeset.EDIT, '/', 6),
                          changes.next())
         self.assertRaises(StopIteration, changes.next)
 
@@ -655,9 +655,27 @@ class NonSelfContainedScopedTestCase(unittest.TestCase):
         chgset = self.repos.get_changeset(7)
         self.assertEqual(7, chgset.rev)
         changes = chgset.get_changes()
-        self.assertEqual(('', Node.DIRECTORY, Changeset.ADD, None, -1),
+        self.assertEqual(('/', Node.DIRECTORY, Changeset.ADD, None, -1),
                          changes.next())
         self.assertRaises(TracError, lambda: self.repos.get_node(None, 6))
+
+
+class AnotherNonSelfContainedScopedTestCase(unittest.TestCase):
+
+    def setUp(self):
+        self.repos = SubversionRepository(REPOS_PATH + '/branches', None,
+                                          logger_factory('test'))
+
+    def tearDown(self):
+        self.repos = None
+
+    def test_mixed_changeset_with_edit(self):
+        chgset = self.repos.get_changeset(9)
+        self.assertEqual(9, chgset.rev)
+        changes = chgset.get_changes()
+        self.assertEqual(('v1x/README.txt', Node.FILE, Changeset.EDIT,
+                          'v1x/README.txt', 8),
+                         changes.next())
 
 
 def suite():
@@ -671,6 +689,8 @@ def suite():
         suite.addTest(unittest.makeSuite(RecentPathScopedRepositoryTestCase,
             'test', suiteClass=SubversionRepositoryTestSetup))
         suite.addTest(unittest.makeSuite(NonSelfContainedScopedTestCase,
+            'test', suiteClass=SubversionRepositoryTestSetup))
+        suite.addTest(unittest.makeSuite(AnotherNonSelfContainedScopedTestCase,
             'test', suiteClass=SubversionRepositoryTestSetup))
     return suite
 
