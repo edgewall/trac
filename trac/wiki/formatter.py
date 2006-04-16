@@ -206,7 +206,7 @@ class Formatter(object):
     
     img_re = re.compile(r"\.(gif|jpg|jpeg|png)(\?.*)?$", re.IGNORECASE)
 
-    def __init__(self, env, req=None, absurls=0, db=None):
+    def __init__(self, env, req=None, absurls=False, db=None):
         self.env = env
         self.req = req
         self._db = db
@@ -724,7 +724,7 @@ class OneLinerFormatter(Formatter):
     """
     flavor = 'oneliner'
 
-    def __init__(self, env, absurls=0, db=None):
+    def __init__(self, env, absurls=False, db=None):
         Formatter.__init__(self, env, None, absurls, db)
 
     # Override a few formatters to disable some wiki syntax in "oneliner"-mode
@@ -793,7 +793,7 @@ class OutlineFormatter(Formatter):
     text."""
     flavor = 'outline'
     
-    def __init__(self, env, absurls=0, db=None):
+    def __init__(self, env, absurls=False, db=None):
         Formatter.__init__(self, env, None, absurls, db)
 
     # Override a few formatters to disable some wiki syntax in "outline"-mode
@@ -841,18 +841,25 @@ class OutlineFormatter(Formatter):
         self.outline.append((depth, '<a href="#%s">%s</a>' % (anchor, text)))
 
 
-def wiki_to_html(wikitext, env, req, db=None, absurls=0, escape_newlines=False):
+def wiki_to_html(wikitext, env, req, db=None,
+                 absurls=False, escape_newlines=False):
+    if not wikitext:
+        return ''
     out = StringIO()
     Formatter(env, req, absurls, db).format(wikitext, out, escape_newlines)
     return Markup(out.getvalue())
 
-def wiki_to_oneliner(wikitext, env, db=None, shorten=False, absurls=0):
+def wiki_to_oneliner(wikitext, env, db=None, shorten=False, absurls=False):
+    if not wikitext:
+        return ''
     out = StringIO()
     OneLinerFormatter(env, absurls, db).format(wikitext, out, shorten)
     return Markup(out.getvalue())
 
-def wiki_to_outline(wikitext, env, db=None, absurls=0, max_depth=None,
-                    min_depth=None):
+def wiki_to_outline(wikitext, env, db=None,
+                    absurls=False, max_depth=None, min_depth=None):
+    if not wikitext:
+        return ''
     out = StringIO()
     OutlineFormatter(env, absurls, db).format(wikitext, out, max_depth,
                                               min_depth)
