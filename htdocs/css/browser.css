@@ -53,16 +53,7 @@ h1 .sep { color: #666; padding: 0 .1em }
 #dirlist td.rev { text-align: right }
 #dirlist td.change { font-size: 85%; vertical-align: middle; white-space: nowrap }
 
-/* Log */
-tr.diff input { 
- padding: 0 1em 0 1em;
- margin: 0; 
-}
-
-div.buttons {
- clear: left;
-}
-
+/* Style for the ''View Changes'' button */
 #anydiff {
  margin: 0 0 1em;
  float: left;
@@ -74,7 +65,20 @@ div.buttons {
  vertical-align: baseline;
  margin: 0 -0.5em 0 1em;
 }
+@media print {
+ #anydiff form { display:  none }
+}
 
+
+/* Log */
+tr.diff input { 
+ padding: 0 1em 0 1em;
+ margin: 0; 
+}
+
+div.buttons {
+ clear: left;
+}
 
 /* Styles for the revision log table
    (extends the styles for "table.listing") */
