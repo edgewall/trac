@@ -73,23 +73,18 @@ class AboutModule(Component):
     def _render_config(self, req):
         req.perm.assert_permission('CONFIG_VIEW')
         req.hdf['about.page'] = 'config'
-        # Gather default values
-        defaults = {}
-        for section, options in self.env.get_default_config().iteritems():
-            defaults[section] = default_options = {}
-            for opt in options:
-                default_options[opt.name] = opt.default
         
         # Export the config table to hdf
         sections = []
         for section in self.config.sections():
             options = []
-            default_options = defaults.get(section)
+            default_options = self.config.getdefaults().get(section)
             for name,value in self.config.options(section):
                 default = default_options and default_options.get(name) or ''
-                options.append({'name': name, 'value': value,
-                                'valueclass': (value == default and \
-                                               'defaultvalue' or 'value')})
+                options.append({
+                    'name': name, 'value': value,
+                    'valueclass': (unicode(value) == unicode(default) 
+                                   and 'defaultvalue' or 'value')})
             options.sort(lambda x,y: cmp(x['name'], y['name']))
             sections.append({'name': section, 'options': options})
         sections.sort(lambda x,y: cmp(x['name'], y['name']))
