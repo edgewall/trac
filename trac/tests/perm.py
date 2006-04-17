@@ -82,8 +82,6 @@ class PermissionSystemTestCase(unittest.TestCase):
         self.env = EnvironmentStub(enable=[perm.PermissionSystem,
                                            perm.DefaultPermissionStore,
                                            TestPermissionRequestor])
-        self.env.config.setdefault('trac', 'permission_store',
-                                   'DefaultPermissionStore')
         self.perm = perm.PermissionSystem(self.env)
 
     def test_all_permissions(self):
@@ -134,8 +132,6 @@ class PermTestCase(unittest.TestCase):
                            ('developer', 'employee'),
                            ('bob', 'developer')])
         db.commit()
-        self.env.config.setdefault('trac', 'permission_store',
-                                   'DefaultPermissionStore')
         self.perm = perm.PermissionCache(self.env, 'bob')
 
     def test_has_permission(self):

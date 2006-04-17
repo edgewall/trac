@@ -28,8 +28,11 @@ class ConfigurationTestCase(unittest.TestCase):
     def setUp(self):
         self.filename = os.path.join(tempfile.gettempdir(), 'trac-test.ini')
         self._write([])
+        self._orig_registry = Option.registry
+        Option.registry = {}
 
     def tearDown(self):
+        Option.registry = self._orig_registry
         os.remove(self.filename)
 
     def _write(self, lines):
@@ -44,7 +47,9 @@ class ConfigurationTestCase(unittest.TestCase):
         self.assertEquals('', config.get('a', 'option'))
         self.assertEquals('value', config.get('a', 'option', 'value'))
 
-        config.setdefault('a', 'option', 'value')
+        class Foo(object):
+            option_a = Option('a', 'option', 'value')
+
         self.assertEquals('value', config.get('a', 'option'))
 
     def test_default_bool(self):
@@ -53,16 +58,20 @@ class ConfigurationTestCase(unittest.TestCase):
         self.assertEquals(True, config.getbool('a', 'option', 'yes'))
         self.assertEquals(True, config.getbool('a', 'option', 1))
 
-        config.setdefault('a', 'option', 'true')
+        class Foo(object):
+            option_a = Option('a', 'option', 'true')
+
         self.assertEquals(True, config.getbool('a', 'option'))
 
     def test_default_int(self):
         config = Configuration(self.filename)
         self.assertRaises(ConfigurationError, config.getint, 'a', 'option')
-        self.assertEquals(1, config.getbool('a', 'option', '1'))
-        self.assertEquals(1, config.getbool('a', 'option', 1))
+        self.assertEquals(1, config.getint('a', 'option', '1'))
+        self.assertEquals(1, config.getint('a', 'option', 1))
 
-        config.setdefault('a', 'option', '2')
+        class Foo(object):
+            option_a = Option('a', 'option', '2')
+
         self.assertEquals(2, config.getint('a', 'option'))
 
     def test_read_and_get(self):
@@ -140,4 +149,4 @@ def suite():
     return unittest.makeSuite(ConfigurationTestCase, 'test')
 
 if __name__ == '__main__':
-    unittest.main()
+    unittest.main(defaultTest='suite')

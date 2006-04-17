@@ -78,7 +78,7 @@ class AboutModule(Component):
         sections = []
         for section in self.config.sections():
             options = []
-            default_options = self.config.getdefaults().get(section)
+            default_options = self.config.defaults().get(section)
             for name,value in self.config.options(section):
                 default = default_options and default_options.get(name) or ''
                 options.append({

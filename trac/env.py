@@ -212,7 +212,7 @@ class Environment(Component, ComponentManager):
         os.mkdir(os.path.join(self.path, 'conf'))
         _create_file(os.path.join(self.path, 'conf', 'trac.ini'))
         self.setup_config()
-        for section, default_options in self.config.getdefaults().items():
+        for section, default_options in self.config.defaults().items():
             for name, value in default_options.items():
                 self.config.set(section, name, value)
         for section, name, value in options:
@@ -384,7 +384,7 @@ class EnvironmentSetup(Component):
     def _update_sample_config(self):
         from ConfigParser import ConfigParser
         config = ConfigParser()
-        for section, options in self.config.getdefaults().items():
+        for section, options in self.config.defaults().items():
             config.add_section(section)
             for name, value in options.items():
                 config.set(section, name, value)

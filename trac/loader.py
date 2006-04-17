@@ -47,8 +47,8 @@ def load_components(env):
                                                              plugin_file))
                 module = imp.load_source(plugin_name, plugin_file)
                 loaded_components.append(plugin_name)
-                env.config.setdefault('components', plugin_name + '.*',
-                                      'enabled')
+                if plugin_name + '.*' not in env.config['components']:
+                    env.config['components'].set(plugin_name + '.*', 'enabled')
         except Exception, e:
             env.log.error('Failed to load plugin from %s', plugin_file,
                           exc_info=True)
@@ -116,8 +116,9 @@ def load_components(env):
                 # loaded from the environment plugins directory.
                 if os.path.dirname(egg.location) == plugins_dir:
                     for module in modules:
-                        env.config.setdefault('components', module + '.*',
-                                              'enabled')
+                        if module + '.*' not in env.config['components']:
+                            env.config['components'].set(module + '.*',
+                                                         'enabled')
 
     # Load default components
     from trac.db_default import default_components

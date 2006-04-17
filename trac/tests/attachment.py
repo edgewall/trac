@@ -25,7 +25,7 @@ class AttachmentTestCase(unittest.TestCase):
         self.env.path = os.path.join(tempfile.gettempdir(), 'trac-tempenv')
         os.mkdir(self.env.path)
         self.attachments_dir = os.path.join(self.env.path, 'attachments')
-        self.env.config.setdefault('attachment', 'max_size', 512)
+        self.env.config.set('attachment', 'max_size', 512)
 
         self.perm = Mock(assert_permission=lambda x: None,
                          has_permission=lambda x: True)

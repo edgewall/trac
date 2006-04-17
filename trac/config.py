@@ -44,7 +44,6 @@ class Configuration(object):
     """
     def __init__(self, filename):
         self._sections = {}
-        self._defaults = {}
         self.filename = filename
         self.parser = ConfigParser()
         self._lastmtime = 0
@@ -52,9 +51,6 @@ class Configuration(object):
         self.site_parser = ConfigParser()
         self._lastsitemtime = 0
         self.parse_if_needed()
-
-        for (section, name), option in Option.registry.items():
-            self[section].setdefault(name, option.default)
 
     def __contains__(self, name):
         """Return whether the configuration contains a section of the given
@@ -104,27 +100,22 @@ class Configuration(object):
         """
         return self[section].getlist(name, default, sep, keep_empty)
 
-    def getdefaults(self):
-        """Returns a ConfigParser instance that is populated with the default
-        values.
-        
-        (since Trac 0.10)
-        """
-        options = {}
-        for (section, name), value in self._defaults.items():
-            options.setdefault(section, {})[name] = value
-        return options
-
-    def setdefault(self, section, name, value):
-        """Set the default value of a specific option."""
-        return self[section].setdefault(name, value)
-
     def set(self, section, name, value):
         """Change a configuration value.
         
         These changes are not persistent unless saved with `save()`.
         """
         self[section].set(name, value)
+
+    def defaults(self):
+        """Returns a dictionary of the default configuration values.
+        
+        (since Trac 0.10)
+        """
+        defaults = {}
+        for (section, name), option in Option.registry.items():
+            defaults.setdefault(section, {})[name] = option.default
+        return defaults
 
     def options(self, section):
         """Return a list of `(name, value)` tuples for every option in the
@@ -140,33 +131,40 @@ class Configuration(object):
         if self.parser.has_section(section):
             self.parser.remove_option(section, name)
 
-    def sections(self, include_defaults=False):
+    def sections(self):
         """Return a list of section names."""
-        sections = set(self.parser.sections())
-        if include_defaults:
-            sections |= set([section for section, name in self._defaults])
-        return sorted(sections)
+        return sorted(set(self.site_parser.sections() + self.parser.sections()))
 
     def save(self):
         """Write the configuration options to the primary file."""
         if not self.filename:
             return
+
+        # Only save options that differ from the defaults
+        config = ConfigParser()
+        for section in self.sections():
+            for option in self[section]:
+                default = self.site_parser.has_option(section, option) and \
+                          self.site_parser.get(section, option) or None
+                current = self.parser.has_option(section, option) and \
+                          self.parser.get(section, option) or None
+                if current is not None and current != default:
+                    if not config.has_section(section):
+                        config.add_section(section)
+                    config.set(section, option, current)
+
         fileobj = file(self.filename, 'w')
         try:
-            self.parser.write(fileobj)
+            config.write(fileobj)
         finally:
             fileobj.close()
 
     def parse_if_needed(self):
-        # Merge global configuration option into _defaults
+        # Load global configuration
         if os.path.isfile(self.site_filename):
             modtime = os.path.getmtime(self.site_filename)
             if modtime > self._lastsitemtime:
                 self.site_parser.read(self.site_filename)
-                for section in self.site_parser.sections():
-                    for option in self.site_parser.options(section):
-                        value = self.site_parser.get(section, option)
-                        self._defaults[(section, option)] = value
                 self._lastsitemtime = modtime
 
         if not self.filename or not os.path.isfile(self.filename):
@@ -189,27 +187,35 @@ class Section(object):
         self.name = name
 
     def __contains__(self, name):
-        return self.config.parser.has_option(self.name, name)
+        return self.config.parser.has_option(self.name, name) or \
+               self.config.site_parser.has_option(self.name, name) 
 
     def __iter__(self):
         options = []
         if self.config.parser.has_section(self.name):
             for option in self.config.parser.options(self.name):
-                options.append(option)
+                options.append(option.lower())
                 yield option
-        for section, option in self.config._defaults:
-            if section == self.name and option not in options:
-                yield option
+        if self.config.site_parser.has_section(self.name):
+            for option in self.config.site_parser.options(self.name):
+                if option.lower() not in options:
+                    yield option
 
     def __repr__(self):
         return '<Section [%s]>' % (self.name)
 
     def get(self, name, default=None):
         """Return the value of the specified option."""
-        if name in self:
+        if self.config.parser.has_option(self.name, name):
             value = self.config.parser.get(self.name, name)
+        elif self.config.site_parser.has_option(self.name, name):
+            value = self.config.site_parser.get(self.name, name)
         else:
-            value = self.config._defaults.get((self.name, name)) or default
+            option = Option.registry.get((self.name, name))
+            if option:
+                value = option.default or default
+            else:
+                value = default
         if value is None:
             return ''
         return to_unicode(value)
@@ -259,11 +265,6 @@ class Section(object):
         for name in self:
             yield name, self.get(name)
 
-    def setdefault(self, name, value):
-        """Set the default value of a specific option."""
-        if (self.name, name) not in self.config._defaults:
-            self.config._defaults[(self.name, name)] = value
-
     def set(self, name, value):
         """Change a configuration value.
         
@@ -286,8 +287,9 @@ class Option(object):
         
         @param section: the name of the configuration section this option
             belongs to
+        @param name: the name of the option
         @param default: the default value for the option
-        @param default: documentation of the option
+        @param doc: documentation of the option
         """
         self.section = section
         self.name = name
@@ -301,7 +303,8 @@ class Option(object):
         config = getattr(instance, 'config', None)
         if config and isinstance(config, Configuration):
             section = config[self.section]
-            return self.accessor(section, self.name, self.default)
+            value = self.accessor(section, self.name, self.default)
+            return value
         return None
 
     def __set__(self, instance, value):
