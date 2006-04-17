@@ -24,7 +24,7 @@ from StringIO import StringIO
 import time
 
 from trac import util
-from trac.config import *
+from trac.config import IntOption
 from trac.core import *
 from trac.mimeview import Mimeview, is_binary
 from trac.perm import IPermissionRequestor
@@ -43,7 +43,7 @@ from trac.wiki import wiki_to_html, wiki_to_oneliner, IWikiSyntaxProvider, \
 
 
 class DiffArgs(dict):
-    def __getattr__(self,str):
+    def __getattr__(self, str):
         return self[str]
 
 
@@ -62,30 +62,20 @@ class ChangesetModule(Component):
     In that case, there's no changeset information displayed.
     """
 
-    implements(IConfigurable, INavigationContributor, IPermissionRequestor,
-               IRequestHandler, ITimelineEventProvider, IWikiSyntaxProvider,
-               ISearchSource)
+    implements(INavigationContributor, IPermissionRequestor, IRequestHandler,
+               ITimelineEventProvider, IWikiSyntaxProvider, ISearchSource)
 
-    # IConfigurable methods
+    timeline_show_files = IntOption('timeline', 'changeset_show_files', 0,
+        """Number of files to show (`-1` for unlimited, `0` to disable).""")
 
-    def get_config_sections(self):
-        yield ConfigSection('timeline', [
-            ConfigOption('changeset_show_files', '0',
-                         """Number of files to show (`-1` for unlimited,
-                         `0` to disable)                           
-                         """)])
-        yield ConfigSection('changeset', [
-            ConfigOption('max_diff_files', '1000',
-                         """Maximum number of modified files for which the
-                         changeset view will attempt to show the diffs inlined.
-                         (''since 0.10'')
-                         """),
-            ConfigOption('max_diff_bytes', '10000000',
-                         """Maximum total size in bytes of the modified files
-                         (their old size plus their new size) for which the
-                         changeset view will attempt to show the diffs inlined.
-                         (''since 0.10'')
-                         """)])
+    max_diff_files = IntOption('changeset', 'max_diff_files', 0,
+        """Maximum number of modified files for which the changeset view will
+        attempt to show the diffs inlined (''since 0.10'')."""),
+
+    max_diff_bytes = IntOption('changeset', 'max_diff_bytes', 10000000,
+        """Maximum total size in bytes of the modified files (their old size
+        plus their new size) for which the changeset view will attempt to show
+        the diffs inlined (''since 0.10'').""")
 
     # INavigationContributor methods
 
@@ -103,7 +93,7 @@ class ChangesetModule(Component):
     # IRequestHandler methods
 
     _request_re = re.compile(r"/changeset(?:/([^/]+))?(/.*)?$")
-    
+
     def match_request(self, req):
         match = re.match(self._request_re, req.path_info)
         if match:
@@ -121,7 +111,7 @@ class ChangesetModule(Component):
          * If `new_path` and `old_path` are equal (or `old_path` is omitted)
            and `new` and `old` are equal (or `old` is omitted),
            then we're about to view a revision Changeset: `chgset` is True.
-           Furthermore, if the path is not the root, the changeset is 
+           Furthermore, if the path is not the root, the changeset is
            ''restricted'' to that path (only the changes affecting that path,
            its children or its ancestor directories will be shown).
          * In any other case, the set of changes corresponds to arbitrary
@@ -129,11 +119,11 @@ class ChangesetModule(Component):
            are equal, the ''restricted'' flag will also be set, meaning in this
            case that the differences between two revisions are restricted to
            those occurring on that path.
-         
+
         In any case, either path@rev pairs must exist.
         """
         req.perm.assert_permission('CHANGESET_VIEW')
-        
+
         # -- retrieve arguments
         new_path = req.args.get('new_path')
         new = req.args.get('new')
@@ -269,15 +259,15 @@ class ChangesetModule(Component):
                                                    rev=diff.old_rev),
                       }
             }
-        
+
         if chgset: # Changeset Mode (possibly restricted on a path)
             path, rev = diff.new_path, diff.new_rev
 
-            # -- getting the change summary from the Changeset.get_changes 
+            # -- getting the change summary from the Changeset.get_changes
             def get_changes():
                 for npath, kind, change, opath, orev in chgset.get_changes():
                     old_node = new_node = None
-                    if (restricted and 
+                    if (restricted and
                         not (npath == path or                # same path
                              npath.startswith(path + '/') or # npath is below
                              path.startswith(npath + '/'))): # npath is above
@@ -287,7 +277,7 @@ class ChangesetModule(Component):
                     if change != Changeset.DELETE:
                         new_node = repos.get_node(npath, rev)
                     yield old_node, new_node, kind, change
-                    
+
             def _changeset_title(rev):
                 if restricted:
                     return 'Changeset %s for %s' % (rev, path)
@@ -346,11 +336,11 @@ class ChangesetModule(Component):
                     add_link(req, 'next', next_href, _changeset_title(next_rev))
 
         else: # Diff Mode
-            # -- getting the change summary from the Repository.get_changes 
+            # -- getting the change summary from the Repository.get_changes
             def get_changes():
                 for d in repos.get_changes(**diff):
                     yield d
-                    
+
             reverse_href = req.href.changeset(diff.old_rev, diff.old_path,
                                                    old=diff.new_rev,
                                                    old_path=diff.new_path)
@@ -419,7 +409,7 @@ class ChangesetModule(Component):
 
         def _content_changes(old_node, new_node):
             """Returns the list of differences.
-            
+
             The list is empty when no differences between comparable files
             are detected, but the return value is None for non-comparable files.
             """
@@ -455,8 +445,8 @@ class ChangesetModule(Component):
             else:
                 return []
 
-        max_diff_bytes = self.config['changeset'].getint('max_diff_bytes')
-        max_diff_files = self.config['changeset'].getint('max_diff_files')
+        max_diff_bytes = self.max_diff_bytes
+        max_diff_files = self.max_diff_files
         diff_bytes = diff_files = 0
         if max_diff_bytes or max_diff_files:
             for old_node, new_node, kind, change in get_changes():
@@ -465,8 +455,8 @@ class ChangesetModule(Component):
                     diff_bytes += _estimate_changes(old_node, new_node)
         show_diffs = (not max_diff_files or diff_files <= max_diff_files) and \
                      (not max_diff_bytes or diff_bytes <= max_diff_bytes or \
-                      diff_files == 1)                      
-                
+                      diff_files == 1)
+
         idx = 0
         for old_node, new_node, kind, change in get_changes():
             if change != Changeset.EDIT:
@@ -496,7 +486,7 @@ class ChangesetModule(Component):
                             new_node.created_rev, new_node.created_path,
                             old=old_node.created_rev,
                             old_path=old_node.created_path)
-                    info['diff_href'] = diff_href                        
+                    info['diff_href'] = diff_href
                 req.hdf['changeset.changes.%d' % idx] = info
             idx += 1 # the sequence should be immutable
 
@@ -589,7 +579,7 @@ class ChangesetModule(Component):
         buf.seek(0, 2) # be sure to be at the end
         req.send_header("Content-Length", buf.tell())
         req.end_headers()
-        
+
         req.write(buf.getvalue())
 
     def title_for_diff(self, diff):
@@ -611,7 +601,7 @@ class ChangesetModule(Component):
     def get_timeline_events(self, req, start, stop, filters):
         if 'changeset' in filters:
             format = req.args.get('format')
-            show_files = self.config['timeline'].getint('changeset_show_files')
+            show_files = self.timeline_show_files
             db = self.env.get_db_cnx()
             repos = self.env.get_repository(req.authname)
             for chgset in repos.get_changesets(start, stop):
@@ -644,10 +634,10 @@ class ChangesetModule(Component):
     # IWikiSyntaxProvider methods
 
     CHANGESET_ID = r"[a-fA-F\d]+"
-    
+
     def get_wiki_syntax(self):
         yield (
-            # [...] form: start with optional intertrac: [T... or [trac ... 
+            # [...] form: start with optional intertrac: [T... or [trac ...
             r"!?\[(?P<it_changeset>%s\s*)" % Formatter.INTERTRAC_SCHEME +
             # hex digits + optional /path for the restricted changeset
             r"%s(?:/[^\]]*)?\]|" % self.CHANGESET_ID +
@@ -696,7 +686,7 @@ class ChangesetModule(Component):
             old, new = pathrev(p1), pathrev(p2)
             diff = DiffArgs(old_path=old[0], old_rev=old[1],
                             new_path=new[0], new_rev=new[1])
-        else: 
+        else:
             old_path, old_rev = pathrev(params)
             new_rev = None
             if old_rev and ':' in old_rev:
@@ -705,12 +695,12 @@ class ChangesetModule(Component):
                             new_path=old_path, new_rev=new_rev)
         title = self.title_for_diff(diff)
         href = formatter.href.changeset(new_path=diff.new_path or None,
-                                        new=diff.new_rev, 
+                                        new=diff.new_rev,
                                         old_path=diff.old_path or None,
                                         old=diff.old_rev)
         return '<a class="changeset" title="%s" href="%s">%s</a>' \
                % (title, href, label)
-    
+
     # ISearchSource methods
 
     def get_search_filters(self, req):
@@ -750,7 +740,7 @@ class AnyDiffModule(Component):
         old_path = req.args.get('old_path')
         old_rev = req.args.get('old_rev')
 
-        # -- normalize 
+        # -- normalize
         repos = self.env.get_repository(req.authname)
         new_path = repos.normalize_path(new_path)
         new_rev = repos.normalize_rev(new_rev)
@@ -760,7 +750,7 @@ class AnyDiffModule(Component):
         authzperm = SubversionAuthorizer(self.env, req.authname)
         authzperm.assert_permission_for_changeset(new_rev)
         authzperm.assert_permission_for_changeset(old_rev)
-        
+
         # -- prepare rendering
         req.hdf['anydiff'] = {
             'new_path': new_path,

@@ -21,8 +21,8 @@
 import re
 from StringIO import StringIO
 
+from trac.config import IntOption, Option
 from trac.core import *
-from trac.config import *
 from trac.util import to_utf8, to_unicode
 from trac.util.markup import escape, Markup, Fragment, html
 
@@ -219,7 +219,14 @@ class Mimeview(Component):
     renderers = ExtensionPoint(IHTMLPreviewRenderer)
     annotators = ExtensionPoint(IHTMLPreviewAnnotator)
 
-    implements(IConfigurable)
+    default_charset = Option('trac', 'default_charset', 'iso-8859-15',
+        """Charset to be used when in doubt.""")
+
+    tab_width = IntOption('mimeviewer', 'tab_width', 8,
+        """Displayed tab width in file preview (''since 0.9'').""")
+
+    max_preview_size = IntOption('mimeviewer', 'max_preview_size', 262144,
+        """Maximum file size for HTML preview. (''since 0.9'').""")
 
     # Public API
 
@@ -274,8 +281,7 @@ class Mimeview(Component):
                     if expanded_content is None:
                         content = content_to_unicode(self.env, content,
                                                      full_mimetype)
-                        tabw = self.config['mimeviewer'].getint('tab_width')
-                        expanded_content = content.expandtabs(tabw)
+                        expanded_content = content.expandtabs(self.tab_width)
                     rendered_content = expanded_content
                 result = renderer.render(req, full_mimetype, rendered_content,
                                          filename, url)
@@ -333,7 +339,7 @@ class Mimeview(Component):
         return buf.getvalue()
 
     def get_max_preview_size(self):
-        return self.config['mimeviewer'].getint('max_preview_size')
+        return self.max_preview_size
 
     def get_charset(self, content='', mimetype=None):
         """Infer the character encoding from the `content` or the `mimetype`.
@@ -353,7 +359,7 @@ class Mimeview(Component):
             utf = detect_unicode(content)
             if utf is not None:
                 return utf
-        return self.config.get('trac', 'default_charset')
+        return self.default_charset
 
     def get_mimetype(self, filename, content):
         """Infer the MIME type from the `filename` or the `content`.
@@ -399,20 +405,6 @@ class Mimeview(Component):
         else:
             return {'preview': self.render(req, mimetype, content, filename,
                                            url, annotations)}
-
-    # IConfigurable
-
-    def get_config_sections(self):
-        yield ConfigSection('trac', [
-            ConfigOption('default_charset', 'iso-8859-15',
-                         "Charset to be used in last resort.")])
-        yield ConfigSection('mimeviewer', [
-            ConfigOption('tab_width', '8',
-                         """Displayed tab width in file preview (''since 0.9'')
-                         """),
-            ConfigOption('max_preview_size', '262144',
-                         """Maximum file size for HTML preview. (''since 0.9'')
-                         """)])
 
 
 def _html_splitlines(lines):

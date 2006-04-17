@@ -16,40 +16,19 @@
 
 from ConfigParser import ConfigParser
 import os
+try:
+    set
+except NameError:
+    from sets import Set as set
 import sys
 
-from trac.core import *
-from trac.util import doctrim, to_unicode
+from trac.core import ExtensionPoint, TracError
+from trac.util import sorted, to_unicode
 
-__all__ = ['IConfigurable', 'ConfigSection', 'ConfigOption', 'Configuration',
-           'ConfigurationError', 'default_dir']
+__all__ = ['Configuration', 'Option', 'BoolOption', 'IntOption', 'ListOption',
+           'ExtensionOption', 'ConfigurationError', 'default_dir']
 
 _TRUE_VALUES = ('yes', 'true', 'on', 'aye', '1', 1, True)
-
-
-class IConfigurable(Interface):
-    def get_config_sections():
-        """Generate `ConfigSection` objects"""
-         
-
-class ConfigSection(object):
-    def __init__(self, name, options, header=None, footer=None):
-        """
-        `name` is the section name.
-        `options` is a list of `ConfigOption` objects.
-        `header` is some documentation for the section that should appear
-        before the list of options, as opposed to the `footer` documentation.
-        """
-        self.name = name
-        self.options = options
-        self.header = header and doctrim(header) or ''
-        self.footer = footer and doctrim(footer) or ''
-        
-class ConfigOption(object):
-    def __init__(self, name, default, doc):
-        self.name = name
-        self.default = default or ''
-        self.doc = doc and doctrim(doc) or ''
 
 
 class ConfigurationError(TracError):
@@ -73,6 +52,9 @@ class Configuration(object):
         self.site_parser = ConfigParser()
         self._lastsitemtime = 0
         self.parse_if_needed()
+
+        for (section, name), option in Option.registry.items():
+            self[section].setdefault(name, option.default)
 
     def __contains__(self, name):
         """Return whether the configuration contains a section of the given
@@ -110,17 +92,28 @@ class Configuration(object):
         """
         return self[section].getint(name, default)
 
-    def getlist(self, section, name, default=None, sep=',', keep_empty=True):
+    def getlist(self, section, name, default=None, sep=',', keep_empty=False):
         """Return a list of values that have been specified as a single
         comma-separated option.
         
         A different separator can be specified using the `sep` parameter. If
-        the `keep_empty` parameter is set to `False`, empty elements are
-        omitted from the list.
+        the `keep_empty` parameter is set to `True`, empty elements are
+        included in the list.
         
         (since Trac 0.10)
         """
         return self[section].getlist(name, default, sep, keep_empty)
+
+    def getdefaults(self):
+        """Returns a ConfigParser instance that is populated with the default
+        values.
+        
+        (since Trac 0.10)
+        """
+        options = {}
+        for (section, name), value in self._defaults.items():
+            options.setdefault(section, {})[name] = value
+        return options
 
     def setdefault(self, section, name, value):
         """Set the default value of a specific option."""
@@ -147,9 +140,12 @@ class Configuration(object):
         if self.parser.has_section(section):
             self.parser.remove_option(section, name)
 
-    def sections(self):
+    def sections(self, include_defaults=False):
         """Return a list of section names."""
-        return self.parser.sections()
+        sections = set(self.parser.sections())
+        if include_defaults:
+            sections |= set([section for section, name in self._defaults])
+        return sorted(sections)
 
     def save(self):
         """Write the configuration options to the primary file."""
@@ -205,13 +201,18 @@ class Section(object):
             if section == self.name and option not in options:
                 yield option
 
+    def __repr__(self):
+        return '<Section [%s]>' % (self.name)
+
     def get(self, name, default=None):
         """Return the value of the specified option."""
-        if not name in self:
-            if default is None:
-                return self.config._defaults.get((self.name, name), '')
-            return default
-        return to_unicode(self.config.parser.get(self.name, name))
+        if name in self:
+            value = self.config.parser.get(self.name, name)
+        else:
+            value = self.config._defaults.get((self.name, name)) or default
+        if value is None:
+            return ''
+        return to_unicode(value)
 
     def getbool(self, name, default=None):
         """Return the value of the specified option as boolean.
@@ -219,9 +220,10 @@ class Section(object):
         This method returns `True` if the option value is one of "yes", "true",
         "on", or "1", ignoring case. Otherwise `False` is returned.
         """
-        if isinstance(default, basestring):
-            default = default.lower()
-        return self.get(name, default) in _TRUE_VALUES
+        value = self.get(name, default)
+        if isinstance(value, basestring):
+            value = value.lower() in _TRUE_VALUES
+        return bool(value)
 
     def getint(self, name, default=None):
         """Return the value of the specified option as integer.
@@ -244,9 +246,10 @@ class Section(object):
         from the list.
         """
         value = self.get(name, default)
-        if value is None:
-            return []
-        items = [item.strip() for item in value.split(sep)]
+        if isinstance(value, basestring):
+            items = [item.strip() for item in value.split(sep)]
+        else:
+            items = list(value)
         if not keep_empty:
             items = filter(None, items)
         return items
@@ -268,7 +271,89 @@ class Section(object):
         """
         if not self.config.parser.has_section(self.name):
             self.config.parser.add_section(self.name)
-        return self.config.parser.set(self.name, name, value.encode('utf-8'))
+        return self.config.parser.set(self.name, name,
+                                      to_unicode(value).encode('utf-8'))
+
+
+class Option(object):
+    """Descriptor for configuration options on `Configurable` subclasses."""
+
+    registry = {}
+    accessor = Section.get
+
+    def __init__(self, section, name, default=None, doc=''):
+        """Create the extension point.
+        
+        @param section: the name of the configuration section this option
+            belongs to
+        @param default: the default value for the option
+        @param default: documentation of the option
+        """
+        self.section = section
+        self.name = name
+        self.default = default
+        self.registry[(self.section, self.name)] = self
+        self.__doc__ = doc
+
+    def __get__(self, instance, owner):
+        if instance is None:
+            return self
+        config = getattr(instance, 'config', None)
+        if config and isinstance(config, Configuration):
+            section = config[self.section]
+            return self.accessor(section, self.name, self.default)
+        return None
+
+    def __set__(self, instance, value):
+        raise AttributeError, 'can\'t set attribute'
+
+    def __repr__(self):
+        return '<%s [%s] "%s">' % (self.__class__.__name__, self.section,
+                                   self.name)
+
+
+class BoolOption(Option):
+    """Descriptor for boolean configuration options."""
+    accessor = Section.getbool
+
+
+class IntOption(Option):
+    """Descriptor for integer configuration options."""
+    accessor = Section.getint
+
+
+class ListOption(Option):
+    """Descriptor for configuration options that contain multiple values
+    separated by a specific character."""
+
+    def __init__(self, section, name, default=None, sep=',', keep_empty=False,
+                 doc=''):
+        Option.__init__(self, section, name, default, doc)
+        self.sep = sep
+        self.keep_empty = keep_empty
+
+    def accessor(self, section, name, default):
+        return section.getlist(name, default, self.sep, self.keep_empty)
+
+
+class ExtensionOption(Option):
+
+    def __init__(self, section, name, interface, default=None, doc=''):
+        Option.__init__(self, section, name, default, doc)
+        self.xtnpt = ExtensionPoint(interface)
+
+    def __get__(self, instance, owner):
+        value = Option.__get__(self, instance, owner)
+        for impl in self.xtnpt.extensions(instance):
+            if impl.__class__.__name__ == value:
+                return impl
+        if self.default is not None:
+            return self.default(instance.env)
+        raise AttributeError('Cannot find an implementation of the "%s" '
+                             'interface named "%s".  Please update the option '
+                             '%s.%s in trac.ini.'
+                             % (self.xtnpt.interface.__name__, value,
+                                self.section, self.name))
 
 
 def default_dir(name):

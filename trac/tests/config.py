@@ -98,9 +98,9 @@ class ConfigurationTestCase(unittest.TestCase):
     def test_read_and_getlist_keep_empty(self):
         self._write(['[a]', 'option = ,bar,baz'])
         config = Configuration(self.filename)
-        self.assertEquals(['', 'bar', 'baz'], config.getlist('a', 'option'))
-        self.assertEquals(['bar', 'baz'],
-                          config.getlist('a', 'option', keep_empty=False))
+        self.assertEquals(['bar', 'baz'], config.getlist('a', 'option'))
+        self.assertEquals(['', 'bar', 'baz'],
+                          config.getlist('a', 'option', keep_empty=True))
 
     def test_set_and_save(self):
         config = Configuration(self.filename)

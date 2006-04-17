@@ -69,6 +69,7 @@ def add_javascript(req, filename):
         idx += 1
     req.hdf['chrome.js.%i' % idx] = href
 
+
 class INavigationContributor(Interface):
     """Extension point interface for components that contribute items to the
     navigation.
@@ -115,11 +116,41 @@ class Chrome(Component):
     """Responsible for assembling the web site chrome, i.e. everything that
     is not actual page content.
     """
-    implements(IEnvironmentSetupParticipant, IConfigurable,
-               IRequestHandler, ITemplateProvider, IWikiSyntaxProvider)
+    implements(IEnvironmentSetupParticipant, IRequestHandler, ITemplateProvider,
+               IWikiSyntaxProvider)
 
     navigation_contributors = ExtensionPoint(INavigationContributor)
     template_providers = ExtensionPoint(ITemplateProvider)
+
+    templates_dir = Option('trac', 'templates_dir', default_dir('templates'),
+        """Path to the !ClearSilver templates.""")
+
+    htdocs_location = Option('trac', 'htdocs_location', '',
+        """Base URL of the core static resources.""")
+
+    metanav_order = ListOption('trac', 'metanav',
+                               'login,logout,settings,help,about', doc=
+        """List of items IDs to display in the navigation bar `metanav`.""")
+
+    mainnav_order = ListOption('trac', 'mainnav',
+                               'wiki,timeline,roadmap,browser,tickets,'
+                               'newticket,search', doc=
+        """List of item IDs to display in the navigation bar `mainnav`.""")
+
+    logo_link = Option('header_logo', 'link', 'http://example.org/',
+        """URL to link to from header logo.""")
+
+    logo_src = Option('header_logo', 'src', 'common/trac_banner.png',
+        """URL of the image to use as header logo.""")
+
+    logo_alt = Option('header_logo', 'alt', '',
+        """Alternative text for the header logo.""")
+
+    logo_width = IntOption('header_logo', 'width', 236,
+        """Width of the header logo image in pixels.""")
+
+    logo_height = IntOption('header_logo', 'height', 73,
+        """Height of the header logo image in pixels.""")
 
     # IEnvironmentSetupParticipant methods
 
@@ -165,47 +196,6 @@ class Chrome(Component):
     def upgrade_environment(self, db):
         pass
 
-    # IConfigurable methods
-
-    def get_config_sections(self):
-        yield ConfigSection('trac', [
-            ConfigOption('templates_dir', default_dir('templates'),
-                         "Path to the !ClearSilver templates"),
-            ConfigOption('metanav', 'login,logout,settings,help,about',
-                         """List of sections to display in the navigation bar
-                         `metanav` 
-                         """),
-            ConfigOption('mainnav', 'wiki,timeline,roadmap,browser,tickets,newticket,search',
-                         """List of sections to display in the navigation bar
-                         `mainnav`
-                         """)])
-        yield ConfigSection('project', [
-            ConfigOption('name', 'My Project',
-                         "Project name"),
-            ConfigOption('descr', 'My example project',
-                         "Short project description"),
-            ConfigOption('url', 'http://example.com/', 
-                         "URL to the main project website"),
-            ConfigOption('footer', 
-                         'Visit the Trac open source project at<br />'
-                         '<a href="http://trac.edgewall.com/">'
-                         'http://trac.edgewall.com/</a>',
-                         "Page footer text (right-aligned)")
-            ])
-        yield ConfigSection('header_logo', [
-            ConfigOption('link', 'http://trac.edgewall.com/',
-                         "Destination URL to link to from header logo"),
-            ConfigOption('src', 'common/trac_banner.png',
-                         "URL to image to use as header logo."),
-            ConfigOption('alt', 'Trac',
-                         "''alt'' text for header logo"),
-            ConfigOption('width', '236',
-                         "Header logo width in pixels"),
-            ConfigOption('height', '73', 
-                         "Header logo height in pixels"),
-            ], footer="""
-            See also: TracInterfaceCustomization
-            """)
 
     # IRequestHandler methods
 
@@ -245,8 +235,7 @@ class Chrome(Component):
                 ('site', self.env.get_htdocs_dir())]
 
     def get_templates_dirs(self):
-        return [self.env.get_templates_dir(),
-                self.config.get('trac', 'templates_dir')]
+        return [self.env.get_templates_dir(), self.templates_dir]
 
     # IWikiSyntaxProvider methods
     
@@ -277,8 +266,7 @@ class Chrome(Component):
 
         href = Href(req.base_path)
         req.hdf['chrome.href'] = href.chrome()
-        htdocs_location = self.config.get('trac', 'htdocs_location') or \
-                          href.chrome('common')
+        htdocs_location = self.htdocs_location or href.chrome('common')
         req.hdf['htdocs_location'] = htdocs_location.rstrip('/') + '/'
 
         # HTML <head> links
@@ -287,7 +275,7 @@ class Chrome(Component):
         add_link(req, 'help', self.env.href.wiki('TracGuide'))
         add_stylesheet(req, 'common/css/trac.css')
         add_javascript(req, 'common/js/trac.js')
-        icon = self.config.get('project', 'icon')
+        icon = self.env.project_icon
         if icon:
             if not icon.startswith('/') and icon.find('://') == -1:
                 if '/' in icon:
@@ -299,8 +287,7 @@ class Chrome(Component):
             add_link(req, 'shortcut icon', icon, mimetype=mimetype)
 
         # Logo image
-        logo_link = self.config.get('header_logo', 'link')
-        logo_src = self.config.get('header_logo', 'src')
+        logo_src = self.logo_src
         if logo_src:
             logo_src_abs = logo_src.startswith('http://') or \
                            logo_src.startswith('https://')
@@ -310,13 +297,12 @@ class Chrome(Component):
                 else:
                     logo_src = href.chrome('common', logo_src)
             req.hdf['chrome.logo'] = {
-                'link': logo_link, 'src': logo_src, 'src_abs': logo_src_abs,
-                'alt': self.config.get('header_logo', 'alt'),
-                'width': self.config.get('header_logo', 'width', ''),
-                'height': self.config.get('header_logo', 'height', '')
+                'link': self.logo_link, 'src': logo_src,
+                'src_abs': logo_src_abs, 'alt': self.logo_alt,
+                'width': self.logo_width, 'height': self.logo_height
             }
         else:
-            req.hdf['chrome.logo.link'] = logo_link
+            req.hdf['chrome.logo.link'] = self.logo_link
 
         # Navigation links
         navigation = {}
@@ -328,7 +314,7 @@ class Chrome(Component):
                 active = contributor.get_active_navigation_item(req)
 
         for category, items in [(k, v.items()) for k, v in navigation.items()]:
-            order = self.config.getlist('trac', category)
+            order = getattr(self, category + '_order')
             def navcmp(x, y):
                 if x[0] not in order:
                     return int(y[0] in order)

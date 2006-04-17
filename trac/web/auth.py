@@ -23,8 +23,8 @@ import re
 import time
 import urllib2
 
+from trac.config import BoolOption
 from trac.core import *
-from trac.config import *
 from trac.web.api import IAuthenticator, IRequestHandler
 from trac.web.chrome import INavigationContributor
 from trac.util import escape, hex_entropy, md5crypt, Markup
@@ -43,22 +43,14 @@ class LoginModule(Component):
     resources.
     """
 
-    implements(IConfigurable, IAuthenticator, INavigationContributor,
-               IRequestHandler)
+    implements(IAuthenticator, INavigationContributor, IRequestHandler)
 
-    # IConfigurable
+    check_ip = BoolOption('trac', 'check_auth_ip', 'true',
+         """Whether the IP address of the user should be checked for
+         authentication (''since 0.9'').""")
 
-    def get_config_sections(self):
-        yield ConfigSection('trac', [
-            ConfigOption('check_auth_ip', 'true',
-                         """Whether the IP address of the user should be
-                         checked for authentication (true, false)
-                         (''since 0.9'')
-                         """),
-            ConfigOption('ignore_auth_case', 'false',
-                         """Whether case should be ignored for login names
-                         (true, false) (''since 0.9'')
-                         """)])
+    ignore_case = BoolOption('trac', 'ignore_auth_case', 'false',
+        """Whether case should be ignored for login names (''since 0.9'').""")
 
     # IAuthenticator methods
 
@@ -72,7 +64,7 @@ class LoginModule(Component):
         if not authname:
             return None
 
-        if self.config.getbool('trac', 'ignore_auth_case'):
+        if self.ignore_case:
             authname = authname.lower()
 
         return authname
@@ -124,7 +116,7 @@ class LoginModule(Component):
         assert req.remote_user, 'Authentication information not available.'
 
         remote_user = req.remote_user
-        if self.config.getbool('trac', 'ignore_auth_case'):
+        if self.ignore_case:
             remote_user = remote_user.lower()
 
         assert req.authname in ('anonymous', remote_user), \
@@ -171,7 +163,7 @@ class LoginModule(Component):
     def _get_name_for_cookie(self, req, cookie):
         db = self.env.get_db_cnx()
         cursor = db.cursor()
-        if self.config.getbool('trac', 'check_auth_ip'):
+        if self.check_ip:
             cursor.execute("SELECT name FROM auth_cookie "
                            "WHERE cookie=%s AND ipnr=%s",
                            (cookie.value, req.remote_addr))

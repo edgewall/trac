@@ -18,6 +18,10 @@ import imp
 import inspect
 import os
 import re
+try:
+    set
+except NameError:
+    from sets import Set as set
 from StringIO import StringIO
 
 from trac.config import default_dir
@@ -425,39 +429,22 @@ class TracIniMacro(WikiMacroBase):
     """
 
     def render_macro(self, req, name, filter):
+        from trac.config import Option
         from trac.wiki.formatter import wiki_to_html, wiki_to_oneliner
         filter = filter or ''
 
-        all_options = self.env.get_default_config()
-        sections = [section for section, options in all_options.iteritems()
-                    if options and not filter or section.startswith(filter)]
+        sections = set([section for section, option in Option.registry.keys()
+                        if section.startswith(filter)])
 
-        section_headers, section_footers = {}, {}
-        for provider in self.env.config_providers:
-            for section in provider.get_config_sections():
-                if section.name not in sections:
-                    continue
-                if section.header:
-                    headers = section_headers.get(section.name, [])
-                    headers.append(section.header)                    
-                    section_headers[section.name] = headers
-                if section.footer:
-                    footers = section_footers.get(section.name, [])
-                    footers.append(section.footer)                    
-                    section_footers[section.name] = footers
-
-        return html.DIV(class_="tracini")\
-               [[(html.H2(id="%s" % section)["[%s]" % section],
-                  [html.P[wiki_to_html(header, self.env, req)]
-                   for header in section_headers.get(section, [])],
-                  all_options[section] and html.TABLE(class_="wiki")\
-                  [html.TBODY[[html.TR[html.TD[html.TT[option.name]],
-                                       html.TD[wiki_to_oneliner(option.doc,
-                                                                self.env)]]
-                               for option in all_options[section]]]],
-                  [html.P[wiki_to_html(footer, self.env, req)]
-                   for footer in section_footers.get(section, [])])
-                 for section in sorted(sections)]]
+        return html.DIV(class_="tracini")(
+            [(html.H2(id="%s" % section)["[%s]" % section],
+              html.TABLE(class_="wiki")(
+                  html.TBODY([html.TR(html.TD(html.TT[option.name]),
+                                      html.TD(wiki_to_oneliner(option.__doc__,
+                                                               self.env)))
+                              for option in Option.registry.values()
+                              if option.section == section])))
+             for section in sorted(sections)])
 
 
 class UserMacroProvider(Component):

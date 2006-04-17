@@ -19,7 +19,7 @@ import smtplib
 import re
 
 from trac import __version__
-from trac.config import *
+from trac.config import BoolOption, IntOption, Option
 from trac.core import *
 from trac.util import CRLF, wrap
 from trac.web.clearsilver import HDFWrapper
@@ -28,40 +28,41 @@ from trac.web.main import populate_hdf
 
 class NotificationSystem(Component):
 
-    implements(IConfigurable)
+    smtp_enabled = BoolOption('notification', 'smtp_enabled', 'false',
+        """Enable SMTP (email) notification.""")
 
-    # IConfigurable methods
+    smtp_server = Option('notification', 'smtp_server', 'localhost',
+        """SMTP server hostname to use for email notifications.""")
 
-    def get_config_sections(self):
-        yield ConfigSection('notification', [
-            ConfigOption('smtp_enabled', 'false',
-                         "Enable SMTP (email) notification (true, false)."),
-            ConfigOption('smtp_server', 'localhost',
-                         "SMTP server hostname to use for email notifications"),
-            ConfigOption('smtp_port', '25',
-                         "SMTP server port to use for email notifications"),
-            ConfigOption('smtp_user', '',
-                         "Username for SMTP server. (''since 0.9'')"),
-            ConfigOption('smtp_password', '',
-                         "Password for SMTP server. (''since 0.9'')"),
-            ConfigOption('smtp_from', 'trac@localhost',
-                         "Sender address to use in notification emails"),
-            ConfigOption('smtp_replyto', 'trac@localhost',
-                         "Reply-To address to use in notification emails"),
-            ConfigOption('mime_encoding', 'base64',
-                         """Specify the MIME encoding scheme for emails
-                         (''since 0.10'')"""),
-            ConfigOption('allow_public_cc', 'false',
-                         """Recipients can see email addresses of other CC'ed
-                         recipients (''since 0.10'')"""),
-            ConfigOption('maxheaderlen', '78',
-                         "FIXME"),
-            ], footer="""
-            See also: TracNotification.
-            """)
+    smtp_port = IntOption('notification', 'smtp_port', 25,
+        """SMTP server port to use for email notification.""")
+
+    smtp_user = Option('notification', 'smtp_user', '',
+        """Username for SMTP server. (''since 0.9'').""")
+
+    smtp_password = Option('notification', 'smtp_password', '',
+        """Password for SMTP server. (''since 0.9'').""")
+
+    smtp_from = Option('notification', 'smtp_from', 'trac@localhost',
+        """Sender address to use in notification emails.""")
+
+    smtp_replyto = Option('notification', 'smtp_replyto', 'trac@localhost',
+        """Reply-To address to use in notification emails.""")
+
+    smtp_always_cc = Option('notification', 'smtp_always_cc', '',
+        """Email address(es) to always send notifications to.""")
+
+    mime_encoding = Option('notification', 'mime_encoding', 'base64',
+        """Specify the MIME encoding scheme for emails (''since 0.10'').""")
+
+    allow_public_cc = BoolOption('notification', 'allow_public_cc', 'false',
+        """Recipients can see email addresses of other CC'ed recipients
+        (''since 0.10'').""")
+
+    maxheaderlen = Option('notification', 'maxheaderlen', '78')
 
 
-class Notify:
+class Notify(object):
     """Generic notification class for Trac. Subclass this to implement
     different methods."""
 

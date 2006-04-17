@@ -16,8 +16,8 @@
 # Author: Jonas Borgström <jonas@edgewall.com>
 #         Christopher Lenz <cmlenz@gmx.de>
 
-__all__ = ['Component', 'ExtensionPoint', 'SingletonExtensionPoint',
-           'implements', 'Interface', 'TracError']
+__all__ = ['Component', 'ExtensionPoint', 'implements', 'Interface',
+           'TracError']
 
 
 class TracError(Exception):
@@ -57,28 +57,6 @@ class ExtensionPoint(property):
     def __repr__(self):
         """Return a textual representation of the extension point."""
         return '<ExtensionPoint %s>' % self.interface.__name__
-
-
-class SingletonExtensionPoint(property):
-    def __init__(self, interface, cfg_section, cfg_property, default=None):
-        property.__init__(self, self.implementation)
-        self.xtnpt = ExtensionPoint(interface)
-        self.cfg_section = cfg_section
-        self.cfg_property = cfg_property
-        self.default = default
-
-    def implementation(self, component):
-        cfgvalue = component.config.get(self.cfg_section, self.cfg_property)
-        for impl in self.xtnpt.extensions(component):
-            if impl.__class__.__name__ == cfgvalue:
-                return impl
-        if self.default is not None:
-            return self.default(component.env)
-        raise AttributeError('Cannot find an implementation of the "%s" '
-                             'interface named "%s".  Please update your '
-                             'trac.ini setting "%s.%s"'
-                             % (self.xtnpt.interface.__name__, cfgvalue,
-                                self.cfg_section, self.cfg_property))
 
 
 class ComponentMeta(type):

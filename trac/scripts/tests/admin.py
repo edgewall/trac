@@ -65,9 +65,7 @@ class InMemoryEnvironment(Environment):
         return self._db
 
     def create(self, db_str=None):
-        for section, options in self.get_default_config().iteritems():
-            for opt in options:
-                self.config.setdefault(section, opt.name, opt.default)
+        pass
 
     def verify(self):
         return True

@@ -20,7 +20,7 @@
 import re
 import time
 
-from trac.config import *
+from trac.config import IntOption
 from trac.core import *
 from trac.perm import IPermissionRequestor
 from trac.util import format_date, format_time, http_date, to_unicode
@@ -59,19 +59,13 @@ class ITimelineEventProvider(Interface):
 
 class TimelineModule(Component):
 
-    implements(IConfigurable, INavigationContributor, IPermissionRequestor,
-               IRequestHandler)
+    implements(INavigationContributor, IPermissionRequestor, IRequestHandler)
 
     event_providers = ExtensionPoint(ITimelineEventProvider)
 
-    # IConfigurable methods
-
-    def get_config_sections(self):
-        yield ConfigSection('timeline', [
-            ConfigOption('default_daysback', '30',
-                         """Default "depth" of the Timeline, in days.
-                         (''since 0.9.'')
-                         """)])
+    default_daysback = IntOption('timeline', 'default_daysback', 30,
+        """Default number of days displayed in the Timeline, in days.
+        (''since 0.9.'')""")
 
     # INavigationContributor methods
 
@@ -113,7 +107,7 @@ class TimelineModule(Component):
         try:
             daysback = max(0, int(req.args.get('daysback', '')))
         except ValueError:
-            daysback = self.config['timeline'].getint('default_daysback')
+            daysback = self.default_daysback
         req.hdf['timeline.from'] = format_date(fromdate)
         req.hdf['timeline.daysback'] = daysback
 

@@ -19,7 +19,7 @@ import re
 import time
 
 from trac.attachment import attachment_to_hdf, Attachment
-from trac.config import *
+from trac.config import BoolOption, Option
 from trac.core import *
 from trac.env import IEnvironmentSetupParticipant
 from trac.ticket import Milestone, Ticket, TicketSystem, ITicketManipulator
@@ -179,40 +179,31 @@ class NewticketModule(TicketModuleBase):
 
 class TicketModule(TicketModuleBase):
 
-    implements(IConfigurable, INavigationContributor, IRequestHandler,
-               ITimelineEventProvider)
+    implements(INavigationContributor, IRequestHandler, ITimelineEventProvider)
 
-    # IConfigurable methods
+    default_version = Option('ticket', 'default_version', '',
+        """Default version for newly created tickets.""")
 
-    def get_config_sections(self):
-        yield ConfigSection('timeline', [
-            ConfigOption('ticket_show_details', 'false',
-                         """Enable the display of all ticket changes in the
-                         timeline (''since 0.9'')
-                         """)])
-        yield ConfigSection('ticket', [
-            ConfigOption('default_version', '',
-                         "Default version for newly created tickets"),
-            ConfigOption('default_type', 'defect',
-                         """Default type for newly created tickets
-                         (''since 0.9'')
-                         """),
-            ConfigOption('default_priority', 'major',
-                         "Default priority for newly created tickets"),
-            ConfigOption('default_milestone', '',
-                         "Default milestone for newly created tickets"),
-            ConfigOption('default_component', 'component1',
-                         "Default component for newly created tickets"),
-            ConfigOption('restrict_owner', 'false',
-                         """Make the owner field of tickets use a drop-down
-                         menu. See
-                         [wiki:TracTickets#AssigntoasDropDownList AssignToAsDropDownList]
-                         (''since 0.9'')
-                         """)])
-        yield ConfigSection('ticket-custom', [], header="""
-        Creates [wiki:TracTicketsCustomFields user-defined ticket fields].
-        """)
+    default_type = Option('ticket', 'default_type', 'defect',
+        """Default type for newly created tickets (''since 0.9'').""")
 
+    default_priority = Option('ticket', 'default_priority', 'major',
+        """Default priority for newly created tickets.""")
+
+    default_milestone = Option('ticket', 'default_milestone', '',
+        """Default milestone for newly created tickets.""")
+
+    default_component = Option('ticket', 'default_component', '',
+        """Default component for newly created tickets""")
+
+    restrict_owner = BoolOption('ticket', 'restrict_owner', 'false',
+        """Make the owner field of tickets use a drop-down menu. See
+        [wiki:TracTickets#AssigntoasDropDownList AssignToAsDropDownList]
+        (''since 0.9'').""")
+
+    timeline_details = BoolOption('timeline', 'ticket_show_details', 'false',
+        """Enable the display of all ticket changes in the timeline
+        (''since 0.9'').""")
 
     # INavigationContributor methods
 
@@ -295,7 +286,7 @@ class TicketModule(TicketModuleBase):
     def get_timeline_filters(self, req):
         if req.perm.has_permission('TICKET_VIEW'):
             yield ('ticket', 'Ticket changes')
-            if self.config.getbool('timeline', 'ticket_show_details'):
+            if self.timeline_details:
                 yield ('ticket_details', 'Ticket details', False)
 
     def get_timeline_events(self, req, start, stop, filters):

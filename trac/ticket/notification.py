@@ -27,23 +27,14 @@ from trac.notification import NotifyEmail
 
 class TicketNotificationSystem(Component):
 
-    implements(IConfigurable)
+    always_notify_owner = BoolOption('notification', 'always_notify_owner',
+                                     'false',
+        """Always send notifications to the ticket owner (''since 0.9'').""")
 
-    # IConfigurable methods
-
-    def get_config_sections(self):
-        yield ConfigSection('notification', [
-            ConfigOption('always_notify_owner', 'false',
-                         """Always send notifications to the ticket owner
-                         (''since 0.9'')
-                         """),
-            ConfigOption('always_notify_reporter', 'false',
-                         """Always send notifications to any address in the
-                         ''reporter'' field
-                         """),
-            ConfigOption('smtp_always_cc', '',
-                         "Email address(es) to always send notifications to"),
-            ])
+    always_notify_reporter = BoolOption('notification', 'always_notify_reporter',
+                                        'false',
+        """Always send notifications to any address in the ''reporter''
+        field.""")
 
 
 class TicketNotifyEmail(NotifyEmail):
@@ -196,7 +187,7 @@ class TicketNotifyEmail(NotifyEmail):
         acc = self.config.get('notification', 'smtp_always_cc')
         if acc:
             ccrecipients += acc.replace(',', ' ').split()
-            
+
         return (torecipients, ccrecipients)
 
     def get_message_id(self, rcpt, modtime=0):

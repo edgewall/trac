@@ -19,8 +19,8 @@
 
 import unittest
 
-from trac.config import IConfigurable
-from trac.core import ComponentManager, Component, ExtensionPoint
+from trac.core import Component, ComponentManager, ExtensionPoint
+from trac.env import Environment
 from trac.db.sqlite_backend import SQLiteConnection
 
 
@@ -117,13 +117,12 @@ class InMemoryDatabase(SQLiteConnection):
         self.cnx.commit()
 
 
-class EnvironmentStub(Component, ComponentManager):
+class EnvironmentStub(Environment):
     """A stub of the trac.env.Environment object for testing."""
-
-    config_providers = ExtensionPoint(IConfigurable)
 
     def __init__(self, default_data=False, enable=None):
         ComponentManager.__init__(self)
+        Component.__init__(self)
         self.enabled_components = enable
         self.db = InMemoryDatabase()
 
@@ -137,11 +136,6 @@ class EnvironmentStub(Component, ComponentManager):
         self.href = Href('/trac.cgi')
         self.abs_href = Href('http://example.org/trac.cgi')
 
-        for provider in self.config_providers:
-            for section in provider.get_config_sections():
-                for opt in section.options:
-                    self.config.setdefault(section.name, opt.name, opt.default)
-
         from trac import db_default
         if default_data:
             cursor = self.db.cursor()
@@ -153,11 +147,6 @@ class EnvironmentStub(Component, ComponentManager):
             self.db.commit()
             
         self.known_users = []
-
-    def component_activated(self, component):
-        component.env = self
-        component.config = self.config
-        component.log = self.log
 
     def is_component_enabled(self, cls):
         if self.enabled_components is None:

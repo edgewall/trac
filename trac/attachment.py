@@ -23,7 +23,7 @@ import time
 import unicodedata
 
 from trac import perm, util
-from trac.config import *
+from trac.config import BoolOption, IntOption
 from trac.core import *
 from trac.env import IEnvironmentSetupParticipant
 from trac.mimeview import *
@@ -124,11 +124,6 @@ class Attachment(object):
         else:
             handle_ta = False
 
-        # Maximum attachment size (in bytes)
-        max_size = int(self.env.config.get('attachment', 'max_size'))
-        if max_size >= 0 and size > max_size:
-            raise TracError('Maximum attachment size: %d bytes' % max_size,
-                            'Upload failed')
         self.size = size
         self.time = t or time.time()
 
@@ -212,31 +207,25 @@ def attachment_to_hdf(env, db, req, attachment):
 
 class AttachmentModule(Component):
 
-    implements(IConfigurable, IEnvironmentSetupParticipant, IRequestHandler,
+    implements(IEnvironmentSetupParticipant, IRequestHandler,
                INavigationContributor, IWikiSyntaxProvider)
 
     CHUNK_SIZE = 4096
 
-    # IConfigurable methods
+    max_size = IntOption('attachment', 'max_size', 262144,
+        """Maximum allowed file size for ticket and wiki attachments.""")
 
-    def get_config_sections(self):
-        yield ConfigSection('attachment', [
-            ConfigOption('max_size', '262144',
-                         """Maximum allowed file size for ticket and wiki
-                         attachments
-                         """),
-            ConfigOption('render_unsafe_content', 'false',
-                         """Whether non-binary attachments should be rendered in
-                         the browser, or only made downloadable.
+    render_unsafe_content = BoolOption('attachment', 'render_unsafe_content',
+                                       'false',
+        """Whether non-binary attachments should be rendered in the browser, or
+        only made downloadable.
 
-                         Pretty much any text file may be interpreted as HTML
-                         by the browser, which allows a malicious user to
-                         attach a file containing cross-site scripting attacks.
+        Pretty much any text file may be interpreted as HTML by the browser,
+        which allows a malicious user to attach a file containing cross-site
+        scripting attacks.
 
-                         For public sites where anonymous users can create
-                         attachments, it is recommended to leave this option off
-                         (which is the default).
-                         """)])
+        For public sites where anonymous users can create attachments, it is
+        recommended to leave this option disabled (which is the default).""")
 
     # IEnvironmentSetupParticipant methods
 
@@ -328,6 +317,12 @@ class AttachmentModule(Component):
             size = upload.file.len
         if size == 0:
             raise TracError('No file uploaded')
+
+        # Maximum attachment size (in bytes)
+        max_size = self.max_size
+        if max_size >= 0 and size > max_size:
+            raise TracError('Maximum attachment size: %d bytes' % max_size,
+                            'Upload failed')
 
         # We try to normalize the filename to unicode NFC if we can.
         # Files uploaded from OS X might be in NFD.
@@ -435,18 +430,16 @@ class AttachmentModule(Component):
             binary = is_binary(str_data)
             mime_type = mimeview.get_mimetype(attachment.filename, str_data)
 
-            # Previewing arbitrary attachments can potentially be harmful
-            render_unsafe = self.config.getbool('attachment',
-                                                'render_unsafe_content')
             # Eventually send the file directly
             format = req.args.get('format')
             if format in ('raw', 'txt'):
-                if not render_unsafe and not binary:
+                if not self.render_unsafe_content and not binary:
                     # Force browser to download HTML/SVG/etc pages that may
                     # contain malicious code enabling XSS attacks
                     req.send_header('Content-Disposition', 'attachment;' +
                                     'filename=' + attachment.filename)
-                if render_unsafe and not binary and format == 'txt':
+                if self.render_unsafe_content and not binary \
+                        and format == 'txt':
                     mime_type = 'text/plain'
                 if 'charset=' not in mime_type:
                     charset = mimeview.get_charset(str_data, mime_type)
@@ -454,7 +447,7 @@ class AttachmentModule(Component):
                 req.send_file(attachment.path, mime_type)
 
             # add ''Plain Text'' alternate link if needed
-            if render_unsafe and not binary and \
+            if self.render_unsafe_content and not binary and \
                not mime_type.startswith('text/plain'):
                 plaintext_href = attachment.href(format='txt')
                 add_link(req, 'alternate', plaintext_href, 'Plain Text',

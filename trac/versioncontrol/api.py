@@ -16,7 +16,7 @@
 
 from heapq import heappop, heappush
 
-from trac.config import IConfigurable, ConfigSection, ConfigOption
+from trac.config import Option
 from trac.core import *
 from trac.perm import PermissionError
 
@@ -41,37 +41,33 @@ class IRepositoryConnector(Interface):
 class RepositoryManager(Component):
     """Component that keeps track of the supported version control systems, and
     provides easy access to the configured implementation."""
-    implements(IConfigurable)
 
     connectors = ExtensionPoint(IRepositoryConnector)
+
+    repository_type = Option('trac', 'repository_type', 'svn',
+        """Repository connector type. (''since 0.10'')""")
+    repository_dir = Option('trac', 'repository_dir', '',
+        """Path to local repository""")
 
     def __init__(self):
         self._connector = None
 
     # Public API methods
 
-    def get_repository(self, repos_type, repos_dir, authname):
+    def get_repository(self, authname):
         if not self._connector:
             candidates = []
             for connector in self.connectors:
                 for repos_type_, prio in connector.get_supported_types():
-                    if repos_type_ != repos_type:
+                    if self.repository_type != repos_type_:
                         continue
                     heappush(candidates, (-prio, connector))
             if not candidates:
                 raise TracError, 'Unsupported version control system "%s"' \
-                                 % repos_type
+                                 % self.repository_type
             self._connector = heappop(candidates)[1]
-        return self._connector.get_repository(repos_type, repos_dir, authname)
-
-    # IConfigurable methods
-
-    def get_config_sections(self):
-        yield ConfigSection('trac', [
-            ConfigOption('repository_type', 'svn',
-                         "Repository connector type. (''since 0.10'')"),
-            ConfigOption('repository_dir', '',
-                         "Path to local repository")])
+        return self._connector.get_repository(self.repository_type,
+                                              self.repository_dir, authname)
 
 
 class NoSuchChangeset(TracError):

@@ -22,7 +22,7 @@ import sys
 import dircache
 import urllib
 
-from trac.config import *
+from trac.config import ExtensionOption
 from trac.core import *
 from trac.env import open_environment
 from trac.perm import PermissionCache, NoPermissionCache, PermissionError
@@ -92,11 +92,11 @@ def populate_hdf(hdf, env, req=None):
     }
 
     hdf['project'] = {
-        'name': env.config.get('project', 'name'),
-        'name_encoded': env.config.get('project', 'name'),
-        'descr': env.config.get('project', 'descr'),
-        'footer': Markup(env.config.get('project', 'footer')),
-        'url': env.config.get('project', 'url')
+        'name': env.project_name,
+        'name_encoded': env.project_name,
+        'descr': env.project_description,
+        'footer': Markup(env.project_footer),
+        'url': env.project_url
     }
 
     if req:
@@ -122,10 +122,13 @@ class RequestDispatcher(Component):
 
     authenticators = ExtensionPoint(IAuthenticator)
     handlers = ExtensionPoint(IRequestHandler)
-    default_handler = SingletonExtensionPoint(IRequestHandler,
-                                              'trac', 'default_handler')
 
-    implements(IConfigurable)
+    default_handler = ExtensionOption('trac', 'default_handler',
+                                      IRequestHandler, 'WikiHandler',
+        """Name of the component that handles requests to the base URL.
+        
+        Options include `TimeLineModule`, `RoadmapModule`, `BrowserModule`,
+        `QueryModule`, `ReportModule` and `NewticketModule` (''since 0.9'').""")
 
     # Public API
 
@@ -147,7 +150,7 @@ class RequestDispatcher(Component):
         # For backwards compatibility, should be removed in the future
         self.env.href = req.href
         self.env.abs_href = req.abs_href
-        
+
         # Select the component that should handle the request
         chosen_handler = None
         if not req.path_info or req.path_info == '/':
@@ -161,7 +164,7 @@ class RequestDispatcher(Component):
         if not chosen_handler:
             raise HTTPNotFound('No handler matched request to %s',
                                req.path_info)
-        
+
         # Attach user information to the request
         anonymous_request = getattr(chosen_handler, 'anonymous_request', False)
         if anonymous_request:
@@ -195,17 +198,6 @@ class RequestDispatcher(Component):
             # Give the session a chance to persist changes
             if req.session:
                 req.session.save()
-
-    # IConfigurable methods
-
-    def get_config_sections(self):
-        yield ConfigSection('trac', [
-            ConfigOption('default_handler', 'WikiModule',
-                         """Name of the component that handles requests to the
-                         base URL. Some options are `TimeLineModule`,
-                         `RoadmapModule`, `BrowserModule`, `QueryModule`,
-                         `ReportModule` and `NewticketModule` (''since 0.9'')
-                         """)])
 
 
 def dispatch_request(environ, start_response):
@@ -295,9 +287,8 @@ def dispatch_request(environ, start_response):
                                'to locate the Trac environment(s).')
     env = _open_environment(env_path, run_once=environ['wsgi.run_once'])
 
-    base_url = env.config.get('trac', 'base_url')
-    if base_url:
-        environ['trac.base_url'] = base_url
+    if env.base_url:
+        environ['trac.base_url'] = env.base_url
 
     req = Request(environ, start_response)
     try:
@@ -378,8 +369,8 @@ def send_project_index(environ, start_response, parent_dir=None,
                 env = _open_environment(env_path,
                                         run_once=environ['wsgi.run_once'])
                 proj = {
-                    'name': env.config.get('project', 'name'),
-                    'description': env.config.get('project', 'descr'),
+                    'name': env.project_name,
+                    'description': env.project_description,
                     'href': href(env_name)
                 }
             except Exception, e:

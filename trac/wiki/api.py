@@ -24,7 +24,7 @@ import time
 import urllib
 import re
 
-from trac.config import *
+from trac.config import BoolOption
 from trac.core import *
 from trac.util.markup import html
 
@@ -102,13 +102,17 @@ class IWikiSyntaxProvider(Interface):
 class WikiSystem(Component):
     """Represents the wiki system."""
 
-    implements(IConfigurable, IWikiChangeListener, IWikiSyntaxProvider)
+    implements(IWikiChangeListener, IWikiSyntaxProvider)
 
     change_listeners = ExtensionPoint(IWikiChangeListener)
     macro_providers = ExtensionPoint(IWikiMacroProvider)
     syntax_providers = ExtensionPoint(IWikiSyntaxProvider)
 
     INDEX_UPDATE_INTERVAL = 5 # seconds
+
+    ignore_missing_pages = BoolOption('wiki', 'ignore_missing_pages', 'false',
+        """Enable/disable highlighting CamelCase links to missing pages
+        (''since 0.9'').""")
 
     def __init__(self):
         self._index = None
@@ -199,15 +203,6 @@ class WikiSystem(Component):
         return self._link_resolvers
     link_resolvers = property(_get_link_resolvers)
 
-    # IConfigurable methods
-
-    def get_config_sections(self):
-        yield ConfigSection('wiki', [
-            ConfigOption('ignore_missing_pages', 'false',
-                         """Enable/disable highlighting CamelCase links to
-                         missing pages (''since 0.9'')
-                         """)])
-
     # IWikiChangeListener methods
 
     def wiki_page_added(self, page):
@@ -226,11 +221,10 @@ class WikiSystem(Component):
     # IWikiSyntaxProvider methods
     
     def get_wiki_syntax(self):
-        ignore_missing = self.config.getbool('wiki', 'ignore_missing_pages')
         yield (r"!?(?<!/)\b[A-Z][a-z]+(?:[A-Z][a-z]*[a-z/])+"
                 "(?:#[A-Za-z0-9]+)?(?=:?\Z|:?\s|[.,;!?\)}\]])",
                lambda x, y, z: self._format_link(x, 'wiki', y, y,
-                                                 ignore_missing))
+                                                 self.ignore_missing_pages))
 
     def get_link_resolvers(self):
         yield ('wiki', self._format_fancy_link)

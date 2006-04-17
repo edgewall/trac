@@ -21,7 +21,7 @@ import os.path
 from fnmatch import fnmatchcase
 
 from trac import util
-from trac.config import *
+from trac.config import ListOption, Option
 from trac.core import *
 from trac.mimeview import Mimeview, is_binary, get_mimetype
 from trac.perm import IPermissionRequestor
@@ -41,24 +41,21 @@ CHUNK_SIZE = 4096
 
 class BrowserModule(Component):
 
-    implements(IConfigurable, INavigationContributor, IPermissionRequestor,
-               IRequestHandler, IWikiSyntaxProvider)
+    implements(INavigationContributor, IPermissionRequestor, IRequestHandler,
+               IWikiSyntaxProvider)
 
-    # IConfigurable methods
+    hidden_properties = Option('browser', 'hide_properties', 'svk:merge',
+        """List of subversion properties to hide from the repository browser
+        (''since 0.9'')""")
 
-    def get_config_sections(self):
-        yield ConfigSection('browser', [
-            ConfigOption('hide_properties', 'svk:merge',
-                         """List of subversion properties to hide from the
-                         repository browser (''since 0.9'')"""),
-            ConfigOption('downloadable_paths', '/trunk, /branches/*, /tags/*',
-                         """List of repository paths that can be downloaded.
-                         Leave the option empty if you want to disable all
-                         downloads, otherwise set it to a comma-separated list
-                         of authorized paths (those paths are glob
-                         patterns, i.e. "*" can be used as a wild card) 
-                         (''since 0.10'')""")
-            ])
+    downloadable_paths = ListOption('browser', 'downloadable_paths',
+                                    ['/trunk', '/branches/*', '/tags/*'], doc=
+        """List of repository paths that can be downloaded.
+        
+        Leave the option empty if you want to disable all downloads, otherwise
+        set it to a comma-separated list of authorized paths (those paths are
+        glob patterns, i.e. "*" can be used as a wild card)
+        (''since 0.10'')""")
 
     # INavigationContributor methods
 
@@ -104,7 +101,7 @@ class BrowserModule(Component):
         node = get_existing_node(self.env, repos, path, rev_or_latest)
 
         # Rendered list of node properties
-        hidden_properties = self.config.getlist('browser', 'hide_properties')
+        hidden_properties = self.hidden_properties
         properties = []
         for name, value in node.get_properties().items():
             if not name in hidden_properties:
@@ -187,7 +184,7 @@ class BrowserModule(Component):
                 desc=(col == order and not desc and 1 or None))
 
         # ''Zip Archive'' alternate link
-        patterns = self.config.getlist('browser', 'downloadable_paths')
+        patterns = self.downloadable_paths
         if node.path and patterns and \
                filter(None, [fnmatchcase(node.path, p) for p in patterns]):
             zip_href = req.href.changeset(rev or repos.youngest_rev, node.path,

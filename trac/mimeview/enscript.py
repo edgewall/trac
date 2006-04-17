@@ -15,8 +15,8 @@
 #
 # Author: Daniel Lundin <daniel@edgewall.com>
 
+from trac.config import Option
 from trac.core import *
-from trac.config import *
 from trac.mimeview.api import IHTMLPreviewRenderer
 from trac.util import escape, NaivePopen, Deuglifier
 
@@ -93,16 +93,12 @@ class EnscriptDeuglifier(Deuglifier):
 class EnscriptRenderer(Component):
     """Syntax highlighting using GNU Enscript."""
 
-    implements(IConfigurable, IHTMLPreviewRenderer)
+    implements(IHTMLPreviewRenderer)
 
     expand_tabs = True
 
-    # IConfigurable methods
-
-    def get_config_sections(self):
-        yield ConfigSection('mimeviewer', [
-                ConfigOption('enscript_path', 'enscript',
-                             "Path to the Enscript program")])
+    path = Option('mimeviewer', 'enscript_path', 'enscript',
+        """Path to the Enscript executable.""")
 
     # IHTMLPreviewRenderer methods
 
@@ -112,7 +108,7 @@ class EnscriptRenderer(Component):
         return 0
 
     def render(self, req, mimetype, content, filename=None, rev=None):
-        cmdline = self.config.get('mimeviewer', 'enscript_path')
+        cmdline = self.path
         mimetype = mimetype.split(';', 1)[0] # strip off charset
         cmdline += ' --color -h -q --language=html -p - -E' + types[mimetype]
         self.env.log.debug("Enscript command line: %s" % cmdline)

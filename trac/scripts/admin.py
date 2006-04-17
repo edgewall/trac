@@ -28,7 +28,7 @@ import locale
 
 import trac
 from trac import perm, util, db_default
-from trac.config import default_dir, Configuration
+from trac.config import default_dir
 from trac.env import Environment
 from trac.perm import PermissionSystem
 from trac.ticket.model import *
@@ -1087,7 +1087,6 @@ Congratulations!
         if arg[0] in ['-b', '--no-backup']:
             do_backup = False
         self.db_open()
-        self._update_sample_config()
 
         if not self.__env.needs_upgrade():
             print "Database is up to date, no upgrade necessary."
@@ -1095,20 +1094,6 @@ Congratulations!
 
         self.__env.upgrade(backup=do_backup)
         print 'Upgrade done.'
-
-    def _update_sample_config(self):
-        filename = os.path.join(self.__env.path, 'conf', 'trac.ini.sample')
-        try:
-            file(filename, 'w').close() # Create the config file
-            config = Configuration(filename)
-            for section, options in self.__env.get_default_config().iteritems():
-                for opt in options:
-                    config.set(section, opt.name, opt.default)
-            config.save()
-            print ('Wrote sample configuration file, with the new settings '
-                   'and their default values: \n\n  %s\n\n' % filename)
-        except IOError, e:
-            print "Warning: couldn't write sample configuration file (%s)" % e
 
     _help_hotcopy = [('hotcopy <backupdir>',
                       'Make a hot backup copy of an environment')]

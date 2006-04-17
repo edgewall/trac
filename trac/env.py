@@ -61,7 +61,40 @@ class Environment(Component, ComponentManager):
      * wiki and ticket attachments.
     """   
     setup_participants = ExtensionPoint(IEnvironmentSetupParticipant)
-    config_providers = ExtensionPoint(IConfigurable)
+
+    base_url = Option('trac', 'base_url', '',
+        """Base URL of the Trac deployment.""")
+
+    project_name = Option('project', 'name', 'My Project',
+        """Name of the project.""")
+
+    project_description = Option('project', 'descr', 'My example project',
+        """Short description of the project.""")
+
+    project_url = Option('project', 'url', 'http://example.org/',
+        """URL of the main project web site.""")
+
+    project_footer = Option('project', 'footer',
+                            'Visit the Trac open source project at<br />'
+                            '<a href="http://trac.edgewall.com/">'
+                            'http://trac.edgewall.com/</a>',
+        """Page footer text (right-aligned).""")
+
+    project_icon = Option('project', 'icon', 'common/trac.ico',
+        """URL of the icon of the project.""")
+
+    log_type = Option('logging', 'log_type', 'none',
+        """Logging facility to use.
+        
+        Should be one of (`none`, `file`, `stderr`, `syslog`, `winlog`).""")
+
+    log_file = Option('logging', 'log_file', 'trac.log',
+        """If `log_type` is `file`, this should be a path to the log-file.""")
+
+    log_level = Option('logging', 'log_level', 'DEBUG',
+        """Level of verbosity in log.
+        
+        Should be one of (`CRITICAL`, `ERROR`, `WARN`, `INFO`, `DEBUG`).""")
 
     def __init__(self, path, create=False, options=[]):
         """Initialize the Trac environment.
@@ -85,9 +118,6 @@ class Environment(Component, ComponentManager):
         if create:
             self.create(options)
         else:
-            for section, options in self.get_default_config().iteritems():
-                for opt in options:
-                    self.config.setdefault(section, opt.name, opt.default)
             self.verify()
 
         if create:
@@ -126,6 +156,7 @@ class Environment(Component, ComponentManager):
                 return enabled
 
         # versioncontrol components are enabled if the repository is configured
+        # FIXME: this shouldn't be hardcoded like this
         if component_name.startswith('trac.versioncontrol.'):
             return self.config.get('trac', 'repository_dir') != ''
 
@@ -153,12 +184,7 @@ class Environment(Component, ComponentManager):
         
         @param authname: user name for authorization
         """
-        repos_type = self.config.get('trac', 'repository_type')
-        repos_dir = self.config.get('trac', 'repository_dir')
-        if not repos_dir:
-            raise TracError, 'Path to repository not configured'
-        return RepositoryManager(self).get_repository(repos_type, repos_dir,
-                                                      authname)
+        return RepositoryManager(self).get_repository(authname)
 
     def create(self, options=[]):
         """Create the basic directory structure of the environment, initialize
@@ -186,9 +212,9 @@ class Environment(Component, ComponentManager):
         os.mkdir(os.path.join(self.path, 'conf'))
         _create_file(os.path.join(self.path, 'conf', 'trac.ini'))
         self.setup_config()
-        for section, opts in self.get_default_config().iteritems():
-            for opt in opts:
-                self.config.set(section, opt.name, opt.default)
+        for section, default_options in self.config.getdefaults().items():
+            for name, value in default_options.items():
+                self.config.set(section, name, value)
         for section, name, value in options:
             self.config.set(section, name, value)
         self.config.save()
@@ -209,18 +235,6 @@ class Environment(Component, ComponentManager):
         """Load the configuration file."""
         self.config = Configuration(os.path.join(self.path, 'conf', 'trac.ini'))
 
-    def get_default_config(self):
-        """Return a dictionary of `options` indexed by section names.
-
-        `options` is a list of `ConfigOption` objects.
-        """
-        default_config = {}
-        for provider in self.config_providers:
-            for section in provider.get_config_sections():
-                other_options = default_config.get(section.name, [])
-                default_config[section.name] = other_options + section.options
-        return default_config
-
     def get_templates_dir(self):
         """Return absolute path to the templates directory."""
         return os.path.join(self.path, 'templates')
@@ -236,13 +250,11 @@ class Environment(Component, ComponentManager):
     def setup_log(self):
         """Initialize the logging sub-system."""
         from trac.log import logger_factory
-        logtype = self.config.get('logging', 'log_type', 'none')
-        loglevel = self.config.get('logging', 'log_level', 'DEBUG')
-        logfile = self.config.get('logging', 'log_file', 'trac.log')
-        if not os.path.isabs(logfile):
+        logtype = self.log_type
+        logfile = self.log_file
+        if logtype == 'file' and not os.path.isabs(logfile):
             logfile = os.path.join(self.get_log_dir(), logfile)
-        logid = self.path # Env-path provides process-unique ID
-        self.log = logger_factory(logtype, logfile, loglevel, logid)
+        self.log = logger_factory(logtype, logfile, self.log_level, self.path)
 
     def get_known_users(self, cnx=None):
         """Generator that yields information about all known users, i.e. users
@@ -326,7 +338,7 @@ class Environment(Component, ComponentManager):
 
 
 class EnvironmentSetup(Component):
-    implements(IEnvironmentSetupParticipant, IConfigurable)
+    implements(IEnvironmentSetupParticipant)
 
     # IEnvironmentSetupParticipant methods
 
@@ -339,6 +351,7 @@ class EnvironmentSetup(Component):
                                ','.join(cols), ','.join(['%s' for c in cols])),
                                vals)
         db.commit()
+        self._update_sample_config()
 
     def environment_needs_upgrade(self, db):
         dbver = self.env.get_version(db)
@@ -364,28 +377,29 @@ class EnvironmentSetup(Component):
                        "name='database_version'", (db_default.db_version,))
         self.log.info('Upgraded database version from %d to %d',
                       dbver, db_default.db_version)
+        self._update_sample_config()
 
-    # IConfigurable methods
+    # Internal methods
 
-    def get_config_sections(self):
-        yield ConfigSection('logging', [
-            ConfigOption('log_type', 'none',
-                         """Logging facility to use.
-                         Should be one of (`none`, `file`, `stderr`, `syslog`,
-                         `winlog`).
-                         """),
-            ConfigOption('log_file', 'trac.log',
-                         """If `log_type` is `file`, this should be a path to
-                         the log-file
-                         """),
-            ConfigOption('log_level', 'DEBUG',
-                         """Level of verbosity in log.
-                         Should be one of (`CRITICAL`, `ERROR`, `WARN`, `INFO`,
-                         `DEBUG`).
-                         """)
-            ], footer="""
-            See also: TracLogging
-            """)
+    def _update_sample_config(self):
+        from ConfigParser import ConfigParser
+        config = ConfigParser()
+        for section, options in self.config.getdefaults().items():
+            config.add_section(section)
+            for name, value in options.items():
+                config.set(section, name, value)
+        filename = os.path.join(self.env.path, 'conf', 'trac.ini.sample')
+        try:
+            fileobj = file(filename, 'w')
+            try:
+                config.write(fileobj)
+                fileobj.close()
+            finally:
+                fileobj.close()
+            print ('Wrote sample configuration file with the new settings '
+                   'and their default values: \n\n  %s\n\n' % filename)
+        except IOError, e:
+            print "Warning: couldn't write sample configuration file (%s)" % e
 
 
 def open_environment(env_path=None):
