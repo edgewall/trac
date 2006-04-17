@@ -3,6 +3,7 @@
 # Copyright (C) 2004-2006 Edgewall Software
 # Copyright (C) 2004 Daniel Lundin <daniel@edgewall.com>
 # Copyright (C) 2005-2006 Christopher Lenz <cmlenz@gmx.de>
+# Copyright (C) 2006 Christian Boos <cboos@neuf.fr>
 # All rights reserved.
 #
 # This software is licensed as described in the file COPYING, which
@@ -229,19 +230,30 @@ class Mimeview(Component):
 
     def render(self, req, mimetype, content, filename=None, url=None,
                annotations=None):
-        """Render an XHTML preview of the given `content` (a raw str object)
+        """Render an XHTML preview of the given `content`.
+
+        `content` is the same as an `IHTMLPreviewRenderer.render`'s
+        `content` argument.
 
         The specified `mimetype` will be used to select the most appropriate
         `IHTMLPreviewRenderer` implementation available for this MIME type.
+        If not given, the MIME type will be infered from the filename or the
+        content.
 
         Return a string containing the XHTML text.
         """
         if not content:
             return ''
 
-        full_mimetype = mimetype or self.get_mimetype(filename, content)
+        # Ensure we have a MIME type for this content
+        full_mimetype = mimetype
+        if not full_mimetype:
+            if hasattr(content, 'read'):
+                content = content.read(mimeview.get_max_preview_size())
+            full_mimetype = self.get_mimetype(filename, content)
         mimetype = full_mimetype.split(';')[0].strip() # split off charset
 
+        # Determine candidate `IHTMLPreviewRenderer`s
         candidates = []
         for renderer in self.renderers:
             qr = renderer.get_quality_ratio(mimetype)
@@ -249,21 +261,23 @@ class Mimeview(Component):
                 candidates.append((qr, renderer))
         candidates.sort(lambda x,y: cmp(y[0], x[0]))
 
+        # First candidate which renders successfully wins.
+        # Also, we don't want to expand tabs more than once.
         expanded_content = None
-
         for qr, renderer in candidates:
             try:
                 self.log.debug('Trying to render HTML preview using %s'
                                % renderer.__class__.__name__)
                 # check if we need to perform a tab expansion
+                rendered_content = content
                 if getattr(renderer, 'expand_tabs', False):
                     if expanded_content is None:
                         content = content_to_unicode(self.env, content,
                                                      full_mimetype)
                         tabw = self.config['mimeviewer'].getint('tab_width')
                         expanded_content = content.expandtabs(tabw)
-                    content = expanded_content
-                result = renderer.render(req, full_mimetype, content,
+                    rendered_content = expanded_content
+                result = renderer.render(req, full_mimetype, rendered_content,
                                          filename, url)
                 if not result:
                     continue
