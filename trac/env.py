@@ -396,10 +396,12 @@ class EnvironmentSetup(Component):
                 fileobj.close()
             finally:
                 fileobj.close()
-            print ('Wrote sample configuration file with the new settings '
-                   'and their default values: \n\n  %s\n\n' % filename)
+            self.log.info('Wrote sample configuration file with the new '
+                          'settings and their default values: %s',
+                          filename)
         except IOError, e:
-            print "Warning: couldn't write sample configuration file (%s)" % e
+            self.log.warn('Couldn\'t write sample configuration file (%s)', e,
+                          exc_info=True)
 
 
 def open_environment(env_path=None):
