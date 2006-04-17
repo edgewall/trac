@@ -346,6 +346,8 @@ class ExtensionOption(Option):
         self.xtnpt = ExtensionPoint(interface)
 
     def __get__(self, instance, owner):
+        if instance is None:
+            return self
         value = Option.__get__(self, instance, owner)
         for impl in self.xtnpt.extensions(instance):
             if impl.__class__.__name__ == value:
