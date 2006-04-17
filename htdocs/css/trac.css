@@ -383,6 +383,6 @@ div.system-message p.system-message-title { font-weight: bold; }
 }
 
 @media print {
- #header, #altlinks, #footer { display: none }
+ #header, #altlinks, #footer, #help { display: none }
  .nav, form, .buttons form { display: none }
 }
