@@ -236,8 +236,8 @@ class RoadmapModule(Component):
         write_prop('X-WR-CALNAME',
                    self.config.get('project', 'name') + ' - Roadmap')
         for milestone in milestones:
-            uid = '<%s/milestone/%s@%s>' % (req.cgi_location,
-                                            milestone['name'], host)
+            uid = '<%s/milestone/%s@%s>' % (req.base_path, milestone['name'],
+                                            host)
             if milestone.has_key('due'):
                 write_prop('BEGIN', 'VEVENT')
                 write_prop('UID', uid)
