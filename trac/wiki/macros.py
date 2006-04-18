@@ -223,8 +223,6 @@ class ImageMacro(WikiMacroBase):
         [[Image(photo.jpg, right)]]                    # aligned by keyword
         [[Image(photo.jpg, nolink)]]                   # without link to source
         [[Image(photo.jpg, align=right)]]              # aligned by attribute
-        [[Image(photo.jpg, float:right)]]              # aligned by style
-        [[Image(photo.jpg, float:right, border:solid 5px green)]] # 2 style specs
     }}}
     
     You can use image from other page, other ticket or other module.
@@ -251,38 +249,33 @@ class ImageMacro(WikiMacroBase):
         if len(args) == 0:
             raise Exception("No argument.")
         filespec = args[0]
-        size_re = re.compile('^[0-9]+%?$')
-        align_re = re.compile('^(?:left|right|top|bottom)$')
-        keyval_re = re.compile('^([-a-z0-9]+)([=:])(.*)')
-        quoted_re = re.compile("^(?:[\"'])(.*)(?:[\"'])$")
+        size_re = re.compile('[0-9]+%?$')
+        attr_re = re.compile('(align|border|width|height|alt|title|longdesc|class|id|usemap)=(.+)')
+        quoted_re = re.compile("(?:[\"'])(.*)(?:[\"'])$")
         attr = {}
         style = {}
         nolink = False
         for arg in args[1:]:
             arg = arg.strip()
-            if size_re.search(arg):
+            if size_re.match(arg):
                 # 'width' keyword
                 attr['width'] = arg
-                continue
-            if align_re.search(arg):
-                # 'align' keyword
-                attr['align'] = arg
                 continue
             if arg == 'nolink':
                 nolink = True
                 continue
-            match = keyval_re.search(arg)
+            match = attr_re.match(arg)
             if match:
-                key = match.group(1)
-                sep = match.group(2)
-                val = match.group(3)
+                key, val = match.groups()
                 m = quoted_re.search(val) # unquote "..." and '...'
                 if m:
                     val = m.group(1)
-                if sep == '=':
-                    attr[key] = val;
-                elif sep == ':':
-                    style[key] = val
+                if key == 'align':
+                    style['float'] = val
+                elif key == 'border':
+                    style['border'] = ' %dpx solid' % int(val);
+                else:
+                    attr[key] = val
 
         # parse filespec argument to get module and id if contained.
         parts = filespec.split(':')
@@ -343,12 +336,17 @@ class ImageMacro(WikiMacroBase):
             if desc and not attr.has_key(key):
                 attr[key] = desc
         a_style = 'padding:0; border:none' # style of anchor
-        img_attr = ' '.join(['%s="%s"' % x for x in attr.iteritems()])
-        img_style = '; '.join(['%s:%s' % x for x in style.iteritems()])
-        result = '<img src="%s" %s style="%s" />' \
-                 % (raw_url, img_attr, img_style)
+        img_attr = ' '.join(['%s="%s"' % (k, escape(v))
+                             for k, v in attr.iteritems()])
+        if style:
+            img_style = '; '.join(['%s:%s' % (k, escape(v))
+                                   for k, v in style.iteritems()])
+            print 'style', img_style
+            img_attr += ' style="%s"' % img_style
+        result = Markup('<img src="%%s" %s />' % img_attr, raw_url).sanitize()
         if not nolink:
-            result = '<a href="%s" style="%s">%s</a>' % (url, a_style, result)
+            result = Markup('<a href="%s" style="%s">%s</a>',
+                            url, a_style, result)
         return result
 
 
