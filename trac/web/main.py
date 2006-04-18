@@ -124,7 +124,7 @@ class RequestDispatcher(Component):
     handlers = ExtensionPoint(IRequestHandler)
 
     default_handler = ExtensionOption('trac', 'default_handler',
-                                      IRequestHandler, 'WikiHandler',
+                                      IRequestHandler, 'WikiModule',
         """Name of the component that handles requests to the base URL.
         
         Options include `TimeLineModule`, `RoadmapModule`, `BrowserModule`,

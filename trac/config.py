@@ -352,8 +352,6 @@ class ExtensionOption(Option):
         for impl in self.xtnpt.extensions(instance):
             if impl.__class__.__name__ == value:
                 return impl
-        if self.default is not None:
-            return self.default(instance.env)
         raise AttributeError('Cannot find an implementation of the "%s" '
                              'interface named "%s".  Please update the option '
                              '%s.%s in trac.ini.'
