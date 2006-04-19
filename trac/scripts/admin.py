@@ -562,6 +562,11 @@ class TracAdmin(cmd.Cmd):
             print "Does an environment already exist?"
             return 2
 
+        if os.path.exists(self.envname) and os.listdir(self.envname):
+            print "Initenv for '%s' failed." % self.envname
+            print "Directory exists and is not empty."
+            return 2
+
         arg = self.arg_tokenize(line)
         project_name = None
         db_str = None

@@ -166,9 +166,11 @@ class Environment(Component, ComponentManager):
     def verify(self):
         """Verify that the provided path points to a valid Trac environment
         directory."""
-        fd = open(os.path.join(self.path, 'VERSION'), 'r')
-        assert fd.read(26) == 'Trac Environment Version 1'
-        fd.close()
+        try:
+            fd = open(os.path.join(self.path, 'VERSION'), 'r')
+            assert fd.read(26) == 'Trac Environment Version 1'
+        finally:
+            fd.close()
 
     def get_db_cnx(self):
         """Return a database connection from the connection pool."""
@@ -195,7 +197,8 @@ class Environment(Component, ComponentManager):
             fd.close()
 
         # Create the directory structure
-        os.mkdir(self.path)
+        if not os.path.exists(self.path):
+            os.mkdir(self.path)
         os.mkdir(self.get_log_dir())
         os.mkdir(self.get_htdocs_dir())
         os.mkdir(os.path.join(self.path, 'plugins'))
