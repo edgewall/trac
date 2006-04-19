@@ -404,7 +404,8 @@ class Mimeview(Component):
                     'raw_href': url}
         else:
             return {'preview': self.render(req, mimetype, content, filename,
-                                           url, annotations)}
+                                           url, annotations),
+                    'raw_href': url}
 
 
 def _html_splitlines(lines):
