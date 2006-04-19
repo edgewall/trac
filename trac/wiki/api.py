@@ -158,7 +158,7 @@ class WikiSystem(Component):
     def has_page(self, pagename):
         """Whether a page with the specified name exists."""
         self._update_index()
-        return self._index.has_key(pagename)
+        return self._index.has_key(pagename.rstrip('/'))
 
     def _get_rules(self):
         self._prepare_rules()
