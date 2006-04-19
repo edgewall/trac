@@ -11,6 +11,7 @@ class TestWikiChangeListener(Component):
         self.added = []
         self.changed = []
         self.deleted = []
+        self.deleted_version = []
 
     def wiki_page_added(self, page):
         self.added.append(page)
@@ -21,6 +22,8 @@ class TestWikiChangeListener(Component):
     def wiki_page_deleted(self, page):
         self.deleted.append(page)
 
+    def wiki_page_version_deleted(self, page):
+        self.deleted_version.append(page)
 
 
 class WikiPageTestCase(unittest.TestCase):
@@ -133,7 +136,7 @@ class WikiPageTestCase(unittest.TestCase):
         self.assertEqual(None, cursor.fetchone())
 
         listener = TestWikiChangeListener(self.env)
-        self.assertEqual(0, len(listener.deleted))
+        self.assertTrue(page, listener.deleted_version[0])
 
     def test_delete_page_last_version(self):
         cursor = self.db.cursor()
