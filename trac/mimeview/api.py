@@ -256,7 +256,7 @@ class Mimeview(Component):
         full_mimetype = mimetype
         if not full_mimetype:
             if hasattr(content, 'read'):
-                content = content.read(mimeview.get_max_preview_size())
+                content = content.read(self.get_max_preview_size())
             full_mimetype = self.get_mimetype(filename, content)
         mimetype = full_mimetype.split(';')[0].strip() # split off charset
 
