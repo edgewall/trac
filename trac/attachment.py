@@ -316,7 +316,7 @@ class AttachmentModule(Component):
         else:
             size = upload.file.len
         if size == 0:
-            raise TracError('No file uploaded')
+            raise TracError("Can't upload empty file")
 
         # Maximum attachment size (in bytes)
         max_size = self.max_size
