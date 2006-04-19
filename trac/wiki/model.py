@@ -95,6 +95,11 @@ class WikiPage(object):
             # Let change listeners know about the deletion
             for listener in WikiSystem(self.env).change_listeners:
                 listener.wiki_page_deleted(self)
+        else:
+            # Let change listeners know about the deletion
+            for listener in WikiSystem(self.env).change_listeners:
+                if hasattr(listener, 'wiki_page_version_deleted'):
+                    listener.wiki_page_version_deleted(self)
 
         if handle_ta:
             db.commit()

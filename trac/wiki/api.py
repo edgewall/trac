@@ -43,6 +43,9 @@ class IWikiChangeListener(Interface):
     def wiki_page_deleted(page):
         """Called when a page has been deleted."""
 
+    def wiki_page_version_deleted(page):
+        """Called when a version of a page has been deleted."""
+
 
 class IWikiPageManipulator(Interface):
     """Extension point interface for components that need to to specific
@@ -217,6 +220,9 @@ class WikiSystem(Component):
         if self.has_page(page.name):
             self.log.debug('Removing page %s from index' % page.name)
             del self._index[page.name]
+
+    def wiki_page_version_deleted(self, page):
+        pass
 
     # IWikiSyntaxProvider methods
     

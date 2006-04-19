@@ -921,6 +921,10 @@ class InterWikiMap(Component):
         if page.name == InterWikiMap._page_name:
             self._interwiki_map.clear()
 
+    def wiki_page_version_deleted(self, page):
+        if page.name == InterWikiMap._page_name:
+            self._update()
+
     def _update(self):
         from trac.wiki.model import WikiPage
         self._interwiki_map = {}
