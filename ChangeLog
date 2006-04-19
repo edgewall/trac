@@ -1,7 +1,8 @@
 Trac 0.9.5  (Apr 18, 2006)
 http://svn.edgewall.com/repos/trac/tags/trac-0.9.5
 
- * Fixed wiki macro XSS vulnerability found by Mr. Kazuhiro Nishiyama.
+ * Fixed wiki macro XSS vulnerability found by Mr. Kazuhiro Nishiyama:
+   http://jvn.jp/jp/JVN%2384091359/index.html
  * Smaller memory usage when accessing subversion history.
  * Fixed issue with incorrectly generated urls when installed behind a web 
    proxy (#2531).
