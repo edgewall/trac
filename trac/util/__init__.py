@@ -91,6 +91,8 @@ def to_unicode(text, charset=None, lossy=True):
     the input).
     """
     if not isinstance(text, str):
+        if isinstance(text, Exception):
+            return ' '.join([unicode(arg) for arg in text.args])
         return unicode(text)
     errors = lossy and 'replace' or 'strict'
     try:

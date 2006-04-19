@@ -22,7 +22,7 @@ from trac import __version__
 from trac.core import *
 from trac.perm import IPermissionRequestor
 from trac.util import format_date, format_datetime, parse_date, \
-                      pretty_timedelta, shorten_line, CRLF
+                      pretty_timedelta, shorten_line, CRLF, to_unicode
 from trac.util.markup import html, unescape, Markup
 from trac.ticket import Milestone, Ticket, TicketSystem
 from trac.Timeline import ITimelineEventProvider
@@ -391,13 +391,13 @@ class MilestoneModule(Component):
         try:
             milestone.due = due and parse_date(due) or 0
         except ValueError, e:
-            raise TracError(e, 'Invalid Date Format')
+            raise TracError(to_unicode(e), 'Invalid Date Format')
         if req.args.has_key('completed'):
             completed = req.args.get('completeddate', '')
             try:
                 milestone.completed = completed and parse_date(completed) or 0
             except ValueError, e:
-                raise TracError(e, 'Invalid Date Format')
+                raise TracError(to_unicode(e), 'Invalid Date Format')
             if milestone.completed > time():
                 raise TracError('Completion date may not be in the future',
                                 'Invalid Completion Date')
