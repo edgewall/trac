@@ -258,7 +258,10 @@ class Mimeview(Component):
             if hasattr(content, 'read'):
                 content = content.read(self.get_max_preview_size())
             full_mimetype = self.get_mimetype(filename, content)
-        mimetype = full_mimetype.split(';')[0].strip() # split off charset
+        if full_mimetype:
+            mimetype = full_mimetype.split(';')[0].strip() # split off charset
+        else:
+            mimetype = full_mimetype = 'text/plain' # fallback if not binary
 
         # Determine candidate `IHTMLPreviewRenderer`s
         candidates = []
@@ -365,6 +368,8 @@ class Mimeview(Component):
         """Infer the MIME type from the `filename` or the `content`.
 
         `content` is either a `str` or an `unicode` object.
+
+        Return the detected MIME type, or `None` if detection failed.
         """
         mimetype = get_mimetype(filename, content)
         charset = None
