@@ -166,13 +166,11 @@ class Environment(Component, ComponentManager):
     def verify(self):
         """Verify that the provided path points to a valid Trac environment
         directory."""
-        fd = None
+        fd = open(os.path.join(self.path, 'VERSION'), 'r')
         try:
-            fd = open(os.path.join(self.path, 'VERSION'), 'r')
             assert fd.read(26) == 'Trac Environment Version 1'
         finally:
-            if fd:
-                fd.close()
+            fd.close()
 
     def get_db_cnx(self):
         """Return a database connection from the connection pool."""
