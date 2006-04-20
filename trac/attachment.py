@@ -438,8 +438,8 @@ class AttachmentModule(Component):
                     # contain malicious code enabling XSS attacks
                     req.send_header('Content-Disposition', 'attachment;' +
                                     'filename=' + attachment.filename)
-                if self.render_unsafe_content and not binary \
-                        and format == 'txt':
+                if not mime_type or (self.render_unsafe_content and \
+                                     not binary and format == 'txt'):
                     mime_type = 'text/plain'
                 if 'charset=' not in mime_type:
                     charset = mimeview.get_charset(str_data, mime_type)
