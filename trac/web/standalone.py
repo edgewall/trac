@@ -155,7 +155,7 @@ def main():
     options, args = parser.parse_args()
 
     if not args and not options.env_parent_dir:
-        parser.error('either the --env_parent_dir option or at least one '
+        parser.error('either the --env-parent-dir option or at least one '
                      'environment must be specified')
 
     if options.port is None:
