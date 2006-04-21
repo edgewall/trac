@@ -50,16 +50,22 @@ class NotificationSystem(Component):
         """Reply-To address to use in notification emails.""")
 
     smtp_always_cc = Option('notification', 'smtp_always_cc', '',
-        """Email address(es) to always send notifications to.""")
+        """Email address(es) to always send notifications to,
+           addresses can be see by all recipients (Cc:).""")
+
+    smtp_always_bcc = Option('notification', 'smtp_always_bcc', '',
+        """Email address(es) to always send notifications to,
+           addresses do not appear publicly (Bcc:). (''since 0.10'').""")
 
     mime_encoding = Option('notification', 'mime_encoding', 'base64',
         """Specify the MIME encoding scheme for emails (''since 0.10'').""")
 
-    allow_public_cc = BoolOption('notification', 'allow_public_cc', 'false',
-        """Recipients can see email addresses of other CC'ed recipients
-        (''since 0.10'').""")
+    use_public_cc = BoolOption('notification', 'use_public_cc', 'false',
+        """Recipients can see email addresses of other CC'ed recipients.
+           (''since 0.10'').""")
 
-    maxheaderlen = Option('notification', 'maxheaderlen', '78')
+    maxheaderlen = Option('notification', 'maxheaderlen', '160',
+        """Maximum length of SMTP headers. (''since 0.10'').""")
 
 
 class Notify(object):
@@ -131,26 +137,24 @@ class NotifyEmail(Notify):
         from email.Charset import Charset, QP, BASE64
         self._charset = Charset()
         self._charset.input_charset = 'utf-8'
-        self._charset.input_codec = 'utf-8'
         pref = self.env.config.get('notification', 'mime_encoding').lower()
         if pref == 'base64':
             self._charset.header_encoding = BASE64
             self._charset.body_encoding = BASE64
             self._charset.output_charset = 'utf-8'
-            self._charset.output_codec = 'utf-8'    
-            self._pref_encoding = 'base64'
+            self._charset.input_codec = 'utf-8'
+            self._charset.output_codec = 'utf-8'
         elif pref in ['qp', 'quoted-printable']:
             self._charset.header_encoding = QP
             self._charset.body_encoding = QP
             self._charset.output_charset = 'utf-8'
-            self._charset.output_codec = 'utf-8'    
-            self._pref_encoding = 'quoted-printable'
+            self._charset.input_codec = 'utf-8'
+            self._charset.output_codec = 'utf-8'
         elif pref == 'none':
             self._charset.header_encoding = None
             self._charset.body_encoding = None
+            self._charset.input_codec = None
             self._charset.output_charset = 'ascii'
-            self._charset.output_codec = 'ascii'    
-            self._pref_encoding = None
         else:
             raise TracError, 'Invalid email encoding setting: %s' % pref
 
@@ -182,13 +186,13 @@ class NotifyEmail(Notify):
         from email.Header import Header
         try:
             tmp = name.encode('ascii')
-            name = Header(tmp, 'ascii', maxlinelen=self.maxheaderlen)
+            header = Header(tmp, 'ascii', maxlinelen=self.maxheaderlen)
         except UnicodeEncodeError:
-            name = Header(name, self._charset, maxlinelen=self.maxheaderlen)
+            header = Header(name, self._charset, maxlinelen=self.maxheaderlen)
         if not email:
-            return name
+            return header
         else:
-            return "\"%s\" <%s>" % (name, email)
+            return "\"%s\" <%s>" % (header, email)
 
     def add_headers(self, msg, headers):
         for h in headers:
@@ -243,7 +247,7 @@ class NotifyEmail(Notify):
         from email.Utils import formatdate, formataddr
         body = self.hdf.render(self.template_name)
         projname = self.config.get('project', 'name')
-        public_cc = self.config.getbool('notification', 'allow_public_cc')
+        public_cc = self.config.getbool('notification', 'use_public_cc')
         headers = {}
         headers['X-Mailer'] = 'Trac %s, by Edgewall Software' % __version__
         headers['X-Trac-Version'] =  __version__
@@ -253,44 +257,59 @@ class NotifyEmail(Notify):
         headers['From'] = (projname, self.from_email)
         headers['Sender'] = self.from_email
         headers['Reply-To'] = self.replyto_email
-        # Format and remove invalid addresses
-        toaddrs = filter(lambda x: x, \
-                         [self.get_smtp_address(addr) for addr in torcpts])
-        ccaddrs = filter(lambda x: x, \
-                         [self.get_smtp_address(addr) for addr in ccrcpts])
-        # Remove duplicates
-        totmp = []
-        cctmp = []
-        for addr in toaddrs:
-            if addr not in totmp:
-                totmp.append(addr)
-        for addr in [c for c in ccaddrs if c not in totmp]:
-            if addr not in cctmp:
-                cctmp.append(addr)
-        (toaddrs, ccaddrs) = (totmp, cctmp)
-        if toaddrs:
-            headers['To'] = ', '.join(toaddrs)
+
+        def build_addresses(rcpts):
+            """Format and remove invalid addresses"""
+            return filter(lambda x: x, \
+                          [self.get_smtp_address(addr) for addr in rcpts])
+
+        def remove_dup(rcpts, all):
+            """Remove duplicates"""
+            tmp = []
+            for rcpt in rcpts:
+                if not rcpt in all:
+                    tmp.append(rcpt)
+                    all.append(rcpt)
+            return (tmp, all)
+
+        toaddrs = build_addresses(torcpts)
+        ccaddrs = build_addresses(ccrcpts)
+        accparam = self.config.get('notification', 'smtp_always_cc')
+        accaddrs = accparam and \
+                   build_addresses(accparam.replace(',', ' ').split()) or []
+        bccparam = self.config.get('notification', 'smtp_always_bcc')
+        bccaddrs = bccparam and \
+                   build_addresses(bccparam.replace(',', ' ').split()) or []
+
+        recipients = []
+        (toaddrs, recipients) = remove_dup(toaddrs, recipients)
+        (ccaddrs, recipients) = remove_dup(ccaddrs, recipients)
+        (accaddrs, recipients) = remove_dup(accaddrs, recipients)
+        (bccaddrs, recipients) = remove_dup(bccaddrs, recipients)
+
+        pcc = accaddrs
         if public_cc:
-            headers['Cc'] = ', '.join(ccaddrs)
+            pcc += ccaddrs
+            if toaddrs:
+                headers['To'] = ', '.join(toaddrs)
+        if pcc:
+            headers['Cc'] = ', '.join(pcc)
         headers['Date'] = formatdate()
-        charset = 'utf-8'
-        if not self._pref_encoding:
+        # sanity check
+        if not self._charset.body_encoding:
             try:
                 dummy = body.encode('ascii')
             except UnicodeDecodeError:
                 raise TracError, "Ticket contains non-Ascii chars. " \
                                  "Please change encoding setting"
-            charset = 'ascii'
-        else:
-            charset = 'utf-8'
-        msg = MIMEText(body, 'plain', charset)
+        msg = MIMEText(body, 'plain')
+        # Message class computes the wrong type from MIMEText constructor,
+        # which does not take a Charset object as initializer. Reset the
+        # encoding type to force a new, valid evaluation
         del msg['Content-Transfer-Encoding']
-        if self._pref_encoding:
-            msg['Content-Transfer-Encoding'] = self._pref_encoding
         msg.set_charset(self._charset)
         self.add_headers(msg, headers);
         self.add_headers(msg, mime_headers);
-        recipients = toaddrs + ccaddrs
         self.env.log.debug("Sending SMTP notification to %s on port %d to %s"
                            % (self.smtp_server, self.smtp_port, recipients))
         msgtext = msg.as_string()

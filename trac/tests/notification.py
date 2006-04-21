@@ -22,7 +22,6 @@ from trac.ticket.model import Ticket
 from trac.ticket.notification import TicketNotifyEmail
 from trac.test import EnvironmentStub
 
-import sys
 import socket
 import string
 import threading
@@ -337,7 +336,7 @@ class NotificationTestCase(unittest.TestCase):
         self.env.config.set('notification', 'always_notify_reporter', 'true')
         self.env.config.set('notification', 'smtp_always_cc', 
                             'joe.user@example.net, joe.bar@example.net')
-        self.env.config.set('notification', 'allow_public_cc', 'true')
+        self.env.config.set('notification', 'use_public_cc', 'true')
         self.env.config.set('notification', 'smtp_port', "%d" % smtp_test_port)
         self.env.config.set('notification', 'smtp_server','localhost')
 
@@ -428,36 +427,56 @@ class NotificationTestCase(unittest.TestCase):
             self.failIf(mo.group('tz') not in tz)
 
     def test_bcc_privacy(self):
-        """ Validate no BCC recipient is visible """
-        # CC list should be private
-        self.env.config.set('notification', 'allow_public_cc', 'false')
-        ticket = Ticket(self.env)
-        ticket['reporter'] = '"Joe User" <joe.user@example.org>'
-        ticket['summary'] = 'This is a summary'
-        ticket.insert()
-        tn = TicketNotifyEmail(self.env)
-        tn.notify(ticket, newticket=True)
-        message = notifysuite.smtpd.get_message()
-        (headers, body) = self._parse_message(message)
-        # Msg should not contain a CC list
-        self.failIf('Cc' in headers)
-        # Msg should nevertheless have a To list
-        self.failIf('To' not in headers)
-        # Extract the list of 'To' recipients from the message
-        to = [rcpt.strip() for rcpt in headers['To'].split(',')]
-        # Extract the list of the actual SMTP recipients
-        rcptlist = notifysuite.smtpd.get_recipients()
-        # Build the list of the expected 'Bcc' recipients 
-        ccrcpt = self.env.config.get('notification', 'smtp_always_cc')
-        cclist = [cc.strip() for cc in ccrcpt.split(',')]
-        for rcpt in cclist:
-            # Check none of the 'Bcc' recipients appears in the 'To' header
-            self.failIf(rcpt in to)
-            # Check the message has actually been sent to the recipients
-            self.failIf(rcpt not in rcptlist)
-            
+        """ Validate visibility of recipients"""
+        def run_bcc_feature(public):
+            # CC list should be private
+            self.env.config.set('notification', 'use_public_cc',
+                                public and 'true' or 'false')
+            self.env.config.set('notification', 'smtp_always_bcc', 
+                                'joe.foobar@example.net')
+            ticket = Ticket(self.env)
+            ticket['reporter'] = '"Joe User" <joe.user@example.org>'
+            ticket['summary'] = 'This is a summary'
+            ticket.insert()
+            tn = TicketNotifyEmail(self.env)
+            tn.notify(ticket, newticket=True)
+            message = notifysuite.smtpd.get_message()
+            (headers, body) = self._parse_message(message)
+            if public:
+                # Msg should have a To list
+                self.failIf('To' not in headers)
+                # Extract the list of 'To' recipients from the message
+                to = [rcpt.strip() for rcpt in headers['To'].split(',')]
+            else:
+                # Msg should not have a To list
+                self.failIf('To' in headers)
+                # Extract the list of 'To' recipients from the message
+                to = []            
+            # Extract the list of 'Cc' recipients from the message
+            cc = [rcpt.strip() for rcpt in headers['Cc'].split(',')]
+            # Extract the list of the actual SMTP recipients
+            rcptlist = notifysuite.smtpd.get_recipients()
+            # Build the list of the expected 'Cc' recipients 
+            ccrcpt = self.env.config.get('notification', 'smtp_always_cc')
+            cclist = [ccr.strip() for ccr in ccrcpt.split(',')]
+            for rcpt in cclist:
+                # Each recipient of the 'Cc' list should appear in the 'Cc' header
+                self.failIf(rcpt not in cc)
+                # Check the message has actually been sent to the recipients
+                self.failIf(rcpt not in rcptlist)
+            # Build the list of the expected 'Bcc' recipients 
+            bccrcpt = self.env.config.get('notification', 'smtp_always_bcc')
+            bcclist = [bccr.strip() for bccr in bccrcpt.split(',')]
+            for rcpt in bcclist:
+                # Check none of the 'Bcc' recipients appears in the 'To' header
+                self.failIf(rcpt in to)
+                # Check the message has actually been sent to the recipients
+                self.failIf(rcpt not in rcptlist)
+        run_bcc_feature(True)
+        run_bcc_feature(False)
+
     def test_short_login(self):
-        """ Validate no qualified addresses """        
+        """ Validate no qualified addresses """
         def _test_short_login(enabled):
             ticket = Ticket(self.env)
             ticket['reporter'] = 'joeuser'
@@ -557,7 +576,7 @@ class NotificationTestCase(unittest.TestCase):
         ticket = Ticket(self.env)
         ticket['reporter'] = 'joe.user@example.org'
         # Forces non-ascii characters
-        summary = u'A very %s súmmäry' % u' '.join(['long'] * 20)
+        summary = u'A_very %s súmmäry' % u' '.join(['long'] * 20)
         ticket['summary'] = summary
         ticket.insert()
         tn = TicketNotifyEmail(self.env)
@@ -566,15 +585,17 @@ class NotificationTestCase(unittest.TestCase):
         (headers, body) = self._parse_message(message)
         # Discards the project name & ticket number
         subject = headers['Subject']
-        summary = subject[subject.find(':')+2:]
-        self.failIf(summary != ticket['summary'])
+        summary = subject[subject.find(':')+2:].encode('utf-8')
+        # Hack: we need to keep space chars in long headers
+        tksummary = ticket['summary'].replace(' ', '_').encode('utf-8')
+        self.failIf(summary != tksummary)
 
     def test_mimebody_b64(self):
         """ Validate MIME Base64/utf-8 encoding """
         self.env.config.set('notification','mime_encoding', 'base64')
         ticket = Ticket(self.env)
         ticket['reporter'] = 'joe.user@example.org'
-        ticket['summary'] = 'This is a summary'
+        ticket['summary'] = u'This is a súmmäry'
         ticket.insert()
         self._validate_mimebody((base64, 'base64', 'utf-8'), \
                                 ticket, True)
@@ -584,7 +605,7 @@ class NotificationTestCase(unittest.TestCase):
         self.env.config.set('notification','mime_encoding', 'qp')
         ticket = Ticket(self.env)
         ticket['reporter'] = 'joe.user@example.org'
-        ticket['summary'] = 'This is a summary'
+        ticket['summary'] = u'This is a súmmäry'
         ticket.insert()
         self._validate_mimebody((quopri, 'quoted-printable', 'utf-8'), \
                                 ticket, True)
@@ -594,7 +615,7 @@ class NotificationTestCase(unittest.TestCase):
         self.env.config.set('notification','mime_encoding', 'none')
         ticket = Ticket(self.env)
         ticket['reporter'] = 'joe.user@example.org'
-        ticket['summary'] = 'This is a summary'
+        ticket['summary'] = u'This is a summary'
         ticket.insert()
         self._validate_mimebody((None, '7bit', 'ascii'), \
                                 ticket, True)
@@ -694,7 +715,7 @@ class NotificationTestCase(unittest.TestCase):
         decoders = { 'q' : quopri, 'b' : base64 }
         try:
             decoder = decoders[mo.group('code').lower()]
-            val = decoder.decodestring(mo.group('value'), True)
+            val = decoder.decodestring(mo.group('value'))
             header = unicode(val, mo.group('charset'))
         except Exception, e:
             raise AssertionError, e

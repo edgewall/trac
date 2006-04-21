@@ -183,11 +183,6 @@ class TicketNotifyEmail(NotifyEmail):
             for author,ticket in cursor:
                 torecipients.append(author)
 
-        # Add smtp_always_cc address
-        acc = self.config.get('notification', 'smtp_always_cc')
-        if acc:
-            ccrecipients += acc.replace(',', ' ').split()
-
         return (torecipients, ccrecipients)
 
     def get_message_id(self, rcpt, modtime=0):
