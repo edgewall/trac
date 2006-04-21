@@ -20,6 +20,7 @@ except ImportError:
     from base64 import decodestring as b64decode
 import md5
 import re
+import sys
 import time
 import urllib2
 

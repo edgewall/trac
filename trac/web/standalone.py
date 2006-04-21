@@ -85,11 +85,6 @@ class TracHTTPServer(ThreadingMixIn, WSGIServer):
     def __init__(self, server_address, application, env_parent_dir, env_paths):
         WSGIServer.__init__(self, server_address, application,
                             request_handler=TracHTTPRequestHandler)
-        self.environ['trac.env_path'] = None
-        if env_parent_dir:
-            self.environ['trac.env_parent_dir'] = env_parent_dir
-        else:
-            self.environ['trac.env_paths'] = env_paths
 
 
 class TracHTTPRequestHandler(WSGIRequestHandler):
@@ -171,7 +166,8 @@ def main():
         }[options.protocol]
     server_address = (options.hostname, options.port)
 
-    wsgi_app = dispatch_request
+    wsgi_app = TracEnvironMiddleware(dispatch_request,
+                                     options.env_parent_dir, args)
     if auths:
         wsgi_app = AuthenticationMiddleware(wsgi_app, auths)
     base_path = options.base_path.strip('/')
@@ -187,8 +183,7 @@ def main():
         def serve():
             server_cls = __import__('flup.server.%s' % options.protocol,
                                     None, None, ['']).WSGIServer
-            app = TracEnvironMiddleware(wsgi_app, options.env_parent_dir, args)
-            ret = server_cls(app, bindAddress=server_address).run()
+            ret = server_cls(wsgi_app, bindAddress=server_address).run()
             sys.exit(ret and 42 or 0) # if SIGHUP exit with status 42
 
     try:
