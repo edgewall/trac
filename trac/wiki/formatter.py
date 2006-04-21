@@ -193,7 +193,7 @@ class Formatter(object):
          r"(\]\]|\((?P<macroargs>.*?)\)\]\]))"),
         # heading, list, definition, indent, table...
         r"(?P<heading>^\s*(?P<hdepth>=+)\s.*\s(?P=hdepth)\s*$)",
-        r"(?P<list>^(?P<ldepth>\s+)(?:\*|\d+\.|[a-zA-Z]+\.) )",
+        r"(?P<list>^(?P<ldepth>\s+)(?:\*|\d+\.|[a-zA-Z]\.|[ivxIVX]{1,5}\.) )",
         r"(?P<definition>^\s+((?:%s.*?%s|%s.*?%s|[^%s%s])+?::)(?:\s+|$))"
         % (INLINE_TOKEN, INLINE_TOKEN, STARTBLOCK_TOKEN, ENDBLOCK_TOKEN,
            INLINE_TOKEN, STARTBLOCK[0]),

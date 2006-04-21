@@ -622,6 +622,29 @@ Some paragraph
    i. roman 1
    ii. roman 2
 Paragraph
+============================== Numbered lists counter-examples
+ This will not start a new numbered
+ list. There's more than one character
+ before the "."
+ OTOH, the following is a roman numbered list:
+ iii. start
+ xxvii. maximal number in sequence
+Paragraph
+------------------------------
+<blockquote>
+<p>
+This will not start a new numbered
+list. There's more than one character
+before the "."
+OTOH, the following is a roman numbered list:
+</p>
+</blockquote>
+<ol class="lowerroman"><li>start
+</li><li>maximal number in sequence
+</li></ol><p>
+Paragraph
+</p>
+------------------------------
 ============================== Simple definition list
  term:: definition
 ------------------------------
