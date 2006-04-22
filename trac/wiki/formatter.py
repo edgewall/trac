@@ -21,6 +21,7 @@ from __future__ import generators
 import re
 import os
 import urllib
+import StringIO as pyStringIO
 
 try:
     from cStringIO import StringIO
@@ -660,7 +661,9 @@ class OneLinerFormatter(Formatter):
         # Simplify code blocks
         in_code_block = 0
         processor = None
-        buf = StringIO()
+        buf = pyStringIO.StringIO()
+        text = unicode(text, 'utf-8', 'replace')
+
         for line in text.strip().splitlines():
             if line.strip() == '{{{':
                 in_code_block += 1
@@ -678,6 +681,7 @@ class OneLinerFormatter(Formatter):
             else:
                 print>>buf, line
         result = buf.getvalue()[:-1]
+        result = result.encode('utf-8')
 
         if shorten:
             result = util.shorten_line(result)

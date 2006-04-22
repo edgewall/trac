@@ -257,6 +257,12 @@ foo (<a class="missing wiki" href="/wiki/FooBar" rel="nofollow">FooBar?</a> )
 </p>
 ------------------------------
 ==============================
+== Indice di Priorità ==
+------------------------------
+<h2 id="IndicediPriorità">Indice di Priorità</h2>
+------------------------------
+== Indice di Priorità ==
+==============================
 == Heading with trailing white-space == 
 ------------------------------
 <h2 id="Headingwithtrailingwhitespace">Heading with trailing white-space</h2>
