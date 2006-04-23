@@ -148,7 +148,7 @@ class Configuration(object):
                           self.site_parser.get(section, option)
                 current = self.parser.has_option(section, option) and \
                           self.parser.get(section, option)
-                if current != default:
+                if current is not False and current != default:
                     if not config.has_section(section):
                         config.add_section(section)
                     config.set(section, option, current or '')
