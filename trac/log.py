@@ -34,7 +34,7 @@ def logger_factory(logtype='syslog', logfile=None, level='WARNING',
     elif logtype in ['stderr']:
         hdlr = logging.StreamHandler(sys.stderr)
     else:
-        hdlr = logging.handlers.MemoryHandler(1024)
+        hdlr = None
 
     format = 'Trac[%(module)s] %(levelname)s: %(message)s'
     if logtype in ['file', 'stderr']:
@@ -54,7 +54,8 @@ def logger_factory(logtype='syslog', logfile=None, level='WARNING',
     else:
         logger.setLevel(logging.WARNING)
     formatter = logging.Formatter(format,datefmt)
-    hdlr.setFormatter(formatter)
-    logger.addHandler(hdlr) 
+    if hdlr:
+        hdlr.setFormatter(formatter)
+        logger.addHandler(hdlr) 
 
     return logger
