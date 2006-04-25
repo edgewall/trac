@@ -84,6 +84,20 @@ class TicketNotifyEmail(NotifyEmail):
                     cdescr += 'Old description:' + 2*CRLF + old_descr + 2*CRLF
                     cdescr += 'New description:' + 2*CRLF + new_descr + CRLF
                     self.hdf.set_unescaped('email.changes_descr', cdescr)
+                elif field == 'cc':
+                    (addcc, delcc) = self.diff_cc(old, new)
+                    chgcc = ''
+                    if delcc:
+                        chgcc += wrap(" * cc: %s (removed)" % ', '.join(delcc), 
+                                      self.COLS, ' ', ' ', CRLF)
+                        chgcc += CRLF
+                    if addcc:
+                        chgcc += wrap(" * cc: %s (added)" % ', '.join(addcc), 
+                                      self.COLS, ' ', ' ', CRLF)
+                        chgcc += CRLF
+                    if chgcc:
+                        changes += chgcc
+                    self.prev_cc += old and self.parse_cc(old) or []
                 else:
                     newv = new
                     l = 7 + len(field)
@@ -93,8 +107,6 @@ class TicketNotifyEmail(NotifyEmail):
                 if newv:
                     self.hdf.set_unescaped('%s.oldvalue' % pfx, old)
                     self.hdf.set_unescaped('%s.newvalue' % pfx, newv)
-                if field == 'cc':
-                    self.prev_cc += old and self.parse_cc(old) or []
                 self.hdf.set_unescaped('%s.author' % pfx, author)
             if changes:
                 self.hdf.set_unescaped('email.changes_body', changes)
@@ -145,6 +157,13 @@ class TicketNotifyEmail(NotifyEmail):
 
     def parse_cc(self, txt):
         return filter(lambda x: '@' in x, txt.replace(',', ' ').split())
+
+    def diff_cc(self, old, new):
+        oldcc = NotifyEmail.addrsep_re.split(old)
+        newcc = NotifyEmail.addrsep_re.split(new)
+        added = [x for x in newcc if x not in oldcc]
+        removed = [x for x in oldcc if x not in newcc]
+        return (added, removed)
 
     def format_hdr(self):
         return '#%s: %s' % (self.ticket.id, wrap(self.ticket['summary'],

@@ -19,6 +19,7 @@
 
 import time
 import sys
+import re
 
 from trac.core import TracError
 from trac.ticket import TicketSystem
@@ -210,6 +211,14 @@ class Ticket(object):
                     # If the old component has been removed from the database we
                     # just leave the owner as is.
                     pass
+
+        # Fix up cc list separators and remove duplicates
+        if self.values.has_key('cc'):
+            cclist = []
+            for cc in re.split(r'[;,\s]+', self.values['cc']):
+                if cc not in cclist:
+                    cclist.append(cc)
+            self.values['cc'] = ', '.join(cclist)
 
         custom_fields = [f['name'] for f in self.fields if f.get('custom')]
         for name in self._old.keys():

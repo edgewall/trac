@@ -122,6 +122,7 @@ class NotifyEmail(Notify):
     shortaddr_re = re.compile(addrfmt)
     longaddr_re = re.compile(r"^\s*(.*)\s+<(" + addrfmt + ")>\s*$");
     nodomaddr_re = re.compile(r"[\w\d_\.\-]+")
+    addrsep_re = re.compile(r"[;\s,]+")
 
     def __init__(self, env):
         Notify.__init__(self, env)
