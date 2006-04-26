@@ -86,15 +86,15 @@ class ComponentMeta(type):
                 # that any inherited initializers are also called.
                 for init in [b.__init__._original for b in new_class.mro()
                              if issubclass(b, Component)
-                             and b.__dict__.has_key('__init__')]:
+                             and '__init__' in b.__dict__]:
                     break
             def maybe_init(self, compmgr, init=init, cls=new_class):
-                if not cls in compmgr.components:
+                if cls not in compmgr.components:
                     compmgr.components[cls] = self
                     if init:
                         init(self)
             maybe_init._original = init
-            setattr(new_class, '__init__', maybe_init)
+            new_class.__init__ = maybe_init
 
         if d.get('abstract'):
             # Don't put abstract component classes in the registry
@@ -149,12 +149,12 @@ class Component(object):
 
         # The normal case where the component is not also the component manager
         compmgr = args[0]
-        if not cls in compmgr.components:
+        self = compmgr.components.get(cls)
+        if self is None:
             self = super(Component, cls).__new__(cls)
             self.compmgr = compmgr
             compmgr.component_activated(self)
-            return self
-        return compmgr[cls]
+        return self
 
 
 class ComponentManager(object):
@@ -163,6 +163,7 @@ class ComponentManager(object):
     def __init__(self):
         """Initialize the component manager."""
         self.components = {}
+        self.enabled = {}
         if isinstance(self, Component):
             self.components[self.__class__] = self
 
@@ -173,17 +174,19 @@ class ComponentManager(object):
     def __getitem__(self, cls):
         """Activate the component instance for the given class, or return the
         existing the instance if the component has already been activated."""
+        if cls not in self.enabled:
+            self.enabled[cls] = self.is_component_enabled(cls)
+        if not self.enabled[cls]:
+            return None
         component = self.components.get(cls)
         if not component:
-            if not self.is_component_enabled(cls):
-                return None
             if cls not in ComponentMeta._components:
                 raise TracError, 'Component "%s" not registered' % cls.__name__
             try:
                 component = cls(self)
             except TypeError, e:
-                raise TracError, 'Unable to instantiate component "%s" (%s)' \
-                                 % (cls.__name__, e)
+                raise TracError, 'Unable to instantiate component %r (%s)' \
+                                 % (cls, e)
         return component
 
     def component_activated(self, component):

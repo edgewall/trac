@@ -266,6 +266,21 @@ class ComponentTestCase(unittest.TestCase):
         self.assertEquals('x', tests.next().test())
         self.assertRaises(StopIteration, tests.next)
 
+    def test_instantiation_doesnt_enable(self):
+        """
+        Make sure that a component disabled by the ComponentManager is not
+        implicitly enabled by instantiating it directly.
+        """
+        from trac.core import ComponentManager
+        class DisablingComponentManager(ComponentManager):
+            def is_component_enabled(self, cls):
+                return False
+        class ComponentA(Component):
+            pass
+        mgr = DisablingComponentManager()
+        instance = ComponentA(mgr)
+        self.assertEqual(None, mgr[ComponentA])
+
 
 def suite():
     return unittest.makeSuite(ComponentTestCase, 'test')
