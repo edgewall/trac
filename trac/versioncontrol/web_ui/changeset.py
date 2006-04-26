@@ -639,6 +639,8 @@ class ChangesetModule(Component):
                     if wiki_format:
                         message = wiki_to_oneliner(message, self.env, db,
                                                    shorten=True)
+                    else:
+                        message = shortlog
 
                 if show_files:
                     files = []
