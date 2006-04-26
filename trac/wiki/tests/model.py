@@ -136,7 +136,7 @@ class WikiPageTestCase(unittest.TestCase):
         self.assertEqual(None, cursor.fetchone())
 
         listener = TestWikiChangeListener(self.env)
-        self.assertTrue(page, listener.deleted_version[0])
+        self.assertEqual(page, listener.deleted_version[0])
 
     def test_delete_page_last_version(self):
         cursor = self.db.cursor()
