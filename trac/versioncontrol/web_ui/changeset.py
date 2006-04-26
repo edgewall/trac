@@ -24,14 +24,13 @@ from StringIO import StringIO
 import time
 
 from trac import util
-from trac.config import IntOption
+from trac.config import BoolOption, IntOption
 from trac.core import *
 from trac.mimeview import Mimeview, is_binary
 from trac.perm import IPermissionRequestor
 from trac.Search import ISearchSource, search_to_sql, shorten_result
 from trac.Timeline import ITimelineEventProvider
-from trac.util import unicode_urlencode
-from trac.util.markup import escape, unescape, Markup
+from trac.util.markup import html, escape, unescape, Markup
 from trac.versioncontrol import Changeset, Node
 from trac.versioncontrol.diff import get_diff_options, hdf_diff, unified_diff
 from trac.versioncontrol.svn_authz import SubversionAuthorizer
@@ -77,6 +76,13 @@ class ChangesetModule(Component):
         plus their new size) for which the changeset view will attempt to show
         the diffs inlined (''since 0.10'').""")
 
+    wiki_format_messages = BoolOption('changeset', 'wiki_format_messages',
+                                      'false',
+        """Whether wiki formatting should be applied to changeset messages.
+        
+        If this option is disabled, changeset messages will be rendered as
+        pre-formatted text.""")
+
     # INavigationContributor methods
 
     def get_active_navigation_item(self, req):
@@ -105,9 +111,9 @@ class ChangesetModule(Component):
             return True
 
     def process_request(self, req):
-        """
-        The appropriate mode of operation is inferred from the request
+        """The appropriate mode of operation is inferred from the request
         parameters:
+
          * If `new_path` and `old_path` are equal (or `old_path` is omitted)
            and `new` and `old` are equal (or `old` is omitted),
            then we're about to view a revision Changeset: `chgset` is True.
@@ -233,8 +239,10 @@ class ChangesetModule(Component):
         if chgset:
             diff_params = 'new=%s' % new
         else:
-            diff_params = unicode_urlencode({'new_path': new_path, 'new': new,
-                                             'old_path': old_path, 'old': old})
+            diff_params = util.unicode_urlencode({'new_path': new_path,
+                                                  'new': new,
+                                                  'old_path': old_path,
+                                                  'old': old})
         add_link(req, 'alternate', '?format=diff&'+diff_params, 'Unified Diff',
                  'text/plain', 'diff')
         add_link(req, 'alternate', '?format=zip&'+diff_params, 'Zip Archive',
@@ -251,14 +259,13 @@ class ChangesetModule(Component):
         req.hdf['changeset'] = {
             'chgset': chgset and True,
             'restricted': restricted,
-            'href': { 'new_rev': req.href.changeset(diff.new_rev),
-                      'old_rev': req.href.changeset(diff.old_rev),
-                      'new_path': req.href.browser(diff.new_path,
-                                                   rev=diff.new_rev),
-                      'old_path': req.href.browser(diff.old_path,
-                                                   rev=diff.old_rev),
-                      }
+            'href': {
+                'new_rev': req.href.changeset(diff.new_rev),
+                'old_rev': req.href.changeset(diff.old_rev),
+                'new_path': req.href.browser(diff.new_path, rev=diff.new_rev),
+                'old_path': req.href.browser(diff.old_path, rev=diff.old_rev)
             }
+        }
 
         if chgset: # Changeset Mode (possibly restricted on a path)
             path, rev = diff.new_path, diff.new_rev
@@ -292,15 +299,19 @@ class ChangesetModule(Component):
                 properties.append({'name': name, 'value': value,
                                    'htmlclass': htmlclass})
 
+            message = chgset.message or '--'
+            if self.wiki_format_messages:
+                message = wiki_to_html(message, self.env, req,
+                                       escape_newlines=True)
+            else:
+                message = html.PRE(message)
             req.hdf['changeset'] = {
                 'revision': chgset.rev,
                 'time': util.format_datetime(chgset.date),
                 'age': util.pretty_timedelta(chgset.date, None, 3600),
                 'author': chgset.author or 'anonymous',
-                'message': wiki_to_html(chgset.message or '--', self.env, req,
-                                        escape_newlines=True),
-                'properties': properties
-                }
+                'message': message, 'properties': properties
+            }
             oldest_rev = repos.oldest_rev
             if chgset.rev != oldest_rev:
                 if restricted:
@@ -601,23 +612,34 @@ class ChangesetModule(Component):
     def get_timeline_events(self, req, start, stop, filters):
         if 'changeset' in filters:
             format = req.args.get('format')
+            wiki_format = self.wiki_format_messages
             show_files = self.timeline_show_files
             db = self.env.get_db_cnx()
             repos = self.env.get_repository(req.authname)
             for chgset in repos.get_changesets(start, stop):
                 message = chgset.message or '--'
-                shortlog = wiki_to_oneliner(message, self.env, db, shorten=True)
+                if wiki_format:
+                    shortlog = wiki_to_oneliner(message, self.env, db,
+                                                shorten=True)
+                else:
+                    shortlog = util.shorten_line(message)
+
                 if format == 'rss':
                     title = Markup('Changeset [%s]: %s', chgset.rev, shortlog)
                     href = self.env.abs_href.changeset(chgset.rev)
-                    message = wiki_to_html(message, self.env, req, db,
-                                           absurls=True)
+                    if wiki_format:
+                        message = wiki_to_html(message, self.env, req, db,
+                                               absurls=True)
+                    else:
+                        message = html.PRE(message)
                 else:
                     title = Markup('Changeset <em>[%s]</em> by %s', chgset.rev,
                                    chgset.author)
                     href = req.href.changeset(chgset.rev)
-                    message = wiki_to_oneliner(message, self.env, db,
-                                               shorten=True)
+                    if wiki_format:
+                        message = wiki_to_oneliner(message, self.env, db,
+                                                   shorten=True)
+
                 if show_files:
                     files = []
                     for chg in chgset.get_changes():
@@ -628,6 +650,7 @@ class ChangesetModule(Component):
                                             chg[2], chg[0] or '/'))
                     message = Markup('<span class="changes">%s</span> %s',
                                      Markup(''.join(files)), message)
+
                 yield 'changeset', href, title, chgset.date, chgset.author,\
                       message
 
@@ -758,6 +781,6 @@ class AnyDiffModule(Component):
             'old_path': old_path,
             'old_rev': old_rev,
             'changeset_href': req.href.changeset(),
-            }
+        }
 
         return 'anydiff.cs', None

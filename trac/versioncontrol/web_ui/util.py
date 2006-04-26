@@ -19,8 +19,9 @@
 import re
 import urllib
 
-from trac.util import escape, format_datetime, pretty_timedelta, shorten_line, \
-                      TracError, Markup
+from trac.core import TracError
+from trac.util import escape, format_datetime, pretty_timedelta, shorten_line
+from trac.util.markup import html, Markup
 from trac.versioncontrol.api import NoSuchNode, NoSuchChangeset
 from trac.wiki import wiki_to_html, wiki_to_oneliner
 
@@ -36,25 +37,35 @@ def get_changes(env, repos, revs, full=None, req=None, format=None):
         except NoSuchChangeset:
             changes[rev] = {}
             continue
+
+        wiki_format = env.config['changeset'].getbool('wiki_format_messages')
         message = changeset.message or '--'
-        shortlog = wiki_to_oneliner(message, env, db, shorten=True)
+        if wiki_format:
+            shortlog = wiki_to_oneliner(message, env, db, shorten=True)
+        else:
+            shortlog = Markup.escape(shorten_line(message))
+
         if full:
-            message = wiki_to_html(message, env, req, db,
-                                   absurls=(format == 'rss'),
-                                   escape_newlines=True)
+            if wiki_format:
+                message = wiki_to_html(message, env, req, db,
+                                       absurls=(format == 'rss'),
+                                       escape_newlines=True)
+            else:
+                message = html.PRE(message)
         else:
             message = shortlog
+
         if format == 'rss':
             if isinstance(shortlog, Markup):
                 shortlog = shortlog.plaintext(keeplinebreaks=False)
             message = unicode(message)
+
         changes[rev] = {
             'date_seconds': changeset.date,
             'date': format_datetime(changeset.date),
             'age': pretty_timedelta(changeset.date),
             'author': changeset.author or 'anonymous',
-            'message': message,
-            'shortlog': shortlog,
+            'message': message, 'shortlog': shortlog,
         }
     return changes
 
@@ -105,4 +116,3 @@ def render_node_property(env, name, value):
         value = Markup(''.join(['<br />%s' % escape(v)
                                 for v in value.split('\n')]))
     return value
-
