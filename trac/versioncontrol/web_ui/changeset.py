@@ -77,7 +77,7 @@ class ChangesetModule(Component):
         the diffs inlined (''since 0.10'').""")
 
     wiki_format_messages = BoolOption('changeset', 'wiki_format_messages',
-                                      'false',
+                                      'true',
         """Whether wiki formatting should be applied to changeset messages.
         
         If this option is disabled, changeset messages will be rendered as
