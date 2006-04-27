@@ -20,6 +20,7 @@ from trac.db.util import ConnectionWrapper
 
 psycopg = None
 PgSQL = None
+PGSchemaError = None
 
 
 class PostgreSQLConnector(Component):
@@ -38,6 +39,9 @@ class PostgreSQLConnector(Component):
                 params={}):
         cnx = self.get_connection(path, user, password, host, port, params)
         cursor = cnx.cursor()
+        if cnx.schema:
+            cursor.execute('CREATE SCHEMA %s' % cnx.schema)
+            cursor.execute('SET search_path TO %s, public', (cnx.schema,))
         from trac.db_default import schema
         for table in schema:
             for stmt in self.to_sql(table):
@@ -76,6 +80,7 @@ class PostgreSQLConnection(ConnectionWrapper):
         # We support both psycopg and PgSQL but prefer psycopg
         global psycopg
         global PgSQL
+        global PGSchemaError
         global have_psycopg2
         
         if not psycopg and not PgSQL:
@@ -83,13 +88,16 @@ class PostgreSQLConnection(ConnectionWrapper):
                 try:
                     import psycopg2 as psycopg
                     import psycopg2.extensions
+                    from psycopg2 import ProgrammingError as PGSchemaError
                     psycopg2.extensions.register_type(psycopg2.extensions.UNICODE)
                     have_psycopg2 = True
                 except ImportError:
                     have_psycopg2 = False
                     import psycopg
+                    from psycopg import ProgrammingError as PGSchemaError
             except ImportError:
                 from pyPgSQL import PgSQL
+                from pyPgSQL.libpq import OperationalError as PGSchemaError
         if psycopg:
             dsn = []
             if path:
@@ -108,6 +116,14 @@ class PostgreSQLConnection(ConnectionWrapper):
         else:
             cnx = PgSQL.connect('', user, password, host, path, port, 
                                 client_encoding='utf-8', unicode_results=True)
+        try:
+            self.schema = None
+            if 'schema' in params:
+                self.schema = params['schema']
+            cnx.cursor().execute('SET search_path TO %s, public', 
+                                (self.schema,))
+        except PGSchemaError:
+            cnx.rollback()
         ConnectionWrapper.__init__(self, cnx)
 
     def cast(self, column, type):
@@ -122,3 +138,12 @@ class PostgreSQLConnection(ConnectionWrapper):
     def get_last_id(self, cursor, table, column='id'):
         cursor.execute("SELECT CURRVAL('%s_%s_seq')" % (table, column))
         return cursor.fetchone()[0]
+
+    def rollback(self):
+        self.cnx.rollback()
+        if self.schema:
+            try:
+                self.cnx.cursor().execute("SET search_path TO %s, public", 
+                                         (self.schema,))
+            except PGSchemaError:
+                self.cnx.rollback()
