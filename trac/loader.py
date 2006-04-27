@@ -87,7 +87,11 @@ def load_components(env):
                 try:
                     entry_point = egg.get_entry_info('trac.plugins', name)
                     if entry_point.module_name not in loaded_components:
-                        entry_point.load()
+                        try:
+                            entry_point.load()
+                        except pkg_resources.DistributionNotFound, e:
+                            env.log.warning('Cannot load plugin %s because it '
+                                            'requires "%s"', name, e)
                         modules.append(entry_point.module_name)
                         loaded_components.append(entry_point.module_name)
                 except ImportError, e:
