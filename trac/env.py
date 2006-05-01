@@ -273,12 +273,12 @@ class Environment(Component, ComponentManager):
         if not cnx:
             cnx = self.get_db_cnx()
         cursor = cnx.cursor()
-        cursor.execute("SELECT DISTINCT s.sid, n.var_value, e.var_value "
+        cursor.execute("SELECT DISTINCT s.sid, n.value, e.value "
                        "FROM session AS s "
-                       " LEFT JOIN session AS n ON (n.sid=s.sid "
-                       "  AND n.authenticated=1 AND n.var_name = 'name') "
-                       " LEFT JOIN session AS e ON (e.sid=s.sid "
-                       "  AND e.authenticated=1 AND e.var_name = 'email') "
+                       " LEFT JOIN session_attribute AS n ON (n.sid=s.sid "
+                       "  and n.authenticated=1 AND n.name = 'name') "
+                       " LEFT JOIN session_attribute AS e ON (e.sid=s.sid "
+                       "  AND e.authenticated=1 AND e.name = 'email') "
                        "WHERE s.authenticated=1 ORDER BY s.sid")
         for username,name,email in cursor:
             yield username, name, email

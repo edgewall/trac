@@ -131,7 +131,7 @@ def embedded_numbers(s):
 def hex_entropy(bytes=32):
     import md5
     import random
-    return md5.md5(str(random.random() + time.time())).hexdigest()[:bytes]
+    return md5.md5(str(random.random())).hexdigest()[:bytes]
 
 def pretty_size(size):
     if size is None:
