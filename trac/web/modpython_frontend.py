@@ -77,8 +77,9 @@ class ModPythonGateway(WSGIGateway):
         try:
             self.req.write(data)
         except IOError, e:
-            if 'client closed connection' not in e.strerror:
+            if 'client closed connection' not in str(e):
                 raise
+
 
 def handler(req):
     options = req.get_options()
