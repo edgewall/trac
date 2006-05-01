@@ -39,18 +39,22 @@ class ToUnicodeTestCase(unittest.TestCase):
         assert isinstance(uc, unicode)
         self.assertEquals(u'\xc3', uc)
 
-    def test_from_exception(self):
-        u = 'u\B144'
-        err = None
-        try:
-            int(u)
-        except ValueError, e:
-            self.assertEquals(u'invalid literal for int(): u\B144',
-                              to_unicode(e))
+    def test_from_exception_using_args(self):
+        u = u'\uB144'
         try:
             raise ValueError, '%s is not a number.' % u
         except ValueError, e:
-            self.assertEquals(u'u\B144 is not a number.', to_unicode(e))
+            self.assertEquals(u'\uB144 is not a number.', to_unicode(e))
+
+    def test_from_exception_using_str(self):
+        class PermissionError(StandardError):
+            def __str__(self):
+                return u'acc\xe8s interdit'
+        try:
+            raise PermissionError()
+        except PermissionError, e:
+            self.assertEquals(u'acc\xe8s interdit', to_unicode(e))
+
 
 def suite():
     suite = unittest.TestSuite()

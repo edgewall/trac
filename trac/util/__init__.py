@@ -92,7 +92,13 @@ def to_unicode(text, charset=None, lossy=True):
     """
     if not isinstance(text, str):
         if isinstance(text, Exception):
-            return ' '.join([unicode(arg) for arg in text.args])
+            # two possibilities for storing unicode strings in exception data:
+            try:
+                # custom __str__ method on the exception (e.g. PermissionError)
+                return unicode(text)
+            except UnicodeError:
+                # unicode arguments given to the exception (e.g. parse_date)
+                return ' '.join([unicode(arg) for arg in text.args])
         return unicode(text)
     errors = lossy and 'replace' or 'strict'
     try:
