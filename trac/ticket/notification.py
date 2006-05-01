@@ -161,8 +161,8 @@ class TicketNotifyEmail(NotifyEmail):
     def diff_cc(self, old, new):
         oldcc = NotifyEmail.addrsep_re.split(old)
         newcc = NotifyEmail.addrsep_re.split(new)
-        added = [x for x in newcc if x not in oldcc]
-        removed = [x for x in oldcc if x not in newcc]
+        added = [x for x in newcc if x and x not in oldcc]
+        removed = [x for x in oldcc if x and x not in newcc]
         return (added, removed)
 
     def format_hdr(self):
