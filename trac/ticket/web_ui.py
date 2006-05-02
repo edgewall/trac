@@ -196,11 +196,6 @@ class TicketModule(TicketModuleBase):
     default_component = Option('ticket', 'default_component', '',
         """Default component for newly created tickets""")
 
-    restrict_owner = BoolOption('ticket', 'restrict_owner', 'false',
-        """Make the owner field of tickets use a drop-down menu. See
-        [wiki:TracTickets#AssigntoasDropDownList AssignToAsDropDownList]
-        (''since 0.9'').""")
-
     timeline_details = BoolOption('timeline', 'ticket_show_details', 'false',
         """Enable the display of all ticket changes in the timeline
         (''since 0.9'').""")

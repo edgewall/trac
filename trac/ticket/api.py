@@ -16,6 +16,7 @@
 
 import re
 
+from trac.config import *
 from trac.core import *
 from trac.perm import IPermissionRequestor
 from trac.Search import ISearchSource, search_to_sql, shorten_result
@@ -62,6 +63,11 @@ class TicketSystem(Component):
 
     change_listeners = ExtensionPoint(ITicketChangeListener)
 
+    restrict_owner = BoolOption('ticket', 'restrict_owner', 'false',
+        """Make the owner field of tickets use a drop-down menu. See
+        [wiki:TracTickets#AssigntoasDropDownList AssignToAsDropDownList]
+        (''since 0.9'').""")
+
     # Public API
 
     def get_available_actions(self, ticket, perm_):
@@ -91,7 +97,7 @@ class TicketSystem(Component):
 
         # Owner field, can be text or drop-down depending on configuration
         field = {'name': 'owner', 'label': 'Owner'}
-        if self.config.getbool('ticket', 'restrict_owner'):
+        if self.restrict_owner:
             field['type'] = 'select'
             users = []
             for username, name, email in self.env.get_known_users(db):
