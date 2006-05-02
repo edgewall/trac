@@ -531,6 +531,7 @@ class Formatter(object):
     # Blockquote
 
     def close_indentation(self):
+        self.close_table()
         self.out.write(('</blockquote>' + os.linesep) * self.indent_level)
         self.indent_level = 0
 
@@ -539,6 +540,7 @@ class Formatter(object):
             return
         diff = depth - self.indent_level
         if diff != 0:
+            self.close_table()
             self.close_paragraph()
             self.close_indentation()
             self.close_list()
@@ -571,7 +573,6 @@ class Formatter(object):
     def open_table(self):
         if not self.in_table:
             self.close_paragraph()
-            self.close_indentation()
             self.close_list()
             self.close_def_list()
             self.in_table = 1
@@ -700,7 +701,7 @@ class Formatter(object):
             if self.in_def_list and not line.startswith(' '):
                 self.close_def_list()
 
-            if self.in_table and line[0:2] != '||':
+            if self.in_table and line.strip()[0:2] != '||':
                 self.close_table()
 
             if len(result) and not self.in_list_item and not self.in_def_list \

@@ -753,7 +753,33 @@ in:
 out:
 || RPC# || parameter len || ..... parameter ..... ||
 ----
-==============================
+============================== Indented tables, multiple columns
+|| a || b ||
+
+  || a || b ||
+  || a || b ||
+
+|| a || b ||
+------------------------------
+<table class="wiki">
+<tr><td> a </td><td> b 
+</td></tr></table>
+<blockquote>
+<table class="wiki">
+<tr><td> a </td><td> b 
+</td></tr><tr><td> a </td><td> b 
+</td></tr></table>
+</blockquote>
+<table class="wiki">
+<tr><td> a </td><td> b 
+</td></tr></table>
+------------------------------
+|| a || b ||
+
+  || a || b ||
+  || a || b ||
+
+|| a || b ||
 ============================== General Wiki syntax, mix of headings and lists
 = Heading 1 =
 Paragraph
