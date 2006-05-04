@@ -86,7 +86,7 @@
    <tr>
     <th class="diff"></th>
     <th class="change"></th>
-    <th class="data">Date</th>
+    <th class="date">Date</th>
     <th class="rev">Rev</th>
     <th class="chgset">Chgset</th>
     <th class="author">Author</th>
