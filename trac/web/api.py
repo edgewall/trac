@@ -252,16 +252,19 @@ class Request(object):
         self._write = self._start_response(self._status, self._outheaders)
 
     def check_modified(self, timesecs, extra=''):
-        """Check the request "If-None-Match" header against an entity tag
-        generated from the specified last modified time in seconds (`timesecs`),
-        optionally appending an `extra` string to indicate variants of the
-        requested resource. That `extra` parameter can also be a list,
-        in which case the MD5 sum of the list content will be used.
+        """Check the request "If-None-Match" header against an entity tag.
+
+        The entity tag is generated from the specified last modified time
+        in seconds (`timesecs`), optionally appending an `extra` string to
+        indicate variants of the requested resource.
+
+        That `extra` parameter can also be a list, in which case the MD5 sum
+        of the list content will be used.
 
         If the generated tag matches the "If-None-Match" header of the request,
         this method sends a "304 Not Modified" response to the client.
-        Otherwise, it adds the entity tag as as "ETag" header to the response so
-        that consequetive requests can be cached.
+        Otherwise, it adds the entity tag as an "ETag" header to the response
+        so that consecutive requests can be cached.
         """
         if isinstance(extra, list):
             import md5
