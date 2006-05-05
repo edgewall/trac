@@ -67,6 +67,14 @@ class ChangesetModule(Component):
     timeline_show_files = IntOption('timeline', 'changeset_show_files', 0,
         """Number of files to show (`-1` for unlimited, `0` to disable).""")
 
+    timeline_long_messages = BoolOption('timeline', 'changeset_long_messages',
+                                        'false',
+        """Whether wiki-formatted changeset messages should be multiline or not.
+
+        If this option is not specified or is false and `wiki_format_messages`
+        is set to true, changeset messages will be single line only, losing
+        some formatting (bullet points, etc).""")
+
     max_diff_files = IntOption('changeset', 'max_diff_files', 0,
         """Maximum number of modified files for which the changeset view will
         attempt to show the diffs inlined (''since 0.10'')."""),
@@ -636,9 +644,14 @@ class ChangesetModule(Component):
                     title = Markup('Changeset <em>[%s]</em> by %s', chgset.rev,
                                    chgset.author)
                     href = req.href.changeset(chgset.rev)
+
                     if wiki_format:
-                        message = wiki_to_oneliner(message, self.env, db,
-                                                   shorten=True)
+                        if self.timeline_long_messages:
+                            message = wiki_to_html(message, self.env, req, db,
+                                                   absurls=True)
+                        else:
+                            message = wiki_to_oneliner(message, self.env, db,
+                                                       shorten=True)
                     else:
                         message = shortlog
 
