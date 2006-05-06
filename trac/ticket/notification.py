@@ -215,10 +215,13 @@ class TicketNotifyEmail(NotifyEmail):
 
     def send(self, torcpts, ccrcpts):
         hdrs = {}
-        dest = torcpts or ccrcpts
+        always_cc = self.config['notification'].get('smtp_always_cc')
+        always_bcc = self.config['notification'].get('smtp_always_bcc')
+        dest = torcpts or ccrcpts or filter(None, [always_cc]) or \
+               filter(None, [always_bcc])
         if not dest:
             self.env.log.info('no recipient for a ticket notification')
-            return 
+            return
         hdrs['Message-ID'] = self.get_message_id(dest[0], self.modtime)
         hdrs['X-Trac-Ticket-ID'] = str(self.ticket.id)
         hdrs['X-Trac-Ticket-URL'] = self.ticket['link']
