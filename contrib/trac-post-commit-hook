@@ -74,7 +74,7 @@ import sys
 import time 
 
 from trac.env import open_environment
-from trac.Notify import TicketNotifyEmail
+from trac.ticket.notification import TicketNotifyEmail
 from trac.ticket import Ticket
 from trac.web.href import Href
 
@@ -145,7 +145,7 @@ class CommitHook:
         for cmd, tkts in cmdGroups:
             if CommitHook._supported_cmds.has_key(cmd.lower()):
                 func = getattr(self, CommitHook._supported_cmds[cmd.lower()])
-                func(ticketPattern.findall(tkts))
+                func([int(tkt_id) for tkt_id in ticketPattern.findall(tkts)])
 
     def _cmdClose(self, tickets):
         for tkt_id in tickets:
