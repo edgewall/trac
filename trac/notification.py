@@ -58,11 +58,18 @@ class NotificationSystem(Component):
            addresses do not appear publicly (Bcc:). (''since 0.10'').""")
 
     mime_encoding = Option('notification', 'mime_encoding', 'base64',
-        """Specify the MIME encoding scheme for emails (''since 0.10'').""")
+        """Specifies the MIME encoding scheme for emails.
+        
+        Valid options are 'base64' for Base64 encoding, 'qp' for
+        Quoted-Printable, and 'none' for no encoding. Note that the no encoding
+        means that non-ASCII characters in text are going to cause problems
+        with notifications (''since 0.10'').""")
 
     use_public_cc = BoolOption('notification', 'use_public_cc', 'false',
         """Recipients can see email addresses of other CC'ed recipients.
-           (''since 0.10'').""")
+        
+        If this option is disabled (the default), recipients are put on BCC
+        (''since 0.10'').""")
 
     maxheaderlen = Option('notification', 'maxheaderlen', '160',
         """Maximum length of SMTP headers. (''since 0.10'').""")
