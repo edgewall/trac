@@ -29,6 +29,7 @@ import unittest
 import re
 import base64
 import quopri
+import time
 
 smtp_test_port = 8225
 LF = '\n'
@@ -619,6 +620,37 @@ class NotificationTestCase(unittest.TestCase):
         ticket.insert()
         self._validate_mimebody((None, '7bit', 'ascii'), \
                                 ticket, True)
+
+    def test_updater(self):
+        """ Validate not-self-notification option """
+        def _test_updater(disable):
+            if disable:
+                self.env.config.set('notification','always_notify_updater', 'false')
+            ticket = Ticket(self.env)
+            ticket['reporter'] = 'joe.user@example.org'
+            ticket['summary'] = u'This is a súmmäry'
+            ticket['cc'] = 'joe.bar@example.com'
+            ticket.insert()
+            ticket['component'] = 'dummy'
+            now = time.time()
+            ticket.save_changes('joe.bar2@example.com', 'This is a change', when=now)
+            tn = TicketNotifyEmail(self.env)
+            tn.notify(ticket, newticket=False, modtime=now)
+            message = notifysuite.smtpd.get_message()
+            (headers, body) = self._parse_message(message)
+            # checks for header existence
+            self.failIf(not headers)
+            # checks for updater in the 'To' recipient list
+            self.failIf('To' not in headers)
+            tolist = [addr.strip() for addr in headers['To'].split(',')]
+            if disable:
+                self.failIf('joe.bar2@example.com' in tolist)
+            else:
+                self.failIf('joe.bar2@example.com' not in tolist)
+
+        # Validate with and without a default domain
+        for disable in [False, True]:
+            _test_updater(disable)
 
     def _validate_mimebody(self, mime, ticket, newtk):
         """ Validate the body of a ticket notification message """

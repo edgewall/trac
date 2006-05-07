@@ -36,6 +36,11 @@ class TicketNotificationSystem(Component):
         """Always send notifications to any address in the ''reporter''
         field.""")
 
+    always_notify_reporter = BoolOption('notification', 'always_notify_updater',
+                                        'true',
+        """Always send notifications to the person who causes the ticket 
+        property change.""")
+
 
 class TicketNotifyEmail(NotifyEmail):
     """Notification of ticket changes."""
@@ -179,6 +184,8 @@ class TicketNotifyEmail(NotifyEmail):
                                               'always_notify_reporter')
         notify_owner = self.config.getbool('notification',
                                            'always_notify_owner')
+        notify_updater = self.config.getbool('notification', 
+                                            'always_notify_updater')
 
         ccrecipients = self.prev_cc
         torecipients = []
@@ -201,6 +208,13 @@ class TicketNotifyEmail(NotifyEmail):
                            "WHERE ticket=%s", (tktid,))
             for author,ticket in cursor:
                 torecipients.append(author)
+
+        # Suppress the updater from the recipients
+        if not notify_updater:
+            cursor.execute("SELECT author FROM ticket_change WHERE ticket=%s "
+                           "ORDER BY time DESC LIMIT 1", (tktid,))
+            (updater, ) = cursor.fetchone() 
+            torecipients = [r for r in torecipients if r and r != updater]
 
         return (torecipients, ccrecipients)
 
