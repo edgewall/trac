@@ -231,8 +231,8 @@ class TicketNotifyEmail(NotifyEmail):
         hdrs = {}
         always_cc = self.config['notification'].get('smtp_always_cc')
         always_bcc = self.config['notification'].get('smtp_always_bcc')
-        dest = torcpts or ccrcpts or filter(None, [always_cc]) or \
-               filter(None, [always_bcc])
+        dest = filter(None, torcpts) or filter(None, ccrcpts) or \
+               filter(None, [always_cc]) or filter(None, [always_bcc])
         if not dest:
             self.env.log.info('no recipient for a ticket notification')
             return

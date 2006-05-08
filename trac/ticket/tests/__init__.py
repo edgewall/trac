@@ -1,6 +1,6 @@
 import unittest
 
-from trac.ticket.tests import api, model, query, wikisyntax
+from trac.ticket.tests import api, model, query, wikisyntax, notification
 
 def suite():
     suite = unittest.TestSuite()
@@ -8,6 +8,7 @@ def suite():
     suite.addTest(model.suite())
     suite.addTest(query.suite())
     suite.addTest(wikisyntax.suite())
+    suite.addTest(notification.suite())
     return suite
 
 if __name__ == '__main__':
