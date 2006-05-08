@@ -109,8 +109,8 @@ class Environment(Component, ComponentManager):
         ComponentManager.__init__(self)
 
         self.path = path
-        self.setup_config() 
-        self.setup_log() 
+        self.setup_config(load_defaults=create)
+        self.setup_log()
 
         from trac.loader import load_components
         load_components(self)
@@ -214,10 +214,7 @@ class Environment(Component, ComponentManager):
         # Setup the default configuration
         os.mkdir(os.path.join(self.path, 'conf'))
         _create_file(os.path.join(self.path, 'conf', 'trac.ini'))
-        self.setup_config()
-        for section, default_options in self.config.defaults().items():
-            for name, value in default_options.items():
-                self.config.set(section, name, value)
+        self.setup_config(load_defaults=True)
         for section, name, value in options:
             self.config.set(section, name, value)
         self.config.save()
@@ -234,9 +231,13 @@ class Environment(Component, ComponentManager):
         row = cursor.fetchone()
         return row and int(row[0])
 
-    def setup_config(self):
+    def setup_config(self, load_defaults=False):
         """Load the configuration file."""
         self.config = Configuration(os.path.join(self.path, 'conf', 'trac.ini'))
+        if load_defaults:
+            for section, default_options in self.config.defaults().iteritems():
+                for name, value in default_options.iteritems():
+                    self.config.set(section, name, value)
 
     def get_templates_dir(self):
         """Return absolute path to the templates directory."""
