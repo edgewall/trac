@@ -73,6 +73,9 @@ def load_components(env):
                      yield dist
                  except pkg_resources.DistributionNotFound, e:
                      env.log.error('Skipping "%s" ("%s" not found)', dist, e)
+                 except pkg_resources.VersionConflict, e:
+                     env.log.error('Skipping "%s" (version conflict: "%s")',
+                                   dist, e)
 
         for egg in flatten([pkg_env[name][0] for name in pkg_env]):
             modules = []
