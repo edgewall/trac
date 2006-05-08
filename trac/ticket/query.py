@@ -59,6 +59,8 @@ class Query(object):
 
     def from_string(cls, env, string, **kw):
         filters = string.split('&')
+        kw_strs = ['order', 'group']
+        kw_bools = ['desc', 'groupdesc', 'verbose']
         constraints = {}
         for filter in filters:
             filter = filter.split('=')
@@ -78,7 +80,13 @@ class Query(object):
                 field = field[:-1]
             values = map(lambda x: neg + mode + x, values)
             try:
-                constraints[str(field)] = values
+                field = str(field)
+                if field in kw_strs:
+                    kw[field] = values[0]
+                elif field in kw_bools:
+                    kw[field] = True
+                else:
+                    constraints[field] = values
             except UnicodeError:
                 pass # field must be a str, see `get_href()`
         return cls(env, constraints, **kw)

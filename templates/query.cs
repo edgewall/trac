@@ -20,10 +20,13 @@
  <fieldset id="filters">
   <legend>Filters</legend>
   <?cs def:checkbox_checked(constraint, option) ?><?cs
+   set:checked = 0 ?><?cs
    each:value = constraint.values ?><?cs
-    if:value == option ?> checked="checked"<?cs
+    if:(value == option) == (constraint.mode == '') ?><?cs
+      set:checked = 1 ?><?cs
     /if ?><?cs
    /each ?><?cs
+   if:checked ?> checked="checked"<?cs /if ?><?cs
   /def ?>
   <table summary="Query filters">
    <tbody><tr style="height: 1px"><td colspan="4"></td></tr></tbody><?cs

@@ -141,6 +141,10 @@ query:status=new|reopened
 query:milestone!=
 
 query:milestone=1.0|2.0&owner=me
+
+query:group=owner
+
+query:verbose=1
 ------------------------------
 <p>
 <a class="query" href="/query?order=priority">query:?order=priority</a>
@@ -156,6 +160,12 @@ query:milestone=1.0|2.0&owner=me
 </p>
 <p>
 <a class="query" href="/query?milestone=1.0&amp;milestone=2.0&amp;owner=me&amp;order=priority">query:milestone=1.0|2.0&amp;owner=me</a>
+</p>
+<p>
+<a class="query" href="/query?group=owner&amp;order=priority">query:group=owner</a>
+</p>
+<p>
+<a class="query" href="/query?verbose=1&amp;order=priority">query:verbose=1</a>
 </p>
 ------------------------------
 """
