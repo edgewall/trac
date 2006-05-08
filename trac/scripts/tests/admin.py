@@ -78,7 +78,7 @@ class InMemoryEnvironment(Environment):
         return cls.__module__.startswith('trac.') and \
                cls.__module__.find('.tests.') == -1
 
-    def setup_config(self):
+    def setup_config(self, load_defaults=None):
         self.config = Configuration(None)
             
     def save_config(self):
