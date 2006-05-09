@@ -98,19 +98,23 @@ trac:wiki:InterTrac
 [trac:wiki:InterTrac intertrac]
 ------------------------------
 <p>
-<a class="ext-link" href="http://projects.edgewall.com/trac/wiki/InterTrac" title="wiki:InterTrac in Trac's Trac"><span class="icon"></span>t:wiki:InterTrac</a>
-<a class="ext-link" href="http://projects.edgewall.com/trac/wiki/InterTrac" title="wiki:InterTrac in Trac's Trac"><span class="icon"></span>trac:wiki:InterTrac</a>
-<a class="ext-link" href="http://projects.edgewall.com/trac/wiki/InterTrac" title="wiki:InterTrac in Trac's Trac"><span class="icon"></span>intertrac</a>
-<a class="ext-link" href="http://projects.edgewall.com/trac/wiki/InterTrac" title="wiki:InterTrac in Trac's Trac"><span class="icon"></span>intertrac</a>
+<a class="ext-link" href="http://projects.edgewall.com/trac/wiki/InterTrac" title="wiki:InterTrac in Trac's Trac"><span class="icon">t:wiki:InterTrac</span></a>
+<a class="ext-link" href="http://projects.edgewall.com/trac/wiki/InterTrac" title="wiki:InterTrac in Trac's Trac"><span class="icon">trac:wiki:InterTrac</span></a>
+<a class="ext-link" href="http://projects.edgewall.com/trac/wiki/InterTrac" title="wiki:InterTrac in Trac's Trac"><span class="icon">intertrac</span></a>
+<a class="ext-link" href="http://projects.edgewall.com/trac/wiki/InterTrac" title="wiki:InterTrac in Trac's Trac"><span class="icon">intertrac</span></a>
 </p>
 ------------------------------
 ============================== Wiki InterTrac shorthands
+t:InterTrac
+trac:InterTrac
 [t:InterTrac intertrac]
 [trac:InterTrac intertrac]
 ------------------------------
 <p>
-<a class="ext-link" href="http://projects.edgewall.com/trac/search?q=InterTrac" title="InterTrac in Trac's Trac"><span class="icon"></span>intertrac</a>
-<a class="ext-link" href="http://projects.edgewall.com/trac/search?q=InterTrac" title="InterTrac in Trac's Trac"><span class="icon"></span>intertrac</a>
+<a class="ext-link" href="http://projects.edgewall.com/trac/search?q=InterTrac" title="InterTrac in Trac's Trac"><span class="icon">t:InterTrac</span></a>
+<a class="ext-link" href="http://projects.edgewall.com/trac/search?q=InterTrac" title="InterTrac in Trac's Trac"><span class="icon">trac:InterTrac</span></a>
+<a class="ext-link" href="http://projects.edgewall.com/trac/search?q=InterTrac" title="InterTrac in Trac's Trac"><span class="icon">intertrac</span></a>
+<a class="ext-link" href="http://projects.edgewall.com/trac/search?q=InterTrac" title="InterTrac in Trac's Trac"><span class="icon">intertrac</span></a>
 </p>
 ------------------------------
 """

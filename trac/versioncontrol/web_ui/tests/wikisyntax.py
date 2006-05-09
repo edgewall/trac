@@ -48,29 +48,21 @@ Change:<a class="missing changeset" href="/changeset/10" rel="nofollow">[10]</a>
 ============================== InterTrac for changesets
 trac:changeset:2081
 [trac:changeset:2081 Trac r2081]
-[T2081]
-[trac 2081]
 ------------------------------
 <p>
-<a class="ext-link" href="http://projects.edgewall.com/trac/changeset/2081" title="changeset:2081 in Trac's Trac"><span class="icon"></span>trac:changeset:2081</a>
-<a class="ext-link" href="http://projects.edgewall.com/trac/changeset/2081" title="changeset:2081 in Trac's Trac"><span class="icon"></span>Trac r2081</a>
-<a class="ext-link" href="http://projects.edgewall.com/trac/changeset/2081" title="changeset:2081 in Trac's Trac"><span class="icon"></span>[T2081]</a>
-<a class="ext-link" href="http://projects.edgewall.com/trac/changeset/2081" title="changeset:2081 in Trac's Trac"><span class="icon"></span>[trac 2081]</a>
+<a class="ext-link" href="http://projects.edgewall.com/trac/changeset/2081" title="changeset:2081 in Trac's Trac"><span class="icon">trac:changeset:2081</span></a>
+<a class="ext-link" href="http://projects.edgewall.com/trac/changeset/2081" title="changeset:2081 in Trac's Trac"><span class="icon">Trac r2081</span></a>
 </p>
 ------------------------------
 ============================== Changeset InterTrac shorthands
-t:InterTrac
-trac:InterTrac
-[t:InterTrac intertrac]
-[trac:InterTrac intertrac]
+[T2081]
+[trac 2081]
 T:r2081
 ------------------------------
 <p>
-<a class="ext-link" href="http://projects.edgewall.com/trac/search?q=InterTrac" title="InterTrac in Trac's Trac"><span class="icon"></span>t:InterTrac</a>
-<a class="ext-link" href="http://projects.edgewall.com/trac/search?q=InterTrac" title="InterTrac in Trac's Trac"><span class="icon"></span>trac:InterTrac</a>
-<a class="ext-link" href="http://projects.edgewall.com/trac/search?q=InterTrac" title="InterTrac in Trac's Trac"><span class="icon"></span>intertrac</a>
-<a class="ext-link" href="http://projects.edgewall.com/trac/search?q=InterTrac" title="InterTrac in Trac's Trac"><span class="icon"></span>intertrac</a>
-<a class="ext-link" href="http://projects.edgewall.com/trac/search?q=r2081" title="r2081 in Trac's Trac"><span class="icon"></span>T:r2081</a>
+<a class="ext-link" href="http://projects.edgewall.com/trac/changeset/2081" title="changeset:2081 in Trac's Trac"><span class="icon">[T2081]</span></a>
+<a class="ext-link" href="http://projects.edgewall.com/trac/changeset/2081" title="changeset:2081 in Trac's Trac"><span class="icon">[trac 2081]</span></a>
+<a class="ext-link" href="http://projects.edgewall.com/trac/search?q=r2081" title="r2081 in Trac's Trac"><span class="icon">T:r2081</span></a>
 </p>
 ------------------------------
 """
