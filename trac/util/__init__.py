@@ -48,11 +48,18 @@ try:
 except NameError:
     def sorted(iterable, cmp=None, key=None, reverse=False):
         """Partial implementation of the "sorted" function from Python 2.4"""
-        lst = key and [(key(i), i) for i in iterable] or list(iterable)
+        if key is None:
+            lst = list(iterable)
+        else:
+            lst = [(key(val), idx, val) for idx, val in enumerate(iterable)]
         lst.sort()
+        if key is None:
+            if reverse:
+                return lst[::-1]
+            return lst
         if reverse:
             lst = reversed(lst)
-        return key and [i for __, i in lst] or lst
+        return [i[-1] for i in lst]
 
 def to_utf8(text, charset='iso-8859-15'):
     """Convert a string to UTF-8, assuming the encoding is either UTF-8, ISO
