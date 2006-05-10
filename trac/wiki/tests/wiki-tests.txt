@@ -372,6 +372,29 @@ Block
  [&hellip;]
 and block
  [&hellip;]
+============================== Unfinished code blocks
+Block 
+{{{
+number one
+
+and block
+{{{
+number two
+ }}
+------------------------------
+<p>
+Block 
+</p>
+<pre class="wiki">number one
+
+and block
+{{{
+number two
+ }}
+}}}
+</pre>
+------------------------------
+Block [&hellip;]
 ============================== Wiki processor
 {{{
 #!default

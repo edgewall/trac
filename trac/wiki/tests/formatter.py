@@ -117,6 +117,10 @@ class WikiTestCase(unittest.TestCase):
                 sep = '-' * 15
                 msg = '\n%s expected:\n%s\n%s actual:\n%s\n%s\n' \
                       % (sep, match.group(1), sep, match.group(2), sep)
+# Tip: sometimes, 'expected' and 'actual' differ only by whitespace,
+#      then replace the above line by those two:
+#                      % (sep, match.group(1).replace(' ', '.'),
+#                         sep, match.group(2).replace(' ', '.'), sep)
                 msg = msg.replace(r'\n', '\n')
             raise AssertionError( # See below for details
                 '%s\n\n%s:%s: "%s" (%s flavor)' \

@@ -599,7 +599,7 @@ class Formatter(object):
             self.out.write('</table>' + os.linesep)
             self.in_table = 0
 
-    # -- Wiki engine
+    # Paragraphs
 
     def open_paragraph(self):
         if not self.paragraph_open:
@@ -625,6 +625,8 @@ class Formatter(object):
                 else:
                     return getattr(self, '_' + itype + '_formatter')(match,
                                                                      fullmatch)
+    # Code blocks
+    
     def handle_code_block(self, line):
         if line.strip() == Formatter.STARTBLOCK:
             self.in_code_block += 1
@@ -654,6 +656,12 @@ class Formatter(object):
         else:
             self.code_text += line + os.linesep
 
+    def close_code_blocks(self):
+        while self.in_code_block > 0:
+            self.handle_code_block(Formatter.ENDBLOCK)
+
+    # -- Wiki engine
+    
     def format(self, text, out, escape_newlines=False):
         self.out = out
         self._open_tags = []
@@ -715,6 +723,7 @@ class Formatter(object):
         self.close_indentation()
         self.close_list()
         self.close_def_list()
+        self.close_code_blocks()
 
 
 class OneLinerFormatter(Formatter):
@@ -786,6 +795,9 @@ class OneLinerFormatter(Formatter):
 
         # Close all open 'one line'-tags
         result += self.close_tag(None)
+        # Flush unterminated code blocks
+        if in_code_block > 0:
+            result += '[&hellip;]'
         out.write(result)
 
 
