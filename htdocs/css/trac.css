@@ -385,5 +385,6 @@ div.system-message p.system-message-title { font-weight: bold; }
 
 @media print {
  #header, #altlinks, #footer, #help { display: none }
- .nav, form, .buttons form { display: none }
+ .nav, form, .buttons form, form .buttons { display: none }
+ form.printableform { display: block }
 }

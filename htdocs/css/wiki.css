@@ -45,6 +45,10 @@ h4:hover .anchor, h5:hover .anchor, h6:hover .anchor {
 #wikihist td.version { text-align: center }
 #wikihist td.comment { width: 100% }
 
+@media print { 
+ th.diff, td.diff { display: none }
+}
+
 /* Styles for the TracGuideToc wikimacro */
 .wiki-toc {
  padding: .5em 1em;

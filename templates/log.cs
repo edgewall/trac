@@ -77,7 +77,7 @@
   </div>
  </div>
 
- <form action="<?cs var:log.changeset_href ?>" method="get">
+ <form  class="printableform" action="<?cs var:log.changeset_href ?>" method="get">
   <div class="buttons"><input type="submit" value="View changes" 
        title="Diff from Old Revision to New Revision (select them below)" />
  </div>

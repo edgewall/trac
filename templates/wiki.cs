@@ -152,7 +152,7 @@
  <?cs elif wiki.action == "history" ?>
   <h1>Change History of <a href="<?cs var:wiki.current_href ?>"><?cs
     var:wiki.page_name ?></a></h1>
-  <?cs if:len(wiki.history) ?><form method="get" action="">
+  <?cs if:len(wiki.history) ?><form class="printableform" method="get" action="">
    <input type="hidden" name="action" value="diff" />
    <div class="buttons">
     <input type="submit" value="View changes" />

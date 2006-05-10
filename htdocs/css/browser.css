@@ -79,7 +79,9 @@ tr.diff input {
 div.buttons {
  clear: left;
 }
-
+@media print { 
+  th.diff, td.diff { display: none }
+}
 /* Styles for the revision log table
    (extends the styles for "table.listing") */
 #chglist { margin-top: 0 }
