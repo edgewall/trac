@@ -330,8 +330,8 @@ class ImageMacro(WikiMacroBase):
         if not url: # this is an attachment
             from trac.attachment import Attachment
             attachment = Attachment(self.env, module, id, file)
-            url = attachment.href()
-            raw_url = attachment.href(format='raw')
+            url = attachment.href(req)
+            raw_url = attachment.href(req, format='raw')
             desc = attachment.description
         for key in ['title', 'alt']:
             if desc and not attr.has_key(key):
