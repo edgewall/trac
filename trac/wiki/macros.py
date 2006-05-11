@@ -352,7 +352,8 @@ class ImageMacro(Component):
             img_style = '; '.join(['%s:%s' % (k, escape(v))
                                    for k, v in style.iteritems()])
             img_attr += ' style="%s"' % img_style
-        result = Markup('<img src="%%s" %s />' % img_attr, raw_url).sanitize()
+        result = Markup('<img src="%%s" %s />' % img_attr.replace('%', '%%'),
+                        raw_url).sanitize()
         if not nolink:
             result = Markup('<a href="%s" style="%s">%s</a>',
                             url, a_style, result)
