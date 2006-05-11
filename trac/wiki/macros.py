@@ -250,7 +250,8 @@ class ImageMacro(WikiMacroBase):
             raise Exception("No argument.")
         filespec = args[0]
         size_re = re.compile('[0-9]+%?$')
-        attr_re = re.compile('(align|border|width|height|alt|title|longdesc|class|id|usemap)=(.+)')
+        attr_re = re.compile('(align|border|width|height|alt'
+                             '|title|longdesc|class|id|usemap)=(.+)')
         quoted_re = re.compile("(?:[\"'])(.*)(?:[\"'])$")
         attr = {}
         style = {}
@@ -275,7 +276,7 @@ class ImageMacro(WikiMacroBase):
                 elif key == 'border':
                     style['border'] = ' %dpx solid' % int(val);
                 else:
-                    attr[key] = val
+                    attr[str(key)] = val # will be used as a __call__ keyword
 
         # parse filespec argument to get module and id if contained.
         parts = filespec.split(':')
@@ -335,18 +336,12 @@ class ImageMacro(WikiMacroBase):
         for key in ['title', 'alt']:
             if desc and not attr.has_key(key):
                 attr[key] = desc
-        a_style = 'padding:0; border:none' # style of anchor
-        img_attr = ' '.join(['%s="%s"' % (k, escape(v))
-                             for k, v in attr.iteritems()])
         if style:
-            img_style = '; '.join(['%s:%s' % (k, escape(v))
-                                   for k, v in style.iteritems()])
-            print 'style', img_style
-            img_attr += ' style="%s"' % img_style
-        result = Markup('<img src="%%s" %s />' % img_attr, raw_url).sanitize()
+            attr['style'] = '; '.join(['%s:%s' % (k, escape(v))
+                                       for k, v in style.iteritems()])
+        result = Markup(html.IMG(src=raw_url, **attr)).sanitize()
         if not nolink:
-            result = Markup('<a href="%s" style="%s">%s</a>',
-                            url, a_style, result)
+            result = html.A(result, href=url, style='padding:0; border:none')
         return result
 
 
@@ -407,7 +402,6 @@ class InterTracMacro(WikiMacroBase):
                 url = intertrac.get('url', '')
                 if url:
                     title = intertrac.get('title', url)
-                    print title
                     yield html.TR[html.TD[html.A(href=url+'/timeline')
                                           [html.B[prefix]]],
                                   html.TD[html.A(href=url)[title]]]

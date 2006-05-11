@@ -1,11 +1,12 @@
 import unittest
 
-from trac.wiki.tests import formatter, model, wikisyntax
+from trac.wiki.tests import formatter, macros, model, wikisyntax
 
 def suite():
 
     suite = unittest.TestSuite()
     suite.addTest(formatter.suite())
+    suite.addTest(macros.suite())
     suite.addTest(model.suite())
     suite.addTest(wikisyntax.suite())
     return suite
