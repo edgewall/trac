@@ -8,6 +8,10 @@ An InterTrac link is used for referring to a Trac object
 (Wiki page, changeset, ticket, ...) located in another
 Trac environment.
 
+== List of Active InterTrac Prefixes ==
+
+[[InterTrac]]
+
 == Link Syntax ==
 
 {{{
@@ -73,10 +77,6 @@ Now, given this configuration, one could create the following links:
 Anything not given as explicit links (intertrac_prefix:module:id)
 is interpreted by the remote Trac, relying on its quickjump
 facility.
-
-== List of Active InterTrac Prefixes ==
-
-[[InterTrac]]
 
 ----
 See also: TracLinks, InterWiki
