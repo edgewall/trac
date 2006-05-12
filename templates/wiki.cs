@@ -88,19 +88,19 @@
    </div>
   </form>
   <dl id="overview">
-   <dt class="author">Author:</dt>
+   <dt class="property author">Author:</dt>
    <dd class="author"><?cs
     if:wiki.num_changes > 1 ?><em class="multi">(multiple changes)</em><?cs
     else ?><?cs var:wiki.author ?> <span class="ipnr">(IP: <?cs
      var:wiki.ipnr ?>)</span><?cs
     /if ?></dd>
-   <dt class="time">Timestamp:</dt>
+   <dt class="property time">Timestamp:</dt>
    <dd class="time"><?cs
     if:wiki.num_changes > 1 ?><em class="multi">(multiple changes)</em><?cs
     elif:wiki.time ?><?cs var:wiki.time ?> (<?cs var:wiki.time_delta ?> ago)<?cs
     else ?>--<?cs
     /if ?></dd>
-   <dt class="comment">Comment:</dt>
+   <dt class="property comment">Comment:</dt>
    <dd class="comment"><?cs
     if:wiki.num_changes > 1 ?><em class="multi">(multiple changes)</em><?cs
     else ?><?cs var:wiki.comment ?><?cs /if ?></dd>
