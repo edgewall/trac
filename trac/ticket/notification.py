@@ -36,8 +36,8 @@ class TicketNotificationSystem(Component):
         """Always send notifications to any address in the ''reporter''
         field.""")
 
-    always_notify_reporter = BoolOption('notification', 'always_notify_updater',
-                                        'true',
+    always_notify_updater = BoolOption('notification', 'always_notify_updater',
+                                       'true',
         """Always send notifications to the person who causes the ticket 
         property change.""")
 
@@ -185,7 +185,7 @@ class TicketNotifyEmail(NotifyEmail):
         notify_owner = self.config.getbool('notification',
                                            'always_notify_owner')
         notify_updater = self.config.getbool('notification', 
-                                            'always_notify_updater')
+                                             'always_notify_updater')
 
         ccrecipients = self.prev_cc
         torecipients = []
