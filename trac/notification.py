@@ -71,7 +71,7 @@ class NotificationSystem(Component):
         If this option is disabled (the default), recipients are put on BCC
         (''since 0.10'').""")
 
-    maxheaderlen = Option('notification', 'maxheaderlen', '160',
+    maxheaderlen = Option('notification', 'maxheaderlen', '76',
         """Maximum length of SMTP headers. (''since 0.10'').""")
 
 
@@ -190,13 +190,17 @@ class NotifyEmail(Notify):
 
         Notify.notify(self, resid)
 
-    def format_header(self, name, email=None):
+    def format_header(self, key, name, email=None):
         from email.Header import Header
+        maxlength = self.maxheaderlen-(len(key)+2)
+        # Do not sent ridiculous short headers
+        if maxlength < 10:
+            raise TracError, "Header length is too short"
         try:
             tmp = name.encode('ascii')
-            header = Header(tmp, 'ascii', maxlinelen=self.maxheaderlen)
+            header = Header(tmp, 'ascii', maxlinelen=maxlength)
         except UnicodeEncodeError:
-            header = Header(name, self._charset, maxlinelen=self.maxheaderlen)
+            header = Header(name, self._charset, maxlinelen=maxlength)
         if not email:
             return header
         else:
@@ -204,7 +208,7 @@ class NotifyEmail(Notify):
 
     def add_headers(self, msg, headers):
         for h in headers:
-            msg[h] = self.encode_header(headers[h])
+            msg[h] = self.encode_header(h, headers[h])
 
     def get_smtp_address(self, address):
         if not address:
@@ -232,9 +236,9 @@ class NotifyEmail(Notify):
         self.env.log.info("Invalid email address: %s" % address)
         return None
 
-    def encode_header(self, value):
+    def encode_header(self, key, value):
         if isinstance(value, tuple):
-            return self.format_header(value[0], value[1])
+            return self.format_header(key, value[0], value[1])
         if isinstance(value, list):
             items = []
             for v in value:
@@ -242,8 +246,8 @@ class NotifyEmail(Notify):
             return ',\n\t'.join(items)
         mo = NotifyEmail.longaddr_re.match(value)
         if mo:
-            return self.format_header(mo.group(1), mo.group(2))
-        return self.format_header(value)
+            return self.format_header(key, mo.group(1), mo.group(2))
+        return self.format_header(key, value)
 
     def begin_send(self):
         self.server = smtplib.SMTP(self.smtp_server, self.smtp_port)

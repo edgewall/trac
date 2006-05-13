@@ -32,6 +32,7 @@ import time
 
 
 SMTP_TEST_PORT = 8225
+MAXBODYWIDTH = 76
 notifysuite = None
 
 
@@ -319,7 +320,8 @@ class NotificationTestCase(unittest.TestCase):
         self.env.config.set('notification','mime_encoding', 'base64')
         ticket = Ticket(self.env)
         ticket['reporter'] = 'joe.user@example.org'
-        ticket['summary'] = u'This is a súmmäry'
+        ticket['summary'] = u'This is a long enough summary to cause Trac to' \
+                            u'generate a multi-line súmmäry'
         ticket.insert()
         self._validate_mimebody((base64, 'base64', 'utf-8'), \
                                 ticket, True)
@@ -329,7 +331,8 @@ class NotificationTestCase(unittest.TestCase):
         self.env.config.set('notification','mime_encoding', 'qp')
         ticket = Ticket(self.env)
         ticket['reporter'] = 'joe.user@example.org'
-        ticket['summary'] = u'This is a súmmäry'
+        ticket['summary'] = u'This is a long enough summary to cause Trac to' \
+                            u'generate a multi-line súmmäry'
         ticket.insert()
         self._validate_mimebody((quopri, 'quoted-printable', 'utf-8'), \
                                 ticket, True)
@@ -392,6 +395,9 @@ class NotificationTestCase(unittest.TestCase):
         charset = charset.group(1)
         self.assertEqual(charset, mime_charset)
         self.assertEqual(headers['Content-Transfer-Encoding'], mime_name)
+        # checks the width of each body line
+        for line in body.splitlines():
+            self.failIf(len(line) > MAXBODYWIDTH)
         # attempts to decode the body, following the specified MIME endoding 
         # and charset
         try:
@@ -402,9 +408,6 @@ class NotificationTestCase(unittest.TestCase):
             raise AssertionError, e
         # now processes each line of the body
         bodylines = body.splitlines()
-        # checks the width of each line
-        for line in bodylines:
-            self.failIf(len(line) > 76)
         # body starts with a summary line, prefixed with the ticket number
         # #<n>: summary
         (tknum, summary) = bodylines[0].split(' ', 1)
