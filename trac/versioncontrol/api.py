@@ -329,7 +329,7 @@ class Changeset(object):
         
     def get_changes(self):
         """
-        Generator that produces a (path, kind, change, base_rev, base_path)
+        Generator that produces a (path, kind, change, base_path, base_rev)
         tuple for every change in the changeset, where change can be one of
         Changeset.ADD, Changeset.COPY, Changeset.DELETE, Changeset.EDIT or
         Changeset.MOVE, and kind is one of Node.FILE or Node.DIRECTORY.
