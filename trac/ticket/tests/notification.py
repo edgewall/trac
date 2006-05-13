@@ -303,8 +303,7 @@ class NotificationTestCase(unittest.TestCase):
         ticket = Ticket(self.env)
         ticket['reporter'] = 'joe.user@example.org'
         # Forces non-ascii characters
-        summary = u'A_very %s súmmäry' % u' '.join(['long'] * 20)
-        ticket['summary'] = summary
+        ticket['summary'] = u'A_very %s súmmäry' % u' '.join(['long'] * 20)
         ticket.insert()
         tn = TicketNotifyEmail(self.env)
         tn.notify(ticket, newticket=True)
@@ -312,10 +311,8 @@ class NotificationTestCase(unittest.TestCase):
         (headers, body) = parse_smtp_message(message)
         # Discards the project name & ticket number
         subject = headers['Subject']
-        summary = subject[subject.find(':')+2:].encode('utf-8')
-        # Hack: we need to keep space chars in long headers
-        tksummary = ticket['summary'].replace(' ', '_').encode('utf-8')
-        self.failIf(summary != tksummary)
+        summary = subject[subject.find(':')+2:]
+        self.failIf(ticket['summary'] != summary)
 
     def test_mimebody_b64(self):
         """Validate MIME Base64/utf-8 encoding"""

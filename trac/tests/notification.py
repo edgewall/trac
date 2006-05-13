@@ -326,10 +326,14 @@ def decode_header(header):
         return header
     # attempts to decode the hedear, 
     # following the specified MIME endoding and charset
-    decoders = { 'q' : quopri, 'b' : base64 }
     try:
-        decoder = decoders[mo.group('code').lower()]
-        val = decoder.decodestring(mo.group('value'))
+        encoding = mo.group('code').lower() 
+        if encoding  == 'q':
+            val = quopri.decodestring(mo.group('value'), header=True)
+        elif encoding == 'b':
+            val = base64.decodestring(mo.group('value'))
+        else:
+            raise AssertionError, "unsupported encoding: %s" % encoding
         header = unicode(val, mo.group('charset'))
     except Exception, e:
         raise AssertionError, e
