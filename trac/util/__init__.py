@@ -105,7 +105,7 @@ def to_unicode(text, charset=None, lossy=True):
                 return unicode(text)
             except UnicodeError:
                 # unicode arguments given to the exception (e.g. parse_date)
-                return ' '.join([unicode(arg) for arg in text.args])
+                return ' '.join([to_unicode(arg) for arg in text.args])
         return unicode(text)
     errors = lossy and 'replace' or 'strict'
     try:
