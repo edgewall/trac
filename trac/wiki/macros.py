@@ -66,18 +66,10 @@ class TitleIndexMacro(WikiMacroBase):
         prefix = content or None
 
         wiki = WikiSystem(self.env)
-        pages = list(wiki.get_pages(prefix))
-        pages.sort()
 
-        buf = StringIO()
-        buf.write('<ul>')
-        for page in pages:
-            buf.write('<li><a href="%s">' % escape(self.env.href.wiki(page)))
-            buf.write(escape(page))
-            buf.write('</a></li>\n')
-        buf.write('</ul>')
-
-        return buf.getvalue()
+        return html.UL[[html.LI(html.A(wiki.format_page_name(page),
+                                       href=req.href.wiki(page)))
+                        for page in sorted(wiki.get_pages(prefix))]]
 
 
 class RecentChangesMacro(WikiMacroBase):
@@ -116,22 +108,21 @@ class RecentChangesMacro(WikiMacroBase):
             args.append(limit)
         cursor.execute(sql, args)
 
-        buf = StringIO()
+        entries_per_date = []
         prevdate = None
-
         for name, time in cursor:
             date = format_date(time)
             if date != prevdate:
-                if prevdate:
-                    buf.write('</ul>')
-                buf.write('<h3>%s</h3><ul>' % date)
                 prevdate = date
-            buf.write('<li><a href="%s">%s</a></li>\n'
-                      % (escape(self.env.href.wiki(name)), escape(name)))
-        if prevdate:
-            buf.write('</ul>')
+                entries_per_date.append((date, []))
+            entries_per_date[-1][1].append(name)
 
-        return buf.getvalue()
+        wiki = WikiSystem(self.env)
+        return html.DIV[[html.H3(date) +
+                         html.UL[[html.LI(html.A(wiki.format_page_name(name),
+                                                   href=req.href.wiki(name)))
+                                    for name in entries]]
+                         for date, entries in entries_per_date]]
 
 
 class PageOutlineMacro(WikiMacroBase):

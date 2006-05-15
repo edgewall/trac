@@ -30,7 +30,7 @@ from trac.util.markup import html, Markup
 from trac.versioncontrol.diff import get_diff_options, hdf_diff
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
 from trac.web import HTTPNotFound, IRequestHandler
-from trac.wiki.api import IWikiPageManipulator
+from trac.wiki.api import IWikiPageManipulator, WikiSystem
 from trac.wiki.model import WikiPage
 from trac.wiki.formatter import wiki_to_html, wiki_to_oneliner
 
@@ -120,7 +120,6 @@ class WikiModule(Component):
             self._render_view(req, db, page)
 
         req.hdf['wiki.action'] = action
-        req.hdf['wiki.page_name'] = page.name
         req.hdf['wiki.current_href'] = req.href.wiki(page.name)
         return 'wiki.cs', None
 
@@ -132,6 +131,7 @@ class WikiModule(Component):
 
     def get_timeline_events(self, req, start, stop, filters):
         if 'wiki' in filters:
+            wiki = WikiSystem(self.env)
             format = req.args.get('format')
             db = self.env.get_db_cnx()
             cursor = db.cursor()
@@ -139,7 +139,8 @@ class WikiModule(Component):
                            "FROM wiki WHERE time>=%s AND time<=%s",
                            (start, stop))
             for t,name,comment,author in cursor:
-                title = Markup('<em>%s</em> edited by %s', name, author)
+                title = Markup('<em>%s</em> edited by %s',
+                               wiki.format_page_name(name), author)
                 if format == 'rss':
                     href = req.abs_href.wiki(name)
                     comment = wiki_to_html(comment or '--', self.env, req, db,
@@ -151,6 +152,14 @@ class WikiModule(Component):
                 yield 'wiki', href, title, t, author, comment
 
     # Internal methods
+
+    def _set_title(self, req, page, action):
+        title = name = WikiSystem(self.env).format_page_name(page.name)
+        if action:
+            title += ' (%s)' % action
+        req.hdf['wiki.page_name'] = name
+        req.hdf['title'] = title
+        return title
 
     def _do_delete(self, req, db, page):
         if page.readonly:
@@ -205,8 +214,8 @@ class WikiModule(Component):
         if req.args.has_key('delete_version'):
             version = int(req.args.get('version', 0))
 
-        req.hdf['title'] = page.name + ' (delete)'
-        req.hdf['wiki'] = {'page_name': page.name, 'mode': 'delete'}
+        self._set_title(req, page, 'delete')
+        req.hdf['wiki'] = {'mode': 'delete'}
         if version is not None:
             req.hdf['wiki.version'] = version
             num_versions = 0
@@ -225,7 +234,7 @@ class WikiModule(Component):
 
         add_stylesheet(req, 'common/css/diff.css')
 
-        req.hdf['title'] = page.name + ' (diff)'
+        self._set_title(req, page, 'diff')
 
         # Ask web spiders to not index old versions
         req.hdf['html.norobots'] = 1
@@ -301,9 +310,8 @@ class WikiModule(Component):
         else:
             editrows = req.session.get('wiki_editrows', '20')
 
-        req.hdf['title'] = page.name + ' (edit)'
+        self._set_title(req, page, 'edit')
         info = {
-            'page_name': page.name,
             'page_source': page.text,
             'version': page.version,
             'author': author,
@@ -332,7 +340,7 @@ class WikiModule(Component):
         if not page.exists:
             raise TracError, "Page %s does not exist" % page.name
 
-        req.hdf['title'] = page.name + ' (history)'
+        self._set_title(req, page, 'history')
 
         history = []
         for version, t, author, comment, ipnr in page.get_history():
@@ -354,8 +362,9 @@ class WikiModule(Component):
 
         if page.name == 'WikiStart':
             req.hdf['title'] = ''
+            page_name = 'WikiStart'
         else:
-            req.hdf['title'] = page.name
+            page_name = self._set_title(req, page, '')
 
         version = req.args.get('version')
         if version:
@@ -365,7 +374,7 @@ class WikiModule(Component):
         txt_href = req.href.wiki(page.name, version=version, format='txt')
         add_link(req, 'alternate', txt_href, 'Plain Text', 'text/plain')
 
-        req.hdf['wiki'] = {'page_name': page.name, 'exists': page.exists,
+        req.hdf['wiki'] = {'exists': page.exists,
                            'version': page.version, 'readonly': page.readonly}
         if page.exists:
             req.hdf['wiki.page_html'] = wiki_to_html(page.text, self.env, req)
@@ -374,7 +383,8 @@ class WikiModule(Component):
         else:
             if not req.perm.has_permission('WIKI_CREATE'):
                 raise HTTPNotFound('Page %s not found', page.name)
-            req.hdf['wiki.page_html'] = html.P['Describe "', page.name, '" here']
+            req.hdf['wiki.page_html'] = html.P['Describe "%s" here' \
+                                               % page_name]
 
         # Show attachments
         attachments = []

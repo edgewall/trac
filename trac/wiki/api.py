@@ -117,6 +117,10 @@ class WikiSystem(Component):
         """Enable/disable highlighting CamelCase links to missing pages
         (''since 0.9'').""")
 
+    split_page_names = BoolOption('wiki', 'split_page_names', 'false',
+        """Enable/disable splitting the WikiPageNames with space characters
+        (''since 0.10'').""")
+
     def __init__(self):
         self._index = None
         self._last_index_update = 0
@@ -225,22 +229,35 @@ class WikiSystem(Component):
         pass
 
     # IWikiSyntaxProvider methods
+
+    def format_page_name(self, page):
+        if self.split_page_names:
+            return re.sub(r"([a-z])([A-Z][a-z])", r"\1 \2", page)
+        return page
     
     def get_wiki_syntax(self):
-        yield (r"!?(?<!/)\b[A-Z][a-z]+(?:[A-Z][a-z]*[a-z/])+"
-                "(?:#[A-Za-z0-9]+)?(?=:?\Z|:?\s|[.,;!?\)}\]])",
-               lambda x, y, z: self._format_link(x, 'wiki', y, y,
-                                                 self.ignore_missing_pages))
+        # Regular WikiPageNames
+        def wikipagenames_link(formatter, match, fullmatch):
+            return self._format_link(formatter, 'wiki', match,
+                                     self.format_page_name(match),
+                                     self.ignore_missing_pages)
+        
+        yield (r"!?(?<!/)\b" # start at a word boundary but not after '/'
+               r"[A-Z][a-z]+(?:[A-Z][a-z]*[a-z/])+" # wiki words
+               r"(?:#[A-Za-z0-9]+)?" # optional fragment identifier
+               r"(?=:?\Z|:?\s|[.,;!?\)}\]])", # what should follow it
+               wikipagenames_link)
+
+        # MoinMoin's ["internal free link"]
         from trac.wiki.formatter import Formatter
-        yield (r"!?\[(?:%s)\]" % Formatter.QUOTED_STRING,
-               lambda x, y, z: self._format_link(x, 'wiki', y[2:-2], y[2:-2],
-                                                 False))
+        def internal_free_link(fmt, m, fullmatch):
+            return self._format_link(fmt, 'wiki', m[2:-2], m[2:-2], False)
+        yield (r"!?\[(?:%s)\]" % Formatter.QUOTED_STRING, internal_free_link)
 
     def get_link_resolvers(self):
-        yield ('wiki', self._format_fancy_link)
-
-    def _format_fancy_link(self, f, n, p, l):
-        return self._format_link(f, n, p, l, False)
+        def link_resolver(formatter, ns, target, label):
+            return self._format_link(formatter, ns, target, label, False)
+        yield ('wiki', link_resolver)
 
     def _format_link(self, formatter, ns, page, label, ignore_missing):
         anchor = ''
