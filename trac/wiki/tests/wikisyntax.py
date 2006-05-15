@@ -91,6 +91,13 @@ anotherWikiPageName
 ------------------------------
 8FjBpOmy
 anotherWikiPageName
+============================== MoinMoin style forced links
+This is a ["Wiki"] page link.
+------------------------------
+<p>
+This is a <a class="missing wiki" href="/wiki/Wiki" rel="nofollow">Wiki?</a> page link.
+</p>
+------------------------------
 ============================== InterTrac for wiki
 t:wiki:InterTrac
 trac:wiki:InterTrac

@@ -231,6 +231,10 @@ class WikiSystem(Component):
                 "(?:#[A-Za-z0-9]+)?(?=:?\Z|:?\s|[.,;!?\)}\]])",
                lambda x, y, z: self._format_link(x, 'wiki', y, y,
                                                  self.ignore_missing_pages))
+        from trac.wiki.formatter import Formatter
+        yield (r"!?\[(?:%s)\]" % Formatter.QUOTED_STRING,
+               lambda x, y, z: self._format_link(x, 'wiki', y[2:-2], y[2:-2],
+                                                 False))
 
     def get_link_resolvers(self):
         yield ('wiki', self._format_fancy_link)
