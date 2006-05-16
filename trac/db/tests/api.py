@@ -40,6 +40,15 @@ class ParseConnectionStringTestCase(unittest.TestCase):
                                        'path': '/trac'}),
                          _parse_db_str('postgres://john:letmein@localhost:9431/trac'))
 
+    def test_mysql_simple(self):
+        self.assertEqual(('mysql', {'host': 'localhost', 'path': '/trac'}),
+                         _parse_db_str('mysql://localhost/trac'))
+
+    def test_mysql_with_creds(self):
+        self.assertEqual(('mysql', {'user': 'john', 'password': 'letmein',
+                                    'host': 'localhost', 'port': 3306,
+                                    'path': '/trac'}),
+                         _parse_db_str('mysql://john:letmein@localhost:3306/trac'))
 
 def suite():
     return unittest.makeSuite(ParseConnectionStringTestCase,'test')

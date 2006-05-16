@@ -219,9 +219,9 @@
         var:report.description ?></textarea>
      </div>
      <div class="field">
-      <label for="sql">
+      <label for="query">
        SQL Query for Report:</label><br />
-      <textarea id="sql" name="sql" cols="85" rows="20"><?cs
+      <textarea id="query" name="query" cols="85" rows="20"><?cs
         var:report.sql ?></textarea>
      </div>
      <div class="buttons">

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2003-2005 Edgewall Software
+# Copyright (C) 2003-2006 Edgewall Software
 # Copyright (C) 2003-2005 Daniel Lundin <daniel@edgewall.com>
 # All rights reserved.
 #
@@ -154,7 +154,7 @@ schema = [
         Column('id', auto_increment=True),
         Column('author'),
         Column('title'),
-        Column('sql'),
+        Column('query'),
         Column('description')],
 ]
 
@@ -385,12 +385,13 @@ data = (('component',
              ('name', 'value'),
                (('database_version', str(db_version)),)),
            ('report',
-             ('author', 'title', 'sql', 'description'),
+             ('author', 'title', 'query', 'description'),
                __mkreports(reports)))
 
 
 default_components = ('trac.About', 'trac.attachment',
-                      'trac.db.postgres_backend', 'trac.db.sqlite_backend',
+                      'trac.db.mysql_backend', 'trac.db.postgres_backend',
+                      'trac.db.sqlite_backend',
                       'trac.mimeview.enscript', 'trac.mimeview.patch',
                       'trac.mimeview.php', 'trac.mimeview.rst',
                       'trac.mimeview.silvercity', 'trac.mimeview.txtl',

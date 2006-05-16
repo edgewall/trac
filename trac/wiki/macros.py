@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2005 Edgewall Software
-# Copyright (C) 2005 Christopher Lenz <cmlenz@gmx.de>
+# Copyright (C) 2005-2006 Edgewall Software
+# Copyright (C) 2005-2006 Christopher Lenz <cmlenz@gmx.de>
 # All rights reserved.
 #
 # This software is licensed as described in the file COPYING, which
@@ -97,12 +97,12 @@ class RecentChangesMacro(WikiMacroBase):
         db = self.env.get_db_cnx()
         cursor = db.cursor()
 
-        sql = 'SELECT name, max(time) FROM wiki'
+        sql = 'SELECT name, max(time) AS max_time FROM wiki'
         args = []
         if prefix:
             sql += ' WHERE name LIKE %s'
             args.append(prefix + '%')
-        sql += ' GROUP BY name ORDER BY max(time) DESC'
+        sql += ' GROUP BY name ORDER BY max_time DESC'
         if limit:
             sql += ' LIMIT %s'
             args.append(limit)

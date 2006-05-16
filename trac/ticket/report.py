@@ -119,11 +119,11 @@ class ReportModule(Component):
             req.redirect(req.href.report())
 
         title = req.args.get('title', '')
-        sql = req.args.get('sql', '')
+        query = req.args.get('query', '')
         description = req.args.get('description', '')
         cursor = db.cursor()
-        cursor.execute("INSERT INTO report (title,sql,description) "
-                       "VALUES (%s,%s,%s)", (title, sql, description))
+        cursor.execute("INSERT INTO report (title,query,description) "
+                       "VALUES (%s,%s,%s)", (title, query, description))
         id = db.get_last_id(cursor, 'report')
         db.commit()
         req.redirect(req.href.report(id))
@@ -147,11 +147,11 @@ class ReportModule(Component):
 
         if not req.args.has_key('cancel'):
             title = req.args.get('title', '')
-            sql = req.args.get('sql', '')
+            query = req.args.get('query', '')
             description = req.args.get('description', '')
             cursor = db.cursor()
-            cursor.execute("UPDATE report SET title=%s,sql=%s,description=%s "
-                           "WHERE id=%s", (title, sql, description, id))
+            cursor.execute("UPDATE report SET title=%s,query=%s,description=%s "
+                           "WHERE id=%s", (title, query, description, id))
             db.commit()
         req.redirect(req.href.report(id))
 
@@ -175,11 +175,11 @@ class ReportModule(Component):
     def _render_editor(self, req, db, id, copy=False):
         if id == -1:
             req.perm.assert_permission('REPORT_CREATE')
-            title = sql = description = ''
+            title = query = description = ''
         else:
             req.perm.assert_permission('REPORT_MODIFY')
             cursor = db.cursor()
-            cursor.execute("SELECT title,description,sql FROM report "
+            cursor.execute("SELECT title,description,query FROM report "
                            "WHERE id=%s", (id,))
             row = cursor.fetchone()
             if not row:
@@ -187,7 +187,7 @@ class ReportModule(Component):
                                      'Invalid Report Number')
             title = row[0] or ''
             description = row[1] or ''
-            sql = row[2] or ''
+            query = row[2] or ''
 
         if copy:
             title += ' (copy)'
@@ -204,7 +204,7 @@ class ReportModule(Component):
         req.hdf['report.id'] = id
         req.hdf['report.mode'] = 'edit'
         req.hdf['report.title'] = title
-        req.hdf['report.sql'] = sql
+        req.hdf['report.sql'] = query
         req.hdf['report.description'] = description
 
     def _render_view(self, req, db, id):
@@ -401,7 +401,7 @@ class ReportModule(Component):
             description = 'This is a list of reports available.'
         else:
             cursor = db.cursor()
-            cursor.execute("SELECT title,sql,description from report "
+            cursor.execute("SELECT title,query,description from report "
                            "WHERE id=%s", (id,))
             row = cursor.fetchone()
             if not row:
@@ -436,26 +436,18 @@ class ReportModule(Component):
             req.hdf['report.var.' + aname] = arg
             values.append(arg)
 
-        # simple parameter substitution outside literal
+        # simple parameter substitution
         def repl(match):
             add_value(match.group(1))
             return '%s'
 
-        # inside a literal break it and concatenate with the parameter
-        def repl_literal(match):
-            add_value(match.group(1))
-            return "' || %s || '"
-
-        var_re = re.compile("[$]([A-Z]+)")
+        var_re = re.compile("'?[$]([A-Z]+)'?")
         sql_io = StringIO()
 
         # break SQL into literals and non-literals to handle replacing
         # variables within them with query parameters
         for expr in re.split("('(?:[^']|(?:''))*')", sql):
-            if expr.startswith("'"):
-                sql_io.write(var_re.sub(repl_literal, expr))
-            else:
-                sql_io.write(var_re.sub(repl, expr))
+            sql_io.write(var_re.sub(repl, expr))
         return sql_io.getvalue(), values
 
     def _render_csv(self, req, cols, rows, sep=','):
