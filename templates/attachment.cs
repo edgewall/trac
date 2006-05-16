@@ -49,7 +49,12 @@
    <input type="submit" name="cancel" value="Cancel" />
    <input type="submit" value="Delete attachment" />
   </div></form>
- </div><?cs else ?>
+ </div>
+<?cs elif:attachment.mode == 'list' ?>
+ <h1><a href="<?cs var:attachment.parent.href ?>"><?cs
+   var:attachment.parent.name ?></a>:<?cs
+  call:list_of_attachments(attachment.list, attachment.attach_href) ?>
+<?cs else ?>
  <h1><a href="<?cs var:attachment.parent.href ?>"><?cs
    var:attachment.parent.name ?></a>: <?cs var:attachment.filename ?></h1>
  <div id="preview"><?cs

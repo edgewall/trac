@@ -18,7 +18,7 @@ import os
 import re
 import time
 
-from trac.attachment import attachment_to_hdf, Attachment
+from trac.attachment import attachments_to_hdf, Attachment
 from trac.config import BoolOption, Option
 from trac.core import *
 from trac.env import IEnvironmentSetupParticipant
@@ -482,10 +482,8 @@ class TicketModule(TicketModuleBase):
         req.hdf['ticket.changes'] = changes
 
         # List attached files
-        for idx, attachment in enumerate(Attachment.select(self.env, 'ticket',
-                                                           ticket.id)):
-            hdf = attachment_to_hdf(self.env, db, req, attachment)
-            req.hdf['ticket.attachments.%s' % idx] = hdf
+        req.hdf['ticket.attachments'] = attachments_to_hdf(self.env, req, db,
+                                                           'ticket', ticket.id)
         if req.perm.has_permission('TICKET_APPEND'):
             req.hdf['ticket.attach_href'] = req.href.attachment('ticket',
                                                                 ticket.id)

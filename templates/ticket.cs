@@ -77,24 +77,7 @@
 </div>
 
 <?cs if:ticket.attach_href || len(ticket.attachments) ?>
-<h2>Attachments</h2><?cs
- if:len(ticket.attachments) ?><div id="attachments">
-  <dl class="attachments"><?cs each:attachment = ticket.attachments ?>
-   <dt><a href="<?cs var:attachment.href ?>" title="View attachment"><?cs
-   var:attachment.filename ?></a> (<?cs var:attachment.size ?>) - added by <em><?cs
-   var:attachment.author ?></em> on <?cs
-   var:attachment.time ?>.</dt><?cs
-   if:attachment.description ?>
-    <dd><?cs var:attachment.description ?></dd><?cs
-   /if ?><?cs
-  /each ?></dl><?cs
- /if ?><?cs
- if:ticket.attach_href ?>
-  <form method="get" action="<?cs var:ticket.attach_href ?>"><div>
-   <input type="hidden" name="action" value="new" />
-   <input type="submit" value="Attach File" />
-  </div></form><?cs
- /if ?><?cs if:len(ticket.attachments) ?></div><?cs /if ?>
+<?cs call:list_of_attachments(ticket.attachments, ticket.attach_href) ?>
 <?cs /if ?>
 
 <?cs if:len(ticket.changes) ?><h2>Change History</h2>

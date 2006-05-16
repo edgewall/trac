@@ -188,7 +188,13 @@ class Attachment(object):
         return fd
 
 
-def attachment_to_hdf(env, db, req, attachment):
+# Templating utilities
+
+def attachments_to_hdf(env, req, db, parent_type, parent_id):
+    return [attachment_to_hdf(env, req, db, attachment) for attachment
+            in Attachment.select(env, parent_type, parent_id, db)]
+    
+def attachment_to_hdf(env, req, db, attachment):
     from trac.wiki import wiki_to_oneliner
     if not db:
         db = env.get_db_cnx()
@@ -271,23 +277,16 @@ class AttachmentModule(Component):
         else:
             segments = path.split('/')
             parent_id = '/'.join(segments[:-1])
-            filename = segments[-1]
-            if len(segments) == 1 or not filename:
+            last_segment = segments[-1]
+            if len(segments) == 1:
+                self._render_list(req, parent_type, last_segment)
+                return 'attachment.cs', None
+            if not last_segment:
                 raise HTTPBadRequest('Bad request')
-            attachment = Attachment(self.env, parent_type, parent_id, filename)
-
-        # Populate attachment.parent:
-        parent_link = attachment.parent_href(req)
-        if attachment.parent_type == 'ticket':
-            parent_text = 'Ticket #' + attachment.parent_id
-        else: # 'wiki'
-            parent_text = attachment.parent_id
-
-        req.hdf['attachment.parent'] = {
-            'type': attachment.parent_type, 'id': attachment.parent_id,
-            'name': parent_text, 'href': parent_link,
-        }
-
+            attachment = Attachment(self.env, parent_type, parent_id,
+                                    last_segment)
+        parent_link, parent_text = self._parent_to_hdf(
+            req, attachment.parent_type, attachment.parent_id)
         if req.method == 'POST':
             if action == 'new':
                 self._do_save(req, attachment)
@@ -303,6 +302,19 @@ class AttachmentModule(Component):
 
         add_stylesheet(req, 'common/css/code.css')
         return 'attachment.cs', None
+
+    def _parent_to_hdf(self, req, parent_type, parent_id):
+        # Populate attachment.parent:
+        parent_link = req.href(parent_type, parent_id)
+        if parent_type == 'ticket':
+            parent_text = 'Ticket #' + parent_id
+        else: # 'wiki'
+            parent_text = parent_id
+        req.hdf['attachment.parent'] = {
+            'type': parent_type, 'id': parent_id,
+            'name': parent_text, 'href': parent_link
+        }
+        return parent_link, parent_text
 
     # IWikiSyntaxProvider methods
     
@@ -401,7 +413,7 @@ class AttachmentModule(Component):
 
         # Render HTML view
         req.hdf['title'] = attachment.title
-        req.hdf['attachment'] = attachment_to_hdf(self.env, None, req,
+        req.hdf['attachment'] = attachment_to_hdf(self.env, req, None,
                                                   attachment)
         
         perm_map = {'ticket': 'TICKET_ADMIN', 'wiki': 'WIKI_DELETE'}
@@ -454,6 +466,14 @@ class AttachmentModule(Component):
                 attachment.filename, raw_href, annotations=['lineno'])
         finally:
             fd.close()
+
+    def _render_list(self, req, p_type, p_id):
+        self._parent_to_hdf(req, p_type, p_id)
+        req.hdf['attachment'] = {
+            'mode': 'list',
+            'list': attachments_to_hdf(self.env, req, None, p_type, p_id),
+            'attach_href': req.href.attachment(p_type, p_id)
+            }
 
     def _format_link(self, formatter, ns, link, label):
         ids = link.split(':', 2)

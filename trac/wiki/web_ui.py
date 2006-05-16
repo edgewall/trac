@@ -19,7 +19,7 @@
 import re
 import StringIO
 
-from trac.attachment import attachment_to_hdf, Attachment
+from trac.attachment import attachments_to_hdf, Attachment
 from trac.core import *
 from trac.perm import IPermissionRequestor
 from trac.Search import ISearchSource, search_to_sql, shorten_result
@@ -387,10 +387,8 @@ class WikiModule(Component):
                                                % page_name]
 
         # Show attachments
-        attachments = []
-        for attachment in Attachment.select(self.env, 'wiki', page.name, db):
-            attachments.append(attachment_to_hdf(self.env, db, req, attachment))
-        req.hdf['wiki.attachments'] = attachments
+        req.hdf['wiki.attachments'] = attachments_to_hdf(self.env, req, db,
+                                                         'wiki', page.name)
         if req.perm.has_permission('WIKI_MODIFY'):
             attach_href = req.href.attachment('wiki', page.name)
             req.hdf['wiki.attach_href'] = attach_href
