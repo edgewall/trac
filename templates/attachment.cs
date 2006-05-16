@@ -52,7 +52,7 @@
  </div>
 <?cs elif:attachment.mode == 'list' ?>
  <h1><a href="<?cs var:attachment.parent.href ?>"><?cs
-   var:attachment.parent.name ?></a>:<?cs
+   var:attachment.parent.name ?></a></h1><?cs
   call:list_of_attachments(attachment.list, attachment.attach_href) ?>
 <?cs else ?>
  <h1><a href="<?cs var:attachment.parent.href ?>"><?cs
