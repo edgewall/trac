@@ -63,7 +63,12 @@ class Environment(Component, ComponentManager):
     setup_participants = ExtensionPoint(IEnvironmentSetupParticipant)
 
     base_url = Option('trac', 'base_url', '',
-        """Base URL of the Trac deployment.""")
+        """Base URL of the Trac deployment.
+        
+        In most configurations, Trac will automatically reconstruct the URL
+        that is used to access it automatically. However, in more complex
+        setups, usually involving running Trac behind a HTTP proxy, you may
+        need to use this option to force Trac to use the correct URL.""")
 
     project_name = Option('project', 'name', 'My Project',
         """Name of the project.""")
