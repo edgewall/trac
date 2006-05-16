@@ -58,27 +58,6 @@ form .field { margin-top: .75em; width: 100% }
 form #comment { width: 100% }
 
 #properties { white-space: nowrap; line-height: 160%; padding: .5em }
-/*#properties .main { margin-bottom: 1em }
-#properties .col1 {
- border-right: 1px dotted #d7d7d7;
- float: left;
- margin-bottom: 1em;
- width: 45%;
-}
-#properties .col2 { margin-left: 40% }
-#properties .main label, #properties .col1 label, #properties .col2 label {
- float:left;
- width: 7em;
- text-align: right;
- margin-right: .5em;
-}
-#properties .custom {
- clear: left;
- border-top: 1px dotted #d7d7d7;
- padding-top: 1em
-}
-#properties .custom .field { margin: .25em 0 }*/
-
 #properties table { border-spacing: 0; width: 100%; }
 #properties table th {
  padding: .4em;
