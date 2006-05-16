@@ -3,7 +3,7 @@ from trac.db import Table, Column, Index, DatabaseManager
 def do_upgrade(env, ver, cursor):
     """Rename the column `sql` in the `report` table for compatibity with MySQL.
     """
-    cursor.execute("CREATE TEMP TABLE report_old AS SELECT * FROM report")
+    cursor.execute("CREATE TEMPORARY TABLE report_old AS SELECT * FROM report")
     cursor.execute("DROP TABLE report")
 
     table = Table('report', key='id')[
