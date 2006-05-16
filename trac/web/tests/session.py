@@ -79,6 +79,26 @@ class SessionTestCase(unittest.TestCase):
         self.assertEqual(('john', 1), cursor.fetchone())
         self.assertEqual(None, cursor.fetchone())
 
+    def test_new_session_promotion(self):
+        """
+        Verifies that even without a preexisting anonymous session,
+        an authenticated session will be created when the user logs in.
+        (same test as above without the initial INSERT)
+        """
+        cursor = self.db.cursor()
+        incookie = Cookie()
+        incookie['trac_session'] = '123456'
+        outcookie = Cookie()
+        req = Mock(authname='john', base_path='/', incookie=incookie,
+                   outcookie=outcookie)
+        session = Session(self.env, req)
+        self.assertEqual('john', session.sid)
+        session.save()
+
+        cursor.execute("SELECT sid,authenticated FROM session")
+        self.assertEqual(('john', 1), cursor.fetchone())
+        self.assertEqual(None, cursor.fetchone())
+
     def test_add_anonymous_session_var(self):
         """
         Verify that new variables are inserted into the 'session' table in the
@@ -190,7 +210,7 @@ class SessionTestCase(unittest.TestCase):
     def test_add_authenticated_session_var(self):
         """
         Verify that new variables are inserted into the 'session' table in the
-        database for an authenticted session.
+        database for an authenticated session.
         """
         req = Mock(authname='john', base_path='/', incookie=Cookie())
         session = Session(self.env, req)

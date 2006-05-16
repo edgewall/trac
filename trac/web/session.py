@@ -113,27 +113,35 @@ class Session(dict):
 
         db = self.env.get_db_cnx()
         cursor = db.cursor()
-        cursor.execute("SELECT COUNT(*) FROM session WHERE sid=%s "
-                       "AND authenticated=1", (self.req.authname,))
-        if cursor.fetchone()[0]:
-            # If there's already an authenticated session for the user, we
+        cursor.execute("SELECT authenticated FROM session "
+                       "WHERE sid=%s OR sid=%s ", (sid, self.req.authname))
+        authenticated_flags = [row[0] for row in cursor.fetchall()]
+        
+        if len(authenticated_flags) == 2:
+            # There's already an authenticated session for the user, we
             # simply delete the anonymous session
             cursor.execute("DELETE FROM session WHERE sid=%s "
                            "AND authenticated=0", (sid,))
             cursor.execute("DELETE FROM session_attribute WHERE sid=%s "
                            "AND authenticated=0", (sid,))
+        elif len(authenticated_flags) == 1:
+            if not authenticated_flags[0]:
+                # Update the anomymous session records so that the session ID
+                # becomes the user name, and set the authenticated flag.
+                self.env.log.debug('Promoting anonymous session %s to '
+                                   'authenticated session for user %s',
+                                   sid, self.req.authname)
+                cursor.execute("UPDATE session SET sid=%s,authenticated=1 "
+                               "WHERE sid=%s AND authenticated=0",
+                               (self.req.authname, sid))
+                cursor.execute("UPDATE session_attribute "
+                               "SET sid=%s,authenticated=1 WHERE sid=%s",
+                               (self.req.authname, sid))
         else:
-            # Otherwise, update the session records so that the session ID is
-            # the user name, and the authenticated flag is set
-            self.env.log.debug('Promoting anonymous session %s to '
-                               'authenticated session for user %s', sid,
-                               self.req.authname)
-            cursor.execute("UPDATE session SET sid=%s,authenticated=1 "
-                           "WHERE sid=%s AND authenticated=0",
-                           (self.req.authname, sid))
-            cursor.execute("UPDATE session_attribute SET sid=%s,"
-                           "authenticated=1 WHERE sid=%s",
-                           (self.req.authname, sid))
+            # we didn't have an anonymous session for this sid
+            cursor.execute("INSERT INTO session (sid,last_visit,authenticated)"
+                           " VALUES(%s,%s,1)",
+                           (self.req.authname, int(time.time())))
         self._new = False
         db.commit()
 
@@ -152,10 +160,9 @@ class Session(dict):
 
         if self._new:
             self._new = False
-            cursor.execute("INSERT INTO session (sid,last_visit,authenticated) "
-                           "VALUES(%s,%s,%s)", (self.sid,
-                                                self.last_visit,
-                                                authenticated))
+            cursor.execute("INSERT INTO session (sid,last_visit,authenticated)"
+                           " VALUES(%s,%s,%s)",
+                           (self.sid, self.last_visit, authenticated))
         if self._old.items() != self.items():
             attrs = [(self.sid, authenticated, k, v) for k, v in self.items()]
             cursor.execute("DELETE FROM session_attribute WHERE sid=%s",
@@ -168,7 +175,7 @@ class Session(dict):
             elif not authenticated:
                 # No need to keep around empty unauthenticated sessions
                 cursor.execute("DELETE FROM session "
-                               "WHERE sid=%s AND authenticated=0" % (self.sid,))
+                               "WHERE sid=%s AND authenticated=0", (self.sid,))
                 return
 
         now = int(time.time())
