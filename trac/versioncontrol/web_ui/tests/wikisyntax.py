@@ -39,12 +39,19 @@ changeset:1, changeset:1/README.txt
 [1], r1
 ============================== Link resolver counter examples
 Change:[10] There should be a link to changeset [10]
+
+rfc and rfc:4180 should not be changeset links
 ------------------------------
 <p>
 Change:<a class="missing changeset" href="/changeset/10" rel="nofollow">[10]</a> There should be a link to changeset <a class="missing changeset" href="/changeset/10" rel="nofollow">[10]</a>
 </p>
+<p>
+rfc and rfc:4180 should not be changeset links
+</p>
 ------------------------------
 Change:<a class="missing changeset" href="/changeset/10" rel="nofollow">[10]</a> There should be a link to changeset <a class="missing changeset" href="/changeset/10" rel="nofollow">[10]</a>
+
+rfc and rfc:4180 should not be changeset links
 ============================== InterTrac for changesets
 trac:changeset:2081
 [trac:changeset:2081 Trac r2081]
@@ -65,7 +72,7 @@ T:r2081
 <a class="ext-link" href="http://projects.edgewall.com/trac/search?q=r2081" title="r2081 in Trac's Trac"><span class="icon">T:r2081</span></a>
 </p>
 ------------------------------
-"""
+""" #'
 
 def _get_changeset(self, x):
     raise TracError("No changeset")
@@ -110,6 +117,13 @@ log:trunk:12-23
 <a class="source" href="/log/trunk?rev=23&amp;stop_rev=12">log:trunk@12-23</a>
 <a class="source" href="/log/trunk?rev=23&amp;stop_rev=12">log:trunk:12:23</a>
 <a class="source" href="/log/trunk?rev=23&amp;stop_rev=12">log:trunk:12-23</a>
+</p>
+------------------------------
+============================== Link resolver counter examples
+rfc:4180 should not be a log link
+------------------------------
+<p>
+rfc:4180 should not be a log link
 </p>
 ------------------------------
 """
