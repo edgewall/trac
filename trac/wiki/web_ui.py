@@ -121,17 +121,8 @@ class WikiModule(Component):
         else:
             format = req.args.get('format')
             if format:
-                content, output_type, ext = Mimeview(self.env).convert_content(
-                                            req, 'text/x-trac-wiki', page.text,
-                                            format)
-                req.send_response(200)
-                req.send_header('Content-Type', output_type)
-                req.send_header('Content-Disposition',
-                                'filename=%s.%s' % (page.name, ext))
-                req.end_headers()
-                req.write(content)
-                return
-
+                Mimeview(self.env).send_converted(req, 'text/x-trac-wiki',
+                                                  page.text, format, page.name)
             self._render_view(req, db, page)
 
         req.hdf['wiki.action'] = action

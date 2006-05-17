@@ -433,14 +433,8 @@ class QueryModule(Component):
 
         format = req.args.get('format')
         if format:
-            content, output_type, ext = Mimeview(self.env).convert_content(
-                req, 'trac.ticket.Query', query, format)
-            req.send_response(200)
-            req.send_header('Content-Type', output_type)
-            req.send_header('Content-Disposition', 'filename=query.' + ext)
-            req.end_headers()
-            req.write(content)
-            return
+            Mimeview(self.env).send_converted(req, 'trac.ticket.Query', query,
+                                              format, 'query')
 
         self.display_html(req, query)
         return 'query.cs', None

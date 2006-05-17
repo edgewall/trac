@@ -281,15 +281,8 @@ class TicketModule(TicketModuleBase):
         mime = Mimeview(self.env)
         format = req.args.get('format')
         if format:
-            content, output_type, ext = mime.convert_content(
-                req, 'trac.ticket.Ticket', ticket, format)
-            req.send_response(200)
-            req.send_header('Content-Type', output_type)
-            req.send_header('Content-Disposition',
-                            'filename=#%i.%s' % (ticket.id, ext))
-            req.end_headers()
-            req.write(content)
-            return
+            mime.send_converted(req, 'trac.ticket.Ticket', ticket, format,
+                                'ticket_%d' % ticket.id)
 
         # If the ticket is being shown in the context of a query, add
         # links to help navigate in the query result set

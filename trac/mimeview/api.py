@@ -483,6 +483,21 @@ class Mimeview(Component):
                                            url, annotations),
                     'raw_href': url}
 
+    def send_converted(self, req, in_type, content, selector, filename='file'):
+        """Helper method for converting `content` and sending it directly.
+
+        `selector` can be either a key or a MIME Type."""
+        from trac.web import RequestDone
+        content, output_type, ext = self.convert_content(req, in_type,
+                                                         content, selector)
+        req.send_response(200)
+        req.send_header('Content-Type', output_type)
+        req.send_header('Content-Disposition', 'filename=%s.%s' % (filename,
+                                                                   ext))
+        req.end_headers()
+        req.write(content)
+        raise RequestDone        
+        
 
 def _html_splitlines(lines):
     """Tracks open and close tags in lines of HTML text and yields lines that
