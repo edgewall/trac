@@ -349,12 +349,12 @@ class QueryModule(Component):
 
     # IContentConverter methods
     def get_supported_conversions(self):
-        yield ('rss', 'RSS Feed', 'xml', 'trac.ticket.query',
-               'application/rss+xml', 9)
+        yield ('rss', 'RSS Feed', 'xml',
+               'trac.ticket.Query', 'application/rss+xml', 8)
         yield ('csv', 'Comma-delimited Text', 'csv',
-               'trac.ticket.query', 'text/plain', 9)
-        yield ('tab', 'Tab-delimited Text', 'csv', 'trac.ticket.query',
-               'text/plain', 9)
+               'trac.ticket.Query', 'text/csv', 8)
+        yield ('tab', 'Tab-delimited Text', 'csv',
+               'trac.ticket.Query', 'text/plain', 8)
 
     def convert_content(self, req, mimetype, query, key):
         if key == 'rss':
@@ -412,7 +412,7 @@ class QueryModule(Component):
 
         # Add registered converters
         for conversion in Mimeview(self.env).get_supported_conversions(
-                                             'trac.ticket.query'):
+                                             'trac.ticket.Query'):
             add_link(req, 'alternate', query.get_href(format=conversion[0]),
                       conversion[1], conversion[3])
 
@@ -434,8 +434,7 @@ class QueryModule(Component):
         format = req.args.get('format')
         if format:
             content, output_type, ext = Mimeview(self.env).convert_content(
-                                        req, 'trac.ticket.query', query,
-                                        format)
+                req, 'trac.ticket.Query', query, format)
             req.send_response(200)
             req.send_header('Content-Type', output_type)
             req.send_header('Content-Disposition', 'filename=query.' + ext)

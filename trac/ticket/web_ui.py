@@ -208,11 +208,11 @@ class TicketModule(TicketModuleBase):
 
     def get_supported_conversions(self):
         yield ('csv', 'Comma-delimited Text', 'csv',
-               'trac.ticket.model.Ticket', 'text/plain', 9)
-        yield ('tab', 'Tab-delimited Text', 'csv', 'trac.ticket.model.Ticket',
-               'text/plain', 9)
-        yield ('rss', 'RSS Feed', 'xml', 'trac.ticket.model.Ticket',
-               'application/rss+xml', 9)
+               'trac.ticket.Ticket', 'text/csv', 8)
+        yield ('tab', 'Tab-delimited Text', 'csv',
+               'trac.ticket.Ticket', 'text/plain', 8)
+        yield ('rss', 'RSS Feed', 'xml',
+               'trac.ticket.Ticket', 'application/rss+xml', 8)
 
     def convert_content(self, req, mimetype, ticket, key):
         if key == 'csv':
@@ -277,11 +277,11 @@ class TicketModule(TicketModuleBase):
 
         self._insert_ticket_data(req, db, ticket, reporter_id)
 
+        mime = Mimeview(self.env)
         format = req.args.get('format')
         if format:
-            content, output_type, ext = Mimeview(self.env).convert_content(
-                                        req, 'trac.ticket.model.Ticket', ticket,
-                                        format)
+            content, output_type, ext = mime.convert_content(
+                req, 'trac.ticket.Ticket', ticket, format)
             req.send_response(200)
             req.send_header('Content-Type', output_type)
             req.send_header('Content-Disposition',
@@ -311,8 +311,7 @@ class TicketModule(TicketModuleBase):
         add_stylesheet(req, 'common/css/ticket.css')
 
         # Add registered converters
-        for conversion in Mimeview(self.env).get_supported_conversions(
-                                             'trac.ticket.model.Ticket'):
+        for conversion in mime.get_supported_conversions('trac.ticket.Ticket'):
             conversion_href = req.href.ticket(ticket.id, format=conversion[0])
             add_link(req, 'alternate', conversion_href, conversion[1],
                      conversion[3])
