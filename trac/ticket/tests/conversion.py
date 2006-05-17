@@ -32,8 +32,8 @@ class TicketConversionTestCase(unittest.TestCase):
         expected = sorted([('csv', 'Comma-delimited Text', 'csv',
                            'trac.ticket.Ticket', 'text/csv', 8,
                            self.ticket_module),
-                          ('tab', 'Tab-delimited Text', 'csv',
-                           'trac.ticket.Ticket', 'text/plain', 8,
+                          ('tab', 'Tab-delimited Text', 'tsv',
+                           'trac.ticket.Ticket', 'text/tab-separated-values', 8,
                            self.ticket_module),
                            ('rss', 'RSS Feed', 'xml',
                             'trac.ticket.Ticket', 'application/rss+xml', 8,
@@ -47,7 +47,7 @@ class TicketConversionTestCase(unittest.TestCase):
                                             ticket, 'csv')
         self.assertEqual((u'id,summary,reporter,owner,description,keywords,cc'
                           '\r\nNone,Foo,santa,,Bar,,\r\n',
-                          'text/plain;charset=utf-8', 'csv'), csv)
+                          'text/csv;charset=utf-8', 'csv'), csv)
 
 
     def test_tab_conversion(self):
@@ -56,7 +56,8 @@ class TicketConversionTestCase(unittest.TestCase):
                                             ticket, 'tab')
         self.assertEqual((u'id\tsummary\treporter\towner\tdescription\tkeywords'
                           '\tcc\r\nNone\tFoo\tsanta\t\tBar\t\t\r\n',
-                          'text/plain;charset=utf-8', 'csv'), csv)
+                          'text/tab-separated-values;charset=utf-8', 'tsv'),
+                         csv)
 
     def test_rss_conversion(self):
         ticket = self._create_a_ticket()

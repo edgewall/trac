@@ -353,16 +353,16 @@ class QueryModule(Component):
                'trac.ticket.Query', 'application/rss+xml', 8)
         yield ('csv', 'Comma-delimited Text', 'csv',
                'trac.ticket.Query', 'text/csv', 8)
-        yield ('tab', 'Tab-delimited Text', 'csv',
-               'trac.ticket.Query', 'text/plain', 8)
+        yield ('tab', 'Tab-delimited Text', 'tsv',
+               'trac.ticket.Query', 'text/tab-separated-values', 8)
 
     def convert_content(self, req, mimetype, query, key):
         if key == 'rss':
             return self.export_rss(req, query)
         elif key == 'csv':
-            return self.export_csv(query)
+            return self.export_csv(query, mimetype='text/csv')
         elif key == 'tab':
-            return self.export_csv(query, '\t')
+            return self.export_csv(query, '\t', 'text/tab-separated-values')
 
     # INavigationContributor methods
 

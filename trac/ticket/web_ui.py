@@ -209,16 +209,17 @@ class TicketModule(TicketModuleBase):
     def get_supported_conversions(self):
         yield ('csv', 'Comma-delimited Text', 'csv',
                'trac.ticket.Ticket', 'text/csv', 8)
-        yield ('tab', 'Tab-delimited Text', 'csv',
-               'trac.ticket.Ticket', 'text/plain', 8)
+        yield ('tab', 'Tab-delimited Text', 'tsv',
+               'trac.ticket.Ticket', 'text/tab-separated-values', 8)
         yield ('rss', 'RSS Feed', 'xml',
                'trac.ticket.Ticket', 'application/rss+xml', 8)
 
     def convert_content(self, req, mimetype, ticket, key):
         if key == 'csv':
-            return self.export_csv(ticket)
+            return self.export_csv(ticket, mimetype='text/csv')
         elif key == 'tab':
-            return self.export_csv(ticket, sep='\t')
+            return self.export_csv(ticket, sep='\t',
+                                   mimetype='text/tab-separated-values')
         elif key == 'rss':
             return self.export_rss(req, ticket)
 
