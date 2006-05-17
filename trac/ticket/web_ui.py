@@ -206,7 +206,7 @@ class TicketModule(TicketModuleBase):
 
     # IContentConverter methods
 
-    def get_conversions(self):
+    def get_supported_conversions(self):
         yield ('csv', 'Comma-delimited Text', 'csv',
                'trac.ticket.model.Ticket', 'text/plain', 9)
         yield ('tab', 'Tab-delimited Text', 'csv', 'trac.ticket.model.Ticket',

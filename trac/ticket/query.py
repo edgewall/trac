@@ -348,7 +348,7 @@ class QueryModule(Component):
                IContentConverter)
 
     # IContentConverter methods
-    def get_conversions(self):
+    def get_supported_conversions(self):
         yield ('rss', 'RSS Feed', 'xml', 'trac.ticket.query',
                'application/rss+xml', 9)
         yield ('csv', 'Comma-delimited Text', 'csv',

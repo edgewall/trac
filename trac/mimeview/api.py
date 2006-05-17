@@ -217,7 +217,7 @@ class IContentConverter(Interface):
     """An extension point interface for generic MIME based content
     conversion."""
 
-    def get_conversions():
+    def get_supported_conversions():
         """Return an iterable of tuples in the form (key, name, extension,
         in_mimetype, out_mimetype, quality) representing the MIME conversions
         supported and
@@ -251,11 +251,11 @@ class Mimeview(Component):
 
     def get_supported_conversions(self, mimetype):
         """Return a list of target MIME types in same form as
-        `IContentConverter.get_conversions()`, but with the converter
+        `IContentConverter.get_supported_conversions()`, but with the converter
         component appended. Output is ordered from best to worst quality."""
         converters = []
         for converter in self.converters:
-            for k, n, e, im, om, q in converter.get_conversions():
+            for k, n, e, im, om, q in converter.get_supported_conversions():
                 if im == mimetype and q > 0:
                     converters.append((k, n, e, im, om, q, converter))
         converters = sorted(converters, key=lambda i: i[-1], reverse=True)

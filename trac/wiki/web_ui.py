@@ -44,7 +44,7 @@ class WikiModule(Component):
     page_manipulators = ExtensionPoint(IWikiPageManipulator)
 
     # IContentConverter methods
-    def get_conversions(self):
+    def get_supported_conversions(self):
         yield ('txt', 'Plain Text', 'txt', 'text/x-trac-wiki', 'text/plain', 9)
 
     def convert_content(self, req, mimetype, content, key):
