@@ -202,15 +202,21 @@ class ChangesetModule(Component):
                                  new_path=new_path, new_rev=new)
         if chgset:
             chgset = repos.get_changeset(new)
+            message = chgset.message or '--'
+            if self.wiki_format_messages:
+                message = wiki_to_html(message, self.env, req,
+                                              escape_newlines=True)
+            else:
+                message = html.PRE(message)
             req.check_modified(chgset.date, [
                 diff_options[0],
                 ''.join(diff_options[1]),
                 repos.name,
                 repos.rev_older_than(new, repos.youngest_rev),
-                chgset.message,
+                message,
                 util.pretty_timedelta(chgset.date, None, 3600)])
         else:
-            pass # FIXME: what date should we choose for a diff?
+            message = None # FIXME: what date should we choose for a diff?
 
         req.hdf['changeset'] = diff_args
 
@@ -242,7 +248,7 @@ class ChangesetModule(Component):
                 return
 
         # -- HTML format
-        self._render_html(req, repos, chgset, restricted,
+        self._render_html(req, repos, chgset, restricted, message,
                           diff_args, diff_options)
         if chgset:
             diff_params = 'new=%s' % new
@@ -262,7 +268,8 @@ class ChangesetModule(Component):
 
     # Internal methods
 
-    def _render_html(self, req, repos, chgset, restricted, diff, diff_options):
+    def _render_html(self, req, repos, chgset, restricted, message,
+                     diff, diff_options):
         """HTML version"""
         req.hdf['changeset'] = {
             'chgset': chgset and True,
@@ -307,12 +314,6 @@ class ChangesetModule(Component):
                 properties.append({'name': name, 'value': value,
                                    'htmlclass': htmlclass})
 
-            message = chgset.message or '--'
-            if self.wiki_format_messages:
-                message = wiki_to_html(message, self.env, req,
-                                       escape_newlines=True)
-            else:
-                message = html.PRE(message)
             req.hdf['changeset'] = {
                 'revision': chgset.rev,
                 'time': util.format_datetime(chgset.date),
