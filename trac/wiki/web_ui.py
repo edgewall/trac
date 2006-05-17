@@ -33,14 +33,22 @@ from trac.web import HTTPNotFound, IRequestHandler
 from trac.wiki.api import IWikiPageManipulator, WikiSystem
 from trac.wiki.model import WikiPage
 from trac.wiki.formatter import wiki_to_html, wiki_to_oneliner
+from trac.mimeview.api import Mimeview, IContentConverter
 
 
 class WikiModule(Component):
 
     implements(INavigationContributor, IPermissionRequestor, IRequestHandler,
-               ITimelineEventProvider, ISearchSource)
+               ITimelineEventProvider, ISearchSource, IContentConverter)
 
     page_manipulators = ExtensionPoint(IWikiPageManipulator)
+
+    # IContentConverter methods
+    def get_conversions(self):
+        yield ('txt', 'Plain Text', 'txt', 'text/x-trac-wiki', 'text/plain', 9)
+
+    def convert_content(self, req, mimetype, content, key):
+        return (content, 'text/plain;charset=utf-8')
 
     # INavigationContributor methods
 
@@ -111,12 +119,19 @@ class WikiModule(Component):
         elif action == 'history':
             self._render_history(req, db, page)
         else:
-            if req.args.get('format') == 'txt':
+            format = req.args.get('format')
+            if format:
+                content, output_type, ext = Mimeview(self.env).convert_content(
+                                            req, 'text/x-trac-wiki', page.text,
+                                            format)
                 req.send_response(200)
-                req.send_header('Content-Type', 'text/plain;charset=utf-8')
+                req.send_header('Content-Type', output_type)
+                req.send_header('Content-Disposition',
+                                'filename=%s.%s' % (page.name, ext))
                 req.end_headers()
-                req.write(page.text)
+                req.write(content)
                 return
+
             self._render_view(req, db, page)
 
         req.hdf['wiki.action'] = action
@@ -371,8 +386,13 @@ class WikiModule(Component):
             # Ask web spiders to not index old versions
             req.hdf['html.norobots'] = 1
 
-        txt_href = req.href.wiki(page.name, version=version, format='txt')
-        add_link(req, 'alternate', txt_href, 'Plain Text', 'text/plain')
+        # Add registered converters
+        for conversion in Mimeview(self.env).get_supported_conversions(
+                                             'text/x-trac-wiki'):
+            conversion_href = req.href.wiki(page.name, version=version,
+                                            format=conversion[0])
+            add_link(req, 'alternate', conversion_href, conversion[1],
+                     conversion[3])
 
         req.hdf['wiki'] = {'exists': page.exists,
                            'version': page.version, 'readonly': page.readonly}

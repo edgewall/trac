@@ -23,7 +23,7 @@ from StringIO import StringIO
 
 from trac.config import IntOption, Option
 from trac.core import *
-from trac.util import to_utf8, to_unicode
+from trac.util import to_utf8, to_unicode, sorted
 from trac.util.markup import escape, Markup, Fragment, html
 
 
@@ -213,11 +213,30 @@ class IHTMLPreviewAnnotator(Interface):
         annotation data."""
 
 
+class IContentConverter(Interface):
+    """An extension point interface for generic MIME based content
+    conversion."""
+
+    def get_conversions():
+        """Return an iterable of tuples in the form (key, name, extension,
+        in_mimetype, out_mimetype, quality) representing the MIME conversions
+        supported and
+        the quality ratio of the conversion in the range 0 to 9, where 0 means
+        no support and 9 means "perfect" support. eg. ('latex', 'LaTeX', 'tex',
+        'text/x-trac-wiki', 'text/plain', 8)"""
+
+    def convert_content(req, mimetype, content, key):
+        """Convert the given content from mimetype to the output MIME type
+        represented by key. Returns a tuple in the form (content,
+        output_mime_type)."""
+
+
 class Mimeview(Component):
     """A generic class to prettify data, typically source code."""
 
     renderers = ExtensionPoint(IHTMLPreviewRenderer)
     annotators = ExtensionPoint(IHTMLPreviewAnnotator)
+    converters = ExtensionPoint(IContentConverter)
 
     default_charset = Option('trac', 'default_charset', 'iso-8859-15',
         """Charset to be used when in doubt.""")
@@ -229,6 +248,58 @@ class Mimeview(Component):
         """Maximum file size for HTML preview. (''since 0.9'').""")
 
     # Public API
+
+    def get_supported_conversions(self, mimetype):
+        """Return a list of target MIME types in same form as
+        `IContentConverter.get_conversions()`, but with the converter
+        component appended. Output is ordered from best to worst quality."""
+        converters = []
+        for converter in self.converters:
+            for k, n, e, im, om, q in converter.get_conversions():
+                if im == mimetype and q > 0:
+                    converters.append((k, n, e, im, om, q, converter))
+        converters = sorted(converters, key=lambda i: i[-1], reverse=True)
+        return converters
+
+    def convert_content(self, req, mimetype, content, key, filename=None,
+                        url=None):
+        """Convert the given content to the target MIME type represented by
+        `key`, which can be either a MIME type or a key. Returns a tuple of
+        (content, output_mime_type, extension)."""
+        if not content:
+            return ('', 'text/plain;charset=utf-8')
+
+        # Ensure we have a MIME type for this content
+        full_mimetype = mimetype
+        if not full_mimetype:
+            if hasattr(content, 'read'):
+                content = content.read(self.get_max_preview_size())
+            full_mimetype = self.get_mimetype(filename, content)
+        if full_mimetype:
+            mimetype = full_mimetype.split(';')[0].strip() # split off charset
+        else:
+            mimetype = full_mimetype = 'text/plain' # fallback if not binary
+
+        # Choose best converter
+        candidates = self.get_supported_conversions(mimetype)
+        candidates = [c for c in candidates if key in (c[0], c[4])]
+        if not candidates:
+            raise TracError('No available MIME conversions from %s to %s' %
+                            (mimetype, key))
+
+        # First candidate which converts successfully wins.
+        for ck, name, ext, input_mimettype, output_mimetype, quality, \
+                converter in candidates:
+            try:
+                output = converter.convert_content(req, mimetype, content, ck)
+                if not output:
+                    continue
+                return (output[0], output[1], ext)
+            except Exception, e:
+                self.log.warning('MIME conversion using %s failed (%s)'
+                                 % (converter, e), exc_info=True)
+        raise TracError('No available MIME conversions from %s to %s' %
+                        (mimetype, key))
 
     def get_annotation_types(self):
         """Generator that returns all available annotation types."""

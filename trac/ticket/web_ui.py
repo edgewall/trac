@@ -17,6 +17,7 @@
 import os
 import re
 import time
+from StringIO import StringIO
 
 from trac.attachment import attachments_to_hdf, Attachment
 from trac.config import BoolOption, Option
@@ -25,11 +26,13 @@ from trac.env import IEnvironmentSetupParticipant
 from trac.ticket import Milestone, Ticket, TicketSystem, ITicketManipulator
 from trac.ticket.notification import TicketNotifyEmail
 from trac.Timeline import ITimelineEventProvider
-from trac.util import format_datetime, get_reporter_id, pretty_timedelta
+from trac.util import format_datetime, get_reporter_id, pretty_timedelta, \
+                      CRLF, http_date
 from trac.util.markup import html, Markup
 from trac.web import IRequestHandler
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
 from trac.wiki import wiki_to_html, wiki_to_oneliner
+from trac.mimeview.api import Mimeview, IContentConverter
 
 
 class TicketModuleBase(Component):
@@ -179,7 +182,8 @@ class NewticketModule(TicketModuleBase):
 
 class TicketModule(TicketModuleBase):
 
-    implements(INavigationContributor, IRequestHandler, ITimelineEventProvider)
+    implements(INavigationContributor, IRequestHandler, ITimelineEventProvider,
+               IContentConverter)
 
     default_version = Option('ticket', 'default_version', '',
         """Default version for newly created tickets.""")
@@ -199,6 +203,24 @@ class TicketModule(TicketModuleBase):
     timeline_details = BoolOption('timeline', 'ticket_show_details', 'false',
         """Enable the display of all ticket changes in the timeline
         (''since 0.9'').""")
+
+    # IContentConverter methods
+
+    def get_conversions(self):
+        yield ('csv', 'Comma-delimited Text', 'csv',
+               'trac.ticket.model.Ticket', 'text/plain', 9)
+        yield ('tab', 'Tab-delimited Text', 'csv', 'trac.ticket.model.Ticket',
+               'text/plain', 9)
+        yield ('rss', 'RSS Feed', 'xml', 'trac.ticket.model.Ticket',
+               'application/rss+xml', 9)
+
+    def convert_content(self, req, mimetype, ticket, key):
+        if key == 'csv':
+            return self.export_csv(ticket)
+        elif key == 'tab':
+            return self.export_csv(ticket, sep='\t')
+        elif key == 'rss':
+            return self.export_rss(req, ticket)
 
     # INavigationContributor methods
 
@@ -255,6 +277,19 @@ class TicketModule(TicketModuleBase):
 
         self._insert_ticket_data(req, db, ticket, reporter_id)
 
+        format = req.args.get('format')
+        if format:
+            content, output_type, ext = Mimeview(self.env).convert_content(
+                                        req, 'trac.ticket.model.Ticket', ticket,
+                                        format)
+            req.send_response(200)
+            req.send_header('Content-Type', output_type)
+            req.send_header('Content-Disposition',
+                            'filename=#%i.%s' % (ticket.id, ext))
+            req.end_headers()
+            req.write(content)
+            return
+
         # If the ticket is being shown in the context of a query, add
         # links to help navigate in the query result set
         if 'query_tickets' in req.session:
@@ -274,6 +309,14 @@ class TicketModule(TicketModuleBase):
                 add_link(req, 'up', req.session['query_href'])
 
         add_stylesheet(req, 'common/css/ticket.css')
+
+        # Add registered converters
+        for conversion in Mimeview(self.env).get_supported_conversions(
+                                             'trac.ticket.model.Ticket'):
+            conversion_href = req.href.ticket(ticket.id, format=conversion[0])
+            add_link(req, 'alternate', conversion_href, conversion[1],
+                     conversion[3])
+
         return 'ticket.cs', None
 
     # ITimelineEventProvider methods
@@ -370,6 +413,68 @@ class TicketModule(TicketModuleBase):
                     yield produce(row, 'new', {}, None)
 
     # Internal methods
+
+    def export_csv(self, ticket, sep=',', mimetype='text/plain'):
+        content = StringIO()
+        content.write(sep.join(['id'] + [f['name'] for f in ticket.fields])
+                      + CRLF)
+        content.write(sep.join([unicode(ticket.id)] +
+                                [ticket.values.get(f['name'], '')
+                                 .replace(sep, '_').replace('\\', '\\\\')
+                                 .replace('\n', '\\n').replace('\r', '\\r')
+                                 for f in ticket.fields]) + CRLF)
+        return (content.getvalue(), '%s;charset=utf-8' % mimetype)
+        
+    def export_rss(self, req, ticket):
+        db = self.env.get_db_cnx()
+        changelog = ticket.get_changelog(db=db)
+        curr_author = None
+        curr_date   = 0
+        changes = []
+        change_summary = {}
+
+        description = wiki_to_html(ticket['description'], self.env, req, db)
+        req.hdf['ticket.description.formatted'] = unicode(description)
+
+        def update_title():
+            if not changes: return
+            title = '; '.join(['%s %s' % (', '.join(v), k)
+                               for k, v in change_summary.iteritems()])
+            changes[-1]['title'] = title
+
+        for date, author, field, old, new in changelog:
+            if date != curr_date or author != curr_author:
+                update_title()
+                change_summary = {}
+
+                changes.append({
+                    'date': http_date(date),
+                    'author': author,
+                    'fields': {}
+                })
+                curr_date = date
+                curr_author = author
+            if field == 'comment':
+                change_summary['added'] = ['comment']
+                changes[-1]['comment'] = unicode(wiki_to_html(new, self.env,
+                                                              req, db,
+                                                              absurls=True))
+            elif field == 'description':
+                change_summary.setdefault('changed', []).append(field)
+                changes[-1]['fields'][field] = ''
+            else:
+                change = 'changed'
+                if not old:
+                    change = 'set'
+                elif not new:
+                    change = 'deleted'
+                change_summary.setdefault(change, []).append(field)
+                changes[-1]['fields'][field] = {'old': old,
+                                                'new': new}
+        update_title()
+        req.hdf['ticket.changes'] = changes
+        return (req.hdf.render('ticket_rss.cs'), 'application/rss+xml')
+
 
     def _do_save(self, req, db, ticket):
         if req.perm.has_permission('TICKET_CHGPROP'):

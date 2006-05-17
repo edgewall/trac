@@ -29,7 +29,7 @@ from trac.web import IRequestHandler
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
 from trac.wiki import wiki_to_html, wiki_to_oneliner, IWikiSyntaxProvider
 from trac.wiki.macros import WikiMacroBase
-
+from trac.mimeview.api import Mimeview, IContentConverter
 
 class QuerySyntaxError(Exception):
     """Exception raised when a ticket query cannot be parsed from a string."""
@@ -344,7 +344,25 @@ class Query(object):
 
 class QueryModule(Component):
 
-    implements(IRequestHandler, INavigationContributor, IWikiSyntaxProvider)
+    implements(IRequestHandler, INavigationContributor, IWikiSyntaxProvider,
+               IContentConverter)
+
+    # IContentConverter methods
+    def get_conversions(self):
+        yield ('rss', 'RSS Feed', 'xml', 'trac.ticket.query',
+               'application/rss+xml', 9)
+        yield ('csv', 'Comma-delimited Text', 'csv',
+               'trac.ticket.query', 'text/plain', 9)
+        yield ('tab', 'Tab-delimited Text', 'csv', 'trac.ticket.query',
+               'text/plain', 9)
+
+    def convert_content(self, req, mimetype, query, key):
+        if key == 'rss':
+            return self.export_rss(req, query)
+        elif key == 'csv':
+            return self.export_csv(query)
+        elif key == 'tab':
+            return self.export_csv(query, '\t')
 
     # INavigationContributor methods
 
@@ -392,12 +410,11 @@ class QueryModule(Component):
                     del req.session[var]
             req.redirect(query.get_href())
 
-        add_link(req, 'alternate', query.get_href(format='rss'), 'RSS Feed',
-                 'application/rss+xml', 'rss')
-        add_link(req, 'alternate', query.get_href(format='csv'),
-                 'Comma-delimited Text', 'text/plain')
-        add_link(req, 'alternate', query.get_href(format='tab'),
-                 'Tab-delimited Text', 'text/plain')
+        # Add registered converters
+        for conversion in Mimeview(self.env).get_supported_conversions(
+                                             'trac.ticket.query'):
+            add_link(req, 'alternate', query.get_href(format=conversion[0]),
+                      conversion[1], conversion[3])
 
         constraints = {}
         for k, v in query.constraints.items():
@@ -415,16 +432,19 @@ class QueryModule(Component):
         req.hdf['query.constraints'] = constraints
 
         format = req.args.get('format')
-        if format == 'rss':
-            self.display_rss(req, query)
-            return 'query_rss.cs', 'application/rss+xml'
-        elif format == 'csv':
-            self.display_csv(req, query)
-        elif format == 'tab':
-            self.display_csv(req, query, '\t')
-        else:
-            self.display_html(req, query)
-            return 'query.cs', None
+        if format:
+            content, output_type, ext = Mimeview(self.env).convert_content(
+                                        req, 'trac.ticket.query', query,
+                                        format)
+            req.send_response(200)
+            req.send_header('Content-Type', output_type)
+            req.send_header('Content-Disposition', 'filename=query.' + ext)
+            req.end_headers()
+            req.write(content)
+            return
+
+        self.display_html(req, query)
+        return 'query.cs', None
 
     # Internal methods
 
@@ -595,22 +615,20 @@ class QueryModule(Component):
            self.env.is_component_enabled(ReportModule):
             req.hdf['query.report_href'] = req.href.report()
 
-    def display_csv(self, req, query, sep=','):
-        req.send_response(200)
-        req.send_header('Content-Type', 'text/plain;charset=utf-8')
-        req.end_headers()
-
+    def export_csv(self, query, sep=',', mimetype='text/plain'):
+        content = StringIO()
         cols = query.get_columns()
-        req.write(sep.join([col for col in cols]) + CRLF)
+        content.write(sep.join([col for col in cols]) + CRLF)
 
         results = query.execute(self.env.get_db_cnx())
         for result in results:
-            req.write(sep.join([unicode(result[col]).replace(sep, '_')
-                                                    .replace('\n', ' ')
-                                                    .replace('\r', ' ')
-                                for col in cols]) + CRLF)
+            content.write(sep.join([unicode(result[col]).replace(sep, '_')
+                                                        .replace('\n', ' ')
+                                                        .replace('\r', ' ')
+                                    for col in cols]) + CRLF)
+        return (content.getvalue(), '%s;charset=utf-8' % mimetype)
 
-    def display_rss(self, req, query):
+    def export_rss(self, req, query):
         query.verbose = True
         db = self.env.get_db_cnx()
         results = query.execute(db)
@@ -630,6 +648,7 @@ class QueryModule(Component):
                 groupdesc=query.groupdesc and 1 or None,
                 verbose=query.verbose and 1 or None,
                 **query.constraints)
+        return (req.hdf.render('query_rss.cs'), 'application/rss+xml')
 
     # IWikiSyntaxProvider methods
     
