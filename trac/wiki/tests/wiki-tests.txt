@@ -612,14 +612,14 @@ Paragraph
 Paragraph
 ============================== Numbered lists
  1. item 1
-   a. item 1.a
-   a. item 1.b
+    a. item 1.a
+    a. item 1.b
 
 Some paragraph
 
  2. continue with item 2
-   i. roman 1
-   ii. roman 2
+    i. roman 1
+    ii. roman 2
 Paragraph
 ------------------------------
 <ol><li>item 1
@@ -636,14 +636,14 @@ Paragraph
 </p>
 ------------------------------
 1. item 1
-   a. item 1.a
-   a. item 1.b
+    a. item 1.a
+    a. item 1.b
 
 Some paragraph
 
  2. continue with item 2
-   i. roman 1
-   ii. roman 2
+    i. roman 1
+    ii. roman 2
 Paragraph
 ============================== Numbered lists counter-examples
  This will not start a new numbered
@@ -665,6 +665,43 @@ OTOH, the following is a roman numbered list:
 <ol class="lowerroman"><li>start
 </li><li>maximal number in sequence
 </li></ol><p>
+Paragraph
+</p>
+------------------------------
+============================== Mixed lists multi-line items
+ 1. multi-line
+    numbered list
+    i. multi-line
+      item i.
+      * sub item
+    ii. multi-line
+      item ii.
+      * sub item
+        multiline
+        a. subsub
+          multiline
+        b. subsub
+    iii. multi-line
+      item iii.
+      * sub item
+Paragraph
+------------------------------
+<ol><li>multi-line
+numbered list
+<ol class="lowerroman"><li>multi-line
+item i.
+<ul><li>sub item
+</li></ul></li><li>multi-line
+item ii.
+<ul><li>sub item
+multiline
+<ol class="loweralpha"><li>subsub
+multiline
+</li><li>subsub
+</li></ol></li></ul></li><li>multi-line
+item iii.
+<ul><li>sub item
+</li></ul></li></ol></li></ol><p>
 Paragraph
 </p>
 ------------------------------
