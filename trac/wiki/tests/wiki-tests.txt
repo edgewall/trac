@@ -1,3 +1,7 @@
+============================================================
+
+        Font styles
+
 ============================== Bold + italic markup
 This should be '''''bold and italic'''''
 ------------------------------
@@ -118,7 +122,10 @@ __foo__
 <tt>verbatim</tt>
  [&hellip;]
 <tt>{{{this is verbatim}}}</tt> and <tt>`that` should also `be` verbatim</tt>
-==============================
+============================================================
+
+        Link Resolvers
+
 ============================== Link resolvers, short form
 link:1
 
@@ -247,6 +254,10 @@ link:"123"
 <a class="odd resolver" href="/thing/123">link:"123"</a>
 </p>
 ------------------------------
+============================================================
+
+        Other Links
+
 ============================== Relative links
 Relative links are supported:
 [../parent See above]
@@ -314,6 +325,10 @@ Other test:<strong>bold text</strong> should be bold
 ------------------------------
 <strong>Note:</strong>
 ==============================
+============================================================
+
+        Processor blocks
+
 ============================== Code Block 1
 {{{
 Preformatted text.
@@ -443,6 +458,10 @@ echo &#34;foo&#34;
 <div>Click me</div>
 ------------------------------
  [&hellip;]
+============================================================
+
+        Wiki Macros
+
 ============================== Macro with arguments (leading)
 [[HelloWorld(hej hopp)]]
 ------------------------------
@@ -543,6 +562,10 @@ Inline  comment
 </p>
 ------------------------------
 Inline  comment
+============================================================
+
+           Headings
+
 ============================== I18N heading
 = ça marche! =
 ------------------------------
@@ -579,6 +602,10 @@ Inline  comment
 <h2 id="LinkedHeading"><a class="missing wiki" href="/wiki/SandBox" rel="nofollow">Linked Heading?</a></h2>
 ------------------------------
 == [wiki:SandBox Linked Heading] ==
+============================================================
+
+             Lists
+
 ============================== Bulleted lists
 Paragraph
  * foo bar
@@ -776,6 +803,10 @@ complex topic:: multiline
 ------------------------------
 complex topic:: multiline
                  <tt>not:: a dl</tt>
+============================================================
+
+            Tables
+
 ============================== Simple Table, one column
 || a || 
 || b ||
@@ -840,7 +871,11 @@ out:
   || a || b ||
 
 || a || b ||
-============================== General Wiki syntax, mix of headings and lists
+============================================================
+
+         Mixed examples
+
+============================== Mix of headings and lists
 = Heading 1 =
 Paragraph
  * Item 1
@@ -862,7 +897,7 @@ Paragraph
  * Item 1
    * Item 2
 Another paragraph
-============================== General Wiki syntax: heading, lists and table
+============================== Heading, lists and table
 Paragraph
 ----
  1. Item 1

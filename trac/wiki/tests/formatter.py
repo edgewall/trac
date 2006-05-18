@@ -148,7 +148,10 @@ def suite(data=None, setup=None, file=__file__):
     for test in tests:
         if not test or test == '\n':
             continue
-        input, page, oneliner = test.split('-' * 30 + '\n')
+        blocks = test.split('-' * 30 + '\n')
+        if len(blocks) != 3:
+            continue
+        input, page, oneliner = blocks
         tc = WikiTestCase(input, page, file, line)
         if setup:
             setup(tc)
