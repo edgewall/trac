@@ -127,7 +127,7 @@ class WikiProcessor(object):
             if content_for_span:
                 text = html.SPAN(class_='code-block')[content_for_span]
             elif interrupt_paragraph:
-                text = "</p>%s<p>" % text
+                text = "</p>%s<p>" % unicode(text)
         return to_unicode(text)
 
 
