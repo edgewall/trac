@@ -193,7 +193,7 @@ class Formatter(object):
          r"(\]\]|\((?P<macroargs>.*?)\)\]\]))"),
         # heading, list, definition, indent, table...
         r"(?P<heading>^\s*(?P<hdepth>=+)\s.*\s(?P=hdepth)\s*$)",
-        r"(?P<list>^(?P<ldepth>\s+)(?:\*|\d+\.|[a-zA-Z]\.|[ivxIVX]{1,5}\.) )",
+        r"(?P<list>^(?P<ldepth>\s+)(?:[-*]|\d+\.|[a-zA-Z]\.|[ivxIVX]{1,5}\.) )",
         r"(?P<definition>^\s+((?:%s.*?%s|%s.*?%s|[^%s%s])+?::)(?:\s+|$))"
         % (INLINE_TOKEN, INLINE_TOKEN, STARTBLOCK_TOKEN, ENDBLOCK_TOKEN,
            INLINE_TOKEN, STARTBLOCK[0]),
@@ -455,12 +455,12 @@ class Formatter(object):
     # Lists
     
     def _list_formatter(self, match, fullmatch):
-        ldepth = len(fullmatch.group('ldepth'))
-        depth = int((len(fullmatch.group('ldepth')) + 1) / 2)
+        ldepth = len(fullmatch.group('ldepth').replace('\t', ' '*8))
+        match = match.replace('\t', ' '*8)
         listid = match[ldepth]
-        self.in_list_item = depth > 0
+        self.in_list_item = True
         class_ = start = None
-        if listid == '*':
+        if listid in '-*':
             type_ = 'ul'
         else:
             type_ = 'ol'
@@ -473,45 +473,50 @@ class Formatter(object):
                 class_ = 'loweralpha'
             elif listid.isupper():
                 class_ = 'upperalpha'
-        self._set_list_depth(depth, type_, class_, start)
+        self._set_list_depth(ldepth, type_, class_, start)
         return ''
 
-    def _set_list_depth(self, depth, type_, class_, start):
-        current_depth = len(self._list_stack)
-        diff = depth - current_depth
-        self.close_table()
-        self.close_paragraph()
-        self.close_indentation()
-        begin_list = type_
-        if class_:
-            begin_list += ' class="%s"' % class_
-        if start:
-            begin_list += start and ' start="%s"' % start
-        if diff > 0:
-            for i in range(diff):
-                self._list_stack.append(type_)
-                self.out.write('<%s><li>' % begin_list)
-        elif diff < 0:
-            for i in range(-diff):
-                tmp = self._list_stack.pop()
-                self.out.write('</li></%s>' % tmp)
-            if self._list_stack != [] and type_ != self._list_stack[-1]:
-                tmp = self._list_stack.pop()
-                self._list_stack.append(type_)
-                self.out.write('</li></%s><%s><li>' % (tmp, begin_list))
+    def _get_list_depth(self):
+        """Return the space offset associated to the deepest opened list."""
+        return self._list_stack and self._list_stack[-1][1] or 0
+        
+    def _set_list_depth(self, depth, new_type, list_class, start):
+        def open_list():
+            self.close_table()
+            self.close_paragraph()
+            self.close_indentation()
+            self._list_stack.append((new_type, depth))
+            class_attr = list_class and ' class="%s"' % list_class or ''
+            start_attr = start and ' start="%s"' % start or ''
+            self.out.write('<'+new_type+class_attr+start_attr+'><li>')
+        def close_list(tp):
+            self._list_stack.pop()
+            self.out.write('</li></%s>' % tp)
+
+        # depending on the indent/dedent, open or close lists
+        if depth > self._get_list_depth():
+            open_list()
+        else:
+            while self._list_stack:
+                deepest_type, deepest_offset = self._list_stack[-1]
+                if depth >= deepest_offset:
+                    break
+                close_list(deepest_type)
             if depth > 0:
-                self.out.write('</li><li>')
-        # diff == 0
-        elif self._list_stack != [] and type_ != self._list_stack[-1]:
-            tmp = self._list_stack.pop()
-            self._list_stack.append(type_)
-            self.out.write('</li></%s><%s><li>' % (tmp, begin_list))
-        elif depth > 0:
-            self.out.write('</li><li>')
+                if self._list_stack:
+                    old_type, old_offset = self._list_stack[-1]
+                    if new_type and old_type != new_type:
+                        close_list(old_type)
+                        open_list()
+                    else:
+                        if old_offset != depth: # adjust last depth
+                            self._list_stack[-1] = (old_type, depth)
+                        self.out.write('</li><li>')
+                else:
+                    open_list()
 
     def close_list(self):
-        if self._list_stack != []:
-            self._set_list_depth(0, None, None, None)
+        self._set_list_depth(0, None, None, None)
 
     # Definition Lists
 
@@ -530,31 +535,61 @@ class Formatter(object):
 
     # Blockquote
 
-    def close_indentation(self):
-        self.close_table()
-        self.out.write(('</blockquote>' + os.linesep) * self.indent_level)
-        self.indent_level = 0
+    def _indent_formatter(self, match, fullmatch):
+        idepth = len(fullmatch.group('idepth').replace('\t', ' '*8))
+        if self._list_stack:
+            ltype, ldepth = self._list_stack[-1]
+            if idepth < ldepth:
+                for _, ldepth in self._list_stack:
+                    if idepth > ldepth:
+                        self.in_list_item = True
+                        self._set_list_depth(idepth, None, None, None)
+                        return ''
+            elif idepth <= ldepth + (ltype == 'ol' and 3 or 2):
+                self.in_list_item = True
+                return ''
+        if not self.in_def_list:
+            self._set_quote_depth(idepth)
+        return ''
 
-    def open_indentation(self, depth):
-        if self.in_def_list:
-            return
-        diff = depth - self.indent_level
-        if diff != 0:
+    def close_indentation(self):
+        self._set_quote_depth(0)
+
+    def _get_quote_depth(self):
+        """Return the space offset associated to the deepest opened quote."""
+        return self._quote_stack and self._quote_stack[-1] or 0
+
+    def _set_quote_depth(self, depth):
+        if depth > 0:
+            self.in_quote = True
+        def open_quote(depth):
             self.close_table()
             self.close_paragraph()
-            self.close_indentation()
             self.close_list()
-            self.indent_level = depth
-            self.out.write(('<blockquote>' + os.linesep) * depth)
-
-    def _indent_formatter(self, match, fullmatch):
-        depth = int((len(fullmatch.group('idepth')) + 1) / 2)
-        list_depth = len(self._list_stack)
-        if list_depth > 0 and depth == list_depth + 1:
-            self.in_list_item = 1
+            def open_one_quote(d):
+                self._quote_stack.append(d)
+                self.out.write('<blockquote>' + os.linesep)
+            open_one_quote(depth)
+        def close_quote():
+            self.close_table()
+            self.close_paragraph()
+            self._quote_stack.pop()
+            self.out.write('</blockquote>' + os.linesep)
+        if depth > self._get_quote_depth():
+            open_quote(depth)
         else:
-            self.open_indentation(depth)
-        return ''
+            while self._quote_stack:
+                deepest_offset = self._quote_stack[-1]
+                if depth >= deepest_offset:
+                    break
+                close_quote()
+            if depth > 0:
+                if self._quote_stack:
+                    old_offset = self._quote_stack[-1]
+                    if old_offset != depth: # adjust last depth
+                        self._quote_stack[-1] = depth
+                else:
+                    open_quote(depth)
 
     # Table
     
@@ -640,8 +675,8 @@ class Formatter(object):
         elif line.strip() == Formatter.ENDBLOCK:
             self.in_code_block -= 1
             if self.in_code_block == 0 and self.code_processor:
-                self.close_paragraph()
                 self.close_table()
+                self.close_paragraph()
                 self.out.write(self.code_processor.process(self.req, self.code_text))
             else:
                 self.code_text += line + os.linesep
@@ -666,13 +701,13 @@ class Formatter(object):
         self.out = out
         self._open_tags = []
         self._list_stack = []
+        self._quote_stack = []
 
         self.in_code_block = 0
         self.in_table = 0
         self.in_def_list = 0
         self.in_table_row = 0
         self.in_table_cell = 0
-        self.indent_level = 0
         self.paragraph_open = 0
 
         for line in text.splitlines():
@@ -682,11 +717,11 @@ class Formatter(object):
                 continue
             # Handle Horizontal ruler
             elif line[0:4] == '----':
+                self.close_table()
                 self.close_paragraph()
                 self.close_indentation()
                 self.close_list()
                 self.close_def_list()
-                self.close_table()
                 self.out.write('<hr />' + os.linesep)
                 continue
             # Handle new paragraph
@@ -700,11 +735,15 @@ class Formatter(object):
             if escape_newlines:
                 line += ' [[BR]]'
             self.in_list_item = False
+            self.in_quote = False
             # Throw a bunch of regexps on the problem
             result = re.sub(self.wiki.rules, self.replace, line)
 
             if not self.in_list_item:
                 self.close_list()
+
+            if not self.in_quote:
+                self.close_indentation()
 
             if self.in_def_list and not line.startswith(' '):
                 self.close_def_list()

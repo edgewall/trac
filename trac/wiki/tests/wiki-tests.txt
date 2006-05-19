@@ -637,10 +637,65 @@ Paragraph
  * item 2
    item 2 line 2
 Paragraph
+============================== Changelog sample
+2003-09-18 23:26  Joe Bar <joeb@gloogle.gom>
+
+	* src/code.py: Fix problem with obsolete use of
+	backslash in symbols.
+        * src/test.py: Added unit tests.
+          - test + symbol
+          - test - symbol
+Paragraph
+------------------------------
+<p>
+2003-09-18 23:26  Joe Bar &lt;joeb@gloogle.gom&gt;
+</p>
+<ul><li>src/code.py: Fix problem with obsolete use of
+backslash in symbols.
+</li><li>src/test.py: Added unit tests.
+<ul><li>test + symbol
+</li><li>test - symbol
+</li></ul></li></ul><p>
+Paragraph
+</p>
+------------------------------
+============================== Complex bulleted list
+    * foo bar
+      boo baz
+           * Subitem 1
+             - nested item 1
+             - nested item 2
+             nested item 2 continued
+           Subitem 1 continued
+        * Subitem 2
+         Subitem 2 continued
+        * Subitem 3
+          continued
+    * item 2
+     item 2 line 2
+Paragraph
+------------------------------
+<ul><li>foo bar
+boo baz
+<ul><li>Subitem 1
+<ul><li>nested item 1
+</li><li>nested item 2
+nested item 2 continued
+</li></ul></li><li>Subitem 1 continued
+</li></ul></li><li>Subitem 2
+Subitem 2 continued
+</li><li>Subitem 3
+continued
+</li></ul><ul><li>item 2
+item 2 line 2
+</li></ul><p>
+Paragraph
+</p>
+------------------------------
 ============================== Numbered lists
  1. item 1
-    a. item 1.a
-    a. item 1.b
+   a. item 1.a
+   a. item 1.b
 
 Some paragraph
 
@@ -663,8 +718,8 @@ Paragraph
 </p>
 ------------------------------
 1. item 1
-    a. item 1.a
-    a. item 1.b
+   a. item 1.a
+   a. item 1.b
 
 Some paragraph
 
