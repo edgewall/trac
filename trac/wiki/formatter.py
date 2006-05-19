@@ -452,11 +452,28 @@ class Formatter(object):
         self._anchors.append(anchor)
         self.out.write('<h%d id="%s">%s</h%d>' % (depth, anchor, text, depth))
 
+    # Generic indentation (as defined by lists and quotes)
+
+    def _set_tab(self, depth):
+        """Append a new tab if needed and truncate tabs deeper than `depth`
+
+        given:       -*-----*--*---*--
+        setting:              *
+        results in:  -*-----*-*-------
+        """
+        tabstops = []
+        for ts in self._tabstops:
+            if ts >= depth:
+                break
+            tabstops.append(ts)
+        tabstops.append(depth)
+        self._tabstops = tabstops
+
     # Lists
     
     def _list_formatter(self, match, fullmatch):
-        ldepth = len(fullmatch.group('ldepth').replace('\t', ' '*8))
-        match = match.replace('\t', ' '*8)
+        ldepth = len(fullmatch.group('ldepth'))
+        match = match
         listid = match[ldepth]
         self.in_list_item = True
         class_ = start = None
@@ -475,17 +492,18 @@ class Formatter(object):
                 class_ = 'upperalpha'
         self._set_list_depth(ldepth, type_, class_, start)
         return ''
-
+        
     def _get_list_depth(self):
         """Return the space offset associated to the deepest opened list."""
         return self._list_stack and self._list_stack[-1][1] or 0
-        
+
     def _set_list_depth(self, depth, new_type, list_class, start):
         def open_list():
             self.close_table()
             self.close_paragraph()
-            self.close_indentation()
+            self.close_indentation() # FIXME: why not lists in quotes?
             self._list_stack.append((new_type, depth))
+            self._set_tab(depth)
             class_attr = list_class and ' class="%s"' % list_class or ''
             start_attr = start and ' start="%s"' % start or ''
             self.out.write('<'+new_type+class_attr+start_attr+'><li>')
@@ -536,7 +554,7 @@ class Formatter(object):
     # Blockquote
 
     def _indent_formatter(self, match, fullmatch):
-        idepth = len(fullmatch.group('idepth').replace('\t', ' '*8))
+        idepth = len(fullmatch.group('idepth'))
         if self._list_stack:
             ltype, ldepth = self._list_stack[-1]
             if idepth < ldepth:
@@ -560,14 +578,13 @@ class Formatter(object):
         return self._quote_stack and self._quote_stack[-1] or 0
 
     def _set_quote_depth(self, depth):
-        if depth > 0:
-            self.in_quote = True
         def open_quote(depth):
             self.close_table()
             self.close_paragraph()
             self.close_list()
             def open_one_quote(d):
                 self._quote_stack.append(d)
+                self._set_tab(d)
                 self.out.write('<blockquote>' + os.linesep)
             open_one_quote(depth)
         def close_quote():
@@ -575,8 +592,14 @@ class Formatter(object):
             self.close_paragraph()
             self._quote_stack.pop()
             self.out.write('</blockquote>' + os.linesep)
-        if depth > self._get_quote_depth():
-            open_quote(depth)
+        quote_depth = self._get_quote_depth()
+        if depth > quote_depth:
+            self._set_tab(depth)
+            tabstops = self._tabstops[::-1]
+            while tabstops:
+                tab = tabstops.pop()
+                if tab > quote_depth:
+                    open_quote(tab)
         else:
             while self._quote_stack:
                 deepest_offset = self._quote_stack[-1]
@@ -590,6 +613,8 @@ class Formatter(object):
                         self._quote_stack[-1] = depth
                 else:
                     open_quote(depth)
+        if depth > 0:
+            self.in_quote = True
 
     # Table
     
@@ -702,6 +727,7 @@ class Formatter(object):
         self._open_tags = []
         self._list_stack = []
         self._quote_stack = []
+        self._tabstops = []
 
         self.in_code_block = 0
         self.in_table = 0
@@ -731,6 +757,11 @@ class Formatter(object):
                 self.close_list()
                 self.close_def_list()
                 continue
+
+            # Tab expansion and clear tabstops if no indent
+            line = line.replace('\t', ' '*8)
+            if not line.startswith(' '):
+                self._tabstops = []
 
             if escape_newlines:
                 line += ' [[BR]]'

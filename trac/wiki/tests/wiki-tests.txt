@@ -982,3 +982,83 @@ Paragraph
 ||Table||cell||
 ||Foo||Bar||Baz||
 <a class="ext-link" href="http://www.edgewall.com/"><span class="icon">http://www.edgewall.com/</span></a>
+============================== Lists, indents and table
+
+  * Bar
+    * Foo
+
+    || Foo || Bar ||
+
+  || Foo || Bar ||
+------------------------------
+<ul><li>Bar
+<ul><li>Foo
+</li></ul></li></ul><blockquote>
+<blockquote>
+<table class="wiki">
+<tr><td> Foo </td><td> Bar 
+</td></tr></table>
+</blockquote>
+</blockquote>
+<blockquote>
+<table class="wiki">
+<tr><td> Foo </td><td> Bar 
+</td></tr></table>
+</blockquote>
+------------------------------
+* Bar
+    * Foo
+
+    || Foo || Bar ||
+
+  || Foo || Bar ||
+============================== "Tabstops" set by lists and quotes
+        This is one level deep
+
+  * Bar
+        * Foo
+
+        Now this should be 2 levels deep as well
+
+               This is now level 3.
+
+        Continue on level 2.
+
+          - but a list always restart at level 1.
+Paragraph.
+------------------------------
+<blockquote>
+<p>
+This is one level deep
+</p>
+</blockquote>
+<ul><li>Bar
+<ul><li>Foo
+</li></ul></li></ul><blockquote>
+<blockquote>
+<p>
+Now this should be 2 levels deep as well
+</p>
+</blockquote>
+</blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>
+This is now level 3.
+</p>
+</blockquote>
+</blockquote>
+</blockquote>
+<blockquote>
+<blockquote>
+<p>
+Continue on level 2.
+</p>
+</blockquote>
+</blockquote>
+<ul><li>but a list always restart at level 1.
+</li></ul><p>
+Paragraph.
+</p>
+------------------------------
