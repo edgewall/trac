@@ -275,6 +275,15 @@ pre.wiki, pre.literal-block {
  padding: .25em;
  overflow: auto;
 }
+
+blockquote.citation { 
+ margin: 0;
+ border-style: solid; 
+ border-width: 0 0 0 2px; 
+ border-color: #b44; 
+ padding-left: .5em;
+}
+
 table.wiki {
  border: 2px solid #ccc;
  border-collapse: collapse;

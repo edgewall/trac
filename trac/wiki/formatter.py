@@ -179,6 +179,7 @@ class Formatter(object):
         % (INLINE_TOKEN, INLINE_TOKEN)]
 
     _post_rules = [
+        r"(?P<citation>^(?P<cdepth>>(?: *>)*))",
         r"(?P<htmlescape>[&<>])",
         # shref corresponds to short TracLinks, i.e. sns:stgt
         r"(?P<shref>!?((?P<sns>%s):(?P<stgt>%s|%s(?:%s*%s)?)))" \
@@ -473,7 +474,6 @@ class Formatter(object):
     
     def _list_formatter(self, match, fullmatch):
         ldepth = len(fullmatch.group('ldepth'))
-        match = match
         listid = match[ldepth]
         self.in_list_item = True
         class_ = start = None
@@ -570,6 +570,11 @@ class Formatter(object):
             self._set_quote_depth(idepth)
         return ''
 
+    def _citation_formatter(self, match, fullmatch):
+        cdepth = len(fullmatch.group('cdepth').replace(' ', ''))
+        self._set_quote_depth(cdepth, True)
+        return ''
+
     def close_indentation(self):
         self._set_quote_depth(0)
 
@@ -577,7 +582,7 @@ class Formatter(object):
         """Return the space offset associated to the deepest opened quote."""
         return self._quote_stack and self._quote_stack[-1] or 0
 
-    def _set_quote_depth(self, depth):
+    def _set_quote_depth(self, depth, citation=False):
         def open_quote(depth):
             self.close_table()
             self.close_paragraph()
@@ -585,8 +590,13 @@ class Formatter(object):
             def open_one_quote(d):
                 self._quote_stack.append(d)
                 self._set_tab(d)
-                self.out.write('<blockquote>' + os.linesep)
-            open_one_quote(depth)
+                class_attr = citation and ' class="citation"' or ''
+                self.out.write('<blockquote%s>' % class_attr + os.linesep)
+            if citation:
+                for d in range(quote_depth+1, depth+1):
+                    open_one_quote(d)
+            else:
+                open_one_quote(depth)
         def close_quote():
             self.close_table()
             self.close_paragraph()
@@ -606,7 +616,7 @@ class Formatter(object):
                 if depth >= deepest_offset:
                     break
                 close_quote()
-            if depth > 0:
+            if not citation and depth > 0:
                 if self._quote_stack:
                     old_offset = self._quote_stack[-1]
                     if old_offset != depth: # adjust last depth
@@ -810,6 +820,7 @@ class OneLinerFormatter(Formatter):
     # Override a few formatters to disable some wiki syntax in "oneliner"-mode
     def _list_formatter(self, match, fullmatch): return match
     def _indent_formatter(self, match, fullmatch): return match
+    def _citation_formatter(self, match, fullmatch): return escape(match)
     def _heading_formatter(self, match, fullmatch):
         return escape(match, False)
     def _definition_formatter(self, match, fullmatch):
@@ -880,8 +891,8 @@ class OutlineFormatter(Formatter):
         Formatter.__init__(self, env, None, absurls, db)
 
     # Override a few formatters to disable some wiki syntax in "outline"-mode
-    def _macro_formatter(self, match, fullmatch):
-        return match
+    def _citation_formatter(self, match, fullmatch): return escape(match)
+    def _macro_formatter(self, match, fullmatch): return match
 
     def handle_code_block(self, line):
         if line.strip() == Formatter.STARTBLOCK:

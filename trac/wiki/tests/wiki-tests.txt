@@ -1062,3 +1062,39 @@ Continue on level 2.
 Paragraph.
 </p>
 ------------------------------
+============================== Citations
+> This is the quoted text
+>> a nested quote
+A comment on the above
+>> start 2nd level
+> first level
+------------------------------
+<blockquote class="citation">
+<p>
+ This is the quoted text
+</p>
+<blockquote class="citation">
+<p>
+ a nested quote
+</p>
+</blockquote>
+</blockquote>
+<p>
+A comment on the above
+</p>
+<blockquote class="citation">
+<blockquote class="citation">
+<p>
+ start 2nd level
+</p>
+</blockquote>
+<p>
+ first level
+</p>
+</blockquote>
+------------------------------
+&gt; This is the quoted text
+&gt;&gt; a nested quote
+A comment on the above
+&gt;&gt; start 2nd level
+&gt; first level
