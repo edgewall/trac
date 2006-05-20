@@ -28,7 +28,7 @@ from trac.versioncontrol.web_ui.changeset import ChangesetModule
 from trac.versioncontrol.web_ui.util import *
 from trac.web import IRequestHandler
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
-from trac.wiki import IWikiSyntaxProvider
+from trac.wiki import IWikiSyntaxProvider, Formatter
 
 LOG_LIMIT = 100
 
@@ -209,23 +209,42 @@ class LogModule(Component):
         return 'log.cs', None
 
     # IWikiSyntaxProvider methods
+
+    REV_RANGE = "%s[-:]%s" % ((ChangesetModule.CHANGESET_ID,)*2)
     
     def get_wiki_syntax(self):
-        yield (r"!?\[%s:%s\]|(?:\b|!)r%s:%s\b"
-               % ((ChangesetModule.CHANGESET_ID,) * 4),
-               lambda x, y, z: self._format_link(x, 'log',
-                                                 '#'+(y[0] == 'r' and y[1:]
-                                                      or y[1:-1]), y))
+        yield (
+            # [...] form, starts with optional intertrac: [T... or [trac ...
+            r"!?\[(?P<it_log>%s\s*)" % Formatter.INTERTRAC_SCHEME +
+            # <from>:<to> + optional path restriction
+            r"(?P<log_rev>%s)(?P<log_path>/[^\]]*)?\]" % self.REV_RANGE,
+            lambda x, y, z: self._format_link(x, 'log1', y[1:-1], y, z))
+        yield (
+            # r<from>:<to> form (no intertrac and no path restriction)
+            r"(?:\b|!)r%s\b" % self.REV_RANGE,
+            lambda x, y, z: self._format_link(x, 'log2', '@' + y[1:], y))
 
     def get_link_resolvers(self):
         yield ('log', self._format_link)
 
-    def _format_link(self, formatter, ns, path, label):
-        path, rev, line = get_path_rev_line(path)
+    def _format_link(self, formatter, ns, match, label, fullmatch=None):
+        if ns == 'log1':
+            it_log = fullmatch.group('it_log')
+            rev = fullmatch.group('log_rev')
+            path = fullmatch.group('log_path')
+        else: # ns == 'log2'
+            path, rev, line = get_path_rev_line(match)
         stop_rev = None
-        for sep in ":-":
+        for sep in ':-':
             if not stop_rev and rev and sep in rev:
                 stop_rev, rev = rev.split(sep, 1)
         label = urllib.unquote(label)
-        return html.A(href=formatter.href.log(path, rev=rev, stop_rev=stop_rev),
-                      class_='source')[label]
+        href = formatter.href.log(path, rev=rev, stop_rev=stop_rev)
+        if ns == 'log1':
+            target = it_log + href[len(formatter.href.log('/')):]
+            # prepending it_log is needed, as the helper expects it there
+            intertrac = formatter.shorthand_intertrac_helper('log', target,
+                                                             label, fullmatch)
+            if intertrac:
+                return intertrac
+        return html.A(href=href, class_='source')[label]

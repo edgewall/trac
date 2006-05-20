@@ -64,11 +64,13 @@ trac:changeset:2081
 ============================== Changeset InterTrac shorthands
 [T2081]
 [trac 2081]
+[trac 2081/trunk]
 T:r2081
 ------------------------------
 <p>
 <a class="ext-link" href="http://projects.edgewall.com/trac/changeset/2081" title="changeset:2081 in Trac's Trac"><span class="icon">[T2081]</span></a>
 <a class="ext-link" href="http://projects.edgewall.com/trac/changeset/2081" title="changeset:2081 in Trac's Trac"><span class="icon">[trac 2081]</span></a>
+<a class="ext-link" href="http://projects.edgewall.com/trac/changeset/2081/trunk" title="changeset:2081/trunk in Trac\'s Trac"><span class="icon">[trac 2081/trunk]</span></a>
 <a class="ext-link" href="http://projects.edgewall.com/trac/search?q=r2081" title="r2081 in Trac's Trac"><span class="icon">T:r2081</span></a>
 </p>
 ------------------------------
@@ -87,9 +89,11 @@ def changeset_setup(tc):
 LOG_TEST_CASES="""
 ============================== Log range TracLinks
 [1:2], r1:2, [12:23], r12:23
+[1:2/trunk]
 ------------------------------
 <p>
-<a class="source" href="/log/?rev=2&amp;stop_rev=1">[1:2]</a>, <a class="source" href="/log/?rev=2&amp;stop_rev=1">r1:2</a>, <a class="source" href="/log/?rev=23&amp;stop_rev=12">[12:23]</a>, <a class="source" href="/log/?rev=23&amp;stop_rev=12">r12:23</a>
+<a class="source" href="/log?rev=2&amp;stop_rev=1">[1:2]</a>, <a class="source" href="/log/?rev=2&amp;stop_rev=1">r1:2</a>, <a class="source" href="/log?rev=23&amp;stop_rev=12">[12:23]</a>, <a class="source" href="/log/?rev=23&amp;stop_rev=12">r12:23</a>
+<a class="source" href="/log/trunk?rev=2&amp;stop_rev=1">[1:2/trunk]</a>
 </p>
 ------------------------------
 ============================== Escaping Log range TracLinks
@@ -124,6 +128,17 @@ rfc:4180 should not be a log link
 ------------------------------
 <p>
 rfc:4180 should not be a log link
+</p>
+------------------------------
+============================== Log range InterTrac shorthands
+[T3317:3318]
+[trac 3317:3318]
+[trac 3317:3318/trunk]
+------------------------------
+<p>
+<a class="ext-link" href="http://projects.edgewall.com/trac/log/rev=3318&amp;stop_rev=3317" title="log:rev=3318&amp;stop_rev=3317 in Trac\'s Trac"><span class="icon">[T3317:3318]</span></a>
+<a class="ext-link" href="http://projects.edgewall.com/trac/log/rev=3318&amp;stop_rev=3317" title="log:rev=3318&amp;stop_rev=3317 in Trac\'s Trac"><span class="icon">[trac 3317:3318]</span></a>
+<a class="ext-link" href="http://projects.edgewall.com/trac/log/trunk?rev=3318&amp;stop_rev=3317" title="log:trunk?rev=3318&amp;stop_rev=3317 in Trac\'s Trac"><span class="icon">[trac 3317:3318/trunk]</span></a>
 </p>
 ------------------------------
 """
