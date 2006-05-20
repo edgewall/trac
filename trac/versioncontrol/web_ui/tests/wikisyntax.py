@@ -152,10 +152,10 @@ diff:trunk@12:23
 diff:@12:23
 ------------------------------
 <p>
-<a class="changeset" title="Diff from trunk@latest to branch@latest" href="/changeset?new_path=branch&old_path=trunk">diff:trunk//branch</a>
-<a class="changeset" title="Diff from trunk@12 to branch@23" href="/changeset?new=23&new_path=branch&old=12&old_path=trunk">diff:trunk@12//branch@23</a>
-<a class="changeset" title="Diff r12:23 for trunk" href="/changeset?new=23&new_path=trunk&old=12&old_path=trunk">diff:trunk@12:23</a>
-<a class="changeset" title="Diff r12:23 for /" href="/changeset?new=23&old=12">diff:@12:23</a>
+<a class="changeset" href="/changeset?new_path=branch&amp;old_path=trunk" title="Diff from trunk@latest to branch@latest">diff:trunk//branch</a>
+<a class="changeset" href="/changeset?new=23&amp;new_path=branch&amp;old=12&amp;old_path=trunk" title="Diff from trunk@12 to branch@23">diff:trunk@12//branch@23</a>
+<a class="changeset" href="/changeset?new=23&amp;new_path=trunk&amp;old=12&amp;old_path=trunk" title="Diff r12:23 for trunk">diff:trunk@12:23</a>
+<a class="changeset" href="/changeset?new=23&amp;old=12" title="Diff r12:23 for /">diff:@12:23</a>
 </p>
 ------------------------------
 """

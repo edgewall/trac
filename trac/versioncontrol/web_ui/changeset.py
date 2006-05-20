@@ -706,13 +706,13 @@ class ChangesetModule(Component):
         cursor.execute('SELECT message FROM revision WHERE rev=%s', (rev,))
         row = cursor.fetchone()
         if row:
-            return '<a class="changeset" title="%s" href="%s">%s</a>' \
-                   % (escape(util.shorten_line(row[0])),
-                      formatter.href.changeset(rev, path), label)
+            return html.A(label, class_="changeset",
+                          title=util.shorten_line(row[0]),
+                          href=formatter.href.changeset(rev, path))
         else:
-            return '<a class="missing changeset" href="%s"' \
-                   ' rel="nofollow">%s</a>' \
-                   % (formatter.href.changeset(rev, path), label)
+            return html.A(label, class_="missing changeset",
+                          href=formatter.href.changeset(rev, path),
+                          rel="nofollow")
 
     def _format_diff_link(self, formatter, ns, params, label):
         def pathrev(path):
@@ -737,8 +737,7 @@ class ChangesetModule(Component):
                                         new=diff.new_rev,
                                         old_path=diff.old_path or None,
                                         old=diff.old_rev)
-        return '<a class="changeset" title="%s" href="%s">%s</a>' \
-               % (title, href, label)
+        return html.A(label, class_="changeset", title=title, href=href)
 
     # ISearchSource methods
 
