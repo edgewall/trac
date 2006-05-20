@@ -51,9 +51,19 @@ dd.changeset p { margin: 0; padding: 0 }
 dd.changeset ul { padding-left: 15px; }
 
 /* Styles for the 'changeset_show_files' option */
-dd.changeset .changes .add { color: #2e2 }
-dd.changeset .changes .delete { color: #e00 }
-dd.changeset .changes .edit, dd.changeset .changes .copy,
-dd.changeset .changes .move {
- color: #e84;
+dd.changeset ul.changes { 
+ padding-left: 0;
+ list-style-type: none;
 }
+dd.changeset .changes li div {
+ border: 1px solid #999;
+ float: left;
+ margin: .4em .5em 0 0;
+ overflow: hidden;
+ width: .8em; height: .8em;
+}
+dd.changeset .changes .add     { background: #bfb }
+dd.changeset .changes .delete  { background: #f88 }
+dd.changeset .changes .edit    { background: #fd8 }
+dd.changeset .changes .copy    { background: #88f }
+dd.changeset .changes .move    { background: #ccc }

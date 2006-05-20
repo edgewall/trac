@@ -660,12 +660,11 @@ class ChangesetModule(Component):
                     files = []
                     for chg in chgset.get_changes():
                         if show_files > 0 and len(files) >= show_files:
-                            files.append('&hellip; <br />')
+                            files.append(html.LI(Markup('&hellip;')))
                             break
-                        files.append(Markup('<span class="%s">%s</span><br />',
-                                            chg[2], chg[0] or '/'))
-                    message = Markup('<span class="changes">%s</span> %s',
-                                     Markup(''.join(files)), message)
+                        files.append(html.LI(html.DIV(class_=chg[2]),
+                                             chg[0] or '/'))
+                    message = html.UL(files, class_="changes") + message
 
                 yield 'changeset', href, title, chgset.date, chgset.author,\
                       message
