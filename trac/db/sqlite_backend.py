@@ -28,7 +28,7 @@ try:
     import pysqlite2.dbapi2 as sqlite
     have_pysqlite = 2
     _ver = sqlite.sqlite_version_info
-    sqlite_version = _ver[0] * 10000 + _ver[1] * 100 + _ver[2]
+    sqlite_version = _ver[0] * 10000 + _ver[1] * 100 + int(_ver[2])
 
     class PyFormatCursor(sqlite.Cursor):
         def _rollback_on_error(self, function, *args, **kwargs):
