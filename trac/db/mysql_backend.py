@@ -14,9 +14,13 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://projects.edgewall.com/trac/.
 
+import re
+
 from trac.core import *
 from trac.db.api import IDatabaseConnector
 from trac.db.util import ConnectionWrapper
+
+_like_escape_re = re.compile(r'([/_%])')
 
 
 class MySQLConnector(Component):
@@ -114,7 +118,10 @@ class MySQLConnection(ConnectionWrapper):
         return 'CAST(%s AS %s)' % (column, type)
 
     def like(self):
-        return 'LIKE'
+        return "LIKE %s ESCAPE '/'"
+
+    def like_escape(self, text):
+        return _like_escape_re.sub(r'/\1', text)
 
     def get_last_id(self, cursor, table, column='id'):
         return self.cnx.insert_id()

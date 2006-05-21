@@ -14,6 +14,8 @@
 #
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
+import re
+
 from trac.core import *
 from trac.db.api import IDatabaseConnector
 from trac.db.util import ConnectionWrapper
@@ -21,6 +23,8 @@ from trac.db.util import ConnectionWrapper
 psycopg = None
 PgSQL = None
 PGSchemaError = None
+
+_like_escape_re = re.compile(r'([/_%])')
 
 
 class PostgreSQLConnector(Component):
@@ -133,7 +137,10 @@ class PostgreSQLConnection(ConnectionWrapper):
     def like(self):
         # Temporary hack needed for the case-insensitive string matching in the
         # search module
-        return 'ILIKE'
+        return "ILIKE %s ESCAPE '/'"
+
+    def like_escape(self, text):
+        return _like_escape_re.sub(r'/\1', text)
 
     def get_last_id(self, cursor, table, column='id'):
         cursor.execute("SELECT CURRVAL('%s_%s_seq')" % (table, column))

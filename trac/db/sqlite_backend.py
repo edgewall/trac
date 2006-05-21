@@ -15,15 +15,20 @@
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
 import os
+import re
 import weakref
 
 from trac.core import *
 from trac.db.api import IDatabaseConnector
 from trac.db.util import ConnectionWrapper
 
+_like_escape_re = re.compile(r'([/_%])')
+
 try:
     import pysqlite2.dbapi2 as sqlite
     have_pysqlite = 2
+    _ver = sqlite.sqlite_version_info
+    sqlite_version = _ver[0] * 10000 + _ver[1] * 100 + _ver[2]
 
     class PyFormatCursor(sqlite.Cursor):
         def _rollback_on_error(self, function, *args, **kwargs):
@@ -47,6 +52,8 @@ except ImportError:
     try:
         import sqlite
         have_pysqlite = 1
+        _ver = sqlite._sqlite.sqlite_version_info()
+        sqlite_version = _ver[0] * 10000 + _ver[1] * 100 + _ver[2]
 
         class SQLiteUnicodeCursor(sqlite.Cursor):
             def _convert_row(self, row):
@@ -171,7 +178,16 @@ class SQLiteConnection(ConnectionWrapper):
         return column
 
     def like(self):
-        return 'LIKE'
+        if sqlite_version >= 30100:
+            return "LIKE %s ESCAPE '/'"
+        else:
+            return 'LIKE %s'
+
+    def like_escape(self, text):
+        if sqlite_version >= 30100:
+            return _like_escape_re.sub(r'/\1', text)
+        else:
+            return text
 
     if have_pysqlite == 2:
         def get_last_id(self, cursor, table, column='id'):
