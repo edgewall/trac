@@ -181,8 +181,8 @@ source:/foo/bar@head#L20
 <a class="source" href="/browser/foo/bar?rev=head">source:/foo/bar#head</a>
 <a class="source" href="/browser/foo/bar?rev=42">source:/foo/bar@42</a>
 <a class="source" href="/browser/foo/bar?rev=head">source:/foo/bar@head</a>
-<a class="source" href="/browser/foo%20bar/baz%2Bquux">source:/foo bar/baz+quux</a>
-<a class="source" href="/browser/foo%2520bar/baz%252Bquux?rev=42">source:/foo%20bar/baz%2Bquux#42</a>
+<a class="source" href="/browser/foo%20bar/baz%2Bquux">source:/foo%20bar/baz%2Bquux</a>
+<a class="source" href="/browser/foo%2520bar/baz%252Bquux?rev=42">source:/foo%2520bar/baz%252Bquux#42</a>
 <a class="source" href="/browser/?rev=42">source:#42</a>
 <a class="source" href="/browser/?rev=42">source:@42</a>
 <a class="source" href="/browser/foo/bar?rev=42#L20">source:/foo/bar@42#L20</a>

@@ -238,7 +238,6 @@ class LogModule(Component):
         for sep in ':-':
             if not stop_rev and rev and sep in rev:
                 stop_rev, rev = rev.split(sep, 1)
-        label = urllib.unquote(label)
         href = formatter.href.log(path, rev=rev, stop_rev=stop_rev)
         if ns == 'log1':
             target = it_log + href[len(formatter.href.log('/')):]

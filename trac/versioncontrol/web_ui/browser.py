@@ -288,6 +288,5 @@ class BrowserModule(Component):
         fragment = ''
         if line is not None:
             fragment = '#L%d' % line
-        label = urllib.unquote(label)
         return html.A(href=formatter.href.browser(path, rev=rev) + fragment,
                       class_='source')[label]
