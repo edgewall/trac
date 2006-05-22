@@ -144,10 +144,14 @@ def suite(data=None, setup=None, file=__file__):
         file = os.path.join(os.path.split(file)[0], 'wiki-tests.txt')
         data = open(file, 'r').read().decode('utf-8')
     tests = data.split('=' * 30)
-    line = 1
+    next_line = 1
+    line = 0
     for test in tests:
+        if line != next_line:
+            line = next_line
         if not test or test == '\n':
             continue
+        next_line += len(test.split('\n')) - 1
         blocks = test.split('-' * 30 + '\n')
         if len(blocks) != 3:
             continue
@@ -161,7 +165,6 @@ def suite(data=None, setup=None, file=__file__):
             if setup:
                 setup(tc)
             suite.addTest(tc)
-        line += len(test.split('\n'))
     return suite
 
 if __name__ == '__main__':

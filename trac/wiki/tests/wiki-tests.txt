@@ -188,7 +188,7 @@ This ticket is the first one
 ||http://example.com/img.png||text||
 ------------------------------
 <table class="wiki">
-<tr><td><img src="http://example.com/img.png" alt="http://example.com/img.png" /></td><td>text
+<tr><td><img src="http://example.com/img.png" alt="http://example.com/img.png" title="Warning: direct image links are deprecated, use [[Image(...)]] instead" /></td><td>text
 </td></tr></table>
 ------------------------------
 ||<a class="ext-link" href="http://example.com/img.png"><span class="icon">http://example.com/img.png</span></a>||text||
@@ -277,7 +277,7 @@ Relative links are supported:
 http://example.com/img.png?foo=bar
 ------------------------------
 <p>
-<img src="http://example.com/img.png?foo=bar" alt="http://example.com/img.png?foo=bar" />
+<img src="http://example.com/img.png?foo=bar" alt="http://example.com/img.png?foo=bar" title="Warning: direct image links are deprecated, use [[Image(...)]] instead" />
 </p>
 ------------------------------
 <a class="ext-link" href="http://example.com/img.png?foo=bar"><span class="icon">http://example.com/img.png?foo=bar</span></a>
