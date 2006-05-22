@@ -456,7 +456,7 @@ class Formatter(object):
         heading = match[depth + 1:len(match) - depth - 1]
 
         text = wiki_to_oneliner(heading, self.env, self.db, self._absurls)
-        sans_markup = re.sub(r'</?\w+(?: .*?)?>', '', text)
+        sans_markup = text.plaintext(keeplinebreaks=False).replace('.', '')
 
         anchor = self._anchor_re.sub('', sans_markup)
         if not anchor or not anchor[0].isalpha():

@@ -581,9 +581,15 @@ Inline  comment
 ============================== Heading with < and >
 = Foo <Bar> Baz =
 ------------------------------
-<h1 id="FooltBargtBaz">Foo &lt;Bar&gt; Baz</h1>
+<h1 id="FooBarBaz">Foo &lt;Bar&gt; Baz</h1>
 ------------------------------
 = Foo &lt;Bar&gt; Baz =
+============================== Heading with .
+= Version 0.10 =
+------------------------------
+<h1 id="Version010">Version 0.10</h1>
+------------------------------
+= Version 0.10 =
 ============================== Normal heading
 == Heading with trailing white-space == 
 ------------------------------
