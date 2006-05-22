@@ -269,7 +269,7 @@ Relative links are supported:
 Relative links are supported:
 <a href="../parent">See above</a>
 <a href="/docs">See documentation</a>
-<img src="/images/logo.png" alt="Our logo" />
+<img src="/images/logo.png" alt="Our logo" title="Warning: direct image links are deprecated, use [[Image(...)]] instead" />
 <a href="/">/</a>
 </p>
 ------------------------------

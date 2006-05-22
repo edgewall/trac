@@ -392,27 +392,28 @@ class Formatter(object):
     def _make_ext_link(self, url, text, title=''):
         # ---- TODO: the following should be removed in milestone:0.11
         if Formatter.img_re.search(url) and self.flavor != 'oneliner':
-            return unicode(html.IMG(src=url, alt=title or text,
-                                    title='Warning: direct image links are '
-                                    'deprecated, use [[Image(...)]] instead'))
+            link = html.IMG(src=url, alt=title or text,
+                            title='Warning: direct image links are deprecated,'
+                            ' use [[Image(...)]] instead')
         # ----
-        url = escape(url)
-        text, title = escape(text), escape(title)
-        title_attr = title and ' title="%s"' % title or ''
-        if not url.startswith(self._local):
-            return '<a class="ext-link" href="%s"%s><span class="icon">' \
-                   '%s</span></a>' % (url, title_attr, text)
+        elif not url.startswith(self._local):
+            link = html.A(html.SPAN(text, class_="icon"),
+                          class_="ext-link", href=url, title=title or None)
         else:
-            return '<a href="%s"%s>%s</a>' % (url, title_attr, text)
+            link = html.A(text, href=url, title=title or None)
+        return unicode(link)
 
     def _make_relative_link(self, url, text):
-        url, text = escape(url), escape(text)
+        # ---- TODO: the following should be removed in milestone:0.11
         if Formatter.img_re.search(url) and self.flavor != 'oneliner':
-            return '<img src="%s" alt="%s" />' % (url, text)
-        if url.startswith('//'): # only the protocol will be kept
-            return '<a class="ext-link" href="%s">%s</a>' % (url, text)
+            link = html.IMG(src=url, alt=text, title='Warning: direct image '
+                            'links are deprecated, use [[Image(...)]] instead')
+        # ----
+        elif url.startswith('//'): # only the protocol will be kept
+            link = html.A(text, class_="ext-link", href=url)
         else:
-            return '<a href="%s">%s</a>' % (url, text)
+            link = html.A(text, href=url)
+        return unicode(link)
 
     # WikiMacros
     
