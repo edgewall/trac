@@ -57,7 +57,10 @@ class NotificationSystem(Component):
     smtp_always_bcc = Option('notification', 'smtp_always_bcc', '',
         """Email address(es) to always send notifications to,
            addresses do not appear publicly (Bcc:). (''since 0.10'').""")
-
+           
+    smtp_default_domain = Option('notification', 'smtp_default_domain', '',
+        """Default host/domain to append to address that do not specify one""")
+           
     mime_encoding = Option('notification', 'mime_encoding', 'base64',
         """Specifies the MIME encoding scheme for emails.
         
@@ -71,6 +74,12 @@ class NotificationSystem(Component):
         
         If this option is disabled (the default), recipients are put on BCC
         (''since 0.10'').""")
+
+    use_short_addr = BoolOption('notification', 'use_short_addr', 'false',
+        """Permit email address without a host/domain (i.e. username only)
+        
+        The SMTP server should accept those addresses, and either append
+        a FQDN or use local delivery (''since 0.10'').""")
         
     use_tls = BoolOption('notification', 'use_tls', 'false',
         """Use SSL/TLS to send notifications (''since 0.10'').""")
@@ -220,7 +229,7 @@ class NotifyEmail(Notify):
             if self.email_map.has_key(address):
                 address = self.email_map[address]
             elif NotifyEmail.nodomaddr_re.match(address):
-                if self.config.getbool('notification', 'allow_short_addr'):
+                if self.config.getbool('notification', 'use_short_addr'):
                     return address
                 domain = self.config.get('notification', 'smtp_default_domain')
                 if domain:

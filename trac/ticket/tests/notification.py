@@ -215,7 +215,7 @@ class NotificationTestCase(unittest.TestCase):
             self.env.config.set('notification', 'smtp_always_cc', \
                                 'joe.bar@example.net')
             if enabled:
-                self.env.config.set('notification', 'allow_short_addr', 'true')
+                self.env.config.set('notification', 'use_short_addr', 'true')
             tn = TicketNotifyEmail(self.env)
             tn.notify(ticket, newticket=True)
             message = notifysuite.smtpd.get_message()
