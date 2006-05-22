@@ -25,6 +25,7 @@ from trac.util import CRLF, wrap
 from trac.web.clearsilver import HDFWrapper
 from trac.web.main import populate_hdf
 
+MAXHEADERLEN = 76
 
 class NotificationSystem(Component):
 
@@ -70,9 +71,9 @@ class NotificationSystem(Component):
         
         If this option is disabled (the default), recipients are put on BCC
         (''since 0.10'').""")
-
-    maxheaderlen = Option('notification', 'maxheaderlen', '76',
-        """Maximum length of SMTP headers. (''since 0.10'').""")
+        
+    use_tls = BoolOption('notification', 'use_tls', 'false',
+        """Use SSL/TLS to send notifications (''since 0.10'').""")
 
 
 class Notify(object):
@@ -134,6 +135,7 @@ class NotifyEmail(Notify):
     def __init__(self, env):
         Notify.__init__(self, env)
 
+        self._use_tls = self.env.config.getbool('notification', 'use_tls')
         self._init_pref_encoding()
         # Get the email addresses of all known users
         self.email_map = {}
@@ -173,7 +175,6 @@ class NotifyEmail(Notify):
             return
         self.smtp_server = self.config['notification'].get('smtp_server')
         self.smtp_port = self.config['notification'].getint('smtp_port')
-        self.maxheaderlen = self.config['notification'].getint('maxheaderlen')
         self.from_email = self.config['notification'].get('smtp_from')
         self.replyto_email = self.config['notification'].get('smtp_replyto')
         self.from_email = self.from_email or self.replyto_email
@@ -192,7 +193,7 @@ class NotifyEmail(Notify):
 
     def format_header(self, key, name, email=None):
         from email.Header import Header
-        maxlength = self.maxheaderlen-(len(key)+2)
+        maxlength = MAXHEADERLEN-(len(key)+2)
         # Do not sent ridiculous short headers
         if maxlength < 10:
             raise TracError, "Header length is too short"
@@ -251,6 +252,13 @@ class NotifyEmail(Notify):
 
     def begin_send(self):
         self.server = smtplib.SMTP(self.smtp_server, self.smtp_port)
+        # self.server.set_debuglevel(True)
+        if self._use_tls:
+            self.server.ehlo()
+            if not self.server.esmtp_features.has_key('starttls'):
+                raise TracError, "TLS enabled but server does not support TLS"
+            self.server.starttls()
+            self.server.ehlo()
         if self.user_name:
             self.server.login(self.user_name, self.password)
 
@@ -325,7 +333,19 @@ class NotifyEmail(Notify):
         self.env.log.debug("Sending SMTP notification to %s on port %d to %s"
                            % (self.smtp_server, self.smtp_port, recipients))
         msgtext = msg.as_string()
+        # Ensure the message complies with RFC2822: use CRLF line endings
+        recrlf = re.compile("\r?\n")
+        msgtext = "\r\n".join(recrlf.split(msgtext))
         self.server.sendmail(msg['From'], recipients, msgtext)
 
     def finish_send(self):
-        self.server.quit()
+        if self._use_tls:
+            # avoid false failure detection when the server closes
+            # the SMTP connection with TLS enabled
+            import socket
+            try:
+                self.server.quit()
+            except socket.sslerror:
+                pass
+        else:
+            self.server.quit()

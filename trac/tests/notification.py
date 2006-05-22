@@ -348,18 +348,22 @@ def parse_smtp_message(msg):
     headers = {}
     lh = None
     body = None
+    # last line does not contain the final line ending
+    msg += '\r\n'
     for line in msg.splitlines(True):
         if body != None:
             # append current line to the body
             if line[-2] == CR:
-                body += "%s\n" % line[0:-2]
+                body += line[0:-2]
+                body += '\n'
             else:
-                body += line
+                raise AssertionError, "body misses CRLF: %s (0x%x)" \
+                                      % (line, ord(line[-1]))
         else:
             if line[-2] != CR:
                 # RFC822 requires CRLF at end of field line
-                raise AssertionError, "header field misses CRLF: %s (%d)" \
-                                      % (line, int(line[-2]))
+                raise AssertionError, "header field misses CRLF: %s (0x%x)" \
+                                      % (line, ord(line[-1]))
             # discards CR
             line = line[0:-2]
             if line.strip() == '':
