@@ -486,9 +486,6 @@ class ReportModule(Component):
                                                          fullmatch)
         if intertrac:
             return intertrac
-        report, args = target, ''
-        if '?' in target:
-            report, args = target.split('?')
-            args = '?' + args
+        report, args, fragment = formatter.split_link(target)
         return html.A(href=formatter.href.report(report) + args,
                       class_='report')[label]

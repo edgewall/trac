@@ -475,9 +475,9 @@ class AttachmentModule(Component):
             'attach_href': req.href.attachment(p_type, p_id)
             }
 
-    def _format_link(self, formatter, ns, link, label):
+    def _format_link(self, formatter, ns, target, label):
+        link, params, fragment = formatter.split_link(target)
         ids = link.split(':', 2)
-        params = ''
         if len(ids) == 3:
             parent_type, parent_id, filename = ids
         else:
@@ -491,9 +491,6 @@ class AttachmentModule(Component):
                 if len(path_info) > 2:
                     parent_id = path_info[2]
             filename = link
-        idx = filename.find('?')
-        if idx >= 0:
-            filename, params = filename[:idx], filename[idx:]
         href = formatter.href()
         try:
             attachment = Attachment(self.env, parent_type, parent_id, filename)

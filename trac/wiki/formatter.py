@@ -225,6 +225,17 @@ class Formatter(object):
         return self._db
     db = property(fget=_get_db)
 
+    def split_link(self, target):
+        """Split a target along "?" and "#" in `(path, query, fragment)`."""
+        query = fragment = ''
+        idx = target.find('#')
+        if idx >= 0:
+            target, fragment = target[:idx], target[idx:]
+        idx = target.find('?')
+        if idx >= 0:
+            target, query = target[:idx], target[idx:]
+        return (target, query, fragment)
+
     # -- Rules preceeding IWikiSyntaxProvider rules: Font styles
     
     def tag_open_p(self, tag):
@@ -452,7 +463,7 @@ class Formatter(object):
             # an ID must start with a letter in HTML
             anchor = 'a' + anchor
         i = 1
-        anchor = anchor_base = anchor
+        anchor_base = anchor
         while anchor in self._anchors:
             anchor = anchor_base + str(i)
             i += 1

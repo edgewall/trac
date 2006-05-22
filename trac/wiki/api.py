@@ -260,15 +260,12 @@ class WikiSystem(Component):
         yield ('wiki', link_resolver)
 
     def _format_link(self, formatter, ns, page, label, ignore_missing):
-        anchor = ''
-        if page.find('#') != -1:
-            anchor = page[page.find('#'):]
-            page = page[:page.find('#')]
+        page, query, fragment = formatter.split_link(page)
+        href = formatter.href.wiki(page) + fragment
         if not self.has_page(page):
             if ignore_missing:
                 return label
-            return html.A(class_='missing wiki', rel='nofollow',
-                          href=formatter.href.wiki(page) + anchor)[label + '?']
+            return html.A(label+'?', href=href, class_='missing wiki',
+                          rel='nofollow')
         else:
-            return html.A(href=formatter.href.wiki(page) + anchor,
-                          class_='wiki')[label]
+            return html.A(label, href=href, class_='wiki')

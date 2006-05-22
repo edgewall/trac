@@ -256,9 +256,10 @@ class SearchModule(Component):
     def get_link_resolvers(self):
         yield ('search', self._format_link)
 
-    def _format_link(self, formatter, ns, query, label):
-        if query and query[0] == '?':
+    def _format_link(self, formatter, ns, target, label):
+        path, query, fragment = formatter.split_link(target)
+        if query:
             href = formatter.href.search() + query.replace(' ', '+')
         else:
-            href = formatter.href.search(q=query)
+            href = formatter.href.search(q=path)
         return html.A(class_='search', href=href)[label]
