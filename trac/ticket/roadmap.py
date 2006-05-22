@@ -331,7 +331,7 @@ class MilestoneModule(Component):
         match = re.match(r'/milestone(?:/(.+))?', req.path_info)
         if match:
             if match.group(1):
-                req.args['id'] = urllib.unquote(match.group(1))
+                req.args['id'] = match.group(1)
             return True
 
     def process_request(self, req):
