@@ -204,7 +204,8 @@ class Formatter(object):
 
     _processor_re = re.compile('#\!([\w+-][\w+-/]*)')
     _anchor_re = re.compile('[^\w\d\.-:]+', re.UNICODE)
-    
+
+    # TODO: the following should be removed in milestone:0.11
     img_re = re.compile(r"\.(gif|jpg|jpeg|png)(\?.*)?$", re.IGNORECASE)
 
     def __init__(self, env, req=None, absurls=False, db=None):
@@ -389,11 +390,15 @@ class Formatter(object):
             return None
 
     def _make_ext_link(self, url, text, title=''):
+        # ---- TODO: the following should be removed in milestone:0.11
+        if Formatter.img_re.search(url) and self.flavor != 'oneliner':
+            return unicode(html.IMG(src=url, alt=title or text,
+                                    title='Warning: direct image links are '
+                                    'deprecated, use [[Image(...)]] instead'))
+        # ----
         url = escape(url)
         text, title = escape(text), escape(title)
         title_attr = title and ' title="%s"' % title or ''
-        if Formatter.img_re.search(url) and self.flavor != 'oneliner':
-            return '<img src="%s" alt="%s" />' % (url, title or text)
         if not url.startswith(self._local):
             return '<a class="ext-link" href="%s"%s><span class="icon">' \
                    '%s</span></a>' % (url, title_attr, text)

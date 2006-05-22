@@ -277,15 +277,17 @@ class BrowserModule(Component):
                 ('browser', self._format_link)]
 
     def _format_link(self, formatter, ns, path, label):
+        # ---- TODO: the following should be removed in milestone:0.11
         match = IMG_RE.search(path)
         if formatter.flavor != 'oneliner' and match:
-            return '<img src="%s" alt="%s" />' % \
-                   (formatter.href.file(path, format='raw'), label)
+            return html.IMG(src=formatter.href.file(path, format='raw'),
+                            alt=label, title='Warning: direct image links are '
+                            'deprecated, use [[Image(source:...)]] instead)')
+        # ----
         path, rev, line = get_path_rev_line(path)
+        fragment = ''
         if line is not None:
-            anchor = '#L%d' % line
-        else:
-            anchor = ''
+            fragment = '#L%d' % line
         label = urllib.unquote(label)
-        return html.A(href=formatter.href.browser(path, rev=rev) + anchor,
+        return html.A(href=formatter.href.browser(path, rev=rev) + fragment,
                       class_='source')[label]
