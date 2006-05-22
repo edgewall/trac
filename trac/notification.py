@@ -315,6 +315,10 @@ class NotifyEmail(Notify):
         (ccaddrs, recipients) = remove_dup(ccaddrs, recipients)
         (accaddrs, recipients) = remove_dup(accaddrs, recipients)
         (bccaddrs, recipients) = remove_dup(bccaddrs, recipients)
+        
+        # if there is not valid recipient, leave immediately
+        if len(recipients) < 1:
+            return
 
         pcc = accaddrs
         if public_cc:

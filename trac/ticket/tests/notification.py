@@ -82,6 +82,23 @@ class NotificationTestCase(unittest.TestCase):
         # checks that reporter has been notified
         self.failIf(smtp_address(ticket['reporter']) not in recipients)
 
+    def test_no_recipient(self):
+        """Validate no recipient case"""
+        self.env.config.set('notification', 'smtp_always_cc', '')
+        ticket = Ticket(self.env)
+        ticket['reporter'] = 'anonymous'
+        ticket['summary'] = 'Foo'
+        ticket.insert()
+        tn = TicketNotifyEmail(self.env)
+        tn.notify(ticket, newticket=True)
+        sender = notifysuite.smtpd.get_sender()
+        recipients = notifysuite.smtpd.get_recipients()
+        message = notifysuite.smtpd.get_message()
+        # checks that no message has been sent
+        self.failIf(recipients)
+        self.failIf(sender)
+        self.failIf(message)
+
     def test_cc_only(self):
         """Validate notifications w/o explicit recipients but Cc: 
            are actually sent. Non-regression test for #3101"""
