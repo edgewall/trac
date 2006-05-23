@@ -114,8 +114,7 @@ __foo__
 <tt>verbatim</tt>
 </p>
 <pre class="wiki">{{{in `block`
-</pre>
-<p>
+</pre><p>
 <tt>{{{this is verbatim}}}</tt> and <tt>`that` should also `be` verbatim</tt>
 </p>
 ------------------------------
@@ -333,20 +332,28 @@ Other test:<strong>bold text</strong> should be bold
 {{{
 Preformatted text.
 }}}
+Paragraph
 ------------------------------
 <pre class="wiki">Preformatted text.
-</pre>
+</pre><p>
+Paragraph
+</p>
 ------------------------------
  [&hellip;]
+Paragraph
 ============================== Code Block 2
 {{{
 <b>Preformatted text</b>.
 }}}
+Paragraph
 ------------------------------
 <pre class="wiki">&lt;b&gt;Preformatted text&lt;/b&gt;.
-</pre>
+</pre><p>
+Paragraph
+</p>
 ------------------------------
  [&hellip;]
+Paragraph
 ============================== Embedded code blocks
 {{{
 Outer block.
@@ -354,14 +361,18 @@ Outer block.
 Inner block.
 }}}
 }}}
+Paragraph
 ------------------------------
 <pre class="wiki">Outer block.
 {{{
 Inner block.
 }}}
-</pre>
+</pre><p>
+Paragraph
+</p>
 ------------------------------
  [&hellip;]
+Paragraph
 ============================== Consecutive code blocks
 Block 
 {{{
@@ -371,22 +382,25 @@ and block
 {{{
 number two
 }}}
+.
 ------------------------------
 <p>
 Block 
 </p>
 <pre class="wiki">number one
-</pre>
-<p>
+</pre><p>
 and block
 </p>
 <pre class="wiki">number two
-</pre>
+</pre><p>
+.
+</p>
 ------------------------------
 Block 
  [&hellip;]
 and block
  [&hellip;]
+.
 ============================== Unfinished code blocks
 Block 
 {{{
@@ -407,30 +421,37 @@ and block
 number two
  }}
 }}}
-</pre>
-------------------------------
+</pre>------------------------------
 Block [&hellip;]
 ============================== Wiki processor
 {{{
 #!default
 Preformatted text.
 }}}
+Paragraph
 ------------------------------
 <pre class="wiki">Preformatted text.
-</pre>
+</pre><p>
+Paragraph
+</p>
 ------------------------------
  [&hellip;]
+Paragraph
 ============================== Wiki processor counter example
 {{{
 #!/bin/sh
 echo "foo"
 }}}
+Paragraph
 ------------------------------
 <pre class="wiki">#!/bin/sh
-echo &#34;foo&#34;
-</pre>
+echo "foo"
+</pre><p>
+Paragraph
+</p>
 ------------------------------
  [&hellip;]
+Paragraph
 ============================== HTML wiki processor
 {{{
 #!html

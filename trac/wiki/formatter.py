@@ -16,6 +16,7 @@
 #
 # Author: Jonas Borgström <jonas@edgewall.com>
 #         Christopher Lenz <cmlenz@gmx.de>
+#         Christian Boos <cboos@neuf.fr>
 
 import re
 import os
@@ -33,11 +34,7 @@ __all__ = ['wiki_to_html', 'wiki_to_oneliner', 'wiki_to_outline', 'Formatter' ]
 
 
 def system_message(msg, text):
-    return """<div class="system-message">
- <strong>%s</strong>
- <pre>%s</pre>
-</div>
-""" % (escape(msg), escape(text))
+    return html.DIV(html.STRONG(msg), html.PRE(text), class_="system-message")
 
 
 class WikiProcessor(object):
@@ -45,37 +42,44 @@ class WikiProcessor(object):
     _code_block_re = re.compile('^<div(?:\s+class="([^"]+)")?>(.*)</div>$')
 
     def __init__(self, env, name):
+        # TODO: transmit `formatter` argument
         self.env = env
         self.name = name
         self.error = None
+        self.macro_provider = None
 
         builtin_processors = {'html': self._html_processor,
                               'default': self._default_processor,
                               'comment': self._comment_processor}
+        
         self.processor = builtin_processors.get(name)
         if not self.processor:
             # Find a matching wiki macro
             for macro_provider in WikiSystem(self.env).macro_providers:
-                if self.name in list(macro_provider.get_macros()):
-                    self.processor = self._macro_processor
-                    break
+                for macro_name in macro_provider.get_macros():
+                    if self.name == macro_name:
+                        self.processor = self._macro_processor
+                        self.macro_provider = macro_provider
+                        break
         if not self.processor:
             # Find a matching mimeview renderer
             from trac.mimeview.api import MIME_MAP
-            if MIME_MAP.has_key(self.name):
+            if self.name in MIME_MAP:
                 self.name = MIME_MAP[self.name]
                 self.processor = self._mimeview_processor
-            elif self.name in MIME_MAP.values():
+            elif self.name in MIME_MAP.values(): # FIXME: use the reversed map
                 self.processor = self._mimeview_processor
             else:
                 self.processor = self._default_processor
                 self.error = 'No macro named [[%s]] found' % name
 
+    # builtin processors
+
     def _comment_processor(self, req, text):
         return ''
 
     def _default_processor(self, req, text):
-        return '<pre class="wiki">' + escape(text) + '</pre>\n'
+        return html.PRE(text, class_="wiki")
 
     def _html_processor(self, req, text):
         from HTMLParser import HTMLParseError
@@ -86,22 +90,25 @@ class WikiProcessor(object):
             return system_message('HTML parsing error: %s' % escape(e.msg),
                                   text.splitlines()[e.lineno - 1].strip())
 
+    # generic processors
+
     def _macro_processor(self, req, text):
-        for macro_provider in WikiSystem(self.env).macro_providers:
-            if self.name in list(macro_provider.get_macros()):
-                self.env.log.debug('Executing Wiki macro %s by provider %s'
-                                   % (self.name, macro_provider))
-                return macro_provider.render_macro(req, self.name, text)
+        # TODO: macro should take a `formatter` argument
+        self.env.log.debug('Executing Wiki macro %s by provider %s'
+                           % (self.name, self.macro_provider))
+        return self.macro_provider.render_macro(req, self.name, text)
 
     def _mimeview_processor(self, req, text):
+        # TODO: transmit context from `formatter`
         return Mimeview(self.env).render(req, self.name, text)
 
     def process(self, req, text, in_paragraph=False):
         if self.error:
-            return system_message(Markup('Error: Failed to load processor '
+            text = system_message(Markup('Error: Failed to load processor '
                                          '<code>%s</code>', self.name),
                                   self.error)
-        text = self.processor(req, text)
+        else:
+            text = self.processor(req, text)
         if in_paragraph:
             content_for_span = None
             interrupt_paragraph = False
@@ -160,9 +167,7 @@ class Formatter(object):
 
     LHREF_RELATIVE_TARGET = r"[/.][^\s[\]]*"
 
-
-    # Rules provided by IWikiSyntaxProviders will be inserted,
-    # between _pre_rules and _post_rules
+    # Sequence of regexps used by the engine
 
     _pre_rules = [
         # Font styles
@@ -178,27 +183,35 @@ class Formatter(object):
         r"(?P<inlinecode2>!?%s(?P<inline2>.*?)%s)" \
         % (INLINE_TOKEN, INLINE_TOKEN)]
 
+    # Rules provided by IWikiSyntaxProviders will be inserted here
+
     _post_rules = [
+        # > ...
         r"(?P<citation>^(?P<cdepth>>(?: *>)*))",
+        # &, < and > to &amp;, &lt; and &gt;
         r"(?P<htmlescape>[&<>])",
-        # shref corresponds to short TracLinks, i.e. sns:stgt
+        # wiki:TracLinks
         r"(?P<shref>!?((?P<sns>%s):(?P<stgt>%s|%s(?:%s*%s)?)))" \
         % (LINK_SCHEME, QUOTED_STRING,
            SHREF_TARGET_FIRST, SHREF_TARGET_MIDDLE, SHREF_TARGET_LAST),
-        # lhref corresponds to long TracLinks, i.e. [lns:ltgt label?]
+        # [wiki:TracLinks with label]
         r"(?P<lhref>!?\[(?:(?P<lns>%s):(?P<ltgt>%s|[^\]\s]*)|(?P<rel>%s))"
         r"(?:\s+(?P<label>%s|[^\]]+))?\])" \
         % (LINK_SCHEME, QUOTED_STRING, LHREF_RELATIVE_TARGET, QUOTED_STRING),
-        # macro call
+        # [[macro]] call
         (r"(?P<macro>!?\[\[(?P<macroname>[\w/+-]+)"
          r"(\]\]|\((?P<macroargs>.*?)\)\]\]))"),
-        # heading, list, definition, indent, table...
+        # == heading ==
         r"(?P<heading>^\s*(?P<hdepth>=+)\s.*\s(?P=hdepth)\s*$)",
+        #  * list
         r"(?P<list>^(?P<ldepth>\s+)(?:[-*]|\d+\.|[a-zA-Z]\.|[ivxIVX]{1,5}\.) )",
+        # definition:: 
         r"(?P<definition>^\s+((?:%s.*?%s|%s.*?%s|[^%s%s])+?::)(?:\s+|$))"
         % (INLINE_TOKEN, INLINE_TOKEN, STARTBLOCK_TOKEN, ENDBLOCK_TOKEN,
            INLINE_TOKEN, STARTBLOCK[0]),
+        # (leading space)
         r"(?P<indent>^(?P<idepth>\s+)(?=\S))",
+        # || table ||
         r"(?P<last_table_cell>\|\|\s*$)",
         r"(?P<table_cell>\|\|)"]
 
@@ -236,10 +249,10 @@ class Formatter(object):
             target, query = target[:idx], target[idx:]
         return (target, query, fragment)
 
-    # -- Rules preceeding IWikiSyntaxProvider rules: Font styles
+    # -- Pre- IWikiSyntaxProvider rules (Font styles)
     
     def tag_open_p(self, tag):
-        """Do we currently have any open tag with @tag as end-tag"""
+        """Do we currently have any open tag with `tag` as end-tag?"""
         return tag in self._open_tags
 
     def close_tag(self, tag):
@@ -309,12 +322,12 @@ class Formatter(object):
             return self.simple_tag_handler('<sup>', '</sup>')
 
     def _inlinecode_formatter(self, match, fullmatch):
-        return '<tt>%s</tt>' % escape(fullmatch.group('inline'))
+        return unicode(html.TT(fullmatch.group('inline')))
 
     def _inlinecode2_formatter(self, match, fullmatch):
-        return '<tt>%s</tt>' % escape(fullmatch.group('inline2'))
+        return unicode(html.TT(fullmatch.group('inline2')))
 
-    # -- Rules following IWikiSyntaxProvider rules
+    # -- Post- IWikiSyntaxProvider rules
 
     # HTML escape of &, < and >
 
@@ -341,12 +354,13 @@ class Formatter(object):
         if not label: # e.g. `[http://target]` or `[wiki:target]`
             if target:
                 if target.startswith('//'): # for `[http://target]`
-                    label = ns+':'+target   # use `http://target`
+                    label = ns+':'+target   #  use `http://target`
                 else:                       # for `wiki:target`
-                    label = target          # use only `target`
+                    label = target          #  use only `target`
             else: # e.g. `[search:]` 
                 label = ns
-        label = self._unquote(label)
+        else:
+            label = self._unquote(label)
         rel = fullmatch.group('rel')
         if rel:
             return self._make_relative_link(rel, label or rel)
@@ -354,8 +368,8 @@ class Formatter(object):
             return self._make_link(ns, target, match, label)
 
     def _make_link(self, ns, target, match, label):
-        # check first for an alias defined in trac.ini
-        ns = self.env.config.get('intertrac', ns.upper()) or ns
+        # first check for an alias defined in trac.ini
+        ns = self.env.config.get('intertrac', ns) or ns
         if ns in self.wiki.link_resolvers:
             return to_unicode(self.wiki.link_resolvers[ns](
                 self, ns, target, escape(label, False)))
@@ -367,9 +381,9 @@ class Formatter(object):
                    match
 
     def _make_intertrac_link(self, ns, target, label):
-        url = self.env.config.get('intertrac', ns.upper() + '.url')
+        url = self.env.config.get('intertrac', ns + '.url')
         if url:
-            name = self.env.config.get('intertrac', ns.upper() + '.title',
+            name = self.env.config.get('intertrac', ns + '.title',
                                        'Trac project %s' % ns)
             sep = target.find(':')
             if sep != -1:
@@ -385,8 +399,7 @@ class Formatter(object):
             it_group = fullmatch.group('it_%s' % ns)
             if it_group:
                 alias = it_group.strip()
-                intertrac = self.env.config.get('intertrac', alias.upper()) or \
-                            alias
+                intertrac = self.env.config.get('intertrac', alias) or alias
                 target = '%s:%s' % (ns, target[len(it_group):])
                 return self._make_intertrac_link(intertrac, target, label) or \
                        label
@@ -394,7 +407,7 @@ class Formatter(object):
 
     def _make_interwiki_link(self, ns, target, label):
         interwiki = InterWikiMap(self.env)
-        if interwiki.has_key(ns):
+        if ns in interwiki:
             url, title = interwiki.url(ns, target)
             return self._make_ext_link(url, label, title)
         else:
@@ -430,7 +443,7 @@ class Formatter(object):
     
     def _macro_formatter(self, match, fullmatch):
         name = fullmatch.group('macroname')
-        if name in ['br', 'BR']:
+        if name.lower() == 'br':
             return '<br />'
         args = fullmatch.group('macroargs')
         try:
@@ -439,8 +452,8 @@ class Formatter(object):
         except Exception, e:
             self.env.log.error('Macro %s(%s) failed' % (name, args),
                                exc_info=True)
-            return system_message('Error: Macro %s(%s) failed' \
-                                  % (name, args), e)
+            return unicode(system_message('Error: Macro %s(%s) failed' \
+                                          % (name, args), e))
 
     # Headings
 
@@ -453,7 +466,7 @@ class Formatter(object):
         self.close_def_list()
 
         depth = min(len(fullmatch.group('hdepth')), 5)
-        heading = match[depth + 1:len(match) - depth - 1]
+        heading = match[depth+1:-depth-1]
 
         text = wiki_to_oneliner(heading, self.env, self.db, self._absurls)
         sans_markup = text.plaintext(keeplinebreaks=False).replace('.', '')
@@ -707,11 +720,11 @@ class Formatter(object):
                 if match[0] == '!':
                     return match[1:]
                 if itype in self.wiki.external_handlers:
-                    return to_unicode(self.wiki.external_handlers[itype](
-                        self, match, fullmatch))
+                    external_handler = self.wiki.external_handlers[itype]
+                    return to_unicode(external_handler(self, match, fullmatch))
                 else:
-                    return getattr(self, '_' + itype + '_formatter')(match,
-                                                                     fullmatch)
+                    internal_handler = getattr(self, '_%s_formatter' % itype)
+                    return internal_handler(match, fullmatch)
     # Code blocks
     
     def handle_code_block(self, line):
@@ -729,7 +742,8 @@ class Formatter(object):
             if self.in_code_block == 0 and self.code_processor:
                 self.close_table()
                 self.close_paragraph()
-                self.out.write(self.code_processor.process(self.req, self.code_text))
+                self.out.write(self.code_processor.process(self.req,
+                                                           self.code_text))
             else:
                 self.code_text += line + os.linesep
         elif not self.code_processor:
@@ -837,7 +851,8 @@ class OneLinerFormatter(Formatter):
     # Override a few formatters to disable some wiki syntax in "oneliner"-mode
     def _list_formatter(self, match, fullmatch): return match
     def _indent_formatter(self, match, fullmatch): return match
-    def _citation_formatter(self, match, fullmatch): return escape(match)
+    def _citation_formatter(self, match, fullmatch):
+        return escape(match, False)
     def _heading_formatter(self, match, fullmatch):
         return escape(match, False)
     def _definition_formatter(self, match, fullmatch):
@@ -873,14 +888,14 @@ class OneLinerFormatter(Formatter):
                     in_code_block -= 1
                     if in_code_block == 0:
                         if processor != 'comment':
-                            print>>buf, ' ![...]'
+                            buf.write(' ![...]' + os.linesep)
                         processor = None
             elif in_code_block:
                 if not processor:
                     if line.startswith('#!'):
                         processor = line[2:].strip()
             else:
-                print>>buf, line
+                buf.write(line + os.linesep)
         result = buf.getvalue()[:-1]
 
         if shorten:
@@ -900,16 +915,16 @@ class OneLinerFormatter(Formatter):
 
 
 class OutlineFormatter(Formatter):
-    """Special formatter that generates an outline of all the headings in wiki
-    text."""
+    """Special formatter that generates an outline of all the headings."""
     flavor = 'outline'
     
     def __init__(self, env, absurls=False, db=None):
         Formatter.__init__(self, env, None, absurls, db)
 
-    # Override a few formatters to disable some wiki syntax in "outline"-mode
-    def _citation_formatter(self, match, fullmatch): return escape(match)
-    def _macro_formatter(self, match, fullmatch): return match
+    # Avoid the possible side-effects of rendering WikiProcessors
+
+    def _macro_formatter(self, match, fullmatch):
+        return ''
 
     def handle_code_block(self, line):
         if line.strip() == Formatter.STARTBLOCK:
@@ -929,7 +944,7 @@ class OutlineFormatter(Formatter):
         min_depth = max(1, min_depth)
 
         curr_depth = min_depth - 1
-        for depth, link in self.outline:
+        for depth, anchor, text in self.outline:
             if depth < min_depth or depth > max_depth:
                 continue
             if depth < curr_depth:
@@ -939,17 +954,17 @@ class OutlineFormatter(Formatter):
             else:
                 out.write("</li><li>\n")
             curr_depth = depth
-            out.write(link)
+            out.write('<a href="#%s">%s</a>' % (anchor, text))
         out.write('</li></ol>' * curr_depth)
 
     def _heading_formatter(self, match, fullmatch):
         Formatter._heading_formatter(self, match, fullmatch)
         depth = min(len(fullmatch.group('hdepth')), 5)
-        heading = match[depth + 1:len(match) - depth - 1]
+        heading = match[depth+1:-depth-1]
         anchor = self._anchors[-1]
         text = wiki_to_oneliner(heading, self.env, self.db, self._absurls)
         text = re.sub(r'</?a(?: .*?)?>', '', text) # Strip out link tags
-        self.outline.append((depth, '<a href="#%s">%s</a>' % (anchor, text)))
+        self.outline.append((depth, anchor, text))
 
 
 def wiki_to_html(wikitext, env, req, db=None,
@@ -990,27 +1005,47 @@ class InterWikiMap(Component):
     def __init__(self):
         self._interwiki_map = None
         # This dictionary maps upper-cased namespaces
-        # to (namespace, prefix, title) values
+        # to (namespace, prefix, title) values;
 
+    # The component itself behaves as a map
+
+    def __contains__(self, ns):
+        self._update()
+        return ns.upper() in self._interwiki_map
+
+    def __getitem__(self, ns):
+        self._update()
+        return self._interwiki_map[ns.upper()]
+
+    def __setitem__(self, ns, value):
+        self._update()
+        self._interwiki_map[ns.upper()] = value
+
+    def keys(self):
+        self._update()
+        return self._interwiki_map.keys()
+
+    # Expansion of positional arguments ($1, $2, ...) in URL and title
     def _expand(self, txt, args):
+        """Replace "$1" by the first args, "$2" by the second, etc."""
         def setarg(match):
             num = int(match.group()[1:])
             return 0 < num <= len(args) and args[num-1] or ''
         return re.sub(InterWikiMap._argspec_re, setarg, txt)
 
     def _expand_or_append(self, txt, args):
+        """Like expand, but also append first arg if there's no "$"."""
         if not args:
             return txt
         expanded = self._expand(txt, args)
         return expanded == txt and txt + args[0] or expanded
 
-    def has_key(self, ns):
-        if not self._interwiki_map:
-            self._update()
-        return self._interwiki_map.has_key(ns.upper())
-
     def url(self, ns, target):
-        ns, url, title = self._interwiki_map[ns.upper()]
+        """Return `(url, title)` for the given InterWiki `ns`.
+        
+        Expand the colon-separated `target` arguments.
+        """
+        ns, url, title = self[ns]
         args = target.split(':')
         expanded_url = self._expand_or_append(url, args)
         expanded_title = self._expand(title, args)
@@ -1030,7 +1065,7 @@ class InterWikiMap(Component):
 
     def wiki_page_deleted(self, page):
         if page.name == InterWikiMap._page_name:
-            self._interwiki_map.clear()
+            self._interwiki_map = None
 
     def wiki_page_version_deleted(self, page):
         if page.name == InterWikiMap._page_name:
@@ -1038,6 +1073,8 @@ class InterWikiMap(Component):
 
     def _update(self):
         from trac.wiki.model import WikiPage
+        if self._interwiki_map is not None:
+            return
         self._interwiki_map = {}
         content = WikiPage(self.env, InterWikiMap._page_name).text
         in_map = False
@@ -1051,8 +1088,7 @@ class InterWikiMap(Component):
                         prefix, url, title = m.groups()
                         url = url.strip()
                         title = title and title.strip() or prefix
-                        self._interwiki_map[prefix.upper()] = (prefix, url,
-                                                               title)
+                        self[prefix] = (prefix, url, title)
             elif line.startswith('----'):
                 in_map = True
 
@@ -1067,12 +1103,9 @@ class InterWikiMap(Component):
     def render_macro(self, req, name, content):
         from trac.util import sorted
         from trac.util.markup import html as _
-        if not self._interwiki_map:
-            self._update()
-            
         interwikis = []
-        for k in sorted(self._interwiki_map.keys()):
-            prefix, url, title = self._interwiki_map[k]
+        for k in sorted(self.keys()):
+            prefix, url, title = self[k]
             interwikis.append({
                 'prefix': prefix, 'url': url, 'title': title,
                 'rc_url': self._expand_or_append(url, ['RecentChanges']),
