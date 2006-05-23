@@ -171,9 +171,9 @@ class Formatter(object):
 
     _pre_rules = [
         # Font styles
-        r"(?P<bolditalic>%s)" % BOLDITALIC_TOKEN,
-        r"(?P<bold>%s)" % BOLD_TOKEN,
-        r"(?P<italic>%s)" % ITALIC_TOKEN,
+        r"(?P<bolditalic>!?%s)" % BOLDITALIC_TOKEN,
+        r"(?P<bold>!?%s)" % BOLD_TOKEN,
+        r"(?P<italic>!?%s)" % ITALIC_TOKEN,
         r"(?P<underline>!?%s)" % UNDERLINE_TOKEN,
         r"(?P<strike>!?%s)" % STRIKE_TOKEN,
         r"(?P<subscript>!?%s)" % SUBSCRIPT_TOKEN,
@@ -216,7 +216,7 @@ class Formatter(object):
         r"(?P<table_cell>\|\|)"]
 
     _processor_re = re.compile('#\!([\w+-][\w+-/]*)')
-    _anchor_re = re.compile('[^\w\d\.-:]+', re.UNICODE)
+    _anchor_re = re.compile('[^\w\.-:]+', re.UNICODE)
 
     # TODO: the following should be removed in milestone:0.11
     img_re = re.compile(r"\.(gif|jpg|jpeg|png)(\?.*)?$", re.IGNORECASE)
@@ -269,8 +269,10 @@ class Formatter(object):
     def open_tag(self, open, close):
         self._open_tags.append((open, close))
 
-    def simple_tag_handler(self, open_tag, close_tag):
+    def simple_tag_handler(self, match, open_tag, close_tag):
         """Generic handler for simple binary style tags"""
+        if match[0] == '!':
+            return match[1:]
         if self.tag_open_p((open_tag, close_tag)):
             return self.close_tag(close_tag)
         else:
@@ -278,6 +280,8 @@ class Formatter(object):
         return open_tag
 
     def _bolditalic_formatter(self, match, fullmatch):
+        if match[0] == '!':
+            return match[1:]
         italic = ('<i>', '</i>')
         italic_open = self.tag_open_p(italic)
         tmp = ''
@@ -291,35 +295,23 @@ class Formatter(object):
         return tmp
 
     def _bold_formatter(self, match, fullmatch):
-        return self.simple_tag_handler('<strong>', '</strong>')
+        return self.simple_tag_handler(match, '<strong>', '</strong>')
 
     def _italic_formatter(self, match, fullmatch):
-        return self.simple_tag_handler('<i>', '</i>')
+        return self.simple_tag_handler(match, '<i>', '</i>')
 
     def _underline_formatter(self, match, fullmatch):
-        if match[0] == '!':
-            return match[1:]
-        else:
-            return self.simple_tag_handler('<span class="underline">',
-                                           '</span>')
+        return self.simple_tag_handler(match, '<span class="underline">',
+                                       '</span>')
 
     def _strike_formatter(self, match, fullmatch):
-        if match[0] == '!':
-            return match[1:]
-        else:
-            return self.simple_tag_handler('<del>', '</del>')
+        return self.simple_tag_handler(match, '<del>', '</del>')
 
     def _subscript_formatter(self, match, fullmatch):
-        if match[0] == '!':
-            return match[1:]
-        else:
-            return self.simple_tag_handler('<sub>', '</sub>')
+        return self.simple_tag_handler(match, '<sub>', '</sub>')
 
     def _superscript_formatter(self, match, fullmatch):
-        if match[0] == '!':
-            return match[1:]
-        else:
-            return self.simple_tag_handler('<sup>', '</sup>')
+        return self.simple_tag_handler(match, '<sup>', '</sup>')
 
     def _inlinecode_formatter(self, match, fullmatch):
         return unicode(html.TT(fullmatch.group('inline')))
