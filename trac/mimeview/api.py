@@ -120,14 +120,15 @@ def get_mimetype(filename, content=None):
             mode = match.group(1) or match.group(2).lower()
             if MIME_MAP.has_key(mode):
                 return MIME_MAP[mode]
+    mimetype = None
     try:
         import mimetypes
-        return mimetypes.guess_type(filename)[0]
+        mimetype = mimetypes.guess_type(filename)[0]
     except:
-        if content and is_binary(content):
-            return 'application/octet-stream'
-        else:
-            return None
+        pass
+    if not mimetype and content and is_binary(content):
+        mimetype = 'application/octet-stream'
+    return mimetype
 
 def is_binary(data):
     """Detect binary content by checking the first thousand bytes for zeroes.
