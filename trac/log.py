@@ -33,8 +33,8 @@ def logger_factory(logtype='syslog', logfile=None, level='WARNING',
         hdlr = logging.handlers.SysLogHandler('/dev/log')
     elif logtype in ['stderr']:
         hdlr = logging.StreamHandler(sys.stderr)
-    else:
-        hdlr = None
+    else:  # throw away log events
+        hdlr = logging.handlers.MemoryHandler(0)
 
     format = 'Trac[%(module)s] %(levelname)s: %(message)s'
     if logtype in ['file', 'stderr']:
