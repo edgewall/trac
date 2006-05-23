@@ -21,8 +21,9 @@ from time import localtime, strftime, time
 from trac import __version__
 from trac.core import *
 from trac.perm import IPermissionRequestor
-from trac.util import format_date, format_datetime, parse_date, \
-                      pretty_timedelta, shorten_line, CRLF, to_unicode
+from trac.util.datefmt import format_date, format_datetime, parse_date, \
+                               pretty_timedelta
+from trac.util.text import shorten_line, CRLF, to_unicode
 from trac.util.markup import html, unescape, Markup
 from trac.ticket import Milestone, Ticket, TicketSystem
 from trac.Timeline import ITimelineEventProvider
@@ -437,7 +438,8 @@ class MilestoneModule(Component):
             req.hdf['title'] = 'New Milestone'
             req.hdf['milestone.mode'] = 'new'
 
-        from trac.util import get_date_format_hint, get_datetime_format_hint
+        from trac.util.datefmt import get_date_format_hint, \
+                                       get_datetime_format_hint
         req.hdf['milestone'] = milestone_to_hdf(self.env, db, req, milestone)
         req.hdf['milestone.date_hint'] = get_date_format_hint()
         req.hdf['milestone.datetime_hint'] = get_datetime_format_hint()

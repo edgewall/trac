@@ -23,7 +23,8 @@ from trac.core import *
 from trac.db import get_column_names
 from trac.perm import IPermissionRequestor
 from trac.ticket import Ticket, TicketSystem
-from trac.util import format_datetime, http_date, shorten_line, CRLF
+from trac.util.datefmt import format_datetime, http_date
+from trac.util.text import shorten_line, CRLF
 from trac.util.markup import escape, html, unescape
 from trac.web import IRequestHandler
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor

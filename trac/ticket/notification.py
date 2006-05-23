@@ -21,7 +21,7 @@ import md5
 from trac import __version__
 from trac.core import *
 from trac.config import *
-from trac.util import CRLF, wrap
+from trac.util.text import CRLF, wrap
 from trac.notification import NotifyEmail
 
 

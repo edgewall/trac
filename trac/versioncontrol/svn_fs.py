@@ -50,7 +50,7 @@ from trac.versioncontrol import Changeset, Node, Repository, \
                                 NoSuchChangeset, NoSuchNode
 from trac.versioncontrol.cache import CachedRepository
 from trac.versioncontrol.svn_authz import SubversionAuthorizer
-from trac.util import to_unicode
+from trac.util.text import to_unicode
 
 try:
     from svn import fs, repos, core, delta

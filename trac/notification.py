@@ -21,7 +21,7 @@ import re
 from trac import __version__
 from trac.config import BoolOption, IntOption, Option
 from trac.core import *
-from trac.util import CRLF, wrap
+from trac.util.text import CRLF, wrap
 from trac.web.clearsilver import HDFWrapper
 from trac.web.main import populate_hdf
 

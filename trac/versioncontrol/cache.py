@@ -14,7 +14,7 @@
 #
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
-from trac.util import TracError
+from trac.core import TracError
 from trac.versioncontrol import Changeset, Node, Repository, Authorizer, \
                                 NoSuchChangeset
 

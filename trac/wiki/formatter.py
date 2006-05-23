@@ -27,7 +27,7 @@ from StringIO import StringIO
 from trac.core import *
 from trac.mimeview import *
 from trac.wiki.api import WikiSystem, IWikiChangeListener, IWikiMacroProvider
-from trac.util import shorten_line, to_unicode
+from trac.util.text import shorten_line, to_unicode
 from trac.util.markup import escape, Markup, Element, html
 
 __all__ = ['wiki_to_html', 'wiki_to_oneliner', 'wiki_to_outline', 'Formatter' ]

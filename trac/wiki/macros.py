@@ -26,7 +26,8 @@ from StringIO import StringIO
 
 from trac.config import default_dir
 from trac.core import *
-from trac.util import format_date, sorted
+from trac.util import sorted
+from trac.util.datefmt import format_date
 from trac.util.markup import escape, html, Markup
 from trac.wiki.api import IWikiMacroProvider, WikiSystem
 from trac.wiki.model import WikiPage

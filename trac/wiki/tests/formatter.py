@@ -7,7 +7,7 @@ from trac.core import *
 from trac.wiki.api import IWikiSyntaxProvider
 from trac.wiki.formatter import Formatter, OneLinerFormatter
 from trac.wiki.macros import WikiMacroBase
-from trac.util import to_unicode
+from trac.util.text import to_unicode
 from trac.util.markup import html
 
 # We need to supply our own macro because the real macros

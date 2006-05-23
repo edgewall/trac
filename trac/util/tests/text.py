@@ -3,7 +3,7 @@
 import doctest
 import unittest
 
-from trac.util import to_unicode
+from trac.util.text import to_unicode
 
 class ToUnicodeTestCase(unittest.TestCase):
 

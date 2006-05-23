@@ -29,9 +29,11 @@ import locale
 import trac
 from trac import perm, util, db_default
 from trac.config import default_dir
+from trac.core import TracError
 from trac.env import Environment
 from trac.perm import PermissionSystem
 from trac.ticket.model import *
+from trac.util.text import to_unicode, wrap
 from trac.wiki import WikiPage
 
 def copytree(src, dst, symlinks=False, skip=[]):
@@ -90,7 +92,7 @@ class TracAdmin(cmd.Cmd):
         """`line` may be a `str` or an `unicode` object"""
         try:
             if isinstance(line, str):
-                line = util.to_unicode(line, sys.stdin.encoding)
+                line = to_unicode(line, sys.stdin.encoding)
             rv = cmd.Cmd.onecmd(self, line) or 0
         except SystemExit:
             raise
@@ -468,8 +470,8 @@ class TracAdmin(cmd.Cmd):
         actions = self._permsys.get_actions()
         actions.sort()
         text = ', '.join(actions)
-        print util.wrap(text, initial_indent=' ', subsequent_indent=' ',
-                        linesep='\n')
+        print wrap(text, initial_indent=' ', subsequent_indent=' ',
+                   linesep='\n')
         print
 
     def _do_permission_add(self, user, action):
@@ -617,7 +619,7 @@ class TracAdmin(cmd.Cmd):
                     if repos:
                         print ' Indexing repository'
                         repos.sync()
-                except util.TracError, e:
+                except TracError, e:
                     print>>sys.stderr, "\nWarning:\n"
                     if repository_type == "svn":
                         print>>sys.stderr, "You should install the SVN bindings"
@@ -749,7 +751,7 @@ Congratulations!
             raise Exception, '%s is not a file' % filename
 
         f = open(filename,'r')
-        data = util.to_unicode(f.read(), 'utf-8')
+        data = to_unicode(f.read(), 'utf-8')
 
         # Make sure we don't insert the exact same page twice
         rows = self.db_query("SELECT text FROM wiki WHERE name=%s "

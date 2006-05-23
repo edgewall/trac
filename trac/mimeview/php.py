@@ -19,7 +19,8 @@
 from trac.core import *
 from trac.config import Option
 from trac.mimeview.api import IHTMLPreviewRenderer
-from trac.util import Deuglifier, NaivePopen
+from trac.util import NaivePopen
+from trac.util.markup import Deuglifier
 
 __all__ = ['PHPRenderer']
 

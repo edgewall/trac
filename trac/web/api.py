@@ -24,7 +24,7 @@ import sys
 import urlparse
 
 from trac.core import Interface
-from trac.util import http_date
+from trac.util.datefmt import http_date
 from trac.web.href import Href
 
 HTTP_STATUS = dict([(code, reason.title()) for code, (reason, description)

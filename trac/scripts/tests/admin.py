@@ -27,7 +27,7 @@ from trac.config import Configuration
 from trac.env import Environment
 from trac.scripts import admin
 from trac.test import InMemoryDatabase
-from trac.util import get_date_format_hint
+from trac.util.datefmt import get_date_format_hint
 
 STRIP_TRAILING_SPACE = re.compile(r'( +)$', re.MULTILINE)
 

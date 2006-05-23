@@ -25,8 +25,10 @@ from trac.config import ListOption, Option
 from trac.core import *
 from trac.mimeview import Mimeview, is_binary, get_mimetype
 from trac.perm import IPermissionRequestor
-from trac.util import sorted
+from trac.util import sorted, embedded_numbers
+from trac.util.datefmt import http_date, format_datetime, pretty_timedelta
 from trac.util.markup import escape, html, Markup
+from trac.util.text import pretty_size
 from trac.web import IRequestHandler, RequestDone
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
 from trac.wiki import wiki_to_html, IWikiSyntaxProvider
@@ -148,7 +150,7 @@ class BrowserModule(Component):
                 'fullpath': entry.path,
                 'is_dir': entry.isdir,
                 'content_length': entry.content_length,
-                'size': util.pretty_size(entry.content_length),
+                'size': pretty_size(entry.content_length),
                 'rev': entry.rev,
                 'permission': 1, # FIXME
                 'log_href': req.href.log(entry.path, rev=rev),
@@ -166,10 +168,10 @@ class BrowserModule(Component):
         elif order == 'size':
             def file_order(a):
                 return (a['content_length'],
-                        util.embedded_numbers(a['name'].lower()))
+                        embedded_numbers(a['name'].lower()))
         else:
             def file_order(a):
-                return util.embedded_numbers(a['name'].lower())
+                return embedded_numbers(a['name'].lower())
 
         dir_order = desc and 1 or -1
 
@@ -216,7 +218,7 @@ class BrowserModule(Component):
             req.send_header('Content-Type',
                             format == 'txt' and 'text/plain' or mime_type)
             req.send_header('Content-Length', node.content_length)
-            req.send_header('Last-Modified', util.http_date(node.last_modified))
+            req.send_header('Last-Modified', http_date(node.last_modified))
             req.end_headers()
 
             while 1:
@@ -239,8 +241,8 @@ class BrowserModule(Component):
             req.hdf['file'] = {
                 'rev': node.rev,
                 'changeset_href': req.href.changeset(node.rev),
-                'date': util.format_datetime(changeset.date),
-                'age': util.pretty_timedelta(changeset.date),
+                'date': format_datetime(changeset.date),
+                'age': pretty_timedelta(changeset.date),
                 'author': changeset.author or 'anonymous',
                 'message': message
             } 

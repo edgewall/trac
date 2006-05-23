@@ -23,7 +23,8 @@ from StringIO import StringIO
 
 from trac.config import IntOption, Option
 from trac.core import *
-from trac.util import to_utf8, to_unicode, sorted
+from trac.util import sorted
+from trac.util.text import to_utf8, to_unicode
 from trac.util.markup import escape, Markup, Fragment, html
 
 

@@ -20,7 +20,7 @@ from trac.config import *
 from trac.core import *
 from trac.perm import IPermissionRequestor
 from trac.Search import ISearchSource, search_to_sql, shorten_result
-from trac.util import shorten_line
+from trac.util.text import shorten_line
 from trac.util.markup import html, Markup
 from trac.wiki import IWikiSyntaxProvider, Formatter
 

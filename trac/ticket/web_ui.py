@@ -26,8 +26,9 @@ from trac.env import IEnvironmentSetupParticipant
 from trac.ticket import Milestone, Ticket, TicketSystem, ITicketManipulator
 from trac.ticket.notification import TicketNotifyEmail
 from trac.Timeline import ITimelineEventProvider
-from trac.util import format_datetime, get_reporter_id, pretty_timedelta, \
-                      CRLF, http_date
+from trac.util import get_reporter_id
+from trac.util.datefmt import format_datetime, pretty_timedelta, http_date
+from trac.util.text import CRLF
 from trac.util.markup import html, Markup
 from trac.web import IRequestHandler
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor

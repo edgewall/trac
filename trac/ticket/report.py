@@ -25,6 +25,8 @@ from trac.core import *
 from trac.db import get_column_names
 from trac.perm import IPermissionRequestor
 from trac.util import sorted
+from trac.util.datefmt import format_date, format_time, format_datetime, \
+                               http_date
 from trac.util.markup import html
 from trac.web import IRequestHandler
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
@@ -162,8 +164,8 @@ class ReportModule(Component):
         cursor.execute("SELECT title FROM report WHERE id = %s", (id,))
         row = cursor.fetchone()
         if not row:
-            raise util.TracError('Report %s does not exist.' % id,
-                                 'Invalid Report Number')
+            raise TracError('Report %s does not exist.' % id,
+                            'Invalid Report Number')
         req.hdf['title'] = 'Delete Report {%s} %s' % (id, row[0])
         req.hdf['report'] = {
             'id': id,
@@ -183,8 +185,8 @@ class ReportModule(Component):
                            "WHERE id=%s", (id,))
             row = cursor.fetchone()
             if not row:
-                raise util.TracError('Report %s does not exist.' % id,
-                                     'Invalid Report Number')
+                raise TracError('Report %s does not exist.' % id,
+                                'Invalid Report Number')
             title = row[0] or ''
             description = row[1] or ''
             query = row[2] or ''
@@ -329,10 +331,10 @@ class ReportModule(Component):
                 elif column == 'report':
                     value['report_href'] = req.href.report(cell)
                 elif column in ('time', 'date','changetime', 'created', 'modified'):
-                    value['date'] = util.format_date(cell)
-                    value['time'] = util.format_time(cell)
-                    value['datetime'] = util.format_datetime(cell)
-                    value['gmt'] = util.http_date(cell)
+                    value['date'] = format_date(cell)
+                    value['time'] = format_time(cell)
+                    value['datetime'] = format_datetime(cell)
+                    value['gmt'] = http_date(cell)
                 prefix = 'report.items.%d.%s' % (row_idx, unicode(column))
                 req.hdf[prefix] = unicode(cell)
                 for key in value.keys():
@@ -375,7 +377,7 @@ class ReportModule(Component):
     def execute_report(self, req, db, id, sql, args):
         sql, args = self.sql_sub_vars(req, sql, args)
         if not sql:
-            raise util.TracError('Report %s has no SQL query.' % id)
+            raise TracError('Report %s has no SQL query.' % id)
         if sql.find('__group__') == -1:
             req.hdf['report.sorting.enabled'] = 1
 
@@ -405,8 +407,8 @@ class ReportModule(Component):
                            "WHERE id=%s", (id,))
             row = cursor.fetchone()
             if not row:
-                raise util.TracError('Report %d does not exist.' % id,
-                                     'Invalid Report Number')
+                raise TracError('Report %d does not exist.' % id,
+                                'Invalid Report Number')
             title = row[0] or ''
             sql = row[1]
             description = row[2] or ''
@@ -432,7 +434,8 @@ class ReportModule(Component):
             try:
                 arg = args[aname]
             except KeyError:
-                raise util.TracError("Dynamic variable '$%s' not defined." % aname)
+                raise TracError("Dynamic variable '$%s' not defined." \
+                                % aname)
             req.hdf['report.var.' + aname] = arg
             values.append(arg)
 

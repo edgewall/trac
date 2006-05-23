@@ -27,7 +27,10 @@ from trac.config import BoolOption, IntOption
 from trac.core import *
 from trac.env import IEnvironmentSetupParticipant
 from trac.mimeview import *
+from trac.util import get_reporter_id, create_unique_file
+from trac.util.datefmt import format_datetime
 from trac.util.markup import html
+from trac.util.text import unicode_quote, unicode_unquote, pretty_size
 from trac.web import HTTPBadRequest, IRequestHandler
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
 from trac.wiki import IWikiSyntaxProvider
@@ -72,9 +75,9 @@ class Attachment(object):
 
     def _get_path(self):
         path = os.path.join(self.env.path, 'attachments', self.parent_type,
-                            util.unicode_quote(self.parent_id))
+                            unicode_quote(self.parent_id))
         if self.filename:
-            path = os.path.join(path, util.unicode_quote(self.filename))
+            path = os.path.join(path, unicode_quote(self.filename))
         return os.path.normpath(path)
     path = property(_get_path)
 
@@ -135,14 +138,14 @@ class Attachment(object):
 
         if not os.access(self.path, os.F_OK):
             os.makedirs(self.path)
-        filename = util.unicode_quote(filename)
-        path, targetfile = util.create_unique_file(os.path.join(self.path,
-                                                                filename))
+        filename = unicode_quote(filename)
+        path, targetfile = create_unique_file(os.path.join(self.path,
+                                                           filename))
         try:
             # Note: `path` is an unicode string because `self.path` was one.
             # As it contains only quoted chars and numbers, we can use `ascii`
             basename = os.path.basename(path).encode('ascii')
-            filename = util.unicode_unquote(basename)
+            filename = unicode_unquote(basename)
 
             cursor = db.cursor()
             cursor.execute("INSERT INTO attachment "
@@ -203,8 +206,8 @@ def attachment_to_hdf(env, req, db, attachment):
         'description': wiki_to_oneliner(attachment.description, env, db),
         'author': attachment.author,
         'ipnr': attachment.ipnr,
-        'size': util.pretty_size(attachment.size),
-        'time': util.format_datetime(attachment.time),
+        'size': pretty_size(attachment.size),
+        'time': format_datetime(attachment.time),
         'href': attachment.href(req)
     }
     return hdf
@@ -403,7 +406,7 @@ class AttachmentModule(Component):
         req.perm.assert_permission(perm_map[attachment.parent_type])
 
         req.hdf['attachment'] = {'mode': 'new',
-                                 'author': util.get_reporter_id(req)}
+                                 'author': get_reporter_id(req)}
 
     def _render_view(self, req, attachment):
         perm_map = {'ticket': 'TICKET_VIEW', 'wiki': 'WIKI_VIEW'}

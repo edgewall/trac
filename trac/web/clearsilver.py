@@ -15,7 +15,8 @@
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
 from trac.core import TracError
-from trac.util import markup, to_unicode
+from trac.util.markup import Markup, Fragment, escape
+from trac.util.text import to_unicode
 
 
 class HDFWrapper:
@@ -202,7 +203,7 @@ class HDFWrapper:
         """
         self.set_value(name, value, False)
         
-    def set_value(self, name, value, escape=True):
+    def set_value(self, name, value, do_escape=True):
         """
         Add data to the HDF dataset.
         """
@@ -216,17 +217,17 @@ class HDFWrapper:
                 return
             if value in (True, False):
                 set_str(prefix, int(value))
-            elif isinstance(value, (markup.Markup, markup.Fragment)):
+            elif isinstance(value, (Markup, Fragment)):
                 set_unicode(prefix, unicode(value))
             elif isinstance(value, str):
-                if escape:
+                if do_escape:
                     # Assume UTF-8 here, for backward compatibility reasons
-                    set_unicode(prefix, markup.escape(to_unicode(value)))
+                    set_unicode(prefix, escape(to_unicode(value)))
                 else:
                     set_str(prefix, value)
             elif isinstance(value, unicode):
-                if escape:
-                    set_unicode(prefix, markup.escape(value))
+                if do_escape:
+                    set_unicode(prefix, escape(value))
                 else:
                     set_unicode(prefix, value)
             elif isinstance(value, dict):

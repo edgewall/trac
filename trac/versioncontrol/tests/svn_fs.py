@@ -31,7 +31,7 @@ except:
 
 from trac.log import logger_factory
 from trac.test import TestSetup
-from trac.util import TracError
+from trac.core import TracError
 from trac.versioncontrol import Changeset, Node
 from trac.versioncontrol.svn_fs import SubversionRepository
 

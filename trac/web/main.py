@@ -26,7 +26,8 @@ from trac.config import ExtensionOption
 from trac.core import *
 from trac.env import open_environment
 from trac.perm import PermissionCache, NoPermissionCache, PermissionError
-from trac.util import format_datetime, http_date, to_unicode
+from trac.util.datefmt import format_datetime, http_date
+from trac.util.text import to_unicode
 from trac.util.markup import Markup
 from trac.web.api import *
 from trac.web.chrome import Chrome

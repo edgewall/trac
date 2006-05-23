@@ -17,7 +17,7 @@
 #         Christopher Lenz <cmlenz@gmx.de>
 
 from urllib import quote, urlencode
-from trac.util import unicode_quote, unicode_urlencode
+from trac.util.text import unicode_quote, unicode_urlencode
 
 
 class Href(object):

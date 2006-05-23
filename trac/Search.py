@@ -19,7 +19,7 @@ import time
 
 from trac.core import *
 from trac.perm import IPermissionRequestor
-from trac.util import format_datetime
+from trac.util.datefmt import format_datetime
 from trac.util.markup import escape, html
 from trac.web import IRequestHandler
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor

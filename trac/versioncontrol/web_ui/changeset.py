@@ -30,7 +30,9 @@ from trac.mimeview import Mimeview, is_binary
 from trac.perm import IPermissionRequestor
 from trac.Search import ISearchSource, search_to_sql, shorten_result
 from trac.Timeline import ITimelineEventProvider
+from trac.util.datefmt import format_datetime, pretty_timedelta
 from trac.util.markup import html, escape, unescape, Markup
+from trac.util.text import unicode_urlencode, shorten_line, CRLF
 from trac.versioncontrol import Changeset, Node
 from trac.versioncontrol.diff import get_diff_options, hdf_diff, unified_diff
 from trac.versioncontrol.svn_authz import SubversionAuthorizer
@@ -214,7 +216,7 @@ class ChangesetModule(Component):
                 repos.name,
                 repos.rev_older_than(new, repos.youngest_rev),
                 message,
-                util.pretty_timedelta(chgset.date, None, 3600)])
+                pretty_timedelta(chgset.date, None, 3600)])
         else:
             message = None # FIXME: what date should we choose for a diff?
 
@@ -253,10 +255,10 @@ class ChangesetModule(Component):
         if chgset:
             diff_params = 'new=%s' % new
         else:
-            diff_params = util.unicode_urlencode({'new_path': new_path,
-                                                  'new': new,
-                                                  'old_path': old_path,
-                                                  'old': old})
+            diff_params = unicode_urlencode({'new_path': new_path,
+                                             'new': new,
+                                             'old_path': old_path,
+                                             'old': old})
         add_link(req, 'alternate', '?format=diff&'+diff_params, 'Unified Diff',
                  'text/plain', 'diff')
         add_link(req, 'alternate', '?format=zip&'+diff_params, 'Zip Archive',
@@ -316,8 +318,8 @@ class ChangesetModule(Component):
 
             req.hdf['changeset'] = {
                 'revision': chgset.rev,
-                'time': util.format_datetime(chgset.date),
-                'age': util.pretty_timedelta(chgset.date, None, 3600),
+                'time': format_datetime(chgset.date),
+                'age': pretty_timedelta(chgset.date, None, 3600),
                 'author': chgset.author or 'anonymous',
                 'message': message, 'properties': properties
             }
@@ -560,16 +562,16 @@ class ChangesetModule(Component):
                         break
                 if not old_node_info[0]:
                     old_node_info = new_node_info # support for 'A'dd changes
-                req.write('Index: ' + new_path + util.CRLF)
-                req.write('=' * 67 + util.CRLF)
-                req.write('--- %s (revision %s)' % old_node_info + util.CRLF)
-                req.write('+++ %s (revision %s)' % new_node_info + util.CRLF)
+                req.write('Index: ' + new_path + CRLF)
+                req.write('=' * 67 + CRLF)
+                req.write('--- %s (revision %s)' % old_node_info + CRLF)
+                req.write('+++ %s (revision %s)' % new_node_info + CRLF)
                 for line in unified_diff(old_content.splitlines(),
                                          new_content.splitlines(), context,
                                          ignore_blank_lines='-B' in options,
                                          ignore_case='-i' in options,
                                          ignore_space_changes='-b' in options):
-                    req.write(line + util.CRLF)
+                    req.write(line + CRLF)
 
     def _render_zip(self, req, filename, repos, diff):
         """ZIP archive with all the added and/or modified files."""
@@ -631,7 +633,7 @@ class ChangesetModule(Component):
                     shortlog = wiki_to_oneliner(message, self.env, db,
                                                 shorten=True)
                 else:
-                    shortlog = util.shorten_line(message)
+                    shortlog = shorten_line(message)
 
                 if format == 'rss':
                     title = Markup('Changeset [%s]: %s', chgset.rev, shortlog)
@@ -706,7 +708,7 @@ class ChangesetModule(Component):
         row = cursor.fetchone()
         if row:
             return html.A(label, class_="changeset",
-                          title=util.shorten_line(row[0]),
+                          title=shorten_line(row[0]),
                           href=formatter.href.changeset(rev, path))
         else:
             return html.A(label, class_="missing changeset",
@@ -757,7 +759,7 @@ class ChangesetModule(Component):
             if not authzperm.has_permission_for_changeset(rev):
                 continue
             yield (req.href.changeset(rev),
-                   '[%s]: %s' % (rev, util.shorten_line(log)),
+                   '[%s]: %s' % (rev, shorten_line(log)),
                    date, author, shorten_result(log, terms))
 
 

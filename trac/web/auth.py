@@ -28,7 +28,8 @@ from trac.config import BoolOption
 from trac.core import *
 from trac.web.api import IAuthenticator, IRequestHandler
 from trac.web.chrome import INavigationContributor
-from trac.util import escape, hex_entropy, md5crypt, Markup
+from trac.util import hex_entropy, md5crypt
+from trac.util.markup import escape, Markup
 
 
 class LoginModule(Component):
