@@ -23,33 +23,34 @@ import re
 from StringIO import StringIO
 
 from trac.core import *
-from trac.mimeview.api import IHTMLPreviewRenderer
+from trac.config import ListOption
+from trac.mimeview.api import IHTMLPreviewRenderer, Mimeview
 
 __all__ = ['SilverCityRenderer']
 
 types = {
-    'text/css':['CSS'],
-    'text/html':['HyperText', {'asp.default.language':1}],
-    'application/xml':['XML'],
-    'application/xhtml+xml':['HyperText', {'asp.default.language':1}],
-    'application/x-javascript':['CPP'], # Kludgy.
-    'text/x-asp':['HyperText', {'asp.default.language':2}],
-    'text/x-c++hdr':['CPP'],
-    'text/x-c++src':['CPP'],
-    'text/x-chdr':['CPP'],
-    'text/x-csrc':['CPP'],
-    'text/x-perl':['Perl'],
-    'text/x-php':['HyperText', {'asp.default.language':4}],
-    'application/x-httpd-php':['HyperText', {'asp.default.language':4}],
-    'application/x-httpd-php4':['HyperText', {'asp.default.language':4}],
-    'application/x-httpd-php3':['HyperText', {'asp.default.language':4}],
-    'text/x-psp':['HyperText', {'asp.default.language':3}],
-    'text/x-python':['Python'],
-    'text/x-ruby':['Ruby'],
-    'text/x-sql':['SQL'],
-    'text/xml':['XML'],
-    'text/xslt':['XSLT'],
-    'image/svg+xml':['XML']
+    'text/css':                 ('CSS', 3),
+    'text/html':                ('HyperText', 3, {'asp.default.language':1}),
+    'application/xml':          ('XML', 3),
+    'application/xhtml+xml':    ('HyperText', 3, {'asp.default.language':1}),
+    'application/x-javascript': ('CPP', 3), # Kludgy.
+    'text/x-asp':               ('HyperText', 3, {'asp.default.language':2}),
+    'text/x-c++hdr':            ('CPP', 3),
+    'text/x-c++src':            ('CPP', 3),
+    'text/x-chdr':              ('CPP', 3),
+    'text/x-csrc':              ('CPP', 3),
+    'text/x-perl':              ('Perl', 3),
+    'text/x-php':               ('HyperText', 3, {'asp.default.language':4}),
+    'application/x-httpd-php':  ('HyperText', 3, {'asp.default.language':4}),
+    'application/x-httpd-php4': ('HyperText', 3, {'asp.default.language':4}),
+    'application/x-httpd-php3': ('HyperText', 3, {'asp.default.language':4}),
+    'text/x-psp':               ('HyperText', 3, {'asp.default.language':3}),
+    'text/x-python':            ('Python', 3),
+    'text/x-ruby':              ('Ruby', 3),
+    'text/x-sql':               ('SQL', 3),
+    'text/xml':                 ('XML', 3),
+    'text/xslt':                ('XSLT', 3),
+    'image/svg+xml':            ('XML', 3)
 }
 
 CRLF_RE = re.compile('\r$', re.MULTILINE)
@@ -60,23 +61,42 @@ class SilverCityRenderer(Component):
 
     implements(IHTMLPreviewRenderer)
 
+    enscript_modes = ListOption('mimeviewer', 'silvercity_modes',
+        '',
+        """List of additional MIME types known by SilverCity.
+        For each, a tuple `mimetype:mode:quality` has to be
+        specified, where `mimetype` is the MIME type,
+        `mode` is the corresponding SilverCity mode to be used
+        for the conversion and `quality` is the quality ratio
+        associated to this conversion.
+        That can also be used to override the default
+        quality ratio used by the SilverCity render, which is 3
+        (''since 0.10'').""")
+
     expand_tabs = True
 
+    def __init__(self):
+        self._types = None
+
     def get_quality_ratio(self, mimetype):
-        if mimetype in types:
-            return 3
-        return 0
+        # Extend default MIME type to mode mappings with configured ones
+        if not self._types:
+            self._types = {}
+            self._types.update(types)
+            self._types.update(
+                Mimeview(self.env).configured_modes_mapping('silvercity'))
+        return self._types.get(mimetype, (None, 0))[1]
 
     def render(self, req, mimetype, content, filename=None, rev=None):
         import SilverCity
         try:
             mimetype = mimetype.split(';', 1)[0]
-            typelang = types[mimetype]
+            typelang = self._types[mimetype]
             lang = typelang[0]
             module = getattr(SilverCity, lang)
             generator = getattr(module, lang + "HTMLGenerator")
             try:
-                allprops = typelang[1]
+                allprops = typelang[2]
                 propset = SilverCity.PropertySet()
                 for p in allprops.keys():
                     propset[p] = allprops[p]

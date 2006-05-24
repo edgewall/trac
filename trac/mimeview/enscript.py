@@ -15,62 +15,62 @@
 #
 # Author: Daniel Lundin <daniel@edgewall.com>
 
-from trac.config import Option
+from trac.config import Option, ListOption
 from trac.core import *
-from trac.mimeview.api import IHTMLPreviewRenderer
+from trac.mimeview.api import IHTMLPreviewRenderer, Mimeview
 from trac.util import NaivePopen
 from trac.util.markup import escape, Deuglifier
 
 __all__ = ['EnscriptRenderer']
 
 types = {
-    'application/xhtml+xml':    'html',
-    'application/postscript':   'postscript',
-    'application/x-csh':        'csh',
-    'application/x-troff':      'nroff',
-    'text/html':                'html',
-    'text/x-ada':               'ada',
-    'text/x-asm':               'asm',
-    'text/x-awk':               'awk',
-    'text/x-c++src':            'cpp',
-    'text/x-c++hdr':            'cpp',
-    'text/x-chdr':              'c',
-    'text/x-csh':               'csh',
-    'text/x-csrc':              'c',
-    'text/x-diff':              'diffu', # Assume unified diff (works otherwise)
-    'text/x-eiffel':            'eiffel',
-    'text/x-elisp':             'elisp',
-    'text/x-fortran':           'fortran',
-    'text/x-haskell':           'haskell',
-    'text/x-idl':               'idl',
-    'text/x-inf':               'inf',
-    'text/x-java':              'java',
-    'text/x-javascript':        'javascript',
-    'text/x-ksh':               'ksh',
-    'text/x-lua':               'lua',
-    'text/x-m4':                'm4',
-    'text/x-makefile':          'makefile',
-    'text/x-mail':              'mail',
-    'text/x-matlab':            'matlab',
-    'text/x-objc':              'objc',
-    'text/x-pascal':            'pascal',
-    'text/x-perl':              'perl',
-    'text/x-pyrex':             'pyrex',
-    'text/x-python':            'python',
-    'text/x-rfc':               'rfc',
-    'text/x-ruby':              'ruby',
-    'text/x-sh':                'sh',
-    'text/x-scheme':            'scheme',
-    'text/x-sql':               'sql',
-    'text/x-tcl':               'tcl',
-    'text/x-tex':               'tex',
-    'text/x-vba':               'vba',
-    'text/x-verilog':           'verilog',
-    'text/x-vhdl':              'vhdl',
-    'model/vrml':               'vrml',
-    'application/x-sh':         'sh',
-    'text/x-zsh':               'zsh',
-    'text/vnd.wap.wmlscript':   'wmlscript',
+    'application/xhtml+xml':    ('html', 2),
+    'application/postscript':   ('postscript', 2),
+    'application/x-csh':        ('csh', 2),
+    'application/x-troff':      ('nroff', 2),
+    'text/html':                ('html', 2),
+    'text/x-ada':               ('ada', 2),
+    'text/x-asm':               ('asm', 2),
+    'text/x-awk':               ('awk', 2),
+    'text/x-c++src':            ('cpp', 2),
+    'text/x-c++hdr':            ('cpp', 2),
+    'text/x-chdr':              ('c', 2),
+    'text/x-csh':               ('csh', 2),
+    'text/x-csrc':              ('c', 2),
+    'text/x-diff':              ('diffu', 2), # Assume unified diff (works otherwise)
+    'text/x-eiffel':            ('eiffel', 2),
+    'text/x-elisp':             ('elisp', 2),
+    'text/x-fortran':           ('fortran', 2),
+    'text/x-haskell':           ('haskell', 2),
+    'text/x-idl':               ('idl', 2),
+    'text/x-inf':               ('inf', 2),
+    'text/x-java':              ('java', 2),
+    'text/x-javascript':        ('javascript', 2),
+    'text/x-ksh':               ('ksh', 2),
+    'text/x-lua':               ('lua', 2),
+    'text/x-m4':                ('m4', 2),
+    'text/x-makefile':          ('makefile', 2),
+    'text/x-mail':              ('mail', 2),
+    'text/x-matlab':            ('matlab', 2),
+    'text/x-objc':              ('objc', 2),
+    'text/x-pascal':            ('pascal', 2),
+    'text/x-perl':              ('perl', 2),
+    'text/x-pyrex':             ('pyrex', 2),
+    'text/x-python':            ('python', 2),
+    'text/x-rfc':               ('rfc', 2),
+    'text/x-ruby':              ('ruby', 2),
+    'text/x-sh':                ('sh', 2),
+    'text/x-scheme':            ('scheme', 2),
+    'text/x-sql':               ('sql', 2),
+    'text/x-tcl':               ('tcl', 2),
+    'text/x-tex':               ('tex', 2),
+    'text/x-vba':               ('vba', 2),
+    'text/x-verilog':           ('verilog', 2),
+    'text/x-vhdl':              ('vhdl', 2),
+    'model/vrml':               ('vrml', 2),
+    'application/x-sh':         ('sh', 2),
+    'text/x-zsh':               ('zsh', 2),
+    'text/vnd.wap.wmlscript':   ('wmlscript', 2),
 }
 
 
@@ -101,17 +101,37 @@ class EnscriptRenderer(Component):
     path = Option('mimeviewer', 'enscript_path', 'enscript',
         """Path to the Enscript executable.""")
 
+    enscript_modes = ListOption('mimeviewer', 'enscript_modes',
+        'text/x-dylan:dylan:4',
+        """List of additional MIME types known by Enscript.
+        For each, a tuple `mimetype:mode:quality` has to be
+        specified, where `mimetype` is the MIME type,
+        `mode` is the corresponding Enscript mode to be used
+        for the conversion and `quality` is the quality ratio
+        associated to this conversion.
+        That can also be used to override the default
+        quality ratio used by the Enscript render, which is 2
+        (''since 0.10'').""")
+
+    def __init__(self):
+        self._types = None
+
     # IHTMLPreviewRenderer methods
 
     def get_quality_ratio(self, mimetype):
-        if mimetype in types:
-            return 2
-        return 0
+        # Extend default MIME type to mode mappings with configured ones
+        if not self._types:
+            self._types = {}
+            self._types.update(types)
+            self._types.update(
+                Mimeview(self.env).configured_modes_mapping('enscript'))
+        return self._types.get(mimetype, (None, 0))[1]
 
     def render(self, req, mimetype, content, filename=None, rev=None):
         cmdline = self.path
         mimetype = mimetype.split(';', 1)[0] # strip off charset
-        cmdline += ' --color -h -q --language=html -p - -E' + types[mimetype]
+        mode = self._types[mimetype][0]
+        cmdline += ' --color -h -q --language=html -p - -E%s' % mode
         self.env.log.debug("Enscript command line: %s" % cmdline)
 
         np = NaivePopen(cmdline, content.encode('utf-8'), capturestderr=1)

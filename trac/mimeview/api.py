@@ -16,12 +16,32 @@
 #
 # Author: Daniel Lundin <daniel@edgewall.com>
 #         Christopher Lenz <cmlenz@gmx.de>
-#
+#         Christian Boos <cboos@neuf.fr>
+
+"""
+The `trac.mimeview` module centralize the intelligence related to
+file metadata, principally concerning the `type` (MIME type) of the content
+and, if relevant, concerning the text encoding (charset) used by the content.
+
+There are primarily two approaches for getting the MIME type of a given file:
+ * taking advantage of existing conventions for the file name
+ * examining the file content and applying various heuristics
+
+The module also knows how to convert the file content from one type
+to another type.
+
+In some cases, only the `url` pointing to the file's content is actually
+needed, that's why we avoid to read the file's content when it's not needed.
+
+The actual `content` to be converted might be a `unicode` object,
+but it can also be the raw byte string (`str`) object, or simply
+an object that can be `read()`.
+"""
 
 import re
 from StringIO import StringIO
 
-from trac.config import IntOption, Option
+from trac.config import IntOption, ListOption, Option
 from trac.core import *
 from trac.util import sorted
 from trac.util.text import to_utf8, to_unicode
@@ -31,104 +51,107 @@ from trac.util.markup import escape, Markup, Fragment, html
 __all__ = ['get_mimetype', 'is_binary', 'detect_unicode', 'Mimeview',
            'content_to_unicode']
 
-MIME_MAP = {
-    'css':'text/css',
-    'html':'text/html',
-    'txt':'text/plain', 'TXT':'text/plain', 'text':'text/plain',
-    'README':'text/plain', 'INSTALL':'text/plain', 
-    'AUTHORS':'text/plain', 'COPYING':'text/plain', 
-    'ChangeLog':'text/plain', 'RELEASE':'text/plain', 
-    'ada':'text/x-ada',
-    'asm':'text/x-asm',
-    'asp':'text/x-asp',
-    'awk':'text/x-awk',
-    'c':'text/x-csrc',
-    'csh':'application/x-csh',
-    'diff':'text/x-diff', 'patch':'text/x-diff',
-    'e':'text/x-eiffel',
-    'el':'text/x-elisp',
-    'f':'text/x-fortran',
-    'h':'text/x-chdr',
-    'cc':'text/x-c++src', 'CC':'text/x-c++src',
-    'cpp':'text/x-c++src', 'C':'text/x-c++src',
-    'hh':'text/x-c++hdr', 'HH':'text/x-c++hdr',
-    'hpp':'text/x-c++hdr', 'H':'text/x-c++hdr',
-    'hs':'text/x-haskell',
-    'ico':'image/x-icon',
-    'idl':'text/x-idl',
-    'inf':'text/x-inf',
-    'java':'text/x-java',
-    'js':'text/x-javascript',
-    'ksh':'text/x-ksh',
-    'lua':'text/x-lua',
-    'm':'text/x-objc', 'mm':'text/x-objc',
-    'm4':'text/x-m4',
-    'make':'text/x-makefile', 'mk':'text/x-makefile',
-    'Makefile':'text/x-makefile',
-    'makefile':'text/x-makefile', 'GNUMakefile':'text/x-makefile',
-    'mail':'text/x-mail',
-    'pas':'text/x-pascal',
-    'pdf':'application/pdf',
-    'pl':'text/x-perl', 'pm':'text/x-perl', 'PL':'text/x-perl',
-    'perl':'text/x-perl',
-    'php':'text/x-php', 'php4':'text/x-php', 'php3':'text/x-php',
-    'ps':'application/postscript',
-    'psp':'text/x-psp',
-    'py':'text/x-python', 'python':'text/x-python',
-    'pyx':'text/x-pyrex',
-    'nroff':'application/x-troff', 'roff':'application/x-troff',
-    'troff':'application/x-troff',
-    'rb':'text/x-ruby', 'ruby':'text/x-ruby',
-    'rfc':'text/x-rfc',
-    'rst': 'text/x-rst',
-    'rtf':'application/rtf',
-    'scm':'text/x-scheme',
-    'sh':'application/x-sh',
-    'sql':'text/x-sql',
-    'svg':'image/svg+xml',
-    'tcl':'text/x-tcl',
-    'tex':'text/x-tex',
-    'txtl': 'text/x-textile', 'textile': 'text/x-textile',
-    'vb':'text/x-vba', 'vba':'text/x-vba', 'bas':'text/x-vba',
-    'v':'text/x-verilog', 'verilog':'text/x-verilog',
-    'vhd':'text/x-vhdl',
-    'vrml':'model/vrml',
-    'wrl':'model/vrml',
-    'xml':'text/xml',
-    'xs':'text/x-csrc',
-    'xsl':'text/xsl',
-    'zsh':'text/x-zsh'
+
+# Some common MIME types and their associated keywords and/or file extensions
+
+KNOWN_MIME_TYPES = {
+    'application/pdf':        ['pdf'],
+    'application/postscript': ['ps'],
+    'application/rtf':        ['rtf'],
+    'application/x-sh':       ['sh'],
+    'application/x-csh':      ['csh'],
+    'application/x-troff':    ['nroff', 'roff', 'troff'],
+
+    'image/x-icon':           ['ico'],
+    'image/svg+xml':          ['svg'],
+    
+    'model/vrml':             ['vrml', 'wrl'],
+    
+    'text/css':               ['css'],
+    'text/html':              ['html'],
+    'text/plain':             ['txt', 'TXT', 'text', 'README', 'INSTALL',
+                               'AUTHORS', 'COPYING', 'ChangeLog', 'RELEASE'],
+    'text/xml':               ['xml'],
+    'text/xsl':               ['xsl'],
+    'text/x-csrc':            ['c', 'xs'],
+    'text/x-chdr':            ['h'],
+    'text/x-c++src':          ['cc', 'CC', 'cpp', 'C'],
+    'text/x-c++hdr':          ['hh', 'HH', 'hpp', 'H'],
+    'text/x-diff':            ['diff', 'patch'],
+    'text/x-eiffel':          ['e'],
+    'text/x-elisp':           ['el'],
+    'text/x-fortran':         ['f'],
+    'text/x-haskell':         ['hs'],
+    'text/x-javascript':      ['js'],
+    'text/x-objc':            ['m', 'mm'],
+    'text/x-makefile':        ['make', 'mk',
+                               'Makefile', 'makefile', 'GNUMakefile'],
+    'text/x-pascal':          ['pas'],
+    'text/x-perl':            ['pl', 'pm', 'PL', 'perl'],
+    'text/x-php':             ['php', 'php3', 'php4'],
+    'text/x-python':          ['py', 'python'],
+    'text/x-pyrex':           ['pyx'],
+    'text/x-ruby':            ['rb', 'ruby'],
+    'text/x-scheme':          ['scm'],
+    'text/x-textile':         ['txtl', 'textile'],
+    'text/x-vba':             ['vb', 'vba', 'bas'],
+    'text/x-verilog':         ['v', 'verilog'],
+    'text/x-vhdl':            ['vhd'],
 }
 
+# extend the above with simple (text/x-<something>: <something>) mappings
 
+for x in ['ada', 'asm', 'asp', 'awk', 'idl', 'inf', 'java', 'ksh', 'lua',
+          'm4', 'mail', 'psp', 'rfc', 'rst', 'sql', 'tcl', 'tex', 'zsh']:
+    KNOWN_MIME_TYPES.setdefault('text/x-%s' % x, []).append(x)
+
+
+# Default mapping from keywords/extensions to known MIME types:
+
+MIME_MAP = {}
+for t, exts in KNOWN_MIME_TYPES.items():
+    MIME_MAP[t] = t
+    for e in exts:
+        MIME_MAP[e] = t
+
+# Simple builtin autodetection from the content using a regexp
 MODE_RE = re.compile(
     r"#!(?:[/\w.-_]+/)?(\w+)|"               # look for shebang
     r"-\*-\s*(?:mode:\s*)?([\w+-]+)\s*-\*-"  # look for Emacs' -*- mode -*-
     )
 
-def get_mimetype(filename, content=None):
+def get_mimetype(filename, content=None, mime_map=MIME_MAP):
     """Guess the most probable MIME type of a file with the given name.
 
+    `filename` is either a filename (the lookup will then use the suffix)
+    or some arbitrary keyword.
+    
     `content` is either a `str` or an `unicode` string.
     """
     suffix = filename.split('.')[-1]
-    if MIME_MAP.has_key(suffix):
-        return MIME_MAP[suffix]
-    elif content:
-        match = re.search(MODE_RE, content[:1000])
-        if match:
-            mode = match.group(1) or match.group(2).lower()
-            if MIME_MAP.has_key(mode):
-                return MIME_MAP[mode]
-    mimetype = None
-    try:
-        import mimetypes
-        mimetype = mimetypes.guess_type(filename)[0]
-    except:
-        pass
-    if not mimetype and content and is_binary(content):
-        mimetype = 'application/octet-stream'
-    return mimetype
+    if suffix in mime_map:
+        # 1) mimetype from the suffix, using the `mime_map`
+        return mime_map[suffix]
+    else:
+        mimetype = None
+        try:
+            import mimetypes
+            # 2) mimetype from the suffix, using the `mimetypes` module
+            mimetype = mimetypes.guess_type(filename)[0]
+        except:
+            pass
+        if not mimetype and content:
+            match = re.search(MODE_RE, content[:1000])
+            if match:
+                mode = match.group(1) or match.group(2).lower()
+                if mode in mime_map:
+                    # 3) mimetype from the content, using the `MODE_RE`
+                    return mime_map[mode]
+            else:
+                if is_binary(content):
+                    # 4) mimetype from the content, using`is_binary`
+                    return 'application/octet-stream'
+        return mimetype
 
 def is_binary(data):
     """Detect binary content by checking the first thousand bytes for zeroes.
@@ -154,18 +177,18 @@ def detect_unicode(data):
         return None
 
 def content_to_unicode(env, content, mimetype):
-    """Utility for transforming an `IHTMLPreviewRenderer.render`'s `content`
-    argument to an unicode string.
-    """
+    """Retrieve an `unicode` object from a `content` to be previewed"""
     mimeview = Mimeview(env)
     if hasattr(content, 'read'):
-        content = content.read(mimeview.get_max_preview_size())
+        content = content.read(mimeview.max_preview_size)
     return mimeview.to_unicode(content, mimetype)
 
 
 class IHTMLPreviewRenderer(Interface):
     """Extension point interface for components that add HTML renderers of
     specific content types to the `Mimeview` component.
+
+    (Deprecated)
     """
 
     # implementing classes should set this property to True if they
@@ -249,6 +272,16 @@ class Mimeview(Component):
     max_preview_size = IntOption('mimeviewer', 'max_preview_size', 262144,
         """Maximum file size for HTML preview. (''since 0.9'').""")
 
+    mime_map = ListOption('mimeviewer', 'mime_map',
+        'text/x-dylan:dylan,text/x-idl:ice,text/x-ada:ads:adb',
+        """List of additional MIME types and keyword mappings.
+        Mappings are comma-separated, and for each MIME type,
+        there's a colon (":") separated list of associated keywords
+        or file extensions. (''since 0.10'').""")
+
+    def __init__(self):
+        self._mime_map = None
+        
     # Public API
 
     def get_supported_conversions(self, mimetype):
@@ -275,7 +308,7 @@ class Mimeview(Component):
         full_mimetype = mimetype
         if not full_mimetype:
             if hasattr(content, 'read'):
-                content = content.read(self.get_max_preview_size())
+                content = content.read(self.max_preview_size)
             full_mimetype = self.get_mimetype(filename, content)
         if full_mimetype:
             mimetype = full_mimetype.split(';')[0].strip() # split off charset
@@ -329,7 +362,7 @@ class Mimeview(Component):
         full_mimetype = mimetype
         if not full_mimetype:
             if hasattr(content, 'read'):
-                content = content.read(self.get_max_preview_size())
+                content = content.read(self.max_preview_size)
             full_mimetype = self.get_mimetype(filename, content)
         if full_mimetype:
             mimetype = full_mimetype.split(';')[0].strip() # split off charset
@@ -415,6 +448,7 @@ class Mimeview(Component):
         return buf.getvalue()
 
     def get_max_preview_size(self):
+        """Deprecated: use `max_preview_size` attribute directly."""
         return self.max_preview_size
 
     def get_charset(self, content='', mimetype=None):
@@ -442,9 +476,20 @@ class Mimeview(Component):
 
         `content` is either a `str` or an `unicode` object.
 
-        Return the detected MIME type, or `None` if detection failed.
+        Return the detected MIME type, augmented by the
+        charset information (i.e. "<mimetype>; charset=..."),
+        or `None` if detection failed.
         """
-        mimetype = get_mimetype(filename, content)
+        # Extend default extension to MIME type mappings with configured ones
+        if not self._mime_map:
+            self._mime_map = MIME_MAP
+            for mapping in self.config['mimeviewer'].getlist('mime_map'):
+                if ':' in mapping:
+                    assocations = mapping.split(':')
+                    for keyword in assocations: # Note: [0] kept on purpose
+                        self._mime_map[keyword] = assocations[0]
+
+        mimetype = get_mimetype(filename, content, self._mime_map)
         charset = None
         if mimetype:
             charset = self.get_charset(content, mimetype)
@@ -469,16 +514,29 @@ class Mimeview(Component):
             charset = self.get_charset(content, mimetype)
         return to_unicode(content, charset)
 
+    def configured_modes_mapping(self, renderer):
+        """Return a MIME type to `(mode,quality)` mapping for given `option`"""
+        types, option = {}, '%s_modes' % renderer
+        for mapping in self.config['mimeviewer'].getlist(option):
+            if not mapping:
+                continue
+            try:
+                mimetype, mode, quality = mapping.split(':')
+                types[mimetype] = (mode, int(quality))
+            except (TypeError, ValueError):
+                self.log.warning("Invalid mapping '%s' specified in '%s' "
+                                 "option." % (mapping, option))
+        return types
+    
     def preview_to_hdf(self, req, content, length, mimetype, filename,
                        url=None, annotations=None):
         """Prepares a rendered preview of the given `content`.
 
         Note: `content` will usually be an object with a `read` method.
         """        
-        max_preview_size = self.get_max_preview_size()
-        if length >= max_preview_size:
+        if length >= self.max_preview_size:
             return {'max_file_size_reached': True,
-                    'max_file_size': max_preview_size,
+                    'max_file_size': self.max_preview_size,
                     'raw_href': url}
         else:
             return {'preview': self.render(req, mimetype, content, filename,
