@@ -65,11 +65,11 @@ except ImportError:
             def fetchmany(self, num):
                 rows = sqlite.Cursor.fetchmany(self, num)
                 return rows != None and [self._convert_row(row)
-                                         for row in rows] or None
+                                         for row in rows] or []
             def fetchall(self):
                 rows = sqlite.Cursor.fetchall(self)
                 return rows != None and [self._convert_row(row)
-                                         for row in rows] or None
+                                         for row in rows] or []
     except ImportError:
         have_pysqlite = 0
 
