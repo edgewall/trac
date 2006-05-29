@@ -471,7 +471,7 @@ class Mimeview(Component):
                 return utf
         return self.default_charset
 
-    def get_mimetype(self, filename, content):
+    def get_mimetype(self, filename, content=None):
         """Infer the MIME type from the `filename` or the `content`.
 
         `content` is either a `str` or an `unicode` object.
