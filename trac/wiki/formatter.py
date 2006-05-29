@@ -63,15 +63,14 @@ class WikiProcessor(object):
                         break
         if not self.processor:
             # Find a matching mimeview renderer
-            from trac.mimeview.api import MIME_MAP
-            if self.name in MIME_MAP:
-                self.name = MIME_MAP[self.name]
-                self.processor = self._mimeview_processor
-            elif self.name in MIME_MAP.values(): # FIXME: use the reversed map
+            from trac.mimeview.api import Mimeview
+            mimetype = Mimeview(self.env).get_mimetype(self.name)
+            if mimetype:
+                self.name = mimetype
                 self.processor = self._mimeview_processor
             else:
                 self.processor = self._default_processor
-                self.error = 'No macro named [[%s]] found' % name
+                self.error = "No macro or processor named '%s' found" % name
 
     # builtin processors
 
