@@ -20,10 +20,10 @@ import time
 from trac.core import *
 from trac.perm import IPermissionRequestor
 from trac.util.datefmt import format_datetime
-from trac.util.markup import escape, html
+from trac.util.markup import escape, html, Element
 from trac.web import IRequestHandler
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
-from trac.wiki import IWikiSyntaxProvider
+from trac.wiki import IWikiSyntaxProvider, wiki_to_link
 
 
 class ISearchSource(Interface):
@@ -213,40 +213,12 @@ class SearchModule(Component):
     def quickjump(self, req, kwd):
         if len(kwd.split()) != 1:
             return None
-        # Ticket quickjump
-        if kwd[0] == '#' and kwd[1:].isdigit():
-            return req.href.ticket(kwd[1:])
-        elif kwd[0:len('ticket:')] == 'ticket:' and kwd[len('ticket:'):].isdigit():
-            return req.href.ticket(kwd[len('ticket:'):])
-        elif kwd[0:len('bug:')] == 'bug:' and kwd[len('bug:'):].isdigit():
-            return req.href.ticket(kwd[len('bug:'):])
-        # Changeset quickjump
-        elif kwd[0] == '[' and kwd[-1] == ']' and kwd[1:-1].isalnum():
-            return req.href.changeset(kwd[1:-1])
-        elif kwd[0:len('changeset:')] == 'changeset:' and kwd[len('changeset:'):].isdigit():
-            return req.href.changeset(kwd[len('changeset:'):])
-        # Report quickjump
-        elif kwd[0] == '{' and kwd[-1] == '}' and kwd[1:-1].isdigit():
-            return req.href.report(kwd[1:-1])
-        elif kwd[0:len('report:')] == 'report:' and kwd[len('report:'):].isdigit():
-            return req.href.report(kwd[len('report:'):])
-        # Milestone quickjump
-        elif kwd[0:len('milestone:')] == 'milestone:':
-            return req.href.milestone(kwd[len('milestone:'):])
         # Source quickjump
-        elif kwd[0] == '/':
+        if kwd[0] == '/':
             return req.href.browser(kwd)
-        elif kwd[0:len('source:')] == 'source:':
-            return req.href.browser(kwd[len('source:'):])
-        # Wiki quickjump
-        elif kwd[0:len('wiki:')] == 'wiki:':
-            r = "((^|(?<=[^A-Za-z]))[!]?[A-Z][a-z/]+(?:[A-Z][a-z/]+)+)"
-            if re.match (r, kwd[len('wiki:'):]):
-                return req.href.wiki(kwd[len('wiki:'):])
-        elif len(kwd) > 1 and kwd[0].isupper() and kwd[1].islower():
-            r = "((^|(?<=[^A-Za-z]))[!]?[A-Z][a-z/]+(?:[A-Z][a-z/]+)+)"
-            if re.match (r, kwd):
-                return req.href.wiki(kwd)
+        link = wiki_to_link(kwd, self.env, req)
+        if isinstance(link, Element):
+            return link.attr['href']
 
     # IWikiSyntaxProvider methods
     

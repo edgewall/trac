@@ -30,7 +30,8 @@ from trac.wiki.api import WikiSystem, IWikiChangeListener, IWikiMacroProvider
 from trac.util.text import shorten_line, to_unicode
 from trac.util.markup import escape, Markup, Element, html
 
-__all__ = ['wiki_to_html', 'wiki_to_oneliner', 'wiki_to_outline', 'Formatter' ]
+__all__ = ['wiki_to_html', 'wiki_to_oneliner', 'wiki_to_outline',
+           'wiki_to_link', 'Formatter' ]
 
 
 def system_message(msg, text):
@@ -134,7 +135,7 @@ class WikiProcessor(object):
                 text = html.SPAN(class_='code-block')[content_for_span]
             elif interrupt_paragraph:
                 text = "</p>%s<p>" % to_unicode(text)
-        return to_unicode(text)
+        return text
 
 
 class Formatter(object):
@@ -313,10 +314,10 @@ class Formatter(object):
         return self.simple_tag_handler(match, '<sup>', '</sup>')
 
     def _inlinecode_formatter(self, match, fullmatch):
-        return unicode(html.TT(fullmatch.group('inline')))
+        return html.TT(fullmatch.group('inline'))
 
     def _inlinecode2_formatter(self, match, fullmatch):
-        return unicode(html.TT(fullmatch.group('inline2')))
+        return html.TT(fullmatch.group('inline2'))
 
     # -- Post- IWikiSyntaxProvider rules
 
@@ -362,8 +363,8 @@ class Formatter(object):
         # first check for an alias defined in trac.ini
         ns = self.env.config.get('intertrac', ns) or ns
         if ns in self.wiki.link_resolvers:
-            return to_unicode(self.wiki.link_resolvers[ns](
-                self, ns, target, escape(label, False)))
+            return self.wiki.link_resolvers[ns](self, ns, target,
+                                                escape(label, False))
         elif target.startswith('//') or ns == "mailto":
             return self._make_ext_link(ns+':'+target, label)
         else:
@@ -416,7 +417,7 @@ class Formatter(object):
                           class_="ext-link", href=url, title=title or None)
         else:
             link = html.A(text, href=url, title=title or None)
-        return unicode(link)
+        return link
 
     def _make_relative_link(self, url, text):
         # ---- TODO: the following should be removed in milestone:0.11
@@ -428,7 +429,7 @@ class Formatter(object):
             link = html.A(text, class_="ext-link", href=url)
         else:
             link = html.A(text, href=url)
-        return unicode(link)
+        return link
 
     # WikiMacros
     
@@ -443,8 +444,8 @@ class Formatter(object):
         except Exception, e:
             self.env.log.error('Macro %s(%s) failed' % (name, args),
                                exc_info=True)
-            return unicode(system_message('Error: Macro %s(%s) failed' \
-                                          % (name, args), e))
+            return system_message('Error: Macro %s(%s) failed' % (name, args),
+                                  e)
 
     # Headings
 
@@ -704,18 +705,6 @@ class Formatter(object):
             self.out.write('</p>' + os.linesep)
             self.paragraph_open = 0
 
-    def replace(self, fullmatch):
-        for itype, match in fullmatch.groupdict().items():
-            if match and not itype in self.wiki.helper_patterns:
-                # Check for preceding escape character '!'
-                if match[0] == '!':
-                    return match[1:]
-                if itype in self.wiki.external_handlers:
-                    external_handler = self.wiki.external_handlers[itype]
-                    return to_unicode(external_handler(self, match, fullmatch))
-                else:
-                    internal_handler = getattr(self, '_%s_formatter' % itype)
-                    return internal_handler(match, fullmatch)
     # Code blocks
     
     def handle_code_block(self, line):
@@ -733,8 +722,8 @@ class Formatter(object):
             if self.in_code_block == 0 and self.code_processor:
                 self.close_table()
                 self.close_paragraph()
-                self.out.write(self.code_processor.process(self.req,
-                                                           self.code_text))
+                self.out.write(to_unicode(self.code_processor.process(
+                    self.req, self.code_text)))
             else:
                 self.code_text += line + os.linesep
         elif not self.code_processor:
@@ -754,8 +743,29 @@ class Formatter(object):
 
     # -- Wiki engine
     
-    def format(self, text, out, escape_newlines=False):
-        self.out = out
+    def handle_match(self, fullmatch):
+        for itype, match in fullmatch.groupdict().items():
+            if match and not itype in self.wiki.helper_patterns:
+                # Check for preceding escape character '!'
+                if match[0] == '!':
+                    return match[1:]
+                if itype in self.wiki.external_handlers:
+                    external_handler = self.wiki.external_handlers[itype]
+                    return external_handler(self, match, fullmatch)
+                else:
+                    internal_handler = getattr(self, '_%s_formatter' % itype)
+                    return internal_handler(match, fullmatch)
+
+    def replace(self, fullmatch):
+        """Replace one match with its corresponding expansion"""
+        replacement = self.handle_match(fullmatch)
+        if replacement:
+            return to_unicode(replacement)
+
+    def reset(self, out=None):
+        class NullOut(object):
+            def write(self, data): pass
+        self.out = out or NullOut()
         self._open_tags = []
         self._list_stack = []
         self._quote_stack = []
@@ -768,6 +778,8 @@ class Formatter(object):
         self.in_table_cell = 0
         self.paragraph_open = 0
 
+    def format(self, text, out=None, escape_newlines=False):
+        self.reset(out)
         for line in text.splitlines():
             # Handle code block
             if self.in_code_block or line.strip() == Formatter.STARTBLOCK:
@@ -925,9 +937,7 @@ class OutlineFormatter(Formatter):
 
     def format(self, text, out, max_depth=6, min_depth=1):
         self.outline = []
-        class NullOut(object):
-            def write(self, data): pass
-        Formatter.format(self, text, NullOut())
+        Formatter.format(self, text)
 
         if min_depth > max_depth:
             min_depth, max_depth = max_depth, min_depth
@@ -958,6 +968,23 @@ class OutlineFormatter(Formatter):
         self.outline.append((depth, anchor, text))
 
 
+class LinkFormatter(OutlineFormatter):
+    """Special formatter that focuses on ."""
+    flavor = 'outline'
+    
+    def __init__(self, env, absurls=False, db=None):
+        OutlineFormatter.__init__(self, env, absurls, db)
+        
+    def match(self, wikitext):
+        """Return the Wiki match found at the beginning of the `wikitext`"""
+        self.reset()        
+        match = re.match(self.wiki.rules, wikitext)
+        if match:
+            return self.handle_match(match)
+
+
+# -- wiki_to_* helper functions
+
 def wiki_to_html(wikitext, env, req, db=None,
                  absurls=False, escape_newlines=False):
     if not wikitext:
@@ -981,6 +1008,11 @@ def wiki_to_outline(wikitext, env, db=None,
     OutlineFormatter(env, absurls, db).format(wikitext, out, max_depth,
                                               min_depth)
     return Markup(out.getvalue())
+
+def wiki_to_link(wikitext, env, req):
+    if not wikitext:
+        return ''
+    return LinkFormatter(env, False, None).match(wikitext)
 
 
 class InterWikiMap(Component):
