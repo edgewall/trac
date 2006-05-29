@@ -830,7 +830,7 @@ class Formatter(object):
             if len(result) and not self.in_list_item and not self.in_def_list \
                     and not self.in_table:
                 self.open_paragraph()
-            out.write(result + os.linesep)
+            self.out.write(result + os.linesep)
             self.close_table_row()
 
         self.close_table()
