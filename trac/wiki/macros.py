@@ -205,8 +205,11 @@ class ImageMacro(WikiMacroBase):
      * `right`, `left`, `top` or `bottom` are interpreted as the alignment for
        the image
      * `nolink` means without link to image source.
-     * `key=value` style are interpreted as HTML attributes for the image
-     * `key:value` style are interpreted as CSS style indications for the image
+     * `key=value` style are interpreted as HTML attributes or CSS style
+        indications for the image. Valid keys are:
+        * align, border, width, height, alt, title, longdesc, class, id
+          and usemap
+        * `border` can only be a number
     
     Examples:
     {{{
@@ -290,8 +293,8 @@ class ImageMacro(WikiMacroBase):
                 rev = None
                 if '@' in file:
                     file, rev = file.split('@')
-                url = self.env.href.browser(file, rev=rev)
-                raw_url = self.env.href.browser(file, rev=rev, format='raw')
+                url = req.href.browser(file, rev=rev)
+                raw_url = req.href.browser(file, rev=rev, format='raw')
                 desc = filespec
             else: # #ticket:attachment or WikiPage:attachment
                 # FIXME: do something generic about shorthand forms...
@@ -300,7 +303,7 @@ class ImageMacro(WikiMacroBase):
                     module = 'ticket'
                     id = id[1:]
                 elif id == 'htdocs':
-                    raw_url = url = self.env.href.chrome('site', file)
+                    raw_url = url = req.href.chrome('site', file)
                     desc = os.path.basename(file)
                 else:
                     module = 'wiki'

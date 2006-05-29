@@ -228,8 +228,9 @@ class Formatter(object):
         self._absurls = absurls
         self._anchors = []
         self._open_tags = []
-        self.href = absurls and env.abs_href or env.href
-        self._local = env.config.get('project', 'url') or env.abs_href.base
+        self.href = absurls and (req or env).abs_href or (req or env).href
+        self._local = env.config.get('project', 'url') \
+                      or (req or env).abs_href.base
         self.wiki = WikiSystem(self.env)
 
     def _get_db(self):
@@ -461,7 +462,7 @@ class Formatter(object):
         depth = min(len(fullmatch.group('hdepth')), 5)
         heading = match[depth+1:-depth-1]
 
-        text = wiki_to_oneliner(heading, self.env, self.db, self._absurls)
+        text = wiki_to_oneliner(heading, self.env, self.db, True, self._absurls)
         sans_markup = text.plaintext(keeplinebreaks=False).replace('.', '')
 
         anchor = self._anchor_re.sub('', sans_markup)
@@ -964,7 +965,7 @@ class OutlineFormatter(Formatter):
         depth = min(len(fullmatch.group('hdepth')), 5)
         heading = match[depth+1:-depth-1]
         anchor = self._anchors[-1]
-        text = wiki_to_oneliner(heading, self.env, self.db, self._absurls)
+        text = wiki_to_oneliner(heading, self.env, self.db, True, self._absurls)
         text = re.sub(r'</?a(?: .*?)?>', '', text) # Strip out link tags
         self.outline.append((depth, anchor, text))
 

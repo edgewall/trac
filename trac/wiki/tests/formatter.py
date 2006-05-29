@@ -7,6 +7,7 @@ from trac.core import *
 from trac.wiki.api import IWikiSyntaxProvider
 from trac.wiki.formatter import Formatter, OneLinerFormatter
 from trac.wiki.macros import WikiMacroBase
+from trac.test import Mock, EnvironmentStub
 from trac.util.text import to_unicode
 from trac.util.markup import html
 
@@ -70,36 +71,23 @@ class WikiTestCase(unittest.TestCase):
         self.file = file
         self.line = line
 
-        # Environment stub
-        from trac.core import ComponentManager
-        from trac.config import Configuration
-        from trac.log import logger_factory
-        from trac.test import InMemoryDatabase
+        self.env = EnvironmentStub()
+        # -- macros support
+        self.env.path = ''
+        # -- intertrac support
+        self.env.config.set('intertrac', 'trac.title', "Trac's Trac")
+        self.env.config.set('intertrac', 'trac.url',
+                            "http://projects.edgewall.com/trac")
+        self.env.config.set('intertrac', 't', 'trac')
+
         from trac.web.href import Href
-
-        db = InMemoryDatabase()
-
-        class DummyEnvironment(ComponentManager):
-            def __init__(self):
-                ComponentManager.__init__(self)
-                self.log = logger_factory('null')
-                self.config = Configuration(None)
-                self.href = Href('/')
-                self.abs_href = Href('http://www.example.com/')
-                self.path = ''
-                # -- intertrac support
-                self.config.set('intertrac', 'trac.title', "Trac's Trac")
-                self.config.set('intertrac', 'trac.url',
-                                "http://projects.edgewall.com/trac")
-                self.config.set('intertrac', 't', 'trac')
-            def component_activated(self, component):
-                component.env = self
-                component.config = self.config
-                component.log = self.log
-            def get_db_cnx(self):
-                return db
-
-        self.env = DummyEnvironment()
+        self.req = Mock(href = Href('/'),
+                        abs_href = Href('http://www.example.com/'))
+        # TODO: remove the following lines in order to discover
+        #       all the places were we should use the req.href
+        #       instead of env.href (will be solved by the Wikifier patch)
+        self.env.href = self.req.href
+        self.env.abs_href = self.req.abs_href
 
     def test(self):
         """Testing WikiFormatter"""
@@ -127,7 +115,7 @@ class WikiTestCase(unittest.TestCase):
                 % (msg, self.file, self.line, self.title, formatter.flavor))
 
     def formatter(self):
-        return Formatter(self.env)
+        return Formatter(self.env, self.req)
 
     def shortDescription(self):
         return 'Test ' + self.title
@@ -135,7 +123,7 @@ class WikiTestCase(unittest.TestCase):
 
 class OneLinerTestCase(WikiTestCase):
     def formatter(self):
-        return OneLinerFormatter(self.env)
+        return OneLinerFormatter(self.env) # TODO: self.req
 
 
 def suite(data=None, setup=None, file=__file__):
