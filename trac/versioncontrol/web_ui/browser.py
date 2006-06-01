@@ -51,7 +51,7 @@ class BrowserModule(Component):
         (''since 0.9'')""")
 
     downloadable_paths = ListOption('browser', 'downloadable_paths',
-                                    ['/trunk', '/branches/*', '/tags/*'], doc=
+                                    '/trunk, /branches/*, /tags/*', doc=
         """List of repository paths that can be downloaded.
         
         Leave the option empty if you want to disable all downloads, otherwise
