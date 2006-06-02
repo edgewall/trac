@@ -22,10 +22,11 @@ import sys
 import dircache
 import urllib
 
-from trac.config import ExtensionOption
+from trac.config import ExtensionOption, OrderedExtensionsOption
 from trac.core import *
 from trac.env import open_environment
 from trac.perm import PermissionCache, NoPermissionCache, PermissionError
+from trac.util import reversed
 from trac.util.datefmt import format_datetime, http_date
 from trac.util.text import to_unicode
 from trac.util.markup import Markup
@@ -124,6 +125,10 @@ class RequestDispatcher(Component):
     authenticators = ExtensionPoint(IAuthenticator)
     handlers = ExtensionPoint(IRequestHandler)
 
+    filters = OrderedExtensionsOption('trac', 'request_filters', IRequestFilter,
+        doc="""Ordered list of filters to apply to all requests
+            (''since 0.10'').""")
+
     default_handler = ExtensionOption('trac', 'default_handler',
                                       IRequestHandler, 'WikiModule',
         """Name of the component that handles requests to the base URL.
@@ -162,6 +167,9 @@ class RequestDispatcher(Component):
                     chosen_handler = handler
                     break
 
+        for filter_ in self.filters:
+            chosen_handler = filter_.pre_process_request(req, chosen_handler)
+
         if not chosen_handler:
             raise HTTPNotFound('No handler matched request to %s',
                                req.path_info)
@@ -189,8 +197,13 @@ class RequestDispatcher(Component):
             try:
                 resp = chosen_handler.process_request(req)
                 if resp:
+                    for filter_ in reversed(self.filters):
+                        resp = filter_.post_process_request(req, *resp)
                     template, content_type = resp
                     req.display(template, content_type or 'text/html')
+                else:
+                    for filter_ in reversed(self.filters):
+                        filter_.post_process_request(None, None)
             except PermissionError, e:
                 raise HTTPForbidden(to_unicode(e))
             except TracError, e:

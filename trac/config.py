@@ -359,6 +359,39 @@ class ExtensionOption(Option):
                                 self.section, self.name))
 
 
+class OrderedExtensionsOption(ListOption):
+    """A comma separated, ordered, list of components implementing `interface`.
+    Can be empty.
+
+    If `include_missing` is true (the default) all components implementing the
+    interface are returned, with those specified by the option ordered first."""
+
+    def __init__(self, section, name, interface, default=None,
+                 include_missing=True, doc=''):
+        ListOption.__init__(self, section, name, default, doc=doc)
+        self.xtnpt = ExtensionPoint(interface)
+        self.include_missing = include_missing
+
+    def __get__(self, instance, owner):
+        if instance is None:
+            return self
+        order = ListOption.__get__(self, instance, owner)
+        components = []
+        for impl in self.xtnpt.extensions(instance):
+            if self.include_missing or impl.__class__.__name__ in order:
+                components.append(impl)
+
+        def compare(x, y):
+            x, y = x.__class__.__name__, y.__class__.__name__
+            if x not in order:
+                return int(y in order)
+            if y not in order:
+                return -int(x in order)
+            return cmp(order.index(x), order.index(y))
+        components.sort(compare)
+        return components
+
+
 def default_dir(name):
     try:
         from trac import siteconfig

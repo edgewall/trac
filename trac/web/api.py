@@ -458,3 +458,23 @@ class IRequestHandler(Interface):
         Note that if template processing should not occur, this method can
         simply send the response itself and not return anything.
         """
+
+
+class IRequestFilter(Interface):
+    """Extension point interface for components that want to filter HTTP
+    requests, before and/or after they are processed by the main handler."""
+
+    def pre_process_request(req, handler):
+        """Do any pre-processing the request might need; typically adding
+        values to req.hdf, or redirecting.
+        
+        Always returns the request handler, even if unchanged.
+        """
+
+    def post_process_request(req, template, content_type):
+        """Do any post-processing the request might need; typically adding
+        values to req.hdf, or changing template or mime type.
+        
+        Always returns a tuple of (template, content_type), even if
+        unchanged.
+        """
