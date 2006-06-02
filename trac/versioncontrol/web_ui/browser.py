@@ -282,7 +282,7 @@ class BrowserModule(Component):
         # ---- TODO: the following should be removed in milestone:0.11
         match = IMG_RE.search(path)
         if formatter.flavor != 'oneliner' and match:
-            return html.IMG(src=formatter.href.file(path, format='raw'),
+            return html.IMG(src=formatter.href.browser(path, format='raw'),
                             alt=label, title='Warning: direct image links are '
                             'deprecated, use [[Image(source:...)]] instead)')
         # ----
