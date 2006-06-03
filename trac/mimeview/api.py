@@ -253,7 +253,7 @@ class IContentConverter(Interface):
     def convert_content(req, mimetype, content, key):
         """Convert the given content from mimetype to the output MIME type
         represented by key. Returns a tuple in the form (content,
-        output_mime_type)."""
+        output_mime_type) or None if conversion is not possible."""
 
 
 class Mimeview(Component):
@@ -316,23 +316,19 @@ class Mimeview(Component):
             mimetype = full_mimetype = 'text/plain' # fallback if not binary
 
         # Choose best converter
-        candidates = self.get_supported_conversions(mimetype)
+        candidates = list(self.get_supported_conversions(mimetype))
         candidates = [c for c in candidates if key in (c[0], c[4])]
         if not candidates:
             raise TracError('No available MIME conversions from %s to %s' %
                             (mimetype, key))
 
-        # First candidate which converts successfully wins.
+        # First successful conversion wins
         for ck, name, ext, input_mimettype, output_mimetype, quality, \
                 converter in candidates:
-            try:
-                output = converter.convert_content(req, mimetype, content, ck)
-                if not output:
-                    continue
-                return (output[0], output[1], ext)
-            except Exception, e:
-                self.log.warning('MIME conversion using %s failed (%s)'
-                                 % (converter, e), exc_info=True)
+            output = converter.convert_content(req, mimetype, content, ck)
+            if not output:
+                continue
+            return (output[0], output[1], ext)
         raise TracError('No available MIME conversions from %s to %s' %
                         (mimetype, key))
 
