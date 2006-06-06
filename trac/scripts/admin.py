@@ -213,9 +213,11 @@ class TracAdmin(cmd.Cmd):
                                xrange(0, (1 + len(sep)) * cnum + sum(colw))])
         print
 
-    def print_doc(self, doc, decor=False):
-        if not doc: return
-        self.print_listing(['Command', 'Description'], doc, '  --', decor) 
+    def print_doc(self, docs):
+        if not docs: return
+        for cmd, doc in docs:
+            print cmd
+            print '\n\t-- %s\n' % doc
 
     def get_component_list(self):
         rows = self.db_query("SELECT name FROM component")
@@ -300,7 +302,7 @@ class TracAdmin(cmd.Cmd):
         if arg[0]:
             try:
                 doc = getattr(self, "_help_" + arg[0])
-                self.print_doc (doc)
+                self.print_doc(doc)
             except AttributeError:
                 print "No documentation found for '%s'" % arg[0]
         else:
@@ -321,7 +323,7 @@ class TracAdmin(cmd.Cmd):
                 print "Usage: trac-admin </path/to/projenv> [command [subcommand] [option ...]]\n"
                 print "Invoking trac-admin without command starts "\
                       "interactive mode."
-            self.print_doc (docs)
+            self.print_doc(docs)
 
     
     ## About / Version
