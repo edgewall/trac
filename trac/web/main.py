@@ -26,7 +26,7 @@ from trac.config import ExtensionOption, OrderedExtensionsOption
 from trac.core import *
 from trac.env import open_environment
 from trac.perm import PermissionCache, NoPermissionCache, PermissionError
-from trac.util import reversed
+from trac.util import reversed, get_last_traceback
 from trac.util.datefmt import format_datetime, http_date
 from trac.util.text import to_unicode
 from trac.util.markup import Markup
@@ -334,17 +334,12 @@ def dispatch_request(environ, start_response):
     except Exception, e:
         env.log.exception(e)
 
-        import traceback
-        from StringIO import StringIO
-        tb = StringIO()
-        traceback.print_exc(file=tb)
-
         if req.hdf:
             req.hdf['title'] = to_unicode(e) or 'Error'
             req.hdf['error'] = {
                 'title': to_unicode(e) or 'Error',
                 'type': 'internal',
-                'traceback': tb.getvalue()
+                'traceback': get_last_traceback()
             }
         try:
             req.send_error(sys.exc_info(), status=500)

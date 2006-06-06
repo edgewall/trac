@@ -154,6 +154,15 @@ class NaivePopen:
             if capturestderr and os.path.isfile(errfile):
                 os.remove(errfile)
 
+# -- sys utils
+
+def get_last_traceback():
+    import traceback
+    from StringIO import StringIO
+    tb = StringIO()
+    traceback.print_exc(file=tb)
+    return tb.getvalue()
+
 def safe__import__(module_name):
     """
     Safe imports: rollback after a failed import.

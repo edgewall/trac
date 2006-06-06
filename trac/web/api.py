@@ -24,6 +24,7 @@ import sys
 import urlparse
 
 from trac.core import Interface
+from trac.util import get_last_traceback
 from trac.util.datefmt import http_date
 from trac.web.href import Href
 
@@ -349,7 +350,8 @@ class Request(object):
             else:
                 data = self.hdf.render(template)
         else:
-            data = str(exc_info[1])
+            content_type = 'text/plain'
+            data = get_last_traceback()
 
         self.send_response(status)
         self._outheaders = []
