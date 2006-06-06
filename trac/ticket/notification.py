@@ -75,7 +75,7 @@ class TicketNotifyEmail(NotifyEmail):
         changes = ''
         if not self.newticket and modtime:  # Ticket change
             changelog = ticket.get_changelog(modtime)
-            for date, author, field, old, new in changelog:
+            for date, author, field, old, new, permanent in changelog:
                 self.hdf.set_unescaped('ticket.change.author', author)
                 pfx = 'ticket.change.%s' % field
                 newv = ''

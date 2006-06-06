@@ -269,9 +269,8 @@ class TicketModule(TicketModuleBase):
                 if comment:
                     req.hdf['ticket.comment'] = comment
                     # Wiki format a preview of comment
-                    req.hdf['ticket.comment_preview'] = wiki_to_html(comment,
-                                                                     self.env,
-                                                                     req, db)
+                    req.hdf['ticket.comment_preview'] = wiki_to_html(
+                        comment, self.env, req, db)
         else:
             req.hdf['ticket.reassign_owner'] = req.authname
             # Store a timestamp in order to detect "mid air collisions"
@@ -512,8 +511,14 @@ class TicketModule(TicketModuleBase):
             ticket['resolution'] = ''
 
         now = int(time.time())
+        cnum = req.args.get('cnum')        
+        replyto = req.args.get('replyto')
+        internal_cnum = cnum
+        if cnum and replyto: # record parent.child relationship
+            internal_cnum = '%s.%s' % (replyto, cnum)
         ticket.save_changes(req.args.get('author', req.authname),
-                            req.args.get('comment'), when=now, db=db)
+                            req.args.get('comment'), when=now, db=db,
+                            cnum=internal_cnum)
         db.commit()
 
         try:
@@ -523,14 +528,22 @@ class TicketModule(TicketModuleBase):
             self.log.exception("Failure sending notification on change to "
                                "ticket #%s: %s" % (ticket.id, e))
 
-        req.redirect(req.href.ticket(ticket.id))
+        fragment = cnum and '#comment:'+cnum or ''
+        req.redirect(req.href.ticket(ticket.id) + fragment)
 
     def _insert_ticket_data(self, req, db, ticket, reporter_id):
         """Insert ticket data into the hdf"""
+        replyto = req.args.get('replyto')
+        req.hdf['title'] = '#%d (%s)' % (ticket.id, ticket['summary'])
         req.hdf['ticket'] = ticket.values
-        req.hdf['ticket.id'] = ticket.id
-        req.hdf['ticket.href'] = req.href.ticket(ticket.id)
+        req.hdf['ticket'] = {
+            'id': ticket.id,
+            'href': req.href.ticket(ticket.id),
+            'replyto': replyto
+            }
 
+        # -- Ticket fields
+        
         for field in TicketSystem(self.env).get_ticket_fields():
             if field['type'] in ('radio', 'select'):
                 value = ticket.values.get(field['name'])
@@ -548,39 +561,67 @@ class TicketModule(TicketModuleBase):
             req.hdf['ticket.fields.' + name] = field
 
         req.hdf['ticket.reporter_id'] = reporter_id
-        req.hdf['title'] = '#%d (%s)' % (ticket.id, ticket['summary'])
-        req.hdf['ticket.description.formatted'] = wiki_to_html(ticket['description'],
-                                                               self.env, req, db)
+        req.hdf['ticket.description.formatted'] = wiki_to_html(
+            ticket['description'], self.env, req, db)
 
         req.hdf['ticket.opened'] = format_datetime(ticket.time_created)
         req.hdf['ticket.opened_delta'] = pretty_timedelta(ticket.time_created)
         if ticket.time_changed != ticket.time_created:
-            req.hdf['ticket.lastmod'] = format_datetime(ticket.time_changed)
-            req.hdf['ticket.lastmod_delta'] = pretty_timedelta(ticket.time_changed)
+            req.hdf['ticket'] = {
+                'lastmod': format_datetime(ticket.time_changed),
+                'lastmod_delta': pretty_timedelta(ticket.time_changed)
+                }
+
+        # -- Ticket Change History
 
         changelog = ticket.get_changelog(db=db)
-        curr_author = None
-        curr_date   = 0
+        autonum = 0 # used for "root" numbers
+        replies = {}
         changes = []
-        for date, author, field, old, new in changelog:
-            if date != curr_date or author != curr_author:
-                changes.append({
+        last_uid = current = None
+        for date, author, field, old, new, permanent in changelog:
+            uid = date, author, permanent
+            if uid != last_uid:
+                last_uid = uid
+                current = {
                     'date': format_datetime(date),
                     'author': author,
                     'fields': {}
-                })
-                curr_date = date
-                curr_author = author
+                }
+                changes.append(current)
+                if permanent:
+                    autonum += 1
+                    current['cnum'] = autonum
             if field == 'comment':
-                changes[-1]['comment'] = wiki_to_html(new, self.env, req, db)
+                current['comment'] = wiki_to_html(new, self.env, req, db)
+                if permanent:
+                    this_num = str(autonum)
+                    if old:
+                        if '.' in old: # retrieve parent.child relationship
+                            parent_num, this_num = old.split('.', 1)
+                            current['replyto'] = parent_num
+                            replies.setdefault(parent_num, []).append(this_num)
+                        else:
+                            this_num = old
+                    assert this_num == str(autonum)
+                    # if we replied to this comment, quote it (with '>' prefix)
+                    if replyto == this_num and not 'comment' in req.args:
+                        req.hdf['ticket.comment'] = '\n'.join(
+                            ['Replying to [comment:%s %s]:' % \
+                             (replyto, author)] +
+                            ['> %s' % line for line in new.splitlines()] + [''])
             elif field == 'description':
-                changes[-1]['fields'][field] = ''
+                current['fields'][field] = ''
             else:
-                changes[-1]['fields'][field] = {'old': old,
-                                                'new': new}
-        req.hdf['ticket.changes'] = changes
+                current['fields'][field] = {'old': old, 'new': new}
+        req.hdf['ticket'] = {
+            'changes': changes,
+            'replies': replies,
+            'cnum': autonum + 1
+           }
 
-        # List attached files
+        # -- Ticket Attachments
+
         req.hdf['ticket.attachments'] = attachments_to_hdf(self.env, req, db,
                                                            'ticket', ticket.id)
         if req.perm.has_permission('TICKET_APPEND'):

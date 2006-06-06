@@ -80,11 +80,39 @@
 <?cs call:list_of_attachments(ticket.attachments, ticket.attach_href) ?>
 <?cs /if ?>
 
+<?cs def:commentref(prefix, cnum) ?>
+<a href="#comment:<?cs var:cnum ?>"><small><?cs var:prefix ?><?cs var:cnum ?></small></a>
+<?cs /def ?>
+
 <?cs if:len(ticket.changes) ?><h2>Change History</h2>
 <div id="changelog"><?cs
  each:change = ticket.changes ?>
-  <h3 id="change_<?cs var:name(change) ?>" class="change"><?cs
-   var:change.date ?>: Modified by <?cs var:change.author ?></h3><?cs
+ <div class="change">
+  <h3 <?cs if:change.cnum ?>id="comment:<?cs var:change.cnum ?>"<?cs /if ?>><?cs
+   var:change.date ?> changed by <?cs var:change.author ?> <?cs
+   if:change.cnum ?><?cs
+    set:nreplies = len(ticket.replies[change.cnum]) ?><?cs
+    if:nreplies || change.replyto ?><span class="threading"> &mdash; <?cs
+     if:change.replyto ?>in reply to: <?cs 
+      call:commentref('&uarr;', change.replyto) ?><?cs if nreplies ?> &ndash; <?cs /if ?><?cs
+     /if ?><?cs
+     if nreplies ?><?cs
+      call:plural('follow-up', nreplies) ?>: <?cs 
+      each:reply = ticket.replies[change.cnum] ?><?cs 
+       call:commentref('&darr;', reply) ?><?cs 
+      /each ?><?cs 
+     /if ?><?cs
+    /if ?></span>&nbsp;
+     <a href="#comment:<?cs var:change.cnum ?>" class="anchor"
+        title="Permalink to comment:<?cs var:change.cnum ?>">&para;</a><?cs
+   /if ?>
+  </h3><?cs
+  if:change.cnum ?>
+   <form method="get" action="<?cs var:ticket.href ?>#comment"><div class="inlinebuttons">
+    <input type="hidden" name="replyto" value="<?cs var:change.cnum ?>" />
+    <input type="submit" value="Reply" title="Reply to comment <?cs var:change.cnum ?>" /></div>
+   </form><?cs 
+  /if ?><?cs
   if:len(change.fields) ?>
    <ul class="changes"><?cs
    each:field = change.fields ?>
@@ -100,8 +128,10 @@
    /each ?>
    </ul><?cs
   /if ?>
-  <div class="comment"><?cs var:change.comment ?></div><?cs
- /each ?></div><?cs
+  <div class="comment"><?cs var:change.comment ?></div>
+ </div><?cs
+ /each ?>
+</div><?cs
 /if ?>
 
 <?cs if:trac.acl.TICKET_CHGPROP || trac.acl.TICKET_APPEND ?>
@@ -277,6 +307,8 @@
 
  <div class="buttons">
   <input type="hidden" name="ts" value="<?cs var:ticket.ts ?>" />
+  <input type="hidden" name="replyto" value="<?cs var:ticket.replyto ?>" />
+  <input type="hidden" name="cnum" value="<?cs var:ticket.cnum ?>" />
   <input type="submit" name="preview" value="Preview" accesskey="r" />&nbsp;
   <input type="submit" value="Submit changes" />
  </div>

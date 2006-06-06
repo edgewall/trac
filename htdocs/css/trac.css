@@ -42,6 +42,21 @@ h4 :link, h4 :visited, h5 :link, h5 :visited, h6 :link, h6 :visited {
  color: inherit;
 }
 
+/* Heading anchors */
+.anchor:link, .anchor:visited {
+ border: none;
+ color: #d7d7d7;
+ font-size: .8em;
+ vertical-align: text-top;
+}
+* > .anchor:link, * > .anchor:visited {
+ visibility: hidden;
+}
+h1:hover .anchor, h2:hover .anchor, h3:hover .anchor,
+h4:hover .anchor, h5:hover .anchor, h6:hover .anchor {
+ visibility: visible;
+}
+
 @media screen {
  a.ext-link .icon {
   background: url(../extlink.gif) left center no-repeat;
@@ -277,12 +292,15 @@ pre.wiki, pre.literal-block {
 }
 
 blockquote.citation { 
- margin: 0;
+ margin: -0.6em 0;
  border-style: solid; 
  border-width: 0 0 0 2px; 
- border-color: #b44; 
  padding-left: .5em;
+ border-color: #b44; 
 }
+.citation blockquote.citation { border-color: #4b4; }
+.citation .citation blockquote.citation { border-color: #44b; }
+.citation .citation .citation blockquote.citation { border-color: #c55; }
 
 table.wiki {
  border: 2px solid #ccc;

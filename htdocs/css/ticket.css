@@ -46,6 +46,21 @@
  font-size: 100%;
  font-weight: normal;
 }
+.inlinebuttons input { 
+ float: right;
+ font-size: 70%;
+ border-width: 1px;
+ margin: 0 .5em .1em 1.5em;
+ padding: 0.1em;
+ background-color: #f6f6f6;
+}
+.inlinebuttons > input { /* rule ignored by IE */
+ visibility: hidden;
+}
+div.change:hover .inlinebuttons input {
+ visibility: visible;
+}
+
 #changelog .changes { list-style: square; margin-left: 2em; padding: 0 }
 #changelog .comment { margin-left: 2em }
 

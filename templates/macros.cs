@@ -190,4 +190,8 @@ def:list_of_attachments(attachments, attach_href) ?>
    <input type="submit" value="Attach File" />
   </div></form><?cs
  /if ?><?cs if:len(attachments) ?></div><?cs /if ?><?cs
+/def ?><?cs
+
+def:plural(base, count) ?><?cs
+ var:base ?><?cs if:count != 1 ?>s<?cs /if ?><?cs
 /def ?>

@@ -22,19 +22,6 @@
 #overview .ipnr { color: #999; font-size: 80% }
 #overview .comment { padding: 1em 0 0 }
 
-/* Heading anchors */
-.anchor:link, .anchor:visited {
- border: none;
- color: #d7d7d7;
- font-size: .8em;
- vertical-align: text-top;
- visibility: hidden;
-}
-h1:hover .anchor, h2:hover .anchor, h3:hover .anchor,
-h4:hover .anchor, h5:hover .anchor, h6:hover .anchor {
- visibility: visible;
-}
-
 /* Styles for the page history table
    (extends the styles for "table.listing") */
 #wikihist td { padding: 0 .5em }

@@ -186,7 +186,8 @@ class TicketSystem(Component):
 
     def get_link_resolvers(self):
         return [('bug', self._format_link),
-                ('ticket', self._format_link)]
+                ('ticket', self._format_link),
+                ('comment', self._format_comment_link)]
 
     def get_wiki_syntax(self):
         yield (
@@ -215,6 +216,29 @@ class TicketSystem(Component):
         return html.A(class_='missing ticket', rel='nofollow',
                       href=formatter.href.ticket(target))[label]
 
+    def _format_comment_link(self, formatter, ns, target, label):
+        type, id, cnum = 'ticket', '1', 0
+        href = None
+        if ':' in target:
+            elts = target.split(':')
+            if len(elts) == 3:
+                type, id, cnum = elts
+                href = formatter.href(type, id)
+        else:
+            # FIXME: the formatter should know which object the text being
+            #        formatted belongs to
+            if formatter.req:
+                path_info = formatter.req.path_info.strip('/').split('/', 2)
+                if len(path_info) == 2:
+                    type, id = path_info[:2]
+                    href = formatter.href(type, id)
+                    cnum = target
+        if href:
+            return html.A(label, href="%s#comment:%s" % (href, cnum),
+                          title="Comment %s for %s:%s" % (cnum, type, id))
+        else:
+            return label
+ 
     # ISearchSource methods
 
     def get_search_filters(self, req):

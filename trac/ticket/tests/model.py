@@ -196,8 +196,8 @@ class TicketTestCase(unittest.TestCase):
         ticket['component'] = 'bar'
         ticket['milestone'] = 'foo'
         ticket.save_changes('jane', 'Testing', when=42)
-        for t, author, field, old, new in ticket.get_changelog():
-            self.assertEqual((42, 'jane'), (t, author))
+        for t, author, field, old, new, permanent in ticket.get_changelog():
+            self.assertEqual((42, 'jane', True), (t, author, permanent))
             if field == 'component':
                 self.assertEqual(('foo', 'bar'), (old, new))
             elif field == 'milestone':
@@ -214,8 +214,8 @@ class TicketTestCase(unittest.TestCase):
         ticket['component'] = 'bar'
         ticket['component'] = 'foo'
         ticket.save_changes('jane', 'Testing', when=42)
-        for t, author, field, old, new in ticket.get_changelog():
-            self.assertEqual((42, 'jane'), (t, author))
+        for t, author, field, old, new, permanent in ticket.get_changelog():
+            self.assertEqual((42, 'jane', True), (t, author, permanent))
             if field == 'comment':
                 self.assertEqual(('', 'Testing'), (old, new))
             else:
