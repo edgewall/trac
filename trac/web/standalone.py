@@ -120,11 +120,11 @@ def main():
     parser.add_option('-a', '--auth', action='callback', type='string',
                       metavar='DIGESTAUTH', callback=_auth_callback,
                       callback_args=(DigestAuthentication,),
-                      help='[project],[htdigest_file],[realm]')
+                      help='[projectdir],[htdigest_file],[realm]')
     parser.add_option('--basic-auth', action='callback', type='string',
                       metavar='BASICAUTH', callback=_auth_callback,
                       callback_args=(BasicAuthentication,),
-                      help='[project],[htpasswd_file],[realm]')
+                      help='[projectdir],[htpasswd_file],[realm]')
 
     parser.add_option('-p', '--port', action='store', type='int', dest='port',
                       help='the port number to bind to')
