@@ -462,7 +462,7 @@ class Formatter(object):
         depth = min(len(fullmatch.group('hdepth')), 5)
         heading = match[depth+1:-depth-1]
 
-        text = wiki_to_oneliner(heading, self.env, self.db, True, self._absurls)
+        text = wiki_to_oneliner(heading, self.env, self.db, False, self._absurls)
         sans_markup = text.plaintext(keeplinebreaks=False).replace('.', '')
 
         anchor = self._anchor_re.sub('', sans_markup)
