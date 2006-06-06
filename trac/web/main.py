@@ -203,7 +203,7 @@ class RequestDispatcher(Component):
                     req.display(template, content_type or 'text/html')
                 else:
                     for filter_ in reversed(self.filters):
-                        filter_.post_process_request(None, None, None)
+                        filter_.post_process_request(req, None, None)
             except PermissionError, e:
                 raise HTTPForbidden(to_unicode(e))
             except TracError, e:
