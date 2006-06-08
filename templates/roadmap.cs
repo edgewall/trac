@@ -30,7 +30,7 @@
        <strong><?cs var:milestone.due_delta ?> late</strong><?cs
       else ?>
        Due in <?cs var:milestone.due_delta ?><?cs
-      /if ?><?cs
+      /if ?> (<?cs var:milestone.due_date ?>)<?cs
      else ?>>
       No date set<?cs
      /if ?>
