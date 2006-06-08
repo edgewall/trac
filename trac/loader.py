@@ -18,6 +18,7 @@ from glob import glob
 import imp
 import os
 import sys
+from trac.config import default_dir
 try:
     set
 except NameError:
@@ -32,33 +33,39 @@ __all__ = ['load_components']
 
 def load_components(env):
     loaded_components = []
-    plugins_dir = os.path.normcase(os.path.realpath(os.path.join(env.path,
-                                                                 'plugins')))
+    plugins_dirs = [os.path.normcase(os.path.realpath(os.path.join(env.path,
+                                                                  'plugins'))),
+                    default_dir('plugins')]
 
-    # First look for Python source files in the plugins directory, which simply
-    # get imported, thereby registering them with the component manager if they
-    # define any components
-    plugin_files = glob(os.path.join(plugins_dir, '*.py'))
-    for plugin_file in plugin_files:
-        try:
-            plugin_name = os.path.basename(plugin_file[:-3])
-            if plugin_name not in loaded_components:
-                env.log.debug('Loading plugin %s from %s' % (plugin_name,
-                                                             plugin_file))
-                module = imp.load_source(plugin_name, plugin_file)
-                loaded_components.append(plugin_name)
-                if plugin_name + '.*' not in env.config['components']:
-                    env.config['components'].set(plugin_name + '.*', 'enabled')
-        except Exception, e:
-            env.log.error('Failed to load plugin from %s', plugin_file,
-                          exc_info=True)
+    # First look for Python source files in the plugins directories, which
+    # simply get imported, thereby registering them with the component manager
+    # if they define any components.
+    for plugins_dir in plugins_dirs:
+        auto_enable = plugins_dir != default_dir('plugins')
+        plugin_files = glob(os.path.join(plugins_dir, '*.py'))
+        for plugin_file in plugin_files:
+            try:
+                plugin_name = os.path.basename(plugin_file[:-3])
+                if plugin_name not in loaded_components:
+                    env.log.debug('Loading plugin %s from %s' % (plugin_name,
+                                                                 plugin_file))
+                    module = imp.load_source(plugin_name, plugin_file)
+                    loaded_components.append(plugin_name)
+                    env.log.debug((plugin_name, auto_enable))
+                    if auto_enable and plugin_name + '.*' \
+                            not in env.config['components']:
+                        env.config['components'].set(plugin_name + '.*', 'enabled')
+            except Exception, e:
+                env.log.error('Failed to load plugin from %s', plugin_file,
+                              exc_info=True)
 
     # If setuptools is installed try to load any eggs from the plugins
     # directory, and also plugins available on sys.path
     if pkg_resources is not None:
         ws = pkg_resources.working_set
-        ws.add_entry(plugins_dir)
-        pkg_env = pkg_resources.Environment([plugins_dir] + sys.path)
+        for plugins_dir in plugins_dirs:
+            ws.add_entry(plugins_dir)
+        pkg_env = pkg_resources.Environment(plugins_dirs + sys.path)
 
         memo = set()
         def flatten(dists):
