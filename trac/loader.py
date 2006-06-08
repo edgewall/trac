@@ -51,7 +51,6 @@ def load_components(env):
                                                                  plugin_file))
                     module = imp.load_source(plugin_name, plugin_file)
                     loaded_components.append(plugin_name)
-                    env.log.debug((plugin_name, auto_enable))
                     if auto_enable and plugin_name + '.*' \
                             not in env.config['components']:
                         env.config['components'].set(plugin_name + '.*', 'enabled')

@@ -195,7 +195,7 @@ class Formatter(object):
         % (LINK_SCHEME, QUOTED_STRING,
            SHREF_TARGET_FIRST, SHREF_TARGET_MIDDLE, SHREF_TARGET_LAST),
         # [wiki:TracLinks with label]
-        r"(?P<lhref>!?\[(?:(?P<lns>%s):(?P<ltgt>%s|[^\]\s]*)|(?P<rel>%s))"
+        r"(?P<lhref>!?\[(?:(?:(?P<lns>%s):)?(?P<ltgt>%s|[^\]\s]*)|(?P<rel>%s))"
         r"(?:\s+(?P<label>%s|[^\]]+))?\])" \
         % (LINK_SCHEME, QUOTED_STRING, LHREF_RELATIVE_TARGET, QUOTED_STRING),
         # [[macro]] call
@@ -341,7 +341,7 @@ class Formatter(object):
         return self._make_link(ns, target, match, match)
 
     def _lhref_formatter(self, match, fullmatch):
-        ns = fullmatch.group('lns')
+        ns = fullmatch.group('lns') or 'wiki'
         target = self._unquote(fullmatch.group('ltgt'))
         label = fullmatch.group('label')
         if not label: # e.g. `[http://target]` or `[wiki:target]`

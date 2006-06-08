@@ -108,6 +108,11 @@ class my_install_scripts (install_scripts):
         if copied:
             self.outfiles.append(ofile)
          
+        for path in ('plugins', 'conf'):
+            full_path = os.path.join(self.install_data, 'share', 'trac', path)
+            if not os.path.exists(full_path):
+                os.makedirs(full_path)
+            
         if os.name == 'posix':
             # Set the executable bits (owner, group, and world) on
             # all the scripts we just installed.
