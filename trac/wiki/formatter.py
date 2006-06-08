@@ -190,6 +190,9 @@ class Formatter(object):
         r"(?P<citation>^(?P<cdepth>>(?: *>)*))",
         # &, < and > to &amp;, &lt; and &gt;
         r"(?P<htmlescape>[&<>])",
+        # [[macro]] call
+        (r"(?P<macro>!?\[\[(?P<macroname>[\w/+-]+)"
+         r"(\]\]|\((?P<macroargs>.*?)\)\]\]))"),
         # wiki:TracLinks
         r"(?P<shref>!?((?P<sns>%s):(?P<stgt>%s|%s(?:%s*%s)?)))" \
         % (LINK_SCHEME, QUOTED_STRING,
@@ -198,9 +201,6 @@ class Formatter(object):
         r"(?P<lhref>!?\[(?:(?:(?P<lns>%s):)?(?P<ltgt>%s|[^\]\s]*)|(?P<rel>%s))"
         r"(?:\s+(?P<label>%s|[^\]]+))?\])" \
         % (LINK_SCHEME, QUOTED_STRING, LHREF_RELATIVE_TARGET, QUOTED_STRING),
-        # [[macro]] call
-        (r"(?P<macro>!?\[\[(?P<macroname>[\w/+-]+)"
-         r"(\]\]|\((?P<macroargs>.*?)\)\]\]))"),
         # == heading ==
         r"(?P<heading>^\s*(?P<hdepth>=+)\s.*\s(?P=hdepth)\s*$)",
         #  * list
