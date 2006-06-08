@@ -89,23 +89,23 @@
  each:change = ticket.changes ?>
  <div class="change">
   <h3 <?cs if:change.cnum ?>id="comment:<?cs var:change.cnum ?>"<?cs /if ?>><?cs
-   var:change.date ?> changed by <?cs var:change.author ?> <?cs
    if:change.cnum ?><?cs
     set:nreplies = len(ticket.replies[change.cnum]) ?><?cs
-    if:nreplies || change.replyto ?><span class="threading"> &mdash; <?cs
+    if:nreplies || change.replyto ?><span class="threading"> (<?cs
      if:change.replyto ?>in reply to: <?cs 
-      call:commentref('&uarr;', change.replyto) ?><?cs if nreplies ?> &ndash; <?cs /if ?><?cs
+      call:commentref('&uarr;', change.replyto) ?><?cs if nreplies ?>; <?cs /if ?><?cs
      /if ?><?cs
      if nreplies ?><?cs
       call:plural('follow-up', nreplies) ?>: <?cs 
       each:reply = ticket.replies[change.cnum] ?><?cs 
        call:commentref('&darr;', reply) ?><?cs 
       /each ?><?cs 
-     /if ?><?cs
+     /if ?>)<?cs
     /if ?></span>&nbsp;
      <a href="#comment:<?cs var:change.cnum ?>" class="anchor"
         title="Permalink to comment:<?cs var:change.cnum ?>">&para;</a><?cs
-   /if ?>
+   /if ?><?cs
+   var:change.date ?> changed by <?cs var:change.author ?> 
   </h3><?cs
   if:change.cnum ?>
    <form method="get" action="<?cs var:ticket.href ?>#comment"><div class="inlinebuttons">

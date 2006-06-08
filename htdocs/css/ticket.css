@@ -46,6 +46,9 @@
  font-size: 100%;
  font-weight: normal;
 }
+#changelog .threading {
+	float: right;
+}
 .inlinebuttons input { 
  float: right;
  font-size: 70%;
