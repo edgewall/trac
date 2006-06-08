@@ -101,11 +101,12 @@
        call:commentref('&darr;', reply) ?><?cs 
       /each ?><?cs 
      /if ?>)<?cs
-    /if ?></span>&nbsp;
-     <a href="#comment:<?cs var:change.cnum ?>" class="anchor"
-        title="Permalink to comment:<?cs var:change.cnum ?>">&para;</a><?cs
+    /if ?></span><?cs
    /if ?><?cs
-   var:change.date ?> changed by <?cs var:change.author ?> 
+   var:change.date ?> changed by <?cs var:change.author ?><?cs
+   if:change.cnum ?>&nbsp;<a href="#comment:<?cs var:change.cnum ?>" class="anchor"
+      title="Permalink to comment:<?cs var:change.cnum ?>">&para;</a><?cs
+   /if ?>
   </h3><?cs
   if:change.cnum ?>
    <form method="get" action="<?cs var:ticket.href ?>#comment"><div class="inlinebuttons">
