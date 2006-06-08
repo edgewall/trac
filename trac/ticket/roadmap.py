@@ -402,6 +402,15 @@ class MilestoneModule(Component):
             if milestone.completed > time():
                 raise TracError('Completion date may not be in the future',
                                 'Invalid Completion Date')
+            retarget_to = req.args.get('target')
+            if req.args.has_key('retarget'):
+                cursor = db.cursor()
+                cursor.execute("UPDATE ticket SET milestone=%s WHERE "
+                               "milestone=%s and status != 'closed'",
+                                (retarget_to, milestone.name))
+                self.env.log.info('Tickets associated with milestone %s '
+                                  'retargeted to %s' % 
+                                  (milestone.name, retarget_to))
         else:
             milestone.completed = 0
 
@@ -433,6 +442,9 @@ class MilestoneModule(Component):
             req.perm.assert_permission('MILESTONE_MODIFY')
             req.hdf['title'] = 'Milestone %s' % milestone.name
             req.hdf['milestone.mode'] = 'edit'
+            req.hdf['milestones'] = [m.name for m in
+                                     Milestone.select(self.env)
+                                     if m.name != milestone.name]
         else:
             req.perm.assert_permission('MILESTONE_CREATE')
             req.hdf['title'] = 'New Milestone'

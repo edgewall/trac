@@ -50,11 +50,28 @@
         /alt ?>" title="Format: <?cs
         var:milestone.datetime_hint ?>" />
       <em>Format: <?cs var:milestone.datetime_hint ?></em>
-     </label>
+     </label><?cs
+     if:len(milestones) ?>
+     <br/>
+     <input type="checkbox" id="retarget" name="retarget" checked="checked"
+            onclick="enableControl('target', this.checked)"/>
+     <label>
+      Retarget associated open tickets to milestone
+      <select id="target" name="target">
+       <option value="">None</option><?cs
+       each:name = milestones ?>
+       <option><?cs var:name ?></option><?cs
+       /each ?>
+      </select>
+     </label><?cs
+     /if ?>
      <script type="text/javascript">
        var completed = document.getElementById("completed");
+       var retarget = document.getElementById("retarget");
        var enableCompletedDate = function() {
          enableControl("completeddate", completed.checked);
+         enableControl("retarget", completed.checked);
+         enableControl("target", completed.checked && retarget.checked);
        };
        addEvent(window, "load", enableCompletedDate);
        addEvent(completed, "click", enableCompletedDate);
