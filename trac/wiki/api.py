@@ -236,7 +236,6 @@ class WikiSystem(Component):
         return page
     
     def get_wiki_syntax(self):
-        # Regular WikiPageNames
         def wikipagenames_link(formatter, match, fullmatch):
             return self._format_link(formatter, 'wiki', match,
                                      self.format_page_name(match),
@@ -247,12 +246,6 @@ class WikiSystem(Component):
                r"(?:#[A-Za-z0-9]+)?" # optional fragment identifier
                r"(?=:?\Z|:?\s|[.,;!?\)}\]])", # what should follow it
                wikipagenames_link)
-
-        # MoinMoin's ["internal free link"]
-        from trac.wiki.formatter import Formatter
-        def internal_free_link(fmt, m, fullmatch):
-            return self._format_link(fmt, 'wiki', m[2:-2], m[2:-2], False)
-        yield (r"!?\[(?:%s)\]" % Formatter.QUOTED_STRING, internal_free_link)
 
     def get_link_resolvers(self):
         def link_resolver(formatter, ns, target, label):

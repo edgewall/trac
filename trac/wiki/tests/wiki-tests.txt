@@ -503,10 +503,10 @@ Hello, [[HelloWorld(...)]]
 [[HelloWorld(hej hopp) ]] # This shouldnt executed as macro since it contain whitespace between ) and ]
 ------------------------------
 <p>
-[[HelloWorld(hej hopp) ]] # This shouldnt executed as macro since it contain whitespace between ) and ]
+<a class="missing wiki" href="/wiki/%5BHelloWorld%28hej" rel="nofollow">hopp) ?</a>] # This shouldnt executed as macro since it contain whitespace between ) and ]
 </p>
 ------------------------------
-[[HelloWorld(hej hopp) ]] # This shouldnt executed as macro since it contain whitespace between ) and ]
+<a class="missing wiki" href="/wiki/%5BHelloWorld%28hej" rel="nofollow">hopp) ?</a>] # This shouldnt executed as macro since it contain whitespace between ) and ]
 ============================== Another bad macro call
 [[HelloWorld(hej hopp))]] # Extra right brace and still executed
 ------------------------------
@@ -753,6 +753,26 @@ Some paragraph
  2. continue with item 2
     i. roman 1
     ii. roman 2
+Paragraph
+============================== Numbered lists multi-line items
+ 1. This is a very long line at
+    the first level, which works correctly.
+    1. But this line at the second level, which
+       is also continued on the next line, does not.
+Paragraph
+------------------------------
+<ol><li>This is a very long line at
+the first level, which works correctly.
+<ol><li>But this line at the second level, which
+is also continued on the next line, does not.
+</li></ol></li></ol><p>
+Paragraph
+</p>
+------------------------------
+1. This is a very long line at
+    the first level, which works correctly.
+    1. But this line at the second level, which
+       is also continued on the next line, does not.
 Paragraph
 ============================== Numbered lists counter-examples
  This will not start a new numbered

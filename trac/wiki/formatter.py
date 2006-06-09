@@ -190,17 +190,19 @@ class Formatter(object):
         r"(?P<citation>^(?P<cdepth>>(?: *>)*))",
         # &, < and > to &amp;, &lt; and &gt;
         r"(?P<htmlescape>[&<>])",
-        # [[macro]] call
-        (r"(?P<macro>!?\[\[(?P<macroname>[\w/+-]+)"
-         r"(\]\]|\((?P<macroargs>.*?)\)\]\]))"),
         # wiki:TracLinks
         r"(?P<shref>!?((?P<sns>%s):(?P<stgt>%s|%s(?:%s*%s)?)))" \
         % (LINK_SCHEME, QUOTED_STRING,
            SHREF_TARGET_FIRST, SHREF_TARGET_MIDDLE, SHREF_TARGET_LAST),
+        # [[macro]] call
+        (r"(?P<macro>!?\[\[(?P<macroname>[\w/+-]+)"
+         r"(\]\]|\((?P<macroargs>.*?)\)\]\]))"),
         # [wiki:TracLinks with label]
-        r"(?P<lhref>!?\[(?:(?:(?P<lns>%s):)?(?P<ltgt>%s|[^\]\s]*)|(?P<rel>%s))"
-        r"(?:\s+(?P<label>%s|[^\]]+))?\])" \
-        % (LINK_SCHEME, QUOTED_STRING, LHREF_RELATIVE_TARGET, QUOTED_STRING),
+        (r"(?P<lhref>!?\[(?:"
+         r"(?P<rel>%s)|" % LHREF_RELATIVE_TARGET + # ./... or /...
+         r"(?:(?P<lns>%s):)?(?P<ltgt>%s|[^\]\s]*))" % \
+         (LINK_SCHEME, QUOTED_STRING) + # wiki:TracLinks or wiki:"trac links"
+         r"(?:\s+(?P<label>%s|[^\]]+))?\])" % QUOTED_STRING), # label
         # == heading ==
         r"(?P<heading>^\s*(?P<hdepth>=+)\s.*\s(?P=hdepth)\s*$)",
         #  * list
@@ -341,7 +343,8 @@ class Formatter(object):
         return self._make_link(ns, target, match, match)
 
     def _lhref_formatter(self, match, fullmatch):
-        ns = fullmatch.group('lns') or 'wiki'
+        rel = fullmatch.group('rel')
+        ns = fullmatch.group('lns') or (not rel and 'wiki')
         target = self._unquote(fullmatch.group('ltgt'))
         label = fullmatch.group('label')
         if not label: # e.g. `[http://target]` or `[wiki:target]`
@@ -354,7 +357,6 @@ class Formatter(object):
                 label = ns
         else:
             label = self._unquote(label)
-        rel = fullmatch.group('rel')
         if rel:
             return self._make_relative_link(rel, label or rel)
         else:
