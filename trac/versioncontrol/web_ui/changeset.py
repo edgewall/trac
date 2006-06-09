@@ -488,10 +488,9 @@ class ChangesetModule(Component):
 
         idx = 0
         for old_node, new_node, kind, change in get_changes():
-            show_entry = True
-            if change == Changeset.EDIT and \
+            show_entry = change != Changeset.EDIT
+            if change in (Changeset.EDIT, Changeset.COPY, Changeset.MOVE) and \
                    req.perm.has_permission('FILE_VIEW'):
-                show_entry = False
                 assert old_node and new_node
                 props = _prop_changes(old_node, new_node)
                 if props:
