@@ -225,6 +225,7 @@ class ChangesetModule(Component):
         format = req.args.get('format')
 
         if format in ['diff', 'zip']:
+            req.perm.assert_permission('FILE_VIEW')
             # choosing an appropriate filename
             rpath = new_path.replace('/','_')
             if chgset:
@@ -372,6 +373,9 @@ class ChangesetModule(Component):
             title = self.title_for_diff(diff)
         req.hdf['title'] = title
 
+        if not req.perm.has_permission('BROWSER_VIEW'):
+            return
+
         def _change_info(old_node, new_node, change):
             info = {'change': change}
             if old_node:
@@ -467,23 +471,26 @@ class ChangesetModule(Component):
             else:
                 return []
 
-        max_diff_bytes = self.max_diff_bytes
-        max_diff_files = self.max_diff_files
-        diff_bytes = diff_files = 0
-        if max_diff_bytes or max_diff_files:
-            for old_node, new_node, kind, change in get_changes():
-                if change == Changeset.EDIT and kind == Node.FILE:
-                    diff_files += 1
-                    diff_bytes += _estimate_changes(old_node, new_node)
-        show_diffs = (not max_diff_files or diff_files <= max_diff_files) and \
-                     (not max_diff_bytes or diff_bytes <= max_diff_bytes or \
-                      diff_files == 1)
+        if req.perm.has_permission('FILE_VIEW'):
+            diff_bytes = diff_files = 0
+            if self.max_diff_bytes or self.max_diff_files:
+                for old_node, new_node, kind, change in get_changes():
+                    if change == Changeset.EDIT and kind == Node.FILE:
+                        diff_files += 1
+                        diff_bytes += _estimate_changes(old_node, new_node)
+            show_diffs = (not self.max_diff_files or \
+                          diff_files <= self.max_diff_files) and \
+                         (not self.max_diff_bytes or \
+                          diff_bytes <= self.max_diff_bytes or \
+                          diff_files == 1)
+        else:
+            show_diffs = False
 
         idx = 0
         for old_node, new_node, kind, change in get_changes():
-            if change != Changeset.EDIT:
-                show_entry = True
-            else:
+            show_entry = True
+            if change == Changeset.EDIT and \
+                   req.perm.has_permission('FILE_VIEW'):
                 show_entry = False
                 assert old_node and new_node
                 props = _prop_changes(old_node, new_node)
@@ -658,7 +665,7 @@ class ChangesetModule(Component):
                     else:
                         message = shortlog
 
-                if show_files:
+                if show_files and req.perm.has_permission('BROWSER_VIEW'):
                     files = []
                     for chg in chgset.get_changes():
                         if show_files > 0 and len(files) >= show_files:
