@@ -59,6 +59,7 @@
  margin: 0 0 2em;
  padding: 2px;
  position: relative;
+ width: 100%;
 }
 .diff h2 {
  color: #333;
