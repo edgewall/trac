@@ -146,10 +146,10 @@ class Chrome(Component):
     logo_alt = Option('header_logo', 'alt', '',
         """Alternative text for the header logo.""")
 
-    logo_width = IntOption('header_logo', 'width', 236,
+    logo_width = IntOption('header_logo', 'width', -1,
         """Width of the header logo image in pixels.""")
 
-    logo_height = IntOption('header_logo', 'height', 73,
+    logo_height = IntOption('header_logo', 'height', -1,
         """Height of the header logo image in pixels.""")
 
     # IEnvironmentSetupParticipant methods
@@ -296,10 +296,12 @@ class Chrome(Component):
                     logo_src = href.chrome(logo_src)
                 else:
                     logo_src = href.chrome('common', logo_src)
+            width = self.logo_width > -1 or None
+            height = self.logo_height > -1 or None
             req.hdf['chrome.logo'] = {
                 'link': self.logo_link, 'src': logo_src,
                 'src_abs': logo_src_abs, 'alt': self.logo_alt,
-                'width': self.logo_width, 'height': self.logo_height
+                'width': width, 'height': height
             }
         else:
             req.hdf['chrome.logo.link'] = self.logo_link
