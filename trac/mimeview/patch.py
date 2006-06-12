@@ -110,67 +110,73 @@ class PatchRenderer(Component):
         output = []
         filename, groups = None, None
         lines = iter(difflines)
-        for line in lines:
-            if not line.startswith('--- '):
-                continue
-
-            # Base filename/version
-            words = line.split(None, 2)
-            filename, fromrev = words[1], 'old'
-            groups, blocks = None, None
-
-            # Changed filename/version
+        try:
             line = lines.next()
-            if not line.startswith('+++ '):
-                return None
-
-            words = line.split(None, 2)
-            if len(words[1]) < len(filename):
-                # Always use the shortest filename for display
-                filename = words[1]
-            groups = []
-            output.append({'filename' : filename, 'oldrev' : fromrev,
-                           'newrev' : 'new', 'diff' : groups})
-
-            for line in lines:
-                # @@ -333,10 +329,8 @@
-                r = re.match(r'@@ -(\d+),(\d+) \+(\d+),(\d+) @@', line)
-                if not r:
-                    break
-                blocks = []
-                groups.append(blocks)
-                fromline,fromend,toline,toend = map(int, r.groups())
-                last_type = None
-
-                fromend += fromline
-                toend += toline
-
-                while fromline < fromend or toline < toend:
+            while True:
+                if not line.startswith('--- '):
                     line = lines.next()
+                    continue
 
-                    # First character is the command
-                    command, line = line[0], line[1:]
-                    # Make a new block?
-                    if (command == ' ') != last_type:
-                        last_type = command == ' '
-                        blocks.append({'type': last_type and 'unmod' or 'mod',
-                                       'base.offset': fromline - 1,
-                                       'base.lines': [],
-                                       'changed.offset': toline - 1,
-                                       'changed.lines': []})
-                    if command == ' ':
-                        blocks[-1]['changed.lines'].append(line)
-                        blocks[-1]['base.lines'].append(line)
-                        fromline += 1
-                        toline += 1
-                    elif command == '+':
-                        blocks[-1]['changed.lines'].append(line)
-                        toline += 1
-                    elif command == '-':
-                        blocks[-1]['base.lines'].append(line)
-                        fromline += 1
-                    else:
-                        return None
+                # Base filename/version
+                words = line.split(None, 2)
+                filename, fromrev = words[1], 'old'
+                groups, blocks = None, None
+
+                # Changed filename/version
+                line = lines.next()
+                if not line.startswith('+++ '):
+                    return None
+
+                words = line.split(None, 2)
+                if len(words[1]) < len(filename):
+                    # Always use the shortest filename for display
+                    filename = words[1]
+                groups = []
+                output.append({'filename' : filename, 'oldrev' : fromrev,
+                               'newrev' : 'new', 'diff' : groups})
+
+                for line in lines:
+                    # @@ -333,10 +329,8 @@
+                    r = re.match(r'@@ -(\d+),(\d+) \+(\d+),(\d+) @@', line)
+                    if not r:
+                        break
+                    blocks = []
+                    groups.append(blocks)
+                    fromline,fromend,toline,toend = map(int, r.groups())
+                    last_type = None
+
+                    fromend += fromline
+                    toend += toline
+
+                    while fromline < fromend or toline < toend:
+                        line = lines.next()
+
+                        # First character is the command
+                        command, line = line[0], line[1:]
+                        # Make a new block?
+                        if (command == ' ') != last_type:
+                            last_type = command == ' '
+                            blocks.append({'type': last_type and 'unmod' or 'mod',
+                                           'base.offset': fromline - 1,
+                                           'base.lines': [],
+                                           'changed.offset': toline - 1,
+                                           'changed.lines': []})
+                        if command == ' ':
+                            blocks[-1]['changed.lines'].append(line)
+                            blocks[-1]['base.lines'].append(line)
+                            fromline += 1
+                            toline += 1
+                        elif command == '+':
+                            blocks[-1]['changed.lines'].append(line)
+                            toline += 1
+                        elif command == '-':
+                            blocks[-1]['base.lines'].append(line)
+                            fromline += 1
+                        else:
+                            return None
+                line = lines.next()
+        except StopIteration:
+            pass
 
         # Go through all groups/blocks and mark up intraline changes, and
         # convert to html
