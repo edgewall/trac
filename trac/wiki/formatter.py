@@ -992,14 +992,14 @@ class LinkFormatter(OutlineFormatter):
 def wiki_to_html(wikitext, env, req, db=None,
                  absurls=False, escape_newlines=False):
     if not wikitext:
-        return ''
+        return Markup()
     out = StringIO()
     Formatter(env, req, absurls, db).format(wikitext, out, escape_newlines)
     return Markup(out.getvalue())
 
 def wiki_to_oneliner(wikitext, env, db=None, shorten=False, absurls=False):
     if not wikitext:
-        return ''
+        return Markup()
     out = StringIO()
     OneLinerFormatter(env, absurls, db).format(wikitext, out, shorten)
     return Markup(out.getvalue())
@@ -1007,7 +1007,7 @@ def wiki_to_oneliner(wikitext, env, db=None, shorten=False, absurls=False):
 def wiki_to_outline(wikitext, env, db=None,
                     absurls=False, max_depth=None, min_depth=None):
     if not wikitext:
-        return ''
+        return Markup()
     out = StringIO()
     OutlineFormatter(env, absurls, db).format(wikitext, out, max_depth,
                                               min_depth)
