@@ -574,6 +574,16 @@ class TicketModule(TicketModuleBase):
 
         # -- Ticket Change History
 
+        def quote_original(author, original, link):
+            if not 'comment' in req.args: # i.e. the comment was not yet edited
+                req.hdf['ticket.comment'] = '\n'.join(
+                    ['Replying to [%s %s]:' % (link, author)] +
+                    ['> %s' % line for line in original.splitlines()] + [''])
+
+        if replyto == 'description':
+            quote_original(reporter_id, ticket['description'],
+                           'ticket:%d' % ticket.id)
+
         changelog = ticket.get_changelog(db=db)
         autonum = 0 # used for "root" numbers
         replies = {}
@@ -604,12 +614,8 @@ class TicketModule(TicketModuleBase):
                         else:
                             this_num = old
                     assert this_num == str(autonum)
-                    # if we replied to this comment, quote it (with '>' prefix)
-                    if replyto == this_num and not 'comment' in req.args:
-                        req.hdf['ticket.comment'] = '\n'.join(
-                            ['Replying to [comment:%s %s]:' % \
-                             (replyto, author)] +
-                            ['> %s' % line for line in new.splitlines()] + [''])
+                    if replyto == this_num:
+                        quote_original(author, new, 'comment:%s' % replyto)
             elif field == 'description':
                 current['fields'][field] = ''
             else:

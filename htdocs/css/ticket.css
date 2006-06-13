@@ -39,6 +39,12 @@
 #ticket table.properties td { width: 30% }
 #ticket table.properties .description { border-top: 1px solid #dd9 }
 
+#ticket .description form { 
+ float: right;
+ position: relative;
+ bottom: 1.8em;
+}
+
 #changelog { border: 1px outset #996; padding: 1em }
 #changelog h3 {
  border-bottom: 1px solid #d7d7d7;
@@ -47,21 +53,12 @@
  font-weight: normal;
 }
 #changelog .threading {
-	float: right;
-}
-.inlinebuttons input { 
  float: right;
- font-size: 70%;
- border-width: 1px;
- margin: 0 .5em .1em 1.5em;
- padding: 0.1em;
- background-color: #f6f6f6;
+ position: relative;
+ bottom: 0.3em;
 }
-.inlinebuttons > input { /* rule ignored by IE */
- visibility: hidden;
-}
-div.change:hover .inlinebuttons input {
- visibility: visible;
+#changelog h3 .threading form { 
+ display: inline
 }
 
 #changelog .changes { list-style: square; margin-left: 2em; padding: 0 }
