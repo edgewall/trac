@@ -348,8 +348,12 @@ class TicketModule(TicketModuleBase):
             else:
                 return None
             kind, verb = status_map[status]
-            title = Markup('Ticket <em title="%s">#%s</em> (%s) %s by %s',
-                           summary, id, type, verb, author)
+            if format == 'rss':
+                title = 'Ticket #%s (%s %s): %s' % \
+                        (id, type.lower(), verb, summary)
+            else:
+                title = Markup('Ticket <em title="%s">#%s</em> (%s) %s by %s',
+                               summary, id, type, verb, author)
             href = format == 'rss' and req.abs_href.ticket(id) or \
                                        req.href.ticket(id)
             if cid:
