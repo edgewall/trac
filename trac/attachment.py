@@ -376,7 +376,7 @@ class AttachmentModule(Component):
 
     # Public methods
 
-    def get_attachment_history(self, start, stop, type):
+    def get_history(self, start, stop, type):
         """Return an iterable of tuples describing changes to attachments on
         a particular object type.
 

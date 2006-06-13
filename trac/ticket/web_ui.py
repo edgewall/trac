@@ -420,8 +420,7 @@ class TicketModule(TicketModuleBase):
             # Attachments
             if 'ticket_details' in filters:
                 for change, type, id, filename, time, description, author in \
-                        AttachmentModule(self.env). \
-                            get_attachment_history(start, stop, 'ticket'):
+                        AttachmentModule(self.env).get_history(start, stop, 'ticket'):
                     title = Markup('<em>%s</em> attached to ticket <em>#%s</em> by %s' % 
                                    (os.path.basename(filename), id, author))
                     yield ('attachment',

@@ -165,8 +165,7 @@ class WikiModule(Component):
 
             # Attachments
             for change, type, id, filename, time, description, author in \
-                    AttachmentModule(self.env).get_attachment_history(start, stop,
-                                                                      'wiki'): 
+                    AttachmentModule(self.env).get_history(start, stop, 'wiki'): 
                 title = Markup('<em>%s</em> attached to <em>%s</em> by %s' %
                                (os.path.basename(filename), id, author))
                 yield ('attachment',
