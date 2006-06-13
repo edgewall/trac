@@ -36,6 +36,10 @@ from trac.wiki import wiki_to_html, wiki_to_oneliner
 from trac.mimeview.api import Mimeview, IContentConverter
 
 
+class InvalidTicket(TracError):
+    """Exception raised when a ticket fails validation."""
+
+
 class TicketModuleBase(Component):
     # FIXME: temporary place-holder for unified ticket validation until
     #        ticket controller unification is merged
@@ -47,10 +51,10 @@ class TicketModuleBase(Component):
         for manipulator in self.ticket_manipulators:
             for field, message in manipulator.validate_ticket(req, ticket):
                 if field:
-                    raise TracError("The ticket %s field is invalid: %s" %
-                                    (field, message))
+                    raise InvalidTicket("The ticket %s field is invalid: %s" %
+                                        (field, message))
                 else:
-                    raise TracError("Invalid ticket: %s" % message)
+                    raise InvalidTicket("Invalid ticket: %s" % message)
 
 
 class NewticketModule(TicketModuleBase):

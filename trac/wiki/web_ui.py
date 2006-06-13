@@ -37,6 +37,10 @@ from trac.wiki.formatter import wiki_to_html, wiki_to_oneliner
 from trac.mimeview.api import Mimeview, IContentConverter
 
 
+class InvalidWikiPage(TracError):
+    """Exception raised when a Wiki page fails validation."""
+
+
 class WikiModule(Component):
 
     implements(INavigationContributor, IPermissionRequestor, IRequestHandler,
@@ -205,7 +209,12 @@ class WikiModule(Component):
 
         # Give the manipulators a pass at post-processing the page
         for manipulator in self.page_manipulators:
-            manipulator.validate_wiki_page(req, page)
+            for field, message in manipulator.validate_wiki_page(req, page):
+                if field:
+                    raise InvalidWikiPage("The Wiki page field %s is invalid: %s"
+                                          % (field, message))
+                else:
+                    raise InvalidWikiPage("Invalid Wiki page: %s" % message)
 
         page.save(req.args.get('author'), req.args.get('comment'),
                   req.remote_addr)

@@ -36,6 +36,41 @@ from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
 from trac.wiki import IWikiSyntaxProvider
 
 
+class InvalidAttachment(TracError):
+    """Exception raised when attachment validation fails."""
+
+
+class IAttachmentChangeListener(Interface):
+    """Extension point interface for components that require notification when
+    attachments are created or deleted."""
+    def attachment_added(attachment):
+        """Called when an attachment is added."""
+
+    def attachment_deleted(attachment):
+        """Called when an attachment is deleted."""
+
+
+class IAttachmentManipulator(Interface):
+    """Extension point interface for components that need to manipulate
+    attachments.
+    
+    Unlike change listeners, a manipulator can reject changes being committed
+    to the database."""
+    def prepare_attachment(req, attachment, fields):
+        """Not currently called, but should be provided for future
+        compatibility."""
+
+    def validate_attachment(req, attachment):
+        """Validate an attachment after upload but before being stored in Trac
+        environment.
+        
+        Must return a list of `(field, message)` tuples, one for each problem
+        detected. `field` can be any of `description`, `username`, `filename`,
+        `content`, or `None` to indicate an overall problem with the
+        attachment. Therefore, a return value of `[]` means everything is
+        OK."""
+
+
 class Attachment(object):
 
     def __init__(self, env, parent_type, parent_id, filename=None, db=None):
@@ -119,6 +154,10 @@ class Attachment(object):
         if handle_ta:
             db.commit()
 
+        for listener in AttachmentModule(self.env).change_listeners:
+            listener.attachment_deleted(self)
+
+
     def insert(self, filename, fileobj, size, t=None, db=None):
         if not db:
             db = self.env.get_db_cnx()
@@ -158,6 +197,10 @@ class Attachment(object):
 
             self.env.log.info('New attachment: %s by %s', self.title,
                               self.author)
+
+            for listener in AttachmentModule(self.env).change_listeners:
+                listener.attachment_added(self)
+
             if handle_ta:
                 db.commit()
         finally:
@@ -217,6 +260,9 @@ class AttachmentModule(Component):
 
     implements(IEnvironmentSetupParticipant, IRequestHandler,
                INavigationContributor, IWikiSyntaxProvider)
+
+    change_listeners = ExtensionPoint(IAttachmentChangeListener)
+    manipulators = ExtensionPoint(IAttachmentManipulator)
 
     CHUNK_SIZE = 4096
 
@@ -364,6 +410,16 @@ class AttachmentModule(Component):
         attachment.description = req.args.get('description', '')
         attachment.author = req.args.get('author', '')
         attachment.ipnr = req.remote_addr
+
+        # Validate attachment
+        for manipulator in self.manipulators:
+            for field, message in manipulator.validate_attachment(req, attachment):
+                if field:
+                    raise InvalidAttachment('Attachment field %s is invalid: %s'
+                                            % (field, message))
+                else:
+                    raise InvalidAttachment('Invalid attachment: %s' % message)
+
         if req.args.get('replace'):
             try:
                 old_attachment = Attachment(self.env, attachment.parent_type,
