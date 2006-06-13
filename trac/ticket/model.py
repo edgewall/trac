@@ -241,11 +241,11 @@ class Ticket(object):
                            "VALUES (%s, %s, %s, %s, %s, %s)",
                            (self.id, when, author, name, self._old[name],
                             self[name]))
-        if comment:
-            cursor.execute("INSERT INTO ticket_change "
-                           "(ticket,time,author,field,oldvalue,newvalue) "
-                           "VALUES (%s,%s,%s,'comment',%s,%s)",
-                           (self.id, when, author, cnum, comment))
+        # always save comment, even if empty (numbering support for timeline)
+        cursor.execute("INSERT INTO ticket_change "
+                       "(ticket,time,author,field,oldvalue,newvalue) "
+                       "VALUES (%s,%s,%s,'comment',%s,%s)",
+                       (self.id, when, author, cnum, comment))
 
         cursor.execute("UPDATE ticket SET changetime=%s WHERE id=%s",
                        (when, self.id))

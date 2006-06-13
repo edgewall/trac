@@ -328,7 +328,8 @@ class TicketModule(TicketModuleBase):
                       'closed': ('closedticket', 'closed'),
                       'edit': ('editedticket', 'updated')}
 
-        def produce((id, t, author, type, summary), status, fields, comment):
+        def produce((id, t, author, type, summary), status, fields,
+                    comment, cid):
             if status == 'edit':
                 if 'ticket_details' in filters:
                     info = ''
@@ -351,7 +352,8 @@ class TicketModule(TicketModuleBase):
                            summary, id, type, verb, author)
             href = format == 'rss' and req.abs_href.ticket(id) or \
                                        req.href.ticket(id)
-
+            if cid:
+                href += '#comment:' + cid
             if status == 'new':
                 message = summary
             else:
@@ -381,19 +383,21 @@ class TicketModule(TicketModuleBase):
             for id,t,author,type,summary,field,oldvalue,newvalue in cursor:
                 if not previous_update or (id,t,author) != previous_update[:3]:
                     if previous_update:
-                        ev = produce(previous_update, status, fields, comment)
+                        ev = produce(previous_update, status, fields,
+                                     comment, cid)
                         if ev:
                             yield ev
-                    status, fields, comment = 'edit', {}, ''
-                    previous_update = (id,t,author, type, summary)
+                    status, fields, comment, cid = 'edit', {}, '', None
+                    previous_update = (id, t, author, type, summary)
                 if field == 'comment':
                     comment = newvalue
+                    cid = oldvalue and oldvalue.split('.')[-1]
                 elif field == 'status' and newvalue in ('reopened', 'closed'):
                     status = newvalue
                 else:
                     fields[field] = newvalue
             if previous_update:
-                ev = produce(previous_update, status, fields, comment)
+                ev = produce(previous_update, status, fields, comment, cid)
                 if ev:
                     yield ev
             
@@ -403,7 +407,7 @@ class TicketModule(TicketModuleBase):
                                "  FROM ticket WHERE time>=%s AND time<=%s",
                                (start, stop))
                 for row in cursor:
-                    yield produce(row, 'new', {}, None)
+                    yield produce(row, 'new', {}, None, None)
 
     # Internal methods
 
