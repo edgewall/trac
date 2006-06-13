@@ -442,51 +442,34 @@ class TicketModule(TicketModuleBase):
         
     def export_rss(self, req, ticket):
         db = self.env.get_db_cnx()
-        changelog = ticket.get_changelog(db=db)
-        curr_author = None
-        curr_date   = 0
         changes = []
         change_summary = {}
 
         description = wiki_to_html(ticket['description'], self.env, req, db)
         req.hdf['ticket.description.formatted'] = unicode(description)
 
-        def update_title():
-            if not changes: return
-            title = '; '.join(['%s %s' % (', '.join(v), k)
-                               for k, v in change_summary.iteritems()])
-            changes[-1]['title'] = title
-
-        for date, author, field, old, new in changelog:
-            if date != curr_date or author != curr_author:
-                update_title()
-                change_summary = {}
-
-                changes.append({
-                    'date': http_date(date),
-                    'author': author,
-                    'fields': {}
-                })
-                curr_date = date
-                curr_author = author
-            if field == 'comment':
+        for change in self.grouped_changelog_entries(ticket, db):
+            changes.append(change)
+            # compute a change summary
+            change_summary = {}
+            # wikify comment
+            if 'comment' in change:
+                comment = change['comment']
+                change['comment'] = unicode(wiki_to_html(
+                    comment, self.env, req, db, absurls=True))
                 change_summary['added'] = ['comment']
-                changes[-1]['comment'] = unicode(wiki_to_html(new, self.env,
-                                                              req, db,
-                                                              absurls=True))
-            elif field == 'description':
-                change_summary.setdefault('changed', []).append(field)
-                changes[-1]['fields'][field] = ''
-            else:
-                change = 'changed'
-                if not old:
-                    change = 'set'
-                elif not new:
-                    change = 'deleted'
-                change_summary.setdefault(change, []).append(field)
-                changes[-1]['fields'][field] = {'old': old,
-                                                'new': new}
-        update_title()
+            for field, values in change['fields'].iteritems():
+                if field == 'description':
+                    change_summary.setdefault('changed', []).append(field)
+                else:
+                    chg = 'changed'
+                    if not values['old']:
+                        chg = 'set'
+                    elif not values['new']:
+                        chg = 'deleted'
+                    change_summary.setdefault(chg, []).append(field)
+            change['title'] = '; '.join(['%s %s' % (', '.join(v), k) for k, v \
+                                         in change_summary.iteritems()])
         req.hdf['ticket.changes'] = changes
         return (req.hdf.render('ticket_rss.cs'), 'application/rss+xml')
 
@@ -605,47 +588,29 @@ class TicketModule(TicketModuleBase):
         if replyto == 'description':
             quote_original(reporter_id, ticket['description'],
                            'ticket:%d' % ticket.id)
-
-        changelog = ticket.get_changelog(db=db)
-        autonum = 0 # used for "root" numbers
         replies = {}
         changes = []
-        last_uid = current = None
-        for date, author, field, old, new, permanent in changelog:
-            uid = date, author, permanent
-            if uid != last_uid:
-                last_uid = uid
-                current = {
-                    'date': format_datetime(date),
-                    'author': author,
-                    'fields': {}
-                }
-                changes.append(current)
-                if permanent:
-                    autonum += 1
-                    current['cnum'] = autonum
-            if field == 'comment':
-                current['comment'] = wiki_to_html(new, self.env, req, db)
-                if permanent:
-                    this_num = str(autonum)
-                    if old:
-                        if '.' in old: # retrieve parent.child relationship
-                            parent_num, this_num = old.split('.', 1)
-                            current['replyto'] = parent_num
-                            replies.setdefault(parent_num, []).append(this_num)
-                        else:
-                            this_num = old
-                    assert this_num == str(autonum)
-                    if replyto == this_num:
-                        quote_original(author, new, 'comment:%s' % replyto)
-            elif field == 'description':
-                current['fields'][field] = ''
-            else:
-                current['fields'][field] = {'old': old, 'new': new}
+        cnum = 0
+        for change in self.grouped_changelog_entries(ticket, db):
+            changes.append(change)
+            # wikify comment
+            comment = ''
+            if 'comment' in change:
+                comment = change['comment']
+                change['comment'] = wiki_to_html(comment, self.env, req, db)
+            if change['permanent']:
+                cnum = change['cnum']
+                # keep track of replies threading
+                if 'replyto' in change:
+                    replies.setdefault(change['replyto'], []).append(cnum)
+                # eventually cite the replied to comment
+                if replyto == str(cnum):
+                    quote_original(change['author'], comment,
+                                   'comment:%s' % replyto)
         req.hdf['ticket'] = {
             'changes': changes,
             'replies': replies,
-            'cnum': autonum + 1
+            'cnum': cnum + 1
            }
 
         # -- Ticket Attachments
@@ -660,3 +625,43 @@ class TicketModule(TicketModuleBase):
         actions = TicketSystem(self.env).get_available_actions(ticket, req.perm)
         for action in actions:
             req.hdf['ticket.actions.' + action] = '1'
+
+    def grouped_changelog_entries(self, ticket, db):
+        """Iterate on changelog entries, consolidating related changes
+        in a `dict` object.
+        """
+        changelog = ticket.get_changelog(db=db)
+        autonum = 0 # used for "root" numbers
+        last_uid = current = None
+        for date, author, field, old, new, permanent in changelog:
+            uid = date, author, permanent
+            if uid != last_uid:
+                if current:
+                    yield current
+                last_uid = uid
+                current = {
+                    'http_date': http_date(date),
+                    'date': format_datetime(date),
+                    'author': author,
+                    'fields': {},
+                    'permanent': permanent
+                }
+                if permanent:
+                    autonum += 1
+                    current['cnum'] = autonum
+            # some common processing for fields
+            if field == 'comment':
+                current['comment'] = new
+                if old:
+                    if '.' in old: # retrieve parent.child relationship
+                        parent_num, this_num = old.split('.', 1)
+                        current['replyto'] = parent_num
+                    else:
+                        this_num = old
+                    assert this_num == str(autonum)
+            elif field == 'description':
+                current['fields'][field] = ''
+            else:
+                current['fields'][field] = {'old': old, 'new': new}
+        if current:
+            yield current

@@ -15,9 +15,11 @@
    <item><?cs
     if:change.author ?><author><?cs var:change.author ?></author><?cs
     /if ?>
-    <pubDate><?cs var:change.date ?></pubDate>
+    <pubDate><?cs var:change.http_date ?></pubDate>
     <title><?cs var:change.title ?></title>
-    <link><?cs var:base_host ?><?cs var:ticket.href ?></link>
+    <link><?cs var:base_host ?><?cs var:ticket.href ?><?cs 
+     if:change.cnum ?>#comment:<?cs var:change.cnum ?><?cs
+     /if ?></link>
     <description>
     <?cs if:len(change.fields) ?>
     &lt;ul&gt;<?cs
