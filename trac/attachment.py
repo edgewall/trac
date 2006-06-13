@@ -34,6 +34,7 @@ from trac.util.text import unicode_quote, unicode_unquote, pretty_size
 from trac.web import HTTPBadRequest, IRequestHandler
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
 from trac.wiki import IWikiSyntaxProvider
+from trac.Timeline import ITimelineEventProvider
 
 
 class InvalidAttachment(TracError):
@@ -372,6 +373,24 @@ class AttachmentModule(Component):
 
     def get_link_resolvers(self):
         yield ('attachment', self._format_link)
+
+    # Public methods
+
+    def get_attachment_history(self, start, stop, type):
+        """Return an iterable of tuples describing changes to attachments on
+        a particular object type.
+
+        The tuples are in the form (change, type, id, filename, time,
+        description, author). `change` can currently only be `created`."""
+        # Traverse attachment directory
+        db = self.env.get_db_cnx()
+        cursor = db.cursor()
+        cursor.execute("SELECT type, id, filename, time, description, author "
+                       "  FROM attachment "
+                       "  WHERE time > %s AND time < %s "
+                       "        AND type = %s", (start, stop, type))
+        for type, id, filename, time, description, author in cursor:
+            yield ('created', type, id, filename, time, description, author)
 
     # Internal methods
 

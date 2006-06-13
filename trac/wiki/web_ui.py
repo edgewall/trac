@@ -16,10 +16,11 @@
 # Author: Jonas Borgström <jonas@edgewall.com>
 #         Christopher Lenz <cmlenz@gmx.de>
 
+import os
 import re
 import StringIO
 
-from trac.attachment import attachments_to_hdf, Attachment
+from trac.attachment import attachments_to_hdf, Attachment, AttachmentModule
 from trac.core import *
 from trac.perm import IPermissionRequestor
 from trac.Search import ISearchSource, search_to_sql, shorten_result
@@ -161,6 +162,17 @@ class WikiModule(Component):
                     comment = wiki_to_oneliner(comment, self.env, db,
                                                shorten=True)
                 yield 'wiki', href, title, t, author, comment
+
+            # Attachments
+            for change, type, id, filename, time, description, author in \
+                    AttachmentModule(self.env).get_attachment_history(start, stop,
+                                                                      'wiki'): 
+                title = Markup('<em>%s</em> attached to <em>%s</em> by %s' %
+                               (os.path.basename(filename), id, author))
+                yield ('attachment',
+                       self.env.href('attachment', type, id, filename),
+                       title, time, author, description)
+
 
     # Internal methods
 

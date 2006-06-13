@@ -19,7 +19,7 @@ import re
 import time
 from StringIO import StringIO
 
-from trac.attachment import attachments_to_hdf, Attachment
+from trac.attachment import attachments_to_hdf, Attachment, AttachmentModule
 from trac.config import BoolOption, Option
 from trac.core import *
 from trac.env import IEnvironmentSetupParticipant
@@ -416,6 +416,17 @@ class TicketModule(TicketModuleBase):
                                (start, stop))
                 for row in cursor:
                     yield produce(row, 'new', {}, None, None)
+
+            # Attachments
+            if 'ticket_details' in filters:
+                for change, type, id, filename, time, description, author in \
+                        AttachmentModule(self.env). \
+                            get_attachment_history(start, stop, 'ticket'):
+                    title = Markup('<em>%s</em> attached to ticket <em>#%s</em> by %s' % 
+                                   (os.path.basename(filename), id, author))
+                    yield ('attachment',
+                           self.env.href('attachment', type, id, filename),
+                           title, time, author, description)
 
     # Internal methods
 
