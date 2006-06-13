@@ -12,8 +12,8 @@
  padding: .5em 1em;
  position: relative;
 }
-#ticket h2.summary { margin: 0 }
-#ticket h3.status { color: #996; font-size: 90%; font-weight: normal; margin-top: .5em; }
+h1 .status { color: #444; text-transform: lowercase; }
+#ticket h2.summary { margin: 0 0 .8em 0 }
 #ticket .date { color: #996; float: right; font-size: 85%; position: relative }
 #ticket .date p { margin: 0 }
 

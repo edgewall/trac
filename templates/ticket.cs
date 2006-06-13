@@ -30,8 +30,12 @@
 
 <div id="content" class="ticket">
 
- <h1>Ticket #<?cs var:ticket.id ?> <?cs
- if:ticket.type ?>(<?cs var:ticket.type ?>)<?cs /if ?></h1>
+ <h1>Ticket #<?cs var:ticket.id ?> <span class="status">(<?cs 
+  var:ticket.status ?><?cs 
+  if:ticket.type ?> <?cs var:ticket.type ?><?cs 
+  /if ?><?cs 
+  if:ticket.resolution ?>: <?cs var:ticket.resolution ?><?cs 
+  /if ?>)</span></h1>
 
 <div id="searchable">
 <div id="ticket">
@@ -42,9 +46,6 @@
   <?cs /if ?>
  </div>
  <h2 class="summary"><?cs var:ticket.summary ?></h2>
- <h3 class="status">Status: <strong><?cs var:ticket.status ?><?cs
-  if:ticket.resolution ?> (<?cs var:ticket.resolution ?>)<?cs
-  /if ?></strong></h3>
  <table class="properties">
   <tr>
    <th id="h_reporter">Reported by:</th>
