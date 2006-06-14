@@ -145,6 +145,7 @@ class WikiModule(Component):
         if 'wiki' in filters:
             wiki = WikiSystem(self.env)
             format = req.args.get('format')
+            href = format == 'rss' and req.abs_href or req.href
             db = self.env.get_db_cnx()
             cursor = db.cursor()
             cursor.execute("SELECT time,name,comment,author "
@@ -154,22 +155,19 @@ class WikiModule(Component):
                 title = Markup('<em>%s</em> edited by %s',
                                wiki.format_page_name(name), author)
                 if format == 'rss':
-                    href = req.abs_href.wiki(name)
                     comment = wiki_to_html(comment or '--', self.env, req, db,
                                            absurls=True)
                 else:
-                    href = req.href.wiki(name)
                     comment = wiki_to_oneliner(comment, self.env, db,
                                                shorten=True)
-                yield 'wiki', href, title, t, author, comment
+                yield 'wiki', href.wiki(name), title, t, author, comment
 
             # Attachments
             for change, type, id, filename, time, description, author in \
                     AttachmentModule(self.env).get_history(start, stop, 'wiki'): 
                 title = Markup('<em>%s</em> attached to <em>%s</em> by %s' %
                                (os.path.basename(filename), id, author))
-                yield ('attachment',
-                       req.href('attachment', type, id, filename),
+                yield ('attachment', href.attachment(type, id, filename),
                        title, time, author, description)
 
 

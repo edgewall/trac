@@ -332,6 +332,8 @@ class TicketModule(TicketModuleBase):
                       'closed': ('closedticket', 'closed'),
                       'edit': ('editedticket', 'updated')}
 
+        href = format == 'rss' and req.abs_href or req.href
+
         def produce((id, t, author, type, summary), status, fields,
                     comment, cid):
             if status == 'edit':
@@ -358,10 +360,9 @@ class TicketModule(TicketModuleBase):
             else:
                 title = Markup('Ticket <em title="%s">#%s</em> (%s) %s by %s',
                                summary, id, type, verb, author)
-            href = format == 'rss' and req.abs_href.ticket(id) or \
-                                       req.href.ticket(id)
+            ticket_href = href.ticket(id)
             if cid:
-                href += '#comment:' + cid
+                ticket_href += '#comment:' + cid
             if status == 'new':
                 message = summary
             else:
@@ -373,7 +374,7 @@ class TicketModule(TicketModuleBase):
                     else:
                         message += wiki_to_oneliner(comment, self.env, db,
                                                     shorten=True)
-            return kind, href, title, t, author, message
+            return kind, ticket_href, title, t, author, message
 
         # Ticket changes
         if 'ticket' in filters or 'ticket_details' in filters:
@@ -423,8 +424,7 @@ class TicketModule(TicketModuleBase):
                         AttachmentModule(self.env).get_history(start, stop, 'ticket'):
                     title = Markup('<em>%s</em> attached to ticket <em>#%s</em> by %s' % 
                                    (os.path.basename(filename), id, author))
-                    yield ('attachment',
-                           req.href('attachment', type, id, filename),
+                    yield ('attachment', href.attachment(type, id, filename),
                            title, time, author, description)
 
     # Internal methods

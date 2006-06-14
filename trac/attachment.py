@@ -34,7 +34,6 @@ from trac.util.text import unicode_quote, unicode_unquote, pretty_size
 from trac.web import HTTPBadRequest, IRequestHandler
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
 from trac.wiki import IWikiSyntaxProvider
-from trac.Timeline import ITimelineEventProvider
 
 
 class InvalidAttachment(TracError):
