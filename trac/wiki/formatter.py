@@ -229,7 +229,7 @@ class Formatter(object):
         self.req = req
         self._db = db
         self._absurls = absurls
-        self._anchors = []
+        self._anchors = {}
         self._open_tags = []
         self.href = absurls and (req or env).abs_href or (req or env).href
         self._local = env.config.get('project', 'url') \
@@ -454,25 +454,18 @@ class Formatter(object):
 
     # Headings
 
-    def _heading_formatter(self, match, fullmatch):
+    def _parse_heading(self, match, fullmatch, shorten):
         match = match.strip()
-        self.close_table()
-        self.close_paragraph()
-        self.close_indentation()
-        self.close_list()
-        self.close_def_list()
 
         depth = min(len(fullmatch.group('hdepth')), 5)
         anchor = fullmatch.group('hanchor') or ''
         heading = match[depth+1:-depth-1-len(anchor)]
-        heading = wiki_to_oneliner(heading, self.env, self.db, False,
+        heading = wiki_to_oneliner(heading, self.env, self.db, shorten,
                                    self._absurls)
-
         if anchor:
             anchor = anchor[1:]
         else:
             sans_markup = heading.plaintext(keeplinebreaks=False)
-
             anchor = self._anchor_re.sub('', sans_markup)
             if not anchor or anchor[0].isdigit() or anchor[0] in '.-':
                 # an ID must start with a Name-start character in XHTML
@@ -482,8 +475,18 @@ class Formatter(object):
         while anchor in self._anchors:
             anchor = anchor_base + str(i)
             i += 1
-        self._anchors.append(anchor)
-        self.out.write('<h%d id="%s">%s</h%d>' % (depth, anchor, heading, depth))
+        self._anchors[anchor] = True
+        return (depth, heading, anchor)
+
+    def _heading_formatter(self, match, fullmatch):
+        self.close_table()
+        self.close_paragraph()
+        self.close_indentation()
+        self.close_list()
+        self.close_def_list()
+        depth, heading, anchor = self._parse_heading(match, fullmatch, False)
+        self.out.write('<h%d id="%s">%s</h%d>' %
+                       (depth, anchor, heading, depth))
 
     # Generic indentation (as defined by lists and quotes)
 
@@ -969,17 +972,13 @@ class OutlineFormatter(Formatter):
         out.write('</li></ol>' * curr_depth)
 
     def _heading_formatter(self, match, fullmatch):
-        Formatter._heading_formatter(self, match, fullmatch)
-        depth = min(len(fullmatch.group('hdepth')), 5)
-        heading = match[depth+1:-depth-1]
-        anchor = self._anchors[-1]
-        text = wiki_to_oneliner(heading, self.env, self.db, True, self._absurls)
-        text = re.sub(r'</?a(?: .*?)?>', '', text) # Strip out link tags
-        self.outline.append((depth, anchor, text))
+        depth, heading, anchor = self._parse_heading(match, fullmatch, True)
+        heading = re.sub(r'</?a(?: .*?)?>', '', heading) # Strip out link tags
+        self.outline.append((depth, anchor, heading))
 
 
 class LinkFormatter(OutlineFormatter):
-    """Special formatter that focuses on ."""
+    """Special formatter that focuses on TracLinks."""
     flavor = 'outline'
     
     def __init__(self, env, absurls=False, db=None):
