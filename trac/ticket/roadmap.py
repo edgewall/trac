@@ -47,22 +47,22 @@ def get_tickets_for_milestone(env, db, milestone, field='component'):
         tickets.append({'id': tkt_id, 'status': status, field: fieldval})
     return tickets
 
-def get_query_links(env, milestone, grouped_by='component', group=None):
+def get_query_links(req, milestone, grouped_by='component', group=None):
     q = {}
     if not group:
-        q['all_tickets'] = env.href.query(milestone=milestone)
-        q['active_tickets'] = env.href.query(milestone=milestone,
-                                             status=('new', 'assigned', 'reopened'))
-        q['closed_tickets'] = env.href.query(milestone=milestone, status='closed')
+        q['all_tickets'] = req.href.query(milestone=milestone)
+        q['active_tickets'] = req.href.query(
+            milestone=milestone, status=('new', 'assigned', 'reopened'))
+        q['closed_tickets'] = req.href.query(
+            milestone=milestone, status='closed')
     else:
-        q['all_tickets'] = env.href.query({grouped_by: group},
-                                          milestone=milestone)
-        q['active_tickets'] = env.href.query({grouped_by: group},
-                                             milestone=milestone,
-                                             status=('new', 'assigned', 'reopened'))
-        q['closed_tickets'] = env.href.query({grouped_by: group},
-                                             milestone=milestone,
-                                             status='closed')
+        q['all_tickets'] = req.href.query(
+            {grouped_by: group}, milestone=milestone)
+        q['active_tickets'] = req.href.query(
+            {grouped_by: group}, milestone=milestone,
+            status=('new', 'assigned', 'reopened'))
+        q['closed_tickets'] = req.href.query(
+            {grouped_by: group}, milestone=milestone, status='closed')
     return q
 
 def calc_ticket_stats(tickets):
@@ -91,7 +91,7 @@ def milestone_to_hdf(env, db, req, milestone):
     if milestone.exists:
         safe_name = milestone.name.replace('/', '%2F')
     hdf = {'name': milestone.name,
-           'href': env.href.milestone(safe_name)}
+           'href': req.href.milestone(safe_name)}
     if milestone.description:
         hdf['description_source'] = milestone.description
         hdf['description'] = wiki_to_html(milestone.description, env, req, db)
@@ -162,7 +162,7 @@ class RoadmapModule(Component):
             tickets = get_tickets_for_milestone(self.env, db, milestone_name,
                                                 'owner')
             req.hdf[prefix + 'stats'] = calc_ticket_stats(tickets)
-            for k, v in get_query_links(self.env, milestone_name).items():
+            for k, v in get_query_links(req, milestone_name).items():
                 req.hdf[prefix + 'queries.' + k] = v
             milestone['tickets'] = tickets # for the iCalendar view
 
@@ -176,7 +176,7 @@ class RoadmapModule(Component):
         username = None
         if req.authname and req.authname != 'anonymous':
             username = req.authname
-        icshref = self.env.href.roadmap(show=req.args.get('show'),
+        icshref = req.href.roadmap(show=req.args.get('show'),
                                         user=username, format='ics')
         add_link(req, 'alternate', icshref, 'iCalendar', 'text/calendar', 'ics')
 
@@ -259,7 +259,7 @@ class RoadmapModule(Component):
                     write_date('DUE', localtime(milestone['due']))
                 write_prop('SUMMARY', 'Ticket #%i: %s' % (ticket.id,
                                                           ticket['summary']))
-                write_prop('URL', self.env.abs_href.ticket(ticket.id))
+                write_prop('URL', req.abs_href.ticket(ticket.id))
                 write_prop('DESCRIPTION', ticket['description'])
                 priority = get_priority(ticket)
                 if priority:
@@ -316,11 +316,11 @@ class MilestoneModule(Component):
             for completed, name, description in cursor:
                 title = Markup('Milestone <em>%s</em> completed', name)
                 if format == 'rss':
-                    href = self.env.abs_href.milestone(name)
+                    href = req.abs_href.milestone(name)
                     message = wiki_to_html(description, self.env, db,
                                            absurls=True)
                 else:
-                    href = self.env.href.milestone(name)
+                    href = req.href.milestone(name)
                     message = wiki_to_oneliner(description, self.env, db,
                                                shorten=True)
                 yield 'milestone', href, title, completed, None, message or '--'
@@ -338,7 +338,7 @@ class MilestoneModule(Component):
     def process_request(self, req):
         req.perm.assert_permission('MILESTONE_VIEW')
 
-        add_link(req, 'up', self.env.href.roadmap(), 'Roadmap')
+        add_link(req, 'up', req.href.roadmap(), 'Roadmap')
 
         db = self.env.get_db_cnx()
         milestone = Milestone(self.env, req.args.get('id'), db)
@@ -348,9 +348,9 @@ class MilestoneModule(Component):
             if req.args.has_key('cancel'):
                 if milestone.exists:
                     safe_name = milestone.name.replace('/', '%2F')
-                    req.redirect(self.env.href.milestone(safe_name))
+                    req.redirect(req.href.milestone(safe_name))
                 else:
-                    req.redirect(self.env.href.roadmap())
+                    req.redirect(req.href.roadmap())
             elif action == 'edit':
                 self._do_save(req, db, milestone)
             elif action == 'delete':
@@ -375,7 +375,7 @@ class MilestoneModule(Component):
             retarget_to = req.args.get('target')
         milestone.delete(retarget_to, req.authname)
         db.commit()
-        req.redirect(self.env.href.roadmap())
+        req.redirect(req.href.roadmap())
 
     def _do_save(self, req, db, milestone):
         if milestone.exists:
@@ -423,7 +423,7 @@ class MilestoneModule(Component):
         db.commit()
 
         safe_name = milestone.name.replace('/', '%2F')
-        req.redirect(self.env.href.milestone(safe_name))
+        req.redirect(req.href.milestone(safe_name))
 
     def _render_confirm(self, req, db, milestone):
         req.perm.assert_permission('MILESTONE_DELETE')
@@ -483,7 +483,7 @@ class MilestoneModule(Component):
         tickets = get_tickets_for_milestone(self.env, db, milestone.name, by)
         stats = calc_ticket_stats(tickets)
         req.hdf['milestone.stats'] = stats
-        for key, value in get_query_links(self.env, milestone.name).items():
+        for key, value in get_query_links(req, milestone.name).items():
             req.hdf['milestone.queries.' + key] = value
 
         groups = _get_groups(self.env, db, by)
@@ -503,8 +503,8 @@ class MilestoneModule(Component):
             req.hdf['%s.percent_total' % prefix] = percent_total * 100
             stats = calc_ticket_stats(group_tickets)
             req.hdf[prefix] = stats
-            for key, value in get_query_links(self.env, milestone.name,
-                                              by, group).items():
+            for key, value in \
+                    get_query_links(req, milestone.name, by, group).items():
                 req.hdf['%s.queries.%s' % (prefix, key)] = value
             group_no += 1
         req.hdf['milestone.stats.max_percent_total'] = max_percent_total * 100

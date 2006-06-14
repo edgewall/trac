@@ -29,7 +29,7 @@ from trac.core import *
 from trac.web.api import IAuthenticator, IRequestHandler
 from trac.web.chrome import INavigationContributor
 from trac.util import hex_entropy, md5crypt
-from trac.util.markup import escape, Markup
+from trac.util.markup import escape, html
 
 
 class LoginModule(Component):
@@ -80,12 +80,10 @@ class LoginModule(Component):
         if req.authname and req.authname != 'anonymous':
             yield ('metanav', 'login', 'logged in as %s' % req.authname)
             yield ('metanav', 'logout',
-                   Markup('<a href="%s">Logout</a>' 
-                          % escape(self.env.href.logout())))
+                   html.A('Logout', href=req.href.logout()))
         else:
             yield ('metanav', 'login',
-                   Markup('<a href="%s">Login</a>' 
-                          % escape(self.env.href.login())))
+                   html.A('Login', href=req.href.login()))
 
     # IRequestHandler methods
 
@@ -134,7 +132,7 @@ class LoginModule(Component):
 
         req.authname = remote_user
         req.outcookie['trac_auth'] = cookie
-        req.outcookie['trac_auth']['path'] = self.env.href()
+        req.outcookie['trac_auth']['path'] = req.href()
 
     def _do_logout(self, req):
         """Log the user out.
@@ -159,7 +157,7 @@ class LoginModule(Component):
         "expires" property to a date in the past.
         """
         req.outcookie['trac_auth'] = ''
-        req.outcookie['trac_auth']['path'] = self.env.href()
+        req.outcookie['trac_auth']['path'] = req.href()
         req.outcookie['trac_auth']['expires'] = -10000
 
     def _get_name_for_cookie(self, req, cookie):
@@ -187,7 +185,7 @@ class LoginModule(Component):
         if referer and not referer.startswith(req.base_url):
             # only redirect to referer if it is from the same site
             referer = None
-        req.redirect(referer or self.env.abs_href())
+        req.redirect(referer or req.abs_href())
 
 
 class HTTPAuthentication(object):

@@ -68,6 +68,7 @@ def _open_environment(env_path, run_once=False):
 def populate_hdf(hdf, env, req=None):
     """Populate the HDF data set with various information, such as common URLs,
     project information and request-related information.
+    FIXME: do we really have req==None at times?
     """
     from trac import __version__
     hdf['trac'] = {
@@ -75,24 +76,6 @@ def populate_hdf(hdf, env, req=None):
         'time': format_datetime(),
         'time.gmt': http_date()
     }
-    hdf['trac.href'] = {
-        'wiki': env.href.wiki(),
-        'browser': env.href.browser('/'),
-        'timeline': env.href.timeline(),
-        'roadmap': env.href.roadmap(),
-        'milestone': env.href.milestone(None),
-        'report': env.href.report(),
-        'query': env.href.query(),
-        'newticket': env.href.newticket(),
-        'search': env.href.search(),
-        'about': env.href.about(),
-        'about_config': env.href.about('config'),
-        'login': env.href.login(),
-        'logout': env.href.logout(),
-        'settings': env.href.settings(),
-        'homepage': 'http://trac.edgewall.com/'
-    }
-
     hdf['project'] = {
         'name': env.project_name,
         'name_encoded': env.project_name,
@@ -102,6 +85,24 @@ def populate_hdf(hdf, env, req=None):
     }
 
     if req:
+        hdf['trac.href'] = {
+            'wiki': req.href.wiki(),
+            'browser': req.href.browser('/'),
+            'timeline': req.href.timeline(),
+            'roadmap': req.href.roadmap(),
+            'milestone': req.href.milestone(None),
+            'report': req.href.report(),
+            'query': req.href.query(),
+            'newticket': req.href.newticket(),
+            'search': req.href.search(),
+            'about': req.href.about(),
+            'about_config': req.href.about('config'),
+            'login': req.href.login(),
+            'logout': req.href.logout(),
+            'settings': req.href.settings(),
+            'homepage': 'http://trac.edgewall.com/'
+        }
+
         hdf['base_url'] = req.base_url
         hdf['base_host'] = req.base_url[:req.base_url.rfind(req.base_path)]
         hdf['cgi_location'] = req.base_path
@@ -153,7 +154,7 @@ class RequestDispatcher(Component):
         In addition, this method initializes the HDF data set and adds the web
         site chrome.
         """
-        # For backwards compatibility, should be removed in the future
+        # FIXME: For backwards compatibility, should be removed in 0.11
         self.env.href = req.href
         self.env.abs_href = req.abs_href
 

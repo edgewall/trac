@@ -66,10 +66,10 @@ class SettingsModule(Component):
                     req.session.change_sid(val)
                 else:
                     req.session[field] = val
-        req.redirect(self.env.href.settings())
+        req.redirect(req.href.settings())
 
     def _do_load(self, req):
         if req.authname == 'anonymous':
             oldsid = req.args.get('loadsid')
             req.session.get_session(oldsid)
-        req.redirect(self.env.href.settings())
+        req.redirect(req.href.settings())

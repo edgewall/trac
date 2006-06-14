@@ -100,7 +100,7 @@ class BrowserModule(Component):
         # If `rev` is `None`, we'll try to reuse `None` consistently,
         # as a special shortcut to the latest revision.
         rev_or_latest = rev or repos.youngest_rev
-        node = get_existing_node(self.env, repos, path, rev_or_latest)
+        node = get_existing_node(req, repos, path, rev_or_latest)
 
         # Rendered list of node properties
         hidden_properties = self.hidden_properties

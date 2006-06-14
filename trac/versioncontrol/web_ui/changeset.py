@@ -643,7 +643,7 @@ class ChangesetModule(Component):
 
                 if format == 'rss':
                     title = Markup('Changeset [%s]: %s', chgset.rev, shortlog)
-                    href = self.env.abs_href.changeset(chgset.rev)
+                    href = req.abs_href.changeset(chgset.rev)
                     if wiki_format:
                         message = wiki_to_html(message, self.env, req, db,
                                                absurls=True)

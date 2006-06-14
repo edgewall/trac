@@ -103,7 +103,7 @@ class LogModule(Component):
                 for h in repos.get_path_history(path, rev, limit):
                     yield h
         else:
-            history = get_existing_node(self.env, repos, path, rev).get_history
+            history = get_existing_node(req, repos, path, rev).get_history
 
         # -- retrieve history, asking for limit+1 results
         info = []

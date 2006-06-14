@@ -424,7 +424,7 @@ class TicketModule(TicketModuleBase):
                     title = Markup('<em>%s</em> attached to ticket <em>#%s</em> by %s' % 
                                    (os.path.basename(filename), id, author))
                     yield ('attachment',
-                           self.env.href('attachment', type, id, filename),
+                           req.href('attachment', type, id, filename),
                            title, time, author, description)
 
     # Internal methods

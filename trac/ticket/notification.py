@@ -57,13 +57,14 @@ class TicketNotifyEmail(NotifyEmail):
         self.prev_cc = []
 
     def notify(self, ticket, newticket=True, modtime=0):
+        # FIXME: should have a `req` parameter, for ['link'] below
         self.ticket = ticket
         self.modtime = modtime
         self.newticket = newticket
         self.ticket['description'] = wrap(self.ticket.values.get('description', ''),
                                           self.COLS, initial_indent=' ',
                                           subsequent_indent=' ', linesep=CRLF)
-        self.ticket['link'] = self.env.abs_href.ticket(ticket.id)
+        self.ticket['link'] = self.env.abs_href.ticket(ticket.id) # FIXME
         self.hdf.set_unescaped('email.ticket_props', self.format_props())
         self.hdf.set_unescaped('email.ticket_body_hdr', self.format_hdr())
         self.hdf.set_unescaped('ticket', self.ticket.values)

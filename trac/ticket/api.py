@@ -263,6 +263,6 @@ class TicketSystem(Component):
             if status == 'closed':
                 ticket = Markup('<span style="text-decoration: line-through">'
                                 '#%s</span>: ', tid)
-            yield (self.env.href.ticket(tid),
+            yield (req.href.ticket(tid),
                    ticket + shorten_line(summary),
                    date, author, shorten_result(desc, terms))

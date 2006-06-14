@@ -99,7 +99,7 @@ class ReStructuredTextRenderer(Component):
                         if not WikiSystem(self.env).has_page(pagename.group()):
                             missing = 1
                             text = text + "?"
-                    uri = function(self.env.href, g)
+                    uri = function(req.href, g)
                     reference = nodes.reference(rawtext, text)
                     reference['refuri']= uri
                     if missing:

@@ -246,7 +246,6 @@ class Chrome(Component):
         yield ('htdocs', self._format_link)
 
     def _format_link(self, formatter, ns, file, label):
-        href = self.env.href.chrome('site', file)
         return html.A(href=formatter.href.chrome('site', file))[label]
 
     # Public API methods
@@ -270,9 +269,9 @@ class Chrome(Component):
         req.hdf['htdocs_location'] = htdocs_location.rstrip('/') + '/'
 
         # HTML <head> links
-        add_link(req, 'start', self.env.href.wiki())
-        add_link(req, 'search', self.env.href.search())
-        add_link(req, 'help', self.env.href.wiki('TracGuide'))
+        add_link(req, 'start', req.href.wiki())
+        add_link(req, 'search', req.href.search())
+        add_link(req, 'help', req.href.wiki('TracGuide'))
         add_stylesheet(req, 'common/css/trac.css')
         add_javascript(req, 'common/js/trac.js')
         icon = self.env.project_icon

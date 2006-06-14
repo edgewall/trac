@@ -1,5 +1,6 @@
 from trac.test import EnvironmentStub, Mock
 from trac.web.auth import LoginModule
+from trac.web.href import Href
 
 from Cookie import SimpleCookie as Cookie
 import unittest
@@ -13,13 +14,15 @@ class LoginModuleTestCase(unittest.TestCase):
         self.module = LoginModule(self.env)
 
     def test_anonymous_access(self):
-        req = Mock(incookie=Cookie(), remote_addr='127.0.0.1', remote_user=None)
+        req = Mock(incookie=Cookie(), href=Href('/trac.cgi'),
+                   remote_addr='127.0.0.1', remote_user=None)
         self.assertEqual(None, self.module.authenticate(req))
 
     def test_unknown_cookie_access(self):
         incookie = Cookie()
         incookie['trac_auth'] = '123'
-        req = Mock(cgi_location='/trac', incookie=incookie, outcookie=Cookie(),
+        req = Mock(cgi_location='/trac', href=Href('/trac.cgi'),
+                   incookie=incookie, outcookie=Cookie(),
                    remote_addr='127.0.0.1', remote_user=None)
         self.assertEqual(None, self.module.authenticate(req))
 
@@ -31,6 +34,7 @@ class LoginModuleTestCase(unittest.TestCase):
         incookie['trac_auth'] = '123'
         outcookie = Cookie()
         req = Mock(incookie=incookie, outcookie=outcookie,
+                   href=Href('/trac.cgi'),
                    remote_addr='127.0.0.1', remote_user=None)
         self.assertEqual('john', self.module.authenticate(req))
         self.failIf('auth_cookie' in req.outcookie)
@@ -42,7 +46,8 @@ class LoginModuleTestCase(unittest.TestCase):
         incookie = Cookie()
         incookie['trac_auth'] = '123'
         outcookie = Cookie()
-        req = Mock(cgi_location='/trac', incookie=incookie, outcookie=outcookie,
+        req = Mock(cgi_location='/trac', href=Href('/trac.cgi'),
+                   incookie=incookie, outcookie=outcookie,
                    remote_addr='192.168.0.100', remote_user=None)
         self.assertEqual(None, self.module.authenticate(req))
         self.failIf('trac_auth' not in req.outcookie)
@@ -56,6 +61,7 @@ class LoginModuleTestCase(unittest.TestCase):
         incookie['trac_auth'] = '123'
         outcookie = Cookie()
         req = Mock(incookie=incookie, outcookie=outcookie,
+                   href=Href('/trac.cgi'),
                    remote_addr='192.168.0.100', remote_user=None)
         self.assertEqual('john', self.module.authenticate(req))
         self.failIf('auth_cookie' in req.outcookie)
@@ -64,7 +70,8 @@ class LoginModuleTestCase(unittest.TestCase):
         outcookie = Cookie()
         # remote_user must be upper case to test that by default, case is
         # preserved.
-        req = Mock(cgi_location='/trac', incookie=Cookie(), outcookie=outcookie,
+        req = Mock(cgi_location='/trac', href=Href('/trac.cgi'),
+                   incookie=Cookie(), outcookie=outcookie,
                    remote_addr='127.0.0.1', remote_user='john', authname='john')
         self.module._do_login(req)
 
@@ -85,7 +92,8 @@ class LoginModuleTestCase(unittest.TestCase):
         self.env.config.set('trac', 'ignore_auth_case', 'yes')
 
         outcookie = Cookie()
-        req = Mock(cgi_location='/trac', incookie=Cookie(), outcookie=outcookie,
+        req = Mock(cgi_location='/trac', href=Href('/trac.cgi'),
+                   incookie=Cookie(), outcookie=outcookie,
                    remote_addr='127.0.0.1', remote_user='John',
                    authname='anonymous')
         self.module._do_login(req)
@@ -100,7 +108,8 @@ class LoginModuleTestCase(unittest.TestCase):
         self.assertEquals('127.0.0.1', row[1])
 
     def test_login_no_username(self):
-        req = Mock(incookie=Cookie(), remote_addr='127.0.0.1', remote_user=None)
+        req = Mock(incookie=Cookie(), href=Href('/trac.cgi'),
+                   remote_addr='127.0.0.1', remote_user=None)
         self.assertRaises(AssertionError, self.module._do_login, req)
 
     def test_already_logged_in_same_user(self):
@@ -110,6 +119,7 @@ class LoginModuleTestCase(unittest.TestCase):
         incookie = Cookie()
         incookie['trac_auth'] = '123'
         req = Mock(incookie=incookie, outcookie=Cookie(),
+                   href=Href('/trac.cgi'),
                    remote_addr='127.0.0.1', remote_user='john', authname='john')
         self.module._do_login(req) # this shouldn't raise an error
 
@@ -119,8 +129,9 @@ class LoginModuleTestCase(unittest.TestCase):
                        "VALUES ('123', 'john', '127.0.0.1')")
         incookie = Cookie()
         incookie['trac_auth'] = '123'
-        req = Mock(incookie=incookie, authname='john', remote_addr='127.0.0.1',
-                   remote_user='tom')
+        req = Mock(incookie=incookie, authname='john',
+                   href=Href('/trac.cgi'),
+                   remote_addr='127.0.0.1', remote_user='tom')
         self.assertRaises(AssertionError, self.module._do_login, req)
 
     def test_logout(self):
@@ -130,7 +141,8 @@ class LoginModuleTestCase(unittest.TestCase):
         incookie = Cookie()
         incookie['trac_auth'] = '123'
         outcookie = Cookie()
-        req = Mock(cgi_location='/trac', incookie=incookie, outcookie=outcookie,
+        req = Mock(cgi_location='/trac', href=Href('/trac.cgi'),
+                   incookie=incookie, outcookie=outcookie,
                    remote_addr='127.0.0.1', remote_user=None, authname='john')
         self.module._do_logout(req)
         self.failIf('trac_auth' not in outcookie)
@@ -138,7 +150,8 @@ class LoginModuleTestCase(unittest.TestCase):
         self.failIf(cursor.fetchone())
 
     def test_logout_not_logged_in(self):
-        req = Mock(cgi_location='/trac', incookie=Cookie(), outcookie=Cookie(),
+        req = Mock(cgi_location='/trac', href=Href('/trac.cgi'),
+                   incookie=Cookie(), outcookie=Cookie(),
                    remote_addr='127.0.0.1', remote_user=None,
                    authname='anonymous')
         self.module._do_logout(req) # this shouldn't raise an error

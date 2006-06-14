@@ -144,7 +144,7 @@ class Query(object):
 
         return self.cols
 
-    def execute(self, db=None):
+    def execute(self, req, db=None):
         if not self.cols:
             self.get_columns()
 
@@ -159,7 +159,7 @@ class Query(object):
         results = []
         for row in cursor:
             id = int(row[0])
-            result = {'id': id, 'href': self.env.href.ticket(id)}
+            result = {'id': id, 'href': req.href.ticket(id)}
             for i in range(1, len(columns)):
                 name, val = columns[i], row[i]
                 if name == self.group:
@@ -175,16 +175,17 @@ class Query(object):
         cursor.close()
         return results
 
-    def get_href(self, order=None, desc=None, format=None):
+    def get_href(self, req, order=None, desc=None, format=None):
+        # FIXME: only use .href from that 'req' for now
         if desc is None:
             desc = self.desc
         if order is None:
             order = self.order
-        return self.env.href.query(order=order, desc=desc and 1 or None,
-                                   group=self.group or None,
-                                   groupdesc=self.groupdesc and 1 or None,
-                                   verbose=self.verbose and 1 or None,
-                                   format=format, **self.constraints)
+        return req.href.query(order=order, desc=desc and 1 or None,
+                              group=self.group or None,
+                              groupdesc=self.groupdesc and 1 or None,
+                              verbose=self.verbose and 1 or None,
+                              format=format, **self.constraints)
 
     def get_sql(self):
         """Return a (sql, params) tuple for the query."""
@@ -361,9 +362,9 @@ class QueryModule(Component):
         if key == 'rss':
             return self.export_rss(req, query)
         elif key == 'csv':
-            return self.export_csv(query, mimetype='text/csv')
+            return self.export_csv(req, query, mimetype='text/csv')
         elif key == 'tab':
-            return self.export_csv(query, '\t', 'text/tab-separated-values')
+            return self.export_csv(req, query, '\t', 'text/tab-separated-values')
 
     # INavigationContributor methods
 
@@ -409,13 +410,14 @@ class QueryModule(Component):
             for var in ('query_constraints', 'query_time', 'query_tickets'):
                 if req.session.has_key(var):
                     del req.session[var]
-            req.redirect(query.get_href())
+            req.redirect(query.get_href(req))
 
         # Add registered converters
         for conversion in Mimeview(self.env).get_supported_conversions(
                                              'trac.ticket.Query'):
-            add_link(req, 'alternate', query.get_href(format=conversion[0]),
-                      conversion[1], conversion[3])
+            add_link(req, 'alternate',
+                     query.get_href(req, format=conversion[0]),
+                     conversion[1], conversion[3])
 
         constraints = {}
         for k, v in query.constraints.items():
@@ -525,8 +527,9 @@ class QueryModule(Component):
         for idx, col in enumerate(cols):
             req.hdf['query.headers.%d' % idx] = {
                 'name': col, 'label': labels.get(col, 'Ticket'),
-                'href': query.get_href(order=col, desc=(col == query.order and
-                                                        not query.desc))
+                'href': query.get_href(req, order=col,
+                                       desc=(col == query.order and
+                                             not query.desc))
             }
 
         href = req.href.query(group=query.group,
@@ -544,7 +547,7 @@ class QueryModule(Component):
         if query.verbose:
             req.hdf['query.verbose'] = True
 
-        tickets = query.execute(db)
+        tickets = query.execute(req, db)
         req.hdf['query.num_matches'] = len(tickets)
 
         # The most recent query is stored in the user session
@@ -560,7 +563,7 @@ class QueryModule(Component):
             orig_list = [int(id) for id in req.session.get('query_tickets', '').split()]
             rest_list = orig_list[:]
             orig_time = int(req.session.get('query_time', 0))
-        req.session['query_href'] = query.get_href()
+        req.session['query_href'] = query.get_href(req)
 
         # Find out which tickets originally in the query results no longer
         # match the constraints
@@ -609,12 +612,12 @@ class QueryModule(Component):
            self.env.is_component_enabled(ReportModule):
             req.hdf['query.report_href'] = req.href.report()
 
-    def export_csv(self, query, sep=',', mimetype='text/plain'):
+    def export_csv(self, req, query, sep=',', mimetype='text/plain'):
         content = StringIO()
         cols = query.get_columns()
         content.write(sep.join([col for col in cols]) + CRLF)
 
-        results = query.execute(self.env.get_db_cnx())
+        results = query.execute(req, self.env.get_db_cnx())
         for result in results:
             content.write(sep.join([unicode(result[col]).replace(sep, '_')
                                                         .replace('\n', ' ')
@@ -625,9 +628,9 @@ class QueryModule(Component):
     def export_rss(self, req, query):
         query.verbose = True
         db = self.env.get_db_cnx()
-        results = query.execute(db)
+        results = query.execute(req, db)
         for result in results:
-            result['href'] = self.env.abs_href.ticket(result['id'])
+            result['href'] = req.abs_href.ticket(result['id'])
             if result['reporter'].find('@') == -1:
                 result['reporter'] = ''
             if result['description']:
@@ -638,7 +641,7 @@ class QueryModule(Component):
             if result['time']:
                 result['time'] = http_date(result['time'])
         req.hdf['query.results'] = results
-        req.hdf['query.href'] = self.env.abs_href.query(group=query.group,
+        req.hdf['query.href'] = req.abs_href.query(group=query.group,
                 groupdesc=query.groupdesc and 1 or None,
                 verbose=query.verbose and 1 or None,
                 **query.constraints)
@@ -660,7 +663,8 @@ class QueryModule(Component):
             from trac.ticket.query import Query, QuerySyntaxError
             try:
                 query = Query.from_string(formatter.env, query)
-                return html.A(href=query.get_href(), class_='query')[label]
+                return html.A(href=query.get_href(formatter), # Hack
+                              class_='query')[label]
             except QuerySyntaxError, e:
                 return html.EM(class_='error')['[Error: %s]' % e]
 
@@ -692,7 +696,7 @@ class TicketQueryMacro(WikiMacroBase):
 
         query = Query.from_string(self.env, query_string)
         query.order = 'id'
-        tickets = query.execute()
+        tickets = query.execute(req)
         if tickets:
             if compact:
                 links = []
