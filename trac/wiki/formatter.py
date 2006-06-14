@@ -203,8 +203,9 @@ class Formatter(object):
          r"(?:(?P<lns>%s):)?(?P<ltgt>%s|[^\]\s]*))" % \
          (LINK_SCHEME, QUOTED_STRING) + # wiki:TracLinks or wiki:"trac links"
          r"(?:\s+(?P<label>%s|[^\]]+))?\])" % QUOTED_STRING), # label
-        # == heading ==
-        r"(?P<heading>^\s*(?P<hdepth>=+)\s.*\s(?P=hdepth)\s*$)",
+        # == heading == #hanchor
+        r"(?P<heading>^\s*(?P<hdepth>=+)\s.*\s(?P=hdepth)\s*"
+        r"(?P<hanchor>#[\w:](?<!\d)[\w:.-]*)?$)",
         #  * list
         r"(?P<list>^(?P<ldepth>\s+)(?:[-*]|\d+\.|[a-zA-Z]\.|[ivxIVX]{1,5}\.) )",
         # definition:: 
@@ -218,7 +219,7 @@ class Formatter(object):
         r"(?P<table_cell>\|\|)"]
 
     _processor_re = re.compile('#\!([\w+-][\w+-/]*)')
-    _anchor_re = re.compile('[^\w/-:]+', re.UNICODE)
+    _anchor_re = re.compile('[^\w:.-]+', re.UNICODE)
 
     # TODO: the following should be removed in milestone:0.11
     img_re = re.compile(r"\.(gif|jpg|jpeg|png)(\?.*)?$", re.IGNORECASE)
@@ -462,22 +463,27 @@ class Formatter(object):
         self.close_def_list()
 
         depth = min(len(fullmatch.group('hdepth')), 5)
-        heading = match[depth+1:-depth-1]
+        anchor = fullmatch.group('hanchor') or ''
+        heading = match[depth+1:-depth-1-len(anchor)]
+        heading = wiki_to_oneliner(heading, self.env, self.db, False,
+                                   self._absurls)
 
-        text = wiki_to_oneliner(heading, self.env, self.db, False, self._absurls)
-        sans_markup = text.plaintext(keeplinebreaks=False)
+        if anchor:
+            anchor = anchor[1:]
+        else:
+            sans_markup = heading.plaintext(keeplinebreaks=False)
 
-        anchor = self._anchor_re.sub('', sans_markup)
-        if not anchor or not anchor[0].isalpha():
-            # an ID must start with a letter in HTML
-            anchor = 'a' + anchor
+            anchor = self._anchor_re.sub('', sans_markup)
+            if not anchor or anchor[0].isdigit() or anchor[0] in '.-':
+                # an ID must start with a Name-start character in XHTML
+                anchor = 'a' + anchor # keeping 'a' for backward compat
         i = 1
         anchor_base = anchor
         while anchor in self._anchors:
             anchor = anchor_base + str(i)
             i += 1
         self._anchors.append(anchor)
-        self.out.write('<h%d id="%s">%s</h%d>' % (depth, anchor, text, depth))
+        self.out.write('<h%d id="%s">%s</h%d>' % (depth, anchor, heading, depth))
 
     # Generic indentation (as defined by lists and quotes)
 

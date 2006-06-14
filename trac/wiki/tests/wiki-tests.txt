@@ -608,13 +608,13 @@ Inline  comment
 ============================== Heading with .
 = Version 0.10 =
 ------------------------------
-<h1 id="Version010">Version 0.10</h1>
+<h1 id="Version0.10">Version 0.10</h1>
 ------------------------------
 = Version 0.10 =
 ============================== Normal heading
 == Heading with trailing white-space == 
 ------------------------------
-<h2 id="Headingwithtrailingwhitespace">Heading with trailing white-space</h2>
+<h2 id="Headingwithtrailingwhite-space">Heading with trailing white-space</h2>
 ------------------------------
 == Heading with trailing white-space ==
 ============================== Formatted heading
@@ -629,6 +629,18 @@ Inline  comment
 <h2 id="LinkedHeading"><a class="missing wiki" href="/wiki/SandBox" rel="nofollow">Linked Heading?</a></h2>
 ------------------------------
 == [wiki:SandBox Linked Heading] ==
+============================== Normal heading, fixed id
+== Heading with fixed id == #heading-fixed-id
+------------------------------
+<h2 id="heading-fixed-id">Heading with fixed id</h2>
+------------------------------
+== Heading with fixed id == #heading-fixed-id
+============================== Normal heading, auto-corrected id
+== 10 tips ==
+------------------------------
+<h2 id="a10tips">10 tips</h2>
+------------------------------
+== 10 tips ==
 ============================================================
 
              Lists
