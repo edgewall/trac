@@ -1,5 +1,5 @@
 sql = [
-"""CREATE TEMP TABLE node_change_old AS SELECT * FROM node_change;""",
+"""CREATE TEMPORARY TABLE node_change_old AS SELECT * FROM node_change;""",
 """DROP TABLE node_change;""",
 """CREATE TABLE node_change (
     rev             text,

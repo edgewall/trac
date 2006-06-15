@@ -4,7 +4,7 @@ sql = [
 #-- Remove the unused lock table
 """DROP TABLE lock;""",
 #-- Separate anonymous from authenticated sessions.
-"""CREATE TEMP TABLE session_old AS SELECT * FROM session;""",
+"""CREATE TEMPORARY TABLE session_old AS SELECT * FROM session;""",
 """DELETE FROM session;""",
 """INSERT INTO session (username,var_name,var_value)
   SELECT username,var_name,var_value FROM session_old

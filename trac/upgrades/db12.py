@@ -3,7 +3,7 @@ sql = [
 """DELETE FROM session WHERE username='anonymous';""",
 #-- Schema change: use an authenticated flag instead of separate sid/username
 #-- columns
-"""CREATE TEMP TABLE session_old AS SELECT * FROM session;""",
+"""CREATE TEMPORARY TABLE session_old AS SELECT * FROM session;""",
 """DROP TABLE session;""",
 """CREATE TABLE session (
         sid             text,

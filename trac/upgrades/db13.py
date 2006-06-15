@@ -1,6 +1,6 @@
 sql = [
 #-- Add ticket_type to 'ticket', remove the unused 'url' column
-"""CREATE TEMP TABLE ticket_old AS SELECT * FROM ticket;""",
+"""CREATE TEMPORARY TABLE ticket_old AS SELECT * FROM ticket;""",
 """DROP TABLE ticket;""",
 """CREATE TABLE ticket (
         id              integer PRIMARY KEY,

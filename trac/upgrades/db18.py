@@ -1,9 +1,9 @@
 from trac.db import Table, Column, Index, DatabaseManager
 
 def do_upgrade(env, ver, cursor):
-    cursor.execute("CREATE TEMP TABLE session_old AS SELECT * FROM session")
+    cursor.execute("CREATE TEMPORARY TABLE session_old AS SELECT * FROM session")
     cursor.execute("DROP TABLE session")
-    cursor.execute("CREATE TEMP TABLE ticket_change_old AS SELECT * FROM ticket_change")
+    cursor.execute("CREATE TEMPORARY TABLE ticket_change_old AS SELECT * FROM ticket_change")
     cursor.execute("DROP TABLE ticket_change")
 
     # A more normalized session schema where the attributes are stored in

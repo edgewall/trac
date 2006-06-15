@@ -4,7 +4,7 @@ sql = [
 #-- Remove empty values from the milestone list
 """DELETE FROM milestone WHERE COALESCE(name,'')='';""",
 #-- Add a description column to the version table, and remove unnamed versions
-"""CREATE TEMP TABLE version_old AS SELECT * FROM version;""",
+"""CREATE TEMPORARY TABLE version_old AS SELECT * FROM version;""",
 """DROP TABLE version;""",
 """CREATE TABLE version (
         name            text PRIMARY KEY,
@@ -14,7 +14,7 @@ sql = [
 """INSERT INTO version(name,time,description)
     SELECT name,time,'' FROM version_old WHERE COALESCE(name,'')<>'';""",
 #-- Add a description column to the component table, and remove unnamed components
-"""CREATE TEMP TABLE component_old AS SELECT * FROM component;""",
+"""CREATE TEMPORARY TABLE component_old AS SELECT * FROM component;""",
 """DROP TABLE component;""",
 """CREATE TABLE component (
         name            text PRIMARY KEY,

@@ -4,7 +4,7 @@ def do_upgrade(env, ver, cursor):
     """Rename the columns `kind` and `change` in the `node_change` table for
     compatibity with MySQL.
     """
-    cursor.execute("CREATE TEMP TABLE nc_old AS SELECT * FROM node_change")
+    cursor.execute("CREATE TEMPORARY TABLE nc_old AS SELECT * FROM node_change")
     cursor.execute("DROP TABLE node_change")
 
     table = Table('node_change', key=('rev', 'path', 'change_type'))[

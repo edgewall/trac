@@ -1,6 +1,6 @@
 sql = [
 #-- Add unique id, descr to 'milestone'
-"""CREATE TEMP TABLE milestone_old AS SELECT * FROM milestone;""",
+"""CREATE TEMPORARY TABLE milestone_old AS SELECT * FROM milestone;""",
 """DROP TABLE milestone;""",
 """CREATE TABLE milestone (
          id              integer PRIMARY KEY,

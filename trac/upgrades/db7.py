@@ -1,6 +1,6 @@
 sql = [
 #-- Add readonly flag to 'wiki'
-"""CREATE TEMP TABLE wiki_old AS SELECT * FROM wiki;""",
+"""CREATE TEMPORARY TABLE wiki_old AS SELECT * FROM wiki;""",
 """DROP TABLE wiki;""",
 """CREATE TABLE wiki (
          name            text,
