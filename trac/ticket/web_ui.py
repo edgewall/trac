@@ -586,7 +586,7 @@ class TicketModule(TicketModuleBase):
                     ['> %s' % line for line in original.splitlines()] + [''])
 
         if replyto == 'description':
-            quote_original(reporter_id, ticket['description'],
+            quote_original(ticket['reporter'], ticket['description'],
                            'ticket:%d' % ticket.id)
         replies = {}
         changes = []
