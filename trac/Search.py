@@ -17,6 +17,7 @@
 import re
 import time
 
+from trac.config import IntOption
 from trac.core import *
 from trac.perm import IPermissionRequestor
 from trac.util.datefmt import format_datetime
@@ -119,6 +120,9 @@ class SearchModule(Component):
     
     RESULTS_PER_PAGE = 10
 
+    min_query_length = IntOption('search', 'min_query_length', 3,
+        """Minimum length of query string allowed when performing a search.""")
+
     # INavigationContributor methods
 
     def get_active_navigation_item(self, req):
@@ -170,10 +174,10 @@ class SearchModule(Component):
                 query = query[1:]
             terms = search_terms(query)
             # Refuse queries that obviously would result in a huge result set
-            if len(terms) == 1 and len(terms[0]) < 3:
+            if len(terms) == 1 and len(terms[0]) < self.min_query_length:
                 raise TracError('Search query too short. '
-                                'Query must be at least 3 characters long.',
-                                'Search Error')
+                                'Query must be at least %d characters long.' % \
+                                self.min_query_length, 'Search Error')
             results = []
             for source in self.search_sources:
                 results += list(source.get_search_results(req, terms, filters))
