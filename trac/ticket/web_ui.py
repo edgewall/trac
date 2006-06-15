@@ -421,9 +421,12 @@ class TicketModule(TicketModuleBase):
             # Attachments
             if 'ticket_details' in filters:
                 for change, type, id, filename, time, description, author in \
-                        AttachmentModule(self.env).get_history(start, stop, 'ticket'):
-                    title = Markup('<em>%s</em> attached to ticket <em>#%s</em> by %s' % 
-                                   (os.path.basename(filename), id, author))
+                        AttachmentModule(self.env).get_history(start, stop,
+                                                               'ticket'):
+                    title = html.EM(os.path.basename(filename)) + \
+                            ' attached to ticket ' + html.EM('#', id)
+                    if format != 'rss':
+                        title += Markup(' by %s', author)
                     yield ('attachment', href.attachment(type, id, filename),
                            title, time, author, description)
 
