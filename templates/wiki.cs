@@ -3,15 +3,38 @@
 
 <div id="ctxtnav" class="nav">
  <h2>Wiki Navigation</h2>
- <ul>
-  <li><a href="<?cs var:trac.href.wiki ?>">Start Page</a></li>
-  <li><a href="<?cs var:trac.href.wiki ?>/TitleIndex">Title Index</a></li>
-  <li><a href="<?cs var:trac.href.wiki ?>/RecentChanges">Recent Changes</a></li>
-  <?cs if:wiki.history_href ?>
-   <li class="last"><a href="<?cs var:wiki.history_href ?>">Page History</a></li>
-  <?cs else ?>
-   <li class="last">Page History</li>
-  <?cs /if ?>
+ <ul><?cs
+  if:wiki.action == "diff" ?>
+   <li class="first"><?cs
+     if:len(chrome.links.prev) ?> &larr; 
+      <a class="prev" href="<?cs var:chrome.links.prev.0.href ?>" title="<?cs
+       var:chrome.links.prev.0.title ?>">Previous Change</a><?cs
+     else ?>
+      <span class="missing">&larr; Previous Change</span><?cs
+     /if ?>
+   </li><?cs
+   set:history_class = "" ?><?cs 
+  else ?>
+   <li><a href="<?cs var:trac.href.wiki ?>">Start Page</a></li>
+   <li><a href="<?cs var:trac.href.wiki ?>/TitleIndex">Title Index</a></li>
+   <li><a href="<?cs var:trac.href.wiki ?>/RecentChanges">Recent Changes</a></li><?cs
+   set:history_class = "last" ?><?cs
+  /if ?><?cs
+  if:wiki.history_href ?>
+   <li class="<?cs var:history_class ?>"><a href="<?cs var:wiki.history_href ?>">Page History</a></li><?cs 
+  else ?>
+   <li class="<?cs var:history_class ?>">Page History</li><?cs 
+  /if ?><?cs
+  if:wiki.action == "diff" ?>
+   <li class="last"><?cs
+     if:len(chrome.links.next) ?>
+      <a class="next" href="<?cs var:chrome.links.next.0.href ?>" title="<?cs
+       var:chrome.links.next.0.title ?>">Next Change</a> &rarr; <?cs
+     else ?>
+      <span class="missing">Next Change &rarr;</span><?cs
+     /if ?>
+   </li><?cs 
+  /if ?>
  </ul>
  <hr />
 </div>

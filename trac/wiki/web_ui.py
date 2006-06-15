@@ -257,8 +257,8 @@ class WikiModule(Component):
         req.perm.assert_permission('WIKI_VIEW')
 
         if not page.exists:
-            raise TracError, "Version %s of page %s does not exist" \
-                             % (req.args.get('version'), page.name)
+            raise TracError("Version %s of page %s does not exist" %
+                            (req.args.get('version'), page.name))
 
         add_stylesheet(req, 'common/css/diff.css')
 
@@ -272,19 +272,18 @@ class WikiModule(Component):
             old_version = int(old_version)
             if old_version == page.version:
                 old_version = None
-            elif old_version > page.version:
+            elif old_version > page.version: # FIXME: what about reverse diffs?
                 old_version, page = page.version, \
                                     WikiPage(self.env, page.name, old_version)
-
+        new_version = int(page.version)
         info = {
-            'version': page.version,
+            'version': new_version,
             'history_href': req.href.wiki(page.name, action='history')
         }
-
         num_changes = 0
         old_page = None
         for version,t,author,comment,ipnr in page.get_history():
-            if version == page.version:
+            if version == new_version:
                 if t:
                     info['time'] = format_datetime(t)
                     info['time_delta'] = pretty_timedelta(t)
@@ -293,16 +292,27 @@ class WikiModule(Component):
                 info['ipnr'] = ipnr or ''
             else:
                 num_changes += 1
-                if version < page.version:
+                if version < new_version:
                     if (old_version and version == old_version) or \
                             not old_version:
                         old_page = WikiPage(self.env, page.name, version)
                         info['num_changes'] = num_changes
                         info['old_version'] = version
                         break
-
         req.hdf['wiki'] = info
 
+        # -- prev/next links
+        if new_version > 1:
+            add_link(req, 'prev', req.href.wiki(page.name, action='diff',
+                                                version=new_version-1),
+                     'Version %d' % (new_version-1))
+        latest_page = WikiPage(self.env, page.name)
+        if new_version < latest_page.version:
+            add_link(req, 'next', req.href.wiki(page.name, action='diff',
+                                                version=new_version+1),
+                     'Version %d' % (new_version+1))
+
+        # -- text diffs
         diff_style, diff_options = get_diff_options(req)
 
         oldtext = old_page and old_page.text.splitlines() or []
