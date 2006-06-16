@@ -191,7 +191,7 @@ class HTMLSanitizer(HTMLParser):
         'td', 'textarea', 'tfoot', 'th', 'thead', 'tr', 'tt', 'u', 'ul',
         'var'])
     safe_attrs = frozenset(['abbr', 'accept', 'accept-charset',
-        'accesskey', 'action', 'align', 'alt', 'axis', 'border',
+        'accesskey', 'action', 'align', 'alt', 'axis', 'border', 'bgcolor',
         'cellpadding', 'cellspacing', 'char', 'charoff', 'charset',
         'checked', 'cite', 'class', 'clear', 'cols', 'colspan', 'color',
         'compact', 'coords', 'datetime', 'dir', 'disabled', 'enctype',
