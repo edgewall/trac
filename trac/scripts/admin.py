@@ -33,8 +33,10 @@ from trac.core import TracError
 from trac.env import Environment
 from trac.perm import PermissionSystem
 from trac.ticket.model import *
+from trac.util.markup import html
 from trac.util.text import to_unicode, wrap
 from trac.wiki import WikiPage
+from trac.wiki.macros import WikiMacroBase
 
 def copytree(src, dst, symlinks=False, skip=[]):
     """Recursively copy a directory tree using copy2() (from shutil.copytree.)
@@ -213,11 +215,14 @@ class TracAdmin(cmd.Cmd):
                                xrange(0, (1 + len(sep)) * cnum + sum(colw))])
         print
 
-    def print_doc(self, docs):
+    def print_doc(cls, docs, stream=None):
+        if stream is None:
+            stream = sys.stdout
         if not docs: return
         for cmd, doc in docs:
-            print cmd
-            print '\n\t-- %s\n' % doc
+            print>>stream, cmd
+            print>>stream, '\t-- %s\n' % doc
+    print_doc = classmethod(print_doc)
 
     def get_component_list(self):
         rows = self.db_query("SELECT name FROM component")
@@ -297,6 +302,19 @@ class TracAdmin(cmd.Cmd):
     ## Help
     _help_help = [('help', 'Show documentation')]
 
+    def all_docs(cls):
+        return (cls._help_about + cls._help_help +
+                cls._help_initenv + cls._help_hotcopy +
+                cls._help_resync + cls._help_upgrade +
+                cls._help_wiki +
+#               cls._help_config + cls._help_wiki +
+                cls._help_permission + cls._help_component +
+                cls._help_ticket +
+                cls._help_ticket_type + cls._help_priority +
+                cls._help_severity +  cls._help_version +
+                cls._help_milestone)
+    all_docs = classmethod(all_docs)
+
     def do_help(self, line=None):
         arg = self.arg_tokenize(line)
         if arg[0]:
@@ -306,16 +324,6 @@ class TracAdmin(cmd.Cmd):
             except AttributeError:
                 print "No documentation found for '%s'" % arg[0]
         else:
-            docs = (self._help_about + self._help_help +
-                    self._help_initenv + self._help_hotcopy +
-                    self._help_resync + self._help_upgrade +
-                    self._help_wiki +
-#                    self._help_config + self._help_wiki +
-                    self._help_permission + self._help_component +
-                    self._help_ticket +
-                    self._help_ticket_type + self._help_priority +
-                    self._help_severity +  self._help_version +
-                    self._help_milestone)
             print 'trac-admin - The Trac Administration Console %s' \
                   % trac.__version__
             if not self.interactive:
@@ -323,7 +331,7 @@ class TracAdmin(cmd.Cmd):
                 print "Usage: trac-admin </path/to/projenv> [command [subcommand] [option ...]]\n"
                 print "Invoking trac-admin without command starts "\
                       "interactive mode."
-            self.print_doc(docs)
+            self.print_doc(self.all_docs())
 
     
     ## About / Version
@@ -1135,6 +1143,37 @@ Congratulations!
             cnx.rollback()
 
         print 'Hotcopy done.'
+
+
+class TracAdminHelpMacro(WikiMacroBase):
+    """Displays help for trac-admin commands.
+
+    Examples:
+    {{{
+    [[TracAdminHelp]]               # all commands
+    [[TracAdminHelp(wiki)]]         # all wiki commands
+    [[TracAdminHelp(wiki export)]]  # the "wiki export" command
+    [[TracAdminHelp(upgrade)]]      # the upgrade command
+    }}}
+    """
+
+    def render_macro(self, req, name, content):
+        if content:
+            try:
+                arg = content.split(' ', 1)[0]
+                doc = getattr(TracAdmin, '_help_' + arg)
+            except AttributeError:
+                raise TracError('Unknown trac-admin command "%s"' % content)
+            if arg != content:
+                for cmd, help in doc:
+                    if cmd.startswith(content):
+                        doc = [(cmd, help)]
+                        break
+        else:
+            doc = TracAdmin.all_docs()
+        buf = StringIO.StringIO()
+        TracAdmin.print_doc(doc, buf)
+        return html.PRE(class_='wiki')[buf.getvalue()]
 
 
 def run(args):
