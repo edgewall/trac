@@ -317,7 +317,7 @@ class MilestoneModule(Component):
                 title = Markup('Milestone <em>%s</em> completed', name)
                 if format == 'rss':
                     href = req.abs_href.milestone(name)
-                    message = wiki_to_html(description, self.env, db,
+                    message = wiki_to_html(description, self.env, req, db,
                                            absurls=True)
                 else:
                     href = req.href.milestone(name)
