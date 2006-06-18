@@ -106,6 +106,9 @@ class SilverCityRenderer(Component):
             err = "No SilverCity lexer found for mime-type '%s'." % mimetype
             raise Exception, err
 
+        # SilverCity does not like unicode strings
+        content = content.encode('utf-8')
+        
         # SilverCity generates extra empty line against some types of
         # the line such as comment or #include with CRLF. So we
         # standardize to LF end-of-line style before call.
@@ -118,6 +121,9 @@ class SilverCityRenderer(Component):
         span_default_re = re.compile(r'<span class="\w+_default">(.*?)</span>',
                                      re.DOTALL)
         html = span_default_re.sub(r'\1', br_re.sub('', buf.getvalue()))
+        
+        # Convert the output back to a unicode string
+        html = html.decode('utf-8')
 
         # SilverCity generates _way_ too many non-breaking spaces...
         # We don't need them anyway, so replace them by normal spaces
