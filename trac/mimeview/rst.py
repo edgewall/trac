@@ -28,7 +28,7 @@ from distutils.version import StrictVersion
 import re
 
 from trac.core import *
-from trac.mimeview.api import IHTMLPreviewRenderer
+from trac.mimeview.api import IHTMLPreviewRenderer, content_to_unicode
 from trac.web.href import Href
 from trac.wiki.formatter import WikiProcessor
 from trac.wiki import WikiSystem
@@ -223,7 +223,9 @@ class ReStructuredTextRenderer(Component):
 
         _inliner = rst.states.Inliner()
         _parser = rst.Parser(inliner=_inliner)
-
+        content = content_to_unicode(self.env, content, mimetype)
+        content = content.encode('utf-8')
         html = publish_string(content, writer_name='html', parser=_parser,
                               settings_overrides={'halt_level': 6})
+        html = html.decode('utf-8')
         return html[html.find('<body>') + 6:html.find('</body>')].strip()
