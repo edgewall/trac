@@ -135,7 +135,7 @@ class NotifyEmail(Notify):
     server = None
     email_map = None
     template_name = None
-    addrfmt = r"[\w\d_\.\-]+\@(([\w\d\-])+\.)+([\w\d]{2,4})+"
+    addrfmt = r"[\w\d_\.\-\+=]+\@(([\w\d\-])+\.)+([\w\d]{2,4})+"
     shortaddr_re = re.compile(addrfmt)
     longaddr_re = re.compile(r"^\s*(.*)\s+<(" + addrfmt + ")>\s*$");
     nodomaddr_re = re.compile(r"[\w\d_\.\-]+")
