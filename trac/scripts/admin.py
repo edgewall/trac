@@ -470,7 +470,7 @@ class TracAdmin(cmd.Cmd):
             perms = self._permsys.get_user_permissions(user)
             for action in perms:
                 if perms[action]:
-                    rows.append((action, user))
+                    rows.append((user, action))
         else:
             rows = self._permsys.get_all_permissions()
         rows.sort()
