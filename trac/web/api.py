@@ -20,7 +20,7 @@ import os
 import urlparse
 
 from trac.core import Interface
-from trac.util import http_date
+from trac.util import http_date, TracError
 
 
 class RequestDone(Exception):
