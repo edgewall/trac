@@ -18,7 +18,7 @@
 
 from trac.core import *
 from trac.config import Option
-from trac.mimeview.api import IHTMLPreviewRenderer
+from trac.mimeview.api import IHTMLPreviewRenderer, content_to_unicode
 from trac.util import NaivePopen
 from trac.util.markup import Deuglifier
 
@@ -63,8 +63,10 @@ class PHPRenderer(Component):
         # -n to ignore php.ini so we're using default colors
         cmdline += ' -sn'
         self.env.log.debug("PHP command line: %s" % cmdline)
-
-        np = NaivePopen(cmdline, content.encode('utf-8'), capturestderr=1)
+        
+        content = content_to_unicode(self.env, content, mimetype)
+        content = content.encode('utf-8')
+        np = NaivePopen(cmdline, content, capturestderr=1)
         if np.errorlevel or np.err:
             err = 'Running (%s) failed: %s, %s.' % (cmdline, np.errorlevel,
                                                     np.err)
