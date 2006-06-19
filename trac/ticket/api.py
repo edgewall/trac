@@ -18,7 +18,7 @@ import re
 
 from trac.config import *
 from trac.core import *
-from trac.perm import IPermissionRequestor
+from trac.perm import IPermissionRequestor, PermissionSystem
 from trac.Search import ISearchSource, search_to_sql, shorten_result
 from trac.util.text import shorten_line
 from trac.util.markup import html, Markup
@@ -78,8 +78,8 @@ class TicketSystem(Component):
             'reopened': ['leave', 'resolve', 'reassign'          ],
             'closed':   ['leave',                        'reopen']
         }
-        perms = {'resolve': 'TICKET_MODIFY', 'reassign': 'TICKET_CHGPROP',
-                 'accept': 'TICKET_CHGPROP', 'reopen': 'TICKET_CREATE'}
+        perms = {'resolve': 'TICKET_MODIFY', 'reassign': 'TICKET_MODIFY',
+                 'accept': 'TICKET_MODIFY', 'reopen': 'TICKET_CREATE'}
         return [action for action in actions.get(ticket['status'], ['leave'])
                 if action not in perms or perm_.has_permission(perms[action])]
 
@@ -100,8 +100,10 @@ class TicketSystem(Component):
         if self.restrict_owner:
             field['type'] = 'select'
             users = []
+            perm = PermissionSystem(self.env)
             for username, name, email in self.env.get_known_users(db):
-                users.append(username)
+                if perm.get_user_permissions(username).get('TICKET_MODIFY'):
+                    users.append(username)
             field['options'] = users
             field['optional'] = True
         else:
@@ -177,7 +179,7 @@ class TicketSystem(Component):
 
     def get_permission_actions(self):
         return ['TICKET_APPEND', 'TICKET_CREATE', 'TICKET_CHGPROP',
-                'TICKET_VIEW',  
+                'TICKET_VIEW',
                 ('TICKET_MODIFY', ['TICKET_APPEND', 'TICKET_CHGPROP']),  
                 ('TICKET_ADMIN', ['TICKET_CREATE', 'TICKET_MODIFY',  
                                   'TICKET_VIEW'])]
