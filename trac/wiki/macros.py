@@ -424,7 +424,7 @@ class TracIniMacro(WikiMacroBase):
                         if section.startswith(filter)])
 
         return html.DIV(class_="tracini")(
-            [(html.H2(id="%s" % section)["[%s]" % section],
+            [(html.H2(id="%s-section" % section)["[%s]" % section],
               html.TABLE(class_="wiki")(
                   html.TBODY([html.TR(html.TD(html.TT[option.name]),
                                       html.TD(wiki_to_oneliner(option.__doc__,
