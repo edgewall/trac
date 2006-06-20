@@ -28,7 +28,7 @@
      /if ?>
     </li><?cs
    else ?>
-    <li class="first"><a href="<?cs var:changeset.reverse_href ?>">Reverse Diff</a></li><?cs
+    <li class="last"><a href="<?cs var:changeset.reverse_href ?>">Reverse Diff</a></li><?cs
    /if ?>
   </ul><?cs
  /with ?>
