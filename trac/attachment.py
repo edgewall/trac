@@ -526,7 +526,7 @@ class AttachmentModule(Component):
 
             # add ''Plain Text'' alternate link if needed
             if self.render_unsafe_content and not binary and \
-               not mime_type.startswith('text/plain'):
+               mime_type and not mime_type.startswith('text/plain'):
                 plaintext_href = attachment.href(req, format='txt')
                 add_link(req, 'alternate', plaintext_href, 'Plain Text',
                          mime_type)
