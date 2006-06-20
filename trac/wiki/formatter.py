@@ -34,8 +34,9 @@ __all__ = ['wiki_to_html', 'wiki_to_oneliner', 'wiki_to_outline',
            'wiki_to_link', 'Formatter' ]
 
 
-def system_message(msg, text):
-    return html.DIV(html.STRONG(msg), html.PRE(text), class_="system-message")
+def system_message(msg, text=None):
+    return html.DIV(html.STRONG(msg), text and html.PRE(text),
+                    class_="system-message")
 
 
 class WikiProcessor(object):
