@@ -26,7 +26,8 @@ from trac.core import ExtensionPoint, TracError
 from trac.util import sorted, to_unicode
 
 __all__ = ['Configuration', 'Option', 'BoolOption', 'IntOption', 'ListOption',
-           'ExtensionOption', 'ConfigurationError', 'default_dir']
+           'ExtensionOption', 'OrderedExtensionsOption', 'ConfigurationError',
+           'default_dir']
 
 _TRUE_VALUES = ('yes', 'true', 'on', 'aye', '1', 1, True)
 
