@@ -398,11 +398,9 @@ class WikiModule(Component):
     def _render_view(self, req, db, page):
         req.perm.assert_permission('WIKI_VIEW')
 
+        page_name = self._set_title(req, page, '')
         if page.name == 'WikiStart':
             req.hdf['title'] = ''
-            page_name = 'WikiStart'
-        else:
-            page_name = self._set_title(req, page, '')
 
         version = req.args.get('version')
         if version:
