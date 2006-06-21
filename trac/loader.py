@@ -47,7 +47,7 @@ def load_components(env):
             try:
                 plugin_name = os.path.basename(plugin_file[:-3])
                 if plugin_name not in loaded_components:
-                    env.log.debug('Loading plugin %s from %s' % (plugin_name,
+                    env.log.debug('Loading file plugin %s from %s' % (plugin_name,
                                                                  plugin_file))
                     module = imp.load_source(plugin_name, plugin_file)
                     loaded_components.append(plugin_name)
@@ -90,7 +90,7 @@ def load_components(env):
                 # Load plugins declared via the `trac.plugins` entry point.
                 # This is the only supported option going forward, the
                 # others will be dropped at some point in the future.
-                env.log.debug('Loading plugin %s from %s', name,
+                env.log.debug('Loading egg plugin %s from %s', name,
                               egg.location)
                 egg.activate()
                 try:
@@ -127,7 +127,7 @@ def load_components(env):
             if modules:
                 # Automatically enable any components provided by plugins
                 # loaded from the environment plugins directory.
-                if os.path.dirname(egg.location) == plugins_dir:
+                if os.path.dirname(egg.location) == plugins_dirs[0]:
                     for module in modules:
                         if module + '.*' not in env.config['components']:
                             env.config['components'].set(module + '.*',
