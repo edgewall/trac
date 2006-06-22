@@ -246,4 +246,4 @@ class LogModule(Component):
                                                              label, fullmatch)
             if intertrac:
                 return intertrac
-        return html.A(href=href, class_='source')[label]
+        return html.A(label, href=href, class_='source')

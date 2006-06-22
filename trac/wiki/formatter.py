@@ -133,7 +133,7 @@ class WikiProcessor(object):
                 elif text.startswith('<table'):
                     interrupt_paragraph = True
             if content_for_span:
-                text = html.SPAN(class_='code-block')[content_for_span]
+                text = html.SPAN(content_for_span, class_='code-block')
             elif interrupt_paragraph:
                 text = "</p>%s<p>" % to_unicode(text)
         return text

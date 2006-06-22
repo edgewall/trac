@@ -65,9 +65,10 @@ class WikiModule(Component):
         if not req.perm.has_permission('WIKI_VIEW'):
             return
         yield ('mainnav', 'wiki',
-               html.A(href=req.href.wiki(), accesskey=1)['Wiki'])
+               html.A('Wiki', href=req.href.wiki(), accesskey=1))
         yield ('metanav', 'help',
-               html.A(href=req.href.wiki('TracGuide'), accesskey=6)['Help/Guide'])
+               html.A('Help/Guide', href=req.href.wiki('TracGuide'),
+                      accesskey=6))
 
     # IPermissionRequestor methods
 
@@ -164,8 +165,7 @@ class WikiModule(Component):
 
             # Attachments
             for change, type, id, filename, time, description, author in \
-                    AttachmentModule(self.env).get_history(start, stop,
-                                                           'wiki'): 
+                    AttachmentModule(self.env).get_history(start, stop, 'wiki'):
                 title = html.EM(os.path.basename(filename)) + \
                         ' attached to ' + html.EM(id)
                 if format != 'rss':
@@ -424,8 +424,7 @@ class WikiModule(Component):
         else:
             if not req.perm.has_permission('WIKI_CREATE'):
                 raise HTTPNotFound('Page %s not found', page.name)
-            req.hdf['wiki.page_html'] = html.P['Describe "%s" here' \
-                                               % page_name]
+            req.hdf['wiki.page_html'] = html.P('Describe "%s" here' % page_name)
 
         # Show attachments
         req.hdf['wiki.attachments'] = attachments_to_hdf(self.env, req, db,

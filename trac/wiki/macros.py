@@ -68,9 +68,9 @@ class TitleIndexMacro(WikiMacroBase):
 
         wiki = WikiSystem(self.env)
 
-        return html.UL[[html.LI(html.A(wiki.format_page_name(page),
+        return html.UL([html.LI(html.A(wiki.format_page_name(page),
                                        href=req.href.wiki(page)))
-                        for page in sorted(wiki.get_pages(prefix))]]
+                        for page in sorted(wiki.get_pages(prefix))])
 
 
 class RecentChangesMacro(WikiMacroBase):
@@ -119,11 +119,11 @@ class RecentChangesMacro(WikiMacroBase):
             entries_per_date[-1][1].append(name)
 
         wiki = WikiSystem(self.env)
-        return html.DIV[[html.H3(date) +
-                         html.UL[[html.LI(html.A(wiki.format_page_name(name),
-                                                   href=req.href.wiki(name)))
-                                    for name in entries]]
-                         for date, entries in entries_per_date]]
+        return html.DIV([html.H3(date) +
+                         html.UL([html.LI(html.A(wiki.format_page_name(name),
+                                                 href=req.href.wiki(name)))
+                                    for name in entries])
+                         for date, entries in entries_per_date])
 
 
 class PageOutlineMacro(WikiMacroBase):
@@ -370,9 +370,9 @@ class MacroListMacro(WikiMacroBase):
                             % macro_name, e))
                     yield (macro_name, descr)
 
-        return html.DL[[(html.DT[html.CODE['[[',macro_name,']]']],
-                         html.DD[description])
-                        for macro_name, description in get_macro_descr()]]
+        return html.DL([(html.DT(html.CODE('[[',macro_name,']]')),
+                         html.DD(description))
+                        for macro_name, description in get_macro_descr()])
 
 
 class InterTracMacro(WikiMacroBase):
@@ -391,19 +391,19 @@ class InterTracMacro(WikiMacroBase):
         def generate_prefix(prefix):
             intertrac = intertracs[prefix]
             if isinstance(intertrac, basestring):
-                yield html.TR[html.TD[html.B[prefix]],
-                              html.TD['Alias for ', html.B[intertrac]]]
+                yield html.TR(html.TD(html.B(prefix)),
+                              html.TD('Alias for ', html.B(intertrac)))
             else:
                 url = intertrac.get('url', '')
                 if url:
                     title = intertrac.get('title', url)
-                    yield html.TR[html.TD[html.A(href=url+'/timeline')
-                                          [html.B[prefix]]],
-                                  html.TD[html.A(href=url)[title]]]
+                    yield html.TR(html.TD(html.A(html.B(prefix),
+                                                 href=url + '/timeline')),
+                                  html.TD(html.A(title, href=url)))
 
-        return html.TABLE(class_="wiki intertrac")[
-            html.TR[html.TH[html.EM['Prefix']], html.TH[html.EM['Trac Site']]],
-            [generate_prefix(p) for p in sorted(intertracs.keys())]]
+        return html.TABLE(class_="wiki intertrac")(
+            html.TR(html.TH(html.EM('Prefix')), html.TH(html.EM('Trac Site'))),
+            [generate_prefix(p) for p in sorted(intertracs.keys())])
 
 
 class TracIniMacro(WikiMacroBase):
@@ -423,10 +423,10 @@ class TracIniMacro(WikiMacroBase):
         sections = set([section for section, option in Option.registry.keys()
                         if section.startswith(filter)])
 
-        return html.DIV(class_="tracini")(
-            [(html.H2(id="%s-section" % section)["[%s]" % section],
-              html.TABLE(class_="wiki")(
-                  html.TBODY([html.TR(html.TD(html.TT[option.name]),
+        return html.DIV(class_='tracini')(
+            [(html.H2('[%s]' % section, id='%s-section' % section),
+              html.TABLE(class_='wiki')(
+                  html.TBODY([html.TR(html.TD(html.TT(option.name)),
                                       html.TD(wiki_to_oneliner(option.__doc__,
                                                                self.env)))
                               for option in Option.registry.values()

@@ -132,7 +132,7 @@ class SearchModule(Component):
         if not req.perm.has_permission('SEARCH_VIEW'):
             return
         yield ('mainnav', 'search',
-               html.A(href=req.href.search(), accesskey=4)['Search'])
+               html.A('Search', href=req.href.search(), accesskey=4))
 
     # IPermissionRequestor methods
 
@@ -238,4 +238,4 @@ class SearchModule(Component):
             href = formatter.href.search() + query.replace(' ', '+')
         else:
             href = formatter.href.search(q=path)
-        return html.A(class_='search', href=href)[label]
+        return html.A(label, class_='search', href=href)

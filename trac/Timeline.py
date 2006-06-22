@@ -77,7 +77,7 @@ class TimelineModule(Component):
         if not req.perm.has_permission('TIMELINE_VIEW'):
             return
         yield ('mainnav', 'timeline',
-               html.A(href=req.href.timeline(), accesskey=2)['Timeline'])
+               html.A('Timeline', href=req.href.timeline(), accesskey=2))
 
     # IPermissionRequestor methods
 

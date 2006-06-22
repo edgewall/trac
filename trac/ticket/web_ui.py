@@ -93,7 +93,7 @@ class NewticketModule(TicketModuleBase):
         if not req.perm.has_permission('TICKET_CREATE'):
             return
         yield ('mainnav', 'newticket', 
-               html.A(href=req.href.newticket(), accesskey=7)['New Ticket'])
+               html.A('New Ticket', href=req.href.newticket(), accesskey=7))
 
     # IRequestHandler methods
 

@@ -47,7 +47,7 @@ class ReportModule(Component):
         if not req.perm.has_permission('REPORT_VIEW'):
             return
         yield ('mainnav', 'tickets',
-               html.A(href=req.href.report())['View Tickets'])
+               html.A('View Tickets', href=req.href.report()))
 
     # IPermissionRequestor methods  
 
@@ -490,5 +490,5 @@ class ReportModule(Component):
         if intertrac:
             return intertrac
         report, args, fragment = formatter.split_link(target)
-        return html.A(href=formatter.href.report(report) + args,
-                      class_='report')[label]
+        return html.A(label, href=formatter.href.report(report) + args,
+                      class_='report')

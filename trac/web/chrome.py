@@ -246,7 +246,7 @@ class Chrome(Component):
         yield ('htdocs', self._format_link)
 
     def _format_link(self, formatter, ns, file, label):
-        return html.A(href=formatter.href.chrome('site', file))[label]
+        return html.A(label, href=formatter.href.chrome('site', file))
 
     # Public API methods
 

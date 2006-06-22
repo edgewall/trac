@@ -33,7 +33,7 @@ class SettingsModule(Component):
 
     def get_navigation_items(self, req):
         yield ('metanav', 'settings',
-               html.A(href=req.href.settings())['Settings'])
+               html.A('Settings', href=req.href.settings()))
 
     # IRequestHandler methods
 

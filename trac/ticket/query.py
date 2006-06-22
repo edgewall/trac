@@ -376,7 +376,7 @@ class QueryModule(Component):
         if req.perm.has_permission('TICKET_VIEW') and \
                 not self.env.is_component_enabled(ReportModule):
             yield ('mainnav', 'tickets',
-                   html.A(href=req.href.query())['View Tickets'])
+                   html.A('View Tickets', href=req.href.query()))
 
     # IRequestHandler methods
 
@@ -579,7 +579,7 @@ class QueryModule(Component):
                     data.update(ticket.values)
                 except TracError, e:
                     data = {'id': rest_id, 'time': 0, 'changetime': 0,
-                            'summary': html.EM[e]}
+                            'summary': html.EM(e)}
                 tickets.insert(orig_list.index(rest_id), data)
 
         num_matches_group = {}
@@ -657,16 +657,16 @@ class QueryModule(Component):
 
     def _format_link(self, formatter, ns, query, label):
         if query[0] == '?':
-            return html.A(href=formatter.href.query() + query.replace(' ', '+'),
-                          class_='query')[label]
+            return html.A(label, class_='query',
+                          href=formatter.href.query() + query.replace(' ', '+'))
         else:
             from trac.ticket.query import Query, QuerySyntaxError
             try:
                 query = Query.from_string(formatter.env, query)
-                return html.A(href=query.get_href(formatter), # Hack
-                              class_='query')[label]
+                return html.A(label, href=query.get_href(formatter), # Hack
+                              class_='query')
             except QuerySyntaxError, e:
-                return html.EM(class_='error')['[Error: %s]' % e]
+                return html.EM('[Error: %s]' % e, class_='error')
 
 
 class TicketQueryMacro(WikiMacroBase):

@@ -172,7 +172,7 @@ class MarkupTestCase(unittest.TestCase):
 class TagsTestCase(unittest.TestCase):
 
     def test_link(self):
-        link = html.A(href='#', title='Foo', accesskey=None)['Bar']
+        link = html.A('Bar', href='#', title='Foo', accesskey=None)
         bits = link.serialize()
         self.assertEqual(u'<a href="#" title="Foo">', bits.next())
         self.assertEqual(u'Bar', bits.next())

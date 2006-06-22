@@ -68,7 +68,7 @@ class BrowserModule(Component):
         if not req.perm.has_permission('BROWSER_VIEW'):
             return
         yield ('mainnav', 'browser',
-               html.A(href=req.href.browser())['Browse Source'])
+               html.A('Browse Source', href=req.href.browser()))
 
     # IPermissionRequestor methods
 
@@ -290,5 +290,5 @@ class BrowserModule(Component):
         fragment = ''
         if line is not None:
             fragment = '#L%d' % line
-        return html.A(href=formatter.href.browser(path, rev=rev) + fragment,
-                      class_='source')[label]
+        return html.A(label, class_='source',
+                      href=formatter.href.browser(path, rev=rev) + fragment)

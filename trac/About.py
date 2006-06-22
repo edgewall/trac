@@ -38,7 +38,7 @@ class AboutModule(Component):
 
     def get_navigation_items(self, req):
         yield ('metanav', 'about',
-               html.a(href=req.href.about())['About Trac'])
+               html.a('About Trac', href=req.href.about()))
 
     # IPermissionRequestor methods
 

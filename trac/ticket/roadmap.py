@@ -132,7 +132,7 @@ class RoadmapModule(Component):
         if not req.perm.has_permission('ROADMAP_VIEW'):
             return
         yield ('mainnav', 'roadmap',
-               html.a(href=req.href.roadmap(), accesskey=3)['Roadmap'])
+               html.a('Roadmap', href=req.href.roadmap(), accesskey=3))
 
     # IPermissionRequestor methods
 
@@ -518,5 +518,5 @@ class MilestoneModule(Component):
         yield ('milestone', self._format_link)
 
     def _format_link(self, formatter, ns, name, label):
-        return html.A(href=formatter.href.milestone(name),
-                      class_='milestone')[label]
+        return html.A(label, href=formatter.href.milestone(name),
+                      class_='milestone')

@@ -210,13 +210,13 @@ class TicketSystem(Component):
                            (str(int(target)),))
             row = cursor.fetchone()
             if row:
-                return html.A(class_='%s ticket' % row[1],
+                return html.A(label, class_='%s ticket' % row[1],
                               title=shorten_line(row[0]) + ' (%s)' % row[1],
-                              href=formatter.href.ticket(target))[label]
+                              href=formatter.href.ticket(target))
         except ValueError:
             pass
-        return html.A(class_='missing ticket', rel='nofollow',
-                      href=formatter.href.ticket(target))[label]
+        return html.A(label, class_='missing ticket', rel='nofollow',
+                      href=formatter.href.ticket(target))
 
     def _format_comment_link(self, formatter, ns, target, label):
         type, id, cnum = 'ticket', '1', 0

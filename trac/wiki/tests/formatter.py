@@ -36,7 +36,7 @@ class DivCodeElementMacro(WikiMacroBase):
     """A dummy macro returning a div block, used by the unit test."""
 
     def render_macro(self, req, name, content):
-        return html.DIV(class_="code")['Hello World, args = ', content]
+        return html.DIV('Hello World, args = ', content, class_="code")
 
 class SampleResolver(Component):
     """A dummy macro returning a div block, used by the unit test."""
@@ -56,8 +56,8 @@ class SampleResolver(Component):
             module = 'thing'
         except ValueError:
             pass
-        return html.A(class_='%s resolver' % kind,
-                      href=formatter.href(module, target))[label]
+        return html.A(label, class_='%s resolver' % kind,
+                      href=formatter.href(module, target))
 
 
 class WikiTestCase(unittest.TestCase):
