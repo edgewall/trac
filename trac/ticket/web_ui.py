@@ -420,15 +420,13 @@ class TicketModule(TicketModuleBase):
 
             # Attachments
             if 'ticket_details' in filters:
-                for change, type, id, filename, time, description, author in \
-                        AttachmentModule(self.env).get_history(start, stop,
-                                                               'ticket'):
-                    title = html.EM(os.path.basename(filename)) + \
-                            ' attached to ticket ' + html.EM('#', id)
-                    if format != 'rss':
-                        title += Markup(' by %s', author)
-                    yield ('attachment', href.attachment(type, id, filename),
-                           title, time, author, description)
+                def display(id):
+                    return Markup('ticket %s', html.EM('#', id))
+                att = AttachmentModule(self.env)
+                for event in att.get_timeline_events(req, db, 'ticket',
+                                                     format, start, stop,
+                                                     display):
+                    yield event
 
     # Internal methods
 

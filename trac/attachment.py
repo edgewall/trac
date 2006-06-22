@@ -29,11 +29,12 @@ from trac.env import IEnvironmentSetupParticipant
 from trac.mimeview import *
 from trac.util import get_reporter_id, create_unique_file
 from trac.util.datefmt import format_datetime
-from trac.util.markup import html
+from trac.util.markup import Markup, html
 from trac.util.text import unicode_quote, unicode_unquote, pretty_size
 from trac.web import HTTPBadRequest, IRequestHandler
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
-from trac.wiki import IWikiSyntaxProvider
+from trac.wiki.api import IWikiSyntaxProvider
+from trac.wiki.formatter import wiki_to_html, wiki_to_oneliner
 
 
 class InvalidAttachment(TracError):
@@ -241,7 +242,6 @@ def attachments_to_hdf(env, req, db, parent_type, parent_id):
             in Attachment.select(env, parent_type, parent_id, db)]
     
 def attachment_to_hdf(env, req, db, attachment):
-    from trac.wiki import wiki_to_oneliner
     if not db:
         db = env.get_db_cnx()
     hdf = {
@@ -390,6 +390,26 @@ class AttachmentModule(Component):
                        "        AND type = %s", (start, stop, type))
         for type, id, filename, time, description, author in cursor:
             yield ('created', type, id, filename, time, description, author)
+
+    def get_timeline_events(self, req, db, type, format, start, stop, display):
+        """Return an iterable of events suitable for ITimelineEventProvider.
+
+        `display` is a callback for formatting the attachment's parent
+        """
+        for change, type, id, filename, time, descr, author in \
+                self.get_history(start, stop, type):
+            title = html.EM(os.path.basename(filename)) + \
+                    ' attached to ' + display(id)
+            if format == 'rss':
+                descr = wiki_to_html(descr or '--', self.env, req, db,
+                                     absurls=True)
+                href = req.abs_href
+            else:
+                descr = wiki_to_oneliner(descr, self.env, db, shorten=True)
+                title += Markup(' by %s', author)
+                href = req.href
+            yield('attachment', href.attachment(type, id, filename), title,
+                  time, author, descr)
 
     # Internal methods
 

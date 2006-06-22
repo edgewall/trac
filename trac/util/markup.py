@@ -102,7 +102,7 @@ class Markup(unicode):
         as is. Escaping quotes is generally only required for strings that are
         to be used in attribute values.
         """
-        if isinstance(text, cls):
+        if isinstance(text, (cls, Element)):
             return text
         text = unicode(text)
         if not text:

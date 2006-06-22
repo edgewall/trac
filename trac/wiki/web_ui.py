@@ -164,15 +164,13 @@ class WikiModule(Component):
                 yield 'wiki', href.wiki(name), title, t, author, comment
 
             # Attachments
-            for change, type, id, filename, time, description, author in \
-                    AttachmentModule(self.env).get_history(start, stop, 'wiki'):
-                title = html.EM(os.path.basename(filename)) + \
-                        ' attached to ' + html.EM(id)
-                if format != 'rss':
-                    title += Markup(' by %s', author)
-                yield ('attachment', href.attachment(type, id, filename),
-                       title, time, author, description)
-
+            def display(id):
+                return Markup('ticket ', html.EM('#', id))
+            att = AttachmentModule(self.env)
+            for event in att.get_timeline_events(req, db, 'wiki', format,
+                                                 start, stop,
+                                                 lambda id: html.EM(id)):
+                yield event
 
     # Internal methods
 
