@@ -61,7 +61,12 @@ class Session(dict):
     def get_session(self, sid, authenticated=False):
         db = self.env.get_db_cnx()
         cursor = db.cursor()
+        refresh_cookie = False
+
+        if self.sid and sid != self.sid:
+            refresh_cookie = True
         self.sid = sid
+
         cursor.execute("SELECT last_visit FROM session "
                        "WHERE sid=%s AND authenticated=%s",
                        (sid, int(authenticated)))
@@ -70,6 +75,9 @@ class Session(dict):
             return
         self._new = False
         self.last_visit = int(row[0])
+        if self.last_visit and time.time() - self.last_visit > UPDATE_INTERVAL:
+            refresh_cookie = True
+
         cursor.execute("SELECT name,value FROM session_attribute "
                        "WHERE sid=%s and authenticated=%s",
                        (sid, int(authenticated)))
@@ -78,9 +86,8 @@ class Session(dict):
         self._old.update(self)
 
         # Refresh the session cookie if this is the first visit since over a day
-        if not authenticated and self.last_visit:
-            if time.time() - self.last_visit > UPDATE_INTERVAL:
-                self.bake_cookie()
+        if not authenticated and refresh_cookie:
+            self.bake_cookie()
 
     def change_sid(self, new_sid):
         assert self.req.authname == 'anonymous', \
