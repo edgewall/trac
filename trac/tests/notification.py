@@ -129,23 +129,26 @@ class SMTPServerEngine:
             # to the state engine. Thanks to John Hall for pointing
             # this out.
             while not completeLine:
-                lump = self.socket.recv(1024);
-                if len(lump):
-                    data += lump
-                    if (len(data) >= 2) and data[-2:] == '\r\n':
-                        completeLine = 1
-                        if self.state != SMTPServerEngine.ST_DATA:
-                            rsp, keep = self.do_command(data)
-                        else:
-                            rsp = self.do_data(data)
-                            if rsp == None:
-                                continue
-                        self.socket.send(rsp + "\r\n")
-                        if keep == 0:
-                            self.socket.close()
-                            return
-                else:
-                    # EOF
+                try:
+                    lump = self.socket.recv(1024);
+                    if len(lump):
+                        data += lump
+                        if (len(data) >= 2) and data[-2:] == '\r\n':
+                            completeLine = 1
+                            if self.state != SMTPServerEngine.ST_DATA:
+                                rsp, keep = self.do_command(data)
+                            else:
+                                rsp = self.do_data(data)
+                                if rsp == None:
+                                    continue
+                            self.socket.send(rsp + "\r\n")
+                            if keep == 0:
+                                self.socket.close()
+                                return
+                    else:
+                        # EOF
+                        return
+                except socket.error:
                     return
         return
             
@@ -222,12 +225,18 @@ class SMTPServer:
         self._socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self._socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self._socket.bind(("", port))
+        self._socket_service = None
 
     def serve(self, impl):
         while ( self._resume ):
-            nsd = self._socket.accept()
-            engine = SMTPServerEngine(nsd[0], impl)
+            try:
+                nsd = self._socket.accept()
+            except socket.error:
+                return
+            self._socket_service = nsd[0]
+            engine = SMTPServerEngine(self._socket_service, impl)
             engine.chug()
+            self._socket_service = None
 
     def start(self):
         self._socket.listen(1)
@@ -237,8 +246,19 @@ class SMTPServer:
         self._resume = False
         
     def terminate(self):
-        self._socket.close()
-
+        if self._socket_service:
+            # force the blocking socket to stop waiting for data 
+            try:
+                #self._socket_service.shutdown(2)
+                self._socket_service.close()
+            except AttributeError:
+                # the SMTP server may also discard the socket
+                pass
+            self._socket_service = None
+        if self._socket:
+            #self._socket.shutdown(2)
+            self._socket.close()
+            self._socket = None
 
 class SMTPServerStore(SMTPServerInterface):
     """
@@ -274,7 +294,7 @@ class SMTPServerStore(SMTPServerInterface):
 
 class SMTPThreadedServer(threading.Thread):
     """
-    Run a SMTP server for a single connection, within a dediceted thread
+    Run a SMTP server for a single connection, within a dedicated thread
     """
 
     def __init__(self, port):
@@ -284,18 +304,28 @@ class SMTPThreadedServer(threading.Thread):
         threading.Thread.__init__(self)
       
     def run(self):
+        # run from within the SMTP server thread
         self.server.serve(impl = self.store)
 
     def start(self):
+        # run from the main thread
         self.server.start()
         threading.Thread.start(self)
         
     def stop(self):
+        # run from the main thread
         self.server.stop()
+        # send a message to make the SMTP server quit gracefully
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        s.connect(('localhost', self.port))
-        r = s.send("QUIT\r\n");
-        self.join()
+        try:
+            s.connect(('localhost', self.port))
+            r = s.send("QUIT\r\n");
+        except socket.error:
+            pass
+        s.close()
+        # wait for the SMTP server to complete (for up to 2 secs)
+        self.join(2.0)
+        # clean up the SMTP server (and force quit if needed)
         self.server.terminate()
 
     def get_sender(self):
