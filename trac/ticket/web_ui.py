@@ -492,15 +492,9 @@ class TicketModule(TicketModuleBase):
 
         # Mid air collision?
         if int(req.args.get('ts')) != ticket.time_changed:
-            self._insert_ticket_data(req, None, ticket,
-                                     req.args.get('author'))
-            self._populate_misc(req, db)
-            req.hdf.hdf.copy('newticket', req.hdf.hdf.getObj('ticket'))
-            ticket = Ticket(self.env, ticket.id, db=db)
-            self._insert_ticket_data(req, None, ticket,
-                                     req.args.get('author'))
-            self._populate_misc(req, db)
-            return 'ticket_error_midair.cs', None
+            raise TracError("Sorry, can not save your changes. "
+                            "This ticket has been modified by someone else "
+                            "since you started", 'Mid Air Collision')
 
         self._validate_ticket(req, ticket)
 
