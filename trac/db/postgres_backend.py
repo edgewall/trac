@@ -85,20 +85,13 @@ class PostgreSQLConnection(ConnectionWrapper):
         global psycopg
         global PgSQL
         global PGSchemaError
-        global have_psycopg2
         
         if not psycopg and not PgSQL:
             try:
-                try:
-                    import psycopg2 as psycopg
-                    import psycopg2.extensions
-                    from psycopg2 import ProgrammingError as PGSchemaError
-                    psycopg2.extensions.register_type(psycopg2.extensions.UNICODE)
-                    have_psycopg2 = True
-                except ImportError:
-                    have_psycopg2 = False
-                    import psycopg
-                    from psycopg import ProgrammingError as PGSchemaError
+                import psycopg2 as psycopg
+                import psycopg2.extensions
+                from psycopg2 import ProgrammingError as PGSchemaError
+                psycopg2.extensions.register_type(psycopg2.extensions.UNICODE)
             except ImportError:
                 from pyPgSQL import PgSQL
                 from pyPgSQL.libpq import OperationalError as PGSchemaError
@@ -115,8 +108,7 @@ class PostgreSQLConnection(ConnectionWrapper):
             if port:
                 dsn.append('port=' + str(port))
             cnx = psycopg.connect(' '.join(dsn))
-            if have_psycopg2:
-                cnx.set_client_encoding('UNICODE')
+            cnx.set_client_encoding('UNICODE')
         else:
             cnx = PgSQL.connect('', user, password, host, path, port, 
                                 client_encoding='utf-8', unicode_results=True)
