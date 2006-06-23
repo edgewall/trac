@@ -99,6 +99,27 @@ class MySQLConnection(ConnectionWrapper):
 
     poolable = True
 
+    def _mysqldb_gt_or_eq(self, v):
+        """This function checks whether the version of python-mysqldb
+        is greater than or equal to the version that's passed to it.
+        Note that the tuple only checks the major, minor, and sub versions;
+        the sub-sub version is weird, so we only check for 'final' versions.
+        """
+        from MySQLdb import version_info as ver
+        if ver[0] < v[0] or ver[1] < v[1] or ver[2] < v[2]:
+            return False
+        if ver[3] != 'final':
+            return False
+        return True
+
+    def _set_character_set(self, cnx, charset):
+        vers = tuple([ int(n) for n in cnx.get_server_info().split('.')[:2] ])
+        if vers < (4, 1):
+            raise TracError, 'MySQL servers older than 4.1 are not supported!'
+        cnx.query('SET NAMES %s' % charset)
+        cnx.store_result()
+        cnx.charset = charset
+
     def __init__(self, path, user=None, password=None, host=None,
                  port=None, params={}):
         import MySQLdb
@@ -110,8 +131,17 @@ class MySQLConnection(ConnectionWrapper):
         if port == None:
             port = 3306
 
-        cnx = MySQLdb.connect(db=path, user=user, passwd=password, host=host,
-                              port=port, use_unicode=True, charset='utf8')
+        # python-mysqldb 1.2.1 added a 'charset' arg that is required for
+        # unicode stuff.  We hack around that here for older versions; at
+        # some point, this hack should be removed, and a strict requirement
+        # on 1.2.1 made.  -dilinger
+        if (self._mysqldb_gt_or_eq((1, 2, 1))):
+            cnx = MySQLdb.connect(db=path, user=user, passwd=password,
+                                  host=host, port=port, charset='utf8')
+        else:
+            cnx = MySQLdb.connect(db=path, user=user, passwd=password,
+                                  host=host, port=port, use_unicode=True)
+            self._set_character_set(cnx, 'utf8')
         ConnectionWrapper.__init__(self, cnx)
 
     def cast(self, column, type):
