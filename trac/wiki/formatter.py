@@ -746,7 +746,7 @@ class Formatter(object):
             if match and not itype in self.wiki.helper_patterns:
                 # Check for preceding escape character '!'
                 if match[0] == '!':
-                    return match[1:]
+                    return escape(match[1:])
                 if itype in self.wiki.external_handlers:
                     external_handler = self.wiki.external_handlers[itype]
                     return external_handler(self, match, fullmatch)
