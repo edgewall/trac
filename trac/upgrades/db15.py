@@ -17,3 +17,4 @@ def do_upgrade(env, ver, cursor):
     cursor.execute("INSERT INTO session (sid,authenticated,var_name,var_value) "
                    "SELECT sid,authenticated,var_name,var_value "
                    "FROM session_old")
+    cursor.execute("DROP TABLE session_old")

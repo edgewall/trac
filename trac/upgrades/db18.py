@@ -56,4 +56,6 @@ def do_upgrade(env, ver, cursor):
                    "SELECT ticket, time, author, field, oldvalue, newvalue "
                    "FROM ticket_change_old")
 
+    cursor.execute("DROP TABLE session_old")
+    cursor.execute("DROP TABLE ticket_change_old")
 

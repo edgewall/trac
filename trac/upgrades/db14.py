@@ -11,7 +11,8 @@ sql = [
     UNIQUE(rev, path, change)
 );""",
 """INSERT INTO node_change (rev,path,kind,change,base_path,base_rev)
-    SELECT rev,path,kind,change,base_path,base_rev FROM node_change_old;"""
+    SELECT rev,path,kind,change,base_path,base_rev FROM node_change_old;""",
+"""DROP TABLE node_change_old;"""
 ]
 
 def do_upgrade(env, ver, cursor):

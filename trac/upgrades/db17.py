@@ -23,3 +23,4 @@ def do_upgrade(env, ver, cursor):
     cursor.execute("INSERT INTO node_change (rev,path,node_type,change_type,"
                    "base_path,base_rev) SELECT rev,path,kind,change,"
                    "base_path,base_rev FROM nc_old")
+    cursor.execute("DROP TABLE nc_old")
