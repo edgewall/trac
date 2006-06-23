@@ -414,9 +414,7 @@ class Formatter(object):
     def _make_ext_link(self, url, text, title=''):
         # ---- TODO: the following should be removed in milestone:0.11
         if Formatter.img_re.search(url) and self.flavor != 'oneliner':
-            link = html.IMG(src=url, alt=title or text,
-                            title='Warning: direct image links are deprecated,'
-                            ' use [[Image(...)]] instead')
+            link = html.IMG(src=url, alt=title or text)
         # ----
         elif not url.startswith(self._local):
             link = html.A(html.SPAN(text, class_="icon"),
@@ -428,8 +426,7 @@ class Formatter(object):
     def _make_relative_link(self, url, text):
         # ---- TODO: the following should be removed in milestone:0.11
         if Formatter.img_re.search(url) and self.flavor != 'oneliner':
-            link = html.IMG(src=url, alt=text, title='Warning: direct image '
-                            'links are deprecated, use [[Image(...)]] instead')
+            link = html.IMG(src=url, alt=text)
         # ----
         elif url.startswith('//'): # only the protocol will be kept
             link = html.A(text, class_="ext-link", href=url)

@@ -283,8 +283,7 @@ class BrowserModule(Component):
         match = IMG_RE.search(path)
         if formatter.flavor != 'oneliner' and match:
             return html.IMG(src=formatter.href.browser(path, format='raw'),
-                            alt=label, title='Warning: direct image links are '
-                            'deprecated, use [[Image(source:...)]] instead)')
+                            alt=label)
         # ----
         path, rev, line = get_path_rev_line(path)
         fragment = ''
