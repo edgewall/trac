@@ -226,7 +226,7 @@ class WikiModule(Component):
                 else:
                     raise InvalidWikiPage("Invalid Wiki page: %s" % message)
 
-        page.save(req.args.get('author'), req.args.get('comment'),
+        page.save(get_reporter_id(req, 'author'), req.args.get('comment'),
                   req.remote_addr)
         req.redirect(req.href.wiki(page.name))
 
@@ -336,7 +336,7 @@ class WikiModule(Component):
         if preview:
             page.readonly = req.args.has_key('readonly')
 
-        author = req.args.get('author', get_reporter_id(req))
+        author = get_reporter_id(req, 'author')
         comment = req.args.get('comment', '')
         editrows = req.args.get('editrows')
         if editrows:

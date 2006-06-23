@@ -110,7 +110,7 @@ class NewticketModule(TicketModuleBase):
 
         ticket = Ticket(self.env, db=db)
         ticket.populate(req.args)
-        ticket.values.setdefault('reporter', get_reporter_id(req))
+        ticket.values['reporter'] = get_reporter_id(req, 'reporter')
 
         if ticket.values.has_key('description'):
             description = wiki_to_html(ticket['description'], self.env, req, db)
@@ -163,8 +163,8 @@ class NewticketModule(TicketModuleBase):
             raise TracError('Tickets must contain a summary.')
 
         ticket = Ticket(self.env, db=db)
-        ticket.values.setdefault('reporter', get_reporter_id(req))
         ticket.populate(req.args)
+        ticket.values['reporter'] = get_reporter_id(req, 'reporter')
         self._validate_ticket(req, ticket)
 
         ticket.insert(db=db)
@@ -253,7 +253,6 @@ class TicketModule(TicketModuleBase):
         id = int(req.args.get('id'))
 
         ticket = Ticket(self.env, id, db=db)
-        reporter_id = get_reporter_id(req)
 
         if req.method == 'POST':
             if not req.args.has_key('preview'):
@@ -268,7 +267,6 @@ class TicketModule(TicketModuleBase):
                 req.hdf['ticket.reassign_owner'] = req.args.get('reassign_owner') \
                                                    or req.authname
                 req.hdf['ticket.resolve_resolution'] = req.args.get('resolve_resolution')
-                reporter_id = req.args.get('author')
                 comment = req.args.get('comment')
                 if comment:
                     req.hdf['ticket.comment'] = comment
@@ -280,7 +278,8 @@ class TicketModule(TicketModuleBase):
             # Store a timestamp in order to detect "mid air collisions"
             req.hdf['ticket.ts'] = ticket.time_changed
 
-        self._insert_ticket_data(req, db, ticket, reporter_id)
+        self._insert_ticket_data(req, db, ticket,
+                                 get_reporter_id(req, 'author'))
 
         mime = Mimeview(self.env)
         format = req.args.get('format')
@@ -522,7 +521,7 @@ class TicketModule(TicketModuleBase):
         internal_cnum = cnum
         if cnum and replyto: # record parent.child relationship
             internal_cnum = '%s.%s' % (replyto, cnum)
-        ticket.save_changes(req.args.get('author', req.authname),
+        ticket.save_changes(get_reporter_id(req, 'author'),
                             req.args.get('comment'), when=now, db=db,
                             cnum=internal_cnum)
         db.commit()

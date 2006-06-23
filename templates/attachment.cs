@@ -14,11 +14,13 @@
   </div>
   <fieldset>
    <legend>Attachment Info</legend>
-   <div class="field">
-    <label>Your email or username:<br />
-    <input type="text" name="author" size="30" value="<?cs
-      var:attachment.author?>" /></label>
-   </div>
+   <?cs if:trac.authname == "anonymous" ?>
+    <div class="field">
+     <label>Your email or username:<br />
+     <input type="text" name="author" size="30" value="<?cs
+       var:attachment.author?>" /></label>
+    </div>
+   <?cs /if ?>
    <div class="field">
     <label>Description of the file (optional):<br />
     <input type="text" name="description" size="60" /></label>

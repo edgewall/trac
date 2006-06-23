@@ -446,7 +446,7 @@ class AttachmentModule(Component):
             raise TracError('No file uploaded')
 
         attachment.description = req.args.get('description', '')
-        attachment.author = req.args.get('author', '')
+        attachment.author = get_reporter_id(req, 'author')
         attachment.ipnr = req.remote_addr
 
         # Validate attachment

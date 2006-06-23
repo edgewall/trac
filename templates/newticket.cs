@@ -11,11 +11,13 @@ addEvent(window, 'load', function() { document.getElementById('summary').focus()
 <?cs include:"site_newticket.cs" ?>
 <form id="newticket" method="post" action="<?cs
   var:trac.href.newticket ?>#preview">
- <div class="field">
-  <label for="reporter">Your email or username:</label><br />
-  <input type="text" id="reporter" name="reporter" size="40" value="<?cs
-    var:newticket.reporter ?>" /><br />
- </div>
+ <?cs if:trac.authname == "anonymous" ?>
+  <div class="field">
+   <label for="reporter">Your email or username:</label><br />
+   <input type="text" id="reporter" name="reporter" size="40" value="<?cs
+     var:newticket.reporter ?>" /><br />
+  </div>
+ <?cs /if ?>
  <div class="field">
   <label for="summary">Short summary:</label><br />
   <input id="summary" type="text" name="summary" size="80" value="<?cs

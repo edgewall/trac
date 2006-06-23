@@ -39,18 +39,18 @@ from trac.util.datefmt import pretty_timedelta, format_datetime, \
 
 # -- req/session utils
 
-def get_reporter_id(req):
-    name = req.session.get('name', None)
-    email = req.session.get('email', None)
-    
+def get_reporter_id(req, arg_name=None):
     if req.authname != 'anonymous':
         return req.authname
-    elif name and email:
+    if arg_name:
+        r = req.args.get(arg_name)
+        if r:
+            return r
+    name = req.session.get('name', None)
+    email = req.session.get('email', None)
+    if name and email:
         return '%s <%s>' % (name, email)
-    elif not name and email:
-        return email
-    else:
-        return req.authname
+    return name or email or req.authname # == 'anonymous'
 
 
 # -- algorithmic utilities

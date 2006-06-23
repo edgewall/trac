@@ -144,11 +144,13 @@
  <hr />
  <h3><a name="edit" onfocus="document.getElementById('comment').focus()">Add/Change #<?cs
    var:ticket.id ?> (<?cs var:ticket.summary ?>)</a></h3>
- <div class="field">
-  <label for="author">Your email or username:</label><br />
-  <input type="text" id="author" name="author" size="40"
-    value="<?cs var:ticket.reporter_id ?>" /><br />
- </div>
+ <?cs if:trac.authname == "anonymous" ?>
+  <div class="field">
+   <label for="author">Your email or username:</label><br />
+   <input type="text" id="author" name="author" size="40"
+     value="<?cs var:ticket.reporter_id ?>" /><br />
+  </div>
+ <?cs /if ?>
  <div class="field">
   <fieldset class="iefix">
    <label for="comment">Comment (you may use <a tabindex="42" href="<?cs

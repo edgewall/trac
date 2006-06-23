@@ -263,11 +263,13 @@
     </div>
     <fieldset id="changeinfo">
      <legend>Change information</legend>
-     <div class="field">
-      <label>Your email or username:<br />
-      <input id="author" type="text" name="author" size="30" value="<?cs
-        var:wiki.author ?>" /></label>
-     </div>
+     <?cs if:trac.authname == "anonymous" ?>
+      <div class="field">
+       <label>Your email or username:<br />
+       <input id="author" type="text" name="author" size="30" value="<?cs
+         var:wiki.author ?>" /></label>
+      </div>
+     <?cs /if ?>
      <div class="field">
       <label>Comment about this change (optional):<br />
       <input id="comment" type="text" name="comment" size="60" value="<?cs
