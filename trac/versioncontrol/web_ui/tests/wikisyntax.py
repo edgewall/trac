@@ -92,7 +92,7 @@ LOG_TEST_CASES="""
 [1:2/trunk]
 ------------------------------
 <p>
-<a class="source" href="/log?rev=2&amp;stop_rev=1">[1:2]</a>, <a class="source" href="/log/?rev=2&amp;stop_rev=1">r1:2</a>, <a class="source" href="/log?rev=23&amp;stop_rev=12">[12:23]</a>, <a class="source" href="/log/?rev=23&amp;stop_rev=12">r12:23</a>
+<a class="source" href="/log/?rev=2&amp;stop_rev=1">[1:2]</a>, <a class="source" href="/log/?rev=2&amp;stop_rev=1">r1:2</a>, <a class="source" href="/log/?rev=23&amp;stop_rev=12">[12:23]</a>, <a class="source" href="/log/?rev=23&amp;stop_rev=12">r12:23</a>
 <a class="source" href="/log/trunk?rev=2&amp;stop_rev=1">[1:2/trunk]</a>
 </p>
 ------------------------------
@@ -136,8 +136,8 @@ rfc:4180 should not be a log link
 [trac 3317:3318/trunk]
 ------------------------------
 <p>
-<a class="ext-link" href="http://projects.edgewall.com/trac/log/rev=3318&amp;stop_rev=3317" title="log:rev=3318&amp;stop_rev=3317 in Trac\'s Trac"><span class="icon">[T3317:3318]</span></a>
-<a class="ext-link" href="http://projects.edgewall.com/trac/log/rev=3318&amp;stop_rev=3317" title="log:rev=3318&amp;stop_rev=3317 in Trac\'s Trac"><span class="icon">[trac 3317:3318]</span></a>
+<a class="ext-link" href="http://projects.edgewall.com/trac/log/?rev=3318&amp;stop_rev=3317" title="log:?rev=3318&amp;stop_rev=3317 in Trac\'s Trac"><span class="icon">[T3317:3318]</span></a>
+<a class="ext-link" href="http://projects.edgewall.com/trac/log/?rev=3318&amp;stop_rev=3317" title="log:?rev=3318&amp;stop_rev=3317 in Trac\'s Trac"><span class="icon">[trac 3317:3318]</span></a>
 <a class="ext-link" href="http://projects.edgewall.com/trac/log/trunk?rev=3318&amp;stop_rev=3317" title="log:trunk?rev=3318&amp;stop_rev=3317 in Trac\'s Trac"><span class="icon">[trac 3317:3318/trunk]</span></a>
 </p>
 ------------------------------

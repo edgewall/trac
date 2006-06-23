@@ -238,7 +238,7 @@ class LogModule(Component):
         for sep in ':-':
             if not stop_rev and rev and sep in rev:
                 stop_rev, rev = rev.split(sep, 1)
-        href = formatter.href.log(path, rev=rev, stop_rev=stop_rev)
+        href = formatter.href.log(path or '/', rev=rev, stop_rev=stop_rev)
         if ns == 'log1':
             target = it_log + href[len(formatter.href.log('/')):]
             # prepending it_log is needed, as the helper expects it there
