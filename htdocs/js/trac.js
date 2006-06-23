@@ -66,10 +66,11 @@ function searchHighlight() {
         var span = document.createElement("span");
         span.className = "searchword" + (searchwordindex % 5);
         span.appendChild(document.createTextNode(
-            node.nodeValue.substr(pos, word.length)));
-        var newNode = node.splitText(pos);
-        newNode.nodeValue = newNode.nodeValue.substr(word.length);
-        node.parentNode.insertBefore(span, newNode);
+          node.nodeValue.substr(pos, word.length)));
+        node.parentNode.insertBefore(span, node.parentNode.insertBefore(
+          document.createTextNode(node.nodeValue.substr(pos + word.length)),
+            node.nextSibling));
+        node.nodeValue = node.nodeValue.substr(0, pos);
         return true;
       }
     } else if (!node.nodeName.match(/button|select|textarea/i)) {
