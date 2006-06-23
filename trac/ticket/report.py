@@ -293,6 +293,12 @@ class ReportModule(Component):
                     return val
                 rows = sorted(rows, key=sortkey, reverse=(not asc))
 
+        # Get the email addresses of all known users
+        email_map = {}
+        for username, name, email in self.env.get_known_users():
+            if email:
+                email_map[username] = email
+
         # Convert the rows and cells to HDF-format
         row_idx = 0
         for row in rows:
@@ -326,8 +332,11 @@ class ReportModule(Component):
                     desc = wiki_to_html(cell, self.env, req, db,
                                         absurls=(format == 'rss'))
                     value['parsed'] = format == 'rss' and unicode(desc) or desc
-                elif column == 'reporter' and cell.find('@') != -1:
-                    value['rss'] = cell
+                elif column == 'reporter':
+                    if cell.find('@') != -1:
+                        value['rss'] = cell
+                    elif cell in email_map:
+                        value['rss'] = email_map[cell]
                 elif column == 'report':
                     value['report_href'] = req.href.report(cell)
                 elif column in ('time', 'date','changetime', 'created', 'modified'):
