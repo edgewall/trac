@@ -222,9 +222,6 @@ class Formatter(object):
     _processor_re = re.compile('#\!([\w+-][\w+-/]*)')
     _anchor_re = re.compile('[^\w:.-]+', re.UNICODE)
 
-    # TODO: the following should be removed in milestone:0.11
-    img_re = re.compile(r"\.(gif|jpg|jpeg|png)(\?.*)?$", re.IGNORECASE)
-
     def __init__(self, env, req=None, absurls=False, db=None):
         self.env = env
         self.req = req
@@ -412,27 +409,17 @@ class Formatter(object):
             return None
 
     def _make_ext_link(self, url, text, title=''):
-        # ---- TODO: the following should be removed in milestone:0.11
-        if Formatter.img_re.search(url) and self.flavor != 'oneliner':
-            link = html.IMG(src=url, alt=title or text)
-        # ----
-        elif not url.startswith(self._local):
-            link = html.A(html.SPAN(text, class_="icon"),
+        if not url.startswith(self._local):
+            return html.A(html.SPAN(text, class_="icon"),
                           class_="ext-link", href=url, title=title or None)
         else:
-            link = html.A(text, href=url, title=title or None)
-        return link
+            return html.A(text, href=url, title=title or None)
 
     def _make_relative_link(self, url, text):
-        # ---- TODO: the following should be removed in milestone:0.11
-        if Formatter.img_re.search(url) and self.flavor != 'oneliner':
-            link = html.IMG(src=url, alt=text)
-        # ----
-        elif url.startswith('//'): # only the protocol will be kept
-            link = html.A(text, class_="ext-link", href=url)
+        if url.startswith('//'): # only the protocol will be kept
+            return html.A(text, class_="ext-link", href=url)
         else:
-            link = html.A(text, href=url)
-        return link
+            return html.A(text, href=url)
 
     # WikiMacros
     

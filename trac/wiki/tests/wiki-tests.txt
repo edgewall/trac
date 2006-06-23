@@ -187,7 +187,7 @@ This ticket is the first one
 ||http://example.com/img.png||text||
 ------------------------------
 <table class="wiki">
-<tr><td><img src="http://example.com/img.png" alt="http://example.com/img.png" /></td><td>text
+<tr><td><a class="ext-link" href="http://example.com/img.png"><span class="icon">http://example.com/img.png</span></a></td><td>text
 </td></tr></table>
 ------------------------------
 ||<a class="ext-link" href="http://example.com/img.png"><span class="icon">http://example.com/img.png</span></a>||text||
@@ -268,15 +268,15 @@ Relative links are supported:
 Relative links are supported:
 <a href="../parent">See above</a>
 <a href="/docs">See documentation</a>
-<img src="/images/logo.png" alt="Our logo" />
+<a href="/images/logo.png">Our logo</a>
 <a href="/">/</a>
 </p>
 ------------------------------
-==============================  Image TracLink (DEPRECATED)
+==============================  Image links are now regular external links
 http://example.com/img.png?foo=bar
 ------------------------------
 <p>
-<img src="http://example.com/img.png?foo=bar" alt="http://example.com/img.png?foo=bar" />
+<a class="ext-link" href="http://example.com/img.png?foo=bar"><span class="icon">http://example.com/img.png?foo=bar</span></a>
 </p>
 ------------------------------
 <a class="ext-link" href="http://example.com/img.png?foo=bar"><span class="icon">http://example.com/img.png?foo=bar</span></a>

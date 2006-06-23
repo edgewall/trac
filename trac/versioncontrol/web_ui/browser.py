@@ -36,8 +36,6 @@ from trac.versioncontrol.api import NoSuchChangeset
 from trac.versioncontrol.web_ui.util import *
 
 
-IMG_RE = re.compile(r"\.(gif|jpg|jpeg|png)(\?.*)?$", re.IGNORECASE)
-
 CHUNK_SIZE = 4096
 
 
@@ -279,12 +277,6 @@ class BrowserModule(Component):
                 ('browser', self._format_link)]
 
     def _format_link(self, formatter, ns, path, label):
-        # ---- TODO: the following should be removed in milestone:0.11
-        match = IMG_RE.search(path)
-        if formatter.flavor != 'oneliner' and match:
-            return html.IMG(src=formatter.href.browser(path, format='raw'),
-                            alt=label)
-        # ----
         path, rev, line = get_path_rev_line(path)
         fragment = ''
         if line is not None:
