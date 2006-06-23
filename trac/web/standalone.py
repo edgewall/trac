@@ -18,6 +18,7 @@
 #         Matthew Good <trac@matt-good.net>
 #         Christopher Lenz <cmlenz@gmx.de>
 
+import errno
 import os
 import sys
 from SocketServer import ThreadingMixIn
@@ -149,6 +150,9 @@ def main():
         parser.add_option('-d', '--daemonize', action='store_true',
                           dest='daemonize',
                           help='run in the background as a daemon')
+        parser.add_option('--pidfile', action='store',
+                          dest='pidfile',
+                          help='When daemonizing, file to which to write pid')
 
     parser.set_defaults(port=None, hostname='', base_path='', daemonize=False,
                         protocol='http')
@@ -187,8 +191,39 @@ def main():
             sys.exit(ret and 42 or 0) # if SIGHUP exit with status 42
 
     try:
-        if os.name == 'posix' and options.daemonize:
-            daemon.daemonize()
+        if os.name == 'posix':
+            if options.pidfile:
+                options.pidfile = os.path.abspath(options.pidfile)
+                if os.path.exists(options.pidfile):
+                    pidfile = open(options.pidfile)
+                    try:
+                        pid = int(pidfile.read())
+                    finally:
+                        pidfile.close()
+
+                    try:
+                        # signal the process to see if it is still running
+                        os.kill(pid, 0)
+                    except OSError, e:
+                        if e.errno != errno.ESRCH:
+                            raise
+                    else:
+                        sys.exit("tracd is already running with pid %s" % pid)
+                realserve = serve
+                def serve():
+                    try:
+                        pidfile = open(options.pidfile, 'w')
+                        try:
+                            pidfile.write(str(os.getpid()))
+                        finally:
+                            pidfile.close()
+                        realserve()
+                    finally:
+                       if os.path.exists(options.pidfile):
+                           os.remove(options.pidfile)
+
+            if options.daemonize:
+                daemon.daemonize()
 
         if options.autoreload:
             def modification_callback(file):
