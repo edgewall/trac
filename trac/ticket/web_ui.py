@@ -173,7 +173,7 @@ class NewticketModule(TicketModuleBase):
         # Notify
         try:
             tn = TicketNotifyEmail(self.env)
-            tn.notify(ticket, newticket=True)
+            tn.notify(ticket, req, newticket=True)
         except Exception, e:
             self.log.exception("Failure sending notification on creation of "
                                "ticket #%s: %s" % (ticket.id, e))
@@ -528,7 +528,7 @@ class TicketModule(TicketModuleBase):
 
         try:
             tn = TicketNotifyEmail(self.env)
-            tn.notify(ticket, newticket=False, modtime=now)
+            tn.notify(ticket, req, newticket=False, modtime=now)
         except Exception, e:
             self.log.exception("Failure sending notification on change to "
                                "ticket #%s: %s" % (ticket.id, e))
@@ -626,11 +626,11 @@ class TicketModule(TicketModuleBase):
         for action in actions:
             req.hdf['ticket.actions.' + action] = '1'
 
-    def grouped_changelog_entries(self, ticket, db):
+    def grouped_changelog_entries(self, ticket, db, when=0):
         """Iterate on changelog entries, consolidating related changes
         in a `dict` object.
         """
-        changelog = ticket.get_changelog(db=db)
+        changelog = ticket.get_changelog(when=when, db=db)
         autonum = 0 # used for "root" numbers
         last_uid = current = None
         for date, author, field, old, new, permanent in changelog:
@@ -646,7 +646,7 @@ class TicketModule(TicketModuleBase):
                     'fields': {},
                     'permanent': permanent
                 }
-                if permanent:
+                if permanent and not when:
                     autonum += 1
                     current['cnum'] = autonum
             # some common processing for fields
@@ -658,7 +658,7 @@ class TicketModule(TicketModuleBase):
                         current['replyto'] = parent_num
                     else:
                         this_num = old
-                    assert this_num == str(autonum)
+                    current['cnum'] = int(this_num)
             elif field == 'description':
                 current['fields'][field] = ''
             else:

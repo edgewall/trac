@@ -56,66 +56,75 @@ class TicketNotifyEmail(NotifyEmail):
         NotifyEmail.__init__(self, env)
         self.prev_cc = []
 
-    def notify(self, ticket, newticket=True, modtime=0):
-        # FIXME: should have a `req` parameter, for ['link'] below
+    def notify(self, ticket, req, newticket=True, modtime=0):
         self.ticket = ticket
         self.modtime = modtime
         self.newticket = newticket
         self.ticket['description'] = wrap(self.ticket.values.get('description', ''),
                                           self.COLS, initial_indent=' ',
                                           subsequent_indent=' ', linesep=CRLF)
-        self.ticket['link'] = self.env.abs_href.ticket(ticket.id) # FIXME
         self.hdf.set_unescaped('email.ticket_props', self.format_props())
         self.hdf.set_unescaped('email.ticket_body_hdr', self.format_hdr())
-        self.hdf.set_unescaped('ticket', self.ticket.values)
         self.hdf['ticket.new'] = self.newticket
         subject = self.format_subj()
+        link = req.abs_href.ticket(ticket.id)
         if not self.newticket:
             subject = 'Re: ' + subject
         self.hdf.set_unescaped('email.subject', subject)
         changes = ''
         if not self.newticket and modtime:  # Ticket change
-            changelog = ticket.get_changelog(modtime)
-            for date, author, field, old, new, permanent in changelog:
-                self.hdf.set_unescaped('ticket.change.author', author)
-                pfx = 'ticket.change.%s' % field
-                newv = ''
-                if field == 'comment':
-                    newv = wrap(new, self.COLS, ' ', ' ', CRLF)
-                elif field == 'description':
-                    new_descr = wrap(new, self.COLS, ' ', ' ', CRLF)
-                    old_descr = wrap(old, self.COLS, '> ', '> ', CRLF)
-                    old_descr = old_descr.replace(2*CRLF, CRLF + '>' + CRLF)
-                    cdescr = CRLF
-                    cdescr += 'Old description:' + 2*CRLF + old_descr + 2*CRLF
-                    cdescr += 'New description:' + 2*CRLF + new_descr + CRLF
-                    self.hdf.set_unescaped('email.changes_descr', cdescr)
-                elif field == 'cc':
-                    (addcc, delcc) = self.diff_cc(old, new)
-                    chgcc = ''
-                    if delcc:
-                        chgcc += wrap(" * cc: %s (removed)" % ', '.join(delcc), 
-                                      self.COLS, ' ', ' ', CRLF)
-                        chgcc += CRLF
-                    if addcc:
-                        chgcc += wrap(" * cc: %s (added)" % ', '.join(addcc), 
-                                      self.COLS, ' ', ' ', CRLF)
-                        chgcc += CRLF
-                    if chgcc:
-                        changes += chgcc
-                    self.prev_cc += old and self.parse_cc(old) or []
-                else:
-                    newv = new
-                    l = 7 + len(field)
-                    chg = wrap('%s => %s' % (old, new), self.COLS - l, '',
-                               l * ' ', CRLF)
-                    changes += '  * %s:  %s%s' % (field, chg, CRLF)
-                if newv:
-                    self.hdf.set_unescaped('%s.oldvalue' % pfx, old)
-                    self.hdf.set_unescaped('%s.newvalue' % pfx, newv)
-                self.hdf.set_unescaped('%s.author' % pfx, author)
+            from trac.ticket.web_ui import TicketModule
+            for change in TicketModule(self.env).grouped_changelog_entries(
+                ticket, self.db, when=modtime):
+                if not change['permanent']: # attachment with same time...
+                    continue
+                self.hdf.set_unescaped('ticket.change.author', 
+                                       change['author'])
+                self.hdf.set_unescaped('ticket.change.comment',
+                                       change['comment'])
+                link += '#comment:%d' % change['cnum']
+                for field, values in change['fields'].iteritems():
+                    old = values['old']
+                    new = values['new']
+                    pfx = 'ticket.change.%s' % field
+                    newv = ''
+                    if field == 'comment':
+                        newv = wrap(new, self.COLS, ' ', ' ', CRLF)
+                    elif field == 'description':
+                        new_descr = wrap(new, self.COLS, ' ', ' ', CRLF)
+                        old_descr = wrap(old, self.COLS, '> ', '> ', CRLF)
+                        old_descr = old_descr.replace(2*CRLF, CRLF + '>' + CRLF)
+                        cdescr = CRLF
+                        cdescr += 'Old description:' + 2*CRLF + old_descr + 2*CRLF
+                        cdescr += 'New description:' + 2*CRLF + new_descr + CRLF
+                        self.hdf.set_unescaped('email.changes_descr', cdescr)
+                    elif field == 'cc':
+                        (addcc, delcc) = self.diff_cc(old, new)
+                        chgcc = ''
+                        if delcc:
+                            chgcc += wrap(" * cc: %s (removed)" % ', '.join(delcc), 
+                                          self.COLS, ' ', ' ', CRLF)
+                            chgcc += CRLF
+                        if addcc:
+                            chgcc += wrap(" * cc: %s (added)" % ', '.join(addcc), 
+                                          self.COLS, ' ', ' ', CRLF)
+                            chgcc += CRLF
+                        if chgcc:
+                            changes += chgcc
+                        self.prev_cc += old and self.parse_cc(old) or []
+                    else:
+                        newv = new
+                        l = 7 + len(field)
+                        chg = wrap('%s => %s' % (old, new), self.COLS - l, '',
+                                   l * ' ', CRLF)
+                        changes += '  * %s:  %s%s' % (field, chg, CRLF)
+                    if newv:
+                        self.hdf.set_unescaped('%s.oldvalue' % pfx, old)
+                        self.hdf.set_unescaped('%s.newvalue' % pfx, newv)
             if changes:
                 self.hdf.set_unescaped('email.changes_body', changes)
+        self.ticket['link'] = link
+        self.hdf.set_unescaped('ticket', self.ticket.values)
         NotifyEmail.notify(self, ticket.id, subject)
 
     def format_props(self):
