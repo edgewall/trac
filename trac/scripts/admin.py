@@ -742,7 +742,8 @@ Congratulations!
             self._do_wiki_load(dir)
         elif arg[0] == 'upgrade' and len(arg) == 1:
             self._do_wiki_load(default_dir('wiki'),
-                               ignore=['WikiStart', 'checkwiki.py'])
+                               ignore=['WikiStart', 'checkwiki.py'],
+                               create_only=['InterMapTxt'])
         else:    
             self.do_help ('wiki')
 
@@ -756,7 +757,8 @@ Congratulations!
         page = WikiPage(self.env_open(), name)
         page.delete()
 
-    def _do_wiki_import(self, filename, title, cursor=None):
+    def _do_wiki_import(self, filename, title, cursor=None,
+                        create_only=[]):
         if not os.path.isfile(filename):
             raise Exception, '%s is not a file' % filename
 
@@ -768,6 +770,9 @@ Congratulations!
                              "ORDER BY version DESC LIMIT 1", cursor,
                              params=(title,))
         old = list(rows)
+        if old and title in create_only:
+            print '  %s already exists.' % title
+            return
         if old and data == old[0][0]:
             print '  %s already up to date.' % title
             return
@@ -799,7 +804,7 @@ Congratulations!
             print " %s => %s" % (p, dst)
             self._do_wiki_export(p, dst)
 
-    def _do_wiki_load(self, dir, cursor=None, ignore=[]):
+    def _do_wiki_load(self, dir, cursor=None, ignore=[], create_only=[]):
         for page in os.listdir(dir):
             if page in ignore:
                 continue
@@ -807,7 +812,7 @@ Congratulations!
             page = urllib.unquote(page)
             if os.path.isfile(filename):
                 print " %s => %s" % (filename, page)
-                self._do_wiki_import(filename, page, cursor)
+                self._do_wiki_import(filename, page, cursor, create_only)
 
     ## Ticket
     _help_ticket = [('ticket remove <number>', 'Remove ticket')]
