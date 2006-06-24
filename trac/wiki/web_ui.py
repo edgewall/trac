@@ -358,7 +358,10 @@ class WikiModule(Component):
         }
         if page.exists:
             info['history_href'] = req.href.wiki(page.name,
-                                                      action='history')
+                                                 action='history')
+            info['last_change_href'] = req.href.wiki(page.name,
+                                                     action='diff',
+                                                     version=page.version)
         if preview:
             info['page_html'] = wiki_to_html(page.text, self.env, req, db)
             info['readonly'] = int(req.args.has_key('readonly'))
@@ -416,9 +419,12 @@ class WikiModule(Component):
         req.hdf['wiki'] = {'exists': page.exists,
                            'version': page.version, 'readonly': page.readonly}
         if page.exists:
-            req.hdf['wiki.page_html'] = wiki_to_html(page.text, self.env, req)
-            history_href = req.href.wiki(page.name, action='history')
-            req.hdf['wiki.history_href'] = history_href
+            req.hdf['wiki'] = {
+                'page_html': wiki_to_html(page.text, self.env, req),
+                'history_href': req.href.wiki(page.name, action='history'),
+                'last_change_href': req.href.wiki(page.name, action='diff',
+                                                  version=page.version)
+                }
         else:
             if not req.perm.has_permission('WIKI_CREATE'):
                 raise HTTPNotFound('Page %s not found', page.name)

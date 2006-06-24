@@ -12,20 +12,8 @@
      else ?>
       <span class="missing">&larr; Previous Change</span><?cs
      /if ?>
-   </li><?cs
-   set:history_class = "" ?><?cs 
-  else ?>
-   <li><a href="<?cs var:trac.href.wiki ?>">Start Page</a></li>
-   <li><a href="<?cs var:trac.href.wiki ?>/TitleIndex">Title Index</a></li>
-   <li><a href="<?cs var:trac.href.wiki ?>/RecentChanges">Recent Changes</a></li><?cs
-   set:history_class = "last" ?><?cs
-  /if ?><?cs
-  if:wiki.history_href ?>
-   <li class="<?cs var:history_class ?>"><a href="<?cs var:wiki.history_href ?>">Page History</a></li><?cs 
-  else ?>
-   <li class="<?cs var:history_class ?>">Page History</li><?cs 
-  /if ?><?cs
-  if:wiki.action == "diff" ?>
+   </li>
+   <li><a href="<?cs var:wiki.history_href ?>">Page History</a></li>
    <li class="last"><?cs
      if:len(chrome.links.next) ?>
       <a class="next" href="<?cs var:chrome.links.next.0.href ?>" title="<?cs
@@ -33,7 +21,14 @@
      else ?>
       <span class="missing">Next Change &rarr;</span><?cs
      /if ?>
-   </li><?cs 
+   </li><?cs
+  elif:wiki.action == "history" ?>
+   <li><a href="<?cs var:wiki.current_href ?>">View Latest Version</a></li><?cs
+  else ?>
+   <li><a href="<?cs var:trac.href.wiki ?>">Start Page</a></li>
+   <li><a href="<?cs var:trac.href.wiki ?>/TitleIndex">Index by Title</a></li>
+   <li><a href="<?cs var:trac.href.wiki ?>/RecentChanges">Index by Date</a></li>
+   <li class="last"><a href="<?cs var:wiki.last_change_href ?>">Last Change</a></li><?cs 
   /if ?>
  </ul>
  <hr />
