@@ -280,7 +280,9 @@ class WikiModule(Component):
         }
         num_changes = 0
         old_page = None
-        for version,t,author,comment,ipnr in page.get_history():
+        latest_page = WikiPage(self.env, page.name)
+        prev_version = next_version = None
+        for version,t,author,comment,ipnr in latest_page.get_history():
             if version == new_version:
                 if t:
                     info['time'] = format_datetime(t)
@@ -291,24 +293,27 @@ class WikiModule(Component):
             else:
                 num_changes += 1
                 if version < new_version:
+                    if not prev_version:
+                        prev_version = version
                     if (old_version and version == old_version) or \
                             not old_version:
                         old_page = WikiPage(self.env, page.name, version)
                         info['num_changes'] = num_changes
                         info['old_version'] = version
                         break
+                else:
+                    next_version = version
         req.hdf['wiki'] = info
 
         # -- prev/next links
-        if new_version > 1:
+        if prev_version:
             add_link(req, 'prev', req.href.wiki(page.name, action='diff',
-                                                version=new_version-1),
-                     'Version %d' % (new_version-1))
-        latest_page = WikiPage(self.env, page.name)
-        if new_version < latest_page.version:
+                                                version=prev_version),
+                     'Version %d' % prev_version)
+        if next_version:
             add_link(req, 'next', req.href.wiki(page.name, action='diff',
-                                                version=new_version+1),
-                     'Version %d' % (new_version+1))
+                                                version=next_version),
+                     'Version %d' % next_version)
 
         # -- text diffs
         diff_style, diff_options = get_diff_options(req)
