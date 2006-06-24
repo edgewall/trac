@@ -199,11 +199,12 @@ class Attachment(object):
             self.env.log.info('New attachment: %s by %s', self.title,
                               self.author)
 
+            if handle_ta:
+                db.commit()
+
             for listener in AttachmentModule(self.env).change_listeners:
                 listener.attachment_added(self)
 
-            if handle_ta:
-                db.commit()
         finally:
             targetfile.close()
 

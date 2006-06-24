@@ -92,17 +92,18 @@ class WikiPage(object):
             for attachment in Attachment.select(self.env, 'wiki', self.name, db):
                 attachment.delete(db)
 
-            # Let change listeners know about the deletion
+        if handle_ta:
+            db.commit()
+
+        # Let change listeners know about the deletion
+        if not self.exists:
             for listener in WikiSystem(self.env).change_listeners:
                 listener.wiki_page_deleted(self)
         else:
-            # Let change listeners know about the deletion
             for listener in WikiSystem(self.env).change_listeners:
                 if hasattr(listener, 'wiki_page_version_deleted'):
                     listener.wiki_page_version_deleted(self)
 
-        if handle_ta:
-            db.commit()
 
     def save(self, author, comment, remote_addr, t=None, db=None):
         if not db:

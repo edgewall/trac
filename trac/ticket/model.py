@@ -171,13 +171,15 @@ class Ticket(object):
                                "VALUES (%s,%s,%s)", [(tkt_id, name, self[name])
                                                      for name in custom_fields])
 
+        if handle_ta:
+            db.commit()
+
+        self.id = tkt_id
+        self._old = {}
+
         for listener in TicketSystem(self.env).change_listeners:
             listener.ticket_created(self)
 
-        if handle_ta:
-            db.commit()
-        self.id = tkt_id
-        self._old = {}
         return self.id
 
     def save_changes(self, author, comment, when=0, db=None, cnum=''):
@@ -250,13 +252,13 @@ class Ticket(object):
         cursor.execute("UPDATE ticket SET changetime=%s WHERE id=%s",
                        (when, self.id))
 
-        for listener in TicketSystem(self.env).change_listeners:
-            listener.ticket_changed(self, comment, self._old)
-
         if handle_ta:
             db.commit()
         self._old = {}
         self.time_changed = when
+
+        for listener in TicketSystem(self.env).change_listeners:
+            listener.ticket_changed(self, comment, self._old)
 
     def get_changelog(self, when=0, db=None):
         """Return the changelog as a list of tuples of the form
@@ -300,11 +302,11 @@ class Ticket(object):
                        " WHERE type='ticket' and id=%s", (self.id,))
         cursor.execute("DELETE FROM ticket_custom WHERE ticket=%s", (self.id,))
 
-        for listener in TicketSystem(self.env).change_listeners:
-            listener.ticket_deleted(self)
-
         if handle_ta:
             db.commit()
+
+        for listener in TicketSystem(self.env).change_listeners:
+            listener.ticket_deleted(self)
 
 
 class AbstractEnum(object):
