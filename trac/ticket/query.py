@@ -554,16 +554,17 @@ class QueryModule(Component):
         orig_list = rest_list = None
         orig_time = int(time.time())
         query_constraints = unicode(query.constraints)
-        if query_constraints != req.session.get('query_constraints'):
-            # New query, initialize session vars
+        if query_constraints != req.session.get('query_constraints') \
+                or int(req.session.get('query_time', 0)) < orig_time - 3600:
+            # New or outdated query, (re-)initialize session vars
             req.session['query_constraints'] = query_constraints
-            req.session['query_time'] = int(time.time())
             req.session['query_tickets'] = ' '.join([str(t['id']) for t in tickets])
         else:
             orig_list = [int(id) for id in req.session.get('query_tickets', '').split()]
             rest_list = orig_list[:]
             orig_time = int(req.session.get('query_time', 0))
         req.session['query_href'] = query.get_href(req)
+        req.session['query_time'] = orig_time
 
         # Find out which tickets originally in the query results no longer
         # match the constraints
