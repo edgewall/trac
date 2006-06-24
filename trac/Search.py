@@ -167,9 +167,18 @@ class SearchModule(Component):
         query = req.args.get('q')
         if query:
             page = int(req.args.get('page', '1'))
-            redir = self.quickjump(req, query)
-            if redir:
-                req.redirect(redir)
+            noquickjump = int(req.args.get('noquickjump', '0'))
+            link_elt = self.quickjump(req, query)
+            if link_elt is not None:
+                quickjump_href = link_elt.attr['href']
+                if noquickjump:
+                    req.hdf['search.quickjump'] = {
+                        'href': quickjump_href,
+                        'name': html.EM(link_elt.children),
+                        'description': link_elt.attr.get('title', '')
+                        }
+                else:
+                    req.redirect(quickjump_href)
             elif query.startswith('!'):
                 query = query[1:]
             terms = search_terms(query)
@@ -215,14 +224,12 @@ class SearchModule(Component):
         return 'search.cs', None
 
     def quickjump(self, req, kwd):
-        if len(kwd.split()) != 1:
-            return None
         # Source quickjump
         if kwd[0] == '/':
             return req.href.browser(kwd)
         link = wiki_to_link(kwd, self.env, req)
         if isinstance(link, Element):
-            return link.attr['href']
+            return link
 
     # IWikiSyntaxProvider methods
     

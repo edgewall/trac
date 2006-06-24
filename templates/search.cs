@@ -27,6 +27,7 @@ addEvent(window, 'load', function() { document.getElementById('q').focus()});
 <form action="<?cs var:trac.href.search ?>" method="get">
  <p>
   <input type="text" id="q" name="q" size="40" value="<?cs var:search.q ?>" />
+  <input type="hidden" name="noquickjump" value="1" />
   <input type="submit" value="Search" />
  </p>
  <p><?cs
@@ -37,27 +38,34 @@ addEvent(window, 'load', function() { document.getElementById('q').focus()});
    <label for="<?cs var:filter.name ?>"><?cs var:filter.label?></label><?cs
   /each ?>
  </p>
-</form>
-<?cs if:len(search.result) ?>
- <hr />
+</form><?cs 
+
+if:len(search.result) || len(search.quickjump) ?>
+ <hr /><?cs
+ if:len(search.result) ?>
  <h2>Search results <?cs
   if:search.n_pages > 1 ?>(<?cs
    var:(search.page-1) * search.page_size + 1 ?> - <?cs
    var:(search.page-1) * search.page_size + len(search.result) ?> 
    of <?cs var:search.n_hits?>)<?cs
-  /if ?></h2>
+  /if ?></h2><?cs
+ /if ?>
  <div id="searchable">
   <dl id="results"><?cs
+   if:len(search.quickjump) ?>
+    <dt id=quickjump><a href="<?cs var:search.quickjump.href ?>">Quickjump to <?cs var:search.quickjump.name ?></a></dt>
+    <dd><?cs var:search.quickjump.description ?></dd><?cs 
+   /if ?><?cs 
    each item=search.result ?>
- <dt><a href="<?cs var:item.href ?>"><?cs var:item.title ?></a></dt>
- <dd><?cs var:item.excerpt ?></dd>
- <dd>
-  <span class="author">By <?cs var:item.author ?></span> &mdash;
-  <span class="date"><?cs var:item.date ?></span><?cs
-  if:item.keywords ?> &mdash
-   <span class="keywords">Keywords: <em><?cs var:item.keywords ?></em></span><?cs
-  /if ?>
- </dd><?cs
+    <dt><a href="<?cs var:item.href ?>"><?cs var:item.title ?></a></dt>
+    <dd><?cs var:item.excerpt ?></dd>
+    <dd>
+     <span class="author">By <?cs var:item.author ?></span> &mdash;
+     <span class="date"><?cs var:item.date ?></span><?cs
+     if:item.keywords ?> &mdash
+      <span class="keywords">Keywords: <em><?cs var:item.keywords ?></em></span><?cs
+     /if ?>
+    </dd><?cs
    /each ?>
   </dl>
   <hr />
@@ -81,7 +89,7 @@ addEvent(window, 'load', function() { document.getElementById('q').focus()});
   </div><?cs
  /if ?><?cs
 
-elif:search.q ?>
+elif:search.q && !search.quickjump ?>
  <div id="notfound">No matches found.</div><?cs
 /if ?>
 
