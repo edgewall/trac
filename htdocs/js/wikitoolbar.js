@@ -66,6 +66,12 @@ function addWikiFormattingToolbar(textarea) {
   addButton("hr", "Horizontal rule: ----", function() {
     encloseSelection("\n----\n", "");
   });
+  addButton("np", "New paragraph", function() {
+    encloseSelection("\n\n", "");
+  });
+  addButton("br", "Line break: [[BR]]", function() {
+    encloseSelection("[[BR]]\n", "");
+  });
 
   textarea.parentNode.insertBefore(toolbar, textarea);
 }
