@@ -62,9 +62,13 @@
   </form>
  
  <?cs elif:wiki.action == "diff" ?>
-  <h1>Changes between Version <?cs var:wiki.old_version?> and <?cs
-    var:wiki.version?> of <a href="<?cs var:wiki.current_href ?>"><?cs 
-    var:wiki.page_name ?></a></h1>
+  <h1>Changes <?cs
+    if:wiki.old_version ?>between 
+     <a href="<?cs var:wiki.current_href ?>?version=<?cs var:wiki.old_version?>">Version <?cs var:wiki.old_version?></a> and <?cs
+    else ?>from <?cs
+    /if ?>
+    <a href="<?cs var:wiki.current_href ?>?version=<?cs var:wiki.version?>">Version <?cs var:wiki.version?></a> of 
+    <a href="<?cs var:wiki.current_href ?>"><?cs var:wiki.page_name ?></a></h1>
   <form method="post" id="prefs" action="<?cs var:wiki.current_href ?>">
    <div>
     <input type="hidden" name="action" value="diff" />
