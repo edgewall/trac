@@ -287,7 +287,7 @@ class WikiModule(Component):
             'latest_version': latest_page.version,
             'history_href': req.href.wiki(page.name, action='history')
         }
-        print `info`
+
         num_changes = 0
         old_page = None
         prev_version = next_version = None
@@ -300,8 +300,8 @@ class WikiModule(Component):
                 info['comment'] = comment or '--'
                 info['ipnr'] = ipnr or ''
             else:
-                num_changes += 1
                 if version < new_version:
+                    num_changes += 1
                     if not prev_version:
                         prev_version = version
                     if (old_version and version == old_version) or \
