@@ -331,8 +331,10 @@
     if:wiki.exists && trac.acl.WIKI_DELETE ?>
      <form method="get" action="<?cs var:wiki.current_href ?>"><div id="delete">
       <input type="hidden" name="action" value="delete" />
-      <input type="hidden" name="version" value="<?cs var:wiki.version ?>" />
-      <input type="submit" name="delete_version" value="Delete this version" />
+      <input type="hidden" name="version" value="<?cs var:wiki.version ?>" /><?cs
+      if:wiki.version == wiki.latest_version ?>
+       <input type="submit" name="delete_version" value="Delete this version" /><?cs
+      /if ?>
       <input type="submit" value="Delete page" />
      </div></form>
     <?cs /if ?>

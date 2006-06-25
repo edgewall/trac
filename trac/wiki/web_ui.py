@@ -421,8 +421,11 @@ class WikiModule(Component):
             add_link(req, 'alternate', conversion_href, conversion[1],
                      conversion[3])
 
+        latest_page = WikiPage(self.env, page.name)
         req.hdf['wiki'] = {'exists': page.exists,
-                           'version': page.version, 'readonly': page.readonly}
+                           'version': page.version,
+                           'latest_version': latest_page.version,
+                           'readonly': page.readonly}
         if page.exists:
             req.hdf['wiki'] = {
                 'page_html': wiki_to_html(page.text, self.env, req),
