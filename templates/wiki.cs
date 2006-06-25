@@ -36,28 +36,39 @@
 
 <div id="content" class="wiki">
 
- <?cs if wiki.action == "delete" ?>
-  <h1>Delete <?cs
-   if:?wiki.version ?>version <?cs var:wiki.version ?> of <?cs /if ?><a href="<?cs
+ <?cs if wiki.action == "delete" ?><?cs 
+  if:wiki.version - wiki.old_version > 1 ?><?cs
+   set:first_version = wiki.old_version + 1 ?><?cs
+   set:version_range = "versions "+first_version+" to "+wiki.version+" of " ?><?cs
+   set:delete_what = "those versions" ?><?cs
+  elif:wiki.version ?><?cs
+   set:version_range = "version "+wiki.version+" of " ?><?cs
+   set:delete_what = "this version" ?><?cs
+  else ?><?cs
+   set:version_range = "" ?><?cs
+   set:delete_what = "page" ?><?cs
+  /if ?>
+  <h1>Delete <?cs var:version_range ?><a href="<?cs
     var:wiki.current_href ?>"><?cs var:wiki.page_name ?></a></h1>
   <form action="<?cs var:wiki.current_href ?>" method="post">
    <input type="hidden" name="action" value="delete" />
    <p><strong>Are you sure you want to <?cs
-    if:!?wiki.version ?>completely <?cs /if ?>delete <?cs
-    if:?wiki.version ?>version <?cs var:wiki.version ?> of <?cs
-    /if ?>this page?</strong><br /><?cs
+    if:!?wiki.version ?>completely <?cs 
+    /if ?>delete <?cs var:version_range ?>this page?</strong><br /><?cs
    if:wiki.only_version ?>
     This is the only version the page, so the page will be removed
     completely!<?cs
    /if ?><?cs
    if:?wiki.version ?>
     <input type="hidden" name="version" value="<?cs var:wiki.version ?>" /><?cs
+   /if ?><?cs
+   if:wiki.old_version ?>
+    <input type="hidden" name="old_version" value="<?cs var:wiki.old_version ?>" /><?cs
    /if ?>
    This is an irreversible operation.</p>
    <div class="buttons">
     <input type="submit" name="cancel" value="Cancel" />
-    <input type="submit" value="Delete <?cs
-      if:?wiki.version ?>this version<?cs else ?>page<?cs /if ?>" />
+    <input type="submit" value="Delete <?cs var:delete_what ?>" />
    </div>
   </form>
  
@@ -168,7 +179,19 @@
       </table><?cs
      /if ?>
     </li>
-   </ul>
+   </ul><?cs
+   if:trac.acl.WIKI_DELETE && 
+    (len(wiki.diff) == 0 || wiki.version == wiki.latest_version) ?>
+    <form method="get" action="<?cs var:wiki.current_href ?>">
+     <input type="hidden" name="action" value="delete" />
+     <input type="hidden" name="version" value="<?cs var:wiki.version ?>" />
+     <input type="hidden" name="old_version" value="<?cs var:wiki.old_version ?>" />
+     <input type="submit" name="delete_version" value="Delete <?cs
+     if:wiki.version - wiki.old_version > 1 ?> version <?cs 
+      var:wiki.old_version+1 ?> to <?cs 
+     /if ?>version <?cs var:wiki.version ?>" />
+    </form><?cs
+   /if ?>
   </div>
 
  <?cs elif wiki.action == "history" ?>

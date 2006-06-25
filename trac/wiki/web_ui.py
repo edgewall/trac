@@ -191,11 +191,16 @@ class WikiModule(Component):
         if req.args.has_key('cancel'):
             req.redirect(req.href.wiki(page.name))
 
-        version = None
-        if req.args.has_key('version'):
-            version = int(req.args.get('version', 0))
+        version = int(req.args.get('version', 0)) or None
+        old_version = int(req.args.get('old_version', 0)) or version
 
-        page.delete(version, db)
+        if version and old_version and version > old_version:
+            # delete from `old_version` exclusive to `version` inclusive:
+            for v in range(old_version, version):
+                page.delete(v + 1, db)
+        else:
+            # only delete that `version`, or the whole page if `None`
+            page.delete(version, db)
         db.commit()
 
         if not page.exists:
@@ -239,17 +244,19 @@ class WikiModule(Component):
         version = None
         if req.args.has_key('delete_version'):
             version = int(req.args.get('version', 0))
+        old_version = int(req.args.get('old_version', 0)) or version
 
         self._set_title(req, page, 'delete')
         req.hdf['wiki'] = {'mode': 'delete'}
         if version is not None:
-            req.hdf['wiki.version'] = version
             num_versions = 0
-            for change in page.get_history():
-                num_versions += 1;
-                if num_versions > 1:
-                    break
-            req.hdf['wiki.only_version'] = num_versions == 1
+            for v,t,author,comment,ipnr in page.get_history():
+                if v >= old_version:
+                    num_versions += 1;
+                    if num_versions > 1:
+                        break
+            req.hdf['wiki'] = {'version': version, 'old_version': old_version,
+                               'only_version': num_versions == 1}
 
     def _render_diff(self, req, db, page):
         req.perm.assert_permission('WIKI_VIEW')
@@ -273,14 +280,16 @@ class WikiModule(Component):
             elif old_version > page.version: # FIXME: what about reverse diffs?
                 old_version, page = page.version, \
                                     WikiPage(self.env, page.name, old_version)
+        latest_page = WikiPage(self.env, page.name)
         new_version = int(page.version)
         info = {
             'version': new_version,
+            'latest_version': latest_page.version,
             'history_href': req.href.wiki(page.name, action='history')
         }
+        print `info`
         num_changes = 0
         old_page = None
-        latest_page = WikiPage(self.env, page.name)
         prev_version = next_version = None
         for version,t,author,comment,ipnr in latest_page.get_history():
             if version == new_version:
