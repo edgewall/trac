@@ -378,6 +378,7 @@ class WikiModule(Component):
                                                      version=page.version)
         if preview:
             info['page_html'] = wiki_to_html(page.text, self.env, req, db)
+            info['comment_html'] = wiki_to_oneliner(comment, self.env, req, db)
             info['readonly'] = int(req.args.has_key('readonly'))
         req.hdf['wiki'] = info
 
@@ -442,6 +443,13 @@ class WikiModule(Component):
                 'last_change_href': req.href.wiki(page.name, action='diff',
                                                   version=page.version)
                 }
+            if version:
+                req.hdf['wiki'] = {
+                    'comment_html': wiki_to_oneliner(page.comment or '--',
+                                                     self.env, db),
+                    'author': page.author,
+                    'age': pretty_timedelta(page.time)
+                    }
         else:
             if not req.perm.has_permission('WIKI_CREATE'):
                 raise HTTPNotFound('Page %s not found', page.name)

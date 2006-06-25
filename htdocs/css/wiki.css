@@ -17,6 +17,22 @@
  overflow: auto;
 }
 
+/* Additional style for the version info */
+#info {
+ margin: 1em 0;
+ background: #f7f7f0;
+ border: 1px solid #d7d7d7;
+ border-collapse: collapse;
+ border-spacing: 0;
+ clear: both;
+ width: 100%;
+}
+#info th, #info td { font-size: 85%; padding: 2px .5em; vertical-align: top }
+#info th { font-weight: bold; text-align: left; white-space: nowrap }
+#info td.message { width: 100% }
+#info .message ul { padding: 0; margin: 0 2em }
+#info .message p { margin: 0; padding: 0 }
+
 /* Diff view */
 #overview .multi { color: #999 }
 #overview .ipnr { color: #999; font-size: 80% }

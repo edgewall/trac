@@ -42,23 +42,28 @@ class WikiPage(object):
             db = self.env.get_db_cnx()
         cursor = db.cursor()
         if version:
-            cursor.execute("SELECT version,text,readonly FROM wiki "
+            cursor.execute("SELECT version,time,author,text,comment,readonly "
+                           "FROM wiki "
                            "WHERE name=%s AND version=%s",
                            (name, int(version)))
         else:
-            cursor.execute("SELECT version,text,readonly FROM wiki "
+            cursor.execute("SELECT version,time,author,text,comment,readonly "
+                           "FROM wiki "
                            "WHERE name=%s ORDER BY version DESC LIMIT 1",
                            (name,))
         row = cursor.fetchone()
         if row:
-            version,text,readonly = row
+            version,time,author,text,comment,readonly = row
             self.version = int(version)
+            self.author = author
+            self.time = time
             self.text = text
+            self.comment = comment
             self.readonly = readonly and int(readonly) or 0
         else:
             self.version = 0
-            self.text = ''
-            self.readonly = 0
+            self.text = self.comment = self.author = ''
+            self.time = self.readonly = 0
 
     exists = property(fget=lambda self: self.version > 0)
 

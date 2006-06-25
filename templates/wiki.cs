@@ -240,9 +240,16 @@
   <?cs if wiki.action == "edit" || wiki.action == "preview" || wiki.action == "collision" ?>
    <h1>Editing "<?cs var:wiki.page_name ?>"</h1><?cs
     if wiki.action == "preview" ?>
+     <table id="info" summary="Revision info"><tbody><tr>
+       <th scope="col">
+        Preview of future version <?cs var:$wiki.version+1 ?> (modified by <?cs var:wiki.author ?>)
+       </th></tr><tr>
+       <td class="message"><?cs var:wiki.comment_html ?></td>
+      </tr>
+     </tbody></table>
      <fieldset id="preview">
       <legend>Preview (<a href="#edit">skip</a>)</legend>
-      <div class="wikipage"><?cs var:wiki.page_html ?></div>
+        <div class="wikipage"><?cs var:wiki.page_html ?></div>
      </fieldset><?cs
      elif wiki.action =="collision"?>
      <div class="system-message">
@@ -320,6 +327,15 @@
    </form>
   <?cs /if ?>
   <?cs if wiki.action == "view" ?>
+   <?cs if:wiki.comment_html ?>
+    <table id="info" summary="Revision info"><tbody><tr>
+      <th scope="col">
+       Version <?cs var:wiki.version ?> (modified by <?cs var:wiki.author ?>, <?cs var:wiki.age ?> ago)
+      </th></tr><tr>
+      <td class="message"><?cs var:wiki.comment_html ?></td>
+     </tr>
+    </tbody></table>
+   <?cs /if ?>
    <div class="wikipage">
     <div id="searchable"><?cs var:wiki.page_html ?></div>
    </div>

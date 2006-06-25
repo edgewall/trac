@@ -108,20 +108,7 @@ div.buttons {
 
 #paging { margin: 1em 0 }
 
-/* Styles for the revision info in the file view */
-#info {
- background: #f7f7f0;
- border: 1px solid #d7d7d7;
- border-collapse: collapse;
- border-spacing: 0;
- clear: both;
- width: 100%;
-}
-#info th, #info td { font-size: 85%; padding: 2px .5em; vertical-align: top }
-#info th { font-weight: bold; text-align: left; white-space: nowrap }
-#info td.message { width: 100% }
-#info .message ul { padding: 0; margin: 0 2em }
-#info .message p { margin: 0; padding: 0 }
+/* Styles for the revision info in the file view (see also trac.css) */
 #info .props {
  color: #666;
  list-style: square;
