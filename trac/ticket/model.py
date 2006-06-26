@@ -262,7 +262,11 @@ class Ticket(object):
 
     def get_changelog(self, when=0, db=None):
         """Return the changelog as a list of tuples of the form
-        (time, author, field, oldvalue, newvalue).
+        (time, author, field, oldvalue, newvalue, permanent).
+
+        While the other tuple elements are quite self-explanatory,
+        the `permanent` flag is used to distinguish collateral changes
+        that are not yet immutable (like attachments, currently).
         """
         db = self._get_db(db)
         cursor = db.cursor()
