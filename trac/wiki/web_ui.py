@@ -301,7 +301,8 @@ class WikiModule(Component):
                     info['time'] = format_datetime(t)
                     info['time_delta'] = pretty_timedelta(t)
                 info['author'] = author or 'anonymous'
-                info['comment'] = comment or '--'
+                info['comment'] = wiki_to_html(comment or '--',
+                                               self.env, req, db)
                 info['ipnr'] = ipnr or ''
             else:
                 if version < new_version:

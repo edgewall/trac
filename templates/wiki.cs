@@ -133,8 +133,8 @@
     elif:wiki.time ?><?cs var:wiki.time ?> (<?cs var:wiki.time_delta ?> ago)<?cs
     else ?>--<?cs
     /if ?></dd>
-   <dt class="property comment">Comment:</dt>
-   <dd class="comment"><?cs
+   <dt class="property message">Comment:</dt>
+   <dd class="message"><?cs
     if:wiki.num_changes > 1 ?><em class="multi">(multiple changes)</em><?cs
     else ?><?cs var:wiki.comment ?><?cs /if ?></dd>
   </dl>
