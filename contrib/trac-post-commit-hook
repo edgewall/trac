@@ -142,34 +142,40 @@ class CommitHook:
         self.env.abs_href = Href(url)
 
         cmdGroups = commandPattern.findall(msg) 
+
+        tickets = {}
         for cmd, tkts in cmdGroups:
-            if CommitHook._supported_cmds.has_key(cmd.lower()):
-                func = getattr(self, CommitHook._supported_cmds[cmd.lower()])
-                func(ticketPattern.findall(tkts))
+            funcname = CommitHook._supported_cmds.get(cmd.lower(), '')
+            if funcname:
+                for tkt_id in ticketPattern.findall(tkts):
+                    func = getattr(self, funcname)
+                    tickets.setdefault(tkt_id, []).append(func)
 
-    def _cmdClose(self, tickets):
-        for tkt_id in tickets:
+        for tkt_id, cmds in tickets.iteritems():
             try:
-                ticket = Ticket(self.env, tkt_id)
-                ticket['status'] = 'closed'
-                ticket['resolution'] = 'fixed'
-                ticket.save_changes(self.author, self.msg, self.now)
+                db = self.env.get_db_cnx()
+                
+                ticket = Ticket(self.env, int(tkt_id), db)
+                for cmd in cmds:
+                    cmd(ticket)
+
+                ticket.save_changes(self.author, self.msg, self.now, db)
+                db.commit()
+                
                 tn = TicketNotifyEmail(self.env)
                 tn.notify(ticket, newticket=0, modtime=self.now)
             except Exception, e:
+                # import traceback
+                # traceback.print_exc(file=sys.stderr)
                 print>>sys.stderr, 'Unexpected error while processing ticket ' \
                                    'ID %s: %s' % (tkt_id, e)
 
-    def _cmdRefs(self, tickets):
-        for tkt_id in tickets: 
-            try:
-                ticket = Ticket(self.env, tkt_id)
-                ticket.save_changes(self.author, self.msg, self.now)
-                tn = TicketNotifyEmail(self.env)
-                tn.notify(ticket, newticket=0, modtime=self.now)
-            except Exception, e:
-                print>>sys.stderr, 'Unexpected error while processing ticket ' \
-                                   'ID %s: %s' % (tkt_id, e)
+    def _cmdClose(self, ticket):
+        ticket['status'] = 'closed'
+        ticket['resolution'] = 'fixed'
+
+    def _cmdRefs(self, ticket):
+        pass
 
 
 if __name__ == "__main__":
