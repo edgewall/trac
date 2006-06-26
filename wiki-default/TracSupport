@@ -1,4 +1,7 @@
 = Trac Support =
+----
+'''Warning:''' the following instructions apply to the '''Trac web application itself''', ''not'' to the actual software being managed by this instance of Trac. Check the project's WikiStart page for pointers to the relevant support information.
+----
 
 Like in most [http://www.opensource.org/ open source projects], "free" Trac support is available primarily through the community itself, mainly through the [http://projects.edgewall.com/trac/wiki/MailingList mailing list] and the project wiki.
 
