@@ -76,6 +76,8 @@ import time
 from trac.env import open_environment
 from trac.ticket.notification import TicketNotifyEmail
 from trac.ticket import Ticket
+from trac.ticket.web_ui import TicketModule
+# TODO: move grouped_changelog_entries to model.py
 from trac.web.href import Href
 
 try:
@@ -138,38 +140,53 @@ class CommitHook:
         self.env = open_environment(project)
         if url is None:
             url = self.env.config.get('project', 'url')
-        self.env.href = Href(url)
-        self.env.abs_href = Href(url)
+        class Request(object):
+            def __init__(self):
+                self.href = self.abs_href = Href(url)
 
-        cmdGroups = commandPattern.findall(msg) 
+        cmdGroups = commandPattern.findall(msg)
+
+        tickets = {}
         for cmd, tkts in cmdGroups:
-            if CommitHook._supported_cmds.has_key(cmd.lower()):
-                func = getattr(self, CommitHook._supported_cmds[cmd.lower()])
-                func([int(tkt_id) for tkt_id in ticketPattern.findall(tkts)])
+            funcname = CommitHook._supported_cmds.get(cmd.lower(), '')
+            if funcname:
+                for tkt_id in ticketPattern.findall(tkts):
+                    func = getattr(self, funcname)
+                    tickets.setdefault(tkt_id, []).append(func)
 
-    def _cmdClose(self, tickets):
-        for tkt_id in tickets:
+        for tkt_id, cmds in tickets.iteritems():
             try:
-                ticket = Ticket(self.env, tkt_id)
-                ticket['status'] = 'closed'
-                ticket['resolution'] = 'fixed'
-                ticket.save_changes(self.author, self.msg, self.now)
+                db = self.env.get_db_cnx()
+                
+                ticket = Ticket(self.env, int(tkt_id), db)
+                for cmd in cmds:
+                    cmd(ticket)
+
+                # determine sequence number... 
+                cnum = 0
+                tm = TicketModule(self.env)
+                for change in tm.grouped_changelog_entries(ticket, db):
+                    if change['permanent']:
+                        cnum += 1
+                
+                ticket.save_changes(self.author, self.msg, self.now, db, cnum+1)
+                db.commit()
+                
                 tn = TicketNotifyEmail(self.env)
-                tn.notify(ticket, newticket=0, modtime=self.now)
+                tn.notify(ticket, Request(), newticket=0, modtime=self.now)
             except Exception, e:
+                # import traceback
+                # traceback.print_exc(file=sys.stderr)
                 print>>sys.stderr, 'Unexpected error while processing ticket ' \
                                    'ID %s: %s' % (tkt_id, e)
+            
 
-    def _cmdRefs(self, tickets):
-        for tkt_id in tickets: 
-            try:
-                ticket = Ticket(self.env, tkt_id)
-                ticket.save_changes(self.author, self.msg, self.now)
-                tn = TicketNotifyEmail(self.env)
-                tn.notify(ticket, newticket=0, modtime=self.now)
-            except Exception, e:
-                print>>sys.stderr, 'Unexpected error while processing ticket ' \
-                                   'ID %s: %s' % (tkt_id, e)
+    def _cmdClose(self, ticket):
+        ticket['status'] = 'closed'
+        ticket['resolution'] = 'fixed'
+
+    def _cmdRefs(self, ticket):
+        pass
 
 
 if __name__ == "__main__":
