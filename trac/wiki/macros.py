@@ -98,7 +98,10 @@ class RecentChangesMacro(WikiMacroBase):
         db = self.env.get_db_cnx()
         cursor = db.cursor()
 
-        sql = 'SELECT name, max(time) AS max_time FROM wiki'
+        sql = 'SELECT name, ' \
+              '  max(version) AS max_version, ' \
+              '  max(time) AS max_time ' \
+              'FROM wiki'
         args = []
         if prefix:
             sql += ' WHERE name LIKE %s'
@@ -111,19 +114,23 @@ class RecentChangesMacro(WikiMacroBase):
 
         entries_per_date = []
         prevdate = None
-        for name, time in cursor:
+        for name, version, time in cursor:
             date = format_date(time)
             if date != prevdate:
                 prevdate = date
                 entries_per_date.append((date, []))
-            entries_per_date[-1][1].append(name)
+            entries_per_date[-1][1].append((name, version))
 
         wiki = WikiSystem(self.env)
-        return html.DIV([html.H3(date) +
-                         html.UL([html.LI(html.A(wiki.format_page_name(name),
-                                                 href=req.href.wiki(name)))
-                                    for name in entries])
-                         for date, entries in entries_per_date])
+        return html.DIV(
+            [html.H3(date) +
+             html.UL([html.LI(
+            html.A(wiki.format_page_name(name), href=req.href.wiki(name)), ' ',
+            html.SMALL('(', html.A('diff',
+                                   href=req.href.wiki(name, action='diff',
+                                                      version=version)), ')'))
+                      for name, version in entries])
+             for date, entries in entries_per_date])
 
 
 class PageOutlineMacro(WikiMacroBase):
@@ -353,7 +360,6 @@ class MacroListMacro(WikiMacroBase):
 
     def render_macro(self, req, name, content):
         from trac.wiki.formatter import wiki_to_html, system_message
-        from trac.wiki import WikiSystem
         wiki = WikiSystem(self.env)
 
         def get_macro_descr():
