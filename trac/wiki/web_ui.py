@@ -149,18 +149,22 @@ class WikiModule(Component):
             href = format == 'rss' and req.abs_href or req.href
             db = self.env.get_db_cnx()
             cursor = db.cursor()
-            cursor.execute("SELECT time,name,comment,author "
+            cursor.execute("SELECT time,name,comment,author,version "
                            "FROM wiki WHERE time>=%s AND time<=%s",
                            (start, stop))
-            for t,name,comment,author in cursor:
+            for t,name,comment,author,version in cursor:
                 title = Markup('<em>%s</em> edited by %s',
                                wiki.format_page_name(name), author)
+                diff_link = html.A('diff', href=href.wiki(name, action='diff',
+                                                          version=version))
                 if format == 'rss':
                     comment = wiki_to_html(comment or '--', self.env, req, db,
                                            absurls=True)
                 else:
                     comment = wiki_to_oneliner(comment, self.env, db,
                                                shorten=True)
+                if version > 1:
+                    comment = Markup('%s (%s)', comment, diff_link)
                 yield 'wiki', href.wiki(name), title, t, author, comment
 
             # Attachments
