@@ -106,8 +106,8 @@
       <li>Property <strong><?cs var:prop.name ?></strong> set to <em><code><?cs
       var:prop.value ?></code></em></li><?cs
      /each ?>
-    </ul></td><?cs
-   /if ?></tr>
+    </ul></td></tr><?cs
+   /if ?>
   </table><?cs
  /if ?><?cs
  
@@ -132,11 +132,11 @@
 
   <div id="anydiff">
    <form action="<?cs var:browser.anydiff_href ?>" method="get">
-    <input type="hidden" name="new_path" value="<?cs var:browser.path ?>" />
-    <input type="hidden" name="old_path" value="<?cs var:browser.path ?>" />
-    <input type="hidden" name="new_rev" value="<?cs var:browser.revision ?>" />
-    <input type="hidden" name="old_rev" value="<?cs var:browser.revision ?>" />
     <div class="buttons">
+     <input type="hidden" name="new_path" value="<?cs var:browser.path ?>" />
+     <input type="hidden" name="old_path" value="<?cs var:browser.path ?>" />
+     <input type="hidden" name="new_rev" value="<?cs var:browser.revision ?>" />
+     <input type="hidden" name="old_rev" value="<?cs var:browser.revision ?>" />
      <input type="submit" value="View changes..." title="Prepare an Arbitrary Diff" />
     </div>
    </form>
