@@ -41,16 +41,17 @@ def get_changes(env, repos, revs, full=None, req=None, format=None):
 
         wiki_format = env.config['changeset'].getbool('wiki_format_messages')
         message = changeset.message or '--'
+        absurls = (format == 'rss')
         if wiki_format:
-            shortlog = wiki_to_oneliner(message, env, db, shorten=True)
+            shortlog = wiki_to_oneliner(message, env, db,
+                                        shorten=True, absurls=absurls)
         else:
             shortlog = Markup.escape(shorten_line(message))
 
         if full:
             if wiki_format:
                 message = wiki_to_html(message, env, req, db,
-                                       absurls=(format == 'rss'),
-                                       escape_newlines=True)
+                                       absurls=absurls, escape_newlines=True)
             else:
                 message = html.PRE(message)
         else:
