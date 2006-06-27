@@ -107,7 +107,7 @@ def to_utf8(text, charset='iso-8859-15'):
 
 # -- Plain text formatting
 
-def shorten_line(text, maxlen = 75):
+def shorten_line(text, maxlen=75):
     if len(text or '') < maxlen:
         return text
     shortline = text[:maxlen]
@@ -120,10 +120,10 @@ def wrap(t, cols=75, initial_indent='', subsequent_indent='',
     try:
         import textwrap
         t = t.strip().replace('\r\n', '\n').replace('\r', '\n')
-        wrapper = textwrap.TextWrapper(cols, replace_whitespace = 0,
-                                       break_long_words = 0,
-                                       initial_indent = initial_indent,
-                                       subsequent_indent = subsequent_indent)
+        wrapper = textwrap.TextWrapper(cols, replace_whitespace=0,
+                                       break_long_words=0,
+                                       initial_indent=initial_indent,
+                                       subsequent_indent=subsequent_indent)
         wrappedLines = []
         for line in t.split('\n'):
             wrappedLines += wrapper.wrap(line.rstrip()) or ['']
