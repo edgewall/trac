@@ -81,16 +81,15 @@ class TicketNotifyEmail(NotifyEmail):
                 self.hdf.set_unescaped('ticket.change.author', 
                                        change['author'])
                 self.hdf.set_unescaped('ticket.change.comment',
-                                       change['comment'])
+                                       wrap(change['comment'], self.COLS,
+                                            ' ', ' ', CRLF))
                 link += '#comment:%d' % change['cnum']
                 for field, values in change['fields'].iteritems():
                     old = values['old']
                     new = values['new']
                     pfx = 'ticket.change.%s' % field
                     newv = ''
-                    if field == 'comment':
-                        newv = wrap(new, self.COLS, ' ', ' ', CRLF)
-                    elif field == 'description':
+                    if field == 'description':
                         new_descr = wrap(new, self.COLS, ' ', ' ', CRLF)
                         old_descr = wrap(old, self.COLS, '> ', '> ', CRLF)
                         old_descr = old_descr.replace(2*CRLF, CRLF + '>' + CRLF)
