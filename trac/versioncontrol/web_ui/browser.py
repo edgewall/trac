@@ -241,6 +241,7 @@ class BrowserModule(Component):
                 'changeset_href': req.href.changeset(node.rev),
                 'date': format_datetime(changeset.date),
                 'age': pretty_timedelta(changeset.date),
+                'size': pretty_size(node.content_length),
                 'author': changeset.author or 'anonymous',
                 'message': message
             } 

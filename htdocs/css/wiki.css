@@ -17,9 +17,6 @@
  overflow: auto;
 }
 
-/* Additional style for the Wiki version info */
-#info { margin: 1em 0; }
-
 /* Diff view */
 #overview .multi { color: #999 }
 #overview .ipnr { color: #999; font-size: 80% }

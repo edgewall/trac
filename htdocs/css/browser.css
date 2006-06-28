@@ -109,6 +109,7 @@ div.buttons {
 #paging { margin: 1em 0 }
 
 /* Styles for the revision info in the file view (see also trac.css) */
+#info { margin: 0; }
 #info .props {
  color: #666;
  list-style: square;

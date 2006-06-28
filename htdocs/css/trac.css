@@ -280,6 +280,7 @@ label.disabled { color: #d7d7d7 }
 
 /* Version information (browser, wiki, attachments) */
 #info {
+ margin: 1em 0 0 0;
  background: #f7f7f0;
  border: 1px solid #d7d7d7;
  border-collapse: collapse;

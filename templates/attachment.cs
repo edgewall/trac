@@ -59,6 +59,14 @@
 <?cs else ?>
  <h1><a href="<?cs var:attachment.parent.href ?>"><?cs
    var:attachment.parent.name ?></a>: <?cs var:attachment.filename ?></h1>
+ <table id="info" summary="Description"><tbody><tr>
+   <th scope="col">
+    File <?cs var:attachment.filename ?>, <?cs var:attachment.size ?> 
+    (added by <?cs var:attachment.author ?>,  <?cs var:attachment.age ?> ago)
+   </th></tr><tr>
+   <td class="message"><?cs var:attachment.description ?></td>
+  </tr>
+ </tbody></table>
  <div id="preview"><?cs
   if:attachment.preview ?>
    <?cs var:attachment.preview ?><?cs

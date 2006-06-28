@@ -95,7 +95,7 @@
   <table id="info" summary="Revision info"><?cs
    if:!browser.is_dir ?><tr>
     <th scope="col">
-     Revision <a href="<?cs var:file.changeset_href ?>"><?cs var:file.rev ?></a>
+     Revision <a href="<?cs var:file.changeset_href ?>"><?cs var:file.rev ?></a>, <?cs var:file.size ?>
      (checked in by <?cs var:file.author ?>, <?cs var:file.age ?> ago)
     </th></tr><tr>
     <td class="message"><?cs var:file.message ?></td>

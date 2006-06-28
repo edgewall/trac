@@ -28,7 +28,7 @@ from trac.core import *
 from trac.env import IEnvironmentSetupParticipant
 from trac.mimeview import *
 from trac.util import get_reporter_id, create_unique_file
-from trac.util.datefmt import format_datetime
+from trac.util.datefmt import format_datetime, pretty_timedelta
 from trac.util.markup import Markup, html
 from trac.util.text import unicode_quote, unicode_unquote, pretty_size
 from trac.web import HTTPBadRequest, IRequestHandler
@@ -252,6 +252,7 @@ def attachment_to_hdf(env, req, db, attachment):
         'ipnr': attachment.ipnr,
         'size': pretty_size(attachment.size),
         'time': format_datetime(attachment.time),
+        'age': pretty_timedelta(attachment.time),
         'href': attachment.href(req)
     }
     return hdf
@@ -513,7 +514,10 @@ class AttachmentModule(Component):
         req.hdf['title'] = attachment.title
         req.hdf['attachment'] = attachment_to_hdf(self.env, req, None,
                                                   attachment)
-        
+        # Override the 'oneliner'
+        req.hdf['attachment.description'] = wiki_to_html(attachment.description,
+                                                         self.env, req)
+
         perm_map = {'ticket': 'TICKET_ADMIN', 'wiki': 'WIKI_DELETE'}
         if req.perm.has_permission(perm_map[attachment.parent_type]):
             req.hdf['attachment.can_delete'] = 1
