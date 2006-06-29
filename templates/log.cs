@@ -100,7 +100,7 @@
     if:item.copyfrom_path ?>
      <tr class="<?cs if:name(item) % #2 ?>even<?cs else ?>odd<?cs /if ?>">
       <td class="copyfrom_path" colspan="8" style="padding-left: <?cs var:indent ?>em">
-       copied from <a href="<?cs var:item.browser_href ?>"?><?cs var:item.copyfrom_path ?></a>:
+       copied from <a href="<?cs var:item.browser_href ?>"><?cs var:item.copyfrom_path ?></a>:
       </td>
      </tr><?cs
      set:indent = indent + #1 ?><?cs
