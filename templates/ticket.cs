@@ -155,8 +155,8 @@
   <fieldset class="iefix">
    <label for="comment">Comment (you may use <a tabindex="42" href="<?cs
      var:trac.href.wiki ?>/WikiFormatting">WikiFormatting</a> here):</label><br />
-   <p><textarea id="comment" name="comment" class="wikitext" rows="10" cols="78"><?cs
-     var:ticket.comment ?></textarea></p>
+   <p><textarea id="comment" name="comment" class="wikitext" rows="10" cols="78">
+<?cs var:ticket.comment ?></textarea></p>
   </fieldset><?cs
   if ticket.comment_preview ?>
    <fieldset id="preview">
@@ -184,8 +184,8 @@
    if:trac.acl.TICKET_ADMIN ?><tr>
     <th><label for="description">Description:</label></th>
     <td class="fullrow" colspan="3">
-     <textarea id="description" name="description" class="wikitext" rows="10" cols="68"><?cs
-        var:ticket.description ?></textarea>
+     <textarea id="description" name="description" class="wikitext" rows="10" cols="68">
+<?cs var:ticket.description ?></textarea>
     </td>
    </tr><tr>
     <th><label for="reporter">Reporter:</label></th>
@@ -227,8 +227,8 @@
         var:name(field) ?>" name="<?cs
         var:name(field) ?>"<?cs
         if:field.height ?> rows="<?cs var:field.height ?>"<?cs /if ?><?cs
-        if:field.width ?> cols="<?cs var:field.width ?>"<?cs /if ?>><?cs
-        var:ticket[name(field)] ?></textarea><?cs
+        if:field.width ?> cols="<?cs var:field.width ?>"<?cs /if ?>>
+<?cs var:ticket[name(field)] ?></textarea><?cs
       elif:field.type == 'radio' ?><?cs set:optidx = 0 ?><?cs
        each:option = field.options ?><label><input type="radio" id="<?cs
          var:name(field) ?>" name="<?cs

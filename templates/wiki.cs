@@ -275,7 +275,8 @@
       </select>
      </div>
      <p><textarea id="text" class="wikitext" name="text" cols="80" rows="<?cs
-       var:wiki.edit_rows ?>"><?cs var:wiki.page_source ?></textarea></p>
+       var:wiki.edit_rows ?>">
+<?cs var:wiki.page_source ?></textarea></p>
      <script type="text/javascript">
        var scrollBarPos = document.getElementById("scroll_bar_pos");
        var text = document.getElementById("text");

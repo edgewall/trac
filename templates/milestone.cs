@@ -82,8 +82,8 @@
     <fieldset class="iefix">
      <label for="description">Description (you may use <a tabindex="42" href="<?cs
        var:trac.href.wiki ?>/WikiFormatting">WikiFormatting</a> here):</label>
-     <p><textarea id="description" name="description" class="wikitext" rows="10" cols="78"><?cs
-       var:milestone.description_source ?></textarea></p>
+     <p><textarea id="description" name="description" class="wikitext" rows="10" cols="78">
+<?cs var:milestone.description_source ?></textarea></p>
     </fieldset>
    </div>
    <div class="buttons">

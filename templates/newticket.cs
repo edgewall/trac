@@ -32,8 +32,8 @@ addEvent(window, 'load', function() { document.getElementById('summary').focus()
  <div class="field">
   <label for="description">Full description (you may use <a tabindex="42" href="<?cs
     var:$trac.href.wiki ?>/WikiFormatting">WikiFormatting</a> here):</label><br />
-  <textarea id="description" name="description" class="wikitext" rows="10" cols="78"><?cs
-    var:newticket.description ?></textarea><?cs
+  <textarea id="description" name="description" class="wikitext" rows="10" cols="78">
+<?cs var:newticket.description ?></textarea><?cs
   if:newticket.description_preview ?>
    <fieldset id="preview">
     <legend>Description Preview</legend>

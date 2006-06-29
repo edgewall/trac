@@ -215,8 +215,8 @@
        Description:</label> (You may use <a tabindex="42" href="<?cs
          var:$trac.href.wiki ?>/WikiFormatting">WikiFormatting</a> here)
       </label><br />
-      <textarea id="description" name="description" class="wikitext" rows="10" cols="78"><?cs
-        var:report.description ?></textarea>
+      <textarea id="description" name="description" class="wikitext" rows="10" cols="78">
+<?cs var:report.description ?></textarea>
      </div>
      <div class="field">
       <label for="query">
