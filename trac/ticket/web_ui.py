@@ -607,6 +607,8 @@ class TicketModule(TicketModuleBase):
                 if replyto == str(cnum):
                     quote_original(change['author'], comment,
                                    'comment:%s' % replyto)
+            if 'description' in change['fields']:
+                change['fields']['description'] = ''
         req.hdf['ticket'] = {
             'changes': changes,
             'replies': replies,
@@ -659,8 +661,6 @@ class TicketModule(TicketModuleBase):
                     else:
                         this_num = old
                     current['cnum'] = int(this_num)
-            elif field == 'description':
-                current['fields'][field] = ''
             else:
                 current['fields'][field] = {'old': old, 'new': new}
         if current:
