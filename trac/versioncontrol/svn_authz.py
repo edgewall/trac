@@ -33,11 +33,11 @@ class SvnAuthzOptions(Component):
 
 
 def SubversionAuthorizer(env, authname):
-    authz_file = env.config.get('trac','authz_file')    
+    authz_file = env.config.get('trac', 'authz_file')
     if not authz_file:
         return Authorizer()
 
-    module_name = env.config.get('trac','authz_module_name','')
+    module_name = env.config.get('trac', 'authz_module_name')
     db = env.get_db_cnx()
     return RealSubversionAuthorizer(db, authname, module_name, authz_file)
 
@@ -156,4 +156,3 @@ class RealSubversionAuthorizer(Authorizer):
         if self.conf_authz.has_option(section, subject):
             return 'r' in self.conf_authz.get(section, subject)
         return None
-
