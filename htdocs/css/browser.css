@@ -27,7 +27,7 @@ h1 .sep { color: #666; padding: 0 .1em }
 }
 #dirlist td.rev {
  font-family: monospace;
- letter-spacing: -0.02em;
+ letter-spacing: -0.08em;
  font-size: 90%;
  text-align: right;
 }
@@ -98,12 +98,25 @@ div.buttons {
 #chglist td.author { font-size: 85%; vertical-align: top; padding-top: 0.55em }
 #chglist td.rev, #chglist td.chgset { 
  font-family: monospace;  
- letter-spacing: -0.02em;
+ letter-spacing: -0.08em;
  font-size: 90%;
  text-align: right; 
 }
 #chglist td.rev a, #chglist td.chgset a { border-bottom: none }
-#chglist td.summary { width: 100%; font-size: 85%; vertical-align: middle; white-space: nowrap }
+#chglist td.summary { 
+ width: 100%; 
+ font-size: 85%; 
+ vertical-align: middle; 
+ white-space: nowrap 
+}
+#chglist .verbose td.summary {
+ border: none;
+ color: #333;
+ padding: .5em 1em 1em 2em;
+ font-size: 90%; 
+ white-space: normal 
+}
+
 #chglist td.summary * { margin-top: 0; margin-bottom: 0 }
 
 #paging { margin: 1em 0 }

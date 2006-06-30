@@ -86,20 +86,25 @@
    <tr>
     <th class="diff"></th>
     <th class="change"></th>
-    <th class="date">Date</th>
     <th class="rev">Rev</th>
     <th class="chgset">Chgset</th>
+    <th class="date">Date</th>
     <th class="author">Author</th>
-    <th class="summary">Log Message</th>
+    <th class="summary"><?cs if:!log.verbose ?>Log Message<?cs /if ?></th>
    </tr>
   </thead>
   <tbody><?cs
    set:indent = #1 ?><?cs
    set:idx = #0 ?><?cs
-   each:item = log.items ?><?cs
+   each:item = log.items ?><?cs 
+    if:name(item) % #2 ?><?cs
+     set:even_odd = "odd" ?><?cs
+    else ?><?cs
+     set:even_odd = "even" ?><?cs
+    /if ?><?cs
     if:item.copyfrom_path ?>
-     <tr class="<?cs if:name(item) % #2 ?>even<?cs else ?>odd<?cs /if ?>">
-      <td class="copyfrom_path" colspan="8" style="padding-left: <?cs var:indent ?>em">
+     <tr class="<?cs var:even_odd ?>">
+      <td class="copyfrom_path" colspan="7" style="padding-left: <?cs var:indent ?>em">
        copied from <a href="<?cs var:item.browser_href ?>"><?cs var:item.copyfrom_path ?></a>:
       </td>
      </tr><?cs
@@ -107,7 +112,7 @@
     elif:log.mode == "path_history" ?><?cs
       set:indent = #1 ?><?cs
     /if ?>
-    <tr class="<?cs if:name(item) % #2 ?>even<?cs else ?>odd<?cs /if ?>">
+    <tr class="<?cs var:even_odd ?>">
      <td class="diff">
       <input type="radio" name="old" 
              value="<?cs var:item.path ?>@<?cs var:item.rev ?>" <?cs
@@ -121,7 +126,6 @@
        <span class="comment">(<?cs var:item.change ?>)</span>
       </a>
      </td>
-     <td class="date"><?cs var:log.changes[item.rev].date ?></td>
      <td class="rev">
       <a href="<?cs var:item.browser_href ?>" 
          title="Browse at revision <?cs var:item.rev ?>">@<?cs var:item.rev ?></a>
@@ -130,9 +134,16 @@
       <a href="<?cs var:item.changeset_href ?>"
          title="View changeset [<?cs var:item.rev ?>]">[<?cs var:item.rev ?>]</a>
      </td>
+     <td class="date"><?cs var:log.changes[item.rev].date ?></td>
      <td class="author"><?cs var:log.changes[item.rev].author ?></td>
-     <td class="summary"><?cs var:log.changes[item.rev].message ?></td>
+     <td class="summary"><?cs
+      if:!log.verbose ?><?cs var:log.changes[item.rev].message ?><?cs /if ?></td>
     </tr><?cs
+    if:log.verbose ?>
+    <tr class="<?cs var:even_odd ?> verbose">
+     <td class="summary" colspan="7"><?cs var:log.changes[item.rev].message ?></td>
+    </tr><?cs
+    /if ?><?cs
     set:idx = idx + 1 ?><?cs
    /each ?>
   </tbody>
