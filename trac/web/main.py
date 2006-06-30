@@ -359,7 +359,7 @@ def send_project_index(environ, start_response, parent_dir=None,
         loadpaths.insert(0, tmpl_path)
     else:
         template = 'index.cs'
-    req.hdf = HDFWrapper(loadpaths=[default_dir('templates')])
+    req.hdf = HDFWrapper(loadpaths)
 
     tmpl_vars = {}
     if req.environ.get('trac.template_vars'):
