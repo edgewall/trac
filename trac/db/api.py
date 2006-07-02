@@ -78,6 +78,7 @@ class DatabaseManager(Component):
     def _get_connector(self): ### FIXME: Make it public?
         scheme, args = _parse_db_str(self.connection_uri)
         candidates = {}
+        connector = None
         for connector in self.connectors:
             for scheme_, priority in connector.get_supported_schemes():
                 if scheme_ != scheme:
