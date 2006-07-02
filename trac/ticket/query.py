@@ -27,7 +27,8 @@ from trac.util.datefmt import format_datetime, http_date
 from trac.util.text import shorten_line, CRLF
 from trac.util.markup import escape, html, unescape
 from trac.web import IRequestHandler
-from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
+from trac.web.chrome import add_link, add_script, add_stylesheet, \
+                            INavigationContributor
 from trac.wiki import wiki_to_html, wiki_to_oneliner, IWikiSyntaxProvider
 from trac.wiki.macros import WikiMacroBase
 from trac.mimeview.api import Mimeview, IContentConverter
@@ -500,6 +501,7 @@ class QueryModule(Component):
     def display_html(self, req, query):
         req.hdf['title'] = 'Custom Query'
         add_stylesheet(req, 'common/css/report.css')
+        add_script(req, 'common/js/query.js')
 
         db = self.env.get_db_cnx()
 

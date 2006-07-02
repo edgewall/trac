@@ -53,8 +53,8 @@ def add_stylesheet(req, filename, mimetype='text/css'):
         href = Href(req.base_path).chrome
     add_link(req, 'stylesheet', href(filename), mimetype=mimetype)
 
-def add_javascript(req, filename):
-    """ Include Javascript in the current template. """
+def add_script(req, filename, mimetype='text/javascript'):
+    """Add a reference to an external javascript file to the template."""
     if filename.startswith('common/') and 'htdocs_location' in req.hdf:
         href = Href(req.hdf['htdocs_location'])
         filename = filename[7:]
@@ -63,11 +63,17 @@ def add_javascript(req, filename):
     href = href(filename)
     idx = 0
     while True:
-        js = req.hdf.get('chrome.js.%i' % idx)
-        if not js: break
-        if js == href: return
+        js = req.hdf.get('chrome.script.%i.href' % idx)
+        if not js:
+            break
+        if js == href: # already added
+            return
         idx += 1
-    req.hdf['chrome.js.%i' % idx] = href
+    req.hdf['chrome.script.%i' % idx] = {'href': href, 'type': mimetype}
+
+def add_javascript(req, filename):
+    """Deprecated: use `add_script()` instead."""
+    add_script(req, filename, mimetype='text/javascript')
 
 
 class INavigationContributor(Interface):
@@ -273,7 +279,7 @@ class Chrome(Component):
         add_link(req, 'search', req.href.search())
         add_link(req, 'help', req.href.wiki('TracGuide'))
         add_stylesheet(req, 'common/css/trac.css')
-        add_javascript(req, 'common/js/trac.js')
+        add_script(req, 'common/js/trac.js')
         icon = self.env.project_icon
         if icon:
             if not icon.startswith('/') and icon.find('://') == -1:
