@@ -63,7 +63,7 @@ def add_script(req, filename, mimetype='text/javascript'):
     href = href(filename)
     idx = 0
     while True:
-        js = req.hdf.get('chrome.script.%i.href' % idx)
+        js = req.hdf.get('chrome.scripts.%i.href' % idx)
         if not js:
             break
         if js == href: # already added
@@ -280,6 +280,7 @@ class Chrome(Component):
         add_link(req, 'help', req.href.wiki('TracGuide'))
         add_stylesheet(req, 'common/css/trac.css')
         add_script(req, 'common/js/trac.js')
+
         icon = self.env.project_icon
         if icon:
             if not icon.startswith('/') and icon.find('://') == -1:
