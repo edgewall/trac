@@ -69,7 +69,7 @@ def add_script(req, filename, mimetype='text/javascript'):
         if js == href: # already added
             return
         idx += 1
-    req.hdf['chrome.script.%i' % idx] = {'href': href, 'type': mimetype}
+    req.hdf['chrome.scripts.%i' % idx] = {'href': href, 'type': mimetype}
 
 def add_javascript(req, filename):
     """Deprecated: use `add_script()` instead."""
