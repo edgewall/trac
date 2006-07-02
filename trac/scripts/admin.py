@@ -1200,3 +1200,7 @@ def run(args):
                     admin.run()
     else:
         return admin.onecmd("help")
+
+
+if __name__ == '__main__':
+    run(sys.argv[1:])
