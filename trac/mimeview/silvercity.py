@@ -44,6 +44,7 @@ types = {
     'application/x-httpd-php':  ('HyperText', 3, {'asp.default.language':4}),
     'application/x-httpd-php4': ('HyperText', 3, {'asp.default.language':4}),
     'application/x-httpd-php3': ('HyperText', 3, {'asp.default.language':4}),
+    'text/x-javascript':        ('CPP', 3), # Kludgy.
     'text/x-psp':               ('HyperText', 3, {'asp.default.language':3}),
     'text/x-python':            ('Python', 3),
     'text/x-ruby':              ('Ruby', 3),

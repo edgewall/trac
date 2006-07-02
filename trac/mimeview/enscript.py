@@ -27,6 +27,7 @@ types = {
     'application/xhtml+xml':    ('html', 2),
     'application/postscript':   ('postscript', 2),
     'application/x-csh':        ('csh', 2),
+    'application/x-javascript': ('javascript', 2),
     'application/x-troff':      ('nroff', 2),
     'text/html':                ('html', 2),
     'text/x-ada':               ('ada', 2),
