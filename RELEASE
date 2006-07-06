@@ -1,8 +1,8 @@
-Trac 0.9.5 Release Notes
-============================
-April 18, 2006
+Trac 0.9.6 Release Notes
+========================
+July 6, 2006
 
-We're proud to present our latest release - Trac 0.9.5.
+We're proud to present our latest release - Trac 0.9.6.
 
 Trac is an enhanced wiki and issue tracking system, integrated with
 Subversion, for software development projects. Trac uses a minimalistic
@@ -37,16 +37,23 @@ List information, subscription and archive available at:
 
 What's New
 ----------
-A brief summary of major changes for version 0.9.5:
+A brief summary of major changes for version 0.9.6:
 
- * Fixed wiki macro XSS vulnerability.
- * Smaller memory usage when accessing subversion history.
- * Fixed issue with incorrectly generated urls when installed behind a web 
-   proxy.
+ * Fixed reStructuredText breach of privacy and denial of service vulnerability
+   found by Felix Wiemann.
+ * trac-post-commit-hook fixes.
 
 For a more complete list of improvements, see the ChangeLog at:
 
  <http://projects.edgewall.com/trac/wiki/ChangeLog>
+
+
+About the vulnerability
+-----------------------
+The discovered vulnerability requires docutils to be installed and enabled.
+Systems that do not have docutils installed or enabled are not vulnerable.
+As of this version version 0.3.9 or greater of docutils is required for
+using reStructuredText markup in Trac.
 
 
 Acknowledgements
