@@ -1,3 +1,11 @@
+Trac 0.9.6  (Jul 6, 2006)
+http://svn.edgewall.com/repos/trac/tags/trac-0.9.6
+
+ * Fixed reStructuredText breach of privacy and denial of service vulnerability
+   found by Felix Wiemann.
+ * trac-post-commit-hook fixes.
+ * Fixed bugs: #2894, #3058, #3209 #3325.
+
 Trac 0.9.5  (Apr 18, 2006)
 http://svn.edgewall.com/repos/trac/tags/trac-0.9.5
 
@@ -7,7 +15,7 @@ http://svn.edgewall.com/repos/trac/tags/trac-0.9.5
  * Fixed issue with incorrectly generated urls when installed behind a web 
    proxy (#2531).
  * Fixed bugs: #2531, #2777, #3020.
-	
+
 Trac 0.9.4  (Feb 15, 2006)
 http://svn.edgewall.com/repos/trac/tags/trac-0.9.4
 

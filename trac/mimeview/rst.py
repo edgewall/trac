@@ -82,9 +82,9 @@ class ReStructuredTextRenderer(Component):
             from docutils import __version__
         except ImportError:
             raise TracError, 'Docutils not found'
-        if StrictVersion(__version__) < StrictVersion('0.3.3'):
+        if StrictVersion(__version__) < StrictVersion('0.3.9'):
             raise TracError, 'Docutils version >= %s required, %s found' \
-                             % ('0.3.3', __version__)
+                             % ('0.3.9', __version__)
 
         def trac_get_reference(rawtext, link, text):
             for (pattern, function) in LINKS:
@@ -226,6 +226,8 @@ class ReStructuredTextRenderer(Component):
         content = content_to_unicode(self.env, content, mimetype)
         content = content.encode('utf-8')
         html = publish_string(content, writer_name='html', parser=_parser,
-                              settings_overrides={'halt_level': 6})
+                              settings_overrides={'halt_level': 6, 
+                                                  'file_insertion_enabled': 0, 
+                                                  'raw_enabled': 0}) 
         html = html.decode('utf-8')
         return html[html.find('<body>') + 6:html.find('</body>')].strip()
