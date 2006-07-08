@@ -959,6 +959,13 @@ Trac Admin Console %s
         self.assertEqual(2, rv)
         self.assertEqual(self.expected_results[test_name], output)
 
+    def test_backslash_use_ok(self):
+        test_name = sys._getframe().f_code.co_name
+        self._execute('version add \\')
+        rv, output = self._execute('version list')
+        self.assertEqual(0, rv)
+        self.assertEqual(self.expected_results[test_name], output)
+
 
 def suite():
     return unittest.makeSuite(TracadminTestCase, 'test')

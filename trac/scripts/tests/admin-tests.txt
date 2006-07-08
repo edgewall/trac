@@ -642,3 +642,11 @@ milestone4
 
 ===== test_milestone_remove_error_bad_milestone =====
 Command failed: Milestone bad_milestone does not exist.
+===== test_backslash_use_ok =====
+
+Name  Time
+----------
+\
+2.0       
+1.0       
+

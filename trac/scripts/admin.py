@@ -95,6 +95,7 @@ class TracAdmin(cmd.Cmd):
         try:
             if isinstance(line, str):
                 line = to_unicode(line, sys.stdin.encoding)
+            line = line.replace('\\', '\\\\')
             rv = cmd.Cmd.onecmd(self, line) or 0
         except SystemExit:
             raise
