@@ -77,7 +77,7 @@ class ReStructuredTextRenderer(Component):
     def render(self, req, mimetype, content, filename=None, rev=None):
         try:
             from docutils import nodes
-            from docutils.core import publish_string
+            from docutils.core import publish_parts
             from docutils.parsers import rst
             from docutils import __version__
         except ImportError:
@@ -224,10 +224,8 @@ class ReStructuredTextRenderer(Component):
         _inliner = rst.states.Inliner()
         _parser = rst.Parser(inliner=_inliner)
         content = content_to_unicode(self.env, content, mimetype)
-        content = content.encode('utf-8')
-        html = publish_string(content, writer_name='html', parser=_parser,
+        parts = publish_parts(content, writer_name='html', parser=_parser,
                               settings_overrides={'halt_level': 6, 
                                                   'file_insertion_enabled': 0, 
-                                                  'raw_enabled': 0}) 
-        html = html.decode('utf-8')
-        return html[html.find('<body>') + 6:html.find('</body>')].strip()
+                                                  'raw_enabled': 0})
+        return parts['html_body']
