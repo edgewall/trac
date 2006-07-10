@@ -77,6 +77,7 @@ def populate_hdf(hdf, env, req=None):
         'time.gmt': http_date()
     }
     hdf['project'] = {
+        'shortname': os.path.basename(env.path),
         'name': env.project_name,
         'name_encoded': env.project_name,
         'descr': env.project_description,
