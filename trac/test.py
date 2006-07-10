@@ -125,6 +125,7 @@ class EnvironmentStub(Environment):
         Component.__init__(self)
         self.enabled_components = enable
         self.db = InMemoryDatabase()
+        self.path = ''
 
         from trac.config import Configuration
         self.config = Configuration(None)
