@@ -1,9 +1,28 @@
 from trac.config import Configuration
-from trac.core import TracError
+from trac import core
+from trac.core import TracError, implements
 from trac.ticket.model import Ticket, Component, Milestone, Priority, Type
+from trac.ticket.api import ITicketChangeListener
 from trac.test import EnvironmentStub
 
 import unittest
+
+class TestTicketChangeListener(core.Component):
+    implements(ITicketChangeListener)
+
+    def ticket_created(self, ticket):
+        self.action = 'created'
+        self.ticket = ticket
+
+    def ticket_changed(self, ticket, comment, old_values):
+        self.action = 'changed'
+        self.ticket = ticket
+        self.comment = comment
+        self.old_values = old_values
+        
+    def ticket_deleted(self, ticket):
+        self.action = 'deleted'
+        self.ticket = ticket
 
 
 class TicketTestCase(unittest.TestCase):
@@ -221,6 +240,38 @@ class TicketTestCase(unittest.TestCase):
             else:
                 self.fail('Unexpected change (%s)'
                           % ((t, author, field, old, new),))
+
+    def test_change_listener_created(self):
+        listener = TestTicketChangeListener(self.env)
+        ticket = self._create_a_ticket()
+        ticket.insert()
+        self.assertEqual('created', listener.action)
+        self.assertEqual(ticket, listener.ticket)
+
+    def test_change_listener_changed(self):
+        listener = TestTicketChangeListener(self.env)
+        data = {'component': 'foo', 'milestone': 'bar'}
+        tkt_id = self._insert_ticket('Hello World', reporter='john', **data)
+
+        ticket = Ticket(self.env, tkt_id)
+        ticket['component'] = 'new component'
+        ticket['milestone'] = 'new milestone'
+
+        comment = 'changing ticket'
+        ticket.save_changes('author', comment)
+
+        self.assertEqual('changed', listener.action)
+        self.assertEqual(comment, listener.comment)
+        for key, value in data.iteritems():
+            self.assertEqual(value, listener.old_values[key])
+
+    def test_change_listener_deleted(self):
+        listener = TestTicketChangeListener(self.env)
+        ticket = self._create_a_ticket()
+        ticket.insert()
+        ticket.delete()
+        self.assertEqual('deleted', listener.action)
+        self.assertEqual(ticket, listener.ticket)
 
 
 class EnumTestCase(unittest.TestCase):

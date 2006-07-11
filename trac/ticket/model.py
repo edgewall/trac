@@ -254,11 +254,12 @@ class Ticket(object):
 
         if handle_ta:
             db.commit()
+        old_values = self._old
         self._old = {}
         self.time_changed = when
 
         for listener in TicketSystem(self.env).change_listeners:
-            listener.ticket_changed(self, comment, self._old)
+            listener.ticket_changed(self, comment, old_values)
 
     def get_changelog(self, when=0, db=None):
         """Return the changelog as a list of tuples of the form
