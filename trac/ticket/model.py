@@ -138,7 +138,8 @@ class Ticket(object):
 
         # Add a timestamp
         if not when:
-            when = int(time.time())
+            when = time.time()
+        when = int(when)
         self.time_created = self.time_changed = when
 
         cursor = db.cursor()
@@ -269,6 +270,7 @@ class Ticket(object):
         the `permanent` flag is used to distinguish collateral changes
         that are not yet immutable (like attachments, currently).
         """
+        when = int(when)
         db = self._get_db(db)
         cursor = db.cursor()
         if when:
