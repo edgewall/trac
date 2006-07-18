@@ -231,7 +231,13 @@ class LogModule(Component):
         if ns == 'log1':
             it_log = fullmatch.group('it_log')
             rev = fullmatch.group('log_rev')
-            path = fullmatch.group('log_path')
+            path = fullmatch.group('log_path') or '/'
+            target = '%s%s@%s' % (it_log, path, rev)
+            # prepending it_log is needed, as the helper expects it there
+            intertrac = formatter.shorthand_intertrac_helper(
+                'log', target, label, fullmatch)
+            if intertrac:
+                return intertrac
         else: # ns == 'log2'
             path, rev, line = get_path_rev_line(match)
         stop_rev = None
@@ -239,11 +245,4 @@ class LogModule(Component):
             if not stop_rev and rev and sep in rev:
                 stop_rev, rev = rev.split(sep, 1)
         href = formatter.href.log(path or '/', rev=rev, stop_rev=stop_rev)
-        if ns == 'log1':
-            target = it_log + href[len(formatter.href.log('/')):]
-            # prepending it_log is needed, as the helper expects it there
-            intertrac = formatter.shorthand_intertrac_helper('log', target,
-                                                             label, fullmatch)
-            if intertrac:
-                return intertrac
         return html.A(label, href=href, class_='source')

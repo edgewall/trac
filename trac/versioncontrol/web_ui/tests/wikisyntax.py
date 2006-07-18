@@ -136,9 +136,9 @@ rfc:4180 should not be a log link
 [trac 3317:3318/trunk]
 ------------------------------
 <p>
-<a class="ext-link" href="http://projects.edgewall.com/trac/log/?rev=3318&amp;stop_rev=3317" title="log:?rev=3318&amp;stop_rev=3317 in Trac\'s Trac"><span class="icon">[T3317:3318]</span></a>
-<a class="ext-link" href="http://projects.edgewall.com/trac/log/?rev=3318&amp;stop_rev=3317" title="log:?rev=3318&amp;stop_rev=3317 in Trac\'s Trac"><span class="icon">[trac 3317:3318]</span></a>
-<a class="ext-link" href="http://projects.edgewall.com/trac/log/trunk?rev=3318&amp;stop_rev=3317" title="log:trunk?rev=3318&amp;stop_rev=3317 in Trac\'s Trac"><span class="icon">[trac 3317:3318/trunk]</span></a>
+<a class="ext-link" href="http://projects.edgewall.com/trac/log//@3317:3318" title="log:/@3317:3318 in Trac\'s Trac"><span class="icon">[T3317:3318]</span></a>
+<a class="ext-link" href="http://projects.edgewall.com/trac/log//@3317:3318" title="log:/@3317:3318 in Trac\'s Trac"><span class="icon">[trac 3317:3318]</span></a>
+<a class="ext-link" href="http://projects.edgewall.com/trac/log//trunk@3317:3318" title="log:/trunk@3317:3318 in Trac\'s Trac"><span class="icon">[trac 3317:3318/trunk]</span></a>
 </p>
 ------------------------------
 """
