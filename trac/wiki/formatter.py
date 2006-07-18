@@ -375,15 +375,21 @@ class Formatter(object):
                    match
 
     def _make_intertrac_link(self, ns, target, label):
-        url = self.env.config.get('intertrac', ns + '.url')
+        intertrac_config = self.env.config['intertrac']
+        url = intertrac_config.get(ns+'.url')
         if url:
-            name = self.env.config.get('intertrac', ns + '.title',
-                                       'Trac project %s' % ns)
-            sep = target.find(':')
-            if sep != -1:
-                url = '%s/%s/%s' % (url, target[:sep], target[sep + 1:])
-            else: 
-                url = '%s/search?q=%s' % (url, urllib.quote_plus(target))
+            name = intertrac_config.get(ns+'.title', 'Trac project %s' % ns)
+            compat = intertrac_config.getbool(ns+'.compat', 'true')
+            # TODO: set `compat` default to False once 0.10 gets widely used
+            # and remove compatibility code altogether once 0.[89] disappear...
+            if compat:
+                sep = target.find(':')
+                if sep != -1:
+                    url = '%s/%s/%s' % (url, target[:sep], target[sep + 1:])
+                else: 
+                    url = '%s/search?q=%s' % (url, urllib.quote_plus(target))
+            else:
+                url = '%s/intertrac/%s' % (url, urllib.quote(target))
             return self._make_ext_link(url, label, '%s in %s' % (target, name))
         else:
             return None
