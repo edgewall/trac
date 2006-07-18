@@ -70,7 +70,11 @@ class ConnectionPool(object):
             while True:
                 if self._dormant:
                     cnx = self._dormant.pop()
-                    break
+                    try:
+                        cnx.cursor() # check whether the connection is stale
+                        break
+                    except Exception:
+                        cnx.close()
                 elif self._maxsize and self._cursize < self._maxsize:
                     cnx = self._connector.get_connection(**self._kwargs)
                     self._cursize += 1
