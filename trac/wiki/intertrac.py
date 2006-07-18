@@ -17,15 +17,16 @@
 import re
 
 from trac.core import *
-from trac.util.markup import Element
+from trac.util.markup import Element, html
 from trac.web import IRequestHandler
+from trac.wiki.api import IWikiMacroProvider
 from trac.wiki.formatter import wiki_to_link
 
 
 class InterTracDispatcher(Component):
     """Implements support for InterTrac dispatching."""
 
-    implements(IRequestHandler)
+    implements(IRequestHandler, IWikiMacroProvider)
 
     # IRequestHandler methods
 
@@ -47,3 +48,38 @@ class InterTracDispatcher(Component):
                 req.redirect(href)
         raise TracError('"%s" is not a TracLinks' % link)
 
+
+    # IWikiMacroProvider methods
+
+    def get_macros(self):
+        yield 'InterTrac'
+
+    def get_macro_description(self, name): 
+        return "Provide a list of known InterTrac prefixes."
+
+    def render_macro(self, req, name, content):
+        intertracs = {}
+        for key, value in self.config.options('intertrac'):
+            if '.' in key:
+                prefix, attribute = key.split('.', 1)
+                intertrac = intertracs.setdefault(prefix, {})
+                intertrac[attribute] = value
+            else:
+                intertracs[key] = value # alias
+
+        def generate_prefix(prefix):
+            intertrac = intertracs[prefix]
+            if isinstance(intertrac, basestring):
+                yield html.TR(html.TD(html.B(prefix)),
+                              html.TD('Alias for ', html.B(intertrac)))
+            else:
+                url = intertrac.get('url', '')
+                if url:
+                    title = intertrac.get('title', url)
+                    yield html.TR(html.TD(html.A(html.B(prefix),
+                                                 href=url + '/timeline')),
+                                  html.TD(html.A(title, href=url)))
+
+        return html.TABLE(class_="wiki intertrac")(
+            html.TR(html.TH(html.EM('Prefix')), html.TH(html.EM('Trac Site'))),
+            [generate_prefix(p) for p in sorted(intertracs.keys())])

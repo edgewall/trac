@@ -381,37 +381,6 @@ class MacroListMacro(WikiMacroBase):
                         for macro_name, description in get_macro_descr()])
 
 
-class InterTracMacro(WikiMacroBase):
-    """Provide a list of known InterTrac prefixes."""
-
-    def render_macro(self, req, name, content):
-        intertracs = {}
-        for key, value in self.config.options('intertrac'):
-            if '.' in key:
-                prefix, attribute = key.split('.', 1)
-                intertrac = intertracs.setdefault(prefix, {})
-                intertrac[attribute] = value
-            else:
-                intertracs[key] = value # alias
-
-        def generate_prefix(prefix):
-            intertrac = intertracs[prefix]
-            if isinstance(intertrac, basestring):
-                yield html.TR(html.TD(html.B(prefix)),
-                              html.TD('Alias for ', html.B(intertrac)))
-            else:
-                url = intertrac.get('url', '')
-                if url:
-                    title = intertrac.get('title', url)
-                    yield html.TR(html.TD(html.A(html.B(prefix),
-                                                 href=url + '/timeline')),
-                                  html.TD(html.A(title, href=url)))
-
-        return html.TABLE(class_="wiki intertrac")(
-            html.TR(html.TH(html.EM('Prefix')), html.TH(html.EM('Trac Site'))),
-            [generate_prefix(p) for p in sorted(intertracs.keys())])
-
-
 class TracIniMacro(WikiMacroBase):
     """Produce documentation for Trac configuration file.
 
