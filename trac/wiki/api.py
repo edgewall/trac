@@ -244,7 +244,7 @@ class WikiSystem(Component):
         yield (r"!?(?<!/)\b" # start at a word boundary but not after '/'
                r"[A-Z][a-z]+(?:[A-Z][a-z]*[a-z/])+" # wiki words
                r"(?:#[A-Za-z0-9]+)?" # optional fragment identifier
-               r"(?=:?\Z|:?\s|[.,;!?\)}\]])", # what should follow it
+               r"(?=:?\Z|:?\s|[.,;!?\)}\'\"\]])", # what should follow it
                wikipagenames_link)
 
     def get_link_resolvers(self):

@@ -46,15 +46,28 @@ CamelCase
 </p>
 ------------------------------
 ============================== WikiPageNames endings
-foo (FooBar)
-
 foo (FooBar )
+foo FooBar.
+FooBar, foo
+foo FooBar;
+foo FooBar!
+foo FooBar?
+foo (FooBar)
+foo {FooBar}
+foo 'FooBar'
+foo "FooBar"
 ------------------------------
 <p>
-foo (<a class="missing wiki" href="/wiki/FooBar" rel="nofollow">FooBar?</a>)
-</p>
-<p>
 foo (<a class="missing wiki" href="/wiki/FooBar" rel="nofollow">FooBar?</a> )
+foo <a class="missing wiki" href="/wiki/FooBar" rel="nofollow">FooBar?</a>.
+<a class="missing wiki" href="/wiki/FooBar" rel="nofollow">FooBar?</a>, foo
+foo <a class="missing wiki" href="/wiki/FooBar" rel="nofollow">FooBar?</a>;
+foo <a class="missing wiki" href="/wiki/FooBar" rel="nofollow">FooBar?</a>!
+foo <a class="missing wiki" href="/wiki/FooBar" rel="nofollow">FooBar?</a>?
+foo (<a class="missing wiki" href="/wiki/FooBar" rel="nofollow">FooBar?</a>)
+foo {<a class="missing wiki" href="/wiki/FooBar" rel="nofollow">FooBar?</a>}
+foo '<a class="missing wiki" href="/wiki/FooBar" rel="nofollow">FooBar?</a>'
+foo "<a class="missing wiki" href="/wiki/FooBar" rel="nofollow">FooBar?</a>"
 </p>
 ------------------------------
 ============================== WikiPageNames counter examples
