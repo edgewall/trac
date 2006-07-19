@@ -275,8 +275,6 @@ class Formatter(object):
 
     def simple_tag_handler(self, match, open_tag, close_tag):
         """Generic handler for simple binary style tags"""
-        if match[0] == '!':
-            return match[1:]
         if self.tag_open_p((open_tag, close_tag)):
             return self.close_tag(close_tag)
         else:
@@ -284,8 +282,6 @@ class Formatter(object):
         return open_tag
 
     def _bolditalic_formatter(self, match, fullmatch):
-        if match[0] == '!':
-            return match[1:]
         italic = ('<i>', '</i>')
         italic_open = self.tag_open_p(italic)
         tmp = ''

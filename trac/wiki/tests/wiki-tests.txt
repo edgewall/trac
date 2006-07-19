@@ -91,16 +91,22 @@ without endtags
 ------------------------------
 <sup>superscript</sup>, <sub>subscript</sub>, normal.
 ============================== Escaping markup
-!__foo!__
-!~~bar!~~
-!,,boo!,,
-!^baz!^
+!'''''foobar!''''' x
+!''foo!'' x
+!'''bar!''' x
+!__foo!__ x
+!~~bar!~~ x
+!,,boo!,, x
+!^baz!^ x
 ------------------------------
 <p>
-__foo__
-~~bar~~
-,,boo,,
-^baz^
+'''''foobar''''' x
+''foo'' x
+'''bar''' x
+__foo__ x
+~~bar~~ x
+,,boo,, x
+^baz^ x
 </p>
 ------------------------------
 ============================== Complex mixed verbatim markup
