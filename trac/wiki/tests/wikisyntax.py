@@ -115,6 +115,20 @@ This is a ["Wiki"] page link.
 This is a <a class="missing wiki" href="/wiki/Wiki" rel="nofollow">Wiki?</a> page link.
 </p>
 ------------------------------
+============================== WikiPageName with label
+See details of the [WikiPageNames wiki page name] syntax.
+------------------------------
+<p>
+See details of the <a class="missing wiki" href="/wiki/WikiPageNames" rel="nofollow">wiki page name?</a> syntax.
+</p>
+------------------------------
+============================== WikiPageName with label should be strict...
+new_channel_name [, '''integer''' handle [, '''boolean''' test]]
+------------------------------
+<p>
+new_channel_name [, <strong>integer</strong> handle [, <strong>boolean</strong> test]]
+</p>
+------------------------------
 ============================== InterTrac for wiki
 t:wiki:InterTrac
 trac:wiki:InterTrac

@@ -236,21 +236,32 @@ class WikiSystem(Component):
         return page
     
     def get_wiki_syntax(self):
-        # Regular WikiPageNames
         from trac.wiki.formatter import Formatter
-        def wikipagenames_link(formatter, match, fullmatch):
+        wiki_page_name = (
+            r"[A-Z][a-z]+(?:[A-Z][a-z]*[a-z/])+" # wiki words
+            r"(?:#%s)?" % Formatter.XML_NAME + # optional fragment id
+            r"(?=:?\Z|:?\s|[.,;!?\)}\'\"\]])" # what should follow it
+            )
+        
+        # Regular WikiPageNames
+        def wikipagename_link(formatter, match, fullmatch):
             return self._format_link(formatter, 'wiki', match,
                                      self.format_page_name(match),
                                      self.ignore_missing_pages)
         
-        yield (r"!?(?<!/)\b" # start at a word boundary but not after '/'
-               r"[A-Z][a-z]+(?:[A-Z][a-z]*[a-z/])+" # wiki words
-               r"(?:#%s)?" % Formatter.XML_NAME + # optional fragment id
-               r"(?=:?\Z|:?\s|[.,;!?\)}\'\"\]])", # what should follow it
-               wikipagenames_link)
+        yield (r"!?(?<!/)\b" + # start at a word boundary but not after '/'
+               wiki_page_name, wikipagename_link)
+
+        # [WikiPageNames with label]
+        def wikipagename_with_label_link(formatter, match, fullmatch):
+            page, label = match[1:-1].split(' ', 1)
+            return self._format_link(formatter, 'wiki', page, label.strip(),
+                                     self.ignore_missing_pages)
+        yield (r"!?\[%s\s+(?:%s|[^\]]+)\]" % (wiki_page_name,
+                                              Formatter.QUOTED_STRING),
+               wikipagename_with_label_link)
 
         # MoinMoin's ["internal free link"] 
-        from trac.wiki.formatter import Formatter 
         def internal_free_link(fmt, m, fullmatch): 
             return self._format_link(fmt, 'wiki', m[2:-2], m[2:-2], False) 
         yield (r"!?\[(?:%s)\]" % Formatter.QUOTED_STRING, internal_free_link) 
