@@ -503,10 +503,10 @@ Hello, [[HelloWorld(...)]]
 [[HelloWorld(hej hopp) ]] # This shouldnt executed as macro since it contain whitespace between ) and ]
 ------------------------------
 <p>
-<a class="missing wiki" href="/wiki/%5BHelloWorld%28hej" rel="nofollow">hopp) ?</a>] # This shouldnt executed as macro since it contain whitespace between ) and ]
+[[HelloWorld(hej hopp) ]] # This shouldnt executed as macro since it contain whitespace between ) and ]
 </p>
 ------------------------------
-<a class="missing wiki" href="/wiki/%5BHelloWorld%28hej" rel="nofollow">hopp) ?</a>] # This shouldnt executed as macro since it contain whitespace between ) and ]
+[[HelloWorld(hej hopp) ]] # This shouldnt executed as macro since it contain whitespace between ) and ]
 ============================== Another bad macro call
 [[HelloWorld(hej hopp))]] # Extra right brace and still executed
 ------------------------------

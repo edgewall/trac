@@ -47,6 +47,7 @@ CamelCase
 ------------------------------
 ============================== WikiPageNames endings
 foo (FooBar )
+foo FooBar: something
 foo FooBar.
 FooBar, foo
 foo FooBar;
@@ -56,9 +57,11 @@ foo (FooBar)
 foo {FooBar}
 foo 'FooBar'
 foo "FooBar"
+foo [FooBar]
 ------------------------------
 <p>
 foo (<a class="missing wiki" href="/wiki/FooBar" rel="nofollow">FooBar?</a> )
+foo <a class="missing wiki" href="/wiki/FooBar" rel="nofollow">FooBar?</a>: something
 foo <a class="missing wiki" href="/wiki/FooBar" rel="nofollow">FooBar?</a>.
 <a class="missing wiki" href="/wiki/FooBar" rel="nofollow">FooBar?</a>, foo
 foo <a class="missing wiki" href="/wiki/FooBar" rel="nofollow">FooBar?</a>;
@@ -68,6 +71,7 @@ foo (<a class="missing wiki" href="/wiki/FooBar" rel="nofollow">FooBar?</a>)
 foo {<a class="missing wiki" href="/wiki/FooBar" rel="nofollow">FooBar?</a>}
 foo '<a class="missing wiki" href="/wiki/FooBar" rel="nofollow">FooBar?</a>'
 foo "<a class="missing wiki" href="/wiki/FooBar" rel="nofollow">FooBar?</a>"
+foo [<a class="missing wiki" href="/wiki/FooBar" rel="nofollow">FooBar?</a>]
 </p>
 ------------------------------
 ============================== WikiPageNames counter examples
@@ -75,13 +79,6 @@ A0B1, ST62T53C6, IR32V1H000
 ------------------------------
 <p>
 A0B1, ST62T53C6, IR32V1H000
-</p>
-------------------------------
-============================== WikiPageNames trailing characters
-SandBox SandBox, SandBox; SandBox: SandBox. SandBox? SandBox! (SandBox) {SandBox} [SandBox]
-------------------------------
-<p>
-<a class="missing wiki" href="/wiki/SandBox" rel="nofollow">SandBox?</a> <a class="missing wiki" href="/wiki/SandBox" rel="nofollow">SandBox?</a>, <a class="missing wiki" href="/wiki/SandBox" rel="nofollow">SandBox?</a>; <a class="missing wiki" href="/wiki/SandBox" rel="nofollow">SandBox?</a>: <a class="missing wiki" href="/wiki/SandBox" rel="nofollow">SandBox?</a>. <a class="missing wiki" href="/wiki/SandBox" rel="nofollow">SandBox?</a>? <a class="missing wiki" href="/wiki/SandBox" rel="nofollow">SandBox?</a>! (<a class="missing wiki" href="/wiki/SandBox" rel="nofollow">SandBox?</a>) {<a class="missing wiki" href="/wiki/SandBox" rel="nofollow">SandBox?</a>} <a class="missing wiki" href="/wiki/SandBox" rel="nofollow">SandBox?</a>
 </p>
 ------------------------------
 ============================== WikiPageNames with fragment identifier
