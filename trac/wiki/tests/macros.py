@@ -33,6 +33,13 @@ IMAGE_MACRO_TEST_CASES=u"""
 <a style="padding:0; border:none" href="/browser/test.png"><img width="30%" alt="source:test.png" src="/browser/test.png?format=raw" title="source:test.png" /></a>
 </p>
 ------------------------------
+============================== http: Image, nolink
+[[Image(http://www.edgewall.com/gfx/shredder.png, nolink)]]
+------------------------------
+<p>
+<img src="http://www.edgewall.com/gfx/shredder.png" alt="http://www.edgewall.com/gfx/shredder.png" title="http://www.edgewall.com/gfx/shredder.png" />
+</p>
+------------------------------
 """
 
 
