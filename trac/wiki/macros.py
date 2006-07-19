@@ -119,7 +119,7 @@ class RecentChangesMacro(WikiMacroBase):
             if date != prevdate:
                 prevdate = date
                 entries_per_date.append((date, []))
-            entries_per_date[-1][1].append((name, version))
+            entries_per_date[-1][1].append((name, int(version)))
 
         wiki = WikiSystem(self.env)
         return html.DIV(
