@@ -168,6 +168,8 @@ class Formatter(object):
 
     LHREF_RELATIVE_TARGET = r"[/.][^\s[\]]*"
 
+    XML_NAME = r"[\w:](?<!\d)[\w:.-]*" # See http://www.w3.org/TR/REC-xml/#id 
+
     # Sequence of regexps used by the engine
 
     _pre_rules = [
@@ -206,7 +208,7 @@ class Formatter(object):
          r"(?:\s+(?P<label>%s|[^\]]+))?\])" % QUOTED_STRING), # label
         # == heading == #hanchor
         r"(?P<heading>^\s*(?P<hdepth>=+)\s.*\s(?P=hdepth)\s*"
-        r"(?P<hanchor>#[\w:](?<!\d)[\w:.-]*)?$)",
+        r"(?P<hanchor>#%s)?$)" % XML_NAME,
         #  * list
         r"(?P<list>^(?P<ldepth>\s+)(?:[-*]|\d+\.|[a-zA-Z]\.|[ivxIVX]{1,5}\.) )",
         # definition:: 

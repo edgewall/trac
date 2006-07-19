@@ -84,6 +84,13 @@ SandBox SandBox, SandBox; SandBox: SandBox. SandBox? SandBox! (SandBox) {SandBox
 <a class="missing wiki" href="/wiki/SandBox" rel="nofollow">SandBox?</a> <a class="missing wiki" href="/wiki/SandBox" rel="nofollow">SandBox?</a>, <a class="missing wiki" href="/wiki/SandBox" rel="nofollow">SandBox?</a>; <a class="missing wiki" href="/wiki/SandBox" rel="nofollow">SandBox?</a>: <a class="missing wiki" href="/wiki/SandBox" rel="nofollow">SandBox?</a>. <a class="missing wiki" href="/wiki/SandBox" rel="nofollow">SandBox?</a>? <a class="missing wiki" href="/wiki/SandBox" rel="nofollow">SandBox?</a>! (<a class="missing wiki" href="/wiki/SandBox" rel="nofollow">SandBox?</a>) {<a class="missing wiki" href="/wiki/SandBox" rel="nofollow">SandBox?</a>} <a class="missing wiki" href="/wiki/SandBox" rel="nofollow">SandBox?</a>
 </p>
 ------------------------------
+============================== WikiPageNames with fragment identifier
+SandBox#heading-fixed-id
+------------------------------
+<p>
+<a class="missing wiki" href="/wiki/SandBox#heading-fixed-id" rel="nofollow">SandBox#heading-fixed-id?</a>
+</p>
+------------------------------
 ============================== WikiPageNames counter examples (paths)
 /absolute/path/is/NotWiki and relative/path/is/NotWiki
 /ThisIsNotWikiEither and /ThisIs/NotWikiEither but ThisIs/SubWiki
