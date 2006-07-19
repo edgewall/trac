@@ -452,8 +452,8 @@ class Formatter(object):
 
         depth = min(len(fullmatch.group('hdepth')), 5)
         anchor = fullmatch.group('hanchor') or ''
-        heading = match[depth+1:-depth-1-len(anchor)]
-        heading = wiki_to_oneliner(heading, self.env, self.db, shorten,
+        heading_text = match[depth+1:-depth-1-len(anchor)]
+        heading = wiki_to_oneliner(heading_text, self.env, self.db, False,
                                    self._absurls)
         if anchor:
             anchor = anchor[1:]
@@ -469,6 +469,9 @@ class Formatter(object):
             anchor = anchor_base + str(i)
             i += 1
         self._anchors[anchor] = True
+        if shorten:
+            heading = wiki_to_oneliner(heading_text, self.env, self.db, True,
+                                       self._absurls)
         return (depth, heading, anchor)
 
     def _heading_formatter(self, match, fullmatch):
