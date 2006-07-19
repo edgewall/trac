@@ -752,7 +752,8 @@ Congratulations!
         rows = self.db_query("SELECT name, max(version), max(time) "
                              "FROM wiki GROUP BY name ORDER BY name")
         self.print_listing(['Title', 'Edits', 'Modified'],
-                           [(r[0], r[1], self._format_datetime(r[2])) for r in rows])
+                           [(r[0], int(r[1]), self._format_datetime(r[2]))
+                            for r in rows])
 
     def _do_wiki_remove(self, name):
         page = WikiPage(self.env_open(), name)
