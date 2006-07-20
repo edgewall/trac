@@ -312,7 +312,7 @@ class ImageMacro(WikiMacroBase):
                 elif id == 'htdocs':
                     raw_url = url = req.href.chrome('site', file)
                     desc = os.path.basename(file)
-                elif id in ('http', 'ftp'): # external URLs
+                elif id in ('http', 'https', 'ftp'): # external URLs
                     raw_url = url = desc = id+':'+file
                 else:
                     module = 'wiki'
