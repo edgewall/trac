@@ -5,11 +5,11 @@
 #
 # This software is licensed as described in the file COPYING, which
 # you should have received as part of this distribution. The terms
-# are also available at http://trac.edgewall.com/license.html.
+# are also available at http://trac.edgewall.org/wiki/TracLicense.
 #
 # This software consists of voluntary contributions made by many
 # individuals. For the exact contribution history, see the revision
-# history and logs, available at http://projects.edgewall.com/trac/.
+# history and logs, available at http://trac.edgewall.org/log/.
 
 import unittest
 
@@ -66,7 +66,7 @@ class MimeviewTestCase(unittest.TestCase):
 
     def test_html_splitlines_with_multiline(self):
         """
-        Regression test for http://projects.edgewall.com/trac/ticket/2655
+        Regression test for http://trac.edgewall.org/ticket/2655
         """
         lines = ['<span class="p_tripledouble">"""',
                 'a <a href="http://google.com">http://google.com</a>/',

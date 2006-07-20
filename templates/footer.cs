@@ -17,7 +17,7 @@ if:len(chrome.links.alternate) ?>
 
 <div id="footer">
  <hr />
- <a id="tracpowered" href="http://trac.edgewall.com/"><img src="<?cs
+ <a id="tracpowered" href="http://trac.edgewall.org/"><img src="<?cs
    var:htdocs_location ?>trac_logo_mini.png" height="30" width="107"
    alt="Trac Powered"/></a>
  <p class="left">

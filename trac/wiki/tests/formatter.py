@@ -77,7 +77,7 @@ class WikiTestCase(unittest.TestCase):
         # -- intertrac support
         self.env.config.set('intertrac', 'trac.title', "Trac's Trac")
         self.env.config.set('intertrac', 'trac.url',
-                            "http://projects.edgewall.com/trac")
+                            "http://trac.edgewall.org")
         self.env.config.set('intertrac', 't', 'trac')
 
         from trac.web.href import Href

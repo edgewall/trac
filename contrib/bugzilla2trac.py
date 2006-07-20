@@ -3,7 +3,7 @@
 """
 Import a Bugzilla items into a Trac database.
 
-Requires:  Trac 0.9b1 from http://trac.edgewall.com/
+Requires:  Trac 0.9b1 from http://trac.edgewall.org/
            Python 2.3 from http://www.python.org/
            MySQL >= 3.23 from http://www.mysql.org/
 

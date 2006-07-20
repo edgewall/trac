@@ -1,7 +1,7 @@
 """
 Import a Sourceforge project's tracker items into a Trac database.
 
-Requires:  Development version of Trac 0.7-pre from http://trac.edgewall.com/
+Requires:  Development version of Trac 0.7-pre from http://trac.edgewall.org/
            ElementTree from effbot.org/zone/element.htm
            Python 2.3 from http://www.python.org/
            

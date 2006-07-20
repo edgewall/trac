@@ -71,7 +71,7 @@
   </dl>
 
  <?cs else ?>
-  <a href="http://trac.edgewall.com" style="border: none; float: right; margin-left: 2em">
+  <a href="http://trac.edgewall.org/" style="border: none; float: right; margin-left: 2em">
    <img style="display: block" src="<?cs var:chrome.href ?>/common/trac_banner.png"
      alt="Trac: Integrated SCM &amp; Project Management"/>
   </a>
@@ -85,7 +85,7 @@ It provides an interface to the Subversion revision control systems, integrated 
   The complete text of the license can be found in the COPYING file
   included in the distribution.</p>
   <p>Please visit the Trac open source project: 
-  <a href="http://projects.edgewall.com/trac/">http://projects.edgewall.com/trac/</a></p>
+  <a href="http://trac.edgewall.org/">http://trac.edgewall.org/</a></p>
   <p>Trac is a product of <a href="http://www.edgewall.com/">Edgewall
   Software</a>, provider of professional Linux and software development
   services.</p>

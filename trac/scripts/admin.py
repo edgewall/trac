@@ -5,14 +5,11 @@
 #
 # This software is licensed as described in the file COPYING, which
 # you should have received as part of this distribution. The terms
-# are also available at http://trac.edgewall.com/license.html.
+# are also available at http://trac.edgewall.org/wiki/TracLicense.
 #
 # This software consists of voluntary contributions made by many
 # individuals. For the exact contribution history, see the revision
-# history and logs, available at http://projects.edgewall.com/trac/.
-#
-
-__copyright__ = 'Copyright (c) 2003-2006 Edgewall Software'
+# history and logs, available at http://trac.edgewall.org/log/.
 
 import cmd
 import getpass
@@ -109,9 +106,9 @@ class TracAdmin(cmd.Cmd):
         self.interactive = True
         print 'Welcome to trac-admin %(ver)s\n'                \
               'Interactive Trac administration console.\n'       \
-              '%(copy)s\n\n'                                    \
+              'Copyright (c) 2003-2006 Edgewall Software\n\n'                                    \
               "Type:  '?' or 'help' for help on commands.\n" %  \
-              {'ver':trac.__version__,'copy':__copyright__}
+              {'ver':trac.__version__}
         self.cmdloop()
 
     ##
@@ -663,7 +660,7 @@ deploying Trac to a real web server).
 The latest documentation can also always be found on the project
 website:
 
-  http://projects.edgewall.com/trac/
+  http://trac.edgewall.org/
 
 Congratulations!
 """ % dict(project_name=project_name, project_path=self.envname,

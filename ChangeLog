@@ -1,5 +1,5 @@
 Trac 0.9.6  (Jul 6, 2006)
-http://svn.edgewall.com/repos/trac/tags/trac-0.9.6
+http://svn.edgewall.org/repos/trac/tags/trac-0.9.6
 
  * Fixed reStructuredText breach of privacy and denial of service vulnerability
    found by Felix Wiemann.
@@ -7,7 +7,7 @@ http://svn.edgewall.com/repos/trac/tags/trac-0.9.6
  * Fixed bugs: #2894, #3058, #3209 #3325.
 
 Trac 0.9.5  (Apr 18, 2006)
-http://svn.edgewall.com/repos/trac/tags/trac-0.9.5
+http://svn.edgewall.org/repos/trac/tags/trac-0.9.5
 
  * Fixed wiki macro XSS vulnerability found by Mr. Kazuhiro Nishiyama:
    http://jvn.jp/jp/JVN%2384091359/index.html
@@ -17,7 +17,7 @@ http://svn.edgewall.com/repos/trac/tags/trac-0.9.5
  * Fixed bugs: #2531, #2777, #3020.
 
 Trac 0.9.4  (Feb 15, 2006)
-http://svn.edgewall.com/repos/trac/tags/trac-0.9.4
+http://svn.edgewall.org/repos/trac/tags/trac-0.9.4
 
  * Deletion of reports has been fixed.
  * Various encoding issues with the timeline RSS feed have been fixed.
@@ -29,7 +29,7 @@ http://svn.edgewall.com/repos/trac/tags/trac-0.9.4
    #2707, #2735
 
 Trac 0.9.3  (Jan 8, 2006)
-http://svn.edgewall.com/repos/trac/tags/trac-0.9.3
+http://svn.edgewall.org/repos/trac/tags/trac-0.9.3
 
  * Fixed XSS vulnerabilities.
  * Timeline RSS feed validity issue resolved.
@@ -39,13 +39,13 @@ http://svn.edgewall.com/repos/trac/tags/trac-0.9.3
    #2490, #2493, #2512, #2517, #2519, #2527, #2548, #2558, #2558
 
 Trac 0.9.2  (Dec 5, 2005)
-http://svn.edgewall.com/repos/trac/tags/trac-0.9.2
+http://svn.edgewall.org/repos/trac/tags/trac-0.9.2
 
  * Fixed SQL injection vulnerability in ticket search module.
  * Fixed broken ticket email notifications.
 
 Trac 0.9.1  (Dec 1, 2005)
-http://svn.edgewall.com/repos/trac/tags/trac-0.9.1
+http://svn.edgewall.org/repos/trac/tags/trac-0.9.1
 
  * Fixed SQL injection vulnerability in ticket query module.
  * Fixed bugs: #1633, #2167, #2283, #2284, #2285, #2291, #2292, #2300,
@@ -53,7 +53,7 @@ http://svn.edgewall.com/repos/trac/tags/trac-0.9.1
 
 
 Trac 0.9  (Oct 31, 2005)
-http://svn.edgewall.com/repos/trac/tags/trac-0.9
+http://svn.edgewall.org/repos/trac/tags/trac-0.9
 
  * Support for a global trac.ini configuration file.
  * Changed logic for enabling plugins/components.
@@ -73,7 +73,7 @@ http://svn.edgewall.com/repos/trac/tags/trac-0.9
 
 
 Trac 0.9-beta2  (Sept 25, 2005)
-http://svn.edgewall.com/repos/trac/tags/trac-0.9b2
+http://svn.edgewall.org/repos/trac/tags/trac-0.9b2
 
  * Support for setuptools 0.6.
  * Allow insertion of a custom HTML snippet above the new ticket form
@@ -90,7 +90,7 @@ http://svn.edgewall.com/repos/trac/tags/trac-0.9b2
 
 
 Trac 0.9-beta1  (Sept 5, 2005)
-http://svn.edgewall.com/repos/trac/tags/trac-0.9b1
+http://svn.edgewall.org/repos/trac/tags/trac-0.9b1
 
  Trac 0.9 contains a great number of new features, improvements and
  bug fixes. The following list contains only a few highlights:
@@ -107,11 +107,11 @@ http://svn.edgewall.com/repos/trac/tags/trac-0.9b1
  * Python version >= 2.3 is now required.
 
  The complete list of closed tickets can be found here:
-   http://projects.edgewall.com/trac/query?status=closed&milestone=0.9
+   http://trac.edgewall.org/query?status=closed&milestone=0.9
 
 
 Trac 0.8.3  (Jun 15, 2005)
-http://svn.edgewall.com/repos/trac/tags/trac-0.8.3
+http://svn.edgewall.org/repos/trac/tags/trac-0.8.3
 
  * Fix compatibility of 'trac-admin resync' with Subversion >= 1.2.
  * Settings page now works correctly when Trac is deployed at the
@@ -121,7 +121,7 @@ http://svn.edgewall.com/repos/trac/tags/trac-0.8.3
 
 
 Trac 0.8.2  (Jun 1, 2005)
-http://svn.edgewall.com/repos/trac/tags/trac-0.8.2
+http://svn.edgewall.org/repos/trac/tags/trac-0.8.2
 
  * Compatibility with Subversion >= 1.2 fixed.
  * Compatibility with Docutils >= 0.3.7 fixed.
@@ -130,7 +130,7 @@ http://svn.edgewall.com/repos/trac/tags/trac-0.8.2
 
 
 Trac 0.8.1  (Feb 28, 2005)
-http://svn.edgewall.com/repos/trac/tags/trac-0.8.1
+http://svn.edgewall.org/repos/trac/tags/trac-0.8.1
 
  * Improved Python 2.1 compatibility.
  * Layout of navigation bar in Opera fixed.
@@ -144,7 +144,7 @@ http://svn.edgewall.com/repos/trac/tags/trac-0.8.1
 
 
 Trac 0.8 'Qualia'  (Nov 15, 2004)
-http://svn.edgewall.com/repos/trac/tags/trac-0.8
+http://svn.edgewall.org/repos/trac/tags/trac-0.8
 
  * Roadmap module.
  * Support for custom ticket properties.
@@ -187,7 +187,7 @@ http://svn.edgewall.com/repos/trac/tags/trac-0.8
 
 
 Trac 0.7.1 'Argento'  (Jun, 2004)
-http://svn.edgewall.com/repos/trac/tags/trac-0.7.1
+http://svn.edgewall.org/repos/trac/tags/trac-0.7.1
 
  * Bugfixes for 0.7
  * Fixes security hole in auth.py
@@ -200,7 +200,7 @@ http://svn.edgewall.com/repos/trac/tags/trac-0.7.1
 
 
 Trac 0.7 'Fulci'  (May 18, 2004)
-http://svn.edgewall.com/repos/trac/tags/trac-0.7
+http://svn.edgewall.org/repos/trac/tags/trac-0.7
 
  * Revised database format (requires manual upgrade).
  * Trac standalone daemon, tracd (Experimental).
@@ -236,7 +236,7 @@ http://svn.edgewall.com/repos/trac/tags/trac-0.7
 
 
 Trac 0.6.1 '245 Trioxin (April 12, 2004)
-http://svn.edgewall.com/repos/trac/tags/trac-0.6.1
+http://svn.edgewall.org/repos/trac/tags/trac-0.6.1
 
  * RSS now escapes entities in summary.
  * Search results won't highlight dates anymore.
@@ -247,7 +247,7 @@ http://svn.edgewall.com/repos/trac/tags/trac-0.6.1
 
 
 Trac 0.6 'Solanum' (March 23, 2004)
-http://svn.edgewall.com/repos/trac/tags/trac-0.6
+http://svn.edgewall.org/repos/trac/tags/trac-0.6
 
  * View diffs between wiki page edits.
  * Improved Search module.
@@ -271,7 +271,7 @@ http://svn.edgewall.com/repos/trac/tags/trac-0.6
 
 
 Trac 0.5.2 'Nameless' (March 2, 2004)
-http://svn.edgewall.com/repos/trac/tags/trac-0.5.2
+http://svn.edgewall.org/repos/trac/tags/trac-0.5.2
 
  * Performance improvements.
  * Better unicode support in commit-messages.
@@ -290,7 +290,7 @@ http://svn.edgewall.com/repos/trac/tags/trac-0.5.2
 
 
 Trac 0.5.1 'Unnamed' (February 25, 2004)
-http://svn.edgewall.com/repos/trac/tags/trac-0.5.1
+http://svn.edgewall.org/repos/trac/tags/trac-0.5.1
 
  * Navbar now works properly on error pages.
  * Cleaned up source code. Removed ugly tabs.
@@ -300,6 +300,6 @@ http://svn.edgewall.com/repos/trac/tags/trac-0.5.1
 
 
 Trac 0.5 'Incognito' (February 23, 2004)
-http://svn.edgewall.com/repos/trac/tags/trac-0.5
+http://svn.edgewall.org/repos/trac/tags/trac-0.5
 
  * First release.

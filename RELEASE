@@ -18,21 +18,21 @@ making tracking progress or getting an overview of a project easy.
 
 For more information, please visit the main Trac web site:
 
-  <http://trac.edgewall.com/>
+  <http://trac.edgewall.org/>
 
 The software, published under the modified BSD License, is
 available at:
 
-  <http://projects.edgewall.com/trac/download/>
+  <http://trac.edgewall.org/wiki/TracDownload>
 
-Please report problems and provide feedback in the project issue tracker:
+Please report problems in the project issue tracker:
 
-  <http://projects.edgewall.com/trac/>
+  <http://trac.edgewall.org/newticket>
 
 For questions, comments and user discussions, please use the Trac mailing list.
 List information, subscription and archive available at:
 
-  <http://projects.edgewall.com/trac/wiki/MailingList>
+  <http://trac.edgewall.org/wiki/MailingList>
 
 
 What's New
@@ -46,7 +46,7 @@ A brief summary of major changes for version 0.9.5:
 
 For a more complete list of improvements, see the ChangeLog at:
 
- <http://projects.edgewall.com/trac/wiki/ChangeLog>
+ <http://trac.edgewall.org/wiki/ChangeLog>
 
 
 Acknowledgements
@@ -63,4 +63,4 @@ over the last version.
 
 Please let us know. :-)
 
-/The Trac Team <http://trac.edgewall.com/>
+/The Trac Team <http://trac.edgewall.org/>
