@@ -115,8 +115,9 @@ class WikiModule(Component):
                 self._do_delete(req, db, page)
             elif action == 'diff':
                 get_diff_options(req)
-                req.redirect(req.href.wiki(page.name, version=page.version,
-                                           action='diff'))
+                req.redirect(req.href.wiki(
+                    page.name, version=page.version,
+                    old_version=req.args.get('old_version'), action='diff'))
         elif action == 'delete':
             self._render_confirm(req, db, page)
         elif action == 'edit':

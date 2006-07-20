@@ -84,6 +84,7 @@
    <div>
     <input type="hidden" name="action" value="diff" />
     <input type="hidden" name="version" value="<?cs var:wiki.version ?>" />
+    <input type="hidden" name="old_version" value="<?cs var:wiki.old_version ?>" />
     <label>View differences <select name="style">
      <option value="inline"<?cs
        if:diff.style == 'inline' ?> selected="selected"<?cs
