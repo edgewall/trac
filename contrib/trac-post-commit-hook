@@ -140,9 +140,6 @@ class CommitHook:
         self.env = open_environment(project)
         if url is None:
             url = self.env.config.get('project', 'url')
-        class Request(object):
-            def __init__(self):
-                self.href = self.abs_href = Href(url)
 
         cmdGroups = commandPattern.findall(msg)
 
@@ -173,7 +170,7 @@ class CommitHook:
                 db.commit()
                 
                 tn = TicketNotifyEmail(self.env)
-                tn.notify(ticket, Request(), newticket=0, modtime=self.now)
+                tn.notify(ticket, newticket=0, modtime=self.now)
             except Exception, e:
                 # import traceback
                 # traceback.print_exc(file=sys.stderr)
