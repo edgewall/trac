@@ -56,7 +56,7 @@ class TicketNotifyEmail(NotifyEmail):
         NotifyEmail.__init__(self, env)
         self.prev_cc = []
 
-    def notify(self, ticket, req, newticket=True, modtime=0):
+    def notify(self, ticket, newticket=True, modtime=0):
         self.ticket = ticket
         self.modtime = modtime
         self.newticket = newticket
@@ -67,7 +67,7 @@ class TicketNotifyEmail(NotifyEmail):
         self.hdf.set_unescaped('email.ticket_body_hdr', self.format_hdr())
         self.hdf['ticket.new'] = self.newticket
         subject = self.format_subj()
-        link = req.abs_href.ticket(ticket.id)
+        link = self.env.abs_href.ticket(ticket.id)
         if not self.newticket:
             subject = 'Re: ' + subject
         self.hdf.set_unescaped('email.subject', subject)

@@ -173,7 +173,7 @@ class NewticketModule(TicketModuleBase):
         # Notify
         try:
             tn = TicketNotifyEmail(self.env)
-            tn.notify(ticket, req, newticket=True)
+            tn.notify(ticket, newticket=True)
         except Exception, e:
             self.log.exception("Failure sending notification on creation of "
                                "ticket #%s: %s" % (ticket.id, e))
@@ -528,7 +528,7 @@ class TicketModule(TicketModuleBase):
 
         try:
             tn = TicketNotifyEmail(self.env)
-            tn.notify(ticket, req, newticket=False, modtime=now)
+            tn.notify(ticket, newticket=False, modtime=now)
         except Exception, e:
             self.log.exception("Failure sending notification on change to "
                                "ticket #%s: %s" % (ticket.id, e))

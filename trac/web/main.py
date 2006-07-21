@@ -157,6 +157,7 @@ class RequestDispatcher(Component):
         """
         # FIXME: For backwards compatibility, should be removed in 0.11
         self.env.href = req.href
+        # FIXME in 0.11: self.env.abs_href = Href(self.env.base_url)
         self.env.abs_href = req.abs_href
 
         # Select the component that should handle the request

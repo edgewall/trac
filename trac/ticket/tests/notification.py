@@ -66,7 +66,7 @@ class NotificationTestCase(unittest.TestCase):
         ticket['summary'] = 'Foo'
         ticket.insert()
         tn = TicketNotifyEmail(self.env)
-        tn.notify(ticket, self.req, newticket=True)
+        tn.notify(ticket, newticket=True)
         recipients = notifysuite.smtpd.get_recipients()
         # checks there is no duplicate in the recipient list
         rcpts = []
@@ -91,7 +91,7 @@ class NotificationTestCase(unittest.TestCase):
         ticket['summary'] = 'Foo'
         ticket.insert()
         tn = TicketNotifyEmail(self.env)
-        tn.notify(ticket, self.req, newticket=True)
+        tn.notify(ticket, newticket=True)
         sender = notifysuite.smtpd.get_sender()
         recipients = notifysuite.smtpd.get_recipients()
         message = notifysuite.smtpd.get_message()
@@ -107,7 +107,7 @@ class NotificationTestCase(unittest.TestCase):
         ticket['summary'] = 'Foo'
         ticket.insert()
         tn = TicketNotifyEmail(self.env)
-        tn.notify(ticket, self.req, newticket=True)
+        tn.notify(ticket, newticket=True)
         recipients = notifysuite.smtpd.get_recipients()
         # checks that all cc recipients have been notified
         cc_list = self.env.config.get('notification', 'smtp_always_cc')
@@ -124,7 +124,7 @@ class NotificationTestCase(unittest.TestCase):
         ticket['summary'] = 'This is a summary'
         ticket.insert()
         tn = TicketNotifyEmail(self.env)
-        tn.notify(ticket, self.req, newticket=True)
+        tn.notify(ticket, newticket=True)
         message = notifysuite.smtpd.get_message()
         (headers, body) = parse_smtp_message(message)
         # checks for header existence
@@ -158,7 +158,7 @@ class NotificationTestCase(unittest.TestCase):
         ticket['summary'] = 'This is a summary'
         ticket.insert()
         tn = TicketNotifyEmail(self.env)
-        tn.notify(ticket, self.req, newticket=True)
+        tn.notify(ticket, newticket=True)
         message = notifysuite.smtpd.get_message()
         (headers, body) = parse_smtp_message(message)
         self.failIf('Date' not in headers)
@@ -185,7 +185,7 @@ class NotificationTestCase(unittest.TestCase):
             ticket['summary'] = 'This is a summary'
             ticket.insert()
             tn = TicketNotifyEmail(self.env)
-            tn.notify(ticket, self.req, newticket=True)
+            tn.notify(ticket, newticket=True)
             message = notifysuite.smtpd.get_message()
             (headers, body) = parse_smtp_message(message)
             if public:
@@ -235,7 +235,7 @@ class NotificationTestCase(unittest.TestCase):
             if enabled:
                 self.env.config.set('notification', 'use_short_addr', 'true')
             tn = TicketNotifyEmail(self.env)
-            tn.notify(ticket, self.req, newticket=True)
+            tn.notify(ticket, newticket=True)
             message = notifysuite.smtpd.get_message()
             (headers, body) = parse_smtp_message(message)
             # Msg should not have a 'To' header
@@ -276,7 +276,7 @@ class NotificationTestCase(unittest.TestCase):
             if enabled:
                 self.env.config.set('notification', 'smtp_default_domain', 'example.org')
             tn = TicketNotifyEmail(self.env)
-            tn.notify(ticket, self.req, newticket=True)
+            tn.notify(ticket, newticket=True)
             message = notifysuite.smtpd.get_message()
             (headers, body) = parse_smtp_message(message)
             # Msg should always have a 'Cc' field
@@ -306,7 +306,7 @@ class NotificationTestCase(unittest.TestCase):
         ticket['summary'] = 'This is a summary'
         ticket.insert()
         tn = TicketNotifyEmail(self.env)
-        tn.notify(ticket, self.req, newticket=True)
+        tn.notify(ticket, newticket=True)
         message = notifysuite.smtpd.get_message()
         (headers, body) = parse_smtp_message(message)
         # Msg should always have a 'To' field
@@ -325,7 +325,7 @@ class NotificationTestCase(unittest.TestCase):
         ticket['summary'] = u'A_very %s súmmäry' % u' '.join(['long'] * 20)
         ticket.insert()
         tn = TicketNotifyEmail(self.env)
-        tn.notify(ticket, self.req, newticket=True)
+        tn.notify(ticket, newticket=True)
         message = notifysuite.smtpd.get_message()
         (headers, body) = parse_smtp_message(message)
         # Discards the project name & ticket number
@@ -379,7 +379,7 @@ class NotificationTestCase(unittest.TestCase):
             now = time.time()
             ticket.save_changes('joe.bar2@example.com', 'This is a change', when=now)
             tn = TicketNotifyEmail(self.env)
-            tn.notify(ticket, self.req, newticket=False, modtime=now)
+            tn.notify(ticket, newticket=False, modtime=now)
             message = notifysuite.smtpd.get_message()
             (headers, body) = parse_smtp_message(message)
             # checks for header existence
@@ -400,7 +400,7 @@ class NotificationTestCase(unittest.TestCase):
         """Validate the body of a ticket notification message"""
         (mime_decoder, mime_name, mime_charset) = mime
         tn = TicketNotifyEmail(self.env)
-        tn.notify(ticket, self.req, newticket=newtk)
+        tn.notify(ticket, newticket=newtk)
         message = notifysuite.smtpd.get_message()
         (headers, body) = parse_smtp_message(message)
         self.failIf('MIME-Version' not in headers)
