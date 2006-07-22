@@ -142,21 +142,29 @@ class Configuration(object):
             return
 
         # Only save options that differ from the defaults
-        config = ConfigParser()
+        sections = []
         for section in self.sections():
+            options = []
             for option in self[section]:
                 default = self.site_parser.has_option(section, option) and \
                           self.site_parser.get(section, option)
                 current = self.parser.has_option(section, option) and \
                           self.parser.get(section, option)
                 if current is not False and current != default:
-                    if not config.has_section(section):
-                        config.add_section(section)
-                    config.set(section, option, current or '')
+                    options.append((option, current))
+            if options:
+                sections.append((section, sorted(options)))
 
         fileobj = file(self.filename, 'w')
         try:
-            config.write(fileobj)
+            print>>fileobj, '# -*- coding: utf-8 -*-'
+            print>>fileobj
+            for section, options in sections:
+                print>>fileobj, '[%s]' % section
+                for key, val in options:
+                    print>>fileobj, '%s = %s' % \
+                                    (key, to_unicode(val).encode('utf-8'))
+                print>>fileobj
         finally:
             fileobj.close()
 
