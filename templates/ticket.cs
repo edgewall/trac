@@ -92,6 +92,7 @@
 <?cs if:len(ticket.changes) ?><h2>Change History</h2>
 <div id="changelog"><?cs
  each:change = ticket.changes ?>
+ <form method="get" action="<?cs var:ticket.href ?>#comment">
  <div class="change">
   <h3 <?cs if:change.cnum ?>id="comment:<?cs var:change.cnum ?>"<?cs /if ?>><?cs
    if:change.cnum ?>
@@ -107,10 +108,9 @@
         call:commentref('&darr;&nbsp;', reply) ?><?cs 
        /each ?><?cs 
       /if ?>)<?cs
-    /if ?><form method="get" action="<?cs var:ticket.href ?>#comment"><span class="inlinebuttons">
+    /if ?><span class="inlinebuttons">
     <input type="hidden" name="replyto" value="<?cs var:change.cnum ?>" />
     <input type="submit" value="Reply" title="Reply to comment <?cs var:change.cnum ?>" /></span>
-   </form>
     </span><?cs
    /if ?><?cs
    var:change.date ?> changed by <?cs var:change.author ?><?cs
@@ -134,7 +134,8 @@
    </ul><?cs
   /if ?>
   <div class="comment"><?cs var:change.comment ?></div>
- </div><?cs
+ </div>
+ </form><?cs
  /each ?>
 </div><?cs
 /if ?>
