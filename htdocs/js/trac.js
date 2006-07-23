@@ -110,7 +110,7 @@ function enableControl(id, enabled) {
   }
 }
 
-function addHeadingLinks(container) {
+function addHeadingLinks(container, title) {
   var base = document.location.pathname;
   function addLinks(elems) {
     for (var i = 0; i < elems.length; i++) {
@@ -119,7 +119,7 @@ function addHeadingLinks(container) {
         var link = document.createElement('a');
         link.href = base + '#' + hn.id;
         link.className = 'anchor';
-        link.title = "Link to this section";
+        link.title = title.replace(/\$id/, hn.id);
         link.appendChild(document.createTextNode(" \u00B6"));
         hn.appendChild(link);
       }

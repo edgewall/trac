@@ -382,7 +382,7 @@
    </div>
   <?cs /if ?>
   <script type="text/javascript">
-   addHeadingLinks(document.getElementById("searchable"));
+   addHeadingLinks(document.getElementById("searchable"), "Link to this section");
   </script>
  <?cs /if ?>
  <?cs /if ?>

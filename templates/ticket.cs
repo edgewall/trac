@@ -124,10 +124,7 @@
     /if ?>
     </span><?cs
    /if ?><?cs
-   var:change.date ?> changed by <?cs var:change.author ?><?cs
-   if:change.cnum ?>&nbsp;<a href="#comment:<?cs var:change.cnum ?>" class="anchor"
-      title="Permalink to comment:<?cs var:change.cnum ?>">&para;</a><?cs
-   /if ?>
+   var:change.date ?> changed by <?cs var:change.author ?>
   </h3><?cs
   if:len(change.fields) ?>
    <ul class="changes"><?cs
@@ -335,5 +332,8 @@
 <?cs /if ?>
 
  </div>
+ <script type="text/javascript">
+  addHeadingLinks(document.getElementById("searchable"), "Permalink to $id");
+ </script>
 </div>
 <?cs include "footer.cs"?>
