@@ -17,6 +17,7 @@
 import re
 
 from trac.core import *
+from trac.util import sorted
 from trac.util.markup import Element, html
 from trac.web import IRequestHandler
 from trac.wiki.api import IWikiMacroProvider
