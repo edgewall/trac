@@ -23,7 +23,7 @@
      /if ?>
    </li><?cs
   elif:wiki.action == "history" ?>
-   <li><a href="<?cs var:wiki.current_href ?>">View Latest Version</a></li><?cs
+   <li class="last"><a href="<?cs var:wiki.current_href ?>">View Latest Version</a></li><?cs
   else ?>
    <li><a href="<?cs var:trac.href.wiki ?>">Start Page</a></li>
    <li><a href="<?cs var:trac.href.wiki ?>/TitleIndex">Index by Title</a></li>

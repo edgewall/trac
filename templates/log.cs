@@ -3,17 +3,17 @@
 
 <div id="ctxtnav" class="nav">
  <ul>
-  <li class="last">
+  <li class="first <?cs if:len(chrome.links.prev)+len(chrome.links.next) == 0 ?>last<?cs /if ?>">
    <a href="<?cs var:log.browser_href ?>">View Latest Revision</a>
   </li><?cs
   if:len(chrome.links.prev) ?>
-   <li class="first<?cs if:!len(chrome.links.next) ?> last<?cs /if ?>">
+   <li class="<?cs if:!len(chrome.links.next) ?> last<?cs /if ?>">
     &larr; <a href="<?cs var:chrome.links.prev.0.href ?>" title="<?cs
       var:chrome.links.prev.0.title ?>">Newer Revisions</a>
    </li><?cs
   /if ?><?cs
   if:len(chrome.links.next) ?>
-   <li class="<?cs if:!len(chrome.links.prev) ?>first <?cs /if ?>last">
+   <li class="last">
     <a href="<?cs var:chrome.links.next.0.href ?>" title="<?cs
       var:chrome.links.next.0.title ?>">Older Revisions</a> &rarr;
    </li><?cs
