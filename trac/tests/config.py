@@ -113,14 +113,15 @@ class ConfigurationTestCase(unittest.TestCase):
 
     def test_set_and_save(self):
         config = Configuration(self.filename)
+        config.set('b', 'option0', 'y')
         config.set('a', 'option0', 'x')
-        config.set('a', 'option1', u"Voilà l'été") # unicode
         config.set('a', 'option2', "Voilà l'été")  # UTF-8
-        config.set('a', 'option3', "Voil\xe0 l'\xe9t\xe9") # latin-1
+        config.set('a', 'option1', u"Voilà l'été") # unicode
+        # Note: the following would depend on the locale.getpreferredencoding()
+        # config.set('a', 'option3', "Voil\xe0 l'\xe9t\xe9") # latin-1
         self.assertEquals('x', config.get('a', 'option0'))
         self.assertEquals(u"Voilà l'été", config.get('a', 'option1'))
         self.assertEquals(u"Voilà l'été", config.get('a', 'option2'))
-        self.assertEquals(u"Voilà l'été", config.get('a', 'option3'))
         config.save()
 
         configfile = open(self.filename, 'r')
@@ -130,7 +131,10 @@ class ConfigurationTestCase(unittest.TestCase):
                            'option0 = x\n', 
                            "option1 = Voilà l'été\n", 
                            "option2 = Voilà l'été\n", 
-                           "option3 = Voilà l'été\n", 
+                           # "option3 = Voilà l'été\n", 
+                           '\n',
+                           '[b]\n',
+                           'option0 = y\n', 
                            '\n'],
                           configfile.readlines())
         configfile.close()
@@ -138,7 +142,7 @@ class ConfigurationTestCase(unittest.TestCase):
         self.assertEquals('x', config2.get('a', 'option0'))
         self.assertEquals(u"Voilà l'été", config2.get('a', 'option1'))
         self.assertEquals(u"Voilà l'été", config2.get('a', 'option2'))
-        self.assertEquals(u"Voilà l'été", config2.get('a', 'option3'))
+        # self.assertEquals(u"Voilà l'été", config2.get('a', 'option3'))
 
     def test_sections(self):
         self._write(['[a]', 'option = x', '[b]', 'option = y'])
