@@ -71,14 +71,23 @@
     /if ?><?cs set:idx = idx + #fullrow + 1 ?><?cs
    /if ?><?cs
   /each ?></tr>
- </table>
- <?cs if:ticket.description ?><div id="comment:description" class="description">
-  <?cs var:ticket.description.formatted ?>
-  <form method="get" action="<?cs var:ticket.href ?>#comment"><div class="inlinebuttons">
-   <input type="hidden" name="replyto" value="description" />
-   <input type="submit" value="Reply" title="Reply, quoting this description" /></div>
-  </form>
- </div><?cs /if ?>
+ </table><?cs 
+ if:ticket.description ?>
+  <form method="get" action="<?cs var:ticket.href ?>#comment">
+   <div class="description">
+    <h3 id="comment:description">
+     <span class="inlinebuttons">
+      <input type="hidden" name="replyto" value="description" />
+      <input type="submit" value="Reply" title="Reply, quoting this description" />
+     </span>
+     Description <?cs
+     if:ticket.description.lastmod ?><span class="lastmod" title="<?cs var:ticket.description.lastmod ?>">(Last modified by <?cs var:ticket.description.author ?>)</span><?cs
+     /if ?>
+    </h3>
+    <?cs var:ticket.description.formatted ?>
+   </div>
+  </form><?cs 
+ /if ?>
 </div>
 
 <?cs if:ticket.attach_href || len(ticket.attachments) ?>
@@ -96,6 +105,10 @@
  <div class="change">
   <h3 <?cs if:change.cnum ?>id="comment:<?cs var:change.cnum ?>"<?cs /if ?>><?cs
    if:change.cnum ?>
+    <span class="inlinebuttons">
+     <input type="hidden" name="replyto" value="<?cs var:change.cnum ?>" />
+     <input type="submit" value="Reply" title="Reply to comment <?cs var:change.cnum ?>" />
+    </span>
     <span class="threading"><?cs
      set:nreplies = len(ticket.replies[change.cnum]) ?><?cs
      if:nreplies || change.replyto ?>(<?cs
@@ -108,9 +121,7 @@
         call:commentref('&darr;&nbsp;', reply) ?><?cs 
        /each ?><?cs 
       /if ?>)<?cs
-    /if ?><span class="inlinebuttons">
-    <input type="hidden" name="replyto" value="<?cs var:change.cnum ?>" />
-    <input type="submit" value="Reply" title="Reply to comment <?cs var:change.cnum ?>" /></span>
+    /if ?>
     </span><?cs
    /if ?><?cs
    var:change.date ?> changed by <?cs var:change.author ?><?cs

@@ -591,6 +591,7 @@ class TicketModule(TicketModuleBase):
         replies = {}
         changes = []
         cnum = 0
+        description_lastmod = description_author = None
         for change in self.grouped_changelog_entries(ticket, db):
             changes.append(change)
             # wikify comment
@@ -609,11 +610,17 @@ class TicketModule(TicketModuleBase):
                                    'comment:%s' % replyto)
             if 'description' in change['fields']:
                 change['fields']['description'] = ''
+                description_lastmod = change['date']
+                description_author = change['author']
+                
         req.hdf['ticket'] = {
             'changes': changes,
             'replies': replies,
             'cnum': cnum + 1
            }
+        if description_lastmod:
+            req.hdf['ticket.description'] = {'lastmod': description_lastmod,
+                                             'author': description_author}
 
         # -- Ticket Attachments
 
