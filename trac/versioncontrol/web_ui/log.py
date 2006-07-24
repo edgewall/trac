@@ -23,6 +23,7 @@ from trac.core import *
 from trac.perm import IPermissionRequestor
 from trac.util.datefmt import http_date
 from trac.util.markup import html
+from trac.util.text import wrap
 from trac.versioncontrol import Changeset
 from trac.versioncontrol.web_ui.changeset import ChangesetModule
 from trac.versioncontrol.web_ui.util import *
@@ -180,8 +181,9 @@ class LogModule(Component):
             for rev in revs:
                 changeset = repos.get_changeset(rev)
                 cs = changes[rev]
-                cs['message'] = '\n'.join(['\t' + m for m in
-                                           changeset.message.split('\n')])
+                cs['message'] = wrap(changeset.message, 70,
+                                     initial_indent='\t',
+                                     subsequent_indent='\t')
                 files = []
                 actions = []
                 for path, kind, chg, bpath, brev in changeset.get_changes():
