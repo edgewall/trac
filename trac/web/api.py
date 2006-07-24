@@ -24,6 +24,7 @@ import sys
 import urlparse
 
 from trac.core import Interface
+from trac.mimeview.api import get_mimetype
 from trac.util import get_last_traceback
 from trac.util.datefmt import http_date
 from trac.web.href import Href
@@ -388,8 +389,7 @@ class Request(object):
             raise RequestDone
 
         if not mimetype:
-            mimetype = mimetypes.guess_type(path)[0] or \
-                       'application/octet-stream'
+            mimetype = get_mimetype(path) or 'application/octet-stream'
 
         self.send_response(200)
         self.send_header('Content-Type', mimetype)
