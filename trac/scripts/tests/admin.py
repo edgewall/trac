@@ -118,7 +118,7 @@ class TracadminTestCase(unittest.TestCase):
             _err = sys.stderr
             _out = sys.stdout
             sys.stderr = sys.stdout = out = StringIO()
-            setattr(out, 'encoding', _out.encoding) # fake output encoding
+            setattr(out, 'encoding', 'utf-8') # fake output encoding
             retval = None
             try:
                 retval = self._admin.onecmd(cmd)
@@ -126,7 +126,7 @@ class TracadminTestCase(unittest.TestCase):
                 pass
             value = out.getvalue()
             if isinstance(value, str): # reverse what print_listing did
-                value = value.decode(_out.encoding)
+                value = value.decode('utf-8')
             if strip_trailing_space:
                 return retval, STRIP_TRAILING_SPACE.sub('', value)
             else:
