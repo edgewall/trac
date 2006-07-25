@@ -162,38 +162,57 @@ class RequestDispatcher(Component):
 
         # Select the component that should handle the request
         chosen_handler = None
-        if not req.path_info or req.path_info == '/':
-            chosen_handler = self.default_handler
-        else:
-            for handler in self.handlers:
-                if handler.match_request(req):
-                    chosen_handler = handler
-                    break
+        early_error = None
+        try:
+            if not req.path_info or req.path_info == '/':
+                chosen_handler = self.default_handler
+            else:
+                for handler in self.handlers:
+                    if handler.match_request(req):
+                        chosen_handler = handler
+                        break
 
-        for filter_ in self.filters:
-            chosen_handler = filter_.pre_process_request(req, chosen_handler)
-
-        if not chosen_handler:
-            raise HTTPNotFound('No handler matched request to %s',
-                               req.path_info)
+            for f in self.filters:
+                chosen_handler = f.pre_process_request(req, chosen_handler)
+                
+        except:
+            early_error = sys.exc_info()
+            
+        if not chosen_handler and not early_error:
+            early_error = (HTTPNotFound('No handler matched request to %s',
+                                        req.path_info),
+                           None, None)
 
         # Attach user information to the request
-        anonymous_request = getattr(chosen_handler, 'anonymous_request', False)
+        anonymous_request = getattr(chosen_handler, 'anonymous_request',
+                                    False)
+        if not anonymous_request:
+            try:
+                req.authname = self.authenticate(req)
+                req.perm = PermissionCache(self.env, req.authname)
+                req.session = Session(self.env, req)
+            except:
+                anonymous_request = True
+                early_error = sys.exc_info()
         if anonymous_request:
             req.authname = 'anonymous'
             req.perm = NoPermissionCache()
-        else:
-            req.authname = self.authenticate(req)
-            req.perm = PermissionCache(self.env, req.authname)
-            req.session = Session(self.env, req)
 
         # Prepare HDF for the clearsilver template
-        use_template = getattr(chosen_handler, 'use_template', True)
-        if use_template:
-            chrome = Chrome(self.env)
-            req.hdf = HDFWrapper(loadpaths=chrome.get_all_templates_dirs())
-            populate_hdf(req.hdf, self.env, req)
-            chrome.populate_hdf(req, chosen_handler)
+        try:
+            use_template = getattr(chosen_handler, 'use_template', True)
+            if use_template:
+                chrome = Chrome(self.env)
+                req.hdf = HDFWrapper(loadpaths=chrome.get_all_templates_dirs())
+                populate_hdf(req.hdf, self.env, req)
+                chrome.populate_hdf(req, chosen_handler)
+        except:
+            req.hdf = None # revert to sending plaintext error
+            if not early_error:
+                raise
+
+        if early_error:
+            raise early_error[0], early_error[1], early_error[2]
 
         # Process the request and render the template
         try:
