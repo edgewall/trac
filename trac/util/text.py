@@ -28,22 +28,22 @@ CRLF = '\r\n'
 
 # -- Unicode
 
-def to_unicode(text, charset=None, lossy=True):
+def to_unicode(text, charset=None):
     """Convert a `str` object to an `unicode` object.
 
-    If `charset` is not specified, we'll make some guesses,
-    first trying the UTF-8 encoding then trying the locale
-    preferred encoding (this differs from the `unicode` function
-    which only tries with the locale preferred encoding, in 'strict'
-    mode).
+    If `charset` is given, we simply assume that encoding for the text,
+    but we'll use the "replace" mode so that the decoding will always
+    succeed.
+    If `charset` is ''not'' specified, we'll make some guesses, first
+    trying the UTF-8 encoding, then trying the locale preferred encoding,
+    in "replace" mode. This differs from the `unicode` builtin, which
+    by default uses the locale preferred encoding, in 'strict' mode,
+    and is therefore prompt to raise `UnicodeDecodeError`s.
 
-    If the `lossy` argument is `True`, which is the default, then
-    we use the 'replace' mode:
-
-    If the `lossy` argument is `False`, we fallback to the 'iso-8859-15'
-    charset in case of an error (encoding a `str` using 'iso-8859-15'
-    will always work, as there's one Unicode character for each byte of
-    the input).
+    Because of the "replace" mode, the original content might be altered.
+    If this is not what is wanted, one could map the original byte content
+    by using an encoding which maps each byte of the input to an unicode
+    character, e.g. by doing `unicode(text, 'iso-8859-1')`.
     """
     if not isinstance(text, str):
         if isinstance(text, Exception):
@@ -55,17 +55,13 @@ def to_unicode(text, charset=None, lossy=True):
                 # unicode arguments given to the exception (e.g. parse_date)
                 return ' '.join([to_unicode(arg) for arg in text.args])
         return unicode(text)
-    errors = lossy and 'replace' or 'strict'
-    try:
-        if charset:
-            return unicode(text, charset, errors)
-        else:
-            try:
-                return unicode(text, 'utf-8')
-            except UnicodeError:
-                return unicode(text, locale.getpreferredencoding(), errors)
-    except UnicodeError:
-        return unicode(text, 'iso-8859-15')
+    if charset:
+        return unicode(text, charset, 'replace')
+    else:
+        try:
+            return unicode(text, 'utf-8')
+        except UnicodeError:
+            return unicode(text, locale.getpreferredencoding(), 'replace')
 
 def unicode_quote(value):
     """A unicode aware version of urllib.quote"""
