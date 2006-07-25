@@ -228,7 +228,7 @@ class Chrome(Component):
                 path = os.path.normpath(os.path.join(dir, filename))
                 assert os.path.commonprefix([dir, path]) == dir
                 if os.path.isfile(path):
-                    req.send_file(path)
+                    req.send_file(path, mimeview.get_mimetype(path))
 
         self.log.warning('File %s not found in any of %s', filename, dirs)
         raise HTTPNotFound('File %s not found', filename)
