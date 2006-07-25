@@ -168,7 +168,7 @@ class Formatter(object):
 
     LHREF_RELATIVE_TARGET = r"[/.][^\s[\]]*"
 
-    XML_NAME = r"[\w:](?<!\d)[\w:.-]*" # See http://www.w3.org/TR/REC-xml/#id 
+    XML_NAME = r"[\w:](?<!\d)[\w:.-]*?" # See http://www.w3.org/TR/REC-xml/#id 
 
     # Sequence of regexps used by the engine
 
