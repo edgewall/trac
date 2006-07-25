@@ -227,6 +227,14 @@ class Node(object):
     DIRECTORY = "dir"
     FILE = "file"
 
+    # created_path and created_rev properties refer to the Node "creation"
+    # in the Subversion meaning of a Node in a versioned tree (see #3340).
+    #
+    # Those properties must be set by subclasses.
+    #
+    created_rev = None   
+    created_path = None
+
     def __init__(self, path, rev, kind):
         assert kind in (Node.DIRECTORY, Node.FILE), "Unknown node kind %s" % kind
         self.path = unicode(path)
