@@ -167,20 +167,9 @@ class SearchModule(Component):
         query = req.args.get('q')
         if query:
             page = int(req.args.get('page', '1'))
-            noquickjump = int(req.args.get('noquickjump', '0'))
-            link_elt = self.quickjump(req, query)
-            if link_elt is not None:
-                quickjump_href = link_elt.attr['href']
-                if noquickjump:
-                    req.hdf['search.quickjump'] = {
-                        'href': quickjump_href,
-                        'name': html.EM(link_elt.children),
-                        'description': link_elt.attr.get('title', '')
-                        }
-                else:
-                    req.redirect(quickjump_href)
-            elif query.startswith('!'):
+            if query.startswith('!'):
                 query = query[1:]
+            self.check_quickjump(req, query)
             terms = search_terms(query)
             # Refuse queries that obviously would result in a huge result set
             if len(terms) == 1 and len(terms[0]) < self.min_query_length:
@@ -223,13 +212,29 @@ class SearchModule(Component):
         add_stylesheet(req, 'common/css/search.css')
         return 'search.cs', None
 
-    def quickjump(self, req, kwd):
+    def check_quickjump(self, req, kwd):
+        noquickjump = int(req.args.get('noquickjump', '0'))
         # Source quickjump
+        quickjump_href = None
         if kwd[0] == '/':
-            return req.href.browser(kwd)
-        link = wiki_to_link(kwd, self.env, req)
-        if isinstance(link, Element):
-            return link
+            quickjump_href = req.href.browser(kwd)
+            name = kwd
+            description = 'Browse repository path ' + kwd
+        else:
+            link = wiki_to_link(kwd, self.env, req)
+            if isinstance(link, Element):
+                quickjump_href = link.attr['href']
+                name = link.children
+                description = link.attr.get('title', '')
+        if quickjump_href:
+            if noquickjump:
+                req.hdf['search.quickjump'] = {
+                    'href': quickjump_href,
+                    'name': html.EM(name),
+                    'description': description
+                    }
+            else:
+                req.redirect(quickjump_href)
 
     # IWikiSyntaxProvider methods
     
