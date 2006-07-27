@@ -167,9 +167,9 @@ class SearchModule(Component):
         query = req.args.get('q')
         if query:
             page = int(req.args.get('page', '1'))
+            self.check_quickjump(req, query)
             if query.startswith('!'):
                 query = query[1:]
-            self.check_quickjump(req, query)
             terms = search_terms(query)
             # Refuse queries that obviously would result in a huge result set
             if len(terms) == 1 and len(terms[0]) < self.min_query_length:
