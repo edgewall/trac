@@ -659,11 +659,10 @@ class QueryModule(Component):
         yield ('query', self._format_link)
 
     def _format_link(self, formatter, ns, query, label):
-        if query[0] == '?':
+        if query.startswith('?'):
             return html.A(label, class_='query',
                           href=formatter.href.query() + query.replace(' ', '+'))
         else:
-            from trac.ticket.query import Query, QuerySyntaxError
             try:
                 query = Query.from_string(formatter.env, query)
                 return html.A(label, href=query.get_href(formatter), # Hack

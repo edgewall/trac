@@ -1,7 +1,8 @@
 from trac.config import Configuration
 from trac.log import logger_factory
 from trac.test import Mock, EnvironmentStub
-from trac.ticket.query import Query
+from trac.ticket.query import Query, QueryModule
+from trac.wiki.formatter import LinkFormatter
 
 import unittest
 
@@ -310,9 +311,27 @@ ORDER BY COALESCE(t.id,0)=0,t.id""")
         self.assertEqual([], args)
         tickets = query.execute(Mock(href=self.env.href))
 
+class QueryLinksTestCase(unittest.TestCase):
+    def setUp(self):
+        self.env = EnvironmentStub(default_data=True)
+        self.query_module = QueryModule(self.env)
+        self.formatter = LinkFormatter(self.env)
+
+    def _format_link(self, query, label):
+        return str(self.query_module._format_link(self.formatter, 'query',
+                                                  query, label))
+
+    def test_empty_query(self):
+        self.assertEqual(self._format_link('', 'label'),
+                         '<em class="error">[Error: Query filter requires '
+                         'field and constraints separated by a "="]</em>')
+
 
 def suite():
-    return unittest.makeSuite(QueryTestCase, 'test')
+    suite = unittest.TestSuite()
+    suite.addTest(unittest.makeSuite(QueryTestCase, 'test'))
+    suite.addTest(unittest.makeSuite(QueryLinksTestCase, 'test'))
+    return suite
 
 if __name__ == '__main__':
     unittest.main()
