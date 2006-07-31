@@ -23,13 +23,12 @@ from trac.ticket.notification import TicketNotifyEmail
 from trac.test import EnvironmentStub, Mock
 from trac.tests.notification import SMTPThreadedServer, parse_smtp_message, \
                                     smtp_address
-
+                                    
 import unittest
 import re
 import base64
 import quopri
 import time
-
 
 SMTP_TEST_PORT = 8225
 MAXBODYWIDTH = 76
@@ -48,7 +47,7 @@ class NotificationTestCase(unittest.TestCase):
         self.env.config.set('notification', 'smtp_always_cc', 
                             'joe.user@example.net, joe.bar@example.net')
         self.env.config.set('notification', 'use_public_cc', 'true')
-        self.env.config.set('notification', 'smtp_port', "%d" % SMTP_TEST_PORT)
+        self.env.config.set('notification', 'smtp_port', str(SMTP_TEST_PORT))
         self.env.config.set('notification', 'smtp_server','localhost')
         self.req = Mock(href=self.env.href, abs_href=self.env.abs_href)
 
@@ -206,7 +205,8 @@ class NotificationTestCase(unittest.TestCase):
             ccrcpt = self.env.config.get('notification', 'smtp_always_cc')
             cclist = [ccr.strip() for ccr in ccrcpt.split(',')]
             for rcpt in cclist:
-                # Each recipient of the 'Cc' list should appear in the 'Cc' header
+                # Each recipient of the 'Cc' list should appear 
+                # in the 'Cc' header
                 self.failIf(rcpt not in cc)
                 # Check the message has actually been sent to the recipients
                 self.failIf(rcpt not in rcptlist)
@@ -214,7 +214,8 @@ class NotificationTestCase(unittest.TestCase):
             bccrcpt = self.env.config.get('notification', 'smtp_always_bcc')
             bcclist = [bccr.strip() for bccr in bccrcpt.split(',')]
             for rcpt in bcclist:
-                # Check none of the 'Bcc' recipients appears in the 'To' header
+                # Check none of the 'Bcc' recipients appears 
+                # in the 'To' header
                 self.failIf(rcpt in to)
                 # Check the message has actually been sent to the recipients
                 self.failIf(rcpt not in rcptlist)
@@ -230,7 +231,7 @@ class NotificationTestCase(unittest.TestCase):
             ticket.insert()
             # Be sure that at least one email address is valid, so that we 
             # send a notification even if other addresses are not valid
-            self.env.config.set('notification', 'smtp_always_cc', \
+            self.env.config.set('notification', 'smtp_always_cc',
                                 'joe.bar@example.net')
             if enabled:
                 self.env.config.set('notification', 'use_short_addr', 'true')
@@ -253,8 +254,8 @@ class NotificationTestCase(unittest.TestCase):
                 # Msg should not be delivered to joeuser
                 self.failIf(ticket['reporter'] in cclist)
             # Msg should still be delivered to the always_cc list
-            self.failIf(self.env.config.get('notification', 'smtp_always_cc') \
-                        not in cclist)
+            self.failIf(self.env.config.get('notification',
+                        'smtp_always_cc') not in cclist)
         # Validate with and without the short addr option enabled
         for enable in [False, True]:
             _test_short_login(enable)
@@ -262,8 +263,10 @@ class NotificationTestCase(unittest.TestCase):
     def test_default_domain(self):
         """Validate support for default domain name"""
         def _test_default_domain(enabled):
-            self.env.config.set('notification', 'always_notify_owner', 'false')
-            self.env.config.set('notification', 'always_notify_reporter', 'false')
+            self.env.config.set('notification', 'always_notify_owner',
+                                'false')
+            self.env.config.set('notification', 'always_notify_reporter',
+                                'false')
             self.env.config.set('notification', 'smtp_always_cc', '')
             ticket = Ticket(self.env)
             ticket['cc'] = 'joenodom, joewithdom@example.com'
@@ -271,10 +274,11 @@ class NotificationTestCase(unittest.TestCase):
             ticket.insert()
             # Be sure that at least one email address is valid, so that we 
             # send a notification even if other addresses are not valid
-            self.env.config.set('notification', 'smtp_always_cc', \
+            self.env.config.set('notification', 'smtp_always_cc',
                                 'joe.bar@example.net')
             if enabled:
-                self.env.config.set('notification', 'smtp_default_domain', 'example.org')
+                self.env.config.set('notification', 'smtp_default_domain',
+                                    'example.org')
             tn = TicketNotifyEmail(self.env)
             tn.notify(ticket, newticket=True)
             message = notifysuite.smtpd.get_message()
@@ -299,8 +303,10 @@ class NotificationTestCase(unittest.TestCase):
         """Validate login-to-email map"""
         self.env.config.set('notification', 'always_notify_owner', 'false')
         self.env.config.set('notification', 'always_notify_reporter', 'true')
-        self.env.config.set('notification', 'smtp_always_cc', 'joe@example.com')
-        self.env.known_users = [('joeuser', 'Joe User', 'user-joe@example.com')]
+        self.env.config.set('notification', 'smtp_always_cc',
+                            'joe@example.com')
+        self.env.known_users = [('joeuser', 'Joe User',
+                                'user-joe@example.com')]
         ticket = Ticket(self.env)
         ticket['reporter'] = 'joeuser'
         ticket['summary'] = 'This is a summary'
@@ -338,8 +344,8 @@ class NotificationTestCase(unittest.TestCase):
         self.env.config.set('notification','mime_encoding', 'base64')
         ticket = Ticket(self.env)
         ticket['reporter'] = 'joe.user@example.org'
-        ticket['summary'] = u'This is a long enough summary to cause Trac to' \
-                            u'generate a multi-line súmmäry'
+        ticket['summary'] = u'This is a long enough summary to cause Trac ' \
+                            u'to generate a multi-line (2 lines) súmmäry'
         ticket.insert()
         self._validate_mimebody((base64, 'base64', 'utf-8'), \
                                 ticket, True)
@@ -349,10 +355,10 @@ class NotificationTestCase(unittest.TestCase):
         self.env.config.set('notification','mime_encoding', 'qp')
         ticket = Ticket(self.env)
         ticket['reporter'] = 'joe.user@example.org'
-        ticket['summary'] = u'This is a long enough summary to cause Trac to' \
-                            u'generate a multi-line súmmäry'
+        ticket['summary'] = u'This is a long enough summary to cause Trac ' \
+                            u'to generate a multi-line (2 lines) súmmäry'
         ticket.insert()
-        self._validate_mimebody((quopri, 'quoted-printable', 'utf-8'), \
+        self._validate_mimebody((quopri, 'quoted-printable', 'utf-8'),
                                 ticket, True)
 
     def test_mimebody_none(self):
@@ -365,11 +371,26 @@ class NotificationTestCase(unittest.TestCase):
         self._validate_mimebody((None, '7bit', 'ascii'), \
                                 ticket, True)
 
+    def test_md5_digest(self):
+        """Validate MD5 digest w/ non-ASCII recipient address (#3491)"""
+        self.env.config.set('notification', 'always_notify_owner', 'false')
+        self.env.config.set('notification', 'always_notify_reporter', 'true')
+        self.env.config.set('notification', 'smtp_always_cc', '')
+        ticket = Ticket(self.env)
+        ticket['reporter'] = u'"Jöe Usèr" <joe.user@example.org>'
+        ticket['summary'] = u'This is a summary'
+        ticket.insert()
+        tn = TicketNotifyEmail(self.env)
+        tn.notify(ticket, newticket=True)
+        message = notifysuite.smtpd.get_message()
+        (headers, body) = parse_smtp_message(message)
+
     def test_updater(self):
         """Validate no-self-notification option"""
         def _test_updater(disable):
             if disable:
-                self.env.config.set('notification','always_notify_updater', 'false')
+                self.env.config.set('notification','always_notify_updater',
+                                    'false')
             ticket = Ticket(self.env)
             ticket['reporter'] = 'joe.user@example.org'
             ticket['summary'] = u'This is a súmmäry'
@@ -377,7 +398,8 @@ class NotificationTestCase(unittest.TestCase):
             ticket.insert()
             ticket['component'] = 'dummy'
             now = time.time()
-            ticket.save_changes('joe.bar2@example.com', 'This is a change', when=now)
+            ticket.save_changes('joe.bar2@example.com', 'This is a change',
+                                when=now)
             tn = TicketNotifyEmail(self.env)
             tn.notify(ticket, newticket=False, modtime=now)
             message = notifysuite.smtpd.get_message()
@@ -426,9 +448,19 @@ class NotificationTestCase(unittest.TestCase):
             raise AssertionError, e
         # now processes each line of the body
         bodylines = body.splitlines()
-        # body starts with a summary line, prefixed with the ticket number
-        # #<n>: summary
-        (tknum, summary) = bodylines[0].split(' ', 1)
+        # body starts with one of more summary lines, first line is prefixed 
+        # with the ticket number such as #<n>: summary        
+        # finds the banner after the summary
+        banner_delim_re = re.compile(r'^\-+\+\-+$')
+        bodyheader = []
+        while ( not banner_delim_re.match(bodylines[0]) ):
+            bodyheader.append(bodylines.pop(0))
+        # summary should be present
+        self.failIf(not bodyheader)
+        # banner should not be empty
+        self.failIf(not bodylines)
+        # extracts the ticket ID from the first line
+        (tknum, bodyheader[0]) = bodyheader[0].split(' ', 1)
         self.assertEqual(tknum[0], '#')
         try:
             tkid = int(tknum[1:-1])
@@ -436,14 +468,14 @@ class NotificationTestCase(unittest.TestCase):
         except ValueError:
             raise AssertionError, "invalid ticket number"
         self.assertEqual(tknum[-1], ':')
+        summary = ' '.join(bodyheader)
         self.assertEqual(summary, ticket['summary'])
-        # next step: checks the banner appears right after the summary
-        banner_delim_re = re.compile(r'^\-+\+\-+$')
-        self.failIf(not banner_delim_re.match(bodylines[1]))
+        # now checks the banner contents
+        self.failIf(not banner_delim_re.match(bodylines[0]))
         banner = True
         footer = None
         props = {}
-        for line in bodylines[2:]:
+        for line in bodylines[1:]:
             # detect end of banner
             if banner_delim_re.match(line):
                 banner = False
@@ -469,7 +501,7 @@ class NotificationTestCase(unittest.TestCase):
                 self.failIf(footer > 3)
                 # check ticket link
                 if line[:11] == 'Ticket URL:':
-                    self.assertEqual(line[12:].strip(), \
+                    self.assertEqual(line[12:].strip(),
                                      "<%s>" % ticket['link'].strip())
                 # note project title / URL are not validated yet
 

@@ -230,7 +230,8 @@ class TicketNotifyEmail(NotifyEmail):
     def get_message_id(self, rcpt, modtime=0):
         """Generate a predictable, but sufficiently unique message ID."""
         s = '%s.%08d.%d.%s' % (self.config.get('project', 'url'),
-                               int(self.ticket.id), modtime, rcpt)
+                               int(self.ticket.id), modtime, 
+                               rcpt.encode('ascii', 'ignore'))
         dig = md5.new(s).hexdigest()
         host = self.from_email[self.from_email.find('@') + 1:]
         msgid = '<%03d.%s@%s>' % (len(s), dig, host)
