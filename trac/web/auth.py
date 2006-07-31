@@ -88,7 +88,7 @@ class LoginModule(Component):
     # IRequestHandler methods
 
     def match_request(self, req):
-        return re.match('/(login|logout)/?', req.path_info)
+        return re.match('/(login|logout)/?$', req.path_info)
 
     def process_request(self, req):
         if req.path_info.startswith('/login'):
