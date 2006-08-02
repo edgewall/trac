@@ -384,7 +384,7 @@ class WikiModule(Component):
                                                      version=page.version)
         if preview:
             info['page_html'] = wiki_to_html(page.text, self.env, req, db)
-            info['comment_html'] = wiki_to_oneliner(comment, self.env, req, db)
+            info['comment_html'] = wiki_to_oneliner(comment, self.env, db)
             info['readonly'] = int(req.args.has_key('readonly'))
         req.hdf['wiki'] = info
 

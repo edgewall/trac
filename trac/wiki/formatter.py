@@ -1014,4 +1014,3 @@ def wiki_to_link(wikitext, env, req):
     if not wikitext:
         return ''
     return LinkFormatter(env, False, None).match(wikitext)
-
