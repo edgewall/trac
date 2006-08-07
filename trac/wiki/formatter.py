@@ -971,11 +971,14 @@ class OutlineFormatter(Formatter):
 
 class LinkFormatter(OutlineFormatter):
     """Special formatter that focuses on TracLinks."""
-    flavor = 'outline'
+    flavor = 'link'
     
     def __init__(self, env, absurls=False, db=None):
         OutlineFormatter.__init__(self, env, absurls, db)
         
+    def _heading_formatter(self, match, fullmatch):
+         return ''
+    
     def match(self, wikitext):
         """Return the Wiki match found at the beginning of the `wikitext`"""
         self.reset()        
