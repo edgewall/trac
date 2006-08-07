@@ -73,7 +73,7 @@
   /each ?></tr>
  </table><?cs 
  if:ticket.description ?>
-  <form method="get" action="<?cs var:ticket.href ?>#comment">
+  <form method="get" action="<?cs var:ticket.href ?>#comment" class="printableform">
    <div class="description">
     <h3 id="comment:description">
      <span class="inlinebuttons">
@@ -101,7 +101,7 @@
 <?cs if:len(ticket.changes) ?><h2>Change History</h2>
 <div id="changelog"><?cs
  each:change = ticket.changes ?>
- <form method="get" action="<?cs var:ticket.href ?>#comment">
+ <form method="get" action="<?cs var:ticket.href ?>#comment" class="printableform">
  <div class="change">
   <h3 <?cs if:change.cnum ?>id="comment:<?cs var:change.cnum ?>"<?cs /if ?>><?cs
    if:change.cnum ?>
