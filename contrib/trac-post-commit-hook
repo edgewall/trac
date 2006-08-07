@@ -140,6 +140,8 @@ class CommitHook:
         self.env = open_environment(project)
         if url is None:
             url = self.env.config.get('project', 'url')
+        self.env.href = Href(url)
+        self.env.abs_href = Href(url)
 
         cmdGroups = commandPattern.findall(msg)
 
