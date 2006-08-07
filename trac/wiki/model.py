@@ -94,8 +94,7 @@ class WikiPage(object):
         if not self.exists:
             from trac.attachment import Attachment
             # Delete orphaned attachments
-            for attachment in Attachment.select(self.env, 'wiki', self.name, db):
-                attachment.delete(db)
+            Attachment.delete_all(self.env, 'wiki', self.name, db)
 
         if handle_ta:
             db.commit()

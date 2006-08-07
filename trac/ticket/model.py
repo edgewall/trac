@@ -17,7 +17,6 @@
 # Author: Jonas Borgström <jonas@edgewall.com>
 #         Christopher Lenz <cmlenz@gmx.de>
 
-import os
 import re
 import sys
 import time
@@ -304,17 +303,7 @@ class Ticket(object):
 
     def delete(self, db=None):
         db, handle_ta = self._get_db_for_write(db)
-        attachment_dir = None
-        for attachment in list(Attachment.select(self.env, 'ticket', self.id,
-                                                 db)):
-            attachment_dir = os.path.dirname(attachment.path)
-            attachment.delete(db)
-        if attachment_dir:
-            try:
-                os.rmdir(attachment_dir)
-            except OSError:
-                self.env.log.error("Can't delete attachment directory %s",
-                                   attachment_dir, exc_info=True)
+        Attachment.delete_all(self.env, 'ticket', self.id, db)
         cursor = db.cursor()
         cursor.execute("DELETE FROM ticket WHERE id=%s", (self.id,))
         cursor.execute("DELETE FROM ticket_change WHERE ticket=%s", (self.id,))

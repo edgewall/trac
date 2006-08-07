@@ -225,7 +225,25 @@ class Attachment(object):
             attachment.ipnr = ipnr
             yield attachment
 
+    def delete_all(cls, env, parent_type, parent_id, db):
+        """Delete all attachments of a given resource.
+
+        As this is usually done while deleting the parent resource,
+        the `db` argument is ''not'' optional here.
+        """
+        attachment_dir = None
+        for attachment in list(cls.select(env, parent_type, parent_id, db)):
+            attachment_dir = os.path.dirname(attachment.path)
+            attachment.delete(db)
+        if attachment_dir:
+            try:
+                os.rmdir(attachment_dir)
+            except OSError:
+                env.log.error("Can't delete attachment directory %s",
+                              attachment_dir, exc_info=True)
+            
     select = classmethod(select)
+    delete_all = classmethod(delete_all)
 
     def open(self):
         self.env.log.debug('Trying to open attachment at %s', self.path)
