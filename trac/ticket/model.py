@@ -21,6 +21,7 @@ import time
 import sys
 import re
 
+from trac.attachment import Attachment
 from trac.core import TracError
 from trac.ticket import TicketSystem
 from trac.util import sorted, embedded_numbers
@@ -302,11 +303,12 @@ class Ticket(object):
 
     def delete(self, db=None):
         db, handle_ta = self._get_db_for_write(db)
+        for attachment in list(Attachment.select(self.env, 'ticket', self.id,
+                                                 db)):
+            attachment.delete(db)
         cursor = db.cursor()
         cursor.execute("DELETE FROM ticket WHERE id=%s", (self.id,))
         cursor.execute("DELETE FROM ticket_change WHERE ticket=%s", (self.id,))
-        cursor.execute("DELETE FROM attachment "
-                       " WHERE type='ticket' and id=%s", (self.id,))
         cursor.execute("DELETE FROM ticket_custom WHERE ticket=%s", (self.id,))
 
         if handle_ta:
