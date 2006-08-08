@@ -29,7 +29,7 @@ from trac.core import *
 from trac.web.api import IAuthenticator, IRequestHandler
 from trac.web.chrome import INavigationContributor
 from trac.util import hex_entropy, md5crypt
-from trac.util.markup import escape, html
+from trac.util.html import escape, html
 
 
 class LoginModule(Component):

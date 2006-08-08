@@ -14,7 +14,7 @@
 #
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
-from trac.util.markup import escape, Markup
+from trac.util.html import escape, Markup
 
 from difflib import SequenceMatcher
 import re

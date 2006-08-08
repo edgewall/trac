@@ -23,8 +23,8 @@ from trac.core import *
 from trac.perm import IPermissionRequestor
 from trac.util.datefmt import format_date, format_datetime, parse_date, \
                                pretty_timedelta
+from trac.util.html import html, unescape, Markup
 from trac.util.text import shorten_line, CRLF, to_unicode
-from trac.util.markup import html, unescape, Markup
 from trac.ticket import Milestone, Ticket, TicketSystem
 from trac.Timeline import ITimelineEventProvider
 from trac.web import IRequestHandler

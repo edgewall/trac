@@ -131,7 +131,7 @@ class InterWikiMap(Component):
 
     def render_macro(self, req, name, content):
         from trac.util import sorted
-        from trac.util.markup import html as _
+        from trac.util.html import html as _
         interwikis = []
         for k in sorted(self.keys()):
             prefix, url, title = self[k]

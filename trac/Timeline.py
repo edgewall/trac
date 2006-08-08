@@ -24,8 +24,8 @@ from trac.config import IntOption
 from trac.core import *
 from trac.perm import IPermissionRequestor
 from trac.util.datefmt import format_date, format_time, http_date
+from trac.util.html import html, Markup
 from trac.util.text import to_unicode
-from trac.util.markup import html, Markup
 from trac.web import IRequestHandler
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
 

@@ -22,7 +22,7 @@ import re
 from trac.core import *
 from trac.perm import IPermissionRequestor
 from trac.web import IRequestHandler
-from trac.util.markup import html
+from trac.util.html import html
 from trac.web.chrome import add_stylesheet, INavigationContributor
 
 

@@ -1,10 +1,10 @@
 import unittest
 
-from trac.util.tests import markup, text
+from trac.util.tests import html, text
 
 def suite():
     suite = unittest.TestSuite()
-    suite.addTest(markup.suite())
+    suite.addTest(html.suite())
     suite.addTest(text.suite())
     return suite
 

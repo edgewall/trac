@@ -20,8 +20,8 @@ from trac.config import *
 from trac.core import *
 from trac.perm import IPermissionRequestor, PermissionSystem
 from trac.Search import ISearchSource, search_to_sql, shorten_result
+from trac.util.html import html, Markup
 from trac.util.text import shorten_line
-from trac.util.markup import html, Markup
 from trac.wiki import IWikiSyntaxProvider, Formatter
 
 

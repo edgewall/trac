@@ -27,7 +27,7 @@ from trac.mimeview import Mimeview, is_binary, get_mimetype
 from trac.perm import IPermissionRequestor
 from trac.util import sorted, embedded_numbers
 from trac.util.datefmt import http_date, format_datetime, pretty_timedelta
-from trac.util.markup import escape, html, Markup
+from trac.util.html import escape, html, Markup
 from trac.util.text import pretty_size
 from trac.web import IRequestHandler, RequestDone
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor

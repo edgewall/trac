@@ -21,7 +21,7 @@ import time
 
 from trac.core import TracError
 from trac.util import hex_entropy
-from trac.util.markup import Markup
+from trac.util.html import Markup
 
 UPDATE_INTERVAL = 3600*24 # Update session last_visit time stamp after 1 day
 PURGE_AGE = 3600*24*90 # Purge session after 90 days idle

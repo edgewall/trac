@@ -28,7 +28,7 @@ from trac.config import default_dir
 from trac.core import *
 from trac.util import sorted
 from trac.util.datefmt import format_date
-from trac.util.markup import escape, html, Markup
+from trac.util.html import escape, html, Markup
 from trac.wiki.api import IWikiMacroProvider, WikiSystem
 from trac.wiki.model import WikiPage
 from trac.web.chrome import add_stylesheet

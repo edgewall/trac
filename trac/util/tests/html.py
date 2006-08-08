@@ -4,7 +4,7 @@ import doctest
 from HTMLParser import HTMLParseError
 import unittest
 
-from trac.util.markup import escape, html, unescape, Element, Markup
+from trac.util.html import escape, html, unescape, Element, Markup
 
 
 class MarkupTestCase(unittest.TestCase):

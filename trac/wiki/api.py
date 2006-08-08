@@ -26,7 +26,7 @@ import re
 
 from trac.config import BoolOption
 from trac.core import *
-from trac.util.markup import html
+from trac.util.html import html
 
 
 class IWikiChangeListener(Interface):

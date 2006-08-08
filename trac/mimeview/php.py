@@ -22,7 +22,7 @@ from trac.core import *
 from trac.config import Option
 from trac.mimeview.api import IHTMLPreviewRenderer, content_to_unicode
 from trac.util import NaivePopen
-from trac.util.markup import Deuglifier
+from trac.util.html import Deuglifier
 
 __all__ = ['PHPRenderer']
 

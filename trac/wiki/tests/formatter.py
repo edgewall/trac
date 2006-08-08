@@ -8,8 +8,8 @@ from trac.wiki.api import IWikiSyntaxProvider
 from trac.wiki.formatter import Formatter, OneLinerFormatter
 from trac.wiki.macros import WikiMacroBase
 from trac.test import Mock, EnvironmentStub
+from trac.util.html import html
 from trac.util.text import to_unicode
-from trac.util.markup import html
 
 # We need to supply our own macro because the real macros
 # can not be loaded using our 'fake' environment.

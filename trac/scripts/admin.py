@@ -30,7 +30,7 @@ from trac.core import TracError
 from trac.env import Environment
 from trac.perm import PermissionSystem
 from trac.ticket.model import *
-from trac.util.markup import html
+from trac.util.html import html
 from trac.util.text import to_unicode, wrap
 from trac.wiki import WikiPage
 from trac.wiki.macros import WikiMacroBase

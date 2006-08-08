@@ -28,8 +28,8 @@ from trac.ticket.notification import TicketNotifyEmail
 from trac.Timeline import ITimelineEventProvider
 from trac.util import get_reporter_id
 from trac.util.datefmt import format_datetime, pretty_timedelta, http_date
+from trac.util.html import html, Markup
 from trac.util.text import CRLF
-from trac.util.markup import html, Markup
 from trac.web import IRequestHandler
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
 from trac.wiki import wiki_to_html, wiki_to_oneliner

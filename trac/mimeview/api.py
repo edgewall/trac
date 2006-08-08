@@ -45,7 +45,7 @@ from trac.config import IntOption, ListOption, Option
 from trac.core import *
 from trac.util import sorted
 from trac.util.text import to_utf8, to_unicode
-from trac.util.markup import escape, Markup, Fragment, html
+from trac.util.html import escape, Markup, Fragment, html
 
 
 __all__ = ['get_mimetype', 'is_binary', 'detect_unicode', 'Mimeview',

@@ -22,7 +22,7 @@ import urllib
 from trac.core import *
 from trac.perm import IPermissionRequestor
 from trac.util.datefmt import http_date
-from trac.util.markup import html
+from trac.util.html import html
 from trac.util.text import wrap
 from trac.versioncontrol import Changeset
 from trac.versioncontrol.web_ui.changeset import ChangesetModule

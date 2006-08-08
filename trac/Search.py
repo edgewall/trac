@@ -21,7 +21,7 @@ from trac.config import IntOption
 from trac.core import *
 from trac.perm import IPermissionRequestor
 from trac.util.datefmt import format_datetime
-from trac.util.markup import escape, html, Element
+from trac.util.html import escape, html, Element
 from trac.web import IRequestHandler
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
 from trac.wiki import IWikiSyntaxProvider, wiki_to_link

@@ -29,7 +29,7 @@ from trac.env import IEnvironmentSetupParticipant
 from trac.mimeview import *
 from trac.util import get_reporter_id, create_unique_file
 from trac.util.datefmt import format_datetime, pretty_timedelta
-from trac.util.markup import Markup, html
+from trac.util.html import Markup, html
 from trac.util.text import unicode_quote, unicode_unquote, pretty_size
 from trac.web import HTTPBadRequest, IRequestHandler
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor

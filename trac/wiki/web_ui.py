@@ -27,8 +27,8 @@ from trac.Search import ISearchSource, search_to_sql, shorten_result
 from trac.Timeline import ITimelineEventProvider
 from trac.util import get_reporter_id
 from trac.util.datefmt import format_datetime, pretty_timedelta
+from trac.util.html import html, Markup
 from trac.util.text import shorten_line
-from trac.util.markup import html, Markup
 from trac.versioncontrol.diff import get_diff_options, hdf_diff
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
 from trac.web import HTTPNotFound, IRequestHandler

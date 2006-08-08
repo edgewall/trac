@@ -15,7 +15,7 @@
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
 from trac.core import TracError
-from trac.util.markup import Markup, Fragment, escape
+from trac.util.html import Markup, Fragment, escape
 from trac.util.text import to_unicode
 
 

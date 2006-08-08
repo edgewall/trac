@@ -21,8 +21,8 @@ import urllib
 
 from trac.core import TracError
 from trac.util.datefmt import format_datetime, pretty_timedelta
+from trac.util.html import escape, html, Markup
 from trac.util.text import shorten_line
-from trac.util.markup import escape, html, Markup
 from trac.versioncontrol.api import NoSuchNode, NoSuchChangeset
 from trac.wiki import wiki_to_html, wiki_to_oneliner
 

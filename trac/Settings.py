@@ -15,7 +15,7 @@
 # Author: Daniel Lundin <daniel@edgewall.com>
 
 from trac.core import *
-from trac.util.markup import html
+from trac.util.html import html
 from trac.web import IRequestHandler
 from trac.web.chrome import INavigationContributor
 

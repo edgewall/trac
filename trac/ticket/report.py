@@ -27,7 +27,7 @@ from trac.perm import IPermissionRequestor
 from trac.util import sorted
 from trac.util.datefmt import format_date, format_time, format_datetime, \
                                http_date
-from trac.util.markup import html
+from trac.util.html import html
 from trac.web import IRequestHandler
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
 from trac.wiki import wiki_to_html, IWikiSyntaxProvider, Formatter

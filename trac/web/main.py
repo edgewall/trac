@@ -28,8 +28,8 @@ from trac.env import open_environment
 from trac.perm import PermissionCache, NoPermissionCache, PermissionError
 from trac.util import reversed, get_last_traceback
 from trac.util.datefmt import format_datetime, http_date
+from trac.util.html import Markup
 from trac.util.text import to_unicode
-from trac.util.markup import Markup
 from trac.web.api import *
 from trac.web.chrome import Chrome
 from trac.web.clearsilver import HDFWrapper

@@ -28,7 +28,7 @@ from urllib import quote, unquote, urlencode
 
 # Imports for backward compatibility
 from trac.core import TracError
-from trac.util.markup import escape, unescape, Markup, Deuglifier
+from trac.util.html import escape, unescape, Markup, Deuglifier
 from trac.util.text import CRLF, to_utf8, to_unicode, shorten_line, \
                            wrap, pretty_size
 from trac.util.datefmt import pretty_timedelta, format_datetime, \
