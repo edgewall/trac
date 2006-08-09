@@ -378,7 +378,8 @@ class MacroListMacro(WikiMacroBase):
                             % macro_name, e))
                     yield (macro_name, descr)
 
-        return html.DL([(html.DT(html.CODE('[[',macro_name,']]')),
+        return html.DL([(html.DT(html.CODE('[[',macro_name,']]'),
+                                 id='%s-macro' % macro_name),
                          html.DD(description))
                         for macro_name, description in get_macro_descr()])
 
