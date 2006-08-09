@@ -677,46 +677,48 @@ class TicketQueryMacro(WikiMacroBase):
     This macro accepts two parameters, the second of which is optional.
     
     The first parameter is the query itself, and uses the same syntax as for
-    {{{query:}}} wiki links. The second parameter determines how the list of
-    tickets is presented: the default presentation is to list the ticket ID next
-    to the summary, with each ticket on a separate line. If the second parameter
-    is given and set to '''compact''' then the tickets are presented as a
-    comma-separated list of ticket IDs.
+    `query:` wiki links (but '''not''' the variant syntax starting with "?").
+
+    The second parameter determines how the list of tickets is presented:
+    the default presentation is to list the ticket ID next to the summary,
+    with each ticket on a separate line.
+    If the second parameter is given, it must be one of:
+     - '''compact''' -- the tickets are presented as a comma-separated
+       list of ticket IDs. 
+     - '''count''' -- only the count of matching tickets is displayed
     """
 
     def render_macro(self, req, name, content):
         query_string = ''
-        compact = 0
+        compact = False
+        count = False
         argv = content.split(',')
         if len(argv) > 0:
             query_string = argv[0]
             if len(argv) > 1:
-                if argv[1].strip().lower() == 'compact':
-                    compact = 1
-
-        buf = StringIO()
+                format = argv[1].strip().lower()
+                if format == 'compact':
+                    compact = True
+                elif format == 'count':
+                    count = True
 
         query = Query.from_string(self.env, query_string)
         query.order = 'id'
         tickets = query.execute(req)
         if tickets:
+            def ticket_anchor(ticket):
+                return html.A('#%s' % ticket['id'],
+                              class_=ticket['status'],
+                              href=req.href.ticket(int(ticket['id'])),
+                              title=shorten_line(ticket['summary']))
             if compact:
-                links = []
-                for ticket in tickets:
-                    href = req.href.ticket(int(ticket['id']))
-                    summary = escape(shorten_line(ticket['summary']))
-                    a = '<a class="%s ticket" href="%s" title="%s">#%s</a>' % \
-                        (ticket['status'], href, summary, ticket['id'])
-                    links.append(a)
-                buf.write(', '.join(links))
+                alist = [ticket_anchor(ticket) for ticket in tickets]
+                return html.SPAN(alist[0], *[(', ', a) for a in alist[1:]])
+            elif count:
+                cnt = len(tickets)
+                return html.SPAN(cnt, title='%d tickets for which %s' % 
+                                 (cnt, query_string))
             else:
-                buf.write('<dl class="wiki compact">')
-                for ticket in tickets:
-                    href = req.href.ticket(int(ticket['id']))
-                    dt = '<dt><a class="%s ticket" href="%s">#%s</a></dt>' % \
-                         (ticket['status'], href, ticket['id'])
-                    buf.write(dt)
-                    buf.write('<dd>%s</dd>' % (escape(ticket['summary'])))
-                buf.write('</dl>')
-
-        return buf.getvalue()
+                return html.DL([(html.DT(ticket_anchor(ticket)),
+                                 html.DD(ticket['summary']))
+                                for ticket in tickets], class_='wiki compact')
