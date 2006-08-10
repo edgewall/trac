@@ -21,6 +21,8 @@ except NameError:
 from StringIO import StringIO
 import sys
 
+from trac.util.text import to_unicode
+
 __all__ = ['escape', 'unescape', 'html']
 
 _EMPTY_TAGS = frozenset(['br', 'hr', 'img', 'input'])
@@ -104,7 +106,7 @@ class Markup(unicode):
         """
         if isinstance(text, (cls, Element)):
             return text
-        text = unicode(text)
+        text = to_unicode(text)
         if not text:
             return cls()
         text = text.replace('&', '&amp;') \
@@ -309,8 +311,11 @@ class Fragment(object):
             else:
                 yield escape(child, quotes=False)
 
+    def __unicode__(self):
+        return u''.join(self.serialize())
+
     def __str__(self):
-        return Markup(''.join(self.serialize()))
+        return ''.join(self.serialize())
 
     def __add__(self, other):
         return Fragment()(self, other)
