@@ -29,7 +29,7 @@ import re
 
 from trac.core import *
 from trac.mimeview.api import IHTMLPreviewRenderer, content_to_unicode
-from trac.util.markup import Element
+from trac.util.html import Element
 from trac.web.href import Href
 from trac.wiki.formatter import WikiProcessor
 from trac.wiki import WikiSystem, wiki_to_link
