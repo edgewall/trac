@@ -18,7 +18,7 @@
 #
 # Trac support for reStructured Text, including a custom 'trac' directive
 #
-# 'trac' directive code by Oliver Rutherfurd.
+# 'trac' directive code by Oliver Rutherfurd, overhauled by cboos.
 #
 # Inserts `reference` nodes for TracLinks into the document tree.
 
@@ -29,39 +29,10 @@ import re
 
 from trac.core import *
 from trac.mimeview.api import IHTMLPreviewRenderer, content_to_unicode
+from trac.util.markup import Element
 from trac.web.href import Href
 from trac.wiki.formatter import WikiProcessor
-from trac.wiki import WikiSystem
-
-WIKI_LINK = re.compile(r'(?:wiki:)?(.+)')
-TICKET_LINK = re.compile(r'(?:#(\d+))|(?:ticket:(\d+))')
-REPORT_LINK = re.compile(r'(?:{(\d+)})|(?:report:(\d+))')
-CHANGESET_LINK = re.compile(r'(?:\[(\d+)\])|(?:changeset:(\d+))')
-FILE_LINK = re.compile(r'(?:browser|repos|source):([^#]+)#?(.*)')
-
-def _wikipage(href, args):
-    return href.wiki(args[0])
-
-def _ticket(href, args):
-    return href.ticket(args[0])
-
-def _report(href, args):
-    return href.report(args[0])
-
-def _changeset(href, args):
-    return href.changeset(int(args[0]))
-
-def _browser(href, args):
-    path = args[0]
-    rev = len(args) == 2 and args[1] or ''
-    return href.browser(path, rev=rev)
-
-# TracLink REs and callback functions
-LINKS = [(TICKET_LINK, _ticket),
-         (REPORT_LINK, _report),
-         (CHANGESET_LINK, _changeset),
-         (FILE_LINK, _browser),
-         (WIKI_LINK, _wikipage)]
+from trac.wiki import WikiSystem, wiki_to_link
 
 class ReStructuredTextRenderer(Component):
     """
@@ -86,23 +57,14 @@ class ReStructuredTextRenderer(Component):
             raise TracError, 'Docutils version >= %s required, %s found' \
                              % ('0.3.9', __version__)
 
-        def trac_get_reference(rawtext, link, text):
-            for (pattern, function) in LINKS:
-                m = pattern.match(link)
-                if m:
-                    g = filter(None, m.groups())
-                    missing = 0
-                    if not text:
-                        text = g[0]
-                    if pattern == WIKI_LINK:
-                        pagename = re.search(r'^[^\#]+',g[0])
-                        if not WikiSystem(self.env).has_page(pagename.group()):
-                            missing = 1
-                            text = text + "?"
-                    uri = function(req.href, g)
-                    reference = nodes.reference(rawtext, text)
+        def trac_get_reference(rawtext, target, text):
+            link = wiki_to_link(target, self.env, req)
+            if isinstance(link, Element):
+                uri = link.attr.get('href', '')
+                if uri:
+                    reference = nodes.reference(rawtext, text or target)
                     reference['refuri']= uri
-                    if missing:
+                    if 'missing' in link.attr.get('class', ''):
                         reference.set_class('missing')
                     return reference
             return None
@@ -117,13 +79,8 @@ class ReStructuredTextRenderer(Component):
 
               .. trac:: target [text]
 
-            ``target`` may be one of the following:
-
-              * For wiki: ``WikiName`` or ``wiki:WikiName``
-               * For tickets: ``#1`` or ``ticket:1``
-              * For reports: ``{1}`` or ``report:1``
-              * For changesets: ``[1]`` or ``changeset:1``
-              * For files: ``source:trunk/COPYING``
+            ``target`` may be any `TracLink`_, provided it doesn't
+            embed a space character (e.g. wiki:"..." notation won't work).
 
             ``[text]`` is optional.  If not given, ``target`` is
             used as the reference text.
