@@ -110,6 +110,8 @@ class WikiProcessor(object):
                                   self.error)
         else:
             text = self.processor(req, text)
+        if not text:
+            return ''
         if in_paragraph:
             content_for_span = None
             interrupt_paragraph = False

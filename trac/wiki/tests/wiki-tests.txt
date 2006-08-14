@@ -553,6 +553,14 @@ Hello World, args = hej hopp Hello World, args = hej hopp2 # Test non greedy mat
 </p>
 ------------------------------
 [[DivCodeElement(...)]]
+============================== Macro returning None
+[[None(hej hopp)]] nada
+------------------------------
+<p>
+ nada
+</p>
+------------------------------
+[[None(...)]] nada
 ============================== Inlined HTML wiki processor
 Inline [[html(<B> Test </B>)]] text
 ------------------------------
