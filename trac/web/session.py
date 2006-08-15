@@ -171,7 +171,7 @@ class Session(dict):
             cursor.execute("INSERT INTO session (sid,last_visit,authenticated)"
                            " VALUES(%s,%s,%s)",
                            (self.sid, self.last_visit, authenticated))
-        if self._old.items() != self.items():
+        if self._old != self:
             attrs = [(self.sid, authenticated, k, v) for k, v in self.items()]
             cursor.execute("DELETE FROM session_attribute WHERE sid=%s",
                            (self.sid,))
