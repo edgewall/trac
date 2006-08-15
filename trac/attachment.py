@@ -166,8 +166,8 @@ class Attachment(object):
         else:
             handle_ta = False
 
-        self.size = size
-        self.time = t or time.time()
+        self.size = size and int(size) or 0
+        self.time = int(t or time.time())
 
         # Make sure the path to the attachment is inside the environment
         # attachments directory
@@ -219,8 +219,8 @@ class Attachment(object):
             attachment = Attachment(env, parent_type, parent_id)
             attachment.filename = filename
             attachment.description = description
-            attachment.size = size
-            attachment.time = time
+            attachment.size = size and int(size) or 0
+            attachment.time = time and int(time) or 0
             attachment.author = author
             attachment.ipnr = ipnr
             yield attachment

@@ -13,10 +13,6 @@ import unittest
 import time
 
 
-def sleep_for_timestamps():
-    granularity = 0.02
-    time.sleep(granularity)
-    
 
 class AttachmentTestCase(unittest.TestCase):
 
@@ -65,10 +61,9 @@ class AttachmentTestCase(unittest.TestCase):
 
     def test_insert(self):
         attachment = Attachment(self.env, 'ticket', 42)
-        attachment.insert('foo.txt', tempfile.TemporaryFile(), 0)
-        sleep_for_timestamps()
+        attachment.insert('foo.txt', tempfile.TemporaryFile(), 0, 1)
         attachment = Attachment(self.env, 'ticket', 42)
-        attachment.insert('bar.jpg', tempfile.TemporaryFile(), 0)
+        attachment.insert('bar.jpg', tempfile.TemporaryFile(), 0, 2)
 
         attachments = Attachment.select(self.env, 'ticket', 42)
         self.assertEqual('foo.txt', attachments.next().filename)
