@@ -46,44 +46,28 @@ h1 .sep { color: #666; padding: 0 .1em }
 }
 #dirlist td.name a.parent { background-image: url(../parent.png) }
 #dirlist td.name a.dir { background-image: url(../folder.png) }
-#dirlist td.name span.dir { background-image: url(../folderdeny.png) }
 #dirlist td.name a.file { background-image: url(../file.png) }
-#dirlist td.name span.file { background-image: url(../filedeny.png) }
 #dirlist td.name a, #dirlist td.rev a { border-bottom: none; display: block }
 #dirlist td.rev { text-align: right }
 #dirlist td.change { font-size: 85%; vertical-align: middle; white-space: nowrap }
 
 /* Style for the ''View Changes'' button */
-#anydiff {
- margin: 0 0 1em;
- float: left;
-}
-#anydiff form, #anydiff div, #anydiff h2 {
- display: inline;
-}
-#anydiff input { 
- vertical-align: baseline;
- margin: 0 -0.5em 0 1em;
-}
+#anydiff { margin: 0 0 1em; float: left }
+#anydiff form, #anydiff div, #anydiff h2 { display: inline }
+#anydiff input {  vertical-align: baseline; margin: 0 -0.5em 0 1em }
 @media print {
  #anydiff form { display:  none }
 }
 
-
 /* Log */
-tr.diff input { 
- padding: 0 1em 0 1em;
- margin: 0; 
+tr.diff input { padding: 0 1em; margin: 0 }
+
+div.buttons { clear: left }
+@media print { 
+ th.diff, td.diff { display: none }
 }
 
-div.buttons {
- clear: left;
-}
-@media print { 
-  th.diff, td.diff { display: none }
-}
-/* Styles for the revision log table
-   (extends the styles for "table.listing") */
+/* Styles for the revision log table (extends the styles for "table.listing") */
 #chglist { margin-top: 0 }
 #chglist td.change span { 
  border: 1px solid #999;
@@ -94,7 +78,12 @@ div.buttons {
 #chglist td.diff { white-space: nowrap }
 #chglist td.change .comment { display: none }
 #chglist td.old_path { font-style: italic }
-#chglist td.date { font-size: 85%; vertical-align: top; padding-top: 0.55em; white-space: nowrap }
+#chglist td.date {
+ font-size: 85%;
+ vertical-align: top;
+ padding-top: 0.55em;
+ white-space: nowrap;
+}
 #chglist td.author { font-size: 85%; vertical-align: top; padding-top: 0.55em }
 #chglist td.rev, #chglist td.chgset { 
  font-family: monospace;  

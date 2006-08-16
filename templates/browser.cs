@@ -58,22 +58,12 @@
      <?cs set:change = browser.changes[item.rev] ?>
      <tr class="<?cs if:name(item) % #2 ?>even<?cs else ?>odd<?cs /if ?>">
       <td class="name"><?cs
-       if:item.is_dir ?><?cs
-        if:item.permission ?>
-         <a class="dir" title="Browse Directory" href="<?cs
-           var:item.browser_href ?>"><?cs var:item.name ?></a><?cs
-        else ?>
-         <span class="dir" title="Access Denied" href=""><?cs
-           var:item.name ?></span><?cs
-        /if ?><?cs
-       else ?><?cs
-        if:item.permission != '' ?>
-         <a class="file" title="View File" href="<?cs
-           var:item.browser_href ?>"><?cs var:item.name ?></a><?cs
-        else ?>
-         <span class="file" title="Access Denied" href=""><?cs
-           var:item.name ?></span><?cs
-        /if ?><?cs
+       if:item.is_dir ?>
+        <a class="dir" title="Browse Directory" href="<?cs
+          var:item.browser_href ?>"><?cs var:item.name ?></a><?cs
+       else ?>
+        <a class="file" title="View File" href="<?cs
+          var:item.browser_href ?>"><?cs var:item.name ?></a><?cs
        /if ?>
       </td>
       <td class="size"><?cs var:item.size ?></td>

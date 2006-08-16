@@ -2,11 +2,7 @@
 #prefs fieldset { margin: 1em .5em .5em; padding: .5em 1em 0 }
 
 /* Diff/change overview */
-#overview {
- line-height: 130%;
- margin-top: 1em;
- padding: .5em;
-}
+#overview { line-height: 130%; margin-top: 1em; padding: .5em }
 #overview dt.property {
  font-weight: bold;
  padding-right: .25em;
@@ -19,10 +15,7 @@
 
 #overview .message { padding: 1em 0 1px }
 #overview dd.message p, #overview dd.message ul, #overview dd.message ol,
-#overview dd.message pre {
- margin-bottom: 1em;
- margin-top: 0;
-}
+#overview dd.message pre { margin-bottom: 1em; margin-top: 0; }
 
 /* Colors for change types */
 #chglist .edit, #overview .mod, .diff #legend .mod { background: #fd8 }

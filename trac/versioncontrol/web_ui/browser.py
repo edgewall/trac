@@ -150,7 +150,6 @@ class BrowserModule(Component):
                 'content_length': entry.content_length,
                 'size': pretty_size(entry.content_length),
                 'rev': entry.rev,
-                'permission': 1, # FIXME
                 'log_href': req.href.log(entry.path, rev=rev),
                 'browser_href': req.href.browser(entry.path, rev=rev)
             })

@@ -24,21 +24,19 @@
 }
 #overview .files { padding: 1px 0 }
 
-.diff ul.props { font-size: 90%; list-style: disc; margin: .5em 0 0; padding: 0 .5em 1em 2em }
+.diff ul.props {
+ font-size: 90%;
+ list-style: disc;
+ margin: .5em 0 0;
+ padding: 0 .5em 1em 2em;
+}
 .diff ul.props li { margin: 0; padding: 0 }
 
-
-#title dl {
- display: inline;
- font-size: 110%
-}
+#title dl { display: inline; font-size: 110% }
 #title dt { 
-  font-size: 110%;
-  font-weight: bold;
-  display: inline; 
-  margin-left: 3em;
+ display: inline; 
+ font-size: 110%;
+ font-weight: bold;
+ margin-left: 3em;
 }
-#title dd { 
-  display: inline;
-  margin-left: 0.4em;
-}
+#title dd { display: inline; margin-left: 0.4em }
