@@ -23,7 +23,7 @@ if:len(chrome.links.alternate) ?>
  <p class="left">
   Powered by <a href="<?cs var:trac.href.about ?>"><strong>Trac <?cs
   var:trac.version ?></strong></a><br />
-  By <a href="http://www.edgewall.com/">Edgewall Software</a>.
+  By <a href="http://www.edgewall.org/">Edgewall Software</a>.
  </p>
  <p class="right">
   <?cs var:project.footer ?>

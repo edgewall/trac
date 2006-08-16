@@ -75,25 +75,23 @@
    <img style="display: block" src="<?cs var:chrome.href ?>/common/trac_banner.png"
      alt="Trac: Integrated SCM &amp; Project Management"/>
   </a>
-<h1>About Trac <?cs var:trac.version ?></h1>
-<p>
-Trac is a web-based software project management and bug/issue
-tracking system emphasizing ease of use and low ceremony. 
-It provides an interface to the Subversion revision control systems, integrated Wiki and convenient report facilities. 
-</p>
-  <p>Trac is distributed under the modified BSD License.<br />
-  The complete text of the license can be found in the COPYING file
-  included in the distribution.</p>
-  <p>Please visit the Trac open source project: 
-  <a href="http://trac.edgewall.org/">http://trac.edgewall.org/</a></p>
-  <p>Trac is a product of <a href="http://www.edgewall.com/">Edgewall
-  Software</a>, provider of professional Linux and software development
-  services.</p>
-  <p>Copyright &copy; 2003-2006 <a href="http://www.edgewall.com/">Edgewall
+  <h1>About Trac <?cs var:trac.version ?></h1>
+  <p>Trac is a web-based software project management and bug/issue tracking
+  system emphasizing ease of use and low ceremony. It provides an integrated
+  Wiki, an interface to version control systems, and a number convenient ways
+  to stay on top of events and changes within a project.</p>
+  <p>Trac is distributed under the modified BSD License. The complete text of
+  the license can be found
+  <a href="http://trac.edgewall.org/wiki/TracLicense">online</a> as well as in
+  the <tt>COPYING</tt> file included in the distribution.</p>
+  <a href="http://www.python.org/" style="border: none; float: right">
+   <img style="display: block" src="<?cs var:htdocs_location ?>python.png"
+     alt="python powered" width="140" height="56" />
+  </a>
+  <p>Please visit the Trac open source project at
+  <a href="http://trac.edgewall.org/">http://trac.edgewall.org/</a>.</p>
+  <p>Copyright &copy; 2003-2006 <a href="http://www.edgewall.org/">Edgewall
   Software</a></p>
-  <a href="http://www.edgewall.com/">
-   <img style="display: block; margin: 30px" src="<?cs var:chrome.href ?>/common/edgewall.png"
-     alt="Edgewall Software"/></a>
  <?cs /if ?>
 </div>
 <?cs include "footer.cs"?>
