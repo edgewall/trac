@@ -304,7 +304,7 @@ class Mimeview(Component):
         `key`, which can be either a MIME type or a key. Returns a tuple of
         (content, output_mime_type, extension)."""
         if not content:
-            return ('', 'text/plain;charset=utf-8')
+            return ('', 'text/plain;charset=utf-8', '.txt')
 
         # Ensure we have a MIME type for this content
         full_mimetype = mimetype
