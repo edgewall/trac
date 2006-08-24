@@ -61,7 +61,9 @@ KNOWN_MIME_TYPES = {
     'application/x-sh':       ['sh'],
     'application/x-csh':      ['csh'],
     'application/x-troff':    ['nroff', 'roff', 'troff'],
-
+    'application/x-troff':    ['nroff', 'roff', 'troff'],
+    'application/rss+xml':    ['rss'],
+    
     'image/x-icon':           ['ico'],
     'image/svg+xml':          ['svg'],
     

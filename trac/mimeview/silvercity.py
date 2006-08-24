@@ -33,6 +33,7 @@ types = {
     'text/html':                ('HyperText', 3, {'asp.default.language':1}),
     'application/xml':          ('XML', 3),
     'application/xhtml+xml':    ('HyperText', 3, {'asp.default.language':1}),
+    'application/rss+xml':      ('HyperText', 3, {'asp.default.language':1}),
     'application/x-javascript': ('CPP', 3), # Kludgy.
     'text/x-asp':               ('HyperText', 3, {'asp.default.language':2}),
     'text/x-c++hdr':            ('CPP', 3),
