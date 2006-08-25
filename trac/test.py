@@ -164,6 +164,21 @@ class EnvironmentStub(Environment):
         return self.known_users
 
 
+def locate(fn):
+    """Locates a binary on the path.
+
+    Returns the fully-qualified path, or None.
+    """
+    import os
+    exec_suffix = os.name == 'nt' and '.exe' or ''
+    
+    for p in ["."] + os.environ['PATH'].split(os.pathsep):
+        f = os.path.join(p, fn + exec_suffix)
+        if os.path.exists(f):
+            return f
+    return None
+
+
 def suite():
     import trac.tests
     import trac.db.tests

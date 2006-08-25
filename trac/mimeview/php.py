@@ -16,6 +16,7 @@
 # Author: Christian Boos <cboos@bct-technology.com>
 #         Christopher Lenz <cmlenz@gmx.de>
 
+import os
 import re
 
 from trac.core import *
@@ -82,15 +83,21 @@ class PHPRenderer(Component):
         content = content_to_unicode(self.env, content, mimetype)
         content = content.encode('utf-8')
         np = NaivePopen(cmdline, content, capturestderr=1)
-        if np.errorlevel or np.err:
+        if (os.name != 'nt' and np.errorlevel) or np.err:
             err = 'Running (%s) failed: %s, %s.' % (cmdline, np.errorlevel,
                                                     np.err)
             raise Exception, err
-        odata = ''.join(np.out.splitlines()[1:-2])
+        odata = ''.join(np.out.splitlines()[1:-1])
         if odata.startswith('X-Powered-By'):
             raise TracError, 'You appear to be using the PHP CGI binary.  ' \
                              'Trac requires the CLI version for syntax ' \
                              'highlighting.'
+
+        epilogues = ["</span>", "</font>"]
+        for e in epilogues:
+            if odata.endswith(e):
+                odata = odata[:-len(e)]
+                break
 
         html = PhpDeuglifier().format(odata.decode('utf-8'))
         for line in html.split('<br />'):
