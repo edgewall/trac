@@ -53,9 +53,9 @@ def format_datetime(t=None, format='%x %X', gmt=False):
         t = time.time()
     if not isinstance(t, (list, tuple, time.struct_time)):
         if gmt:
-            t = time.gmtime(int(t))
+            t = time.gmtime(float(t))
         else:
-            t = time.localtime(int(t))
+            t = time.localtime(float(t))
 
     text = time.strftime(format, t)
     encoding = locale.getpreferredencoding()
@@ -91,7 +91,7 @@ def http_date(t=None):
     if t is None:
         t = time.time()
     if not isinstance(t, (list, tuple, time.struct_time)):
-        t = time.gmtime(int(t))
+        t = time.gmtime(float(t))
     weekdays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
     months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep',
               'Oct', 'Nov', 'Dec']
