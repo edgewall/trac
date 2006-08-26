@@ -19,6 +19,24 @@
 #         Christian Boos <cboos@neuf.fr>
 
 """
+----
+NOTE: for plugin developers
+
+ The Mimeview API is quite complex and many things there are currently
+ a bit difficult to work with (e.g. what an actual `content` might be,
+ see last paragraph of this docstring).
+
+ So this area is mainly in a ''work in progress'' state, which will
+ be improved upon in the near future
+ (see http://trac.edgewall.org/ticket/3332).
+
+ In particular, if you are interested in writing IContentConverter
+ and IHTMLPreviewRenderer components, note that those interfaces
+ will be merged into a new style IContentConverter.
+ Feel free to contribute remarks and suggestions for improvements
+ to the corresponding ticket (#3332).
+----
+
 The `trac.mimeview` module centralize the intelligence related to
 file metadata, principally concerning the `type` (MIME type) of the content
 and, if relevant, concerning the text encoding (charset) used by the content.
@@ -192,7 +210,18 @@ class IHTMLPreviewRenderer(Interface):
     """Extension point interface for components that add HTML renderers of
     specific content types to the `Mimeview` component.
 
-    (Deprecated)
+    ----
+    This interface will be merged with IContentConverter, as conversion
+    to text/html will be simply a particular type of content conversion.
+
+    However, note that the IHTMLPreviewRenderer will still be supported
+    for a while through an adapter, whereas the IContentConverter interface
+    itself will be changed.
+
+    So if all you want to do is convert to HTML and don't feel like
+    following the API changes, rather you should rather implement this
+    interface for the time being.
+    ---
     """
 
     # implementing classes should set this property to True if they
@@ -244,7 +273,30 @@ class IHTMLPreviewAnnotator(Interface):
 
 class IContentConverter(Interface):
     """An extension point interface for generic MIME based content
-    conversion."""
+    conversion.
+
+    ----
+    NOTE: This api will likely change in the future, e.g.:
+
+    def get_supported_conversions(input): 
+        '''Tells whether this converter can handle this `input` type.
+
+        Return an iterable of `Conversion` objects, each describing
+        how the conversion should be done and what will be the output type.
+        '''
+
+    def convert_content(context, conversion, content): 
+        '''Convert the given `AbstractContent` as specified by `Conversion`.
+
+        The conversion takes place in the given formatting `context`.
+        A `context` provides at least a `req` property.
+        If no other specific context object is available, a
+        `ToplevelContext` can be used to wrap the `req` instance.
+        
+        Return the converted content, which ''must'' be a `MimeContent` object.
+        '''
+    ----
+    """
 
     def get_supported_conversions():
         """Return an iterable of tuples in the form (key, name, extension,
