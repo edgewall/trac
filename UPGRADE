@@ -68,7 +68,6 @@ to upgrade to specific versions of Trac.
 
 From 0.9.x to 0.10.x
 --------------------
-
 Due to some changes in the Wiki syntax, you may notice that certain parts of 
 your pages no longer work as expected:
 
@@ -80,9 +79,21 @@ your pages no longer work as expected:
    (for example, use wiki:"My page" instead of wiki:My%20page.) 
 
 
+From 0.9.3 to 0.9.4
+-------------------
+There is a bug in Pysqlite 1.x that causes reports using the "%" character 
+for LIKE clauses or date formatting to fail. You will need to use escape the 
+percent characters with another: "%%".
+
+
+From 0.9.x to 0.9.3
+-------------------
+If you are using plugins you might need to upgrade them. See 
+http://trac.edgewall.org/milestone/0.9.3 for further details. 
+
+
 From 0.9-beta to 0.9
 --------------------
-
 If inclusion of the static resources (style sheets, javascript, images) is not
 working, check the value of the `htdocs_location` in trac.ini. For mod_python,
 Tracd and FastCGI, you can simply remove the option altogether. For CGI, you
@@ -104,7 +115,6 @@ too:
 
 From 0.8.x to 0.9
 -----------------
-
 mod_python users will need to change the name of the mod_python handler in
 the Apache HTTPD configuration:
 
@@ -131,7 +141,6 @@ http://www.sqlite.org/version3.html.
 
 From 0.7.x to 0.8
 -----------------
-
 0.8 adds a new roadmap feature which requires additional permissions. While a
 fresh installation will by default grant `ROADMAP_VIEW` and `MILESTONE_VIEW`
 permissions to anonymous, these permissions have to be granted manually when
