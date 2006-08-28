@@ -18,6 +18,8 @@
 try:
     from trac.web import fcgi_frontend
     fcgi_frontend.run()
+except SystemExit:
+    raise
 except Exception, e:
     print 'Content-Type: text/plain\r\n\r\n',
     print 'Oops...'

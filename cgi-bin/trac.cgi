@@ -18,7 +18,8 @@
 try:
     from trac.web import cgi_frontend
     cgi_frontend.run()
-
+except SystemExit:
+    raise
 except Exception, e:
     import sys
     import traceback
