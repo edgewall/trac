@@ -66,6 +66,20 @@ The following sections discuss any extra actions that may need to be taken
 to upgrade to specific versions of Trac.
 
 
+From 0.9.x to 0.10.x
+--------------------
+
+Due to some changes in the Wiki syntax, you may notice that certain parts of 
+your pages no longer work as expected:
+
+ * Previously, links to images would result in that image being embedded 
+   into the page. Since 0.10, links to images remain plain links. If you 
+   want to embed an image in the page, use the [[Image]] macro.
+ * You can no longer use %20 in wiki links to encode spaces. Instead, you 
+   should quote the name containing spaces 
+   (for example, use wiki:"My page" instead of wiki:My%20page.) 
+
+
 From 0.9-beta to 0.9
 --------------------
 

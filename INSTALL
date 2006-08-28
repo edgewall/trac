@@ -15,7 +15,7 @@ To install Trac, the following software packages must be installed:
    python-devel and python-xml packages.
  * Subversion, version >= 1.0. (>= 1.1.x recommended)
  * Subversion SWIG Python bindings (not PySVN).
- * PySQLite, version >= 0.5 (1.1.6 recommended)
+ * PySQLite, version 1.x (for SQLite 2.x) or version 2.x (for SQLite 3.x)
  * Clearsilver, version >= 0.9.3 (0.9.14 recommended)
  * A web server capable of executing CGI/FastCGI scripts, or Apache HTTPD with
    mod_python. (Trac also comes with a standalone server, but its use is not
