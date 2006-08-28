@@ -22,6 +22,8 @@ Results in:
 <h1 style="text-align: right; color: blue">HTML Test</h1>
 }}}
 
+Note that Trac sanitizes your HTML code before displaying it. That means that if you try to use potentially dangerous constructs such as Javascript event handlers, those will be removed from the output.
+
 == More Information ==
 
  * http://www.w3.org/ -- World Wide Web Consortium

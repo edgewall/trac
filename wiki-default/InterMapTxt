@@ -28,9 +28,10 @@ so it may be better to use comments for disabling prefixes.
 Also note that !InterWiki prefixes are case insensitive.
 
 
-== List of Active InterWiki Prefixes ==
+== List of Active Prefixes ==
 
 [[InterWiki]]
+
 
 ----
 
@@ -38,7 +39,11 @@ Also note that !InterWiki prefixes are case insensitive.
 
 {{{
 PEP     http://www.python.org/peps/pep-$1.html                                       # Python Enhancement Proposal 
-TracML  http://thread.gmane.org/gmane.comp.version-control.subversion.trac.general/  # Trac Mailing List
+Trac-ML  http://thread.gmane.org/gmane.comp.version-control.subversion.trac.general/ # Message $1 in Trac Mailing List
+trac-dev http://thread.gmane.org/gmane.comp.version-control.subversion.trac.devel/   # Message $1 in Trac Development Mailing List
+
+Mercurial http://www.selenic.com/mercurial/wiki/index.cgi/ # the wiki for the Mercurial distributed SCM
+RFC       http://rfc.net/rfc$1.html # IETF's RFC $1
 
 #
 # A arbitrary pick of InterWiki prefixes...
@@ -59,6 +64,6 @@ MetaWikiPedia    http://meta.wikipedia.org/wiki/
 MoinMoin         http://moinmoin.wikiwikiweb.de/
 WhoIs            http://www.whois.sc/
 Why              http://clublet.com/c/c/why?
-Wiki             http://c2.com/cgi/wiki?
+c2Wiki             http://c2.com/cgi/wiki?
 WikiPedia        http://en.wikipedia.org/wiki/
 }}}

@@ -49,7 +49,7 @@ For each revision log entry, there are 7 columns shown:
  1. The first column contains a pair of radio buttons and should used 
     for selecting the ''old'' and the ''new'' revisions that will be 
     used for [wiki:TracRevisionLog#viewingtheactualchanges viewing the actual changes].
- 2. A color code (similar to the one explained [wiki:TracChangeset here]) 
+ 2. A color code (similar to the one used for the [wiki:TracChangeset#ChangesetHeader changesets]) 
     indicating kind of change.
     Clicking on this column refreshes the revision log so that it restarts
     with this change.
@@ -64,9 +64,7 @@ For each revision log entry, there are 7 columns shown:
     checkbox in the form above.
     
 
-== Viewing the Actual Changes ==
-
-''(requires [milestone:0.10])''
+== Inspecting Changes Between Revisions ==
 
 The ''View changes...'' buttons (placed above and below the list
 of changes, on the left side) will show the set of differences
@@ -83,7 +81,6 @@ in the given range of revisions.
 Finally, if the two revisions are identical, the corresponding
 changeset will be shown (same effect as clicking on column 5).
 
-
 == Alternative Formats ==
 
 === The ChangeLog Text ===
@@ -96,7 +93,9 @@ but as a simple text, matching the usual conventions for
 === RSS Support ===
 
 The revision log also provides a RSS feed to monitor the changes.
-To subscribe to an RSS feed for a file or directory, open its
+To subscribe to a RSS feed for a file or directory, open its
 revision log in the browser and click the orange 'XML' icon at the bottom
 of the page. For more information on RSS support in Trac, see TracRss.
 
+----
+See also: TracBrowser, TracChangeset, TracGuide

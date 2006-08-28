@@ -1,22 +1,19 @@
 = Trac Permissions =
 [[TracGuideToc]]
 
-Trac uses a simple but flexible permission system to control what users can and can't access.
+Trac uses a simple permission system to control what users can and can't access.
 
 Permission privileges are managed using the [wiki:TracAdmin trac-admin] tool.
 
-Regular visitors, non-authenticated users, accessing the system are assigned the default 
-role (''user'') named {{{anonymous}}}. 
-Assign permissions to the {{{anonymous}}} user to set privileges for non-authenticated/guest users.
+Non-authenticated users accessing the system are assigned the name "anonymous". Assign permissions to the "anonymous" user to set privileges for anonymous/guest users. The parts of Trac that a user does not have the privileges for will not be displayed in the navigation.
 
-In addition to these privileges users can be granted additional individual 
-rights in effect when authenticated and logged into the system.
+In addition to these privileges, users can be granted additional individual rights in effect when authenticated and logged into the system. All logged in users belong to the virtual group "authenticated", which inherits permissions from "anonymous".
 
 == Available Privileges ==
 
-To enable all privileges for a user, use the `TRAC_ADMIN` permission. Having `TRAC_ADMIN` is like being `root` on a *NIX system, it will let you do anything you want.
+To enable all privileges for a user, use the `TRAC_ADMIN` permission. Having `TRAC_ADMIN` is like being `root` on a *NIX system, it will allow you perform any operation.
 
-Otherwise, individual privileges can be assigned to users for the various different functional areas of Trac:
+Otherwise, individual privileges can be assigned to users for the various different functional areas of Trac (not that the privilege names are case-sensitive):
 
 === Repository Browser ===
 
@@ -30,9 +27,9 @@ Otherwise, individual privileges can be assigned to users for the various differ
 || `TICKET_VIEW` || View existing [wiki:TracTickets tickets] and perform [wiki:TracQuery ticket queries] ||
 || `TICKET_CREATE` || Create new [wiki:TracTickets tickets] ||
 || `TICKET_APPEND` || Add comments or attachments to [wiki:TracTickets tickets] ||
-|| `TICKET_CHGPROP` || Modify [wiki:TracTickets ticket] properties ||
+|| `TICKET_CHGPROP` || Modify [wiki:TracTickets ticket] properties (priority, assignment, keywords, etc.) except description field ||
 || `TICKET_MODIFY` || Includes both `TICKET_APPEND` and `TICKET_CHGPROP`, and in addition allows resolving [wiki:TracTickets tickets] ||
-|| `TICKET_ADMIN` || All `TICKET_*` permissions, plus the deletion of ticket attachments. ||
+|| `TICKET_ADMIN` || All `TICKET_*` permissions, plus the deletion of ticket attachments and modification of the description field ||
 
 === Roadmap ===
 
@@ -42,7 +39,6 @@ Otherwise, individual privileges can be assigned to users for the various differ
 || `MILESTONE_DELETE` || Delete milestones ||
 || `MILESTONE_ADMIN` || All `MILESTONE_*` permissions ||
 || `ROADMAP_VIEW` || View the [wiki:TracRoadmap roadmap] page ||
-|| `ROADMAP_ADMIN` || Alias for `MILESTONE_ADMIN` (deprecated) ||
 
 === Reports ===
 
@@ -69,7 +65,7 @@ Otherwise, individual privileges can be assigned to users for the various differ
 
 == Granting Privileges ==
 
-Currently the only way to grant privileges to users is by using the `trac-admin` script. The current set of privileges can be listed with the following command:
+You grant privileges to users using [wiki:TracAdmin trac-admin]. The current set of privileges can be listed with the following command:
 {{{
   $ trac-admin /path/to/projenv permission list
 }}}
@@ -77,6 +73,11 @@ Currently the only way to grant privileges to users is by using the `trac-admin`
 This command will allow the user ''bob'' to delete reports:
 {{{
   $ trac-admin /path/to/projenv permission add bob REPORT_DELETE
+}}}
+
+The `permission add` command also accepts multiple privilege names:
+{{{
+  $ trac-admin /path/to/projenv permission add bob REPORT_DELETE WIKI_CREATE
 }}}
 
 == Permission Groups ==
@@ -90,6 +91,29 @@ Permissions can be grouped together to form roles such as ''developer'', ''admin
   $ trac-admin /path/to/projenv permission add john developer
 }}}
 
+Group membership can be checked by doing a {{{permission list}}} with no further arguments; the resulting output will include group memberships. Use lowercase for group names, as uppercase is reserved for permissions.
+
+== Removing Permissions ==
+
+Permissions can be removed using the 'remove' command. For example:
+
+This command will prevent the user ''bob'' from deleting reports:
+{{{
+  $ trac-admin /path/to/projenv permission remove bob REPORT_DELETE
+}}}
+
+Just like `permission add`, this command accepts multiple privilege names.
+
+You can also remove all privileges for a specific user:
+{{{
+  $ trac-admin /path/to/projenv permission remove bob *
+}}}
+
+Or one privilege for all users:
+{{{
+  $ trac-admin /path/to/projenv permission remove * REPORT_ADMIN
+}}}
+
 == Default Permissions ==
 
 Granting privileges to the special user ''anonymous'' can be used to control what an anonymous user can do before they have logged in.
@@ -97,4 +121,4 @@ Granting privileges to the special user ''anonymous'' can be used to control wha
 In the same way, privileges granted to the special user ''authenticated'' will apply to any authenticated (logged in) user.
 
 ----
-See also: TracAdmin, TracGuide
+See also: FineGrainedPermissions, TracAdmin, TracGuide

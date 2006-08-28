@@ -3,6 +3,14 @@
 Since version 0.9, Trac supports being run through the [http://www.fastcgi.com/ FastCGI] interface. Like [wiki:TracModPython mod_python], this allows Trac to remain resident, and is faster than external CGI interfaces which must start a new process for each request. However, unlike mod_python, it is able to support [http://httpd.apache.org/docs/suexec.html SuEXEC]. Additionally, it is supported by much wider variety of web servers.
 
 == Simple Apache configuration ==
+
+There are two FastCGI modules commonly available for Apache: `mod_fastcgi` and
+`mod_fcgid`.  The `FastCgiIpcDir` and `FastCgiConfig` directives discussed
+below are `mod_fastcgi` directives; the `DefaultInitEnv` is a `mod_fgcid`
+directive.
+
+For `mod_fastcgi`, add the following to an appropriate Apache configuration
+file:
 {{{
 # Enable fastcgi for .fcgi files
 # (If you're using a distro package for mod_fcgi, something like
@@ -13,8 +21,12 @@ Since version 0.9, Trac supports being run through the [http://www.fastcgi.com/ 
 </IfModule>
 LoadModule fastcgi_module /usr/lib/apache2/modules/mod_fastcgi.so
 }}}
+Setting `FastCgiIpcDir` is optional if the default is suitable.
 
-You can either setup the `TRAC_ENV` as an overall default:
+Configure `ScriptAlias` or similar options as described in TracCgi, but
+calling `trac.fcgi` instead of `trac.cgi`.
+
+You can set up the `TRAC_ENV` as an overall default:
 {{{
 FastCgiConfig -initial-env TRAC_ENV=/path/to/env/trac
 }}}
@@ -24,7 +36,30 @@ Or you can serve multiple Trac projects in a directory like:
 FastCgiConfig -initial-env TRAC_ENV_PARENT_DIR=/parent/dir/of/projects
 }}}
 
-Configure `ScriptAlias` or similar options as described in TracCgi, but calling `trac.fcgi` instead of `trac.cgi`.
+But neither of these will work for `mod_fcgid`.  A similar but partial
+solution for `mod_fcgid` is:
+{{{
+DefaultInitEnv TRAC_ENV /path/to/env/trac/
+}}}
+But this cannot be used in `Directory` or `Location` context, which makes it
+difficult to support multiple projects.
+
+A better method which works for both of these modules (and for  [http://www.lighttpd.net/ lighttpd] and CGI as well), because it involves
+no server configuration settings for environment variables, is to set one
+of the variables in `trac.fcgi`, e.g.:
+{{{
+import os
+os.environ['TRAC_ENV'] = "/path/to/projectenv"
+}}}
+or
+{{{
+import os
+os.environ['TRAC_ENV_PARENT_DIR'] = "/path/to/project/parent/dir"
+}}}
+
+Using this method, different projects can be supported by using different
+`.fcgi` scripts with different `ScriptAliases`, copying and appropriately
+renaming `trac.fcgi` and adding the above code to create each such script.
 
 == Simple Lighttpd Configuration ==
 
@@ -47,11 +82,166 @@ fastcgi.server = ("/trac" =>
                  )
 }}}
 
-Note that you will need to add a new entry to `fastcgi.server` for each separate Trac instance that you wish to run. Alternatively, you may use the `TRAC_ENV_PARENT_DIR` variable instead of `TRAC_ENV` as described  above.
+Note that you will need to add a new entry to `fastcgi.server` for each separate Trac instance that you wish to run. Alternatively, you may use the `TRAC_ENV_PARENT_DIR` variable instead of `TRAC_ENV` as described above,
+and you may set one of the two in `trac.fcgi` instead of in `lighttpd.conf`
+using `bin-environment` (as in the section above on Apache configuration).
+
+For using two projects with lighttpd add the following to your `lighttpd.conf`:
+{{{
+fastcgi.server = ("/first" =>
+                   ("first" =>
+                    ("socket" => "/tmp/trac-fastcgi-first.sock",
+                     "bin-path" => "/path/to/cgi-bin/trac.fcgi",
+                     "check-local" => "disable",
+                     "bin-environment" =>
+                       ("TRAC_ENV" => "/path/to/projenv-first")
+                    )
+                  ),
+                  "/second" =>
+                    ("second" =>
+                    ("socket" => "/tmp/trac-fastcgi-second.sock",
+                     "bin-path" => "/path/to/cgi-bin/trac.fcgi",
+                     "check-local" => "disable",
+                     "bin-environment" =>
+                       ("TRAC_ENV" => "/path/to/projenv-second")
+                    )
+                  )
+                )
+}}}
+Note that field values are different.  If you prefer setting the environment
+variables in the `.fcgi` scripts, then copy/rename `trac.fcgi`, e.g., to
+`first.fcgi` and `second.fcgi`, and reference them in the above settings.
+Note that the above will result in different processes in any event, even
+if both are running from the same `trac.fcgi` script.
+{{{
+#!html
+<p style="background: #fdc; border: 2px solid #d00; font-style: italic; padding: 0 .5em; margin: 1em 0;">
+<strong>Note from c00i90wn:</strong> It's very important the order on which server.modules are loaded, if mod_auth is not loaded <strong>BEFORE</strong> mod_fastcgi, then the server will fail to authenticate the user.
+</p>
+}}}
+For authentication you should enable mod_auth in lighttpd.conf 'server.modules', select auth.backend and auth rules:
+{{{
+server.modules              = (
+...
+  "mod_auth",
+...
+)
+
+auth.backend               = "htpasswd"
+
+# Separated password files for each project
+# See "Conditional Configuration" in
+# http://trac.lighttpd.net/trac/file/branches/lighttpd-merge-1.4.x/doc/configuration.txt
+
+$HTTP["url"] =~ "^/first/" {
+  auth.backend.htpasswd.userfile = "/path/to/projenv-first/htpasswd.htaccess"
+}
+$HTTP["url"] =~ "^/second/" {
+  auth.backend.htpasswd.userfile = "/path/to/projenv-second/htpasswd.htaccess"
+}
+
+# Enable auth on trac URLs, see
+# http://trac.lighttpd.net/trac/file/branches/lighttpd-merge-1.4.x/doc/authentication.txt
+
+auth.require = ("/first/login" =>
+                ("method"  => "basic",
+                 "realm"   => "First project",
+                 "require" => "valid-user"
+                ),
+                "/second/login" =>
+                ("method"  => "basic",
+                 "realm"   => "Second project",
+                 "require" => "valid-user"
+                )
+               )
+
+
+}}}
+Note that lighttpd (I use version 1.4.3) stopped if password file doesn't exist.
+
+Note that lighttpd doesn't support 'valid-user' in versions prior to 1.3.16.
+
+Conditional configuration is also useful for mapping static resources, i.e. serving out images and CSS directly instead of through FastCGI:
+{{{
+# Aliasing functionality is needed
+server.modules += ("mod_alias")
+
+# Setup an alias for the static resources
+alias.url = ("/trac/chrome/common" => "/usr/share/trac/htdocs")
+
+# Use negative lookahead, matching all requests that ask for any resource under /trac, EXCEPT in
+# /trac/chrome/common, and use FastCGI for those
+$HTTP["url"] =~ "^/trac(?!/chrome/common)" {
+# If you have previous fastcgi.server declarations for applications other than Trac, use += here
+# instead of = so you won't overwrite them
+fastcgi.server = ("/trac" =>
+                   ("trac" =>
+                     ("socket" => "/tmp/trac-fastcgi.sock",
+                      "bin-path" => "/path/to/cgi-bin/trac.fcgi",
+                      "check-local" => "disable",
+                      "bin-environment" =>
+                        ("TRAC_ENV" => "/path/to/projenv")
+                     )
+                   )
+                 )
+}
+}}}
+The technique can be easily adapted for use with multiple projects by creating aliases for each of them, and wrapping the fastcgi.server declarations inside conditional configuration blocks.
+Also there is another way to handle multiple projects and it's to use TRAC_ENV_PARENT_DIR instead of TRAC_ENV and use global auth, let's see an example:
+{{{
+#  This is for handling multiple projects
+  alias.url       = ( "/trac/" => "/path/to/trac/htdocs/" )
+
+  fastcgi.server += ("/projects"  =>
+                      ("trac" =>
+                        (
+                          "socket" => "/tmp/trac.sock",
+                          "bin-path" => "/path/to/cgi-bin/trac.fcgi",
+                          "check-local" => "disable",
+                          "bin-environment" =>
+                            ("TRAC_ENV_PARENT_DIR" => "/path/to/parent/dir/of/projects/" )
+                        )
+                      )
+                    )
+#And here starts the global auth configuration
+  auth.backend = "htpasswd"
+  auth.backend.htpasswd.userfile = "/path/to/unique/htpassword/file/trac.htpasswd"
+  $HTTP["url"] =~ "^/projects/.*/login$" {
+    auth.require = ("/" =>
+                     (
+                       "method"  => "basic",
+                       "realm"   => "trac",
+                       "require" => "valid-user"
+                     )
+                   )
+  }
+}}}
+
+Changing date/time format also supported by lighttpd over environment variable LC_TIME
+{{{
+fastcgi.server = ("/trac" =>
+                   ("trac" =>
+                     ("socket" => "/tmp/trac-fastcgi.sock",
+                      "bin-path" => "/path/to/cgi-bin/trac.fcgi",
+                      "check-local" => "disable",
+                      "bin-environment" =>
+                        ("TRAC_ENV" => "/path/to/projenv",
+                        "LC_TIME" => "ru_RU")
+                     )
+                   )
+                 )
+}}}
+For details about languages specification see TracFaq question 2.13.
 
 Other important information like [http://trac.lighttpd.net/trac/wiki/TracInstall this updated TracInstall page], [wiki:TracCgi#MappingStaticResources and this] are useful for non-fastcgi specific installation aspects.
 
+If you use trac-0.9, read [http://lists.edgewall.com/archive/trac/2005-November/005311.html about small bug]
+
 Relaunch lighttpd, and browse to `http://yourhost.example.org/trac` to access Trac.
+
+Note about running lighttpd with reduced permissions:
+
+  If nothing else helps and trac.fcgi doesn't start with lighttpd settings __server.username = "www-data"__, __server.groupname = "www-data"__, then in the `bin-environment` section set `PYTHON_EGG_CACHE` to the home directory of `www-data` or some other directory accessible to this account for writing.
 
 ----
 See also TracCgi, TracModPython, TracInstall, TracGuide

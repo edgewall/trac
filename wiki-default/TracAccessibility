@@ -16,6 +16,9 @@ Trac supports accessibility keys for the most common operations. On Windows and 
  * `7` - [wiki:TracTickets New Ticket]
  * `9` - [../about About Trac]
  * `0` - This page
+ * `e` - Edit this page
+ * `f` - Search
+
 
 ----
 See also: TracGuide

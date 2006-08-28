@@ -16,7 +16,7 @@ mapping can be done.
 }}}
 
 The link is composed by the targeted Wiki (or system) name,
-followed by a column (e.g. {{{MeatBall:}}}),
+followed by a colon (e.g. {{{MeatBall:}}}),
 followed by a page specification in the target.
 Note that, as for InterTrac prefixes, InterWiki prefixes are case insensitive.
 
@@ -47,7 +47,7 @@ In addition, an optional comment is allowed after the mapping.
 ----
 {{{
 PEP     http://www.python.org/peps/pep-$1.html                                       # Python Enhancement Proposal $1 
-TracML  http://thread.gmane.org/gmane.comp.version-control.subversion.trac.general/$1  # Message $1 in Trac Mailing List
+Trac-ML  http://thread.gmane.org/gmane.comp.version-control.subversion.trac.general/$1  # Message $1 in Trac Mailing List
 
 ...
 MeatBall http://www.usemod.com/cgi-bin/mb.pl?
@@ -62,6 +62,13 @@ Then,
  * `MoinMoin:InterWikiMap` should be rendered as 
    [http://moinmoin.wikiwikiweb.de/InterWikiMap MoinMoin:InterWikiMap]
    and the ''title'' for that link would be "!InterWikiMap in !MoinMoin"
- * {{{TracML:4346}}} should be rendered as 
-   [http://thread.gmane.org/gmane.comp.version-control.subversion.trac.general/4346 TracML:4346]
+ * {{{Trac-ML:4346}}} should be rendered as 
+   [http://thread.gmane.org/gmane.comp.version-control.subversion.trac.general/4346 Trac-ML:4346]
    and the ''title'' for that link would be "Message 4346 in Trac Mailing List"
+
+----
+=== Temporary notice (delete this when we sync) ===
+About full links vs. having the InterWiki link itself. 
+
+Well, I'm not sure about that, since those InterWiki prefixes ''are'' (or will be when we sync) present in the default InterMapTxt, so those examples will work until the InterMapTxt gets locally edited, at which point it won't be a surprise that this links don't work anymore... OTOH, if those examples ''still'' work after the prefixes have been removed, this can also be a bit surprising ;)
+----

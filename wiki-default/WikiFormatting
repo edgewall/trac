@@ -14,7 +14,7 @@ This page demonstrates the formatting syntax available anywhere WikiFormatting i
 
 The Trac wiki supports the following font styles:
 {{{
- * '''bold'''
+ * '''bold''', '''!''' can be bold too'''
  * ''italic''
  * '''''bold italic'''''
  * __underline__
@@ -25,7 +25,7 @@ The Trac wiki supports the following font styles:
 }}}
 
 Display:
- * '''bold'''
+ * '''bold''', '''!''' can be bold too'''
  * ''italic''
  * '''''bold italic'''''
  * __underline__
@@ -34,26 +34,30 @@ Display:
  * ^superscript^ 
  * ,,subscript,,
 
-Note that the `{{{...}}}` and {{{`...`}}} commands not only select a monospace font, but also treat their content as verbatim text, meaning that no further wiki processing is done on this text.
+Notes:
+ * `{{{...}}}` and {{{`...`}}} commands not only select a monospace font, but also treat their content as verbatim text, meaning that no further wiki processing is done on this text.
+ * {{{ ! }}} tells wiki parser to not take the following characters as wiki format.
 
 == Headings ==
 
 You can create heading by starting a line with one up to five ''equal'' characters ("=")
 followed by a single space and the headline text. The line should end with a space 
 followed by the same number of ''='' characters.
+The heading might optionally be followed by an explicit id. If not, an implicit but nevertheless readable id will be generated.
 
 Example:
 {{{
 = Heading =
 == Subheading ==
 === About ''this'' ===
+=== Explicit id === #using-explicit-id-in-heading
 }}}
 
 Display:
 = Heading =
 == Subheading ==
 === About ''this'' ===
-
+=== Explicit id === #using-explicit-id-in-heading
 
 == Paragraphs ==
 
@@ -79,8 +83,13 @@ Example:
  * Item 2
 
  1. Item 1
-   1. Item 1.1
+   a. Item 1.a
+   a. Item 1.b
+      i. Item 1.b.i
+      i. Item 1.b.ii
  1. Item 2
+And numbered lists can also be given an explicit number:
+ 3. Item 3
 }}}
 
 Display:
@@ -89,13 +98,19 @@ Display:
  * Item 2
 
  1. Item 1
-   1. Item 1.1
+   a. Item 1.a
+   a. Item 1.b
+      i. Item 1.b.i
+      i. Item 1.b.ii
  1. Item 2
+And numbered lists can also be given an explicit number:
+ 3. Item 3
 
 Note that there must be one or more spaces preceding the list item markers, otherwise the list will be treated as a normal paragraph.
 
 
 == Definition Lists ==
+
 
 The wiki also supports definition lists.
 
@@ -149,6 +164,24 @@ Example:
 Display:
   This text is a quote from someone else.
 
+== Discussion Citations ==
+
+To delineate a citation in an ongoing discussion thread, such as the ticket comment area, e-mail-like citation marks (">", ">>", etc.) may be used.  
+
+Example:
+{{{
+>> Someone's original text
+> Someone else's reply text
+My reply text
+}}}
+
+Display:
+>> Someone's original text
+> Someone else's reply text
+My reply text
+
+''Note: Some WikiFormatting elements, such as lists and preformatted text, are  lost in the citation area.  Some reformatting may be necessary to create a clear citation.''
+
 == Tables ==
 
 Simple tables can be created like this:
@@ -177,7 +210,7 @@ Example:
 Display:
  TitleIndex, http://www.edgewall.com/, !NotAlink
 
-Links can be given a more descriptive title by writing the link followed by a space and a title and all this inside square brackets.  If the descriptive title is omitted, then the explicit prefix is disguarded, unless the link is an external link. This can be useful for wiki pages not adhering to the WikiPageNames convention.
+Links can be given a more descriptive title by writing the link followed by a space and a title and all this inside square brackets.  If the descriptive title is omitted, then the explicit prefix is discarded, unless the link is an external link. This can be useful for wiki pages not adhering to the WikiPageNames convention.
 
 Example:
 {{{
@@ -199,12 +232,14 @@ Wiki pages can link directly to other parts of the Trac system. Pages can refer 
  * Tickets: #1 or ticket:1
  * Reports: {1} or report:1
  * Changesets: r1, [1] or changeset:1
- * Revision Logs: r1:3, [1:3] or log:branches/0.8-stable#1:3
+ * Revision Logs: r1:3, [1:3] or log:branches/0.8-stable@1:3
  * Wiki pages: CamelCase or wiki:CamelCase
  * Milestones: milestone:1.0 or milestone:"End-of-days Release"
  * Files: source:trunk/COPYING
- * Attachments: attachment:"file name.doc"
- * A specific file revision: source:/trunk/COPYING#200
+ * Wiki Attachments: attachment:sample_attachment.txt
+ * Ticket Attachments: attachment:ticket:944:attachment.1073.diff
+ * A specific file revision: source:/trunk/COPYING@200
+ * A particular line of a specific file revision: source:/trunk/COPYING@200#L25
  * A filename with embedded space: source:"/trunk/README FIRST"
 }}}
 
@@ -212,12 +247,14 @@ Display:
  * Tickets: #1 or ticket:1
  * Reports: {1} or report:1
  * Changesets: r1, [1] or changeset:1
- * Revision Logs: r1:3, [1:3] or log:branches/0.8-stable#1:3
+ * Revision Logs: r1:3, [1:3] or log:branches/0.8-stable@1:3
  * Wiki pages: CamelCase or wiki:CamelCase
  * Milestones: milestone:1.0 or milestone:"End-of-days Release"
  * Files: source:trunk/COPYING
- * Attachments: attachment:"file name.doc"
- * A specific file revision: source:/trunk/COPYING#200
+ * Wiki Attachments: attachment:sample_attachment.txt
+ * Ticket Attachments: attachment:ticket:944:attachment.1073.diff
+ * A specific file revision: source:/trunk/COPYING@200
+ * A particular line of a specific file revision: source:/trunk/COPYING@200#L25
  * A filename with embedded space: source:"/trunk/README FIRST"
 
 See TracLinks for more in-depth information.
@@ -295,6 +332,7 @@ Example:
 <pre class="wiki">{{{
 #!python
 class Test:
+
     def __init__(self):
         print "Hello World"
 if __name__ == '__main__':

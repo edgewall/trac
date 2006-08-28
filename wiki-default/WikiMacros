@@ -4,7 +4,7 @@ Trac macros are plugins to extend the Trac engine with custom 'functions' writte
 Another kind of macros are WikiProcessors. They typically deal with alternate markup formats and representation of larger blocks of information (like source code highlighting).
 
 == Using Macros ==
-Macro calls are enclosed in two ''square brackets''. Like python functions, macros can also have arguments, a comma separated list within parentheses. 
+Macro calls are enclosed in two ''square brackets''. Like Python functions, macros can also have arguments, a comma separated list within parentheses. 
 
 === Examples ===
 
@@ -27,12 +27,11 @@ Display:
 [[MacroList]]
 
 == Macros from around the world ==
-The [http://projects.edgewall.com/trac/ Trac Project] has a section dedicated to user-contributed macros, [http://projects.edgewall.com/trac/wiki/MacroBazaar MacroBazaar]. If you're looking for new macros, or have written new ones to share with the world, don't hesitate adding it to the [http://projects.edgewall.com/trac/wiki/MacroBazaar MacroBazaar] wiki page.
 
-----
+The [http://trac-hacks.org/ Trac Hacks] site provides a wide collection of macros and other Trac [TracPlugins plugins] contributed by the Trac community. If you're looking for new macros, or have written one that you'd like to share with the world, please don't hesitate to visit that site.
 
 == Developing Custom Macros ==
-Macros, like Trac itself, are written in the [http://www.python.org/ Python programming language]. They are very simple modules, identified by the filename and should contain a single ''entry point'' function. Trac will display the returned data inserted into the HTML where the macro was called.
+Macros, like Trac itself, are written in the [http://www.python.org/ Python programming language]. They are very simple modules, identified by the filename and should contain a single `execute()` function. Trac will display the returned data inserted into the HTML representation of the Wiki page where the macro is called.
 
 It's easiest to learn from an example:
 {{{
@@ -47,10 +46,10 @@ You can also use the environment (`env`) object, for example to access configura
 {{{
 #!python
 def execute(hdf, txt, env):
-    return env.get_config('trac', 'repository_dir')
+    return env.config.get('trac', 'repository_dir')
 }}}
 
-Note that since version 0.9, wiki macros can also be written as TracPlugins. This gives them some capabilities than “classic” macros do not have, such as directly access the HTTP request.
+Note that since version 0.9, wiki macros can also be written as TracPlugins. This gives them some capabilities that “classic” macros do not have, such as being able to directly access the HTTP request.
 
 For more information about developing macros, see the [http://projects.edgewall.com/trac/wiki/TracDev development resources] on the main project site.
 

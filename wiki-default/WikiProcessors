@@ -1,10 +1,13 @@
 = Wiki Processors =
-Processors are WikiMacros designed to provide alternative markup formats for the Trac Wiki engine. Processors can be thought of as ''macro functions to process user-edited text''. 
 
-The wiki engine uses processors to allow using [wiki:WikiRestructuredText Restructured Text] and [wiki:WikiHtml raw HTML] in any wiki text throughout Trac.
+Processors are WikiMacros designed to provide alternative markup formats for the [TracWiki Wiki engine]. Processors can be thought of as ''macro functions to process user-edited text''. 
+
+The Wiki engine uses processors to allow using [wiki:WikiRestructuredText Restructured Text], [wiki:WikiHtml raw HTML] and [http://www.textism.com/tools/textile/ textile] in any Wiki text throughout Trac.
+
 
 == Using Processors ==
-To use a processor on a block of text, use a wiki blockquote, selecting a processor by name using ''shebang notation'' (#!), familiar to most UNIX users from scripts.
+
+To use a processor on a block of text, use a Wiki code block, selecting a processor by name using ''shebang notation'' (#!), familiar to most UNIX users from scripts.
 
 '''Example 1''' (''inserting raw HTML in a wiki text''):
 
@@ -78,7 +81,9 @@ int main(int argc, char *argv[])
 The following processors are included in the Trac distribution:
  * '''html''' -- Insert custom HTML in a wiki page. See WikiHtml.
  * '''rst''' -- Trac support for Restructured Text. See WikiRestructuredText.
- * '''textile''' -- Supported if  [http://dealmeida.net/projects/textile/ Textile] is installed.
+ * '''textile''' -- Supported if  [http://dealmeida.net/projects/textile/ Textile] is installed. See [http://hobix.com/textile/ a Textile reference].
+
+Textile link above is rotten. [http://www.textism.com/tools/textile/ this one] works, allows to test example.
 
 === Code Highlighting Support ===
 Trac includes processors to provide inline [wiki:TracSyntaxColoring syntax highlighting] for the following languages:

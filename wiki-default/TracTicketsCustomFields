@@ -69,7 +69,7 @@ test_six.cols = 60
 test_six.rows = 30
 }}}
 
-''Note: To make an entering an option for a `select` type field optional, specify a leading `|` in the `fieldname.options` option.''
+''Note: To make entering an option for a `select` type field optional, specify a leading `|` in the `fieldname.options` option.''
 
 === Reports Involving Custom Fields ===
 

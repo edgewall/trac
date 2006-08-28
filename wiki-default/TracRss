@@ -7,8 +7,8 @@ Using the RSS subscription feature in Trac, you can easily monitor progress of t
 Trac supports RSS feeds in:
 
  * TracTimeline --  Use the RSS feed to '''subscribe to project events'''.[[br]]Monitor overall project progress in your favorite RSS reader.
- * TracReports and TracQuery -- Allows syndication of report and ticket query results.[[br]]Be notified about important and relevant issue tickets.
- * TracBrowser -- Syndication of file changes.[[br]]Stay up to date with changes to a specific file or directory.
+ * TracTickets, TracReports, and TracQuery -- Allows syndication of report and ticket query results.[[br]]Be notified about important and relevant issue tickets.
+ * TracBrowser and TracRevisionLog -- Syndication of file changes.[[br]]Stay up to date with changes to a specific file or directory.
 
 == How to access RSS data ==
 Anywhere in Trac where RSS is available, you should find a small orange '''XML''' icon, typically placed at the bottom of the page. Clicking the icon will access the RSS feed for that specific resource.
@@ -19,9 +19,11 @@ Anywhere in Trac where RSS is available, you should find a small orange '''XML''
  * http://blogs.law.harvard.edu/tech/rss -- RSS 2.0 Specification
  * http://www.mozilla.org/products/firefox/ -- Mozilla Firefox supports [http://www.mozilla.org/products/firefox/live-bookmarks.html live bookmarks] using RSS
  * http://sage.mozdev.org -- Sage RSS and Atom feed aggregator for Mozilla Firefox
+ * http://pim.kde.org/users.php -- [http://kde.org KDE] RSS Reader for Linux/BSD/*n*x systems
  * http://www.rssreader.com/ -- Free and powerful RSS Reader for Windows
  * http://liferea.sourceforge.net/ -- Open source GTK2 RSS Reader for Linux
- * http://akregator.sourceforge.net/ -- Open source KDE RSS Reader (will be part of KDE-PIM 3.4)
+ * http://akregator.sourceforge.net/ -- Open source KDE RSS Reader (part of KDE-PIM)
  * http://www.sharpreader.net/ -- A free RSS Reader written in .NET for Windows
+ * http://ranchero.com/netnewswire/ -- An excellent RSS reader for Mac OS X (has both free and pay versions)
 ----
 See also: TracGuide, TracTimeline, TracReports, TracBrowser

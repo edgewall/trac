@@ -10,8 +10,6 @@ As with the TracWiki, this subsystem has been designed with the goal of making u
 An issue is assigned to a person who must resolve it or reassign the ticket to someone else.
 All tickets can be edited, annotated, assigned, prioritized and discussed at any time.
 
-'''Note:''' To make full use of the ticket system, use it as an ''in bucket'' for ideas and tasks for your project, rather than just bug/fault reporting. 
-
 == Ticket Fields ==
 
 A  ticket contains the following information attributes:
@@ -56,7 +54,7 @@ to understand.
 '''Note:''' See TracNotification for how to configure email notifications of ticket changes.
 
 === State Diagram ===
-http://projects.edgewall.com/trac/attachment/wiki/TracTickets/Trac%20Ticket%20State%20Chart%2020040607DF.png?format=raw
+[[Image(http://projects.edgewall.com/trac/attachment/wiki/TracTickets/Trac%20Ticket%20State%20Chart%2020060603DF.png?format=raw)]]
 
 
 == Default Values for Drop-Down Fields ==
@@ -84,8 +82,7 @@ Trac also lets you add your own custom ticket fields. See TracTicketsCustomField
 
 If the list of possible ticket owners is finite, you can change the ''assign-to'' ticket field from a text input to a drop-down list. This is done by setting the `restrict_owner` option of the `[ticket]` section in [wiki:TracIni trac.ini] to “true”. In that case, Trac will use the list of all users who have logged in and set their email address to populate the drop-down field.
 
-''Note that this feature is '''still experimental as of version 0.9'''. There is no way to only display a subset of all known users as possible ticket owners. Nor is there a convenient way to remove emeritus users short of directly modifying the database.''
-
+To appear in the dropdown list, a user needs be registered with the project, ''i.e.'' a user session should exist in the database. Such an entry is automatically created in the database the first time the user submits a change in the project, for example when editing the user's details in the ''Settings'' page. Also, the user must have `TICKET_MODIFY` [TracPermissions permissions].
 
 == Preset Values for New Tickets ==
 
@@ -93,6 +90,7 @@ To create a link to the new-ticket form filled with preset values, you need to c
 
 Possible variables are :
 
+ * '''type''' - The type droplist
  * '''reporter''' - Name or email of the reporter
  * '''summary''' - Summary line for the ticket
  * '''description''' - Long description of the ticket
@@ -107,5 +105,5 @@ Possible variables are :
 
 '''Example:''' ''/trac/newticket?summary=Compile%20Error&version=1.0&component=gui''
 
-
+----
 See also:  TracGuide, TracWiki, TracTicketsCustomFields, TracNotification

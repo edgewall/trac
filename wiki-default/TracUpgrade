@@ -20,7 +20,7 @@ python setup.py install
 
 to install the new version. If you've downloaded the Windows installer, you execute it, and so on.
 
-In any case, if you're doing a major version upgrade (such as from 0.8 to 0.9), it is ''highly'' recommended that you first remove the existing Trac code. To do this, you need to delete the `trac` directory from the Python `lib/site-packages` directory. You may also want to remove the Trac `cgi-bin`, `htdocs` and `templates` directories that are commonly found in a directory called `share/trac` (the exact location depends on your platform).
+In any case, if you're doing a major version upgrade (such as from 0.8 to 0.9), it is ''highly'' recommended that you first remove the existing Trac code. To do this, you need to delete the `trac` directory from the Python `lib/site-packages` directory. You may also want to remove the Trac `cgi-bin`, `htdocs`, `templates` and `wiki-default` directories that are commonly found in a directory called `share/trac` (the exact location depends on your platform).
 
 === Upgrade the Trac Environment ===
 
@@ -53,6 +53,20 @@ In order to reload the new Trac code you will need to restart your web server (n
 
 The following sections discuss any extra actions that may need to be taken to upgrade to specific versions of Trac.
 
+== From 0.9.x to 0.10.x ==
+
+Due to some changes in the Wiki syntax, you may notice that certain parts of your pages no longer work as expected:
+ * Previously, links to images would result in that image being embedded into the page. Since 0.10, links to images remain plain links. If you want to embed an image in the page, use the `[[Image]]` macro.
+ * You can no longer use `%20` in wiki links to encode spaces. Instead, you should quote the name containing spaces (for example, use `wiki:"My page"` instead of `wiki:My%20page`.)
+
+== From 0.9.3 to 0.9.4 ==
+
+There is a bug in Pysqlite 1.x that causes reports using the "%" character for `LIKE` clauses or date formatting to fail.  You will need to use escape the percent characters with another: "%%".
+
+== From 0.9.x to 0.9.3 or later ==
+
+If you are using plugins you might need to upgrade them. See http://projects.edgewall.com/trac/milestone/0.9.3 for further details.
+
 == From 0.9-beta to 0.9 ==
 
 If inclusion of the static resources (style sheets, javascript, images) is not working, check the value of the `htdocs_location` in trac.ini. For [wiki:TracModPython mod_python], [wiki:TracStandalone Tracd] and [wiki:TracFastCgi FastCGI], you can simply remove the option altogether. For [wiki:TracCgi CGI], you should fix it to point to the URL you mapped the Trac `htdocs` directory to (although you can also remove it and then [wiki:TracCgi#MappingStaticResources map the static resources]). If you're still having problems after removing the option, check the paths in the `trac/siteconfig.py` file and fix them if they're incorrect.
@@ -81,6 +95,13 @@ To do this, you need to have both SQLite 2.8.x and SQLite 3.x installed (they ha
  $ mv trac.db trac2.db
  $ sqlite trac2.db .dump | sqlite3 trac.db
 }}}
+
+To update multiple database files at once on linux you may use the following command (replace {{{/var/trac}}} withe the location where your trac installtions reside):
+{{{
+ $ find /var/trac/ -iname "trac.db" | xargs -i bash -c "mv {} {}.2; sqlite {}.2 .dump | sqlite3 {};"
+}}}
+
+Remember the give the webserver write permission to trac.db.
 
 After testing that the conversion was successful, the `trac2.db` file can be deleted. For more information on the SQLite upgrade see http://www.sqlite.org/version3.html.
 

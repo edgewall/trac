@@ -1,8 +1,5 @@
 = Trac Links =
-As you might have guessed, TracLinks are a very fundamental feature of Trac.
-
-They allow hyperlinking between Trac entities (tickets, reports, changesets, Wiki
-pages, milestones and source files) from anywhere WikiFormatting is used.
+TracLinks are a fundamental feature of Trac, because they allow easy hyperlinking between the various entities in the system—such as tickets, reports, changesets, Wiki pages, milestones, and source files—from anywhere WikiFormatting is used.
 
 TracLinks are generally of the form '''type:id''' (where ''id'' represents the
 number, name or path of the item) though some frequently used kinds of items
@@ -10,28 +7,35 @@ also have short-hand notations.
 
 Some examples:
  * Tickets: '''!#1''' or '''!ticket:1'''
+ * Ticket comments: '''!comment:ticket:1:2''' 
  * Reports: '''!{1}''' or '''!report:1'''
  * Changesets: '''!r1''', '''![1]''' or '''!changeset:1'''
- * Revision log: '''!r1:3''', '''![1:3]''' or '''!log:#1:3'''
- * Wiki pages: '''CamelCase''' or '''!wiki:CamelCase'''
+ * Revision log: '''!r1:3''', '''![1:3]''' or '''!log:@1:3''', '''!log:trunk@1:3'''
+ * Diffs (requires [milestone:0.10]): '''!diff:@1:3''', '''!diff:tags/trac-0.9.2/wiki-default//tags/trac-0.9.3/wiki-default''' or '''!diff:trunk/trac@3538//sandbox/vc-refactoring@3539'''
+ * Wiki pages: '''!CamelCase''' or '''!wiki:CamelCase'''
  * Milestones: '''!milestone:1.0'''
  * Attachment: '''!attachment:ticket:944:attachment.1073.diff'''
  * Files: '''!source:trunk/COPYING'''
- * A specific file revision: '''!source:/trunk/COPYING#200'''
+ * A specific file revision: '''!source:/trunk/COPYING@200'''
+ * A particular line of a specific file revision: '''!source:/trunk/COPYING@200#L25'''
 Display:
  * Tickets: #1 or ticket:1
+ * Ticket comments: comment:ticket:1:2 
  * Reports: {1} or report:1
  * Changesets: r1, [1] or changeset:1
- * Differences: r1:3, [1:3] or log:#1:3
+ * Revision log: r1:3, [1:3] or log:@1:3, log:trunk@1:3
+ * Diffs (requires [milestone:0.10]): diff:@20:30, diff:tags/trac-0.9.2/wiki-default//tags/trac-0.9.3/wiki-default or diff:trunk/trac@3538//sandbox/vc-refactoring/trac@3539
  * Wiki pages: CamelCase or wiki:CamelCase
  * Milestones: milestone:1.0
- * Files: source:trunk/COPYING
  * Attachment: attachment:ticket:944:attachment.1073.diff
- * A specific file revision: source:/trunk/COPYING#200
+ * Files: source:trunk/COPYING
+ * A specific file revision: source:/trunk/COPYING@200
+ * A particular line of a specific file revision: source:/trunk/COPYING@200#L25
 
 '''Note:''' The wiki:CamelCase form is rarely used, but it can be convenient to refer to
 pages whose names do not follow WikiPageNames rules, i.e., single words,
-non-alphabetic characters, etc.
+non-alphabetic characters, etc. See WikiPageNames for more about features specific
+to links to Wiki page names.
 
 Trac links using the full (non-shorthand) notation can also be given a custom
 link title like this:
@@ -50,14 +54,24 @@ If the title is be omitted, only the id (the part after the colon) is displayed:
 
 Display: [ticket:1]
 
-It might seem a simple enough concept at a glance, but actually allows quite a complex network of information. In practice, it's very intuitive and simple to use, and we've found the "link trail" extremely helpful to better understand what's happening in a project or why a particular change was made.
+`wiki` is the default if the namespace part of a full link is omitted (''since version 0.10''):
 
-== attachement: links ==
+{{{
+[SandBox the sandbox]
+}}}
+
+Display: [SandBox the sandbox]
+
+TracLinks are a very simple idea, but actually allow quite a complex network of information. In practice, it's very intuitive and simple to use, and we've found the "link trail" extremely helpful to better understand what's happening in a project or why a particular change was made.
+
+The following sections describe the individual link types in detail, as well as several notes advanced usage of links.
+
+== attachment: links ==
 
 The link syntax for attachments is as follows:
  * !attachment:the_file.txt creates a link to the attachment the_file.txt of the current object
  * !attachment:wiki:MyPage:the_file.txt creates a link to the attachment the_file.txt of the !MyPage wiki page
- * !attachment:ticket:753:the_file.txt creates a link to the attachment the_file.txt of the ticket 753 !attachment:wiki:MyPage:the_file.txt
+ * !attachment:ticket:753:the_file.txt creates a link to the attachment the_file.txt of the ticket 753
 
 == source: links ==
 
@@ -65,15 +79,44 @@ The default behavior for a source:/some/path link is to open the directory brows
 if the path points to a directory and otherwise open the log view. 
 It's also possible to link directly to a specific revision of a file like this: source:/some/file@123 
 or like this to link to the latest revision: source:/some/file@latest.
-If the revision is specified, one can even link to a specific line number: !source:/some/file@123#L10 
-[[comment(TODO: remove the ! when Edgewall Trac is upgraded with the support for the line syntax)]]
+If the revision is specified, one can even link to a specific line number: source:/some/file@123#L10 
+
+== search: and query: links ==
+
+See TracSearch#SearchLinks and TracQuery#UsingTracLinks
+
+== InterWiki links ==
+
+Other prefixes can be defined freely and made to point to resources in other Web applications. The definition of those prefixes as well as the URLs of the corresponding Web applications is defined in a special Wiki page, the InterMapTxt page. Note that while this could be used to create links to other Trac environments, there's a more specialized way to register other Trac environments which offers greater flexibility.
+
+== InterTrac links ==
+
+Any of the above form of Trac links could be written in one Trac environment and actually refer to resources present in another Trac environment, provided the Trac link is prefixed by the name of that other Trac environment followed by a colon. That other Trac environment must be registered. See InterTrac for details. 
+
+
+== Server-relative links ==
+
+It is often useful to be able to link to objects on your server that have no built-in
+Trac linking mechanism, such as static resources, a `/register` page, etc. This
+can be achieved by simply using either an absolute path from the server root, 
+or a relative link from the URL of the current page:
+
+{{{
+[../newticket newticket]
+[/ home]
+}}}
+
+Display: [../newticket newticket] [/ home]
 
 == Quoting space in TracLinks ==
 
-The usual syntax for quoting space is:
-
+Immediately after a TracLinks prefix, targets containing space characters should
+be enclosed in a pair of quotes or double quotes.
+Examples:
+ * !wiki:"The whitespace convention"
  * !attachment:'the file.txt' or
  * !attachment:"the file.txt" 
+ * !attachment:"ticket:123:the file.txt" 
 
 == Where to use TracLinks ==
 You can use TracLinks in:
@@ -97,5 +140,5 @@ Display:
  ![42] is not a link either.
 
 ----
-See also: WikiFormatting, TracWiki
+See also: WikiFormatting, TracWiki, WikiPageNames, InterTrac, InterWiki
  

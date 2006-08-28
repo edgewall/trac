@@ -76,8 +76,8 @@ def get_page_from_file (pname):
     return d
 
 def get_page_from_web (pname):
-    host = "projects.edgewall.com"
-    rfile = "/trac/wiki/%s?format=txt" % pname
+    host = "trac.edgewall.org"
+    rfile = "/wiki/%s?format=txt" % pname
     c = httplib.HTTPConnection(host)
     c.request("GET", rfile)
     r = c.getresponse()

@@ -6,7 +6,7 @@ Trac has a built-in functionality for visualizing “diffs” - changes to files
 There are different kinds of ''change sets''. 
 Some can correspond to revisions made in the repositories,
 others can aggregate changes made in several revisions, 
-but in the end, any kind of differences could be shown.
+but in the end, any kind of differences can be shown.
 
 The changeset view consists of two parts, the ''header'' 
 and the ''diff views''.
@@ -61,58 +61,37 @@ made by the check-in.
 There will be also navigation links to the ''Previous Changeset''
 to and ''Next Changeset''.
 
-
-'''Note: all of the following will only be available in Trac [milestone:0.10]'''
-
 === Examining Differences Between Revisions ===
 
-A very frequent need is to look at changes made on a file 
-or on a directory spanning multiple revisions. 
-The easiest way to get there is from the TracRevisionLog, 
-where one can select the '''old''' and the '''new''' revisions
-of the path being examined, and then click the ''View changes''
-button.
+Often you'll want to look at changes made on a file 
+or on a directory spanning multiple revisions. The easiest way
+to get there is from the TracRevisionLog, where you can select
+the ''old'' and the ''new'' revisions of the file or directory, and
+then click the ''View changes'' button.
 
-=== Examining Arbitrary Differences ===
+=== Examining Differences Between Branches ===
 
-One of the main feature of source configuration management
-systems is the possibility to work simultaneously on alternate
-''Lines of Developments'', or ''branches''. 
-The evolution of branches are often made in parallel, making it
-sometimes difficult to understand the exact set of differences 
-between alternative versions.
+One of the core features of version control systems is the possibility
+to work simultaneously on different ''Lines of Developments'', commonly
+called “branches”. Trac enables you to examine the exact differences
+between such branches.
 
-This is where Trac comes to the rescue: 
-the '''View changes ...''' button in the TracBrowser
-leads to a form permitting the selection of arbitrary
-''From:'' and ''To:'' path/revision pairs.
+Using the '''View changes ...''' button in the TracBrowser allows you to enter
+''From:'' and ''To:'' path/revision pairs. The resulting set of differences consist
+of the changes that should be applied to the ''From:'' content in order
+to get to the ''To:'' content.
 
-The resulting set of differences consist in the changes 
-that should be applied to the ''From:'' content in order
-to make it look like the ''To:'' content.
-
-For convenience, it is possible to invert the roles
-of the '''old''' and the '''new''' path/revision pairs
-by clicking the ''Reverse Diff'' link on the changeset page.
+For convenience, it is possible to invert the roles of the ''old'' and the ''new''
+path/revision pairs by clicking the ''Reverse Diff'' link on the changeset page.
 
 === Checking the Last Change ===
 
-The last possibility for looking at changes is 
-to have a quick look on the ''Last Change'' while
-browsing a file or a directory. 
+The last possibility for examining changes is to use the ''Last Change''
+link provided by the TracBrowser.
 
-This shows the last change that happened on that path.
-The links ''Previous Changeset'' and ''Next Changeset''
-are replace by links to ''Previous Change'' and ''Next Change'',
-which makes it really convenient to traverse the change history
-of a specific file or directory.
-This view of a changeset, restricted to a specific path,
-is called ''restricted changeset''.
-
-Of course, if one is doing that on the root of the
-repository, there will be no path restriction
-and the full changeset will be shown.
-
+This link will take you to the last change that was made on that path.
+From there, you can use the ''Previous Change'' and ''Next Change'' links
+to traverse the change history of the file or directory.
 
 ----
 See also: TracGuide, TracBrowser

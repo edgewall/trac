@@ -3,6 +3,8 @@
 
 Trac is distributed with a powerful command-line configuration tool. This tool can be used  to configure and customize your Trac-installation to better fit your needs.
 
+Some of those operations can also be performed via the web interface thanks to the optional [http://trac.edgewall.org/wiki/WebAdmin WebAdmin] plugin, distributed separately for now.
+
 == Usage ==
 
 You can get a comprehensive list of the available options, commands and sub-commands by invoking `trac-admin` with the `help` command:

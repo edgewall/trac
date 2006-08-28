@@ -9,7 +9,7 @@ Rather than have its own report definition format, TracReports relies on standar
 
   '''Note:''' ''The report module is being phased out in its current form because it seriously limits the ability of the Trac team to make adjustments to the underlying database schema. We believe that the [wiki:TracQuery query module] is a good replacement that provides more flexibility and better usability. While there are certain reports that cannot yet be handled by the query module, we intend to further enhance it so that at some point the reports module can be completely removed. This also means that there will be no major enhancements to the report module anymore.''
 
-  ''You can already completely replace the reports module by the query module simply be disabling the former in [wiki:TracIni trac.ini]:''
+  ''You can already completely replace the reports module by the query module simply by disabling the former in [wiki:TracIni trac.ini]:''
   {{{
   [components]
   trac.ticket.report.* = disabled
@@ -29,10 +29,10 @@ Simple reports - ungrouped reports to be specific - can be changed to be sorted 
 If a column header is a hyperlink (red), click the column you would like to sort by. Clicking the same header again reverses the order.
 
 
-== Alternate Download Formats ==
-Aside from the default HTML view, reports can also be exported in a number of alternate formats.
+== Alternative Download Formats ==
+Aside from the default HTML view, reports can also be exported in a number of alternative formats.
 At the bottom of the report page, you will find a list of available data formats. Click the desired link to 
-download the alternate report format.
+download the alternative report format.
 
 === Comma-delimited - CSV (Comma Separated Values) ===
 Export the report as plain text, each row on its own line, columns separated by a single comma (',').

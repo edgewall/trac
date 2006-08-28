@@ -1,6 +1,10 @@
 = Installing Trac as CGI =
 
-To install Trac as a CGI script, you need to make the `trac.cgi` executable as a CGI by your web server. If you're using [http://httpd.apache.org/ Apache HTTPD], there are a couple ways to do that:
+To install Trac as a CGI script, you need to make the `trac.cgi` executable as a CGI by your web server.
+
+  ''Please note that using Trac via CGI is significantly slower than any other deployment method, such as [TracModPython mod_python] or [TracFastCgi FastCGI].''
+
+If you're using [http://httpd.apache.org/ Apache HTTPD], there are a couple ways to do that:
 
  1. Use a `ScriptAlias` to map a URL to the `trac.cgi` script
  2. Copy the `trac.cgi` file into the directory for CGI executables used by your web server (commonly named `cgi-bin`). You can also create a symbolic link, but in that case make sure that the `FollowSymLinks` option is enabled for the `cgi-bin` directory.
@@ -10,22 +14,35 @@ The first option is recommended as it also allows you to map the CGI to a friend
 Now, edit the Apache configuration file and add this snippet, file names and locations changed to match your installation:
 {{{
 ScriptAlias /trac /usr/share/trac/cgi-bin/trac.cgi
+}}}
 
-# Trac needs to know where the database is located
+ ''Note that this directive requires the `mod_alias` module to be installed and enabled.''
+
+If you're using Trac with a single project you need to set its location using the `TRAC_ENV` environment variable:
+{{{
 <Location "/trac">
   SetEnv TRAC_ENV "/path/to/projectenv"
 </Location>
 }}}
 
+Or to use multiple projects you can specify their common parent directory using the `TRAC_ENV_PARENT_DIR` variable:
+{{{
+<Location "/trac">
+  SetEnv TRAC_ENV_PARENT_DIR "/path/to/project/parent/dir"
+</Location>
+}}}
+
+ ''Note that the `SetEnv` directive requires the `mod_env` module to be installed and enable.''
+
 This will make Trac available at `http://yourhost.example.org/trac`.
 
- ''Note: Make sure that the modules mod_alias and mod_env modules are available and enabled in your Apache configuration, otherwise Apache will complain about the above snippet.''
+If you are using the [http://httpd.apache.org/docs/suexec.html Apache suEXEC] feature please see [http://trac.edgewall.org/wiki/ApacheSuexec].
 
- ''Note: If you are using the [http://httpd.apache.org/docs/suexec.html Apache suEXEC] feature see [http://projects.edgewall.com/trac/wiki/ApacheSuexec ApacheSuexec] (on the main Trac site).''
+On some systems, you ''may'' need to edit the shebang line in the `trac.cgi` file to point to your real Python installation path. On a Windows system you may need to configure Windows to know how to execute a .cgi file (Explorer -> Tools -> Folder Options -> File Types -> CGI).
 
 == Mapping Static Resources ==
 
-Out of the box, Trac will serve static resources such as style sheets or images itself. For a CGI setup, though, this is highly undesirable, because it results in the CGI script being invoked for documents that could be more efficiently served by the web server.
+Out of the box, Trac will serve static resources such as style sheets or images itself. For a CGI setup, though, this is highly undesirable, because it results in the CGI script being invoked for documents that could be much more efficiently served by the web server directly.
 
 Web servers such as [http://httpd.apache.org/ Apache HTTPD] allow you to create “Aliases” to resources, thereby giving them a virtual URL that doesn't necessarily bear any resemblance to the layout of the servers file system. We already used this capability above when defining a `ScriptAlias` for the CGI script, and we'll use it now to map requests to the static resources to the directory on the file system that contains them, thereby bypassing the processing of such requests by the CGI script.
 
@@ -48,7 +65,10 @@ Alternatively, you can set the `htdocs_location` configuration option in [wiki:T
 htdocs_location = /trac-htdocs
 }}}
 
-Trac will then use this URL when embedding static resources into HTML pages. Of course, you still need to make the Trac `htdocs` directory available through the web server at the specified URL, for example by copying (or linking) the directory into the document root of the web server.
+Trac will then use this URL when embedding static resources into HTML pages. Of course, you still need to make the Trac `htdocs` directory available through the web server at the specified URL, for example by copying (or linking) the directory into the document root of the web server:
+{{{
+$ ln -s /usr/share/trac/htdocs /var/www/your_site.com/htdocs/trac-htdocs
+}}}
 
 == Adding Authentication ==
 
@@ -74,12 +94,22 @@ After you've created the users, you can set their permissions using TracPermissi
 
 Now, you'll need to enable authentication against the password file in the Apache configuration:
 {{{
-<Location "/cgi-bin/trac.cgi/login">
+<Location "/trac/login">
   AuthType Basic
   AuthName "Trac"
   AuthUserFile /somewhere/trac.htpasswd
   Require valid-user
 </Location>
+}}}
+
+If you're hosting multiple projects you can use the same password file for all of them:
+{{{
+<LocationMatch "/trac/[^/]+/login">
+  AuthType Basic
+  AuthName "Trac"
+  AuthUserFile /somewhere/trac.htpasswd
+  Require valid-user
+</LocationMatch>
 }}}
 
 For better security, it is recommended that you either enable SSL or at least use the “Digest” authentication scheme instead of “Basic”. Please read the [http://httpd.apache.org/docs/2.0/ Apache HTTPD documentation] to find out more.

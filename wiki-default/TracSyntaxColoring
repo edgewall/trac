@@ -5,7 +5,7 @@ To do this, Trac uses external libraries with support for a great number of prog
 
 Currently Trac supports syntax coloring using one or more of the following packages:
 
- * [http://people.ssh.fi/mtr/genscript/ GNU Enscript]
+ * [http://www.codento.com/people/mtr/genscript/ GNU Enscript] 
  * [http://silvercity.sourceforge.net/ SilverCity]
 
 To activate syntax coloring, simply install either one (or more) of these packages. No additional configuration is required, however to modify the colors, have a look at `trac/htdocs/css/code.css`.
@@ -27,6 +27,7 @@ If neither package is available, Trac will display the data as plain text.
 || Asm      ||   || X ||
 || * ASP    || X || X ||
 || * C      || X || X ||
+|| * C#     ||   || X(2) ||
 || * C++    || X || X ||
 || * Java   ||   || X ||
 || Awk      ||   || X ||
@@ -39,7 +40,6 @@ If neither package is available, Trac will display the data as plain text.
 || HTML     || X || X ||
 || IDL      ||   || X ||
 || Javascript || X || X ||
-
 || m4       ||   || X ||
 || Makefile ||   || X ||
 || Matlab   ||   || X ||
@@ -61,14 +61,17 @@ If neither package is available, Trac will display the data as plain text.
 || VHDL     ||   || X ||
 || Visual Basic |||| X ||
 || VRML     ||   || X ||
-|| XML      || X || X ||
+|| XML      || X ||  ||
 
 ''(*) Supported as inline code blocks in [wiki:WikiFormatting Wiki text] using WikiProcessors.''
 
 ''(1) Ruby highlighting is not included in the Enscript distribution.  Highlighting rules for Ruby can be obtained from: http://neugierig.org/software/ruby/
 
+''(2) C# highlighting is not included in the Enscript distribution.  Highlighting rules for Ruby can be obtained from: http://wiki.hasno.info/index.php/Csharp.st
+
 == Extra Software ==
- * GNU Enscript -- http://people.ssh.fi/mtr/genscript/
+ * GNU Enscript -- http://directory.fsf.org/GNU/enscript.html
+ * GNU Enscript for Windows -- http://gnuwin32.sourceforge.net/packages/enscript.htm
  * !SilverCity -- http://silvercity.sf.net/
 
 ----
