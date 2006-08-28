@@ -1,3 +1,19 @@
+Trac 0.10-beta1  (Aug 28, 2006)
+http://svn.edgewall.org/repos/trac/tags/trac-0.10b1
+
+ Trac 0.10 contains a great number of new features, improvements and
+ bug fixes. The following list contains only a few highlights:
+
+ * Support for spam protection.
+ * Advanced diff support.
+ * InterWiki and InterTrac support.
+ * Improved notification system.
+ * WSGI Used as web server protocol.
+
+ A more complete list of new features can be found in the RELEASE file.
+ The complete list of closed tickets can be found here:
+   http://trac.edgewall.org/query?status=closed&milestone=0.10
+
 Trac 0.9.6  (Jul 6, 2006)
 http://svn.edgewall.org/repos/trac/tags/trac-0.9.6
 

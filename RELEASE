@@ -1,66 +1,166 @@
-Trac 0.9.5 Release Notes
-============================
-April 18, 2006
+Release Notes for Trac 0.10b1
+=============================
+August 28, 2006
 
-We're proud to present our latest release - Trac 0.9.5.
+We're happy to announce the Trac 0.10b1 release, available from:
 
-Trac is an enhanced wiki and issue tracking system, integrated with
-Subversion, for software development projects. Trac uses a minimalistic
-approach to web-based software project management. Our mission is simple; to
-help developers write great software while staying out of the way. Trac should
-impose as little as possible on a team's established development process and
-policies.
+  http://trac.edgewall.org/wiki/TracDownload
 
-Trac allows wiki markup in issue descriptions and commit messages, creating
-links and useful structure between bugs, tasks, changesets, files and wiki
-pages.  A timeline view presents all project events in chronological order,
-making tracking progress or getting an overview of a project easy.
+This is a beta release, which means that the Trac developers feel that this
+release is stable enough for for serious testing. While we feel that this
+release is stable we do not recommend to use this release in production. If
+no serious bugs are found the final stable 0.10 release will be released in
+a couple of days.
 
-For more information, please visit the main Trac web site:
+For questions, comments and user discussions, please use the Trac mailing
+list. List information, subscription and archive available at:
 
-  <http://trac.edgewall.org/>
+  http://trac.edgewall.org/wiki/MailingList
 
-The software, published under the modified BSD License, is
-available at:
+User visible changes
+====================
 
-  <http://trac.edgewall.org/wiki/TracDownload>
+Advanced diff support
+---------------------
+The TracRevisionLog view can now be used to select two arbitrary revisions
+of a given path in the repository and see the differences between them, in
+the familiar TracChangeset view.
 
-Please report problems in the project issue tracker:
+A related change is the possibility to navigate through a sequence of
+restricted changesets. A restricted changeset is the subset of changes
+within a changeset inside a given directory. One can easily start
+navigating such a sequence by following the new Last Change navigation link
+present for the currently browsed path.
 
-  <http://trac.edgewall.org/newticket>
+It's now also possible to compare two arbitrary paths at any revision. This
+can be used to check the differences between a tagged version and trunk, or
+to review the set of differences between two branches.
 
-For questions, comments and user discussions, please use the Trac mailing list.
-List information, subscription and archive available at:
+InterWiki and InterTrac support
+-------------------------------
+An InterWiki link can be used to refer to a Wiki page located on another
+Wiki system, and by extension, to any object located on any other Web site,
+as long as simple URL mapping is possible.
 
-  <http://trac.edgewall.org/wiki/MailingList>
+An InterTrac link can be used for referring to a Trac resource (Wiki page,
+changeset, ticket, ...) on an other Trac environment. This makes it easier
+to work with multiple separate projects, and seamlessly refer to resources
+from one Trac to another.
 
+Improved modularity
+-------------------
+Trac now supports database and version control backends as third-party
+plugins.
 
-What's New
-----------
-A brief summary of major changes for version 0.9.5:
+It is now easier to add support for new database backends. In addition to
+the already existing support for SQLite and PostgreSQL, Trac now features
+experimental support for the MySQL database.
 
- * Fixed wiki macro XSS vulnerability.
- * Smaller memory usage when accessing subversion history.
- * Fixed issue with incorrectly generated urls when installed behind a web 
-   proxy.
+As for the version control systems, Trac still features best of breed
+Subversion support, but the Subversion bindings and libraries are no longer
+mandatory for using Trac itself. Other version control systems can be
+supported by external plugins.
 
-For a more complete list of improvements, see the ChangeLog at:
+Improved notification system
+----------------------------
+The encoding for emails sent out by Trac can now be confiured. This may
+decrease email size and can avoid useless encoding for western languages
+that make some touchy SMTP servers bounce the notifications.
 
- <http://trac.edgewall.org/wiki/ChangeLog>
+Support for local network installations using local email addresses
+(addresses without a domain name) and a configurable default domain name
+has been added, as well as support for both visible and blind carbon
+copies.
 
+Support for spam protection
+---------------------------
+Trac now provides extension point that allow plugins to intercept content
+submissions, which can be used to filter out spam. One plugin that does
+this is the SpamFilter plugin, which is available as a separate package:
+
+  http://trac.edgewall.org/wiki/SpamFilter
+
+This plugin implements a number of different strategies for testing
+content, such as regular expression matching, IP blacklisting, and Akismet
+queries.
+
+WSGI used as web server protocol
+
+Trac now uses WSGI (the "Python Web Server Gateway Interface") internally.
+While Trac continues to provide builtin support for CGI, FastCGI and
+mod_python, as well as the standalone server "tracd", you can now take
+advantage of the WSGI support to use Trac in other setups, such as Twisted,
+Paste, SCGI, or ISAPI.
+
+Lots of minor improvements
+--------------------------
+
+To the Wiki syntax
+
+Numerous improvements have been made in the WikiFormatting syntax:
+
+ * Headings can optionally be given explicit id.
+ * MoinMoin ["internal free link"] syntax is now supported.
+ * Introduced citation syntax for the Wiki (e-mail style).
+ * Added more robust parsing and formatting of Wiki lists and robust
+   coupling of lists and quotes.
+ * Improved the way external links are displayed.
+ * Lots of new ways to refer to specific repository views (diff:from//to,
+   log:, [x:y], rx:y)
+ * htdocs:, useful for referring to local resources in TracStandalone
+ * MoinMoin-style syntax for description lists
+ * Removed support for direct embedding of images using links: use the
+   [[Image]] macro instead.
+
+To the Wiki subsystem
+
+ * Quicker access to last change on a page and better navigation in the
+   page history
+ * Preview the change comment before saving a change and display the
+   change comment when viewing a specific version of a page. This
+   hopefully will encourage authors to document their changes!
+
+To the Ticket subsystem
+
+ * Possibility to Reply to ticket description and changes
+ * Export individual ticket data in CSV or RSS format
+
+Developer-visible changes
+=========================
+
+unicode everywhere
+------------------
+Trac used to handle text content by using str objects, in which Unicode
+characters were represented using UTF-8 encoding. This lead to various
+problems with most non-western languages. We now use the dedicated unicode
+datatype to consistently handle text written in any language.
+
+Better way to programatically generate HTML fragments
+-----------------------------------------------------
+Trac now provides utility code to programmatically generate HTML snippets.
+This can be used in the various places where Trac expects plugins to return
+small fragments of HTML bypassing the template system. These utilities can
+be found in the trac.util.html module.
+
+Unit test framework for email notifications
+-------------------------------------------
+Email notifications can now be validated; unit tests include a private SMTP
+server and helper methods to extract and decode email data.
 
 Acknowledgements
-----------------
+================
+
 Many thanks to the growing number of people who have, and continue to,
-support the project. Also our thanks to all people providing feedback and bug
-reports that helps us make Trac better, easier to use and more effective.
+support the project. Also our thanks to all people providing feedback and
+bug reports that helps us make Trac better, easier to use and more
+effective.
 
 Without your invaluable help, Trac would not evolve. Thank you all.
 
 Finally, we offer hope that Trac will prove itself useful to like-minded
-programmers around the world, and that this release will prove an improvement
-over the last version.
+programmers around the world, and that this release will prove an
+improvement over the last version.
 
 Please let us know. :-)
 
-/The Trac Team <http://trac.edgewall.org/>
+/The Trac Team http://trac.edgewall.org/
