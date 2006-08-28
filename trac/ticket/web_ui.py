@@ -105,6 +105,9 @@ class NewticketModule(TicketModuleBase):
 
         db = self.env.get_db_cnx()
 
+        if req.method == 'POST' and not req.perm.has_permission('TICKET_MODIFY'):
+            del req.args['owner']
+
         if req.method == 'POST' and not req.args.has_key('preview'):
             self._do_create(req, db)
 
@@ -139,6 +142,8 @@ class NewticketModule(TicketModuleBase):
                 field['skip'] = True
             elif name == 'owner':
                 field['label'] = 'Assign to'
+                if not req.perm.has_permission('TICKET_MODIFY'):
+                    field['skip'] = True
             elif name == 'milestone':
                 # Don't make completed milestones available for selection
                 options = field['options'][:]
