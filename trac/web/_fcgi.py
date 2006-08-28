@@ -1,6 +1,6 @@
 # -*- coding: iso-8859-1 -*-
 #
-# Copyright (c) 2002, 2003, 2005 Allan Saddi <allan@saddi.com>
+# Copyright (c) 2002, 2003, 2005, 2006 Allan Saddi <allan@saddi.com>
 # All rights reserved.
 #
 # This software is licensed as described in the file COPYING, which
@@ -19,6 +19,7 @@ fcgi - a FastCGI/WSGI gateway.
 For more information about FastCGI, see <http://www.fastcgi.com/>.
 
 For more information about the Web Server Gateway Interface, see
+
 <http://www.python.org/peps/pep-0333.html>.
 
 Example usage:
@@ -36,13 +37,13 @@ variable FCGI_FORCE_CGI to "Y" or "y".
 """
 
 __author__ = 'Allan Saddi <allan@saddi.com>'
-__version__ = '$Revision: 1797 $'
+__version__ = '$Revision: 2025 $'
 
 import sys
 import os
 import signal
 import struct
-import StringIO
+import cStringIO as StringIO
 import select
 import socket
 import errno
@@ -56,6 +57,10 @@ except ImportError:
     import dummy_thread as thread
     import dummy_threading as threading
     thread_available = False
+
+# Apparently 2.3 doesn't define SHUT_WR? Assume it is 1 in this case.
+if not hasattr(socket, 'SHUT_WR'):
+    socket.SHUT_WR = 1
 
 __all__ = ['WSGIServer']
 
@@ -513,9 +518,7 @@ class Record(object):
             try:
                 sent = sock.send(data)
             except socket.error, e:
-                if e[0] == errno.EPIPE:
-                    return # Don't bother raising an exception. Just ignore.
-                elif e[0] == errno.EAGAIN:
+                if e[0] == errno.EAGAIN:
                     select.select([], [sock], [])
                     continue
                 else:
@@ -738,7 +741,7 @@ class Connection(object):
                 outrec.contentData += encode_pair(name, str(cap))
 
         outrec.contentLength = len(outrec.contentData)
-        self.writeRecord(rec)
+        self.writeRecord(outrec)
 
     def _do_begin_request(self, inrec):
         """Handle an FCGI_BEGIN_REQUEST from the web server."""
@@ -909,7 +912,7 @@ class Server(object):
     inputStreamShrinkThreshold = 102400 - 8192
 
     def __init__(self, handler=None, maxwrite=8192, bindAddress=None,
-                 multiplexed=False):
+                 umask=None, multiplexed=False):
         """
         handler, if present, must reference a function or method that
         takes one argument: a Request object. If handler is not
@@ -967,6 +970,7 @@ class Server(object):
                 FCGI_MPXS_CONNS: 0
                 }
         self._bindAddress = bindAddress
+        self._umask = umask
 
     def _setupSocket(self):
         if self._bindAddress is None: # Run as a normal FastCGI?
@@ -995,6 +999,7 @@ class Server(object):
                 sys.exit(0)
         else:
             # Run as a server
+            oldUmask = None
             if type(self._bindAddress) is str:
                 # Unix socket
                 sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
@@ -1002,6 +1007,8 @@ class Server(object):
                     os.unlink(self._bindAddress)
                 except OSError:
                     pass
+                if self._umask is not None:
+                    oldUmask = os.umask(self._umask)
             else:
                 # INET socket
                 assert type(self._bindAddress) is tuple
@@ -1011,6 +1018,9 @@ class Server(object):
 
             sock.bind(self._bindAddress)
             sock.listen(socket.SOMAXCONN)
+
+            if oldUmask is not None:
+                os.umask(oldUmask)
 
         return sock
 
@@ -1127,7 +1137,8 @@ class WSGIServer(Server):
     FastCGI server that supports the Web Server Gateway Interface. See
     <http://www.python.org/peps/pep-0333.html>.
     """
-    def __init__(self, application, environ=None, multithreaded=True, **kw):
+    def __init__(self, application, environ=None, umask=None,
+                 multithreaded=True, **kw):
         """
         environ, if present, must be a dictionary-like object. Its
         contents will be copied into application's environ. Useful
@@ -1241,16 +1252,20 @@ class WSGIServer(Server):
         if not self.multithreaded:
             self._app_lock.acquire()
         try:
-            result = self.application(environ, start_response)
             try:
-                for data in result:
-                    if data:
-                        write(data)
-                if not headers_sent:
-                    write('') # in case body was empty
-            finally:
-                if hasattr(result, 'close'):
-                    result.close()
+                result = self.application(environ, start_response)
+                try:
+                    for data in result:
+                        if data:
+                            write(data)
+                    if not headers_sent:
+                        write('') # in case body was empty
+                finally:
+                    if hasattr(result, 'close'):
+                        result.close()
+            except socket.error, e:
+                if e[0] != errno.EPIPE:
+                    raise # Don't let EPIPE propagate beyond server
         finally:
             if not self.multithreaded:
                 self._app_lock.release()
