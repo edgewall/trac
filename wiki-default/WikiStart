@@ -1,4 +1,4 @@
-= Welcome to Trac 0.10 =
+= Welcome to Trac 0.10b1 =
 
 Trac is a '''minimalistic''' approach to '''web-based''' management of
 '''software projects'''. Its goal is to simplify effective tracking and handling of software issues, enhancements and overall progress.
@@ -20,7 +20,7 @@ data. This newly created environment also contains
 [wiki:TracGuide documentation] to help you get started with your project.
 
 You can use [wiki:TracAdmin trac-admin] to configure
-[http://trac.edgewall.com/ Trac] to better fit your project, especially in
+[http://trac.edgewall.org/ Trac] to better fit your project, especially in
 regard to ''components'', ''versions'' and ''milestones''. 
 
 
@@ -32,12 +32,8 @@ Enjoy! [[BR]]
 == Starting Points ==
 
  * TracGuide --  Built-in Documentation
- * [http://projects.edgewall.com/trac/ The Trac project] -- Trac Open Source Project
- * [http://projects.edgewall.com/trac/wiki/TracFaq Trac FAQ] -- Frequently Asked Questions
+ * [http://trac.edgewall.org/ The Trac project] -- Trac Open Source Project
+ * [http://trac.edgewall.org/wiki/TracFaq Trac FAQ] -- Frequently Asked Questions
  * TracSupport --  Trac Support
 
 For a complete list of local wiki pages, see TitleIndex.
-
-Trac is brought to you by [http://www.edgewall.com/ Edgewall Software],
-providing professional Linux and software development services to clients
-worldwide. Visit http://www.edgewall.com/ for more information.
