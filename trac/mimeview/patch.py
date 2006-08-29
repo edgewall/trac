@@ -152,7 +152,9 @@ class PatchRenderer(Component):
                         line = lines.next()
 
                         # First character is the command
-                        command, line = line[0], line[1:]
+                        command = ' '
+                        if line:
+                            command, line = line[0], line[1:]
                         # Make a new block?
                         if (command == ' ') != last_type:
                             last_type = command == ' '
