@@ -105,7 +105,8 @@ class NewticketModule(TicketModuleBase):
 
         db = self.env.get_db_cnx()
 
-        if req.method == 'POST' and not req.perm.has_permission('TICKET_MODIFY'):
+        if req.method == 'POST' and 'owner' in req.args and \
+               not req.perm.has_permission('TICKET_MODIFY'):
             del req.args['owner']
 
         if req.method == 'POST' and not req.args.has_key('preview'):
