@@ -38,7 +38,7 @@
  </div>
  <div id="help">
   <strong>Note:</strong> See <a href="<?cs var:trac.href.wiki
-  ?>/TracChangeset#ExaminingArbitraryDifferences">TracChangeset</a> for help on using the arbitrary diff feature.
+  ?>/TracChangeset#ExaminingDifferencesBetweenBranches">TracChangeset</a> for help on using the arbitrary diff feature.
  </div>
 </div>
 
