@@ -1,7 +1,6 @@
 include AUTHORS ChangeLog COPYING INSTALL MANIFEST.in README README.tracd RELEASE setup.cfg THANKS UPGRADE
 include scripts/trac-admin
 include scripts/tracd
-include scripts/tracdb2env
 include scripts/trac-postinstall.py
 include scripts/*.1
 include scripts/rpm-install.sh

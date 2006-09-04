@@ -90,11 +90,6 @@ class my_install_scripts (install_scripts):
                                         self.install_dir)
         if copied:
             self.outfiles.append(ofile)
-        ofile, copied = self.copy_file(os.path.join(self.build_dir,
-                                                     'tracdb2env'),
-                                        self.install_dir)
-        if copied:
-            self.outfiles.append(ofile)
             
         cgi_dir = os.path.join(self.install_data, 'share', 'trac', 'cgi-bin')
         if not os.path.exists(cgi_dir):
@@ -241,7 +236,6 @@ facilities.
       scripts=[_p('scripts/trac-admin'),
                _p('scripts/trac-postinstall.py'),
                _p('scripts/tracd'),
-               _p('scripts/tracdb2env'),
                _p('cgi-bin/trac.cgi'),
                _p('cgi-bin/trac.fcgi')],
       cmdclass = {'install': my_install,
