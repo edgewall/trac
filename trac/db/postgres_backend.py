@@ -44,7 +44,7 @@ class PostgreSQLConnector(Component):
         cnx = self.get_connection(path, user, password, host, port, params)
         cursor = cnx.cursor()
         if cnx.schema:
-            cursor.execute('CREATE SCHEMA %s' % cnx.schema)
+            cursor.execute('CREATE SCHEMA "%s"' % cnx.schema)
             cursor.execute('SET search_path TO %s', (cnx.schema,))
         from trac.db_default import schema
         for table in schema:
