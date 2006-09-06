@@ -247,6 +247,8 @@ class Section(object):
         `ConfigurationError` exception is raised.
         """
         value = self.get(name, default)
+        if value == '':
+            return default
         try:
             return int(value)
         except ValueError:

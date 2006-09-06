@@ -65,7 +65,8 @@ class ConfigurationTestCase(unittest.TestCase):
 
     def test_default_int(self):
         config = Configuration(self.filename)
-        self.assertRaises(ConfigurationError, config.getint, 'a', 'option')
+        self.assertRaises(ConfigurationError, config.getint, 'a', 'option', 'b')
+        self.assertEquals(None, config.getint('a', 'option'))
         self.assertEquals(1, config.getint('a', 'option', '1'))
         self.assertEquals(1, config.getint('a', 'option', 1))
 
