@@ -254,7 +254,7 @@ class ReportModule(Component):
         for col in cols:
             title=col.capitalize()
             prefix = 'report.headers.%d' % idx
-            req.hdf['%s.real' % prefix] = col[0]
+            req.hdf['%s.real' % prefix] = col
             if title.startswith('__') and title.endswith('__'):
                 continue
             elif title[0] == '_' and title[-1] == '_':
