@@ -14,10 +14,11 @@ class TestTicketChangeListener(core.Component):
         self.action = 'created'
         self.ticket = ticket
 
-    def ticket_changed(self, ticket, comment, old_values):
+    def ticket_changed(self, ticket, comment, author, old_values):
         self.action = 'changed'
         self.ticket = ticket
         self.comment = comment
+        self.author = author
         self.old_values = old_values
         
     def ticket_deleted(self, ticket):
@@ -262,6 +263,7 @@ class TicketTestCase(unittest.TestCase):
 
         self.assertEqual('changed', listener.action)
         self.assertEqual(comment, listener.comment)
+        self.assertEqual('author', listener.author)
         for key, value in data.iteritems():
             self.assertEqual(value, listener.old_values[key])
 

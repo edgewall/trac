@@ -32,7 +32,7 @@ class ITicketChangeListener(Interface):
     def ticket_created(ticket):
         """Called when a ticket is created."""
 
-    def ticket_changed(ticket, comment, old_values):
+    def ticket_changed(ticket, comment, author, old_values):
         """Called when a ticket is modified.
         
         `old_values` is a dictionary containing the previous values of the

@@ -261,7 +261,7 @@ class Ticket(object):
         self.time_changed = when
 
         for listener in TicketSystem(self.env).change_listeners:
-            listener.ticket_changed(self, comment, old_values)
+            listener.ticket_changed(self, comment, author, old_values)
 
     def get_changelog(self, when=0, db=None):
         """Return the changelog as a list of tuples of the form
