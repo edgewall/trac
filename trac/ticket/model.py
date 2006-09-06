@@ -415,7 +415,8 @@ class AbstractEnum(object):
             db = env.get_db_cnx()
         cursor = db.cursor()
         cursor.execute("SELECT name,value FROM enum WHERE type=%s "
-                       "ORDER BY value", (cls.type,))
+                       "ORDER BY " + db.cast('value', 'int'),
+                       (cls.type,))
         for name, value in cursor:
             obj = cls(env)
             obj.name = obj._old_name = name

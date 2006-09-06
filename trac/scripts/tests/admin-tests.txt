@@ -430,6 +430,27 @@ minor
 trivial    
 new_priority   
 
+===== test_priority_add_many_ok =====
+
+Possible Values
+---------------
+blocker        
+critical       
+major          
+minor          
+trivial    
+p0            
+p1            
+p2            
+p3            
+p4            
+p5            
+p6            
+p7            
+p8            
+p9            
+p10           
+
 ===== test_priority_add_error_already_exists =====
 Command failed: columns type, name are not unique
 ===== test_priority_change_ok =====

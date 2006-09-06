@@ -502,6 +502,18 @@ Trac Admin Console %s
         self.assertEqual(0, rv)
         self.assertEqual(self.expected_results[test_name], output)
 
+    def test_priority_add_many_ok(self):
+        """
+        Tests adding more than 10 priority values.  This makes sure that
+        ordering is preserved when adding more than 10 values.
+        """
+        test_name = sys._getframe().f_code.co_name
+        for i in xrange(11):
+            self._execute('priority add p%s' % i)
+        rv, output = self._execute('priority list')
+        self.assertEqual(0, rv)
+        self.assertEqual(self.expected_results[test_name], output)
+
     def test_priority_add_error_already_exists(self):
         """
         Tests the 'priority add' command in trac-admin.  This particular
