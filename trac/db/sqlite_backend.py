@@ -175,7 +175,13 @@ class SQLiteConnection(ConnectionWrapper):
             return SQLiteUnicodeCursor(self.cnx, self.cnx.rowclass)
 
     def cast(self, column, type):
-        return 'CAST(%s AS %s)' % (column, type)
+        if sqlite_version >= 30203:
+            return 'CAST(%s AS %s)' % (column, type)
+        elif type == 'int':
+            # hack to force older SQLite versions to convert column to an int
+            return '1*' + column
+        else:
+            return column
 
     def like(self):
         if sqlite_version >= 30100:
