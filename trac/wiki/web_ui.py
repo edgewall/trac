@@ -249,7 +249,7 @@ class WikiModule(Component):
         version = None
         if req.args.has_key('delete_version'):
             version = int(req.args.get('version', 0))
-        old_version = int(req.args.get('old_version', 0)) or version
+        old_version = int(req.args.get('old_version') or 0) or version
 
         self._set_title(req, page, 'delete')
         req.hdf['wiki'] = {'mode': 'delete'}
