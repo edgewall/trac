@@ -75,11 +75,13 @@
  if:ticket.description ?>
   <form method="get" action="<?cs var:ticket.href ?>#comment" class="printableform">
    <div class="description">
-    <h3 id="comment:description">
+    <h3 id="comment:description"><?cs
+     if:trac.acl.TICKET_APPEND ?>
      <span class="inlinebuttons">
       <input type="hidden" name="replyto" value="description" />
       <input type="submit" value="Reply" title="Reply, quoting this description" />
-     </span>
+     </span><?cs
+     /if ?>
      Description <?cs
      if:ticket.description.lastmod ?><span class="lastmod" title="<?cs var:ticket.description.lastmod ?>">(Last modified by <?cs var:ticket.description.author ?>)</span><?cs
      /if ?>
@@ -104,11 +106,13 @@
  <form method="get" action="<?cs var:ticket.href ?>#comment" class="printableform">
  <div class="change">
   <h3 <?cs if:change.cnum ?>id="comment:<?cs var:change.cnum ?>"<?cs /if ?>><?cs
-   if:change.cnum ?>
+   if:change.cnum ?><?cs
+    if:trac.acl.TICKET_APPEND ?>
     <span class="inlinebuttons">
      <input type="hidden" name="replyto" value="<?cs var:change.cnum ?>" />
      <input type="submit" value="Reply" title="Reply to comment <?cs var:change.cnum ?>" />
-    </span>
+    </span><?cs
+    /if ?>
     <span class="threading"><?cs
      set:nreplies = len(ticket.replies[change.cnum]) ?><?cs
      if:nreplies || change.replyto ?>(<?cs
