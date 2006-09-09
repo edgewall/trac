@@ -75,7 +75,12 @@ class InterWikiMap(Component):
         Expand the colon-separated `target` arguments.
         """
         ns, url, title = self[ns]
-        args = target.split(':')
+        maxargnum = max([0]+[int(a[1:]) for a in
+                             re.findall(InterWikiMap._argspec_re, url)])
+        if maxargnum > 0:
+            args = target.split(':', (maxargnum - 1))
+        else:
+            args = [target]
         expanded_url = self._expand_or_append(url, args)
         expanded_title = self._expand(title, args)
         if expanded_title == title:
@@ -85,12 +90,11 @@ class InterWikiMap(Component):
     # IWikiChangeListener methods
 
     def wiki_page_added(self, page):
-        if page.name == InterWikiMap._page_name:
-            self._update()
+        pass
 
     def wiki_page_changed(self, page, version, t, comment, author, ipnr):
         if page.name == InterWikiMap._page_name:
-            self._update()
+            self._interwiki_map = None
 
     def wiki_page_deleted(self, page):
         if page.name == InterWikiMap._page_name:
@@ -98,7 +102,7 @@ class InterWikiMap(Component):
 
     def wiki_page_version_deleted(self, page):
         if page.name == InterWikiMap._page_name:
-            self._update()
+            self._interwiki_map = None
 
     def _update(self):
         from trac.wiki.model import WikiPage
