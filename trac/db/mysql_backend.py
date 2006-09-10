@@ -145,6 +145,8 @@ class MySQLConnection(ConnectionWrapper):
         ConnectionWrapper.__init__(self, cnx)
 
     def cast(self, column, type):
+        if type == 'int':
+            type = 'signed'
         return 'CAST(%s AS %s)' % (column, type)
 
     def like(self):
