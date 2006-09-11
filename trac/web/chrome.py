@@ -322,14 +322,16 @@ class Chrome(Component):
                 active = contributor.get_active_navigation_item(req)
 
         for category, items in [(k, v.items()) for k, v in navigation.items()]:
-            order = getattr(self, category + '_order')
-            def navcmp(x, y):
-                if x[0] not in order:
-                    return int(y[0] in order)
-                if y[0] not in order:
-                    return -int(x[0] in order)
-                return cmp(order.index(x[0]), order.index(y[0]))
-            items.sort(navcmp)
+            category_order = category + '_order'
+            if hasattr(self, category_order):
+                order = getattr(self, category_order)
+                def navcmp(x, y):
+                    if x[0] not in order:
+                        return int(y[0] in order)
+                    if y[0] not in order:
+                        return -int(x[0] in order)
+                    return cmp(order.index(x[0]), order.index(y[0]))
+                items.sort(navcmp)
 
             for name, text in items:
                 req.hdf['chrome.nav.%s.%s' % (category, name)] = text
