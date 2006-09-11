@@ -83,9 +83,16 @@ A0B1, ST62T53C6, IR32V1H000
 ------------------------------
 ============================== WikiPageNames with fragment identifier
 SandBox#heading-fixed-id
+
+wiki:TracSubversion#TracandSubversion1.3.1. etc.
+TracSubversion#TracandSubversion1.3.1. etc.
 ------------------------------
 <p>
 <a class="missing wiki" href="/wiki/SandBox#heading-fixed-id" rel="nofollow">SandBox#heading-fixed-id?</a>
+</p>
+<p>
+<a class="missing wiki" href="/wiki/TracSubversion#TracandSubversion1.3.1" rel="nofollow">wiki:TracSubversion#TracandSubversion1.3.1?</a>. etc.
+<a class="missing wiki" href="/wiki/TracSubversion#TracandSubversion1.3.1" rel="nofollow">TracSubversion#TracandSubversion1.3.1?</a>. etc.
 </p>
 ------------------------------
 ============================== WikiPageNames counter examples (paths)

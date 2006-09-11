@@ -230,6 +230,9 @@ class WikiSystem(Component):
 
     # IWikiSyntaxProvider methods
 
+    XML_NAME = r"[\w:](?<!\d)(?:[\w:.-]*?[\w:-])*"
+    # See http://www.w3.org/TR/REC-xml/#id, here adapted to exclude terminal "."
+
     def format_page_name(self, page):
         if self.split_page_names:
             return re.sub(r"([a-z])([A-Z][a-z])", r"\1 \2", page)
@@ -239,7 +242,7 @@ class WikiSystem(Component):
         from trac.wiki.formatter import Formatter
         wiki_page_name = (
             r"[A-Z][a-z]+(?:[A-Z][a-z]*[a-z/])+" # wiki words
-            r"(?:#%s)?" % Formatter.XML_NAME + # optional fragment id
+            r"(?:#%s)?" % self.XML_NAME + # optional fragment id
             r"(?=:?\Z|:?\s|[.,;!?\)}\'\"\]])" # what should follow it
             )
         
