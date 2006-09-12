@@ -467,8 +467,8 @@ class IRequestFilter(Interface):
     requests, before and/or after they are processed by the main handler."""
 
     def pre_process_request(req, handler):
-        """Do any pre-processing the request might need; typically adding
-        values to req.hdf, or redirecting.
+        """Called after initial handler selection, and can be used to change
+        the selected handler or redirect request.
         
         Always returns the request handler, even if unchanged.
         """

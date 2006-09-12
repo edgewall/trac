@@ -172,9 +172,7 @@ class RequestDispatcher(Component):
                         chosen_handler = handler
                         break
 
-            for f in self.filters:
-                chosen_handler = f.pre_process_request(req, chosen_handler)
-                
+            chosen_handler = self._pre_process_request(req, chosen_handler)
         except:
             early_error = sys.exc_info()
             
@@ -201,6 +199,7 @@ class RequestDispatcher(Component):
         # Prepare HDF for the clearsilver template
         try:
             use_template = getattr(chosen_handler, 'use_template', True)
+            req.hdf = None
             if use_template:
                 chrome = Chrome(self.env)
                 req.hdf = HDFWrapper(loadpaths=chrome.get_all_templates_dirs())
@@ -212,20 +211,30 @@ class RequestDispatcher(Component):
                 raise
 
         if early_error:
+            try:
+                self._post_process_request(req)
+            except Exception, e:
+                self.log.exception(e)
             raise early_error[0], early_error[1], early_error[2]
 
         # Process the request and render the template
         try:
             try:
-                resp = chosen_handler.process_request(req)
-                if resp:
-                    for filter_ in reversed(self.filters):
-                        resp = filter_.post_process_request(req, *resp)
-                    template, content_type = resp
-                    req.display(template, content_type or 'text/html')
-                else:
-                    for filter_ in reversed(self.filters):
-                        filter_.post_process_request(req, None, None)
+                try:
+                    resp = chosen_handler.process_request(req)
+                    if resp:
+                        template, content_type = \
+                                  self._post_process_request(req, *resp)
+                        req.display(template, content_type or 'text/html')
+                    else:
+                        self._post_process_request(req)
+                except:
+                    err = sys.exc_info()
+                    try:
+                        self._post_process_request(req)
+                    except Exception, e:
+                        self.log.exception(e)
+                    raise err[0], err[1], err[2]
             except PermissionError, e:
                 raise HTTPForbidden(to_unicode(e))
             except TracError, e:
@@ -234,6 +243,17 @@ class RequestDispatcher(Component):
             # Give the session a chance to persist changes
             if req.session:
                 req.session.save()
+
+    def _pre_process_request(self, req, chosen_handler):
+        for f in self.filters:
+            chosen_handler = f.pre_process_request(req, chosen_handler)
+        return chosen_handler
+                
+    def _post_process_request(self, req, template=None, content_type=None):
+        for f in reversed(self.filters):
+            template, content_type = f.post_process_request(req, template,
+                                                            content_type)
+        return template, content_type
 
 
 def dispatch_request(environ, start_response):
