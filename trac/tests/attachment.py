@@ -1,6 +1,5 @@
 # -*- encoding: utf-8 -*-
 from trac.attachment import Attachment, AttachmentModule
-from trac.config import Configuration
 from trac.log import logger_factory
 from trac.test import EnvironmentStub, Mock
 from trac.wiki.formatter import Formatter

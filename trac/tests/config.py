@@ -15,6 +15,7 @@
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
 from trac.config import *
+from trac.test import TestConfiguration
 
 import os
 from StringIO import StringIO
@@ -36,11 +37,7 @@ class ConfigurationTestCase(unittest.TestCase):
         os.remove(self.filename)
 
     def _read(self):
-        config = Configuration(self.filename)
-        # insulate us from "real" global trac.ini (ref. #3700)
-        from ConfigParser import ConfigParser
-        config.site_parser = ConfigParser()
-        return config
+        return TestConfiguration(self.filename)
 
     def _write(self, lines):
         fileobj = open(self.filename, 'w')

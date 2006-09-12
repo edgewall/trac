@@ -23,10 +23,9 @@ import unittest
 from StringIO import StringIO
 
 from trac.db_default import data as default_data
-from trac.config import Configuration
 from trac.env import Environment
 from trac.scripts import admin
-from trac.test import InMemoryDatabase
+from trac.test import InMemoryDatabase, TestConfiguration
 from trac.util.datefmt import get_date_format_hint
 
 STRIP_TRAILING_SPACE = re.compile(r'( +)$', re.MULTILINE)
@@ -79,7 +78,7 @@ class InMemoryEnvironment(Environment):
                cls.__module__.find('.tests.') == -1
 
     def setup_config(self, load_defaults=None):
-        self.config = Configuration(None)
+        self.config = TestConfiguration(None)
             
     def save_config(self):
         pass

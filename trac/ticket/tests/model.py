@@ -1,4 +1,3 @@
-from trac.config import Configuration
 from trac import core
 from trac.core import TracError, implements
 from trac.ticket.model import Ticket, Component, Milestone, Priority, Type

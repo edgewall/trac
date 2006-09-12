@@ -1,4 +1,3 @@
-from trac.config import Configuration
 from trac.log import logger_factory
 from trac.test import Mock, EnvironmentStub
 from trac.ticket.query import Query, QueryModule

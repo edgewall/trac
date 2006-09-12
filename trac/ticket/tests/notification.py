@@ -16,7 +16,6 @@
 # (lsmithson@open-networks.co.uk) extensible Python SMTP Server
 #
 
-from trac.config import Configuration
 from trac.core import TracError
 from trac.ticket.model import Ticket
 from trac.ticket.notification import TicketNotifyEmail

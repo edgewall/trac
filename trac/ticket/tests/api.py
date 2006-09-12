@@ -1,4 +1,3 @@
-from trac.config import Configuration
 from trac.ticket.api import TicketSystem
 from trac.test import EnvironmentStub, Mock
 

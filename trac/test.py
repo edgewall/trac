@@ -19,6 +19,7 @@
 
 import unittest
 
+from trac.config import Configuration
 from trac.core import Component, ComponentManager, ExtensionPoint
 from trac.env import Environment
 from trac.db.sqlite_backend import SQLiteConnection
@@ -117,6 +118,14 @@ class InMemoryDatabase(SQLiteConnection):
         self.cnx.commit()
 
 
+class TestConfiguration(Configuration):
+    def __init__(self, filename):
+        Configuration.__init__(self, filename)
+        # insulate us from "real" global trac.ini (ref. #3700)
+        from ConfigParser import ConfigParser
+        self.site_parser = ConfigParser()
+
+
 class EnvironmentStub(Environment):
     """A stub of the trac.env.Environment object for testing."""
 
@@ -127,11 +136,7 @@ class EnvironmentStub(Environment):
         self.db = InMemoryDatabase()
         self.path = ''
 
-        from trac.config import Configuration
-        from ConfigParser import ConfigParser
-        self.config = Configuration(None)
-        # insulate us from "real" global trac.ini (ref. #3700)        
-        self.config.site_parser = ConfigParser()
+        self.config = TestConfiguration(None)
 
         from trac.log import logger_factory
         self.log = logger_factory('test')
