@@ -35,6 +35,13 @@ class ConfigurationTestCase(unittest.TestCase):
         Option.registry = self._orig_registry
         os.remove(self.filename)
 
+    def _read(self):
+        config = Configuration(self.filename)
+        # insulate us from "real" global trac.ini (ref. #3700)
+        from ConfigParser import ConfigParser
+        config.site_parser = ConfigParser()
+        return config
+
     def _write(self, lines):
         fileobj = open(self.filename, 'w')
         try:
@@ -43,7 +50,7 @@ class ConfigurationTestCase(unittest.TestCase):
             fileobj.close()
 
     def test_default(self):
-        config = Configuration(self.filename)
+        config = self._read()
         self.assertEquals('', config.get('a', 'option'))
         self.assertEquals('value', config.get('a', 'option', 'value'))
 
@@ -53,7 +60,7 @@ class ConfigurationTestCase(unittest.TestCase):
         self.assertEquals('value', config.get('a', 'option'))
 
     def test_default_bool(self):
-        config = Configuration(self.filename)
+        config = self._read()
         self.assertEquals(False, config.getbool('a', 'option'))
         self.assertEquals(True, config.getbool('a', 'option', 'yes'))
         self.assertEquals(True, config.getbool('a', 'option', 1))
@@ -64,7 +71,7 @@ class ConfigurationTestCase(unittest.TestCase):
         self.assertEquals(True, config.getbool('a', 'option'))
 
     def test_default_int(self):
-        config = Configuration(self.filename)
+        config = self._read()
         self.assertRaises(ConfigurationError, config.getint, 'a', 'option', 'b')
         self.assertEquals(None, config.getint('a', 'option'))
         self.assertEquals(1, config.getint('a', 'option', '1'))
@@ -77,43 +84,43 @@ class ConfigurationTestCase(unittest.TestCase):
 
     def test_read_and_get(self):
         self._write(['[a]', 'option = x'])
-        config = Configuration(self.filename)
+        config = self._read()
         self.assertEquals('x', config.get('a', 'option'))
         self.assertEquals('x', config.get('a', 'option', 'y'))
 
     def test_read_and_getbool(self):
         self._write(['[a]', 'option = yes'])
-        config = Configuration(self.filename)
+        config = self._read()
         self.assertEquals(True, config.getbool('a', 'option'))
         self.assertEquals(True, config.getbool('a', 'option', False))
 
     def test_read_and_getint(self):
         self._write(['[a]', 'option = 42'])
-        config = Configuration(self.filename)
+        config = self._read()
         self.assertEquals(42, config.getint('a', 'option'))
         self.assertEquals(42, config.getint('a', 'option', 25))
 
     def test_read_and_getlist(self):
         self._write(['[a]', 'option = foo, bar, baz'])
-        config = Configuration(self.filename)
+        config = self._read()
         self.assertEquals(['foo', 'bar', 'baz'],
                           config.getlist('a', 'option'))
 
     def test_read_and_getlist_sep(self):
         self._write(['[a]', 'option = foo | bar | baz'])
-        config = Configuration(self.filename)
+        config = self._read()
         self.assertEquals(['foo', 'bar', 'baz'],
                           config.getlist('a', 'option', sep='|'))
 
     def test_read_and_getlist_keep_empty(self):
         self._write(['[a]', 'option = ,bar,baz'])
-        config = Configuration(self.filename)
+        config = self._read()
         self.assertEquals(['bar', 'baz'], config.getlist('a', 'option'))
         self.assertEquals(['', 'bar', 'baz'],
                           config.getlist('a', 'option', keep_empty=True))
 
     def test_set_and_save(self):
-        config = Configuration(self.filename)
+        config = self._read()
         config.set('b', 'option0', 'y')
         config.set('a', 'option0', 'x')
         config.set('a', 'option2', "Voilà l'été")  # UTF-8
@@ -147,19 +154,21 @@ class ConfigurationTestCase(unittest.TestCase):
 
     def test_sections(self):
         self._write(['[a]', 'option = x', '[b]', 'option = y'])
-        config = Configuration(self.filename)
+        config = self._read()
         self.assertEquals(['a', 'b'], config.sections())
+        config.site_parser.add_section('c')
+        self.assertEquals(['a', 'b', 'c'], config.sections())
 
     def test_options(self):
         self._write(['[a]', 'option = x', '[b]', 'option = y'])
-        config = Configuration(self.filename)
+        config = self._read()
         self.assertEquals(('option', 'x'), iter(config.options('a')).next())
         self.assertEquals(('option', 'y'), iter(config.options('b')).next())
         self.assertRaises(StopIteration, iter(config.options('c')).next)
 
     def test_reparse(self):
         self._write(['[a]', 'option = x'])
-        config = Configuration(self.filename)
+        config = self._read()
         self.assertEquals('x', config.get('a', 'option'))
         time.sleep(1) # needed because of low mtime granularity
 

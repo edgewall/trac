@@ -128,7 +128,10 @@ class EnvironmentStub(Environment):
         self.path = ''
 
         from trac.config import Configuration
+        from ConfigParser import ConfigParser
         self.config = Configuration(None)
+        # insulate us from "real" global trac.ini (ref. #3700)        
+        self.config.site_parser = ConfigParser()
 
         from trac.log import logger_factory
         self.log = logger_factory('test')
