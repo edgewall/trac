@@ -71,18 +71,12 @@ def get_changes(env, repos, revs, full=None, req=None, format=None):
         }
     return changes
 
-def get_path_links(href, path, rev):
-    links = []
-    parts = path.split('/')
-    if not parts[-1]:
-        parts.pop()
-    path = '/'
-    for part in parts:
-        path = path + part + '/'
-        links.append({
-            'name': part or 'root',
-            'href': href.browser(path, rev=rev)
-        })
+def get_path_links(href, fullpath, rev):
+    links = [{'name': 'root', 'href': href.browser(rev=rev)}]
+    path = ''
+    for part in [p for p in fullpath.split('/') if p]:
+        path += part + '/'
+        links.append({'name': part, 'href': href.browser(path, rev=rev)})
     return links
 
 rev_re = re.compile(r"([^@#:]*)[@#:]([^#]+)(?:#L(\d+))?")
