@@ -70,6 +70,9 @@ class ComponentMeta(type):
     def __new__(cls, name, bases, d):
         """Create the component class."""
 
+        d['_implements'] = _implements[:]
+        del _implements[:]
+
         new_class = type.__new__(cls, name, bases, d)
         if name == 'Component':
             # Don't put the Component base class in the registry
@@ -110,23 +113,13 @@ class ComponentMeta(type):
         return new_class
 
 
+_implements = []
+
 def implements(*interfaces):
-    """
-    Can be used in the class definiton of `Component` subclasses to declare
+    """Can be used in the class definiton of `Component` subclasses to declare
     the extension points that are extended.
     """
-    import sys
-
-    frame = sys._getframe(1)
-    locals = frame.f_locals
-
-    # Some sanity checks
-    assert locals is not frame.f_globals and '__module__' in frame.f_locals, \
-           'implements() can only be used in a class definition'
-    assert not '_implements' in locals, \
-           'implements() can only be used once in a class definition'
-
-    locals['_implements'] = interfaces
+    _implements.extend(interfaces)
 
 
 class Component(object):
