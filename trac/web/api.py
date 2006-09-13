@@ -15,7 +15,7 @@
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
 from BaseHTTPServer import BaseHTTPRequestHandler
-from Cookie import SimpleCookie as Cookie
+from Cookie import CookieError, BaseCookie, SimpleCookie
 import cgi
 import mimetypes
 import os
@@ -93,6 +93,27 @@ class RequestDone(Exception):
     """
 
 
+class Cookie(SimpleCookie):
+    def load(self, rawdata, ignore_parse_errors=False):
+        if ignore_parse_errors:
+            self.bad_cookies = []
+            self._BaseCookie__set = self._loose_set
+        SimpleCookie.load(self, rawdata)
+        if ignore_parse_errors:
+            self._BaseCookie__set = self._strict_set
+            for key in self.bad_cookies:
+                del self[key]
+
+    _strict_set = BaseCookie._BaseCookie__set
+
+    def _loose_set(self, key, real_value, coded_value):
+        try:
+            self._strict_set(key, real_value, coded_value)
+        except CookieError:
+            self.bad_cookies.append(key)
+            dict.__setitem__(self, key, None)
+
+
 class Request(object):
     """Represents a HTTP request/response pair.
     
@@ -130,7 +151,7 @@ class Request(object):
         self.incookie = Cookie()
         cookie = self.get_header('Cookie')
         if cookie:
-            self.incookie.load(cookie)
+            self.incookie.load(cookie, ignore_parse_errors=True)
         self.outcookie = Cookie()
 
         self.base_url = self.environ.get('trac.base_url')

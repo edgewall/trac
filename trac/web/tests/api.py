@@ -96,6 +96,11 @@ class RequestTestCase(unittest.TestCase):
         req.write(u'Föö')
         self.assertEqual('Föö', buf.getvalue())
 
+    def test_invalid_cookies(self):
+        environ = self._make_environ(HTTP_COOKIE='bad:key=value;')
+        req = Request(environ, None)
+        self.assertEqual('', str(req.incookie))
+
 
 def suite():
     suite = unittest.TestSuite()
