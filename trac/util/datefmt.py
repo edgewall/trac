@@ -83,8 +83,8 @@ def get_datetime_format_hint():
     tmpl = format_datetime(t)
     return tmpl.replace('1999', 'YYYY', 1).replace('99', 'YY', 1) \
                .replace('10', 'MM', 1).replace('29', 'DD', 1) \
-               .replace('23', 'hh', 1).replace('59', 'mm', 1) \
-               .replace('58', 'ss', 1)
+               .replace('23', 'hh', 1).replace('11', 'hh', 1) \
+               .replace('59', 'mm', 1).replace('58', 'ss', 1)
 
 def http_date(t=None):
     """Format t as a rfc822 timestamp"""
