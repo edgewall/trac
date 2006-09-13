@@ -386,7 +386,6 @@ class MilestoneModule(Component):
         if not req.args.has_key('name'):
             raise TracError('You must provide a name for the milestone.',
                             'Required Field Missing')
-        milestone.name = req.args.get('name')
 
         due = req.args.get('duedate', '')
         try:
@@ -414,6 +413,8 @@ class MilestoneModule(Component):
         else:
             milestone.completed = 0
 
+        # don't update the milestone name until after retargetting open tickets
+        milestone.name = req.args.get('name')
         milestone.description = req.args.get('description', '')
 
         if milestone.exists:
