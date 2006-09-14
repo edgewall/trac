@@ -96,10 +96,12 @@ class PatchRenderer(Component):
                 fr, to = fromlines[i], tolines[i]
                 (start, end) = _get_change_extent(fr, to)
                 if start != 0 or end != 0:
-                    fromlines[i] = fr[:start] + '\0' + fr[start:end+len(fr)] + \
-                                   '\1' + fr[end:]
-                    tolines[i] = to[:start] + '\0' + to[start:end+len(to)] + \
-                                 '\1' + to[end:]
+                    last = end+len(fr)
+                    fromlines[i] = fr[:start] + '\0' + fr[start:last] + \
+                                   '\1' + fr[last:]
+                    last = end+len(to)
+                    tolines[i] = to[:start] + '\0' + to[start:last] + \
+                                 '\1' + to[last:]
 
         import re
         space_re = re.compile(' ( +)|^ ')
