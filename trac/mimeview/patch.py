@@ -95,7 +95,7 @@ class PatchRenderer(Component):
             for i in xrange(len(fromlines)):
                 fr, to = fromlines[i], tolines[i]
                 (start, end) = _get_change_extent(fr, to)
-                if start != 0 and end != 0:
+                if start != 0 or end != 0:
                     fromlines[i] = fr[:start] + '\0' + fr[start:end+len(fr)] + \
                                    '\1' + fr[end:]
                     tolines[i] = to[:start] + '\0' + to[start:end+len(to)] + \
