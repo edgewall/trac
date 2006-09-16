@@ -48,6 +48,20 @@ class TicketModuleBase(Component):
     ticket_manipulators = ExtensionPoint(ITicketManipulator)
 
     def _validate_ticket(self, req, ticket):
+        # Always validate for known values
+        for field in ticket.fields:
+            if 'options' not in field:
+                continue
+            name = field['name']
+            if name in ticket.values and name in ticket._old:
+                value = ticket[name]
+                if value:
+                    if value not in field['options']:
+                        raise InvalidTicket('"%s" is not a valid value for '
+                                            'the %s field.' % (value, name))
+                elif not field.get('optional', False):
+                    raise InvalidTicket('field %s must be set' % name)
+        # Custom validation rules
         for manipulator in self.ticket_manipulators:
             for field, message in manipulator.validate_ticket(req, ticket):
                 if field:
@@ -499,8 +513,6 @@ class TicketModule(TicketModuleBase):
                             "This ticket has been modified by someone else "
                             "since you started", 'Mid Air Collision')
 
-        self._validate_ticket(req, ticket)
-
         # Do any action on the ticket?
         action = req.args.get('action')
         actions = TicketSystem(self.env).get_available_actions(ticket, req.perm)
@@ -520,6 +532,8 @@ class TicketModule(TicketModuleBase):
         elif action == 'reopen':
             ticket['status'] = 'reopened'
             ticket['resolution'] = ''
+
+        self._validate_ticket(req, ticket)
 
         now = int(time.time())
         cnum = req.args.get('cnum')        
