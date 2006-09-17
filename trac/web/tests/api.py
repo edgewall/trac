@@ -101,6 +101,16 @@ class RequestTestCase(unittest.TestCase):
         req = Request(environ, None)
         self.assertEqual('', str(req.incookie))
 
+    def test_read(self):
+        environ = self._make_environ(**{'wsgi.input': StringIO('test input')})
+        req = Request(environ, None)
+        self.assertEqual('test input', req.read())
+
+    def test_read_size(self):
+        environ = self._make_environ(**{'wsgi.input': StringIO('test input')})
+        req = Request(environ, None)
+        self.assertEqual('test', req.read(size=4))
+
 
 def suite():
     suite = unittest.TestSuite()

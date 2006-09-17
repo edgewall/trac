@@ -429,7 +429,11 @@ class Request(object):
         """Read the specified number of bytes from the request body."""
         fileobj = self.environ['wsgi.input']
         if size is None:
-            size = int(self.get_header('Content-Length', -1))
+            size = self.get_header('Content-Length')
+            if size is None:
+                size = -1
+            else:
+                size = int(size)
         data = fileobj.read(size)
         return data
 
