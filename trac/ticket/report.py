@@ -340,10 +340,14 @@ class ReportModule(Component):
                 elif column == 'report':
                     value['report_href'] = req.href.report(cell)
                 elif column in ('time', 'date','changetime', 'created', 'modified'):
-                    value['date'] = format_date(cell)
-                    value['time'] = format_time(cell)
-                    value['datetime'] = format_datetime(cell)
-                    value['gmt'] = http_date(cell)
+                    if cell == 'None':
+                        value['date'] = value['time'] = cell
+                        value['datetime'] = value['gmt'] = cell
+                    else:
+                        value['date'] = format_date(cell)
+                        value['time'] = format_time(cell)
+                        value['datetime'] = format_datetime(cell)
+                        value['gmt'] = http_date(cell)
                 prefix = 'report.items.%d.%s' % (row_idx, unicode(column))
                 req.hdf[prefix] = unicode(cell)
                 for key in value.keys():
