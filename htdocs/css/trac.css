@@ -19,6 +19,7 @@ h3 { font-size: 14px }
 hr { border: none;  border-top: 1px solid #ccb; margin: 2em 0 }
 address { font-style: normal }
 img { border: none }
+tt { white-space: pre }
 
 .underline { text-decoration: underline }
 ol.loweralpha { list-style-type: lower-alpha }
