@@ -162,8 +162,11 @@ class Configuration(object):
             for section, options in sections:
                 print>>fileobj, '[%s]' % section
                 for key, val in options:
-                    print>>fileobj, '%s = %s' % \
-                                    (key, to_unicode(val).encode('utf-8'))
+                    if key in self[section].overriden:
+                        print>>fileobj, '# %s = <set in global trac.ini>' % key
+                    else:
+                        print>>fileobj, '%s = %s' % \
+                                        (key, to_unicode(val).encode('utf-8'))
                 print>>fileobj
         finally:
             fileobj.close()
@@ -183,17 +186,21 @@ class Configuration(object):
             self.parser.read(self.filename)
             self._lastmtime = modtime
 
+    def has_site_option(self, section, name):
+        return self.site_parser.has_option(section, name)
+
 
 class Section(object):
     """Proxy for a specific configuration section.
     
     Objects of this class should not be instantiated directly.
     """
-    __slots__ = ['config', 'name']
+    __slots__ = ['config', 'name', 'overriden']
 
     def __init__(self, config, name):
         self.config = config
         self.name = name
+        self.overriden = {}
 
     def __contains__(self, name):
         return self.config.parser.has_option(self.name, name) or \
@@ -283,8 +290,12 @@ class Section(object):
         """
         if not self.config.parser.has_section(self.name):
             self.config.parser.add_section(self.name)
-        return self.config.parser.set(self.name, name,
-                                      to_unicode(value).encode('utf-8'))
+        if value is None:
+            self.overriden[name] = True
+            value = ''
+        else:
+            value = to_unicode(value).encode('utf-8')
+        return self.config.parser.set(self.name, name, value)
 
 
 class Option(object):

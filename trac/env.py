@@ -242,6 +242,8 @@ class Environment(Component, ComponentManager):
         if load_defaults:
             for section, default_options in self.config.defaults().iteritems():
                 for name, value in default_options.iteritems():
+                    if self.config.has_site_option(section, name):
+                        value = None
                     self.config.set(section, name, value)
 
     def get_templates_dir(self):
