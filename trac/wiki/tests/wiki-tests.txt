@@ -269,6 +269,8 @@ Relative links are supported:
 [/docs See documentation]
 [/images/logo.png Our logo]
 [/]
+[#title]
+[#title see Title]
 ------------------------------
 <p>
 Relative links are supported:
@@ -276,6 +278,8 @@ Relative links are supported:
 <a href="/docs">See documentation</a>
 <a href="/images/logo.png">Our logo</a>
 <a href="/">/</a>
+<a href="#title">#title</a>
+<a href="#title">see Title</a>
 </p>
 ------------------------------
 ==============================  Image links are now regular external links

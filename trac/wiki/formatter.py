@@ -168,7 +168,7 @@ class Formatter(object):
     SHREF_TARGET_MIDDLE = r"(?:\|(?=[^|\s])|[^|<>\s])"
     SHREF_TARGET_LAST = r"[a-zA-Z0-9/=]" # we don't want "_"
 
-    LHREF_RELATIVE_TARGET = r"[/.][^\s[\]]*"
+    LHREF_RELATIVE_TARGET = r"[/.#][^\s[\]]*"
 
     XML_NAME = r"[\w:](?<!\d)[\w:.-]*?" # See http://www.w3.org/TR/REC-xml/#id 
 
