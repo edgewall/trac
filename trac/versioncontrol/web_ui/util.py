@@ -79,7 +79,7 @@ def get_path_links(href, fullpath, rev):
         links.append({'name': part, 'href': href.browser(path, rev=rev)})
     return links
 
-rev_re = re.compile(r"([^@#:]*)[@#:]([^#]+)(?:#L(\d+))?")
+rev_re = re.compile(r"([^@#:]*)[@#:]([^#]+)?(?:#L(\d+))?")
 
 def get_path_rev_line(path):
     rev = None

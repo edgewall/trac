@@ -174,6 +174,7 @@ source:#42
 source:@42
 source:/foo/bar@42#L20
 source:/foo/bar@head#L20
+source:/foo/bar@#L20
 ------------------------------
 <p>
 <a class="source" href="/browser/foo/bar">source:/foo/bar</a>
@@ -187,6 +188,7 @@ source:/foo/bar@head#L20
 <a class="source" href="/browser/?rev=42">source:@42</a>
 <a class="source" href="/browser/foo/bar?rev=42#L20">source:/foo/bar@42#L20</a>
 <a class="source" href="/browser/foo/bar?rev=head#L20">source:/foo/bar@head#L20</a>
+<a class="source" href="/browser/foo/bar#L20">source:/foo/bar@#L20</a>
 </p>
 ------------------------------
 ============================== source: provider, with quoting
