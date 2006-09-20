@@ -53,7 +53,10 @@ class HTTPException(Exception):
 
 
 for code in [code for code in HTTP_STATUS if code >= 400]:
-    exc_name = HTTP_STATUS[code].replace(' ', '')
+    exc_name = HTTP_STATUS[code].replace(' ', '').replace('-', '')
+    # 2.5 compatibility hack:
+    if exc_name == 'InternalServerError':
+        exc_name = 'InternalError'
     if exc_name.lower().startswith('http'):
         exc_name = exc_name[4:]
     setattr(sys.modules[__name__], 'HTTP' + exc_name, HTTPException(code))
