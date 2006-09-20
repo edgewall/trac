@@ -228,6 +228,8 @@ class RequestDispatcher(Component):
                         req.display(template, content_type or 'text/html')
                     else:
                         self._post_process_request(req)
+                except RequestDone:
+                    raise
                 except:
                     err = sys.exc_info()
                     try:
