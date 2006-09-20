@@ -19,6 +19,7 @@ try:
 except ImportError:
     import dummy_threading as threading
     threading._get_ident = lambda: 0
+import sys
 import time
 
 from trac.db.util import ConnectionWrapper
@@ -87,6 +88,7 @@ class ConnectionPool(object):
                                                 'connection within %d seconds' \
                                                 % timeout
                     else:
+                        print>>sys.stderr, '[%d] wait for connection...' % tid
                         self._available.wait()
             self._active[tid] = [1, cnx]
             return PooledConnection(self, cnx)
@@ -103,21 +105,34 @@ class ConnectionPool(object):
                 if num > 1:
                     self._active[tid][0] = num - 1
                 else:
-                    del self._active[tid]
-                    if cnx not in self._dormant:
-                        cnx.rollback()
-                        if cnx.poolable:
-                            self._dormant.append(cnx)
-                        else:
-                            self._cursize -= 1
-                        self._available.notify()
+                    self._cleanup(tid)
         finally:
             self._available.release()
 
-    def shutdown(self):
+    def _cleanup(self, tid):
+        # Note: self._available *must* be acquired
+        if tid in self._active:
+            cnx = self._active.pop(tid)[1]
+            if cnx not in self._dormant:
+                cnx.rollback()
+                if cnx.poolable:
+                    self._dormant.append(cnx)
+                else:
+                    cnx.close()
+                    self._cursize -= 1
+                self._available.notify()
+
+    def shutdown(self, tid=None):
         self._available.acquire()
         try:
-            for cnx in self._dormant:
-                cnx.cnx.close()
+            if tid:
+                cleanup_list = [tid]
+            else:
+                cleanup_list = self._active.keys()
+            for tid in cleanup_list:
+                self._cleanup(tid)
+            if not tid:
+                for cnx in self._dormant:
+                    cnx.close()
         finally:
             self._available.release()

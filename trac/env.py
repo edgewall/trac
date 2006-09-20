@@ -181,9 +181,9 @@ class Environment(Component, ComponentManager):
         """Return a database connection from the connection pool."""
         return DatabaseManager(self).get_connection()
 
-    def shutdown(self):
+    def shutdown(self, tid=None):
         """Close the environment."""
-        DatabaseManager(self).shutdown()
+        DatabaseManager(self).shutdown(tid)
 
     def get_repository(self, authname=None):
         """Return the version control repository configured for this

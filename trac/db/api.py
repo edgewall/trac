@@ -70,9 +70,9 @@ class DatabaseManager(Component):
             self._cnx_pool = ConnectionPool(5, connector, **args)
         return self._cnx_pool.get_cnx()
 
-    def shutdown(self):
+    def shutdown(self, tid=None):
         if self._cnx_pool:
-            self._cnx_pool.shutdown()
+            self._cnx_pool.shutdown(tid)
             self._cnx_pool = None
 
     def _get_connector(self): ### FIXME: Make it public?

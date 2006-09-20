@@ -350,7 +350,6 @@ def dispatch_request(environ, start_response):
 
     req = Request(environ, start_response)
     try:
-        db = env.get_db_cnx()
         try:
             try:
                 dispatcher = RequestDispatcher(env)
@@ -359,7 +358,8 @@ def dispatch_request(environ, start_response):
                 pass
             return req._response or []
         finally:
-            db.close()
+            if environ.get('wsgi.multithread', False):
+                env.shutdown(threading._get_ident())
 
     except HTTPException, e:
         env.log.warn(e)
