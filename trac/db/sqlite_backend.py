@@ -27,6 +27,18 @@ _like_escape_re = re.compile(r'([/_%])')
 try:
     import pysqlite2.dbapi2 as sqlite
     have_pysqlite = 2
+except ImportError:
+    try:
+        import sqlite3 as sqlite
+        have_pysqlite = 2
+    except ImportError:
+        try:
+            import sqlite
+            have_pysqlite = 1
+        except ImportError:
+            have_pysqlite = 0
+
+if have_pysqlite == 2:
     _ver = sqlite.sqlite_version_info
     sqlite_version = _ver[0] * 10000 + _ver[1] * 100 + int(_ver[2])
 
@@ -48,30 +60,26 @@ try:
             return self._rollback_on_error(sqlite.Cursor.executemany, sql,
                                            args or [])
 
-except ImportError:
-    try:
-        import sqlite
-        have_pysqlite = 1
-        _ver = sqlite._sqlite.sqlite_version_info()
-        sqlite_version = _ver[0] * 10000 + _ver[1] * 100 + _ver[2]
+elif have_pysqlite == 1:
+    _ver = sqlite._sqlite.sqlite_version_info()
+    sqlite_version = _ver[0] * 10000 + _ver[1] * 100 + _ver[2]
 
-        class SQLiteUnicodeCursor(sqlite.Cursor):
-            def _convert_row(self, row):
-                return tuple([(isinstance(v, str) and [v.decode('utf-8')] or [v])[0]
-                              for v in row])
-            def fetchone(self):
-                row = sqlite.Cursor.fetchone(self)
-                return row and self._convert_row(row) or None
-            def fetchmany(self, num):
-                rows = sqlite.Cursor.fetchmany(self, num)
-                return rows != None and [self._convert_row(row)
-                                         for row in rows] or []
-            def fetchall(self):
-                rows = sqlite.Cursor.fetchall(self)
-                return rows != None and [self._convert_row(row)
-                                         for row in rows] or []
-    except ImportError:
-        have_pysqlite = 0
+    class SQLiteUnicodeCursor(sqlite.Cursor):
+        def _convert_row(self, row):
+            return tuple([(isinstance(v, str) and [v.decode('utf-8')] or [v])[0]
+                          for v in row])
+        def fetchone(self):
+            row = sqlite.Cursor.fetchone(self)
+            return row and self._convert_row(row) or None
+        def fetchmany(self, num):
+            rows = sqlite.Cursor.fetchmany(self, num)
+            return rows != None and [self._convert_row(row)
+                                     for row in rows] or []
+        def fetchall(self):
+            rows = sqlite.Cursor.fetchall(self)
+            return rows != None and [self._convert_row(row)
+                                     for row in rows] or []
+
 
 def _to_sql(table):
     sql = ["CREATE TABLE %s (" % table.name]
@@ -92,8 +100,6 @@ def _to_sql(table):
     for index in table.indices:
         yield "CREATE INDEX %s_%s_idx ON %s (%s);" % (table.name,
               '_'.join(index.columns), table.name, ','.join(index.columns))
-
-
 
 
 class SQLiteConnector(Component):
