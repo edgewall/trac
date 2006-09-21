@@ -19,7 +19,6 @@ try:
 except ImportError:
     import dummy_threading as threading
     threading._get_ident = lambda: 0
-import sys
 import time
 
 from trac.db.util import ConnectionWrapper
@@ -88,7 +87,6 @@ class ConnectionPool(object):
                                                 'connection within %d seconds' \
                                                 % timeout
                     else:
-                        print>>sys.stderr, '[%d] wait for connection...' % tid
                         self._available.wait()
             self._active[tid] = [1, cnx]
             return PooledConnection(self, cnx)
