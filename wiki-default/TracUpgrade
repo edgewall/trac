@@ -13,14 +13,14 @@ Typically, there are four steps involved in upgrading to a newer version of Trac
 
 Get the new version of Trac, either by downloading an offical release package or by checking it out from the [http://projects.edgewall.com/trac/wiki/SubversionRepository Subversion repository].
 
+If you're doing a major version upgrade (such as from 0.8 to 0.9), it is ''highly'' recommended that you first remove the existing Trac code. To do this, you need to delete the `trac` directory from the Python `lib/site-packages` directory. You may also want to remove the Trac `cgi-bin`, `htdocs`, `templates` and `wiki-default` directories that are commonly found in a directory called `share/trac` (the exact location depends on your platform).
+
 If you have a source distribution, you need to run
 {{{
 python setup.py install
 }}}
 
 to install the new version. If you've downloaded the Windows installer, you execute it, and so on.
-
-In any case, if you're doing a major version upgrade (such as from 0.8 to 0.9), it is ''highly'' recommended that you first remove the existing Trac code. To do this, you need to delete the `trac` directory from the Python `lib/site-packages` directory. You may also want to remove the Trac `cgi-bin`, `htdocs`, `templates` and `wiki-default` directories that are commonly found in a directory called `share/trac` (the exact location depends on your platform).
 
 === Upgrade the Trac Environment ===
 
@@ -58,6 +58,9 @@ The following sections discuss any extra actions that may need to be taken to up
 Due to some changes in the Wiki syntax, you may notice that certain parts of your pages no longer work as expected:
  * Previously, links to images would result in that image being embedded into the page. Since 0.10, links to images remain plain links. If you want to embed an image in the page, use the `[[Image]]` macro.
  * You can no longer use `%20` in wiki links to encode spaces. Instead, you should quote the name containing spaces (for example, use `wiki:"My page"` instead of `wiki:My%20page`.)
+
+Several enhancements have been made to the version control subsystem, in particular for the support of scoped repositories has been improved. 
+It is recommended that you perform a [TracAdmin#InteractiveMode trac-admin] '''`resync`''' operation to take advantage of these improvements.
 
 == From 0.9.3 to 0.9.4 ==
 

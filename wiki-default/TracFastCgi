@@ -21,7 +21,7 @@ file:
 </IfModule>
 LoadModule fastcgi_module /usr/lib/apache2/modules/mod_fastcgi.so
 }}}
-Setting `FastCgiIpcDir` is optional if the default is suitable.
+Setting `FastCgiIpcDir` is optional if the default is suitable. Note that the `LoadModule` line must be after the `IfModule` group.
 
 Configure `ScriptAlias` or similar options as described in TracCgi, but
 calling `trac.fcgi` instead of `trac.cgi`.
@@ -172,8 +172,7 @@ alias.url = ("/trac/chrome/common" => "/usr/share/trac/htdocs")
 # Use negative lookahead, matching all requests that ask for any resource under /trac, EXCEPT in
 # /trac/chrome/common, and use FastCGI for those
 $HTTP["url"] =~ "^/trac(?!/chrome/common)" {
-# If you have previous fastcgi.server declarations for applications other than Trac, use += here
-# instead of = so you won't overwrite them
+# Even if you have other fastcgi.server declarations for applications other than Trac, do NOT use += here
 fastcgi.server = ("/trac" =>
                    ("trac" =>
                      ("socket" => "/tmp/trac-fastcgi.sock",
@@ -242,6 +241,74 @@ Relaunch lighttpd, and browse to `http://yourhost.example.org/trac` to access Tr
 Note about running lighttpd with reduced permissions:
 
   If nothing else helps and trac.fcgi doesn't start with lighttpd settings __server.username = "www-data"__, __server.groupname = "www-data"__, then in the `bin-environment` section set `PYTHON_EGG_CACHE` to the home directory of `www-data` or some other directory accessible to this account for writing.
+
+
+== Simple LiteSpeed Configuration ==
+
+The FastCGI front-end was developed primarily for use with alternative webservers, such as [http://www.litespeedtech.com/ LiteSpeed].
+
+LiteSpeed web server is an event-driven asynchronous Apache replacement designed from the ground-up to be secure, scalable, and operate with minimal resources. LiteSpeed can operate directly from an Apache config file and is targeted for business-critical environments.
+
+Setup
+
+1) Please make sure you have first have a working install of a Trac project. Test install with “tracd” first.
+
+2) Create a Virtual Host for this setup. From now on we will refer to this vhost as TracVhost. For this tutorial we will be assuming that your trac project will be accessible via:
+
+{{{
+http://yourdomain.com/trac/
+}}}
+
+3) Go “TracVhost → External Apps” tab and create a new “External Application”.
+
+{{{
+Name: MyTracFCGI	
+Address: uds://tmp/lshttpd/mytracfcgi.sock
+Max Connections: 10
+Environment: TRAC_ENV=/fullpathto/mytracproject/ <--- path to root folder of trac project
+Initial Request Timeout (secs): 30
+Retry Timeout (secs): 0
+Persistent Connection	Yes
+Connection Keepalive Timeout: 30
+Response Bufferring: No	
+Auto Start: Yes
+Command: /usr/share/trac/cgi-bin/trac.fcgi  <--- path to trac.fcgi
+Back Log: 50
+Instances: 10
+}}}
+
+4) Optional. If you need to use htpasswd based authentication. Go to “TracVhost → Security” tab and create a new security “Realm”.
+
+{{{
+DB Type: Password File
+Realm Name: MyTracUserDB               <--- any name you wish and referenced later
+User DB Location: /fullpathto/htpasswd <--- path to your htpasswd file
+}}}
+
+If you don’t have a htpasswd file or don’t know how to create the entries within one, go to http://sherylcanter.com/encrypt.php, to generate the user:password combos.
+
+5) Go to “PythonVhost → Contexts” and create a new “FCGI Context”.
+
+{{{
+URI: /trac/                              <--- URI path to bind to python fcgi app we created	
+Fast CGI App: [VHost Level] MyTractFCGI  <--- select the trac fcgi extapp we just created
+Realm: TracUserDB                        <--- only if (4) is set. select ream created in (4)
+}}}
+
+6) Modify /fullpathto/mytracproject/conf/trac.ini
+
+{{{
+#find/set base_rul, url, and link variables
+base_url = http://yourdomain.com/trac/ <--- base url to generate correct links to
+url = http://yourdomain.com/trac/      <--- link of project
+link = http://yourdomain.com/trac/     <--- link of graphic logo
+}}}
+
+7) Restart LiteSpeed, “lswsctrl restart”, and access your new Trac project at: 
+
+{{{
+http://yourdomain.com/trac/
+}}}
 
 ----
 See also TracCgi, TracModPython, TracInstall, TracGuide

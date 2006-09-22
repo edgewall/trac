@@ -1,16 +1,15 @@
-Release Notes for Trac 0.10b1
-=============================
-August 28, 2006
+Release Notes for Trac 0.10rc1
+==============================
+September 22, 2006
 
-We're happy to announce the Trac 0.10b1 release, available from:
+We're happy to announce the Trac 0.10rc1 release, available from:
 
   http://trac.edgewall.org/wiki/TracDownload
 
-This is a beta release, which means that the Trac developers feel that this
-release is stable enough for for serious testing. While we feel that this
-release is stable we do not recommend to use this release in production. If
-no serious bugs are found the final stable 0.10 release will be released in
-a couple of days.
+This is a release candidate, which means that the Trac developers feel
+that this release is ready for production use, so we encourage people to
+test this release thoroughly. If no serious bugs are found the final
+stable 0.10 release will be released on Monday.
 
 For questions, comments and user discussions, please use the Trac mailing
 list. List information, subscription and archive available at:
@@ -22,30 +21,34 @@ User visible changes
 
 Advanced diff support
 ---------------------
-The TracRevisionLog view can now be used to select two arbitrary revisions
-of a given path in the repository and see the differences between them, in
-the familiar TracChangeset view.
+The TracRevisionLog view can now be used to select two arbitrary
+revisions of a given path in the repository and see the differences
+between them, in the familiar TracChangeset view.
 
 A related change is the possibility to navigate through a sequence of
 restricted changesets. A restricted changeset is the subset of changes
 within a changeset inside a given directory. One can easily start
-navigating such a sequence by following the new Last Change navigation link
-present for the currently browsed path.
+navigating such a sequence by following the new Last Change navigation
+link present for the currently browsed path.
 
-It's now also possible to compare two arbitrary paths at any revision. This
-can be used to check the differences between a tagged version and trunk, or
-to review the set of differences between two branches.
+It's now also possible to compare two arbitrary paths at any revision.
+This can be used to check the differences between a tagged version and
+trunk, or to review the set of differences between two branches.
+
+Other enhancements have been made to the version control subsystem, in
+particular the support of scoped repositories has been improved. You
+should therefore perform a trac-admin resync operation.
 
 InterWiki and InterTrac support
 -------------------------------
 An InterWiki link can be used to refer to a Wiki page located on another
-Wiki system, and by extension, to any object located on any other Web site,
-as long as simple URL mapping is possible.
+Wiki system, and by extension, to any object located on any other Web
+site, as long as simple URL mapping is possible.
 
-An InterTrac link can be used for referring to a Trac resource (Wiki page,
-changeset, ticket, ...) on an other Trac environment. This makes it easier
-to work with multiple separate projects, and seamlessly refer to resources
-from one Trac to another.
+An InterTrac link can be used for referring to a Trac resource (Wiki
+page, changeset, ticket, ...) on an other Trac environment. This makes it
+easier to work with multiple separate projects, and seamlessly refer to
+resources from one Trac to another.
 
 Improved modularity
 -------------------
@@ -57,13 +60,13 @@ the already existing support for SQLite and PostgreSQL, Trac now features
 experimental support for the MySQL database.
 
 As for the version control systems, Trac still features best of breed
-Subversion support, but the Subversion bindings and libraries are no longer
-mandatory for using Trac itself. Other version control systems can be
-supported by external plugins.
+Subversion support, but the Subversion bindings and libraries are no
+longer mandatory for using Trac itself. Other version control systems can
+be supported by external plugins.
 
 Improved notification system
 ----------------------------
-The encoding for emails sent out by Trac can now be confiured. This may
+The encoding for emails sent out by Trac can now be configured. This may
 decrease email size and can avoid useless encoding for western languages
 that make some touchy SMTP servers bounce the notifications.
 
@@ -81,20 +84,19 @@ this is the SpamFilter plugin, which is available as a separate package:
   http://trac.edgewall.org/wiki/SpamFilter
 
 This plugin implements a number of different strategies for testing
-content, such as regular expression matching, IP blacklisting, and Akismet
-queries.
+content, such as regular expression matching, IP blacklisting, and
+Akismet queries.
 
 WSGI used as web server protocol
-
-Trac now uses WSGI (the "Python Web Server Gateway Interface") internally.
-While Trac continues to provide builtin support for CGI, FastCGI and
-mod_python, as well as the standalone server "tracd", you can now take
-advantage of the WSGI support to use Trac in other setups, such as Twisted,
-Paste, SCGI, or ISAPI.
+--------------------------------
+Trac now uses WSGI (the "Python Web Server Gateway Interface")
+internally. While Trac continues to provide builtin support for CGI,
+FastCGI and mod_python, as well as the standalone server "tracd", you can
+now take advantage of the WSGI support to use Trac in other setups, such
+as Twisted, Paste, SCGI, or ISAPI.
 
 Lots of minor improvements
 --------------------------
-
 To the Wiki syntax
 
 Numerous improvements have been made in the WikiFormatting syntax:
@@ -105,8 +107,8 @@ Numerous improvements have been made in the WikiFormatting syntax:
  * Added more robust parsing and formatting of Wiki lists and robust
    coupling of lists and quotes.
  * Improved the way external links are displayed.
- * Lots of new ways to refer to specific repository views (diff:from//to,
-   log:, [x:y], rx:y)
+ * Lots of new ways to refer to specific repository views (diff:from//
+   to, log:, [x:y], rx:y)
  * htdocs:, useful for referring to local resources in TracStandalone
  * MoinMoin-style syntax for description lists
  * Removed support for direct embedding of images using links: use the
@@ -132,20 +134,26 @@ unicode everywhere
 ------------------
 Trac used to handle text content by using str objects, in which Unicode
 characters were represented using UTF-8 encoding. This lead to various
-problems with most non-western languages. We now use the dedicated unicode
-datatype to consistently handle text written in any language.
+problems with most non-western languages. We now use the dedicated
+unicode datatype to consistently handle text written in any language. See
+also TracDev/UnicodeGuidelines.
 
-Better way to programatically generate HTML fragments
------------------------------------------------------
-Trac now provides utility code to programmatically generate HTML snippets.
-This can be used in the various places where Trac expects plugins to return
-small fragments of HTML bypassing the template system. These utilities can
-be found in the trac.util.html module.
+Better way to programmatically generate HTML fragments
+------------------------------------------------------
+Trac now provides utility code to programmatically generate HTML
+snippets. This can be used in the various places where Trac expects
+plugins to return small fragments of HTML bypassing the template system.
+These utilities can be found in the trac.util.html module.
 
 Unit test framework for email notifications
 -------------------------------------------
-Email notifications can now be validated; unit tests include a private SMTP
-server and helper methods to extract and decode email data.
+Email notifications can now be validated; unit tests include a private
+SMTP server and helper methods to extract and decode email data.
+
+Internal API changes
+--------------------
+A detailed view of the API changes since 0.9.x can be found in TracDev/
+ApiChanges/0.10.
 
 Acknowledgements
 ================

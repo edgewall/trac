@@ -10,7 +10,7 @@ If you just installed mod_python, you may have to add a line to load the module 
 LoadModule python_module modules/mod_python.so
 }}}
 
- ''Note: The exact path to the module depends on how the HTTPD installation is layed out.''
+ ''Note: The exact path to the module depends on how the HTTPD installation is laid out.''
 
 You can test your mod_python installation by adding the following to your httpd.conf.  You should remove this when you are done testing for security reasons.
 {{{
@@ -132,6 +132,8 @@ If you're experiencing problems submitting some of the forms in Trac (a common p
 
 If the <Location /> directive is used, setting the `DocumentRoot` may result in a ''403 (Forbidden)'' error. Either remove the `DocumentRoot` directive, or make sure that accessing the directory it points is allowed (in a corresponding `<Directory>` block).
 
+Using <Location /> together with `SetHandler` resulted in having everything handled by mod_python, which leads to not being able download any CSS or images/icons. I used <Location /trac> `SetHandler None` </Location> to circumvent the problem, though I do not know if this is the most elegant solution.
+
 === Using .htaccess ===
 
 Although it may seem trivial to rewrite the above configuration as a directory in your document root with a `.htaccess` file, this does not work. Apache will append a "/" to any Trac URLs, which interferes with its correct operation.
@@ -161,7 +163,7 @@ Pay attention to the version of the installed mod_python and sqlite packages. Po
 
 === Subversion issues ===
 
-If you get the following Trac Error `Unsupported version control system "svn"` only under mod_python, though it works well on the command-line and even with TracStandalone, chances are that you forgot to add the path to the Python bindings with the [TracModPython#ConfiguringPythonPath PythonPath] directive (The better way is to add a link to the bindings in the Python `site-packages` directory, or create a `.pth` file in that directory.)
+If you get the following Trac Error `Unsupported version control system "svn"` only under mod_python, though it works well on the command-line and even with TracStandalone, chances are that you forgot to add the path to the Python bindings with the [TracModPython#ConfiguringPythonPath PythonPath] directive. (The better way is to add a link to the bindings in the Python `site-packages` directory, or create a `.pth` file in that directory.)
 
 If this is not the case, it's possible that you're using Subversion libraries that are binary incompatible with the apache ones (an incompatibility of the `apr` libraries is usually the cause). In that case, you also won't be able to use the svn modules for Apache (`mod_dav_svn`).
 

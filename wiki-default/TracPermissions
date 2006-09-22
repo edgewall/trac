@@ -13,7 +13,7 @@ In addition to these privileges, users can be granted additional individual righ
 
 To enable all privileges for a user, use the `TRAC_ADMIN` permission. Having `TRAC_ADMIN` is like being `root` on a *NIX system, it will allow you perform any operation.
 
-Otherwise, individual privileges can be assigned to users for the various different functional areas of Trac (not that the privilege names are case-sensitive):
+Otherwise, individual privileges can be assigned to users for the various different functional areas of Trac (note that the privilege names are case-sensitive):
 
 === Repository Browser ===
 
@@ -121,4 +121,4 @@ Granting privileges to the special user ''anonymous'' can be used to control wha
 In the same way, privileges granted to the special user ''authenticated'' will apply to any authenticated (logged in) user.
 
 ----
-See also: FineGrainedPermissions, TracAdmin, TracGuide
+See also: TracAdmin, TracGuide and [http://trac.edgewall.org/wiki/FineGrainedPermissions FineGrainedPermissions]

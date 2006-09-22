@@ -98,7 +98,7 @@ print ':'.join((options.username, realm, kd([options.username, realm, options.pa
 Note: If you use the above script you must use the --auth option to tracd, not --basic-auth, and you must set the realm in the --auth value to 'trac' (without the quotes). Example usage (assuming you saved the script as trac-digest.py):
 
 {{{
-python trac-digest.py -u username -p password > c:\digest.txt
+python trac-digest.py -u username -p password >> c:\digest.txt
 python tracd --port 8000 --auth proj_name,c:\digest.txt,trac c:\path\to\proj_name
 }}}
 
@@ -124,3 +124,7 @@ syntax for the above. With this, the example link above can be written simply
 
 ----
 See also: TracInstall, TracCgi, TracModPython, TracGuide
+
+----
+'''Translation:'''
+ * [https://opensvn.csie.org/traccgi/trac_rus/wiki/StandAloneTracForTeapot Russian] (перевод на Русский)

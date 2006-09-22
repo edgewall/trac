@@ -37,7 +37,7 @@ contributed by the community, as before.'''
 
 == [diff] ==
 || `tab_width` || ''deprecated since 0.9 in favor of the `tab_width` option in the `[mimeviewer]` section'' ||
-
+ 
 == [project] ==
 || `name`   || Project name ||
 || `descr`  || Short project description ||
@@ -96,7 +96,7 @@ See also: TracNotification
 || `default_milestone` || Default milestone for newly created tickets ||
 || `default_component` || Default component for newly created tickets ||
 || `default_type`      || Default type for newly created tickets ||
-|| `restrict_owner`    || Make the owner field of tickets use a drop-down menu (''since 0.9''). See [wiki:TracTickets#AssigntoasDropDownList AssignToAsDropDownList] ||
+|| `restrict_owner`    || Make the owner field of tickets use a drop-down menu (''since 0.9''). See [wiki:TracTickets#Assign-toasDrop-DownList AssignToAsDropDownList] ||
 
 == [ticket-custom] ==
 Creates [wiki:TracTicketsCustomFields user-defined ticket fields].
@@ -129,6 +129,11 @@ webadmin.* = enabled
 The first option tells Trac to disable the [wiki:TracReports report module]. The second option instructs Trac to enable all components in the `webadmin` package. Note that the trailing wildcard is required for module/package matching. To get a list of active components for your installation, see the ''Plugins'' page on ''About Trac'' (requires `CONFIG_VIEW` [wiki:TracPermissions permissions].)
 
 See also: TracPlugins
+
+== [changeset] ==
+(''since 0.10'')
+
+|| `max_diff_bytes` || A limit for the sum of the size of all old ''and'' new files involved in a changeset. [[br]] Note that when requesting a diff precisely on a very big file (e.g. by the use of the ''Last Change'' link), the size limit will ''not'' be taken into account and the diffs will always be computed. ||
 
 ----
 See also: TracGuide, TracAdmin, TracEnvironment

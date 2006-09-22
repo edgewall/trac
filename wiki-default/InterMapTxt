@@ -56,7 +56,7 @@ DebianBug        http://bugs.debian.org/
 DebianPackage    http://packages.debian.org/
 Dictionary       http://www.dict.org/bin/Dict?Database=*&Form=Dict1&Strategy=*&Query=
 Google           http://www.google.com/search?q=
-GoogleGroups     http://groups.google.com/groups?q=
+GoogleGroups     http://groups.google.com/group/$1/msg/$2        # Message $2 in $1 Google Group
 JargonFile       http://downlode.org/perl/jargon-redirect.cgi?term=
 MeatBall         http://www.usemod.com/cgi-bin/mb.pl?
 MetaWiki         http://sunir.org/apps/meta.pl?

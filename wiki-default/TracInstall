@@ -12,6 +12,7 @@ To install Trac, the following software packages must be installed:
  * [http://www.python.org/ Python], version >= 2.3.
    * For RPM-based systems you might also need the `python-devel` and `python-xml` packages.
    * If you want to use Trac with Subversion on Windows, note that there are no precompiled Subversion bindings for Python 2.4, so you probably need Python 2.3.
+    * 2006-09-20: This seems to be no longer true, see http://subversion.tigris.org/servlets/ProjectDocumentList?folderID=91. For subversion 1.4.0 python 2.4 binary bindings are available.
  * [http://www.clearsilver.net/ ClearSilver], version >= 0.9.3
    * With python-bindings (`./configure --with-python=/usr/bin/python`)
  * You also need a database system and the corresponding python drivers for it.
@@ -20,7 +21,7 @@ To install Trac, the following software packages must be installed:
 === For SQLite ===
 
  * [http://www.sqlite.org/ SQLite], version 2.8.x or 3.x (preferred)
- * [http://pysqlite.initd.org/ PySQLite], version 1.x (for SQLite 2.x) or version 2.x (for SQLite 3.x). For details see [http://trac.edgewall.org/wiki/PySqlite PySqlite]
+ * [http://pysqlite.org/ PySQLite], version 1.x (for SQLite 2.x) or version 2.x (for SQLite 3.x). For details see [http://trac.edgewall.org/wiki/PySqlite PySqlite]
 
 ''Note: Versions of Trac prior to 0.9 do '''not''' work with PySQLite 2.x.''
 

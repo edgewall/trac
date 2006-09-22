@@ -22,6 +22,7 @@ The example below should help to explain the syntax.
    * value: Default value (0 or 1).
    * order: Sort order placement.
  * '''select''': Drop-down select box. Uses a list of values.
+   * label: Descriptive label.
    * options: List of values, separated by '''|''' (vertical pipe).
    * value: Default value (Item #, starting at 0).
    * order: Sort order placement.

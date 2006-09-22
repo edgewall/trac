@@ -67,7 +67,7 @@ If neither package is available, Trac will display the data as plain text.
 
 ''(1) Ruby highlighting is not included in the Enscript distribution.  Highlighting rules for Ruby can be obtained from: http://neugierig.org/software/ruby/
 
-''(2) C# highlighting is not included in the Enscript distribution.  Highlighting rules for Ruby can be obtained from: http://wiki.hasno.info/index.php/Csharp.st
+''(2) C# highlighting is not included in the Enscript distribution.  Highlighting rules for C# can be obtained from: http://wiki.hasno.info/index.php/Csharp.st
 
 == Extra Software ==
  * GNU Enscript -- http://directory.fsf.org/GNU/enscript.html
