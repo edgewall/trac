@@ -78,6 +78,20 @@ your pages no longer work as expected:
    should quote the name containing spaces 
    (for example, use wiki:"My page" instead of wiki:My%20page.) 
 
+Also note that the argument list of the "trac-admin initenv" command has
+changed: there's a new argument for determining the type of version
+control system. The old usage was:
+
+   initenv <projectname> <db> <repospath> <templatepath>
+
+The new usage is:
+
+   initenv <projectname> <db> <repostype> <repospath> <templatepath>
+
+If you're using any scripts that automate the creation of Trac environments,
+you will need to update them. If you're using Subversion, specify "svn" for
+the <repostype> argument.
+
 
 From 0.9.3 to 0.9.4
 -------------------
