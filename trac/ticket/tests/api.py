@@ -27,7 +27,7 @@ class TicketSystemTestCase(unittest.TestCase):
         fields = TicketSystem(self.env).get_custom_fields()
         self.assertEqual({'name': 'test', 'type': 'select', 'label': 'Test',
                           'value': '1', 'options': ['option1', 'option2'],
-                          'order': 0},
+                          'order': 0, 'optional': False},
                          fields[0])
 
     def test_custom_field_textarea(self):
