@@ -30,6 +30,17 @@ class TicketSystemTestCase(unittest.TestCase):
                           'order': 0, 'optional': False},
                          fields[0])
 
+    def test_custom_field_optional_select(self):
+        self.env.config.set('ticket-custom', 'test', 'select')
+        self.env.config.set('ticket-custom', 'test.label', 'Test')
+        self.env.config.set('ticket-custom', 'test.value', '1')
+        self.env.config.set('ticket-custom', 'test.options', '|option1|option2')
+        fields = TicketSystem(self.env).get_custom_fields()
+        self.assertEqual({'name': 'test', 'type': 'select', 'label': 'Test',
+                          'value': '1', 'options': ['', 'option1', 'option2'],
+                          'order': 0, 'optional': True},
+                         fields[0])
+
     def test_custom_field_textarea(self):
         self.env.config.set('ticket-custom', 'test', 'textarea')
         self.env.config.set('ticket-custom', 'test.label', 'Test')
