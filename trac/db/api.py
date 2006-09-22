@@ -73,7 +73,8 @@ class DatabaseManager(Component):
     def shutdown(self, tid=None):
         if self._cnx_pool:
             self._cnx_pool.shutdown(tid)
-            self._cnx_pool = None
+            if not tid:
+                self._cnx_pool = None
 
     def _get_connector(self): ### FIXME: Make it public?
         scheme, args = _parse_db_str(self.connection_uri)
