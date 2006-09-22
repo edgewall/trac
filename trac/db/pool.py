@@ -34,13 +34,14 @@ class PooledConnection(ConnectionWrapper):
     to the pool.
     """
 
-    def __init__(self, pool, cnx):
+    def __init__(self, pool, cnx, tid):
         ConnectionWrapper.__init__(self, cnx)
         self._pool = pool
+        self._tid = tid
 
     def close(self):
         if self.cnx:
-            self._pool._return_cnx(self.cnx)
+            self._pool._return_cnx(self.cnx, self._tid)
             self.cnx = None
 
     def __del__(self):
@@ -65,8 +66,11 @@ class ConnectionPool(object):
         try:
             tid = threading._get_ident()
             if tid in self._active:
-                self._active[tid][0] += 1
-                return PooledConnection(self, self._active[tid][1])
+                num, cnx = self._active.get(tid)
+                if num == 0:
+                    cnx.rollback()
+                self._active[tid][0] = num + 1
+                return PooledConnection(self, cnx, tid)
             while True:
                 if self._dormant:
                     cnx = self._dormant.pop()
@@ -89,14 +93,13 @@ class ConnectionPool(object):
                     else:
                         self._available.wait()
             self._active[tid] = [1, cnx]
-            return PooledConnection(self, cnx)
+            return PooledConnection(self, cnx, tid)
         finally:
             self._available.release()
 
-    def _return_cnx(self, cnx):
+    def _return_cnx(self, cnx, tid):
         self._available.acquire()
         try:
-            tid = threading._get_ident()
             if tid in self._active:
                 num, cnx_ = self._active.get(tid)
                 assert cnx is cnx_
@@ -111,13 +114,16 @@ class ConnectionPool(object):
         # Note: self._available *must* be acquired
         if tid in self._active:
             cnx = self._active.pop(tid)[1]
-            if cnx not in self._dormant:
-                cnx.rollback()
-                if cnx.poolable:
+            if cnx not in self._dormant: # hm, how could that happen?
+                if cnx.poolable: # i.e. we can manipulate it from other threads
+                    cnx.rollback()
                     self._dormant.append(cnx)
-                else:
+                elif tid == threading._get_ident():
+                    cnx.rollback() # non-poolable but same thread: close
                     cnx.close()
                     self._cursize -= 1
+                else: # non-poolable, different thread: do nothing
+                    self._active[tid][0] = 0
                 self._available.notify()
 
     def shutdown(self, tid=None):
