@@ -62,6 +62,16 @@ Due to some changes in the Wiki syntax, you may notice that certain parts of you
 Several enhancements have been made to the version control subsystem, in particular for the support of scoped repositories has been improved. 
 It is recommended that you perform a [TracAdmin#InteractiveMode trac-admin] '''`resync`''' operation to take advantage of these improvements.
 
+Also note that the argument list of the [TracAdmin trac-admin] '''`initenv`''' command has changed: there's a new argument for determining the type of version control system. The old usage was:
+{{{
+   initenv <projectname> <db> <repospath> <templatepath>
+}}}
+The new usage is:
+{{{
+   initenv <projectname> <db> <repostype> <repospath> <templatepath>
+}}}
+If you're using any scripts that automate the creation of Trac environments, you will need to update them. If you're using Subversion, specify `svn` for the `<repostype>` argument.
+
 == From 0.9.3 to 0.9.4 ==
 
 There is a bug in Pysqlite 1.x that causes reports using the "%" character for `LIKE` clauses or date formatting to fail.  You will need to use escape the percent characters with another: "%%".

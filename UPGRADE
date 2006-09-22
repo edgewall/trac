@@ -78,6 +78,11 @@ your pages no longer work as expected:
    should quote the name containing spaces 
    (for example, use wiki:"My page" instead of wiki:My%20page.) 
 
+Several enhancements have been made to the version control subsystem, in
+particular for the support of scoped repositories has been improved. It is
+recommended that you perform a "trac-admin resync" operation to take
+advantage of these improvements.
+
 Also note that the argument list of the "trac-admin initenv" command has
 changed: there's a new argument for determining the type of version
 control system. The old usage was:
