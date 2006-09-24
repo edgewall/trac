@@ -59,14 +59,20 @@ class ReStructuredTextRenderer(Component):
 
         def trac_get_reference(rawtext, target, text):
             link = wiki_to_link(target, self.env, req)
+            uri = None
+            missing = False
             if isinstance(link, Element):
                 uri = link.attr.get('href', '')
-                if uri:
-                    reference = nodes.reference(rawtext, text or target)
-                    reference['refuri']= uri
-                    if 'missing' in link.attr.get('class', ''):
-                        reference.set_class('missing')
-                    return reference
+                missing = 'missing' in link.attr.get('class', '')
+            else:
+                uri = req.href.wiki(target)
+                missing = not WikiSystem(self.env).has_page(target)
+            if uri:                    
+                reference = nodes.reference(rawtext, text or target)
+                reference['refuri']= uri
+                if missing:
+                    reference.set_class('missing')
+                return reference
             return None
 
         def trac(name, arguments, options, content, lineno,
