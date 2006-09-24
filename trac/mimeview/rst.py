@@ -29,7 +29,7 @@ import re
 
 from trac.core import *
 from trac.mimeview.api import IHTMLPreviewRenderer, content_to_unicode
-from trac.util.html import Element
+from trac.util.html import Element, Markup
 from trac.web.href import Href
 from trac.wiki.formatter import WikiProcessor
 from trac.wiki import WikiSystem, wiki_to_link
@@ -58,10 +58,17 @@ class ReStructuredTextRenderer(Component):
                              % ('0.3.9', __version__)
 
         def trac_get_reference(rawtext, target, text):
-            link = wiki_to_link(target, self.env, req)
+            fulltext = text and target+' '+text or target
+            link = wiki_to_link(fulltext, self.env, req)
             uri = None
             missing = False
             if isinstance(link, Element):
+                linktext = Markup(link).striptags()
+                # the following is a bit hackish, but it takes into account:
+                #  - an eventual trailing '?' for missing wiki pages
+                #  - space eventually introduced due to split_page_names option
+                if linktext.rstrip('?').replace(' ', '') != target:
+                    text = linktext
                 uri = link.attr.get('href', '')
                 missing = 'missing' in link.attr.get('class_', '')
             else:
