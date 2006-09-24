@@ -63,7 +63,7 @@ class ReStructuredTextRenderer(Component):
             missing = False
             if isinstance(link, Element):
                 uri = link.attr.get('href', '')
-                missing = 'missing' in link.attr.get('class', '')
+                missing = 'missing' in link.attr.get('class_', '')
             else:
                 uri = req.href.wiki(target)
                 missing = not WikiSystem(self.env).has_page(target)
