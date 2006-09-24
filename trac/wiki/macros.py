@@ -267,6 +267,9 @@ class ImageMacro(WikiMacroBase):
             if arg == 'nolink':
                 nolink = True
                 continue
+            if arg in ('left', 'right', 'top', 'bottom'):
+                style['float'] = arg
+                continue
             match = attr_re.match(arg)
             if match:
                 key, val = match.groups()

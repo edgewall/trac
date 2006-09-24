@@ -33,6 +33,13 @@ IMAGE_MACRO_TEST_CASES=u"""
 <a style="padding:0; border:none" href="/browser/test.png"><img width="30%" alt="source:test.png" src="/browser/test.png?format=raw" title="source:test.png" /></a>
 </p>
 ------------------------------
+============================== source: Image, keyword alignment
+[[Image(source:test.png, right)]]
+------------------------------
+<p>
+<a style="padding:0; border:none" href="/browser/test.png"><img src="/browser/test.png?format=raw" alt="source:test.png" style="float:right" title="source:test.png" /></a>
+</p>
+------------------------------
 ============================== http: Image, nolink
 [[Image(http://www.edgewall.com/gfx/shredder.png, nolink)]]
 ------------------------------
