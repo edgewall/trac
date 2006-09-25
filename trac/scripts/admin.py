@@ -1113,7 +1113,15 @@ Congratulations!
             print "Database is up to date, no upgrade necessary."
             return
 
-        self.__env.upgrade(backup=do_backup)
+        try:
+            self.__env.upgrade(backup=do_backup)
+        except EnvironmentError, e:
+            msg = unicode(e)
+            if 'backup' in msg:
+                raise TracError("Backup failed '%s'.\nUse `--no-backup' to "
+                                "upgrade without doing a backup." % msg)
+            else:
+                raise
         print 'Upgrade done.'
 
     _help_hotcopy = [('hotcopy <backupdir>',
