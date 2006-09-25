@@ -54,7 +54,7 @@ def run():
             fd = stream.fileno()
             flags = fcntl.fcntl(fd, fcntl.F_GETFL)
             fcntl.fcntl(fd, fcntl.F_SETFL, flags & ~os.O_NONBLOCK)
-    except ImportError:
+    except (ImportError, AttributeError):
         pass
 
     try: # Use binary I/O on Windows

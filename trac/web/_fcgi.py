@@ -948,7 +948,7 @@ class Server(object):
                 # Attempt to glean the maximum number of connections
                 # from the OS.
                 maxConns = resource.getrlimit(resource.RLIMIT_NOFILE)[0]
-            except ImportError:
+            except (ImportError, AttributeError):
                 maxConns = 100 # Just some made up number.
             maxReqs = maxConns
             if multiplexed:
