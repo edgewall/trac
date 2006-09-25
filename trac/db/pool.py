@@ -67,7 +67,7 @@ class ConnectionPool(object):
             tid = threading._get_ident()
             if tid in self._active:
                 num, cnx = self._active.get(tid)
-                if num == 0:
+                if num == 0: # was pushed back (see _cleanup)
                     cnx.rollback()
                 self._active[tid][0] = num + 1
                 return PooledConnection(self, cnx, tid)
@@ -122,8 +122,8 @@ class ConnectionPool(object):
                     cnx.rollback() # non-poolable but same thread: close
                     cnx.close()
                     self._cursize -= 1
-                else: # non-poolable, different thread: do nothing
-                    self._active[tid][0] = 0
+                else: # non-poolable, different thread: push it back
+                    self._active[tid] = [0, cnx]
                 self._available.notify()
 
     def shutdown(self, tid=None):
