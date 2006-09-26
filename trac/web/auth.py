@@ -209,7 +209,15 @@ class BasicAuthentication(HTTPAuthentication):
     def load(self, filename):
         fd = open(filename, 'r')
         for line in fd:
-            u, h = line.strip().split(':')
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                u, h = line.split(':')
+            except ValueError:
+                print >>sys.stderr, 'Warning: invalid password line in %s: %s' \
+                                    % (filename, line)
+                continue
             if '$' in h or self.crypt:
                 self.hash[u] = h
             else:
@@ -262,7 +270,15 @@ class DigestAuthentication(HTTPAuthentication):
         """
         fd = open(filename, 'r')
         for line in fd.readlines():
-            u, r, a1 = line.strip().split(':')
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                u, r, a1 = line.split(':')
+            except ValueError:
+                print >>sys.stderr, 'Warning: invalid digest line in %s: %s' \
+                                    % (filename, line)
+                continue
             if r == realm:
                 self.hash[u] = a1
         if self.hash == {}:
