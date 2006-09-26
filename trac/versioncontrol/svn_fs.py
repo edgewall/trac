@@ -666,8 +666,9 @@ class SubversionChangeset(Changeset):
             # Determine the action
             if not path:                # deletion
                 if base_path:
+                    base_path = '/'+key_path
                     action = Changeset.DELETE
-                    deletions[key_path] = idx
+                    deletions[base_path] = idx
                 elif self.scope:        # root property change
                     action = Changeset.EDIT
                 else:                   # deletion outside of scope, ignore
@@ -701,7 +702,6 @@ class SubversionChangeset(Changeset):
 
         moves = []
         for k,v in copies.items():
-            k = k.lstrip('/')
             if k in deletions:
                 changes[v][2] = Changeset.MOVE
                 moves.append(deletions[k])
