@@ -209,9 +209,13 @@ class RoadmapModule(Component):
                 else: return 'CANCELLED'
             else: return ''
 
+        def escape_value(text): 
+            s = ''.join(map(lambda c: (c in ';,\\') and '\\' + c or c, text))
+            return '\\n'.join(re.split(r'[\r\n]+', s))
+
         def write_prop(name, value, params={}):
             text = ';'.join([name] + [k + '=' + v for k, v in params.items()]) \
-                 + ':' + '\\n'.join(re.split(r'[\r\n]+', value))
+                 + ':' + escape_value(value)
             firstline = 1
             while text:
                 if not firstline: text = ' ' + text
@@ -254,6 +258,8 @@ class RoadmapModule(Component):
                            if ticket['owner'] == user]:
                 ticket = Ticket(self.env, tkt_id)
                 write_prop('BEGIN', 'VTODO')
+                write_prop('UID', '<%s/ticket/%s@%s>' % (req.base_path,
+                                                         tkt_id, host))
                 if milestone.has_key('due'):
                     write_prop('RELATED-TO', uid)
                     write_date('DUE', localtime(milestone['due']))
