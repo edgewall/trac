@@ -648,12 +648,10 @@ class SubversionChangeset(Changeset):
         copies, deletions = {}, {}
         changes = []
         revroots = {}
-        for path, change in editor.changes.items():
-            #assert path == change.path or change.base_path
-            
-            # Filtering on `path`
-            if not (_is_path_within_scope(self.scope, path) and \
-                    self.authz.has_permission(path)):
+        for key_path, change in editor.changes.items():
+            # Filtering on `key_path`
+            if not (_is_path_within_scope(self.scope, key_path) and \
+                    self.authz.has_permission(key_path)):
                 continue
 
             path = change.path
@@ -669,7 +667,7 @@ class SubversionChangeset(Changeset):
             if not path:                # deletion
                 if base_path:
                     action = Changeset.DELETE
-                    deletions[base_path] = idx
+                    deletions[key_path] = idx
                 elif self.scope:        # root property change
                     action = Changeset.EDIT
                 else:                   # deletion outside of scope, ignore
@@ -703,6 +701,7 @@ class SubversionChangeset(Changeset):
 
         moves = []
         for k,v in copies.items():
+            k = k.lstrip('/')
             if k in deletions:
                 changes[v][2] = Changeset.MOVE
                 moves.append(deletions[k])
