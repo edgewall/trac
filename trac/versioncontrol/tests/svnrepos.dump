@@ -552,3 +552,86 @@ Content-length: 23
 PROPS-END
 En résumé ...
 
+Revision-number: 18
+Prop-content-length: 124
+Content-length: 124
+
+K 7
+svn:log
+V 24
+Prepare for fancy rename
+K 10
+svn:author
+V 5
+cboos
+K 8
+svn:date
+V 27
+2006-09-27T10:40:38.671875Z
+PROPS-END
+
+Node-path: trunk/Xprimary_proc
+Node-kind: dir
+Node-action: add
+Prop-content-length: 10
+Content-length: 10
+
+PROPS-END
+
+
+Node-path: trunk/Xprimary_proc/Xprimary_pkg.vhd
+Node-kind: file
+Node-action: add
+Prop-content-length: 10
+Text-content-length: 5
+Text-content-md5: 2debfdcf79f03e4a65a667d21ef9de14
+Content-length: 15
+
+PROPS-END
+TEST
+
+
+Revision-number: 19
+Prop-content-length: 145
+Content-length: 145
+
+K 7
+svn:log
+V 45
+Fancy copy+rename resulting in double delete.
+K 10
+svn:author
+V 5
+cboos
+K 8
+svn:date
+V 27
+2006-09-27T10:41:27.484375Z
+PROPS-END
+
+Node-path: trunk/mpp_proc
+Node-kind: dir
+Node-action: add
+Node-copyfrom-rev: 18
+Node-copyfrom-path: trunk/Xprimary_proc
+
+
+Node-path: trunk/mpp_proc/Xprimary_proc
+Node-kind: dir
+Node-action: add
+Node-copyfrom-rev: 18
+Node-copyfrom-path: trunk/Xprimary_proc
+
+
+Node-path: trunk/mpp_proc/Xprimary_proc/Xprimary_pkg.vhd
+Node-action: delete
+
+
+Node-path: trunk/mpp_proc/Xprimary_pkg.vhd
+Node-action: delete
+
+
+Node-path: trunk/Xprimary_proc
+Node-action: delete
+
+

@@ -649,7 +649,6 @@ class SubversionChangeset(Changeset):
         changes = []
         revroots = {}
         for path, change in editor.changes.items():
-            #assert path == change.path or change.base_path
             
             # Filtering on `path`
             if not (_is_path_within_scope(self.scope, path) and \
@@ -668,6 +667,8 @@ class SubversionChangeset(Changeset):
             # Determine the action
             if not path:                # deletion
                 if base_path:
+                    if base_path in deletions:
+                        continue # duplicates on base_path are possible (#3778)
                     action = Changeset.DELETE
                     deletions[base_path] = idx
                 elif self.scope:        # root property change
