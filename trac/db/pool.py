@@ -102,11 +102,13 @@ class ConnectionPool(object):
         try:
             if tid in self._active:
                 num, cnx_ = self._active.get(tid)
-                assert cnx is cnx_
-                if num > 1:
-                    self._active[tid][0] = num - 1
-                else:
-                    self._cleanup(tid)
+                if cnx is cnx_:
+                    if num > 1:
+                        self._active[tid][0] = num - 1
+                    else:
+                        self._cleanup(tid)
+                # otherwise, cnx was already cleaned up during a shutdown(tid),
+                # and in the meantime, `tid` has been reused (#3504)
         finally:
             self._available.release()
 
