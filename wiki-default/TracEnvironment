@@ -57,6 +57,8 @@ sudo su - postgres -c psql trac
 CREATE USER trac-user-name WITH PASSWORD 'trac-pass-name';
 }}}
 
+(Just to remind you, if you don't have a sudo/su setup, you just need to do the createdb and psql statements. That threw me the first couple of times I read this.)
+
 == Source Code Repository ==
 
 You'll first have to provide the ''type'' of your repository (e.g. `svn` for Subversion,

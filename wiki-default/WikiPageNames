@@ -8,7 +8,7 @@ CamelCase page names must follow these rules:
  2. A name must have at least two capital letters.
  3. The first character must be capitalized.
  4. Every capital letter must be followed by one or more lower-case letters. 
- 5. The use of slash ( / ) is permitted to create a hierarchy inside the wiki.
+ 5. The use of slash ( / ) is permitted in page names (possibly representing a hierarchy).
 
 If you want to create a wiki page that doesn't follow CamelCase rules you can use the following syntax:
 {{{

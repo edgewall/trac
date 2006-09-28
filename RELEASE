@@ -1,15 +1,10 @@
-Release Notes for Trac 0.10rc1
-==============================
-September 22, 2006
+Release Notes for Trac 0.10
+===========================
+September 28, 2006
 
 We're happy to announce the Trac 0.10rc1 release, available from:
 
   http://trac.edgewall.org/wiki/TracDownload
-
-This is a release candidate, which means that the Trac developers feel
-that this release is ready for production use, so we encourage people to
-test this release thoroughly. If no serious bugs are found the final
-stable 0.10 release will be released on Monday.
 
 For questions, comments and user discussions, please use the Trac mailing
 list. List information, subscription and archive available at:

@@ -154,12 +154,12 @@ SELECT id as ticket, created, status, summary FROM ticket
 }}}
 
 === Custom formatting columns ===
-Columns whose names begin and end with 2 underscores (Example: '''_''''''_color_''''''_''') are
+Columns whose names begin and end with 2 underscores (Example: '''`__color__`''') are
 assumed to be ''formatting hints'', affecting the appearance of the row.
  
- * '''_''''''_group_''''''_''' -- Group results based on values in this column. Each group will have its own header and table.
- * '''_''''''_color_''''''_''' -- Should be a numeric value ranging from 1 to 5 to select a pre-defined row color. Typically used to color rows by issue priority.
- * '''_''''''_style_''''''_''' -- A custom CSS style expression to use for the current row. 
+ * '''`__group__`''' -- Group results based on values in this column. Each group will have its own header and table.
+ * '''`__color__`''' -- Should be a numeric value ranging from 1 to 5 to select a pre-defined row color. Typically used to color rows by issue priority.
+ * '''`__style__`''' -- A custom CSS style expression to use for the current row. 
 
 '''Example:''' ''List active tickets, grouped by milestone, colored by priority''
 {{{
@@ -181,11 +181,11 @@ By default, all columns on each row are display on a single row in the HTML
 report, possibly formatted according to the descriptions above. However, it's
 also possible to create multi-line report entries.
 
- * '''column_''' -- ''Break row after this''. By appending an underscore ('_') to the column name, the remaining columns will be be continued on a second line.
+ * '''`column_`''' -- ''Break row after this''. By appending an underscore ('_') to the column name, the remaining columns will be be continued on a second line.
 
- * '''_column_''' -- ''Full row''. By adding an underscore ('_') both at the beginning and the end of a column name, the data will be shown on a separate row.
+ * '''`_column_`''' -- ''Full row''. By adding an underscore ('_') both at the beginning and the end of a column name, the data will be shown on a separate row.
 
- * '''_column'''  --  ''Hide data''. Prepending an underscore ('_') to a column name instructs Trac to hide the contents from the HTML output. This is useful for information to be visible only if downloaded in other formats (like CSV or RSS/XML).
+ * '''`_column`'''  --  ''Hide data''. Prepending an underscore ('_') to a column name instructs Trac to hide the contents from the HTML output. This is useful for information to be visible only if downloaded in other formats (like CSV or RSS/XML).
 
 '''Example:''' ''List active tickets, grouped by milestone, colored by priority, with  description and multi-line layout''
 

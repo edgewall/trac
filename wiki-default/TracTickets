@@ -62,12 +62,12 @@ to understand.
 
 The option selected by default for the various drop-down fields can be set in [wiki:TracIni trac.ini], in the `[ticket]` section:
 
- * `default_type`: Default ticket type
  * `default_component`: Name of the component selected by default
- * `default_version`: Name of the default version
  * `default_milestone`: Name of the default milestone
  * `default_priority`: Default priority value
  * `default_severity`: Default severity value
+ * `default_type`: Default ticket type
+ * `default_version`: Name of the default version
 
 If any of these options are omitted, the default value will either be the first in the list, or an empty value, depending on whether the field in question is required to be set.
 
