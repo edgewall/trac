@@ -36,7 +36,7 @@ class Ticket(object):
         self.env = env
         self.fields = TicketSystem(self.env).get_ticket_fields()
         self.values = {}
-        if tkt_id:
+        if tkt_id is not None:
             self._fetch_ticket(tkt_id, db)
         else:
             self._init_defaults(db)
