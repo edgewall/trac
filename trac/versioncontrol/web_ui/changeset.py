@@ -242,6 +242,7 @@ class ChangesetModule(Component):
                 else:
                     filename = 'diff-from-%s-r%s-to-%s-r%s' \
                                % (old_path.replace('/','_'), old, rpath, new)
+            filename = req.args.get('filename', filename)
             if format == 'diff':
                 self._render_diff(req, filename, repos, diff_args,
                                   diff_options)
