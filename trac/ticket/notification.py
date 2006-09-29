@@ -220,9 +220,16 @@ class TicketNotifyEmail(NotifyEmail):
 
         # Suppress the updater from the recipients
         if not notify_updater:
+            updater = None
             cursor.execute("SELECT author FROM ticket_change WHERE ticket=%s "
                            "ORDER BY time DESC LIMIT 1", (tktid,))
-            (updater, ) = cursor.fetchone() 
+            for updater, in cursor:
+                break
+            else:
+                cursor.execute("SELECT reporter FROM ticket WHERE id=%s",
+                               (tktid,))
+                for updater, in cursor:
+                    break
             torecipients = [r for r in torecipients if r and r != updater]
 
         return (torecipients, ccrecipients)
