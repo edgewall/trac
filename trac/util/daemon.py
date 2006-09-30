@@ -11,9 +11,6 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/log/.
 
-import os
-import sys
-
 import atexit
 import errno
 import os
