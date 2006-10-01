@@ -16,7 +16,7 @@
     <title><?cs var:project.name_encoded ?></title>
     <url><?cs if:!chrome.logo.src_abs ?><?cs var:base_host ?><?cs /if ?><?cs
      var:chrome.logo.src ?></url>
-    <link><?cs var:query.href ?></link>
+    <link><?cs var:base_host ?><?cs var:ticket.href ?></link>
    </image><?cs
   /if ?><?cs 
   each:change = ticket.changes ?>
