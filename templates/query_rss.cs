@@ -11,25 +11,19 @@
    <description><?cs var:project.descr ?></description><?cs
   /if ?>
   <language>en-us</language>
-  <image>
-   <title><?cs var:project.name_encoded ?></title>
-   <url><?cs
-    if:!header_logo.src_abs ?><?cs var:base_host ?><?cs
-    /if ?><?cs
-    var:header_logo.src ?></url>
-   <link><?cs var:base_host ?><?cs var:trac.href.timeline ?></link><?cs
-   if:header_logo.width ?>
-    <width><?cs var:header_logo.width ?></width><?cs
-   /if ?><?cs
-   if:header_logo.height ?>
-    <height><?cs var:header_logo.height ?></height><?cs
-   /if ?>
-  </image>
   <generator>Trac v<?cs var:trac.version ?></generator><?cs
+  if:chrome.logo.src ?>
+   <image>
+    <title><?cs var:project.name_encoded ?></title>
+    <url><?cs if:!chrome.logo.src_abs ?><?cs var:base_host ?><?cs /if ?><?cs
+     var:chrome.logo.src ?></url>
+    <link><?cs var:query.href ?></link>
+   </image><?cs
+  /if ?><?cs
   each:result = query.results ?>
    <item>
     <link><?cs var:result.href ?></link>
-    <guid isPermaLink="true"><?cs var:result.href ?></guid>
+    <guid isPermaLink="false"><?cs var:result.href ?></guid>
     <title><?cs var:'#' + result.id + ': ' + result.summary ?></title><?cs
     if:result.created ?>
      <pubDate><?cs var:result.created ?></pubDate><?cs

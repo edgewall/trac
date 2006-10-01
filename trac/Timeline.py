@@ -165,6 +165,7 @@ class TimelineModule(Component):
                      'author': author or 'anonymous',
                      'date': format_date(date),
                      'time': format_time(date, '%H:%M'),
+                     'dateuid': int(date),
                      'message': message}
 
             if format == 'rss':

@@ -10,7 +10,15 @@
   <link><?cs var:base_host ?><?cs var:ticket.href ?></link>
   <description><?cs var:ticket.description.formatted ?></description>
   <language>en-us</language>
-  <generator>Trac v<?cs var:trac.version ?></generator><?cs 
+  <generator>Trac v<?cs var:trac.version ?></generator><?cs
+  if:chrome.logo.src ?>
+   <image>
+    <title><?cs var:project.name_encoded ?></title>
+    <url><?cs if:!chrome.logo.src_abs ?><?cs var:base_host ?><?cs /if ?><?cs
+     var:chrome.logo.src ?></url>
+    <link><?cs var:query.href ?></link>
+   </image><?cs
+  /if ?><?cs 
   each:change = ticket.changes ?>
    <item><?cs
     if:change.author ?><author><?cs var:change.author ?></author><?cs
@@ -20,6 +28,9 @@
     <link><?cs var:base_host ?><?cs var:ticket.href ?><?cs 
      if:change.cnum ?>#comment:<?cs var:change.cnum ?><?cs
      /if ?></link>
+    <guid isPermaLink="false"><?cs var:base_host ?><?cs var:ticket.href ?><?cs 
+     if:change.cnum ?>#comment:<?cs var:change.cnum ?><?cs
+     /if ?></guid>
     <description>
     <?cs if:len(change.fields) ?>
     &lt;ul&gt;<?cs

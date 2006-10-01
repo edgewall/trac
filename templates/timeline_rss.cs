@@ -26,6 +26,8 @@
     /if ?>
     <pubDate><?cs var:event.date ?></pubDate>
     <link><?cs var:event.href ?></link>
+    <guid isPermaLink="false"><?cs var:event.href ?>/<?cs 
+     var:event.dateuid ?></guid>
     <description><?cs var:event.message ?></description>
    </item><?cs
   /each ?>
