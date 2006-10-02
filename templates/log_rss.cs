@@ -10,7 +10,15 @@
   <link><?cs var:base_host ?><?cs var:log.log_href ?></link>
   <description>Trac Log - Revisions of <?cs var:log.path ?></description>
   <language>en-us</language>
-  <generator>Trac v<?cs var:trac.version ?></generator><?cs 
+  <generator>Trac v<?cs var:trac.version ?></generator><?cs
+  if:chrome.logo.src ?>
+   <image>
+    <title><?cs var:project.name_encoded ?></title>
+    <url><?cs if:!chrome.logo.src_abs ?><?cs var:base_host ?><?cs /if ?><?cs
+     var:chrome.logo.src ?></url>
+    <link><?cs var:base_host ?><?cs var:log.log_href ?></link>
+   </image><?cs
+  /if ?><?cs 
   each:item = log.items ?><?cs 
    with:change = log.changes[item.rev] ?>
     <item><?cs
@@ -19,6 +27,8 @@
      <pubDate><?cs var:change.date ?></pubDate>
      <title>Revision <?cs var:item.rev ?>: <?cs var:change.shortlog ?></title>
      <link><?cs var:base_host ?><?cs var:item.restricted_href ?></link>
+     <guid isPermaLink="false"><?cs var:base_host ?><?cs 
+	   var:item.restricted_href ?></guid>
      <description><?cs var:change.message ?></description>
      <category>Log</category>
     </item><?cs 
