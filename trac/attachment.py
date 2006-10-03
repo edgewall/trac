@@ -599,8 +599,10 @@ class AttachmentModule(Component):
         link, params, fragment = formatter.split_link(target)
         ids = link.split(':', 2)
         if len(ids) == 3:
-            parent_type, parent_id, filename = ids
+            filename, parent_type, parent_id = ids
+            permute = True
         else:
+            permute = False
             # FIXME: the formatter should know which object the text being
             #        formatter belongs to
             parent_type, parent_id = 'wiki', 'WikiStart'
@@ -612,12 +614,21 @@ class AttachmentModule(Component):
                     parent_id = path_info[2]
             filename = link
         href = formatter.href()
-        try:
-            attachment = Attachment(self.env, parent_type, parent_id, filename)
-            if formatter.req:
-                href = attachment.href(formatter.req) + params
-            return html.A(label, class_='attachment', href=href,
-                          title='Attachment %s' % attachment.title)
-        except TracError:
-            return html.A(label, class_='missing attachment', rel='nofollow',
+        def attachment_link(parent_type, parent_id, filename):
+            try:
+                attachment = Attachment(self.env, parent_type, parent_id,
+                                        filename)
+                if formatter.req:
+                    href = attachment.href(formatter.req) + params
+                return html.A(label, class_='attachment', href=href,
+                              title='Attachment %s' % attachment.title)
+            except TracError:
+                return None
+        link = attachment_link(parent_type, parent_id, filename)
+        if not link and permute: # support old attachment: syntax
+            link = attachment_link(filename, parent_type, parent_id)
+        if not link:
+            link = html.A(label, class_='missing attachment', rel='nofollow',
                           href=formatter.href())
+        return link
+        

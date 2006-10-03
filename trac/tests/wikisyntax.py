@@ -37,17 +37,30 @@ search:"?q=foo bar&wiki=on"
 """
 
 ATTACHMENT_TEST_CASES="""
-============================== attachment: link resolver
-attachment:wiki:WikiStart:file.txt
-attachment:ticket:123:file.txt
-[attachment:wiki:WikiStart:file.txt file.txt]
-[attachment:ticket:123:file.txt]
+============================== attachment: link resolver (deprecated)
+attachment:wiki:WikiStart:file.txt (deprecated)
+attachment:ticket:123:file.txt (deprecated)
+[attachment:wiki:WikiStart:file.txt file.txt] (deprecated)
+[attachment:ticket:123:file.txt] (deprecated)
 ------------------------------
 <p>
-<a class="attachment" href="/attachment/wiki/WikiStart/file.txt" title="Attachment WikiStart: file.txt">attachment:wiki:WikiStart:file.txt</a>
-<a class="attachment" href="/attachment/ticket/123/file.txt" title="Attachment #123: file.txt">attachment:ticket:123:file.txt</a>
+<a class="attachment" href="/attachment/wiki/WikiStart/file.txt" title="Attachment WikiStart: file.txt">attachment:wiki:WikiStart:file.txt</a> (deprecated)
+<a class="attachment" href="/attachment/ticket/123/file.txt" title="Attachment #123: file.txt">attachment:ticket:123:file.txt</a> (deprecated)
+<a class="attachment" href="/attachment/wiki/WikiStart/file.txt" title="Attachment WikiStart: file.txt">file.txt</a> (deprecated)
+<a class="attachment" href="/attachment/ticket/123/file.txt" title="Attachment #123: file.txt">ticket:123:file.txt</a> (deprecated)
+</p>
+------------------------------
+============================== attachment: link resolver
+attachment:file.txt:wiki:WikiStart
+attachment:file.txt:ticket:123
+[attachment:file.txt:wiki:WikiStart file.txt]
+[attachment:file.txt:ticket:123]
+------------------------------
+<p>
+<a class="attachment" href="/attachment/wiki/WikiStart/file.txt" title="Attachment WikiStart: file.txt">attachment:file.txt:wiki:WikiStart</a>
+<a class="attachment" href="/attachment/ticket/123/file.txt" title="Attachment #123: file.txt">attachment:file.txt:ticket:123</a>
 <a class="attachment" href="/attachment/wiki/WikiStart/file.txt" title="Attachment WikiStart: file.txt">file.txt</a>
-<a class="attachment" href="/attachment/ticket/123/file.txt" title="Attachment #123: file.txt">ticket:123:file.txt</a>
+<a class="attachment" href="/attachment/ticket/123/file.txt" title="Attachment #123: file.txt">file.txt:ticket:123</a>
 </p>
 ------------------------------
 """ # "
