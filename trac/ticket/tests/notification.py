@@ -23,11 +23,12 @@ from trac.test import EnvironmentStub, Mock
 from trac.tests.notification import SMTPThreadedServer, parse_smtp_message, \
                                     smtp_address
                                     
-import unittest
-import re
 import base64
+import os
 import quopri
+import re
 import time
+import unittest
 
 SMTP_TEST_PORT = 8225
 MAXBODYWIDTH = 76
@@ -39,6 +40,9 @@ class NotificationTestCase(unittest.TestCase):
     
     def setUp(self):
         self.env = EnvironmentStub(default_data=True)
+        self.env.config.set('trac', 'templates_dir',
+                            os.path.join(os.path.dirname(self.env.path),
+                                         'templates'))
         self.env.config.set('project',      'name', 'TracTest')
         self.env.config.set('notification', 'smtp_enabled', 'true')
         self.env.config.set('notification', 'always_notify_owner', 'true')
@@ -505,7 +509,7 @@ class NotificationTestCase(unittest.TestCase):
                 # note project title / URL are not validated yet
 
         # ticket properties which are not expected in the banner
-        xlist = ['summary', 'description', 'link', 'comment']
+        xlist = ['summary', 'description', 'link', 'comment', 'new']
         # check banner content (field exists, msg value matches ticket value)
         for p in [prop for prop in ticket.values.keys() if prop not in xlist]:
             self.failIf(not props.has_key(p))
