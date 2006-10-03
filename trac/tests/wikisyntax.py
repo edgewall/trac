@@ -1,6 +1,7 @@
 import unittest
 
 from trac.Search import SearchModule
+from trac.attachment import AttachmentModule
 from trac.wiki.tests import formatter
 
 SEARCH_TEST_CASES="""
@@ -32,9 +33,26 @@ search:"?q=foo bar&wiki=on"
 ------------------------------
 """
 
+ATTACHMENT_TEST_CASES="""
+============================== search: link resolver
+attachment:wiki:WikiStart:file.txt
+attachment:ticket:123:file.txt
+[attachment:wiki:WikiStart:file.txt file.txt]
+[attachment:ticket:123:file.txt]
+------------------------------
+<p>
+<a class="missing attachment" href="" rel="nofollow">attachment:wiki:WikiStart:file.txt</a>
+<a class="missing attachment" href="" rel="nofollow">attachment:ticket:123:file.txt</a>
+<a class="missing attachment" href="" rel="nofollow">file.txt</a>
+<a class="missing attachment" href="" rel="nofollow">ticket:123:file.txt</a>
+</p>
+------------------------------
+"""
+
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(formatter.suite(SEARCH_TEST_CASES, file=__file__))
+    suite.addTest(formatter.suite(ATTACHMENT_TEST_CASES, file=__file__))
     return suite
 
 if __name__ == '__main__':

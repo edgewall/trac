@@ -57,7 +57,7 @@ trac:#2041
 <a class="ext-link" href="http://trac.edgewall.org/search?q=%232041" title="#2041 in Trac's Trac"><span class="icon">trac:#2041</span></a>
 </p>
 ------------------------------
-"""
+""" # " 
 
 def ticket_setup(tc):
     ticket = Ticket(tc.env)
@@ -110,7 +110,7 @@ trac:report:1
 <a class="ext-link" href="http://trac.edgewall.org/report/1" title="report:1 in Trac's Trac"><span class="icon">{trac 1}</span></a>
 </p>
 ------------------------------
-"""
+""" # '
 
 def report_setup(tc):
     db = tc.env.get_db_cnx()
@@ -170,6 +170,26 @@ query:verbose=1
 ------------------------------
 """
 
+COMMENT_TEST_CASES="""
+============================== comment: link resolver
+comment:ticket:123:2
+[comment:ticket:123:2 see above]
+------------------------------
+<p>
+<a href="/ticket/123#comment:2" title="Comment 2 for ticket:123">comment:ticket:123:2</a>
+<a href="/ticket/123#comment:2" title="Comment 2 for ticket:123">see above</a>
+</p>
+------------------------------
+""" # "
+
+# NOTE: the following test cases:
+#
+#  comment:2
+#  [comment:2 see above]
+#
+# would trigger an error in the workaround code ../api.py, line 235
+# As it's a problem with a temp workaround, I think there's no need
+# to fix it for now.
 
 def suite():
     suite = unittest.TestSuite()
@@ -177,6 +197,7 @@ def suite():
     suite.addTest(formatter.suite(REPORT_TEST_CASES, report_setup, __file__))
     suite.addTest(formatter.suite(MILESTONE_TEST_CASES, file=__file__))
     suite.addTest(formatter.suite(QUERY_TEST_CASES, file=__file__))
+    suite.addTest(formatter.suite(COMMENT_TEST_CASES, file=__file__))
     return suite
 
 if __name__ == '__main__':
