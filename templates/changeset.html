@@ -65,15 +65,15 @@
                        nprops = len(item.props)">
           <div class="$cl"> </div>
           <py:choose test="">
-            <a py:when="cl == 'rem'" title="Show what was removed (rev. $item.old.rev)" href="$item.old.browser_href">
+            <a py:when="cl == 'rem'" title="Show what was removed (rev. $item.old.rev)" href="$item.old.href">
               $item.old.path</a>
-            <a py:otherwise="" title="Show entry in browser" href="$item.new.browser_href">
+            <a py:otherwise="" title="Show entry in browser" href="$item.new.href">
               ${item.new.path or '(root)'}</a>
           </py:choose>
           <span class="comment">($kind)</span>
           <py:if test="item.old.path and item.change == 'copy' or item.change == 'move'">
             <small><em>
-                ($kind from <a title="Show original file (rev. $item.old.rev)" href="$item.old.browser_href">
+                ($kind from <a title="Show original file (rev. $item.old.rev)" href="$item.old.href">
                   $item.old.path</a>)
               </em></small>
           </py:if>
@@ -89,7 +89,7 @@
             </py:when>
           </py:choose>
           <py:if test="cl == 'mod' and item.diffs is None">
-            (<a title="Show previous version in browser" href="$item.old.browser_href">previous</a>)
+            (<a title="Show previous version in browser" href="$item.old.href">previous</a>)
           </py:if>
         </py:with>
       </py:def>
