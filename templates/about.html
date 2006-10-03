@@ -1,0 +1,125 @@
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:py="http://genshi.edgewall.org/"
+  xmlns:xi="http://www.w3.org/2001/XInclude">
+  <xi:include href="layout.html"><xi:fallback/></xi:include>
+  <head>
+    <title>About</title>
+  </head>
+
+  <body>
+    <div id="ctxtnav" class="nav">
+      <h2>About Navigation</h2>
+      <ul>
+        <li class="first${not perm.has_permission('CONFIG_VIEW') and ' last' or ''}">
+          <a href="${href.about()}">Overview</a>
+        </li>
+        <li py:if="perm.has_permission('CONFIG_VIEW')">
+          <a href="${href.about('config')}">Configuration</a>
+        </li>
+        <li class="last" py:if="perm.has_permission('CONFIG_VIEW')">
+          <a href="${href.about('plugins')}">Plugins</a>
+        </li>
+      </ul>
+    </div>
+
+    <div id="content" class="${about.page and 'about_%s' % about.page or 'about'}"
+      py:choose="about.page">
+
+      <div py:when="'config'" py:strip="">
+        <h1>Configuration</h1>
+        <table>
+          <thead>
+            <tr>
+              <th class="section">Section</th>
+              <th class="name">Name</th>
+              <th class="value">Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            <div py:for="section in about.config" py:strip="">
+              <tr py:for="idx,option in enumerate(section.options)">
+                <th py:if="idx == 0" class="section"
+                  rowspan="${len(section.options)}">
+                  ${section.name}</th>
+                <td class="name">${option.name}</td>
+                <td class="${option.valueclass}">${option.value}</td>
+              </tr>
+            </div>
+          </tbody>
+        </table>
+        <div id="help">
+          See <a href="${href.wiki('TracIni')}">TracIni</a> for information about
+          the configuration.
+        </div>
+      </div>
+
+      <div py:when="'plugins'" py:strip="">
+        <h1>Plugins</h1>
+        <dl id="plugins">
+          <div py:for="plugin in about.plugins" py:strip="">
+            <h2 id="${plugin.module}.${plugin.name}">${plugin.name}</h2>
+            <table>
+              <tr>
+                <th class="module" scope="row">Module</th>
+                <td class="module">${plugin.module}<br />
+                  <span class="path">${plugin.path}</span></td>
+              </tr>
+              <tr py:if="plugin.description">
+                <th class="description" scope="row">Description</th>
+                <td class="description">${plugin.description}</td>
+              </tr>
+              <tr py:for="idx,extension_point in enumerate(plugin.extension_points)">
+                <th py:if="idx == 0" class="xtnpts"
+                  rowspan="${len(plugin.extension_points)}">
+                  Extension points:
+                </th>
+                <td class="xtnpts">        
+                  <code>${extension_point.module}.${extension_point.interface}</code>
+                  <div py:if="extension_point.extensions" py:strip="">
+                    (${len(extension_point.extensions)} extensions)
+                    <ul>
+                      <li py:for="extension in extension_point.extensions">
+                        <a href="#${extension.module}.${extension.name}">${extension.name}</a>
+                      </li>
+                    </ul>
+                  </div>
+                  <div class="description">${extension_point.description}</div>
+                </td>
+              </tr>
+            </table>
+          </div>
+        </dl>
+      </div>
+
+      <div py:otherwise="" py:strip="">
+        <a href="http://trac.edgewall.org/"
+          style="border: none; float: right; margin-left: 2em">
+          <img style="display: block" src="${href.chrome('common/trac_banner.png')}"
+            alt="Trac: Integrated SCM &amp; Project Management"/>
+        </a>
+        <h1>About Trac ${trac.version}</h1>
+        <p>Trac is a web-based software project management and bug/issue
+          tracking system emphasizing ease of use and low ceremony. 
+          It provides an integrated Wiki, an interface to version control 
+          systems, and a number convenient ways to stay on top of events
+          and changes within a project.
+        </p>
+        <p>Trac is distributed under the modified BSD License.<br />
+          The complete text of the license can be found 
+          <a href="http://trac.edgewall.org/wiki/TracLicense">online</a>
+          as well as in the <tt>COPYING</tt> file included in the distribution.</p>
+        <a href="http://www.python.org/" style="border: none; float: right">
+          <img style="display: block" src="${chrome.htdocs_location}python.png"
+            alt="python powered" width="140" height="56" />
+        </a>
+        <p>Please visit the Trac open source project: 
+          <a href="http://trac.edgewall.org/">http://trac.edgewall.org/</a></p>
+        <p>Copyright &copy; 2003-2006
+          <a href="http://www.edgewall.org/">Edgewall Software</a></p>
+      </div>
+    </div>
+  </body>
+</html>

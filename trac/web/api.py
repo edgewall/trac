@@ -352,30 +352,36 @@ class Request(object):
         else:
             data = self.hdf.render(template)
 
+        self.send(data, content_type, status)
+
+    def send(self, content, content_type='text/html', status=200):
         self.send_response(status)
         self.send_header('Cache-control', 'must-revalidate')
-        self.send_header('Expires', 'Fri, 01 Jan 1999 00:00:00 GMT')
         self.send_header('Content-Type', content_type + ';charset=utf-8')
-        self.send_header('Content-Length', len(data))
+        self.send_header('Content-Length', len(content))
         self.end_headers()
 
         if self.method != 'HEAD':
-            self.write(data)
+            self.write(content)
         raise RequestDone
 
-    def send_error(self, exc_info, template='error.cs',
-                   content_type='text/html', status=500):
-        if self.hdf:
-            if self.args.has_key('hdfdump'):
-                # FIXME: the administrator should probably be able to disable HDF
-                #        dumps
-                content_type = 'text/plain'
-                data = str(self.hdf)
-            else:
-                data = self.hdf.render(template)
-        else:
-            content_type = 'text/plain'
+    def send_error(self, exc_info, template='error.html',
+                   content_type='text/html', status=500, env=None, data={}):
+        try:
+            if self.hdf and template.endswith('.cs'): # FIXME: remove this
+                if self.args.has_key('hdfdump'):
+                    content_type = 'text/plain'
+                    data = str(self.hdf)
+                else:
+                    data = self.hdf.render(template)
+
+            if template.endswith('.html'):
+                from trac.web.chrome import Chrome
+                data = Chrome(env).render_response(self, template,
+                                                   'text/html', data)
+        except: # failed to render
             data = get_last_traceback()
+            content_type = 'text/plain'
 
         self.send_response(status)
         self._outheaders = []

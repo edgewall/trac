@@ -1,0 +1,104 @@
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:py="http://genshi.edgewall.org/"
+      xmlns:xi="http://www.w3.org/2001/XInclude">
+  <xi:include href="layout.html"><xi:fallback/></xi:include>
+  <head>
+    <py:choose test="milestone.exists">
+      <title py:when="True">Edit Milestone ${milestone.name}</title>
+      <title py:otherwise="">New Milestone</title>
+    </py:choose>
+    <link rel="stylesheet" type="text/css"
+          href="${chrome.htdocs_location}css/roadmap.css" />
+    <script type="text/javascript">
+      addEvent(window, 'load', function() { document.getElementById('name').focus()}); 
+    </script>
+  </head>
+
+  <body>
+    <div id="ctxtnav" class="nav"></div>
+
+    <div id="content" class="milestone">
+      <py:choose test="milestone.exists">
+        <h1 py:when="True">Edit Milestone ${milestone.name}</h1>
+        <h1 py:otherwise="">New Milestone</h1>
+      </py:choose>
+
+      <form id="edit" action="" method="post">
+        <input type="hidden" name="id" value="${milestone.name}" />
+        <input type="hidden" name="action" value="edit" />
+        <div class="field">
+          <label>Name of the milestone:<br />
+            <input type="text" id="name" name="name" size="32" value="${milestone.name}" />
+          </label>
+        </div>
+        <fieldset>
+          <legend>Schedule</legend>
+          <label>Due:<br />
+            <input type="text" id="duedate" name="duedate" size="${len(date_hint)}"
+                   value="${milestone.due_date}" title="Format: ${date_hint}" />
+            <em>Format: ${date_hint}</em>
+          </label>
+          <div class="field">
+            <label>
+              <input type="checkbox" id="completed" name="completed"
+                     checked="${milestone.completed or None}" />
+              Completed:<br />
+            </label>
+            <label>
+              <input type="text" id="completeddate" name="completeddate"
+                     size="${len(datetime_hint)}" title="Format: ${datetime_hint}"
+                     value="${milestone.completed_date or datetime_now}" />
+              <em>Format: ${datetime_hint}</em>
+            </label>
+            <py:if test="milestones">
+              <br/>
+              <input type="checkbox" id="retarget" name="retarget" checked="checked"
+                     onclick="enableControl('target', this.checked)"/>
+              <label>Retarget associated open tickets to milestone
+                <select id="target" name="target">
+                  <option value="">None</option>
+                  <option py:for="name in milestones">${name}</option>
+                </select>
+             </label>
+           </py:if>
+           <script type="text/javascript">/*<![CDATA[*/
+             var completed = document.getElementById("completed");
+             var retarget = document.getElementById("retarget");
+             var enableCompletedDate = function() {
+               enableControl("completeddate", completed.checked);
+               enableControl("retarget", completed.checked);
+               enableControl("target", completed.checked && retarget.checked);
+             };
+             addEvent(window, "load", enableCompletedDate);
+             addEvent(completed, "click", enableCompletedDate);
+           /*]]>*/</script>
+          </div>
+        </fieldset>
+        <div class="field">
+          <fieldset class="iefix">
+            <label for="description">Description (you may use <a tabindex="42"
+                   href="${href.wiki('WikiFormatting')}">WikiFormatting</a> here):</label>
+            <p><textarea id="description" name="description" class="wikitext" rows="10" cols="78">
+${milestone.description_source}</textarea></p>
+          </fieldset>
+        </div>
+        <div class="buttons" py:choose="milestone.exists">
+          <input py:when="True" type="submit" value="Submit changes" />
+          <input py:otherwise="" type="submit" value="Add milestone" />
+          <input type="submit" name="cancel" value="Cancel" />
+        </div>
+        <script type="text/javascript" src="${chromehtdocs_location}js/wikitoolbar.js"></script>
+      </form>
+
+    </div>
+
+    <div id="help"><strong>Note:</strong> See
+      <a href="${href.wiki('TracRoadmap')}">TracRoadmap</a> for help on using
+      the roadmap.
+    </div>
+
+  </body>
+</html>

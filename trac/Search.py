@@ -17,13 +17,15 @@
 import re
 import time
 
+from genshi.builder import tag, Element
+
 from trac.config import IntOption
 from trac.core import *
 from trac.perm import IPermissionRequestor
 from trac.util.datefmt import format_datetime
-from trac.util.html import escape, html, Element
 from trac.web import IRequestHandler
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
+from trac.web.paginate import Paginator
 from trac.wiki import IWikiSyntaxProvider, wiki_to_link
 
 
@@ -109,7 +111,7 @@ def shorten_result(text='', keywords=[], maxlen=240, fuzz=60):
     if beg < len(text)-maxlen:
         msg = msg + ' ...'
     return msg
-    
+
 
 class SearchModule(Component):
 
@@ -132,7 +134,7 @@ class SearchModule(Component):
         if not req.perm.has_permission('SEARCH_VIEW'):
             return
         yield ('mainnav', 'search',
-               html.A('Search', href=req.href.search(), accesskey=4))
+               tag.a('Search', href=req.href.search(), accesskey=4))
 
     # IPermissionRequestor methods
 
@@ -150,70 +152,59 @@ class SearchModule(Component):
         available_filters = []
         for source in self.search_sources:
             available_filters += source.get_search_filters(req)
-            
         filters = [f[0] for f in available_filters if req.args.has_key(f[0])]
         if not filters:
             filters = [f[0] for f in available_filters
                        if len(f) < 3 or len(f) > 2 and f[2]]
-                
-        req.hdf['search.filters'] = [
-            { 'name': filter[0],
-              'label': filter[1],
-              'active': filter[0] in filters
-            } for filter in available_filters]
-                
-        req.hdf['title'] = 'Search'
+        data = {'filters': [{'name': f[0], 'label': f[1],
+                             'active': f[0] in filters}
+                            for f in available_filters]}
 
         query = req.args.get('q')
         if query:
-            page = int(req.args.get('page', '1'))
-            self.check_quickjump(req, query)
+            data['query'] = query
+            data['quickjump'] = self.check_quickjump(req, query)
             if query.startswith('!'):
                 query = query[1:]
             terms = search_terms(query)
+
             # Refuse queries that obviously would result in a huge result set
             if len(terms) == 1 and len(terms[0]) < self.min_query_length:
                 raise TracError('Search query too short. '
                                 'Query must be at least %d characters long.' % \
                                 self.min_query_length, 'Search Error')
+
             results = []
             for source in self.search_sources:
                 results += list(source.get_search_results(req, terms, filters))
             results.sort(lambda x,y: cmp(y[2], x[2]))
-            page_size = self.RESULTS_PER_PAGE
-            n = len(results)
-            n_pages = (n-1) / page_size + 1
-            results = results[(page-1) * page_size: page * page_size]
 
-            req.hdf['title'] = 'Search Results'
-            req.hdf['search.q'] = req.args.get('q')
-            req.hdf['search.page'] = page
-            req.hdf['search.n_hits'] = n
-            req.hdf['search.n_pages'] = n_pages
-            req.hdf['search.page_size'] = page_size
-            if page < n_pages:
+            page = int(req.args.get('page', '1'))
+            results = Paginator(results, page - 1, self.RESULTS_PER_PAGE)
+            for idx, result in enumerate(results):
+                results[idx] = {'href': result[0], 'title': result[1],
+                                'date': format_datetime(result[2]),
+                                'author': result[3], 'excerpt': result[4]}
+            data['results'] = results
+
+            if results.has_next_page:
                 next_href = req.href.search(zip(filters, ['on'] * len(filters)),
                                             q=req.args.get('q'), page=page + 1,
                                             noquickjump=1)
                 add_link(req, 'next', next_href, 'Next Page')
-            if page > 1:
+
+            if results.has_previous_page:
                 prev_href = req.href.search(zip(filters, ['on'] * len(filters)),
                                             q=req.args.get('q'), page=page - 1,
                                             noquickjump=1)
                 add_link(req, 'prev', prev_href, 'Previous Page')
-            req.hdf['search.page_href'] = req.href.search(
+
+            data['page_href'] = req.href.search(
                 zip(filters, ['on'] * len(filters)), q=req.args.get('q'),
                 noquickjump=1)
-            req.hdf['search.result'] = [
-                { 'href': result[0],
-                  'title': result[1],
-                  'date': format_datetime(result[2]),
-                  'author': result[3],
-                  'excerpt': result[4]
-                } for result in results]
 
         add_stylesheet(req, 'common/css/search.css')
-        return 'search.cs', None
+        return 'search.html', data, None
 
     def check_quickjump(self, req, kwd):
         noquickjump = int(req.args.get('noquickjump', '0'))
@@ -226,16 +217,13 @@ class SearchModule(Component):
         else:
             link = wiki_to_link(kwd, self.env, req)
             if isinstance(link, Element):
-                quickjump_href = link.attr['href']
+                quickjump_href = link.attrib.get('href')
                 name = link.children
-                description = link.attr.get('title', '')
+                description = link.attrib.get('title', '')
         if quickjump_href:
             if noquickjump:
-                req.hdf['search.quickjump'] = {
-                    'href': quickjump_href,
-                    'name': html.EM(name),
-                    'description': description
-                    }
+                return {'href': quickjump_href, 'name': tag.EM(name),
+                        'description': description}
             else:
                 req.redirect(quickjump_href)
 
@@ -253,4 +241,4 @@ class SearchModule(Component):
             href = formatter.href.search() + query.replace(' ', '+')
         else:
             href = formatter.href.search(q=path)
-        return html.A(label, class_='search', href=href)
+        return tag.a(label, class_='search', href=href)

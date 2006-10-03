@@ -1,0 +1,48 @@
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:py="http://genshi.edgewall.org/"
+  xmlns:xi="http://www.w3.org/2001/XInclude">
+
+  <xi:include href="layout.html"><xi:fallback/></xi:include>
+
+  <head>
+    <title>$title</title>
+  </head>
+
+  <body>
+    <div id="ctxtnav" class="nav"></div>
+
+    <div id="content" class="error">
+      <py:choose test="type">
+        <py:when test="'TracError'">
+          <h1>$title</h1>
+          <p class="message">$message</p>
+        </py:when>
+        <py:when test="'internal'">
+          <h1>Oops&hellip;</h1>
+          <div class="message">
+            <strong>Trac detected an internal error:</strong>
+            <pre>$message</pre>
+          </div>
+          <p>If you think this really should work and you can reproduce it, 
+            you should consider reporting this problem to the Trac team.</p>
+          <p>Go to <a href="$trac.homepage">$trac.homepage</a> 
+            and create a new ticket where you describe the problem and how to reproduce it. 
+            
+            Don't forget to include the Python traceback found below.</p>
+        </py:when>
+      </py:choose>
+      <p>
+        <a href="${href.wiki('TracGuide')}">TracGuide</a> &mdash; The Trac User and Administration Guide
+      </p>
+      <py:if test="traceback">
+        <h4>Python Traceback</h4>
+        <pre>$traceback</pre>
+      </py:if>
+    </div>
+  </body>
+</html>
+

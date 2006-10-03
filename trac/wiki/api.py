@@ -100,7 +100,35 @@ class IWikiSyntaxProvider(Interface):
         return some HTML fragment.
         The `label` is already HTML escaped, whereas the `target` is not.
         """
- 
+
+
+def parse_args(args):
+    """Utility for parsing macro "content" and splitting them into arguments.
+
+    The content is split along commas, unless they are escaped with a
+    backquote (like this: \,).
+    Named arguments a la Python are supported, and keys must be  valid python
+    identifiers immediately followed by the "=" sign.
+
+    >>> parse_args('')
+    ([], {})
+    >>> parse_args('Some text')
+    (['Some text'], {})
+    >>> parse_args('Some text, mode= 3, some other arg\, with a comma.')
+    (['Some text', ' some other arg, with a comma.'], {'mode': ' 3'})
+    
+    """    
+    largs, kwargs = [], {}
+    if args:
+        for arg in re.split(r'(?<!\\),', args):
+            arg = arg.replace(r'\,', ',')
+            m = re.match(r'\s*[a-zA-Z_]\w+=', arg)
+            if m:
+                kwargs[arg[:m.end()-1].lstrip()] = arg[m.end():]
+            else:
+                largs.append(arg)
+    return largs, kwargs
+
 
 class WikiSystem(Component):
     """Represents the wiki system."""

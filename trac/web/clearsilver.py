@@ -106,6 +106,8 @@ class HDFWrapper:
     False
     """
 
+    has_clearsilver = False
+    
     def __init__(self, loadpaths=[]):
         """Create a new HDF dataset.
         
@@ -129,15 +131,26 @@ class HDFWrapper:
             neo_cgi.update()
             import neo_util
             self.hdf = neo_util.HDF()
+            self.has_clearsilver = True
         except ImportError, e:
-            raise TracError, "ClearSilver not installed (%s)" % e
+            import sys
+            print>>sys.stderr, "ClearSilver not installed"
         
         self['hdf.loadpaths'] = loadpaths
+
+    def __repr__(self):
+        return '<HDFWrapper 0x%x>' % id(self)
+
+    def __nonzero__(self):
+        return self.has_clearsilver
 
     def __getattr__(self, name):
         # For backwards compatibility, expose the interface of the underlying HDF
         # object
-        return getattr(self.hdf, name)
+        if self.has_clearsilver:
+            return getattr(self.hdf, name)
+        else:
+            return None
 
     def __contains__(self, name):
         return self.hdf.getObj(str(name)) != None
@@ -207,6 +220,8 @@ class HDFWrapper:
         """
         Add data to the HDF dataset.
         """
+        if not self.has_clearsilver:
+            return
         def set_unicode(prefix, value):
             self.hdf.setValue(prefix.encode('utf-8'), value.encode('utf-8'))
         def set_str(prefix, value):

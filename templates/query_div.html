@@ -1,0 +1,68 @@
+<!--!
+       groups    - a dict, where:
+                     key       - is the value shared by all results in this group
+                     value     - is the list of corresponding tickets
+
+       headers   - a sequence of header structure:
+                     .name     - field name for this header
+                     .label    - what to display for this header
+
+       fields    - dict of field name to field structure:
+                     .label    - field label
+
+       query     - the actual Query instance used to perform the query
+
+-->
+<div xmlns="http://www.w3.org/1999/xhtml" xmlns:py="http://genshi.edgewall.org/"
+     xmlns:xi="http://www.w3.org/2001/XInclude">
+  <xi:include href="macros.html"><xi:fallback/></xi:include>
+
+  <py:def function="num_matches(v)">
+    <span class="numrows">(${v or 'No'} match${v != 1 and 'es' or ''})</span>
+  </py:def>
+
+  <py:for each="groupname, results in groups">
+    <h2 py:if="groupname">
+      ${fields[query.group].label}: $groupname ${num_matches(len(results))}
+    </h2>
+    <table class="listing tickets">
+      <thead>
+        <tr>
+          <th py:for="header in headers"
+            class="$header.name${query.order == header.name and (query.desc and ' desc' or ' asc') or ''}">
+            <a title="Sort by $header.label${query.order == header.name and not query.desc and ' (descending)' or ''}"
+              href="$header.href">$header.label</a>
+          </th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <py:for each="idx, result in enumerate(results)">
+
+          <tr class="${idx % 2 and 'odd' or 'even'} prio${result.priority_value}${
+            result.added and ' added' or ''}${
+            result.changed and ' changed' or ''}${
+            result.removed and ' removed' or ''}">
+            <py:for each="idx, header in enumerate(headers)" py:choose="">
+              <td py:when="idx == 0" class="id"><a href="$result.href" title="View ticket">#$result.id</a></td>
+              <td py:otherwise="" class="$header.name" py:choose="">
+                <a py:when="header.name == 'summary'" href="$result.href" title="View ticket">$result.summary</a>
+                <span py:otherwise="">${result[header.name]}</span>
+              </td>
+            </py:for>
+          </tr>
+
+          <tr py:if="query.verbose" class="fullrow">
+            <td colspan="${len(headers)}">
+              <p class="meta">Reported by <strong>$result.reporter</strong>,
+                ${dateinfo(result.time)} ago${result.description and ':' or ''}</p>
+              <p py:if="result.description">$result.description</p>
+            </td>
+          </tr>
+
+        </py:for>
+      </tbody>
+    </table>
+  </py:for>
+</div>
+

@@ -1,0 +1,297 @@
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:py="http://genshi.edgewall.org/"
+  xmlns:xi="http://www.w3.org/2001/XInclude">
+
+  <xi:include href="layout.html"><xi:fallback/></xi:include>
+  <xi:include href="macros.html"><xi:fallback/></xi:include>
+
+  <head>
+    <title>#${ticket.id} (${ticket.summary})</title>
+  </head>
+
+  <body>
+    <div id="ctxtnav" class="nav"/>
+
+    <div id="content" class="ticket">
+
+      <h1>Ticket #${ticket.id}
+        <span class="status">(${ticket.status}<py:if
+            test="ticket.type"> ${ticket.type}</py:if><py:if
+            test="ticket.resolution">: ${ticket.resolution}</py:if>
+          )</span>
+      </h1>
+
+      <div id="searchable">
+
+        <div id="ticket">
+          <div class="date">
+            <p>Opened ${dateinfo(opened)} ago</p>
+            <p py:if="lastmod">Last modified ${dateinfo(lastmod)} ago</p>
+          </div>
+          <h2 class="summary">${ticket.summary}</h2>
+          <table class="properties"
+            py:with="fields = [f for f in fields if not f.skip]">
+            <tr>
+              <th id="h_reporter">Reported by:</th>
+              <td headers="h_reporter">${ticket.reporter}</td>
+              <th id="h_owner">Assigned to:</th>
+              <td headers="h_owner">${ticket.owner}
+                <py:if test="ticket.status == 'assigned'">(accepted)</py:if>
+              </td>
+            </tr>
+            <tr py:for="row in group(fields, 2, lambda f: f.type != 'textarea')"
+              py:with="fullrow = len(row) == 1">
+              <py:for each="idx, field in enumerate(row)">
+                <th py:if="idx == 0 or not fullrow">
+                  <py:if test="field">${field.label or field.name}:</py:if>
+                </th>
+                <td py:if="idx == 0 or not fullrow"
+                  py:attrs="{'colspan': fullrow and 3 or None}">
+                  <py:if test="field">${ticket[field.name]}</py:if>
+                </td>
+              </py:for>
+            </tr>
+          </table>
+          <form py:if="ticket.description" method="get" action="#comment"
+            class="printableform">
+            <div class="description">
+              <h3 id="comment:description">
+                <span py:if="perm.has_permission('TICKET_APPEND')" class="inlinebuttons">
+                  <input type="hidden" name="replyto" value="description" />
+                  <input type="submit" value="Reply" title="Reply, quoting this description" />
+                </span>
+                Description
+                <span py:if="description_lastmod" class="lastmod"
+                  title="description_lastmod">
+                  (last modified by ${description_author})
+                </span>
+              </h3>
+              ${description}
+            </div>
+          </form>
+        </div>
+
+        ${list_of_attachments(attachments, attach_href)}
+
+        <py:if test="changes">
+          <h2>Change History</h2>
+          <div id="changelog">
+            <form py:for="change in changes" method="get" action="#comment"
+              class="printableform">
+              <div class="change">
+                <h3 id="comment:${change.cnum}">
+                  <span py:if="perm.has_permission('TICKET_APPEND')" class="inlinebuttons">
+                    <input type="hidden" name="replyto" value="${change.cnum}" />
+                    <input type="submit" value="Reply" title="Reply to comment ${change.cnum}" />
+                  </span>
+                  <span class="threading" py:with="change_replies = replies[str(change.cnum)]">
+                    <py:def function="commentref(prefix, cnum)">
+                      <a href="#comment:$cnum"><small>$prefix$cnum</small></a>
+                    </py:def>
+                    <py:if test="change_replies or change.replyto">
+                      <py:if test="change.replyto">
+                        in reply to: ${commentref('&uarr;&nbsp;', change.replyto)}
+                        <py:if test="change_replies">; </py:if>
+                      </py:if>
+                      <py:if test="change_replies">follow-up${len(change_replies) > 1 and 's' or ''}:
+                        <py:for each="reply in change_replies">
+                          ${commentref('&darr;&nbsp;', reply)}
+                        </py:for></py:if>
+                    </py:if>
+                    &nbsp;
+                  </span>
+                  ${change.date} changed by ${change.author}
+                </h3>
+                <ul py:if="change.fields" class="changes">
+                  <li py:for="field_name, field in change.fields.items()">
+                    <strong>${field_name}</strong>
+                    <py:choose>
+                      <py:when test="field_name == 'attachment'">
+                        <em>${field.new}</em> added
+                      </py:when>
+                      <py:when test="field.old and field.new">
+                        changed from <em>${field.old}</em> to <em>${field.new}</em>
+                      </py:when>
+                      <py:when test="not field.old and field.new">
+                        set to <em>${field.new}</em>
+                      </py:when>
+                      <py:otherwise>deleted</py:otherwise>
+                    </py:choose>
+                  </li>
+                </ul>
+                <div py:if="change.comment" class="comment">${change.comment}</div>
+              </div>
+            </form>
+          </div>
+        </py:if>
+
+        <form py:if="perm.has_permission('TICKET_APPEND') or
+          perm.has_permission('TICKET_CHGPROP')"
+          action="#preview" method="post">
+          <hr />
+          <h3><a name="edit" onfocus="document.getElementById('comment').focus()">
+              Add/Change #${ticket.id} (${ticket.summary})</a></h3>
+          <div py:if="authname == 'anonymous'" class="field">
+            <label for="author">Your email or username:</label><br />
+            <input type="text" id="author" name="author" size="40" value="${reporter_id}" /><br />
+          </div>
+          <div class="field">
+            <fieldset class="iefix">
+              <label for="comment">Comment (you may use
+                <a tabindex="42" href="${href.wiki('WikiFormatting')}">WikiFormatting</a>
+                here):
+              </label><br />
+              <p><textarea id="comment" name="comment" class="wikitext" rows="10" cols="78">
+${comment}</textarea></p>
+            </fieldset>
+            <fieldset py:if="preview" id="preview">
+              <legend>Comment Preview</legend>
+              ${preview}
+            </fieldset>
+          </div>
+
+          <fieldset id="properties"
+            py:if="req.perm.has_permission('TICKET_CHGPROP')"
+            py:with="fields = [f for f in fields if not f.skip]">
+            <legend>Change Properties</legend>
+            <table>
+              <tr>
+                <th><label for="summary">Summary:</label></th>
+                <td class="fullrow" colspan="3">
+                  <input type="text" id="summary" name="summary" value="${ticket.summary}"
+                    size="70" />
+                </td>
+              </tr>
+              <py:if test="perm.has_permission('TICKET_ADMIN')">
+                <tr>
+                  <th><label for="reporter">Reporter:</label></th>
+                  <td class="fullrow" colspan="3">
+                    <input type="text" id="reporter" name="reporter"
+                      value="${ticket.reporter}" size="70" />
+                  </td>
+                </tr>
+                <tr>
+                  <th><label for="description">Description:</label></th>
+                  <td class="fullrow" colspan="3">
+                    <textarea id="description" name="description" class="wikitext"
+                      rows="10" cols="68" py:content="ticket.description"></textarea>
+                  </td>
+                </tr>
+              </py:if>
+              <tr py:for="row in group(fields, 2, lambda f: f.type != 'textarea')"
+                py:with="fullrow = len(row) == 1">
+                <py:for each="idx, field in enumerate(row)">
+                  <th class="col${idx + 1}" py:if="idx == 0 or not fullrow">
+                    <label for="${field.name}" py:if="field"
+                      py:strip="field.type == 'radio'">${field.label or field.name}:</label>
+                  </th>
+                  <td class="col${idx + 1}" py:if="idx == 0 or not fullrow"
+                    py:attrs="{'colspan': fullrow and 3 or None}">
+                    <py:choose test="field.type" py:if="field">
+                      <select py:when="'select'" id="${field.name}" name="${field.name}">
+                        <option py:for="option in field.options"
+                          selected="${ticket[field.name] == option or None}"
+                          py:content="option"></option>
+                      </select>
+                      <textarea py:when="'textarea'" id="${field.name}" name="${field.name}"
+                        cols="${field.width}" rows="${field.height}"
+                        py:content="ticket[field.name]"></textarea>
+                      <input py:when="'checkbox'" type="checkbox" id="${field.name}"
+                        name="${field.name}" value="${field.value}" />
+                      <label py:when="'radio'"
+                        py:for="idx, option in enumerate(field.options)">
+                        <input type="radio" name="${field.name}" value="${option}"
+                          checked="${ticket[field.name] == option or None}" />
+                        ${option}
+                      </label>
+                      <input py:otherwise="" type="text" id="${field.name}"
+                        name="${field.name}" value="${ticket[field.name]}" />
+                    </py:choose>
+                  </td>
+                </py:for>
+              </tr>
+            </table>
+
+          </fieldset>
+
+          <py:choose test="not actions or actions == ['leave']">
+
+            <input py:when="True" type="hidden" name="action" value="leave" />
+
+            <fieldset py:otherwise="" id="action" py:with="action = action or 'leave'">
+
+              <legend>Action</legend>
+              <py:for each="button in
+                filter(None,[('leave', 'leave as ' + ticket.status),
+                             ('accept' in actions and ('accept', 'accept ticket') or None),
+                             ('reopen' in actions and ('reopen', 'reopen ticket') or None),
+                             ('resolve' in actions and ('resolve', '', 'as:', resolve_resolution,
+                             [f for f in fields if f.name == 'resolution'][0].options) or None),
+                             ('reassign' in actions and ('reassign', '', 'to:', reassign_owner,
+                             [f for f in fields if f.name == 'owner'][0].options, 40) or None)])"
+                py:with="value = button[0];
+                         text = button[1] or button[0];
+                         subchoice = button[2];
+                         subselector = button[3];
+                         suboptions = button[4];
+                         subsize = button[5];
+                         subid = value+'_subchoice'">
+                <input type="radio" id="$value" name="action" value="$value"
+                  checked="${action == value and 'checked' or None}" />
+                <label for="$value">$text</label>
+                <label py:if="subchoice" py:choose="" for="$subid">$subchoice
+                  <select py:when="suboptions" size="1" id="$subid" name="$subid">
+                    <py:for each="option in suboptions">
+                      ${select_option(subselector, option)}
+                    </py:for>
+                  </select>
+                  <input py:otherwise="" type="text" id="$subid" name="$subid" size="40"
+                    value="$subselector" />
+                </label>
+                <br />
+              </py:for>
+
+              <script py:if="'resolve' in actions or 'reassign' in actions" type="text/javascript">
+                <py:for each="action in actions">
+                  var $action = document.getElementById("$action");
+                </py:for>
+                var updateActionFields = function() {
+                <py:if test="'resolve' in actions"> enableControl('resolve_subchoice', resolve.checked);</py:if>
+                <py:if test="'reassign' in actions"> enableControl('reassign_subchoice', reassign.checked);</py:if>
+                };
+                addEvent(window, 'load', updateActionFields);
+                <py:for each="action in actions">
+                  addEvent($action, 'click', updateActionFields);
+                </py:for>
+              </script>
+            </fieldset>
+          </py:choose>
+
+          <script type="text/javascript" src="${htdocs_location}js/wikitoolbar.js"></script>
+          <div class="buttons">
+            <input type="hidden" name="ts" value="${timestamp}" />
+            <input type="hidden" name="replyto" value="${replyto}" />
+            <input type="hidden" name="cnum" value="${cnum}" />
+            <input type="submit" name="preview" value="Preview" accesskey="r" />&nbsp;
+            <input type="submit" value="Submit changes" />
+          </div>
+
+        </form>
+      </div>
+
+      <div id="help">
+        <strong>Note:</strong> See <a href="${href.wiki('TracTickets')}">TracTickets</a>
+        for help on using tickets.
+      </div>
+
+      <script type="text/javascript" src="${chrome.htdocs_location}/js/wikitoolbar.js"></script>
+      <script type="text/javascript">
+        addHeadingLinks(document.getElementById("searchable"), "Permalink to $ticket.id");
+      </script>
+
+    </div>
+  </body>
+</html>

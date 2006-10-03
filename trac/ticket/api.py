@@ -99,7 +99,7 @@ class TicketSystem(Component):
         field = {'name': 'owner', 'label': 'Owner'}
         if self.restrict_owner:
             field['type'] = 'select'
-            users = []
+            users = [''] # for clearing assignment
             perm = PermissionSystem(self.env)
             for username, name, email in self.env.get_known_users(db):
                 if perm.get_user_permissions(username).get('TICKET_MODIFY'):

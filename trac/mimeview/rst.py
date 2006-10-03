@@ -69,8 +69,8 @@ class ReStructuredTextRenderer(Component):
                 #  - space eventually introduced due to split_page_names option
                 if linktext.rstrip('?').replace(' ', '') != target:
                     text = linktext
-                uri = link.attr.get('href', '')
-                missing = 'missing' in link.attr.get('class_', '')
+                uri = link.attrib.get('href', '')
+                missing = 'missing' in link.attrib.get('class', '')
             else:
                 uri = req.href.wiki(target)
                 missing = not WikiSystem(self.env).has_page(target)

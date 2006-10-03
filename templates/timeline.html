@@ -1,0 +1,54 @@
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:py="http://genshi.edgewall.org/"
+      xmlns:xi="http://www.w3.org/2001/XInclude">
+  <xi:include href="layout.html"><xi:fallback/></xi:include>
+  <head>
+    <title>Timeline</title>
+  </head>
+
+  <body>
+    <div id="ctxtnav" class="nav"/>
+
+    <div id="content" class="timeline">
+
+      <h1>Timeline</h1>
+
+      <form id="prefs" method="get" action="">
+       <div>
+        <label>View changes from <input type="text" size="10" name="from" value="$fromday" /></label> and
+        <label><input type="text" size="3" name="daysback" value="$daysback" /> days back</label>.
+       </div>
+       <fieldset>
+        <label py:for="filter in filters">
+          <input type="checkbox" name="${filter.name}"
+                 checked="${filter.enabled or None}"/> ${filter.label}
+        </label>
+       </fieldset>
+       <div class="buttons">
+        <input type="submit" name="update" value="Update" />
+       </div>
+      </form>
+
+      <py:for each="day, events in groupby(events, key=lambda e: e.date)">
+        <h2>$day:</h2>
+        <dl>
+          <py:for each="event in events">
+            <dt class="${event.kind}"><a href="${event.href}">
+              <span class="time">${event.time}</span> ${event.title}
+            </a></dt>
+            <dd class="${event.kind}">${event.message}</dd>
+          </py:for>
+        </dl>
+      </py:for>
+
+      <div id="help">
+        <strong>Note:</strong> See <a href="${href.wiki('TracTimeline')}">TracTimeline</a>
+        for information about the timeline view.
+      </div>
+
+    </div>
+  </body>
+</html>

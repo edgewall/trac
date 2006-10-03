@@ -1,0 +1,143 @@
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:py="http://genshi.edgewall.org/"
+  xmlns:xi="http://www.w3.org/2001/XInclude">
+
+  <xi:include href="layout.html"><xi:fallback/></xi:include>
+  <xi:include href="macros.html"><xi:fallback/></xi:include>
+
+  <head><title>$path (log)</title></head>
+
+  <body>
+
+    <div id="ctxtnav" class="nav">
+      <ul py:with="prev = chrome.links.prev; next = chrome.links.next">
+        <li class="first${not (prev or next) and ' last' or ''}">
+          <a href="${href.browser(path)}">View Latest Revision</a>
+        </li>
+        <li py:if="prev" class="${not next and 'last' or None}">
+          &larr; <a title="${prev[0].title}" href="${prev[0].href}">Newer Revisions</a>
+        </li>
+        <li py:if="next" class="last">
+          <a  title="${next[0].title}" href="${next[0].href}">Older Revisions</a> &rarr;
+        </li>
+      </ul>
+    </div>
+
+    <div id="content" class="log">
+      <h1>${browser_path_links(path_links)}</h1>
+
+      <form id="prefs" action="" method="get">
+        <div>
+          <input type="hidden" name="action" value="$mode" />
+          <label>View log starting at <input type="text" id="rev" name="rev" value="${items[0].rev}" size="5" /></label>
+          <label>and back to <input type="text" id="stop_rev" name="stop_rev" value="$stop_rev" size="5" /></label>
+          <br />
+          <div class="choice">
+            <fieldset>
+              <legend>Mode:</legend>
+              ${radiobuttons(mode, 'mode',
+                 [('stop_on_copy', 'Stop on copy', 'default'),
+                  ('follow_copy', 'Follow copies'),
+                  ('path_history', 'Show only adds, moves and deletes')])}
+            </fieldset>
+          </div>
+          <label><input type="checkbox" name="verbose" checked="${verbose and 'checked' or None}" />
+            Show full log messages</label>
+        </div>
+        <div class="buttons">
+          <input type="submit" value="Update" />
+        </div>
+      </form>
+
+      <div class="diff">
+        <div id="legend">
+          <h3>Legend:</h3>
+          <dl>
+            <dt class="add"></dt><dd>Added</dd>
+            <py:if test="mode == 'path_history'">
+              <dt class="rem" ></dt><dd>Removed</dd>
+            </py:if>
+            <dt class="mod"></dt><dd>Modified</dd>
+            <dt class="cp"></dt><dd>Copied or renamed</dd>
+          </dl>
+        </div>
+      </div>
+
+      <form  class="printableform" action="${href.changeset()}" method="get">
+        <div class="buttons">
+          <input type="submit" value="View changes"
+            title="Diff from Old Revision to New Revision (select them below)" />
+        </div>
+        <table id="chglist" class="listing">
+          <thead>
+            <tr>
+              <th class="diff"></th>
+              <th class="change"></th>
+              <th class="rev">Rev</th>
+              <th class="chgset">Chgset</th>
+              <th class="date">Date</th>
+              <th class="author">Author</th>
+              <th class="summary">${not verbose and 'Log Message'}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <py:for each="idx, item in enumerate(items)">
+              <py:with vars="change = changes[item.rev]; odd_even = idx % 2 and 'odd' or 'even'">
+                <!--! highlight copy or rename operations -->
+                <tr py:if="item.copyfrom_path" class="$odd_even">
+                  <td />
+                  <td class="copyfrom_path" colspan="7" style="padding-left: ${item.depth - 1}em">
+                    copied from <a href="${href.browser(item.path, rev=item.rev)}">$item.copyfrom_path</a>:
+                  </td>
+                </tr>
+
+                <tr class="$odd_even">
+                  <td class="diff">
+                    <input type="radio" name="old" value="${item.path}@${item.rev}" py:attrs="form_attrs(checked=idx==len(items)-1)" />
+                    <input type="radio" name="new" value="${item.path}@${item.rev}" py:attrs="form_attrs(checked=idx==0)" />
+                  </td>
+                  <td class="change" style="padding-left: ${item.depth}em">
+                    <a title="View log starting at this revision" href="${href.log(item.path, rev=item.rev)}">
+                      <span class="$item.change"></span>
+                      <span class="comment">($item.change)</span>
+                    </a>
+                  </td>
+                  <td class="rev">
+                    <a title="Browse at revision $item.rev" href="${href.browser(item.path, rev=item.existing_rev)}">
+                      @$item.existing_rev</a>
+                  </td>
+                  <td class="chgset">
+                    <a title="View changeset [$item.rev]" href="${href.changeset(item.rev)}">
+                      [$item.rev]</a>
+                  </td>
+                  <td class="date">$change.date</td>
+                  <td class="author">$change.author</td>
+                  <td class="summary">${not verbose and change.message or ''}</td>
+                </tr>
+
+                <tr py:if="verbose">
+                  <td class="summary" colspan="7">$change.message</td>
+                </tr>
+              </py:with>
+            </py:for>
+          </tbody>
+        </table>
+
+        <div py:if="len(items) &gt; 10" class="buttons">
+          <input type="submit" value="View changes"
+            title="Diff from Old Revision to New Revision (select them above)" />
+        </div>
+      </form>
+
+      <div id="help">
+        <strong>Note:</strong> See <a href="${href.wiki(TracRevisionLog)}">TracRevisionLog</a>
+        for help on using the revision log.
+      </div>
+
+    </div>
+  </body>
+</html>

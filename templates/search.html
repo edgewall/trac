@@ -1,0 +1,100 @@
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:py="http://genshi.edgewall.org/"
+      xmlns:xi="http://www.w3.org/2001/XInclude">
+  <xi:include href="layout.html"><xi:fallback/></xi:include>
+  <head>
+    <title>Search<py:if test="query"> Results</py:if></title>
+    <script type="text/javascript">
+      addEvent(window, 'load', function() { document.getElementById('q').focus()}); 
+    </script>
+  </head>
+
+  <body>
+    <div id="ctxtnav" class="nav">
+      <ul py:if="chrome.links.prev or chrome.links.next">
+        <li py:if="chrome.links.prev"
+            class="first${chrome.links.next and '' or ' last'}">
+          &larr; <a href="${chrome.links.prev[0].href}">${chrome.links.prev[0].title}</a>
+        </li>
+        <li py:if="chrome.links.next"
+            class="${chrome.links.prev and '' or 'first '}last">
+          <a href="${chrome.links.next[0].href}">${chrome.links.next[0].title}</a> &rarr;
+        </li>
+      </ul>
+    </div>
+
+    <div id="content" class="search">
+
+      <h1><label for="q">Search</label></h1>
+      <form action="${href.search()}" method="get">
+        <p>
+          <input type="text" id="q" name="q" size="40" value="${query}" />
+          <input type="hidden" name="noquickjump" value="1" />
+          <input type="submit" value="Search" />
+        </p>
+        <p>
+          <py:for each="filter in filters">
+            <input type="checkbox" id="${filter.name}" name="${filter.name}"
+                   checked="${filter.active and 'checked' or None}" />
+            <label for="${filter.name}">${filter.label}</label>
+          </py:for>
+       </p>
+      </form>
+
+      <py:if test="results or quickjump"><hr />
+        <h2>
+          Search results
+          <py:if test="results.has_more_pages">
+            (${results.span[0] + 1} - ${results.span[1]} of ${results.num_items})
+          </py:if>
+        </h2>
+        <div id="searchable">
+          <dl id="results">
+            <py:if test="quickjump">
+              <dt id="quickjump">
+                <a href="${quickjump.href}">Quickjump to ${quickjump.name}</a>
+              </dt>
+              <dd>${quickjump.description}</dd>
+            </py:if>
+            <py:for each="result in results">
+              <dt><a href="${result.href}">${result.title}</a></dt>
+              <dd>${result.excerpt}</dd>
+              <dd>
+                <span class="author">By ${result.author}</span> &mdash;
+                <span class="date">${result.date}</span>
+                <py:if test="result.keywords">
+                  &mdash; <span class="keywords">Keywords: <em>${result.keywords}</em></span>
+                </py:if>
+              </dd>
+            </py:for>
+          </dl>
+          <hr />
+        </div>
+        <div id="paging" py:if="results.has_more_pages">
+          <a py:if="results.has_previous_page"
+             py:with="prevlink = chrome.links.prev[0]"
+             href="${prevlink.href}" title="${prevlink.title}">&larr;</a>
+          <py:for each="num in xrange(results.num_pages)">
+            <a href="${page_href}&amp;page=${num + 1}"
+               py:strip="num == results.page">${num + 1}</a>
+          </py:for>
+          <a py:if="results.has_next_page"
+             py:with="nextlink = chrome.links.next[0]"
+             href="${nextlink.href}" title="${nextlink.title}">&rarr;</a>
+        </div>
+      </py:if>
+
+      <div id="notfound" py:if="query and not (results or quickjump)">
+        No matches found.
+      </div>
+
+      <div id="help">
+        <strong>Note:</strong> See <a href="${href.wiki('TracSearch')}">TracSearch</a> for help on searching.
+      </div>
+
+    </div>
+  </body>
+</html>

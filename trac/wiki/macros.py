@@ -346,7 +346,7 @@ class ImageMacro(WikiMacroBase):
         if style:
             attr['style'] = '; '.join(['%s:%s' % (k, escape(v))
                                        for k, v in style.iteritems()])
-        result = Markup(html.IMG(src=raw_url, **attr)).sanitize()
+        result = html.IMG(src=raw_url, **attr)
         if not nolink:
             result = html.A(result, href=url, style='padding:0; border:none')
         return result

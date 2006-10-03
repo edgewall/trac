@@ -1,0 +1,190 @@
+<!--!
+       changes   - a list of diff items, each being a dict containing informations about
+                   changes for one file:
+                     .new and .old - information about the files being diffed
+                       .path         - path of the file
+                       .rev          - rev of the file (for 'sidebyside')
+                       .shortrev     - abbreviated form of rev of the file (for 'inline')
+                       .href         - link to the full file (optional)
+                     .props        - a list of property changes
+                       .name         - name of the property
+                       .old          - old value of the property
+                       .new          - new value for the property
+                     .diffs        - a sequence of diff blocks, each block being a dict:
+                       .type         - one of 'unmod', 'add', 'rem' or 'mod'
+                       .base and .changed - informations about lines from old and new content
+                         .lines              - the lines
+                         .offset             - position within the file
+
+       diff      - dict specifying diff style and options
+                     .style     - can be 'sidebyside' (4 columns) or 'inline' (3 columns)
+                     .options   - contexlines, various ignore...
+
+       longcol  - "long" column header; e.g. 'Revision' or 'File' or '' (for 'sidebyside')
+       shortcol - "short" column header: e.g. 'r' or '' (for 'inline')
+
+-->
+<div xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:py="http://genshi.edgewall.org/"
+  xmlns:xi="http://www.w3.org/2001/XInclude"
+  class="diff">
+
+  <ul class="entries">
+    <py:for each="idx, item in enumerate(changes)">
+      <li py:if="item.diffs or item.props" class="entry" id="file$idx">
+        <h2>
+          <a title="$item.new.title" href="$item.new.href">$item.new.path</a>
+        </h2>
+        <ul py:if="item.props" class="props">
+          <li py:for="prop in item.props">Property <strong>$prop.name</strong>
+            ${prop.old and prop.new and 'changed from ' or not prop.old and 'set' or 'deleted'}
+            <py:if test="prop.old and prop.new"><em><tt>$prop.old</tt></em></py:if>
+            <py:if test="prop.new"> to <em><tt>$prop.new</tt></em></py:if>
+          </li>
+        </ul>
+        <table py:if="item.diffs" class="$diff.style" summary="Differences" cellspacing="0">
+          <py:choose test="diff.style">
+            <py:when test="'sidebyside'">
+              <colgroup class="l"><col class="lineno" /><col class="content" /></colgroup>
+              <colgroup class="r"><col class="lineno" /><col class="content" /></colgroup>
+              <thead>
+                <tr>
+                  <th colspan="2">
+                    <a title="$item.old.title" href="$item.old.href">$longcol $item.old.rev</a>
+                  </th>
+                  <th colspan="2">
+                    <a title="$item.new.title" href="$item.new.href">$longcol $item.new.rev</a>
+                  </th>
+                </tr>
+              </thead>
+            </py:when>
+            <py:when test="'inline'">
+              <colgroup><col class="lineno" /><col class="lineno" /><col class="content" /></colgroup>
+              <thead>
+                <tr>
+                  <th title="$longcol $item.old.rev">
+                    <a title="$item.old.title" href="$item.old.href">$shortcol$item.old.shortrev</a>
+                  </th>
+                  <th title="$longcol $item.new.rev">
+                    <a title="$item.new.title" href="$item.new.href">$shortcol$item.new.shortrev</a>
+                  </th>
+                  <th>&nbsp;</th>
+                </tr>
+              </thead>
+            </py:when>
+          </py:choose>
+          <py:for each="idx, diffs in enumerate(item.diffs)">
+            <tbody py:for="block in diffs" class="$block.type">
+              <py:choose test="block.type">
+
+                <py:when test="'unmod'"> <!--! Show identical lines on both "sides" -->
+                  <tr py:for="idx, line in enumerate(block.base.lines)">
+                    <py:with vars="from_n = block.base.offset+idx+1; to_n = block.changed.offset+idx+1">
+                      <py:choose test="diff.style">
+                        <py:when test="'sidebyside'">
+                          <th>$from_n</th><td class="l"><span>$line</span>&nbsp;</td>
+                          <th>$to_n</th><td class="r"><span>${block.changed.lines[idx]}</span>&nbsp;</td>
+                        </py:when>
+                        <py:when test="'inline'">
+                          <th>$from_n</th><th>$to_n</th><td class="l"><span>$line</span>&nbsp;</td>
+                        </py:when>
+                      </py:choose>
+                    </py:with>
+                  </tr>
+                </py:when>
+
+                <py:when test="'add'"> <!--! Show only added lines, on the "right side" -->
+                  <tr py:for="idx, line in enumerate(block.changed.lines)"
+                    class="${diff.style == 'inline' and first_last(idx, block.changed.lines) or None}">
+                    <py:with vars="to_n = block.changed.offset+idx+1">
+                      <py:choose test="diff.style">
+                        <py:when test="'sidebyside'">
+                          <th>&nbsp;</th><td class="l">&nbsp;</td>
+                          <th>$to_n</th><td class="r"><ins>$line</ins>&nbsp;</td>
+                        </py:when>
+                        <py:when test="'inline'">
+                          <th>&nbsp;</th><th>$to_n</th><td class="r"><ins>$line</ins>&nbsp;</td>
+                        </py:when>
+                      </py:choose>
+                    </py:with>
+                  </tr>
+                </py:when>
+
+                <py:when test="'rem'"> <!--! Show only deleted lines, on the "left side" -->
+                  <tr py:for="idx, line in enumerate(block.base.lines)"
+                    class="${diff.style == 'inline' and first_last(idx, block.base.lines) or None}">
+                    <py:with vars="from_n = block.base.offset+idx+1">
+                      <py:choose test="diff.style">
+                        <py:when test="'sidebyside'">
+                          <th>$from_n</th><td class="l"><del>$line</del>&nbsp;</td>
+                          <th>&nbsp;</th><td class="r">&nbsp;</td>
+                        </py:when>
+                        <py:when test="'inline'">
+                          <th>$from_n</th><th>&nbsp;</th><td class="l"><del>$line</del>&nbsp;</td>
+                        </py:when>
+                      </py:choose>
+                    </py:with>
+                  </tr>
+                </py:when>
+
+                <py:when test="'mod'"> <!--! Show edited lines, on both "sides" -->
+                  <py:choose test="diff.style">
+                    <py:when test="'sidebyside'">
+                      <py:choose>
+                        <py:when test="len(block.base.lines) &gt;= len(block.changed.lines)">
+                          <tr py:for="idx, line in enumerate(block.base.lines)">
+                            <th>${block.base.offset+idx+1}</th>
+                            <td class="l"><span>$line</span>&nbsp;</td>
+                            <py:with vars="within_change = idx &lt; len(block.changed.lines)">
+                              <th>${within_change and block.changed.offset+idx+1 or '&nbsp;'}</th>
+                              <td class="r"><span py:if="within_change">${block.changed.lines[idx]}</span>&nbsp;</td>
+                            </py:with>
+                          </tr>
+                        </py:when>
+                        <py:otherwise> <!--! there are more changed lines than original lines -->
+                          <tr py:for="idx, line in enumerate(block.changed.lines)">
+                            <py:with vars="within_change = idx &lt; len(block.base.lines)">
+                              <th>${within_change and block.base.offset+idx+1 or '&nbsp;'}</th>
+                              <td class="l"><span py:if="within_change">${block.base.lines[idx]}</span>&nbsp;</td>
+                            </py:with>
+                            <th>${block.changed.offset+idx+1}</th>
+                            <td class="r"><span>$line</span>&nbsp;</td>
+                          </tr>
+                        </py:otherwise>
+                      </py:choose>
+                    </py:when>
+                    <py:when test="'inline'">
+                      <!--! First show the "old" lines -->
+                      <tr py:for="idx, line in enumerate(block.base.lines)"
+                        class="${idx == 0 and 'first' or None}">
+                        <th>${block.base.offset+idx+1}</th><th>&nbsp;</th><td class="l"><span>$line</span>&nbsp;</td>
+                      </tr>
+                      <!--! Then show the "new" lines -->
+                      <tr py:for="idx, line in enumerate(block.changed.lines)"
+                        class="${idx + 1 == len(block.changed.lines) and 'last' or None}">
+                        <th>&nbsp;</th><th>${block.changed.offset+idx+1}</th><td class="r"><span>$line</span>&nbsp;</td>
+                      </tr>
+                    </py:when>
+                  </py:choose>
+                </py:when>
+
+              </py:choose>
+            </tbody>
+            <py:if test="idx &lt; len(item.diffs) - 1">
+              <tbody class="skipped" py:choose="diff.style">
+                <tr py:when="'sidebyside'">
+                  <th>&hellip;</th><td>&nbsp;</td>
+                  <th>&hellip;</th><td>&nbsp;</td>
+                </tr>
+                <tr py:when="'inline'">
+                  <th>&hellip;</th><th>&hellip;</th><td>&nbsp;</td>
+                </tr>
+              </tbody>
+            </py:if>
+          </py:for>
+        </table>
+      </li>
+    </py:for>
+  </ul>
+
+</div>

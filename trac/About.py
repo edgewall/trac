@@ -19,10 +19,12 @@
 
 import re
 
+from genshi import Markup
+from genshi.builder import tag
+
 from trac.core import *
 from trac.perm import IPermissionRequestor
 from trac.web import IRequestHandler
-from trac.util.html import html
 from trac.web.chrome import add_stylesheet, INavigationContributor
 
 
@@ -38,7 +40,7 @@ class AboutModule(Component):
 
     def get_navigation_items(self, req):
         yield ('metanav', 'about',
-               html.a('About Trac', href=req.href.about()))
+               tag.a('About Trac', href=req.href.about()))
 
     # IPermissionRequestor methods
 
@@ -56,25 +58,22 @@ class AboutModule(Component):
 
     def process_request(self, req):
         page = req.args.get('page', 'default')
-        req.hdf['title'] = 'About Trac'
-        if req.perm.has_permission('CONFIG_VIEW'):
-            req.hdf['about.config_href'] = req.href.about('config')
-            req.hdf['about.plugins_href'] = req.href.about('plugins')
         if page == 'config':
-            self._render_config(req)
+            data = self._render_config(req)
         elif page == 'plugins':
-            self._render_plugins(req)
+            data = self._render_plugins(req)
+        else:
+            data = {}
 
         add_stylesheet(req, 'common/css/about.css')
-        return 'about.cs', None
+        return 'about.html', {'about': data}, None
 
     # Internal methods
 
     def _render_config(self, req):
         req.perm.assert_permission('CONFIG_VIEW')
-        req.hdf['about.page'] = 'config'
+        data = {'page': 'config'}
         
-        # Export the config table to hdf
         sections = []
         for section in self.config.sections():
             options = []
@@ -88,7 +87,8 @@ class AboutModule(Component):
             options.sort(lambda x,y: cmp(x['name'], y['name']))
             sections.append({'name': section, 'options': options})
         sections.sort(lambda x,y: cmp(x['name'], y['name']))
-        req.hdf['about.config'] = sections
+        data['config'] = sections
+        return data
         # TODO:
         # We should probably export more info here like:
         # permissions, components...
@@ -104,15 +104,15 @@ class AboutModule(Component):
                 return obj.__doc__
         req.perm.assert_permission('CONFIG_VIEW')
         import sys
-        req.hdf['about.page'] = 'plugins'
         from trac.core import ComponentMeta
+        data = {'page': 'plugins'}
         plugins = []
         for component in ComponentMeta._components:
             if not self.env.is_component_enabled(component):
                 continue
             plugin = {'name': component.__name__}
             if component.__doc__:
-                plugin['description'] = getdoc(component)
+                plugin['description'] = Markup(getdoc(component))
 
             module = sys.modules[component.__module__]
             plugin['module'] = module.__name__
@@ -128,7 +128,7 @@ class AboutModule(Component):
                                'interface': xtnpt.interface.__name__,
                                'module': xtnpt.interface.__module__})
                 if xtnpt.interface.__doc__:
-                    xtnpts[-1]['description'] = getdoc(xtnpt.interface)
+                    xtnpts[-1]['description'] = Markup(getdoc(xtnpt.interface))
                 extensions = []
                 for extension in ComponentMeta._registry.get(xtnpt.interface, []):
                     if self.env.is_component_enabled(extension):
@@ -149,4 +149,5 @@ class AboutModule(Component):
             return c
         plugins.sort(plugincmp)
 
-        req.hdf['about.plugins'] = plugins
+        data['plugins'] = plugins
+        return data

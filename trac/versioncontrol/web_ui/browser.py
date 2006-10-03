@@ -20,15 +20,13 @@ import urllib
 import os.path
 from fnmatch import fnmatchcase
 
-from trac import util
 from trac.config import ListOption, Option
 from trac.core import *
 from trac.mimeview import Mimeview, is_binary, get_mimetype
 from trac.perm import IPermissionRequestor
 from trac.util import sorted, embedded_numbers
-from trac.util.datefmt import http_date, format_datetime, pretty_timedelta
+from trac.util.datefmt import http_date
 from trac.util.html import escape, html, Markup
-from trac.util.text import pretty_size
 from trac.web import IRequestHandler, RequestDone
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
 from trac.wiki import wiki_to_html, IWikiSyntaxProvider
@@ -105,55 +103,39 @@ class BrowserModule(Component):
         properties = []
         for name, value in node.get_properties().items():
             if not name in hidden_properties:
-                properties.append({
-                    'name': name,
-                    'value': render_node_property(self.env, name, value)})
-
-        req.hdf['title'] = path
-        req.hdf['browser'] = {
-            'path': path,
-            'revision': rev,
-            'props': properties,
-            'href': req.href.browser(path, rev=rev),
-            'log_href': req.href.log(path, rev=rev),
-            'restr_changeset_href': req.href.changeset(node.rev,
-                                                       node.created_path),
-            'anydiff_href': req.href.anydiff(),
-        }
+                rendered = render_node_property(self.env, name, value)
+                properties.append({'name': name, 'value': rendered})
 
         path_links = get_path_links(req.href, path, rev)
         if len(path_links) > 1:
             add_link(req, 'up', path_links[-2]['href'], 'Parent directory')
-        req.hdf['browser.path'] = path_links
 
-        if node.isdir:
-            req.hdf['browser.is_dir'] = True
-            self._render_directory(req, repos, node, rev)
-        else:
-            self._render_file(req, repos, node, rev)
-
+        data = {
+            'path': path, 'rev': node.rev,
+            'created_path': node.created_path,
+            'created_rev': node.created_rev,
+            'props': properties,
+            'path_links': path_links,
+            'dir': node.isdir and self._render_dir(req, repos, node, rev),
+            'file': node.isfile and self._render_file(req, repos, node, rev),
+        }
         add_stylesheet(req, 'common/css/browser.css')
-        return 'browser.cs', None
+        return 'browser.html', data, None
 
     # Internal methods
 
-    def _render_directory(self, req, repos, node, rev=None):
+    def _render_dir(self, req, repos, node, rev=None):
         req.perm.assert_permission('BROWSER_VIEW')
 
         # Entries metadata
-        info = []
+        entries = []
         for entry in node.get_entries():
-            info.append({
-                'name': entry.name,
-                'fullpath': entry.path,
-                'is_dir': entry.isdir,
-                'content_length': entry.content_length,
-                'size': pretty_size(entry.content_length),
-                'rev': entry.rev,
-                'log_href': req.href.log(entry.path, rev=rev),
-                'browser_href': req.href.browser(entry.path, rev=rev)
-            })
-        changes = get_changes(self.env, repos, [i['rev'] for i in info])
+            entries.append({
+                'rev': entry.rev, 'path': entry.path, 'name': entry.name,
+                'kind': entry.kind, 'is_dir': entry.isdir,
+                'size': entry.content_length
+                })
+        changes = get_changes(self.env, repos, [i['rev'] for i in entries])
 
         # Ordering of entries
         order = req.args.get('order', 'name').lower()
@@ -164,7 +146,7 @@ class BrowserModule(Component):
                 return changes[a['rev']]['date_seconds']
         elif order == 'size':
             def file_order(a):
-                return (a['content_length'],
+                return (a['size'],
                         embedded_numbers(a['name'].lower()))
         else:
             def file_order(a):
@@ -174,13 +156,7 @@ class BrowserModule(Component):
 
         def browse_order(a):
             return a['is_dir'] and dir_order or 0, file_order(a)
-        info = sorted(info, key=browse_order, reverse=desc)
-
-        switch_ordering_hrefs = {}
-        for col in ('name', 'size', 'date'):
-            switch_ordering_hrefs[col] = req.href.browser(
-                node.path, rev=rev, order=col,
-                desc=(col == order and not desc and 1 or None))
+        entries = sorted(entries, key=browse_order, reverse=desc)
 
         # ''Zip Archive'' alternate link
         patterns = self.downloadable_paths
@@ -191,9 +167,8 @@ class BrowserModule(Component):
             add_link(req, 'alternate', zip_href, 'Zip Archive',
                      'application/zip', 'zip')
 
-        req.hdf['browser'] = {'order': order, 'desc': desc and 1 or 0,
-                              'items': info, 'changes': changes,
-                              'order_href': switch_ordering_hrefs}
+        return {'order': order, 'desc': desc and 1 or 0,
+                'entries': entries, 'changes': changes}
 
     def _render_file(self, req, repos, node, rev=None):
         req.perm.assert_permission('FILE_VIEW')
@@ -235,16 +210,6 @@ class BrowserModule(Component):
             else:
                 message = html.PRE(message)
 
-            req.hdf['file'] = {
-                'rev': node.rev,
-                'changeset_href': req.href.changeset(node.rev),
-                'date': format_datetime(changeset.date),
-                'age': pretty_timedelta(changeset.date),
-                'size': pretty_size(node.content_length),
-                'author': changeset.author or 'anonymous',
-                'message': message
-            } 
-
             # add ''Plain Text'' alternate link if needed
             if not is_binary(chunk) and mime_type != 'text/plain':
                 plain_href = req.href.browser(node.path, rev=rev, format='txt')
@@ -260,11 +225,21 @@ class BrowserModule(Component):
 
             del content # the remainder of that content is not needed
 
-            req.hdf['file'] = mimeview.preview_to_hdf(
-                req, node.get_content(), node.get_content_length(), mime_type,
-                node.created_path, raw_href, annotations=['lineno'])
-
             add_stylesheet(req, 'common/css/code.css')
+
+            preview_data = mimeview.preview_data(req, node.get_content(),
+                                                 node.get_content_length(),
+                                                 mime_type, node.created_path,
+                                                 raw_href,
+                                                 annotations=['lineno'])
+            return {
+                'date': changeset.date,
+                'size': node.content_length ,
+                'author': changeset.author or 'anonymous',
+                'message': message,
+                'preview': preview_data,
+                }
+
 
     # IWikiSyntaxProvider methods
 

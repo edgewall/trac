@@ -34,18 +34,13 @@ from trac.util.datefmt import format_datetime, pretty_timedelta
 from trac.util.html import html, escape, unescape, Markup
 from trac.util.text import unicode_urlencode, shorten_line, CRLF
 from trac.versioncontrol import Changeset, Node
-from trac.versioncontrol.diff import get_diff_options, hdf_diff, unified_diff
+from trac.versioncontrol.diff import get_diff_options, diff_blocks, unified_diff
 from trac.versioncontrol.svn_authz import SubversionAuthorizer
 from trac.versioncontrol.web_ui.util import render_node_property
-from trac.web import IRequestHandler
+from trac.web import IRequestHandler, RequestDone
 from trac.web.chrome import INavigationContributor, add_link, add_stylesheet
 from trac.wiki import wiki_to_html, wiki_to_oneliner, IWikiSyntaxProvider, \
                       Formatter
-
-
-class DiffArgs(dict):
-    def __getattr__(self, str):
-        return self[str]
 
 
 class ChangesetModule(Component):
@@ -164,7 +159,7 @@ class ChangesetModule(Component):
         if old_path == new_path and old == new: # revert to Changeset
             old_path = old = None
 
-        diff_options = get_diff_options(req)
+        style, options, diff_data = get_diff_options(req)
 
         # -- setup the `chgset` and `restricted` flags, see docstring above.
         chgset = not old and not old_path
@@ -184,15 +179,15 @@ class ChangesetModule(Component):
                 req.redirect(req.href.changeset(new, new_path, old=old,
                                                 old_path=old_path))
 
-        # -- preparing the diff arguments
+        # -- preparing the data
         if chgset:
             prev = repos.get_node(new_path, new).get_previous()
             if prev:
                 prev_path, prev_rev = prev[:2]
             else:
                 prev_path, prev_rev = new_path, repos.previous_rev(new)
-            diff_args = DiffArgs(old_path=prev_path, old_rev=prev_rev,
-                                 new_path=new_path, new_rev=new)
+            data = {'old_path': prev_path, 'old_rev': prev_rev,
+                    'new_path': new_path, 'new_rev': new}
         else:
             if not new:
                 new = repos.youngest_rev
@@ -200,8 +195,10 @@ class ChangesetModule(Component):
                 old = repos.youngest_rev
             if not old_path:
                 old_path = new_path
-            diff_args = DiffArgs(old_path=old_path, old_rev=old,
-                                 new_path=new_path, new_rev=new)
+            data = {'old_path': old_path, 'old_rev': old,
+                    'new_path': new_path, 'new_rev': new}
+        data['diff'] = diff_data
+        
         if chgset:
             chgset = repos.get_changeset(new)
             message = chgset.message or '--'
@@ -211,16 +208,12 @@ class ChangesetModule(Component):
             else:
                 message = html.PRE(message)
             req.check_modified(chgset.date, [
-                diff_options[0],
-                ''.join(diff_options[1]),
-                repos.name,
+                style, ''.join(options), repos.name,
                 repos.rev_older_than(new, repos.youngest_rev),
                 message,
                 pretty_timedelta(chgset.date, None, 3600)])
         else:
             message = None # FIXME: what date should we choose for a diff?
-
-        req.hdf['changeset'] = diff_args
 
         format = req.args.get('format')
 
@@ -243,16 +236,13 @@ class ChangesetModule(Component):
                     filename = 'diff-from-%s-r%s-to-%s-r%s' \
                                % (old_path.replace('/','_'), old, rpath, new)
             if format == 'diff':
-                self._render_diff(req, filename, repos, diff_args,
-                                  diff_options)
-                return
+                self._render_diff(req, filename, repos, data)
             elif format == 'zip':
-                self._render_zip(req, filename, repos, diff_args)
-                return
+                self._render_zip(req, filename, repos, data)
 
         # -- HTML format
-        self._render_html(req, repos, chgset, restricted, message,
-                          diff_args, diff_options)
+        self._render_html(req, repos, chgset, restricted, message, data)
+        
         if chgset:
             diff_params = 'new=%s' % new
         else:
@@ -267,26 +257,17 @@ class ChangesetModule(Component):
         add_stylesheet(req, 'common/css/changeset.css')
         add_stylesheet(req, 'common/css/diff.css')
         add_stylesheet(req, 'common/css/code.css')
-        return 'changeset.cs', None
+        return 'changeset.html', data, None
 
     # Internal methods
 
-    def _render_html(self, req, repos, chgset, restricted, message,
-                     diff, diff_options):
+    def _render_html(self, req, repos, chgset, restricted, message, data):
         """HTML version"""
-        req.hdf['changeset'] = {
-            'chgset': chgset and True,
-            'restricted': restricted,
-            'href': {
-                'new_rev': req.href.changeset(diff.new_rev),
-                'old_rev': req.href.changeset(diff.old_rev),
-                'new_path': req.href.browser(diff.new_path, rev=diff.new_rev),
-                'old_path': req.href.browser(diff.old_path, rev=diff.old_rev)
-            }
-        }
+        data['chgset'] = chgset and True
+        data['restricted'] = restricted
 
         if chgset: # Changeset Mode (possibly restricted on a path)
-            path, rev = diff.new_path, diff.new_rev
+            path, rev = data['new_path'], data['new_rev']
 
             # -- getting the change summary from the Changeset.get_changes
             def get_changes():
@@ -317,7 +298,7 @@ class ChangesetModule(Component):
                 properties.append({'name': name, 'value': value,
                                    'htmlclass': htmlclass})
 
-            req.hdf['changeset'] = {
+            data['changeset'] = {
                 'revision': chgset.rev,
                 'time': format_datetime(chgset.date),
                 'age': pretty_timedelta(chgset.date, None, 3600),
@@ -337,7 +318,7 @@ class ChangesetModule(Component):
                 else:
                     add_link(req, 'first', req.href.changeset(oldest_rev),
                              'Changeset %s' % oldest_rev)
-                    prev_path = diff.old_path
+                    prev_path = data['old_path']
                     prev_rev = repos.previous_rev(chgset.rev)
                     if prev_rev:
                         prev_href = req.href.changeset(prev_rev)
@@ -361,43 +342,29 @@ class ChangesetModule(Component):
         else: # Diff Mode
             # -- getting the change summary from the Repository.get_changes
             def get_changes():
-                for d in repos.get_changes(**diff):
+                for d in repos.get_changes(
+                    new_path=data['new_path'], new_rev=data['new_rev'],
+                    old_path=data['old_path'], old_rev=data['old_rev']):
                     yield d
-
-            reverse_href = req.href.changeset(diff.old_rev, diff.old_path,
-                                                   old=diff.new_rev,
-                                                   old_path=diff.new_path)
-            req.hdf['changeset.reverse_href'] = reverse_href
-            req.hdf['changeset.href.log'] = req.href.log(
-                diff.new_path, rev=diff.new_rev, stop_rev=diff.old_rev)
-            title = self.title_for_diff(diff)
-        req.hdf['title'] = title
+            title = self.title_for_diff(data)
+            
+        data['title'] = title
 
         if not req.perm.has_permission('BROWSER_VIEW'):
             return
 
-        def _change_info(old_node, new_node, change):
-            info = {'change': change}
-            if old_node:
-                info['path.old'] = old_node.path
-                info['rev.old'] = old_node.rev
-                info['shortrev.old'] = repos.short_rev(old_node.rev)
-                old_href = req.href.browser(old_node.created_path,
-                                            rev=old_node.created_rev)
-                # Reminder: old_node.path may not exist at old_node.rev
-                #           as long as old_node.rev==old_node.created_rev
-                #           ... and diff.old_rev may have nothing to do
-                #           with _that_ node specific history...
-                info['browser_href.old'] = old_href
-            if new_node:
-                info['path.new'] = new_node.path
-                info['rev.new'] = new_node.rev # created rev.
-                info['shortrev.new'] = repos.short_rev(new_node.rev)
-                new_href = req.href.browser(new_node.created_path,
-                                            rev=new_node.created_rev)
-                # (same remark as above)
-                info['browser_href.new'] = new_href
-            return info
+        def node_info(node):
+            return {'path': node.path,
+                    'rev': node.rev,
+                    'shortrev': repos.short_rev(node.rev),
+                    'href': req.href.browser(node.created_path,
+                                             rev=node.created_rev),
+                    'title': ('Show revision %s of this file in browser' %
+                              node.rev)}
+        # Reminder: node.path may not exist at node.rev
+        #           as long as node.rev==node.created_rev
+        #           ... and data['old_rev'] may have nothing to do
+        #           with _that_ node specific history...
 
         hidden_properties = self.config.getlist('browser', 'hide_properties')
 
@@ -452,22 +419,21 @@ class ChangesetModule(Component):
             new_content = mview.to_unicode(new_content, new_node.content_type)
 
             if old_content != new_content:
-                context = 3
-                options = diff_options[1]
-                for option in options:
-                    if option.startswith('-U'):
-                        context = int(option[2:])
-                        break
+                options = data['diff']['options']
+                context = options.get('contextlines', 3)
                 if context < 0:
                     context = None
                 tabwidth = self.config['diff'].getint('tab_width',
                                 self.config['mimeviewer'].getint('tab_width'))
-                return hdf_diff(old_content.splitlines(),
-                                new_content.splitlines(),
-                                context, tabwidth,
-                                ignore_blank_lines='-B' in options,
-                                ignore_case='-i' in options,
-                                ignore_space_changes='-b' in options)
+                ignore_blank_lines = options.get('ignoreblanklines')
+                ignore_case = options.get('ignorecase')
+                ignore_space = options.get('ignorewhitespace')
+                return diff_blocks(old_content.splitlines(),
+                                   new_content.splitlines(),
+                                   context, tabwidth,
+                                   ignore_blank_lines=ignore_blank_lines,
+                                   ignore_case=ignore_case,
+                                   ignore_space_changes=ignore_space)
             else:
                 return []
 
@@ -486,25 +452,31 @@ class ChangesetModule(Component):
         else:
             show_diffs = False
 
-        idx = 0
+        has_diffs = False
+        changes = []
         for old_node, new_node, kind, change in get_changes():
+            props = []
+            diffs = []
             show_entry = change != Changeset.EDIT
             if change in (Changeset.EDIT, Changeset.COPY, Changeset.MOVE) and \
                    req.perm.has_permission('FILE_VIEW'):
                 assert old_node and new_node
                 props = _prop_changes(old_node, new_node)
                 if props:
-                    req.hdf['changeset.changes.%d.props' % idx] = props
                     show_entry = True
                 if kind == Node.FILE and show_diffs:
                     diffs = _content_changes(old_node, new_node)
                     if diffs != []:
                         if diffs:
-                            req.hdf['changeset.changes.%d.diff' % idx] = diffs
+                            has_diffs = True
                         # elif None (means: manually compare to (previous))
                         show_entry = True
             if show_entry or not show_diffs:
-                info = _change_info(old_node, new_node, change)
+                info = {'change': change,
+                        'old': old_node and node_info(old_node),
+                        'new': new_node and node_info(new_node),
+                        'props': props,
+                        'diffs': diffs}
                 if change == Changeset.EDIT and not show_diffs:
                     if chgset:
                         diff_href = req.href.changeset(new_node.rev,
@@ -515,10 +487,15 @@ class ChangesetModule(Component):
                             old=old_node.created_rev,
                             old_path=old_node.created_path)
                     info['diff_href'] = diff_href
-                req.hdf['changeset.changes.%d' % idx] = info
-            idx += 1 # the sequence should be immutable
+            else:
+                info = None
+            changes.append(info) # the sequence should be immutable
 
-    def _render_diff(self, req, filename, repos, diff, diff_options):
+        data.update({'has_diffs': has_diffs, 'changes': changes,
+                     'longcol': 'Revision', 'shortcol': 'r'})
+        return data
+
+    def _render_diff(self, req, filename, repos, data):
         """Raw Unified Diff version"""
         req.send_response(200)
         req.send_header('Content-Type', 'text/plain;charset=utf-8')
@@ -527,7 +504,9 @@ class ChangesetModule(Component):
         req.end_headers()
 
         mimeview = Mimeview(self.env)
-        for old_node, new_node, kind, change in repos.get_changes(**diff):
+        for old_node, new_node, kind, change in repos.get_changes(
+            new_path=data['new_path'], new_rev=data['new_rev'],
+            old_path=data['old_path'], old_rev=data['old_rev']):
             # TODO: Property changes
 
             # Content changes
@@ -555,17 +534,18 @@ class ChangesetModule(Component):
                                                   new_node.content_type)
             else:
                 old_node_path = repos.normalize_path(old_node.path)
-                diff_old_path = repos.normalize_path(diff.old_path)
-                new_path = posixpath.join(diff.new_path,
+                diff_old_path = repos.normalize_path(data['old_path'])
+                new_path = posixpath.join(data['new_path'],
                                           old_node_path[len(diff_old_path)+1:])
 
             if old_content != new_content:
-                context = 3
-                options = diff_options[1]
-                for option in options:
-                    if option.startswith('-U'):
-                        context = int(option[2:])
-                        break
+                options = data['diff']['options']
+                context = options.get('contextlines', 3)
+                if context < 0:
+                    context = 3 # FIXME: unified_diff bugs with context=None
+                ignore_blank_lines = options.get('ignoreblanklines')
+                ignore_case = options.get('ignorecase')
+                ignore_space = options.get('ignorewhitespace')
                 if not old_node_info[0]:
                     old_node_info = new_node_info # support for 'A'dd changes
                 req.write('Index: ' + new_path + CRLF)
@@ -574,14 +554,15 @@ class ChangesetModule(Component):
                 req.write('+++ %s (revision %s)' % new_node_info + CRLF)
                 for line in unified_diff(old_content.splitlines(),
                                          new_content.splitlines(), context,
-                                         ignore_blank_lines='-B' in options,
-                                         ignore_case='-i' in options,
-                                         ignore_space_changes='-b' in options):
+                                         ignore_blank_lines=ignore_blank_lines,
+                                         ignore_case=ignore_case,
+                                         ignore_space_changes=ignore_space):
                     req.write(line + CRLF)
+        raise RequestDone
 
-    def _render_zip(self, req, filename, repos, diff):
+    def _render_zip(self, req, filename, repos, data):
         """ZIP archive with all the added and/or modified files."""
-        new_rev = diff.new_rev
+        new_rev = data['new_rev']
         req.send_response(200)
         req.send_header('Content-Type', 'application/zip')
         req.send_header('Content-Disposition', 'attachment;'
@@ -591,7 +572,9 @@ class ChangesetModule(Component):
 
         buf = StringIO()
         zipfile = ZipFile(buf, 'w', ZIP_DEFLATED)
-        for old_node, new_node, kind, change in repos.get_changes(**diff):
+        for old_node, new_node, kind, change in repos.get_changes(
+            new_path=data['new_path'], new_rev=data['new_rev'],
+            old_path=data['old_path'], old_rev=data['old_rev']):
             if kind == Node.FILE and change != Changeset.DELETE:
                 assert new_node
                 zipinfo = ZipInfo()
@@ -609,16 +592,17 @@ class ChangesetModule(Component):
         req.end_headers()
 
         req.write(buf.getvalue())
+        raise RequestDone
 
-    def title_for_diff(self, diff):
-        if diff.new_path == diff.old_path: # ''diff between 2 revisions'' mode
+    def title_for_diff(self, data):
+        if data['new_path'] == data['old_path']: # ''diff between 2 revisions'' mode
             return 'Diff r%s:%s for %s' \
-                   % (diff.old_rev or 'latest', diff.new_rev or 'latest',
-                      diff.new_path or '/')
-        else:                              # ''arbitrary diff'' mode
+                   % (data['old_rev'] or 'latest', data['new_rev'] or 'latest',
+                      data['new_path'] or '/')
+        else:                              # ''generalized diff'' mode
             return 'Diff from %s@%s to %s@%s' \
-                   % (diff.old_path or '/', diff.old_rev or 'latest',
-                      diff.new_path or '/', diff.new_rev or 'latest')
+                   % (data['old_path'] or '/', data['old_rev'] or 'latest',
+                      data['new_path'] or '/', data['new_rev'] or 'latest')
 
     # ITimelineEventProvider methods
 
@@ -730,20 +714,20 @@ class ChangesetModule(Component):
         if '//' in params:
             p1, p2 = params.split('//', 1)
             old, new = pathrev(p1), pathrev(p2)
-            diff = DiffArgs(old_path=old[0], old_rev=old[1],
-                            new_path=new[0], new_rev=new[1])
+            data = {'old_path': old[0], 'old_rev': old[1],
+                    'new_path': new[0], 'new_rev': new[1]}
         else:
             old_path, old_rev = pathrev(params)
             new_rev = None
             if old_rev and ':' in old_rev:
                 old_rev, new_rev = old_rev.split(':', 1)
-            diff = DiffArgs(old_path=old_path, old_rev=old_rev,
-                            new_path=old_path, new_rev=new_rev)
-        title = self.title_for_diff(diff)
-        href = formatter.href.changeset(new_path=diff.new_path or None,
-                                        new=diff.new_rev,
-                                        old_path=diff.old_path or None,
-                                        old=diff.old_rev)
+            data = {'old_path': old_path, 'old_rev': old_rev,
+                    'new_path': old_path, 'new_rev': new_rev}
+        title = self.title_for_diff(data)
+        href = formatter.href.changeset(new_path=data['new_path'] or None,
+                                        new=data['new_rev'],
+                                        old_path=data['old_path'] or None,
+                                        old=data['old_rev'])
         return html.A(label, class_="changeset", title=title, href=href)
 
     # ISearchSource methods
@@ -776,7 +760,7 @@ class AnyDiffModule(Component):
     # IRequestHandler methods
 
     def match_request(self, req):
-        return re.match(r'/anydiff$', req.path_info)
+        return re.match(r'/diff_form$', req.path_info)
 
     def process_request(self, req):
         # -- retrieve arguments
@@ -797,12 +781,11 @@ class AnyDiffModule(Component):
         authzperm.assert_permission_for_changeset(old_rev)
 
         # -- prepare rendering
-        req.hdf['anydiff'] = {
+        data = {
             'new_path': new_path,
             'new_rev': new_rev,
             'old_path': old_path,
             'old_rev': old_rev,
-            'changeset_href': req.href.changeset(),
         }
 
-        return 'anydiff.cs', None
+        return 'diff_form.html', data, None

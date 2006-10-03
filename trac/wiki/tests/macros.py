@@ -30,7 +30,7 @@ IMAGE_MACRO_TEST_CASES=u"""
 [[Image(source:test.png, 30%)]]
 ------------------------------
 <p>
-<a style="padding:0; border:none" href="/browser/test.png"><img width="30%" alt="source:test.png" src="/browser/test.png?format=raw" title="source:test.png" /></a>
+<a style="padding:0; border:none" href="/browser/test.png"><img width="30%" alt="source:test.png" title="source:test.png" src="/browser/test.png?format=raw" /></a>
 </p>
 ------------------------------
 ============================== source: Image, keyword alignment

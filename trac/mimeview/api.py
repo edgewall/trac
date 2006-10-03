@@ -580,8 +580,8 @@ class Mimeview(Component):
                                  "option." % (mapping, option))
         return types
     
-    def preview_to_hdf(self, req, content, length, mimetype, filename,
-                       url=None, annotations=None):
+    def preview_data(self, req, content, length, mimetype, filename,
+                     url=None, annotations=None):
         """Prepares a rendered preview of the given `content`.
 
         Note: `content` will usually be an object with a `read` method.
@@ -591,8 +591,8 @@ class Mimeview(Component):
                     'max_file_size': self.max_preview_size,
                     'raw_href': url}
         else:
-            return {'preview': self.render(req, mimetype, content, filename,
-                                           url, annotations),
+            return {'rendered': self.render(req, mimetype, content,
+                                            filename, url, annotations),
                     'raw_href': url}
 
     def send_converted(self, req, in_type, content, selector, filename='file'):

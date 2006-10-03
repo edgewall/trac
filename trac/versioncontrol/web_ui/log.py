@@ -79,20 +79,7 @@ class LogModule(Component):
             if repos.rev_older_than(rev, stop_rev):
                 rev, stop_rev = stop_rev, rev
             
-        req.hdf['title'] = path + ' (log)'
-        req.hdf['log'] = {
-            'mode': mode,
-            'path': path,
-            'rev': rev,
-            'verbose': verbose,
-            'stop_rev': stop_rev,
-            'browser_href': req.href.browser(path),
-            'changeset_href': req.href.changeset(),
-            'log_href': req.href.log(path, rev=rev)
-        }
-
         path_links = get_path_links(req.href, path, rev)
-        req.hdf['log.path'] = path_links
         if path_links:
             add_link(req, 'up', path_links[-1]['href'], 'Parent directory')
 
@@ -108,24 +95,30 @@ class LogModule(Component):
 
         # -- retrieve history, asking for limit+1 results
         info = []
+        depth = 1
+        fix_deleted_rev = False
         previous_path = repos.normalize_path(path)
         for old_path, old_rev, old_chg in history(limit+1):
+            if fix_deleted_rev:
+                fix_deleted_rev['existing_rev'] = old_rev
+                fix_deleted_rev = False
             if stop_rev and repos.rev_older_than(old_rev, stop_rev):
                 break
             old_path = repos.normalize_path(old_path)
+
             item = {
-                'rev': str(old_rev),
-                'path': old_path,
-                'log_href': req.href.log(old_path, rev=old_rev),
-                'browser_href': req.href.browser(old_path, rev=old_rev),
-                'changeset_href': req.href.changeset(old_rev),
-                'restricted_href': req.href.changeset(old_rev, new_path=old_path),
-                'change': old_chg
+                'path': old_path, 'rev': old_rev, 'existing_rev': old_rev,
+                'change': old_chg, 'depth': depth,
             }
+            
+            if old_chg == Changeset.DELETE:
+                fix_deleted_rev = item
             if not (mode == 'path_history' and old_chg == Changeset.EDIT):
                 info.append(item)
             if old_path and old_path != previous_path \
                and not (mode == 'path_history' and old_path == normpath):
+                depth += 1
+                item['depth'] = depth
                 item['copyfrom_path'] = old_path
                 if mode == 'stop_on_copy':
                     break
@@ -157,8 +150,6 @@ class LogModule(Component):
             # now, only show 'limit' results
             del info[-1]
         
-        req.hdf['log.items'] = info
-
         revs = [i['rev'] for i in info]
         changes = get_changes(self.env, repos, revs, verbose, req, format)
         if format == 'rss':
@@ -191,12 +182,18 @@ class LogModule(Component):
                     actions.append(chg)
                 cs['files'] = files
                 cs['actions'] = actions
-        req.hdf['log.changes'] = changes
+
+        data = {
+            'path': path, 'rev': rev, 'stop_rev': stop_rev,
+            'mode': mode, 'verbose': verbose,
+            'path_links': path_links,
+            'items': info, 'changes': changes
+            }
 
         if req.args.get('format') == 'changelog':
-            return 'log_changelog.cs', 'text/plain'
+            return 'revisionlog.txt', data, 'text/plain'
         elif req.args.get('format') == 'rss':
-            return 'log_rss.cs', 'application/rss+xml'
+            return 'revisionlog.rss', data, 'application/rss+xml'
 
         add_stylesheet(req, 'common/css/browser.css')
         add_stylesheet(req, 'common/css/diff.css')
@@ -208,7 +205,7 @@ class LogModule(Component):
                                        stop_rev=stop_rev)
         add_link(req, 'alternate', changelog_href, 'ChangeLog', 'text/plain')
 
-        return 'log.cs', None
+        return 'revisionlog.html', data, None
 
     # IWikiSyntaxProvider methods
 

@@ -1,0 +1,86 @@
+# -*- coding: utf-8 -*-
+#
+# Copyright (C) 2006 Edgewall Software
+# Copyright (C) 2006 Matthew Good <trac@matt-good.net>
+# Copyright (C) 2006 Christopher Lenz <cmlenz@gmx.de>
+# All rights reserved.
+#
+# This software is licensed as described in the file COPYING, which
+# you should have received as part of this distribution. The terms
+# are also available at http://trac.edgewall.org/wiki/TracLicense.
+#
+# This software consists of voluntary contributions made by many
+# individuals. For the exact contribution history, see the revision
+# history and logs, available at http://trac.edgewall.org/log/.
+
+"""Various classes and functions to provide some backwards-compatibility with
+previous of Python prior to 2.4.
+"""
+
+try:
+    reversed = reversed
+except NameError:
+    def reversed(x):
+        if hasattr(x, 'keys'):
+            raise ValueError('mappings do not support reverse iteration')
+        i = len(x)
+        while i > 0:
+            i -= 1
+            yield x[i]
+
+try:
+    sorted = sorted
+except NameError:
+    def sorted(iterable, cmp=None, key=None, reverse=False):
+        """Partial implementation of the "sorted" function from Python 2.4"""
+        if key is None:
+            lst = list(iterable)
+        else:
+            lst = [(key(val), idx, val) for idx, val in enumerate(iterable)]
+        lst.sort()
+        if key is None:
+            if reverse:
+                return lst[::-1]
+            return lst
+        if reverse:
+            lst = reversed(lst)
+        return [i[-1] for i in lst]
+
+try:
+    from itertools import groupby
+except ImportError:
+    class groupby(object):
+        def __init__(self, iterable, key=None):
+            if key is None:
+                key = lambda x: x
+            self.keyfunc = key
+            self.it = iter(iterable)
+            self.tgtkey = self.currkey = self.currvalue = xrange(0)
+        def __iter__(self):
+            return self
+        def next(self):
+            while self.currkey == self.tgtkey:
+                self.currvalue = self.it.next() # Exit on StopIteration
+                self.currkey = self.keyfunc(self.currvalue)
+            self.tgtkey = self.currkey
+            return (self.currkey, self._grouper(self.tgtkey))
+        def _grouper(self, tgtkey):
+            while self.currkey == tgtkey:
+                yield self.currvalue
+                self.currvalue = self.it.next() # Exit on StopIteration
+                self.currkey = self.keyfunc(self.currvalue)
+
+try:
+    any = any
+except NameError:
+    def any(S):
+        for x in S:
+            if x:
+               return True
+        return False
+
+    def all(S):
+        for x in S:
+            if not x:
+               return False
+        return True    

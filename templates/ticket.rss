@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<rss version="2.0" xmlns:py="http://genshi.edgewall.org/">
+  <channel>
+
+    <title>${project.name}: Ticket $title</title>
+    <link>${abs_href.ticket(id)}</link>
+    <description>${unicode(description)}</description>
+    <language>en-us</language>
+    <image py:if="chrome.logo.src">
+      <title>$project.name</title>
+      <url>$chrome.logo.src</url>
+      <link>${abs_href.ticket(id)}</link>
+    </image>
+    <generator>Trac $trac.version</generator>
+
+    <item py:for="change in changes">
+      <author py:if="change.author">$change.author</author>
+      <pubDate>${http_date(change.date)}</pubDate>
+      <title>$change.title</title>
+      <link>${abs_href.ticket(id)}<py:if test="change.cnum">#comment:$change.cnum</py:if></link>
+      <guid isPermaLink="false">${abs_href.ticket(id)}<py:if test="change.cnum">#comment:$change.cnum</py:if></guid>
+      <description>
+        <py:if test="change.fields">
+          &lt;ul&gt;
+          <py:for each="field, value in change.fields.iteritems()">
+            &lt;li&gt;&lt;strong&gt;$field&lt;/strong&gt; 
+            <py:choose>
+              <py:when test="not value.old">
+                set to &lt;em&gt;$value.new&lt;/em&gt;
+              </py:when>
+              <py:when test="value.new">
+                changed from &lt;em&gt;$value.old&lt;/em&gt; to &lt;em&gt;$value.new&lt;/em&gt;.
+              </py:when>
+              <py:otherwise>
+                deleted
+              </py:otherwise>
+            </py:choose>
+            &lt;/li&gt;
+          </py:for>
+          &lt;/ul&gt;
+        </py:if>
+        $change.comment
+      </description>
+      <category>Ticket</category>
+    </item>
+
+ </channel>
+</rss>

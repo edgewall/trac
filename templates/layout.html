@@ -1,0 +1,68 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:py="http://genshi.edgewall.org/"
+      xmlns:xi="http://www.w3.org/2001/XInclude"
+      py:strip="">
+  <xi:include href="site.html"><xi:fallback/></xi:include>
+
+  <head py:match="head">
+    <title>${select('title/text()')} – Trac</title>
+    <meta py:if="norobots" name="ROBOTS" content="NOINDEX, NOFOLLOW" />
+    <div py:for="rel, links in chrome.links.items()" py:strip="">
+      <link rel="${rel}" py:for="link in links" py:attrs="link"/>
+    </div>
+    <script py:for="script in chrome.scripts"
+            type="${script.type}" src="${script.href}"></script>
+    ${select('*[not(title)]')}
+  </head>
+
+  <div py:def="navigation(category)" id="${category}" class="nav">
+    <ul py:if="chrome.nav[category]">
+      <li py:for="idx, item in  enumerate(chrome.nav[category])"
+          class="${first_last(idx, chrome.nav[category])}">${item.label}</li>
+    </ul>
+  </div>
+
+  <body py:match="body">
+    <div id="banner">
+      <div id="header">
+        <a py:if="chrome.logo.src" id="logo" href="${chrome.logo.link}"><img
+          src="${chrome.logo.src}" alt="${chrome.logo.alt}" /></a>
+      </div>
+      <form py:if="perm.has_permission('SEARCH_VIEW')" id="search"
+            action="${href.search()}" method="get"><div>
+        <label for="proj-search">Search:</label>
+        <input type="text" id="proj-search" name="q" size="10" accesskey="f" value="" />
+        <input type="submit" value="Search" />
+        <input type="hidden" name="wiki" value="on" />
+        <input type="hidden" name="changeset" value="on" />
+        <input type="hidden" name="ticket" value="on" />
+      </div></form>
+      ${navigation('metanav')}
+    </div>
+    ${navigation('mainnav')}
+
+    <div id="main">
+      ${select('*')}
+
+      <div id="altlinks" py:if="chrome.links.alternate">
+        <h3>Download in other formats:</h3>
+        <ul>
+          <li py:for="idx, link in enumerate(chrome.links.alternate)"
+            class="${first_last(idx, chrome.links.alternate)}">
+            <a href="${link.href}" class="${link['class']}" py:content="link.title" />
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div id="footer"><hr/>
+      <a id="tracpowered" href="http://trac.edgewall.org/"><img src="${href.chrome('common/trac_logo_mini.png')}" height="30" width="107" alt="Trac Powered"/></a>
+      <p class="left">
+        Powered by <a href="${href.about()}"><strong>Trac ${trac.version}</strong></a><br />
+        By <a href="http://www.edgewall.org/">Edgewall Software</a>.
+      </p>
+      <p class="right">${chrome.footer}</p>
+    </div>
+  </body>
+
+</html>

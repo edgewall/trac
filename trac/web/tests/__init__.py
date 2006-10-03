@@ -1,10 +1,9 @@
 import unittest
 
 from trac.web.tests import api, auth, cgi_frontend, chrome, clearsilver, \
-                           href, session, wikisyntax
+                           href, paginate, session, wikisyntax
 
 def suite():
-
     suite = unittest.TestSuite()
     suite.addTest(api.suite())
     suite.addTest(auth.suite())
@@ -12,6 +11,7 @@ def suite():
     suite.addTest(chrome.suite())
     suite.addTest(clearsilver.suite())
     suite.addTest(href.suite())
+    suite.addTest(paginate.suite())
     suite.addTest(session.suite())
     suite.addTest(wikisyntax.suite())
     return suite

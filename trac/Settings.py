@@ -14,8 +14,9 @@
 #
 # Author: Daniel Lundin <daniel@edgewall.com>
 
+from genshi.builder import tag
+
 from trac.core import *
-from trac.util.html import html
 from trac.web import IRequestHandler
 from trac.web.chrome import INavigationContributor
 
@@ -33,7 +34,7 @@ class SettingsModule(Component):
 
     def get_navigation_items(self, req):
         yield ('metanav', 'settings',
-               html.A('Settings', href=req.href.settings()))
+               tag.a('Settings', href=req.href.settings()))
 
     # IRequestHandler methods
 
@@ -49,12 +50,11 @@ class SettingsModule(Component):
             elif action == 'load':
                 self._do_load(req)
 
-        req.hdf['title'] = 'Settings'
-        req.hdf['settings'] = req.session
+        data = {'session': req.session}
         if req.authname == 'anonymous':
-            req.hdf['settings.session_id'] = req.session.sid
+            data['session_id'] = req.session.sid
 
-        return 'settings.cs', None
+        return 'settings.html', {'settings': data}, None
 
     # Internal methods
 

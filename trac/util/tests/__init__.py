@@ -1,10 +1,12 @@
+import doctest
 import unittest
 
-from trac.util.tests import html, text
+from trac import util
+from trac.util.tests import text
 
 def suite():
     suite = unittest.TestSuite()
-    suite.addTest(html.suite())
+    suite.addTest(doctest.DocTestSuite(util))
     suite.addTest(text.suite())
     return suite
 

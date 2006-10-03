@@ -17,13 +17,12 @@ import time
 import smtplib
 import re
 
+from genshi.core import Markup
 from trac import __version__
 from trac.config import BoolOption, IntOption, Option
 from trac.core import *
 from trac.util.text import CRLF
 from trac.web.chrome import Chrome
-from trac.web.clearsilver import HDFWrapper
-from trac.web.main import populate_hdf
 
 MAXHEADERLEN = 76
 
@@ -97,9 +96,10 @@ class Notify(object):
         self.config = env.config
         self.db = env.get_db_cnx()
 
-        loadpaths = Chrome(self.env).get_all_templates_dirs()
-        self.hdf = HDFWrapper(loadpaths)
-        populate_hdf(self.hdf, env)
+        self.template = Chrome(self.env).load_template(self.template_name,
+                                                       method='text')
+        self.data = {'CRLF': CRLF}
+        Chrome(self.env).populate_data(None, self.data)
 
     def notify(self, resid):
         (torcpts, ccrcpts) = self.get_recipients(resid)
@@ -280,8 +280,9 @@ class NotifyEmail(Notify):
 
     def send(self, torcpts, ccrcpts, mime_headers={}):
         from email.MIMEText import MIMEText
-        from email.Utils import formatdate, formataddr
-        body = self.hdf.render(self.template_name)
+        from email.Utils import formatdate
+        stream = self.template.generate(**self.data)
+        body = stream.render('text')
         projname = self.config.get('project', 'name')
         public_cc = self.config.getbool('notification', 'use_public_cc')
         headers = {}
@@ -355,7 +356,7 @@ class NotifyEmail(Notify):
         msgtext = msg.as_string()
         # Ensure the message complies with RFC2822: use CRLF line endings
         recrlf = re.compile("\r?\n")
-        msgtext = "\r\n".join(recrlf.split(msgtext))
+        msgtext = CRLF.join(recrlf.split(msgtext))
         self.server.sendmail(msg['From'], recipients, msgtext)
 
     def finish_send(self):

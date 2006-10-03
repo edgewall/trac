@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<rss version="2.0" xmlns:py="http://genshi.edgewall.org/">
+  <channel>
+    <title>$project.name: Ticket Query</title>
+    <link>$query_href</link>
+    <language>en-us</language>
+    <image py:if="chrome.logo.src">
+      <title>$project.name</title>
+      <url>$chrome.logo.src</url>
+      <link>$query_href</link>
+    </image>
+    <generator>Trac $trac.version</generator>
+
+    <item py:for="result in results" py:with="href = abs_href.ticket(result.id)">
+      <link>$href</link>
+      <guid isPermaLink="false">$href</guid>
+      <title>#$result.id: $result.summary</title>
+      <pubDate py:if="result.time">${http_date(result.time)}</pubDate>
+      <author py:if="result.reporter">$result.reporter</author>
+      <description>${unicode(result.description)}</description>
+      <category>Results</category>
+      <comments>$href#changelog</comments>
+    </item>
+
+ </channel>
+</rss>

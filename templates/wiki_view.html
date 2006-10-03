@@ -1,0 +1,88 @@
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:py="http://genshi.edgewall.org/"
+  xmlns:xi="http://www.w3.org/2001/XInclude">
+  <xi:include href="layout.html"><xi:fallback/></xi:include>
+  <xi:include href="macros.html"><xi:fallback/></xi:include>
+
+  <head>
+    <title>$title</title>
+  </head>
+
+  <body>
+    <div id="ctxtnav" class="nav">
+      <h2>Wiki Navigation</h2>
+      <ul>
+        <li><a href="${href.wiki('WikiStart')}">Start Page</a></li>
+        <li><a href="${href.wiki('TitleIndex')}">Index by Title</a></li>
+        <li><a href="${href.wiki('RecentChanges')}">Index by Date</a></li>
+        <li class="last">
+          <a href="${req.href.wiki(page.name, action='diff', version=page.version)}">Last Change</a>
+        </li> 
+      </ul>
+      <hr />
+    </div>
+
+    <div id="content" class="wiki">
+      
+      <py:if test="comment_html">
+        <table id="info" summary="Revision info">
+          <tbody>
+            <tr><th scope="col">Version $page.version (modified by $page.author, ${dateinfo(page.time)} ago)</th></tr>
+            <tr><td class="message">$comment_html</td></tr>
+          </tbody>
+        </table>
+      </py:if>
+
+      <div class="wikipage">
+        <div id="searchable">$page_html</div>
+      </div>
+
+      ${list_of_attachments(attachments, attach_href, compact=True)}
+
+      <py:with vars="modify_perm = perm.has_permission('WIKI_MODIFY');
+                     delete_perm = perm.has_permission('WIKI_DELETE');
+                     admin_perm = perm.has_permission('WIKI_ADMIN')">
+        <py:if test="admin_perm or (not readonly and (modify_perm or delete_perm))">
+          <div class="buttons">
+            <py:if test="modify_perm">
+              <form method="get" action="${href.wiki(page.name)}">
+                <div>
+                  <input type="hidden" name="action" value="edit" />
+                  <input type="submit" value="${page.exists and 'Edit' or 'Create'} this page" accesskey="e" />
+                </div>
+              </form>
+              <py:if test="page.exists">
+                <form method="get" action="$attach_href">
+                  <div>
+                    <input type="hidden" name="action" value="new" />
+                    <input type="submit" value="Attach file" />
+                  </div>
+                </form>
+              </py:if>
+            </py:if>
+            <py:if test="page.exists and delete_perm">
+              <form method="get" action="${href.wiki(page.name)}">
+                <div id="delete">
+                  <input type="hidden" name="action" value="delete" />
+                  <input type="hidden" name="version" value="$page.version" />
+                  <py:if test="page.version == latest_version">
+                    <input type="submit" name="delete_version" value="Delete this version" />
+                  </py:if>
+                  <input type="submit" value="Delete page" />
+                </div>
+              </form>
+            </py:if>
+          </div>
+        </py:if>
+      </py:with>
+
+      <script type="text/javascript">
+        addHeadingLinks(document.getElementById("searchable"), "Link to this section");
+      </script>
+
+    </div>
+  </body>
+</html>

@@ -21,8 +21,8 @@ import md5
 from trac import __version__
 from trac.core import *
 from trac.config import *
-from trac.util.text import CRLF, wrap
 from trac.notification import NotifyEmail
+from trac.util.text import CRLF, wrap
 
 
 class TicketNotificationSystem(Component):
@@ -45,7 +45,7 @@ class TicketNotificationSystem(Component):
 class TicketNotifyEmail(NotifyEmail):
     """Notification of ticket changes."""
 
-    template_name = "ticket_notify_email.cs"
+    template_name = "ticket_notify_email.txt"
     ticket = None
     newticket = None
     modtime = 0
@@ -60,70 +60,78 @@ class TicketNotifyEmail(NotifyEmail):
         self.ticket = ticket
         self.modtime = modtime
         self.newticket = newticket
-        self.ticket['description'] = wrap(self.ticket.values.get('description', ''),
-                                          self.COLS, initial_indent=' ',
-                                          subsequent_indent=' ', linesep=CRLF)
-        self.hdf.set_unescaped('email.ticket_props', self.format_props())
-        self.hdf.set_unescaped('email.ticket_body_hdr', self.format_hdr())
-        self.hdf['ticket.new'] = self.newticket
-        subject = self.format_subj()
+
+        changes_body = ''
+        changes_descr = ''
+        change_data = {}
         link = self.env.abs_href.ticket(ticket.id)
-        if not self.newticket:
-            subject = 'Re: ' + subject
-        self.hdf.set_unescaped('email.subject', subject)
-        changes = ''
+        
         if not self.newticket and modtime:  # Ticket change
             from trac.ticket.web_ui import TicketModule
             for change in TicketModule(self.env).grouped_changelog_entries(
                 ticket, self.db, when=modtime):
                 if not change['permanent']: # attachment with same time...
                     continue
-                self.hdf.set_unescaped('ticket.change.author', 
-                                       change['author'])
-                self.hdf.set_unescaped('ticket.change.comment',
-                                       wrap(change['comment'], self.COLS,
-                                            ' ', ' ', CRLF))
+                change_data.update({
+                    'author': change['author'],
+                    'comment': wrap(change['comment'], self.COLS, ' ', ' ',
+                                    CRLF)
+                    })
                 link += '#comment:%s' % str(change.get('cnum', ''))
                 for field, values in change['fields'].iteritems():
                     old = values['old']
                     new = values['new']
-                    pfx = 'ticket.change.%s' % field
                     newv = ''
                     if field == 'description':
                         new_descr = wrap(new, self.COLS, ' ', ' ', CRLF)
                         old_descr = wrap(old, self.COLS, '> ', '> ', CRLF)
-                        old_descr = old_descr.replace(2*CRLF, CRLF + '>' + CRLF)
+                        old_descr = old_descr.replace(2*CRLF, CRLF + '>' + \
+                                                      CRLF)
                         cdescr = CRLF
-                        cdescr += 'Old description:' + 2*CRLF + old_descr + 2*CRLF
-                        cdescr += 'New description:' + 2*CRLF + new_descr + CRLF
-                        self.hdf.set_unescaped('email.changes_descr', cdescr)
+                        cdescr += 'Old description:' + 2*CRLF + old_descr + \
+                                  2*CRLF
+                        cdescr += 'New description:' + 2*CRLF + new_descr + \
+                                  CRLF
+                        changes_descr = cdescr
                     elif field == 'cc':
                         (addcc, delcc) = self.diff_cc(old, new)
                         chgcc = ''
                         if delcc:
-                            chgcc += wrap(" * cc: %s (removed)" % ', '.join(delcc), 
-                                          self.COLS, ' ', ' ', CRLF)
-                            chgcc += CRLF
+                            chgcc += wrap(" * cc: %s (removed)" %
+                                          ', '.join(delcc), 
+                                          self.COLS, ' ', ' ', CRLF) + CRLF
                         if addcc:
-                            chgcc += wrap(" * cc: %s (added)" % ', '.join(addcc), 
-                                          self.COLS, ' ', ' ', CRLF)
-                            chgcc += CRLF
+                            chgcc += wrap(" * cc: %s (added)" %
+                                          ', '.join(addcc), 
+                                          self.COLS, ' ', ' ', CRLF) + CRLF
                         if chgcc:
-                            changes += chgcc
+                            changes_body += chgcc
                         self.prev_cc += old and self.parse_cc(old) or []
                     else:
                         newv = new
                         l = 7 + len(field)
                         chg = wrap('%s => %s' % (old, new), self.COLS - l, '',
                                    l * ' ', CRLF)
-                        changes += '  * %s:  %s%s' % (field, chg, CRLF)
+                        changes_body += '  * %s:  %s%s' % (field, chg, CRLF)
                     if newv:
-                        self.hdf.set_unescaped('%s.oldvalue' % pfx, old)
-                        self.hdf.set_unescaped('%s.newvalue' % pfx, newv)
-            if changes:
-                self.hdf.set_unescaped('email.changes_body', changes)
+                        change_data[field] = {'oldvalue': old, 'newvalue': new}
+            
+        self.ticket['description'] = wrap(
+            self.ticket.values.get('description', ''), self.COLS,
+            initial_indent=' ', subsequent_indent=' ', linesep=CRLF)
+        self.ticket['new'] = self.newticket
         self.ticket['link'] = link
-        self.hdf.set_unescaped('ticket', self.ticket.values)
+        
+        subject = self.format_subj()
+        self.data.update({
+            'ticket_props': self.format_props(),
+            'ticket_body_hdr': self.format_hdr(),
+            'subject': self.newticket and subject or 'Re: ' + subject,
+            'ticket': ticket.values,
+            'changes_body': changes_body,
+            'changes_descr': changes_descr,
+            'change': change_data
+            })
         NotifyEmail.notify(self, ticket.id, subject)
 
     def format_props(self):

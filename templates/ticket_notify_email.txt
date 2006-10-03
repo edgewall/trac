@@ -1,0 +1,29 @@
+$ticket_body_hdr
+$ticket_props
+#choose ticket.new
+  #when True
+$ticket.description
+  #end
+  #otherwise
+    #if changes_body
+Changes (by $change.author):
+
+$changes_body
+    #end
+    #if changes_descr
+$changes_descr
+--
+    #end
+    #if change.comment
+
+Comment${not changes_body and '(by %s)' % change.author or ''}:
+
+$change.comment
+    #end
+  #end
+#end
+
+-- 
+Ticket URL: <$ticket.link>
+$project.name <${abs_href}>
+$project.descr

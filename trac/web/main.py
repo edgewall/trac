@@ -22,6 +22,10 @@ import sys
 import dircache
 import urllib
 
+from genshi import Markup
+from genshi.output import DocType
+from genshi.template import TemplateLoader
+
 from trac.config import ExtensionOption, OrderedExtensionsOption
 from trac.core import *
 from trac.env import open_environment
@@ -155,10 +159,8 @@ class RequestDispatcher(Component):
         In addition, this method initializes the HDF data set and adds the web
         site chrome.
         """
-        # FIXME: For backwards compatibility, should be removed in 0.11
-        self.env.href = req.href
-        # FIXME in 0.11: self.env.abs_href = Href(self.env.base_url)
-        self.env.abs_href = req.abs_href
+        self.env.href = req.href # FIXME: remove later in 0.11
+        self.env.abs_href = Href(self.env.base_url)
 
         # Select the component that should handle the request
         chosen_handler = None
@@ -204,7 +206,7 @@ class RequestDispatcher(Component):
                 chrome = Chrome(self.env)
                 req.hdf = HDFWrapper(loadpaths=chrome.get_all_templates_dirs())
                 populate_hdf(req.hdf, self.env, req)
-                chrome.populate_hdf(req, chosen_handler)
+                chrome.prepare_request(req, chosen_handler)
         except:
             req.hdf = None # revert to sending plaintext error
             if not early_error:
@@ -223,9 +225,17 @@ class RequestDispatcher(Component):
                 try:
                     resp = chosen_handler.process_request(req)
                     if resp:
-                        template, content_type = \
-                                  self._post_process_request(req, *resp)
-                        req.display(template, content_type or 'text/html')
+                        chrome = Chrome(self.env)
+                        if len(resp) == 2:
+                            chrome.populate_hdf(req)
+                            template, content_type = \
+                                      self._post_process_request(req, *resp)
+                            req.display(template, content_type or 'text/html')
+                        else: # FIXME postprocess API need to change for genshi
+                            template, data, content_type = resp
+                            output = chrome.render_response(req, template,
+                                                            content_type, data)
+                            req.send(output, content_type or 'text/html')
                     else:
                         self._post_process_request(req)
                 except RequestDone:
@@ -363,30 +373,28 @@ def dispatch_request(environ, start_response):
 
     except HTTPException, e:
         env.log.warn(e)
+        title = e.reason or 'Error'
+        data = {'title': title, 'type': 'TracError', 'message': e.message}
         if req.hdf:
-            req.hdf['title'] = e.reason or 'Error'
-            req.hdf['error'] = {
-                'title': e.reason or 'Error',
-                'type': 'TracError',
-                'message': e.message
-            }
+            req.hdf['title'] = title
+            req.hdf['error'] = data            
         try:
-            req.send_error(sys.exc_info(), status=e.code)
+            req.send_error(sys.exc_info(), status=e.code, env=env, data=data)
         except RequestDone:
             return []
 
     except Exception, e:
         env.log.exception(e)
 
+        message = "%s: %s" % (e.__class__.__name__, to_unicode(e))
+        title = message or 'Error'
+        data = {'type': 'internal', 'message': message,
+                'traceback': get_last_traceback()}
         if req.hdf:
-            req.hdf['title'] = to_unicode(e) or 'Error'
-            req.hdf['error'] = {
-                'title': to_unicode(e) or 'Error',
-                'type': 'internal',
-                'traceback': get_last_traceback()
-            }
+            req.hdf['title'] = title
+            req.hdf['error'] = data
         try:
-            req.send_error(sys.exc_info(), status=500)
+            req.send_error(sys.exc_info(), status=500, env=env, data=data)
         except RequestDone:
             return []
 
@@ -401,14 +409,15 @@ def send_project_index(environ, start_response, parent_dir=None,
         tmpl_path, template = os.path.split(req.environ['trac.env_index_template'])
         loadpaths.insert(0, tmpl_path)
     else:
-        template = 'index.cs'
-    req.hdf = HDFWrapper(loadpaths)
+        template = 'index.html'
+    req.hdf = HDFWrapper(loadpaths) # keep that for custom .cs templates
 
-    tmpl_vars = {}
+    data = {}
     if req.environ.get('trac.template_vars'):
         for pair in req.environ['trac.template_vars'].split(','):
             key, val = pair.split('=')
             req.hdf[key] = val
+            data[key] = val
 
     if parent_dir and not env_paths:
         env_paths = dict([(filename, os.path.join(parent_dir, filename))
@@ -432,7 +441,14 @@ def send_project_index(environ, start_response, parent_dir=None,
         projects.sort(lambda x, y: cmp(x['name'].lower(), y['name'].lower()))
 
         req.hdf['projects'] = projects
-        req.display(template)
+        data['projects'] = projects
+        if template.endswith('.cs'): # assume Clearsilver
+            req.display(template)
+        else:
+            markuptemplate = TemplateLoader(loadpaths).load(template)
+            stream = markuptemplate.generate(**data)
+            output = stream.render('xhtml', doctype=DocType.XHTML_STRICT)
+            req.send(output, 'text/html')
     except RequestDone:
         pass
 

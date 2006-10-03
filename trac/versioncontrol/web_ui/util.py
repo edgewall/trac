@@ -59,7 +59,7 @@ def get_changes(env, repos, revs, full=None, req=None, format=None):
 
         if format == 'rss':
             if isinstance(shortlog, Markup):
-                shortlog = shortlog.plaintext(keeplinebreaks=False)
+                shortlog = u' '.join(shortlog.striptags().splitlines())
             message = unicode(message)
 
         changes[rev] = {

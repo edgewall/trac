@@ -1,0 +1,112 @@
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:py="http://genshi.edgewall.org/"
+      xmlns:xi="http://www.w3.org/2001/XInclude">
+ <xi:include href="layout.html"><xi:fallback/></xi:include>
+ <head>
+  <title>New Ticket</title>
+  <script type="text/javascript">
+   addEvent(window, 'load', function() { document.getElementById('summary').focus()}); 
+  </script>
+ </head>
+
+ <body>
+  <div id="ctxtnav" class="nav"/>
+
+  <div id="content" class="ticket">
+
+   <h1>Create New Ticket</h1>
+
+   <form id="newticket" method="post" action="#preview">
+
+    <div py:if="req.authname == 'anonymous'" class="field">
+     <label for="reporter">Your email or username:</label><br />
+     <input type="text" id="reporter" name="reporter" size="40" value="${ticket.reporter}" /><br />
+    </div>
+
+    <div class="field">
+     <label for="summary">Short summary:</label><br />
+     <input id="summary" type="text" name="summary" size="80" value="${ticket.summary}"/>
+    </div>
+
+    <div class="field">
+     <label for="description">Full description (you may use <a tabindex="42"
+            href="${href.wiki('WikiFormatting')}">WikiFormatting</a> here):</label><br />
+     <textarea id="description" name="description" class="wikitext" rows="10"
+               cols="78">${ticket.description}</textarea>
+     <fieldset py:if="preview" id="preview">
+      <legend>Description Preview</legend>
+      ${preview}
+     </fieldset>
+    </div>
+
+    <fieldset id="properties"
+              py:with="fields = [f for f in fields if not f.skip]">
+     <legend>Ticket Properties</legend>
+     <input type="hidden" name="action" value="create" />
+     <input type="hidden" name="status" value="new" />
+
+     <table>
+      <tr py:for="row in group(fields, 2, lambda f: f.type != 'textarea')"
+          py:with="fullrow = len(row) == 1">
+       <py:for each="idx, field in enumerate(row)">
+        <th class="col${idx + 1}" py:if="idx == 0 or not fullrow">
+         <label for="${field.name}" py:if="field"
+                py:strip="field.type == 'radio'">${field.label or field.name}:</label>
+        </th>
+        <td class="col${idx + 1}" py:if="idx == 0 or not fullrow"
+            py:attrs="{'colspan': fullrow and 3 or None}">
+         <py:choose test="field.type" py:if="field">
+          <select py:when="'select'" id="${field.name}" name="${field.name}">
+           <option py:for="option in field.options"
+                   selected="${ticket[field.name] == option or None}"
+                   py:content="option"></option>
+          </select>
+          <textarea py:when="'textarea'" id="${field.name}" name="${field.name}"
+                    cols="${field.width}" rows="${field.height}"
+                    py:content="ticket[field.name]"></textarea>
+          <input py:when="'checkbox'" type="checkbox" id="${field.name}"
+                 name="${field.name}" value="${field.value}" />
+          <label py:when="'radio'"
+                 py:for="idx, option in enumerate(field.options)">
+           <input type="radio" name="${field.name}" value="${option}"
+                  checked="${ticket[field.name] == option or None}" />
+           ${option}
+          </label>
+          <input py:otherwise="" type="text" id="${field.name}"
+                 name="${field.name}" value="${ticket[field.name]}" />
+         </py:choose>
+        </td>
+       </py:for>
+      </tr>
+     </table>
+
+    </fieldset>
+
+    
+    <p py:if="can_attach">
+     <label>
+      <input type="checkbox" name="attachment" checked="${attachment or None}" />
+      I have files to attach to this ticket
+     </label>
+    </p>
+
+    <div class="buttons">
+     <input type="submit" name="preview" value="Preview" accesskey="r" />&nbsp;
+     <input type="submit" value="Submit ticket" />
+    </div>
+
+   </form>
+   
+   <script type="text/javascript" src="${chrome.htdocs_location}js/wikitoolbar.js"></script>
+
+   <div id="help">
+    <strong>Note:</strong> See <a href="${href.wiki('TracTickets')}">TracTickets</a>
+    for help on using tickets.
+   </div>
+
+  </div>
+ </body>
+</html>

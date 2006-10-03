@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<rss version="2.0" xmlns:py="http://genshi.edgewall.org/">
+  <channel py:with="log_href = abs_href.log(path, rev=rev)">
+
+    <title>Revisions of $path</title>
+    <link>$log_href</link>
+    <description>Trac Log - Revisions of $path</description>
+    <language>en-US</language>
+    <generator>Trac ${trac.version}</generator>
+    <image py:if="chrome.logo">
+      <title>${project.name}</title>
+      <url>${chrome.logo.src}</url>
+      <link>$log_href</link>
+    </image>
+
+    <item py:for="item in items" py:with="change = changes[item.rev]">
+      <author py:if="change.author">$change.author</author>
+      <pubDate>${format_datetime(change.date_seconds)}</pubDate> <!--! FIXME: use 'change.date' later on -->
+      <title>Revision $item.rev: $change.shortlog</title>
+      <link>${abs_href.changeset(rev, path)}</link>
+      <guid isPermaLink="false">${abs_href.changeset(item.rev, item.path)}</guid>
+      <description>$change.message</description>
+      <category>Log</category>
+    </item>
+
+ </channel>
+</rss>

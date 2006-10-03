@@ -1,0 +1,119 @@
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:py="http://genshi.edgewall.org/"
+  xmlns:xi="http://www.w3.org/2001/XInclude">
+  <xi:include href="layout.html"><xi:fallback/></xi:include>
+  <xi:include href="macros.html"><xi:fallback/></xi:include>
+
+  <head>
+    <title>$title</title>
+  </head>
+
+  <body>
+    <div id="ctxtnav" class="nav">
+      <h2>Wiki Navigation</h2>
+      <ul>
+        <li><a href="${href.wiki('WikiStart')}">Start Page</a></li>
+        <li><a href="${href.wiki('TitleIndex')}">Index by Title</a></li>
+        <li><a href="${href.wiki('RecentChanges')}">Index by Date</a></li>
+        <li class="last">
+          <a href="${req.href.wiki(page.name, action='diff', version=page.version)}">Last Change</a>
+        </li>
+      </ul>
+      <hr />
+    </div>
+    <!-- if wiki.action == "edit" || wiki.action == "preview" || wiki.action == "collision" -->
+    <div id="content" class="wiki">
+
+      <h1>Editing $page_name</h1>
+      <py:choose test="action">
+        <py:when test="'preview'">
+          <table id="info" summary="Revision info">
+            <tbody>
+              <tr><th scope="col">Preview of future version ${page.version+1} (modified by $author)</th></tr>
+              <tr><td class="message">$comment_html</td></tr>
+            </tbody>
+          </table>
+          <fieldset id="preview">
+            <legend>Preview (<a href="#edit">skip</a>)</legend>
+            <div class="wikipage">$page_html</div>
+          </fieldset>
+        </py:when>
+        <py:when test="'collision'">
+          <div class="system-message">
+            Sorry, this page has been modified by somebody else since you started
+            editing. Your changes cannot be saved.
+          </div>
+        </py:when>
+      </py:choose>
+      <form id="edit" action="${href.wiki(page.name)}" method="post">
+        <fieldset class="iefix">
+          <input type="hidden" name="action" value="edit" />
+          <input type="hidden" name="version" value="$page.version" />
+          <input type="hidden" id="scroll_bar_pos" name="scroll_bar_pos" value="$scroll_bar_pos" />
+          <div id="rows">
+            <label for="editrows">Adjust edit area height:</label>
+            <select size="1" name="editrows" id="editrows" tabindex="43"
+              onchange="resizeTextArea('text', this.options[selectedIndex].value)">
+              <option py:for="rows in range(8, 42, 4)" value="$rows" py:attrs="form_attrs(selected=str(rows)==edit_rows)">
+                $rows
+              </option>
+            </select>
+          </div>
+          <p><textarea id="text" class="wikitext" name="text" cols="80" rows="$edit_rows">
+$page.text
+            </textarea>
+          </p>
+          <script type="text/javascript">
+            var scrollBarPos = document.getElementById("scroll_bar_pos");
+            var text = document.getElementById("text");
+            addEvent(window, "load", function() {
+              if (scrollBarPos.value) text.scrollTop = scrollBarPos.value;
+            });
+            addEvent(text, "blur", function() { scrollBarPos.value = text.scrollTop });
+          </script>
+        </fieldset>
+        <div id="help">
+          <b>Note:</b> See <a href="${href.wiki('WikiFormatting')}">WikiFormatting</a> and
+          <a href="${href.wiki('TracWiki')}">TracWiki</a> for help on editing wiki content.
+        </div>
+        <fieldset id="changeinfo">
+          <legend>Change information</legend>
+          <py:if test="authname == 'anonymous'">
+            <div class="field">
+              <label>Your email or username:<br />
+                <input id="author" type="text" name="author" size="30" value="$author" />
+              </label>
+            </div>
+          </py:if>
+          <div class="field">
+            <label>Comment about this change (optional):<br />
+              <input id="comment" type="text" name="comment" size="60" value="$comment" />
+            </label>
+          </div><br />
+          <py:if test="perm.has_permission('WIKI_ADMIN')">
+            <div class="options">
+              <label><input type="checkbox" name="readonly" id="readonly" py:attrs="form_attrs(checked=page.readonly)" />
+                Page is read-only
+              </label>
+            </div>
+          </py:if>
+        </fieldset>
+        <div class="buttons" py:choose="action">
+          <py:when test="'collision'">
+            <input type="submit" name="preview" value="Preview" disabled="disabled" />&nbsp;
+            <input type="submit" name="save" value="Submit changes" disabled="disabled" />&nbsp;
+          </py:when>
+          <py:otherwise>
+            <input type="submit" name="preview" value="Preview" accesskey="r" />&nbsp;
+            <input type="submit" name="save" value="Submit changes" />&nbsp;
+          </py:otherwise>
+          <input type="submit" name="cancel" value="Cancel" />
+        </div>
+        <script type="text/javascript" src="${htdocs_location}js/wikitoolbar.js"></script>
+      </form>
+    </div>
+  </body>
+</html>

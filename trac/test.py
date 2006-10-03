@@ -17,6 +17,7 @@
 # Author: Jonas Borgström <jonas@edgewall.com>
 #         Christopher Lenz <cmlenz@gmx.de>
 
+import os
 import unittest
 
 from trac.config import Configuration
@@ -134,7 +135,11 @@ class EnvironmentStub(Environment):
         Component.__init__(self)
         self.enabled_components = enable
         self.db = InMemoryDatabase()
-        self.path = ''
+
+        import trac
+        self.path = os.path.dirname(trac.__file__)
+        if not os.path.isabs(self.path):
+            self.path = os.path.join(os.getcwd(), self.path)
 
         self.config = TestConfiguration(None)
 
@@ -164,9 +169,6 @@ class EnvironmentStub(Environment):
 
     def get_db_cnx(self):
         return self.db
-
-    def get_templates_dir(self):
-        return None
 
     def get_known_users(self, db):
         return self.known_users

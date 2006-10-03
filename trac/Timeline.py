@@ -24,7 +24,7 @@ from trac.config import IntOption
 from trac.core import *
 from trac.perm import IPermissionRequestor
 from trac.util.datefmt import format_date, format_time, http_date
-from trac.util.html import html, Markup
+from trac.util.html import html, plaintext, Markup
 from trac.util.text import to_unicode
 from trac.web import IRequestHandler
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
@@ -91,6 +91,7 @@ class TimelineModule(Component):
 
     def process_request(self, req):
         req.perm.assert_permission('TIMELINE_VIEW')
+        data = {}
 
         format = req.args.get('format')
         maxrows = int(req.args.get('max', 0))
@@ -98,7 +99,7 @@ class TimelineModule(Component):
         # Parse the from date and adjust the timestamp to the last second of
         # the day
         t = time.localtime()
-        if req.args.has_key('from'):
+        if 'from' in req.args:
             try:
                 t = time.strptime(req.args.get('from'), '%x')
             except:
@@ -109,8 +110,9 @@ class TimelineModule(Component):
             daysback = max(0, int(req.args.get('daysback', '')))
         except ValueError:
             daysback = self.default_daysback
-        req.hdf['timeline.from'] = format_date(fromdate)
-        req.hdf['timeline.daysback'] = daysback
+
+        data = {'fromday': format_date(fromdate), 'daysback': daysback,
+                'events': [], 'filters': []}
 
         available_filters = []
         for event_provider in self.event_providers:
@@ -118,7 +120,7 @@ class TimelineModule(Component):
 
         filters = []
         # check the request or session for enabled filters, or use default
-        for test in (lambda f: req.args.has_key(f[0]),
+        for test in (lambda f: f[0] in req.args,
                      lambda f: req.session.get('timeline.filter.%s' % f[0], '')\
                                == '1',
                      lambda f: len(f) == 2 or f[2]):
@@ -127,12 +129,12 @@ class TimelineModule(Component):
             filters = [f[0] for f in available_filters if test(f)]
 
         # save the results of submitting the timeline form to the session
-        if req.args.has_key('update'):
+        if 'update' in req.args:
             for filter in available_filters:
                 key = 'timeline.filter.%s' % filter[0]
-                if req.args.has_key(filter[0]):
+                if filter[0] in req.args:
                     req.session[key] = '1'
-                elif req.session.has_key(key):
+                elif key in req.session:
                     del req.session[key]
 
         stop = fromdate
@@ -151,15 +153,12 @@ class TimelineModule(Component):
         if maxrows and len(events) > maxrows:
             del events[maxrows:]
 
-        req.hdf['title'] = 'Timeline'
-
         # Get the email addresses of all known users
         email_map = {}
         for username, name, email in self.env.get_known_users():
             if email:
                 email_map[username] = email
 
-        idx = 0
         for kind, href, title, date, author, message in events:
             event = {'kind': kind, 'title': title, 'href': href,
                      'author': author or 'anonymous',
@@ -171,34 +170,36 @@ class TimelineModule(Component):
             if format == 'rss':
                 # Strip/escape HTML markup
                 if isinstance(title, Markup):
-                    title = title.plaintext(keeplinebreaks=False)
+                    title = plaintext(title, keeplinebreaks=False)
                 event['title'] = title
                 event['message'] = to_unicode(message)
 
                 if author:
                     # For RSS, author must be an email address
-                    if author.find('@') != -1:
-                        event['author.email'] = author
-                    elif email_map.has_key(author):
-                        event['author.email'] = email_map[author]
+                    if '@' in author:
+                        event['author'] = author
+                    elif author in email_map:
+                        event['author'] = email_map[author]
+                    else:
+                        del event['author']
                 event['date'] = http_date(date)
 
-            req.hdf['timeline.events.%s' % idx] = event
-            idx += 1
+            data['events'].append(event)
 
         if format == 'rss':
-            return 'timeline_rss.cs', 'application/rss+xml'
+            return 'timeline.rss', data, 'application/rss+xml'
 
         add_stylesheet(req, 'common/css/timeline.css')
         rss_href = req.href.timeline([(f, 'on') for f in filters],
                                      daysback=90, max=50, format='rss')
         add_link(req, 'alternate', rss_href, 'RSS Feed', 'application/rss+xml',
                  'rss')
-        for idx,fltr in enumerate(available_filters):
-            req.hdf['timeline.filters.%d' % idx] = {'name': fltr[0],
-                'label': fltr[1], 'enabled': int(fltr[0] in filters)}
 
-        return 'timeline.cs', None
+        for filter_ in available_filters:
+            data['filters'].append({'name': filter_[0], 'label': filter_[1],
+                                    'enabled': filter_[0] in filters})
+
+        return 'timeline.html', data, None
 
     def _provider_failure(self, exc, req, ep, current_filters, all_filters):
         """Raise a TracError exception explaining the failure of a provider.

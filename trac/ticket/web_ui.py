@@ -16,22 +16,21 @@
 
 import os
 import re
-import time
 from StringIO import StringIO
+import time
 
-from trac.attachment import attachments_to_hdf, Attachment, AttachmentModule
+from trac.attachment import attachments_data, Attachment, AttachmentModule
 from trac.config import BoolOption, Option
 from trac.core import *
-from trac.env import IEnvironmentSetupParticipant
 from trac.ticket import Milestone, Ticket, TicketSystem, ITicketManipulator
 from trac.ticket.notification import TicketNotifyEmail
 from trac.Timeline import ITimelineEventProvider
 from trac.util import get_reporter_id
-from trac.util.datefmt import format_datetime, pretty_timedelta, http_date
 from trac.util.html import html, Markup
 from trac.util.text import CRLF
 from trac.web import IRequestHandler
-from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
+from trac.web.chrome import add_link, add_stylesheet, INavigationContributor, \
+                            Chrome
 from trac.wiki import wiki_to_html, wiki_to_oneliner
 from trac.mimeview.api import Mimeview, IContentConverter
 
@@ -73,30 +72,7 @@ class TicketModuleBase(Component):
 
 class NewticketModule(TicketModuleBase):
 
-    implements(IEnvironmentSetupParticipant, INavigationContributor,
-               IRequestHandler)
-
-    # IEnvironmentSetupParticipant methods
-
-    def environment_created(self):
-        """Create the `site_newticket.cs` template file in the environment."""
-        if self.env.path:
-            templates_dir = os.path.join(self.env.path, 'templates')
-            if not os.path.exists(templates_dir):
-                os.mkdir(templates_dir)
-            template_name = os.path.join(templates_dir, 'site_newticket.cs')
-            template_file = file(template_name, 'w')
-            template_file.write("""<?cs
-####################################################################
-# New ticket prelude - Included directly above the new ticket form
-?>
-""")
-
-    def environment_needs_upgrade(self, db):
-        return False
-
-    def upgrade_environment(self, db):
-        pass
+    implements(INavigationContributor, IRequestHandler)
 
     # INavigationContributor methods
 
@@ -116,26 +92,24 @@ class NewticketModule(TicketModuleBase):
 
     def process_request(self, req):
         req.perm.assert_permission('TICKET_CREATE')
-
+        data = {}
         db = self.env.get_db_cnx()
 
         if req.method == 'POST' and 'owner' in req.args and \
                not req.perm.has_permission('TICKET_MODIFY'):
             del req.args['owner']
 
-        if req.method == 'POST' and not req.args.has_key('preview'):
+        if req.method == 'POST' and 'preview' not in req.args:
             self._do_create(req, db)
 
         ticket = Ticket(self.env, db=db)
         ticket.populate(req.args)
         ticket.values['reporter'] = get_reporter_id(req, 'reporter')
+        data['ticket'] = ticket
 
-        if ticket.values.has_key('description'):
+        if 'description' in ticket.values:
             description = wiki_to_html(ticket['description'], self.env, req, db)
-            req.hdf['newticket.description_preview'] = description
-
-        req.hdf['title'] = 'New Ticket'
-        req.hdf['newticket'] = ticket.values
+            data['preview'] = description
 
         field_names = [field['name'] for field in ticket.fields
                        if not field.get('custom')]
@@ -149,10 +123,10 @@ class NewticketModule(TicketModuleBase):
                 ticket.fields.insert(insert_idx, ticket.fields[curr_idx])
                 del ticket.fields[curr_idx]
 
+        data['fields'] = []
         for field in ticket.fields:
             name = field['name']
-            del field['name']
-            if name in ('summary', 'reporter', 'description', 'type', 'status',
+            if name in ('summary', 'reporter', 'description', 'status',
                         'resolution'):
                 field['skip'] = True
             elif name == 'owner':
@@ -163,23 +137,22 @@ class NewticketModule(TicketModuleBase):
                 # Don't make completed milestones available for selection
                 options = field['options'][:]
                 for option in field['options']:
-                    milestone = Milestone(self.env, option, db=db)
-                    if milestone.is_completed:
+                    if Milestone(self.env, option, db=db).is_completed:
                         options.remove(option)
                 field['options'] = options
-            req.hdf['newticket.fields.' + name] = field
+            data['fields'].append(field)
 
         if req.perm.has_permission('TICKET_APPEND'):
-            req.hdf['newticket.can_attach'] = True
-            req.hdf['newticket.attachment'] = req.args.get('attachment')
+            data['can_attach'] = True
+            data['attachment'] = req.args.get('attachment')
 
         add_stylesheet(req, 'common/css/ticket.css')
-        return 'newticket.cs', None
+        return 'ticket_new.html', data, None
 
     # Internal methods
 
     def _do_create(self, req, db):
-        if not req.args.get('summary'):
+        if 'summary' not in req.args:
             raise TracError('Tickets must contain a summary.')
 
         ticket = Ticket(self.env, db=db)
@@ -199,10 +172,10 @@ class NewticketModule(TicketModuleBase):
                                "ticket #%s: %s" % (ticket.id, e))
 
         # Redirect the user to the newly created ticket
-        if req.args.get('attachment'):
+        if 'attachment' in req.args:
             req.redirect(req.href.attachment('ticket', ticket.id, action='new'))
-        else:
-            req.redirect(req.href.ticket(ticket.id))
+
+        req.redirect(req.href.ticket(ticket.id))
 
 
 class TicketModule(TicketModuleBase):
@@ -266,6 +239,7 @@ class TicketModule(TicketModuleBase):
 
     def process_request(self, req):
         req.perm.assert_permission('TICKET_VIEW')
+        data = {}
 
         action = req.args.get('action', 'view')
 
@@ -273,6 +247,7 @@ class TicketModule(TicketModuleBase):
         id = int(req.args.get('id'))
 
         ticket = Ticket(self.env, id, db=db)
+        data['ticket'] = ticket
 
         if req.method == 'POST':
             if not req.args.has_key('preview'):
@@ -282,23 +257,22 @@ class TicketModule(TicketModuleBase):
                 ticket.populate(req.args)
                 self._validate_ticket(req, ticket)
 
-                req.hdf['ticket.action'] = action
-                req.hdf['ticket.ts'] = req.args.get('ts')
-                req.hdf['ticket.reassign_owner'] = req.args.get('reassign_owner') \
-                                                   or req.authname
-                req.hdf['ticket.resolve_resolution'] = req.args.get('resolve_resolution')
+                data['action'] = action
+                data['timestamp'] = req.args.get('ts')
+                data['reassign_owner'] = req.args.get('reassign_subchoice') \
+                                         or req.authname
+                data['resolve_resolution'] = req.args.get('resolve_subchoice')
                 comment = req.args.get('comment')
                 if comment:
-                    req.hdf['ticket.comment'] = comment
+                    data['comment'] = comment
                     # Wiki format a preview of comment
-                    req.hdf['ticket.comment_preview'] = wiki_to_html(
-                        comment, self.env, req, db)
+                    data['preview'] = wiki_to_html(comment, self.env, req, db)
         else:
-            req.hdf['ticket.reassign_owner'] = req.authname
+            data['reassign_owner'] = req.authname
             # Store a timestamp in order to detect "mid air collisions"
-            req.hdf['ticket.ts'] = ticket.time_changed
+            data['timestamp'] = ticket.time_changed
 
-        self._insert_ticket_data(req, db, ticket,
+        self._insert_ticket_data(req, db, ticket, data,
                                  get_reporter_id(req, 'author'))
 
         mime = Mimeview(self.env)
@@ -333,7 +307,7 @@ class TicketModule(TicketModuleBase):
             add_link(req, 'alternate', conversion_href, conversion[1],
                      conversion[3])
 
-        return 'ticket.cs', None
+        return 'ticket_view.html', data, None
 
     # ITimelineEventProvider methods
 
@@ -440,7 +414,7 @@ class TicketModule(TicketModuleBase):
             # Attachments
             if 'ticket_details' in filters:
                 def display(id):
-                    return Markup('ticket %s', html.EM('#', id))
+                    return html('ticket ', html.EM('#', id))
                 att = AttachmentModule(self.env)
                 for event in att.get_timeline_events(req, db, 'ticket',
                                                      format, start, stop,
@@ -459,14 +433,11 @@ class TicketModule(TicketModuleBase):
                                  .replace('\n', '\\n').replace('\r', '\\r')
                                  for f in ticket.fields]) + CRLF)
         return (content.getvalue(), '%s;charset=utf-8' % mimetype)
-        
+
     def export_rss(self, req, ticket):
         db = self.env.get_db_cnx()
         changes = []
         change_summary = {}
-
-        description = wiki_to_html(ticket['description'], self.env, req, db)
-        req.hdf['ticket.description.formatted'] = unicode(description)
 
         for change in self.grouped_changelog_entries(ticket, db):
             changes.append(change)
@@ -490,9 +461,16 @@ class TicketModule(TicketModuleBase):
                     change_summary.setdefault(chg, []).append(field)
             change['title'] = '; '.join(['%s %s' % (', '.join(v), k) for k, v \
                                          in change_summary.iteritems()])
-        req.hdf['ticket.changes'] = changes
-        return (req.hdf.render('ticket_rss.cs'), 'application/rss+xml')
 
+        data = {
+            'id': ticket.id,
+            'description': wiki_to_html(ticket['description'], self.env, req,
+                                        db, absurls=True),
+            'changes': changes,
+            }
+        
+        template = Chrome(self.env).load_template('ticket.rss', req, data)
+        return template.generate(**data).render('xml'), 'application/rss+xml'
 
     def _do_save(self, req, db, ticket):
         if req.perm.has_permission('TICKET_CHGPROP'):
@@ -517,7 +495,7 @@ class TicketModule(TicketModuleBase):
         action = req.args.get('action')
         actions = TicketSystem(self.env).get_available_actions(ticket, req.perm)
         if action not in actions:
-            raise TracError('Invalid action')
+            raise TracError('Invalid action "%s"' % action)
 
         # TODO: this should not be hard-coded like this
         if action == 'accept':
@@ -525,9 +503,9 @@ class TicketModule(TicketModuleBase):
             ticket['owner'] = req.authname
         if action == 'resolve':
             ticket['status'] = 'closed'
-            ticket['resolution'] = req.args.get('resolve_resolution')
+            ticket['resolution'] = req.args.get('resolve_subchoice')
         elif action == 'reassign':
-            ticket['owner'] = req.args.get('reassign_owner')
+            ticket['owner'] = req.args.get('reassign_subchoice')
             ticket['status'] = 'new'
         elif action == 'reopen':
             ticket['status'] = 'reopened'
@@ -556,19 +534,14 @@ class TicketModule(TicketModuleBase):
         fragment = cnum and '#comment:'+cnum or ''
         req.redirect(req.href.ticket(ticket.id) + fragment)
 
-    def _insert_ticket_data(self, req, db, ticket, reporter_id):
+    def _insert_ticket_data(self, req, db, ticket, data, reporter_id):
         """Insert ticket data into the hdf"""
         replyto = req.args.get('replyto')
-        req.hdf['title'] = '#%d (%s)' % (ticket.id, ticket['summary'])
-        req.hdf['ticket'] = ticket.values
-        req.hdf['ticket'] = {
-            'id': ticket.id,
-            'href': req.href.ticket(ticket.id),
-            'replyto': replyto
-            }
+        data['replyto'] = replyto
 
         # -- Ticket fields
-        
+
+        data['fields'] = []
         for field in TicketSystem(self.env).get_ticket_fields():
             if field['type'] in ('radio', 'select'):
                 value = ticket.values.get(field['name'])
@@ -579,29 +552,25 @@ class TicketModule(TicketModuleBase):
                     options.append(value)
                 field['options'] = options
             name = field['name']
-            del field['name']
-            if name in ('summary', 'reporter', 'description', 'type', 'status',
+            if name in ('summary', 'reporter', 'description', 'status',
                         'resolution', 'owner'):
                 field['skip'] = True
-            req.hdf['ticket.fields.' + name] = field
+            data['fields'].append(field)
 
-        req.hdf['ticket.reporter_id'] = reporter_id
-        req.hdf['ticket.description.formatted'] = wiki_to_html(
-            ticket['description'], self.env, req, db)
+        data['reporter_id'] = reporter_id
+        data['description'] = wiki_to_html(ticket['description'], self.env, req,
+                                           db)
 
-        req.hdf['ticket.opened'] = format_datetime(ticket.time_created)
-        req.hdf['ticket.opened_delta'] = pretty_timedelta(ticket.time_created)
+        # FIXME: get rid of this once datetime branch is merged
+        data['opened'] = ticket.time_created
         if ticket.time_changed != ticket.time_created:
-            req.hdf['ticket'] = {
-                'lastmod': format_datetime(ticket.time_changed),
-                'lastmod_delta': pretty_timedelta(ticket.time_changed)
-                }
+            data['lastmod'] = ticket.time_changed
 
         # -- Ticket Change History
 
         def quote_original(author, original, link):
-            if not 'comment' in req.args: # i.e. the comment was not yet edited
-                req.hdf['ticket.comment'] = '\n'.join(
+            if 'comment' not in req.args: # i.e. the comment was not yet edited
+                data['comment'] = '\n'.join(
                     ['Replying to [%s %s]:' % (link, author)] +
                     ['> %s' % line for line in original.splitlines()] + [''])
 
@@ -632,28 +601,24 @@ class TicketModule(TicketModuleBase):
                 change['fields']['description'] = ''
                 description_lastmod = change['date']
                 description_author = change['author']
-                
-        req.hdf['ticket'] = {
-            'changes': changes,
-            'replies': replies,
-            'cnum': cnum + 1
-           }
+
+        data['changes'] = changes
+        data['replies'] = replies
+        data['cnum'] = cnum + 1
         if description_lastmod:
-            req.hdf['ticket.description'] = {'lastmod': description_lastmod,
-                                             'author': description_author}
+            data['description_author'] = description_author
+            data['description_lastmod'] = description_lastmod
 
         # -- Ticket Attachments
 
-        req.hdf['ticket.attachments'] = attachments_to_hdf(self.env, req, db,
-                                                           'ticket', ticket.id)
+        data['attachments'] = attachments_data(self.env, req, db, 'ticket',
+                                               ticket.id)
         if req.perm.has_permission('TICKET_APPEND'):
-            req.hdf['ticket.attach_href'] = req.href.attachment('ticket',
-                                                                ticket.id)
+            data['attach_href'] = req.href.attachment('ticket', ticket.id)
 
         # Add the possible actions to hdf
         actions = TicketSystem(self.env).get_available_actions(ticket, req.perm)
-        for action in actions:
-            req.hdf['ticket.actions.' + action] = '1'
+        data['actions'] = actions
 
     def grouped_changelog_entries(self, ticket, db, when=0):
         """Iterate on changelog entries, consolidating related changes
@@ -668,13 +633,8 @@ class TicketModule(TicketModuleBase):
                 if current:
                     yield current
                 last_uid = uid
-                current = {
-                    'http_date': http_date(date),
-                    'date': format_datetime(date),
-                    'author': author,
-                    'fields': {},
-                    'permanent': permanent
-                }
+                current = {'date': date, 'author': author, 'fields': {},
+                           'permanent': permanent}
                 if permanent and not when:
                     autonum += 1
                     current['cnum'] = autonum

@@ -1,0 +1,219 @@
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<div xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:py="http://genshi.edgewall.org/" py:strip="">
+
+  <!--!  Macro for generating an <option> element in forms
+  -
+  -      'selector'  is the selector variable
+  -      'value'     is the value of the option
+  -      'text'      is the displayed text (defaults to 'value')
+  -->
+  <py:def function="select_option(selector, value, text=None)">
+    <option value="$value" py:attrs="form_attrs(selected=selector == value)">${text or value}</option>
+  </py:def>
+
+  <!--!  Macro for generating a <input type="checkbox"> element in forms
+  -
+  -      The <input> and a corresponding <label> will be wrapped in a <div> field.
+  -
+  -      'selector'  is a boolean variable
+  -      'name       is the name of the option
+  -      'text'      is the displayed text, defaults to 'name'
+  -      'id'        optional id for the checkbox, if different from 'name' 
+  -->
+  <py:def function="checkbox(selector, name, text=None, id=None)">
+    <py:with vars="id = id or name">
+      <div class="field">
+        <input type="checkbox" id="$id" name="$name" py:attrs="form_attrs(checked=selector)" />
+        <label for="$id">${text or name}</label>
+      </div>
+    </py:with>
+  </py:def>
+
+  <!--!  Macro for generating a set of <input type="radio"> element in forms
+  -
+  -      'selector'  is the selector variable
+  -      'name       is the name shared by the buttons option
+  -      'buttons'   is a list used for defining the individual buttons.
+  -                  Each is a tuple (value/id, text=None, default=False).
+  -->
+  <py:def function="radiobuttons(selector, name, buttons)">
+    <label py:for="button in buttons"
+           py:with="value = button[0]; text = button[1] or button[0]; default = button[3]">
+      <input type="radio" id="$value" name="$name" value="$value" 
+        checked="${selector == value or (default and selector not in values) and 'checked' or None}" />
+      $text
+    </label>
+  </py:def>
+
+  <!--!  Eventually display the plural form of a noun
+  -
+  -      'cnt'       corresponding quantity
+  -      'noun'
+  -      'keepzero'  If True, 0 gets pluralized, otherwise nothing gets generated.
+  -
+  -      We take care to not insert any extra space.
+  -->
+  
+  <py:def function="plural(cnt,noun,keepzero=False)"><py:if 
+      test="cnt != 0 or keepzero"
+      >${cnt == 1 and ('1 '+noun) or '%d %ss' % (cnt, noun)}</py:if></py:def>
+
+  <!--!  Display size of a content in human friendly format (think -H)
+  -
+  -      We take care to not insert any extra space.
+  -->
+  <py:def function="sizeinfo(size)"><span title="$size bytes">${
+      pretty_size(size)
+  }</span></py:def>
+    
+  <!--!  Display how many time elapsed since the given date.
+  -
+  -      Typically used in sentences like "changed ${dateinfo(date)} ago"
+  -
+  -      We take care to not insert any extra space.
+  -->
+  <py:def function="dateinfo(date)"><span title="${format_datetime(date)}">${
+      pretty_timedelta(date)
+  }</span></py:def>
+    
+  <!--!  Display a sequence of path components.
+  -
+  -      Each component is a link to the corresponding location in the browser.
+  -->
+  <py:def function="browser_path_links(path_links)">
+    <py:for each="idx, part in enumerate(path_links)">
+      <py:with vars="first = idx == 0; last = idx == len(path_links) - 1">
+        <a class="${first and 'first' or None}" 
+          title="${first and 'Go to root directory' or 'View ' + part.name}"
+          href="$part.href">$part.name</a>
+        <py:if test="not last"><span class="sep">/</span></py:if>
+      </py:with>
+    </py:for>
+  </py:def>
+
+
+  <!--! Add Previous/Next navigation links
+  -
+  -     `change` the label to use after the Previous/Next words
+  -     `others` links to insert after Previous and before Next links
+  -
+  -     Assume the 'chrome' datastructure to be available from the context.
+  -->
+  <py:def function="changeset_navigation(change, others=[])">
+    <li class="first" py:choose="">
+      <py:when test="chrome.links.prev"> 
+        &larr; <a class="prev" py:attrs="chrome.links.prev[0]">Previous $change</a>
+      </py:when>
+      <py:otherwise>
+        <span class="missing">&larr; Previous $change</span>
+      </py:otherwise>
+    </li>
+    <li py:for="label, url in others"><a href="$url">$label</a></li>
+    <li class="last" py:choose="">
+      <py:when test="chrome.links.next">
+        <a class="next" py:attrs="chrome.links.next[0]">Next $change</a> &rarr; 
+      </py:when>
+      <py:otherwise>
+        <span class="missing">Next $change &rarr;</span>
+      </py:otherwise>
+    </li>
+  </py:def>
+
+
+  <!--! Add diff option fields (to be used inside a form)
+  -
+  -     `diff` the datastructure which contains diff options
+  -
+  -->
+  <py:def function="diff_options_fields(diff)">
+    <label for="style">View differences</label>
+    <select id="style" name="style">
+      ${select_option(diff.style, 'inline')}
+      ${select_option(diff.style, 'sidebyside', 'side by side')}
+    </select>
+    <div class="field">
+      Show <input type="text" name="contextlines" id="contextlines" size="2"
+                  maxlength="3" value="${diff.options.contextlines &lt; 0 and 'all' or diff.options.contextlines}" />
+      <label for="contextlines">lines around each change</label>
+    </div>
+    <fieldset id="ignore">
+      <legend>Ignore:</legend>
+      ${checkbox(diff.options.ignoreblanklines, 'ignoreblanklines', 'Blank lines')}
+      ${checkbox(diff.options.ignorecase, 'ignorecase', 'Case changes')}
+      ${checkbox(diff.options.ignorewhitespace, 'ignorewhitespace', 'White space changes')}
+    </fieldset>
+    <div class="buttons">
+      <input type="submit" name="update" value="Update" />
+    </div>
+  </py:def>
+
+
+  <!--! Display a div for visualizing a preview of a file content
+  -
+  -     'preview' is usually obtained from calling Mimeview.preview_data()
+  -
+  -->
+  <py:def function="preview_file(preview)">
+    <div py:if="preview" id="preview">
+      ${preview.rendered}
+      <py:choose>
+        <py:when test="preview.max_file_size_reached">
+          <strong>HTML preview not available</strong>,
+          since the file size exceeds $preview.max_file_size bytes.
+          Try <a href="$preview.raw_href">downloading</a> the file instead.
+        </py:when>
+        <py:when test="not preview.rendered">
+          <strong>HTML preview not available</strong>. 
+          To view, <a href="$preview.raw_href">download</a> the file.
+        </py:when>
+      </py:choose>
+    </div>
+  </py:def>
+
+  <!--! Display a list of attachments
+  -
+  -     'attachments' is a list of attachment data
+  -     'attach_href' is a url for adding a new attachment
+  -
+  -->
+  <py:def function="list_of_attachments(attachments, attach_href, compact=False)">
+    <py:def function="show_one_attachment(attachment)">
+      <a href="$attachment.href" title="View attachment">$attachment.filename</a>
+        (${sizeinfo(attachment.size)}) - added by <em>$attachment.author</em> 
+        ${dateinfo(attachment.date)} ago.
+    </py:def>
+    <py:choose test="">
+      <py:when test="compact and attachments">
+        <h3>Attachments</h3>
+        <ul>
+          <li py:for="attachment in attachments">
+            ${show_one_attachment(attachment)}
+            <q py:if="compact and attachment.description">$attachment.description</q>
+          </li>
+        </ul>
+      </py:when>
+      <py:when test="not compact">
+        <h2>Attachments</h2>
+        <div py:if="attachments or attach_href" id="attachments">
+          <dl py:if="attachments" class="attachments">
+            <py:for each="attachment in attachments">
+              <dt>${show_one_attachment(attachment)}</dt>
+              <dd py:if="attachment.description">$attachment.description</dd>
+            </py:for>
+          </dl>
+          <form py:if="attach_href" method="get" action="$attach_href">
+            <div>
+              <input type="hidden" name="action" value="new" />
+              <input type="submit" value="Attach File" />
+            </div>
+          </form>
+        </div>
+      </py:when>
+    </py:choose>
+  </py:def>
+
+</div>

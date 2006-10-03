@@ -44,7 +44,7 @@ class InterTracDispatcher(Component):
             raise TracError('No TracLinks given')
         link_elt = wiki_to_link(link, self.env, req)
         if isinstance(link_elt, Element):
-            href = link_elt.attr['href']
+            href = link_elt.attrib.get('href')
             if href:
                 req.redirect(href)
         raise TracError('"%s" is not a TracLinks' % link)

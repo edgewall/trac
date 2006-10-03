@@ -27,7 +27,7 @@ from StringIO import StringIO
 from trac.core import *
 from trac.mimeview import *
 from trac.wiki.api import WikiSystem
-from trac.util.html import escape, Markup, Element, html
+from trac.util.html import escape, plaintext, Markup, Element, html
 from trac.util.text import shorten_line, to_unicode
 
 __all__ = ['wiki_to_html', 'wiki_to_oneliner', 'wiki_to_outline',
@@ -83,10 +83,13 @@ class WikiProcessor(object):
         return html.PRE(text, class_="wiki")
 
     def _html_processor(self, req, text):
-        from HTMLParser import HTMLParseError
+        from genshi import Stream
+        from genshi.input import HTMLParser, ParseError
+        from genshi.filters import HTMLSanitizer
         try:
-            return Markup(text).sanitize()
-        except HTMLParseError, e:
+            stream = Stream(HTMLSanitizer()(HTMLParser(StringIO(text))))
+            return stream.render('xhtml', encoding=None)
+        except ParseError, e:
             self.env.log.warn(e)
             return system_message('HTML parsing error: %s' % escape(e.msg),
                                   text.splitlines()[e.lineno - 1].strip())
@@ -116,9 +119,9 @@ class WikiProcessor(object):
             content_for_span = None
             interrupt_paragraph = False
             if isinstance(text, Element):
-                tagname = text.tagname.lower()
+                tagname = text.tag.lower()
                 if tagname == 'div':
-                    class_ = text.attr.get('class_', '')
+                    class_ = text.attrib.get('class', '')
                     if class_ and 'code' in class_:
                         content_for_span = text.children
                     else:
@@ -126,7 +129,8 @@ class WikiProcessor(object):
                 elif tagname == 'table':
                     interrupt_paragraph = True
             else:
-                match = re.match(self._code_block_re, text)
+                text = to_unicode(text)
+                match = re.match(self._code_block_re, unicode(text))
                 if match:
                     if match.group(1) and 'code' in match.group(1):
                         content_for_span = match.group(2)
@@ -135,7 +139,7 @@ class WikiProcessor(object):
                 elif text.startswith('<table'):
                     interrupt_paragraph = True
             if content_for_span:
-                text = html.SPAN(content_for_span, class_='code-block')
+                text = html.SPAN(class_='code-block')(*content_for_span)
             elif interrupt_paragraph:
                 text = "</p>%s<p>" % to_unicode(text)
         return text
@@ -456,7 +460,7 @@ class Formatter(object):
         if anchor:
             anchor = anchor[1:]
         else:
-            sans_markup = heading.plaintext(keeplinebreaks=False)
+            sans_markup = plaintext(heading, keeplinebreaks=False)
             anchor = self._anchor_re.sub('', sans_markup)
             if not anchor or anchor[0].isdigit() or anchor[0] in '.-':
                 # an ID must start with a Name-start character in XHTML
@@ -767,6 +771,8 @@ class Formatter(object):
         """Replace one match with its corresponding expansion"""
         replacement = self.handle_match(fullmatch)
         if replacement:
+            if isinstance(replacement, Element):
+                return replacement.generate().render('xhtml', encoding=None)
             return to_unicode(replacement)
 
     def reset(self, out=None):

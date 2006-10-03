@@ -1,0 +1,111 @@
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:py="http://genshi.edgewall.org/"
+      xmlns:xi="http://www.w3.org/2001/XInclude">
+  <xi:include href="layout.html"><xi:fallback/></xi:include>
+  <head>
+    <title>Milestone ${milestone.name}</title>
+    <link rel="stylesheet" type="text/css"
+          href="${chrome.htdocs_location}css/roadmap.css" />
+  </head>
+
+  <body>
+    <div id="ctxtnav" class="nav"></div>
+
+    <div id="content" class="milestone">
+      <h1>Milestone ${milestone.name}</h1>
+      <div class="info">
+        <py:choose>
+          <p py:when="milestone.completed" class="date">
+            Completed ${milestone.completed_delta} ago
+            (${milestone.completed_date})
+          </p>
+          <p py:when="milestone.late" class="date">
+            <strong>${milestone.due_delta} late</strong> (${milestone.due_date})
+          </p>
+          <p py:when="milestone.due" class="date">
+            Due in ${milestone.due_delta} (${milestone.due_date})
+          </p>
+          <p py:otherwise="" class="date">
+            No date set
+          </p>
+        </py:choose>
+        <py:if test="stats.total_tickets">
+          <table class="progress">
+            <td class="closed" style="width: ${stats.percent_closed}%">
+              <a href="$queries.closed_tickets"
+                 title="${stats.active_tickets} of ${stats.total_tickets} ticket${stats.total_tickets != 1 and 's' or ''} closed"></a>
+            </td>
+            <td class="open" style="width: ${stats.percent_active}">
+              <a href="$queries.active_tickets"
+                 title="${stats.active_tickets} of ${stats.total_tickets} ticket${stats.total_tickets != 1 and 's' or ''} active"></a>
+            </td>
+          </table>
+          <p class="percent">${stats.percent_closed}%</p>
+          <dl>
+            <dt>Closed tickets:</dt>
+            <dd><a href="$queries.closed_tickets">${stats.closed_tickets}</a></dd>
+            <dt>Active tickets:</dt>
+            <dd><a href="$queries.active_tickets">${stats.active_tickets}</a></dd>
+          </dl>
+        </py:if>
+      </div>
+
+      <form py:if="stats.available_groups" id="stats" action="">
+        <fieldset>
+          <legend>
+            <label for="by">Ticket status by</label>
+            <select id="by" name="by" onchange="this.form.submit()">
+              <option py:for="group in stats.available_groups"
+                      value="${group.name}" py:content="group.label"
+                      selected="${stats.grouped_by == group.name or None}" />
+            </select>
+            <noscript><input type="submit" value="Update" /></noscript>
+          </legend>
+          <table summary="Shows the milestone completion status grouped by ${stats.grouped_by}">
+            <tr py:for="group in stats.groups">
+              <th scope="row">
+                <a href="${group.queries.all_tickets}">${group.name}</a>
+              </th>
+              <td style="white-space: nowrap">
+                <table class="progress" style="width: ${group.percent_total * 80 / stats.max_percent_total}%">
+                  <td class="closed" style="width: ${group.stats.percent_closed}%">
+                    <a href="$queries.closed_tickets"
+                       title="${group.stats.active_tickets} of ${group.stats.total_tickets} ticket${group.stats.total_tickets != 1 and 's' or ''} closed"></a>
+                  </td>
+                  <td class="open" style="width: ${group.stats.percent_active}">
+                    <a href="$group.queries.active_tickets"
+                       title="${group.stats.active_tickets} of ${group.stats.total_tickets} ticket${group.stats.total_tickets != 1 and 's' or ''} active"></a>
+                  </td>
+                </table>
+                <p class="percent">${group.stats.closed_tickets} / ${group.stats.total_tickets}</p>
+              </td>
+            </tr>
+          </table>
+        </fieldset>
+      </form>
+
+      <div class="description">${milestone.description}</div>
+
+      <div py:if="perm.has_permission('MILESTONE_MODIFY') or perm.has_permission('MILESTONE_DELETE')" class="buttons">
+        <form py:if="perm.has_permission('MILESTONE_MODIFY')" method="get" action="">
+          <input type="hidden" name="action" value="edit" />
+          <input type="submit" value="Edit milestone" />
+        </form>
+        <form py:if="perm.has_permission('MILESTONE_DELETE')" method="get" action="">
+          <input type="hidden" name="action" value="delete" />
+          <input type="submit" value="Delete milestone" />
+        </form>
+      </div>
+
+    </div>
+
+    <div id="help"><strong>Note:</strong> See
+      <a href="${href.wiki('TracRoadmap')}">TracRoadmap</a> for help on using
+      the roadmap.
+    </div>
+
+  </body>
+</html>

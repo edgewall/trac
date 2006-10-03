@@ -19,7 +19,7 @@ from trac.util.html import escape, Markup
 from difflib import SequenceMatcher
 import re
 
-__all__ = ['get_diff_options', 'hdf_diff', 'unified_diff']
+__all__ = ['get_diff_options', 'hdf_diff', 'diff_blocks', 'unified_diff']
 
 
 def _get_change_extent(str1, str2):
@@ -127,8 +127,11 @@ def _group_opcodes(opcodes, n=3):
             group[-1] = tag, i1, min(i2, i1 + n), j1, min(j2, j1 + n)
         yield group
 
-def hdf_diff(fromlines, tolines, context=None, tabwidth=8,
-             ignore_blank_lines=0, ignore_case=0, ignore_space_changes=0):
+def hdf_diff(*args, **kwargs):
+    return diff_blocks(*args, **kwargs)
+
+def diff_blocks(fromlines, tolines, context=None, tabwidth=8,
+                ignore_blank_lines=0, ignore_case=0, ignore_space_changes=0):
     """
     Return an array that is adequate for adding the the HDF data set for HTML
     rendering of the differences.
@@ -148,27 +151,13 @@ def hdf_diff(fromlines, tolines, context=None, tabwidth=8,
                 for i in range(i2 - i1):
                     fromline, toline = fromlines[i1 + i], tolines[j1 + i]
                     (start, end) = _get_change_extent(fromline, toline)
-
-                    if start == 0 and end < 0:
-                        # Change at start of line
-                        fromlines[i1 + i] = '\0' + fromline[:end] + '\1' + \
-                                            fromline[end:]
-                        tolines[j1 + i] = '\0' + toline[:end] + '\1' + \
-                                          toline[end:]
-                    elif start > 0 and end == 0:
-                        # Change at end of line
-                        fromlines[i1 + i] = fromline[:start] + '\0' + \
-                                            fromline[start:] + '\1'
-                        tolines[j1 + i] = toline[:start] + '\0' + \
-                                          toline[start:] + '\1'
-                    elif start > 0 and end < 0:
-                        # Change somewhere in the middle
-                        fromlines[i1 + i] = fromline[:start] + '\0' + \
-                                            fromline[start:end] + '\1' + \
-                                            fromline[end:]
-                        tolines[j1 + i] = toline[:start] + '\0' + \
-                                          toline[start:end] + '\1' + \
-                                          toline[end:]
+                    if start != 0 or end != 0:
+                        last = end+len(fromline)
+                        fromlines[i1+i] = fromline[:start] + '\0' + fromline[start:last] + \
+                                       '\1' + fromline[last:]
+                        last = end+len(toline)
+                        tolines[j1+i] = toline[:start] + '\0' + toline[start:last] + \
+                                     '\1' + toline[last:]
             yield tag, i1, i2, j1, j2
 
     changes = []
@@ -179,33 +168,33 @@ def hdf_diff(fromlines, tolines, context=None, tabwidth=8,
         last_tag = None
         for tag, i1, i2, j1, j2 in markup_intraline_changes(group):
             if tag != last_tag:
-                blocks.append({'type': type_map[tag], 'base.offset': i1,
-                               'base.lines': [], 'changed.offset': j1,
-                               'changed.lines': []})
+                blocks.append({'type': type_map[tag],
+                               'base': {'offset': i1, 'lines': []},
+                               'changed': {'offset': j1, 'lines': []}})
             if tag == 'equal':
                 for line in fromlines[i1:i2]:
                     line = line.expandtabs(tabwidth)
                     line = space_re.sub(htmlify, escape(line, quotes=False))
-                    blocks[-1]['base.lines'].append(Markup(line))
+                    blocks[-1]['base']['lines'].append(Markup(unicode(line)))
                 for line in tolines[j1:j2]:
                     line = line.expandtabs(tabwidth)
                     line = space_re.sub(htmlify, escape(line, quotes=False))
-                    blocks[-1]['changed.lines'].append(Markup(line))
+                    blocks[-1]['changed']['lines'].append(Markup(unicode(line)))
             else:
                 if tag in ('replace', 'delete'):
                     for line in fromlines[i1:i2]:
                         line = line.expandtabs(tabwidth)
-                        line = escape(line, quotes=False).replace('\0', '<del>') \
-                                                         .replace('\1', '</del>')
-                        blocks[-1]['base.lines'].append(Markup(space_re.sub(htmlify,
-                                                                            line)))
+                        line = escape(line, quotes=False) \
+                               .replace('\0', '<del>').replace('\1', '</del>')
+                        blocks[-1]['base']['lines'].append(
+                            Markup(space_re.sub(htmlify, unicode(line))))
                 if tag in ('replace', 'insert'):
                     for line in tolines[j1:j2]:
                         line = line.expandtabs(tabwidth)
-                        line = escape(line, quotes=False).replace('\0', '<ins>') \
-                                                         .replace('\1', '</ins>')
-                        blocks[-1]['changed.lines'].append(Markup(space_re.sub(htmlify,
-                                                                               line)))
+                        line = escape(line, quotes=False) \
+                               .replace('\0', '<ins>').replace('\1', '</ins>')
+                        blocks[-1]['changed']['lines'].append(
+                            Markup(space_re.sub(htmlify, unicode(line))))
         changes.append(blocks)
     return changes
 
@@ -231,7 +220,9 @@ def unified_diff(fromlines, tolines, context=None, ignore_blank_lines=0,
                         yield '+' + line
 
 def get_diff_options(req):
-
+    options_data = {}
+    data = {'options': options_data}
+    
     def get_bool_option(name, default=0):
         pref = int(req.session.get('diff_' + name, default))
         arg = int(req.args.has_key(name))
@@ -245,7 +236,7 @@ def get_diff_options(req):
     style = req.args.get('style', pref)
     if req.args.has_key('update') and style != pref:
         req.session['diff_style'] = style
-    req.hdf['diff.style'] = style
+    data['style'] = style
 
     pref = int(req.session.get('diff_contextlines', 2))
     try:
@@ -255,24 +246,22 @@ def get_diff_options(req):
     if req.args.has_key('update') and arg != pref:
         req.session['diff_contextlines'] = arg
     options = ['-U%d' % arg]
-    if arg >= 0:
-        req.hdf['diff.options.contextlines'] = arg
-    else:
-        req.hdf['diff.options.contextlines'] = 'all'
+    options_data['contextlines'] = arg
 
     arg = get_bool_option('ignoreblanklines')
     if arg:
         options.append('-B')
-    req.hdf['diff.options.ignoreblanklines'] = arg
+    options_data['ignoreblanklines'] = arg
 
     arg = get_bool_option('ignorecase')
     if arg:
         options.append('-i')
-    req.hdf['diff.options.ignorecase'] = arg
+    options_data['ignorecase'] = arg
 
     arg = get_bool_option('ignorewhitespace')
     if arg:
         options.append('-b')
-    req.hdf['diff.options.ignorewhitespace'] = arg
+    options_data['ignorewhitespace'] = arg
 
-    return (style, options)
+    req.hdf['diff'] = data
+    return (style, options, data)

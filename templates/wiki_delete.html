@@ -1,0 +1,55 @@
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:py="http://genshi.edgewall.org/"
+  xmlns:xi="http://www.w3.org/2001/XInclude">
+
+  <xi:include href="layout.html"><xi:fallback/></xi:include>
+
+  <head>
+    <title>$title</title>
+  </head>
+
+  <body>
+    <div id="ctxtnav" class="nav">
+      <h2>Wiki Navigation</h2>
+      <ul>
+        <li><a href="${href.wiki('WikiStart')}">Start Page</a></li>
+        <li><a href="${href.wiki('TitleIndex')}">Index by Title</a></li>
+        <li><a href="${href.wiki('RecentChanges')}">Index by Date</a></li>
+      </ul>
+      <hr />
+    </div>
+
+    <div id="content" class="wiki"
+      py:with="
+      current_href = href.wiki(page.name);
+      what, range = (new_version and old_version and new_version - old_version &gt; 1) and
+      ('those versions', 'versions %d to %d of ' % (old_version+1, new_version)) or
+      new_version and
+      ('this version', 'version %d of ' % new_version) or
+      ('page', '')
+      ">
+      <h1>Delete $range <a href="current_href">$page_name</a></h1>
+      <form action="$current_href" method="post">
+        <input type="hidden" name="action" value="delete" />
+        <p>
+          <strong>Are you sure you want to ${not range and 'completely' or ''} delete $range this page?</strong>
+          <br />
+          <py:if test="num_versions == 1">
+            This is the only version the page, so the page will be removed completely!
+          </py:if>
+          <input py:if="new_version" type="hidden" name="version" value="$new_version" />
+          <input py:if="old_version" type="hidden" name="old_version" value="$old_version" />
+          This is an irreversible operation.
+        </p>
+        <div class="buttons">
+          <input type="submit" name="cancel" value="Cancel" />
+          <input type="submit" value="Delete $what" />
+        </div>
+      </form>
+    </div>
+  </body>
+</html>

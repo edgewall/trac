@@ -1,0 +1,143 @@
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:py="http://genshi.edgewall.org/"
+  xmlns:xi="http://www.w3.org/2001/XInclude">
+
+  <xi:include href="layout.html"><xi:fallback/></xi:include>
+  <xi:include href="macros.html"><xi:fallback/></xi:include>
+
+  <head><title>$title</title></head>
+
+  <body>
+    <div id="ctxtnav" class="nav">
+      <h2>Navigation</h2>
+      <ul py:choose="">
+        <py:when test="changeset">
+          ${changeset_navigation(changeset and restricted and 'Change' or 'Changeset')}
+        </py:when>
+        <py:otherwise>
+          <li class="last">
+            <a href="${href.changeset(old_rev, old_path, old=new_rev, old_path=new_path)}">Reverse Diff</a>
+          </li>
+        </py:otherwise>
+      </ul>
+    </div>
+
+    <div id="content" class="changeset">
+      <div id="title" py:choose="">
+        <h1 py:when="changeset and restricted">
+          Changeset <a title="Show full changeset" href="${href.changeset(new_rev)}">$new_rev</a>
+          for <a title="Show entry in browser" href="${href.browser(new_path, rev=new_rev)}">$new_path</a>
+        </h1>
+        <h1 py:when="not changeset and restricted">
+          Changes in <a title="Show entry in browser" href="${href.browser(new_path, rev=new_rev)}">$new_path</a>
+          <a title="Show revision log" href="${href.log(new_path, rev=new_rev, stop_rev=old_rev)}">
+            [$old_rev:$new_rev]</a>
+        </h1>
+        <h1 py:when="not changeset and not restricted">
+          Changes from <a title="Show entry in browser" href="${href.browser(old_path, rev=old_rev)}">$old_path</a>
+          at <a title="Show full changeset" href="${href.changeset(old_rev)}">r$old_rev</a>
+          to <a title="Show entry in browser" href="${href.browser(new_path, rev=new_rev)}">$new_path</a>
+          at <a title="Show full changeset" href="${href.changeset(new_rev)}">r$new_rev</a>
+          </h1>
+        <h1 py:otherwise="">Changeset $new_rev</h1>
+      </div>
+
+      <form py:if="has_diffs or diff.options.ignoreblanklines or diff.options.ignorecase or
+                     diff.options.ignorewhitespace"
+        id="prefs" action="">
+        <div>
+          <py:if test="not changeset">
+            <input type="hidden" name="old_path" value="$old_path" />
+            <input type="hidden" name="new_path" value="$new_path" />
+            <input type="hidden" name="old" value="$old_rev" />
+            <input type="hidden" name="new" value="$new_rev" />
+          </py:if>
+          ${diff_options_fields(diff)}
+        </div>
+      </form>
+
+      <py:def function="node_change(idx,item,cl,kind)">
+        <py:with vars="ndiffs = item.diffs is not None and len(item.diffs) or 0;
+                       nprops = len(item.props)">
+          <div class="$cl"> </div>
+          <py:choose test="">
+            <a py:when="cl == 'rem'" title="Show what was removed (rev. $item.old.rev)" href="$item.old.browser_href">
+              $item.old.path</a>
+            <a py:otherwise="" title="Show entry in browser" href="$item.new.browser_href">
+              ${item.new.path or '(root)'}</a>
+          </py:choose>
+          <span class="comment">($kind)</span>
+          <py:if test="item.old.path and item.change == 'copy' or item.change == 'move'">
+            <small><em>
+                ($kind from <a title="Show original file (rev. $item.old.rev)" href="$item.old.browser_href">
+                  $item.old.path</a>)
+              </em></small>
+          </py:if>
+          <py:choose>
+            <py:when test="item.diff_href">
+              (<a title="Show differences" href="$item.diff_href">view diffs</a>)
+            </py:when>
+            <py:when test="ndiffs + nprops &gt; 0">
+              (<a title="Show differences" href="#file$idx">${
+                 plural(ndiffs,'diff')}${
+                 (ndiffs and nprops) and ', ' or ''
+                }${plural(nprops, 'prop')}</a>)
+            </py:when>
+          </py:choose>
+          <py:if test="cl == 'mod' and item.diffs is None">
+            (<a title="Show previous version in browser" href="$item.old.browser_href">previous</a>)
+          </py:if>
+        </py:with>
+      </py:def>
+
+      <dl id="overview">
+        <py:if test="changeset">
+          <dt class="property time">Timestamp:</dt>
+          <dd class="time">$changeset.time (${changeset.age or 'less than one hour'} ago)</dd>
+          <dt class="property author">Author:</dt>
+          <dd class="author">$changeset.author</dd>
+          <span py:for="prop in changeset.properties" py:strip="">
+          <dt class="property $prop.htmlclass">$prop.name:</dt>
+          <dd class="$prop.htmlclass">$prop.value</dd>
+          </span>
+          <dt class="property message">Message:</dt>
+          <dd class="message" id="searchable">${changeset.message or '&nbsp;'}</dd>
+        </py:if>
+        <dt class="property files">${filter(None, changes) and 'Files:' or '(No files)'}</dt>
+        <dd class="files">
+          <ul>
+            <li py:for="idx,item in enumerate(changes)" py:choose="item.change">
+              <py:when test="'add'">${node_change(idx, item, 'add', 'added')}</py:when>
+              <py:when test="'delete'">${node_change(idx, item, 'rem', 'deleted')}</py:when>
+              <py:when test="'copy'">${node_change(idx, item, 'cp', 'copied')}</py:when>
+              <py:when test="'move'">${node_change(idx, item, 'mv', 'moved')}</py:when>
+              <py:when test="'edit'">${node_change(idx, item, 'mod', 'modified')}</py:when>
+              <py:otherwise><!-- ignored change (maybe because of diff options or ignored prop.) --></py:otherwise>
+            </li>
+          </ul>
+        </dd>
+      </dl>
+
+      <div class="diff">
+        <div id="legend">
+          <h3>Legend:</h3>
+          <dl>
+            <dt class="unmod"></dt><dd>Unmodified</dd>
+            <dt class="add"></dt><dd>Added</dd>
+            <dt class="rem"></dt><dd>Removed</dd>
+            <dt class="mod"></dt><dd>Modified</dd>
+            <dt class="cp"></dt><dd>Copied</dd>
+            <dt class="mv"></dt><dd>Moved</dd>
+          </dl>
+        </div>
+
+        <xi:include href="diff_div.html"><xi:fallback/></xi:include>
+
+      </div>
+    </div>
+  </body>
+</html>

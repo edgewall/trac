@@ -90,7 +90,7 @@ def milestone_to_hdf(env, db, req, milestone):
     safe_name = None
     if milestone.exists:
         safe_name = milestone.name.replace('/', '%2F')
-    hdf = {'name': milestone.name,
+    hdf = {'name': milestone.name, 'exists': milestone.exists,
            'href': req.href.milestone(safe_name)}
     if milestone.description:
         hdf['description_source'] = milestone.description
@@ -146,41 +146,37 @@ class RoadmapModule(Component):
 
     def process_request(self, req):
         req.perm.assert_permission('ROADMAP_VIEW')
-        req.hdf['title'] = 'Roadmap'
+        data = {}
 
         showall = req.args.get('show') == 'all'
-        req.hdf['roadmap.showall'] = showall
+        data['showall'] = showall
 
         db = self.env.get_db_cnx()
         milestones = [milestone_to_hdf(self.env, db, req, m)
                       for m in Milestone.select(self.env, showall, db)]
-        req.hdf['roadmap.milestones'] = milestones        
+        data['milestones'] = milestones
 
         for idx, milestone in enumerate(milestones):
             milestone_name = unescape(milestone['name']) # Kludge
-            prefix = 'roadmap.milestones.%d.' % idx
             tickets = get_tickets_for_milestone(self.env, db, milestone_name,
                                                 'owner')
-            req.hdf[prefix + 'stats'] = calc_ticket_stats(tickets)
-            for k, v in get_query_links(req, milestone_name).items():
-                req.hdf[prefix + 'queries.' + k] = v
+            milestone['stats'] = calc_ticket_stats(tickets)
+            milestone['queries'] = get_query_links(req, milestone_name)
             milestone['tickets'] = tickets # for the iCalendar view
 
         if req.args.get('format') == 'ics':
             self.render_ics(req, db, milestones)
             return
 
-        add_stylesheet(req, 'common/css/roadmap.css')
-
         # FIXME should use the 'webcal:' scheme, probably
         username = None
         if req.authname and req.authname != 'anonymous':
             username = req.authname
-        icshref = req.href.roadmap(show=req.args.get('show'),
-                                        user=username, format='ics')
+        icshref = req.href.roadmap(show=req.args.get('show'), user=username,
+                                   format='ics')
         add_link(req, 'alternate', icshref, 'iCalendar', 'text/calendar', 'ics')
 
-        return 'roadmap.cs', None
+        return 'roadmap.html', data, None
 
     # Internal methods
 
@@ -362,14 +358,11 @@ class MilestoneModule(Component):
             elif action == 'delete':
                 self._do_delete(req, db, milestone)
         elif action in ('new', 'edit'):
-            self._render_editor(req, db, milestone)
+            return self._render_editor(req, db, milestone)
         elif action == 'delete':
-            self._render_confirm(req, db, milestone)
-        else:
-            self._render_view(req, db, milestone)
+            return self._render_confirm(req, db, milestone)
 
-        add_stylesheet(req, 'common/css/roadmap.css')
-        return 'milestone.cs', None
+        return self._render_view(req, db, milestone)
 
     # Internal methods
 
@@ -435,40 +428,34 @@ class MilestoneModule(Component):
     def _render_confirm(self, req, db, milestone):
         req.perm.assert_permission('MILESTONE_DELETE')
 
-        req.hdf['title'] = 'Milestone %s' % milestone.name
-        req.hdf['milestone'] = milestone_to_hdf(self.env, db, req, milestone)
-        req.hdf['milestone.mode'] = 'delete'
+        data = {'milestone': milestone_to_hdf(self.env, db, req, milestone),
+                'milestones': [m.name for m in
+                               Milestone.select(self.env, False, db)
+                               if m.name != milestone.name]}
 
-        for idx,other in enumerate(Milestone.select(self.env, False, db)):
-            if other.name == milestone.name:
-                continue
-            req.hdf['milestones.%d' % idx] = other.name
+        return 'milestone_delete.html', data, None
 
     def _render_editor(self, req, db, milestone):
-        if milestone.exists:
-            req.perm.assert_permission('MILESTONE_MODIFY')
-            req.hdf['title'] = 'Milestone %s' % milestone.name
-            req.hdf['milestone.mode'] = 'edit'
-            req.hdf['milestones'] = [m.name for m in
-                                     Milestone.select(self.env)
-                                     if m.name != milestone.name]
-        else:
-            req.perm.assert_permission('MILESTONE_CREATE')
-            req.hdf['title'] = 'New Milestone'
-            req.hdf['milestone.mode'] = 'new'
-
         from trac.util.datefmt import get_date_format_hint, \
                                        get_datetime_format_hint
-        req.hdf['milestone'] = milestone_to_hdf(self.env, db, req, milestone)
-        req.hdf['milestone.date_hint'] = get_date_format_hint()
-        req.hdf['milestone.datetime_hint'] = get_datetime_format_hint()
-        req.hdf['milestone.datetime_now'] = format_datetime()
+        data = {'date_hint': get_date_format_hint(),
+                'datetime_hint': get_datetime_format_hint(),
+                'datetime_now': format_datetime()}
+
+        if milestone.exists:
+            req.perm.assert_permission('MILESTONE_MODIFY')
+            data['milestones'] = [m.name for m in
+                                  Milestone.select(self.env, False, db)
+                                  if m.name != milestone.name]
+        else:
+            req.perm.assert_permission('MILESTONE_CREATE')
+
+        data['milestone'] = milestone_to_hdf(self.env, db, req, milestone)
+
+        return 'milestone_edit.html', data, None
 
     def _render_view(self, req, db, milestone):
-        req.hdf['title'] = 'Milestone %s' % milestone.name
-        req.hdf['milestone.mode'] = 'view'
-
-        req.hdf['milestone'] = milestone_to_hdf(self.env, db, req, milestone)
+        data = {'milestone': milestone_to_hdf(self.env, db, req, milestone)}
 
         available_groups = []
         component_group_available = False
@@ -479,42 +466,36 @@ class MilestoneModule(Component):
                                          'label': field['label']})
                 if field['name'] == 'component':
                     component_group_available = True
-        req.hdf['milestone.stats.available_groups'] = available_groups
-
         if component_group_available:
             by = req.args.get('by', 'component')
         else:
             by = req.args.get('by', available_groups[0]['name'])
-        req.hdf['milestone.stats.grouped_by'] = by
 
         tickets = get_tickets_for_milestone(self.env, db, milestone.name, by)
-        stats = calc_ticket_stats(tickets)
-        req.hdf['milestone.stats'] = stats
-        for key, value in get_query_links(req, milestone.name).items():
-            req.hdf['milestone.queries.' + key] = value
+        data['stats'] = calc_ticket_stats(tickets)
+        data['stats']['available_groups'] = available_groups
+        data['stats']['grouped_by'] = by
+        data['queries'] = get_query_links(req, milestone.name)
 
+        data['stats']['groups'] = []
         groups = _get_groups(self.env, db, by)
-        group_no = 0
         max_percent_total = 0
         for group in groups:
             group_tickets = [t for t in tickets if t[by] == group]
             if not group_tickets:
                 continue
-            prefix = 'milestone.stats.groups.%s' % group_no
-            req.hdf['%s.name' % prefix] = group
+            data['stats']['groups'].append({'name': group})
             percent_total = 0
             if len(tickets) > 0:
                 percent_total = float(len(group_tickets)) / float(len(tickets))
                 if percent_total > max_percent_total:
                     max_percent_total = percent_total
-            req.hdf['%s.percent_total' % prefix] = percent_total * 100
-            stats = calc_ticket_stats(group_tickets)
-            req.hdf[prefix] = stats
-            for key, value in \
-                    get_query_links(req, milestone.name, by, group).items():
-                req.hdf['%s.queries.%s' % (prefix, key)] = value
-            group_no += 1
-        req.hdf['milestone.stats.max_percent_total'] = max_percent_total * 100
+            data['stats']['groups'][-1]['percent_total'] = percent_total * 100
+            data['stats']['groups'][-1]['stats'] = calc_ticket_stats(group_tickets)
+            data['stats']['groups'][-1]['queries'] = get_query_links(req, milestone.name, by, group)
+        data['stats']['max_percent_total'] = max_percent_total * 100
+
+        return 'milestone_view.html', data, None
 
     # IWikiSyntaxProvider methods
 
