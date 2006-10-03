@@ -613,8 +613,8 @@ class AttachmentModule(Component):
                 if len(path_info) > 2:
                     parent_id = path_info[2]
             filename = link
-        href = formatter.href()
         def attachment_link(parent_type, parent_id, filename):
+            href = formatter.href()
             try:
                 attachment = Attachment(self.env, parent_type, parent_id,
                                         filename)
