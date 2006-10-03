@@ -226,7 +226,9 @@ class TicketSystem(Component):
         if ':' in target:
             elts = target.split(':')
             if len(elts) == 3:
-                type, id, cnum = elts
+                cnum, type, id = elts
+                if cnum != 'description' and cnum and not cnum[0].isdigit():
+                    type, id, cnum = elts # support old comment: style
                 href = formatter.href(type, id)
         else:
             # FIXME: the formatter should know which object the text being

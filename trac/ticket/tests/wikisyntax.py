@@ -172,12 +172,20 @@ query:verbose=1
 
 COMMENT_TEST_CASES="""
 ============================== comment: link resolver
-comment:ticket:123:2
-[comment:ticket:123:2 see above]
+comment:ticket:123:2 (deprecated)
+[comment:ticket:123:2 see above] (deprecated)
+[comment:ticket:123:description see descr] (deprecated)
+comment:2:ticket:123
+[comment:2:ticket:123 see above]
+[comment:description:ticket:123 see descr]
 ------------------------------
 <p>
-<a href="/ticket/123#comment:2" title="Comment 2 for ticket:123">comment:ticket:123:2</a>
+<a href="/ticket/123#comment:2" title="Comment 2 for ticket:123">comment:ticket:123:2</a> (deprecated)
+<a href="/ticket/123#comment:2" title="Comment 2 for ticket:123">see above</a> (deprecated)
+<a href="/ticket/123#comment:description" title="Comment description for ticket:123">see descr</a> (deprecated)
+<a href="/ticket/123#comment:2" title="Comment 2 for ticket:123">comment:2:ticket:123</a>
 <a href="/ticket/123#comment:2" title="Comment 2 for ticket:123">see above</a>
+<a href="/ticket/123#comment:description" title="Comment description for ticket:123">see descr</a>
 </p>
 ------------------------------
 """ # "
