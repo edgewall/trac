@@ -134,7 +134,7 @@ class SQLiteConnection(ConnectionWrapper):
     """Connection wrapper for SQLite."""
 
     __slots__ = ['_active_cursors']
-    poolable = False
+    poolable = have_pysqlite and sqlite_version >= 30301
 
     def __init__(self, path, params={}):
         assert have_pysqlite > 0
@@ -147,15 +147,16 @@ class SQLiteConnection(ConnectionWrapper):
             if not os.access(path, os.R_OK + os.W_OK) or \
                    not os.access(dbdir, os.R_OK + os.W_OK):
                 from getpass import getuser
-                raise TracError, 'The user %s requires read _and_ write ' \
-                                 'permission to the database file %s and the ' \
-                                 'directory it is located in.' \
-                                 % (getuser(), path)
+                raise TracError('The user %s requires read _and_ write ' \
+                                'permission to the database file %s and the ' \
+                                'directory it is located in.' \
+                                % (getuser(), path))
 
         if have_pysqlite == 2:
             self._active_cursors = weakref.WeakKeyDictionary()
             timeout = int(params.get('timeout', 10.0))
             cnx = sqlite.connect(path, detect_types=sqlite.PARSE_DECLTYPES,
+                                 check_same_thread=sqlite_version < 30301,
                                  timeout=timeout)
         else:
             timeout = int(params.get('timeout', 10000))
