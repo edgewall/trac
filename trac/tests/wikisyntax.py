@@ -1,7 +1,10 @@
+import os
+import shutil
+import tempfile
 import unittest
 
 from trac.Search import SearchModule
-from trac.attachment import AttachmentModule
+from trac.attachment import Attachment
 from trac.wiki.tests import formatter
 
 SEARCH_TEST_CASES="""
@@ -34,25 +37,38 @@ search:"?q=foo bar&wiki=on"
 """
 
 ATTACHMENT_TEST_CASES="""
-============================== search: link resolver
+============================== attachment: link resolver
 attachment:wiki:WikiStart:file.txt
 attachment:ticket:123:file.txt
 [attachment:wiki:WikiStart:file.txt file.txt]
 [attachment:ticket:123:file.txt]
 ------------------------------
 <p>
-<a class="missing attachment" href="" rel="nofollow">attachment:wiki:WikiStart:file.txt</a>
-<a class="missing attachment" href="" rel="nofollow">attachment:ticket:123:file.txt</a>
-<a class="missing attachment" href="" rel="nofollow">file.txt</a>
-<a class="missing attachment" href="" rel="nofollow">ticket:123:file.txt</a>
+<a class="attachment" href="/attachment/wiki/WikiStart/file.txt" title="Attachment WikiStart: file.txt">attachment:wiki:WikiStart:file.txt</a>
+<a class="attachment" href="/attachment/ticket/123/file.txt" title="Attachment #123: file.txt">attachment:ticket:123:file.txt</a>
+<a class="attachment" href="/attachment/wiki/WikiStart/file.txt" title="Attachment WikiStart: file.txt">file.txt</a>
+<a class="attachment" href="/attachment/ticket/123/file.txt" title="Attachment #123: file.txt">ticket:123:file.txt</a>
 </p>
 ------------------------------
-"""
+""" # "
+
+def attachment_setup(tc):
+    tc.env.path = os.path.join(tempfile.gettempdir(), 'trac-tempenv')
+    os.mkdir(tc.env.path)
+    wiki_attachment = Attachment(tc.env, 'wiki', 'WikiStart')
+    wiki_attachment.insert('file.txt', tempfile.TemporaryFile(), 0)
+    ticket_attachment = Attachment(tc.env, 'ticket', 123)
+    ticket_attachment.insert('file.txt', tempfile.TemporaryFile(), 0)
+
+def attachment_teardown(tc):
+    shutil.rmtree(tc.env.path)
 
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(formatter.suite(SEARCH_TEST_CASES, file=__file__))
-    suite.addTest(formatter.suite(ATTACHMENT_TEST_CASES, file=__file__))
+    suite.addTest(formatter.suite(ATTACHMENT_TEST_CASES, file=__file__,
+                                  setup=attachment_setup,
+                                  teardown=attachment_teardown))
     return suite
 
 if __name__ == '__main__':

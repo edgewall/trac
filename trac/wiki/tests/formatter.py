@@ -68,7 +68,7 @@ class SampleResolver(Component):
 
 class WikiTestCase(unittest.TestCase):
 
-    def __init__(self, input, correct, file, line):
+    def __init__(self, input, correct, file, line, setup=None, teardown=None):
         unittest.TestCase.__init__(self, 'test')
         self.title, self.input = input.split('\n', 1)
         if self.title:
@@ -76,6 +76,8 @@ class WikiTestCase(unittest.TestCase):
         self.correct = correct
         self.file = file
         self.line = line
+        self._setup = setup
+        self._teardown = teardown
 
         self.env = EnvironmentStub()
         # -- macros support
@@ -94,6 +96,14 @@ class WikiTestCase(unittest.TestCase):
         #       instead of env.href (will be solved by the Wikifier patch)
         self.env.href = self.req.href
         self.env.abs_href = self.req.abs_href
+
+    def setUp(self):
+        if self._setup:
+            self._setup(self)
+
+    def tearDown(self):
+        if self._teardown:
+            self._teardown(self)
 
     def test(self):
         """Testing WikiFormatter"""
@@ -132,7 +142,7 @@ class OneLinerTestCase(WikiTestCase):
         return OneLinerFormatter(self.env) # TODO: self.req
 
 
-def suite(data=None, setup=None, file=__file__):
+def suite(data=None, setup=None, file=__file__, teardown=None):
     suite = unittest.TestSuite()
     if not data:
         file = os.path.join(os.path.split(file)[0], 'wiki-tests.txt')
@@ -150,14 +160,11 @@ def suite(data=None, setup=None, file=__file__):
         if len(blocks) != 3:
             continue
         input, page, oneliner = blocks
-        tc = WikiTestCase(input, page, file, line)
-        if setup:
-            setup(tc)
+        tc = WikiTestCase(input, page, file, line, setup, teardown)
         suite.addTest(tc)
         if oneliner:
-            tc = OneLinerTestCase(input, oneliner[:-1], file, line)
-            if setup:
-                setup(tc)
+            tc = OneLinerTestCase(input, oneliner[:-1], file, line,
+                                  setup, teardown)
             suite.addTest(tc)
     return suite
 
