@@ -3,9 +3,9 @@ from trac.util import sorted
 from trac.ticket.model import Ticket
 from trac.ticket.web_ui import TicketModule
 from trac.mimeview.api import Mimeview
-from trac.web.clearsilver import HDFWrapper
 from trac.web.href import Href
 
+import os
 import unittest
 
 
@@ -13,10 +13,12 @@ class TicketConversionTestCase(unittest.TestCase):
 
     def setUp(self):
         self.env = EnvironmentStub()
+        self.env.config.set('trac', 'templates_dir',
+                            os.path.join(os.path.dirname(self.env.path),
+                                         'templates'))
         self.ticket_module = TicketModule(self.env)
         self.mimeview = Mimeview(self.env)
-        self.req = Mock(hdf=HDFWrapper(['./templates']),
-                        base_path='/trac.cgi', path_info='',
+        self.req = Mock(base_path='/trac.cgi', path_info='',
                         href=Href('/trac.cgi'),
                         abs_href=Href('http://example.org/trac.cgi'),
                         environ={}, perm=None, authname='-', args={})
@@ -76,7 +78,7 @@ Bar
 &lt;/p&gt;
 </description>
     <language>en-us</language>
-    <generator>Trac 0.11dev-genshi</generator>
+    <generator>Trac 0.11dev</generator>
  </channel>
 </rss>""",
                           'application/rss+xml', 'xml'),
