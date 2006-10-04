@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:py="http://genshi.edgewall.org/"
       xmlns:xi="http://www.w3.org/2001/XInclude">
- <xi:include href="layout.html"><xi:fallback/></xi:include>
+ <xi:include href="layout.html" />
  <head>
   <title>New Ticket</title>
   <script type="text/javascript">
@@ -60,6 +60,7 @@
             py:attrs="{'colspan': fullrow and 3 or None}">
          <py:choose test="field.type" py:if="field">
           <select py:when="'select'" id="${field.name}" name="${field.name}">
+           <option py:if="field.optional"></option>
            <option py:for="option in field.options"
                    selected="${ticket[field.name] == option or None}"
                    py:content="option"></option>
