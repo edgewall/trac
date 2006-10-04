@@ -1,7 +1,6 @@
 <?xml version="1.0"?>
 <rss version="2.0" xmlns:py="http://genshi.edgewall.org/">
   <channel py:with="log_href = abs_href.log(path, rev=rev)">
-
     <title>Revisions of $path</title>
     <link>$log_href</link>
     <description>Trac Log - Revisions of $path</description>

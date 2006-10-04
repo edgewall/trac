@@ -1,7 +1,6 @@
 <?xml version="1.0"?>
 <rss version="2.0" xmlns:py="http://genshi.edgewall.org/">
   <channel>
-
     <title>${project.name}: Ticket $title</title>
     <link>${abs_href.ticket(id)}</link>
     <description>${unicode(description)}</description>

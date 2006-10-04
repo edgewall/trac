@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:py="http://genshi.edgewall.org/"
       xmlns:xi="http://www.w3.org/2001/XInclude">
-  <xi:include href="layout.html"><xi:fallback/></xi:include>
+  <xi:include href="layout.html" />
   <head>
     <title>Generalized Diff Form</title>
   </head>
@@ -21,20 +21,22 @@
         <form action="${href.changeset()}" method="get">
           <table>
             <tr>
-        <th><label for="old_path">From:</label></th>
-        <td>
-          <input type="text" id="old_path" name="old_path" value="$old_path" size="44" />
-            <label for="old_rev">at Revision:</label>
-            <input type="text" id="old_rev" name="old" value="$old_rev" size="4" />
-        </td>
+              <th><label for="old_path">From:</label></th>
+              <td>
+                <input type="text" id="old_path" name="old_path" value="$old_path" size="44" />
+                <label>at Revision:
+                  <input type="text" name="old" value="$old_rev" size="4" />
+                </label>
+              </td>
             </tr>
             <tr>
-        <th><label for="new_path">To:</label></th>
-        <td>
-          <input type="text" id="new_path" name="new_path" value="$new_path" size="44" />
-            <label for="new_rev">at Revision:</label>
-            <input type="text" id="new_rev" name="new" value="$new_rev" size="4" />
-        </td>
+              <th><label for="new_path">To:</label></th>
+              <td>
+                <input type="text" id="new_path" name="new_path" value="$new_path" size="44" />
+                <label>at Revision:
+                  <input type="text" id="new_rev" name="new" value="$new_rev" size="4" />
+                </label>
+              </td>
             </tr>
           </table>
           <div class="buttons">
@@ -43,7 +45,8 @@
         </form>
       </div>
       <div id="help">
-        <strong>Note:</strong> See <a href="${href.wiki('TracChangeset')}#ExaminingDifferencesBetweenBranches">TracChangeset</a> for help on using the arbitrary diff feature.
+        <strong>Note:</strong> See <a href="${href.wiki('TracChangeset')}#ExaminingDifferencesBetweenBranches">TracChangeset</a>
+        for help on using the arbitrary diff feature.
       </div>
     </div>
   </body>

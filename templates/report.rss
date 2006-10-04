@@ -1,7 +1,6 @@
 <?xml version="1.0"?>
 <rss version="2.0" xmlns:py="http://genshi.edgewall.org/">
   <channel>
-
     <title>$project.name: $report.title</title>
     <link>${abs_href.report(report.id)}</link>
     <description>Trac Report - $description</description>

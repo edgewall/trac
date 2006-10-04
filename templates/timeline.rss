@@ -1,7 +1,6 @@
 <?xml version="1.0"?>
 <rss version="2.0" xmlns:py="http://genshi.edgewall.org/">
  <channel>
-
   <title>${project.name}</title>
   <link>${abs_href.timeline}</link>
   <description>Trac Timeline</description>
