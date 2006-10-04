@@ -18,7 +18,7 @@
   <div py:def="navigation(category)" id="${category}" class="nav">
     <ul py:if="chrome.nav[category]">
       <li py:for="idx, item in  enumerate(chrome.nav[category])"
-          class="${first_last(idx, chrome.nav[category])}">${item.label}</li>
+          class="${item.active and 'active ' or ''}${first_last(idx, chrome.nav[category])}">${item.label}</li>
     </ul>
   </div>
 
