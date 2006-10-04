@@ -12,10 +12,26 @@
   </head>
 
   <body>
-    <div id="ctxtnav" class="nav"/>
+    <div id="ctxtnav" class="nav" py:with="links = chrome.links">
+      <h2>Ticket Navigation</h2>
+      <ul py:if="links.prev or links.next or links.up">
+        <li py:with="link = links.prev[0]" class="first"
+            py:choose="bool(links.prev)">&larr;
+          <a py:when="True" href="${link.href}" title="${link.title}">Previous Ticket</a>
+          <span py:otherwise="" class="missing">Previous Ticket</span>
+        </li>
+        <li py:if="links.up" py:with="link = links.up[0]">
+          <a href="${link.href}" title="${link.title}">Back to Query</a>
+        </li>
+        <li py:with="link = links.next[0]" class="last"
+            py:choose="bool(links.next)">
+          <a py:when="True" href="${link.href}" title="${link.title}">Next Ticket</a>
+          <span py:otherwise="" class="missing">Next Ticket</span>
+        &rarr;</li>
+      </ul>
+    </div>
 
     <div id="content" class="ticket">
-
       <h1>Ticket #${ticket.id}
         <span class="status">(${ticket.status}<py:if
             test="ticket.type"> ${ticket.type}</py:if><py:if
