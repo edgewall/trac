@@ -741,7 +741,7 @@ class ChangesetModule(Component):
             return
         authzperm = SubversionAuthorizer(self.env, req.authname)
         db = self.env.get_db_cnx()
-        sql, args = search_to_sql(db, ['message', 'author'], terms)
+        sql, args = search_to_sql(db, ['rev', 'message', 'author'], terms)
         cursor = db.cursor()
         cursor.execute("SELECT rev,time,author,message "
                        "FROM revision WHERE " + sql, args)
