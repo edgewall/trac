@@ -27,7 +27,7 @@ class TicketSystemTestCase(unittest.TestCase):
         fields = TicketSystem(self.env).get_custom_fields()
         self.assertEqual({'name': 'test', 'type': 'select', 'label': 'Test',
                           'value': '1', 'options': ['option1', 'option2'],
-                          'order': 0, 'optional': False},
+                          'order': 0},
                          fields[0])
 
     def test_custom_field_optional_select(self):
@@ -37,7 +37,7 @@ class TicketSystemTestCase(unittest.TestCase):
         self.env.config.set('ticket-custom', 'test.options', '|option1|option2')
         fields = TicketSystem(self.env).get_custom_fields()
         self.assertEqual({'name': 'test', 'type': 'select', 'label': 'Test',
-                          'value': '1', 'options': ['', 'option1', 'option2'],
+                          'value': '1', 'options': ['option1', 'option2'],
                           'order': 0, 'optional': True},
                          fields[0])
 
