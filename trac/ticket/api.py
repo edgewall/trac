@@ -168,7 +168,9 @@ class TicketSystem(Component):
             }
             if field['type'] == 'select' or field['type'] == 'radio':
                 field['options'] = config.getlist(name + '.options', sep='|')
-                field['optional'] = '' in field['options']
+                if '' in field['options']:
+                    field['optional'] = True
+                    field['options'].remove('')
             elif field['type'] == 'textarea':
                 field['width'] = config.getint(name + '.cols')
                 field['height'] = config.getint(name + '.rows')
