@@ -273,13 +273,15 @@ class WikiModule(Component):
         diffs = diff_blocks(oldtext, newtext, context=context,
                             ignore_blank_lines='-B' in diff_options,
                             ignore_case='-i' in diff_options,
-                            ignore_space_changes='-b' in diff_options)          
+                            ignore_space_changes='-b' in diff_options)
 
-        # -- prev/next links
+        # -- prev/up/next links
         if prev_version:
             add_link(req, 'prev', req.href.wiki(page.name, action='diff',
                                                 version=prev_version),
                      'Version %d' % prev_version)
+        add_link(req, 'up', req.href.wiki(page.name, action='history'),
+                 'Page history')
         if next_version:
             add_link(req, 'next', req.href.wiki(page.name, action='diff',
                                                 version=next_version),

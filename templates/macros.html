@@ -95,32 +95,29 @@
   </py:def>
 
 
-  <!--! Add Previous/Next navigation links
+  <!--! Add Previous/Up/Next navigation links
   -
-  -     `change` the label to use after the Previous/Next words
-  -     `others` links to insert after Previous and before Next links
+  -     `label` the label to use after the Previous/Next words
+  -     `uplabel` the label to use for the Up link
   -
   -     Assume the 'chrome' datastructure to be available from the context.
   -->
-  <py:def function="changeset_navigation(change, others=[])">
-    <li class="first" py:choose="">
-      <py:when test="chrome.links.prev"> 
-        &larr; <a class="prev" py:attrs="chrome.links.prev[0]">Previous $change</a>
-      </py:when>
-      <py:otherwise>
-        <span class="missing">&larr; Previous $change</span>
-      </py:otherwise>
+  <ul py:def="prevnext_nav(label, uplabel=None)" py:with="links = chrome.links"
+      py:if="chrome.links.up or chrome.links.prev or chrome.links.next">
+    <li class="first" py:choose="bool(links.prev)" py:with="link = links.prev[0]">
+      &larr; <a py:when="True" class="prev" href="${link.href}"
+                title="${link.title}">Previous $label</a>
+      <span py:otherwise="" class="missing">&larr; Previous $label</span>
     </li>
-    <li py:for="label, url in others"><a href="$url">$label</a></li>
-    <li class="last" py:choose="">
-      <py:when test="chrome.links.next">
-        <a class="next" py:attrs="chrome.links.next[0]">Next $change</a> &rarr; 
-      </py:when>
-      <py:otherwise>
-        <span class="missing">Next $change &rarr;</span>
-      </py:otherwise>
+    <li py:if="links.up and uplabel" py:with="link = links.up[0]">
+      <a href="${link.href}" title="${link.title}">$uplabel</a>
     </li>
-  </py:def>
+    <li class="last" py:choose="bool(links.next)" py:with="link = links.next[0]">
+      <a py:when="True" class="next" href="${link.href}"
+         title="${link.title}">Next $label</a>
+      <span py:otherwise="" class="missing">Next $label</span> &rarr;
+    </li>
+  </ul>
 
 
   <!--! Add diff option fields (to be used inside a form)

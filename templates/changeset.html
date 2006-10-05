@@ -15,7 +15,7 @@
       <h2>Navigation</h2>
       <ul py:choose="">
         <py:when test="changeset">
-          ${changeset_navigation(changeset and restricted and 'Change' or 'Changeset')}
+          ${prevnext_nav(changeset and restricted and 'Change' or 'Changeset')}
         </py:when>
         <py:otherwise>
           <li class="last">

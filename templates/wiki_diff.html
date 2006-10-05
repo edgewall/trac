@@ -13,9 +13,7 @@
   <body>
     <div id="ctxtnav" class="nav">
       <h2>Wiki Navigation</h2>
-      <ul>
-        ${changeset_navigation('Change', [('Page History', href.wiki(page.name, action='history'))])}
-      </ul>
+      ${prevnext_nav('Change', 'Page History')}
       <hr />
     </div>
 
