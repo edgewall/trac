@@ -8,7 +8,9 @@
   <xi:include href="site.html"><xi:fallback /></xi:include>
 
   <head py:match="head">
-    <title>${select('title/text()')} – Trac</title>
+    <title py:with="title = unicode(select('title/text()'))">
+      ${' – '.join(filter(None, [title, project.name, 'Trac']))}
+    </title>
     <meta py:if="norobots" name="ROBOTS" content="NOINDEX, NOFOLLOW" />
     <py:if test="chrome.links">
       <py:for each="rel, links in chrome.links.items()">
