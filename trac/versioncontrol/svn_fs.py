@@ -616,6 +616,8 @@ class SubversionNode(Node):
     def get_last_modified(self):
         date = fs.revision_prop(self.fs_ptr, self.created_rev,
                                 core.SVN_PROP_REVISION_DATE, self.pool())
+        if not date:
+            return 0
         return core.svn_time_from_cstring(date, self.pool()) / 1000000
 
     def _get_prop(self, name):
@@ -633,7 +635,10 @@ class SubversionChangeset(Changeset):
         message = self._get_prop(core.SVN_PROP_REVISION_LOG)
         author = self._get_prop(core.SVN_PROP_REVISION_AUTHOR)
         date = self._get_prop(core.SVN_PROP_REVISION_DATE)
-        date = core.svn_time_from_cstring(date, self.pool()) / 1000000
+        if date:
+            date = core.svn_time_from_cstring(date, self.pool()) / 1000000
+        else:
+            date = 0
         Changeset.__init__(self, rev, message, author, date)
 
     def get_changes(self):
