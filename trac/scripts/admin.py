@@ -31,7 +31,7 @@ from trac.env import Environment
 from trac.perm import PermissionSystem
 from trac.ticket.model import *
 from trac.util.html import html
-from trac.util.text import to_unicode, wrap
+from trac.util.text import print_table, to_unicode, wrap
 from trac.wiki import WikiPage
 from trac.wiki.macros import WikiMacroBase
 
@@ -179,39 +179,6 @@ class TracAdmin(cmd.Cmd):
 
     def word_complete (self, text, words):
         return [a for a in words if a.startswith (text)]
-
-    def print_listing(self, headers, data, sep=' ', decor=True):
-        cons_charset = sys.stdout.encoding
-        ldata = list(data)
-        if decor:
-            ldata.insert(0, headers)
-        print
-        colw = []
-        ncols = len(ldata[0]) # assumes all rows are of equal length
-        for cnum in xrange(0, ncols):
-            mw = 0
-            for cell in [unicode(d[cnum]) or '' for d in ldata]:
-                if len(cell) > mw:
-                    mw = len(cell)
-            colw.append(mw)
-        for rnum in xrange(len(ldata)):
-            for cnum in xrange(ncols):
-                if decor and rnum == 0:
-                    sp = ('%%%ds' % len(sep)) % ' '  # No separator in header
-                else:
-                    sp = sep
-                if cnum + 1 == ncols:
-                    sp = '' # No separator after last column
-                pdata = ((u'%%-%ds%s' % (colw[cnum], sp)) 
-                         % (ldata[rnum][cnum] or ''))
-                if cons_charset and isinstance(pdata, unicode):
-                    pdata = pdata.encode(cons_charset, 'replace')
-                print pdata,
-            print
-            if rnum == 0 and decor:
-                print ''.join(['-' for x in
-                               xrange(0, (1 + len(sep)) * cnum + sum(colw))])
-        print
 
     def print_doc(cls, docs, stream=None):
         if stream is None:
@@ -400,7 +367,7 @@ class TracAdmin(cmd.Cmd):
         data = []
         for c in Component.select(self.env_open()):
             data.append((c.name, c.owner))
-        self.print_listing(['Name', 'Owner'], data)
+        print_table(data, ['Name', 'Owner'])
 
     def _do_component_add(self, name, owner):
         component = Component(self.env_open())
@@ -472,7 +439,7 @@ class TracAdmin(cmd.Cmd):
         else:
             rows = self._permsys.get_all_permissions()
         rows.sort()
-        self.print_listing(['User', 'Action'], rows)
+        print_table(rows, ['User', 'Action'])
         print
         print 'Available actions:'
         actions = self._permsys.get_actions()
@@ -748,9 +715,8 @@ Congratulations!
     def _do_wiki_list(self):
         rows = self.db_query("SELECT name, max(version), max(time) "
                              "FROM wiki GROUP BY name ORDER BY name")
-        self.print_listing(['Title', 'Edits', 'Modified'],
-                           [(r[0], int(r[1]), self._format_datetime(r[2]))
-                            for r in rows])
+        print_table([(r[0], int(r[1]), self._format_datetime(r[2]))
+                    for r in rows], ['Title', 'Edits', 'Modified'])
 
     def _do_wiki_remove(self, name):
         page = WikiPage(self.env_open(), name)
@@ -932,8 +898,8 @@ Congratulations!
 
     def _do_enum_list(self, type):
         enum_cls = self._enum_map[type]
-        self.print_listing(['Possible Values'],
-                           [(e.name,) for e in enum_cls.select(self.env_open())])
+        print_table([(e.name,) for e in enum_cls.select(self.env_open())],
+                    ['Possible Values'])
 
     def _do_enum_add(self, type, name):
         cnx = self.db_open()
@@ -1016,7 +982,7 @@ Congratulations!
             data.append((m.name, m.due and self._format_date(m.due),
                          m.completed and self._format_datetime(m.completed)))
 
-        self.print_listing(['Name', 'Due', 'Completed'], data)
+        print_table(data, ['Name', 'Due', 'Completed'])
 
     def _do_milestone_rename(self, name, newname):
         milestone = Milestone(self.env_open(), name)
@@ -1080,7 +1046,7 @@ Congratulations!
         data = []
         for v in Version.select(self.env_open()):
             data.append((v.name, v.time and self._format_date(v.time)))
-        self.print_listing(['Name', 'Time'], data)
+        print_table(data, ['Name', 'Time'])
 
     def _do_version_rename(self, name, newname):
         version = Version(self.env_open(), name)

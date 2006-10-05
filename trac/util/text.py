@@ -103,6 +103,44 @@ def to_utf8(text, charset='iso-8859-15'):
 
 # -- Plain text formatting
 
+def print_table(data, headers=None, sep='  ', out=None):
+    if out is None:
+        out = sys.stdout
+    charset = getattr(out, 'encoding', 'utf-8')
+    data = list(data)
+    if headers:
+        data.insert(0, headers)
+    elif not data:
+        return
+
+    num_cols = len(data[0]) # assumes all rows are of equal length
+    col_width = []
+    for idx in range(num_cols):
+        col_width.append(max(len(unicode(d[idx])) for d in data))
+
+    out.write('\n')
+    for ridx, row in enumerate(data):
+        for cidx, cell in enumerate(row):
+            if headers and ridx == 0:
+                sp = ('%%%ds' % len(sep)) % ' '  # No separator in header
+            else:
+                sp = sep
+            if cidx + 1 == num_cols:
+                sp = '' # No separator after last column
+
+            line = (u'%%-%ds%s' % (col_width[cidx], sp)) % (cell or '')
+            if isinstance(line, unicode):
+                line = line.encode(charset, 'replace')
+            out.write(line)
+
+        out.write('\n')
+        if ridx == 0 and headers:
+            out.write(''.join(['-' for x in xrange(0, len(sep) * cidx +
+                                                      sum(col_width))]))
+            out.write('\n')
+
+    out.write('\n')
+
 def shorten_line(text, maxlen=75):
     if len(text or '') < maxlen:
         return text

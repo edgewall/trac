@@ -32,12 +32,11 @@ STRIP_TRAILING_SPACE = re.compile(r'( +)$', re.MULTILINE)
 
 
 def load_expected_results(file, pattern):
-    """
-    Reads the file, named file, which contains test results separated by
-    the a regular expression, pattern.  The test results are returned as
-    a dictionary.
-    """
+    """Reads the file, named file, which contains test results separated by the
+    regular expression pattern.
 
+    The test results are returned as a dictionary.
+    """
     expected = {}
     compiled_pattern = re.compile(pattern)
     f = open(file, 'r')
@@ -84,10 +83,6 @@ class InMemoryEnvironment(Environment):
         pass
 
 
-class SkipTest(Exception):
-    pass
-
-
 class TracadminTestCase(unittest.TestCase):
     """
     Tests the output of trac-admin and is meant to be used with
@@ -113,9 +108,9 @@ class TracadminTestCase(unittest.TestCase):
         self.env = None
 
     def _execute(self, cmd, strip_trailing_space=True, fail_on_error=False):
+        _err = sys.stderr
+        _out = sys.stdout
         try:
-            _err = sys.stderr
-            _out = sys.stdout
             sys.stderr = sys.stdout = out = StringIO()
             setattr(out, 'encoding', 'utf-8') # fake output encoding
             retval = None
@@ -181,12 +176,9 @@ Trac Admin Console %s
         a result, there is only this one test.
         """
         test_name = sys._getframe().f_code.co_name
-        try:
-            rv, output = self._execute('permission list')
-            self.assertEqual(0, rv)
-            self.assertEqual(self.expected_results[test_name], output)
-        except SkipTest, e:
-            print>>sys.stderr, 'Skipping test %s: %s' % (test_name, e)
+        rv, output = self._execute('permission list')
+        self.assertEqual(0, rv)
+        self.assertEqual(self.expected_results[test_name], output)
 
     def test_permission_add_one_action_ok(self):
         """
@@ -195,13 +187,10 @@ Trac Admin Console %s
         success.
         """
         test_name = sys._getframe().f_code.co_name
-        try:
-            self._execute('permission add test_user WIKI_VIEW')
-            rv, output = self._execute('permission list')
-            self.assertEqual(0, rv)
-            self.assertEqual(self.expected_results[test_name], output)
-        except SkipTest, e:
-            print>>sys.stderr, 'Skipping test %s: %s' % (test_name, e)
+        self._execute('permission add test_user WIKI_VIEW')
+        rv, output = self._execute('permission list')
+        self.assertEqual(0, rv)
+        self.assertEqual(self.expected_results[test_name], output)
 
     def test_permission_add_multiple_actions_ok(self):
         """
@@ -210,13 +199,10 @@ Trac Admin Console %s
         success.
         """
         test_name = sys._getframe().f_code.co_name
-        try:
-            self._execute('permission add test_user LOG_VIEW FILE_VIEW')
-            rv, output = self._execute('permission list')
-            self.assertEqual(0, rv)
-            self.assertEqual(self.expected_results[test_name], output)
-        except SkipTest, e:
-            print>>sys.stderr, 'Skipping test %s: %s' % (test_name, e)
+        self._execute('permission add test_user LOG_VIEW FILE_VIEW')
+        rv, output = self._execute('permission list')
+        self.assertEqual(0, rv)
+        self.assertEqual(self.expected_results[test_name], output)
 
     def test_permission_remove_one_action_ok(self):
         """
@@ -225,13 +211,10 @@ Trac Admin Console %s
         success.
         """
         test_name = sys._getframe().f_code.co_name
-        try:
-            self._execute('permission remove anonymous TICKET_MODIFY')
-            rv, output = self._execute('permission list')
-            self.assertEqual(0, rv)
-            self.assertEqual(self.expected_results[test_name], output)
-        except SkipTest, e:
-            print>>sys.stderr, 'Skipping test %s: %s' % (test_name, e)
+        self._execute('permission remove anonymous TICKET_MODIFY')
+        rv, output = self._execute('permission list')
+        self.assertEqual(0, rv)
+        self.assertEqual(self.expected_results[test_name], output)
 
     def test_permission_remove_multiple_actions_ok(self):
         """
@@ -240,14 +223,10 @@ Trac Admin Console %s
         for success.
         """
         test_name = sys._getframe().f_code.co_name
-        try:
-            test_name = sys._getframe().f_code.co_name
-            self._execute('permission remove anonymous WIKI_CREATE WIKI_MODIFY')
-            rv, output = self._execute('permission list')
-            self.assertEqual(0, rv)
-            self.assertEqual(self.expected_results[test_name], output)
-        except SkipTest, e:
-            print>>sys.stderr, 'Skipping test %s: %s' % (test_name, e)
+        self._execute('permission remove anonymous WIKI_CREATE WIKI_MODIFY')
+        rv, output = self._execute('permission list')
+        self.assertEqual(0, rv)
+        self.assertEqual(self.expected_results[test_name], output)
 
     # Component tests
 
