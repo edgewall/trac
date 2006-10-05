@@ -10,9 +10,11 @@
   <head py:match="head">
     <title>${select('title/text()')} – Trac</title>
     <meta py:if="norobots" name="ROBOTS" content="NOINDEX, NOFOLLOW" />
-    <div py:for="rel, links in chrome.links.items()" py:strip="">
-      <link rel="${rel}" py:for="link in links" py:attrs="link"/>
-    </div>
+    <py:if test="chrome.links">
+      <py:for each="rel, links in chrome.links.items()">
+        <link rel="${rel}" py:for="link in links" py:attrs="link" />
+      </py:for>
+    </py:if>
     <script py:for="script in chrome.scripts"
             type="${script.type}" src="${script.href}"></script>
     ${select('*[not(title)]')}
