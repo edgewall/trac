@@ -166,7 +166,7 @@ class WikiSystem(Component):
                 self.log.debug('Updating wiki page index')
                 db = self.env.get_db_cnx()
                 cursor = db.cursor()
-                cursor.execute("SELECT DISTINCT name FROM wiki")
+                cursor.execute("SELECT DISTINCT name FROM wiki WHERE version=1")
                 self._index = {}
                 for (name,) in cursor:
                     self._index[name] = True
