@@ -183,6 +183,8 @@ class WikiSystem(Component):
         prefix are included.
         """
         self._update_index()
+        # Note: use of keys() is intentional since iterkeys() is prone to
+        # errors with concurrent modification
         for page in self._index.keys():
             if not prefix or page.startswith(prefix):
                 yield page
