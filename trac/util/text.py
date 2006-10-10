@@ -21,7 +21,7 @@
 import locale
 import os
 import sys
-from urllib import quote, unquote, urlencode
+from urllib import quote, quote_plus, unquote, urlencode
 
 
 CRLF = '\r\n'
@@ -66,6 +66,10 @@ def to_unicode(text, charset=None):
 def unicode_quote(value):
     """A unicode aware version of urllib.quote"""
     return quote(value.encode('utf-8'))
+
+def unicode_quote_plus(value):
+    """A unicode aware version of urllib.quote"""
+    return quote_plus(value.encode('utf-8'))
 
 def unicode_unquote(value):
     """A unicode aware version of urllib.unquote.

@@ -27,7 +27,8 @@ from trac import mimeview
 from trac.config import *
 from trac.core import *
 from trac.env import IEnvironmentSetupParticipant
-from trac.util.text import pretty_size
+from trac.util import get_reporter_id
+from trac.util.text import pretty_size, unicode_quote_plus
 from trac.util.datefmt import pretty_timedelta, format_datetime, format_date, \
                               format_time, http_date
 from trac.web.api import IRequestHandler, HTTPNotFound
@@ -347,12 +348,14 @@ class Chrome(Component):
         data.setdefault('trac', {}).update({
             'version': VERSION,
             'homepage': 'http://trac.edgewall.org', # FIXME: use setup data
+            'systeminfo': self.env.systeminfo,
             })
 
         data.setdefault('project', {}).update({
             'name': self.env.project_name,
             'descr': self.env.project_description,
-            'url': self.env.project_url
+            'url': self.env.project_url,
+            'admin': self.env.project_admin,
             })
         
         chrome_data = data.setdefault('chrome', {})
@@ -378,6 +381,7 @@ class Chrome(Component):
         data['href'] = req and req.href
         data['perm'] = req and req.perm
         data['authname'] = req and req.authname or '<trac>'
+        data['get_reporter_id'] = get_reporter_id
 
         if not 'sorted' in dir(__builtin__):
             # Python 2.3 compat functions
@@ -419,6 +423,7 @@ class Chrome(Component):
         data['format_date'] = format_date
         data['format_time'] = format_time
         data['http_date'] = http_date
+        data['quote_plus'] = unicode_quote_plus
         
         ## debugging tools
         from pprint import pformat

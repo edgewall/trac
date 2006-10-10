@@ -37,7 +37,15 @@ class PostgreSQLConnector(Component):
 
     def get_connection(self, path, user=None, password=None, host=None,
                        port=None, params={}):
-        return PostgreSQLConnection(path, user, password, host, port, params)
+        global psycopg
+        global PgSQL
+        cnx = PostgreSQLConnection(path, user, password, host, port, params)
+        if psycopg:
+            self.env.systeminfo['psycopg2'] = psycopg.__version__
+        elif PgSQL:
+            import pyPgSQL
+            self.env.systeminfo['pyPgSQL'] = pyPgSQL.__version__
+        return cnx
 
     def init_db(self, path, user=None, password=None, host=None, port=None,
                 params={}):

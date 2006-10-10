@@ -435,6 +435,10 @@ table.listing tbody tr:hover { background: #eed !important }
 div.system-message p { margin: 0; }
 div.system-message p.system-message-title { font-weight: bold; }
 
+#content.error #systeminfo th { font-weight: bold; text-align: right; }
+#content.error #newticket form { display: inline; }
+#content.error #newticket textarea { display: none; }
+
 /* Styles for search word highlighting */
 @media screen {
  .searchword0 { background: #ff9 }

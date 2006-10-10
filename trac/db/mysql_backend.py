@@ -37,8 +37,10 @@ class MySQLConnector(Component):
 
     def get_connection(self, path, user=None, password=None, host=None,
                        port=None, params={}):
+        import MySQLdb
+        self.env.systeminfo['MySQLdb'] = MySQLdb.__version__
         return MySQLConnection(path, user, password, host, port, params)
-
+    
     def init_db(self, path, user=None, password=None, host=None, port=None,
                 params={}):
         cnx = self.get_connection(path, user, password, host, port, params)

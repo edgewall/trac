@@ -15,6 +15,7 @@
 # Author: Jonas Borgström <jonas@edgewall.com>
 
 import os
+import sys
 
 from trac import db_default, util
 from trac.config import *
@@ -79,6 +80,9 @@ class Environment(Component, ComponentManager):
     project_url = Option('project', 'url', 'http://example.org/',
         """URL of the main project web site.""")
 
+    project_admin = Option('project', 'admin', '',
+        """E-Mail address of the project's administrator.""")
+
     project_footer = Option('project', 'footer',
                             'Visit the Trac open source project at<br />'
                             '<a href="http://trac.edgewall.org/">'
@@ -116,6 +120,7 @@ class Environment(Component, ComponentManager):
         self.path = path
         self.setup_config(load_defaults=create)
         self.setup_log()
+        self.systeminfo = {'Python': sys.version}
 
         from trac.loader import load_components
         load_components(self)

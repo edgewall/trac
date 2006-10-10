@@ -41,6 +41,7 @@ except ImportError:
 if have_pysqlite == 2:
     _ver = sqlite.sqlite_version_info
     sqlite_version = _ver[0] * 10000 + _ver[1] * 100 + int(_ver[2])
+    sqlite_version_string = '%d.%d.%d' % (_ver[0], _ver[1], int(_ver[2]))
 
     class PyFormatCursor(sqlite.Cursor):
         def _rollback_on_error(self, function, *args, **kwargs):
@@ -63,6 +64,7 @@ if have_pysqlite == 2:
 elif have_pysqlite == 1:
     _ver = sqlite._sqlite.sqlite_version_info()
     sqlite_version = _ver[0] * 10000 + _ver[1] * 100 + _ver[2]
+    sqlite_version_string = '%d.%d.%d' % _ver
 
     class SQLiteUnicodeCursor(sqlite.Cursor):
         def _convert_row(self, row):
@@ -110,13 +112,16 @@ class SQLiteConnector(Component):
         return [('sqlite', 1)]
 
     def get_connection(self, path, params={}):
+        global sqlite_version_string
+        self.env.systeminfo['pysqlite'] = '%d.%d.%s' % sqlite.version_info
+        self.env.systeminfo['SQLite'] = sqlite_version_string
         return SQLiteConnection(path, params)
 
     def init_db(cls, path, params={}):
         if path != ':memory:':
             # make the directory to hold the database
             if os.path.exists(path):
-                raise TracError, 'Database already exists at %s' % path
+                raise TracError('Database already exists at %s' % path)
             os.makedirs(os.path.split(path)[0])
         cnx = sqlite.connect(path, timeout=int(params.get('timeout', 10000)))
         cursor = cnx.cursor()
@@ -141,7 +146,7 @@ class SQLiteConnection(ConnectionWrapper):
         self.cnx = None
         if path != ':memory:':
             if not os.access(path, os.F_OK):
-                raise TracError, 'Database "%s" not found.' % path
+                raise TracError('Database "%s" not found.' % path)
 
             dbdir = os.path.dirname(path)
             if not os.access(path, os.R_OK + os.W_OK) or \

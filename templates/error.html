@@ -9,6 +9,35 @@
     <title>$title</title>
   </head>
 
+  <py:def function="create_ticket(teo=False)">
+    <input type="hidden" name="preview" value="1" />
+    <input type="hidden" name="reporter" value="${get_reporter_id(req)}" />
+    <input py:if="teo" type="hidden" name="version"
+           value="${'dev' in trac.version and 'devel' or trac.version}" />
+    <input type="hidden" name="summary" value="$message" />
+    <textarea name="description">
+==== How to Reproduce ====
+While doing a $req.method operation on `$req.path_info`, Trac issued an internal error.
+
+<py:if test="req.method.lower() == 'post'">
+${pprint(req.args)}
+</py:if>
+
+==== System Information ====
+<py:for each="k, v in trac.systeminfo.iteritems()">
+|| '''$k''' || `$v` ||
+</py:for>
+
+==== Python Traceback ====
+{{{
+$traceback
+}}}
+    </textarea>
+    <span class="inlinebuttons">
+      <input type="submit" name="create" value="Create" />
+    </span>
+  </py:def>
+
   <body>
     <div id="ctxtnav" class="nav"></div>
 
@@ -24,21 +53,60 @@
             <strong>Trac detected an internal error:</strong>
             <pre>$message</pre>
           </div>
-          <p>If you think this really should work and you can reproduce it, 
-            you should consider reporting this problem to the Trac team.</p>
-          <p>Go to <a href="$trac.homepage">$trac.homepage</a> 
-            and create a new ticket where you describe the problem and how to reproduce it. 
-            
-            Don't forget to include the Python traceback found below.</p>
+          <py:choose>
+            <py:when test="not perm.has_permission('TRAC_ADMIN')">
+              <p>
+                There was an internal error in Trac,
+                <strong>we strongly recommend that you inform your local
+                  <a py:strip="not project.admin" href="mailto:$project.admin">Trac administrator</a>
+                </strong>
+                and give him all the information he needs to reproduce the issue.
+              </p>
+              <py:if test="not project.admin">
+                <form id="newticket" method="get" action="${href.newticket()}">
+                  <p>
+                    To that end, you could ${create_ticket} a ticket in this Trac, and
+                    select the <i>infrastructure</i> or a similar <i>trac</i> related component.
+                  </p>
+                </form>
+              </py:if>
+              <p>
+                The action that triggered the error was:
+                <pre>${req.method}: ${req.path_info}</pre>
+              </p>
+            </py:when>
+            <py:otherwise>
+              <p>If you think this really should work and you can reproduce it,
+                you should consider reporting this problem to the Trac team.</p>
+              <p>First
+                <a py:with="q = quote_plus(message[:80])"
+                   href="$trac.homepage/search?ticket=yes&amp;noquickjump=1&amp;q=$q">search</a>
+                for a similar issue, as it is quite likely that this problem has been reported before.
+              </p>
+              <form id="newticket" method="get" action="$trac.homepage/newticket">
+                <p>
+                  If this is not the case, then ${create_ticket(True)} a new ticket in Trac's Trac,
+                  where you can describe the problem and explain how to reproduce it.
+                </p>
+              </form>
+              <h4>System Information</h4>
+              <table id="systeminfo">
+                <tr py:for="k, v in trac.systeminfo.iteritems()">
+                  <th>$k:</th><td>$v</td>
+                </tr>
+              </table>
+              <py:if test="traceback">
+                <h4>Python Traceback</h4>
+                <pre>$traceback</pre>
+              </py:if>
+              <p>&nbsp;</p>
+            </py:otherwise>
+          </py:choose>
         </py:when>
       </py:choose>
       <p>
         <a href="${href.wiki('TracGuide')}">TracGuide</a> &mdash; The Trac User and Administration Guide
       </p>
-      <py:if test="traceback">
-        <h4>Python Traceback</h4>
-        <pre>$traceback</pre>
-      </py:if>
     </div>
   </body>
 </html>
