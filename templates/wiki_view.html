@@ -19,13 +19,13 @@
         <li><a href="${href.wiki('RecentChanges')}">Index by Date</a></li>
         <li class="last">
           <a href="${req.href.wiki(page.name, action='diff', version=page.version)}">Last Change</a>
-        </li> 
+        </li>
       </ul>
       <hr />
     </div>
 
     <div id="content" class="wiki">
-      
+
       <py:if test="comment_html">
         <table id="info" summary="Revision info">
           <tbody>
@@ -50,7 +50,22 @@
               <form method="get" action="${href.wiki(page.name)}">
                 <div>
                   <input type="hidden" name="action" value="edit" />
-                  <input type="submit" value="${page.exists and 'Edit' or 'Create'} this page" accesskey="e" />
+                  <py:choose>
+                    <py:when test="page.exists">
+                      <input type="submit" value="Edit this page" accesskey="e" />
+                    </py:when>
+                    <py:otherwise>
+                      <input type="submit" value="Create this page" accesskey="e" />
+                      <div py:if="templates" id="template">
+                        <label for="template">Using the template:</label>
+                        <select name="template">
+                          <option selected="${not default_template in templates and 'selected' or None}"
+                                  value="">(blank page)</option>
+                          <option py:for="t in templates" py:attrs="form_attrs(selected=t==default_template)">$t</option>
+                        </select>
+                      </div>
+                    </py:otherwise>
+                  </py:choose>
                 </div>
               </form>
               <py:if test="page.exists">

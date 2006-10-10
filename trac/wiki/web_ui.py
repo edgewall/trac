@@ -48,6 +48,9 @@ class WikiModule(Component):
 
     page_manipulators = ExtensionPoint(IWikiPageManipulator)
 
+    PAGE_TEMPLATES_PREFIX = 'PageTemplates/'
+    DEFAULT_PAGE_TEMPLATE = 'DefaultPage'
+
     # IContentConverter methods
     def get_supported_conversions(self):
         yield ('txt', 'Plain Text', 'txt', 'text/x-trac-wiki', 'text/plain', 9)
@@ -316,6 +319,11 @@ class WikiModule(Component):
 
         if 'text' in req.args:
             page.text = req.args.get('text')
+        elif 'template' in req.args:
+            template = self.PAGE_TEMPLATES_PREFIX + req.args.get('template')
+            template_page = WikiPage(self.env, template, db=db)
+            if template_page.exists:
+                page.text = template_page.text
         if action == 'preview':
             page.readonly = 'readonly' in req.args
 
@@ -404,6 +412,12 @@ class WikiModule(Component):
         if req.perm.has_permission('WIKI_MODIFY'):
             attach_href = req.href.attachment('wiki', page.name)
 
+        prefix = self.PAGE_TEMPLATES_PREFIX
+        print `list(WikiPage.select_names(self.env, prefix+'%', db))`
+        templates = [t.replace(prefix, '', 1) for t in
+                     WikiPage.select_names(self.env, prefix+'%', db)]
+        print `templates`
+
         data.update({'action': 'view',
                      'page_html': page_html,
                      'comment_html': comment_html,
@@ -412,7 +426,8 @@ class WikiModule(Component):
                      'attach_href': attach_href,
                      # Ask web spiders to not index old versions
                      'norobots': bool(version),
-                     })
+                     'default_template': self.DEFAULT_PAGE_TEMPLATE,
+                     'templates': templates})
         return 'wiki_view.html', data, None
 
     # ITimelineEventProvider methods

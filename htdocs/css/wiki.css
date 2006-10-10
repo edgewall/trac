@@ -16,6 +16,7 @@
  margin: 1em 0 2em;
  overflow: auto;
 }
+#template { vertical-align: middle; padding-top: 1em; }
 
 /* Diff view */
 #overview .multi { color: #999 }
