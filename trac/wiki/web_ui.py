@@ -413,10 +413,8 @@ class WikiModule(Component):
             attach_href = req.href.attachment('wiki', page.name)
 
         prefix = self.PAGE_TEMPLATES_PREFIX
-        print `list(WikiPage.select_names(self.env, prefix+'%', db))`
-        templates = [t.replace(prefix, '', 1) for t in
-                     WikiPage.select_names(self.env, prefix+'%', db)]
-        print `templates`
+        templates = [t[len(prefix):] for t in
+                     WikiSystem(self.env).get_pages(prefix)]
 
         data.update({'action': 'view',
                      'page_html': page_html,

@@ -156,17 +156,4 @@ class WikiPage(object):
         for version,time,author,comment,ipnr in cursor:
             yield version,time,author,comment,ipnr
 
-    def select_names(cls, env, prefix=None, db=None):
-        if not db:
-            db = env.get_db_cnx()
-        cursor = db.cursor()
-        if prefix:
-            cursor.execute("SELECT name FROM wiki WHERE name LIKE %s"
-                           " ORDER BY name", (prefix,))
-        else:
-            cursor.execute("SELECT name FROM wiki ORDER BY name")
-        for name, in cursor:
-            yield name
-
-    select_names = classmethod(select_names)
 
