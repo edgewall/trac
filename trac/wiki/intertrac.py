@@ -61,8 +61,9 @@ class InterTracDispatcher(Component):
     def render_macro(self, req, name, content):
         intertracs = {}
         for key, value in self.config.options('intertrac'):
-            if '.' in key:
-                prefix, attribute = key.split('.', 1)
+            idx = key.rfind('.') # rsplit only in 2.4
+            if idx > 0: # 0 itself doesn't help much: .xxx = ...
+                prefix, attribute = key[:idx], key[idx+1:]
                 intertrac = intertracs.setdefault(prefix, {})
                 intertrac[attribute] = value
             else:
