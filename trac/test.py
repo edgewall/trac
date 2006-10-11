@@ -19,6 +19,7 @@
 
 import os
 import unittest
+import sys
 
 from trac.config import Configuration
 from trac.core import Component, ComponentManager, ExtensionPoint
@@ -135,6 +136,7 @@ class EnvironmentStub(Environment):
         Component.__init__(self)
         self.enabled_components = enable
         self.db = InMemoryDatabase()
+        self.systeminfo = {'Python': sys.version}
 
         import trac
         self.path = os.path.dirname(trac.__file__)
