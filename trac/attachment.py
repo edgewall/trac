@@ -519,7 +519,8 @@ class AttachmentModule(Component):
 
         return {'mode': 'delete',
                 'title': '%s (delete)' % attachment.title,
-                'filename': attachment.filename}
+                'filename': attachment.filename,
+                'attachment': attachment}
 
     def _render_form(self, req, attachment):
         perm_map = {'ticket': 'TICKET_APPEND', 'wiki': 'WIKI_MODIFY'}
