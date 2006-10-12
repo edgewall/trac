@@ -343,7 +343,7 @@ class Request(object):
         `template` parameter, which can be either the name of the template file,
         or an already parsed `neo_cs.CS` object.
         """
-        assert self.hdf, 'HDF dataset not available'
+        assert self.hdf, 'HDF dataset not available. Check your clearsilver installation'
         if self.args.has_key('hdfdump'):
             # FIXME: the administrator should probably be able to disable HDF
             #        dumps

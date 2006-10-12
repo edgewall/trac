@@ -106,7 +106,7 @@ class HDFWrapper:
     False
     """
 
-    has_clearsilver = False
+    has_clearsilver = None
     
     def __init__(self, loadpaths=[]):
         """Create a new HDF dataset.
@@ -133,8 +133,10 @@ class HDFWrapper:
             self.hdf = neo_util.HDF()
             self.has_clearsilver = True
         except ImportError, e:
-            import sys
-            print>>sys.stderr, "ClearSilver not installed"
+            if self.has_clearsilver is None:
+                import sys
+                print>>sys.stderr, "ClearSilver not installed"
+            self.has_clearsilver = False
         
         self['hdf.loadpaths'] = loadpaths
 
