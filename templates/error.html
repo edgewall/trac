@@ -25,7 +25,7 @@ ${pprint(req.args)}
 
 ==== System Information ====
 <py:for each="k, v in trac.systeminfo.iteritems()">
-|| '''$k''' || `${v.replace('\n',' ')}` ||
+|| '''$k''' || ${'\n' in v and ['`%s`[[br]]' % line for line in v.split('\n')] or '`%s`' % v} ||
 </py:for>
 
 ==== Python Traceback ====
