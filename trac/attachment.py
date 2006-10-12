@@ -517,9 +517,7 @@ class AttachmentModule(Component):
         perm_map = {'ticket': 'TICKET_ADMIN', 'wiki': 'WIKI_DELETE'}
         req.perm.assert_permission(perm_map[attachment.parent_type])
 
-        return {'mode': 'delete',
-                'title': '%s (delete)' % attachment.title,
-                'filename': attachment.filename,
+        return {'mode': 'delete', 'title': '%s (delete)' % attachment.title,
                 'attachment': attachment}
 
     def _render_form(self, req, attachment):
