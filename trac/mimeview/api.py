@@ -330,7 +330,7 @@ class Mimeview(Component):
 
     mime_map = ListOption('mimeviewer', 'mime_map',
         'text/x-dylan:dylan,text/x-idl:ice,text/x-ada:ads:adb',
-        """List of additional MIME types and keyword mappings.
+        doc="""List of additional MIME types and keyword mappings.
         Mappings are comma-separated, and for each MIME type,
         there's a colon (":") separated list of associated keywords
         or file extensions. (''since 0.10'').""")

@@ -103,7 +103,7 @@ class EnscriptRenderer(Component):
         """Path to the Enscript executable.""")
 
     enscript_modes = ListOption('mimeviewer', 'enscript_modes',
-        'text/x-dylan:dylan:4',
+        'text/x-dylan:dylan:4', doc=
         """List of additional MIME types known by Enscript.
         For each, a tuple `mimetype:mode:quality` has to be
         specified, where `mimetype` is the MIME type,
