@@ -563,6 +563,8 @@ class TracAdmin(cmd.Cmd):
         if not os.access(os.path.join(templates_dir, 'header.cs'), os.F_OK):
             print templates_dir, "doesn't look like a Trac templates directory"
             return 2
+        if templates_dir == default_dir('templates'):
+            templates_dir = None # let the runtime default_dir() take over
 
         try:
             print 'Creating and Initializing Project'
