@@ -17,7 +17,7 @@
 import os
 import urllib
 
-from trac.config import Option
+from trac.config import Option, IntOption
 from trac.core import *
 from trac.db.pool import ConnectionPool
 
@@ -57,6 +57,10 @@ class DatabaseManager(Component):
         [wiki:TracEnvironment#DatabaseConnectionStrings string] for this
         project""")
 
+    timeout = IntOption('trac', 'timeout', '20',
+        """Timeout value for database connection, in seconds.
+        Use '0' to specify ''no timeout''. ''(Since 0.11)''""")
+
     def __init__(self):
         self._cnx_pool = None
 
@@ -68,7 +72,7 @@ class DatabaseManager(Component):
         if not self._cnx_pool:
             connector, args = self._get_connector()
             self._cnx_pool = ConnectionPool(5, connector, **args)
-        return self._cnx_pool.get_cnx()
+        return self._cnx_pool.get_cnx(self.timeout or None)
 
     def shutdown(self, tid=None):
         if self._cnx_pool:
