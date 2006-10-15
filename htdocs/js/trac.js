@@ -41,7 +41,7 @@ function searchHighlight() {
       var param = params[p].split('=');
       if (param.length < 2) continue;
       if (param[0] == 'q' || param[0] == 'p') { // q= for Google, p= for Yahoo
-        var query = unescape(param[1].replace(/\+/g, ' '));
+        var query = decodeURIComponent(param[1].replace(/\+/g, ' '));
         if (query[0] == '!') query = query.slice(1);
         words = query.split(/(".*?")|('.*?')|(\s+)/);
         var words2 = new Array();
