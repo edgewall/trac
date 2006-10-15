@@ -87,9 +87,9 @@ class ConnectionPool(object):
                     if timeout:
                         self._available.wait(timeout)
                         if (time.time() - start) >= timeout:
-                            raise TimeoutError, 'Unable to get database ' \
-                                                'connection within %d seconds' \
-                                                % timeout
+                            raise TimeoutError('Unable to get database ' \
+                                               'connection within %d seconds' \
+                                               % timeout)
                     else:
                         self._available.wait()
             self._active[tid] = [1, cnx]
@@ -113,20 +113,20 @@ class ConnectionPool(object):
             self._available.release()
 
     def _cleanup(self, tid):
-        # Note: self._available *must* be acquired
+        """Note: self._available *must* be acquired when calling this one."""
         if tid in self._active:
             cnx = self._active.pop(tid)[1]
-            if cnx not in self._dormant: # hm, how could that happen?
-                if cnx.poolable: # i.e. we can manipulate it from other threads
-                    cnx.rollback()
-                    self._dormant.append(cnx)
-                elif tid == threading._get_ident():
-                    cnx.rollback() # non-poolable but same thread: close
-                    cnx.close()
-                    self._cursize -= 1
-                else: # non-poolable, different thread: push it back
-                    self._active[tid] = [0, cnx]
-                self._available.notify()
+            assert cnx not in self._dormant # hm, how could that happen?
+            if cnx.poolable: # i.e. we can manipulate it from other threads
+                cnx.rollback()
+                self._dormant.append(cnx)
+            elif tid == threading._get_ident():
+                cnx.rollback() # non-poolable but same thread: close
+                cnx.close()
+                self._cursize -= 1
+            else: # non-poolable, different thread: push it back
+                self._active[tid] = [0, cnx]
+            self._available.notify()
 
     def shutdown(self, tid=None):
         self._available.acquire()
