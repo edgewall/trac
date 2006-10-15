@@ -99,12 +99,12 @@ class ConnectionPool(object):
                     break
                 else:
                     if timeout:
-                        self._available.wait(timeout)
                         if (time.time() - start) >= timeout:
-                            raise TimeoutError('Unable to get database ' \
-                                               'connection within %d seconds' \
-                                               % timeout)
-                    else:
+                            raise TimeoutError('Unable to get database '
+                                               'connection within %d seconds'
+                                                % timeout)
+                        self._available.wait(timeout)
+                    else: # Warning: without timeout, Trac *might* hang
                         self._available.wait()
             self._active[tid] = [1, cnx]
             return PooledConnection(self, cnx, tid)
