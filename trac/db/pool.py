@@ -48,6 +48,19 @@ class PooledConnection(ConnectionWrapper):
         self.close()
 
 
+def try_rollback(cnx):
+    """Resets the Connection in a safe way, returning True when it succeeds.
+    
+    The rollback we do for safety on a Connection can fail at
+    critical times because of a timeout on the Connection.
+    """
+    try:
+        cnx.rollback() # resets the connection
+        return True
+    except Exception:
+        cnx.close()
+        return False
+
 class ConnectionPool(object):
     """A very simple connection pool implementation."""
 
@@ -68,17 +81,18 @@ class ConnectionPool(object):
             if tid in self._active:
                 num, cnx = self._active.get(tid)
                 if num == 0: # was pushed back (see _cleanup)
-                    cnx.rollback()
-                self._active[tid][0] = num + 1
-                return PooledConnection(self, cnx, tid)
+                    if try_rollback(cnx):
+                        self._active[tid][0] = num + 1
+                        return PooledConnection(self, cnx, tid)
+                    else:
+                        del self._active[tid]
             while True:
                 if self._dormant:
                     cnx = self._dormant.pop()
-                    try:
-                        cnx.cursor() # check whether the connection is stale
+                    if try_rollback(cnx):
                         break
-                    except Exception:
-                        cnx.close()
+                    else:
+                        self._cursize -= 1
                 elif self._maxsize and self._cursize < self._maxsize:
                     cnx = self._connector.get_connection(**self._kwargs)
                     self._cursize += 1
@@ -118,11 +132,13 @@ class ConnectionPool(object):
             cnx = self._active.pop(tid)[1]
             assert cnx not in self._dormant # hm, how could that happen?
             if cnx.poolable: # i.e. we can manipulate it from other threads
-                cnx.rollback()
-                self._dormant.append(cnx)
+                if try_rollback(cnx):
+                    self._dormant.append(cnx)
+                else:
+                    self._cursize -= 1
             elif tid == threading._get_ident():
-                cnx.rollback() # non-poolable but same thread: close
-                cnx.close()
+                if try_rollback(cnx): # non-poolable but same thread: close
+                    cnx.close()
                 self._cursize -= 1
             else: # non-poolable, different thread: push it back
                 self._active[tid] = [0, cnx]
