@@ -156,6 +156,7 @@ class PageOutlineMacro(WikiMacroBase):
 
     def render_macro(self, req, name, content):
         from trac.wiki.formatter import wiki_to_outline
+        from genshi.builder import tag
         min_depth, max_depth = 1, 6
         title = None
         inline = 0
@@ -177,16 +178,13 @@ class PageOutlineMacro(WikiMacroBase):
         pagename = req.args.get('page') or 'WikiStart'
         page = WikiPage(self.env, pagename)
 
-        buf = StringIO()
-        if not inline:
-            buf.write('<div class="wiki-toc">')
+        outline = wiki_to_outline(page.text, self.env, db=db,
+                                  max_depth=max_depth, min_depth=min_depth)
         if title:
-            buf.write('<h4>%s</h4>' % escape(title))
-        buf.write(wiki_to_outline(page.text, self.env, db=db,
-                                  max_depth=max_depth, min_depth=min_depth))
+            outline = tag.h4(title) + outline
         if not inline:
-            buf.write('</div>')
-        return buf.getvalue()
+            outline = tag.div(outline, class_="wiki-toc")
+        return outline
 
 
 class ImageMacro(WikiMacroBase):
