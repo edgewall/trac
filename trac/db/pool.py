@@ -67,7 +67,7 @@ class ConnectionPool(object):
     def __init__(self, maxsize, connector, **kwargs):
         self._dormant = [] # inactive connections in pool
         self._active = {} # active connections by thread ID
-        self._available = threading.Condition(threading.Lock())
+        self._available = threading.Condition(threading.RLock())
         self._maxsize = maxsize # maximum pool size
         self._cursize = 0 # current pool size, includes active connections
         self._connector = connector
