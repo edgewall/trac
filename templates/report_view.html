@@ -94,17 +94,17 @@
                     <!--! generic fields -->
                     <py:when test="col == 'time'">
                       <py:def function="cellclass">date</py:def>
-                      <py:def function="content">${cell.value != 'None' and format_time(cell.value) or '--'}</py:def>
+                      <py:def function="content">${cell.value != 'None' and format_time(int(cell.value)) or '--'}</py:def>
                     </py:when>
 
                     <py:when test="col in ('date', 'created', 'modified')">
                       <py:def function="cellclass">date</py:def>
-                      <py:def function="content">${cell.value != 'None' and format_date(cell.value) or '--'}</py:def>
+                      <py:def function="content">${cell.value != 'None' and format_date(int(cell.value)) or '--'}</py:def>
                     </py:when>
 
                     <py:when test="col == 'datetime'">
                       <py:def function="cellclass">date</py:def>
-                      <py:def function="content">${cell.value != 'None' and format_datetime(cell.value) or '--'}</py:def>
+                      <py:def function="content">${cell.value != 'None' and format_datetime(int(cell.value)) or '--'}</py:def>
                     </py:when>
 
                     <py:when test="col == 'description'">

@@ -17,8 +17,10 @@
 #         Christopher Lenz <cmlenz@gmx.de>
 
 import time
+from datetime import datetime
 
 from trac.core import *
+from trac.util.datefmt import utc, to_timestamp
 from trac.wiki.api import WikiSystem
 
 
@@ -56,14 +58,15 @@ class WikiPage(object):
             version,time,author,text,comment,readonly = row
             self.version = int(version)
             self.author = author
-            self.time = time
+            self.time = datetime.fromtimestamp(time, utc)
             self.text = text
             self.comment = comment
             self.readonly = readonly and int(readonly) or 0
         else:
             self.version = 0
             self.text = self.comment = self.author = ''
-            self.time = self.readonly = 0
+            self.time = None
+            self.readonly = 0
 
     exists = property(fget=lambda self: self.version > 0)
 
@@ -117,14 +120,15 @@ class WikiPage(object):
             handle_ta = False
 
         if t is None:
-            t = time.time()
+            t = datetime.now(utc)
 
         if self.text != self.old_text:
             cursor = db.cursor()
             cursor.execute("INSERT INTO wiki (name,version,time,author,ipnr,"
                            "text,comment,readonly) VALUES (%s,%s,%s,%s,%s,%s,"
-                           "%s,%s)", (self.name, self.version + 1, t, author,
-                           remote_addr, self.text, comment, self.readonly))
+                           "%s,%s)", (self.name, self.version + 1,
+                                      to_timestamp(t), author, remote_addr,
+                                      self.text, comment, self.readonly))
             self.version += 1
         elif self.readonly != self.old_readonly:
             cursor = db.cursor()
@@ -153,7 +157,8 @@ class WikiPage(object):
         cursor.execute("SELECT version,time,author,comment,ipnr FROM wiki "
                        "WHERE name=%s AND version<=%s "
                        "ORDER BY version DESC", (self.name, self.version))
-        for version,time,author,comment,ipnr in cursor:
+        for version,ts,author,comment,ipnr in cursor:
+            time = datetime.fromtimestamp(ts, utc)
             yield version,time,author,comment,ipnr
 
 

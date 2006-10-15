@@ -14,9 +14,11 @@
 #
 # Author: Daniel Lundin <daniel@edgewall.com>
 
+from datetime import datetime
 from genshi.builder import tag
 
 from trac.core import *
+from trac.util.datefmt import all_timezones, utc
 from trac.web import IRequestHandler
 from trac.web.chrome import INavigationContributor
 
@@ -25,7 +27,7 @@ class SettingsModule(Component):
 
     implements(INavigationContributor, IRequestHandler)
 
-    _form_fields = ['newsid','name', 'email']
+    _form_fields = ['newsid','name', 'email', 'tz']
 
     # INavigationContributor methods
 
@@ -50,11 +52,13 @@ class SettingsModule(Component):
             elif action == 'load':
                 self._do_load(req)
 
+        req.hdf['timezones'] = ['default'] + all_timezones
         data = {'session': req.session}
         if req.authname == 'anonymous':
             data['session_id'] = req.session.sid
 
-        return 'settings.html', {'settings': data}, None
+        return 'settings.html', {'settings': data,
+                                 'timezones': all_timezones}, None
 
     # Internal methods
 
@@ -62,6 +66,9 @@ class SettingsModule(Component):
         for field in self._form_fields:
             val = req.args.get(field)
             if val:
+                if field == 'tz' and val not in all_timezones and \
+                       'tz' in req.session:
+                    del req.session['tz']
                 if field == 'newsid' and val:
                     req.session.change_sid(val)
                 else:

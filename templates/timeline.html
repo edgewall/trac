@@ -18,7 +18,7 @@
 
       <form id="prefs" method="get" action="">
        <div>
-        <label>View changes from <input type="text" size="10" name="from" value="$fromday" /></label> and
+        <label>View changes from <input type="text" size="10" name="from" value="${format_date(fromdate)}" /></label> and
         <label><input type="text" size="3" name="daysback" value="$daysback" /> days back</label>.
        </div>
        <fieldset>
@@ -32,12 +32,12 @@
        </div>
       </form>
 
-      <py:for each="day, events in groupby(events, key=lambda e: e.date)">
+      <py:for each="day, events in groupby(events, key=lambda e: e.day)">
         <h2>$day:</h2>
         <dl>
           <py:for each="event in events">
             <dt class="${event.kind}"><a href="${event.href}">
-              <span class="time">${event.time}</span> ${event.title}
+              <span class="time">${format_time(event.date, str('%H:%M'))}</span> ${event.title}
             </a></dt>
             <dd class="${event.kind}">${event.message}</dd>
           </py:for>

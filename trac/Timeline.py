@@ -17,13 +17,15 @@
 # Author: Jonas Borgström <jonas@edgewall.com>
 #         Christopher Lenz <cmlenz@gmx.de>
 
+from datetime import datetime, timedelta
+from heapq import heappush, heappop
 import re
 import time
 
 from trac.config import IntOption
 from trac.core import *
 from trac.perm import IPermissionRequestor
-from trac.util.datefmt import format_date, format_time, http_date
+from trac.util.datefmt import format_date, parse_date, to_timestamp, utc
 from trac.util.html import html, plaintext, Markup
 from trac.util.text import to_unicode
 from trac.web import IRequestHandler
@@ -98,20 +100,19 @@ class TimelineModule(Component):
 
         # Parse the from date and adjust the timestamp to the last second of
         # the day
-        t = time.localtime()
+        t = datetime.now(utc)
         if 'from' in req.args:
             try:
-                t = time.strptime(req.args.get('from'), '%x')
+                t =  parse_date(req.args.get('from'), req.tz)
             except:
                 pass
-
-        fromdate = time.mktime((t[0], t[1], t[2], 23, 59, 59, t[6], t[7], t[8]))
+        fromdate = t.replace(hour=23, minute=59, second=59)
         try:
             daysback = max(0, int(req.args.get('daysback', '')))
         except ValueError:
             daysback = self.default_daysback
 
-        data = {'fromday': format_date(fromdate), 'daysback': daysback,
+        data = {'fromdate': fromdate, 'daysback': daysback,
                 'events': [], 'filters': []}
 
         available_filters = []
@@ -138,18 +139,22 @@ class TimelineModule(Component):
                     del req.session[key]
 
         stop = fromdate
-        start = stop - (daysback + 1) * 86400
+        start = stop - timedelta(days=daysback + 1)
 
         events = []
         for event_provider in self.event_providers:
             try:
-                events += event_provider.get_timeline_events(req, start, stop,
-                                                             filters)
+                for event in event_provider.get_timeline_events(req, start,
+                                                                stop, filters):
+                    kind, href, title, date, author, message = event
+                    if not isinstance(date, datetime):
+                        date = datetime.fromtimestamp(event[3], utc)
+                    heappush(events, (-to_timestamp(date),
+                             (kind, href, title, date, author, message)))
             except Exception, e: # cope with a failure of that provider
                 self._provider_failure(e, req, event_provider, filters,
                                        [f[0] for f in available_filters])
 
-        events.sort(lambda x,y: cmp(y[3], x[3]))
         if maxrows and len(events) > maxrows:
             del events[maxrows:]
 
@@ -159,12 +164,14 @@ class TimelineModule(Component):
             if email:
                 email_map[username] = email
 
-        for kind, href, title, date, author, message in events:
+        while events:
+            _, (kind, href, title, date, author, message) = heappop(events)
             event = {'kind': kind, 'title': title, 'href': href,
                      'author': author or 'anonymous',
-                     'date': format_date(date),
-                     'time': format_time(date, '%H:%M'),
-                     'dateuid': int(date),
+                     'date': date,
+                     # for speeding-up the grouping by day:
+                     'day': format_date(date, tzinfo=req.tz),
+                     'dateuid': to_timestamp(date),
                      'message': message}
 
             if format == 'rss':
@@ -182,7 +189,6 @@ class TimelineModule(Component):
                         event['author'] = email_map[author]
                     else:
                         del event['author']
-                event['date'] = http_date(date)
 
             data['events'].append(event)
 

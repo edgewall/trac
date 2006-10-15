@@ -22,6 +22,7 @@ from trac import __version__
 from trac.core import *
 from trac.config import *
 from trac.notification import NotifyEmail
+from trac.util.datefmt import to_timestamp
 from trac.util.text import CRLF, wrap
 
 
@@ -56,7 +57,7 @@ class TicketNotifyEmail(NotifyEmail):
         NotifyEmail.__init__(self, env)
         self.prev_cc = []
 
-    def notify(self, ticket, newticket=True, modtime=0):
+    def notify(self, ticket, newticket=True, modtime=None):
         self.ticket = ticket
         self.modtime = modtime
         self.newticket = newticket
@@ -242,10 +243,10 @@ class TicketNotifyEmail(NotifyEmail):
 
         return (torecipients, ccrecipients)
 
-    def get_message_id(self, rcpt, modtime=0):
+    def get_message_id(self, rcpt, modtime=None):
         """Generate a predictable, but sufficiently unique message ID."""
         s = '%s.%08d.%d.%s' % (self.config.get('project', 'url'),
-                               int(self.ticket.id), modtime, 
+                               int(self.ticket.id), to_timestamp(modtime),
                                rcpt.encode('ascii', 'ignore'))
         dig = md5.new(s).hexdigest()
         host = self.from_email[self.from_email.find('@') + 1:]

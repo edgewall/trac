@@ -16,6 +16,7 @@
 # Author: Jonas Borgström <jonas@edgewall.com>
 #         Christopher Lenz <cmlenz@gmx.de>
 
+from datetime import datetime
 import os
 import re
 import StringIO
@@ -26,6 +27,7 @@ from trac.perm import IPermissionRequestor
 from trac.Search import ISearchSource, search_to_sql, shorten_result
 from trac.Timeline import ITimelineEventProvider
 from trac.util import get_reporter_id
+from trac.util.datefmt import to_timestamp, utc
 from trac.util.html import html, Markup
 from trac.util.text import shorten_line
 from trac.versioncontrol.diff import get_diff_options, diff_blocks
@@ -436,6 +438,8 @@ class WikiModule(Component):
 
     def get_timeline_events(self, req, start, stop, filters):
         if 'wiki' in filters:
+            start = to_timestamp(start)
+            stop = to_timestamp(stop)
             wiki = WikiSystem(self.env)
             format = req.args.get('format')
             href = format == 'rss' and req.abs_href or req.href
@@ -444,7 +448,7 @@ class WikiModule(Component):
             cursor.execute("SELECT time,name,comment,author,version "
                            "FROM wiki WHERE time>=%s AND time<=%s",
                            (start, stop))
-            for t,name,comment,author,version in cursor:
+            for ts,name,comment,author,version in cursor:
                 title = Markup('<em>%s</em> edited by %s',
                                wiki.format_page_name(name), author)
                 diff_link = html.A('diff', href=href.wiki(name, action='diff',
@@ -457,6 +461,7 @@ class WikiModule(Component):
                                                shorten=True)
                 if version > 1:
                     comment = html(comment, ' (', diff_link, ')')
+                t = datetime.fromtimestamp(ts, utc)
                 yield 'wiki', href.wiki(name), title, t, author, comment
 
             # Attachments
@@ -488,6 +493,6 @@ class WikiModule(Component):
                        "WHERE w1.version = w2.ver AND w1.name = w2.name "
                        "AND " + sql_query, args)
 
-        for name, date, author, text in cursor:
+        for name, ts, author, text in cursor:
             yield (req.href.wiki(name), '%s: %s' % (name, shorten_line(text)),
-                   date, author, shorten_result(text, terms))
+                   datetime.fromtimestamp(ts, utc), author, shorten_result(text, terms))

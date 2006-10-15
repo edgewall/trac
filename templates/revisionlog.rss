@@ -14,7 +14,7 @@
 
     <item py:for="item in items" py:with="change = changes[item.rev]">
       <author py:if="change.author">$change.author</author>
-      <pubDate>${format_datetime(change.date_seconds)}</pubDate> <!--! FIXME: use 'change.date' later on -->
+      <pubDate>${http_date(change.date)}</pubDate>
       <title>Revision $item.rev: $change.shortlog</title>
       <link>${abs_href.changeset(rev, path)}</link>
       <guid isPermaLink="false">${abs_href.changeset(item.rev, item.path)}</guid>

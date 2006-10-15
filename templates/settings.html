@@ -36,6 +36,15 @@
        <input type="text" id="email" name="email" class="textwidget" size="30"
               value="${settings.session.email}" />
       </div>
+      <div> 
+       <label for="tz">Time zone:</label>
+       <select name="tz" id="tz">
+        <option>Default time zone</option>
+        <option py:for="tz in timezones" 
+          selected="${settings.session.tz == tz or None}"
+          py:content="tz"/>
+       </select>
+      </div>
       <div py:if="settings.session_id" py:strip="">
        <h3>Session</h3>
        <div>

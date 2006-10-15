@@ -17,6 +17,7 @@
 #
 
 from trac.core import TracError
+from trac.util.datefmt import utc
 from trac.ticket.model import Ticket
 from trac.ticket.notification import TicketNotifyEmail
 from trac.test import EnvironmentStub, Mock
@@ -24,6 +25,7 @@ from trac.tests.notification import SMTPThreadedServer, parse_smtp_message, \
                                     smtp_address
                                     
 import base64
+from datetime import datetime
 import os
 import quopri
 import re
@@ -52,7 +54,7 @@ class NotificationTestCase(unittest.TestCase):
         self.env.config.set('notification', 'use_public_cc', 'true')
         self.env.config.set('notification', 'smtp_port', str(SMTP_TEST_PORT))
         self.env.config.set('notification', 'smtp_server','localhost')
-        self.req = Mock(href=self.env.href, abs_href=self.env.abs_href)
+        self.req = Mock(href=self.env.href, abs_href=self.env.abs_href, tz=utc)
 
     def tearDown(self):
         """Signal the notification test suite that a test is over"""
@@ -400,7 +402,7 @@ class NotificationTestCase(unittest.TestCase):
             ticket['cc'] = 'joe.bar@example.com'
             ticket.insert()
             ticket['component'] = 'dummy'
-            now = time.time()
+            now = datetime.now(utc)
             ticket.save_changes('joe.bar2@example.com', 'This is a change',
                                 when=now)
             tn = TicketNotifyEmail(self.env)

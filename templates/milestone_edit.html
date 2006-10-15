@@ -13,7 +13,7 @@
     <link rel="stylesheet" type="text/css"
           href="${chrome.htdocs_location}css/roadmap.css" />
     <script type="text/javascript">
-      addEvent(window, 'load', function() { document.getElementById('name').focus()}); 
+      addEvent(window, 'load', function() { document.getElementById('name').focus()});
     </script>
   </head>
 
@@ -38,7 +38,7 @@
           <legend>Schedule</legend>
           <label>Due:<br />
             <input type="text" id="duedate" name="duedate" size="${len(date_hint)}"
-                   value="${milestone.due_date}" title="Format: ${date_hint}" />
+                   value="${format_date(milestone.due)}" title="Format: ${date_hint}" />
             <em>Format: ${date_hint}</em>
           </label>
           <div class="field">
@@ -50,7 +50,7 @@
             <label>
               <input type="text" id="completeddate" name="completeddate"
                      size="${len(datetime_hint)}" title="Format: ${datetime_hint}"
-                     value="${milestone.completed_date or datetime_now}" />
+                     value="${format_date(milestone.completed) or format_date}" />
               <em>Format: ${datetime_hint}</em>
             </label>
             <py:if test="milestones">

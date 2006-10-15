@@ -15,6 +15,7 @@
 # Author: Jonas Borgström <jonas@edgewall.com>
 
 import re
+from datetime import datetime
 
 from trac.config import *
 from trac.core import *
@@ -22,6 +23,7 @@ from trac.perm import IPermissionRequestor, PermissionSystem
 from trac.Search import ISearchSource, search_to_sql, shorten_result
 from trac.util.html import html, Markup
 from trac.util.text import shorten_line
+from trac.util.datefmt import utc
 from trac.wiki import IWikiSyntaxProvider, Formatter
 
 
@@ -266,11 +268,12 @@ class TicketSystem(Component):
                        "LEFT JOIN ticket_change b ON a.id = b.ticket "
                        "WHERE (b.field='comment' AND %s ) OR %s" % (sql, sql2),
                        args + args2)
-        for summary, desc, author, keywords, tid, date, status in cursor:
+        for summary, desc, author, keywords, tid, ts, status in cursor:
             ticket = '#%d: ' % tid
             if status == 'closed':
                 ticket = Markup('<span style="text-decoration: line-through">'
                                 '#%s</span>: ', tid)
             yield (req.href.ticket(tid),
                    ticket + shorten_line(summary),
-                   date, author, shorten_result(desc, terms))
+                   datetime.fromtimestamp(ts, utc), author,
+                   shorten_result(desc, terms))

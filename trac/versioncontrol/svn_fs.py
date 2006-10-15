@@ -43,6 +43,7 @@ import os.path
 import time
 import weakref
 import posixpath
+from datetime import datetime
 
 from trac.core import *
 from trac.versioncontrol import Changeset, Node, Repository, \
@@ -51,6 +52,7 @@ from trac.versioncontrol import Changeset, Node, Repository, \
 from trac.versioncontrol.cache import CachedRepository
 from trac.versioncontrol.svn_authz import SubversionAuthorizer
 from trac.util.text import to_unicode
+from trac.util.datefmt import utc
 
 try:
     from svn import fs, repos, core, delta
@@ -616,11 +618,12 @@ class SubversionNode(Node):
         return self._get_prop(core.SVN_PROP_MIME_TYPE)
 
     def get_last_modified(self):
-        date = fs.revision_prop(self.fs_ptr, self.created_rev,
-                                core.SVN_PROP_REVISION_DATE, self.pool())
-        if not date:
-            return 0
-        return core.svn_time_from_cstring(date, self.pool()) / 1000000
+        _date = fs.revision_prop(self.fs_ptr, self.created_rev,
+                                 core.SVN_PROP_REVISION_DATE, self.pool())
+        if not _date:
+            return None
+        ts = core.svn_time_from_cstring(_date, self.pool()) / 1000000
+        return datetime.fromtimestamp(ts, utc)
 
     def _get_prop(self, name):
         return fs.node_prop(self.root, self._scoped_svn_path, name, self.pool())
@@ -636,11 +639,12 @@ class SubversionChangeset(Changeset):
         self.pool = Pool(pool)
         message = self._get_prop(core.SVN_PROP_REVISION_LOG)
         author = self._get_prop(core.SVN_PROP_REVISION_AUTHOR)
-        date = self._get_prop(core.SVN_PROP_REVISION_DATE)
-        if date:
-            date = core.svn_time_from_cstring(date, self.pool()) / 1000000
+        _date = self._get_prop(core.SVN_PROP_REVISION_DATE)
+        if _date:
+            ts = core.svn_time_from_cstring(_date, self.pool()) / 1000000
+            date = datetime.fromtimestamp(ts, utc)
         else:
-            date = 0
+            date = None
         Changeset.__init__(self, rev, message, author, date)
 
     def get_changes(self):

@@ -143,7 +143,7 @@ class BrowserModule(Component):
 
         if order == 'date':
             def file_order(a):
-                return changes[a['rev']]['date_seconds']
+                return changes[a['rev']]['date']
         elif order == 'size':
             def file_order(a):
                 return (a['size'],

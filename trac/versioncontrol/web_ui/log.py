@@ -167,7 +167,6 @@ class LogModule(Component):
                 elif email_map.has_key(author):
                     author_email = email_map[author]
                 cs['author'] = author_email
-                cs['date'] = http_date(cs['date_seconds'])
         elif format == 'changelog':
             for rev in revs:
                 changeset = repos.get_changeset(rev)

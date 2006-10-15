@@ -3,7 +3,9 @@ from trac.core import TracError, implements
 from trac.ticket.model import Ticket, Component, Milestone, Priority, Type
 from trac.ticket.api import ITicketChangeListener
 from trac.test import EnvironmentStub
+from trac.util.datefmt import utc, to_timestamp
 
+from datetime import datetime
 import unittest
 
 class TestTicketChangeListener(core.Component):
@@ -214,9 +216,10 @@ class TicketTestCase(unittest.TestCase):
         ticket = Ticket(self.env, tkt_id)
         ticket['component'] = 'bar'
         ticket['milestone'] = 'foo'
-        ticket.save_changes('jane', 'Testing', when=42)
+        now = datetime(2001, 1, 1, 1, 1, 1, 0, utc)
+        ticket.save_changes('jane', 'Testing', now)
         for t, author, field, old, new, permanent in ticket.get_changelog():
-            self.assertEqual((42, 'jane', True), (t, author, permanent))
+            self.assertEqual((now, 'jane', True), (t, author, permanent))
             if field == 'component':
                 self.assertEqual(('foo', 'bar'), (old, new))
             elif field == 'milestone':
@@ -232,9 +235,10 @@ class TicketTestCase(unittest.TestCase):
         ticket = Ticket(self.env, tkt_id)
         ticket['component'] = 'bar'
         ticket['component'] = 'foo'
-        ticket.save_changes('jane', 'Testing', when=42)
+        now = datetime(2001, 1, 1,  1, 1, 1, 0, utc)
+        ticket.save_changes('jane', 'Testing', now)
         for t, author, field, old, new, permanent in ticket.get_changelog():
-            self.assertEqual((42, 'jane', True), (t, author, permanent))
+            self.assertEqual((now, 'jane', True), (t, author, permanent))
             if field == 'comment':
                 self.assertEqual(('', 'Testing'), (old, new))
             else:
@@ -330,8 +334,8 @@ class MilestoneTestCase(unittest.TestCase):
         milestone = Milestone(self.env)
         self.assertEqual(False, milestone.exists)
         self.assertEqual(None, milestone.name)
-        self.assertEqual(0, milestone.due)
-        self.assertEqual(0, milestone.completed)
+        self.assertEqual(None, milestone.due)
+        self.assertEqual(None, milestone.completed)
         self.assertEqual('', milestone.description)
 
     def test_new_milestone_empty_name(self):
@@ -342,8 +346,8 @@ class MilestoneTestCase(unittest.TestCase):
         milestone = Milestone(self.env, '')
         self.assertEqual(False, milestone.exists)
         self.assertEqual(None, milestone.name)
-        self.assertEqual(0, milestone.due)
-        self.assertEqual(0, milestone.completed)
+        self.assertEqual(None, milestone.due)
+        self.assertEqual(None, milestone.completed)
         self.assertEqual('', milestone.description)
 
     def test_existing_milestone(self):
@@ -354,8 +358,8 @@ class MilestoneTestCase(unittest.TestCase):
         milestone = Milestone(self.env, 'Test')
         self.assertEqual(True, milestone.exists)
         self.assertEqual('Test', milestone.name)
-        self.assertEqual(0, milestone.due)
-        self.assertEqual(0, milestone.completed)
+        self.assertEqual(None, milestone.due)
+        self.assertEqual(None, milestone.completed)
         self.assertEqual('', milestone.description)
 
     def test_create_milestone(self):
@@ -408,14 +412,17 @@ class MilestoneTestCase(unittest.TestCase):
         cursor.close()
 
         milestone = Milestone(self.env, 'Test')
-        milestone.due = 42
-        milestone.completed = 43
+        t1 = datetime(2001,01,01, tzinfo=utc)
+        t2 = datetime(2002,02,02, tzinfo=utc)
+        milestone.due = t1
+        milestone.completed = t2
         milestone.description = 'Foo bar'
         milestone.update()
 
         cursor = self.db.cursor()
         cursor.execute("SELECT * FROM milestone WHERE name='Test'")
-        self.assertEqual(('Test', 42, 43, 'Foo bar'), cursor.fetchone())
+        self.assertEqual(('Test', to_timestamp(t1), to_timestamp(t2), 'Foo bar'),
+                         cursor.fetchone())
 
     def test_update_milestone_without_name(self):
         cursor = self.db.cursor()

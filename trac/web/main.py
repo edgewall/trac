@@ -26,12 +26,12 @@ from genshi import Markup
 from genshi.output import DocType
 from genshi.template import TemplateLoader
 
-from trac.config import ExtensionOption, OrderedExtensionsOption
+from trac.config import ExtensionOption, Option, OrderedExtensionsOption
 from trac.core import *
 from trac.env import open_environment
 from trac.perm import PermissionCache, NoPermissionCache, PermissionError
 from trac.util import reversed, get_last_traceback
-from trac.util.datefmt import format_datetime, http_date
+from trac.util.datefmt import format_datetime, http_date, localtz, timezone
 from trac.util.html import Markup
 from trac.util.text import to_unicode
 from trac.web.api import *
@@ -142,6 +142,11 @@ class RequestDispatcher(Component):
         Options include `TimeLineModule`, `RoadmapModule`, `BrowserModule`,
         `QueryModule`, `ReportModule` and `NewticketModule` (''since 0.9'').""")
 
+    default_timezone = Option('trac', 'default_timezone', '',
+                              doc="""The default timezone to use""")
+
+
+
     # Public API
 
     def authenticate(self, req):
@@ -197,6 +202,12 @@ class RequestDispatcher(Component):
         if anonymous_request:
             req.authname = 'anonymous'
             req.perm = NoPermissionCache()
+
+        try:
+            req.tz = timezone(req.session.get('tz', self.default_timezone
+                                              or 'missing'))
+        except:
+            req.tz = localtz
 
         # Prepare HDF for the clearsilver template
         try:

@@ -72,9 +72,7 @@
                       <a title="View Revision Log"
                         href="${href.log(entry.path, rev=rev)}">$entry.rev</a>
                     </td>
-                    <td class="age">${dateinfo(change.date_seconds)}</td>
-                    <!--! FIXME: use 'date' and therefore replace 'date' by 'date_seconds'
-                                 in trac.versioncontrol.web_ui.util.get_changes -->
+                    <td class="age">${dateinfo(change.date)}</td>
                     <td class="change">
                       <span class="author">$change.author:</span>
                       <span class="change">$change.message</span>

@@ -16,6 +16,7 @@
 # Author: Jonas Borgström <jonas@edgewall.com>
 #         Christopher Lenz <cmlenz@gmx.de>
 
+from datetime import datetime
 import os
 import re
 import shutil
@@ -28,7 +29,7 @@ from trac.core import *
 from trac.env import IEnvironmentSetupParticipant
 from trac.mimeview import *
 from trac.util import get_reporter_id, create_unique_file
-from trac.util.datefmt import format_datetime, pretty_timedelta
+from trac.util.datefmt import format_datetime, pretty_timedelta, utc
 from trac.util.html import Markup, html
 from trac.util.text import unicode_quote, unicode_unquote, pretty_size
 from trac.web import HTTPBadRequest, IRequestHandler
@@ -272,7 +273,7 @@ def attachment_data(env, req, db, attachment):
         'author': attachment.author,
         'ipnr': attachment.ipnr,
         'size': attachment.size,
-        'date': attachment.time,
+        'date': datetime.fromtimestamp(attachment.time, utc),
         'href': attachment.href(req)
     }
 
@@ -414,7 +415,8 @@ class AttachmentModule(Component):
                        "  FROM attachment "
                        "  WHERE time > %s AND time < %s "
                        "        AND type = %s", (start, stop, type))
-        for type, id, filename, time, description, author in cursor:
+        for type, id, filename, ts, description, author in cursor:
+            time = datetime.fromtimestamp(ts, utc)
             yield ('created', type, id, filename, time, description, author)
 
     def get_timeline_events(self, req, db, type, format, start, stop, display):

@@ -14,6 +14,7 @@
 #
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
+from datetime import datetime
 import imp
 import inspect
 import os
@@ -27,7 +28,7 @@ from StringIO import StringIO
 from trac.config import default_dir
 from trac.core import *
 from trac.util import sorted
-from trac.util.datefmt import format_date
+from trac.util.datefmt import format_date, utc
 from trac.util.html import escape, html, Markup
 from trac.wiki.api import IWikiMacroProvider, WikiSystem
 from trac.wiki.model import WikiPage
@@ -114,7 +115,8 @@ class RecentChangesMacro(WikiMacroBase):
 
         entries_per_date = []
         prevdate = None
-        for name, version, time in cursor:
+        for name, version, ts in cursor:
+            time = datetime.fromtimestamp(ts, utc)
             date = format_date(time)
             if date != prevdate:
                 prevdate = date

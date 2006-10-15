@@ -12,6 +12,7 @@
 # history and logs, available at http://trac.edgewall.org/log/.
 
 import cmd
+from datetime import datetime
 import getpass
 import os
 import shlex
@@ -30,6 +31,8 @@ from trac.core import TracError
 from trac.env import Environment
 from trac.perm import PermissionSystem
 from trac.ticket.model import *
+from trac.util.datefmt import parse_date, format_date, format_datetime, utc
+from trac.util.html import html
 from trac.util.html import html
 from trac.util.text import print_table, to_unicode, wrap
 from trac.wiki import WikiPage
@@ -230,34 +233,11 @@ class TracAdmin(cmd.Cmd):
         rows = self.db_query("SELECT name FROM version")
         return [row[0] for row in rows]
 
-    def _parse_date(self, t):
-        seconds = None
-        t = t.strip()
-        if t == 'now':
-            seconds = int(time.time())
-        else:
-            for format in [self._date_format, '%x %X', '%x, %X', '%X %x',
-                           '%X, %x', '%x', '%c', '%b %d, %Y']:
-                try:
-                    pt = time.strptime(t, format)
-                    seconds = int(time.mktime(pt))
-                except ValueError:
-                    continue
-                break
-        if seconds == None:
-            try:
-                seconds = int(t)
-            except ValueError:
-                pass
-        if seconds == None:
-            print>>sys.stderr, 'Unknown time format %s' % t
-        return seconds
+    def _format_date(self, t):
+        return format_date(t, self._date_format)
 
-    def _format_date(self, s):
-        return time.strftime(self._date_format, time.localtime(s))
-
-    def _format_datetime(self, s):
-        return time.strftime(self._datetime_format, time.localtime(s))
+    def _format_datetime(self, t):
+        return format_datetime(t, self._datetime_format)
 
 
     ##
@@ -717,7 +697,8 @@ Congratulations!
     def _do_wiki_list(self):
         rows = self.db_query("SELECT name, max(version), max(time) "
                              "FROM wiki GROUP BY name ORDER BY name")
-        print_table([(r[0], int(r[1]), self._format_datetime(r[2]))
+        print_table([(r[0], int(r[1]),
+                      self._format_datetime(datetime.fromtimestamp(r[2], utc)))
                     for r in rows], ['Title', 'Edits', 'Modified'])
 
     def _do_wiki_remove(self, name):
@@ -1002,12 +983,12 @@ Congratulations!
 
     def _do_milestone_set_due(self, name, t):
         milestone = Milestone(self.env_open(), name)
-        milestone.due = self._parse_date(t)
+        milestone.due = parse_date(t)
         milestone.update()
 
     def _do_milestone_set_completed(self, name, t):
         milestone = Milestone(self.env_open(), name)
-        milestone.completed = self._parse_date(t)
+        milestone.completed = parse_date(t)
         milestone.update()
 
     ## Version
@@ -1066,7 +1047,7 @@ Congratulations!
 
     def _do_version_time(self, name, t):
         version = Version(self.env_open(), name)
-        version.time = self._parse_date(t)
+        version.time = parse_date(t)
         version.update()
 
     _help_upgrade = [('upgrade', 'Upgrade database to current version')]

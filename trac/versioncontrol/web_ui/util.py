@@ -20,7 +20,7 @@ import re
 import urllib
 
 from trac.core import TracError
-from trac.util.datefmt import format_datetime, pretty_timedelta
+from trac.util.datefmt import pretty_timedelta
 from trac.util.html import escape, html, Markup
 from trac.util.text import shorten_line
 from trac.versioncontrol.api import NoSuchNode, NoSuchChangeset
@@ -63,9 +63,7 @@ def get_changes(env, repos, revs, full=None, req=None, format=None):
             message = unicode(message)
 
         changes[rev] = {
-            'date_seconds': changeset.date,
-            'date': format_datetime(changeset.date),
-            'age': pretty_timedelta(changeset.date),
+            'date': changeset.date,
             'author': changeset.author or 'anonymous',
             'message': message, 'shortlog': shortlog,
         }

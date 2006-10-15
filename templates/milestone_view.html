@@ -19,14 +19,14 @@
       <div class="info">
         <py:choose>
           <p py:when="milestone.completed" class="date">
-            Completed ${milestone.completed_delta} ago
-            (${milestone.completed_date})
+            Completed ${pretty_timedelta(milestone.completed)} ago
+            (${format_date(milestone.completed)})
           </p>
           <p py:when="milestone.late" class="date">
-            <strong>${milestone.due_delta} late</strong> (${milestone.due_date})
+            <strong>${pretty_timedelta(milestone.due)} late</strong> (${format_date(milestone.due)})
           </p>
           <p py:when="milestone.due" class="date">
-            Due in ${milestone.due_delta} (${milestone.due_date})
+            Due in ${pretty_timedelta(milestone.due)} (${format_date(milestone.due)})
           </p>
           <p py:otherwise="" class="date">
             No date set

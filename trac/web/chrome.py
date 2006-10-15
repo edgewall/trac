@@ -15,6 +15,7 @@
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
 import __builtin__
+from datetime import timedelta
 import os
 import re
 
@@ -417,12 +418,20 @@ class Chrome(Component):
         data['first_last'] = first_last
 
         # formatting utilities
+        def _format_date(*args, **kw):
+            return format_date(tzinfo=req.tz, *args, **kw)
+        def _format_time(*args, **kw):
+            return format_time(tzinfo=req.tz, *args, **kw)
+        def _format_datetime(*args, **kw):
+            return format_datetime(tzinfo=req.tz, *args, **kw)
+
         data['pretty_size'] = pretty_size
         data['pretty_timedelta'] = pretty_timedelta
-        data['format_datetime'] = format_datetime
-        data['format_date'] = format_date
-        data['format_time'] = format_time
+        data['format_datetime'] = _format_datetime
+        data['format_date'] = _format_date
+        data['format_time'] = _format_time
         data['http_date'] = http_date
+        data['timedelta'] = timedelta
         data['quote_plus'] = unicode_quote_plus
         
         ## debugging tools

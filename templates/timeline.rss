@@ -15,7 +15,7 @@
   <item py:for="event in events">
    <title>${event.title}</title>
    <author py:if="event.author">${event.author}</author>
-   <pubDate>${event.date}</pubDate>
+   <pubDate>${http_date(event.date)}</pubDate>
    <link>${event.href}</link>
    <guid isPermaLink="false">${event.href}/${event.dateuid}</guid>
    <description>${event.message}</description>

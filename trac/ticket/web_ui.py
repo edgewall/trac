@@ -14,6 +14,7 @@
 #
 # Author: Jonas Borgström <jonas@edgewall.com>
 
+from datetime import datetime
 import os
 import re
 from StringIO import StringIO
@@ -26,6 +27,7 @@ from trac.ticket import Milestone, Ticket, TicketSystem, ITicketManipulator
 from trac.ticket.notification import TicketNotifyEmail
 from trac.Timeline import ITimelineEventProvider
 from trac.util import get_reporter_id
+from trac.util.datefmt import to_timestamp, utc
 from trac.util.html import html, Markup
 from trac.util.text import CRLF
 from trac.web import IRequestHandler
@@ -270,7 +272,7 @@ class TicketModule(TicketModuleBase):
         else:
             data['reassign_owner'] = req.authname
             # Store a timestamp in order to detect "mid air collisions"
-            data['timestamp'] = ticket.time_changed
+            data['timestamp'] = str(ticket.time_changed)
 
         self._insert_ticket_data(req, db, ticket, data,
                                  get_reporter_id(req, 'author'))
@@ -318,6 +320,8 @@ class TicketModule(TicketModuleBase):
                 yield ('ticket_details', 'Ticket details', False)
 
     def get_timeline_events(self, req, start, stop, filters):
+        start = to_timestamp(start)
+        stop = to_timestamp(stop)
         format = req.args.get('format')
 
         status_map = {'new': ('newticket', 'created'),
@@ -327,7 +331,7 @@ class TicketModule(TicketModuleBase):
 
         href = format == 'rss' and req.abs_href or req.href
 
-        def produce((id, t, author, type, summary), status, fields,
+        def produce((id, ts, author, type, summary), status, fields,
                     comment, cid):
             if status == 'edit':
                 if 'ticket_details' in filters:
@@ -367,6 +371,7 @@ class TicketModule(TicketModuleBase):
                     else:
                         message += wiki_to_oneliner(comment, self.env, db,
                                                     shorten=True)
+            t = datetime.fromtimestamp(ts, utc)
             return kind, ticket_href, title, t, author, message
 
         # Ticket changes
@@ -486,7 +491,7 @@ class TicketModule(TicketModuleBase):
             req.perm.assert_permission('TICKET_APPEND')
 
         # Mid air collision?
-        if int(req.args.get('ts')) != ticket.time_changed:
+        if req.args.get('ts') != str(ticket.time_changed):
             raise TracError("Sorry, can not save your changes. "
                             "This ticket has been modified by someone else "
                             "since you started", 'Mid Air Collision')
@@ -511,9 +516,9 @@ class TicketModule(TicketModuleBase):
             ticket['status'] = 'reopened'
             ticket['resolution'] = ''
 
+        now = datetime.now(utc)
         self._validate_ticket(req, ticket)
 
-        now = int(time.time())
         cnum = req.args.get('cnum')        
         replyto = req.args.get('replyto')
         internal_cnum = cnum
@@ -620,7 +625,7 @@ class TicketModule(TicketModuleBase):
         actions = TicketSystem(self.env).get_available_actions(ticket, req.perm)
         data['actions'] = actions
 
-    def grouped_changelog_entries(self, ticket, db, when=0):
+    def grouped_changelog_entries(self, ticket, db, when=None):
         """Iterate on changelog entries, consolidating related changes
         in a `dict` object.
         """

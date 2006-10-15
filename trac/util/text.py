@@ -120,7 +120,7 @@ def print_table(data, headers=None, sep='  ', out=None):
     num_cols = len(data[0]) # assumes all rows are of equal length
     col_width = []
     for idx in range(num_cols):
-        col_width.append(max([len(unicode(d[idx])) for d in data]))
+        col_width.append(max([len(unicode(d[idx] or '')) for d in data]))
 
     out.write('\n')
     for ridx, row in enumerate(data):

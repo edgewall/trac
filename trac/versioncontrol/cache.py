@@ -14,7 +14,10 @@
 #
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
+from datetime import datetime
+
 from trac.core import TracError
+from trac.util.datefmt import utc, to_timestamp
 from trac.versioncontrol import Changeset, Node, Repository, Authorizer, \
                                 NoSuchChangeset
 
@@ -50,7 +53,7 @@ class CachedRepository(Repository):
         cursor = self.db.cursor()
         cursor.execute("SELECT rev FROM revision "
                        "WHERE time >= %s AND time < %s "
-                       "ORDER BY time", (start, stop))
+                       "ORDER BY time", (to_timestamp(start), to_timestamp(stop)))
         for rev, in cursor:
             if self.authz.has_permission_for_changeset(rev):
                 yield self.get_changeset(rev)
@@ -93,8 +96,9 @@ class CachedRepository(Repository):
                 changeset = self.repos.get_changeset(current_rev)
                 cursor.execute("INSERT INTO revision (rev,time,author,message) "
                                "VALUES (%s,%s,%s,%s)", (str(current_rev),
-                               changeset.date, changeset.author,
-                               changeset.message))
+                                                        to_timestamp(changeset.date),
+                                                        changeset.author,
+                                                        changeset.message))
                 for path,kind,action,base_path,base_rev in changeset.get_changes():
                     self.log.debug("Caching node change in [%s]: %s"
                                    % (current_rev, (path, kind, action,
@@ -154,8 +158,9 @@ class CachedChangeset(Changeset):
                        "WHERE rev=%s", (rev,))
         row = cursor.fetchone()
         if row:
-            date, author, message = row
-            Changeset.__init__(self, rev, message, author, int(date))
+            _date, author, message = row
+            date = datetime.fromtimestamp(_date, utc)
+            Changeset.__init__(self, rev, message, author, date)
         else:
             raise NoSuchChangeset(rev)
 

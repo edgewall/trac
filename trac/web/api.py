@@ -17,6 +17,7 @@
 from BaseHTTPServer import BaseHTTPRequestHandler
 from Cookie import CookieError, BaseCookie, SimpleCookie
 import cgi
+from datetime import datetime
 import mimetypes
 import os
 from StringIO import StringIO
@@ -25,7 +26,7 @@ import urlparse
 
 from trac.core import Interface
 from trac.util import get_last_traceback
-from trac.util.datefmt import http_date
+from trac.util.datefmt import http_date, localtz
 from trac.web.href import Href
 
 HTTP_STATUS = dict([(code, reason.title()) for code, (reason, description)
@@ -276,7 +277,7 @@ class Request(object):
         self._send_cookie_headers()
         self._write = self._start_response(self._status, self._outheaders)
 
-    def check_modified(self, timesecs, extra=''):
+    def check_modified(self, time, extra=''):
         """Check the request "If-None-Match" header against an entity tag.
 
         The entity tag is generated from the specified last modified time
@@ -297,7 +298,7 @@ class Request(object):
             for elt in extra:
                 m.update(repr(elt))
             extra = m.hexdigest()
-        etag = 'W"%s/%d/%s"' % (self.authname, timesecs, extra)
+        etag = 'W"%s/%s/%s"' % (self.authname, http_date(time), extra)
         inm = self.get_header('If-None-Match')
         if (not inm or inm != etag):
             self.send_header('ETag', etag)
@@ -411,7 +412,8 @@ class Request(object):
             raise HTTPNotFound("File %s not found" % path)
 
         stat = os.stat(path)
-        last_modified = http_date(stat.st_mtime)
+        mtime = datetime.fromtimestamp(stat.st_mtime, localtz)
+        last_modified = http_date(mtime)
         if last_modified == self.get_header('If-Modified-Since'):
             self.send_response(304)
             self.end_headers()

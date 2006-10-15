@@ -16,7 +16,7 @@
 
     <div id="content" class="roadmap">
       <h1>Roadmap</h1>
-      
+
       <form id="prefs" method="get" action="">
         <div>
           <input type="checkbox" id="showall" name="show" value="all"
@@ -34,10 +34,10 @@
           <div class="info">
             <h2><a href="${milestone.href}">Milestone: <em>${milestone.name}</em></a></h2>
             <py:choose>
-              <p py:when="milestone.completed" title="${milestone.completed_date}"
-                 class="date">Completed ${milestone.completed_delta} ago</p>
-              <p py:when="milestone.due" title="${milestone.due_date}"
-                 class="date">Due in ${milestone.due_delta}</p>
+              <p py:when="milestone.completed" title="${format_date(milestone.completed)}"
+                 class="date">Completed ${pretty_timedelta(milestone.completed)} ago</p>
+              <p py:when="milestone.due" title="${format_date(milestone.due)}"
+                 class="date">Due in ${pretty_timedelta(milestone.due + timedelta(days=1))}</p>
               <p py:otherwise="" class="date">No date set</p>
             </py:choose>
             <py:if test="milestone.stats.total_tickets"

@@ -18,6 +18,7 @@
 #         Christopher Lenz <cmlenz@gmx.de>
 #         Christian Boos <cboos@neuf.fr>
 
+from datetime import datetime
 import posixpath
 import re
 from StringIO import StringIO
@@ -30,7 +31,7 @@ from trac.mimeview import Mimeview, is_binary
 from trac.perm import IPermissionRequestor
 from trac.Search import ISearchSource, search_to_sql, shorten_result
 from trac.Timeline import ITimelineEventProvider
-from trac.util.datefmt import format_datetime, pretty_timedelta
+from trac.util.datefmt import pretty_timedelta, utc
 from trac.util.html import html, escape, unescape, Markup
 from trac.util.text import unicode_urlencode, shorten_line, CRLF
 from trac.versioncontrol import Changeset, Node
@@ -298,13 +299,7 @@ class ChangesetModule(Component):
                 properties.append({'name': name, 'value': value,
                                    'htmlclass': htmlclass})
 
-            data['changeset'] = {
-                'revision': chgset.rev,
-                'time': format_datetime(chgset.date),
-                'age': pretty_timedelta(chgset.date, None, 3600),
-                'author': chgset.author or 'anonymous',
-                'message': message, 'properties': properties
-            }
+            data['changeset'] = chgset
             oldest_rev = repos.oldest_rev
             if chgset.rev != oldest_rev:
                 if restricted:
@@ -745,12 +740,13 @@ class ChangesetModule(Component):
         cursor = db.cursor()
         cursor.execute("SELECT rev,time,author,message "
                        "FROM revision WHERE " + sql, args)
-        for rev, date, author, log in cursor:
+        for rev, ts, author, log in cursor:
             if not authzperm.has_permission_for_changeset(rev):
                 continue
             yield (req.href.changeset(rev),
                    '[%s]: %s' % (rev, shorten_line(log)),
-                   date, author, shorten_result(log, terms))
+                   datetime.fromtimestamp(ts, utc), author,
+                   shorten_result(log, terms))
 
 
 class AnyDiffModule(Component):

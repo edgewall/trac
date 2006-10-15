@@ -15,14 +15,14 @@
 #
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
+from datetime import datetime
 import re
 from time import localtime, strftime, time
 
 from trac import __version__
 from trac.core import *
 from trac.perm import IPermissionRequestor
-from trac.util.datefmt import format_date, format_datetime, parse_date, \
-                               pretty_timedelta
+from trac.util.datefmt import parse_date, utc, to_timestamp
 from trac.util.html import html, unescape, Markup
 from trac.util.text import shorten_line, CRLF, to_unicode
 from trac.ticket import Milestone, Ticket, TicketSystem
@@ -97,13 +97,9 @@ def milestone_to_hdf(env, db, req, milestone):
         hdf['description'] = wiki_to_html(milestone.description, env, req, db)
     if milestone.due:
         hdf['due'] = milestone.due
-        hdf['due_date'] = format_date(milestone.due)
-        hdf['due_delta'] = pretty_timedelta(milestone.due + 86400)
         hdf['late'] = milestone.is_late
     if milestone.completed:
         hdf['completed'] = milestone.completed
-        hdf['completed_date'] = format_datetime(milestone.completed)
-        hdf['completed_delta'] = pretty_timedelta(milestone.completed)
     return hdf
 
 def _get_groups(env, db, by='component'):
@@ -314,8 +310,9 @@ class MilestoneModule(Component):
             cursor = db.cursor()
             cursor.execute("SELECT completed,name,description FROM milestone "
                            "WHERE completed>=%s AND completed<=%s",
-                           (start, stop,))
-            for completed, name, description in cursor:
+                           (to_timestamp(start), to_timestamp(stop)))
+            for ts, name, description in cursor:
+                completed = datetime.fromtimestamp(ts, utc)
                 title = Markup('Milestone <em>%s</em> completed', name)
                 if format == 'rss':
                     href = req.abs_href.milestone(name)
@@ -388,16 +385,16 @@ class MilestoneModule(Component):
 
         due = req.args.get('duedate', '')
         try:
-            milestone.due = due and parse_date(due) or 0
+            milestone.due = due and parse_date(due, tzinfo=req.tz) or 0
         except ValueError, e:
             raise TracError(to_unicode(e), 'Invalid Date Format')
         if req.args.has_key('completed'):
             completed = req.args.get('completeddate', '')
             try:
-                milestone.completed = completed and parse_date(completed) or 0
+                milestone.completed = completed and parse_date(completed) or None
             except ValueError, e:
                 raise TracError(to_unicode(e), 'Invalid Date Format')
-            if milestone.completed > time():
+            if milestone.completed > datetime.now(utc):
                 raise TracError('Completion date may not be in the future',
                                 'Invalid Completion Date')
             retarget_to = req.args.get('target')
@@ -439,8 +436,7 @@ class MilestoneModule(Component):
         from trac.util.datefmt import get_date_format_hint, \
                                        get_datetime_format_hint
         data = {'date_hint': get_date_format_hint(),
-                'datetime_hint': get_datetime_format_hint(),
-                'datetime_now': format_datetime()}
+                'datetime_hint': get_datetime_format_hint()}
 
         if milestone.exists:
             req.perm.assert_permission('MILESTONE_MODIFY')

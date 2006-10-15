@@ -1,7 +1,9 @@
+from datetime import datetime
 import unittest
 
 from trac.core import *
 from trac.test import EnvironmentStub
+from trac.util.datefmt import utc, to_timestamp
 from trac.wiki import WikiPage, IWikiChangeListener
 
 
@@ -41,10 +43,11 @@ class WikiPageTestCase(unittest.TestCase):
         self.assertEqual(0, page.readonly)
 
     def test_existing_page(self):
+        t = datetime(2001, 1, 1, 1, 1, 1, 0, utc)
         cursor = self.db.cursor()
         cursor.execute("INSERT INTO wiki VALUES(%s,%s,%s,%s,%s,%s,%s,%s)",
-                       ('TestPage', 0, 42, 'joe', '::1', 'Bla bla', 'Testing',
-                        0))
+                       ('TestPage', 0, to_timestamp(t), 'joe', '::1', 'Bla bla',
+                        'Testing', 0))
 
         page = WikiPage(self.env, 'TestPage')
         self.assertEqual('TestPage', page.name)
@@ -53,18 +56,19 @@ class WikiPageTestCase(unittest.TestCase):
         self.assertEqual(False, page.readonly)
         history = list(page.get_history())
         self.assertEqual(1, len(history))
-        self.assertEqual((0, 42, 'joe', 'Testing', '::1'), history[0])
+        self.assertEqual((0, t, 'joe', 'Testing', '::1'), history[0])
 
     def test_create_page(self):
         page = WikiPage(self.env)
         page.name = 'TestPage'
         page.text = 'Bla bla'
-        page.save('joe', 'Testing', '::1', 42)
+        t = datetime(2001, 1, 1, 1, 1, 1, 0, utc)
+        page.save('joe', 'Testing', '::1', t)
 
         cursor = self.db.cursor()
         cursor.execute("SELECT version,time,author,ipnr,text,comment,"
                        "readonly FROM wiki WHERE name=%s", ('TestPage',))
-        self.assertEqual((1, 42, 'joe', '::1', 'Bla bla', 'Testing', 0),
+        self.assertEqual((1, to_timestamp(t), 'joe', '::1', 'Bla bla', 'Testing', 0),
                          cursor.fetchone())
 
         listener = TestWikiChangeListener(self.env)
@@ -72,31 +76,33 @@ class WikiPageTestCase(unittest.TestCase):
 
     def test_update_page(self):
         cursor = self.db.cursor()
+        t = datetime(2001, 1, 1, 1, 1, 1, 0, utc)
+        t2 = datetime(2002, 1, 1, 1, 1, 1, 0, utc)
         cursor.execute("INSERT INTO wiki VALUES(%s,%s,%s,%s,%s,%s,%s,%s)",
-                       ('TestPage', 1, 42, 'joe', '::1', 'Bla bla', 'Testing',
-                        0))
+                       ('TestPage', 1, to_timestamp(t), 'joe', '::1', 'Bla bla',
+                        'Testing', 0))
 
         page = WikiPage(self.env, 'TestPage')
         page.text = 'Bla'
-        page.save('kate', 'Changing', '192.168.0.101', 43)
+        page.save('kate', 'Changing', '192.168.0.101', t2)
 
         cursor.execute("SELECT version,time,author,ipnr,text,comment,"
                        "readonly FROM wiki WHERE name=%s", ('TestPage',))
-        self.assertEqual((1, 42, 'joe', '::1', 'Bla bla', 'Testing', 0),
+        self.assertEqual((1, to_timestamp(t), 'joe', '::1', 'Bla bla', 'Testing', 0),
                          cursor.fetchone())
-        self.assertEqual((2, 43, 'kate', '192.168.0.101', 'Bla',
+        self.assertEqual((2, to_timestamp(t2), 'kate', '192.168.0.101', 'Bla',
                           'Changing', 0), cursor.fetchone())
 
         listener = TestWikiChangeListener(self.env)
-        self.assertEqual((page, 2, 43, 'Changing', 'kate', '192.168.0.101'),
+        self.assertEqual((page, 2, t2, 'Changing', 'kate', '192.168.0.101'),
                          listener.changed[0])
 
         page = WikiPage(self.env, 'TestPage')
         history = list(page.get_history())
         self.assertEqual(2, len(history))
-        self.assertEqual((2, 43, 'kate', 'Changing', '192.168.0.101'),
+        self.assertEqual((2, t2, 'kate', 'Changing', '192.168.0.101'),
                          history[0])
-        self.assertEqual((1, 42, 'joe', 'Testing', '::1'), history[1])
+        self.assertEqual((1, t, 'joe', 'Testing', '::1'), history[1])
 
     def test_delete_page(self):
         cursor = self.db.cursor()
