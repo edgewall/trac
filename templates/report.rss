@@ -21,13 +21,13 @@
             </py:when>
             <py:when test="col in ('time', 'changetime', 'created', 'modified')">
               <!-- FIXME: we end up with multiple pubDate -->
-              <pubDate py:if="cell.value != 'None'">${http_date(cell.value)}</pubDate>
+              <pubDate py:if="cell.value != 'None'">${http_date(fromtimestamp(int(cell.value)))}</pubDate>
             </py:when>
             <py:when test="col == 'summary'">
               <title>#$row.id: $cell.value</title>
             </py:when>
             <py:when test="col == 'description'">
-              <description>${unicode($cell.parsed)}</description>
+              <description>${unicode(cell.parsed)}</description>
             </py:when>
           </py:choose>
         </py:with>

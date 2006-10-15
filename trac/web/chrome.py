@@ -15,7 +15,7 @@
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
 import __builtin__
-from datetime import timedelta
+from datetime import datetime, timedelta
 import os
 import re
 
@@ -424,6 +424,8 @@ class Chrome(Component):
             return format_time(tzinfo=req.tz, *args, **kw)
         def _format_datetime(*args, **kw):
             return format_datetime(tzinfo=req.tz, *args, **kw)
+        def _fromtimestamp(t):
+            return datetime.fromtimestamp(t, req.tz)
 
         data['pretty_size'] = pretty_size
         data['pretty_timedelta'] = pretty_timedelta
@@ -432,6 +434,7 @@ class Chrome(Component):
         data['format_time'] = _format_time
         data['http_date'] = http_date
         data['timedelta'] = timedelta
+        data['fromtimestamp'] = _fromtimestamp
         data['quote_plus'] = unicode_quote_plus
         
         ## debugging tools
