@@ -249,7 +249,7 @@ class HDFWrapper:
                     set_unicode(prefix, value)
             elif isinstance(value, dict):
                 for k in value.keys():
-                    add_value('%s.%s' % (prefix, k), value[k])
+                    add_value('%s.%s' % (prefix, to_unicode(k)), value[k])
             else:
                 if hasattr(value, '__iter__') or \
                         isinstance(value, (list, tuple)):
