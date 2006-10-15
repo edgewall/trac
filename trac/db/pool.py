@@ -81,12 +81,11 @@ class ConnectionPool(object):
             if tid in self._active:
                 num, cnx = self._active.get(tid)
                 if num == 0: # was pushed back (see _cleanup)
-                    if try_rollback(cnx):
-                        self._active[tid][0] = num + 1
-                    else:
+                    if not try_rollback(cnx):
                         del self._active[tid]
                         cnx = None
                 if cnx:
+                    self._active[tid][0] = num + 1
                     return PooledConnection(self, cnx, tid)
             while True:
                 if self._dormant:
