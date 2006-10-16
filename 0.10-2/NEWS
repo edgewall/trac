@@ -1,0 +1,12 @@
+trac (0.10-1) unstable; urgency=low
+
+  This release require that you handle the upgrade process for each
+  project byhand.
+  
+  To do that, you should do two steps on each project:
+  
+   $: trac-admin /path/to/your/project upgrade
+   $: trac-admin /path/to/your/project wiki upgrade
+
+ -- Otavio Salvador <otavio@debian.org>  Thu,  5 Oct 2006 13:52:10 -0300
+
