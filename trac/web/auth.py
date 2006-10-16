@@ -18,7 +18,12 @@ try:
     from base64 import b64decode
 except ImportError:
     from base64 import decodestring as b64decode
+try:
+    import threading
+except ImportError:
+    import dummy_threading as threading
 import md5
+import os
 import re
 import sys
 import time
@@ -194,19 +199,36 @@ class HTTPAuthentication(object):
         raise NotImplementedError
 
 
-class BasicAuthentication(HTTPAuthentication):
+class PasswordFileAuthentication(HTTPAuthentication):
+    def __init__(self, filename):
+        self.filename = filename
+        self.mtime = os.stat(filename).st_mtime
+        self.load(self.filename)
+        self._lock = threading.Lock()
+
+    def check_reload(self):
+        self._lock.acquire()
+        try:
+            mtime = os.stat(self.filename).st_mtime
+            if mtime > self.mtime:
+                self.mtime = mtime
+                self.load(self.filename)
+        finally:
+            self._lock.release()
+
+class BasicAuthentication(PasswordFileAuthentication):
 
     def __init__(self, htpasswd, realm):
-        self.hash = {}
         self.realm = realm
         try:
             import crypt
             self.crypt = crypt.crypt
         except ImportError:
             self.crypt = None
-        self.load(htpasswd)
+        PasswordFileAuthentication.__init__(self, htpasswd)
 
     def load(self, filename):
+        self.hash = {}
         fd = open(filename, 'r')
         for line in fd:
             line = line.strip()
@@ -228,6 +250,7 @@ class BasicAuthentication(HTTPAuthentication):
             print >> sys.stderr, "Warning: found no users in file:", filename
 
     def test(self, user, password):
+        self.check_reload()
         the_hash = self.hash.get(user)
         if the_hash is None:
             return False
@@ -253,21 +276,21 @@ class BasicAuthentication(HTTPAuthentication):
                          % self.realm)])('')
 
 
-class DigestAuthentication(HTTPAuthentication):
+class DigestAuthentication(PasswordFileAuthentication):
     """A simple HTTP digest authentication implementation (RFC 2617)."""
 
     MAX_NONCES = 100
 
     def __init__(self, htdigest, realm):
         self.active_nonces = []
-        self.hash = {}
         self.realm = realm
-        self.load_htdigest(htdigest, realm)
+        PasswordFileAuthentication.__init__(self, htdigest)
 
-    def load_htdigest(self, filename, realm):
+    def load(self, filename):
         """Load account information from apache style htdigest files, only
         users from the specified realm are used
         """
+        self.hash = {}
         fd = open(filename, 'r')
         for line in fd.readlines():
             line = line.strip()
@@ -279,10 +302,10 @@ class DigestAuthentication(HTTPAuthentication):
                 print >>sys.stderr, 'Warning: invalid digest line in %s: %s' \
                                     % (filename, line)
                 continue
-            if r == realm:
+            if r == self.realm:
                 self.hash[u] = a1
         if self.hash == {}:
-            print >> sys.stderr, "Warning: found no users in realm:", realm
+            print >> sys.stderr, "Warning: found no users in realm:", self.realm
         
     def parse_auth_header(self, authorization):
         values = {}
@@ -322,6 +345,7 @@ class DigestAuthentication(HTTPAuthentication):
                 self.send_auth_request(environ, start_response)
                 return None
         # Unknown user?
+        self.check_reload()
         if not self.hash.has_key(auth['username']):
             self.send_auth_request(environ, start_response)
             return None
