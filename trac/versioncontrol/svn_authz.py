@@ -38,8 +38,8 @@ def SubversionAuthorizer(env, authname):
         return Authorizer()
 
     module_name = env.config.get('trac', 'authz_module_name')
-    db = env.get_db_cnx()
-    return RealSubversionAuthorizer(db, authname, module_name, authz_file)
+    repos = env.get_repository()
+    return RealSubversionAuthorizer(repos, authname, module_name, authz_file)
 
 def parent_iter(path):
     path = path.strip('/')
@@ -64,8 +64,8 @@ class RealSubversionAuthorizer(Authorizer):
     module_name = ''
     conf_authz = None
 
-    def __init__(self, db, auth_name, module_name, cfg_file, cfg_fp=None):
-        self.db = db
+    def __init__(self, repos, auth_name, module_name, cfg_file, cfg_fp=None):
+        self.repos = repos
         self.auth_name = auth_name
         self.module_name = module_name
                                 
@@ -94,10 +94,9 @@ class RealSubversionAuthorizer(Authorizer):
         return 0
 
     def has_permission_for_changeset(self, rev):
-        cursor = self.db.cursor()
-        cursor.execute("SELECT path FROM node_change WHERE rev=%s", (rev,))
-        for row in cursor:
-            if self.has_permission(row[0]):
+        changeset = self.repos.get_changeset(rev)
+        for path,_,_,_,_ in changeset.get_changes():
+            if self.has_permission(path):
                 return 1
         return 0
 

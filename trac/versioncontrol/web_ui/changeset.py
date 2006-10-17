@@ -34,7 +34,7 @@ from trac.Timeline import ITimelineEventProvider
 from trac.util.datefmt import pretty_timedelta, utc
 from trac.util.html import html, escape, unescape, Markup
 from trac.util.text import unicode_urlencode, shorten_line, CRLF
-from trac.versioncontrol import Changeset, Node
+from trac.versioncontrol import Changeset, Node, NoSuchChangeset
 from trac.versioncontrol.diff import get_diff_options, diff_blocks, unified_diff
 from trac.versioncontrol.svn_authz import SubversionAuthorizer
 from trac.versioncontrol.web_ui.util import render_node_property
@@ -688,14 +688,12 @@ class ChangesetModule(Component):
             rev, path = chgset[:sep], chgset[sep:]
         else:
             rev, path = chgset, None
-        cursor = formatter.db.cursor()
-        cursor.execute('SELECT message FROM revision WHERE rev=%s', (rev,))
-        row = cursor.fetchone()
-        if row:
+        try:
+            changeset = self.env.get_repository().get_changeset(rev)
             return html.A(label, class_="changeset",
-                          title=shorten_line(row[0]),
+                          title=shorten_line(changeset.message),
                           href=formatter.href.changeset(rev, path))
-        else:
+        except NoSuchChangeset:
             return html.A(label, class_="missing changeset",
                           href=formatter.href.changeset(rev, path),
                           rel="nofollow")
