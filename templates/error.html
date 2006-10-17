@@ -7,7 +7,7 @@
   <xi:include href="layout.html" />
   <head>
     <title>${message or 'Error'}</title>
-    <script type="text/javascript">/*<![CDATA[*/
+    <script py:if="frames" type="text/javascript">/*<![CDATA[*/
       $(document).ready(function() {
         $("#traceback a").click(function() {
           $("div", this.parentNode).slideToggle("fast");
@@ -77,17 +77,16 @@ ${traceback}
           </div>
           <py:choose>
             <py:when test="not perm.has_permission('TRAC_ADMIN')">
-              <p>There was an internal error in Trac, <strong>we strongly
-              recommend that you inform your local
+              <p>There was an internal error in Trac. It is recommended
+              that you inform your local
               <a py:strip="not project.admin" href="mailto:${project.admin}">Trac
-              administrator</a></strong> and give him all the information he
-              needs to reproduce the issue.
+              administrator</a> and give him all the information he needs to
+              reproduce the issue.
               </p>
               <py:if test="not project.admin">
                 <form id="newticket" method="get" action="${href.newticket()}">
                   <p>To that end, you could ${create_ticket} a ticket at this
-                  site, and select the <i>infrastructure</i> or a similar
-                  component.</p>
+                  site.</p>
                 </form>
               </py:if>
               <p>
@@ -96,19 +95,21 @@ ${traceback}
               </p>
             </py:when>
             <py:otherwise>
-              <p>If you think this really should work and you can reproduce
-              it, you should consider reporting this problem to the Trac
-              team.</p>
-              <p>First
+              <p>If you think this should work you can reproduce the problem,
+              you should consider reporting this to the Trac team.</p>
+              <p>Before you do that, though, please first try
                 <a py:with="q = quote_plus(message[:80])"
-                   href="${trac.homepage}/search?ticket=yes&amp;noquickjump=1&amp;q=$q">search</a>
-                for a similar issue, as it is quite likely that this problem
-                has been reported before.
+                   href="${trac.homepage}/search?ticket=yes&amp;noquickjump=1&amp;q=$q">searching</a>
+                for similar issues, as it is quite likely that this problem
+                has been reported before. For questions about installation
+                and configuration of Trac, please try the
+                <a href="${trac.homepage}/wiki/MailingList">mailing list</a>
+                instead of filing a ticket.
               </p>
               <form id="newticket" method="get" action="${trac.homepage}/newticket">
-                <p>If this is not the case, please ${create_ticket(True)} a
-                new ticket with the Trac project, where you can describe the
-                problem and explain how to reproduce it.</p>
+                <p>Otherwise, please ${create_ticket(True)} a new ticket at
+                the Trac project site, where you can describe the problem and
+                explain how to reproduce it.</p>
               </form>
               <h2>System Information:</h2>
               <table class="listing" id="systeminfo">
@@ -117,7 +118,7 @@ ${traceback}
                   <td>$value</td>
                 </tr>
               </table>
-              <py:if test="traceback">
+              <py:if test="frames">
                 <h2>Python Traceback</h2>
                 <div id="traceback">
                   Most recent call last:
@@ -151,9 +152,9 @@ ${traceback}
                       </div>
                     </li>
                   </ul>
-                  <pre style="display: none"><py:for each="frame in frames">File "${frame.filename}", line ${frame.lineno}, in ${frame.function}
+                  <pre style="display: none"><py:for each="frame in frames">File "${frame.filename}", line ${frame.lineno}, in ${frame.function}<py:if test="frame.line">
   ${frame.line.lstrip()}
-</py:for></pre>
+</py:if></py:for></pre>
                   <p><input type="button" id="tbtoggle" value="Switch to plain text view" /></p>
                 </div>
               </py:if>

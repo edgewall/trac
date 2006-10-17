@@ -446,14 +446,8 @@ div.system-message p.system-message-title { font-weight: bold; }
 #content.error #newticket form { display: inline; }
 #content.error #newticket textarea { display: none; }
 
-#content.error #systeminfo dl { margin-left: 1em; }
-#content.error #systeminfo dt {
-  float: left;
-  font-weight: bold;
-  padding-right: 1em;
-  text-align: right;
-  width: 8em;
-}
+#content.error #systeminfo { margin: 1em; width: auto; }
+#content.error #systeminfo th { font-weight: bold; text-align: right; }
 
 #content.error #traceback { margin-left: 1em; }
 #content.error #traceback :link, #content.error #traceback :visited {
