@@ -218,9 +218,9 @@ class Formatter(object):
         #  * list
         r"(?P<list>^(?P<ldepth>\s+)(?:[-*]|\d+\.|[a-zA-Z]\.|[ivxIVX]{1,5}\.) )",
         # definition:: 
-        r"(?P<definition>^\s+((?:%s.*?%s|%s.*?%s|[^%s%s])+?::)(?:\s+|$))"
-        % (INLINE_TOKEN, INLINE_TOKEN, STARTBLOCK_TOKEN, ENDBLOCK_TOKEN,
-           INLINE_TOKEN, STARTBLOCK[0]),
+        r"(?P<definition>^\s+((?:%s[^%s]*%s|%s.*?%s|[^%s%s:]|:[^:])+::)(?:\s+|$))"
+        % (INLINE_TOKEN, INLINE_TOKEN, INLINE_TOKEN,
+           STARTBLOCK_TOKEN, ENDBLOCK_TOKEN, INLINE_TOKEN, STARTBLOCK[0]),
         # (leading space)
         r"(?P<indent>^(?P<idepth>\s+)(?=\S))",
         # || table ||
