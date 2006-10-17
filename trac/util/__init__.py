@@ -182,6 +182,28 @@ def get_last_traceback():
     traceback.print_exc(file=tb)
     return tb.getvalue()
 
+def get_lines_from_file(filename, lineno, context=0):
+    """Return `content` number of lines before and after the specified
+    `lineno` from the file identified by `filename`.
+    
+    Returns a `(lines_before, line, lines_after)` tuple.
+    """
+    if os.path.isfile(filename):
+        fileobj = open(filename, 'U')
+        try:
+            lines = fileobj.readlines()
+            lbound = max(0, lineno - context)
+            ubound = lineno + 1 + context
+
+            before = [l.rstrip('\n') for l in lines[lbound:lineno]]
+            line = lines[lineno].rstrip('\n')
+            after = [l.rstrip('\n') for l in lines[lineno + 1:ubound]]
+
+            return before, line, after
+        finally:
+            fileobj.close()
+    return (), None, ()
+
 def safe__import__(module_name):
     """
     Safe imports: rollback after a failed import.

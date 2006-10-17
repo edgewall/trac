@@ -30,10 +30,10 @@ from trac.config import ExtensionOption, Option, OrderedExtensionsOption
 from trac.core import *
 from trac.env import open_environment
 from trac.perm import PermissionCache, NoPermissionCache, PermissionError
-from trac.util import reversed, get_last_traceback
+from trac.util import reversed, get_lines_from_file, get_last_traceback
 from trac.util.datefmt import format_datetime, http_date, localtz, timezone
 from trac.util.html import Markup
-from trac.util.text import to_unicode
+from trac.util.text import shorten_line, to_unicode
 from trac.web.api import *
 from trac.web.chrome import Chrome
 from trac.web.clearsilver import HDFWrapper
@@ -386,9 +386,6 @@ def dispatch_request(environ, start_response):
         env.log.warn(e)
         title = e.reason or 'Error'
         data = {'title': title, 'type': 'TracError', 'message': e.message}
-        if req.hdf:
-            req.hdf['title'] = title
-            req.hdf['error'] = data            
         try:
             req.send_error(sys.exc_info(), status=e.code, env=env, data=data)
         except RequestDone:
@@ -399,11 +396,27 @@ def dispatch_request(environ, start_response):
 
         message = "%s: %s" % (e.__class__.__name__, to_unicode(e))
         title = message or 'Error'
+        traceback = get_last_traceback()
+
+        frames = []
+        if req.perm.has_permission('TRAC_ADMIN'):
+            tb = sys.exc_info()[2]
+            while tb:
+                if not tb.tb_frame.f_locals.get('__traceback_hide__'):
+                    filename = tb.tb_frame.f_code.co_filename
+                    lineno = tb.tb_lineno - 1
+                    before, line, after = get_lines_from_file(filename,
+                                                              lineno, 5)
+                    frames += [{'traceback': tb, 'filename': filename,
+                                'lineno': lineno, 'line': line,
+                                'lines_before': before, 'lines_after': after,
+                                'function': tb.tb_frame.f_code.co_name,
+                                'vars': tb.tb_frame.f_locals.items()}]
+                tb = tb.tb_next
+
         data = {'type': 'internal', 'message': message,
-                'traceback': get_last_traceback()}
-        if req.hdf:
-            req.hdf['title'] = title
-            req.hdf['error'] = data
+                'traceback': traceback, 'frames': frames,
+                'shorten_line': shorten_line}
         try:
             req.send_error(sys.exc_info(), status=500, env=env, data=data)
         except RequestDone:

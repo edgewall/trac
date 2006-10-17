@@ -91,7 +91,12 @@ input[type=text]:focus, input.textwidget:focus, textarea:focus {
 }
 option { border-bottom: 1px dotted #d7d7d7 }
 fieldset { border: 1px solid #d7d7d7; padding: .5em; margin: 0 }
-fieldset.iefix { background: transparent; border: none; padding: 0; margin: 0 }
+fieldset.iefix {
+  background: transparent;
+  border: none;
+  padding: 0;
+  margin: 0;
+}
 * html fieldset.iefix { width: 98% }
 fieldset.iefix p { margin: 0 }
 legend { color: #999; padding: 0 .25em; font-size: 90%; font-weight: bold }
@@ -431,13 +436,60 @@ table.listing tbody tr:hover { background: #eed !important }
  padding: .5em;
  margin: 1em 0;
 }
-#content.error pre, div.system-message pre { margin-left: 1em; overflow: auto }
+#content.error pre, div.system-message pre {
+  margin-left: 1em;
+  overflow: auto;
+}
 div.system-message p { margin: 0; }
 div.system-message p.system-message-title { font-weight: bold; }
 
-#content.error #systeminfo th { font-weight: bold; text-align: right; }
 #content.error #newticket form { display: inline; }
 #content.error #newticket textarea { display: none; }
+
+#content.error #systeminfo dl { margin-left: 1em; }
+#content.error #systeminfo dt {
+  float: left;
+  font-weight: bold;
+  padding-right: 1em;
+  text-align: right;
+  width: 8em;
+}
+
+#content.error #traceback { margin-left: 1em; }
+#content.error #traceback :link, #content.error #traceback :visited {
+  border: none;
+}
+#content.error #tbtoggle { font-size: 80%; }
+#content.error #traceback div { margin-left: 1em; }
+#content.error #traceback h3 { font-size: 95%; margin: .5em 0 0; }
+#content.error #traceback :link var, #content.error #traceback :visited var {
+  font-family: monospace;
+  font-style: normal;
+  font-weight: bold;
+}
+#content.error #traceback span.file { color: #666; font-size: 85%; }
+#content.error #traceback ul { list-style: none; margin: .5em 0; padding: 0; }
+#content.error #traceback ol {
+  border: 1px dotted #d7d7d7;
+  color: #999;
+  font-size: 85%;
+  line-height: 1;
+  margin: .5em 0;
+}
+#content.error #traceback ol li { white-space: pre; }
+#content.error #traceback ol li.current { background: #e6e6e6; color: #333; }
+#content.error #traceback ol li code { color: #666; }
+#content.error #traceback ol li.current code { color: #000; }
+#content.error #traceback table { margin: .5em 0 1em;  }
+#content.error #traceback th, #content.error #traceback td {
+  font-size: 85%; padding: 1px;
+}
+#content.error #traceback th var {
+  font-family: monospace;
+  font-style: normal;
+}
+#content.error #traceback td code { white-space: pre; }
+#content.error #traceback pre { font-size: 95%; }
 
 /* Styles for search word highlighting */
 @media screen {
@@ -450,6 +502,8 @@ div.system-message p.system-message-title { font-weight: bold; }
 
 @media print {
  #header, #altlinks, #footer, #help { display: none }
- .nav, form, .buttons form, form .buttons, form .inlinebuttons { display: none }
+ .nav, form, .buttons form, form .buttons, form .inlinebuttons {
+   display: none;
+ }
  form.printableform { display: block }
 }

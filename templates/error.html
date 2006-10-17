@@ -7,6 +7,28 @@
   <xi:include href="layout.html" />
   <head>
     <title>$title</title>
+    <script type="text/javascript">/*<![CDATA[*/
+      $(document).ready(function() {
+        $("#traceback a").click(function() {
+          $("div", this.parentNode).slideToggle("fast");
+          return false;
+        });
+        $("#tbtoggle").click(function() {
+          if (this.value.indexOf("interactive") < 0) {
+            this.value = "Switch to interactive view";
+            $("#traceback ul").fadeOut("fast", function() {
+              $("#traceback pre").fadeIn("fast");
+            });
+          } else {
+            this.value = "Switch to plain text view";
+            $("#traceback pre").fadeOut("fast", function() {
+              $("#traceback ul").fadeIn("fast");
+            });
+          }
+        });
+        return false;
+      });
+    /*]]>/**/</script>
   </head>
 
   <py:def function="create_ticket(teo=False)">
@@ -24,13 +46,13 @@ ${pprint(req.args)}
 </py:if>
 
 ==== System Information ====
-<py:for each="k, v in trac.systeminfo.iteritems()">
+<py:for each="k, v in trac.systeminfo.items()">
 || '''$k''' || ${'\n' in v and ['`%s`[[br]]' % line for line in v.split('\n')] or '`%s`' % v} ||
 </py:for>
 
 ==== Python Traceback ====
 {{{
-$traceback
+${traceback}
 }}}
     </textarea>
     <span class="inlinebuttons">
@@ -55,19 +77,17 @@ $traceback
           </div>
           <py:choose>
             <py:when test="not perm.has_permission('TRAC_ADMIN')">
-              <p>
-                There was an internal error in Trac,
-                <strong>we strongly recommend that you inform your local
-                  <a py:strip="not project.admin" href="mailto:$project.admin">Trac administrator</a>
-                </strong>
-                and give him all the information he needs to reproduce the issue.
+              <p>There was an internal error in Trac, <strong>we strongly
+              recommend that you inform your local
+              <a py:strip="not project.admin" href="mailto:${project.admin}">Trac
+              administrator</a></strong> and give him all the information he
+              needs to reproduce the issue.
               </p>
               <py:if test="not project.admin">
                 <form id="newticket" method="get" action="${href.newticket()}">
-                  <p>
-                    To that end, you could ${create_ticket} a ticket in this Trac, and
-                    select the <i>infrastructure</i> or a similar <i>trac</i> related component.
-                  </p>
+                  <p>To that end, you could ${create_ticket} a ticket at this
+                  site, and select the <i>infrastructure</i> or a similar
+                  component.</p>
                 </form>
               </py:if>
               <p>
@@ -76,30 +96,67 @@ $traceback
               </p>
             </py:when>
             <py:otherwise>
-              <p>If you think this really should work and you can reproduce it,
-                you should consider reporting this problem to the Trac team.</p>
+              <p>If you think this really should work and you can reproduce
+              it, you should consider reporting this problem to the Trac
+              team.</p>
               <p>First
                 <a py:with="q = quote_plus(message[:80])"
-                   href="$trac.homepage/search?ticket=yes&amp;noquickjump=1&amp;q=$q">search</a>
-                for a similar issue, as it is quite likely that this problem has been reported before.
+                   href="${trac.homepage}/search?ticket=yes&amp;noquickjump=1&amp;q=$q">search</a>
+                for a similar issue, as it is quite likely that this problem
+                has been reported before.
               </p>
-              <form id="newticket" method="get" action="$trac.homepage/newticket">
-                <p>
-                  If this is not the case, then ${create_ticket(True)} a new ticket in Trac's Trac,
-                  where you can describe the problem and explain how to reproduce it.
-                </p>
+              <form id="newticket" method="get" action="${trac.homepage}/newticket">
+                <p>If this is not the case, please ${create_ticket(True)} a
+                new ticket with the Trac project, where you can describe the
+                problem and explain how to reproduce it.</p>
               </form>
-              <h4>System Information</h4>
-              <table id="systeminfo">
-                <tr py:for="k, v in trac.systeminfo.iteritems()">
-                  <th>$k:</th><td>$v</td>
+              <h2>System Information:</h2>
+              <table class="listing" id="systeminfo">
+                <tr py:for="name, value in trac.systeminfo.items()">
+                  <th>$name:</th>
+                  <td>$value</td>
                 </tr>
               </table>
               <py:if test="traceback">
-                <h4>Python Traceback</h4>
-                <pre>$traceback</pre>
+                <h2>Python Traceback</h2>
+                <div id="traceback">
+                  Most recent call last:
+                  <ul>
+                    <li class="frame" py:for="idx, frame in enumerate(frames)">
+                      <a href="#frame${idx}" id="#frame${idx}">
+                        <span class="file">File "${frame.filename}",
+                        line ${frame.lineno + 1}, in</span>
+                        <var>${frame.function}</var>
+                      </a>
+                      <div py:if="frame.line" class="source" style="display: none">
+                        <h3>Code fragment:</h3>
+                        <ol start="${frame.lineno - len(frame.lines_before)}">
+                          <li py:for="line in frame.lines_before"><code>${line or u'\xa0'}</code></li>
+                          <li class="current"><code>${frame.line or u'\xa0'}</code></li>
+                          <li py:for="line in frame.lines_after"><code>${line or u'\xa0'}</code></li>
+                        </ol>
+                      </div>
+                      <div py:if="frame.vars" class="vars" style="display: none">
+                        <h3>Local variables:</h3>
+                        <table class="listing">
+                          <thead><tr><th>Name</th><th>Value</th></tr></thead>
+                          <tbody>
+                            <tr py:for="idx, (name, value) in enumerate(sorted(frame.vars))"
+                                class="${idx % 2 and 'odd' or None}">
+                              <th scope="row"><var>$name</var></th>
+                              <td><code>${shorten_line(repr(value))}</code></td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </li>
+                  </ul>
+                  <pre style="display: none"><py:for each="frame in frames">File "${frame.filename}", line ${frame.lineno}, in ${frame.function}
+  ${frame.line.lstrip()}
+</py:for></pre>
+                  <p><input type="button" id="tbtoggle" value="Switch to plain text view" /></p>
+                </div>
               </py:if>
-              <p>&nbsp;</p>
             </py:otherwise>
           </py:choose>
         </py:when>
@@ -110,4 +167,3 @@ $traceback
     </div>
   </body>
 </html>
-

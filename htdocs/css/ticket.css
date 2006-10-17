@@ -1,6 +1,6 @@
 @import url(code.css);
 
-#content { width: 700px; max-width: 100% }
+#content.ticket { width: 700px; max-width: 100% }
 
 #newticket #description { width: 100% }
 #newticket #properties { width: 100% }
