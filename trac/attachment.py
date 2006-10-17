@@ -170,8 +170,8 @@ class Attachment(object):
             handle_ta = False
 
         self.size = size and int(size) or 0
-        time = int(t or time.time())
-        self.date = datetime.fromtimestamp(time, utc)
+        timestamp = int(t or time.time())
+        self.date = datetime.fromtimestamp(timestamp, utc)
 
         # Make sure the path to the attachment is inside the environment
         # attachments directory
@@ -195,8 +195,8 @@ class Attachment(object):
             cursor.execute("INSERT INTO attachment "
                            "VALUES (%s,%s,%s,%s,%s,%s,%s,%s)",
                            (self.parent_type, self.parent_id, filename,
-                            self.size, time, self.description, self.author,
-                            self.ipnr))
+                            self.size, timestamp, self.description,
+                            self.author, self.ipnr))
             shutil.copyfileobj(fileobj, targetfile)
             self.filename = filename
 
