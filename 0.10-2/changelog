@@ -3,6 +3,7 @@ trac (0.10-2) unstable; urgency=medium
   * debian/control: Added a Conflicts: against libapache2-mod-python2.3 to
     avoid breakage if using it through apache2 (Closes: #384381).
   * Urgency = high to get it back in etch.
+  * Added missing changelog entries from Andres Salomon.
 
  -- Jesus Climent <jesus.climent@hispalinux.es>  Mon, 16 Oct 2006 21:58:29 +0300
 
@@ -14,6 +15,33 @@ trac (0.10-1) unstable; urgency=low
     byhand
 
  -- Otavio Salvador <otavio@debian.org>  Thu,  5 Oct 2006 13:51:10 -0300
+
+trac (0.10~b1-1) experimental; urgency=low
+
+  * New upstream release, finally.
+  * Incorporate new python policy magic (closes: #384969).
+
+ -- Andres Salomon <dilinger@debian.org>  Wed, 30 Aug 2006 01:36:55 +0000
+
+trac (0.9.99+0.10svn20060710-1) experimental; urgency=low
+
+  * New snapshot of 0.10dev (revision 3519).  Note that this includes
+    the security update that was in the 0.9.6 release.
+
+ -- Andres Salomon <dilinger@debian.org>  Mon, 10 Jul 2006 15:36:51 -0400
+
+trac (0.9.99+0.10svn20060626-1) experimental; urgency=low
+
+  * New snapshot of 0.10dev (revision 3488).
+
+ -- Andres Salomon <dilinger@debian.org>  Mon, 26 Jun 2006 17:33:41 -0400
+
+trac (0.9.99+0.10svn20060610-1) experimental; urgency=low
+
+  * New upstream release; stick a snapshot of 0.10dev (revision 3390) into
+    experimental (closes: #370657).
+
+ -- Andres Salomon <dilinger@debian.org>  Sat, 10 Jun 2006 18:29:25 -0400
 
 trac (0.9.6-3) unstable; urgency=low
 
