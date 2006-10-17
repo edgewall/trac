@@ -154,20 +154,18 @@
   -
   -->
   <py:def function="preview_file(preview)">
-    <div py:if="preview" id="preview">
-      ${preview.rendered}
-      <py:choose>
-        <py:when test="preview.max_file_size_reached">
-          <strong>HTML preview not available</strong>,
-          since the file size exceeds $preview.max_file_size bytes.
-          Try <a href="$preview.raw_href">downloading</a> the file instead.
-        </py:when>
-        <py:when test="not preview.rendered">
-          <strong>HTML preview not available</strong>.
-          To view, <a href="$preview.raw_href">download</a> the file.
-        </py:when>
-      </py:choose>
-    </div>
+    ${preview.rendered}
+    <py:choose>
+      <py:when test="preview.max_file_size_reached">
+        <strong>HTML preview not available</strong>,
+        since the file size exceeds $preview.max_file_size bytes.
+        Try <a href="$preview.raw_href">downloading</a> the file instead.
+      </py:when>
+      <py:when test="not preview.rendered">
+        <strong>HTML preview not available</strong>.
+        To view, <a href="$preview.raw_href">download</a> the file.
+      </py:when>
+    </py:choose>
   </py:def>
 
   <!--! Display a list of attachments

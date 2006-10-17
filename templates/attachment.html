@@ -82,12 +82,14 @@
               </th>
             </tr>
             <tr>
-              <td class="message">$attachment.description</td>
+              <td class="message searchable">$attachment.description</td>
             </tr>
           </tbody>
         </table>
 
-        ${preview_file(preview)} <!--! a <div id="preview"> containing the rendered file preview -->
+        <div py:if="preview" id="preview" class="searchable">
+          ${preview_file(preview)}
+        </div>
 
         <py:if test="can_delete">
           <div class="buttons">

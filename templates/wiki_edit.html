@@ -8,6 +8,7 @@
   <xi:include href="macros.html" />
   <head>
     <title>$title</title>
+    <script type="text/javascript" src="${chrome.htdocs_location}js/wikitoolbar.js"></script>
   </head>
 
   <body>
@@ -65,12 +66,12 @@
 $page.text</textarea>
           </p>
           <script type="text/javascript">
-            var scrollBarPos = document.getElementById("scroll_bar_pos");
-            var text = document.getElementById("text");
-            addEvent(window, "load", function() {
-              if (scrollBarPos.value) text.scrollTop = scrollBarPos.value;
+            var scrollBarPos = $("#scroll_bar_pos").get(0);
+            var text = $("#text");
+            $(document).ready(function() {
+              if (scrollBarPos.value) text.get(0).scrollTop = scrollBarPos.value;
             });
-            addEvent(text, "blur", function() { scrollBarPos.value = text.scrollTop });
+            text.blur(function() { scrollBarPos.value = text.get(0).scrollTop });
           </script>
         </fieldset>
         <div id="help">
@@ -110,7 +111,6 @@ $page.text</textarea>
           </py:otherwise>
           <input type="submit" name="cancel" value="Cancel" />
         </div>
-        <script type="text/javascript" src="${chrome.htdocs_location}js/wikitoolbar.js"></script>
       </form>
     </div>
   </body>

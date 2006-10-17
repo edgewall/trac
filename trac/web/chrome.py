@@ -260,7 +260,9 @@ class Chrome(Component):
         add_link(req, 'search', req.href.search())
         add_link(req, 'help', req.href.wiki('TracGuide'))
         add_stylesheet(req, 'common/css/trac.css')
+        add_script(req, 'common/js/jquery.js')
         add_script(req, 'common/js/trac.js')
+        add_script(req, 'common/js/search.js')
 
         icon = self.env.project_icon
         if icon:

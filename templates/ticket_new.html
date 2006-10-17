@@ -7,8 +7,9 @@
   <xi:include href="layout.html" />
   <head>
     <title>New Ticket</title>
+    <script type="text/javascript" src="${chrome.htdocs_location}js/wikitoolbar.js"></script>
     <script type="text/javascript">
-      addEvent(window, 'load', function() { document.getElementById('summary').focus()}); 
+      $(document).ready(function() {$("#summary").get(0).focus()});
     </script>
   </head>
 
@@ -90,7 +91,6 @@
           <input type="submit" name="preview" value="Preview" accesskey="r" />&nbsp;
           <input type="submit" value="Submit ticket" />
         </div>
-        <script type="text/javascript" src="${chrome.htdocs_location}js/wikitoolbar.js"></script>
       </form>
 
       <div id="help">

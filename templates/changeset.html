@@ -104,7 +104,7 @@
           <dd class="$prop.htmlclass">$prop.value</dd>
           </span>
           <dt class="property message">Message:</dt>
-          <dd class="message" id="searchable">${changeset.message or '&nbsp;'}</dd>
+          <dd class="message searchable">${changeset.message or '&nbsp;'}</dd>
         </py:if>
         <dt class="property files">${filter(None, changes) and 'Files:' or '(No files)'}</dt>
         <dd class="files">

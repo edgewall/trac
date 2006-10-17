@@ -8,6 +8,11 @@
   <xi:include href="macros.html" />
   <head>
     <title>$title</title>
+    <script type="text/javascript">
+      $(document).ready(function() {
+        addHeadingLinks($("div.wikipage"), "Link to this section");
+      });
+    </script>
   </head>
 
   <body>
@@ -35,8 +40,8 @@
         </table>
       </py:if>
 
-      <div class="wikipage">
-        <div id="searchable">$page_html</div>
+      <div class="wikipage searchable">
+        $page_html
       </div>
 
       ${list_of_attachments(attachments, attach_href, compact=True)}
@@ -92,10 +97,6 @@
           </div>
         </py:if>
       </py:with>
-
-      <script type="text/javascript">
-        addHeadingLinks(document.getElementById("searchable"), "Link to this section");
-      </script>
 
     </div>
   </body>

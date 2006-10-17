@@ -132,12 +132,12 @@
             py:attrs="form_attrs(checked=query.groupdesc)" />
           <label for="groupdesc">descending</label>
           <script type="text/javascript">
-            var group = document.getElementById("group");
+            var group = $("#group");
             var updateGroupDesc = function() {
-              enableControl('groupdesc', group.selectedIndex != 0);
+              enableControl('groupdesc', group.get(0).selectedIndex != 0);
             }
-            addEvent(window, 'load', updateGroupDesc);
-            addEvent(group, 'change', updateGroupDesc);
+            $(document).ready(updateGroupDesc);
+            group.change(updateGroupDesc);
           </script>
         </p>
 

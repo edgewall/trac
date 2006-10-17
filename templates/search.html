@@ -8,7 +8,7 @@
   <head>
     <title>Search<py:if test="query"> Results</py:if></title>
     <script type="text/javascript">
-      addEvent(window, 'load', function() { document.getElementById('q').focus()}); 
+      $(document).ready(function() {$("#q").get(0).focus()});
     </script>
   </head>
 
@@ -51,7 +51,7 @@
             (${results.span[0] + 1} - ${results.span[1]} of ${results.num_items})
           </py:if>
         </h2>
-        <div id="searchable">
+        <div>
           <dl id="results">
             <py:if test="quickjump">
               <dt id="quickjump">
@@ -60,13 +60,13 @@
               <dd>${quickjump.description}</dd>
             </py:if>
             <py:for each="result in results">
-              <dt><a href="${result.href}">${result.title}</a></dt>
-              <dd>${result.excerpt}</dd>
+              <dt><a href="${result.href}" class="searchable">${result.title}</a></dt>
+              <dd class="searchable">${result.excerpt}</dd>
               <dd>
                 <span class="author">By ${result.author}</span> &mdash;
                 <span class="date">${result.date}</span>
                 <py:if test="result.keywords">
-                  &mdash; <span class="keywords">Keywords: <em>${result.keywords}</em></span>
+                  &mdash; <span class="keywords">Keywords: <em class="searchable">${result.keywords}</em></span>
                 </py:if>
               </dd>
             </py:for>
