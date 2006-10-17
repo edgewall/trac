@@ -277,11 +277,11 @@ class Request(object):
         self._send_cookie_headers()
         self._write = self._start_response(self._status, self._outheaders)
 
-    def check_modified(self, time, extra=''):
+    def check_modified(self, datetime, extra=''):
         """Check the request "If-None-Match" header against an entity tag.
 
         The entity tag is generated from the specified last modified time
-        in seconds (`timesecs`), optionally appending an `extra` string to
+        (`datetime`), optionally appending an `extra` string to
         indicate variants of the requested resource.
 
         That `extra` parameter can also be a list, in which case the MD5 sum
@@ -298,7 +298,7 @@ class Request(object):
             for elt in extra:
                 m.update(repr(elt))
             extra = m.hexdigest()
-        etag = 'W"%s/%s/%s"' % (self.authname, http_date(time), extra)
+        etag = 'W"%s/%s/%s"' % (self.authname, http_date(datetime), extra)
         inm = self.get_header('If-None-Match')
         if (not inm or inm != etag):
             self.send_header('ETag', etag)

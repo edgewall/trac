@@ -29,7 +29,7 @@ from trac.core import *
 from trac.env import IEnvironmentSetupParticipant
 from trac.mimeview import *
 from trac.util import get_reporter_id, create_unique_file
-from trac.util.datefmt import format_datetime, pretty_timedelta, utc
+from trac.util.datefmt import utc
 from trac.util.html import Markup, html
 from trac.util.text import unicode_quote, unicode_unquote, pretty_size
 from trac.web import HTTPBadRequest, IRequestHandler
@@ -85,7 +85,7 @@ class Attachment(object):
             self.filename = None
             self.description = None
             self.size = None
-            self.time = None
+            self.date = None
             self.author = None
             self.ipnr = None
 
@@ -106,7 +106,8 @@ class Attachment(object):
         self.filename = row[0]
         self.description = row[1]
         self.size = row[2] and int(row[2]) or 0
-        self.time = row[3] and int(row[3]) or 0
+        time = row[3] and int(row[3]) or 0
+        self.date = datetime.fromtimestamp(time, utc)
         self.author = row[4]
         self.ipnr = row[5]
 
@@ -161,6 +162,7 @@ class Attachment(object):
 
 
     def insert(self, filename, fileobj, size, t=None, db=None):
+        # FIXME: `t` should probably be switched to `datetime` too
         if not db:
             db = self.env.get_db_cnx()
             handle_ta = True
@@ -168,7 +170,8 @@ class Attachment(object):
             handle_ta = False
 
         self.size = size and int(size) or 0
-        self.time = int(t or time.time())
+        time = int(t or time.time())
+        self.date = datetime.fromtimestamp(time, utc)
 
         # Make sure the path to the attachment is inside the environment
         # attachments directory
@@ -192,7 +195,7 @@ class Attachment(object):
             cursor.execute("INSERT INTO attachment "
                            "VALUES (%s,%s,%s,%s,%s,%s,%s,%s)",
                            (self.parent_type, self.parent_id, filename,
-                            self.size, self.time, self.description, self.author,
+                            self.size, time, self.description, self.author,
                             self.ipnr))
             shutil.copyfileobj(fileobj, targetfile)
             self.filename = filename
@@ -221,7 +224,8 @@ class Attachment(object):
             attachment.filename = filename
             attachment.description = description
             attachment.size = size and int(size) or 0
-            attachment.time = time and int(time) or 0
+            time = time and int(time) or 0
+            attachment.date = datetime.fromtimestamp(time, utc)
             attachment.author = author
             attachment.ipnr = ipnr
             yield attachment
@@ -273,7 +277,7 @@ def attachment_data(env, req, db, attachment):
         'author': attachment.author,
         'ipnr': attachment.ipnr,
         'size': attachment.size,
-        'date': datetime.fromtimestamp(attachment.time, utc),
+        'date': attachment.date,
         'href': attachment.href(req)
     }
 
@@ -532,7 +536,7 @@ class AttachmentModule(Component):
         perm_map = {'ticket': 'TICKET_VIEW', 'wiki': 'WIKI_VIEW'}
         req.perm.assert_permission(perm_map[attachment.parent_type])
 
-        req.check_modified(attachment.time)
+        req.check_modified(attachment.date)
 
         # Render HTML view
         att_data = attachment_data(self.env, req, None, attachment)
