@@ -2,6 +2,7 @@ import unittest
 
 from trac.test import Mock
 from trac.wiki.tests import formatter
+from trac.versioncontrol import NoSuchChangeset
 from trac.versioncontrol.web_ui import *
 
 CHANGESET_TEST_CASES="""
@@ -76,10 +77,10 @@ T:r2081
 ------------------------------
 """ #'
 
-def _get_changeset(self, x):
-    raise TracError("No changeset")
+def _get_changeset(rev):
+    raise NoSuchChangeset(rev)
 
-def _get_repository(self):
+def _get_repository():
     return Mock(get_changeset=_get_changeset)
 
 def changeset_setup(tc):
