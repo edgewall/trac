@@ -395,7 +395,6 @@ def dispatch_request(environ, start_response):
         env.log.exception(e)
 
         message = "%s: %s" % (e.__class__.__name__, to_unicode(e))
-        title = message or 'Error'
         traceback = get_last_traceback()
 
         frames = []
