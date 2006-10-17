@@ -94,16 +94,19 @@
   -->
   <ul py:def="prevnext_nav(label, uplabel=None)" py:with="links = chrome.links"
       py:if="chrome.links.up or chrome.links.prev or chrome.links.next">
-    <li class="first" py:choose="bool(links.prev)" py:with="link = links.prev[0]">
-      &larr; <a py:when="True" class="prev" href="${link.href}"
+    <li class="first" py:choose="">
+      &larr; <a py:when="links.prev" py:with="link = links.prev[0]"
+                class="prev" href="${link.href}"
                 title="${link.title}">Previous $label</a>
-      <span py:otherwise="" class="missing">&larr; Previous $label</span>
+      <span py:otherwise="" class="missing">Previous $label</span>
     </li>
-    <li py:if="links.up and uplabel" py:with="link = links.up[0]">
-      <a href="${link.href}" title="${link.title}">$uplabel</a>
+    <li py:if="links.up and uplabel">
+      <a py:with="link = links.up[0]" href="${link.href}"
+         title="${link.title}">$uplabel</a>
     </li>
-    <li class="last" py:choose="bool(links.next)" py:with="link = links.next[0]">
-      <a py:when="True" class="next" href="${link.href}"
+    <li class="last" py:choose="">
+      <a py:when="links.next"  py:with="link = links.next[0]"
+         class="next" href="${link.href}"
          title="${link.title}">Next $label</a>
       <span py:otherwise="" class="missing">Next $label</span> &rarr;
     </li>
