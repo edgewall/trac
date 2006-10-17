@@ -261,9 +261,9 @@ class TicketModule(TicketModuleBase):
 
                 data['action'] = action
                 data['timestamp'] = req.args.get('ts')
-                data['reassign_owner'] = req.args.get('reassign_subchoice') \
+                data['reassign_owner'] = req.args.get('reassign_choice') \
                                          or req.authname
-                data['resolve_resolution'] = req.args.get('resolve_subchoice')
+                data['resolve_resolution'] = req.args.get('resolve_choice')
                 comment = req.args.get('comment')
                 if comment:
                     data['comment'] = comment
@@ -508,9 +508,9 @@ class TicketModule(TicketModuleBase):
             ticket['owner'] = req.authname
         if action == 'resolve':
             ticket['status'] = 'closed'
-            ticket['resolution'] = req.args.get('resolve_subchoice')
+            ticket['resolution'] = req.args.get('resolve_choice')
         elif action == 'reassign':
-            ticket['owner'] = req.args.get('reassign_subchoice')
+            ticket['owner'] = req.args.get('reassign_choice')
             ticket['status'] = 'new'
         elif action == 'reopen':
             ticket['status'] = 'reopened'

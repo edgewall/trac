@@ -233,34 +233,31 @@ ${comment}</textarea></p>
           <input py:when="True" type="hidden" name="action" value="leave" />
 
           <fieldset py:otherwise="" id="action" py:with="action = action or 'leave'">
-
             <legend>Action</legend>
-            <py:for each="button in
-              filter(None,[('leave', 'leave as ' + ticket.status),
-                           ('accept' in actions and ('accept', 'accept ticket') or None),
-                           ('reopen' in actions and ('reopen', 'reopen ticket') or None),
-                           ('resolve' in actions and ('resolve', '', 'as:', resolve_resolution,
-                           [f for f in fields if f.name == 'resolution'][0].options) or None),
-                           ('reassign' in actions and ('reassign', '', 'to:', reassign_owner,
-                           [f for f in fields if f.name == 'owner'][0].options, 40) or None)])"
-              py:with="value = button[0];
-                       text = button[1] or button[0];
-                       subchoice = button[2];
-                       subselector = button[3];
-                       suboptions = button[4];
-                       subsize = button[5];
-                       subid = value+'_subchoice'">
-              <input type="radio" id="$value" name="action" value="$value"
-                checked="${action == value and 'checked' or None}" />
-              <label for="$value">$text</label>
-              <label py:if="subchoice" py:choose="" for="$subid">$subchoice
-                <select py:when="suboptions" size="1" id="$subid" name="$subid">
-                  <py:for each="option in suboptions">
-                    ${select_option(subselector, option)}
-                  </py:for>
+            <py:for each="button in filter(None, [
+              ('leave', 'leave as ' + ticket.status),
+              ('accept' in actions and ('accept', 'accept ticket') or None),
+              ('reopen' in actions and ('reopen', 'reopen ticket') or None),
+              ('resolve' in actions and ('resolve', '', 'as', resolve_resolution,
+                [f for f in fields if f.name == 'resolution'][0].options) or None),
+              ('reassign' in actions and ('reassign', '', 'to', reassign_owner,
+                [f for f in fields if f.name == 'owner'][0].options) or None)
+            ])" py:with="name = button[0]; label = button[1] or button[0]">
+              <input type="radio" id="$name" name="action" value="$name"
+                     checked="${action == name and 'checked' or None}" />
+              <label for="$name">$label</label>
+              <label py:if="len(button) > 2" for="${name}_choice"
+                     py:with="sublabel, subval, suboptions = button[2:]"
+                     py:choose="">
+                ${sublabel}:
+                <select py:when="suboptions" size="1" id="${name}_choice"
+                        name="${name}_choice">
+                  <option py:for="option in suboptions"
+                          selected="${option == subval or None}"
+                          py:content="option" />
                 </select>
-                <input py:otherwise="" type="text" id="$subid" name="$subid" size="40"
-                  value="$subselector" />
+                <input py:otherwise="" type="text" id="${name}_choice"
+                       name="${name}_choice" size="40" value="$subval" />
               </label>
               <br />
             </py:for>
@@ -269,9 +266,9 @@ ${comment}</textarea></p>
               <py:for each="action in actions">
                 var $action = $("#$action");
               </py:for>
-              var updateActionFields = function() {
-                <py:if test="'resolve' in actions">enableControl('resolve_subchoice', resolve.get(0).checked);</py:if>
-                <py:if test="'reassign' in actions">enableControl('reassign_subchoice', reassign.get(0).checked);</py:if>
+              function updateActionFields() {
+                <py:if test="'resolve' in actions">enableControl('resolve_choice', resolve.get(0).checked);</py:if>
+                <py:if test="'reassign' in actions">enableControl('reassign_choice', reassign.get(0).checked);</py:if>
               };
               $(document).ready(updateActionFields);
               <py:for each="action in actions">

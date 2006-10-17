@@ -4,16 +4,6 @@
 <div xmlns="http://www.w3.org/1999/xhtml"
      xmlns:py="http://genshi.edgewall.org/" py:strip="">
 
-  <!--!  Macro for generating an <option> element in forms
-  -
-  -      'selector'  is the selector variable
-  -      'value'     is the value of the option
-  -      'text'      is the displayed text (defaults to 'value')
-  -->
-  <py:def function="select_option(selector, value, text=None)">
-    <option value="$value" py:attrs="form_attrs(selected=selector == value)">${text or value}</option>
-  </py:def>
-
   <!--!  Macro for generating a <input type="checkbox"> element in forms
   -
   -      The <input> and a corresponding <label> will be wrapped in a <div> field.
@@ -128,8 +118,10 @@
   <py:def function="diff_options_fields(diff)">
     <label for="style">View differences</label>
     <select id="style" name="style">
-      ${select_option(diff.style, 'inline')}
-      ${select_option(diff.style, 'sidebyside', 'side by side')}
+      <option selected="${diff.style == 'inline' or None}"
+              value="inline">inline</option>
+      <option selected="${diff.style == 'sidebyside' or None}"
+              value="sidebyside">side by side</option>
     </select>
     <div class="field">
       Show <input type="text" name="contextlines" id="contextlines" size="2"

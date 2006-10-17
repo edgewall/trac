@@ -410,12 +410,13 @@ def dispatch_request(environ, start_response):
                                 'lineno': lineno, 'line': line,
                                 'lines_before': before, 'lines_after': after,
                                 'function': tb.tb_frame.f_code.co_name,
-                                'vars': tb.tb_frame.f_locals.items()}]
+                                'vars': tb.tb_frame.f_locals}]
                 tb = tb.tb_next
 
         data = {'type': 'internal', 'message': message,
                 'traceback': traceback, 'frames': frames,
                 'shorten_line': shorten_line}
+
         try:
             req.send_error(sys.exc_info(), status=500, env=env, data=data)
         except RequestDone:

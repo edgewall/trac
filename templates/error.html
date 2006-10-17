@@ -141,7 +141,7 @@ ${traceback}
                         <table class="listing">
                           <thead><tr><th>Name</th><th>Value</th></tr></thead>
                           <tbody>
-                            <tr py:for="idx, (name, value) in enumerate(sorted(frame.vars))"
+                            <tr py:for="idx, (name, value) in enumerate(sorted(frame.vars.items()))"
                                 class="${idx % 2 and 'odd' or None}">
                               <th scope="row"><var>$name</var></th>
                               <td><code>${shorten_line(repr(value))}</code></td>
