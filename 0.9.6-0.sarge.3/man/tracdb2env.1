@@ -1,0 +1,26 @@
+.\" You can view this file with:
+.\" nroff -man [filename]
+.\"
+.TH tracdb2env 1
+.SH NAME
+tracdb2env \- Tool to convert old Trac databases to Trac environments.
+.Sh SYNOPSIS
+.TP
+\fBtracdb2env\fP <\fIdb-file\fP> <\fIenv-dir\fP>
+.SH OVERVIEW
+
+Starting with version 0.7 Trac stores project specific information in project
+environment directories instead of in database files. \fBtracdb2env\fP can extract
+information from an old database file and insert that into a newly created
+project environment directory.
+
+Trac is a minimalistic web-based software project management and bug/issue
+tracking system. It provides an interface to the Subversion revision control
+systems, an integrated wiki, flexible issue tracking and convenient report
+facilities.
+
+Documentation for Trac in general, including detailed usage explanations
+and tutorials can be be found in the Trac wiki at
+http://trac.edgewall.com/.
+
+Run `tracdb2env -h' to access the built-in tool documentation.
