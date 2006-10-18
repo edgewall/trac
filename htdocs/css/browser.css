@@ -118,7 +118,7 @@ div.buttons { clear: left }
  margin: 0 0 .4em 1.6em;
  padding: 0;
 }
-#info .props li { padding: 0 }
+#info .props li { padding: 0; overflow: auto; }
 
 /* Styles for the HTML preview */
 #preview { background: #fff; clear: both; margin: 0 }
