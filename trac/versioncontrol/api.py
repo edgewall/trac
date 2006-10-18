@@ -15,6 +15,11 @@
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
 from heapq import heappop, heappush
+try:
+    import threading
+except ImportError:
+    import dummy_threading as threading
+    threading._get_ident = lambda: 0
 
 from trac.config import Option
 from trac.core import *
@@ -53,6 +58,8 @@ class RepositoryManager(Component):
         """Path to local repository""")
 
     def __init__(self):
+        self._cache = {}
+        self._lock = threading.Lock()
         self._connector = None
 
     # Public API methods
@@ -69,8 +76,27 @@ class RepositoryManager(Component):
                 raise TracError('Unsupported version control system "%s"'
                                 % self.repository_type)
             self._connector = heappop(candidates)[1]
-        return self._connector.get_repository(self.repository_type,
-                                              self.repository_dir, authname)
+        try:
+            self._lock.acquire()
+            tid = threading._get_ident()
+            if tid in self._cache:
+                repos = self._cache[tid]
+            else:
+                rtype, rdir = self.repository_type, self.repository_dir
+                repos = self._connector.get_repository(rtype, rdir, authname)
+                self._cache[tid] = repos
+            return repos
+        finally:
+            self._lock.release()
+
+    def shutdown(self, tid=None):
+        assert tid == threading._get_ident()
+        if tid:
+            try:
+                self._lock.acquire()
+                self._cache.pop(tid, None)
+            finally:
+                self._lock.release()
 
 
 class NoSuchChangeset(TracError):

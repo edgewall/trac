@@ -188,6 +188,7 @@ class Environment(Component, ComponentManager):
 
     def shutdown(self, tid=None):
         """Close the environment."""
+        RepositoryManager(self).shutdown(tid)
         DatabaseManager(self).shutdown(tid)
 
     def get_repository(self, authname=None):
