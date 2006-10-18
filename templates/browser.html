@@ -64,7 +64,7 @@
                   <td class="name">
                     <a class="${entry.kind}"
                       title="${entry.kind == 'dir' and 'Browse Directory' or 'View File'}"
-                      href="${href.browser(entry.path, rev=rev)}">$entry.name</a>
+                      href="${href.browser(entry.path)}">$entry.name</a>
                   </td>
                   <td class="size">${sizeinfo(entry.size)}</td>
                   <td class="rev">
