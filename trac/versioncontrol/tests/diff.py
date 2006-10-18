@@ -95,6 +95,10 @@ class DiffTestCase(unittest.TestCase):
         groups = diff._group_opcodes(opcodes, n=3)
         self.assertEqual([('insert', 0, 0, 0, 1), ('equal', 0, 3, 1, 4)],
                          groups.next())
+
+    def test_unified_diff_no_context(self):
+        diff_lines = list(diff.unified_diff(['a'], ['b']))
+        self.assertEqual(['@@ -1,1 +1,1 @@', '-a', '+b'], diff_lines)
     
 
 def suite():
