@@ -104,7 +104,7 @@ def _group_opcodes(opcodes, n=3):
     """
     # Full context produces all the opcodes
     if n is None:
-        yield opcodes
+        yield list(opcodes)
         return
 
     # Otherwise we leave at most n lines with the tag 'equal' before and after
