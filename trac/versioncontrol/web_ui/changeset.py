@@ -24,6 +24,8 @@ import re
 from StringIO import StringIO
 import time
 
+from genshi.builder import tag
+
 from trac import util
 from trac.config import BoolOption, IntOption
 from trac.core import *
@@ -35,11 +37,13 @@ from trac.util.datefmt import pretty_timedelta, utc
 from trac.util.html import html, escape, unescape, Markup
 from trac.util.text import unicode_urlencode, shorten_line, CRLF
 from trac.versioncontrol import Changeset, Node, NoSuchChangeset
-from trac.versioncontrol.diff import get_diff_options, diff_blocks, unified_diff
+from trac.versioncontrol.diff import get_diff_options, diff_blocks, \
+                                     unified_diff
 from trac.versioncontrol.svn_authz import SubversionAuthorizer
 from trac.versioncontrol.web_ui.util import render_node_property
 from trac.web import IRequestHandler, RequestDone
-from trac.web.chrome import INavigationContributor, add_link, add_stylesheet
+from trac.web.chrome import add_link, add_script, add_stylesheet, \
+                            INavigationContributor
 from trac.wiki import wiki_to_html, wiki_to_oneliner, IWikiSyntaxProvider, \
                       Formatter
 
@@ -754,9 +758,24 @@ class AnyDiffModule(Component):
     # IRequestHandler methods
 
     def match_request(self, req):
-        return re.match(r'/diff_form$', req.path_info)
+        return re.match(r'/diff$', req.path_info)
 
     def process_request(self, req):
+        repos = self.env.get_repository(req.authname)
+        authz = SubversionAuthorizer(self.env, req.authname)
+
+        if req.get_header('X-Requested-With') == 'XMLHttpRequest':
+            dirname, prefix = posixpath.split(req.args.get('q'))
+            prefix = prefix.lower()
+            node = repos.get_node(dirname)
+            html = tag.ul(
+                [tag.li('/' + e.path.lstrip('/'))
+                 for e in node.get_entries()
+                 if e.name.lower().startswith(prefix)]
+            )
+            req.write(html.generate().render('xhtml'))
+            raise RequestDone
+
         # -- retrieve arguments
         new_path = req.args.get('new_path')
         new_rev = req.args.get('new_rev')
@@ -764,22 +783,21 @@ class AnyDiffModule(Component):
         old_rev = req.args.get('old_rev')
 
         # -- normalize
-        repos = self.env.get_repository(req.authname)
         new_path = repos.normalize_path(new_path)
+        if not new_path.startswith('/'):
+            new_path = '/' + new_path
         new_rev = repos.normalize_rev(new_rev)
         old_path = repos.normalize_path(old_path)
+        if not old_path.startswith('/'):
+            old_path = '/' + old_path
         old_rev = repos.normalize_rev(old_rev)
 
-        authzperm = SubversionAuthorizer(self.env, req.authname)
-        authzperm.assert_permission_for_changeset(new_rev)
-        authzperm.assert_permission_for_changeset(old_rev)
+        authz.assert_permission_for_changeset(new_rev)
+        authz.assert_permission_for_changeset(old_rev)
 
         # -- prepare rendering
-        data = {
-            'new_path': new_path,
-            'new_rev': new_rev,
-            'old_path': old_path,
-            'old_rev': old_rev,
-        }
+        data = {'new_path': new_path, 'new_rev': new_rev,
+                'old_path': old_path, 'old_rev': old_rev}
 
+        add_script(req, 'common/js/suggest.js')
         return 'diff_form.html', data, None

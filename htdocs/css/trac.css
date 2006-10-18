@@ -386,7 +386,6 @@ table.wiki td { border: 1px solid #ccc;  padding: .1em .25em; }
 #attachments dt { display: list-item; list-style: square; }
 #attachments dd { font-style: italic; margin-left: 0; padding-left: 0; }
 
-
 /* Styles for tabular listings such as those used for displaying directory
    contents and report results. */
 table.listing {
@@ -430,6 +429,33 @@ table.listing tbody tr { border-top: 1px solid #ddd }
 table.listing tbody tr.even { background-color: #fcfcfc }
 table.listing tbody tr.odd { background-color: #f7f7f7 }
 table.listing tbody tr:hover { background: #eed !important }
+
+/* Auto-completion interface */
+input.suggest { border: 1px solid #d7d7d7; }
+.suggestions { background: #fff; border: 1px solid #666 }
+.suggestions ul {
+  font-family: sans-serif;
+  max-height: 20em;
+  min-height: 3em;
+  list-style: none;
+  margin: 0;
+  overflow: auto;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  padding: 0;
+  width: 200px;
+}
+.suggestions li { cursor: pointer; padding: 2px 5px }
+.suggestions li.selected { background: #ff9; color: #000 }
+* html .suggestions iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 3000px;
+  height: 3000px;
+  z-index: -1;
+}
+* html .suggestions ul { height: 5em; }
 
 /* Styles for the settings page */
 #content.settings .field th { text-align: right; white-space: nowrap; }

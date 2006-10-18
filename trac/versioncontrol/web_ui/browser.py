@@ -15,10 +15,10 @@
 #
 # Author: Jonas Borgström <jonas@edgewall.com>
 
-import re
-import urllib
-import os.path
 from fnmatch import fnmatchcase
+import re
+import os
+import urllib
 
 from trac.config import ListOption, Option
 from trac.core import *
@@ -28,7 +28,8 @@ from trac.util import sorted, embedded_numbers
 from trac.util.datefmt import http_date
 from trac.util.html import escape, html, Markup
 from trac.web import IRequestHandler, RequestDone
-from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
+from trac.web.chrome import add_link, add_script, add_stylesheet, \
+                            INavigationContributor
 from trac.wiki import wiki_to_html, IWikiSyntaxProvider
 from trac.versioncontrol.api import NoSuchChangeset
 from trac.versioncontrol.web_ui.util import *
