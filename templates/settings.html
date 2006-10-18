@@ -25,18 +25,18 @@
       <form method="post" action="">
         <fieldset>
           <legend>Personal Information</legend>
-          <div class="field">
-            <label>Full name:
-              <input type="text" name="name" size="30"
-                     value="${settings.session.name}" />
-            </label>
-          </div>
-          <div class="field">
-            <label>Email address:
-              <input type="text" name="email" size="30"
-                     value="${settings.session.email}" />
-            </label>
-          </div>
+          <table>
+            <tr class="field">
+              <th><label>Full name:</label></th>
+              <td><input type="text" name="name" size="30"
+                  value="${settings.session.name}" /></td>
+            </tr>
+            <tr class="field">
+              <th><label>Email address:</label></th>
+              <td><input type="text" name="email" size="30"
+                  value="${settings.session.email}" /></td>
+            </tr>
+          </table>
           <p py:choose="" class="hint">
             <py:when test="req.authname == 'anonymous'">
               This information is used to automatically populate some forms
@@ -52,19 +52,23 @@
 
         <fieldset>
           <legend>Preferences</legend>
-          <div class="field">
-            <label>Time zone:
-              <select name="tz" id="tz">
-                <option>Default time zone</option>
-                <option py:for="tz in timezones"
-                  selected="${settings.session.tz == tz or None}"
-                  py:content="tz" />
-              </select>
-            </label>
-            <p class="hint">Configuring your time zone will result in all
-            dates and times displayed on this site to use your time zone
-            instead of that of the server.</p>
-          </div>
+          <table>
+            <tr class="field">
+              <th><label>Time zone:</label></th>
+              <td><select name="tz" id="tz">
+                  <option>Default time zone</option>
+                  <option py:for="tz in timezones"
+                    selected="${settings.session.tz == tz or None}"
+                    py:content="tz" />
+                </select>
+              </td>
+              <td>
+                <p class="hint">Configuring your time zone will result in all
+                  dates and times displayed on this site to use your time zone
+                  instead of that of the server.</p>
+              </td>
+            </tr>
+          </table>
         </fieldset>
 
         <fieldset py:if="settings.session_id">

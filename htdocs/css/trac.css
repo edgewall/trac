@@ -431,6 +431,9 @@ table.listing tbody tr.even { background-color: #fcfcfc }
 table.listing tbody tr.odd { background-color: #f7f7f7 }
 table.listing tbody tr:hover { background: #eed !important }
 
+/* Styles for the settings page */
+#content.settings .field th { text-align: right; white-space: nowrap; }
+
 /* Styles for the error page (and rst errors) */
 #content.error .message, div.system-message {
  background: #fdc;
