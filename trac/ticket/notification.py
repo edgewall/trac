@@ -193,9 +193,14 @@ class TicketNotifyEmail(NotifyEmail):
                                                  self.COLS, linesep=CRLF))
 
     def format_subj(self):
-        projname = self.config.get('project', 'name')
-        return '[%s] #%s: %s' % (projname, self.ticket.id,
-                                 self.ticket['summary'])
+        prefix = self.config.get('notification', 'smtp_subject_prefix')
+        if prefix == '__default__': 
+            prefix = '[%s]' % self.config.get('project', 'name') 
+        if prefix: 
+            return '%s #%s: %s' % (prefix, self.ticket.id,
+                                  self.ticket['summary'])
+        else:
+            return '#%s: %s' % (self.ticket.id, self.ticket['summary']) 
 
     def get_recipients(self, tktid):
         notify_reporter = self.config.getbool('notification',

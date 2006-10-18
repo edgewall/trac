@@ -83,6 +83,14 @@ class NotificationSystem(Component):
         
     use_tls = BoolOption('notification', 'use_tls', 'false',
         """Use SSL/TLS to send notifications (''since 0.10'').""")
+    
+    smtp_subject_prefix = Option('notification', 'smtp_subject_prefix',
+                                 '__default__', 
+        """Text to prepend to subject line of notification emails. 
+        
+        If the setting is not defined, then the [$project_name] prefix.
+        If no prefix is desired, then specifying an empty option 
+        will disable it.(''since 0.10.1'').""")
 
 
 class Notify(object):
