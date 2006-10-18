@@ -5,7 +5,6 @@
       xmlns:py="http://genshi.edgewall.org/"
       xmlns:xi="http://www.w3.org/2001/XInclude"
       py:strip="">
-  <xi:include href="site.html"><xi:fallback /></xi:include>
 
   <head py:match="head">
     <title py:with="title = unicode(select('title/text()'))">
@@ -71,5 +70,7 @@
       <p class="right">${chrome.footer}</p>
     </div>
   </body>
+
+  <xi:include href="site.html"><xi:fallback /></xi:include>
 
 </html>
