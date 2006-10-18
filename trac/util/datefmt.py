@@ -148,6 +148,7 @@ else:
 
 DSTDIFF = DSTOFFSET - STDOFFSET
 
+
 class LocalTimezone(tzinfo):
     """A 'local' time zone implementation"""
     
@@ -178,13 +179,13 @@ class LocalTimezone(tzinfo):
 utc = FixedOffset(0, 'UTC')
 utcmin = datetime.min.replace(tzinfo=utc)
 utcmax = datetime.max.replace(tzinfo=utc)
-_epoc = datetime(1970,1,1, tzinfo=utc)
+_epoc = datetime(1970, 1, 1, tzinfo=utc)
 _zero = timedelta(0)
 
 localtz = LocalTimezone()
 
 try:
-    from pytz import timezone, all_timezones
+    from pytz import all_timezones, timezone
 except ImportError:
     # Use a makeshift timezone implementation if pytz is not available.
     # This implementation only supports fixed offset time zones.
@@ -204,12 +205,8 @@ except ImportError:
                   FixedOffset(-480, 'Etc/GMT+8'), FixedOffset(-540, 'Etc/GMT+9'),
                   FixedOffset(-600, 'Etc/GMT+10'), FixedOffset(-660, 'Etc/GMT+11'),
                   FixedOffset(-720, 'Etc/GMT+12')]
-    _tzmap = {}
-    all_timezones = []
-    
-    for z in _timezones:
-        _tzmap[z._name] = z
-        all_timezones.append(z._name)
+    all_timezones = [z._name for z in _timezones]
+    _tzmap = dict([(z._name, z) for z in _timezones])
 
     def timezone(zone):
         """Fetch timezone instance by name or raise `KeyError`"""

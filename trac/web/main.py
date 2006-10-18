@@ -379,7 +379,7 @@ def dispatch_request(environ, start_response):
                 pass
             return req._response or []
         finally:
-            if environ.get('wsgi.multithread', False):
+            if not environ.get('wsgi.run_once'):
                 env.shutdown(threading._get_ident())
 
     except HTTPException, e:

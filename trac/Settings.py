@@ -52,7 +52,6 @@ class SettingsModule(Component):
             elif action == 'load':
                 self._do_load(req)
 
-        req.hdf['timezones'] = ['default'] + all_timezones
         data = {'session': req.session}
         if req.authname == 'anonymous':
             data['session_id'] = req.session.sid

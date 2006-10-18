@@ -90,7 +90,10 @@ input[type=text]:focus, input.textwidget:focus, textarea:focus {
  border: 1px solid #886;
 }
 option { border-bottom: 1px dotted #d7d7d7 }
-fieldset { border: 1px solid #d7d7d7; padding: .5em; margin: 0 }
+fieldset { border: 1px solid #d7d7d7; padding: .5em; margin: 1em 0 }
+form p.hint { color: #666; font-size: 85%; font-style: italic; margin: .5em 0;
+  padding-left: 1em;
+}
 fieldset.iefix {
   background: transparent;
   border: none;
