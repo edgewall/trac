@@ -90,8 +90,8 @@ class RepositoryManager(Component):
             self._lock.release()
 
     def shutdown(self, tid=None):
-        assert tid == threading._get_ident()
         if tid:
+            assert tid == threading._get_ident()
             try:
                 self._lock.acquire()
                 self._cache.pop(tid, None)
