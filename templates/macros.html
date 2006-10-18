@@ -31,7 +31,9 @@
   -->
   <py:def function="radiobuttons(selector, name, buttons)">
     <label py:for="button in buttons"
-           py:with="value = button[0]; text = button[1] or button[0]; default = button[3]">
+           py:with="value = button[0];
+                    text = len(button) > 1 and button[1] or button[0];
+                    default = len(button) > 2 and button[2]">
       <input type="radio" id="$value" name="$name" value="$value"
         checked="${selector == value or (default and selector not in values) and 'checked' or None}" />
       $text
