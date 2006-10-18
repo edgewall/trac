@@ -1,0 +1,2 @@
+version=3
+http://ftp.edgewall.com/pub/trac/trac-([\d\.]*).tar.gz debian uupdate
