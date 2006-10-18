@@ -91,15 +91,14 @@ def milestone_to_hdf(env, db, req, milestone):
     if milestone.exists:
         safe_name = milestone.name.replace('/', '%2F')
     hdf = {'name': milestone.name, 'exists': milestone.exists,
-           'href': req.href.milestone(safe_name)}
+           'href': req.href.milestone(safe_name),
+           'due':  milestone.due, 'completed': milestone.completed
+           } # FIXME: pass the full milestone object
     if milestone.description:
         hdf['description_source'] = milestone.description
         hdf['description'] = wiki_to_html(milestone.description, env, req, db)
     if milestone.due:
-        hdf['due'] = milestone.due
         hdf['late'] = milestone.is_late
-    if milestone.completed:
-        hdf['completed'] = milestone.completed
     return hdf
 
 def _get_groups(env, db, by='component'):
