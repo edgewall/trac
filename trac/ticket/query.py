@@ -59,20 +59,20 @@ class Query(object):
         if self.group not in [f['name'] for f in self.fields]:
             self.group = None
 
-    def from_string(cls, env, string, **kw):
+    def from_string(cls, env, req, string, **kw):
         filters = string.split('&')
         kw_strs = ['order', 'group']
         kw_bools = ['desc', 'groupdesc', 'verbose']
         constraints = {}
-        for filter in filters:
-            filter = filter.split('=')
-            if len(filter) != 2:
-                raise QuerySyntaxError, 'Query filter requires field and ' \
-                                        'constraints separated by a "="'
-            field,values = filter
+        for filter_ in filters:
+            filter_ = filter_.split('=')
+            if len(filter_) != 2:
+                raise QuerySyntaxError('Query filter requires field and ' 
+                                       'constraints separated by a "="')
+            field,values = filter_
             if not field:
-                raise QuerySyntaxError, 'Query filter requires field name'
-            values = values.split('|')
+                raise QuerySyntaxError('Query filter requires field name')
+            # from last char of `field`, get the mode of comparison
             mode, neg = '', ''
             if field[-1] in ('~', '^', '$'):
                 mode = field[-1]
@@ -80,15 +80,20 @@ class Query(object):
             if field[-1] == '!':
                 neg = '!'
                 field = field[:-1]
-            values = map(lambda x: neg + mode + x, values)
+            processed_values = []
+            for val in values.split('|'):
+                if req:
+                    val = val.replace('$USER', req.authname)
+                val = neg + mode + val # add mode of comparison
+                processed_values.append(val)
             try:
                 field = str(field)
                 if field in kw_strs:
-                    kw[field] = values[0]
+                    kw[field] = processed_values[0]
                 elif field in kw_bools:
                     kw[field] = True
                 else:
-                    constraints[field] = values
+                    constraints[field] = processed_values
             except UnicodeError:
                 pass # field must be a str, see `get_href()`
         return cls(env, constraints, **kw)
@@ -531,7 +536,7 @@ class QueryModule(Component):
             if vals:
                 mode = req.args.get(field + '_mode')
                 if mode:
-                    vals = map(lambda x: mode + x, vals)
+                    vals = [mode + x for x in vals]
                 if remove_constraints.has_key(field):
                     idx = remove_constraints[field]
                     if idx >= 0:
@@ -665,7 +670,7 @@ class QueryModule(Component):
                           href=formatter.href.query() + query.replace(' ', '+'))
         else:
             try:
-                query = Query.from_string(formatter.env, query)
+                query = Query.from_string(formatter.env, formatter.req, query)
                 return html.A(label, href=query.get_href(formatter), # Hack
                               class_='query')
             except QuerySyntaxError, e:
@@ -717,11 +722,10 @@ class TicketQueryMacro(WikiMacroBase):
         if len(argv) > 0 and not 'format' in kwargs: # 0.10 compatibility hack
             kwargs['format'] = argv[0]
 
-        kwargs.setdefault('order', 'id')
         format = kwargs.pop('format', 'list').strip().lower()
         query_string = '&'.join(['%s=%s' % item for item in kwargs.iteritems()])
 
-        query = Query.from_string(self.env, query_string)
+        query = Query.from_string(self.env, req, query_string)
         tickets = query.execute(req)
 
         if format == 'count':

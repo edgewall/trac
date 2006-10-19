@@ -90,7 +90,8 @@ class WikiTestCase(unittest.TestCase):
 
         from trac.web.href import Href
         self.req = Mock(href = Href('/'),
-                        abs_href = Href('http://www.example.com/'))
+                        abs_href = Href('http://www.example.com/'),
+                        authname='anonymous')
         # TODO: remove the following lines in order to discover
         #       all the places were we should use the req.href
         #       instead of env.href (will be solved by the Wikifier patch)
