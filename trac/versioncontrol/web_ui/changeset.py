@@ -777,8 +777,9 @@ class AnyDiffModule(Component):
                 return entry.isfile, name_order(entry)
 
             html = tag.ul(
-                [tag.li('/' + e.path.lstrip('/'))
+                [tag.li(is_dir and tag.b(path) or path)
                  for e in sorted(node.get_entries(), key=kind_order)
+                 for is_dir, path in [(e.isdir, '/' + e.path.lstrip('/'))]
                  if e.name.lower().startswith(prefix)]
             )
 
