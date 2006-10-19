@@ -112,7 +112,7 @@ class BrowserModule(Component):
             add_link(req, 'up', path_links[-2]['href'], 'Parent directory')
 
         data = {
-            'path': path, 'rev': node.rev,
+            'path': path, 'rev': node.rev, 'stickyrev': rev,
             'created_path': node.created_path,
             'created_rev': node.created_rev,
             'props': properties,

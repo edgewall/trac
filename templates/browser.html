@@ -26,7 +26,7 @@
         <form action="" method="get">
           <div>
             <label for="rev">View revision:</label>
-            <input type="text" id="rev" name="rev" value="$rev" size="6" />
+            <input type="text" id="rev" name="rev" value="$stickyrev" size="6" />
           </div>
         </form>
       </div>
@@ -39,7 +39,7 @@
                 <th class="$class_${order == class_ and (desc and ' desc' or ' asc') or ''}">
                   <a title="Sort by $class_${order == class_ and not desc and
                                              ' (descending)' or ''}"
-                    href="${href.browser(path, rev=rev, order=class_,
+                    href="${href.browser(path, rev=stickyrev, order=class_,
                     desc=(class_ == order and not desc and 1 or None))}">$title</a>
                 </th>
               </py:def>
@@ -64,7 +64,7 @@
                   <td class="name">
                     <a class="${entry.kind}"
                       title="${entry.kind == 'dir' and 'Browse Directory' or 'View File'}"
-                      href="${href.browser(entry.path)}">$entry.name</a>
+                      href="${href.browser(entry.path, rev=stickyrev)}">$entry.name</a>
                   </td>
                   <td class="size">${sizeinfo(entry.size)}</td>
                   <td class="rev">
