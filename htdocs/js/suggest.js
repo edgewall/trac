@@ -4,69 +4,76 @@
 */
 $.suggest = function(input, url, paramName, minChars, delay) {
   var input = $(input).addClass("suggest").attr("autocomplete", "off");
-  var offset = getOffset(input);
-  var results = $("<div>").addClass("suggestions").css({
-    position: "absolute",
-    top:  (offset.y + input.get(0).offsetHeight) + "px",
-    left: offset.x + "px"
-  }).hide().appendTo("body");
   var timeout = null;
   var prev = "";
   var selectedIndex = -1;
+  var results = null;
 
-  input
-    .blur(function() {
-      if (timeout) clearTimeout(timeout);
-      timeout = setTimeout(hide, 200);
-    })
-    .keydown(function(e) {
-      switch(e.keyCode) {
-
-        case 27: // escape
-          hide();
-          break;
-
-        case 38: // up
-        case 40: // down
-          e.preventDefault();
-          if (results.is(":visible")) {
-            var items = $("li", results);
-            if (!items) return;
-            var index = selectedIndex + (e.keyCode == 38 ? -1 : 1);
-            if (index >= 0 && index < items.length) {
-              move(index);
-            }
-          } else {
-            show();
+  input.keydown(function(e) {
+    switch(e.keyCode) {
+      case 27: // escape
+        hide();
+        break;
+      case 38: // up
+      case 40: // down
+        e.preventDefault();
+        if (results) {
+          var items = $("li", results);
+          if (!items) return;
+          var index = selectedIndex + (e.keyCode == 38 ? -1 : 1);
+          if (index >= 0 && index < items.length) {
+            move(index);
           }
-          break;
-
-        case 9:  // tab
-        case 13: // return
+        } else {
+          show();
+        }
+        break;
+      case 9:  // tab
+      case 13: // return
+      case 39: // right
+        if (results) {
           var li = $("li.selected", results);
           if (li.length) {
             select(li);
             e.preventDefault();
           }
-          break;
+        }
+        break;
+      default:
+        if (timeout) clearTimeout(timeout);
+        timeout = setTimeout(show, delay);
+        break;
+    }
+  });
+  input.blur(function() {
+    if (timeout) clearTimeout(timeout);
+    timeout = setTimeout(hide, 200);
+  });
 
-        default:
-          selectedIndex = -1;
-          if (timeout) clearTimeout(timeout);
-          timeout = setTimeout(show, delay);
-          break;
-      }
-    });
+  function getOffset(elem) {
+    elem = $(elem).get(0);
+    var offset = {left: 0, top: 0};
+    do {
+      offset.left += elem.offsetLeft || 0;
+      offset.top += elem.offsetTop || 0;
+      elem = elem.offsetParent;
+    } while (elem);
+    return offset;
+  }
 
   function hide() {
     if (timeout) clearTimeout(timeout);
     input.removeClass("loading");
-    if (results.is(":visible")) {
-      results.hide();
+    if (results) {
+      results.fadeOut("fast").remove();
+      results = null;
     }
+    $("iframe.iefix").remove();
+    selectedIndex = -1;
   }
 
   function move(index) {
+    if (!results) return;
     items = $("li", results);
     items.removeClass("selected");
     $(items[index]).addClass("selected");
@@ -76,9 +83,8 @@ $.suggest = function(input, url, paramName, minChars, delay) {
   function select(li) {
     if (!li) li = $("<li>");
     else li = $(li);
-    var val = $.trim(li.html());
+    var val = $.trim(li.text());
     prev = val;
-    results.html("");
     input.val(val);
     hide();
     selectedIndex = -1;
@@ -88,34 +94,47 @@ $.suggest = function(input, url, paramName, minChars, delay) {
     var val = input.val();
     if (val == prev) return;
     prev = val;
-    if (val.length >= minChars) {
-      input.addClass("loading");
-      var params = {};
-      params[paramName] = val;
-      $.get(url, params, function(data) {
-        if (data) {
-          if ($.browser.msie) {
-            results.html("");
-            results
-              .append(document.createElement("iframe"))
-              .append($("<div>").html(data).css("z-index", "101"));
-          } else {
-            results.html(data);
-          }
-          results.fadeTo("fast", 0.95);
-          items = $("li", results);
-          items
-            .hover(function() { move(items.index(this)) },
-                   function() { $(this).removeClass("selected") })
-            .click(function() { select(this) });
-          move(0);
-        } else {
-          hide();
+    if (val.length < minChars) { hide(); return; }
+    input.addClass("loading");
+    var params = {};
+    params[paramName] = val;
+    $.get(url, params, function(data) {
+      if (!data) { hide(); return; }
+      if (!results) {
+        var offset = getOffset(input);
+        results = $("<div>").addClass("suggestions").css({
+          position: "absolute",
+          minWidth: input.get(0).offsetWidth + "px",
+          top:  (offset.top + input.get(0).offsetHeight) + "px",
+          left: offset.left + "px",
+          zIndex: 2
+        }).appendTo("body");
+        if ($.browser.msie) {
+          var iframe = $("<iframe style='display:none;position:absolute;" +
+            "filter:progid:DXImageTransform.Microsoft.Alpha(opacity=0);'" +
+            " class='iefix' src='javascript:false;' frameborder='0'" +
+            " scrolling='no'></iframe>").insertAfter(results);
+          setTimeout(function() {
+            var offset = getOffset(results);
+            iframe.css({
+              top: offset.top + "px",
+              right: (offset.left + results.get(0).offsetWidth) + "px",
+              bottom: (offset.top + results.get(0).offsetHeight) + "px",
+              left: offset.left + "px",
+              zIndex: 1
+            });
+            iframe.show();
+          }, 10);
         }
-      });
-    } else {
-      results.hide();
-    }
+      }
+      results.html(data).fadeTo("fast", 0.92);
+      items = $("li", results);
+      items
+        .hover(function() { move(items.index(this)) },
+               function() { $(this).removeClass("selected") })
+        .click(function() { select(this); input.get(0).focus() });
+      move(0);
+    });
   }
 }
 

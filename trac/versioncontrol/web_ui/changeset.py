@@ -33,6 +33,8 @@ from trac.mimeview import Mimeview, is_binary
 from trac.perm import IPermissionRequestor
 from trac.Search import ISearchSource, search_to_sql, shorten_result
 from trac.Timeline import ITimelineEventProvider
+from trac.util import embedded_numbers
+from trac.util.compat import sorted
 from trac.util.datefmt import pretty_timedelta, utc
 from trac.util.html import html, escape, unescape, Markup
 from trac.util.text import unicode_urlencode, shorten_line, CRLF
@@ -768,13 +770,20 @@ class AnyDiffModule(Component):
             dirname, prefix = posixpath.split(req.args.get('q'))
             prefix = prefix.lower()
             node = repos.get_node(dirname)
+
+            def kind_order(entry):
+                def name_order(entry):
+                    return embedded_numbers(entry.name)
+                return entry.isfile, name_order(entry)
+
             html = tag.ul(
                 [tag.li('/' + e.path.lstrip('/'))
-                 for e in node.get_entries()
+                 for e in sorted(node.get_entries(), key=kind_order)
                  if e.name.lower().startswith(prefix)]
             )
+
             req.write(html.generate().render('xhtml'))
-            raise RequestDone
+            return
 
         # -- retrieve arguments
         new_path = req.args.get('new_path')

@@ -48,7 +48,7 @@
     ${navigation('mainnav')}
 
     <div id="main">
-      ${select('*')}
+      ${select('*|text()')}
 
       <div id="altlinks" py:if="chrome.links.alternate">
         <h3>Download in other formats:</h3>
@@ -62,7 +62,9 @@
     </div>
 
     <div id="footer"><hr/>
-      <a id="tracpowered" href="http://trac.edgewall.org/"><img src="${href.chrome('common/trac_logo_mini.png')}" height="30" width="107" alt="Trac Powered"/></a>
+      <a id="tracpowered" href="http://trac.edgewall.org/"><img
+        src="${href.chrome('common/trac_logo_mini.png')}" height="30"
+        width="107" alt="Trac Powered"/></a>
       <p class="left">
         Powered by <a href="${href.about()}"><strong>Trac ${trac.version}</strong></a><br />
         By <a href="http://www.edgewall.org/">Edgewall Software</a>.

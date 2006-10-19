@@ -1,15 +1,9 @@
-/* Trac CSS */
-body {
- background: #fff;
- color: #000;
- margin: 10px;
- padding: 0;
-}
+body { background: #fff; color: #000; margin: 10px; padding: 0; }
 body, th, td {
- font: normal 13px verdana,arial,'Bitstream Vera Sans',helvetica,sans-serif;
+ font: normal 13px Verdana,Arial,'Bitstream Vera Sans',Helvetica,sans-serif;
 }
 h1, h2, h3, h4 {
- font-family: arial,verdana,'Bitstream Vera Sans',helvetica,sans-serif;
+ font-family: Arial,Verdana,'Bitstream Vera Sans',Helvetica,sans-serif;
  font-weight: bold;
  letter-spacing: -0.018em;
 }
@@ -34,10 +28,7 @@ ol.arabic     { list-style-type: decimal }
  color: #b00;
  border-bottom: 1px dotted #bbb;
 }
-:link:hover, :visited:hover {
- background-color: #eee;
- color: #555;
-}
+:link:hover, :visited:hover { background-color: #eee; color: #555 }
 h1 :link, h1 :visited ,h2 :link, h2 :visited, h3 :link, h3 :visited,
 h4 :link, h4 :visited, h5 :link, h5 :visited, h6 :link, h6 :visited {
  color: inherit;
@@ -431,8 +422,7 @@ table.listing tbody tr.odd { background-color: #f7f7f7 }
 table.listing tbody tr:hover { background: #eed !important }
 
 /* Auto-completion interface */
-input.suggest { border: 1px solid #d7d7d7; }
-.suggestions { background: #fff; border: 1px solid #666 }
+.suggestions { background: #fff; border: 1px solid #886; color: #222; }
 .suggestions ul {
   font-family: sans-serif;
   max-height: 20em;
@@ -440,22 +430,12 @@ input.suggest { border: 1px solid #d7d7d7; }
   list-style: none;
   margin: 0;
   overflow: auto;
-  overflow-x: hidden;
-  overflow-y: scroll;
   padding: 0;
-  width: 200px;
+  width: 440px;
 }
-.suggestions li { cursor: pointer; padding: 2px 5px }
-.suggestions li.selected { background: #ff9; color: #000 }
-* html .suggestions iframe {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 3000px;
-  height: 3000px;
-  z-index: -1;
-}
-* html .suggestions ul { height: 5em; }
+* html .suggestions ul { height: 10em; }
+.suggestions li { background: #fff; cursor: pointer; padding: 2px 5px }
+.suggestions li.selected { background: #b9b9b9 }
 
 /* Styles for the settings page */
 #content.settings .field th { text-align: right; white-space: nowrap; }

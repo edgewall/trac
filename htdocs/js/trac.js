@@ -42,14 +42,3 @@ function addHeadingLinks(container, title) {
     });
   }
 }
-
-function getOffset(elem) {
-  elem = $(elem).get(0);
-  var left = elem.offsetLeft || 0;
-  var top = elem.offsetTop || 0;
-  while (elem = elem.offsetParent) {
-    left += elem.offsetLeft
-    top += elem.offsetTop
-  }
-  return {x: left, y: top};
-}
