@@ -7,6 +7,13 @@
   <xi:include href="layout.html" />
   <head>
     <title>$title</title>
+    <script type="text/javascript">
+      $(document).ready(function() {
+        $("#group").change(function() {
+          $("#groupdesc").enable(this.selectedIndex != 0)
+        }).change();
+      });
+    </script>
   </head>
 
   <body>
@@ -131,14 +138,6 @@
           <input type="checkbox" name="groupdesc" id="groupdesc"
             py:attrs="form_attrs(checked=query.groupdesc)" />
           <label for="groupdesc">descending</label>
-          <script type="text/javascript">
-            var group = $("#group");
-            var updateGroupDesc = function() {
-              enableControl('groupdesc', group.get(0).selectedIndex != 0);
-            }
-            $(document).ready(updateGroupDesc);
-            group.change(updateGroupDesc);
-          </script>
         </p>
 
         <p class="option">

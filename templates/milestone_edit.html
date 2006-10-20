@@ -13,9 +13,18 @@
     <link rel="stylesheet" type="text/css"
           href="${chrome.htdocs_location}css/roadmap.css" />
     <script type="text/javascript" src="${chrome.htdocs_location}js/wikitoolbar.js"></script>
-    <script type="text/javascript">
-      $(document).ready(function() {$("#name").get(0).focus()});
-    </script>
+    <script type="text/javascript">/*<![CDATA[*/
+      $(document).ready(function() {
+        $("#completed").click(function() {
+          $("#completeddate").enable(this.checked);
+          var retarget = $("#retarget");
+          retarget.enable(this.checked);
+          $("#target").enable(this.checked && retarget.checked());
+        }).click();
+        $("#retarget").click(function(){ $("#target").enable(this.checked) });
+        $("#name").get(0).focus()
+      });
+    /*]]>*/</script>
   </head>
 
   <body>
@@ -56,28 +65,14 @@
             </label>
             <py:if test="milestones">
               <br/>
-              <input type="checkbox" id="retarget" name="retarget" checked="checked"
-                     onclick="enableControl('target', this.checked)"/>
-              <label>Retarget associated open tickets to milestone
+              <input type="checkbox" id="retarget" name="retarget" checked="checked" />
+              <label>Retarget associated open tickets to milestone:
                 <select id="target" name="target">
                   <option value="">None</option>
                   <option py:for="name in milestones">${name}</option>
                 </select>
               </label>
             </py:if>
-            <script type="text/javascript">/*<![CDATA[*/
-              var completed = $("#completed");
-              var retarget = $("#retarget");
-              var enableCompletedDate = function() {
-                enableControl("completeddate", completed.get(0).checked);
-                if (retarget.length) {
-                  enableControl("retarget", completed.get(0).checked);
-                  enableControl("target", completed.get(0).checked && retarget.get(0).checked);
-                }
-              };
-              $(document).ready(enableCompletedDate);
-              completed.click(enableCompletedDate);
-            /*]]>*/</script>
           </div>
         </fieldset>
         <div class="field">

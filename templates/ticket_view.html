@@ -12,7 +12,11 @@
     <script type="text/javascript" src="${chrome.htdocs_location}js/wikitoolbar.js"></script>
     <script type="text/javascript">
       $(document).ready(function() {
-        addHeadingLinks($("#changelog"), "Permalink to ${ticket.id}");
+        $("#changelog h3.change").addAnchors("Link to this change");
+        $("#action input[@name='action']").click(function() {
+          $("#resolve_choice").enable($("#resolve").checked());
+          $("#reassign_choice").enable($("#reassign").checked());
+        }).click();
       });
     </script>
   </head>
@@ -88,9 +92,9 @@
         <h2>Change History</h2>
         <div id="changelog">
           <form py:for="change in changes" method="get" action="#comment"
-            class="printableform">
+                class="printableform">
             <div class="change">
-              <h3 id="comment:${change.cnum}">
+              <h3 class="change" id="comment:${change.cnum}">
                 <span py:if="perm.has_permission('TICKET_APPEND')" class="inlinebuttons">
                   <input type="hidden" name="replyto" value="${change.cnum}" />
                   <input type="submit" value="Reply" title="Reply to comment ${change.cnum}" />
@@ -261,20 +265,6 @@ ${comment}</textarea></p>
               </label>
               <br />
             </py:for>
-
-            <script py:if="'resolve' in actions or 'reassign' in actions" type="text/javascript">
-              <py:for each="action in actions">
-                var $action = $("#$action");
-              </py:for>
-              function updateActionFields() {
-                <py:if test="'resolve' in actions">enableControl('resolve_choice', resolve.get(0).checked);</py:if>
-                <py:if test="'reassign' in actions">enableControl('reassign_choice', reassign.get(0).checked);</py:if>
-              };
-              $(document).ready(updateActionFields);
-              <py:for each="action in actions">
-                ${action}.click(updateActionFields);
-              </py:for>
-            </script>
           </fieldset>
         </py:choose>
 
