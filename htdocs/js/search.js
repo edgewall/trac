@@ -1,9 +1,31 @@
-// Adapted from http://www.kryogenix.org/code/browser/searchhi/
-function searchHighlight() {
+/* Adapted from http://www.kryogenix.org/code/browser/searchhi/ */
+
+$.fn.highlightText = function(text, className) {
+  function highlight(node) {
+    if (node.nodeType == 3) { // Node.TEXT_NODE
+      var val = node.nodeValue;
+      var pos = val.toLowerCase().indexOf(text);
+      if (pos >= 0 && !$.className.has(node.parentNode, className)) {
+        var span = document.createElement("span");
+        span.className = className;
+        span.appendChild(document.createTextNode(val.substr(pos, text.length)));
+        node.parentNode.insertBefore(span, node.parentNode.insertBefore(
+          document.createTextNode(val.substr(pos + text.length)),
+            node.nextSibling));
+        node.nodeValue = val.substr(0, pos);
+      }
+    } else if (!$(node).is("button, select, textarea")) {
+      $.each(node.childNodes, function() { highlight(this) });
+    }
+  }
+  return this.each(function() { highlight(this) });
+}
+
+$(document).ready(function() {
   var elems = $(".searchable");
   if (!elems.length) return;
 
-  function getSearchWords(url) {
+  function getSearchTerms(url) {
     if (url.indexOf("?") == -1) return [];
     var params = url.substr(url.indexOf("?") + 1).split("&");
     for (var p in params) {
@@ -12,48 +34,22 @@ function searchHighlight() {
       if (param[0] == "q" || param[0] == "p") { // q= for Google, p= for Yahoo
         var query = decodeURIComponent(param[1].replace(/\+/g, " "));
         if (query[0] == "!") query = query.slice(1);
-        var words = [];
+        var terms = [];
         $.each(query.split(/(".*?")|('.*?')|(\s+)/), function() {
-          word = this.replace(/^\s+$/, "");
-          if (word.length) {
-            words.push(this.replace(/^['"]/, "").replace(/['"]$/, ""));
+          term = this.replace(/^\s+$/, "");
+          if (term.length) {
+            terms.push(term.replace(/^['"]/, "").replace(/['"]$/, ""));
           }
         });
-        return words;
+        return terms;
       }
     }
     return [];
   }
 
-  function highlightWord(node, word, index) {
-    // If this node is a text node and contains the search word, highlight it by
-    // surrounding it with a span element
-    if (node.nodeType == 3) { // Node.TEXT_NODE
-      var text = node.nodeValue;
-      var pos = text.toLowerCase().indexOf(word);
-      if (pos >= 0 && !/^searchword\d$/.test(node.parentNode.className)) {
-        var span = document.createElement("span");
-        span.className = "searchword" + (index % 5);
-        span.appendChild(document.createTextNode(text.substr(pos, word.length)));
-        node.parentNode.insertBefore(span, node.parentNode.insertBefore(
-          document.createTextNode(text.substr(pos + word.length)),
-            node.nextSibling));
-        node.nodeValue = text.substr(0, pos);
-        return true;
-      }
-    } else if (!$(node).is("button, select, textarea")) {
-      $.each(node.childNodes, function() { highlightWord(this, word, index) });
-    }
-    return false;
-  }
-
-  var words = getSearchWords(document.URL);
-  if (!words.length) words = getSearchWords(document.referrer);
-  if (words.length) {
-    for (var w in words) {
-      elems.each(function() { highlightWord(this, words[w].toLowerCase(), w) });
-    }
-  }
-}
-
-$(document).ready(searchHighlight);
+  var terms = getSearchTerms(document.URL);
+  if (!terms.length) terms = getSearchTerms(document.referrer);
+  $.each(terms, function(idx) {
+    elems.highlightText(this.toLowerCase(), "searchword" + (idx % 5));
+  });
+});
