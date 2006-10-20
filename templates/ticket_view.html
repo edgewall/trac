@@ -12,7 +12,7 @@
     <script type="text/javascript" src="${chrome.htdocs_location}js/wikitoolbar.js"></script>
     <script type="text/javascript">
       $(document).ready(function() {
-        $("#changelog h3.change").addAnchors("Link to this change");
+        $("#changelog h3.change").addAnchor("Link to this change");
         $("#action input[@name='action']").click(function() {
           $("#resolve_choice").enable($("#resolve").checked());
           $("#reassign_choice").enable($("#reassign").checked());
