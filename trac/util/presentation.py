@@ -12,9 +12,68 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/log/.
 
+"""Varios utility functions and classes that support common presentation
+tasks such as grouping or pagination.
+"""
+
 from math import ceil
 
-__all__ = ['paginate', 'Paginator']
+__all__ = ['first_last', 'group', 'paginate', 'Paginator']
+
+
+def first_last(idx, seq):
+    return ' '.join(filter(None, [
+        (idx == 0) and 'first',
+        (idx == len(seq) - 1) and 'last'
+    ]))
+
+
+def group(iterable, num, predicate=None):
+    """Combines the elements produced by the given iterable so that every `n`
+    items are returned as a tuple.
+    
+    >>> items = [1, 2, 3, 4]
+    >>> for item in group(items, 2):
+    ...     print item
+    (1, 2)
+    (3, 4)
+    
+    The last tuple is padded with `None` values if its' length is smaller than
+    `num`.
+    
+    >>> items = [1, 2, 3, 4, 5]
+    >>> for item in group(items, 2):
+    ...     print item
+    (1, 2)
+    (3, 4)
+    (5, None)
+    
+    The optional `predicate` parameter can be used to flag elements that should
+    not be packed together with other items. Only those elements where the
+    predicate function returns True are grouped with other elements, otherwise
+    they are returned as a tuple of length 1:
+    
+    >>> items = [1, 2, 3, 4]
+    >>> for item in group(items, 2, lambda x: x != 3):
+    ...     print item
+    (1, 2)
+    (3,)
+    (4, None)
+    """
+    buf = []
+    for item in iterable:
+        flush = predicate and not predicate(item)
+        if buf and flush:
+            buf += [None] * (num - len(buf))
+            yield tuple(buf)
+            del buf[:]
+        buf.append(item)
+        if flush or len(buf) == num:
+            yield tuple(buf)
+            del buf[:]
+    if buf:
+        buf += [None] * (num - len(buf))
+        yield tuple(buf)
 
 
 def paginate(items, page=0, max_per_page=10):

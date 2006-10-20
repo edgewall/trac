@@ -1,7 +1,7 @@
 import unittest
 
-from trac.web.tests import api, auth, cgi_frontend, chrome, \
-                           href, paginate, session, wikisyntax
+from trac.web.tests import api, auth, cgi_frontend, chrome, href, session, \
+                           wikisyntax
 
 try:
     import neo_cgi
@@ -18,7 +18,6 @@ def suite():
     if clearsilver:
         suite.addTest(clearsilver.suite())
     suite.addTest(href.suite())
-    suite.addTest(paginate.suite())
     suite.addTest(session.suite())
     suite.addTest(wikisyntax.suite())
     return suite

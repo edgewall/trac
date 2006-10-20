@@ -64,53 +64,6 @@ def embedded_numbers(s):
     pieces[1::2] = map(int, pieces[1::2])
     return pieces
 
-def group(iterable, num, predicate=None):
-    """Combines the elements produced by the given iterable so that every `n`
-    items are returned as a tuple.
-    
-    >>> items = [1, 2, 3, 4]
-    >>> for item in group(items, 2):
-    ...     print item
-    (1, 2)
-    (3, 4)
-    
-    The last tuple is padded with `None` values if its' length is smaller than
-    `num`.
-    
-    >>> items = [1, 2, 3, 4, 5]
-    >>> for item in group(items, 2):
-    ...     print item
-    (1, 2)
-    (3, 4)
-    (5, None)
-    
-    The optional `predicate` parameter can be used to flag elements that should
-    not be packed together with other items. Only those elements where the
-    predicate function returns True are grouped with other elements, otherwise
-    they are returned as a tuple of length 1:
-    
-    >>> items = [1, 2, 3, 4]
-    >>> for item in group(items, 2, lambda x: x != 3):
-    ...     print item
-    (1, 2)
-    (3,)
-    (4, None)
-    """
-    buf = []
-    for item in iterable:
-        flush = predicate and not predicate(item)
-        if buf and flush:
-            buf += [None] * (num - len(buf))
-            yield tuple(buf)
-            del buf[:]
-        buf.append(item)
-        if flush or len(buf) == num:
-            yield tuple(buf)
-            del buf[:]
-    if buf:
-        buf += [None] * (num - len(buf))
-        yield tuple(buf)
-
 
 # -- os utilities
 

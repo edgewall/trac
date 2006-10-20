@@ -15,12 +15,12 @@
 import doctest
 import unittest
 
-from trac.web import paginate
+from trac.util import presentation
 
 
 def suite():
     suite = unittest.TestSuite()
-    suite.addTest(doctest.DocTestSuite(paginate))
+    suite.addTest(doctest.DocTestSuite(presentation))
     return suite
 
 if __name__ == '__main__':

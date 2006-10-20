@@ -18,6 +18,7 @@ import smtplib
 import re
 
 from genshi.core import Markup
+
 from trac import __version__
 from trac.config import BoolOption, IntOption, Option
 from trac.core import *

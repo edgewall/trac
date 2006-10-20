@@ -47,7 +47,7 @@ $.loadStyleSheet = function(href, type) {
 
 // Used for dynamically updating the height of a textarea
 function resizeTextArea(id, rows) {
-  var textarea = $(id).get(0);
+  var textarea = $("#" + id).get(0);
   if (!textarea || textarea.rows == undefined) return;
   textarea.rows = rows;
 }

@@ -9,6 +9,19 @@
   <head>
     <title>$title</title>
     <script type="text/javascript" src="${chrome.htdocs_location}js/wikitoolbar.js"></script>
+    <script type="text/javascript">
+      $(document).ready(function() {
+        var scrollBarPos = $("#scroll_bar_pos");
+        var text = $("#text");
+        if (scrollBarPos.val()) text.get(0).scrollTop = scrollBarPos.val();
+        text.blur(function() {
+          scrollBarPos.val(text.get(0).scrollTop);
+        });
+        $("#editrows").change(function() {
+          resizeTextArea("text", this.options[this.selectedIndex].value);
+        });
+      });
+    </script>
   </head>
 
   <body>
@@ -24,7 +37,7 @@
       </ul>
       <hr />
     </div>
-    <!-- if wiki.action == "edit" || wiki.action == "preview" || wiki.action == "collision" -->
+    <!--! if wiki.action == "edit" || wiki.action == "preview" || wiki.action == "collision" -->
     <div id="content" class="wiki">
 
       <h1>Editing $page_name</h1>
@@ -52,12 +65,13 @@
         <fieldset class="iefix">
           <input type="hidden" name="action" value="edit" />
           <input type="hidden" name="version" value="$page.version" />
-          <input type="hidden" id="scroll_bar_pos" name="scroll_bar_pos" value="$scroll_bar_pos" />
+          <input type="hidden" id="scroll_bar_pos" name="scroll_bar_pos"
+                 value="$scroll_bar_pos" />
           <div id="rows">
             <label for="editrows">Adjust edit area height:</label>
-            <select size="1" name="editrows" id="editrows" tabindex="43"
-              onchange="resizeTextArea('text', this.options[selectedIndex].value)">
-              <option py:for="rows in range(8, 42, 4)" value="$rows" py:attrs="form_attrs(selected=str(rows)==edit_rows)">
+            <select size="1" name="editrows" id="editrows" tabindex="43">
+              <option py:for="rows in range(8, 42, 4)" value="$rows"
+                      selected="${str(rows) == edit_rows or None}">
                 $rows
               </option>
             </select>
@@ -65,14 +79,6 @@
           <p><textarea id="text" class="wikitext" name="text" cols="80" rows="$edit_rows">
 $page.text</textarea>
           </p>
-          <script type="text/javascript">
-            var scrollBarPos = $("#scroll_bar_pos").get(0);
-            var text = $("#text");
-            $(document).ready(function() {
-              if (scrollBarPos.value) text.get(0).scrollTop = scrollBarPos.value;
-            });
-            text.blur(function() { scrollBarPos.value = text.get(0).scrollTop });
-          </script>
         </fieldset>
         <div id="help">
           <b>Note:</b> See <a href="${href.wiki('WikiFormatting')}">WikiFormatting</a> and
@@ -94,7 +100,8 @@ $page.text</textarea>
           </div><br />
           <py:if test="perm.has_permission('WIKI_ADMIN')">
             <div class="options">
-              <label><input type="checkbox" name="readonly" id="readonly" py:attrs="form_attrs(checked=page.readonly)" />
+              <label><input type="checkbox" name="readonly" id="readonly"
+                            checked="${page.readonly or None}" />
                 Page is read-only
               </label>
             </div>

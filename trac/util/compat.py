@@ -84,3 +84,18 @@ except NameError:
             if not x:
                return False
         return True    
+
+try:
+    from functools import partial
+except ImportError:
+    def partial(func_, *args, **kwargs):
+        def newfunc(*fargs, **fkwargs):
+            return func_(*(args + fargs), **dict(kwargs, **fkwargs))
+        newfunc.func = func_
+        newfunc.args = args
+        newfunc.keywords = kwargs
+        try:
+            newfunc.__name__ = func_.__name__
+        except TypeError: # python 2.3
+            pass
+        return newfunc

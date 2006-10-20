@@ -17,6 +17,7 @@
 import __builtin__
 from datetime import datetime, timedelta
 import os
+import pprint
 import re
 
 from genshi import Markup
@@ -28,7 +29,8 @@ from trac import mimeview
 from trac.config import *
 from trac.core import *
 from trac.env import IEnvironmentSetupParticipant
-from trac.util import get_reporter_id
+from trac.util import compat, get_reporter_id, presentation
+from trac.util.compat import partial
 from trac.util.text import pretty_size, unicode_quote_plus
 from trac.util.datefmt import pretty_timedelta, format_datetime, format_date, \
                               format_time, http_date
@@ -163,6 +165,25 @@ class Chrome(Component):
         """Height of the header logo image in pixels.""")
 
     templateloader = None
+
+    # A dictionary of default context data for templates
+    _default_context_data = {
+        'all': compat.all,
+        'any': compat.any,
+        'first_last': presentation.first_last,
+        'get_reporter_id': get_reporter_id,
+        'group': presentation.group,
+        'groupby': compat.groupby,
+        'http_date': http_date,
+        'paginate': presentation.paginate,
+        'pprint': pprint.pformat,
+        'pretty_size': pretty_size,
+        'pretty_timedelta': pretty_timedelta,
+        'quote_plus': unicode_quote_plus,
+        'reversed': compat.reversed,
+        'sorted': compat.sorted,
+        'timedelta': timedelta,
+    }
 
     # IEnvironmentSetupParticipant methods
 
@@ -348,116 +369,63 @@ class Chrome(Component):
     def populate_data(self, req, data):
         from trac import __version__ as VERSION
 
+        data.update(self._default_context_data)
         data.setdefault('trac', {}).update({
             'version': VERSION,
-            'homepage': 'http://trac.edgewall.org', # FIXME: use setup data
+            'homepage': 'http://trac.edgewall.org/', # FIXME: use setup data
             'systeminfo': self.env.systeminfo,
-            })
-
+        })
         data.setdefault('project', {}).update({
             'name': self.env.project_name,
             'descr': self.env.project_description,
             'url': self.env.project_url,
             'admin': self.env.project_admin,
-            })
-        
-        chrome_data = data.setdefault('chrome', {})
-        chrome_data.update({
+        })
+
+        chrome = data.setdefault('chrome', {})
+        chrome.update({
             'footer': Markup(self.env.project_footer),
-            })
+        })
         if req:
-            chrome_data.update({
+            chrome.update({
                 'htdocs_location': req.environ.get('trac.htdocs_location'),
                 'logo': req.environ.get('trac.chrome.logo', {}),
                 'links': req.environ.get('trac.chrome.links', []),
                 'nav': req.environ.get('trac.chrome.nav', {}),
                 'scripts': req.environ.get('trac.chrome.scripts', []),
-                })
+            })
         else:
-            chrome_data.update({
+            chrome.update({
                 'htdocs_location': self.htdocs_location,
                 'logo': self.get_logo_data(self.env.abs_href),
-                })
+            })
 
         data['req'] = req
         data['abs_href'] = req and req.abs_href or self.env.abs_href
         data['href'] = req and req.href
         data['perm'] = req and req.perm
         data['authname'] = req and req.authname or '<trac>'
-        data['get_reporter_id'] = get_reporter_id
 
-        if not 'sorted' in dir(__builtin__):
-            # Python 2.3 compat functions
-            from trac.util.compat import groupby, sorted, reversed
-            data['groupby'] = groupby
-            data['sorted'] = sorted
-            data['reversed'] = reversed
-        else:
-            import itertools
-            data['groupby'] = itertools.groupby
-        if not 'any' in dir(__builtin__):
-            # Python 2.4 compat functions
-            from trac.util.compat import any, all
-            data['any'] = any
-            data['all'] = all
+        # Timezone-dependant functions
+        data['format_datetime'] = partial(format_datetime, tzinfo=req.tz)
+        data['format_date'] = partial(format_date, tzinfo=req.tz)
+        data['format_time'] = partial(format_time, tzinfo=req.tz)
+        data['fromtimestamp'] = partial(datetime.fromtimestamp, tz=req.tz)
 
-        from trac.util import group
-        data['group'] = group
-
-        def form_attrs(**kwargs):
-            attrs = {}
-            for k, v in kwargs.iteritems():
-                attrs[k] = v and k or None
-            return attrs
-        data['form_attrs'] = form_attrs
-
-        # presentation utilities
-        def first_last(i, list):
-            first, last = (i == 0), (i == len(list) - 1)
-            return '%s%s%s' % (first and 'first' or '',
-                               first and last and ' ' or '',
-                               last and 'last' or '') or None
-        data['first_last'] = first_last
-
-        # formatting utilities
-        def _format_date(*args, **kw):
-            return format_date(tzinfo=req.tz, *args, **kw)
-        def _format_time(*args, **kw):
-            return format_time(tzinfo=req.tz, *args, **kw)
-        def _format_datetime(*args, **kw):
-            return format_datetime(tzinfo=req.tz, *args, **kw)
-        def _fromtimestamp(t):
-            return datetime.fromtimestamp(t, req.tz)
-
-        data['pretty_size'] = pretty_size
-        data['pretty_timedelta'] = pretty_timedelta
-        data['format_datetime'] = _format_datetime
-        data['format_date'] = _format_date
-        data['format_time'] = _format_time
-        data['http_date'] = http_date
-        data['timedelta'] = timedelta
-        data['fromtimestamp'] = _fromtimestamp
-        data['quote_plus'] = unicode_quote_plus
-        
-        ## debugging tools
-        from pprint import pformat
-        data['pprint'] = pformat
-
-    def load_template(self, filename, req=None, data=None, method=None):
+    def load_template(self, filename, method=None):
         """Retrieve a Template and optionally preset the template data.
-
-        If `req` and `data` are given, the `data` dictionary will be preset
-        with the "standard" Trac information and helper methods.
 
         Also, if the optional `method` argument is set to `'text'`, a
         TextTemplate instance will be created instead of a MarkupTemplate.
         """
-        if req and data:
-            self.populate_data(req, data)
         if not self.templateloader:
             self.templateloader = TemplateLoader(self.get_all_templates_dirs(),
                                                  auto_reload=self.auto_reload)
-        cls = method == 'text' and TextTemplate or MarkupTemplate
+        if method == 'text':
+            cls = TextTemplate
+        else:
+            cls = MarkupTemplate
+
         return self.templateloader.load(filename, cls=cls)
 
     def render_response(self, req, template_name, content_type, data):
@@ -473,8 +441,10 @@ class Chrome(Component):
         doctype = {'text/html': DocType.XHTML_STRICT}.get(content_type)
         method = {'text/html': 'xhtml',
                   'text/plain': 'text'}.get(content_type, 'xml')
-        
-        template = self.load_template(template_name, req, data, method=method)
+
+        template = self.load_template(template_name, method=method)
+        self.populate_data(req, data)
+
         stream = template.generate(**data)
 
         if method == 'text':

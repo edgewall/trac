@@ -4,43 +4,8 @@
 <div xmlns="http://www.w3.org/1999/xhtml"
      xmlns:py="http://genshi.edgewall.org/" py:strip="">
 
-  <!--!  Macro for generating a <input type="checkbox"> element in forms
-  -
-  -      The <input> and a corresponding <label> will be wrapped in a <div> field.
-  -
-  -      'selector'  is a boolean variable
-  -      'name       is the name of the option
-  -      'text'      is the displayed text, defaults to 'name'
-  -      'id'        optional id for the checkbox, if different from 'name'
-  -->
-  <py:def function="checkbox(selector, name, text=None, id=None)">
-    <py:with vars="id = id or name">
-      <div class="field">
-        <input type="checkbox" id="$id" name="$name" py:attrs="form_attrs(checked=selector)" />
-        <label for="$id">${text or name}</label>
-      </div>
-    </py:with>
-  </py:def>
-
-  <!--!  Macro for generating a set of <input type="radio"> element in forms
-  -
-  -      'selector'  is the selector variable
-  -      'name       is the name shared by the buttons option
-  -      'buttons'   is a list used for defining the individual buttons.
-  -                  Each is a tuple (value/id, text=None, default=False).
-  -->
-  <py:def function="radiobuttons(selector, name, buttons)">
-    <label py:for="button in buttons"
-           py:with="value = button[0];
-                    text = len(button) > 1 and button[1] or button[0];
-                    default = len(button) > 2 and button[2]">
-      <input type="radio" id="$value" name="$name" value="$value"
-        checked="${selector == value or (default and selector not in values) and 'checked' or None}" />
-      $text
-    </label>
-  </py:def>
-
-  <!--!  Eventually display the plural form of a noun
+  <!--!  Display the plural or singular form of a noun depending on a given
+  -      number.
   -
   -      'cnt'       corresponding quantity
   -      'noun'
@@ -48,7 +13,6 @@
   -
   -      We take care to not insert any extra space.
   -->
-
   <py:def function="plural(cnt,noun,keepzero=False)"><py:if
       test="cnt != 0 or keepzero"
       >${cnt == 1 and ('1 '+noun) or '%d %ss' % (cnt, noun)}</py:if></py:def>
@@ -86,7 +50,6 @@
     </py:for>
   </py:def>
 
-
   <!--! Add Previous/Up/Next navigation links
   -
   -     `label` the label to use after the Previous/Next words
@@ -114,7 +77,6 @@
     </li>
   </ul>
 
-
   <!--! Add diff option fields (to be used inside a form)
   -
   -     `diff` the datastructure which contains diff options
@@ -133,17 +95,28 @@
                   maxlength="3" value="${diff.options.contextlines &lt; 0 and 'all' or diff.options.contextlines}" />
       <label for="contextlines">lines around each change</label>
     </div>
-    <fieldset id="ignore">
+    <fieldset id="ignore" py:with="options = diff.options">
       <legend>Ignore:</legend>
-      ${checkbox(diff.options.ignoreblanklines, 'ignoreblanklines', 'Blank lines')}
-      ${checkbox(diff.options.ignorecase, 'ignorecase', 'Case changes')}
-      ${checkbox(diff.options.ignorewhitespace, 'ignorewhitespace', 'White space changes')}
+      <div class="field">
+        <input type="checkbox" id="ignoreblanklines" name="ignoreblanklines"
+               checked="${options.ignoreblanklines or None}" />
+        <label for="ignoreblanklines">Blank lines</label>
+      </div>
+      <div class="field">
+        <input type="checkbox" id="ignorecase" name="ignorecase"
+               checked="${options.ignorecase or None}" />
+        <label for="ignorecase">Case changes</label>
+      </div>
+      <div class="field">
+        <input type="checkbox" id="ignorewhitespace" name="ignorewhitespace"
+               checked="${options.ignorewhitespace or None}" />
+        <label for="ignorewhitespace">White space changes</label>
+      </div>
     </fieldset>
     <div class="buttons">
       <input type="submit" name="update" value="Update" />
     </div>
   </py:def>
-
 
   <!--! Display a div for visualizing a preview of a file content
   -

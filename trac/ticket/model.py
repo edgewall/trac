@@ -24,7 +24,7 @@ from datetime import date, datetime
 
 from trac.attachment import Attachment
 from trac.core import TracError
-from trac.ticket import TicketSystem
+from trac.ticket.api import TicketSystem
 from trac.util import sorted, embedded_numbers
 from trac.util.datefmt import utc, utcmax, to_timestamp
 

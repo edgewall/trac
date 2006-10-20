@@ -85,10 +85,10 @@
 
                         <py:when test="'checkbox'">
                           <input type="radio" id="${field_name}_on" name="$field_name" value="1"
-                            py:attrs="form_attrs(checked=constraint.mode != '!')" />
+                                 checked="${constraint.mode != '!' or None}" />
                           <label for="${field_name}_on">yes</label>
                           <input type="radio" id="${field_name}_off" name="$field_name" value="0"
-                            py:attrs="form_attrs(checked=constraint.mode == '!')" />
+                                 checked="${constraint.mode == '!' or None}" />
                           <label for="${field_name}_off">no</label>
                         </py:when>
 
@@ -114,9 +114,12 @@
                   <label for="add_filter">Add filter</label>&nbsp;
                   <select name="add_filter" id="add_filter">
                     <option></option>
-                    <option py:for="field_name, field in fields.iteritems()" value="$field_name"
-                      py:attrs="form_attrs(disabled=field.type=='radio' and constraints[field_name]
-                                           and len(constraints[field_name]))">$field.label
+                    <option py:for="field_name, field in fields.iteritems()"
+                            value="$field_name"
+                            disabled="${(field.type == 'radio' and
+                                         constraints[fieldname] and
+                                         len(constraints[field_name])) or None}">
+                      ${field.label}
                     </option>
                   </select>
                   <input type="submit" name="add" value="+" />
@@ -131,17 +134,18 @@
           <select name="group" id="group">
             <option></option>
             <option py:for="field_name, field in fields.iteritems()"
-              py:if="field.type in ('select', 'radio') or field_name == 'owner'"
-              py:attrs="form_attrs(selected=field_name == query.group)" value="${field_name}">$field.label
-            </option>
+                    py:if="field.type in ('select', 'radio') or field_name == 'owner'"
+                    selected="${field_name == query.group or None}"
+                    value="${field_name}">${field.label}</option>
           </select>
           <input type="checkbox" name="groupdesc" id="groupdesc"
-            py:attrs="form_attrs(checked=query.groupdesc)" />
+                 checked="${query.groupdesc or None}" />
           <label for="groupdesc">descending</label>
         </p>
 
         <p class="option">
-          <input type="checkbox" name="verbose" id="verbose" py:attrs="form_attrs(checked=query.verbose)" />
+          <input type="checkbox" name="verbose" id="verbose"
+                 checked="${query.verbose or None}" />
           <label for="verbose">Show full description under each result</label>
         </p>
 

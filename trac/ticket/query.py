@@ -21,8 +21,10 @@ import time
 
 from trac.core import *
 from trac.db import get_column_names
+from trac.mimeview.api import Mimeview, IContentConverter
 from trac.perm import IPermissionRequestor
-from trac.ticket import Ticket, TicketSystem
+from trac.ticket.api import TicketSystem
+from trac.ticket.model import Ticket
 from trac.util.html import escape, html, unescape
 from trac.util.text import shorten_line, CRLF
 from trac.web import IRequestHandler
@@ -31,7 +33,7 @@ from trac.web.chrome import add_link, add_script, add_stylesheet, \
 from trac.wiki.api import IWikiSyntaxProvider, parse_args
 from trac.wiki.formatter import wiki_to_html, wiki_to_oneliner
 from trac.wiki.macros import WikiMacroBase # TODO: should be moved in .api
-from trac.mimeview.api import Mimeview, IContentConverter
+
 
 class QuerySyntaxError(Exception):
     """Exception raised when a ticket query cannot be parsed from a string."""
