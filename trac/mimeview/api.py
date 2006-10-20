@@ -59,11 +59,13 @@ an object that can be `read()`.
 import re
 from StringIO import StringIO
 
+from genshi.core import escape, Markup, Stream
+from genshi.builder import Fragment, tag
+
 from trac.config import IntOption, ListOption, Option
 from trac.core import *
 from trac.util import sorted
 from trac.util.text import to_utf8, to_unicode
-from trac.util.html import escape, Markup, Fragment, html
 
 
 __all__ = ['get_mimetype', 'is_binary', 'detect_unicode', 'Mimeview',
@@ -448,7 +450,7 @@ class Mimeview(Component):
                                          filename, url)
                 if not result:
                     continue
-                elif isinstance(result, Fragment):
+                elif isinstance(result, (Fragment, Stream)):
                     return result
                 elif isinstance(result, basestring):
                     return Markup(to_unicode(result))
@@ -703,8 +705,8 @@ class ImageRenderer(Component):
 
     def render(self, req, mimetype, content, filename=None, url=None):
         if url:
-            return html.DIV(html.IMG(src=url,alt=filename),
-                            class_="image-file")
+            return tag.div(tag.img(src=url, alt=filename),
+                           class_="image-file")
 
 
 class WikiTextRenderer(Component):
