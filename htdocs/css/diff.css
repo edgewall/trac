@@ -116,7 +116,7 @@
  background: #f7f7f7;
  border: 1px solid #d7d7d7;
 }
-.diff table td del, .diff table td ins { text-decoration: none }
+.diff table td del, .diff table td ins { text-decoration: none; white-space: pre; }
 .diff table td del { color: #600 }
 .diff table td ins { color: #060 }
 
