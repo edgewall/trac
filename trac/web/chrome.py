@@ -428,9 +428,9 @@ class Chrome(Component):
 
         return self.templateloader.load(filename, cls=cls)
 
-    def render_template(self, req, template_name, content_type, data,
+    def render_template(self, req, filename, data, content_type=None, 
                         fragment=False):
-        """Render the `template_name` using the `data` for the context.
+        """Render the `filename` using the `data` for the context.
 
         The `content_type` argument is used to choose the kind of template
         used (TextTemplate if `'text/plain'`, MarkupTemplate otherwise), and
@@ -442,7 +442,7 @@ class Chrome(Component):
         method = {'text/html': 'xhtml',
                   'text/plain': 'text'}.get(content_type, 'xml')
 
-        template = self.load_template(template_name, method=method)
+        template = self.load_template(filename, method=method)
         self.populate_data(req, data)
 
         stream = template.generate(**data)

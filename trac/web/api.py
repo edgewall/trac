@@ -378,8 +378,8 @@ class Request(object):
 
             if template.endswith('.html'):
                 from trac.web.chrome import Chrome
-                data = Chrome(env).render_template(self, template,
-                                                   'text/html', data)
+                data = Chrome(env).render_template(self, template, data,
+                                                   'text/html')
         except: # failed to render
             data = get_last_traceback()
             content_type = 'text/plain'

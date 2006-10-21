@@ -55,8 +55,7 @@ class PatchRenderer(Component):
 
         add_stylesheet(req, 'common/css/diff.css')
         return Chrome(self.env).render_template(req, 'diff_div.html',
-                                                'text/html', data,
-                                                fragment=True)
+                                                data, fragment=True)
 
     # Internal methods
 

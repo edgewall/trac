@@ -752,9 +752,8 @@ class TicketQueryMacro(WikiMacroBase):
 
                 add_stylesheet(req, 'common/css/report.css')
                 
-                template = Chrome(self.env).load_template('query_div.html',
-                                                          req, data)
-                return template.generate(**data).render('xhtml')
+                return Chrome(self.env).render_template(req, 'query_div.html',
+                                                        data, fragment=True)
             else:
                 return html.DL([(html.DT(ticket_anchor(ticket)),
                                  html.DD(ticket['summary']))
