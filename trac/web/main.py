@@ -244,8 +244,9 @@ class RequestDispatcher(Component):
                             req.display(template, content_type or 'text/html')
                         else: # FIXME postprocess API need to change for genshi
                             template, data, content_type = resp
-                            output = chrome.render_response(req, template,
-                                                            content_type, data)
+                            output = chrome.render_template(req, template,
+                                                            content_type,
+                                                            data)
                             req.send(output, content_type or 'text/html')
                     else:
                         self._post_process_request(req)

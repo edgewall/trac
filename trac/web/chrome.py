@@ -428,17 +428,17 @@ class Chrome(Component):
 
         return self.templateloader.load(filename, cls=cls)
 
-    def render_response(self, req, template_name, content_type, data):
+    def render_template(self, req, template_name, content_type, data,
+                        fragment=False):
         """Render the `template_name` using the `data` for the context.
 
-        The MIME `content_type` argument is used to choose the kind of template
+        The `content_type` argument is used to choose the kind of template
         used (TextTemplate if `'text/plain'`, MarkupTemplate otherwise), and
         tweak the rendering process (use of XHTML Strict doctype if
         `'text/html'` is given).
         """
         if content_type is None:
             content_type = 'text/html'
-        doctype = {'text/html': DocType.XHTML_STRICT}.get(content_type)
         method = {'text/html': 'xhtml',
                   'text/plain': 'text'}.get(content_type, 'xml')
 
@@ -446,8 +446,11 @@ class Chrome(Component):
         self.populate_data(req, data)
 
         stream = template.generate(**data)
+        if fragment:
+            return stream
 
         if method == 'text':
             return stream.render('text')
         else:
+            doctype = {'text/html': DocType.XHTML_STRICT}.get(content_type)
             return stream.render(method, doctype=doctype)

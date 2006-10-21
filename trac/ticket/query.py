@@ -654,9 +654,11 @@ class QueryModule(Component):
                                         groupdesc=query.groupdesc and 1 or None,
                                         verbose=query.verbose and 1 or None,
                                         **query.constraints)
+
         data = {'results': results, 'query_href': query_href}
-        template = Chrome(self.env).load_template('query.rss', req, data)
-        return template.generate(**data).render('xml'), 'application/rss+xml'
+        output = Chrome(self.env).render_template(req, 'query.rss',
+                                                  'application/rss+xml', data)
+        return output, 'application/rss+xml'
 
     # IWikiSyntaxProvider methods
     
