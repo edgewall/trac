@@ -184,9 +184,11 @@ This ticket is the first one
 <a class="odd resolver" href="/thing/123">link:123</a>&amp;
 ============================== Link resolver SHREF_TARGET_FIRST
 <bug>http://localhost/bugzilla/show_bug.cgi?id=1284</bug> 804
+__Summary:__
 ------------------------------
 <p>
 &lt;bug&gt;<a class="ext-link" href="http://localhost/bugzilla/show_bug.cgi?id=1284"><span class="icon">http://localhost/bugzilla/show_bug.cgi?id=1284</span></a>&lt;/bug&gt; 804
+<span class="underline">Summary:</span>
 </p>
 ------------------------------
 ============================== Link resolver SHREF_TARGET_MIDDLE
