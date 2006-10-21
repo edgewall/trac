@@ -489,7 +489,7 @@ class SubversionRepository(Repository):
             text_deltas = 0 # as this is anyway re-done in Diff.py...
             entry_props = 0 # "... typically used only for working copy updates"
             repos.svn_repos_dir_delta(old_root,
-                                      _to_svn(self.scope, old_path), '',
+                                      _to_svn(self.scope + old_path), '',
                                       new_root,
                                       _to_svn(self.scope + new_path),
                                       e_ptr, e_baton, authz_cb,
