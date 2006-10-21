@@ -52,8 +52,8 @@
                      td_attrs = fullrow and {'class': 'fullrow', 'colspan': 100} or {}"
             class="${row.__color__ and 'color'+row.__color__+'-' or ''}${row.__idx__ % 2 and 'odd' or 'even'}"
             style="${row.__bgcolor__ and 'background: '+row.__bgcolor__+';'
-            }${row.__fgcolor__ and row_style+'color: '+row.__fgcolor__+';'
-            }${row.__style__ and row_style+row.__style__+';'
+            }${row.__fgcolor__ and 'color: '+row.__fgcolor__+';'
+            }${row.__style__ and row.__style__+';'
             }${fullrow and ';border: none; padding: 0;' or ''}">
 
             <py:for each="cell in cell_group">
