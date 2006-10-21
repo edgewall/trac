@@ -460,8 +460,8 @@ class ChangesetModule(Component):
                         break
                 if context < 0:
                     context = None
-                tabwidth = self.config['diff'].getint('tab_width',
-                                self.config['mimeviewer'].getint('tab_width'))
+                tabwidth = self.config['diff'].getint('tab_width') or \
+                           self.config['mimeviewer'].getint('tab_width', 8)
                 return hdf_diff(old_content.splitlines(),
                                 new_content.splitlines(),
                                 context, tabwidth,
