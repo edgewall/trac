@@ -30,7 +30,7 @@ from trac.config import *
 from trac.core import *
 from trac.env import IEnvironmentSetupParticipant
 from trac.util import compat, get_reporter_id, presentation
-from trac.util.compat import partial
+from trac.util.compat import partial, set
 from trac.util.text import pretty_size, unicode_quote_plus
 from trac.util.datefmt import pretty_timedelta, format_datetime, format_date, \
                               format_time, http_date
@@ -42,6 +42,11 @@ def add_link(req, rel, href, title=None, mimetype=None, classname=None):
     """Add a link to the HDF data set that will be inserted as <link> element in
     the <head> of the generated HTML
     """
+    linkid = '%s:%s' % (rel, href)
+    linkset = req.environ.setdefault('trac.chrome.linkset', set())
+    if linkid in linkset:
+        return # Already added that link
+
     link = {'href': href}
     if title:
         link['title'] = title
@@ -49,8 +54,10 @@ def add_link(req, rel, href, title=None, mimetype=None, classname=None):
         link['type'] = mimetype
     if classname:
         link['class'] = classname
-    # FIXME: don't add the same link more than once
-    req.environ.setdefault('trac.chrome.links', {}).setdefault(rel, []).append(link)
+
+    links = req.environ.setdefault('trac.chrome.links', {})
+    links.setdefault(rel, []).append(link)
+    linkset.add(linkid)
 
 def add_stylesheet(req, filename, mimetype='text/css'):
     """Add a link to a style sheet to the HDF data set so that it gets included
@@ -65,14 +72,19 @@ def add_stylesheet(req, filename, mimetype='text/css'):
 
 def add_script(req, filename, mimetype='text/javascript'):
     """Add a reference to an external javascript file to the template."""
+    scriptset = req.environ.setdefault('trac.chrome.scriptset', set())
+    if filename in scriptset:
+        return False # Already added that script
+
     if filename.startswith('common/') and 'trac.htdocs_location' in req.environ:
         href = Href(req.environ['trac.htdocs_location'])
         filename = filename[7:]
     else:
         href = Href(req.base_path).chrome
     script = {'href': href(filename), 'type': mimetype}
-    # FIXME: don't add the same script more than once
+
     req.environ.setdefault('trac.chrome.scripts', []).append(script)
+    scriptset.add(filename)
 
 def add_javascript(req, filename):
     """Deprecated: use `add_script()` instead."""
@@ -164,7 +176,7 @@ class Chrome(Component):
     logo_height = IntOption('header_logo', 'height', -1,
         """Height of the header logo image in pixels.""")
 
-    templateloader = None
+    templates = None
 
     # A dictionary of default context data for templates
     _default_context_data = {
@@ -407,10 +419,13 @@ class Chrome(Component):
         data['authname'] = req and req.authname or '<trac>'
 
         # Timezone-dependant functions
-        data['format_datetime'] = partial(format_datetime, tzinfo=req.tz)
-        data['format_date'] = partial(format_date, tzinfo=req.tz)
-        data['format_time'] = partial(format_time, tzinfo=req.tz)
-        data['fromtimestamp'] = partial(datetime.fromtimestamp, tz=req.tz)
+        tzinfo = None
+        if req:
+            tzinfo = req.tz
+        data['format_datetime'] = partial(format_datetime, tzinfo=tzinfo)
+        data['format_date'] = partial(format_date, tzinfo=tzinfo)
+        data['format_time'] = partial(format_time, tzinfo=tzinfo)
+        data['fromtimestamp'] = partial(datetime.fromtimestamp, tz=tzinfo)
 
     def load_template(self, filename, method=None):
         """Retrieve a Template and optionally preset the template data.
@@ -418,17 +433,17 @@ class Chrome(Component):
         Also, if the optional `method` argument is set to `'text'`, a
         TextTemplate instance will be created instead of a MarkupTemplate.
         """
-        if not self.templateloader:
-            self.templateloader = TemplateLoader(self.get_all_templates_dirs(),
-                                                 auto_reload=self.auto_reload)
+        if not self.templates:
+            self.templates = TemplateLoader(self.get_all_templates_dirs(),
+                                            auto_reload=self.auto_reload)
         if method == 'text':
             cls = TextTemplate
         else:
             cls = MarkupTemplate
 
-        return self.templateloader.load(filename, cls=cls)
+        return self.templates.load(filename, cls=cls)
 
-    def render_template(self, req, filename, data, content_type=None, 
+    def render_template(self, req, filename, data, content_type=None,
                         fragment=False):
         """Render the `filename` using the `data` for the context.
 

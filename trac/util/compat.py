@@ -18,6 +18,13 @@ previous of Python prior to 2.4.
 """
 
 try:
+    set = set
+    frozenset = frozenset
+except NameError:
+    from sets import Set as set
+    from sets import ImmutableSet as frozenset
+
+try:
     reversed = reversed
 except NameError:
     def reversed(x):

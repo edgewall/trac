@@ -1,7 +1,7 @@
 from trac.core import Component, ComponentManager, implements
 from trac.perm import PermissionCache
 from trac.test import EnvironmentStub, Mock
-from trac.web.chrome import add_link, add_stylesheet, Chrome, \
+from trac.web.chrome import add_link, add_script, add_stylesheet, Chrome, \
                             INavigationContributor
 from trac.web.href import Href
 
@@ -35,12 +35,25 @@ class ChromeTestCase(unittest.TestCase):
         self.assertEqual('text/html', link['type'])
         self.assertEqual('home', link['class'])
 
+    def test_add_script(self):
+        req = Mock(base_path='/trac.cgi', environ={}, href=Href('/trac.cgi'))
+        add_script(req, 'common/js/trac.js')
+        add_script(req, 'common/js/trac.js')
+        scripts = req.environ['trac.chrome.scripts']
+        self.assertEqual(1, len(scripts))
+        self.assertEqual('text/javascript', scripts[0]['type'])
+        self.assertEqual('/trac.cgi/chrome/common/js/trac.js',
+                         scripts[0]['href'])
+
     def test_add_stylesheet(self):
         req = Mock(base_path='/trac.cgi', environ={}, href=Href('/trac.cgi'))
         add_stylesheet(req, 'common/css/trac.css')
-        link = req.environ['trac.chrome.links']['stylesheet'][0]
-        self.assertEqual('text/css', link['type'])
-        self.assertEqual('/trac.cgi/chrome/common/css/trac.css', link['href'])
+        add_stylesheet(req, 'common/css/trac.css')
+        links = req.environ['trac.chrome.links']['stylesheet']
+        self.assertEqual(1, len(links))
+        self.assertEqual('text/css', links[0]['type'])
+        self.assertEqual('/trac.cgi/chrome/common/css/trac.css',
+                         links[0]['href'])
 
     def test_htdocs_location(self):
         req = Mock(environ={}, href=Href('/trac.cgi'), base_path='/trac.cgi',
@@ -202,4 +215,6 @@ def suite():
     return unittest.makeSuite(ChromeTestCase, 'test')
 
 if __name__ == '__main__':
-    unittest.main()
+    from trac.web import chrome
+    print chrome.__file__
+    unittest.main(defaultTest='suite')

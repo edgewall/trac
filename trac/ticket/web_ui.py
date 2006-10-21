@@ -473,9 +473,10 @@ class TicketModule(TicketModuleBase):
                                         db, absurls=True),
             'changes': changes,
             }
-        
-        template = Chrome(self.env).load_template('ticket.rss', req, data)
-        return template.generate(**data).render('xml'), 'application/rss+xml'
+
+        output = Chrome(self.env).render_template(req, 'ticket.rss', data,
+                                                  'application/rss+xml')
+        return output, 'application/rss+xml'
 
     def _do_save(self, req, db, ticket):
         if req.perm.has_permission('TICKET_CHGPROP'):
