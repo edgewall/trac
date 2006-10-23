@@ -163,7 +163,9 @@ schema = [
 ## Default Reports
 ##
 
-reports = (
+def get_reports(db):
+    owner = db.concat('owner', "' *'")
+    return (
 ('Active Tickets',
 """
  * List all active tickets by priority.
@@ -173,7 +175,7 @@ reports = (
 """
 SELECT p.value AS __color__,
    id AS ticket, summary, component, version, milestone, t.type AS type, 
-   (CASE status WHEN 'assigned' THEN owner||' *' ELSE owner END) AS owner,
+   (CASE status WHEN 'assigned' THEN %s ELSE owner END) AS owner,
    time AS created,
    changetime AS _changetime, description AS _description,
    reporter AS _reporter
@@ -181,7 +183,7 @@ SELECT p.value AS __color__,
   WHERE status IN ('new', 'assigned', 'reopened') 
 AND p.name = t.priority AND p.type = 'priority'
   ORDER BY p.value, milestone, t.type, time
-"""),
+""" % owner),
 #----------------------------------------------------------------------------
  ('Active Tickets by Version',
 """
@@ -195,7 +197,7 @@ for useful RSS export.
 SELECT p.value AS __color__,
    version AS __group__,
    id AS ticket, summary, component, version, t.type AS type, 
-   (CASE status WHEN 'assigned' THEN owner||' *' ELSE owner END) AS owner,
+   (CASE status WHEN 'assigned' THEN %s ELSE owner END) AS owner,
    time AS created,
    changetime AS _changetime, description AS _description,
    reporter AS _reporter
@@ -203,7 +205,7 @@ SELECT p.value AS __color__,
   WHERE status IN ('new', 'assigned', 'reopened') 
 AND p.name = t.priority AND p.type = 'priority'
   ORDER BY (version IS NULL),version, p.value, t.type, time
-"""),
+""" % owner),
 #----------------------------------------------------------------------------
 ('All Tickets by Milestone',
 """
@@ -215,9 +217,9 @@ for useful RSS export.
 """,
 """
 SELECT p.value AS __color__,
-   milestone||' Release' AS __group__,
+   %s AS __group__,
    id AS ticket, summary, component, version, t.type AS type, 
-   (CASE status WHEN 'assigned' THEN owner||' *' ELSE owner END) AS owner,
+   (CASE status WHEN 'assigned' THEN %s ELSE owner END) AS owner,
    time AS created,
    changetime AS _changetime, description AS _description,
    reporter AS _reporter
@@ -225,7 +227,7 @@ SELECT p.value AS __color__,
   WHERE status IN ('new', 'assigned', 'reopened') 
 AND p.name = t.priority AND p.type = 'priority'
   ORDER BY (milestone IS NULL),milestone, p.value, t.type, time
-"""),
+""" % (db.concat('milestone', "' Release'"), owner)),
 #----------------------------------------------------------------------------
 ('Assigned, Active Tickets by Owner',
 """
@@ -314,7 +316,7 @@ SELECT p.value AS __color__,
      ELSE 'Active Tickets' 
     END) AS __group__,
    id AS ticket, summary, component, version, milestone, t.type AS type, 
-   (CASE status WHEN 'assigned' THEN owner||' *' ELSE owner END) AS owner,
+   (CASE status WHEN 'assigned' THEN %s ELSE owner END) AS owner,
    time AS created,
    changetime AS _changetime, description AS _description,
    reporter AS _reporter
@@ -322,7 +324,7 @@ SELECT p.value AS __color__,
   WHERE status IN ('new', 'assigned', 'reopened') 
 AND p.name = t.priority AND p.type = 'priority'
   ORDER BY (owner = '$USER') DESC, p.value, milestone, t.type, time
-"""))
+""" % owner))
 
 
 ##
@@ -330,7 +332,8 @@ AND p.name = t.priority AND p.type = 'priority'
 ##
 
 # (table, (column1, column2), ((row1col1, row1col2), (row2col1, row2col2)))
-data = (('component',
+def get_data(db):
+   return (('component',
              ('name', 'owner'),
                (('component1', 'somebody'),
                 ('component2', 'somebody'))),
@@ -386,7 +389,7 @@ data = (('component',
                (('database_version', str(db_version)),)),
            ('report',
              ('author', 'title', 'query', 'description'),
-               __mkreports(reports)))
+               __mkreports(get_reports(db))))
 
 
 default_components = ('trac.About', 'trac.attachment',

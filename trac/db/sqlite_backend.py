@@ -190,6 +190,9 @@ class SQLiteConnection(ConnectionWrapper):
         else:
             return column
 
+    def concat(self, *args):
+        return '||'.join(args)
+
     def like(self):
         if sqlite_version >= 30100:
             return "LIKE %s ESCAPE '/'"
