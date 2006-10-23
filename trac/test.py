@@ -155,7 +155,7 @@ class EnvironmentStub(Environment):
         from trac import db_default
         if default_data:
             cursor = self.db.cursor()
-            for table, cols, vals in db_default.data:
+            for table, cols, vals in db_default.get_data(self.db):
                 cursor.executemany("INSERT INTO %s (%s) VALUES (%s)"
                                    % (table, ','.join(cols),
                                       ','.join(['%s' for c in cols])),

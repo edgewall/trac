@@ -151,6 +151,9 @@ class MySQLConnection(ConnectionWrapper):
             type = 'signed'
         return 'CAST(%s AS %s)' % (column, type)
 
+    def concat(self, *args):
+        return 'concat(%s)' % ', '.join(args)
+
     def like(self):
         return "LIKE %s ESCAPE '/'"
 

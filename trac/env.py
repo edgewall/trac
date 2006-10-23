@@ -363,7 +363,7 @@ class EnvironmentSetup(Component):
         """Insert default data into the database."""
         db = self.env.get_db_cnx()
         cursor = db.cursor()
-        for table, cols, vals in db_default.data:
+        for table, cols, vals in db_default.get_data(db):
             cursor.executemany("INSERT INTO %s (%s) VALUES (%s)" % (table,
                                ','.join(cols), ','.join(['%s' for c in cols])),
                                vals)

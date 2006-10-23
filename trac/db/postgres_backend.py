@@ -133,6 +133,9 @@ class PostgreSQLConnection(ConnectionWrapper):
         # Temporary hack needed for the union of selects in the search module
         return 'CAST(%s AS %s)' % (column, type)
 
+    def concat(self, *args):
+        return '||'.join(args)
+
     def like(self):
         # Temporary hack needed for the case-insensitive string matching in the
         # search module

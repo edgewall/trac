@@ -22,7 +22,6 @@ import time
 import unittest
 from StringIO import StringIO
 
-from trac.db_default import data as default_data
 from trac.env import Environment
 from trac.scripts import admin
 from trac.test import InMemoryDatabase, TestConfiguration
