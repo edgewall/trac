@@ -262,6 +262,8 @@ class WikiModule(Component):
                         break
                 else:
                     next_version = version
+        if not old_version:
+            old_version = 0
 
         # -- text diffs
         diff_style, diff_options, diff_data = get_diff_options(req)
