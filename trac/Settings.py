@@ -27,7 +27,7 @@ class SettingsModule(Component):
 
     implements(INavigationContributor, IRequestHandler)
 
-    _form_fields = ['newsid','name', 'email', 'tz']
+    _form_fields = ['newsid','name', 'email', 'tz', 'accesskeys']
 
     # INavigationContributor methods
 
@@ -65,13 +65,15 @@ class SettingsModule(Component):
         for field in self._form_fields:
             val = req.args.get(field)
             if val:
-                if field == 'tz' and val not in all_timezones and \
-                       'tz' in req.session:
+                if field == 'tz' and 'tz' in req.session and \
+                        val not in all_timezones:
                     del req.session['tz']
-                if field == 'newsid' and val:
+                elif field == 'newsid' and val:
                     req.session.change_sid(val)
                 else:
                     req.session[field] = val
+            elif field in req.session:
+                del req.session[field]
         req.redirect(req.href.settings())
 
     def _do_load(self, req):

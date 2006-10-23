@@ -22,6 +22,7 @@ import re
 
 from genshi import Markup
 from genshi.builder import tag
+from genshi.core import START
 from genshi.output import DocType
 from genshi.template import TemplateLoader, MarkupTemplate, TextTemplate
 
@@ -464,8 +465,17 @@ class Chrome(Component):
         if fragment:
             return stream
 
+        if not int(req.session.get('accesskeys', 0)):
+            stream |= self._strip_accesskeys
+
         if method == 'text':
             return stream.render('text')
         else:
             doctype = {'text/html': DocType.XHTML_STRICT}.get(content_type)
             return stream.render(method, doctype=doctype)
+
+    def _strip_accesskeys(self, stream, ctxt=None):
+        for kind, data, pos in stream:
+            if kind is START and 'accesskey' in data[1]:
+                data[1].remove('accesskey')
+            yield kind, data, pos

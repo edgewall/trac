@@ -52,23 +52,31 @@
 
         <fieldset>
           <legend>Preferences</legend>
-          <table>
-            <tr class="field">
-              <th><label for="tz">Time zone:</label></th>
-              <td><select name="tz" id="tz">
-                  <option>Default time zone</option>
-                  <option py:for="tz in timezones"
-                    selected="${settings.session.tz == tz or None}"
-                    py:content="tz" />
-                </select>
-              </td>
-              <td>
-                <p class="hint">Configuring your time zone will result in all
-                  dates and times displayed on this site to use your time zone
-                  instead of that of the server.</p>
-              </td>
-            </tr>
-          </table>
+          <div class="field">
+            <label>Time zone:
+            <select name="tz">
+              <option>Default time zone</option>
+              <option py:for="tz in timezones"
+                      selected="${settings.session.tz == tz or None}"
+                      py:content="tz" />
+            </select></label>
+            <p class="hint">Configuring your time zone will result in all
+            dates and times displayed on this site to use your time zone
+            instead of that of the server.</p>
+          </div>
+          <div class="field">
+            <label>
+              <input type="checkbox" name="accesskeys" value="1"
+                     checked="${settings.session.accesskeys or None}" />
+              Enable access keys
+            </label>
+            <p class="hint">This site provides keyboard shortcuts for faster
+            access to certain functions of this site. As these shortcuts can
+            cause conflicts with shortcuts provided by the desktop system or
+            web browser, they are disabled by default. See
+            <a href="${href.wiki('TracAccessibility')}">TracAccessibility</a>
+            for more information on access keys.</p>
+          </div>
         </fieldset>
 
         <fieldset py:if="settings.session_id">
