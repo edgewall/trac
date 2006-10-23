@@ -21,7 +21,8 @@ class TicketConversionTestCase(unittest.TestCase):
         self.req = Mock(base_path='/trac.cgi', path_info='',
                         href=Href('/trac.cgi'),
                         abs_href=Href('http://example.org/trac.cgi'),
-                        environ={}, perm=None, authname='-', args={}, tz=None)
+                        environ={}, perm=None, authname='-', args={}, tz=None,
+                        session=None)
 
     def _create_a_ticket(self):
         # 1. Creating ticket

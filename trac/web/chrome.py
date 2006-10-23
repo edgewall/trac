@@ -465,7 +465,7 @@ class Chrome(Component):
         if fragment:
             return stream
 
-        if not int(req.session.get('accesskeys', 0)):
+        if not req.session or not int(req.session.get('accesskeys', 0)):
             stream |= self._strip_accesskeys
 
         if method == 'text':
