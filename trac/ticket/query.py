@@ -656,8 +656,8 @@ class QueryModule(Component):
                                         **query.constraints)
 
         data = {'results': results, 'query_href': query_href}
-        output = Chrome(self.env).render_template(req, 'query.rss',
-                                                  'application/rss+xml', data)
+        output = Chrome(self.env).render_template(req, 'query.rss', data,
+                                                  'application/rss+xml')
         return output, 'application/rss+xml'
 
     # IWikiSyntaxProvider methods
