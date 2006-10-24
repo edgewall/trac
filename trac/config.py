@@ -162,7 +162,7 @@ class Configuration(object):
             for section, options in sections:
                 print>>fileobj, '[%s]' % section
                 for key, val in options:
-                    if key in self[section].overriden:
+                    if key in self[section].overridden:
                         print>>fileobj, '# %s = <set in global trac.ini>' % key
                     else:
                         print>>fileobj, '%s = %s' % \
@@ -195,12 +195,12 @@ class Section(object):
     
     Objects of this class should not be instantiated directly.
     """
-    __slots__ = ['config', 'name', 'overriden']
+    __slots__ = ['config', 'name', 'overridden']
 
     def __init__(self, config, name):
         self.config = config
         self.name = name
-        self.overriden = {}
+        self.overridden = {}
 
     def __contains__(self, name):
         return self.config.parser.has_option(self.name, name) or \
@@ -291,7 +291,7 @@ class Section(object):
         if not self.config.parser.has_section(self.name):
             self.config.parser.add_section(self.name)
         if value is None:
-            self.overriden[name] = True
+            self.overridden[name] = True
             value = ''
         else:
             value = to_unicode(value).encode('utf-8')
