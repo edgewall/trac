@@ -33,8 +33,8 @@ class InputWrapper(object):
     def read(self, size=-1):
         return self.req.read(size)
 
-    def readline(self):
-        return self.req.readline()
+    def readline(self, size=-1):
+        return self.req.readline(size)
 
     def readlines(self, hint=-1):
         return self.req.readlines(hint)
