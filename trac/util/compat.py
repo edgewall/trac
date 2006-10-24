@@ -90,6 +90,7 @@ except ImportError:
                 self.currkey = self.keyfunc(self.currvalue)
 
 try:
+    all = all
     any = any
 except NameError:
     def any(S):
@@ -102,7 +103,7 @@ except NameError:
         for x in S:
             if not x:
                return False
-        return True    
+        return True
 
 try:
     from functools import partial
