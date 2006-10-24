@@ -330,7 +330,10 @@ class ChangesetModule(Component):
                 if restricted:
                     next_rev = repos.next_rev(chgset.rev, path)
                     if next_rev:
-                        next_href = req.href.changeset(next_rev, path)
+                        if repos.has_node(path, next_rev):
+                            next_href = req.href.changeset(next_rev, path)
+                        else: # must be a 'D'elete or 'R'ename, show full cset
+                            next_href = req.href.changeset(next_rev)
                 else:
                     add_link(req, 'last', req.href.changeset(youngest_rev),
                              'Changeset %s' % youngest_rev)
