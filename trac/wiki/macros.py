@@ -127,10 +127,13 @@ class RecentChangesMacro(WikiMacroBase):
         return html.DIV(
             [html.H3(date) +
              html.UL([html.LI(
-            html.A(wiki.format_page_name(name), href=req.href.wiki(name)), ' ',
+            html.A(wiki.format_page_name(name), href=req.href.wiki(name)),
+            ' ',
+            version > 1 and 
             html.SMALL('(', html.A('diff',
                                    href=req.href.wiki(name, action='diff',
-                                                      version=version)), ')'))
+                                                      version=version)), ')') \
+            or None)
                       for name, version in entries])
              for date, entries in entries_per_date])
 
