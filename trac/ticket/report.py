@@ -32,7 +32,6 @@ from trac.web import IRequestHandler
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
 from trac.wiki import wiki_to_html, IWikiSyntaxProvider, Formatter
 
-
 class ReportModule(Component):
 
     implements(INavigationContributor, IPermissionRequestor, IRequestHandler,
@@ -388,7 +387,7 @@ class ReportModule(Component):
                      'text/plain')
 
     def execute_report(self, req, db, id, sql, args):
-        sql, args = self.sql_sub_vars(req, sql, args)
+        sql, args = self.sql_sub_vars(req, sql, args, db)
         if not sql:
             raise TracError('Report %s has no SQL query.' % id)
         if sql.find('__group__') == -1:
@@ -431,7 +430,7 @@ class ReportModule(Component):
     def get_var_args(self, req):
         report_args = {}
         for arg in req.args.keys():
-            if not arg == arg.upper():
+            if not arg.isupper():
                 continue
             report_args[arg] = req.args.get(arg)
 
@@ -441,7 +440,9 @@ class ReportModule(Component):
 
         return report_args
 
-    def sql_sub_vars(self, req, sql, args):
+    def sql_sub_vars(self, req, sql, args, db=None):
+        if db is None:
+            db = self.env.get_db_cnx()
         values = []
         def add_value(aname):
             try:
@@ -452,18 +453,26 @@ class ReportModule(Component):
             req.hdf['report.var.' + aname] = arg
             values.append(arg)
 
-        # simple parameter substitution
+        # simple parameter substitution outside literal
         def repl(match):
             add_value(match.group(1))
             return '%s'
 
-        var_re = re.compile("'?[$]([A-Z]+)'?")
+        # inside a literal break it and concatenate with the parameter
+        def repl_literal(match):
+            add_value(match.group(1))
+            return db.concat("'", "%s", "'")
+
+        var_re = re.compile("[$]([A-Z]+)")
         sql_io = StringIO()
 
         # break SQL into literals and non-literals to handle replacing
         # variables within them with query parameters
         for expr in re.split("('(?:[^']|(?:''))*')", sql):
-            sql_io.write(var_re.sub(repl, expr))
+            if expr.startswith("'"):
+                sql_io.write(var_re.sub(repl_literal, expr))
+            else:
+                sql_io.write(var_re.sub(repl, expr))
         return sql_io.getvalue(), values
 
     def _render_csv(self, req, cols, rows, sep=','):
