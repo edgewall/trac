@@ -6,7 +6,7 @@
  <ul><?cs
   if:wiki.action == "diff" ?>
    <li class="first"><?cs
-     if:len(chrome.links.prev) ?> &larr; 
+     if:len(chrome.links.prev) ?> &larr;
       <a class="prev" href="<?cs var:chrome.links.prev.0.href ?>" title="<?cs
        var:chrome.links.prev.0.title ?>">Previous Change</a><?cs
      else ?>
@@ -28,7 +28,7 @@
    <li><a href="<?cs var:trac.href.wiki ?>">Start Page</a></li>
    <li><a href="<?cs var:trac.href.wiki ?>/TitleIndex">Index by Title</a></li>
    <li><a href="<?cs var:trac.href.wiki ?>/RecentChanges">Index by Date</a></li>
-   <li class="last"><a href="<?cs var:wiki.last_change_href ?>">Last Change</a></li><?cs 
+   <li class="last"><a href="<?cs var:wiki.last_change_href ?>">Last Change</a></li><?cs
   /if ?>
  </ul>
  <hr />
@@ -36,7 +36,7 @@
 
 <div id="content" class="wiki">
 
- <?cs if wiki.action == "delete" ?><?cs 
+ <?cs if wiki.action == "delete" ?><?cs
   if:wiki.version - wiki.old_version > 1 ?><?cs
    set:first_version = wiki.old_version + 1 ?><?cs
    set:version_range = "versions "+first_version+" to "+wiki.version+" of " ?><?cs
@@ -53,7 +53,7 @@
   <form action="<?cs var:wiki.current_href ?>" method="post">
    <input type="hidden" name="action" value="delete" />
    <p><strong>Are you sure you want to <?cs
-    if:!?wiki.version ?>completely <?cs 
+    if:!?wiki.version ?>completely <?cs
     /if ?>delete <?cs var:version_range ?>this page?</strong><br /><?cs
    if:wiki.only_version ?>
     This is the only version the page, so the page will be removed
@@ -71,14 +71,14 @@
     <input type="submit" value="Delete <?cs var:delete_what ?>" />
    </div>
   </form>
- 
+
  <?cs elif:wiki.action == "diff" ?>
   <h1>Changes <?cs
-    if:wiki.old_version ?>between 
+    if:wiki.old_version ?>between
      <a href="<?cs var:wiki.current_href ?>?version=<?cs var:wiki.old_version?>">Version <?cs var:wiki.old_version?></a> and <?cs
     else ?>from <?cs
     /if ?>
-    <a href="<?cs var:wiki.current_href ?>?version=<?cs var:wiki.version?>">Version <?cs var:wiki.version?></a> of 
+    <a href="<?cs var:wiki.current_href ?>?version=<?cs var:wiki.version?>">Version <?cs var:wiki.version?></a> of
     <a href="<?cs var:wiki.current_href ?>"><?cs var:wiki.page_name ?></a></h1>
   <form method="post" id="prefs" action="<?cs var:wiki.current_href ?>">
    <div>
@@ -169,7 +169,7 @@
        <colgroup><col class="lineno" /><col class="lineno" /><col class="content" /></colgroup>
        <thead><tr>
         <th title="Version <?cs var:wiki.old_version ?>">v<?cs
-          var:wiki.old_version ?></th>
+          var:wiki.old_version || "0" ?></th>
         <th title="Version <?cs var:wiki.version ?>">v<?cs
           var:wiki.version ?></th>
         <th>&nbsp;</th>
@@ -181,15 +181,15 @@
      /if ?>
     </li>
    </ul><?cs
-   if:trac.acl.WIKI_DELETE && 
+   if:trac.acl.WIKI_DELETE &&
     (len(wiki.diff) == 0 || wiki.version == wiki.latest_version) ?>
     <form method="get" action="<?cs var:wiki.current_href ?>">
      <input type="hidden" name="action" value="delete" />
      <input type="hidden" name="version" value="<?cs var:wiki.version ?>" />
      <input type="hidden" name="old_version" value="<?cs var:wiki.old_version ?>" />
      <input type="submit" name="delete_version" value="Delete <?cs
-     if:wiki.version - wiki.old_version > 1 ?> version <?cs 
-      var:wiki.old_version+1 ?> to <?cs 
+     if:wiki.version - wiki.old_version > 1 ?> version <?cs
+      var:wiki.old_version+1 ?> to <?cs
      /if ?>version <?cs var:wiki.version ?>" />
     </form><?cs
    /if ?>
@@ -224,7 +224,7 @@
         var:item.url ?>" title="View this version"><?cs
         var:item.version ?></a></td>
       <td class="date"><?cs var:item.time ?></td>
-      <td class="author" title="IP-Address: <?cs var:item.ipaddr ?>"><?cs 
+      <td class="author" title="IP-Address: <?cs var:item.ipaddr ?>"><?cs
         var:item.author ?></td>
       <td class="comment"><?cs var:item.comment ?></td>
      </tr>
@@ -236,7 +236,7 @@
     </div><?cs
    /if ?>
   </form><?cs /if ?>
- 
+
  <?cs else ?>
   <?cs if wiki.action == "edit" || wiki.action == "preview" || wiki.action == "collision" ?>
    <h1>Editing "<?cs var:wiki.page_name ?>"</h1><?cs
@@ -254,7 +254,7 @@
      </fieldset><?cs
      elif wiki.action =="collision"?>
      <div class="system-message">
-       Sorry, this page has been modified by somebody else since you started 
+       Sorry, this page has been modified by somebody else since you started
        editing. Your changes cannot be saved.
      </div><?cs
     /if ?>
