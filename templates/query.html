@@ -117,7 +117,7 @@
                     <option py:for="field_name, field in fields.iteritems()"
                             value="$field_name"
                             disabled="${(field.type == 'radio' and
-                                         constraints[fieldname] and
+                                         constraints[field_name] and
                                          len(constraints[field_name])) or None}">
                       ${field.label}
                     </option>

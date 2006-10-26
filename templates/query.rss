@@ -15,7 +15,7 @@
       <link>$href</link>
       <guid isPermaLink="false">$href</guid>
       <title>#$result.id: $result.summary</title>
-      <pubDate py:if="result.time">${http_date(fromtimestamp(result.time))}</pubDate>
+      <pubDate py:if="result.time">${http_date(result.time)}</pubDate>
       <author py:if="result.reporter">$result.reporter</author>
       <description>${unicode(result.description)}</description>
       <category>Results</category>

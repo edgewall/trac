@@ -15,9 +15,9 @@
 #
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
+from datetime import datetime, timedelta
 import re
 from StringIO import StringIO
-import time
 
 from trac.core import *
 from trac.db import get_column_names
@@ -25,6 +25,7 @@ from trac.mimeview.api import Mimeview, IContentConverter
 from trac.perm import IPermissionRequestor
 from trac.ticket.api import TicketSystem
 from trac.ticket.model import Ticket
+from trac.util.datefmt import to_timestamp, utc
 from trac.util.html import escape, html, unescape
 from trac.util.text import shorten_line, CRLF
 from trac.web import IRequestHandler
@@ -174,8 +175,8 @@ class Query(object):
                     val = val or 'None'
                 elif name == 'reporter':
                     val = val or 'anonymous'
-                elif name in ['changetime', 'time']:
-                    val = int(val)
+                elif name in ('changetime', 'time'):
+                    val = datetime.fromtimestamp(int(val), utc)
                 elif val is None:
                     val = '--'
                 result[name] = val
@@ -332,7 +333,8 @@ class Query(object):
                 else:
                     sql.append("%s.value" % name)
             elif col in ['t.milestone', 't.version']:
-                time_col = name == 'milestone' and 'milestone.due' or 'version.time'
+                time_col = name == 'milestone' and 'milestone.due' or \
+                           'version.time'
                 if desc:
                     sql.append("COALESCE(%s,0)=0 DESC,%s DESC,%s DESC"
                                % (time_col, time_col, col))
@@ -403,22 +405,19 @@ class Query(object):
             if orig_list:
                 # Mark tickets added or changed since the query was first
                 # executed
-                if int(ticket['time']) > orig_time:
+                if ticket['time'] > orig_time:
                     ticket['added'] = True
-                elif int(ticket['changetime']) > orig_time:
+                elif ticket['changetime'] > orig_time:
                     ticket['changed'] = True
-            for field, value in ticket.items():
-                if field == self.group:
-                    groups.setdefault(value, []).append(ticket)
-                    if not groupsequence or groupsequence[-1] != value:
-                        groupsequence.append(value)
-                if field == 'time':
-                    ticket[field] = value
-                elif field == 'description':
-                    ticket[field] = \
-                                  wiki_to_html(value or '', self.env, req, db)
-                else:
-                    ticket[field] = value
+            if self.group:
+                group_key = ticket[self.group]
+                groups.setdefault(group_key, []).append(ticket)
+                if not groupsequence or groupsequence[-1] != group_key:
+                    groupsequence.append(group_key)
+            description = ticket.get('description')
+            if description:
+                ticket['description'] = wiki_to_html(description, self.env,
+                                                     req, db)
         groupsequence = [(value, groups[value]) for value in groupsequence]
 
         return {'query': self,
@@ -557,10 +556,12 @@ class QueryModule(Component):
 
         # The most recent query is stored in the user session;
         orig_list = rest_list = None
-        orig_time = int(time.time())
+        orig_time = datetime.now(utc)
+        query_time = int(req.session.get('query_time', 0))
+        query_time = datetime.fromtimestamp(query_time, utc)
         query_constraints = unicode(query.constraints)
         if query_constraints != req.session.get('query_constraints') \
-                or int(req.session.get('query_time', 0)) < orig_time - 3600:
+                or query_time < orig_time - timedelta(hours=1):
             # New or outdated query, (re-)initialize session vars
             req.session['query_constraints'] = query_constraints
             req.session['query_tickets'] = ' '.join([str(t['id'])
@@ -569,7 +570,7 @@ class QueryModule(Component):
             orig_list = [int(id)
                          for id in req.session.get('query_tickets', '').split()]
             rest_list = orig_list[:]
-            orig_time = int(req.session.get('query_time', 0))
+            orig_time = query_time
 
         # Find out which tickets originally in the query results no longer
         # match the constraints
@@ -606,7 +607,7 @@ class QueryModule(Component):
                                     **query.constraints)
 
         req.session['query_href'] = query.get_href(req)
-        req.session['query_time'] = orig_time
+        req.session['query_time'] = to_timestamp(orig_time)
         req.session['query_tickets'] = ' '.join([str(t['id']) for t in tickets])
 
         # Kludge: only show link to available reports if the report module is
