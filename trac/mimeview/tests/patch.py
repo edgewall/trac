@@ -43,8 +43,9 @@ class PatchRendererTestCase(unittest.TestCase):
         return self.patch_html.select('//div[@id="%s"]/div' % expected_id)
 
     def _test(self, expected_id, result):
-        expected = str(self._expected(expected_id)).splitlines()
-        result = str(XML(result)).splitlines()
+        expected = str(self._expected(expected_id))
+        result = str(XML(result))
+        expected, result = expected.splitlines(), result.splitlines()
         for exp, res in zip(expected, result):
             self.assertEquals(exp, res)
         self.assertEquals(len(expected), len(result))
@@ -69,6 +70,35 @@ class PatchRendererTestCase(unittest.TestCase):
         self.assertTrue(result)
         self._test('simple', result)
 
+    def test_no_newline_in_base(self):
+        """
+        Simple regression test for #4027 ("No newline at end of file")
+        """
+        result = self.patch.render(self.req, None, """
+--- nonewline   2006-10-27 08:36:48.453125000 +0200
++++ newline     2006-10-27 08:36:57.187500000 +0200
+@@ -1 +1 @@
+-ONELINE
+\ No newline at end of file
++ONELINE        
+""")
+        self.assertTrue(result)
+        self._test('no_newline_in_base', result)
+
+    def test_no_newline_in_changed(self):
+        """
+        Another simple regression test for #4027 ("No newline at end of file")
+        """
+        result = self.patch.render(self.req, None, """
+--- newline     2006-10-27 08:36:57.187500000 +0200
++++ nonewline   2006-10-27 08:36:48.453125000 +0200
+@@ -1 +1 @@
+-ONELINE
++ONELINE
+\ No newline at end of file
+""")
+        self.assertTrue(result)
+        self._test('no_newline_in_changed', result)
 
 def suite():
     suite = unittest.TestSuite()

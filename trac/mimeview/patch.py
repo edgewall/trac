@@ -119,13 +119,15 @@ class PatchRenderer(Component):
                 shortrev = ('old', 'new')
                 if len(commonprefix) > len(commonsuffix):
                     common = commonprefix
-                else:
+                elif commonsuffix:
                     common = commonsuffix.lstrip('/')
                     a = oldpath[:-len(commonsuffix)]
                     b = newpath[:-len(commonsuffix)]
                     if len(a) < 4 and len(b) < 4:
                         shortrev = (a, b)
-
+                else:
+                    common = '(a) %s vs. (b) %s' % (oldpath, newpath)
+                    shortrev = ('a', 'b')
                 groups = []
                 changes.append({'change': 'edit', 'props': [],
                                 'diffs': groups,
@@ -135,22 +137,22 @@ class PatchRenderer(Component):
                                 'new': {'path': common,
                                         'rev': ' '.join(newinfo[1:]),
                                         'shortrev': shortrev[1]}})
-
-                for line in lines:
-                    # @@ -333,10 +329,8 @@
-                    r = re.match(r'@@ -(\d+),(\d+) \+(\d+),(\d+) @@', line)
+                line = lines.next()
+                while line:
+                    # "@@ -333,10 +329,8 @@" or "@@ -1 +1 @@"
+                    r = re.match(r'@@ -(\d+)(?:,(\d+))? \+(\d+)(?:,(\d+))? @@', line)
                     if not r:
                         break
                     blocks = []
                     groups.append(blocks)
-                    fromline,fromend,toline,toend = map(int, r.groups())
-                    last_type = None
+                    fromline, fromend, toline, toend = [x and int(x) or 1
+                                                        for x in r.groups()]
+                    last_type = last_change = extra = None
 
                     fromend += fromline
                     toend += toline
-
-                    while fromline < fromend or toline < toend:
-                        line = lines.next()
+                    line = lines.next()
+                    while fromline < fromend or toline < toend or extra:
 
                         # First character is the command
                         command = ' '
@@ -166,19 +168,26 @@ class PatchRenderer(Component):
                                            'changed': {'offset': toline - 1,
                                                        'lines': []}})
                         if command == ' ':
-                            blocks[-1]['changed']['lines'].append(line)
-                            blocks[-1]['base']['lines'].append(line)
-                            fromline += 1
-                            toline += 1
+                            sides = ['base', 'changed']
                         elif command == '+':
-                            blocks[-1]['changed']['lines'].append(line)
-                            toline += 1
+                            last_side = 'changed'
+                            sides = [last_side]
                         elif command == '-':
-                            blocks[-1]['base']['lines'].append(line)
-                            fromline += 1
+                            last_side = 'base'
+                            sides = [last_side]
+                        elif command == '\\' and last_side:
+                            sides = [last_side]
                         else:
                             return None
-                line = lines.next()
+                        for side in sides:
+                            if side == 'base':
+                                fromline += 1
+                            else:
+                                toline += 1
+                            blocks[-1][side]['lines'].append(line)
+                        line = lines.next()
+                        if line and line[0] == '\\':
+                            extra = True
         except StopIteration:
             pass
 
