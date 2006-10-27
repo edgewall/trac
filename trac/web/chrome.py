@@ -32,7 +32,7 @@ from trac.core import *
 from trac.env import IEnvironmentSetupParticipant
 from trac.util import compat, get_reporter_id, presentation
 from trac.util.compat import partial, set
-from trac.util.text import pretty_size, unicode_quote_plus
+from trac.util.text import pretty_size, shorten_line, unicode_quote_plus
 from trac.util.datefmt import pretty_timedelta, format_datetime, format_date, \
                               format_time, http_date
 from trac.web.api import IRequestHandler, HTTPNotFound
@@ -194,6 +194,7 @@ class Chrome(Component):
         'pretty_timedelta': pretty_timedelta,
         'quote_plus': unicode_quote_plus,
         'reversed': compat.reversed,
+        'shorten_line': shorten_line,
         'sorted': compat.sorted,
         'timedelta': timedelta,
     }
