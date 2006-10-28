@@ -64,7 +64,7 @@ from genshi.builder import Fragment, tag
 
 from trac.config import IntOption, ListOption, Option
 from trac.core import *
-from trac.util import sorted
+from trac.util import sorted, Ranges
 from trac.util.text import to_utf8, to_unicode
 
 
@@ -455,7 +455,9 @@ class Mimeview(Component):
                 elif isinstance(result, basestring):
                     return Markup(to_unicode(result))
                 elif annotations:
-                    return Markup(self._annotate(result, annotations))
+                    m = req.args.get('marks')
+                    return Markup(self._annotate(result, annotations,
+                                                 m and Ranges(m)))
                 else:
                     buf = StringIO()
                     buf.write('<div class="code"><pre>')
@@ -467,7 +469,7 @@ class Mimeview(Component):
                 self.log.warning('HTML preview using %s failed (%s)'
                                  % (renderer, e), exc_info=True)
 
-    def _annotate(self, lines, annotations):
+    def _annotate(self, lines, annotations, marks=None):
         buf = StringIO()
         buf.write('<table class="code"><thead><tr>')
         annotators = []
@@ -494,7 +496,11 @@ class Mimeview(Component):
             for annotator in annotators:
                 cells.append(annotator.annotate_line(num + 1, line))
             cells.append('<td>%s</td>\n' % space_re.sub(htmlify, line))
-            buf.write('<tr>' + '\n'.join(cells) + '</tr>')
+            if marks and num+1 in marks:
+                buf.write('<tr class="%s">' % ('hilite',) +
+                          '\n'.join(cells) + '</tr>')
+            else:
+                buf.write('<tr>' + '\n'.join(cells) + '</tr>')
         else:
             if num < 0:
                 return ''

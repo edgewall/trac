@@ -57,7 +57,12 @@ table.code tbody td {
  padding: 1px 2px;
  vertical-align: top;
 }
-
+table.code tbody tr.hilite th {
+ background: #ccf;
+}
+table.code tbody tr.hilite td {
+ background: #ddf;
+}
 .image-file { background: #eee; padding: .3em }
 .image-file img { background: url(../imggrid.png) }
 

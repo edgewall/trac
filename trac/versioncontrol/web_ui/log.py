@@ -237,7 +237,7 @@ class LogModule(Component):
             if intertrac:
                 return intertrac
         else: # ns == 'log2'
-            path, rev, line = get_path_rev_line(match)
+            path, rev, marks, line = parse_path_link(match)
         stop_rev = None
         for sep in ':-':
             if not stop_rev and rev and sep in rev:

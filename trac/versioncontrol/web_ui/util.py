@@ -26,7 +26,7 @@ from trac.util.text import shorten_line
 from trac.versioncontrol.api import NoSuchNode, NoSuchChangeset
 from trac.wiki import wiki_to_html, wiki_to_oneliner
 
-__all__ = ['get_changes', 'get_path_links', 'get_path_rev_line',
+__all__ = ['get_changes', 'get_path_links', 'parse_path_link',
            'get_existing_node', 'render_node_property']
 
 def get_changes(env, repos, revs, full=None, req=None, format=None):
@@ -77,19 +77,33 @@ def get_path_links(href, fullpath, rev):
         links.append({'name': part, 'href': href.browser(path, rev=rev)})
     return links
 
-rev_re = re.compile(r"([^@#:]*)[@#:]([^#]+)?(?:#L(\d+))?")
 
-def get_path_rev_line(path):
-    rev = None
-    line = None
-    match = rev_re.search(path)
+PATH_LINK_RE = re.compile(r"([^@#:]*)"     # path
+                          r"[@:]([^#:]+)?" # rev
+                          r"(?::(\d+(?:-\d+)?(?:,\d+(?:-\d+)?)*))?" # marks
+                          r"(?:#L(\d+))?"  # anchor line
+                          )
+
+def parse_path_link(path):
+    """Analyse repository source path specifications.
+
+    Valid forms are simple paths (/dir/file), paths at a given revision
+    (/dir/file@234), paths with line number marks (/dir/file@234:10,20-30)
+    and paths with line number anchor (/dir/file@234#L100).
+    Marks and anchor can be combined.
+    The revision must be present when specifying line numbers.
+    In the few cases where it would be redundant (e.g. for tags), the
+    revision number itself can be omitted: /tags/v10/file@100-110#L99
+
+    Return a `(path, rev, marks, line)` tuple.
+    """
+    rev = marks = line = None
+    match = PATH_LINK_RE.search(path)
     if match:
-        path = match.group(1)
-        rev = match.group(2)
-        if match.group(3):
-            line = int(match.group(3))
-    path = urllib.unquote(path)
-    return path, rev, line
+        path, rev, marks, line = match.groups()
+        line = line and int(line) or None
+    path = urllib.unquote(path) # TODO: this should probably go away...
+    return path, rev, marks, line
 
 def get_existing_node(req, repos, path, rev):
     try: 

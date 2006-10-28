@@ -253,9 +253,10 @@ class BrowserModule(Component):
                 ('browser', self._format_link)]
 
     def _format_link(self, formatter, ns, path, label):
-        path, rev, line = get_path_rev_line(path)
+        path, rev, marks, line = parse_path_link(path)
         fragment = ''
         if line is not None:
             fragment = '#L%d' % line
         return html.A(label, class_='source',
-                      href=formatter.href.browser(path, rev=rev) + fragment)
+                      href=formatter.href.browser(path, rev=rev,
+                                                  marks=marks) + fragment)
