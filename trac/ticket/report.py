@@ -247,11 +247,8 @@ class ReportModule(Component):
         sort_col = ''
         if req.args.has_key('sort'):
             sort_col = req.args.get('sort')
-        asc = req.args.get('asc', None)
-        if asc:
-            asc = bool(int(asc)) # string '0' or '1' to int/boolean
-        else:
-            asc = True
+        asc = req.args.get('asc', 1)
+        asc = bool(int(asc)) # string '0' or '1' to int/boolean
 
         # Place retrieved columns in groups, according to naming conventions
         #  * _col_ means fullrow, i.e. a group with one header
