@@ -264,8 +264,11 @@ class BrowserModule(Component):
                 ('browser', self._format_link)]
 
     def _format_link(self, formatter, ns, path, label):
-        path, rev, marks, line = self._parse_path_link(path)
-        fragment = line is not None and '#L%d' % line or ''
+        rev = marks = line = None
+        match = self.PATH_LINK_RE.match(path)
+        if match:
+            path, rev, marks, line = match.groups()
+        fragment = line and '#L%s' % line or ''
         return html.A(label, class_='source',
                       href=formatter.href.browser(path, rev=rev,
                                                   marks=marks) + fragment)
@@ -275,16 +278,4 @@ class BrowserModule(Component):
                               r"(?::(\d+(?:-\d+)?(?:,\d+(?:-\d+)?)*))?" # marks
                               r"(?:#L(\d+))?"  # anchor line
                               )
-
-    def _parse_path_link(self, path):
-        """Analyse repository source path specifications.
-
-        Return a `(path, rev, marks, line)` tuple.
-        """
-        rev = marks = line = None
-        match = self.PATH_LINK_RE.search(path)
-        if match:
-            path, rev, marks, line = match.groups()
-            line = line and int(line) or None
-        return path, rev, marks, line
 
