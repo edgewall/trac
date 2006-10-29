@@ -248,15 +248,43 @@ class BrowserModule(Component):
         return []
 
     def get_link_resolvers(self):
+        """TracBrowser link resolvers.
+         - `source:` and `browser:`
+             * simple paths (/dir/file)
+             * paths at a given revision (/dir/file@234)
+             * paths with line number marks (/dir/file@234:10,20-30)
+             * paths with line number anchor (/dir/file@234#L100)
+            Marks and anchor can be combined.
+            The revision must be present when specifying line numbers.
+            In the few cases where it would be redundant (e.g. for tags), the
+            revision number itself can be omitted: /tags/v10/file@100-110#L99
+        """
         return [('repos', self._format_link),
                 ('source', self._format_link),
                 ('browser', self._format_link)]
 
     def _format_link(self, formatter, ns, path, label):
-        path, rev, marks, line = parse_path_link(path)
-        fragment = ''
-        if line is not None:
-            fragment = '#L%d' % line
+        path, rev, marks, line = self._parse_path_link(path)
+        fragment = line is not None and '#L%d' % line or ''
         return html.A(label, class_='source',
                       href=formatter.href.browser(path, rev=rev,
                                                   marks=marks) + fragment)
+
+    PATH_LINK_RE = re.compile(r"([^@#:]*)"     # path
+                              r"[@:]([^#:]+)?" # rev
+                              r"(?::(\d+(?:-\d+)?(?:,\d+(?:-\d+)?)*))?" # marks
+                              r"(?:#L(\d+))?"  # anchor line
+                              )
+
+    def _parse_path_link(self, path):
+        """Analyse repository source path specifications.
+
+        Return a `(path, rev, marks, line)` tuple.
+        """
+        rev = marks = line = None
+        match = self.PATH_LINK_RE.search(path)
+        if match:
+            path, rev, marks, line = match.groups()
+            line = line and int(line) or None
+        return path, rev, marks, line
+

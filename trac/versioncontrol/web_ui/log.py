@@ -236,11 +236,26 @@ class LogModule(Component):
                 'log', target, label, fullmatch)
             if intertrac:
                 return intertrac
-        else: # ns == 'log2'
-            path, rev, marks, line = parse_path_link(match)
+        else:
+            assert ns in ('log', 'log2')
+            path, rev = self._parse_log_link(match)
         stop_rev = None
         for sep in ':-':
             if not stop_rev and rev and sep in rev:
                 stop_rev, rev = rev.split(sep, 1)
         href = formatter.href.log(path or '/', rev=rev, stop_rev=stop_rev)
         return html.A(label, href=href, class_='source')
+
+    LOG_LINK_RE = re.compile(r"([^@:]*)[@:](.+)?")
+
+    def _parse_log_link(self, path):
+        """Analyse repository log path specifications.
+
+        Return a `(path, rev)` tuple.
+        """
+        rev = None
+        match = self.LOG_LINK_RE.search(path)
+        if match:
+            path, rev = match.groups()
+        return path, rev
+
