@@ -186,8 +186,7 @@ class PatchRenderer(Component):
                                 toline += 1
                             blocks[-1][side]['lines'].append(line)
                         line = lines.next()
-                        if line and line[0] == '\\':
-                            extra = True
+                        extra = line and line[0] == '\\'
         except StopIteration:
             pass
 
