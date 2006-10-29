@@ -165,13 +165,11 @@ diff:@12:23
 SOURCE_TEST_CASES="""
 ============================== source: link resolver
 source:/foo/bar
-source:/foo/bar#42
-source:/foo/bar#head
+source:/foo/bar#42   # no long works as rev spec
+source:/foo/bar#head #
 source:/foo/bar@42
 source:/foo/bar@head
 source:/foo%20bar/baz%2Bquux
-source:/foo%2520bar/baz%252Bquux#42
-source:#42
 source:@42
 source:/foo/bar@42#L20
 source:/foo/bar@head#L20
@@ -179,13 +177,11 @@ source:/foo/bar@#L20
 ------------------------------
 <p>
 <a class="source" href="/browser/foo/bar">source:/foo/bar</a>
-<a class="source" href="/browser/foo/bar?rev=42">source:/foo/bar#42</a>
-<a class="source" href="/browser/foo/bar?rev=head">source:/foo/bar#head</a>
+<a class="source" href="/browser/foo/bar%2342">source:/foo/bar#42</a>   # no long works as rev spec
+<a class="source" href="/browser/foo/bar%23head">source:/foo/bar#head</a> #
 <a class="source" href="/browser/foo/bar?rev=42">source:/foo/bar@42</a>
 <a class="source" href="/browser/foo/bar?rev=head">source:/foo/bar@head</a>
-<a class="source" href="/browser/foo%20bar/baz%2Bquux">source:/foo%20bar/baz%2Bquux</a>
-<a class="source" href="/browser/foo%2520bar/baz%252Bquux?rev=42">source:/foo%2520bar/baz%252Bquux#42</a>
-<a class="source" href="/browser/?rev=42">source:#42</a>
+<a class="source" href="/browser/foo%2520bar/baz%252Bquux">source:/foo%20bar/baz%2Bquux</a>
 <a class="source" href="/browser/?rev=42">source:@42</a>
 <a class="source" href="/browser/foo/bar?rev=42#L20">source:/foo/bar@42#L20</a>
 <a class="source" href="/browser/foo/bar?rev=head#L20">source:/foo/bar@head#L20</a>

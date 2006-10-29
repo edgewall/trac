@@ -102,7 +102,6 @@ def parse_path_link(path):
     if match:
         path, rev, marks, line = match.groups()
         line = line and int(line) or None
-    path = urllib.unquote(path) # TODO: this should probably go away...
     return path, rev, marks, line
 
 def get_existing_node(req, repos, path, rev):
