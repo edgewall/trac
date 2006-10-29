@@ -352,8 +352,3 @@ class Ranges(object):
                 if b > x: # short-circuit if we've gone too far
                     break
         return False
-
-if __name__ == "__main__":
-    from doctest import testmod
-    testmod()
-

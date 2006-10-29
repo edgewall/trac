@@ -21,6 +21,7 @@ import urllib
 
 from trac.core import *
 from trac.perm import IPermissionRequestor
+from trac.util import Ranges
 from trac.util.datefmt import http_date
 from trac.util.html import html
 from trac.util.text import wrap
@@ -67,37 +68,61 @@ class LogModule(Component):
         path = req.args.get('path', '/')
         rev = req.args.get('rev')
         stop_rev = req.args.get('stop_rev')
+        revs = req.args.get('revs', rev)
         format = req.args.get('format')
         verbose = req.args.get('verbose')
-        limit = LOG_LIMIT
+        limit = int(req.args.get('limit', LOG_LIMIT))
 
         repos = self.env.get_repository(req.authname)
         normpath = repos.normalize_path(path)
-        rev = unicode(repos.normalize_rev(rev))
-        if stop_rev:
-            stop_rev = unicode(repos.normalize_rev(stop_rev))
-            if repos.rev_older_than(rev, stop_rev):
-                rev, stop_rev = stop_rev, rev
-            
+        revranges = None
+        rev = revs
+        if revs:
+            try:
+                revranges = Ranges(revs)
+                rev = revranges.b
+            except ValueError:
+                pass
+        rev = unicode(repos.normalize_rev(rev))    
         path_links = get_path_links(req.href, path, rev)
         if path_links:
             add_link(req, 'up', path_links[-1]['href'], 'Parent directory')
 
         # The `history()` method depends on the mode:
-        #  * for ''stop on copy'' and ''follow copies'', it's `Node.history()` 
-        #  * for ''show only add, delete'' it's`Repository.get_path_history()` 
+        #  * for ''stop on copy'' and ''follow copies'', it's `Node.history()`
+        #    unless explicit ranges have been specified
+        #  * for ''show only add, delete'' we're using
+        #   `Repository.get_path_history()` 
         if mode == 'path_history':
+            rev = revranges.b
             def history(limit):
                 for h in repos.get_path_history(path, rev, limit):
                     yield h
         else:
-            history = get_existing_node(req, repos, path, rev).get_history
+            if not revranges or revranges.a == revranges.b:
+                history = get_existing_node(req, repos, path, rev).get_history
+            else:
+                def history(limit):
+                    prevpath = path
+                    ranges = list(revranges.pairs)
+                    ranges.reverse()
+                    for (a,b) in ranges:
+                        while b >= a:
+                            rev = repos.normalize_rev(b)
+                            node = get_existing_node(req, repos, prevpath, rev)
+                            node_history = list(node.get_history(2))
+                            rev = node_history[0][1]
+                            if rev < a:
+                                break
+                            yield node_history[0]
+                            prevpath = node_history[-1][0] # follow copy
+                            b = rev-1
 
         # -- retrieve history, asking for limit+1 results
         info = []
         depth = 1
         fix_deleted_rev = False
-        previous_path = repos.normalize_path(path)
+        previous_path = normpath
         for old_path, old_rev, old_chg in history(limit+1):
             if fix_deleted_rev:
                 fix_deleted_rev['existing_rev'] = old_rev
@@ -208,14 +233,15 @@ class LogModule(Component):
 
     # IWikiSyntaxProvider methods
 
-    REV_RANGE = "%s[-:]%s" % ((ChangesetModule.CHANGESET_ID,)*2)
+    REV_RANGE = (r"(?:\d+(?:[-:]\d+)?(?:,\d+(?:[-:]\d+)?)*" # int rev ranges
+                 r"|%s)" % ChangesetModule.CHANGESET_ID) # or any kind of rev
     
     def get_wiki_syntax(self):
         yield (
             # [...] form, starts with optional intertrac: [T... or [trac ...
             r"!?\[(?P<it_log>%s\s*)" % Formatter.INTERTRAC_SCHEME +
             # <from>:<to> + optional path restriction
-            r"(?P<log_rev>%s)(?P<log_path>/[^\]]*)?\]" % self.REV_RANGE,
+            r"(?P<log_revs>%s)(?P<log_path>/[^\]]*)?\]" % self.REV_RANGE,
             lambda x, y, z: self._format_link(x, 'log1', y[1:-1], y, z))
         yield (
             # r<from>:<to> form (no intertrac and no path restriction)
@@ -228,9 +254,9 @@ class LogModule(Component):
     def _format_link(self, formatter, ns, match, label, fullmatch=None):
         if ns == 'log1':
             it_log = fullmatch.group('it_log')
-            rev = fullmatch.group('log_rev')
+            revs = fullmatch.group('log_revs')
             path = fullmatch.group('log_path') or '/'
-            target = '%s%s@%s' % (it_log, path, rev)
+            target = '%s%s@%s' % (it_log, path, revs)
             # prepending it_log is needed, as the helper expects it there
             intertrac = formatter.shorthand_intertrac_helper(
                 'log', target, label, fullmatch)
@@ -238,24 +264,15 @@ class LogModule(Component):
                 return intertrac
         else:
             assert ns in ('log', 'log2')
-            path, rev = self._parse_log_link(match)
-        stop_rev = None
-        for sep in ':-':
-            if not stop_rev and rev and sep in rev:
-                stop_rev, rev = rev.split(sep, 1)
-        href = formatter.href.log(path or '/', rev=rev, stop_rev=stop_rev)
-        return html.A(label, href=href, class_='source')
+            path = match
+            revs = ''
+            if self.LOG_LINK_RE.match(match):
+                indexes = [sep in match and match.index(sep) for sep in ':@']
+                idx = min([i for i in indexes if i is not False])
+                path, revs = match[:idx], match[idx+1:]
+        revs = revs.replace(':', '-')
+        return html.A(label, class_='source',
+                      href=formatter.href.log(path or '/', revs=revs))
 
-    LOG_LINK_RE = re.compile(r"([^@:]*)[@:](.+)?")
-
-    def _parse_log_link(self, path):
-        """Analyse repository log path specifications.
-
-        Return a `(path, rev)` tuple.
-        """
-        rev = None
-        match = self.LOG_LINK_RE.search(path)
-        if match:
-            path, rev = match.groups()
-        return path, rev
+    LOG_LINK_RE = re.compile(r"([^@:]*)[@:]%s?" % REV_RANGE)
 

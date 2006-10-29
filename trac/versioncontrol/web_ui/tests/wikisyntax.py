@@ -93,8 +93,8 @@ LOG_TEST_CASES="""
 [1:2/trunk]
 ------------------------------
 <p>
-<a class="source" href="/log/?rev=2&amp;stop_rev=1">[1:2]</a>, <a class="source" href="/log/?rev=2&amp;stop_rev=1">r1:2</a>, <a class="source" href="/log/?rev=23&amp;stop_rev=12">[12:23]</a>, <a class="source" href="/log/?rev=23&amp;stop_rev=12">r12:23</a>
-<a class="source" href="/log/trunk?rev=2&amp;stop_rev=1">[1:2/trunk]</a>
+<a class="source" href="/log/?revs=1-2">[1:2]</a>, <a class="source" href="/log/?revs=1-2">r1:2</a>, <a class="source" href="/log/?revs=12-23">[12:23]</a>, <a class="source" href="/log/?revs=12-23">r12:23</a>
+<a class="source" href="/log/trunk?revs=1-2">[1:2/trunk]</a>
 </p>
 ------------------------------
 ============================== Escaping Log range TracLinks
@@ -115,13 +115,22 @@ log:trunk:12:23
 log:trunk:12-23
 ------------------------------
 <p>
-<a class="source" href="/log/?rev=12">log:@12</a>
-<a class="source" href="/log/trunk">log:trunk</a>
-<a class="source" href="/log/trunk?rev=12">log:trunk@12</a>
-<a class="source" href="/log/trunk?rev=23&amp;stop_rev=12">log:trunk@12:23</a>
-<a class="source" href="/log/trunk?rev=23&amp;stop_rev=12">log:trunk@12-23</a>
-<a class="source" href="/log/trunk?rev=23&amp;stop_rev=12">log:trunk:12:23</a>
-<a class="source" href="/log/trunk?rev=23&amp;stop_rev=12">log:trunk:12-23</a>
+<a class="source" href="/log/?revs=12">log:@12</a>
+<a class="source" href="/log/trunk?revs=">log:trunk</a>
+<a class="source" href="/log/trunk?revs=12">log:trunk@12</a>
+<a class="source" href="/log/trunk?revs=12-23">log:trunk@12:23</a>
+<a class="source" href="/log/trunk?revs=12-23">log:trunk@12-23</a>
+<a class="source" href="/log/trunk?revs=12-23">log:trunk:12:23</a>
+<a class="source" href="/log/trunk?revs=12-23">log:trunk:12-23</a>
+</p>
+------------------------------
+============================== Multiple Log ranges
+r12:20,25,35:56,68,69,100-120
+[12:20,25,35:56,68,69,100-120]
+------------------------------
+<p>
+<a class="source" href="/log/?revs=12-20%2C25%2C35-56%2C68%2C69%2C100-120">r12:20,25,35:56,68,69,100-120</a>
+<a class="source" href="/log/?revs=12-20%2C25%2C35-56%2C68%2C69%2C100-120">[12:20,25,35:56,68,69,100-120]</a>
 </p>
 ------------------------------
 ============================== Link resolver counter examples
