@@ -36,9 +36,9 @@
           <table class="progress">
             <td class="closed" style="width: ${stats.percent_closed}%">
               <a href="$queries.closed_tickets"
-                 title="${stats.active_tickets} of ${stats.total_tickets} ticket${stats.total_tickets != 1 and 's' or ''} closed"></a>
+                 title="${stats.closed_tickets} of ${stats.total_tickets} ticket${stats.total_tickets != 1 and 's' or ''} closed"></a>
             </td>
-            <td class="open" style="width: ${stats.percent_active}">
+            <td class="open" style="width: ${stats.percent_active}%">
               <a href="$queries.active_tickets"
                  title="${stats.active_tickets} of ${stats.total_tickets} ticket${stats.total_tickets != 1 and 's' or ''} active"></a>
             </td>
@@ -72,10 +72,10 @@
               <td style="white-space: nowrap">
                 <table class="progress" style="width: ${group.percent_total * 80 / stats.max_percent_total}%">
                   <td class="closed" style="width: ${group.stats.percent_closed}%">
-                    <a href="$queries.closed_tickets"
-                       title="${group.stats.active_tickets} of ${group.stats.total_tickets} ticket${group.stats.total_tickets != 1 and 's' or ''} closed"></a>
+                    <a href="$group.queries.closed_tickets"
+                       title="${group.stats.closed_tickets} of ${group.stats.total_tickets} ticket${group.stats.total_tickets != 1 and 's' or ''} closed"></a>
                   </td>
-                  <td class="open" style="width: ${group.stats.percent_active}">
+                  <td class="open" style="width: ${group.stats.percent_active}%">
                     <a href="$group.queries.active_tickets"
                        title="${group.stats.active_tickets} of ${group.stats.total_tickets} ticket${group.stats.total_tickets != 1 and 's' or ''} active"></a>
                   </td>

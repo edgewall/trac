@@ -45,9 +45,9 @@
               <table class="progress">
                 <td class="closed" style="width: ${stats.percent_closed}%">
                   <a href="$queries.closed_tickets"
-                     title="${stats.active_tickets} of ${stats.total_tickets} ticket${stats.total_tickets != 1 and 's' or ''} closed"></a>
+                     title="${stats.closed_tickets} of ${stats.total_tickets} ticket${stats.total_tickets != 1 and 's' or ''} closed"></a>
                 </td>
-                <td class="open" style="width: ${stats.percent_active}">
+                <td class="open" style="width: ${stats.percent_active}%">
                   <a href="$queries.active_tickets"
                      title="${stats.active_tickets} of ${stats.total_tickets} ticket${stats.total_tickets != 1 and 's' or ''} active"></a>
                 </td>
