@@ -131,6 +131,8 @@ class TestConfiguration(Configuration):
 class EnvironmentStub(Environment):
     """A stub of the trac.env.Environment object for testing."""
 
+    href = abs_href = None
+
     def __init__(self, default_data=False, enable=None):
         ComponentManager.__init__(self)
         Component.__init__(self)

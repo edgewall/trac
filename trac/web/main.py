@@ -164,9 +164,6 @@ class RequestDispatcher(Component):
         In addition, this method initializes the HDF data set and adds the web
         site chrome.
         """
-        self.env.href = req.href # FIXME: remove later in 0.11
-        self.env.abs_href = Href(self.env.base_url)
-
         # Select the component that should handle the request
         chosen_handler = None
         early_error = None

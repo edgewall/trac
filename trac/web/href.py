@@ -21,8 +21,7 @@ from trac.util.text import unicode_quote, unicode_urlencode
 
 
 class Href(object):
-    """
-    Implements a callable that constructs URLs with the given base. The
+    """Implements a callable that constructs URLs with the given base. The
     function can be called with any number of positional and keyword
     arguments which than are used to assemble the URL.
 

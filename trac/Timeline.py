@@ -214,6 +214,8 @@ class TimelineModule(Component):
         without the filters corresponding to the guilty event provider `ep`.
         """
         ep_name, exc_name = [i.__class__.__name__ for i in (ep, exc)]
+        self.log.exception('Timeline event provider %s failed', ep_name)
+
         guilty_filters = [f[0] for f in ep.get_timeline_filters(req)]
         guilty_kinds = [f[1] for f in ep.get_timeline_filters(req)]
         other_filters = [f for f in current_filters if not f in guilty_filters]
