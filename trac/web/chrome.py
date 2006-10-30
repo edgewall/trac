@@ -26,6 +26,7 @@ from genshi.core import START
 from genshi.output import DocType
 from genshi.template import TemplateLoader, MarkupTemplate, TextTemplate
 
+from trac import __version__ as VERSION
 from trac import mimeview
 from trac.config import *
 from trac.core import *
@@ -44,7 +45,7 @@ def add_link(req, rel, href, title=None, mimetype=None, classname=None):
     the <head> of the generated HTML
     """
     linkid = '%s:%s' % (rel, href)
-    linkset = req.environ.setdefault('trac.chrome.linkset', set())
+    linkset = req.chrome.setdefault('linkset', set())
     if linkid in linkset:
         return # Already added that link
 
@@ -56,7 +57,7 @@ def add_link(req, rel, href, title=None, mimetype=None, classname=None):
     if classname:
         link['class'] = classname
 
-    links = req.environ.setdefault('trac.chrome.links', {})
+    links = req.chrome.setdefault('links', {})
     links.setdefault(rel, []).append(link)
     linkset.add(linkid)
 
@@ -64,8 +65,8 @@ def add_stylesheet(req, filename, mimetype='text/css'):
     """Add a link to a style sheet to the HDF data set so that it gets included
     in the generated HTML page.
     """
-    if filename.startswith('common/') and 'trac.htdocs_location' in req.environ:
-        href = Href(req.environ['trac.htdocs_location'])
+    if filename.startswith('common/') and 'htdocs_location' in req.chrome:
+        href = Href(req.chrome['htdocs_location'])
         filename = filename[7:]
     else:
         href = Href(req.base_path).chrome
@@ -73,18 +74,18 @@ def add_stylesheet(req, filename, mimetype='text/css'):
 
 def add_script(req, filename, mimetype='text/javascript'):
     """Add a reference to an external javascript file to the template."""
-    scriptset = req.environ.setdefault('trac.chrome.scriptset', set())
+    scriptset = req.chrome.setdefault('trac.chrome.scriptset', set())
     if filename in scriptset:
         return False # Already added that script
 
-    if filename.startswith('common/') and 'trac.htdocs_location' in req.environ:
-        href = Href(req.environ['trac.htdocs_location'])
+    if filename.startswith('common/') and 'htdocs_location' in req.chrome:
+        href = Href(req.chrome['htdocs_location'])
         filename = filename[7:]
     else:
         href = Href(req.base_path).chrome
     script = {'href': href(filename), 'type': mimetype}
 
-    req.environ.setdefault('trac.chrome.scripts', []).append(script)
+    req.chrome.setdefault('scripts', []).append(script)
     scriptset.add(filename)
 
 def add_javascript(req, filename):
@@ -226,9 +227,6 @@ class Chrome(Component):
 
     # IRequestHandler methods
 
-    anonymous_request = True
-    use_template = False
-
     def match_request(self, req):
         match = re.match(r'/chrome/(?P<prefix>[^/]+)/+(?P<filename>[/\w\-\.]+)',
                          req.path_info)
@@ -285,19 +283,35 @@ class Chrome(Component):
         return dirs
 
     def prepare_request(self, req, handler=None):
-        req.environ['trac.chrome.links'] = {}
-        req.environ['trac.chrome.scripts'] = []
+        """Prepare the basic chrome data for the request.
+        
+        @param req: the request object
+        @param handler: the `IRequestHandler` instance that is processing the
+            request
+        """
+        self.log.debug('Prepare chrome data for request')
+
+        chrome = {'links': {}, 'scripts': []}
+
+        # This is ugly... we can't pass the real Request object to the
+        # add_xxx methods, because it doesn't yet have the chrome attribute
+        class FakeRequest(object):
+            def __init__(self, req):
+                self.base_path = req.base_path
+                self.chrome = chrome
+        fakereq = FakeRequest(req)
+
         htdocs_location = self.htdocs_location or req.href.chrome('common')
-        req.environ['trac.htdocs_location'] = htdocs_location.rstrip('/') + '/'
+        chrome['htdocs_location'] = htdocs_location.rstrip('/') + '/'
 
         # HTML <head> links
-        add_link(req, 'start', req.href.wiki())
-        add_link(req, 'search', req.href.search())
-        add_link(req, 'help', req.href.wiki('TracGuide'))
-        add_stylesheet(req, 'common/css/trac.css')
-        add_script(req, 'common/js/jquery.js')
-        add_script(req, 'common/js/trac.js')
-        add_script(req, 'common/js/search.js')
+        add_link(fakereq, 'start', req.href.wiki())
+        add_link(fakereq, 'search', req.href.search())
+        add_link(fakereq, 'help', req.href.wiki('TracGuide'))
+        add_stylesheet(fakereq, 'common/css/trac.css')
+        add_script(fakereq, 'common/js/jquery.js')
+        add_script(fakereq, 'common/js/trac.js')
+        add_script(fakereq, 'common/js/search.js')
 
         icon = self.env.project_icon
         if icon:
@@ -307,11 +321,11 @@ class Chrome(Component):
                 else:
                     icon = req.href.chrome('common', icon)
             mimetype = mimeview.get_mimetype(icon)
-            add_link(req, 'icon', icon, mimetype=mimetype)
-            add_link(req, 'shortcut icon', icon, mimetype=mimetype)
+            add_link(fakereq, 'icon', icon, mimetype=mimetype)
+            add_link(fakereq, 'shortcut icon', icon, mimetype=mimetype)
 
         # Logo image
-        req.environ['trac.chrome.logo'] = self.get_logo_data(req.href)
+        chrome['logo'] = self.get_logo_data(req.href)
 
         # Navigation links
         allitems = {}
@@ -341,7 +355,9 @@ class Chrome(Component):
                 if name == active:
                     nav[category][-1]['active'] = True
 
-        req.environ['trac.chrome.nav'] = nav
+        chrome['nav'] = nav
+
+        return chrome
 
     def get_logo_data(self, href):
         logo = {}
@@ -368,21 +384,19 @@ class Chrome(Component):
     def populate_hdf(self, req):
         """Add chrome-related data to the HDF (deprecated)."""
         req.hdf['HTTP.PathInfo'] = req.path_info
-        req.hdf['htdocs_location'] = req.environ.get('trac.htdocs_location')
+        req.hdf['htdocs_location'] = req.chrome['htdocs_location']
 
         req.hdf['chrome.href'] = req.href.chrome()
-        req.hdf['chrome.links'] = req.environ.get('trac.chrome.links', [])
-        req.hdf['chrome.logo'] = req.environ.get('trac.chrome.logo', {})
-        req.hdf['chrome.scripts'] = req.environ.get('trac.chrome.scripts', [])
+        req.hdf['chrome.links'] = req.chrome['links']
+        req.hdf['chrome.scripts'] = req.chrome['scripts']
+        req.hdf['chrome.logo'] = req.chrome['logo']
 
-        for category, items in req.environ.get('trac.chrome.nav', {}).items():
+        for category, items in chrome['nav'].items():
             for item in items:
                 prefix = 'chrome.nav.%s.%s' % (category, item['name'])
                 req.hdf[prefix] = item['label']
 
     def populate_data(self, req, data):
-        from trac import __version__ as VERSION
-
         data.update(self._default_context_data)
         data.setdefault('trac', {}).update({
             'version': VERSION,
@@ -397,37 +411,32 @@ class Chrome(Component):
         })
 
         chrome = data.setdefault('chrome', {})
-        chrome.update({
-            'footer': Markup(self.env.project_footer),
-        })
         if req:
-            chrome.update({
-                'htdocs_location': req.environ.get('trac.htdocs_location'),
-                'logo': req.environ.get('trac.chrome.logo', {}),
-                'links': req.environ.get('trac.chrome.links', []),
-                'nav': req.environ.get('trac.chrome.nav', {}),
-                'scripts': req.environ.get('trac.chrome.scripts', []),
-            })
+            chrome.update(req.chrome)
         else:
             chrome.update({
                 'htdocs_location': self.htdocs_location,
                 'logo': self.get_logo_data(self.env.abs_href),
             })
+        chrome.update({
+            'footer': Markup(self.env.project_footer)
+        })
 
-        data['req'] = req
-        data['abs_href'] = req and req.abs_href or self.env.abs_href
-        data['href'] = req and req.href
-        data['perm'] = req and req.perm
-        data['authname'] = req and req.authname or '<trac>'
-
-        # Timezone-dependant functions
         tzinfo = None
         if req:
             tzinfo = req.tz
-        data['format_datetime'] = partial(format_datetime, tzinfo=tzinfo)
-        data['format_date'] = partial(format_date, tzinfo=tzinfo)
-        data['format_time'] = partial(format_time, tzinfo=tzinfo)
-        data['fromtimestamp'] = partial(datetime.fromtimestamp, tz=tzinfo)
+
+        data.update({
+            'req': req,
+            'abs_href': req and req.abs_href or self.env.abs_href,
+            'href': req and req.href,
+            'perm': req and req.perm,
+            'authname': req and req.authname or '<trac>',
+            'format_datetime': partial(format_datetime, tzinfo=tzinfo),
+            'format_date': partial(format_date, tzinfo=tzinfo),
+            'format_time': partial(format_time, tzinfo=tzinfo),
+            'fromtimestamp': partial(datetime.fromtimestamp, tz=tzinfo)
+        })
 
     def load_template(self, filename, method=None):
         """Retrieve a Template and optionally preset the template data.

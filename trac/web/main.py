@@ -30,7 +30,8 @@ from trac.config import ExtensionOption, Option, OrderedExtensionsOption
 from trac.core import *
 from trac.env import open_environment
 from trac.perm import PermissionCache, NoPermissionCache, PermissionError
-from trac.util import reversed, get_lines_from_file, get_last_traceback
+from trac.util import get_lines_from_file, get_last_traceback
+from trac.util.compat import partial, reversed
 from trac.util.datefmt import format_datetime, http_date, localtz, timezone
 from trac.util.html import Markup
 from trac.util.text import shorten_line, to_unicode
@@ -115,7 +116,7 @@ def populate_hdf(hdf, env, req=None):
 
         if req.perm:
             for action in req.perm.permissions():
-                req.hdf['trac.acl.' + action] = True
+                hdf['trac.acl.' + action] = True
 
         for arg in [k for k in req.args.keys() if k]:
             if isinstance(req.args[arg], (list, tuple)):
@@ -143,9 +144,7 @@ class RequestDispatcher(Component):
         `QueryModule`, `ReportModule` and `NewticketModule` (''since 0.9'').""")
 
     default_timezone = Option('trac', 'default_timezone', '',
-                              doc="""The default timezone to use""")
-
-
+        """The default timezone to use""")
 
     # Public API
 
@@ -164,75 +163,41 @@ class RequestDispatcher(Component):
         In addition, this method initializes the HDF data set and adds the web
         site chrome.
         """
+        self.log.debug('Dispatching %r', req)
+        chrome = Chrome(self.env)
+
+        # Setup request callbacks for lazily-evaluated properties
+        req.callbacks.update({
+            'authname': self.authenticate,
+            'chrome': chrome.prepare_request,
+            'hdf': self._get_hdf,
+            'perm': self._get_perm,
+            'session': self._get_session,
+            'tz': self._get_timezone
+        })
+
         # Select the component that should handle the request
         chosen_handler = None
-        early_error = None
-        try:
-            if not req.path_info or req.path_info == '/':
-                chosen_handler = self.default_handler
-            else:
-                for handler in self.handlers:
-                    if handler.match_request(req):
-                        chosen_handler = handler
-                        break
+        if not req.path_info or req.path_info == '/':
+            chosen_handler = self.default_handler
+        else:
+            for handler in self.handlers:
+                if handler.match_request(req):
+                    chosen_handler = handler
+                    break
+        chosen_handler = self._pre_process_request(req, chosen_handler)
+        if not chosen_handler:
+            raise HTTPNotFound('No handler matched request to %s',
+                               req.path_info)
 
-            chosen_handler = self._pre_process_request(req, chosen_handler)
-        except:
-            early_error = sys.exc_info()
-            
-        if not chosen_handler and not early_error:
-            early_error = (HTTPNotFound('No handler matched request to %s',
-                                        req.path_info),
-                           None, None)
-
-        # Attach user information to the request
-        anonymous_request = getattr(chosen_handler, 'anonymous_request',
-                                    False)
-        if not anonymous_request:
-            try:
-                req.authname = self.authenticate(req)
-                req.perm = PermissionCache(self.env, req.authname)
-                req.session = Session(self.env, req)
-            except:
-                anonymous_request = True
-                early_error = sys.exc_info()
-        if anonymous_request:
-            req.authname = 'anonymous'
-            req.perm = NoPermissionCache()
-
-        try:
-            req.tz = timezone(req.session.get('tz', self.default_timezone
-                                              or 'missing'))
-        except:
-            req.tz = localtz
-
-        # Prepare HDF for the clearsilver template
-        try:
-            use_template = getattr(chosen_handler, 'use_template', True)
-            req.hdf = None
-            if use_template:
-                chrome = Chrome(self.env)
-                req.hdf = HDFWrapper(loadpaths=chrome.get_all_templates_dirs())
-                populate_hdf(req.hdf, self.env, req)
-                chrome.prepare_request(req, chosen_handler)
-        except:
-            req.hdf = None # revert to sending plaintext error
-            if not early_error:
-                raise
-
-        if early_error:
-            try:
-                self._post_process_request(req)
-            except Exception, e:
-                self.log.exception(e)
-            raise early_error[0], early_error[1], early_error[2]
+        req.callbacks['chrome'] = partial(chrome.prepare_request,
+                                          handler=chosen_handler)
 
         # Process the request and render the template
         try:
             try:
                 resp = chosen_handler.process_request(req)
                 if resp:
-                    chrome = Chrome(self.env)
                     if len(resp) == 2: # Clearsilver
                         chrome.populate_hdf(req)
                         template, content_type = \
@@ -266,11 +231,31 @@ class RequestDispatcher(Component):
         except TracError, e:
             raise HTTPInternalError(e.message)
 
+    # Internal methods
+
+    def _get_hdf(self, req):
+        hdf = HDFWrapper(loadpaths=Chrome(self.env).get_all_templates_dirs())
+        populate_hdf(hdf, self.env, req)
+        return hdf
+
+    def _get_perm(self, req):
+        return PermissionCache(self.env, req.authname)
+
+    def _get_session(self, req):
+        return Session(self.env, req)
+
+    def _get_timezone(self, req):
+        try:
+            return timezone(req.session.get('tz', self.default_timezone
+                                            or 'missing'))
+        except:
+            return localtz
+
     def _pre_process_request(self, req, chosen_handler):
-        for f in self.filters:
-            chosen_handler = f.pre_process_request(req, chosen_handler)
+        for filter_ in self.filters:
+            chosen_handler = filter_.pre_process_request(req, chosen_handler)
         return chosen_handler
-                
+
     def _post_process_request(self, req, template=None, content_type=None):
         for f in reversed(self.filters):
             template, content_type = f.post_process_request(req, template,

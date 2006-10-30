@@ -59,6 +59,8 @@ class Session(dict):
         self.req.outcookie[COOKIE_KEY]['expires'] = expires
 
     def get_session(self, sid, authenticated=False):
+        self.env.log.debug('Retrieving session for ID %r', sid)
+
         db = self.env.get_db_cnx()
         cursor = db.cursor()
         refresh_cookie = False

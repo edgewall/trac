@@ -123,17 +123,14 @@ class Request(object):
     
     This class provides a convenience API over WSGI.
     """
-    args = None
-    hdf = None
-    authname = None
-    perm = None
-    session = None
 
     def __init__(self, environ, start_response):
         """Create the request wrapper.
         
         @param environ: The WSGI environment dict
         @param start_response: The WSGI callback for starting the response
+        @param callbacks: A dictionary of functions that are used to lazily
+            evaluate attribute lookups
         """
         self.environ = environ
         self._start_response = start_response
@@ -141,22 +138,15 @@ class Request(object):
         self._status = '200 OK'
         self._response = None
 
-        self._inheaders = [(name[5:].replace('_', '-').lower(), value)
-                           for name, value in environ.items()
-                           if name.startswith('HTTP_')]
-        if 'CONTENT_LENGTH' in environ:
-            self._inheaders.append(('content-length',
-                                    environ['CONTENT_LENGTH']))
-        if 'CONTENT_TYPE' in environ:
-            self._inheaders.append(('content-type', environ['CONTENT_TYPE']))
         self._outheaders = []
         self._outcharset = None
-
-        self.incookie = Cookie()
-        cookie = self.get_header('Cookie')
-        if cookie:
-            self.incookie.load(cookie, ignore_parse_errors=True)
         self.outcookie = Cookie()
+
+        self.callbacks = {
+            'args': Request._parse_args,
+            'incookie': Request._parse_cookies,
+            '_inheaders': Request._parse_headers
+        }
 
         self.base_url = self.environ.get('trac.base_url')
         if not self.base_url:
@@ -164,54 +154,20 @@ class Request(object):
         self.href = Href(self.base_path)
         self.abs_href = Href(self.base_url)
 
-        self.args = self._parse_args()
+    def __getattr__(self, name):
+        """Performs lazy attribute lookup by delegating to the functions in the
+        callbacks dictionary."""
+        if name in self.callbacks:
+            value = self.callbacks[name](self)
+            setattr(self, name, value)
+            return value
+        return getattr(super(Request, self), name)
 
-    def _parse_args(self):
-        """Parse the supplied request parameters into a dictionary."""
-        args = _RequestArgs()
+    def __repr__(self):
+        return '<%s "%s %s">' % (self.__class__.__name__, self.method,
+                                 self.path_info)
 
-        fp = self.environ['wsgi.input']
-        ctype = self.get_header('Content-Type')
-        if ctype:
-            # Avoid letting cgi.FieldStorage consume the input stream when the
-            # request does not contain form data
-            ctype, options = cgi.parse_header(ctype)
-            if ctype not in ('application/x-www-form-urlencoded',
-                             'multipart/form-data'):
-                fp = StringIO('')
-
-        fs = cgi.FieldStorage(fp, environ=self.environ, keep_blank_values=True)
-        if fs.list:
-            for name in fs.keys():
-                values = fs[name]
-                if not isinstance(values, list):
-                    values = [values]
-                for value in values:
-                    if not value.filename:
-                        value = unicode(value.value, 'utf-8')
-                    if name in args:
-                        if isinstance(args[name], list):
-                            args[name].append(value)
-                        else:
-                            args[name] = [args[name], value]
-                    else:
-                        args[name] = value
-
-        return args
-
-    def _reconstruct_url(self):
-        """Reconstruct the absolute base URL of the application."""
-        host = self.get_header('Host')
-        if not host:
-            # Missing host header, so reconstruct the host from the
-            # server name and port
-            default_port = {'http': 80, 'https': 443}
-            if self.server_port and self.server_port != default_port[self.scheme]:
-                host = '%s:%d' % (self.server_name, self.server_port)
-            else:
-                host = self.server_name
-        return urlparse.urlunparse((self.scheme, host, self.base_path, None,
-                                    None, None))
+    # Public API
 
     method = property(fget=lambda self: self.environ['REQUEST_METHOD'],
                       doc='The HTTP method of the request')
@@ -256,19 +212,6 @@ class Request(object):
             if ctpos >= 0:
                 self._outcharset = value[ctpos + 8:].strip()
         self._outheaders.append((name, unicode(value).encode('utf-8')))
-
-    def _send_cookie_headers(self):
-        for name in self.outcookie.keys():
-            path = self.outcookie[name].get('path')
-            if path:
-                path = path.replace(' ', '%20') \
-                           .replace(';', '%3B') \
-                           .replace(',', '%3C')
-            self.outcookie[name]['path'] = path
-
-        cookies = self.outcookie.output(header='')
-        for cookie in cookies.splitlines():
-            self._outheaders.append(('Set-Cookie', cookie.strip()))
 
     def end_headers(self):
         """Must be called after all headers have been sent and before the actual
@@ -462,6 +405,85 @@ class Request(object):
             data = data.encode(self._outcharset or 'utf-8')
         self._write(data)
 
+    # Internal methods
+
+    def _parse_args(self):
+        """Parse the supplied request parameters into a dictionary."""
+        args = _RequestArgs()
+
+        fp = self.environ['wsgi.input']
+        ctype = self.get_header('Content-Type')
+        if ctype:
+            # Avoid letting cgi.FieldStorage consume the input stream when the
+            # request does not contain form data
+            ctype, options = cgi.parse_header(ctype)
+            if ctype not in ('application/x-www-form-urlencoded',
+                             'multipart/form-data'):
+                fp = StringIO('')
+
+        fs = cgi.FieldStorage(fp, environ=self.environ, keep_blank_values=True)
+        if fs.list:
+            for name in fs.keys():
+                values = fs[name]
+                if not isinstance(values, list):
+                    values = [values]
+                for value in values:
+                    if not value.filename:
+                        value = unicode(value.value, 'utf-8')
+                    if name in args:
+                        if isinstance(args[name], list):
+                            args[name].append(value)
+                        else:
+                            args[name] = [args[name], value]
+                    else:
+                        args[name] = value
+
+        return args
+
+    def _parse_cookies(self):
+        cookies = Cookie()
+        header = self.get_header('Cookie')
+        if header:
+            cookies.load(header, ignore_parse_errors=True)
+        return cookies
+
+    def _parse_headers(self):
+        headers = [(name[5:].replace('_', '-').lower(), value)
+                   for name, value in self.environ.items()
+                   if name.startswith('HTTP_')]
+        if 'CONTENT_LENGTH' in self.environ:
+            headers.append(('content-length', self.environ['CONTENT_LENGTH']))
+        if 'CONTENT_TYPE' in self.environ:
+            headers.append(('content-type', self.environ['CONTENT_TYPE']))
+        return headers
+
+    def _reconstruct_url(self):
+        """Reconstruct the absolute base URL of the application."""
+        host = self.get_header('Host')
+        if not host:
+            # Missing host header, so reconstruct the host from the
+            # server name and port
+            default_port = {'http': 80, 'https': 443}
+            if self.server_port and self.server_port != default_port[self.scheme]:
+                host = '%s:%d' % (self.server_name, self.server_port)
+            else:
+                host = self.server_name
+        return urlparse.urlunparse((self.scheme, host, self.base_path, None,
+                                    None, None))
+
+    def _send_cookie_headers(self):
+        for name in self.outcookie.keys():
+            path = self.outcookie[name].get('path')
+            if path:
+                path = path.replace(' ', '%20') \
+                           .replace(';', '%3B') \
+                           .replace(',', '%3C')
+            self.outcookie[name]['path'] = path
+
+        cookies = self.outcookie.output(header='')
+        for cookie in cookies.splitlines():
+            self._outheaders.append(('Set-Cookie', cookie.strip()))
+
 
 class IAuthenticator(Interface):
     """Extension point interface for components that can provide the name
@@ -475,14 +497,6 @@ class IAuthenticator(Interface):
 class IRequestHandler(Interface):
     """Extension point interface for request handlers."""
 
-    # implementing classes should set this property to `True` if they
-    # don't need session and authentication related information
-    anonymous_request = False
-    
-    # implementing classes should set this property to `False` if they
-    # don't need the HDF data and don't produce content using a template
-    use_template = True
-    
     def match_request(req):
         """Return whether the handler wants to process the given request."""
 
