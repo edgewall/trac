@@ -861,8 +861,8 @@ class OneLinerFormatter(Formatter):
     """
     flavor = 'oneliner'
 
-    def __init__(self, env, absurls=False, db=None):
-        Formatter.__init__(self, env, None, absurls, db)
+    def __init__(self, env, absurls=False, db=None, req=None):
+        Formatter.__init__(self, env, req, absurls, db)
 
     # Override a few formatters to disable some wiki syntax in "oneliner"-mode
     def _list_formatter(self, match, fullmatch): return match
@@ -1005,11 +1005,12 @@ def wiki_to_html(wikitext, env, req, db=None,
     Formatter(env, req, absurls, db).format(wikitext, out, escape_newlines)
     return Markup(out.getvalue())
 
-def wiki_to_oneliner(wikitext, env, db=None, shorten=False, absurls=False):
+def wiki_to_oneliner(wikitext, env, db=None, shorten=False, absurls=False,
+                     req=None):
     if not wikitext:
         return Markup()
     out = StringIO()
-    OneLinerFormatter(env, absurls, db).format(wikitext, out, shorten)
+    OneLinerFormatter(env, absurls, db, req=req).format(wikitext, out, shorten)
     return Markup(out.getvalue())
 
 def wiki_to_outline(wikitext, env, db=None,

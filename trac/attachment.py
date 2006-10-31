@@ -45,6 +45,7 @@ class InvalidAttachment(TracError):
 class IAttachmentChangeListener(Interface):
     """Extension point interface for components that require notification when
     attachments are created or deleted."""
+
     def attachment_added(attachment):
         """Called when an attachment is added."""
 
@@ -58,6 +59,7 @@ class IAttachmentManipulator(Interface):
     
     Unlike change listeners, a manipulator can reject changes being committed
     to the database."""
+
     def prepare_attachment(req, attachment, fields):
         """Not currently called, but should be provided for future
         compatibility."""
@@ -259,29 +261,6 @@ class Attachment(object):
         return fd
 
 
-# Templating utilities
-
-def attachments_data(env, req, db, parent_type, parent_id):
-    return [attachment_data(env, req, db, attachment) for attachment
-            in Attachment.select(env, parent_type, parent_id, db)]
-    
-def attachment_data(env, req, db, attachment):
-    # FIXME: pretty close to the attachment itself... so pass directly
-    # the attachment
-    if not db:
-        db = env.get_db_cnx()
-    description = wiki_to_oneliner(attachment.description, env, db)
-    return {
-        'filename': attachment.filename,
-        'description': Markup(description.strip()),
-        'author': attachment.author,
-        'ipnr': attachment.ipnr,
-        'size': attachment.size,
-        'date': attachment.date,
-        'href': attachment.href(req)
-    }
-
-
 class AttachmentModule(Component):
 
     implements(IEnvironmentSetupParticipant, IRequestHandler,
@@ -368,9 +347,9 @@ class AttachmentModule(Component):
                 data = {
                     'mode': 'list',
                     'parent': parent_data(parent_type, last_segment),
-                    'attachments': attachments_data(self.env, req, None,
-                                                    parent_type, last_segment),
-                    }
+                    'attachments': Attachment.select(env, parent_type,
+                                                     last_segment),
+                }
                 return 'attachment.html', data, None
             if not last_segment:
                 raise HTTPBadRequest('Bad request')
@@ -538,15 +517,9 @@ class AttachmentModule(Component):
 
         req.check_modified(attachment.date)
 
-        # Render HTML view
-        att_data = attachment_data(self.env, req, None, attachment)
-        # Override the 'oneliner'
-        att_data['description'] = wiki_to_html(attachment.description,
-                                               self.env, req)
-        
         data = {'mode': 'view', 'title': attachment.title,
-                'attachment': att_data}
-    
+                'attachment': attachment}
+
         perm_map = {'ticket': 'TICKET_ADMIN', 'wiki': 'WIKI_DELETE'}
         if req.perm.has_permission(perm_map[attachment.parent_type]):
             data['can_delete'] = True

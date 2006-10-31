@@ -33,9 +33,9 @@
                  href="${href.wiki('WikiFormatting')}">WikiFormatting</a> here):</label><br />
           <textarea id="description" name="description" class="wikitext" rows="10"
                  cols="78">${ticket.description}</textarea>
-          <fieldset py:if="preview" id="preview">
+          <fieldset py:if="ticket.description" id="preview">
             <legend>Description Preview</legend>
-            ${preview}
+            ${wiki_to_html(ticket.description)}
           </fieldset>
         </div>
 
@@ -94,8 +94,9 @@
       </form>
 
       <div id="help">
-        <strong>Note:</strong> See <a href="${href.wiki('TracTickets')}">TracTickets</a>
-        for help on using tickets.
+        <strong>Note:</strong> See
+        <a href="${href.wiki('TracTickets')}">TracTickets</a> for help on using
+        tickets.
       </div>
     </div>
   </body>

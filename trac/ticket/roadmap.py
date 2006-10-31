@@ -22,7 +22,8 @@ from time import localtime, strftime, time
 from trac import __version__
 from trac.core import *
 from trac.perm import IPermissionRequestor
-from trac.util.datefmt import parse_date, utc, to_timestamp
+from trac.util.datefmt import parse_date, utc, to_timestamp, \
+                              get_date_format_hint, get_datetime_format_hint
 from trac.util.html import html, unescape, Markup
 from trac.util.text import shorten_line, CRLF, to_unicode
 from trac.ticket import Milestone, Ticket, TicketSystem
@@ -86,21 +87,6 @@ def calc_ticket_stats(tickets):
         'percent_closed': percent_closed
     }
 
-def milestone_to_hdf(env, db, req, milestone):
-    safe_name = None
-    if milestone.exists:
-        safe_name = milestone.name.replace('/', '%2F')
-    hdf = {'name': milestone.name, 'exists': milestone.exists,
-           'href': req.href.milestone(safe_name),
-           'due':  milestone.due, 'completed': milestone.completed
-           } # FIXME: pass the full milestone object
-    if milestone.description:
-        hdf['description_source'] = milestone.description
-        hdf['description'] = wiki_to_html(milestone.description, env, req, db)
-    if milestone.due:
-        hdf['late'] = milestone.is_late
-    return hdf
-
 def _get_groups(env, db, by='component'):
     for field in TicketSystem(env).get_ticket_fields():
         if field['name'] == by:
@@ -147,17 +133,16 @@ class RoadmapModule(Component):
         data['showall'] = showall
 
         db = self.env.get_db_cnx()
-        milestones = [milestone_to_hdf(self.env, db, req, m)
-                      for m in Milestone.select(self.env, showall, db)]
-        data['milestones'] = milestones
+        milestones = list(Milestone.select(self.env, showall, db))
+        stats = []
+        queries = []
 
         for idx, milestone in enumerate(milestones):
-            milestone_name = unescape(milestone['name']) # Kludge
-            tickets = get_tickets_for_milestone(self.env, db, milestone_name,
+            tickets = get_tickets_for_milestone(self.env, db, milestone.name,
                                                 'owner')
-            milestone['stats'] = calc_ticket_stats(tickets)
-            milestone['queries'] = get_query_links(req, milestone_name)
-            milestone['tickets'] = tickets # for the iCalendar view
+            stats.append(calc_ticket_stats(tickets))
+            queries.append(get_query_links(req, milestone.name))
+            #milestone['tickets'] = tickets # for the iCalendar view
 
         if req.args.get('format') == 'ics':
             self.render_ics(req, db, milestones)
@@ -171,6 +156,11 @@ class RoadmapModule(Component):
                                    format='ics')
         add_link(req, 'alternate', icshref, 'iCalendar', 'text/calendar', 'ics')
 
+        data = {
+            'milestones': milestones,
+            'stats': stats,
+            'queries': queries
+        }
         return 'roadmap.html', data, None
 
     # Internal methods
@@ -337,7 +327,7 @@ class MilestoneModule(Component):
         milestone_id = req.args.get('id')
         if not milestone_id:
             req.redirect(req.href.roadmap())
-            
+
         req.perm.assert_permission('MILESTONE_VIEW')
 
         add_link(req, 'up', req.href.roadmap(), 'Roadmap')
@@ -428,33 +418,31 @@ class MilestoneModule(Component):
     def _render_confirm(self, req, db, milestone):
         req.perm.assert_permission('MILESTONE_DELETE')
 
-        data = {'milestone': milestone_to_hdf(self.env, db, req, milestone),
-                'milestones': [m.name for m in
-                               Milestone.select(self.env, False, db)
-                               if m.name != milestone.name]}
-
+        data = {
+            'milestone': milestone,
+            'milestones': Milestone.select(self.env, False, db)
+        }
         return 'milestone_delete.html', data, None
 
     def _render_editor(self, req, db, milestone):
-        from trac.util.datefmt import get_date_format_hint, \
-                                       get_datetime_format_hint
-        data = {'date_hint': get_date_format_hint(),
-                'datetime_hint': get_datetime_format_hint()}
+        data = {
+            'milestone': milestone,
+            'date_hint': get_date_format_hint(),
+            'datetime_hint': get_datetime_format_hint()
+        }
 
         if milestone.exists:
             req.perm.assert_permission('MILESTONE_MODIFY')
-            data['milestones'] = [m.name for m in
+            data['milestones'] = [m for m in
                                   Milestone.select(self.env, False, db)
                                   if m.name != milestone.name]
         else:
             req.perm.assert_permission('MILESTONE_CREATE')
 
-        data['milestone'] = milestone_to_hdf(self.env, db, req, milestone)
-
         return 'milestone_edit.html', data, None
 
     def _render_view(self, req, db, milestone):
-        data = {'milestone': milestone_to_hdf(self.env, db, req, milestone)}
+        data = {'milestone': milestone}
 
         available_groups = []
         component_group_available = False

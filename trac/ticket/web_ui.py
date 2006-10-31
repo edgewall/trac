@@ -20,9 +20,10 @@ import re
 from StringIO import StringIO
 import time
 
-from trac.attachment import attachments_data, Attachment, AttachmentModule
+from trac.attachment import Attachment, AttachmentModule
 from trac.config import BoolOption, Option
 from trac.core import *
+from trac.mimeview.api import Mimeview, IContentConverter
 from trac.ticket import Milestone, Ticket, TicketSystem, ITicketManipulator
 from trac.ticket.notification import TicketNotifyEmail
 from trac.Timeline import ITimelineEventProvider
@@ -34,7 +35,6 @@ from trac.web import IRequestHandler
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor, \
                             Chrome
 from trac.wiki import wiki_to_html, wiki_to_oneliner
-from trac.mimeview.api import Mimeview, IContentConverter
 
 
 class InvalidTicket(TracError):
@@ -131,10 +131,6 @@ class TicketModule(Component):
         ticket.values['reporter'] = get_reporter_id(req, 'reporter')
         data['ticket'] = ticket
 
-        if 'description' in ticket.values:
-            description = wiki_to_html(ticket['description'], self.env, req, db)
-            data['preview'] = description
-
         field_names = [field['name'] for field in ticket.fields
                        if not field.get('custom')]
         if 'owner' in field_names:
@@ -201,8 +197,6 @@ class TicketModule(Component):
                 comment = req.args.get('comment')
                 if comment:
                     data['comment'] = comment
-                    # Wiki format a preview of comment
-                    data['preview'] = wiki_to_html(comment, self.env, req, db)
         else:
             data['reassign_owner'] = req.authname
             # Store a timestamp in order to detect "mid air collisions"
@@ -384,9 +378,6 @@ class TicketModule(Component):
             change_summary = {}
             # wikify comment
             if 'comment' in change:
-                comment = change['comment']
-                change['comment'] = unicode(wiki_to_html(
-                    comment, self.env, req, db, absurls=True))
                 change_summary['added'] = ['comment']
             for field, values in change['fields'].iteritems():
                 if field == 'description':
@@ -402,11 +393,9 @@ class TicketModule(Component):
                                          in change_summary.iteritems()])
 
         data = {
-            'id': ticket.id,
-            'description': wiki_to_html(ticket['description'], self.env, req,
-                                        db, absurls=True),
+            'ticket': ticket,
             'changes': changes,
-            }
+        }
 
         output = Chrome(self.env).render_template(req, 'ticket.rss', data,
                                                   'application/rss+xml')
@@ -549,8 +538,6 @@ class TicketModule(Component):
             data['fields'].append(field)
 
         data['reporter_id'] = reporter_id
-        data['description'] = wiki_to_html(ticket['description'], self.env, req,
-                                           db)
 
         # FIXME: get rid of this once datetime branch is merged
         data['opened'] = ticket.time_created
@@ -576,9 +563,6 @@ class TicketModule(Component):
             changes.append(change)
             # wikify comment
             comment = ''
-            if 'comment' in change:
-                comment = change['comment']
-                change['comment'] = wiki_to_html(comment, self.env, req, db)
             if change['permanent']:
                 cnum = change['cnum']
                 # keep track of replies threading
@@ -602,8 +586,7 @@ class TicketModule(Component):
 
         # -- Ticket Attachments
 
-        data['attachments'] = attachments_data(self.env, req, db, 'ticket',
-                                               ticket.id)
+        data['attachments'] = Attachment.select(self.env, 'ticket', ticket.id)
         if req.perm.has_permission('TICKET_APPEND'):
             data['attach_href'] = req.href.attachment('ticket', ticket.id)
 

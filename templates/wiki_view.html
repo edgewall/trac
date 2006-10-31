@@ -8,6 +8,7 @@
   <xi:include href="macros.html" />
   <head>
     <title>$title</title>
+    <meta py:if="version" name="ROBOTS" content="NOINDEX, NOFOLLOW" />
     <script type="text/javascript">
       $(document).ready(function() {
         $("#content").find("h1,h2,h3,h4,h5,h6").addAnchor("Link to this section");
@@ -31,17 +32,26 @@
 
     <div id="content" class="wiki">
 
-      <py:if test="comment_html">
+      <py:if test="version">
         <table id="info" summary="Revision info">
           <tbody>
-            <tr><th scope="col">Version $page.version (modified by $page.author, ${dateinfo(page.time)} ago)</th></tr>
-            <tr><td class="message">$comment_html</td></tr>
+            <tr><th scope="row">
+              Version $page.version (modified by $page.author, ${dateinfo(page.time)} ago)
+            </th></tr>
+            <tr><td class="message">
+              ${wiki_to_oneliner(comment or '--')}
+            </td></tr>
           </tbody>
         </table>
       </py:if>
 
-      <div class="wikipage searchable">
-        $page_html
+      <div class="wikipage searchable" py:choose="">
+        <py:when test="page.exists">
+          ${wiki_to_html(page.text)}
+        </py:when>
+        <py:otherwise>
+          Describe ${page.name} here.
+        </py:otherwise>
       </div>
 
       ${list_of_attachments(attachments, attach_href, compact=True)}

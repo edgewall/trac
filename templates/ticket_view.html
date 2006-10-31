@@ -79,7 +79,7 @@
               </span>
             </h3>
             <div class="searchable">
-              ${description}
+              ${wiki_to_html(ticket.description)}
             </div>
           </div>
         </form>
@@ -134,7 +134,7 @@
                 </li>
               </ul>
               <div py:if="change.comment" class="comment searchable">
-                ${change.comment}
+                ${wiki_to_html(change.comment)}
               </div>
             </div>
           </form>
@@ -142,8 +142,8 @@
       </py:if>
 
       <form py:if="perm.has_permission('TICKET_APPEND') or
-        perm.has_permission('TICKET_CHGPROP')"
-        action="#preview" method="post">
+                   perm.has_permission('TICKET_CHGPROP')"
+            action="#preview" method="post">
         <hr />
         <h3><a name="edit" onfocus="$('#comment').get(0).focus()">
             Add/Change #${ticket.id} (${ticket.summary})</a></h3>
@@ -160,9 +160,9 @@
             <p><textarea id="comment" name="comment" class="wikitext" rows="10" cols="78">
 ${comment}</textarea></p>
           </fieldset>
-          <fieldset py:if="preview" id="preview">
+          <fieldset py:if="comment" id="preview">
             <legend>Comment Preview</legend>
-            ${preview}
+            ${wiki_to_html(comment)}
           </fieldset>
         </div>
 

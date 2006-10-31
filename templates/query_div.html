@@ -32,7 +32,7 @@
           <th py:for="header in headers"
             class="$header.name${query.order == header.name and (query.desc and ' desc' or ' asc') or ''}">
             <a title="Sort by $header.label${query.order == header.name and not query.desc and ' (descending)' or ''}"
-              href="$header.href">$header.label</a>
+              href="$header.href">${header.label}</a>
           </th>
         </tr>
       </thead>
@@ -55,9 +55,9 @@
 
           <tr py:if="query.verbose" class="fullrow">
             <td colspan="${len(headers)}">
-              <p class="meta">Reported by <strong>$result.reporter</strong>,
-                ${dateinfo(result.time)} ago${result.description and ':' or ''}</p>
-              <p py:if="result.description">$result.description</p>
+              <p class="meta">Reported by <strong>${result.reporter}</strong>,
+                ${dateinfo(result.time)} ago<py:if test="result.description">:</py:if></p>
+              <p py:if="result.description">${wiki_to_html(result.description)}</p>
             </td>
           </tr>
 

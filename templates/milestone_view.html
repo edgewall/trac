@@ -23,10 +23,12 @@
             (${format_date(milestone.completed)})
           </p>
           <p py:when="milestone.late" class="date">
-            <strong>${pretty_timedelta(milestone.due)} late</strong> (${format_date(milestone.due)})
+            <strong>${pretty_timedelta(milestone.due)} late</strong>
+            (${format_date(milestone.due)})
           </p>
           <p py:when="milestone.due" class="date">
-            Due in ${pretty_timedelta(milestone.due)} (${format_date(milestone.due)})
+            Due in ${pretty_timedelta(milestone.due)}
+            (${format_date(milestone.due)})
           </p>
           <p py:otherwise="" class="date">
             No date set
@@ -43,7 +45,7 @@
                  title="${stats.active_tickets} of ${stats.total_tickets} ticket${stats.total_tickets != 1 and 's' or ''} active"></a>
             </td>
           </table>
-          <p class="percent">${stats.percent_closed}%</p>
+          <p class="percent">${int(stats.percent_closed)}%</p>
           <dl>
             <dt>Closed tickets:</dt>
             <dd><a href="$queries.closed_tickets">${stats.closed_tickets}</a></dd>
@@ -87,7 +89,7 @@
         </fieldset>
       </form>
 
-      <div class="description">${milestone.description}</div>
+      <div class="description">${wiki_to_html(milestone.description)}</div>
 
       <div py:if="perm.has_permission('MILESTONE_MODIFY') or perm.has_permission('MILESTONE_DELETE')" class="buttons">
         <form py:if="perm.has_permission('MILESTONE_MODIFY')" method="get" action="">

@@ -21,7 +21,7 @@ import os
 import re
 import StringIO
 
-from trac.attachment import attachments_data, Attachment, AttachmentModule
+from trac.attachment import Attachment, AttachmentModule
 from trac.core import *
 from trac.perm import IPermissionRequestor
 from trac.Search import ISearchSource, search_to_sql, shorten_result
@@ -245,11 +245,11 @@ class WikiModule(Component):
         num_changes = 0
         old_page = None
         prev_version = next_version = None
-        for version,t,a,c,i in latest_page.get_history():
+        for version, t, a, c, i in latest_page.get_history():
             if version == new_version:
                 date = t
                 author = a or 'anonymous'
-                comment = wiki_to_html(c or '--', self.env, req, db)
+                comment = c or '--'
                 ipnr = i or ''
             else:
                 if version < new_version:
@@ -312,11 +312,10 @@ class WikiModule(Component):
             'new_version': new_version, 'old_version': old_version,
             'latest_version': latest_page.version,
             'num_changes': num_changes,
-            'norobots': True, # Ask web spiders to not index old versions
             'longcol': 'Version', 'shortcol': 'v',
             'changes': changes,
             'diff': diff_data,
-            })
+        })
         return 'wiki_diff.html', data, None
 
     def _render_editor(self, req, db, page, action='edit'):
@@ -352,8 +351,8 @@ class WikiModule(Component):
         })
         if action == 'preview':
             data.update({
-            'page_html': wiki_to_html(page.text, self.env, req, db),
-            'comment_html': wiki_to_oneliner(comment, self.env, db)
+                'page_html': wiki_to_html(page.text, self.env, req, db),
+                'comment_html': wiki_to_oneliner(comment, self.env, db)
             })
         return 'wiki_edit.html', data, None
 
@@ -397,21 +396,15 @@ class WikiModule(Component):
         if page.name == 'WikiStart':
             data['title'] = ''
 
-        page_html = comment_html = attach_href = ''
         latest_page = WikiPage(self.env, page.name)
 
-        if page.exists:
-            page_html = wiki_to_html(page.text, self.env, req, db)
-            if version:
-                comment_html = wiki_to_oneliner(page.comment or '--',
-                                                self.env, db)
-        else:
+        if not page.exists:
             if not req.perm.has_permission('WIKI_CREATE'):
                 raise HTTPNotFound('Page %s not found', page.name)
-            page_html = html.P('Describe "%s" here' % data['page_name'])
 
         # Show attachments
-        attachments = attachments_data(self.env, req, db, 'wiki', page.name)
+        attachments = Attachment.select(self.env, 'wiki', page.name)
+        attach_href = None
         if req.perm.has_permission('WIKI_MODIFY'):
             attach_href = req.href.attachment('wiki', page.name)
 
@@ -419,16 +412,13 @@ class WikiModule(Component):
         templates = [t[len(prefix):] for t in
                      WikiSystem(self.env).get_pages(prefix)]
 
-        data.update({'action': 'view',
-                     'page_html': page_html,
-                     'comment_html': comment_html,
-                     'latest_version': latest_page.version,
-                     'attachments': attachments,
-                     'attach_href': attach_href,
-                     # Ask web spiders to not index old versions
-                     'norobots': bool(version),
-                     'default_template': self.DEFAULT_PAGE_TEMPLATE,
-                     'templates': templates})
+        data.update({
+            'latest_version': latest_page.version,
+            'attachments': attachments,
+            'attach_href': attach_href,
+            'default_template': self.DEFAULT_PAGE_TEMPLATE,
+            'templates': templates
+        })
         return 'wiki_view.html', data, None
 
     # ITimelineEventProvider methods

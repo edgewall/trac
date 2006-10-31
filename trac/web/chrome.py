@@ -37,7 +37,7 @@ from trac.util.datefmt import pretty_timedelta, format_datetime, format_date, \
                               format_time, http_date
 from trac.web.api import IRequestHandler, HTTPNotFound
 from trac.web.href import Href
-from trac.wiki import IWikiSyntaxProvider
+from trac.wiki import IWikiSyntaxProvider, wiki_to_html, wiki_to_oneliner
 
 def add_link(req, rel, href, title=None, mimetype=None, classname=None):
     """Add a link to the HDF data set that will be inserted as <link> element in
@@ -399,46 +399,55 @@ class Chrome(Component):
                 req.hdf[prefix] = item['label']
 
     def populate_data(self, req, data):
-        data.update(self._default_context_data)
-        data.setdefault('trac', {}).update({
+        d = self._default_context_data.copy()
+        d['trac'] = {
             'version': VERSION,
             'homepage': 'http://trac.edgewall.org/', # FIXME: use setup data
             'systeminfo': self.env.systeminfo,
-        })
-        data.setdefault('project', {}).update({
+        }
+        d['project'] = {
             'name': self.env.project_name,
             'descr': self.env.project_description,
             'url': self.env.project_url,
             'admin': self.env.project_admin,
-        })
-
-        chrome = data.setdefault('chrome', {})
+        }
+        d['chrome'] = {
+            'footer': Markup(self.env.project_footer)
+        }
         if req:
-            chrome.update(req.chrome)
+            d['chrome'].update(req.chrome)
         else:
-            chrome.update({
+            d['chrome'].update({
                 'htdocs_location': self.htdocs_location,
                 'logo': self.get_logo_data(self.env.abs_href),
             })
-        chrome.update({
-            'footer': Markup(self.env.project_footer)
-        })
 
         tzinfo = None
         if req:
             tzinfo = req.tz
 
-        data.update({
+        d.update({
             'req': req,
             'abs_href': req and req.abs_href or self.env.abs_href,
             'href': req and req.href,
             'perm': req and req.perm,
             'authname': req and req.authname or '<trac>',
+
+            # Date/time formatting
             'format_datetime': partial(format_datetime, tzinfo=tzinfo),
             'format_date': partial(format_date, tzinfo=tzinfo),
             'format_time': partial(format_time, tzinfo=tzinfo),
-            'fromtimestamp': partial(datetime.datetime.fromtimestamp, tz=tzinfo)
+            'fromtimestamp': partial(datetime.datetime.fromtimestamp,
+                                     tz=tzinfo),
+
+            # Wiki-formatting functions
+            'wiki_to_html': partial(wiki_to_html, env=self.env, req=req),
+            'wiki_to_oneliner': partial(wiki_to_oneliner, env=self.env, req=req),
         })
+
+        # Finally merge in the page-specific data
+        d.update(data)
+        return d
 
     def load_template(self, filename, method=None):
         """Retrieve a Template and optionally preset the template data.
@@ -471,7 +480,7 @@ class Chrome(Component):
                   'text/plain': 'text'}.get(content_type, 'xml')
 
         template = self.load_template(filename, method=method)
-        self.populate_data(req, data)
+        data = self.populate_data(req, data)
 
         stream = template.generate(**data)
         if fragment:
@@ -484,6 +493,12 @@ class Chrome(Component):
             return stream.render('text')
         else:
             doctype = {'text/html': DocType.XHTML_STRICT}.get(content_type)
+            req.chrome['links'] = {}
+            req.chrome['scripts'] = []
+            data.setdefault('chrome', {}).update({
+                'late_links': req.chrome['links'],
+                'late_scripts': req.chrome['scripts'],
+            })
             return stream.render(method, doctype=doctype)
 
     def _strip_accesskeys(self, stream, ctxt=None):

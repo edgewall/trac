@@ -8,6 +8,8 @@
   <xi:include href="macros.html" />
   <head>
     <title>$title</title>
+    <link rel="stylesheet" type="text/css" href="$htdocs_location/css/diff.css" />
+    <meta name="ROBOTS" content="NOINDEX, NOFOLLOW" />
   </head>
 
   <body>
@@ -49,7 +51,7 @@
         <dt class="property message">Comment:</dt>
         <dd class="message" py:choose="">
           <em py:when="multi" class="multi">(multiple changes)</em>
-          <py:otherwise>$comment</py:otherwise>
+          <py:otherwise>${wiki_to_html(comment)}</py:otherwise>
         </dd>
       </dl>
       <div class="diff">

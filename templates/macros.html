@@ -146,7 +146,9 @@
   -->
   <py:def function="list_of_attachments(attachments, attach_href, compact=False)">
     <py:def function="show_one_attachment(attachment)">
-      <a href="$attachment.href" title="View attachment">$attachment.filename</a>
+      <a href="${href('attachment', attachment.parent_type,
+                      attachment.parent_id, attachment.filename)}"
+         title="View attachment">$attachment.filename</a>
         (${sizeinfo(attachment.size)}) - added by <em>$attachment.author</em>
         ${dateinfo(attachment.date)} ago.
     </py:def>
@@ -156,7 +158,7 @@
         <ul>
           <li py:for="attachment in attachments">
             ${show_one_attachment(attachment)}
-            <q py:if="compact and attachment.description">$attachment.description</q>
+            <q py:if="compact and attachment.description">${wiki_to_oneliner(attachment.description)}</q>
           </li>
         </ul>
       </py:when>
@@ -166,7 +168,9 @@
           <dl py:if="attachments" class="attachments">
             <py:for each="attachment in attachments">
               <dt>${show_one_attachment(attachment)}</dt>
-              <dd py:if="attachment.description">$attachment.description</dd>
+              <dd py:if="attachment.description">
+                $wiki_to_html(attachment.description)
+              </dd>
             </py:for>
           </dl>
           <form py:if="attach_href" method="get" action="$attach_href">

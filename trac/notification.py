@@ -107,8 +107,7 @@ class Notify(object):
 
         self.template = Chrome(self.env).load_template(self.template_name,
                                                        method='text')
-        self.data = {'CRLF': CRLF}
-        Chrome(self.env).populate_data(None, self.data)
+        self.data = Chrome(self.env).populate_data(None, {'CRLF': CRLF})
 
     def notify(self, resid):
         (torcpts, ccrcpts) = self.get_recipients(resid)

@@ -378,6 +378,7 @@ def dispatch_request(environ, start_response):
     except Exception, e:
         env.log.exception(e)
 
+        del req.chrome # reset chrome data
         message = "%s: %s" % (e.__class__.__name__, to_unicode(e))
         traceback = get_last_traceback()
 

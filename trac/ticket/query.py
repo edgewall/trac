@@ -32,7 +32,6 @@ from trac.web import IRequestHandler
 from trac.web.chrome import add_link, add_script, add_stylesheet, \
                             INavigationContributor, Chrome
 from trac.wiki.api import IWikiSyntaxProvider, parse_args
-from trac.wiki.formatter import wiki_to_html, wiki_to_oneliner
 from trac.wiki.macros import WikiMacroBase # TODO: should be moved in .api
 
 
@@ -414,10 +413,6 @@ class Query(object):
                 groups.setdefault(group_key, []).append(ticket)
                 if not groupsequence or groupsequence[-1] != group_key:
                     groupsequence.append(group_key)
-            description = ticket.get('description')
-            if description:
-                ticket['description'] = wiki_to_html(description, self.env,
-                                                     req, db)
         groupsequence = [(value, groups[value]) for value in groupsequence]
 
         return {'query': self,
@@ -647,10 +642,6 @@ class QueryModule(Component):
         for result in results:
             if result['reporter'].find('@') == -1:
                 result['reporter'] = ''
-            if result['description']:
-                result['description'] = wiki_to_html(result['description'],
-                                                     self.env, req, db,
-                                                     absurls=True)
         query_href = req.abs_href.query(group=query.group,
                                         groupdesc=query.groupdesc and 1 or None,
                                         verbose=query.verbose and 1 or None,
