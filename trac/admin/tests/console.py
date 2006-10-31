@@ -23,7 +23,7 @@ import unittest
 from StringIO import StringIO
 
 from trac.env import Environment
-from trac.scripts import admin
+from trac.admin import console
 from trac.test import InMemoryDatabase, TestConfiguration
 from trac.util.datefmt import get_date_format_hint
 
@@ -89,14 +89,14 @@ class TracadminTestCase(unittest.TestCase):
     """
 
     expected_results = load_expected_results(os.path.join(os.path.split(__file__)[0],
-                                            'admin-tests.txt'),
+                                            'console-tests.txt'),
                                             '===== (test_[^ ]+) =====')
 
     def setUp(self):
         self.env = InMemoryEnvironment('', create=True)
         self.db = self.env.get_db_cnx()
 
-        self._admin = admin.TracAdmin()
+        self._admin = console.TracAdmin()
         self._admin.env_set('', self.env)
 
         # Set test date to 11th Jan 2004

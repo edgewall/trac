@@ -1,0 +1,104 @@
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:xi="http://www.w3.org/2001/XInclude"
+      xmlns:py="http://genshi.edgewall.org/">
+  <xi:include href="admin.html" />
+  <head>
+    <title>Plugins</title>
+    <script type="text/javascript" src="${htdocs_location}js/folding.js"></script>
+    <script type="text/javascript">
+      $(document).ready(function(){ $("div.plugin h3").enableFolding() });
+    </script>
+  </head>
+
+  <body>
+    <h2>Manage Plugins</h2>
+
+    <form id="addplug" class="addnew" method="post" enctype="multipart/form-data">
+      <fieldset>
+        <legend>Install Plugin:</legend>
+        <div class="field">
+          <label>
+            File: <input type="file" name="egg_file" disabled="${readonly or None}" />
+          </label>
+        </div>
+        <p class="help" py:choose="readonly">
+          <py:when test="True">
+            The web server does not have sufficient permissions to store files in
+            the environment plugins directory.
+          </py:when>
+          <py:otherwise>
+            Upload a plugin packaged as Python egg.
+          </py:otherwise>
+        </p>
+        <div class="buttons">
+          <input type="submit" name="install" value="Install"
+                 disabled="${readonly or None}" />
+        </div>
+      </fieldset>
+    </form>
+
+    <form py:for="idx, plugin in enumerate(plugins)" method="post">
+      <div class="plugin">
+        <h3>${plugin.name} ${plugin.version}</h3>
+        <div class="uninstall buttons">
+          <input type="hidden" name="plugin_filename"
+                 value="${plugin.plugin_filename}" />
+          <input type="submit" name="uninstall" value="Uninstall"
+                 disabled="${plugin.readonly or None}" />
+        </div>
+        <p class="summary">$plugin.info.summary</p>
+        <dl py:if="plugin.info.home_page or plugin.info.author or plugin.info.author_email"
+            class="info">
+          <py:if test="plugin.info.author or plugin.info.author_email">
+            <dt>Author:</dt>
+            <dd>
+              <a py:strip="not plugin.info.author_email"
+                 href="mailto:${plugin.info.author_email}">
+                ${plugin.info.author_email or plugin.info.author}
+              </a>
+            </dd>
+          </py:if>
+          <py:if test="plugin.info.home_page">
+            <dt>Home page:</dt>
+            <dd>
+              <a onclick="window.open(this.href); return false"
+                 href="$plugin.info.home_page">${plugin.info.home_page}</a>
+            </dd>
+          </py:if>
+          <py:if test="plugin.info.license">
+            <dt>License:</dt>
+            <dd>${plugin.info.license}</dd>
+          </py:if>
+        </dl>
+        <table class="listing">
+          <thead>
+            <tr><th>Component</th><th class="sel">Enabled</th></tr>
+          </thead>
+          <tbody>
+            <tr py:for="component in plugin.components">
+              <td class="name" title="${component.description}">
+                ${component.name}<p class="module">${component.module}</p>
+              </td>
+              <td class="sel">
+                <input py:if="not component.required" type="hidden" name="component"
+                       value="${component.module}.${component.name}" />
+                <input type="checkbox" name="enable"
+                       value="${component.module}.${component.name}"
+                       checked="${component.enabled or None}"
+                       disabled="${component.required or None}" />
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="update buttons">
+          <input type="hidden" name="plugin" value="$idx" />
+          <input type="submit" name="update" value="Apply changes" />
+        </div>
+      </div>
+    </form>
+  </body>
+
+</html>

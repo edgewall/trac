@@ -1,0 +1,86 @@
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:xi="http://www.w3.org/2001/XInclude"
+      xmlns:py="http://genshi.edgewall.org/">
+  <xi:include href="admin.html" />
+  <head>
+    <title>$label_plural</title>
+  </head>
+
+  <body>
+    <h2>Manage $label_plural</h2>
+
+    <py:choose>
+      <form py:when="enum" class="mod" id="modenum" method="post">
+        <fieldset>
+          <legend>Modify $label_singular</legend>
+          <div class="field">
+            <label>Name: <input type="text" name="name" value="${enum.name}" /></label>
+          </div>
+          <div class="buttons">
+            <input type="submit" name="cancel" value="Cancel"/>
+            <input type="submit" name="save" value="Save"/>
+          </div>
+        </fieldset>
+      </form>
+
+      <py:otherwise>
+        <form class="addnew" id="addenum" method="post">
+          <fieldset>
+            <legend>Add $label_singular</legend>
+            <div class="field">
+              <label>Name:<input type="text" name="name" id="name"/></label>
+            </div>
+            <div class="buttons">
+              <input type="submit" name="add" value="Add"/>
+            </div>
+          </fieldset>
+        </form>
+
+        <py:choose>
+          <form py:when="enums" method="POST">
+            <table class="listing" id="enumlist">
+              <thead>
+                <tr><th class="sel">&nbsp;</th>
+                  <th>Name</th><th>Default</th><th>Order</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr py:for="enum in enums">
+                  <td><input type="checkbox" name="sel" value="${enum.name}" /></td>
+                  <td><a href="${href.admin('ticket', enum.type, enum.name)}">${enum.name}</a></td>
+                  <td class="default">
+                    <input type="radio" name="default" value="${enum.name}"
+                           checked="${enum.name==default or None}" />
+                  </td>
+                  <td class="default">
+                    <select name="value_${enum.value}">
+                      <option py:for="other in enums"
+                              selected="${other.value==enum.value or None}">${other.value}</option>
+                    </select>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="buttons">
+              <input type="submit" name="remove" value="Remove selected items" />
+              <input type="submit" name="apply" value="Apply changes" />
+            </div>
+            <p class="help">
+              You can remove all items from this list to completely hide this
+              field from the user interface.
+            </p>
+          </form>
+
+          <p py:otherwise="" class="help">
+            As long as you don't add any items to the list, this field
+            will remain completely hidden from the user interface.
+          </p>
+        </py:choose>
+      </py:otherwise>
+    </py:choose>
+  </body>
+
+</html>

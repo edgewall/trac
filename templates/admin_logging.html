@@ -1,0 +1,64 @@
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:xi="http://www.w3.org/2001/XInclude"
+      xmlns:py="http://genshi.edgewall.org/">
+  <xi:include href="admin.html" />
+  <head>
+    <title>Logging</title>
+  </head>
+
+  <body>
+    <h2>Logging</h2>
+
+    <form class="mod" id="modlog" method="post">
+      <fieldset>
+        <legend>Configuration</legend>
+        <div class="field">
+          <label>Type:<br />
+            <select id="log_type" name="log_type">
+              <option py:for="type in log.types" value="${type.name}"
+                      selected="${type.selected or None}"
+                      disabled="${type.disabled or None}">${type.label}</option>
+            </select>
+          </label>
+        </div>
+        <div class="field">
+          <label>Log level:<br />
+            <select id="log_level" name="log_level">
+              <option py:for="level in log.levels"
+                      selected="${level==log.level or None}">$level</option>
+            </select>
+          </label>
+        </div>
+        <div class="field">
+          <label>Log file:<br />
+            <input type="text" id="log_file" name="log_file" size="48" value="$log.file"/>
+          </label>
+          <p class="help">
+            If you specify a relative path, the log file will be stored inside the
+            <code>log</code> directory of the project environment (<code>$log.dir</code>).
+          </p>
+        </div>
+        <script type="text/javascript">
+          var logType = document.getElementById("log_type");
+          var enableLevelAndFile = function() {
+            enableControl("log_level", log_type.selectedIndex > 0);
+            enableControl("log_file",
+                          log_type.options[log_type.selectedIndex].value == "file");
+          };
+          addEvent(window, "load", enableLevelAndFile);
+          addEvent(log_type, "change", enableLevelAndFile);
+        </script>
+        <div class="buttons">
+          <input type="submit" value="Apply changes"/>
+        </div>
+        <p class="help">
+          You may need to restart the server for these changes to take effect.
+        </p>
+      </fieldset>
+    </form>
+  </body>
+
+</html>

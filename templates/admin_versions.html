@@ -1,0 +1,108 @@
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:xi="http://www.w3.org/2001/XInclude"
+      xmlns:py="http://genshi.edgewall.org/">
+  <xi:include href="admin.html" />
+  <head>
+    <title>Versions</title>
+  </head>
+
+  <body>
+    <h2>Manage Versions</h2>
+
+    <py:choose>
+      <form py:when="version" class="mod" id="modver" method="post">
+        <fieldset>
+          <legend>Modify Version:</legend>
+          <div class="field">
+            <label>Name:<br />
+              <input type="text" name="name" value="${version.name}" />
+            </label>
+          </div>
+          <div class="field">
+            <label>Date:<br />
+              <input type="text" name="time" size="${len(date_hint)}"
+                     value="${format_date(version.time)}"
+                     title="Format: $date_hint" />
+              <em>Format: $date_hint</em>
+            </label>
+          </div>
+          <div class="field">
+            <fieldset class="iefix">
+              <label for="description">
+                Description (you may use <a tabindex="42" href="${href.wiki('WikiFormatting')}">WikiFormatting</a> here):
+              </label>
+              <p>
+                <textarea id="description" name="description" class="wikitext" rows="6" cols="60">
+$version.description</textarea>
+              </p>
+            </fieldset>
+          </div>
+          <div class="buttons">
+            <input type="submit" name="cancel" value="Cancel"/>
+            <input type="submit" name="save" value="Save"/>
+          </div>
+        </fieldset>
+      </form>
+
+      <py:otherwise>
+        <form class="addnew" id="addver" method="post">
+          <fieldset>
+            <legend>Add Version:</legend>
+            <div class="field">
+              <label>Name:<br /><input type="text" name="name" id="name" /></label>
+            </div>
+            <div class="field">
+              <label>Date:<br />
+                <input type="text" name="time" size="${len(date_hint)}"
+                       title="Format: $date_hint" />
+                <em>Format: $date_hint</em>
+              </label>
+            </div>
+            <div class="buttons">
+              <input type="submit" name="add" value="Add" />
+            </div>
+          </fieldset>
+        </form>
+
+        <py:choose>
+          <form py:when="versions" method="POST">
+            <table class="listing" id="verlist">
+              <thead>
+                <tr><th class="sel">&nbsp;</th>
+                  <th>Name</th><th>Time</th><th>Default</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr py:for="version in versions">
+                  <td><input type="checkbox" name="sel" value="${version.name}"/></td>
+                  <td><a href="${href.admin('ticket', 'versions', version.name)}">${version.name}</a></td>
+                  <td>${format_datetime(version.time)}</td>
+                  <td class="default">
+                    <input type="radio" name="default" value="${version.name}"
+                           checked="${version.name==default or None}" />
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="buttons">
+              <input type="submit" name="remove" value="Remove selected items" />
+              <input type="submit" name="apply" value="Apply changes" />
+            </div>
+            <p class="help">
+              You can remove all items from this list to completely hide this field from the user interface.
+            </p>
+          </form>
+
+          <p py:otherwise="" class="help">
+            As long as you don't add any items to the list, this field
+            will remain completely hidden from the user interface.
+          </p>
+        </py:choose>
+      </py:otherwise>
+    </py:choose>
+  </body>
+
+</html>

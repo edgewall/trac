@@ -14,8 +14,7 @@
 #
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
-import __builtin__
-from datetime import datetime, timedelta
+import datetime
 import os
 import pprint
 import re
@@ -184,6 +183,8 @@ class Chrome(Component):
     _default_context_data = {
         'all': compat.all,
         'any': compat.any,
+        'date': datetime.date,
+        'datetime': datetime.datetime,
         'first_last': presentation.first_last,
         'get_reporter_id': get_reporter_id,
         'group': presentation.group,
@@ -197,7 +198,8 @@ class Chrome(Component):
         'reversed': compat.reversed,
         'shorten_line': shorten_line,
         'sorted': compat.sorted,
-        'timedelta': timedelta,
+        'time': datetime.time,
+        'timedelta': datetime.timedelta,
     }
 
     # IEnvironmentSetupParticipant methods
@@ -435,7 +437,7 @@ class Chrome(Component):
             'format_datetime': partial(format_datetime, tzinfo=tzinfo),
             'format_date': partial(format_date, tzinfo=tzinfo),
             'format_time': partial(format_time, tzinfo=tzinfo),
-            'fromtimestamp': partial(datetime.fromtimestamp, tz=tzinfo)
+            'fromtimestamp': partial(datetime.datetime.fromtimestamp, tz=tzinfo)
         })
 
     def load_template(self, filename, method=None):

@@ -1,11 +1,11 @@
 import unittest
 
-from trac.scripts.tests import admin
+from trac.admin.tests import console
 
 def suite():
 
     suite = unittest.TestSuite()
-    suite.addTest(admin.suite())
+    suite.addTest(console.suite())
     return suite
 
 if __name__ == '__main__':

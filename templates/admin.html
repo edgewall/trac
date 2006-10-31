@@ -1,0 +1,42 @@
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:xi="http://www.w3.org/2001/XInclude"
+      xmlns:py="http://genshi.edgewall.org/"
+      py:strip="">
+
+  <head py:match="head">
+    <title>Administration: ${select('title/text()')}</title>
+    ${select('*[not(title)]')}
+  </head>
+
+  <body py:match="body">
+    <div id="ctxtnav" class="nav"></div>
+
+    <div id="content" class="admin">
+      <h1>Administration</h1>
+      <div id="tabs">
+        <ul py:for="category, panels in groupby(panels, lambda p: p.category)">
+          <li class="${category.id == active_cat and 'active' or None}">
+            ${category.label}
+            <ul>
+              <li py:for="panel in panels" py:with="panel = panel.panel"
+                  class="${panel.id == active_panel and 'active' or None}">
+                <a py:strip="panel.id == active_panel"
+                   href="${href.admin(category.id, panel.id)}">${panel.label}</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+      <div id="tabcontent">
+        ${select("*|text()")}
+        <br style="clear: right" />
+      </div>
+    </div>
+
+  </body>
+
+  <xi:include href="layout.html" />
+</html>

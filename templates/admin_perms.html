@@ -1,0 +1,75 @@
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:xi="http://www.w3.org/2001/XInclude"
+      xmlns:py="http://genshi.edgewall.org/">
+  <xi:include href="admin.html" />
+  <head>
+    <title>Permissions</title>
+  </head>
+
+  <body>
+    <h2>Manage Permissions</h2>
+
+    <form id="addperm" class="addnew" method="post">
+      <fieldset>
+        <legend>Grant Permission:</legend>
+        <div class="field">
+          <label>Subject: <input type="text" name="subject" /></label>
+        </div>
+        <div class="field">
+          <label>Action:
+            <select id="action" name="action">
+              <option py:for="action in actions">$action</option>
+            </select>
+          </label>
+        </div>
+        <p class="help">
+          Grant permission for an action to a subject, which can be either a user
+          or a group.
+        </p>
+        <div class="buttons">
+          <input type="submit" name="add" value=" Add " />
+        </div>
+      </fieldset>
+    </form>
+
+    <form id="addsubj" class="addnew" method="post">
+      <fieldset>
+        <legend>Add Subject to Group:</legend>
+        <div class="field">
+          <label>Subject: <input type="text" name="subject" /></label>
+        </div>
+        <div class="field">
+          <label>Group: <input type="text" name="group" /></label>
+        </div>
+        <p class="help">
+          Add a user or group to an existing permission group.
+        </p>
+        <div class="buttons">
+          <input type="submit" name="add" value=" Add "/>
+        </div>
+      </fieldset>
+    </form>
+
+    <form method="post">
+      <table class="listing" id="permlist">
+        <thead>
+          <tr><th class="sel">&nbsp;</th><th>Subject</th><th>Action</th></tr>
+        </thead>
+        <tbody>
+          <tr py:for="perm in perms">
+            <td><input type="checkbox" name="sel" value="${perm.key}" /></td>
+            <td>${perm.subject}</td>
+            <td>${perm.action}</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="buttons">
+        <input type="submit" name="remove" value="Remove selected items" />
+      </div>
+    </form>
+  </body>
+
+</html>

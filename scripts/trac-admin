@@ -18,5 +18,5 @@ __license__ = """
 
 import sys
 
-from trac.scripts.admin import run
+from trac.admin.console import run
 sys.exit(run(sys.argv[1:]))
