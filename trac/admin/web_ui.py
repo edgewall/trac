@@ -256,7 +256,10 @@ class PermissionAdminPanel(Component):
         perms = [{'subject': p[0], 'action': p[1], 'key': '%s:%s' % p}
                  for p in perms]
 
-        return 'admin_perms.html', {'actions': perm.get_actions, 'perms': perms}
+        return 'admin_perms.html', {
+            'actions': perm.get_actions(),
+            'perms': perms
+        }
 
 
 class PluginAdminPanel(Component):
