@@ -41,45 +41,57 @@ class InvalidTicket(TracError):
     """Exception raised when a ticket fails validation."""
 
 
-class TicketModuleBase(Component):
-    # FIXME: temporary place-holder for unified ticket validation until
-    #        ticket controller unification is merged
-    abstract = True
+class TicketModule(Component):
+
+    implements(INavigationContributor, IRequestHandler, ITimelineEventProvider,
+               IContentConverter)
 
     ticket_manipulators = ExtensionPoint(ITicketManipulator)
 
-    def _validate_ticket(self, req, ticket):
-        # Always validate for known values
-        for field in ticket.fields:
-            if 'options' not in field:
-                continue
-            name = field['name']
-            if name in ticket.values and name in ticket._old:
-                value = ticket[name]
-                if value:
-                    if value not in field['options']:
-                        raise InvalidTicket('"%s" is not a valid value for '
-                                            'the %s field.' % (value, name))
-                elif not field.get('optional', False):
-                    raise InvalidTicket('field %s must be set' % name)
-        # Custom validation rules
-        for manipulator in self.ticket_manipulators:
-            for field, message in manipulator.validate_ticket(req, ticket):
-                if field:
-                    raise InvalidTicket("The ticket %s field is invalid: %s" %
-                                        (field, message))
-                else:
-                    raise InvalidTicket("Invalid ticket: %s" % message)
+    default_version = Option('ticket', 'default_version', '',
+        """Default version for newly created tickets.""")
 
+    default_type = Option('ticket', 'default_type', 'defect',
+        """Default type for newly created tickets (''since 0.9'').""")
 
-class NewticketModule(TicketModuleBase):
+    default_priority = Option('ticket', 'default_priority', 'major',
+        """Default priority for newly created tickets.""")
 
-    implements(INavigationContributor, IRequestHandler)
+    default_milestone = Option('ticket', 'default_milestone', '',
+        """Default milestone for newly created tickets.""")
+
+    default_component = Option('ticket', 'default_component', '',
+        """Default component for newly created tickets""")
+
+    timeline_details = BoolOption('timeline', 'ticket_show_details', 'false',
+        """Enable the display of all ticket changes in the timeline
+        (''since 0.9'').""")
+
+    # IContentConverter methods
+
+    def get_supported_conversions(self):
+        yield ('csv', 'Comma-delimited Text', 'csv',
+               'trac.ticket.Ticket', 'text/csv', 8)
+        yield ('tab', 'Tab-delimited Text', 'tsv',
+               'trac.ticket.Ticket', 'text/tab-separated-values', 8)
+        yield ('rss', 'RSS Feed', 'xml',
+               'trac.ticket.Ticket', 'application/rss+xml', 8)
+
+    def convert_content(self, req, mimetype, ticket, key):
+        if key == 'csv':
+            return self.export_csv(ticket, mimetype='text/csv')
+        elif key == 'tab':
+            return self.export_csv(ticket, sep='\t',
+                                   mimetype='text/tab-separated-values')
+        elif key == 'rss':
+            return self.export_rss(req, ticket)
 
     # INavigationContributor methods
 
     def get_active_navigation_item(self, req):
-        return 'newticket'
+        if re.match(r'/newticket/?', req.path_info):
+            return 'newticket'
+        return 'tickets'
 
     def get_navigation_items(self, req):
         if not req.perm.has_permission('TICKET_CREATE'):
@@ -90,9 +102,19 @@ class NewticketModule(TicketModuleBase):
     # IRequestHandler methods
 
     def match_request(self, req):
-        return re.match(r'/newticket/?', req.path_info) is not None
+        if re.match(r'/newticket/?', req.path_info) is not None:
+            return True
+        match = re.match(r'/ticket/([0-9]+)', req.path_info)
+        if match:
+            req.args['id'] = match.group(1)
+            return True
 
     def process_request(self, req):
+        if 'id' in req.args:
+            return self.process_ticket_request(req)
+        return self.process_newticket_request(req)
+
+    def process_newticket_request(self, req):
         req.perm.assert_permission('TICKET_CREATE')
         data = {}
         db = self.env.get_db_cnx()
@@ -151,95 +173,7 @@ class NewticketModule(TicketModuleBase):
         add_stylesheet(req, 'common/css/ticket.css')
         return 'ticket_new.html', data, None
 
-    # Internal methods
-
-    def _do_create(self, req, db):
-        if 'summary' not in req.args:
-            raise TracError('Tickets must contain a summary.')
-
-        ticket = Ticket(self.env, db=db)
-        ticket.populate(req.args)
-        ticket.values['reporter'] = get_reporter_id(req, 'reporter')
-        self._validate_ticket(req, ticket)
-
-        ticket.insert(db=db)
-        db.commit()
-
-        # Notify
-        try:
-            tn = TicketNotifyEmail(self.env)
-            tn.notify(ticket, newticket=True)
-        except Exception, e:
-            self.log.exception("Failure sending notification on creation of "
-                               "ticket #%s: %s" % (ticket.id, e))
-
-        # Redirect the user to the newly created ticket
-        if 'attachment' in req.args:
-            req.redirect(req.href.attachment('ticket', ticket.id, action='new'))
-
-        req.redirect(req.href.ticket(ticket.id))
-
-
-class TicketModule(TicketModuleBase):
-
-    implements(INavigationContributor, IRequestHandler, ITimelineEventProvider,
-               IContentConverter)
-
-    default_version = Option('ticket', 'default_version', '',
-        """Default version for newly created tickets.""")
-
-    default_type = Option('ticket', 'default_type', 'defect',
-        """Default type for newly created tickets (''since 0.9'').""")
-
-    default_priority = Option('ticket', 'default_priority', 'major',
-        """Default priority for newly created tickets.""")
-
-    default_milestone = Option('ticket', 'default_milestone', '',
-        """Default milestone for newly created tickets.""")
-
-    default_component = Option('ticket', 'default_component', '',
-        """Default component for newly created tickets""")
-
-    timeline_details = BoolOption('timeline', 'ticket_show_details', 'false',
-        """Enable the display of all ticket changes in the timeline
-        (''since 0.9'').""")
-
-    # IContentConverter methods
-
-    def get_supported_conversions(self):
-        yield ('csv', 'Comma-delimited Text', 'csv',
-               'trac.ticket.Ticket', 'text/csv', 8)
-        yield ('tab', 'Tab-delimited Text', 'tsv',
-               'trac.ticket.Ticket', 'text/tab-separated-values', 8)
-        yield ('rss', 'RSS Feed', 'xml',
-               'trac.ticket.Ticket', 'application/rss+xml', 8)
-
-    def convert_content(self, req, mimetype, ticket, key):
-        if key == 'csv':
-            return self.export_csv(ticket, mimetype='text/csv')
-        elif key == 'tab':
-            return self.export_csv(ticket, sep='\t',
-                                   mimetype='text/tab-separated-values')
-        elif key == 'rss':
-            return self.export_rss(req, ticket)
-
-    # INavigationContributor methods
-
-    def get_active_navigation_item(self, req):
-        return 'tickets'
-
-    def get_navigation_items(self, req):
-        return []
-
-    # IRequestHandler methods
-
-    def match_request(self, req):
-        match = re.match(r'/ticket/([0-9]+)', req.path_info)
-        if match:
-            req.args['id'] = match.group(1)
-            return True
-
-    def process_request(self, req):
+    def process_ticket_request(self, req):
         req.perm.assert_permission('TICKET_VIEW')
         data = {}
 
@@ -477,6 +411,57 @@ class TicketModule(TicketModuleBase):
         output = Chrome(self.env).render_template(req, 'ticket.rss', data,
                                                   'application/rss+xml')
         return output, 'application/rss+xml'
+
+    def _validate_ticket(self, req, ticket):
+        # Always validate for known values
+        for field in ticket.fields:
+            if 'options' not in field:
+                continue
+            name = field['name']
+            if name in ticket.values and name in ticket._old:
+                value = ticket[name]
+                if value:
+                    if value not in field['options']:
+                        raise InvalidTicket('"%s" is not a valid value for '
+                                            'the %s field.' % (value, name))
+                elif not field.get('optional', False):
+                    raise InvalidTicket('field %s must be set' % name)
+        # Custom validation rules
+        for manipulator in self.ticket_manipulators:
+            for field, message in manipulator.validate_ticket(req, ticket):
+                if field:
+                    raise InvalidTicket("The ticket %s field is invalid: %s" %
+                                        (field, message))
+                else:
+                    raise InvalidTicket("Invalid ticket: %s" % message)
+
+
+    def _do_create(self, req, db):
+        if 'summary' not in req.args:
+            raise TracError('Tickets must contain a summary.')
+
+        ticket = Ticket(self.env, db=db)
+        ticket.populate(req.args)
+        ticket.values['reporter'] = get_reporter_id(req, 'reporter')
+        self._validate_ticket(req, ticket)
+
+        ticket.insert(db=db)
+        db.commit()
+
+        # Notify
+        try:
+            tn = TicketNotifyEmail(self.env)
+            tn.notify(ticket, newticket=True)
+        except Exception, e:
+            self.log.exception("Failure sending notification on creation of "
+                               "ticket #%s: %s" % (ticket.id, e))
+
+        # Redirect the user to the newly created ticket
+        if 'attachment' in req.args:
+            req.redirect(req.href.attachment('ticket', ticket.id, action='new'))
+
+        req.redirect(req.href.ticket(ticket.id))
+
 
     def _do_save(self, req, db, ticket):
         if req.perm.has_permission('TICKET_CHGPROP'):
