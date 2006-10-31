@@ -129,6 +129,7 @@ class WikiModule(Component):
         elif action == 'history':
             return self._render_history(req, db, page)
         else:
+            req.perm.assert_permission('WIKI_VIEW')            
             format = req.args.get('format')
             if format:
                 Mimeview(self.env).send_converted(req, 'text/x-trac-wiki',
@@ -382,8 +383,6 @@ class WikiModule(Component):
         return 'wiki_history.html', data, None
 
     def _render_view(self, req, db, page):
-        req.perm.assert_permission('WIKI_VIEW')
-
         version = req.args.get('version')
 
         # Add registered converters
