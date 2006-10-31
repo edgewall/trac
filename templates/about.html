@@ -7,6 +7,7 @@
   <xi:include href="layout.html" />
   <head>
     <title>About</title>
+    <link rel="stylesheet" type="text/css" href="$htdocs_location/css/about.css" />
   </head>
 
   <body>
@@ -16,17 +17,14 @@
         <li class="first${not perm.has_permission('CONFIG_VIEW') and ' last' or ''}">
           <a href="${href.about()}">Overview</a>
         </li>
-        <li py:if="perm.has_permission('CONFIG_VIEW')">
-          <a href="${href.about('config')}">Configuration</a>
-        </li>
         <li class="last" py:if="perm.has_permission('CONFIG_VIEW')">
-          <a href="${href.about('plugins')}">Plugins</a>
+          <a href="${href.about('config')}">Configuration</a>
         </li>
       </ul>
     </div>
 
     <div id="content" class="${about.page and 'about_%s' % about.page or 'about'}"
-      py:choose="about.page">
+         py:choose="about.page">
 
       <div py:when="'config'" py:strip="">
         <h1>Configuration</h1>
@@ -54,44 +52,6 @@
           See <a href="${href.wiki('TracIni')}">TracIni</a> for information about
           the configuration.
         </div>
-      </div>
-
-      <div py:when="'plugins'" py:strip="">
-        <h1>Plugins</h1>
-        <dl id="plugins">
-          <div py:for="plugin in about.plugins" py:strip="">
-            <h2 id="${plugin.module}.${plugin.name}">${plugin.name}</h2>
-            <table>
-              <tr>
-                <th class="module" scope="row">Module</th>
-                <td class="module">${plugin.module}<br />
-                  <span class="path">${plugin.path}</span></td>
-              </tr>
-              <tr py:if="plugin.description">
-                <th class="description" scope="row">Description</th>
-                <td class="description">${plugin.description}</td>
-              </tr>
-              <tr py:for="idx,extension_point in enumerate(plugin.extension_points)">
-                <th py:if="idx == 0" class="xtnpts"
-                  rowspan="${len(plugin.extension_points)}">
-                  Extension points:
-                </th>
-                <td class="xtnpts">        
-                  <code>${extension_point.module}.${extension_point.interface}</code>
-                  <div py:if="extension_point.extensions" py:strip="">
-                    (${len(extension_point.extensions)} extensions)
-                    <ul>
-                      <li py:for="extension in extension_point.extensions">
-                        <a href="#${extension.module}.${extension.name}">${extension.name}</a>
-                      </li>
-                    </ul>
-                  </div>
-                  <div class="description">${extension_point.description}</div>
-                </td>
-              </tr>
-            </table>
-          </div>
-        </dl>
       </div>
 
       <div py:otherwise="" py:strip="">

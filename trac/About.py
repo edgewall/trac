@@ -25,7 +25,7 @@ from genshi.builder import tag
 from trac.core import *
 from trac.perm import IPermissionRequestor
 from trac.web import IRequestHandler
-from trac.web.chrome import add_stylesheet, INavigationContributor
+from trac.web.chrome import INavigationContributor
 
 
 class AboutModule(Component):
@@ -65,7 +65,6 @@ class AboutModule(Component):
         else:
             data = {}
 
-        add_stylesheet(req, 'common/css/about.css')
         return 'about.html', {'about': data}, None
 
     # Internal methods
@@ -92,62 +91,3 @@ class AboutModule(Component):
         # TODO:
         # We should probably export more info here like:
         # permissions, components...
-
-    def _render_plugins(self, req):
-        try:
-            from trac.wiki.formatter import wiki_to_html
-            import inspect
-            def getdoc(obj):
-                return wiki_to_html(inspect.getdoc(obj), self.env, req)
-        except:
-            def getdoc(obj):
-                return obj.__doc__
-        req.perm.assert_permission('CONFIG_VIEW')
-        import sys
-        from trac.core import ComponentMeta
-        data = {'page': 'plugins'}
-        plugins = []
-        for component in ComponentMeta._components:
-            if not self.env.is_component_enabled(component):
-                continue
-            plugin = {'name': component.__name__}
-            if component.__doc__:
-                plugin['description'] = Markup(getdoc(component))
-
-            module = sys.modules[component.__module__]
-            plugin['module'] = module.__name__
-            if hasattr(module, '__file__'):
-                plugin['path'] = module.__file__
-
-            xtnpts = []
-            for name, xtnpt in [(attr, getattr(component, attr)) for attr
-                                in dir(component)]:
-                if not isinstance(xtnpt, ExtensionPoint):
-                    continue
-                xtnpts.append({'name': name,
-                               'interface': xtnpt.interface.__name__,
-                               'module': xtnpt.interface.__module__})
-                if xtnpt.interface.__doc__:
-                    xtnpts[-1]['description'] = Markup(getdoc(xtnpt.interface))
-                extensions = []
-                for extension in ComponentMeta._registry.get(xtnpt.interface, []):
-                    if self.env.is_component_enabled(extension):
-                        extensions.append({'name': extension.__name__,
-                                           'module': extension.__module__})
-                xtnpts[-1]['extensions'] = extensions
-            xtnpts.sort(lambda x,y: cmp(x['name'], y['name']))
-            plugin['extension_points'] = xtnpts
-
-            plugins.append(plugin)
-
-        def plugincmp(x, y):
-            c = cmp(len(x['module'].split('.')), len(y['module'].split('.')))
-            if c == 0:
-                c = cmp(x['module'].lower(), y['module'].lower())
-                if c == 0:
-                    c = cmp(x['name'].lower(), y['name'].lower())
-            return c
-        plugins.sort(plugincmp)
-
-        data['plugins'] = plugins
-        return data
