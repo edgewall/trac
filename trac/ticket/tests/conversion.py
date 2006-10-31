@@ -19,7 +19,7 @@ class TicketConversionTestCase(unittest.TestCase):
         self.ticket_module = TicketModule(self.env)
         self.mimeview = Mimeview(self.env)
         self.req = Mock(base_path='/trac.cgi', path_info='',
-                        href=Href('/trac.cgi'),
+                        href=Href('/trac.cgi'), chrome={'logo': None},
                         abs_href=Href('http://example.org/trac.cgi'),
                         environ={}, perm=None, authname='-', args={}, tz=None,
                         session=None)
