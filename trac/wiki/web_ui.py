@@ -127,6 +127,7 @@ class WikiModule(Component):
         elif action == 'history':
             self._render_history(req, db, page)
         else:
+            req.perm.assert_permission('WIKI_VIEW')            
             format = req.args.get('format')
             if format:
                 Mimeview(self.env).send_converted(req, 'text/x-trac-wiki',
@@ -418,8 +419,6 @@ class WikiModule(Component):
         req.hdf['wiki.history'] = history
 
     def _render_view(self, req, db, page):
-        req.perm.assert_permission('WIKI_VIEW')
-
         page_name = self._set_title(req, page, '')
         if page.name == 'WikiStart':
             req.hdf['title'] = ''
