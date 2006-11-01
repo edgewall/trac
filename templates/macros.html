@@ -169,7 +169,7 @@
             <py:for each="attachment in attachments">
               <dt>${show_one_attachment(attachment)}</dt>
               <dd py:if="attachment.description">
-                $wiki_to_html(attachment.description)
+                ${wiki_to_oneliner(attachment.description)}
               </dd>
             </py:for>
           </dl>
