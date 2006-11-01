@@ -23,7 +23,8 @@ except NameError:
 import sys
 
 from trac.core import ExtensionPoint, TracError
-from trac.util import sorted, to_unicode
+from trac.util import sorted
+from trac.util.text import to_unicode, CRLF
 
 __all__ = ['Configuration', 'Option', 'BoolOption', 'IntOption', 'ListOption',
            'ExtensionOption', 'OrderedExtensionsOption', 'ConfigurationError',
@@ -165,6 +166,7 @@ class Configuration(object):
                     if key in self[section].overridden:
                         print>>fileobj, '# %s = <set in global trac.ini>' % key
                     else:
+                        val = val.replace(CRLF, '\n').replace('\n', '\n ')
                         print>>fileobj, '%s = %s' % \
                                         (key, to_unicode(val).encode('utf-8'))
                 print>>fileobj
