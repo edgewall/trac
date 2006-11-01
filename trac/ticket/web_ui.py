@@ -112,7 +112,7 @@ class NewticketModule(TicketModuleBase):
     # IRequestHandler methods
 
     def match_request(self, req):
-        return re.match(r'/newticket/?', req.path_info) is not None
+        return re.match(r'/newticket/?$', req.path_info) is not None
 
     def process_request(self, req):
         req.perm.assert_permission('TICKET_CREATE')
@@ -259,7 +259,7 @@ class TicketModule(TicketModuleBase):
     # IRequestHandler methods
 
     def match_request(self, req):
-        match = re.match(r'/ticket/([0-9]+)', req.path_info)
+        match = re.match(r'/ticket/([0-9]+)$', req.path_info)
         if match:
             req.args['id'] = match.group(1)
             return True
