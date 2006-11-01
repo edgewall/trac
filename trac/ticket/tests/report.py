@@ -11,12 +11,16 @@ class ReportTestCase(unittest.TestCase):
         self.report_module = ReportModule(self.env)
 
     def test_sub_var_no_quotes(self):
-        sql, args = self.report_module.sql_sub_vars("$VAR", {'VAR': 'value'})
+        req = Mock(hdf=dict())
+        sql, args = self.report_module.sql_sub_vars(req, "$VAR",
+                                                    {'VAR': 'value'})
         self.assertEqual("%s", sql)
         self.assertEqual(['value'], args)
 
     def test_sub_var_quotes(self):
-        sql, args = self.report_module.sql_sub_vars("'$VAR'", {'VAR': 'value'})
+        req = Mock(hdf=dict())
+        sql, args = self.report_module.sql_sub_vars(req, "'$VAR'",
+                                                    {'VAR': 'value'})
         self.assertEqual("''||%s||''", sql)
         self.assertEqual(['value'], args)
 
