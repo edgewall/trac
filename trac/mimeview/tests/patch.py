@@ -32,7 +32,7 @@ class PatchRendererTestCase(unittest.TestCase):
     def setUp(self):
         env = EnvironmentStub(enable=[Chrome, PatchRenderer])
         self.patch = Mimeview(env).renderers[0]
-        self.req = Mock(base_path='',environ={},
+        self.req = Mock(base_path='',chrome={},
                         abs_href=Href('/'), href=Href('/'),
                         perm=None, authname=None, tz=None)
         patch_html = open(os.path.join(os.path.split(__file__)[0],

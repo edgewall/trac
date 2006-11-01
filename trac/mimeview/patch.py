@@ -145,7 +145,7 @@ class PatchRenderer(Component):
                         break
                     blocks = []
                     groups.append(blocks)
-                    fromline, fromend, toline, toend = [x and int(x) or 1
+                    fromline, fromend, toline, toend = [int(x or 1)
                                                         for x in r.groups()]
                     last_type = last_change = extra = None
 
