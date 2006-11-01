@@ -222,7 +222,7 @@ facilities.
       author_email="info@edgewall.com",
       license=LICENSE,
       url=URL,
-      packages=['trac', 'trac.db', 'trac.mimeview', 'trac.scripts',
+      packages=['trac', 'trac.admin', 'trac.db', 'trac.mimeview',
                 'trac.ticket', 'trac.upgrades', 'trac.util', 'trac.web',
                 'trac.versioncontrol', 'trac.versioncontrol.web_ui', 
                 'trac.wiki'],
