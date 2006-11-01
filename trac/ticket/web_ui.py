@@ -102,9 +102,9 @@ class TicketModule(Component):
     # IRequestHandler methods
 
     def match_request(self, req):
-        if re.match(r'/newticket/?', req.path_info) is not None:
+        if re.match(r'/newticket/?$', req.path_info) is not None:
             return True
-        match = re.match(r'/ticket/([0-9]+)', req.path_info)
+        match = re.match(r'/ticket/([0-9]+)$', req.path_info)
         if match:
             req.args['id'] = match.group(1)
             return True
@@ -182,7 +182,7 @@ class TicketModule(Component):
         data['ticket'] = ticket
 
         if req.method == 'POST':
-            if not req.args.has_key('preview'):
+            if 'preview' not in req.args:
                 self._do_save(req, db, ticket)
             else:
                 # Use user supplied values
@@ -415,6 +415,7 @@ class TicketModule(Component):
                                             'the %s field.' % (value, name))
                 elif not field.get('optional', False):
                     raise InvalidTicket('field %s must be set' % name)
+
         # Custom validation rules
         for manipulator in self.ticket_manipulators:
             for field, message in manipulator.validate_ticket(req, ticket):
