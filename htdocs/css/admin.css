@@ -19,6 +19,8 @@
 #tabcontent h2 { color: #333; margin-top: 0; }
 p.help { color: #666; font-size: 90%; margin: 1em .5em .5em; }
 
+#enumlist tbody td { vertical-align: middle; }
+
 form.addnew { clear: right; float: right; margin: -2em 0 4em; width: 33% }
 form.mod { margin-top: 1em; }
 form.mod .field { margin: .5em 0; }
