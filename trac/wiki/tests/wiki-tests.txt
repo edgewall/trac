@@ -515,10 +515,10 @@ Hello, [[HelloWorld(...)]]
 [[HelloWorld(hej hopp) ]] # This shouldnt executed as macro since it contain whitespace between ) and ]
 ------------------------------
 <p>
-[[HelloWorld(hej hopp) ]] # This shouldnt executed as macro since it contain whitespace between ) and ]
+[[<a class="missing wiki" href="/wiki/HelloWorld" rel="nofollow">HelloWorld?</a>(hej hopp) ]] # This shouldnt executed as macro since it contain whitespace between ) and ]
 </p>
 ------------------------------
-[[HelloWorld(hej hopp) ]] # This shouldnt executed as macro since it contain whitespace between ) and ]
+[[<a class="missing wiki" href="/wiki/HelloWorld" rel="nofollow">HelloWorld?</a>(hej hopp) ]] # This shouldnt executed as macro since it contain whitespace between ) and ]
 ============================== Another bad macro call
 [[HelloWorld(hej hopp))]] # Extra right brace and still executed
 ------------------------------

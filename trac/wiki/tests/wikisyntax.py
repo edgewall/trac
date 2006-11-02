@@ -97,6 +97,23 @@ TracSubversion#TracandSubversion1.3.1. etc.
 <a class="missing wiki" href="/wiki/TracSubversion#TracandSubversion1.3.1" rel="nofollow">TracSubversion#TracandSubversion1.3.1?</a>. etc.
 </p>
 ------------------------------
+============================== WikiPageNames with fragment id (performance test)
+BillOfMaterials#get_bill_of_materials_from_room_xml(fpxml=nil)
+
+[BillOfMaterials#get_bill_of_materials_from_room_xml(fpxml=nil)]
+
+[BillOfMaterials#get_bill_of_materials_from_room_xml(fpxml=nil) speed]
+------------------------------
+<p>
+<a class="missing wiki" href="/wiki/BillOfMaterials#get_bill_of_materials_from_room_xml" rel="nofollow">BillOfMaterials#get_bill_of_materials_from_room_xml?</a>(fpxml=nil)
+</p>
+<p>
+[<a class="missing wiki" href="/wiki/BillOfMaterials#get_bill_of_materials_from_room_xml" rel="nofollow">BillOfMaterials#get_bill_of_materials_from_room_xml?</a>(fpxml=nil)]
+</p>
+<p>
+[<a class="missing wiki" href="/wiki/BillOfMaterials#get_bill_of_materials_from_room_xml" rel="nofollow">BillOfMaterials#get_bill_of_materials_from_room_xml?</a>(fpxml=nil) speed]
+</p>
+------------------------------
 ============================== WikiPageNames counter examples (paths)
 /absolute/path/is/NotWiki and relative/path/is/NotWiki
 /ThisIsNotWikiEither and /ThisIs/NotWikiEither but ThisIs/SubWiki
