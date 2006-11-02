@@ -81,7 +81,7 @@ class ChangesetModule(Component):
 
     max_diff_files = IntOption('changeset', 'max_diff_files', 0,
         """Maximum number of modified files for which the changeset view will
-        attempt to show the diffs inlined (''since 0.10'')."""),
+        attempt to show the diffs inlined (''since 0.10'').""")
 
     max_diff_bytes = IntOption('changeset', 'max_diff_bytes', 10000000,
         """Maximum total size in bytes of the modified files (their old size
