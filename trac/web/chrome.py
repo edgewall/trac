@@ -393,7 +393,7 @@ class Chrome(Component):
         req.hdf['chrome.scripts'] = req.chrome['scripts']
         req.hdf['chrome.logo'] = req.chrome['logo']
 
-        for category, items in chrome['nav'].items():
+        for category, items in req.chrome['nav'].items():
             for item in items:
                 prefix = 'chrome.nav.%s.%s' % (category, item['name'])
                 req.hdf[prefix] = item['label']
