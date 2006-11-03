@@ -59,7 +59,7 @@
       <py:with vars="modify_perm = perm.has_permission('WIKI_MODIFY');
                      delete_perm = perm.has_permission('WIKI_DELETE');
                      admin_perm = perm.has_permission('WIKI_ADMIN')">
-        <py:if test="admin_perm or (not readonly and (modify_perm or delete_perm))">
+        <py:if test="admin_perm or (not page.readonly and (modify_perm or delete_perm))">
           <div class="buttons">
             <py:if test="modify_perm">
               <form method="get" action="${href.wiki(page.name)}">

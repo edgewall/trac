@@ -587,7 +587,8 @@ class TicketModule(Component):
 
         # -- Ticket Attachments
 
-        data['attachments'] = Attachment.select(self.env, 'ticket', ticket.id)
+        data['attachments'] = list(Attachment.select(self.env, 'ticket',
+                                                     ticket.id))
         if req.perm.has_permission('TICKET_APPEND'):
             data['attach_href'] = req.href.attachment('ticket', ticket.id)
 

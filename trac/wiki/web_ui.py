@@ -403,7 +403,7 @@ class WikiModule(Component):
                 raise HTTPNotFound('Page %s not found', page.name)
 
         # Show attachments
-        attachments = Attachment.select(self.env, 'wiki', page.name)
+        attachments = list(Attachment.select(self.env, 'wiki', page.name))
         attach_href = None
         if req.perm.has_permission('WIKI_MODIFY'):
             attach_href = req.href.attachment('wiki', page.name)
