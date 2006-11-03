@@ -345,6 +345,9 @@ class Changeset(object):
     EDIT = 'edit'
     MOVE = 'move'
 
+    # change types which can have diff associated to them
+    DIFF_CHANGES = (EDIT, COPY, MOVE) # MERGE
+
     def __init__(self, rev, message, author, date):
         self.rev = rev
         self.message = message
