@@ -195,13 +195,10 @@ class RequestDispatcher(Component):
                                           handler=chosen_handler)
 
         # Protect against CSRF attacks.
-        # We can only block against such attacks if the user is logged in
-        # or if we have an incoming session cookie.
         if (req.method == 'POST' and
-            req.args.get('__FORM_TOKEN') != req.form_token and
-            (req.incookie.has_key('trac_auth') or
-             req.incookie.has_key('trac_session'))):
-            raise TracError('Missing or invalid form token')
+            req.args.get('__FORM_TOKEN') != req.form_token):
+            raise TracError('Missing or invalid form token. '
+                            'Do you have cookies enabled?')
 
         # Process the request and render the template
         try:
