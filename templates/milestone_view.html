@@ -22,7 +22,7 @@
             Completed ${pretty_timedelta(milestone.completed)} ago
             (${format_date(milestone.completed)})
           </p>
-          <p py:when="milestone.late" class="date">
+          <p py:when="milestone.is_late" class="date">
             <strong>${pretty_timedelta(milestone.due)} late</strong>
             (${format_date(milestone.due)})
           </p>
