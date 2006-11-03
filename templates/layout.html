@@ -80,6 +80,12 @@
     </div>
   </body>
 
+  <form py:match="form[@method='post' and @avoidloop!='true']" 
+        avoidloop="true" py:attrs="select('@*')">
+    <input type="hidden" name="__FORM_TOKEN" value="$form_token"/>
+    ${select('*|text()')}
+  </form>
+
   <xi:include href="site.html"><xi:fallback /></xi:include>
 
 </html>

@@ -173,7 +173,8 @@ class RequestDispatcher(Component):
             'hdf': self._get_hdf,
             'perm': self._get_perm,
             'session': self._get_session,
-            'tz': self._get_timezone
+            'tz': self._get_timezone,
+            'form_token': self._get_form_token
         })
 
         # Select the component that should handle the request
@@ -192,6 +193,15 @@ class RequestDispatcher(Component):
 
         req.callbacks['chrome'] = partial(chrome.prepare_request,
                                           handler=chosen_handler)
+
+        # Protect against CSRF attacks.
+        # We can only block against such attacks if the user is logged in
+        # or if we have an incoming session cookie.
+        if (req.method == 'POST' and
+            req.args.get('__FORM_TOKEN') != req.form_token and
+            (req.incookie.has_key('trac_auth') or
+             req.incookie.has_key('trac_session'))):
+            raise TracError('Missing or invalid form token')
 
         # Process the request and render the template
         try:
@@ -250,6 +260,21 @@ class RequestDispatcher(Component):
                                             or 'missing'))
         except:
             return localtz
+
+    def _get_form_token(self, req):
+        """Used to protect against CSRF.
+
+        The 'trac_auth' cookie is a good and strong shared secret, only
+        known by the user it belongs to and Trac itself.
+
+        The session id is our second best option, not as reliable since
+        it will change on each request if the user has cookies disabled in
+        his/her browser.
+        """
+        if req.incookie.has_key('trac_auth'):
+            return req.incookie['trac_auth'].value
+        else:
+            return req.session.sid
 
     def _pre_process_request(self, req, chosen_handler):
         for filter_ in self.filters:

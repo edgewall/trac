@@ -432,6 +432,7 @@ class Chrome(Component):
             'href': req and req.href,
             'perm': req and req.perm,
             'authname': req and req.authname or '<trac>',
+            'form_token': req and req.form_token,
 
             # Date/time formatting
             'format_datetime': partial(format_datetime, tzinfo=tzinfo),

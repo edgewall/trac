@@ -22,7 +22,7 @@ class TicketConversionTestCase(unittest.TestCase):
                         href=Href('/trac.cgi'), chrome={'logo': None},
                         abs_href=Href('http://example.org/trac.cgi'),
                         environ={}, perm=None, authname='-', args={}, tz=None,
-                        session=None)
+                        session=None, form_token=None)
 
     def _create_a_ticket(self):
         # 1. Creating ticket
