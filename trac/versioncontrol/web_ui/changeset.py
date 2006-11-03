@@ -446,7 +446,7 @@ class ChangesetModule(Component):
             diff_bytes = diff_files = 0
             if self.max_diff_bytes or self.max_diff_files:
                 for old_node, new_node, kind, change in get_changes():
-                    if change == Changeset.EDIT and kind == Node.FILE:
+                    if change in Changeset.DIFF_CHANGES and kind == Node.FILE:
                         diff_files += 1
                         diff_bytes += _estimate_changes(old_node, new_node)
             show_diffs = (not self.max_diff_files or \
@@ -463,7 +463,7 @@ class ChangesetModule(Component):
             props = []
             diffs = []
             show_entry = change != Changeset.EDIT
-            if change in (Changeset.EDIT, Changeset.COPY, Changeset.MOVE) and \
+            if change in Changeset.DIFF_CHANGES and \
                    req.perm.has_permission('FILE_VIEW'):
                 assert old_node and new_node
                 props = _prop_changes(old_node, new_node)
