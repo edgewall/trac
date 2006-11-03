@@ -647,6 +647,14 @@ class SubversionChangeset(Changeset):
             date = None
         Changeset.__init__(self, rev, message, author, date)
 
+    def get_properties(self):
+        props = fs.revision_proplist(self.fs_ptr, self.rev, self.pool())
+        for k,v in props.iteritems():
+            if k not in (core.SVN_PROP_REVISION_LOG,
+                         core.SVN_PROP_REVISION_AUTHOR,
+                         core.SVN_PROP_REVISION_DATE):
+                yield (k, to_unicode(v), False, '')
+
     def get_changes(self):
         pool = Pool(self.pool)
         tmp = Pool(pool)

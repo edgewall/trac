@@ -306,6 +306,7 @@ class ChangesetModule(Component):
                                    'htmlclass': htmlclass})
 
             data['changeset'] = chgset
+            data['changeset_properties'] = properties
             oldest_rev = repos.oldest_rev
             if chgset.rev != oldest_rev:
                 if restricted:

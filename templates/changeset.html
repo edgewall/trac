@@ -99,10 +99,10 @@
           <dd class="time">${format_datetime(changeset.date)} (${pretty_timedelta(changeset.date, None, 3600) or 'less than one hour'} ago)</dd>
           <dt class="property author">Author:</dt>
           <dd class="author">${changeset.author or 'anonymous'}</dd>
-          <span py:for="prop in changeset.properties" py:strip="">
-          <dt class="property $prop.htmlclass">$prop.name:</dt>
-          <dd class="$prop.htmlclass">$prop.value</dd>
-          </span>
+          <py:for each="prop in changeset_properties">
+            <dt class="property $prop.htmlclass">$prop.name:</dt>
+            <dd class="$prop.htmlclass">$prop.value</dd>
+          </py:for>
           <dt class="property message">Message:</dt>
           <dd class="message searchable">${changeset.message or '&nbsp;'}</dd>
         </py:if>

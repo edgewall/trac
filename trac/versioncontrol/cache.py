@@ -43,8 +43,8 @@ class CachedRepository(Repository):
         if not self.synced:
             self.sync()
             self.synced = 1
-        return CachedChangeset(self.repos.normalize_rev(rev), self.db,
-                               self.authz)
+        return CachedChangeset(self.repos, self.repos.normalize_rev(rev),
+                               self.db, self.authz)
 
     def get_changesets(self, start, stop):
         if not self.synced:
@@ -150,7 +150,8 @@ class CachedRepository(Repository):
 
 class CachedChangeset(Changeset):
 
-    def __init__(self, rev, db, authz):
+    def __init__(self, repos, rev, db, authz):
+        self.repos = repos
         self.db = db
         self.authz = authz
         cursor = self.db.cursor()
@@ -178,4 +179,5 @@ class CachedChangeset(Changeset):
             yield path, kind, change, base_path, base_rev
 
     def get_properties(self):
-        return []
+        for prop in self.repos.get_changeset(self.rev).get_properties():
+            yield prop
