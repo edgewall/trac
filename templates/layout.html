@@ -33,7 +33,7 @@
         <a py:if="chrome.logo.src" id="logo" href="${chrome.logo.link}"><img
           src="${chrome.logo.src}" alt="${chrome.logo.alt}" /></a>
       </div>
-      <form py:if="perm.has_permission('SEARCH_VIEW')" id="search"
+      <form py:if="'SEARCH_VIEW' in perm" id="search"
             action="${href.search()}" method="get"><div>
         <label for="proj-search">Search:</label>
         <input type="text" id="proj-search" name="q" size="10" accesskey="f" value="" />

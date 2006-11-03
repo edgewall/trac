@@ -131,10 +131,9 @@ class SearchModule(Component):
         return 'search'
 
     def get_navigation_items(self, req):
-        if not req.perm.has_permission('SEARCH_VIEW'):
-            return
-        yield ('mainnav', 'search',
-               tag.a('Search', href=req.href.search(), accesskey=4))
+        if 'SEARCH_VIEW' in req.perm:
+            yield ('mainnav', 'search',
+                   tag.a('Search', href=req.href.search(), accesskey=4))
 
     # IPermissionRequestor methods
 

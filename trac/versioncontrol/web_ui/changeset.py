@@ -140,7 +140,7 @@ class ChangesetModule(Component):
 
         In any case, either path@rev pairs must exist.
         """
-        req.perm.assert_permission('CHANGESET_VIEW')
+        req.perm.require('CHANGESET_VIEW')
 
         # -- retrieve arguments
         new_path = req.args.get('new_path')
@@ -225,7 +225,7 @@ class ChangesetModule(Component):
         format = req.args.get('format')
 
         if format in ['diff', 'zip']:
-            req.perm.assert_permission('FILE_VIEW')
+            req.perm.require('FILE_VIEW')
             # choosing an appropriate filename
             rpath = new_path.replace('/','_')
             if chgset:
@@ -355,7 +355,7 @@ class ChangesetModule(Component):
             
         data['title'] = title
 
-        if not req.perm.has_permission('BROWSER_VIEW'):
+        if 'BROWSER_VIEW' not in req.perm:
             return
 
         def node_info(node):
@@ -442,7 +442,7 @@ class ChangesetModule(Component):
             else:
                 return []
 
-        if req.perm.has_permission('FILE_VIEW'):
+        if 'FILE_VIEW' in req.perm:
             diff_bytes = diff_files = 0
             if self.max_diff_bytes or self.max_diff_files:
                 for old_node, new_node, kind, change in get_changes():
@@ -463,8 +463,7 @@ class ChangesetModule(Component):
             props = []
             diffs = []
             show_entry = change != Changeset.EDIT
-            if change in Changeset.DIFF_CHANGES and \
-                   req.perm.has_permission('FILE_VIEW'):
+            if change in Changeset.DIFF_CHANGES and 'FILE_VIEW' in req.perm:
                 assert old_node and new_node
                 props = _prop_changes(old_node, new_node)
                 if props:
@@ -612,7 +611,7 @@ class ChangesetModule(Component):
     # ITimelineEventProvider methods
 
     def get_timeline_filters(self, req):
-        if req.perm.has_permission('CHANGESET_VIEW'):
+        if 'CHANGESET_VIEW' in req.perm:
             yield ('changeset', 'Repository checkins')
 
     def get_timeline_events(self, req, start, stop, filters):
@@ -653,7 +652,7 @@ class ChangesetModule(Component):
                     else:
                         message = shortlog
 
-                if show_files and req.perm.has_permission('BROWSER_VIEW'):
+                if show_files and 'BROWSER_VIEW' in req.perm:
                     files = []
                     for chg in chgset.get_changes():
                         if show_files > 0 and len(files) >= show_files:
@@ -736,7 +735,7 @@ class ChangesetModule(Component):
     # ISearchSource methods
 
     def get_search_filters(self, req):
-        if req.perm.has_permission('CHANGESET_VIEW'):
+        if 'CHANGESET_VIEW' in req.perm:
             yield ('changeset', 'Changesets')
 
     def get_search_results(self, req, terms, filters):

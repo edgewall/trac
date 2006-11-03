@@ -114,11 +114,11 @@ class BasicsAdminPanel(Component):
     # IAdminPanelProvider methods
 
     def get_admin_panels(self, req):
-        if req.perm.has_permission('TRAC_ADMIN'):
+        if 'TRAC_ADMIN' in req.perm:
             yield ('general', 'General', 'basics', 'Basic Settings')
 
     def render_admin_panel(self, req, cat, page, path_info):
-        req.perm.assert_permission('TRAC_ADMIN')
+        req.perm.require('TRAC_ADMIN')
 
         if req.method == 'POST':
             for option in ('name', 'url', 'descr'):
@@ -141,7 +141,7 @@ class LoggingAdminPanel(Component):
     # IAdminPanelProvider methods
 
     def get_admin_panels(self, req):
-        if req.perm.has_permission('TRAC_ADMIN'):
+        if 'TRAC_ADMIN' in req.perm:
             yield ('general', 'General', 'logging', 'Logging')
 
     def render_admin_panel(self, req, cat, page, path_info):
@@ -220,7 +220,7 @@ class PermissionAdminPanel(Component):
 
     # IAdminPanelProvider
     def get_admin_panels(self, req):
-        if req.perm.has_permission('TRAC_ADMIN'):
+        if 'TRAC_ADMIN' in req.perm:
             yield ('general', 'General', 'perm', 'Permissions')
 
     def render_admin_panel(self, req, cat, page, path_info):
@@ -279,11 +279,11 @@ class PluginAdminPanel(Component):
     # IAdminPanelProvider methods
 
     def get_admin_panels(self, req):
-        if req.perm.has_permission('TRAC_ADMIN'):
+        if 'TRAC_ADMIN' in req.perm:
             yield ('general', 'General', 'plugin', 'Plugins')
 
     def render_admin_panel(self, req, cat, page, _):
-        req.perm.assert_permission('TRAC_ADMIN')
+        req.perm.require('TRAC_ADMIN')
 
         if req.method == 'POST':
             if 'install' in req.args:

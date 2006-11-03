@@ -1,4 +1,5 @@
 # -*- encoding: utf-8 -*-
+
 from trac.attachment import Attachment, AttachmentModule
 from trac.log import logger_factory
 from trac.test import EnvironmentStub, Mock
@@ -22,8 +23,7 @@ class AttachmentTestCase(unittest.TestCase):
         self.attachments_dir = os.path.join(self.env.path, 'attachments')
         self.env.config.set('attachment', 'max_size', 512)
 
-        self.perm = Mock(assert_permission=lambda x: None,
-                         has_permission=lambda x: True)
+        self.perm = Mock(__contains__=lambda x: True, require=lambda x: None)
 
     def tearDown(self):
         shutil.rmtree(self.env.path)

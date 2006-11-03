@@ -110,10 +110,9 @@ class RoadmapModule(Component):
         return 'roadmap'
 
     def get_navigation_items(self, req):
-        if not req.perm.has_permission('ROADMAP_VIEW'):
-            return
-        yield ('mainnav', 'roadmap',
-               html.a('Roadmap', href=req.href.roadmap(), accesskey=3))
+        if 'ROADMAP_VIEW' in req.perm:
+            yield ('mainnav', 'roadmap',
+                   html.a('Roadmap', href=req.href.roadmap(), accesskey=3))
 
     # IPermissionRequestor methods
 
@@ -126,7 +125,7 @@ class RoadmapModule(Component):
         return re.match(r'/roadmap/?', req.path_info) is not None
 
     def process_request(self, req):
-        req.perm.assert_permission('ROADMAP_VIEW')
+        req.perm.require('ROADMAP_VIEW')
         data = {}
 
         showall = req.args.get('show') == 'all'
@@ -289,7 +288,7 @@ class MilestoneModule(Component):
     # ITimelineEventProvider methods
 
     def get_timeline_filters(self, req):
-        if req.perm.has_permission('MILESTONE_VIEW'):
+        if 'MILESTONE_VIEW' in req.perm:
             yield ('milestone', 'Milestones')
 
     def get_timeline_events(self, req, start, stop, filters):
@@ -328,7 +327,7 @@ class MilestoneModule(Component):
         if not milestone_id:
             req.redirect(req.href.roadmap())
 
-        req.perm.assert_permission('MILESTONE_VIEW')
+        req.perm.require('MILESTONE_VIEW')
 
         add_link(req, 'up', req.href.roadmap(), 'Roadmap')
 
@@ -357,7 +356,7 @@ class MilestoneModule(Component):
     # Internal methods
 
     def _do_delete(self, req, db, milestone):
-        req.perm.assert_permission('MILESTONE_DELETE')
+        req.perm.require('MILESTONE_DELETE')
 
         retarget_to = None
         if req.args.has_key('retarget'):
@@ -368,9 +367,9 @@ class MilestoneModule(Component):
 
     def _do_save(self, req, db, milestone):
         if milestone.exists:
-            req.perm.assert_permission('MILESTONE_MODIFY')
+            req.perm.require('MILESTONE_MODIFY')
         else:
-            req.perm.assert_permission('MILESTONE_CREATE')
+            req.perm.require('MILESTONE_CREATE')
 
         if not req.args.has_key('name'):
             raise TracError('You must provide a name for the milestone.',
@@ -416,7 +415,7 @@ class MilestoneModule(Component):
         req.redirect(req.href.milestone(safe_name))
 
     def _render_confirm(self, req, db, milestone):
-        req.perm.assert_permission('MILESTONE_DELETE')
+        req.perm.require('MILESTONE_DELETE')
 
         data = {
             'milestone': milestone,
@@ -432,12 +431,12 @@ class MilestoneModule(Component):
         }
 
         if milestone.exists:
-            req.perm.assert_permission('MILESTONE_MODIFY')
+            req.perm.require('MILESTONE_MODIFY')
             data['milestones'] = [m for m in
                                   Milestone.select(self.env, False, db)
                                   if m.name != milestone.name]
         else:
-            req.perm.assert_permission('MILESTONE_CREATE')
+            req.perm.require('MILESTONE_CREATE')
 
         return 'milestone_edit.html', data, None
 

@@ -76,7 +76,7 @@ ${traceback}
             <pre>$message</pre>
           </div>
           <py:choose>
-            <py:when test="not perm.has_permission('TRAC_ADMIN')">
+            <py:when test="'TRAC_ADMIN' not in perm">
               <p>There was an internal error in Trac. It is recommended
               that you inform your local
               <a py:strip="not project.admin" href="mailto:${project.admin}">Trac

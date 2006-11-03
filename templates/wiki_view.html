@@ -56,9 +56,9 @@
 
       ${list_of_attachments(attachments, attach_href, compact=True)}
 
-      <py:with vars="modify_perm = perm.has_permission('WIKI_MODIFY');
-                     delete_perm = perm.has_permission('WIKI_DELETE');
-                     admin_perm = perm.has_permission('WIKI_ADMIN')">
+      <py:with vars="modify_perm = 'WIKI_MODIFY' in perm;
+                     delete_perm = 'WIKI_DELETE' in perm;
+                     admin_perm = 'WIKI_ADMIN' in perm">
         <py:if test="admin_perm or (not page.readonly and (modify_perm or delete_perm))">
           <div class="buttons">
             <py:if test="modify_perm">

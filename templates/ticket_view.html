@@ -68,7 +68,7 @@
               class="printableform">
           <div class="description">
             <h3 id="comment:description">
-              <span py:if="perm.has_permission('TICKET_APPEND')" class="inlinebuttons">
+              <span py:if="'TICKET_APPEND' in perm" class="inlinebuttons">
                 <input type="hidden" name="replyto" value="description" />
                 <input type="submit" value="Reply" title="Reply, quoting this description" />
               </span>
@@ -94,7 +94,7 @@
                 class="printableform">
             <div class="change">
               <h3 class="change" id="comment:${change.cnum}">
-                <span py:if="perm.has_permission('TICKET_APPEND')" class="inlinebuttons">
+                <span py:if="'TICKET_APPEND' in perm" class="inlinebuttons">
                   <input type="hidden" name="replyto" value="${change.cnum}" />
                   <input type="submit" value="Reply" title="Reply to comment ${change.cnum}" />
                 </span>
@@ -141,8 +141,7 @@
         </div>
       </py:if>
 
-      <form py:if="perm.has_permission('TICKET_APPEND') or
-                   perm.has_permission('TICKET_CHGPROP')"
+      <form py:if="'TICKET_APPEND' in perm or 'TICKET_CHGPROP' in perm"
             action="#preview" method="post">
         <hr />
         <h3><a name="edit" onfocus="$('#comment').get(0).focus()">
@@ -166,9 +165,8 @@ ${comment}</textarea></p>
           </fieldset>
         </div>
 
-        <fieldset id="properties"
-          py:if="req.perm.has_permission('TICKET_CHGPROP')"
-          py:with="fields = [f for f in fields if not f.skip]">
+        <fieldset id="properties" py:if="'TICKET_CHGPROP' in req.perm"
+                  py:with="fields = [f for f in fields if not f.skip]">
           <legend>Change Properties</legend>
           <table>
             <tr>
@@ -178,7 +176,7 @@ ${comment}</textarea></p>
                   size="70" />
               </td>
             </tr>
-            <py:if test="perm.has_permission('TICKET_ADMIN')">
+            <py:if test="'TICKET_ADMIN' in perm">
               <tr>
                 <th><label for="reporter">Reporter:</label></th>
                 <td class="fullrow" colspan="3">

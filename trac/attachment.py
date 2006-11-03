@@ -426,7 +426,7 @@ class AttachmentModule(Component):
 
     def _do_save(self, req, attachment):
         perm_map = {'ticket': 'TICKET_APPEND', 'wiki': 'WIKI_MODIFY'}
-        req.perm.assert_permission(perm_map[attachment.parent_type])
+        req.perm.reqiure(perm_map[attachment.parent_type])
 
         if req.args.has_key('cancel'):
             req.redirect(attachment.parent_href(req))
@@ -476,7 +476,7 @@ class AttachmentModule(Component):
                 if not (old_attachment.author and req.authname \
                         and old_attachment.author == req.authname):
                     perm_map = {'ticket': 'TICKET_ADMIN', 'wiki': 'WIKI_DELETE'}
-                    req.perm.assert_permission(perm_map[old_attachment.parent_type])
+                    req.perm.require(perm_map[old_attachment.parent_type])
                 old_attachment.delete()
             except TracError:
                 pass # don't worry if there's nothing to replace
@@ -488,7 +488,7 @@ class AttachmentModule(Component):
 
     def _do_delete(self, req, attachment):
         perm_map = {'ticket': 'TICKET_ADMIN', 'wiki': 'WIKI_DELETE'}
-        req.perm.assert_permission(perm_map[attachment.parent_type])
+        req.perm.require(perm_map[attachment.parent_type])
 
         if req.args.has_key('cancel'):
             req.redirect(attachment.href(req))
@@ -500,20 +500,20 @@ class AttachmentModule(Component):
 
     def _render_confirm(self, req, attachment):
         perm_map = {'ticket': 'TICKET_ADMIN', 'wiki': 'WIKI_DELETE'}
-        req.perm.assert_permission(perm_map[attachment.parent_type])
+        req.perm.require(perm_map[attachment.parent_type])
 
         return {'mode': 'delete', 'title': '%s (delete)' % attachment.title,
                 'attachment': attachment}
 
     def _render_form(self, req, attachment):
         perm_map = {'ticket': 'TICKET_APPEND', 'wiki': 'WIKI_MODIFY'}
-        req.perm.assert_permission(perm_map[attachment.parent_type])
+        req.perm.require(perm_map[attachment.parent_type])
 
         return {'mode': 'new', 'author': get_reporter_id(req)}
 
     def _render_view(self, req, attachment):
         perm_map = {'ticket': 'TICKET_VIEW', 'wiki': 'WIKI_VIEW'}
-        req.perm.assert_permission(perm_map[attachment.parent_type])
+        req.perm.require(perm_map[attachment.parent_type])
 
         req.check_modified(attachment.date)
 
@@ -521,7 +521,7 @@ class AttachmentModule(Component):
                 'attachment': attachment}
 
         perm_map = {'ticket': 'TICKET_ADMIN', 'wiki': 'WIKI_DELETE'}
-        if req.perm.has_permission(perm_map[attachment.parent_type]):
+        if perm_map[attachment.parent_type] in req.perm:
             data['can_delete'] = True
 
         fd = attachment.open()

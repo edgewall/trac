@@ -91,12 +91,13 @@
 
       <div class="description">${wiki_to_html(milestone.description)}</div>
 
-      <div py:if="perm.has_permission('MILESTONE_MODIFY') or perm.has_permission('MILESTONE_DELETE')" class="buttons">
-        <form py:if="perm.has_permission('MILESTONE_MODIFY')" method="get" action="">
+      <div py:if="'MILESTONE_MODIFY' in perm or 'MILESTONE_DELETE' in perm"
+           class="buttons">
+        <form py:if="'MILESTONE_MODIFY' in perm" method="get" action="">
           <input type="hidden" name="action" value="edit" />
           <input type="submit" value="Edit milestone" />
         </form>
-        <form py:if="perm.has_permission('MILESTONE_DELETE')" method="get" action="">
+        <form py:if="'MILESTONE_DELETE' in perm" method="get" action="">
           <input type="hidden" name="action" value="delete" />
           <input type="submit" value="Delete milestone" />
         </form>

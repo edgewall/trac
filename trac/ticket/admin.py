@@ -28,12 +28,12 @@ class ComponentAdminPage(Component):
     # IAdminPanelProvider methods
 
     def get_admin_panels(self, req):
-        if req.perm.has_permission('TICKET_ADMIN'):
+        if 'TICKET_ADMIN' in req.perm:
             yield ('ticket', 'Ticket System', 'components', 'Components')
 
     def render_admin_panel(self, req, cat, page, component):
-        req.perm.assert_permission('TICKET_ADMIN')
-        
+        req.perm.require('TICKET_ADMIN')
+
         # Detail view?
         if component:
             comp = model.Component(self.env, component)
@@ -105,11 +105,11 @@ class MilestoneAdminPage(Component):
     # IAdminPanelProvider methods
 
     def get_admin_panels(self, req):
-        if req.perm.has_permission('TICKET_ADMIN'):
+        if 'TICKET_ADMIN' in req.perm:
             yield ('ticket', 'Ticket System', 'milestones', 'Milestones')
 
     def render_admin_panel(self, req, cat, page, milestone):
-        req.perm.assert_permission('TICKET_ADMIN')
+        req.perm.require('TICKET_ADMIN')
 
         # Detail view?
         if milestone:
@@ -195,11 +195,11 @@ class VersionAdminPage(Component):
     # IAdminPanelProvider methods
 
     def get_admin_panels(self, req):
-        if req.perm.has_permission('TICKET_ADMIN'):
+        if 'TICKET_ADMIN' in req.perm:
             yield ('ticket', 'Ticket System', 'versions', 'Versions')
 
     def render_admin_panel(self, req, cat, page, version):
-        req.perm.assert_permission('TICKET_ADMIN')
+        req.perm.require('TICKET_ADMIN')
 
         # Detail view?
         if version:
@@ -273,11 +273,12 @@ class AbstractEnumAdminPage(Component):
     # IAdminPanelProvider methods
 
     def get_admin_panels(self, req):
-        if req.perm.has_permission('TICKET_ADMIN'):
+        if 'TICKET_ADMIN' in req.perm:
             yield ('ticket', 'Ticket System', self._type, self._label[1])
 
     def render_admin_panel(self, req, cat, page, path_info):
-        req.perm.assert_permission('TICKET_ADMIN')
+        req.perm.require('TICKET_ADMIN')
+
         data = {'label_singular': self._label[0],
                 'label_plural': self._label[1],
                 'title': 'Admin: %s' % self._label[1]}

@@ -94,10 +94,9 @@ class TicketModule(Component):
         return 'tickets'
 
     def get_navigation_items(self, req):
-        if not req.perm.has_permission('TICKET_CREATE'):
-            return
-        yield ('mainnav', 'newticket', 
-               html.A('New Ticket', href=req.href.newticket(), accesskey=7))
+        if 'TICKET_CREATE' in req.perm:
+            yield ('mainnav', 'newticket', 
+                   html.A('New Ticket', href=req.href.newticket(), accesskey=7))
 
     # IRequestHandler methods
 
@@ -115,12 +114,12 @@ class TicketModule(Component):
         return self.process_newticket_request(req)
 
     def process_newticket_request(self, req):
-        req.perm.assert_permission('TICKET_CREATE')
+        req.perm.require('TICKET_CREATE')
         data = {}
         db = self.env.get_db_cnx()
 
         if req.method == 'POST' and 'owner' in req.args and \
-               not req.perm.has_permission('TICKET_MODIFY'):
+               'TICKET_MODIFY' not in req.perm:
             del req.args['owner']
 
         if req.method == 'POST' and 'preview' not in req.args:
@@ -151,7 +150,7 @@ class TicketModule(Component):
                 field['skip'] = True
             elif name == 'owner':
                 field['label'] = 'Assign to'
-                if not req.perm.has_permission('TICKET_MODIFY'):
+                if 'TICKET_MODIFY' not in req.perm:
                     field['skip'] = True
             elif name == 'milestone':
                 # Don't make completed milestones available for selection
@@ -162,7 +161,7 @@ class TicketModule(Component):
                 field['options'] = options
             data['fields'].append(field)
 
-        if req.perm.has_permission('TICKET_APPEND'):
+        if 'TICKET_APPEND' in req.perm:
             data['can_attach'] = True
             data['attachment'] = req.args.get('attachment')
 
@@ -170,7 +169,7 @@ class TicketModule(Component):
         return 'ticket_new.html', data, None
 
     def process_ticket_request(self, req):
-        req.perm.assert_permission('TICKET_VIEW')
+        req.perm.require('TICKET_VIEW')
         data = {}
 
         action = req.args.get('action', 'view')
@@ -242,7 +241,7 @@ class TicketModule(Component):
     # ITimelineEventProvider methods
 
     def get_timeline_filters(self, req):
-        if req.perm.has_permission('TICKET_VIEW'):
+        if 'TICKET_VIEW' in req.perm:
             yield ('ticket', 'Ticket changes')
             if self.timeline_details:
                 yield ('ticket_details', 'Ticket details', False)
@@ -454,17 +453,17 @@ class TicketModule(Component):
 
 
     def _do_save(self, req, db, ticket):
-        if req.perm.has_permission('TICKET_CHGPROP'):
+        if 'TICKET_CHGPROP' in req.perm:
             # TICKET_CHGPROP gives permission to edit the ticket
             if not req.args.get('summary'):
                 raise TracError('Tickets must contain summary.')
 
             if req.args.has_key('description') or req.args.has_key('reporter'):
-                req.perm.assert_permission('TICKET_ADMIN')
+                req.perm.require('TICKET_ADMIN')
 
             ticket.populate(req.args)
         else:
-            req.perm.assert_permission('TICKET_APPEND')
+            req.perm.require('TICKET_APPEND')
 
         # Mid air collision?
         if req.args.get('ts') != str(ticket.time_changed):
@@ -589,7 +588,7 @@ class TicketModule(Component):
 
         data['attachments'] = list(Attachment.select(self.env, 'ticket',
                                                      ticket.id))
-        if req.perm.has_permission('TICKET_APPEND'):
+        if 'TICKET_APPEND' in req.perm:
             data['attach_href'] = req.href.attachment('ticket', ticket.id)
 
         # Add the possible actions to hdf

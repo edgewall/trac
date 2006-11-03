@@ -76,10 +76,9 @@ class TimelineModule(Component):
         return 'timeline'
 
     def get_navigation_items(self, req):
-        if not req.perm.has_permission('TIMELINE_VIEW'):
-            return
-        yield ('mainnav', 'timeline',
-               html.A('Timeline', href=req.href.timeline(), accesskey=2))
+        if 'TIMELINE_VIEW' in req.perm:
+            yield ('mainnav', 'timeline',
+                   html.A('Timeline', href=req.href.timeline(), accesskey=2))
 
     # IPermissionRequestor methods
 

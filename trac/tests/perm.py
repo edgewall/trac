@@ -116,27 +116,26 @@ class PermissionSystemTestCase(unittest.TestCase):
             self.failIf(res not in expected)
 
 
-class PermTestCase(unittest.TestCase):
+class PermissionCacheTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.env = EnvironmentStub(enable=[perm.PermissionSystem,
-                                           perm.DefaultPermissionStore,
-                                           TestPermissionRequestor])
-        # Add a few groups
-        db = self.env.get_db_cnx()
-        cursor = db.cursor()
-        cursor.executemany("INSERT INTO permission VALUES(%s,%s)", [
-                           ('employee', 'TEST_MODIFY'),
-                           ('developer', 'TEST_ADMIN'),
-                           ('developer', 'employee'),
-                           ('bob', 'developer')])
-        db.commit()
-        self.perm = perm.PermissionCache(self.env, 'bob')
+        self.perm = perm.PermissionCache({'TEST_MODIFY': True,
+                                          'TEST_ADMIN': True})
+
+    def test_contains(self):
+        self.assertEqual(True, 'TEST_MODIFY' in self.perm)
+        self.assertEqual(True, 'TEST_ADMIN' in self.perm)
+        self.assertEqual(False, 'TRAC_ADMIN' in self.perm)
 
     def test_has_permission(self):
-        self.assertEqual(1, self.perm.has_permission('TEST_MODIFY'))
-        self.assertEqual(1, self.perm.has_permission('TEST_ADMIN'))
-        self.assertEqual(0, self.perm.has_permission('TRAC_ADMIN'))
+        self.assertEqual(True, self.perm.has_permission('TEST_MODIFY'))
+        self.assertEqual(True, self.perm.has_permission('TEST_ADMIN'))
+        self.assertEqual(False, self.perm.has_permission('TRAC_ADMIN'))
+
+    def test_require(self):
+        self.perm.require('TEST_MODIFY')
+        self.perm.require('TEST_ADMIN')
+        self.assertRaises(perm.PermissionError, self.perm.require, 'TRAC_ADMIN')
 
     def test_assert_permission(self):
         self.perm.assert_permission('TEST_MODIFY')
@@ -149,7 +148,7 @@ def suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(DefaultPermissionStoreTestCase, 'test'))
     suite.addTest(unittest.makeSuite(PermissionSystemTestCase, 'test'))
-    suite.addTest(unittest.makeSuite(PermTestCase, 'test'))
+    suite.addTest(unittest.makeSuite(PermissionCacheTestCase, 'test'))
     return suite
 
 if __name__ == '__main__':

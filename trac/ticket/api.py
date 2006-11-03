@@ -252,7 +252,7 @@ class TicketSystem(Component):
     # ISearchSource methods
 
     def get_search_filters(self, req):
-        if req.perm.has_permission('TICKET_VIEW'):
+        if 'TICKET_VIEW' in req.perm:
             yield ('ticket', 'Tickets')
 
     def get_search_results(self, req, terms, filters):

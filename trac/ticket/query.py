@@ -453,7 +453,7 @@ class QueryModule(Component):
 
     def get_navigation_items(self, req):
         from trac.ticket.report import ReportModule
-        if req.perm.has_permission('TICKET_VIEW') and \
+        if 'TICKET_VIEW' in req.perm and \
                 not self.env.is_component_enabled(ReportModule):
             yield ('mainnav', 'tickets',
                    html.A('View Tickets', href=req.href.query()))
@@ -609,7 +609,7 @@ class QueryModule(Component):
         # actually enabled
         from trac.ticket.report import ReportModule
         report_href = None
-        if req.perm.has_permission('REPORT_VIEW') and \
+        if 'REPORT_VIEW' in req.perm and \
                self.env.is_component_enabled(ReportModule):
             report_href = req.href.report()
         data['report_href'] = report_href
@@ -619,7 +619,7 @@ class QueryModule(Component):
 
         add_stylesheet(req, 'common/css/report.css')
         add_script(req, 'common/js/query.js')
-        
+
         return 'query.html', data, None
 
     def export_csv(self, req, query, sep=',', mimetype='text/plain'):

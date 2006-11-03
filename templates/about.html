@@ -14,10 +14,10 @@
     <div id="ctxtnav" class="nav">
       <h2>About Navigation</h2>
       <ul>
-        <li class="first${not perm.has_permission('CONFIG_VIEW') and ' last' or ''}">
+        <li class="first${'CONFIG_VIEW' not in perm and ' last' or ''}">
           <a href="${href.about()}">Overview</a>
         </li>
-        <li class="last" py:if="perm.has_permission('CONFIG_VIEW')">
+        <li class="last" py:if="'CONFIG_VIEW' in perm">
           <a href="${href.about('config')}">Configuration</a>
         </li>
       </ul>

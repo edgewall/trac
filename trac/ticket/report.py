@@ -40,10 +40,9 @@ class ReportModule(Component):
         return 'tickets'
 
     def get_navigation_items(self, req):
-        if not req.perm.has_permission('REPORT_VIEW'):
-            return
-        yield ('mainnav', 'tickets',
-               html.A('View Tickets', href=req.href.report()))
+        if 'REPORT_VIEW' in req.perm:
+            yield ('mainnav', 'tickets',
+                   html.A('View Tickets', href=req.href.report()))
 
     # IPermissionRequestor methods  
 
@@ -62,7 +61,7 @@ class ReportModule(Component):
             return True
 
     def process_request(self, req):
-        req.perm.assert_permission('REPORT_VIEW')
+        req.perm.require('REPORT_VIEW')
 
         # did the user ask for any special report?
         id = int(req.args.get('id', -1))
@@ -99,8 +98,8 @@ class ReportModule(Component):
         # Kludge: only show link to custom query if the query module is actually
         # enabled
         from trac.ticket.query import QueryModule
-        if req.perm.has_permission('TICKET_VIEW') and \
-           self.env.is_component_enabled(QueryModule):
+        if 'TICKET_VIEW' in req.perm and \
+                self.env.is_component_enabled(QueryModule):
             data['query_href'] = req.href.query()
 
         add_stylesheet(req, 'common/css/report.css')
@@ -109,7 +108,7 @@ class ReportModule(Component):
     # Internal methods
 
     def _do_create(self, req, db):
-        req.perm.assert_permission('REPORT_CREATE')
+        req.perm.require('REPORT_CREATE')
 
         if req.args.has_key('cancel'):
             req.redirect(req.href.report())
@@ -125,7 +124,7 @@ class ReportModule(Component):
         req.redirect(req.href.report(id))
 
     def _do_delete(self, req, db, id):
-        req.perm.assert_permission('REPORT_DELETE')
+        req.perm.require('REPORT_DELETE')
 
         if 'cancel' in req.args:
             req.redirect(req.href.report(id))
@@ -137,7 +136,7 @@ class ReportModule(Component):
 
     def _do_save(self, req, db, id):
         """Save report changes to the database"""
-        req.perm.assert_permission('REPORT_MODIFY')
+        req.perm.require('REPORT_MODIFY')
 
         if 'cancel' not in req.args:
             title = req.args.get('title', '')
@@ -150,7 +149,7 @@ class ReportModule(Component):
         req.redirect(req.href.report(id))
 
     def _render_confirm_delete(self, req, db, id):
-        req.perm.assert_permission('REPORT_DELETE')
+        req.perm.require('REPORT_DELETE')
 
         cursor = db.cursor()
         cursor.execute("SELECT title FROM report WHERE id=%s", (id,))
@@ -164,7 +163,7 @@ class ReportModule(Component):
 
     def _render_editor(self, req, db, id, copy):
         if id != -1:
-            req.perm.assert_permission('REPORT_MODIFY')
+            req.perm.require('REPORT_MODIFY')
             cursor = db.cursor()
             cursor.execute("SELECT title,description,query FROM report "
                            "WHERE id=%s", (id,))
@@ -174,7 +173,7 @@ class ReportModule(Component):
                 raise TracError('Report %s does not exist.' % id,
                                 'Invalid Report Number')
         else:
-            req.perm.assert_permission('REPORT_CREATE')
+            req.perm.require('REPORT_CREATE')
             title = description = query = ''
 
         if copy:
@@ -199,8 +198,7 @@ class ReportModule(Component):
         actions = {'create': 'REPORT_CREATE', 'delete': 'REPORT_DELETE',
                    'modify': 'REPORT_MODIFY'}
         perms = {}
-        for action in [k for k,v in actions.items()
-                       if req.perm.has_permission(v)]:
+        for action in [k for k,v in actions.items() if v in req.perm]:
             perms[action] = True
         try:
             args = self.get_var_args(req)
@@ -364,7 +362,7 @@ class ReportModule(Component):
                  'Comma-delimited Text', 'text/plain')
         add_link(req, 'alternate', '?format=tab' + href,
                  'Tab-delimited Text', 'text/plain')
-        if req.perm.has_permission('REPORT_SQL_VIEW'):
+        if 'REPORT_SQL_VIEW' in req.perm:
             add_link(req, 'alternate', '?format=sql', 'SQL Query',
                      'text/plain')
 
@@ -444,7 +442,7 @@ class ReportModule(Component):
         raise RequestDone
 
     def _send_sql(self, req, id, title, description, sql):
-        req.perm.assert_permission('REPORT_SQL_VIEW')
+        req.perm.require('REPORT_SQL_VIEW')
         req.send_response(200)
         req.send_header('Content-Type', 'text/plain;charset=utf-8')
         req.end_headers()

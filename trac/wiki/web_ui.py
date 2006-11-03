@@ -66,13 +66,12 @@ class WikiModule(Component):
         return 'wiki'
 
     def get_navigation_items(self, req):
-        if not req.perm.has_permission('WIKI_VIEW'):
-            return
-        yield ('mainnav', 'wiki',
-               html.A('Wiki', href=req.href.wiki(), accesskey=1))
-        yield ('metanav', 'help',
-               html.A('Help/Guide', href=req.href.wiki('TracGuide'),
-                      accesskey=6))
+        if 'WIKI_VIEW' in req.perm:
+            yield ('mainnav', 'wiki',
+                   html.A('Wiki', href=req.href.wiki(), accesskey=1))
+            yield ('metanav', 'help',
+                   html.A('Help/Guide', href=req.href.wiki('TracGuide'),
+                          accesskey=6))
 
     # IPermissionRequestor methods
 
@@ -129,7 +128,7 @@ class WikiModule(Component):
         elif action == 'history':
             return self._render_history(req, db, page)
         else:
-            req.perm.assert_permission('WIKI_VIEW')            
+            req.perm.require('WIKI_VIEW')            
             format = req.args.get('format')
             if format:
                 Mimeview(self.env).send_converted(req, 'text/x-trac-wiki',
@@ -149,9 +148,9 @@ class WikiModule(Component):
 
     def _do_delete(self, req, db, page):
         if page.readonly:
-            req.perm.assert_permission('WIKI_ADMIN')
+            req.perm.require('WIKI_ADMIN')
         else:
-            req.perm.assert_permission('WIKI_DELETE')
+            req.perm.require('WIKI_DELETE')
 
         if req.args.has_key('cancel'):
             req.redirect(req.href.wiki(page.name))
@@ -175,14 +174,14 @@ class WikiModule(Component):
 
     def _do_save(self, req, db, page):
         if page.readonly:
-            req.perm.assert_permission('WIKI_ADMIN')
+            req.perm.require('WIKI_ADMIN')
         elif not page.exists:
-            req.perm.assert_permission('WIKI_CREATE')
+            req.perm.require('WIKI_CREATE')
         else:
-            req.perm.assert_permission('WIKI_MODIFY')
+            req.perm.require('WIKI_MODIFY')
 
         page.text = req.args.get('text')
-        if req.perm.has_permission('WIKI_ADMIN'):
+        if 'WIKI_ADMIN' in req.perm:
             # Modify the read-only flag if it has been changed and the user is
             # WIKI_ADMIN
             page.readonly = int(req.args.has_key('readonly'))
@@ -202,9 +201,9 @@ class WikiModule(Component):
 
     def _render_confirm(self, req, db, page):
         if page.readonly:
-            req.perm.assert_permission('WIKI_ADMIN')
+            req.perm.require('WIKI_ADMIN')
         else:
-            req.perm.assert_permission('WIKI_DELETE')
+            req.perm.require('WIKI_DELETE')
 
         version = None
         if 'delete_version' in req.args:
@@ -224,7 +223,7 @@ class WikiModule(Component):
         return 'wiki_delete.html', data, None
 
     def _render_diff(self, req, db, page):
-        req.perm.assert_permission('WIKI_VIEW')
+        req.perm.require('WIKI_VIEW')
 
         if not page.exists:
             raise TracError("Version %s of page %s does not exist" %
@@ -319,7 +318,7 @@ class WikiModule(Component):
         return 'wiki_diff.html', data, None
 
     def _render_editor(self, req, db, page, action='edit'):
-        req.perm.assert_permission('WIKI_MODIFY')
+        req.perm.require('WIKI_MODIFY')
 
         if 'text' in req.args:
             page.text = req.args.get('text')
@@ -362,7 +361,7 @@ class WikiModule(Component):
         This information is used to present a changelog/history for a given
         page.
         """
-        req.perm.assert_permission('WIKI_VIEW')
+        req.perm.require('WIKI_VIEW')
 
         if not page.exists:
             raise TracError, "Page %s does not exist" % page.name
@@ -399,13 +398,13 @@ class WikiModule(Component):
         latest_page = WikiPage(self.env, page.name)
 
         if not page.exists:
-            if not req.perm.has_permission('WIKI_CREATE'):
+            if 'WIKI_CREATE' not in req.perm:
                 raise HTTPNotFound('Page %s not found', page.name)
 
         # Show attachments
         attachments = list(Attachment.select(self.env, 'wiki', page.name))
         attach_href = None
-        if req.perm.has_permission('WIKI_MODIFY'):
+        if 'WIKI_MODIFY' in req.perm:
             attach_href = req.href.attachment('wiki', page.name)
 
         prefix = self.PAGE_TEMPLATES_PREFIX
@@ -424,7 +423,7 @@ class WikiModule(Component):
     # ITimelineEventProvider methods
 
     def get_timeline_filters(self, req):
-        if req.perm.has_permission('WIKI_VIEW'):
+        if 'WIKI_VIEW' in req.perm:
             yield ('wiki', 'Wiki changes')
 
     def get_timeline_events(self, req, start, stop, filters):
@@ -467,7 +466,7 @@ class WikiModule(Component):
     # ISearchSource methods
 
     def get_search_filters(self, req):
-        if req.perm.has_permission('WIKI_VIEW'):
+        if 'WIKI_VIEW' in req.perm:
             yield ('wiki', 'Wiki')
 
     def get_search_results(self, req, terms, filters):

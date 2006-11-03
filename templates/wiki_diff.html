@@ -67,7 +67,7 @@
 
         <xi:include href="diff_div.html"/>
 
-        <form py:if="perm.has_permission('WIKI_DELETE') and (not changes[0].diffs or new_version == latest_version)"
+        <form py:if="'WIKI_DELETE' in perm and (not changes[0].diffs or new_version == latest_version)"
           method="get" action="${href.wiki(page.name)}">
           <input type="hidden" name="action" value="delete" />
           <input type="hidden" name="version" value="$new_version" />

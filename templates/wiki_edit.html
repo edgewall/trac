@@ -95,7 +95,7 @@ $page.text</textarea>
               <input id="comment" type="text" name="comment" size="60" value="$comment" />
             </label>
           </div><br />
-          <py:if test="perm.has_permission('WIKI_ADMIN')">
+          <py:if test="'WIKI_ADMIN' in perm">
             <div class="options">
               <label><input type="checkbox" name="readonly" id="readonly"
                             checked="${page.readonly or None}" />

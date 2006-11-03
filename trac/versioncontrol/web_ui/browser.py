@@ -62,10 +62,9 @@ class BrowserModule(Component):
         return 'browser'
 
     def get_navigation_items(self, req):
-        if not req.perm.has_permission('BROWSER_VIEW'):
-            return
-        yield ('mainnav', 'browser',
-               html.A('Browse Source', href=req.href.browser()))
+        if 'BROWSER_VIEW' in req.perm:
+            yield ('mainnav', 'browser',
+                   html.A('Browse Source', href=req.href.browser()))
 
     # IPermissionRequestor methods
 
@@ -126,7 +125,7 @@ class BrowserModule(Component):
     # Internal methods
 
     def _render_dir(self, req, repos, node, rev=None):
-        req.perm.assert_permission('BROWSER_VIEW')
+        req.perm.require('BROWSER_VIEW')
 
         # Entries metadata
         entries = []
@@ -172,7 +171,7 @@ class BrowserModule(Component):
                 'entries': entries, 'changes': changes}
 
     def _render_file(self, req, repos, node, rev=None):
-        req.perm.assert_permission('FILE_VIEW')
+        req.perm.require('FILE_VIEW')
 
         mimeview = Mimeview(self.env)
 

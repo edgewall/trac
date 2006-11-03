@@ -29,7 +29,7 @@ from genshi.template import TemplateLoader
 from trac.config import ExtensionOption, Option, OrderedExtensionsOption
 from trac.core import *
 from trac.env import open_environment
-from trac.perm import PermissionCache, NoPermissionCache, PermissionError
+from trac.perm import PermissionCache, PermissionError, PermissionSystem
 from trac.util import get_lines_from_file, get_last_traceback
 from trac.util.compat import partial, reversed
 from trac.util.datefmt import format_datetime, http_date, localtz, timezone
@@ -246,7 +246,8 @@ class RequestDispatcher(Component):
         return hdf
 
     def _get_perm(self, req):
-        return PermissionCache(self.env, req.authname)
+        perms = PermissionSystem(self.env).get_user_permissions(req.authname)
+        return PermissionCache(perms)
 
     def _get_session(self, req):
         return Session(self.env, req)
@@ -409,7 +410,7 @@ def dispatch_request(environ, start_response):
         traceback = get_last_traceback()
 
         frames = []
-        if req.perm.has_permission('TRAC_ADMIN'):
+        if 'TRAC_ADMIN' in req.perm:
             tb = sys.exc_info()[2]
             while tb:
                 if not tb.tb_frame.f_locals.get('__traceback_hide__'):
