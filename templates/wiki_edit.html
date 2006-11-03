@@ -11,12 +11,9 @@
     <script type="text/javascript" src="${chrome.htdocs_location}js/wikitoolbar.js"></script>
     <script type="text/javascript">
       $(document).ready(function() {
-        var scrollBarPos = $("#scroll_bar_pos");
-        var text = $("#text");
-        if (scrollBarPos.val()) text.get(0).scrollTop = scrollBarPos.val();
-        text.blur(function() {
-          scrollBarPos.val(text.get(0).scrollTop);
-        });
+        $("#text").blur(function() {
+          $("#scroll_bar_pos").val(this.scrollTop)
+        }).get(0).scrollTop = $("#scroll_bar_pos").val();
         $("#editrows").change(function() {
           resizeTextArea("text", this.options[this.selectedIndex].value);
         });
