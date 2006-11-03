@@ -28,6 +28,7 @@ from trac import __version__ as TRAC_VERSION
 from trac.admin.api import IAdminPanelProvider
 from trac.core import *
 from trac.perm import PermissionSystem
+from trac.util.compat import sorted
 from trac.web import HTTPNotFound, IRequestHandler
 from trac.web.chrome import add_script, add_stylesheet, Chrome, \
                             INavigationContributor
