@@ -161,7 +161,7 @@ class Request(object):
             value = self.callbacks[name](self)
             setattr(self, name, value)
             return value
-        return getattr(super(Request, self), name)
+        raise AttributeError(name)
 
     def __repr__(self):
         return '<%s "%s %s">' % (self.__class__.__name__, self.method,

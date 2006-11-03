@@ -432,7 +432,6 @@ class Chrome(Component):
             'href': req and req.href,
             'perm': req and req.perm,
             'authname': req and req.authname or '<trac>',
-            'form_token': req and req.form_token,
 
             # Date/time formatting
             'format_datetime': partial(format_datetime, tzinfo=tzinfo),
@@ -487,20 +486,41 @@ class Chrome(Component):
         if fragment:
             return stream
 
-        if not req.session or not int(req.session.get('accesskeys', 0)):
-            stream |= self._strip_accesskeys
-
         if method == 'text':
             return stream.render('text')
-        else:
-            doctype = {'text/html': DocType.XHTML_STRICT}.get(content_type)
-            req.chrome['links'] = {}
-            req.chrome['scripts'] = []
-            data.setdefault('chrome', {}).update({
-                'late_links': req.chrome['links'],
-                'late_scripts': req.chrome['scripts'],
-            })
-            return stream.render(method, doctype=doctype)
+
+        doctype = {'text/html': DocType.XHTML_STRICT}.get(content_type)
+        if doctype:
+            if req.form_token:
+                stream |= self._add_form_token(req.form_token)
+            if not req.session or not int(req.session.get('accesskeys', 0)):
+                stream |= self._strip_accesskeys
+
+        req.chrome['links'] = {}
+        req.chrome['scripts'] = []
+        data.setdefault('chrome', {}).update({
+            'late_links': req.chrome['links'],
+            'late_scripts': req.chrome['scripts'],
+        })
+
+        return stream.render(method, doctype=doctype)
+
+    # Template filters
+
+    def _add_form_token(self, token):
+        elem = tag.div(
+            tag.input(type='hidden', name='__FORM_TOKEN', value=token)
+        )
+        def _generate(stream, ctxt=None):
+            for kind, data, pos in stream:
+                if kind is START and data[0].localname == 'form' \
+                                 and data[1].get('method', '').lower() == 'post':
+                    yield kind, data, pos
+                    for event in elem.generate():
+                        yield event
+                else:
+                    yield kind, data, pos
+        return _generate
 
     def _strip_accesskeys(self, stream, ctxt=None):
         for kind, data, pos in stream:
