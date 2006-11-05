@@ -189,6 +189,7 @@ class RequestDispatcher(Component):
                 req.authname = self.authenticate(req)
                 req.perm = PermissionCache(self.env, req.authname)
                 req.session = Session(self.env, req)
+                req.form_token = self._get_form_token(req)
             except:
                 anonymous_request = True
                 early_error = sys.exc_info()
@@ -221,6 +222,12 @@ class RequestDispatcher(Component):
         try:
             try:
                 try:
+                    # Protect against CSRF attacks.
+                    if (req.method == 'POST' and
+                        req.args.get('__FORM_TOKEN') != req.form_token):
+                        raise TracError('Missing or invalid form token '
+                                        'Do you have cookies enabled?')
+
                     resp = chosen_handler.process_request(req)
                     if resp:
                         template, content_type = \
@@ -256,6 +263,21 @@ class RequestDispatcher(Component):
             template, content_type = f.post_process_request(req, template,
                                                             content_type)
         return template, content_type
+
+    def _get_form_token(self, req):
+        """Used to protect against CSRF.
+
+        The 'trac_auth' cookie is a good and strong shared secret, only
+        known by the user it belongs to and Trac itself.
+
+        The session id is our second best option, not as reliable since
+        it will change on each request if the user has cookies disabled in
+        his/her browser.
+        """
+        if req.incookie.has_key('trac_auth'):
+            return req.incookie['trac_auth'].value
+        else:
+            return req.session.sid
 
 
 def dispatch_request(environ, start_response):

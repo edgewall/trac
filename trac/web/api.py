@@ -127,6 +127,7 @@ class Request(object):
     authname = None
     perm = None
     session = None
+    form_token = None
 
     def __init__(self, environ, start_response):
         """Create the request wrapper.
@@ -350,7 +351,7 @@ class Request(object):
             content_type = 'text/plain'
             data = str(self.hdf)
         else:
-            data = self.hdf.render(template)
+            data = self.hdf.render(template, self.form_token)
 
         self.send_response(status)
         self.send_header('Cache-control', 'must-revalidate')
