@@ -334,7 +334,7 @@ class FormTokenInjector(HTMLParser):
         self.out.write('<!%s>' % data)
 
     def handle_pi(self, data):
-        self.out.write('<?%s?>' % data)
+        self.out.write('<?%s>' % data)
 
     def handle_data(self, data):
         self.out.write(data)
