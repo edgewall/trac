@@ -352,7 +352,7 @@ class Request(object):
             data = str(self.hdf)
         else:
             form_token = None
-            if content_type == 'text/html':
+            if content_type in ('text/html', 'application/xhtml+xml'):
                 form_token = self.form_token
             data = self.hdf.render(template, form_token)
 
