@@ -351,7 +351,10 @@ class Request(object):
             content_type = 'text/plain'
             data = str(self.hdf)
         else:
-            data = self.hdf.render(template, self.form_token)
+            form_token = None
+            if content_type == 'text/html':
+                form_token = self.form_token
+            data = self.hdf.render(template, form_token)
 
         self.send_response(status)
         self.send_header('Cache-control', 'must-revalidate')
