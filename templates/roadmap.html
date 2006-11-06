@@ -5,6 +5,7 @@
       xmlns:py="http://genshi.edgewall.org/"
       xmlns:xi="http://www.w3.org/2001/XInclude">
   <xi:include href="layout.html" />
+  <xi:include href="macros.html" />
   <head>
     <title>Roadmap</title>
     <link rel="stylesheet" type="text/css"
@@ -12,6 +13,7 @@
   </head>
 
   <body>
+
     <div id="ctxtnav" class="nav"></div>
 
     <div id="content" class="roadmap">
@@ -52,26 +54,7 @@
                 No date set
               </p>
             </py:choose>
-            <py:if test="stats[idx].total_tickets"
-                   py:with="stats = stats[idx]; queries = queries[idx]">
-              <table class="progress">
-                <td class="closed" style="width: ${stats.percent_closed}%">
-                  <a href="$queries.closed_tickets"
-                     title="${stats.closed_tickets} of ${stats.total_tickets} ticket${stats.total_tickets != 1 and 's' or ''} closed"></a>
-                </td>
-                <td class="open" style="width: ${stats.percent_active}%">
-                  <a href="$queries.active_tickets"
-                     title="${stats.active_tickets} of ${stats.total_tickets} ticket${stats.total_tickets != 1 and 's' or ''} active"></a>
-                </td>
-              </table>
-              <p class="percent">${int(stats.percent_closed)}%</p>
-              <dl>
-                <dt>Closed tickets:</dt>
-                <dd><a href="$queries.closed_tickets">${stats.closed_tickets}</a></dd>
-                <dt>Active tickets:</dt>
-                <dd><a href="$queries.active_tickets">${stats.active_tickets}</a></dd>
-              </dl>
-            </py:if>
+            <py:if test="stats[idx].count">${progress_bar(stats[idx])}</py:if>
           </div>
 
           <div class="description">${wiki_to_html(milestone.description)}</div>

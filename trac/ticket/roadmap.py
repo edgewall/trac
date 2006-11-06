@@ -27,11 +27,107 @@ from trac.util.datefmt import parse_date, utc, to_timestamp, \
 from trac.util.html import html, unescape, Markup
 from trac.util.text import shorten_line, CRLF, to_unicode
 from trac.ticket import Milestone, Ticket, TicketSystem
+from trac.ticket.query import Query
 from trac.Timeline import ITimelineEventProvider
 from trac.web import IRequestHandler
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
 from trac.wiki import wiki_to_html, wiki_to_oneliner, IWikiSyntaxProvider
+from trac.config import ExtensionOption
 
+class ITicketGroupStatsProvider(Interface):
+    def get_ticket_group_stats(self, ticket_ids):
+        """ Gather statistics on a group of tickets.
+
+        This method returns a valid TicketGroupStats object.
+        """
+
+class TicketGroupStats(object):
+    """Encapsulates statistics on a group of tickets."""
+
+    def __init__(self, title, unit):
+        """Creates a new TicketGroupStats object.
+        title is the display name of this group of stats (eg 'ticket status').
+        unit is the display name of the units for these stats (eg 'hour').
+        """
+        self.title = title
+        self.unit = unit
+        self.count = 0
+        self.qry_args = {}
+        self.intervals = []
+        self.done_percent = 0
+        self.done_count = 0
+
+    def add_interval(self, title, count, qry_args, css_class, countsToProg=0):
+        """Adds a division to this stats' group's progress bar.
+
+        title is the display name (eg 'closed', 'spent effort') of this interval
+          that will be displayed in front of the unit name.
+        count is the number of units in the interval.
+        qry_args is a dict of extra params that will yield the subset of
+          tickets in this interval on a query.
+        css_class is the css class that will be used to display the division.
+        countsToProg can be set to true to make this interval count towards
+          overall completion of this group of tickets.
+        """
+        self.intervals.append({
+            'title': title,
+            'count': count,
+            'qry_args': qry_args,
+            'css_class': css_class,
+            'percent': None,
+            'countsToProg': countsToProg
+        })
+        self.count = self.count + count
+        self._refresh_calcs()
+
+    def _refresh_calcs(self):
+        if self.count < 1:
+            return
+        total_percent = 0
+        self.done_percent = 0
+        self.done_count = 0
+        for interval in self.intervals:
+            interval['percent'] = round(float(interval['count'] / 
+                                        float(self.count) * 100))
+            total_percent = total_percent + interval['percent']
+            if interval['countsToProg']:
+                self.done_percent += interval['percent']
+                self.done_count += interval['count']
+
+        if self.done_count and total_percent != 100:
+            fudge_int = [i for i in self.intervals if i['countsToProg']][0]
+            fudge_amt = 100 - total_percent
+            fudge_int['percent'] += fudge_amt
+            self.done_percent += fudge_amt
+
+class DefaultTicketGroupStatsProvider(Component):
+    implements(ITicketGroupStatsProvider)
+
+    def get_ticket_group_stats(self, ticket_ids):
+        total_cnt = len(ticket_ids)
+        if total_cnt:
+            cursor = self.env.get_db_cnx().cursor()
+            str_ids = [str(x) for x in ticket_ids]
+            active_cnt = cursor.execute("SELECT count(1) FROM ticket "
+                                    "WHERE status <> 'closed' AND id IN "
+                                    "(%s)" % ",".join(str_ids))
+            active_cnt = 0
+            for cnt, in cursor:
+                active_cnt = cnt
+        else:
+            active_cnt = 0
+
+        closed_cnt = total_cnt - active_cnt
+
+        stat = TicketGroupStats('ticket status', 'ticket')
+        stat.add_interval('closed', closed_cnt, {'status': 'closed'},
+                          'closed', True)
+        stat.add_interval('active', active_cnt,
+                     {'status': ['new', 'assigned', 'reopened']}, 'open', False)
+        return stat
+
+def get_ticket_stats(provider, tickets):
+    return provider.get_ticket_group_stats([t['id'] for t in tickets])
 
 def get_tickets_for_milestone(env, db, milestone, field='component'):
     cursor = db.cursor()
@@ -48,44 +144,36 @@ def get_tickets_for_milestone(env, db, milestone, field='component'):
         tickets.append({'id': tkt_id, 'status': status, field: fieldval})
     return tickets
 
-def get_query_links(req, milestone, grouped_by='component', group=None):
-    q = {}
-    if not group:
-        q['all_tickets'] = req.href.query(milestone=milestone)
-        q['active_tickets'] = req.href.query(
-            milestone=milestone, status=('new', 'assigned', 'reopened'))
-        q['closed_tickets'] = req.href.query(
-            milestone=milestone, status='closed')
-    else:
-        q['all_tickets'] = req.href.query(
-            {grouped_by: group}, milestone=milestone)
-        q['active_tickets'] = req.href.query(
-            {grouped_by: group}, milestone=milestone,
-            status=('new', 'assigned', 'reopened'))
-        q['closed_tickets'] = req.href.query(
-            {grouped_by: group}, milestone=milestone, status='closed')
-    return q
+def milestone_stat_to_hdf(env, stat, name, grouped_by='component', group=None):
+    def merge_cp(dict1, dict2):
+        cp = dict1.copy()
+        cp.update(dict2)
+        return cp
 
-def calc_ticket_stats(tickets):
-    total_cnt = len(tickets)
-    active = [ticket for ticket in tickets if ticket['status'] != 'closed']
-    active_cnt = len(active)
-    closed_cnt = total_cnt - active_cnt
-
-    percent_active, percent_closed = 0, 0
-    if total_cnt > 0:
-        percent_active = round(float(active_cnt) / float(total_cnt) * 100)
-        percent_closed = round(float(closed_cnt) / float(total_cnt) * 100)
-        if percent_active + percent_closed > 100:
-            percent_closed -= 1
-
-    return {
-        'total_tickets': total_cnt,
-        'active_tickets': active_cnt,
-        'percent_active': percent_active,
-        'closed_tickets': closed_cnt,
-        'percent_closed': percent_closed
-    }
+    hdf = {}
+    base_args = {'milestone': name, grouped_by: group}
+    hdf['title'] = stat.title
+    hdf['caps_title'] = stat.title.capitalize()
+    hdf['count'] = stat.count
+    hdf['unit']= stat.unit
+    hdf['href'] = env.href.query(merge_cp(base_args, stat.qry_args))
+    hdf['done_percent'] = stat.done_percent
+    hdf['done_count'] = stat.done_count
+    hdf['intervals'] = []
+    i = 0
+    for i in range(len(stat.intervals)):
+        interval = stat.intervals[i]
+        int_hdf = {}
+        for (key,val) in interval.items():
+            if key != 'qry_args':
+                int_hdf[key] = val
+        int_hdf['href'] = env.href.query(
+                                    merge_cp(base_args, interval['qry_args']))
+        int_hdf['caps_title'] = interval['title'].capitalize()
+        int_hdf['last'] = i == len(stat.intervals) - 1
+        hdf['intervals'].append(int_hdf)
+        i += 1
+    return hdf
 
 def _get_groups(env, db, by='component'):
     for field in TicketSystem(env).get_ticket_fields():
@@ -103,6 +191,11 @@ def _get_groups(env, db, by='component'):
 class RoadmapModule(Component):
 
     implements(INavigationContributor, IPermissionRequestor, IRequestHandler)
+    stats_provider = ExtensionOption('trac', 'roadmap_stats', ITicketGroupStatsProvider,
+                            'DefaultTicketGroupStatsProvider',
+        """Name of the component implementing `ITicketGroupStatsProvider`, 
+        which is used to collect statistics on groups of tickets for display
+        in the roadmap views.""")
 
     # INavigationContributor methods
 
@@ -139,8 +232,8 @@ class RoadmapModule(Component):
         for idx, milestone in enumerate(milestones):
             tickets = get_tickets_for_milestone(self.env, db, milestone.name,
                                                 'owner')
-            stats.append(calc_ticket_stats(tickets))
-            queries.append(get_query_links(req, milestone.name))
+            stat = get_ticket_stats(self.stats_provider, tickets)
+            stats.append(milestone_stat_to_hdf(self.env, stat, milestone.name))
             #milestone['tickets'] = tickets # for the iCalendar view
 
         if req.args.get('format') == 'ics':
@@ -268,6 +361,13 @@ class MilestoneModule(Component):
 
     implements(INavigationContributor, IPermissionRequestor, IRequestHandler,
                ITimelineEventProvider, IWikiSyntaxProvider)
+ 
+    stats_provider = ExtensionOption('trac', 'milestone_stats', ITicketGroupStatsProvider,
+                            'DefaultTicketGroupStatsProvider',
+        """Name of the component implementing `ITicketGroupStatsProvider`, 
+        which is used to collect statistics on groups of tickets for display
+        in the milestone views.""")
+    
 
     # INavigationContributor methods
 
@@ -458,28 +558,41 @@ class MilestoneModule(Component):
             by = req.args.get('by', available_groups[0]['name'])
 
         tickets = get_tickets_for_milestone(self.env, db, milestone.name, by)
-        data['stats'] = calc_ticket_stats(tickets)
-        data['stats']['available_groups'] = available_groups
-        data['stats']['grouped_by'] = by
-        data['queries'] = get_query_links(req, milestone.name)
+
+        stat = get_ticket_stats(self.stats_provider, tickets)
+        data['stats'] = {'available_groups': available_groups, 
+                         'grouped_by': by}
+        data['stats'].update(milestone_stat_to_hdf(self.env, stat,
+                                                  milestone.name))
 
         data['stats']['groups'] = []
         groups = _get_groups(self.env, db, by)
-        max_percent_total = 0
+        max_count = 0
+        group_stats = []
+
         for group in groups:
             group_tickets = [t for t in tickets if t[by] == group]
             if not group_tickets:
                 continue
-            data['stats']['groups'].append({'name': group})
-            percent_total = 0
-            if len(tickets) > 0:
-                percent_total = float(len(group_tickets)) / float(len(tickets))
-                if percent_total > max_percent_total:
-                    max_percent_total = percent_total
-            data['stats']['groups'][-1]['percent_total'] = percent_total * 100
-            data['stats']['groups'][-1]['stats'] = calc_ticket_stats(group_tickets)
-            data['stats']['groups'][-1]['queries'] = get_query_links(req, milestone.name, by, group)
-        data['stats']['max_percent_total'] = max_percent_total * 100
+
+            gstat = get_ticket_stats(self.stats_provider, group_tickets)
+            
+            gs_dict = {'name': group} 
+            gs_dict['stats'] = milestone_stat_to_hdf(self.env, gstat,
+                                                 milestone.name, by, group)
+                
+            if gstat.count > max_count:
+                max_count = gstat.count
+             
+            group_stats.append(gstat)                
+            data['stats']['groups'].append(gs_dict)
+        
+        grp_no = 0
+        for gstat in group_stats:
+            d = data['stats']['groups'][grp_no]
+            d['percent_of_max_total'] = (float(gstat.count) /
+                                        float(max_count) * 100)
+            grp_no +=1
 
         return 'milestone_view.html', data, None
 

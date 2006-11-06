@@ -481,7 +481,7 @@ class ChangesetModule(Component):
                         'new': new_node and node_info(new_node),
                         'props': props,
                         'diffs': diffs}
-                if change == Changeset.EDIT and not show_diffs:
+                if change in Changeset.DIFF_CHANGES and not show_diffs:
                     if chgset:
                         diff_href = req.href.changeset(new_node.rev,
                                                        new_node.path)
