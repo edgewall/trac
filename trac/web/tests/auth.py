@@ -1,3 +1,4 @@
+from trac.core import TracError
 from trac.test import EnvironmentStub, Mock
 from trac.web.auth import LoginModule
 from trac.web.href import Href
@@ -110,7 +111,7 @@ class LoginModuleTestCase(unittest.TestCase):
     def test_login_no_username(self):
         req = Mock(incookie=Cookie(), href=Href('/trac.cgi'),
                    remote_addr='127.0.0.1', remote_user=None)
-        self.assertRaises(AssertionError, self.module._do_login, req)
+        self.assertRaises(TracError, self.module._do_login, req)
 
     def test_already_logged_in_same_user(self):
         cursor = self.db.cursor()
