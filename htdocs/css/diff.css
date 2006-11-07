@@ -160,5 +160,4 @@
 .diff table.sidebyside tbody.rem td.r { background: #faa }
 .diff table.sidebyside tbody.mod del, .diff table.sidebyside tbody.mod ins {
  background: #fc0; 
- white-space: pre;
 }
