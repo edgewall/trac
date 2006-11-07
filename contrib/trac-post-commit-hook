@@ -71,7 +71,7 @@
 import re
 import os
 import sys
-import time 
+from datetime import datetime 
 
 from trac.env import open_environment
 from trac.ticket.notification import TicketNotifyEmail
@@ -79,7 +79,7 @@ from trac.ticket import Ticket
 from trac.ticket.web_ui import TicketModule
 # TODO: move grouped_changelog_entries to model.py
 from trac.util.text import to_unicode
-from trac.web.href import Href
+from trac.util.datefmt import utc
 
 try:
     from optparse import OptionParser
@@ -105,9 +105,8 @@ parser.add_option('-m', '--msg', dest='msg',
 parser.add_option('-c', '--encoding', dest='encoding',
                   help='The encoding used by the log message.')
 parser.add_option('-s', '--siteurl', dest='url',
-                  help='The base URL to the project\'s trac website (to which '
-                       '/ticket/## is appended).  If this is not specified, '
-                       'the project URL from trac.ini will be used.')
+                  help='(deprecated) the base_url from trac.ini will '
+                  'always be used.')
 
 (options, args) = parser.parse_args(sys.argv[1:])
 
@@ -141,12 +140,8 @@ class CommitHook:
         self.author = author
         self.rev = rev
         self.msg = "(In [%s]) %s" % (rev, msg)
-        self.now = int(time.time()) 
+        self.now = datetime.now(utc)
         self.env = open_environment(project)
-        if url is None:
-            url = self.env.config.get('project', 'url')
-        self.env.href = Href(url)
-        self.env.abs_href = Href(url)
 
         cmdGroups = commandPattern.findall(msg)
 
