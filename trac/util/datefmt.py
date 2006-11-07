@@ -111,7 +111,7 @@ def parse_date(text, tzinfo=None):
         except ValueError:
             continue
     if tm == None:
-        raise ValueError, '%s is not a known date format.' % text
+        raise ValueError('%s is invalid or not a known date format' % text)
     return datetime(*(tm[0:6] + (0, tzinfo)))
 
 def to_timestamp(dt):

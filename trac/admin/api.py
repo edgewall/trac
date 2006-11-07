@@ -14,6 +14,39 @@
 from trac.core import *
 
 
+class AdminCommand(object):
+
+    def __init__(self, env, name=None, description=None):
+        if name is None:
+            name = self.__class__.__name__.lower()
+            if name.endswith('command'):
+                name = name[:-7]
+        if description is None:
+            description = inspect.getdoc(self.__class__)
+        self.env = env
+        self.config = env.config
+        self.log = env.log
+        self.name = name
+        self.description = description
+
+    def complete(self, args):
+        return []
+
+    def execute(self, optparser, args):
+        raise NotImplementedError
+
+
+class IAdminCommandProvider(Interface):
+    """Extension point interface for adding commands to the admin
+    command-line.
+    """
+
+    def get_admin_commands():
+        """Return an `AdminCommand` instance for every supported
+        command.
+        """
+
+
 class IAdminPanelProvider(Interface):
     """Extension point interface for adding panels to the web-based
     administration interface.

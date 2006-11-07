@@ -401,38 +401,43 @@ def dispatch_request(environ, start_response):
     except Exception, e:
         env.log.exception(e)
 
-        try: # clear chrome data is already set
-            del req.chrome
-        except AttributeError:
-            pass
-
-        message = "%s: %s" % (e.__class__.__name__, to_unicode(e))
-        traceback = get_last_traceback()
-
-        frames = []
-        if 'TRAC_ADMIN' in req.perm:
-            tb = sys.exc_info()[2]
-            while tb:
-                if not tb.tb_frame.f_locals.get('__traceback_hide__'):
-                    filename = tb.tb_frame.f_code.co_filename
-                    lineno = tb.tb_lineno - 1
-                    before, line, after = get_lines_from_file(filename,
-                                                              lineno, 5)
-                    frames += [{'traceback': tb, 'filename': filename,
-                                'lineno': lineno, 'line': line,
-                                'lines_before': before, 'lines_after': after,
-                                'function': tb.tb_frame.f_code.co_name,
-                                'vars': tb.tb_frame.f_locals}]
-                tb = tb.tb_next
-
-        data = {'type': 'internal', 'message': message,
-                'traceback': traceback, 'frames': frames,
-                'shorten_line': shorten_line}
-
+        exc_info = sys.exc_info()
         try:
-            req.send_error(sys.exc_info(), status=500, env=env, data=data)
-        except RequestDone:
-            return []
+            message = "%s: %s" % (e.__class__.__name__, to_unicode(e))
+            traceback = get_last_traceback()
+
+            frames = []
+            if 'TRAC_ADMIN' in req.perm:
+                tb = exc_info[2]
+                while tb:
+                    if not tb.tb_frame.f_locals.get('__traceback_hide__'):
+                        filename = tb.tb_frame.f_code.co_filename
+                        lineno = tb.tb_lineno - 1
+                        before, line, after = get_lines_from_file(filename,
+                                                                  lineno, 5)
+                        frames += [{'traceback': tb, 'filename': filename,
+                                    'lineno': lineno, 'line': line,
+                                    'lines_before': before, 'lines_after': after,
+                                    'function': tb.tb_frame.f_code.co_name,
+                                    'vars': tb.tb_frame.f_locals}]
+                    tb = tb.tb_next
+
+            data = {'type': 'internal', 'message': message,
+                    'traceback': traceback, 'frames': frames,
+                    'shorten_line': shorten_line}
+
+            try: # clear chrome data is already set
+                del req.chrome
+            except AttributeError:
+                pass
+
+            try:
+                req.send_error(exc_info, status=500, env=env, data=data)
+            except RequestDone:
+                return []
+
+        finally:
+            del exc_info
 
 def send_project_index(environ, start_response, parent_dir=None,
                        env_paths=None):
