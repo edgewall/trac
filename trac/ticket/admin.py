@@ -119,14 +119,14 @@ class MilestoneAdminPage(Component):
                     mil.name = req.args.get('name')
                     due = req.args.get('duedate', '')
                     try:
-                        mil.due = due and parse_date(due) or 0
+                        mil.due = due and datefmt.parse_date(due) or 0
                     except ValueError, e:
                         raise TracError(e, 'Invalid Date Format')
                     if 'completed' in req.args:
                         completed = req.args.get('completeddate', '')
                         try:
                             mil.completed = completed and \
-                                            parse_date(completed) or 0
+                                            datefmt.parse_date(completed) or 0
                         except ValueError, e:
                             raise TracError(e, 'Invalid Date Format')
                         if mil.completed > time.time():
@@ -150,7 +150,7 @@ class MilestoneAdminPage(Component):
                     mil = model.Milestone(self.env)
                     mil.name = req.args.get('name')
                     if req.args.get('duedate'):
-                        mil.due = parse_date(req.args.get('duedate'))
+                        mil.due = datefmt.parse_date(req.args.get('duedate'))
                     mil.insert()
                     req.redirect(req.href.admin(cat, page))
 
@@ -208,7 +208,7 @@ class VersionAdminPage(Component):
                 if req.args.get('save'):
                     ver.name = req.args.get('name')
                     if req.args.get('time'):
-                        ver.time =  parse_date(req.args.get('time'))
+                        ver.time =  datefmt.parse_date(req.args.get('time'))
                     ver.description = req.args.get('description')
                     ver.update()
                     req.redirect(req.href.admin(cat, page))
@@ -225,7 +225,7 @@ class VersionAdminPage(Component):
                     ver = model.Version(self.env)
                     ver.name = req.args.get('name')
                     if req.args.get('time'):
-                        ver.time = parse_date(req.args.get('time'))
+                        ver.time = datefmt.parse_date(req.args.get('time'))
                     ver.insert()
                     req.redirect(req.href.admin(cat, page))
                          
