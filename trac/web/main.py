@@ -221,37 +221,35 @@ class RequestDispatcher(Component):
         # Process the request and render the template
         try:
             try:
-                try:
-                    # Protect against CSRF attacks.
-                    if (req.method == 'POST' and
-                        req.args.get('__FORM_TOKEN') != req.form_token):
-                        raise TracError('Missing or invalid form token. '
-                                        'Do you have cookies enabled?')
+                # Protect against CSRF attacks.
+                if (req.method == 'POST' and
+                    req.args.get('__FORM_TOKEN') != req.form_token):
+                    raise TracError('Missing or invalid form token. '
+                                    'Do you have cookies enabled?')
 
-                    resp = chosen_handler.process_request(req)
-                    if resp:
-                        template, content_type = \
-                                  self._post_process_request(req, *resp)
-                        req.display(template, content_type or 'text/html')
-                    else:
-                        self._post_process_request(req)
-                except RequestDone:
-                    raise
-                except:
-                    err = sys.exc_info()
-                    try:
-                        self._post_process_request(req)
-                    except Exception, e:
-                        self.log.exception(e)
-                    raise err[0], err[1], err[2]
-            except PermissionError, e:
-                raise HTTPForbidden(to_unicode(e))
-            except TracError, e:
-                raise HTTPInternalError(e.message)
-        finally:
-            # Give the session a chance to persist changes
-            if req.session:
-                req.session.save()
+                resp = chosen_handler.process_request(req)
+                if resp:
+                    template, content_type = self._post_process_request(req,
+                                                                        *resp)
+                    # Give the session a chance to persist changes
+                    if req.session:
+                        req.session.save()
+                    req.display(template, content_type or 'text/html')
+                else:
+                    self._post_process_request(req)
+            except RequestDone:
+                raise
+            except:
+                err = sys.exc_info()
+                try:
+                    self._post_process_request(req)
+                except Exception, e:
+                    self.log.exception(e)
+                raise err[0], err[1], err[2]
+        except PermissionError, e:
+            raise HTTPForbidden(to_unicode(e))
+        except TracError, e:
+            raise HTTPInternalError(e.message)
 
     def _pre_process_request(self, req, chosen_handler):
         for f in self.filters:
