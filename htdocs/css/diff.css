@@ -108,7 +108,7 @@
 .diff table tbody td {
  background: #fff;
  font: normal 11px monospace;
- overflow: hidden;
+ overflow: visible;
  padding: 1px 2px;
  vertical-align: top;
 }
@@ -116,9 +116,7 @@
  background: #f7f7f7;
  border: 1px solid #d7d7d7;
 }
-.diff table td del, .diff table td ins { text-decoration: none; white-space: pre; }
-.diff table td del { color: #600 }
-.diff table td ins { color: #060 }
+.diff td ins, .diff td del {text-decoration: none;}
 
 /* Styles for the inline diff */
 .diff table.inline tbody.mod td.l, .diff table.inline tbody.rem td.l {
@@ -141,8 +139,16 @@
 .diff table.inline tbody.add tr.first td.r { border-top-width: 1px }
 .diff table.inline tbody.mod tr.last td.r,
 .diff table.inline tbody.add tr.last td.r { border-bottom-width: 1px }
-.diff table.inline tbody.mod td del { background: #e99; color: #000 }
-.diff table.inline tbody.mod td ins { background: #9e9; color: #000 }
+.diff table.inline tbody.mod td del { 
+ background: #e99; 
+ color: #000;
+ white-space: pre;
+}
+.diff table.inline tbody.mod td ins { 
+ background: #9e9; 
+ color: #000;
+ white-space: pre;
+}
 
 /* Styles for the side-by-side diff */
 .diff table.sidebyside colgroup.content { width: 50% }
@@ -153,5 +159,6 @@
 .diff table.sidebyside tbody.rem td.l { background: #f88 }
 .diff table.sidebyside tbody.rem td.r { background: #faa }
 .diff table.sidebyside tbody.mod del, .diff table.sidebyside tbody.mod ins {
- background: #fc0;
+ background: #fc0; 
+ white-space: pre;
 }
