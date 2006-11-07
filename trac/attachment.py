@@ -426,7 +426,7 @@ class AttachmentModule(Component):
 
     def _do_save(self, req, attachment):
         perm_map = {'ticket': 'TICKET_APPEND', 'wiki': 'WIKI_MODIFY'}
-        req.perm.reqiure(perm_map[attachment.parent_type])
+        req.perm.require(perm_map[attachment.parent_type])
 
         if req.args.has_key('cancel'):
             req.redirect(attachment.parent_href(req))
