@@ -118,8 +118,13 @@ class LoginModule(Component):
         problems on installations authenticating against Windows which is not
         case sensitive regarding user names and domain names
         """
-        assert req.remote_user, 'Authentication information not available.'
-
+        if not req.remote_user:
+            raise TracError(html("Authentication information not available. "
+                                 "Please refer to the ",
+                                 html.a('installation documentation',
+                                        title="Configuring Authentication",
+                                        href=req.href.wiki('TracInstall') +
+                                        "#ConfiguringAuthentication"), "."))
         remote_user = req.remote_user
         if self.ignore_case:
             remote_user = remote_user.lower()

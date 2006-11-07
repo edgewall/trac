@@ -465,6 +465,9 @@ class Element(Fragment):
 
 class Tags(object):
 
+    def __call__(self, *args):
+        return Fragment()(*args)
+
     def __getattribute__(self, name):
         return Element(name.lower())
 
