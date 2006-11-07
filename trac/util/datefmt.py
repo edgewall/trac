@@ -190,21 +190,22 @@ except ImportError:
     # Use a makeshift timezone implementation if pytz is not available.
     # This implementation only supports fixed offset time zones.
     #
-    _timezones = [FixedOffset(840, 'Etc/GMT-14'), FixedOffset(780, 'Etc/GMT-13'),
-                  FixedOffset(720, 'Etc/GMT-12'), FixedOffset(660, 'Etc/GMT-11'),
-                  FixedOffset(600, 'Etc/GMT-10'), FixedOffset(540, 'Etc/GMT-9'),
-                  FixedOffset(480, 'Etc/GMT-8'),  FixedOffset(420, 'Etc/GMT-7'),
-                  FixedOffset(360, 'Etc/GMT-6'),  FixedOffset(300, 'Etc/GMT-5'),
-                  FixedOffset(240, 'Etc/GMT-4'),  FixedOffset(180, 'Etc/GMT-3'),
-                  FixedOffset(120, 'Etc/GMT-2'),  FixedOffset(60, 'Etc/GMT-1'),
-                  FixedOffset(0, 'Etc/GMT-0'),    FixedOffset(0, 'Etc/GMT'),
-                  FixedOffset(0, 'Etc/GMT+0'),    FixedOffset(-60, 'Etc/GMT+1'),
-                  FixedOffset(-120, 'Etc/GMT+2'), FixedOffset(-180, 'Etc/GMT+3'),
-                  FixedOffset(-240, 'Etc/GMT+4'), FixedOffset(-300, 'Etc/GMT+5'),
-                  FixedOffset(-360, 'Etc/GMT+6'), FixedOffset(-420, 'Etc/GMT+7'),
-                  FixedOffset(-480, 'Etc/GMT+8'), FixedOffset(-540, 'Etc/GMT+9'),
-                  FixedOffset(-600, 'Etc/GMT+10'), FixedOffset(-660, 'Etc/GMT+11'),
-                  FixedOffset(-720, 'Etc/GMT+12')]
+    _timezones = [
+        FixedOffset(840, 'Etc/GMT-14'), FixedOffset(780, 'Etc/GMT-13'),
+        FixedOffset(720, 'Etc/GMT-12'), FixedOffset(660, 'Etc/GMT-11'),
+        FixedOffset(600, 'Etc/GMT-10'), FixedOffset(540, 'Etc/GMT-9'),
+        FixedOffset(480, 'Etc/GMT-8'),  FixedOffset(420, 'Etc/GMT-7'),
+        FixedOffset(360, 'Etc/GMT-6'),  FixedOffset(300, 'Etc/GMT-5'),
+        FixedOffset(240, 'Etc/GMT-4'),  FixedOffset(180, 'Etc/GMT-3'),
+        FixedOffset(120, 'Etc/GMT-2'),  FixedOffset(60, 'Etc/GMT-1'),
+        FixedOffset(0, 'Etc/GMT-0'),    FixedOffset(0, 'Etc/GMT'),
+        FixedOffset(0, 'Etc/GMT+0'),    FixedOffset(-60, 'Etc/GMT+1'),
+        FixedOffset(-120, 'Etc/GMT+2'), FixedOffset(-180, 'Etc/GMT+3'),
+        FixedOffset(-240, 'Etc/GMT+4'), FixedOffset(-300, 'Etc/GMT+5'),
+        FixedOffset(-360, 'Etc/GMT+6'), FixedOffset(-420, 'Etc/GMT+7'),
+        FixedOffset(-480, 'Etc/GMT+8'), FixedOffset(-540, 'Etc/GMT+9'),
+        FixedOffset(-600, 'Etc/GMT+10'), FixedOffset(-660, 'Etc/GMT+11'),
+        FixedOffset(-720, 'Etc/GMT+12')]
     all_timezones = [z._name for z in _timezones]
     _tzmap = dict([(z._name, z) for z in _timezones])
 
