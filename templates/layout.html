@@ -2,13 +2,14 @@
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:py="http://genshi.edgewall.org/"
       xmlns:xi="http://www.w3.org/2001/XInclude"
+      xmlns:py="http://genshi.edgewall.org/"
       py:strip="">
 
   <head py:match="head">
-    <title py:with="title = unicode(select('title/text()'))">
-      ${' – '.join(filter(None, [title, project.name, 'Trac']))}
+    <title py:with="title = list(select('title/text()'))">
+      <py:if test="title">${title} –</py:if>
+      ${' – '.join(filter(None, [project.name, 'Trac']))}
     </title>
     <py:if test="chrome.links">
       <py:for each="rel, links in chrome.links.items()">
