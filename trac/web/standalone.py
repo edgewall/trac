@@ -99,6 +99,10 @@ class TracHTTPRequestHandler(WSGIRequestHandler):
 
     server_version = 'tracd/' + VERSION
 
+    def address_string(self):
+        # Disable reverse name lookups
+        return self.client_address[:2][0]
+
 
 def main():
     from optparse import OptionParser, OptionValueError
