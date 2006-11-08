@@ -308,7 +308,7 @@
      </div><br />
      <?cs if trac.acl.WIKI_ADMIN ?>
       <div class="options">
-       <label><input type="checkbox" name="readonly" id="readonly"<?cs
+       <label><input type="checkbox" name="readonly" id="readonly" <?cs
          if wiki.readonly == "1"?>checked="checked"<?cs /if ?> />
        Page is read-only</label>
       </div>
