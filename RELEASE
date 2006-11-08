@@ -12,7 +12,7 @@ list. List information, subscription and archive available at:
   http://trac.edgewall.org/wiki/MailingList
 
 
-Trac 0.10.1 is a security and bug-fix release. This release fixes
+Trac 0.10.1 is a security and bug fix release. This release fixes
 a Cross Site Request Forgery (CSRF) vulnerability reported by Daniel 
 Kahn Gillmor. Trac 0.10.1 also fixes a number of bugs found since the
 last release. The complete list of closed tickets can be found here:
