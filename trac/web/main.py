@@ -30,7 +30,7 @@ from trac.config import ExtensionOption, Option, OrderedExtensionsOption
 from trac.core import *
 from trac.env import open_environment
 from trac.perm import PermissionCache, PermissionError, PermissionSystem
-from trac.util import get_lines_from_file, get_last_traceback
+from trac.util import get_lines_from_file, get_last_traceback, hex_entropy
 from trac.util.compat import partial, reversed
 from trac.util.datefmt import format_datetime, http_date, localtz, timezone
 from trac.util.html import Markup
@@ -262,17 +262,20 @@ class RequestDispatcher(Component):
     def _get_form_token(self, req):
         """Used to protect against CSRF.
 
-        The 'trac_auth' cookie is a good and strong shared secret, only
-        known by the user it belongs to and Trac itself.
-
-        The session id is our second best option, not as reliable since
-        it will change on each request if the user has cookies disabled in
-        his/her browser.
+        The 'form_token' is strong shared secret stored in a user cookie.
+        By requiring that every POST form to contain this value we're
+        able to protect against CSRF attacks. Since this value is only known
+        by the user and not by an attacker.
+        If the the user does not have a `trac_form_token` cookie a new
+        one is generated.
         """
-        if req.incookie.has_key('trac_auth'):
-            return req.incookie['trac_auth'].value
+        if req.incookie.has_key('trac_form_token'):
+            return req.incookie['trac_form_token'].value
         else:
-            return req.session.sid
+            req.outcookie['trac_form_token'] = hex_entropy(24)
+            req.outcookie['trac_form_token']['path'] = req.base_path
+            req.outcookie['trac_form_token']['expires'] = 3600*24*90 # 90 days
+            return req.outcookie['trac_form_token'].value
 
     def _pre_process_request(self, req, chosen_handler):
         for filter_ in self.filters:
