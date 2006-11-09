@@ -438,8 +438,7 @@ class MilestoneModule(Component):
         if req.method == 'POST':
             if req.args.has_key('cancel'):
                 if milestone.exists:
-                    safe_name = milestone.name.replace('/', '%2F')
-                    req.redirect(req.href.milestone(safe_name))
+                    req.redirect(req.href.milestone(milestone.name))
                 else:
                     req.redirect(req.href.roadmap())
             elif action == 'edit':
@@ -511,8 +510,7 @@ class MilestoneModule(Component):
             milestone.insert()
         db.commit()
 
-        safe_name = milestone.name.replace('/', '%2F')
-        req.redirect(req.href.milestone(safe_name))
+        req.redirect(req.href.milestone(milestone.name))
 
     def _render_confirm(self, req, db, milestone):
         req.perm.require('MILESTONE_DELETE')
@@ -563,7 +561,7 @@ class MilestoneModule(Component):
         data['stats'] = {'available_groups': available_groups, 
                          'grouped_by': by}
         data['stats'].update(milestone_stat_to_hdf(self.env, stat,
-                                                  milestone.name))
+                                                   milestone.name))
 
         data['stats']['groups'] = []
         groups = _get_groups(self.env, db, by)
@@ -579,7 +577,7 @@ class MilestoneModule(Component):
             
             gs_dict = {'name': group} 
             gs_dict['stats'] = milestone_stat_to_hdf(self.env, gstat,
-                                                 milestone.name, by, group)
+                                                     milestone.name, by, group)
                 
             if gstat.count > max_count:
                 max_count = gstat.count

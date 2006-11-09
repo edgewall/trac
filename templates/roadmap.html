@@ -34,7 +34,7 @@
         <li py:for="idx, milestone in enumerate(milestones)" class="milestone">
 
           <div class="info">
-            <h2><a href="${href.milestone(milestone.name.replace('/', '%2F'))}">
+            <h2><a href="${href.milestone(milestone.name)}">
               Milestone: <em>${milestone.name}</em>
             </a></h2>
             <py:choose>
