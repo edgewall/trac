@@ -294,7 +294,11 @@ class Request(object):
             content_type = 'text/plain'
             data = str(self.hdf)
         else:
-            data = self.hdf.render(template)
+            try:
+                form_token = self.form_token
+            except AttributeError:
+                form_token = None
+            data = self.hdf.render(template, form_token)
 
         self.send(data, content_type, status)
 

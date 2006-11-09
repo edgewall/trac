@@ -14,6 +14,8 @@
 #
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
+from HTMLParser import HTMLParser
+
 from trac.core import TracError
 from trac.util.html import Markup, Fragment, escape
 from trac.util.text import to_unicode
@@ -288,7 +290,7 @@ class HDFWrapper:
         cs.parseStr(string)
         return cs
 
-    def render(self, template):
+    def render(self, template, form_token=None):
         """Render the HDF using the given template.
 
         The template parameter can be either an already parse neo_cs.CS
@@ -300,7 +302,59 @@ class HDFWrapper:
             import neo_cs
             template = neo_cs.CS(self.hdf)
             template.parseFile(filename)
-        return template.render()
+
+        if form_token:
+            from cStringIO import StringIO
+            out = StringIO()
+            injector = FormTokenInjector(form_token, out)
+            injector.feed(template.render())
+            return out.getvalue()
+        else:
+            return template.render()
+
+
+class FormTokenInjector(HTMLParser):
+    """Identify and protect forms from CSRF attacks
+
+    This filter works by adding a input type=hidden field to POST forms.
+    """
+    def __init__(self, form_token, out):
+        HTMLParser.__init__(self)
+        self.out = out
+        self.token = form_token
+
+    def handle_starttag(self, tag, attrs):
+        self.out.write(self.get_starttag_text())
+        if tag.lower() == 'form':
+            for name, value in attrs:
+                if name.lower() == 'method' and value.lower() == 'post':
+                    self.out.write('<input type="hidden" name="__FORM_TOKEN"'
+                                   ' value="%s"/>' % self.token)
+                    break
+                    
+    def handle_startendtag(self, tag, attrs):
+        self.out.write(self.get_starttag_text())
+        
+    def handle_charref(self, name):
+        self.out.write('&#%s;' % name)
+
+    def handle_entityref(self, name):
+        self.out.write('&%s;' % name)
+
+    def handle_comment(self, data):
+        self.out.write('<!--%s-->' % data)
+
+    def handle_decl(self, data):
+        self.out.write('<!%s>' % data)
+
+    def handle_pi(self, data):
+        self.out.write('<?%s?>' % data)
+
+    def handle_data(self, data):
+        self.out.write(data)
+
+    def handle_endtag(self, tag):
+        self.out.write('</' + tag + '>')
 
 
 if __name__ == '__main__':
