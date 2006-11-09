@@ -1,0 +1,18 @@
+#!/usr/bin/make -f
+DEB_PYTHON_SYSTEM := pysupport
+
+include /usr/share/cdbs/1/rules/debhelper.mk
+include /usr/share/cdbs/1/class/python-distutils.mk
+include /usr/share/cdbs/1/rules/simple-patchsys.mk
+
+DEB_INSTALL_DOCS_ALL=$(filter-out $(DEB_INSTALL_CHANGELOGS_ALL),$(shell for f in contrib README RELEASE UPGRADE AUTHORS THANKS; do if test -s $(DEB_SRCDIR)/$$f; then echo $(DEB_SRCDIR)/$$f; fi; done))
+
+clean::
+	rm -f trac/__init__.pyc
+
+binary-post-install/trac::
+	chmod 755 debian/trac/usr/share/python-support/trac/trac/test.py
+#	chmod 644 debian/trac/usr/share/trac/htdocs/css/code.css
+	chmod 644 debian/trac/usr/share/trac/htdocs/js/wikitoolbar.js
+#	mv debian/trac/usr/lib/python2.3/site-packages/trac/db_default.py debian/trac/etc/trac/
+#	(cd debian/trac ; ln -fs etc/trac/db_default.py usr/lib/python2.3/site-packages/trac/db_default.py)
