@@ -229,7 +229,7 @@ class RoadmapModule(Component):
         stats = []
         queries = []
 
-        for idx, milestone in enumerate(milestones):
+        for milestone in milestones:
             tickets = get_tickets_for_milestone(self.env, db, milestone.name,
                                                 'owner')
             stat = get_ticket_stats(self.stats_provider, tickets)
