@@ -499,17 +499,17 @@ class TicketModule(Component):
         internal_cnum = cnum
         if cnum and replyto: # record parent.child relationship
             internal_cnum = '%s.%s' % (replyto, cnum)
-        ticket.save_changes(get_reporter_id(req, 'author'),
-                            req.args.get('comment'), when=now, db=db,
-                            cnum=internal_cnum)
-        db.commit()
+        if ticket.save_changes(get_reporter_id(req, 'author'),
+                               req.args.get('comment'), when=now, db=db,
+                               cnum=internal_cnum):
+            db.commit()
 
-        try:
-            tn = TicketNotifyEmail(self.env)
-            tn.notify(ticket, newticket=False, modtime=now)
-        except Exception, e:
-            self.log.exception("Failure sending notification on change to "
-                               "ticket #%s: %s" % (ticket.id, e))
+            try:
+                tn = TicketNotifyEmail(self.env)
+                tn.notify(ticket, newticket=False, modtime=now)
+            except Exception, e:
+                self.log.exception("Failure sending notification on change to "
+                                   "ticket #%s: %s" % (ticket.id, e))
 
         fragment = cnum and '#comment:'+cnum or ''
         req.redirect(req.href.ticket(ticket.id) + fragment)

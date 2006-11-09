@@ -189,12 +189,13 @@ class Ticket(object):
     def save_changes(self, author, comment, when=None, db=None, cnum=''):
         """
         Store ticket changes in the database. The ticket must already exist in
-        the database.
+        the database.  Returns False if there were no changes to save, True
+        otherwise.
         """
         assert self.exists, 'Cannot update a new ticket'
 
         if not self._old and not comment:
-            return # Not modified
+            return False # Not modified
 
         db, handle_ta = self._get_db_for_write(db)
         cursor = db.cursor()
@@ -266,6 +267,7 @@ class Ticket(object):
 
         for listener in TicketSystem(self.env).change_listeners:
             listener.ticket_changed(self, comment, author, old_values)
+        return True
 
     def get_changelog(self, when=None, db=None):
         """Return the changelog as a list of tuples of the form
