@@ -186,23 +186,15 @@
 
   <!--!  Display a generic "progress bar", for use in roadmap and milestone.
   -
-  -      Expected properties of the `stats` argument:
-  -       .intervals    list of intervals, each with:
-  -         .title        the common identifier for this group
-  -         .caps_title   same as above but capitalized
-  -         .css_class    the CSS class used to customize the look of the interval
-  -         .percent      the actual width in % of the interval
-  -         .count        the actual number of units taken by this interval
-  -      .unit         the name of the unit used
-  -      .done_percent the percent considered "done"
-  -      .count        the total number of units
+  -      `stats` argument is a TicketGroupStats instance
+  -       `interval_hrefs` are links to a query for each of the stats.intervals
   -->
-  <py:def function="progress_bar(stats, percent=None, legend=True, style=None)">
+  <py:def function="progress_bar(stats, interval_hrefs, percent=None, legend=True, style=None)">
     <table class="progress" style="$style">
       <tr>
-        <td py:for="interval in stats.intervals"
+        <td py:for="idx, interval in enumerate(stats.intervals)"
             class="$interval.css_class" style="width: ${interval.percent}%">
-          <a href="$interval.href"
+          <a href="${interval_hrefs[idx]}"
             title="${interval.count} of ${stats.count} ${stats.unit}${
             stats.count != 1 and 's' or ''} ${interval.title}"></a>
         </td>
@@ -210,11 +202,11 @@
     </table>
     <p class="percent">${percent is None and '%d%%' % stats.done_percent or percent}</p>
     <dl py:if="legend">
-      <py:for each="interval in stats.intervals">
-        <dt>${interval.caps_title} ${stats.unit}s:</dt>
-        <dd><a href="$interval.href">${interval.count}</a></dd>
+      <py:for each="idx, interval in enumerate(stats.intervals)">
+        <dt>${interval.title.capitalize()} ${stats.unit}s:</dt>
+        <dd><a href="${interval_hrefs[idx]}">${interval.count}</a></dd>
       </py:for>
     </dl>
-  </py:def>
+</py:def>
 
 </div>

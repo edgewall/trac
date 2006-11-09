@@ -33,7 +33,7 @@
       <ul class="milestones">
         <li py:for="idx, milestone in enumerate(milestones)" class="milestone">
 
-          <div class="info">
+          <div class="info" py:with="mstats = milestone_stats[idx]">
             <h2><a href="${href.milestone(milestone.name)}">
               Milestone: <em>${milestone.name}</em>
             </a></h2>
@@ -54,7 +54,7 @@
                 No date set
               </p>
             </py:choose>
-            <py:if test="stats[idx].count">${progress_bar(stats[idx])}</py:if>
+            <py:if test="mstats.stats.count">${progress_bar(mstats.stats, mstats.interval_hrefs)}</py:if>
           </div>
 
           <div class="description">${wiki_to_html(milestone.description)}</div>
