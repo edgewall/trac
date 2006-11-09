@@ -32,13 +32,12 @@ class SvnAuthzOptions(Component):
         """The module prefix used in the authz_file.""")
 
 
-def SubversionAuthorizer(env, authname):
+def SubversionAuthorizer(env, repos, authname):
     authz_file = env.config.get('trac', 'authz_file')
     if not authz_file:
         return Authorizer()
 
     module_name = env.config.get('trac', 'authz_module_name')
-    repos = env.get_repository()
     return RealSubversionAuthorizer(repos, authname, module_name, authz_file)
 
 def parent_iter(path):

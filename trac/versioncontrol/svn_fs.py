@@ -256,11 +256,13 @@ class SubversionConnector(Component):
         The repository is generally wrapped in a `CachedRepository`,
         unless `direct-svn-fs` is the specified type.
         """
-        authz = None
+        repos = SubversionRepository(dir, None, self.log)
+        crepos = CachedRepository(self.env.get_db_cnx(), repos, None, self.log)
         if authname:
-            authz = SubversionAuthorizer(self.env, authname)
-        repos = SubversionRepository(dir, authz, self.log)
-        return CachedRepository(self.env.get_db_cnx(), repos, authz, self.log)
+            authz = SubversionAuthorizer(self.env, crepos, authname)
+            repos.authz = crepos.authz = authz
+        return crepos
+            
 
 
 class SubversionRepository(Repository):
