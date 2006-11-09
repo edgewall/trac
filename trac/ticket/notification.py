@@ -124,10 +124,12 @@ class TicketNotifyEmail(NotifyEmail):
         self.ticket['link'] = link
         
         subject = self.format_subj()
+        if not self.newticket:
+            subject = 'Re: ' + subject
         self.data.update({
             'ticket_props': self.format_props(),
             'ticket_body_hdr': self.format_hdr(),
-            'subject': self.newticket and subject or 'Re: ' + subject,
+            'subject': subject,
             'ticket': ticket.values,
             'changes_body': changes_body,
             'changes_descr': changes_descr,
