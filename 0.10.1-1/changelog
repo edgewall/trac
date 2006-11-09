@@ -1,0 +1,299 @@
+trac (0.10.1-1) unstable; urgency=high
+
+  * New Upstream Release (Closes: #397683)
+  * Depend on python-psycopg2 (Closes: #397725)
+  * Security fix, hence urgency=high. No DSA or CVS available yet.
+  * Upstream changes (most important ones):
+    - fixed CSRF vulnerability
+    - better database handling
+    - only TICKET_ADMIN can assign a passed milestone to a ticket
+    - failed to upload attachments
+    - more (comprehensive list can be found at
+      http://trac.edgewall.org/query?status=closed&milestone=0.10.1)
+
+ -- Jesus Climent <jesus.climent@hispalinux.es>  Thu,  9 Nov 2006 11:53:53 +0200
+
+trac (0.10-3) unstable; urgency=low
+
+  * debian/control: changed the Conflicts: entry with a versioned oned
+    (Closes: #393842, #384381)
+
+ -- Jesus Climent <jesus.climent@hispalinux.es>  Wed, 18 Oct 2006 11:47:41 +0300
+
+trac (0.10-2) unstable; urgency=medium
+
+  * debian/control: Added a Conflicts: against libapache2-mod-python2.3 to
+    avoid breakage if using it through apache2 (Closes: #384381).
+  * Urgency = high to get it back in etch.
+  * Added missing changelog entries from Andres Salomon.
+
+ -- Jesus Climent <jesus.climent@hispalinux.es>  Mon, 16 Oct 2006 21:58:29 +0300
+
+trac (0.10-1) unstable; urgency=low
+
+  * New upstream release
+  * Add a watch file
+  * Add a NEWS entry to remember user that he needs to handle the upgrade
+    byhand
+
+ -- Otavio Salvador <otavio@debian.org>  Thu,  5 Oct 2006 13:51:10 -0300
+
+trac (0.10~b1-1) experimental; urgency=low
+
+  * New upstream release, finally.
+  * Incorporate new python policy magic (closes: #384969).
+
+ -- Andres Salomon <dilinger@debian.org>  Wed, 30 Aug 2006 01:36:55 +0000
+
+trac (0.9.99+0.10svn20060710-1) experimental; urgency=low
+
+  * New snapshot of 0.10dev (revision 3519).  Note that this includes
+    the security update that was in the 0.9.6 release.
+
+ -- Andres Salomon <dilinger@debian.org>  Mon, 10 Jul 2006 15:36:51 -0400
+
+trac (0.9.99+0.10svn20060626-1) experimental; urgency=low
+
+  * New snapshot of 0.10dev (revision 3488).
+
+ -- Andres Salomon <dilinger@debian.org>  Mon, 26 Jun 2006 17:33:41 -0400
+
+trac (0.9.99+0.10svn20060610-1) experimental; urgency=low
+
+  * New upstream release; stick a snapshot of 0.10dev (revision 3390) into
+    experimental (closes: #370657).
+
+ -- Andres Salomon <dilinger@debian.org>  Sat, 10 Jun 2006 18:29:25 -0400
+
+trac (0.9.6-3) unstable; urgency=low
+
+  * Make the python-support build-dep-indep a normal build-depends, and
+    drop the python dep (python-support pulls in python).
+  * Reset permissions on wikitoolbar.js during build.
+  * Drop old usr/lib/python2.3/site-packages/trac/ path from package, which
+    cdbs seemed to be picking up for some reason (closes: #385166).
+
+ -- Andres Salomon <dilinger@debian.org>  Wed, 30 Aug 2006 01:53:25 +0000
+
+trac (0.9.6-2) unstable; urgency=low
+
+  * Upgraded to the new Python policy (Closes: #380977)
+  * Standards updated to 3.7.2, no changes needed.
+
+ -- Jesus Climent <jesus.climent@hispalinux.es>  Thu, 10 Aug 2006 21:41:04 +0300
+
+trac (0.9.6-1) unstable; urgency=high
+
+  * New upstream release.
+  * Security upload, hence urgency set to high.
+    - Fixed reStructuredText breach of privacy and denial of service
+      vulnerability found by Felix Wiemann.
+    - trac-post-commit-hook fix.
+  * Added -f to rm to enforce removal of file, even if it does not exist.
+
+ -- Jesus Climent <jesus.climent@hispalinux.es>  Thu,  6 Jul 2006 23:28:04 +0300
+
+trac (0.9.5-2) unstable; urgency=low
+
+  * Add myself to uploaders.
+  * Ack NMU; thanks Lars!
+  * Drop debian-specific manpages; upstream already includes them.  Allow
+    debhelper to create manpage directory, as well.
+  * Change the path for test.py in debian/rules to match regardless of
+    the python version.
+  * Fix grammar errors in README.Debian; thanks to Micah Anderson for the
+    patch (closes: #372188).
+
+ -- Andres Salomon <dilinger@debian.org>  Sat, 10 Jun 2006 05:44:19 +0000
+
+trac (0.9.5-1.1) unstable; urgency=low
+
+  * Non-maintainer upload.
+  * Fix debian/rules clean target so it doesn't break by trying to remove
+    files even when they don't exist. Closes: #366827.
+  * Updated build dependency for debhelper to be at leat 4.1.0, since that
+    is required for cdbs's debhelper.mk to work (according to linda, at
+    least).
+
+ -- Lars Wirzenius <liw@iki.fi>  Sun, 21 May 2006 07:41:47 +0300
+
+trac (0.9.5-1) unstable; urgency=high
+
+  * New upstream release.
+  * Security upload, hence urgency set to HIGH.
+    - Fixed wiki macro XSS vulnerability.
+    - Smaller memory usage when accessing subversion history.
+    - Fixed issue with incorrectly generated urls when installed behind a web
+      proxy.
+
+ -- Jesus Climent <jesus.climent@hispalinux.es>  Tue, 18 Apr 2006 20:04:25 +0000
+
+trac (0.9.4-3) unstable; urgency=low
+
+  * Set a proper python-subversion dependency (Closes: #356797)
+
+ -- Jesus Climent <jesus.climent@hispalinux.es>  Tue, 28 Mar 2006 18:49:06 +0000
+
+trac (0.9.4-2) unstable; urgency=low
+
+  * Revert db_default.py move. (Reopen: #332657)
+
+ -- Otavio Salvador <otavio@debian.org>  Thu, 16 Feb 2006 10:45:24 -0200
+
+trac (0.9.4-1) unstable; urgency=low
+
+  * New upstream release.
+  * Revert back compatibility level to 4 allowing easier backporting to
+    Sarge.
+  * Move db_default.py to /etc/trac allowing better user customizability
+    (Closes: #332657).
+
+ -- Otavio Salvador <otavio@debian.org>  Thu, 16 Feb 2006 10:12:23 -0200
+
+trac (0.9.3-1) unstable; urgency=high
+
+  * New upstream release.
+  * Security update (thus urgengy high), fixing:
+    - Fixed XSS vulnerabilities.
+  * Also, fixes:
+    - Timeline RSS feed validity issue resolved.
+    - "trac-admin initenv" now handles empty repositories.
+    - Textile unicode support.
+
+ -- Jesus Climent <jesus.climent@hispalinux.es>  Sun,  8 Jan 2006 20:24:43 +0000
+
+trac (0.9.2-1) unstable; urgency=high
+
+  * New upstream release.
+  * Security update (urgency high), fixing:
+    - an SQL injection vulnerability in the search module.
+    - broken email ticket notifications.
+
+ -- Jesus Climent <jesus.climent@hispalinux.es>  Mon,  5 Dec 2005 19:36:02 +0000
+
+trac (0.9.1-2) unstable; urgency=low
+
+  * The new version solves upgrade problems from experimental 
+    (Closes: #338122)
+  * Tras was relicensed as with a modified BSD license. Change "copyright"
+    accordingly.
+  * Added ${python:Depends} to handle dependencies.
+  * Compat updated to 5.
+
+ -- Jesus Climent <jesus.climent@hispalinux.es>  Thu,  1 Dec 2005 21:46:10 +0000
+
+trac (0.9.1-1) unstable; urgency=HIGH
+
+  * New upstream release
+    - Fix a SQL injection security bug.
+  
+ -- Otavio Salvador <otavio@debian.org>  Thu,  1 Dec 2005 20:02:37 -0200
+
+trac (0.9-1) unstable; urgency=low
+
+  * New upstream release
+    - 10_stolen_from_0.8-branch.patch: not need anymore.
+    - 11_fix_misleading_error.patch: not need anymore.
+    - Fix leak of temporary files; (Closes: #327803)
+    - Apache configuration snip was improved; (Closes: #327206)
+  * debian/control:
+    - Add recommends of python2.3-setuptools to support plugins;
+    - Add python2.3-pysqlite2 and python2.3-psycopg as alternatives to
+      python2.3-sqlite;
+    - Add suggests of libapache2-mod-python;
+    - Add depends of python2.3 package to leave lintain happy.
+  * debian/README.Debian: cite the need of a ready to use Subversion
+    repository to setup Trac environment. (Closes: #327205)
+  
+ -- Otavio Salvador <otavio@debian.org>  Mon, 31 Oct 2005 18:02:30 -0200
+
+trac (0.8.4-2) unstable; urgency=low
+
+  * Add 10_stolen_from_0.8-branch.patch sync with r2041.
+  * Add 11_fix_misleading_error.patch. (Closes: #320926)
+  * Bumb Standards-Version to 3.6.2.
+  
+ -- Otavio Salvador <otavio@debian.org>  Tue,  2 Aug 2005 07:18:11 -0300
+
+trac (0.8.4-1) unstable; urgency=critical
+
+  * New upstream release.
+    - Fixed file upload vulnerability. Trac could be tricked into uploading
+      files outside the environment directory.
+
+ -- Otavio Salvador <otavio@debian.org>  Sun, 19 Jun 2005 16:06:42 -0300
+
+trac (0.8.3-1) unstable; urgency=low
+
+  * New upstream release:
+    - 01_sync_from_0.8-branch.diff droped since all patches was included
+      on this release.
+    - Support Subversion 1.2 was add (Closes: #314200)
+
+ -- Otavio Salvador <otavio@debian.org>  Wed, 15 Jun 2005 19:57:06 -0300
+  
+trac (0.8.1-3) unstable; urgency=low
+
+  * debian/patches/01_sync_from_0.8-branch.diff: 
+    - Sync with r1520. This have all previous fixes and more.
+
+ -- Otavio Salvador <otavio@debian.org>  Sun, 17 Apr 2005 19:09:59 -0300
+
+trac (0.8.1-2) unstable; urgency=low
+
+  * debian/rules:
+    - Add support for patching in build process;
+    - Include contrib/ on doc directory. (Closes: #298969)
+  * debian/patches/01_sync_from_0.8-branch.diff: 
+    - Added in sync with r1461. This include the fix for AssertionError
+      raised when visiting WikiRestructuredTextLinks after clean install
+      bug. (Closes: #301151)
+
+ -- Otavio Salvador <otavio@debian.org>  Tue, 29 Mar 2005 20:44:07 -0300
+
+trac (0.8.1-1) unstable; urgency=low
+
+  * debian/control:
+    - Add suggestion of enscript and python-docutils (Closes: #284094)
+    - Change debhelper build-dependencie to build-depends-indep and set it
+      to be (>= 4.0.0)
+    - Recommends a http server instead of depends of it (Closes: #294674)
+  * New upstream release (Closes: #298011)
+
+ -- Otavio Salvador <otavio@debian.org>  Sat,  5 Mar 2005 17:29:21 -0300
+
+trac (0.8-1) unstable; urgency=low
+
+  * New upstream release (Closes: #282010)
+
+ -- Otavio Salvador <otavio@debian.org>  Mon, 20 Dec 2004 22:49:48 -0200
+
+trac (0.7.1-4) unstable; urgency=low
+
+  * debian/control
+    - changed the order httpd<>apache2
+    - added python as build-dependency (Closes: #270180)
+
+ -- Jesus Climent <jesus.climent@hispalinux.es>  Mon,  6 Sep 2004 09:06:28 +0000
+
+trac (0.7.1-3) unstable; urgency=low
+
+  * debian/control: Depends: changed to include virtual httpd (Closes: #267890)
+
+ -- Jesus Climent <jesus.climent@hispalinux.es>  Sat, 28 Aug 2004 17:48:55 +0300
+
+trac (0.7.1-2) unstable; urgency=low
+
+  * debian/control:
+    - Fixed typo (Closes: #266868)
+
+ -- Jesus Climent <jesus.climent@hispalinux.es>  Thu, 19 Aug 2004 17:03:39 +0000
+
+trac (0.7.1-1) unstable; urgency=low
+
+  * First package upload.
+  * Man pages taken from trunk.
+
+ -- Jesus Climent <jesus.climent@hispalinux.es>  Mon, 19 Jul 2004 12:01:17 +0000
+
+

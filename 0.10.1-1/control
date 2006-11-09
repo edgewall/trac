@@ -1,0 +1,19 @@
+Source: trac
+Section: web
+Priority: optional
+Build-Depends: cdbs (>= 0.4.43), python-all-dev, python-support (>= 0.3), debhelper (>= 4.1.0)
+Maintainer: Jesus Climent <jesus.climent@hispalinux.es>
+Uploaders: Otavio Salvador <otavio@debian.org>, Andres Salomon <dilinger@debian.org>
+Standards-Version: 3.7.2
+
+Package: trac
+Architecture: all
+Depends: ${python:Depends}, python-clearsilver (>= 0.9.3), python-pysqlite2 | python-sqlite (>= 0.4.3) | python-psycopg2, python-subversion, subversion (>= 1.0.1)
+Recommends: apache2 | httpd, python-setuptools (>= 0.5a13)
+Suggests: enscript, python-docutils, libapache2-mod-python
+Conflicts: libapache2-mod-python2.3 (<< 3.2.8-3)
+Description: Enhanced wiki and issue tracking system for software development projects
+ Trac uses a minimalistic approach to web-based software project management.
+ Our mission; to help developers write great software while staying out of
+ the way. Trac should impose as little as possible on a team's established
+ development process and policies.
