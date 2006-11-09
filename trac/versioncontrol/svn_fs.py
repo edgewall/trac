@@ -258,11 +258,13 @@ class SubversionConnector(Component):
         The repository is wrapped in a `CachedRepository`.
         """
         self.env.systeminfo['Subversion'] = self._get_version()
-        authz = None
+        repos = SubversionRepository(dir, None, self.log)
+        crepos = CachedRepository(self.env.get_db_cnx(), repos, None, self.log)
         if authname:
-            authz = SubversionAuthorizer(self.env, authname)
-        repos = SubversionRepository(dir, authz, self.log)
-        return CachedRepository(self.env.get_db_cnx(), repos, authz, self.log)
+            authz = SubversionAuthorizer(self.env, crepos, authname)
+            repos.authz = crepos.authz = authz
+        return crepos
+            
 
     def _get_version(self):
         version = (core.SVN_VER_MAJOR, core.SVN_VER_MINOR, core.SVN_VER_MICRO)
