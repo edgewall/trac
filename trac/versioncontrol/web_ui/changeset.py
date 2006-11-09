@@ -41,7 +41,6 @@ from trac.util.text import unicode_urlencode, shorten_line, CRLF
 from trac.versioncontrol import Changeset, Node, NoSuchChangeset
 from trac.versioncontrol.diff import get_diff_options, diff_blocks, \
                                      unified_diff
-from trac.versioncontrol.svn_authz import SubversionAuthorizer
 from trac.versioncontrol.web_ui.util import render_node_property
 from trac.web import IRequestHandler, RequestDone
 from trac.web.chrome import add_link, add_script, add_stylesheet, \
@@ -157,11 +156,11 @@ class ChangesetModule(Component):
         repos = self.env.get_repository(req.authname)
         new_path = repos.normalize_path(new_path)
         new = repos.normalize_rev(new)
+
+        repos.authz.assert_permission_for_changeset(new)
+
         old_path = repos.normalize_path(old_path or new_path)
         old = repos.normalize_rev(old or new)
-
-        authzperm = SubversionAuthorizer(self.env, req.authname)
-        authzperm.assert_permission_for_changeset(new)
 
         if old_path == new_path and old == new: # revert to Changeset
             old_path = old = None
@@ -741,14 +740,14 @@ class ChangesetModule(Component):
     def get_search_results(self, req, terms, filters):
         if not 'changeset' in filters:
             return
-        authzperm = SubversionAuthorizer(self.env, req.authname)
+        repos = self.env.get_repository(req.authname)
         db = self.env.get_db_cnx()
         sql, args = search_to_sql(db, ['rev', 'message', 'author'], terms)
         cursor = db.cursor()
         cursor.execute("SELECT rev,time,author,message "
                        "FROM revision WHERE " + sql, args)
         for rev, ts, author, log in cursor:
-            if not authzperm.has_permission_for_changeset(rev):
+            if not repos.authz.has_permission_for_changeset(rev):
                 continue
             yield (req.href.changeset(rev),
                    '[%s]: %s' % (rev, shorten_line(log)),
@@ -767,7 +766,6 @@ class AnyDiffModule(Component):
 
     def process_request(self, req):
         repos = self.env.get_repository(req.authname)
-        authz = SubversionAuthorizer(self.env, req.authname)
 
         if req.get_header('X-Requested-With') == 'XMLHttpRequest':
             dirname, prefix = posixpath.split(req.args.get('q'))
@@ -805,8 +803,8 @@ class AnyDiffModule(Component):
             old_path = '/' + old_path
         old_rev = repos.normalize_rev(old_rev)
 
-        authz.assert_permission_for_changeset(new_rev)
-        authz.assert_permission_for_changeset(old_rev)
+        repos.authz.assert_permission_for_changeset(new_rev)
+        repos.authz.assert_permission_for_changeset(old_rev)
 
         # -- prepare rendering
         data = {'new_path': new_path, 'new_rev': new_rev,
