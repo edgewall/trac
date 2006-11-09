@@ -22,6 +22,7 @@ from time import localtime, strftime, time
 from trac import __version__
 from trac.core import *
 from trac.perm import IPermissionRequestor
+from trac.util import sorted
 from trac.util.datefmt import parse_date, utc, to_timestamp, \
                               get_date_format_hint, get_datetime_format_hint
 from trac.util.html import html, unescape, Markup
@@ -46,8 +47,10 @@ class TicketGroupStats(object):
 
     def __init__(self, title, unit):
         """Creates a new TicketGroupStats object.
-        title is the display name of this group of stats (eg 'ticket status').
-        unit is the display name of the units for these stats (eg 'hour').
+        
+        `title` is the display name of this group of stats (e.g.
+          'ticket status').
+        `unit` is the display name of the units for these stats (e.g. 'hour').
         """
         self.title = title
         self.unit = unit
@@ -60,13 +63,13 @@ class TicketGroupStats(object):
     def add_interval(self, title, count, qry_args, css_class, countsToProg=0):
         """Adds a division to this stats' group's progress bar.
 
-        title is the display name (eg 'closed', 'spent effort') of this interval
-          that will be displayed in front of the unit name.
-        count is the number of units in the interval.
-        qry_args is a dict of extra params that will yield the subset of
+        `title` is the display name (eg 'closed', 'spent effort') of this
+        interval that will be displayed in front of the unit name.
+        `count` is the number of units in the interval.
+        `qry_args` is a dict of extra params that will yield the subset of
           tickets in this interval on a query.
-        css_class is the css class that will be used to display the division.
-        countsToProg can be set to true to make this interval count towards
+        `css_class` is the css class that will be used to display the division.
+        `countsToProg` can be set to true to make this interval count towards
           overall completion of this group of tickets.
         """
         self.intervals.append({
@@ -107,10 +110,10 @@ class DefaultTicketGroupStatsProvider(Component):
         total_cnt = len(ticket_ids)
         if total_cnt:
             cursor = self.env.get_db_cnx().cursor()
-            str_ids = [str(x) for x in ticket_ids]
+            str_ids = [str(x) for x in sorted(ticket_ids)]
             active_cnt = cursor.execute("SELECT count(1) FROM ticket "
-                                    "WHERE status <> 'closed' AND id IN "
-                                    "(%s)" % ",".join(str_ids))
+                                        "WHERE status <> 'closed' AND id IN "
+                                        "(%s)" % ",".join(str_ids))
             active_cnt = 0
             for cnt, in cursor:
                 active_cnt = cnt
@@ -123,7 +126,8 @@ class DefaultTicketGroupStatsProvider(Component):
         stat.add_interval('closed', closed_cnt, {'status': 'closed'},
                           'closed', True)
         stat.add_interval('active', active_cnt,
-                     {'status': ['new', 'assigned', 'reopened']}, 'open', False)
+                          {'status': ['new', 'assigned', 'reopened']},
+                          'open', False)
         return stat
 
 
@@ -155,24 +159,14 @@ def milestone_stats_data(req, stat, name, grouped_by='component', group=None):
             'interval_hrefs': [query_href(interval['qry_args'])
                                for interval in stat.intervals]}
 
-def _get_groups(env, db, by='component'):
-    for field in TicketSystem(env).get_ticket_fields():
-        if field['name'] == by:
-            if field.has_key('options'):
-                return field['options']
-            else:
-                cursor = db.cursor()
-                cursor.execute("SELECT DISTINCT %s FROM ticket ORDER BY %s"
-                               % (by, by))
-                return [row[0] for row in cursor]
-    return []
 
 
 class RoadmapModule(Component):
 
     implements(INavigationContributor, IPermissionRequestor, IRequestHandler)
-    stats_provider = ExtensionOption('trac', 'roadmap_stats', ITicketGroupStatsProvider,
-                            'DefaultTicketGroupStatsProvider',
+    stats_provider = ExtensionOption('roadmap', 'stats_provider',
+                                     ITicketGroupStatsProvider,
+                                     'DefaultTicketGroupStatsProvider',
         """Name of the component implementing `ITicketGroupStatsProvider`, 
         which is used to collect statistics on groups of tickets for display
         in the roadmap views.""")
@@ -342,8 +336,9 @@ class MilestoneModule(Component):
     implements(INavigationContributor, IPermissionRequestor, IRequestHandler,
                ITimelineEventProvider, IWikiSyntaxProvider)
  
-    stats_provider = ExtensionOption('trac', 'milestone_stats', ITicketGroupStatsProvider,
-                            'DefaultTicketGroupStatsProvider',
+    stats_provider = ExtensionOption('milestone', 'stats_provider',
+                                     ITicketGroupStatsProvider,
+                                     'DefaultTicketGroupStatsProvider',
         """Name of the component implementing `ITicketGroupStatsProvider`, 
         which is used to collect statistics on groups of tickets for display
         in the milestone views.""")
@@ -462,7 +457,8 @@ class MilestoneModule(Component):
         if req.args.has_key('completed'):
             completed = req.args.get('completeddate', '')
             try:
-                milestone.completed = completed and parse_date(completed) or None
+                milestone.completed = completed and parse_date(completed) or \
+                                      None
             except ValueError, e:
                 raise TracError(to_unicode(e), 'Invalid Date Format')
             if milestone.completed > datetime.now(utc):
@@ -522,20 +518,26 @@ class MilestoneModule(Component):
         milestone_groups = []
         available_groups = []
         component_group_available = False
-        for field in TicketSystem(self.env).get_ticket_fields():
+        ticket_fields = TicketSystem(self.env).get_ticket_fields()
+
+        # collect fields that can be used for grouping
+        for field in ticket_fields:
             if field['type'] == 'select' and field['name'] != 'milestone' \
                     or field['name'] == 'owner':
                 available_groups.append({'name': field['name'],
                                          'label': field['label']})
                 if field['name'] == 'component':
                     component_group_available = True
+
+        # determine the field currently used for grouping
+        by = None
         if component_group_available:
-            by = req.args.get('by', 'component')
-        else:
-            by = req.args.get('by', available_groups[0]['name'])
+            by = 'component'
+        elif available_groups:
+            by = available_groups[0]['name']
+        by = req.args.get('by', by)
 
         tickets = get_tickets_for_milestone(self.env, db, milestone.name, by)
-
         stat = get_ticket_stats(self.stats_provider, tickets)
 
         data = {'milestone': milestone,
@@ -544,30 +546,41 @@ class MilestoneModule(Component):
                 'groups': milestone_groups}
         data.update(milestone_stats_data(req, stat, milestone.name))
 
-        groups = _get_groups(self.env, db, by)
-        max_count = 0
-        group_stats = []
+        if by:
+            groups = []
+            for field in ticket_fields:
+                if field['name'] == by:
+                    if field.has_key('options'):
+                        groups = field['options']
+                    else:
+                        cursor = db.cursor()
+                        cursor.execute("SELECT DISTINCT %s FROM ticket "
+                                       "ORDER BY %s" % (by, by))
+                        groups = [row[0] for row in cursor]
 
-        for group in groups:
-            group_tickets = [t for t in tickets if t[by] == group]
-            if not group_tickets:
-                continue
+            max_count = 0
+            group_stats = []
 
-            gstat = get_ticket_stats(self.stats_provider, group_tickets)
-            if gstat.count > max_count:
-                max_count = gstat.count
-             
-            group_stats.append(gstat) 
-            
-            gs_dict = {'name': group}
-            gs_dict.update(milestone_stats_data(req, gstat, milestone.name,
-                                                by, group))
-            milestone_groups.append(gs_dict)
-        
-        for idx, gstat in enumerate(group_stats):
-            gs_dict = milestone_groups[idx]
-            gs_dict['percent_of_max_total'] = (float(gstat.count) /
-                                               float(max_count) * 100)
+            for group in groups:
+                group_tickets = [t for t in tickets if t[by] == group]
+                if not group_tickets:
+                    continue
+
+                gstat = get_ticket_stats(self.stats_provider, group_tickets)
+                if gstat.count > max_count:
+                    max_count = gstat.count
+
+                group_stats.append(gstat) 
+
+                gs_dict = {'name': group}
+                gs_dict.update(milestone_stats_data(req, gstat, milestone.name,
+                                                    by, group))
+                milestone_groups.append(gs_dict)
+
+            for idx, gstat in enumerate(group_stats):
+                gs_dict = milestone_groups[idx]
+                gs_dict['percent_of_max_total'] = (float(gstat.count) /
+                                                   float(max_count) * 100)
 
         return 'milestone_view.html', data, None
 
