@@ -87,11 +87,8 @@ def calc_ticket_stats(tickets):
     }
 
 def milestone_to_hdf(env, db, req, milestone):
-    safe_name = None
-    if milestone.exists:
-        safe_name = milestone.name.replace('/', '%2F')
     hdf = {'name': milestone.name,
-           'href': req.href.milestone(safe_name)}
+           'href': req.href.milestone(milestone.name)}
     if milestone.description:
         hdf['description_source'] = milestone.description
         hdf['description'] = wiki_to_html(milestone.description, env, req, db)
@@ -353,8 +350,7 @@ class MilestoneModule(Component):
         if req.method == 'POST':
             if req.args.has_key('cancel'):
                 if milestone.exists:
-                    safe_name = milestone.name.replace('/', '%2F')
-                    req.redirect(req.href.milestone(safe_name))
+                    req.redirect(req.href.milestone(milestone.name))
                 else:
                     req.redirect(req.href.roadmap())
             elif action == 'edit':
@@ -429,8 +425,7 @@ class MilestoneModule(Component):
             milestone.insert()
         db.commit()
 
-        safe_name = milestone.name.replace('/', '%2F')
-        req.redirect(req.href.milestone(safe_name))
+        req.redirect(req.href.milestone(milestone.name))
 
     def _render_confirm(self, req, db, milestone):
         req.perm.assert_permission('MILESTONE_DELETE')
