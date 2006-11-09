@@ -126,6 +126,7 @@ class DefaultTicketGroupStatsProvider(Component):
                      {'status': ['new', 'assigned', 'reopened']}, 'open', False)
         return stat
 
+
 def get_ticket_stats(provider, tickets):
     return provider.get_ticket_group_stats([t['id'] for t in tickets])
 
@@ -144,7 +145,7 @@ def get_tickets_for_milestone(env, db, milestone, field='component'):
         tickets.append({'id': tkt_id, 'status': status, field: fieldval})
     return tickets
 
-def milestone_stat_to_hdf(env, stat, name, grouped_by='component', group=None):
+def milestone_stat_to_hdf(req, stat, name, grouped_by='component', group=None):
     def merge_cp(dict1, dict2):
         cp = dict1.copy()
         cp.update(dict2)
@@ -156,7 +157,7 @@ def milestone_stat_to_hdf(env, stat, name, grouped_by='component', group=None):
     hdf['caps_title'] = stat.title.capitalize()
     hdf['count'] = stat.count
     hdf['unit']= stat.unit
-    hdf['href'] = env.href.query(merge_cp(base_args, stat.qry_args))
+    hdf['href'] = req.href.query(merge_cp(base_args, stat.qry_args))
     hdf['done_percent'] = stat.done_percent
     hdf['done_count'] = stat.done_count
     hdf['intervals'] = []
@@ -167,8 +168,8 @@ def milestone_stat_to_hdf(env, stat, name, grouped_by='component', group=None):
         for (key,val) in interval.items():
             if key != 'qry_args':
                 int_hdf[key] = val
-        int_hdf['href'] = env.href.query(
-                                    merge_cp(base_args, interval['qry_args']))
+        int_hdf['href'] = req.href.query(merge_cp(base_args,
+                                                  interval['qry_args']))
         int_hdf['caps_title'] = interval['title'].capitalize()
         int_hdf['last'] = i == len(stat.intervals) - 1
         hdf['intervals'].append(int_hdf)
@@ -233,7 +234,7 @@ class RoadmapModule(Component):
             tickets = get_tickets_for_milestone(self.env, db, milestone.name,
                                                 'owner')
             stat = get_ticket_stats(self.stats_provider, tickets)
-            stats.append(milestone_stat_to_hdf(self.env, stat, milestone.name))
+            stats.append(milestone_stat_to_hdf(req, stat, milestone.name))
             #milestone['tickets'] = tickets # for the iCalendar view
 
         if req.args.get('format') == 'ics':
@@ -560,8 +561,7 @@ class MilestoneModule(Component):
         stat = get_ticket_stats(self.stats_provider, tickets)
         data['stats'] = {'available_groups': available_groups, 
                          'grouped_by': by}
-        data['stats'].update(milestone_stat_to_hdf(self.env, stat,
-                                                   milestone.name))
+        data['stats'].update(milestone_stat_to_hdf(req, stat, milestone.name))
 
         data['stats']['groups'] = []
         groups = _get_groups(self.env, db, by)
@@ -576,7 +576,7 @@ class MilestoneModule(Component):
             gstat = get_ticket_stats(self.stats_provider, group_tickets)
             
             gs_dict = {'name': group} 
-            gs_dict['stats'] = milestone_stat_to_hdf(self.env, gstat,
+            gs_dict['stats'] = milestone_stat_to_hdf(req, gstat,
                                                      milestone.name, by, group)
                 
             if gstat.count > max_count:
