@@ -934,8 +934,8 @@ class OutlineFormatter(Formatter):
     """Special formatter that generates an outline of all the headings."""
     flavor = 'outline'
     
-    def __init__(self, env, absurls=False, db=None):
-        Formatter.__init__(self, env, None, absurls, db)
+    def __init__(self, env, absurls=False, db=None, req=None):
+        Formatter.__init__(self, env, req, absurls, db)
 
     # Avoid the possible side-effects of rendering WikiProcessors
 
@@ -981,8 +981,8 @@ class LinkFormatter(OutlineFormatter):
     """Special formatter that focuses on TracLinks."""
     flavor = 'link'
     
-    def __init__(self, env, absurls=False, db=None):
-        OutlineFormatter.__init__(self, env, absurls, db)
+    def __init__(self, env, absurls=False, db=None, req=None):
+        OutlineFormatter.__init__(self, env, absurls, db, req)
         
     def _heading_formatter(self, match, fullmatch):
          return ''
@@ -1025,4 +1025,4 @@ def wiki_to_outline(wikitext, env, db=None,
 def wiki_to_link(wikitext, env, req):
     if not wikitext:
         return ''
-    return LinkFormatter(env, False, None).match(wikitext)
+    return LinkFormatter(env, False, None, req).match(wikitext)
