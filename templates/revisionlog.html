@@ -130,11 +130,19 @@
                   </td>
                   <td class="date" py:content="format_datetime(change.date)"/>
                   <td class="author">$change.author</td>
-                  <td class="summary">${not verbose and change.message or ''}</td>
+                  <td class="summary">${
+                    not verbose and (wiki_format_messages and wiki_to_oneliner(change.message) \
+                                 or shorten_line(change.message)) or ''
+                    }</td>
                 </tr>
 
                 <tr py:if="verbose">
-                  <td class="summary" colspan="7">$change.message</td>
+                  <td class="summary" colspan="7" py:choose="">
+                    <py:when test="wiki_format_messages">
+                      ${wiki_to_html(change.message, escape_newlines=True)}
+                    </py:when>
+                    <py:otherwise><pre>${change.message}</pre></py:otherwise>
+                  </td>
                 </tr>
               </py:with>
             </py:for>

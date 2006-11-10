@@ -108,7 +108,9 @@
           </py:for>
           <dt class="property message">Message:</dt>
           <dd class="message searchable" py:choose="">
-            <py:when test="wiki_format_messages">${wiki_to_html(changeset.message, escape_newlines=True)}</py:when>
+            <py:when test="wiki_format_messages">
+              ${wiki_to_html(changeset.message, escape_newlines=True)}
+            </py:when>
             <py:otherwise>${changeset.message}</py:otherwise>
           </dd>
         </py:if>

@@ -176,26 +176,19 @@ class LogModule(Component):
             del info[-1]
         
         revs = [i['rev'] for i in info]
-        changes = get_changes(self.env, repos, revs, verbose, req, format)
+        changes = get_changes(repos, revs)
+        extra_changes = {}
+        email_map = {}
         if format == 'rss':
             # Get the email addresses of all known users
             email_map = {}
             for username,name,email in self.env.get_known_users():
                 if email:
                     email_map[username] = email
-            for cs in changes.values():
-                # For RSS, author must be an email address
-                author = cs['author']
-                author_email = ''
-                if '@' in author:
-                    author_email = author
-                elif email_map.has_key(author):
-                    author_email = email_map[author]
-                cs['author'] = author_email
         elif format == 'changelog':
             for rev in revs:
-                changeset = repos.get_changeset(rev)
-                cs = changes[rev]
+                changeset = changes[rev]
+                cs = {}
                 cs['message'] = wrap(changeset.message, 70,
                                      initial_indent='\t',
                                      subsequent_indent='\t')
@@ -206,12 +199,15 @@ class LogModule(Component):
                     actions.append(chg)
                 cs['files'] = files
                 cs['actions'] = actions
-
+                extra_changes[rev] = cs
         data = {
             'path': path, 'rev': rev, 'stop_rev': stop_rev,
             'mode': mode, 'verbose': verbose,
             'path_links': path_links,
-            'items': info, 'changes': changes
+            'items': info, 'changes': changes,
+            'email_map': email_map, 'extra_changes': extra_changes,
+            'wiki_format_messages':
+            self.config['changeset'].getbool('wiki_format_messages')
             }
 
         if req.args.get('format') == 'changelog':

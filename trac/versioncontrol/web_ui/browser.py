@@ -30,7 +30,7 @@ from trac.util.html import escape, html, Markup
 from trac.web import IRequestHandler, RequestDone
 from trac.web.chrome import add_link, add_script, add_stylesheet, \
                             INavigationContributor
-from trac.wiki import wiki_to_html, IWikiSyntaxProvider
+from trac.wiki import IWikiSyntaxProvider
 from trac.versioncontrol.api import NoSuchChangeset
 from trac.versioncontrol.web_ui.util import *
 
@@ -120,6 +120,8 @@ class BrowserModule(Component):
             'path_links': path_links,
             'dir': node.isdir and self._render_dir(req, repos, node, rev),
             'file': node.isfile and self._render_file(req, repos, node, rev),
+            'wiki_format_messages':
+            self.config['changeset'].getbool('wiki_format_messages')
         }
         add_stylesheet(req, 'common/css/browser.css')
         return 'browser.html', data, None
@@ -137,7 +139,7 @@ class BrowserModule(Component):
                 'kind': entry.kind, 'is_dir': entry.isdir,
                 'size': entry.content_length
                 })
-        changes = get_changes(self.env, repos, [i['rev'] for i in entries])
+        changes = get_changes(repos, [i['rev'] for i in entries])
 
         # Ordering of entries
         order = req.args.get('order', 'name').lower()
@@ -145,7 +147,7 @@ class BrowserModule(Component):
 
         if order == 'date':
             def file_order(a):
-                return changes[a['rev']]['date']
+                return changes[a['rev']].date
         elif order == 'size':
             def file_order(a):
                 return (a['size'],
@@ -205,13 +207,6 @@ class BrowserModule(Component):
             # is more interesting than the `rev` changeset.
             changeset = repos.get_changeset(node.rev)
 
-            message = changeset.message or '--'
-            if self.config['changeset'].getbool('wiki_format_messages'):
-                message = wiki_to_html(message, self.env, req,
-                                       escape_newlines=True)
-            else:
-                message = html.PRE(message)
-
             # add ''Plain Text'' alternate link if needed
             if not is_binary(chunk) and mime_type != 'text/plain':
                 plain_href = req.href.browser(node.path, rev=rev, format='txt')
@@ -235,10 +230,8 @@ class BrowserModule(Component):
                                                  raw_href,
                                                  annotations=['lineno'])
             return {
-                'date': changeset.date,
+                'changeset': changeset,
                 'size': node.content_length ,
-                'author': changeset.author or 'anonymous',
-                'message': message,
                 'preview': preview_data,
                 }
 

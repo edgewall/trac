@@ -24,13 +24,11 @@ from trac.util.datefmt import pretty_timedelta
 from trac.util.html import escape, html, Markup
 from trac.util.text import shorten_line
 from trac.versioncontrol.api import NoSuchNode, NoSuchChangeset
-from trac.wiki import wiki_to_html, wiki_to_oneliner
 
 __all__ = ['get_changes', 'get_path_links', 
            'get_existing_node', 'render_node_property']
 
-def get_changes(env, repos, revs, full=None, req=None, format=None):
-    db = env.get_db_cnx()
+def get_changes(repos, revs):
     changes = {}
     for rev in revs:
         try:
@@ -38,35 +36,7 @@ def get_changes(env, repos, revs, full=None, req=None, format=None):
         except NoSuchChangeset:
             changes[rev] = {}
             continue
-
-        wiki_format = env.config['changeset'].getbool('wiki_format_messages')
-        message = changeset.message or '--'
-        absurls = (format == 'rss')
-        if wiki_format:
-            shortlog = wiki_to_oneliner(message, env, db,
-                                        shorten=True, absurls=absurls)
-        else:
-            shortlog = Markup.escape(shorten_line(message))
-
-        if full:
-            if wiki_format:
-                message = wiki_to_html(message, env, req, db,
-                                       absurls=absurls, escape_newlines=True)
-            else:
-                message = html.PRE(message)
-        else:
-            message = shortlog
-
-        if format == 'rss':
-            if isinstance(shortlog, Markup):
-                shortlog = u' '.join(shortlog.striptags().splitlines())
-            message = unicode(message)
-
-        changes[rev] = {
-            'date': changeset.date,
-            'author': changeset.author or 'anonymous',
-            'message': message, 'shortlog': shortlog,
-        }
+        changes[rev] = changeset
     return changes
 
 def get_path_links(href, fullpath, rev):

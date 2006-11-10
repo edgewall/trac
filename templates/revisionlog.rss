@@ -13,12 +13,16 @@
     </image>
 
     <item py:for="item in items" py:with="change = changes[item.rev]">
-      <author py:if="change.author">$change.author</author>
+      <author py:if="change.author" py:with="a = change.author">${a and '@' in a and a or email_map.get(a)}</author>
       <pubDate>${http_date(change.date)}</pubDate>
-      <title>Revision $item.rev: $change.shortlog</title>
+      <title>Revision $item.rev: ${shorten_line(change.message)}</title>
       <link>${abs_href.changeset(rev, path)}</link>
       <guid isPermaLink="false">${abs_href.changeset(item.rev, item.path)}</guid>
-      <description>$change.message</description>
+      <description py:with="m = change.message">${
+        unicode(wiki_format_messages and (verbose and wiki_to_html(m, absurls=True) \
+                                                   or wiki_to_oneliner(m, absurls=True)) \
+                                       or m)
+        }</description>
       <category>Log</category>
     </item>
 
