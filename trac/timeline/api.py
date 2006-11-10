@@ -25,22 +25,22 @@ class TimelineEvent(object):
     """Group event related information.
 
     title: short summary for the event
-    message: optional Markup that should be taken into account along side the
-             contextual information
+    markup: optional Markup that should be taken into account along side the
+        contextual information
     date, author, authenticated, ipnr: date and authorship info for the event;
-             `info` is a datetime instance
-    type, id, info: context and contextual information; the `info` will be
-             interpreted as wiki text
+        `date` is a datetime instance
+    type, id, message: context and contextual information;
+        `message` will be interpreted as wiki text
     """
 
-    def __init__(self, kind, title='', href=None, message=None):
+    def __init__(self, kind, title='', href=None, markup=None):
         self.kind = kind
         self.title = title
         self.href = href
-        self.message = message
+        self.markup = markup
         self.author = 'unknown'
         self.date = self.authenticated = self.ipnr = None
-        self.type = self.id = self.info = None
+        self.type = self.id = self.message = None
 
     def __repr__(self):
         return '<TimelineEvent %s - %s>' % (self.date, self.href)
@@ -52,10 +52,10 @@ class TimelineEvent(object):
         self.authenticated = authenticated
         self.ipnr = ipnr
 
-    def set_context(self, type, id, info=None):
+    def set_context(self, type, id, message=None):
         self.type = type
         self.id = id
-        self.info = info
+        self.message = message
 
     def dateuid(self):
         return to_timestamp(self.date),

@@ -41,8 +41,8 @@
                 <py:if test="event.author">by ${event.author}</py:if>
             </a></dt>
             <dd class="${event.kind}">
-              ${event.message}
-              <py:if test="event.wiki">${wiki_to_oneliner(event.wiki)}</py:if>
+              ${event.markup}
+              <py:if test="event.message">${wiki_to_oneliner(event.message)}</py:if>
             </dd>
           </py:for>
         </dl>

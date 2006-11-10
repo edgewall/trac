@@ -160,12 +160,12 @@ class TimelineModule(Component):
     def _event_from_tuple(self, req, event):
         """Build a TimelineEvent from a pre-0.11 ITimelineEventProvider tuple
         """
-        kind, href, title, date, author, message = event
+        kind, href, title, date, author, markup = event
         if not isinstance(date, datetime):
             date = datetime.fromtimestamp(date, utc)
         if href and href.startswith(req.abs_href.base):
             href = href[len(req.abs_href.base):]
-        event = TimelineEvent(kind, title, href, message)
+        event = TimelineEvent(kind, title, href, markup)
         event.set_changeinfo(date, author)
         return event
 
