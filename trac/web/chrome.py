@@ -21,7 +21,7 @@ import re
 
 from genshi import Markup
 from genshi.builder import tag
-from genshi.core import START
+from genshi.core import Attrs, START
 from genshi.output import DocType
 from genshi.template import TemplateLoader, MarkupTemplate, TextTemplate
 
@@ -538,5 +538,6 @@ class Chrome(Component):
     def _strip_accesskeys(self, stream, ctxt=None):
         for kind, data, pos in stream:
             if kind is START and 'accesskey' in data[1]:
-                data[1].remove('accesskey')
+                data = data[0], Attrs([(k,v) for k,v in data[1]
+                                       if k != 'accesskey'])
             yield kind, data, pos
