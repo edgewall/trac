@@ -248,7 +248,6 @@ class TicketModule(Component):
     def get_timeline_events(self, req, start, stop, filters):
         start = to_timestamp(start)
         stop = to_timestamp(stop)
-        format = req.args.get('format')
 
         status_map = {'new': ('newticket', 'created'),
                       'reopened': ('newticket', 'reopened'),
@@ -337,11 +336,10 @@ class TicketModule(Component):
             # Attachments
             if 'ticket_details' in filters:
                 def display(id):
-                    return html('ticket ', html.EM('#', id))
+                    return html('ticket ', html.em('#', id))
                 att = AttachmentModule(self.env)
                 for event in att.get_timeline_events(req, db, 'ticket',
-                                                     format, start, stop,
-                                                     display):
+                                                     start, stop, display):
                     yield event
 
     # Internal methods

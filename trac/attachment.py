@@ -28,6 +28,7 @@ from trac.config import BoolOption, IntOption
 from trac.core import *
 from trac.env import IEnvironmentSetupParticipant
 from trac.mimeview import *
+from trac.timeline.api import TimelineEvent
 from trac.util import get_reporter_id, create_unique_file
 from trac.util.datefmt import utc
 from trac.util.html import Markup, html
@@ -35,7 +36,6 @@ from trac.util.text import unicode_quote, unicode_unquote, pretty_size
 from trac.web import HTTPBadRequest, IRequestHandler
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
 from trac.wiki.api import IWikiSyntaxProvider
-from trac.wiki.formatter import wiki_to_html, wiki_to_oneliner
 
 
 class InvalidAttachment(TracError):
@@ -402,26 +402,21 @@ class AttachmentModule(Component):
             time = datetime.fromtimestamp(ts, utc)
             yield ('created', type, id, filename, time, description, author)
 
-    def get_timeline_events(self, req, db, type, format, start, stop, display):
+    def get_timeline_events(self, req, db, type, start, stop, display):
         """Return an iterable of events suitable for ITimelineEventProvider.
 
         `display` is a callback for formatting the attachment's parent
         """
         for change, type, id, filename, time, descr, author in \
                 self.get_history(start, stop, type):
-            title = html(html.EM(os.path.basename(filename)),
+            title = html(html.em(os.path.basename(filename)),
                          ' attached to ', display(id))
-            if format == 'rss':
-                descr = wiki_to_html(descr or '--', self.env, req, db,
-                                     absurls=True)
-                href = req.abs_href
-            else:
-                descr = wiki_to_oneliner(descr, self.env, db, shorten=True)
-                title += Markup(' by %s', author)
-                href = req.href
-            yield('attachment', href.attachment(type, id, filename), title,
-                  time, author, descr)
-
+            event = TimelineEvent('attachment', title,
+                                  req.href.attachment(type, id, filename))
+            event.set_changeinfo(time, author)
+            event.set_context('attachment', type+':'+id, descr)
+            yield event
+            
     # Internal methods
 
     def _do_save(self, req, attachment):
