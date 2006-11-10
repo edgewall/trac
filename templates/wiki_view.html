@@ -7,7 +7,7 @@
   <xi:include href="layout.html" />
   <xi:include href="macros.html" />
   <head>
-    <title>$title</title>
+    <title py:if="title">$title</title>
     <meta py:if="version" name="ROBOTS" content="NOINDEX, NOFOLLOW" />
     <script type="text/javascript">
       $(document).ready(function() {

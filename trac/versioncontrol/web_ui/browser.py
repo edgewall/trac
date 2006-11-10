@@ -43,13 +43,15 @@ class BrowserModule(Component):
     implements(INavigationContributor, IPermissionRequestor, IRequestHandler,
                IWikiSyntaxProvider)
 
-    hidden_properties = Option('browser', 'hide_properties', 'svk:merge',
-        """List of subversion properties to hide from the repository browser
+    hidden_properties = ListOption('browser', 'hide_properties', 'svk:merge',
+        doc="""Comma-separated list of subversion properties to hide from the
+        repository browser.
+
         (''since 0.9'')""")
 
     downloadable_paths = ListOption('browser', 'downloadable_paths',
-                                    '/trunk, /branches/*, /tags/*', doc=
-        """List of repository paths that can be downloaded.
+                                    '/trunk, /branches/*, /tags/*',
+        doc="""List of repository paths that can be downloaded.
         
         Leave the option empty if you want to disable all downloads, otherwise
         set it to a comma-separated list of authorized paths (those paths are
