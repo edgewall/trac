@@ -27,7 +27,7 @@ from trac.util.text import to_unicode, unicode_urlencode
 from trac.util.html import html
 from trac.web.api import IRequestHandler, RequestDone
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
-from trac.wiki import wiki_to_html, IWikiSyntaxProvider, Formatter
+from trac.wiki import IWikiSyntaxProvider, Formatter
 
 class ReportModule(Component):
 
@@ -229,13 +229,9 @@ class ReportModule(Component):
             title = '{%i} %s' % (id, title)
         
         data = {'action': 'view', 'title': title,
-                'report':
-                {'id': id, 'title': title,
-                 'description': wiki_to_html(description, self.env, req, db,
-                                             absurls=(format == 'rss')),
-                 'can': perms,
-                 'args': args}}
-
+                'report': {'id': id, 'title': title,
+                           'description': description,
+                           'can': perms, 'args': args}}
         try:
             cols, results = self.execute_report(req, db, id, sql, args)
         except Exception, e:
@@ -313,10 +309,7 @@ class ReportModule(Component):
                         row['id'] = value
                     # Special casing based on column name
                     col = col.strip('_')
-                    if col == 'description':
-                        cell['parsed'] = wiki_to_html(value, self.env, req, db,
-                                                      absurls=(format == 'rss'))
-                    elif col == 'reporter':
+                    if col == 'reporter':
                         if '@' in value:
                             cell['author'] = value
                         elif value in email_map:

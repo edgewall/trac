@@ -6,7 +6,7 @@
     <span py:if="numrows and report.id != -1" class="numrows">($numrows matches)</span>
   </h1>
 
-  <div py:if="report.description" id="description">$report.description</div>
+  <div py:if="report.description" id="description">${wiki_to_html(report.description)}</div>
 
   <div py:if="report.id != -1 and (report.can.create or report.can.modify or report.can.delete)" class="buttons">
     <form py:if="report.can.modify" action="" method="get">
@@ -109,7 +109,7 @@
 
                     <py:when test="col == 'description'">
                       <py:def function="cellclass"></py:def>
-                      <py:def function="content">$cell.parsed</py:def>
+                      <py:def function="content">${wiki_to_html(cell.value)}</py:def>
                     </py:when>
 
                     <py:otherwise>
@@ -120,7 +120,7 @@
                   </py:choose>
                 </py:with>
                 <td class="$cellclass" py:attrs="td_attrs">
-                  $content <hr py:if="fullrow"/>
+                  ${content()} <hr py:if="fullrow"/>
                 </td>
               </py:if>
             </py:for>
