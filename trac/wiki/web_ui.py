@@ -23,9 +23,10 @@ import StringIO
 
 from trac.attachment import Attachment, AttachmentModule
 from trac.core import *
+from trac.mimeview.api import Mimeview, IContentConverter
 from trac.perm import IPermissionRequestor
 from trac.Search import ISearchSource, search_to_sql, shorten_result
-from trac.timeline.api import ITimelineEventProvider
+from trac.timeline.api import ITimelineEventProvider, TimelineEvent
 from trac.util import get_reporter_id
 from trac.util.datefmt import to_timestamp, utc
 from trac.util.html import html, Markup
@@ -35,8 +36,6 @@ from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
 from trac.web import HTTPNotFound, IRequestHandler
 from trac.wiki.api import IWikiPageManipulator, WikiSystem
 from trac.wiki.model import WikiPage
-from trac.wiki.formatter import wiki_to_html, wiki_to_oneliner
-from trac.mimeview.api import Mimeview, IContentConverter
 
 
 class InvalidWikiPage(TracError):
@@ -348,11 +347,6 @@ class WikiModule(Component):
             'edit_rows': editrows,
             'scroll_bar_pos': req.args.get('scroll_bar_pos', '')
         })
-        if action == 'preview':
-            data.update({
-                'page_html': wiki_to_html(page.text, self.env, req, db),
-                'comment_html': wiki_to_oneliner(comment, self.env, db)
-            })
         return 'wiki_edit.html', data, None
 
     def _render_history(self, req, db, page):
@@ -374,7 +368,7 @@ class WikiModule(Component):
                 'version': version,
                 'date': date,
                 'author': author,
-                'comment': wiki_to_oneliner(comment or '', self.env, db),
+                'comment': comment,
                 'ipnr': ipnr
             })
         data['history'] = history
@@ -435,28 +429,23 @@ class WikiModule(Component):
             href = format == 'rss' and req.abs_href or req.href
             db = self.env.get_db_cnx()
             cursor = db.cursor()
-            cursor.execute("SELECT time,name,comment,author,version "
+            cursor.execute("SELECT time,name,comment,author,ipnr,version "
                            "FROM wiki WHERE time>=%s AND time<=%s",
                            (start, stop))
-            for ts,name,comment,author,version in cursor:
-                title = Markup('<em>%s</em> edited by %s',
-                               wiki.format_page_name(name), author)
-                diff_link = html.A('diff', href=href.wiki(name, action='diff',
-                                                          version=version))
-                if format == 'rss':
-                    comment = wiki_to_html(comment or '--', self.env, req, db,
-                                           absurls=True)
-                else:
-                    comment = wiki_to_oneliner(comment, self.env, db,
-                                               shorten=True)
+            for ts,name,comment,author,ipnr,version in cursor:
+                title = html.em(wiki.format_page_name(name))
+                markup = None
                 if version > 1:
-                    comment = html(comment, ' (', diff_link, ')')
+                    markup = html.a('(diff)', href=href.wiki(name,
+                                                             action='diff',
+                                                             version=version))
                 t = datetime.fromtimestamp(ts, utc)
-                yield 'wiki', href.wiki(name), title, t, author, comment
+                event = TimelineEvent('wiki', title, href.wiki(name), markup)
+                event.set_changeinfo(t, author, ipnr=ipnr)
+                event.set_context('wiki', name, comment)
+                yield event
 
             # Attachments
-            def display(id):
-                return Markup('ticket ', html.EM('#', id))
             att = AttachmentModule(self.env)
             for event in att.get_timeline_events(req, db, 'wiki', format,
                                                  start, stop,

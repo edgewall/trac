@@ -48,7 +48,7 @@
               </td>
               <td class="date">${format_datetime(item.date)}</td>
               <td class="author" title="IP-Address: $item.ipnr">$item.author</td>
-              <td class="comment">$item.comment</td>
+              <td class="comment">${wiki_to_oneliner(item.comment)}</td>
             </tr>
           </tbody>
         </table>
