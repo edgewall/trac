@@ -3,7 +3,7 @@
   <channel>
     <title>${project.name}: Ticket $title</title>
     <link>${abs_href.ticket(ticket.id)}</link>
-    <description>${unicode(wiki_to_html(ticket.description))}</description>
+    <description>${unicode(wiki_to_html(ticket.description, absurls=True))}</description>
     <language>en-us</language>
     <image py:if="chrome.logo.src">
       <title>$project.name</title>
@@ -38,7 +38,7 @@
           </py:for>
           &lt;/ul&gt;
         </py:if>
-        ${unicode(wiki_to_html(change.comment))}
+        ${unicode(wiki_to_html(change.comment, absurls=True))}
       </description>
       <category>Ticket</category>
     </item>

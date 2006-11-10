@@ -17,7 +17,7 @@
       <title>#$result.id: $result.summary</title>
       <pubDate py:if="result.time">${http_date(result.time)}</pubDate>
       <author py:if="result.reporter">$result.reporter</author>
-      <description>${unicode(wiki_to_html(result.description))}</description>
+      <description>${unicode(wiki_to_html(result.description, absurls=True))}</description>
       <category>Results</category>
       <comments>$href#changelog</comments>
     </item>

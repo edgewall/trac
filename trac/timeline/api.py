@@ -19,13 +19,14 @@
 
 from trac.core import *
 from trac.util.datefmt import to_timestamp
+from trac.web.href import Href
 
 
 class TimelineEvent(object):
     """Group event related information.
 
     title:   short summary for the event
-    href:    relative link to resource advertised by this event
+    href:    link to the resource advertised by this event
     markup:  optional Markup that should be taken into account along side the
              contextual information
     date, author, authenticated, ipnr:
@@ -64,7 +65,14 @@ class TimelineEvent(object):
         self.message = message
 
     def dateuid(self):
-        return to_timestamp(self.date),
+        return to_timestamp(self.date)
+
+    def abs_href(self, req):
+        if self.href.startswith('/'):
+            # Convert from a relative `href` 
+            return Href(req.abs_href.base[:-len(req.href.base)])() + self.href
+        else:
+            return self.href
 
 
 class ITimelineEventProvider(Interface):

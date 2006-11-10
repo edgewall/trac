@@ -9,7 +9,7 @@
   <image py:if="chrome.logo.src">
    <title>${project.name}</title>
    <url>${chrome.logo.src}</url>
-   <link>${abs_href.timeline}</link>
+   <link>${abs_href.timeline()}</link>
   </image>
 
   <item py:for="_, event in events">
@@ -18,9 +18,11 @@
     <author py:if="author">$author</author>
    </py:with>
    <pubDate>${http_date(event.date)}</pubDate>
-   <link><py:if test="event.href.startswith('/')">${to_abs_href(event.href)}</py:if></link>
-   <guid isPermaLink="false">${to_abs_href(event.href)}/${event.dateuid}</guid>
-   <description>${event.message}<py:if test="event.wiki">${wiki_to_html(event.wiki,absurls=True)}</py:if></description>
+   <link>${event.abs_href(req)}</link>
+   <guid isPermaLink="false">${event.abs_href(req)}/${event.dateuid}</guid>
+   <description>${
+     event.message
+   }<py:if test="event.wiki">${wiki_to_html(event.wiki, absurls=True)}</py:if></description>
   </item>
 
  </channel>
