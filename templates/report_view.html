@@ -63,65 +63,67 @@
 
                     <!--! for the report listing -->
                     <py:when test="col == 'report'">
-                      <py:def function="cellclass">report</py:def>
-                      <py:def function="content">
+                      <td class="$col" py:attrs="td_attrs">
                         <a title="View report" href="${href.report(cell.value)}">{$cell.value}</a>
-                      </py:def>
+                        <hr py:if="fullrow"/>
+                      </td>
                     </py:when>
 
                     <py:when test="col == 'title' and report.id == -1">
-                      <py:def function="cellclass">title</py:def>
-                      <py:def function="content">
+                      <td class="$col" py:attrs="td_attrs">
                         <a title="View report" href="${href.report(row.id)}">$cell.value</a>
-                      </py:def>
+                        <hr py:if="fullrow"/>
+                      </td>
                     </py:when>
 
                     <!--! for the ticket listing -->
                     <py:when test="col in ('ticket', 'id')">
-                      <py:def function="cellclass">ticket</py:def>
-                      <py:def function="content">
+                      <td class="ticket" py:attrs="td_attrs">
                         <a title="View ticket" href="${href.ticket(cell.value)}">#$cell.value</a>
-                      </py:def>
+                        <hr py:if="fullrow"/>
+                      </td>
                     </py:when>
 
                     <py:when test="col == 'summary' and row.id">
-                      <py:def function="cellclass">summary</py:def>
-                      <py:def function="content">
+                      <td class="$col" py:attrs="td_attrs">
                         <a title="View ticket" href="${href.ticket(row.id)}">$cell.value</a>
-                      </py:def>
+                        <hr py:if="fullrow"/>
+                      </td>
                     </py:when>
 
                     <!--! generic fields -->
                     <py:when test="col == 'time'">
-                      <py:def function="cellclass">date</py:def>
-                      <py:def function="content">${cell.value != 'None' and format_time(int(cell.value)) or '--'}</py:def>
+                      <td class="date" py:attrs="td_attrs">${cell.value != 'None' and format_time(int(cell.value)) or '--'}
+                        <hr py:if="fullrow"/>
+                      </td>
                     </py:when>
 
                     <py:when test="col in ('date', 'created', 'modified')">
-                      <py:def function="cellclass">date</py:def>
-                      <py:def function="content">${cell.value != 'None' and format_date(int(cell.value)) or '--'}</py:def>
+                      <td class="date" py:attrs="td_attrs">${cell.value != 'None' and format_date(int(cell.value)) or '--'}
+                        <hr py:if="fullrow"/>
+                      </td>
                     </py:when>
 
                     <py:when test="col == 'datetime'">
-                      <py:def function="cellclass">date</py:def>
-                      <py:def function="content">${cell.value != 'None' and format_datetime(int(cell.value)) or '--'}</py:def>
+                      <td class="date" py:attrs="td_attrs">${cell.value != 'None' and format_datetime(int(cell.value)) or '--'}
+                        <hr py:if="fullrow"/>
+                      </td>
                     </py:when>
 
                     <py:when test="col == 'description'">
-                      <py:def function="cellclass"></py:def>
-                      <py:def function="content">${wiki_to_html(cell.value)}</py:def>
+                      <td class="$col" py:attrs="td_attrs">${wiki_to_html(cell.value)}
+                        <hr py:if="fullrow"/>
+                      </td>
                     </py:when>
 
                     <py:otherwise>
-                      <py:def function="cellclass">$col</py:def>
-                      <py:def function="content">$cell.value</py:def>
+                      <td class="$col" py:attrs="td_attrs">$cell.value
+                        <hr py:if="fullrow"/>
+                      </td>
                     </py:otherwise>
 
                   </py:choose>
                 </py:with>
-                <td class="$cellclass" py:attrs="td_attrs">
-                  ${content()} <hr py:if="fullrow"/>
-                </td>
               </py:if>
             </py:for>
           </tr>
