@@ -25,5 +25,5 @@ $change.comment
 
 -- 
 Ticket URL: <$ticket.link>
-$project.name <${abs_href}>
+$project.name <${abs_href()}>
 $project.descr
