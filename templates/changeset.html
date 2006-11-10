@@ -101,10 +101,16 @@
           <dd class="author">${changeset.author or 'anonymous'}</dd>
           <py:for each="prop in changeset_properties">
             <dt class="property $prop.htmlclass">$prop.name:</dt>
-            <dd class="$prop.htmlclass">$prop.value</dd>
+            <dd class="$prop.htmlclass" py:choose="">
+              <py:when test="prop.wikiflag">${wiki_to_html(prop.value)}</py:when>
+              <py:otherwise>$prop.value</py:otherwise>
+            </dd>
           </py:for>
           <dt class="property message">Message:</dt>
-          <dd class="message searchable">${changeset.message or '&nbsp;'}</dd>
+          <dd class="message searchable" py:choose="">
+            <py:when test="wiki_format_messages">${wiki_to_html(changeset.message, escape_newlines=True)}</py:when>
+            <py:otherwise>${changeset.message}</py:otherwise>
+          </dd>
         </py:if>
         <dt class="property files">${filter(None, changes) and 'Files:' or '(No files)'}</dt>
         <dd class="files">

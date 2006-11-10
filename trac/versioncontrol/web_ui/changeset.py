@@ -32,7 +32,7 @@ from trac.core import *
 from trac.mimeview import Mimeview, is_binary
 from trac.perm import IPermissionRequestor
 from trac.Search import ISearchSource, search_to_sql, shorten_result
-from trac.timeline.api import ITimelineEventProvider
+from trac.timeline.api import ITimelineEventProvider, TimelineEvent
 from trac.util import embedded_numbers
 from trac.util.compat import sorted
 from trac.util.datefmt import pretty_timedelta, utc
@@ -45,8 +45,7 @@ from trac.versioncontrol.web_ui.util import render_node_property
 from trac.web import IRequestHandler, RequestDone
 from trac.web.chrome import add_link, add_script, add_stylesheet, \
                             INavigationContributor
-from trac.wiki import wiki_to_html, wiki_to_oneliner, IWikiSyntaxProvider, \
-                      Formatter
+from trac.wiki import IWikiSyntaxProvider, Formatter
 
 
 class ChangesetModule(Component):
@@ -204,22 +203,16 @@ class ChangesetModule(Component):
             data = {'old_path': old_path, 'old_rev': old,
                     'new_path': new_path, 'new_rev': new}
         data['diff'] = diff_data
+        data['wiki_format_messages'] = self.wiki_format_messages
         
         if chgset:
             chgset = repos.get_changeset(new)
-            message = chgset.message or '--'
-            if self.wiki_format_messages:
-                message = wiki_to_html(message, self.env, req,
-                                              escape_newlines=True)
-            else:
-                message = html.PRE(message)
+            # TODO: find a cheaper way to reimplement r2636
             req.check_modified(chgset.date, [
                 style, ''.join(options), repos.name,
                 repos.rev_older_than(new, repos.youngest_rev),
-                message,
+                chgset.message,
                 pretty_timedelta(chgset.date, None, 3600)])
-        else:
-            message = None # FIXME: what date should we choose for a diff?
 
         format = req.args.get('format')
 
@@ -247,7 +240,7 @@ class ChangesetModule(Component):
                 self._render_zip(req, filename, repos, data)
 
         # -- HTML format
-        self._render_html(req, repos, chgset, restricted, message, data)
+        self._render_html(req, repos, chgset, restricted, data)
         
         if chgset:
             diff_params = 'new=%s' % new
@@ -267,7 +260,7 @@ class ChangesetModule(Component):
 
     # Internal methods
 
-    def _render_html(self, req, repos, chgset, restricted, message, data):
+    def _render_html(self, req, repos, chgset, restricted, data):
         """HTML version"""
         data['chgset'] = chgset and True
         data['restricted'] = restricted
@@ -299,10 +292,9 @@ class ChangesetModule(Component):
             title = _changeset_title(rev)
             properties = []
             for name, value, wikiflag, htmlclass in chgset.get_properties():
-                if wikiflag:
-                    value = wiki_to_html(value or '', self.env, req)
                 properties.append({'name': name, 'value': value,
-                                   'htmlclass': htmlclass})
+                                   'htmlclass': htmlclass,
+                                   'wikiflag': wikiflag})
 
             data['changeset'] = chgset
             data['changeset_properties'] = properties
@@ -615,42 +607,23 @@ class ChangesetModule(Component):
 
     def get_timeline_events(self, req, start, stop, filters):
         if 'changeset' in filters:
-            format = req.args.get('format')
-            wiki_format = self.wiki_format_messages
             show_files = self.timeline_show_files
-            db = self.env.get_db_cnx()
+            wiki_format = self.wiki_format_messages
+            long_messages = self.timeline_long_messages
+            
             repos = self.env.get_repository(req.authname)
+            
             for chgset in repos.get_changesets(start, stop):
-                message = chgset.message or '--'
+                shortlog = shorten_line(chgset.message or '')
+                title = html('Changeset ', html.em('[%s]' % chgset.rev), ': ',
+                             shortlog)
                 if wiki_format:
-                    shortlog = wiki_to_oneliner(message, self.env, db,
-                                                shorten=True)
+                    message = chgset.message
+                    markup = ''
                 else:
-                    shortlog = shorten_line(message)
-
-                if format == 'rss':
-                    title = Markup('Changeset [%s]: %s', chgset.rev, shortlog)
-                    href = req.abs_href.changeset(chgset.rev)
-                    if wiki_format:
-                        message = wiki_to_html(message, self.env, req, db,
-                                               absurls=True)
-                    else:
-                        message = html.PRE(message)
-                else:
-                    title = Markup('Changeset <em>[%s]</em> by %s', chgset.rev,
-                                   chgset.author)
-                    href = req.href.changeset(chgset.rev)
-
-                    if wiki_format:
-                        if self.timeline_long_messages:
-                            message = wiki_to_html(message, self.env, req, db,
-                                                   absurls=True)
-                        else:
-                            message = wiki_to_oneliner(message, self.env, db,
-                                                       shorten=True)
-                    else:
-                        message = shortlog
-
+                    message = None
+                    markup = long_messages and chgset.message or shortlog
+                    
                 if show_files and 'BROWSER_VIEW' in req.perm:
                     files = []
                     for chg in chgset.get_changes():
@@ -659,10 +632,14 @@ class ChangesetModule(Component):
                             break
                         files.append(html.LI(html.DIV(class_=chg[2]),
                                              chg[0] or '/'))
-                    message = html.UL(files, class_="changes") + message
+                    markup = html(html.UL(files, class_="changes"), markup)
 
-                yield 'changeset', href, title, chgset.date, chgset.author,\
-                      message
+                event = TimelineEvent('changeset', title,
+                                      req.href.changeset(chgset.rev), markup)
+                event.set_changeinfo(chgset.date, chgset.author, True)
+                event.set_context('changeset', chgset.rev, message)
+                event.use_oneliner = not long_messages
+                yield event
 
     # IWikiSyntaxProvider methods
 
