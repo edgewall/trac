@@ -14,7 +14,7 @@
 
   <item py:for="_, event in events">
    <title>${plaintext(event.title, keeplinebreaks=False)}</title>
-   <py:with vars="author=event.author; author = author and '@' in author and author or email_map[author]">
+   <py:with vars="author=event.author; author = author and '@' in author and author or email_map.get(author)">
     <author py:if="author">$author</author>
    </py:with>
    <pubDate>${http_date(event.date)}</pubDate>

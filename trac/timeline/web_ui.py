@@ -25,82 +25,13 @@ import time
 from trac.config import IntOption
 from trac.core import *
 from trac.perm import IPermissionRequestor
+from trac.timeline.api import ITimelineEventProvider, TimelineEvent
 from trac.util.datefmt import format_date, parse_date, to_timestamp, utc
 from trac.util.html import html, Markup
 from trac.util.text import to_unicode
 from trac.web import IRequestHandler
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
 
-    
-class TimelineEvent(object):
-    """Group event related information.
-
-    title: short summary for the event
-    message: optional Markup that should be taken into account along side the
-             contextual information
-    date, author, authenticated, ipnr: date and authorship info for the event;
-             `info` is a datetime instance
-    type, id, info: context and contextual information; the `info` will be
-             interpreted as wiki text
-    """
-
-    def __init__(self, kind, title='', href=None, message=None):
-        self.kind = kind
-        self.title = title
-        self.href = href
-        self.message = message
-        self.author = 'unknown'
-        self.date = self.authenticated = self.ipnr = None
-        self.type = self.id = self.info = None
-
-    def __repr__(self):
-        return '<TimelineEvent %s - %s>' % (self.date, self.href)
-
-    def set_changeinfo(self, date,
-                       author='anonymous', authenticated=None, ipnr=None):
-        self.date = date
-        self.author = author
-        self.authenticated = authenticated
-        self.ipnr = ipnr
-
-    def set_context(self, type, id, info=None):
-        self.type = type
-        self.id = id
-        self.info = info
-
-    def dateuid(self):
-        return to_timestamp(self.date),
-
-
-class ITimelineEventProvider(Interface):
-    """Extension point interface for adding sources for timed events to the
-    timeline.
-    """
-
-    def get_timeline_filters(self, req):
-        """Return a list of filters that this event provider supports.
-        
-        Each filter must be a (name, label) tuple, where `name` is the internal
-        name, and `label` is a human-readable name for display.
-
-        Optionally, the tuple can contain a third element, `checked`.
-        If `checked` is omitted or True, the filter is active by default,
-        otherwise it will be inactive.
-        """
-
-    def get_timeline_events(self, req, start, stop, filters):
-        """Return a list of events in the time range given by the `start` and
-        `stop` parameters.
-        
-        The `filters` parameters is a list of the enabled filters, each item
-        being the name of the tuples returned by `get_timeline_filters`.
-
-        The events are TimelineEvent instances.
-
-        Note:
-        The events returned by this function used to be tuples of the form
-        (kind, href, title, date, author, message). This is now deprecated.
-        """
 
 
 class TimelineModule(Component):

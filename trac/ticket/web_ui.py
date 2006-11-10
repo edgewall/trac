@@ -26,7 +26,7 @@ from trac.core import *
 from trac.mimeview.api import Mimeview, IContentConverter
 from trac.ticket import Milestone, Ticket, TicketSystem, ITicketManipulator
 from trac.ticket.notification import TicketNotifyEmail
-from trac.Timeline import ITimelineEventProvider
+from trac.timeline.api import ITimelineEventProvider
 from trac.util import get_reporter_id
 from trac.util.datefmt import to_timestamp, utc
 from trac.util.html import html, Markup

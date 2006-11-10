@@ -29,7 +29,7 @@ from trac.util.html import html, unescape, Markup
 from trac.util.text import shorten_line, CRLF, to_unicode
 from trac.ticket import Milestone, Ticket, TicketSystem
 from trac.ticket.query import Query
-from trac.Timeline import ITimelineEventProvider
+from trac.timeline.api import ITimelineEventProvider
 from trac.web import IRequestHandler
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
 from trac.wiki import wiki_to_html, wiki_to_oneliner, IWikiSyntaxProvider

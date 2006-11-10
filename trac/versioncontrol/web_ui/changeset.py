@@ -32,7 +32,7 @@ from trac.core import *
 from trac.mimeview import Mimeview, is_binary
 from trac.perm import IPermissionRequestor
 from trac.Search import ISearchSource, search_to_sql, shorten_result
-from trac.Timeline import ITimelineEventProvider
+from trac.timeline.api import ITimelineEventProvider
 from trac.util import embedded_numbers
 from trac.util.compat import sorted
 from trac.util.datefmt import pretty_timedelta, utc
