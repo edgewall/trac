@@ -26,7 +26,7 @@ from trac.core import *
 from trac.mimeview.api import Mimeview, IContentConverter
 from trac.ticket import Milestone, Ticket, TicketSystem, ITicketManipulator
 from trac.ticket.notification import TicketNotifyEmail
-from trac.timeline.api import ITimelineEventProvider
+from trac.timeline.api import ITimelineEventProvider, TimelineEvent
 from trac.util import get_reporter_id
 from trac.util.datefmt import to_timestamp, utc
 from trac.util.html import html, Markup
@@ -34,7 +34,6 @@ from trac.util.text import CRLF
 from trac.web import IRequestHandler
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor, \
                             Chrome
-from trac.wiki import wiki_to_html, wiki_to_oneliner
 
 
 class InvalidTicket(TracError):
@@ -256,8 +255,6 @@ class TicketModule(Component):
                       'closed': ('closedticket', 'closed'),
                       'edit': ('editedticket', 'updated')}
 
-        href = format == 'rss' and req.abs_href or req.href
-
         def produce((id, ts, author, type, summary), status, fields,
                     comment, cid):
             if status == 'edit':
@@ -278,28 +275,22 @@ class TicketModule(Component):
             else:
                 return None
             kind, verb = status_map[status]
-            if format == 'rss':
-                title = 'Ticket #%s (%s %s): %s' % \
-                        (id, type.lower(), verb, summary)
-            else:
-                title = Markup('Ticket <em title="%s">#%s</em> (%s) %s by %s',
-                               summary, id, type, verb, author)
-            ticket_href = href.ticket(id)
+            title = Markup('Ticket <em title="%s">#%s</em> (%s) %s',
+                           summary, id, type, verb)
+            ticket_href = req.href.ticket(id)
             if cid:
                 ticket_href += '#comment:' + cid
+            markup = message = None
             if status == 'new':
                 message = summary
             else:
-                message = Markup(info)
-                if comment:
-                    if format == 'rss':
-                        message += wiki_to_html(comment, self.env, req, db,
-                                                absurls=True)
-                    else:
-                        message += wiki_to_oneliner(comment, self.env, db,
-                                                    shorten=True)
+                markup = Markup(info)
+                message = comment
             t = datetime.fromtimestamp(ts, utc)
-            return kind, ticket_href, title, t, author, message
+            event = TimelineEvent(kind, title, ticket_href, markup)
+            event.set_changeinfo(t, author)
+            event.set_context('ticket', id, message)
+            return event
 
         # Ticket changes
         if 'ticket' in filters or 'ticket_details' in filters:
