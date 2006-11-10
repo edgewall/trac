@@ -20,7 +20,7 @@
 from trac.core import *
 from trac.util.datefmt import to_timestamp
 
-    
+
 class TimelineEvent(object):
     """Group event related information.
 
