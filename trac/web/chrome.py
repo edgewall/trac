@@ -21,7 +21,7 @@ import re
 
 from genshi import Markup
 from genshi.builder import tag
-from genshi.core import START, plaintext
+from genshi.core import START
 from genshi.output import DocType
 from genshi.template import TemplateLoader, MarkupTemplate, TextTemplate
 
@@ -32,6 +32,7 @@ from trac.core import *
 from trac.env import IEnvironmentSetupParticipant
 from trac.util import compat, get_reporter_id, presentation
 from trac.util.compat import partial, set
+from trac.util.html import plaintext
 from trac.util.text import pretty_size, shorten_line, unicode_quote_plus, \
                            to_unicode
 from trac.util.datefmt import pretty_timedelta, format_datetime, format_date, \
@@ -91,6 +92,14 @@ def add_script(req, filename, mimetype='text/javascript'):
 def add_javascript(req, filename):
     """Deprecated: use `add_script()` instead."""
     add_script(req, filename, mimetype='text/javascript')
+
+
+def to_abs_href(env, req, rel_href):
+    """Convert a relative `href` to an absolute href."""
+    href = env.abs_href
+    if req:
+        href = Href(req.abs_href.base[:-len(req.href.base)])
+    return href(rel_href)
 
 
 class INavigationContributor(Interface):
@@ -432,6 +441,7 @@ class Chrome(Component):
         d.update({
             'req': req,
             'abs_href': req and req.abs_href or self.env.abs_href,
+            'to_abs_href': partial(to_abs_href, self.env, req),
             'href': req and req.href,
             'perm': req and req.perm,
             'authname': req and req.authname or '<trac>',

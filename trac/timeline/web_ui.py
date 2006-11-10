@@ -163,8 +163,9 @@ class TimelineModule(Component):
         kind, href, title, date, author, markup = event
         if not isinstance(date, datetime):
             date = datetime.fromtimestamp(date, utc)
-        if href and href.startswith(req.abs_href.base):
-            href = href[len(req.abs_href.base):]
+        base = req.abs_href.base[:-len(req.href.base)]
+        if href and href.startswith(base):
+            href = href[len(base):]
         event = TimelineEvent(kind, title, href, markup)
         event.set_changeinfo(date, author)
         return event

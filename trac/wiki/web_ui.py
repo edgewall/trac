@@ -422,11 +422,8 @@ class WikiModule(Component):
 
     def get_timeline_events(self, req, start, stop, filters):
         if 'wiki' in filters:
-            start = to_timestamp(start)
-            stop = to_timestamp(stop)
+            start, stop = to_timestamp(start), to_timestamp(stop)
             wiki = WikiSystem(self.env)
-            format = req.args.get('format')
-            href = format == 'rss' and req.abs_href or req.href
             db = self.env.get_db_cnx()
             cursor = db.cursor()
             cursor.execute("SELECT time,name,comment,author,ipnr,version "
@@ -436,18 +433,18 @@ class WikiModule(Component):
                 title = html.em(wiki.format_page_name(name))
                 markup = None
                 if version > 1:
-                    markup = html.a('(diff)', href=href.wiki(name,
-                                                             action='diff',
-                                                             version=version))
+                    markup = html.a('(diff)', href=req.href.wiki(
+                        name, action='diff', version=version))
                 t = datetime.fromtimestamp(ts, utc)
-                event = TimelineEvent('wiki', title, href.wiki(name), markup)
+                event = TimelineEvent('wiki', title, req.href.wiki(name),
+                                      markup)
                 event.set_changeinfo(t, author, ipnr=ipnr)
                 event.set_context('wiki', name, comment)
                 yield event
 
             # Attachments
             att = AttachmentModule(self.env)
-            for event in att.get_timeline_events(req, db, 'wiki', format,
+            for event in att.get_timeline_events(req, db, 'wiki', None,
                                                  start, stop,
                                                  lambda id: html.EM(id)):
                 yield event

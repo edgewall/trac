@@ -13,10 +13,11 @@
 
 import re
 
-from genshi.core import Markup, escape, unescape, plaintext
+from genshi.core import Markup, escape, unescape
 from genshi.builder import Element, ElementFactory, Fragment
+from genshi.path import Path
 
-__all__ = ['escape', 'unescape', 'html']
+__all__ = ['escape', 'unescape', 'html', 'plaintext']
 
 
 class Deuglifier(object):
@@ -51,4 +52,13 @@ class TransposingElementFactory(ElementFactory):
         return ElementFactory.__getattr__(self, self.func(name))
 
 
+TEXT_XPATH = Path('text()')
+
+def plaintext(text, keeplinebreaks=True):
+    if isinstance(text, Fragment):
+        return TEXT_XPATH.select(text)
+    else:
+        from genshi import core
+        return core.plaintext(text)
+    
 html = TransposingElementFactory(str.lower)

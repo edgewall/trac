@@ -18,8 +18,8 @@
     <author py:if="author">$author</author>
    </py:with>
    <pubDate>${http_date(event.date)}</pubDate>
-   <link><py:if test="event.href.startswith('/')">${req.abs_href.base}${event.href}</py:if></link>
-   <guid isPermaLink="false">${req.abs_href.base}${event.href}/${event.dateuid}</guid>
+   <link><py:if test="event.href.startswith('/')">${to_abs_href(event.href)}</py:if></link>
+   <guid isPermaLink="false">${to_abs_href(event.href)}/${event.dateuid}</guid>
    <description>${event.message}<py:if test="event.wiki">${wiki_to_html(event.wiki,absurls=True)}</py:if></description>
   </item>
 
