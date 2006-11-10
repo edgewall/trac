@@ -26,7 +26,7 @@ class IAdminPanelProvider(Interface):
         `(category, category_label, page, page_label)`.
         """
 
-    def render_admin_paneel(req, category, page, path_info):
+    def render_admin_panel(req, category, page, path_info):
         """Process a request for an admin panel.
         
         This function should return a tuple of the form `(template, data)`,
