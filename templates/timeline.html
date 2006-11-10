@@ -32,14 +32,18 @@
        </div>
       </form>
 
-      <py:for each="day, events in groupby(events, key=lambda e: e.day)">
+      <py:for each="day, events in groupby(events, key=lambda (day,ev): day)">
         <h2>$day:</h2>
         <dl>
-          <py:for each="event in events">
+          <py:for each="_, event in events">
             <dt class="${event.kind}"><a href="${event.href}">
               <span class="time">${format_time(event.date, str('%H:%M'))}</span> ${event.title}
+                <py:if test="event.author">by ${event.author}</py:if>
             </a></dt>
-            <dd class="${event.kind}">${event.message}</dd>
+            <dd class="${event.kind}">
+              ${event.message}
+              <py:if test="event.wiki">${wiki_to_oneliner(event.wiki)}</py:if>
+            </dd>
           </py:for>
         </dl>
       </py:for>

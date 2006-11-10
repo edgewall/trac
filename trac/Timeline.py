@@ -26,10 +26,50 @@ from trac.config import IntOption
 from trac.core import *
 from trac.perm import IPermissionRequestor
 from trac.util.datefmt import format_date, parse_date, to_timestamp, utc
-from trac.util.html import html, plaintext, Markup
+from trac.util.html import html, Markup
 from trac.util.text import to_unicode
 from trac.web import IRequestHandler
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
+
+    
+class TimelineEvent(object):
+    """Group event related information.
+
+    title: short summary for the event
+    message: optional Markup that should be taken into account along side the
+             contextual information
+    date, author, authenticated, ipnr: date and authorship info for the event;
+             `info` is a datetime instance
+    type, id, info: context and contextual information; the `info` will be
+             interpreted as wiki text
+    """
+
+    def __init__(self, kind, title='', href=None, message=None):
+        self.kind = kind
+        self.title = title
+        self.href = href
+        self.message = message
+        self.author = 'unknown'
+        self.date = self.authenticated = self.ipnr = None
+        self.type = self.id = self.info = None
+
+    def __repr__(self):
+        return '<TimelineEvent %s - %s>' % (self.date, self.href)
+
+    def set_changeinfo(self, date,
+                       author='anonymous', authenticated=None, ipnr=None):
+        self.date = date
+        self.author = author
+        self.authenticated = authenticated
+        self.ipnr = ipnr
+
+    def set_context(self, type, id, info=None):
+        self.type = type
+        self.id = id
+        self.info = info
+
+    def dateuid(self):
+        return to_timestamp(self.date),
 
 
 class ITimelineEventProvider(Interface):
@@ -55,8 +95,11 @@ class ITimelineEventProvider(Interface):
         The `filters` parameters is a list of the enabled filters, each item
         being the name of the tuples returned by `get_timeline_filters`.
 
-        The events returned by this function must be tuples of the form
-        (kind, href, title, date, author, message).
+        The events are TimelineEvent instances.
+
+        Note:
+        The events returned by this function used to be tuples of the form
+        (kind, href, title, date, author, message). This is now deprecated.
         """
 
 
@@ -140,58 +183,35 @@ class TimelineModule(Component):
         stop = fromdate
         start = stop - timedelta(days=daysback + 1)
 
+        # gather all events for the given period of time
         events = []
         for event_provider in self.event_providers:
             try:
                 for event in event_provider.get_timeline_events(req, start,
                                                                 stop, filters):
-                    kind, href, title, date, author, message = event
-                    if not isinstance(date, datetime):
-                        date = datetime.fromtimestamp(event[3], utc)
-                    heappush(events, (-to_timestamp(date),
-                             (kind, href, title, date, author, message)))
+                    # compatibility with 0.10 providers
+                    if isinstance(event, tuple):
+                        event = self._event_from_tuple(req, event)
+                    heappush(events, (-to_timestamp(event.date), event))
             except Exception, e: # cope with a failure of that provider
                 self._provider_failure(e, req, event_provider, filters,
                                        [f[0] for f in available_filters])
-
-        if maxrows and len(events) > maxrows:
-            del events[maxrows:]
-
-        # Get the email addresses of all known users
-        email_map = {}
-        for username, name, email in self.env.get_known_users():
-            if email:
-                email_map[username] = email
-
+        # prepare sorted global list
+        data_events = data['events']
         while events:
-            _, (kind, href, title, date, author, message) = heappop(events)
-            event = {'kind': kind, 'title': title, 'href': href,
-                     'author': author or 'anonymous',
-                     'date': date,
-                     # for speeding-up the grouping by day:
-                     'day': format_date(date, tzinfo=req.tz),
-                     'dateuid': to_timestamp(date),
-                     'message': message}
-
-            if format == 'rss':
-                # Strip/escape HTML markup
-                if isinstance(title, Markup):
-                    title = plaintext(title, keeplinebreaks=False)
-                event['title'] = title
-                event['message'] = to_unicode(message)
-
-                if author:
-                    # For RSS, author must be an email address
-                    if '@' in author:
-                        event['author'] = author
-                    elif author in email_map:
-                        event['author'] = email_map[author]
-                    else:
-                        del event['author']
-
-            data['events'].append(event)
+            _, event = heappop(events)
+            day = format_date(event.date, tzinfo=req.tz),
+            data_events.append((day, event))
+            if maxrows and len(data_events) > maxrows:
+                break
 
         if format == 'rss':
+            # Get the email addresses of all known users
+            email_map = {}
+            for username, name, email in self.env.get_known_users():
+                if email:
+                    email_map[username] = email
+            data['email_map'] = email_map
             return 'timeline.rss', data, 'application/rss+xml'
 
         add_stylesheet(req, 'common/css/timeline.css')
@@ -205,6 +225,18 @@ class TimelineModule(Component):
                                     'enabled': filter_[0] in filters})
 
         return 'timeline.html', data, None
+
+    def _event_from_tuple(self, req, event):
+        """Build a TimelineEvent from a pre-0.11 ITimelineEventProvider tuple
+        """
+        kind, href, title, date, author, message = event
+        if not isinstance(date, datetime):
+            date = datetime.fromtimestamp(date, utc)
+        if href and href.startswith(req.abs_href.base):
+            href = href[len(req.abs_href.base):]
+        event = TimelineEvent(kind, title, href, message)
+        event.set_changeinfo(date, author)
+        return event
 
     def _provider_failure(self, exc, req, ep, current_filters, all_filters):
         """Raise a TracError exception explaining the failure of a provider.

@@ -21,7 +21,7 @@ import re
 
 from genshi import Markup
 from genshi.builder import tag
-from genshi.core import START
+from genshi.core import START, plaintext
 from genshi.output import DocType
 from genshi.template import TemplateLoader, MarkupTemplate, TextTemplate
 
@@ -32,7 +32,8 @@ from trac.core import *
 from trac.env import IEnvironmentSetupParticipant
 from trac.util import compat, get_reporter_id, presentation
 from trac.util.compat import partial, set
-from trac.util.text import pretty_size, shorten_line, unicode_quote_plus
+from trac.util.text import pretty_size, shorten_line, unicode_quote_plus, \
+                           to_unicode
 from trac.util.datefmt import pretty_timedelta, format_datetime, format_date, \
                               format_time, http_date
 from trac.web.api import IRequestHandler, HTTPNotFound
@@ -191,6 +192,7 @@ class Chrome(Component):
         'groupby': compat.groupby,
         'http_date': http_date,
         'paginate': presentation.paginate,
+        'plaintext': plaintext,
         'pprint': pprint.pformat,
         'pretty_size': pretty_size,
         'pretty_timedelta': pretty_timedelta,
@@ -200,6 +202,7 @@ class Chrome(Component):
         'sorted': compat.sorted,
         'time': datetime.time,
         'timedelta': datetime.timedelta,
+        'to_unicode': to_unicode,
     }
 
     # IEnvironmentSetupParticipant methods

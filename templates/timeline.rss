@@ -12,13 +12,15 @@
    <link>${abs_href.timeline}</link>
   </image>
 
-  <item py:for="event in events">
-   <title>${event.title}</title>
-   <author py:if="event.author">${event.author}</author>
+  <item py:for="_, event in events">
+   <title>${plaintext(event.title, keeplinebreaks=False)}</title>
+   <py:with vars="author=event.author; author = author and '@' in author and author or email_map[author]">
+    <author py:if="author">$author</author>
+   </py:with>
    <pubDate>${http_date(event.date)}</pubDate>
-   <link>${event.href}</link>
-   <guid isPermaLink="false">${event.href}/${event.dateuid}</guid>
-   <description>${event.message}</description>
+   <link><py:if test="event.href.startswith('/')">${req.abs_href.base}${event.href}</py:if></link>
+   <guid isPermaLink="false">${req.abs_href.base}${event.href}/${event.dateuid}</guid>
+   <description>${event.message}<py:if test="event.wiki">${wiki_to_html(event.wiki,absurls=True)}</py:if></description>
   </item>
 
  </channel>
