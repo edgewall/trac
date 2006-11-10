@@ -29,7 +29,7 @@ from trac.util.html import html, unescape, Markup
 from trac.util.text import shorten_line, CRLF, to_unicode
 from trac.ticket import Milestone, Ticket, TicketSystem
 from trac.ticket.query import Query
-from trac.timeline.api import ITimelineEventProvider
+from trac.timeline.api import ITimelineEventProvider, TimelineEvent
 from trac.web import IRequestHandler
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
 from trac.wiki import wiki_to_html, wiki_to_oneliner, IWikiSyntaxProvider
@@ -368,24 +368,20 @@ class MilestoneModule(Component):
 
     def get_timeline_events(self, req, start, stop, filters):
         if 'milestone' in filters:
-            format = req.args.get('format')
             db = self.env.get_db_cnx()
             cursor = db.cursor()
+            # TODO: creation and (later) modifications should also be reported
             cursor.execute("SELECT completed,name,description FROM milestone "
                            "WHERE completed>=%s AND completed<=%s",
                            (to_timestamp(start), to_timestamp(stop)))
             for ts, name, description in cursor:
                 completed = datetime.fromtimestamp(ts, utc)
                 title = Markup('Milestone <em>%s</em> completed', name)
-                if format == 'rss':
-                    href = req.abs_href.milestone(name)
-                    message = wiki_to_html(description, self.env, req, db,
-                                           absurls=True)
-                else:
-                    href = req.href.milestone(name)
-                    message = wiki_to_oneliner(description, self.env, db,
-                                               shorten=True)
-                yield 'milestone', href, title, completed, None, message or '--'
+                event = TimelineEvent('milestone', title,
+                                      req.href.milestone(name))
+                event.set_changeinfo(completed, '') # FIXME: store the author
+                event.set_context('milestone', name, description)
+                yield event
 
     # IRequestHandler methods
 
