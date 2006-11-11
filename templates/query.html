@@ -31,7 +31,7 @@
     <div id="content" class="query">
       <h1>$title ${num_matches(len(tickets))}</h1>
 
-      <form id="query" method="post" action="${href.query}">
+      <form id="query" method="post" action="${href.query()}">
         <fieldset id="filters">
           <legend>Filters</legend>
           <table summary="Query filters">
