@@ -288,7 +288,18 @@ class Ranges(object):
     >>> x = Ranges("1-9,2-4") # handle ranges that completely overlap
     >>> list(x)
     [1, 2, 3, 4, 5, 6, 7, 8, 9]
+
+    The members 'a' and 'b' refer to the min and max value of the range, and
+    are None if the range is empty:
     
+    >>> x.a
+    1
+    >>> x.b
+    9
+    >>> e = Ranges()
+    >>> e.a, e.b
+    (None, None)
+
     Empty ranges are ok, and ranges can be constructed in pieces, if you
     so choose:
     
@@ -303,35 +314,40 @@ class Ranges(object):
     """
     def __init__(self, r=None):
         self.pairs = []
+        self.a = self.b = None
         self.appendrange(r)
 
     def appendrange(self, r):
         """Add a range (from a string or None) to the current one"""
-        if not r: return
+        if not r:
+            return
         p = self.pairs
         for x in r.split(","):
             try:
                 a, b = map(int, x.split('-', 1))
             except ValueError:
                 a, b = int(x), int(x)
-            p.append((a, b))
+            if b >= a:
+                p.append((a, b))
         self._reduce()
 
     def _reduce(self):
         """Come up with the minimal representation of the ranges"""
-        d = [] # list of indices to delete
         p = self.pairs
         p.sort()
-        for i in range(len(p) - 1):
-            if p[i+1][0] <= p[i][1]: # this item overlaps with the next
-	        # make the first one include the second
-                p[i] = (p[i][0], max(p[i][1], p[i+1][1]))
-	        d.append(i+1) # delete the second on a later pass
-        d.reverse()
-        for i in d:
-            del p[i]
-        self.a = p[0][0]  # min value
-        self.b = p[-1][1] # max value
+        i = 0
+        while i + 1 < len(p):
+            if p[i+1][0]-1 <= p[i][1]: # this item overlaps with the next
+                # make the first include the second
+                p[i] = (p[i][0], max(p[i][1], p[i+1][1])) 
+                del p[i+1] # delete the second, after adjusting my endpoint
+            else:
+                i += 1
+        if p:
+            self.a = p[0][0] # min value
+            self.b = p[-1][1] # max value
+        else:
+            self.a = self.b = None        
 
     def __iter__(self):
         """
@@ -345,10 +361,43 @@ class Ranges(object):
                 yield i
 
     def __contains__(self, x):
-        if self.a <= x <= self.b: # short-circuit if outside of possible range
+        """
+        >>> 55 in Ranges()
+        False
+        """
+        # short-circuit if outside the possible range
+        if self.a is not None and self.a <= x <= self.b:
             for a, b in self.pairs:
                 if a <= x <= b:
                     return True
                 if b > x: # short-circuit if we've gone too far
                     break
         return False
+
+    def __str__(self):
+        """Provide a compact string representation of the range.
+        
+        >>> (str(Ranges("1,2,3,5")), str(Ranges()), str(Ranges('2')))
+        ('1-3,5', '', '2')
+        >>> str(Ranges('99-1')) # only nondecreasing ranges allowed
+        ''
+        """
+        r = []
+        for a, b in self.pairs:
+            if a == b:
+                r.append(str(a))
+            else:
+                r.append("%d-%d" % (a, b))
+        return ",".join(r)
+
+    def __len__(self):
+        """The length of the entire span, ignoring holes.
+        
+        >>> (len(Ranges('99')), len(Ranges('1-2')), len(Ranges('')))
+        (1, 2, 0)
+        """
+        if self.a is not None and self.b is not None:
+            return self.b - self.a + 1
+        else:
+            return 0
+

@@ -266,9 +266,9 @@ class LogModule(Component):
                 indexes = [sep in match and match.index(sep) for sep in ':@']
                 idx = min([i for i in indexes if i is not False])
                 path, revs = match[:idx], match[idx+1:]
-        revs = revs.replace(':', '-')
+        ranges = Ranges(revs.replace(':', '-'))
         return html.A(label, class_='source',
-                      href=formatter.href.log(path or '/', revs=revs))
+                      href=formatter.href.log(path or '/', revs=str(ranges)))
 
     LOG_LINK_RE = re.compile(r"([^@:]*)[@:]%s?" % REV_RANGE)
 
