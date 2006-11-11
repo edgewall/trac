@@ -47,7 +47,7 @@ if have_pysqlite == 2:
         def _rollback_on_error(self, function, *args, **kwargs):
             try:
                 return function(self, *args, **kwargs)
-            except sqlite.OperationalError, e:
+            except sqlite.DatabaseError, e:
                 self.cnx.rollback()
                 raise
         def execute(self, sql, args=None):
