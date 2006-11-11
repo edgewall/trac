@@ -43,12 +43,17 @@ class IterableCursor(object):
             yield row
 
     def execute(self, sql, args=None):
+        # -- In case of SQL errors, uncomment the following 'print' statements
+        # print 'execute', repr(sql)
         if args:
+            # print repr(args)
             return self.cursor.execute(sql_escape_percent(sql), args)
         return self.cursor.execute(sql)
 
     def executemany(self, sql, args=None):
+        # print 'executemany', repr(sql)
         if args:
+            # print repr(args)
             return self.cursor.executemany(sql_escape_percent(sql), args)
         return self.cursor.executemany(sql)
 
