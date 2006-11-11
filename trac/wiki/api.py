@@ -264,9 +264,11 @@ class WikiSystem(Component):
     # See http://www.w3.org/TR/REC-xml/#id,
     # here adapted to exclude terminal "." and ":" characters
 
-    def format_page_name(self, page):
-        if self.split_page_names:
-            return re.sub(r"([a-z])([A-Z][a-z])", r"\1 \2", page)
+    PAGE_SPLIT_RE = re.compile(r"([a-z])([A-Z][a-z])")
+    
+    def format_page_name(self, page, split=False):
+        if split or self.split_page_names:
+            return self.PAGE_SPLIT_RE.sub(r"\1 \2", page)
         return page
     
     def get_wiki_syntax(self):

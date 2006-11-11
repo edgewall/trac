@@ -27,10 +27,10 @@ from StringIO import StringIO
 
 from trac.config import default_dir
 from trac.core import *
-from trac.util import sorted
 from trac.util.datefmt import format_date, utc
+from trac.util.compat import sorted, groupby, any
 from trac.util.html import escape, html, Markup
-from trac.wiki.api import IWikiMacroProvider, WikiSystem
+from trac.wiki.api import IWikiMacroProvider, WikiSystem, parse_args
 from trac.wiki.model import WikiPage
 from trac.web.chrome import add_stylesheet
 
@@ -62,17 +62,58 @@ class TitleIndexMacro(WikiMacroBase):
     Accepts a prefix string as parameter: if provided, only pages with names
     that start with the prefix are included in the resulting list. If this
     parameter is omitted, all pages are listed.
+
+    Alternate `format` can be specified:
+     - `format=group`: The list of page will be structured in groups
+        according to common prefix. This format also supports a `min=n`
+        argument, where `n` is the minimal number of pages for a group.
     """
 
+    SPLIT_RE = re.compile(r"( |/|[0-9])")
+
     def render_macro(self, req, name, content):
-        prefix = content or None
+        args, kw = parse_args(content)
+        prefix = args and args[0] or None
+        format = kw.get('format', '')
+        minsize = max(int(kw.get('min', 2)), 2)
 
         wiki = WikiSystem(self.env)
+        pages = sorted(wiki.get_pages(prefix))
 
-        return html.UL([html.LI(html.A(wiki.format_page_name(page),
-                                       href=req.href.wiki(page)))
-                        for page in sorted(wiki.get_pages(prefix))])
+        if format != 'group':
+            return html.UL([html.LI(html.A(wiki.format_page_name(page),
+                                           href=req.href.wiki(page)))
+                            for page in pages])
+        
+        # Group by Wiki word and/or Wiki hierarchy
+        pages = [(self.SPLIT_RE.split(wiki.format_page_name(page, split=True)),
+                  page) for page in pages]
+        def split_in_groups(group):
+            """Return list of pagename or (key, sublist) elements"""
+            groups = []
+            for key, subgrp in groupby(group, lambda (k,p): k and k[0] or ''):
+                subgrp = [(k[1:],p) for k,p in subgrp]
+                if key and len(subgrp) >= minsize:
+                    sublist = split_in_groups(sorted(subgrp))
+                    if len(sublist) == 1:
+                        elt = (key+sublist[0][0], sublist[0][1])
+                    else:
+                        elt = (key, sublist)
+                    groups.append(elt)
+                else:
+                    for elt in subgrp:
+                        groups.append(elt[1])
+            return groups
 
+        def render_groups(groups):
+            return html.UL(
+                [html.LI(isinstance(elt, tuple) and 
+                         html(html.STRONG(elt[0]), render_groups(elt[1])) or
+                         html.A(wiki.format_page_name(elt),
+                                href=req.href.wiki(elt)))
+                 for elt in groups])
+        return render_groups(split_in_groups(pages))
+            
 
 class RecentChangesMacro(WikiMacroBase):
     """Lists all pages that have recently been modified, grouping them by the
