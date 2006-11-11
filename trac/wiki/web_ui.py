@@ -170,8 +170,6 @@ class WikiModule(Component):
                 yield 'wiki', href.wiki(name), title, t, author, comment
 
             # Attachments
-            def display(id):
-                return Markup('ticket ', html.EM('#', id))
             att = AttachmentModule(self.env)
             for event in att.get_timeline_events(req, db, 'wiki', format,
                                                  start, stop,
