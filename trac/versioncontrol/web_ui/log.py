@@ -229,8 +229,8 @@ class LogModule(Component):
 
     # IWikiSyntaxProvider methods
 
-    REV_RANGE = (r"(?:\d+(?:[-:]\d+)?(?:,\d+(?:[-:]\d+)?)*" # int rev ranges
-                 r"|%s)" % ChangesetModule.CHANGESET_ID) # or any kind of rev
+    REV_RANGE = r"(?:%s|%s)" % (Ranges.RE_STR, ChangesetModule.CHANGESET_ID)
+    #                          int rev ranges or any kind of rev
     
     def get_wiki_syntax(self):
         yield (

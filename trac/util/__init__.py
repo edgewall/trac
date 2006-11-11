@@ -312,6 +312,9 @@ class Ranges(object):
 
     ''Code contributed by Tim Hatch''
     """
+
+    RE_STR = r"""\d+(?:[-:]\d+)?(?:,\d+(?:[-:]\d+)?)*"""
+    
     def __init__(self, r=None):
         self.pairs = []
         self.a = self.b = None
