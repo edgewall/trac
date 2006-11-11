@@ -32,6 +32,7 @@
       <h1>$title ${num_matches(len(tickets))}</h1>
 
       <form id="query" method="post" action="${href.query()}">
+        <input py:if="'id' in query.constraints" type="hidden" name="id" value="${query.constraints['id']}" />
         <fieldset id="filters">
           <legend>Filters</legend>
           <table summary="Query filters">

@@ -21,6 +21,7 @@ from trac.config import *
 from trac.core import *
 from trac.perm import IPermissionRequestor, PermissionSystem
 from trac.Search import ISearchSource, search_to_sql, shorten_result
+from trac.util import Ranges
 from trac.util.html import html, Markup
 from trac.util.text import shorten_line
 from trac.util.datefmt import utc
@@ -202,7 +203,8 @@ class TicketSystem(Component):
             # matches #... but not &#... (HTML entity)
             r"!?(?<!&)#"
             # optional intertrac shorthand #T... + digits
-            r"(?P<it_ticket>%s)\d+" % Formatter.INTERTRAC_SCHEME,
+            r"(?P<it_ticket>%s)%s" % (Formatter.INTERTRAC_SCHEME,
+                                      Ranges.RE_STR),
             lambda x, y, z: self._format_link(x, 'ticket', y[1:], y, z))
 
     def _format_link(self, formatter, ns, target, label, fullmatch=None):
@@ -211,14 +213,23 @@ class TicketSystem(Component):
         if intertrac:
             return intertrac
         try:
-            cursor = formatter.db.cursor()
-            cursor.execute("SELECT summary,status FROM ticket WHERE id=%s",
-                           (str(int(target)),))
-            row = cursor.fetchone()
-            if row:
-                return html.A(label, class_='%s ticket' % row[1],
-                              title=shorten_line(row[0]) + ' (%s)' % row[1],
-                              href=formatter.href.ticket(target))
+            r = Ranges(target)
+            if len(r) == 1:
+                cursor = formatter.db.cursor()
+                cursor.execute("SELECT summary,status FROM ticket WHERE id=%s",
+                               (str(r.a),))
+                for summary, status in cursor:
+                    return html.A(label, class_='%s ticket' % status,
+                                  title=shorten_line(summary)+' (%s)' % status,
+                                  href=formatter.href.ticket(target))
+                else:
+                    return html.A(label, class_='missing ticket',
+                                  href=formatter.href.ticket(target),
+                                  rel="nofollow")
+            else:
+                ranges = str(r)
+                return html.A(label, title='Tickets '+ranges,
+                              href=formatter.href.query(id=ranges))
         except ValueError:
             pass
         return html.A(label, class_='missing ticket', rel='nofollow',

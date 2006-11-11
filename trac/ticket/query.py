@@ -25,6 +25,7 @@ from trac.mimeview.api import Mimeview, IContentConverter
 from trac.perm import IPermissionRequestor
 from trac.ticket.api import TicketSystem
 from trac.ticket.model import Ticket
+from trac.util import Ranges
 from trac.util.datefmt import to_timestamp, utc
 from trac.util.html import escape, html, unescape
 from trac.util.text import shorten_line, CRLF
@@ -116,7 +117,8 @@ class Query(object):
 
         # Semi-intelligently remove columns that are restricted to a single
         # value by a query constraint.
-        for col in [k for k in self.constraints.keys() if k in cols]:
+        for col in [k for k in self.constraints.keys()
+                    if k != 'id' and k in cols]:
             constraint = self.constraints[col]
             if len(constraint) == 1 and constraint[0] \
                     and not constraint[0][0] in ('!', '~', '^', '$'):
@@ -273,8 +275,28 @@ class Query(object):
             if len(v[0]) > neg and v[0][neg] in ('~', '^', '$'):
                 mode = v[0][neg]
 
+            # Special case id ranges
+            if k == 'id':
+                ranges = Ranges()
+                for r in v:
+                    r = r.replace('!', '')
+                    ranges.appendrange(r)
+                ids = []
+                id_clauses = []
+                for a,b in ranges.pairs:
+                    if a == b:
+                        ids.append(str(a))
+                    else:
+                        id_clauses.append('id BETWEEN %s AND %s')
+                        args.append(a)
+                        args.append(b)
+                if ids:
+                    id_clauses.append('id IN (%s)' % (','.join(ids)))
+                if id_clauses:
+                    clauses.append('%s(%s)' % (neg and 'NOT ' or '',
+                                               ' OR '.join(id_clauses)))
             # Special case for exact matches on multiple values
-            if not mode and len(v) > 1:
+            elif not mode and len(v) > 1:
                 if k not in custom_fields:
                     col = 't.' + k
                 else:
@@ -512,6 +534,7 @@ class QueryModule(Component):
         constraints = {}
         ticket_fields = [f['name'] for f in
                          TicketSystem(self.env).get_ticket_fields()]
+        ticket_fields.append('id')
 
         # For clients without JavaScript, we remove constraints here if
         # requested
