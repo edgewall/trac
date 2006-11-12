@@ -64,15 +64,14 @@ class CachedRepository(Repository):
 
         # -- repository used for populating the cache
         cursor.execute("SELECT value FROM system WHERE name='repository_dir'")
-        row = cursor.fetchone()
-        if row:
-            previous_repository_dir = row[0]
+        for previous_repository_dir, in cursor:
+            if previous_repository_dir != self.name:
+                raise TracError("The 'repository_dir' has changed, "
+                                "a 'trac-admin resync' operation is needed.")
+            break
         else: # no 'repository_dir' stored yet, assume everything's OK
-            previous_repository_dir = self.name
-
-        if self.name != previous_repository_dir:
-            raise TracError, ("The 'repository_dir' has changed, "
-                              "a 'trac-admin resync' operation is needed.")
+            cursor.execute("INSERT INTO system (name,value) "
+                           "VALUES ('repository_dir',%s)", (self.name,))
 
         youngest_stored = self.repos.get_youngest_rev_in_cache(self.db)
 
