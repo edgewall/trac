@@ -442,7 +442,7 @@ class TracIniMacro(WikiMacroBase):
 
     def render_macro(self, req, name, filter):
         from trac.config import Option
-        from trac.wiki.formatter import wiki_to_html, wiki_to_oneliner
+        from trac.wiki.formatter import wiki_to_oneliner
         filter = filter or ''
 
         sections = set([section for section, option in Option.registry.keys()
@@ -453,7 +453,8 @@ class TracIniMacro(WikiMacroBase):
               html.TABLE(class_='wiki')(
                   html.TBODY([html.TR(html.TD(html.TT(option.name)),
                                       html.TD(wiki_to_oneliner(option.__doc__,
-                                                               self.env)))
+                                                               self.env,
+                                                               req=req)))
                               for option in Option.registry.values()
                               if option.section == section])))
              for section in sorted(sections)])

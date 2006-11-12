@@ -456,7 +456,7 @@ class Formatter(object):
         anchor = fullmatch.group('hanchor') or ''
         heading_text = match[depth+1:-depth-1-len(anchor)]
         heading = wiki_to_oneliner(heading_text, self.env, self.db, False,
-                                   self._absurls)
+                                   self._absurls, self.req)
         if anchor:
             anchor = anchor[1:]
         else:
@@ -473,7 +473,7 @@ class Formatter(object):
         self._anchors[anchor] = True
         if shorten:
             heading = wiki_to_oneliner(heading_text, self.env, self.db, True,
-                                       self._absurls)
+                                       self._absurls, self.req)
         return (depth, heading, anchor)
 
     def _heading_formatter(self, match, fullmatch):
@@ -575,7 +575,7 @@ class Formatter(object):
         tmp = self.in_def_list and '</dd>' or '<dl>'
         definition = match[:match.find('::')]
         tmp += '<dt>%s</dt><dd>' % wiki_to_oneliner(definition, self.env,
-                                                    self.db)
+                                                    self.db, req=self.req)
         self.in_def_list = True
         return tmp
 
