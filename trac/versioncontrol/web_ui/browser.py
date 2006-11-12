@@ -77,14 +77,19 @@ class BrowserModule(Component):
 
     def match_request(self, req):
         import re
-        match = re.match(r'/(browser|file)(?:(/.*))?', req.path_info)
+        match = re.match(r'/(export|browser|file)(?:(/.*))?', req.path_info)
         if match:
-            req.args['path'] = match.group(2) or '/'
-            if match.group(1) == 'file':
-                req.redirect(req.href.browser(req.args.get('path'),
-                                              rev=req.args.get('rev'),
+            mode, path = match.groups()
+            if mode == 'export':
+                if path and '/' in path:
+                    _, rev, path = path.split('/', 2)
+                    req.args['rev'] = rev
+                    req.args['format'] = 'raw'
+            elif mode == 'file':
+                req.redirect(req.href.browser(path, rev=req.args.get('rev'),
                                               format=req.args.get('format')),
                              permanent=True)
+            req.args['path'] = path or '/'
             return True
 
     def process_request(self, req):
@@ -214,7 +219,7 @@ class BrowserModule(Component):
                          'text/plain')
 
             # add ''Original Format'' alternate link (always)
-            raw_href = req.href.browser(node.path, rev=rev, format='raw')
+            raw_href = req.href.export(rev or repos.youngest_rev, node.path)
             add_link(req, 'alternate', raw_href, 'Original Format', mime_type)
 
             self.log.debug("Rendering preview of node %s@%s with mime-type %s"
@@ -253,11 +258,20 @@ class BrowserModule(Component):
             In the few cases where it would be redundant (e.g. for tags), the
             revision number itself can be omitted: /tags/v10/file@100-110#L99
         """
-        return [('repos', self._format_link),
-                ('source', self._format_link),
-                ('browser', self._format_link)]
+        return [('repos', self._format_browser_link),
+                ('export', self._format_export_link),
+                ('source', self._format_browser_link),
+                ('browser', self._format_browser_link)]
 
-    def _format_link(self, formatter, ns, path, label):
+    def _format_export_link(self, formatter, ns, export, label):
+        if ':' in export:
+            rev, path = export.split(':', 1)
+        else:
+            rev, path = self.env.get_repository().youngest_rev, export
+        return html.A(label, class_='source',
+                      href=formatter.href.export(rev, path))
+
+    def _format_browser_link(self, formatter, ns, path, label):
         rev = marks = line = None
         match = self.PATH_LINK_RE.match(path)
         if match:
