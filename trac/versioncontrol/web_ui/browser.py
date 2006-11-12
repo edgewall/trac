@@ -94,7 +94,9 @@ class BrowserModule(Component):
 
     def process_request(self, req):
         path = req.args.get('path', '/')
-        rev = req.args.get('rev') or None
+        rev = req.args.get('rev', None)
+        order = req.args.get('order', None)
+        desc = req.args.get('desc', None)
 
         # Find node for the requested path/rev
         repos = self.env.get_repository(req.authname)
@@ -113,7 +115,7 @@ class BrowserModule(Component):
                 rendered = render_node_property(self.env, name, value)
                 properties.append({'name': name, 'value': rendered})
 
-        path_links = get_path_links(req.href, path, rev)
+        path_links = get_path_links(req.href, path, rev, order, desc)
         if len(path_links) > 1:
             add_link(req, 'up', path_links[-2]['href'], 'Parent directory')
 

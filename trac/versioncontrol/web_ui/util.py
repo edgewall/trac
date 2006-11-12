@@ -39,12 +39,16 @@ def get_changes(repos, revs):
         changes[rev] = changeset
     return changes
 
-def get_path_links(href, fullpath, rev):
-    links = [{'name': 'root', 'href': href.browser(rev=rev)}]
+def get_path_links(href, fullpath, rev, order=None, desc=None):
+    links = [{'name': 'root',
+              'href': href.browser(rev=rev, order=order, desc=desc)}]
     path = ''
     for part in [p for p in fullpath.split('/') if p]:
         path += part + '/'
-        links.append({'name': part, 'href': href.browser(path, rev=rev)})
+        links.append({
+            'name': part,
+            'href': href.browser(path, rev=rev, order=order, desc=desc)
+            })
     return links
 
 def get_existing_node(req, repos, path, rev):

@@ -64,7 +64,7 @@
                   <td class="name">
                     <a class="${entry.kind}"
                       title="${entry.kind == 'dir' and 'Browse Directory' or 'View File'}"
-                      href="${href.browser(entry.path, rev=stickyrev)}">$entry.name</a>
+                      href="${href.browser(entry.path, rev=stickyrev, order=dir.order, desc=dir.desc)}">$entry.name</a>
                   </td>
                   <td class="size">${sizeinfo(entry.size)}</td>
                   <td class="rev">
@@ -76,7 +76,7 @@
                     <span class="author">$change.author:</span>
                     <span class="change" py:choose="">
                       <py:when test="wiki_format_messages">
-                        ${wiki_to_oneliner(change.message)}
+                        ${wiki_to_oneliner(change.message, shorten=True)}
                       </py:when>
                       <py:otherwise>${shorten_line(change.message)}</py:otherwise>
                     </span>
