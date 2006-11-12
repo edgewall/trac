@@ -195,7 +195,13 @@ class RequestDispatcher(Component):
                                           handler=chosen_handler)
 
         # Protect against CSRF attacks.
+        # We validate the form token for all POST requests except if
+        # Content-Type is 'text/xml' since this breaks the XmlRpcPlugin.
+        # We can safely do this since `cgi.FieldStorage` do not parse this
+        # content type.
+        content_type = req.get_header('Content-Type') or ''
         if (req.method == 'POST' and
+            not content_type.lower().startswith('text/xml') and
             req.args.get('__FORM_TOKEN') != req.form_token):
             raise TracError('Missing or invalid form token. '
                             'Do you have cookies enabled?')
