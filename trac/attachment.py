@@ -125,6 +125,10 @@ class Attachment(object):
         return req.href.attachment(self.parent_type, self.parent_id,
                                    self.filename, *args, **dict)
 
+    def raw_href(self, req):
+        return req.href('raw-attachment', self.parent_type, self.parent_id,
+                        self.filename)
+
     def parent_href(self, req):
         return req.href(self.parent_type, self.parent_id)
 
@@ -310,11 +314,12 @@ class AttachmentModule(Component):
     # IRequestHandler methods
 
     def match_request(self, req):
-        match = re.match(r'^/attachment/(ticket|wiki)(?:[/:](.*))?$',
+        match = re.match(r'^/(raw-)?attachment/([^/]+)(?:[/:](.*))?$',
                          req.path_info)
         if match:
-            req.args['type'] = match.group(1)
-            req.args['path'] = match.group(2).replace(':', '/')
+            req.args['format'] = match.group(1) and 'raw' or ''
+            req.args['type'] = match.group(2)
+            req.args['path'] = match.group(3).replace(':', '/')
             return True
 
     def process_request(self, req):
@@ -381,6 +386,7 @@ class AttachmentModule(Component):
         return []
 
     def get_link_resolvers(self):
+        yield ('raw-attachment', self._format_link)
         yield ('attachment', self._format_link)
 
     # Public methods
@@ -554,7 +560,7 @@ class AttachmentModule(Component):
                          mime_type)
 
             # add ''Original Format'' alternate link (always)
-            raw_href = attachment.href(req, format='raw')
+            raw_href = attachment.raw_href(req)
             add_link(req, 'alternate', raw_href, 'Original Format', mime_type)
 
             self.log.debug("Rendering preview of file %s with mime-type %s"
@@ -590,7 +596,9 @@ class AttachmentModule(Component):
             try:
                 attachment = Attachment(self.env, parent_type, parent_id,
                                         filename)
-                if formatter.req:
+                if ns.startswith('raw'):
+                    href = attachment.raw_href(formatter.req)
+                elif formatter.req:
                     href = attachment.href(formatter.req) + params
                 return html.A(label, class_='attachment', href=href,
                               title='Attachment %s' % attachment.title)
