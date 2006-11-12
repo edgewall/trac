@@ -614,16 +614,15 @@ class ChangesetModule(Component):
             repos = self.env.get_repository(req.authname)
             
             for chgset in repos.get_changesets(start, stop):
-                shortlog = shorten_line(chgset.message or '')
-                title = html('Changeset ', html.em('[%s]' % chgset.rev), ': ',
-                             shortlog)
+                title = html('Changeset ', html.em('[%s]' % chgset.rev))
                 if wiki_format:
                     message = chgset.message
                     markup = ''
                 else:
                     message = None
-                    markup = long_messages and chgset.message or shortlog
-                    
+                    markup = long_messages and chgset.message or \
+                             shorten_line(chgset.message or '')
+
                 if show_files and 'BROWSER_VIEW' in req.perm:
                     files = []
                     for chg in chgset.get_changes():
