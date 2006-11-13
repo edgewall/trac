@@ -107,7 +107,13 @@ class CachedRepository(Repository):
                                    (str(current_rev), path, kind, action,
                                    base_path, base_rev))
                 current_rev = self.repos.next_rev(current_rev)
-            self.db.commit()
+            try:
+                self.db.commit()
+            except:
+                # See <http://trac.edgewall.org/ticket/4120>: this breaks badly
+                # while rendering the timeline, because the commit happens
+                # while iterating over a recordset
+                pass
             self.repos.authz = authz # restore permission checking
 
     def get_node(self, path, rev=None):
