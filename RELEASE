@@ -1,8 +1,8 @@
-Release Notes for Trac 0.10.1
+Release Notes for Trac 0.10.2
 =============================
-November 8, 2006
+November 13, 2006
 
-We're happy to announce the Trac 0.10.1 release, available from:
+We're happy to announce the Trac 0.10.2 release, available from:
 
   http://trac.edgewall.org/wiki/TracDownload
 
@@ -11,13 +11,16 @@ list. List information, subscription and archive available at:
 
   http://trac.edgewall.org/wiki/MailingList
 
+Trac 0.10.2 is a bug fix release and fixes few bugs introduced in the 
+0.10.1 release. A brief summary of major changes:
 
-Trac 0.10.1 is a security and bug fix release. This release fixes
-a Cross Site Request Forgery (CSRF) vulnerability reported by Daniel 
-Kahn Gillmor. Trac 0.10.1 also fixes a number of bugs found since the
-last release. The complete list of closed tickets can be found here:
+ * Fixes deadlock when using authz_file config option (#3996).
+ * Makes the CSRF code play nice with the XmlRpcPlugin (#4122).
+ * Fixes Timeline breakage after svn commit when using sqlite (#4120).
 
-   http://trac.edgewall.org/query?status=closed&milestone=0.10.1
+The complete list of closed tickets can be found here:
+
+   http://trac.edgewall.org/query?status=closed&milestone=0.10.2
 
 
 Acknowledgements
