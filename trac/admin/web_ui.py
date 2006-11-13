@@ -28,7 +28,7 @@ from trac import __version__ as TRAC_VERSION
 from trac.admin.api import IAdminPanelProvider
 from trac.core import *
 from trac.perm import PermissionSystem
-from trac.util.compat import sorted
+from trac.util.compat import partial, sorted
 from trac.web import HTTPNotFound, IRequestHandler
 from trac.web.chrome import add_script, add_stylesheet, Chrome, \
                             INavigationContributor
@@ -84,6 +84,7 @@ class AdminModule(Component):
                                                      path_info)
         data.update({
             'active_cat': cat_id, 'active_panel': panel_id,
+            'panel_href': partial(req.href, 'admin', cat_id, panel_id),
             'panels': [{
                 'category': {'id': panel[0], 'label': panel[1]},
                 'panel': {'id': panel[2], 'label': panel[3]}

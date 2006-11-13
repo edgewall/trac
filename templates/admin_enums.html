@@ -50,7 +50,7 @@
               <tbody>
                 <tr py:for="enum in enums">
                   <td><input type="checkbox" name="sel" value="${enum.name}" /></td>
-                  <td><a href="${href.admin('ticket', enum.type, enum.name)}">${enum.name}</a></td>
+                  <td><a href="${panel_href(enum.name)}">${enum.name}</a></td>
                   <td class="default">
                     <input type="radio" name="default" value="${enum.name}"
                            checked="${enum.name==default or None}" />

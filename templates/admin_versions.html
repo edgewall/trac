@@ -78,7 +78,7 @@ $version.description</textarea>
               <tbody>
                 <tr py:for="version in versions">
                   <td><input type="checkbox" name="sel" value="${version.name}"/></td>
-                  <td><a href="${href.admin('ticket', 'versions', version.name)}">${version.name}</a></td>
+                  <td><a href="${panel_href(version.name)}">${version.name}</a></td>
                   <td>${format_datetime(version.time)}</td>
                   <td class="default">
                     <input type="radio" name="default" value="${version.name}"

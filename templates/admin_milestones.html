@@ -54,7 +54,7 @@
               </label>
               <p>
                 <textarea id="description" name="description" class="wikitext" rows="6" cols="60">
-$milestone.description</textarea>
+${milestone.description}</textarea>
               </p>
             </fieldset>
           </div>
@@ -102,7 +102,7 @@ $milestone.description</textarea>
                   <input type="checkbox" name="sel" value="$milestone.name" />
                 </td>
                 <td>
-                  <a href="${href.admin('ticket', 'milestones', milestone.name)}">$milestone.name</a>
+                  <a href="${panel_href(milestone.name)}">${milestone.name}</a>
                 </td>
                 <td>${format_date(milestone.due)}</td>
                 <td><py:if test="milestone.completed">

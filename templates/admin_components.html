@@ -83,7 +83,7 @@ $component.description</textarea>
                 <tr py:for="comp in components">
                   <td class="sel"><input type="checkbox" name="sel" value="$comp.name" /></td>
                   <td class="name">
-                    <a href="${href.admin('ticket', 'components', comp.name)}">$comp.name</a>
+                    <a href="${panel_href(comp.name)}">$comp.name</a>
                   </td>
                   <td class="owner">$comp.owner</td>
                   <td class="default">

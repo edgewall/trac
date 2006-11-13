@@ -85,7 +85,7 @@ class ComponentAdminPage(Component):
 
             default = self.config.get('ticket', 'default_component')
             data = {'components': model.Component.select(self.env),
-                    'default': default, 'title': 'Admin: Components'}
+                    'default': default}
 
         if self.config.getbool('ticket', 'restrict_owner'):
             perm = PermissionSystem(self.env)
@@ -278,10 +278,9 @@ class AbstractEnumAdminPage(Component):
 
     def render_admin_panel(self, req, cat, page, path_info):
         req.perm.require('TICKET_ADMIN')
-
         data = {'label_singular': self._label[0],
-                'label_plural': self._label[1],
-                'title': 'Admin: %s' % self._label[1]}
+                'label_plural': self._label[1]}
+
         # Detail view?
         if path_info:
             enum = self._enum_cls(self.env, path_info)
