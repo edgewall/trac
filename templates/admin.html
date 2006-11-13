@@ -8,7 +8,7 @@
 
   <head py:match="head">
     <title>Administration: ${select('title/text()')}</title>
-    ${select('*[not(title)]')}
+    ${select("*[local-name() != 'title']")}
   </head>
 
   <body py:match="body">

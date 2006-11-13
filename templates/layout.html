@@ -18,7 +18,7 @@
     </py:if>
     <script py:for="script in chrome.scripts"
             type="${script.type}" src="${script.href}"></script>
-    ${select('*[not(title)]')}
+    ${select("*[local-name() != 'title']")}
   </head>
 
   <div py:def="navigation(category)" id="${category}" class="nav">
