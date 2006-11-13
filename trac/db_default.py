@@ -392,7 +392,7 @@ def get_data(db):
                __mkreports(get_reports(db))))
 
 
-default_components = ('trac.About', 'trac.admin.console', 'trac.admin.web_ui',
+default_components = ('trac.about', 'trac.admin.console', 'trac.admin.web_ui',
                       'trac.attachment', 'trac.db.mysql_backend',
                       'trac.db.postgres_backend', 'trac.db.sqlite_backend',
                       'trac.mimeview.enscript', 'trac.mimeview.patch',
