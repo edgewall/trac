@@ -416,14 +416,15 @@ class Request(object):
         args = _RequestArgs()
 
         fp = self.environ['wsgi.input']
+
+        # Avoid letting cgi.FieldStorage consume the input stream when the
+        # request does not contain form data
         ctype = self.get_header('Content-Type')
         if ctype:
-            # Avoid letting cgi.FieldStorage consume the input stream when the
-            # request does not contain form data
             ctype, options = cgi.parse_header(ctype)
-            if ctype not in ('application/x-www-form-urlencoded',
-                             'multipart/form-data'):
-                fp = StringIO('')
+        if ctype not in ('application/x-www-form-urlencoded',
+                         'multipart/form-data'):
+            fp = StringIO('')
 
         fs = cgi.FieldStorage(fp, environ=self.environ, keep_blank_values=True)
         if fs.list:
