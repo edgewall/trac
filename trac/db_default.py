@@ -392,14 +392,13 @@ def get_data(db):
                __mkreports(get_reports(db))))
 
 
-default_components = ('trac.About', 'trac.attachment',
-                      'trac.db.mysql_backend', 'trac.db.postgres_backend',
-                      'trac.db.sqlite_backend',
+default_components = ('trac.About', 'trac.admin.console', 'trac.admin.web_ui',
+                      'trac.attachment', 'trac.db.mysql_backend',
+                      'trac.db.postgres_backend', 'trac.db.sqlite_backend',
                       'trac.mimeview.enscript', 'trac.mimeview.patch',
                       'trac.mimeview.php', 'trac.mimeview.rst',
                       'trac.mimeview.silvercity', 'trac.mimeview.txtl',
-                      'trac.admin.console', 'trac.admin.web_ui',
-                      'trac.Search', 'trac.Settings',
+                      'trac.prefs.web_ui', 'trac.Search',
                       'trac.ticket.admin', 'trac.ticket.query',
                       'trac.ticket.report', 'trac.ticket.roadmap',
                       'trac.ticket.web_ui', 'trac.timeline.web_ui',

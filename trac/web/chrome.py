@@ -156,7 +156,7 @@ class Chrome(Component):
         """Base URL of the core static resources.""")
 
     metanav_order = ListOption('trac', 'metanav',
-                               'login,logout,settings,help,about', doc=
+                               'login,logout,prefs,help,about', doc=
         """List of items IDs to display in the navigation bar `metanav`.""")
 
     mainnav_order = ListOption('trac', 'mainnav',

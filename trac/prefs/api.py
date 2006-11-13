@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# 
+#
 # Copyright (C) 2006 Edgewall Software
 # All rights reserved.
 #
@@ -14,20 +14,17 @@
 from trac.core import *
 
 
-class IAdminPanelProvider(Interface):
-    """Extension point interface for adding panels to the web-based
-    administration interface.
-    """
+class IPreferencePanelProvider(Interface):
 
-    def get_admin_panels(req):
-        """Return a list of available admin panels.
+    def get_preference_panels(req):
+        """Return a list of available preference panels.
         
-        The items returned by this function must be tuples of the form
-        `(category, category_label, page, page_label)`.
+        The items returned by this function must be tuple of the form
+        `(name, label)`.
         """
 
-    def render_admin_panel(req, category, page, path_info):
-        """Process a request for an admin panel.
+    def render_preference_panel(req, panel, path_info):
+        """Process a request for a preference panel.
         
         This function should return a tuple of the form `(template, data)`,
         where `template` is the name of the template to use and `data` is the

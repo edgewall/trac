@@ -1,0 +1,26 @@
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:py="http://genshi.edgewall.org/"
+      xmlns:xi="http://www.w3.org/2001/XInclude">
+  <xi:include href="prefs.html" />
+  <head>
+    <title>Keyboard Shortcuts</title>
+  </head>
+  <body>
+
+    <div class="field">
+      <label>Time zone:
+      <select name="tz">
+        <option>Default time zone</option>
+        <option py:for="tz in timezones"
+                selected="${settings.session.tz == tz or None}">$tz</option>
+      </select></label>
+      <p class="hint">Configuring your time zone will result in all
+      dates and times displayed on this site to use your time zone
+      instead of that of the server.</p>
+    </div>
+
+  </body>
+</html>

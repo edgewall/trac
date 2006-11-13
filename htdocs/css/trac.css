@@ -437,12 +437,6 @@ table.listing tbody tr:hover { background: #eed !important }
 .suggestions li { background: #fff; cursor: pointer; padding: 2px 5px }
 .suggestions li.selected { background: #b9b9b9 }
 
-/* Styles for the settings page */
-#content.settings div.field { margin-bottom: 1em; }
-#content.settings tr.field th { text-align: right; vertical-align: top;
-  white-space: nowrap;
-}
-
 /* Styles for the error page (and rst errors) */
 #content.error .message, div.system-message {
  background: #fdc;
