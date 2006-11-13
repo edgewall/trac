@@ -85,7 +85,7 @@ ${traceback}
               </p>
               <py:if test="not project.admin">
                 <form id="newticket" method="get" action="${href.newticket()}">
-                  <p>To that end, you could ${create_ticket} a ticket at this
+                  <p>To that end, you could ${create_ticket()} a ticket at this
                   site.</p>
                 </form>
               </py:if>
