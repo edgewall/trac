@@ -3,8 +3,8 @@ import shutil
 import tempfile
 import unittest
 
-from trac.Search import SearchModule
 from trac.attachment import Attachment
+from trac.search.web_ui import SearchModule
 from trac.wiki.tests import formatter
 
 SEARCH_TEST_CASES="""

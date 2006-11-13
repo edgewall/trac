@@ -22,95 +22,12 @@ from genshi.builder import tag, Element
 from trac.config import IntOption
 from trac.core import *
 from trac.perm import IPermissionRequestor
+from trac.search.api import ISearchSource
 from trac.util.datefmt import format_datetime
 from trac.util.presentation import Paginator
 from trac.web import IRequestHandler
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
 from trac.wiki import IWikiSyntaxProvider, wiki_to_link
-
-
-class ISearchSource(Interface):
-    """
-    Extension point interface for adding search sources to the Trac
-    Search system.
-    """
-
-    def get_search_filters(self, req):
-        """
-        Return a list of filters that this search source supports. Each
-        filter must be a (name, label[, default]) tuple, where `name` is the
-        internal name, `label` is a human-readable name for display and
-        `default` is an optional boolean for determining whether this filter
-        is searchable by default.
-        """
-
-    def get_search_results(self, req, terms, filters):
-        """
-        Return a list of search results matching each search term in `terms`.
-        The `filters` parameters is a list of the enabled
-        filters, each item being the name of the tuples returned by
-        `get_search_events`.
-
-        The events returned by this function must be tuples of the form
-        (href, title, date, author, excerpt).
-        """
-
-
-def search_terms(q):
-    """
-    Break apart a search query into its various search terms.  Terms are
-    grouped implicitly by word boundary, or explicitly by (single or double)
-    quotes.
-    """
-    results = []
-    for term in re.split('(".*?")|(\'.*?\')|(\s+)', q):
-        if term != None and term.strip() != '':
-            if term[0] == term[-1] == "'" or term[0] == term[-1] == '"':
-                term = term[1:-1]
-            results.append(term)
-    return results
-
-def search_to_sql(db, columns, terms):
-    """
-    Convert a search query into a SQL condition string and corresponding
-    parameters. The result is returned as a (string, params) tuple.
-    """
-    if len(columns) < 1 or len(terms) < 1:
-        raise TracError('Empty search attempt, this should really not happen.')
-
-    likes = ['%s %s' % (i, db.like()) for i in columns]
-    c = ' OR '.join(likes)
-    sql = '(' + ') AND ('.join([c] * len(terms)) + ')'
-    args = []
-    for t in terms:
-        args.extend(['%'+db.like_escape(t)+'%'] * len(columns))
-    return sql, tuple(args)
-
-def shorten_result(text='', keywords=[], maxlen=240, fuzz=60):
-    if not text: text = ''
-    text_low = text.lower()
-    beg = -1
-    for k in keywords:
-        i = text_low.find(k.lower())
-        if (i > -1 and i < beg) or beg == -1:
-            beg = i
-    excerpt_beg = 0
-    if beg > fuzz:
-        for sep in ('.', ':', ';', '='):
-            eb = text.find(sep, beg - fuzz, beg - 1)
-            if eb > -1:
-                eb += 1
-                break
-        else:
-            eb = beg - fuzz
-        excerpt_beg = eb
-    if excerpt_beg < 0: excerpt_beg = 0
-    msg = text[excerpt_beg:beg+maxlen]
-    if beg > fuzz:
-        msg = '... ' + msg
-    if beg < len(text)-maxlen:
-        msg = msg + ' ...'
-    return msg
 
 
 class SearchModule(Component):
@@ -165,7 +82,7 @@ class SearchModule(Component):
             data['quickjump'] = self.check_quickjump(req, query)
             if query.startswith('!'):
                 query = query[1:]
-            terms = search_terms(query)
+            terms = self._get_search_terms(query)
 
             # Refuse queries that obviously would result in a huge result set
             if len(terms) == 1 and len(terms[0]) < self.min_query_length:
@@ -227,10 +144,10 @@ class SearchModule(Component):
                 req.redirect(quickjump_href)
 
     # IWikiSyntaxProvider methods
-    
+
     def get_wiki_syntax(self):
         return []
-    
+
     def get_link_resolvers(self):
         yield ('search', self._format_link)
 
@@ -241,3 +158,19 @@ class SearchModule(Component):
         else:
             href = formatter.href.search(q=path)
         return tag.a(label, class_='search', href=href)
+
+    # Internal methods
+
+    def _get_search_terms(self, query):
+        """Break apart a search query into its various search terms.
+        
+        Terms are grouped implicitly by word boundary, or explicitly by (single
+        or double) quotes.
+        """
+        results = []
+        for term in re.split('(".*?")|(\'.*?\')|(\s+)', query):
+            if term != None and term.strip() != '':
+                if term[0] == term[-1] == "'" or term[0] == term[-1] == '"':
+                    term = term[1:-1]
+                results.append(term)
+        return results

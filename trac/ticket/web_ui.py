@@ -24,13 +24,14 @@ from trac.attachment import Attachment, AttachmentModule
 from trac.config import BoolOption, Option
 from trac.core import *
 from trac.mimeview.api import Mimeview, IContentConverter
+from trac.search import ISearchSource, search_to_sql, shorten_result
 from trac.ticket import Milestone, Ticket, TicketSystem, ITicketManipulator
 from trac.ticket.notification import TicketNotifyEmail
 from trac.timeline.api import ITimelineEventProvider, TimelineEvent
 from trac.util import get_reporter_id
 from trac.util.datefmt import to_timestamp, utc
 from trac.util.html import html, Markup
-from trac.util.text import CRLF
+from trac.util.text import CRLF, shorten_line
 from trac.web import IRequestHandler
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor, \
                             Chrome
@@ -42,8 +43,8 @@ class InvalidTicket(TracError):
 
 class TicketModule(Component):
 
-    implements(INavigationContributor, IRequestHandler, ITimelineEventProvider,
-               IContentConverter)
+    implements(IContentConverter, INavigationContributor, IRequestHandler,
+               ISearchSource, ITimelineEventProvider)
 
     ticket_manipulators = ExtensionPoint(ITicketManipulator)
 
@@ -237,6 +238,35 @@ class TicketModule(Component):
 
         return 'ticket_view.html', data, None
 
+    # ISearchSource methods
+
+    def get_search_filters(self, req):
+        if 'TICKET_VIEW' in req.perm:
+            yield ('ticket', 'Tickets')
+
+    def get_search_results(self, req, terms, filters):
+        if not 'ticket' in filters:
+            return
+        db = self.env.get_db_cnx()
+        sql, args = search_to_sql(db, ['b.newvalue'], terms)
+        sql2, args2 = search_to_sql(db, ['summary', 'keywords', 'description',
+                                         'reporter', 'cc', 'id'], terms)
+        cursor = db.cursor()
+        cursor.execute("SELECT DISTINCT a.summary,a.description,a.reporter, "
+                       "a.keywords,a.id,a.time,a.status FROM ticket a "
+                       "LEFT JOIN ticket_change b ON a.id = b.ticket "
+                       "WHERE (b.field='comment' AND %s ) OR %s" % (sql, sql2),
+                       args + args2)
+        for summary, desc, author, keywords, tid, ts, status in cursor:
+            ticket = '#%d: ' % tid
+            if status == 'closed':
+                ticket = Markup('<span style="text-decoration: line-through">'
+                                '#%s</span>: ', tid)
+            yield (req.href.ticket(tid),
+                   ticket + shorten_line(summary),
+                   datetime.fromtimestamp(ts, utc), author,
+                   shorten_result(desc, terms))
+
     # ITimelineEventProvider methods
 
     def get_timeline_filters(self, req):
@@ -413,7 +443,6 @@ class TicketModule(Component):
                 else:
                     raise InvalidTicket("Invalid ticket: %s" % message)
 
-
     def _do_create(self, req, db):
         if 'summary' not in req.args:
             raise TracError('Tickets must contain a summary.')
@@ -439,7 +468,6 @@ class TicketModule(Component):
             req.redirect(req.href.attachment('ticket', ticket.id, action='new'))
 
         req.redirect(req.href.ticket(ticket.id))
-
 
     def _do_save(self, req, db, ticket):
         if 'TICKET_CHGPROP' in req.perm:

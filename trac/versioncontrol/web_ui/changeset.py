@@ -31,7 +31,7 @@ from trac.config import BoolOption, IntOption
 from trac.core import *
 from trac.mimeview import Mimeview, is_binary
 from trac.perm import IPermissionRequestor
-from trac.Search import ISearchSource, search_to_sql, shorten_result
+from trac.search import ISearchSource, search_to_sql, shorten_result
 from trac.timeline.api import ITimelineEventProvider, TimelineEvent
 from trac.util import embedded_numbers
 from trac.util.compat import sorted
@@ -39,8 +39,7 @@ from trac.util.datefmt import pretty_timedelta, utc
 from trac.util.html import html, escape, unescape, Markup
 from trac.util.text import unicode_urlencode, shorten_line, CRLF
 from trac.versioncontrol import Changeset, Node, NoSuchChangeset
-from trac.versioncontrol.diff import get_diff_options, diff_blocks, \
-                                     unified_diff
+from trac.versioncontrol.diff import get_diff_options, diff_blocks, unified_diff
 from trac.versioncontrol.web_ui.util import render_node_property
 from trac.web import IRequestHandler, RequestDone
 from trac.web.chrome import add_link, add_script, add_stylesheet, \

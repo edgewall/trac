@@ -25,7 +25,7 @@ from trac.attachment import Attachment, AttachmentModule
 from trac.core import *
 from trac.mimeview.api import Mimeview, IContentConverter
 from trac.perm import IPermissionRequestor
-from trac.Search import ISearchSource, search_to_sql, shorten_result
+from trac.search import ISearchSource, search_to_sql, shorten_result
 from trac.timeline.api import ITimelineEventProvider, TimelineEvent
 from trac.util import get_reporter_id
 from trac.util.datefmt import to_timestamp, utc

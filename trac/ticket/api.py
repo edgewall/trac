@@ -20,9 +20,8 @@ from datetime import datetime
 from trac.config import *
 from trac.core import *
 from trac.perm import IPermissionRequestor, PermissionSystem
-from trac.Search import ISearchSource, search_to_sql, shorten_result
 from trac.util import Ranges
-from trac.util.html import html, Markup
+from trac.util.html import html
 from trac.util.text import shorten_line
 from trac.util.datefmt import utc
 from trac.wiki import IWikiSyntaxProvider, Formatter
@@ -62,7 +61,7 @@ class ITicketManipulator(Interface):
 
 
 class TicketSystem(Component):
-    implements(IPermissionRequestor, IWikiSyntaxProvider, ISearchSource)
+    implements(IPermissionRequestor, IWikiSyntaxProvider)
 
     change_listeners = ExtensionPoint(ITicketChangeListener)
 
@@ -260,31 +259,3 @@ class TicketSystem(Component):
         else:
             return label
  
-    # ISearchSource methods
-
-    def get_search_filters(self, req):
-        if 'TICKET_VIEW' in req.perm:
-            yield ('ticket', 'Tickets')
-
-    def get_search_results(self, req, terms, filters):
-        if not 'ticket' in filters:
-            return
-        db = self.env.get_db_cnx()
-        sql, args = search_to_sql(db, ['b.newvalue'], terms)
-        sql2, args2 = search_to_sql(db, ['summary', 'keywords', 'description',
-                                         'reporter', 'cc', 'id'], terms)
-        cursor = db.cursor()
-        cursor.execute("SELECT DISTINCT a.summary,a.description,a.reporter, "
-                       "a.keywords,a.id,a.time,a.status FROM ticket a "
-                       "LEFT JOIN ticket_change b ON a.id = b.ticket "
-                       "WHERE (b.field='comment' AND %s ) OR %s" % (sql, sql2),
-                       args + args2)
-        for summary, desc, author, keywords, tid, ts, status in cursor:
-            ticket = '#%d: ' % tid
-            if status == 'closed':
-                ticket = Markup('<span style="text-decoration: line-through">'
-                                '#%s</span>: ', tid)
-            yield (req.href.ticket(tid),
-                   ticket + shorten_line(summary),
-                   datetime.fromtimestamp(ts, utc), author,
-                   shorten_result(desc, terms))

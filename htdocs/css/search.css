@@ -1,14 +1,41 @@
-#content form { margin: 1em 0 0 }
-#content form p { margin: .5em 0 }
-#content hr { clear: left; margin-bottom: 0 }
-#notfound { margin: 2em; font-size: 110% }
+#content.search .filters { color: #333; font-size: 85%; }
 
-#results { margin-right: 3em }
-#results dt { margin: 1.5em 0 0 }
-#results dt a { color: #33c }
-#results dd { font-size: 80%; margin: 0; padding: 0 }
-#results .author, #results .date, #results .keywords { color: #090 }
+#content.search form { margin: 1em 0 0 }
+#content.search form p { margin: .5em 0 }
+#content.search hr { clear: left; margin-bottom: 0 }
+#content.search #notfound { margin: 2em; font-size: 110% }
 
-#quickjump { font-style: italic; font-weight: bold; }
+#content.search h2 .numresults { color: #666; font-size: 90%; }
+#content.search #results { margin-right: 3em }
+#content.search #results dt { margin: 1.5em 0 0 }
+#content.search #results dt a { color: #33c }
+#content.search #results dd { font-size: 80%; margin: 0; padding: 0 }
+#content.search #results .author, #results .date, #results .keywords {
+  color: #090;
+}
 
-#paging { margin: 0 0 2em; text-align: center }
+#content.search #quickjump { font-style: italic; font-weight: bold; }
+
+#content.search .paging { margin: 0 0 2em; padding: .5em 0 0;
+  font-size: 85%; line-height: 2em; text-align: center;
+}
+#content.search .paging span { color: #666; padding: 0; }
+#content.search .paging :link, #content.search .paging :visited {
+  background: #999; border: 1px solid #666; color: #fff; padding: .1em .3em;
+}
+#content.search .paging :link:hover, #content.search .paging :visited:hover {
+  background: #666; border-color: #333;
+}
+#content.search .paging .previous :link,
+#content.search .paging .previous :visited,
+#content.search .paging .next :link,
+#content.search .paging .next :visited {
+  background: transparent; border: none; color: #666; font-size: 150%;
+  font-weight: bold;
+}
+#content.search .paging .previous :link:hover,
+#content.search .paging .previous :visited:hover,
+#content.search .paging .next :link:hover,
+#content.search .paging .next :visited:hover {
+  background: transparent; color: #000;
+}

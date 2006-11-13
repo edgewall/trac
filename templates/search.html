@@ -12,19 +12,24 @@
     </script>
   </head>
 
+  <div py:def="paging" class="paging" py:if="results.has_more_pages">
+    <span py:if="results.has_previous_page"
+          py:with="prevlink = chrome.links.prev[0]" class="previous">
+      <a href="${prevlink.href}" title="${prevlink.title}">&larr;</a>
+    </span>
+    <span py:for="num in range(max(0, results.page - 10),
+                               min(results.page + 11, results.num_pages))">
+      <a href="${page_href}&amp;page=${num + 1}"
+         py:strip="num == results.page">${num + 1}</a>
+    </span>
+    <span py:if="results.has_next_page"
+          py:with="nextlink = chrome.links.next[0]" class="next">
+      <a href="${nextlink.href}" title="${nextlink.title}">&rarr;</a>
+    </span>
+  </div>
+
   <body>
-    <div id="ctxtnav" class="nav">
-      <ul py:if="chrome.links.prev or chrome.links.next">
-        <li py:if="chrome.links.prev"
-            class="first${chrome.links.next and '' or ' last'}">
-          &larr; <a href="${chrome.links.prev[0].href}">${chrome.links.prev[0].title}</a>
-        </li>
-        <li py:if="chrome.links.next"
-            class="${chrome.links.prev and '' or 'first '}last">
-          <a href="${chrome.links.next[0].href}">${chrome.links.next[0].title}</a> &rarr;
-        </li>
-      </ul>
-    </div>
+    <div id="ctxtnav" class="nav"></div>
 
     <div id="content" class="search">
 
@@ -35,7 +40,7 @@
           <input type="hidden" name="noquickjump" value="1" />
           <input type="submit" value="Search" />
         </p>
-        <p>
+        <p class="filters">
           <py:for each="filter in filters">
             <input type="checkbox" id="${filter.name}" name="${filter.name}"
                    checked="${filter.active and 'checked' or None}" />
@@ -46,11 +51,12 @@
 
       <py:if test="results or quickjump"><hr />
         <h2>
-          Search results
-          <py:if test="results.has_more_pages">
+          Results
+          <span class="numresults">
             (${results.span[0] + 1} - ${results.span[1]} of ${results.num_items})
-          </py:if>
+          </span>
         </h2>
+        ${paging()}
         <div>
           <dl id="results">
             <py:if test="quickjump">
@@ -71,20 +77,8 @@
               </dd>
             </py:for>
           </dl>
-          <hr />
         </div>
-        <div id="paging" py:if="results.has_more_pages">
-          <a py:if="results.has_previous_page"
-             py:with="prevlink = chrome.links.prev[0]"
-             href="${prevlink.href}" title="${prevlink.title}">&larr;</a>
-          <py:for each="num in xrange(results.num_pages)">
-            <a href="${page_href}&amp;page=${num + 1}"
-               py:strip="num == results.page">${num + 1}</a>
-          </py:for>
-          <a py:if="results.has_next_page"
-             py:with="nextlink = chrome.links.next[0]"
-             href="${nextlink.href}" title="${nextlink.title}">&rarr;</a>
-        </div>
+        ${paging()}
       </py:if>
 
       <div id="notfound" py:if="query and not (results or quickjump)">
@@ -92,7 +86,8 @@
       </div>
 
       <div id="help">
-        <strong>Note:</strong> See <a href="${href.wiki('TracSearch')}">TracSearch</a> for help on searching.
+        <strong>Note:</strong> See <a href="${href.wiki('TracSearch')}">TracSearch</a>
+        for help on searching.
       </div>
 
     </div>
