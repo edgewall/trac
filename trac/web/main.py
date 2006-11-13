@@ -16,10 +16,11 @@
 # Author: Christopher Lenz <cmlenz@gmx.de>
 #         Matthew Good <trac@matt-good.net>
 
+import cgi
+import dircache
 import locale
 import os
 import sys
-import dircache
 import urllib
 
 from trac.config import ExtensionOption, OrderedExtensionsOption
@@ -221,17 +222,18 @@ class RequestDispatcher(Component):
         # Process the request and render the template
         try:
             try:
-                # Protect against CSRF attacks.
-                # We validate the form token for all POST requests except if
-                # Content-Type is 'text/xml' since this breaks the
-                # XmlRpcPlugin. We can safely do this since
-                # `cgi.FieldStorage` do not parse this content type.
-                content_type = req.get_header('Content-Type') or ''
-                if (req.method == 'POST' and
-                    not content_type.lower().startswith('text/xml') and
-                    req.args.get('__FORM_TOKEN') != req.form_token):
-                    raise TracError('Missing or invalid form token. '
-                                    'Do you have cookies enabled?')
+                # Protect against CSRF attacks: we validate the form token for
+                # all POST requests with a content-type corresponding to form
+                # submissions
+                if req.method == 'POST':
+                    ctype = req.get_header('Content-Type')
+                    if ctype:
+                        ctype, options = cgi.parse_header(ctype)
+                    if ctype in ('application/x-www-form-urlencoded',
+                                 'multipart/form-data') and \
+                            req.args.get('__FORM_TOKEN') != req.form_token:
+                        raise HTTPBadRequest('Missing or invalid form token. '
+                                             'Do you have cookies enabled?')
 
                 resp = chosen_handler.process_request(req)
                 if resp:
@@ -272,9 +274,10 @@ class RequestDispatcher(Component):
         """Used to protect against CSRF.
 
         The 'form_token' is strong shared secret stored in a user cookie.
-        By requiring that every POST form to contain this value we're
-        able to protect against CSRF attacks. Since this value is only known
-        by the user and not by an attacker.
+        By requiring that every POST form to contain this value we're able to
+        protect against CSRF attacks. Since this value is only known by the
+        user and not by an attacker.
+        
         If the the user does not have a `trac_form_token` cookie a new
         one is generated.
         """
@@ -283,7 +286,6 @@ class RequestDispatcher(Component):
         else:
             req.outcookie['trac_form_token'] = hex_entropy(24)
             req.outcookie['trac_form_token']['path'] = req.base_path
-            req.outcookie['trac_form_token']['expires'] = 3600*24*90 # 90 days
             return req.outcookie['trac_form_token'].value
         
 

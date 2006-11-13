@@ -302,7 +302,7 @@ class HDFWrapper:
 class FormTokenInjector(HTMLParser):
     """Identify and protect forms from CSRF attacks
 
-    This filter works by adding a input type=hidden field to POST forms.
+    This filter works by adding a hidden input field to all POST forms.
     """
     def __init__(self, form_token, out):
         HTMLParser.__init__(self)
@@ -314,13 +314,14 @@ class FormTokenInjector(HTMLParser):
         if tag.lower() == 'form':
             for name, value in attrs:
                 if name.lower() == 'method' and value.lower() == 'post':
-                    self.out.write('<input type="hidden" name="__FORM_TOKEN"'
-                                   ' value="%s"/>' % self.token)
+                    self.out.write('<div><input type="hidden" '
+                                   ' name="__FORM_TOKEN" value="%s" /></div>'
+                                   % self.token)
                     break
-                    
+
     def handle_startendtag(self, tag, attrs):
         self.out.write(self.get_starttag_text())
-        
+
     def handle_charref(self, name):
         self.out.write('&#%s;' % name)
 
