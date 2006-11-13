@@ -4,16 +4,20 @@
   border-color: #ccc #666 #666 #ccc; clear: left;
   margin: 1em 0 2em; padding: .5em 0 0; float: left; width: 12em;
 }
-#tabs ul { list-style: none; margin: 0 0 .5em; padding: 0 }
+#tabs ul { list-style: none; margin: 0 0 .5em; padding: 0; }
 #tabs li { color: #999; font-size: 90%; font-weight: bold; margin: 0;
-  padding: 0.1em .5em;
+  padding: 0.1em 5px;
 }
 #tabs li li { color: #000; font-size: 110%; font-weight: normal;
-  margin: 0 -0.5em; padding-left: 1.5em; text-transform: none;
+  margin: 0 -3px; padding: 1px 0 1px 10px;
 }
-#tabs li li.active { background: #ccb; }
+#tabs li li.active { background: #ddc; border: 1px solid;
+  border-color: #ccc #000 #666 #ccc; padding: 0 0 0 9px;
+}
 #tabs :link, #tabs :visited { border: none; display: block }
-#tabs :link:hover, #tabs :visited:hover { background: transparent }
+#tabs :link:hover, #tabs :visited:hover { background: transparent;
+  color: #000;
+}
 
 #tabcontent { padding: 0.4em 2em; margin-left: 12em; min-height: 300px; }
 #tabcontent h2 { color: #333; margin-top: 0; }
