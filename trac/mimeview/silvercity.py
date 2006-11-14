@@ -63,7 +63,7 @@ class SilverCityRenderer(Component):
 
     implements(IHTMLPreviewRenderer)
 
-    enscript_modes = ListOption('mimeviewer', 'silvercity_modes',
+    silvercity_modes = ListOption('mimeviewer', 'silvercity_modes',
         '', doc=
         """List of additional MIME types known by SilverCity.
         For each, a tuple `mimetype:mode:quality` has to be
