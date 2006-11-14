@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 import os
-import os.path
 import sys
 import string
 from glob import glob
@@ -223,10 +222,10 @@ facilities.
       license=LICENSE,
       url=URL,
       packages=['trac', 'trac.admin', 'trac.db', 'trac.mimeview',
-                'trac.ticket', 'trac.timeline',
-                'trac.upgrades', 'trac.util', 'trac.web',
+                'trac.prefs', 'trac.search', 'trac.ticket', 'trac.timeline',
+                'trac.upgrades', 'trac.util',
                 'trac.versioncontrol', 'trac.versioncontrol.web_ui', 
-                'trac.wiki'],
+                'trac.web', 'trac.wiki'],
       data_files=[(_p('share/trac/templates'), glob('templates/*')),
                   (_p('share/trac/htdocs'), glob(_p('htdocs/*.*')) + [_p('htdocs/README')]),
                   (_p('share/trac/htdocs/css'), glob(_p('htdocs/css/*'))),
