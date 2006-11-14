@@ -252,6 +252,7 @@ class ChangesetModule(Component):
                  'text/plain', 'diff')
         add_link(req, 'alternate', '?format=zip&'+diff_params, 'Zip Archive',
                  'application/zip', 'zip')
+        add_script(req, 'common/js/diff.js')
         add_stylesheet(req, 'common/css/changeset.css')
         add_stylesheet(req, 'common/css/diff.css')
         add_stylesheet(req, 'common/css/code.css')

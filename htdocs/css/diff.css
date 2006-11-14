@@ -69,6 +69,14 @@
  margin: 0 auto;
  padding: .1em 0 .25em .5em;
 }
+.diff h2 .switch { color: #999; float: right; font-size: 75%;
+  line-height: 1.6;
+}
+.diff h2 .switch span { border-left: 1px solid #ccc; cursor: pointer;
+  padding: 0 1em;
+}
+.diff h2 .switch span:first-child { border: none; }
+.diff h2 .switch span.active { color: #333; cursor: default; }
 
 /* Styles for the actual diff tables (side-by-side and inline) */
 .diff table {
@@ -160,4 +168,9 @@
 .diff table.sidebyside tbody.rem td.r { background: #faa }
 .diff table.sidebyside tbody.mod del, .diff table.sidebyside tbody.mod ins {
  background: #fc0; 
+}
+
+/* Styles for the plain-text diff view */
+.diff pre { background: #fff; border: 1px solid #ddd; font-size: 85%;
+  margin: 0;
 }

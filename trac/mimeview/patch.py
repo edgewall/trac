@@ -22,7 +22,7 @@ from trac.core import *
 from trac.mimeview.api import content_to_unicode, IHTMLPreviewRenderer, \
                               Mimeview
 from trac.util.html import escape, Markup
-from trac.web.chrome import Chrome, add_stylesheet
+from trac.web.chrome import Chrome, add_script, add_stylesheet
 
 __all__ = ['PatchRenderer']
 
@@ -53,6 +53,7 @@ class PatchRenderer(Component):
         data = {'diff': {'style': 'inline'},
                 'changes': changes, 'longcol': 'File'}
 
+        add_script(req, 'common/js/diff.js')
         add_stylesheet(req, 'common/css/diff.css')
         return Chrome(self.env).render_template(req, 'diff_div.html',
                                                 data, fragment=True)
