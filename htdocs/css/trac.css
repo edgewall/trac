@@ -199,18 +199,19 @@ label.disabled { color: #d7d7d7 }
  border-right: 1px solid #d7d7d7;
  display: inline;
  font-size: 11px;
- line-height: 16px;
+ line-height: 1.5;
  padding: 0 1em;
  white-space: nowrap;
 }
 #altlinks li.last { border-right: none }
 #altlinks li :link, #altlinks li :visited {
- background-position: 0 -1px;
  background-repeat: no-repeat;
+ color: #666;
  border: none;
+ padding: 0 0 2px;
 }
 #altlinks li a.ics { background-image: url(../ics.png); padding-left: 22px }
-#altlinks li a.rss { background-image: url(../xml.png); padding-left: 42px }
+#altlinks li a.rss { background-image: url(../feed.png); padding-left: 20px }
 
 /* Footer */
 #footer {
