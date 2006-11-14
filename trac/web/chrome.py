@@ -81,10 +81,11 @@ def add_script(req, filename, mimetype='text/javascript'):
 
     if filename.startswith('common/') and 'htdocs_location' in req.chrome:
         href = Href(req.chrome['htdocs_location'])
-        filename = filename[7:]
+        path = filename[7:]
     else:
         href = Href(req.base_path).chrome
-    script = {'href': href(filename), 'type': mimetype}
+        path = filename
+    script = {'href': href(path), 'type': mimetype}
 
     req.chrome.setdefault('scripts', []).append(script)
     scriptset.add(filename)
