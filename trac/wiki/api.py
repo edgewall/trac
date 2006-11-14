@@ -276,7 +276,7 @@ class WikiSystem(Component):
         wiki_page_name = (
             r"[A-Z][a-z]+(?:[A-Z][a-z]*[a-z/])+" # wiki words
             r"(?:#%s)?" % self.XML_NAME + # optional fragment id
-            r"(?=[^a-zA-Z]|\s|\Z)" # what should follow it
+            r"(?=:(?:\Z|\s)|[^:a-zA-Z]|\s|\Z)" # what should follow it
             )
         
         # Regular WikiPageNames

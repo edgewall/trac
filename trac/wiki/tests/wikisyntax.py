@@ -182,17 +182,19 @@ trac:InterTrac
 </p>
 ------------------------------
 ============================== InterWiki links
-This is the original meatball:InterMapTxt wiki page.
+This is the original MeatBall:InterMapTxt wiki page.
 Checkout the [tsvn:http://svn.edgewall.com/repos/trac Trac Repository].
 
 complex link complex:a:test with positional arguments
 complex link complex:a (not enough arguments)
 complex link complex:a:test:more (too many arguments)
 
-nolink:ignored
+NoLink:ignored
+NoLink:
+NoLink: ...
 ------------------------------
 <p>
-This is the original <a class="ext-link" href="http://www.usemod.com/cgi-bin/mb.pl?InterMapTxt" title="InterMapTxt in MeatBall..."><span class="icon">meatball:InterMapTxt</span></a> wiki page.
+This is the original <a class="ext-link" href="http://www.usemod.com/cgi-bin/mb.pl?InterMapTxt" title="InterMapTxt in MeatBall..."><span class="icon">MeatBall:InterMapTxt</span></a> wiki page.
 Checkout the <a class="ext-link" href="tsvn:http://svn.edgewall.com/repos/trac" title="http://svn.edgewall.com/repos/trac in tsvn"><span class="icon">Trac Repository</span></a>.
 </p>
 <p>
@@ -201,7 +203,9 @@ complex link <a class="ext-link" href="http://server/a/page/?format=txt" title="
 complex link <a class="ext-link" href="http://server/a/page/test:more?format=txt" title="resource test:more in a"><span class="icon">complex:a:test:more</span></a> (too many arguments)
 </p>
 <p>
-nolink:ignored
+NoLink:ignored
+<a class="missing wiki" href="/wiki/NoLink" rel="nofollow">NoLink?</a>:
+<a class="missing wiki" href="/wiki/NoLink" rel="nofollow">NoLink?</a>: ...
 </p>
 ------------------------------
 """ #" Emacs likes it that way better
