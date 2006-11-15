@@ -30,9 +30,10 @@
 
   <body py:match="body">
     <div id="banner">
-      <div id="header">
-        <a py:if="chrome.logo.src" id="logo" href="${chrome.logo.link}"><img
+      <div id="header" py:choose="">
+        <a py:when="chrome.logo.src" id="logo" href="${chrome.logo.link}"><img
           src="${chrome.logo.src}" alt="${chrome.logo.alt}" /></a>
+        <h1 py:otherwise=""><a href="${chrome.logo.link}">${project.name}</a></h1>
       </div>
       <form py:if="'SEARCH_VIEW' in perm" id="search"
             action="${href.search()}" method="get"><div>
