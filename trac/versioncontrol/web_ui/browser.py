@@ -178,7 +178,7 @@ class BrowserModule(Component):
             add_link(req, 'alternate', zip_href, 'Zip Archive',
                      'application/zip', 'zip')
 
-        return {'order': order, 'desc': desc and 1 or 0,
+        return {'order': order, 'desc': desc and 1 or None,
                 'entries': entries, 'changes': changes}
 
     def _render_file(self, req, repos, node, rev=None):
