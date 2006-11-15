@@ -39,8 +39,8 @@
             <tbody>
               <tr style="height: 1px"><td colspan="4"></td></tr>
             </tbody>
-            <py:for each="field_name, field in fields.iteritems()">
-              <py:for each="constraint_name, constraint in constraints.iteritems()">
+            <py:for each="field_name, field in fields.items()">
+              <py:for each="constraint_name, constraint in constraints.items()">
                 <tbody py:if="field_name == constraint_name"
                   py:with="multiline = field.type in ('select', 'text')">
                   <py:for each="constraint_idx, constraint_value in enumerate(constraint['values'])">
@@ -62,7 +62,7 @@
                       </py:choose>
 
                       <td class="filter" colspan="${field.type in ('radio', 'checkbox') and 2 or None}"
-                        py:choose="field.type">
+                          py:choose="field.type">
 
                         <py:when test="'select'">
                           <select name="${constraint_name}">
@@ -72,7 +72,6 @@
                             </option>
                           </select>
                         </py:when>
-
 
                         <py:when test="'radio'">
                           <py:for each="option in field.options">
@@ -99,10 +98,9 @@
 
                       </td>
                       <td class="actions"
-                        py:with="rm_idx = multiline and idx or len(constraint['values'])-1">
-                        <input type="submit" name="rm_filter_${field_name}${
-                          field.type != 'radio' and '_%d' % rm_idx or ''}" value="-" />
-                      </td>
+                          py:with="rm_idx = multiline and idx or len(constraint['values']) - 1"><input
+                          type="submit" name="rm_filter_${field_name}${field.type != 'radio' and '_%d' % rm_idx or ''}"
+                          value="-" /></td>
                     </tr>
                   </py:for>
                 </tbody>
@@ -115,7 +113,7 @@
                   <label for="add_filter">Add filter</label>&nbsp;
                   <select name="add_filter" id="add_filter">
                     <option></option>
-                    <option py:for="field_name, field in fields.iteritems()"
+                    <option py:for="field_name, field in fields.items()"
                             value="$field_name"
                             disabled="${(field.type == 'radio' and
                                          constraints[field_name] and
@@ -134,7 +132,7 @@
           <label for="group">Group results by</label>
           <select name="group" id="group">
             <option></option>
-            <option py:for="field_name, field in fields.iteritems()"
+            <option py:for="field_name, field in fields.items()"
                     py:if="field.type in ('select', 'radio') or field_name == 'owner'"
                     selected="${field_name == query.group or None}"
                     value="${field_name}">${field.label}</option>

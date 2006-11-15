@@ -193,14 +193,14 @@ ${comment}</textarea></p>
               </tr>
             </py:if>
             <tr py:for="row in group(fields, 2, lambda f: f.type != 'textarea')"
-              py:with="fullrow = len(row) == 1">
+                py:with="fullrow = len(row) == 1">
               <py:for each="idx, field in enumerate(row)">
                 <th class="col${idx + 1}" py:if="idx == 0 or not fullrow">
                   <label for="${field.name}" py:if="field"
                     py:strip="field.type == 'radio'">${field.label or field.name}:</label>
                 </th>
                 <td class="col${idx + 1}" py:if="idx == 0 or not fullrow"
-                  py:attrs="{'colspan': fullrow and 3 or None}">
+                    py:attrs="{'colspan': fullrow and 3 or None}">
                   <py:choose test="field.type" py:if="field">
                     <select py:when="'select'" id="${field.name}" name="${field.name}">
                       <option py:if="field.optional"></option>
@@ -211,8 +211,11 @@ ${comment}</textarea></p>
                     <textarea py:when="'textarea'" id="${field.name}" name="${field.name}"
                       cols="${field.width}" rows="${field.height}"
                       py:content="ticket[field.name]"></textarea>
-                    <input py:when="'checkbox'" type="checkbox" id="${field.name}"
-                      name="${field.name}" value="${field.value}" />
+                    <span py:when="'checkbox'">
+                      <input type="checkbox" id="${field.name}" name="${field.name}"
+                             checked="${ticket[field.name] == '1' and 'checked' or None}" value="1" />
+                      <input type="hidden" name="checkbox_${field.name}" value="1" />
+                    </span>
                     <label py:when="'radio'"
                       py:for="idx, option in enumerate(field.options)">
                       <input type="radio" name="${field.name}" value="${option}"

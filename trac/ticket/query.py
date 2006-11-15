@@ -166,20 +166,29 @@ class Query(object):
         cursor = db.cursor()
         cursor.execute(sql, args)
         columns = get_column_names(cursor)
+        fields = []
+        for column in columns:
+            fields += [f for f in self.fields if f['name'] == column] or [None]
         results = []
+
         for row in cursor:
             id = int(row[0])
             result = {'id': id, 'href': req.href.ticket(id)}
             for i in range(1, len(columns)):
-                name, val = columns[i], row[i]
+                name, field, val = columns[i], fields[i], row[i]
                 if name == self.group:
                     val = val or 'None'
                 elif name == 'reporter':
                     val = val or 'anonymous'
-                elif name in ('changetime', 'time'):
-                    val = datetime.fromtimestamp(int(val), utc)
                 elif val is None:
                     val = '--'
+                elif name in ('changetime', 'time'):
+                    val = datetime.fromtimestamp(int(val), utc)
+                elif field and field['type'] == 'checkbox':
+                    try:
+                        val = bool(int(val))
+                    except TypeError, ValueError:
+                        val = False
                 result[name] = val
             results.append(result)
         cursor.close()

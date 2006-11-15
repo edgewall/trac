@@ -192,7 +192,6 @@ function initializeFilters() {
           var option = property.options[i];
           td.appendChild(createCheckbox(propertyName, option,
             propertyName + "_" + option));
-          td.appendChild(document.createTextNode(" "));
           td.appendChild(createLabel(option ? option : "none",
             propertyName + "_" + option));
         }
