@@ -542,7 +542,7 @@ class TicketModule(Component):
                 value = ticket.values.get(field['name'])
                 options = field['options']
                 if name == 'milestone' and 'TICKET_ADMIN' not in req.perm:
-                    options = [opt for opt in field['options'] if not
+                    options = [opt for opt in options if not
                                Milestone(self.env, opt, db=db).is_completed]
                 if value and not value in options:
                     # Current ticket value must be visible even if its not in the
