@@ -4,7 +4,10 @@ import os
 import sys
 import string
 from glob import glob
-from distutils.core import setup
+if 'develop' in sys.argv:
+    from setuptools import setup
+else:
+    from distutils.core import setup
 from distutils.command.install import install
 from distutils.command.install_data import install_data
 from distutils.command.install_scripts import install_scripts
