@@ -430,7 +430,8 @@ class WikiModule(Component):
                            "FROM wiki WHERE time>=%s AND time<=%s",
                            (start, stop))
             for ts,name,comment,author,ipnr,version in cursor:
-                title = html.em(wiki.format_page_name(name))
+                title = html(html.em(wiki.format_page_name(name)),
+                             version > 1 and ' edited' or ' created')
                 markup = None
                 if version > 1:
                     markup = html.a('(diff)', href=req.href.wiki(
