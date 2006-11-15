@@ -196,6 +196,7 @@ class Chrome(Component):
         'http_date': http_date,
         'itemgetter': compat.itemgetter,
         'paginate': presentation.paginate,
+        'partial': partial,
         'plaintext': plaintext,
         'pprint': pprint.pformat,
         'pretty_size': pretty_size,

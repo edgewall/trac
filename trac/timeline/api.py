@@ -37,6 +37,8 @@ class TimelineEvent(object):
              `message` will be interpreted as wiki text
     use_oneliner:
              contextual information should be presented in brief
+    shorten_oneliner:
+             contextual information should be truncated
     """
 
     def __init__(self, kind, title='', href=None, markup=None):
@@ -48,6 +50,7 @@ class TimelineEvent(object):
         self.date = self.authenticated = self.ipnr = None
         self.type = self.id = self.message = None
         self.use_oneliner = True
+        self.shorten_oneliner = True
 
     def __repr__(self):
         return '<TimelineEvent %s - %s>' % (self.date, self.href)

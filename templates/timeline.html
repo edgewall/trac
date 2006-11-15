@@ -40,7 +40,7 @@
               <span class="time">${format_time(event.date, str('%H:%M'))}</span> ${event.title}
                 <py:if test="event.author">by ${event.author}</py:if>
             </a></dt>
-            <dd class="${event.kind}" py:with="wikify = event.use_oneliner and wiki_to_oneliner or wiki_to_html">
+            <dd class="${event.kind}" py:with="wikify = event.use_oneliner and partial(wiki_to_oneliner, shorten=event.shorten_oneliner) or wiki_to_html">
               ${event.markup}
               <py:if test="event.message">${wikify(event.message)}</py:if>
             </dd>
