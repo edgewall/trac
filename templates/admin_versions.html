@@ -23,10 +23,10 @@
           </div>
           <div class="field">
             <label>Date:<br />
-              <input type="text" name="time" size="${len(date_hint)}"
-                     value="${format_date(version.time)}"
-                     title="Format: $date_hint" />
-              <em>Format: $date_hint</em>
+              <input type="text" name="time" size="${len(datetime_hint)}"
+                     value="${format_datetime(version.time)}"
+                     title="Format: $datetime_hint" />
+              <em>Format: $datetime_hint</em>
             </label>
           </div>
           <div class="field">
@@ -55,10 +55,11 @@ $version.description</textarea>
               <label>Name:<br /><input type="text" name="name" id="name" /></label>
             </div>
             <div class="field">
-              <label>Date:<br />
-                <input type="text" name="time" size="${len(date_hint)}"
-                       title="Format: $date_hint" />
-                <em>Format: $date_hint</em>
+              <label>Released:<br />
+                <input type="text" name="time" size="${len(datetime_hint)}"
+                       title="Format: $datetime_hint"
+                       value="${format_datetime()}" /><br />
+                <em>Format: $datetime_hint</em>
               </label>
             </div>
             <div class="buttons">
@@ -72,7 +73,7 @@ $version.description</textarea>
             <table class="listing" id="verlist">
               <thead>
                 <tr><th class="sel">&nbsp;</th>
-                  <th>Name</th><th>Time</th><th>Default</th>
+                  <th>Name</th><th>Released</th><th>Default</th>
                 </tr>
               </thead>
               <tbody>
@@ -92,7 +93,8 @@ $version.description</textarea>
               <input type="submit" name="apply" value="Apply changes" />
             </div>
             <p class="help">
-              You can remove all items from this list to completely hide this field from the user interface.
+              You can remove all items from this list to completely hide this
+              field from the user interface.
             </p>
           </form>
 

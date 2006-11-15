@@ -59,10 +59,11 @@
           <tr><th class="sel">&nbsp;</th><th>Subject</th><th>Action</th></tr>
         </thead>
         <tbody>
-          <tr py:for="perm in perms">
-            <td><input type="checkbox" name="sel" value="${perm.key}" /></td>
-            <td>${perm.subject}</td>
-            <td>${perm.action}</td>
+          <tr py:for="idx, (subject, action) in enumerate(sorted(perms))"
+              class="${idx % 2 and 'odd' or 'even'}">
+            <td><input type="checkbox" name="sel" value="$subject:$action" /></td>
+            <td>$subject</td>
+            <td>$action</td>
           </tr>
         </tbody>
       </table>

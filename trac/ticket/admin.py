@@ -257,7 +257,7 @@ class VersionAdminPage(Component):
             }
 
         data.update({
-            'date_hint': datefmt.get_date_format_hint(),
+            'datetime_hint': datefmt.get_datetime_format_hint()
         })
         return 'admin_versions.html', data
 

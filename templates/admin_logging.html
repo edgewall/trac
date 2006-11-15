@@ -7,6 +7,14 @@
   <xi:include href="admin.html" />
   <head>
     <title>Logging</title>
+    <script type="text/javascript">/*<![CDATA[*/
+      $(document).ready(function() {
+        $("#log_type").change(function() {
+          $("#log_level").enable(this.selectedIndex > 0);
+          $("#log_file").enable(this.options[this.selectedIndex].value == "file");
+        }).change();
+      });
+    /*]]>*/</script>
   </head>
 
   <body>
@@ -41,16 +49,6 @@
             <code>log</code> directory of the project environment (<code>$log.dir</code>).
           </p>
         </div>
-        <script type="text/javascript">
-          var logType = document.getElementById("log_type");
-          var enableLevelAndFile = function() {
-            enableControl("log_level", log_type.selectedIndex > 0);
-            enableControl("log_file",
-                          log_type.options[log_type.selectedIndex].value == "file");
-          };
-          addEvent(window, "load", enableLevelAndFile);
-          addEvent(log_type, "change", enableLevelAndFile);
-        </script>
         <div class="buttons">
           <input type="submit" value="Apply changes"/>
         </div>

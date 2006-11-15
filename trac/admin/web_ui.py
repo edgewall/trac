@@ -152,7 +152,7 @@ class LoggingAdminPanel(Component):
         log_dir = os.path.join(self.env.path, 'log')
 
         log_types = [
-            dict(name='', label=''),
+            dict(name='', label='None'),
             dict(name='stderr', label='Console', selected=log_type == 'stderr'),
             dict(name='file', label='File', selected=log_type == 'file'),
             dict(name='syslog', label='Syslog', disabled=os.name != 'posix',
@@ -226,12 +226,12 @@ class PermissionAdminPanel(Component):
 
     def render_admin_panel(self, req, cat, page, path_info):
         perm = PermissionSystem(self.env)
-        perms = perm.get_all_permissions()
-        subject = req.args.get('subject')
-        action = req.args.get('action')
-        group = req.args.get('group')
 
         if req.method == 'POST':
+            subject = req.args.get('subject')
+            action = req.args.get('action')
+            group = req.args.get('group')
+
             # Grant permission to subject
             if req.args.get('add') and subject and action:
                 if action not in perm.get_actions():
@@ -250,17 +250,13 @@ class PermissionAdminPanel(Component):
                 sel = isinstance(sel, list) and sel or [sel]
                 for key in sel:
                     subject, action = key.split(':', 1)
-                    if (subject, action) in perms:
+                    if (subject, action) in perm.get_all_permissions():
                         perm.revoke_permission(subject, action)
                 req.redirect(req.href.admin(cat, page))
 
-        perms.sort()
-        perms = [{'subject': p[0], 'action': p[1], 'key': '%s:%s' % p}
-                 for p in perms]
-
         return 'admin_perms.html', {
             'actions': perm.get_actions(),
-            'perms': perms
+            'perms': perm.get_all_permissions()
         }
 
 
