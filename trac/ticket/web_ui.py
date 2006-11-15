@@ -286,34 +286,33 @@ class TicketModule(Component):
 
         def produce((id, ts, author, type, summary), status, fields,
                     comment, cid):
+            info = ''
             if status == 'edit':
                 if 'ticket_details' in filters:
-                    info = ''
                     if len(fields) > 0:
-                        info = ', '.join(['<i>%s</i>' % f for f in \
-                                          fields.keys()]) + ' changed<br />'
+                        keys = fields.keys()
+                        info = html([[html.i(f), ', '] for f in keys[:-1]],
+                                    html.i(keys[-1]), ' changed', html.br())
                 else:
                     return None
             elif 'ticket' in filters:
                 if status == 'closed' and fields.has_key('resolution'):
                     info = fields['resolution']
                     if info and comment:
-                        info = '%s: ' % info
-                else:
-                    info = ''
+                        info += ': '
             else:
                 return None
             kind, verb = status_map[status]
-            title = Markup('Ticket <em title="%s">#%s</em> (%s) %s',
-                           summary, id, type, verb)
+            title = html('Ticket ', html.em('#', id, title=summary),
+                         ' (', verb, ')')
             ticket_href = req.href.ticket(id)
             if cid:
                 ticket_href += '#comment:' + cid
             markup = message = None
             if status == 'new':
-                message = summary
+                markup = summary
             else:
-                markup = Markup(info)
+                markup = info
                 message = comment
             t = datetime.fromtimestamp(ts, utc)
             event = TimelineEvent(kind, title, ticket_href, markup)
