@@ -573,6 +573,10 @@ class TicketModule(TicketModuleBase):
             if field['type'] in ('radio', 'select'):
                 value = ticket.values.get(field['name'])
                 options = field['options']
+                if field['name'] == 'milestone' \
+                    and not req.perm.has_permission('TICKET_ADMIN'):
+                    options = [opt for opt in options if not
+                               Milestone(self.env, opt, db=db).is_completed]
                 if value and not value in options:
                     # Current ticket value must be visible even if its not in the
                     # possible values
