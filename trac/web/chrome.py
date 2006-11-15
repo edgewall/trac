@@ -186,6 +186,7 @@ class Chrome(Component):
     _default_context_data = {
         'all': compat.all,
         'any': compat.any,
+        'attrgetter': compat.attrgetter,
         'date': datetime.date,
         'datetime': datetime.datetime,
         'first_last': presentation.first_last,
@@ -193,6 +194,7 @@ class Chrome(Component):
         'group': presentation.group,
         'groupby': compat.groupby,
         'http_date': http_date,
+        'itemgetter': compat.itemgetter,
         'paginate': presentation.paginate,
         'plaintext': plaintext,
         'pprint': pprint.pformat,
