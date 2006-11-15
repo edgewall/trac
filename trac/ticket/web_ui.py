@@ -154,10 +154,8 @@ class TicketModule(Component):
                     field['skip'] = True
             elif name == 'milestone':
                 # Don't make completed milestones available for selection
-                options = field['options'][:]
-                for option in field['options']:
-                    if Milestone(self.env, option, db=db).is_completed:
-                        options.remove(option)
+                options = [opt for opt in field['options'] if not
+                           Milestone(self.env, opt, db=db).is_completed]
                 field['options'] = options
             data['fields'].append(field)
 
@@ -539,15 +537,18 @@ class TicketModule(Component):
 
         data['fields'] = []
         for field in TicketSystem(self.env).get_ticket_fields():
+            name = field['name']
             if field['type'] in ('radio', 'select'):
                 value = ticket.values.get(field['name'])
                 options = field['options']
+                if name == 'milestone' and 'TICKET_ADMIN' not in req.perm:
+                    options = [opt for opt in field['options'] if not
+                               Milestone(self.env, opt, db=db).is_completed]
                 if value and not value in options:
                     # Current ticket value must be visible even if its not in the
                     # possible values
                     options.append(value)
                 field['options'] = options
-            name = field['name']
             if name in ('summary', 'reporter', 'description', 'status',
                         'resolution', 'owner'):
                 field['skip'] = True
