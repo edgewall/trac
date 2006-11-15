@@ -45,11 +45,14 @@
             result.changed and ' changed' or ''}${
             result.removed and ' removed' or ''}">
             <py:for each="idx, header in enumerate(headers)" py:choose="">
-              <td py:when="idx == 0" class="id"><a href="$result.href" title="View ticket">#$result.id</a></td>
-              <td py:otherwise="" class="$header.name" py:choose="">
-                <a py:when="header.name == 'summary'" href="$result.href" title="View ticket">$result.summary</a>
-                <span py:otherwise="">${result[header.name]}</span>
-              </td>
+              <py:with vars="name = header.name; value = result[name]">
+                <td py:when="idx == 0" class="id"><a href="$result.href" title="View ticket">#$result.id</a></td>
+                <td py:otherwise="" class="$name" py:choose="">
+                  <a py:when="name == 'summary'" href="$result.href" title="View ticket">$value</a>
+                  <span py:when="isinstance(value, datetime)">${format_datetime(value)}</span>
+                  <span py:otherwise="">$value</span>
+                </td>
+              </py:with>
             </py:for>
           </tr>
 
