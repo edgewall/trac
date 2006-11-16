@@ -301,8 +301,8 @@ class TicketModule(Component):
             else:
                 return None
             kind, verb = status_map[status]
-            title = html(type or 'Ticket', ' ',
-                         html.em('#', id, title=summary), ' ', verb)
+            title = html('Ticket ', html.em('#', id, title=summary),
+                         ' (%s) ' % (type or 'Ticket'), verb)
             ticket_href = req.href.ticket(id)
             if cid:
                 ticket_href += '#comment:' + cid
