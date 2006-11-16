@@ -374,7 +374,8 @@ def dispatch_request(environ, start_response):
                                'options "TracEnv" or "TracEnvParentDir" are '
                                'missing. Trac requires one of these options '
                                'to locate the Trac environment(s).')
-    env = _open_environment(env_path, run_once=environ['wsgi.run_once'])
+    run_once = environ['wsgi.run_once']
+    env = _open_environment(env_path, run_once=run_once)
 
     if env.base_url:
         environ['trac.base_url'] = env.base_url
@@ -389,7 +390,7 @@ def dispatch_request(environ, start_response):
                 pass
             return req._response or []
         finally:
-            if environ.get('wsgi.multithread', False):
+            if not run_once:
                 env.shutdown(threading._get_ident())
 
     except HTTPException, e:
