@@ -31,22 +31,16 @@ class CachedRepository(Repository):
         Repository.__init__(self, repos.name, authz, log)
         self.db = db
         self.repos = repos
-        self.synced = 0
+        self.sync()
 
     def close(self):
         self.repos.close()
 
     def get_changeset(self, rev):
-        if not self.synced:
-            self.sync()
-            self.synced = 1
         return CachedChangeset(self.repos.normalize_rev(rev), self.db,
                                self.authz)
 
     def get_changesets(self, start, stop):
-        if not self.synced:
-            self.sync()
-            self.synced = 1
         cursor = self.db.cursor()
         cursor.execute("SELECT rev FROM revision "
                        "WHERE time >= %s AND time < %s "
@@ -70,6 +64,7 @@ class CachedRepository(Repository):
             cursor.execute("INSERT INTO system (name,value) "
                            "VALUES ('repository_dir',%s)", (self.name,))
 
+        self.repos.clear()
         youngest_stored = self.repos.get_youngest_rev_in_cache(self.db)
 
         if youngest_stored != str(self.repos.youngest_rev):
@@ -106,13 +101,7 @@ class CachedRepository(Repository):
                                    (str(current_rev), path, kind, action,
                                    base_path, base_rev))
                 current_rev = self.repos.next_rev(current_rev)
-            try:
-                self.db.commit()
-            except:
-                # See <http://trac.edgewall.org/ticket/4120>: this breaks badly
-                # while rendering the timeline, because the commit happens
-                # while iterating over a recordset
-                pass
+            self.db.commit()
             self.repos.authz = authz # restore permission checking
 
     def get_node(self, path, rev=None):
@@ -125,7 +114,7 @@ class CachedRepository(Repository):
         return self.repos.oldest_rev
 
     def get_youngest_rev(self):
-        return self.repos.youngest_rev
+        return self.repos.get_youngest_rev_in_cache(self.db)
 
     def previous_rev(self, rev):
         return self.repos.previous_rev(rev)

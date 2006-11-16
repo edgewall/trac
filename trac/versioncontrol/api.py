@@ -24,6 +24,7 @@ except ImportError:
 from trac.config import Option
 from trac.core import *
 from trac.perm import PermissionError
+from trac.web.api import IRequestFilter
 
 
 class IRepositoryConnector(Interface):
@@ -50,6 +51,8 @@ class RepositoryManager(Component):
     It provides easy access to the configured implementation.
     """
 
+    implements(IRequestFilter)
+
     connectors = ExtensionPoint(IRepositoryConnector)
 
     repository_type = Option('trac', 'repository_type', 'svn',
@@ -61,6 +64,18 @@ class RepositoryManager(Component):
         self._cache = {}
         self._lock = threading.Lock()
         self._connector = None
+
+    # IRequestFilter methods
+
+    def pre_process_request(self, req, handler):
+        from trac.web.chrome import Chrome        
+        if handler is not Chrome(self.env):
+            self.get_repository(req.authname) # triggers a sync if applicable
+        return handler
+
+    def post_process_request(self, req, template, content_type):
+        return (template, content_type)
+
 
     # Public API methods
 
@@ -119,6 +134,10 @@ class Repository(object):
     def close(self):
         """Close the connection to the repository."""
         raise NotImplementedError
+
+    def clear(self):
+        """Clear any data that may have been cached in instance properties."""
+        pass
 
     def get_changeset(self, rev):
         """Retrieve a Changeset corresponding to the  given revision `rev`."""

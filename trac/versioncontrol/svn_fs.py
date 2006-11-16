@@ -307,6 +307,9 @@ class SubversionRepository(Repository):
         
         self.log.debug("Opening subversion file-system at %s with scope %s" \
                        % (self.path, self.scope))
+        self.clear()
+
+    def clear(self):
         self.youngest = None
         self.oldest = None
 
