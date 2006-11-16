@@ -63,6 +63,8 @@ class TicketNotifyEmail(NotifyEmail):
         self.ticket['description'] = wrap(self.ticket.values.get('description', ''),
                                           self.COLS, initial_indent=' ',
                                           subsequent_indent=' ', linesep=CRLF)
+        self.reporter = ''
+        self.owner = ''
         self.hdf.set_unescaped('email.ticket_props', self.format_props())
         self.hdf.set_unescaped('email.ticket_body_hdr', self.format_hdr())
         self.hdf['ticket.new'] = self.newticket
@@ -204,13 +206,15 @@ class TicketNotifyEmail(NotifyEmail):
         ccrecipients = self.prev_cc
         torecipients = []
         cursor = self.db.cursor()
-
+        
         # Harvest email addresses from the cc, reporter, and owner fields
         cursor.execute("SELECT cc,reporter,owner FROM ticket WHERE id=%s",
                        (tktid,))
         row = cursor.fetchone()
         if row:
             ccrecipients += row[0] and row[0].replace(',', ' ').split() or []
+            self.reporter = row[1]
+            self.owner = row[2]
             if notify_reporter:
                 torecipients.append(row[1])
             if notify_owner:
@@ -224,18 +228,27 @@ class TicketNotifyEmail(NotifyEmail):
                 torecipients.append(author)
 
         # Suppress the updater from the recipients
-        if not notify_updater:
-            updater = None
-            cursor.execute("SELECT author FROM ticket_change WHERE ticket=%s "
-                           "ORDER BY time DESC LIMIT 1", (tktid,))
+        updater = None
+        cursor.execute("SELECT author FROM ticket_change WHERE ticket=%s "
+                       "ORDER BY time DESC LIMIT 1", (tktid,))
+        for updater, in cursor:
+            break
+        else:
+            cursor.execute("SELECT reporter FROM ticket WHERE id=%s",
+                           (tktid,))
             for updater, in cursor:
                 break
-            else:
-                cursor.execute("SELECT reporter FROM ticket WHERE id=%s",
-                               (tktid,))
-                for updater, in cursor:
-                    break
-            torecipients = [r for r in torecipients if r and r != updater]
+
+        if not notify_updater:
+            filter_out = True
+            if notify_reporter and (updater == self.reporter):
+                filter_out = False
+            if notify_owner and (updater == self.owner):
+                filter_out = False
+            if filter_out:
+                torecipients = [r for r in torecipients if r and r != updater]
+        elif updater:
+            torecipients.append(updater)
 
         return (torecipients, ccrecipients)
 
@@ -250,19 +263,14 @@ class TicketNotifyEmail(NotifyEmail):
         return msgid
 
     def send(self, torcpts, ccrcpts):
+        dest = self.reporter or 'anonymous'
         hdrs = {}
-        always_cc = self.config['notification'].get('smtp_always_cc')
-        always_bcc = self.config['notification'].get('smtp_always_bcc')
-        dest = filter(None, torcpts) or filter(None, ccrcpts) or \
-               filter(None, [always_cc]) or filter(None, [always_bcc])
-        if not dest:
-            self.env.log.info('no recipient for a ticket notification')
-            return
-        hdrs['Message-ID'] = self.get_message_id(dest[0], self.modtime)
+        hdrs['Message-ID'] = self.get_message_id(dest, self.modtime)
         hdrs['X-Trac-Ticket-ID'] = str(self.ticket.id)
         hdrs['X-Trac-Ticket-URL'] = self.ticket['link']
         if not self.newticket:
-            hdrs['In-Reply-To'] = self.get_message_id(dest[0])
-            hdrs['References'] = self.get_message_id(dest[0])
+            msgid = self.get_message_id(dest)
+            hdrs['In-Reply-To'] = msgid
+            hdrs['References'] = msgid
         NotifyEmail.send(self, torcpts, ccrcpts, hdrs)
 
