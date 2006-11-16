@@ -293,7 +293,7 @@ class RoadmapModule(Component):
             if milestone.has_key('due'):
                 write_prop('BEGIN', 'VEVENT')
                 write_prop('UID', uid)
-                write_date('DTSTAMP', localtime(milestone['due']))
+                write_utctime('DTSTAMP', localtime(milestone['due']))
                 write_date('DTSTART', localtime(milestone['due']))
                 write_prop('SUMMARY', 'Milestone %s' % milestone['name'])
                 write_prop('URL', req.base_url + '/milestone/' +
