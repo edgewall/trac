@@ -164,6 +164,8 @@ class RequestDispatcher(Component):
         # Select the component that should handle the request
         chosen_handler = None
         early_error = None
+        req.authname = 'anonymous'
+        req.perm = NoPermissionCache()
         try:
             if not req.path_info or req.path_info == '/':
                 chosen_handler = self.default_handler
@@ -173,6 +175,19 @@ class RequestDispatcher(Component):
                         chosen_handler = handler
                         break
 
+            # Attach user information to the request early, so that
+            # the IRequestFilter can see it while preprocessing
+            if not getattr(chosen_handler, 'anonymous_request', False):
+                try:
+                    req.authname = self.authenticate(req)
+                    req.perm = PermissionCache(self.env, req.authname)
+                    req.session = Session(self.env, req)
+                    req.form_token = self._get_form_token(req)
+                except:
+                    req.authname = 'anonymous'
+                    req.perm = NoPermissionCache()
+                    early_error = sys.exc_info()
+
             chosen_handler = self._pre_process_request(req, chosen_handler)
         except:
             early_error = sys.exc_info()
@@ -181,22 +196,6 @@ class RequestDispatcher(Component):
             early_error = (HTTPNotFound('No handler matched request to %s',
                                         req.path_info),
                            None, None)
-
-        # Attach user information to the request
-        anonymous_request = getattr(chosen_handler, 'anonymous_request',
-                                    False)
-        if not anonymous_request:
-            try:
-                req.authname = self.authenticate(req)
-                req.perm = PermissionCache(self.env, req.authname)
-                req.session = Session(self.env, req)
-                req.form_token = self._get_form_token(req)
-            except:
-                anonymous_request = True
-                early_error = sys.exc_info()
-        if anonymous_request:
-            req.authname = 'anonymous'
-            req.perm = NoPermissionCache()
 
         # Prepare HDF for the clearsilver template
         try:
