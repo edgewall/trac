@@ -61,7 +61,7 @@ class NotificationTestCase(unittest.TestCase):
         notifysuite.tear_down()
 
     def test_recipients(self):
-        """Validate To/Cc recipients"""
+        """To/Cc recipients"""
         ticket = Ticket(self.env)
         ticket['reporter'] = '"Joe User" <joe.user@example.org>'
         ticket['owner']    = 'joe.user@example.net'
@@ -88,7 +88,7 @@ class NotificationTestCase(unittest.TestCase):
         self.failIf(smtp_address(ticket['reporter']) not in recipients)
 
     def test_no_recipient(self):
-        """Validate no recipient case"""
+        """No recipient case"""
         self.env.config.set('notification', 'smtp_always_cc', '')
         ticket = Ticket(self.env)
         ticket['reporter'] = 'anonymous'
@@ -105,8 +105,7 @@ class NotificationTestCase(unittest.TestCase):
         self.failIf(message)
 
     def test_cc_only(self):
-        """Validate notifications w/o explicit recipients but Cc: 
-           are actually sent. Non-regression test for #3101"""
+        """Notification w/o explicit recipients but Cc: (#3101)"""
         ticket = Ticket(self.env)
         ticket['summary'] = 'Foo'
         ticket.insert()
@@ -119,7 +118,7 @@ class NotificationTestCase(unittest.TestCase):
             self.failIf(r not in recipients)
 
     def test_structure(self):
-        """Validate basic SMTP message structure (headers, body)"""
+        """Basic SMTP message structure (headers, body)"""
         ticket = Ticket(self.env)
         ticket['reporter'] = '"Joe User" <joe.user@example.org>'
         ticket['owner']    = 'joe.user@example.net'
@@ -143,8 +142,7 @@ class NotificationTestCase(unittest.TestCase):
         self.failIf('Sender' not in headers)
 
     def test_date(self):
-        """Validate date format 
-           Date format hould be compliant with RFC822,
+        """Date format compliance (RFC822) 
            we do not support 'military' format""" 
         date_str = r"^((?P<day>\w{3}),\s*)*(?P<dm>\d{2})\s+" \
                    r"(?P<month>\w{3})\s+(?P<year>200\d)\s+" \
@@ -177,7 +175,7 @@ class NotificationTestCase(unittest.TestCase):
             self.failIf(mo.group('tz') not in tz)
 
     def test_bcc_privacy(self):
-        """Validate visibility of recipients"""
+        """Visibility of recipients"""
         def run_bcc_feature(public):
             # CC list should be private
             self.env.config.set('notification', 'use_public_cc',
@@ -228,7 +226,7 @@ class NotificationTestCase(unittest.TestCase):
         run_bcc_feature(False)
 
     def test_short_login(self):
-        """Validate email addresses without a FQDN"""
+        """Email addresses without a FQDN"""
         def _test_short_login(enabled):
             ticket = Ticket(self.env)
             ticket['reporter'] = 'joeuser'
@@ -266,7 +264,7 @@ class NotificationTestCase(unittest.TestCase):
             _test_short_login(enable)
 
     def test_default_domain(self):
-        """Validate support for default domain name"""
+        """Default domain name"""
         def _test_default_domain(enabled):
             self.env.config.set('notification', 'always_notify_owner',
                                 'false')
@@ -305,7 +303,7 @@ class NotificationTestCase(unittest.TestCase):
             _test_default_domain(enable)
 
     def test_email_map(self):
-        """Validate login-to-email map"""
+        """Login-to-email mapping"""
         self.env.config.set('notification', 'always_notify_owner', 'false')
         self.env.config.set('notification', 'always_notify_reporter', 'true')
         self.env.config.set('notification', 'smtp_always_cc',
@@ -328,7 +326,7 @@ class NotificationTestCase(unittest.TestCase):
         self.failIf('joeuser' in tolist)
 
     def test_multiline_header(self):
-        """Validate encoded headers split into multiple lines"""
+        """Encoded headers split into multiple lines"""
         self.env.config.set('notification','mime_encoding', 'qp')
         ticket = Ticket(self.env)
         ticket['reporter'] = 'joe.user@example.org'
@@ -345,7 +343,7 @@ class NotificationTestCase(unittest.TestCase):
         self.failIf(ticket['summary'] != summary)
 
     def test_mimebody_b64(self):
-        """Validate MIME Base64/utf-8 encoding"""
+        """MIME Base64/utf-8 encoding"""
         self.env.config.set('notification','mime_encoding', 'base64')
         ticket = Ticket(self.env)
         ticket['reporter'] = 'joe.user@example.org'
@@ -356,7 +354,7 @@ class NotificationTestCase(unittest.TestCase):
                                 ticket, True)
 
     def test_mimebody_qp(self):
-        """Validate MIME QP/utf-8 encoding"""
+        """MIME QP/utf-8 encoding"""
         self.env.config.set('notification','mime_encoding', 'qp')
         ticket = Ticket(self.env)
         ticket['reporter'] = 'joe.user@example.org'
@@ -367,7 +365,7 @@ class NotificationTestCase(unittest.TestCase):
                                 ticket, True)
 
     def test_mimebody_none(self):
-        """Validate MIME None/ascii encoding"""
+        """MIME None/ascii encoding"""
         self.env.config.set('notification','mime_encoding', 'none')
         ticket = Ticket(self.env)
         ticket['reporter'] = 'joe.user@example.org'
@@ -377,7 +375,7 @@ class NotificationTestCase(unittest.TestCase):
                                 ticket, True)
 
     def test_md5_digest(self):
-        """Validate MD5 digest w/ non-ASCII recipient address (#3491)"""
+        """MD5 digest w/ non-ASCII recipient address (#3491)"""
         self.env.config.set('notification', 'always_notify_owner', 'false')
         self.env.config.set('notification', 'always_notify_reporter', 'true')
         self.env.config.set('notification', 'smtp_always_cc', '')
@@ -391,7 +389,7 @@ class NotificationTestCase(unittest.TestCase):
         (headers, body) = parse_smtp_message(message)
 
     def test_updater(self):
-        """Validate no-self-notification option"""
+        """No-self-notification option"""
         def _test_updater(disable):
             if disable:
                 self.env.config.set('notification','always_notify_updater',
@@ -423,8 +421,57 @@ class NotificationTestCase(unittest.TestCase):
         for disable in [False, True]:
             _test_updater(disable)
 
+    def test_updater_only(self):
+        """Notification w/ updater, w/o any other recipient (#4188)"""
+        self.env.config.set('notification', 'always_notify_owner', 'false')
+        self.env.config.set('notification', 'always_notify_reporter', 'false')
+        self.env.config.set('notification', 'always_notify_updater', 'true')
+        self.env.config.set('notification', 'smtp_always_cc', '')
+        self.env.config.set('notification', 'smtp_always_bcc', '')
+        self.env.config.set('notification', 'use_public_cc', 'false')
+        self.env.config.set('notification', 'use_short_addr', 'false')
+        self.env.config.set('notification', 'smtp_replyto', 
+                            'joeuser@example.net')
+        ticket = Ticket(self.env)
+        ticket['summary'] = 'Foo'
+        ticket.insert()
+        ticket['summary'] = 'Bar'
+        ticket['component'] = 'New value'
+        ticket.save_changes('joe@example.com', 'this is my comment')        
+        tn = TicketNotifyEmail(self.env)
+        tn.notify(ticket, newticket=True)
+        recipients = notifysuite.smtpd.get_recipients()
+        self.failIf(recipients is None)
+        self.failIf(len(recipients) != 1)
+        self.failIf(recipients[0] != 'joe@example.com')
+
+    def test_updater_is_reporter(self):
+        """Notification to reporter w/ updater option disabled (#3780)"""
+        self.env.config.set('notification', 'always_notify_owner', 'false')
+        self.env.config.set('notification', 'always_notify_reporter', 'true')
+        self.env.config.set('notification', 'always_notify_updater', 'false')
+        self.env.config.set('notification', 'smtp_always_cc', '')
+        self.env.config.set('notification', 'smtp_always_bcc', '')
+        self.env.config.set('notification', 'use_public_cc', 'false')
+        self.env.config.set('notification', 'use_short_addr', 'false')
+        self.env.config.set('notification', 'smtp_replyto', 
+                            'joeuser@example.net')
+        ticket = Ticket(self.env)
+        ticket['summary'] = 'Foo'
+        ticket['reporter'] = u'joe@example.org'
+        ticket.insert()
+        ticket['summary'] = 'Bar'
+        ticket['component'] = 'New value'
+        ticket.save_changes('joe@example.org', 'this is my comment')        
+        tn = TicketNotifyEmail(self.env)
+        tn.notify(ticket, newticket=True)
+        recipients = notifysuite.smtpd.get_recipients()
+        self.failIf(recipients is None)
+        self.failIf(len(recipients) != 1)
+        self.failIf(recipients[0] != 'joe@example.org')
+
     def _validate_mimebody(self, mime, ticket, newtk):
-        """Validate the body of a ticket notification message"""
+        """Body of a ticket notification message"""
         (mime_decoder, mime_name, mime_charset) = mime
         tn = TicketNotifyEmail(self.env)
         tn.notify(ticket, newticket=newtk)

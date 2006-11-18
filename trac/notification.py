@@ -229,7 +229,7 @@ class NotifyEmail(Notify):
         if not email:
             return header
         else:
-            return "\"%s\" <%s>" % (header, email)
+            return '"%s" <%s>' % (header, email)
 
     def add_headers(self, msg, headers):
         for h in headers:
@@ -334,6 +334,7 @@ class NotifyEmail(Notify):
         
         # if there is not valid recipient, leave immediately
         if len(recipients) < 1:
+            self.env.log.info('no recipient for a ticket notification')
             return
 
         pcc = accaddrs
