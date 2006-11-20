@@ -108,7 +108,7 @@ class PreferencesModule(Component):
                     req.session.change_sid(val)
                 else:
                     req.session[field] = val
-            elif field in req.session:
+            elif field in req.args and req.session:
                 del req.session[field]
 
     def _do_load(self, req):
