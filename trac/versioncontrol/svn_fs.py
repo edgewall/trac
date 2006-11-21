@@ -308,9 +308,9 @@ class SubversionRepository(Repository):
         else:
             self.scope = '/'
         assert self.scope[0] == '/'
-        
-        self.log.debug("Opening subversion file-system at %s with scope %s" \
-                       % (self.path, self.scope))
+        self.clear()
+
+    def clear(self):
         self.youngest = None
         self.oldest = None
 
@@ -339,7 +339,6 @@ class SubversionRepository(Repository):
         return rev
 
     def close(self):
-        self.log.debug("Closing subversion file-system at %s" % self.path)
         self.repos = None
         self.fs_ptr = None
         self.pool = None

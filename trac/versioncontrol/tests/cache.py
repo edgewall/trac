@@ -136,7 +136,7 @@ class CacheTestCase(unittest.TestCase):
                      get_youngest_rev=lambda: 1,
                      next_rev=lambda x: None, normalize_rev=lambda rev: rev)
         cache = CachedRepository(self.db, repos, None, self.log)
-        self.assertEqual(1, cache.youngest_rev)
+        self.assertEqual('1', cache.youngest_rev)
         changeset = cache.get_changeset(1)
         self.assertEqual('joe', changeset.author)
         self.assertEqual('Import', changeset.message)
