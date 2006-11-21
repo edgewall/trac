@@ -50,7 +50,6 @@ class CachedRepository(Repository):
                 yield self.get_changeset(rev)
 
     def sync(self):
-        self.log.debug("Checking whether sync with repository is needed")
         cursor = self.db.cursor()
 
         # -- repository used for populating the cache
