@@ -65,6 +65,10 @@ class SearchModule(Component):
     def process_request(self, req):
         req.perm.assert_permission('SEARCH_VIEW')
 
+        if req.path_info == '/search/opensearch':
+            return ('opensearch.xml', {},
+                    'application/opensearchdescription+xml')
+
         available_filters = []
         for source in self.search_sources:
             available_filters += source.get_search_filters(req)

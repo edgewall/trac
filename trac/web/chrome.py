@@ -323,16 +323,13 @@ class Chrome(Component):
         add_script(fakereq, 'common/js/trac.js')
         add_script(fakereq, 'common/js/search.js')
 
-        icon = self.env.project_icon
-        if icon:
-            if not icon.startswith('/') and icon.find('://') == -1:
-                if '/' in icon:
-                    icon = req.href.chrome(icon)
-                else:
-                    icon = req.href.chrome('common', icon)
-            mimetype = mimeview.get_mimetype(icon)
-            add_link(fakereq, 'icon', icon, mimetype=mimetype)
-            add_link(fakereq, 'shortcut icon', icon, mimetype=mimetype)
+        # Shortcut icon
+        chrome['icon'] = self.get_icon_data(req)
+        if chrome['icon']:
+            src = chrome['icon']['src']
+            mimetype = chrome['icon']['mimetype']
+            add_link(fakereq, 'icon', src, mimetype=mimetype)
+            add_link(fakereq, 'shortcut icon', src, mimetype=mimetype)
 
         # Logo image
         chrome['logo'] = self.get_logo_data(req.href)
@@ -368,6 +365,23 @@ class Chrome(Component):
         chrome['nav'] = nav
 
         return chrome
+
+
+    def get_icon_data(self, req):
+        icon = {}
+        icon_src = icon_abs_src = self.env.project_icon
+        if icon_src:
+            if not icon_src.startswith('/') and icon_src.find('://') == -1:
+                if '/' in icon_src:
+                    icon_abs_src = req.abs_href.chrome(icon_src)
+                    icon_src = req.href.chrome(icon_src)
+                else:
+                    icon_abs_src = req.abs_href.chrome('common', icon_src)
+                    icon_src = req.href.chrome('common', icon_src)
+            mimetype = mimeview.get_mimetype(icon_src)
+            icon = {'src': icon_src, 'abs_src': icon_abs_src,
+                    'mimetype': mimetype}
+        return icon
 
     def get_logo_data(self, href):
         logo = {}

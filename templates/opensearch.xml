@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<OpenSearchDescription xmlns:py="http://genshi.edgewall.org/"
+                       xmlns="http://a9.com/-/spec/opensearch/1.1/">
+  <ShortName>Search $project.name</ShortName>
+  <InputEncoding>UTF-8</InputEncoding>
+  <Image py:if="chrome.icon.abs_src" width="16" height="16"
+         type="$chrome.icon.mimetype">$chrome.icon.abs_src</Image>
+  <Url type="text/html"
+       template="${abs_href.search()}?q={searchTerms}&amp;page={startPage}"/>
+</OpenSearchDescription>

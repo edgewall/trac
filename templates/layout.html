@@ -16,6 +16,10 @@
         <link rel="${rel}" py:for="link in links" py:attrs="link" />
       </py:for>
     </py:if>
+    <py:if test="'SEARCH_VIEW' in perm" id="search">
+      <link type="application/opensearchdescription+xml" rel="search" 
+            href="${href.search('opensearch')}" title="Search $project.name"/>
+    </py:if>
     <script py:for="script in chrome.scripts"
             type="${script.type}" src="${script.href}"></script>
     ${select("*[local-name() != 'title']")}

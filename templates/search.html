@@ -7,6 +7,11 @@
   <xi:include href="layout.html" />
   <head>
     <title>Search<py:if test="query"> Results</py:if></title>
+    <py:if test="results">
+        <meta name="startIndex" content="${results.span[0] + 1}"/>
+        <meta name="totalResults" content="$results.num_items"/>
+        <meta name="itemsPerPage" content="$results.max_per_page"/>
+    </py:if>
     <script type="text/javascript">
       $(document).ready(function() {$("#q").get(0).focus()});
     </script>
