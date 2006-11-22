@@ -394,11 +394,8 @@ class MilestoneModule(Component):
             return True
 
     def process_request(self, req):
-        milestone_id = req.args.get('id')
-        if not milestone_id:
-            req.redirect(req.href.roadmap())
-
         req.perm.require('MILESTONE_VIEW')
+        milestone_id = req.args.get('id')
 
         add_link(req, 'up', req.href.roadmap(), 'Roadmap')
 
@@ -420,6 +417,9 @@ class MilestoneModule(Component):
             return self._render_editor(req, db, milestone)
         elif action == 'delete':
             return self._render_confirm(req, db, milestone)
+
+        if not milestone_id:
+            req.redirect(req.href.roadmap())
 
         return self._render_view(req, db, milestone)
 
