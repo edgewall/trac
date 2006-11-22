@@ -1,17 +1,15 @@
 # -*- encoding: utf-8 -*-
 
-from trac.attachment import Attachment, AttachmentModule
-from trac.log import logger_factory
-from trac.test import EnvironmentStub, Mock
-from trac.wiki.formatter import Formatter
-
 import os
-import os.path
 import shutil
 import tempfile
 import unittest
 import time
 
+from trac.attachment import Attachment, AttachmentModule
+from trac.log import logger_factory
+from trac.test import EnvironmentStub, Mock
+from trac.wiki.formatter import Formatter
 
 
 class AttachmentTestCase(unittest.TestCase):
@@ -128,16 +126,16 @@ class AttachmentModuleTestCase(unittest.TestCase):
         attachment.insert('foo.txt', tempfile.TemporaryFile(), 0)
 
         ns, func = AttachmentModule(self.env).get_link_resolvers().next()
-        self.assertEqual('attachment', ns)
+        self.assertEqual('raw-attachment', ns)
 
         req = Mock(path_info='/wiki/SomePage', href=self.env.href)
         formatter = Formatter(self.env, req)
         self.assertEqual('<a class="attachment" href="'
-                         '/trac.cgi/attachment/wiki/SomePage/foo.txt" '
+                         '/trac.cgi/raw-attachment/wiki/SomePage/foo.txt" '
                          'title="Attachment SomePage: foo.txt">Foo</a>',
                          unicode(func(formatter, ns, 'foo.txt', 'Foo')))
         self.assertEqual('<a class="attachment" href="/trac.cgi/'
-                         'attachment/wiki/SomePage/foo.txt?format=raw" '
+                         'raw-attachment/wiki/SomePage/foo.txt" '
                          'title="Attachment SomePage: foo.txt">Foo</a>',
                          unicode(func(formatter, ns, 'foo.txt?format=raw',
                                       'Foo')))
@@ -147,12 +145,12 @@ class AttachmentModuleTestCase(unittest.TestCase):
         attachment.insert('foo.txt', tempfile.TemporaryFile(), 0)
 
         ns, func = AttachmentModule(self.env).get_link_resolvers().next()
-        self.assertEqual('attachment', ns)
+        self.assertEqual('raw-attachment', ns)
 
         req = Mock(path_info='/wiki/SomePage/SubPage', href=self.env.href)
         formatter = Formatter(self.env, req)
         self.assertEqual('<a class="attachment" href="'
-                         '/trac.cgi/attachment/wiki/SomePage/SubPage/foo.txt" '
+                         '/trac.cgi/raw-attachment/wiki/SomePage/SubPage/foo.txt" '
                          'title="Attachment SomePage/SubPage: foo.txt"'
                          '>Foo</a>',
                          unicode(func(formatter, ns, 'foo.txt', 'Foo')))
@@ -162,16 +160,16 @@ class AttachmentModuleTestCase(unittest.TestCase):
         attachment.insert('foo.txt', tempfile.TemporaryFile(), 0)
 
         ns, func = AttachmentModule(self.env).get_link_resolvers().next()
-        self.assertEqual('attachment', ns)
+        self.assertEqual('raw-attachment', ns)
 
         req = Mock(path_info='/ticket/123', href=self.env.href)
         formatter = Formatter(self.env, req)
         self.assertEqual('<a class="attachment" href="/trac.cgi/'
-                         'attachment/ticket/123/foo.txt" '
+                         'raw-attachment/ticket/123/foo.txt" '
                          'title="Attachment #123: foo.txt">Foo</a>',
                          unicode(func(formatter, ns, 'foo.txt', 'Foo')))
         self.assertEqual('<a class="attachment" href="/trac.cgi/'
-                         'attachment/ticket/123/foo.txt?format=raw" '
+                         'raw-attachment/ticket/123/foo.txt" '
                          'title="Attachment #123: foo.txt">Foo</a>',
                          unicode(func(formatter, ns, 'foo.txt?format=raw',
                                       'Foo')))
@@ -181,24 +179,27 @@ class AttachmentModuleTestCase(unittest.TestCase):
         attachment.insert('foo.txt', tempfile.TemporaryFile(), 0)
 
         ns, func = AttachmentModule(self.env).get_link_resolvers().next()
-        self.assertEqual('attachment', ns)
+        self.assertEqual('raw-attachment', ns)
 
         req = Mock(path_info='/wiki', href=self.env.href)
         formatter = Formatter(self.env, req)
         self.assertEqual('<a class="attachment" href="/trac.cgi/'
-                         'attachment/ticket/123/foo.txt" '
+                         'raw-attachment/ticket/123/foo.txt" '
                          'title="Attachment #123: foo.txt">Foo</a>',
                          unicode(func(formatter, ns, 'ticket:123:foo.txt',
                                       'Foo')))
         self.assertEqual('<a class="attachment" href="/trac.cgi/'
-                         'attachment/ticket/123/foo.txt?format=raw" '
+                         'raw-attachment/ticket/123/foo.txt" '
                          'title="Attachment #123: foo.txt">Foo</a>',
                          unicode(func(formatter, ns,
                                       'ticket:123:foo.txt?format=raw', 'Foo')))
 
 
 def suite():
-    return unittest.makeSuite(AttachmentTestCase, 'test')
+    suite = unittest.TestSuite()
+    suite.addTest(unittest.makeSuite(AttachmentTestCase, 'test'))
+    suite.addTest(unittest.makeSuite(AttachmentModuleTestCase, 'test'))
+    return suite
 
 if __name__ == '__main__':
-    unittest.main()
+    unittest.main(defaultTest='suite')
