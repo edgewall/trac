@@ -116,23 +116,23 @@ class TimelineModule(Component):
 
         # gather all events for the given period of time
         events = []
-        for event_provider in self.event_providers:
+        for provider in self.event_providers:
             try:
-                for event in event_provider.get_timeline_events(req, start,
-                                                                stop, filters):
+                for event in provider.get_timeline_events(req, start, stop,
+                                                          filters):
                     # compatibility with 0.10 providers
                     if isinstance(event, tuple):
                         event = self._event_from_tuple(req, event)
                     heappush(events, (-to_timestamp(event.date), event))
             except Exception, e: # cope with a failure of that provider
-                self._provider_failure(e, req, event_provider, filters,
+                self._provider_failure(e, req, provider, filters,
                                        [f[0] for f in available_filters])
+
         # prepare sorted global list
         data_events = data['events']
         while events:
             _, event = heappop(events)
-            day = format_date(event.date, tzinfo=req.tz),
-            data_events.append((day, event))
+            data_events.append(event)
             if maxrows and len(data_events) > maxrows:
                 break
 

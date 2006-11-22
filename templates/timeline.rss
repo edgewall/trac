@@ -1,29 +1,31 @@
 <?xml version="1.0"?>
 <rss version="2.0" xmlns:py="http://genshi.edgewall.org/">
- <channel>
-  <title>${project.name}</title>
-  <link>${abs_href.timeline()}</link>
-  <description>Trac Timeline</description>
-  <language>en-US</language>
-  <generator>Trac ${trac.version}</generator>
-  <image py:if="chrome.logo.src">
-   <title>${project.name}</title>
-   <url>${chrome.logo.src}</url>
-   <link>${abs_href.timeline()}</link>
-  </image>
+  <channel>
+    <title>${project.name}</title>
+    <link>${abs_href.timeline()}</link>
+    <description>Trac Timeline</description>
+    <language>en-US</language>
+    <generator>Trac ${trac.version}</generator>
+    <image py:if="chrome.logo.src">
+      <title>${project.name}</title>
+      <url>${chrome.logo.src}</url>
+      <link>${abs_href.timeline()}</link>
+    </image>
 
-  <item py:for="_, event in events">
-   <title>${plaintext(event.title, keeplinebreaks=False)}</title>
-   <py:with vars="author=event.author; author = author and '@' in author and author or email_map.get(author)">
-    <author py:if="author">$author</author>
-   </py:with>
-   <pubDate>${http_date(event.date)}</pubDate>
-   <link>${event.abs_href(req)}</link>
-   <guid isPermaLink="false">${event.abs_href(req)}/${event.dateuid}</guid>
-   <description>${
-     event.message
-   }<py:if test="event.wiki">${wiki_to_html(event.wiki, absurls=True)}</py:if></description>
-  </item>
+    <item py:for="event in events">
+      <title>${plaintext(event.title, keeplinebreaks=False)}</title>
+      <py:with vars="author=event.author; author = author and '@' in author and author or email_map.get(author)">
+        <author py:if="author">$author</author>
+      </py:with>
+      <pubDate>${http_date(event.date)}</pubDate>
+      <link>${event.abs_href(req)}</link>
+      <guid isPermaLink="false">${event.abs_href(req)}/${event.dateuid()}</guid>
+      <description py:with="wikify = event.use_oneliner and
+                                     partial(wiki_to_oneliner, shorten=event.shorten_oneliner) or
+                                     wiki_to_html">${
+        event.markup
+      }<py:if test="event.message">${wikify(event.message, absurls=True)}</py:if></description>
+    </item>
 
- </channel>
+   </channel>
 </rss>
