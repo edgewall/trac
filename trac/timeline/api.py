@@ -55,8 +55,8 @@ class TimelineEvent(object):
     def __repr__(self):
         return '<TimelineEvent %s - %s>' % (self.date, self.href)
 
-    def set_changeinfo(self, date,
-                       author='anonymous', authenticated=None, ipnr=None):
+    def set_changeinfo(self, date, author='anonymous', authenticated=None,
+                       ipnr=None):
         self.date = date
         self.author = author
         self.authenticated = authenticated

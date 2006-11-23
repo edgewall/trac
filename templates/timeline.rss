@@ -20,11 +20,9 @@
       <pubDate>${http_date(event.date)}</pubDate>
       <link>${event.abs_href(req)}</link>
       <guid isPermaLink="false">${event.abs_href(req)}/${event.dateuid()}</guid>
-      <description py:with="wikify = event.use_oneliner and
-                                     partial(wiki_to_oneliner, shorten=event.shorten_oneliner) or
-                                     wiki_to_html">${
+      <description>${
         event.markup
-      }<py:if test="event.message">${wikify(event.message, absurls=True)}</py:if></description>
+      }<py:if test="event.message">${wiki_to_html(event.message, absurls=True)}</py:if></description>
     </item>
 
    </channel>
