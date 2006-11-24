@@ -65,16 +65,27 @@ def add_link(req, rel, href, title=None, mimetype=None, classname=None):
 def add_stylesheet(req, filename, mimetype='text/css'):
     """Add a link to a style sheet to the HDF data set so that it gets included
     in the generated HTML page.
+    
+    If the filename is absolute (i.e. starts with a slash), the generated link
+    will be based off the application root path. If it is relative, the link
+    will be based off the `/chrome/` path.
     """
     if filename.startswith('common/') and 'htdocs_location' in req.chrome:
         href = Href(req.chrome['htdocs_location'])
         filename = filename[7:]
     else:
-        href = Href(req.base_path).chrome
+        href = req.href
+        if not filename.startswith('/'):
+            href = href.chrome
     add_link(req, 'stylesheet', href(filename), mimetype=mimetype)
 
 def add_script(req, filename, mimetype='text/javascript'):
-    """Add a reference to an external javascript file to the template."""
+    """Add a reference to an external javascript file to the template.
+    
+    If the filename is absolute (i.e. starts with a slash), the generated link
+    will be based off the application root path. If it is relative, the link
+    will be based off the `/chrome/` path.
+    """
     scriptset = req.chrome.setdefault('trac.chrome.scriptset', set())
     if filename in scriptset:
         return False # Already added that script
@@ -83,7 +94,9 @@ def add_script(req, filename, mimetype='text/javascript'):
         href = Href(req.chrome['htdocs_location'])
         path = filename[7:]
     else:
-        href = Href(req.base_path).chrome
+        href = req.href
+        if not filename.startswith('/'):
+            href = href.chrome
         path = filename
     script = {'href': href(path), 'type': mimetype}
 
