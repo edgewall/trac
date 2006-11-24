@@ -57,9 +57,9 @@ class PhpDeuglifier(Deuglifier):
         return color_rules + [ r'(?P<font><font.*?>)', r'(?P<endfont></font>)' ]
     rules = classmethod(rules)
 
+
 class PHPRenderer(Component):
-    """
-    Syntax highlighting using the PHP executable if available.
+    """Syntax highlighting using the PHP executable if available.
     """
 
     implements(IHTMLPreviewRenderer)
@@ -75,23 +75,25 @@ class PHPRenderer(Component):
         return 0
 
     def render(self, req, mimetype, content, filename=None, rev=None):
-        cmdline = self.config.get('mimeviewer', 'php_path')
         # -n to ignore php.ini so we're using default colors
-        cmdline += ' -sn'
+        cmdline = '%s -sn' % self.path
         self.env.log.debug("PHP command line: %s" % cmdline)
-        
+
         content = content_to_unicode(self.env, content, mimetype)
         content = content.encode('utf-8')
         np = NaivePopen(cmdline, content, capturestderr=1)
         if (os.name != 'nt' and np.errorlevel) or np.err:
-            err = 'Running (%s) failed: %s, %s.' % (cmdline, np.errorlevel,
+            msg = 'Running (%s) failed: %s, %s.' % (cmdline,
+                                                    np.errorlevel,
                                                     np.err)
-            raise Exception, err
+            raise Exception(msg)
+
         odata = ''.join(np.out.splitlines()[1:-1])
-        if odata.startswith('X-Powered-By'):
-            raise TracError, 'You appear to be using the PHP CGI binary.  ' \
-                             'Trac requires the CLI version for syntax ' \
-                             'highlighting.'
+        if odata.startswith('X-Powered-By:') or \
+                odata.startswith('Content-type:'):
+            raise TracError('You appear to be using the PHP CGI '
+                            'binary. Trac requires the CLI version '
+                            'for syntax highlighting.')
 
         epilogues = ["</span>", "</font>"]
         for e in epilogues:
