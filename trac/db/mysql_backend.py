@@ -39,7 +39,9 @@ class MySQLConnector(Component):
                        port=None, params={}):
         import MySQLdb
         self.env.systeminfo['MySQLdb'] = MySQLdb.__version__
-        return MySQLConnection(path, user, password, host, port, params)
+        cnx = MySQLConnection(path, user, password, host, port, params)
+        self.env.systeminfo['MySQL'] = cnx.cnx.get_server_info()
+        return cnx
     
     def init_db(self, path, user=None, password=None, host=None, port=None,
                 params={}):
