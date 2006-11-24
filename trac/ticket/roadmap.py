@@ -339,12 +339,14 @@ class MilestoneModule(Component):
             return True
 
     def process_request(self, req):
+        milestone_id = req.args.get('id')
+            
         req.perm.assert_permission('MILESTONE_VIEW')
 
         add_link(req, 'up', req.href.roadmap(), 'Roadmap')
 
         db = self.env.get_db_cnx()
-        milestone = Milestone(self.env, req.args.get('id'), db)
+        milestone = Milestone(self.env, milestone_id, db)
         action = req.args.get('action', 'view')
 
         if req.method == 'POST':
@@ -363,6 +365,9 @@ class MilestoneModule(Component):
             self._render_confirm(req, db, milestone)
         else:
             self._render_view(req, db, milestone)
+
+        if not milestone_id:
+            req.redirect(req.href.roadmap())
 
         add_stylesheet(req, 'common/css/roadmap.css')
         return 'milestone.cs', None
