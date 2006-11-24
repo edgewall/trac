@@ -164,3 +164,7 @@ class MySQLConnection(ConnectionWrapper):
 
     def get_last_id(self, cursor, table, column='id'):
         return self.cnx.insert_id()
+
+    def rollback(self):
+        self.cnx.rollback()
+        self.cnx.ping()
