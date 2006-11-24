@@ -678,9 +678,8 @@ Congratulations!
         cursor = cnx.cursor()
         cursor.execute("DELETE FROM revision")
         cursor.execute("DELETE FROM node_change")
-        repos = self.__env.get_repository()
         cursor.execute("DELETE FROM system WHERE name='repository_dir'")
-        repos.sync()
+        repos = self.__env.get_repository() # this will do the sync()
         print 'Done.'
 
     ## Wiki
