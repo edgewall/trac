@@ -544,7 +544,7 @@ class Component(object):
                        "ORDER BY name")
         for name, owner, description in cursor:
             component = cls(env)
-            component.name = name
+            component.name = component._old_name = name
             component.owner = owner or None
             component.description = description or ''
             yield component
@@ -770,7 +770,7 @@ class Version(object):
         versions = []
         for name, time, description in cursor:
             version = cls(env)
-            version.name = name
+            version.name = version._old_name = name
             version.time = time and datetime.fromtimestamp(int(time), utc) or None
             version.description = description or ''
             versions.append(version)

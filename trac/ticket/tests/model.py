@@ -1,6 +1,6 @@
 from trac import core
 from trac.core import TracError, implements
-from trac.ticket.model import Ticket, Component, Milestone, Priority, Type
+from trac.ticket.model import Ticket, Component, Milestone, Priority, Type, Version
 from trac.ticket.api import ITicketChangeListener
 from trac.test import EnvironmentStub
 from trac.util.datefmt import utc, to_timestamp
@@ -465,11 +465,47 @@ class MilestoneTestCase(unittest.TestCase):
         assert milestones[1].exists
 
 
+class ComponentTestCase(unittest.TestCase):
+    def setUp(self):
+        self.env = EnvironmentStub(default_data=True)
+
+    def test_exists_negative(self):
+        def get_fake_component():
+            return Component(self.env, "Shrubbery")
+        self.assertRaises(TracError, get_fake_component)
+
+    def test_exists(self):
+        """
+        http://trac.edgewall.org/ticket/4247
+        """
+        for c in Component(self.env).select(self.env):
+            self.assertEqual(c.exists, True)
+
+
+class VersionTestCase(unittest.TestCase):
+
+    def setUp(self):
+        self.env = EnvironmentStub(default_data=True)
+
+    def test_exists_negative(self):
+        def get_fake_version():
+            return Version(self.env, "-1")
+        self.assertRaises(TracError, get_fake_version)
+
+    def test_exists(self):
+        """
+        http://trac.edgewall.org/ticket/4247
+        """
+        for v in Version(self.env).select(self.env):
+            self.assertEqual(v.exists, True)
+
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(TicketTestCase, 'test'))
     suite.addTest(unittest.makeSuite(EnumTestCase, 'test'))
     suite.addTest(unittest.makeSuite(MilestoneTestCase, 'test'))
+    suite.addTest(unittest.makeSuite(ComponentTestCase, 'test'))
+    suite.addTest(unittest.makeSuite(VersionTestCase, 'test'))
     return suite
 
 if __name__ == '__main__':
