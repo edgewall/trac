@@ -56,8 +56,15 @@ class Query(object):
 
         if self.order != 'id' \
                 and self.order not in [f['name'] for f in self.fields]:
-            # order by priority by default
-            self.order = 'priority'
+            # TODO: fix after adding time/changetime to the api.py
+            if order == 'created':
+                order = 'time'
+            elif order == 'modified':
+                order = 'changetime'
+            if order in ['time', 'changetime']:
+                self.order = order
+            else:
+                self.order = 'priority'
 
         if self.group not in [f['name'] for f in self.fields]:
             self.group = None
@@ -400,6 +407,11 @@ class Query(object):
 
         cols = self.get_columns()
         labels = dict([(f['name'], f['label']) for f in self.fields])
+
+        # TODO: remove after adding time/changetime to the api.py
+        labels['changetime'] = 'Modified'
+        labels['time'] = 'Created'
+
         headers = [{
             'name': col, 'label': labels.get(col, 'Ticket'),
             'href': self.get_href(req, order=col, desc=(col == self.order and
