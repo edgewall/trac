@@ -29,9 +29,11 @@ from trac.ticket import Milestone, Ticket, TicketSystem, ITicketManipulator
 from trac.ticket.notification import TicketNotifyEmail
 from trac.timeline.api import ITimelineEventProvider, TimelineEvent
 from trac.util import get_reporter_id
+from trac.util.compat import any
 from trac.util.datefmt import to_timestamp, utc
 from trac.util.html import html, Markup
 from trac.util.text import CRLF, shorten_line
+from trac.versioncontrol.diff import get_diff_options, diff_blocks
 from trac.web import IRequestHandler
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor, \
                             Chrome
@@ -170,7 +172,8 @@ class TicketModule(Component):
         req.perm.require('TICKET_VIEW')
         data = {}
 
-        action = req.args.get('action', 'view')
+        action = req.args.get('action', ('history' in req.args and 'history' or
+                                         'view'))
 
         db = self.env.get_db_cnx()
         id = int(req.args.get('id'))
@@ -178,7 +181,19 @@ class TicketModule(Component):
         ticket = Ticket(self.env, id, db=db)
         data['ticket'] = ticket
 
-        if req.method == 'POST':
+        if action in ('history', 'diff'):
+            field = req.args.get('field')
+            if field:
+                text_fields = [field]
+            else:
+                text_fields = [field['name'] for field in 
+                               TicketSystem(self.env).get_ticket_fields() if
+                               field['type'] == 'textarea']
+            if action == 'history':
+                return self._render_history(req, db, ticket, data, text_fields)
+            elif action == 'diff':
+                return self._render_diff(req, db, ticket, data, text_fields)
+        elif req.method == 'POST':
             if 'preview' not in req.args:
                 self._do_save(req, db, ticket)
             else:
@@ -235,6 +250,173 @@ class TicketModule(Component):
                      conversion[3])
 
         return 'ticket_view.html', data, None
+
+    def _get_history(self, ticket, db):
+        history = []
+        for change in self.grouped_changelog_entries(ticket, db):
+            if change['permanent']:
+                change['version'] = change['cnum']
+                history.append(change)
+        return history
+        
+    def _render_history(self, req, db, ticket, data, text_fields):
+        """Extract the history for a ticket description.
+
+        """
+        req.perm.require('TICKET_VIEW')
+
+        history = self._get_history(ticket, db)
+        history.reverse()
+        history = [c for c in history if any([f in text_fields
+                                              for f in c['fields']])]
+        history.append({'version': 0, 'comment': "''Initial version''",
+                        'date': ticket.time_created,
+                        'author': ticket['reporter'] # not 100% accurate...
+                        })
+        data.update({'title': 'Ticket History', 'history': history})
+
+        add_link(req, 'up', req.href.ticket(ticket.id))
+        
+        return 'ticket_history.html', data, None
+
+    def _render_diff(self, req, db, ticket, data, text_fields):
+        """Show differences between two versions of a ticket description.
+
+        `text_fields` is optionally a list of fields of interest, that are
+        considered for jumping to the next change.
+        """
+        req.perm.require('TICKET_VIEW')
+
+        new_version = int(req.args.get('version', 1))
+        old_version = int(req.args.get('old_version', new_version))
+        if old_version > new_version:
+            old_version, new_version = new_version, old_version
+
+        # get the list of versions having a description change
+        history = self._get_history(ticket, db)
+        changes = {}
+        descriptions = []
+        old_idx = new_idx = -1 # indexes in descriptions
+        for change in history:
+            version = change['version']
+            changes[version] = change
+            if any([f in text_fields for f in change['fields']]):
+                if old_version and version <= old_version:
+                    old_idx = len(descriptions)
+                if new_idx == -1 and new_version and version >= new_version:
+                    new_idx = len(descriptions)
+                descriptions.append((version, change))
+
+        # determine precisely old and new versions
+        if old_version == new_version:
+            if new_idx >= 0:
+                old_idx = new_idx - 1
+        if old_idx >= 0:
+            old_version, old_change = descriptions[old_idx]
+        else:
+            old_version, old_change = 0, None
+        num_changes = new_idx - old_idx
+        if new_idx >= 0:
+            new_version, new_change = descriptions[new_idx]
+        else:
+            raise TracError('No differences to show')
+
+        # determine prev and next versions
+        prev_version = old_version
+        next_version = None
+        if new_idx < len(descriptions) - 1:
+            next_version = descriptions[new_idx+1][0]
+
+        # -- old properties (old_ticket) and new properties (new_ticket)
+
+        # assume a linear sequence of change numbers, starting at 1, with gaps
+        def replay_changes(values, old_values, from_version, to_version):
+            for version in range(from_version, to_version+1):
+                if version in changes:
+                    for k, v in changes[version]['fields'].iteritems():
+                        values[k] = v['new']
+                        if old_values is not None and k not in old_values:
+                            old_values[k] = v['old']
+
+        old_ticket = {}
+        if old_version:
+            replay_changes(old_ticket, None, 1, old_version)
+
+        new_ticket = {}
+        replay_changes(new_ticket, old_ticket, old_version+1, new_version)
+
+        changes = []
+
+        def version_info(v, field=None):
+            path = 'Ticket #%d' % ticket.id
+            if field:
+                path += Markup(' &ndash; %s', field)
+            if v:
+                rev, shortrev = 'Version %d' % v, 'v%d' % v
+            else:
+                rev, shortrev = 'Initial Version', 'initial'
+            return {'path':  path, 'rev': rev, 'shortrev': shortrev,
+                    'href': req.href.ticket(ticket.id, version=v)}
+
+        # -- prop changes
+        props = []
+        for k, v in new_ticket.iteritems():
+            if k not in text_fields:
+                old, new = old_ticket[k], new_ticket[k]
+                if old != new:
+                    props.append({'name': k, 'old': old, 'new': new})
+        changes.append({'props': props,
+                        'new': version_info(new_version),
+                        'old': version_info(old_version)})
+
+
+        # -- text diffs
+        diff_style, diff_options, diff_data = get_diff_options(req)
+        context = 3
+        for option in diff_options:
+            if option.startswith('-U'):
+                context = int(option[2:])
+                break
+        if context < 0:
+            context = None
+
+        for field in text_fields:
+            old_text = old_ticket.get(field)
+            old_text = old_text and old_text.splitlines() or []
+            new_text = new_ticket.get(field)
+            new_text = new_text and new_text.splitlines() or []
+            diffs = diff_blocks(old_text, new_text, context=context,
+                                ignore_blank_lines='-B' in diff_options,
+                                ignore_case='-i' in diff_options,
+                                ignore_space_changes='-b' in diff_options)
+
+            changes.append({'diffs': diffs,
+                            'new': version_info(new_version, field),
+                            'old': version_info(old_version, field)})
+
+        # -- prev/up/next links
+        if prev_version:
+            add_link(req, 'prev', req.href.ticket(ticket.id, action='diff',
+                                                  version=prev_version),
+                     'Version %d' % prev_version)
+        add_link(req, 'up', req.href.ticket(ticket.id, action='history'),
+                 'Ticket History')
+        if next_version:
+            add_link(req, 'next', req.href.ticket(ticket.id, action='diff',
+                                                  version=next_version),
+                     'Version %d' % next_version)
+
+        add_stylesheet(req, 'common/css/diff.css')
+
+        data.update({
+            'title': 'Ticket Diff',
+            'old_version': old_version, 'new_version': new_version,
+            'changes': changes, 'diff': diff_data,
+            'num_changes': num_changes, 'change': new_change,
+            'old_ticket': old_ticket, 'new_ticket': new_ticket
+            })
+        
+        return 'ticket_diff.html', data, None
 
     # ISearchSource methods
 
@@ -531,14 +713,24 @@ class TicketModule(Component):
     def _insert_ticket_data(self, req, db, ticket, data, reporter_id):
         """Insert ticket data into the hdf"""
         replyto = req.args.get('replyto')
+        version = req.args.get('version', None)
+        
         data['replyto'] = replyto
+        if version:
+            try:
+                version = int(version)
+                data['version'] = version
+            except ValueError:
+                pass
 
         # -- Ticket fields
-
-        data['fields'] = []
+        types = {}
+        fields = []
         for field in TicketSystem(self.env).get_ticket_fields():
             name = field['name']
-            if field['type'] in ('radio', 'select'):
+            type_ = field['type']
+            types[name] = type_
+            if type_ in ('radio', 'select'):
                 value = ticket.values.get(field['name'])
                 options = field['options']
                 if name == 'milestone' and 'TICKET_ADMIN' not in req.perm:
@@ -552,7 +744,7 @@ class TicketModule(Component):
             if name in ('summary', 'reporter', 'description', 'status',
                         'resolution', 'owner'):
                 field['skip'] = True
-            data['fields'].append(field)
+            fields.append(field)
 
         data['reporter_id'] = reporter_id
 
@@ -572,45 +764,48 @@ class TicketModule(Component):
         if replyto == 'description':
             quote_original(ticket['reporter'], ticket['description'],
                            'ticket:%d' % ticket.id)
+        values = {}
         replies = {}
         changes = []
         cnum = 0
-        description_lastmod = description_author = None
         for change in self.grouped_changelog_entries(ticket, db):
+            if version is not None and cnum > version:
+                # Retrieve initial ticket values from later changes
+                for k, v in change['fields'].iteritems():
+                    if k not in values:
+                        values[k] = v['old']
+                continue
             changes.append(change)
-            # wikify comment
-            comment = ''
             if change['permanent']:
                 cnum = change['cnum']
                 # keep track of replies threading
                 if 'replyto' in change:
                     replies.setdefault(change['replyto'], []).append(cnum)
                 # eventually cite the replied to comment
+                comment = ''
                 if replyto == str(cnum):
                     quote_original(change['author'], comment,
                                    'comment:%s' % replyto)
-            if 'description' in change['fields']:
-                change['fields']['description'] = ''
-                description_lastmod = change['date']
-                description_author = change['author']
+                if version:
+                    # Override ticket value by current changes
+                    for k, v in change['fields'].iteritems():
+                        values[k] = v['new']
+                if 'description' in change['fields']:
+                    data['description_change'] = change
 
-        data['changes'] = changes
-        data['replies'] = replies
-        data['cnum'] = cnum + 1
-        if description_lastmod:
-            data['description_author'] = description_author
-            data['description_lastmod'] = description_lastmod
+        if version is not None:
+            ticket.values.update(values)
 
-        # -- Ticket Attachments
-
-        data['attachments'] = list(Attachment.select(self.env, 'ticket',
-                                                     ticket.id))
-        if 'TICKET_APPEND' in req.perm:
-            data['attach_href'] = req.href.attachment('ticket', ticket.id)
-
-        # Add the possible actions to hdf
-        actions = TicketSystem(self.env).get_available_actions(ticket, req.perm)
-        data['actions'] = actions
+        data.update({
+            'fields': fields, 'changes': changes, 'field_types': types,
+            'replies': replies, 'cnum': cnum + 1,
+            'attachments': list(Attachment.select(self.env, 'ticket',
+                                                  ticket.id)),
+            'attach_href': 'TICKET_APPEND' in req.perm and \
+            req.href.attachment('ticket', ticket.id),
+            'actions': TicketSystem(self.env).get_available_actions(ticket,
+                                                                    req.perm)
+            })
 
     def grouped_changelog_entries(self, ticket, db, when=None):
         """Iterate on changelog entries, consolidating related changes

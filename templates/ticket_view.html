@@ -28,10 +28,19 @@
     </div>
 
     <div id="content" class="ticket">
-      <h1>Ticket #${ticket.id}
+      <h1><a py:strip="not version and version != 0" href="${href.ticket(ticket.id)}">Ticket #${ticket.id}</a>
         <span class="status">(${ticket.status}<py:if
             test="ticket.type"> ${ticket.type}</py:if><py:if
             test="ticket.resolution">: ${ticket.resolution}</py:if>)</span>
+        <py:choose test="version">
+          <py:when test="0">
+            &mdash; at <a href="#comment:description">Initial Version</a>
+          </py:when>
+          <py:when test="Undefined" />
+          <py:otherwise>
+            &mdash; at <a href="#comment:$version">Version $version</a>
+          </py:otherwise>
+        </py:choose>
       </h1>
 
       <div id="ticket">
@@ -70,12 +79,13 @@
             <h3 id="comment:description">
               <span py:if="'TICKET_APPEND' in perm" class="inlinebuttons">
                 <input type="hidden" name="replyto" value="description" />
-                <input type="submit" value="Reply" title="Reply, quoting this description" />
+                <input type="submit" name="reply" value="Reply" title="Reply, quoting this description" />
               </span>
               Description
-              <span py:if="description_lastmod" class="lastmod"
-                title="description_lastmod">
-                (last modified by ${description_author})
+              <span py:if="description_change" class="lastmod"
+                title="$description_change.date">
+                (last modified by ${description_change.author})
+                (<a href="${href.ticket(ticket.id, action='diff', version=description_change.cnum)}">diff</a>)
               </span>
             </h3>
             <div class="searchable">
@@ -85,7 +95,9 @@
         </form>
       </div>
 
-      ${list_of_attachments(attachments, attach_href)}
+      <py:if test="not version and version != 0">
+        ${list_of_attachments(attachments, attach_href)}
+      </py:if>
 
       <py:if test="changes">
         <h2>Change History</h2>
@@ -117,17 +129,29 @@
                 ${change.date} changed by ${change.author}
               </h3>
               <ul py:if="change.fields" class="changes">
-                <li py:for="field_name, field in change.fields.items()">
+                <li py:for="field_name, field in change.fields.items()"
+                    py:with="filed_type = field_types[field_name]">
                   <strong>${field_name}</strong>
                   <py:choose>
                     <py:when test="field_name == 'attachment'">
-                      <em>${field.new}</em> added
+                      <a href="${href.attachment('ticket', ticket.id, field.new)}"><em>${field.new}</em></a> added
                     </py:when>
                     <py:when test="field.old and field.new">
-                      changed from <em>${field.old}</em> to <em>${field.new}</em>
+                      changed
+                      <py:choose>
+                        <py:when test="field_types[field_name] == 'textarea'">
+                          (<a href="${href.ticket(ticket.id, action='diff', version=change.cnum)}">diff</a>)
+                        </py:when>
+                        <py:otherwise>
+                          from <em>${field.old}</em> to <em>${field.new}</em>
+                        </py:otherwise>
+                      </py:choose>
                     </py:when>
                     <py:when test="not field.old and field.new">
-                      set to <em>${field.new}</em>
+                      set
+                      <py:if test="field_types[field_name] != 'textarea'">
+                        to <em>${field.new}</em>
+                      </py:if>
                     </py:when>
                     <py:otherwise>deleted</py:otherwise>
                   </py:choose>
@@ -141,7 +165,7 @@
         </div>
       </py:if>
 
-      <form py:if="'TICKET_APPEND' in perm or 'TICKET_CHGPROP' in perm"
+      <form py:if="not version and version != 0 and ('TICKET_APPEND' in perm or 'TICKET_CHGPROP' in perm)"
             action="#preview" method="post">
         <hr />
         <h3><a name="edit" onfocus="$('#comment').get(0).focus()">

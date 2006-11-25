@@ -422,6 +422,16 @@ table.listing tbody tr.even { background-color: #fcfcfc }
 table.listing tbody tr.odd { background-color: #f7f7f7 }
 table.listing tbody tr:hover { background: #eed !important }
 
+/* Styles for the page history table
+   (extends the styles for "table.listing") */
+#fieldhist td { padding: 0 .5em }
+#fieldhist td.date, #fieldhist td.diff, #fieldhist td.version,
+#fieldhist td.author {
+ white-space: nowrap;
+}
+#fieldhist td.version { text-align: center }
+#fieldhist td.comment { width: 100% }
+
 /* Auto-completion interface */
 .suggestions { background: #fff; border: 1px solid #886; color: #222; }
 .suggestions ul {

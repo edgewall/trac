@@ -1,0 +1,77 @@
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:py="http://genshi.edgewall.org/"
+      xmlns:xi="http://www.w3.org/2001/XInclude">
+  <xi:include href="layout.html" />
+  <xi:include href="macros.html" />
+  <head>
+    <title>$title</title>
+    <link rel="stylesheet" type="text/css" href="${chrome.htdocs_location}css/diff.css" />
+    <meta name="ROBOTS" content="NOINDEX, NOFOLLOW" />
+  </head>
+
+  <body>
+    <div id="ctxtnav" class="nav">
+      <h2>Ticket Navigation</h2>
+      ${prevnext_nav('Change', 'Ticket History')}
+      <hr />
+    </div>
+
+    <div id="content" class="ticket">
+      <h1 py:choose="">Changes
+        <py:when test="old_version">between
+          <a href="${href.ticket(ticket.id,version=old_version)}">Version $old_version</a> and
+        </py:when>
+        <py:when test="old_version == 0">between
+          <a href="${href.ticket(ticket.id,version=0)}">Initial Version</a> and
+        </py:when>
+        <py:otherwise>from</py:otherwise>
+        <a href="${href.ticket(ticket.id,version=new_version)}">Version $new_version</a> of
+        <a href="${href.ticket(ticket.id)}">Ticket #$ticket.id</a>
+      </h1>
+      <form method="post" id="prefs"
+            action="${href.ticket(ticket.id,action='diff',old_version=old_version,version=new_version)}">
+        <div>
+          <input type="hidden" name="action" value="diff" />
+          <input type="hidden" name="version" value="$new_version" />
+          <input type="hidden" name="old_version" value="$old_version" />
+          ${diff_options_fields(diff)}
+        </div>
+      </form>
+      <dl id="overview" py:with="multi = num_changes &gt; 1">
+        <dt class="property time">Timestamp:</dt>
+        <dd class="time" py:choose="">
+          <em py:when="multi" class="multi">(multiple changes)</em>
+          <py:when test="date">${format_datetime(change.date)} (${pretty_timedelta(change.date)} ago)</py:when>
+          <py:otherwise>--</py:otherwise>
+        </dd>
+        <dt class="property author">Author:</dt>
+        <dd class="author" py:choose="">
+          <em py:when="multi" class="multi">(multiple changes)</em>
+          <py:otherwise>$change.author <span py:if="change.ipnr" class="ipnr">(IP: $change.ipnr)</span></py:otherwise>
+        </dd>
+        <dt class="property message">Comment:</dt>
+        <dd class="message" py:choose="">
+          <em py:when="multi" class="multi">(multiple changes)</em>
+          <py:otherwise>${wiki_to_html(change.comment)}</py:otherwise>
+        </dd>
+      </dl>
+      <div class="diff">
+        <div id="legend">
+          <h3>Legend:</h3>
+          <dl>
+            <dt class="unmod"></dt><dd>Unmodified</dd>
+            <dt class="add"></dt><dd>Added</dd>
+            <dt class="rem"></dt><dd>Removed</dd>
+            <dt class="mod"></dt><dd>Modified</dd>
+          </dl>
+        </div>
+
+        <xi:include href="diff_div.html"/>
+
+      </div>
+    </div>
+  </body>
+</html>

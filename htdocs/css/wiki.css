@@ -23,16 +23,6 @@
 #overview .ipnr { color: #999; font-size: 80% }
 #overview .comment { padding: 1em 0 0 }
 
-/* Styles for the page history table
-   (extends the styles for "table.listing") */
-#wikihist td { padding: 0 .5em }
-#wikihist td.date, #wikihist td.diff, #wikihist td.version,
-#wikihist td.author {
- white-space: nowrap;
-}
-#wikihist td.version { text-align: center }
-#wikihist td.comment { width: 100% }
-
 @media print { 
  th.diff, td.diff { display: none }
 }

@@ -471,4 +471,5 @@ class WikiModule(Component):
 
         for name, ts, author, text in cursor:
             yield (req.href.wiki(name), '%s: %s' % (name, shorten_line(text)),
-                   datetime.fromtimestamp(ts, utc), author, shorten_result(text, terms))
+                   datetime.fromtimestamp(ts, utc), author,
+                   shorten_result(text, terms))
