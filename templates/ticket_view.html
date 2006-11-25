@@ -32,11 +32,11 @@
         <span class="status">(${ticket.status}<py:if
             test="ticket.type"> ${ticket.type}</py:if><py:if
             test="ticket.resolution">: ${ticket.resolution}</py:if>)</span>
-        <py:choose test="version">
-          <py:when test="0">
+        <py:choose test="str(version)">
+          <py:when test="'0'">
             &mdash; at <a href="#comment:description">Initial Version</a>
           </py:when>
-          <py:when test="Undefined" />
+          <py:when test="'undefined'" />
           <py:otherwise>
             &mdash; at <a href="#comment:$version">Version $version</a>
           </py:otherwise>
