@@ -478,7 +478,7 @@ class ComponentTestCase(unittest.TestCase):
         """
         http://trac.edgewall.org/ticket/4247
         """
-        for c in Component(self.env).select(self.env):
+        for c in Component.select(self.env):
             self.assertEqual(c.exists, True)
 
 
@@ -496,7 +496,7 @@ class VersionTestCase(unittest.TestCase):
         """
         http://trac.edgewall.org/ticket/4247
         """
-        for v in Version(self.env).select(self.env):
+        for v in Version.select(self.env):
             self.assertEqual(v.exists, True)
 
 def suite():
