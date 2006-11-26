@@ -53,8 +53,14 @@ class Query(object):
 
         if self.order != 'id' \
                 and self.order not in [f['name'] for f in self.fields]:
-            # order by priority by default
-            self.order = 'priority'
+            if order == 'created':
+                order = 'time'
+            elif order == 'modified':
+                order = 'changetime'
+            if order in ['time', 'changetime']:
+                self.order = order
+            else:
+                self.order = 'priority'
 
         if self.group not in [f['name'] for f in self.fields]:
             self.group = None
@@ -526,6 +532,8 @@ class QueryModule(Component):
 
         cols = query.get_columns()
         labels = dict([(f['name'], f['label']) for f in query.fields])
+        labels['changetime'] = 'Modified'
+        labels['time'] = 'Created'
         for idx, col in enumerate(cols):
             req.hdf['query.headers.%d' % idx] = {
                 'name': col, 'label': labels.get(col, 'Ticket'),
@@ -597,7 +605,7 @@ class QueryModule(Component):
             for field, value in ticket.items():
                 if field == query.group:
                     num_matches_group[value] = num_matches_group.get(value, 0)+1
-                if field == 'time':
+                if field in ('time', 'changetime'):
                     ticket[field] = format_datetime(value)
                 elif field == 'description':
                     ticket[field] = wiki_to_html(value or '', self.env, req, db)
