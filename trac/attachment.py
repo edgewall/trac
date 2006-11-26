@@ -29,7 +29,7 @@ from trac.core import *
 from trac.env import IEnvironmentSetupParticipant
 from trac.mimeview import *
 from trac.timeline.api import TimelineEvent
-from trac.util import get_reporter_id, create_unique_file
+from trac.util import get_reporter_id, create_unique_file, content_disposition
 from trac.util.datefmt import utc
 from trac.util.html import Markup, html
 from trac.util.text import unicode_quote, unicode_unquote, pretty_size
@@ -542,8 +542,9 @@ class AttachmentModule(Component):
                 if not self.render_unsafe_content and not binary:
                     # Force browser to download HTML/SVG/etc pages that may
                     # contain malicious code enabling XSS attacks
-                    req.send_header('Content-Disposition', 'attachment;' +
-                                    'filename=' + attachment.filename)
+                    req.send_header('Content-Disposition',
+                                    content_disposition('attachment',
+                                                        attachment.filename))
                 if not mime_type or (self.render_unsafe_content and \
                                      not binary and format == 'txt'):
                     mime_type = 'text/plain'

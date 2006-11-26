@@ -33,7 +33,7 @@ from trac.mimeview import Mimeview, is_binary
 from trac.perm import IPermissionRequestor
 from trac.search import ISearchSource, search_to_sql, shorten_result
 from trac.timeline.api import ITimelineEventProvider, TimelineEvent
-from trac.util import embedded_numbers
+from trac.util import embedded_numbers, content_disposition
 from trac.util.compat import sorted
 from trac.util.datefmt import pretty_timedelta, utc
 from trac.util.html import html, escape, unescape, Markup
@@ -494,8 +494,8 @@ class ChangesetModule(Component):
         """Raw Unified Diff version"""
         req.send_response(200)
         req.send_header('Content-Type', 'text/plain;charset=utf-8')
-        req.send_header('Content-Disposition', 'inline;'
-                        'filename=%s.diff' % filename)
+        req.send_header('Content-Disposition',
+                        content_disposition('inline;', filename + '.diff'))
         req.end_headers()
 
         mimeview = Mimeview(self.env)
@@ -560,8 +560,8 @@ class ChangesetModule(Component):
         new_rev = data['new_rev']
         req.send_response(200)
         req.send_header('Content-Type', 'application/zip')
-        req.send_header('Content-Disposition', 'attachment;'
-                        'filename=%s.zip' % filename)
+        req.send_header('Content-Disposition',
+                        content_disposition('inline;', filename + '.zip'))
 
         from zipfile import ZipFile, ZipInfo, ZIP_DEFLATED
 

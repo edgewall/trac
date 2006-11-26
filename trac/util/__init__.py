@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # Copyright (C) 2003-2006 Edgewall Software
-# Copyright (C) 2003-2004 Jonas Borgström <jonas@edgewall.com>
+# Copyright (C) 2003-2006 Jonas Borgström <jonas@edgewall.com>
 # Copyright (C) 2006 Matthew Good <trac@matt-good.net>
 # Copyright (C) 2005-2006 Christian Boos <cboos@neuf.fr>
 # All rights reserved.
@@ -17,6 +17,7 @@
 # Author: Jonas Borgström <jonas@edgewall.com>
 #         Matthew Good <trac@matt-good.net>
 
+from email.Utils import encode_rfc2231
 import locale
 import md5
 import os
@@ -404,3 +405,8 @@ class Ranges(object):
         else:
             return 0
 
+def content_disposition(type, filename=None):
+    """Generate a properly escaped Content-Disposition header"""
+    if isinstance(filename, unicode):
+        filename = filename.encode('utf-8')
+    return type +'; filename*=' + encode_rfc2231(filename, 'utf-8')
