@@ -110,95 +110,9 @@ class AttachmentTestCase(unittest.TestCase):
         attachment.delete()
 
 
-class AttachmentModuleTestCase(unittest.TestCase):
-
-    def setUp(self):
-        self.env = EnvironmentStub()
-        self.env.path = os.path.join(tempfile.gettempdir(), 'trac-tempenv')
-        os.mkdir(self.env.path)
-        self.attachments_dir = os.path.join(self.env.path, 'attachments')
-
-    def tearDown(self):
-        shutil.rmtree(self.env.path)
-
-    def test_wiki_link_wikipage(self):
-        attachment = Attachment(self.env, 'wiki', 'SomePage')
-        attachment.insert('foo.txt', tempfile.TemporaryFile(), 0)
-
-        ns, func = AttachmentModule(self.env).get_link_resolvers().next()
-        self.assertEqual('raw-attachment', ns)
-
-        req = Mock(path_info='/wiki/SomePage', href=self.env.href)
-        formatter = Formatter(self.env, req)
-        self.assertEqual('<a class="attachment" href="'
-                         '/trac.cgi/raw-attachment/wiki/SomePage/foo.txt" '
-                         'title="Attachment SomePage: foo.txt">Foo</a>',
-                         unicode(func(formatter, ns, 'foo.txt', 'Foo')))
-        self.assertEqual('<a class="attachment" href="/trac.cgi/'
-                         'raw-attachment/wiki/SomePage/foo.txt" '
-                         'title="Attachment SomePage: foo.txt">Foo</a>',
-                         unicode(func(formatter, ns, 'foo.txt?format=raw',
-                                      'Foo')))
-
-    def test_wiki_link_subpage(self):
-        attachment = Attachment(self.env, 'wiki', 'SomePage/SubPage')
-        attachment.insert('foo.txt', tempfile.TemporaryFile(), 0)
-
-        ns, func = AttachmentModule(self.env).get_link_resolvers().next()
-        self.assertEqual('raw-attachment', ns)
-
-        req = Mock(path_info='/wiki/SomePage/SubPage', href=self.env.href)
-        formatter = Formatter(self.env, req)
-        self.assertEqual('<a class="attachment" href="'
-                         '/trac.cgi/raw-attachment/wiki/SomePage/SubPage/foo.txt" '
-                         'title="Attachment SomePage/SubPage: foo.txt"'
-                         '>Foo</a>',
-                         unicode(func(formatter, ns, 'foo.txt', 'Foo')))
-
-    def test_wiki_link_ticket(self):
-        attachment = Attachment(self.env, 'ticket', 123)
-        attachment.insert('foo.txt', tempfile.TemporaryFile(), 0)
-
-        ns, func = AttachmentModule(self.env).get_link_resolvers().next()
-        self.assertEqual('raw-attachment', ns)
-
-        req = Mock(path_info='/ticket/123', href=self.env.href)
-        formatter = Formatter(self.env, req)
-        self.assertEqual('<a class="attachment" href="/trac.cgi/'
-                         'raw-attachment/ticket/123/foo.txt" '
-                         'title="Attachment #123: foo.txt">Foo</a>',
-                         unicode(func(formatter, ns, 'foo.txt', 'Foo')))
-        self.assertEqual('<a class="attachment" href="/trac.cgi/'
-                         'raw-attachment/ticket/123/foo.txt" '
-                         'title="Attachment #123: foo.txt">Foo</a>',
-                         unicode(func(formatter, ns, 'foo.txt?format=raw',
-                                      'Foo')))
-
-    def test_wiki_link_foreign(self):
-        attachment = Attachment(self.env, 'ticket', 123)
-        attachment.insert('foo.txt', tempfile.TemporaryFile(), 0)
-
-        ns, func = AttachmentModule(self.env).get_link_resolvers().next()
-        self.assertEqual('raw-attachment', ns)
-
-        req = Mock(path_info='/wiki', href=self.env.href)
-        formatter = Formatter(self.env, req)
-        self.assertEqual('<a class="attachment" href="/trac.cgi/'
-                         'raw-attachment/ticket/123/foo.txt" '
-                         'title="Attachment #123: foo.txt">Foo</a>',
-                         unicode(func(formatter, ns, 'ticket:123:foo.txt',
-                                      'Foo')))
-        self.assertEqual('<a class="attachment" href="/trac.cgi/'
-                         'raw-attachment/ticket/123/foo.txt" '
-                         'title="Attachment #123: foo.txt">Foo</a>',
-                         unicode(func(formatter, ns,
-                                      'ticket:123:foo.txt?format=raw', 'Foo')))
-
-
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(AttachmentTestCase, 'test'))
-    suite.addTest(unittest.makeSuite(AttachmentModuleTestCase, 'test'))
     return suite
 
 if __name__ == '__main__':

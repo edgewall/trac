@@ -5,6 +5,8 @@ import unittest
 
 from trac.attachment import Attachment
 from trac.search.web_ui import SearchModule
+from trac.test import Mock
+from trac.web.href import Href
 from trac.wiki.tests import formatter
 
 SEARCH_TEST_CASES="""
@@ -50,17 +52,55 @@ attachment:ticket:123:file.txt (deprecated)
 <a class="attachment" href="/attachment/ticket/123/file.txt" title="Attachment #123: file.txt">ticket:123:file.txt</a> (deprecated)
 </p>
 ------------------------------
-============================== attachment: link resolver
+============================== attachment: "foreign" links
 attachment:file.txt:wiki:WikiStart
 attachment:file.txt:ticket:123
 [attachment:file.txt:wiki:WikiStart file.txt]
 [attachment:file.txt:ticket:123]
+attachment:foo.txt:wiki:SomePage/SubPage
 ------------------------------
 <p>
 <a class="attachment" href="/attachment/wiki/WikiStart/file.txt" title="Attachment WikiStart: file.txt">attachment:file.txt:wiki:WikiStart</a>
 <a class="attachment" href="/attachment/ticket/123/file.txt" title="Attachment #123: file.txt">attachment:file.txt:ticket:123</a>
 <a class="attachment" href="/attachment/wiki/WikiStart/file.txt" title="Attachment WikiStart: file.txt">file.txt</a>
 <a class="attachment" href="/attachment/ticket/123/file.txt" title="Attachment #123: file.txt">file.txt:ticket:123</a>
+<a class="attachment" href="/attachment/wiki/SomePage/SubPage/foo.txt" title="Attachment SomePage/SubPage: foo.txt">attachment:foo.txt:wiki:SomePage/SubPage</a>
+</p>
+------------------------------
+============================== attachment: "local" links
+attachment:file.txt
+[attachment:file.txt that file]
+------------------------------
+<p>
+<a class="attachment" href="/attachment/wiki/WikiStart/file.txt" title="Attachment WikiStart: file.txt">attachment:file.txt</a>
+<a class="attachment" href="/attachment/wiki/WikiStart/file.txt" title="Attachment WikiStart: file.txt">that file</a>
+</p>
+------------------------------
+============================== attachment: "missing" links
+attachment:foo.txt
+[attachment:foo.txt other file]
+------------------------------
+<p>
+<a class="missing attachment" href="" rel="nofollow">attachment:foo.txt</a>
+<a class="missing attachment" href="" rel="nofollow">other file</a>
+</p>
+------------------------------
+============================== attachment: "raw" links
+raw-attachment:file.txt
+[raw-attachment:file.txt that file]
+------------------------------
+<p>
+<a class="attachment" href="/raw-attachment/wiki/WikiStart/file.txt" title="Attachment WikiStart: file.txt">raw-attachment:file.txt</a>
+<a class="attachment" href="/raw-attachment/wiki/WikiStart/file.txt" title="Attachment WikiStart: file.txt">that file</a>
+</p>
+------------------------------
+============================== attachment: raw format as explicit argument
+attachment:file.txt?format=raw
+[attachment:file.txt?format=raw that file]
+------------------------------
+<p>
+<a class="attachment" href="/attachment/wiki/WikiStart/file.txt?format=raw" title="Attachment WikiStart: file.txt">attachment:file.txt?format=raw</a>
+<a class="attachment" href="/attachment/wiki/WikiStart/file.txt?format=raw" title="Attachment WikiStart: file.txt">that file</a>
 </p>
 ------------------------------
 """ # "
@@ -68,20 +108,24 @@ attachment:file.txt:ticket:123
 def attachment_setup(tc):
     tc.env.path = os.path.join(tempfile.gettempdir(), 'trac-tempenv')
     os.mkdir(tc.env.path)
-    wiki_attachment = Attachment(tc.env, 'wiki', 'WikiStart')
-    wiki_attachment.insert('file.txt', tempfile.TemporaryFile(), 0)
-    ticket_attachment = Attachment(tc.env, 'ticket', 123)
-    ticket_attachment.insert('file.txt', tempfile.TemporaryFile(), 0)
+    attachment = Attachment(tc.env, 'wiki', 'WikiStart')
+    attachment.insert('file.txt', tempfile.TemporaryFile(), 0)
+    attachment = Attachment(tc.env, 'ticket', 123)
+    attachment.insert('file.txt', tempfile.TemporaryFile(), 0)
+    attachment = Attachment(tc.env, 'wiki', 'SomePage/SubPage')
+    attachment.insert('foo.txt', tempfile.TemporaryFile(), 0)
 
 def attachment_teardown(tc):
     shutil.rmtree(tc.env.path)
 
 def suite():
+    req = Mock(path_info='/wiki/WikiStart', href=Href('/'),
+               abs_href=Href('http://www.example.com/'))
     suite = unittest.TestSuite()
     suite.addTest(formatter.suite(SEARCH_TEST_CASES, file=__file__))
     suite.addTest(formatter.suite(ATTACHMENT_TEST_CASES, file=__file__,
                                   setup=attachment_setup,
-                                  teardown=attachment_teardown))
+                                  teardown=attachment_teardown, req=req))
     return suite
 
 if __name__ == '__main__':

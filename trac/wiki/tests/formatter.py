@@ -68,7 +68,8 @@ class SampleResolver(Component):
 
 class WikiTestCase(unittest.TestCase):
 
-    def __init__(self, input, correct, file, line, setup=None, teardown=None):
+    def __init__(self, input, correct, file, line, setup=None, teardown=None,
+                 req=None):
         unittest.TestCase.__init__(self, 'test')
         self.title, self.input = input.split('\n', 1)
         if self.title:
@@ -89,9 +90,12 @@ class WikiTestCase(unittest.TestCase):
         self.env.config.set('intertrac', 't', 'trac')
 
         from trac.web.href import Href
-        self.req = Mock(href = Href('/'),
-                        abs_href = Href('http://www.example.com/'),
-                        authname='anonymous')
+        if req:
+            self.req = req
+        else:
+            self.req = Mock(href = Href('/'),
+                            abs_href = Href('http://www.example.com/'),
+                            authname='anonymous')
         # TODO: remove the following lines in order to discover
         #       all the places were we should use the req.href
         #       instead of env.href (will be solved by the Wikifier patch)
@@ -140,10 +144,10 @@ class WikiTestCase(unittest.TestCase):
 
 class OneLinerTestCase(WikiTestCase):
     def formatter(self):
-        return OneLinerFormatter(self.env) # TODO: self.req
+        return OneLinerFormatter(self.env, req=self.req)
 
 
-def suite(data=None, setup=None, file=__file__, teardown=None):
+def suite(data=None, setup=None, file=__file__, teardown=None, req=None):
     suite = unittest.TestSuite()
     if not data:
         file = os.path.join(os.path.split(file)[0], 'wiki-tests.txt')
@@ -161,11 +165,11 @@ def suite(data=None, setup=None, file=__file__, teardown=None):
         if len(blocks) != 3:
             continue
         input, page, oneliner = blocks
-        tc = WikiTestCase(input, page, file, line, setup, teardown)
+        tc = WikiTestCase(input, page, file, line, setup, teardown, req)
         suite.addTest(tc)
         if oneliner:
             tc = OneLinerTestCase(input, oneliner[:-1], file, line,
-                                  setup, teardown)
+                                  setup, teardown, req)
             suite.addTest(tc)
     return suite
 
