@@ -179,9 +179,9 @@ SELECT p.value AS __color__,
    time AS created,
    changetime AS _changetime, description AS _description,
    reporter AS _reporter
-  FROM ticket t, enum p
+  FROM ticket t
+  LEFT JOIN enum p ON p.name = t.priority AND p.type = 'priority'
   WHERE status IN ('new', 'assigned', 'reopened') 
-AND p.name = t.priority AND p.type = 'priority'
   ORDER BY p.value, milestone, t.type, time
 """ % owner),
 #----------------------------------------------------------------------------
@@ -201,9 +201,9 @@ SELECT p.value AS __color__,
    time AS created,
    changetime AS _changetime, description AS _description,
    reporter AS _reporter
-  FROM ticket t, enum p
+  FROM ticket t
+  LEFT JOIN enum p ON p.name = t.priority AND p.type = 'priority'
   WHERE status IN ('new', 'assigned', 'reopened') 
-AND p.name = t.priority AND p.type = 'priority'
   ORDER BY (version IS NULL),version, p.value, t.type, time
 """ % owner),
 #----------------------------------------------------------------------------
@@ -223,9 +223,9 @@ SELECT p.value AS __color__,
    time AS created,
    changetime AS _changetime, description AS _description,
    reporter AS _reporter
-  FROM ticket t, enum p
+  FROM ticket t
+  LEFT JOIN enum p ON p.name = t.priority AND p.type = 'priority'
   WHERE status IN ('new', 'assigned', 'reopened') 
-AND p.name = t.priority AND p.type = 'priority'
   ORDER BY (milestone IS NULL),milestone, p.value, t.type, time
 """ % (db.concat('milestone', "' Release'"), owner)),
 #----------------------------------------------------------------------------
@@ -240,9 +240,9 @@ SELECT p.value AS __color__,
    id AS ticket, summary, component, milestone, t.type AS type, time AS created,
    changetime AS _changetime, description AS _description,
    reporter AS _reporter
-  FROM ticket t,enum p
+  FROM ticket t
+  LEFT JOIN enum p ON p.name = t.priority AND p.type = 'priority'
   WHERE status = 'assigned'
-AND p.name=t.priority AND p.type='priority'
   ORDER BY owner, p.value, t.type, time
 """),
 #----------------------------------------------------------------------------
@@ -257,9 +257,9 @@ SELECT p.value AS __color__,
    id AS ticket, summary, component, milestone, t.type AS type, time AS created,
    description AS _description_,
    changetime AS _changetime, reporter AS _reporter
-  FROM ticket t, enum p
+  FROM ticket t
+  LEFT JOIN enum p ON p.name = t.priority AND p.type = 'priority'
   WHERE status = 'assigned'
-AND p.name = t.priority AND p.type = 'priority'
   ORDER BY owner, p.value, t.type, time
 """),
 #----------------------------------------------------------------------------
@@ -279,8 +279,8 @@ SELECT p.value AS __color__,
    resolution,version, t.type AS type, priority, owner,
    changetime AS modified,
    time AS _time,reporter AS _reporter
-  FROM ticket t,enum p
-  WHERE p.name=t.priority AND p.type='priority'
+  FROM ticket t
+  LEFT JOIN enum p ON p.name = t.priority AND p.type = 'priority'
   ORDER BY (milestone IS NULL), milestone DESC, (status = 'closed'), 
         (CASE status WHEN 'closed' THEN modified ELSE (-1)*p.value END) DESC
 """),
@@ -298,9 +298,9 @@ SELECT p.value AS __color__,
    t.type AS type, priority, time AS created,
    changetime AS _changetime, description AS _description,
    reporter AS _reporter
-  FROM ticket t, enum p
-  WHERE t.status IN ('new', 'assigned', 'reopened') 
-AND p.name = t.priority AND p.type = 'priority' AND owner = '$USER'
+  FROM ticket t
+  LEFT JOIN enum p ON p.name = t.priority AND p.type = 'priority'
+  WHERE t.status IN ('new', 'assigned', 'reopened') AND owner = '$USER'
   ORDER BY (status = 'assigned') DESC, p.value, milestone, t.type, time
 """),
 #----------------------------------------------------------------------------
@@ -320,9 +320,9 @@ SELECT p.value AS __color__,
    time AS created,
    changetime AS _changetime, description AS _description,
    reporter AS _reporter
-  FROM ticket t, enum p
+  FROM ticket t
+  LEFT JOIN enum p ON p.name = t.priority AND p.type = 'priority'
   WHERE status IN ('new', 'assigned', 'reopened') 
-AND p.name = t.priority AND p.type = 'priority'
   ORDER BY (owner = '$USER') DESC, p.value, milestone, t.type, time
 """ % owner))
 
