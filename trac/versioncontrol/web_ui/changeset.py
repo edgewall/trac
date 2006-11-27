@@ -642,7 +642,7 @@ class ChangesetModule(Component):
 
     # IWikiSyntaxProvider methods
 
-    CHANGESET_ID = r"(?:\d+|[a-fA-F\d]{6,})" # only "long enough" hexa ids
+    CHANGESET_ID = r"(?:\d+|[a-fA-F\d]{8,})" # only "long enough" hexa ids
 
     def get_wiki_syntax(self):
         yield (
@@ -651,7 +651,7 @@ class ChangesetModule(Component):
             # hex digits + optional /path for the restricted changeset
             r"%s(?:/[^\]]*)?\]|" % self.CHANGESET_ID +
             # r... form: allow r1 but not r1:2 (handled by the log syntax)
-            r"(?:\b|!)r%s\b(?!:%s)" % ((self.CHANGESET_ID,)*2),
+            r"(?:\b|!)r\d+\b(?!:\d)",
             lambda x, y, z:
             self._format_changeset_link(x, 'changeset',
                                         y[0] == 'r' and y[1:] or y[1:-1],

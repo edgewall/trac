@@ -41,18 +41,18 @@ changeset:1, changeset:1/README.txt
 ============================== Link resolver counter examples
 Change:[10] There should be a link to changeset [10]
 
-rfc and rfc:4180 should not be changeset links
+rfc and rfc:4180 should not be changeset links, neither should rfc4180
 ------------------------------
 <p>
 Change:<a class="missing changeset" href="/changeset/10" rel="nofollow">[10]</a> There should be a link to changeset <a class="missing changeset" href="/changeset/10" rel="nofollow">[10]</a>
 </p>
 <p>
-rfc and rfc:4180 should not be changeset links
+rfc and rfc:4180 should not be changeset links, neither should rfc4180
 </p>
 ------------------------------
 Change:<a class="missing changeset" href="/changeset/10" rel="nofollow">[10]</a> There should be a link to changeset <a class="missing changeset" href="/changeset/10" rel="nofollow">[10]</a>
 
-rfc and rfc:4180 should not be changeset links
+rfc and rfc:4180 should not be changeset links, neither should rfc4180
 ============================== InterTrac for changesets
 trac:changeset:2081
 [trac:changeset:2081 Trac r2081]

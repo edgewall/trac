@@ -328,15 +328,17 @@ class SubversionRepository(Repository):
         return _normalize_path(path)
 
     def normalize_rev(self, rev):
-        try:
-            rev =  int(rev)
-        except (ValueError, TypeError):
-            rev = None
-        if rev is None:
-            rev = self.youngest_rev
-        elif rev > self.youngest_rev:
+        if rev is None or isinstance(rev, basestring) and \
+               rev.lower() in ('', 'head', 'latest', 'youngest'):
+            return self.youngest_rev
+        else:
+            try:
+                rev = int(rev)
+                if rev <= self.youngest_rev:
+                    return rev
+            except (ValueError, TypeError):
+                pass
             raise NoSuchChangeset(rev)
-        return rev
 
     def close(self):
         self.repos = None

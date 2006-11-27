@@ -34,7 +34,7 @@ from trac.log import logger_factory
 from trac.test import TestSetup
 from trac.core import TracError
 from trac.util.datefmt import utc
-from trac.versioncontrol import Changeset, Node
+from trac.versioncontrol import Changeset, Node, NoSuchChangeset
 from trac.versioncontrol.svn_fs import SubversionRepository
 
 REPOS_PATH = os.path.join(tempfile.gettempdir(), 'trac-svnrepos')
@@ -99,6 +99,8 @@ class SubversionRepositoryTestCase(unittest.TestCase):
         self.assertEqual(19, self.repos.normalize_rev('latest'))
         self.assertEqual(19, self.repos.normalize_rev('head'))
         self.assertEqual(19, self.repos.normalize_rev(''))
+        self.assertRaises(NoSuchChangeset,
+                          self.repos.normalize_rev, 'something else')
         self.assertEqual(19, self.repos.normalize_rev(None))
         self.assertEqual(11, self.repos.normalize_rev('11'))
         self.assertEqual(11, self.repos.normalize_rev(11))
@@ -112,6 +114,7 @@ class SubversionRepositoryTestCase(unittest.TestCase):
         self.assertEqual(7, self.repos.next_rev(6))
         # ...
         self.assertEqual(None, self.repos.next_rev(19))
+        self.assertRaises(NoSuchChangeset, self.repos.normalize_rev, 20)
 
     def test_rev_path_navigation(self):
         self.assertEqual(1, self.repos.oldest_rev)

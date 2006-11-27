@@ -241,7 +241,7 @@ class LogModule(Component):
             lambda x, y, z: self._format_link(x, 'log1', y[1:-1], y, z))
         yield (
             # r<from>:<to> form (no intertrac and no path restriction)
-            r"(?:\b|!)r%s\b" % self.REV_RANGE,
+            r"(?:\b|!)r%s\b" % Ranges.RE_STR,
             lambda x, y, z: self._format_link(x, 'log2', '@' + y[1:], y))
 
     def get_link_resolvers(self):
