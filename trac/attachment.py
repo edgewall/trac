@@ -317,7 +317,8 @@ class AttachmentModule(Component):
         match = re.match(r'^/(raw-)?attachment/([^/]+)(?:[/:](.*))?$',
                          req.path_info)
         if match:
-            req.args['format'] = match.group(1) and 'raw' or ''
+            if match.group(1):
+                req.args['format'] = 'raw'
             req.args['type'] = match.group(2)
             req.args['path'] = match.group(3).replace(':', '/')
             return True
