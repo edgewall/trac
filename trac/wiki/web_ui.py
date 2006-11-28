@@ -98,6 +98,10 @@ class WikiModule(Component):
         db = self.env.get_db_cnx()
         page = WikiPage(self.env, pagename, version, db)
 
+        if version and page.version == 0:
+            raise TracError('No version "%s" for Wiki page "%s"' %
+                            (version, pagename))
+
         add_stylesheet(req, 'common/css/wiki.css')
 
         if req.method == 'POST':
