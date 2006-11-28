@@ -69,7 +69,7 @@
               <label>Retarget associated open tickets to milestone:
                 <select id="target" name="target">
                   <option value="">None</option>
-                  <option py:for="name in milestones">${name}</option>
+                  <option py:for="m in milestones">${m.name}</option>
                 </select>
               </label>
             </py:if>
