@@ -401,7 +401,6 @@ class WikiModule(Component):
                 version = int(version)
                 for hist in latest_page.get_history():
                     v = hist[0]
-                    print 'version', v, version
                     if v != version:
                         if v < version:
                             if not prev_version:
