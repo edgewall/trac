@@ -589,5 +589,6 @@ class MilestoneModule(Component):
         yield ('milestone', self._format_link)
 
     def _format_link(self, formatter, ns, name, label):
-        return html.A(label, href=formatter.href.milestone(name),
-                      class_='milestone')
+        name, query, fragment = formatter.split_link(name)
+        href = formatter.href.milestone(name) + query + fragment
+        return html.A(label, href=href, class_='milestone')

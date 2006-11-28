@@ -145,6 +145,15 @@ milestone:foo
 <a class="milestone" href="/milestone/boo">Milestone Boo</a>
 </p>
 ------------------------------
+============================== milestone: link resolver + arguments
+milestone:?action=new
+[milestone:1.0#KnownIssues Known Issues for 1.0]
+------------------------------
+<p>
+<a class="milestone" href="/milestone/?action=new">milestone:?action=new</a>
+<a class="milestone" href="/milestone/1.0#KnownIssues">Known Issues for 1.0</a>
+</p>
+------------------------------
 """
 
 
