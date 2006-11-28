@@ -389,12 +389,29 @@ class WikiModule(Component):
         if page.name == 'WikiStart':
             data['title'] = ''
 
-        latest_page = WikiPage(self.env, page.name)
-
         if not page.exists:
             if 'WIKI_CREATE' not in req.perm:
                 raise HTTPNotFound('Page %s not found', page.name)
 
+        latest_page = WikiPage(self.env, page.name)
+
+        prev_version = next_version = None
+        if version:
+            try:
+                version = int(version)
+                for hist in latest_page.get_history():
+                    v = hist[0]
+                    print 'version', v, version
+                    if v != version:
+                        if v < version:
+                            if not prev_version:
+                                prev_version = v
+                                break
+                        else:
+                            next_version = v
+            except ValueError:
+                version = None
+            
         # Show attachments
         attachments = list(Attachment.select(self.env, 'wiki', page.name))
         attach_href = None
@@ -405,12 +422,25 @@ class WikiModule(Component):
         templates = [t[len(prefix):] for t in
                      WikiSystem(self.env).get_pages(prefix)]
 
+        # -- prev/up/next links
+        if prev_version:
+            add_link(req, 'prev', req.href.wiki(page.name,
+                                                version=prev_version),
+                     'Version %d' % prev_version)
+        add_link(req, 'up', req.href.wiki(page.name),
+                 'View Latest Version')
+        if next_version:
+            add_link(req, 'next', req.href.wiki(page.name,
+                                                version=next_version),
+                     'Version %d' % next_version)
+
         data.update({
             'latest_version': latest_page.version,
             'attachments': attachments,
             'attach_href': attach_href,
             'default_template': self.DEFAULT_PAGE_TEMPLATE,
-            'templates': templates
+            'templates': templates,
+            'version': version
         })
         return 'wiki_view.html', data, None
 
@@ -437,7 +467,8 @@ class WikiModule(Component):
                     markup = html.a('(diff)', href=req.href.wiki(
                         name, action='diff', version=version))
                 t = datetime.fromtimestamp(ts, utc)
-                event = TimelineEvent('wiki', title, req.href.wiki(name),
+                event = TimelineEvent('wiki', title,
+                                      req.href.wiki(name, version=version),
                                       markup)
                 event.set_changeinfo(t, author, ipnr=ipnr)
                 event.set_context('wiki', name, comment)

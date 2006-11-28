@@ -19,14 +19,19 @@
   <body>
     <div id="ctxtnav" class="nav">
       <h2>Wiki Navigation</h2>
-      <ul>
-        <li><a href="${href.wiki('WikiStart')}">Start Page</a></li>
-        <li><a href="${href.wiki('TitleIndex')}">Index by Title</a></li>
-        <li><a href="${href.wiki('RecentChanges')}">Index by Date</a></li>
-        <li class="last">
-          <a href="${req.href.wiki(page.name, action='diff', version=page.version)}">Last Change</a>
-        </li>
-      </ul>
+      <py:choose>
+        <py:when test="version">
+          ${prevnext_nav('Version', 'View Latest Version')}
+        </py:when>
+        <ul py:otherwise="">
+          <li><a href="${href.wiki('WikiStart')}">Start Page</a></li>
+          <li><a href="${href.wiki('TitleIndex')}">Index by Title</a></li>
+          <li><a href="${href.wiki('RecentChanges')}">Index by Date</a></li>
+          <li class="last">
+            <a href="${req.href.wiki(page.name, action='diff', version=page.version)}">Last Change</a>
+          </li>
+        </ul>
+        </py:choose>
       <hr />
     </div>
 
