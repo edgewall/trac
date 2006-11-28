@@ -266,26 +266,28 @@ class BrowserModule(Component):
                 ('browser', self._format_browser_link)]
 
     def _format_export_link(self, formatter, ns, export, label):
+        export, query, fragment = formatter.split_link(export)
         if ':' in export:
             rev, path = export.split(':', 1)
+        elif '@' in export:
+            path, rev = export.split('@', 1)
         else:
             rev, path = self.env.get_repository().youngest_rev, export
         return html.A(label, class_='source',
-                      href=formatter.href.export(rev, path))
+                      href=formatter.href.export(rev, path) + fragment)
 
     def _format_browser_link(self, formatter, ns, path, label):
-        rev = marks = line = None
+        path, query, fragment = formatter.split_link(path)
+        rev = marks = None
         match = self.PATH_LINK_RE.match(path)
         if match:
-            path, rev, marks, line = match.groups()
-        fragment = line and '#L%s' % line or ''
+            path, rev, marks = match.groups()
         return html.A(label, class_='source',
-                      href=formatter.href.browser(path, rev=rev,
-                                                  marks=marks) + fragment)
+                      href=(formatter.href.browser(path, rev=rev, marks=marks)+
+                            query + fragment))
 
     PATH_LINK_RE = re.compile(r"([^@#:]*)"     # path
                               r"[@:]([^#:]+)?" # rev
                               r"(?::(\d+(?:-\d+)?(?:,\d+(?:-\d+)?)*))?" # marks
-                              r"(?:#L(\d+))?"  # anchor line
                               )
 

@@ -5,6 +5,20 @@ from trac.wiki.tests import formatter
 from trac.versioncontrol import NoSuchChangeset
 from trac.versioncontrol.web_ui import *
 
+
+def _get_changeset(rev):
+    if rev == '1':
+        return Mock(message="start")
+    else:
+        raise NoSuchChangeset(rev)
+
+def _get_repository():
+    return Mock(get_changeset=_get_changeset, youngest_rev='latest')
+
+def repository_setup(tc):
+    setattr(tc.env, 'get_repository', _get_repository)
+
+
 CHANGESET_TEST_CASES="""
 ============================== changeset: link resolver
 changeset:1
@@ -99,18 +113,6 @@ T:r2081
 ------------------------------
 """ #"
 
-def _get_changeset(rev):
-    if rev == '1':
-        return Mock(message="start")
-    else:
-        raise NoSuchChangeset(rev)
-
-def _get_repository():
-    return Mock(get_changeset=_get_changeset)
-
-def changeset_setup(tc):
-    setattr(tc.env, 'get_repository', _get_repository)
-
 
 LOG_TEST_CASES="""
 ============================== Log range TracLinks
@@ -141,12 +143,29 @@ log:trunk:12-23
 ------------------------------
 <p>
 <a class="source" href="/log/?revs=12">log:@12</a>
-<a class="source" href="/log/trunk?revs=">log:trunk</a>
+<a class="source" href="/log/trunk">log:trunk</a>
 <a class="source" href="/log/trunk?revs=12">log:trunk@12</a>
 <a class="source" href="/log/trunk?revs=12-23">log:trunk@12:23</a>
 <a class="source" href="/log/trunk?revs=12-23">log:trunk@12-23</a>
 <a class="source" href="/log/trunk?revs=12-23">log:trunk:12:23</a>
 <a class="source" href="/log/trunk?revs=12-23">log:trunk:12-23</a>
+</p>
+------------------------------
+============================== log: link resolver + query
+log:?limit=10
+log:@12?limit=10
+log:trunk?limit=10
+log:trunk@12?limit=10
+[10:20?verbose=yes&format=changelog]
+[10:20/trunk?verbose=yes&format=changelog]
+------------------------------
+<p>
+<a class="source" href="/log/?limit=10">log:?limit=10</a>
+<a class="source" href="/log/?revs=12&amp;limit=10">log:@12?limit=10</a>
+<a class="source" href="/log/trunk?limit=10">log:trunk?limit=10</a>
+<a class="source" href="/log/trunk?revs=12&amp;limit=10">log:trunk@12?limit=10</a>
+<a class="source" href="/log/?revs=10-20&amp;verbose=yes&amp;format=changelog">[10:20?verbose=yes&amp;format=changelog]</a>
+<a class="source" href="/log/trunk?revs=10-20&amp;verbose=yes&amp;format=changelog">[10:20/trunk?verbose=yes&amp;format=changelog]</a>
 </p>
 ------------------------------
 ============================== Multiple Log ranges
@@ -225,8 +244,8 @@ source:/foo/bar@#L20
 ------------------------------
 <p>
 <a class="source" href="/browser/foo/bar">source:/foo/bar</a>
-<a class="source" href="/browser/foo/bar%2342">source:/foo/bar#42</a>   # no long works as rev spec
-<a class="source" href="/browser/foo/bar%23head">source:/foo/bar#head</a> #
+<a class="source" href="/browser/foo/bar#42">source:/foo/bar#42</a>   # no long works as rev spec
+<a class="source" href="/browser/foo/bar#head">source:/foo/bar#head</a> #
 <a class="source" href="/browser/foo/bar?rev=42">source:/foo/bar@42</a>
 <a class="source" href="/browser/foo/bar?rev=head">source:/foo/bar@head</a>
 <a class="source" href="/browser/foo%2520bar/baz%252Bquux">source:/foo%20bar/baz%2Bquux</a>
@@ -234,6 +253,15 @@ source:/foo/bar@#L20
 <a class="source" href="/browser/foo/bar?rev=42#L20">source:/foo/bar@42#L20</a>
 <a class="source" href="/browser/foo/bar?rev=head#L20">source:/foo/bar@head#L20</a>
 <a class="source" href="/browser/foo/bar#L20">source:/foo/bar@#L20</a>
+</p>
+------------------------------
+============================== source: link resolver + query 
+source:/foo?order=size&desc=1
+source:/foo/bar?format=raw
+------------------------------
+<p>
+<a class="source" href="/browser/foo?order=size&amp;desc=1">source:/foo?order=size&amp;desc=1</a>
+<a class="source" href="/browser/foo/bar?format=raw">source:/foo/bar?format=raw</a>
 </p>
 ------------------------------
 ============================== source: provider, with quoting
@@ -249,17 +277,36 @@ source:"even with whitespaces"
 <a class="source" href="/browser/even%20with%20whitespaces">Path with spaces</a>
 </p>
 ------------------------------
+============================== export: link resolver
+export:/foo/bar.html
+export:123:/foo/pict.gif
+export:/foo/pict.gif@123
+------------------------------
+<p>
+<a class="source" href="/export/latest/foo/bar.html">export:/foo/bar.html</a>
+<a class="source" href="/export/123/foo/pict.gif">export:123:/foo/pict.gif</a>
+<a class="source" href="/export/123/foo/pict.gif">export:/foo/pict.gif@123</a>
+</p>
+------------------------------
+============================== export: link resolver + fragment
+export:/foo/bar.html#header
+------------------------------
+<p>
+<a class="source" href="/export/latest/foo/bar.html#header">export:/foo/bar.html#header</a>
+</p>
+------------------------------
 """ # " (be Emacs friendly...)
 
 
 
 def suite():
     suite = unittest.TestSuite()
-    suite.addTest(formatter.suite(CHANGESET_TEST_CASES, changeset_setup,
+    suite.addTest(formatter.suite(CHANGESET_TEST_CASES, repository_setup,
                                   __file__))
     suite.addTest(formatter.suite(LOG_TEST_CASES, file=__file__))
     suite.addTest(formatter.suite(DIFF_TEST_CASES, file=__file__))
-    suite.addTest(formatter.suite(SOURCE_TEST_CASES, file=__file__))
+    suite.addTest(formatter.suite(SOURCE_TEST_CASES, repository_setup,
+                                  file=__file__))
     return suite
 
 if __name__ == '__main__':

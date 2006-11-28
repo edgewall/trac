@@ -237,7 +237,7 @@ class LogModule(Component):
             # [...] form, starts with optional intertrac: [T... or [trac ...
             r"!?\[(?P<it_log>%s\s*)" % Formatter.INTERTRAC_SCHEME +
             # <from>:<to> + optional path restriction
-            r"(?P<log_revs>%s)(?P<log_path>/[^\]]*)?\]" % self.REV_RANGE,
+            r"(?P<log_revs>%s)(?P<log_path>[/?][^\]]*)?\]" % self.REV_RANGE,
             lambda x, y, z: self._format_link(x, 'log1', y[1:-1], y, z))
         yield (
             # r<from>:<to> form (no intertrac and no path restriction)
@@ -258,8 +258,13 @@ class LogModule(Component):
                 'log', target, label, fullmatch)
             if intertrac:
                 return intertrac
+            path, query, fragment = formatter.split_link(path)
         else:
             assert ns in ('log', 'log2')
+            if ns == 'log':
+                match, query, fragment = formatter.split_link(match)
+            else:
+                query = fragment = ''
             path = match
             revs = ''
             if self.LOG_LINK_RE.match(match):
@@ -267,8 +272,11 @@ class LogModule(Component):
                 idx = min([i for i in indexes if i is not False])
                 path, revs = match[:idx], match[idx+1:]
         ranges = Ranges(revs.replace(':', '-'))
-        return html.A(label, class_='source',
-                      href=formatter.href.log(path or '/', revs=str(ranges)))
+        revs = str(ranges) or None
+        if revs and query:
+            query = '&' + query[1:]
+        href = formatter.href.log(path or '/', revs=revs) + query + fragment
+        return html.A(label, class_='source', href=href)
 
     LOG_LINK_RE = re.compile(r"([^@:]*)[@:]%s?" % REV_RANGE)
 
