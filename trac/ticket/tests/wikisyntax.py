@@ -15,7 +15,25 @@ ticket:abc
 <p>
 <a class="new ticket" href="/ticket/1" title="This is the summary (new)">ticket:1</a>
 <a class="missing ticket" href="/ticket/12" rel="nofollow">ticket:12</a>
-<a class="missing ticket" href="/ticket/abc" rel="nofollow">ticket:abc</a>
+<a class="missing ticket" rel="nofollow">ticket:abc</a>
+</p>
+------------------------------
+============================== ticket: link resolver + arguments
+ticket:1?format=csv
+ticket:1#comment:3
+------------------------------
+<p>
+<a class="new ticket" href="/ticket/1?format=csv" title="This is the summary (new)">ticket:1?format=csv</a>
+<a class="new ticket" href="/ticket/1#comment:3" title="This is the summary (new)">ticket:1#comment:3</a>
+</p>
+------------------------------
+============================== ticket: link resolver with ranges
+ticket:12-14,33
+ticket:12,33?order=created
+------------------------------
+<p>
+<a href="/query?id=12-14%2C33" title="Tickets 12-14,33">ticket:12-14,33</a>
+<a href="/query?id=12%2C33&amp;order=created" title="Tickets 12,33">ticket:12,33?order=created</a>
 </p>
 ------------------------------
 ============================== ticket link shorthand form

@@ -212,7 +212,8 @@ class TicketSystem(Component):
         if intertrac:
             return intertrac
         try:
-            r = Ranges(target)
+            link, params, fragment = formatter.split_link(target)
+            r = Ranges(link)
             if len(r) == 1:
                 cursor = formatter.db.cursor()
                 cursor.execute("SELECT summary,status FROM ticket WHERE id=%s",
@@ -220,19 +221,21 @@ class TicketSystem(Component):
                 for summary, status in cursor:
                     return html.A(label, class_='%s ticket' % status,
                                   title=shorten_line(summary)+' (%s)' % status,
-                                  href=formatter.href.ticket(target))
+                                  href=(formatter.href.ticket(link) + \
+                                        params + fragment))
                 else:
-                    return html.A(label, class_='missing ticket',
-                                  href=formatter.href.ticket(target),
+                    return html.A(label, class_='missing ticket', 
+                                  href=formatter.href.ticket(link),
                                   rel="nofollow")
             else:
                 ranges = str(r)
+                if params:
+                    params = '&' + params[1:]
                 return html.A(label, title='Tickets '+ranges,
-                              href=formatter.href.query(id=ranges))
+                              href=formatter.href.query(id=ranges) + params)
         except ValueError:
             pass
-        return html.A(label, class_='missing ticket', rel='nofollow',
-                      href=formatter.href.ticket(target))
+        return html.A(label, class_='missing ticket', rel='nofollow')
 
     def _format_comment_link(self, formatter, ns, target, label):
         type, id, cnum = 'ticket', '1', 0
