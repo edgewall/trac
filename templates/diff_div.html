@@ -31,8 +31,8 @@
 
   <ul class="entries">
     <py:for each="idx, item in enumerate(changes)">
-      <li py:if="item.diffs or item.props" class="entry" id="file$idx">
-        <h2>
+      <li py:if="item.diffs or item.props" class="entry">
+        <h2 id="file$idx">
           <a title="$item.new.title" href="$item.new.href">$item.new.path</a>
         </h2>
         <ul py:if="item.props" class="props">

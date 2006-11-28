@@ -13,10 +13,19 @@ changeset:abc
 changeset:1, changeset:1/README.txt
 ------------------------------
 <p>
-<a class="missing changeset" href="/changeset/1" rel="nofollow">changeset:1</a>
+<a class="changeset" href="/changeset/1" title="start">changeset:1</a>
 <a class="missing changeset" href="/changeset/12" rel="nofollow">changeset:12</a>
 <a class="missing changeset" href="/changeset/abc" rel="nofollow">changeset:abc</a>
-<a class="missing changeset" href="/changeset/1" rel="nofollow">changeset:1</a>, <a class="missing changeset" href="/changeset/1/README.txt" rel="nofollow">changeset:1/README.txt</a>
+<a class="changeset" href="/changeset/1" title="start">changeset:1</a>, <a class="changeset" href="/changeset/1/README.txt" title="start">changeset:1/README.txt</a>
+</p>
+------------------------------
+============================== changeset: link resolver + query and fragment
+changeset:1?format=diff
+changeset:1#file0
+------------------------------
+<p>
+<a class="changeset" href="/changeset/1?format=diff" title="start">changeset:1?format=diff</a>
+<a class="changeset" href="/changeset/1#file0" title="start">changeset:1#file0</a>
 </p>
 ------------------------------
 ============================== changeset shorthand syntax
@@ -25,9 +34,22 @@ changeset:1, changeset:1/README.txt
 [1/README.txt]
 ------------------------------
 <p>
-<a class="missing changeset" href="/changeset/1" rel="nofollow">[1]</a>, <a class="missing changeset" href="/changeset/1" rel="nofollow">r1</a>
+<a class="changeset" href="/changeset/1" title="start">[1]</a>, <a class="changeset" href="/changeset/1" title="start">r1</a>
 <a class="missing changeset" href="/changeset/12" rel="nofollow">[12]</a>, <a class="missing changeset" href="/changeset/12" rel="nofollow">r12</a>, rABC
-<a class="missing changeset" href="/changeset/1/README.txt" rel="nofollow">[1/README.txt]</a>
+<a class="changeset" href="/changeset/1/README.txt" title="start">[1/README.txt]</a>
+</p>
+------------------------------
+============================== changeset shorthand syntax + query and fragment
+[1?format=diff]
+[1#file0]
+[1/README.txt?format=diff]
+[1/README.txt#file0]
+------------------------------
+<p>
+<a class="changeset" href="/changeset/1?format=diff" title="start">[1?format=diff]</a>
+<a class="changeset" href="/changeset/1#file0" title="start">[1#file0]</a>
+<a class="changeset" href="/changeset/1/README.txt?format=diff" title="start">[1/README.txt?format=diff]</a>
+<a class="changeset" href="/changeset/1/README.txt#file0" title="start">[1/README.txt#file0]</a>
 </p>
 ------------------------------
 ============================== escaping the above
@@ -75,10 +97,13 @@ T:r2081
 <a class="ext-link" href="http://trac.edgewall.org/search?q=r2081" title="r2081 in Trac's Trac"><span class="icon">T:r2081</span></a>
 </p>
 ------------------------------
-""" #'
+""" #"
 
 def _get_changeset(rev):
-    raise NoSuchChangeset(rev)
+    if rev == '1':
+        return Mock(message="start")
+    else:
+        raise NoSuchChangeset(rev)
 
 def _get_repository():
     return Mock(get_changeset=_get_changeset)
@@ -166,6 +191,20 @@ diff:@12:23
 <a class="changeset" href="/changeset?new=23&amp;new_path=branch&amp;old=12&amp;old_path=trunk" title="Diff from trunk@12 to branch@23">diff:trunk@12//branch@23</a>
 <a class="changeset" href="/changeset?new=23&amp;new_path=trunk&amp;old=12&amp;old_path=trunk" title="Diff r12:23 for trunk">diff:trunk@12:23</a>
 <a class="changeset" href="/changeset?new=23&amp;old=12" title="Diff r12:23 for /">diff:@12:23</a>
+</p>
+------------------------------
+============================== diff: link resolver + query
+diff:trunk//branch?format=diff
+------------------------------
+<p>
+<a class="changeset" href="/changeset?new_path=branch&amp;old_path=trunk&amp;format=diff" title="Diff from trunk@latest to branch@latest">diff:trunk//branch?format=diff</a>
+</p>
+------------------------------
+============================== diff: link, empty diff
+diff://
+------------------------------
+<p>
+<a class="changeset" title="Diff rlatest:latest for /">diff://</a>
 </p>
 ------------------------------
 """

@@ -8,6 +8,11 @@
   <xi:include href="macros.html" />
   <head>
     <title>$title</title>
+    <script type="text/javascript">
+      $(document).ready(function() {
+        $("#content").find("li.entry h2").addAnchor("Link to this diff");
+      });
+    </script>
   </head>
 
   <body>

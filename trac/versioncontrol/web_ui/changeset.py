@@ -34,7 +34,7 @@ from trac.perm import IPermissionRequestor
 from trac.search import ISearchSource, search_to_sql, shorten_result
 from trac.timeline.api import ITimelineEventProvider, TimelineEvent
 from trac.util import embedded_numbers, content_disposition
-from trac.util.compat import sorted
+from trac.util.compat import any, sorted
 from trac.util.datefmt import pretty_timedelta, utc
 from trac.util.html import html, escape, unescape, Markup
 from trac.util.text import unicode_urlencode, shorten_line, CRLF
@@ -649,7 +649,8 @@ class ChangesetModule(Component):
             # [...] form: start with optional intertrac: [T... or [trac ...
             r"!?\[(?P<it_changeset>%s\s*)" % Formatter.INTERTRAC_SCHEME +
             # hex digits + optional /path for the restricted changeset
-            r"%s(?:/[^\]]*)?\]|" % self.CHANGESET_ID +
+            # + optional query and fragment
+            r"%s(?:/[^\]]*)?(?:\?[^\]]*)?(?:#[^\]]*)?\]|" % self.CHANGESET_ID +
             # r... form: allow r1 but not r1:2 (handled by the log syntax)
             r"(?:\b|!)r\d+\b(?!:\d)",
             lambda x, y, z:
@@ -667,6 +668,7 @@ class ChangesetModule(Component):
                                                          fullmatch)
         if intertrac:
             return intertrac
+        chgset, params, fragment = formatter.split_link(chgset)
         sep = chgset.find('/')
         if sep > 0:
             rev, path = chgset[:sep], chgset[sep:]
@@ -676,13 +678,15 @@ class ChangesetModule(Component):
             changeset = self.env.get_repository().get_changeset(rev)
             return html.A(label, class_="changeset",
                           title=shorten_line(changeset.message),
-                          href=formatter.href.changeset(rev, path))
+                          href=(formatter.href.changeset(rev, path) +
+                                params + fragment))
         except NoSuchChangeset:
             return html.A(label, class_="missing changeset",
                           href=formatter.href.changeset(rev, path),
                           rel="nofollow")
 
-    def _format_diff_link(self, formatter, ns, params, label):
+    def _format_diff_link(self, formatter, ns, target, label):
+        params, query, fragment = formatter.split_link(target)
         def pathrev(path):
             if '@' in path:
                 return path.split('@', 1)
@@ -701,10 +705,14 @@ class ChangesetModule(Component):
             data = {'old_path': old_path, 'old_rev': old_rev,
                     'new_path': old_path, 'new_rev': new_rev}
         title = self.title_for_diff(data)
-        href = formatter.href.changeset(new_path=data['new_path'] or None,
-                                        new=data['new_rev'],
-                                        old_path=data['old_path'] or None,
-                                        old=data['old_rev'])
+        href = None
+        if any(data.values()):
+            if query:
+                query = '&' + query[1:]
+            href = formatter.href.changeset(new_path=data['new_path'] or None,
+                                            new=data['new_rev'],
+                                            old_path=data['old_path'] or None,
+                                            old=data['old_rev']) + query
         return html.A(label, class_="changeset", title=title, href=href)
 
     # ISearchSource methods
