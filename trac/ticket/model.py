@@ -67,14 +67,11 @@ class Ticket(object):
                 options = field.get('options')
                 if default and options and default not in options:
                     try:
-                        default_idx = int(default)
-                        if default_idx > len(options):
-                            raise ValueError
-                        default = options[default_idx]
-                    except ValueError:
-                        self.env.log.warning('Invalid default value for '
-                                             'custom field "%s"'
-                                             % field['name'])
+                        default = options[int(default)]
+                    except (ValueError, IndexError):
+                        self.env.log.warning('Invalid default value "%s" '
+                                             'for custom field "%s"'
+                                             % (default, field['name']))
             if default:
                 self.values.setdefault(field['name'], default)
 
