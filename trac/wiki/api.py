@@ -275,6 +275,7 @@ class WikiSystem(Component):
         from trac.wiki.formatter import Formatter
         wiki_page_name = (
             r"[A-Z][a-z]+(?:[A-Z][a-z]*[a-z/])+" # wiki words
+            r"(?:@\d+)?" # optional version
             r"(?:#%s)?" % self.XML_NAME + # optional fragment id
             r"(?=:(?:\Z|\s)|[^:a-zA-Z]|\s|\Z)" # what should follow it
             )
@@ -309,11 +310,16 @@ class WikiSystem(Component):
 
     def _format_link(self, formatter, ns, page, label, ignore_missing):
         page, query, fragment = formatter.split_link(page)
-        href = formatter.href.wiki(page) + fragment
-        if not self.has_page(page):
+        version = None
+        if '@' in page:
+            page, version = page.split('@', 1)
+        if version and query:
+            query = '&' + query[1:]
+        href = formatter.href.wiki(page, version=version) + query + fragment
+        if not self.has_page(page): # TODO: check for the version?
             if ignore_missing:
                 return label
             return html.A(label+'?', href=href, class_='missing wiki',
                           rel='nofollow')
         else:
-            return html.A(label, href=href, class_='wiki')
+            return html.A(label, href=href, class_='wiki', version=version)

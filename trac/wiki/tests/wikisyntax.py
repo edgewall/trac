@@ -26,6 +26,19 @@ wiki:abc
 <a class="missing wiki" href="/wiki/abc" rel="nofollow">wiki:abc?</a>
 </p>
 ------------------------------
+============================== wiki: link resolver + query and fragment
+wiki:TestPage?format=txt
+wiki:TestPage/?version=12
+wiki:TestPage/?action=diff&version=12
+wiki:"Space 1 23#heading"
+------------------------------
+<p>
+<a class="wiki" href="/wiki/TestPage?format=txt">wiki:TestPage?format=txt</a>
+<a class="wiki" href="/wiki/TestPage?version=12">wiki:TestPage/?version=12</a>
+<a class="wiki" href="/wiki/TestPage?action=diff&amp;version=12">wiki:TestPage/?action=diff&amp;version=12</a>
+<a class="wiki" href="/wiki/Space%201%2023#heading">wiki:"Space 1 23#heading"</a>
+</p>
+------------------------------
 ============================== WikiPageNames conformance
 CamelCase AlabamA ABc AlaBamA FooBar
 ------------------------------
@@ -139,6 +152,25 @@ This is a ["Wiki"] page link.
 ------------------------------
 <p>
 This is a <a class="missing wiki" href="/wiki/Wiki" rel="nofollow">Wiki?</a> page link.
+</p>
+------------------------------
+============================== Wiki links with @version
+wiki:page@12
+WikiStart@12
+WikiStart@12#heading
+[WikiStart@12]
+[WikiStart@12#heading]
+This is a ["Wiki@12"] page link.
+[wiki:WikiStart@12?format=txt v12 as text]
+------------------------------
+<p>
+<a class="missing wiki" href="/wiki/page?version=12" rel="nofollow">wiki:page@12?</a>
+<a class="missing wiki" href="/wiki/WikiStart?version=12" rel="nofollow">WikiStart@12?</a>
+<a class="missing wiki" href="/wiki/WikiStart?version=12#heading" rel="nofollow">WikiStart@12#heading?</a>
+[<a class="missing wiki" href="/wiki/WikiStart?version=12" rel="nofollow">WikiStart@12?</a>]
+[<a class="missing wiki" href="/wiki/WikiStart?version=12#heading" rel="nofollow">WikiStart@12#heading?</a>]
+This is a <a class="missing wiki" href="/wiki/Wiki?version=12" rel="nofollow">Wiki@12?</a> page link.
+<a class="missing wiki" href="/wiki/WikiStart?version=12&amp;format=txt" rel="nofollow">v12 as text?</a>
 </p>
 ------------------------------
 ============================== WikiPageName with label
