@@ -97,8 +97,9 @@ class WikiModule(Component):
 
         db = self.env.get_db_cnx()
         page = WikiPage(self.env, pagename, version, db)
+        latest_page = WikiPage(self.env, pagename, None, db)
 
-        if version and page.version == 0:
+        if version and page.version == 0 and latest_page.version != 0:
             raise TracError('No version "%s" for Wiki page "%s"' %
                             (version, pagename))
 
@@ -106,10 +107,9 @@ class WikiModule(Component):
 
         if req.method == 'POST':
             if action == 'edit':
-                latest_version = WikiPage(self.env, pagename, None, db).version
                 if req.args.has_key('cancel'):
                     req.redirect(req.href.wiki(page.name))
-                elif int(version) != latest_version:
+                elif int(version) != latest_page.version:
                     return self._render_editor(req, db, page, 'collision')
                 elif req.args.has_key('preview'):
                     return self._render_editor(req, db, page, 'preview')
