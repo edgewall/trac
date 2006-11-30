@@ -169,7 +169,7 @@
        <colgroup><col class="lineno" /><col class="lineno" /><col class="content" /></colgroup>
        <thead><tr>
         <th title="Version <?cs var:wiki.old_version ?>">v<?cs
-          var:wiki.old_version || "0" ?></th>
+          alt:wiki.old_version ?>0<?cs /alt ?></th>
         <th title="Version <?cs var:wiki.version ?>">v<?cs
           var:wiki.version ?></th>
         <th>&nbsp;</th>
