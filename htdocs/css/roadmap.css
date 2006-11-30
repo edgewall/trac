@@ -67,7 +67,7 @@ li.milestone { list-style: none; margin-bottom: 4em }
 #stats legend { white-space: nowrap }
 #stats table { border-collapse: collapse; width: 100% }
 #stats th, #stats td { font-size: 10px; padding: 0; white-space: nowrap }
-#stats th { text-align: right; text-transform: capitalize }
+#stats th { text-align: right; }
 #stats th :link, #stats th :visited { border: none }
 #stats td { padding-left: 0.5em; width: 100% }
 #stats td table.progress { margin: 3px 4px 3px 0 }
