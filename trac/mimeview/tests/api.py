@@ -13,7 +13,10 @@
 
 import unittest
 
-from trac.mimeview.api import get_mimetype, _html_splitlines
+from trac.core import *
+from trac.test import EnvironmentStub
+from trac.mimeview.api import get_mimetype, _html_splitlines, \
+                              Mimeview, IContentConverter
 
 class GetMimeTypeTestCase(unittest.TestCase):
 
@@ -51,8 +54,26 @@ class GetMimeTypeTestCase(unittest.TestCase):
         self.assertEqual('application/octet-stream',
                          get_mimetype('xxx', "abc\0xyz"))
         
-    
+
+class Converter0(Component):
+    implements(IContentConverter)
+    def get_supported_conversions(self):
+        yield ('key0', 'Format 0', 'c0', 'text/x-sample', 'text/html', 8)
+
+class Converter2(Component):
+    implements(IContentConverter)
+    def get_supported_conversions(self):
+        yield ('key2', 'Format 2', 'c2', 'text/x-sample', 'text/html', 2)
+
+class Converter1(Component):
+    implements(IContentConverter)
+    def get_supported_conversions(self):
+        yield ('key1', 'Format 1', 'c1', 'text/x-sample', 'text/html', 4)
+
 class MimeviewTestCase(unittest.TestCase):
+
+    def setUp(self):
+        self.env = EnvironmentStub(default_data=True)
 
     def test_html_splitlines_without_markup(self):
         lines = ['line 1', 'line 2']
@@ -80,6 +101,12 @@ class MimeviewTestCase(unittest.TestCase):
         self.assertEqual('<span class="p_tripledouble">Test</span>', result[3])
         self.assertEqual('<span class="p_tripledouble">"""</span>', result[4])
 
+    def test_get_supported_conversions(self):
+        mimeview = Mimeview(self.env)
+        conversions = mimeview.get_supported_conversions('text/x-sample')
+        self.assertEqual(Converter0(self.env), conversions[0][-1])
+        self.assertEqual(Converter1(self.env), conversions[1][-1])
+        self.assertEqual(Converter2(self.env), conversions[2][-1])
 
 def suite():
     suite = unittest.TestSuite()

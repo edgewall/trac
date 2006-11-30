@@ -351,7 +351,7 @@ class Mimeview(Component):
             for k, n, e, im, om, q in converter.get_supported_conversions():
                 if im == mimetype and q > 0:
                     converters.append((k, n, e, im, om, q, converter))
-        converters = sorted(converters, key=lambda i: i[-1], reverse=True)
+        converters = sorted(converters, key=lambda i: i[-2], reverse=True)
         return converters
 
     def convert_content(self, req, mimetype, content, key, filename=None,
