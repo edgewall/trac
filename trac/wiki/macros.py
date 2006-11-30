@@ -455,7 +455,8 @@ class TracIniMacro(WikiMacroBase):
                                       html.TD(wiki_to_oneliner(option.__doc__,
                                                                self.env,
                                                                req=req)))
-                              for option in Option.registry.values()
+                              for option in sorted(Option.registry.values(),
+                                                   key=lambda o: o.name)
                               if option.section == section])))
              for section in sorted(sections)])
 
