@@ -136,7 +136,7 @@ class RequestDispatcher(Component):
                                       IRequestHandler, 'WikiModule',
         """Name of the component that handles requests to the base URL.
         
-        Options include `TimeLineModule`, `RoadmapModule`, `BrowserModule`,
+        Options include `TimelineModule`, `RoadmapModule`, `BrowserModule`,
         `QueryModule`, `ReportModule` and `NewticketModule` (''since 0.9'').""")
 
     # Public API
