@@ -421,6 +421,7 @@ class AttachmentModule(Component):
             title = html.EM(os.path.basename(filename)) + \
                     ' attached to ' + display(id)
             if format == 'rss':
+                title = Markup(title).striptags()
                 descr = wiki_to_html(descr or '--', self.env, req, db,
                                      absurls=True)
                 href = req.abs_href
