@@ -30,7 +30,8 @@
   </div>
 
   <py:for each="value_for_group, row_group in row_groups">
-    <h2 py:if="value_for_group">$value_for_group</h2>
+    <h2 py:if="value_for_group">$value_for_group
+    <span class="numrows" py:with="cnt = len(row_group)">(${cnt or 'No'} match${cnt != 1 and 'es' or ''})</span></h2>
     <table class="listing ${report.id == -1 and 'reports' or 'tickets'}">
       <thead>
         <tr py:for="header_group in header_groups">
