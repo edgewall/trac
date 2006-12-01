@@ -120,15 +120,15 @@ class TicketModule(Component):
         data = {}
         db = self.env.get_db_cnx()
 
-        if req.method == 'POST' and 'owner' in req.args and \
+        if req.method == 'POST' and 'field_owner' in req.args and \
                'TICKET_MODIFY' not in req.perm:
-            del req.args['owner']
+            del req.args['field_owner']
 
         if req.method == 'POST' and 'preview' not in req.args:
             self._do_create(req, db)
 
         ticket = Ticket(self.env, db=db)
-        ticket.populate(req.args)
+        self._populate(req, ticket)
         ticket.values['reporter'] = get_reporter_id(req, 'reporter')
         data['ticket'] = ticket
 
@@ -198,7 +198,7 @@ class TicketModule(Component):
                 self._do_save(req, db, ticket)
             else:
                 # Use user supplied values
-                ticket.populate(req.args)
+                self._populate(req, ticket)
                 self._validate_ticket(req, ticket)
 
                 data['action'] = action
@@ -250,6 +250,10 @@ class TicketModule(Component):
                      conversion[3])
 
         return 'ticket_view.html', data, None
+
+    def _populate(self, req, ticket):
+        ticket.populate(dict([(k[6:],v) for k,v in req.args.iteritems()
+                              if k.startswith('field_')]))
 
     def _get_history(self, ticket, db):
         history = []
@@ -623,11 +627,11 @@ class TicketModule(Component):
                     raise InvalidTicket("Invalid ticket: %s" % message)
 
     def _do_create(self, req, db):
-        if 'summary' not in req.args:
+        if 'field_summary' not in req.args:
             raise TracError('Tickets must contain a summary.')
 
         ticket = Ticket(self.env, db=db)
-        ticket.populate(req.args)
+        self._populate(req, ticket)
         ticket.values['reporter'] = get_reporter_id(req, 'reporter')
         self._validate_ticket(req, ticket)
 
@@ -651,13 +655,13 @@ class TicketModule(Component):
     def _do_save(self, req, db, ticket):
         if 'TICKET_CHGPROP' in req.perm:
             # TICKET_CHGPROP gives permission to edit the ticket
-            if not req.args.get('summary'):
+            if not req.args.get('field_summary'):
                 raise TracError('Tickets must contain summary.')
 
-            if req.args.has_key('description') or req.args.has_key('reporter'):
+            if 'field_description' in req.args or 'field_reporter' in req.args:
                 req.perm.require('TICKET_ADMIN')
 
-            ticket.populate(req.args)
+            self._populate(req, ticket)
         else:
             req.perm.require('TICKET_APPEND')
 
@@ -795,7 +799,7 @@ class TicketModule(Component):
 
         if version is not None:
             ticket.values.update(values)
-
+            
         data.update({
             'fields': fields, 'changes': changes, 'field_types': types,
             'replies': replies, 'cnum': cnum + 1,

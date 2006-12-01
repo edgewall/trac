@@ -2,7 +2,7 @@
 
 #content.ticket { width: 700px; max-width: 100% }
 
-#newticket #description { width: 100% }
+#newticket #field-description { width: 100% }
 #newticket #properties { width: 100% }
 
 #ticket {

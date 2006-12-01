@@ -194,24 +194,24 @@ ${comment}</textarea></p>
           <legend>Change Properties</legend>
           <table>
             <tr>
-              <th><label for="summary">Summary:</label></th>
+              <th><label for="field-summary">Summary:</label></th>
               <td class="fullrow" colspan="3">
-                <input type="text" id="summary" name="summary" value="${ticket.summary}"
+                <input type="text" id="field-summary" name="field_summary" value="${ticket.summary}"
                   size="70" />
               </td>
             </tr>
             <py:if test="'TICKET_ADMIN' in perm">
               <tr>
-                <th><label for="reporter">Reporter:</label></th>
+                <th><label for="field-reporter">Reporter:</label></th>
                 <td class="fullrow" colspan="3">
-                  <input type="text" id="reporter" name="reporter"
+                  <input type="text" id="field-reporter" name="field_reporter"
                     value="${ticket.reporter}" size="70" />
                 </td>
               </tr>
               <tr>
-                <th><label for="description">Description:</label></th>
+                <th><label for="field-description">Description:</label></th>
                 <td class="fullrow" colspan="3">
-                  <textarea id="description" name="description" class="wikitext"
+                  <textarea id="field-description" name="field_description" class="wikitext"
                     rows="10" cols="68" py:content="ticket.description"></textarea>
                 </td>
               </tr>
@@ -220,34 +220,34 @@ ${comment}</textarea></p>
                 py:with="fullrow = len(row) == 1">
               <py:for each="idx, field in enumerate(row)">
                 <th class="col${idx + 1}" py:if="idx == 0 or not fullrow">
-                  <label for="${field.name}" py:if="field"
+                  <label for="field-${field.name}" py:if="field"
                     py:strip="field.type == 'radio'">${field.label or field.name}:</label>
                 </th>
                 <td class="col${idx + 1}" py:if="idx == 0 or not fullrow"
                     py:attrs="{'colspan': fullrow and 3 or None}">
                   <py:choose test="field.type" py:if="field">
-                    <select py:when="'select'" id="${field.name}" name="${field.name}">
+                    <select py:when="'select'" id="field-${field.name}" name="field_${field.name}">
                       <option py:if="field.optional"></option>
                       <option py:for="option in field.options"
                         selected="${ticket[field.name] == option or None}"
                         py:content="option"></option>
                     </select>
-                    <textarea py:when="'textarea'" id="${field.name}" name="${field.name}"
+                    <textarea py:when="'textarea'" id="field-${field.name}" name="field_${field.name}"
                       cols="${field.width}" rows="${field.height}"
                       py:content="ticket[field.name]"></textarea>
                     <span py:when="'checkbox'">
-                      <input type="checkbox" id="${field.name}" name="${field.name}"
+                      <input type="checkbox" id="field-${field.name}" name="field_${field.name}"
                              checked="${ticket[field.name] == '1' and 'checked' or None}" value="1" />
-                      <input type="hidden" name="checkbox_${field.name}" value="1" />
+                      <input type="hidden" name="field_checkbox_${field.name}" value="1" />
                     </span>
                     <label py:when="'radio'"
                       py:for="idx, option in enumerate(field.options)">
-                      <input type="radio" name="${field.name}" value="${option}"
+                      <input type="radio" name="field_${field.name}" value="${option}"
                         checked="${ticket[field.name] == option or None}" />
                       ${option}
                     </label>
-                    <input py:otherwise="" type="text" id="${field.name}"
-                      name="${field.name}" value="${ticket[field.name]}" />
+                    <input py:otherwise="" type="text" id="field-${field.name}"
+                      field_name="${field.name}" value="${ticket[field.name]}" />
                   </py:choose>
                 </td>
               </py:for>
