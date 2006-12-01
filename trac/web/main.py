@@ -141,8 +141,8 @@ class RequestDispatcher(Component):
                                       IRequestHandler, 'WikiModule',
         """Name of the component that handles requests to the base URL.
         
-        Options include `TimeLineModule`, `RoadmapModule`, `BrowserModule`,
-        `QueryModule`, `ReportModule` and `NewticketModule` (''since 0.9'').""")
+        Options include `TimelineModule`, `RoadmapModule`, `BrowserModule`,
+        `QueryModule`, `ReportModule` and `TicketModule` (''since 0.9'').""")
 
     default_timezone = Option('trac', 'default_timezone', '',
         """The default timezone to use""")
