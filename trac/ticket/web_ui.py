@@ -549,7 +549,9 @@ class TicketModule(Component):
             # Attachments
             if 'ticket_details' in filters:
                 def display(id):
-                    return html('ticket ', html.em('#', id))
+                    return html('ticket ',
+                                html.em('#', id,
+                                        title=Ticket(self.env, id)['summary']))
                 att = AttachmentModule(self.env)
                 for event in att.get_timeline_events(req, db, 'ticket',
                                                      start, stop, display):
