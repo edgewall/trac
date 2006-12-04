@@ -640,8 +640,8 @@ class SubversionChangeset(Changeset):
         self.scope = scope
         self.fs_ptr = fs_ptr
         self.pool = Pool(pool)
-        message = self._get_prop(core.SVN_PROP_REVISION_LOG)
-        author = self._get_prop(core.SVN_PROP_REVISION_AUTHOR)
+        message = _from_svn(self._get_prop(core.SVN_PROP_REVISION_LOG))
+        author = _from_svn(self._get_prop(core.SVN_PROP_REVISION_AUTHOR))
         _date = self._get_prop(core.SVN_PROP_REVISION_DATE)
         if _date:
             ts = core.svn_time_from_cstring(_date, self.pool()) / 1000000

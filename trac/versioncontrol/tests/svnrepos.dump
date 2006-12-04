@@ -635,3 +635,32 @@ Node-path: trunk/Xprimary_proc
 Node-action: delete
 
 
+Revision-number: 20
+Prop-content-length: 132
+Content-length: 132
+
+K 7
+svn:log
+V 20
+Chez moi Ã§a marche
+
+K 10
+svn:author
+V 16
+Jonas BorgstrÃ¶m
+K 8
+svn:date
+V 27
+2006-12-04T10:47:24.015625Z
+PROPS-END
+
+Node-path: trunk/RÃ©sumÃ©.txt
+Node-kind: file
+Node-action: change
+Text-content-length: 25
+Text-content-md5: c3744e0035c756a17fdf6dbbdd5719f0
+Content-length: 25
+
+En résumé ... ça marche.
+
+
