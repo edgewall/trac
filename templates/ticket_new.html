@@ -64,8 +64,11 @@
                     <textarea py:when="'textarea'" id="field-${field.name}" name="field_${field.name}"
                               cols="${field.width}" rows="${field.height}"
                               py:content="ticket[field.name]"></textarea>
-                    <input py:when="'checkbox'" type="checkbox" id="field-${field.name}"
-                           name="field_${field.name}" value="${field.value}" />
+                    <span py:when="'checkbox'">
+                      <input type="checkbox" id="field-${field.name}" name="field_${field.name}"
+                             checked="${field.value == '1' and 'checked' or None}" value="1" />
+                      <input type="hidden" name="field_checkbox_${field.name}" value="1" />
+                    </span>
                     <label py:when="'radio'"
                            py:for="idx, option in enumerate(field.options)">
                       <input type="radio" name="field_${field.name}" value="${option}"
