@@ -41,12 +41,12 @@ types = {
     'text/x-chdr':              ('CPP', 3),
     'text/x-csrc':              ('CPP', 3),
     'text/x-perl':              ('Perl', 3),
-    'text/x-php':               ('HyperText', 3, {'asp.default.language':4}),
-    'application/x-httpd-php':  ('HyperText', 3, {'asp.default.language':4}),
-    'application/x-httpd-php4': ('HyperText', 3, {'asp.default.language':4}),
-    'application/x-httpd-php3': ('HyperText', 3, {'asp.default.language':4}),
+    'text/x-php':               ('HyperText', 3, {'asp.default.language': 4}),
+    'application/x-httpd-php':  ('HyperText', 3, {'asp.default.language': 4}),
+    'application/x-httpd-php4': ('HyperText', 3, {'asp.default.language': 4}),
+    'application/x-httpd-php3': ('HyperText', 3, {'asp.default.language': 4}),
     'text/x-javascript':        ('CPP', 3), # Kludgy.
-    'text/x-psp':               ('HyperText', 3, {'asp.default.language':3}),
+    'text/x-psp':               ('HyperText', 3, {'asp.default.language': 3}),
     'text/x-python':            ('Python', 3),
     'text/x-ruby':              ('Ruby', 3),
     'text/x-sql':               ('SQL', 3),
@@ -76,6 +76,7 @@ class SilverCityRenderer(Component):
         (''since 0.10'').""")
 
     expand_tabs = True
+    returns_source = True
 
     def __init__(self):
         self._types = None

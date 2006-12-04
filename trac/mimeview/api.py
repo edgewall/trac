@@ -59,8 +59,10 @@ an object that can be `read()`.
 import re
 from StringIO import StringIO
 
-from genshi.core import escape, Markup, Stream
+from genshi import escape, Markup, Stream
+from genshi.core import TEXT, START, END, START_NS, END_NS
 from genshi.builder import Fragment, tag
+from genshi.input import HTMLParser
 
 from trac.config import IntOption, ListOption, Option
 from trac.core import *
@@ -230,6 +232,10 @@ class IHTMLPreviewRenderer(Interface):
     # support text content where Trac should expand tabs into spaces
     expand_tabs = False
 
+    # indicate whether the output of this renderer is source code that can
+    # be decorated with annotations
+    returns_source = False
+
     def get_quality_ratio(mimetype):
         """Return the level of support this renderer provides for the `content`
         of the specified MIME type. The return value must be a number between
@@ -256,6 +262,7 @@ class IHTMLPreviewRenderer(Interface):
         be considered to correspond to lines of text in the original content.
         """
 
+
 class IHTMLPreviewAnnotator(Interface):
     """Extension point interface for components that can annotate an XHTML
     representation of file contents with additional information."""
@@ -268,7 +275,7 @@ class IHTMLPreviewAnnotator(Interface):
         let the user toggle the appearance of the annotation type.
         """
 
-    def annotate_line(number, content):
+    def annotate_row(number, content):
         """Return the XHTML markup for the table cell that contains the
         annotation data."""
 
@@ -438,6 +445,7 @@ class Mimeview(Component):
             try:
                 self.log.debug('Trying to render HTML preview using %s'
                                % renderer.__class__.__name__)
+
                 # check if we need to perform a tab expansion
                 rendered_content = content
                 if getattr(renderer, 'expand_tabs', False):
@@ -446,66 +454,63 @@ class Mimeview(Component):
                                                      full_mimetype)
                         expanded_content = content.expandtabs(self.tab_width)
                     rendered_content = expanded_content
+
                 result = renderer.render(req, full_mimetype, rendered_content,
                                          filename, url)
                 if not result:
                     continue
-                elif isinstance(result, (Fragment, Stream)):
-                    return result
-                elif isinstance(result, basestring):
-                    return Markup(to_unicode(result))
-                elif annotations:
+
+                if not getattr(renderer, 'returns_source', False):
+                    if isinstance(result, basestring):
+                        if not isinstance(result, unicode):
+                            result = to_unicode(result)
+                        return Markup(to_unicode(result))
+                    elif isinstance(result, Fragment):
+                        return result.generate()
+                    else:
+                        return result
+
+                if annotations:
                     m = req.args.get('marks')
-                    return Markup(self._annotate(result, annotations,
-                                                 m and Ranges(m)))
+                    return self._annotate(result, annotations, m and Ranges(m))
                 else:
-                    buf = StringIO()
-                    buf.write('<div class="code"><pre>')
-                    for line in result:
-                        buf.write(line + '\n')
-                    buf.write('</pre></div>')
-                    return Markup(buf.getvalue())
+                    return tag.div(class_='code')(tag.pre(result)).generate()
+
             except Exception, e:
                 self.log.warning('HTML preview using %s failed (%s)'
                                  % (renderer, e), exc_info=True)
 
-    def _annotate(self, lines, annotations, marks=None):
-        buf = StringIO()
-        buf.write('<table class="code"><thead><tr>')
-        annotators = []
+    def _annotate(self, stream, annotations, marks=None):
+        annotators, annotypes = [], []
         for annotator in self.annotators:
-            atype, alabel, adesc = annotator.get_annotation_type()
+            atype, alabel, _ = annotator.get_annotation_type()
             if atype in annotations:
-                buf.write('<th class="%s">%s</th>' % (atype, alabel))
+                annotypes.append((atype, alabel))
                 annotators.append(annotator)
-        buf.write('<th class="content">&nbsp;</th>')
-        buf.write('</tr></thead><tbody>')
 
-        space_re = re.compile('(?P<spaces> (?: +))|'
-                              '^(?P<tag><\w+.*?>)?( )')
-        def htmlify(match):
-            m = match.group('spaces')
-            if m:
-                div, mod = divmod(len(m), 2)
-                return div * '&nbsp; ' + mod * '&nbsp;'
-            return (match.group('tag') or '') + '&nbsp;'
+        if isinstance(stream, list):
+            stream = HTMLParser(StringIO('\n'.join(stream)))
 
-        num = -1
-        for num, line in enumerate(_html_splitlines(lines)):
-            cells = []
-            for annotator in annotators:
-                cells.append(annotator.annotate_line(num + 1, line))
-            cells.append('<td>%s</td>\n' % space_re.sub(htmlify, line))
-            if marks and num+1 in marks:
-                buf.write('<tr class="%s">' % ('hilite',) +
-                          '\n'.join(cells) + '</tr>')
-            else:
-                buf.write('<tr>' + '\n'.join(cells) + '</tr>')
-        else:
-            if num < 0:
-                return ''
-        buf.write('</tbody></table>')
-        return buf.getvalue()
+        def _head_row():
+            return tag.re(
+                [tag.th(alabel, class_=atype) for atype, alabel in annotypes] +
+                [tag.th(u'\xa0', class_='content')]
+            )
+
+        def _body_rows():
+            for idx, line in enumerate(_group_lines(stream)):
+                row = tag.tr()
+                if marks and idx + 1 in marks:
+                    row(class_='hilite')
+                for annotator in annotators:
+                    annotator.annotate_row(row, idx + 1, line)
+                row.append(tag.td(line))
+                yield row
+
+        return tag.table(class_='code')(
+            tag.thead(_head_row()),
+            tag.tbody(_body_rows())
+        )
 
     def get_max_preview_size(self):
         """Deprecated: use `max_preview_size` attribute directly."""
@@ -616,40 +621,64 @@ class Mimeview(Component):
                                                                    ext))
         req.end_headers()
         req.write(content)
-        raise RequestDone        
-        
+        raise RequestDone
 
-def _html_splitlines(lines):
-    """Tracks open and close tags in lines of HTML text and yields lines that
-    have no tags spanning more than one line."""
-    open_tag_re = re.compile(r'<(\w+)(\s.*?)?[^/]?>')
-    close_tag_re = re.compile(r'</(\w+)>')
-    open_tags = []
-    for line in lines:
-        # Reopen tags still open from the previous line
-        for tag in open_tags:
-            line = tag.group(0) + line
-        open_tags = []
 
-        # Find all tags opened on this line
-        for tag in open_tag_re.finditer(line):
-            open_tags.append(tag)
+def _group_lines(stream):
+    space_re = re.compile('(?P<spaces> (?: +))|^(?P<tag><\w+.*?>)?( )')
+    def pad_spaces(match):
+        m = match.group('spaces')
+        if m:
+            div, mod = divmod(len(m), 2)
+            return div * u'\xa0 ' + mod * u'\xa0'
+        return (match.group('tag') or '') + u'\xa0'
 
-        open_tags.reverse()
+    def _generate():
+        stack = []
+        def _reverse():
+            for event in reversed(stack):
+                if event[0] is START:
+                    yield END, event[1][0], event[2]
+                else:
+                    yield END_NS, event[1][0], event[2]
 
-        # Find all tags closed on this line
-        for ctag in close_tag_re.finditer(line):
-            for otag in open_tags:
-                if otag.group(1) == ctag.group(1):
-                    open_tags.remove(otag)
-                    break
+        for kind, data, pos in stream:
+            if kind is TEXT:
+                lines = data.splitlines(True)
+                for e in stack:
+                    yield e
+                yield kind, lines.pop(0).rstrip('\n'), pos
+                for e in _reverse():
+                    yield e
+                if '\n' in data:
+                    yield TEXT, '\n', pos
+                    for line in lines:
+                        for event in stack:
+                            yield event
+                        yield kind, line.rstrip('\n'), pos
+                        if line.endswith('\n'):
+                            for e in _reverse():
+                                yield e
+                            yield TEXT, '\n', pos
+            else:
+                if kind is START or kind is START_NS:
+                    stack.append((kind, data, pos))
+                elif kind is END or kind is END_NS:
+                    stack.pop()
+                else:
+                    yield kind, data, pos
 
-        # Close all tags still open at the end of line, they'll get reopened at
-        # the beginning of the next line
-        for tag in open_tags:
-            line += '</%s>' % tag.group(1)
-
-        yield line
+    buf = []
+    for kind, data, pos in _generate():
+        if kind is TEXT and data == '\n':
+            yield Stream(buf[:])
+            del buf[:]
+        else:
+            if kind is TEXT:
+                data = space_re.sub(pad_spaces, data)
+            buf.append((kind, data, pos))
+    if buf:
+        yield Stream(buf[:])
 
 
 # -- Default annotators
@@ -663,9 +692,10 @@ class LineNumberAnnotator(Component):
     def get_annotation_type(self):
         return 'lineno', 'Line', 'Line numbers'
 
-    def annotate_line(self, number, content):
-        return '<th id="L%s"><a href="#L%s">%s</a></th>' % (number, number,
-                                                            number)
+    def annotate_row(self, row, lineno, content):
+        row.append(tag.th(id='L%s' % lineno)(
+            tag.a(lineno, href='#L%s' % lineno)
+        ))
 
 
 # -- Default renderers
@@ -677,6 +707,7 @@ class PlainTextRenderer(Component):
     implements(IHTMLPreviewRenderer)
 
     expand_tabs = True
+    returns_source = True
 
     TREAT_AS_BINARY = [
         'application/pdf',
@@ -696,8 +727,8 @@ class PlainTextRenderer(Component):
 
         self.env.log.debug("Using default plain text mimeviewer")
         content = content_to_unicode(self.env, content, mimetype)
-        for line in content.splitlines():
-            yield escape(line)
+        for line in content.splitlines(True):
+            yield TEXT, line, (None, -1, -1)
 
 
 class ImageRenderer(Component):
@@ -712,7 +743,7 @@ class ImageRenderer(Component):
     def render(self, req, mimetype, content, filename=None, url=None):
         if url:
             return tag.div(tag.img(src=url, alt=filename),
-                           class_="image-file")
+                           class_='image-file')
 
 
 class WikiTextRenderer(Component):

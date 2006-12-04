@@ -15,8 +15,8 @@ import unittest
 
 from trac.core import *
 from trac.test import EnvironmentStub
-from trac.mimeview.api import get_mimetype, _html_splitlines, \
-                              Mimeview, IContentConverter
+from trac.mimeview.api import get_mimetype, IContentConverter, Mimeview
+
 
 class GetMimeTypeTestCase(unittest.TestCase):
 
@@ -53,60 +53,46 @@ class GetMimeTypeTestCase(unittest.TestCase):
     def test_from_content_using_is_binary(self):
         self.assertEqual('application/octet-stream',
                          get_mimetype('xxx', "abc\0xyz"))
-        
 
-class Converter0(Component):
-    implements(IContentConverter)
-    def get_supported_conversions(self):
-        yield ('key0', 'Format 0', 'c0', 'text/x-sample', 'text/html', 8)
-
-class Converter2(Component):
-    implements(IContentConverter)
-    def get_supported_conversions(self):
-        yield ('key2', 'Format 2', 'c2', 'text/x-sample', 'text/html', 2)
-
-class Converter1(Component):
-    implements(IContentConverter)
-    def get_supported_conversions(self):
-        yield ('key1', 'Format 1', 'c1', 'text/x-sample', 'text/html', 4)
 
 class MimeviewTestCase(unittest.TestCase):
 
     def setUp(self):
         self.env = EnvironmentStub(default_data=True)
 
-    def test_html_splitlines_without_markup(self):
-        lines = ['line 1', 'line 2']
-        self.assertEqual(lines, list(_html_splitlines(lines)))
+        # Make sure we have no external components hanging around in the
+        # component registry
+        from trac.core import ComponentMeta
+        self.old_registry = ComponentMeta._registry
+        ComponentMeta._registry = {}
 
-    def test_html_splitlines_with_markup(self):
-        lines = ['<p><b>Hi', 'How are you</b></p>']
-        result = list(_html_splitlines(lines))
-        self.assertEqual('<p><b>Hi</b></p>', result[0])
-        self.assertEqual('<p><b>How are you</b></p>', result[1])
-
-    def test_html_splitlines_with_multiline(self):
-        """
-        Regression test for http://trac.edgewall.org/ticket/2655
-        """
-        lines = ['<span class="p_tripledouble">"""',
-                'a <a href="http://google.com">http://google.com</a>/',
-                'Test', 'Test', '"""</span>']
-        result = list(_html_splitlines(lines))
-        self.assertEqual('<span class="p_tripledouble">"""</span>', result[0])
-        self.assertEqual('<span class="p_tripledouble">a '
-                         '<a href="http://google.com">http://google.com</a>/'
-                         '</span>', result[1])
-        self.assertEqual('<span class="p_tripledouble">Test</span>', result[2])
-        self.assertEqual('<span class="p_tripledouble">Test</span>', result[3])
-        self.assertEqual('<span class="p_tripledouble">"""</span>', result[4])
+    def tearDown(self):
+        # Restore the original component registry
+        from trac.core import ComponentMeta
+        ComponentMeta._registry = self.old_registry
 
     def test_get_supported_conversions(self):
+        class Converter0(Component):
+            implements(IContentConverter)
+            def get_supported_conversions(self):
+                yield 'key0', 'Format 0', 'c0', 'text/x-sample', 'text/html', 8
+
+        class Converter2(Component):
+            implements(IContentConverter)
+            def get_supported_conversions(self):
+                yield 'key2', 'Format 2', 'c2', 'text/x-sample', 'text/html', 2
+
+        class Converter1(Component):
+            implements(IContentConverter)
+            def get_supported_conversions(self):
+                yield 'key1', 'Format 1', 'c1', 'text/x-sample', 'text/html', 4
+
         mimeview = Mimeview(self.env)
         conversions = mimeview.get_supported_conversions('text/x-sample')
         self.assertEqual(Converter0(self.env), conversions[0][-1])
         self.assertEqual(Converter1(self.env), conversions[1][-1])
         self.assertEqual(Converter2(self.env), conversions[2][-1])
+
 
 def suite():
     suite = unittest.TestSuite()

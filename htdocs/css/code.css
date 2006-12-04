@@ -50,26 +50,23 @@ table.code tbody th :link, table.code tbody th :visited {
 table.code tbody th :link:hover, table.code tbody th :visited:hover {
  color: #000;
 }
-table.code tbody td {
- background: #fff;
+table.code td {
  font: normal 11px monospace;
  overflow: hidden;
  padding: 1px 2px;
  vertical-align: top;
 }
-table.code tbody tr.hilite th {
+table.code tr.hilite th {
  background: #ccf;
 }
-table.code tbody tr.hilite td {
+table.code tr.hilite td {
  background: #ddf;
 }
 .image-file { background: #eee; padding: .3em }
 .image-file img { background: url(../imggrid.png) }
 
 /* Default */
-.code-block span {
- font-family: monospace;
-}
+.code-block span { font-family: monospace; }
 
 /* Comments */
 .code-comment, .css_comment, .c_comment, .c_commentdoc, .c_commentline,

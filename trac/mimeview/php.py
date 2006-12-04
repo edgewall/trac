@@ -67,11 +67,13 @@ class PHPRenderer(Component):
     path = Option('mimeviewer', 'php_path', 'php',
         """Path to the PHP executable (''since 0.9'').""")
 
+    returns_source = True
+
     # IHTMLPreviewRenderer methods
 
     def get_quality_ratio(self, mimetype):
         if mimetype in php_types:
-            return 4
+            return 5
         return 0
 
     def render(self, req, mimetype, content, filename=None, rev=None):

@@ -98,6 +98,7 @@ class EnscriptRenderer(Component):
     implements(IHTMLPreviewRenderer)
 
     expand_tabs = True
+    returns_source = True
 
     path = Option('mimeviewer', 'enscript_path', 'enscript',
         """Path to the Enscript executable.""")
