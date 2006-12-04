@@ -83,7 +83,6 @@ class DatabaseManager(Component):
     def _get_connector(self): ### FIXME: Make it public?
         scheme, args = _parse_db_str(self.connection_uri)
         candidates = {}
-        connector = None
         for connector in self.connectors:
             for scheme_, priority in connector.get_supported_schemes():
                 if scheme_ != scheme:
@@ -91,7 +90,8 @@ class DatabaseManager(Component):
                 highest = candidates.get(scheme_, (None, 0))[1]
                 if priority > highest:
                     candidates[scheme] = (connector, priority)
-            connector = candidates.get(scheme, [None])[0]
+
+        connector = candidates.get(scheme, [None])[0]
         if not connector:
             raise TracError, 'Unsupported database type "%s"' % scheme
 
