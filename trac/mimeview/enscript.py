@@ -132,7 +132,8 @@ class EnscriptRenderer(Component):
         cmdline = self.path
         mimetype = mimetype.split(';', 1)[0] # strip off charset
         mode = self._types[mimetype][0]
-        cmdline += ' --color -h -q --language=html -p - -E%s' % mode
+        cmdline = ('"%s" --color -h -q --language=html -p - -E%s' % \
+                   (cmdline, mode))
         self.env.log.debug("Enscript command line: %s" % cmdline)
 
         np = NaivePopen(cmdline, content.encode('utf-8'), capturestderr=1)
