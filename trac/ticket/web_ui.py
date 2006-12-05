@@ -35,8 +35,8 @@ from trac.util.html import html, Markup
 from trac.util.text import CRLF, shorten_line
 from trac.versioncontrol.diff import get_diff_options, diff_blocks
 from trac.web import IRequestHandler
-from trac.web.chrome import add_link, add_stylesheet, INavigationContributor, \
-                            Chrome
+from trac.web.chrome import add_link, add_script, add_stylesheet, \
+                            INavigationContributor, Chrome
 
 
 class InvalidTicket(TracError):
@@ -411,7 +411,8 @@ class TicketModule(Component):
                      'Version %d' % next_version)
 
         add_stylesheet(req, 'common/css/diff.css')
-
+        add_script(req, 'common/js/diff.js')
+        
         data.update({
             'title': 'Ticket Diff',
             'old_version': old_version, 'new_version': new_version,
