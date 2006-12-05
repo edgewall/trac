@@ -312,7 +312,8 @@ class WikiModule(Component):
                     'old': version_info(old_version)}]
 
         data.update({ 
-            'date': date, 'author': author, 'comment': comment, 'ipnr': ipnr,
+            'change': {'date': date, 'author': author, 'ipnr': ipnr,
+                       'comment': comment},
             'new_version': new_version, 'old_version': old_version,
             'latest_version': latest_page.version,
             'num_changes': num_changes,

@@ -40,18 +40,18 @@
         <dt class="property time">Timestamp:</dt>
         <dd class="time" py:choose="">
           <em py:when="multi" class="multi">(multiple changes)</em>
-          <py:when test="date">${format_datetime(date)} (${pretty_timedelta(date)} ago)</py:when>
+          <py:when test="date">${format_datetime(change.date)} (${pretty_timedelta(change.date)} ago)</py:when>
           <py:otherwise>--</py:otherwise>
         </dd>
         <dt class="property author">Author:</dt>
         <dd class="author" py:choose="">
           <em py:when="multi" class="multi">(multiple changes)</em>
-          <py:otherwise>$author <span class="ipnr">(IP: $ipnr)</span></py:otherwise>
+          <py:otherwise>$change.author <span py:if="change.ipnr" class="ipnr">(IP: $change.ipnr)</span></py:otherwise>
         </dd>
         <dt class="property message">Comment:</dt>
         <dd class="message" py:choose="">
           <em py:when="multi" class="multi">(multiple changes)</em>
-          <py:otherwise>${wiki_to_html(comment)}</py:otherwise>
+          <py:otherwise>${wiki_to_html(change.comment)}</py:otherwise>
         </dd>
       </dl>
       <div class="diff">
