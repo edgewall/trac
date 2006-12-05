@@ -105,8 +105,8 @@
           <form py:for="change in changes" method="get" action="#comment"
                 class="printableform">
             <div class="change">
-              <h3 class="change" id="comment:${change.cnum}">
-                <span py:if="'TICKET_APPEND' in perm" class="inlinebuttons">
+              <h3 class="change" id="${change.cnum and 'comment:%d' % change.cnum or ''}">
+                <span py:if="change.cnum and 'TICKET_APPEND' in perm" class="inlinebuttons">
                   <input type="hidden" name="replyto" value="${change.cnum}" />
                   <input type="submit" value="Reply" title="Reply to comment ${change.cnum}" />
                 </span>
