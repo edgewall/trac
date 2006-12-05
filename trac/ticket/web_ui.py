@@ -346,7 +346,7 @@ class TicketModule(Component):
         if old_version:
             replay_changes(old_ticket, None, 1, old_version)
 
-        new_ticket = {}
+        new_ticket = dict(old_ticket)
         replay_changes(new_ticket, old_ticket, old_version+1, new_version)
 
         changes = []
