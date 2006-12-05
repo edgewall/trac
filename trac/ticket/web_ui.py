@@ -727,7 +727,7 @@ class TicketModule(Component):
                 version = int(version)
                 data['version'] = version
             except ValueError:
-                pass
+                version = None
 
         # -- Ticket fields
         types = {}
@@ -774,30 +774,33 @@ class TicketModule(Component):
         replies = {}
         changes = []
         cnum = 0
+        skip = False
         for change in self.grouped_changelog_entries(ticket, db):
-            if version is not None and cnum > version:
-                # Retrieve initial ticket values from later changes
-                for k, v in change['fields'].iteritems():
-                    if k not in values:
-                        values[k] = v['old']
-                continue
-            changes.append(change)
             if change['permanent']:
                 cnum = change['cnum']
-                # keep track of replies threading
-                if 'replyto' in change:
-                    replies.setdefault(change['replyto'], []).append(cnum)
-                # eventually cite the replied to comment
-                comment = ''
-                if replyto == str(cnum):
-                    quote_original(change['author'], comment,
-                                   'comment:%s' % replyto)
-                if version:
-                    # Override ticket value by current changes
+                if version is not None and cnum > version:
+                    # Retrieve initial ticket values from later changes
                     for k, v in change['fields'].iteritems():
-                        values[k] = v['new']
-                if 'description' in change['fields']:
-                    data['description_change'] = change
+                        if k not in values:
+                            values[k] = v['old']
+                    skip = True
+                else:
+                    # keep track of replies threading
+                    if 'replyto' in change:
+                        replies.setdefault(change['replyto'], []).append(cnum)
+                    # eventually cite the replied to comment
+                    comment = ''
+                    if replyto == str(cnum):
+                        quote_original(change['author'], comment,
+                                       'comment:%s' % replyto)
+                    if version:
+                        # Override ticket value by current changes
+                        for k, v in change['fields'].iteritems():
+                            values[k] = v['new']
+                    if 'description' in change['fields']:
+                        data['description_change'] = change
+            if not skip:
+                changes.append(change)
 
         if version is not None:
             ticket.values.update(values)
