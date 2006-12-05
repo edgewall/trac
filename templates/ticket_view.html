@@ -247,7 +247,7 @@ ${comment}</textarea></p>
                       ${option}
                     </label>
                     <input py:otherwise="" type="text" id="field-${field.name}"
-                      field_name="${field.name}" value="${ticket[field.name]}" />
+                      name="${field.name}" value="${ticket[field.name]}" />
                   </py:choose>
                 </td>
               </py:for>

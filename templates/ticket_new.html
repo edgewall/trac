@@ -42,7 +42,7 @@
         <fieldset id="properties" py:with="fields = [f for f in fields if not f.skip]">
           <legend>Ticket Properties</legend>
           <input type="hidden" name="action" value="create" />
-          <input type="hidden" name="status" value="new" />
+          <input type="hidden" name="field_status" value="new" />
 
           <table>
             <tr py:for="row in group(fields, 2, lambda f: f.type != 'textarea')"

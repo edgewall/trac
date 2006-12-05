@@ -82,7 +82,8 @@ class TicketSystem(Component):
         }
         perms = {'resolve': 'TICKET_MODIFY', 'reassign': 'TICKET_MODIFY',
                  'accept': 'TICKET_MODIFY', 'reopen': 'TICKET_CREATE'}
-        return [action for action in actions.get(ticket['status'], ['leave'])
+        return [action for action in actions.get(ticket['status'] or 'new',
+                                                 ['leave'])
                 if action not in perms or perm_.has_permission(perms[action])]
 
     def get_ticket_fields(self):
