@@ -13,6 +13,7 @@
     <script type="text/javascript">
       $(document).ready(function() {
         $("#changelog h3.change").addAnchor("Link to this change");
+        $("div.description").find("h1,h2,h3,h4,h5,h6").addAnchor("Link to this section");
         $("#action input[@name='action']").click(function() {
           $("#resolve_choice").enable($("#resolve").checked());
           $("#reassign_choice").enable($("#reassign").checked());
