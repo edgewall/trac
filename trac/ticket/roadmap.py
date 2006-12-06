@@ -366,7 +366,7 @@ class MilestoneModule(Component):
         else:
             self._render_view(req, db, milestone)
 
-        if not milestone_id:
+        if not milestone_id and action != 'new':
             req.redirect(req.href.roadmap())
 
         add_stylesheet(req, 'common/css/roadmap.css')
