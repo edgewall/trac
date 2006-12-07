@@ -194,6 +194,20 @@ def get_module_path(module):
     return base_path
 
 def get_pkginfo(dist):
+    """Get a dictionary containing package information for a package
+
+    `dist` can be either a Distribution instance or a module instance.
+    Always returns a dictionary but it will be empty if no Distribution
+    instance can be created for the given module.
+    """
+    import types
+    if isinstance(dist, types.ModuleType):
+        try:
+            from pkg_resources import find_distributions
+            distribs = find_distributions(get_module_path(dist), only=True)
+            dist = distribs.next()
+        except (ImportError, StopIteration):
+            return {}
     import email
     attrs = ('author', 'author-email', 'license', 'home-page', 'summary',
              'description', 'version')

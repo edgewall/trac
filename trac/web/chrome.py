@@ -225,20 +225,8 @@ class Chrome(Component):
     }
 
     def __init__(self):
-        # Get genshi version
-        try:
-            import genshi
-            import pkg_resources
-            genshi_path = get_module_path(genshi)
-            for dist in pkg_resources.find_distributions(genshi_path,
-                                                         only=True):
-                genshi_version = get_pkginfo(dist).get('version')
-                break
-            else:
-                genshi_version = 'unknown'
-            self.env.systeminfo['Genshi'] = genshi_version
-        except ImportError:
-            pass
+        import genshi
+        self.env.systeminfo['Genshi'] = get_pkginfo(genshi).get('version')
 
     # IEnvironmentSetupParticipant methods
 
