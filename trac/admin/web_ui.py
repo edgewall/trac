@@ -14,7 +14,6 @@
 #
 # Author: Jonas Borgström <jonas@edgewall.com>
 
-import email
 import inspect
 import os
 import re
@@ -28,6 +27,7 @@ from trac import __version__ as TRAC_VERSION
 from trac.admin.api import IAdminPanelProvider
 from trac.core import *
 from trac.perm import PermissionSystem
+from trac.util import get_pkginfo, get_module_path
 from trac.util.compat import partial, sorted
 from trac.web import HTTPNotFound, IRequestHandler
 from trac.web.chrome import add_script, add_stylesheet, Chrome, \
@@ -270,8 +270,7 @@ class PluginAdminPanel(Component):
         'Mimeview', 'Chrome')
 
     def __init__(self):
-        self.trac_path = self._find_base_path(sys.modules['trac.core'].__file__,
-                                              'trac.core')
+        self.trac_path = get_module_path(sys.modules['trac.core'])
 
     # IAdminPanelProvider methods
 
@@ -392,7 +391,7 @@ class PluginAdminPanel(Component):
                     'name': dist.project_name, 'version': dist.version,
                     'path': dist.location, 'description': description,
                     'plugin_filename': plugin_filename, 'readonly': readonly,
-                    'info': self._get_pkginfo(dist), 'components': []
+                    'info': get_pkginfo(dist), 'components': []
                 }
             plugins[dist.project_name]['components'].append({
                 'name': component.__name__, 'module': module.__name__,
@@ -424,13 +423,7 @@ class PluginAdminPanel(Component):
         return 'admin_plugins.html', data
 
     def _find_distribution(self, module):
-        # Determine the plugin that this component belongs to
-        path = module.__file__
-        if path.endswith('.pyc') or path.endswith('.pyo'):
-            path = path[:-1]
-        if os.path.basename(path) == '__init__.py':
-            path = os.path.dirname(path)
-        path = self._find_base_path(path, module.__name__)
+        path = get_module_path(module)
         if path == self.trac_path:
             return pkg_resources.Distribution(project_name='Trac',
                                               version=TRAC_VERSION,
@@ -443,24 +436,3 @@ class PluginAdminPanel(Component):
                                               version='',
                                               location=module.__file__)
 
-    def _find_base_path(self, path, module_name):
-        base_path = os.path.splitext(path)[0]
-        while base_path.replace(os.sep, '.').endswith(module_name):
-            base_path = os.path.dirname(base_path)
-            module_name = '.'.join(module_name.split('.')[:-1])
-            if not module_name:
-                break
-        return base_path
-
-    def _get_pkginfo(self, dist):
-        attrs = ('author', 'author-email', 'license', 'home-page', 'summary',
-                 'description')
-        info = {}
-        try:
-            pkginfo = email.message_from_string(dist.get_metadata('PKG-INFO'))
-            for attr in [key for key in attrs if key in pkginfo]:
-                info[attr.lower().replace('-', '_')] = pkginfo[attr]
-        except email.Errors.MessageError, e:
-            self.log.warning('Failed to parse PKG-INFO file for %s: %s', dist,
-                             e, exc_info=True)
-        return info

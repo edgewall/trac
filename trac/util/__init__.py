@@ -17,7 +17,6 @@
 # Author: Jonas Borgström <jonas@edgewall.com>
 #         Matthew Good <trac@matt-good.net>
 
-from email.Utils import encode_rfc2231
 import locale
 import md5
 import os
@@ -176,6 +175,40 @@ def safe__import__(module_name):
                 del(sys.modules[modname])
         raise e
 
+# -- setuptools utils
+
+def get_module_path(module):
+    # Determine the plugin that this component belongs to
+    path = module.__file__
+    module_name = module.__name__
+    if path.endswith('.pyc') or path.endswith('.pyo'):
+        path = path[:-1]
+    if os.path.basename(path) == '__init__.py':
+        path = os.path.dirname(path)
+    base_path = os.path.splitext(path)[0]
+    while base_path.replace(os.sep, '.').endswith(module_name):
+        base_path = os.path.dirname(base_path)
+        module_name = '.'.join(module_name.split('.')[:-1])
+        if not module_name:
+            break
+    return base_path
+
+def get_pkginfo(dist):
+    import email
+    attrs = ('author', 'author-email', 'license', 'home-page', 'summary',
+             'description', 'version')
+    info = {}
+    def normalize(attr):
+        return attr.lower().replace('-', '_')
+    try:
+        pkginfo = email.message_from_string(dist.get_metadata('PKG-INFO'))
+        for attr in [key for key in attrs if key in pkginfo]:
+            info[normalize(attr)] = pkginfo[attr]
+    except email.Errors.MessageError, e:
+        err = 'Failed to parse PKG-INFO file for %s: %s' % (dist, e)
+        for attr in attrs:
+            info[normalize(attr)] = err
+    return info
 
 # -- crypto utils
 
@@ -407,6 +440,7 @@ class Ranges(object):
 
 def content_disposition(type, filename=None):
     """Generate a properly escaped Content-Disposition header"""
+    from email.Utils import encode_rfc2231
     if isinstance(filename, unicode):
         filename = filename.encode('utf-8')
     return type +'; filename*=' + encode_rfc2231(filename, 'utf-8')
