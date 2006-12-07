@@ -30,7 +30,8 @@ from trac import mimeview
 from trac.config import *
 from trac.core import *
 from trac.env import IEnvironmentSetupParticipant
-from trac.util import compat, get_reporter_id, presentation
+from trac.util import compat, get_reporter_id, presentation, get_pkginfo, \
+                      get_module_path
 from trac.util.compat import partial, set
 from trac.util.html import plaintext
 from trac.util.text import pretty_size, shorten_line, unicode_quote_plus, \
@@ -243,6 +244,20 @@ class Chrome(Component):
 
 
     def environment_needs_upgrade(self, db):
+        # Get genshi version
+        try:
+            import genshi
+            import pkg_resources
+            genshi_path = get_module_path(genshi)
+            for dist in pkg_resources.find_distributions(genshi_path,
+                                                         only=True):
+                genshi_version = get_pkginfo(dist).get('version')
+                break
+            else:
+                genshi_version = 'unknown'
+            self.env.systeminfo['Genshi'] = genshi_version
+        except ImportError:
+            pass
         return False
 
     def upgrade_environment(self, db):
