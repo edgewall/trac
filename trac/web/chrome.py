@@ -226,7 +226,8 @@ class Chrome(Component):
 
     def __init__(self):
         import genshi
-        self.env.systeminfo['Genshi'] = get_pkginfo(genshi).get('version')
+        self.env.systeminfo.append(('Genshi',
+                                    get_pkginfo(genshi).get('version')))
 
     # IEnvironmentSetupParticipant methods
 
