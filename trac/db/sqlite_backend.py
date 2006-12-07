@@ -21,6 +21,7 @@ import weakref
 from trac.core import *
 from trac.db.api import IDatabaseConnector
 from trac.db.util import ConnectionWrapper
+from trac.util import get_pkginfo
 
 _like_escape_re = re.compile(r'([/_%])')
 
@@ -108,13 +109,19 @@ class SQLiteConnector(Component):
     """SQLite database support."""
     implements(IDatabaseConnector)
 
+    def __init__(self):
+        self._version = None
+
     def get_supported_schemes(self):
         return [('sqlite', 1)]
 
     def get_connection(self, path, params={}):
-        global sqlite_version_string
-        self.env.systeminfo['pysqlite'] = '%d.%d.%s' % sqlite.version_info
-        self.env.systeminfo['SQLite'] = sqlite_version_string
+        if not self._version:
+            global sqlite_version_string
+            self._version = get_pkginfo(sqlite).get(
+                'version', '%d.%d.%s' % sqlite.version_info)
+            self.env.systeminfo.extend([('SQLite', sqlite_version_string),
+                                        ('pysqlite', self._version)])
         return SQLiteConnection(path, params)
 
     def init_db(cls, path, params={}):

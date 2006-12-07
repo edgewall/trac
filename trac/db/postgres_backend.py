@@ -19,6 +19,7 @@ import re
 from trac.core import *
 from trac.db.api import IDatabaseConnector
 from trac.db.util import ConnectionWrapper
+from trac.util import get_pkginfo
 
 psycopg = None
 PgSQL = None
@@ -32,6 +33,9 @@ class PostgreSQLConnector(Component):
 
     implements(IDatabaseConnector)
 
+    def __init__(self):
+        self._version = None
+
     def get_supported_schemes(self):
         return [('postgres', 1)]
 
@@ -40,11 +44,20 @@ class PostgreSQLConnector(Component):
         global psycopg
         global PgSQL
         cnx = PostgreSQLConnection(path, user, password, host, port, params)
-        if psycopg:
-            self.env.systeminfo['psycopg2'] = psycopg.__version__
-        elif PgSQL:
-            import pyPgSQL
-            self.env.systeminfo['pyPgSQL'] = pyPgSQL.__version__
+        if not self._version:
+            if psycopg:
+                self._version = get_pkginfo(psycopg).get('version',
+                                                         psycopg.__version__)
+                name = 'psycopg2'
+            elif PgSQL:
+                import pyPgSQL
+                self._version = get_pkginfo(pyPgSQL).get('version',
+                                                         pyPgSQL.__version__)
+                name = 'pyPgSQL'
+            else:
+                name = 'unknown postgreSQL driver'
+                self._version = '?'
+            self.env.systeminfo.append((name, self._version))
         return cnx
 
     def init_db(self, path, user=None, password=None, host=None, port=None,

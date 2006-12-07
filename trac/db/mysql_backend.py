@@ -19,6 +19,7 @@ import re
 from trac.core import *
 from trac.db.api import IDatabaseConnector
 from trac.db.util import ConnectionWrapper
+from trac.util import get_pkginfo
 
 _like_escape_re = re.compile(r'([/_%])')
 
@@ -32,15 +33,21 @@ class MySQLConnector(Component):
 
     implements(IDatabaseConnector)
 
+    def __init__(self):
+        self._version = None
+
     def get_supported_schemes(self):
         return [('mysql', 1)]
 
     def get_connection(self, path, user=None, password=None, host=None,
                        port=None, params={}):
-        import MySQLdb
-        self.env.systeminfo['MySQLdb'] = MySQLdb.__version__
         cnx = MySQLConnection(path, user, password, host, port, params)
-        self.env.systeminfo['MySQL'] = cnx.cnx.get_server_info()
+        if not self._version:
+            import MySQLdb
+            self._version = get_pkginfo(MySQLdb).get('version',
+                                                     MySQLdb.__version__)
+            self.env.systeminfo.extend([('MySQL', cnx.cnx.get_server_info()),
+                                        ('MySQLdb', self._version)])
         return cnx
     
     def init_db(self, path, user=None, password=None, host=None, port=None,

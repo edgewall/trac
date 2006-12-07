@@ -22,3 +22,6 @@
   background: #f9f9f0;
 }
 #content.about_config td.doc { padding: 3px 1em 3px 1em; }
+
+#content.about_systeminfo #systeminfo { margin: 1em; width: auto; }
+#content.about_systeminfo #systeminfo th { font-weight: bold; text-align: right; }

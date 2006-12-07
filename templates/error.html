@@ -46,7 +46,7 @@ ${pprint(req.args)}
 </py:if>
 
 ==== System Information ====
-<py:for each="k, v in trac.systeminfo.items()">
+<py:for each="k, v in trac.systeminfo">
 || '''$k''' || ${'\n' in v and ['`%s`[[br]]' % line for line in v.split('\n')] or '`%s`' % v} ||
 </py:for>
 
@@ -113,7 +113,7 @@ ${traceback}
               </form>
               <h2>System Information:</h2>
               <table class="listing" id="systeminfo">
-                <tr py:for="name, value in trac.systeminfo.items()">
+                <tr py:for="name, value in trac.systeminfo">
                   <th>$name:</th>
                   <td>$value</td>
                 </tr>

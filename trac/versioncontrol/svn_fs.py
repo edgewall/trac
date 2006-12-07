@@ -246,6 +246,9 @@ class SubversionConnector(Component):
 
     implements(IRepositoryConnector)
 
+    def __init__(self):
+        self._version = None
+
     def get_supported_types(self):
         global has_subversion
         if has_subversion:
@@ -257,7 +260,9 @@ class SubversionConnector(Component):
 
         The repository is wrapped in a `CachedRepository`.
         """
-        self.env.systeminfo['Subversion'] = self._get_version()
+        if not self._version:
+            self._version = self._get_version()
+            self.env.systeminfo.append(('Subversion', self._version))
         repos = SubversionRepository(dir, None, self.log)
         crepos = CachedRepository(self.env.get_db_cnx(), repos, None, self.log)
         if authname:
@@ -270,7 +275,8 @@ class SubversionConnector(Component):
         version = (core.SVN_VER_MAJOR, core.SVN_VER_MINOR, core.SVN_VER_MICRO)
         version_string = '%d.%d.%d' % version
         if version[0] < 1:
-            raise TracError("Subversion >= 1.0 required: Found "+version_string)
+            raise TracError("Subversion >= 1.0 required: Found " +
+                            version_string)
         return version_string
 
 

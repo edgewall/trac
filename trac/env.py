@@ -18,11 +18,12 @@ import os
 import sys
 from urlparse import urlsplit
 
-from trac import db_default, util
+from trac import db_default
 from trac.config import *
 from trac.core import Component, ComponentManager, implements, Interface, \
                       ExtensionPoint, TracError
 from trac.db import DatabaseManager
+from trac.util import get_pkginfo
 from trac.versioncontrol import RepositoryManager
 from trac.web.href import Href
 
@@ -122,7 +123,12 @@ class Environment(Component, ComponentManager):
         self.path = path
         self.setup_config(load_defaults=create)
         self.setup_log()
-        self.systeminfo = {'Python': sys.version}
+
+        from trac import core, __version__ as VERSION
+        self.systeminfo = [
+            ('Trac', get_pkginfo(core).get('version', VERSION)),
+            ('Python', sys.version)
+            ]
         self._href = self._abs_href = None
 
         from trac.loader import load_components

@@ -86,8 +86,8 @@ class PygmentsRenderer(Component):
         self.log.debug("Pygments installed? %r", have_pygments)
         if have_pygments:
             import pygments
-            version = get_pkginfo(pygments).get('version')
-            self.env.systeminfo['Pygments'] = version
+            self.env.systeminfo.append(('Pygments',
+                                        get_pkginfo(pygments).get('version')))
         self._types = None
 
     # IHTMLPreviewRenderer implementation

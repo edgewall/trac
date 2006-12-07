@@ -138,7 +138,7 @@ class EnvironmentStub(Environment):
         Component.__init__(self)
         self.enabled_components = enable
         self.db = InMemoryDatabase()
-        self.systeminfo = {'Python': sys.version}
+        self.systeminfo = [('Python': sys.version)]
 
         import trac
         self.path = os.path.dirname(trac.__file__)

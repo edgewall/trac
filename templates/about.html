@@ -59,19 +59,11 @@
 
       <div py:when="'systeminfo'" py:strip="">
         <h1>System Information</h1>
-        <table class="wiki">
-          <thead>
-            <tr>
-              <th class="name">Name</th>
-              <th class="value">Value</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr py:for="name, value in about.systeminfo.items()">
-              <td class="name">$name</td>
-              <td class="value">$value</td>
-            </tr>
-          </tbody>
+        <table class="listing" id="systeminfo">
+          <tr py:for="name, value in trac.systeminfo">
+            <th>$name:</th>
+            <td>$value</td>
+          </tr>
         </table>
       </div>
 
