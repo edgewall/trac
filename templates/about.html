@@ -17,6 +17,9 @@
         <li class="first${'CONFIG_VIEW' not in perm and ' last' or ''}">
           <a href="${href.about()}">Overview</a>
         </li>
+        <li py:if="'CONFIG_VIEW' in perm">
+          <a href="${href.about('systeminfo')}">System Information</a>
+        </li>
         <li class="last" py:if="'CONFIG_VIEW' in perm">
           <a href="${href.about('config')}">Configuration</a>
         </li>
@@ -52,6 +55,24 @@
           See <a href="${href.wiki('TracIni')}">TracIni</a> for information about
           the configuration.
         </div>
+      </div>
+
+      <div py:when="'systeminfo'" py:strip="">
+        <h1>System Information</h1>
+        <table class="wiki">
+          <thead>
+            <tr>
+              <th class="name">Name</th>
+              <th class="value">Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr py:for="name, value in about.systeminfo.items()">
+              <td class="name">$name</td>
+              <td class="value">$value</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
 
       <div py:otherwise="" py:strip="">

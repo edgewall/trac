@@ -60,8 +60,8 @@ class AboutModule(Component):
         page = req.args.get('page', 'default')
         if page == 'config':
             data = self._render_config(req)
-        elif page == 'plugins':
-            data = self._render_plugins(req)
+        elif page == 'systeminfo':
+            data = self._render_systeminfo(req)
         else:
             data = {}
 
@@ -88,6 +88,8 @@ class AboutModule(Component):
         sections.sort(lambda x,y: cmp(x['name'], y['name']))
         data['config'] = sections
         return data
-        # TODO:
-        # We should probably export more info here like:
-        # permissions, components...
+
+    def _render_systeminfo(self, req):
+        req.perm.assert_permission('CONFIG_VIEW')
+        data = {'page': 'systeminfo', 'systeminfo': self.env.systeminfo}
+        return data
