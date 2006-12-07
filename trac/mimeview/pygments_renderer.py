@@ -21,6 +21,7 @@ from trac.core import *
 from trac.config import ListOption, Option
 from trac.mimeview.api import IHTMLPreviewRenderer, Mimeview
 from trac.prefs import IPreferencePanelProvider
+from trac.util import get_module_path, get_pkginfo
 from trac.util.datefmt import http_date, localtz
 from trac.web import IRequestHandler
 from trac.web.chrome import add_stylesheet
@@ -83,6 +84,20 @@ class PygmentsRenderer(Component):
 
     def __init__(self):
         self.log.debug("Pygments installed? %r", have_pygments)
+        if have_pygments:
+            try:
+                import pygments
+                import pkg_resources
+                pygments_path = get_module_path(pygments)
+                for dist in pkg_resources.find_distributions(pygments_path,
+                                                             only=True):
+                    pygments_version = get_pkginfo(dist).get('version')
+                    break
+                else:
+                    pygments_version = 'unknown'
+                self.env.systeminfo['Pygments'] = pygments_version
+            except ImportError:
+                pass
         self._types = None
 
     # IHTMLPreviewRenderer implementation
