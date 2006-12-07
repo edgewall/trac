@@ -224,6 +224,22 @@ class Chrome(Component):
         'to_unicode': to_unicode,
     }
 
+    def __init__(self):
+        # Get genshi version
+        try:
+            import genshi
+            import pkg_resources
+            genshi_path = get_module_path(genshi)
+            for dist in pkg_resources.find_distributions(genshi_path,
+                                                         only=True):
+                genshi_version = get_pkginfo(dist).get('version')
+                break
+            else:
+                genshi_version = 'unknown'
+            self.env.systeminfo['Genshi'] = genshi_version
+        except ImportError:
+            pass
+
     # IEnvironmentSetupParticipant methods
 
     def environment_created(self):
@@ -244,20 +260,6 @@ class Chrome(Component):
 
 
     def environment_needs_upgrade(self, db):
-        # Get genshi version
-        try:
-            import genshi
-            import pkg_resources
-            genshi_path = get_module_path(genshi)
-            for dist in pkg_resources.find_distributions(genshi_path,
-                                                         only=True):
-                genshi_version = get_pkginfo(dist).get('version')
-                break
-            else:
-                genshi_version = 'unknown'
-            self.env.systeminfo['Genshi'] = genshi_version
-        except ImportError:
-            pass
         return False
 
     def upgrade_environment(self, db):
