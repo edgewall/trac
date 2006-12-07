@@ -1,8 +1,11 @@
-Release Notes for Trac 0.10.2
-=============================
-November 13, 2006
+Release Notes for Trac 0.10.3rc1
+================================
+December 7, 2006
 
-We're happy to announce the Trac 0.10.2 release, available from:
+NOTE: This is a release candidate, the real 0.10.3 will hopefully be
+      released early next week.
+
+We're happy to announce the Trac 0.10.3-rc1 release, available from:
 
   http://trac.edgewall.org/wiki/TracDownload
 
@@ -11,16 +14,16 @@ list. List information, subscription and archive available at:
 
   http://trac.edgewall.org/wiki/MailingList
 
-Trac 0.10.2 is a bug fix release and fixes few bugs introduced in the 
-0.10.1 release. A brief summary of major changes:
+Trac 0.10.3 is a bug fix release and fixes few bugs introduced in the 
+0.10.1 and 0.10.2 releases. A brief summary of major changes:
 
- * Fixes deadlock when using authz_file config option (#3996).
- * Makes the CSRF code play nice with the XmlRpcPlugin (#4122).
- * Fixes Timeline breakage after svn commit when using sqlite (#4120).
+ * Timeline fail to load with a "NoSuchChangeset" error message (#4132).
+ * Timed out MySQL connections not handled properly (#3645).
+ * Subversion repository resync broken. (#4204).
 
 The complete list of closed tickets can be found here:
 
-   http://trac.edgewall.org/query?status=closed&milestone=0.10.2
+   http://trac.edgewall.org/query?status=closed&milestone=0.10.3
 
 
 Acknowledgements
