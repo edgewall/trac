@@ -61,7 +61,7 @@ class Query(object):
                 order = 'time'
             elif order == 'modified':
                 order = 'changetime'
-            if order in ['time', 'changetime']:
+            if order in ('time', 'changetime'):
                 self.order = order
             else:
                 self.order = 'priority'
@@ -351,10 +351,10 @@ class Query(object):
                 col = 't.' + name
             else:
                 col = name + '.value'
-            if name == 'id':
-                # FIXME: This is a somewhat ugly hack.  Can we also have the
-                #        column type for this?  If it's an integer, we do first
-                #        one, if text, we do 'else'
+            # FIXME: This is a somewhat ugly hack.  Can we also have the
+            #        column type for this?  If it's an integer, we do first
+            #        one, if text, we do 'else'
+            if name in ('id', 'time', 'changetime'):
                 if desc:
                     sql.append("COALESCE(%s,0)=0 DESC," % col)
                 else:
@@ -369,9 +369,11 @@ class Query(object):
                     sql.append("%s.value DESC" % name)
                 else:
                     sql.append("%s.value" % name)
-            elif col in ['t.milestone', 't.version']:
-                time_col = name == 'milestone' and 'milestone.due' or \
-                           'version.time'
+            elif name in ('milestone', 'version'):
+                if name == 'milestone': 
+                    time_col = 'milestone.due'
+                else:
+                    time_col = 'version.time'
                 if desc:
                     sql.append("COALESCE(%s,0)=0 DESC,%s DESC,%s DESC"
                                % (time_col, time_col, col))
