@@ -271,8 +271,7 @@ class LogModule(Component):
                 indexes = [sep in match and match.index(sep) for sep in ':@']
                 idx = min([i for i in indexes if i is not False])
                 path, revs = match[:idx], match[idx+1:]
-        ranges = Ranges(revs.replace(':', '-'))
-        revs = str(ranges) or None
+        revs = self._normalize_ranges(formatter.req, revs)
         if revs and query:
             query = '&' + query[1:]
         href = formatter.href.log(path or '/', revs=revs) + query + fragment
@@ -280,3 +279,18 @@ class LogModule(Component):
 
     LOG_LINK_RE = re.compile(r"([^@:]*)[@:]%s?" % REV_RANGE)
 
+    def _normalize_ranges(self, req, revs):
+        ranges = revs.replace(':', '-')
+        try:
+            # fast path; only numbers
+            revranges = Ranges(ranges) 
+        except ValueError:
+            # slow path, normalize each rev
+            repos = self.env.get_repository(req.authname)
+            splitted_ranges = re.split(r'([-,])', ranges)
+            revs = [repos.normalize_rev(r) for r in splitted_ranges[::2]]
+            seps = splitted_ranges[1::2]+['']
+            ranges = ''.join([str(rev)+sep for rev, sep in zip(revs, seps)])
+            revranges = Ranges(ranges)
+        return str(revranges) or None
+               

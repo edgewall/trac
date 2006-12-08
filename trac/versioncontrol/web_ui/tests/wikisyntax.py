@@ -12,8 +12,15 @@ def _get_changeset(rev):
     else:
         raise NoSuchChangeset(rev)
 
-def _get_repository():
-    return Mock(get_changeset=_get_changeset, youngest_rev='latest')
+def _normalize_rev(rev):
+    try:
+        return int(rev)
+    except ValueError:
+        return '200'
+    
+def _get_repository(authname=None):
+    return Mock(get_changeset=_get_changeset, youngest_rev='200',
+                normalize_rev=_normalize_rev)
 
 def repository_setup(tc):
     setattr(tc.env, 'get_repository', _get_repository)
@@ -140,6 +147,7 @@ log:trunk@12:23
 log:trunk@12-23
 log:trunk:12:23
 log:trunk:12-23
+log:trunk:12-head
 ------------------------------
 <p>
 <a class="source" href="/log/?revs=12">log:@12</a>
@@ -149,6 +157,7 @@ log:trunk:12-23
 <a class="source" href="/log/trunk?revs=12-23">log:trunk@12-23</a>
 <a class="source" href="/log/trunk?revs=12-23">log:trunk:12:23</a>
 <a class="source" href="/log/trunk?revs=12-23">log:trunk:12-23</a>
+<a class="source" href="/log/trunk?revs=12-200">log:trunk:12-head</a>
 </p>
 ------------------------------
 ============================== log: link resolver + query
@@ -171,10 +180,12 @@ log:trunk@12?limit=10
 ============================== Multiple Log ranges
 r12:20,25,35:56,68,69,100-120
 [12:20,25,35:56,68,69,100-120]
+[12:20,25,88:head,68,69] (not supported)
 ------------------------------
 <p>
 <a class="source" href="/log/?revs=12-20%2C25%2C35-56%2C68-69%2C100-120">r12:20,25,35:56,68,69,100-120</a>
 <a class="source" href="/log/?revs=12-20%2C25%2C35-56%2C68-69%2C100-120">[12:20,25,35:56,68,69,100-120]</a>
+[12:20,25,88:head,68,69] (not supported)
 </p>
 ------------------------------
 ============================== Link resolver counter examples
@@ -283,7 +294,7 @@ export:123:/foo/pict.gif
 export:/foo/pict.gif@123
 ------------------------------
 <p>
-<a class="source" href="/export/latest/foo/bar.html">export:/foo/bar.html</a>
+<a class="source" href="/export/200/foo/bar.html">export:/foo/bar.html</a>
 <a class="source" href="/export/123/foo/pict.gif">export:123:/foo/pict.gif</a>
 <a class="source" href="/export/123/foo/pict.gif">export:/foo/pict.gif@123</a>
 </p>
@@ -292,7 +303,7 @@ export:/foo/pict.gif@123
 export:/foo/bar.html#header
 ------------------------------
 <p>
-<a class="source" href="/export/latest/foo/bar.html#header">export:/foo/bar.html#header</a>
+<a class="source" href="/export/200/foo/bar.html#header">export:/foo/bar.html#header</a>
 </p>
 ------------------------------
 """ # " (be Emacs friendly...)
@@ -303,7 +314,8 @@ def suite():
     suite = unittest.TestSuite()
     suite.addTest(formatter.suite(CHANGESET_TEST_CASES, repository_setup,
                                   __file__))
-    suite.addTest(formatter.suite(LOG_TEST_CASES, file=__file__))
+    suite.addTest(formatter.suite(LOG_TEST_CASES, repository_setup,
+                                  file=__file__))
     suite.addTest(formatter.suite(DIFF_TEST_CASES, file=__file__))
     suite.addTest(formatter.suite(SOURCE_TEST_CASES, repository_setup,
                                   file=__file__))
