@@ -207,7 +207,7 @@ SELECT p.value AS __color__,
   ORDER BY (version IS NULL),version, p.value, t.type, time
 """ % owner),
 #----------------------------------------------------------------------------
-('All Tickets by Milestone',
+('Active Tickets by Milestone',
 """
 This report shows how to color results by priority,
 while grouping results by milestone.
