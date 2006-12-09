@@ -15,8 +15,9 @@ def tests():
   and a string for the authz configuration contents.
   
   >>> from trac.versioncontrol.svn_authz import RealSubversionAuthorizer
+  >>> from trac.test import Mock
   >>> from StringIO import StringIO
-  >>> make_auth = lambda mod, cfg: RealSubversionAuthorizer(None,
+  >>> make_auth = lambda mod, cfg, repos=None: RealSubversionAuthorizer(repos,
   ...                   'user', mod, None, StringIO(cfg))
   
   
@@ -205,6 +206,21 @@ def tests():
       >>> int(a.has_permission('/b'))
       0
   
+  Scoped Repository
+  -----------------
+  >>> repos = Mock(scope='/scope')
+  >>> a = make_auth('', '''
+  ... [/not_in_scope]
+  ... * = r
+  ... [/scope/in_scope]
+  ... * = r
+  ... ''',
+  ... repos)
+  >>> int(a.has_permission('/not_in_scope'))
+  0
+  >>> int(a.has_permission('/in_scope'))
+  1
+
   Changeset Permissions
   ---------------------
   A test should go here for the changeset permissions.
