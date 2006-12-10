@@ -171,7 +171,7 @@ ORDER BY COALESCE(t.id,0)=0,t.id""")
 """SELECT t.id AS id,t.summary AS summary,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.milestone AS milestone,t.time AS time,t.changetime AS changetime,priority.value AS priority_value
 FROM ticket AS t
   LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
-WHERE COALESCE(t.owner,'') LIKE %s
+WHERE COALESCE(t.owner,'') LIKE %s ESCAPE '/'
 ORDER BY COALESCE(t.id,0)=0,t.id""")
         self.assertEqual(['%someone%'], args)
         tickets = query.execute(Mock(href=self.env.href))
@@ -183,7 +183,7 @@ ORDER BY COALESCE(t.id,0)=0,t.id""")
 """SELECT t.id AS id,t.summary AS summary,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.milestone AS milestone,t.time AS time,t.changetime AS changetime,priority.value AS priority_value
 FROM ticket AS t
   LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
-WHERE COALESCE(t.owner,'') NOT LIKE %s
+WHERE COALESCE(t.owner,'') NOT LIKE %s ESCAPE '/'
 ORDER BY COALESCE(t.id,0)=0,t.id""")
         self.assertEqual(['%someone%'], args)
         tickets = query.execute(Mock(href=self.env.href))
@@ -195,7 +195,7 @@ ORDER BY COALESCE(t.id,0)=0,t.id""")
 """SELECT t.id AS id,t.summary AS summary,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.milestone AS milestone,t.time AS time,t.changetime AS changetime,priority.value AS priority_value
 FROM ticket AS t
   LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
-WHERE COALESCE(t.owner,'') LIKE %s
+WHERE COALESCE(t.owner,'') LIKE %s ESCAPE '/'
 ORDER BY COALESCE(t.id,0)=0,t.id""")
         self.assertEqual(['someone%'], args)
         tickets = query.execute(Mock(href=self.env.href))
@@ -207,7 +207,7 @@ ORDER BY COALESCE(t.id,0)=0,t.id""")
 """SELECT t.id AS id,t.summary AS summary,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.milestone AS milestone,t.time AS time,t.changetime AS changetime,priority.value AS priority_value
 FROM ticket AS t
   LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
-WHERE COALESCE(t.owner,'') LIKE %s
+WHERE COALESCE(t.owner,'') LIKE %s ESCAPE '/'
 ORDER BY COALESCE(t.id,0)=0,t.id""")
         self.assertEqual(['%someone'], args)
         tickets = query.execute(Mock(href=self.env.href))
@@ -269,12 +269,12 @@ ORDER BY COALESCE(t.id,0)=0,t.id""")
         query = Query.from_string(self.env, None, 'owner~=someone|someone_else',
                                   order='id')
         sql, args = query.get_sql()
-        self.assertEqual(['%someone%', '%someone_else%'], args)
+        self.assertEqual(['%someone%', '%someone/_else%'], args)
         self.assertEqual(sql,
 """SELECT t.id AS id,t.summary AS summary,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.milestone AS milestone,t.time AS time,t.changetime AS changetime,priority.value AS priority_value
 FROM ticket AS t
   LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
-WHERE (COALESCE(t.owner,'') LIKE %s OR COALESCE(t.owner,'') LIKE %s)
+WHERE (COALESCE(t.owner,'') LIKE %s ESCAPE '/' OR COALESCE(t.owner,'') LIKE %s ESCAPE '/')
 ORDER BY COALESCE(t.id,0)=0,t.id""")
         tickets = query.execute(Mock(href=self.env.href))
 

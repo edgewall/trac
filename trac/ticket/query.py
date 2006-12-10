@@ -271,14 +271,16 @@ class Query(object):
                         value)
             if not value:
                 return None
-
+            db = self.env.get_db_cnx()
+            value = db.like_escape(value)
             if mode == '~':
                 value = '%' + value + '%'
             elif mode == '^':
                 value = value + '%'
             elif mode == '$':
                 value = '%' + value
-            return ("COALESCE(%s,'') %sLIKE %%s" % (name, neg and 'NOT ' or ''),
+            return ("COALESCE(%s,'') %s%s" % (name, neg and 'NOT ' or '',
+                                              db.like()),
                     value)
 
         clauses = []
