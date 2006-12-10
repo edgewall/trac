@@ -8,6 +8,14 @@
   <xi:include href="macros.html" />
   <head>
     <title>$path</title>
+    <script type="text/javascript">
+      $(document).ready(function() {
+        $("#jumploc input").hide();
+        $("#jumploc select").change(function () {
+          this.parentNode.parentNode.submit();
+        })
+      });
+    </script>
   </head>
 
   <body>
@@ -20,13 +28,30 @@
 
     <div id="content" class="browser">
 
-      <h1>${browser_path_links(path_links)}</h1>
+      <h1>${browser_path_links(path_links, stickyrev)}</h1>
 
       <div id="jumprev">
         <form action="" method="get">
           <div>
-            <label for="rev">View revision:</label>
+            <label for="rev" title="${sticky_rev and 'Hint: clear the field to view latest revision' or None}">
+              View revision:</label>
             <input type="text" id="rev" name="rev" value="$stickyrev" size="6" />
+          </div>
+        </form>
+      </div>
+
+      <div py:if="quickjump_entries" id="jumploc">
+        <form action="" method="get">
+          <div class="buttons">
+            <label for="preselected">Visit:</label>
+            <select id="preselected" name="preselected">
+              <option selected="selected" />
+              <optgroup py:for="category, locations in groupby(quickjump_entries, key=lambda q: q[0])"
+                label="${category}">
+                <option py:for="_, name, path, rev in locations" value="${href.browser(path, rev=rev)}">$name</option>
+              </optgroup>
+            </select>
+            <input type="submit" value="Go!" title="Jump to the chosen preselected path" />
           </div>
         </form>
       </div>

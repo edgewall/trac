@@ -39,6 +39,10 @@ class CachedRepository(Repository):
     def close(self):
         self.repos.close()
 
+    def get_quickjump_entries(self, rev):
+        for category, name, path, rev in self.repos.get_quickjump_entries(rev):
+            yield category, name, path, rev
+
     def get_changeset(self, rev):
         return CachedChangeset(self.repos, self.repos.normalize_rev(rev),
                                self.db, self.authz)

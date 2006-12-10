@@ -13,9 +13,14 @@ h1 :link, h1 :visited { color: #b00 }
 h1 .first:link, h1 .first:visited { color: #998 }
 h1 .sep { color: #666; padding: 0 .1em }
 
-#jumprev { float: right; font-size: 10px; margin: 0 0 0 }
-#jumprev form { margin: 0 }
-#jumprev input { font-size: 10px; margin-right: 0 }
+#jumprev, #jumploc { float: right; font-size: 10px; margin: 0 0 0.6em }
+#jumprev form, #jumploc form { margin: 0 }
+#jumprev input, #jumploc select, #jumploc input { 
+  font-size: 10px; 
+  margin: 0; 
+}
+#jumploc div.buttons { margin: 0;}
+#jumploc { margin-right: 2em;}
 
 /* Styles for the directory entries table
    (extends the styles for "table.listing") */
@@ -63,7 +68,7 @@ h1 .sep { color: #666; padding: 0 .1em }
 /* Log */
 tr.diff input { padding: 0 1em; margin: 0 }
 
-div.buttons { clear: left }
+div.log div.buttons { clear: left }
 @media print { 
  th.diff, td.diff { display: none }
 }

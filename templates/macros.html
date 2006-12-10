@@ -39,7 +39,7 @@
   -
   -      Each component is a link to the corresponding location in the browser.
   -->
-  <py:def function="browser_path_links(path_links)">
+  <py:def function="browser_path_links(path_links,rev=None)">
     <py:for each="idx, part in enumerate(path_links)">
       <py:with vars="first = idx == 0; last = idx == len(path_links) - 1">
         <a class="${first and 'first' or None}"
@@ -48,6 +48,9 @@
         <py:if test="not last"><span class="sep">/</span></py:if>
       </py:with>
     </py:for>
+    <py:if test="rev"><span class="sep">@</span>
+      <a href="${href.changeset(rev)}" title="View changeset $rev">$rev</a>
+    </py:if>
   </py:def>
 
   <!--! Add Previous/Up/Next navigation links

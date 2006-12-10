@@ -93,6 +93,10 @@ class BrowserModule(Component):
             return True
 
     def process_request(self, req):
+        go_to_preselected = req.args.get('preselected')
+        if go_to_preselected:
+            req.redirect(go_to_preselected)
+            
         path = req.args.get('path', '/')
         rev = req.args.get('rev', None)
         order = req.args.get('order', None)
@@ -127,6 +131,7 @@ class BrowserModule(Component):
             'path_links': path_links,
             'dir': node.isdir and self._render_dir(req, repos, node, rev),
             'file': node.isfile and self._render_file(req, repos, node, rev),
+            'quickjump_entries': list(repos.get_quickjump_entries(rev)),
             'wiki_format_messages':
             self.config['changeset'].getbool('wiki_format_messages')
         }

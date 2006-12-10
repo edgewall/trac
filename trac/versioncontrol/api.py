@@ -139,6 +139,16 @@ class Repository(object):
         """Clear any data that may have been cached in instance properties."""
         pass
 
+    def get_quickjump_entries(self, rev):
+        """Generate a list of interesting places in the repository.
+
+        `rev` might be used to restrict the list of available locations,
+        but in general it's best to produce all known locations.
+
+        The generated results must be of the form (category, name, path, rev).
+        """
+        return []
+    
     def get_changeset(self, rev):
         """Retrieve a Changeset corresponding to the  given revision `rev`."""
         raise NotImplementedError

@@ -45,12 +45,14 @@ import weakref
 import posixpath
 from datetime import datetime
 
+from trac.config import ListOption
 from trac.core import *
 from trac.versioncontrol import Changeset, Node, Repository, \
                                 IRepositoryConnector, \
                                 NoSuchChangeset, NoSuchNode
 from trac.versioncontrol.cache import CachedRepository
 from trac.versioncontrol.svn_authz import SubversionAuthorizer
+from trac.util import sorted, embedded_numbers
 from trac.util.text import to_unicode
 from trac.util.datefmt import utc
 
@@ -246,6 +248,18 @@ class SubversionConnector(Component):
 
     implements(IRepositoryConnector)
 
+    branches = ListOption('svn', 'branches', 'trunk,branches/*', doc=
+        """List of paths categorized as ''branches''.
+        If a path ends with '*', then all the directory entries found
+        below that path will be returned.
+        """)
+
+    tags = ListOption('svn', 'tags', 'tags/*', doc=
+        """List of paths categorized as ''tags''.
+        If a path ends with '*', then all the directory entries found
+        below that path will be returned.
+        """)
+
     def __init__(self):
         self._version = None
 
@@ -263,13 +277,14 @@ class SubversionConnector(Component):
         if not self._version:
             self._version = self._get_version()
             self.env.systeminfo.append(('Subversion', self._version))
-        repos = SubversionRepository(dir, None, self.log)
+        repos = SubversionRepository(dir, None, self.log,
+                                     {'tags': self.tags,
+                                      'branches': self.branches})
         crepos = CachedRepository(self.env.get_db_cnx(), repos, None, self.log)
         if authname:
             authz = SubversionAuthorizer(self.env, crepos, authname)
             repos.authz = crepos.authz = authz
         return crepos
-            
 
     def _get_version(self):
         version = (core.SVN_VER_MAJOR, core.SVN_VER_MINOR, core.SVN_VER_MICRO)
@@ -285,9 +300,10 @@ class SubversionRepository(Repository):
     Repository implementation based on the svn.fs API.
     """
 
-    def __init__(self, path, authz, log):
+    def __init__(self, path, authz, log, options={}):
         self.path = path # might be needed by __del__()/close()
         self.log = log
+        self.options = options
         self.pool = Pool()
         
         # Remove any trailing slash or else subversion might abort
@@ -351,6 +367,34 @@ class SubversionRepository(Repository):
         self.fs_ptr = None
         self.pool = None
 
+    def _get_tags_or_branches(self, paths):
+        """Retrieve known branches or tags."""
+        for path in self.options.get(paths, []):
+            if path.endswith('*'):
+                folder = posixpath.dirname(path)
+                try:
+                    entries = [n for n in self.get_node(folder).get_entries()]
+                    for node in sorted(entries, key=lambda n: 
+                                       embedded_numbers(n.path.lower())):
+                        if node.kind == Node.DIRECTORY:
+                            yield node
+                except: # no right (TODO: should use a specific Exception here)
+                    pass
+            else:
+                try:
+                    yield self.get_node(path)
+                except: # no right
+                    pass
+
+    def get_quickjump_entries(self, rev):
+        """Retrieve known branches, as (name, id) pairs.
+        Purposedly ignores `rev` and takes always last revision.
+        """
+        for n in self._get_tags_or_branches('branches'):
+            yield 'branches', n.path, n.path, None
+        for n in self._get_tags_or_branches('tags'):
+            yield 'tags', n.path, n.created_path, n.created_rev
+
     def get_changeset(self, rev):
         return SubversionChangeset(int(rev), self.authz, self.scope,
                                    self.fs_ptr, self.pool)
@@ -361,7 +405,7 @@ class SubversionRepository(Repository):
         if path and path[-1] == '/':
             path = path[:-1]
 
-        rev = self.normalize_rev(rev)
+        rev = self.normalize_rev(rev) or self.youngest_rev
 
         return SubversionNode(path, rev, self.authz, self.scope, self.fs_ptr,
                               self.pool)
