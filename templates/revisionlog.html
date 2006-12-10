@@ -93,7 +93,7 @@
               <th class="chgset">Chgset</th>
               <th class="date">Date</th>
               <th class="author">Author</th>
-              <th class="summary">${not verbose and 'Log Message'}</th>
+              <th class="summary"><py:if test="not verbose">Log Message</py:if></th>
             </tr>
           </thead>
           <tbody>
@@ -130,10 +130,13 @@
                   </td>
                   <td class="date" py:content="format_datetime(change.date)"/>
                   <td class="author">$change.author</td>
-                  <td class="summary">${
-                    not verbose and (wiki_format_messages and wiki_to_oneliner(change.message) \
-                                 or shorten_line(change.message)) or ''
-                    }</td>
+                  <td class="summary" py:choose="">
+                    <py:when test="verbose"></py:when>
+                    <py:when test="wiki_format_messages">
+                      ${wiki_to_oneliner(change.message)}
+                    </py:when>
+                    <py:otherwise>shorten_line(change.message)</py:otherwise>
+                  </td>
                 </tr>
 
                 <tr py:if="verbose">
