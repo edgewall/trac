@@ -1,11 +1,8 @@
-Release Notes for Trac 0.10.3rc1
-================================
-December 7, 2006
+Release Notes for Trac 0.10.3
+=============================
+December 12, 2006
 
-NOTE: This is a release candidate, the real 0.10.3 will hopefully be
-      released early next week.
-
-We're happy to announce the Trac 0.10.3-rc1 release, available from:
+We're happy to announce the Trac 0.10.3 release, available from:
 
   http://trac.edgewall.org/wiki/TracDownload
 
@@ -14,7 +11,7 @@ list. List information, subscription and archive available at:
 
   http://trac.edgewall.org/wiki/MailingList
 
-Trac 0.10.3 is a bug fix release and fixes few bugs introduced in the 
+Trac 0.10.3 is a bug fix release and fixes a few bugs introduced in the 
 0.10.1 and 0.10.2 releases. A brief summary of major changes:
 
  * Timeline fail to load with a "NoSuchChangeset" error message (#4132).
