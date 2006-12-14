@@ -7,6 +7,7 @@ from trac.attachment import Attachment
 from trac.search.web_ui import SearchModule
 from trac.test import Mock
 from trac.web.href import Href
+from trac.wiki.api import Context
 from trac.wiki.tests import formatter
 
 SEARCH_TEST_CASES="""
@@ -81,8 +82,8 @@ attachment:foo.txt
 [attachment:foo.txt other file]
 ------------------------------
 <p>
-<a class="missing attachment" href="" rel="nofollow">attachment:foo.txt</a>
-<a class="missing attachment" href="" rel="nofollow">other file</a>
+<a class="missing attachment" rel="nofollow">attachment:foo.txt</a>
+<a class="missing attachment" rel="nofollow">other file</a>
 </p>
 ------------------------------
 ============================== attachment: "raw" links
@@ -119,13 +120,13 @@ def attachment_teardown(tc):
     shutil.rmtree(tc.env.path)
 
 def suite():
-    req = Mock(path_info='/wiki/WikiStart', href=Href('/'),
-               abs_href=Href('http://www.example.com/'))
     suite = unittest.TestSuite()
     suite.addTest(formatter.suite(SEARCH_TEST_CASES, file=__file__))
     suite.addTest(formatter.suite(ATTACHMENT_TEST_CASES, file=__file__,
+                                  context=Context(None, None,
+                                                  'wiki', 'WikiStart'),
                                   setup=attachment_setup,
-                                  teardown=attachment_teardown, req=req))
+                                  teardown=attachment_teardown))
     return suite
 
 if __name__ == '__main__':

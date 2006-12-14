@@ -44,7 +44,7 @@
               Version $page.version (modified by $page.author, ${dateinfo(page.time)} ago)
             </th></tr>
             <tr><td class="message">
-              ${wiki_to_oneliner(comment or '--')}
+              ${context.wiki_to_html(page.comment or '--')}
             </td></tr>
           </tbody>
         </table>
@@ -52,14 +52,14 @@
 
       <div class="wikipage searchable" py:choose="">
         <py:when test="page.exists">
-          ${wiki_to_html(page.text)}
+          ${context.wiki_to_html(page.text)}
         </py:when>
         <py:otherwise>
           Describe ${page.name} here.
         </py:otherwise>
       </div>
 
-      ${list_of_attachments(attachments, attach_href, compact=True)}
+      ${list_of_attachments(context, attachments, attach_href, compact=True)}
 
       <py:with vars="modify_perm = 'WIKI_MODIFY' in perm;
                      delete_perm = 'WIKI_DELETE' in perm;

@@ -26,15 +26,16 @@ class TimelineEvent(object):
     """Group event related information.
 
     title:   short summary for the event
-    href:    link to the resource advertised by this event
+    href:    link to the resource advertised by this event;
+             if not given, will be the context's self reference
     markup:  optional Markup that should be taken into account along side the
              contextual information
     date, author, authenticated, ipnr:
              date and authorship info for the event;
              `date` is a datetime instance
-    type, id, message:
+    context, wikitext:
              context and contextual information;
-             `message` will be interpreted as wiki text
+             `wikitext` will be interpreted as wiki text
     use_oneliner:
              contextual information should be presented in brief
     shorten_oneliner:
@@ -48,12 +49,22 @@ class TimelineEvent(object):
         self.markup = markup
         self.author = 'unknown'
         self.date = self.authenticated = self.ipnr = None
-        self.type = self.id = self.message = None
+        self.context = self.wikitext = None
         self.use_oneliner = True
         self.shorten_oneliner = True
 
     def __repr__(self):
-        return '<TimelineEvent %s - %s>' % (self.date, self.href)
+        return '<TimelineEvent %s - %r - %s>' % \
+               (self.date, self.context, self.href)
+
+    def _get_abs_href(self):
+        req = self.context.req
+        if self.href.startswith('/'):
+            # Convert from a relative `href` 
+            return Href(req.abs_href.base[:-len(req.href.base)])() + self.href
+        else:
+            return self.href
+    abs_href = property(fget=_get_abs_href)
 
     def set_changeinfo(self, date, author='anonymous', authenticated=None,
                        ipnr=None):
@@ -62,20 +73,13 @@ class TimelineEvent(object):
         self.authenticated = authenticated
         self.ipnr = ipnr
 
-    def set_context(self, type, id, message=None):
-        self.type = type
-        self.id = id
-        self.message = message
+    def set_context(self, context, wikitext=None):
+        self.context = context
+        self.wikitext = wikitext
 
     def dateuid(self):
         return to_timestamp(self.date)
 
-    def abs_href(self, req):
-        if self.href.startswith('/'):
-            # Convert from a relative `href` 
-            return Href(req.abs_href.base[:-len(req.href.base)])() + self.href
-        else:
-            return self.href
 
 
 class ITimelineEventProvider(Interface):
@@ -97,13 +101,13 @@ class ITimelineEventProvider(Interface):
     def get_timeline_events(self, req, start, stop, filters):
         """Return a list of events in the time range given by the `start` and
         `stop` parameters.
-        
+
         The `filters` parameters is a list of the enabled filters, each item
         being the name of the tuples returned by `get_timeline_filters`.
 
-        The events are TimelineEvent instances.
+        Since 0.11, the events are TimelineEvent instances.
 
         Note:
         The events returned by this function used to be tuples of the form
-        (kind, href, title, date, author, message). This is now deprecated.
+        (kind, href, title, date, author, markup). This is now deprecated.
         """

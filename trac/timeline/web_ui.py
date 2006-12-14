@@ -168,6 +168,7 @@ class TimelineModule(Component):
             href = href[len(base):]
         event = TimelineEvent(kind, title, href, markup)
         event.set_changeinfo(date, author)
+        event.set_context(Context(self.env, None), '')
         return event
 
     def _provider_failure(self, exc, req, ep, current_filters, all_filters):

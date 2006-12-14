@@ -1,6 +1,7 @@
 from trac.log import logger_factory
 from trac.test import Mock, EnvironmentStub
 from trac.ticket.query import Query, QueryModule
+from trac.wiki.api import Context
 from trac.wiki.formatter import LinkFormatter
 
 import unittest
@@ -315,7 +316,7 @@ class QueryLinksTestCase(unittest.TestCase):
     def setUp(self):
         self.env = EnvironmentStub(default_data=True)
         self.query_module = QueryModule(self.env)
-        self.formatter = LinkFormatter(self.env)
+        self.formatter = LinkFormatter(Context(self.env, None))
 
     def _format_link(self, query, label):
         return str(self.query_module._format_link(self.formatter, 'query',

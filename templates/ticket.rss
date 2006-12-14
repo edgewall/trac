@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <rss version="2.0" xmlns:py="http://genshi.edgewall.org/">
-  <channel>
+  <channel py:with="abs_context = context(abs_urls=True)">
     <title>${project.name}: Ticket $title</title>
     <link>${abs_href.ticket(ticket.id)}</link>
-    <description>${unicode(wiki_to_html(ticket.description, absurls=True))}</description>
+    <description>${unicode(abs_context.wiki_to_html(ticket.description))}</description>
     <language>en-us</language>
     <image py:if="chrome.logo.src">
       <title>$project.name</title>
@@ -22,7 +22,7 @@
         <py:if test="change.fields">
           &lt;ul&gt;
           <py:for each="field, value in change.fields.items()">
-            &lt;li&gt;&lt;strong&gt;$field&lt;/strong&gt; 
+            &lt;li&gt;&lt;strong&gt;$field&lt;/strong&gt;
             <py:choose>
               <py:when test="not value.old">
                 set to &lt;em&gt;$value.new&lt;/em&gt;
@@ -38,7 +38,7 @@
           </py:for>
           &lt;/ul&gt;
         </py:if>
-        ${unicode(wiki_to_html(change.comment, absurls=True))}
+        ${unicode(abs_context.wiki_to_html(change.comment, absurls=True))}
       </description>
       <category>Ticket</category>
     </item>

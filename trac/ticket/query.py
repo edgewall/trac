@@ -32,7 +32,7 @@ from trac.util.text import shorten_line, CRLF
 from trac.web import IRequestHandler
 from trac.web.chrome import add_link, add_script, add_stylesheet, \
                             INavigationContributor, Chrome
-from trac.wiki.api import IWikiSyntaxProvider, parse_args
+from trac.wiki.api import IWikiSyntaxProvider, parse_args, Context
 from trac.wiki.macros import WikiMacroBase # TODO: should be moved in .api
 
 
@@ -201,17 +201,17 @@ class Query(object):
         cursor.close()
         return results
 
-    def get_href(self, req, order=None, desc=None, format=None):
-        # FIXME: only use .href from that 'req' for now
+    def get_href(self, context, order=None, desc=None, format=None):
+        """Since 0.11: first argument is a Context instead of a Request."""
         if desc is None:
             desc = self.desc
         if order is None:
             order = self.order
-        return req.href.query(order=order, desc=desc and 1 or None,
-                              group=self.group or None,
-                              groupdesc=self.groupdesc and 1 or None,
-                              verbose=self.verbose and 1 or None,
-                              format=format, **self.constraints)
+        return context.href.query(order=order, desc=desc and 1 or None,
+                                  group=self.group or None,
+                                  groupdesc=self.groupdesc and 1 or None,
+                                  verbose=self.verbose and 1 or None,
+                                  format=format, **self.constraints)
 
     def get_sql(self):
         """Return a (sql, params) tuple for the query."""
@@ -394,7 +394,7 @@ class Query(object):
 
         return "".join(sql), args
 
-    def template_data(self, req, db, tickets, orig_list=None, orig_time=None):
+    def template_data(self, context, tickets, orig_list=None, orig_time=None):
         constraints = {}
         for k, v in self.constraints.items():
             constraint = {'values': [], 'mode': ''}
@@ -418,8 +418,8 @@ class Query(object):
 
         headers = [{
             'name': col, 'label': labels.get(col, 'Ticket'),
-            'href': self.get_href(req, order=col, desc=(col == self.order and
-                                                         not self.desc))
+            'href': self.get_href(context, order=col,
+                                  desc=(col == self.order and not self.desc))
             } for col in cols]
 
         fields = {}
@@ -463,6 +463,7 @@ class Query(object):
         groupsequence = [(value, groups[value]) for value in groupsequence]
 
         return {'query': self,
+                'context': context,
                 'constraints': constraints,
                 'headers': headers,
                 'fields': fields,
@@ -532,18 +533,19 @@ class QueryModule(Component):
                       req.args.has_key('groupdesc'),
                       req.args.has_key('verbose'))
 
+        context = Context(self.env, req)
         if req.args.has_key('update'):
             # Reset session vars
             for var in ('query_constraints', 'query_time', 'query_tickets'):
                 if req.session.has_key(var):
                     del req.session[var]
-            req.redirect(query.get_href(req))
+            req.redirect(query.get_href(context))
 
         # Add registered converters
         for conversion in Mimeview(self.env).get_supported_conversions(
                                              'trac.ticket.Query'):
             add_link(req, 'alternate',
-                     query.get_href(req, format=conversion[0]),
+                     query.get_href(context, format=conversion[0]),
                      conversion[1], conversion[3])
 
         format = req.args.get('format')
@@ -551,7 +553,7 @@ class QueryModule(Component):
             Mimeview(self.env).send_converted(req, 'trac.ticket.Query', query,
                                               format, 'query')
 
-        return self.display_html(req, query)
+        return self.display_html(context, query)
 
     # Internal methods
 
@@ -593,7 +595,8 @@ class QueryModule(Component):
 
         return constraints
 
-    def display_html(self, req, query):
+    def display_html(self, context, query):
+        req = context.req
         db = self.env.get_db_cnx()
         tickets = query.execute(req, db)
 
@@ -632,7 +635,7 @@ class QueryModule(Component):
                             'summary': html.EM(e)}
                 tickets.insert(orig_list.index(rest_id), data)
 
-        data = query.template_data(req, db, tickets, orig_list, orig_time)
+        data = query.template_data(context, tickets, orig_list, orig_time)
 
         # For clients without JavaScript, we add a new constraint here if
         # requested
@@ -649,7 +652,7 @@ class QueryModule(Component):
                                     verbose=query.verbose and 1 or None,
                                     **query.constraints)
 
-        req.session['query_href'] = query.get_href(req)
+        req.session['query_href'] = query.get_href(context)
         req.session['query_time'] = to_timestamp(orig_time)
         req.session['query_tickets'] = ' '.join([str(t['id']) for t in tickets])
 
@@ -695,7 +698,11 @@ class QueryModule(Component):
                                         verbose=query.verbose and 1 or None,
                                         **query.constraints)
 
-        data = {'results': results, 'query_href': query_href}
+        data = {
+            'context': Context(self.env, req),
+            'results': results,
+            'query_href': query_href
+            }
         output = Chrome(self.env).render_template(req, 'query.rss', data,
                                                   'application/rss+xml')
         return output, 'application/rss+xml'
@@ -714,8 +721,8 @@ class QueryModule(Component):
                           href=formatter.href.query() + query.replace(' ', '+'))
         else:
             try:
-                query = Query.from_string(formatter.env, formatter.req, query)
-                return html.A(label, href=query.get_href(formatter), # Hack
+                query = Query.from_string(self.env, formatter.req, query)
+                return html.A(label, href=query.get_href(formatter.context),
                               class_='query')
             except QuerySyntaxError, e:
                 return html.EM('[Error: %s]' % e, class_='error')
@@ -760,7 +767,8 @@ class TicketQueryMacro(WikiMacroBase):
     Also, using "&" as a field separator still work but is deprecated.
     """
 
-    def render_macro(self, req, name, content):
+    def render_macro(self, formatter, name, content):
+        req = formatter.req
         query_string = ''
         argv, kwargs = parse_args(content)
         if len(argv) > 0 and not 'format' in kwargs: # 0.10 compatibility hack
@@ -788,7 +796,7 @@ class TicketQueryMacro(WikiMacroBase):
             elif format == 'table':
                 db = self.env.get_db_cnx()
                 tickets = query.execute(req, db)
-                data = query.template_data(req, db, tickets)
+                data = query.template_data(formatter.context, tickets)
 
                 add_stylesheet(req, 'common/css/report.css')
                 

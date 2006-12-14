@@ -44,7 +44,7 @@ from trac.versioncontrol.web_ui.util import render_node_property
 from trac.web import IRequestHandler, RequestDone
 from trac.web.chrome import add_link, add_script, add_stylesheet, \
                             INavigationContributor
-from trac.wiki import IWikiSyntaxProvider, Formatter
+from trac.wiki import IWikiSyntaxProvider, Context, Formatter
 
 
 class ChangesetModule(Component):
@@ -264,9 +264,11 @@ class ChangesetModule(Component):
         """HTML version"""
         data['chgset'] = chgset and True
         data['restricted'] = restricted
+        context = Context(self.env, req)
 
         if chgset: # Changeset Mode (possibly restricted on a path)
             path, rev = data['new_path'], data['new_rev']
+            context = context('changeset', rev) # context.detail = path ?
 
             # -- getting the change summary from the Changeset.get_changes
             def get_changes():
@@ -345,6 +347,7 @@ class ChangesetModule(Component):
             title = self.title_for_diff(data)
             
         data['title'] = title
+        data['context'] = context
 
         if 'BROWSER_VIEW' not in req.perm:
             return
@@ -612,6 +615,7 @@ class ChangesetModule(Component):
             long_messages = self.timeline_long_messages
             
             repos = self.env.get_repository(req.authname)
+            context = Context(self.env, req)
             
             for chgset in repos.get_changesets(start, stop):
                 title = html('Changeset ', html.em('[%s]' % chgset.rev))
@@ -636,7 +640,7 @@ class ChangesetModule(Component):
                 event = TimelineEvent('changeset', title,
                                       req.href.changeset(chgset.rev), markup)
                 event.set_changeinfo(chgset.date, chgset.author, True)
-                event.set_context('changeset', chgset.rev, message)
+                event.set_context(context('changeset', chgset.rev), message)
                 event.use_oneliner = not long_messages
                 yield event
 

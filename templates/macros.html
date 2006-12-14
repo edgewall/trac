@@ -147,10 +147,9 @@
   -     'attach_href' is a url for adding a new attachment
   -
   -->
-  <py:def function="list_of_attachments(attachments, attach_href, compact=False)">
+  <py:def function="list_of_attachments(context, attachments, attach_href, compact=False)">
     <py:def function="show_one_attachment(attachment)">
-      <a href="${href('attachment', attachment.parent_type,
-                      attachment.parent_id, attachment.filename)}"
+      <a href="${context.href('attachment', context.resource, context.id, attachment.filename)}"
          title="View attachment">$attachment.filename</a>
         (${sizeinfo(attachment.size)}) - added by <em>$attachment.author</em>
         ${dateinfo(attachment.date)} ago.
@@ -161,7 +160,7 @@
         <ul>
           <li py:for="attachment in attachments">
             ${show_one_attachment(attachment)}
-            <q py:if="compact and attachment.description">${wiki_to_oneliner(attachment.description)}</q>
+            <q py:if="compact and attachment.description">${context('attachment', attachment.filename).wiki_to_oneliner(attachment.description)}</q>
           </li>
         </ul>
       </py:when>
@@ -172,7 +171,7 @@
             <py:for each="attachment in attachments">
               <dt>${show_one_attachment(attachment)}</dt>
               <dd py:if="attachment.description">
-                ${wiki_to_oneliner(attachment.description)}
+                ${context('attachment', attachment.filename).wiki_to_oneliner(attachment.description)}
               </dd>
             </py:for>
           </dl>

@@ -30,7 +30,7 @@ from trac.versioncontrol.web_ui.changeset import ChangesetModule
 from trac.versioncontrol.web_ui.util import *
 from trac.web import IRequestHandler
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
-from trac.wiki import IWikiSyntaxProvider, Formatter
+from trac.wiki import IWikiSyntaxProvider, Context, Formatter
 
 LOG_LIMIT = 100
 
@@ -201,6 +201,7 @@ class LogModule(Component):
                 cs['actions'] = actions
                 extra_changes[rev] = cs
         data = {
+            'context': Context(self.env, req, 'source', path),
             'path': path, 'rev': rev, 'stop_rev': stop_rev,
             'mode': mode, 'verbose': verbose,
             'path_links': path_links,

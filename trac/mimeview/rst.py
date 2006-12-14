@@ -32,7 +32,7 @@ from trac.mimeview.api import IHTMLPreviewRenderer, content_to_unicode
 from trac.util.html import Element, Markup
 from trac.web.href import Href
 from trac.wiki.formatter import WikiProcessor
-from trac.wiki import WikiSystem, wiki_to_link
+from trac.wiki import WikiSystem
 
 class ReStructuredTextRenderer(Component):
     """
@@ -45,7 +45,7 @@ class ReStructuredTextRenderer(Component):
             return 8
         return 0
 
-    def render(self, req, mimetype, content, filename=None, rev=None):
+    def render(self, context, mimetype, content, filename=None, rev=None):
         try:
             from docutils import nodes
             from docutils.core import publish_parts
@@ -59,7 +59,7 @@ class ReStructuredTextRenderer(Component):
 
         def trac_get_reference(rawtext, target, text):
             fulltext = text and target+' '+text or target
-            link = wiki_to_link(fulltext, self.env, req)
+            link = context.wiki_to_link(fulltext)
             uri = None
             missing = False
             if isinstance(link, Element):
@@ -72,7 +72,7 @@ class ReStructuredTextRenderer(Component):
                 uri = link.attrib.get('href', '')
                 missing = 'missing' in link.attrib.get('class', '')
             else:
-                uri = req.href.wiki(target)
+                uri = context.href.wiki(target)
                 missing = not WikiSystem(self.env).has_page(target)
             if uri:                    
                 reference = nodes.reference(rawtext, text or target)
@@ -142,8 +142,8 @@ class ReStructuredTextRenderer(Component):
 
         # The code_block could is taken from the leo plugin rst2
         def code_formatter(language, text):
-            processor = WikiProcessor(self.env, language)
-            html = processor.process(req, text)
+            processor = WikiProcessor(formatter, language)
+            html = processor.process(text)
             raw = nodes.raw('', html, format='html')
             return raw
         

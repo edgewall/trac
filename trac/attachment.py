@@ -35,7 +35,7 @@ from trac.util.html import Markup, html
 from trac.util.text import unicode_quote, unicode_unquote, pretty_size
 from trac.web import HTTPBadRequest, IRequestHandler
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
-from trac.wiki.api import IWikiSyntaxProvider
+from trac.wiki.api import IWikiSyntaxProvider, Context
 
 
 class InvalidAttachment(TracError):
@@ -133,6 +133,7 @@ class Attachment(object):
         return req.href(self.parent_type, self.parent_id)
 
     def _get_title(self):
+        # TODO: get that from the parent context
         return '%s%s: %s' % (self.parent_type == 'ticket' and '#' or '',
                              self.parent_id, self.filename)
     title = property(_get_title)
@@ -334,12 +335,13 @@ class AttachmentModule(Component):
         def parent_data(parent_type, parent_id):
             # Populate attachment.parent:
             parent_href = req.href(parent_type, parent_id)
+            # FIXME: Context should take care of 'name' as well
             if parent_type == 'ticket':
                 parent_name = 'Ticket #' + parent_id
             else: # 'wiki'
                 parent_name = parent_id
-            return {'type': parent_type, 'id': parent_id,
-                    'name': parent_name, 'href': parent_href}
+            return (Context(self.env, req, parent_type, parent_id),
+                    parent_name)
 
         action = req.args.get('action', 'view')
         if action == 'new':
@@ -350,10 +352,12 @@ class AttachmentModule(Component):
             last_segment = segments[-1]
             if len(segments) == 1:
                 # No specific attachment specified, show the list
+                parent_context, pname = parent_data(parent_type, last_segment)
                 data = {
                     'mode': 'list',
-                    'parent': parent_data(parent_type, last_segment),
-                    'attachments': Attachment.select(env, parent_type,
+                    'context': parent_context('attachment'),
+                    'parent': {'name': pname},
+                    'attachments': Attachment.select(self.env, parent_type,
                                                      last_segment),
                 }
                 return 'attachment.html', data, None
@@ -362,7 +366,10 @@ class AttachmentModule(Component):
             attachment = Attachment(self.env, parent_type, parent_id,
                                     last_segment)
 
-        parent_data = parent_data(attachment.parent_type, attachment.parent_id)
+        parent_context, pname = parent_data(attachment.parent_type,
+                                            attachment.parent_id)
+        context = parent_context('attachment', attachment.filename)
+        
         if req.method == 'POST':
             if action == 'new':
                 self._do_save(req, attachment)
@@ -373,10 +380,11 @@ class AttachmentModule(Component):
         elif action == 'new':
             data = self._render_form(req, attachment)
         else:
-            add_link(req, 'up', parent_data['href'], parent_data['name'])
-            data = self._render_view(req, attachment)
+            add_link(req, 'up', parent_context.self_href(), pname)
+            data = self._render_view(context, attachment)
 
-        data['parent'] = parent_data
+        data['context'] = context
+        data['parent'] = {'name': pname}
 
         add_stylesheet(req, 'common/css/code.css')
         return 'attachment.html', data, None
@@ -409,19 +417,20 @@ class AttachmentModule(Component):
             time = datetime.fromtimestamp(ts, utc)
             yield ('created', type, id, filename, time, description, author)
 
-    def get_timeline_events(self, req, db, type, start, stop, display):
+    def get_timeline_events(self, context, start, stop, display):
         """Return an iterable of events suitable for ITimelineEventProvider.
 
         `display` is a callback for formatting the attachment's parent
+        (context should be able to do that as well)
         """
         for change, type, id, filename, time, descr, author in \
-                self.get_history(start, stop, type):
+                self.get_history(start, stop, context.resource):
             title = html(html.em(os.path.basename(filename)),
                          ' attached to ', display(id))
             event = TimelineEvent('attachment', title,
-                                  req.href.attachment(type, id, filename))
+                                  context.href.attachment(type, id, filename))
             event.set_changeinfo(time, author)
-            event.set_context('attachment', type+':'+id, descr)
+            event.set_context(context(type, id)('attachment', id), descr)
             yield event
             
     # Internal methods
@@ -513,7 +522,8 @@ class AttachmentModule(Component):
 
         return {'mode': 'new', 'author': get_reporter_id(req)}
 
-    def _render_view(self, req, attachment):
+    def _render_view(self, context, attachment):
+        req = context.req
         perm_map = {'ticket': 'TICKET_VIEW', 'wiki': 'WIKI_VIEW'}
         req.perm.require(perm_map[attachment.parent_type])
 
@@ -569,7 +579,7 @@ class AttachmentModule(Component):
                            % (attachment.filename, mime_type))
 
             data['preview'] = mimeview.preview_data(
-                req, fd, os.fstat(fd.fileno()).st_size, mime_type,
+                context, fd, os.fstat(fd.fileno()).st_size, mime_type,
                 attachment.filename, raw_href, annotations=['lineno'])
             return data
         finally:
@@ -583,15 +593,8 @@ class AttachmentModule(Component):
             permute = True
         else:
             permute = False
-            # FIXME: the formatter should know which object the text being
-            #        formatter belongs to
-            parent_type, parent_id = 'wiki', 'WikiStart'
-            if formatter.req:
-                path_info = formatter.req.path_info.split('/', 2)
-                if len(path_info) > 1:
-                    parent_type = path_info[1]
-                if len(path_info) > 2:
-                    parent_id = path_info[2]
+            parent_type, parent_id = formatter.context.resource, \
+                                     formatter.context.id
             filename = link
         def attachment_link(parent_type, parent_id, filename):
             href = formatter.href()
@@ -604,13 +607,12 @@ class AttachmentModule(Component):
                     href = attachment.href(formatter.req) + params
                 return html.A(label, class_='attachment', href=href,
                               title='Attachment %s' % attachment.title)
-            except TracError:
+            except TracError, e:
                 return None
         link = attachment_link(parent_type, parent_id, filename)
         if not link and permute: # support old attachment: syntax
             link = attachment_link(filename, parent_type, parent_id)
         if not link:
-            link = html.A(label, class_='missing attachment', rel='nofollow',
-                          href=formatter.href())
+            link = html.A(label, class_='missing attachment', rel='nofollow')
         return link
         

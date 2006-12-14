@@ -30,7 +30,7 @@ from trac.util.html import escape, html, Markup
 from trac.web import IRequestHandler, RequestDone
 from trac.web.chrome import add_link, add_script, add_stylesheet, \
                             INavigationContributor
-from trac.wiki import IWikiSyntaxProvider
+from trac.wiki.api import IWikiSyntaxProvider, Context
 from trac.versioncontrol.api import NoSuchChangeset
 from trac.versioncontrol.web_ui.util import *
 
@@ -123,14 +123,17 @@ class BrowserModule(Component):
         if len(path_links) > 1:
             add_link(req, 'up', path_links[-2]['href'], 'Parent directory')
 
+        context = Context(self.env, req, 'source', path)
         data = {
+            'context': context,
             'path': path, 'rev': node.rev, 'stickyrev': rev,
             'created_path': node.created_path,
             'created_rev': node.created_rev,
             'props': properties,
             'path_links': path_links,
             'dir': node.isdir and self._render_dir(req, repos, node, rev),
-            'file': node.isfile and self._render_file(req, repos, node, rev),
+            'file': node.isfile and self._render_file(context, repos,
+                                                      node, rev),
             'quickjump_entries': list(repos.get_quickjump_entries(rev)),
             'wiki_format_messages':
             self.config['changeset'].getbool('wiki_format_messages')
@@ -186,7 +189,8 @@ class BrowserModule(Component):
         return {'order': order, 'desc': desc and 1 or None,
                 'entries': entries, 'changes': changes}
 
-    def _render_file(self, req, repos, node, rev=None):
+    def _render_file(self, context, repos, node, rev=None):
+        req = context.req
         req.perm.require('FILE_VIEW')
 
         mimeview = Mimeview(self.env)
@@ -236,7 +240,7 @@ class BrowserModule(Component):
 
             add_stylesheet(req, 'common/css/code.css')
 
-            preview_data = mimeview.preview_data(req, node.get_content(),
+            preview_data = mimeview.preview_data(context, node.get_content(),
                                                  node.get_content_length(),
                                                  mime_type, node.created_path,
                                                  raw_href,

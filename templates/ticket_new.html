@@ -35,7 +35,7 @@
                  cols="78">${ticket.description}</textarea>
           <fieldset py:if="ticket.description" id="preview">
             <legend>Description Preview</legend>
-            ${wiki_to_html(ticket.description)}
+            ${context.wiki_to_html(ticket.description)}
           </fieldset>
         </div>
 

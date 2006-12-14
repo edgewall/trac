@@ -129,7 +129,7 @@ class EnscriptRenderer(Component):
                 Mimeview(self.env).configured_modes_mapping('enscript'))
         return self._types.get(mimetype, (None, 0))[1]
 
-    def render(self, req, mimetype, content, filename=None, rev=None):
+    def render(self, context, mimetype, content, filename=None, rev=None):
         cmdline = self.path
         mimetype = mimetype.split(';', 1)[0] # strip off charset
         mode = self._types[mimetype][0]

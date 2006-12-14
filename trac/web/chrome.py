@@ -40,7 +40,7 @@ from trac.util.datefmt import pretty_timedelta, format_datetime, format_date, \
                               format_time, http_date
 from trac.web.api import IRequestHandler, HTTPNotFound
 from trac.web.href import Href
-from trac.wiki import IWikiSyntaxProvider, wiki_to_html, wiki_to_oneliner
+from trac.wiki import IWikiSyntaxProvider
 
 def add_link(req, rel, href, title=None, mimetype=None, classname=None):
     """Add a link to the HDF data set that will be inserted as <link> element in
@@ -480,10 +480,6 @@ class Chrome(Component):
             'format_time': partial(format_time, tzinfo=tzinfo),
             'fromtimestamp': partial(datetime.datetime.fromtimestamp,
                                      tz=tzinfo),
-
-            # Wiki-formatting functions
-            'wiki_to_html': partial(wiki_to_html, env=self.env, req=req),
-            'wiki_to_oneliner': partial(wiki_to_oneliner, env=self.env, req=req),
         })
 
         # Finally merge in the page-specific data

@@ -108,7 +108,7 @@ class SilverCityRenderer(Component):
                 Mimeview(self.env).configured_modes_mapping('silvercity'))
         return self._types.get(mimetype, (None, 0))[1]
 
-    def render(self, req, mimetype, content, filename=None, rev=None):
+    def render(self, context, mimetype, content, filename=None, rev=None):
         try:
             mimetype = mimetype.split(';', 1)[0]
             typelang = self._types[mimetype]

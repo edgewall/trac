@@ -24,6 +24,7 @@ from trac.mimeview.api import Mimeview
 from trac.mimeview.pygments_renderer import PygmentsRenderer
 from trac.web.chrome import Chrome
 from trac.web.href import Href
+from trac.wiki.api import Context
 
 
 class PygmentsRendererTestCase(unittest.TestCase):
@@ -34,6 +35,7 @@ class PygmentsRendererTestCase(unittest.TestCase):
         self.req = Mock(base_path='',chrome={},
                         abs_href=Href('/'), href=Href('/'),
                         session={}, perm=None, authname=None, tz=None)
+        self.context = Context(self.env, self.req)
         pygments_html = open(os.path.join(os.path.split(__file__)[0],
                                        'pygments.html'))
         self.pygments_html = Stream(list(HTMLParser(pygments_html)))
@@ -53,7 +55,7 @@ class PygmentsRendererTestCase(unittest.TestCase):
         """
         Simple Python highlighting with Pygments (direct)
         """
-        result = self.pygments.render(self.req, 'text/x-python', """
+        result = self.pygments.render(self.context, 'text/x-python', """
 def hello():
         return "Hello World!"
 """)
@@ -64,7 +66,7 @@ def hello():
         """
         Simple Python highlighting with Pygments (through Mimeview.render)
         """
-        result = mimeview = Mimeview(self.env).render(self.req,
+        result = mimeview = Mimeview(self.env).render(self.context,
                                                       'text/x-python', """
 def hello():
         return "Hello World!"
@@ -76,7 +78,7 @@ def hello():
         """
         Simple test for direct rendering of empty content.
         """
-        result = self.pygments.render(self.req, 'text/x-python', '')
+        result = self.pygments.render(self.context, 'text/x-python', '')
         self.assertTrue(result)
         self._test('empty_content', result)
 

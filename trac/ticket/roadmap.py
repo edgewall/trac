@@ -32,7 +32,7 @@ from trac.ticket.query import Query
 from trac.timeline.api import ITimelineEventProvider, TimelineEvent
 from trac.web import IRequestHandler
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
-from trac.wiki import IWikiSyntaxProvider
+from trac.wiki.api import IWikiSyntaxProvider, Context
 from trac.config import ExtensionOption
 
 class ITicketGroupStatsProvider(Interface):
@@ -223,6 +223,7 @@ class RoadmapModule(Component):
         add_link(req, 'alternate', icshref, 'iCalendar', 'text/calendar', 'ics')
 
         data = {
+            'context': Context(self.env, req),
             'milestones': milestones,
             'milestone_stats': stats,
             'queries': queries
@@ -368,8 +369,8 @@ class MilestoneModule(Component):
 
     def get_timeline_events(self, req, start, stop, filters):
         if 'milestone' in filters:
-            db = self.env.get_db_cnx()
-            cursor = db.cursor()
+            context = Context(self.env, req)
+            cursor = context.db.cursor()
             # TODO: creation and (later) modifications should also be reported
             cursor.execute("SELECT completed,name,description FROM milestone "
                            "WHERE completed>=%s AND completed<=%s",
@@ -380,7 +381,7 @@ class MilestoneModule(Component):
                 event = TimelineEvent('milestone', title,
                                       req.href.milestone(name))
                 event.set_changeinfo(completed, '') # FIXME: store the author
-                event.set_context('milestone', name, description)
+                event.set_context(context('milestone', name), description)
                 yield event
 
     # IRequestHandler methods
@@ -489,6 +490,8 @@ class MilestoneModule(Component):
 
         data = {
             'milestone': milestone,
+            'context': Context(self.env, req, 'milestone', milestone.name,
+                               db=db),
             'milestones': Milestone.select(self.env, False, db)
         }
         return 'milestone_delete.html', data, None
@@ -496,6 +499,8 @@ class MilestoneModule(Component):
     def _render_editor(self, req, db, milestone):
         data = {
             'milestone': milestone,
+            'context': Context(self.env, req, 'milestone', milestone.name,
+                               db=db),
             'date_hint': get_date_format_hint(),
             'datetime_hint': get_datetime_format_hint()
         }
@@ -537,6 +542,8 @@ class MilestoneModule(Component):
         stat = get_ticket_stats(self.stats_provider, tickets)
 
         data = {'milestone': milestone,
+                'context': Context(self.env, req, 'milestone', milestone.name,
+                                   db=db),
                 'available_groups': available_groups, 
                 'grouped_by': by,
                 'groups': milestone_groups}

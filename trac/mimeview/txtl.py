@@ -31,6 +31,6 @@ class TextileRenderer(Component):
             return 8
         return 0
 
-    def render(self, req, mimetype, content, filename=None, rev=None):
+    def render(self, context, mimetype, content, filename=None, rev=None):
         import textile
         return textile.textile(content.encode('utf-8'), encoding='utf-8')

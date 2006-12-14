@@ -12,15 +12,15 @@
       <link>$log_href</link>
     </image>
 
-    <item py:for="item in items" py:with="change = changes[item.rev]">
+    <item py:for="item in items" py:with="change = changes[item.rev]; item_context = context('changeset', change.rev, abs_urls=True)">
       <author py:if="change.author" py:with="a = change.author">${a and '@' in a and a or email_map.get(a)}</author>
       <pubDate>${http_date(change.date)}</pubDate>
       <title>Revision $item.rev: ${shorten_line(change.message)}</title>
       <link>${abs_href.changeset(rev, path)}</link>
       <guid isPermaLink="false">${abs_href.changeset(item.rev, item.path)}</guid>
       <description py:with="m = change.message">${
-        unicode(wiki_format_messages and (verbose and wiki_to_html(m, absurls=True) \
-                                                   or wiki_to_oneliner(m, absurls=True)) \
+        unicode(wiki_format_messages and (verbose and item_context.wiki_to_html(m) \
+                                                   or item_context.wiki_to_oneliner(m)) \
                                        or m)
         }</description>
       <category>Log</category>

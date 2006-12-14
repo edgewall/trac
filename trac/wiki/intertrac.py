@@ -20,8 +20,7 @@ from trac.core import *
 from trac.util import sorted
 from trac.util.html import Element, html
 from trac.web import IRequestHandler
-from trac.wiki.api import IWikiMacroProvider
-from trac.wiki.formatter import wiki_to_link
+from trac.wiki.api import IWikiMacroProvider, Context
 
 
 class InterTracDispatcher(Component):
@@ -42,7 +41,7 @@ class InterTracDispatcher(Component):
         link = req.args.get('link', '')
         if not link:
             raise TracError('No TracLinks given')
-        link_elt = wiki_to_link(link, self.env, req)
+        link_elt = Context(self.env, req).wiki_to_link(link)
         if isinstance(link_elt, Element):
             href = link_elt.attrib.get('href')
             if href:

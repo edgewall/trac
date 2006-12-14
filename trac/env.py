@@ -80,8 +80,9 @@ class Environment(Component, ComponentManager):
     project_description = Option('project', 'descr', 'My example project',
         """Short description of the project.""")
 
-    project_url = Option('project', 'url', 'http://example.org/',
-        """URL of the main project web site.""")
+    project_url = Option('project', 'url', '',
+        """URL of the main project web site, usually the website in which
+        the `base_url` resides.""")
 
     project_admin = Option('project', 'admin', '',
         """E-Mail address of the project's administrator.""")

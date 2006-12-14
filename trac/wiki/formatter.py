@@ -30,8 +30,7 @@ from trac.wiki.api import WikiSystem
 from trac.util.html import escape, plaintext, Markup, Element, html
 from trac.util.text import shorten_line, to_unicode
 
-__all__ = ['wiki_to_html', 'wiki_to_oneliner', 'wiki_to_outline',
-           'wiki_to_link', 'Formatter' ]
+__all__ = ['Formatter']
 
 
 def system_message(msg, text=None):
@@ -43,9 +42,11 @@ class WikiProcessor(object):
 
     _code_block_re = re.compile('^<div(?:\s+class="([^"]+)")?>(.*)</div>$')
 
-    def __init__(self, env, name):
-        # TODO: transmit `formatter` argument
-        self.env = env
+    def __init__(self, formatter, name):
+        """Since 0.11: first argument is a Formatter instead of an Environment.
+        """
+        self.formatter = formatter
+        self.env = formatter.env
         self.name = name
         self.error = None
         self.macro_provider = None
@@ -57,7 +58,7 @@ class WikiProcessor(object):
         self.processor = builtin_processors.get(name)
         if not self.processor:
             # Find a matching wiki macro
-            for macro_provider in WikiSystem(self.env).macro_providers:
+            for macro_provider in formatter.wiki.macro_providers:
                 for macro_name in macro_provider.get_macros():
                     if self.name == macro_name:
                         self.processor = self._macro_processor
@@ -66,7 +67,7 @@ class WikiProcessor(object):
         if not self.processor:
             # Find a matching mimeview renderer
             from trac.mimeview.api import Mimeview
-            mimetype = Mimeview(self.env).get_mimetype(self.name)
+            mimetype = Mimeview(formatter.env).get_mimetype(self.name)
             if mimetype:
                 self.name = mimetype
                 self.processor = self._mimeview_processor
@@ -76,13 +77,13 @@ class WikiProcessor(object):
 
     # builtin processors
 
-    def _comment_processor(self, req, text):
+    def _comment_processor(self, text):
         return ''
 
-    def _default_processor(self, req, text):
+    def _default_processor(self, text):
         return html.PRE(text, class_="wiki")
 
-    def _html_processor(self, req, text):
+    def _html_processor(self, text):
         from genshi import Stream
         from genshi.input import HTMLParser, ParseError
         from genshi.filters import HTMLSanitizer
@@ -96,23 +97,23 @@ class WikiProcessor(object):
 
     # generic processors
 
-    def _macro_processor(self, req, text):
-        # TODO: macro should take a `formatter` argument
+    def _macro_processor(self, text):
         self.env.log.debug('Executing Wiki macro %s by provider %s'
                            % (self.name, self.macro_provider))
-        return self.macro_provider.render_macro(req, self.name, text)
+        return self.macro_provider.render_macro(self.formatter, self.name, text)
 
-    def _mimeview_processor(self, req, text):
-        # TODO: transmit context from `formatter`
-        return Mimeview(self.env).render(req, self.name, text)
+    def _mimeview_processor(self, text):
+        return Mimeview(self.env).render(self.formatter.context,
+                                         self.name, text)
+    # TODO: use convert('text/html') instead of render
 
-    def process(self, req, text, in_paragraph=False):
+    def process(self, text, in_paragraph=False):
         if self.error:
             text = system_message(Markup('Error: Failed to load processor '
                                          '<code>%s</code>', self.name),
                                   self.error)
         else:
-            text = self.processor(req, text)
+            text = self.processor(text)
         if not text:
             return ''
         if in_paragraph:
@@ -146,6 +147,11 @@ class WikiProcessor(object):
 
 
 class Formatter(object):
+    """Base Wiki formatter.
+
+    Parses and formats wiki text, in a given Context.
+    """
+    
     flavor = 'default'
 
     # Some constants used for clarifying the Wiki regexps:
@@ -230,23 +236,17 @@ class Formatter(object):
     _processor_re = re.compile('#\!([\w+-][\w+-/]*)')
     _anchor_re = re.compile('[^\w:.-]+', re.UNICODE)
 
-    def __init__(self, env, req=None, absurls=False, db=None):
-        self.env = env
-        self.req = req
-        self._db = db
-        self._absurls = absurls
+    def __init__(self, context):
+        """Since 0.11: only takes a single Context argument."""
+        self.context = context
+        # shortcuts
+        self.env = context.env
+        self.req = context.req
+        self.db = context.db
+        self.href = context.abs_urls and context.abs_href or context.href
+        self.wiki = WikiSystem(context.env)
         self._anchors = {}
         self._open_tags = []
-        self.href = absurls and (req or env).abs_href or (req or env).href
-        self._local = env.config.get('project', 'url') \
-                      or (req or env).abs_href.base
-        self.wiki = WikiSystem(self.env)
-
-    def _get_db(self):
-        if not self._db:
-            self._db = self.env.get_db_cnx()
-        return self._db
-    db = property(fget=_get_db)
 
     def split_link(self, target):
         """Split a target along "?" and "#" in `(path, query, fragment)`."""
@@ -361,13 +361,16 @@ class Formatter(object):
         else:
             label = self._unquote(label)
         if rel:
-            return self._make_relative_link(rel, label or rel)
+            label = label or rel
+            if rel[0] == '#':
+                rel = self.context.self_href() + rel
+            return self._make_relative_link(rel, label)
         else:
             return self._make_link(ns, target, match, label)
 
     def _make_link(self, ns, target, match, label):
         # first check for an alias defined in trac.ini
-        ns = self.env.config.get('intertrac', ns) or ns
+        ns = self.env.config['intertrac'].get(ns, ns)
         if ns in self.wiki.link_resolvers:
             return self.wiki.link_resolvers[ns](self, ns, target,
                                                 escape(label, False))
@@ -379,11 +382,11 @@ class Formatter(object):
                    match
 
     def _make_intertrac_link(self, ns, target, label):
-        intertrac_config = self.env.config['intertrac']
-        url = intertrac_config.get(ns+'.url')
+        intertrac = self.env.config['intertrac']
+        url = intertrac.get(ns+'.url')
         if url:
-            name = intertrac_config.get(ns+'.title', 'Trac project %s' % ns)
-            compat = intertrac_config.getbool(ns+'.compat', 'true')
+            name = intertrac.get(ns+'.title', 'Trac project %s' % ns)
+            compat = intertrac.getbool(ns+'.compat', 'true')
             # TODO: set `compat` default to False once 0.10 gets widely used
             # and remove compatibility code altogether once 0.[89] disappear...
             if compat:
@@ -403,10 +406,10 @@ class Formatter(object):
             it_group = fullmatch.group('it_%s' % ns)
             if it_group:
                 alias = it_group.strip()
-                intertrac = self.env.config.get('intertrac', alias) or alias
+                intertrac = self.env.config['intertrac']
                 target = '%s:%s' % (ns, target[len(it_group):])
-                return self._make_intertrac_link(intertrac, target, label) or \
-                       label
+                return self._make_intertrac_link(intertrac.get(alias, alias),
+                                                 target, label) or label
         return None
 
     def _make_interwiki_link(self, ns, target, label):
@@ -419,7 +422,7 @@ class Formatter(object):
             return None
 
     def _make_ext_link(self, url, text, title=''):
-        if not url.startswith(self._local):
+        if not url.startswith(self.context.local_url()):
             return html.A(html.SPAN(text, class_="icon"),
                           class_="ext-link", href=url, title=title or None)
         else:
@@ -439,8 +442,8 @@ class Formatter(object):
             return '<br />'
         args = fullmatch.group('macroargs')
         try:
-            macro = WikiProcessor(self.env, name)
-            return macro.process(self.req, args, True)
+            macro = WikiProcessor(self, name)
+            return macro.process(args, in_paragraph=True)
         except Exception, e:
             self.env.log.error('Macro %s(%s) failed' % (name, args),
                                exc_info=True)
@@ -455,8 +458,7 @@ class Formatter(object):
         depth = min(len(fullmatch.group('hdepth')), 5)
         anchor = fullmatch.group('hanchor') or ''
         heading_text = match[depth+1:-depth-1-len(anchor)]
-        heading = wiki_to_oneliner(heading_text, self.env, self.db, False,
-                                   self._absurls, self.req)
+        heading = self.context.wiki_to_oneliner(heading_text, False)
         if anchor:
             anchor = anchor[1:]
         else:
@@ -472,8 +474,7 @@ class Formatter(object):
             i += 1
         self._anchors[anchor] = True
         if shorten:
-            heading = wiki_to_oneliner(heading_text, self.env, self.db, True,
-                                       self._absurls, self.req)
+            heading = self.context.wiki_to_oneliner(heading_text, True)
         return (depth, heading, anchor)
 
     def _heading_formatter(self, match, fullmatch):
@@ -574,8 +575,7 @@ class Formatter(object):
     def _definition_formatter(self, match, fullmatch):
         tmp = self.in_def_list and '</dd>' or '<dl>'
         definition = match[:match.find('::')]
-        tmp += '<dt>%s</dt><dd>' % wiki_to_oneliner(definition, self.env,
-                                                    self.db, req=self.req)
+        tmp += '<dt>%s</dt><dd>' % self.context.wiki_to_oneliner(definition)
         self.in_def_list = True
         return tmp
 
@@ -727,24 +727,25 @@ class Formatter(object):
             else:
                 self.code_text += line + os.linesep
                 if not self.code_processor:
-                    self.code_processor = WikiProcessor(self.env, 'default')
+                    self.code_processor = WikiProcessor(self, 'default')
         elif line.strip() == Formatter.ENDBLOCK:
             self.in_code_block -= 1
             if self.in_code_block == 0 and self.code_processor:
                 self.close_table()
                 self.close_paragraph()
-                self.out.write(to_unicode(self.code_processor.process(
-                    self.req, self.code_text)))
+                processed = self.code_processor.process(self.code_text)
+                self.out.write(to_unicode(processed))
+
             else:
                 self.code_text += line + os.linesep
         elif not self.code_processor:
             match = Formatter._processor_re.search(line)
             if match:
                 name = match.group(1)
-                self.code_processor = WikiProcessor(self.env, name)
+                self.code_processor = WikiProcessor(self, name)
             else:
                 self.code_text += line + os.linesep 
-                self.code_processor = WikiProcessor(self.env, 'default')
+                self.code_processor = WikiProcessor(self, 'default')
         else:
             self.code_text += line + os.linesep
 
@@ -775,7 +776,8 @@ class Formatter(object):
                 return replacement.generate().render('xhtml', encoding=None)
             return to_unicode(replacement)
 
-    def reset(self, out=None):
+    def reset(self, source, out=None):
+        self.source = source
         class NullOut(object):
             def write(self, data): pass
         self.out = out or NullOut()
@@ -792,7 +794,7 @@ class Formatter(object):
         self.paragraph_open = 0
 
     def format(self, text, out=None, escape_newlines=False):
-        self.reset(out)
+        self.reset(text, out)
         for line in text.splitlines():
             # Handle code block
             if self.in_code_block or line.strip() == Formatter.STARTBLOCK:
@@ -861,8 +863,8 @@ class OneLinerFormatter(Formatter):
     """
     flavor = 'oneliner'
 
-    def __init__(self, env, absurls=False, db=None, req=None):
-        Formatter.__init__(self, env, req, absurls, db)
+    def __init__(self, context):
+        Formatter.__init__(self, context)
 
     # Override a few formatters to disable some wiki syntax in "oneliner"-mode
     def _list_formatter(self, match, fullmatch): return match
@@ -889,8 +891,7 @@ class OneLinerFormatter(Formatter):
     def format(self, text, out, shorten=False):
         if not text:
             return
-        self.out = out
-        self._open_tags = []
+        self.reset(text, out)
 
         # Simplify code blocks
         in_code_block = 0
@@ -934,8 +935,8 @@ class OutlineFormatter(Formatter):
     """Special formatter that generates an outline of all the headings."""
     flavor = 'outline'
     
-    def __init__(self, env, absurls=False, db=None, req=None):
-        Formatter.__init__(self, env, req, absurls, db)
+    def __init__(self, context):
+        Formatter.__init__(self, context)
 
     # Avoid the possible side-effects of rendering WikiProcessors
 
@@ -981,48 +982,16 @@ class LinkFormatter(OutlineFormatter):
     """Special formatter that focuses on TracLinks."""
     flavor = 'link'
     
-    def __init__(self, env, absurls=False, db=None, req=None):
-        OutlineFormatter.__init__(self, env, absurls, db, req)
+    def __init__(self, context):
+        OutlineFormatter.__init__(self, context)
         
     def _heading_formatter(self, match, fullmatch):
          return ''
     
     def match(self, wikitext):
         """Return the Wiki match found at the beginning of the `wikitext`"""
-        self.reset()        
+        self.reset(wikitext)        
         match = re.match(self.wiki.rules, wikitext)
         if match:
             return self.handle_match(match)
 
-
-# -- wiki_to_* helper functions
-
-def wiki_to_html(wikitext, env, req, db=None,
-                 absurls=False, escape_newlines=False):
-    if not wikitext:
-        return Markup()
-    out = StringIO()
-    Formatter(env, req, absurls, db).format(wikitext, out, escape_newlines)
-    return Markup(out.getvalue())
-
-def wiki_to_oneliner(wikitext, env, db=None, shorten=False, absurls=False,
-                     req=None):
-    if not wikitext:
-        return Markup()
-    out = StringIO()
-    OneLinerFormatter(env, absurls, db, req=req).format(wikitext, out, shorten)
-    return Markup(out.getvalue())
-
-def wiki_to_outline(wikitext, env, db=None,
-                    absurls=False, max_depth=None, min_depth=None):
-    if not wikitext:
-        return Markup()
-    out = StringIO()
-    OutlineFormatter(env, absurls, db).format(wikitext, out, max_depth,
-                                              min_depth)
-    return Markup(out.getvalue())
-
-def wiki_to_link(wikitext, env, req):
-    if not wikitext:
-        return ''
-    return LinkFormatter(env, False, None, req).match(wikitext)

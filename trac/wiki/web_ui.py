@@ -35,7 +35,7 @@ from trac.versioncontrol.diff import get_diff_options, diff_blocks
 from trac.web.chrome import add_link, add_script, add_stylesheet, \
                             INavigationContributor
 from trac.web import HTTPNotFound, IRequestHandler
-from trac.wiki.api import IWikiPageManipulator, WikiSystem
+from trac.wiki.api import IWikiPageManipulator, WikiSystem, Context
 from trac.wiki.model import WikiPage
 
 
@@ -139,11 +139,12 @@ class WikiModule(Component):
                                                   page.text, format, page.name)
             return self._render_view(req, db, page)
 
-    def page_data(self, page, action=''):
+    def page_data(self, req, page, action=''):
         title = page_name = WikiSystem(self.env).format_page_name(page.name)
         if action:
             title += ' (%s)' % action
         return {'page': page,
+                'context': Context(self.env, req, 'wiki', page.name),
                 'action': action,
                 'page_name': page_name,
                 'title': title}
@@ -214,7 +215,7 @@ class WikiModule(Component):
             version = int(req.args.get('version', 0))
         old_version = int(req.args.get('old_version') or 0) or version
 
-        data = self.page_data(page, 'delete')
+        data = self.page_data(req, page, 'delete')
         if version is not None:
             num_versions = 0
             for v,t,author,comment,ipnr in page.get_history():
@@ -301,7 +302,7 @@ class WikiModule(Component):
         add_stylesheet(req, 'common/css/diff.css')
         add_script(req, 'common/js/diff.js')
         
-        data = self.page_data(page, 'diff')
+        data = self.page_data(req, page, 'diff')
 
         def version_info(v):
             return {'path': data['page_name'], 'rev': v, 'shortrev': v,
@@ -347,7 +348,7 @@ class WikiModule(Component):
         else:
             editrows = req.session.get('wiki_editrows', '20')
 
-        data = self.page_data(page, action)
+        data = self.page_data(req, page, action)
         data.update({
             'author': author,
             'comment': comment,
@@ -367,7 +368,7 @@ class WikiModule(Component):
         if not page.exists:
             raise TracError, "Page %s does not exist" % page.name
 
-        data = self.page_data(page, 'history')
+        data = self.page_data(req, page, 'history')
 
         history = []
         for version, date, author, comment, ipnr in page.get_history():
@@ -392,7 +393,7 @@ class WikiModule(Component):
             add_link(req, 'alternate', conversion_href, conversion[1],
                      conversion[3])
 
-        data = self.page_data(page)
+        data = self.page_data(req, page)
         if page.name == 'WikiStart':
             data['title'] = ''
 
@@ -460,8 +461,8 @@ class WikiModule(Component):
         if 'wiki' in filters:
             start, stop = to_timestamp(start), to_timestamp(stop)
             wiki = WikiSystem(self.env)
-            db = self.env.get_db_cnx()
-            cursor = db.cursor()
+            context = Context(self.env, req)
+            cursor = context.db.cursor()
             cursor.execute("SELECT time,name,comment,author,ipnr,version "
                            "FROM wiki WHERE time>=%s AND time<=%s",
                            (start, stop))
@@ -477,12 +478,12 @@ class WikiModule(Component):
                                       req.href.wiki(name, version=version),
                                       markup)
                 event.set_changeinfo(t, author, ipnr=ipnr)
-                event.set_context('wiki', name, comment)
+                event.set_context(context('wiki', name), comment)
                 yield event
 
             # Attachments
             att = AttachmentModule(self.env)
-            for event in att.get_timeline_events(req, db, 'wiki', start, stop,
+            for event in att.get_timeline_events(context('wiki'), start, stop,
                                                  lambda id: html.em(id)):
                 yield event
 

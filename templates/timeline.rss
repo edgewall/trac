@@ -18,11 +18,11 @@
         <author py:if="author">$author</author>
       </py:with>
       <pubDate>${http_date(event.date)}</pubDate>
-      <link>${event.abs_href(req)}</link>
-      <guid isPermaLink="false">${event.abs_href(req)}/${event.dateuid()}</guid>
+      <link>${event.abs_href}</link>
+      <guid isPermaLink="false">${event.abs_href}/${event.dateuid()}</guid>
       <description>${
-        event.markup
-      }<py:if test="event.message">${wiki_to_html(event.message, absurls=True)}</py:if></description>
+        unicode(event.markup)
+      }<py:if test="event.wikitext">${unicode(event.context(abs_urls=True).wiki_to_html(event.wikitext))}</py:if></description>
     </item>
 
    </channel>

@@ -98,7 +98,9 @@
           </thead>
           <tbody>
             <py:for each="idx, item in enumerate(items)">
-              <py:with vars="change = changes[item.rev]; odd_even = idx % 2 and 'odd' or 'even'">
+              <py:with vars="change = changes[item.rev];
+                             change_context = context('changeset', change.rev);
+                             odd_even = idx % 2 and 'odd' or 'even'">
                 <!--! highlight copy or rename operations -->
                 <tr py:if="item.copyfrom_path" class="$odd_even">
                   <td />
@@ -133,7 +135,7 @@
                   <td class="summary" py:choose="">
                     <py:when test="verbose"></py:when>
                     <py:when test="wiki_format_messages">
-                      ${wiki_to_oneliner(change.message)}
+                      ${change_context.wiki_to_oneliner(change.message)}
                     </py:when>
                     <py:otherwise>shorten_line(change.message)</py:otherwise>
                   </td>
@@ -142,7 +144,7 @@
                 <tr py:if="verbose">
                   <td class="summary" colspan="7" py:choose="">
                     <py:when test="wiki_format_messages">
-                      ${wiki_to_html(change.message, escape_newlines=True)}
+                      ${change_context.wiki_to_html(change.message, escape_newlines=True)}
                     </py:when>
                     <py:otherwise><pre>${change.message}</pre></py:otherwise>
                   </td>

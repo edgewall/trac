@@ -101,7 +101,8 @@ class PygmentsRenderer(Component):
         except KeyError:
             return 0
 
-    def render(self, req, mimetype, content, filename=None, rev=None):
+    def render(self, context, mimetype, content, filename=None, rev=None):
+        req = context.req
         if self._types is None:
             self._init_types()
         add_stylesheet(req, '/pygments/%s.css' %

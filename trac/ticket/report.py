@@ -27,7 +27,7 @@ from trac.util.text import to_unicode, unicode_urlencode
 from trac.util.html import html
 from trac.web.api import IRequestHandler, RequestDone
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
-from trac.wiki import IWikiSyntaxProvider, Formatter
+from trac.wiki import IWikiSyntaxProvider, Context, Formatter
 
 class ReportModule(Component):
 
@@ -227,8 +227,10 @@ class ReportModule(Component):
 
         if id > 0:
             title = '{%i} %s' % (id, title)
-        
+
+        context = Context(self.env, req, 'report', id)
         data = {'action': 'view', 'title': title,
+                'context': context,
                 'report': {'id': id, 'title': title,
                            'description': description,
                            'can': perms, 'args': args}}
@@ -289,6 +291,7 @@ class ReportModule(Component):
             col_idx = 0
             cell_groups = []
             row = {'cell_groups': cell_groups}
+            resource = 'ticket'
             for header_group in header_groups:
                 cell_group = []
                 for header in header_group:
@@ -314,8 +317,11 @@ class ReportModule(Component):
                             cell['author'] = value
                         elif value in email_map:
                             cell['author'] = email_map[value]
+                    elif col == 'resource':
+                        resource = value
                     cell_group.append(cell)
                 cell_groups.append(cell_group)
+            row['context'] = context(resource, row.get('id'))
             if row_groups:
                 row_group = row_groups[-1][1]
             else:

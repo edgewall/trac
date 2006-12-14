@@ -23,6 +23,9 @@ except ImportError:
 import time
 import urllib
 import re
+from StringIO import StringIO
+
+from genshi.core import Markup
 
 from trac.config import BoolOption
 from trac.core import *
@@ -77,8 +80,11 @@ class IWikiMacroProvider(Interface):
         """Return a plain text description of the macro with the specified name.
         """
 
-    def render_macro(req, name, content):
-        """Return the HTML output of the macro."""
+    def render_macro(formatter, name, content):
+        """Return the HTML output of the macro.
+
+        Since 0.11: first argument is a Formatter instead of a Request.
+        """
 
 
 class IWikiSyntaxProvider(Interface):
@@ -100,6 +106,109 @@ class IWikiSyntaxProvider(Interface):
         return some HTML fragment.
         The `label` is already HTML escaped, whereas the `target` is not.
         """
+
+class Context(object):
+    """Base class for Wiki rendering contexts.
+
+    This encapsulates the "referential context" of a Wiki content,
+    and is therefore attached to a specific resource of type `resource`,
+    identified by its `id`.
+    
+    A resource can also be parented in another resource, which means we are
+    talking about this resource in the context of another resource (and so on).
+    
+    The context also encapsulates the "access context" of a Wiki content,
+    i.e. how the resource is accessed (`req`), so that links in the rendered
+    content will use the base URL.
+    If the request is not present in the context, the canonical base URLs
+    as configured in the environment will be used.
+
+    Finally, the context should also know about the rendering context, and
+    specifically about the expected output MIME type (TODO)
+    """
+
+    def __init__(self, env, req, resource=None, id=None, parent=None,
+                 abs_urls=False, db=None):
+        self.env = env
+        self.req = req
+        self.resource = resource
+        self.id = id
+        self.parent = parent
+        self.abs_urls = abs_urls
+        self._db = db
+
+    def __repr__(self):
+        return '<Context %r (%s,%s)%s>' % \
+               (self.req, self.resource, self.id,
+                self.abs_urls and ' [abs]' or '')
+    
+    def __call__(self, resource=None, id=None, abs_urls=None):
+        """Create a new Context, child of this Context.
+
+        The non specified parameters will inherit their corresponding
+        parent's context values.
+        """
+        return Context(self.env, self.req, resource or self.resource,
+                       id or self.id, self,
+                       abs_urls=[self.abs_urls, abs_urls][abs_urls is None])
+
+    def _get_db(self):
+        if not self._db:
+            self._db = self.env.get_db_cnx()
+        return self._db
+    db = property(fget=_get_db)
+
+    def _get_href(self):
+        """Return an Href instance, adapted to the context."""
+        base = self.req or self.env
+        if self.abs_urls:
+            return base.abs_href
+        else:
+            return base.href
+    href = property(fget=_get_href)
+
+    def self_href(self, *args, **kwargs):
+        """Return a reference to the resource itself."""
+        return self.href(self.resource, self.id, *args, **kwargs)
+
+    def local_url(self):
+        """Return the local URL, either the configured `[project] url`
+        or the one that can be infered from the request or the Environment.
+        """
+        return (self.env.config.get('project', 'url') or
+                (self.req or self.env).abs_href.base)
+
+    # -- wiki rendering methods
+
+    def wiki_to_html(self, wikitext, escape_newlines=False):
+        from trac.wiki.formatter import Formatter
+        if not wikitext:
+            return Markup()
+        out = StringIO()
+        Formatter(self).format(wikitext, out, escape_newlines)
+        return Markup(out.getvalue())
+
+    def wiki_to_oneliner(self, wikitext, shorten=False):
+        from trac.wiki.formatter import OneLinerFormatter
+        if not wikitext:
+            return Markup()
+        out = StringIO()
+        OneLinerFormatter(self).format(wikitext, out, shorten)
+        return Markup(out.getvalue())
+
+    def wiki_to_outline(self, wikitext, max_depth=None, min_depth=None):
+        from trac.wiki.formatter import OutlineFormatter
+        if not wikitext:
+            return Markup()
+        out = StringIO()
+        OutlineFormatter(self).format(wikitext, out, max_depth, min_depth)
+        return Markup(out.getvalue())
+
+    def wiki_to_link(self, wikitext):
+        from trac.wiki.formatter import LinkFormatter
+        if not wikitext:
+            return ''
+        return LinkFormatter(self).match(wikitext)
 
 
 def parse_args(args):

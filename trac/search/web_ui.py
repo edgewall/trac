@@ -27,7 +27,7 @@ from trac.util.datefmt import format_datetime
 from trac.util.presentation import Paginator
 from trac.web import IRequestHandler
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
-from trac.wiki import IWikiSyntaxProvider, wiki_to_link
+from trac.wiki.api import IWikiSyntaxProvider, Context
 
 
 class SearchModule(Component):
@@ -135,7 +135,7 @@ class SearchModule(Component):
             name = kwd
             description = 'Browse repository path ' + kwd
         else:
-            link = wiki_to_link(kwd, self.env, req)
+            link = Context(self.env, req).wiki_to_link(kwd)
             if isinstance(link, Element):
                 quickjump_href = link.attrib.get('href')
                 name = link.children

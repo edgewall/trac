@@ -242,8 +242,8 @@ class IHTMLPreviewRenderer(Interface):
         0 and 9, where 0 means no support and 9 means "perfect" support.
         """
 
-    def render(req, mimetype, content, filename=None, url=None):
-        """Render an XHTML preview of the raw `content`.
+    def render(context, mimetype, content, filename=None, url=None):
+        """Render an XHTML preview of the raw `content` within a Context.
 
         The `content` might be:
          * a `str` object
@@ -402,7 +402,7 @@ class Mimeview(Component):
         for annotator in self.annotators:
             yield annotator.get_annotation_type()
 
-    def render(self, req, mimetype, content, filename=None, url=None,
+    def render(self, context, mimetype, content, filename=None, url=None,
                annotations=None):
         """Render an XHTML preview of the given `content`.
 
@@ -455,8 +455,8 @@ class Mimeview(Component):
                         expanded_content = content.expandtabs(self.tab_width)
                     rendered_content = expanded_content
 
-                result = renderer.render(req, full_mimetype, rendered_content,
-                                         filename, url)
+                result = renderer.render(context, full_mimetype,
+                                         rendered_content, filename, url)
                 if not result:
                     continue
 
@@ -471,7 +471,7 @@ class Mimeview(Component):
                         return result
 
                 if annotations:
-                    m = req.args.get('marks')
+                    m = context.req and context.req.args.get('marks') or None
                     return self._annotate(result, annotations, m and Ranges(m))
                 else:
                     return tag.div(class_='code')(tag.pre(result)).generate()
@@ -593,7 +593,7 @@ class Mimeview(Component):
                                  "option." % (mapping, option))
         return types
     
-    def preview_data(self, req, content, length, mimetype, filename,
+    def preview_data(self, context, content, length, mimetype, filename,
                      url=None, annotations=None):
         """Prepares a rendered preview of the given `content`.
 
@@ -604,7 +604,7 @@ class Mimeview(Component):
                     'max_file_size': self.max_preview_size,
                     'raw_href': url}
         else:
-            return {'rendered': self.render(req, mimetype, content,
+            return {'rendered': self.render(context, mimetype, content,
                                             filename, url, annotations),
                     'raw_href': url}
 
@@ -720,7 +720,7 @@ class PlainTextRenderer(Component):
             return 0
         return 1
 
-    def render(self, req, mimetype, content, filename=None, url=None):
+    def render(self, context, mimetype, content, filename=None, url=None):
         if is_binary(content):
             self.env.log.debug("Binary data; no preview available")
             return
@@ -740,7 +740,7 @@ class ImageRenderer(Component):
             return 8
         return 0
 
-    def render(self, req, mimetype, content, filename=None, url=None):
+    def render(self, context, mimetype, content, filename=None, url=None):
         if url:
             return tag.div(tag.img(src=url, alt=filename),
                            class_='image-file')
@@ -755,7 +755,7 @@ class WikiTextRenderer(Component):
             return 8
         return 0
 
-    def render(self, req, mimetype, content, filename=None, url=None):
-        from trac.wiki import wiki_to_html
-        return wiki_to_html(content_to_unicode(self.env, content, mimetype),
-                            self.env, req)
+    def render(self, context, mimetype, content, filename=None, url=None):
+        return context.wiki_to_html(content_to_unicode(self.env, content,
+                                                       mimetype))
+

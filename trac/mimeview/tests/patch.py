@@ -25,16 +25,18 @@ from trac.mimeview.api import Mimeview
 from trac.mimeview.patch import PatchRenderer
 from trac.web.chrome import Chrome
 from trac.web.href import Href
+from trac.wiki.api import Context
 
 
 class PatchRendererTestCase(unittest.TestCase):
 
     def setUp(self):
         env = EnvironmentStub(enable=[Chrome, PatchRenderer])
+        req = Mock(base_path='',chrome={},
+                   abs_href=Href('/'), href=Href('/'),
+                   perm=None, authname=None, tz=None)
+        self.context = Context(env, req)
         self.patch = Mimeview(env).renderers[0]
-        self.req = Mock(base_path='',chrome={},
-                        abs_href=Href('/'), href=Href('/'),
-                        perm=None, authname=None, tz=None)
         patch_html = open(os.path.join(os.path.split(__file__)[0],
                                        'patch.html'))
         self.patch_html = Stream(list(HTMLParser(patch_html)))
@@ -54,7 +56,7 @@ class PatchRendererTestCase(unittest.TestCase):
         """
         Simple patch rendering
         """
-        result = self.patch.render(self.req, None, """
+        result = self.patch.render(self.context, None, """
 --- README.orig 2006-10-27 14:42:04.062500000 +0200
 +++ README      2006-10-27 14:42:28.125000000 +0200
 @@ -1,5 +1,5 @@
@@ -74,7 +76,7 @@ class PatchRendererTestCase(unittest.TestCase):
         """
         Simple regression test for #4027 ("No newline at end of file")
         """
-        result = self.patch.render(self.req, None, """
+        result = self.patch.render(self.context, None, """
 --- nonewline   2006-10-27 08:36:48.453125000 +0200
 +++ newline     2006-10-27 08:36:57.187500000 +0200
 @@ -1 +1 @@
@@ -89,7 +91,7 @@ class PatchRendererTestCase(unittest.TestCase):
         """
         Another simple regression test for #4027 ("No newline at end of file")
         """
-        result = self.patch.render(self.req, None, """
+        result = self.patch.render(self.context, None, """
 --- newline     2006-10-27 08:36:57.187500000 +0200
 +++ nonewline   2006-10-27 08:36:48.453125000 +0200
 @@ -1 +1 @@

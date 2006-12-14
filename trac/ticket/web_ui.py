@@ -37,7 +37,7 @@ from trac.versioncontrol.diff import get_diff_options, diff_blocks
 from trac.web import IRequestHandler
 from trac.web.chrome import add_link, add_script, add_stylesheet, \
                             INavigationContributor, Chrome
-
+from trac.wiki.api import Context
 
 class InvalidTicket(TracError):
     """Exception raised when a ticket fails validation."""
@@ -131,6 +131,7 @@ class TicketModule(Component):
         self._populate(req, ticket)
         ticket.values['reporter'] = get_reporter_id(req, 'reporter')
         data['ticket'] = ticket
+        data['context'] = Context(self.env, req, 'ticket', ticket.id, db=db)
 
         field_names = [field['name'] for field in ticket.fields
                        if not field.get('custom')]
@@ -180,7 +181,8 @@ class TicketModule(Component):
 
         ticket = Ticket(self.env, id, db=db)
         data['ticket'] = ticket
-
+        data['context'] = Context(self.env, req, 'ticket', ticket.id, db=db)
+        
         if action in ('history', 'diff'):
             field = req.args.get('field')
             if field:
@@ -468,6 +470,7 @@ class TicketModule(Component):
                       'reopened': ('newticket', 'reopened'),
                       'closed': ('closedticket', 'closed'),
                       'edit': ('editedticket', 'updated')}
+        context = Context(self.env, req)
 
         def produce((id, ts, author, type, summary), status, fields,
                     comment, cid):
@@ -502,7 +505,7 @@ class TicketModule(Component):
             t = datetime.fromtimestamp(ts, utc)
             event = TimelineEvent(kind, title, ticket_href, markup)
             event.set_changeinfo(t, author)
-            event.set_context('ticket', id, message)
+            event.set_context(context('ticket', id), message)
             return event
 
         # Ticket changes
@@ -554,7 +557,7 @@ class TicketModule(Component):
                                 html.em('#', id,
                                         title=Ticket(self.env, id)['summary']))
                 att = AttachmentModule(self.env)
-                for event in att.get_timeline_events(req, db, 'ticket',
+                for event in att.get_timeline_events(context('ticket'),
                                                      start, stop, display):
                     yield event
 
@@ -598,6 +601,7 @@ class TicketModule(Component):
 
         data = {
             'ticket': ticket,
+            'context': Context(self.env, req, 'ticket', ticket.id, db=db),
             'changes': changes,
         }
 

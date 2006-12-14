@@ -76,7 +76,7 @@ class PHPRenderer(Component):
             return 5
         return 0
 
-    def render(self, req, mimetype, content, filename=None, rev=None):
+    def render(self, context, mimetype, content, filename=None, rev=None):
         # -n to ignore php.ini so we're using default colors
         cmdline = '%s -sn' % self.path
         self.env.log.debug("PHP command line: %s" % cmdline)

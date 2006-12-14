@@ -239,27 +239,23 @@ class TicketSystem(Component):
         return html.A(label, class_='missing ticket', rel='nofollow')
 
     def _format_comment_link(self, formatter, ns, target, label):
-        type, id, cnum = 'ticket', '1', 0
-        href = None
+        context = None
         if ':' in target:
             elts = target.split(':')
             if len(elts) == 3:
-                cnum, type, id = elts
+                cnum, resource, id = elts
                 if cnum != 'description' and cnum and not cnum[0].isdigit():
-                    type, id, cnum = elts # support old comment: style
-                href = formatter.href(type, id)
+                    resource, id, cnum = elts # support old comment: style
+                context = formatter.context(resource, id)
         else:
-            # FIXME: the formatter should know which object the text being
-            #        formatted belongs to
-            if formatter.req:
-                path_info = formatter.req.path_info.strip('/').split('/', 2)
-                if len(path_info) == 2:
-                    type, id = path_info[:2]
-                    href = formatter.href(type, id)
-                    cnum = target
-        if href:
-            return html.A(label, href="%s#comment:%s" % (href, cnum),
-                          title="Comment %s for %s:%s" % (cnum, type, id))
+            context = formatter.context
+            cnum = target
+
+        if context:
+            return html.A(label, href="%s#comment:%s" % \
+                          (context.self_href(), cnum),
+                          title="Comment %s for %s:%s" % \
+                          (cnum, context.resource, context.id))
         else:
             return label
  

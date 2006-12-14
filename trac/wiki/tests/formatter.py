@@ -4,7 +4,7 @@ import StringIO
 import unittest
 
 from trac.core import *
-from trac.wiki.api import IWikiSyntaxProvider
+from trac.wiki.api import IWikiSyntaxProvider, Context
 from trac.wiki.formatter import Formatter, OneLinerFormatter
 from trac.wiki.macros import WikiMacroBase
 from trac.test import Mock, EnvironmentStub
@@ -69,7 +69,7 @@ class SampleResolver(Component):
 class WikiTestCase(unittest.TestCase):
 
     def __init__(self, input, correct, file, line, setup=None, teardown=None,
-                 req=None):
+                 context=None):
         unittest.TestCase.__init__(self, 'test')
         self.title, self.input = input.split('\n', 1)
         if self.title:
@@ -80,7 +80,16 @@ class WikiTestCase(unittest.TestCase):
         self._setup = setup
         self._teardown = teardown
 
-        self.env = EnvironmentStub()
+        self.context = context and context() or Context(None, None)
+
+        self.env = self.context.env = EnvironmentStub()
+
+        from trac.web.href import Href
+        self.req = self.context.req = \
+                   Mock(href=Href('/'),
+                        abs_href=Href('http://www.example.com/'),
+                        authname='anonymous')
+
         # -- macros support
         self.env.path = ''
         # -- intertrac support
@@ -89,16 +98,9 @@ class WikiTestCase(unittest.TestCase):
                             "http://trac.edgewall.org")
         self.env.config.set('intertrac', 't', 'trac')
 
-        from trac.web.href import Href
-        if req:
-            self.req = req
-        else:
-            self.req = Mock(href = Href('/'),
-                            abs_href = Href('http://www.example.com/'),
-                            authname='anonymous')
         # TODO: remove the following lines in order to discover
         #       all the places were we should use the req.href
-        #       instead of env.href (will be solved by the Wikifier patch)
+        #       instead of env.href
         self.env.href = self.req.href
         self.env.abs_href = self.req.abs_href
 
@@ -136,7 +138,7 @@ class WikiTestCase(unittest.TestCase):
                 % (msg, self.file, self.line, self.title, formatter.flavor))
 
     def formatter(self):
-        return Formatter(self.env, self.req)
+        return Formatter(self.context)
 
     def shortDescription(self):
         return 'Test ' + self.title
@@ -144,10 +146,10 @@ class WikiTestCase(unittest.TestCase):
 
 class OneLinerTestCase(WikiTestCase):
     def formatter(self):
-        return OneLinerFormatter(self.env, req=self.req)
+        return OneLinerFormatter(self.context)
 
 
-def suite(data=None, setup=None, file=__file__, teardown=None, req=None):
+def suite(data=None, setup=None, file=__file__, teardown=None, context=None):
     suite = unittest.TestSuite()
     if not data:
         file = os.path.join(os.path.split(file)[0], 'wiki-tests.txt')
@@ -165,11 +167,11 @@ def suite(data=None, setup=None, file=__file__, teardown=None, req=None):
         if len(blocks) != 3:
             continue
         input, page, oneliner = blocks
-        tc = WikiTestCase(input, page, file, line, setup, teardown, req)
+        tc = WikiTestCase(input, page, file, line, setup, teardown, context)
         suite.addTest(tc)
         if oneliner:
             tc = OneLinerTestCase(input, oneliner[:-1], file, line,
-                                  setup, teardown, req)
+                                  setup, teardown, context)
             suite.addTest(tc)
     return suite
 
