@@ -538,8 +538,8 @@ class Formatter(object):
             self.close_indentation() # FIXME: why not lists in quotes?
             self._list_stack.append((new_type, depth))
             self._set_tab(depth)
-            class_attr = list_class and ' class="%s"' % list_class or ''
-            start_attr = start and ' start="%s"' % start or ''
+            class_attr = (list_class and ' class="%s"' % list_class) or ''
+            start_attr = (start and ' start="%s"' % start) or ''
             self.out.write('<'+new_type+class_attr+start_attr+'><li>')
         def close_list(tp):
             self._list_stack.pop()

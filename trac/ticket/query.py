@@ -526,7 +526,7 @@ class QueryModule(Component):
                 email = req.session.get('email')
                 name = req.session.get('name')
                 if email or name:
-                    constraints['cc'] = ('~%s' % email or name,)
+                    constraints['cc'] = ('~%s' % (email or name),)
 
         query = Query(self.env, constraints, req.args.get('order'),
                       req.args.has_key('desc'), req.args.get('group'),

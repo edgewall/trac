@@ -121,7 +121,7 @@ class NoSuchChangeset(TracError):
 class NoSuchNode(TracError):
     def __init__(self, path, rev, msg=None):
         TracError.__init__(self, "%sNo node %s at revision %s" \
-                           % (msg and '%s: ' % msg or '', path, rev))
+                           % ((msg and '%s: ' % msg) or '', path, rev))
 
 class Repository(object):
     """Base class for a repository provided by a version control system."""
