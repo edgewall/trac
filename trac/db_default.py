@@ -273,7 +273,7 @@ SELECT p.value AS __color__,
    (CASE status 
       WHEN 'closed' THEN 'color: #777; background: #ddd; border-color: #ccc;'
       ELSE 
-        (CASE owner WHEN '$USER' THEN 'font-weight: bold' END)
+        (CASE owner WHEN $USER THEN 'font-weight: bold' END)
     END) AS __style__,
    id AS ticket, summary, component, status, 
    resolution,version, t.type AS type, priority, owner,
@@ -300,7 +300,7 @@ SELECT p.value AS __color__,
    reporter AS _reporter
   FROM ticket t
   LEFT JOIN enum p ON p.name = t.priority AND p.type = 'priority'
-  WHERE t.status IN ('new', 'assigned', 'reopened') AND owner = '$USER'
+  WHERE t.status IN ('new', 'assigned', 'reopened') AND owner = $USER
   ORDER BY (status = 'assigned') DESC, p.value, milestone, t.type, time
 """),
 #----------------------------------------------------------------------------
@@ -312,7 +312,7 @@ SELECT p.value AS __color__,
 """
 SELECT p.value AS __color__,
    (CASE owner 
-     WHEN '$USER' THEN 'My Tickets' 
+     WHEN $USER THEN 'My Tickets' 
      ELSE 'Active Tickets' 
     END) AS __group__,
    id AS ticket, summary, component, version, milestone, t.type AS type, 
@@ -323,7 +323,7 @@ SELECT p.value AS __color__,
   FROM ticket t
   LEFT JOIN enum p ON p.name = t.priority AND p.type = 'priority'
   WHERE status IN ('new', 'assigned', 'reopened') 
-  ORDER BY (owner = '$USER') DESC, p.value, milestone, t.type, time
+  ORDER BY (owner = $USER) DESC, p.value, milestone, t.type, time
 """ % owner))
 
 

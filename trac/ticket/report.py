@@ -406,24 +406,32 @@ class ReportModule(Component):
                 raise TracError("Dynamic variable '$%s' not defined." % aname)
             values.append(arg)
 
+        var_re = re.compile("[$]([A-Z]+)")
+
         # simple parameter substitution outside literal
         def repl(match):
             add_value(match.group(1))
             return '%s'
 
         # inside a literal break it and concatenate with the parameter
-        def repl_literal(match):
-            add_value(match.group(1))
-            return db.concat("'", "%s", "'")
+        def repl_literal(expr):
+            parts = var_re.split(expr[1:-1])
+            if len(parts) == 1:
+                return expr
+            params = parts[1::2]
+            parts = ["'%s'" % p for p in parts]
+            parts[1::2] = ['%s'] * len(params)
+            for param in params:
+                add_value(param)
+            return db.concat(*parts)
 
-        var_re = re.compile("[$]([A-Z]+)")
         sql_io = StringIO()
 
         # break SQL into literals and non-literals to handle replacing
         # variables within them with query parameters
         for expr in re.split("('(?:[^']|(?:''))*')", sql):
             if expr.startswith("'"):
-                sql_io.write(var_re.sub(repl_literal, expr))
+                sql_io.write(repl_literal(expr))
             else:
                 sql_io.write(var_re.sub(repl, expr))
         return sql_io.getvalue(), values
