@@ -448,7 +448,9 @@ class AttachmentModule(Component):
         if hasattr(upload.file, 'fileno'):
             size = os.fstat(upload.file.fileno())[6]
         else:
-            size = upload.file.len
+            upload.file.seek(0, 2) # seek to end of file
+            size = upload.file.tell()
+            upload.file.seek(0)
         if size == 0:
             raise TracError("Can't upload empty file")
 
