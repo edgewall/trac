@@ -199,7 +199,7 @@ function initializeFilters() {
         td.appendChild(createRadio(propertyName, "1", propertyName + "_on"));
         td.appendChild(document.createTextNode(" "));
         td.appendChild(createLabel("yes", propertyName + "_on"));
-        td.appendChild(createRadio(propertyName, "!1", propertyName + "_off"));
+        td.appendChild(createRadio(propertyName, "0", propertyName + "_off"));
         td.appendChild(document.createTextNode(" "));
         td.appendChild(createLabel("no", propertyName + "_off"));
       }

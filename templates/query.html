@@ -85,10 +85,10 @@
 
                         <py:when test="'checkbox'">
                           <input type="radio" id="${field_name}_on" name="$field_name" value="1"
-                                 checked="${constraint.mode != '!' or None}" />
+                                 checked="${constraint.mode != '!' or constraint_value == '1' or None}" />
                           <label for="${field_name}_on">yes</label>
                           <input type="radio" id="${field_name}_off" name="$field_name" value="0"
-                                 checked="${constraint.mode == '!' or None}" />
+                                 checked="${constraint.mode == '!' or constraint_value != '1' or None}" />
                           <label for="${field_name}_off">no</label>
                         </py:when>
 

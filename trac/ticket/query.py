@@ -645,12 +645,7 @@ class QueryModule(Component):
             if field:
                 constraint = constraints.setdefault(field, {})
                 constraint.setdefault('values', []).append('')
-
-        # FIXME: is this used somewhere?
-        query_href = req.href.query(group=query.group,
-                                    groupdesc=query.groupdesc and 1 or None,
-                                    verbose=query.verbose and 1 or None,
-                                    **query.constraints)
+                # FIXME: '' not always correct (e.g. checkboxes)
 
         req.session['query_href'] = query.get_href(context)
         req.session['query_time'] = to_timestamp(orig_time)
@@ -664,7 +659,6 @@ class QueryModule(Component):
                self.env.is_component_enabled(ReportModule):
             report_href = req.href.report()
         data['report_href'] = report_href
-        # data['href'] = query_href, # FIXME: apparently not used in template...
 
         data['title'] = 'Custom Query',
 
