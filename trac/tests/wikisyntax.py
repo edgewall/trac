@@ -123,7 +123,7 @@ def suite():
     suite = unittest.TestSuite()
     suite.addTest(formatter.suite(SEARCH_TEST_CASES, file=__file__))
     suite.addTest(formatter.suite(ATTACHMENT_TEST_CASES, file=__file__,
-                                  context=Context(None, None,
+                                  context=Context(Mock(), None,
                                                   'wiki', 'WikiStart'),
                                   setup=attachment_setup,
                                   teardown=attachment_teardown))

@@ -267,19 +267,21 @@ link:"123"
 
 ============================== Relative links
 Relative links are supported:
-[../parent See above]
-[/docs See documentation]
-[/images/logo.png Our logo]
-[/]
+[../parent See above] Note: see wikisyntax tests for other parent tests
+[//docs See documentation]
+[//images/logo.png Our logo]
+[/] Note: "" is an Href("/") artifact
+[/newticket?component=test new ticket]
 [#title]
 [#title see Title]
 ------------------------------
 <p>
 Relative links are supported:
-<a href="../parent">See above</a>
+<a href="/parent">See above</a> Note: see wikisyntax tests for other parent tests
 <a href="/docs">See documentation</a>
 <a href="/images/logo.png">Our logo</a>
-<a href="/">/</a>
+<a href="">/</a> Note: "" is an Href("/") artifact
+<a href="/newticket?component=test">new ticket</a>
 <a href="#title">#title</a>
 <a href="#title">see Title</a>
 </p>

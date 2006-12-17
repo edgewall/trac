@@ -1,8 +1,10 @@
 from datetime import datetime
 import unittest
 
+from trac.test import Mock
 from trac.util.datefmt import utc
-from trac.wiki.api import WikiSystem
+from trac.web.href import Href
+from trac.wiki.api import WikiSystem, Context
 from trac.wiki.model import WikiPage
 from trac.wiki.tests import formatter
 
@@ -242,6 +244,59 @@ NoLink:ignored
 ------------------------------
 """ #" Emacs likes it that way better
 
+
+RELATIVE_LINKS_TESTS=u"""
+============================== Relative to the project url
+[//docs Documentation]
+------------------------------
+<p>
+<a href="/docs">Documentation</a>
+</p>
+------------------------------
+============================== Relative to the base url
+[/newticket?priority=high bug]
+[/ Project]
+------------------------------
+<p>
+<a href="/trac/newticket?priority=high">bug</a>
+<a href="/trac">Project</a>
+</p>
+------------------------------
+============================== Relative to the current page
+[./Detail see detail]
+[.. see parent]
+[../Other see other]
+------------------------------
+<p>
+<a href="/trac/wiki/Main/Sub/Detail">see detail</a>
+<a href="/trac/wiki/Main">see parent</a>
+<a href="/trac/wiki/Main/Other">see other</a>
+</p>
+------------------------------
+============================== Relative to the current page with anchors
+[#topic see topic]
+[.#topic see topic]
+[./#topic see topic]
+[./Detail#topic see detail]
+[..#topic see parent]
+[../#topic see parent]
+[../Other#topic see other]
+[../Other/#topic see other]
+------------------------------
+<p>
+<a href="/trac/wiki/Main/Sub#topic">see topic</a>
+<a href="/trac/wiki/Main/Sub#topic">see topic</a>
+<a href="/trac/wiki/Main/Sub#topic">see topic</a>
+<a href="/trac/wiki/Main/Sub/Detail#topic">see detail</a>
+<a href="/trac/wiki/Main#topic">see parent</a>
+<a href="/trac/wiki/Main#topic">see parent</a>
+<a href="/trac/wiki/Main/Other#topic">see other</a>
+<a href="/trac/wiki/Main/Other#topic">see other</a>
+</p>
+------------------------------
+""" # "
+
+
 def wiki_setup(tc):
     now = datetime.now(utc)
     wiki1 = WikiPage(tc.env)
@@ -273,12 +328,20 @@ complex         http://server/$1/page/$2?format=txt  # resource $2 in $1
 {{{
 nolink          http://noweb
 }}}
-"""
+""" 
     imt.save('joe', 'test InterWiki links', '::1', now)
 
 
 def suite():
-    return formatter.suite(TEST_CASES, wiki_setup, __file__)
+    suite = unittest.TestSuite()
+    suite.addTest(formatter.suite(TEST_CASES, wiki_setup, __file__))
+    context = Context(Mock(), Mock(href=Href('/trac'),
+                                   abs_href=Href('http://www.example.com/'),
+                                   authname='anonymous'),
+                      'wiki', 'Main/Sub')
+    suite.addTest(formatter.suite(RELATIVE_LINKS_TESTS, wiki_setup, __file__,
+                                  context=context))
+    return suite
 
 if __name__ == '__main__':
     unittest.main(defaultTest='suite') 

@@ -80,15 +80,18 @@ class WikiTestCase(unittest.TestCase):
         self._setup = setup
         self._teardown = teardown
 
-        self.context = context and context() or Context(None, None)
+        self.context = context and context() or Context(Mock(), None)
 
         self.env = self.context.env = EnvironmentStub()
 
         from trac.web.href import Href
-        self.req = self.context.req = \
-                   Mock(href=Href('/'),
+        req = Mock(href=Href('/'),
                         abs_href=Href('http://www.example.com/'),
                         authname='anonymous')
+        if not self.context.req:
+            self.context.req = self.req = req
+        else:
+            self.req = self.context.req
 
         # -- macros support
         self.env.path = ''

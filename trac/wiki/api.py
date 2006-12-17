@@ -29,6 +29,7 @@ from genshi.core import Markup
 
 from trac.config import BoolOption
 from trac.core import *
+from trac.util import reversed
 from trac.util.html import html
 
 
@@ -116,6 +117,11 @@ class Context(object):
     
     A resource can also be parented in another resource, which means we are
     talking about this resource in the context of another resource (and so on).
+
+    For example, when rendering a ticket description within a Custom Query
+    embedded in a wiki page, the context will be:
+    
+    `Context(env, req)('wiki', 'CurrentStatus')('query')('ticket', '12')`
     
     The context also encapsulates the "access context" of a Wiki content,
     i.e. how the resource is accessed (`req`), so that links in the rendered
@@ -123,12 +129,14 @@ class Context(object):
     If the request is not present in the context, the canonical base URLs
     as configured in the environment will be used.
 
-    Finally, the context should also know about the rendering context, and
-    specifically about the expected output MIME type (TODO)
+    Finally, the context should also know about the formatting context,
+    and more specifically about the expected output MIME type (TODO)
     """
 
     def __init__(self, env, req, resource=None, id=None, parent=None,
                  abs_urls=False, db=None):
+        if not env:
+            raise TracError("Environment not specified for Context")
         self.env = env
         self.req = req
         self.resource = resource
@@ -138,19 +146,43 @@ class Context(object):
         self._db = db
 
     def __repr__(self):
-        return '<Context %r (%s,%s)%s>' % \
-               (self.req, self.resource, self.id,
+        resource_path = []
+        current = self
+        while current:
+            resource_path.append('%s:%s' % (current.resource or '',
+                                            current.id or ''))
+            current = current.parent 
+        return '<Context %r (%s)%s>' % \
+               (self.req, ', '.join(reversed(resource_path)),
                 self.abs_urls and ' [abs]' or '')
     
     def __call__(self, resource=None, id=None, abs_urls=None):
         """Create a new Context, child of this Context.
 
-        The non specified parameters will inherit their corresponding
-        parent's context values.
+        >>> from trac.test import EnvironmentStub
+        >>> c = Context(EnvironmentStub(), None)
+
+        >>> c1 = c('wiki', 'CurrentStatus')
+        >>> c1
+        <Context None (:, wiki:CurrentStatus)>
+
+        If both `resource` and `id` are `None`, then the new context will
+        actually be a copy of the current context, instead of a child context.
+
+        >>> c2 = c1()
+        >>> c2
+        <Context None (:, wiki:CurrentStatus)>
+        
+        >>> (c1.parent == c2.parent, c1.parent == c)
+        (True, True)
+
+        >>> c(abs_urls=True)('query')('ticket', '12')
+        <Context None (:, query:, ticket:12) [abs]>
         """
-        return Context(self.env, self.req, resource or self.resource,
-                       id or self.id, self,
-                       abs_urls=[self.abs_urls, abs_urls][abs_urls is None])
+        copy = not resource and not id
+        return Context(self.env, self.req, copy and self.resource or resource,
+                       copy and self.id or id, [self, self.parent][copy],
+                       abs_urls=[abs_urls, self.abs_urls][abs_urls is None])
 
     def _get_db(self):
         if not self._db:
@@ -167,9 +199,69 @@ class Context(object):
             return base.href
     href = property(fget=_get_href)
 
-    def self_href(self, *args, **kwargs):
-        """Return a reference to the resource itself."""
-        return self.href(self.resource, self.id, *args, **kwargs)
+    def self_href(self, rel=None, **kwargs):
+        """Return a reference relative to the resource itself.
+
+        >>> from trac.test import EnvironmentStub
+        >>> c = Context(EnvironmentStub(), None)
+
+        >>> c.self_href()
+        '/trac.cgi'
+
+        >>> c(abs_urls=True).self_href()
+        'http://example.org/trac.cgi'
+
+        >>> c('wiki', 'Main').self_href()
+        '/trac.cgi/wiki/Main'
+
+        Relative references start at the current id:
+
+        >>> c('wiki', 'Main').self_href('#anchor')
+        '/trac.cgi/wiki/Main#anchor'
+
+        >>> c('wiki', 'Main').self_href('./Sub')
+        '/trac.cgi/wiki/Main/Sub'
+
+        >>> c('wiki', 'Main/Sub').self_href('..')
+        '/trac.cgi/wiki/Main'
+
+        >>> c('wiki', 'Main').self_href('../Other')
+        '/trac.cgi/wiki/Other'
+
+        References always stay within the current resource realm:
+
+        >>> main_sub = c('wiki', 'Main/Sub')
+        >>> main_sub.self_href('../..')
+        '/trac.cgi/wiki'
+
+        >>> main_sub.self_href('../../..')
+        '/trac.cgi/wiki'
+
+        References with anchors also work
+
+        >>> main_sub.self_href('#Check')
+        '/trac.cgi/wiki/Main/Sub#Check'
+
+        """
+        if rel and rel[0] == '/': # absolute reference, start at project base
+            return self.href(rel.lstrip('/'), **kwargs)
+        base = unicode(self.id or '').split('/')
+        for comp in (rel or '').split('/'):
+            if comp in ('.', ''):
+                continue
+            elif comp == '..':
+                if base:
+                    base.pop()
+            elif '#' in comp:
+                rel, anchor = comp.split('#')
+                if rel == '..':
+                    base.pop()
+                elif rel not in ('.', ''):
+                    base.append(rel)
+                return self.href(self.resource, *base, **kwargs) + '#' + anchor
+            else:
+                base.append(comp)
+        return self.href(self.resource, *base, **kwargs)
 
     def local_url(self):
         """Return the local URL, either the configured `[project] url`

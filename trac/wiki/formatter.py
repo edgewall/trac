@@ -243,7 +243,7 @@ class Formatter(object):
         self.env = context.env
         self.req = context.req
         self.db = context.db
-        self.href = context.abs_urls and context.abs_href or context.href
+        self.href = context.href
         self.wiki = WikiSystem(context.env)
         self._anchors = {}
         self._open_tags = []
@@ -361,10 +361,12 @@ class Formatter(object):
         else:
             label = self._unquote(label)
         if rel:
-            label = label or rel
-            if rel[0] == '#':
-                rel = self.context.self_href() + rel
-            return self._make_relative_link(rel, label)
+            path, query, fragment = self.split_link(rel)
+            if path.startswith('//'):
+                path = '/' + path.lstrip('/')
+            else:
+                path = self.context.self_href(path)
+            return html.A(label or rel, href=path + query + fragment)
         else:
             return self._make_link(ns, target, match, label)
 
@@ -427,12 +429,6 @@ class Formatter(object):
                           class_="ext-link", href=url, title=title or None)
         else:
             return html.A(text, href=url, title=title or None)
-
-    def _make_relative_link(self, url, text):
-        if url.startswith('//'): # only the protocol will be kept
-            return html.A(text, class_="ext-link", href=url)
-        else:
-            return html.A(text, href=url)
 
     # WikiMacros
     
