@@ -171,9 +171,12 @@ class LocalTimezone(tzinfo):
         tt = (dt.year, dt.month, dt.day,
               dt.hour, dt.minute, dt.second,
               dt.weekday(), 0, -1)
-        stamp = time.mktime(tt)
-        tt = time.localtime(stamp)
-        return tt.tm_isdst > 0
+        try:
+            stamp = time.mktime(tt)
+            tt = time.localtime(stamp)
+            return tt.tm_isdst > 0
+        except OverflowError:
+            return False
 
 
 utc = FixedOffset(0, 'UTC')
