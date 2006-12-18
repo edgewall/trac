@@ -30,7 +30,7 @@ from genshi import QName, Stream
 from genshi.core import Attrs, START, END, TEXT
 
 try:
-    from pygments import get_lexer_by_name
+    from pygments.lexers import get_lexer_by_name
     from pygments.formatters.html import HtmlFormatter
     from pygments.styles import get_style_by_name
     have_pygments = True
