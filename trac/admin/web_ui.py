@@ -26,7 +26,7 @@ from genshi.builder import tag
 from trac import __version__ as TRAC_VERSION
 from trac.admin.api import IAdminPanelProvider
 from trac.core import *
-from trac.perm import PermissionSystem
+from trac.perm import PermissionSystem, IPermissionRequestor
 from trac.util import get_pkginfo, get_module_path
 from trac.util.compat import partial, sorted
 from trac.web import HTTPNotFound, IRequestHandler
@@ -217,11 +217,16 @@ class LoggingAdminPanel(Component):
 
 class PermissionAdminPanel(Component):
 
-    implements(IAdminPanelProvider)
+    implements(IAdminPanelProvider, IPermissionRequestor)
 
-    # IAdminPanelProvider
+    # IPermissionRequestor methods
+    def get_permission_actions(self):
+        actions = ['PERMISSION_GRANT', 'PERMISSION_REVOKE']
+        return actions + [('PERMISSION_ADMIN', actions)]
+
+    # IAdminPanelProvider methods
     def get_admin_panels(self, req):
-        if 'TRAC_ADMIN' in req.perm:
+        if 'PERMISSION_GRANT' in req.perm or 'PERMISSION_REVOKE' in req.perm:
             yield ('general', 'General', 'perm', 'Permissions')
 
     def render_admin_panel(self, req, cat, page, path_info):
@@ -234,18 +239,24 @@ class PermissionAdminPanel(Component):
 
             # Grant permission to subject
             if req.args.get('add') and subject and action:
+                req.perm.require('PERMISSION_GRANT')
                 if action not in perm.get_actions():
                     raise TracError('Unknown action')
+                req.perm.require(action)
                 perm.grant_permission(subject, action)
                 req.redirect(req.href.admin(cat, page))
 
             # Add subject to group
             elif req.args.get('add') and subject and group:
+                req.perm.require('PERMISSION_GRANT')
+                for action in perm.get_user_permissions(group):
+                    req.perm.require(action)
                 perm.grant_permission(subject, group)
                 req.redirect(req.href.admin(cat, page))
 
             # Remove permissions action
             elif req.args.get('remove') and req.args.get('sel'):
+                req.perm.require('PERMISSION_REVOKE')
                 sel = req.args.get('sel')
                 sel = isinstance(sel, list) and sel or [sel]
                 for key in sel:
@@ -255,7 +266,7 @@ class PermissionAdminPanel(Component):
                 req.redirect(req.href.admin(cat, page))
 
         return 'admin_perms.html', {
-            'actions': perm.get_actions(),
+            'actions': req.perm.permissions(),
             'perms': perm.get_all_permissions()
         }
 

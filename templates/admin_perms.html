@@ -12,6 +12,7 @@
   <body>
     <h2>Manage Permissions</h2>
 
+    <py:if test="'PERMISSION_GRANT' in perm">
     <form id="addperm" class="addnew" method="post">
       <fieldset>
         <legend>Grant Permission:</legend>
@@ -52,22 +53,23 @@
         </div>
       </fieldset>
     </form>
+    </py:if>
 
-    <form method="post">
+    <form method="post" py:with="revoke_perm = 'PERMISSION_REVOKE' in perm">
       <table class="listing" id="permlist">
         <thead>
-          <tr><th class="sel">&nbsp;</th><th>Subject</th><th>Action</th></tr>
+          <tr><th class="sel" py:if="revoke_perm">&nbsp;</th><th>Subject</th><th>Action</th></tr>
         </thead>
         <tbody>
           <tr py:for="idx, (subject, action) in enumerate(sorted(perms))"
               class="${idx % 2 and 'odd' or 'even'}">
-            <td><input type="checkbox" name="sel" value="$subject:$action" /></td>
+            <td py:if="revoke_perm"><input type="checkbox" name="sel" value="$subject:$action" /></td>
             <td>$subject</td>
             <td>$action</td>
           </tr>
         </tbody>
       </table>
-      <div class="buttons">
+      <div class="buttons" py:if="revoke_perm">
         <input type="submit" name="remove" value="Remove selected items" />
       </div>
     </form>
