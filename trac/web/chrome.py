@@ -217,6 +217,7 @@ class Chrome(Component):
         'pretty_timedelta': pretty_timedelta,
         'quote_plus': unicode_quote_plus,
         'reversed': compat.reversed,
+        'separated': presentation.separated,
         'shorten_line': shorten_line,
         'sorted': compat.sorted,
         'time': datetime.time,

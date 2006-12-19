@@ -17,6 +17,7 @@ tasks such as grouping or pagination.
 """
 
 from math import ceil
+from itertools import izip, chain, repeat
 
 __all__ = ['first_last', 'group', 'paginate', 'Paginator']
 
@@ -185,3 +186,11 @@ class Paginator(object):
     def has_previous_page(self):
         return self.page > 0
     has_previous_page = property(has_previous_page)
+
+def separated(items, sep=','):
+    items = iter(items)
+    last = items.next()
+    for i in items:
+        yield sep, last
+        last = i
+    yield None, last
