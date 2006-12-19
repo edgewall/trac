@@ -340,9 +340,10 @@ class ReportModule(Component):
         if format == 'rss':
             return 'report.rss', data, 'application/rss+xml'
         elif format == 'csv':
-            self._send_csv(req, cols, results)
+            self._send_csv(req, cols, results, mimetype='text/csv')
         elif format == 'tab':
-            self._send_csv(req, cols, results, '\t')
+            self._send_csv(req, cols, results, '\t',
+                           mimetype='text/tab-separated-values')
         else:
             return 'report.html', data, None
 
@@ -436,9 +437,9 @@ class ReportModule(Component):
                 sql_io.write(var_re.sub(repl, expr))
         return sql_io.getvalue(), values
 
-    def _send_csv(self, req, cols, rows, sep=','):
+    def _send_csv(self, req, cols, rows, sep=',', mimetype='text/plain'):
         req.send_response(200)
-        req.send_header('Content-Type', 'text/plain;charset=utf-8')
+        req.send_header('Content-Type', mimetype + ';charset=utf-8')
         req.end_headers()
 
         req.write(sep.join(cols) + '\r\n')
