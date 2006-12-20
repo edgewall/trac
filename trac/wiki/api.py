@@ -350,6 +350,14 @@ class WikiSystem(Component):
         """Enable/disable splitting the WikiPageNames with space characters
         (''since 0.10'').""")
 
+    render_unsafe_content = BoolOption('wiki', 'render_unsafe_content', 'false',
+        """Enable/disable the use of unsafe HTML tags such as `<script>` or
+        `<embed>` with the HTML [wiki:WikiProcessors WikiProcessor]
+        (''since 0.10.4'').
+
+        For public sites where anonymous users can edit the wiki it is
+        recommended to leave this option disabled (which is the default).""")
+
     def __init__(self):
         self._index = None
         self._last_index_update = 0

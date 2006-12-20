@@ -288,7 +288,7 @@ class AttachmentModule(Component):
         which allows a malicious user to attach a file containing cross-site
         scripting attacks.
 
-        For public sites where anonymous users can create attachments, it is
+        For public sites where anonymous users can create attachments it is
         recommended to leave this option disabled (which is the default).""")
 
     # IEnvironmentSetupParticipant methods

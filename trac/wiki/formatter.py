@@ -84,6 +84,8 @@ class WikiProcessor(object):
         return html.PRE(text, class_="wiki")
 
     def _html_processor(self, text):
+        if WikiSystem(self.env).render_unsafe_content:
+            return Markup(text)
         from genshi import Stream
         from genshi.input import HTMLParser, ParseError
         from genshi.filters import HTMLSanitizer
