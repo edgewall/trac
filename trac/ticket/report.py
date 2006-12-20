@@ -340,10 +340,14 @@ class ReportModule(Component):
         if format == 'rss':
             return 'report.rss', data, 'application/rss+xml'
         elif format == 'csv':
-            self._send_csv(req, cols, results, mimetype='text/csv')
+            filename = id and 'report_%s.csv' % id or 'report.csv'
+            self._send_csv(req, cols, results, mimetype='text/csv',
+                           filename=filename)
         elif format == 'tab':
+            filename = id and 'report_%s.tsv' % id or 'report.tsv'
             self._send_csv(req, cols, results, '\t',
-                           mimetype='text/tab-separated-values')
+                           mimetype='text/tab-separated-values',
+                           filename=filename)
         else:
             return 'report.html', data, None
 
@@ -437,9 +441,12 @@ class ReportModule(Component):
                 sql_io.write(var_re.sub(repl, expr))
         return sql_io.getvalue(), values
 
-    def _send_csv(self, req, cols, rows, sep=',', mimetype='text/plain'):
+    def _send_csv(self, req, cols, rows, sep=',', mimetype='text/plain',
+                  filename=None):
         req.send_response(200)
         req.send_header('Content-Type', mimetype + ';charset=utf-8')
+        if filename:
+            req.send_header('Content-Disposition', 'filename=' + filename)
         req.end_headers()
 
         req.write(sep.join(cols) + '\r\n')
@@ -453,6 +460,9 @@ class ReportModule(Component):
         req.perm.require('REPORT_SQL_VIEW')
         req.send_response(200)
         req.send_header('Content-Type', 'text/plain;charset=utf-8')
+        if id:
+            req.send_header('Content-Disposition',
+                            'filename=report_%s.sql' % id)
         req.end_headers()
 
         req.write('-- ## %s: %s ## --\n\n' % (id, title))
