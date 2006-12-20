@@ -83,6 +83,8 @@ class WikiProcessor(object):
         return html.PRE(text, class_="wiki")
 
     def _html_processor(self, req, text):
+        if WikiSystem(self.env).render_unsafe_content:
+            return Markup(text)
         from HTMLParser import HTMLParseError
         try:
             return Markup(text).sanitize()
