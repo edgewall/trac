@@ -202,7 +202,7 @@
      if:name(field) == query.group ?><?cs
       var:field.label ?><?cs
      /if ?><?cs
-    /each ?>: <?cs var:result[query.group] ?> <?cs call:num_matches(query.num_matches_group[result[query.group]]) ?></h2>
+    /each ?>: <?cs var:result[query.group] ?> <?cs call:num_matches(query.num_matches_group["_"+result[query.group]+"_"]) ?></h2>
    <table class="listing tickets">
    <?cs call:thead() ?><tbody><?cs
   /if ?>
