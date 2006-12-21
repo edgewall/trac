@@ -684,9 +684,6 @@ class QueryModule(Component):
         query.verbose = True
         db = self.env.get_db_cnx()
         results = query.execute(req, db)
-        for result in results:
-            if result['reporter'].find('@') == -1:
-                result['reporter'] = ''
         query_href = req.abs_href.query(group=query.group,
                                         groupdesc=query.groupdesc and 1 or None,
                                         verbose=query.verbose and 1 or None,

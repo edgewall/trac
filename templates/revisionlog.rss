@@ -1,5 +1,8 @@
 <?xml version="1.0"?>
-<rss version="2.0" xmlns:py="http://genshi.edgewall.org/">
+<rss version="2.0" xmlns:py="http://genshi.edgewall.org/"
+                   xmlns:dc="http://purl.org/dc/elements/1.1/"
+                   xmlns:xi="http://www.w3.org/2001/XInclude">
+  <xi:include href="macros.rss" />
   <channel py:with="log_href = abs_href.log(path, rev=rev)">
     <title>Revisions of $path</title>
     <link>$log_href</link>
@@ -13,7 +16,7 @@
     </image>
 
     <item py:for="item in items" py:with="change = changes[item.rev]; item_context = context('changeset', change.rev, abs_urls=True)">
-      <author py:if="change.author" py:with="a = change.author">${a and '@' in a and a or email_map.get(a)}</author>
+      ${author_or_creator(change.author, email_map)}
       <pubDate>${http_date(change.date)}</pubDate>
       <title>Revision $item.rev: ${shorten_line(change.message)}</title>
       <link>${abs_href.changeset(rev, path)}</link>

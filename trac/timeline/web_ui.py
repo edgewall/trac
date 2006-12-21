@@ -30,7 +30,8 @@ from trac.util.datefmt import format_date, parse_date, to_timestamp, utc
 from trac.util.html import html, Markup
 from trac.util.text import to_unicode
 from trac.web import IRequestHandler
-from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
+from trac.web.chrome import add_link, add_stylesheet, INavigationContributor, \
+                            Chrome
 
 
 
@@ -139,9 +140,10 @@ class TimelineModule(Component):
         if format == 'rss':
             # Get the email addresses of all known users
             email_map = {}
-            for username, name, email in self.env.get_known_users():
-                if email:
-                    email_map[username] = email
+            if Chrome(self.env).show_email_addresses:
+                for username, name, email in self.env.get_known_users():
+                    if email:
+                        email_map[username] = email
             data['email_map'] = email_map
             return 'timeline.rss', data, 'application/rss+xml'
 

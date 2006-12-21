@@ -98,7 +98,7 @@
                   </td>
                   <td class="age">${dateinfo(change.date)}</td>
                   <td class="change">
-                    <span class="author">$change.author:</span>
+                    <span class="author">${authorinfo(change.author)}:</span>
                     <span class="change" py:choose="">
                       <py:when test="wiki_format_messages">
                         ${context('changeset', change.rev).wiki_to_oneliner(change.message, shorten=True)}
@@ -117,7 +117,7 @@
         <tr py:if="file">
           <th scope="col">
             Revision <a href="${href.changeset(rev)}">$rev</a>, ${sizeinfo(file.size)}
-            (checked in by $file.changeset.author, ${dateinfo(file.changeset.date)} ago)
+            (checked in by ${authorinfo(file.changeset.author)}, ${dateinfo(file.changeset.date)} ago)
           </th>
         </tr>
         <tr py:if="file">

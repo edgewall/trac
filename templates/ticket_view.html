@@ -54,9 +54,9 @@
                py:with="fields = [f for f in fields if not f.skip]">
           <tr>
             <th id="h_reporter">Reported by:</th>
-            <td headers="h_reporter" class="searchable">${ticket.reporter}</td>
+            <td headers="h_reporter" class="searchable">${authorinfo(ticket.reporter)}</td>
             <th id="h_owner">Assigned to:</th>
-            <td headers="h_owner">${ticket.owner}
+            <td headers="h_owner">${authorinfo(ticket.owner)}
               <py:if test="ticket.status == 'assigned'">(accepted)</py:if>
             </td>
           </tr>
@@ -85,7 +85,7 @@
               Description
               <span py:if="description_change" class="lastmod"
                 title="$description_change.date">
-                (last modified by ${description_change.author})
+                (last modified by ${authorinfo(description_change.author)})
                 (<a href="${href.ticket(ticket.id, action='diff', version=description_change.cnum)}">diff</a>)
               </span>
             </h3>
@@ -127,7 +127,7 @@
                   </py:if>
                   &nbsp;
                 </span>
-                ${change.date} changed by ${change.author}
+                ${change.date} changed by ${authorinfo(change.author)}
               </h3>
               <ul py:if="change.fields" class="changes">
                 <li py:for="field_name, field in change.fields.items()"

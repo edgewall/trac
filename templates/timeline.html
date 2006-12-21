@@ -5,6 +5,7 @@
       xmlns:py="http://genshi.edgewall.org/"
       xmlns:xi="http://www.w3.org/2001/XInclude">
   <xi:include href="layout.html" />
+  <xi:include href="macros.html" />
   <head>
     <title>Timeline</title>
   </head>
@@ -38,7 +39,7 @@
           <py:for each="event in events">
             <dt class="${event.kind}"><a href="${event.href}">
               <span class="time">${format_time(event.date, str('%H:%M'))}</span> ${event.title}
-                <py:if test="event.author">by ${event.author}</py:if>
+                <py:if test="event.author">by ${authorinfo(event.author)}</py:if>
             </a></dt>
             <dd class="${event.kind}" py:with="wikify = event.use_oneliner and partial(event.context.wiki_to_oneliner, shorten=event.shorten_oneliner) or event.context.wiki_to_html">
               ${event.markup}

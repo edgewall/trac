@@ -21,7 +21,7 @@ class TicketConversionTestCase(unittest.TestCase):
         self.req = Mock(base_path='/trac.cgi', path_info='',
                         href=Href('/trac.cgi'), chrome={'logo': None},
                         abs_href=Href('http://example.org/trac.cgi'),
-                        environ={}, perm=None, authname='-', args={}, tz=None,
+                        environ={}, perm=[], authname='-', args={}, tz=None,
                         session=None, form_token=None)
 
     def _create_a_ticket(self):
@@ -70,7 +70,9 @@ class TicketConversionTestCase(unittest.TestCase):
         ticket = self._create_a_ticket()
         content, mimetype, ext = self.mimeview.convert_content(
             self.req, 'trac.ticket.Ticket', ticket, 'rss')
-        self.assertEqual(("""<rss version="2.0">
+        self.assertEqual(("""<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/">
+  
+
   <channel>
     <title>My Project: Ticket </title>
     <link>http://example.org/trac.cgi/ticket</link>

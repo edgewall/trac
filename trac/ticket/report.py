@@ -26,7 +26,8 @@ from trac.util import sorted
 from trac.util.text import to_unicode, unicode_urlencode
 from trac.util.html import html
 from trac.web.api import IRequestHandler, RequestDone
-from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
+from trac.web.chrome import add_link, add_stylesheet, INavigationContributor, \
+                            Chrome
 from trac.wiki import IWikiSyntaxProvider, Context, Formatter
 
 class ReportModule(Component):
@@ -276,12 +277,6 @@ class ReportModule(Component):
                 header_groups.append([])
             header_group.append(header)
 
-        # Get the email addresses of all known users
-        email_map = {}
-        for username, name, email in self.env.get_known_users():
-            if email:
-                email_map[username] = email
-
         # Structure the rows and cells:
         #  - group rows according to __group__ value, if defined
         #  - group cells the same way headers are grouped
@@ -313,10 +308,7 @@ class ReportModule(Component):
                     # Special casing based on column name
                     col = col.strip('_')
                     if col == 'reporter':
-                        if '@' in value:
-                            cell['author'] = value
-                        elif value in email_map:
-                            cell['author'] = email_map[value]
+                        cell['author'] = value
                     elif col == 'resource':
                         resource = value
                     cell_group.append(cell)
@@ -329,10 +321,18 @@ class ReportModule(Component):
                 row_groups = [(None, row_group)]
             row_group.append(row)
 
+        # Get the email addresses of all known users
+        email_map = {}
+        if Chrome(self.env).show_email_addresses:
+            for username, name, email in self.env.get_known_users():
+                if email:
+                    email_map[username] = email
+
         data.update({'header_groups': header_groups,
                      'row_groups': row_groups,
                      'numrows': len(results),
-                     'sorting_enabled': len(row_groups)==1})
+                     'sorting_enabled': len(row_groups)==1,
+                     'email_map': email_map})
 
         if id:
             self.add_alternate_links(req, args)

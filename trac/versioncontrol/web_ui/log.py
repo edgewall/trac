@@ -29,7 +29,8 @@ from trac.versioncontrol import Changeset
 from trac.versioncontrol.web_ui.changeset import ChangesetModule
 from trac.versioncontrol.web_ui.util import *
 from trac.web import IRequestHandler
-from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
+from trac.web.chrome import add_link, add_stylesheet, INavigationContributor, \
+                            Chrome
 from trac.wiki import IWikiSyntaxProvider, Context, Formatter
 
 LOG_LIMIT = 100
@@ -179,12 +180,13 @@ class LogModule(Component):
         changes = get_changes(repos, revs)
         extra_changes = {}
         email_map = {}
+        
         if format == 'rss':
             # Get the email addresses of all known users
-            email_map = {}
-            for username,name,email in self.env.get_known_users():
-                if email:
-                    email_map[username] = email
+            if Chrome(self.env).show_email_addresses:
+                for username,name,email in self.env.get_known_users():
+                    if email:
+                        email_map[username] = email
         elif format == 'changelog':
             for rev in revs:
                 changeset = changes[rev]

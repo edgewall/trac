@@ -1,5 +1,8 @@
 <?xml version="1.0"?>
-<rss version="2.0" xmlns:py="http://genshi.edgewall.org/">
+<rss version="2.0" xmlns:py="http://genshi.edgewall.org/"
+                   xmlns:dc="http://purl.org/dc/elements/1.1/"
+                   xmlns:xi="http://www.w3.org/2001/XInclude">
+  <xi:include href="macros.rss" />
   <channel py:with="abs_context = context(abs_urls=True)">
     <title>${project.name}: Ticket $title</title>
     <link>${abs_href.ticket(ticket.id)}</link>
@@ -13,7 +16,7 @@
     <generator>Trac $trac.version</generator>
 
     <item py:for="change in changes">
-      <author py:if="change.author">$change.author</author>
+      ${author_or_creator(change.author)}
       <pubDate>${http_date(change.date)}</pubDate>
       <title>$change.title</title>
       <link>${abs_href.ticket(ticket.id)}<py:if test="change.cnum">#comment:$change.cnum</py:if></link>
@@ -38,7 +41,7 @@
           </py:for>
           &lt;/ul&gt;
         </py:if>
-        ${unicode(abs_context.wiki_to_html(change.comment, absurls=True))}
+        ${unicode(abs_context.wiki_to_html(change.comment))}
       </description>
       <category>Ticket</category>
     </item>

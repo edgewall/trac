@@ -25,6 +25,15 @@
       pretty_size(size)
   }</span></py:def>
 
+  <!--!  Display author information, eventually obfuscating the e-mail address
+  -
+  -      We take care to not insert any extra space.
+  -->
+  <py:def function="authorinfo(author, email_map=None)"><py:choose><py:when test="author"><py:with
+    vars="author = show_email_addresses and email_map and '@' not in author and email_map[author] or author">${
+      author and format_author(author) or 'anonymous'
+  }</py:with></py:when><py:otherwise>anonymous</py:otherwise></py:choose></py:def>
+
   <!--!  Display how many time elapsed since the given date.
   -
   -      Typically used in sentences like "changed ${dateinfo(date)} ago"
@@ -151,7 +160,7 @@
     <py:def function="show_one_attachment(attachment)">
       <a href="${context.href('attachment', context.resource, context.id, attachment.filename)}"
          title="View attachment">$attachment.filename</a>
-        (${sizeinfo(attachment.size)}) - added by <em>$attachment.author</em>
+       (${sizeinfo(attachment.size)}) - added by <em>${authorinfo(attachment.author)}</em>
         ${dateinfo(attachment.date)} ago.
     </py:def>
     <py:choose test="">

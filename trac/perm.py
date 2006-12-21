@@ -246,15 +246,20 @@ class PermissionSystem(Component):
     # IPermissionRequestor methods
 
     def get_permission_actions(self):
-        """Implement the global `TRAC_ADMIN` meta permission."""
-        actions = []
+        """Implement the global `TRAC_ADMIN` meta permission.
+        
+        Implements also the `EMAIL_VIEW` permission which allows for
+        showing email addresses even if `[trac] show_email_addresses`
+        is `false`.
+        """
+        actions = ['EMAIL_VIEW']
         for requestor in [r for r in self.requestors if r is not self]:
             for action in requestor.get_permission_actions():
                 if isinstance(action, tuple):
                     actions.append(action[0])
                 else:
                     actions.append(action)
-        return [('TRAC_ADMIN', actions)]
+        return [('TRAC_ADMIN', actions), 'EMAIL_VIEW']
 
 
 class PermissionCache(object):

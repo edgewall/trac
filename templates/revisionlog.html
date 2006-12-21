@@ -131,7 +131,7 @@
                       [$item.rev]</a>
                   </td>
                   <td class="date" py:content="format_datetime(change.date)"/>
-                  <td class="author">$change.author</td>
+                  <td class="author">${authorinfo(change.author)}</td>
                   <td class="summary" py:choose="">
                     <py:when test="verbose"></py:when>
                     <py:when test="wiki_format_messages">

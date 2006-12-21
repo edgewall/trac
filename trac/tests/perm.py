@@ -84,9 +84,9 @@ class PermissionSystemTestCase(unittest.TestCase):
         self.perm = perm.PermissionSystem(self.env)
 
     def test_all_permissions(self):
-        self.assertEqual({'TEST_CREATE': True, 'TEST_DELETE': True,
-                          'TEST_MODIFY': True,  'TEST_ADMIN': True,
-                          'TRAC_ADMIN': True},
+        self.assertEqual({'EMAIL_VIEW': True, 'TRAC_ADMIN': True,
+                          'TEST_CREATE': True, 'TEST_DELETE': True,
+                          'TEST_MODIFY': True,  'TEST_ADMIN': True},
                          self.perm.get_user_permissions())
 
     def test_simple_permissions(self):

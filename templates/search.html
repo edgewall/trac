@@ -5,6 +5,7 @@
       xmlns:py="http://genshi.edgewall.org/"
       xmlns:xi="http://www.w3.org/2001/XInclude">
   <xi:include href="layout.html" />
+  <xi:include href="macros.html" />
   <head>
     <title>Search<py:if test="query"> Results</py:if></title>
     <py:if test="results">
@@ -74,7 +75,7 @@
               <dt><a href="${result.href}" class="searchable">${result.title}</a></dt>
               <dd class="searchable">${result.excerpt}</dd>
               <dd>
-                <span class="author">By ${result.author}</span> &mdash;
+                <span class="author">By ${authorinfo(result.author)}</span> &mdash;
                 <span class="date">${result.date}</span>
                 <py:if test="result.keywords">
                   &mdash; <span class="keywords">Keywords: <em class="searchable">${result.keywords}</em></span>

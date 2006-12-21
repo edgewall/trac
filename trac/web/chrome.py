@@ -34,8 +34,8 @@ from trac.util import compat, get_reporter_id, presentation, get_pkginfo, \
                       get_module_path
 from trac.util.compat import partial, set
 from trac.util.html import plaintext
-from trac.util.text import pretty_size, shorten_line, unicode_quote_plus, \
-                           to_unicode
+from trac.util.text import pretty_size, obfuscate_email_address, \
+                           shorten_line, unicode_quote_plus, to_unicode
 from trac.util.datefmt import pretty_timedelta, format_datetime, format_date, \
                               format_time, http_date
 from trac.web.api import IRequestHandler, HTTPNotFound
@@ -193,6 +193,10 @@ class Chrome(Component):
 
     logo_height = IntOption('header_logo', 'height', -1,
         """Height of the header logo image in pixels.""")
+
+    show_email_addresses = BoolOption('trac', 'show_email_addresses', 'false',
+        """Show email addresses instead of usernames. If false, we obfuscate
+        email addresses (''since 0.11'').""")
 
     templates = None
 
@@ -464,6 +468,8 @@ class Chrome(Component):
                 'logo': self.get_logo_data(self.env.abs_href),
             })
 
+        show_email_addresses = (self.show_email_addresses or not req or \
+                                'EMAIL_VIEW' in req.perm)
         tzinfo = None
         if req:
             tzinfo = req.tz
@@ -474,6 +480,8 @@ class Chrome(Component):
             'href': req and req.href,
             'perm': req and req.perm,
             'authname': req and req.authname or '<trac>',
+            'show_email_addresses': show_email_addresses,
+            'format_author': partial(self._format_author, req),
 
             # Date/time formatting
             'format_datetime': partial(format_datetime, tzinfo=tzinfo),
@@ -542,6 +550,14 @@ class Chrome(Component):
         })
 
         return stream.render(method, doctype=doctype)
+
+    # Helpers
+
+    def _format_author(self, req, author):
+        if self.show_email_addresses or not req or 'EMAIL_VIEW' in req.perm:
+            return author
+        else:
+            return obfuscate_email_address(author)
 
     # Template filters
 

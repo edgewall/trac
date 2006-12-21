@@ -1,5 +1,8 @@
 <?xml version="1.0"?>
-<rss version="2.0" xmlns:py="http://genshi.edgewall.org/">
+<rss version="2.0" xmlns:py="http://genshi.edgewall.org/"
+                   xmlns:dc="http://purl.org/dc/elements/1.1/"
+                   xmlns:xi="http://www.w3.org/2001/XInclude">
+  <xi:include href="macros.rss" />
   <channel>
     <title>${project.name}</title>
     <link>${abs_href.timeline()}</link>
@@ -14,9 +17,7 @@
 
     <item py:for="event in events">
       <title>${plaintext(event.title, keeplinebreaks=False)}</title>
-      <py:with vars="author=event.author; author = author and '@' in author and author or email_map.get(author)">
-        <author py:if="author">$author</author>
-      </py:with>
+      ${author_or_creator(event.author, email_map)}
       <pubDate>${http_date(event.date)}</pubDate>
       <link>${event.abs_href}</link>
       <guid isPermaLink="false">${event.abs_href}/${event.dateuid()}</guid>

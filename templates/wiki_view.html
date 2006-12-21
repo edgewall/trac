@@ -41,7 +41,7 @@
         <table id="info" summary="Revision info">
           <tbody>
             <tr><th scope="row">
-              Version $page.version (modified by $page.author, ${dateinfo(page.time)} ago)
+                Version $page.version (modified by ${authorinfo(page.author)}, ${dateinfo(page.time)} ago)
             </th></tr>
             <tr><td class="message">
               ${context.wiki_to_html(page.comment or '--')}

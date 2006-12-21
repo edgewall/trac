@@ -46,7 +46,7 @@
         <dt class="property author">Author:</dt>
         <dd class="author" py:choose="">
           <em py:when="multi" class="multi">(multiple changes)</em>
-          <py:otherwise>$change.author <span py:if="change.ipnr" class="ipnr">(IP: $change.ipnr)</span></py:otherwise>
+          <py:otherwise>${authorinfo(change.author)} <span py:if="change.ipnr" class="ipnr">(IP: $change.ipnr)</span></py:otherwise>
         </dd>
         <dt class="property message">Comment:</dt>
         <dd class="message" py:choose="">

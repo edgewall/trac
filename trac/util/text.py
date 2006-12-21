@@ -170,6 +170,12 @@ def wrap(t, cols=75, initial_indent='', subsequent_indent='',
     except ImportError:
         return t
 
+def obfuscate_email_address(address):
+    if address:
+        at = address.find('@')
+        if at != -1:
+            return address[:at] + "@..." + ((address[-1] == '>' and '>') or '')
+    return address
 
 # -- Conversion
 

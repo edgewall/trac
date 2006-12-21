@@ -1,5 +1,8 @@
 <?xml version="1.0"?>
-<rss version="2.0" xmlns:py="http://genshi.edgewall.org/">
+<rss version="2.0" xmlns:py="http://genshi.edgewall.org/"
+                   xmlns:dc="http://purl.org/dc/elements/1.1/"
+                   xmlns:xi="http://www.w3.org/2001/XInclude">
+  <xi:include href="macros.rss" />
   <channel>
     <title>$project.name: Ticket Query</title>
     <link>$query_href</link>
@@ -16,7 +19,7 @@
       <guid isPermaLink="false">$href</guid>
       <title>#$result.id: $result.summary</title>
       <pubDate py:if="result.time">${http_date(result.time)}</pubDate>
-      <author py:if="result.reporter">$result.reporter</author>
+      ${author_or_creator(result.reporter)}
       <description>${unicode(context('ticket', result.id, abs_urls=True).wiki_to_html(result.description))}</description>
       <category>Results</category>
       <comments>$href#changelog</comments>
