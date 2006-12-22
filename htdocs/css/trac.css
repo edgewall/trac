@@ -6,6 +6,7 @@ h1, h2, h3, h4 {
  font-family: Arial,Verdana,'Bitstream Vera Sans',Helvetica,sans-serif;
  font-weight: bold;
  letter-spacing: -0.018em;
+ page-break-after: avoid;
 }
 h1 { font-size: 19px; margin: .15em 1em 0.5em 0 }
 h2 { font-size: 16px }
