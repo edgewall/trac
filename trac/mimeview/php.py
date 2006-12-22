@@ -104,7 +104,8 @@ class PHPRenderer(Component):
                 break
 
         html = PhpDeuglifier().format(odata.decode('utf-8'))
-        for line in html.split('<br />'):
-            # PHP generates _way_ too many non-breaking spaces...
-            # We don't need them anyway, so replace them by normal spaces
-            yield line.replace('&nbsp;', ' ')
+
+        # PHP generates _way_ too many non-breaking spaces...
+        # We don't need them anyway, so replace them by normal spaces
+        return [line.replace('&nbsp;', ' ') for line in html.split('<br />')]
+
