@@ -690,8 +690,11 @@ class SubversionChangeset(Changeset):
         self.scope = scope
         self.fs_ptr = fs_ptr
         self.pool = Pool(pool)
-        message = _from_svn(self._get_prop(core.SVN_PROP_REVISION_LOG))
-        author = _from_svn(self._get_prop(core.SVN_PROP_REVISION_AUTHOR))
+        message = self._get_prop(core.SVN_PROP_REVISION_LOG)
+        author = self._get_prop(core.SVN_PROP_REVISION_AUTHOR)
+        # we _hope_ it's UTF-8, but can't be 100% sure (#4321)
+        message = message and to_unicode(message, 'utf-8')
+        author = author and to_unicode(author, 'utf-8')
         _date = self._get_prop(core.SVN_PROP_REVISION_DATE)
         if _date:
             ts = core.svn_time_from_cstring(_date, self.pool()) / 1000000
