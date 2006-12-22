@@ -492,7 +492,7 @@ class Mimeview(Component):
             stream = HTMLParser(StringIO('\n'.join(stream)))
 
         def _head_row():
-            return tag.re(
+            return tag.tr(
                 [tag.th(alabel, class_=atype) for atype, alabel in annotypes] +
                 [tag.th(u'\xa0', class_='content')]
             )
