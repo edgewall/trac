@@ -11,7 +11,8 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://projects.edgewall.com/trac/.
 
-import time
+from datetime import datetime
+from trac.util.datefmt import utc
 
 from trac.admin import IAdminPanelProvider
 from trac.core import *
@@ -129,7 +130,7 @@ class MilestoneAdminPage(Component):
                                             datefmt.parse_date(completed) or 0
                         except ValueError, e:
                             raise TracError(e, 'Invalid Date Format')
-                        if mil.completed > time.time():
+                        if mil.completed > datetime.now(utc):
                             raise TracError('Completion date may not be in the '
                                             'future', 'Invalid Completion Date')
                     else:
