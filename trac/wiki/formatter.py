@@ -30,8 +30,8 @@ from trac.wiki.api import WikiSystem
 from trac.util.html import escape, plaintext, Markup, Element, html
 from trac.util.text import shorten_line, to_unicode
 
-__all__ = ['Formatter']
-
+__all__ = ['wiki_to_html', 'wiki_to_oneliner', 'wiki_to_outline',
+           'wiki_to_link', 'Formatter']
 
 def system_message(msg, text=None):
     return html.DIV(html.STRONG(msg), text and html.PRE(text),
@@ -993,3 +993,22 @@ class LinkFormatter(OutlineFormatter):
         if match:
             return self.handle_match(match)
 
+
+def wiki_to_html(wikitext, env, req, db=None,
+                 absurls=False, escape_newlines=False):
+    ctx = Context(env, req, db=db, abs_urls=absurls)
+    return ctx.wiki_to_html(wikitext, escape_newlines)
+
+def wiki_to_oneliner(wikitext, env, db=None, shorten=False, absurls=False,
+                     req=None):
+    ctx = Context(env, req, db=db, abs_urls=absurls)
+    return ctx.wiki_to_oneliner(wikitext, shorten)
+
+def wiki_to_outline(wikitext, env, db=None,
+                    absurls=False, max_depth=None, min_depth=None):
+    ctx = Context(env, req, db=db, abs_urls=absurls)
+    return ctx.wiki_to_outline(wikitext, max_depth, min_depth)
+
+def wiki_to_link(wikitext, env, req):
+    ctx = Context(env, req)
+    return Context(env, req).wiki_to_link(wikitext)
