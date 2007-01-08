@@ -142,6 +142,7 @@ class CommitHook:
         self.msg = "(In [%s]) %s" % (rev, msg)
         self.now = datetime.now(utc)
         self.env = open_environment(project)
+        self.env.get_repository() # will do a `sync` if needed
 
         cmdGroups = commandPattern.findall(msg)
 
