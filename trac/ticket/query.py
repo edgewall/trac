@@ -728,8 +728,6 @@ class TicketQueryMacro(WikiMacroBase):
     If the key is the name of a field, the value must use the same syntax as for
     `query:` wiki links (but '''not''' the variant syntax starting with "?").
 
-    There are
-
     The optional `format` parameter determines how the list of tickets is
     presented: 
      - '''list''' -- the default presentation is to list the ticket ID next
@@ -755,7 +753,7 @@ class TicketQueryMacro(WikiMacroBase):
 
     For compatibility with Trac 0.10, if there's a second positional parameter
     given to the macro, it will be used to specify the `format`.
-    Also, using "&" as a field separator still work but is deprecated.
+    Also, using "&" as a field separator still works but is deprecated.
     """
 
     def render_macro(self, formatter, name, content):

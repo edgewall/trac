@@ -67,8 +67,8 @@ class TitleIndexMacro(WikiMacroBase):
 
     Alternate `format` can be specified:
      - `format=group`: The list of page will be structured in groups
-        according to common prefix. This format also supports a `min=n`
-        argument, where `n` is the minimal number of pages for a group.
+       according to common prefix. This format also supports a `min=n`
+       argument, where `n` is the minimal number of pages for a group.
     """
 
     SPLIT_RE = re.compile(r"( |/|[0-9])")
@@ -254,7 +254,7 @@ class ImageMacro(WikiMacroBase):
        the image
      * `nolink` means without link to image source.
      * `key=value` style are interpreted as HTML attributes or CSS style
-        indications for the image. Valid keys are:
+       indications for the image. Valid keys are:
         * align, border, width, height, alt, title, longdesc, class, id
           and usemap
         * `border` can only be a number
