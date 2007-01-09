@@ -26,7 +26,7 @@ from StringIO import StringIO
 
 from trac.core import *
 from trac.mimeview import *
-from trac.wiki.api import WikiSystem
+from trac.wiki.api import WikiSystem, Context
 from trac.util.html import escape, plaintext, Markup, Element, html
 from trac.util.text import shorten_line, to_unicode
 
