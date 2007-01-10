@@ -81,9 +81,8 @@ class TicketGroupStats(object):
             'countsToProg': countsToProg
         })
         self.count = self.count + count
-        self._refresh_calcs()
 
-    def _refresh_calcs(self):
+    def refresh_calcs(self):
         if self.count < 1:
             return
         total_percent = 0
@@ -128,6 +127,7 @@ class DefaultTicketGroupStatsProvider(Component):
         stat.add_interval('active', active_cnt,
                           {'status': ['new', 'assigned', 'reopened']},
                           'open', False)
+        stat.refresh_calcs()
         return stat
 
 
