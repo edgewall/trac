@@ -17,13 +17,13 @@
 :: Modify paths here:
 
 :: -- this one *must* be set
-SET TRAC_ENV=C:\Workspace\local\trac\devel
+SET TRAC_ENV=
 
 :: -- set if Python is not in the system path
 SET PYTHON_PATH=
 
 :: -- set to the folder containing trac/ if installed in a non-standard location
-SET TRAC_PATH=C:/Workspace/src/trac/trunk
+SET TRAC_PATH=
 :: ----------------------------------------------------------
 
 :: Do not execute hook if trac environment does not exist
