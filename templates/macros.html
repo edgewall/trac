@@ -200,7 +200,7 @@
   -      `stats` argument is a TicketGroupStats instance
   -       `interval_hrefs` are links to a query for each of the stats.intervals
   -->
-  <py:def function="progress_bar(stats, interval_hrefs, percent=None, legend=True, style=None)">
+  <py:def function="progress_bar(stats, interval_hrefs, percent=None, legend=True, style=None, stats_href=None)">
     <table class="progress" style="$style">
       <tr>
         <td py:for="idx, interval in enumerate(stats.intervals)"
@@ -217,6 +217,10 @@
         <dt>${interval.title.capitalize()} ${stats.unit}s:</dt>
         <dd><a href="${interval_hrefs[idx]}">${interval.count}</a></dd>
       </py:for>
+      <py:if test="stats_href">
+        <dt>Total ${stats.unit}s:</dt>
+        <dd><a href="${stats_href}">${reduce(lambda x, y: x.count + y.count, stats.intervals or [0])}</a></dd>
+      </py:if>
     </dl>
 </py:def>
 

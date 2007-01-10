@@ -40,7 +40,7 @@
             No date set
           </p>
         </py:choose>
-        <py:if test="stats.count">${progress_bar(stats, interval_hrefs)}</py:if>
+        <py:if test="stats.count">${progress_bar(stats, interval_hrefs, stats_href=stats_href)}</py:if>
       </div>
 
       <form py:if="available_groups" id="stats" action="">
