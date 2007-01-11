@@ -83,7 +83,7 @@ KNOWN_MIME_TYPES = {
     'application/x-sh':       ['sh'],
     'application/x-csh':      ['csh'],
     'application/x-troff':    ['nroff', 'roff', 'troff'],
-    'application/x-troff':    ['nroff', 'roff', 'troff'],
+    
     'application/rss+xml':    ['rss'],
     
     'image/x-icon':           ['ico'],
@@ -644,22 +644,22 @@ def _group_lines(stream):
 
         for kind, data, pos in stream:
             if kind is TEXT:
-                lines = data.splitlines(True)
-                for e in stack:
-                    yield e
-                yield kind, lines.pop(0).rstrip('\n'), pos
-                for e in _reverse():
-                    yield e
-                if '\n' in data:
-                    yield TEXT, '\n', pos
+                lines = data.split('\n')
+                if lines:
+                    # First element
+                    for e in stack:
+                        yield e
+                    yield kind, lines.pop(0), pos
+                    for e in _reverse():
+                        yield e
+                    # Subsequent ones, prefix with \n
                     for line in lines:
-                        for event in stack:
-                            yield event
-                        yield kind, line.rstrip('\n'), pos
-                        if line.endswith('\n'):
-                            for e in _reverse():
-                                yield e
-                            yield TEXT, '\n', pos
+                        yield TEXT, '\n', pos
+                        for e in stack:
+                            yield e
+                        yield kind, line, pos
+                        for e in _reverse():
+                            yield e
             else:
                 if kind is START or kind is START_NS:
                     stack.append((kind, data, pos))

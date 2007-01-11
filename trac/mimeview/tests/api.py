@@ -12,11 +12,15 @@
 # history and logs, available at http://trac.edgewall.org/log/.
 
 import unittest
+from StringIO import StringIO
 
 from trac.core import *
 from trac.test import EnvironmentStub
-from trac.mimeview.api import get_mimetype, IContentConverter, Mimeview
-
+from trac.mimeview.api import get_mimetype, IContentConverter, Mimeview, \
+                              _group_lines
+from genshi import Stream, Namespace, Attrs
+from genshi.core import TEXT, START, END, START_NS, END_NS
+from genshi.input import HTMLParser
 
 class GetMimeTypeTestCase(unittest.TestCase):
 
@@ -93,11 +97,85 @@ class MimeviewTestCase(unittest.TestCase):
         self.assertEqual(Converter1(self.env), conversions[1][-1])
         self.assertEqual(Converter2(self.env), conversions[2][-1])
 
+class GroupLinesTestCase(unittest.TestCase):
+
+    def test_empty_stream(self):
+        lines = list(_group_lines([]))
+        self.assertEqual(len(lines), 0)
+
+    def test_text_only_stream(self):
+        input = [(TEXT, "test", (None, -1, -1))]
+        lines = list(_group_lines(input))
+        self.assertEquals(len(lines), 1)
+        self.assertTrue(isinstance(lines[0], Stream))
+        self.assertEquals(lines[0].events, input)
+
+    def test_simplespan(self):
+        input = HTMLParser(StringIO("<span>test</span>"))
+        lines = list(_group_lines(input))
+        self.assertEquals(len(lines), 1)
+        self.assertTrue(isinstance(lines[0], Stream))
+        for (a, b) in zip(lines[0], input):
+            self.assertEqual(a, b)
+
+    def test_empty_text_stream(self):
+        """
+        http://trac.edgewall.org/ticket/4336
+        """
+        input = [(TEXT, "", (None, -1, -1))]
+        lines = list(_group_lines(input))
+        self.assertEquals(len(lines), 1)
+        self.assertTrue(isinstance(lines[0], Stream))
+        self.assertEquals(lines[0].events, input)
+
+    def test_empty_text_in_span(self):
+        """
+        http://trac.edgewall.org/ticket/4336
+        """
+        ns = Namespace('http://www.w3.org/1999/xhtml')
+        input = [(START, (ns.span, Attrs([])), (None, -1, -1)),
+                 (TEXT, "", (None, -1, -1)),
+                 (END, ns.span, (None, -1, -1)),
+                ]
+        lines = list(_group_lines(input))
+        self.assertEqual(len(lines), 1)
+        self.assertEqual(lines[0].render('html'), "<span></span>")
+                 
+    def test_newline(self):
+        """
+        If the text element does not end with a newline, it's not properly
+        closed.
+        """
+        input = HTMLParser(StringIO('<span class="c">a\nb</span>'))
+        expected = ['<span class="c">a</span>',
+                    '<span class="c">b</span>',
+                   ]
+        lines = list(_group_lines(input))
+        self.assertEquals(len(lines), len(expected))
+        for a, b in zip(lines, expected):
+            self.assertEquals(a.render('xml'), b)
+
+    def test_multinewline(self):
+        """
+        ditto.
+        """
+        input = HTMLParser(StringIO('<span class="c">\n\n\na</span>'))
+        expected = ['<span class="c"></span>',
+                    '<span class="c"></span>',
+                    '<span class="c"></span>',
+                    '<span class="c">a</span>',
+                   ]
+        lines = list(_group_lines(input))
+        self.assertEquals(len(lines), len(expected))
+        for a, b in zip(lines, expected):
+            self.assertEquals(a.render('xml'), b)
+
 
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(GetMimeTypeTestCase, 'test'))
     suite.addTest(unittest.makeSuite(MimeviewTestCase, 'test'))
+    suite.addTest(unittest.makeSuite(GroupLinesTestCase, 'test'))
     return suite
 
 if __name__ == '__main__':
