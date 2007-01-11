@@ -109,6 +109,27 @@ class Environment(Component, ComponentManager):
         
         Should be one of (`CRITICAL`, `ERROR`, `WARN`, `INFO`, `DEBUG`).""")
 
+    log_format = Option('logging', 'log_format', None,
+        """Custom logging format.
+
+        If nothing is set, the following will be used:
+        
+        Trac[$(module)s] $(levelname)s: $(message)s
+
+        In addition to regular key names supported by the Python logger library
+        library (see http://docs.python.org/lib/node422.html), one could use:
+         - $(path)s     the path for the current environment
+         - $(basename)s the last path component of the current environment
+         - $(project)s  the project name
+
+         Note the usage of `$(...)s` instead of `%(...)s` as the latter form
+         would be interpreted by the ConfigParser itself.
+
+         Example:
+         ($(thread)d) Trac[$(basename)s:$(module)s] $(levelname)s: $(message)s
+
+         (since 0.11)""")
+
     def __init__(self, path, create=False, options=[]):
         """Initialize the Trac environment.
         
@@ -281,7 +302,14 @@ class Environment(Component, ComponentManager):
         logfile = self.log_file
         if logtype == 'file' and not os.path.isabs(logfile):
             logfile = os.path.join(self.get_log_dir(), logfile)
-        self.log = logger_factory(logtype, logfile, self.log_level, self.path)
+        format = self.log_format
+        if format:
+            format = format.replace('$(', '%(') \
+                     .replace('%(path)s', self.path) \
+                     .replace('%(basename)s', os.path.basename(self.path)) \
+                     .replace('%(project)s', self.project_name)
+        self.log = logger_factory(logtype, logfile, self.log_level, self.path,
+                                  format=format)
 
     def get_known_users(self, cnx=None):
         """Generator that yields information about all known users, i.e. users

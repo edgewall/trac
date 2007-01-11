@@ -20,32 +20,33 @@ import logging.handlers
 import sys
 
 def logger_factory(logtype='syslog', logfile=None, level='WARNING',
-                   logid='Trac'):
+                   logid='Trac', format=None):
     logger = logging.getLogger(logid)
     logtype = logtype.lower()
     if logtype == 'file':
         hdlr = logging.FileHandler(logfile)
-    elif logtype in ['winlog', 'eventlog', 'nteventlog']:
+    elif logtype in ('winlog', 'eventlog', 'nteventlog'):
         # Requires win32 extensions
         hdlr = logging.handlers.NTEventLogHandler(logid,
                                                   logtype='Application')
-    elif logtype in ['syslog', 'unix']:
+    elif logtype in ('syslog', 'unix'):
         hdlr = logging.handlers.SysLogHandler('/dev/log')
-    elif logtype in ['stderr']:
+    elif logtype in ('stderr'):
         hdlr = logging.StreamHandler(sys.stderr)
     else:
         hdlr = logging.handlers.BufferingHandler(0)
         # Note: this _really_ throws away log events, as a `MemoryHandler`
         # would keep _all_ records in case there's no target handler (a bug?)
 
-    format = 'Trac[%(module)s] %(levelname)s: %(message)s'
-    if logtype in ['file', 'stderr']:
-        format = '%(asctime)s ' + format 
+    if not format:
+        format = 'Trac[%(module)s] %(levelname)s: %(message)s'
+        if logtype in ('file', 'stderr'):
+            format = '%(asctime)s ' + format
     datefmt = ''
     if logtype == 'stderr':
         datefmt = '%X'        
     level = level.upper()
-    if level in ['DEBUG', 'ALL']:
+    if level in ('DEBUG', 'ALL'):
         logger.setLevel(logging.DEBUG)
     elif level == 'INFO':
         logger.setLevel(logging.INFO)
@@ -55,7 +56,7 @@ def logger_factory(logtype='syslog', logfile=None, level='WARNING',
         logger.setLevel(logging.CRITICAL)
     else:
         logger.setLevel(logging.WARNING)
-    formatter = logging.Formatter(format,datefmt)
+    formatter = logging.Formatter(format, datefmt)
     hdlr.setFormatter(formatter)
     logger.addHandler(hdlr) 
 
