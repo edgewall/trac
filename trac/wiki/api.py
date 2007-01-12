@@ -112,7 +112,7 @@ class Context(object):
     """Base class for Wiki rendering contexts.
 
     This encapsulates the "referential context" of a Wiki content,
-    and is therefore attached to a specific resource of type `resource`,
+    and is therefore attached to a specific resource of type `realm`,
     identified by its `id`.
     
     A resource can also be parented in another resource, which means we are
@@ -133,13 +133,13 @@ class Context(object):
     and more specifically about the expected output MIME type (TODO)
     """
 
-    def __init__(self, env, req, resource=None, id=None, parent=None,
+    def __init__(self, env, req, realm=None, id=None, parent=None,
                  abs_urls=False, db=None):
         if not env:
             raise TracError("Environment not specified for Context")
         self.env = env
         self.req = req
-        self.resource = resource
+        self.realm = realm
         self.id = id
         self.parent = parent
         self.abs_urls = abs_urls
@@ -149,14 +149,14 @@ class Context(object):
         resource_path = []
         current = self
         while current:
-            resource_path.append('%s:%s' % (current.resource or '',
+            resource_path.append('%s:%s' % (current.realm or '',
                                             current.id or ''))
             current = current.parent 
         return '<Context %r (%s)%s>' % \
                (self.req, ', '.join(reversed(resource_path)),
                 self.abs_urls and ' [abs]' or '')
     
-    def __call__(self, resource=None, id=None, abs_urls=None):
+    def __call__(self, realm=None, id=None, abs_urls=None):
         """Create a new Context, child of this Context.
 
         >>> from trac.test import EnvironmentStub
@@ -166,7 +166,7 @@ class Context(object):
         >>> c1
         <Context None (:, wiki:CurrentStatus)>
 
-        If both `resource` and `id` are `None`, then the new context will
+        If both `realm` and `id` are `None`, then the new context will
         actually be a copy of the current context, instead of a child context.
 
         >>> c2 = c1()
@@ -179,8 +179,8 @@ class Context(object):
         >>> c(abs_urls=True)('query')('ticket', '12')
         <Context None (:, query:, ticket:12) [abs]>
         """
-        copy = not resource and not id
-        return Context(self.env, self.req, copy and self.resource or resource,
+        copy = not realm and not id
+        return Context(self.env, self.req, copy and self.realm or realm,
                        copy and self.id or id, [self, self.parent][copy],
                        abs_urls=[abs_urls, self.abs_urls][abs_urls is None])
 
@@ -258,10 +258,10 @@ class Context(object):
                     base.pop()
                 elif rel not in ('.', ''):
                     base.append(rel)
-                return self.href(self.resource, *base, **kwargs) + '#' + anchor
+                return self.href(self.realm, *base, **kwargs) + '#' + anchor
             else:
                 base.append(comp)
-        return self.href(self.resource, *base, **kwargs)
+        return self.href(self.realm, *base, **kwargs)
 
     def local_url(self):
         """Return the local URL, either the configured `[project] url`

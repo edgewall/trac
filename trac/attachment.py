@@ -424,7 +424,7 @@ class AttachmentModule(Component):
         (context should be able to do that as well)
         """
         for change, type, id, filename, time, descr, author in \
-                self.get_history(start, stop, context.resource):
+                self.get_history(start, stop, context.realm):
             title = html(html.em(os.path.basename(filename)),
                          ' attached to ', display(id))
             event = TimelineEvent('attachment', title,
@@ -595,7 +595,7 @@ class AttachmentModule(Component):
             permute = True
         else:
             permute = False
-            parent_type, parent_id = formatter.context.resource, \
+            parent_type, parent_id = formatter.context.realm, \
                                      formatter.context.id
             filename = link
         def attachment_link(parent_type, parent_id, filename):

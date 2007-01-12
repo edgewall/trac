@@ -158,7 +158,7 @@
   -->
   <py:def function="list_of_attachments(context, attachments, attach_href, compact=False)">
     <py:def function="show_one_attachment(attachment)">
-      <a href="${context.href('attachment', context.resource, context.id, attachment.filename)}"
+      <a href="${context.href('attachment', context.realm, context.id, attachment.filename)}"
          title="View attachment">$attachment.filename</a>
        (${sizeinfo(attachment.size)}) - added by <em>${authorinfo(attachment.author)}</em>
         ${dateinfo(attachment.date)} ago.

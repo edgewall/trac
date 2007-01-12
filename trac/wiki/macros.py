@@ -362,7 +362,7 @@ class ImageMacro(WikiMacroBase):
                     module = 'wiki'
         elif len(parts) == 1:               # attachment
             file = filespec
-            module, id = formatter.context.resource, formatter.context.id
+            module, id = formatter.context.realm, formatter.context.id
             if module not in ['wiki', 'ticket']: # FIXME: shouldn't be needed
                 raise Exception('Cannot reference local attachment from here')
         else:
