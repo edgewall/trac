@@ -17,13 +17,15 @@
     <div id="content" class="admin">
       <h1>Administration</h1>
       <div id="tabs">
-        <ul py:for="category, panels in groupby(panels, lambda p: p.category)">
-          <li class="${category.id == active_cat and 'active' or None}">
+        <ul py:for="category, panels in groupby(panels, lambda p: p.category)"
+            py:with="cat_is_active = category.id == active_cat">
+          <li class="${cat_is_active and 'active' or None}">
             ${category.label}
             <ul>
-              <li py:for="panel in panels" py:with="panel = panel.panel"
-                  class="${panel.id == active_panel and 'active' or None}">
-                <a py:strip="panel.id == active_panel"
+              <li py:for="panel in panels" py:with="panel = panel.panel;
+                      pan_is_active = cat_is_active and panel.id == active_panel"
+                  class="${pan_is_active and 'active' or None}">
+                <a py:strip="pan_is_active"
                    href="${href.admin(category.id, panel.id)}">${panel.label}</a>
               </li>
             </ul>
