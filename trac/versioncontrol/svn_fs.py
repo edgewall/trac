@@ -104,10 +104,12 @@ def _get_history(svn_path, authz, fs_ptr, pool, start, end, limit=None):
 
 def _to_svn(*args):
     """Expect a list of `unicode` path components.
-    Returns an UTF-8 encoded string suitable for the Subversion python bindings.
+    Returns an UTF-8 encoded string suitable for the Subversion python bindings
+    (the returned path never starts with a leading "/")
     """
-    return '/'.join([path.strip('/') for path in args]).encode('utf-8')
-    
+    return '/'.join([p for p in [p.strip('/') for p in args] if p])\
+           .encode('utf-8')
+
 def _from_svn(path):
     """Expect an UTF-8 encoded string and transform it to an `unicode` object"""
     return path and path.decode('utf-8')
@@ -317,7 +319,6 @@ class SubversionRepository(Repository):
     """
 
     def __init__(self, path, authz, log, options={}):
-        self.path = path # might be needed by __del__()/close()
         self.log = log
         self.options = options
         self.pool = Pool()
@@ -379,9 +380,7 @@ class SubversionRepository(Repository):
             raise NoSuchChangeset(rev)
 
     def close(self):
-        self.repos = None
-        self.fs_ptr = None
-        self.pool = None
+        self.repos = self.fs_ptr = self.pool = None
 
     def _get_tags_or_branches(self, paths):
         """Retrieve known branches or tags."""
@@ -672,9 +671,9 @@ class SubversionNode(Node):
                 annotations.append(revision)
             rev = _svn_rev(self.rev)
             start = _svn_rev(0)
-            repo_url = 'file:///%s%s' % (self.repos.path,
-                                         self._scoped_svn_path)
-            self.repos.log.info('opening ra_local session to' + repo_url)
+            repo_url = 'file:///%s/%s' % (self.repos.path.lstrip('/'),
+                                          self._scoped_svn_path)
+            self.repos.log.info('opening ra_local session to ' + repo_url)
             from svn import client
             try:
                 client.blame2(repo_url, rev, start, rev, blame_receiver,
